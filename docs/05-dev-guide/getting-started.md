@@ -2,7 +2,7 @@
 
 ## Prerequisites
 
-- Flutter 3.47.x stable (`flutter --version`), Dart 3.13.x. Use `fvm` and commit `.fvmrc` so every developer and CI pin the same SDK.
+- Flutter 3.47.x stable (`flutter --version`), Dart 3.13.x. The exact version is pinned in `.fvmrc` at the repository root (currently **3.47.5**, which ships Dart 3.13.4) so every developer and CI build on the same SDK — see *Using fvm* below.
 - Android Studio (latest) with SDK 35, NDK r27; Xcode 16+ with iOS 16 simulator; CocoaPods is no longer required (Swift Package Manager is default since Flutter 3.44).
 - Python 3.11+ with `openpyxl` for the content pipeline.
 - `make` (targets below).
@@ -19,6 +19,20 @@ dart run build_runner build -d  # riverpod, freezed, drift, go_router codegen
 flutter analyze && flutter test
 flutter run
 ```
+
+## Using fvm
+
+The SDK version lives in `.fvmrc` at the repository root and is the single source of truth. `.fvm/` (the downloaded SDK and its symlink) is git-ignored.
+
+```bash
+dart pub global activate fvm     # once per machine
+fvm install                      # from the repository root; reads .fvmrc
+fvm flutter --version            # should print 3.47.5 / Dart 3.13.4
+```
+
+Prefix Flutter and Dart commands with `fvm` (`fvm flutter test`, `fvm dart run build_runner build -d`) so they use the pinned SDK rather than whatever is on `PATH`. fvm resolves `.fvmrc` by walking up from the current directory, so this works from `app/` too.
+
+Point your IDE at `<repo>/.fvm/flutter_sdk` as the Flutter SDK path. To move the whole project to a new SDK, change `.fvmrc`, run `fvm install`, and record the reason in `decisions.md`.
 
 ## Makefile targets
 
