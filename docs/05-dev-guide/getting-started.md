@@ -14,7 +14,7 @@ git clone … deutschplan && cd deutschplan
 fvm install                     # picks the SDK from .fvmrc
 make content                    # Excel → content.db → app/assets/db/content.db
 cd app
-flutter pub get
+flutter pub get                 # also runs gen_l10n -> lib/l10n/generated/
 dart run build_runner build -d  # riverpod, freezed, drift, go_router codegen
 flutter analyze && flutter test
 flutter run
@@ -51,6 +51,6 @@ Point your IDE at `<repo>/.fvm/flutter_sdk` as the Flutter SDK path. To move the
 2. Create `lib/features/<feature>/<screen>_screen.dart`, `<screen>_providers.dart`, feature widgets.
 3. Add the typed route in `lib/router/routes.dart` and the navigation entry in `docs/01-architecture/navigation.md` if new.
 4. Use only `DpSurface`, tokens and `Adaptive*` widgets — no raw colours, no direct Material/Cupertino chrome.
-5. Copy in ARB (`lib/l10n/app_en.arb`, `app_bn.arb`); German content from the DB.
+5. Copy in ARB (`lib/l10n/app_en.arb`, `app_bn.arb`); German content from the DB. Every key needs an `@key` description — `test/l10n_test.dart` fails without one, and also fails on a hard-coded string in a `Text(...)`, `tooltip:`, `label:`, `hintText:` or `semanticsLabel:` position. A literal that is genuinely not copy is marked `// ponytail: allow-literal`.
 6. Tests: unit for logic, widget for behaviour (FR IDs in test names), goldens for light/dark/glass.
 7. PR template asks for: docs updated · tests · goldens · migration (if DB changed) · licence check (if a package was added).

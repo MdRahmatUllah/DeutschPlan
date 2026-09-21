@@ -1,3 +1,4 @@
+import 'package:deutschplan/l10n/generated/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 
@@ -8,12 +9,24 @@ void main() {
   runApp(const ProviderScope(child: DeutschPlanApp()));
 }
 
+/// Supported UI languages, English first — see `supportedLocales` in [DeutschPlanApp].
+const List<Locale> supportedLocales = <Locale>[Locale('en'), Locale('bn')];
+
 class DeutschPlanApp extends StatelessWidget {
   const DeutschPlanApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(title: 'DeutschPlan', home: const _Placeholder());
+    return MaterialApp(
+      onGenerateTitle: (context) => AppLocalizations.of(context).appTitle,
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      // English first: gen_l10n orders supportedLocales alphabetically, which puts
+      // Bangla first, and Flutter falls back to the FIRST supported locale when the
+      // device locale matches none. `ui_language` defaults to `en`
+      // (docs/02-data/user-database.md), so English has to lead.
+      supportedLocales: supportedLocales,
+      home: const _Placeholder(),
+    );
   }
 }
 
@@ -23,6 +36,8 @@ class _Placeholder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(body: Center(child: Text('DeutschPlan')));
+    return Scaffold(
+      body: Center(child: Text(AppLocalizations.of(context).loadingCourse)),
+    );
   }
 }

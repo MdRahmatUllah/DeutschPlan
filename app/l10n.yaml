@@ -1,0 +1,10 @@
+# Localisation. UI languages are English and Bangla (docs/01-architecture/
+# accessibility-performance.md). German course text comes from content.db and is
+# never an ARB key; fixed German UI copy ("Tag geschafft!") IS an ARB key and is
+# marked as such in its @-description (docs/05-dev-guide/coding-standards.md).
+arb-dir: lib/l10n
+template-arb-file: app_en.arb
+output-localization-file: app_localizations.dart
+output-dir: lib/l10n/generated
+nullable-getter: false
+untranslated-messages-file: l10n-untranslated.json
