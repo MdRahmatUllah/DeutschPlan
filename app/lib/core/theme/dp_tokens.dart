@@ -53,6 +53,32 @@ class DpTokens extends ThemeExtension<DpTokens> {
     motion: DpMotionTokens.defaults,
   );
 
+  /// Aurora Glass. Buttons stay solid so calls to action never blur; the
+  /// palette is the Light one, and only the surfaces change.
+  factory DpTokens.glass() => const DpTokens(
+    mode: DpMode.glass,
+    color: DpPalette.light,
+    surface: DpSurfaceTokens.glass,
+    typography: DpTypeTokens.defaults,
+    shape: DpShapeTokens.glass,
+    spacing: DpSpacingTokens.defaults,
+    motion: DpMotionTokens.defaults,
+  );
+
+  /// The glass dark variant, chosen automatically when the system is dark.
+  factory DpTokens.glassDark() => const DpTokens(
+    mode: DpMode.glass,
+    color: DpPalette.dark,
+    surface: DpSurfaceTokens.glassDark,
+    typography: DpTypeTokens.defaults,
+    shape: DpShapeTokens.glass,
+    spacing: DpSpacingTokens.defaults,
+    motion: DpMotionTokens.defaults,
+  );
+
+  /// True when this mode renders frosted translucent surfaces.
+  bool get isGlass => mode == DpMode.glass;
+
   final DpMode mode;
   final DpPalette color;
   final DpSurfaceTokens surface;
@@ -273,6 +299,12 @@ class DpSurfaceTokens {
     required this.strongOutlineWidth,
     required this.shadow,
     required this.shadowOffset,
+    this.blur = 0,
+    this.strongBlur = 0,
+    this.shadowBlur = 0,
+    this.highlight = const Color(0x00FFFFFF),
+    this.sheen = const Color(0x00FFFFFF),
+    this.auroraOpacity = 0,
   });
 
   static const DpSurfaceTokens light = DpSurfaceTokens(
@@ -303,6 +335,46 @@ class DpSurfaceTokens {
     shadowOffset: Offset(3, 3),
   );
 
+  /// Aurora Glass, light. Frosted translucent panels over a drifting backdrop;
+  /// values from the `deutsch-plan-v2-aurora-glass-html` android-light canvas.
+  static const DpSurfaceTokens glass = DpSurfaceTokens(
+    paper: Color(0xFFF6F3FF), // backdrop under the aurora
+    card: Color(0x8CFFFFFF), // white at 55 %
+    cardStrong: Color(0xB8FFFFFF), // white at 72 %
+    muted: Color(0x59FFFFFF), // white at 35 %
+    outline: Color(0xA6FFFFFF), // white at 65 %
+    outlineWidth: 1,
+    strongOutlineWidth: 1,
+    shadow: Color(0x1A15121F), // ink at 10 %
+    shadowOffset: Offset(0, 8),
+    shadowBlur: 24,
+    blur: 24,
+    strongBlur: 32,
+    highlight: Color(0xE6FFFFFF), // white at 90 %
+    sheen: Color(0x59FFFFFF), // white at 35 %
+    auroraOpacity: 0.55,
+  );
+
+  /// Aurora Glass, dark — chosen automatically when the system is in dark mode.
+  /// Smoked glass over a near-black backdrop, aurora dimmed to 35 %.
+  static const DpSurfaceTokens glassDark = DpSurfaceTokens(
+    paper: Color(0xFF0E0C16),
+    card: Color(0x8C1E1B2C), // rgba(30,27,44,0.55)
+    cardStrong: Color(0xB81E1B2C), // rgba(30,27,44,0.72)
+    muted: Color(0x1AFFFFFF),
+    outline: Color(0x24FFFFFF), // white at 14 %
+    outlineWidth: 1,
+    strongOutlineWidth: 1,
+    shadow: Color(0x59000000), // black at 35 %
+    shadowOffset: Offset(0, 8),
+    shadowBlur: 24,
+    blur: 24,
+    strongBlur: 32,
+    highlight: Color(0x40FFFFFF), // white at 25 %
+    sheen: Color(0x1AFFFFFF), // white at 10 %
+    auroraOpacity: 0.35,
+  );
+
   final Color paper;
   final Color card;
   final Color cardStrong;
@@ -311,9 +383,24 @@ class DpSurfaceTokens {
   final double outlineWidth;
   final double strongOutlineWidth;
 
-  /// The hard offset shadow: no blur, no spread, pure ink.
+  /// The shadow. Light and dark use a hard offset with no blur; glass uses a
+  /// soft 0/8/24 drop.
   final Color shadow;
   final Offset shadowOffset;
+  final double shadowBlur;
+
+  /// Backdrop blur behind a `card` and a `cardStrong`. Zero outside glass.
+  final double blur;
+  final double strongBlur;
+
+  /// The 1 px inset line along the top edge of a glass panel.
+  final Color highlight;
+
+  /// The top-to-transparent sheen painted over a glass fill.
+  final Color sheen;
+
+  /// Peak opacity of an `AuroraBackdrop` blob (#35). Zero outside glass.
+  final double auroraOpacity;
 
   DpSurfaceTokens lerp(DpSurfaceTokens other, double t) => DpSurfaceTokens(
     paper: Color.lerp(paper, other.paper, t)!,
@@ -329,6 +416,12 @@ class DpSurfaceTokens {
     )!,
     shadow: Color.lerp(shadow, other.shadow, t)!,
     shadowOffset: Offset.lerp(shadowOffset, other.shadowOffset, t)!,
+    shadowBlur: lerpDouble(shadowBlur, other.shadowBlur, t)!,
+    blur: lerpDouble(blur, other.blur, t)!,
+    strongBlur: lerpDouble(strongBlur, other.strongBlur, t)!,
+    highlight: Color.lerp(highlight, other.highlight, t)!,
+    sheen: Color.lerp(sheen, other.sheen, t)!,
+    auroraOpacity: lerpDouble(auroraOpacity, other.auroraOpacity, t)!,
   );
 }
 
@@ -404,6 +497,15 @@ class DpShapeTokens {
     button: 12,
     chip: 8,
     sheet: 24,
+  );
+
+  /// Glass rounds everything more. theming.md says buttons 16 and sheets 28;
+  /// the Aurora Glass artboards draw 14 and 26, and the artboards win.
+  static const DpShapeTokens glass = DpShapeTokens(
+    card: 20,
+    button: 14,
+    chip: 8,
+    sheet: 26,
   );
 
   final double card;
