@@ -4,9 +4,9 @@ Three theme modes share one layout, one component set and one behaviour. Only to
 
 | Mode | Name | Character |
 | --- | --- | --- |
-| Light | Paper & Ink | Warm cream paper, near-black ink, saturated solid fills with ink text, hard 3 px offset shadows, no gradients. The prototype in `design/android-light/` shows this mode. |
-| Dark | Night Ink | Deep violet-black paper, light ink, the same fills lifted one step; offset shadows become 3 px lines at 30 % white. |
-| Glass | Aurora Glass | A drifting backdrop of colour blobs behind every screen; frosted translucent panels with blur, a light border and a top highlight. Buttons stay solid so calls to action never blur. |
+| Light | Paper & Ink | Warm cream paper, near-black ink, saturated solid fills with ink text, hard 3 px offset shadows, no gradients. Artboards: `deutsch-plan-design-html/android-light/` and `ios-light/`. |
+| Dark | Night Ink | Deep violet-black paper, light ink, the same fills lifted one step; offset shadows become 3 px lines at 30 % white. Artboards: `deutsch-plan-design-html/android-dark/` and `ios-dark/`. |
+| Glass | Aurora Glass | A drifting backdrop of colour blobs behind every screen; frosted translucent panels with blur, a light border and a top highlight. Buttons stay solid so calls to action never blur. Artboards: all four canvases of `deutsch-plan-v2-aurora-glass-html/`. |
 
 ## Token architecture
 
