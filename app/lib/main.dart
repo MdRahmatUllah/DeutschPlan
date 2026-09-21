@@ -1,4 +1,5 @@
 import 'package:deutschplan/core/theme/app_theme.dart';
+import 'package:deutschplan/core/theme/glass_capability.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
@@ -7,7 +8,28 @@ import 'package:material_ui/material_ui.dart';
 /// loading settings, resolving the theme) lands in `bootstrap.dart` — see
 /// docs/04-screens/splash.md, FR-S1-01.
 void main() {
-  runApp(const ProviderScope(child: DeutschPlanApp()));
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Glass asks the platform whether it will blur, and watches real frame
+  // timings so a struggling device drops to the opaque surface instead of
+  // stuttering. The query is deliberately not awaited: a channel round trip
+  // here would eat into the 500 ms warm-start budget in splash.md, at the cost
+  // of a frame or two of frosted glass on a device that cannot blur. It moves
+  // into bootstrap() in #66, which already runs before the first frame.
+  final glass = GlassCapability()
+    ..startFrameWatchdog()
+    ..queryPlatform();
+
+  // ProviderScope stays at the very root (riverpod_lint enforces it); the glass
+  // capability sits just inside so every DpSurface can reach it.
+  runApp(
+    ProviderScope(
+      child: GlassCapabilityScope(
+        notifier: glass,
+        child: const DeutschPlanApp(),
+      ),
+    ),
+  );
 }
 
 /// Supported UI languages, English first — see `supportedLocales` in [DeutschPlanApp].
