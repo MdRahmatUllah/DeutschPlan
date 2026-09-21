@@ -300,11 +300,18 @@ class DpVerdictRow extends StatelessWidget {
   /// "Correct", "Almost — watch the spelling: der Mietvertrag", "die, not der".
   final String message;
 
-  IconData get icon => switch (verdict) {
+  /// `correct` and `wrong` are a tick and a cross in the artboard, which
+  /// Material has. `almost` is the mathematical "approximately equal" sign, and
+  /// Material has no glyph for it — it renders as text instead of a near-miss
+  /// icon that means something else.
+  IconData? get icon => switch (verdict) {
     DpVerdict.correct => Icons.check,
-    DpVerdict.almost => Icons.drag_handle,
+    DpVerdict.almost => null,
     DpVerdict.wrongArticle || DpVerdict.wrong => Icons.close,
   };
+
+  /// The artboard's own mark for [DpVerdict.almost].
+  static const String almostGlyph = '≈';
 
   Color colourFrom(DpPalette palette) => switch (verdict) {
     DpVerdict.correct => palette.correctText,
@@ -322,7 +329,15 @@ class DpVerdictRow extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Icon(icon, size: 18, color: colour),
+          if (icon != null)
+            Icon(icon, size: 18, color: colour)
+          else
+            DpText(
+              almostGlyph,
+              role: DpTextRole.bodyLarge,
+              color: colour,
+              weight: 600,
+            ),
           SizedBox(width: tokens.spacing.sm),
           Expanded(
             child: DpText(

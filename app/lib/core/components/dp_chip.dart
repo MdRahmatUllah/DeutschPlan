@@ -51,7 +51,18 @@ class DpChip extends StatelessWidget {
   /// The dot on a status chip — Oat for To do, Sun for Learning, Lime for Done.
   final Color? statusColour;
 
+  /// Overrides the kind's own icon. Pass `SizedBox.shrink()` to remove it.
   final Widget? icon;
+
+  /// The icon the artboard draws for this kind: a flame on the streak pill, a
+  /// tick on a selected filter, an external-link mark on a web link. They are
+  /// part of the chip rather than something every call site remembers.
+  IconData? get defaultIcon => switch (kind) {
+    DpChipKind.streak => Icons.local_fire_department,
+    DpChipKind.filter => selected ? Icons.check : null,
+    DpChipKind.webLink => Icons.open_in_new,
+    DpChipKind.step || DpChipKind.status => null,
+  };
 
   /// Defaults to [label]. Set it where the label is an abbreviation a screen
   /// reader should expand, such as a step code.
@@ -89,6 +100,18 @@ class DpChip extends StatelessWidget {
 
     final radius = kind == DpChipKind.streak ? height / 2 : tokens.shape.chip;
 
+    final glyph =
+        icon ??
+        (defaultIcon == null
+            ? null
+            : Icon(
+                defaultIcon,
+                size: role == DpTextRole.caption ? 14 : 16,
+                color: tokens.color.ink,
+              ));
+    final leading = kind == DpChipKind.webLink ? null : glyph;
+    final trailing = kind == DpChipKind.webLink ? glyph : null;
+
     final chip = Container(
       height: height,
       padding: EdgeInsets.symmetric(horizontal: tokens.spacing.sm),
@@ -104,11 +127,16 @@ class DpChip extends StatelessWidget {
             _StatusDot(colour: statusColour!, ink: tokens.color.ink),
             SizedBox(width: tokens.spacing.xs + 2),
           ],
-          if (icon != null) ...<Widget>[
-            icon!,
+          if (leading != null) ...<Widget>[
+            leading,
             SizedBox(width: tokens.spacing.xs),
           ],
           DpText(label, role: role, weight: weight),
+          // The web-link mark trails its label, as the artboard draws it.
+          if (trailing != null) ...<Widget>[
+            SizedBox(width: tokens.spacing.xs),
+            trailing,
+          ],
         ],
       ),
     );

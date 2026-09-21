@@ -243,7 +243,18 @@ void main() {
         await pump(tester, DpVerdictRow(verdict: verdict, message: message));
 
         expect(find.text(message), findsOneWidget, reason: 'the word');
-        expect(find.byType(Icon), findsOneWidget, reason: 'the icon');
+
+        if (verdict == DpVerdict.almost) {
+          // Material has no "approximately equal" glyph, and the artboard draws
+          // the real character. A near-miss icon would mean something else.
+          expect(
+            find.text(DpVerdictRow.almostGlyph),
+            findsOneWidget,
+            reason: 'the almost mark',
+          );
+        } else {
+          expect(find.byType(Icon), findsOneWidget, reason: 'the icon');
+        }
       }
     });
 
@@ -255,7 +266,11 @@ void main() {
         (DpVerdict.wrong, palette.wrongText),
       ]) {
         await pump(tester, DpVerdictRow(verdict: verdict, message: 'x'));
-        expect(tester.widget<Icon>(find.byType(Icon)).color, colour);
+        if (verdict == DpVerdict.almost) {
+          expect(find.text(DpVerdictRow.almostGlyph), findsOneWidget);
+        } else {
+          expect(tester.widget<Icon>(find.byType(Icon)).color, colour);
+        }
       }
     });
 
