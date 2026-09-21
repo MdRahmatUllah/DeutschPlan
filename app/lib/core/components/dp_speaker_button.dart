@@ -11,7 +11,12 @@ enum DpSpeakerState { idle, loading, playing, unavailable }
 /// The pronounce button.
 ///
 /// From the Foundations artboard: 56 dp, circular, Lagoon, 2 px ink border and
-/// the hard offset shadow. Playing swaps the horn for three bars; unavailable
+/// the hard offset shadow.
+///
+/// The glyph is Material's `volume_up`, not the artboard's own speaker path.
+/// At 56 dp the two are near-indistinguishable and Material's is legible at
+/// every size; this is a deliberate substitution, not an oversight, and the
+/// goldens in #25 pin it. Playing swaps the horn for three bars; unavailable
 /// shows a slashed icon, which `accessibility-performance.md` asks for when no
 /// German system voice is installed.
 class DpSpeakerButton extends StatelessWidget {
@@ -37,7 +42,14 @@ class DpSpeakerButton extends StatelessWidget {
 
   final double size;
 
-  bool get _enabled => onPressed != null && state != DpSpeakerState.unavailable;
+  /// The state changes what a tap DOES, not whether the button responds.
+  /// accessibility-performance.md: "No German system voice → Speaker shows a
+  /// slashed icon; tap explains how to install one." A silent slashed button is
+  /// the one moment the app most needs to say why.
+  bool get _enabled => onPressed != null;
+
+  /// Whether the button is showing that it cannot speak.
+  bool get _mute => state == DpSpeakerState.unavailable;
 
   @override
   Widget build(BuildContext context) {
@@ -56,9 +68,7 @@ class DpSpeakerButton extends StatelessWidget {
             width: size,
             height: size,
             decoration: BoxDecoration(
-              color: state == DpSpeakerState.unavailable
-                  ? tokens.surface.muted
-                  : tokens.color.primary,
+              color: _mute ? tokens.surface.muted : tokens.color.primary,
               shape: BoxShape.circle,
               border: Border.all(color: tokens.color.ink, width: 2),
               boxShadow: tokens.isGlass

@@ -70,6 +70,38 @@ void main() {
       }
     });
 
+    testWidgets('the centre shrinks rather than overflowing at 200 %', (
+      tester,
+    ) async {
+      // The ring's diameter is fixed on Today, so the numbers give way. Without
+      // this the Column overflowed the circle by 132 px at 2x.
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: AppTheme.light(),
+          home: MediaQuery(
+            data: const MediaQueryData(textScaler: TextScaler.linear(2)),
+            child: const Scaffold(
+              body: Center(
+                child: DpProgressRing(
+                  completed: 12,
+                  total: 20,
+                  caption: '6 min left',
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(tester.takeException(), isNull);
+      expect(
+        tester.getSize(find.byType(DpProgressRing)),
+        const Size(120, 120),
+        reason: 'the ring keeps its diameter; the centre is what gives way',
+      );
+    });
+
     testWidgets('it renders in all three modes', (tester) async {
       for (final theme in <ThemeData>[
         AppTheme.light(),
@@ -176,6 +208,24 @@ void main() {
       expect(box.color, DpSurfaceTokens.light.muted);
     });
 
+    testWidgets('a bar too narrow for the floor still does not overflow', (
+      tester,
+    ) async {
+      // Step tiles and Me cards are not fixed width; a tablet pane or a long
+      // label can squeeze this. Honouring the 2 dp floor is not worth an
+      // overflow at a width where nothing is legible anyway.
+      for (final width in <double>[300, 20, 5]) {
+        await pump(
+          tester,
+          SizedBox(
+            width: width,
+            child: const DpSegmentedBar(done: 184, learning: 60, todo: 296),
+          ),
+        );
+        expect(tester.takeException(), isNull, reason: 'at width $width');
+      }
+    });
+
     testWidgets('a screen reader hears all three counts', (tester) async {
       await pump(
         tester,
@@ -253,9 +303,12 @@ void main() {
       expect(find.byType(CircularProgressIndicator), findsOneWidget);
     });
 
-    testWidgets('unavailable is slashed, muted and does not fire', (
+    testWidgets('unavailable is slashed and muted, but still responds', (
       tester,
     ) async {
+      // accessibility-performance.md: "No German system voice → Speaker shows a
+      // slashed icon; tap explains how to install one." An inert button is the
+      // one moment the app most needs to say why.
       var taps = 0;
       await pump(
         tester,
@@ -267,9 +320,28 @@ void main() {
       );
 
       expect(find.byIcon(Icons.volume_off), findsOneWidget);
+
+      final decoration =
+          tester
+                  .widget<Container>(
+                    find
+                        .descendant(
+                          of: find.byType(DpSpeakerButton),
+                          matching: find.byType(Container),
+                        )
+                        .first,
+                  )
+                  .decoration!
+              as BoxDecoration;
+      expect(decoration.color, DpSurfaceTokens.light.muted);
+
       await tester.tap(find.byType(DpSpeakerButton));
       await tester.pumpAndSettle();
-      expect(taps, 0);
+      expect(
+        taps,
+        1,
+        reason: 'the tap has to reach the caller so it can explain',
+      );
     });
 
     testWidgets('long-press is separate from tap, for the 0.75x playback', (

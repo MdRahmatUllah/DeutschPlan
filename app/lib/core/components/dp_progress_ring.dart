@@ -61,22 +61,30 @@ class DpProgressRing extends StatelessWidget {
               stroke: size * _strokeFraction,
               radiusFraction: _radiusFraction,
             ),
+            // The circle's diameter is a layout commitment on Today, so the
+            // centre gives way instead. This is the OPPOSITE call from
+            // DpHeadword in #190, and deliberately: a headword is the content
+            // and must stay legible, whereas these numbers are repeated in the
+            // section cards beside the ring.
             child: Center(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  DpText(
-                    '$completed / $total',
-                    role: DpTextRole.title,
-                    weight: 600,
-                  ),
-                  if (caption != null)
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
                     DpText(
-                      caption!,
-                      role: DpTextRole.caption,
-                      color: tokens.color.textSecondary,
+                      '$completed / $total',
+                      role: DpTextRole.title,
+                      weight: 600,
                     ),
-                ],
+                    if (caption != null)
+                      DpText(
+                        caption!,
+                        role: DpTextRole.caption,
+                        color: tokens.color.textSecondary,
+                      ),
+                  ],
+                ),
               ),
             ),
           ),
@@ -198,6 +206,27 @@ class DpSegmentedBar extends StatelessWidget {
                       );
                       final counts = segments.map((s) => s.$1).toList();
                       final sum = counts.fold(0, (a, b) => a + b);
+
+                      // Below this there is no room for every segment to meet
+                      // the floor, so stop trying: plain proportions overflow
+                      // nothing, and at this width nothing is legible anyway.
+                      if (available < minimumSegment * segments.length) {
+                        return Row(
+                          children: <Widget>[
+                            for (
+                              var i = 0;
+                              i < segments.length;
+                              i++
+                            ) ...<Widget>[
+                              if (i > 0) const SizedBox(width: 2),
+                              Expanded(
+                                flex: counts[i],
+                                child: ColoredBox(color: segments[i].$2),
+                              ),
+                            ],
+                          ],
+                        );
+                      }
 
                       final widths = <double>[
                         for (final count in counts)
