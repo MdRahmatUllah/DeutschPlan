@@ -1,0 +1,295 @@
+import 'package:deutschplan/core/theme/dp_tokens.dart';
+import 'package:deutschplan/core/typography/app_fonts.dart';
+import 'package:material_ui/material_ui.dart';
+
+/// One role of the type scale, named so callers ask for a role rather than a
+/// number. `docs/01-architecture/theming.md` defines all seven.
+enum DpTextRole { display, headline, title, bodyLarge, body, label, caption }
+
+extension DpTextRoleTokens on DpTextRole {
+  DpTextToken token(DpTypeTokens type) => switch (this) {
+    DpTextRole.display => type.display,
+    DpTextRole.headline => type.headline,
+    DpTextRole.title => type.title,
+    DpTextRole.bodyLarge => type.bodyLarge,
+    DpTextRole.body => type.body,
+    DpTextRole.label => type.label,
+    DpTextRole.caption => type.caption,
+  };
+
+  /// The next role up, used for Bangla. `display` is already the top.
+  DpTextRole get oneStepLarger => switch (this) {
+    DpTextRole.display => DpTextRole.display,
+    DpTextRole.headline => DpTextRole.display,
+    DpTextRole.title => DpTextRole.headline,
+    DpTextRole.bodyLarge => DpTextRole.title,
+    DpTextRole.body => DpTextRole.bodyLarge,
+    DpTextRole.label => DpTextRole.body,
+    DpTextRole.caption => DpTextRole.label,
+  };
+}
+
+/// Script-aware text helpers.
+///
+/// `theming.md`: "Bangla is set one step larger at the same role." Bengali
+/// glyphs have a smaller optical size than Latin at the same point size, so
+/// matching the number makes the Bangla look shrunken next to the German.
+///
+/// Most strings in this app are mixed — `die Wohnung · ফ্ল্যাট`, the headword
+/// caption, the widget's Wort des Tages — so the step applies per run, not per
+/// string. A string that is half German gets German at its role and Bangla one
+/// step up, in the same line.
+abstract final class DpScript {
+  /// The Bengali Unicode block.
+  static const int _bengaliStart = 0x0980;
+  static const int _bengaliEnd = 0x09FF;
+
+  static bool isBengaliRune(int rune) =>
+      rune >= _bengaliStart && rune <= _bengaliEnd;
+
+  static bool hasBengali(String text) => text.runes.any(isBengaliRune);
+
+  /// Splits [text] into runs of Bengali and not-Bengali, preserving order.
+  ///
+  /// Whitespace and punctuation join whichever run precedes them, so a separator
+  /// does not produce a third run and a visible size jump around the `·`.
+  static List<(String text, bool bengali)> runs(String text) {
+    if (text.isEmpty) return const <(String, bool)>[];
+
+    final out = <(String, bool)>[];
+    final buffer = StringBuffer();
+    bool? current;
+
+    for (final rune in text.runes) {
+      final isLetter = _isLetterOrMark(rune);
+      final bengali = isBengaliRune(rune);
+
+      // Non-letters stay with the run in progress.
+      if (!isLetter && current != null) {
+        buffer.writeCharCode(rune);
+        continue;
+      }
+
+      if (current == null || bengali == current) {
+        current ??= bengali;
+        buffer.writeCharCode(rune);
+        continue;
+      }
+
+      out.add((buffer.toString(), current));
+      buffer
+        ..clear()
+        ..writeCharCode(rune);
+      current = bengali;
+    }
+
+    if (buffer.isNotEmpty) out.add((buffer.toString(), current ?? false));
+    return out;
+  }
+
+  static bool _isLetterOrMark(int rune) {
+    if (rune >= 0x41 && rune <= 0x5A) return true; // A-Z
+    if (rune >= 0x61 && rune <= 0x7A) return true; // a-z
+    if (rune >= 0xC0 && rune <= 0x24F) return true; // Latin-1 supplement + ext
+    if (rune == 0x1E9E || rune == 0xDF) return true; // ẞ ß
+    return isBengaliRune(rune);
+  }
+
+  /// The soft hyphen. Flutter breaks a line here and renders a hyphen only when
+  /// it does, which is what `accessibility-performance.md` asks for with "long
+  /// compounds soft-hyphenate".
+  static const String softHyphen = '\u00AD';
+
+  /// Lets a long German compound break rather than overflow.
+  ///
+  /// This is **not** German hyphenation — that needs a dictionary, and breaking
+  /// `Wohnungsgeberbestätigung` in the wrong place is worse than not breaking it
+  /// for someone learning the word. Soft hyphens already present in the content
+  /// are respected; beyond that a word only gets break opportunities once it is
+  /// longer than [threshold], and only at the boundaries the content supplies.
+  static String allowBreaks(String text, {int threshold = 14}) {
+    if (text.contains(softHyphen)) return text;
+
+    return text
+        .split(' ')
+        .map((word) => word.length <= threshold ? word : _breakLongWord(word))
+        .join(' ');
+  }
+
+  /// Inserts one break opportunity near the middle of an over-long word, at a
+  /// consonant boundary so the break lands between syllables more often than
+  /// not. A single conservative break beats scattering them.
+  static String _breakLongWord(String word) {
+    const vowels = 'aeiouäöüAEIOUÄÖÜ';
+    final middle = word.length ~/ 2;
+
+    for (var offset = 0; offset < word.length ~/ 4; offset++) {
+      for (final index in <int>[middle + offset, middle - offset]) {
+        if (index <= 2 || index >= word.length - 2) continue;
+        final before = word[index - 1];
+        final at = word[index];
+        if (!vowels.contains(before) && vowels.contains(at)) {
+          return '${word.substring(0, index)}$softHyphen${word.substring(index)}';
+        }
+      }
+    }
+    return word;
+  }
+}
+
+/// Text at a role from the scale, with Bangla automatically one step larger.
+///
+/// Screens use this rather than `Text` so the Bangla rule cannot be forgotten
+/// on the one screen where it matters most.
+class DpText extends StatelessWidget {
+  const DpText(
+    this.data, {
+    required this.role,
+    super.key,
+    this.color,
+    this.weight,
+    this.italic = false,
+    this.textAlign,
+    this.maxLines,
+    this.allowBreaks = false,
+    this.semanticsLabel,
+  });
+
+  final String data;
+  final DpTextRole role;
+  final Color? color;
+
+  /// Overrides the role's own weight on the variable font's `wght` axis.
+  final double? weight;
+  final bool italic;
+  final TextAlign? textAlign;
+  final int? maxLines;
+
+  /// Give an over-long German compound somewhere to break. Off by default: it
+  /// is only right for free text, not for a headword being learned.
+  final bool allowBreaks;
+
+  final String? semanticsLabel;
+
+  @override
+  Widget build(BuildContext context) {
+    final tokens = context.tokens;
+    final text = allowBreaks ? DpScript.allowBreaks(data) : data;
+
+    final base = styleFor(
+      tokens,
+      role,
+      color: color ?? tokens.color.ink,
+    ).copyWith(fontStyle: italic ? FontStyle.italic : FontStyle.normal);
+
+    if (!DpScript.hasBengali(text)) {
+      return Text(
+        text,
+        style: weight == null
+            ? base
+            : base.copyWith(fontVariations: AppFonts.weight(weight!)),
+        textAlign: textAlign,
+        maxLines: maxLines,
+        semanticsLabel: semanticsLabel,
+      );
+    }
+
+    final larger = styleFor(
+      tokens,
+      role.oneStepLarger,
+      color: color ?? tokens.color.ink,
+    ).copyWith(fontStyle: italic ? FontStyle.italic : FontStyle.normal);
+
+    return Text.rich(
+      TextSpan(
+        children: <InlineSpan>[
+          for (final (runText, bengali) in DpScript.runs(text))
+            TextSpan(
+              text: runText,
+              style: bengali ? larger : base,
+              // accessibility-performance.md: German is tagged de-DE and Bangla
+              // bn-BD so TalkBack and VoiceOver switch voices mid-string.
+              locale: bengali
+                  ? const Locale('bn', 'BD')
+                  : const Locale('de', 'DE'),
+            ),
+        ],
+      ),
+      textAlign: textAlign,
+      maxLines: maxLines,
+      semanticsLabel: semanticsLabel ?? text,
+    );
+  }
+
+  /// The [TextStyle] for one role, with the family, fallback and `wght` axis set.
+  static TextStyle styleFor(DpTokens tokens, DpTextRole role, {Color? color}) {
+    final token = role.token(tokens.typography);
+    return TextStyle(
+      fontFamily: AppFonts.latin,
+      fontFamilyFallback: AppFonts.fallback,
+      fontSize: token.size,
+      height: token.heightFactor,
+      fontVariations: AppFonts.weight(token.weight),
+      color: color ?? tokens.color.ink,
+    );
+  }
+}
+
+/// A headword that shrinks rather than clips.
+///
+/// `accessibility-performance.md`: "Text scaling to 200 %; long compounds
+/// soft-hyphenate" and "the headword is announced with article and gender".
+/// A German headword can be very long and the learner has set the scale
+/// deliberately, so the word gives ground before the layout does.
+class DpHeadword extends StatelessWidget {
+  const DpHeadword(
+    this.word, {
+    super.key,
+    this.article,
+    this.role = DpTextRole.display,
+    this.textAlign,
+  });
+
+  final String word;
+
+  /// Printed, never implied by colour alone.
+  final String? article;
+
+  final DpTextRole role;
+  final TextAlign? textAlign;
+
+  @override
+  Widget build(BuildContext context) {
+    final tokens = context.tokens;
+    final articleColour = tokens.color.textForArticle(article);
+
+    return FittedBox(
+      fit: BoxFit.scaleDown,
+      alignment: textAlign == TextAlign.center
+          ? Alignment.center
+          : Alignment.centerLeft,
+      child: Text.rich(
+        TextSpan(
+          children: <InlineSpan>[
+            if (article != null)
+              TextSpan(
+                text: '$article ',
+                style: DpText.styleFor(
+                  tokens,
+                  role,
+                  color: articleColour ?? tokens.color.ink,
+                ),
+              ),
+            TextSpan(
+              text: word,
+              style: DpText.styleFor(tokens, role, color: tokens.color.ink),
+            ),
+          ],
+        ),
+        textAlign: textAlign,
+        maxLines: 1,
+        semanticsLabel: article == null ? word : '$article $word',
+      ),
+    );
+  }
+}

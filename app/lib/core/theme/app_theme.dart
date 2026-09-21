@@ -1,5 +1,6 @@
 import 'package:deutschplan/core/theme/dp_tokens.dart';
 import 'package:deutschplan/core/typography/app_fonts.dart';
+import 'package:deutschplan/core/typography/dp_text.dart';
 import 'package:material_ui/material_ui.dart';
 
 /// Builds the `ThemeData` for each mode and attaches its [DpTokens].
@@ -65,33 +66,20 @@ abstract final class AppTheme {
 
   /// Maps the seven roles of the scale onto the Material text theme.
   ///
-  /// Only the roles the artboards actually use are populated; anything else
-  /// would be a value nobody chose.
-  static TextTheme textTheme(DpTokens tokens) {
-    final type = tokens.typography;
-    TextStyle style(DpTextToken token, {Color? color}) => TextStyle(
-      fontSize: token.size,
-      height: token.heightFactor,
-      fontVariations: AppFonts.weight(token.weight),
-      fontWeight: _weightOf(token.weight),
-      color: color ?? tokens.color.ink,
-    );
-
-    return TextTheme(
-      displayLarge: style(type.display),
-      headlineLarge: style(type.headline),
-      titleLarge: style(type.title),
-      bodyLarge: style(type.bodyLarge),
-      bodyMedium: style(type.body),
-      labelLarge: style(type.label),
-      bodySmall: style(type.caption, color: tokens.color.textSecondary),
-    );
-  }
-
-  /// The variable fonts carry the real weight through `fontVariations`; this
-  /// keeps `fontWeight` consistent for anything that inspects it.
-  static FontWeight _weightOf(double wght) => FontWeight.values.firstWhere(
-    (w) => w.value >= wght,
-    orElse: () => FontWeight.w900,
+  /// The styles come from [DpText.styleFor] so a role has exactly one
+  /// definition. Screens should prefer [DpText], which also applies the Bangla
+  /// step-up; this exists for the Material widgets that read the theme.
+  static TextTheme textTheme(DpTokens tokens) => TextTheme(
+    displayLarge: DpText.styleFor(tokens, DpTextRole.display),
+    headlineLarge: DpText.styleFor(tokens, DpTextRole.headline),
+    titleLarge: DpText.styleFor(tokens, DpTextRole.title),
+    bodyLarge: DpText.styleFor(tokens, DpTextRole.bodyLarge),
+    bodyMedium: DpText.styleFor(tokens, DpTextRole.body),
+    labelLarge: DpText.styleFor(tokens, DpTextRole.label),
+    bodySmall: DpText.styleFor(
+      tokens,
+      DpTextRole.caption,
+      color: tokens.color.textSecondary,
+    ),
   );
 }
