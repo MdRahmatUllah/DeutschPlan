@@ -58,6 +58,10 @@ void main() {
       'muted (Oat)': surface.muted,
     };
 
+    // A typo net, not proof of mapping: four pairs share a value
+    // (primary/good, accent/learning, ink/onPrimary, dasText/correctText), so
+    // swapping a pair would still pass. The reverse check below is what catches
+    // a colour that was missed altogether.
     tokens.forEach((name, colour) {
       test('$name is ${hex(colour)} in Foundations.html', () {
         expect(
@@ -67,6 +71,43 @@ void main() {
         );
       });
     });
+
+    test(
+      'every colour in the artboard is a token or explicitly out of scope',
+      () {
+        const outOfApp = <String>{
+          // The canvas the device frame is pasted onto, outside the app itself.
+          '#E9E4DA',
+        };
+        const specOnly = <String>{
+          // theming.md lists derText, but it appears in no light artboard.
+          '#2F46E0',
+        };
+
+        final accountedFor = <String>{
+          ...tokens.values.map(hex),
+          ...outOfApp,
+          ...specOnly,
+          hex(DpPalette.light.onPrimary),
+          hex(DpPalette.light.onAccent),
+          hex(DpSurfaceTokens.light.cardStrong),
+          hex(DpPalette.light.derText),
+        };
+
+        final inArtboard = RegExp(r'#[0-9A-F]{6}')
+            .allMatches(artboard)
+            .map((m) => m[0]!)
+            .toSet();
+
+        expect(
+          inArtboard.difference(accountedFor),
+          isEmpty,
+          reason:
+              'the artboard uses a colour no token covers — add it to '
+              'DpPalette/DpSurfaceTokens, or list it as out of scope here',
+        );
+      },
+    );
 
     test('the outline is ink at 20 %', () {
       expect(surface.outline.a, closeTo(0.2, 0.005));

@@ -26,6 +26,19 @@ abstract final class AppTheme {
       surface: tokens.surface.card,
       onSurface: tokens.color.ink,
       error: tokens.color.again,
+      // fromSeed derives the rest, and its derivations are cold greys that do
+      // not belong in Paper & Ink. Every field a Material widget actually
+      // reaches for is pinned to a token instead.
+      outline: tokens.surface.outline,
+      outlineVariant: tokens.surface.outline,
+      surfaceContainerLowest: tokens.surface.card,
+      surfaceContainerLow: tokens.surface.card,
+      surfaceContainer: tokens.surface.muted,
+      surfaceContainerHigh: tokens.surface.muted,
+      surfaceContainerHighest: tokens.surface.muted,
+      onSurfaceVariant: tokens.color.textSecondary,
+      tertiary: tokens.color.accent,
+      onTertiary: tokens.color.onAccent,
     );
 
     return ThemeData(

@@ -1,6 +1,5 @@
 import 'package:deutschplan/core/theme/app_theme.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
-import 'package:deutschplan/core/theme/dp_tokens.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 
@@ -39,7 +38,6 @@ class _Placeholder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tokens = context.tokens;
     return Scaffold(
       body: Center(
         child: Text(
@@ -47,7 +45,6 @@ class _Placeholder extends StatelessWidget {
           style: Theme.of(context).textTheme.titleLarge,
         ),
       ),
-      backgroundColor: tokens.surface.paper,
     );
   }
 }

@@ -85,7 +85,8 @@ void main() {
     // docs/01-architecture/theming.md: "Widgets read tokens, never hex values."
     // A Color(0x…) or Colors.red anywhere else is a value that cannot follow the
     // theme into dark or glass.
-    final rawColor = RegExp(r'Color\(\s*0x|Colors\.[a-zA-Z]');
+    // \b so `genderColors.die` is not mistaken for `Colors.die`.
+    final rawColor = RegExp(r'Color\(\s*0x|\bColors\.[a-zA-Z]');
 
     final offenders = <String>[];
     for (final file in _dartFilesIn('lib')) {

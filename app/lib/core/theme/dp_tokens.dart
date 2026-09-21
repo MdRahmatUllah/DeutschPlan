@@ -424,11 +424,16 @@ class DpMotionTokens {
 extension DpTokensContext on BuildContext {
   DpTokens get tokens {
     final tokens = Theme.of(this).extension<DpTokens>();
-    assert(
-      tokens != null,
-      'No DpTokens in the theme. Build the app with AppTheme.light() (or its '
-      'dark/glass counterpart) so the extension is attached.',
-    );
-    return tokens ?? DpTokens.light();
+    if (tokens == null) {
+      // Falling back to Light here would be worse than throwing: the screen
+      // would render *almost* right, and under the glass theme that reads as a
+      // rendering glitch rather than as a missing theme.
+      throw FlutterError(
+        'No DpTokens in the theme. Build this subtree with AppTheme.light() '
+        '(or its dark/glass counterpart) so the extension is attached — a '
+        'route pushed on the root navigator does not inherit a nested Theme.',
+      );
+    }
+    return tokens;
   }
 }
