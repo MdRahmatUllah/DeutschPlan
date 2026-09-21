@@ -6,12 +6,15 @@ plugins {
 
 android {
     namespace = "com.example.deutschplan"
-    compileSdk = flutter.compileSdkVersion
+    // permission_handler_android requires API 37 or later to compile against.
+    compileSdk = 37
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
+        // flutter_local_notifications needs java.time on older API levels.
+        isCoreLibraryDesugaringEnabled = true
     }
 
     defaultConfig {
@@ -19,8 +22,9 @@ android {
         applicationId = "com.example.deutschplan"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
-        minSdk = flutter.minSdkVersion
-        targetSdk = flutter.targetSdkVersion
+        // docs/01-architecture/tech-stack.md: Android 8.0+ (API 26), targetSdk latest.
+        minSdk = 26
+        targetSdk = 37
         // Uses the version code from pubspec.yaml. When using split APKs, 1000 * ABI_VERSION
         // is added automatically by Flutter. (https://developer.android.com/studio/build/configure-apk-splits#configure-APK-versions)
         // You can force using the value of versionCode by specifying the `-P force-version-code-ignoring-abi=true`
@@ -42,6 +46,10 @@ kotlin {
     compilerOptions {
         jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17
     }
+}
+
+dependencies {
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.5")
 }
 
 flutter {

@@ -23,7 +23,7 @@ void main() {
         for (final entry in banned.entries) {
           if (_imports(source, entry.key)) {
             offenders.add(
-              '${file.path}: imports ${entry.key} — use ${entry.value}',
+              '${_rel(file)}: imports ${entry.key} — use ${entry.value}',
             );
           }
         }
@@ -60,7 +60,7 @@ void main() {
           final source = file.readAsStringSync();
           for (final package in forbidden) {
             if (_imports(source, package, prefix: true)) {
-              offenders.add('${file.path}: imports $package');
+              offenders.add('${_rel(file)}: imports $package');
             }
           }
         }
@@ -81,12 +81,41 @@ void main() {
     );
   });
 
+  test('only lib/core/theme/ names a raw colour', () {
+    // docs/01-architecture/theming.md: "Widgets read tokens, never hex values."
+    // A Color(0x…) or Colors.red anywhere else is a value that cannot follow the
+    // theme into dark or glass.
+    // \b so `genderColors.die` is not mistaken for `Colors.die`.
+    final rawColor = RegExp(r'Color\(\s*0x|\bColors\.[a-zA-Z]');
+
+    final offenders = <String>[];
+    for (final file in _dartFilesIn('lib')) {
+      if (_rel(file).startsWith('lib/core/theme/')) continue;
+      final lines = file.readAsLinesSync();
+      for (var i = 0; i < lines.length; i++) {
+        final line = lines[i];
+        if (line.trimLeft().startsWith('//')) continue;
+        if (line.contains('ponytail: allow-raw-colour')) continue;
+        if (rawColor.hasMatch(line)) {
+          offenders.add('${_rel(file)}:${i + 1}: ${line.trim()}');
+        }
+      }
+    }
+
+    expect(
+      offenders,
+      isEmpty,
+      reason:
+          'Read the value from context.tokens instead, so it follows the theme '
+          'into dark and glass:\n${offenders.join('\n')}',
+    );
+  });
+
   test('layering rule 2 — only lib/data/ touches drift', () {
     // "data/ ... is the only layer that touches drift." — project-structure.md
     final offenders = <String>[];
     for (final file in _dartFilesIn('lib')) {
-      final normalised = file.path.replaceAll(r'\', '/');
-      if (normalised.startsWith('lib/data/')) continue;
+      if (_rel(file).startsWith('lib/data/')) continue;
       final source = file.readAsStringSync();
       if (_imports(source, 'package:drift/', prefix: true) ||
           _imports(source, 'package:drift_flutter/', prefix: true)) {
@@ -103,7 +132,12 @@ void main() {
   });
 }
 
-String _rel(File f) => f.path.replaceAll(r'', '/');
+/// Repo-relative path with forward slashes on every platform.
+///
+/// Built by splitting on the platform separator rather than by escaping a
+/// backslash in a string literal — that escape is easy to lose in a patch, and
+/// when it goes the comparisons below silently stop matching anything.
+String _rel(File f) => f.path.split(Platform.pathSeparator).join('/');
 
 Iterable<File> _dartFilesIn(String path) {
   final dir = Directory(path);
@@ -116,9 +150,7 @@ Iterable<File> _dartFilesIn(String path) {
       .where((f) => !f.path.endsWith('.g.dart'))
       .where((f) => !f.path.endsWith('.freezed.dart'))
       .where((f) => !f.path.endsWith('.drift.dart'))
-      .where(
-        (f) => !f.path.replaceAll(r'\', '/').contains('lib/l10n/generated/'),
-      );
+      .where((f) => !_rel(f).contains('lib/l10n/generated/'));
 }
 
 /// True when [source] has an `import`/`export` directive for [package].

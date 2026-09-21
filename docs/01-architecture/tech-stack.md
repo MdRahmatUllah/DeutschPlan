@@ -8,7 +8,7 @@ Re-verified against pub.dev on 21 September 2026 while resolving the real depend
 | --- | --- | --- |
 | Flutter | **3.47.x** (stable, Aug 2026) | Latest stable; Impeller everywhere; standalone design packages at 1.0. Enterprises may stay on 3.44.x — do not go older than that. |
 | Dart | 3.13.x (ships with 3.47) | Records, patterns, macros-free codegen via build_runner. |
-| Android | minSdk 26, targetSdk latest, AGP 9, 16 KB page-size compliant native libs | Required by Google Play for new uploads. |
+| Android | minSdk 26, compileSdk/targetSdk **37**, AGP 9, core library desugaring on, 16 KB page-size compliant native libs | Required by Google Play for new uploads. compileSdk 37 is forced by `permission_handler_android`; desugaring by `flutter_local_notifications`. See ADR 19. |
 | iOS | 16.0+ | Required by `flutter_onnxruntime`; Swift Package Manager is the default dependency manager since Flutter 3.44. |
 
 ## Design system packages (new in 3.47)

@@ -1,3 +1,4 @@
+import 'package:deutschplan/core/theme/app_theme.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
@@ -19,6 +20,7 @@ class DeutschPlanApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       onGenerateTitle: (context) => AppLocalizations.of(context).appTitle,
+      theme: AppTheme.light(),
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       // English first: gen_l10n orders supportedLocales alphabetically, which puts
       // Bangla first, and Flutter falls back to the FIRST supported locale when the
@@ -37,7 +39,12 @@ class _Placeholder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(child: Text(AppLocalizations.of(context).loadingCourse)),
+      body: Center(
+        child: Text(
+          AppLocalizations.of(context).loadingCourse,
+          style: Theme.of(context).textTheme.titleLarge,
+        ),
+      ),
     );
   }
 }
