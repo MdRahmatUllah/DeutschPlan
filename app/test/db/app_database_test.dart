@@ -268,6 +268,15 @@ void main() {
       );
     });
 
+    test('can be checked in bulk, which is what onUpgrade does', () async {
+      // onUpgrade runs this after every migration, because alterTable turns
+      // foreign keys off while it recreates a table. The statement is only
+      // reachable once a migration step exists, so this is where it is proved
+      // to parse and to read back.
+      final dangling = await db.customSelect('PRAGMA foreign_key_check').get();
+      expect(dangling, isEmpty);
+    });
+
     test('cascade, so deleting an attempt takes its answers with it', () async {
       await db.customStatement(
         'INSERT INTO exam_attempts (sublevel_code, seed, started_at) '

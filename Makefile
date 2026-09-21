@@ -31,7 +31,12 @@ gen: ## Migration helpers, then build_runner: riverpod, freezed, drift, go_route
 	$(DART) dart run drift_dev schema generate drift_schemas/ test/db/generated/
 	$(DART) dart run build_runner build --delete-conflicting-outputs
 
+# `schema dump` overwrites without asking, so this refuses when the fixture for
+# the current version is already there. A fixture is the only record of what a
+# shipped schema looked like; overwriting it makes migration_test validate
+# against the new shape instead of catching the drift.
 schema-dump: ## Capture the CURRENT schema as a fixture. Run after bumping schemaVersion.
+	@cd $(APP) && v=$$(sed -n 's/.*latestSchemaVersion = \([0-9][0-9]*\).*/\1/p' lib/data/db/app_database.dart) && test ! -f drift_schemas/drift_schema_v$$v.json || { echo "app/drift_schemas/drift_schema_v$$v.json already exists. Bump latestSchemaVersion in app_database.dart first, or delete the fixture deliberately if this version has not shipped."; exit 1; }
 	$(DART) dart run drift_dev schema dump lib/data/db/app_database.dart drift_schemas/
 	@echo
 	@echo "Fixture written to app/drift_schemas/. Commit it — it is the only"

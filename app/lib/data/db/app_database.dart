@@ -66,7 +66,26 @@ class AppDatabase extends _$AppDatabase {
     //
     // Columns holding data are never dropped: add a nullable column or a new
     // table.
-    onUpgrade: stepByStep(),
+    onUpgrade: (m, from, to) async {
+      // In a transaction because drift does not put one here and only writes
+      // `user_version` once this returns: a step that throws part-way would
+      // otherwise leave the file partly migrated at the old version, and the
+      // next open would replay the steps against a schema that had already
+      // moved. On the learner's device, permanently.
+      await transaction(() => stepByStep()(m, from, to));
+
+      // `Migrator.alterTable` turns foreign keys off while it recreates a
+      // table, so a migration can leave dangling references behind and
+      // nothing would notice until a query returned a row that points at
+      // nothing.
+      final dangling = await customSelect('PRAGMA foreign_key_check').get();
+      if (dangling.isNotEmpty) {
+        throw StateError(
+          'migration $from -> $to left ${dangling.length} dangling '
+          'reference(s): ${dangling.map((r) => r.data).toList()}',
+        );
+      }
+    },
   );
 
   /// The version the file itself reports, which is what a raw

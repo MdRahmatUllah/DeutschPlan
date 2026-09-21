@@ -57,6 +57,10 @@ void main() {
 
         // Runs the real onUpgrade, then compares every table, column, index
         // and constraint against the fixture for the target version.
+        //
+        // With one fixture this is a no-op upgrade: onUpgrade never fires, so
+        // today it proves only that the fixture matches, the same as the test
+        // below. The first real exercise of stepByStep() is the v1 -> v2 step.
         await verifier.migrateAndValidate(db, current, options: _strict);
       });
     }
