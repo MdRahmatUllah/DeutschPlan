@@ -1,0 +1,63 @@
+# Content pipeline: Excel → content.db
+
+Excel is the authoring tool; the app never opens a workbook. `tools/excel_to_sqlite.py` compiles every workbook listed in `content/manifest.yaml` into one read-only SQLite file that ships as an asset.
+
+## Inputs
+
+```
+content/manifest.yaml
+  workbooks:
+    - file: German_B1_Tracker.xlsx     # contains A1, A2, B1 (level per word row)
+    - file: German_B2_Tracker.xlsx
+    - file: German_C1_Tracker.xlsx
+    - file: German_C2_Tracker.xlsx
+    # add more here; order = fallback level order for grammar without a level
+  tips: content/interference_tips.csv
+```
+
+Each workbook MUST contain the sheets **All Words**, **Grammar**, **W01** (for the skills checklist) and the **C-…** category tabs. Columns are read **by header name**, so column order may change; renaming a header requires updating `HEADER_MAP` in the tool.
+
+| Header in All Words | Field | Required |
+| --- | --- | --- |
+| Article | article | no |
+| German | german | yes |
+| Plural / Forms | forms | no |
+| POS | pos | no |
+| Pronunciation (Bangla) | pron_bn | no |
+| English | english | yes |
+| Bangla meaning | bangla | no |
+| Freq | freq 1–5 | no |
+| Level | level A1…C2 | yes |
+| Category | category | no |
+| Week | week | no (used for step split) |
+| Examples (DE) / (EN) | examples, one per line | no |
+| Collocations · Synonyms / register | collocations, synonyms_register | no |
+
+Grammar rows: `Week, Level, Topic, Rule, Example (DE), Example (EN), Watch out`.
+
+## Rules the pipeline enforces
+
+- **PIPE-01** Level comes from the word's own `Level` cell, never from the week's phase label.
+- **PIPE-02** Each level is split into `X.1`/`X.2` at the week boundary nearest the middle by word count; grammar is split by count in teaching order.
+- **PIPE-03** `uid = sha1(level|german|pos|english)[:16]`. A collision inside one build appends the sequence number and is reported.
+- **PIPE-04** `search_key` = lower-case, article stripped, umlauts → ae/oe/ue/ss, diacritics removed; `search_key_alt` folds umlauts to a/o/u. The Dart `text_norm.dart` MUST produce identical output (shared test vectors in `tools/test_vectors.json`).
+- **PIPE-05** Cells beginning with `=`, `-`, `+` or `@` are stored as text (Excel would treat them as formulas); the tool warns.
+- **PIPE-06** Example lines pair DE[i] with EN[i]; an unmatched DE line gets a null translation.
+- **PIPE-07** `content_version` = build timestamp `YYYYMMDDHHMM`; also written to `content_manifest.json` with per-step counts and the uid list, which CI diffs against the previous build to produce the update summary shown on Today (BR-CONTENT-03).
+- **PIPE-08** `verify_content.py` fails the build if: a required sheet/column is missing, a step has 0 words, a word has no example, a uid collision remains, or FTS tables are empty.
+
+## Outputs
+
+- `content/build/content.db` — copied to `app/assets/db/content.db` by `make content`.
+- `content/build/content_manifest.json` — counts, boundaries, uid list, build time.
+
+## Adding a fifth workbook
+
+1. Drop the `.xlsx` at the repository root and add it to `manifest.yaml`.
+2. `make content` → runs the tool, verification, and copies the asset.
+3. Run `flutter test test/db/` (schema and count assertions read the manifest).
+4. Commit the workbook, the manifest and the regenerated asset together.
+
+## Interference tips
+
+`content/interference_tips.csv` columns: `match_type (uid|german|pattern), match, tip_en, tip_bn, tags`. Patterns are regexes over `german` (e.g. `^bekommen$`, `^seit\b`). The pipeline resolves them at build time into `interference_tips(word_uid, tip_en, tip_bn)` so the app never runs regexes.

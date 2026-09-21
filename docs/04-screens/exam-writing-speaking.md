@@ -1,0 +1,21 @@
+# L12 · Exam runner (2/2 — Writing and Speaking sections)
+
+**Prototype.** `ExamWriting`, `ExamSpeaking`.
+
+## Writing · 1 of 1
+Prompt: "Write to your landlord about a broken heating. Use at least 6 of these words:" + 10 target-word chips (Heizung, Vermieter, kaputt, reparieren, kalt, seit, dringend, Wohnung, bitte, Termin); progress line "7 of 10 used · minimum 30 words at A1"; text area; live line "43 words · min 30 · Connectors found: seit, bitte"; *Submit text*; umlaut row pinned above the keyboard.
+
+- FR-L12W-01 Target-word detection uses `searchKey` prefix matching on tokens (so "Heizung" matches "Heizungen"); chips turn Lime when used.
+- FR-L12W-02 Minimum words per level: A1 30 · A2 60 · B1 100 · B2 150 · C1 200 · C2 250.
+- FR-L12W-03 App points (2): ≥ 6 target words → 1; ≥ minimum length → 1. Rubric (2): task covered · structure — 0.5 each, ticked by the learner on the results review.
+- FR-L12W-04 The text is stored in `exam_answers.given`; never leaves the device.
+
+## Speaking · 1 of 1
+Prompt "Describe your morning routine — 1 minute." + hint "Say what you do, when, and in what order. Use Perfekt or Präsens."; recorder with "00:52 / 01:00" ring; state line "Recorded · stays on this phone"; *Retake · 1 left* · *Delete recording*; "Listen back and tick what you managed": four rubric checkboxes (Task covered — the whole morning, in order · Fluency — few long pauses · Pronunciation — understandable throughout · Vocabulary — 6+ words from this step); "Self-assessed · counts 4 points"; *Submit exam*.
+
+- FR-L12S-01 Mic permission requested on first use with rationale; denial shows a message and the section can be skipped (0 points) without blocking the exam.
+- FR-L12S-02 Recording via `record` (AAC, mono, 32 kbps) to `<appSupport>/recordings/<attemptId>.m4a`; max length per level (60/90/120 s); one retake.
+- FR-L12S-03 Rubric ticks → `self_rubric_json`; 1 point each.
+- FR-L12S-04 *Delete recording* from here or from L13 removes the file and zeros the section.
+
+**Tests.** FR-L12W-01 stem matching; FR-L12W-03 scoring; recorder state machine (fake recorder).

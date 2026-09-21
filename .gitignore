@@ -32,8 +32,8 @@ migrate_working_dir/
 .flutter-plugins-dependencies
 .pub-cache/
 .pub/
-/build/
-/coverage/
+build/
+coverage/
 
 # Symbolication related
 app.*.symbols
@@ -42,9 +42,9 @@ app.*.symbols
 app.*.map.json
 
 # Android Studio will place build artifacts here
-/android/app/debug
-/android/app/profile
-/android/app/release
+app/android/app/debug
+app/android/app/profile
+app/android/app/release
 
 # Widget Preview related
 .widget_preview/
@@ -56,3 +56,6 @@ app.*.map.json
 
 # Claude Code local settings
 .claude/settings.local.json
+
+# Design export archives (the unpacked folders are the source)
+deutsch-plan-design-html/*.zip

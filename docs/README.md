@@ -1,0 +1,61 @@
+# DeutschPlan — Project Documentation (source of truth)
+
+DeutschPlan is an offline German course app (A1.1 → C2.2) for Android and iOS, built in Flutter from the four German tracker workbooks. Everything the learner does is stored only on the device.
+
+This folder is the **single source of truth**. When code and these documents disagree, the documents win until they are deliberately changed. Every change to behaviour must land here first, in the same pull request as the code.
+
+## How the documentation is organised
+
+| Folder | What it holds | Read it when |
+| --- | --- | --- |
+| `00-product/` | Product overview, business rules, glossary | You need to know *what* the app does and *why* |
+| `01-architecture/` | Tech stack, project structure, state management, navigation, theming (light · dark · glass), accessibility & performance | You are setting up or extending the codebase |
+| `02-data/` | Excel → content pipeline, content database, user database, data model reference, export/import | You touch anything that reads or writes data |
+| `03-domain/` | Engines: daily plan, FSRS, answer checking, search, quiz, exam generator, grammar practice, sentences, TTS, translation, notifications & widget | You change learning logic |
+| `04-screens/` | One guide per screen (large screens have two) — purpose, prototype reference, layout, functional requirements, business rules, navigation, states, developer notes, tests | You build or change a screen |
+| `05-dev-guide/` | Getting started, coding standards, testing, release, adding content, decision records | You are a developer on the project |
+
+## Screen index
+
+Prototype artboards live in `design/android-light/screens/*.html` (light theme). Dark and glass share the same layouts and behaviour; only tokens differ (see `01-architecture/theming.md`).
+
+| ID | Screen doc | Prototype artboards |
+| --- | --- | --- |
+| S1 | `04-screens/splash.md` | Splash |
+| S2 | `04-screens/onboarding.md` | OnboardingWelcome, Onboarding (language), OnboardingStart, OnboardingPace, OnboardingVoice |
+| S3 | `04-screens/placement.md` | Placement, PlacementResult |
+| T1 | `04-screens/today.md` | Today, TodayDone, TodayRest |
+| T2 | `04-screens/study-session.md`, `04-screens/study-session-states.md` | StudyFront, StudyBack, StudyNew, StudyCloze |
+| T3 | `04-screens/session-summary.md` | Summary |
+| T4 | `04-screens/backlog.md` | Backlog, BacklogEmpty |
+| T5 | `04-screens/practice-sentences.md` | Sentences |
+| T6 | `04-screens/day-complete.md` | DayComplete |
+| L1 | `04-screens/learn.md` | Learn |
+| L2 | `04-screens/step-detail.md` | StepDetail, StepGrammar, QuizSetup, ExamHub |
+| L3 | `04-screens/grammar-library.md` | GrammarLibrary |
+| L4 | `04-screens/grammar-topic.md` | GrammarTopic |
+| L15 | `04-screens/grammar-practice.md` | GrammarPractice |
+| L5/L6 | `04-screens/categories.md` | Categories, CategoryWords |
+| L7–L9 | `04-screens/quiz.md` | QuizSetup (sheet), QuizRunner, QuizResult |
+| L10/L11 | `04-screens/exam-hub.md` | ExamHub, ExamHubLocked, ExamIntro |
+| L12 | `04-screens/exam-runner.md`, `04-screens/exam-writing-speaking.md` | ExamRunner, ExamNavigator, ExamLeave, ExamWriting, ExamSpeaking |
+| L13/L14 | `04-screens/exam-results.md` | ExamResults, ExamReview |
+| R1 | `04-screens/search.md` | Search, SearchIdle, SearchNone |
+| W1 | `04-screens/word-detail.md` | WordDetail |
+| W2 | `04-screens/compare.md` | Compare |
+| R2 | `04-screens/add-word.md` | AddWord |
+| M1 | `04-screens/me.md` | Me |
+| M2 | `04-screens/progress.md` | Progress |
+| M3 | `04-screens/settings.md` | Settings, SettingsBottom |
+| M4 | `04-screens/model-manager.md` | ModelManager |
+| M5 | `04-screens/reminder-days.md` | ReminderDays |
+| M6 | `04-screens/export-import.md` | ExportImport |
+| M7 | `04-screens/reset.md` | ResetDialog |
+| M8/M9 | `04-screens/about-licences.md` | About, Licences |
+| X1 | `04-screens/widget.md` | Widget |
+
+## Conventions used in these documents
+
+- **MUST / SHOULD / MAY** follow RFC 2119. MUST is a requirement; SHOULD is the default unless there is a documented reason; MAY is optional.
+- Requirement IDs look like `FR-T1-03` (functional requirement, screen T1, number 3) and `BR-PLAN-02` (business rule, plan engine, number 2). Tests reference these IDs.
+- Prototype text is quoted verbatim where copy matters (`"Continue · 8 left"`); copy lives in ARB files, never hard-coded.
