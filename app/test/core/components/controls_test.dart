@@ -3,6 +3,8 @@ import 'package:deutschplan/core/components/dp_chip.dart';
 import 'package:deutschplan/core/components/dp_rating_bar.dart';
 import 'package:deutschplan/core/theme/app_theme.dart';
 import 'package:deutschplan/core/theme/dp_tokens.dart';
+import 'package:deutschplan/l10n/generated/app_localizations.dart';
+import 'package:deutschplan/main.dart' show supportedLocales;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 
@@ -18,6 +20,8 @@ void main() {
     await tester.pumpWidget(
       MaterialApp(
         theme: theme ?? AppTheme.light(),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: supportedLocales,
         home: Scaffold(body: Center(child: child)),
       ),
     );
@@ -37,11 +41,15 @@ void main() {
           as BoxDecoration;
 
   group('DpButton', () {
-    testWidgets('the three kinds are 56, 48 and 44 dp tall', (tester) async {
+    testWidgets('the three kinds are 56, 48 and 48 dp tall on Android', (
+      tester,
+    ) async {
+      // The artboard draws the text button at 44; on Android the hit area is
+      // padded to 48, which is the platform minimum. On iOS 44 is already it.
       for (final (kind, height) in <(DpButtonKind, double)>[
         (DpButtonKind.primary, 56),
         (DpButtonKind.secondary, 48),
-        (DpButtonKind.text, 44),
+        (DpButtonKind.text, DpButton.minimumTapTarget),
       ]) {
         await pump(
           tester,
@@ -139,6 +147,86 @@ void main() {
       expect(decoration.color, DpPalette.light.primary);
       expect(decoration.color!.a, 1.0, reason: 'a solid fill, not translucent');
       expect(decoration.border, isNull);
+    });
+
+    testWidgets('a long label wraps at 200 % instead of being clipped', (
+      tester,
+    ) async {
+      // maxLines: 1 inside a fixed-height box clipped the label with no
+      // exception — the same silent failure as the headword in #190.
+      double heightAt(double scale) =>
+          tester.getSize(find.byType(DpButton)).height;
+
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: AppTheme.light(),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: supportedLocales,
+          home: const MediaQuery(
+            data: MediaQueryData(),
+            child: Scaffold(
+              body: Center(
+                child: SizedBox(
+                  width: 360,
+                  child: DpButton(
+                    label: 'All done — see you tomorrow',
+                    onPressed: null,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      final atOne = heightAt(1);
+
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: AppTheme.light(),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: supportedLocales,
+          home: MediaQuery(
+            data: const MediaQueryData(textScaler: TextScaler.linear(2)),
+            child: const Scaffold(
+              body: Center(
+                child: SizedBox(
+                  width: 360,
+                  child: DpButton(
+                    label: 'All done — see you tomorrow',
+                    onPressed: null,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(
+        heightAt(2),
+        greaterThan(atOne),
+        reason: 'the button must grow for the label, not clip it',
+      );
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets('a text button still clears 48 dp on Android', (tester) async {
+      // 44 is the iOS minimum; accessibility-performance.md wants 48 dp on
+      // Android, and the artboard's 44 is a visual measurement.
+      await pump(
+        tester,
+        DpButton(
+          label: 'Done for now',
+          kind: DpButtonKind.text,
+          onPressed: () {},
+        ),
+      );
+      expect(
+        tester.getSize(find.byType(DpButton)).height,
+        greaterThanOrEqualTo(DpButton.minimumTapTarget),
+      );
     });
 
     testWidgets('it is announced as a button with its label', (tester) async {

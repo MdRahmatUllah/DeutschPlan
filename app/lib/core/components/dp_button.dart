@@ -1,3 +1,4 @@
+import 'package:deutschplan/core/adaptive/adaptive.dart';
 import 'package:deutschplan/core/theme/dp_tokens.dart';
 import 'package:deutschplan/core/typography/dp_text.dart';
 import 'package:material_ui/material_ui.dart';
@@ -49,12 +50,16 @@ class DpButton extends StatefulWidget {
   /// Overrides the fill — Today's "All done" primary turns Lime.
   final Color? colour;
 
-  /// Heights from the artboard. All clear the 48 dp minimum except `text`,
-  /// which is 44 and is allowed to be: it is a text link, sized to the iOS
-  /// minimum of 44 pt.
+  /// Visual heights from the artboard. These are the drawn sizes; the hit area
+  /// is padded to [minimumTapTarget] where the drawing is smaller, because
+  /// accessibility-performance.md asks for ">= 48 dp / 44 pt" and 44 is the iOS
+  /// number, not the Android one.
   static const double primaryHeight = 56;
   static const double secondaryHeight = 48;
   static const double textHeight = 44;
+
+  /// Android's minimum. iOS is satisfied by 44.
+  static const double minimumTapTarget = 48;
 
   double get height => switch (kind) {
     DpButtonKind.primary => primaryHeight,
@@ -94,6 +99,7 @@ class _DpButtonState extends State<DpButton> {
 
     // Only the primary carries the hard offset shadow, and only when it is up.
     final shadowed = kind == DpButtonKind.primary && !_down && _enabled;
+    final borderless = tokens.isGlass && kind == DpButtonKind.primary;
 
     Widget content = Row(
       mainAxisSize: widget.expand ? MainAxisSize.max : MainAxisSize.min,
@@ -109,7 +115,9 @@ class _DpButtonState extends State<DpButton> {
             role: role,
             weight: 600,
             color: _enabled ? foreground : tokens.color.textSecondary,
-            maxLines: 1,
+            // No maxLines: at 200 % a long label needs a second line, and
+            // clipping it is worse than a taller button. The button grows with
+            // it — its artboard height is a floor, not a fixed size.
             textAlign: TextAlign.center,
           ),
         ),
@@ -121,15 +129,15 @@ class _DpButtonState extends State<DpButton> {
         decoration: BoxDecoration(
           color: _enabled ? fill : tokens.surface.muted,
           borderRadius: BorderRadius.circular(tokens.shape.button),
-          border: tokens.isGlass && kind == DpButtonKind.primary
-              // Glass buttons are solid with no outline: the artboard draws
-              // `background:#00C2B2; border:none`.
+          // The glass PRIMARY is the borderless one — the artboard draws
+          // `background:#00C2B2; border:none`. Branch on the kind rather than
+          // reading `strongOutlineWidth == 0` as a sentinel, which would leave
+          // the token saying one thing and the button doing another.
+          border: borderless
               ? null
               : Border.all(
                   color: _enabled ? tokens.color.ink : tokens.surface.outline,
-                  width: tokens.surface.strongOutlineWidth == 0
-                      ? 2
-                      : tokens.surface.strongOutlineWidth,
+                  width: 2,
                 ),
           boxShadow: shadowed
               ? <BoxShadow>[
@@ -141,17 +149,35 @@ class _DpButtonState extends State<DpButton> {
                 ]
               : const <BoxShadow>[],
         ),
+        // No Center here: it would expand to the parent's full height and the
+        // minHeight below would stop being a floor.
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: tokens.spacing.lg),
-          child: Center(child: content),
+          padding: EdgeInsets.symmetric(
+            horizontal: tokens.spacing.lg,
+            vertical: tokens.spacing.sm,
+          ),
+          child: content,
         ),
       );
     }
 
-    final button = SizedBox(
-      height: widget.height,
-      width: widget.expand ? double.infinity : null,
-      child: content,
+    // The artboard height is a floor, not a fixed size: at 200 % the label
+    // needs a second line and the button grows to hold it.
+    final button = Align(
+      alignment: Alignment.center,
+      widthFactor: widget.expand ? null : 1,
+      heightFactor: 1,
+      child: ConstrainedBox(
+        constraints: BoxConstraints(
+          minHeight: kind == DpButtonKind.text
+              ? (context.isCupertino
+                    ? widget.height
+                    : DpButton.minimumTapTarget)
+              : widget.height,
+          minWidth: widget.expand ? double.infinity : 0,
+        ),
+        child: content,
+      ),
     );
 
     return Semantics(

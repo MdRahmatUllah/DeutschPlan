@@ -1,5 +1,6 @@
 import 'package:deutschplan/core/theme/dp_tokens.dart';
 import 'package:deutschplan/core/typography/dp_text.dart';
+import 'package:deutschplan/l10n/generated/app_localizations.dart';
 import 'package:material_ui/material_ui.dart';
 
 /// The four FSRS ratings. `business-rules.md` BR-FSRS-02 fixes both the order
@@ -94,7 +95,7 @@ class _RatingButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final tokens = context.tokens;
     final colour = rating.colourFrom(tokens.color);
-    final name = _label(rating);
+    final name = _label(context, rating);
 
     return Semantics(
       button: true,
@@ -131,13 +132,16 @@ class _RatingButton extends StatelessWidget {
     );
   }
 
-  /// The rating names are fixed English terms from the scheduler, not copy —
-  /// `business-rules.md` names them and `review_log` stores them. They stay
-  /// out of ARB for the same reason the ratings themselves do.
-  static String _label(DpRating rating) => switch (rating) {
-    DpRating.again => 'Again',
-    DpRating.hard => 'Hard',
-    DpRating.good => 'Good',
-    DpRating.easy => 'Easy',
-  };
+  /// `review_log` stores the integer 1–4; these four words exist only to be
+  /// read, so they are copy and live in ARB like everything else the learner
+  /// sees. A Bangla learner gets Bangla ratings.
+  static String _label(BuildContext context, DpRating rating) {
+    final l10n = AppLocalizations.of(context);
+    return switch (rating) {
+      DpRating.again => l10n.ratingAgain,
+      DpRating.hard => l10n.ratingHard,
+      DpRating.good => l10n.ratingGood,
+      DpRating.easy => l10n.ratingEasy,
+    };
+  }
 }

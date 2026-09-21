@@ -21,6 +21,26 @@
     "description": "Confirms a value and closes a picker. Used on the iOS time wheel in Reminder & days and onboarding page 5."
   },
 
+  "ratingAgain": "Again",
+  "@ratingAgain": {
+    "description": "FSRS rating 1 on the study card's rating bar. The learner did not recall the word. BR-FSRS-02 fixes the order Again/Hard/Good/Easy."
+  },
+
+  "ratingHard": "Hard",
+  "@ratingHard": {
+    "description": "FSRS rating 2. Recalled, but with difficulty."
+  },
+
+  "ratingGood": "Good",
+  "@ratingGood": {
+    "description": "FSRS rating 3. Recalled correctly. The default."
+  },
+
+  "ratingEasy": "Easy",
+  "@ratingEasy": {
+    "description": "FSRS rating 4. Recalled immediately. Also what \"I know it\" sends for a new word (BR-STATUS-04)."
+  },
+
   "undo": "Undo",
   "@undo": {
     "description": "Action on the snackbar shown after a reversible change, such as rating a card. See FR-T2-02."
