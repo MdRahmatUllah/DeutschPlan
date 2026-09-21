@@ -72,3 +72,6 @@ app/android/app/release
 
 # Design export archives (the unpacked folders are the source)
 deutsch-plan-design-html/*.zip
+
+# Golden failure output, written beside the goldens on a mismatch
+app/test/golden/failures/
