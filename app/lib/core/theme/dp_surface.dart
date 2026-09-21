@@ -1,6 +1,7 @@
 import 'dart:ui' show ImageFilter;
 
 import 'package:deutschplan/core/theme/dp_tokens.dart';
+import 'package:deutschplan/core/theme/glass_capability.dart';
 import 'package:material_ui/material_ui.dart';
 
 /// What a [DpSurface] is being drawn as.
@@ -104,7 +105,10 @@ class _DpSurfaceState extends State<DpSurface> {
         ? widget.child
         : Padding(padding: widget.padding!, child: widget.child);
 
-    final surface = tokens.isGlass
+    // Glass without blur is not glass: on a device that will not composite a
+    // BackdropFilter, a translucent fill over a live backdrop is unreadable
+    // rather than merely plainer. The fallback is opaque, not transparent.
+    final surface = tokens.isGlass && GlassCapabilityScope.blurAllowed(context)
         ? _glass(tokens, borderRadius, body)
         : _solid(tokens, borderRadius, body);
 
@@ -137,11 +141,21 @@ class _DpSurfaceState extends State<DpSurface> {
   /// The caller's explicit state, or a live press on our own gesture.
   bool get _pressed => widget.pressed || _down;
 
-  Color _fill(DpTokens tokens) => switch (widget.kind) {
-    _Card() || _Bar() => tokens.surface.card,
-    _CardStrong() => tokens.surface.cardStrong,
-    _Tint(:final colour, :final opacity) => colour.withValues(alpha: opacity),
-  };
+  Color _fill(DpTokens tokens, {required bool degraded}) {
+    final base = switch (widget.kind) {
+      _Card() || _Bar() => tokens.surface.card,
+      _CardStrong() => tokens.surface.cardStrong,
+      _Tint(:final colour, :final opacity) => colour.withValues(alpha: opacity),
+    };
+
+    // theming.md: glass "degrades to a 92 %-opaque tinted surface". A tint keeps
+    // its own weight — it is a colour wash, not a panel.
+    if (!degraded || widget.kind is _Tint) return base;
+    return base.withValues(alpha: _opaqueFallbackAlpha);
+  }
+
+  /// The opacity a glass panel falls back to, per theming.md.
+  static const double _opaqueFallbackAlpha = 0.92;
 
   double _blur(DpTokens tokens) => switch (widget.kind) {
     _CardStrong() => tokens.surface.strongBlur,
@@ -155,7 +169,7 @@ class _DpSurfaceState extends State<DpSurface> {
     final surface = tokens.surface;
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: _fill(tokens),
+        color: _fill(tokens, degraded: tokens.isGlass),
         borderRadius: borderRadius,
         border: Border.all(color: surface.outline, width: surface.outlineWidth),
         boxShadow: _hasShadow && !_pressed
@@ -202,7 +216,7 @@ class _DpSurfaceState extends State<DpSurface> {
           // the panel would read as a faint wash instead of frosted glass.
           child: DecoratedBox(
             decoration: BoxDecoration(
-              color: _fill(tokens),
+              color: _fill(tokens, degraded: false),
               borderRadius: borderRadius,
             ),
             child: DecoratedBox(
