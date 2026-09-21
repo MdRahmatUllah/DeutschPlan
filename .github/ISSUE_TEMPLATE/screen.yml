@@ -1,0 +1,48 @@
+name: Screen
+description: Build or change one screen from docs/04-screens/
+labels: ["screen", "feature", "area:screen"]
+body:
+  - type: input
+    id: screen
+    attributes:
+      label: Screen
+      description: The ID and name as they appear in the screen index of docs/README.md.
+      placeholder: "T1 · Today"
+    validations: { required: true }
+  - type: textarea
+    id: artboards
+    attributes:
+      label: Artboards
+      description: >
+        One path per line, for every canvas you are building. Both design sets
+        where the screen exists — see the design-set table in docs/README.md.
+      placeholder: |
+        deutsch-plan-design-html/android-light/screens/Today-android.html
+        deutsch-plan-design-html/android-dark/screens/Today-android-dark.html
+        deutsch-plan-design-html/ios-light/screens/Today-ios.html
+        deutsch-plan-design-html/ios-dark/screens/Today-ios-dark.html
+        deutsch-plan-v2-aurora-glass-html/android-light/screens/Today-android.html
+    validations: { required: true }
+  - type: input
+    id: spec
+    attributes:
+      label: Specification
+      placeholder: "docs/04-screens/today.md"
+    validations: { required: true }
+  - type: textarea
+    id: criteria
+    attributes:
+      label: Acceptance criteria
+      description: Quote the FR and BR IDs the screen doc lists. Tests carry these IDs.
+      value: |
+        - [ ] FR-
+        - [ ] Renders from `DpSurface` and tokens only — no raw colours, no direct Material/Cupertino chrome
+        - [ ] Copy lives in ARB (en + bn); German course text comes from content.db
+        - [ ] Goldens for light, dark and glass on the phone and tablet frames
+        - [ ] Test names carry their FR/BR IDs
+    validations: { required: true }
+  - type: input
+    id: blockers
+    attributes:
+      label: Blocked by
+      placeholder: "#67, #33"
