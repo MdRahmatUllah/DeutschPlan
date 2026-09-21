@@ -288,9 +288,9 @@ void main() {
   });
 
   test('bumping the schema version without a migration fails loudly', () async {
-    // drift's own default throws here. An empty onUpgrade would replace that
-    // with silence, and the first learner to update would open their existing
-    // file against the new schema.
+    // The generated migrationSteps() raises for a version it has no step for.
+    // An empty onUpgrade would swallow that, and the first learner to update
+    // would open their existing file against the new schema.
     final dir = Directory.systemTemp.createTempSync('deutschplan_upgrade');
     final file = File('${dir.path}/user.sqlite');
 
@@ -301,7 +301,7 @@ void main() {
     final v2 = _FutureSchema(DatabaseConnection(NativeDatabase(file)));
     await expectLater(
       v2.customSelect('SELECT 1').get(),
-      throwsA(isA<StateError>()),
+      throwsA(isA<ArgumentError>()),
     );
     await v2.close();
 

@@ -1,5 +1,6 @@
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
+import 'package:deutschplan/data/db/schema_versions.dart';
 import 'package:drift_flutter/drift_flutter.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqlite3/common.dart';
@@ -47,24 +48,25 @@ class AppDatabase extends _$AppDatabase {
         DatabaseConnection(NativeDatabase.memory(setup: configureConnection)),
       );
 
+  /// Readable without an instance, which the migration tests need.
+  static const int latestSchemaVersion = 1;
+
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => latestSchemaVersion;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
     onCreate: (m) => m.createAll(),
-    onUpgrade: (m, from, to) async {
-      // Deliberately fatal, and it stays that way until there is a step to
-      // run. drift's own default throws here; an empty body would replace
-      // that with silence, so bumping schemaVersion and forgetting the
-      // migration would open a learner's existing file against the new
-      // schema and fail on their device rather than in CI.
-      //
-      // #56 replaces this with runMigrationSteps and the fixture tests.
-      // Columns holding data are never dropped: add a nullable column or a
-      // new table.
-      throw StateError('no migration from schema $from to $to');
-    },
+    // One step per version, applied in order, from `schema_versions.dart` —
+    // which drift generates from the fixtures in `drift_schemas/`. A version
+    // with no step raises rather than opening a learner's file against a
+    // schema it was never migrated to, which is what an empty onUpgrade would
+    // do silently. `make schema-dump` captures the fixture; migration_test
+    // then opens every previous one and migrates it forward.
+    //
+    // Columns holding data are never dropped: add a nullable column or a new
+    // table.
+    onUpgrade: stepByStep(),
   );
 
   /// The version the file itself reports, which is what a raw

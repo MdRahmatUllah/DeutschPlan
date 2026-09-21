@@ -13,12 +13,16 @@
 git clone … deutschplan && cd deutschplan
 fvm install                     # picks the SDK from .fvmrc
 make content                    # Excel → content.db → app/assets/db/content.db
-cd app
-flutter pub get                 # also runs gen_l10n -> lib/l10n/generated/
-dart run build_runner build -d  # riverpod, freezed, drift, go_router codegen
-flutter analyze && flutter test
-flutter run
+(cd app && flutter pub get)     # also runs gen_l10n -> lib/l10n/generated/
+make gen                        # migration helpers, then build_runner
+make lint && make test
+(cd app && flutter run)
 ```
+
+`make gen` rather than `build_runner` alone: `AppDatabase` imports
+`lib/data/db/schema_versions.dart`, which the drift_dev CLI writes from the
+fixtures in `app/drift_schemas/`. Without that step build_runner has nothing to
+analyse and the whole package fails to resolve.
 
 ## Using fvm
 
@@ -39,10 +43,11 @@ Point your IDE at `<repo>/.fvm/flutter_sdk` as the Flutter SDK path. To move the
 | Target | Does |
 | --- | --- |
 | `make content` | `python tools/excel_to_sqlite.py` + `verify_content.py` + copy asset + write manifest |
-| `make gen` | build_runner (watch with `make gen-watch`) |
+| `make gen` | drift migration helpers, then build_runner (watch with `make gen-watch`) |
+| `make schema-dump` | capture the current schema as a fixture — run after bumping `schemaVersion` |
 | `make test` | unit + widget + db tests |
 | `make goldens` | update golden files for all three themes (review the diff!) |
-| `make lint` | `flutter analyze`, `dart format --set-exit-if-changed`, `custom_lint` |
+| `make lint` | `dart analyze --fatal-infos` (not `flutter analyze` — ADR 18), `dart format --set-exit-if-changed` |
 | `make release-android` / `make release-ios` | see `release.md` |
 
 ## Project conventions checklist for a new screen

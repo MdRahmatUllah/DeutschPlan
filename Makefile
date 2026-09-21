@@ -26,8 +26,17 @@ content: ## Excel -> content.db -> app/assets/db/content.db
 	cp content/build/content.db $(APP)/assets/db/content.db
 	@echo "content.db copied to $(APP)/assets/db/"
 
-gen: ## build_runner: riverpod, freezed, drift, go_router
+gen: ## Migration helpers, then build_runner: riverpod, freezed, drift, go_router
+	$(DART) dart run drift_dev schema steps drift_schemas/ lib/data/db/schema_versions.dart
+	$(DART) dart run drift_dev schema generate drift_schemas/ test/db/generated/
 	$(DART) dart run build_runner build --delete-conflicting-outputs
+
+schema-dump: ## Capture the CURRENT schema as a fixture. Run after bumping schemaVersion.
+	$(DART) dart run drift_dev schema dump lib/data/db/app_database.dart drift_schemas/
+	@echo
+	@echo "Fixture written to app/drift_schemas/. Commit it — it is the only"
+	@echo "record of this schema once user_schema.drift moves on. Then run"
+	@echo "\`make gen\` and write the migration step."
 
 gen-watch: ## build_runner in watch mode
 	$(DART) dart run build_runner watch --delete-conflicting-outputs
