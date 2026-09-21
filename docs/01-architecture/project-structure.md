@@ -12,9 +12,12 @@ deutschplan/                        ← repository root
 │   └── build/                      ← output: content.db + content_manifest.json (git-ignored)
 ├── tools/
 │   ├── excel_to_sqlite.py          ← the pipeline (Python 3.11+, openpyxl)
-│   └── verify_content.py           ← integrity checks run in CI
-├── design/
-│   └── android-light/              ← HTML prototype (59 artboards); dark/ and glass/ when exported
+│   ├── verify_content.py           ← integrity checks run in CI
+│   └── render_design.py            ← renders the artboards to docs/design/*.png
+├── deutsch-plan-design-html/       ← Paper & Ink + Night Ink prototype: 60 artboards ×
+│                                     android-light/dark and ios-light/dark
+├── deutsch-plan-v2-aurora-glass-html/  ← Aurora Glass prototype, same 60 artboards ×
+│                                     the same four canvases
 ├── docs/                           ← this documentation (source of truth)
 └── app/                            ← Flutter project
     ├── pubspec.yaml
