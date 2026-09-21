@@ -52,7 +52,7 @@ void main() {
 
     test('the caret ends after the inserted character every time', () {
       final controller = TextEditingController();
-      for (final key in DpUmlautBar.keys) {
+      for (final key in DpUmlautBar.keys.keys) {
         DpUmlautBar.insert(controller, key);
       }
       expect(controller.text, 'äöüß');
@@ -65,9 +65,10 @@ void main() {
       final controller = TextEditingController();
       await pump(tester, DpUmlautBar(controller: controller));
 
-      for (final key in <String>['ä', 'ö', 'ü', 'ß']) {
+      for (final key in DpUmlautBar.keys.keys) {
         expect(find.text(key), findsOneWidget);
       }
+      expect(DpUmlautBar.keys.keys, <String>['ä', 'ö', 'ü', 'ß']);
       expect(
         tester.getSize(find.byType(DpUmlautBar)).height,
         DpUmlautBar.keyHeight,
@@ -93,17 +94,44 @@ void main() {
       expect(controller.text, DpUmlautBar.capitalSharpS);
     });
 
-    testWidgets('only ß has a long-press', (tester) async {
-      final controller = TextEditingController();
-      await pump(tester, DpUmlautBar(controller: controller));
+    testWidgets('long-pressing any key gives its capital', (tester) async {
+      // German capitalises every noun — Übung, Äpfel, Österreich are all A1
+      // words whose first letter has no key on an English keyboard.
+      for (final entry in DpUmlautBar.keys.entries) {
+        final controller = TextEditingController();
+        await pump(tester, DpUmlautBar(controller: controller));
 
-      await tester.longPress(find.text('ä'));
-      await tester.pumpAndSettle();
-      expect(
-        controller.text,
-        'ä',
-        reason: 'a long-press on a key with no capital form is just a tap',
-      );
+        await tester.longPress(find.text(entry.key));
+        await tester.pumpAndSettle();
+        expect(
+          controller.text,
+          entry.value,
+          reason: 'long-pressing ${entry.key} should give ${entry.value}',
+        );
+      }
+    });
+
+    testWidgets('the callout fills Oat at the button radius, not a card', (
+      tester,
+    ) async {
+      // The GrammarTopic artboard draws it inside a card, so it has no border
+      // and no shadow of its own.
+      await pump(tester, DpCallout.text('bekommen = to get'));
+      final decoration =
+          tester
+                  .widgetList<DecoratedBox>(
+                    find.descendant(
+                      of: find.byType(DpCallout),
+                      matching: find.byType(DecoratedBox),
+                    ),
+                  )
+                  .first
+                  .decoration
+              as BoxDecoration;
+
+      expect(decoration.color, DpSurfaceTokens.light.muted);
+      expect(decoration.border, isNull);
+      expect(decoration.boxShadow ?? const <BoxShadow>[], isEmpty);
     });
 
     testWidgets('the ß key announces its long-press', (tester) async {
@@ -246,13 +274,14 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           theme: AppTheme.light(),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: supportedLocales,
           home: Scaffold(
             body: Builder(
               builder: (context) => GestureDetector(
                 onTap: () => DpUndo.show(
                   context,
                   message: 'Moved die Kaution to the backlog',
-                  undoLabel: 'Undo',
                   onUndo: () => undos++,
                 ),
                 child: const Text('rate'),
@@ -281,13 +310,14 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           theme: AppTheme.light(),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: supportedLocales,
           home: Scaffold(
             body: Builder(
               builder: (context) => GestureDetector(
                 onTap: () => DpUndo.show(
                   context,
                   message: 'Rated ${DateTime.now().microsecondsSinceEpoch}',
-                  undoLabel: 'Undo',
                   onUndo: () {},
                 ),
                 child: const Text('rate'),

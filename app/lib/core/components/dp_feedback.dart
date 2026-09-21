@@ -22,12 +22,21 @@ class DpUmlautBar extends StatelessWidget {
   /// border, 20 px at weight 500, 8 dp apart.
   static const double keyHeight = 44;
 
-  /// The four the learner cannot type on an English keyboard. Capitals come
-  /// from the keyboard's own shift; only ß has no shifted form there, so it
-  /// gets the long-press.
-  static const List<String> keys = <String>['ä', 'ö', 'ü', 'ß'];
+  /// The four characters an English keyboard has no key for, each mapped to
+  /// its capital.
+  ///
+  /// Long-press gives the capital on every key, not just ß. There is no ä on
+  /// the keyboard to shift, and German capitalises every noun — Übung, Äpfel,
+  /// Österreich are all A1 words whose first letter would otherwise be
+  /// unreachable from this bar.
+  static const Map<String, String> keys = <String, String>{
+    'ä': 'Ä',
+    'ö': 'Ö',
+    'ü': 'Ü',
+    'ß': 'ẞ',
+  };
 
-  /// Long-pressing ß gives the capital, which exists but is on no keyboard.
+  /// The capital sharp s exists in Unicode and on no keyboard at all.
   static const String capitalSharpS = 'ẞ';
 
   /// Inserts [text] at the cursor, replacing any selection, and leaves the
@@ -64,15 +73,15 @@ class DpUmlautBar extends StatelessWidget {
 
     return Row(
       children: <Widget>[
-        for (final (index, key) in keys.indexed) ...<Widget>[
+        for (final (index, entry) in keys.entries.indexed) ...<Widget>[
           if (index > 0) SizedBox(width: tokens.spacing.sm),
           Expanded(
             child: _UmlautKey(
-              label: key,
-              shifted: key == 'ß' ? capitalSharpS : null,
-              onTap: enabled ? () => insert(controller, key) : null,
-              onLongPress: key == 'ß' && enabled
-                  ? () => insert(controller, capitalSharpS)
+              label: entry.key,
+              shifted: entry.value,
+              onTap: enabled ? () => insert(controller, entry.key) : null,
+              onLongPress: enabled
+                  ? () => insert(controller, entry.value)
                   : null,
             ),
           ),
@@ -91,7 +100,7 @@ class _UmlautKey extends StatelessWidget {
   });
 
   final String label;
-  final String? shifted;
+  final String shifted;
   final VoidCallback? onTap;
   final VoidCallback? onLongPress;
 
@@ -102,9 +111,7 @@ class _UmlautKey extends StatelessWidget {
     return Semantics(
       button: true,
       enabled: onTap != null,
-      label: shifted == null
-          ? label
-          : AppLocalizations.of(context).umlautLongPressHint(label, shifted!),
+      label: AppLocalizations.of(context).umlautLongPressHint(label, shifted),
       child: ExcludeSemantics(
         child: GestureDetector(
           onTap: onTap,
@@ -133,6 +140,10 @@ class _UmlautKey extends StatelessWidget {
 ///
 /// The artboards use it for grammar "Watch out" and for interference tips —
 /// "⚠ bekommen = to get, not 'to become'" — both with the Tangerine bar.
+///
+/// It draws its own container rather than a [DpSurface]: the GrammarTopic
+/// artboard gives it an Oat fill at radius 12 with no border and no shadow,
+/// because it sits *inside* a card rather than being one.
 class DpCallout extends StatelessWidget {
   const DpCallout({required this.child, super.key, this.colour, this.title});
 
@@ -154,32 +165,38 @@ class DpCallout extends StatelessWidget {
     final tokens = context.tokens;
     final bar = colour ?? tokens.color.hard;
 
-    return DpSurface(
-      kind: DpSurfaceKind.bar,
-      child: IntrinsicHeight(
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            SizedBox(
-              width: barWidth,
-              child: ColoredBox(color: bar),
-            ),
-            Expanded(
-              child: Padding(
-                padding: EdgeInsets.all(tokens.spacing.md),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    if (title != null) ...<Widget>[
-                      DpText(title!, role: DpTextRole.label, weight: 700),
-                      SizedBox(height: tokens.spacing.xs),
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: tokens.surface.muted,
+        borderRadius: BorderRadius.circular(tokens.shape.button),
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(tokens.shape.button),
+        child: IntrinsicHeight(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              SizedBox(
+                width: barWidth,
+                child: ColoredBox(color: bar),
+              ),
+              Expanded(
+                child: Padding(
+                  padding: EdgeInsets.all(tokens.spacing.md),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      if (title != null) ...<Widget>[
+                        DpText(title!, role: DpTextRole.label, weight: 700),
+                        SizedBox(height: tokens.spacing.xs),
+                      ],
+                      child,
                     ],
-                    child,
-                  ],
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -329,10 +346,11 @@ abstract final class DpUndo {
   /// FR-T2-02: "a 4 s snackbar *Undo* MUST revert it fully".
   static const Duration duration = Duration(seconds: 4);
 
+  /// The label is read from ARB rather than passed in: it is the same word at
+  /// every call site, and a parameter is a chance to pass an unlocalised one.
   static void show(
     BuildContext context, {
     required String message,
-    required String undoLabel,
     required VoidCallback onUndo,
   }) {
     final tokens = context.tokens;
@@ -355,7 +373,7 @@ abstract final class DpUndo {
           ),
           content: DpText(message, role: DpTextRole.body),
           action: SnackBarAction(
-            label: undoLabel,
+            label: AppLocalizations.of(context).undo,
             textColor: tokens.color.link,
             onPressed: onUndo,
           ),
