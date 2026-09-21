@@ -25,6 +25,8 @@ Created on first launch from `lib/data/db/user_schema.drift`, which is the autho
 
 ## Settings keys and defaults
 
+`SettingsRepository` (`lib/data/repositories/`) reads this table into memory once and serves it synchronously, because settings are read during `build`. `setting_keys.dart` is the typed catalogue, and `test/data/settings_repository_test.dart` parses the table below and fails if a key or a default here and there disagree — so this is the source, not a copy of one.
+
 | Key | Default | Screen |
 | --- | --- | --- |
 | `daily_new` | 7 | Onboarding, Settings |
