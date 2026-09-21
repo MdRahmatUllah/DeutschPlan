@@ -1,6 +1,7 @@
 import 'package:deutschplan/core/theme/app_theme.dart';
 import 'package:deutschplan/core/theme/dp_tokens.dart';
 import 'package:deutschplan/core/typography/dp_text.dart';
+import 'package:flutter/rendering.dart' show RenderParagraph;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 
@@ -64,6 +65,14 @@ void main() {
       },
     );
 
+    test('a leading separator waits for the first letter', () {
+      // Otherwise '  Bangla' opens a Latin run for the spaces.
+      final runs = DpScript.runs('  ফ্ল');
+      expect(runs, hasLength(1));
+      expect(runs.single.$2, isTrue);
+      expect(runs.single.$1, '  ফ্ল');
+    });
+
     test('an empty string has no runs', () {
       expect(DpScript.runs(''), isEmpty);
     });
@@ -82,6 +91,33 @@ void main() {
         DpTextRole.display,
         reason: 'display is already the largest role — it cannot step up',
       );
+    });
+
+    testWidgets('an explicit weight reaches both scripts, not just the Latin', (
+      tester,
+    ) async {
+      await pump(
+        tester,
+        const DpText(
+          'die Wohnung · ফ্ল্যাট',
+          role: DpTextRole.body,
+          weight: 700,
+        ),
+      );
+      final children =
+          (tester.widget<Text>(find.byType(Text)).textSpan! as TextSpan)
+              .children!
+              .cast<TextSpan>();
+
+      for (final span in children) {
+        expect(
+          span.style!.fontVariations!.single.value,
+          700,
+          reason:
+              'a weight dropped on mixed strings is a weight dropped on '
+              'most of this app, since most of its copy is mixed',
+        );
+      }
     });
 
     testWidgets('German renders at its role and Bangla one step above it', (
@@ -176,29 +212,44 @@ void main() {
   });
 
   group('text scaling to 200 %', () {
-    testWidgets('a long headword does not overflow at 100, 150 or 200 %', (
-      tester,
-    ) async {
-      for (final scale in <double>[1, 1.5, 2]) {
+    testWidgets(
+      'a long headword keeps its size at 200 % instead of shrinking',
+      (tester) async {
+        // The earlier version of this test only asserted that nothing threw.
+        // FittedBox never overflows — it scales until it fits — so it passed
+        // while the headword rendered about 3 px tall. Assert the size instead.
         await pump(
           tester,
           const SizedBox(
-            width: 300,
+            width: 200,
             child: DpHeadword('Wohnungsgeberbestaetigung', article: 'die'),
           ),
-          textScale: scale,
+          textScale: 2,
         );
-        expect(
-          tester.takeException(),
-          isNull,
-          reason: 'the headword overflowed at ${scale}x',
-        );
-      }
-    });
 
-    testWidgets('the headword scales down rather than clipping', (
-      tester,
-    ) async {
+        expect(
+          find.byType(FittedBox),
+          findsNothing,
+          reason: 'scaling down to fit inverts the setting the learner chose',
+        );
+
+        // The root span inherits from DefaultTextStyle; the roles live on the
+        // children, which is where the headword's own size is set.
+        final span =
+            tester.widget<Text>(find.byType(Text)).textSpan! as TextSpan;
+        for (final child in span.children!.cast<TextSpan>()) {
+          expect(
+            child.style!.fontSize,
+            DpTypeTokens.defaults.display.size,
+            reason:
+                'the headword stays at its role; the scaler makes it bigger',
+          );
+        }
+        expect(tester.takeException(), isNull);
+      },
+    );
+
+    testWidgets('a long headword wraps rather than clipping', (tester) async {
       await pump(
         tester,
         const SizedBox(
@@ -207,11 +258,13 @@ void main() {
         ),
         textScale: 2,
       );
-
-      expect(find.byType(FittedBox), findsOneWidget);
+      final paragraph = tester.renderObject<RenderParagraph>(
+        find.byType(RichText),
+      );
       expect(
-        tester.getSize(find.byType(FittedBox)).width,
-        lessThanOrEqualTo(200),
+        paragraph.size.height,
+        greaterThan(DpTypeTokens.defaults.display.height),
+        reason: 'a compound too wide for the card must run onto more lines',
       );
     });
 

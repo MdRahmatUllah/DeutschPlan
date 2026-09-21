@@ -64,8 +64,10 @@ abstract final class DpScript {
       final isLetter = _isLetterOrMark(rune);
       final bengali = isBengaliRune(rune);
 
-      // Non-letters stay with the run in progress.
-      if (!isLetter && current != null) {
+      // Non-letters join the run in progress. With no run yet — a string that
+      // opens with a space or punctuation — they wait for the first letter, so
+      // leading whitespace does not open a spurious run of the wrong script.
+      if (!isLetter) {
         buffer.writeCharCode(rune);
         continue;
       }
@@ -176,29 +178,32 @@ class DpText extends StatelessWidget {
     final tokens = context.tokens;
     final text = allowBreaks ? DpScript.allowBreaks(data) : data;
 
-    final base = styleFor(
-      tokens,
-      role,
-      color: color ?? tokens.color.ink,
-    ).copyWith(fontStyle: italic ? FontStyle.italic : FontStyle.normal);
+    // Applied to every style, not just the Latin one: a weight silently
+    // dropped on mixed strings would be dropped on most of this app's copy.
+    TextStyle dressed(DpTextRole forRole) {
+      final style = styleFor(
+        tokens,
+        forRole,
+        color: color ?? tokens.color.ink,
+      ).copyWith(fontStyle: italic ? FontStyle.italic : FontStyle.normal);
+      return weight == null
+          ? style
+          : style.copyWith(fontVariations: AppFonts.weight(weight!));
+    }
+
+    final base = dressed(role);
 
     if (!DpScript.hasBengali(text)) {
       return Text(
         text,
-        style: weight == null
-            ? base
-            : base.copyWith(fontVariations: AppFonts.weight(weight!)),
+        style: base,
         textAlign: textAlign,
         maxLines: maxLines,
         semanticsLabel: semanticsLabel,
       );
     }
 
-    final larger = styleFor(
-      tokens,
-      role.oneStepLarger,
-      color: color ?? tokens.color.ink,
-    ).copyWith(fontStyle: italic ? FontStyle.italic : FontStyle.normal);
+    final larger = dressed(role.oneStepLarger);
 
     return Text.rich(
       TextSpan(
@@ -235,12 +240,16 @@ class DpText extends StatelessWidget {
   }
 }
 
-/// A headword that shrinks rather than clips.
+/// A headword that wraps rather than clipping or shrinking.
 ///
 /// `accessibility-performance.md`: "Text scaling to 200 %; long compounds
 /// soft-hyphenate" and "the headword is announced with article and gender".
-/// A German headword can be very long and the learner has set the scale
-/// deliberately, so the word gives ground before the layout does.
+///
+/// It deliberately does NOT scale down to fit. Fitting
+/// `Wohnungsgeberbestätigung` onto one line at 200 % takes it to about 3 % of
+/// its nominal size — a few pixels tall — which inverts the setting the learner
+/// chose. Wrapping onto two or three lines keeps the size they asked for, and a
+/// break opportunity is offered so the wrap lands somewhere sensible.
 class DpHeadword extends StatelessWidget {
   const DpHeadword(
     this.word, {
@@ -263,33 +272,29 @@ class DpHeadword extends StatelessWidget {
     final tokens = context.tokens;
     final articleColour = tokens.color.textForArticle(article);
 
-    return FittedBox(
-      fit: BoxFit.scaleDown,
-      alignment: textAlign == TextAlign.center
-          ? Alignment.center
-          : Alignment.centerLeft,
-      child: Text.rich(
-        TextSpan(
-          children: <InlineSpan>[
-            if (article != null)
-              TextSpan(
-                text: '$article ',
-                style: DpText.styleFor(
-                  tokens,
-                  role,
-                  color: articleColour ?? tokens.color.ink,
-                ),
-              ),
+    return Text.rich(
+      TextSpan(
+        children: <InlineSpan>[
+          if (article != null)
             TextSpan(
-              text: word,
-              style: DpText.styleFor(tokens, role, color: tokens.color.ink),
+              text: '$article ',
+              style: DpText.styleFor(
+                tokens,
+                role,
+                color: articleColour ?? tokens.color.ink,
+              ),
             ),
-          ],
-        ),
-        textAlign: textAlign,
-        maxLines: 1,
-        semanticsLabel: article == null ? word : '$article $word',
+          TextSpan(
+            text: DpScript.allowBreaks(word),
+            style: DpText.styleFor(tokens, role, color: tokens.color.ink),
+            locale: const Locale('de', 'DE'),
+          ),
+        ],
       ),
+      textAlign: textAlign,
+      // Announced with its article, as accessibility-performance.md requires,
+      // and without the soft hyphen a screen reader would otherwise voice.
+      semanticsLabel: article == null ? word : '$article $word',
     );
   }
 }
