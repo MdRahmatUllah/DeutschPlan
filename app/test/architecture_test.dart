@@ -131,6 +131,15 @@ void main() {
       'AlertDialog(': 'Adaptive.showConfirm',
       'CupertinoAlertDialog(': 'Adaptive.showConfirm',
       'showTimePicker(': 'Adaptive.showTimePickerFor',
+      // Buttons and chips carry the Paper & Ink treatment — the 2 px ink
+      // border and the hard offset shadow — which no Material default has.
+      'FilledButton': 'DpButton',
+      'ElevatedButton': 'DpButton',
+      'OutlinedButton': 'DpButton(kind: secondary)',
+      'TextButton(': 'DpButton(kind: text)',
+      'Chip(': 'DpChip',
+      'FilterChip(': 'DpChip(kind: filter)',
+      'ActionChip(': 'DpChip',
       'CupertinoDatePicker(': 'Adaptive.showTimePickerFor',
     };
 
@@ -147,7 +156,11 @@ void main() {
         if (line.trimLeft().startsWith('//')) continue;
         if (line.contains('ponytail: allow-chrome')) continue;
         for (final entry in chrome.entries) {
-          if (line.contains(entry.key)) {
+          // , or `DpChip(` matches `Chip(` and `AdaptiveSwitch(` matches
+          // and `AdaptiveSwitch(` matches `Switch(`. Built from a RAW string —
+          // '\b' in an ordinary Dart string is the backspace character, and
+          // the pattern then silently matches nothing at all.
+          if (RegExp(r'\b' + RegExp.escape(entry.key)).hasMatch(line)) {
             offenders.add('$path:${i + 1}: ${entry.key} — use ${entry.value}');
           }
         }
