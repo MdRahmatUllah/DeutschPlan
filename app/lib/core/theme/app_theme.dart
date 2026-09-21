@@ -18,7 +18,10 @@ abstract final class AppTheme {
   static ThemeData _build(DpTokens tokens) {
     final scheme = ColorScheme.fromSeed(
       seedColor: tokens.color.primary,
-      brightness: tokens.mode == DpMode.dark
+      // Derived from the surface, not the mode name: glass has a dark variant
+      // that is still DpMode.glass, and Material needs the real brightness for
+      // scrims, system icons and default ripples.
+      brightness: tokens.surface.paper.computeLuminance() < 0.5
           ? Brightness.dark
           : Brightness.light,
       primary: tokens.color.primary,

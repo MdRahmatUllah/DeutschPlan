@@ -82,6 +82,12 @@ class DpTokens extends ThemeExtension<DpTokens> {
 
   /// Only colours interpolate. Shape, spacing, motion and the type scale are
   /// identical across modes, so a theme change animates colour and nothing else.
+  ///
+  /// `mode` flips at the midpoint rather than interpolating, and that is
+  /// deliberate: it is an enum, and a widget that branches on it — `DpSurface`
+  /// (#33), `GlassPanel` (#34) — must pick one treatment or the other. Expect a
+  /// single switch halfway through a theme animation, not a gradual blend; it
+  /// is not a bug in those widgets.
   @override
   DpTokens lerp(covariant DpTokens? other, double t) {
     if (other == null) return this;

@@ -120,17 +120,41 @@ void main() {
         },
       );
 
-      test('the outline is ink at the documented opacity', () {
+      test('the outline is ink at the opacity the artboard uses', () {
         expect(hex(surface.outline), hex(palette.ink));
+        // Read the opacity out of the artboard instead of restating it here, so
+        // the test cannot agree with itself while the design moves underneath.
+        final alphas =
+            RegExp(r'rgba\(\s*\d+\s*,\s*\d+\s*,\s*\d+\s*,\s*([\d.]+)\s*\)')
+                .allMatches(artboard.toLowerCase())
+                .map((m) => double.parse(m[1]!))
+                .toSet();
+
         expect(
-          surface.outline.a,
-          closeTo(mode == DpMode.light ? 0.20 : 0.22, 0.01),
+          alphas.any((a) => (a - surface.outline.a).abs() < 0.005),
+          isTrue,
+          reason:
+              'outline alpha ${surface.outline.a.toStringAsFixed(2)} matches no '
+              'rgba() in the $name artboard (found: ${alphas.toList()..sort()})',
         );
       });
 
-      test('the hard shadow is offset 3 px down-right with no blur', () {
+      test('the hard shadow matches the artboard exactly, colour included', () {
         expect(surface.shadowOffset, const Offset(3, 3));
-        expect(artboard.toLowerCase(), contains('3px 3px 0 '));
+
+        // The colour is the half this used to miss: `shadow` is not in `named`,
+        // and the reverse scan only sees #RRGGBB, so an rgba() shadow was
+        // unchecked in both modes.
+        final rendered = mode == DpMode.light
+            ? '3px 3px 0 ${hex(surface.shadow).toLowerCase()}'
+            : '3px 3px 0 rgba(255,255,255,'
+                  '${_trimZero(surface.shadow.a)})';
+
+        expect(
+          artboard.toLowerCase().replaceAll(' 0 rgba( ', ' 0 rgba('),
+          contains(rendered),
+          reason: 'the $name artboard does not draw "$rendered"',
+        );
       });
     });
   });
@@ -282,4 +306,10 @@ void main() {
       expect(mid.motion.quick, a.motion.quick);
     });
   });
+}
+
+/// `0.30` -> `0.3`, matching how the artboard writes an rgba alpha.
+String _trimZero(double v) {
+  final text = v.toStringAsFixed(2);
+  return text.endsWith('0') ? text.substring(0, text.length - 1) : text;
 }
