@@ -85,6 +85,11 @@ dev_dependencies:
   riverpod_generator: ^4.0.9
   go_router_builder: ^4.5.0
   drift_dev: ^2.35.0
+
+  # Only so test/db/ can point AppDatabase.open() at a temp directory. Already
+  # in the tree as a transitive dependency of path_provider.
+  path_provider_platform_interface: ^2.1.2
+  plugin_platform_interface: ^2.1.8
   freezed: ^4.0.2
   json_serializable: ^6.14.1
 

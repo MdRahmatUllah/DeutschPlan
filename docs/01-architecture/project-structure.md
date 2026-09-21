@@ -24,13 +24,12 @@ deutschplan/                        ← repository root
     ├── l10n.yaml · lib/l10n/*.arb  ← en, bn (German strings live in content, not ARB)
     ├── assets/
     │   ├── db/content.db           ← copied from content/build by `make content`
-    │   ├── db/user_schema.sql      ← authoritative user.db DDL (mirrored in drift tables)
     │   └── fonts/                  ← Inter, NotoSansBengali
     ├── lib/
     │   ├── main.dart · app.dart · bootstrap.dart
     │   ├── core/                   ← theme (3 modes), tokens, adaptive widgets, GlassPanel, AuroraBackdrop, extensions
     │   ├── data/
-    │   │   ├── db/                 ← drift database, tables, DAOs, migrations, content attach
+    │   │   ├── db/                 ← user_schema.drift (authoritative DDL), AppDatabase, DAOs, migrations, content attach
     │   │   ├── repositories/       ← WordRepository, PlanRepository, GrammarRepository, ExamRepository, SettingsRepository, ModelRepository
     │   │   └── files/              ← model store, export/import, recordings
     │   ├── domain/                 ← pure Dart, no Flutter imports: models (freezed), fsrs, answer_check, text_norm,
