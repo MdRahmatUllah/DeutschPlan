@@ -102,6 +102,7 @@ void main() {
         'idx_word_state_status',
         'idx_review_log_word',
         'idx_review_log_at',
+        'idx_one_active_enrollment',
         'idx_plan_items_date',
         'idx_plan_items_backlog',
         'idx_grammar_state_due',
@@ -130,6 +131,34 @@ void main() {
   });
 
   group('the status rules the docs state, enforced by the database', () {
+    test('only one enrollment can be open at a time', () async {
+      // BR-COURSE-04: the row with completed_on IS NULL is the active step.
+      // A plain unique index would not hold this — SQLite treats every NULL in
+      // a unique index as distinct — which is why the index is on a constant.
+      await db.customStatement(
+        'INSERT INTO enrollments '
+        '(sublevel_code, started_on, daily_new, study_days_mask) '
+        "VALUES ('A1.1', '2026-01-01', 10, 127)",
+      );
+      await expectRejected(
+        'INSERT INTO enrollments '
+        '(sublevel_code, started_on, daily_new, study_days_mask) '
+        "VALUES ('A1.2', '2026-01-02', 10, 127)",
+        because: 'two open enrollments means no single active step',
+      );
+
+      // Completing the first frees the slot, which is how the learner moves on.
+      await db.customStatement(
+        "UPDATE enrollments SET completed_on = '2026-02-01' "
+        "WHERE sublevel_code = 'A1.1'",
+      );
+      await db.customStatement(
+        'INSERT INTO enrollments '
+        '(sublevel_code, started_on, daily_new, study_days_mask) '
+        "VALUES ('A1.2', '2026-02-01', 10, 127)",
+      );
+    });
+
     test('word_state.status is one of the four in BR-STATUS', () async {
       await expectRejected(
         "INSERT INTO word_state (word_uid, status) VALUES ('w1', 'mastered')",
@@ -258,6 +287,27 @@ void main() {
     });
   });
 
+  test('bumping the schema version without a migration fails loudly', () async {
+    // drift's own default throws here. An empty onUpgrade would replace that
+    // with silence, and the first learner to update would open their existing
+    // file against the new schema.
+    final dir = Directory.systemTemp.createTempSync('deutschplan_upgrade');
+    final file = File('${dir.path}/user.sqlite');
+
+    final v1 = AppDatabase(DatabaseConnection(NativeDatabase(file)));
+    await v1.customSelect('SELECT 1').get();
+    await v1.close();
+
+    final v2 = _FutureSchema(DatabaseConnection(NativeDatabase(file)));
+    await expectLater(
+      v2.customSelect('SELECT 1').get(),
+      throwsA(isA<StateError>()),
+    );
+    await v2.close();
+
+    dir.deleteSync(recursive: true);
+  });
+
   test('the schema version is written where a raw inspection reads it', () async {
     // ADR 23: PRAGMA user_version replaces the schema_version table
     // user-database.md originally called for. This is what makes the pragma an
@@ -288,4 +338,12 @@ void main() {
     await onDisk.close();
     dir.deleteSync(recursive: true);
   });
+}
+
+/// The same schema one version ahead, with no migration written for it.
+class _FutureSchema extends AppDatabase {
+  _FutureSchema(super.e);
+
+  @override
+  int get schemaVersion => super.schemaVersion + 1;
 }

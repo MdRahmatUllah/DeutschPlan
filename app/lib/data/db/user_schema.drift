@@ -38,6 +38,12 @@ CREATE TABLE enrollments (
   completed_on    TEXT
 );
 
+-- BR-COURSE-04: at most one open enrollment, which is the active step. Unique
+-- on a constant rather than on completed_on, because SQLite treats every NULL
+-- in a unique index as distinct and would allow any number of open rows.
+CREATE UNIQUE INDEX idx_one_active_enrollment
+  ON enrollments ((1)) WHERE completed_on IS NULL;
+
 -- Per-word learning state. status is derived from stability, never set by hand
 -- (BR-STATUS-02); card_mode switches to 'cloze' after two consecutive >= Good
 -- (BR-FSRS-06).

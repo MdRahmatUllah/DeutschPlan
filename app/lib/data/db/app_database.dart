@@ -54,9 +54,16 @@ class AppDatabase extends _$AppDatabase {
   MigrationStrategy get migration => MigrationStrategy(
     onCreate: (m) => m.createAll(),
     onUpgrade: (m, from, to) async {
-      // Every step ships its own migration and a fixture test that opens the
-      // previous version (#56). Columns holding data are never dropped: add a
-      // nullable column or a new table.
+      // Deliberately fatal, and it stays that way until there is a step to
+      // run. drift's own default throws here; an empty body would replace
+      // that with silence, so bumping schemaVersion and forgetting the
+      // migration would open a learner's existing file against the new
+      // schema and fail on their device rather than in CI.
+      //
+      // #56 replaces this with runMigrationSteps and the fixture tests.
+      // Columns holding data are never dropped: add a nullable column or a
+      // new table.
+      throw StateError('no migration from schema $from to $to');
     },
   );
 
