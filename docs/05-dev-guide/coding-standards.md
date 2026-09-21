@@ -1,6 +1,8 @@
 # Coding standards
 
 - **Lints:** `flutter_lints` + `riverpod_lint` + project rules in `analysis_options.yaml` (`prefer_final_locals`, `avoid_dynamic_calls`, `require_trailing_commas`, `always_declare_return_types`). CI fails on any warning.
+- **Run lints with `dart analyze --fatal-infos`, never `flutter analyze`.** `riverpod_lint` 3.1.4+ is an `analysis_server` plugin declared under the top-level `plugins:` key. `flutter analyze` does not load it and reports "No issues found" while every riverpod rule is silently inactive; `dart analyze` loads it. `custom_lint` is not used (ADR 15).
+- **Generated code is excluded from analysis** (`*.g.dart`, `*.freezed.dart`, `*.drift.dart`) — it is rebuilt by `make gen`, so lints on it are not actionable.
 - **Imports:** `package:material_ui/material_ui.dart` / `package:cupertino_ui/cupertino_ui.dart` — never `package:flutter/material.dart`. Relative imports inside a feature; package imports across layers.
 - **Domain purity:** `lib/domain/**` must not import Flutter, drift or any plugin. Enforced by a test that greps imports.
 - **Models:** `freezed` for all value types; unions for `CardKind`, `ExamSection`, `SearchTier`, `TtsState`.

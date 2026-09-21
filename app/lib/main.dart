@@ -13,10 +13,7 @@ class DeutschPlanApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'DeutschPlan',
-      home: const _Placeholder(),
-    );
+    return MaterialApp(title: 'DeutschPlan', home: const _Placeholder());
   }
 }
 
@@ -26,8 +23,6 @@ class _Placeholder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(child: Text('DeutschPlan')),
-    );
+    return const Scaffold(body: Center(child: Text('DeutschPlan')));
   }
 }
