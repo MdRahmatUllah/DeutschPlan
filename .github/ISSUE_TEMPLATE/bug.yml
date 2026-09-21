@@ -1,0 +1,40 @@
+name: Bug
+description: Something does not behave as the documents say it should
+labels: ["bug"]
+body:
+  - type: textarea
+    id: expected
+    attributes:
+      label: What the documents say
+      description: >
+        Quote the FR or BR ID and the document. The documents are the source of
+        truth; if they are the thing that is wrong, say so — that is a docs change.
+      placeholder: "FR-T1-05: pull-to-refresh MUST re-plan if the date changed."
+    validations: { required: true }
+  - type: textarea
+    id: actual
+    attributes:
+      label: What happens
+    validations: { required: true }
+  - type: textarea
+    id: repro
+    attributes:
+      label: Steps to reproduce
+    validations: { required: true }
+  - type: dropdown
+    id: theme
+    attributes:
+      label: Theme
+      multiple: true
+      options: ["Light", "Dark", "Glass", "All three"]
+  - type: dropdown
+    id: platform
+    attributes:
+      label: Platform
+      multiple: true
+      options: ["Android", "iOS", "Both"]
+  - type: input
+    id: build
+    attributes:
+      label: App and content version
+      description: From About (M9) — "Version 1.0.0 (build 41) · content 2026.09".

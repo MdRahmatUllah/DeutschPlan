@@ -1,0 +1,37 @@
+name: Engine or data
+description: Domain logic, a repository, the content pipeline or the database
+labels: ["feature"]
+body:
+  - type: input
+    id: unit
+    attributes:
+      label: Unit
+      placeholder: "domain/plan_engine.dart"
+    validations: { required: true }
+  - type: input
+    id: spec
+    attributes:
+      label: Specification
+      placeholder: "docs/03-domain/plan-engine.md"
+    validations: { required: true }
+  - type: textarea
+    id: rules
+    attributes:
+      label: Business rules implemented
+      description: The BR IDs from docs/00-product/business-rules.md that this unit owns.
+      placeholder: "BR-PLAN-01 … BR-PLAN-10, BR-COURSE-04/05"
+    validations: { required: true }
+  - type: textarea
+    id: criteria
+    attributes:
+      label: Acceptance criteria
+      value: |
+        - [ ] 
+        - [ ] Pure Dart if it lives under `lib/domain/` — no Flutter, drift or plugin imports
+        - [ ] Test names carry their FR/BR IDs
+    validations: { required: true }
+  - type: input
+    id: blockers
+    attributes:
+      label: Blocked by
+      placeholder: "#20"
