@@ -44,6 +44,28 @@ void main() {
       );
     });
 
+    for (final key in SettingKeys.all.whereType<EnumSetting<Enum>>()) {
+      test('${key.name} has a distinct wire name for every value', () {
+        // `encode` is `wire[value]!`. A value missing from the map throws at
+        // write time, on whichever screen offers it, in production — and the
+        // round-trip test below only ever writes one non-default value per
+        // enum, so it would not catch it. MtVariant.fp16 is the live example.
+        expect(key.wire.keys.toSet(), key.values.toSet());
+        expect(key.wire.values.toSet(), hasLength(key.values.length));
+      });
+
+      test(
+        '${key.name} round-trips every value through the database',
+        () async {
+          for (final value in key.values) {
+            await settings.write(key, value);
+            await settings.load();
+            expect(settings.read(key), value);
+          }
+        },
+      );
+    }
+
     test('every key has no duplicate', () {
       final names = SettingKeys.all.map((k) => k.name).toList();
       expect(names.toSet(), hasLength(names.length));

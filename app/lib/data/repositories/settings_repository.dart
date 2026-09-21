@@ -17,11 +17,11 @@ class SettingsRepository {
 
   final AppDatabase _db;
 
-  final Map<String, String> _values = <String, String>{};
+  /// `null` until [load] has run. Nullable rather than empty so a read before
+  /// load fails instead of quietly answering with defaults.
+  Map<String, String>? _values;
   final StreamController<SettingKey<Object?>> _changes =
       StreamController<SettingKey<Object?>>.broadcast();
-
-  bool _loaded = false;
 
   /// Fires after each [write] that changed something. `bootstrap()` (#66) wires
   /// this to the providers; until then a listener can watch it directly.
@@ -30,22 +30,25 @@ class SettingsRepository {
   /// Reads the table into memory. Call once, before the first [read].
   Future<void> load() async {
     final rows = await _db.select(_db.settings).get();
-    _values
-      ..clear()
-      ..addEntries(rows.map((r) => MapEntry(r.key, r.value)));
-    _loaded = true;
+    _values = <String, String>{for (final row in rows) row.key: row.value};
   }
 
   /// The current value, or the documented default when nothing is stored.
   T read<T>(SettingKey<T> key) {
-    assert(
-      _loaded,
-      'call load() before reading — otherwise every read is the '
-      'default and the learner sees their settings reset for one frame',
-    );
-    final raw = _values[key.name];
+    // Not an assert: those are stripped from release builds, and the failure
+    // this guards against is silent there — every read answering with the
+    // default, which looks to the learner like their settings reset rather
+    // than like a bug anyone can report.
+    final raw = _loadedValues[key.name];
     return raw == null ? key.defaultValue : key.decode(raw);
   }
+
+  Map<String, String> get _loadedValues =>
+      _values ??
+      (throw StateError(
+        'SettingsRepository.load() has not run. Reading now would answer '
+        'with every default and look like the learner lost their settings.',
+      ));
 
   /// Updates the cache immediately, then persists.
   ///
@@ -61,7 +64,7 @@ class SettingsRepository {
     if (encoded == null) {
       // Absent and "cleared" must read back the same, so clearing deletes the
       // row rather than storing an empty string.
-      final had = _values.remove(key.name) != null;
+      final had = _loadedValues.remove(key.name) != null;
       if (!had) return Future<void>.value();
       _changes.add(key);
       return (_db.delete(
@@ -69,8 +72,8 @@ class SettingsRepository {
       )..where((t) => t.key.equals(key.name))).go();
     }
 
-    if (_values[key.name] == encoded) return Future<void>.value();
-    _values[key.name] = encoded;
+    if (_loadedValues[key.name] == encoded) return Future<void>.value();
+    _loadedValues[key.name] = encoded;
     _changes.add(key);
 
     return _db
