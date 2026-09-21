@@ -37,7 +37,7 @@ void main() {
     await tester.pumpAndSettle();
   }
 
-  BoxDecoration decorationOf(WidgetTester tester, {int skip = 0}) {
+  BoxDecoration decorationOf(WidgetTester tester) {
     final boxes = tester
         .widgetList<DecoratedBox>(
           find.descendant(
@@ -46,7 +46,7 @@ void main() {
           ),
         )
         .toList();
-    return boxes[skip].decoration as BoxDecoration;
+    return boxes.first.decoration as BoxDecoration;
   }
 
   group('solid modes (Paper & Ink, Night Ink)', () {
@@ -272,5 +272,41 @@ void main() {
     await pump(tester, AppTheme.light(), onTap: () => taps++);
     await tester.tap(find.byType(DpSurface));
     expect(taps, 1);
+  });
+
+  testWidgets('a press round trip collapses, restores, and still fires onTap', (
+    tester,
+  ) async {
+    // The affordance has to come from onTap alone — no caller should have to
+    // own a bool for it. And the panel must come back up: an earlier attempt
+    // added the Transform only while pressed, which changed the tree shape
+    // under the GestureDetector, dropped the gesture mid-press and left the
+    // panel stuck down with onTap never firing.
+    var taps = 0;
+    await pump(tester, AppTheme.light(), onTap: () => taps++);
+
+    expect(decorationOf(tester).boxShadow, hasLength(1), reason: 'idle');
+
+    final gesture = await tester.startGesture(
+      tester.getCenter(find.byType(DpSurface)),
+    );
+    await tester.pump();
+    expect(decorationOf(tester).boxShadow, isEmpty, reason: 'pressed');
+
+    await gesture.up();
+    await tester.pumpAndSettle();
+    expect(decorationOf(tester).boxShadow, hasLength(1), reason: 'released');
+    expect(taps, 1);
+  });
+
+  testWidgets('a cancelled press restores the shadow', (tester) async {
+    await pump(tester, AppTheme.light(), onTap: () {});
+    final gesture = await tester.startGesture(
+      tester.getCenter(find.byType(DpSurface)),
+    );
+    await tester.pump();
+    await gesture.cancel();
+    await tester.pumpAndSettle();
+    expect(decorationOf(tester).boxShadow, hasLength(1));
   });
 }

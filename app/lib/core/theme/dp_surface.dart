@@ -54,7 +54,15 @@ final class _Tint extends DpSurfaceKind {
 /// Screens use only this widget, which is why adding the glass mode did not
 /// change a single screen file. Keep it that way: a screen that reaches for
 /// `BoxDecoration` itself is a screen that will need editing for the next mode.
-class DpSurface extends StatelessWidget {
+///
+/// **Blur budget.** Under glass every `card` and `cardStrong` is its own
+/// `BackdropFilter`. `accessibility-performance.md` caps this at three blur
+/// layers on screen — header, one panel, tab bar — and asks for 60 fps with one
+/// `BackdropFilter` per list panel. A long list of glass cards (Backlog, Learn,
+/// the grammar library, search results) will blow that on a mid-range phone.
+/// Rows in a scrolling list should use [DpSurfaceKind.bar], which skips the
+/// drop shadow, or wait for the shared-backdrop mechanism in #34.
+class DpSurface extends StatefulWidget {
   const DpSurface({
     required this.child,
     super.key,
@@ -80,49 +88,68 @@ class DpSurface extends StatelessWidget {
   final VoidCallback? onTap;
 
   @override
+  State<DpSurface> createState() => _DpSurfaceState();
+}
+
+class _DpSurfaceState extends State<DpSurface> {
+  bool _down = false;
+
+  @override
   Widget build(BuildContext context) {
     final tokens = context.tokens;
-    final corner = radius ?? tokens.shape.card;
+    final corner = widget.radius ?? tokens.shape.card;
     final borderRadius = BorderRadius.circular(corner);
 
-    final body = padding == null
-        ? child
-        : Padding(padding: padding!, child: child);
+    final body = widget.padding == null
+        ? widget.child
+        : Padding(padding: widget.padding!, child: widget.child);
 
     final surface = tokens.isGlass
         ? _glass(tokens, borderRadius, body)
         : _solid(tokens, borderRadius, body);
 
-    final tappable = onTap == null
+    final tappable = widget.onTap == null
         ? surface
         : GestureDetector(
-            onTap: onTap,
+            onTap: widget.onTap,
+            // Driven here rather than left to the caller: a panel that takes an
+            // onTap and never collapses its shadow is the affordance quietly
+            // missing, and every tappable panel would re-implement this.
+            onTapDown: (_) => setState(() => _down = true),
+            onTapUp: (_) => setState(() => _down = false),
+            onTapCancel: () => setState(() => _down = false),
             behavior: HitTestBehavior.opaque,
             child: surface,
           );
 
-    if (tokens.isGlass || !pressed) return tappable;
-
-    // Pressed: the panel moves into the space its shadow occupied.
+    // The Transform is always present, with a zero offset when idle. Adding or
+    // removing it on press changes the shape of the tree under the
+    // GestureDetector, which drops the gesture mid-press: the panel collapses
+    // and then never releases, and onTap never fires.
     return Transform.translate(
-      offset: tokens.surface.shadowOffset,
+      offset: tokens.isGlass || !_pressed
+          ? Offset.zero
+          : tokens.surface.shadowOffset,
       child: tappable,
     );
   }
 
-  Color _fill(DpTokens tokens) => switch (kind) {
+  /// The caller's explicit state, or a live press on our own gesture.
+  bool get _pressed => widget.pressed || _down;
+
+  Color _fill(DpTokens tokens) => switch (widget.kind) {
     _Card() || _Bar() => tokens.surface.card,
     _CardStrong() => tokens.surface.cardStrong,
     _Tint(:final colour, :final opacity) => colour.withValues(alpha: opacity),
   };
 
-  double _blur(DpTokens tokens) => switch (kind) {
+  double _blur(DpTokens tokens) => switch (widget.kind) {
     _CardStrong() => tokens.surface.strongBlur,
     _ => tokens.surface.blur,
   };
 
   /// Bars sit flush against a screen edge, so they carry no drop shadow.
-  bool get _hasShadow => kind is! _Bar;
+  bool get _hasShadow => widget.kind is! _Bar;
 
   Widget _solid(DpTokens tokens, BorderRadius borderRadius, Widget body) {
     final surface = tokens.surface;
@@ -131,7 +158,7 @@ class DpSurface extends StatelessWidget {
         color: _fill(tokens),
         borderRadius: borderRadius,
         border: Border.all(color: surface.outline, width: surface.outlineWidth),
-        boxShadow: _hasShadow && !pressed
+        boxShadow: _hasShadow && !_pressed
             ? <BoxShadow>[
                 BoxShadow(
                   color: surface.shadow,
