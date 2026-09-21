@@ -15,3 +15,7 @@
 | 11 | 2026-09 | Three theme modes; glass via a single `DpSurface` renderer | Screens stay theme-agnostic | — |
 | 12 | 2026-09 | No dynamic (Material You) colour | Gender colours must stay stable | — |
 | 13 | 2026-09 | No analytics, no accounts | Privacy promise; audience | — |
+| 14 | 2026-09-21 | `sqlite3` 3.x instead of `sqlite3_flutter_libs` | `sqlite3_flutter_libs` is end-of-life; its own description says to move to `package:sqlite3` 3.x, which bundles the native library and is what drift 2.35 depends on | Never — but FTS5 + trigram availability must be asserted at runtime |
+| 15 | 2026-09-21 | Drop `custom_lint` | `riverpod_lint` 3.1.4+ is a native `analyzer_plugin` and no longer depends on custom_lint; the two cannot co-resolve (analyzer_plugin ^0.14 vs ^0.13) | If a future lint we want ships only as a custom_lint plugin |
+| 16 | 2026-09-21 | Take current majors for eight plugins ahead of the versions in tech-stack.md | `record`, `flutter_local_notifications`, `home_widget`, `workmanager`, `file_picker`, `share_plus`, `permission_handler`, `device_info_plus` and the riverpod/freezed generators had all moved a major since the table was written; running old majors on Flutter 3.47 is the larger risk | Per package, on its next major |
+| 17 | 2026-09-21 | Generated code is not committed | `getting-started.md` already runs `build_runner build -d` as a setup step; committing `*.g.dart` adds merge conflicts for no gain | If CI build time makes regeneration expensive |
