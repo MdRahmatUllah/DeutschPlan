@@ -411,6 +411,57 @@ void main() {
       );
     });
 
+    testWidgets('each kind draws the icon the artboard gives it', (
+      tester,
+    ) async {
+      // From the side-by-side with Foundations.html: the streak pill carries a
+      // flame, a selected filter a tick, and a web link an external-link mark.
+      for (final (chip, icon) in <(DpChip, IconData?)>[
+        (
+          const DpChip(label: '12', kind: DpChipKind.streak),
+          Icons.local_fire_department,
+        ),
+        (
+          const DpChip(label: 'All', kind: DpChipKind.filter, selected: true),
+          Icons.check,
+        ),
+        (const DpChip(label: 'All', kind: DpChipKind.filter), null),
+        (
+          const DpChip(label: 'Duden', kind: DpChipKind.webLink),
+          Icons.open_in_new,
+        ),
+        (const DpChip(label: 'A2.1'), null),
+      ]) {
+        await pump(tester, chip);
+        if (icon == null) {
+          expect(
+            find.descendant(
+              of: find.byType(DpChip),
+              matching: find.byType(Icon),
+            ),
+            findsNothing,
+            reason: '${chip.kind} should draw no icon',
+          );
+        } else {
+          expect(find.byIcon(icon), findsOneWidget, reason: '${chip.kind}');
+        }
+      }
+    });
+
+    testWidgets(
+      'the web-link mark trails its label, as the artboard draws it',
+      (tester) async {
+        await pump(
+          tester,
+          const DpChip(label: 'Duden', kind: DpChipKind.webLink),
+        );
+        expect(
+          tester.getCenter(find.byIcon(Icons.open_in_new)).dx,
+          greaterThan(tester.getCenter(find.text('Duden')).dx),
+        );
+      },
+    );
+
     testWidgets('a tappable chip fires and an untappable one has no gesture', (
       tester,
     ) async {

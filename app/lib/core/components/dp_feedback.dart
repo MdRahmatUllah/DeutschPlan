@@ -300,11 +300,23 @@ class DpVerdictRow extends StatelessWidget {
   /// "Correct", "Almost — watch the spelling: der Mietvertrag", "die, not der".
   final String message;
 
-  IconData get icon => switch (verdict) {
+  /// `correct` and `wrong` are a tick and a cross in the artboard, which
+  /// Material has. `almost` is the mathematical "approximately equal" sign, and
+  /// Material has no glyph for it — it renders as text instead of a near-miss
+  /// icon that means something else.
+  IconData? get icon => switch (verdict) {
     DpVerdict.correct => Icons.check,
-    DpVerdict.almost => Icons.drag_handle,
+    DpVerdict.almost => null,
     DpVerdict.wrongArticle || DpVerdict.wrong => Icons.close,
   };
+
+  /// The artboard's own mark for [DpVerdict.almost].
+  static const String almostGlyph = '≈';
+
+  /// All three marks are 18 in the artboard while the words beside them are 15.
+  /// They are marks, not text, so the glyph is sized like the icons rather than
+  /// taking whatever the type scale happens to offer.
+  static const double markSize = 18;
 
   Color colourFrom(DpPalette palette) => switch (verdict) {
     DpVerdict.correct => palette.correctText,
@@ -322,7 +334,17 @@ class DpVerdictRow extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Icon(icon, size: 18, color: colour),
+          if (icon != null)
+            Icon(icon, size: markSize, color: colour)
+          else
+            SizedBox(
+              width: markSize,
+              child: Text(
+                almostGlyph,
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: markSize, color: colour),
+              ),
+            ),
           SizedBox(width: tokens.spacing.sm),
           Expanded(
             child: DpText(

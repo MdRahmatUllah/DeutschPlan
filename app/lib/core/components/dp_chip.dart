@@ -51,7 +51,22 @@ class DpChip extends StatelessWidget {
   /// The dot on a status chip — Oat for To do, Sun for Learning, Lime for Done.
   final Color? statusColour;
 
+  /// Overrides the kind's own icon. Pass `SizedBox.shrink()` to remove it.
   final Widget? icon;
+
+  /// The icon the artboard draws for this kind, at the size it draws it: a
+  /// 16 dp flame on the streak pill, a 14 dp tick on a selected filter, a 14 dp
+  /// external-link mark on a web link.
+  ///
+  /// The size travels with the icon rather than being derived from the text
+  /// role — the two are unrelated, and deriving one from the other gave the
+  /// filter and web-link marks 16 instead of 14.
+  ({IconData icon, double size})? get defaultIcon => switch (kind) {
+    DpChipKind.streak => (icon: Icons.local_fire_department, size: 16),
+    DpChipKind.filter => selected ? (icon: Icons.check, size: 14) : null,
+    DpChipKind.webLink => (icon: Icons.open_in_new, size: 14),
+    DpChipKind.step || DpChipKind.status => null,
+  };
 
   /// Defaults to [label]. Set it where the label is an abbreviation a screen
   /// reader should expand, such as a step code.
@@ -89,6 +104,19 @@ class DpChip extends StatelessWidget {
 
     final radius = kind == DpChipKind.streak ? height / 2 : tokens.shape.chip;
 
+    final fallback = defaultIcon;
+    final glyph =
+        icon ??
+        (fallback == null
+            ? null
+            : Icon(
+                fallback.icon,
+                size: fallback.size,
+                color: tokens.color.ink,
+              ));
+    final leading = kind == DpChipKind.webLink ? null : glyph;
+    final trailing = kind == DpChipKind.webLink ? glyph : null;
+
     final chip = Container(
       height: height,
       padding: EdgeInsets.symmetric(horizontal: tokens.spacing.sm),
@@ -104,11 +132,16 @@ class DpChip extends StatelessWidget {
             _StatusDot(colour: statusColour!, ink: tokens.color.ink),
             SizedBox(width: tokens.spacing.xs + 2),
           ],
-          if (icon != null) ...<Widget>[
-            icon!,
+          if (leading != null) ...<Widget>[
+            leading,
             SizedBox(width: tokens.spacing.xs),
           ],
           DpText(label, role: role, weight: weight),
+          // The web-link mark trails its label, as the artboard draws it.
+          if (trailing != null) ...<Widget>[
+            SizedBox(width: tokens.spacing.xs),
+            trailing,
+          ],
         ],
       ),
     );

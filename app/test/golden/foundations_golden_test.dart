@@ -90,9 +90,20 @@ class _FoundationsGallery extends StatelessWidget {
                         role: DpTextRole.bodyLarge,
                       ),
                       SizedBox(height: tokens.spacing.md),
-                      DpSpeakerButton(
-                        onPressed: () {},
-                        semanticLabel: 'Pronounce die Rechnung',
+                      Row(
+                        children: <Widget>[
+                          DpSpeakerButton(
+                            onPressed: () {},
+                            semanticLabel: 'Pronounce die Rechnung',
+                          ),
+                          SizedBox(width: tokens.spacing.md),
+                          // The artboard shows idle beside playing.
+                          DpSpeakerButton(
+                            onPressed: () {},
+                            semanticLabel: 'Playing',
+                            state: DpSpeakerState.playing,
+                          ),
+                        ],
                       ),
                     ],
                   ),
