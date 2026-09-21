@@ -98,3 +98,20 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   generate: true
+
+  assets:
+    - assets/licences/
+
+  # Variable fonts: one file covers wght 100-900, so the whole type scale in
+  # docs/01-architecture/theming.md ships in three files instead of ten.
+  # Inter carries no Bangla glyphs - mixed strings resolve Bangla through the
+  # fontFamilyFallback in lib/core/typography/app_fonts.dart.
+  fonts:
+    - family: Inter
+      fonts:
+        - asset: assets/fonts/Inter-Variable.ttf
+        - asset: assets/fonts/Inter-Italic-Variable.ttf
+          style: italic
+    - family: Noto Sans Bengali
+      fonts:
+        - asset: assets/fonts/NotoSansBengali-Variable.ttf
