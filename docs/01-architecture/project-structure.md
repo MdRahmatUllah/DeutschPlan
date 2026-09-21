@@ -22,6 +22,7 @@ deutschplan/                        ← repository root
 └── app/                            ← Flutter project
     ├── pubspec.yaml
     ├── l10n.yaml · lib/l10n/*.arb  ← en, bn (German strings live in content, not ARB)
+    ├── drift_schemas/              ← one JSON fixture per schema version (committed)
     ├── assets/
     │   ├── db/content.db           ← copied from content/build by `make content`
     │   └── fonts/                  ← Inter, NotoSansBengali

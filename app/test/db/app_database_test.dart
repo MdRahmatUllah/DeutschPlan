@@ -268,6 +268,15 @@ void main() {
       );
     });
 
+    test('can be checked in bulk, which is what onUpgrade does', () async {
+      // onUpgrade runs this after every migration, because alterTable turns
+      // foreign keys off while it recreates a table. The statement is only
+      // reachable once a migration step exists, so this is where it is proved
+      // to parse and to read back.
+      final dangling = await db.customSelect('PRAGMA foreign_key_check').get();
+      expect(dangling, isEmpty);
+    });
+
     test('cascade, so deleting an attempt takes its answers with it', () async {
       await db.customStatement(
         'INSERT INTO exam_attempts (sublevel_code, seed, started_at) '
@@ -288,9 +297,9 @@ void main() {
   });
 
   test('bumping the schema version without a migration fails loudly', () async {
-    // drift's own default throws here. An empty onUpgrade would replace that
-    // with silence, and the first learner to update would open their existing
-    // file against the new schema.
+    // The generated migrationSteps() raises for a version it has no step for.
+    // An empty onUpgrade would swallow that, and the first learner to update
+    // would open their existing file against the new schema.
     final dir = Directory.systemTemp.createTempSync('deutschplan_upgrade');
     final file = File('${dir.path}/user.sqlite');
 
@@ -301,7 +310,7 @@ void main() {
     final v2 = _FutureSchema(DatabaseConnection(NativeDatabase(file)));
     await expectLater(
       v2.customSelect('SELECT 1').get(),
-      throwsA(isA<StateError>()),
+      throwsA(isA<ArgumentError>()),
     );
     await v2.close();
 
