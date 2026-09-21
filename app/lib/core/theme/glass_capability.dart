@@ -74,10 +74,14 @@ class GlassCapability extends ChangeNotifier {
     if (_frameBudgetMissed) GlassFallbackReason.frameBudget,
   };
 
-  /// Asks the platform whether it will blur, and whether the learner has asked
-  /// for less transparency. Safe to call when no native side is registered —
-  /// the defaults keep glass on rather than silently disabling it.
+  /// Starts listening for platform pushes and reads the current values.
+  ///
+  /// Both flags change while the app runs — battery saver flips Android's
+  /// cross-window blur, and the learner can turn Reduce Transparency on from
+  /// Settings without leaving the app — so a one-shot read at launch would make
+  /// DeutschPlan look like it ignores an accessibility setting.
   Future<void> queryPlatform() async {
+    _channel.setMethodCallHandler(_onPlatformPush);
     try {
       final result = await _channel.invokeMapMethod<String, dynamic>(
         'capabilities',
@@ -92,6 +96,26 @@ class GlassCapability extends ChangeNotifier {
       // Treat a failure to answer as "blur is fine"; a wrongly-opaque app is a
       // worse outcome than a blur that costs a little on an odd device.
     }
+  }
+
+  Future<dynamic> _onPlatformPush(MethodCall call) async {
+    if (call.method != 'capabilitiesChanged') return null;
+    final arguments = (call.arguments as Map?)?.cast<String, dynamic>();
+    if (arguments == null) return null;
+
+    var changed = false;
+    if (arguments['supportsBlur'] case final bool value
+        when value != _platformSupportsBlur) {
+      _platformSupportsBlur = value;
+      changed = true;
+    }
+    if (arguments['reduceTransparency'] case final bool value
+        when value != _reduceTransparency) {
+      _reduceTransparency = value;
+      changed = true;
+    }
+    if (changed) notifyListeners();
+    return null;
   }
 
   /// Watches real frame timings and gives up on blur after

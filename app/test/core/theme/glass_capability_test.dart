@@ -149,6 +149,72 @@ void main() {
       );
     });
 
+    test('a live push from the platform flips the capability', () async {
+      // Battery saver engaging, or Reduce Transparency switched on from
+      // Settings, must take effect without a relaunch.
+      messenger.setMockMethodCallHandler(
+        channel,
+        (call) async => <String, dynamic>{
+          'supportsBlur': true,
+          'reduceTransparency': false,
+        },
+      );
+
+      final capability = GlassCapability();
+      var notified = 0;
+      capability.addListener(() => notified++);
+      await capability.queryPlatform();
+      expect(capability.blurAllowed, isTrue);
+
+      Future<void> push(Map<String, dynamic> arguments) =>
+          messenger.handlePlatformMessage(
+            channel.name,
+            channel.codec.encodeMethodCall(
+              MethodCall('capabilitiesChanged', arguments),
+            ),
+            (_) {},
+          );
+
+      await push({'supportsBlur': false});
+      expect(capability.reasons, {GlassFallbackReason.platformBlurUnavailable});
+
+      await push({'reduceTransparency': true});
+      expect(capability.reasons, hasLength(2));
+
+      // Battery saver disengaging brings blur back — unlike the frame watchdog,
+      // the platform flags are not one-way.
+      await push({'supportsBlur': true, 'reduceTransparency': false});
+      expect(capability.blurAllowed, isTrue);
+      expect(notified, greaterThanOrEqualTo(3));
+    });
+
+    test('an unchanged push notifies nobody', () async {
+      messenger.setMockMethodCallHandler(
+        channel,
+        (call) async => <String, dynamic>{
+          'supportsBlur': true,
+          'reduceTransparency': false,
+        },
+      );
+      final capability = GlassCapability();
+      await capability.queryPlatform();
+
+      var notified = 0;
+      capability.addListener(() => notified++);
+      await messenger.handlePlatformMessage(
+        channel.name,
+        channel.codec.encodeMethodCall(
+          const MethodCall('capabilitiesChanged', {'supportsBlur': true}),
+        ),
+        (_) {},
+      );
+      expect(
+        notified,
+        0,
+        reason: 'a redundant push would rebuild every DpSurface in the tree',
+      );
+    });
+
     test('a native error leaves glass on', () async {
       messenger.setMockMethodCallHandler(
         channel,

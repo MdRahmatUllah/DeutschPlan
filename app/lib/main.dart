@@ -12,7 +12,10 @@ void main() {
 
   // Glass asks the platform whether it will blur, and watches real frame
   // timings so a struggling device drops to the opaque surface instead of
-  // stuttering. Both are cheap and neither blocks the first frame.
+  // stuttering. The query is deliberately not awaited: a channel round trip
+  // here would eat into the 500 ms warm-start budget in splash.md, at the cost
+  // of a frame or two of frosted glass on a device that cannot blur. It moves
+  // into bootstrap() in #66, which already runs before the first frame.
   final glass = GlassCapability()
     ..startFrameWatchdog()
     ..queryPlatform();
