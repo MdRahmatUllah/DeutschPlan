@@ -46,7 +46,7 @@ Glass has a dark variant (aurora at 35 %, smoked glass rgba(30,27,44,0.55)) chos
 Every card, sheet, header and tab bar is drawn by one widget, `DpSurface`, with a `kind` (`card`, `cardStrong`, `tint(color)`, `bar`). Its implementation switches on the mode:
 
 - **Light/Dark:** `DecoratedBox` with the token fill, 1.5 px outline and the hard offset shadow (3 px down-right; pressed = collapse + translate).
-- **Glass:** `GlassPanel` = `ClipRRect` → `BackdropFilter(blur)` → fill → 1 px border → top highlight; shadow 0/8/24 at 10 %. `GlassPanel` degrades to a 92 %-opaque tinted surface when: Android API < 31, the device missed the frame budget for 2 s, or the OS "reduce transparency" setting is on.
+- **Glass:** `GlassPanel` = `ClipRRect` → `BackdropFilter(blur)` → fill → 1 px border → top highlight; shadow 0/8/24 at 10 % (light) / 35 % black (dark). Light fills: card `rgba(255,255,255,0.55)` blur 24, cardStrong `rgba(255,255,255,0.72)` blur 32, border `rgba(255,255,255,0.65)`, highlight `inset 0 1px 0 rgba(255,255,255,0.9)` over a `rgba(255,255,255,0.35)`→transparent sheen. Dark fills: card `rgba(30,27,44,0.55)`, cardStrong `rgba(30,27,44,0.72)`, border `rgba(255,255,255,0.14)`, highlight at 25 %, sheen at 10 %, backdrop `#0E0C16`. `GlassPanel` degrades to a 92 %-opaque tinted surface when: Android API < 31, the device missed the frame budget for 2 s, or the OS "reduce transparency" setting is on.
 
 Because screens only use `DpSurface`, adding the glass mode did not change a single screen file. Keep it that way.
 
