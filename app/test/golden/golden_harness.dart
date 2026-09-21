@@ -19,6 +19,17 @@ import 'package:material_ui/material_ui.dart';
 ///
 /// which emits `test/golden/today_<mode>_<device>.png` for all six combinations.
 
+/// How long [GoldenTester.pumpGolden] waits for animations before giving up.
+const Duration settleTimeout = Duration(seconds: 10);
+
+/// Marks every golden test, so `make test` can leave them out.
+///
+/// Golden files are pixel comparisons and text rendering is not identical
+/// across platforms — hinting, subpixel positioning and antialiasing all
+/// differ. These are generated and verified on ONE platform; running them
+/// elsewhere produces diffs that are about the renderer, not the design.
+const String goldenTag = 'golden';
+
 /// The two frames `testing.md` names.
 enum GoldenDevice {
   /// The reference phone the artboards were drawn at.
@@ -50,6 +61,13 @@ enum GoldenMode {
 
 /// Wraps [child] in everything a screen needs: theme, tokens, localisations,
 /// glass capability and the platform chrome for the device.
+///
+/// Chrome defaults to Material because `testing.md` sizes the matrix as
+/// light/dark/glass × phone/tablet, with no platform axis. Pass [chrome] to
+/// render the Cupertino path — the design sets do ship ios-light and ios-dark,
+/// and #37 built that path — but whether iOS gets the full matrix, a phone-only
+/// pass, or only the screens whose chrome differs is a decision for #151, not
+/// something this default has already made.
 Widget goldenApp({
   required Widget child,
   required GoldenMode mode,
@@ -84,19 +102,25 @@ void goldenTest(
 }) {
   for (final mode in modes) {
     for (final device in devices) {
-      testWidgets('$name · ${mode.name} · ${device.name}', (tester) async {
-        await tester.pumpGolden(
-          builder: builder,
-          mode: mode,
-          device: device,
-          chrome: chrome,
-        );
+      testWidgets(
+        '$name · ${mode.name} · ${device.name}',
+        tags: <String>[goldenTag],
+        (tester) async {
+          await tester.pumpGolden(
+            builder: builder,
+            mode: mode,
+            device: device,
+            chrome: chrome,
+          );
 
-        await expectLater(
-          find.byType(MaterialApp),
-          matchesGoldenFile('goldens/${name}_${mode.name}_${device.name}.png'),
-        );
-      });
+          await expectLater(
+            find.byType(MaterialApp),
+            matchesGoldenFile(
+              'goldens/${name}_${mode.name}_${device.name}.png',
+            ),
+          );
+        },
+      );
     }
   }
 }
@@ -129,7 +153,14 @@ extension GoldenTester on WidgetTester {
     );
 
     // Settle the theme animation and any entrance motion, so two runs of the
-    // same screen produce the same pixels.
-    await pumpAndSettle();
+    // same screen produce the same pixels — but bounded. A repeating animation
+    // never settles, and an unbounded wait turns that into a stalled suite
+    // rather than a failure. AuroraBackdrop (#35) drifts on 18-24 s loops and
+    // must expose the same stillness it already needs for reduce-motion.
+    await pumpAndSettle(
+      const Duration(milliseconds: 100),
+      EnginePhase.sendSemanticsUpdate,
+      settleTimeout,
+    );
   }
 }

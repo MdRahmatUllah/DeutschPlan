@@ -32,8 +32,11 @@ gen: ## build_runner: riverpod, freezed, drift, go_router
 gen-watch: ## build_runner in watch mode
 	$(DART) dart run build_runner watch --delete-conflicting-outputs
 
-test: ## Unit, widget, db and golden tests
-	$(DART) flutter test
+test: ## Unit, widget and db tests. Goldens are separate - see below.
+	$(DART) flutter test --exclude-tags golden
+
+goldens-verify: ## Compare goldens. ONE platform only - see test/golden/README.md
+	$(DART) flutter test test/golden
 
 goldens: update-goldens ## Alias for update-goldens
 

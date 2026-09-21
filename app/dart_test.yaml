@@ -1,0 +1,7 @@
+# Test tags. `golden` marks the pixel comparisons, which are platform-specific:
+# text hinting, subpixel positioning and antialiasing differ between Windows,
+# macOS and Linux, so they are generated and verified on one platform only.
+# `make test` excludes them; `make goldens-verify` runs them.
+tags:
+  golden:
+    skip: false

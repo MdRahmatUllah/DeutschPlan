@@ -22,6 +22,24 @@ today_glass_phone.png   today_glass_tablet.png
 Narrow the matrix with `modes:` or `devices:` where a screen genuinely has no
 tablet layout — but say so in the test, because the default is all six.
 
+## Goldens run on one platform only
+
+Golden files are pixel comparisons, and text rendering is not identical across
+operating systems — hinting, subpixel positioning and antialiasing all differ.
+These were generated on **Windows**. A diff on another platform is about the
+renderer, not the design.
+
+So they carry the `golden` tag and are excluded from `make test`:
+
+```
+make test            # everything except goldens — runs anywhere
+make goldens-verify  # the pixel comparison — one platform
+```
+
+CI should run `goldens-verify` on a single fixed runner. If that runner is not
+Windows, regenerate once there and commit the result, rather than letting each
+contributor's platform rewrite them in turn.
+
 ## Regenerating
 
 ```
