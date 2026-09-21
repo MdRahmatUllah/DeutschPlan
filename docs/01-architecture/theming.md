@@ -60,7 +60,7 @@ Inter (Latin) and Noto Sans Bengali, bundled. Scale: display 40/48 · headline 2
 
 ### Shape, spacing, motion
 
-Radius: cards 16 (glass 20), buttons 12 (glass **14**), chips 8, sheets 24 (glass **26**). Spacing scale 4/8/12/16/24/32/48. Motion tokens: instant 100 ms, quick 200, standard 300, deliberate 400, celebrate 1200. Glass adds blur-in/out and the press light-sweep. All motion respects the OS reduce-motion setting.
+Radius: cards 16 (glass 20), buttons 12 (glass 16), chips 8, sheets 24 (glass 28). Spacing scale 4/8/12/16/24/32/48. Motion tokens: instant 100 ms, quick 200, standard 300, deliberate 400, celebrate 1200. Glass adds blur-in/out and the press light-sweep. All motion respects the OS reduce-motion setting.
 
 ## Platform adaptation
 

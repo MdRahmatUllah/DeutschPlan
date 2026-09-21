@@ -344,7 +344,9 @@ class DpSurfaceTokens {
     muted: Color(0x59FFFFFF), // white at 35 %
     outline: Color(0xA6FFFFFF), // white at 65 %
     outlineWidth: 1,
-    strongOutlineWidth: 1,
+    // Buttons stay solid under glass so calls to action never blur; the
+    // artboard's primary CTA is `background:#00C2B2; border:none`.
+    strongOutlineWidth: 0,
     shadow: Color(0x1A15121F), // ink at 10 %
     shadowOffset: Offset(0, 8),
     shadowBlur: 24,
@@ -364,7 +366,7 @@ class DpSurfaceTokens {
     muted: Color(0x1AFFFFFF),
     outline: Color(0x24FFFFFF), // white at 14 %
     outlineWidth: 1,
-    strongOutlineWidth: 1,
+    strongOutlineWidth: 0, // solid buttons, as in glass light
     shadow: Color(0x59000000), // black at 35 %
     shadowOffset: Offset(0, 8),
     shadowBlur: 24,
@@ -499,13 +501,13 @@ class DpShapeTokens {
     sheet: 24,
   );
 
-  /// Glass rounds everything more. theming.md says buttons 16 and sheets 28;
-  /// the Aurora Glass artboards draw 14 and 26, and the artboards win.
+  /// Glass rounds everything more, per theming.md and the Aurora Glass
+  /// artboards: the primary CTA is drawn at 16 and sheet tops at 28.
   static const DpShapeTokens glass = DpShapeTokens(
     card: 20,
-    button: 14,
+    button: 16,
     chip: 8,
-    sheet: 26,
+    sheet: 28,
   );
 
   final double card;

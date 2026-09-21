@@ -54,6 +54,7 @@ void main() {
 
     group('$name surfaces match the Aurora Glass artboard', () {
       late String squashed;
+      late String raw;
       late List<(int, int, int, double)> declared;
 
       setUpAll(() {
@@ -63,7 +64,7 @@ void main() {
           isTrue,
           reason: 'the $name Foundations artboard moved — see docs/README.md',
         );
-        final raw = file.readAsStringSync().toLowerCase();
+        raw = file.readAsStringSync().toLowerCase();
         squashed = raw.replaceAll(' ', '');
         declared = parseRgba(raw);
       });
@@ -75,6 +76,7 @@ void main() {
         'highlight': surface.highlight,
         'sheen': surface.sheen,
         'shadow': surface.shadow,
+        'muted': surface.muted,
       };
 
       fills.forEach((label, colour) {
@@ -102,19 +104,61 @@ void main() {
         expect(paints(declared, surface.shadow), isTrue);
       });
 
-      test('radii are cards 20, buttons 14, chips 8, sheets 26', () {
+      test('radii come off the real elements, not from anywhere in the file', () {
         final shape = spec.tokens.shape;
         expect(
           [shape.card, shape.button, shape.chip, shape.sheet],
-          <double>[20, 14, 8, 26],
+          <double>[20, 16, 8, 28],
         );
-        expect(squashed, contains('border-radius:20px'));
-        expect(squashed, contains('border-radius:14px'));
+
+        // Searching the whole artboard for "border-radius:16px" would match a
+        // chip, a swatch or a badge just as happily as a button. Pull the
+        // primary call-to-action out by its solid brand fill and measure it.
+        final primaryHex =
+            'background:'
+            '#${(spec.tokens.color.primary.toARGB32() & 0xFFFFFF).toRadixString(16).padLeft(6, '0')}';
+        final primary = RegExp(r'<button[^>]*style="([^"]*)"')
+            .allMatches(raw)
+            .map((m) => m[1]!)
+            .firstWhere(
+              (style) => style.contains(primaryHex),
+              orElse: () => '',
+            );
+
+        expect(
+          primary,
+          isNotEmpty,
+          reason: 'no solid Lagoon button found in the $name artboard',
+        );
+        expect(
+          primary,
+          contains('border-radius:${shape.button.toInt()}px'),
+          reason: 'the primary CTA is not drawn at ${shape.button.toInt()} px',
+        );
+        expect(
+          primary.contains('backdrop-filter'),
+          isFalse,
+          reason:
+              'theming.md: buttons stay solid so calls to action never blur',
+        );
       });
 
-      test('the outline is 1 px, not the 1.5/2 px of the solid modes', () {
+      test('the backdrop the aurora drifts across is the artboard colour', () {
+        // paper is opaque, so it is a hex rather than an rgba fill.
+        final hex =
+            '#${(surface.paper.toARGB32() & 0xFFFFFF).toRadixString(16).padLeft(6, '0')}';
+        expect(
+          raw,
+          contains(hex),
+          reason: 'backdrop $hex is not painted in the $name artboard',
+        );
+      });
+
+      test('the outline is 1 px, and solid buttons draw none', () {
         expect(surface.outlineWidth, 1);
-        expect(surface.strongOutlineWidth, 1);
+        // theming.md: buttons stay solid under glass, so they carry no outline
+        // at all — unlike the 2 px ink border of Paper & Ink / Night Ink.
+        expect(surface.strongOutlineWidth, 0);
         expect(squashed, contains('1pxsolidrgba('));
         expect(paints(declared, surface.outline), isTrue);
       });
