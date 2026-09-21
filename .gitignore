@@ -38,6 +38,12 @@ migrate_working_dir/
 build/
 coverage/
 
+# build_runner output: getting-started.md runs `dart run build_runner build -d`
+# as a setup step, so generated code is rebuilt rather than committed
+*.g.dart
+*.freezed.dart
+*.drift.dart
+
 # Symbolication related
 app.*.symbols
 

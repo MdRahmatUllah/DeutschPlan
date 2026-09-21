@@ -1,6 +1,6 @@
 # Tech stack and package decisions
 
-Verified against pub.dev and the Flutter release notes in September 2026. Pin the versions below in `pubspec.yaml`; upgrade deliberately, one package at a time, with a note in `05-dev-guide/decisions.md`.
+Re-verified against pub.dev on 21 September 2026 while resolving the real dependency set (#20). The versions below are what `app/pubspec.yaml` pins and what the lockfile resolves. Upgrade deliberately, one package at a time, with a note in `05-dev-guide/decisions.md`.
 
 ## SDK
 
@@ -16,8 +16,8 @@ Verified against pub.dev and the Flutter release notes in September 2026. Pin th
 Flutter 3.47 moved Material and Cupertino into `package:material_ui` and `package:cupertino_ui` (both 1.0.x). The in-SDK imports are deprecated from the November 2026 release and removed in 2027. **This project starts on the standalone packages**:
 
 ```yaml
-material_ui: ^1.0.1
-cupertino_ui: ^1.0.0
+material_ui: ^1.2.0
+cupertino_ui: ^1.0.2
 ```
 
 Import `package:material_ui/material_ui.dart` and `package:cupertino_ui/cupertino_ui.dart`; never `package:flutter/material.dart`. If a dependency still uses the old imports, enable `MaterialUiCompatibilityBridge` at the root (documented in the 3.47 release notes) and file an issue upstream; remove the bridge as soon as the dependency migrates.
@@ -26,29 +26,29 @@ Import `package:material_ui/material_ui.dart` and `package:cupertino_ui/cupertin
 
 | Concern | Package | Version | Rationale |
 | --- | --- | --- | --- |
-| State / DI | `flutter_riverpod` + `riverpod_annotation` + `riverpod_generator` | 3.4.x / 3.x | Riverpod 3 is stable; codegen gives typed, auto-disposed providers and `Notifier`/`AsyncNotifier`; offline-first fits its caching model. |
+| State / DI | `flutter_riverpod` + `riverpod_annotation` + `riverpod_generator` | 3.4.x / 4.x | Riverpod 3 is stable; codegen gives typed, auto-disposed providers and `Notifier`/`AsyncNotifier`; offline-first fits its caching model. |
 | Routing | `go_router` | 18.x | `StatefulShellRoute.indexedStack` for the four tabs with preserved state; typed routes via `go_router_builder`; deep links. |
 | Database | `drift` + `drift_flutter` + `drift_dev` | 2.35.x | Type-safe SQL, migrations, reactive `Stream` queries, background isolate, **FTS5 helpers in the Dart API** (2.35+). Runs on `sqlite3` 3.x. |
-| SQLite binaries | `sqlite3_flutter_libs` | latest 0.5.x compatible with drift 2.35 | Ships a current SQLite build with FTS5 (incl. trigram tokenizer) on Android/iOS so the same DB features exist on both platforms. |
-| Immutable models | `freezed` + `freezed_annotation` + `json_serializable` | 3.x / 6.x | Data classes, unions for card kinds and exam sections, JSON for export/import. |
+| SQLite binaries | `sqlite3` | 3.6.x | **Replaces `sqlite3_flutter_libs`, which is end-of-life** ("Not used anymore, update to version 3.x of package:sqlite3 instead"). `sqlite3` 3.x bundles the native library itself and is what drift 2.35 already depends on. FTS5 with the trigram tokenizer must be asserted at runtime — see `02-data/content-database.md`. |
+| Immutable models | `freezed` + `freezed_annotation` + `json_serializable` | 4.x / 3.x / 6.x | Data classes, unions for card kinds and exam sections, JSON for export/import. |
 | Localisation | `flutter_localizations` + `intl` | SDK / 0.20.x | ARB files for en/bn; German date on Today. |
 | TTS (system) | `flutter_tts` | 4.x | Zero-download fallback voice. |
 | TTS (on-device model) | `flutter_onnxruntime` | 1.8.x | Native ONNX Runtime wrapper (ORT 1.22+), 16 KB-page compliant on Android, SPM on iOS. Runs Supertonic 3. |
 | Translation model | `llamadart` | latest 0.x | llama.cpp GGUF inference on **both** Android and iOS via native assets; `llama_cpp_flutter` is Apple-only, so it is not used. Loads Hy-MT1.5-1.8B GGUF. |
 | Audio playback | `just_audio` | 0.10.x | Plays synthesised WAV/PCM and recorded speaking answers; one shared player. |
-| Audio recording | `record` | 6.x | Speaking section recorder (AAC/M4A), mic permission handling. |
+| Audio recording | `record` | 7.x | Speaking section recorder (AAC/M4A), mic permission handling. |
 | Downloads | `background_downloader` | 9.x | Resumable, background, Wi-Fi-only model downloads with progress notifications on both platforms. |
-| Notifications | `flutter_local_notifications` | 19.x | Daily reminder (inexact alarm on Android, UNUserNotificationCenter on iOS). |
-| Home-screen widget | `home_widget` | 0.8.x | Bridges to Glance (Android) and WidgetKit (iOS) via a shared JSON snapshot. |
-| Background work | `workmanager` | 0.9.x | Nightly plan pre-generation and widget refresh on Android; iOS uses BGTaskScheduler through the same package. |
-| Files & sharing | `path_provider`, `file_picker`, `share_plus` | 2.x / 10.x / 11.x | Export/import JSON. |
+| Notifications | `flutter_local_notifications` | 22.x | Daily reminder (inexact alarm on Android, UNUserNotificationCenter on iOS). |
+| Home-screen widget | `home_widget` | 0.10.x | Bridges to Glance (Android) and WidgetKit (iOS) via a shared JSON snapshot. |
+| Background work | `workmanager` | 0.10.x | Nightly plan pre-generation and widget refresh on Android; iOS uses BGTaskScheduler through the same package. |
+| Files & sharing | `path_provider`, `file_picker`, `share_plus` | 2.x / 13.x / 13.x | Export/import JSON. |
 | Web links | `flutter_custom_tabs` | 2.x | Chrome Custom Tabs / SFSafariViewController for Duden, DWDS, Wiktionary, Linguee, Google. |
 | Animation | `flutter_animate` | 4.x | Declarative micro-animations (reveal, shake, ring fill). Confetti is a custom `CustomPainter`. |
 | Charts | `fl_chart` | 1.x | Activity bars, retention line on Progress. |
-| Permissions | `permission_handler` | 12.x | Mic and notification permissions with rationale. |
-| Device info | `device_info_plus` | 11.x | Glass fallback decision (API level, low-end detection). |
-| Lints | `flutter_lints` + `riverpod_lint` + `custom_lint` | latest | Enforced in CI. |
-| Tests | `flutter_test`, `mocktail`, `drift` in-memory DB, `golden_toolkit` (or `alchemist`) | latest | Unit, widget, golden (three themes) and integration tests. |
+| Permissions | `permission_handler` | 13.x | Mic and notification permissions with rationale. |
+| Device info | `device_info_plus` | 13.x | Glass fallback decision (API level, low-end detection). |
+| Lints | `flutter_lints` + `riverpod_lint` | 6.x / 3.1.x | Enforced in CI. `custom_lint` is **no longer used**: riverpod_lint 3.1.4+ is a native `analyzer_plugin` and the two cannot co-resolve. |
+| Tests | `flutter_test`, `integration_test`, `mocktail`, `drift` in-memory DB, `alchemist` | latest | Unit, widget, golden (three themes) and integration tests. |
 
 ## Rejected alternatives (and why)
 

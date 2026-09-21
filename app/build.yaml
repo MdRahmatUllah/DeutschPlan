@@ -1,0 +1,18 @@
+# Code generation. Run with `dart run build_runner build -d` (or `make gen`).
+targets:
+  $default:
+    builders:
+      # Riverpod providers — docs/01-architecture/state-management.md requires
+      # codegen only; hand-written providers are rejected by riverpod_lint.
+      riverpod_generator:
+        options:
+          # Providers auto-dispose unless they opt in with @Riverpod(keepAlive: true).
+          provider_name_suffix: Provider
+
+      # Immutable models and JSON — docs/05-dev-guide/coding-standards.md.
+      json_serializable:
+        options:
+          explicit_to_json: true
+          field_rename: snake
+          create_factory: true
+          create_to_json: true
