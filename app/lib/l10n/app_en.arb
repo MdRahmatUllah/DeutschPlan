@@ -21,6 +21,15 @@
     "description": "Confirms a value and closes a picker. Used on the iOS time wheel in Reminder & days and onboarding page 5."
   },
 
+  "umlautLongPressHint": "{key}, long press for {capital}",
+  "@umlautLongPressHint": {
+    "description": "Screen-reader label for the sharp-s key on the umlaut row. The capital form has no key on any keyboard, so the long press is the only way to reach it and has to be announced.",
+    "placeholders": {
+      "key": { "type": "String", "example": "ß" },
+      "capital": { "type": "String", "example": "ẞ" }
+    }
+  },
+
   "ratingAgain": "Again",
   "@ratingAgain": {
     "description": "FSRS rating 1 on the study card's rating bar. The learner did not recall the word. BR-FSRS-02 fixes the order Again/Hard/Good/Easy."

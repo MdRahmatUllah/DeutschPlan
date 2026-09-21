@@ -5,6 +5,7 @@
   "loadingCourse": "আপনার কোর্স প্রস্তুত করা হচ্ছে",
   "retry": "আবার চেষ্টা করুন",
   "done": "হয়েছে",
+  "umlautLongPressHint": "{key}, {capital} এর জন্য চেপে ধরুন",
   "ratingAgain": "আবার",
   "ratingHard": "কঠিন",
   "ratingGood": "ভালো",
