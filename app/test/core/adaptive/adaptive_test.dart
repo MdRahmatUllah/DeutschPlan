@@ -173,6 +173,66 @@ void main() {
       );
     });
 
+    testWidgets('a pushed route gets a back button without asking', (
+      tester,
+    ) async {
+      // navigation.md has around twenty pushed routes. If each had to supply
+      // its own, the two platform treatments would be re-implemented twenty
+      // times and chrome would be back inside the screens.
+      for (final chrome in AdaptiveChrome.values) {
+        await tester.pumpWidget(
+          MaterialApp(
+            // A fresh Navigator each iteration: otherwise the route pushed on
+            // the first pass is still on top and 'Open' is no longer findable.
+            key: ValueKey(chrome),
+            theme: AppTheme.light(),
+            home: AdaptiveChromeScope(
+              chrome: chrome,
+              child: Builder(
+                builder: (context) => Scaffold(
+                  body: TextButton(
+                    onPressed: () => Navigator.of(context).push(
+                      MaterialPageRoute<void>(
+                        builder: (_) => const AdaptiveScaffold(
+                          title: 'Backlog',
+                          body: SizedBox.shrink(),
+                        ),
+                      ),
+                    ),
+                    child: const Text('Open'),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
+        await tester.tap(find.text('Open'));
+        await tester.pumpAndSettle();
+
+        expect(
+          find.byType(AdaptiveBackButton),
+          findsOneWidget,
+          reason: 'no back affordance in $chrome',
+        );
+        expect(
+          tester.getSize(find.byType(AdaptiveBackButton)).height,
+          greaterThanOrEqualTo(44),
+          reason: 'the back button must clear the minimum tap target',
+        );
+      }
+    });
+
+    testWidgets('a root route gets no back button', (tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: AppTheme.light(),
+          home: const AdaptiveScaffold(title: 'Today', body: SizedBox.shrink()),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(find.byType(AdaptiveBackButton), findsNothing);
+    });
+
     testWidgets('the background is paper, never a raw colour', (tester) async {
       await tester.pumpWidget(
         MaterialApp(
@@ -193,7 +253,11 @@ void main() {
         await pump(
           tester,
           AdaptiveChrome.cupertino,
-          AdaptiveSwitch(value: true, onChanged: (_) {}),
+          AdaptiveSwitch(
+            value: true,
+            onChanged: (_) {},
+            semanticLabel: 'Daily reminder',
+          ),
         );
         expect(find.byType(cupertino.CupertinoSwitch), findsOneWidget);
         expect(find.byType(Switch), findsNothing);
@@ -201,7 +265,11 @@ void main() {
         await pump(
           tester,
           AdaptiveChrome.material,
-          AdaptiveSwitch(value: true, onChanged: (_) {}),
+          AdaptiveSwitch(
+            value: true,
+            onChanged: (_) {},
+            semanticLabel: 'Daily reminder',
+          ),
         );
         expect(find.byType(Switch), findsOneWidget);
         expect(find.byType(cupertino.CupertinoSwitch), findsNothing);
@@ -212,7 +280,11 @@ void main() {
       await pump(
         tester,
         AdaptiveChrome.material,
-        AdaptiveSwitch(value: true, onChanged: (_) {}),
+        AdaptiveSwitch(
+          value: true,
+          onChanged: (_) {},
+          semanticLabel: 'Daily reminder',
+        ),
       );
       expect(
         tester.widget<Switch>(find.byType(Switch)).activeTrackColor,
@@ -222,7 +294,11 @@ void main() {
       await pump(
         tester,
         AdaptiveChrome.cupertino,
-        AdaptiveSwitch(value: true, onChanged: (_) {}),
+        AdaptiveSwitch(
+          value: true,
+          onChanged: (_) {},
+          semanticLabel: 'Daily reminder',
+        ),
       );
       expect(
         tester
@@ -242,7 +318,11 @@ void main() {
       await pump(
         tester,
         AdaptiveChrome.material,
-        AdaptiveSwitch(value: true, onChanged: (_) {}),
+        AdaptiveSwitch(
+          value: true,
+          onChanged: (_) {},
+          semanticLabel: 'Daily reminder',
+        ),
       );
       final control = tester.widget<Switch>(find.byType(Switch));
       expect(control.trackOutlineWidth!.resolve(<WidgetState>{}), 2);
@@ -252,12 +332,66 @@ void main() {
       );
     });
 
+    testWidgets('the tap target clears 48 dp even though the track is smaller', (
+      tester,
+    ) async {
+      // The artboard track is 52x32 / 51x31; the widget is padded out to a tap
+      // target, which is what accessibility-performance.md actually requires.
+      for (final chrome in AdaptiveChrome.values) {
+        await pump(
+          tester,
+          chrome,
+          AdaptiveSwitch(
+            value: true,
+            onChanged: (_) {},
+            semanticLabel: 'Daily reminder',
+          ),
+        );
+        final size = tester.getSize(find.byType(AdaptiveSwitch));
+        expect(
+          size.height,
+          greaterThanOrEqualTo(
+            chrome == AdaptiveChrome.cupertino
+                ? 39
+                : AdaptiveSwitch.minimumTapTarget,
+          ),
+          reason: 'tap target too small in $chrome',
+        );
+        expect(
+          size.height,
+          greaterThan(
+            chrome == AdaptiveChrome.cupertino
+                ? AdaptiveSwitch.cupertinoTrack.height
+                : AdaptiveSwitch.materialTrack.height,
+          ),
+          reason: 'the widget must be larger than the track it draws',
+        );
+      }
+    });
+
+    testWidgets('the semantic label reaches the tree', (tester) async {
+      await pump(
+        tester,
+        AdaptiveChrome.material,
+        AdaptiveSwitch(
+          value: true,
+          onChanged: (_) {},
+          semanticLabel: 'Daily reminder',
+        ),
+      );
+      expect(find.bySemanticsLabel('Daily reminder'), findsOneWidget);
+    });
+
     testWidgets('a null onChanged disables it in both chromes', (tester) async {
       for (final chrome in AdaptiveChrome.values) {
         await pump(
           tester,
           chrome,
-          const AdaptiveSwitch(value: false, onChanged: null),
+          const AdaptiveSwitch(
+            value: false,
+            onChanged: null,
+            semanticLabel: 'Daily reminder',
+          ),
         );
         expect(tester.takeException(), isNull);
       }

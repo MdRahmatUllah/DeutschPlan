@@ -78,6 +78,17 @@ class AdaptiveScaffold extends StatelessWidget {
   static const double materialBarHeight = 56;
   static const double cupertinoBarHeight = 44;
 
+  /// The back affordance, supplied by default so ~20 pushed routes do not each
+  /// rebuild it — and so the two platform treatments the artboards draw (an
+  /// Android chevron, an iOS chevron with a 17 pt label) stay in one place.
+  static Widget? _defaultBack(BuildContext context) {
+    final route = ModalRoute.of(context);
+    if (route == null || !route.canPop) return null;
+    return AdaptiveBackButton(
+      onPressed: () => Navigator.of(context).maybePop(),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final tokens = context.tokens;
@@ -101,6 +112,7 @@ class AdaptiveScaffold extends StatelessWidget {
   Widget _bar(BuildContext context) {
     final cupertinoChrome = context.isCupertino;
     final height = cupertinoChrome ? cupertinoBarHeight : materialBarHeight;
+    final back = leading ?? _defaultBack(context);
 
     final titleWidget = title == null
         ? const SizedBox.shrink()
@@ -111,7 +123,7 @@ class AdaptiveScaffold extends StatelessWidget {
         height: height,
         child: Row(
           children: <Widget>[
-            if (leading != null) leading! else const SizedBox(width: 8),
+            if (back != null) back else const SizedBox(width: 8),
             const SizedBox(width: 4),
             Expanded(child: titleWidget),
             ...actions,
@@ -133,7 +145,7 @@ class AdaptiveScaffold extends StatelessWidget {
             left: 0,
             top: 0,
             bottom: 0,
-            child: leading ?? const SizedBox.shrink(),
+            child: back ?? const SizedBox.shrink(),
           ),
           Positioned(
             right: 0,
@@ -147,24 +159,89 @@ class AdaptiveScaffold extends StatelessWidget {
   }
 }
 
+/// The back affordance, in whichever treatment the platform draws.
+///
+/// Android is a chevron alone; iOS is a chevron with the 17 pt label the
+/// artboards show. Both are 44 pt wide, which clears the minimum tap target.
+class AdaptiveBackButton extends StatelessWidget {
+  const AdaptiveBackButton({required this.onPressed, super.key, this.label});
+
+  final VoidCallback onPressed;
+
+  /// The iOS label. Android ignores it — Material back buttons carry no text.
+  final String? label;
+
+  @override
+  Widget build(BuildContext context) {
+    final tokens = context.tokens;
+    final cupertinoChrome = context.isCupertino;
+
+    return Semantics(
+      button: true,
+      label: label,
+      child: SizedBox(
+        height: 44,
+        child: TextButton(
+          onPressed: onPressed,
+          style: TextButton.styleFrom(
+            foregroundColor: tokens.color.link,
+            padding: EdgeInsets.symmetric(horizontal: cupertinoChrome ? 8 : 12),
+            minimumSize: const Size(44, 44),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Icon(
+                cupertinoChrome
+                    ? cupertino.CupertinoIcons.back
+                    : Icons.arrow_back,
+                color: tokens.color.link,
+              ),
+              if (cupertinoChrome && label != null) ...<Widget>[
+                const SizedBox(width: 2),
+                DpText(
+                  label!,
+                  role: DpTextRole.bodyLarge,
+                  color: tokens.color.link,
+                ),
+              ],
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 /// The on/off control. Lagoon when on in both chromes; the sizes differ.
 class AdaptiveSwitch extends StatelessWidget {
   const AdaptiveSwitch({
     required this.value,
     required this.onChanged,
+    required this.semanticLabel,
     super.key,
-    this.semanticLabel,
   });
 
   final bool value;
   final ValueChanged<bool>? onChanged;
-  final String? semanticLabel;
 
-  /// From the artboards: Android 52×32 with a 2 px ink border, iOS 51×31 with
-  /// none. The border is what makes the Android switch look like Paper & Ink
-  /// rather than stock Material.
-  static const Size materialSize = Size(52, 32);
-  static const Size cupertinoSize = Size(51, 31);
+  /// Required, not optional. accessibility-performance.md: "every control
+  /// labelled". Settings alone carries eight switches; an optional label is
+  /// eight chances to ship one a screen reader announces as just "switch, on".
+  final String semanticLabel;
+
+  /// The visual TRACK, as the artboards draw it: Android 52×32 with a 2 px ink
+  /// border, iOS 51×31 with none. The border is what makes the Android switch
+  /// read as Paper & Ink rather than stock Material.
+  ///
+  /// The widget itself is larger, and deliberately so — Material pads the track
+  /// out to a 48 dp tap target and Cupertino to 39 pt, which is what
+  /// accessibility-performance.md asks for with "targets >= 48 dp / 44 pt".
+  static const Size materialTrack = Size(52, 32);
+  static const Size cupertinoTrack = Size(51, 31);
+
+  /// The smallest tap target accessibility-performance.md allows.
+  static const double minimumTapTarget = 48;
 
   @override
   Widget build(BuildContext context) {
@@ -247,10 +324,13 @@ class AdaptiveSegmented<T extends Object> extends StatelessWidget {
 abstract final class Adaptive {
   /// A bottom sheet. Sheets use `cardStrong`, and under glass they blur over
   /// the scrim rather than over other glass.
+  ///
+  /// Note for #90: `showCupertinoModalPopup` has no drag-to-dismiss, so
+  /// FR-T3-03 ("dismissing the sheet by dragging down behaves as *Done for
+  /// now*") needs a drag handle on iOS.
   static Future<T?> showSheet<T>({
     required BuildContext context,
     required WidgetBuilder builder,
-    bool isScrollControlled = true,
   }) {
     final tokens = context.tokens;
     final chrome = context.chrome;
@@ -270,7 +350,7 @@ abstract final class Adaptive {
 
     return showModalBottomSheet<T>(
       context: context,
-      isScrollControlled: isScrollControlled,
+      isScrollControlled: true,
       // The sheet's own surface is the DpSurface inside; Material must not
       // paint one behind it, or the glass panel sits on a solid slab.
       // Fully transparent is the absence of a colour, not a token.
