@@ -1,12 +1,11 @@
 # user.db — learner data (on device, writable)
 
-Created on first launch from `assets/db/user_schema.sql` (the authoritative DDL) and mirrored by drift table classes so queries are typed. Lives in app-support storage; never leaves the device except through the learner's own export.
+Created on first launch from `lib/data/db/user_schema.drift`, which is the authoritative DDL *and* the file drift generates the typed table classes from — one source, so the schema and the Dart cannot drift apart (ADR 22). It is ordinary SQL; anything wanting the raw DDL can read it. Lives in app-support storage; never leaves the device except through the learner's own export.
 
 ## Tables
 
 | Table | Purpose | Key rules |
 | --- | --- | --- |
-| `schema_version` | migration bookkeeping | drift `MigrationStrategy` bumps it |
 | `settings` (key, value) | all preferences | see keys below |
 | `enrollments` (sublevel_code PK, started_on, daily_new, study_days_mask, completed_on) | steps started | one row with `completed_on IS NULL` = active step |
 | `word_state` (word_uid PK, status, introduced_on, due, stability, difficulty, reps, lapses, fsrs_state, last_review, card_mode, times_logged, note) | per-word learning state | `card_mode`: `plain` or `cloze`; status per BR-STATUS |
@@ -54,7 +53,7 @@ Created on first launch from `assets/db/user_schema.sql` (the authoritative DDL)
 
 ## Migrations
 
-Schema version lives in `schema_version` and in drift's `schemaVersion`. Every change ships a migration step in `lib/data/db/migrations.dart` and a test in `test/db/migration_test.dart` that opens a fixture of each previous version. Never drop columns with data; add nullable columns or new tables.
+The schema version lives in SQLite's own `PRAGMA user_version`, which drift writes and reads; `AppDatabase.fileSchemaVersion()` reads it back and a test asserts it matches `schemaVersion`. There is no `schema_version` table — it would be a hand-kept second copy of one number, and drift reserves the name (ADR 23). Every change ships a migration step in `lib/data/db/migrations.dart` and a test in `test/db/migration_test.dart` that opens a fixture of each previous version. Never drop columns with data; add nullable columns or new tables.
 
 ## Transactions
 
