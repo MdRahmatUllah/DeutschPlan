@@ -313,6 +313,11 @@ class DpVerdictRow extends StatelessWidget {
   /// The artboard's own mark for [DpVerdict.almost].
   static const String almostGlyph = '≈';
 
+  /// All three marks are 18 in the artboard while the words beside them are 15.
+  /// They are marks, not text, so the glyph is sized like the icons rather than
+  /// taking whatever the type scale happens to offer.
+  static const double markSize = 18;
+
   Color colourFrom(DpPalette palette) => switch (verdict) {
     DpVerdict.correct => palette.correctText,
     DpVerdict.almost => palette.almostText,
@@ -330,13 +335,15 @@ class DpVerdictRow extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           if (icon != null)
-            Icon(icon, size: 18, color: colour)
+            Icon(icon, size: markSize, color: colour)
           else
-            DpText(
-              almostGlyph,
-              role: DpTextRole.bodyLarge,
-              color: colour,
-              weight: 600,
+            SizedBox(
+              width: markSize,
+              child: Text(
+                almostGlyph,
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: markSize, color: colour),
+              ),
             ),
           SizedBox(width: tokens.spacing.sm),
           Expanded(

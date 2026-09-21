@@ -274,6 +274,33 @@ void main() {
       }
     });
 
+    testWidgets('all three marks are the same size, and larger than the words', (
+      tester,
+    ) async {
+      // The artboard draws every mark at 18 while the words beside them are 15.
+      for (final verdict in DpVerdict.values) {
+        await pump(tester, DpVerdictRow(verdict: verdict, message: 'x'));
+        if (verdict == DpVerdict.almost) {
+          expect(
+            tester
+                .widget<Text>(find.text(DpVerdictRow.almostGlyph))
+                .style!
+                .fontSize,
+            DpVerdictRow.markSize,
+          );
+        } else {
+          expect(
+            tester.widget<Icon>(find.byType(Icon)).size,
+            DpVerdictRow.markSize,
+          );
+        }
+      }
+      expect(
+        DpVerdictRow.markSize,
+        greaterThan(DpTypeTokens.defaults.body.size),
+      );
+    });
+
     test('a wrong article is styled as wrong, and says which', () {
       // BR-ANS-02: it counts as wrong for scoring, but the feedback names the
       // article — so it shares the colour and differs in the message.

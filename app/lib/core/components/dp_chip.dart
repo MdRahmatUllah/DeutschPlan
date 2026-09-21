@@ -54,13 +54,17 @@ class DpChip extends StatelessWidget {
   /// Overrides the kind's own icon. Pass `SizedBox.shrink()` to remove it.
   final Widget? icon;
 
-  /// The icon the artboard draws for this kind: a flame on the streak pill, a
-  /// tick on a selected filter, an external-link mark on a web link. They are
-  /// part of the chip rather than something every call site remembers.
-  IconData? get defaultIcon => switch (kind) {
-    DpChipKind.streak => Icons.local_fire_department,
-    DpChipKind.filter => selected ? Icons.check : null,
-    DpChipKind.webLink => Icons.open_in_new,
+  /// The icon the artboard draws for this kind, at the size it draws it: a
+  /// 16 dp flame on the streak pill, a 14 dp tick on a selected filter, a 14 dp
+  /// external-link mark on a web link.
+  ///
+  /// The size travels with the icon rather than being derived from the text
+  /// role — the two are unrelated, and deriving one from the other gave the
+  /// filter and web-link marks 16 instead of 14.
+  ({IconData icon, double size})? get defaultIcon => switch (kind) {
+    DpChipKind.streak => (icon: Icons.local_fire_department, size: 16),
+    DpChipKind.filter => selected ? (icon: Icons.check, size: 14) : null,
+    DpChipKind.webLink => (icon: Icons.open_in_new, size: 14),
     DpChipKind.step || DpChipKind.status => null,
   };
 
@@ -100,13 +104,14 @@ class DpChip extends StatelessWidget {
 
     final radius = kind == DpChipKind.streak ? height / 2 : tokens.shape.chip;
 
+    final fallback = defaultIcon;
     final glyph =
         icon ??
-        (defaultIcon == null
+        (fallback == null
             ? null
             : Icon(
-                defaultIcon,
-                size: role == DpTextRole.caption ? 14 : 16,
+                fallback.icon,
+                size: fallback.size,
                 color: tokens.color.ink,
               ));
     final leading = kind == DpChipKind.webLink ? null : glyph;
