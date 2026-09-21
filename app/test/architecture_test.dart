@@ -111,6 +111,58 @@ void main() {
     );
   });
 
+  test('screens reach for chrome only through the Adaptive wrappers', () {
+    // theming.md: "Chrome follows the platform through Adaptive* wrappers".
+    // A screen that builds a Scaffold or a Switch itself is a screen that has
+    // to be edited again for the other platform, which is the cost the wrappers
+    // exist to avoid. lib/core/adaptive/ is where the platform branch lives.
+    const chrome = <String, String>{
+      'Scaffold(': 'AdaptiveScaffold',
+      'AppBar(': 'AdaptiveScaffold',
+      'CupertinoPageScaffold(': 'AdaptiveScaffold',
+      'CupertinoNavigationBar(': 'AdaptiveScaffold',
+      'Switch(': 'AdaptiveSwitch',
+      'CupertinoSwitch(': 'AdaptiveSwitch',
+      'SegmentedButton': 'AdaptiveSegmented',
+      'CupertinoSegmentedControl': 'AdaptiveSegmented',
+      'CupertinoSlidingSegmentedControl': 'AdaptiveSegmented',
+      'showModalBottomSheet(': 'Adaptive.showSheet',
+      'showCupertinoModalPopup(': 'Adaptive.showSheet',
+      'AlertDialog(': 'Adaptive.showConfirm',
+      'CupertinoAlertDialog(': 'Adaptive.showConfirm',
+      'showTimePicker(': 'Adaptive.showTimePickerFor',
+      'CupertinoDatePicker(': 'Adaptive.showTimePickerFor',
+    };
+
+    final offenders = <String>[];
+    for (final file in _dartFilesIn('lib')) {
+      final path = _rel(file);
+      // The wrappers themselves, and main.dart's root MaterialApp.
+      if (path.startsWith('lib/core/adaptive/')) continue;
+      if (path == 'lib/main.dart') continue;
+
+      final lines = file.readAsLinesSync();
+      for (var i = 0; i < lines.length; i++) {
+        final line = lines[i];
+        if (line.trimLeft().startsWith('//')) continue;
+        if (line.contains('ponytail: allow-chrome')) continue;
+        for (final entry in chrome.entries) {
+          if (line.contains(entry.key)) {
+            offenders.add('$path:${i + 1}: ${entry.key} — use ${entry.value}');
+          }
+        }
+      }
+    }
+
+    expect(
+      offenders,
+      isEmpty,
+      reason:
+          'chrome belongs behind lib/core/adaptive/:\n'
+          '${offenders.join('\n')}',
+    );
+  });
+
   test('layering rule 2 — only lib/data/ touches drift', () {
     // "data/ ... is the only layer that touches drift." — project-structure.md
     final offenders = <String>[];
