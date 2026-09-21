@@ -16,6 +16,11 @@
     "description": "Button on the shared ErrorPanel that re-runs the failed operation. See docs/01-architecture/state-management.md."
   },
 
+  "done": "Done",
+  "@done": {
+    "description": "Confirms a value and closes a picker. Used on the iOS time wheel in Reminder & days and onboarding page 5."
+  },
+
   "undo": "Undo",
   "@undo": {
     "description": "Action on the snackbar shown after a reversible change, such as rating a card. See FR-T2-02."

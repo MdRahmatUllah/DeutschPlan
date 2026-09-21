@@ -69,7 +69,8 @@ void main() {
         if (line.contains('ponytail: allow-literal')) continue;
         for (final p in patterns) {
           if (p.hasMatch(line)) {
-            offenders.add('${file.path}:${i + 1}: ${line.trim()}');
+            final path = file.path.split(Platform.pathSeparator).join('/');
+            offenders.add('$path:${i + 1}: ${line.trim()}');
           }
         }
       }
