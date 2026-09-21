@@ -8,15 +8,20 @@ import 'package:material_ui/material_ui.dart';
 /// (a `ThemeExtension`) per mode." Screens read `context.tokens`; they never
 /// reach for a hex value and never construct chrome themselves.
 ///
-/// Dark is #31, glass is #32. Material 3 is *not* given a dynamic colour scheme:
+/// Glass is #32. Material 3 is *not* given a dynamic colour scheme:
 /// ADR 12 rules it out so the gender colours stay stable.
 abstract final class AppTheme {
   static ThemeData light() => _build(DpTokens.light());
 
+  static ThemeData dark() => _build(DpTokens.dark());
+
   static ThemeData _build(DpTokens tokens) {
     final scheme = ColorScheme.fromSeed(
       seedColor: tokens.color.primary,
-      brightness: tokens.mode == DpMode.dark
+      // Derived from the surface, not the mode name: glass has a dark variant
+      // that is still DpMode.glass, and Material needs the real brightness for
+      // scrims, system icons and default ripples.
+      brightness: tokens.surface.paper.computeLuminance() < 0.5
           ? Brightness.dark
           : Brightness.light,
       primary: tokens.color.primary,

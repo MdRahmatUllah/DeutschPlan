@@ -21,6 +21,11 @@ class DeutschPlanApp extends StatelessWidget {
     return MaterialApp(
       onGenerateTitle: (context) => AppLocalizations.of(context).appTitle,
       theme: AppTheme.light(),
+      darkTheme: AppTheme.dark(),
+      // theming.md: the default follows the system light/dark setting. The
+      // learner's explicit choice (theme_mode, incl. Glass) arrives with
+      // Settings in #143.
+      themeMode: ThemeMode.system,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       // English first: gen_l10n orders supportedLocales alphabetically, which puts
       // Bangla first, and Flutter falls back to the FIRST supported locale when the

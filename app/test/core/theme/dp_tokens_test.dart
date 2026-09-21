@@ -9,118 +9,188 @@ import 'package:material_ui/material_ui.dart';
 /// so every value must match `Foundations.html` in the android-light canvas.
 /// These tests read that file rather than trusting a transcription.
 void main() {
-  final foundations = File(
-    '../deutsch-plan-design-html/android-light/screens/Foundations.html',
-  );
-
   String hex(Color c) =>
       '#${(c.toARGB32() & 0xFFFFFF).toRadixString(16).toUpperCase().padLeft(6, '0')}';
 
-  group('Light palette matches the artboard', () {
-    late String artboard;
+  // Each mode is checked against its own canvas. Glass joins this table in #32.
+  final canvases = <DpMode, String>{
+    DpMode.light:
+        '../deutsch-plan-design-html/android-light/screens/Foundations.html',
+    DpMode.dark:
+        '../deutsch-plan-design-html/android-dark/screens/Foundations.html',
+  };
 
-    setUpAll(() {
-      expect(
-        foundations.existsSync(),
-        isTrue,
-        reason:
-            'the Foundations artboard moved — see the design-set table in '
-            'docs/README.md',
-      );
-      artboard = foundations.readAsStringSync().toUpperCase();
-    });
+  // Colours that appear in an artboard but are not app tokens.
+  final outOfScope = <DpMode, Set<String>>{
+    // The canvas the device frame is pasted onto.
+    DpMode.light: {'#E9E4DA'},
+    DpMode.dark: {'#0B0A10'},
+  };
 
-    const palette = DpPalette.light;
-    const surface = DpSurfaceTokens.light;
+  // Tokens theming.md defines that the artboard never actually paints.
+  final specOnly = <DpMode, Set<String>>{
+    DpMode.light: {'#2F46E0'}, // derText
+    DpMode.dark: <String>{},
+  };
 
-    // Name -> value, exactly as docs/01-architecture/theming.md lists them.
-    final tokens = <String, Color>{
-      'primary (Lagoon)': palette.primary,
-      'accent (Sun)': palette.accent,
-      'ink': palette.ink,
-      'textSecondary (Slate Ink)': palette.textSecondary,
-      'link': palette.link,
-      'der (Cobalt)': palette.der,
-      'die (Raspberry)': palette.die,
-      'das (Emerald)': palette.das,
-      'dieText': palette.dieText,
-      'dasText': palette.dasText,
-      'again (Coral)': palette.again,
-      'hard (Tangerine)': palette.hard,
-      'good (Lagoon)': palette.good,
-      'easy (Lime)': palette.easy,
-      'learning (Sun)': palette.learning,
-      'correctText': palette.correctText,
-      'almostText': palette.almostText,
-      'wrongText': palette.wrongText,
-      'paper': surface.paper,
-      'card': surface.card,
-      'muted (Oat)': surface.muted,
-    };
+  canvases.forEach((mode, path) {
+    final name = mode.name;
+    final tokens = mode == DpMode.light ? DpTokens.light() : DpTokens.dark();
+    final palette = tokens.color;
+    final surface = tokens.surface;
 
-    // A typo net, not proof of mapping: four pairs share a value
-    // (primary/good, accent/learning, ink/onPrimary, dasText/correctText), so
-    // swapping a pair would still pass. The reverse check below is what catches
-    // a colour that was missed altogether.
-    tokens.forEach((name, colour) {
-      test('$name is ${hex(colour)} in Foundations.html', () {
+    group('$name palette matches its artboard', () {
+      late String artboard;
+
+      setUpAll(() {
+        final file = File(path);
         expect(
-          artboard.contains(hex(colour)),
+          file.existsSync(),
           isTrue,
-          reason: '$name = ${hex(colour)} does not appear in the artboard',
+          reason:
+              'the $name Foundations artboard moved — see the design-set '
+              'table in docs/README.md',
+        );
+        artboard = file.readAsStringSync().toUpperCase();
+      });
+
+      final named = <String, Color>{
+        'primary': palette.primary,
+        'accent': palette.accent,
+        'ink': palette.ink,
+        'textSecondary': palette.textSecondary,
+        'link': palette.link,
+        'der': palette.der,
+        'die': palette.die,
+        'das': palette.das,
+        'dieText': palette.dieText,
+        'dasText': palette.dasText,
+        'again': palette.again,
+        'hard': palette.hard,
+        'good': palette.good,
+        'easy': palette.easy,
+        'learning': palette.learning,
+        'correctText': palette.correctText,
+        'almostText': palette.almostText,
+        'wrongText': palette.wrongText,
+        'paper': surface.paper,
+        'card': surface.card,
+        'muted': surface.muted,
+        'onPrimary': palette.onPrimary,
+      };
+
+      // A typo net, not proof of mapping: several tokens share a value, so
+      // swapping a pair would still pass. The reverse check below is what
+      // catches a colour that was missed altogether.
+      named.forEach((label, colour) {
+        test('$label is ${hex(colour)}', () {
+          expect(
+            artboard.contains(hex(colour)),
+            isTrue,
+            reason:
+                '$label = ${hex(colour)} does not appear in the $name artboard',
+          );
+        });
+      });
+
+      test(
+        'every colour in the artboard is a token or explicitly out of scope',
+        () {
+          final accountedFor = <String>{
+            ...named.values.map(hex),
+            ...outOfScope[mode]!,
+            ...specOnly[mode]!,
+            hex(palette.onAccent),
+            hex(palette.derText),
+            hex(surface.cardStrong),
+          };
+
+          final inArtboard = RegExp(r'#[0-9A-F]{6}')
+              .allMatches(artboard)
+              .map((m) => m[0]!)
+              .toSet();
+
+          expect(
+            inArtboard.difference(accountedFor),
+            isEmpty,
+            reason:
+                'the $name artboard uses a colour no token covers — add it to '
+                'DpPalette/DpSurfaceTokens, or list it as out of scope here',
+          );
+        },
+      );
+
+      test('the outline is ink at the opacity the artboard uses', () {
+        expect(hex(surface.outline), hex(palette.ink));
+        // Read the opacity out of the artboard instead of restating it here, so
+        // the test cannot agree with itself while the design moves underneath.
+        final alphas =
+            RegExp(r'rgba\(\s*\d+\s*,\s*\d+\s*,\s*\d+\s*,\s*([\d.]+)\s*\)')
+                .allMatches(artboard.toLowerCase())
+                .map((m) => double.parse(m[1]!))
+                .toSet();
+
+        expect(
+          alphas.any((a) => (a - surface.outline.a).abs() < 0.005),
+          isTrue,
+          reason:
+              'outline alpha ${surface.outline.a.toStringAsFixed(2)} matches no '
+              'rgba() in the $name artboard (found: ${alphas.toList()..sort()})',
+        );
+      });
+
+      test('the hard shadow matches the artboard exactly, colour included', () {
+        expect(surface.shadowOffset, const Offset(3, 3));
+
+        // The colour is the half this used to miss: `shadow` is not in `named`,
+        // and the reverse scan only sees #RRGGBB, so an rgba() shadow was
+        // unchecked in both modes.
+        final rendered = mode == DpMode.light
+            ? '3px 3px 0 ${hex(surface.shadow).toLowerCase()}'
+            : '3px 3px 0 rgba(255,255,255,'
+                  '${_trimZero(surface.shadow.a)})';
+
+        expect(
+          artboard.toLowerCase().replaceAll(' 0 rgba( ', ' 0 rgba('),
+          contains(rendered),
+          reason: 'the $name artboard does not draw "$rendered"',
         );
       });
     });
+  });
 
-    test(
-      'every colour in the artboard is a token or explicitly out of scope',
-      () {
-        const outOfApp = <String>{
-          // The canvas the device frame is pasted onto, outside the app itself.
-          '#E9E4DA',
-        };
-        const specOnly = <String>{
-          // theming.md lists derText, but it appears in no light artboard.
-          '#2F46E0',
-        };
+  test('dark lifts every brand and rating colour away from light', () {
+    const l = DpPalette.light;
+    const d = DpPalette.dark;
+    // Night Ink is not light with a swapped background: the fills are lifted a
+    // step so they stay readable on a dark surface.
+    for (final pair in <List<Color>>[
+      [l.primary, d.primary],
+      [l.accent, d.accent],
+      [l.der, d.der],
+      [l.die, d.die],
+      [l.das, d.das],
+      [l.again, d.again],
+      [l.hard, d.hard],
+      [l.easy, d.easy],
+    ]) {
+      expect(
+        pair[1].computeLuminance(),
+        greaterThan(pair[0].computeLuminance()),
+        reason: '${hex(pair[1])} is not lighter than ${hex(pair[0])}',
+      );
+    }
+  });
 
-        final accountedFor = <String>{
-          ...tokens.values.map(hex),
-          ...outOfApp,
-          ...specOnly,
-          hex(DpPalette.light.onPrimary),
-          hex(DpPalette.light.onAccent),
-          hex(DpSurfaceTokens.light.cardStrong),
-          hex(DpPalette.light.derText),
-        };
-
-        final inArtboard = RegExp(r'#[0-9A-F]{6}')
-            .allMatches(artboard)
-            .map((m) => m[0]!)
-            .toSet();
-
-        expect(
-          inArtboard.difference(accountedFor),
-          isEmpty,
-          reason:
-              'the artboard uses a colour no token covers — add it to '
-              'DpPalette/DpSurfaceTokens, or list it as out of scope here',
-        );
-      },
+  test('ink and paper invert between the two modes', () {
+    expect(
+      DpPalette.dark.ink.computeLuminance(),
+      greaterThan(DpPalette.light.ink.computeLuminance()),
     );
-
-    test('the outline is ink at 20 %', () {
-      expect(surface.outline.a, closeTo(0.2, 0.005));
-      expect(hex(surface.outline), hex(palette.ink));
-      // The artboard writes it as rgba(21,18,31,0.2).
-      expect(artboard.toLowerCase(), contains('rgba(21,18,31,0.2)'));
-    });
-
-    test('the hard shadow is pure ink offset 3 px down-right, no blur', () {
-      expect(surface.shadow, palette.ink);
-      expect(surface.shadowOffset, const Offset(3, 3));
-      expect(artboard.toLowerCase(), contains('3px 3px 0 #15121f'));
-    });
+    expect(
+      DpSurfaceTokens.dark.paper.computeLuminance(),
+      lessThan(DpSurfaceTokens.light.paper.computeLuminance()),
+    );
   });
 
   group('scales match theming.md', () {
@@ -236,4 +306,10 @@ void main() {
       expect(mid.motion.quick, a.motion.quick);
     });
   });
+}
+
+/// `0.30` -> `0.3`, matching how the artboard writes an rgba alpha.
+String _trimZero(double v) {
+  final text = v.toStringAsFixed(2);
+  return text.endsWith('0') ? text.substring(0, text.length - 1) : text;
 }

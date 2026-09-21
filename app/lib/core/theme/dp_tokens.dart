@@ -41,6 +41,18 @@ class DpTokens extends ThemeExtension<DpTokens> {
     motion: DpMotionTokens.defaults,
   );
 
+  /// Night Ink. Deep violet-black paper, light ink, the same fills lifted one
+  /// step; the hard offset shadow becomes white at 30 %.
+  factory DpTokens.dark() => const DpTokens(
+    mode: DpMode.dark,
+    color: DpPalette.dark,
+    surface: DpSurfaceTokens.dark,
+    typography: DpTypeTokens.defaults,
+    shape: DpShapeTokens.defaults,
+    spacing: DpSpacingTokens.defaults,
+    motion: DpMotionTokens.defaults,
+  );
+
   final DpMode mode;
   final DpPalette color;
   final DpSurfaceTokens surface;
@@ -70,6 +82,12 @@ class DpTokens extends ThemeExtension<DpTokens> {
 
   /// Only colours interpolate. Shape, spacing, motion and the type scale are
   /// identical across modes, so a theme change animates colour and nothing else.
+  ///
+  /// `mode` flips at the midpoint rather than interpolating, and that is
+  /// deliberate: it is an enum, and a widget that branches on it — `DpSurface`
+  /// (#33), `GlassPanel` (#34) — must pick one treatment or the other. Expect a
+  /// single switch halfway through a theme animation, not a gradual blend; it
+  /// is not a bug in those widgets.
   @override
   DpTokens lerp(covariant DpTokens? other, double t) {
     if (other == null) return this;
@@ -135,6 +153,36 @@ class DpPalette {
     correctText: Color(0xFF00804A),
     almostText: Color(0xFFB45F00),
     wrongText: Color(0xFFC8341F),
+  );
+
+  /// Every value is read off the android-dark `Foundations.html`.
+  ///
+  /// Dark needs no separate `*Text` gender variants: the light set darkens the
+  /// gender colours so they stay legible on cream paper, whereas on Night Ink
+  /// the lifted colour is already the readable one, and the artboard uses a
+  /// single value for each gender.
+  static const DpPalette dark = DpPalette(
+    primary: Color(0xFF2EE6D6), // Lagoon, lifted
+    onPrimary: Color(0xFF15121F), // dark ink on a bright fill
+    accent: Color(0xFFFFD54A), // Sun, lifted
+    onAccent: Color(0xFF15121F),
+    ink: Color(0xFFF4F1FF),
+    textSecondary: Color(0xFFB7B1CC),
+    link: Color(0xFF2EE6D6),
+    der: Color(0xFF8C9DFF),
+    derText: Color(0xFF8C9DFF),
+    die: Color(0xFFFF8AB2),
+    dieText: Color(0xFFFF8AB2),
+    das: Color(0xFF4FE3A0),
+    dasText: Color(0xFF4FE3A0),
+    again: Color(0xFFFF8A7D),
+    hard: Color(0xFFFFBE5C),
+    good: Color(0xFF2EE6D6),
+    easy: Color(0xFFC4F266),
+    learning: Color(0xFFFFD54A),
+    correctText: Color(0xFF4FE3A0),
+    almostText: Color(0xFFFFBE5C),
+    wrongText: Color(0xFFFF8A7D),
   );
 
   final Color primary;
@@ -237,6 +285,21 @@ class DpSurfaceTokens {
     // Buttons carry a heavier 2 px ink border in the artboards.
     strongOutlineWidth: 2,
     shadow: Color(0xFF15121F),
+    shadowOffset: Offset(3, 3),
+  );
+
+  /// theming.md describes the dark treatment as "3 px lines at 30 % white"; the
+  /// artboard keeps the same 3 px offset shadow and simply recolours it, which
+  /// is what is implemented here.
+  static const DpSurfaceTokens dark = DpSurfaceTokens(
+    paper: Color(0xFF13111D),
+    card: Color(0xFF1E1B2C),
+    cardStrong: Color(0xFF1E1B2C),
+    muted: Color(0xFF29253A),
+    outline: Color(0x38F4F1FF), // ink at 22 %
+    outlineWidth: 1.5,
+    strongOutlineWidth: 2,
+    shadow: Color(0x4DFFFFFF), // white at 30 %
     shadowOffset: Offset(3, 3),
   );
 
