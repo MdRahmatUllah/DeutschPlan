@@ -1,0 +1,32 @@
+# State management (Riverpod 3)
+
+## Principles
+
+- **Providers own state; widgets render it.** No `setState` for anything that outlives a gesture.
+- **Codegen everywhere:** `@riverpod` functions and `@riverpod class … extends _$…` notifiers. Hand-written providers are not allowed (lint `riverpod_lint` enforces).
+- **Database is the source of truth.** Screens watch drift `Stream`s exposed as `StreamProvider`s, so a rating in the study session updates Today's ring, the Learn bars and the streak without manual invalidation.
+- **Auto-dispose by default.** Keep-alive only for: database, settings, TTS service, audio player, active session state.
+
+## Provider map
+
+| Provider | Type | Scope | Notes |
+| --- | --- | --- | --- |
+| `appDatabase` | keepAlive | app | Opens user.db, attaches content.db. |
+| `settings` | keepAlive Notifier<Settings> | app | Backed by `settings` table; writes are synchronous then persisted. |
+| `clock` | keepAlive | app | `DateTime Function()`; overridden in tests for date logic. |
+| `todayPlan(date)` | AsyncNotifier family | Today | Calls `PlanEngine.openDay`; watches plan_items stream. |
+| `studySession(args)` | keepAlive Notifier | study modal | Queue of cards, position, undo stack; survives app backgrounding; cleared on close. |
+| `wordDetail(uid)` | autoDispose | sheet | Joins word + state + examples + tips. |
+| `searchResults(query)` | autoDispose, debounced | Search | Runs in a drift background isolate. |
+| `stepProgress` | Stream | Learn/Me | Aggregates per sub-level. |
+| `examAttempt(id)` | keepAlive Notifier | exam modal | Timer, answers, flags; persisted per answer. |
+| `modelManager` | keepAlive AsyncNotifier | Me | Download tasks, statuses, storage. |
+| `tts` | keepAlive | app | Engine selection + fallback. |
+| `theme` | keepAlive Notifier | app | light/dark/glass + system following. |
+
+## Patterns
+
+- **Actions** are methods on notifiers (`ref.read(studySessionProvider.notifier).rate(4)`); widgets never write to repositories.
+- **Undo**: `rate()` pushes an `UndoToken` (previous `word_state` row + review_log id); `undo()` restores the row and deletes the log entry within one transaction.
+- **Refresh after midnight**: `todayPlan` listens to `clock` ticks and app resume; if the date changed, it re-runs `openDay`.
+- **Errors**: `AsyncValue.error` renders the shared `ErrorPanel` with Retry; database write failures never lose the last saved card (writes are per-card transactions).
