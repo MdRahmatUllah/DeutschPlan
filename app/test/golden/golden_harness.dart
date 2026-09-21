@@ -81,9 +81,17 @@ Widget goldenApp({
       theme: mode.theme,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: supportedLocales,
-      home: AdaptiveChromeScope(
-        chrome: chrome ?? AdaptiveChrome.material,
-        child: child,
+      home: MediaQuery(
+        // Goldens are still. Repeating animations — AuroraBackdrop drifts on
+        // 18-24 s loops — would otherwise burn the settle budget and capture a
+        // different frame every run. The backdrop already holds still under
+        // reduce-motion (#Y03), so the golden reuses that rather than needing a
+        // test-only switch.
+        data: const MediaQueryData(disableAnimations: true),
+        child: AdaptiveChromeScope(
+          chrome: chrome ?? AdaptiveChrome.material,
+          child: child,
+        ),
       ),
     ),
   );
