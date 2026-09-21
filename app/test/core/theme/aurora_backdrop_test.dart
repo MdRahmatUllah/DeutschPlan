@@ -143,12 +143,63 @@ void main() {
     });
   });
 
+  testWidgets('the aurora schedules no frames when nothing is moving', (
+    tester,
+  ) async {
+    // A live ticker keeps the engine scheduling frames. Running four of them
+    // for a widget that paints nothing is battery for nothing — and light and
+    // dark are the modes most people use.
+    //
+    // Measured against a tree with no backdrop at all, in a fresh tree each
+    // time, because swapping the theme in place adds the theme transition's
+    // own ticker to the count.
+    Future<int> tickers({
+      required ThemeData theme,
+      required bool backdrop,
+    }) async {
+      await tester.pumpWidget(
+        GlassCapabilityScope(
+          key: ValueKey('${theme.hashCode}-$backdrop'),
+          notifier: GlassCapability.always(),
+          child: MaterialApp(
+            theme: theme,
+            home: backdrop
+                ? const AuroraBackdrop(child: SizedBox.expand())
+                : const SizedBox.expand(),
+          ),
+        ),
+      );
+      await tester.pump();
+      return tester.binding.transientCallbackCount;
+    }
+
+    final lightBaseline = await tickers(
+      theme: AppTheme.light(),
+      backdrop: false,
+    );
+    expect(
+      await tickers(theme: AppTheme.light(), backdrop: true),
+      lightBaseline,
+      reason: 'light paints no aurora, so it must schedule no aurora frames',
+    );
+
+    final glassBaseline = await tickers(
+      theme: AppTheme.glass(),
+      backdrop: false,
+    );
+    expect(
+      await tickers(theme: AppTheme.glass(), backdrop: true),
+      greaterThan(glassBaseline),
+      reason: 'under glass it does drift, so it must schedule frames',
+    );
+  });
+
   group('outside glass', () {
     for (final (name, theme) in <(String, ThemeData)>[
       ('light', AppTheme.light()),
       ('dark', AppTheme.dark()),
     ]) {
-      testWidgets('$name draws no aurora at all', (tester) async {
+      testWidgets('$name draws no aurora and runs no tickers', (tester) async {
         await pump(tester, theme: theme);
         expect(
           within(CustomPaint),

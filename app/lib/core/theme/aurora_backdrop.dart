@@ -143,6 +143,7 @@ class _AuroraBackdropState extends State<AuroraBackdrop>
     final backgrounded = state != AppLifecycleState.resumed;
     if (backgrounded == _backgrounded) return;
     setState(() => _backgrounded = backgrounded);
+    _syncControllers();
   }
 
   @override
@@ -160,9 +161,19 @@ class _AuroraBackdropState extends State<AuroraBackdrop>
       MediaQuery.disableAnimationsOf(context) ||
       !GlassCapabilityScope.blurAllowed(context);
 
+  /// True only when there is something moving to look at. Outside glass the
+  /// widget paints nothing, so a running ticker would be 60 fps of frame
+  /// scheduling for an invisible animation — battery for nothing in the two
+  /// modes most people use.
+  bool get _shouldDrift => context.tokens.isGlass && !_still;
+
+  /// Driven from the lifecycle hooks rather than from `build`: starting and
+  /// stopping a ticker is a side-effect, and `build` runs for reasons that have
+  /// nothing to do with the aurora.
   void _syncControllers() {
+    final drift = _shouldDrift;
     for (final controller in _controllers) {
-      if (_still) {
+      if (!drift) {
         if (controller.isAnimating) controller.stop();
       } else if (!controller.isAnimating) {
         controller.repeat();
@@ -171,9 +182,21 @@ class _AuroraBackdropState extends State<AuroraBackdrop>
   }
 
   @override
+  void didChangeDependencies() {
+    // The theme, the MediaQuery and the capability scope all arrive here.
+    super.didChangeDependencies();
+    _syncControllers();
+  }
+
+  @override
+  void didUpdateWidget(AuroraBackdrop oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _syncControllers();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final tokens = context.tokens;
-    _syncControllers();
 
     // Outside glass there is no aurora at all — the solid modes have paper.
     if (!tokens.isGlass) return widget.child;
@@ -273,7 +296,11 @@ class _BlobPainter extends CustomPainter {
         ],
       ).createShader(rect);
 
-    canvas.drawRect(Offset.zero & size, paint);
+    // Only where the blob can actually contribute. Painting the full screen
+    // four times is four full-screen blends under every BackdropFilter, and
+    // "glass list scroll: 60 fps" is the tightest budget in
+    // accessibility-performance.md. #157 owns measuring it.
+    canvas.drawRect(rect.intersect(Offset.zero & size), paint);
   }
 
   @override
