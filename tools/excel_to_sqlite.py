@@ -19,6 +19,15 @@ from pathlib import Path
 import yaml
 from openpyxl import load_workbook
 
+from pipeline_steps import (
+    LEVELS,
+    LevelSplit,
+    assign_sublevels,
+    check_every_step_has_words,
+    resolve_grammar_levels,
+    split_grammar,
+)
+
 REPO_ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_MANIFEST = REPO_ROOT / "content" / "manifest.yaml"
 
@@ -66,8 +75,6 @@ GRAMMAR_SHEET = "Grammar"
 SKILLS_SHEET = "W01"
 CATEGORY_SHEET_PREFIX = "C-"
 
-LEVELS = ("A1", "A2", "B1", "B2", "C1", "C2")
-
 
 class PipelineError(Exception):
     """A failure the author can act on. Printed without a traceback."""
@@ -95,6 +102,11 @@ class Word:
     collocations: str | None = None
     synonyms_register: str | None = None
 
+    # Derived by pipeline_steps, not read from the workbook.
+    sublevel_code: str | None = None
+    seq: int | None = None
+    seq_in_sublevel: int | None = None
+
 
 @dataclass
 class GrammarRow:
@@ -107,6 +119,11 @@ class GrammarRow:
     example_de: str | None = None
     example_en: str | None = None
     watch_out: str | None = None
+
+    # Derived by pipeline_steps.
+    sublevel_code: str | None = None
+    level_code: str | None = None
+    seq: int | None = None
 
 
 @dataclass
@@ -418,6 +435,44 @@ def read_sources(manifest: Manifest) -> list[SourceBook]:
     return [read_workbook(path) for path in manifest.workbooks]
 
 
+def derive(sources: list[SourceBook]) -> dict[str, LevelSplit]:
+    """Everything between reading and writing: the step split, so far.
+
+    Runs over all workbooks at once, because a level can be spread across two
+    of them and the boundary is a property of the level, not of the file.
+    """
+    words = [word for source in sources for word in source.words]
+
+    for source in sources:
+        # content-pipeline.md: the manifest order is the fallback level order,
+        # which points at the book rather than at its earliest level. An
+        # unlabelled topic in German_B1_Tracker is a B1 topic — that book
+        # carries A1 and A2 on the way to B1, and filing the topic under A1
+        # would teach it in the very first step.
+        levels_here = [
+            lvl for lvl in LEVELS if any(w.level == lvl for w in source.words)
+        ]
+        if levels_here:
+            resolve_grammar_levels(source.grammar, levels_here[-1])
+
+    splits = assign_sublevels(words)
+    check_every_step_has_words(words)
+
+    grammar = [row for source in sources for row in source.grammar]
+    split_grammar(grammar)
+
+    # seq is the reading order across every workbook; seq_in_sublevel is what
+    # the step screen lists by.
+    per_step: dict[str, int] = {}
+    for index, word in enumerate(words, start=1):
+        word.seq = index
+        code = word.sublevel_code or ""
+        per_step[code] = per_step.get(code, 0) + 1
+        word.seq_in_sublevel = per_step[code]
+
+    return splits
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
@@ -431,6 +486,7 @@ def main(argv: list[str] | None = None) -> int:
     try:
         manifest = read_manifest(args.manifest)
         sources = read_sources(manifest)
+        splits = derive(sources)
     except PipelineError as error:
         print(f"content pipeline: {error}", file=sys.stderr)
         return 1
@@ -441,6 +497,12 @@ def main(argv: list[str] | None = None) -> int:
             f"{len(source.grammar)} grammar rows, "
             f"{len(source.categories)} categories, "
             f"{len(source.skill_prompts)} skill prompts"
+        )
+    for level, split in splits.items():
+        print(
+            f"{level}: {split.first} weeks 1-{split.weeks_in_first} "
+            f"({split.words_in_first} words), {split.second} from week "
+            f"{split.boundary_week} ({split.words_in_second} words)"
         )
     return 0
 
