@@ -4,7 +4,9 @@ import 'package:deutschplan/core/theme/dp_tokens.dart';
 import 'package:deutschplan/core/theme/glass_capability.dart';
 import 'package:deutschplan/core/theme/theme_mode.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
+import 'package:deutschplan/router/app_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 
 import 'dart:ui' show PlatformDispatcher;
@@ -58,6 +60,10 @@ class DeutschPlanApp extends StatelessWidget {
   /// first frame is not a frame of the wrong theme.
   final DpMode mode;
 
+  /// Built once and held, because a `GoRouter` rebuilt on every frame loses
+  /// the navigation stack it is holding.
+  static final GoRouter _router = buildRouter();
+
   /// True when the learner chose *Follow the system*.
   ///
   /// [mode] is then only the answer for the first frame. `MaterialApp` has to
@@ -67,7 +73,8 @@ class DeutschPlanApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
+      routerConfig: _router,
       onGenerateTitle: (context) => AppLocalizations.of(context).appTitle,
       theme: AppTheme.light(),
       darkTheme: AppTheme.dark(),
@@ -85,7 +92,6 @@ class DeutschPlanApp extends StatelessWidget {
       // device locale matches none. `ui_language` defaults to `en`
       // (docs/02-data/user-database.md), so English has to lead.
       supportedLocales: supportedLocales,
-      home: const _Placeholder(),
     );
   }
 }
@@ -215,21 +221,4 @@ class BootstrapErrorApp extends StatelessWidget {
       ),
     ),
   );
-}
-
-// ponytail: placeholder shell so the app runs; replaced by the router shell in #67.
-class _Placeholder extends StatelessWidget {
-  const _Placeholder();
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Text(
-          AppLocalizations.of(context).loadingCourse,
-          style: Theme.of(context).textTheme.titleLarge,
-        ),
-      ),
-    );
-  }
 }

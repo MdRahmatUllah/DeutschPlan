@@ -1,16 +1,21 @@
 import 'package:deutschplan/core/theme/dp_tokens.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
 import 'package:deutschplan/main.dart';
+import 'package:deutschplan/router/app_shell.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart' show MaterialApp, ThemeMode;
 
 void main() {
-  testWidgets('the app boots and renders localised copy', (tester) async {
+  testWidgets('the app boots into the shell with Today showing', (
+    tester,
+  ) async {
     await tester.pumpWidget(const DeutschPlanApp(mode: DpMode.light));
     await tester.pumpAndSettle();
 
     final l10n = await AppLocalizations.delegate.load(supportedLocales.first);
-    expect(find.text(l10n.loadingCourse), findsOneWidget);
+    expect(find.byType(AppShell), findsOneWidget);
+    expect(find.text(l10n.tabToday), findsWidgets);
+    expect(find.text('T1'), findsOneWidget, reason: 'Today is the first tab');
   });
 
   testWidgets('the resolved mode is what the app renders', (tester) async {
