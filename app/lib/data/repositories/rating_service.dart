@@ -87,8 +87,19 @@ class RatingService {
   ///
   /// Logged with source `known` so the stats can tell a word the learner
   /// claimed from one they actually studied.
-  Future<void> markKnown(String uid) =>
-      rate(uid, Rating.easy, source: ReviewSource.known);
+  ///
+  /// Takes the plan row too, because the button is for a *new word* — which is
+  /// a word sitting in today's plan. Without it the row stays open and the
+  /// word turns up in tomorrow's backlog after the learner has just said they
+  /// know it.
+  Future<void> markKnown(String uid, {String? planDate, PlanKind? kind}) =>
+      rate(
+        uid,
+        Rating.easy,
+        source: ReviewSource.known,
+        planDate: planDate,
+        kind: kind,
+      );
 
   /// BR-STATUS-03. The FSRS state is untouched: resuming picks up the
   /// schedule, it does not restart it.
@@ -135,9 +146,15 @@ class RatingService {
   /// rule is about a run, and a word the learner just failed is not one they
   /// are ready to produce from a gap.
   ///
-  /// The learner can switch it back by hand from Word detail; that is a
-  /// separate write and this does not fight it, because it only ever looks at
-  /// ratings.
+  /// **It does not yet respect a manual switch.** BR-FSRS-06 also says the
+  /// learner can put a cloze card back to plain from Word detail, and this
+  /// would hand them cloze again on their next Good, because it reads only the
+  /// ratings and cannot tell their `plain` from a run-broken one. Nothing
+  /// writes `card_mode` by hand today — Word detail is #? in M5 — so the rule
+  /// is not broken yet; telling that issue what it has to carry is the point
+  /// of saying so here rather than leaving a comment claiming it is fine.
+  /// Respecting it needs somewhere to record the choice, which is a schema
+  /// change and belongs with the screen that offers it.
   Future<CardMode> _cardModeFor(String uid, Rating rating) async {
     if (rating.value < Rating.good.value) return CardMode.plain;
 

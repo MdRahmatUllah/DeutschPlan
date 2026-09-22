@@ -24,6 +24,7 @@ import 'package:deutschplan/data/repositories/backup_repository.dart';
 import 'package:deutschplan/data/repositories/exam_repository.dart';
 import 'package:deutschplan/data/repositories/grammar_repository.dart';
 import 'package:deutschplan/data/repositories/plan_repository.dart';
+import 'package:deutschplan/data/repositories/rating_service.dart';
 import 'package:deutschplan/data/repositories/search_repository.dart';
 import 'package:deutschplan/data/repositories/setting_keys.dart';
 import 'package:deutschplan/data/repositories/settings_repository.dart';
@@ -160,3 +161,16 @@ SearchRepository searchRepository(Ref ref) =>
 @riverpod
 BackupRepository backupRepository(Ref ref) =>
     BackupRepository(ref.watch(appDatabaseProvider));
+
+/// Rating a word: FSRS joined to the writes (#78).
+///
+/// Takes [clock] rather than reading `DateTime.now()`, so a test that moves the
+/// clock moves which study day a rating lands on.
+@riverpod
+RatingService ratingService(Ref ref) => RatingService(
+  ref.watch(appDatabaseProvider),
+  ref.watch(settingsProvider),
+  ref.watch(planRepositoryProvider),
+  ref.watch(wordRepositoryProvider),
+  ref.watch(clockProvider),
+);

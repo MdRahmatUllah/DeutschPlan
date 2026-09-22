@@ -272,6 +272,28 @@ void main() {
       expect((await logOf(uid)).single.rating, Rating.easy.value);
     });
 
+    test('completes the plan row it came from', () async {
+      // The button is for a *new word*, which is a word sitting in today's
+      // plan. Leaving the row open puts it in tomorrow's backlog right after
+      // the learner said they know it.
+      await db.customStatement(
+        "INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code) "
+        "VALUES ('2026-03-02', ?, 'new', 'A1.1')",
+        <Object>[uid],
+      );
+
+      await rating.markKnown(
+        uid,
+        planDate: '2026-03-02',
+        kind: PlanKind.newWord,
+      );
+
+      expect(
+        (await db.select(db.planItems).getSingle()).completedAt,
+        isNotNull,
+      );
+    });
+
     test('and is logged as known, not as daily study', () async {
       // The stats have to tell a word the learner claimed from one they sat
       // down and studied.
