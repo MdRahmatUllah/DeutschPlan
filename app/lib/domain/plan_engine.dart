@@ -16,6 +16,7 @@
 library;
 
 import 'package:deutschplan/domain/fsrs.dart';
+import 'package:deutschplan/domain/plan_stats.dart';
 
 /// A local date, `YYYY-MM-DD` — the same shape every date column uses.
 ///
@@ -180,6 +181,46 @@ abstract interface class PlanStore {
   ///
   /// Only used to name the step *after* it, for Today's *Start next step*.
   Future<String?> lastCompletedStep();
+
+  /// The days on or before [today] that have any activity recorded, for the
+  /// streak. Bounded by [lookbackDays] so it is one small query, not a scan.
+  Future<Set<PlanDate>> activeDays(PlanDate today, {required int lookbackDays});
+
+  /// New items planned on or before [today], and how many are done — the two
+  /// halves of the schedule check.
+  Future<(int planned, int introduced)> newItemProgress(PlanDate today);
+
+  /// How many plan rows of [date] are neither completed nor skipped.
+  Future<int> openPlanItems(PlanDate date);
+
+  /// The learner's own median seconds per item, or null where there is not
+  /// enough history to measure one (BR-PLAN-09).
+  Future<MeasuredSeconds> measuredSeconds();
+}
+
+/// What could be measured from the logs, per item type.
+///
+/// A null field means "not measurable", which is not the same as zero: the
+/// caller keeps the default for it.
+class MeasuredSeconds {
+  const MeasuredSeconds({
+    required this.sessions,
+    this.revision,
+    this.newWord,
+    this.grammar,
+  });
+
+  /// Days with any activity. BR-PLAN-09 wants seven before it trusts these.
+  final int sessions;
+
+  final int? revision;
+  final int? newWord;
+  final int? grammar;
+
+  /// Sentences are missing on purpose: `sentence_log` stores `shown_on` as a
+  /// date, not an instant, so there is no gap to measure. The 40-second
+  /// default stands until something records a timestamp.
+  bool get enough => sessions >= measuredTimingsAfterSessions;
 }
 
 /// Which block a plan row belongs to.
@@ -487,6 +528,84 @@ class PlanEngine {
 
     await _store.addToPlan(date, PlanKind.revise, picked);
   }
+
+  /// How many days in a row the learner has kept going.
+  ///
+  /// Reads the mask from the active step, falling back to every day when there
+  /// is none — a learner between steps still has a streak.
+  Future<int> streak(PlanDate today) async {
+    final step = await _store.activeStep();
+    final mask = step?.studyDaysMask ?? allDays;
+
+    return streakLength(
+      today: today,
+      activeDays: await _store.activeDays(today, lookbackDays: streakLookback),
+      isStudyDay: (day) => isStudyDay(day, mask),
+      maxLookback: streakLookback,
+    );
+  }
+
+  /// "Am I on schedule?" — planned against introduced.
+  ///
+  /// [fallbackDailyNew] is the pace to divide by when there is no open
+  /// enrolment, which is the state a finished step leaves behind when
+  /// auto-advance is off. The caller passes the `daily_new` setting.
+  Future<ScheduleStatus> scheduleCheck(
+    PlanDate today, {
+    int fallbackDailyNew = 1,
+  }) async {
+    final (planned, introduced) = await _store.newItemProgress(today);
+    final step = await _store.activeStep();
+
+    return ScheduleStatus(
+      planned: planned,
+      introduced: introduced,
+      // The enrolment's pace, not the setting: BR-PLAN-08 freezes it, and
+      // those days were planned at whatever it was then.
+      //
+      // [fallbackDailyNew] covers the gap between steps, where there is no
+      // enrolment to read a pace from. Zero there would report "0 days behind"
+      // beside a non-zero backlog and "not on schedule" — three numbers that
+      // contradict each other on the same screen.
+      dailyNew: step?.dailyNew ?? fallbackDailyNew,
+    );
+  }
+
+  /// BR-PLAN-09: how long [plan] should take.
+  ///
+  /// The learner's own medians once there are seven sessions, the published
+  /// defaults before that — and the defaults stay for anything that could not
+  /// be measured, which is what [MeasuredSeconds] leaves null.
+  Future<Duration> estimate(DailyPlan plan, {int sentences = 0}) async {
+    final measured = await _store.measuredSeconds();
+
+    return timeEstimate(
+      revisions: plan.revise.length,
+      newWords: plan.newToday.length,
+      grammar: plan.grammarDue.length,
+      sentences: sentences,
+      seconds: measured.enough
+          ? ItemSeconds.defaults.withMeasured(
+              revision: measured.revision,
+              newWord: measured.newWord,
+              grammar: measured.grammar,
+            )
+          : ItemSeconds.defaults,
+    );
+  }
+
+  /// BR-PLAN-10, computed rather than stored.
+  Future<bool> isDayComplete(DailyPlan plan, {int openSentences = 0}) async =>
+      dayComplete(
+        openPlanItems: await _store.openPlanItems(plan.date),
+        grammarDue: plan.grammarDue.length,
+        openSentences: openSentences,
+        isStudyDay: plan.isStudyDay,
+      );
+
+  /// How far back the streak looks. A year and a bit: beyond that the number
+  /// is a curiosity, and the scan is not free.
+  static const int streakLookback = 400;
 
   /// BR-PLAN-01: whether [date] is a study day under [mask].
   ///

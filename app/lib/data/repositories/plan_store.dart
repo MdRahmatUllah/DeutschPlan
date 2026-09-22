@@ -2,6 +2,7 @@ import 'package:deutschplan/data/db/app_database.dart';
 import 'package:deutschplan/data/repositories/setting_keys.dart';
 import 'package:deutschplan/data/repositories/settings_repository.dart';
 import 'package:deutschplan/domain/plan_engine.dart';
+import 'package:deutschplan/domain/plan_stats.dart';
 import 'package:drift/drift.dart';
 
 /// [PlanStore] over drift — the engine's half of `plan_items` and friends.
@@ -329,6 +330,173 @@ ON CONFLICT(sublevel_code) DO UPDATE SET
         .customSelect('SELECT COUNT(*) AS n FROM enrollments')
         .getSingle();
     return row.read<int>('n') > 0;
+  }
+
+  /// Days with any activity, for the streak.
+  ///
+  /// `daily_stats` is the record of what actually happened, so a day appears
+  /// here only if something was done on it — which is the question the streak
+  /// asks. A row of all zeroes does not count: `_bumpDailyStats` can create one
+  /// with a rating that is later undone.
+  @override
+  Future<Set<PlanDate>> activeDays(
+    PlanDate today, {
+    required int lookbackDays,
+  }) async {
+    final rows = await _db
+        .customSelect(
+          '''
+SELECT day
+FROM daily_stats
+WHERE day <= ?1 AND day >= ?2
+  AND (new_done > 0 OR reviews_done > 0 OR grammar_done > 0
+       OR sentences_done > 0)
+''',
+          variables: <Variable<Object>>[
+            Variable<String>(today),
+            Variable<String>(addDays(today, -lookbackDays)),
+          ],
+          readsFrom: <ResultSetImplementation<Object, Object>>{_db.dailyStats},
+        )
+        .get();
+
+    return <PlanDate>{for (final row in rows) row.read<String>('day')};
+  }
+
+  /// The schedule check's two counts, in one pass.
+  ///
+  /// Only `new` rows: a missed revision is not "behind", FSRS simply
+  /// reschedules it. And only up to today — there is no plan beyond it to be
+  /// measured against.
+  @override
+  Future<(int, int)> newItemProgress(PlanDate today) async {
+    final row = await _db
+        .customSelect(
+          '''
+SELECT COUNT(*) AS planned,
+       COUNT(completed_at) AS introduced
+FROM plan_items
+WHERE kind = 'new' AND plan_date <= ?1
+''',
+          variables: <Variable<Object>>[Variable<String>(today)],
+          readsFrom: <ResultSetImplementation<Object, Object>>{_db.planItems},
+        )
+        .getSingle();
+
+    return (row.read<int>('planned'), row.read<int>('introduced'));
+  }
+
+  /// BR-PLAN-10: a row is open until it is completed *or* skipped.
+  @override
+  Future<int> openPlanItems(PlanDate date) async {
+    final row = await _db
+        .customSelect(
+          '''
+SELECT COUNT(*) AS n
+FROM plan_items
+WHERE plan_date = ?1 AND completed_at IS NULL AND skipped = 0
+''',
+          variables: <Variable<Object>>[Variable<String>(date)],
+          readsFrom: <ResultSetImplementation<Object, Object>>{_db.planItems},
+        )
+        .getSingle();
+
+    return row.read<int>('n');
+  }
+
+  /// BR-PLAN-09's measured timings.
+  ///
+  /// Nothing records seconds per item, so these come from the gaps between
+  /// consecutive log entries — which is what the doc says ("from `review_log`
+  /// timestamps"). `gapSeconds` throws away the gaps that are really breaks.
+  ///
+  /// New and revise are told apart by joining to the plan row for that day;
+  /// a rating with no plan row — from Search, a quiz, an exam — has no block
+  /// to belong to and is left out rather than guessed at.
+  @override
+  Future<MeasuredSeconds> measuredSeconds() async {
+    final sessions = await _db
+        .customSelect(
+          '''
+SELECT COUNT(*) AS n FROM daily_stats
+WHERE new_done > 0 OR reviews_done > 0 OR grammar_done > 0
+   OR sentences_done > 0
+''',
+          readsFrom: <ResultSetImplementation<Object, Object>>{_db.dailyStats},
+        )
+        .getSingle();
+
+    return MeasuredSeconds(
+      sessions: sessions.read<int>('n'),
+      newWord: medianOf(await _wordGaps('new')),
+      revision: medianOf(await _wordGaps('revise')),
+      grammar: medianOf(await _grammarGaps()),
+    );
+  }
+
+  /// The gaps between consecutive ratings of plan rows of one kind.
+  ///
+  /// `_gapsByDay` is what separates the days, not the ordering: the last review
+  /// of Monday and the first of Tuesday must never produce a gap between them.
+  /// That would be a break of hours, which `sessionGapLimit` would drop anyway,
+  /// but relying on the limit to fix a wrong grouping is how a subtler version
+  /// of it survives.
+  ///
+  /// The ordering is by timestamp alone. Adding `plan_date` to it changed
+  /// nothing — the join derives it from the timestamp — and a clause that
+  /// cannot matter reads as one that does.
+  Future<List<int>> _wordGaps(String kind) async {
+    final rows = await _db
+        .customSelect(
+          '''
+SELECT r.reviewed_at AS at, p.plan_date AS day
+FROM review_log r
+JOIN plan_items p
+  ON p.word_uid = r.word_uid
+ AND p.kind = ?1
+ AND p.plan_date = substr(r.reviewed_at, 1, 10)
+ORDER BY r.reviewed_at
+''',
+          variables: <Variable<Object>>[Variable<String>(kind)],
+          readsFrom: <ResultSetImplementation<Object, Object>>{
+            _db.reviewLog,
+            _db.planItems,
+          },
+        )
+        .get();
+
+    return _gapsByDay(<(String, String)>[
+      for (final row in rows) (row.read<String>('day'), row.read<String>('at')),
+    ]);
+  }
+
+  Future<List<int>> _grammarGaps() async {
+    final rows = await _db
+        .customSelect(
+          '''
+SELECT practised_at AS at, substr(practised_at, 1, 10) AS day
+FROM grammar_practice_log
+ORDER BY practised_at
+''',
+          readsFrom: <ResultSetImplementation<Object, Object>>{
+            _db.grammarPracticeLog,
+          },
+        )
+        .get();
+
+    return _gapsByDay(<(String, String)>[
+      for (final row in rows) (row.read<String>('day'), row.read<String>('at')),
+    ]);
+  }
+
+  /// Gaps taken within each day and then pooled.
+  static List<int> _gapsByDay(List<(String day, String at)> rows) {
+    final byDay = <String, List<DateTime>>{};
+    for (final (day, at) in rows) {
+      (byDay[day] ??= <DateTime>[]).add(DateTime.parse(at));
+    }
+
+    return <int>[for (final day in byDay.values) ...gapSeconds(day)];
   }
 
   /// The most recently closed enrollment.
