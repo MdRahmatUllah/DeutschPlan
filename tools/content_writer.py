@@ -89,13 +89,12 @@ def fill_fts(connection: sqlite3.Connection) -> None:
         "SELECT word_uid, german, english FROM word_examples"
     )
 
-    # FTS5 keeps its index in several small b-trees as rows arrive. One merge
-    # after a bulk load turns them into one, which is what makes the first
-    # search on a cold app fast rather than the tenth.
-    for table in ("words_fts", "words_trigram", "examples_fts"):
-        connection.execute(
-            f"INSERT INTO {table}({table}) VALUES ('optimize')"
-        )
+    # No `optimize` here. It merges the index's b-tree segments, and there is
+    # nothing to merge: the three inserts above run in one transaction, so
+    # FTS5 flushes once. Measured on a real build — segment count and file
+    # size are identical with and without it.
+    #
+    # If this ever loads in batches, it belongs back.
 
 
 def write(connection: sqlite3.Connection, inputs: BuildInputs) -> None:

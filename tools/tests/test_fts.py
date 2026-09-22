@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import sqlite3
 import sys
+from contextlib import contextmanager
 from pathlib import Path
 
 import pytest
@@ -19,6 +20,24 @@ from excel_to_sqlite import collect, derive, read_workbook  # noqa: E402
 from fixtures.make_workbooks import BOOK_LEVELS, write_all  # noqa: E402
 
 FTS_TABLES = ("words_fts", "words_trigram", "examples_fts")
+
+
+@contextmanager
+def probe_row(database: sqlite3.Connection, insert: str):
+    """Adds a row for the duration of one assertion, then undoes it.
+
+    A savepoint rather than a matching DELETE: these run on a module-scoped
+    connection, so a probe that outlives its test — because the test failed,
+    or because the classes were reordered — would make the row-count tests
+    see 181 words against 180.
+    """
+    database.execute("SAVEPOINT probe")
+    try:
+        database.execute(insert)
+        yield
+    finally:
+        database.execute("ROLLBACK TO probe")
+        database.execute("RELEASE probe")
 
 
 @pytest.fixture(scope="module")
@@ -108,15 +127,15 @@ class TestTheSearchTiers:
     def test_tier_3_trigram_finds_a_misspelling(self, database):
         # The tier's whole reason: "Strase" for "Straße". Trigram matches any
         # three-character run, so a dropped or wrong letter still hits.
-        database.execute(
+        with probe_row(
+            database,
             "INSERT INTO words_trigram (uid, german, english, search_key) "
-            "VALUES ('probe', 'Strasse', 'street', 'strasse')"
-        )
-        rows = database.execute(
-            "SELECT uid FROM words_trigram WHERE words_trigram MATCH ?",
-            ['"stras"'],
-        ).fetchall()
-        database.execute("DELETE FROM words_trigram WHERE uid = 'probe'")
+            "VALUES ('probe', 'Strasse', 'street', 'strasse')",
+        ):
+            rows = database.execute(
+                "SELECT uid FROM words_trigram WHERE words_trigram MATCH ?",
+                ['"stras"'],
+            ).fetchall()
         assert ("probe",) in rows
 
     def test_tier_3_returns_nothing_below_three_characters(self, database):
@@ -124,11 +143,11 @@ class TestTheSearchTiers:
         # nothing at all — silently, with no error. The search screen has to
         # fall back to the tiers above rather than show the learner an empty
         # result, and this is the behaviour it falls back from.
-        database.execute(
+        with probe_row(
+            database,
             "INSERT INTO words_trigram (uid, german, english, search_key) "
-            "VALUES ('probe', 'Strasse', 'street', 'strasse')"
-        )
-        try:
+            "VALUES ('probe', 'Strasse', 'street', 'strasse')",
+        ):
             assert ("probe",) in database.execute(
                 "SELECT uid FROM words_trigram WHERE words_trigram MATCH ?",
                 ['"str"'],
@@ -137,8 +156,6 @@ class TestTheSearchTiers:
                 "SELECT uid FROM words_trigram WHERE words_trigram MATCH ?",
                 ['"st"'],
             ).fetchall() == []
-        finally:
-            database.execute("DELETE FROM words_trigram WHERE uid = 'probe'")
 
     def test_tier_4_a_sentence_hit_names_its_headword(self, database):
         row = database.execute(
@@ -156,28 +173,28 @@ class TestTokenizers:
         # remove_diacritics 2 is why "Tur" finds "Tür" here, on top of
         # search_key_alt. Inserted directly so the assertion is about the
         # tokenizer rather than about the fixture's vocabulary.
-        database.execute(
+        with probe_row(
+            database,
             "INSERT INTO words_fts (uid, german, english, bangla, search_key) "
-            "VALUES ('probe', 'Tür', 'door', NULL, 'tuer')"
-        )
-        rows = database.execute(
-            "SELECT uid FROM words_fts WHERE words_fts MATCH ?", ['"Tur"']
-        ).fetchall()
-        database.execute("DELETE FROM words_fts WHERE uid = 'probe'")
+            "VALUES ('probe', 'Tür', 'door', NULL, 'tuer')",
+        ):
+            rows = database.execute(
+                "SELECT uid FROM words_fts WHERE words_fts MATCH ?", ['"Tur"']
+            ).fetchall()
         assert ("probe",) in rows
 
     def test_bangla_survives_the_tokenizer(self, database):
         # unicode61 does not decompose Bangla, so a Bangla meaning is still
         # findable as itself — tier 1's `bangla = raw` match.
-        database.execute(
+        with probe_row(
+            database,
             "INSERT INTO words_fts (uid, german, english, bangla, search_key) "
-            "VALUES ('probe', 'Mädchen', 'girl', 'মেয়ে', 'maedchen')"
-        )
-        rows = database.execute(
-            "SELECT uid FROM words_fts WHERE words_fts MATCH ?",
-            ['bangla : "মেয়ে"'],
-        ).fetchall()
-        database.execute("DELETE FROM words_fts WHERE uid = 'probe'")
+            "VALUES ('probe', 'Mädchen', 'girl', 'মেয়ে', 'maedchen')",
+        ):
+            rows = database.execute(
+                "SELECT uid FROM words_fts WHERE words_fts MATCH ?",
+                ['bangla : "মেয়ে"'],
+            ).fetchall()
         assert ("probe",) in rows
 
     def test_the_uid_column_is_not_searchable(self, database):
@@ -192,11 +209,11 @@ class TestTokenizers:
 
 
 def test_the_index_survives_its_own_integrity_check(database):
-    """`optimize` runs after the bulk load, so the first search is fast rather
-    than the tenth.
+    """FTS5's own verdict on the index it built.
 
-    `integrity-check` is FTS5's own verdict on the merged index — it is the
-    thing that would catch a merge that lost rows.
+    There is no `optimize` in the writer: the three inserts run in one
+    transaction, so FTS5 flushes once and there is nothing to merge. Measured
+    — segment count and file size are identical either way.
     """
     for table in FTS_TABLES:
         database.execute(

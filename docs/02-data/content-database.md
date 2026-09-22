@@ -17,9 +17,9 @@ Column names are backticked; `tools/tests/test_schema.py` reads them out of this
 | `grammar_topics` | `uid` PK, `sublevel_code`, `level_code`, `seq`, `source_week`, `topic`, `rule`, `example_de`, `example_en`, `watch_out` | Grammar |
 | `skill_prompts` | (`level_code`, `ord`), `text` | Weekly skills checklist |
 | `interference_tips` | `word_uid`, `tip_en`, `tip_bn` | L1-specific traps (from CSV) |
-| `words_fts` | FTS5 unicode61 remove_diacritics 2 over german, english, bangla, search_key | Exact / prefix search |
-| `words_trigram` | FTS5 trigram over german, english, search_key | Fuzzy candidates |
-| `examples_fts` | FTS5 unicode61 over german, english, with word_uid UNINDEXED | "In sentences" tier |
+| `words_fts` | `uid` UNINDEXED, `german`, `english`, `bangla`, `search_key` — FTS5 `unicode61 remove_diacritics 2` | Exact / prefix search |
+| `words_trigram` | `uid` UNINDEXED, `german`, `english`, `search_key` — FTS5 `trigram` | Fuzzy candidates |
+| `examples_fts` | `word_uid` UNINDEXED, `german`, `english` — FTS5 `unicode61 remove_diacritics 2` | "In sentences" tier |
 
 Indexes: `words(sublevel_code, seq_in_sublevel)`, `words(search_key)`, `words(search_key_alt)`, `words(category_id)`, `grammar_topics(sublevel_code, seq)`.
 

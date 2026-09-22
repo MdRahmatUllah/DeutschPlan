@@ -65,6 +65,16 @@ def real_tables(database: sqlite3.Connection) -> set[str]:
     }
 
 
+def column_names(cell: str) -> set[str]:
+    """The backticked names in a key-columns cell, tokenizer note excluded.
+
+    The FTS rows read "`uid` UNINDEXED, `german`, … — FTS5 `trigram`". The
+    tokenizer is backticked too, and it is not a column, so everything after
+    the em dash is dropped.
+    """
+    return set(re.findall(r"`([a-z][a-z0-9_]*)`", cell.split("—")[0]))
+
+
 def documented_tables() -> dict[str, str]:
     """The table names and key-column cells from content-database.md.
 
@@ -94,11 +104,7 @@ class TestAgainstTheDoc:
         assert "words" in tables and "meta" in tables
 
     def test_every_documented_table_exists(self, database):
-        # The FTS tables are #48's; this asserts the rest and names them so the
-        # omission is deliberate rather than forgotten.
-        fts = {"words_fts", "words_trigram", "examples_fts"}
-        expected = set(documented_tables()) - fts
-
+        expected = set(documented_tables())
         found = real_tables(database)
         assert expected <= found, f"missing: {expected - found}"
 
@@ -115,13 +121,13 @@ class TestAgainstTheDoc:
         of "prose words" swallowed `key` and `value` — which are the two
         columns of `meta`, so dropping either passed.
         """
+        # The FTS tables are included: PRAGMA table_info works on a virtual
+        # table, and the doc's own query relies on the uid column it lists.
         for table, cell in documented_tables().items():
-            if table in {"words_fts", "words_trigram", "examples_fts"}:
-                continue
             actual = {
                 row[1] for row in database.execute(f"PRAGMA table_info({table})")
             }
-            named = set(re.findall(r"`([a-z][a-z0-9_]*)`", cell))
+            named = column_names(cell)
             assert named, f"{table}: the doc backticks no column names"
             assert named <= actual, (
                 f"{table}: the doc names {sorted(named - actual)}, the schema "
@@ -132,12 +138,10 @@ class TestAgainstTheDoc:
         # The other direction. A column nobody documented is one the app will
         # not know to read, and `content_schema.drift` (#55) mirrors this list.
         for table, cell in documented_tables().items():
-            if table in {"words_fts", "words_trigram", "examples_fts"}:
-                continue
             actual = {
                 row[1] for row in database.execute(f"PRAGMA table_info({table})")
             }
-            named = set(re.findall(r"`([a-z][a-z0-9_]*)`", cell))
+            named = column_names(cell)
             assert actual <= named, (
                 f"{table}: the schema has {sorted(actual - named)}, which "
                 f"content-database.md does not list"
