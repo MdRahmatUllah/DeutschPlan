@@ -29,6 +29,19 @@ void main() {
     }
   });
 
+  testWidgets('following the system keeps following it', (tester) async {
+    // `theme_mode = system` resolves to a concrete mode for the first frame.
+    // Passing that straight to MaterialApp would pin the app to whatever the
+    // phone was on at launch.
+    await tester.pumpWidget(
+      const DeutschPlanApp(mode: DpMode.dark, followsPlatform: true),
+    );
+    await tester.pumpAndSettle();
+
+    final app = tester.widget<MaterialApp>(find.byType(MaterialApp));
+    expect(app.themeMode, ThemeMode.system);
+  });
+
   test('English leads supportedLocales so it is the fallback locale', () {
     expect(supportedLocales.first.languageCode, 'en');
     expect(

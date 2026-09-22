@@ -6,10 +6,12 @@ import 'dart:io';
 import 'package:deutschplan/bootstrap.dart';
 import 'package:deutschplan/core/theme/dp_tokens.dart';
 import 'package:deutschplan/core/theme/glass_capability.dart';
+import 'package:deutschplan/core/theme/theme_mode.dart';
 import 'package:deutschplan/data/db/app_database.dart';
 import 'package:deutschplan/data/db/content_dao.dart';
 import 'package:deutschplan/data/db/content_update.dart';
 import 'package:deutschplan/data/repositories/setting_keys.dart';
+import 'package:deutschplan/data/repositories/settings_repository.dart';
 import 'package:deutschplan/main.dart';
 import 'package:drift/drift.dart' hide isNotNull, isNull;
 import 'package:drift/native.dart';
@@ -142,6 +144,19 @@ void main() {
       final dark = await run(brightness: Brightness.dark);
       addTearDown(dark.dispose);
       expect(dark.themeMode, DpMode.dark);
+    });
+
+    test('following the system is not the same as pinning it', () async {
+      // `theme_mode` defaults to system, which resolves to a fixed light or
+      // dark for the first frame — but the app has to keep following the
+      // platform afterwards, or turning the phone to dark would leave
+      // DeutschPlan light until it was killed.
+      final ready = await run(brightness: Brightness.dark);
+      addTearDown(ready.dispose);
+
+      expect(ready.themeMode, DpMode.dark);
+      expect(ready.themeSetting, ThemeModeSetting.system);
+      expect(ready.themeSetting.followsPlatform, isTrue);
     });
 
     test('the learner"s own choice beats the platform', () async {
@@ -409,6 +424,87 @@ void main() {
       );
       await tester.pumpAndSettle();
       expect(find.text('Export progress'), findsOneWidget);
+    });
+
+    testWidgets('Retry is live, not a greyed-out button', (tester) async {
+      // The gate is what makes it live. An error screen built without
+      // callbacks renders both buttons disabled, which is a dead end rather
+      // than the recoverable screen FR-S1-03 asks for.
+      var attempts = 0;
+      await tester.pumpWidget(
+        BootstrapGate(
+          failure: failureOf(BootstrapStep.database),
+          onRetry: () async {
+            attempts++;
+            return BootstrapFailed(failureOf(BootstrapStep.database));
+          },
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final retry = tester.widget<FilledButton>(find.byType(FilledButton));
+      expect(retry.onPressed, isNotNull, reason: 'Retry is disabled');
+
+      await tester.tap(find.byType(FilledButton));
+      await tester.pumpAndSettle();
+      expect(attempts, 1);
+    });
+
+    testWidgets('a retry that works replaces the error screen', (tester) async {
+      // Built by hand rather than through `run()`: `testWidgets` runs in a
+      // fake-async zone, and a future waiting on the real disk never
+      // completes inside one.
+      final db = AppDatabase.memory();
+      addTearDown(db.close);
+      final ready = Bootstrap(
+        db: db,
+        content: ContentDao(db),
+        settings: SettingsRepository(db),
+        glass: GlassCapability(),
+        contentVersion: ContentFixture.version,
+        contentChange: null,
+        themeMode: DpMode.light,
+        themeSetting: ThemeModeSetting.light,
+        isFirstRun: false,
+        elapsed: Duration.zero,
+      );
+
+      await tester.pumpWidget(
+        BootstrapGate(
+          failure: failureOf(BootstrapStep.database),
+          onRetry: () async => BootstrapReady(ready),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(
+        find.text('DeutschPlan could not open your data.'),
+        findsOneWidget,
+      );
+
+      await tester.tap(find.byType(FilledButton));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(BootstrapErrorApp), findsNothing);
+      expect(find.byType(DeutschPlanApp), findsOneWidget);
+    });
+
+    testWidgets('a retry that fails again says so', (tester) async {
+      await tester.pumpWidget(
+        BootstrapGate(
+          failure: failureOf(BootstrapStep.database),
+          onRetry: () async =>
+              BootstrapFailed(failureOf(BootstrapStep.content)),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byType(FilledButton));
+      await tester.pumpAndSettle();
+
+      expect(
+        find.text('DeutschPlan could not install the course.'),
+        findsOneWidget,
+      );
     });
 
     testWidgets('is never a blank screen', (tester) async {

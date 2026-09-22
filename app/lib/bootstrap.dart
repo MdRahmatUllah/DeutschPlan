@@ -40,6 +40,7 @@ class Bootstrap {
     required this.contentVersion,
     required this.contentChange,
     required this.themeMode,
+    required this.themeSetting,
     required this.isFirstRun,
     required this.elapsed,
   });
@@ -60,6 +61,11 @@ class Bootstrap {
   /// already the right one — a frame of the wrong theme is the thing
   /// FR-S1-01 exists to prevent.
   final DpMode themeMode;
+
+  /// What the learner actually chose, which [themeMode] cannot say: `system`
+  /// resolves to light or dark, and the app has to keep following the
+  /// platform rather than pinning whichever it was at launch.
+  final ThemeModeSetting themeSetting;
 
   /// How long the whole thing took. FR-S1-02 budgets 500 ms warm, 2 s on a
   /// first run; this is what a test and a bug report measure against.
@@ -124,6 +130,10 @@ class BootstrapFailed extends BootstrapResult {
   final BootstrapFailure failure;
 }
 
+/// How long the glass capability query may take before bootstrap gives up on
+/// it. A slice of FR-S1-02's 500 ms, not the whole of it.
+const Duration glassTimeout = Duration(milliseconds: 150);
+
 /// FR-S1-01, in the order the doc gives it.
 ///
 /// Open user.db (creating the schema if absent) · copy content.db when the
@@ -178,16 +188,16 @@ Future<BootstrapResult> bootstrap({
     final settings = SettingsRepository(db);
     await settings.load();
 
-    // Glass asks the platform whether it will blur. It is awaited here rather
-    // than left running into the first frame: main.dart started it unawaited
-    // to protect the launch budget, and the right place for the round trip is
-    // a function that is already off the frame.
+    // Glass asks the platform whether it will blur. Awaited here rather than
+    // left running into the first frame — but bounded, because a native side
+    // that never answers would otherwise hold the app on the launch screen
+    // for ever, which is the blank screen FR-S1-03 exists to prevent. The
+    // defaults already say blur is fine, so giving up costs nothing.
     final capability = glass ?? (GlassCapability()..startFrameWatchdog());
-    await capability.queryPlatform();
+    await capability.queryPlatform().timeout(glassTimeout, onTimeout: () {});
 
-    final mode = settings
-        .read(SettingKeys.themeMode)
-        .resolve(platformBrightness);
+    final setting = settings.read(SettingKeys.themeMode);
+    final mode = setting.resolve(platformBrightness);
 
     watch.stop();
     return BootstrapReady(
@@ -199,6 +209,7 @@ Future<BootstrapResult> bootstrap({
         contentVersion: version,
         contentChange: change,
         themeMode: mode,
+        themeSetting: setting,
         isFirstRun: firstRun,
         elapsed: watch.elapsed,
       ),
