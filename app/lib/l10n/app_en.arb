@@ -70,6 +70,26 @@
     "description": "Action on the bootstrap error screen and on Export / import. Writes everything the learner has done to a JSON file. FR-S1-03, FR-M6-01."
   },
 
+  "tabToday": "Today",
+  "@tabToday": {
+    "description": "First tab of the shell (branch 0), showing the day's plan. docs/01-architecture/navigation.md."
+  },
+
+  "tabLearn": "Learn",
+  "@tabLearn": {
+    "description": "Second tab of the shell (branch 1): the course, grammar, categories and exams."
+  },
+
+  "tabSearch": "Search",
+  "@tabSearch": {
+    "description": "Third tab of the shell (branch 2): look up any word."
+  },
+
+  "tabMe": "Me",
+  "@tabMe": {
+    "description": "Fourth tab of the shell (branch 3): progress, settings and data."
+  },
+
   "undo": "Undo",
   "@undo": {
     "description": "Action on the snackbar shown after a reversible change, such as rating a card. See FR-T2-02."

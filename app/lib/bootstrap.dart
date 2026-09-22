@@ -9,7 +9,9 @@ import 'package:deutschplan/data/db/content_dao.dart';
 import 'package:deutschplan/data/db/content_update.dart';
 import 'package:deutschplan/data/repositories/setting_keys.dart';
 import 'package:deutschplan/data/repositories/settings_repository.dart';
+import 'package:deutschplan/router/app_router.dart';
 import 'package:flutter/foundation.dart' show immutable;
+import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart' show Brightness;
 import 'package:path_provider/path_provider.dart';
 
@@ -37,6 +39,7 @@ class Bootstrap {
     required this.content,
     required this.settings,
     required this.glass,
+    required this.router,
     required this.contentVersion,
     required this.contentChange,
     required this.themeMode,
@@ -49,6 +52,15 @@ class Bootstrap {
   final ContentDao content;
   final SettingsRepository settings;
   final GlassCapability glass;
+
+  /// Built here and held for the life of the app.
+  ///
+  /// A `GoRouter` owns the navigation stack, so one rebuilt on every frame
+  /// loses it — and one held in a static is shared by every instance, which
+  /// makes two widget tests in a file share a history. Bootstrap is where the
+  /// app's singletons are made, and it is also what will know the deep link
+  /// to open with (#70).
+  final GoRouter router;
 
   /// `meta.content_version` of the course now attached.
   final String contentVersion;
@@ -206,6 +218,7 @@ Future<BootstrapResult> bootstrap({
         content: content,
         settings: settings,
         glass: capability,
+        router: buildRouter(),
         contentVersion: version,
         contentChange: change,
         themeMode: mode,

@@ -3,7 +3,7 @@ import 'package:deutschplan/core/theme/dp_surface.dart';
 import 'package:deutschplan/core/theme/dp_tokens.dart';
 import 'package:deutschplan/core/typography/dp_text.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
-import 'package:flutter/foundation.dart' show defaultTargetPlatform;
+import 'package:flutter/foundation.dart' show defaultTargetPlatform, immutable;
 import 'package:material_ui/material_ui.dart';
 
 /// Which platform's chrome to draw.
@@ -469,6 +469,84 @@ abstract final class Adaptive {
 
     if (confirmed != true) return null;
     return TimeOfDay(hour: picked.hour, minute: picked.minute);
+  }
+}
+
+/// One destination of [AdaptiveNavBar].
+@immutable
+class AdaptiveNavDestination {
+  const AdaptiveNavDestination({
+    required this.icon,
+    required this.selectedIcon,
+    required this.label,
+  });
+
+  final IconData icon;
+
+  /// Filled when the tab is the current one; the artboards draw both.
+  final IconData selectedIcon;
+
+  final String label;
+}
+
+/// The four-tab bar at the foot of the shell.
+///
+/// Android draws a Material `NavigationBar`, iOS the flat bar with a hairline
+/// top border that `CupertinoTabBar` gives — the same difference every other
+/// `Adaptive*` wrapper exists for. Built here rather than in the router so the
+/// platform branch stays in one place and the shell is only routing.
+class AdaptiveNavBar extends StatelessWidget {
+  const AdaptiveNavBar({
+    required this.destinations,
+    required this.currentIndex,
+    required this.onSelected,
+    super.key,
+  });
+
+  final List<AdaptiveNavDestination> destinations;
+  final int currentIndex;
+
+  /// Called on every tap, including a tap on the tab already showing — the
+  /// shell needs those to scroll to top and then pop to root.
+  final ValueChanged<int> onSelected;
+
+  @override
+  Widget build(BuildContext context) {
+    final tokens = context.tokens;
+
+    if (context.isCupertino) {
+      return cupertino.CupertinoTabBar(
+        currentIndex: currentIndex,
+        onTap: onSelected,
+        backgroundColor: tokens.surface.card,
+        activeColor: tokens.color.ink,
+        inactiveColor: tokens.color.textSecondary,
+        items: <cupertino.BottomNavigationBarItem>[
+          for (final destination in destinations)
+            cupertino.BottomNavigationBarItem(
+              icon: Icon(destination.icon),
+              activeIcon: Icon(destination.selectedIcon),
+              label: destination.label,
+            ),
+        ],
+      );
+    }
+
+    return NavigationBar(
+      selectedIndex: currentIndex,
+      backgroundColor: tokens.surface.card,
+      // Material swallows a tap on the current destination; the shell's
+      // re-tap behaviour depends on hearing it, so this is wired directly.
+      onDestinationSelected: onSelected,
+      destinations: <Widget>[
+        for (final destination in destinations)
+          NavigationDestination(
+            icon: Icon(destination.icon),
+            selectedIcon: Icon(destination.selectedIcon),
+            label: destination.label,
+          ),
+      ],
+    );
   }
 }
 

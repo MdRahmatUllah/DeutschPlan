@@ -14,5 +14,9 @@
   "bootstrapErrorContent": "DeutschPlan কোর্সটি ইনস্টল করতে পারেনি।",
   "bootstrapErrorSettings": "DeutschPlan আপনার সেটিংস পড়তে পারেনি।",
   "exportProgress": "অগ্রগতি রপ্তানি করুন",
+  "tabToday": "আজ",
+  "tabLearn": "শিখুন",
+  "tabSearch": "খুঁজুন",
+  "tabMe": "আমি",
   "undo": "পূর্বাবস্থায় ফেরান"
 }

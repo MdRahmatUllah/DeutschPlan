@@ -106,16 +106,29 @@ void main() {
   test('four hundred candidates cost less than a frame', () {
     // The number search.md caps tier 3 at. The point is not the exact figure
     // but that the Dart half of a keystroke is nowhere near the 50 ms budget.
+    //
+    // Best of five, not one run: the suite runs in parallel and a single
+    // sample measures whatever else the machine was doing. The best sample is
+    // the one that measures this code, and a real slowdown — a full matrix
+    // instead of three rows — moves it by more than an order of magnitude.
     final candidates = <String>[
       for (var i = 0; i < 400; i++) 'wohnungsgeberbestatigung$i',
     ];
 
-    final watch = Stopwatch()..start();
-    for (final candidate in candidates) {
-      editDistance(candidate, 'wohnungsgeberbestatigung');
+    var best = Duration(days: 1);
+    for (var round = 0; round < 5; round++) {
+      final watch = Stopwatch()..start();
+      for (final candidate in candidates) {
+        editDistance(candidate, 'wohnungsgeberbestatigung');
+      }
+      watch.stop();
+      if (watch.elapsed < best) best = watch.elapsed;
     }
-    watch.stop();
 
-    expect(watch.elapsedMilliseconds, lessThan(16));
+    expect(
+      best.inMicroseconds / 1000,
+      lessThan(16),
+      reason: 'best of five was ${best.inMicroseconds / 1000} ms',
+    );
   });
 }
