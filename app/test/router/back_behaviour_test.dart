@@ -217,6 +217,45 @@ void main() {
       expect(l10n.examLeaveMessage, contains('timer'));
     });
 
+    testWidgets('two quick back presses ask once, not twice', (tester) async {
+      // The handler is async and shows a dialog, so a second press arriving
+      // while the first is still opening used to reach `ModalRoute.willPop`
+      // mid-transition and trip a framework assertion. Two fast presses in a
+      // timed exam is an ordinary input.
+      await pumpApp(tester, at: '/exam/7');
+
+      await tester.binding.handlePopRoute();
+      await tester.binding.handlePopRoute();
+      await tester.pumpAndSettle();
+
+      expect(find.text(l10n.examLeaveTitle), findsOneWidget);
+
+      await tester.tap(find.text(l10n.examLeaveCancel));
+      await tester.pumpAndSettle();
+
+      expect(
+        find.text(l10n.examLeaveTitle),
+        findsNothing,
+        reason: 'a second dialog was waiting behind the first',
+      );
+      expect(location(), '/exam/7');
+    });
+
+    testWidgets('and back still works afterwards', (tester) async {
+      // The re-entrancy flag has to clear, or one double-press would leave
+      // back dead for the rest of the exam.
+      await pumpApp(tester, at: '/exam/7');
+
+      await tester.binding.handlePopRoute();
+      await tester.binding.handlePopRoute();
+      await tester.pumpAndSettle();
+      await tester.tap(find.text(l10n.examLeaveCancel));
+      await tester.pumpAndSettle();
+
+      await pressBack(tester);
+      expect(find.text(l10n.examLeaveTitle), findsOneWidget);
+    });
+
     testWidgets('predictive back and the edge swipe are both off', (
       tester,
     ) async {

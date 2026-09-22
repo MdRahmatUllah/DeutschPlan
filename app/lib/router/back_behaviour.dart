@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:deutschplan/core/adaptive/adaptive.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
+import 'package:flutter/scheduler.dart' show SchedulerBinding;
 import 'package:material_ui/material_ui.dart';
 
 /// Android back, inside the shell. `navigation.md`:
@@ -62,7 +65,7 @@ class ShellBackHandler extends StatelessWidget {
 /// `canPop: false` is also what turns off the iOS edge swipe and the Android
 /// predictive-back preview for this route, which is the rest of #69's
 /// criteria: one mechanism, not three.
-class ExamBackGuard extends StatelessWidget {
+class ExamBackGuard extends StatefulWidget {
   const ExamBackGuard({required this.child, required this.onLeave, super.key});
 
   final Widget child;
@@ -72,12 +75,35 @@ class ExamBackGuard extends StatelessWidget {
   final VoidCallback onLeave;
 
   @override
-  Widget build(BuildContext context) => PopScope(
-    canPop: false,
-    onPopInvokedWithResult: (didPop, _) async {
-      if (didPop) return;
-      final l10n = AppLocalizations.of(context);
+  State<ExamBackGuard> createState() => _ExamBackGuardState();
+}
 
+class _ExamBackGuardState extends State<ExamBackGuard> {
+  /// Whether the dialog is already up.
+  ///
+  /// Not defensive coding. The handler is async and shows a dialog, so a
+  /// second back press arriving while the first is still opening reaches
+  /// `ModalRoute.willPop` mid-transition and trips a framework assertion —
+  /// `'scope != null': is not true`. Two fast presses during a timed exam is
+  /// an ordinary input, and in release the assertion is stripped and the
+  /// behaviour is undefined rather than absent.
+  var _asking = false;
+
+  Future<void> _ask() async {
+    if (_asking) return;
+    setState(() => _asking = true);
+
+    try {
+      // A frame before the dialog goes up. Without it a second press landing
+      // in the same frame reaches the dialog's route while it is still being
+      // installed, and `ModalRoute.willPop` asserts `scope != null`. Waiting
+      // means the second press finds the exam route still on top and is
+      // swallowed by `_asking` above — which is the only place this app can
+      // stop it.
+      await SchedulerBinding.instance.endOfFrame;
+      if (!mounted) return;
+
+      final l10n = AppLocalizations.of(context);
       final leave = await Adaptive.showConfirm(
         context: context,
         title: l10n.examLeaveTitle,
@@ -87,8 +113,19 @@ class ExamBackGuard extends StatelessWidget {
         destructive: true,
       );
 
-      if (leave ?? false) onLeave();
+      if ((leave ?? false) && mounted) widget.onLeave();
+    } finally {
+      if (mounted) setState(() => _asking = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) => PopScope(
+    canPop: false,
+    onPopInvokedWithResult: (didPop, _) {
+      if (didPop) return;
+      unawaited(_ask());
     },
-    child: child,
+    child: widget.child,
   );
 }
