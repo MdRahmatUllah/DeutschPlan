@@ -30,6 +30,31 @@ void main() {
     }
   });
 
+  test('every key in the template is translated in every other ARB', () {
+    // gen_l10n falls back to English for a key a locale lacks, silently —
+    // `splashPreparing` shipped that way, and the splash read English under
+    // Bangla with nothing failing. Reading the files is the only place the
+    // gap is visible; the generated class has already papered over it.
+    Set<String> keysOf(File file) =>
+        (jsonDecode(file.readAsStringSync()) as Map<String, Object?>).keys
+            .where((key) => !key.startsWith('@'))
+            .toSet();
+
+    final template = keysOf(File('lib/l10n/app_en.arb'));
+    for (final arb
+        in Directory('lib/l10n')
+            .listSync()
+            .whereType<File>()
+            .where((f) => f.path.endsWith('.arb'))
+            .where((f) => !f.path.endsWith('app_en.arb'))) {
+      expect(
+        template.difference(keysOf(arb)),
+        isEmpty,
+        reason: '${arb.path} is missing these keys, so they show in English',
+      );
+    }
+  });
+
   test('every supported locale resolves every key', () async {
     for (final locale in AppLocalizations.supportedLocales) {
       final l10n = await AppLocalizations.delegate.load(locale);

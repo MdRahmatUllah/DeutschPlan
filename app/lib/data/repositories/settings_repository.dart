@@ -33,6 +33,18 @@ class SettingsRepository {
     _values = <String, String>{for (final row in rows) row.key: row.value};
   }
 
+  /// One setting straight from the table, before [load] has run.
+  ///
+  /// For the splash only: it is on screen before bootstrap reaches the
+  /// settings step, and still has to speak the learner's language rather than
+  /// the phone's. Everything else reads through [read].
+  static Future<T> peek<T>(AppDatabase db, SettingKey<T> key) async {
+    final row = await (db.select(
+      db.settings,
+    )..where((t) => t.key.equals(key.name))).getSingleOrNull();
+    return row == null ? key.defaultValue : key.decode(row.value);
+  }
+
   /// The current value, or the documented default when nothing is stored.
   T read<T>(SettingKey<T> key) {
     // Not an assert: those are stripped from release builds, and the failure

@@ -37,5 +37,6 @@
   "onboardingMeaningBoth": "দুটোই",
   "onboardingMeaningNote": "এটি অ্যাপের ভাষাও ঠিক করে দেয়। পরে সেটিংসে দুটোই বদলাতে পারবেন।",
   "onboardingMeaningSample": "{german} → {meaning}",
-  "onboardingMeaningSampleBoth": "{english} · {bangla}"
+  "onboardingMeaningSampleBoth": "{english} · {bangla}",
+  "splashPreparing": "আপনার কোর্স প্রস্তুত হচ্ছে · শুধু প্রথমবার"
 }

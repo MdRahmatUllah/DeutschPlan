@@ -52,6 +52,7 @@ void main() {
     WidgetTester tester, {
     Word? sample,
     bool noSample = false,
+    bool sampleThrows = false,
     MeaningLanguage? stored,
     DpMode mode = DpMode.light,
     VoidCallback? onContinue,
@@ -72,7 +73,9 @@ void main() {
         overrides: <Override>[
           settingsProvider.overrideWithValue(settings),
           meaningSampleProvider.overrideWith(
-            (ref) async => word == null
+            (ref) async => sampleThrows
+                ? throw StateError('content.db is not attached')
+                : word == null
                 ? null
                 : WordWithState(
                     word: word,
@@ -257,6 +260,23 @@ void main() {
       expect(
         settings.read(SettingKeys.meaningLanguage),
         MeaningLanguage.bangla,
+      );
+    });
+
+    testWidgets('and if content.db fails, the page does not', (tester) async {
+      // Held by Riverpod 3's `AsyncValue.value`, which is null on error. A
+      // move to `requireValue` would throw here instead, on the one screen
+      // where the learner has not seen the app work yet.
+      await pump(tester, sampleThrows: true);
+
+      expect(tester.takeException(), isNull);
+      expect(find.textContaining('→'), findsNothing);
+
+      await tester.tap(find.text(l10n.onboardingMeaningEnglish));
+      await tester.pump();
+      expect(
+        settings.read(SettingKeys.meaningLanguage),
+        MeaningLanguage.english,
       );
     });
 

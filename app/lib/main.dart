@@ -72,7 +72,11 @@ class BootstrapHost extends StatefulWidget {
   const BootstrapHost({super.key, this.run});
 
   /// Overridden in tests. Defaults to the real [bootstrap].
-  final Future<BootstrapResult> Function({Brightness platformBrightness})? run;
+  final Future<BootstrapResult> Function({
+    Brightness platformBrightness,
+    void Function(UiLanguage)? onUiLanguage,
+  })?
+  run;
 
   @override
   State<BootstrapHost> createState() => _BootstrapHostState();
@@ -80,6 +84,10 @@ class BootstrapHost extends StatefulWidget {
 
 class _BootstrapHostState extends State<BootstrapHost> {
   Widget? _app;
+
+  /// The learner's language, once bootstrap has read it. Until then the
+  /// splash follows the phone — there is nothing else to follow.
+  Locale? _splashLocale;
 
   @override
   void initState() {
@@ -91,6 +99,9 @@ class _BootstrapHostState extends State<BootstrapHost> {
     final platform = PlatformDispatcher.instance;
     final result = await (widget.run ?? bootstrap)(
       platformBrightness: platform.platformBrightness,
+      onUiLanguage: (ui) {
+        if (mounted) setState(() => _splashLocale = ui.locale);
+      },
     );
 
     // ProviderScope at the very root, on both paths: riverpod_lint enforces
@@ -152,6 +163,7 @@ class _BootstrapHostState extends State<BootstrapHost> {
         // the hand-off does not change colour.
         theme: AppTheme.light(),
         darkTheme: AppTheme.dark(),
+        locale: _splashLocale,
         localizationsDelegates: appLocalizationsDelegates,
         supportedLocales: supportedLocales,
         home: const SplashProgressGate(),
@@ -197,6 +209,15 @@ Widget appFor(BootstrapResult result) => switch (result) {
 /// Supported UI languages, English first — see `supportedLocales` in [DeutschPlanApp].
 const List<Locale> supportedLocales = <Locale>[Locale('en'), Locale('bn')];
 
+/// The locale for each app language. `UiLanguage` lives in the data layer,
+/// which knows nothing of Flutter, so the mapping lives here.
+extension UiLanguageLocale on UiLanguage {
+  Locale get locale => switch (this) {
+    UiLanguage.english => const Locale('en'),
+    UiLanguage.bangla => const Locale('bn'),
+  };
+}
+
 /// The delegates every `MaterialApp` here takes — not gen_l10n's own list.
 ///
 /// gen_l10n names `flutter_localizations`' Material and Cupertino delegates,
@@ -240,10 +261,7 @@ class DeutschPlanApp extends ConsumerWidget {
       onGenerateTitle: (context) => AppLocalizations.of(context).appTitle,
       // `ui_language`, not the device: S2 page 2 and Settings both set it, and
       // a learner who chose বাংলা on an English phone means it.
-      locale: switch (ref.watch(languagesProvider).ui) {
-        UiLanguage.english => const Locale('en'),
-        UiLanguage.bangla => const Locale('bn'),
-      },
+      locale: ref.watch(languagesProvider).ui.locale,
       theme: AppTheme.light(),
       darkTheme: AppTheme.dark(),
       themeMode: switch (mode) {

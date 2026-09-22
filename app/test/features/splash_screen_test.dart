@@ -14,6 +14,7 @@ import 'package:deutschplan/features/splash/splash_screen.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
 import 'package:deutschplan/main.dart'
     show BootstrapHost, appLocalizationsDelegates, supportedLocales;
+import 'package:deutschplan/data/repositories/setting_keys.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 
@@ -225,8 +226,10 @@ void main() {
 
       await tester.pumpWidget(
         BootstrapHost(
-          run: ({Brightness platformBrightness = Brightness.light}) =>
-              finished.future,
+          run: ({
+            Brightness platformBrightness = Brightness.light,
+            void Function(UiLanguage)? onUiLanguage,
+          }) => finished.future,
         ),
       );
       await tester.pump();
@@ -253,13 +256,59 @@ void main() {
       );
     });
 
+    testWidgets('and it switches to the learner’s language once read', (
+      tester,
+    ) async {
+      // The splash starts in the phone's language — nothing else is known —
+      // and moves to `ui_language` as soon as bootstrap has read it, rather
+      // than waiting for the app to take over and switching then.
+      final finished = Completer<BootstrapResult>();
+      void Function(UiLanguage)? tell;
+
+      await tester.pumpWidget(
+        BootstrapHost(
+          run:
+              ({
+                Brightness platformBrightness = Brightness.light,
+                void Function(UiLanguage)? onUiLanguage,
+              }) {
+                tell = onUiLanguage;
+                return finished.future;
+              },
+        ),
+      );
+      await tester.pump();
+      expect(find.text(l10n.splashPreparing), findsOneWidget);
+
+      tell!(UiLanguage.bangla);
+      await tester.pump();
+
+      final bn = await AppLocalizations.delegate.load(const Locale('bn'));
+      expect(find.text(bn.splashPreparing), findsOneWidget);
+      expect(tester.takeException(), isNull);
+
+      finished.complete(
+        BootstrapFailed(
+          BootstrapFailure(
+            step: BootstrapStep.content,
+            error: 'no content',
+            stackTrace: StackTrace.empty,
+            db: null,
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+    });
+
     testWidgets('and the progress line appears on a slow one', (tester) async {
       final finished = Completer<BootstrapResult>();
 
       await tester.pumpWidget(
         BootstrapHost(
-          run: ({Brightness platformBrightness = Brightness.light}) =>
-              finished.future,
+          run: ({
+            Brightness platformBrightness = Brightness.light,
+            void Function(UiLanguage)? onUiLanguage,
+          }) => finished.future,
         ),
       );
       await tester.pump(const Duration(milliseconds: 601));

@@ -92,11 +92,13 @@ void main() {
   Future<Bootstrap> run({
     AppDatabase Function()? open,
     Brightness brightness = Brightness.light,
+    void Function(UiLanguage)? onUiLanguage,
   }) async {
     final result = await bootstrap(
       openDatabase: open ?? openReal,
       platformBrightness: brightness,
       glass: GlassCapability(),
+      onUiLanguage: onUiLanguage,
     );
     expect(
       result,
@@ -292,6 +294,41 @@ void main() {
 
       expect(second.contentVersion, '202602021200');
       expect(second.contentChange, isNotNull);
+    });
+  });
+
+  group('the splash hears the app language early', () {
+    // The splash renders before settings load, so without this it speaks the
+    // phone's language and the app then switches to the learner's — on every
+    // launch, for anyone whose two differ.
+    test('before the course is installed, on a first run', () async {
+      // On a first run the content install is most of the wait. Hearing the
+      // language after it would leave the splash in the wrong one throughout.
+      bool? contentThere;
+      UiLanguage? heard;
+
+      final ready = await run(
+        onUiLanguage: (ui) {
+          heard = ui;
+          contentThere = File('${support.path}/content.db').existsSync();
+        },
+      );
+      addTearDown(ready.dispose);
+
+      expect(heard, UiLanguage.english, reason: 'the documented default');
+      expect(contentThere, isFalse);
+    });
+
+    test('and it is the one the learner chose', () async {
+      final first = await run();
+      await first.settings.write(SettingKeys.uiLanguage, UiLanguage.bangla);
+      await first.dispose();
+
+      UiLanguage? heard;
+      final ready = await run(onUiLanguage: (ui) => heard = ui);
+      addTearDown(ready.dispose);
+
+      expect(heard, UiLanguage.bangla);
     });
   });
 
