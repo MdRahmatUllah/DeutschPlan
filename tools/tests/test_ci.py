@@ -100,6 +100,42 @@ def test_it_runs_on_every_pull_request(workflow: dict) -> None:
     assert "main" in triggers["push"]["branches"]
 
 
+def test_the_goldens_are_verified(commands: str, workflow: dict) -> None:
+    """`app/test/golden/README.md`: "CI should run goldens-verify on a single
+    fixed runner."
+
+    `make test` excludes them, so without a job of their own the six committed
+    PNGs are checked by nobody and testing.md's "reviewed as images in the PR"
+    has nothing behind it.
+    """
+    assert "test/golden" in commands, "nothing runs the goldens"
+
+    runners = {
+        job["runs-on"]
+        for job in workflow["jobs"].values()
+        if "test/golden" in yaml.safe_dump(job)
+    }
+    assert runners == {"windows-latest"}, (
+        f"the goldens were generated on Windows; on {runners} the diff would "
+        f"be about the renderer, not the design"
+    )
+
+
+def test_the_pub_cache_is_not_keyed_on_the_sources(workflow: dict) -> None:
+    """Hundreds of megabytes that only change when the lock file does.
+
+    Keyed on the sources as well, every PR touching one Dart file saves a
+    fresh copy and evicts the entries that would have been hits.
+    """
+    for job in workflow["jobs"].values():
+        for step in job["steps"]:
+            if step.get("with", {}).get("path", "").strip() != "~/.pub-cache":
+                continue
+            key = step["with"]["key"]
+            assert "pubspec.lock" in key
+            assert ".dart" not in key, f"the pub cache is keyed on sources: {key}"
+
+
 def test_both_jobs_are_cached(workflow: dict) -> None:
     """#23 asks for pub and build_runner output to be cached."""
     cached = "\n".join(
