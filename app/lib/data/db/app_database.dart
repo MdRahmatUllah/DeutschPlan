@@ -143,7 +143,12 @@ class AppDatabase extends _$AppDatabase {
       ).firstMatch(sql);
       return on != null && ownTables.contains(on.group(1));
     }
-    return false;
+    // Anything else belongs here. The content tables are what is being
+    // excluded, so the default has to be "create it" — otherwise a trigger or
+    // a view added to `user_schema.drift` would be skipped without a word, the
+    // database would open, and whatever it enforced would quietly stop being
+    // enforced.
+    return true;
   }
 
   /// The version the file itself reports, which is what a raw

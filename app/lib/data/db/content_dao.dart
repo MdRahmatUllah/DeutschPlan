@@ -85,9 +85,18 @@ class ContentDao extends DatabaseAccessor<AppDatabase> with _$ContentDaoMixin {
       final row = await customSelect(
         "SELECT value FROM probe.meta WHERE key = 'content_version'",
       ).getSingleOrNull();
-      await customStatement('DETACH DATABASE probe');
       return row?.read<String>('value') ?? '';
     } finally {
+      // Detached here, not after the SELECT: a truncated asset throws between
+      // the two, and a probe left attached makes every later call fail with
+      // "database probe is already in use". The app would then stop noticing
+      // content updates for the rest of the session, with nothing on screen
+      // to say why.
+      try {
+        await customStatement('DETACH DATABASE probe');
+      } on Object {
+        // It was never attached, which is the only way this throws here.
+      }
       if (probe.existsSync()) probe.deleteSync();
     }
   }
@@ -98,12 +107,27 @@ class ContentDao extends DatabaseAccessor<AppDatabase> with _$ContentDaoMixin {
 
   /// Replaces the installed copy with the bundled asset.
   ///
-  /// Detaches first: overwriting a file SQLite has open is how a database
-  /// becomes unreadable rather than merely out of date.
+  /// The new copy is written beside the old one and only swapped in once it is
+  /// on disk. Detaching first and then copying would leave the connection with
+  /// no `c` schema at all if the copy failed — a full disk, a revoked
+  /// permission — and every screen that reads the course would error until the
+  /// app was restarted. Stale content is the better failure.
+  ///
+  /// The detach still has to happen before the rename: overwriting a file
+  /// SQLite has open is how a database becomes unreadable rather than merely
+  /// out of date.
   Future<void> replaceWithBundled() async {
+    final installed = await installedFile();
+    final incoming = File('${installed.path}.new');
+
+    await _copyAsset(incoming);
     await detach();
-    await _copyAsset(await installedFile());
-    await attach();
+    try {
+      incoming.renameSync(installed.path);
+    } finally {
+      // Whatever happened, the course has to come back.
+      await attach();
+    }
   }
 
   Future<void> _copyAsset(File target) async {
