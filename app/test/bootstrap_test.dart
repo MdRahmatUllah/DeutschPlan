@@ -4,6 +4,8 @@ library;
 import 'dart:io';
 
 import 'package:deutschplan/bootstrap.dart';
+import 'package:deutschplan/core/components/dp_button.dart';
+import 'package:deutschplan/features/bootstrap/bootstrap_error_screen.dart';
 import 'package:deutschplan/core/theme/dp_tokens.dart';
 import 'package:deutschplan/core/theme/glass_capability.dart';
 import 'package:deutschplan/core/theme/theme_mode.dart';
@@ -19,8 +21,7 @@ import 'package:drift/native.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:material_ui/material_ui.dart'
-    show Brightness, FilledButton, Text, TextButton;
+import 'package:material_ui/material_ui.dart' show Brightness, Text;
 import 'package:path_provider_platform_interface/path_provider_platform_interface.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 import 'package:sqlite3/sqlite3.dart';
@@ -431,7 +432,7 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      await tester.tap(find.byType(FilledButton));
+      await tester.tap(_retryButton);
       expect(retried, 1);
     });
 
@@ -442,7 +443,7 @@ void main() {
         BootstrapErrorApp(failure: failureOf(BootstrapStep.database)),
       );
       await tester.pumpAndSettle();
-      expect(find.byType(TextButton), findsNothing);
+      expect(_exportButton, findsNothing);
 
       final db = AppDatabase.memory();
       addTearDown(db.close);
@@ -472,10 +473,10 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      final retry = tester.widget<FilledButton>(find.byType(FilledButton));
+      final retry = tester.widget<DpButton>(_retryButton);
       expect(retry.onPressed, isNotNull, reason: 'Retry is disabled');
 
-      await tester.tap(find.byType(FilledButton));
+      await tester.tap(_retryButton);
       await tester.pumpAndSettle();
       expect(attempts, 1);
     });
@@ -520,7 +521,7 @@ void main() {
         findsOneWidget,
       );
 
-      await tester.tap(find.byType(FilledButton));
+      await tester.tap(_retryButton);
       await tester.pumpAndSettle();
 
       expect(find.byType(BootstrapErrorApp), findsNothing);
@@ -537,7 +538,7 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      await tester.tap(find.byType(FilledButton));
+      await tester.tap(_retryButton);
       await tester.pumpAndSettle();
 
       expect(
@@ -557,6 +558,12 @@ void main() {
 }
 
 /// Serves [assets] to `rootBundle`, replacing whatever was there.
+/// The error screen's two actions, found by what they are rather than by the
+/// Material type they used to be: #86 rebuilt them as `DpButton`, and a finder
+/// on `FilledButton` was really asserting which framework widget was inside.
+final Finder _retryButton = find.widgetWithText(DpButton, 'Retry');
+final Finder _exportButton = find.widgetWithText(DpButton, 'Export progress');
+
 void _serveAssets(Map<String, Uint8List> assets) {
   TestWidgetsFlutterBinding.instance.defaultBinaryMessenger
       .setMockMessageHandler('flutter/assets', (ByteData? message) async {

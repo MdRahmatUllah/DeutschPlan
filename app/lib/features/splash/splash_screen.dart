@@ -47,7 +47,7 @@ class SplashScreen extends StatelessWidget {
               // The mark is decorative. A reader that announced "D,
               // DeutschPlan" would say nothing about the wait; the caption
               // below is the screen's actual announcement.
-              const ExcludeSemantics(child: _Mark()),
+              const ExcludeSemantics(child: SplashMark()),
               const SizedBox(height: 40),
               // The line holds its space whether or not it is drawn, so the
               // mark does not jump 3 px when bootstrap crosses the threshold.
@@ -122,8 +122,12 @@ abstract final class _SplashMetrics {
 }
 
 /// The "D" in its speech bubble, plus the wordmark.
-class _Mark extends StatelessWidget {
-  const _Mark();
+///
+/// Public because S1's error state (#86) draws the same mark: the learner is
+/// looking at the splash when bootstrap fails, and keeping the mark is what
+/// stops the failure reading as a crash into a different app.
+class SplashMark extends StatelessWidget {
+  const SplashMark({super.key});
 
   @override
   Widget build(BuildContext context) {

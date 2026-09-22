@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:deutschplan/features/bootstrap/bootstrap_error_screen.dart';
 import 'package:deutschplan/features/splash/splash_screen.dart';
 import 'package:flutter/foundation.dart' show kReleaseMode, debugPrint;
 import 'package:deutschplan/bootstrap.dart';
@@ -285,64 +286,3 @@ class _BootstrapGateState extends State<BootstrapGate> {
 /// Its own `MaterialApp`, because the failure may well be the database the
 /// real one is built from — a theme resolved from settings that would not load
 /// is not available here.
-class BootstrapErrorApp extends StatelessWidget {
-  const BootstrapErrorApp({
-    required this.failure,
-    this.onRetry,
-    this.onExport,
-    super.key,
-  });
-
-  final BootstrapFailure failure;
-  final VoidCallback? onRetry;
-  final VoidCallback? onExport;
-
-  @override
-  Widget build(BuildContext context) => MaterialApp(
-    theme: AppTheme.light(),
-    darkTheme: AppTheme.dark(),
-    localizationsDelegates: AppLocalizations.localizationsDelegates,
-    supportedLocales: supportedLocales,
-    home: Scaffold(
-      body: SafeArea(
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(24),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                Builder(
-                  builder: (context) {
-                    final l10n = AppLocalizations.of(context);
-                    return Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: <Widget>[
-                        Text(switch (failure.step) {
-                          BootstrapStep.database => l10n.bootstrapErrorDatabase,
-                          BootstrapStep.content => l10n.bootstrapErrorContent,
-                          BootstrapStep.settings => l10n.bootstrapErrorSettings,
-                        }, textAlign: TextAlign.center),
-                        const SizedBox(height: 16),
-                        FilledButton(
-                          onPressed: onRetry,
-                          child: Text(l10n.retry),
-                        ),
-                        // Only when user.db opened: the button has to do
-                        // something, or it is a promise the screen cannot keep.
-                        if (failure.canExport)
-                          TextButton(
-                            onPressed: onExport,
-                            child: Text(l10n.exportProgress),
-                          ),
-                      ],
-                    );
-                  },
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    ),
-  );
-}
