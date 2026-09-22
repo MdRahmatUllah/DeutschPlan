@@ -10,5 +10,9 @@
   "ratingHard": "কঠিন",
   "ratingGood": "ভালো",
   "ratingEasy": "সহজ",
+  "bootstrapErrorDatabase": "DeutschPlan আপনার ডেটা খুলতে পারেনি।",
+  "bootstrapErrorContent": "DeutschPlan কোর্সটি ইনস্টল করতে পারেনি।",
+  "bootstrapErrorSettings": "DeutschPlan আপনার সেটিংস পড়তে পারেনি।",
+  "exportProgress": "অগ্রগতি রপ্তানি করুন",
   "undo": "পূর্বাবস্থায় ফেরান"
 }

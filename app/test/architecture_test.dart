@@ -249,6 +249,86 @@ void main() {
           'modify it:\n${offenders.join('\n')}',
     );
   });
+
+  test('FR-S1-01 — no I/O inside a widget build()', () {
+    // "Keep all I/O in bootstrap() before runApp" — splash.md, and the
+    // acceptance criterion on #66. A disk read inside build() runs on every
+    // rebuild, on the UI isolate, behind a frame that is already being laid
+    // out — and it is invisible until a device is slow enough to show it.
+    //
+    // Matched on the text of each build() body rather than on an import,
+    // because a file may legitimately import dart:io for something that is
+    // not in build().
+    final io = RegExp(
+      r'\b('
+      r'File\s*\(|Directory\s*\(|rootBundle\b|'
+      r'getApplication\w*Directory|getTemporaryDirectory|'
+      r'readAsString|readAsBytes|writeAsString|writeAsBytes|'
+      r'existsSync|listSync|deleteSync'
+      r')',
+    );
+
+    final offenders = <String>[];
+    for (final file in _dartFilesIn('lib')) {
+      for (final body in _buildBodies(file.readAsStringSync())) {
+        for (final match in io.allMatches(body)) {
+          offenders.add('${_rel(file)}: ${match.group(0)} inside build()');
+        }
+      }
+    }
+
+    expect(
+      offenders,
+      isEmpty,
+      reason:
+          'move it into bootstrap() or a provider that resolves before the '
+          'frame:\n${offenders.join('\n')}',
+    );
+  });
+}
+
+/// The source of every `build(BuildContext …)` body in [source].
+///
+/// Brace-matched rather than regex-matched: a regex cannot find the end of a
+/// method, and stopping at the next blank line would skip exactly the long
+/// build methods worth checking.
+Iterable<String> _buildBodies(String source) sync* {
+  final signature = RegExp(r'\bbuild\s*\(\s*BuildContext\b');
+  for (final match in signature.allMatches(source)) {
+    final open = source.indexOf('{', match.end);
+    final arrow = source.indexOf('=>', match.end);
+
+    // An expression body: up to the statement's semicolon at depth zero.
+    if (arrow != -1 && (open == -1 || arrow < open)) {
+      final end = _endOfExpression(source, arrow);
+      if (end != -1) yield source.substring(arrow, end);
+      continue;
+    }
+    if (open == -1) continue;
+
+    var depth = 0;
+    for (var i = open; i < source.length; i++) {
+      if (source[i] == '{') depth++;
+      if (source[i] == '}') {
+        depth--;
+        if (depth == 0) {
+          yield source.substring(open, i + 1);
+          break;
+        }
+      }
+    }
+  }
+}
+
+int _endOfExpression(String source, int arrow) {
+  var depth = 0;
+  for (var i = arrow; i < source.length; i++) {
+    final char = source[i];
+    if (char == '(' || char == '[' || char == '{') depth++;
+    if (char == ')' || char == ']' || char == '}') depth--;
+    if (char == ';' && depth == 0) return i;
+  }
+  return -1;
 }
 
 /// Repo-relative path with forward slashes on every platform.
