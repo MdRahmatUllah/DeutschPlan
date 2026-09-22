@@ -248,4 +248,95 @@ ORDER BY plan_date DESC, word_uid
   @override
   Future<void> setLastPlannedDate(PlanDate date) =>
       _settings.write(SettingKeys.lastPlannedDate, parsePlanDate(date));
+
+  /// The step after [sublevelCode] in course order (BR-COURSE-05).
+  ///
+  /// Ordered by the level first and the sublevel second: `sublevels.ord` runs
+  /// 1, 2, 3 *within* a level, so A2.1 has ord 1 just as A1.1 does. Ordering
+  /// on it alone would loop back to the start of the course at every level
+  /// boundary.
+  @override
+  Future<String?> stepAfter(String sublevelCode) async {
+    final rows = await _db
+        .customSelect(
+          '''
+SELECT s.code AS code
+FROM sublevels s
+JOIN levels l ON l.code = s.level_code
+WHERE (l.ord, s.ord) > (
+  SELECT l2.ord, s2.ord
+  FROM sublevels s2 JOIN levels l2 ON l2.code = s2.level_code
+  WHERE s2.code = ?1
+)
+ORDER BY l.ord, s.ord
+LIMIT 1
+''',
+          variables: <Variable<Object>>[Variable<String>(sublevelCode)],
+          readsFrom: <ResultSetImplementation<Object, Object>>{
+            _db.sublevels,
+            _db.levels,
+          },
+        )
+        .get();
+
+    return rows.isEmpty ? null : rows.first.read<String>('code');
+  }
+
+  @override
+  Future<void> completeStep(String sublevelCode, PlanDate on) =>
+      _db.customStatement(
+        'UPDATE enrollments SET completed_on = ?2 '
+        'WHERE sublevel_code = ?1 AND completed_on IS NULL',
+        <Object>[sublevelCode, on],
+      );
+
+  /// Opens an enrollment.
+  ///
+  /// `INSERT OR REPLACE`, because a learner can come back to a step they
+  /// finished — restarting it should reopen the row rather than fail on the
+  /// primary key. The unique index on the open row is what keeps BR-COURSE-04
+  /// true, and `completeStep` runs first.
+  @override
+  Future<void> enroll(ActiveStep step) => _db.customStatement(
+    'INSERT OR REPLACE INTO enrollments '
+    '(sublevel_code, started_on, daily_new, study_days_mask, completed_on) '
+    'VALUES (?1, ?2, ?3, ?4, NULL)',
+    <Object>[
+      step.sublevelCode,
+      step.startedOn,
+      step.dailyNew,
+      step.studyDaysMask,
+    ],
+  );
+
+  @override
+  Future<bool> hasEverEnrolled() async {
+    final row = await _db
+        .customSelect('SELECT COUNT(*) AS n FROM enrollments')
+        .getSingle();
+    return row.read<int>('n') > 0;
+  }
+
+  /// The most recently closed enrollment.
+  ///
+  /// By `completed_on` and then `started_on`, so two steps closed on the same
+  /// day — which happens when a catch-up run burns through a short step —
+  /// still resolve to the later one.
+  @override
+  Future<String?> lastCompletedStep() async {
+    final rows = await _db
+        .customSelect(
+          '''
+SELECT sublevel_code AS code
+FROM enrollments
+WHERE completed_on IS NOT NULL
+ORDER BY completed_on DESC, started_on DESC
+LIMIT 1
+''',
+          readsFrom: <ResultSetImplementation<Object, Object>>{_db.enrollments},
+        )
+        .get();
+
+    return rows.isEmpty ? null : rows.first.read<String>('code');
+  }
 }

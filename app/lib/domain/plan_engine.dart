@@ -9,10 +9,10 @@
 /// here are about *dates*, and a test that has to build a database to move the
 /// calendar forward is a test nobody writes.
 ///
-/// This issue (#76) owns `openDay`, `generateNewThrough` and `ensureRevise`.
-/// The backlog query and skip semantics, auto-advance and the pause flag are
-/// #77; `rate` and friends are #78; the streak, the schedule check and the
-/// time estimate are #79; practice sentences are #80.
+/// #76 built `openDay`, `generateNewThrough` and `ensureRevise`; #77 added the
+/// backlog pause, auto-advance and the step-complete state. `rate` and friends
+/// are #78; the streak, the schedule check and the time estimate are #79;
+/// practice sentences are #80.
 library;
 
 import 'package:deutschplan/domain/fsrs.dart';
@@ -156,6 +156,30 @@ abstract interface class PlanStore {
   /// The last date `generateNewThrough` ran to, or null on a fresh install.
   Future<PlanDate?> lastPlannedDate();
   Future<void> setLastPlannedDate(PlanDate date);
+
+  /// The step after [sublevelCode] in course order, or null at the end of the
+  /// course (BR-COURSE-05).
+  Future<String?> stepAfter(String sublevelCode);
+
+  /// Closes the enrollment for [sublevelCode] as finished on [on].
+  Future<void> completeStep(String sublevelCode, PlanDate on);
+
+  /// Opens an enrollment. The pace carries over from the step that finished:
+  /// BR-PLAN-08 freezes it per enrollment, and advancing a step is not the
+  /// learner changing their mind about it.
+  Future<void> enroll(ActiveStep step);
+
+  /// Whether the learner has ever enrolled.
+  ///
+  /// What separates "has finished a step and not started the next" from "has
+  /// never started" — both have no active step, and Today shows a different
+  /// thing for each (BR-COURSE-05).
+  Future<bool> hasEverEnrolled();
+
+  /// The step whose enrollment closed most recently, or null if none has.
+  ///
+  /// Only used to name the step *after* it, for Today's *Start next step*.
+  Future<String?> lastCompletedStep();
 }
 
 /// Which block a plan row belongs to.
@@ -179,6 +203,9 @@ class DailyPlan {
     required this.backlog,
     required this.activeStep,
     required this.isStudyDay,
+    this.nextStep,
+    this.stepComplete = false,
+    this.newPaused = false,
   });
 
   final PlanDate date;
@@ -194,11 +221,28 @@ class DailyPlan {
   /// New words planned for an earlier day and still open (BR-PLAN-05).
   final List<String> backlog;
 
-  /// Null before the learner has enrolled, or once the last step is finished.
+  /// Null before the learner has enrolled, and between finishing a step and
+  /// starting the next with auto-advance off.
   final String? activeStep;
+
+  /// The step that follows, when there is no active one (BR-COURSE-05).
+  ///
+  /// Today shows "Step complete" and offers *Start next step*; null here with
+  /// [stepComplete] true means the course itself is finished.
+  final String? nextStep;
+
+  /// The active step ran out and nothing replaced it (BR-COURSE-05).
+  ///
+  /// Distinct from having never enrolled, which also leaves [activeStep] null
+  /// but is the onboarding case rather than a finished step.
+  final bool stepComplete;
 
   /// False on a rest day (BR-PLAN-01): no new words, no backlog growth.
   final bool isStudyDay;
+
+  /// BR-PLAN-07: the pause flag is on and the backlog is not empty, so no new
+  /// words were planned today. Revisions carried on.
+  final bool newPaused;
 
   /// The two word blocks, in BR-PLAN-02 order: Revise then New today.
   ///
@@ -220,13 +264,24 @@ class PlanEngine {
     required PlanStore store,
     required int reviseCount,
     required int backlogCatchupDays,
+    bool autoAdvance = true,
+    bool pauseNewWhenBacklog = false,
     Fsrs? fsrs,
-  }) : this._(store, reviseCount, backlogCatchupDays, fsrs ?? Fsrs());
+  }) : this._(
+         store,
+         reviseCount,
+         backlogCatchupDays,
+         autoAdvance,
+         pauseNewWhenBacklog,
+         fsrs ?? Fsrs(),
+       );
 
   PlanEngine._(
     this._store,
     this._reviseCount,
     this._backlogCatchupDays,
+    this._autoAdvance,
+    this._pauseNewWhenBacklog,
     this._fsrs,
   );
 
@@ -240,6 +295,13 @@ class PlanEngine {
   /// coming back after six months should not produce a thousand-word backlog.
   final int _backlogCatchupDays;
 
+  /// BR-COURSE-05, default on.
+  final bool _autoAdvance;
+
+  /// BR-PLAN-07, default off. Today offers it when the backlog passes three
+  /// times `daily_new`.
+  final bool _pauseNewWhenBacklog;
+
   final Fsrs _fsrs;
 
   /// Opens [date] and returns its plan. Idempotent (BR-PLAN-04).
@@ -252,18 +314,30 @@ class PlanEngine {
     await generateNewThrough(date);
     await ensureRevise(date);
 
-    final enrollment = await _store.activeStep();
+    final step = await _store.activeStep();
+    final backlog = await _store.backlogBefore(date);
+
+    // No active step is two different things. Before onboarding it means the
+    // learner has not started; after a step runs out with auto-advance off it
+    // means Today shows "Step complete" and offers the next one.
+    final finished = step == null && await _store.hasEverEnrolled();
 
     return DailyPlan(
       date: date,
       revise: await _store.plannedOn(date, PlanKind.revise),
       newToday: await _store.plannedOn(date, PlanKind.newWord),
       grammarDue: await _store.grammarDueOn(date),
-      backlog: await _store.backlogBefore(date),
-      activeStep: enrollment?.sublevelCode,
-      isStudyDay: isStudyDay(date, enrollment?.studyDaysMask ?? allDays),
+      backlog: backlog,
+      activeStep: step?.sublevelCode,
+      nextStep: finished ? await _store.stepAfter(await _lastStep()) : null,
+      stepComplete: finished,
+      isStudyDay: isStudyDay(date, step?.studyDaysMask ?? allDays),
+      newPaused: _pauseNewWhenBacklog && backlog.isNotEmpty,
     );
   }
+
+  /// The step whose enrollment closed most recently.
+  Future<String> _lastStep() async => await _store.lastCompletedStep() ?? '';
 
   /// Plans new words for every study day from where planning left off through
   /// [today] (BR-PLAN-05).
@@ -272,31 +346,79 @@ class PlanEngine {
   /// word has to carry the date it was *meant* for: that date is what makes it
   /// backlog rather than part of today, and what the backlog list groups by.
   Future<void> generateNewThrough(PlanDate today) async {
-    final enrollment = await _store.activeStep();
-    if (enrollment == null) return;
+    var step = await _store.activeStep();
+    if (step == null) return;
 
-    for (final day in await _daysToPlan(today, enrollment)) {
-      if (!isStudyDay(day, enrollment.studyDaysMask)) continue;
+    for (final day in await _daysToPlan(today, step)) {
+      // Re-read each turn: `_planDay` may have advanced the step, and the new
+      // one carries its own mask.
+      final current = step;
+      if (current == null) break;
+
+      if (!isStudyDay(day, current.studyDaysMask)) continue;
+
+      // BR-PLAN-07. Checked per day, not once: planning a day creates the
+      // rows that are backlog for the day after, so a learner who is already
+      // behind stays paused for the whole catch-up rather than digging deeper.
+      if (await _isPaused(day)) continue;
 
       // Already planned — reopening the same day must not double it.
-      final planned = await _store.plannedOn(day, PlanKind.newWord);
-      if (planned.isNotEmpty) continue;
+      if ((await _store.plannedOn(day, PlanKind.newWord)).isNotEmpty) continue;
 
-      final picked = await _store.unplannedWords(
-        enrollment.sublevelCode,
-        limit: enrollment.dailyNew,
-      );
-
-      // The step is exhausted. Advancing to the next one is #77 (BR-COURSE-05),
-      // so planning stops here rather than silently planning nothing for every
-      // remaining day.
-      if (picked.isEmpty) break;
-
-      await _store.addToPlan(day, PlanKind.newWord, picked);
+      step = await _planDay(day, current);
+      if (step == null) break; // the course ran out, or auto-advance is off
     }
 
     await _store.setLastPlannedDate(today);
   }
+
+  /// Plans one study day, advancing the step if it runs out (BR-COURSE-05).
+  ///
+  /// Returns the step to carry into the next day, or null when there is none
+  /// left to plan from.
+  Future<ActiveStep?> _planDay(PlanDate day, ActiveStep step) async {
+    var current = step;
+    var need = current.dailyNew;
+
+    // Bounded. Each turn either fills the day or advances a step, and the
+    // course is finite, so this terminates — but a content file with a run of
+    // empty steps would otherwise spin, and an unbounded loop in a day-opening
+    // path is not something to find out about from a frozen phone.
+    for (var guard = 0; guard < 100 && need > 0; guard++) {
+      final picked = await _store.unplannedWords(
+        current.sublevelCode,
+        limit: need,
+      );
+
+      if (picked.isNotEmpty) {
+        await _store.addToPlan(day, PlanKind.newWord, picked);
+        need -= picked.length;
+        if (need <= 0) return current;
+      }
+
+      // The step is exhausted: close it, and take the next if we may.
+      await _store.completeStep(current.sublevelCode, day);
+
+      final next = await _store.stepAfter(current.sublevelCode);
+      if (!_autoAdvance || next == null) return null;
+
+      // The pace carries over. BR-PLAN-08 freezes it per enrollment, and
+      // advancing is not the learner changing their mind about it.
+      current = ActiveStep(
+        sublevelCode: next,
+        startedOn: day,
+        dailyNew: current.dailyNew,
+        studyDaysMask: current.studyDaysMask,
+      );
+      await _store.enroll(current);
+    }
+
+    return current;
+  }
+
+  /// BR-PLAN-07: new words are paused while the backlog is not empty.
+  Future<bool> _isPaused(PlanDate day) async =>
+      _pauseNewWhenBacklog && (await _store.backlogBefore(day)).isNotEmpty;
 
   /// The days `generateNewThrough` should walk, oldest first.
   ///
