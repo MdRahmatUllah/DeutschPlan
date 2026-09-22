@@ -14,11 +14,13 @@ import argparse
 import re
 import sys
 from dataclasses import dataclass, field
+from datetime import datetime, timezone
 from pathlib import Path
 
 import yaml
 from openpyxl import load_workbook
 
+from content_writer import BuildInputs, build
 from pipeline_steps import (
     GRAMMAR_TEXT_FIELDS,
     LEVELS,
@@ -534,6 +536,33 @@ def _report(warnings: list[str]) -> None:
     )
 
 
+def collect(sources: list[SourceBook], splits: dict[str, LevelSplit]) -> BuildInputs:
+    """Flattens the per-workbook records into what the writer takes."""
+    prompts: dict[str, list[str]] = {}
+    for source in sources:
+        levels_here = [
+            lvl for lvl in LEVELS if any(w.level == lvl for w in source.words)
+        ]
+        if levels_here and source.skill_prompts:
+            # The checklist belongs to the book's own level, the same one an
+            # unlabelled grammar row falls back to.
+            prompts.setdefault(levels_here[-1], []).extend(source.skill_prompts)
+
+    return BuildInputs(
+        words=[word for source in sources for word in source.words],
+        grammar=[row for source in sources for row in source.grammar],
+        categories=[c for source in sources for c in source.categories],
+        skill_prompts=prompts,
+        splits=splits,
+        sources=[source.file for source in sources],
+        # UTC, the same clock as meta.built_at. The app compares this
+        # string against the installed copy to decide whether to replace
+        # it, so a local clock would let a build in UTC+6 sort above a
+        # later one in CI and the new content would silently not install.
+        content_version=datetime.now(timezone.utc).strftime("%Y%m%d%H%M"),
+    )
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
@@ -542,12 +571,20 @@ def main(argv: list[str] | None = None) -> int:
         default=DEFAULT_MANIFEST,
         help="content/manifest.yaml",
     )
+    parser.add_argument(
+        "--out",
+        type=Path,
+        default=REPO_ROOT / "content" / "build" / "content.db",
+        help="where to write content.db",
+    )
     args = parser.parse_args(argv)
 
     try:
         manifest = read_manifest(args.manifest)
         sources = read_sources(manifest)
         splits = derive(sources)
+        inputs = collect(sources, splits)
+        build(args.out, inputs)
     except PipelineError as error:
         print(f"content pipeline: {error}", file=sys.stderr)
         return 1
@@ -565,6 +602,7 @@ def main(argv: list[str] | None = None) -> int:
             f"({split.words_in_first} words), {split.second} from week "
             f"{split.boundary_week} ({split.words_in_second} words)"
         )
+    print(f"{args.out} written, content_version {inputs.content_version}")
     return 0
 
 

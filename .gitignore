@@ -81,3 +81,4 @@ deutsch-plan-design-html/*.zip
 
 # Golden failure output, written beside the goldens on a mismatch
 app/test/golden/failures/
+content/build/
