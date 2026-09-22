@@ -82,3 +82,8 @@ deutsch-plan-design-html/*.zip
 # Golden failure output, written beside the goldens on a mismatch
 app/test/golden/failures/
 content/build/
+
+# The four source workbooks. `content/manifest.yaml` points `make content` at
+# them, and the built `app/assets/db/content.db` is what ships — CI says so
+# where it checks for that file. The workbooks themselves stay local.
+/data/

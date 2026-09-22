@@ -21,5 +21,13 @@
   "examLeaveMessage": "এ পর্যন্ত আপনার উত্তরগুলো অসম্পূর্ণ প্রচেষ্টা হিসেবে সংরক্ষিত আছে। টাইমার বন্ধ হয়ে যাবে। আপনি এই মক পরীক্ষা হাব থেকে আবার শুরু করতে পারবেন।",
   "examLeaveConfirm": "ছেড়ে যান",
   "examLeaveCancel": "চালিয়ে যান",
-  "undo": "পূর্বাবস্থায় ফেরান"
+  "undo": "পূর্বাবস্থায় ফেরান",
+  "back": "পেছনে",
+  "skip": "এড়ান",
+  "onboardingStepOf": "ধাপ {step} / {total}",
+  "onboardingWelcomeHeadline": "প্রতিদিন একটি করে জার্মান শিখুন",
+  "onboardingWelcomeStart": "শুরু করি",
+  "onboardingPromiseOffline": "পুরোপুরি অফলাইনে চলে · অ্যাকাউন্ট বা ইন্টারনেট লাগে না",
+  "onboardingPromiseSteps": "পরীক্ষার কাঠামো: A1.1 থেকে C2.2 পর্যন্ত ১২টি ধাপ",
+  "onboardingPromisePrivate": "আপনার অগ্রগতি এই ফোনেই থাকে"
 }

@@ -10,12 +10,15 @@
 /// presentation of each route.
 library;
 
+import 'package:deutschplan/features/onboarding/onboarding_shell.dart';
+import 'package:deutschplan/features/onboarding/onboarding_welcome_page.dart';
 import 'package:deutschplan/features/splash/splash_screen.dart';
 import 'package:deutschplan/router/app_shell.dart';
 import 'package:deutschplan/router/back_behaviour.dart';
 import 'package:deutschplan/router/deep_links.dart';
 import 'package:deutschplan/router/route_guards.dart';
 import 'package:deutschplan/router/placeholder_screen.dart';
+import 'package:cupertino_ui/cupertino_ui.dart' show CupertinoPage;
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 
@@ -396,12 +399,41 @@ class OnboardingRoute extends GoRouteData with $OnboardingRoute {
 
   final String page;
 
+  /// A horizontal slide between pages, and the edge swipe back — #87's "system
+  /// back / edge swipe goes to the previous page". `CupertinoPage` gives both
+  /// on both platforms; Android's default zoom transition gives neither the
+  /// slide nor the swipe.
   @override
-  Widget build(BuildContext context, GoRouterState state) => PlaceholderScreen(
-    title: 'Welcome',
-    screen: page == 'placement' ? 'S3' : 'S2',
-    detail: page,
-  );
+  Page<void> buildPage(BuildContext context, GoRouterState state) =>
+      CupertinoPage<void>(key: state.pageKey, child: build(context, state));
+
+  /// `:page` is `1`…`5` for S2, or `placement` for S3 — one route because
+  /// `navigation.md` gives them one path, and the placement check is reached
+  /// from page 3 rather than being a tab of its own.
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    if (page == 'placement') {
+      return const PlaceholderScreen(
+        title: 'Welcome',
+        screen: 'S3',
+        detail: 'placement',
+      );
+    }
+
+    return switch (OnboardingPage.parse(page)) {
+      // A bad `:page` gets the start of setup rather than a blank screen.
+      OnboardingPage.welcome || null => OnboardingWelcomePage(
+        // `push`, not `go`: each page sits on the one before it, so system
+        // back returns there. Onboarding is outside the tab shell, so nothing
+        // else would catch the press, and `go` would leave page 2 with nothing
+        // under it — back would close the app.
+        onStart: () => const OnboardingRoute(page: '2').push<void>(context),
+      ),
+
+      // #88…#91 replace these.
+      _ => PlaceholderScreen(title: 'Welcome', screen: 'S2', detail: page),
+    };
+  }
 }
 
 @TypedGoRoute<StudyRoute>(path: '/study')

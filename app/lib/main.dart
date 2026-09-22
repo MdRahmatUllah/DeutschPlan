@@ -3,10 +3,12 @@ import 'dart:async';
 import 'package:deutschplan/features/bootstrap/bootstrap_error_screen.dart';
 import 'package:deutschplan/features/splash/splash_screen.dart';
 import 'package:flutter/foundation.dart' show kReleaseMode, debugPrint;
+import 'package:flutter/services.dart';
 
 import 'dart:io';
 
 import 'package:deutschplan/data/repositories/backup_repository.dart';
+import 'package:deutschplan/core/theme/system_bars.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:deutschplan/bootstrap.dart';
@@ -42,6 +44,14 @@ import 'dart:ui' show PlatformDispatcher;
 /// result, so S1 renders outside it. S1 needs a theme and nothing else.
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Edge to edge, because the design is. S2's coloured header, S1's field and
+  // the Today header all bleed to the top of the screen; without this Android
+  // paints its own opaque bar above them and every one of those screens gets a
+  // grey band across the top. Each screen still takes the inset with
+  // `SafeArea` — this only stops the system filling it in first.
+  await SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+  SystemChrome.setSystemUIOverlayStyle(transparentSystemBars);
 
   // A `ProviderScope` at the true root, which riverpod_lint requires and which
   // S1 needs anyway now that it renders before bootstrap has produced a
