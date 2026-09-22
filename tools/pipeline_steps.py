@@ -586,3 +586,146 @@ def assign_examples(words: Sequence) -> None:
     """Sets `examples` on every word."""
     for word in words:
         word.examples = pair_examples(word.examples_de, word.examples_en)
+
+
+# Interference tips: the L1 traps a Bangla speaker walks into.
+#
+# `content/interference_tips.csv` is authored by hand, with three ways to say
+# which words a tip belongs to. All three are resolved here, at build time, so
+# the app never runs a regex over five thousand words to draw one card.
+
+#: The match types the CSV's first column may hold.
+#:
+#: - `uid`     — one exact word, by its uid. Survives a rename of the German.
+#: - `german`  — every word whose German cell matches exactly, case-folded.
+#: - `pattern` — a regex over the German, for families like `^seit\b`.
+MATCH_TYPES = ("uid", "german", "pattern")
+
+
+@dataclass(frozen=True)
+class Tip:
+    """One row of the CSV, before it is attached to any word."""
+
+    match_type: str
+    match: str
+    tip_en: str
+    tip_bn: str | None
+    tags: str | None
+    row: int
+
+
+@dataclass(frozen=True)
+class ResolvedTip:
+    word_uid: str
+    tip_en: str
+    tip_bn: str | None
+
+
+def read_tips(path) -> list[Tip]:
+    """Reads the CSV. A malformed row fails the build, naming the line."""
+    import csv
+
+    if path is None:
+        return []
+    if not path.exists():
+        raise PipelineError(
+            f"{path} is missing. It is named by `tips:` in "
+            f"content/manifest.yaml; add the file or remove the key."
+        )
+
+    tips: list[Tip] = []
+    with path.open(encoding="utf-8", newline="") as handle:
+        for number, row in enumerate(csv.DictReader(handle), start=2):
+            missing = [
+                column
+                for column in ("match_type", "match", "tip_en")
+                if not (row.get(column) or "").strip()
+            ]
+            if missing:
+                raise PipelineError(
+                    f"{path.name} line {number}: missing "
+                    f"{', '.join(missing)}. Every tip needs a match type, "
+                    f"something to match, and English text."
+                )
+
+            match_type = row["match_type"].strip()
+            if match_type not in MATCH_TYPES:
+                raise PipelineError(
+                    f"{path.name} line {number}: match_type {match_type!r} is "
+                    f"not one of {', '.join(MATCH_TYPES)}."
+                )
+
+            tips.append(
+                Tip(
+                    match_type=match_type,
+                    match=row["match"].strip(),
+                    tip_en=row["tip_en"].strip(),
+                    tip_bn=(row.get("tip_bn") or "").strip() or None,
+                    tags=(row.get("tags") or "").strip() or None,
+                    row=number,
+                )
+            )
+    return tips
+
+
+def resolve_tips(tips: Sequence, words: Sequence) -> tuple[list[ResolvedTip], list[str]]:
+    """Attaches every tip to the words it matches.
+
+    Returns the rows to write and the warnings. A tip that matches nothing is
+    **always** reported: it is hand-authored prose about a word that is no
+    longer in the course, or a regex with a typo, and either way the author
+    wrote it expecting it to appear.
+    """
+    import re
+
+    by_uid = {word.uid: word for word in words}
+    by_german: dict[str, list] = {}
+    for word in words:
+        by_german.setdefault(word.german.strip().lower(), []).append(word)
+
+    resolved: list[ResolvedTip] = []
+    warnings: list[str] = []
+    seen: set[tuple[str, str]] = set()
+
+    for tip in tips:
+        matched = _matches(tip, by_uid, by_german, words, re)
+
+        if not matched:
+            warnings.append(
+                f"unmatched tip: interference_tips.csv line {tip.row} "
+                f"({tip.match_type} {tip.match!r}) matches no word. The tip "
+                f"will not appear anywhere."
+            )
+            continue
+
+        for word in matched:
+            # (word_uid, tip_en) is the primary key: two CSV rows that say the
+            # same thing about the same word are one tip, not a constraint
+            # failure at write time.
+            key = (word.uid, tip.tip_en)
+            if key in seen:
+                continue
+            seen.add(key)
+            resolved.append(
+                ResolvedTip(word_uid=word.uid, tip_en=tip.tip_en, tip_bn=tip.tip_bn)
+            )
+
+    return resolved, warnings
+
+
+def _matches(tip, by_uid, by_german, words, re) -> list:
+    if tip.match_type == "uid":
+        word = by_uid.get(tip.match)
+        return [word] if word else []
+
+    if tip.match_type == "german":
+        return by_german.get(tip.match.strip().lower(), [])
+
+    try:
+        pattern = re.compile(tip.match, re.IGNORECASE)
+    except re.error as error:
+        raise PipelineError(
+            f"interference_tips.csv line {tip.row}: {tip.match!r} is not a "
+            f"valid regex ({error})."
+        ) from error
+    return [word for word in words if pattern.search(word.german)]
