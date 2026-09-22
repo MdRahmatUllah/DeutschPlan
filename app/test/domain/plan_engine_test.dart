@@ -50,6 +50,53 @@ void main() {
       expect(plan.isStudyDay, isTrue);
     });
 
+    test('the plan reads back in the order it was written', () async {
+      // The order is the answer, not an accident of the query plan: new words
+      // are walked in teaching order and revisions in BR-PLAN-03's priority.
+      //
+      // Uids deliberately out of alphabetical order. With 'seen0'..'seen3' a
+      // list that came back sorted would pass this, which is exactly what let
+      // a planted sort survive the first time I tried it.
+      const byPriority = <String>['zulu', 'alpha', 'mike', 'bravo'];
+      store.candidates = <RevisionCandidate>[
+        for (var i = 0; i < byPriority.length; i++)
+          RevisionCandidate(
+            uid: byPriority[i],
+            stability: 5,
+            lastReview: addDays(monday, -10 + i),
+          ),
+      ];
+
+      final plan = await engineWith(revise: 4).openDay(monday);
+
+      expect(plan.newToday, store.plan['$monday/new']);
+      expect(
+        plan.revise,
+        byPriority,
+        reason: 'lowest retrievability first, and it survived the round trip',
+      );
+
+      // Day two, because day one is w1..w7 — which sorts into the same order
+      // it was written in, so it cannot tell teaching order from a sort. Day
+      // two crosses ten, where 'w10' sorts before 'w8'.
+      final next = await engineWith(revise: 4).openDay(addDays(monday, 1));
+
+      expect(next.newToday, <String>[
+        'w8',
+        'w9',
+        'w10',
+        'w11',
+        'w12',
+        'w13',
+        'w14',
+      ]);
+      expect(
+        next.newToday,
+        isNot(<String>[...next.newToday]..sort()),
+        reason: 'the fixture stopped being able to tell the two apart',
+      );
+    });
+
     test('takes them in teaching order, not at random', () async {
       await engineWith().openDay(monday);
       expect(store.plan['$monday/new'], <String>[
@@ -587,11 +634,23 @@ void main() {
 
       final plan = await engineWith().openDay(monday);
 
-      expect(plan.blocks.map((b) => b.$1), <PlanKind>[
+      expect(plan.wordBlocks.map((b) => b.$1), <PlanKind>[
         PlanKind.revise,
         PlanKind.newWord,
       ]);
-      expect(plan.blocks.first.$2, plan.revise);
+      expect(plan.wordBlocks.first.$2, plan.revise);
+    });
+
+    test('and wordBlocks does not pretend to be the whole day', () async {
+      // `PlanKind` has no value for grammar or sentences, so the accessor
+      // cannot name them. The name has to say so, or a screen rendering it
+      // silently drops the grammar block.
+      store.grammarDue = <String>['g1'];
+
+      final plan = await engineWith().openDay(monday);
+
+      expect(plan.wordBlocks, hasLength(2));
+      expect(plan.grammarDue, <String>['g1'], reason: 'read on its own');
     });
 
     test('grammar due is carried', () async {
@@ -669,8 +728,8 @@ class FakeStore implements PlanStore {
   Future<List<RevisionCandidate>> revisionCandidates() async => candidates;
 
   @override
-  Future<Set<String>> plannedOn(PlanDate date, PlanKind kind) async =>
-      (plan['$date/${kind.wire}'] ?? const <String>[]).toSet();
+  Future<List<String>> plannedOn(PlanDate date, PlanKind kind) async =>
+      <String>[...?plan['$date/${kind.wire}']];
 
   @override
   Future<List<String>> grammarDueOn(PlanDate date) async => grammarDue;

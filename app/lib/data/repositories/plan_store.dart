@@ -114,12 +114,35 @@ WHERE status IN ('learning', 'done')
     ];
   }
 
+  /// In the order the engine planned them.
+  ///
+  /// `ORDER BY rowid` is the insertion order, and insertion order is the
+  /// answer for both kinds: new words were written in teaching order and
+  /// revisions in BR-PLAN-03's priority. Without it the order is whatever the
+  /// query plan happens to give — which is the same thing today, and would
+  /// stop being so after an index change or a VACUUM, with no test to say so.
+  ///
+  /// Not `seq_in_sublevel`: that is right for new words and would destroy the
+  /// revise priority.
   @override
-  Future<Set<String>> plannedOn(PlanDate date, PlanKind kind) async {
-    final rows = await (_db.select(
-      _db.planItems,
-    )..where((p) => p.planDate.equals(date) & p.kind.equals(kind.wire))).get();
-    return <String>{for (final row in rows) row.wordUid};
+  Future<List<String>> plannedOn(PlanDate date, PlanKind kind) async {
+    final rows = await _db
+        .customSelect(
+          '''
+SELECT word_uid AS uid
+FROM plan_items
+WHERE plan_date = ?1 AND kind = ?2
+ORDER BY rowid
+''',
+          variables: <Variable<Object>>[
+            Variable<String>(date),
+            Variable<String>(kind.wire),
+          ],
+          readsFrom: <ResultSetImplementation<Object, Object>>{_db.planItems},
+        )
+        .get();
+
+    return <String>[for (final row in rows) row.read<String>('uid')];
   }
 
   /// Topics whose FSRS due has arrived (BR-PLAN-02, BR-FSRS-05).

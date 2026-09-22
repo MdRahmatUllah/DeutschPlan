@@ -134,8 +134,14 @@ abstract interface class PlanStore {
   /// scale this is a few thousand rows of three columns.
   Future<List<RevisionCandidate>> revisionCandidates();
 
-  /// The words already planned on [date], by kind.
-  Future<Set<String>> plannedOn(PlanDate date, PlanKind kind);
+  /// The words already planned on [date], by kind, **in the order they were
+  /// planned**.
+  ///
+  /// A list rather than a set, because the order is the answer: the learner
+  /// walks the new words in teaching order and the revisions in BR-PLAN-03's
+  /// priority, and both of those are the order the engine wrote them in. A set
+  /// would say the order does not matter and then be relied on for it anyway.
+  Future<List<String>> plannedOn(PlanDate date, PlanKind kind);
 
   /// Grammar topics whose FSRS due falls on or before [date].
   Future<List<String>> grammarDueOn(PlanDate date);
@@ -194,14 +200,18 @@ class DailyPlan {
   /// False on a rest day (BR-PLAN-01): no new words, no backlog growth.
   final bool isStudyDay;
 
-  /// The blocks the learner works through, in BR-PLAN-02 order.
-  List<(PlanKind, List<String>)> get blocks => <(PlanKind, List<String>)>[
+  /// The two word blocks, in BR-PLAN-02 order: Revise then New today.
+  ///
+  /// Only the word blocks. `PlanKind` is `plan_items.kind`, which has no value
+  /// for grammar or for sentences, so this cannot name the other two blocks
+  /// BR-PLAN-02 lists — [grammarDue] is read directly, and sentences arrive at
+  /// #80. Named `wordBlocks` rather than `blocks` so it stops reading as the
+  /// whole day: a screen that rendered `blocks` would silently show no
+  /// grammar.
+  List<(PlanKind, List<String>)> get wordBlocks => <(PlanKind, List<String>)>[
     (PlanKind.revise, revise),
     (PlanKind.newWord, newToday),
   ];
-
-  /// Nothing to do today — not the same as a completed day, which is #79.
-  bool get isEmpty => revise.isEmpty && newToday.isEmpty && grammarDue.isEmpty;
 }
 
 /// The plan engine.
@@ -246,8 +256,8 @@ class PlanEngine {
 
     return DailyPlan(
       date: date,
-      revise: (await _store.plannedOn(date, PlanKind.revise)).toList(),
-      newToday: (await _store.plannedOn(date, PlanKind.newWord)).toList(),
+      revise: await _store.plannedOn(date, PlanKind.revise),
+      newToday: await _store.plannedOn(date, PlanKind.newWord),
       grammarDue: await _store.grammarDueOn(date),
       backlog: await _store.backlogBefore(date),
       activeStep: enrollment?.sublevelCode,
@@ -324,7 +334,7 @@ class PlanEngine {
     // schedule has moved on since.
     if ((await _store.plannedOn(date, PlanKind.revise)).isNotEmpty) return;
 
-    final excluded = await _store.plannedOn(date, PlanKind.newWord);
+    final excluded = (await _store.plannedOn(date, PlanKind.newWord)).toSet();
     final candidates = <RevisionCandidate>[
       for (final c in await _store.revisionCandidates())
         if (!excluded.contains(c.uid)) c,

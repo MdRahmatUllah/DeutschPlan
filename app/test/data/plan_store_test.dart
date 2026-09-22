@@ -298,8 +298,8 @@ VALUES (?, ?, ?, ?, ?)
       await store.addToPlan(monday, PlanKind.newWord, <String>['s1']);
       await store.addToPlan(monday, PlanKind.revise, <String>['s2']);
 
-      expect(await store.plannedOn(monday, PlanKind.newWord), <String>{'s1'});
-      expect(await store.plannedOn(monday, PlanKind.revise), <String>{'s2'});
+      expect(await store.plannedOn(monday, PlanKind.newWord), <String>['s1']);
+      expect(await store.plannedOn(monday, PlanKind.revise), <String>['s2']);
     });
 
     test('keeps the days apart', () async {
@@ -308,7 +308,7 @@ VALUES (?, ?, ?, ?, ?)
         's2',
       ]);
 
-      expect(await store.plannedOn(monday, PlanKind.newWord), <String>{'s1'});
+      expect(await store.plannedOn(monday, PlanKind.newWord), <String>['s1']);
     });
 
     test('carries the word\'s own step, not the learner\'s', () async {
@@ -355,6 +355,18 @@ VALUES (?, ?, ?, ?, ?)
           .customSelect('SELECT completed_at AS done FROM plan_items')
           .getSingle();
       expect(row.read<String?>('done'), isNotNull);
+    });
+
+    test('reads back in the order it was written', () async {
+      // The learner walks new words in teaching order and revisions in
+      // BR-PLAN-03's priority, and both are the order the engine wrote. Row
+      // order happens to agree today; nothing guarantees it, so it is ordered
+      // explicitly. Deliberately not alphabetical, or the assertion would
+      // pass under a default sort too.
+      const written = <String>['s9', 's2', 's14', 's1', 's7'];
+      await store.addToPlan(monday, PlanKind.newWord, written);
+
+      expect(await store.plannedOn(monday, PlanKind.newWord), written);
     });
 
     test('an empty list writes nothing', () async {
