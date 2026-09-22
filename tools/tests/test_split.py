@@ -108,9 +108,13 @@ class TestBoundary:
 
     def test_missing_weeks_in_the_sequence_are_fine(self):
         # Authors skip week numbers. The boundary is a week that exists, not
-        # the arithmetic midpoint of the numbering.
+        # the arithmetic midpoint of the numbering — and the week *counts* are
+        # weeks that exist too, not a subtraction of week numbers. This level
+        # has four weeks, two each side; `boundary_week - 1` would say eight.
         split = split_level(words("A1", {1: 10, 5: 10, 9: 10, 13: 10}), "A1")
         assert split.boundary_week == 9
+        assert split.weeks == (1, 5, 9, 13)
+        assert (split.weeks_in_first, split.weeks_in_second) == (2, 2)
 
 
 class TestRefusals:
@@ -162,7 +166,7 @@ class TestAssignment:
         # meta.sublevel_week_boundaries is what lets the app say "A1.2 starts
         # at week 3" without re-deriving the split.
         assert splits["A1"].boundary_week == 3
-        assert splits["A1"].weeks_in_first == 2
+        assert (splits["A1"].weeks_in_first, splits["A1"].weeks_in_second) == (2, 2)
 
 
 class TestGrammar:
@@ -174,7 +178,7 @@ class TestGrammar:
 
     def test_split_by_count_keeping_teaching_order(self):
         rows = self.grammar("A1", 7)
-        split_grammar(rows, {})
+        split_grammar(rows)
         # BR-COURSE-03: by count, not by the word boundary. The odd topic goes
         # to X.1.
         assert [r.sublevel_code for r in rows] == ["A1.1"] * 4 + ["A1.2"] * 3
@@ -183,7 +187,7 @@ class TestGrammar:
     def test_order_is_the_workbook_order_not_sorted(self):
         rows = self.grammar("B1", 4)
         rows[0].topic = "zzz last alphabetically, first in teaching order"
-        split_grammar(rows, {})
+        split_grammar(rows)
         assert rows[0].seq == 1 and rows[0].sublevel_code == "B1.1"
 
     def test_grammar_does_not_follow_the_word_boundary(self):
@@ -191,20 +195,47 @@ class TestGrammar:
         # grammar early and most of its vocabulary late. Following the word
         # boundary here would leave one step with a single topic.
         rows = self.grammar("C1", 10)
-        split_grammar(rows, {})
+        split_grammar(rows)
         assert sum(r.sublevel_code == "C1.1" for r in rows) == 5
         assert sum(r.sublevel_code == "C1.2" for r in rows) == 5
 
     def test_a_single_topic_goes_to_the_first_step(self):
         rows = self.grammar("C2", 1)
-        split_grammar(rows, {})
+        split_grammar(rows)
         assert rows[0].sublevel_code == "C2.1"
 
     def test_a_row_with_no_level_takes_the_workbook_fallback(self):
         rows = self.grammar(None, 2)
         resolve_grammar_levels(rows, "B2")
-        split_grammar(rows, {})
+        split_grammar(rows)
         assert [r.level_code for r in rows] == ["B2", "B2"]
+
+    def test_the_fallback_is_the_book_level_not_its_earliest(self):
+        # German_B1_Tracker carries A1 and A2 on the way to B1. An unlabelled
+        # topic in it is a B1 topic; filing it under A1 would teach it in the
+        # very first step.
+        from excel_to_sqlite import derive, read_workbook  # noqa: PLC0415
+
+        import tempfile
+
+        from fixtures.make_workbooks import write_all
+
+        directory = Path(tempfile.mkdtemp())
+        write_all(directory)
+        sources = [
+            read_workbook(directory / name)
+            for name in (
+                "German_B1_Tracker.xlsx",
+                "German_B2_Tracker.xlsx",
+                "German_C1_Tracker.xlsx",
+                "German_C2_Tracker.xlsx",
+            )
+        ]
+        for row in sources[0].grammar:
+            row.level = None
+
+        derive(sources)
+        assert {r.level_code for r in sources[0].grammar} == {"B1"}
 
     def test_the_fallback_does_not_overwrite_a_level_that_is_there(self):
         rows = self.grammar("A1", 2)

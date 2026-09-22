@@ -34,6 +34,11 @@ class LevelSplit:
     words_in_first: int
     words_in_second: int
 
+    #: Every week the level actually has, sorted. Kept because the week
+    #: numbers have gaps — authors skip them — so the count of weeks in a half
+    #: cannot be derived from the boundary number alone.
+    weeks: tuple[int, ...] = ()
+
     @property
     def first(self) -> str:
         return f"{self.level}.1"
@@ -44,7 +49,11 @@ class LevelSplit:
 
     @property
     def weeks_in_first(self) -> int:
-        return self.boundary_week - 1
+        return sum(1 for week in self.weeks if week < self.boundary_week)
+
+    @property
+    def weeks_in_second(self) -> int:
+        return sum(1 for week in self.weeks if week >= self.boundary_week)
 
 
 def split_level(words: Sequence, level: str) -> LevelSplit:
@@ -97,6 +106,7 @@ def split_level(words: Sequence, level: str) -> LevelSplit:
         boundary_week=boundary,
         words_in_first=in_first,
         words_in_second=total - in_first,
+        weeks=tuple(weeks),
     )
 
 
@@ -131,7 +141,7 @@ def assign_sublevels(words: Sequence) -> dict[str, LevelSplit]:
     return splits
 
 
-def split_grammar(rows: Sequence, splits: dict[str, LevelSplit]) -> None:
+def split_grammar(rows: Sequence) -> None:
     """BR-COURSE-03: grammar splits by count, keeping teaching order.
 
     By count and not by the word boundary, because the two are authored
@@ -141,9 +151,12 @@ def split_grammar(rows: Sequence, splits: dict[str, LevelSplit]) -> None:
 
     Teaching order is the order the rows appear in the workbook, which is the
     order the author wrote them in. Nothing is sorted.
+
+    It deliberately takes no splits: passing them in would say grammar
+    consults the word boundary, which is the thing this must not do.
     """
     for level in LEVELS:
-        of_level = [r for r in rows if _grammar_level(r, splits) == level]
+        of_level = [r for r in rows if getattr(r, "level", None) == level]
         if not of_level:
             continue
         half = (len(of_level) + 1) // 2  # the odd topic goes to X.1
@@ -153,16 +166,6 @@ def split_grammar(rows: Sequence, splits: dict[str, LevelSplit]) -> None:
             )
             row.level_code = level
             row.seq = index + 1
-
-
-def _grammar_level(row, splits: dict[str, LevelSplit]) -> str | None:
-    """A grammar row's level, or the fallback when it names none.
-
-    `content-pipeline.md`: the manifest's workbook order is the fallback level
-    order. A row with no level belongs to the first level its own workbook
-    carries, which `resolve_grammar_levels` fills in before this runs.
-    """
-    return getattr(row, "level", None)
 
 
 def resolve_grammar_levels(rows: Iterable, fallback: str) -> None:

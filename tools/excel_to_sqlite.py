@@ -444,18 +444,22 @@ def derive(sources: list[SourceBook]) -> dict[str, LevelSplit]:
     words = [word for source in sources for word in source.words]
 
     for source in sources:
-        # content-pipeline.md: the manifest order is the fallback level order.
-        # A grammar row with no level of its own belongs to the first level its
-        # own workbook teaches.
-        levels_here = [lvl for lvl in LEVELS if any(w.level == lvl for w in source.words)]
+        # content-pipeline.md: the manifest order is the fallback level order,
+        # which points at the book rather than at its earliest level. An
+        # unlabelled topic in German_B1_Tracker is a B1 topic — that book
+        # carries A1 and A2 on the way to B1, and filing the topic under A1
+        # would teach it in the very first step.
+        levels_here = [
+            lvl for lvl in LEVELS if any(w.level == lvl for w in source.words)
+        ]
         if levels_here:
-            resolve_grammar_levels(source.grammar, levels_here[0])
+            resolve_grammar_levels(source.grammar, levels_here[-1])
 
     splits = assign_sublevels(words)
     check_every_step_has_words(words)
 
     grammar = [row for source in sources for row in source.grammar]
-    split_grammar(grammar, splits)
+    split_grammar(grammar)
 
     # seq is the reading order across every workbook; seq_in_sublevel is what
     # the step screen lists by.
