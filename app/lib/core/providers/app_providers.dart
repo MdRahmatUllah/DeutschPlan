@@ -69,6 +69,14 @@ DateTime Function() clock(Ref ref) => DateTime.now;
 ///
 /// Derived from [clock] rather than from `DateTime.now()` so a test that moves
 /// the clock moves this too.
+///
+/// **It does not tick.** [clock] is a *function*, so watching it never fires
+/// again — this is computed once and cached until something invalidates it,
+/// and a session left open across midnight would read yesterday. That is
+/// deliberate: a provider that rebuilt every second would rebuild every screen
+/// watching it. `state-management.md` puts the midnight refresh on
+/// `todayPlan`, which listens for app resume and re-runs `openDay`; anything
+/// else that must survive midnight watches that, not this.
 @riverpod
 String today(Ref ref) {
   final now = ref.watch(clockProvider)();
@@ -89,8 +97,11 @@ class Theme extends _$Theme {
     return setting.resolve(_platformBrightness);
   }
 
-  /// The platform's current brightness. Read through the notifier so a test
-  /// can drive it without a widget tree.
+  /// The platform's current brightness.
+  ///
+  /// Seeded by `main` from `PlatformDispatcher` at startup — the default here
+  /// is only what a test gets before it says otherwise, and leaving it as the
+  /// app's real starting value would show a dark phone a light first frame.
   Brightness _platformBrightness = Brightness.light;
 
   /// Called by Settings (FR-M3-02). An action on the notifier, not a write
