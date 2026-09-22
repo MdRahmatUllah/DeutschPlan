@@ -2,6 +2,10 @@ import 'dart:io';
 
 import 'package:deutschplan/data/db/app_database.dart';
 import 'package:drift/drift.dart';
+
+import 'dart:convert';
+
+import 'package:deutschplan/data/db/content_update.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:path_provider/path_provider.dart';
 
@@ -76,6 +80,22 @@ class ContentDao extends DatabaseAccessor<AppDatabase> with _$ContentDaoMixin {
   /// to replace it, and reading the asset means writing it somewhere first,
   /// because SQLite cannot open a Flutter asset in place.
   Future<String> bundledVersion() async {
+    // The manifest first, because it is 255 KB of JSON beside an 8 MB
+    // database and carries the same `content_version` the database does.
+    //
+    // The probe below reads the authoritative value, but to do it it copies
+    // the *whole asset* to a temp file, attaches it, reads one string and
+    // deletes it — on every launch, warm or cold. That is the cost
+    // `splash.md` warns about ("probe the bundled asset's version without
+    // loading the whole 5.5 MB into memory twice") and it was the single
+    // largest thing between a warm start and FR-S1-02's 500 ms.
+    //
+    // `make content` writes the two files together, so they cannot disagree.
+    // If the manifest is missing or unreadable the probe still runs: a
+    // corrupt manifest must not stop the app noticing a content update.
+    final fromManifest = await _versionFromManifest();
+    if (fromManifest != null) return fromManifest;
+
     final probe = File(
       '${(await getTemporaryDirectory()).path}/content_probe.db',
     );
@@ -139,6 +159,20 @@ class ContentDao extends DatabaseAccessor<AppDatabase> with _$ContentDaoMixin {
       bytes.buffer.asUint8List(bytes.offsetInBytes, bytes.lengthInBytes),
       flush: true,
     );
+  }
+
+  /// `content_version` out of the bundled manifest, or null when it cannot be
+  /// read as one.
+  Future<String?> _versionFromManifest() async {
+    try {
+      final text = await rootBundle.loadString(ContentUpdater.manifestAsset);
+      final version =
+          (jsonDecode(text) as Map<String, dynamic>)['content_version'];
+      return version is String && version.isNotEmpty ? version : null;
+    } on Object {
+      // Missing, truncated, or not the shape expected. The probe answers.
+      return null;
+    }
   }
 
   /// The path as it goes inside a quoted `ATTACH DATABASE '…'`.

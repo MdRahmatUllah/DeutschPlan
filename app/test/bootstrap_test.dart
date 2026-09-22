@@ -171,6 +171,34 @@ void main() {
       expect(second.themeMode, DpMode.light);
     });
 
+    test('a learner who has not enrolled opens on onboarding', () async {
+      // `splash.md`: S1 "leads to S2 (no enrollment) · T1". The route guards
+      // only send an *enrolled* learner away from onboarding — nothing sent a
+      // new one to it, so a fresh install opened on an empty Today and setup
+      // was never seen. Caught on the device, not by a test.
+      final ready = await run();
+      addTearDown(ready.dispose);
+
+      expect(
+        ready.router.routeInformationProvider.value.uri.path,
+        '/onboarding/1',
+      );
+    });
+
+    test('and one who has enrolled opens on Today', () async {
+      final first = await run();
+      await first.db.customStatement(
+        "INSERT INTO enrollments (sublevel_code, started_on, daily_new, "
+        "study_days_mask) VALUES ('A1.1', '2026-03-02', 7, 127)",
+      );
+      await first.dispose();
+
+      final second = await run();
+      addTearDown(second.dispose);
+
+      expect(second.router.routeInformationProvider.value.uri.path, '/today');
+    });
+
     test('it knows a first run from a later one', () async {
       final first = await run();
       expect(first.isFirstRun, isTrue);
@@ -537,6 +565,15 @@ void _serveAssets(Map<String, Uint8List> assets) {
         if (bytes == null) return null;
         return ByteData.view(bytes.buffer, bytes.offsetInBytes, bytes.length);
       });
+
+  // `rootBundle` caches by key, and serving a different course here is
+  // pretending a new *app version* shipped — which on a device means a new
+  // process with an empty cache. Without this the second serve hands back the
+  // first manifest, and the version disagrees with the database in a way that
+  // cannot happen outside a test.
+  for (final key in <String>[ContentDao.asset, ContentUpdater.manifestAsset]) {
+    rootBundle.evict(key);
+  }
 }
 
 class _FakePathProvider extends PathProviderPlatform

@@ -157,3 +157,23 @@ def test_every_job_has_a_timeout(workflow: dict) -> None:
 
 def test_a_second_push_cancels_the_first(workflow: dict) -> None:
     assert workflow["concurrency"]["cancel-in-progress"] is True
+
+
+def test_ci_checks_the_shipped_content_pair_agrees(commands: str) -> None:
+    """The app trusts the manifest's `content_version` over the database's.
+
+    `bundledVersion()` reads `content_manifest.json` rather than copying the
+    8 MB database on every launch, so the two shipped files have to carry the
+    same version. `make content` writes them from one value, but they are two
+    committed files copied by two lines — and a stale manifest parses fine, so
+    nothing at runtime notices. The app simply skips an update it should
+    install, or reinstalls for nothing.
+
+    A build-time check costs nothing at runtime, which is the whole reason the
+    runtime stopped opening the database.
+    """
+    assert "content_manifest.json" in commands, (
+        "the workflow verifies content.db but never checks that the manifest "
+        "beside it carries the same content_version — see "
+        "ContentDao.bundledVersion()"
+    )

@@ -14,6 +14,7 @@ import 'package:deutschplan/data/repositories/setting_keys.dart';
 import 'package:deutschplan/data/repositories/settings_repository.dart';
 import 'package:deutschplan/router/app_router.dart';
 import 'package:deutschplan/router/route_guards.dart';
+import 'package:deutschplan/router/routes.dart';
 import 'package:flutter/foundation.dart' show immutable;
 // `Override` is not in the main barrel in Riverpod 3.
 import 'package:flutter_riverpod/misc.dart' show Override;
@@ -226,6 +227,7 @@ Future<BootstrapResult> bootstrap({
     final capability = glass ?? (GlassCapability()..startFrameWatchdog());
     await capability.queryPlatform().timeout(glassTimeout, onTimeout: () {});
 
+    final plan = PlanRepository(db);
     final setting = settings.read(SettingKeys.themeMode);
     final mode = setting.resolve(platformBrightness);
 
@@ -236,11 +238,15 @@ Future<BootstrapResult> bootstrap({
         content: content,
         settings: settings,
         glass: capability,
+        // `splash.md`: S1 "leads to S2 (no enrollment) · T1". The guards only
+        // send an *enrolled* learner away from onboarding; nothing sent a new
+        // one to it, so a fresh install opened on an empty Today and the
+        // learner never saw setup at all.
         router: buildRouter(
-          guards: RouteGuards.of(
-            exams: ExamRepository(db),
-            plan: PlanRepository(db),
-          ),
+          initialLocation: await plan.hasEnrollment()
+              ? '/today'
+              : const OnboardingRoute(page: '1').location,
+          guards: RouteGuards.of(exams: ExamRepository(db), plan: plan),
         ),
         contentVersion: version,
         contentChange: change,

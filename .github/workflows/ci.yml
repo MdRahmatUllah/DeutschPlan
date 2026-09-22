@@ -127,6 +127,30 @@ jobs:
           db=app/assets/db/content.db
           if [ -f "$db" ]; then
             python tools/verify_content.py --db "$db"
+
+            # The app reads `content_version` from the manifest rather than
+            # opening the 8 MB database on every launch, so the two shipped
+            # files have to agree. `make content` writes them from one value
+            # and cannot disagree; two `cp` lines and a hand-copied file can.
+            # A stale manifest parses fine, so nothing at runtime notices —
+            # the app just skips an update, or reinstalls for nothing.
+            python - <<'PY'
+          import json, sqlite3, sys
+
+          manifest = json.load(
+              open("app/assets/db/content_manifest.json", encoding="utf-8")
+          )["content_version"]
+          shipped = sqlite3.connect("app/assets/db/content.db").execute(
+              "SELECT value FROM meta WHERE key = 'content_version'"
+          ).fetchone()[0]
+
+          if manifest != shipped:
+              sys.exit(
+                  f"content_manifest.json says {manifest!r} but content.db "
+                  f"says {shipped!r} — re-run `make content`"
+              )
+          print(f"content_version {shipped} matches in both shipped files")
+          PY
           else
             echo "No $db committed yet — the workbooks are not in this"
             echo "repository. tools/tests/test_make_content.py verifies a"
