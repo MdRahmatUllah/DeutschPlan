@@ -237,6 +237,14 @@ def _cell(row, index: dict[str, int], name: str):
     column = index.get(name)
     if column is None:
         return None
+
+    # Rows are ragged. openpyxl's read-only mode stops a row at its last
+    # non-empty cell, so a row whose "Watch out" is blank is simply shorter
+    # than the header — which is most rows in the real workbooks, and none in
+    # the fixtures. A missing trailing cell is an empty one, not an error.
+    if column > len(row):
+        return None
+
     value = row[column - 1].value
     if isinstance(value, str):
         value = value.strip()

@@ -117,6 +117,22 @@ void main() {
       expect(xml, contains('@drawable/splash_mark'));
     });
 
+    test('and neither theme draws a system title bar', () {
+      // The template used `Theme.Light.NoTitleBar`. Moving to DayNight for the
+      // splash dropped that, and Android drew its own bar with the package
+      // name across the top of every screen. No widget test can see a bar the
+      // platform draws; the first device screenshot showed it immediately.
+      for (final path in const <String>[
+        'android/app/src/main/res/values-v31/styles.xml',
+        'android/app/src/main/res/values-night-v31/styles.xml',
+      ]) {
+        final xml = read(path);
+
+        expect(xml, contains('windowNoTitle">true'), reason: path);
+        expect(xml, contains('windowActionBar">false'), reason: path);
+      }
+    });
+
     test('the theme is still the one the manifest names', () {
       // Renaming the style silently drops the whole launch screen: the
       // manifest keeps pointing at a LaunchTheme that no longer exists in

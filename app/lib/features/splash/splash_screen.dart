@@ -96,9 +96,8 @@ class SplashScreen extends StatelessWidget {
 /// The measurements the artboards give, in one place.
 ///
 /// Named rather than inline because the native launch screens have to match
-/// them exactly — an Android `windowSplashScreenAnimatedIcon` and an iOS
-/// LaunchScreen are separate files that cannot read Dart, so the numbers they
-/// copy need somewhere to be copied *from*.
+/// them exactly — `splash_mark.xml` is a separate file that cannot read Dart,
+/// so the numbers it copies need somewhere to be copied *from*.
 abstract final class _SplashMetrics {
   static const double bubbleWidth = 120;
   static const double bubbleHeight = 92;

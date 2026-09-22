@@ -2,13 +2,17 @@
 library;
 
 import 'package:deutschplan/core/theme/aurora_backdrop.dart';
+
+import 'dart:async';
+
+import 'package:deutschplan/bootstrap.dart';
 import 'package:deutschplan/core/adaptive/adaptive.dart';
 import 'package:deutschplan/core/theme/app_theme.dart';
 import 'package:deutschplan/core/theme/dp_surface.dart';
 import 'package:deutschplan/core/theme/dp_tokens.dart';
 import 'package:deutschplan/features/splash/splash_screen.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
-import 'package:deutschplan/main.dart' show supportedLocales;
+import 'package:deutschplan/main.dart' show BootstrapHost, supportedLocales;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 
@@ -207,6 +211,71 @@ void main() {
         expect(find.byType(AuroraBackdrop), findsNothing, reason: mode.name);
         expect(find.byType(DpSurface), findsNothing, reason: mode.name);
       }
+    });
+  });
+
+  group('it is what the app shows while bootstrap runs', () {
+    testWidgets('S1 is on screen until bootstrap answers', (tester) async {
+      // The whole point of the route existing. Before this, `main` awaited
+      // bootstrap before `runApp`, so the native window covered the wait and
+      // this screen could never render — nothing reached `/splash`, and the
+      // 600 ms progress line had no moment in which to appear.
+      final finished = Completer<BootstrapResult>();
+
+      await tester.pumpWidget(
+        BootstrapHost(
+          run: ({Brightness platformBrightness = Brightness.light}) =>
+              finished.future,
+        ),
+      );
+      await tester.pump();
+
+      expect(find.byType(SplashScreen), findsOneWidget);
+      expect(find.text(l10n.splashPreparing), findsOneWidget);
+
+      finished.complete(
+        BootstrapFailed(
+          BootstrapFailure(
+            step: BootstrapStep.content,
+            error: 'no content',
+            stackTrace: StackTrace.empty,
+            db: null,
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(
+        find.byType(SplashScreen),
+        findsNothing,
+        reason: 'it stayed up after bootstrap answered',
+      );
+    });
+
+    testWidgets('and the progress line appears on a slow one', (tester) async {
+      final finished = Completer<BootstrapResult>();
+
+      await tester.pumpWidget(
+        BootstrapHost(
+          run: ({Brightness platformBrightness = Brightness.light}) =>
+              finished.future,
+        ),
+      );
+      await tester.pump(const Duration(milliseconds: 601));
+
+      expect(find.byType(LinearProgressIndicator), findsOneWidget);
+
+      finished.complete(
+        BootstrapFailed(
+          BootstrapFailure(
+            step: BootstrapStep.content,
+            error: 'no content',
+            stackTrace: StackTrace.empty,
+            db: null,
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
     });
   });
 
