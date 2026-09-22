@@ -247,8 +247,8 @@ def _write_words(
 def _write_grammar(connection: sqlite3.Connection, inputs: BuildInputs) -> None:
     connection.executemany(
         "INSERT INTO grammar_topics (uid, sublevel_code, level_code, seq, "
-        "source_week, topic, rule, example_de, example_en, watch_out) "
-        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        "source_week, topic, rule, example_de, example_en, watch_out, tags) "
+        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
         [
             (
                 row.uid,
@@ -261,6 +261,7 @@ def _write_grammar(connection: sqlite3.Connection, inputs: BuildInputs) -> None:
                 row.example_de,
                 row.example_en,
                 row.watch_out,
+                row.tags,
             )
             for row in inputs.grammar
         ],

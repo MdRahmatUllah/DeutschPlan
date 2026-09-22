@@ -23,6 +23,7 @@ from openpyxl import load_workbook
 from content_writer import BuildInputs, build
 from pipeline_steps import (
     GRAMMAR_TEXT_FIELDS,
+    assign_tags,
     LEVELS,
     check_formula_prefixes,
     read_tips,
@@ -136,6 +137,7 @@ class GrammarRow:
     sublevel_code: str | None = None
     level_code: str | None = None
     seq: int | None = None
+    tags: str | None = None
 
 
 @dataclass
@@ -472,6 +474,13 @@ def derive(sources: list[SourceBook]) -> dict[str, LevelSplit]:
 
     grammar = [row for source in sources for row in source.grammar]
     split_grammar(grammar)
+
+    coverage = assign_tags(grammar)
+    print(
+        f"grammar tags: {coverage['topics']} topics, "
+        f"{coverage['word-order']} can produce Order the sentence",
+        file=sys.stderr,
+    )
 
     # seq is the reading order across every workbook; seq_in_sublevel is what
     # the step screen lists by.

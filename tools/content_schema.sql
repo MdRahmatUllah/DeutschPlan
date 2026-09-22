@@ -98,7 +98,12 @@ CREATE TABLE grammar_topics (
   rule          TEXT,
   example_de    TEXT,
   example_en    TEXT,
-  watch_out     TEXT
+  watch_out     TEXT,
+
+  -- Comma list, derived from the topic title by the pipeline. It decides
+  -- which practice item types apply (grammar-practice.md); every topic
+  -- carries at least gap-fill and pick-the-form.
+  tags          TEXT NOT NULL
 );
 
 CREATE INDEX idx_grammar_step ON grammar_topics (sublevel_code, seq);
