@@ -19,6 +19,9 @@ part 'app_database.g.dart';
 /// class owns only what the learner writes.
 @DriftDatabase(
   include: <String>{'user_schema.drift', 'content.drift'},
+  // WordRepository is a DatabaseAccessor too, but it is not listed here: it
+  // takes SettingsRepository as well, and the generated getter would only
+  // pass the database. It is constructed where its dependencies are.
   daos: <Type>[ContentDao],
 )
 class AppDatabase extends _$AppDatabase {
