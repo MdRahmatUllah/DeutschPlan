@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The Android 12 splash icon: the same mark, on the canvas the platform
+     expects.
+
+     Android masks this into a circle and shows roughly the inner two thirds,
+     so drawing the mark at its own 120 x 104 size loses the bubble's corners
+     and the whole tail — which is exactly what happened the first time. The
+     art is therefore scaled to 132 x 114 inside a 288 x 288 canvas, whose
+     diagonal (174) clears the 192 safe circle.
+
+     `splash_mark.xml` keeps the unpadded geometry for the pre-12 window, which
+     is not masked and can place the mark at the artboard's own size. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="288dp"
+    android:height="288dp"
+    android:viewportWidth="288"
+    android:viewportHeight="288">
+
+    <group
+        android:translateX="78"
+        android:translateY="87"
+        android:scaleX="1.1"
+        android:scaleY="1.1">
+
+        <path
+            android:fillColor="@color/splash_ink"
+            android:pathData="M22,84 L46,84 L34,104 Z" />
+
+        <path
+            android:fillColor="@color/splash_mark"
+            android:strokeColor="@color/splash_ink"
+            android:strokeWidth="3"
+            android:pathData="M1.5,29.5 A28,28 0 0 1 29.5,1.5 L90.5,1.5 A28,28 0 0 1 118.5,29.5 L118.5,62.5 A28,28 0 0 1 90.5,90.5 L29.5,90.5 A28,28 0 0 1 1.5,62.5 Z" />
+
+        <path
+            android:fillColor="@color/splash_ink"
+            android:fillType="evenOdd"
+            android:pathData="M38,16 L60,16 A30,30 0 0 1 60,76 L38,76 Z M52,30 L60,30 A16,16 0 0 1 60,62 L52,62 Z" />
+    </group>
+</vector>

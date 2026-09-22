@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The launch screen's field. Lagoon, the same value as `DpPalette.light.primary`
+     and the `#00C2B2` the Splash artboard fills the screen with.
+
+     Duplicated from Dart on purpose: the Android window is painted before any
+     Dart runs, so the colour cannot be read from the tokens. `splash_test.dart`
+     asserts the two agree, which is what stops them drifting. -->
+<resources>
+    <color name="splash_field">#00C2B2</color>
+    <color name="splash_mark">#FFC61A</color>
+    <color name="splash_ink">#15121F</color>
+</resources>

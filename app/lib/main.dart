@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:deutschplan/features/splash/splash_screen.dart';
 import 'package:deutschplan/bootstrap.dart';
 import 'package:deutschplan/core/theme/app_theme.dart';
 import 'package:deutschplan/core/providers/app_providers.dart';
@@ -17,46 +20,100 @@ import 'dart:ui' show PlatformDispatcher;
 
 /// Entry point.
 ///
-/// Everything that touches the disk happens in [bootstrap], before `runApp` —
-/// FR-S1-01. The first frame is therefore already the right theme, with the
-/// course attached and the settings in memory, and nothing on any screen is
-/// waiting on I/O that should have finished here.
+/// Every byte of disk work still happens inside [bootstrap] — FR-S1-01 — but
+/// `runApp` goes *first*, showing S1 while that runs.
+///
+/// It used to await bootstrap before the first frame, which meant the native
+/// launch window covered the whole wait and `SplashScreen` could never render:
+/// nothing reached `/splash`, and FR-S1's "progress line after 600 ms" had no
+/// moment in which to appear. On a first run that wait is an 8 MB content copy,
+/// so the line is not hypothetical.
+///
+/// The provider container is still built from bootstrap's result and still
+/// overrides everything it opened; it just cannot exist until there is a
+/// result, so S1 renders outside it. S1 needs a theme and nothing else.
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  runApp(const BootstrapHost());
+}
 
-  final platform = PlatformDispatcher.instance;
-  final result = await bootstrap(
-    platformBrightness: platform.platformBrightness,
-  );
+/// Shows S1 while [bootstrap] runs, then swaps in the real app.
+class BootstrapHost extends StatefulWidget {
+  const BootstrapHost({super.key, this.run});
 
-  // ProviderScope at the very root, on both paths: riverpod_lint enforces it,
-  // and the error screen's *Export progress* reads a repository too.
-  //
-  // The overrides are what stop the providers re-opening what bootstrap has
-  // already opened. A failed bootstrap has none, so anything that reads the
-  // database throws with a message rather than opening a second one.
-  final container = ProviderContainer(
-    overrides: switch (result) {
-      BootstrapReady(:final bootstrap) => bootstrap.overrides,
-      BootstrapFailed() => const <Override>[],
-    },
-  );
+  /// Overridden in tests. Defaults to the real [bootstrap].
+  final Future<BootstrapResult> Function({Brightness platformBrightness})? run;
 
-  // The system light/dark switch. Without this the theme notifier never hears
-  // about it, and a learner following the platform would keep whatever the
-  // phone was on when the app launched.
-  if (result is BootstrapReady) {
-    container
-        .read(themeProvider.notifier)
-        .platformBrightnessChanged(platform.platformBrightness);
-    platform.onPlatformBrightnessChanged = () => container
-        .read(themeProvider.notifier)
-        .platformBrightnessChanged(platform.platformBrightness);
+  @override
+  State<BootstrapHost> createState() => _BootstrapHostState();
+}
+
+class _BootstrapHostState extends State<BootstrapHost> {
+  Widget? _app;
+
+  @override
+  void initState() {
+    super.initState();
+    unawaited(_start());
   }
 
-  runApp(
-    UncontrolledProviderScope(container: container, child: appFor(result)),
-  );
+  Future<void> _start() async {
+    final platform = PlatformDispatcher.instance;
+    final result = await (widget.run ?? bootstrap)(
+      platformBrightness: platform.platformBrightness,
+    );
+
+    // ProviderScope at the very root, on both paths: riverpod_lint enforces
+    // it, and the error screen's *Export progress* reads a repository too.
+    //
+    // The overrides are what stop the providers re-opening what bootstrap has
+    // already opened. A failed bootstrap has none, so anything that reads the
+    // database throws with a message rather than opening a second one.
+    final container = ProviderContainer(
+      overrides: switch (result) {
+        BootstrapReady(:final bootstrap) => bootstrap.overrides,
+        BootstrapFailed() => const <Override>[],
+      },
+    );
+
+    // The system light/dark switch. Without this the theme notifier never
+    // hears about it, and a learner following the platform would keep whatever
+    // the phone was on when the app launched.
+    if (result is BootstrapReady) {
+      container
+          .read(themeProvider.notifier)
+          .platformBrightnessChanged(platform.platformBrightness);
+      platform.onPlatformBrightnessChanged = () => container
+          .read(themeProvider.notifier)
+          .platformBrightnessChanged(platform.platformBrightness);
+    }
+
+    if (!mounted) {
+      container.dispose();
+      return;
+    }
+    setState(() {
+      _app = UncontrolledProviderScope(
+        container: container,
+        child: appFor(result),
+      );
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) =>
+      _app ??
+      MaterialApp(
+        debugShowCheckedModeBanner: false,
+        // Platform brightness, because settings are exactly what bootstrap has
+        // not read yet. It is also what the native launch window followed, so
+        // the hand-off does not change colour.
+        theme: AppTheme.light(),
+        darkTheme: AppTheme.dark(),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: supportedLocales,
+        home: const SplashProgressGate(),
+      );
 }
 
 /// Keeps the theme notifier in step with the system light/dark switch.

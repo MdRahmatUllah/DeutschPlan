@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Android 12+ SplashScreen API.
+
+     The field colour and the mark are the artboard's, so the hand-off to
+     Flutter's first frame shows no change of colour and no change of mark.
+
+     What the platform will not let us match exactly is the mark's *size*:
+     Android sizes and masks the splash icon itself, so it lands a little
+     smaller than the 120 dp the artboard draws. That is a platform rule, not
+     something worth faking with a scaled-up asset that would then be cropped —
+     `windowSplashScreenIconBackgroundColor` is deliberately unset so at least
+     no circle appears behind it. -->
+<resources>
+    <style name="LaunchTheme" parent="@android:style/Theme.DeviceDefault.DayNight">
+        <item name="android:windowSplashScreenBackground">@color/splash_field</item>
+        <item name="android:windowSplashScreenAnimatedIcon">@drawable/splash_icon</item>
+        <item name="android:windowLayoutInDisplayCutoutMode">shortEdges</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowActionBar">false</item>
+    </style>
+
+    <style name="NormalTheme" parent="@android:style/Theme.DeviceDefault.DayNight">
+        <item name="android:windowBackground">?android:colorBackground</item>
+        <!-- The template used `Theme.Light.NoTitleBar`. Switching to DayNight
+             for the splash dropped that, and Android drew its own title bar
+             with the package name across the top of every screen — which no
+             widget test can see and the first device screenshot showed at
+             once. There is no `DayNight.NoActionBar` platform style, so the
+             two attributes are set directly. -->
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowActionBar">false</item>
+    </style>
+</resources>
