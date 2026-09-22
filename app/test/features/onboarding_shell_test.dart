@@ -315,6 +315,37 @@ void main() {
   });
 
   group('accessibility', () {
+    testWidgets('every page holds together at 200 % text', (tester) async {
+      // #36. The header, the dots and both actions, on each page — the frame
+      // is shared, so one overflow here would be five on screen.
+      for (final page in OnboardingPage.values) {
+        await tester.pumpWidget(
+          MaterialApp(
+            theme: AppTheme.light(),
+            localizationsDelegates: appLocalizationsDelegates,
+            supportedLocales: supportedLocales,
+            builder: (context, child) => MediaQuery(
+              data: MediaQuery.of(context)
+                  .copyWith(textScaler: const TextScaler.linear(2)),
+              child: child!,
+            ),
+            home: OnboardingShell(
+              page: page,
+              headline: 'Where do you want to start?',
+              primaryLabel: 'Continue',
+              onPrimary: () {},
+              onBack: () {},
+              onSkip: () {},
+              child: const SizedBox(height: 40),
+            ),
+          ),
+        );
+        await tester.pump();
+
+        expect(tester.takeException(), isNull, reason: 'page ${page.step}');
+      }
+    });
+
     testWidgets('the dots announce the step rather than five anonymous pips', (
       tester,
     ) async {

@@ -54,6 +54,7 @@ void main() {
     VoidCallback? onContinue,
     VoidCallback? onBack,
     VoidCallback? onSkip,
+    double textScale = 1,
     bool fresh = true,
   }) async {
     // The phone frame the artboard is drawn at. The default 800 × 600 test
@@ -84,6 +85,11 @@ void main() {
           },
           localizationsDelegates: appLocalizationsDelegates,
           supportedLocales: supportedLocales,
+          builder: (context, child) => MediaQuery(
+            data: MediaQuery.of(context)
+                .copyWith(textScaler: TextScaler.linear(textScale)),
+            child: child!,
+          ),
           home: OnboardingStartPage(
             onPlacement: onPlacement,
             onContinue: onContinue,
@@ -324,6 +330,16 @@ void main() {
   });
 
   group('accessibility', () {
+    testWidgets('the chips grow at 200 % text rather than clip', (
+      tester,
+    ) async {
+      // #36: 200 % text scaling. The artboard's 52 dp is a floor.
+      await pump(tester, textScale: 2);
+
+      expect(tester.takeException(), isNull);
+      expect(tester.getSize(chip('A1.1')).height, greaterThan(52));
+    });
+
     testWidgets('the chips are one group, and the picked one says so', (
       tester,
     ) async {

@@ -79,7 +79,8 @@ class OnboardingStartPage extends ConsumerWidget {
                 level: level,
                 steps: inLevel,
                 chosen: chosen,
-                onChoose: ref.read(onboardingProvider.notifier).chooseStep,
+                onChoose: (code) =>
+                    ref.read(onboardingProvider.notifier).chooseStep(code),
               ),
             ),
           // The artboard's 12 between the chips and the link, plus the link's
@@ -168,20 +169,27 @@ class _StepChip extends StatelessWidget {
         selected: selected,
         radius: tokens.shape.button,
         onTap: onTap,
-        child: SizedBox(
-          height: height,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              DpText(step.code, role: DpTextRole.body, weight: 700),
-              const SizedBox(height: 1),
-              DpText(
-                l10n.onboardingStepWords(step.wordCount),
-                role: DpTextRole.caption,
-                weight: 500,
-                color: tokens.color.textSecondary,
-              ),
-            ],
+        // The artboard's 52 as a floor, not a fixed size: at 200 % text the
+        // code and the count need more, and the chip grows rather than
+        // clipping them.
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(minHeight: height),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 6),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                DpText(step.code, role: DpTextRole.body, weight: 700),
+                const SizedBox(height: 1),
+                DpText(
+                  l10n.onboardingStepWords(step.wordCount),
+                  role: DpTextRole.caption,
+                  weight: 500,
+                  color: tokens.color.textSecondary,
+                ),
+              ],
+            ),
           ),
         ),
       ),
