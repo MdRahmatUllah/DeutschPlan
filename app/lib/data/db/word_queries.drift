@@ -1,0 +1,111 @@
+import 'content_schema.drift';
+import 'user_schema.drift';
+
+-- Every read that joins the course to the learner's progress.
+--
+-- One query, not two: the Words tab draws a row per word with its status
+-- chip, and fetching the state separately would be a second round trip per
+-- screen — or, worse, per row.
+--
+-- `word_state` is LEFT joined throughout. A word the learner has never met has
+-- no row at all, and that is `todo` (BR-STATUS-01) rather than missing data.
+--
+-- **The status is derived here, not read from the column.** BR-STATUS-02 says
+-- `done` comes from stability against `done_stability_days`, and that setting
+-- is one the learner moves. Reading the stored column would leave every list
+-- showing the status a word had when it was last rated, so lowering the
+-- threshold would change nothing until each word happened to come round
+-- again. `:doneAfter` is that setting, passed in by the repository.
+--
+-- The stored column is still written — `refreshStatus` keeps it current for
+-- anything that reads `word_state` directly, and the CHECK constraint keeps
+-- it honest — but nothing on screen depends on it being fresh.
+
+wordsWithStateForStep:
+  SELECT w.**, s.**, CASE
+    WHEN s.status = 'suspended' THEN 'suspended'
+    WHEN s.introduced_on IS NULL AND COALESCE(s.reps, 0) = 0 THEN 'todo'
+    WHEN COALESCE(s.stability, 0) >= :doneAfter THEN 'done'
+    ELSE 'learning' END AS derived_status
+  FROM words w
+  LEFT JOIN word_state s ON s.word_uid = w.uid
+  WHERE w.sublevel_code = :code
+  ORDER BY w.seq_in_sublevel;
+
+-- The same, minus suspended. BR-STATUS-03: suspended words are out of plans,
+-- revision, quizzes, exams and practice sentences until resumed.
+learnableWordsForStep:
+  SELECT w.**, s.**, CASE
+    WHEN s.introduced_on IS NULL AND COALESCE(s.reps, 0) = 0 THEN 'todo'
+    WHEN COALESCE(s.stability, 0) >= :doneAfter THEN 'done'
+    ELSE 'learning' END AS derived_status
+  FROM words w
+  LEFT JOIN word_state s ON s.word_uid = w.uid
+  WHERE w.sublevel_code = :code
+    AND (s.status IS NULL OR s.status != 'suspended')
+  ORDER BY w.seq_in_sublevel;
+
+-- A category, across every step. `categories.md`: ordered by step, then
+-- frequency, then reading order.
+wordsWithStateForCategory:
+  SELECT w.**, s.**, CASE
+    WHEN s.status = 'suspended' THEN 'suspended'
+    WHEN s.introduced_on IS NULL AND COALESCE(s.reps, 0) = 0 THEN 'todo'
+    WHEN COALESCE(s.stability, 0) >= :doneAfter THEN 'done'
+    ELSE 'learning' END AS derived_status
+  FROM words w
+  LEFT JOIN word_state s ON s.word_uid = w.uid
+  JOIN sublevels sub ON sub.code = w.sublevel_code
+  WHERE w.category_id = :category
+  ORDER BY sub.ord, w.freq DESC, w.seq;
+
+wordWithState:
+  SELECT w.**, s.**, CASE
+    WHEN s.status = 'suspended' THEN 'suspended'
+    WHEN s.introduced_on IS NULL AND COALESCE(s.reps, 0) = 0 THEN 'todo'
+    WHEN COALESCE(s.stability, 0) >= :doneAfter THEN 'done'
+    ELSE 'learning' END AS derived_status
+  FROM words w
+  LEFT JOIN word_state s ON s.word_uid = w.uid
+  WHERE w.uid = :uid;
+
+-- Everything due for revision today, across every step the learner has
+-- started. `due` is a local date string, so the comparison is a string one.
+dueWords:
+  SELECT w.**, s.**, CASE
+    WHEN s.introduced_on IS NULL AND COALESCE(s.reps, 0) = 0 THEN 'todo'
+    WHEN COALESCE(s.stability, 0) >= :doneAfter THEN 'done'
+    ELSE 'learning' END AS derived_status
+  FROM word_state s
+  JOIN words w ON w.uid = s.word_uid
+  WHERE s.due IS NOT NULL AND s.due <= :today
+    AND s.status != 'suspended'
+  ORDER BY s.due, w.seq;
+
+-- The counts the step list and Today draw. One row, four numbers: a COUNT per
+-- status would be four scans of the same rows, and each one would have to
+-- repeat the derivation above.
+statusCountsForStep:
+  SELECT
+    COUNT(*) AS total,
+    -- COALESCE because SUM over no rows is NULL, and a step with no words
+    -- should report zero rather than make every caller handle a null.
+    COALESCE(SUM(CASE WHEN s.status != 'suspended'
+      AND s.introduced_on IS NULL AND COALESCE(s.reps, 0) = 0
+      THEN 1 WHEN s.word_uid IS NULL THEN 1 ELSE 0 END), 0) AS todo,
+    COALESCE(SUM(CASE WHEN s.status != 'suspended'
+      AND NOT (s.introduced_on IS NULL AND COALESCE(s.reps, 0) = 0)
+      AND COALESCE(s.stability, 0) < :doneAfter THEN 1 ELSE 0 END), 0)
+      AS learning,
+    COALESCE(SUM(CASE WHEN s.status != 'suspended'
+      AND NOT (s.introduced_on IS NULL AND COALESCE(s.reps, 0) = 0)
+      AND COALESCE(s.stability, 0) >= :doneAfter THEN 1 ELSE 0 END), 0)
+      AS done,
+    COALESCE(SUM(CASE WHEN s.status = 'suspended' THEN 1 ELSE 0 END), 0)
+      AS suspended
+  FROM words w
+  LEFT JOIN word_state s ON s.word_uid = w.uid
+  WHERE w.sublevel_code = :code;
+
+wordStateFor:
+  SELECT * FROM word_state WHERE word_uid = :uid;
