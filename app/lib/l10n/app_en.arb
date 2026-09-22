@@ -101,5 +101,45 @@
   "undo": "Undo",
   "@undo": {
     "description": "Action on the snackbar shown after a reversible change, such as rating a card. See FR-T2-02."
+  },
+  "back": "Back",
+  "@back": {
+    "description": "Onboarding: returns to the previous page. Appears from page 2."
+  },
+  "skip": "Skip",
+  "@skip": {
+    "description": "Onboarding: applies the defaults for every remaining page and finishes. Appears from page 3 (FR-S2-01)."
+  },
+  "onboardingStepOf": "Step {step} of {total}",
+  "@onboardingStepOf": {
+    "description": "Onboarding progress, shown above the headline and as the screen-reader label for the dot row.",
+    "placeholders": {
+      "step": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "onboardingWelcomeHeadline": "Learn German, one clear day at a time",
+  "@onboardingWelcomeHeadline": {
+    "description": "S2 page 1 headline, in the Lagoon header block."
+  },
+  "onboardingWelcomeStart": "Let's start",
+  "@onboardingWelcomeStart": {
+    "description": "S2 page 1 primary button."
+  },
+  "onboardingPromiseOffline": "Works fully offline · no account, no signal needed",
+  "@onboardingPromiseOffline": {
+    "description": "S2 page 1, first promise."
+  },
+  "onboardingPromiseSteps": "Exam-structured: 12 steps from A1.1 to C2.2",
+  "@onboardingPromiseSteps": {
+    "description": "S2 page 1, second promise. A1.1 and C2.2 are step codes and are not translated."
+  },
+  "onboardingPromisePrivate": "Your progress stays on this phone",
+  "@onboardingPromisePrivate": {
+    "description": "S2 page 1, third promise."
   }
 }

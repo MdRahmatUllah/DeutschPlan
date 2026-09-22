@@ -10,6 +10,8 @@
 /// presentation of each route.
 library;
 
+import 'package:deutschplan/features/onboarding/onboarding_shell.dart';
+import 'package:deutschplan/features/onboarding/onboarding_welcome_page.dart';
 import 'package:deutschplan/features/splash/splash_screen.dart';
 import 'package:deutschplan/router/app_shell.dart';
 import 'package:deutschplan/router/back_behaviour.dart';
@@ -396,12 +398,29 @@ class OnboardingRoute extends GoRouteData with $OnboardingRoute {
 
   final String page;
 
+  /// `:page` is `1`…`5` for S2, or `placement` for S3 — one route because
+  /// `navigation.md` gives them one path, and the placement check is reached
+  /// from page 3 rather than being a tab of its own.
   @override
-  Widget build(BuildContext context, GoRouterState state) => PlaceholderScreen(
-    title: 'Welcome',
-    screen: page == 'placement' ? 'S3' : 'S2',
-    detail: page,
-  );
+  Widget build(BuildContext context, GoRouterState state) {
+    if (page == 'placement') {
+      return const PlaceholderScreen(
+        title: 'Welcome',
+        screen: 'S3',
+        detail: 'placement',
+      );
+    }
+
+    return switch (OnboardingPage.parse(page)) {
+      OnboardingPage.welcome => OnboardingWelcomePage(
+        onStart: () => const OnboardingRoute(page: '2').go(context),
+      ),
+
+      // #88…#91 replace these. A bad `:page` lands here too, which is why it
+      // is the welcome page rather than a blank screen.
+      _ => PlaceholderScreen(title: 'Welcome', screen: 'S2', detail: page),
+    };
+  }
 }
 
 @TypedGoRoute<StudyRoute>(path: '/study')

@@ -7,6 +7,7 @@ import 'package:deutschplan/core/theme/app_theme.dart';
 import 'package:deutschplan/data/db/app_database.dart';
 import 'package:deutschplan/data/repositories/exam_repository.dart';
 import 'package:deutschplan/data/repositories/plan_repository.dart';
+import 'package:deutschplan/features/onboarding/onboarding_welcome_page.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
 import 'package:deutschplan/main.dart' show supportedLocales;
 import 'package:deutschplan/router/app_router.dart';
@@ -249,7 +250,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(location(), '/onboarding/1');
-      expect(find.text('S2'), findsOneWidget);
+      expect(find.byType(OnboardingWelcomePage), findsOneWidget);
     });
 
     testWidgets('and goes to Today once they are', (tester) async {
