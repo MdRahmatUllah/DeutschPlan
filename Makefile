@@ -12,8 +12,7 @@ DART := cd $(APP) &&
 
 .DEFAULT_GOAL := help
 
-.PHONY: help content gen gen-watch test goldens update-goldens lint format \
-        release-android release-ios clean
+.PHONY: help content gen gen-watch schema-dump test test-content goldens goldens-verify update-goldens lint format release-android release-ios clean
 
 help: ## List the targets
 	@grep -hE '^[a-z-]+:.*?## ' $(MAKEFILE_LIST) \
