@@ -425,6 +425,27 @@ void main() {
     expect(offenders, isEmpty, reason: offenders.join('\n'));
   });
 
+  test('runApp is handed a ProviderScope', () {
+    // riverpod_lint's `missing_provider_scope` already says this — but only
+    // under a path-less `dart analyze`. `flutter analyze` skips the plugin
+    // (ADR 18) and so does `dart analyze lib test`, and both of those are what
+    // someone reaches for when they want a quick check. This holds however
+    // the analyzer is invoked.
+    //
+    // It is load-bearing rather than tidy: S1 now renders before bootstrap
+    // has produced a container, so without a scope at the root the first
+    // screen that reads a provider during the splash throws.
+    final source = File('lib/main.dart').readAsStringSync();
+
+    expect(
+      RegExp(r'runApp\(\s*const\s+ProviderScope').hasMatch(source),
+      isTrue,
+      reason:
+          'lib/main.dart must hand runApp a ProviderScope — riverpod_lint '
+          'only catches this under `dart analyze` with no path arguments',
+    );
+  });
+
   test('the clock is the only source of now', () {
     // state-management.md: "`DateTime Function()`; overridden in tests for
     // date logic." A study day is a local day, and the plan engine, the
