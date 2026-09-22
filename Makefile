@@ -3,9 +3,15 @@
 # docs/05-dev-guide/getting-started.md documents these; this file is what makes
 # them real. Every target runs from the repository root.
 #
-# Note: lint uses `dart analyze`, NOT `flutter analyze`. The latter does not
-# load the analysis_server plugin that riverpod_lint ships as, so it reports a
-# clean run while every riverpod rule is silently inactive (ADR 18).
+# Note: lint uses `dart analyze`, NOT `flutter analyze`, and with **no path
+# arguments**. Either the wrong command or a narrowing path stops the
+# analysis_server plugin that riverpod_lint ships as from loading, and the run
+# comes back clean with every riverpod rule silently inactive (ADR 18).
+#
+#     dart analyze --fatal-infos lib test   # looks clean, riverpod off
+#     dart analyze --fatal-infos            # what CI runs, riverpod on
+#
+# `missing_provider_scope` reached main that way once. Run `make lint`.
 
 APP := app
 DART := cd $(APP) &&

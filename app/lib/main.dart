@@ -35,7 +35,13 @@ import 'dart:ui' show PlatformDispatcher;
 /// result, so S1 renders outside it. S1 needs a theme and nothing else.
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(const BootstrapHost());
+
+  // A `ProviderScope` at the true root, which riverpod_lint requires and which
+  // S1 needs anyway now that it renders before bootstrap has produced a
+  // container. Once there is a result, the `UncontrolledProviderScope` below
+  // shadows this one for everything under it — that is the scope carrying
+  // bootstrap's overrides, and the one every screen actually reads from.
+  runApp(const ProviderScope(child: BootstrapHost()));
 }
 
 /// Shows S1 while [bootstrap] runs, then swaps in the real app.
