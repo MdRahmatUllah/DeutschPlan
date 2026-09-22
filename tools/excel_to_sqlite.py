@@ -253,6 +253,17 @@ def read_workbook(path: Path) -> SourceBook:
                     f"{', '.join(book.sheetnames)}"
                 )
 
+        # The category tabs are required too. Without one, every word's
+        # category_id is null and the category filter on Search has nothing
+        # to offer — which looks like a UI bug rather than a missing tab.
+        if not any(
+            name.strip().startswith(CATEGORY_SHEET_PREFIX) for name in sheets
+        ):
+            raise PipelineError(
+                f"{path.name} has no '{CATEGORY_SHEET_PREFIX}…' category tab. "
+                f"Found: {', '.join(book.sheetnames)}"
+            )
+
         source = SourceBook(file=path.name)
         source.words = _read_words(book[sheets[WORDS_SHEET]], path.name)
         source.grammar = _read_grammar(book[sheets[GRAMMAR_SHEET]], path.name)
@@ -279,9 +290,11 @@ def _read_words(sheet, file_name: str) -> list[Word]:
         english = _cell(row, index, "english")
         level = _as_level(_cell(row, index, "level"))
 
-        # A wholly blank row is padding, not an error: the workbooks end with
-        # plenty of them.
-        if german is None and english is None and level is None:
+        # Padding, or a section divider that puts a label in one column and
+        # nothing else. Both are rows a spreadsheet accumulates, and neither is
+        # worth stopping a build over — but a row that names a word and then
+        # omits its level still is.
+        if german is None and english is None:
             continue
 
         if german is None or english is None or level is None:
@@ -357,9 +370,13 @@ def _read_skill_prompts(sheet) -> list[str]:
     W01 is a free-form sheet, so every non-empty text cell in the first two
     columns counts, in reading order. Nothing downstream needs more structure
     than "the prompts, in order".
+
+    Row 1 is the sheet's own heading, not something the learner can do. Without
+    skipping it, "Weekly skills checklist" becomes the first thing they are
+    asked to tick off.
     """
     prompts: list[str] = []
-    for row in sheet.iter_rows(min_row=1, max_col=2):
+    for row in sheet.iter_rows(min_row=2, max_col=2):
         for cell in row:
             if isinstance(cell.value, str) and cell.value.strip():
                 prompts.append(cell.value.strip())

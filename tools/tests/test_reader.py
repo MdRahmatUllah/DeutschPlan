@@ -28,7 +28,16 @@ from excel_to_sqlite import (  # noqa: E402
     read_sources,
     read_workbook,
 )
-from fixtures.make_workbooks import BOOK_LEVELS, write_all  # noqa: E402
+from fixtures.make_workbooks import (  # noqa: E402
+    WORD_HEADERS as FIXTURE_HEADERS,
+    BOOK_LEVELS,
+    write_all,
+)
+
+
+# Column positions in the fixture, so a test that plants a cell says which
+# column it means rather than counting on its fingers.
+HEADER_INDEX = {name: i for i, name in enumerate(FIXTURE_HEADERS)}
 
 
 @pytest.fixture(scope="module")
@@ -46,7 +55,13 @@ def first_book(books: Path):
 def test_reads_every_sheet(first_book):
     assert first_book.words, "All Words produced no rows"
     assert first_book.grammar, "Grammar produced no rows"
-    assert first_book.skill_prompts, "W01 produced no prompts"
+    # The content, not just "non-empty": the sheet's heading sat in this list
+    # until it was asked for by name.
+    assert first_book.skill_prompts == [
+        "Introduce yourself in three sentences.",
+        "Order a coffee and ask for the bill.",
+        "Describe your room.",
+    ]
     assert [c.name for c in first_book.categories] == ["Alltag", "Reisen", "Arbeit"]
 
 
@@ -239,6 +254,43 @@ class TestFailures:
     ):
         path = _blank_cell(books / "German_C2_Tracker.xlsx", "English", tmp_path)
         with pytest.raises(PipelineError, match=r"row \d+: missing English"):
+            read_workbook(path)
+
+    def test_a_workbook_with_no_category_tab_says_so(
+        self, books: Path, tmp_path: Path
+    ):
+        def drop_categories(book):
+            for name in list(book.sheetnames):
+                if name.startswith("C-"):
+                    book.remove(book[name])
+
+        path = _copy_with(books / "German_B2_Tracker.xlsx", tmp_path, drop_categories)
+        with pytest.raises(PipelineError, match=r"no 'C-…' category tab"):
+            read_workbook(path)
+
+    def test_a_divider_row_is_skipped_rather_than_fatal(
+        self, books: Path, tmp_path: Path
+    ):
+        # A banner row carrying only the level, which is how these sheets
+        # separate one block from the next. It has a Level and no word, so a
+        # rule that only skips wholly blank rows would stop the build on it and
+        # send the author to delete a row that looks deliberate to them.
+        def add_divider(book):
+            sheet = book["All Words"]
+            row = [None] * len(HEADER_MAP)
+            row[HEADER_INDEX["Level"]] = "C1"
+            sheet.append(row)
+
+        path = _copy_with(books / "German_C1_Tracker.xlsx", tmp_path, add_divider)
+        assert read_workbook(path).words
+
+    def test_a_word_row_missing_its_level_is_still_fatal(
+        self, books: Path, tmp_path: Path
+    ):
+        # The other half of the rule above: a row that names a word and then
+        # omits its level would be filed under the wrong step silently.
+        path = _blank_cell(books / "German_C1_Tracker.xlsx", "Level", tmp_path)
+        with pytest.raises(PipelineError, match=r"row \d+: missing Level"):
             read_workbook(path)
 
     def test_a_manifest_with_no_workbooks_says_so(self, tmp_path: Path):
