@@ -796,7 +796,11 @@ TAG_KEYWORDS: dict[str, tuple[str, ...]] = {
     "adjective": ("adjektiv", "adjective", "deklination", "komparativ", "superlativ"),
     "pronoun": ("pronomen", "pronoun", "reflexiv", "reflexive", "relativ"),
     "preposition": ("präposition", "preposition", "wechselpräposition"),
-    "negation": ("negation", "verneinung", "nicht", "kein"),
+    # Not "nicht" or "kein": they are function words that appear in titles
+    # about separable prefixes ("Nicht trennbare Verben") and article
+    # choice, where the negation tag is wrong and steers the generator's
+    # distractors with it.
+    "negation": ("negation", "verneinung"),
     "passive": ("passiv", "passive", "vorgangspassiv", "zustandspassiv"),
     "subjunctive": ("konjunktiv", "subjunctive", "würde"),
 }

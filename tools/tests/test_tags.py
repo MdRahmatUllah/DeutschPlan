@@ -110,12 +110,21 @@ class TestDerivation:
         derived = first[len(BASE_TAGS) :]
         assert derived == sorted(derived)
 
-    def test_every_tag_in_the_map_is_reachable(self):
-        # A tag whose keywords never fire is a tag the generator will never
-        # see, and nobody would notice.
+    def test_every_keyword_reaches_its_tag(self):
+        # Every one, not just the first: a typo in a later entry would never
+        # be exercised, because an earlier keyword already produced the tag.
         for tag, keywords in TAG_KEYWORDS.items():
-            title = keywords[0]
-            assert tag in tags_for(title), f"{tag} unreachable via {title!r}"
+            for keyword in keywords:
+                assert tag in tags_for(keyword), (
+                    f"{tag} is not reached by {keyword!r}"
+                )
+
+    def test_a_function_word_does_not_tag_a_topic_about_something_else(self):
+        # "Nicht trennbare Verben" is about separable prefixes. Tagging it
+        # `negation` because the title contains "nicht" steers the
+        # generator's distractors at the wrong thing.
+        assert "negation" not in tags_for("Nicht trennbare Verben")
+        assert "negation" in tags_for("Die Verneinung mit kein")
 
 
 class TestAssignment:
@@ -141,6 +150,25 @@ class TestAssignment:
         rows = self.rows("a", "b", "c")
         assign_tags(rows)
         assert all(row.tags for row in rows)
+
+
+def test_the_build_reports_tag_coverage(tmp_path, capsys):
+    """#50 asks for coverage in the build summary.
+
+    Through `derive`, not `assign_tags`: the count exists because Order the
+    sentence disappears silently when the tag is missing, so losing the report
+    loses the only signal that it did.
+    """
+    from excel_to_sqlite import derive, read_workbook
+    from fixtures.make_workbooks import BOOK_LEVELS, write_all
+
+    write_all(tmp_path)
+    sources = [read_workbook(tmp_path / name) for name in BOOK_LEVELS]
+    derive(sources)
+
+    err = capsys.readouterr().err
+    assert "grammar tags:" in err
+    assert "can produce Order the sentence" in err
 
 
 def test_the_tags_reach_the_database(tmp_path):
