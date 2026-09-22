@@ -14,7 +14,7 @@ import argparse
 import re
 import sys
 from dataclasses import dataclass, field
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 
 import yaml
@@ -555,7 +555,11 @@ def collect(sources: list[SourceBook], splits: dict[str, LevelSplit]) -> BuildIn
         skill_prompts=prompts,
         splits=splits,
         sources=[source.file for source in sources],
-        content_version=datetime.now().strftime("%Y%m%d%H%M"),
+        # UTC, the same clock as meta.built_at. The app compares this
+        # string against the installed copy to decide whether to replace
+        # it, so a local clock would let a build in UTC+6 sort above a
+        # later one in CI and the new content would silently not install.
+        content_version=datetime.now(timezone.utc).strftime("%Y%m%d%H%M"),
     )
 
 

@@ -10,6 +10,7 @@ type-check the app's queries against it.
 from __future__ import annotations
 
 import json
+import re
 import sqlite3
 import sys
 from pathlib import Path
@@ -48,10 +49,32 @@ def database(tmp_path_factory) -> sqlite3.Connection:
     connection.close()
 
 
+#: FTS5 keeps its index in tables beside the virtual one. They are sqlite's,
+#: not ours, and no doc should list them.
+SHADOW_SUFFIXES = re.compile(r"_(data|idx|docsize|config|content)$")
+
+
+def real_tables(database: sqlite3.Connection) -> set[str]:
+    return {
+        row[0]
+        for row in database.execute(
+            "SELECT name FROM sqlite_master WHERE type = 'table' "
+            "AND name NOT LIKE 'sqlite_%'"
+        )
+        if not SHADOW_SUFFIXES.search(row[0])
+    }
+
+
 def documented_tables() -> dict[str, str]:
-    """The table names and key-column cells from content-database.md."""
-    section = DOC.read_text(encoding="utf-8").split("## Tables", 1)[1]
-    section = section.split("\n\n")[1]
+    """The table names and key-column cells from content-database.md.
+
+    Located by its header row rather than by counting blocks after the
+    heading: a sentence added under "## Tables" should not silently empty
+    this and make every assertion below pass on nothing.
+    """
+    body = DOC.read_text(encoding="utf-8").split("| Table | Key columns |", 1)
+    assert len(body) == 2, "the table header in content-database.md moved"
+    section = body[1].split(chr(10) + chr(10))[0]
 
     rows: dict[str, str] = {}
     for line in section.splitlines():
@@ -76,73 +99,49 @@ class TestAgainstTheDoc:
         fts = {"words_fts", "words_trigram", "examples_fts"}
         expected = set(documented_tables()) - fts
 
-        found = {
-            row[0]
-            for row in database.execute(
-                "SELECT name FROM sqlite_master WHERE type = 'table' "
-                "AND name NOT LIKE 'sqlite_%'"
-            )
-        }
+        found = real_tables(database)
         assert expected <= found, f"missing: {expected - found}"
 
     def test_no_table_exists_that_nobody_documented(self, database):
-        found = {
-            row[0]
-            for row in database.execute(
-                "SELECT name FROM sqlite_master WHERE type = 'table' "
-                "AND name NOT LIKE 'sqlite_%'"
-            )
-        }
+        found = real_tables(database)
         assert found <= set(documented_tables()), (
             f"undocumented: {found - set(documented_tables())}"
         )
 
     def test_every_key_column_the_doc_names_exists(self, database):
-        """The doc's second cell lists the columns that matter.
+        """The doc's second cell backticks every column name.
 
-        Parsed loosely — it is prose with backticks and parentheses — but a
-        column named there and missing here is a real mismatch.
+        Read out of the backticks rather than guessed at, because a blocklist
+        of "prose words" swallowed `key` and `value` — which are the two
+        columns of `meta`, so dropping either passed.
         """
-        import re
-
         for table, cell in documented_tables().items():
             if table in {"words_fts", "words_trigram", "examples_fts"}:
                 continue
             actual = {
-                row[1]
-                for row in database.execute(f"PRAGMA table_info({table})")
+                row[1] for row in database.execute(f"PRAGMA table_info({table})")
             }
-            # Identifier-looking words from the cell, minus the prose.
-            named = set(re.findall(r"\b[a-z][a-z0-9_]{2,}\b", cell))
-            prose = {
-                "key",
-                "value",
-                "all",
-                "and",
-                "the",
-                "per",
-                "from",
-                "one",
-                "row",
-                "each",
-                "csv",
-                "tabs",
-                "with",
-                "unindexed",
-                "over",
-                "trigram",
-                "unicode",
-                "remove",
-                "diacritics",
+            named = set(re.findall(r"`([a-z][a-z0-9_]*)`", cell))
+            assert named, f"{table}: the doc backticks no column names"
+            assert named <= actual, (
+                f"{table}: the doc names {sorted(named - actual)}, the schema "
+                f"has {sorted(actual)}"
+            )
+
+    def test_the_schema_has_no_column_the_doc_leaves_out(self, database):
+        # The other direction. A column nobody documented is one the app will
+        # not know to read, and `content_schema.drift` (#55) mirrors this list.
+        for table, cell in documented_tables().items():
+            if table in {"words_fts", "words_trigram", "examples_fts"}:
+                continue
+            actual = {
+                row[1] for row in database.execute(f"PRAGMA table_info({table})")
             }
-            for column in named - prose:
-                if column in actual:
-                    continue
-                # The doc writes types and ranges beside names ("ord 1-12").
-                assert not column.isidentifier() or column in actual, (
-                    f"{table}: the doc names {column!r}, the schema has "
-                    f"{sorted(actual)}"
-                )
+            named = set(re.findall(r"`([a-z][a-z0-9_]*)`", cell))
+            assert actual <= named, (
+                f"{table}: the schema has {sorted(actual - named)}, which "
+                f"content-database.md does not list"
+            )
 
 
 class TestIndexes:

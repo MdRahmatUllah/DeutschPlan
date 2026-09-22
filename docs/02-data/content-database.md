@@ -4,17 +4,19 @@ Bundled at `assets/db/content.db`, copied to app-support storage on first run or
 
 ## Tables
 
+Column names are backticked; `tools/tests/test_schema.py` reads them out of this table and fails if the schema and this list disagree, so the backticks are load-bearing.
+
 | Table | Key columns | Purpose |
 | --- | --- | --- |
-| `meta` | key, value | `content_version`, `built_at`, `sources`, `word_count`, `sublevel_week_boundaries` |
-| `levels` | code (A1…C2), ord, name, exam_target | CEFR levels |
-| `sublevels` | code (A1.1…C2.2), level_code, ord 1–12, word_count, grammar_count | Steps |
-| `categories` | id, name, description | Word categories (from C-… tabs) |
-| `words` | uid PK, sublevel_code, level_code, seq, seq_in_sublevel, article, german, forms, pos, pron_bn, english, bangla, freq, category_id, source_week, collocations, synonyms_register, search_key, search_key_alt | One row per entry |
-| `word_examples` | (word_uid, ord) PK, german, english | Example sentences |
-| `grammar_topics` | uid PK, sublevel_code, level_code, seq, source_week, topic, rule, example_de, example_en, watch_out | Grammar |
-| `skill_prompts` | (level_code, ord), text | Weekly skills checklist |
-| `interference_tips` | word_uid, tip_en, tip_bn | L1-specific traps (from CSV) |
+| `meta` | `key`, `value` | `content_version`, `built_at`, `sources`, `word_count`, `sublevel_week_boundaries` |
+| `levels` | `code` (A1…C2), `ord`, `name`, `exam_target` | CEFR levels |
+| `sublevels` | `code` (A1.1…C2.2), `level_code`, `ord` 1–12, `word_count`, `grammar_count` | Steps |
+| `categories` | `id`, `name`, `description` | Word categories (from C-… tabs) |
+| `words` | `uid` PK, `sublevel_code`, `level_code`, `seq`, `seq_in_sublevel`, `article`, `german`, `forms`, `pos`, `pron_bn`, `english`, `bangla`, `freq`, `category_id`, `source_week`, `collocations`, `synonyms_register`, `search_key`, `search_key_alt` | One row per entry |
+| `word_examples` | (`word_uid`, `ord`) PK, `german`, `english` | Example sentences |
+| `grammar_topics` | `uid` PK, `sublevel_code`, `level_code`, `seq`, `source_week`, `topic`, `rule`, `example_de`, `example_en`, `watch_out` | Grammar |
+| `skill_prompts` | (`level_code`, `ord`), `text` | Weekly skills checklist |
+| `interference_tips` | `word_uid`, `tip_en`, `tip_bn` | L1-specific traps (from CSV) |
 | `words_fts` | FTS5 unicode61 remove_diacritics 2 over german, english, bangla, search_key | Exact / prefix search |
 | `words_trigram` | FTS5 trigram over german, english, search_key | Fuzzy candidates |
 | `examples_fts` | FTS5 unicode61 over german, english, with word_uid UNINDEXED | "In sentences" tier |
