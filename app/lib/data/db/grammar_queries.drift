@@ -1,0 +1,50 @@
+import 'content_schema.drift';
+import 'user_schema.drift';
+
+-- Grammar topics joined to the learner's scheduling.
+--
+-- Same shape as `word_queries.drift`: one query per screen, LEFT joined, and
+-- the status derived rather than read. A topic nobody has practised has no
+-- `grammar_state` row, and that is `todo`.
+
+topicsWithStateForStep:
+  SELECT g.**, s.**, CASE
+    WHEN s.status = 'suspended' THEN 'suspended'
+    WHEN s.last_review IS NULL THEN 'todo'
+    WHEN COALESCE(s.stability, 0) >= :doneAfter THEN 'done'
+    ELSE 'learning' END AS derived_status
+  FROM grammar_topics g
+  LEFT JOIN grammar_state s ON s.grammar_uid = g.uid
+  WHERE g.sublevel_code = :code
+  ORDER BY g.seq;
+
+-- What the plan engine asks for: everything due on or before today,
+-- suspended topics excluded.
+dueTopics:
+  SELECT g.**, s.**, CASE
+    WHEN s.last_review IS NULL THEN 'todo'
+    WHEN COALESCE(s.stability, 0) >= :doneAfter THEN 'done'
+    ELSE 'learning' END AS derived_status
+  FROM grammar_state s
+  JOIN grammar_topics g ON g.uid = s.grammar_uid
+  WHERE s.due IS NOT NULL AND s.due <= :today
+    AND s.status != 'suspended'
+  ORDER BY s.due, g.seq;
+
+topicWithState:
+  SELECT g.**, s.**, CASE
+    WHEN s.status = 'suspended' THEN 'suspended'
+    WHEN s.last_review IS NULL THEN 'todo'
+    WHEN COALESCE(s.stability, 0) >= :doneAfter THEN 'done'
+    ELSE 'learning' END AS derived_status
+  FROM grammar_topics g
+  LEFT JOIN grammar_state s ON s.grammar_uid = g.uid
+  WHERE g.uid = :uid;
+
+-- The practice history one topic has, newest first. `grammar.md` shows the
+-- last few runs under the rule.
+practiceFor:
+  SELECT * FROM grammar_practice_log
+  WHERE grammar_uid = :uid
+  ORDER BY practised_at DESC, id DESC
+  LIMIT :limit;

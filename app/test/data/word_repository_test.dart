@@ -260,6 +260,27 @@ void main() {
       expect(seen.last, 1, reason: 'the suspension did not reach the stream');
     });
 
+    test('an open one follows a threshold the learner moves', () async {
+      // `.first` builds a new stream every time, so it never sees this: the
+      // threshold is a query variable, and a stream left open on a screen
+      // would answer with the value it was built with.
+      await state(ContentFixture.haus, stability: 10);
+
+      final seen = <WordStatus>[];
+      final subscription = words
+          .watchWord(ContentFixture.haus)
+          .listen((word) => seen.add(word!.status));
+      addTearDown(subscription.cancel);
+
+      await pumpEventQueue();
+      expect(seen.last, WordStatus.done);
+
+      await settings.write(SettingKeys.doneStabilityDays, 30);
+      await pumpEventQueue();
+
+      expect(seen.last, WordStatus.learning);
+    });
+
     test('the status counts re-emit too', () async {
       final seen = <int>[];
       final subscription = words
