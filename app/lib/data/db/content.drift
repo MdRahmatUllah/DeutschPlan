@@ -36,7 +36,7 @@ exactMatches:
 -- is what FTS5 requires; the query string is quoted and column-filtered by the
 -- caller.
 prefixMatches:
-  SELECT w.*, f.rank AS rank FROM words w
+  SELECT w.**, f.rank AS rank FROM words w
   JOIN (
     SELECT uid, rank FROM words_fts WHERE words_fts MATCH :query
   ) f ON f.uid = w.uid
@@ -54,8 +54,14 @@ trigramCandidates:
 
 -- Search tier 4, "in sentences". The headword comes back with the sentence
 -- because the result row shows it above.
+--
+-- `NULLIF` on the translation is not cosmetic: FTS5 columns carry no type, so
+-- drift reads `e.english` as non-null and a sentence the workbook left
+-- untranslated crashes the cast. Wrapping it makes the column nullable, which
+-- is what `word_examples.english` already is.
 sentenceMatches:
-  SELECT e.word_uid AS wordUid, e.german AS german, e.english AS english,
+  SELECT e.word_uid AS wordUid, e.german AS german,
+         NULLIF(e.english, '') AS english,
          w.german AS head, w.article AS article
   FROM examples_fts e
   JOIN words w ON w.uid = e.word_uid
