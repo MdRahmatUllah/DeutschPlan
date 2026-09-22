@@ -121,8 +121,8 @@ class _RisingChartPainter extends CustomPainter {
   final Color start;
   final Color milestone;
 
-  /// The artboard's own points, in its 390 × 120 space. Scaled to whatever
-  /// width the phone actually has, so the curve keeps its shape on a tablet.
+  /// The artboard's milestones, in its 390 × 120 space. They sit near the
+  /// wave rather than on it — the artboard places them by hand.
   static const List<Offset> _points = <Offset>[
     Offset(28, 96),
     Offset(60, 84),
@@ -138,9 +138,24 @@ class _RisingChartPainter extends CustomPainter {
     Offset(366, 30),
   ];
 
+  /// The artboard's wave: `M28 96C50 60 70 110 92 92s40-40 64-16 40 30 64-10
+  /// 44 20 64-10 50 0 84-26`, with each `s` written out as the `C` it
+  /// abbreviates — its first control point is the previous second one,
+  /// reflected through the join.
+  static Path get _wave => Path()
+    ..moveTo(28, 96)
+    ..cubicTo(50, 60, 70, 110, 92, 92)
+    ..cubicTo(114, 74, 132, 52, 156, 76)
+    ..cubicTo(180, 100, 196, 106, 220, 66)
+    ..cubicTo(244, 26, 264, 86, 284, 56)
+    ..cubicTo(304, 26, 334, 56, 368, 30);
+
   @override
   void paint(Canvas canvas, Size size) {
+    // Stretched across, not scaled: the block is 120 tall at every width, so
+    // on a tablet the wave widens and the dots keep their size.
     final scale = size.width / _RisingChart.artboard.width;
+    final stretch = Matrix4.diagonal3Values(scale, 1, 1).storage;
     Offset at(Offset point) => Offset(point.dx * scale, point.dy);
 
     final stroke = Paint()
@@ -150,10 +165,13 @@ class _RisingChartPainter extends CustomPainter {
       ..strokeCap = StrokeCap.round
       ..strokeJoin = StrokeJoin.round;
 
-    // Dashed, as the artboard's `stroke-dasharray: 6 8`. Drawn segment by
-    // segment because Flutter has no dash support on a path.
-    for (var i = 1; i < _points.length; i++) {
-      _dashed(canvas, at(_points[i - 1]), at(_points[i]), stroke);
+    // `stroke-dasharray: 6 8`, measured along the stretched curve so the
+    // dashes stay 6 dp long whatever the width. Flutter has no dashed stroke;
+    // `PathMetric.extractPath` is the stock way to cut one.
+    for (final metric in _wave.transform(stretch).computeMetrics()) {
+      for (var d = 0.0; d < metric.length; d += 6 + 8) {
+        canvas.drawPath(metric.extractPath(d, d + 6), stroke);
+      }
     }
 
     for (final point in _points) {
@@ -167,7 +185,9 @@ class _RisingChartPainter extends CustomPainter {
         ..drawCircle(centre, 6, stroke);
     }
 
-    // The flag at the summit — the reason the line is going anywhere.
+    // The flag at the summit: `M352 22l14-6v22l-14 6z`, which puts it just
+    // behind the last dot. Anchored to that dot rather than stretched, so it
+    // stays a flag on a tablet instead of widening into a banner.
     final tip = at(_points.last);
     canvas.drawPath(
       Path()
@@ -178,20 +198,6 @@ class _RisingChartPainter extends CustomPainter {
         ..close(),
       Paint()..color = start,
     );
-  }
-
-  void _dashed(Canvas canvas, Offset from, Offset to, Paint paint) {
-    const dash = 6.0;
-    const gap = 8.0;
-
-    final total = (to - from).distance;
-    if (total == 0) return;
-
-    final step = (to - from) / total;
-    for (var drawn = 0.0; drawn < total; drawn += dash + gap) {
-      final end = (drawn + dash).clamp(0.0, total);
-      canvas.drawLine(from + step * drawn, from + step * end, paint);
-    }
   }
 
   @override

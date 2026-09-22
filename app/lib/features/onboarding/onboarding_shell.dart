@@ -1,6 +1,7 @@
 import 'package:deutschplan/core/adaptive/adaptive.dart';
 import 'package:deutschplan/core/components/dp_button.dart';
 import 'package:deutschplan/core/theme/aurora_backdrop.dart';
+import 'package:deutschplan/core/theme/dp_surface.dart';
 import 'package:deutschplan/core/theme/dp_tokens.dart';
 import 'package:deutschplan/core/typography/dp_text.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
@@ -123,11 +124,17 @@ class OnboardingShell extends StatelessWidget {
             children: <Widget>[
               DpButton(label: primaryLabel, onPressed: onPrimary),
               if (page.hasBack) ...<Widget>[
-                const SizedBox(height: 4),
-                DpButton(
-                  label: l10n.back,
-                  onPressed: onBack,
-                  kind: DpButtonKind.text,
+                const SizedBox(height: 8),
+                // A link at the start edge, as the artboard draws it — not a
+                // second full-width button competing with *Continue*.
+                Align(
+                  alignment: AlignmentDirectional.centerStart,
+                  child: DpButton(
+                    label: l10n.back,
+                    onPressed: onBack,
+                    kind: DpButtonKind.text,
+                    expand: false,
+                  ),
                 ),
               ],
             ],
@@ -168,73 +175,87 @@ class _Header extends StatelessWidget {
   Widget build(BuildContext context) {
     final tokens = context.tokens;
     final l10n = AppLocalizations.of(context);
+    final stepOf = l10n.onboardingStepOf(page.step, OnboardingPage.count);
 
-    return ColoredBox(
-      color: page.headerColour(tokens),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Padding(
-            // The artboard's 54 above allows for the status bar. The shell
-            // does not take the top inset — the header colour is meant to run
-            // under the bar — so the block adds it to its own 20 here. The
-            // bottom inset is omitted and carried by whichever of the two
-            // branches below follows.
-            padding: EdgeInsets.fromLTRB(
-              24,
-              20 + MediaQuery.paddingOf(context).top,
-              24,
-              0,
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Row(
-                  children: <Widget>[
-                    Expanded(
-                      child: DpText(
-                        l10n.onboardingStepOf(page.step, OnboardingPage.count),
-                        role: DpTextRole.caption,
-                        weight: 700,
-                        // The header colours are all bright fills, so the ink
-                        // on them is the same ink the artboard uses on each.
-                        color: tokens.color.onPrimary,
-                      ),
-                    ),
-                    if (page.hasSkip)
-                      DpButton(
-                        label: l10n.skip,
-                        onPressed: onSkip,
-                        kind: DpButtonKind.text,
-                        expand: false,
-                      ),
-                  ],
-                ),
-                const SizedBox(height: 6),
-                DpText(
-                  headline,
-                  role: DpTextRole.headline,
-                  color: tokens.color.onPrimary,
-                ),
-              ],
-            ),
+    final content = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Padding(
+          // The artboard's 54 above allows for the status bar. The shell
+          // does not take the top inset — the header colour is meant to run
+          // under the bar — so the block adds it to its own 20 here. The
+          // bottom inset is omitted and carried by whichever of the two
+          // branches below follows.
+          padding: EdgeInsets.fromLTRB(
+            24,
+            20 + MediaQuery.paddingOf(context).top,
+            24,
+            0,
           ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Row(
+                children: <Widget>[
+                  Expanded(
+                    child: DpText(
+                      // Uppercase and tracked, as the artboard sets it; read
+                      // aloud in sentence case, so TalkBack does not spell it.
+                      // `toUpperCase` leaves Bangla alone, which has no case.
+                      stepOf.toUpperCase(),
+                      semanticsLabel: stepOf,
+                      role: DpTextRole.caption,
+                      weight: 700,
+                      letterSpacing: 0.6,
+                      // The header colours are all bright fills, so the ink
+                      // on them is the same ink the artboard uses on each.
+                      color: tokens.color.onPrimary,
+                    ),
+                  ),
+                  if (page.hasSkip)
+                    DpButton(
+                      label: l10n.skip,
+                      onPressed: onSkip,
+                      kind: DpButtonKind.text,
+                      expand: false,
+                    ),
+                ],
+              ),
+              const SizedBox(height: 6),
+              DpText(
+                headline,
+                role: DpTextRole.headline,
+                color: tokens.color.onPrimary,
+              ),
+            ],
+          ),
+        ),
 
-          // Outside the padding on purpose. The artboard gives the art
-          // `margin: 8px -24px -24px` — it bleeds past the block's side
-          // padding and sits flush with its bottom edge, so the line runs the
-          // full width of the screen rather than starting 24 dp in.
-          if (art != null)
-            Padding(padding: const EdgeInsets.only(top: 8), child: art),
-          if (art == null) const SizedBox(height: 24),
-        ],
-      ),
+        // Outside the padding on purpose. The artboard gives the art
+        // `margin: 8px -24px -24px` — it bleeds past the block's side
+        // padding and sits flush with its bottom edge, so the line runs the
+        // full width of the screen rather than starting 24 dp in.
+        if (art != null)
+          Padding(padding: const EdgeInsets.only(top: 8), child: art),
+        if (art == null) const SizedBox(height: 24),
+      ],
     );
+
+    // Under glass the block is a pane tinted with the page colour rather than
+    // a solid fill — the glass artboards lay the colour at 22 % over frosted
+    // white, so the aurora still shows through the top of the screen.
+    return tokens.isGlass
+        ? DpSurface(
+            kind: DpSurfaceKind.tint(page.headerColour(tokens)),
+            radius: 0,
+            child: content,
+          )
+        : ColoredBox(color: page.headerColour(tokens), child: content);
   }
 }
 
-/// "Step n of 5", drawn. The current page is a wide Sun pill; the rest are
-/// outlined dots.
+/// "Step n of 5", drawn: done pages filled ink, the current one a wide Sun
+/// pill, the ones ahead outlined.
 class _StepDots extends StatelessWidget {
   const _StepDots({required this.page});
 
@@ -266,10 +287,14 @@ class _StepDots extends StatelessWidget {
                   width: other == page ? currentWidth : size,
                   height: size,
                   decoration: BoxDecoration(
-                    // No fill on the others, rather than a transparent one:
-                    // the pips they sit on change colour with the header, so
-                    // anything named here would be wrong on four pages.
-                    color: other == page ? tokens.color.accent : null,
+                    // Done pages are filled ink, the current one is the Sun
+                    // pill, and the ones ahead are outlines with no fill at
+                    // all — not a transparent one, which would be a raw colour.
+                    color: other.step < page.step
+                        ? tokens.color.ink
+                        : other == page
+                        ? tokens.color.accent
+                        : null,
                     borderRadius: BorderRadius.circular(size / 2),
                     border: Border.all(color: tokens.color.ink, width: border),
                   ),

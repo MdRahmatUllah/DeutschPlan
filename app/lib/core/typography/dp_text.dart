@@ -155,6 +155,7 @@ class DpText extends StatelessWidget {
     this.maxLines,
     this.allowBreaks = false,
     this.semanticsLabel,
+    this.letterSpacing,
   });
 
   final String data;
@@ -173,6 +174,9 @@ class DpText extends StatelessWidget {
 
   final String? semanticsLabel;
 
+  /// Tracking in logical pixels, for the few uppercase labels that carry it.
+  final double? letterSpacing;
+
   @override
   Widget build(BuildContext context) {
     final tokens = context.tokens;
@@ -181,11 +185,11 @@ class DpText extends StatelessWidget {
     // Applied to every style, not just the Latin one: a weight silently
     // dropped on mixed strings would be dropped on most of this app's copy.
     TextStyle dressed(DpTextRole forRole) {
-      final style = styleFor(
-        tokens,
-        forRole,
-        color: color ?? tokens.color.ink,
-      ).copyWith(fontStyle: italic ? FontStyle.italic : FontStyle.normal);
+      final style = styleFor(tokens, forRole, color: color ?? tokens.color.ink)
+          .copyWith(
+            fontStyle: italic ? FontStyle.italic : FontStyle.normal,
+            letterSpacing: letterSpacing,
+          );
       return weight == null
           ? style
           : style.copyWith(fontVariations: AppFonts.weight(weight!));

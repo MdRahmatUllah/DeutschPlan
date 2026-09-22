@@ -4,6 +4,7 @@ library;
 import 'package:deutschplan/core/adaptive/adaptive.dart';
 import 'package:deutschplan/core/components/dp_button.dart';
 import 'package:deutschplan/core/theme/app_theme.dart';
+import 'package:deutschplan/core/theme/dp_surface.dart';
 import 'package:deutschplan/core/theme/dp_tokens.dart';
 import 'package:deutschplan/features/onboarding/onboarding_shell.dart';
 import 'package:deutschplan/features/onboarding/onboarding_welcome_page.dart';
@@ -129,16 +130,82 @@ void main() {
       expect(colours.toSet(), hasLength(5));
     });
 
-    testWidgets('shows "Step n of 5"', (tester) async {
+    testWidgets('shows "STEP n OF 5", uppercase as drawn', (tester) async {
       for (final page in OnboardingPage.values) {
         await pumpShell(tester, page: page);
 
         expect(
-          find.text(l10n.onboardingStepOf(page.step, 5)),
-          findsWidgets,
+          find.text(l10n.onboardingStepOf(page.step, 5).toUpperCase()),
+          findsOneWidget,
           reason: 'page ${page.step}',
         );
       }
+    });
+
+    // Two tests, not one pumping light then glass: `MaterialApp` animates a
+    // theme change, and one frame after the swap it is still drawing light.
+    //
+    // Behind the headline, not anywhere: the aurora paints its own blob of the
+    // leading colour, and that one is meant to be there.
+    ColoredBox? solidHeader(WidgetTester tester) {
+      final colour = OnboardingPage.welcome.headerColour(tokensOf(tester));
+      return tester
+          .widgetList<ColoredBox>(
+            find.ancestor(
+              of: find.text('A headline'),
+              matching: find.byType(ColoredBox),
+            ),
+          )
+          .where((box) => box.color == colour)
+          .firstOrNull;
+    }
+
+    testWidgets('is a solid block on paper', (tester) async {
+      await pumpShell(tester, page: OnboardingPage.welcome);
+
+      expect(solidHeader(tester), isNotNull);
+    });
+
+    testWidgets('and a tinted pane under glass', (tester) async {
+      // The glass artboards lay the page colour at 22 % over frosted white. A
+      // solid block there would hide the aurora the whole mode is for.
+      await pumpShell(tester, page: OnboardingPage.welcome, mode: DpMode.glass);
+
+      expect(solidHeader(tester), isNull);
+      expect(
+        find.ancestor(
+          of: find.text('A headline'),
+          matching: find.byType(DpSurface),
+        ),
+        findsOneWidget,
+      );
+    });
+  });
+
+  group('the dots', () {
+    testWidgets('fill in as the pages are done', (tester) async {
+      // Behind, filled ink; here, the Sun pill; ahead, an outline and no
+      // fill. Page 3 is the one that shows all three at once.
+      await pumpShell(tester, page: OnboardingPage.startingPoint);
+      final tokens = tokensOf(tester);
+
+      final pips = tester
+          .widgetList<Container>(
+            find.descendant(
+              of: find.bySemanticsLabel(l10n.onboardingStepOf(3, 5)).last,
+              matching: find.byType(Container),
+            ),
+          )
+          .map((pip) => (pip.decoration! as BoxDecoration).color)
+          .toList();
+
+      expect(pips, <Color?>[
+        tokens.color.ink,
+        tokens.color.ink,
+        tokens.color.accent,
+        null,
+        null,
+      ]);
     });
   });
 
@@ -170,6 +237,23 @@ void main() {
           reason: 'page ${page.step}',
         );
       }
+    });
+
+    testWidgets('Back is a link at the start edge, not a second button', (
+      tester,
+    ) async {
+      await pumpShell(
+        tester,
+        page: OnboardingPage.meaningLanguage,
+        onBack: () {},
+      );
+
+      final back = find.widgetWithText(DpButton, l10n.back);
+      expect(tester.widget<DpButton>(back).expand, isFalse);
+      expect(
+        tester.getTopLeft(back).dx,
+        lessThan(tester.getCenter(find.byType(OnboardingShell)).dx),
+      );
     });
 
     testWidgets('the primary action calls back', (tester) async {

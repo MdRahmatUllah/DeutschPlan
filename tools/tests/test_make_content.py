@@ -53,9 +53,15 @@ class TestTheRecipe:
         assert "content_manifest.json" in commands
 
     def test_the_intermediate_is_ignored_and_the_asset_is_not(self):
-        ignored = (REPO / ".gitignore").read_text(encoding="utf-8")
-        assert "content/build/" in ignored
-        assert "assets/db" not in ignored
+        # The rules, not the file: a comment that explains why the asset ships
+        # would otherwise read as a rule that ignores it.
+        rules = [
+            line.strip()
+            for line in (REPO / ".gitignore").read_text(encoding="utf-8").splitlines()
+            if line.strip() and not line.lstrip().startswith("#")
+        ]
+        assert "content/build/" in rules
+        assert not [rule for rule in rules if "assets/db" in rule]
 
     def test_content_diff_compares_the_committed_asset(self):
         # Against the shipped manifest, not against another build output —
