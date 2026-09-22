@@ -68,9 +68,22 @@ String resolveDeepLink(Uri link) {
 /// `?speak=1` on a word link. `widget.md` FR-X1-02: "the app plays on open".
 const String speakParameter = 'speak';
 
-/// Whether a link asks for the word to be spoken.
+/// The routes a deep link does not interrupt.
 ///
-/// Only `1` counts. A truthy-string reading would make `?speak=0` play, which
-/// is the one value someone writing that query would expect to be silent.
+/// An exam is timed and FR-L12-04 makes leaving one a decision, with a dialog
+/// and an abandoned attempt. A `go` is not a pop, so `ExamBackGuard` never
+/// sees a link — and the reminder firing at 19:30 while the learner is
+/// mid-exam is an ordinary sequence, not a contrived one. The link is
+/// dropped rather than queued: it says "open Today", and Today will still be
+/// there when they finish.
+bool interruptible(String location) => !location.startsWith('/exam/');
+
+/// The only value that asks for speech.
+///
+/// A truthy-string reading would make `?speak=0` play, which is the one value
+/// someone writing that query would expect to be silent.
+const String speakOn = '1';
+
+/// Whether a link asks for the word to be spoken.
 bool wantsSpeech(Uri location) =>
-    location.queryParameters[speakParameter] == '1';
+    location.queryParameters[speakParameter] == speakOn;

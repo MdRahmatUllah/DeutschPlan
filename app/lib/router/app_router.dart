@@ -14,7 +14,11 @@ import 'package:go_router/go_router.dart';
 GoRouter buildRouter({String initialLocation = '/today', RouteGuards? guards}) {
   final checks = guards ?? RouteGuards.permissive();
 
-  return GoRouter(
+  // The router refers to itself: the deep-link branch has to know where the
+  // learner already is before deciding whether to move them.
+  late final GoRouter router;
+
+  router = GoRouter(
     navigatorKey: rootNavigatorKey,
     initialLocation: initialLocation,
     routes: $appRoutes,
@@ -24,6 +28,16 @@ GoRouter buildRouter({String initialLocation = '/today', RouteGuards? guards}) {
       // one attempt. Resolved first, then the result goes round again and
       // meets the guards like any other navigation.
       if (state.uri.scheme == deepLinkScheme) {
+        // An exam in progress is the one screen a link does not take over.
+        //
+        // Redirected back to where the learner already is, not `null`:
+        // returning null means "carry on with the incoming location", and the
+        // incoming location is a `deutschplan://` URI that matches no route —
+        // so the link would land on Today through `onException` anyway. The
+        // first version of this guard did exactly that.
+        final current = router.routerDelegate.currentConfiguration.uri;
+        if (!interruptible(current.path)) return current.toString();
+
         return resolveDeepLink(state.uri);
       }
       return guardRedirect(state, checks);
@@ -39,6 +53,8 @@ GoRouter buildRouter({String initialLocation = '/today', RouteGuards? guards}) {
     // difference between a link it cannot parse and one it can.
     onException: (context, state, router) => router.go(fallbackLocation),
   );
+
+  return router;
 }
 
 /// Where an unmatched link lands. Today, because it is the one screen that is

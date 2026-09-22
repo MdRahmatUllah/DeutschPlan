@@ -10,6 +10,7 @@ import 'package:deutschplan/router/app_router.dart';
 import 'package:deutschplan/router/app_shell.dart';
 import 'package:deutschplan/router/deep_links.dart';
 import 'package:deutschplan/router/route_guards.dart';
+import 'package:deutschplan/router/routes.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
@@ -63,6 +64,20 @@ void main() {
       test('and is not invented when it is absent', () {
         expect(
           resolveDeepLink(Uri.parse('deutschplan://word/uid-haus')),
+          isNot(contains('speak')),
+        );
+      });
+
+      test('the typed route carries it, not just the URL', () {
+        // `WordRoute.build` reads its own field. A route that declared the
+        // parameter and then read the raw location would have two answers to
+        // the same question.
+        expect(
+          const WordRoute(uid: 'uid-haus', speak: speakOn).location,
+          '/word/uid-haus?speak=1',
+        );
+        expect(
+          const WordRoute(uid: 'uid-haus').location,
           isNot(contains('speak')),
         );
       });
@@ -213,6 +228,52 @@ void main() {
       expect(location(), fallbackLocation);
       expect(find.text('T1'), findsOneWidget);
       expect(find.byType(AppShell), findsOneWidget);
+    });
+
+    testWidgets('a link does not take over a running exam', (tester) async {
+      // FR-L12-04 makes leaving an exam a decision, with a dialog and an
+      // abandoned attempt. A `go` is not a pop, so #69's `canPop: false`
+      // never sees a link — and the reminder firing at 19:30 while the
+      // learner is mid-exam is an ordinary sequence.
+      router = buildRouter(
+        initialLocation: '/exam/7',
+        guards: RouteGuards.permissive(),
+      );
+      addTearDown(router.dispose);
+      await tester.pumpWidget(
+        MaterialApp.router(
+          routerConfig: router,
+          theme: AppTheme.light(),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: supportedLocales,
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('L12'), findsOneWidget);
+
+      await openLink(tester, 'deutschplan://today');
+
+      expect(location(), '/exam/7');
+      expect(find.text('L12'), findsOneWidget);
+    });
+
+    testWidgets('and works again once the exam is done', (tester) async {
+      // Dropped, not queued — but not disabled either.
+      await pumpApp(tester);
+      await openLink(tester, 'deutschplan://today');
+      expect(location(), '/today');
+    });
+
+    testWidgets('only the exam is protected', (tester) async {
+      // A link interrupting a study session or a quiz is fine: neither is
+      // timed, and both are resumable.
+      await pumpApp(tester);
+      router.go('/sentences');
+      await tester.pumpAndSettle();
+      expect(find.text('T5'), findsOneWidget);
+
+      await openLink(tester, 'deutschplan://today');
+      expect(location(), '/today');
     });
 
     testWidgets('a link still meets the guards', (tester) async {

@@ -510,8 +510,11 @@ class WordRoute extends GoRouteData with $WordRoute {
   Widget build(BuildContext context, GoRouterState state) => PlaceholderScreen(
     title: 'Word',
     screen: 'W1',
+    // The typed field, not `state.uri`: a route that declared a parameter and
+    // then read the raw location would have two answers to the same question,
+    // which is the thing typed routes exist to prevent.
     // TODO(#136): W1 plays the headword on open when this is set.
-    detail: wantsSpeech(state.uri) ? '$uid speak' : uid,
+    detail: speak == speakOn ? '$uid speak' : uid,
   );
 }
 
