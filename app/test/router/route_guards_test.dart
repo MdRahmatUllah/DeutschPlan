@@ -13,6 +13,9 @@ import 'package:deutschplan/features/onboarding/onboarding_meaning_page.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:deutschplan/features/onboarding/onboarding_welcome_page.dart';
+import 'package:deutschplan/features/onboarding/onboarding_start_page.dart';
+import 'package:deutschplan/data/db/content_dao.dart';
+import 'package:deutschplan/core/theme/dp_surface.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
 import 'package:deutschplan/main.dart'
     show appLocalizationsDelegates, supportedLocales;
@@ -54,6 +57,14 @@ void main() {
         overrides: <Override>[
           settingsProvider.overrideWithValue(settings),
           meaningSampleProvider.overrideWith((ref) async => null),
+          courseStepsProvider.overrideWith(
+            (ref) async => <CourseStep>[
+              (code: 'A1.1', levelCode: 'A1', wordCount: 637),
+              (code: 'A1.2', levelCode: 'A1', wordCount: 679),
+              (code: 'A2.1', levelCode: 'A2', wordCount: 540),
+              (code: 'A2.2', levelCode: 'A2', wordCount: 498),
+            ],
+          ),
         ],
         child: MaterialApp.router(
           routerConfig: router,
@@ -375,6 +386,31 @@ void main() {
 
       expect(find.byType(OnboardingWelcomePage), findsOneWidget);
       expect(location(), '/onboarding/1');
+    });
+
+    testWidgets('page 3 opens S3, and takes back what it suggests', (
+      tester,
+    ) async {
+      // #89: "Link pushes S3 and returns with the suggested step
+      // pre-selected." S3 is #93's; here it is popped with a result the way
+      // it will pop itself.
+      await pumpApp(tester, guards: guardsWith(), at: '/onboarding/3');
+      final l10n = AppLocalizations.of(
+        tester.element(find.byType(OnboardingStartPage)),
+      );
+
+      await tester.tap(find.text(l10n.onboardingPlacementLink));
+      await tester.pumpAndSettle();
+      expect(find.byType(OnboardingStartPage), findsNothing);
+
+      router.pop('A2.1');
+      await tester.pumpAndSettle();
+
+      final chosen = find.ancestor(
+        of: find.text('A2.1'),
+        matching: find.byType(DpSurface),
+      );
+      expect(tester.widget<DpSurface>(chosen).selected, isTrue);
     });
 
     testWidgets('and the pages slide sideways, with the edge swipe', (

@@ -80,10 +80,14 @@ tipsForWord:
 grammarForStep:
   SELECT * FROM grammar_topics WHERE sublevel_code = :code ORDER BY seq;
 
+-- BR-COURSE-01's order: level first, then step. `content-database.md` gives
+-- `sublevels.ord` as 1-12, but `PlanStore.stepAfter` was written against an
+-- `ord` that restarts in each level, and ordering on it alone would then
+-- interleave the levels. This is right under either.
 allSublevels:
   SELECT s.*, l.name AS levelName, l.exam_target AS examTarget
   FROM sublevels s JOIN levels l ON l.code = s.level_code
-  ORDER BY s.ord;
+  ORDER BY l.ord, s.ord;
 
 skillPromptsForLevel:
   SELECT * FROM skill_prompts WHERE level_code = :code ORDER BY ord;

@@ -212,12 +212,18 @@ class _Header extends StatelessWidget {
                       color: tokens.color.onPrimary,
                     ),
                   ),
-                  if (page.hasSkip)
+                  // Only with somewhere to go: a Skip that cannot skip is worse
+                  // than none, and finishing is #92's.
+                  if (page.hasSkip && onSkip != null)
                     DpButton(
                       label: l10n.skip,
                       onPressed: onSkip,
                       kind: DpButtonKind.text,
                       expand: false,
+                      // Ink, as the artboard draws it: the header is a bright
+                      // fill, and link teal on Raspberry or Cobalt would all
+                      // but vanish.
+                      colour: tokens.color.onPrimary,
                     ),
                 ],
               ),

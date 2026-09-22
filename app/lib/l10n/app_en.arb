@@ -189,5 +189,22 @@
         "type": "String"
       }
     }
+  },
+  "onboardingStartHeadline": "Where do you want to start?",
+  "@onboardingStartHeadline": {
+    "description": "S2 page 3 headline."
+  },
+  "onboardingStepWords": "{count, plural, =1{1 word} other{{count} words}}",
+  "@onboardingStepWords": {
+    "description": "S2 page 3: the word count under a step chip. The number comes from content.db.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "onboardingPlacementLink": "Not sure? Take a 3-minute check",
+  "@onboardingPlacementLink": {
+    "description": "S2 page 3: the link into S3, the placement check."
   }
 }

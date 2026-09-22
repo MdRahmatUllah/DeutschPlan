@@ -11,6 +11,9 @@ import 'package:path_provider/path_provider.dart';
 
 part 'content_dao.g.dart';
 
+/// One step of the course, as S2 page 3 lists it.
+typedef CourseStep = ({String code, String levelCode, int wordCount});
+
 /// Where the course is read from.
 ///
 /// `docs/02-data/content-database.md`: content.db is bundled as an asset,
@@ -24,6 +27,16 @@ part 'content_dao.g.dart';
 @DriftAccessor(include: <String>{'content.drift'})
 class ContentDao extends DatabaseAccessor<AppDatabase> with _$ContentDaoMixin {
   ContentDao(super.db);
+
+  /// The twelve steps in course order (BR-COURSE-01), with their word counts.
+  ///
+  /// A record rather than drift's row class, so a screen can hold it — and a
+  /// provider can return it, which riverpod_generator cannot do with a type
+  /// drift writes in the same build.
+  Future<List<CourseStep>> courseSteps() async => <CourseStep>[
+    for (final step in await allSublevels().get())
+      (code: step.code, levelCode: step.levelCode, wordCount: step.wordCount),
+  ];
 
   /// The schema name the doc uses. Queries do not write it — see the note at
   /// the top of `content.drift` — but `ATTACH` does, and so does anything that

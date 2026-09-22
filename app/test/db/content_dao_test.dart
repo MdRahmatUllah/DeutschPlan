@@ -8,6 +8,7 @@ import 'package:deutschplan/data/db/content_dao.dart';
 import 'package:drift/drift.dart' hide isNotNull, isNull;
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:sqlite3/sqlite3.dart';
 
 import 'content_fixture.dart';
 
@@ -202,6 +203,29 @@ void main() {
       expect(steps.first.code, 'A1.1');
       expect(steps.first.levelName, 'Beginner');
       expect(steps.first.examTarget, contains('Goethe'));
+    });
+
+    test('BR-COURSE-01 the steps come in course order', () async {
+      // Level first, then step. `PlanStore.stepAfter` was written against an
+      // `ord` that restarts in each level; ordering on `s.ord` alone would
+      // then interleave them — A1.1, A2.1, A1.2, A2.2.
+      final writer = sqlite3.open(content.path);
+      addTearDown(writer.close);
+      writer.execute('''
+        INSERT INTO sublevels (code, level_code, ord, word_count, grammar_count)
+        VALUES ('A2.2', 'A2', 2, 5, 0), ('A2.1', 'A2', 1, 4, 0);
+      ''');
+
+      final steps = await dao.courseSteps();
+
+      expect(steps.map((step) => step.code), <String>[
+        'A1.1',
+        'A1.2',
+        'A2.1',
+        'A2.2',
+      ]);
+      expect(steps.first.levelCode, 'A1');
+      expect(steps.first.wordCount, 2, reason: "the fixture's own count");
     });
 
     test('grammar carries the tags the generator reads', () async {
