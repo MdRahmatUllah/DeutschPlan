@@ -6,6 +6,7 @@ can be tested on its own, without a workbook and without a database.
 
 from __future__ import annotations
 
+import hashlib
 from dataclasses import dataclass
 from typing import Iterable, Sequence
 
@@ -198,3 +199,81 @@ def check_every_step_has_words(words: Sequence) -> None:
             f"these steps have no words: {', '.join(empty)}. Every one of the "
             f"twelve must be non-empty (BR-COURSE-01)."
         )
+
+
+# PIPE-03: sha1 over the four fields that identify a word, truncated.
+#
+# Sixteen hex characters is 64 bits. Over ~11,000 words the chance of any
+# collision is about 3e-15, which is why the collision path below is a warning
+# and a suffix rather than a redesign — but it exists, because a uid is a
+# primary key and two words sharing one would silently merge a learner's
+# progress on both.
+UID_LENGTH = 16
+
+#: The fields the uid is made of, in order. Changing this list changes every
+#: uid, which orphans every learner's word_state — so it is spelled out here
+#: rather than inferred from the record.
+UID_FIELDS = ("level", "german", "pos", "english")
+
+
+class UidCollision(Exception):
+    """Two different words hashed to the same uid."""
+
+
+def uid_for(word, *, suffix: int | None = None) -> str:
+    """`sha1(level|german|pos|english)[:16]`, as PIPE-03 specifies.
+
+    A missing `pos` joins as an empty string rather than being skipped, so
+    "der|Bank||bank" and "der|Bank|noun|bank" are different words — dropping
+    the separator would make them the same.
+
+    The digest is over UTF-8, so an umlaut hashes the same on every platform.
+    """
+    key = "|".join(_uid_part(word, name) for name in UID_FIELDS)
+    if suffix is not None:
+        key = f"{key}|{suffix}"
+    return hashlib.sha1(key.encode("utf-8")).hexdigest()[:UID_LENGTH]
+
+
+def _uid_part(word, name: str) -> str:
+    value = getattr(word, name, None)
+    return "" if value is None else str(value)
+
+
+def assign_uids(words: Sequence) -> list[str]:
+    """Sets `uid` on every word. Returns a line per collision, for the report.
+
+    A collision is resolved by hashing again with the word's sequence number
+    appended, which keeps the uid deterministic for a given input rather than
+    depending on which word happened to be read first... as long as `seq` is
+    itself deterministic, which it is: reading order, fixed by the manifest.
+
+    Two rows that are genuinely identical in all four fields are a duplicate,
+    not a hash collision, and get the same treatment — the second one becomes
+    its own word. `verify_content.py` is where that is reported as a data
+    problem rather than a hash one.
+    """
+    seen: dict[str, object] = {}
+    reports: list[str] = []
+
+    for word in words:
+        uid = uid_for(word)
+        if uid in seen:
+            other = seen[uid]
+            uid = uid_for(word, suffix=word.seq)
+            reports.append(
+                f"uid collision: {word.source_file} row {word.row} "
+                f"({word.level}|{word.german}|{word.pos}|{word.english}) "
+                f"collided with {other.source_file} row {other.row}; "
+                f"resolved to {uid}"
+            )
+            if uid in seen:
+                raise UidCollision(
+                    f"{word.source_file} row {word.row} still collides after "
+                    f"appending its sequence number. Two rows cannot share a "
+                    f"uid — one of them has to change."
+                )
+        seen[uid] = word
+        word.uid = uid
+
+    return reports

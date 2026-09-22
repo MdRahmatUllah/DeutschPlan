@@ -21,6 +21,7 @@ from openpyxl import load_workbook
 
 from pipeline_steps import (
     LEVELS,
+    assign_uids,
     LevelSplit,
     assign_sublevels,
     check_every_step_has_words,
@@ -103,6 +104,7 @@ class Word:
     synonyms_register: str | None = None
 
     # Derived by pipeline_steps, not read from the workbook.
+    uid: str | None = None
     sublevel_code: str | None = None
     seq: int | None = None
     seq_in_sublevel: int | None = None
@@ -469,6 +471,10 @@ def derive(sources: list[SourceBook]) -> dict[str, LevelSplit]:
         code = word.sublevel_code or ""
         per_step[code] = per_step.get(code, 0) + 1
         word.seq_in_sublevel = per_step[code]
+
+    # After seq, because a collision is resolved with the sequence number.
+    for line in assign_uids(words):
+        print(f"warning: {line}", file=sys.stderr)
 
     return splits
 
