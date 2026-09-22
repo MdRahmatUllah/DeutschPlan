@@ -381,6 +381,43 @@ void main() {
     });
   });
 
+  test('navigation goes through the typed routes, not path strings', () {
+    // A `context.go('/learn/step/A1.1')` compiles for ever, including after
+    // the path moves — and a string that matches no route lands on Today
+    // through `onException`, which looks like the screen being empty rather
+    // than like a broken link. The typed routes are what make a rename a
+    // build failure, and #72's cross-tab promise rests on them: only a
+    // registered nested route builds the target tab's parent stack.
+    //
+    // Constants are fine — `context.go(examFallback)` is one place to change.
+    // What this catches is a path written inline.
+    final literal = RegExp(
+      r"\b(?:go|push|replace)\(\s*['"
+      "]/",
+    );
+
+    final offenders = <String>[];
+    for (final file in _dartFilesIn('lib')) {
+      final lines = file.readAsLinesSync();
+      for (var i = 0; i < lines.length; i++) {
+        final line = lines[i];
+        if (line.trimLeft().startsWith('//')) continue;
+        if (line.trimLeft().startsWith('///')) continue;
+        if (literal.hasMatch(line)) {
+          offenders.add('${_rel(file)}:${i + 1}: ${line.trim()}');
+        }
+      }
+    }
+
+    expect(
+      offenders,
+      isEmpty,
+      reason:
+          'use the typed route, or a named constant:\n'
+          '${offenders.join('\n')}',
+    );
+  });
+
   test('the clock is the only source of now', () {
     // state-management.md: "`DateTime Function()`; overridden in tests for
     // date logic." A study day is a local day, and the plan engine, the
