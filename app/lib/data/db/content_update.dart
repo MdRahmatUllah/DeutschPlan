@@ -86,17 +86,25 @@ class ContentUpdater {
   /// Called from `bootstrap()` (#66), before `runApp`, because a course that
   /// changes under a running screen is worse than a slightly longer launch.
   Future<ContentChange?> runIfNeeded() async {
-    final installed = await _dao.version();
+    // The kept manifest is the baseline, not the attached database. If the app
+    // is killed between the file swap and the record — a launch, the most
+    // likely moment — the database already reads as current while no
+    // `content_updates` row exists and the kept manifest still describes the
+    // old version. Comparing against the manifest makes the whole thing
+    // re-runnable: the next launch simply does it again, and
+    // `replaceWithBundled` is idempotent.
+    final previous = await _readInstalledManifest();
+    final installed = previous?['content_version'] as String? ?? '';
+
     final bundled = await _dao.bundledVersion();
     if (bundled.isEmpty || bundled == installed) return null;
-
-    // The previous manifest, read before anything overwrites it.
-    final previous = await _readInstalledManifest();
 
     await _dao.replaceWithBundled();
     final change = _diff(previous, await _readBundledManifest(), bundled);
 
     await _record(change);
+    // Last: until this is written, the update has not happened as far as the
+    // next launch is concerned.
     await _saveInstalledManifest();
     return change;
   }
@@ -127,15 +135,22 @@ class ContentUpdater {
 
   /// The uids whose meaning changed recently enough to wear the chip.
   ///
+  /// Aged from `recorded_at` — when *this device* saw the update — not from
+  /// `version`, which is the pipeline's build time. Someone who installs the
+  /// app three months after a build would otherwise never see a chip at all,
+  /// because the version is already outside the window on the day they get it.
+  ///
   /// Read as a set because `word-detail` asks per word, and a list scan per
   /// card is the kind of thing that turns a smooth list into a stuttering one.
   Future<Set<String>> recentlyUpdated(DateTime now) async {
-    final cutoff = now.subtract(updatedChipWindow);
+    final cutoff = now.toUtc().subtract(updatedChipWindow);
     final rows = await _db
         .customSelect(
           'SELECT version, changed_json FROM content_updates '
-          'WHERE version >= ?',
-          variables: <Variable<Object>>[Variable<String>(_versionAt(cutoff))],
+          'WHERE recorded_at >= ?',
+          variables: <Variable<Object>>[
+            Variable<String>(cutoff.toIso8601String()),
+          ],
         )
         .get();
 
@@ -146,15 +161,6 @@ class ContentUpdater {
           row.read<String?>('changed_json') ?? '{}',
         ).changed,
     };
-  }
-
-  /// `content_version` is `YYYYMMDDHHMM`, so a date comparison is a string
-  /// comparison — which is why the format was chosen (PIPE-07).
-  static String _versionAt(DateTime time) {
-    final utc = time.toUtc();
-    String two(int value) => value.toString().padLeft(2, '0');
-    return '${utc.year}${two(utc.month)}${two(utc.day)}'
-        '${two(utc.hour)}${two(utc.minute)}';
   }
 
   ContentChange _diff(
@@ -189,14 +195,20 @@ class ContentUpdater {
   }
 
   Future<void> _record(ContentChange change) async {
+    // Not INSERT OR REPLACE: that resets `seen`, and a re-run after an
+    // interrupted update would bring back a card the learner had dismissed.
     await _db.customStatement(
-      'INSERT OR REPLACE INTO content_updates '
-      '(version, added, removed, changed_json, seen) VALUES (?, ?, ?, ?, 0)',
+      'INSERT INTO content_updates '
+      '(version, added, removed, changed_json, seen, recorded_at) '
+      'VALUES (?, ?, ?, ?, 0, ?) '
+      'ON CONFLICT(version) DO UPDATE SET added = excluded.added, '
+      'removed = excluded.removed, changed_json = excluded.changed_json',
       <Object?>[
         change.version,
         change.added.length,
         change.removed.length,
         change.toJson(),
+        DateTime.now().toUtc().toIso8601String(),
       ],
     );
   }

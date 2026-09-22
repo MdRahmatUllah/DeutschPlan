@@ -225,24 +225,75 @@ void main() {
       publish(course(version: '202602020000', changeMeaning: true));
       await updater.runIfNeeded();
 
-      final recent = await updater.recentlyUpdated(DateTime.utc(2026, 2, 2, 1));
-      expect(recent, <String>{ContentFixture.haus});
+      expect(await updater.recentlyUpdated(DateTime.now().toUtc()), <String>{
+        ContentFixture.haus,
+      });
     });
 
     test('stops after seven days', () async {
       publish(course(version: '202602020000', changeMeaning: true));
       await updater.runIfNeeded();
 
-      // Six days later it is still there; eight days later it is not.
+      // Relative to now, because the chip ages from when this device recorded
+      // the update — which is now, whatever the build timestamp said.
+      final now = DateTime.now().toUtc();
       expect(
-        await updater.recentlyUpdated(DateTime.utc(2026, 2, 8)),
+        await updater.recentlyUpdated(now.add(const Duration(days: 6))),
         isNotEmpty,
       );
-      expect(await updater.recentlyUpdated(DateTime.utc(2026, 2, 10)), isEmpty);
+      expect(
+        await updater.recentlyUpdated(now.add(const Duration(days: 8))),
+        isEmpty,
+      );
+    });
+
+    test('it ages from when this device saw it, not from the build', () async {
+      // `version` is the pipeline's build time and can be years old by the
+      // time a learner installs the app. Ageing from it would mean they never
+      // saw a chip at all.
+      publish(course(version: '202001010000', changeMeaning: true));
+      await updater.runIfNeeded();
+
+      expect(
+        await updater.recentlyUpdated(DateTime.now().toUtc()),
+        isNotEmpty,
+        reason: 'a 2020 build installed today is new to this learner',
+      );
     });
 
     test('the window is the seven days the issue asks for', () {
       expect(ContentUpdater.updatedChipWindow, const Duration(days: 7));
+    });
+  });
+
+  group('an interrupted update', () {
+    test('runs again on the next launch', () async {
+      // The crash window: the file is swapped and the app dies before the row
+      // is written. The kept manifest still describes the old version, which
+      // is what makes the update re-runnable — comparing against the attached
+      // database instead would have lost it for good.
+      publish(course(version: '202602020000', addWord: true));
+      await dao.replaceWithBundled();
+
+      final change = await updater.runIfNeeded();
+      expect(change, isNotNull, reason: 'the update was lost');
+      expect(change!.added, <String>['uid-neu']);
+    });
+
+    test('does not bring back a card the learner dismissed', () async {
+      publish(course(version: '202602020000', addWord: true));
+      await updater.runIfNeeded();
+      await updater.markSeen('202602020000');
+
+      // Force a re-run of the same version, as an interrupted update would.
+      File('${support.path}/${ContentUpdater.manifestFile}').deleteSync();
+      await updater.runIfNeeded();
+
+      expect(
+        await updater.unseen(),
+        isNull,
+        reason: 'INSERT OR REPLACE would have reset seen',
+      );
     });
   });
 

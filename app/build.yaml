@@ -14,9 +14,14 @@ targets:
       # search query falls back to "unknown table" and generates nothing.
       drift_dev:
         options:
-          sqlite:
-            modules:
-              - fts5
+          # Under `sql.options`, not the older top-level `sqlite:` key — the
+          # two cannot both be present, and `drift_dev schema dump` refuses
+          # the old one outright while build_runner still accepts it.
+          sql:
+            dialect: sqlite
+            options:
+              modules:
+                - fts5
           # The manager API generates a table manager per table on the
           # database. ContentDao's tables live in the attached content.db and
           # deliberately are not on the main database — adding them would make
