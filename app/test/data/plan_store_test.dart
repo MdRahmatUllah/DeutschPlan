@@ -589,6 +589,37 @@ VALUES (?, ?, ?, ?, ?)
       expect((await store.activeStep())!.sublevelCode, 'A1.2');
     });
 
+    test('enrolling never destroys another step’s row', () async {
+      // `INSERT OR REPLACE` resolved the conflict on the open-row index by
+      // *deleting* the other enrollment — start date, frozen pace and all.
+      // The engine calls `completeStep` first so it never hit this, but #92
+      // enrols directly, and losing a row silently is the worst of the
+      // options. Now the partial index refuses it out loud.
+      await enroll(step: 'A1.1', startedOn: '2026-01-05', dailyNew: 3);
+
+      await expectLater(
+        store.enroll(
+          const ActiveStep(
+            sublevelCode: 'A1.2',
+            startedOn: '2026-03-10',
+            dailyNew: 7,
+            studyDaysMask: PlanEngine.allDays,
+          ),
+        ),
+        throwsA(anything),
+      );
+
+      final row = await db
+          .customSelect(
+            'SELECT sublevel_code AS c, started_on AS s, daily_new AS d '
+            'FROM enrollments',
+          )
+          .getSingle();
+      expect(row.read<String>('c'), 'A1.1');
+      expect(row.read<String>('s'), '2026-01-05');
+      expect(row.read<int>('d'), 3, reason: 'the frozen pace was lost');
+    });
+
     test('a step can be restarted after it was finished', () async {
       // `INSERT OR REPLACE` rather than a plain insert: coming back to a step
       // must reopen the row, not fail on the primary key.
@@ -604,6 +635,11 @@ VALUES (?, ?, ?, ?, ?)
       );
 
       expect((await store.activeStep())!.startedOn, '2026-03-10');
+
+      final count = await db
+          .customSelect('SELECT COUNT(*) AS n FROM enrollments')
+          .getSingle();
+      expect(count.read<int>('n'), 1, reason: 'the restart duplicated the row');
     });
 
     test('nobody has enrolled on a fresh install', () async {

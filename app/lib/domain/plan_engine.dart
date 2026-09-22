@@ -329,15 +329,25 @@ class PlanEngine {
       grammarDue: await _store.grammarDueOn(date),
       backlog: backlog,
       activeStep: step?.sublevelCode,
-      nextStep: finished ? await _store.stepAfter(await _lastStep()) : null,
+      nextStep: await _nextStepAfterFinishing(finished),
       stepComplete: finished,
       isStudyDay: isStudyDay(date, step?.studyDaysMask ?? allDays),
       newPaused: _pauseNewWhenBacklog && backlog.isNotEmpty,
     );
   }
 
-  /// The step whose enrollment closed most recently.
-  Future<String> _lastStep() async => await _store.lastCompletedStep() ?? '';
+  /// The step to offer as *Start next step*, or null when there is none.
+  ///
+  /// Nullable all the way through rather than an empty-string sentinel: when
+  /// [finished] is true every enrollment row is closed, so `lastCompletedStep`
+  /// has one to return, and a fallback would be an unreachable branch dressed
+  /// up as a handled case.
+  Future<String?> _nextStepAfterFinishing(bool finished) async {
+    if (!finished) return null;
+
+    final last = await _store.lastCompletedStep();
+    return last == null ? null : _store.stepAfter(last);
+  }
 
   /// Plans new words for every study day from where planning left off through
   /// [today] (BR-PLAN-05).
@@ -413,6 +423,11 @@ class PlanEngine {
       await _store.enroll(current);
     }
 
+    // Falling out of the loop with words still to place means the guard
+    // tripped, which cannot happen: every turn either fills the day or
+    // advances a step, and the course is finite. Asserting it is the
+    // difference between a bug and a learner quietly getting a short day.
+    assert(need <= 0, 'gave up planning $day with $need words still to place');
     return current;
   }
 

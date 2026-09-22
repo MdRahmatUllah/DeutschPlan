@@ -495,6 +495,26 @@ void main() {
       expect(plan.nextStep, 'A1.2', reason: 'Today offers Start next step');
     });
 
+    test('a learner mid-course is offered no next step', () async {
+      // The discriminating case: they have finished A1.1 and are on A1.2, so
+      // `lastCompletedStep` answers A1.1 and the step after it is the one they
+      // are *already* studying. Offering it would put "Start next step" on
+      // Today for a learner who is part way through.
+      // A1.2 needs enough words to still be the active step on day two —
+      // otherwise this tests the end of the course again.
+      store.wordsByStep['A1.2'] = <String>[for (var i = 1; i <= 50; i++) 'b$i'];
+
+      await engineWith().openDay(monday);
+      expect(store.completed, <String>['A1.1@$monday']);
+      expect(store.enrollment!.sublevelCode, 'A1.2');
+
+      final plan = await engineWith().openDay(addDays(monday, 1));
+
+      expect(plan.activeStep, 'A1.2');
+      expect(plan.stepComplete, isFalse);
+      expect(plan.nextStep, isNull, reason: 'it offered the active step');
+    });
+
     test('at the end of the course there is no next step to offer', () async {
       store.course = <String>['A1.1'];
       final engine = engineWith();

@@ -292,15 +292,29 @@ LIMIT 1
 
   /// Opens an enrollment.
   ///
-  /// `INSERT OR REPLACE`, because a learner can come back to a step they
-  /// finished — restarting it should reopen the row rather than fail on the
-  /// primary key. The unique index on the open row is what keeps BR-COURSE-04
-  /// true, and `completeStep` runs first.
+  /// An upsert on the primary key, so coming back to a step the learner
+  /// finished reopens that row rather than failing on it.
+  ///
+  /// **Not `INSERT OR REPLACE`.** That resolves a conflict by *deleting* the
+  /// conflicting rows, and `idx_one_active_enrollment` is a unique index over
+  /// the open row — so enrolling while another step was still open silently
+  /// removed that step's row, taking its start date and its BR-PLAN-08 pace
+  /// with it. `ON CONFLICT` touches only the row named here, which leaves the
+  /// partial index free to refuse a second open enrollment out loud. That
+  /// refusal is the point: a caller that skipped `completeStep` has a bug, and
+  /// the database saying so beats it losing a row.
   @override
   Future<void> enroll(ActiveStep step) => _db.customStatement(
-    'INSERT OR REPLACE INTO enrollments '
-    '(sublevel_code, started_on, daily_new, study_days_mask, completed_on) '
-    'VALUES (?1, ?2, ?3, ?4, NULL)',
+    '''
+INSERT INTO enrollments
+  (sublevel_code, started_on, daily_new, study_days_mask, completed_on)
+VALUES (?1, ?2, ?3, ?4, NULL)
+ON CONFLICT(sublevel_code) DO UPDATE SET
+  started_on      = excluded.started_on,
+  daily_new       = excluded.daily_new,
+  study_days_mask = excluded.study_days_mask,
+  completed_on    = NULL
+''',
     <Object>[
       step.sublevelCode,
       step.startedOn,
