@@ -1,11 +1,15 @@
 import 'package:deutschplan/bootstrap.dart';
 import 'package:deutschplan/core/theme/app_theme.dart';
+import 'package:deutschplan/core/providers/app_providers.dart';
 import 'package:deutschplan/core/theme/dp_tokens.dart';
 import 'package:deutschplan/core/theme/glass_capability.dart';
 import 'package:deutschplan/core/theme/theme_mode.dart';
+import 'package:deutschplan/data/repositories/setting_keys.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
 import 'package:deutschplan/router/app_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+// `Override` is not in the main barrel in Riverpod 3.
+import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 
@@ -20,13 +24,61 @@ import 'dart:ui' show PlatformDispatcher;
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  final platform = PlatformDispatcher.instance;
   final result = await bootstrap(
-    platformBrightness: PlatformDispatcher.instance.platformBrightness,
+    platformBrightness: platform.platformBrightness,
   );
 
   // ProviderScope at the very root, on both paths: riverpod_lint enforces it,
   // and the error screen's *Export progress* reads a repository too.
-  runApp(ProviderScope(child: appFor(result)));
+  //
+  // The overrides are what stop the providers re-opening what bootstrap has
+  // already opened. A failed bootstrap has none, so anything that reads the
+  // database throws with a message rather than opening a second one.
+  final container = ProviderContainer(
+    overrides: switch (result) {
+      BootstrapReady(:final bootstrap) => bootstrap.overrides,
+      BootstrapFailed() => const <Override>[],
+    },
+  );
+
+  // The system light/dark switch. Without this the theme notifier never hears
+  // about it, and a learner following the platform would keep whatever the
+  // phone was on when the app launched.
+  if (result is BootstrapReady) {
+    container
+        .read(themeProvider.notifier)
+        .platformBrightnessChanged(platform.platformBrightness);
+    platform.onPlatformBrightnessChanged = () => container
+        .read(themeProvider.notifier)
+        .platformBrightnessChanged(platform.platformBrightness);
+  }
+
+  runApp(
+    UncontrolledProviderScope(container: container, child: appFor(result)),
+  );
+}
+
+/// Keeps the theme notifier in step with the system light/dark switch.
+///
+/// Without this the notifier never hears about it, and a learner following
+/// the platform keeps whatever the phone was on when the app launched.
+///
+/// [read] and [onChanged] rather than a `PlatformDispatcher`, so the wiring
+/// is something a test can drive: `main` is the one function no test calls,
+/// and a hook installed only there is a hook nothing checks.
+void followPlatformBrightness(
+  ProviderContainer container, {
+  required Brightness Function() read,
+  required void Function(VoidCallback listener) onChanged,
+}) {
+  void tell() =>
+      container.read(themeProvider.notifier).platformBrightnessChanged(read());
+
+  // Once now, because the notifier's own default is only what a test gets —
+  // a dark phone would otherwise see a light first frame.
+  tell();
+  onChanged(tell);
 }
 
 /// The app for a finished bootstrap, or FR-S1-03's error screen.
@@ -38,11 +90,7 @@ Widget appFor(BootstrapResult result) => switch (result) {
   // re-open what bootstrap already opened.
   BootstrapReady(:final bootstrap) => GlassCapabilityScope(
     notifier: bootstrap.glass,
-    child: DeutschPlanApp(
-      mode: bootstrap.themeMode,
-      followsPlatform: bootstrap.themeSetting.followsPlatform,
-      router: bootstrap.router,
-    ),
+    child: DeutschPlanApp(router: bootstrap.router),
   ),
   BootstrapFailed(:final failure) => BootstrapGate(failure: failure),
 };
@@ -50,17 +98,9 @@ Widget appFor(BootstrapResult result) => switch (result) {
 /// Supported UI languages, English first — see `supportedLocales` in [DeutschPlanApp].
 const List<Locale> supportedLocales = <Locale>[Locale('en'), Locale('bn')];
 
-class DeutschPlanApp extends StatelessWidget {
-  DeutschPlanApp({
-    required this.mode,
-    GoRouter? router,
-    this.followsPlatform = false,
-    super.key,
-  }) : router = router ?? buildRouter();
-
-  /// Resolved in [bootstrap] against `theme_mode` and the platform, so the
-  /// first frame is not a frame of the wrong theme.
-  final DpMode mode;
+class DeutschPlanApp extends ConsumerWidget {
+  DeutschPlanApp({GoRouter? router, super.key})
+    : router = router ?? buildRouter();
 
   /// Built by [bootstrap] and held for the life of the app.
   ///
@@ -70,15 +110,17 @@ class DeutschPlanApp extends StatelessWidget {
   /// default is for tests that only want a tree to look at.
   final GoRouter router;
 
-  /// True when the learner chose *Follow the system*.
-  ///
-  /// [mode] is then only the answer for the first frame. `MaterialApp` has to
-  /// keep following the platform afterwards, or turning the phone to dark
-  /// would leave DeutschPlan light until it was killed.
-  final bool followsPlatform;
-
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    // Watched, not passed in: Settings writes through `Theme.choose` and the
+    // new mode has to reach the first frame after it, which a value captured
+    // at launch cannot do.
+    final mode = ref.watch(themeProvider);
+    final followsPlatform = ref
+        .watch(settingsProvider)
+        .read(SettingKeys.themeMode)
+        .followsPlatform;
+
     return MaterialApp.router(
       routerConfig: router,
       onGenerateTitle: (context) => AppLocalizations.of(context).appTitle,

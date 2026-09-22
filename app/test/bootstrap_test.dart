@@ -17,6 +17,7 @@ import 'package:deutschplan/router/app_router.dart';
 import 'package:drift/drift.dart' hide isNotNull, isNull;
 import 'package:drift/native.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart'
     show Brightness, FilledButton, Text, TextButton;
@@ -457,10 +458,12 @@ void main() {
       // completes inside one.
       final db = AppDatabase.memory();
       addTearDown(db.close);
+      final settings = SettingsRepository(db);
+      await settings.load();
       final ready = Bootstrap(
         db: db,
         content: ContentDao(db),
-        settings: SettingsRepository(db),
+        settings: settings,
         glass: GlassCapability(),
         router: buildRouter(),
         contentVersion: ContentFixture.version,
@@ -471,10 +474,16 @@ void main() {
         elapsed: Duration.zero,
       );
 
+      // A `ProviderScope`, because the app the gate swaps in watches the
+      // theme provider. `main` builds the real one from bootstrap's
+      // overrides; this is the same shape.
       await tester.pumpWidget(
-        BootstrapGate(
-          failure: failureOf(BootstrapStep.database),
-          onRetry: () async => BootstrapReady(ready),
+        ProviderScope(
+          overrides: ready.overrides,
+          child: BootstrapGate(
+            failure: failureOf(BootstrapStep.database),
+            onRetry: () async => BootstrapReady(ready),
+          ),
         ),
       );
       await tester.pumpAndSettle();
