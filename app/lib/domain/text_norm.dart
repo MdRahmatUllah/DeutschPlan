@@ -46,12 +46,23 @@ const Map<String, String> umlautFolds = <String, String>{
 };
 
 /// The first key: umlauts expanded the German way. "Tür" becomes `tuer`.
-String searchKey(String text) => _normalise(text, umlautExpansions);
+///
+/// [stripArticle] is on by default, because PIPE-04 says so and because the
+/// pipeline's keys must not move. Turn it off for text that is not German:
+/// `die` is an ordinary English verb, and stripping it turns the meaning
+/// "die out" into "out".
+String searchKey(String text, {bool stripArticle = true}) =>
+    _normalise(text, umlautExpansions, stripArticle: stripArticle);
 
 /// The second key: umlauts folded to the bare vowel. "Tür" becomes `tur`.
-String searchKeyAlt(String text) => _normalise(text, umlautFolds);
+String searchKeyAlt(String text, {bool stripArticle = true}) =>
+    _normalise(text, umlautFolds, stripArticle: stripArticle);
 
-String _normalise(String text, Map<String, String> table) {
+String _normalise(
+  String text,
+  Map<String, String> table, {
+  required bool stripArticle,
+}) {
   // Composed first, or "u" + combining diaeresis never matches the ü in the
   // table below. Dart has no NFC, so the four letters German needs are spelled
   // out; anything else is handled by the combining-mark strip further down.
@@ -67,7 +78,7 @@ String _normalise(String text, Map<String, String> table) {
 
   final stripped = _stripLatinMarks(_dropPunctuation(buffer.toString()));
   final collapsed = stripped.split(RegExp(r'\s+')).where((p) => p.isNotEmpty);
-  return _stripArticle(collapsed.toList());
+  return stripArticle ? _stripArticle(collapsed.toList()) : collapsed.join(' ');
 }
 
 /// The precomposed forms of the letters the umlaut tables key on.

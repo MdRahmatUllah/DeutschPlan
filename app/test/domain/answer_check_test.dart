@@ -95,6 +95,71 @@ void main() {
       expect(checkMeaning('walking', 'walkign / go'), Verdict.almost);
     });
 
+    test('a German article is not stripped off an English meaning', () {
+      // `text_norm` peels der/die/das because PIPE-04 says so for German.
+      // `die` is an ordinary English verb, and with the strip on, "die out"
+      // keyed to "out" — so typing half the answer scored full marks.
+      for (final expected in const <String>[
+        'die out',
+        'die down',
+        'die away',
+        'die young',
+      ]) {
+        final tail = expected.split(' ').last;
+        expect(checkMeaning(tail, expected), Verdict.wrong, reason: expected);
+        expect(checkMeaning(expected, expected), Verdict.correct);
+
+        // Both sides, because stripping only the given or only the expected
+        // leaves the other case passing. This is the direction that scored a
+        // half-answer full marks.
+        expect(checkMeaning(expected, tail), Verdict.wrong, reason: expected);
+      }
+    });
+
+    test('the typo allowance is per word, not per phrase', () {
+      // "go out" is six characters and no word in it is six letters, so a
+      // different preposition is a different answer, not a typo.
+      expect(checkMeaning('go put', 'go out'), Verdict.wrong);
+      expect(checkMeaning('go ou', 'go out'), Verdict.wrong);
+      expect(checkMeaning('sit dowo', 'sit down'), Verdict.wrong);
+
+      // The word that matters is the one that was mistyped, not the longest
+      // in the answer. "after" is five letters, so it stays wrong even beside
+      // a ten-letter word.
+      expect(checkMeaning('to look aftre', 'to look after'), Verdict.wrong);
+      expect(
+        checkMeaning('look aftre understand', 'look after understand'),
+        Verdict.wrong,
+      );
+
+      // And a long word in a phrase does earn it.
+      expect(
+        checkMeaning('look after understnad', 'look after understand'),
+        Verdict.almost,
+      );
+
+      // Two words out is not one typo, however long they are. Both
+      // orderings, because a loop that keeps only the first difference and
+      // one that keeps only the last each pass the other case.
+      expect(
+        checkMeaning('loko after understnad', 'look after understand'),
+        Verdict.wrong,
+      );
+      expect(
+        checkMeaning('understnad after goo', 'understand after go'),
+        Verdict.wrong,
+      );
+
+      // A missing space is a typo with no one word to blame it on, so it
+      // falls back to the longest expected word — which still has to be six.
+      expect(checkMeaning('goout', 'go out'), Verdict.wrong);
+      expect(
+        checkMeaning('lookafter understand', 'look after understand'),
+        Verdict.almost,
+        reason: 'a missing space is one edit, and the phrase has a long word',
+      );
+    });
+
     test('a semicolon separates too, and empty entries are skipped', () {
       expect(checkMeaning('home', 'house; home'), Verdict.correct);
       expect(checkMeaning('home', 'house / / home,'), Verdict.correct);
@@ -178,6 +243,15 @@ void main() {
         Verdict.wrong,
         reason: 'four letters',
       );
+    });
+
+    test('an umlaut does not buy a typo allowance', () {
+      // The expanded key turns "Bäume" into "baeume" — six characters for a
+      // five-letter word. Measuring that would forgive a typo BR-ANS-01 does
+      // not: the rule is six *letters*.
+      expect(checkGerman('Bäuem', 'Bäume'), Verdict.wrong);
+      expect(checkGerman('Baume', 'Bäume'), Verdict.correct, reason: 'ä/a');
+      expect(checkGerman('Blüemn', 'Blümen'), Verdict.almost, reason: 'six');
     });
 
     test('nothing typed is wrong', () {

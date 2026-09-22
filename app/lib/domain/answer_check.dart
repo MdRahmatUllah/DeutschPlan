@@ -50,7 +50,11 @@ Verdict checkMeaning(String given, String expected) {
   final candidates = splitMeanings(expected);
   if (candidates.isEmpty) return Verdict.wrong;
 
-  return _best(_stripInfinitiveTo(given), candidates.map(_stripInfinitiveTo));
+  return _best(
+    _stripInfinitiveTo(given),
+    candidates.map(_stripInfinitiveTo),
+    german: false,
+  );
 }
 
 /// EN→DE, cloze and forms (BR-ANS-02).
@@ -69,7 +73,7 @@ Verdict checkGerman(String given, String german, {String? article}) {
       ? embedded
       : _clean(article!);
 
-  final verdict = _best(givenWord, <String>[expectedWord]);
+  final verdict = _best(givenWord, <String>[expectedWord], german: true);
 
   // Only when the noun itself is right. A wrong article on a wrong word is
   // just wrong, and telling the learner about the article would bury the
@@ -98,7 +102,7 @@ Verdict checkArticle(String given, String article) =>
 /// A plural or a participle has no article of its own to get wrong, so a
 /// leading one is simply part of what was typed.
 Verdict checkForm(String given, String expectedForm) =>
-    _best(given, <String>[expectedForm]);
+    _best(given, <String>[expectedForm], german: true);
 
 /// The synonyms in an authored meaning column, in order.
 ///
@@ -114,11 +118,15 @@ List<String> splitMeanings(String expected) => expected
 ///
 /// Best, not first: "to go / to walk" against "wlak" is *almost* on the second
 /// candidate, and stopping at the first wrong answer would mark it wrong.
-Verdict _best(String given, Iterable<String> candidates) {
+Verdict _best(
+  String given,
+  Iterable<String> candidates, {
+  required bool german,
+}) {
   var best = Verdict.wrong;
 
   for (final candidate in candidates) {
-    final verdict = _compare(given, candidate);
+    final verdict = _compare(given, candidate, german: german);
     if (verdict == Verdict.correct) return Verdict.correct;
     if (verdict == Verdict.almost) best = Verdict.almost;
   }
@@ -126,11 +134,16 @@ Verdict _best(String given, Iterable<String> candidates) {
 }
 
 /// One answer against one expected string.
-Verdict _compare(String given, String expected) {
-  final key = searchKey(given);
-  final alt = searchKeyAlt(given);
-  final expectedKey = searchKey(expected);
-  final expectedAlt = searchKeyAlt(expected);
+///
+/// [german] decides whether a leading article is stripped. It must be false
+/// for a meaning: `text_norm` peels der/die/das, and `die` is an ordinary
+/// English verb — with it on, "die out" keys to "out" and a learner who types
+/// half the answer scores full marks.
+Verdict _compare(String given, String expected, {required bool german}) {
+  final key = searchKey(given, stripArticle: german);
+  final alt = searchKeyAlt(given, stripArticle: german);
+  final expectedKey = searchKey(expected, stripArticle: german);
+  final expectedAlt = searchKeyAlt(expected, stripArticle: german);
 
   if (key.isEmpty || expectedKey.isEmpty) return Verdict.wrong;
 
@@ -145,16 +158,15 @@ Verdict _compare(String given, String expected) {
   // stricter.
   if (key == expectedKey || alt == expectedAlt) return Verdict.correct;
 
-  // BR-ANS-01, and the length is the expected word's: it is the word the
-  // learner was reaching for, and judging by what they typed would let a
-  // five-letter guess pass against a ten-letter answer.
-  if (expectedKey.length < typoMinLength) return Verdict.wrong;
+  // Both spellings get a shot at the typo — a learner typing "Baeuem" for
+  // "Bäume" is one character out on the expanded key and two on the folded
+  // one — but the length gate always comes from the folded key, which is the
+  // closest thing here to a letter count.
+  final gate = expectedAlt.split(' ');
 
-  final distance = editDistance(key, expectedKey, limit: 1) == 1
-      ? 1
-      : editDistance(alt, expectedAlt, limit: 1);
-
-  return distance == 1 ? Verdict.almost : Verdict.wrong;
+  return _typo(key, expectedKey, gate) || _typo(alt, expectedAlt, gate)
+      ? Verdict.almost
+      : Verdict.wrong;
 }
 
 /// Splits a leading German article off, returning it and the rest.
@@ -172,6 +184,51 @@ Verdict _compare(String given, String expected) {
 }
 
 String _clean(String text) => text.trim().toLowerCase();
+
+/// Whether [given] is [expected] with one character mistyped, under BR-ANS-01.
+///
+/// The rule is about a *word*, not a phrase, and the word it is about is the
+/// one that was mistyped — not the longest one in the answer. "look after" and
+/// "look aftre" differ in a five-letter word, so that is wrong however long
+/// "look after" is; "look understand" against "look understnad" differs in a
+/// ten-letter one, so that is almost.
+///
+/// [gate] is the expected string's folded words, and the only thing lengths
+/// are measured on. Taking them from [expected] instead would let the expanded
+/// key decide: "Bäume" keys to "baeume", six characters for a five-letter
+/// word, and a typo in it would be forgiven when BR-ANS-01 says it should not.
+///
+/// The lengths come from the expected side, never the given one. It is the
+/// word the learner was reaching for, and judging by what they typed would let
+/// a three-letter stab pass against a ten-letter answer.
+bool _typo(String given, String expected, List<String> gate) {
+  final typed = given.split(' ');
+  final wanted = expected.split(' ');
+
+  // A missing or extra space is a typo in its own right, and there is no one
+  // word to attribute it to. Judged on the longest expected word, which is the
+  // closest thing to "was this a long enough answer to mistype".
+  if (typed.length != wanted.length) {
+    return _longestWord(gate) >= typoMinLength &&
+        editDistance(given, expected, limit: 1) == 1;
+  }
+
+  var mistyped = -1;
+  for (var i = 0; i < wanted.length; i++) {
+    if (typed[i] == wanted[i]) continue;
+    if (mistyped >= 0) return false; // two words out is not one typo
+    mistyped = i;
+  }
+
+  if (mistyped < 0) return false; // identical; the caller already said correct
+  return gate[mistyped].length >= typoMinLength &&
+      editDistance(typed[mistyped], wanted[mistyped], limit: 1) == 1;
+}
+
+int _longestWord(List<String> words) => words.fold(
+  0,
+  (longest, word) => word.length > longest ? word.length : longest,
+);
 
 /// Drops a leading "to " so "to go" and "go" are the same answer (BR-ANS-01).
 ///
