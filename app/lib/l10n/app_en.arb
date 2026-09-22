@@ -90,6 +90,26 @@
     "description": "Fourth tab of the shell (branch 3): progress, settings and data."
   },
 
+  "examLeaveTitle": "Leave the exam?",
+  "@examLeaveTitle": {
+    "description": "Title of the dialog Android back opens inside the exam runner. docs/04-screens/exam-runner.md, FR-L12-04."
+  },
+
+  "examLeaveMessage": "Your answers so far are saved as an unfinished attempt. The timer stops. You can start this mock again from the exam hub.",
+  "@examLeaveMessage": {
+    "description": "Body of the leave-the-exam dialog. Says what is kept and what is lost, because the answers survive and the time does not."
+  },
+
+  "examLeaveConfirm": "Leave",
+  "@examLeaveConfirm": {
+    "description": "Destructive action on the leave-the-exam dialog. Abandons the attempt (FR-L12-04)."
+  },
+
+  "examLeaveCancel": "Keep going",
+  "@examLeaveCancel": {
+    "description": "Cancel action on the leave-the-exam dialog. Returns to the question the learner was on."
+  },
+
   "undo": "Undo",
   "@undo": {
     "description": "Action on the snackbar shown after a reversible change, such as rating a card. See FR-T2-02."

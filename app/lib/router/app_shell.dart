@@ -1,5 +1,6 @@
 import 'package:deutschplan/core/adaptive/adaptive.dart';
 import 'package:deutschplan/core/theme/dp_tokens.dart';
+import 'package:deutschplan/router/back_behaviour.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
@@ -108,39 +109,65 @@ class AppShell extends StatelessWidget {
     return found;
   }
 
+  /// The four branch roots, in branch order. A location that is one of these
+  /// is a tab root; anything else inside the shell is pushed on top of one.
+  static const List<String> tabRoots = <String>[
+    '/today',
+    '/learn',
+    '/search',
+    '/me',
+  ];
+
+  /// Whether the visible branch has nothing pushed on it.
+  ///
+  /// Read from the location rather than from the branch navigator, because
+  /// `PopScope.canPop` is a *snapshot taken when this widget builds* — and
+  /// pushing a route inside a branch does not rebuild the shell. Reading the
+  /// navigator gave the answer for the stack as it was one route ago, which
+  /// made predictive back offer to close the app from a pushed screen.
+  /// `GoRouterState.of` rebuilds on every navigation, so this one is current.
+  static bool onTabRoot(String location) => tabRoots.contains(location);
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final tokens = context.tokens;
 
-    return AdaptiveScaffold(
-      backgroundColor: tokens.surface.paper,
-      body: navigationShell,
-      bottomBar: AdaptiveNavBar(
-        currentIndex: navigationShell.currentIndex,
-        onSelected: (index) => _onSelected(context, index),
-        destinations: <AdaptiveNavDestination>[
-          AdaptiveNavDestination(
-            icon: Icons.today_outlined,
-            selectedIcon: Icons.today,
-            label: l10n.tabToday,
-          ),
-          AdaptiveNavDestination(
-            icon: Icons.school_outlined,
-            selectedIcon: Icons.school,
-            label: l10n.tabLearn,
-          ),
-          AdaptiveNavDestination(
-            icon: Icons.search_outlined,
-            selectedIcon: Icons.search,
-            label: l10n.tabSearch,
-          ),
-          AdaptiveNavDestination(
-            icon: Icons.person_outline,
-            selectedIcon: Icons.person,
-            label: l10n.tabMe,
-          ),
-        ],
+    final location = GoRouterState.of(context).uri.path;
+
+    return ShellBackHandler(
+      onTabRoot: () => onTabRoot(location),
+      isFirstTab: () => navigationShell.currentIndex == 0,
+      goToFirstTab: () => navigationShell.goBranch(0),
+      child: AdaptiveScaffold(
+        backgroundColor: tokens.surface.paper,
+        body: navigationShell,
+        bottomBar: AdaptiveNavBar(
+          currentIndex: navigationShell.currentIndex,
+          onSelected: (index) => _onSelected(context, index),
+          destinations: <AdaptiveNavDestination>[
+            AdaptiveNavDestination(
+              icon: Icons.today_outlined,
+              selectedIcon: Icons.today,
+              label: l10n.tabToday,
+            ),
+            AdaptiveNavDestination(
+              icon: Icons.school_outlined,
+              selectedIcon: Icons.school,
+              label: l10n.tabLearn,
+            ),
+            AdaptiveNavDestination(
+              icon: Icons.search_outlined,
+              selectedIcon: Icons.search,
+              label: l10n.tabSearch,
+            ),
+            AdaptiveNavDestination(
+              icon: Icons.person_outline,
+              selectedIcon: Icons.person,
+              label: l10n.tabMe,
+            ),
+          ],
+        ),
       ),
     );
   }
