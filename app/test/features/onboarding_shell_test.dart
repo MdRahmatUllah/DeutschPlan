@@ -6,6 +6,7 @@ import 'package:deutschplan/core/components/dp_button.dart';
 import 'package:deutschplan/core/theme/app_theme.dart';
 import 'package:deutschplan/core/theme/dp_surface.dart';
 import 'package:deutschplan/core/theme/dp_tokens.dart';
+import 'package:deutschplan/core/typography/dp_text.dart';
 import 'package:deutschplan/features/onboarding/onboarding_shell.dart';
 import 'package:deutschplan/features/onboarding/onboarding_welcome_page.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
@@ -129,6 +130,66 @@ void main() {
         for (final page in OnboardingPage.values) page.headerColour(tokens),
       ];
       expect(colours.toSet(), hasLength(5));
+    });
+
+    testWidgets('writes in the ink Foundations puts on each fill', (
+      tester,
+    ) async {
+      // White on light-mode Cobalt, dark ink on every other header — and the
+      // dark ink everywhere once the lifted dark-mode colours are behind it.
+      await pumpShell(tester, page: OnboardingPage.welcome);
+      final light = tokensOf(tester);
+      expect(
+        <Color>[for (final p in OnboardingPage.values) p.headerInk(light)],
+        <Color>[
+          light.color.onPrimary,
+          light.color.onPrimary,
+          light.color.onPrimary,
+          const Color(0xFFFFFFFF),
+          light.color.onPrimary,
+        ],
+      );
+    });
+
+    testWidgets('and in dark mode, every header takes dark ink', (
+      tester,
+    ) async {
+      await pumpShell(tester, page: OnboardingPage.welcome, mode: DpMode.dark);
+      final dark = tokensOf(tester);
+
+      for (final page in OnboardingPage.values) {
+        expect(
+          page.headerInk(dark),
+          const Color(0xFF15121F),
+          reason: 'page ${page.step}',
+        );
+      }
+    });
+
+    testWidgets('and under glass-dark, the light page ink', (tester) async {
+      // The pane is frosted dark paper, not a bright fill. Dark ink on it was
+      // unreadable on all five pages.
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: AppTheme.glass(dark: true),
+          localizationsDelegates: appLocalizationsDelegates,
+          supportedLocales: supportedLocales,
+          home: const OnboardingShell(
+            page: OnboardingPage.dailyPace,
+            headline: 'A headline',
+            primaryLabel: 'Continue',
+            child: SizedBox(),
+          ),
+        ),
+      );
+      await tester.pump();
+      final tokens = tokensOf(tester);
+
+      final headline = tester.widget<DpText>(
+        find.widgetWithText(DpText, 'A headline'),
+      );
+      expect(headline.color, tokens.color.ink);
+      expect(headline.color, isNot(const Color(0xFF15121F)));
     });
 
     testWidgets('shows "STEP n OF 5", uppercase as drawn', (tester) async {

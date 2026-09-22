@@ -11,6 +11,7 @@
 library;
 
 import 'package:deutschplan/features/onboarding/onboarding_meaning_page.dart';
+import 'package:deutschplan/features/onboarding/onboarding_pace_page.dart';
 import 'package:deutschplan/features/onboarding/onboarding_shell.dart';
 import 'package:deutschplan/features/onboarding/onboarding_start_page.dart';
 import 'package:deutschplan/features/onboarding/onboarding_welcome_page.dart';
@@ -448,7 +449,12 @@ class OnboardingRoute extends GoRouteData with $OnboardingRoute {
         // drawing a button that does nothing.
       ),
 
-      // #90 and #91 replace these.
+      OnboardingPage.dailyPace => OnboardingPacePage(
+        onContinue: () => const OnboardingRoute(page: '5').push<void>(context),
+        onBack: () => _back(context, OnboardingPage.dailyPace),
+      ),
+
+      // #91 replaces this.
       _ => PlaceholderScreen(title: 'Welcome', screen: 'S2', detail: page),
     };
   }

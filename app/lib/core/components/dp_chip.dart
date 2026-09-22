@@ -82,19 +82,29 @@ class DpChip extends StatelessWidget {
   Widget build(BuildContext context) {
     final tokens = context.tokens;
 
+    // The glass Foundations draw a filter chip differently rather than
+    // merely frosted: a pill, solid Lagoon when on and frosted paper when
+    // off, both behind the glass hairline. A Lagoon wash on glass is a wash
+    // on a wash, and reads as nothing chosen.
+    final glassFilter = tokens.isGlass && kind == DpChipKind.filter;
+
     final fill = switch (kind) {
       DpChipKind.step => selected ? tokens.color.accent : null,
       DpChipKind.status || DpChipKind.webLink => tokens.surface.muted,
       DpChipKind.streak => tokens.color.accent,
+      DpChipKind.filter when glassFilter =>
+        selected ? tokens.color.primary : tokens.surface.muted,
       DpChipKind.filter =>
         selected ? tokens.color.primary.withValues(alpha: 0.22) : null,
     };
 
     final outline = switch (kind) {
       DpChipKind.step || DpChipKind.streak => tokens.color.ink,
+      DpChipKind.filter when glassFilter => tokens.surface.outline,
       DpChipKind.filter => selected ? tokens.color.ink : tokens.surface.outline,
       DpChipKind.status || DpChipKind.webLink => null,
     };
+    final outlineWidth = glassFilter ? tokens.surface.outlineWidth : 1.5;
 
     final (role, weight) = switch (kind) {
       DpChipKind.step || DpChipKind.status => (DpTextRole.caption, 700.0),
@@ -102,7 +112,9 @@ class DpChip extends StatelessWidget {
       DpChipKind.filter || DpChipKind.webLink => (DpTextRole.label, 600.0),
     };
 
-    final radius = kind == DpChipKind.streak ? height / 2 : tokens.shape.chip;
+    final radius = kind == DpChipKind.streak || glassFilter
+        ? height / 2
+        : tokens.shape.chip;
 
     final fallback = defaultIcon;
     final glyph =
@@ -123,7 +135,9 @@ class DpChip extends StatelessWidget {
       decoration: BoxDecoration(
         color: fill,
         borderRadius: BorderRadius.circular(radius),
-        border: outline == null ? null : Border.all(color: outline, width: 1.5),
+        border: outline == null
+            ? null
+            : Border.all(color: outline, width: outlineWidth),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,

@@ -141,6 +141,7 @@ class DpPalette {
     required this.textSecondary,
     required this.link,
     required this.der,
+    required this.onDer,
     required this.derText,
     required this.die,
     required this.dieText,
@@ -166,6 +167,7 @@ class DpPalette {
     textSecondary: Color(0xFF5B5670), // Slate Ink
     link: Color(0xFF007A70),
     der: Color(0xFF3D5AFE), // Cobalt
+    onDer: Color(0xFFFFFFFF), // Foundations writes its Cobalt swatch in white
     derText: Color(0xFF2F46E0),
     die: Color(0xFFFF3D7F), // Raspberry
     dieText: Color(0xFFD6155C),
@@ -196,6 +198,7 @@ class DpPalette {
     textSecondary: Color(0xFFB7B1CC),
     link: Color(0xFF2EE6D6),
     der: Color(0xFF8C9DFF),
+    onDer: Color(0xFF15121F), // the lifted Cobalt is light enough for ink
     derText: Color(0xFF8C9DFF),
     die: Color(0xFFFF8AB2),
     dieText: Color(0xFFFF8AB2),
@@ -223,6 +226,10 @@ class DpPalette {
   /// plain value is for fills and bars. Never colour alone — the article is
   /// always printed (`accessibility-performance.md`).
   final Color der;
+
+  /// Text on a Cobalt fill. The one gender colour dark enough in light mode
+  /// to need white; Raspberry and Emerald take ink in both.
+  final Color onDer;
   final Color derText;
   final Color die;
   final Color dieText;
@@ -267,6 +274,7 @@ class DpPalette {
     textSecondary: Color.lerp(textSecondary, other.textSecondary, t)!,
     link: Color.lerp(link, other.link, t)!,
     der: Color.lerp(der, other.der, t)!,
+    onDer: Color.lerp(onDer, other.onDer, t)!,
     derText: Color.lerp(derText, other.derText, t)!,
     die: Color.lerp(die, other.die, t)!,
     dieText: Color.lerp(dieText, other.dieText, t)!,

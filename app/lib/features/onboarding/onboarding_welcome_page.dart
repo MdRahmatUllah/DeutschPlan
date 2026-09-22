@@ -100,7 +100,8 @@ class _RisingChart extends StatelessWidget {
       height: artboard.height,
       child: CustomPaint(
         painter: _RisingChartPainter(
-          line: tokens.color.onPrimary,
+          // The header's ink, so the line stays visible under glass-dark.
+          line: OnboardingPage.welcome.headerInk(tokens),
           start: tokens.color.accent,
           milestone: tokens.surface.card,
         ),

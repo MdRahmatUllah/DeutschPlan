@@ -14,6 +14,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:deutschplan/features/onboarding/onboarding_welcome_page.dart';
 import 'package:deutschplan/features/onboarding/onboarding_start_page.dart';
+import 'package:deutschplan/features/onboarding/onboarding_pace_page.dart';
 import 'package:deutschplan/data/db/content_dao.dart';
 import 'package:deutschplan/core/theme/dp_surface.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
@@ -411,6 +412,28 @@ void main() {
         matching: find.byType(DpSurface),
       );
       expect(tester.widget<DpSurface>(chosen).selected, isTrue);
+    });
+
+    testWidgets("page 4's estimate is for the step page 3 picked", (
+      tester,
+    ) async {
+      // One draft across the routes: A2.1's 540 words at 7 a day is 78 days,
+      // and page 4 can only know that if page 3's pick reached it.
+      await pumpApp(tester, guards: guardsWith(), at: '/onboarding/3');
+      final l10n = AppLocalizations.of(
+        tester.element(find.byType(OnboardingStartPage)),
+      );
+
+      await tester.tap(find.text('A2.1'));
+      await tester.pump();
+      await tester.tap(find.text(l10n.continueAction));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(OnboardingPacePage), findsOneWidget);
+      expect(
+        find.text(l10n.onboardingPaceEstimate(78, 'A2.1', 7)),
+        findsOneWidget,
+      );
     });
 
     testWidgets('and the pages slide sideways, with the edge swipe', (

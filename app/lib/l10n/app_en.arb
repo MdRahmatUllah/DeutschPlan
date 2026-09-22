@@ -206,5 +206,131 @@
   "onboardingPlacementLink": "Not sure? Take a 3-minute check",
   "@onboardingPlacementLink": {
     "description": "S2 page 3: the link into S3, the placement check."
+  },
+  "onboardingPaceHeadline": "How much each day?",
+  "@onboardingPaceHeadline": {
+    "description": "S2 page 4 headline."
+  },
+  "onboardingPaceNewWords": "New words per day",
+  "@onboardingPaceNewWords": {
+    "description": "S2 page 4: the slider's label, also what a screen reader calls it."
+  },
+  "onboardingPaceEstimate": "{days, plural, =1{{step} takes about 1 day at {dailyNew} words a day} other{{step} takes about {days} days at {dailyNew} words a day}}",
+  "@onboardingPaceEstimate": {
+    "description": "S2 page 4: FR-S2-04's live estimate. step is a sublevel code such as A1.1.",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      },
+      "step": {
+        "type": "String"
+      },
+      "dailyNew": {
+        "type": "int"
+      }
+    }
+  },
+  "onboardingPaceRelaxed": "Relaxed · {count}",
+  "@onboardingPaceRelaxed": {
+    "description": "S2 page 4 preset: 5 new words a day.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "onboardingPaceSteady": "Steady · {count}",
+  "@onboardingPaceSteady": {
+    "description": "S2 page 4 preset: 7 new words a day, the default.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "onboardingPaceIntensive": "Intensive · {count}",
+  "@onboardingPaceIntensive": {
+    "description": "S2 page 4 preset: 15 new words a day.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "onboardingPaceRevisions": "Revisions per day",
+  "@onboardingPaceRevisions": {
+    "description": "S2 page 4: the stepper's label."
+  },
+  "onboardingPaceRevisionsNote": "Due cards beyond this wait for tomorrow",
+  "@onboardingPaceRevisionsNote": {
+    "description": "S2 page 4: under the revisions stepper (BR-PLAN-03)."
+  },
+  "onboardingPaceRevisionsDecrease": "Decrease revisions per day",
+  "@onboardingPaceRevisionsDecrease": {
+    "description": "S2 page 4: the stepper's minus button, for a screen reader."
+  },
+  "onboardingPaceRevisionsIncrease": "Increase revisions per day",
+  "@onboardingPaceRevisionsIncrease": {
+    "description": "S2 page 4: the stepper's plus button, for a screen reader."
+  },
+  "onboardingPaceStudyDays": "Study days",
+  "@onboardingPaceStudyDays": {
+    "description": "S2 page 4: the weekday chips' label."
+  },
+  "weekdayShortMon": "Mo",
+  "@weekdayShortMon": {
+    "description": "A weekday chip: Monday, as short as the chip is narrow."
+  },
+  "weekdayMon": "Monday",
+  "@weekdayMon": {
+    "description": "Monday, read aloud for its chip."
+  },
+  "weekdayShortTue": "Tu",
+  "@weekdayShortTue": {
+    "description": "A weekday chip: Tuesday, as short as the chip is narrow."
+  },
+  "weekdayTue": "Tuesday",
+  "@weekdayTue": {
+    "description": "Tuesday, read aloud for its chip."
+  },
+  "weekdayShortWed": "We",
+  "@weekdayShortWed": {
+    "description": "A weekday chip: Wednesday, as short as the chip is narrow."
+  },
+  "weekdayWed": "Wednesday",
+  "@weekdayWed": {
+    "description": "Wednesday, read aloud for its chip."
+  },
+  "weekdayShortThu": "Th",
+  "@weekdayShortThu": {
+    "description": "A weekday chip: Thursday, as short as the chip is narrow."
+  },
+  "weekdayThu": "Thursday",
+  "@weekdayThu": {
+    "description": "Thursday, read aloud for its chip."
+  },
+  "weekdayShortFri": "Fr",
+  "@weekdayShortFri": {
+    "description": "A weekday chip: Friday, as short as the chip is narrow."
+  },
+  "weekdayFri": "Friday",
+  "@weekdayFri": {
+    "description": "Friday, read aloud for its chip."
+  },
+  "weekdayShortSat": "Sa",
+  "@weekdayShortSat": {
+    "description": "A weekday chip: Saturday, as short as the chip is narrow."
+  },
+  "weekdaySat": "Saturday",
+  "@weekdaySat": {
+    "description": "Saturday, read aloud for its chip."
+  },
+  "weekdayShortSun": "Su",
+  "@weekdayShortSun": {
+    "description": "A weekday chip: Sunday, as short as the chip is narrow."
+  },
+  "weekdaySun": "Sunday",
+  "@weekdaySun": {
+    "description": "Sunday, read aloud for its chip."
   }
 }
