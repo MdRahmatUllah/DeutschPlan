@@ -381,6 +381,50 @@ void main() {
     });
   });
 
+  test('navigation goes through the typed routes and the helper', () {
+    // Two ways to get this wrong, and both are silent.
+    //
+    // A `context.go('/learn/step/A1.1')` compiles for ever, including after
+    // the path moves — and a string matching no route lands on Today through
+    // `onException`, which reads as an empty screen rather than a broken
+    // link. Named constants are fine; a path written inline is not.
+    //
+    // `SomeRoute().go(context)` is worse, because it looks right: it skips
+    // `jumpToTab` and its check that the destination is inside a tab, which
+    // is #72's "a single helper performs branch-switch-then-push". The
+    // router's own files are where both are allowed.
+    //
+    // Matched against the whole file rather than line by line: `dart format`
+    // wraps a long call, and a regex needing the quote on the same line as
+    // the parenthesis would miss exactly the longest paths.
+    final patterns = <String, RegExp>{
+      'a path written inline — use the typed route or a named constant': RegExp(
+        r"\b(?:go|push|replace)\(\s*['"
+        "]/",
+      ),
+      'a typed route opened directly — use context.jumpToTab(...)': RegExp(
+        r"\)\.(?:go|push)\(\s*(?:context|this)\b",
+      ),
+    };
+
+    final offenders = <String>[];
+    for (final file in _dartFilesIn('lib')) {
+      final path = _rel(file);
+      if (path.startsWith('lib/router/')) continue;
+
+      final source = file.readAsStringSync();
+      for (final entry in patterns.entries) {
+        for (final match in entry.value.allMatches(source)) {
+          final line =
+              '\n'.allMatches(source.substring(0, match.start)).length + 1;
+          offenders.add('$path:$line: ${entry.key}');
+        }
+      }
+    }
+
+    expect(offenders, isEmpty, reason: offenders.join('\n'));
+  });
+
   test('the clock is the only source of now', () {
     // state-management.md: "`DateTime Function()`; overridden in tests for
     // date logic." A study day is a local day, and the plan engine, the
