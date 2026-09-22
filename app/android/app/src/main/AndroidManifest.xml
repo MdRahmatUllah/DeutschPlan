@@ -1,8 +1,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- enableOnBackInvokedCallback is predictive back (navigation.md).
+         Without it Android 13+ runs the legacy back handler and the swipe
+         shows no preview of where it is going, however the Flutter side is
+         written. -->
     <application
         android:label="deutschplan"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/ic_launcher"
+        android:enableOnBackInvokedCallback="true">
         <activity
             android:name=".MainActivity"
             android:exported="true"

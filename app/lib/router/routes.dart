@@ -11,6 +11,8 @@
 library;
 
 import 'package:deutschplan/router/app_shell.dart';
+import 'package:deutschplan/router/back_behaviour.dart';
+import 'package:deutschplan/router/route_guards.dart';
 import 'package:deutschplan/router/placeholder_screen.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
@@ -471,10 +473,16 @@ class ExamRoute extends GoRouteData with $ExamRoute {
   final int attemptId;
 
   @override
-  Widget build(BuildContext context, GoRouterState state) => PlaceholderScreen(
-    title: 'Mock exam',
-    screen: 'L12',
-    detail: 'attempt $attemptId',
+  Widget build(BuildContext context, GoRouterState state) => ExamBackGuard(
+    // FR-L12-04: back asks rather than pops, and `canPop: false` is also
+    // what turns off the iOS edge swipe for this route (#69). What *Leave*
+    // does — abandoning the attempt — is the runner's, not the route's.
+    onLeave: () => context.go(examFallback),
+    child: PlaceholderScreen(
+      title: 'Mock exam',
+      screen: 'L12',
+      detail: 'attempt $attemptId',
+    ),
   );
 }
 
