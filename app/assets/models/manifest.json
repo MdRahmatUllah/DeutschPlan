@@ -1,20 +1,28 @@
 {
-  "manifest_version": 1,
+  "manifest_version": 2,
   "models": [
     {
       "id": "supertonic3",
       "name": "Supertonic 3 voice",
       "licence": "OpenRAIL-M",
+      "disables": "tts_engine",
       "variants": [
         {
           "id": "default",
           "name": "Supertonic 3",
-          "bytes": 102760448,
-          "url": "https://huggingface.co/Supertone/supertonic-3/resolve/main/supertonic3.onnx",
-          "sha256": null,
           "files": [
-            "supertonic3.onnx",
-            "voices.bin"
+            {
+              "name": "supertonic3.onnx",
+              "url": "https://huggingface.co/Supertone/supertonic-3/resolve/main/supertonic3.onnx",
+              "bytes": 98566144,
+              "sha256": null
+            },
+            {
+              "name": "voices.bin",
+              "url": "https://huggingface.co/Supertone/supertonic-3/resolve/main/voices.bin",
+              "bytes": 4194304,
+              "sha256": null
+            }
           ]
         }
       ]
@@ -23,6 +31,7 @@
       "id": "hymt",
       "name": "Hy-MT 1.5 translation",
       "licence": "Tencent HY",
+      "disables": "mt_enabled",
       "region_excluded": [
         "EU",
         "GB",
@@ -32,21 +41,25 @@
         {
           "id": "q1_25",
           "name": "1.25-bit build",
-          "bytes": 461373440,
-          "url": "https://huggingface.co/tencent/Hy-MT1.5-1.8B-GGUF/resolve/main/hymt-1.8b-q1_25.gguf",
-          "sha256": null,
           "files": [
-            "hymt-1.8b-q1_25.gguf"
+            {
+              "name": "hymt-1.8b-q1_25.gguf",
+              "url": "https://huggingface.co/tencent/Hy-MT1.5-1.8B-GGUF/resolve/main/hymt-1.8b-q1_25.gguf",
+              "bytes": 461373440,
+              "sha256": null
+            }
           ]
         },
         {
           "id": "q2",
           "name": "Better quality · 2-bit",
-          "bytes": 602931200,
-          "url": "https://huggingface.co/tencent/Hy-MT1.5-1.8B-GGUF/resolve/main/hymt-1.8b-q2.gguf",
-          "sha256": null,
           "files": [
-            "hymt-1.8b-q2.gguf"
+            {
+              "name": "hymt-1.8b-q2.gguf",
+              "url": "https://huggingface.co/tencent/Hy-MT1.5-1.8B-GGUF/resolve/main/hymt-1.8b-q2.gguf",
+              "bytes": 602931200,
+              "sha256": null
+            }
           ]
         }
       ]

@@ -28,36 +28,46 @@ void main() {
   late ModelRepository models;
 
   /// A variant of one file, hashed for real.
-  Future<ModelVariant> variantOf(
+  ModelVariant variantOf(
     String content, {
     String id = 'q1_25',
     String file = 'model.gguf',
     String? sha,
-  }) async => ModelVariant(
+  }) => ModelVariant(
     id: id,
     name: 'test build',
-    bytes: content.length,
-    url: Uri.parse('https://example.invalid/$file'),
-    sha256: sha ?? sha256.convert(utf8.encode(content)).toString(),
-    files: <String>[file],
+    files: <ModelFile>[
+      ModelFile(
+        name: file,
+        url: Uri.parse('https://example.invalid/$file'),
+        bytes: content.length,
+        sha256: sha ?? sha256.convert(utf8.encode(content)).toString(),
+      ),
+    ],
   );
 
-  ModelEntry entryOf(ModelVariant variant, {String id = 'hymt'}) => ModelEntry(
+  ModelEntry entryOf(
+    List<ModelVariant> variants, {
+    String id = 'hymt',
+    String disables = 'mt_enabled',
+  }) => ModelEntry(
     id: id,
     name: 'test model',
     licence: 'test',
+    disables: disables,
     regionExcluded: const <String>[],
-    variants: <ModelVariant>[variant],
+    variants: variants,
   );
 
   /// Puts [content] in staging, the way a finished download would.
   Future<void> stage(
     String modelId,
     ModelVariant variant,
-    String content,
-  ) async {
-    final directory = await models.beginDownload(modelId);
-    File('${directory.path}/${variant.files.single}')
+    String content, {
+    String? file,
+  }) async {
+    final directory = await models.restartDownload(modelId);
+    File('${directory.path}/${file ?? variant.files.first.name}')
         .writeAsStringSync(content);
   }
 
@@ -84,7 +94,7 @@ void main() {
       final manifest = ModelManifest.parse(
         await rootBundle.loadString(ModelRepository.manifestAsset),
       );
-      expect(manifest.version, 1);
+      expect(manifest.version, 2);
       expect(
         manifest.models.map((m) => m.id),
         containsAll(<String>['supertonic3', 'hymt']),
@@ -98,20 +108,21 @@ void main() {
       for (final model in manifest.models) {
         expect(model.licence, isNotEmpty, reason: model.id);
         expect(model.variants, isNotEmpty, reason: model.id);
+        expect(model.disables, isNotEmpty, reason: model.id);
         for (final variant in model.variants) {
-          expect(
-            variant.url.scheme,
-            'https',
-            reason: '${model.id}/${variant.id}',
-          );
-          expect(
-            variant.bytes,
-            greaterThan(0),
-            reason: '${model.id}/${variant.id}',
-          );
           expect(
             variant.files,
             isNotEmpty,
+            reason: '${model.id}/${variant.id}',
+          );
+          for (final file in variant.files) {
+            final where = '${model.id}/${variant.id}/${file.name}';
+            expect(file.url.scheme, 'https', reason: where);
+            expect(file.bytes, greaterThan(0), reason: where);
+          }
+          expect(
+            variant.bytes,
+            greaterThan(0),
             reason: '${model.id}/${variant.id}',
           );
         }
@@ -159,7 +170,7 @@ void main() {
 
   group('FR-M4-01 — nothing unverified activates', () {
     test('a matching checksum activates', () async {
-      final variant = await variantOf('the model bytes');
+      final variant = variantOf('the model bytes');
       await stage('hymt', variant, 'the model bytes');
 
       expect(await models.activate('hymt', variant), ModelStatus.ready);
@@ -170,7 +181,7 @@ void main() {
     });
 
     test('a wrong checksum does not', () async {
-      final variant = await variantOf('the model bytes');
+      final variant = variantOf('the model bytes');
       await stage('hymt', variant, 'not the model bytes');
 
       expect(await models.activate('hymt', variant), ModelStatus.failed);
@@ -180,7 +191,7 @@ void main() {
     test('a partial download does not', () async {
       // The commonest real failure: the connection dropped and the file is
       // the right name and the wrong length.
-      final variant = await variantOf('the model bytes');
+      final variant = variantOf('the model bytes');
       await stage('hymt', variant, 'the model by');
 
       expect(await models.activate('hymt', variant), ModelStatus.failed);
@@ -188,7 +199,7 @@ void main() {
     });
 
     test('a missing file does not', () async {
-      final variant = await variantOf('the model bytes');
+      final variant = variantOf('the model bytes');
       await models.beginDownload('hymt');
 
       expect(await models.activate('hymt', variant), ModelStatus.failed);
@@ -201,10 +212,14 @@ void main() {
       final variant = ModelVariant(
         id: 'q1_25',
         name: 'unpinned',
-        bytes: 15,
-        url: Uri.parse('https://example.invalid/x'),
-        sha256: null,
-        files: const <String>['model.gguf'],
+        files: <ModelFile>[
+          ModelFile(
+            name: 'model.gguf',
+            url: Uri.parse('https://example.invalid/x'),
+            bytes: 15,
+            sha256: null,
+          ),
+        ],
       );
       await stage('hymt', variant, 'the model bytes');
 
@@ -215,10 +230,7 @@ void main() {
 
     test('a truncated hash is not a hash', () async {
       final full = sha256.convert(utf8.encode('the model bytes')).toString();
-      final variant = await variantOf(
-        'the model bytes',
-        sha: full.substring(0, 32),
-      );
+      final variant = variantOf('the model bytes', sha: full.substring(0, 32));
       await stage('hymt', variant, 'the model bytes');
 
       expect(await models.activate('hymt', variant), ModelStatus.failed);
@@ -226,10 +238,7 @@ void main() {
 
     test('an upper-case hash in the manifest still matches', () async {
       final full = sha256.convert(utf8.encode('the model bytes')).toString();
-      final variant = await variantOf(
-        'the model bytes',
-        sha: full.toUpperCase(),
-      );
+      final variant = variantOf('the model bytes', sha: full.toUpperCase());
       await stage('hymt', variant, 'the model bytes');
 
       expect(await models.activate('hymt', variant), ModelStatus.ready);
@@ -238,11 +247,11 @@ void main() {
     test('a failed activation leaves the old model alone', () async {
       // The learner has a working model. An update that does not verify must
       // not take it away.
-      final good = await variantOf('version one');
+      final good = variantOf('version one');
       await stage('hymt', good, 'version one');
       await models.activate('hymt', good);
 
-      final bad = await variantOf('version two', id: 'q2');
+      final bad = variantOf('version two', id: 'q2');
       await stage('hymt', bad, 'corrupted');
       expect(await models.activate('hymt', bad), ModelStatus.failed);
 
@@ -254,62 +263,224 @@ void main() {
     });
 
     test('retrying starts from empty', () async {
-      // A resumed download that appended to a half file would hash to
-      // something that never matches, and the learner would retry forever.
-      final variant = await variantOf('the model bytes');
+      // A retry that appended to a corrupt file would hash to something that
+      // never matches, and the learner would retry for ever.
+      final variant = variantOf('the model bytes');
       await stage('hymt', variant, 'rubbish from the last attempt');
 
+      await models.restartDownload('hymt');
+      expect((await models.stagingFor('hymt')).listSync(), isEmpty);
+    });
+
+    test('resuming keeps what has already arrived', () async {
+      // FR-M4-01 asks for resumable downloads, and the point of resuming is
+      // that the bytes on disk stay. `beginDownload` is the resume path.
+      final variant = variantOf('the model bytes');
+      await stage('hymt', variant, 'the model ');
+
       await models.beginDownload('hymt');
-      final staging = await models.stagingFor('hymt');
-      expect(staging.listSync(), isEmpty);
+      expect((await models.stagingFor('hymt')).listSync(), hasLength(1));
+    });
+
+    test('a crash mid-activation leaves the old model, not nothing', () async {
+      // `activate` renames the old model aside before putting the new one in
+      // place. A process that died in between leaves a `.previous`; the next
+      // read puts it back rather than making the learner download 575 MB
+      // again.
+      final good = variantOf('version one');
+      await stage('hymt', good, 'version one');
+      await models.activate('hymt', good);
+
+      final active = await models.directoryFor('hymt');
+      active.renameSync('${active.path}.previous');
+
+      final state = await models.stateOf(entryOf(<ModelVariant>[good]), good);
+      expect(state.status, ModelStatus.ready);
+      expect(
+        File('${active.path}/model.gguf').readAsStringSync(),
+        'version one',
+      );
+    });
+
+    test('the old model survives an activation that cannot finish', () async {
+      // The ordering is the claim: the model being replaced is renamed aside,
+      // not deleted, so a failure putting the new one in place costs an app
+      // restart rather than a second 575 MB download. A plain file sitting
+      // where the rename wants to go is the cheapest way to make it fail.
+      final good = variantOf('version one');
+      await stage('hymt', good, 'version one');
+      await models.activate('hymt', good);
+
+      final active = await models.directoryFor('hymt');
+      File('${active.path}.previous').writeAsStringSync('in the way');
+
+      final next = variantOf('version two');
+      await stage('hymt', next, 'version two');
+      await expectLater(models.activate('hymt', next), throwsA(anything));
+
+      expect(
+        File('${active.path}/model.gguf').readAsStringSync(),
+        'version one',
+        reason: 'the working model was thrown away before the new one landed',
+      );
+    });
+
+    test('a successful activation leaves nothing behind', () async {
+      final first = variantOf('version one');
+      await stage('hymt', first, 'version one');
+      await models.activate('hymt', first);
+
+      final second = variantOf('version two');
+      await stage('hymt', second, 'version two');
+      await models.activate('hymt', second);
+
+      final active = await models.directoryFor('hymt');
+      expect(Directory('${active.path}.previous').existsSync(), isFalse);
+      expect(
+        File('${active.path}/model.gguf').readAsStringSync(),
+        'version two',
+      );
+    });
+
+    test('it says which file failed', () async {
+      final variant = ModelVariant(
+        id: 'default',
+        name: 'two files',
+        files: <ModelFile>[
+          ModelFile(
+            name: 'a.onnx',
+            url: Uri.parse('https://example.invalid/a'),
+            bytes: 1,
+            sha256: sha256.convert(utf8.encode('a')).toString(),
+          ),
+          ModelFile(
+            name: 'b.bin',
+            url: Uri.parse('https://example.invalid/b'),
+            bytes: 1,
+            sha256: sha256.convert(utf8.encode('b')).toString(),
+          ),
+        ],
+      );
+
+      final staging = await models.restartDownload('supertonic3');
+      File('${staging.path}/a.onnx').writeAsStringSync('a');
+      File('${staging.path}/b.bin').writeAsStringSync('wrong');
+
+      final state = await models.verifyIn(staging, variant);
+      expect(state.status, ModelStatus.failed);
+      expect(state.failedFile, 'b.bin');
+    });
+
+    test('one bad file in a set fails the whole variant', () async {
+      // Hashing per file is what makes this possible to say at all: a digest
+      // over the concatenation would only ever report "something".
+      final variant = ModelVariant(
+        id: 'default',
+        name: 'two files',
+        files: <ModelFile>[
+          ModelFile(
+            name: 'a.onnx',
+            url: Uri.parse('https://example.invalid/a'),
+            bytes: 1,
+            sha256: sha256.convert(utf8.encode('a')).toString(),
+          ),
+          ModelFile(
+            name: 'b.bin',
+            url: Uri.parse('https://example.invalid/b'),
+            bytes: 1,
+            sha256: sha256.convert(utf8.encode('b')).toString(),
+          ),
+        ],
+      );
+
+      final staging = await models.restartDownload('supertonic3');
+      File('${staging.path}/a.onnx').writeAsStringSync('a');
+      File('${staging.path}/b.bin').writeAsStringSync('b');
+      expect(await models.activate('supertonic3', variant), ModelStatus.ready);
+
+      final active = await models.directoryFor('supertonic3');
+      expect(File('${active.path}/b.bin').existsSync(), isTrue);
     });
   });
 
   group('what the card shows', () {
     test('nothing on disk is not downloaded', () async {
-      final variant = await variantOf('bytes');
+      final variant = variantOf('bytes');
       expect(
-        (await models.stateOf(entryOf(variant), variant)).status,
+        (await models.stateOf(
+          entryOf(<ModelVariant>[variant]),
+          variant,
+        )).status,
         ModelStatus.notDownloaded,
       );
     });
 
     test('staging is downloading, with the progress', () async {
-      final variant = await variantOf('0123456789');
+      final variant = variantOf('0123456789');
       await stage('hymt', variant, '01234');
 
-      final state = await models.stateOf(entryOf(variant), variant);
+      final state = await models.stateOf(
+        entryOf(<ModelVariant>[variant]),
+        variant,
+      );
       expect(state.status, ModelStatus.downloading);
       expect(state.bytesOnDisk, 5);
       expect(state.progress, 0.5);
     });
 
     test('an activated model is ready', () async {
-      final variant = await variantOf('bytes');
+      final variant = variantOf('bytes');
       await stage('hymt', variant, 'bytes');
       await models.activate('hymt', variant);
 
       expect(
-        (await models.stateOf(entryOf(variant), variant)).status,
+        (await models.stateOf(
+          entryOf(<ModelVariant>[variant]),
+          variant,
+        )).status,
         ModelStatus.ready,
       );
     });
 
+    test('the other variant of the model is not an update', () async {
+      // The Model manager offers "Better quality · 2-bit" beside the
+      // installed build. Calling that an update would replace a working
+      // model rather than add the one the learner picked.
+      final installed = variantOf('small build');
+      final other = variantOf('big build', id: 'q2');
+      final entry = entryOf(<ModelVariant>[installed, other]);
+
+      await stage('hymt', installed, 'small build');
+      await models.activate('hymt', installed);
+
+      expect(
+        (await models.stateOf(entry, installed)).status,
+        ModelStatus.ready,
+      );
+      expect(
+        (await models.stateOf(entry, other)).status,
+        ModelStatus.notDownloaded,
+      );
+    });
+
     test('a manifest with a new hash is an update', () async {
-      final installed = await variantOf('version one');
+      final installed = variantOf('version one');
       await stage('hymt', installed, 'version one');
       await models.activate('hymt', installed);
 
       // FR-M4-02: updates compare hashes.
-      final published = await variantOf('version two');
+      final published = variantOf('version two');
       expect(
-        (await models.stateOf(entryOf(published), published)).status,
+        (await models.stateOf(
+          entryOf(<ModelVariant>[published]),
+          published,
+        )).status,
         ModelStatus.updateAvailable,
       );
     });
 
     test('a model directory someone emptied is failed, not ready', () async {
-      final variant = await variantOf('bytes');
+      final variant = variantOf('bytes');
       await stage('hymt', variant, 'bytes');
       await models.activate('hymt', variant);
 
@@ -317,7 +488,10 @@ void main() {
           .deleteSync();
 
       expect(
-        (await models.stateOf(entryOf(variant), variant)).status,
+        (await models.stateOf(
+          entryOf(<ModelVariant>[variant]),
+          variant,
+        )).status,
         ModelStatus.failed,
       );
     });
@@ -325,13 +499,16 @@ void main() {
     test('a directory that was never activated is failed', () async {
       // Something put files where the engine looks without going through
       // `activate`. It has no stamp, so it cannot be trusted.
-      final variant = await variantOf('bytes');
+      final variant = variantOf('bytes');
       final active = await models.directoryFor('hymt');
       active.createSync(recursive: true);
       File('${active.path}/model.gguf').writeAsStringSync('bytes');
 
       expect(
-        (await models.stateOf(entryOf(variant), variant)).status,
+        (await models.stateOf(
+          entryOf(<ModelVariant>[variant]),
+          variant,
+        )).status,
         ModelStatus.failed,
       );
     });
@@ -340,11 +517,17 @@ void main() {
   group('FR-M4-03 — deleting turns off what depended on it', () {
     test('deleting the voice falls back to the system engine', () async {
       await settings.write(SettingKeys.ttsEngine, TtsEngine.supertonic);
-      final variant = await variantOf('bytes');
+      final variant = variantOf('bytes');
       await stage('supertonic3', variant, 'bytes');
       await models.activate('supertonic3', variant);
 
-      await models.delete('supertonic3');
+      await models.delete(
+        entryOf(
+          <ModelVariant>[variant],
+          id: 'supertonic3',
+          disables: 'tts_engine',
+        ),
+      );
 
       expect(settings.read(SettingKeys.ttsEngine), TtsEngine.system);
       expect((await models.directoryFor('supertonic3')).existsSync(), isFalse);
@@ -352,32 +535,44 @@ void main() {
 
     test('deleting the translation model turns translation off', () async {
       await settings.write(SettingKeys.mtEnabled, true);
-      final variant = await variantOf('bytes');
+      final variant = variantOf('bytes');
       await stage('hymt', variant, 'bytes');
       await models.activate('hymt', variant);
 
-      await models.delete('hymt');
+      await models.delete(entryOf(<ModelVariant>[variant]));
 
       expect(settings.read(SettingKeys.mtEnabled), isFalse);
       expect((await models.directoryFor('hymt')).existsSync(), isFalse);
     });
 
+    test('a model whose side effect nothing knows is a loud failure', () async {
+      // The manifest names the key; a typo there would otherwise delete the
+      // model and leave the setting pointing at it, silently.
+      final variant = variantOf('bytes');
+      await expectLater(
+        models.delete(
+          entryOf(<ModelVariant>[variant], disables: 'not_a_setting'),
+        ),
+        throwsStateError,
+      );
+    });
+
     test('deleting takes the staging directory too', () async {
-      final variant = await variantOf('bytes');
+      final variant = variantOf('bytes');
       await stage('hymt', variant, 'part');
 
-      await models.delete('hymt');
+      await models.delete(entryOf(<ModelVariant>[variant]));
       expect((await models.stagingFor('hymt')).existsSync(), isFalse);
     });
 
     test('deleting one model leaves the other', () async {
-      final variant = await variantOf('bytes');
+      final variant = variantOf('bytes');
       await stage('hymt', variant, 'bytes');
       await models.activate('hymt', variant);
       await stage('supertonic3', variant, 'bytes');
       await models.activate('supertonic3', variant);
 
-      await models.delete('hymt');
+      await models.delete(entryOf(<ModelVariant>[variant]));
       expect((await models.directoryFor('supertonic3')).existsSync(), isTrue);
     });
   });
@@ -385,7 +580,7 @@ void main() {
   test('the storage card counts what is on disk', () async {
     expect(await models.bytesUsed(), 0);
 
-    final variant = await variantOf('0123456789');
+    final variant = variantOf('0123456789');
     await stage('hymt', variant, '0123456789');
     await models.activate('hymt', variant);
 

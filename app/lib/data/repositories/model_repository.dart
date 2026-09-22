@@ -18,7 +18,7 @@ enum ModelStatus {
   /// Bytes are arriving into the staging directory.
   downloading,
 
-  /// All the bytes are there and the checksum is being read.
+  /// All the bytes are there and the checksums are being read.
   verifying,
 
   /// Verified and in place. The only state anything is allowed to load from.
@@ -27,8 +27,46 @@ enum ModelStatus {
   /// Ready, but the manifest now names a different checksum.
   updateAvailable,
 
-  /// The checksum did not match, or a file is missing. *Retry* from here.
+  /// A checksum did not match, or a file is missing. *Retry* from here.
   failed,
+}
+
+/// One file of a download.
+///
+/// The file is the unit, not the variant: a host publishes a SHA-256 per file,
+/// so hashing several together would give a number nobody upstream can
+/// confirm. It also means a multi-file model can say *which* file failed.
+@immutable
+class ModelFile {
+  const ModelFile({
+    required this.name,
+    required this.url,
+    required this.bytes,
+    required this.sha256,
+  });
+
+  factory ModelFile.fromJson(Map<String, Object?> json) => ModelFile(
+    name: json['name']! as String,
+    url: Uri.parse(json['url']! as String),
+    bytes: json['bytes']! as int,
+    sha256: json['sha256'] as String?,
+  );
+
+  /// The name on disk, relative to the model directory.
+  final String name;
+
+  final Uri url;
+  final int bytes;
+
+  /// SHA-256 as the host publishes it, lower-case hex.
+  ///
+  /// **Nullable on purpose.** A file whose artefact has not been pinned yet
+  /// has no hash, and [ModelRepository.verify] refuses it — FR-M4-01 says a
+  /// partial or unverified file never activates, and "we have not got round to
+  /// the hash" is the same thing as unverified from the learner's side.
+  final String? sha256;
+
+  bool get isPinned => sha256 != null && sha256!.length == 64;
 }
 
 /// One downloadable build of a model.
@@ -37,43 +75,32 @@ class ModelVariant {
   const ModelVariant({
     required this.id,
     required this.name,
-    required this.bytes,
-    required this.url,
-    required this.sha256,
     required this.files,
   });
 
   factory ModelVariant.fromJson(Map<String, Object?> json) => ModelVariant(
     id: json['id']! as String,
     name: json['name']! as String,
-    bytes: json['bytes']! as int,
-    url: Uri.parse(json['url']! as String),
-    sha256: json['sha256'] as String?,
-    files: <String>[
-      for (final file in json['files']! as List<Object?>) file! as String,
+    files: <ModelFile>[
+      for (final file in json['files']! as List<Object?>)
+        ModelFile.fromJson(file! as Map<String, Object?>),
     ],
   );
 
   final String id;
   final String name;
+  final List<ModelFile> files;
 
   /// What the Model manager prints, and what the space check is against.
-  final int bytes;
+  /// Summed rather than stated, so it cannot disagree with the files.
+  int get bytes => files.fold(0, (total, file) => total + file.bytes);
 
-  final Uri url;
+  bool get isPinned => files.isNotEmpty && files.every((file) => file.isPinned);
 
-  /// SHA-256 of the downloaded artefact, lower-case hex.
-  ///
-  /// **Nullable on purpose.** A variant whose artefact has not been pinned yet
-  /// has no hash, and [ModelRepository.verify] refuses it — FR-M4-01 says a
-  /// partial or unverified file never activates, and "we have not got round to
-  /// the hash" is the same thing as unverified from the learner's side.
-  final String? sha256;
-
-  /// The files that make up the download, relative to the model directory.
-  final List<String> files;
-
-  bool get isPinned => sha256 != null && sha256!.length == 64;
+  /// Identifies this exact build: the variant and every hash in it. What
+  /// `activate` stamps, and what an update is compared against.
+  String get fingerprint =>
+      '$id:${files.map((file) => file.sha256 ?? '-').join(',')}';
 }
 
 /// One model, with the variants it can be downloaded as.
@@ -83,6 +110,7 @@ class ModelEntry {
     required this.id,
     required this.name,
     required this.licence,
+    required this.disables,
     required this.variants,
     required this.regionExcluded,
   });
@@ -91,6 +119,7 @@ class ModelEntry {
     id: json['id']! as String,
     name: json['name']! as String,
     licence: json['licence']! as String,
+    disables: json['disables']! as String,
     regionExcluded: <String>[
       for (final region
           in (json['region_excluded'] ?? <Object?>[]) as List<Object?>)
@@ -107,6 +136,13 @@ class ModelEntry {
 
   /// The licence name the Model manager shows beside the size.
   final String licence;
+
+  /// The settings key deleting this model turns off (FR-M4-03).
+  ///
+  /// In the manifest rather than a `switch` on the model id, so renaming a
+  /// model cannot quietly leave `tts_engine` pointing at an engine that is
+  /// gone.
+  final String disables;
 
   /// Where the licence forbids distribution (`translation.md`: the Tencent HY
   /// licence excludes the EU, UK and South Korea). The download button is
@@ -154,18 +190,26 @@ class ModelManifest {
 @immutable
 class ModelState {
   const ModelState({
-    required this.entry,
     required this.variant,
     required this.status,
+    this.entry,
     this.bytesOnDisk = 0,
+    this.failedFile,
   });
 
-  final ModelEntry entry;
+  /// Null when the answer is about a variant rather than a card — see
+  /// [ModelRepository.verifyIn].
+  final ModelEntry? entry;
+
   final ModelVariant variant;
   final ModelStatus status;
 
   /// How much has arrived. The progress line is this over [ModelVariant.bytes].
   final int bytesOnDisk;
+
+  /// Which file did not verify, when one did not. *Retry* does not need it;
+  /// a bug report does.
+  final String? failedFile;
 
   bool get isReady => status == ModelStatus.ready;
 
@@ -177,8 +221,8 @@ class ModelState {
 ///
 /// The download itself is `background_downloader`'s job (FR-M4-01) and the
 /// engines that load these files are M4's; this owns the directory layout, the
-/// manifest, the checksum and the rule that decides when a directory counts as
-/// a model.
+/// manifest, the checksums and the rule that decides when a directory counts
+/// as a model.
 ///
 /// The layout is two directories per model:
 ///
@@ -188,9 +232,9 @@ class ModelState {
 /// ```
 ///
 /// Nothing reads from the staging directory and nothing writes to the active
-/// one. A partial download cannot activate because activation is a directory
-/// rename that only happens after [verify] passes — there is no state in which
-/// half a file is sitting where the engine looks.
+/// one. A partial download cannot activate because activation happens only
+/// after every checksum passes — there is no state in which half a file is
+/// sitting where the engine looks.
 class ModelRepository {
   ModelRepository(this._settings, {this.support});
 
@@ -198,6 +242,10 @@ class ModelRepository {
   static const String manifestAsset = 'assets/models/manifest.json';
 
   static const String _stagingSuffix = '.staging';
+
+  /// Where the model being replaced waits while the new one is put in place.
+  /// A directory left at this name is a crash during [activate].
+  static const String _previousSuffix = '.previous';
 
   final SettingsRepository _settings;
 
@@ -237,51 +285,76 @@ class ModelRepository {
     return File('${root.path}/recordings/$attemptId.m4a');
   }
 
-  /// Makes the staging directory, empty, and returns it. A retry starts clean
-  /// rather than resuming into whatever the failed attempt left.
+  /// The staging directory to download into, keeping whatever is already
+  /// there.
+  ///
+  /// FR-M4-01 asks for resumable downloads, and the point of resuming is that
+  /// the bytes already on disk stay. [restartDownload] is what a checksum
+  /// failure calls — a paused download and a corrupt one need opposite things.
   Future<Directory> beginDownload(String modelId) async {
     final staging = await stagingFor(modelId);
-    if (staging.existsSync()) staging.deleteSync(recursive: true);
     staging.createSync(recursive: true);
     return staging;
   }
 
-  /// Hashes what is in staging and compares it with the manifest.
+  /// What *Retry* calls. Throws away what the failed attempt left.
   ///
-  /// Returns [ModelStatus.ready] only when every file is there and the digest
-  /// matches. A variant with no pinned hash can never reach it.
-  Future<ModelStatus> verify(String modelId, ModelVariant variant) async {
+  /// Resuming into a corrupt file would append to it, hash to something that
+  /// never matches, and leave the learner retrying for ever.
+  Future<Directory> restartDownload(String modelId) async {
     final staging = await stagingFor(modelId);
-    if (!staging.existsSync()) return ModelStatus.notDownloaded;
-    if (!variant.isPinned) return ModelStatus.failed;
+    if (staging.existsSync()) staging.deleteSync(recursive: true);
+    return beginDownload(modelId);
+  }
 
-    for (final name in variant.files) {
-      if (!File('${staging.path}/$name').existsSync()) {
-        return ModelStatus.failed;
+  /// Hashes what is in staging, file by file, against the manifest.
+  ///
+  /// [ModelStatus.ready] only when every file is there and every digest
+  /// matches. A variant with an unpinned hash can never reach it.
+  Future<ModelStatus> verify(String modelId, ModelVariant variant) async =>
+      (await verifyIn(await stagingFor(modelId), variant)).status;
+
+  /// [verify] against any directory, saying which file failed.
+  Future<ModelState> verifyIn(Directory directory, ModelVariant variant) async {
+    ModelState state(ModelStatus status, [String? failed]) =>
+        ModelState(variant: variant, status: status, failedFile: failed);
+
+    if (!directory.existsSync()) return state(ModelStatus.notDownloaded);
+    if (variant.files.isEmpty) return state(ModelStatus.failed);
+
+    for (final file in variant.files) {
+      final onDisk = File('${directory.path}/${file.name}');
+      if (!onDisk.existsSync()) return state(ModelStatus.failed, file.name);
+      if (!file.isPinned) return state(ModelStatus.failed, file.name);
+      if (await _digestOf(onDisk) != file.sha256!.toLowerCase()) {
+        return state(ModelStatus.failed, file.name);
       }
     }
 
-    final digest = await _digestOf(staging, variant);
-    return digest == variant.sha256!.toLowerCase()
-        ? ModelStatus.ready
-        : ModelStatus.failed;
+    return state(ModelStatus.ready);
   }
 
-  /// Verifies and, only then, moves staging into place. FR-M4-01.
+  /// Verifies and, only then, puts staging in place. FR-M4-01.
   ///
-  /// The old directory is deleted first, so a failure between the two leaves
-  /// no model rather than a mixture of two — the next launch reports
-  /// `notDownloaded` and the learner downloads again, which is recoverable.
-  /// A half-merged directory is not.
+  /// The model being replaced is renamed aside rather than deleted, and only
+  /// removed once the new one has landed. Every point in between is
+  /// recoverable: a crash leaves either the old model or the new one, never a
+  /// mixture and never nothing — which on a 575 MB download is the difference
+  /// between an app restart and a second download over mobile data.
   Future<ModelStatus> activate(String modelId, ModelVariant variant) async {
     final status = await verify(modelId, variant);
     if (status != ModelStatus.ready) return status;
 
     final active = await directoryFor(modelId);
     final staging = await stagingFor(modelId);
-    if (active.existsSync()) active.deleteSync(recursive: true);
+    final previous = Directory('${active.path}$_previousSuffix');
+
+    if (previous.existsSync()) previous.deleteSync(recursive: true);
+    if (active.existsSync()) active.renameSync(previous.path);
     staging.renameSync(active.path);
     await _writeStamp(modelId, variant);
+    if (previous.existsSync()) previous.deleteSync(recursive: true);
+
     return ModelStatus.ready;
   }
 
@@ -289,9 +362,19 @@ class ModelRepository {
   Future<ModelState> stateOf(ModelEntry entry, ModelVariant variant) async {
     final active = await directoryFor(entry.id);
     final staging = await stagingFor(entry.id);
+    final previous = Directory('${active.path}$_previousSuffix');
+
+    // A crash during `activate`, after the old model was renamed aside and
+    // before the new one landed. The old one is intact, so put it back rather
+    // than making the learner download again.
+    if (!active.existsSync() && previous.existsSync()) {
+      previous.renameSync(active.path);
+    }
 
     if (active.existsSync()) {
       final stamped = await _readStamp(entry.id);
+
+      // A directory nothing activated, or one a file has gone missing from.
       if (stamped == null || !_hasAll(active, variant)) {
         return ModelState(
           entry: entry,
@@ -300,14 +383,26 @@ class ModelRepository {
           bytesOnDisk: _sizeOf(active),
         );
       }
-      // FR-M4-02: an update is a manifest whose hash differs from the one this
-      // directory was activated with. Comparing stamps rather than re-hashing
-      // the file, because re-hashing half a gigabyte on every launch is not
+
+      // The *other* variant of the same model is not an update — it is a
+      // different download. Offering *Update* for it would replace a working
+      // model rather than add the one the learner picked.
+      if (!stamped.startsWith('${variant.id}:')) {
+        return ModelState(
+          entry: entry,
+          variant: variant,
+          status: ModelStatus.notDownloaded,
+        );
+      }
+
+      // FR-M4-02: an update is a manifest whose hashes differ from the ones
+      // this directory was activated with. Comparing stamps rather than
+      // re-hashing, because re-reading half a gigabyte on every launch is not
       // something to do to find out nothing changed.
       return ModelState(
         entry: entry,
         variant: variant,
-        status: stamped == variant.sha256
+        status: stamped == variant.fingerprint
             ? ModelStatus.ready
             : ModelStatus.updateAvailable,
         bytesOnDisk: _sizeOf(active),
@@ -334,20 +429,29 @@ class ModelRepository {
   ///
   /// The setting is written after the files are gone, so a failure to delete
   /// leaves the model both present and enabled rather than enabled and
-  /// missing.
-  Future<void> delete(String modelId) async {
+  /// missing. Which setting comes from [ModelEntry.disables].
+  Future<void> delete(ModelEntry entry) async {
+    final active = await directoryFor(entry.id);
     for (final directory in <Directory>[
-      await directoryFor(modelId),
-      await stagingFor(modelId),
+      active,
+      await stagingFor(entry.id),
+      Directory('${active.path}$_previousSuffix'),
     ]) {
       if (directory.existsSync()) directory.deleteSync(recursive: true);
     }
 
-    switch (modelId) {
-      case 'supertonic3':
+    switch (entry.disables) {
+      case 'tts_engine':
         await _settings.write(SettingKeys.ttsEngine, TtsEngine.system);
-      case 'hymt':
+      case 'mt_enabled':
         await _settings.write(SettingKeys.mtEnabled, false);
+      default:
+        // Loud, because the failure it guards against is silent: a model
+        // deleted and a setting still pointing at it.
+        throw StateError(
+          'The manifest says deleting ${entry.id} disables '
+          '"${entry.disables}", which nothing here knows how to turn off.',
+        );
     }
   }
 
@@ -357,32 +461,27 @@ class ModelRepository {
     return root.existsSync() ? _sizeOf(root) : 0;
   }
 
-  /// The hash this directory was activated with, so an update can be spotted
-  /// without re-reading the model.
+  /// The fingerprint this directory was activated with, so an update can be
+  /// spotted without re-reading the model.
   Future<File> _stampFile(String modelId) async =>
       File('${(await directoryFor(modelId)).path}/.installed');
 
   Future<void> _writeStamp(String modelId, ModelVariant variant) async =>
-      (await _stampFile(modelId))
-          .writeAsString('${variant.id}\n${variant.sha256}\n');
+      (await _stampFile(modelId)).writeAsString(variant.fingerprint);
 
   Future<String?> _readStamp(String modelId) async {
     final file = await _stampFile(modelId);
     if (!file.existsSync()) return null;
-    final lines = (await file.readAsString()).split('\n');
-    return lines.length < 2 || lines[1].isEmpty ? null : lines[1];
+    final stamp = (await file.readAsString()).trim();
+    return stamp.isEmpty ? null : stamp;
   }
 
-  /// One digest over every file of the variant, in the order the manifest
-  /// lists them — so a model that is several files has one hash to pin, and
-  /// reordering the list is a different hash rather than the same one.
-  Future<String> _digestOf(Directory directory, ModelVariant variant) async {
+  /// Streamed rather than read whole: the biggest of these is 575 MB.
+  Future<String> _digestOf(File file) async {
     final output = AccumulatorSink<Digest>();
     final input = sha256.startChunkedConversion(output);
-    for (final name in variant.files) {
-      await for (final chunk in File('${directory.path}/$name').openRead()) {
-        input.add(chunk);
-      }
+    await for (final chunk in file.openRead()) {
+      input.add(chunk);
     }
     input.close();
     return output.events.single.toString();
@@ -390,7 +489,7 @@ class ModelRepository {
 
   static bool _hasAll(Directory directory, ModelVariant variant) => variant
       .files
-      .every((name) => File('${directory.path}/$name').existsSync());
+      .every((file) => File('${directory.path}/${file.name}').existsSync());
 
   static int _sizeOf(Directory directory) {
     var bytes = 0;
