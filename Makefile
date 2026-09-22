@@ -11,8 +11,7 @@ APP := app
 DART := cd $(APP) &&
 
 .DEFAULT_GOAL := help
-
-.PHONY: help content gen gen-watch schema-dump test test-content goldens goldens-verify update-goldens lint format release-android release-ios clean
+.PHONY: help content content-diff gen gen-watch schema-dump test test-content goldens goldens-verify update-goldens lint format release-android release-ios clean
 
 help: ## List the targets
 	@grep -hE '^[a-z-]+:.*?## ' $(MAKEFILE_LIST) \
@@ -23,7 +22,15 @@ content: ## Excel -> content.db -> app/assets/db/content.db
 	python tools/verify_content.py
 	@mkdir -p $(APP)/assets/db
 	cp content/build/content.db $(APP)/assets/db/content.db
-	@echo "content.db copied to $(APP)/assets/db/"
+	@cp content/build/content_manifest.json $(APP)/assets/db/content_manifest.json
+	@echo
+	@echo "content.db and content_manifest.json copied to $(APP)/assets/db/."
+	@echo "Both are committed: the asset is what ships, and the manifest is"
+	@echo "what the next build diffs against to say what changed."
+	@echo "content/build/ is git-ignored - it is the intermediate."
+
+content-diff: ## What changed since the committed asset. Run before `make content`.
+	@python tools/content_manifest.py 	  $(APP)/assets/db/content_manifest.json content/build/content_manifest.json
 
 gen: ## Migration helpers, then build_runner: riverpod, freezed, drift, go_router
 	$(DART) dart run drift_dev schema steps drift_schemas/ lib/data/db/schema_versions.dart
