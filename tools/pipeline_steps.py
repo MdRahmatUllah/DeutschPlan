@@ -482,3 +482,94 @@ def assign_search_keys(words: Sequence) -> None:
     for word in words:
         word.search_key = search_key(word.german)
         word.search_key_alt = search_key_alt(word.german)
+
+
+# PIPE-05 and PIPE-06: examples, and the cells Excel would have eaten.
+
+#: The four characters Excel reads as the start of a formula. A cell beginning
+#: with one is stored as text; the tool warns, because the author probably did
+#: not mean the cell to start that way and the next person to open the workbook
+#: may find Excel has changed it.
+FORMULA_PREFIXES = ("=", "+", "-", "@")
+
+#: Every field that carries free text an author types. Checked for the prefixes
+#: above. `german` and `english` are in the list too: a word really can start
+#: with a hyphen ("-los" as a suffix entry), and the warning is the point.
+TEXT_FIELDS = (
+    "german",
+    "english",
+    "bangla",
+    "forms",
+    "pron_bn",
+    "collocations",
+    "synonyms_register",
+    "examples_de",
+    "examples_en",
+)
+
+
+@dataclass(frozen=True)
+class Example:
+    """One example sentence, with its translation if there is one."""
+
+    ord: int
+    german: str
+    english: str | None
+
+
+def pair_examples(german_lines: str | None, english_lines: str | None) -> list[Example]:
+    """PIPE-06: DE[i] pairs with EN[i]; an unmatched DE line gets no translation.
+
+    Positional, not matched by content, because that is the only thing the two
+    cells agree on. Blank lines are dropped from each side *before* pairing —
+    an author's stray newline at the end of the German cell would otherwise
+    shift every translation by one, which is the failure this ordering avoids.
+
+    Surplus English lines are dropped: a translation with no sentence to
+    attach to has nowhere to go.
+    """
+    german = _lines(german_lines)
+    english = _lines(english_lines)
+
+    return [
+        Example(
+            ord=index + 1,
+            german=line,
+            english=english[index] if index < len(english) else None,
+        )
+        for index, line in enumerate(german)
+    ]
+
+
+def _lines(cell: str | None) -> list[str]:
+    if not cell:
+        return []
+    return [line.strip() for line in cell.splitlines() if line.strip()]
+
+
+def check_formula_prefixes(words: Sequence) -> list[str]:
+    """PIPE-05: warns about cells Excel would treat as a formula.
+
+    Nothing is changed — the value is already text by the time it reaches
+    here, which is the requirement. The warning exists because the *workbook*
+    is at risk: open it, retype the cell, and Excel turns it into a formula
+    whose cached value is what the next build reads.
+    """
+    warnings: list[str] = []
+    for word in words:
+        for field in TEXT_FIELDS:
+            value = getattr(word, field, None)
+            if isinstance(value, str) and value.startswith(FORMULA_PREFIXES):
+                warnings.append(
+                    f"formula-looking cell: {word.source_file} row {word.row} "
+                    f"{field} starts with {value[0]!r} ({value[:30]!r}). "
+                    f"Stored as text; prefix it with an apostrophe in Excel so "
+                    f"it stays that way."
+                )
+    return warnings
+
+
+def assign_examples(words: Sequence) -> None:
+    """Sets `examples` on every word."""
+    for word in words:
+        word.examples = pair_examples(word.examples_de, word.examples_en)

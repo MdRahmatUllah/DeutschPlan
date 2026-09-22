@@ -21,7 +21,9 @@ from openpyxl import load_workbook
 
 from pipeline_steps import (
     LEVELS,
+    check_formula_prefixes,
     PipelineError,
+    assign_examples,
     assign_grammar_uids,
     assign_search_keys,
     assign_uids,
@@ -109,6 +111,7 @@ class Word:
     seq_in_sublevel: int | None = None
     search_key: str | None = None
     search_key_alt: str | None = None
+    examples: list = field(default_factory=list)
 
 
 @dataclass
@@ -475,11 +478,52 @@ def derive(sources: list[SourceBook]) -> dict[str, LevelSplit]:
         word.seq_in_sublevel = per_step[code]
 
     assign_search_keys(words)
+    assign_examples(words)
 
-    for line in assign_uids(words) + assign_grammar_uids(grammar):
-        print(f"warning: {line}", file=sys.stderr)
+    warnings = (
+        check_formula_prefixes(words)
+        + assign_uids(words)
+        + assign_grammar_uids(grammar)
+    )
+    _report(warnings)
 
     return splits
+
+
+#: How many warnings of one kind are printed in full before the rest are
+#: counted. A build with three hundred formula-looking cells should say so in
+#: one line rather than scroll the real problems off the screen.
+WARNING_SAMPLE = 10
+
+
+def _report(warnings: list[str]) -> None:
+    """Prints the warnings, grouped and capped, with a total.
+
+    Grouped by the text before the first colon, which is how each producer
+    names its kind.
+    """
+    if not warnings:
+        return
+
+    by_kind: dict[str, list[str]] = {}
+    for line in warnings:
+        kind = line.split(":", 1)[0]
+        by_kind.setdefault(kind, []).append(line)
+
+    for kind, lines in by_kind.items():
+        for line in lines[:WARNING_SAMPLE]:
+            print(f"warning: {line}", file=sys.stderr)
+        if len(lines) > WARNING_SAMPLE:
+            print(
+                f"warning: ...and {len(lines) - WARNING_SAMPLE} more {kind}",
+                file=sys.stderr,
+            )
+
+    print(
+        "warnings: "
+        + ", ".join(f"{len(lines)} {kind}" for kind, lines in by_kind.items()),
+        file=sys.stderr,
+    )
 
 
 def main(argv: list[str] | None = None) -> int:
