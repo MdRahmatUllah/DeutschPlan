@@ -12,8 +12,7 @@ DART := cd $(APP) &&
 
 .DEFAULT_GOAL := help
 
-.PHONY: help content gen gen-watch test goldens update-goldens lint format \
-        release-android release-ios clean
+.PHONY: help content gen gen-watch schema-dump test test-content goldens goldens-verify update-goldens lint format release-android release-ios clean
 
 help: ## List the targets
 	@grep -hE '^[a-z-]+:.*?## ' $(MAKEFILE_LIST) \
@@ -46,8 +45,11 @@ schema-dump: ## Capture the CURRENT schema as a fixture. Run after bumping schem
 gen-watch: ## build_runner in watch mode
 	$(DART) dart run build_runner watch --delete-conflicting-outputs
 
-test: ## Unit, widget and db tests. Goldens are separate - see below.
+test: test-content ## Unit, widget and db tests. Goldens are separate - see below.
 	$(DART) flutter test --exclude-tags golden
+
+test-content: ## The content pipeline's own tests (Python)
+	python -m pytest tools/tests -q
 
 goldens-verify: ## Compare goldens. ONE platform only - see test/golden/README.md
 	$(DART) flutter test test/golden

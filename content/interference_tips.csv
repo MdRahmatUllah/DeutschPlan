@@ -1,0 +1,5 @@
+match_type,match,tip_en,tip_bn,tags
+german,bekommen,"""bekommen"" means to receive, not to become. ""Ich bekomme ein Buch"" = I get a book.","""bekommen"" মানে পাওয়া, হওয়া নয়।",false-friend
+german,also,"""also"" means so/therefore, not the English ""also"" (that is ""auch"").","""also"" মানে তাই/সুতরাং, ""auch"" নয়।",false-friend
+pattern,^seit\b,"""seit"" takes the dative and the present tense: ""seit zwei Jahren wohne ich hier"".","""seit"" এর পরে dative এবং present tense বসে।",case;tense
+pattern,^über,"Separable or not depends on stress: ""ÜBERsetzen"" (ferry across) vs ""überSETzen"" (translate).",জোর কোথায় পড়ছে তার উপর নির্ভর করে আলাদা হয় কি না।,separable

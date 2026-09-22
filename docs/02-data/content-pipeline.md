@@ -17,23 +17,37 @@ content/manifest.yaml
 
 Each workbook MUST contain the sheets **All Words**, **Grammar**, **W01** (for the skills checklist) and the **C-…** category tabs. Columns are read **by header name**, so column order may change; renaming a header requires updating `HEADER_MAP` in the tool.
 
-| Header in All Words | Field | Required |
-| --- | --- | --- |
-| Article | article | no |
-| German | german | yes |
-| Plural / Forms | forms | no |
-| POS | pos | no |
-| Pronunciation (Bangla) | pron_bn | no |
-| English | english | yes |
-| Bangla meaning | bangla | no |
-| Freq | freq 1–5 | no |
-| Level | level A1…C2 | yes |
-| Category | category | no |
-| Week | week | no (used for step split) |
-| Examples (DE) / (EN) | examples, one per line | no |
-| Collocations · Synonyms / register | collocations, synonyms_register | no |
+One header per column, one row each — `HEADER_MAP` is checked against this table by `tools/tests/test_reader.py`, so a column added here and not there fails the build rather than being read as blank.
 
-Grammar rows: `Week, Level, Topic, Rule, Example (DE), Example (EN), Watch out`.
+| Header in All Words | Field | Required | Notes |
+| --- | --- | --- | --- |
+| Article | `article` | no | |
+| German | `german` | yes | |
+| Plural / Forms | `forms` | no | |
+| POS | `pos` | no | |
+| Pronunciation (Bangla) | `pron_bn` | no | |
+| English | `english` | yes | |
+| Bangla meaning | `bangla` | no | |
+| Freq | `freq` | no | 1–5 |
+| Level | `level` | yes | A1…C2 |
+| Category | `category` | no | |
+| Week | `week` | no | used for the step split |
+| Examples (DE) | `examples_de` | no | one sentence per line |
+| Examples (EN) | `examples_en` | no | one sentence per line, paired by position |
+| Collocations | `collocations` | no | |
+| Synonyms / register | `synonyms_register` | no | |
+
+Grammar sheet, same contract:
+
+| Header in Grammar | Field | Required |
+| --- | --- | --- |
+| Week | `week` | no |
+| Level | `level` | no |
+| Topic | `topic` | yes |
+| Rule | `rule` | no |
+| Example (DE) | `example_de` | no |
+| Example (EN) | `example_en` | no |
+| Watch out | `watch_out` | no |
 
 ## Rules the pipeline enforces
 
