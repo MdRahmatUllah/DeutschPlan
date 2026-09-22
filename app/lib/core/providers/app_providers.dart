@@ -23,12 +23,17 @@ import 'package:deutschplan/data/db/content_dao.dart';
 import 'package:deutschplan/data/repositories/backup_repository.dart';
 import 'package:deutschplan/data/repositories/exam_repository.dart';
 import 'package:deutschplan/data/repositories/grammar_repository.dart';
+import 'package:deutschplan/data/repositories/model_repository.dart';
 import 'package:deutschplan/data/repositories/plan_repository.dart';
 import 'package:deutschplan/data/repositories/rating_service.dart';
 import 'package:deutschplan/data/repositories/search_repository.dart';
 import 'package:deutschplan/data/repositories/setting_keys.dart';
 import 'package:deutschplan/data/repositories/settings_repository.dart';
 import 'package:deutschplan/data/repositories/word_repository.dart';
+import 'package:deutschplan/services/model_downloads.dart';
+import 'package:deutschplan/services/notification_permission.dart';
+import 'package:deutschplan/services/tts/system_tts.dart';
+import 'package:deutschplan/services/tts/tts_engine.dart';
 import 'package:material_ui/material_ui.dart' show Brightness;
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -210,3 +215,30 @@ RatingService ratingService(Ref ref) => RatingService(
   ref.watch(wordRepositoryProvider),
   ref.watch(clockProvider),
 );
+
+/// Kept alive: it caches the parsed manifest, and the onboarding draft —
+/// itself kept alive — reaches it through [modelDownloads].
+@Riverpod(keepAlive: true)
+ModelRepository modelRepository(Ref ref) =>
+    ModelRepository(ref.watch(settingsProvider));
+
+// --- Services --------------------------------------------------------------
+//
+// `project-structure.md`: platform plugins behind small interfaces, so a test
+// can put a fake in the scope instead of a method channel that is not there.
+
+/// The phone's German voice. `tts` — engine selection and fallback — is
+/// #153's, and will sit in front of this.
+@riverpod
+TtsEngine systemTts(Ref ref) => SystemTts();
+
+/// Kept alive with the onboarding draft that asks it (FR-S2-05). Stateless,
+/// so there is nothing to hold on to but the object.
+@Riverpod(keepAlive: true)
+NotificationPermission notificationPermission(Ref ref) =>
+    const PlatformNotificationPermission();
+
+/// Kept alive for the same reason: page 5's draft queues the voice (FR-S2-06).
+@Riverpod(keepAlive: true)
+ModelDownloads modelDownloads(Ref ref) =>
+    BackgroundModelDownloads(ref.watch(modelRepositoryProvider));

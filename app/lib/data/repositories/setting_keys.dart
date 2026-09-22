@@ -180,7 +180,11 @@ extension MeaningLanguageUi on MeaningLanguage {
 enum ThemeModeSetting { system, light, dark, glass }
 
 /// `supertonic` is the bundled on-device voice; `system` is the platform's.
-enum TtsEngine { supertonic, system }
+///
+/// `…Setting`, like [ThemeModeSetting]: `TtsEngine` is the speech interface in
+/// `services/tts/`, and one name for both made every file that needs the two
+/// an ambiguous import.
+enum TtsEngineSetting { supertonic, system }
 
 /// The translation model's quantisation. ADR 9 defaults to 1.25-bit.
 enum MtVariant { q1_25, q2_5, fp16 }
@@ -254,13 +258,13 @@ abstract final class SettingKeys {
   static const showPronBn = BoolSetting('show_pron_bn', true);
 
   // Audio.
-  static const ttsEngine = EnumSetting<TtsEngine>(
+  static const ttsEngine = EnumSetting<TtsEngineSetting>(
     'tts_engine',
-    TtsEngine.supertonic,
-    TtsEngine.values,
-    <TtsEngine, String>{
-      TtsEngine.supertonic: 'supertonic',
-      TtsEngine.system: 'system',
+    TtsEngineSetting.supertonic,
+    TtsEngineSetting.values,
+    <TtsEngineSetting, String>{
+      TtsEngineSetting.supertonic: 'supertonic',
+      TtsEngineSetting.system: 'system',
     },
   );
   static const ttsVoice = StringSetting('tts_voice', 'Anna');

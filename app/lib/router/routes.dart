@@ -14,6 +14,7 @@ import 'package:deutschplan/features/onboarding/onboarding_meaning_page.dart';
 import 'package:deutschplan/features/onboarding/onboarding_pace_page.dart';
 import 'package:deutschplan/features/onboarding/onboarding_shell.dart';
 import 'package:deutschplan/features/onboarding/onboarding_start_page.dart';
+import 'package:deutschplan/features/onboarding/onboarding_voice_page.dart';
 import 'package:deutschplan/features/onboarding/onboarding_welcome_page.dart';
 import 'package:deutschplan/features/splash/splash_screen.dart';
 import 'package:deutschplan/router/app_shell.dart';
@@ -454,8 +455,11 @@ class OnboardingRoute extends GoRouteData with $OnboardingRoute {
         onBack: () => _back(context, OnboardingPage.dailyPace),
       ),
 
-      // #91 replaces this.
-      _ => PlaceholderScreen(title: 'Welcome', screen: 'S2', detail: page),
+      OnboardingPage.reminderAndVoice => OnboardingVoicePage(
+        onBack: () => _back(context, OnboardingPage.reminderAndVoice),
+        // `onFinish` is FR-S2-03's commit, #92's. Until then *Start learning*
+        // is drawn disabled: there is nothing yet for it to do.
+      ),
     };
   }
 

@@ -516,7 +516,7 @@ void main() {
 
   group('FR-M4-03 — deleting turns off what depended on it', () {
     test('deleting the voice falls back to the system engine', () async {
-      await settings.write(SettingKeys.ttsEngine, TtsEngine.supertonic);
+      await settings.write(SettingKeys.ttsEngine, TtsEngineSetting.supertonic);
       final variant = variantOf('bytes');
       await stage('supertonic3', variant, 'bytes');
       await models.activate('supertonic3', variant);
@@ -529,7 +529,7 @@ void main() {
         ),
       );
 
-      expect(settings.read(SettingKeys.ttsEngine), TtsEngine.system);
+      expect(settings.read(SettingKeys.ttsEngine), TtsEngineSetting.system);
       expect((await models.directoryFor('supertonic3')).existsSync(), isFalse);
     });
 

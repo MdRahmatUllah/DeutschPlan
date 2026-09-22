@@ -1,3 +1,4 @@
+import 'package:deutschplan/core/providers/app_providers.dart';
 import 'package:deutschplan/data/repositories/setting_keys.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -21,9 +22,15 @@ class OnboardingDraft {
     int? dailyNew,
     int? reviseCount,
     int? studyDaysMask,
+    bool? reminderOn,
+    Clock? reminderTime,
+    this.reminderBlocked = false,
+    this.voice = VoiceOffer.offered,
   }) : dailyNew = dailyNew ?? SettingKeys.dailyNew.defaultValue,
        reviseCount = reviseCount ?? SettingKeys.reviseCount.defaultValue,
-       studyDaysMask = studyDaysMask ?? SettingKeys.studyDaysMask.defaultValue;
+       studyDaysMask = studyDaysMask ?? SettingKeys.studyDaysMask.defaultValue,
+       reminderOn = reminderOn ?? SettingKeys.reminderEnabled.defaultValue,
+       reminderTime = reminderTime ?? SettingKeys.reminderTime.defaultValue;
 
   /// BR-COURSE-01's first step, and what page 3 starts on.
   static const String firstStep = 'A1.1';
@@ -44,16 +51,36 @@ class OnboardingDraft {
   final int reviseCount;
   final int studyDaysMask;
 
+  /// `reminder_enabled` and `reminder_time` — off, 19:30.
+  final bool reminderOn;
+  final Clock reminderTime;
+
+  /// The learner turned the switch on and the platform said no. Not a
+  /// setting: it says why the switch went back off, so page 5 can tell them.
+  final bool reminderBlocked;
+
+  /// Where the Supertonic offer on page 5 stands. In the draft, not the page,
+  /// so walking back and forward does not offer — and queue — it twice.
+  final VoiceOffer voice;
+
   OnboardingDraft copyWith({
     String? step,
     int? dailyNew,
     int? reviseCount,
     int? studyDaysMask,
+    bool? reminderOn,
+    Clock? reminderTime,
+    bool? reminderBlocked,
+    VoiceOffer? voice,
   }) => OnboardingDraft(
     step: step ?? this.step,
     dailyNew: dailyNew ?? this.dailyNew,
     reviseCount: reviseCount ?? this.reviseCount,
     studyDaysMask: studyDaysMask ?? this.studyDaysMask,
+    reminderOn: reminderOn ?? this.reminderOn,
+    reminderTime: reminderTime ?? this.reminderTime,
+    reminderBlocked: reminderBlocked ?? this.reminderBlocked,
+    voice: voice ?? this.voice,
   );
 }
 
@@ -93,4 +120,49 @@ class OnboardingNotifier extends _$OnboardingNotifier {
     if (next & 127 == 0) return;
     state = state.copyWith(studyDaysMask: next);
   }
+
+  /// Page 5's switch. FR-S2-05: the permission is asked for here — when the
+  /// switch goes on — and nowhere earlier. Refused, the switch stays off and
+  /// the draft remembers why.
+  Future<void> setReminder({required bool on}) async {
+    if (!on) {
+      state = state.copyWith(reminderOn: false, reminderBlocked: false);
+      return;
+    }
+    final allowed = await ref.read(notificationPermissionProvider).request();
+    state = state.copyWith(reminderOn: allowed, reminderBlocked: !allowed);
+  }
+
+  void setReminderTime(Clock time) =>
+      state = state.copyWith(reminderTime: time);
+
+  /// FR-S2-06: queues Supertonic and lets onboarding carry on. Says whether
+  /// the queueing worked; the bytes arrive long after this returns.
+  Future<bool> downloadVoice() async {
+    if (state.voice == VoiceOffer.started) return true;
+    try {
+      await ref.read(modelDownloadsProvider).start(supertonic);
+    } on Object {
+      return false;
+    }
+    state = state.copyWith(voice: VoiceOffer.started);
+    return true;
+  }
+
+  void deferVoice() => state = state.copyWith(voice: VoiceOffer.deferred);
+
+  /// The model id `assets/models/manifest.json` gives the voice.
+  static const String supertonic = 'supertonic3';
+}
+
+/// Page 5's offer of the better voice.
+enum VoiceOffer {
+  /// *Download now* and *Later* are on the card.
+  offered,
+
+  /// Queued — FR-S2-06's "in the background".
+  started,
+
+  /// *Later*: Settings has it whenever they want it.
+  deferred,
 }

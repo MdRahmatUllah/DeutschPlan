@@ -272,8 +272,14 @@ class ModelRepository {
   Future<Directory> directoryFor(String modelId) async =>
       Directory('${(await _root()).path}/$modelId');
 
-  Future<Directory> stagingFor(String modelId) async =>
-      Directory('${(await _root()).path}/$modelId$_stagingSuffix');
+  Future<Directory> stagingFor(String modelId) async {
+    final root = support ?? await getApplicationSupportDirectory();
+    return Directory('${root.path}/${stagingPath(modelId)}');
+  }
+
+  /// [stagingFor], relative to the app-support directory — the form the
+  /// platform downloader takes, so the bytes land where [verify] looks.
+  static String stagingPath(String modelId) => 'models/$modelId$_stagingSuffix';
 
   /// Where the recorded answer for one exam attempt lives.
   ///
@@ -442,7 +448,7 @@ class ModelRepository {
 
     switch (entry.disables) {
       case 'tts_engine':
-        await _settings.write(SettingKeys.ttsEngine, TtsEngine.system);
+        await _settings.write(SettingKeys.ttsEngine, TtsEngineSetting.system);
       case 'mt_enabled':
         await _settings.write(SettingKeys.mtEnabled, false);
       default:
