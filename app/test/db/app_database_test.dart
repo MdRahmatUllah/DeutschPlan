@@ -85,13 +85,24 @@ void main() {
     });
 
     test('drift generated a typed accessor for every one of them', () {
+      // A superset, not an equality: `content.drift` is included too so drift
+      // can type-check ContentDao's queries, which puts the content tables in
+      // allTables as well. They are never created here — the test above is
+      // what holds that line.
       expect(
         db.allTables.map((t) => t.actualTableName).toSet(),
-        documented,
+        containsAll(documented),
         reason:
             'user_schema.drift is the single source (ADR 23); a table it '
             'declares that drift did not pick up means the include is wrong',
       );
+    });
+
+    test('ownTables is exactly what the doc lists', () {
+      // `onCreate` builds only these, so a name missing here is a table the
+      // app would never create, and one added by mistake is a content table
+      // that would shadow the attached course.
+      expect(AppDatabase.ownTables, documented);
     });
   });
 

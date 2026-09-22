@@ -272,7 +272,7 @@ def _write_skill_prompts(
     connection: sqlite3.Connection, inputs: BuildInputs
 ) -> None:
     connection.executemany(
-        "INSERT INTO skill_prompts (level_code, ord, text) VALUES (?, ?, ?)",
+        "INSERT INTO skill_prompts (level_code, ord, prompt) VALUES (?, ?, ?)",
         [
             (level, index + 1, prompt)
             for level, prompts in inputs.skill_prompts.items()
