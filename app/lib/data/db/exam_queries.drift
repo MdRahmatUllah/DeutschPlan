@@ -1,0 +1,72 @@
+import 'user_schema.drift';
+
+-- Mock exams and quizzes. One query per thing a screen asks for.
+
+-- The attempt to resume. FR-L12-04 keeps an abandoned attempt's answers, so
+-- `in_progress` is the only status the hub offers to continue.
+inProgressExam:
+  SELECT * FROM exam_attempts
+  WHERE sublevel_code = :code AND status = 'in_progress'
+  ORDER BY started_at DESC, id DESC
+  LIMIT 1;
+
+-- The same thing per seed. The hub has a card per mock (FR-L10-02), so one
+-- answer for the whole step would leave a crashed Mock 1 showing *Start*
+-- while Mock 2 was running.
+inProgressBySeed:
+  SELECT * FROM exam_attempts
+  WHERE sublevel_code = :code AND status = 'in_progress'
+  ORDER BY seed, started_at DESC, id DESC;
+
+-- Where to put the learner back. `given IS NULL` rather than a stored cursor:
+-- the answers are the record, and a cursor could disagree with them.
+firstUnanswered:
+  SELECT MIN(ord) AS ord FROM exam_answers
+  WHERE attempt_id = :id AND given IS NULL;
+
+answersFor:
+  SELECT * FROM exam_answers WHERE attempt_id = :id ORDER BY ord;
+
+-- What the exam hub draws: one row per seed that has been sat.
+--
+-- Attempts count everything that is no longer running, because FR-L12-04 says
+-- an abandoned attempt shows as an attempt without a score, and because
+-- BR-EXAM-02's *Try another mock* picks the next unused seed — a seed the
+-- learner walked out of has been used. The score is finished-only
+-- (FR-L10-02). `max_points` can be 0 on an attempt finished without grading,
+-- so the division is guarded rather than left to produce a NULL best.
+examSeedSummary:
+  SELECT seed,
+         COUNT(*) AS attempts,
+         SUM(CASE WHEN status = 'finished' THEN 1 ELSE 0 END) AS finished,
+         MAX(CASE WHEN status = 'finished' AND max_points > 0
+                  THEN score_points * 100.0 / max_points
+                  ELSE 0 END) AS best_percent,
+         MAX(CASE WHEN status = 'finished' THEN passed ELSE 0 END)
+           AS ever_passed
+  FROM exam_attempts
+  WHERE sublevel_code = :code AND status != 'in_progress'
+  GROUP BY seed
+  ORDER BY seed;
+
+-- Passing marks the step: a query, not a flag (BR-EXAM).
+stepPassed:
+  SELECT EXISTS(
+    SELECT 1 FROM exam_attempts
+    WHERE sublevel_code = :code AND status = 'finished' AND passed = 1
+  ) AS passed;
+
+quizAnswersFor:
+  SELECT * FROM quiz_answers WHERE attempt_id = :id ORDER BY ord;
+
+-- The mistakes *Retry mistakes* and *Add mistakes to revision* work from.
+quizMistakes:
+  SELECT * FROM quiz_answers
+  WHERE attempt_id = :id AND verdict IS NOT NULL AND verdict != 'correct'
+  ORDER BY ord;
+
+recentQuizzes:
+  SELECT * FROM quiz_attempts
+  WHERE finished_at IS NOT NULL
+  ORDER BY finished_at DESC, id DESC
+  LIMIT :limit;
