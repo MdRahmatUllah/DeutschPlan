@@ -25,6 +25,8 @@ from pipeline_steps import (
     GRAMMAR_TEXT_FIELDS,
     LEVELS,
     check_formula_prefixes,
+    read_tips,
+    resolve_tips,
     PipelineError,
     assign_examples,
     assign_grammar_uids,
@@ -499,10 +501,13 @@ def derive(sources: list[SourceBook]) -> dict[str, LevelSplit]:
 #: one line rather than scroll the real problems off the screen.
 WARNING_SAMPLE = 10
 
-#: Kinds that are never capped. Every line of these names a different word
-#: whose primary key changed, and `word_state` rows key to it — "…and 40 more"
-#: would tell the author that forty words moved and not which.
-UNCAPPED_WARNINGS = frozenset({"uid collision", "grammar uid collision"})
+#: Kinds that are never capped. Every line of these names a different thing
+#: someone has to go and fix — a word whose primary key changed, or an
+#: authored tip that will not appear. "…and 40 more" would say how many and
+#: not which.
+UNCAPPED_WARNINGS = frozenset(
+    {"uid collision", "grammar uid collision", "unmatched tip"}
+)
 
 
 def _report(warnings: list[str]) -> None:
@@ -536,7 +541,11 @@ def _report(warnings: list[str]) -> None:
     )
 
 
-def collect(sources: list[SourceBook], splits: dict[str, LevelSplit]) -> BuildInputs:
+def collect(
+    sources: list[SourceBook],
+    splits: dict[str, LevelSplit],
+    tips: list | None = None,
+) -> BuildInputs:
     """Flattens the per-workbook records into what the writer takes."""
     prompts: dict[str, list[str]] = {}
     for source in sources:
@@ -554,6 +563,7 @@ def collect(sources: list[SourceBook], splits: dict[str, LevelSplit]) -> BuildIn
         categories=[c for source in sources for c in source.categories],
         skill_prompts=prompts,
         splits=splits,
+        tips=tips or [],
         sources=[source.file for source in sources],
         # UTC, the same clock as meta.built_at. The app compares this
         # string against the installed copy to decide whether to replace
@@ -583,7 +593,12 @@ def main(argv: list[str] | None = None) -> int:
         manifest = read_manifest(args.manifest)
         sources = read_sources(manifest)
         splits = derive(sources)
-        inputs = collect(sources, splits)
+        resolved, tip_warnings = resolve_tips(
+            read_tips(manifest.tips),
+            [word for source in sources for word in source.words],
+        )
+        _report(tip_warnings)
+        inputs = collect(sources, splits, resolved)
         build(args.out, inputs)
     except PipelineError as error:
         print(f"content pipeline: {error}", file=sys.stderr)

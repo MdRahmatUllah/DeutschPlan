@@ -1,5 +1,20 @@
 match_type,match,tip_en,tip_bn,tags
-german,bekommen,"""bekommen"" means to receive, not to become. ""Ich bekomme ein Buch"" = I get a book.","""bekommen"" মানে পাওয়া, হওয়া নয়।",false-friend
-german,also,"""also"" means so/therefore, not the English ""also"" (that is ""auch"").","""also"" মানে তাই/সুতরাং, ""auch"" নয়।",false-friend
-pattern,^seit\b,"""seit"" takes the dative and the present tense: ""seit zwei Jahren wohne ich hier"".","""seit"" এর পরে dative এবং present tense বসে।",case;tense
-pattern,^über,"Separable or not depends on stress: ""ÜBERsetzen"" (ferry across) vs ""überSETzen"" (translate).",জোর কোথায় পড়ছে তার উপর নির্ভর করে আলাদা হয় কি না।,separable
+german,bekommen,"""bekommen"" means to receive, not to become. ""Ich bekomme ein Buch"" = I get a book. To become is ""werden"".","""bekommen"" মানে পাওয়া, হওয়া নয়। হওয়া বোঝাতে ""werden"" ব্যবহার করুন।",false-friend
+german,also,"""also"" means so / therefore. The English ""also"" is ""auch"".","""also"" মানে তাই বা সুতরাং। ইংরেজি ""also"" এর জন্য ""auch"" বলুন।",false-friend
+german,Gift,"""Gift"" is poison. A present is ""das Geschenk"".","""Gift"" মানে বিষ। উপহার বোঝাতে ""das Geschenk"" বলুন।",false-friend
+german,Rat,"""Rat"" is advice. The animal is ""die Ratte"".","""Rat"" মানে পরামর্শ। ইঁদুর হলো ""die Ratte""।",false-friend
+german,Chef,"""Chef"" is a boss. A cook is ""der Koch"".","""Chef"" মানে বস। রাঁধুনি হলো ""der Koch""।",false-friend
+german,Handy,"""Handy"" is a mobile phone — a German word that only looks English.","""Handy"" মানে মোবাইল ফোন। ইংরেজি শব্দ মনে হলেও অর্থ আলাদা।",false-friend
+german,sensibel,"""sensibel"" means sensitive. Sensible is ""vernünftig"".","""sensibel"" মানে সংবেদনশীল। বিচক্ষণ হলো ""vernünftig""।",false-friend
+german,bald,"""bald"" means soon. Having no hair is ""kahl"" or ""glatzköpfig"".","""bald"" মানে শীঘ্রই। টাক হলো ""kahl""।",false-friend
+german,Art,"""Art"" means kind or type. The subject is ""die Kunst"".","""Art"" মানে ধরন। শিল্প হলো ""die Kunst""।",false-friend
+german,See,"""der See"" is a lake; ""die See"" is the sea. The article changes the meaning.","""der See"" মানে হ্রদ, ""die See"" মানে সমুদ্র — article বদলালে অর্থ বদলায়।",article;false-friend
+pattern,^seit\b,"""seit"" takes the dative and the present tense: ""seit zwei Jahren wohne ich hier"" — Bangla and English both want a past tense here.","""seit"" এর পরে dative এবং বর্তমান কাল বসে। বাংলায় অতীত কাল মনে হলেও জার্মানে বর্তমান।",case;tense
+pattern,^mit\b,"""mit"" always takes the dative, even when the sense feels like movement.","""mit"" সবসময় dative নেয়।",case
+pattern,^(nach|zu|von|aus|bei)$,These prepositions always take the dative — there is no accusative version to choose between.,এই preposition গুলো সবসময় dative নেয়।,case
+pattern,^(durch|für|ohne|gegen|um)$,These prepositions always take the accusative.,এই preposition গুলো সবসময় accusative নেয়।,case
+pattern,^über,"Stress decides whether this verb separates: ""ÜBERsetzen"" is to ferry across, ""überSETzen"" is to translate.",জোর কোথায় পড়ছে তার উপর নির্ভর করে ক্রিয়াটি separable কি না বদলায়।,separable
+pattern,^(um|durch|unter|wider)(?!l),"Like ""über"", these prefixes are separable or not depending on stress, and the meaning changes with it.","""über"" এর মতো, এই prefix গুলোও জোরের উপর separable কি না নির্ভর করে, আর অর্থও বদলায়।",separable
+pattern,"^(?!(?:Kuchen|Knochen|Zeichen|Drachen|Rachen)$)\w{3,}chen$","Every ""-chen"" noun is ""das"", whatever the gender of the word it came from — ""das Mädchen"" even though a girl is female.","""-chen"" দিয়ে শেষ হলে noun সবসময় ""das"" — যেমন ""das Mädchen""।",gender
+pattern,"^(?!(?:Sprung|Schwung|Dung)$)\w{2,}ung$","Every ""-ung"" noun is ""die"".","""-ung"" দিয়ে শেষ হলে noun সবসময় ""die""।",gender
+pattern,(heit|keit|schaft)$,"Nouns ending in ""-heit"", ""-keit"" or ""-schaft"" are always ""die"".","""-heit"", ""-keit"", ""-schaft"" দিয়ে শেষ হলে noun সবসময় ""die""।",gender

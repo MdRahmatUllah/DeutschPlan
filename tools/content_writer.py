@@ -44,6 +44,7 @@ class BuildInputs:
     categories: list
     skill_prompts: dict[str, list[str]]
     splits: dict[str, LevelSplit]
+    tips: list
     sources: list[str]
     content_version: str
 
@@ -107,6 +108,7 @@ def write(connection: sqlite3.Connection, inputs: BuildInputs) -> None:
         _write_words(connection, inputs, category_ids)
         _write_grammar(connection, inputs)
         _write_skill_prompts(connection, inputs)
+        _write_tips(connection, inputs)
         _write_meta(connection, inputs)
         fill_fts(connection)
 
@@ -275,6 +277,14 @@ def _write_skill_prompts(
             for level, prompts in inputs.skill_prompts.items()
             for index, prompt in enumerate(prompts)
         ],
+    )
+
+
+def _write_tips(connection: sqlite3.Connection, inputs: BuildInputs) -> None:
+    connection.executemany(
+        "INSERT INTO interference_tips (word_uid, tip_en, tip_bn) "
+        "VALUES (?, ?, ?)",
+        [(tip.word_uid, tip.tip_en, tip.tip_bn) for tip in inputs.tips],
     )
 
 
