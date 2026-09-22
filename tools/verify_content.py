@@ -24,12 +24,18 @@ import sys
 from dataclasses import dataclass
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+
+from pipeline_steps import SUBLEVELS  # noqa: E402
+
 REPO_ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_DB = REPO_ROOT / "content" / "build" / "content.db"
 
-#: Every one of the twelve steps must have words. BR-COURSE-01 fixes the list,
-#: so a missing step is a screen the learner can open and find blank.
-EXPECTED_STEPS = 12
+#: Every step must have words. BR-COURSE-01 fixes the list, so a missing step
+#: is a screen the learner can open and find blank. Taken from the pipeline's
+#: own list rather than restated: a fifth workbook that adds a level should
+#: change one constant, not two.
+EXPECTED_STEPS = len(SUBLEVELS)
 
 #: The three search tables. An empty one is a whole search tier that silently
 #: returns nothing.
@@ -187,6 +193,16 @@ def check_the_database_is_readable(db: sqlite3.Connection) -> list[Failure]:
     for table in FTS_TABLES:
         try:
             db.execute(f"INSERT INTO {table}({table}) VALUES ('integrity-check')")
+        except sqlite3.OperationalError as error:
+            # A missing table and a damaged one send the author in different
+            # directions, and "no such table" is an OperationalError.
+            return [
+                Failure(
+                    "search",
+                    f"{table} is missing ({error}). Rebuild with "
+                    f"`make content`.",
+                )
+            ]
         except sqlite3.DatabaseError as error:
             return [Failure("search", f"{table} is corrupt: {error}")]
     return []

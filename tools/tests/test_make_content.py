@@ -64,6 +64,34 @@ class TestTheRecipe:
         assert "assets/db/content_manifest.json" in commands
         assert "content/build/content_manifest.json" in commands
 
+    def test_everything_the_recipe_copies_is_a_declared_flutter_asset(self):
+        """The one nothing else can catch.
+
+        `make content` can copy the database into `app/assets/db/` all day;
+        unless pubspec.yaml declares the directory, Flutter bundles nothing
+        and the app throws on the first read. There is no build error — the
+        file is simply not there at run time.
+        """
+        declared = set(
+            yaml.safe_load((REPO / "app" / "pubspec.yaml").read_text("utf-8"))[
+                "flutter"
+            ]["assets"]
+        )
+
+        copied = {
+            match.group(1)
+            for line in recipe("content")
+            for match in [re.search(r"\$\(APP\)/(assets/\S+)/[^/\s]+$", line)]
+            if match
+        }
+        assert copied, "the recipe copies nothing into assets/"
+
+        for directory in copied:
+            assert f"{directory}/" in declared, (
+                f"`make content` copies into {directory}/ and pubspec.yaml "
+                f"does not declare it, so the file never ships"
+            )
+
     def test_every_target_in_the_file_is_declared_phony(self):
         text = MAKEFILE.read_text(encoding="utf-8")
         declared = set(

@@ -106,6 +106,10 @@ flutter:
 
   assets:
     - assets/licences/
+    # The compiled course, and the manifest the app stores as its new baseline
+    # after an update so the next one can say what changed
+    # (content-database.md, step 2). Written by `make content`.
+    - assets/db/
 
   # Variable fonts: one file covers wght 100-900, so the whole type scale in
   # docs/01-architecture/theming.md ships in three files instead of ten.
