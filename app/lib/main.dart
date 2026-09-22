@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:deutschplan/features/splash/splash_screen.dart';
+import 'package:flutter/foundation.dart' show kReleaseMode, debugPrint;
 import 'package:deutschplan/bootstrap.dart';
 import 'package:deutschplan/core/theme/app_theme.dart';
 import 'package:deutschplan/core/providers/app_providers.dart';
@@ -86,6 +87,18 @@ class _BootstrapHostState extends State<BootstrapHost> {
       platform.onPlatformBrightnessChanged = () => container
           .read(themeProvider.notifier)
           .platformBrightnessChanged(platform.platformBrightness);
+    }
+
+    // FR-S1-02 is a budget, and a budget nobody can read is a budget nobody
+    // keeps. One line in logcat, so the number is measurable on a device
+    // rather than inferred from `am start -W` — which now reports the splash
+    // frame rather than the time to Today.
+    //
+    // Debug *and* profile, never release: a debug build is JIT and its
+    // numbers mean nothing against a 500 ms budget, so the only build worth
+    // measuring is an AOT one.
+    if (!kReleaseMode && result is BootstrapReady) {
+      debugPrint('bootstrap: ${result.bootstrap.elapsed.inMilliseconds} ms');
     }
 
     if (!mounted) {

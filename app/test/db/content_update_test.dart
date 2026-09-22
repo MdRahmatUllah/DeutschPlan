@@ -110,6 +110,14 @@ void main() {
       ContentDao.asset: build.bytes,
       ContentUpdater.manifestAsset: build.manifest,
     };
+
+    // `rootBundle` caches strings by key, and publishing a new course here is
+    // pretending a new *app version* shipped — which in life means a new
+    // process. Without the evict the second publish hands back the first
+    // manifest, and the version read from it disagrees with the database in a
+    // way that cannot happen on a device.
+    rootBundle.evict(ContentDao.asset);
+    rootBundle.evict(ContentUpdater.manifestAsset);
   }
 
   setUp(() async {
@@ -340,6 +348,41 @@ void main() {
       expect(change!.isEmpty, isTrue);
     },
   );
+
+  group('FR-S1-02 — the version probe', () {
+    test('reads the manifest, not the whole database', () async {
+      // The probe used to copy the entire 8 MB asset to a temp file, attach
+      // it, read one string and delete it — every launch, warm or cold. That
+      // was the single largest thing between a warm start and the 500 ms
+      // budget, and `splash.md` warns about it by name.
+      //
+      // Asserted by taking the database away: with only the manifest present
+      // the version still comes back.
+      final build = course(version: '202603030000');
+      assets = <String, Object>{ContentUpdater.manifestAsset: build.manifest};
+      rootBundle.evict(ContentDao.asset);
+      rootBundle.evict(ContentUpdater.manifestAsset);
+
+      expect(await dao.bundledVersion(), '202603030000');
+    });
+
+    test(
+      'and falls back to the database when the manifest is unreadable',
+      () async {
+        // A corrupt manifest must not stop the app noticing a content update,
+        // so the old path is still there.
+        final build = course(version: '202604040000');
+        assets = <String, Object>{
+          ContentDao.asset: build.bytes,
+          ContentUpdater.manifestAsset: 'not json at all',
+        };
+        rootBundle.evict(ContentDao.asset);
+        rootBundle.evict(ContentUpdater.manifestAsset);
+
+        expect(await dao.bundledVersion(), '202604040000');
+      },
+    );
+  });
 }
 
 class _TempPaths extends PathProviderPlatform with MockPlatformInterfaceMixin {
