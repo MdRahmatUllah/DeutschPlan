@@ -501,10 +501,13 @@ def derive(sources: list[SourceBook]) -> dict[str, LevelSplit]:
 #: one line rather than scroll the real problems off the screen.
 WARNING_SAMPLE = 10
 
-#: Kinds that are never capped. Every line of these names a different word
-#: whose primary key changed, and `word_state` rows key to it — "…and 40 more"
-#: would tell the author that forty words moved and not which.
-UNCAPPED_WARNINGS = frozenset({"uid collision", "grammar uid collision"})
+#: Kinds that are never capped. Every line of these names a different thing
+#: someone has to go and fix — a word whose primary key changed, or an
+#: authored tip that will not appear. "…and 40 more" would say how many and
+#: not which.
+UNCAPPED_WARNINGS = frozenset(
+    {"uid collision", "grammar uid collision", "unmatched tip"}
+)
 
 
 def _report(warnings: list[str]) -> None:

@@ -65,6 +65,52 @@ class TestTheSeedSet:
         assert "bekommen" in tips
         assert "become" in tips["bekommen"].tip_en
 
+    def test_no_pattern_fires_on_a_word_it_is_wrong_about(self):
+        """The anchoring test above is not enough.
+
+        `chen$` is anchored and still matched der Kuchen, der Knochen and das
+        Zeichen — telling the learner each is `das` because of a diminutive
+        suffix none of them has. A tip meant to stop a mistake that is
+        confidently wrong causes one instead.
+        """
+        import re
+
+        never = {
+            "gender": [
+                "Kuchen",
+                "Knochen",
+                "Zeichen",
+                "Drachen",
+                "Rachen",
+                "Sprung",
+                "Schwung",
+                "Dung",
+                "jung",
+            ]
+        }
+        always = {
+            "gender": ["Mädchen", "Brötchen", "Wohnung", "Übung", "Freiheit"]
+        }
+
+        for tag, words in never.items():
+            patterns = [
+                re.compile(tip.match, re.IGNORECASE)
+                for tip in read_tips(SEED)
+                if tip.match_type == "pattern" and tag in (tip.tags or "")
+            ]
+            for word_text in words:
+                hits = [p.pattern for p in patterns if p.search(word_text)]
+                assert not hits, f"{word_text} wrongly matched {hits}"
+
+        for tag, words in always.items():
+            patterns = [
+                re.compile(tip.match, re.IGNORECASE)
+                for tip in read_tips(SEED)
+                if tip.match_type == "pattern" and tag in (tip.tags or "")
+            ]
+            for word_text in words:
+                assert any(p.search(word_text) for p in patterns), word_text
+
     def test_every_pattern_compiles_and_is_anchored_or_suffixed(self):
         import re
 
