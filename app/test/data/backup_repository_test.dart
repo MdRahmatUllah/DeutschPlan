@@ -576,6 +576,96 @@ void main() {
       expect(joined.read<String>('word'), 'uid-tuer');
     });
 
+    test('a backup from a step behind does not break the merge', () async {
+      // BR-COURSE-04 allows one open enrollment, and the index enforces it.
+      // Restoring an old phone's backup onto the one in use is the case merge
+      // exists for, and two open rows would fail the whole import.
+      await sql(
+        'INSERT INTO enrollments (sublevel_code, started_on, daily_new, '
+        "study_days_mask) VALUES ('A2.1', '2026-02-01', 7, 127)",
+      );
+
+      final file = jsonEncode(<String, Object?>{
+        'schema_version': AppDatabase.latestSchemaVersion,
+        'content_version': null,
+        'exported_at': '2026-03-09T00:00:00Z',
+        'tables': <String, Object?>{
+          'enrollments': <Object?>[
+            <String, Object?>{
+              'sublevel_code': 'A1.2',
+              'started_on': '2026-01-01',
+              'daily_new': 7,
+              'study_days_mask': 127,
+              'completed_on': null,
+            },
+          ],
+        },
+      });
+
+      await backup.import(file, mode: ImportMode.merge);
+
+      final rows = await rowsOf('enrollments');
+      expect(rows, hasLength(2));
+      final open = rows.where((row) => row['completed_on'] == null);
+      expect(
+        open.single['sublevel_code'],
+        'A2.1',
+        reason: 'this phone says where the learner is',
+      );
+    });
+
+    test('a finished step from the other phone comes in as finished', () async {
+      await sql(
+        'INSERT INTO enrollments (sublevel_code, started_on, daily_new, '
+        "study_days_mask) VALUES ('A2.1', '2026-02-01', 7, 127)",
+      );
+      final file = jsonEncode(<String, Object?>{
+        'schema_version': AppDatabase.latestSchemaVersion,
+        'content_version': null,
+        'exported_at': '2026-03-09T00:00:00Z',
+        'tables': <String, Object?>{
+          'enrollments': <Object?>[
+            <String, Object?>{
+              'sublevel_code': 'A1.1',
+              'started_on': '2026-01-01',
+              'daily_new': 7,
+              'study_days_mask': 127,
+              'completed_on': '2026-01-31',
+            },
+          ],
+        },
+      });
+
+      await backup.import(file, mode: ImportMode.merge);
+
+      final rows = await rowsOf('enrollments');
+      final imported = rows.firstWhere((row) => row['sublevel_code'] == 'A1.1');
+      expect(imported['completed_on'], '2026-01-31');
+    });
+
+    test('an open step on a phone with none stays open', () async {
+      // Nothing to collide with, so the learner's step comes back as it was.
+      final file = jsonEncode(<String, Object?>{
+        'schema_version': AppDatabase.latestSchemaVersion,
+        'content_version': null,
+        'exported_at': '2026-03-09T00:00:00Z',
+        'tables': <String, Object?>{
+          'enrollments': <Object?>[
+            <String, Object?>{
+              'sublevel_code': 'A1.2',
+              'started_on': '2026-01-01',
+              'daily_new': 7,
+              'study_days_mask': 127,
+              'completed_on': null,
+            },
+          ],
+        },
+      });
+
+      await backup.import(file, mode: ImportMode.merge);
+      expect((await rowsOf('enrollments')).single['completed_on'], isNull);
+    });
+
     test('a failed merge leaves the previous data intact', () async {
       await fillEverything();
       final file = jsonEncode(<String, Object?>{
@@ -609,6 +699,35 @@ void main() {
 
       expect(await count('word_state'), 1, reason: 'a half-merge landed');
       expect(await count('review_log'), 1);
+    });
+  });
+
+  group('a file that is the right shape but wrong inside', () {
+    test('previews rather than crashing', () {
+      // `_parse` checks the envelope, not every row. A null where a timestamp
+      // belongs must read as a file we cannot say much about, not a crash.
+      final file = jsonEncode(<String, Object?>{
+        'schema_version': AppDatabase.latestSchemaVersion,
+        'content_version': null,
+        'exported_at': '2026-03-09T00:00:00Z',
+        'tables': <String, Object?>{
+          'review_log': <Object?>[
+            <String, Object?>{'word_uid': 'uid-haus', 'reviewed_at': null},
+            <String, Object?>{
+              'word_uid': 'uid-tuer',
+              'reviewed_at': '2026-03-01T09:00:00Z',
+            },
+          ],
+          'enrollments': <Object?>[
+            <String, Object?>{'sublevel_code': null, 'completed_on': null},
+          ],
+        },
+      });
+
+      final preview = backup.preview(file);
+      expect(preview.lastActive, '2026-03-01T09:00:00Z');
+      expect(preview.activeStep, isNull);
+      expect(preview.rowCounts['review_log'], 2);
     });
   });
 

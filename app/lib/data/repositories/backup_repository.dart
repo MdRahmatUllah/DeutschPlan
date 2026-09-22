@@ -136,6 +136,10 @@ class BackupRepository {
     'exam_attempts': 'exam_answers',
   };
 
+  /// Tables whose `id` nothing reads back, so the insert does not pay for a
+  /// `last_insert_rowid()` round trip. Only the two attempt tables do.
+  static final Set<String> _needsId = _childOf.keys.toSet();
+
   /// The column on the row that says when it was last touched, where there is
   /// one. FR-M6-03's tie-break.
   static const Map<String, String> _recencyColumn = <String, String>{
@@ -180,17 +184,21 @@ class BackupRepository {
         entry.key: (entry.value! as List<Object?>).length,
     };
 
-    final reviews = _rowsIn(data, 'review_log');
-    final lastActive = reviews.isEmpty
+    // Only the values that are what they should be. `_parse` checks the
+    // envelope, not every row, so a file with a null where a timestamp
+    // belongs has to read as a file we cannot preview rather than a crash.
+    final reviewedAt = <String>[
+      for (final row in _rowsIn(data, 'review_log'))
+        if (row['reviewed_at'] case final String at) at,
+    ];
+    final lastActive = reviewedAt.isEmpty
         ? null
-        : reviews
-              .map((row) => row['reviewed_at']! as String)
-              .reduce((a, b) => a.compareTo(b) >= 0 ? a : b);
+        : reviewedAt.reduce((a, b) => a.compareTo(b) >= 0 ? a : b);
 
     String? activeStep;
     for (final row in _rowsIn(data, 'enrollments')) {
-      if (row['completed_on'] == null) {
-        activeStep = row['sublevel_code'] as String?;
+      if (row['completed_on'] == null && row['sublevel_code'] is String) {
+        activeStep = row['sublevel_code']! as String;
       }
     }
 
@@ -271,7 +279,21 @@ class BackupRepository {
       // key is `(attempt_id, ord)`, and the attempt_id in the file is the
       // other phone's. Keying on that would match a local answer that has
       // nothing to do with it and drop the imported one.
-      final mapped = _withRemappedParent(table, incoming, remap);
+      final mapped = <String, Object?>{
+        ..._withRemappedParent(table, incoming, remap),
+      };
+
+      // BR-COURSE-04 allows one open enrollment, enforced by a unique index.
+      // Merging a backup from a phone the learner was further back on would
+      // otherwise fail the whole import on that index — which is exactly the
+      // case merge exists for. This phone says where they are; the imported
+      // step comes in as a step they have been on.
+      if (mode == ImportMode.merge &&
+          table == 'enrollments' &&
+          mapped['completed_on'] == null &&
+          await _hasOpenEnrollment()) {
+        mapped['completed_on'] = mapped['started_on'];
+      }
 
       if (mode == ImportMode.merge) {
         final local = existing[_keyOf(table, mapped)];
@@ -292,23 +314,32 @@ class BackupRepository {
     if (child != null) remap[child] = remapped;
   }
 
+  /// Inserts one row, and returns its id only for the tables whose children
+  /// need it. Thirteen of the fifteen never read it, and the extra
+  /// `last_insert_rowid()` round trip is the expensive half of a large import.
   Future<int> _insertRow(String table, Map<String, Object?> row) async {
     final names = row.keys.toList();
     if (names.isEmpty) return 0;
 
     final placeholders = List<String>.filled(names.length, '?').join(', ');
     final quoted = names.map((name) => '"$name"').join(', ');
-    await _db.customInsert(
-      'INSERT INTO "$table" ($quoted) VALUES ($placeholders)',
-      variables: <Variable<Object>>[
-        for (final name in names) Variable<Object>(row[name]),
-      ],
-    );
+    final sql = 'INSERT INTO "$table" ($quoted) VALUES ($placeholders)';
+    final variables = <Variable<Object>>[
+      for (final name in names) Variable<Object>(row[name]),
+    ];
 
-    final row2 = await _db
+    if (!_needsId.contains(table)) {
+      await _db.customStatement(sql, <Object?>[
+        for (final name in names) row[name],
+      ]);
+      return 0;
+    }
+
+    await _db.customInsert(sql, variables: variables);
+    final inserted = await _db
         .customSelect('SELECT last_insert_rowid() AS id')
         .getSingle();
-    return row2.read<int>('id');
+    return inserted.read<int>('id');
   }
 
   Future<void> _replaceRow(String table, Map<String, Object?> row) async {
@@ -373,6 +404,15 @@ class BackupRepository {
   Future<List<String>> _columnsOf(String table) async {
     final rows = await _db.customSelect('PRAGMA table_info("$table")').get();
     return <String>[for (final row in rows) row.read<String>('name')];
+  }
+
+  Future<bool> _hasOpenEnrollment() async {
+    final row = await _db
+        .customSelect(
+          'SELECT COUNT(*) AS n FROM enrollments WHERE completed_on IS NULL',
+        )
+        .getSingle();
+    return row.read<int>('n') > 0;
   }
 
   static List<Map<String, Object?>> _rowsIn(
