@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:deutschplan/core/providers/app_providers.dart';
 import 'package:deutschplan/core/theme/dp_tokens.dart';
 import 'package:deutschplan/core/theme/glass_capability.dart';
 import 'package:deutschplan/core/theme/theme_mode.dart';
@@ -14,6 +15,8 @@ import 'package:deutschplan/data/repositories/settings_repository.dart';
 import 'package:deutschplan/router/app_router.dart';
 import 'package:deutschplan/router/route_guards.dart';
 import 'package:flutter/foundation.dart' show immutable;
+// `Override` is not in the main barrel in Riverpod 3.
+import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart' show Brightness;
 import 'package:path_provider/path_provider.dart';
@@ -94,6 +97,18 @@ class Bootstrap {
   /// them apart. Splash's caption — "Preparing your course · first start
   /// only" — is the thing that would be wrong.
   final bool isFirstRun;
+
+  /// The overrides `ProviderScope` needs so nothing re-opens what this
+  /// already opened.
+  ///
+  /// `appDatabaseProvider` and `settingsProvider` throw when they are read
+  /// without one — a second `AppDatabase` over the same file is how a learner
+  /// loses a rating to a race, and an unloaded `SettingsRepository` answers
+  /// every read with a default.
+  List<Override> get overrides => <Override>[
+    appDatabaseProvider.overrideWithValue(db),
+    settingsProvider.overrideWithValue(settings),
+  ];
 
   Future<void> dispose() async {
     await settings.dispose();

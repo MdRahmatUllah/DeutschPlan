@@ -6,6 +6,8 @@ import 'package:deutschplan/core/theme/theme_mode.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
 import 'package:deutschplan/router/app_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+// `Override` is not in the main barrel in Riverpod 3.
+import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 
@@ -26,7 +28,19 @@ Future<void> main() async {
 
   // ProviderScope at the very root, on both paths: riverpod_lint enforces it,
   // and the error screen's *Export progress* reads a repository too.
-  runApp(ProviderScope(child: appFor(result)));
+  //
+  // The overrides are what stop the providers re-opening what bootstrap has
+  // already opened. A failed bootstrap has none, so anything that reads the
+  // database throws with a message rather than opening a second one.
+  runApp(
+    ProviderScope(
+      overrides: switch (result) {
+        BootstrapReady(:final bootstrap) => bootstrap.overrides,
+        BootstrapFailed() => const <Override>[],
+      },
+      child: appFor(result),
+    ),
+  );
 }
 
 /// The app for a finished bootstrap, or FR-S1-03's error screen.

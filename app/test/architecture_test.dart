@@ -285,6 +285,142 @@ void main() {
           'frame:\n${offenders.join('\n')}',
     );
   });
+
+  group('state-management.md — the provider policy', () {
+    /// The provider map's keepAlive rows, read out of the doc.
+    ///
+    /// The doc is the source: a provider promoted to `keepAlive` in code and
+    /// not in the table, or the reverse, is the drift this catches. A list
+    /// restated here would only ever agree with itself.
+    Set<String> documentedKeepAlive() {
+      final doc = File('../docs/01-architecture/state-management.md')
+          .readAsStringSync();
+
+      final table = doc.substring(
+        doc.indexOf('## Provider map'),
+        doc.indexOf('## Patterns'),
+      );
+
+      return <String>{
+        for (final line in table.split('\n'))
+          if (line.startsWith('| `') && line.contains('keepAlive'))
+            RegExp(r'^\| `(\w+)').firstMatch(line)!.group(1)!,
+      };
+    }
+
+    /// The `@Riverpod(keepAlive: true)` names in the source.
+    ///
+    /// Two shapes, and the first version of this got both wrong: a function
+    /// provider is `DateTime Function() clock(Ref ref)`, where a regex that
+    /// took the word before the parenthesis captured `Function`; and a
+    /// notifier is `class Theme extends _$Theme`, which has no parenthesis
+    /// at all. Matched on what each one really looks like instead.
+    Set<String> declaredKeepAlive() {
+      final source = File('lib/core/providers/app_providers.dart')
+          .readAsStringSync();
+
+      final names = <String>{};
+      for (final match in RegExp(
+        r'@Riverpod\(keepAlive: true\)',
+      ).allMatches(source)) {
+        // Everything up to the end of the declaration's first line.
+        final rest = source.substring(match.end);
+        final declaration = rest
+            .split('\n')
+            .skipWhile((line) => line.trim().isEmpty)
+            .first;
+
+        final notifier = RegExp(r'class\s+(\w+)').firstMatch(declaration);
+        if (notifier != null) {
+          names.add(_lowerFirst(notifier.group(1)!));
+          continue;
+        }
+
+        final function = RegExp(r'(\w+)\s*\(Ref \w+\)').firstMatch(declaration);
+        if (function != null) names.add(function.group(1)!);
+      }
+      return names;
+    }
+
+    test('the doc really does list some', () {
+      // Both checks below are set comparisons, and two empty sets are equal.
+      expect(documentedKeepAlive(), isNotEmpty);
+      expect(declaredKeepAlive(), isNotEmpty);
+    });
+
+    test('nothing is kept alive that the doc does not allow', () {
+      final extra = declaredKeepAlive().difference(documentedKeepAlive());
+
+      expect(
+        extra,
+        isEmpty,
+        reason:
+            'keepAlive is the exception, not the default. These are marked in '
+            'code and not in state-management.md:\n${extra.join(', ')}',
+      );
+    });
+
+    test('the four the doc names are all there', () {
+      // #71's criterion: "the keep-alive set is exactly the one
+      // state-management.md allows". The doc lists more than this file owns —
+      // `studySession`, `examAttempt`, `tts` and `modelManager` belong to
+      // their own screens — so this is the part of it that is #71's.
+      expect(
+        declaredKeepAlive(),
+        containsAll(<String>['appDatabase', 'settings', 'clock', 'theme']),
+      );
+    });
+
+    test('the repositories are not kept alive', () {
+      // They hold no state of their own; the database they wrap is the thing
+      // that is expensive, and it is the one that is kept.
+      expect(
+        declaredKeepAlive(),
+        isNot(anyOf(contains('wordRepository'), contains('planRepository'))),
+      );
+    });
+  });
+
+  test('the clock is the only source of now', () {
+    // state-management.md: "`DateTime Function()`; overridden in tests for
+    // date logic." A study day is a local day, and the plan engine, the
+    // streak and the scheduler all turn on which day it is — a second clock
+    // means two answers to "is this due", and only one of them is testable.
+    //
+    // Three files are allowed one, and each says why on the line.
+    const allowed = <String>{
+      // The clock itself.
+      'lib/core/providers/app_providers.dart',
+      // `exported_at` and `recorded_at` are "when this actually happened on
+      // this device", not "which study day is it" — a test clock moved to
+      // 2019 must not make an export claim to have been written then.
+      'lib/data/repositories/backup_repository.dart',
+      'lib/data/db/content_update.dart',
+      // A file's modification time, for the cache's eviction order. Not a
+      // date the learner ever sees.
+      'lib/data/repositories/synthesis_cache.dart',
+      // The time picker's initial value comes from the platform's own clock.
+      'lib/core/adaptive/adaptive.dart',
+    };
+
+    final offenders = <String>[];
+    for (final file in _dartFilesIn('lib')) {
+      final path = _rel(file);
+      if (allowed.contains(path)) continue;
+      if (file.readAsStringSync().contains('DateTime.now(')) {
+        offenders.add(path);
+      }
+    }
+
+    expect(
+      offenders,
+      isEmpty,
+      reason:
+          'read the clock provider instead, or add the file to `allowed` '
+          'above with a line saying why it is not a study day:\n'
+          '${offenders.join('\n')}',
+    );
+  });
 }
 
 /// The source of every `build(BuildContext …)` body in [source].
@@ -330,6 +466,9 @@ int _endOfExpression(String source, int arrow) {
   }
   return -1;
 }
+
+/// `AppDatabase` -> `appDatabase`.
+String _lowerFirst(String name) => name[0].toLowerCase() + name.substring(1);
 
 /// Repo-relative path with forward slashes on every platform.
 ///
