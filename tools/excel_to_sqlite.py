@@ -20,6 +20,7 @@ from pathlib import Path
 import yaml
 from openpyxl import load_workbook
 
+from content_manifest import MANIFEST_NAME, build_manifest, write_manifest
 from content_writer import BuildInputs, build
 from pipeline_steps import (
     GRAMMAR_TEXT_FIELDS,
@@ -609,6 +610,9 @@ def main(argv: list[str] | None = None) -> int:
         _report(tip_warnings)
         inputs = collect(sources, splits, resolved)
         build(args.out, inputs)
+
+        manifest_path = args.out.parent / MANIFEST_NAME
+        write_manifest(manifest_path, build_manifest(inputs, splits))
     except PipelineError as error:
         print(f"content pipeline: {error}", file=sys.stderr)
         return 1
@@ -627,6 +631,7 @@ def main(argv: list[str] | None = None) -> int:
             f"{split.boundary_week} ({split.words_in_second} words)"
         )
     print(f"{args.out} written, content_version {inputs.content_version}")
+    print(f"{manifest_path} written")
     return 0
 
 
