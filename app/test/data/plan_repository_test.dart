@@ -257,6 +257,47 @@ void main() {
       expect((await plan.statsFor(today))!.newDone, 0);
     });
 
+    test('the time spent comes back too', () async {
+      // BR-PLAN-09 derives the session estimate from these seconds. Leaving
+      // them behind would make it drift upward every time someone undoes.
+      await planFor('w1');
+      await rateOnce('w1');
+      expect((await plan.statsFor(today))!.seconds, 10);
+
+      await plan.undo();
+      expect((await plan.statsFor(today))!.seconds, 0);
+    });
+
+    test('only the rating being undone leaves the log', () async {
+      // Two ratings of the same word at the same timestamp: a quiz rating a
+      // batch, or a caller passing a date rather than an instant. Deleting by
+      // (word_uid, reviewed_at) would take both.
+      for (var i = 0; i < 2; i++) {
+        await plan.rate(
+          uid: 'w1',
+          rating: 3,
+          next: scheduled(),
+          source: ReviewSource.quiz,
+          reviewedAt: now,
+          today: today,
+        );
+      }
+      expect(await count('review_log'), 2);
+
+      await plan.undo();
+      expect(await count('review_log'), 1);
+    });
+
+    test('rating a skipped row clears the skip', () async {
+      await planFor('w1');
+      await plan.skip(planDate: today, uid: 'w1', kind: PlanKind.newWord);
+      await rateOnce('w1');
+
+      final item = (await plan.watchPlan(today).first).single;
+      expect(item.completedAt, isNotNull);
+      expect(item.skipped, 0, reason: 'a rated row is not a skipped one');
+    });
+
     test('nothing to undo is not an error', () async {
       expect(await plan.undo(), isNull);
     });

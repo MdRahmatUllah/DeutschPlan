@@ -159,9 +159,13 @@ class PlanRepository {
           ),
         );
 
-    await _db
+    // insertReturning, so the undo entry can name the row by its key. A
+    // (word_uid, reviewed_at) pair is not one: two ratings of the same word
+    // at the same timestamp — a quiz rating a batch, a caller passing a date
+    // rather than an instant — would both be deleted by one undo.
+    final logged = await _db
         .into(_db.reviewLog)
-        .insert(
+        .insertReturning(
           ReviewLogCompanion.insert(
             wordUid: uid,
             reviewedAt: reviewedAt,
@@ -179,7 +183,16 @@ class PlanRepository {
                 t.wordUid.equals(uid) &
                 t.kind.equals(kind.wire),
           ))
-          .write(PlanItemsCompanion(completedAt: Value(reviewedAt)));
+          .write(
+            PlanItemsCompanion(
+              completedAt: Value(reviewedAt),
+              // A rated row is not a skipped one, whatever happened
+              // yesterday. The backlog filters on completed_at and would be
+              // right either way, but anything reading `skipped` would say
+              // "you skipped this" about a word that is done.
+              skipped: const Value(0),
+            ),
+          );
     }
 
     await _bumpDailyStats(
@@ -193,9 +206,11 @@ class PlanRepository {
       uid: uid,
       before: before,
       reviewedAt: reviewedAt,
+      reviewLogId: logged.id,
       planDate: planDate,
       kind: kind,
       today: today,
+      seconds: seconds,
     );
   });
 
@@ -249,12 +264,9 @@ class PlanRepository {
           );
     }
 
-    await (_db.delete(_db.reviewLog)..where(
-          (t) =>
-              t.wordUid.equals(uid) &
-              t.reviewedAt.equals(payload['reviewed_at'] as String),
-        ))
-        .go();
+    await (_db.delete(
+      _db.reviewLog,
+    )..where((t) => t.id.equals(payload['review_log_id'] as int))).go();
 
     final planDate = payload['plan_date'] as String?;
     final kind = payload['kind'] as String?;
@@ -272,7 +284,9 @@ class PlanRepository {
       payload['day'] as String,
       newDone: kind == 'new' ? -1 : 0,
       reviewsDone: kind == 'new' ? 0 : -1,
-      seconds: 0,
+      // The time goes back too. Without it, BR-PLAN-09's estimate — which is
+      // derived from these seconds — drifts upward every time someone undoes.
+      seconds: -(payload['seconds'] as int? ?? 0),
     );
 
     await (_db.delete(_db.undoStack)..where((t) => t.id.equals(entry.id))).go();
@@ -362,9 +376,11 @@ class PlanRepository {
     required String uid,
     required WordStateData? before,
     required String reviewedAt,
+    required int reviewLogId,
     required String? planDate,
     required PlanKind? kind,
     required String today,
+    required int seconds,
   }) async {
     await _db
         .into(_db.undoStack)
@@ -374,6 +390,8 @@ class PlanRepository {
             payloadJson: jsonEncode(<String, Object?>{
               'word_uid': uid,
               'reviewed_at': reviewedAt,
+              'review_log_id': reviewLogId,
+              'seconds': seconds,
               'plan_date': planDate,
               'kind': kind?.wire,
               'day': today,
