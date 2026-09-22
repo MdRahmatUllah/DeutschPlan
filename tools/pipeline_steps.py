@@ -6,6 +6,7 @@ can be tested on its own, without a workbook and without a database.
 
 from __future__ import annotations
 
+import hashlib
 from dataclasses import dataclass
 from typing import Iterable, Sequence
 
@@ -15,7 +16,17 @@ LEVELS = ("A1", "A2", "B1", "B2", "C1", "C2")
 SUBLEVELS = tuple(f"{level}.{half}" for level in LEVELS for half in (1, 2))
 
 
-class SplitError(Exception):
+class PipelineError(Exception):
+    """A failure the author can act on. Printed without a traceback.
+
+    It lives here rather than in `excel_to_sqlite`, which imports this module —
+    the other way round would be a cycle. Everything that fails a build derives
+    from it, because a refusal that reaches the author as a stack trace is a
+    message nobody reads.
+    """
+
+
+class SplitError(PipelineError):
     """A split that would leave a step the app cannot show."""
 
 
@@ -198,3 +209,137 @@ def check_every_step_has_words(words: Sequence) -> None:
             f"these steps have no words: {', '.join(empty)}. Every one of the "
             f"twelve must be non-empty (BR-COURSE-01)."
         )
+
+
+# PIPE-03: sha1 over the four fields that identify a word, truncated.
+#
+# Sixteen hex characters is 64 bits. Over ~11,000 words the chance of any
+# collision is about 3e-15, which is why the collision path below is a warning
+# and a suffix rather than a redesign — but it exists, because a uid is a
+# primary key and two words sharing one would silently merge a learner's
+# progress on both.
+UID_LENGTH = 16
+
+#: The fields the uid is made of, in order. Changing this list changes every
+#: uid, which orphans every learner's word_state — so it is spelled out here
+#: rather than inferred from the record.
+UID_FIELDS = ("level", "german", "pos", "english")
+
+
+class UidCollision(PipelineError):
+    """Two different words hashed to the same uid."""
+
+
+def uid_for(word, *, suffix: int | None = None) -> str:
+    """`sha1(level|german|pos|english)[:16]`, as PIPE-03 specifies.
+
+    A missing `pos` joins as an empty string rather than being skipped, so
+    "der|Bank||bank" and "der|Bank|noun|bank" are different words — dropping
+    the separator would make them the same.
+
+    The digest is over UTF-8, so an umlaut hashes the same on every platform.
+    """
+    key = "|".join(_uid_part(word, name) for name in UID_FIELDS)
+    if suffix is not None:
+        key = f"{key}|{suffix}"
+    return hashlib.sha1(key.encode("utf-8")).hexdigest()[:UID_LENGTH]
+
+
+def _uid_part(word, name: str) -> str:
+    value = getattr(word, name, None)
+    return "" if value is None else str(value)
+
+
+def assign_uids(words: Sequence) -> list[str]:
+    """Sets `uid` on every word. Returns a line per collision, for the report.
+
+    A collision is resolved by hashing again with the *occurrence* number
+    appended: the second word to hash to a given uid gets suffix 2, the third
+    3. The doc says "the sequence number", and the global `seq` would satisfy
+    the letter of it, but `seq` is reading order across every workbook — one
+    unrelated word inserted at the top shifts it, and the colliding word's uid
+    would change with it, orphaning that learner's progress over an edit that
+    had nothing to do with their word. The occurrence index depends only on
+    the collision.
+
+    Two rows that are genuinely identical in all four fields are a duplicate,
+    not a hash collision, and get the same treatment — the second one becomes
+    its own word. `verify_content.py` is where that is reported as a data
+    problem rather than a hash one.
+    """
+    seen: dict[str, object] = {}
+    occurrences: dict[str, int] = {}
+    reports: list[str] = []
+
+    for word in words:
+        uid = uid_for(word)
+        if uid in seen:
+            other = seen[uid]
+            occurrences[uid] = occurrences.get(uid, 1) + 1
+            uid = uid_for(word, suffix=occurrences[uid])
+            reports.append(
+                f"uid collision: {word.source_file} row {word.row} "
+                f"({word.level}|{word.german}|{word.pos}|{word.english}) "
+                f"collided with {other.source_file} row {other.row}; "
+                f"resolved to {uid}"
+            )
+            # Unreachable by construction: the suffix makes every retry a
+            # different key. It stays because a uid is a primary key, and
+            # writing two rows with the same one is the outcome that must not
+            # exist even if the reasoning above is ever wrong.
+            if uid in seen:
+                raise UidCollision(
+                    f"{word.source_file} row {word.row} still collides after "
+                    f"appending its occurrence number. Two rows cannot share "
+                    f"a uid, so one of them has to change."
+                )
+        seen[uid] = word
+        word.uid = uid
+
+    return reports
+
+
+#: Grammar topics carry a uid too: `content-database.md` gives
+#: `grammar_topics.uid PK`, and `grammar_state.grammar_uid` in the learner's
+#: database points at it. A different recipe, because a topic has no part of
+#: speech and no English gloss.
+GRAMMAR_UID_FIELDS = ("level", "topic")
+
+
+def grammar_uid_for(row, *, suffix: int | None = None) -> str:
+    """`sha1(level|topic)[:16]`.
+
+    Same shape and same stability contract as `uid_for`: it keys the learner's
+    grammar scheduling, so changing it loses their progress on every topic.
+    """
+    key = "|".join(_uid_part(row, name) for name in GRAMMAR_UID_FIELDS)
+    if suffix is not None:
+        key = f"{key}|{suffix}"
+    return hashlib.sha1(key.encode("utf-8")).hexdigest()[:UID_LENGTH]
+
+
+def assign_grammar_uids(rows: Sequence) -> list[str]:
+    """Sets `uid` on every grammar row, resolving collisions as words do.
+
+    Two rows with the same topic in the same level are a duplicate in the
+    workbook rather than a hash collision, and the report names both rows.
+    """
+    seen: dict[str, object] = {}
+    occurrences: dict[str, int] = {}
+    reports: list[str] = []
+
+    for row in rows:
+        uid = grammar_uid_for(row)
+        if uid in seen:
+            other = seen[uid]
+            occurrences[uid] = occurrences.get(uid, 1) + 1
+            uid = grammar_uid_for(row, suffix=occurrences[uid])
+            reports.append(
+                f"grammar uid collision: {row.source_file} row {row.row} "
+                f"({row.level}|{row.topic}) collided with "
+                f"{other.source_file} row {other.row}; resolved to {uid}"
+            )
+        seen[uid] = row
+        row.uid = uid
+
+    return reports

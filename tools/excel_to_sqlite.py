@@ -21,6 +21,9 @@ from openpyxl import load_workbook
 
 from pipeline_steps import (
     LEVELS,
+    PipelineError,
+    assign_grammar_uids,
+    assign_uids,
     LevelSplit,
     assign_sublevels,
     check_every_step_has_words,
@@ -76,10 +79,6 @@ SKILLS_SHEET = "W01"
 CATEGORY_SHEET_PREFIX = "C-"
 
 
-class PipelineError(Exception):
-    """A failure the author can act on. Printed without a traceback."""
-
-
 @dataclass
 class Word:
     """One row of *All Words*, before any derivation."""
@@ -103,6 +102,7 @@ class Word:
     synonyms_register: str | None = None
 
     # Derived by pipeline_steps, not read from the workbook.
+    uid: str | None = None
     sublevel_code: str | None = None
     seq: int | None = None
     seq_in_sublevel: int | None = None
@@ -121,6 +121,7 @@ class GrammarRow:
     watch_out: str | None = None
 
     # Derived by pipeline_steps.
+    uid: str | None = None
     sublevel_code: str | None = None
     level_code: str | None = None
     seq: int | None = None
@@ -469,6 +470,9 @@ def derive(sources: list[SourceBook]) -> dict[str, LevelSplit]:
         code = word.sublevel_code or ""
         per_step[code] = per_step.get(code, 0) + 1
         word.seq_in_sublevel = per_step[code]
+
+    for line in assign_uids(words) + assign_grammar_uids(grammar):
+        print(f"warning: {line}", file=sys.stderr)
 
     return splits
 

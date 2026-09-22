@@ -1,0 +1,72 @@
+[
+  {
+    "level": "A1",
+    "german": "Haus",
+    "pos": "noun",
+    "english": "house",
+    "uid": "f59c34bd4c63600c"
+  },
+  {
+    "level": "A1",
+    "german": "Tür",
+    "pos": "noun",
+    "english": "door",
+    "uid": "22c72720b47cdb6f"
+  },
+  {
+    "level": "A1",
+    "german": "Straße",
+    "pos": "noun",
+    "english": "street",
+    "uid": "63ffff35587a00d0"
+  },
+  {
+    "level": "A2",
+    "german": "bekommen",
+    "pos": "verb",
+    "english": "to receive",
+    "uid": "364c69edf304a802"
+  },
+  {
+    "level": "B1",
+    "german": "überlegen",
+    "pos": "verb",
+    "english": "to consider",
+    "uid": "72c873fa604ea382"
+  },
+  {
+    "level": "B2",
+    "german": "Bank",
+    "pos": null,
+    "english": "bank",
+    "uid": "b4684eb7fad80c3b"
+  },
+  {
+    "level": "C1",
+    "german": "Gerechtigkeit",
+    "pos": "noun",
+    "english": "justice",
+    "uid": "adffffa4fad23cd3"
+  },
+  {
+    "level": "C2",
+    "german": "nichtsdestotrotz",
+    "pos": "adverb",
+    "english": "nonetheless",
+    "uid": "915e8acb7cf1078c"
+  },
+  {
+    "level": "A1",
+    "german": "sein",
+    "pos": "verb",
+    "english": "to be",
+    "uid": "600946d210411231"
+  },
+  {
+    "level": "A2",
+    "german": "Mädchen",
+    "pos": "noun",
+    "english": "girl",
+    "uid": "94443dd526fd6f92"
+  }
+]
