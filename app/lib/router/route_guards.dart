@@ -69,17 +69,40 @@ Future<String?> guardRedirect(GoRouterState state, RouteGuards guards) async {
     return await guards.hasExamAttempt(attemptId) ? null : examFallback;
   }
 
-  if (location == '/study') {
-    // `/study` carries its cards in `extra`, which does not survive process
-    // death — so a resumed `/study` has nothing to show. Sending it to Today
-    // is what turns that into "your session ended" rather than a blank card
-    // stack.
-    final args = state.extra;
-    if (args is! SessionArgs || args.wordUids.isEmpty) return studyFallback;
+  // Guarded by what the route *needs*, not by a list of paths. `extra` does
+  // not survive process death, so every route that carries its work in one
+  // has the same failure: restored, it opens with nothing to show.
+  // `navigation.md` names only `/study` under Guards, but `/quiz` and
+  // `/grammar-practice` are the same shape, and finding that out when those
+  // screens are real is finding it out too late.
+  if (needsSession[location] case final fallback?) {
+    return _hasWork(location, state.extra) ? null : fallback;
   }
 
   return null;
 }
+
+/// The routes whose work rides on `extra`, and where each goes without it.
+///
+/// Today for a study session — it reads as "your session ended" rather than
+/// as a blank card stack. Learn for the two that are started from a step.
+const Map<String, String> needsSession = <String, String>{
+  '/study': studyFallback,
+  '/quiz': '/learn',
+  '/grammar-practice': '/learn',
+};
+
+/// Whether [extra] is the argument that route needs, and not an empty one.
+///
+/// An empty list is the same as nothing: a session with no cards and a
+/// practice run with no topics both open a screen with nothing on it.
+bool _hasWork(String location, Object? extra) => switch ((location, extra)) {
+  ('/study', final SessionArgs args) => args.wordUids.isNotEmpty,
+  ('/quiz', final QuizArgs args) => args.length > 0,
+  ('/grammar-practice', final GrammarPracticeArgs args) =>
+    args.topicUids.isNotEmpty,
+  _ => false,
+};
 
 /// Where a guarded route sends the learner instead.
 ///

@@ -1,6 +1,8 @@
 @TestOn('vm')
 library;
 
+import 'dart:io';
+
 import 'package:deutschplan/core/theme/app_theme.dart';
 import 'package:deutschplan/data/db/app_database.dart';
 import 'package:deutschplan/data/repositories/exam_repository.dart';
@@ -76,11 +78,17 @@ void main() {
     });
 
     testWidgets('an id that is not a number does too', (tester) async {
+      // Asserted on `examFallback` rather than on "some shell": an unparsable
+      // id could also be the typed route refusing to build and falling
+      // through to `onException`, which lands on `/today`. The two fallbacks
+      // differing is what tells them apart, and this is the guard.
       await pumpApp(tester, guards: guardsWith());
 
       router.go('/exam/nonsense');
       await tester.pumpAndSettle();
 
+      expect(location(), examFallback);
+      expect(location(), isNot(fallbackLocation));
       expect(find.byType(AppShell), findsOneWidget);
     });
 
@@ -139,6 +147,97 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(location(), studyFallback);
+    });
+  });
+
+  group('the other routes that carry their work in extra', () {
+    testWidgets('a quiz with questions opens', (tester) async {
+      await pumpApp(tester, guards: guardsWith());
+
+      router.go(
+        '/quiz',
+        extra: const QuizArgs(direction: 'deEn', source: 'allLearned', seed: 1),
+      );
+      await tester.pumpAndSettle();
+
+      expect(location(), '/quiz');
+      expect(find.text('L8'), findsOneWidget);
+    });
+
+    testWidgets('a restored quiz does not', (tester) async {
+      // Same failure as `/study`: `extra` is gone after process death, and
+      // the screen would open with no questions in it.
+      await pumpApp(tester, guards: guardsWith());
+
+      router.go('/quiz');
+      await tester.pumpAndSettle();
+
+      expect(location(), '/learn');
+    });
+
+    testWidgets('a grammar practice with topics opens', (tester) async {
+      await pumpApp(tester, guards: guardsWith());
+
+      router.go(
+        '/grammar-practice',
+        extra: const GrammarPracticeArgs(topicUids: <String>['g1']),
+      );
+      await tester.pumpAndSettle();
+
+      expect(location(), '/grammar-practice');
+    });
+
+    testWidgets('one with no topics does not', (tester) async {
+      await pumpApp(tester, guards: guardsWith());
+
+      router.go(
+        '/grammar-practice',
+        extra: const GrammarPracticeArgs(topicUids: <String>[]),
+      );
+      await tester.pumpAndSettle();
+
+      expect(location(), '/learn');
+    });
+
+    testWidgets('the wrong kind of argument is no argument', (tester) async {
+      await pumpApp(tester, guards: guardsWith());
+
+      router.go(
+        '/quiz',
+        extra: const SessionArgs(wordUids: <String>['uid-haus']),
+      );
+      await tester.pumpAndSettle();
+
+      expect(location(), '/learn');
+    });
+
+    test('every route that reads extra is guarded', () {
+      // Read out of the source, not restated: a route added later that
+      // carries its work in `extra` and is not in the map has the same
+      // failure and nothing to catch it. A hardcoded list here would only
+      // ever agree with itself.
+      final source = File('lib/router/routes.dart').readAsStringSync();
+      final declarations = RegExp(r"\n@TypedGoRoute<(\w+)>\(path: '([^']+)'\)")
+          .allMatches(source)
+          .toList();
+      expect(
+        declarations,
+        hasLength(greaterThan(5)),
+        reason: 'the parse found no routes, so this proves nothing',
+      );
+
+      final reading = <String>{};
+      for (var i = 0; i < declarations.length; i++) {
+        final from = declarations[i].start;
+        final to = i + 1 < declarations.length
+            ? declarations[i + 1].start
+            : source.length;
+        if (source.substring(from, to).contains('state.extra')) {
+          reading.add(declarations[i].group(2)!);
+        }
+      }
+
+      expect(needsSession.keys.toSet(), reading);
     });
   });
 
