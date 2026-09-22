@@ -41,6 +41,7 @@ Widget appFor(BootstrapResult result) => switch (result) {
     child: DeutschPlanApp(
       mode: bootstrap.themeMode,
       followsPlatform: bootstrap.themeSetting.followsPlatform,
+      router: bootstrap.router,
     ),
   ),
   BootstrapFailed(:final failure) => BootstrapGate(failure: failure),
@@ -50,19 +51,24 @@ Widget appFor(BootstrapResult result) => switch (result) {
 const List<Locale> supportedLocales = <Locale>[Locale('en'), Locale('bn')];
 
 class DeutschPlanApp extends StatelessWidget {
-  const DeutschPlanApp({
+  DeutschPlanApp({
     required this.mode,
+    GoRouter? router,
     this.followsPlatform = false,
     super.key,
-  });
+  }) : router = router ?? buildRouter();
 
   /// Resolved in [bootstrap] against `theme_mode` and the platform, so the
   /// first frame is not a frame of the wrong theme.
   final DpMode mode;
 
-  /// Built once and held, because a `GoRouter` rebuilt on every frame loses
-  /// the navigation stack it is holding.
-  static final GoRouter _router = buildRouter();
+  /// Built by [bootstrap] and held for the life of the app.
+  ///
+  /// Passed in rather than made here: a router rebuilt on every frame loses
+  /// its navigation stack, and one in a static is shared by every instance,
+  /// so two widget tests in a file would inherit each other's history. The
+  /// default is for tests that only want a tree to look at.
+  final GoRouter router;
 
   /// True when the learner chose *Follow the system*.
   ///
@@ -74,7 +80,7 @@ class DeutschPlanApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
-      routerConfig: _router,
+      routerConfig: router,
       onGenerateTitle: (context) => AppLocalizations.of(context).appTitle,
       theme: AppTheme.light(),
       darkTheme: AppTheme.dark(),

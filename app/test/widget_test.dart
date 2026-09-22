@@ -9,7 +9,7 @@ void main() {
   testWidgets('the app boots into the shell with Today showing', (
     tester,
   ) async {
-    await tester.pumpWidget(const DeutschPlanApp(mode: DpMode.light));
+    await tester.pumpWidget(DeutschPlanApp(mode: DpMode.light));
     await tester.pumpAndSettle();
 
     final l10n = await AppLocalizations.delegate.load(supportedLocales.first);
@@ -39,12 +39,37 @@ void main() {
     // Passing that straight to MaterialApp would pin the app to whatever the
     // phone was on at launch.
     await tester.pumpWidget(
-      const DeutschPlanApp(mode: DpMode.dark, followsPlatform: true),
+      DeutschPlanApp(mode: DpMode.dark, followsPlatform: true),
     );
     await tester.pumpAndSettle();
 
     final app = tester.widget<MaterialApp>(find.byType(MaterialApp));
     expect(app.themeMode, ThemeMode.system);
+  });
+
+  testWidgets('each app gets its own navigation stack', (tester) async {
+    // The router owns the stack, so a static one would be shared by every
+    // instance — and two widget tests in a file would inherit each other's
+    // history. The real app's router comes from bootstrap; this is the
+    // default path.
+    final first = DeutschPlanApp(mode: DpMode.light);
+    await tester.pumpWidget(first);
+    await tester.pumpAndSettle();
+
+    first.router.go('/today/backlog');
+    await tester.pumpAndSettle();
+    expect(find.text('T4'), findsOneWidget);
+
+    final second = DeutschPlanApp(mode: DpMode.light);
+    expect(identical(first.router, second.router), isFalse);
+
+    await tester.pumpWidget(second);
+    await tester.pumpAndSettle();
+    expect(
+      find.text('T1'),
+      findsOneWidget,
+      reason: 'the second app inherited the first one’s stack',
+    );
   });
 
   test('English leads supportedLocales so it is the fallback locale', () {

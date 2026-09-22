@@ -13,6 +13,7 @@ import 'package:deutschplan/data/db/content_update.dart';
 import 'package:deutschplan/data/repositories/setting_keys.dart';
 import 'package:deutschplan/data/repositories/settings_repository.dart';
 import 'package:deutschplan/main.dart';
+import 'package:deutschplan/router/app_router.dart';
 import 'package:drift/drift.dart' hide isNotNull, isNull;
 import 'package:drift/native.dart';
 import 'package:flutter/services.dart';
@@ -461,6 +462,7 @@ void main() {
         content: ContentDao(db),
         settings: SettingsRepository(db),
         glass: GlassCapability(),
+        router: buildRouter(),
         contentVersion: ContentFixture.version,
         contentChange: null,
         themeMode: DpMode.light,

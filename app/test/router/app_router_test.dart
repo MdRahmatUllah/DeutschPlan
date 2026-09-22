@@ -375,6 +375,31 @@ void main() {
     });
   });
 
+  group('a link that matches nothing', () {
+    testWidgets('lands on Today, not on a blank screen', (tester) async {
+      // A stale notification or a stale home-screen widget. Rendering
+      // nothing would leave the learner on a white page with no tab bar and
+      // no way back.
+      await pumpApp(tester);
+
+      router.go('/nope/not/a/route');
+      await tester.pumpAndSettle();
+
+      expect(location(), fallbackLocation);
+      expect(find.byType(AppShell), findsOneWidget);
+      expect(find.text('T1'), findsOneWidget);
+    });
+
+    testWidgets('so does a half-right one', (tester) async {
+      await pumpApp(tester);
+
+      router.go('/learn/step');
+      await tester.pumpAndSettle();
+
+      expect(find.byType(AppShell), findsOneWidget);
+    });
+  });
+
   testWidgets('a typed route builds its own path', (tester) async {
     // The point of go_router_builder: the path exists in one place, and a
     // caller that goes to the wrong one does not compile.
