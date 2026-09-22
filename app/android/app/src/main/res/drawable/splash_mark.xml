@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The "D" in its speech bubble, at the artboard's own 120 x 104 geometry.
+
+     A vector rather than a bitmap so it stays sharp at every density, and
+     because the Android 12 splash icon has to be a vector anyway. The numbers
+     match `_SplashMetrics` in `splash_screen.dart` — bubble 120 x 92, radius
+     28, a 3 px ink border, and the tail at x 22, 24 wide, 20 tall. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="120dp"
+    android:height="104dp"
+    android:viewportWidth="120"
+    android:viewportHeight="104">
+
+    <!-- The tail, drawn first so the bubble's border covers where they meet. -->
+    <path
+        android:fillColor="@color/splash_ink"
+        android:pathData="M22,84 L46,84 L34,104 Z" />
+
+    <!-- The bubble. -->
+    <path
+        android:fillColor="@color/splash_mark"
+        android:strokeColor="@color/splash_ink"
+        android:strokeWidth="3"
+        android:pathData="M1.5,29.5 A28,28 0 0 1 29.5,1.5 L90.5,1.5 A28,28 0 0 1 118.5,29.5 L118.5,62.5 A28,28 0 0 1 90.5,90.5 L29.5,90.5 A28,28 0 0 1 1.5,62.5 Z" />
+
+    <!-- The letter, as a path: a vector drawable cannot render text, and a
+         font the launcher does not have is not something to rely on at boot.
+         Stem from x 38, bowl radius 30, counter radius 16 — Inter Bold's
+         proportions at a 60 px cap height. -->
+    <path
+        android:fillColor="@color/splash_ink"
+        android:fillType="evenOdd"
+        android:pathData="M38,16 L60,16 A30,30 0 0 1 60,76 L38,76 Z M52,30 L60,30 A16,16 0 0 1 60,62 L52,62 Z" />
+</vector>

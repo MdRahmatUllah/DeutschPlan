@@ -1,115 +1,103 @@
 {
   "@@locale": "en",
-
   "appTitle": "DeutschPlan",
   "@appTitle": {
     "description": "The application name. Shown in the task switcher and as the MaterialApp title. Not translated — it is the product name."
   },
-
   "loadingCourse": "Preparing your course",
   "@loadingCourse": {
     "description": "Splash caption while the first-run bootstrap copies content.db and opens the databases. See docs/04-screens/splash.md."
   },
-
+  "splashPreparing": "Preparing your course · first start only",
+  "@splashPreparing": {
+    "description": "S1 splash caption under the wordmark. The full artboard string, including the note that the wait only happens once. See docs/04-screens/splash.md."
+  },
   "retry": "Retry",
   "@retry": {
     "description": "Button on the shared ErrorPanel that re-runs the failed operation. See docs/01-architecture/state-management.md."
   },
-
   "done": "Done",
   "@done": {
     "description": "Confirms a value and closes a picker. Used on the iOS time wheel in Reminder & days and onboarding page 5."
   },
-
   "umlautLongPressHint": "{key}, long press for {capital}",
   "@umlautLongPressHint": {
     "description": "Screen-reader label for the sharp-s key on the umlaut row. The capital form has no key on any keyboard, so the long press is the only way to reach it and has to be announced.",
     "placeholders": {
-      "key": { "type": "String", "example": "ß" },
-      "capital": { "type": "String", "example": "ẞ" }
+      "key": {
+        "type": "String",
+        "example": "ß"
+      },
+      "capital": {
+        "type": "String",
+        "example": "ẞ"
+      }
     }
   },
-
   "ratingAgain": "Again",
   "@ratingAgain": {
     "description": "FSRS rating 1 on the study card's rating bar. The learner did not recall the word. BR-FSRS-02 fixes the order Again/Hard/Good/Easy."
   },
-
   "ratingHard": "Hard",
   "@ratingHard": {
     "description": "FSRS rating 2. Recalled, but with difficulty."
   },
-
   "ratingGood": "Good",
   "@ratingGood": {
     "description": "FSRS rating 3. Recalled correctly. The default."
   },
-
   "ratingEasy": "Easy",
   "@ratingEasy": {
     "description": "FSRS rating 4. Recalled immediately. Also what \"I know it\" sends for a new word (BR-STATUS-04)."
   },
-
   "bootstrapErrorDatabase": "DeutschPlan could not open your data.",
   "@bootstrapErrorDatabase": {
     "description": "Full-screen bootstrap error when user.db would not open or migrate. FR-S1-03."
   },
-
   "bootstrapErrorContent": "DeutschPlan could not install the course.",
   "@bootstrapErrorContent": {
     "description": "Full-screen bootstrap error when content.db could not be copied or attached. FR-S1-03."
   },
-
   "bootstrapErrorSettings": "DeutschPlan could not read your settings.",
   "@bootstrapErrorSettings": {
     "description": "Full-screen bootstrap error when the settings table would not load. FR-S1-03."
   },
-
   "exportProgress": "Export progress",
   "@exportProgress": {
     "description": "Action on the bootstrap error screen and on Export / import. Writes everything the learner has done to a JSON file. FR-S1-03, FR-M6-01."
   },
-
   "tabToday": "Today",
   "@tabToday": {
     "description": "First tab of the shell (branch 0), showing the day's plan. docs/01-architecture/navigation.md."
   },
-
   "tabLearn": "Learn",
   "@tabLearn": {
     "description": "Second tab of the shell (branch 1): the course, grammar, categories and exams."
   },
-
   "tabSearch": "Search",
   "@tabSearch": {
     "description": "Third tab of the shell (branch 2): look up any word."
   },
-
   "tabMe": "Me",
   "@tabMe": {
     "description": "Fourth tab of the shell (branch 3): progress, settings and data."
   },
-
   "examLeaveTitle": "Leave the exam?",
   "@examLeaveTitle": {
     "description": "Title of the dialog Android back opens inside the exam runner. docs/04-screens/exam-runner.md, FR-L12-04."
   },
-
   "examLeaveMessage": "Your answers so far are saved as an unfinished attempt. The timer stops. You can start this mock again from the exam hub.",
   "@examLeaveMessage": {
     "description": "Body of the leave-the-exam dialog. Says what is kept and what is lost, because the answers survive and the time does not."
   },
-
   "examLeaveConfirm": "Leave",
   "@examLeaveConfirm": {
     "description": "Destructive action on the leave-the-exam dialog. Abandons the attempt (FR-L12-04)."
   },
-
   "examLeaveCancel": "Keep going",
   "@examLeaveCancel": {
     "description": "Cancel action on the leave-the-exam dialog. Returns to the question the learner was on."
   },
-
   "undo": "Undo",
   "@undo": {
     "description": "Action on the snackbar shown after a reversible change, such as rating a card. See FR-T2-02."

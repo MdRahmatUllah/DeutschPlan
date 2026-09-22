@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The dark artboard's values: `DpPalette.dark` primary, accent and ink. -->
+<resources>
+    <color name="splash_field">#2EE6D6</color>
+    <color name="splash_mark">#FFD54A</color>
+    <color name="splash_ink">#F4F1FF</color>
+</resources>

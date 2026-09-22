@@ -81,16 +81,24 @@ Widget goldenApp({
       theme: mode.theme,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: supportedLocales,
-      home: MediaQuery(
-        // Goldens are still. Repeating animations — AuroraBackdrop drifts on
-        // 18-24 s loops — would otherwise burn the settle budget and capture a
-        // different frame every run. The backdrop already holds still under
-        // reduce-motion (#Y03), so the golden reuses that rather than needing a
-        // test-only switch.
-        data: const MediaQueryData(disableAnimations: true),
-        child: AdaptiveChromeScope(
-          chrome: chrome ?? AdaptiveChrome.material,
-          child: child,
+      home: Builder(
+        builder: (context) => MediaQuery(
+          // Goldens are still. Repeating animations — AuroraBackdrop drifts on
+          // 18-24 s loops — would otherwise burn the settle budget and capture
+          // a different frame every run. The backdrop already holds still
+          // under reduce-motion (#Y03), so the golden reuses that rather than
+          // needing a test-only switch.
+          //
+          // `copyWith`, not a fresh `MediaQueryData`: a const one carries
+          // `size: Size.zero`, and anything that measures the screen — a
+          // `Scaffold` reading insets, a layout builder — then lays out
+          // against nothing. It renders, so it looks like a screen with a
+          // layout bug rather than a harness with one.
+          data: MediaQuery.of(context).copyWith(disableAnimations: true),
+          child: AdaptiveChromeScope(
+            chrome: chrome ?? AdaptiveChrome.material,
+            child: child,
+          ),
         ),
       ),
     ),

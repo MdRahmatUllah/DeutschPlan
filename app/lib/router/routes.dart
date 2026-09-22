@@ -10,6 +10,7 @@
 /// presentation of each route.
 library;
 
+import 'package:deutschplan/features/splash/splash_screen.dart';
 import 'package:deutschplan/router/app_shell.dart';
 import 'package:deutschplan/router/back_behaviour.dart';
 import 'package:deutschplan/router/deep_links.dart';
@@ -382,9 +383,11 @@ class LicencesRoute extends GoRouteData with $LicencesRoute {
 class SplashRoute extends GoRouteData with $SplashRoute {
   const SplashRoute();
 
+  /// The gate rather than the screen: the progress line is a function of how
+  /// long bootstrap has taken, and only the gate can know that.
   @override
   Widget build(BuildContext context, GoRouterState state) =>
-      const PlaceholderScreen(title: 'DeutschPlan', screen: 'S1');
+      const SplashProgressGate();
 }
 
 @TypedGoRoute<OnboardingRoute>(path: '/onboarding/:page')
