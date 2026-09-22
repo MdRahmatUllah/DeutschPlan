@@ -157,7 +157,7 @@ void main() {
       }
     });
 
-    testWidgets('Skip appears from page 3', (tester) async {
+    testWidgets('FR-S2-01 Skip appears from page 3', (tester) async {
       // FR-S2-01's affordance. Pages 1 and 2 have nothing to default: page 1
       // writes no setting, and the meaning language is the one choice that
       // should be made deliberately.

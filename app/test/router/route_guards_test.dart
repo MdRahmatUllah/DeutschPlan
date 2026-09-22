@@ -15,6 +15,7 @@ import 'package:deutschplan/router/app_shell.dart';
 import 'package:deutschplan/router/route_guards.dart';
 import 'package:deutschplan/router/routes.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:cupertino_ui/cupertino_ui.dart' show CupertinoPageTransition;
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 
@@ -283,6 +284,53 @@ void main() {
       );
 
       expect(location(), '/today');
+    });
+  });
+
+  group('the five pages of S2', () {
+    // #87: "Horizontal page slide; system back / edge swipe goes to the
+    // previous page." Against the real router, because both halves are the
+    // route's doing and a widget test of the page alone would pass without
+    // either.
+    testWidgets('a bad page number starts setup rather than a blank screen', (
+      tester,
+    ) async {
+      await pumpApp(tester, guards: guardsWith(), at: '/onboarding/99');
+
+      expect(find.byType(OnboardingWelcomePage), findsOneWidget);
+    });
+
+    testWidgets('starting moves on, and system back returns', (tester) async {
+      await pumpApp(tester, guards: guardsWith(), at: '/onboarding/1');
+      final l10n = AppLocalizations.of(
+        tester.element(find.byType(OnboardingWelcomePage)),
+      );
+
+      // What is on screen rather than `location()`: a `push` leaves the
+      // reported URL alone unless `optionURLReflectsImperativeAPIs` is set.
+      await tester.tap(find.text(l10n.onboardingWelcomeStart));
+      await tester.pumpAndSettle();
+      expect(find.text('S2'), findsOneWidget);
+      expect(find.byType(OnboardingWelcomePage), findsNothing);
+
+      // Android back. With `go` there is nothing under page 2, the press is
+      // not handled, and the system closes the app instead.
+      final handled = await tester.binding.handlePopRoute();
+      await tester.pumpAndSettle();
+
+      expect(handled, isTrue);
+      expect(find.byType(OnboardingWelcomePage), findsOneWidget);
+      expect(find.text('S2'), findsNothing);
+    });
+
+    testWidgets('and the pages slide sideways, with the edge swipe', (
+      tester,
+    ) async {
+      // The test platform is Android, whose default is a zoom that neither
+      // slides nor swipes. `CupertinoPageTransition` is what does both.
+      await pumpApp(tester, guards: guardsWith(), at: '/onboarding/1');
+
+      expect(find.byType(CupertinoPageTransition), findsOneWidget);
     });
   });
 
