@@ -339,6 +339,19 @@ class PlanRepository {
             ]))
           .watch();
 
+  /// Whether the learner has started a step.
+  ///
+  /// The router's onboarding guard reads this (`navigation.md`:
+  /// "/onboarding/* redirects to /today once enrolled"). It counts every
+  /// enrollment, not just the open one — someone who has finished a step and
+  /// not yet started the next is still not a new learner.
+  Future<bool> hasEnrollment() async {
+    final row = await _db
+        .customSelect('SELECT COUNT(*) AS n FROM enrollments')
+        .getSingle();
+    return row.read<int>('n') > 0;
+  }
+
   Future<DailyStat?> statsFor(String day) => (_db.select(
     _db.dailyStats,
   )..where((t) => t.day.equals(day))).getSingleOrNull();

@@ -205,6 +205,19 @@ class ExamRepository extends DatabaseAccessor<AppDatabase>
             ..where((t) => t.attemptId.equals(attemptId) & t.ord.equals(ord)))
           .write(ExamAnswersCompanion(flagged: Value(flagged ? 1 : 0)));
 
+  /// Whether that attempt is in the table at all.
+  ///
+  /// The router's guard reads this: FR-L12-01 resumes an exam from its id
+  /// alone, so a deep link or a restored process carries nothing else — and
+  /// an id for an attempt that was never created, or that a data reset wiped,
+  /// would open a runner with no questions in it.
+  Future<bool> exists(int attemptId) async {
+    final row = await (select(
+      db.examAttempts,
+    )..where((t) => t.id.equals(attemptId))).getSingleOrNull();
+    return row != null;
+  }
+
   /// The attempt to offer *Continue* on, or null. Today's *Resume* card.
   Future<ExamAttempt?> resumable(String sublevelCode) =>
       inProgressExam(sublevelCode).getSingleOrNull();

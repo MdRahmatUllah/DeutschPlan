@@ -22,6 +22,16 @@ import 'package:material_ui/material_ui.dart';
 void main() {
   late GoRouter router;
 
+  /// What a real caller passes to the routes that take one. `/study` is
+  /// guarded on it (#68), so a test that navigated there empty would be
+  /// redirected — which is the guard working, not the route missing.
+  Object? extraFor(String path) => switch (path) {
+    '/study' => const SessionArgs(wordUids: <String>['uid-haus']),
+    '/quiz' => const QuizArgs(direction: 'deEn', source: 'allLearned', seed: 1),
+    '/grammar-practice' => const GrammarPracticeArgs(topicUids: <String>['g1']),
+    _ => null,
+  };
+
   Future<void> pumpApp(WidgetTester tester, {String at = '/today'}) async {
     router = buildRouter(initialLocation: at);
     addTearDown(router.dispose);
@@ -93,7 +103,7 @@ void main() {
             .replaceAll(':step', 'A1.1')
             .replaceAll(':uid', 'uid-haus');
 
-        router.go(concrete);
+        router.go(concrete, extra: extraFor(concrete));
         await tester.pumpAndSettle();
 
         if (!matched() || location() != concrete) {
@@ -280,7 +290,7 @@ void main() {
       await pumpApp(tester);
       expect(find.byType(AppShell), findsOneWidget);
 
-      router.go('/study');
+      router.go('/study', extra: extraFor('/study'));
       await tester.pumpAndSettle();
 
       expect(find.text('T2'), findsOneWidget);
@@ -306,7 +316,7 @@ void main() {
         '/onboarding/1',
         '/splash',
       ]) {
-        router.go(path);
+        router.go(path, extra: extraFor(path));
         await tester.pumpAndSettle();
 
         // Both halves: a path that matches nothing also renders no shell, and
