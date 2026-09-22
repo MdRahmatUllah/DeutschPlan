@@ -52,7 +52,10 @@ String searchKey(String text) => _normalise(text, umlautExpansions);
 String searchKeyAlt(String text) => _normalise(text, umlautFolds);
 
 String _normalise(String text, Map<String, String> table) {
-  final lowered = text.trim().toLowerCase();
+  // Composed first, or "u" + combining diaeresis never matches the ü in the
+  // table below. Dart has no NFC, so the four letters German needs are spelled
+  // out; anything else is handled by the combining-mark strip further down.
+  final lowered = _compose(text.trim().toLowerCase());
 
   // Before the diacritic strip, or the decomposition below would take ä apart
   // into a + combining diaeresis and it would key as "a" rather than "ae".
@@ -65,6 +68,27 @@ String _normalise(String text, Map<String, String> table) {
   final stripped = _stripLatinMarks(_dropPunctuation(buffer.toString()));
   final collapsed = stripped.split(RegExp(r'\s+')).where((p) => p.isNotEmpty);
   return _stripArticle(collapsed.toList());
+}
+
+/// The precomposed forms of the letters the umlaut tables key on.
+///
+/// Dart has no `String.normalize`, and these four are the only ones where the
+/// difference changes the answer rather than just the diacritic strip: an
+/// unmapped decomposed letter still loses its mark below, but a decomposed ü
+/// would lose its umlaut instead of becoming "ue".
+const Map<String, String> _composed = <String, String>{
+  'ä': 'ä',
+  'ö': 'ö',
+  'ü': 'ü',
+};
+
+String _compose(String text) {
+  var result = text;
+  for (final MapEntry(key: decomposed, value: precomposed)
+      in _composed.entries) {
+    result = result.replaceAll(decomposed, precomposed);
+  }
+  return result;
 }
 
 String _stripArticle(List<String> parts) {
@@ -103,12 +127,33 @@ final RegExp _punctuation = RegExp(r'[!-#%-*,-/:;?@\[-\]_{}¡§«¶·»¿‐-‧
 /// itself on both sides, while a wrong mapping keys differently from Python.
 String _stripLatinMarks(String text) {
   final buffer = StringBuffer();
+  var baseWasLatin = false;
+
   for (final rune in text.runes) {
+    if (rune >= _combiningStart && rune <= _combiningEnd) {
+      // The same rule as Python's NFD strip: drop the mark when it sits on a
+      // Latin letter, keep it otherwise. Bangla vowel signs are outside this
+      // block entirely, so they never reach here.
+      if (!baseWasLatin) buffer.writeCharCode(rune);
+      continue;
+    }
+
     final char = String.fromCharCode(rune);
-    buffer.write(_latinFolds[char] ?? char);
+    final folded = _latinFolds[char];
+    baseWasLatin = folded != null || _isBasicLatinLetter(rune);
+    buffer.write(folded ?? char);
   }
   return buffer.toString();
 }
+
+/// Combining Diacritical Marks. Latin-Extended letters that are not in
+/// [_latinFolds] arrive here already decomposed only if the caller decomposed
+/// them, so this block is the one Python's NFD would produce.
+const int _combiningStart = 0x0300;
+const int _combiningEnd = 0x036F;
+
+bool _isBasicLatinLetter(int rune) =>
+    (rune >= 0x61 && rune <= 0x7A) || (rune >= 0x41 && rune <= 0x5A);
 
 /// Precomposed Latin letters folded to their base.
 ///

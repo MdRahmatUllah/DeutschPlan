@@ -210,6 +210,30 @@
       "search_key": "tuer",
       "search_key_alt": "tur",
       "why": "article and umlaut together"
+    },
+    {
+      "input": "Tür",
+      "search_key": "tuer",
+      "search_key_alt": "tur",
+      "why": "decomposed umlaut: u + combining diaeresis, as macOS pastes it"
+    },
+    {
+      "input": "Mädchen",
+      "search_key": "maedchen",
+      "search_key_alt": "madchen",
+      "why": "decomposed a-umlaut"
+    },
+    {
+      "input": "Café",
+      "search_key": "cafe",
+      "search_key_alt": "cafe",
+      "why": "decomposed acute on a non-German letter"
+    },
+    {
+      "input": "আমি ভালো",
+      "search_key": "আমি ভালো",
+      "search_key_alt": "আমি ভালো",
+      "why": "Bangla vowel signs are combining marks and must survive"
     }
   ]
 }

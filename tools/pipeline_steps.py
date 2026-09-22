@@ -439,7 +439,10 @@ def _normalise(text: str, table: dict[str, str]) -> str:
     apart into a + combining diaeresis and it would key as "a" rather than
     reaching "ae".
     """
-    lowered = text.strip().lower()
+    # Composed first, or "u" + combining diaeresis never matches the ü in the
+    # table and keys as "tur" instead of "tuer". Decomposed text is not
+    # exotic — macOS pastes it — and on Search a wrong key is no results.
+    lowered = unicodedata.normalize("NFC", text.strip().lower())
     mapped = "".join(table.get(char, char) for char in lowered)
     stripped = _strip_latin_marks(_drop_punctuation(mapped))
 
@@ -470,13 +473,12 @@ def search_key_alt(text: str) -> str:
 def assign_search_keys(words: Sequence) -> None:
     """Sets both keys on every word.
 
-    Keyed on the German headword with its article column folded in, because a
-    learner searching "das Haus" and one searching "Haus" are looking for the
-    same row.
+    Keyed on the German cell alone. The article column is deliberately not
+    prepended: `_strip_article` drops one leading article, so a cell already
+    reading "das Haus" plus an article column would key as "das haus" and a
+    learner typing "haus" would find nothing. And prepending buys nothing
+    otherwise — "Haus" keys as "haus" either way.
     """
     for word in words:
-        full = word.german
-        if getattr(word, "article", None):
-            full = f"{word.article} {word.german}"
-        word.search_key = search_key(full)
-        word.search_key_alt = search_key_alt(full)
+        word.search_key = search_key(word.german)
+        word.search_key_alt = search_key_alt(word.german)

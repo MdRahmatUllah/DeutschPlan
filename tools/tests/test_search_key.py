@@ -144,3 +144,28 @@ def test_the_danda_is_not_treated_as_punctuation():
     # Unicode calls it Po. search.md matches `bangla = raw`, so it stays.
     assert "।" not in PUNCTUATION
     assert search_key("আমি ভালো।") == "আমি ভালো।"
+
+
+def test_decomposed_and_composed_key_alike():
+    # macOS pastes decomposed text and several IMEs emit it. The table lookup
+    # only matches the precomposed letter, so without an NFC pass first this
+    # keyed as "tur" — a wrong key, and on Search that is no results.
+    assert search_key("Tür") == search_key("Tür") == "tuer"
+    assert search_key_alt("Tür") == search_key_alt("Tür") == "tur"
+    assert search_key("Mädchen") == "maedchen"
+
+
+def test_the_article_column_is_not_prepended():
+    # _strip_article drops one leading article. A German cell that already
+    # carries one, plus an article column, would key as "das haus" and the
+    # learner typing "haus" would find nothing.
+    word = Word(
+        source_file="f",
+        row=1,
+        article="das",
+        german="das Haus",
+        english="house",
+        level="A1",
+    )
+    assign_search_keys([word])
+    assert word.search_key == "haus"
