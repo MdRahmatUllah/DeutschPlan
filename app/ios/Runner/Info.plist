@@ -53,6 +53,22 @@
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
 	<string>Main</string>
+	<!-- deutschplan:// — the reminder notification and the WidgetKit
+	     extension (navigation.md, notifications-widget.md). A private
+	     scheme; nothing on the web serves it. -->
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>com.deutschplan.app</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>deutschplan</string>
+			</array>
+		</dict>
+	</array>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>

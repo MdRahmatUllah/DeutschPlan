@@ -1,3 +1,4 @@
+import 'package:deutschplan/router/deep_links.dart';
 import 'package:deutschplan/router/route_guards.dart';
 import 'package:deutschplan/router/routes.dart';
 import 'package:go_router/go_router.dart';
@@ -17,7 +18,16 @@ GoRouter buildRouter({String initialLocation = '/today', RouteGuards? guards}) {
     navigatorKey: rootNavigatorKey,
     initialLocation: initialLocation,
     routes: $appRoutes,
-    redirect: (context, state) => guardRedirect(state, checks),
+    redirect: (context, state) {
+      // A `deutschplan://` link is not a location: `deutschplan://exam/A1.2`
+      // names a step, and `/exam/:attemptId` in the table is the runner for
+      // one attempt. Resolved first, then the result goes round again and
+      // meets the guards like any other navigation.
+      if (state.uri.scheme == deepLinkScheme) {
+        return resolveDeepLink(state.uri);
+      }
+      return guardRedirect(state, checks);
+    },
     // A link that matches nothing is a stale notification or a stale widget,
     // not something to show the learner a framework page about — and not
     // something to show them a blank screen about either. Redirecting rather
