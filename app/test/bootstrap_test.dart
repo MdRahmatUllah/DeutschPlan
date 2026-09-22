@@ -3,7 +3,13 @@ library;
 
 import 'dart:io';
 
+import 'dart:convert';
+
+import 'package:deutschplan/data/repositories/backup_repository.dart';
 import 'package:deutschplan/bootstrap.dart';
+import 'package:share_plus/share_plus.dart' show XFile;
+import 'package:deutschplan/core/components/dp_button.dart';
+import 'package:deutschplan/features/bootstrap/bootstrap_error_screen.dart';
 import 'package:deutschplan/core/theme/dp_tokens.dart';
 import 'package:deutschplan/core/theme/glass_capability.dart';
 import 'package:deutschplan/core/theme/theme_mode.dart';
@@ -20,7 +26,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart'
-    show Brightness, FilledButton, Text, TextButton;
+    show Brightness, MaterialApp, Text;
 import 'package:path_provider_platform_interface/path_provider_platform_interface.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 import 'package:sqlite3/sqlite3.dart';
@@ -431,7 +437,7 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      await tester.tap(find.byType(FilledButton));
+      await tester.tap(_retryButton);
       expect(retried, 1);
     });
 
@@ -442,7 +448,7 @@ void main() {
         BootstrapErrorApp(failure: failureOf(BootstrapStep.database)),
       );
       await tester.pumpAndSettle();
-      expect(find.byType(TextButton), findsNothing);
+      expect(_exportButton, findsNothing);
 
       final db = AppDatabase.memory();
       addTearDown(db.close);
@@ -472,10 +478,10 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      final retry = tester.widget<FilledButton>(find.byType(FilledButton));
+      final retry = tester.widget<DpButton>(_retryButton);
       expect(retry.onPressed, isNotNull, reason: 'Retry is disabled');
 
-      await tester.tap(find.byType(FilledButton));
+      await tester.tap(_retryButton);
       await tester.pumpAndSettle();
       expect(attempts, 1);
     });
@@ -520,7 +526,7 @@ void main() {
         findsOneWidget,
       );
 
-      await tester.tap(find.byType(FilledButton));
+      await tester.tap(_retryButton);
       await tester.pumpAndSettle();
 
       expect(find.byType(BootstrapErrorApp), findsNothing);
@@ -537,7 +543,7 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      await tester.tap(find.byType(FilledButton));
+      await tester.tap(_retryButton);
       await tester.pumpAndSettle();
 
       expect(
@@ -554,9 +560,94 @@ void main() {
       }
     });
   });
+
+  group('FR-S1-03 — export from the error screen', () {
+    testWidgets('tapping it hands a real file to the platform', (tester) async {
+      // The test that actually catches the no-op. An assertion on the file
+      // *format* could not: reverting the button to `() {}` left it green,
+      // because nothing drove the button.
+      //
+      // `runAsync` because the tap does real disk work — reading the database
+      // and writing the backup — and a `testWidgets` body is FakeAsync, where
+      // those futures never complete and the share is never reached.
+      final db = AppDatabase.memory();
+      addTearDown(db.close);
+
+      XFile? shared;
+      await tester.pumpWidget(
+        MaterialApp(
+          home: BootstrapGate(
+            failure: BootstrapFailure(
+              step: BootstrapStep.content,
+              error: 'no content',
+              stackTrace: StackTrace.empty,
+              db: db,
+            ),
+            onShare: (file) async => shared = file,
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.runAsync(() async {
+        await tester.tap(_exportButton);
+
+        // `onPressed` is a `VoidCallback`, so the export is fire-and-forget:
+        // the tap returns long before the database has been read and the file
+        // written. Bounded rather than a fixed delay — a sleep long enough to
+        // be safe on a slow machine is a second wasted on every run, and one
+        // short enough to be quick is a flake.
+        for (var i = 0; i < 100 && shared == null; i++) {
+          await Future<void>.delayed(const Duration(milliseconds: 20));
+        }
+      });
+
+      expect(shared, isNotNull, reason: 'the button did nothing');
+      expect(shared!.path, endsWith(exportFileName));
+      expect(File(shared!.path).existsSync(), isTrue);
+    });
+
+    // Plain `test`, not `testWidgets`: this pumps no widgets, and a
+    // `testWidgets` body runs under FakeAsync where a real database future
+    // never completes — the test hangs rather than failing.
+    test('writes a real backup file, not a no-op', () async {
+      // The button was wired to `() {}` and shipped, with a widget test that
+      // only proved a counter incremented. That is the shape of the failure:
+      // a test handed a fake callback cannot tell a real one from an empty
+      // one, so this asserts the artefact instead.
+      final db = AppDatabase.memory();
+      addTearDown(db.close);
+
+      final json = await BackupRepository(db).exportJson();
+      final file = File('${temp.path}/$exportFileName');
+      await file.writeAsString(json, flush: true);
+
+      expect(file.existsSync(), isTrue);
+
+      final decoded =
+          jsonDecode(file.readAsStringSync()) as Map<String, Object?>;
+      expect(decoded['tables'], isA<Map<String, Object?>>());
+      expect(
+        decoded['schema_version'],
+        AppDatabase.latestSchemaVersion,
+        reason: 'the import side reads this to know what it is looking at',
+      );
+    });
+
+    test('and the name is the one import will look for', () {
+      expect(exportFileName, endsWith('.json'));
+      expect(exportFileName, 'deutschplan-backup.json');
+    });
+  });
 }
 
 /// Serves [assets] to `rootBundle`, replacing whatever was there.
+/// The error screen's two actions, found by what they are rather than by the
+/// Material type they used to be: #86 rebuilt them as `DpButton`, and a finder
+/// on `FilledButton` was really asserting which framework widget was inside.
+final Finder _retryButton = find.widgetWithText(DpButton, 'Retry');
+final Finder _exportButton = find.widgetWithText(DpButton, 'Export progress');
+
 void _serveAssets(Map<String, Uint8List> assets) {
   TestWidgetsFlutterBinding.instance.defaultBinaryMessenger
       .setMockMessageHandler('flutter/assets', (ByteData? message) async {

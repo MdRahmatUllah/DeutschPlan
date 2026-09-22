@@ -1,7 +1,14 @@
 import 'dart:async';
 
+import 'package:deutschplan/features/bootstrap/bootstrap_error_screen.dart';
 import 'package:deutschplan/features/splash/splash_screen.dart';
 import 'package:flutter/foundation.dart' show kReleaseMode, debugPrint;
+
+import 'dart:io';
+
+import 'package:deutschplan/data/repositories/backup_repository.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:deutschplan/bootstrap.dart';
 import 'package:deutschplan/core/theme/app_theme.dart';
 import 'package:deutschplan/core/providers/app_providers.dart';
@@ -227,12 +234,24 @@ class DeutschPlanApp extends ConsumerWidget {
 /// buttons a callback-less error screen renders are not an error screen, they
 /// are a dead end.
 class BootstrapGate extends StatefulWidget {
-  const BootstrapGate({required this.failure, this.onRetry, super.key});
+  const BootstrapGate({
+    required this.failure,
+    this.onRetry,
+    this.onShare,
+    super.key,
+  });
 
   final BootstrapFailure failure;
 
   /// Overridden in tests, which have no disk to bootstrap against.
   final Future<BootstrapResult> Function()? onRetry;
+
+  /// Hands the finished backup to the platform. Overridden in tests, which
+  /// have no share sheet — and injected rather than called inline so a test
+  /// can drive the *wiring* and not just the file format. A test that only
+  /// checked the artefact could not tell this button from an empty closure,
+  /// which is how it shipped as one.
+  final Future<void> Function(XFile file)? onShare;
 
   @override
   State<BootstrapGate> createState() => _BootstrapGateState();
@@ -274,75 +293,47 @@ class _BootstrapGateState extends State<BootstrapGate> {
       BootstrapErrorApp(
         failure: _failure,
         onRetry: _retrying ? null : _retry,
-        // #150 wires the share sheet; until then the button is offered only
-        // where it can be honoured.
-        onExport: _failure.canExport ? () {} : null,
+        onExport: _failure.canExport ? _export : null,
       );
+
+  /// FR-S1-03's second half: get the learner's data out when nothing else in
+  /// the app will start.
+  ///
+  /// It used to be `() {}` with a comment deferring the share sheet to another
+  /// issue — which offered a button that did nothing, the very thing
+  /// `canExport` exists to prevent. `share_plus` is already a dependency, so
+  /// there was nothing to wait for.
+  ///
+  /// The file goes to temporary storage rather than app support: it is a copy
+  /// being handed to another app, not state, and the OS may clear it
+  /// afterwards — which is the right lifetime for something already sent.
+  Future<void> _export() async {
+    final db = _failure.db;
+    if (db == null) return;
+
+    final json = await BackupRepository(db).exportJson();
+    final file = File(
+      '${(await getTemporaryDirectory()).path}/$exportFileName',
+    );
+    await file.writeAsString(json, flush: true);
+
+    final share =
+        widget.onShare ??
+        (XFile shared) async {
+          await SharePlus.instance.share(ShareParams(files: <XFile>[shared]));
+        };
+    await share(XFile(file.path));
+  }
 }
+
+/// What the exported backup is called when it leaves the app.
+///
+/// Named rather than inlined because FR-M6 will read it back, and a file the
+/// import side cannot recognise is a backup the learner cannot restore.
+const String exportFileName = 'deutschplan-backup.json';
 
 /// FR-S1-03: a full-screen, recoverable error. Never a blank screen.
 ///
 /// Its own `MaterialApp`, because the failure may well be the database the
 /// real one is built from — a theme resolved from settings that would not load
 /// is not available here.
-class BootstrapErrorApp extends StatelessWidget {
-  const BootstrapErrorApp({
-    required this.failure,
-    this.onRetry,
-    this.onExport,
-    super.key,
-  });
-
-  final BootstrapFailure failure;
-  final VoidCallback? onRetry;
-  final VoidCallback? onExport;
-
-  @override
-  Widget build(BuildContext context) => MaterialApp(
-    theme: AppTheme.light(),
-    darkTheme: AppTheme.dark(),
-    localizationsDelegates: AppLocalizations.localizationsDelegates,
-    supportedLocales: supportedLocales,
-    home: Scaffold(
-      body: SafeArea(
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(24),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                Builder(
-                  builder: (context) {
-                    final l10n = AppLocalizations.of(context);
-                    return Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: <Widget>[
-                        Text(switch (failure.step) {
-                          BootstrapStep.database => l10n.bootstrapErrorDatabase,
-                          BootstrapStep.content => l10n.bootstrapErrorContent,
-                          BootstrapStep.settings => l10n.bootstrapErrorSettings,
-                        }, textAlign: TextAlign.center),
-                        const SizedBox(height: 16),
-                        FilledButton(
-                          onPressed: onRetry,
-                          child: Text(l10n.retry),
-                        ),
-                        // Only when user.db opened: the button has to do
-                        // something, or it is a promise the screen cannot keep.
-                        if (failure.canExport)
-                          TextButton(
-                            onPressed: onExport,
-                            child: Text(l10n.exportProgress),
-                          ),
-                      ],
-                    );
-                  },
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    ),
-  );
-}
