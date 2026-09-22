@@ -54,7 +54,10 @@ Grammar sheet, same contract:
 - **PIPE-01** Level comes from the word's own `Level` cell, never from the week's phase label.
 - **PIPE-02** Each level is split into `X.1`/`X.2` at the week boundary nearest the middle by word count; grammar is split by count in teaching order.
 - **PIPE-03** `uid = sha1(level|german|pos|english)[:16]`. A collision inside one build appends the sequence number and is reported.
-- **PIPE-04** `search_key` = lower-case, article stripped, umlauts → ae/oe/ue/ss, diacritics removed; `search_key_alt` folds umlauts to a/o/u. The Dart `text_norm.dart` MUST produce identical output (shared test vectors in `tools/test_vectors.json`).
+- **PIPE-04** `search_key` = lower-case, article stripped, punctuation dropped, umlauts → ae/oe/ue/ss, Latin diacritics removed; `search_key_alt` folds umlauts to a/o/u. The Dart `text_norm.dart` MUST produce identical output (shared test vectors in `tools/test_vectors.json`).
+  - The article is dropped only as a whole leading word, so `Diebstahl` keeps its `die`, and `der` on its own stays — a learner can look that up.
+  - Punctuation is an **explicit list** of the marks that appear in German and English, not a Unicode category test. The categories `Pc Pd Pe Pf Pi Po Ps` include the Bangla danda, and `search.md` matches `bangla = raw`, so Bangla has to come back byte for byte. `text_norm.dart` carries the same characters as a regex class and a test compares the two lists character by character.
+  - Diacritics are stripped from Latin letters only, for the same reason: Bangla vowel signs are combining marks too.
 - **PIPE-05** Cells beginning with `=`, `-`, `+` or `@` are stored as text (Excel would treat them as formulas); the tool warns.
 - **PIPE-06** Example lines pair DE[i] with EN[i]; an unmatched DE line gets a null translation.
 - **PIPE-07** `content_version` = build timestamp `YYYYMMDDHHMM`; also written to `content_manifest.json` with per-step counts and the uid list, which CI diffs against the previous build to produce the update summary shown on Today (BR-CONTENT-03).

@@ -1,0 +1,239 @@
+{
+  "note": "PIPE-04. Both tools/pipeline_steps.py and lib/domain/text_norm.dart must reproduce every row exactly. Search is where a mismatch is invisible: the word is in the database, the query looks right, and nothing comes back.",
+  "vectors": [
+    {
+      "input": "Haus",
+      "search_key": "haus",
+      "search_key_alt": "haus",
+      "why": "plain ASCII"
+    },
+    {
+      "input": "HAUS",
+      "search_key": "haus",
+      "search_key_alt": "haus",
+      "why": "casing"
+    },
+    {
+      "input": "  Haus  ",
+      "search_key": "haus",
+      "search_key_alt": "haus",
+      "why": "surrounding whitespace"
+    },
+    {
+      "input": "der Tisch",
+      "search_key": "tisch",
+      "search_key_alt": "tisch",
+      "why": "leading article"
+    },
+    {
+      "input": "die Bank",
+      "search_key": "bank",
+      "search_key_alt": "bank",
+      "why": "leading article"
+    },
+    {
+      "input": "das Buch",
+      "search_key": "buch",
+      "search_key_alt": "buch",
+      "why": "leading article"
+    },
+    {
+      "input": "den Mann",
+      "search_key": "mann",
+      "search_key_alt": "mann",
+      "why": "accusative article"
+    },
+    {
+      "input": "dem Kind",
+      "search_key": "kind",
+      "search_key_alt": "kind",
+      "why": "dative article"
+    },
+    {
+      "input": "des Hauses",
+      "search_key": "hauses",
+      "search_key_alt": "hauses",
+      "why": "genitive article"
+    },
+    {
+      "input": "Diebstahl",
+      "search_key": "diebstahl",
+      "search_key_alt": "diebstahl",
+      "why": "starts with 'die' but is one word"
+    },
+    {
+      "input": "Derby",
+      "search_key": "derby",
+      "search_key_alt": "derby",
+      "why": "starts with 'der' but is one word"
+    },
+    {
+      "input": "der  Tisch",
+      "search_key": "tisch",
+      "search_key_alt": "tisch",
+      "why": "doubled space after the article"
+    },
+    {
+      "input": "Tur",
+      "search_key": "tur",
+      "search_key_alt": "tur",
+      "why": "no umlaut to begin with"
+    },
+    {
+      "input": "Tür",
+      "search_key": "tuer",
+      "search_key_alt": "tur",
+      "why": "u-umlaut"
+    },
+    {
+      "input": "Mädchen",
+      "search_key": "maedchen",
+      "search_key_alt": "madchen",
+      "why": "a-umlaut"
+    },
+    {
+      "input": "schön",
+      "search_key": "schoen",
+      "search_key_alt": "schon",
+      "why": "o-umlaut"
+    },
+    {
+      "input": "groß",
+      "search_key": "gross",
+      "search_key_alt": "gross",
+      "why": "eszett"
+    },
+    {
+      "input": "Straße",
+      "search_key": "strasse",
+      "search_key_alt": "strasse",
+      "why": "eszett mid-word"
+    },
+    {
+      "input": "STRASSE",
+      "search_key": "strasse",
+      "search_key_alt": "strasse",
+      "why": "already spelled out, upper case"
+    },
+    {
+      "input": "Grüße",
+      "search_key": "gruesse",
+      "search_key_alt": "grusse",
+      "why": "umlaut and eszett together"
+    },
+    {
+      "input": "Café",
+      "search_key": "cafe",
+      "search_key_alt": "cafe",
+      "why": "acute accent, not German"
+    },
+    {
+      "input": "naïve",
+      "search_key": "naive",
+      "search_key_alt": "naive",
+      "why": "diaeresis on a non-umlaut vowel"
+    },
+    {
+      "input": "Guten Tag!",
+      "search_key": "guten tag",
+      "search_key_alt": "guten tag",
+      "why": "trailing punctuation"
+    },
+    {
+      "input": "Wie geht's?",
+      "search_key": "wie geht s",
+      "search_key_alt": "wie geht s",
+      "why": "apostrophe and question mark"
+    },
+    {
+      "input": "aus-steigen",
+      "search_key": "aus steigen",
+      "search_key_alt": "aus steigen",
+      "why": "hyphen"
+    },
+    {
+      "input": "z. B.",
+      "search_key": "z b",
+      "search_key_alt": "z b",
+      "why": "abbreviation with dots"
+    },
+    {
+      "input": "(der) Wagen",
+      "search_key": "wagen",
+      "search_key_alt": "wagen",
+      "why": "parenthesised article"
+    },
+    {
+      "input": "মেয়ে",
+      "search_key": "মেয়ে",
+      "search_key_alt": "মেয়ে",
+      "why": "Bangla, must pass through unchanged"
+    },
+    {
+      "input": "বই",
+      "search_key": "বই",
+      "search_key_alt": "বই",
+      "why": "Bangla, two letters"
+    },
+    {
+      "input": "ঘর্ষণ",
+      "search_key": "ঘর্ষণ",
+      "search_key_alt": "ঘর্ষণ",
+      "why": "Bangla with a conjunct and a vowel sign"
+    },
+    {
+      "input": "",
+      "search_key": "",
+      "search_key_alt": "",
+      "why": "empty"
+    },
+    {
+      "input": "der",
+      "search_key": "der",
+      "search_key_alt": "der",
+      "why": "the article alone is not stripped"
+    },
+    {
+      "input": "আমি ভালো।",
+      "search_key": "আমি ভালো।",
+      "search_key_alt": "আমি ভালো।",
+      "why": "Bangla with a danda: Unicode calls it punctuation, and it must survive"
+    },
+    {
+      "input": "Größe",
+      "search_key": "groesse",
+      "search_key_alt": "grosse",
+      "why": "umlaut and eszett, alt key folds only the umlaut"
+    },
+    {
+      "input": "die Tür",
+      "search_key": "tuer",
+      "search_key_alt": "tur",
+      "why": "article and umlaut together"
+    },
+    {
+      "input": "Tür",
+      "search_key": "tuer",
+      "search_key_alt": "tur",
+      "why": "decomposed umlaut: u + combining diaeresis, as macOS pastes it"
+    },
+    {
+      "input": "Mädchen",
+      "search_key": "maedchen",
+      "search_key_alt": "madchen",
+      "why": "decomposed a-umlaut"
+    },
+    {
+      "input": "Café",
+      "search_key": "cafe",
+      "search_key_alt": "cafe",
+      "why": "decomposed acute on a non-German letter"
+    },
+    {
+      "input": "আমি ভালো",
+      "search_key": "আমি ভালো",
+      "search_key_alt": "আমি ভালো",
+      "why": "Bangla vowel signs are combining marks and must survive"
+    }
+  ]
+}

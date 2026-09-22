@@ -23,6 +23,7 @@ from pipeline_steps import (
     LEVELS,
     PipelineError,
     assign_grammar_uids,
+    assign_search_keys,
     assign_uids,
     LevelSplit,
     assign_sublevels,
@@ -106,6 +107,8 @@ class Word:
     sublevel_code: str | None = None
     seq: int | None = None
     seq_in_sublevel: int | None = None
+    search_key: str | None = None
+    search_key_alt: str | None = None
 
 
 @dataclass
@@ -470,6 +473,8 @@ def derive(sources: list[SourceBook]) -> dict[str, LevelSplit]:
         code = word.sublevel_code or ""
         per_step[code] = per_step.get(code, 0) + 1
         word.seq_in_sublevel = per_step[code]
+
+    assign_search_keys(words)
 
     for line in assign_uids(words) + assign_grammar_uids(grammar):
         print(f"warning: {line}", file=sys.stderr)

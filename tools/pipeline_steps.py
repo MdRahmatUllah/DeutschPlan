@@ -7,6 +7,7 @@ can be tested on its own, without a workbook and without a database.
 from __future__ import annotations
 
 import hashlib
+import unicodedata
 from dataclasses import dataclass
 from typing import Iterable, Sequence
 
@@ -343,3 +344,141 @@ def assign_grammar_uids(rows: Sequence) -> list[str]:
         row.uid = uid
 
     return reports
+
+
+# PIPE-04: the two search keys.
+#
+# `text_norm.dart` must produce byte-identical output, which is what
+# `tools/test_vectors.json` exists to hold both sides to. Search is the screen
+# where a mismatch is invisible: the word is in the database, the query looks
+# right, and nothing comes back.
+
+#: Stripped from the front of a German headword before keying. Nouns are
+#: authored with their article in a separate column, but the German column
+#: carries one often enough — and a learner typing "Haus" must find "das Haus".
+GERMAN_ARTICLES = ("der", "die", "das", "den", "dem", "des")
+
+#: umlaut -> the spelling a German keyboard-less learner types. This is the
+#: German convention, not a diacritic strip: ä is "ae", never "a".
+UMLAUT_EXPANSIONS = {
+    "ä": "ae",
+    "ö": "oe",
+    "ü": "ue",
+    "ß": "ss",
+}
+
+#: The same letters folded instead of expanded, for `search_key_alt`. Someone
+#: who types "Tur" for "Tür" is served by this one.
+UMLAUT_FOLDS = {
+    "ä": "a",
+    "ö": "o",
+    "ü": "u",
+    "ß": "ss",
+}
+
+
+def _strip_article(text: str) -> str:
+    """Drops a leading German article, and only a leading one.
+
+    "die Bank" keys as "bank"; "Diebstahl" keeps its "die", because the check
+    is on a whole word.
+    """
+    parts = text.split(None, 1)
+    if len(parts) == 2 and parts[0] in GERMAN_ARTICLES:
+        return parts[1]
+    return text
+
+
+def _strip_latin_marks(text: str) -> str:
+    """Removes combining marks from Latin letters, and leaves other scripts.
+
+    A naive NFD-and-drop-every-mark would mangle Bangla: its vowel signs are
+    combining characters too, and `search.md` matches `bangla = raw`, so a
+    Bangla meaning has to come back byte-for-byte.
+    """
+    result: list[str] = []
+    base_is_latin = False
+    for char in unicodedata.normalize("NFD", text):
+        if unicodedata.combining(char):
+            if not base_is_latin:
+                result.append(char)
+            continue
+        base_is_latin = "LATIN" in unicodedata.name(char, "")
+        result.append(char)
+    return unicodedata.normalize("NFC", "".join(result))
+
+
+#: Punctuation dropped before keying, as an explicit list rather than a
+#: Unicode category test.
+#:
+#: The categories `Pc Pd Pe Pf Pi Po Ps` cover Devanagari danda, Arabic comma
+#: and a hundred other marks, and `text_norm.dart` has no category lookup to
+#: match them with. Worse, one of them matters: `search.md` matches
+#: `bangla = raw`, so Bangla has to come back byte for byte, and a danda in a
+#: Bangla meaning must survive.
+#:
+#: So this is the punctuation that actually appears in German and English text,
+#: and `text_norm.dart` carries the same characters as a regex class. Anything
+#: outside it passes through on both sides, which is the safe direction.
+PUNCTUATION = frozenset(
+    "!\"#%&'()*,-./:;?@[\]_{}"
+    "¡§«¶·»¿"
+) | frozenset(chr(c) for c in range(0x2010, 0x2028)) | frozenset(
+    chr(c) for c in range(0x2030, 0x205F)
+)
+
+
+def _drop_punctuation(text: str) -> str:
+    return "".join(" " if char in PUNCTUATION else char for char in text)
+
+
+def _normalise(text: str, table: dict[str, str]) -> str:
+    """Lower-case, article stripped, umlauts mapped, diacritics removed.
+
+    The umlaut mapping runs before the diacritic strip, or NFD would take ä
+    apart into a + combining diaeresis and it would key as "a" rather than
+    reaching "ae".
+    """
+    # Composed first, or "u" + combining diaeresis never matches the ü in the
+    # table and keys as "tur" instead of "tuer". Decomposed text is not
+    # exotic — macOS pastes it — and on Search a wrong key is no results.
+    lowered = unicodedata.normalize("NFC", text.strip().lower())
+    mapped = "".join(table.get(char, char) for char in lowered)
+    stripped = _strip_latin_marks(_drop_punctuation(mapped))
+
+    # After the article check, because "der" only counts as an article when it
+    # is a whole word, and collapsing whitespace first is what makes that test
+    # reliable on "der   Tisch".
+    collapsed = " ".join(stripped.split())
+    return _strip_article(collapsed)
+
+
+def search_key(text: str) -> str:
+    """PIPE-04's first key: umlauts expanded the German way.
+
+    "Tür" keys as "tuer", which is what someone without a German keyboard
+    types.
+    """
+    return _normalise(text, UMLAUT_EXPANSIONS)
+
+
+def search_key_alt(text: str) -> str:
+    """PIPE-04's second key: umlauts folded to the bare vowel.
+
+    "Tür" keys as "tur", for the learner who types the letter they see.
+    """
+    return _normalise(text, UMLAUT_FOLDS)
+
+
+def assign_search_keys(words: Sequence) -> None:
+    """Sets both keys on every word.
+
+    Keyed on the German cell alone. The article column is deliberately not
+    prepended: `_strip_article` drops one leading article, so a cell already
+    reading "das Haus" plus an article column would key as "das haus" and a
+    learner typing "haus" would find nothing. And prepending buys nothing
+    otherwise — "Haus" keys as "haus" either way.
+    """
+    for word in words:
+        word.search_key = search_key(word.german)
+        word.search_key_alt = search_key_alt(word.german)
