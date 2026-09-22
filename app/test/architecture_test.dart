@@ -195,6 +195,60 @@ void main() {
           'Go through a repository in lib/data/ instead:\n${offenders.join('\n')}',
     );
   });
+  test('layering rule 3 — nothing writes to the attached course', () {
+    // content.db is read-only by construction, not by a flag: SQLite only
+    // honours a `?mode=ro` attach when the main connection was opened with
+    // SQLITE_OPEN_URI, and drift_flutter's is not (ADR 26). This is what
+    // keeps the promise instead — a write to a content table is a build
+    // failure rather than a corrupted course on one learner's phone.
+    const contentTables = <String>[
+      'words',
+      'word_examples',
+      'grammar_topics',
+      'skill_prompts',
+      'interference_tips',
+      'levels',
+      'sublevels',
+      'categories',
+      'words_fts',
+      'words_trigram',
+      'examples_fts',
+    ];
+    final write = RegExp(
+      r'\b(INSERT\s+INTO|UPDATE|DELETE\s+FROM|REPLACE\s+INTO)\s+'
+      r'(c\.)?"?(\w+)"?',
+      caseSensitive: false,
+    );
+
+    final offenders = <String>[];
+    for (final file in _dartFilesIn('lib')) {
+      for (final match in write.allMatches(file.readAsStringSync())) {
+        final table = match.group(3);
+        if (contentTables.contains(table)) {
+          offenders.add('${_rel(file)}: ${match.group(0)}');
+        }
+      }
+    }
+
+    // The .drift files hold the SQL drift compiles, so they are checked too.
+    for (final name in <String>['content.drift', 'content_schema.drift']) {
+      final file = File('lib/data/db/$name');
+      if (!file.existsSync()) continue;
+      for (final match in write.allMatches(file.readAsStringSync())) {
+        if (contentTables.contains(match.group(3))) {
+          offenders.add('$name: ${match.group(0)}');
+        }
+      }
+    }
+
+    expect(
+      offenders,
+      isEmpty,
+      reason:
+          'the course is attached read-only by construction; these would '
+          'modify it:\n${offenders.join('\n')}',
+    );
+  });
 }
 
 /// Repo-relative path with forward slashes on every platform.

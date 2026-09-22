@@ -1,0 +1,86 @@
+import 'content_schema.drift';
+
+-- Every read of the course. `docs/02-data/content-database.md` gives the four
+-- shapes; drift type-checks each one against `content_schema.drift` and
+-- generates a typed row class, so a query naming a column that does not exist
+-- is a build error rather than a crash on a learner's phone.
+--
+-- **The table names are unqualified, and that is deliberate.** The real tables
+-- live in the attached schema `c`, and the doc writes `c.words`. drift cannot
+-- type-check a schema prefix it has no declaration for, so these say `words`
+-- and SQLite resolves it: `main` (user.db) has no table of that name, so the
+-- search falls through to the attached database.
+--
+-- That resolution is load-bearing. `content_attach_test.dart` asserts no table
+-- name exists in both schemas, because a `words` table added to user.db would
+-- silently capture every one of these queries.
+
+-- The step screen. `idx_words_step` covers the filter and the order together.
+wordsForStep:
+  SELECT * FROM words
+  WHERE sublevel_code = :code
+  ORDER BY seq_in_sublevel;
+
+countForStep:
+  SELECT word_count, grammar_count FROM sublevels WHERE code = :code;
+
+-- Search tier 1. `search.md`: search_key, search_key_alt, and the Bangla
+-- meaning matched raw — a Bangla query is not normalised, so it has to hit the
+-- column as typed.
+exactMatches:
+  SELECT * FROM words
+  WHERE search_key = :key OR search_key_alt = :alt OR bangla = :raw
+  ORDER BY freq DESC, seq;
+
+-- Search tier 2. MATCH names the virtual table without a schema prefix, which
+-- is what FTS5 requires; the query string is quoted and column-filtered by the
+-- caller.
+prefixMatches:
+  SELECT w.*, f.rank AS rank FROM words w
+  JOIN (
+    SELECT uid, rank FROM words_fts WHERE words_fts MATCH :query
+  ) f ON f.uid = w.uid
+  ORDER BY f.rank
+  LIMIT :limit;
+
+-- Search tier 3. Candidates only: `search.md` filters these by edit distance
+-- in Dart, because SQLite has no OSA distance and 400 rows is cheap to rank.
+trigramCandidates:
+  SELECT w.* FROM words w
+  JOIN (
+    SELECT uid FROM words_trigram WHERE words_trigram MATCH :query
+  ) f ON f.uid = w.uid
+  LIMIT :limit;
+
+-- Search tier 4, "in sentences". The headword comes back with the sentence
+-- because the result row shows it above.
+sentenceMatches:
+  SELECT e.word_uid AS wordUid, e.german AS german, e.english AS english,
+         w.german AS head, w.article AS article
+  FROM examples_fts e
+  JOIN words w ON w.uid = e.word_uid
+  WHERE examples_fts MATCH :query
+  LIMIT :limit;
+
+wordByUid:
+  SELECT * FROM words WHERE uid = :uid;
+
+examplesForWord:
+  SELECT * FROM word_examples WHERE word_uid = :uid ORDER BY ord;
+
+tipsForWord:
+  SELECT * FROM interference_tips WHERE word_uid = :uid;
+
+grammarForStep:
+  SELECT * FROM grammar_topics WHERE sublevel_code = :code ORDER BY seq;
+
+allSublevels:
+  SELECT s.*, l.name AS levelName, l.exam_target AS examTarget
+  FROM sublevels s JOIN levels l ON l.code = s.level_code
+  ORDER BY s.ord;
+
+skillPromptsForLevel:
+  SELECT * FROM skill_prompts WHERE level_code = :code ORDER BY ord;
+
+contentMeta:
+  SELECT value FROM meta WHERE "key" = :key;

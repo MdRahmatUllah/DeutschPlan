@@ -9,6 +9,22 @@ targets:
           # Providers auto-dispose unless they opt in with @Riverpod(keepAlive: true).
           provider_name_suffix: Provider
 
+      # drift: the content database uses FTS5, and the analyzer has to know
+      # the module to type-check a MATCH against words_fts. Without this every
+      # search query falls back to "unknown table" and generates nothing.
+      drift_dev:
+        options:
+          sqlite:
+            modules:
+              - fts5
+          # The manager API generates a table manager per table on the
+          # database. ContentDao's tables live in the attached content.db and
+          # deliberately are not on the main database — adding them would make
+          # createAll() build empty copies in user.db that shadow the attached
+          # ones — so the generated managers reference classes that do not
+          # exist. Nothing uses the manager API; the queries are hand-written.
+          generate_manager: false
+
       # Immutable models and JSON — docs/05-dev-guide/coding-standards.md.
       json_serializable:
         options:

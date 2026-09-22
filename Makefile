@@ -32,7 +32,8 @@ content: ## Excel -> content.db -> app/assets/db/content.db
 content-diff: ## What changed since the committed asset. Run before `make content`.
 	@python tools/content_manifest.py 	  $(APP)/assets/db/content_manifest.json content/build/content_manifest.json
 
-gen: ## Migration helpers, then build_runner: riverpod, freezed, drift, go_router
+gen: ## Mirror + migration helpers, then build_runner
+	python tools/mirror_content_schema.py
 	$(DART) dart run drift_dev schema steps drift_schemas/ lib/data/db/schema_versions.dart
 	$(DART) dart run drift_dev schema generate drift_schemas/ test/db/generated/
 	$(DART) dart run build_runner build --delete-conflicting-outputs
