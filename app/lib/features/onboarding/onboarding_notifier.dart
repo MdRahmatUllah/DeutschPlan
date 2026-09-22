@@ -129,7 +129,15 @@ class OnboardingNotifier extends _$OnboardingNotifier {
       state = state.copyWith(reminderOn: false, reminderBlocked: false);
       return;
     }
-    final allowed = await ref.read(notificationPermissionProvider).request();
+    // A request that throws — one already running, no activity to show it
+    // on — was never answered. Nothing is changed rather than a refusal
+    // recorded: the learner has not said no.
+    final bool allowed;
+    try {
+      allowed = await ref.read(notificationPermissionProvider).request();
+    } on Object {
+      return;
+    }
     state = state.copyWith(reminderOn: allowed, reminderBlocked: !allowed);
   }
 

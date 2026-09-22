@@ -45,6 +45,7 @@ void main() {
   Future<void> pump(
     WidgetTester tester, {
     bool allowed = true,
+    bool permissionThrows = false,
     bool germanVoice = true,
     bool downloadFails = false,
     DpMode mode = DpMode.light,
@@ -57,7 +58,7 @@ void main() {
       ..devicePixelRatio = 3;
     addTearDown(tester.view.reset);
 
-    permission = _FakePermission(allowed: allowed);
+    permission = _FakePermission(allowed: allowed, throws: permissionThrows);
     tts = _FakeTts(available: germanVoice);
     downloads = _FakeDownloads(fails: downloadFails);
     container = ProviderContainer(
@@ -132,6 +133,21 @@ void main() {
       expect(permission.asked, 1);
       expect(draft().reminderOn, isFalse);
       expect(find.text(l10n.onboardingReminderBlocked), findsOneWidget);
+    });
+
+    testWidgets('and a request that throws changes nothing', (tester) async {
+      // permission_handler errors rather than answers when a request is
+      // already running. That is no answer — not a refusal to record.
+      await pump(tester, permissionThrows: true);
+
+      await tester.tap(reminderSwitch());
+      await tester.pump();
+      await tester.pump();
+
+      expect(tester.takeException(), isNull);
+      expect(draft().reminderOn, isFalse);
+      expect(draft().reminderBlocked, isFalse);
+      expect(find.text(l10n.onboardingReminderOff), findsOneWidget);
     });
 
     testWidgets('and switching it off asks nothing', (tester) async {
@@ -367,14 +383,18 @@ void main() {
 }
 
 class _FakePermission implements NotificationPermission {
-  _FakePermission({required this.allowed});
+  _FakePermission({required this.allowed, this.throws = false});
 
   final bool allowed;
+  final bool throws;
   int asked = 0;
 
   @override
   Future<bool> request() async {
     asked++;
+    if (throws) {
+      throw StateError('A request for permissions is already running');
+    }
     return allowed;
   }
 }

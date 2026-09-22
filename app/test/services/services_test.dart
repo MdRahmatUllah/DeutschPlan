@@ -6,6 +6,7 @@ import 'package:deutschplan/data/repositories/model_repository.dart';
 import 'package:deutschplan/data/repositories/settings_repository.dart';
 import 'package:deutschplan/services/model_downloads.dart';
 import 'package:deutschplan/services/tts/system_tts.dart';
+import 'package:flutter/services.dart' show PlatformException;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 
@@ -92,6 +93,14 @@ void main() {
       expect(tts.calls, isEmpty);
     });
 
+    test('and a platform error is a no, not a throw', () async {
+      // An engine that failed to bind throws from the channel. Page 5 relies
+      // on false to show the slashed speaker.
+      final tts = _FakeFlutterTts(available: true, throws: true);
+
+      expect(await SystemTts(tts).speak('Guten Tag!'), isFalse);
+    });
+
     test('an answer that is not a plain yes is a no', () async {
       final tts = _FakeFlutterTts(available: 1);
 
@@ -114,13 +123,17 @@ class _FakeDownloader implements FileDownloader {
 }
 
 class _FakeFlutterTts implements FlutterTts {
-  _FakeFlutterTts({required this.available});
+  _FakeFlutterTts({required this.available, this.throws = false});
 
   final Object available;
+  final bool throws;
   final List<String> calls = <String>[];
 
   @override
-  Future<dynamic> isLanguageAvailable(String language) async => available;
+  Future<dynamic> isLanguageAvailable(String language) async {
+    if (throws) throw PlatformException(code: 'TTS', message: 'not bound');
+    return available;
+  }
 
   @override
   Future<dynamic> setLanguage(String language) async {
