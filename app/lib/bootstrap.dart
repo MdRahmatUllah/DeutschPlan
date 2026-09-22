@@ -7,9 +7,12 @@ import 'package:deutschplan/core/theme/theme_mode.dart';
 import 'package:deutschplan/data/db/app_database.dart';
 import 'package:deutschplan/data/db/content_dao.dart';
 import 'package:deutschplan/data/db/content_update.dart';
+import 'package:deutschplan/data/repositories/exam_repository.dart';
+import 'package:deutschplan/data/repositories/plan_repository.dart';
 import 'package:deutschplan/data/repositories/setting_keys.dart';
 import 'package:deutschplan/data/repositories/settings_repository.dart';
 import 'package:deutschplan/router/app_router.dart';
+import 'package:deutschplan/router/route_guards.dart';
 import 'package:flutter/foundation.dart' show immutable;
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart' show Brightness;
@@ -218,7 +221,12 @@ Future<BootstrapResult> bootstrap({
         content: content,
         settings: settings,
         glass: capability,
-        router: buildRouter(),
+        router: buildRouter(
+          guards: RouteGuards.of(
+            exams: ExamRepository(db),
+            plan: PlanRepository(db),
+          ),
+        ),
         contentVersion: version,
         contentChange: change,
         themeMode: mode,
