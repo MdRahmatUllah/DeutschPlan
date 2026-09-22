@@ -546,7 +546,14 @@ class PlanEngine {
   }
 
   /// "Am I on schedule?" — planned against introduced.
-  Future<ScheduleStatus> scheduleCheck(PlanDate today) async {
+  ///
+  /// [fallbackDailyNew] is the pace to divide by when there is no open
+  /// enrolment, which is the state a finished step leaves behind when
+  /// auto-advance is off. The caller passes the `daily_new` setting.
+  Future<ScheduleStatus> scheduleCheck(
+    PlanDate today, {
+    int fallbackDailyNew = 1,
+  }) async {
     final (planned, introduced) = await _store.newItemProgress(today);
     final step = await _store.activeStep();
 
@@ -555,7 +562,12 @@ class PlanEngine {
       introduced: introduced,
       // The enrolment's pace, not the setting: BR-PLAN-08 freezes it, and
       // those days were planned at whatever it was then.
-      dailyNew: step?.dailyNew ?? 0,
+      //
+      // [fallbackDailyNew] covers the gap between steps, where there is no
+      // enrolment to read a pace from. Zero there would report "0 days behind"
+      // beside a non-zero backlog and "not on schedule" — three numbers that
+      // contradict each other on the same screen.
+      dailyNew: step?.dailyNew ?? fallbackDailyNew,
     );
   }
 

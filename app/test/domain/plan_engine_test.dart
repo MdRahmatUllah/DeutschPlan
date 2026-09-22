@@ -888,6 +888,134 @@ void main() {
     });
   });
 
+  group('#79 joined to the store', () {
+    // `plan_stats_test.dart` covers the rules and `plan_store_test.dart` the
+    // queries. These are the four methods that put the two together, which
+    // nothing exercised until the review pointed it out.
+
+    test('the streak reads the mask from the active step', () async {
+      // A weekday-only learner keeps their streak across the weekend. With
+      // the wrong mask the Saturday gap ends it.
+      store.enrollment = const ActiveStep(
+        sublevelCode: 'A1.1',
+        startedOn: monday,
+        dailyNew: 7,
+        studyDaysMask: 0x1F,
+      );
+      store.active = <PlanDate>{
+        for (final day in <int>[0, 1, 2, 3, 4, 7]) addDays(monday, day),
+      };
+
+      expect(await engineWith().streak(addDays(monday, 7)), 6);
+    });
+
+    test('and falls back to every day with no enrolment', () async {
+      store.enrollment = null;
+      store.active = <PlanDate>{monday, addDays(monday, 1)};
+
+      expect(await engineWith().streak(addDays(monday, 1)), 2);
+    });
+
+    test('the schedule check divides by the enrolment pace', () async {
+      // Not the setting: BR-PLAN-08 freezes the pace per enrolment, and these
+      // days were planned at whatever it was then.
+      store.enrollment = const ActiveStep(
+        sublevelCode: 'A1.1',
+        startedOn: monday,
+        dailyNew: 5,
+        studyDaysMask: PlanEngine.allDays,
+      );
+      await engineWith().openDay(addDays(monday, 2));
+
+      final status = await engineWith().scheduleCheck(addDays(monday, 2));
+
+      expect(status.planned, 15, reason: 'three days at five');
+      expect(status.introduced, 0);
+      expect(status.daysBehind, 3.0);
+    });
+
+    test('and between steps it still reports a real number', () async {
+      // Finishing a step with auto-advance off leaves no enrolment. Zero
+      // there would print "0 days behind" beside "not on schedule".
+      await engineWith().openDay(monday);
+      store.enrollment = null;
+
+      final status = await engineWith().scheduleCheck(
+        monday,
+        fallbackDailyNew: 7,
+      );
+
+      expect(status.behind, 7);
+      expect(status.onSchedule, isFalse);
+      expect(status.daysBehind, 1.0);
+    });
+
+    test('the estimate uses the defaults under seven sessions', () async {
+      store.measured = const MeasuredSeconds(sessions: 6, newWord: 10);
+      final plan = await engineWith().openDay(monday);
+
+      expect(
+        await engineWith().estimate(plan),
+        const Duration(seconds: 45 * 7),
+        reason: 'six sessions is not enough to trust the learner timings',
+      );
+    });
+
+    test('and the learner timings at seven', () async {
+      store.measured = const MeasuredSeconds(sessions: 7, newWord: 10);
+      final plan = await engineWith().openDay(monday);
+
+      expect(await engineWith().estimate(plan), const Duration(seconds: 70));
+    });
+
+    test('a timing that could not be measured keeps its default', () async {
+      store.candidates = <RevisionCandidate>[
+        const RevisionCandidate(uid: 'seen', stability: 5, lastReview: monday),
+      ];
+      store.measured = const MeasuredSeconds(sessions: 7, newWord: 10);
+      final plan = await engineWith().openDay(monday);
+
+      expect(
+        await engineWith().estimate(plan),
+        const Duration(seconds: 70 + 25),
+        reason: 'the revision keeps the 25-second default',
+      );
+    });
+
+    test('the day is complete once nothing is open', () async {
+      final plan = await engineWith().openDay(monday);
+      store.open[monday] = 3;
+
+      expect(await engineWith().isDayComplete(plan), isFalse);
+
+      store.open[monday] = 0;
+      expect(await engineWith().isDayComplete(plan), isTrue);
+    });
+
+    test('and grammar still due keeps it open', () async {
+      store.grammarDue = <String>['g1'];
+      final plan = await engineWith().openDay(monday);
+      store.open[monday] = 0;
+
+      expect(await engineWith().isDayComplete(plan), isFalse);
+    });
+
+    test('a rest day is complete with the plan untouched', () async {
+      store.enrollment = const ActiveStep(
+        sublevelCode: 'A1.1',
+        startedOn: monday,
+        dailyNew: 7,
+        studyDaysMask: 0x1F,
+      );
+      final saturday = addDays(monday, 5);
+      final plan = await engineWith().openDay(saturday);
+      store.open[saturday] = 4;
+
+      expect(plan.isStudyDay, isFalse);
+      expect(await engineWith().isDayComplete(plan), isTrue);
+    });
+  });
+
   group('the date helpers', () {
     test('a day is added on the calendar, not in hours', () {
       // `Duration(days: 1)` drifts by an hour across a DST change; in October
