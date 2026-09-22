@@ -30,10 +30,15 @@ MANIFEST_FORMAT = 1
 def _word_digest(word) -> str:
     """What "changed" means for one word.
 
-    Everything the learner sees, and nothing else. `seq` and `seq_in_sublevel`
-    are left out on purpose: inserting a word at the top of a workbook shifts
-    every later one, and reporting five thousand changed words for one
-    insertion would make the update summary useless.
+    Everything the learner sees, and nothing else.
+
+    `collocations` and `synonyms_register` are in the list because
+    `word-detail.md` renders both, and `freq` and `category` because
+    `categories.md` sorts and filters by them.
+
+    `seq` and `seq_in_sublevel` are left out on purpose: inserting a word at
+    the top of a workbook shifts every later one, and reporting five thousand
+    changed words for one insertion would make the update summary useless.
     """
     parts = (
         word.article,
@@ -43,6 +48,10 @@ def _word_digest(word) -> str:
         word.pron_bn,
         word.english,
         word.bangla,
+        word.collocations,
+        word.synonyms_register,
+        str(word.freq) if word.freq is not None else None,
+        word.category,
         word.sublevel_code,
         "|".join(
             f"{e.german}\u001f{e.english or ''}" for e in getattr(word, "examples", [])
@@ -52,8 +61,22 @@ def _word_digest(word) -> str:
     return hashlib.sha1(joined.encode("utf-8")).hexdigest()[:16]
 
 
+def _grammar_digest(row) -> str:
+    """What "changed" means for one grammar topic.
+
+    `grammar_state.grammar_uid` in the learner's database points at these, so
+    a topic that disappears between two builds orphans their scheduling for
+    it. Tracking the uids is what lets the update say so.
+    """
+    parts = (row.topic, row.rule, row.example_de, row.example_en, row.watch_out)
+    joined = "".join(part or "" for part in parts)
+    return hashlib.sha1(joined.encode("utf-8")).hexdigest()[:16]
+
+
 def build_manifest(inputs, splits) -> dict:
     """The manifest for one build."""
+    from datetime import datetime, timezone
+
     steps: dict[str, dict[str, int]] = {}
     for word in inputs.words:
         entry = steps.setdefault(
@@ -69,6 +92,9 @@ def build_manifest(inputs, splits) -> dict:
     return {
         "format": MANIFEST_FORMAT,
         "content_version": inputs.content_version,
+        # The same field content.db's meta carries, so the two files describe
+        # the build the same way.
+        "built_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "sources": inputs.sources,
         "counts": {
             "words": len(inputs.words),
@@ -83,6 +109,7 @@ def build_manifest(inputs, splits) -> dict:
             split.second: split.boundary_week for split in splits.values()
         },
         "words": {word.uid: _word_digest(word) for word in inputs.words},
+        "grammar": {row.uid: _grammar_digest(row) for row in inputs.grammar},
     }
 
 
@@ -111,20 +138,37 @@ class ContentDiff:
     added: list[str]
     removed: list[str]
     changed: list[str]
+    grammar_added: list[str]
+    grammar_removed: list[str]
+    grammar_changed: list[str]
     previous_version: str
     version: str
 
     @property
     def is_empty(self) -> bool:
-        return not (self.added or self.removed or self.changed)
+        return not (
+            self.added
+            or self.removed
+            or self.changed
+            or self.grammar_added
+            or self.grammar_removed
+            or self.grammar_changed
+        )
 
     def summary(self) -> str:
         if self.is_empty:
             return f"{self.version}: no content change since {self.previous_version}"
+        grammar = ""
+        if self.grammar_added or self.grammar_removed or self.grammar_changed:
+            grammar = (
+                f"; grammar {len(self.grammar_added)} added, "
+                f"{len(self.grammar_removed)} removed, "
+                f"{len(self.grammar_changed)} changed"
+            )
         return (
             f"{self.version}: {len(self.added)} added, "
             f"{len(self.removed)} removed, {len(self.changed)} changed "
-            f"since {self.previous_version}"
+            f"since {self.previous_version}{grammar}"
         )
 
 
@@ -149,17 +193,30 @@ def diff(previous: dict, current: dict) -> ContentDiff:
                 f"as removed; rebuild the previous version or skip the diff."
             )
 
-    before = previous["words"]
-    after = current["words"]
+    words = _compare(previous.get("words", {}), current.get("words", {}))
+    grammar = _compare(previous.get("grammar", {}), current.get("grammar", {}))
 
     return ContentDiff(
-        added=sorted(set(after) - set(before)),
-        removed=sorted(set(before) - set(after)),
-        changed=sorted(
-            uid for uid in set(before) & set(after) if before[uid] != after[uid]
-        ),
+        added=words[0],
+        removed=words[1],
+        changed=words[2],
+        grammar_added=grammar[0],
+        grammar_removed=grammar[1],
+        grammar_changed=grammar[2],
         previous_version=previous["content_version"],
         version=current["content_version"],
+    )
+
+
+def _compare(
+    before: dict[str, str], after: dict[str, str]
+) -> tuple[list[str], list[str], list[str]]:
+    return (
+        sorted(set(after) - set(before)),
+        sorted(set(before) - set(after)),
+        sorted(
+            uid for uid in set(before) & set(after) if before[uid] != after[uid]
+        ),
     )
 
 
@@ -201,6 +258,9 @@ def main(argv: list[str] | None = None) -> int:
                     "added": result.added,
                     "removed": result.removed,
                     "changed": result.changed,
+                    "grammar_added": result.grammar_added,
+                    "grammar_removed": result.grammar_removed,
+                    "grammar_changed": result.grammar_changed,
                 },
                 indent=2,
             )

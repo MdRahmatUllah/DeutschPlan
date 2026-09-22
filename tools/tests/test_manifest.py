@@ -50,11 +50,13 @@ class TestContents:
         assert set(manifest) == {
             "format",
             "content_version",
+            "built_at",
             "sources",
             "counts",
             "steps",
             "boundaries",
             "words",
+            "grammar",
         }
 
     def test_the_counts_match_the_build(self, built):
@@ -119,6 +121,45 @@ class TestDiff:
             diff(old, self.base())
 
 
+class TestGrammarIsTrackedToo:
+    """`grammar_state.grammar_uid` points at these, so a topic that vanishes
+    between builds orphans that learner's scheduling for it."""
+
+    def built(self, tmp_path, mutate=None):
+        write_all(tmp_path)
+        sources = [read_workbook(tmp_path / name) for name in BOOK_LEVELS]
+        splits = derive(sources)
+        inputs = collect(sources, splits)
+        if mutate:
+            mutate(inputs)
+        return build_manifest(inputs, splits)
+
+    def test_every_topic_is_in_the_manifest(self, tmp_path):
+        manifest = self.built(tmp_path)
+        assert len(manifest["grammar"]) == manifest["counts"]["grammar"]
+
+    def test_a_removed_topic_is_reported(self, tmp_path):
+        before = self.built(tmp_path)
+        after = self.built(tmp_path, lambda i: i.grammar.pop(0))
+        result = diff(before, after)
+        assert len(result.grammar_removed) == 1
+        assert not result.is_empty
+
+    def test_a_changed_rule_is_reported(self, tmp_path):
+        before = self.built(tmp_path)
+        after = self.built(
+            tmp_path, lambda i: setattr(i.grammar[0], "rule", "a new rule")
+        )
+        assert len(diff(before, after).grammar_changed) == 1
+
+    def test_the_summary_mentions_grammar_only_when_it_moved(self, tmp_path):
+        before = self.built(tmp_path)
+        assert "grammar" not in diff(before, self.built(tmp_path)).summary()
+
+        after = self.built(tmp_path, lambda i: i.grammar.pop(0))
+        assert "grammar" in diff(before, after).summary()
+
+
 class TestWhatCountsAsChanged:
     """The digest decides, so what it covers is the definition of "changed"."""
 
@@ -130,6 +171,22 @@ class TestWhatCountsAsChanged:
         if mutate:
             mutate(inputs)
         return build_manifest(inputs, splits)
+
+    def test_the_fields_the_word_screen_shows_all_count(self, tmp_path):
+        # word-detail.md renders collocations and the synonym set;
+        # categories.md sorts by freq and filters by category. An author
+        # rewriting any of them ships a change the update card must mention.
+        for field, value in (
+            ("collocations", "auf der Straße"),
+            ("synonyms_register", "≈ Gasse = narrow street"),
+            ("freq", 5),
+            ("category", "Reisen"),
+        ):
+            before = self.build(tmp_path)
+            after = self.build(
+                tmp_path, lambda i, f=field, v=value: setattr(i.words[0], f, v)
+            )
+            assert len(diff(before, after).changed) == 1, field
 
     def test_a_changed_meaning_is_a_change(self, tmp_path):
         before = self.build(tmp_path)
@@ -191,6 +248,9 @@ class TestTheCli:
             "added": ["y"],
             "removed": ["x"],
             "changed": [],
+            "grammar_added": [],
+            "grammar_removed": [],
+            "grammar_changed": [],
         }
 
     def test_a_first_build_has_nothing_to_diff_and_that_is_fine(
