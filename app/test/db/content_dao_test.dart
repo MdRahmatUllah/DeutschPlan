@@ -143,7 +143,7 @@ void main() {
 
     test('prefixMatches ranks, and joins back to the word', () async {
       final hits = await dao.prefixMatches('"Hau"*', 5).get();
-      expect(hits.single.german, 'Haus');
+      expect(hits.single.w.german, 'Haus');
       expect(hits.single.rank, isNotNull);
     });
 
@@ -158,12 +158,15 @@ void main() {
     test('a column filter narrows the search', () async {
       // `english : "door"` must not match a German column containing "door".
       final hits = await dao.prefixMatches('english : "door"', 5).get();
-      expect(hits.single.german, 'Tür');
+      expect(hits.single.w.german, 'Tür');
     });
 
     test('the tokenizer folds diacritics, so Tur finds Tür', () async {
       // remove_diacritics 2, on top of search_key_alt.
-      expect((await dao.prefixMatches('"Tur"', 5).get()).single.german, 'Tür');
+      expect(
+        (await dao.prefixMatches('"Tur"', 5).get()).single.w.german,
+        'Tür',
+      );
     });
 
     test('trigram candidates survive a misspelling', () async {
