@@ -12,6 +12,7 @@ library;
 
 import 'package:deutschplan/router/app_shell.dart';
 import 'package:deutschplan/router/back_behaviour.dart';
+import 'package:deutschplan/router/deep_links.dart';
 import 'package:deutschplan/router/route_guards.dart';
 import 'package:deutschplan/router/placeholder_screen.dart';
 import 'package:go_router/go_router.dart';
@@ -495,13 +496,26 @@ class ExamRoute extends GoRouteData with $ExamRoute {
 /// which is why the uid is in the path.
 @TypedGoRoute<WordRoute>(path: '/word/:uid')
 class WordRoute extends GoRouteData with $WordRoute {
-  const WordRoute({required this.uid});
+  const WordRoute({required this.uid, this.speak});
 
   final String uid;
 
+  /// `?speak=1` from the widget's *Pronounce* action (FR-X1-02). A query
+  /// rather than a path segment because `/word/<uid>` has to stay a valid
+  /// link on its own, and because it describes what to do on arrival rather
+  /// than which word this is.
+  final String? speak;
+
   @override
-  Widget build(BuildContext context, GoRouterState state) =>
-      PlaceholderScreen(title: 'Word', screen: 'W1', detail: uid);
+  Widget build(BuildContext context, GoRouterState state) => PlaceholderScreen(
+    title: 'Word',
+    screen: 'W1',
+    // The typed field, not `state.uri`: a route that declared a parameter and
+    // then read the raw location would have two answers to the same question,
+    // which is the thing typed routes exist to prevent.
+    // TODO(#136): W1 plays the headword on open when this is set.
+    detail: speak == speakOn ? '$uid speak' : uid,
+  );
 }
 
 @TypedGoRoute<CompareRoute>(path: '/compare/:uid')
