@@ -17,12 +17,16 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from excel_to_sqlite import Word  # noqa: E402
+from excel_to_sqlite import GrammarRow, Word  # noqa: E402
 from pipeline_steps import (  # noqa: E402
+    GRAMMAR_UID_FIELDS,
     UID_FIELDS,
     UID_LENGTH,
-    UidCollision,
+    PipelineError,
+    SplitError,
+    assign_grammar_uids,
     assign_uids,
+    grammar_uid_for,
     uid_for,
 )
 
@@ -39,6 +43,19 @@ def word(**kwargs) -> Word:
         "pos": "noun",
     }
     return Word(**{**base, **kwargs})
+
+
+def test_every_refusal_is_a_PipelineError():
+    # main() catches PipelineError and prints one clean line. Anything else
+    # reaches the author as a stack trace, which is a message nobody reads.
+    assert issubclass(SplitError, PipelineError)
+
+
+def test_the_grammar_recipe_is_its_own():
+    # A topic has no part of speech and no English gloss.
+    assert GRAMMAR_UID_FIELDS == ("level", "topic")
+    row = GrammarRow(source_file="f", row=1, topic="Dative", level="A1")
+    assert grammar_uid_for(row) == hashlib.sha1(b"A1|Dative").hexdigest()[:16]
 
 
 def test_the_recipe_is_the_one_the_doc_gives():
@@ -122,13 +139,49 @@ class TestCollisions:
             w.seq = index
         assert assign_uids(words) == []
 
-    def test_a_resolution_that_still_collides_raises(self):
-        # Cannot happen with sha1, but a uid is a primary key: silently writing
-        # two rows with the same one is the outcome that must not exist.
-        a, b, c = word(row=1), word(row=2), word(row=3)
-        a.seq = b.seq = c.seq = 7  # same suffix, so the retry collides too
-        with pytest.raises(UidCollision, match="still collides"):
-            assign_uids([a, b, c])
+    def test_the_suffix_does_not_move_when_a_word_is_inserted_above(self):
+        # The stability property, and the reason the suffix is the occurrence
+        # number rather than the global seq. Inserting one unrelated word at
+        # the top shifts every seq by one; the colliding word's uid must not
+        # follow, or a learner loses their progress over an edit that had
+        # nothing to do with their word.
+        def last_uid(with_extra: bool) -> str:
+            rows = [word(row=0, german="Neu")] if with_extra else []
+            rows += [word(row=1), word(row=2)]
+            for index, row in enumerate(rows, start=1):
+                row.seq = index
+            assign_uids(rows)
+            return rows[-1].uid
+
+        assert last_uid(with_extra=False) == last_uid(with_extra=True)
+
+
+class TestGrammarUids:
+    def rows(self, *topics: str) -> list[GrammarRow]:
+        return [
+            GrammarRow(source_file="f", row=i, topic=t, level="A1")
+            for i, t in enumerate(topics, start=1)
+        ]
+
+    def test_every_topic_gets_one(self):
+        # content-database.md gives grammar_topics a uid PK, and
+        # grammar_state.grammar_uid in the learner's database points at it.
+        rows = self.rows("Dative", "Accusative")
+        assert assign_grammar_uids(rows) == []
+        assert rows[0].uid != rows[1].uid
+        assert all(len(r.uid) == 16 for r in rows)
+
+    def test_a_duplicate_topic_is_reported_and_resolved(self):
+        rows = self.rows("Dative", "Dative")
+        reports = assign_grammar_uids(rows)
+        assert len(reports) == 1 and "Dative" in reports[0]
+        assert rows[0].uid != rows[1].uid
+
+    def test_the_same_topic_in_two_levels_is_two_topics(self):
+        rows = self.rows("Dative")
+        other = GrammarRow(source_file="f", row=1, topic="Dative", level="B1")
+        assign_grammar_uids(rows + [other])
+        assert rows[0].uid != other.uid
 
 
 def test_uids_are_stable_across_rebuilds():
