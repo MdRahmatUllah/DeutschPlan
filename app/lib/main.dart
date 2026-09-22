@@ -1,42 +1,54 @@
+import 'package:deutschplan/bootstrap.dart';
 import 'package:deutschplan/core/theme/app_theme.dart';
+import 'package:deutschplan/core/theme/dp_tokens.dart';
 import 'package:deutschplan/core/theme/glass_capability.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 
-/// Entry point. Real bootstrap work (opening user.db, copying content.db,
-/// loading settings, resolving the theme) lands in `bootstrap.dart` — see
-/// docs/04-screens/splash.md, FR-S1-01.
-void main() {
+import 'dart:ui' show PlatformDispatcher;
+
+/// Entry point.
+///
+/// Everything that touches the disk happens in [bootstrap], before `runApp` —
+/// FR-S1-01. The first frame is therefore already the right theme, with the
+/// course attached and the settings in memory, and nothing on any screen is
+/// waiting on I/O that should have finished here.
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Glass asks the platform whether it will blur, and watches real frame
-  // timings so a struggling device drops to the opaque surface instead of
-  // stuttering. The query is deliberately not awaited: a channel round trip
-  // here would eat into the 500 ms warm-start budget in splash.md, at the cost
-  // of a frame or two of frosted glass on a device that cannot blur. It moves
-  // into bootstrap() in #66, which already runs before the first frame.
-  final glass = GlassCapability()
-    ..startFrameWatchdog()
-    ..queryPlatform();
-
-  // ProviderScope stays at the very root (riverpod_lint enforces it); the glass
-  // capability sits just inside so every DpSurface can reach it.
-  runApp(
-    ProviderScope(
-      child: GlassCapabilityScope(
-        notifier: glass,
-        child: const DeutschPlanApp(),
-      ),
-    ),
+  final result = await bootstrap(
+    platformBrightness: PlatformDispatcher.instance.platformBrightness,
   );
+
+  // ProviderScope at the very root, on both paths: riverpod_lint enforces it,
+  // and the error screen's *Export progress* reads a repository too.
+  runApp(ProviderScope(child: _appFor(result)));
 }
+
+/// The app for a finished bootstrap, or FR-S1-03's error screen.
+///
+/// Split out so the error path is something a widget test can build without a
+/// disk behind it.
+Widget _appFor(BootstrapResult result) => switch (result) {
+  // The providers #71 declares are overridden from here, so nothing has to
+  // re-open what bootstrap already opened.
+  BootstrapReady(:final bootstrap) => GlassCapabilityScope(
+    notifier: bootstrap.glass,
+    child: DeutschPlanApp(mode: bootstrap.themeMode),
+  ),
+  BootstrapFailed(:final failure) => BootstrapErrorApp(failure: failure),
+};
 
 /// Supported UI languages, English first — see `supportedLocales` in [DeutschPlanApp].
 const List<Locale> supportedLocales = <Locale>[Locale('en'), Locale('bn')];
 
 class DeutschPlanApp extends StatelessWidget {
-  const DeutschPlanApp({super.key});
+  const DeutschPlanApp({required this.mode, super.key});
+
+  /// Resolved in [bootstrap] against `theme_mode` and the platform, so the
+  /// first frame is not a frame of the wrong theme.
+  final DpMode mode;
 
   @override
   Widget build(BuildContext context) {
@@ -44,10 +56,13 @@ class DeutschPlanApp extends StatelessWidget {
       onGenerateTitle: (context) => AppLocalizations.of(context).appTitle,
       theme: AppTheme.light(),
       darkTheme: AppTheme.dark(),
-      // theming.md: the default follows the system light/dark setting. The
-      // learner's explicit choice (theme_mode, incl. Glass) arrives with
-      // Settings in #143.
-      themeMode: ThemeMode.system,
+      themeMode: switch (mode) {
+        DpMode.light => ThemeMode.light,
+        DpMode.dark => ThemeMode.dark,
+        // Glass has its own light and dark variants inside `AppTheme.glass`,
+        // so the platform still decides which one shows. #143 wires it.
+        DpMode.glass => ThemeMode.system,
+      },
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       // English first: gen_l10n orders supportedLocales alphabetically, which puts
       // Bangla first, and Flutter falls back to the FIRST supported locale when the
@@ -57,6 +72,73 @@ class DeutschPlanApp extends StatelessWidget {
       home: const _Placeholder(),
     );
   }
+}
+
+/// FR-S1-03: a full-screen, recoverable error. Never a blank screen.
+///
+/// Its own `MaterialApp`, because the failure may well be the database the
+/// real one is built from — a theme resolved from settings that would not load
+/// is not available here.
+class BootstrapErrorApp extends StatelessWidget {
+  const BootstrapErrorApp({
+    required this.failure,
+    this.onRetry,
+    this.onExport,
+    super.key,
+  });
+
+  final BootstrapFailure failure;
+  final VoidCallback? onRetry;
+  final VoidCallback? onExport;
+
+  @override
+  Widget build(BuildContext context) => MaterialApp(
+    theme: AppTheme.light(),
+    darkTheme: AppTheme.dark(),
+    localizationsDelegates: AppLocalizations.localizationsDelegates,
+    supportedLocales: supportedLocales,
+    home: Scaffold(
+      body: SafeArea(
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Builder(
+                  builder: (context) {
+                    final l10n = AppLocalizations.of(context);
+                    return Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        Text(switch (failure.step) {
+                          BootstrapStep.database => l10n.bootstrapErrorDatabase,
+                          BootstrapStep.content => l10n.bootstrapErrorContent,
+                          BootstrapStep.settings => l10n.bootstrapErrorSettings,
+                        }, textAlign: TextAlign.center),
+                        const SizedBox(height: 16),
+                        FilledButton(
+                          onPressed: onRetry,
+                          child: Text(l10n.retry),
+                        ),
+                        // Only when user.db opened: the button has to do
+                        // something, or it is a promise the screen cannot keep.
+                        if (failure.canExport)
+                          TextButton(
+                            onPressed: onExport,
+                            child: Text(l10n.exportProgress),
+                          ),
+                      ],
+                    );
+                  },
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    ),
+  );
 }
 
 // ponytail: placeholder shell so the app runs; replaced by the router shell in #67.

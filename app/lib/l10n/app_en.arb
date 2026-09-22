@@ -50,6 +50,26 @@
     "description": "FSRS rating 4. Recalled immediately. Also what \"I know it\" sends for a new word (BR-STATUS-04)."
   },
 
+  "bootstrapErrorDatabase": "DeutschPlan could not open your data.",
+  "@bootstrapErrorDatabase": {
+    "description": "Full-screen bootstrap error when user.db would not open or migrate. FR-S1-03."
+  },
+
+  "bootstrapErrorContent": "DeutschPlan could not install the course.",
+  "@bootstrapErrorContent": {
+    "description": "Full-screen bootstrap error when content.db could not be copied or attached. FR-S1-03."
+  },
+
+  "bootstrapErrorSettings": "DeutschPlan could not read your settings.",
+  "@bootstrapErrorSettings": {
+    "description": "Full-screen bootstrap error when the settings table would not load. FR-S1-03."
+  },
+
+  "exportProgress": "Export progress",
+  "@exportProgress": {
+    "description": "Action on the bootstrap error screen and on Export / import. Writes everything the learner has done to a JSON file. FR-S1-03, FR-M6-01."
+  },
+
   "undo": "Undo",
   "@undo": {
     "description": "Action on the snackbar shown after a reversible change, such as rating a card. See FR-T2-02."
