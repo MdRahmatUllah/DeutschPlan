@@ -83,6 +83,41 @@ class SettingsRepository {
         );
   }
 
+  /// Runs [query] with the current value of [key], and runs it again with the
+  /// new value whenever [key] changes.
+  ///
+  /// A drift query takes its variables when the stream is built, so a stream
+  /// built once keeps the value it was built with for as long as it is open.
+  /// A threshold the learner moves mid-session — `done_stability_days` is the
+  /// one BR-STATUS-02 cares about — has to rebuild the query, not just
+  /// re-emit it. The old subscription is dropped as soon as the new one is
+  /// made, so nothing arrives from the stale query.
+  Stream<R> switchOn<T, R>(SettingKey<T> key, Stream<R> Function(T) query) {
+    StreamSubscription<R>? inner;
+    StreamSubscription<SettingKey<Object?>>? outer;
+    late StreamController<R> controller;
+
+    void run() {
+      inner?.cancel();
+      inner = query(read(key))
+          .listen(controller.add, onError: controller.addError);
+    }
+
+    controller = StreamController<R>(
+      onListen: () {
+        run();
+        outer = _changes.stream
+            .where((changed) => changed == key)
+            .listen((_) => run());
+      },
+      onCancel: () async {
+        await outer?.cancel();
+        await inner?.cancel();
+      },
+    );
+    return controller.stream;
+  }
+
   /// Puts a key back to its documented default. Used by Reset (M7).
   Future<void> clear<T>(SettingKey<T> key) => write(key, key.defaultValue);
 

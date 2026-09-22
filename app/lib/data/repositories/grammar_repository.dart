@@ -70,52 +70,60 @@ class GrammarRepository extends DatabaseAccessor<AppDatabase>
   double get _doneAfter =>
       _settings.read(SettingKeys.doneStabilityDays).toDouble();
 
-  Stream<List<TopicWithState>> watchStep(String code) =>
-      topicsWithStateForStep(_doneAfter, code).watch().map(
-        (rows) => <TopicWithState>[
-          for (final row in rows)
-            TopicWithState(
-              topic: row.g,
-              state: row.s,
-              status: WordStatus.parse(row.derivedStatus),
-            ),
-        ],
-      );
+  /// Runs [query] again whenever the learner moves `done_stability_days`.
+  ///
+  /// The threshold is a query variable, so a stream built once would keep the
+  /// value it was built with and every status on an open screen would be
+  /// stale until the screen was rebuilt (BR-STATUS-02). [row] is per-query
+  /// because drift gives each one its own result class.
+  Stream<List<TopicWithState>> _watchTopics<T>(
+    Stream<List<T>> Function(double) query,
+    TopicWithState Function(T) row,
+  ) => _settings
+      .switchOn(
+        SettingKeys.doneStabilityDays,
+        (int days) => query(days.toDouble()),
+      )
+      .map((rows) => rows.map(row).toList());
+
+  TopicWithState _topic(
+    GrammarTopic topic,
+    GrammarStateData? state,
+    String derivedStatus,
+  ) => TopicWithState(
+    topic: topic,
+    state: state,
+    status: WordStatus.parse(derivedStatus),
+  );
+
+  Stream<List<TopicWithState>> watchStep(String code) => _watchTopics(
+    (days) => topicsWithStateForStep(days, code).watch(),
+    (row) => _topic(row.g, row.s, row.derivedStatus),
+  );
 
   /// Everything due on or before [today]. The plan engine's `ensureGrammarDue`
   /// reads this, and Step detail shows the same list.
-  Stream<List<TopicWithState>> watchDue(String today) =>
-      dueTopics(_doneAfter, today).watch().map(
-        (rows) => <TopicWithState>[
-          for (final row in rows)
-            TopicWithState(
-              topic: row.g,
-              state: row.s,
-              status: WordStatus.parse(row.derivedStatus),
-            ),
-        ],
-      );
+  Stream<List<TopicWithState>> watchDue(String today) => _watchTopics(
+    (days) => dueTopics(days, today).watch(),
+    (row) => _topic(row.g, row.s, row.derivedStatus),
+  );
 
-  Stream<TopicWithState?> watchTopic(String uid) =>
-      topicWithState(_doneAfter, uid).watch().map(
+  Stream<TopicWithState?> watchTopic(String uid) => _settings
+      .switchOn(
+        SettingKeys.doneStabilityDays,
+        (int days) => topicWithState(days.toDouble(), uid).watch(),
+      )
+      .map(
         (rows) => rows.isEmpty
             ? null
-            : TopicWithState(
-                topic: rows.single.g,
-                state: rows.single.s,
-                status: WordStatus.parse(rows.single.derivedStatus),
-              ),
+            : _topic(rows.single.g, rows.single.s, rows.single.derivedStatus),
       );
 
   Future<TopicWithState?> find(String uid) async {
     final rows = await topicWithState(_doneAfter, uid).get();
     return rows.isEmpty
         ? null
-        : TopicWithState(
-            topic: rows.single.g,
-            state: rows.single.s,
-            status: WordStatus.parse(rows.single.derivedStatus),
-          );
+        : _topic(rows.single.g, rows.single.s, rows.single.derivedStatus);
   }
 
   Stream<List<GrammarPracticeLogData>> watchPractice(
@@ -123,18 +131,28 @@ class GrammarRepository extends DatabaseAccessor<AppDatabase>
     int limit = 5,
   }) => practiceFor(uid, limit).watch();
 
-  /// Records one practice run: the log entry and the new scheduling, together.
+  /// Records one practice run: the log entry, the new scheduling and the day's
+  /// total, together.
   ///
   /// One transaction, for the same reason a rating is: a run that logged but
   /// did not reschedule would show in the history and never come round again,
   /// and the learner would have no way to tell.
+  ///
+  /// [reps] and [lapses] both come from the caller's FSRS card. Deriving
+  /// either here would let the stored value drift from the card's — and the
+  /// stored one is what the next review reads back.
+  ///
+  /// [today] is the local study day, not [PracticeResult.practisedAt]: that is
+  /// an instant, and a study day is a local day.
   Future<void> recordPractice({
     required String uid,
     required PracticeResult result,
     required double stability,
     required double difficulty,
     required String due,
+    required int reps,
     required int lapses,
+    required String today,
   }) => db.transaction(() async {
     final before = await (select(
       db.grammarState,
@@ -162,11 +180,22 @@ class GrammarRepository extends DatabaseAccessor<AppDatabase>
         due: Value(due),
         stability: Value(stability),
         difficulty: Value(difficulty),
-        reps: Value((before?.reps ?? 0) + 1),
+        reps: Value(reps),
         lapses: Value(lapses),
         lastReview: Value(result.practisedAt),
       ),
     );
+
+    // One statement rather than read-then-write, the same way `PlanRepository`
+    // bumps its counters: two runs finishing in the same millisecond would
+    // otherwise each read the same total and one would be lost.
+    await db.customStatement(
+      'INSERT INTO daily_stats (day, grammar_done) VALUES (?, 1) '
+      'ON CONFLICT(day) DO UPDATE SET grammar_done = grammar_done + 1',
+      <Object?>[today],
+    );
+    // A raw statement, so drift has to be told which streams to re-emit.
+    db.markTablesUpdated(<TableInfo<Table, Object?>>{db.dailyStats});
   });
 
   Future<void> suspend(String uid) => _setStatus(uid, WordStatus.suspended);

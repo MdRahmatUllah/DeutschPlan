@@ -58,14 +58,26 @@ void main() {
     double stability = 3,
     String due = '2026-03-10',
     String at = '2026-03-04T09:00:00Z',
+    int reps = 1,
+    int lapses = 0,
+    String? today,
   }) => grammar.recordPractice(
     uid: topicUid,
     result: PracticeResult(items: items, correct: correct, practisedAt: at),
     stability: stability,
     difficulty: 5,
     due: due,
-    lapses: 0,
+    reps: reps,
+    lapses: lapses,
+    today: today ?? at.substring(0, 10),
   );
+
+  Future<int> grammarDone(String day) async {
+    final row = await (db.select(
+      db.dailyStats,
+    )..where((t) => t.day.equals(day))).getSingleOrNull();
+    return row?.grammarDone ?? 0;
+  }
 
   /// The cached `grammar_state.status`. Only `suspended` is read back by the
   /// queries, but the column carries a real status and a stale one would
@@ -106,10 +118,32 @@ void main() {
       expect(found.state!.reps, 1);
     });
 
-    test('reps accumulate across runs', () async {
+    test('reps and lapses come from the card, not a count kept here', () async {
+      // FSRS owns both. A locally incremented `reps` would read back 2 here
+      // and disagree with the card the next review is scheduled from.
+      await practise(at: '2026-03-04T09:00:00Z', reps: 1);
+      await practise(at: '2026-03-05T09:00:00Z', reps: 0, lapses: 1);
+
+      final state = (await grammar.find(topicUid))!.state!;
+      expect(state.reps, 0);
+      expect(state.lapses, 1);
+    });
+
+    test('the day total goes up with it', () async {
       await practise(at: '2026-03-04T09:00:00Z');
+      await practise(at: '2026-03-04T09:20:00Z');
       await practise(at: '2026-03-05T09:00:00Z');
-      expect((await grammar.find(topicUid))!.state!.reps, 2);
+
+      expect(await grammarDone('2026-03-04'), 2);
+      expect(await grammarDone('2026-03-05'), 1);
+    });
+
+    test('the day total is the local day, not the instant', () async {
+      // 23:30 local on the 4th is the 5th in UTC. The streak counts the day
+      // the learner was sitting in.
+      await practise(at: '2026-03-05T22:30:00Z', today: '2026-03-04');
+      expect(await grammarDone('2026-03-04'), 1);
+      expect(await grammarDone('2026-03-05'), 0);
     });
 
     test('the history is newest first', () async {
@@ -120,6 +154,17 @@ void main() {
       expect(history.first.practisedAt, '2026-03-05T09:00:00Z');
       expect(history.first.correct, 2);
     });
+
+    test(
+      'two runs at the same instant come back in the order they ran',
+      () async {
+        await practise(at: '2026-03-04T09:00:00Z', correct: 4);
+        await practise(at: '2026-03-04T09:00:00Z', correct: 1);
+
+        final history = await grammar.watchPractice(topicUid).first;
+        expect(history.map((row) => row.correct), <int>[1, 4]);
+      },
+    );
 
     test('a suspended topic stays suspended', () async {
       // Finishing a run the learner had already started does not un-suspend
@@ -219,6 +264,26 @@ void main() {
       expect(await storedStatus(), WordStatus.todo.wire);
       expect((await grammar.find(topicUid))!.status, WordStatus.todo);
     });
+  });
+
+  test('an open stream follows a threshold the learner moves', () async {
+    // The threshold is a query variable, so a stream built once would answer
+    // with the value it was built with until the screen was rebuilt.
+    await practise(stability: 10);
+
+    final seen = <WordStatus>[];
+    final subscription = grammar
+        .watchTopic(topicUid)
+        .listen((topic) => seen.add(topic!.status));
+    addTearDown(subscription.cancel);
+
+    await pumpEventQueue();
+    expect(seen.last, WordStatus.done);
+
+    await settings.write(SettingKeys.doneStabilityDays, 30);
+    await pumpEventQueue();
+
+    expect(seen.last, WordStatus.learning);
   });
 
   test('the stream re-emits when a run is recorded', () async {

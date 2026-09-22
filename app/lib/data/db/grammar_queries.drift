@@ -46,5 +46,5 @@ topicWithState:
 practiceFor:
   SELECT * FROM grammar_practice_log
   WHERE grammar_uid = :uid
-  ORDER BY practised_at DESC
+  ORDER BY practised_at DESC, id DESC
   LIMIT :limit;

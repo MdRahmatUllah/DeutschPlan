@@ -90,71 +90,66 @@ class WordRepository extends DatabaseAccessor<AppDatabase>
   double get _doneAfter =>
       _settings.read(SettingKeys.doneStabilityDays).toDouble();
 
+  /// Runs [query] again whenever the learner moves `done_stability_days`.
+  ///
+  /// The threshold is a query variable, so a stream built once would keep the
+  /// value it was built with and every status on an open screen would be
+  /// stale until the screen was rebuilt (BR-STATUS-02). [row] is per-query
+  /// because drift gives each one its own result class.
+  Stream<List<WordWithState>> _watchWords<T>(
+    Stream<List<T>> Function(double) query,
+    WordWithState Function(T) row,
+  ) => _settings
+      .switchOn(
+        SettingKeys.doneStabilityDays,
+        (int days) => query(days.toDouble()),
+      )
+      .map((rows) => rows.map(row).toList());
+
+  WordWithState _word(Word word, WordStateData? state, String derivedStatus) =>
+      WordWithState(
+        word: word,
+        state: state,
+        status: WordStatus.parse(derivedStatus),
+      );
+
   /// Every word of a step, suspended ones included — the Words tab shows them
   /// greyed rather than hiding them.
-  Stream<List<WordWithState>> watchStep(String code) =>
-      wordsWithStateForStep(_doneAfter, code).watch().map(
-        (rows) => <WordWithState>[
-          for (final row in rows)
-            WordWithState(
-              word: row.w,
-              state: row.s,
-              status: WordStatus.parse(row.derivedStatus),
-            ),
-        ],
-      );
+  Stream<List<WordWithState>> watchStep(String code) => _watchWords(
+    (days) => wordsWithStateForStep(days, code).watch(),
+    (row) => _word(row.w, row.s, row.derivedStatus),
+  );
 
   /// The same step, ready to be learned from. BR-STATUS-03.
-  Stream<List<WordWithState>> watchLearnableStep(String code) =>
-      learnableWordsForStep(_doneAfter, code).watch().map(
-        (rows) => <WordWithState>[
-          for (final row in rows)
-            WordWithState(
-              word: row.w,
-              state: row.s,
-              status: WordStatus.parse(row.derivedStatus),
-            ),
-        ],
-      );
+  Stream<List<WordWithState>> watchLearnableStep(String code) => _watchWords(
+    (days) => learnableWordsForStep(days, code).watch(),
+    (row) => _word(row.w, row.s, row.derivedStatus),
+  );
 
-  Stream<List<WordWithState>> watchCategory(int categoryId) =>
-      wordsWithStateForCategory(_doneAfter, categoryId).watch().map(
-        (rows) => <WordWithState>[
-          for (final row in rows)
-            WordWithState(
-              word: row.w,
-              state: row.s,
-              status: WordStatus.parse(row.derivedStatus),
-            ),
-        ],
-      );
+  Stream<List<WordWithState>> watchCategory(int categoryId) => _watchWords(
+    (days) => wordsWithStateForCategory(days, categoryId).watch(),
+    (row) => _word(row.w, row.s, row.derivedStatus),
+  );
 
-  Stream<WordWithState?> watchWord(String uid) =>
-      wordWithState(_doneAfter, uid).watch().map(
+  Stream<WordWithState?> watchWord(String uid) => _settings
+      .switchOn(
+        SettingKeys.doneStabilityDays,
+        (int days) => wordWithState(days.toDouble(), uid).watch(),
+      )
+      .map(
         (rows) => rows.isEmpty
             ? null
-            : WordWithState(
-                word: rows.single.w,
-                state: rows.single.s,
-                status: WordStatus.parse(rows.single.derivedStatus),
-              ),
+            : _word(rows.single.w, rows.single.s, rows.single.derivedStatus),
       );
 
   /// Everything due on or before [today], excluding suspended words.
   ///
   /// [today] is a local date string — `plan_items.plan_date` and
   /// `word_state.due` are local days, because a study day is a local day.
-  Stream<List<WordWithState>> watchDue(String today) =>
-      dueWords(_doneAfter, today).watch().map(
-        (rows) => <WordWithState>[
-          for (final row in rows)
-            WordWithState(
-              word: row.w,
-              state: row.s,
-              status: WordStatus.parse(row.derivedStatus),
-            ),
-        ],
-      );
+  Stream<List<WordWithState>> watchDue(String today) => _watchWords(
+    (days) => dueWords(days, today).watch(),
+    (row) => _word(row.w, row.s, row.derivedStatus),
+  );
 
   Future<WordWithState?> find(String uid) async {
     final rows = await wordWithState(_doneAfter, uid).get();
@@ -168,7 +163,10 @@ class WordRepository extends DatabaseAccessor<AppDatabase>
   }
 
   Stream<StatusCountsForStepResult> watchStatusCounts(String code) =>
-      statusCountsForStep(_doneAfter, code).watchSingle();
+      _settings.switchOn(
+        SettingKeys.doneStabilityDays,
+        (int days) => statusCountsForStep(days.toDouble(), code).watchSingle(),
+      );
 
   /// Suspends a word. Its FSRS state is untouched (BR-STATUS-03).
   Future<void> suspend(String uid) => _setStatus(uid, WordStatus.suspended);
