@@ -47,7 +47,9 @@ class DpButton extends StatefulWidget {
   /// Primary buttons are docked full width; a text button hugs its label.
   final bool expand;
 
-  /// Overrides the fill — Today's "All done" primary turns Lime.
+  /// Overrides the fill — Today's "All done" primary turns Lime. A text
+  /// button has no fill, so on one this is the label: S2's *Skip* is ink on
+  /// the coloured header, where the link colour would all but vanish.
   final Color? colour;
 
   /// Visual heights from the artboard. These are the drawn sizes; the hit area
@@ -90,7 +92,7 @@ class _DpButtonState extends State<DpButton> {
     final foreground = switch (kind) {
       DpButtonKind.primary => tokens.color.onPrimary,
       DpButtonKind.secondary => tokens.color.ink,
-      DpButtonKind.text => tokens.color.link,
+      DpButtonKind.text => widget.colour ?? tokens.color.link,
     };
 
     final role = kind == DpButtonKind.primary

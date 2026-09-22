@@ -257,6 +257,14 @@ void main() {
       );
     });
 
+    testWidgets('and not at all with nothing to do', (tester) async {
+      // A Skip that cannot skip is worse than none. Until #92 can finish
+      // setup, a page with no `onSkip` leaves it out.
+      await pumpShell(tester, page: OnboardingPage.startingPoint);
+
+      expect(find.widgetWithText(DpButton, l10n.skip), findsNothing);
+    });
+
     testWidgets('the primary action calls back', (tester) async {
       var advanced = 0;
       await pumpShell(

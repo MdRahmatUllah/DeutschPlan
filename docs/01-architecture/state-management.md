@@ -24,6 +24,7 @@
 | `tts` | keepAlive | app | Engine selection + fallback. |
 | `theme` | keepAlive Notifier | app | light/dark/glass + system following. |
 | `languages` | keepAlive Notifier | app | `meaning_language` + `ui_language`; the root reads `ui_language` for the locale. S2 page 2 sets both from one choice. |
+| `onboarding` | keepAlive Notifier | S2 | `OnboardingNotifier`: S2's plan values as a draft — step, pace, reminders — until the finish commits them in one transaction (#92). Kept alive because the pages come and go and FR-S2-02 wants the values on the way back. |
 
 ## Patterns
 

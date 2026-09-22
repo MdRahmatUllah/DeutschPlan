@@ -218,6 +218,51 @@ void main() {
     });
   });
 
+  testWidgets('glass lays its content out as paper does', (tester) async {
+    // The top highlight is a Stack over the content. With the default fit it
+    // loosened the content's constraints, so a column centred on paper sat in
+    // the top-left corner under glass.
+    Future<Offset> textCentre(ThemeData theme) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: theme,
+          home: Center(
+            child: SizedBox(
+              width: 200,
+              height: 52,
+              child: DpSurface(
+                // Small, so that where it sits shows: a label that nearly
+                // fills the panel is centred whatever the layout does.
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: const <Widget>[
+                    Text('A1.1', style: TextStyle(fontSize: 10)),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+      // Settled, not pumped once: `MaterialApp` animates a theme change, and
+      // one frame after swapping to glass it is still drawing light.
+      await tester.pumpAndSettle();
+      expect(
+        find.byType(BackdropFilter),
+        theme.extension<DpTokens>()!.isGlass ? findsOneWidget : findsNothing,
+      );
+      return tester.getCenter(find.text('A1.1')) -
+          tester.getCenter(find.byType(DpSurface));
+    }
+
+    final paper = await textCentre(AppTheme.light());
+    final glass = await textCentre(AppTheme.glass());
+
+    expect(paper.dx, closeTo(0, 1), reason: 'centred on paper');
+    expect(glass.dx, closeTo(paper.dx, 1));
+    expect(glass.dy, closeTo(paper.dy, 1));
+  });
+
   group('selected', () {
     // The S2 choice cards: a bar each, until one is picked. The artboards draw
     // the pick as a 2 px edge in ink (Lagoon under glass) with the shadow.

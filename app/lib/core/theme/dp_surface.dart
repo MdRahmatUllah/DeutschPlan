@@ -282,6 +282,11 @@ class _TopHighlight extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Stack(
+      // Passthrough, so the panel's content gets the constraints it would get
+      // on paper. The default loosens them, and a glass panel whose content
+      // is narrower than itself — S2's step chips — shrank it to the top-left
+      // corner while the same widget sat centred in light and dark.
+      fit: StackFit.passthrough,
       children: <Widget>[
         child,
         Positioned(

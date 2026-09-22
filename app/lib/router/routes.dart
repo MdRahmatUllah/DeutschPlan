@@ -12,6 +12,7 @@ library;
 
 import 'package:deutschplan/features/onboarding/onboarding_meaning_page.dart';
 import 'package:deutschplan/features/onboarding/onboarding_shell.dart';
+import 'package:deutschplan/features/onboarding/onboarding_start_page.dart';
 import 'package:deutschplan/features/onboarding/onboarding_welcome_page.dart';
 import 'package:deutschplan/features/splash/splash_screen.dart';
 import 'package:deutschplan/router/app_shell.dart';
@@ -436,7 +437,18 @@ class OnboardingRoute extends GoRouteData with $OnboardingRoute {
         onBack: () => _back(context, OnboardingPage.meaningLanguage),
       ),
 
-      // #89…#91 replace these.
+      OnboardingPage.startingPoint => OnboardingStartPage(
+        onContinue: () => const OnboardingRoute(page: '4').push<void>(context),
+        onBack: () => _back(context, OnboardingPage.startingPoint),
+        // S3 pops with the step it suggests (#93, #94), or with nothing.
+        onPlacement: () =>
+            const OnboardingRoute(page: 'placement').push<String>(context),
+        // FR-S2-01's Skip finishes setup, and finishing is #92's. Until then
+        // there is no `onSkip`, and the shell leaves Skip out rather than
+        // drawing a button that does nothing.
+      ),
+
+      // #90 and #91 replace these.
       _ => PlaceholderScreen(title: 'Welcome', screen: 'S2', detail: page),
     };
   }
