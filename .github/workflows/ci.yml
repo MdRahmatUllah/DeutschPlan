@@ -1,0 +1,126 @@
+#  The gate on every pull request.
+#
+#  docs/05-dev-guide/testing.md sets the bar; this is what makes it real. Two
+#  jobs rather than one, because a Python failure behind a ten-minute Flutter
+#  build is a failure nobody reads — and because they have no reason to wait
+#  for each other.
+#
+#  The SDK is read from .fvmrc, which getting-started.md calls the single
+#  source of truth. A version written here as well would be a second copy to
+#  keep in step by hand, and the one that goes stale is always the one CI uses.
+
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+# A second push to the same branch cancels the first: the older run is
+# answering a question nobody is asking any more.
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  app:
+    name: analyze, format, test
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Read the pinned SDK
+        id: sdk
+        run: |
+          version="$(jq -er '.flutter' .fvmrc)"
+          echo "Pinned Flutter: $version"
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ steps.sdk.outputs.version }}
+          channel: stable
+          cache: true
+
+      # Generated code is git-ignored (ADR 17), so every run regenerates it —
+      # which also means a generator that has started producing different
+      # output fails here rather than on someone's machine.
+      - name: Cache pub and build_runner
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.pub-cache
+            app/.dart_tool/build
+          key: >-
+            pub-${{ runner.os }}-${{ steps.sdk.outputs.version }}-${{
+            hashFiles('app/pubspec.lock') }}-${{
+            hashFiles('app/lib/**/*.drift', 'app/lib/**/*.dart') }}
+          restore-keys: |
+            pub-${{ runner.os }}-${{ steps.sdk.outputs.version }}-${{ hashFiles('app/pubspec.lock') }}-
+            pub-${{ runner.os }}-${{ steps.sdk.outputs.version }}-
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: tools/requirements.txt
+
+      - run: pip install -r tools/requirements.txt
+
+      - name: flutter pub get
+        working-directory: app
+        run: flutter pub get
+
+      # `make gen` and not `build_runner build` alone: the mirror and the
+      # migration helpers are inputs to it, and a mirror that no longer
+      # matches the pipeline's DDL is exactly the kind of drift CI is for.
+      - name: make gen
+        run: make gen
+
+      - name: make lint
+        run: make lint
+
+      - name: make test
+        run: make test
+
+  content:
+    name: content pipeline
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: tools/requirements.txt
+
+      - run: pip install -r tools/requirements.txt
+
+      - name: pytest
+        run: python -m pytest tools/tests -q
+
+      # The committed asset, when there is one. The four workbooks are not in
+      # this repository, so `app/assets/db/content.db` only exists once someone
+      # has run `make content` and committed it — and from that moment on, the
+      # thing that actually ships has to pass every gate on every PR.
+      #
+      # `tools/tests/test_make_content.py` already verifies a database built
+      # from the fixtures; this verifies the real one.
+      - name: verify the shipped content.db
+        run: |
+          db=app/assets/db/content.db
+          if [ -f "$db" ]; then
+            python tools/verify_content.py --db "$db"
+          else
+            echo "No $db committed yet — the workbooks are not in this"
+            echo "repository. tools/tests/test_make_content.py verifies a"
+            echo "database built from the fixtures, which ran above."
+          fi
