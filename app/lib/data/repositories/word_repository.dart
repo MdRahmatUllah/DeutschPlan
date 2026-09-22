@@ -39,16 +39,21 @@ enum WordStatus {
 /// A word and what the learner has done with it.
 @immutable
 class WordWithState {
-  const WordWithState({required this.word, required this.state});
+  const WordWithState({
+    required this.word,
+    required this.state,
+    required this.status,
+  });
 
   final Word word;
   final WordStateData? state;
 
-  String get uid => word.uid;
+  /// Derived in SQL against the learner's `done_stability_days`, not read
+  /// from `word_state.status` — that column is a cache, and a threshold the
+  /// learner just moved would leave it a rating behind (BR-STATUS-02).
+  final WordStatus status;
 
-  /// [WordStatus.todo] when there is no state row — a word nobody has met is
-  /// not missing data.
-  WordStatus get status => WordStatus.parse(state?.status);
+  String get uid => word.uid;
 
   bool get isSuspended => status == WordStatus.suspended;
 }
@@ -76,35 +81,63 @@ class WordRepository extends DatabaseAccessor<AppDatabase>
 
   final SettingsRepository _settings;
 
+  /// `done_stability_days`, read on every query rather than cached.
+  ///
+  /// It is a Settings row the learner moves, and the derivation happens in
+  /// SQL — so the value has to come from here each time or the lists would
+  /// answer with the threshold that was current when this object was built.
+  /// A double because it is compared against `stability`, which is REAL.
+  double get _doneAfter =>
+      _settings.read(SettingKeys.doneStabilityDays).toDouble();
+
   /// Every word of a step, suspended ones included — the Words tab shows them
   /// greyed rather than hiding them.
   Stream<List<WordWithState>> watchStep(String code) =>
-      wordsWithStateForStep(code).watch().map(
+      wordsWithStateForStep(_doneAfter, code).watch().map(
         (rows) => <WordWithState>[
-          for (final row in rows) WordWithState(word: row.w, state: row.s),
+          for (final row in rows)
+            WordWithState(
+              word: row.w,
+              state: row.s,
+              status: WordStatus.parse(row.derivedStatus),
+            ),
         ],
       );
 
   /// The same step, ready to be learned from. BR-STATUS-03.
   Stream<List<WordWithState>> watchLearnableStep(String code) =>
-      learnableWordsForStep(code).watch().map(
+      learnableWordsForStep(_doneAfter, code).watch().map(
         (rows) => <WordWithState>[
-          for (final row in rows) WordWithState(word: row.w, state: row.s),
+          for (final row in rows)
+            WordWithState(
+              word: row.w,
+              state: row.s,
+              status: WordStatus.parse(row.derivedStatus),
+            ),
         ],
       );
 
   Stream<List<WordWithState>> watchCategory(int categoryId) =>
-      wordsWithStateForCategory(categoryId).watch().map(
+      wordsWithStateForCategory(_doneAfter, categoryId).watch().map(
         (rows) => <WordWithState>[
-          for (final row in rows) WordWithState(word: row.w, state: row.s),
+          for (final row in rows)
+            WordWithState(
+              word: row.w,
+              state: row.s,
+              status: WordStatus.parse(row.derivedStatus),
+            ),
         ],
       );
 
   Stream<WordWithState?> watchWord(String uid) =>
-      wordWithState(uid).watch().map(
+      wordWithState(_doneAfter, uid).watch().map(
         (rows) => rows.isEmpty
             ? null
-            : WordWithState(word: rows.single.w, state: rows.single.s),
+            : WordWithState(
+                word: rows.single.w,
+                state: rows.single.s,
+                status: WordStatus.parse(rows.single.derivedStatus),
+              ),
       );
 
   /// Everything due on or before [today], excluding suspended words.
@@ -112,21 +145,30 @@ class WordRepository extends DatabaseAccessor<AppDatabase>
   /// [today] is a local date string — `plan_items.plan_date` and
   /// `word_state.due` are local days, because a study day is a local day.
   Stream<List<WordWithState>> watchDue(String today) =>
-      dueWords(today).watch().map(
+      dueWords(_doneAfter, today).watch().map(
         (rows) => <WordWithState>[
-          for (final row in rows) WordWithState(word: row.w, state: row.s),
+          for (final row in rows)
+            WordWithState(
+              word: row.w,
+              state: row.s,
+              status: WordStatus.parse(row.derivedStatus),
+            ),
         ],
       );
 
   Future<WordWithState?> find(String uid) async {
-    final rows = await wordWithState(uid).get();
+    final rows = await wordWithState(_doneAfter, uid).get();
     return rows.isEmpty
         ? null
-        : WordWithState(word: rows.single.w, state: rows.single.s);
+        : WordWithState(
+            word: rows.single.w,
+            state: rows.single.s,
+            status: WordStatus.parse(rows.single.derivedStatus),
+          );
   }
 
   Stream<StatusCountsForStepResult> watchStatusCounts(String code) =>
-      statusCountsForStep(code).watchSingle();
+      statusCountsForStep(_doneAfter, code).watchSingle();
 
   /// Suspends a word. Its FSRS state is untouched (BR-STATUS-03).
   Future<void> suspend(String uid) => _setStatus(uid, WordStatus.suspended);
@@ -166,7 +208,10 @@ class WordRepository extends DatabaseAccessor<AppDatabase>
   /// had — asking [statusFor] there returns `suspended` and the word can never
   /// come back.
   WordStatus derivedStatus(WordStateData state) {
-    if (state.reps == 0 && state.lastReview == null) return WordStatus.todo;
+    // Introduced is what decides, not reviewed: `introduce()` writes the date
+    // and leaves reps at 0, and reading that as never-met would put the word
+    // back to `todo` on the next refresh and offer it as new again.
+    if (state.introducedOn == null && state.reps == 0) return WordStatus.todo;
 
     final threshold = _settings.read(SettingKeys.doneStabilityDays);
     return state.stability >= threshold ? WordStatus.done : WordStatus.learning;
@@ -188,9 +233,12 @@ class WordRepository extends DatabaseAccessor<AppDatabase>
     return status;
   }
 
+  /// Upsert, not update: a word at `todo` has no `word_state` row at all, and
+  /// `word-detail.md` offers *Suspend* on exactly those. An UPDATE would match
+  /// nothing, the chip would flip, and the next read would say `todo` again.
   Future<void> _setStatus(String uid, WordStatus status) async {
-    await (update(db.wordState)..where((t) => t.wordUid.equals(uid))).write(
-      WordStateCompanion(status: Value(status.wire)),
+    await into(db.wordState).insertOnConflictUpdate(
+      WordStateCompanion.insert(wordUid: uid, status: Value(status.wire)),
     );
   }
 

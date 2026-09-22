@@ -275,6 +275,82 @@ void main() {
     });
   });
 
+  group('what the lists show', () {
+    test('the status is derived, so moving the threshold moves them', () async {
+      // The claim that matters: `refreshStatus` only runs after a rating, so
+      // if the lists read the stored column, lowering the threshold would
+      // change nothing until each word happened to come round again.
+      await state(ContentFixture.haus, stability: 10);
+
+      final before = await words.watchStep('A1.1').first;
+      expect(
+        before.firstWhere((w) => w.uid == ContentFixture.haus).status,
+        WordStatus.done,
+      );
+
+      await settings.write(SettingKeys.doneStabilityDays, 30);
+      final after = await words.watchStep('A1.1').first;
+      expect(
+        after.firstWhere((w) => w.uid == ContentFixture.haus).status,
+        WordStatus.learning,
+        reason: 'the list read the cached status',
+      );
+    });
+
+    test('the counts follow the threshold too', () async {
+      await state(ContentFixture.haus, stability: 10);
+      expect((await words.watchStatusCounts('A1.1').first).done, 1);
+
+      await settings.write(SettingKeys.doneStabilityDays, 30);
+      final counts = await words.watchStatusCounts('A1.1').first;
+      expect(counts.done, 0);
+      expect(counts.learning, 1);
+    });
+
+    test(
+      'an introduced word is learning even before its first review',
+      () async {
+        // `introduce` writes the date and leaves reps at 0. Reading that as
+        // never-met put the word back to `todo` and the plan offered it as new
+        // again.
+        await words.introduce(ContentFixture.haus, today: '2026-01-05');
+
+        final step = await words.watchStep('A1.1').first;
+        expect(
+          step.firstWhere((w) => w.uid == ContentFixture.haus).status,
+          WordStatus.learning,
+        );
+        expect(
+          await words.refreshStatus(ContentFixture.haus),
+          WordStatus.learning,
+          reason: 'a refresh after any rating would have reset it',
+        );
+      },
+    );
+  });
+
+  group('suspending a word nobody has met', () {
+    test('works, because word-detail offers it on todo words', () async {
+      // There is no word_state row at all, so an UPDATE would match nothing:
+      // the chip would flip and the next read would say `todo` again.
+      expect((await words.find(ContentFixture.haus))!.state, isNull);
+
+      await words.suspend(ContentFixture.haus);
+
+      final found = await words.find(ContentFixture.haus);
+      expect(found!.status, WordStatus.suspended);
+      expect(await words.watchLearnableStep('A1.1').first, hasLength(1));
+    });
+
+    test('and resuming it puts it back to todo', () async {
+      await words.suspend(ContentFixture.haus);
+      await words.resume(ContentFixture.haus);
+
+      expect((await words.find(ContentFixture.haus))!.status, WordStatus.todo);
+      expect(await words.watchLearnableStep('A1.1').first, hasLength(2));
+    });
+  });
+
   test('introducing a word is idempotent', () async {
     await words.introduce(ContentFixture.haus, today: '2026-01-05');
     await words.introduce(ContentFixture.haus, today: '2026-02-09');
