@@ -1034,4 +1034,42 @@ class FakeStore implements PlanStore {
   @override
   Future<String?> lastCompletedStep() async =>
       completed.isEmpty ? null : completed.last.split('@').first;
+
+  /// Days with activity, for the streak.
+  Set<PlanDate> active = <PlanDate>{};
+
+  /// What the logs could measure, for the estimate.
+  MeasuredSeconds measured = const MeasuredSeconds(sessions: 0);
+
+  /// Plan rows of a day that are neither done nor skipped.
+  final Map<PlanDate, int> open = <PlanDate, int>{};
+
+  @override
+  Future<Set<PlanDate>> activeDays(
+    PlanDate today, {
+    required int lookbackDays,
+  }) async => <PlanDate>{
+    for (final day in active)
+      if (daysBetween(day, today) >= 0 &&
+          daysBetween(day, today) <= lookbackDays)
+        day,
+  };
+
+  @override
+  Future<(int, int)> newItemProgress(PlanDate today) async {
+    var planned = 0;
+    for (final entry in plan.entries) {
+      if (!entry.key.endsWith('/new')) continue;
+      if (daysBetween(entry.key.split('/').first, today) < 0) continue;
+      planned += entry.value.length;
+    }
+    return (planned, _completed.length);
+  }
+
+  @override
+  Future<int> openPlanItems(PlanDate date) async =>
+      open[date] ?? (plan['$date/new'] ?? const <String>[]).length;
+
+  @override
+  Future<MeasuredSeconds> measuredSeconds() async => measured;
 }

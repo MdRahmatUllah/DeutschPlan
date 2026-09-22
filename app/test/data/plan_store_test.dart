@@ -720,6 +720,197 @@ VALUES (?, ?, ?, ?, ?)
     });
   });
 
+  group('the streak queries', () {
+    Future<void> statsRow(
+      String day, {
+      int newDone = 0,
+      int reviews = 0,
+      int grammar = 0,
+      int sentences = 0,
+    }) => db.customStatement(
+      'INSERT INTO daily_stats (day, new_done, reviews_done, grammar_done, '
+      'sentences_done) VALUES (?, ?, ?, ?, ?)',
+      <Object>[day, newDone, reviews, grammar, sentences],
+    );
+
+    test('a day counts when anything was done on it', () async {
+      await statsRow(monday, newDone: 1);
+      await statsRow(addDays(monday, 1), reviews: 3);
+      await statsRow(addDays(monday, 2), grammar: 1);
+      await statsRow(addDays(monday, 3), sentences: 2);
+
+      expect(
+        await store.activeDays(addDays(monday, 3), lookbackDays: 30),
+        hasLength(4),
+      );
+    });
+
+    test('and a row of zeroes does not', () async {
+      // `_bumpDailyStats` can leave one behind when a rating is undone. A day
+      // the learner did nothing on must not hold a streak together.
+      await statsRow(monday);
+
+      expect(await store.activeDays(monday, lookbackDays: 30), isEmpty);
+    });
+
+    test('the future is not counted', () async {
+      await statsRow(addDays(monday, 5), newDone: 1);
+
+      expect(await store.activeDays(monday, lookbackDays: 30), isEmpty);
+    });
+
+    test('and neither is anything past the lookback', () async {
+      await statsRow(addDays(monday, -40), newDone: 1);
+      await statsRow(addDays(monday, -10), newDone: 1);
+
+      expect(await store.activeDays(monday, lookbackDays: 30), <String>{
+        addDays(monday, -10),
+      });
+    });
+  });
+
+  group('the schedule check queries', () {
+    test('counts new items planned and done', () async {
+      await store.addToPlan(monday, PlanKind.newWord, <String>['s1', 's2']);
+      await store.addToPlan(addDays(monday, 1), PlanKind.newWord, <String>[
+        's3',
+      ]);
+      await db.customStatement(
+        "UPDATE plan_items SET completed_at = '2026-03-02T10:00:00Z' "
+        "WHERE word_uid = 's1'",
+      );
+
+      expect(await store.newItemProgress(addDays(monday, 1)), (3, 1));
+    });
+
+    test('revise rows are not part of it', () async {
+      // A missed revision is not "behind" — FSRS reschedules it by itself.
+      await store.addToPlan(monday, PlanKind.revise, <String>['s1', 's2']);
+
+      expect(await store.newItemProgress(monday), (0, 0));
+    });
+
+    test('and tomorrow is not either', () async {
+      await store.addToPlan(addDays(monday, 1), PlanKind.newWord, <String>[
+        's1',
+      ]);
+
+      expect(await store.newItemProgress(monday), (0, 0));
+    });
+  });
+
+  group('open plan items (BR-PLAN-10)', () {
+    test('counts what is neither done nor skipped', () async {
+      await store.addToPlan(monday, PlanKind.newWord, <String>[
+        's1',
+        's2',
+        's3',
+      ]);
+      await db.customStatement(
+        "UPDATE plan_items SET completed_at = '2026-03-02T10:00:00Z' "
+        "WHERE word_uid = 's1'",
+      );
+      await db.customStatement(
+        "UPDATE plan_items SET skipped = 1 WHERE word_uid = 's2'",
+      );
+
+      expect(await store.openPlanItems(monday), 1);
+    });
+
+    test('and a day with nothing planned is not open', () async {
+      expect(await store.openPlanItems(monday), 0);
+    });
+  });
+
+  group('BR-PLAN-09 — the measured timings', () {
+    Future<void> log(String uid, String at) => db.customStatement(
+      'INSERT INTO review_log (word_uid, reviewed_at, rating, source) '
+      "VALUES (?, ?, 3, 'daily')",
+      <Object>[uid, at],
+    );
+
+    test('are null until there is anything to measure', () async {
+      final measured = await store.measuredSeconds();
+
+      expect(measured.sessions, 0);
+      expect(measured.enough, isFalse);
+      expect(measured.newWord, isNull);
+      expect(measured.revision, isNull);
+    });
+
+    test('come from the gaps between ratings of the same kind', () async {
+      await store.addToPlan(monday, PlanKind.newWord, <String>[
+        's1',
+        's2',
+        's3',
+      ]);
+      await log('s1', '2026-03-02T09:00:00Z');
+      await log('s2', '2026-03-02T09:00:30Z');
+      await log('s3', '2026-03-02T09:01:10Z');
+
+      final measured = await store.measuredSeconds();
+
+      expect(measured.newWord, 35, reason: 'gaps of 30 and 40, median 35');
+    });
+
+    test('new and revise are told apart by the plan row', () async {
+      await store.addToPlan(monday, PlanKind.newWord, <String>['s1', 's2']);
+      await store.addToPlan(monday, PlanKind.revise, <String>['s3', 's4']);
+      await log('s1', '2026-03-02T09:00:00Z');
+      await log('s2', '2026-03-02T09:00:40Z');
+      await log('s3', '2026-03-02T09:02:00Z');
+      await log('s4', '2026-03-02T09:02:10Z');
+
+      final measured = await store.measuredSeconds();
+
+      expect(measured.newWord, 40);
+      expect(measured.revision, 10);
+    });
+
+    test('a rating with no plan row is left out, not guessed at', () async {
+      // From Search, a quiz or an exam: there is no block it belongs to.
+      await log('s1', '2026-03-02T09:00:00Z');
+      await log('s2', '2026-03-02T09:00:30Z');
+
+      expect((await store.measuredSeconds()).newWord, isNull);
+    });
+
+    test('and the gap across two days is never taken', () async {
+      // Grouped by day before the gaps are measured. The last review of
+      // Monday and the first of Tuesday are not a gap.
+      await store.addToPlan(monday, PlanKind.newWord, <String>['s1']);
+      await store.addToPlan(addDays(monday, 1), PlanKind.newWord, <String>[
+        's2',
+      ]);
+      await log('s1', '2026-03-02T09:00:00Z');
+      await log('s2', '2026-03-03T09:00:10Z');
+
+      expect((await store.measuredSeconds()).newWord, isNull);
+    });
+
+    test('seven sessions are what make them trusted', () async {
+      for (var day = 0; day < 7; day++) {
+        await db.customStatement(
+          'INSERT INTO daily_stats (day, new_done) VALUES (?, 1)',
+          <Object>[addDays(monday, day)],
+        );
+      }
+
+      expect((await store.measuredSeconds()).enough, isTrue);
+    });
+
+    test('and six are not', () async {
+      for (var day = 0; day < 6; day++) {
+        await db.customStatement(
+          'INSERT INTO daily_stats (day, new_done) VALUES (?, 1)',
+          <Object>[addDays(monday, day)],
+        );
+      }
+
+      expect((await store.measuredSeconds()).enough, isFalse);
+    });
+  });
+
   group('end to end, against SQLite rather than a map', () {
     test('a first day plans seven and a backlog forms behind it', () async {
       await enroll();
