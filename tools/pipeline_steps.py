@@ -731,3 +731,142 @@ def _matches(tip, by_uid, by_german, words, re) -> list:
             f"valid regex ({error})."
         ) from error
     return [word for word in words if pattern.search(word.german)]
+
+
+# Grammar tags: which practice item types a topic can produce.
+#
+# `grammar-practice.md`: "Topics tagged in the pipeline (`grammar_topics.tags`,
+# comma list, derived from topic title keywords) decide which item types
+# apply. Every topic yields at least Gap fill + Pick the form."
+#
+# Derived here rather than authored, because the workbooks have no tag column
+# and asking authors to keep one would put a second source of truth beside the
+# topic title they already write.
+
+#: Tag -> the keywords in a topic title that imply it. Matched case-folded
+#: against the title, as whole words where the keyword is a word.
+#:
+#: German and English both, because the Topic column is authored in either
+#: depending on the workbook — "Nebensatz: weil, dass" and "Subordinate
+#: clauses" are the same topic.
+TAG_KEYWORDS: dict[str, tuple[str, ...]] = {
+    # The three `grammar-practice.md` names for Order the sentence.
+    "word-order": (
+        "wortstellung",
+        "satzstellung",
+        "word order",
+        "wortfolge",
+        "inversion",
+    ),
+    "nebensatz": (
+        "nebensatz",
+        "nebensätze",
+        "subordinate",
+        "subjunction",
+        "konjunktion",
+        "weil",
+        "dass",
+        "obwohl",
+        "wenn",
+    ),
+    "v2": ("verbzweit", "verb second", "v2", "hauptsatz", "position 2"),
+    # The rest steer distractors and Rule recall.
+    "case": ("kasus", "case", "dativ", "akkusativ", "genitiv", "nominativ"),
+    "tense": (
+        "tempus",
+        "tense",
+        "präsens",
+        "präteritum",
+        "perfekt",
+        "plusquamperfekt",
+        "futur",
+    ),
+    "verb-form": (
+        "verb",
+        "konjugation",
+        "conjugation",
+        "partizip",
+        "participle",
+        "imperativ",
+        "modalverb",
+        "trennbar",
+        "separable",
+    ),
+    "gender": ("genus", "gender", "artikel", "article", "geschlecht"),
+    "adjective": ("adjektiv", "adjective", "deklination", "komparativ", "superlativ"),
+    "pronoun": ("pronomen", "pronoun", "reflexiv", "reflexive", "relativ"),
+    "preposition": ("präposition", "preposition", "wechselpräposition"),
+    "negation": ("negation", "verneinung", "nicht", "kein"),
+    "passive": ("passiv", "passive", "vorgangspassiv", "zustandspassiv"),
+    "subjunctive": ("konjunktiv", "subjunctive", "würde"),
+}
+
+#: A keyword always has to start a word. What it may do at the end depends on
+#: how long it is:
+#:
+#: - short keywords must end a word too (allowing the German plural and weak
+#:   endings), because "verb" would otherwise fire on "Verbindung" and
+#:   "artikel" on "Partikel" — both tagging a topic with an item type it
+#:   cannot produce.
+#: - long ones may continue into a compound, because German writes
+#:   "Verbzweitstellung" and "Wechselpräpositionen" as one word and those are
+#:   exactly the topics being looked for.
+#:
+#: Eight characters is where the two stop overlapping: nothing shorter is a
+#: distinctive compound head, and nothing longer turned up inside an unrelated
+#: word.
+COMPOUND_HEAD_LENGTH = 8
+
+_PLURAL = r"(?:e|en|es|er|n|s)?"
+
+
+def _mentions(title: str, keyword: str) -> bool:
+    import re
+
+    ending = "" if len(keyword) >= COMPOUND_HEAD_LENGTH else _PLURAL + r"\b"
+    pattern = r"\b" + re.escape(keyword) + ending
+    return re.search(pattern, title, re.IGNORECASE) is not None
+
+
+#: Every topic gets these, whatever its title says. `grammar-practice.md`
+#: guarantees Gap fill and Pick the form for every topic, and both are built
+#: from the example and the rule alone — no tag needed.
+BASE_TAGS = ("gap-fill", "pick-the-form")
+
+#: The tags that unlock Order the sentence, per `grammar-practice.md`.
+WORD_ORDER_TAGS = frozenset({"word-order", "nebensatz", "v2"})
+
+
+def tags_for(topic: str) -> list[str]:
+    """The tags a topic title implies, plus the two every topic gets.
+
+    Deterministic and order-stable: the derived tags are sorted, so the same
+    title always produces the same comma list and a rebuild of unchanged
+    content produces an identical database.
+    """
+    title = (topic or "").casefold()
+    found = {
+        tag
+        for tag, keywords in TAG_KEYWORDS.items()
+        if any(_mentions(title, keyword) for keyword in keywords)
+    }
+    return list(BASE_TAGS) + sorted(found)
+
+
+def assign_tags(rows: Sequence) -> dict[str, int]:
+    """Sets `tags` on every grammar row. Returns the coverage, for the summary.
+
+    The count that matters is how many topics can produce Order the sentence:
+    without a word-order tag that item type never appears, and nobody would
+    notice, because the other four still do.
+    """
+    coverage: dict[str, int] = {"topics": 0, "word-order": 0}
+
+    for row in rows:
+        tags = tags_for(row.topic)
+        row.tags = ",".join(tags)
+        coverage["topics"] += 1
+        if WORD_ORDER_TAGS & set(tags):
+            coverage["word-order"] += 1
+
+    return coverage

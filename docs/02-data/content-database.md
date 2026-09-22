@@ -14,7 +14,7 @@ Column names are backticked; `tools/tests/test_schema.py` reads them out of this
 | `categories` | `id`, `name`, `description` | Word categories (from C-… tabs) |
 | `words` | `uid` PK, `sublevel_code`, `level_code`, `seq`, `seq_in_sublevel`, `article`, `german`, `forms`, `pos`, `pron_bn`, `english`, `bangla`, `freq`, `category_id`, `source_week`, `collocations`, `synonyms_register`, `search_key`, `search_key_alt` | One row per entry |
 | `word_examples` | (`word_uid`, `ord`) PK, `german`, `english` | Example sentences |
-| `grammar_topics` | `uid` PK, `sublevel_code`, `level_code`, `seq`, `source_week`, `topic`, `rule`, `example_de`, `example_en`, `watch_out` | Grammar |
+| `grammar_topics` | `uid` PK, `sublevel_code`, `level_code`, `seq`, `source_week`, `topic`, `rule`, `example_de`, `example_en`, `watch_out`, `tags` | Grammar |
 | `skill_prompts` | (`level_code`, `ord`), `text` | Weekly skills checklist |
 | `interference_tips` | `word_uid`, `tip_en`, `tip_bn` | L1-specific traps (from CSV) |
 | `words_fts` | `uid` UNINDEXED, `german`, `english`, `bangla`, `search_key` — FTS5 `unicode61 remove_diacritics 2` | Exact / prefix search |
