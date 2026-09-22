@@ -51,8 +51,14 @@ enum FsrsState {
 
   final int value;
 
-  static FsrsState parse(int value) =>
-      FsrsState.values.firstWhere((state) => state.value == value);
+  static FsrsState parse(int value) => FsrsState.values.firstWhere(
+    (state) => state.value == value,
+    // `firstWhere` throws a bare "No element" otherwise, which names neither
+    // the column nor the value. `fsrs_state` has no CHECK constraint, so a
+    // restored backup or a later migration can put anything in it.
+    orElse: () =>
+        throw ArgumentError.value(value, 'fsrs_state', 'expects 0..3'),
+  );
 }
 
 /// A card's scheduling, as `word_state` and `grammar_state` store it.
@@ -89,26 +95,6 @@ class CardState {
   final int scheduledDays;
 
   bool get isFresh => state == FsrsState.fresh;
-
-  CardState copyWith({
-    double? stability,
-    double? difficulty,
-    int? reps,
-    int? lapses,
-    FsrsState? state,
-    DateTime? lastReview,
-    DateTime? due,
-    int? scheduledDays,
-  }) => CardState(
-    stability: stability ?? this.stability,
-    difficulty: difficulty ?? this.difficulty,
-    reps: reps ?? this.reps,
-    lapses: lapses ?? this.lapses,
-    state: state ?? this.state,
-    lastReview: lastReview ?? this.lastReview,
-    due: due ?? this.due,
-    scheduledDays: scheduledDays ?? this.scheduledDays,
-  );
 
   @override
   String toString() =>
@@ -178,14 +164,19 @@ class Fsrs {
   /// schedule something sensible.
   final double desiredRetention;
 
-  double get _w0 => weights[0];
-
   /// Probability of recall [elapsedDays] after a review of a card with this
   /// [stability].
   ///
   /// `(1 + 19/81 · t/S)^(-0.5)`.
   double retrievability(num elapsedDays, double stability) {
     if (stability <= 0) return 0;
+
+    // `pow` of a negative base to -0.5 is NaN, and NaN compares false against
+    // everything — a clock that moved backwards would scramble BR-PLAN-03's
+    // "lowest retrievability first" sort rather than failing. Nothing recalls
+    // worse than perfectly at the moment of review, so zero is the floor.
+    if (elapsedDays <= 0) return 1;
+
     return math.pow(1 + factor * elapsedDays / stability, -0.5).toDouble();
   }
 
@@ -236,7 +227,7 @@ class Fsrs {
         _ => state.isFresh ? FsrsState.learning : FsrsState.review,
       },
       lastReview: now,
-      due: _startOfDay(now.toLocal()).add(Duration(days: scheduled)),
+      due: _addDays(_startOfDay(now.toLocal()), scheduled),
       scheduledDays: scheduled,
     );
   }
@@ -318,7 +309,14 @@ class Fsrs {
   static DateTime _startOfDay(DateTime local) =>
       DateTime(local.year, local.month, local.day);
 
-  /// The stability a brand-new card gets from an Again. Exposed because the
-  /// plan engine previews it before the learner has rated anything.
-  double get initialAgainStability => _w0;
+  /// Adds whole calendar days to a local midnight.
+  ///
+  /// Not `add(Duration(days: n))`: that adds absolute time, so a local
+  /// midnight plus a day drifts by an hour whenever the offset changes. In
+  /// `W. Europe`, 2026-10-25 midnight plus one day comes out at 2026-10-25
+  /// 23:00 — the day before. `word_state.due` is a date string, so every card
+  /// rated that day would be written as due today and come back the same
+  /// evening. `DateTime` normalises an overflowing day field instead.
+  static DateTime _addDays(DateTime day, int days) =>
+      DateTime(day.year, day.month, day.day + days);
 }

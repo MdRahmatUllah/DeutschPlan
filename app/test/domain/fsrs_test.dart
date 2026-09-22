@@ -123,6 +123,17 @@ void main() {
     test('a fresh card has none', () {
       expect(fsrs.retrievability(1, 0), 0);
     });
+
+    test('a negative elapsed is 1, not NaN', () {
+      // `pow` of a negative base to -0.5 is NaN, and NaN compares false
+      // against everything — it would scramble BR-PLAN-03's "lowest
+      // retrievability first" sort rather than failing. Reachable from
+      // outside: the plan engine computes its own elapsed from the stored
+      // `last_review`, and a clock can move backwards.
+      expect(fsrs.retrievability(-1, 10), 1.0);
+      expect(fsrs.retrievability(-100, 10), 1.0);
+      expect(fsrs.retrievability(-100, 10).isNaN, isFalse);
+    });
   });
 
   group('the interval', () {
@@ -428,6 +439,45 @@ void main() {
       expect(state.due!.isUtc, isFalse);
     });
 
+    test('a day added to a due date is a calendar day, not 24 hours', () {
+      // `add(Duration(days: n))` adds absolute time, so a local midnight
+      // drifts by an hour whenever the offset changes. This machine is in
+      // `W. Europe`, where 2026-10-25 midnight plus one day lands at
+      // 2026-10-25 23:00 — the day before. `word_state.due` is a date string,
+      // so every card rated that day would be written as due today and come
+      // back the same evening.
+      //
+      // Skipped where the machine has no DST: there is nothing to cross, and
+      // a test that silently passes everywhere is worse than one that says
+      // where it applies.
+      final transitions = <DateTime>[
+        for (var day = 0; day < 365; day++)
+          if (DateTime(2026, 1, 1 + day).timeZoneOffset !=
+              DateTime(2026, 1, 2 + day).timeZoneOffset)
+            DateTime(2026, 1, 1 + day),
+      ];
+      if (transitions.isEmpty) {
+        markTestSkipped('the local zone has no DST transition in 2026');
+        return;
+      }
+
+      for (final eve in transitions) {
+        final reviewed = fsrs.review(
+          const CardState(),
+          Rating.good,
+          eve.add(const Duration(hours: 9)).toUtc(),
+        );
+        final expected = DateTime(
+          eve.year,
+          eve.month,
+          eve.day + reviewed.scheduledDays,
+        );
+
+        expect(reviewed.due, expected, reason: 'reviewed on $eve');
+        expect(reviewed.due!.hour, 0, reason: 'reviewed on $eve');
+      }
+    });
+
     test('a clock that moved backwards does not give a negative elapsed', () {
       // It happens: a timezone change, a manual clock set. A negative elapsed
       // would give a retrievability above 1 and a nonsense interval.
@@ -492,6 +542,19 @@ void main() {
     test('states round-trip', () {
       for (final state in FsrsState.values) {
         expect(FsrsState.parse(state.value), state);
+      }
+    });
+
+    test('a state outside 0..3 is refused the same way a rating is', () {
+      // `fsrs_state` has no CHECK constraint, so a restored backup or a later
+      // migration can put anything in it. A bare `firstWhere` says only "No
+      // element", which names neither the column nor the value.
+      for (final value in <int>[-1, 4, 99]) {
+        expect(
+          () => FsrsState.parse(value),
+          throwsArgumentError,
+          reason: '$value',
+        );
       }
     });
   });
