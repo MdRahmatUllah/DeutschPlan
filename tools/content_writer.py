@@ -18,6 +18,7 @@ from pathlib import Path
 from pipeline_steps import LEVELS, SUBLEVELS, LevelSplit, PipelineError
 
 SCHEMA = Path(__file__).resolve().parent / "content_schema.sql"
+FTS_SCHEMA = Path(__file__).resolve().parent / "content_fts.sql"
 
 #: The public exam each level aims at. Not in any workbook, and not derivable:
 #: it is what the step detail screen shows under the level name.
@@ -57,6 +58,46 @@ def create_schema(connection: sqlite3.Connection) -> None:
     connection.executescript(SCHEMA.read_text(encoding="utf-8"))
 
 
+def create_fts(connection: sqlite3.Connection) -> None:
+    """Creates the three search tables.
+
+    Separate from `create_schema` so a reader looking for the course does not
+    have to scroll past the index, and so #52 can assert they are populated
+    without guessing which tables are which.
+    """
+    connection.executescript(FTS_SCHEMA.read_text(encoding="utf-8"))
+
+
+def fill_fts(connection: sqlite3.Connection) -> None:
+    """Copies `words` and `word_examples` into the search tables.
+
+    A copy rather than FTS5 external content: external content needs triggers
+    on the source table to stay in step, and content.db is read-only on the
+    device, so there is nothing for a trigger to react to. This runs once, at
+    build time, and cannot drift afterwards.
+    """
+    connection.execute(
+        "INSERT INTO words_fts (uid, german, english, bangla, search_key) "
+        "SELECT uid, german, english, bangla, search_key FROM words"
+    )
+    connection.execute(
+        "INSERT INTO words_trigram (uid, german, english, search_key) "
+        "SELECT uid, german, english, search_key FROM words"
+    )
+    connection.execute(
+        "INSERT INTO examples_fts (word_uid, german, english) "
+        "SELECT word_uid, german, english FROM word_examples"
+    )
+
+    # FTS5 keeps its index in several small b-trees as rows arrive. One merge
+    # after a bulk load turns them into one, which is what makes the first
+    # search on a cold app fast rather than the tenth.
+    for table in ("words_fts", "words_trigram", "examples_fts"):
+        connection.execute(
+            f"INSERT INTO {table}({table}) VALUES ('optimize')"
+        )
+
+
 def write(connection: sqlite3.Connection, inputs: BuildInputs) -> None:
     """Fills an empty database. One transaction: a half-written course is
     worse than none, because the app would attach it and show gaps."""
@@ -68,6 +109,7 @@ def write(connection: sqlite3.Connection, inputs: BuildInputs) -> None:
         _write_grammar(connection, inputs)
         _write_skill_prompts(connection, inputs)
         _write_meta(connection, inputs)
+        fill_fts(connection)
 
 
 def _write_levels(connection: sqlite3.Connection, inputs: BuildInputs) -> None:
@@ -285,6 +327,7 @@ def build(path: Path, inputs: BuildInputs) -> None:
     connection = open_database(path)
     try:
         create_schema(connection)
+        create_fts(connection)
         write(connection, inputs)
     except sqlite3.Error as error:
         raise PipelineError(f"writing {path.name}: {error}") from error
