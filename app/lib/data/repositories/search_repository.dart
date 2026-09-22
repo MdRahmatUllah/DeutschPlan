@@ -1,4 +1,4 @@
-import 'package:deutschplan/data/db/app_database.dart';
+import 'package:deutschplan/data/db/app_database.dart' show Word;
 import 'package:deutschplan/data/db/content_dao.dart';
 import 'package:deutschplan/domain/edit_distance.dart';
 import 'package:deutschplan/domain/text_norm.dart';
@@ -102,6 +102,11 @@ class SearchRepository {
   static const int similarLimit = 10;
   static const int sentenceLimit = 10;
 
+  /// How many prefix rows to fetch. Wider than [startsWithLimit] because the
+  /// exact-meaning pass reads the same list, and a word whose meaning *is* the
+  /// query is worth finding even when eighty others start with it.
+  static const int _prefixLimit = 200;
+
   /// Tier 3 asks the trigram index for candidates and ranks them here.
   static const int _trigramCandidateLimit = 400;
 
@@ -126,17 +131,27 @@ class SearchRepository {
     void take(Iterable<WordHit> hits, int limit) {
       var taken = 0;
       for (final hit in hits) {
-        if (taken == limit) return;
-        // De-duplicated by uid across tiers, so a word that matched exactly
-        // does not come back as its own near-miss.
+        // De-duplicated by uid across tiers, and marked even past the cap: a
+        // word this tier found and had no room for still belongs to this
+        // tier. Letting it fall through would file a word that starts with
+        // the query under *Similar words*.
         if (!seen.add(hit.uid)) continue;
+        if (taken == limit) continue;
         words.add(hit);
         taken++;
       }
     }
 
-    take(await _exact(raw, key, alt), exactLimit);
-    take(await _startsWith(key), startsWithLimit);
+    // One prefix query for two tiers. It is the widest scan of the four, and
+    // the exact-meaning pass needs the same rows: running it twice both cost
+    // twice and gave the meaning pass a shorter list to look through than the
+    // one it was meant to search.
+    final prefixed = key.isEmpty
+        ? const <PrefixMatchesResult>[]
+        : await _content.prefixMatches(_prefixQuery(key), _prefixLimit).get();
+
+    take(await _exact(raw, key, alt, prefixed), exactLimit);
+    take(_startsWith(prefixed), startsWithLimit);
     take(await _similar(key, alt), similarLimit);
 
     return SearchResults(words: words, sentences: await _sentences(key));
@@ -146,7 +161,12 @@ class SearchRepository {
   ///
   /// `bangla` is matched raw: a Bangla query is not what [searchKey]
   /// normalises, so it has to hit the column as typed.
-  Future<List<WordHit>> _exact(String raw, String key, String alt) async {
+  Future<List<WordHit>> _exact(
+    String raw,
+    String key,
+    String alt,
+    List<PrefixMatchesResult> prefixed,
+  ) async {
     final rows = await _content.exactMatches(key, alt, raw).get();
     final hits = <String, WordHit>{
       for (final row in rows)
@@ -157,20 +177,15 @@ class SearchRepository {
     // "die Straße". The prefix index is the cheapest way to get the candidate
     // rows; whether it is really an exact meaning is decided here, because
     // `english` holds a synonym list and FTS would match any one word of it.
-    if (key.isNotEmpty) {
-      final candidates = await _content
-          .prefixMatches(_prefixQuery(key), startsWithLimit * 4)
-          .get();
-      for (final row in candidates) {
-        final word = row.w;
-        if (hits.containsKey(word.uid)) continue;
-        if (_meanings(word.english).contains(key)) {
-          hits[word.uid] = WordHit(
-            word: word,
-            tier: SearchTier.exact,
-            rank: -_freq(word),
-          );
-        }
+    for (final row in prefixed) {
+      final word = row.w;
+      if (hits.containsKey(word.uid)) continue;
+      if (_meanings(word.english).contains(key)) {
+        hits[word.uid] = WordHit(
+          word: word,
+          tier: SearchTier.exact,
+          rank: -_freq(word),
+        );
       }
     }
 
@@ -180,11 +195,7 @@ class SearchRepository {
 
   /// Tier 2. FTS ranks these; frequency breaks the ties BR-SEARCH-01 cares
   /// about, scaled small enough that it cannot reorder two different ranks.
-  Future<List<WordHit>> _startsWith(String key) async {
-    if (key.isEmpty) return const <WordHit>[];
-    final rows = await _content
-        .prefixMatches(_prefixQuery(key), startsWithLimit * 2)
-        .get();
+  List<WordHit> _startsWith(List<PrefixMatchesResult> rows) {
     return <WordHit>[
       for (final row in rows)
         WordHit(
@@ -274,10 +285,24 @@ class SearchRepository {
   ///
   /// The workbook writes them with commas, semicolons or slashes. When
   /// `answer_check.dart` lands (`checkMeaning`) this is what it replaces.
-  static Set<String> _meanings(String english) => <String>{
-    for (final part in english.split(RegExp(r'[,;/]')))
-      if (searchKey(part).isNotEmpty) searchKey(part),
-  };
+  static final RegExp _separators = RegExp('[,;/]');
+
+  /// A bracketed gloss: "house (building)" is still the meaning "house".
+  static final RegExp _aside = RegExp(r'\([^)]*\)');
+
+  static Set<String> _meanings(String english) {
+    final keys = <String>{};
+    for (final part in english.split(_separators)) {
+      // Both forms, because the aside is sometimes the disambiguation the
+      // learner typed: "bank (river)" answers to "bank" and to "bank river",
+      // and `searchKey` only strips the brackets, not the words inside them.
+      for (final form in <String>[part, part.replaceAll(_aside, '')]) {
+        final key = searchKey(form);
+        if (key.isNotEmpty) keys.add(key);
+      }
+    }
+    return keys;
+  }
 
   /// `{search_key english bangla} : "k"*` — a prefix query, column-filtered to
   /// the three things a learner searches by. [columns] is false for

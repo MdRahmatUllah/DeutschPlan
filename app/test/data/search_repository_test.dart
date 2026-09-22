@@ -304,7 +304,7 @@ void main() {
       final rows = await db
           .customSelect('SELECT COUNT(*) AS n FROM c.words')
           .getSingle();
-      expect(rows.read<int>('n'), _wordCount + 2);
+      expect(rows.read<int>('n'), _wordCount + 36);
     });
 
     test('a multi-word query is a phrase, not two terms', () async {
@@ -318,6 +318,64 @@ void main() {
         wrong.inTier(SearchTier.startsWith).map((hit) => hit.word.german),
         isNot(contains('es gibt')),
       );
+    });
+
+    test('BR-SEARCH-01 — frequency breaks a tie inside a tier', () async {
+      // Two words FTS scores the same. The commoner one goes first.
+      final results = await search.search('tief');
+      final tied = results.words
+          .map((hit) => hit.word.german)
+          .where((german) => german.startsWith('tief'))
+          .toList();
+
+      // `tiefe` is the commoner one and sorts *later* by uid, so a run that
+      // fell through to the uid tie-break would answer the other way round.
+      expect(tied, <String>['tiefe', 'tiefa']);
+    });
+
+    test('a meaning with a bracketed gloss still matches exactly', () async {
+      // `bank (river)` keys as `bank river`, so without stripping the aside
+      // this word is not an exact match for `bank` at all.
+      final results = await search.search('bank');
+      expect(
+        results.inTier(SearchTier.exact).map((hit) => hit.word.german),
+        contains('Ufer'),
+      );
+    });
+
+    test('the gloss is still searchable in its own right', () async {
+      final results = await search.search('bank river');
+      expect(
+        results.inTier(SearchTier.exact).map((hit) => hit.word.german),
+        contains('Ufer'),
+      );
+    });
+
+    test('an exact meaning is found past the starts-with cap', () async {
+      // Thirty shorter meanings outrank it, so a meaning pass that only read
+      // as far as the starts-with cap would never see this word — and the
+      // learner would search the English they know and get nothing.
+      final results = await search.search('hand');
+      final exact = results
+          .inTier(SearchTier.exact)
+          .map((hit) => hit.word.german);
+
+      expect(exact, contains('Pfote'));
+    });
+
+    test('a word cut off by a cap does not reappear lower down', () async {
+      // Far more than `startsWithLimit` words start with `wort`. The ones
+      // that do not fit are dropped, not refiled under *Similar words*.
+      final results = await search.search('wort');
+      expect(results.inTier(SearchTier.startsWith), hasLength(20));
+
+      for (final hit in results.inTier(SearchTier.similar)) {
+        expect(
+          hit.word.searchKey.startsWith('wort'),
+          isFalse,
+          reason: '${hit.word.german} starts with the query',
+        );
+      }
     });
 
     test('a query stays under the caps', () async {
@@ -425,6 +483,90 @@ void _writeCourseSizedContent(String path) {
     // is observable: unquoted, the two tokens become an implicit AND and the
     // word order stops mattering.
     var uidSeed = 0;
+    // Two words the same prefix query scores identically, differing only in
+    // `freq`. BR-SEARCH-01 breaks the tie on frequency, and nothing else in
+    // the fixture can tell whether it does.
+    for (final tie in const <List<Object>>[
+      <Object>['tiefa', 1],
+      <Object>['tiefe', 5],
+    ]) {
+      word.execute(<Object?>[
+        'uid-tie-${tie[0]}',
+        'B1.1',
+        'B1',
+        80000 + uidSeed,
+        80000 + uidSeed,
+        'die',
+        tie[0],
+        'noun',
+        'depth',
+        'গভীরতা',
+        tie[1],
+        1,
+        tie[0],
+        tie[0],
+      ]);
+      uidSeed++;
+    }
+
+    // Thirty short meanings that prefix-match `hand`, and one word whose
+    // meaning *is* `hand` buried in a long cell. bm25 favours the short
+    // fields, so the one that matters ranks below the starts-with cap — which
+    // is the case the meaning pass has to look past.
+    for (var i = 0; i < 30; i++) {
+      word.execute(<Object?>[
+        'uid-hand-$i',
+        'B1.1',
+        'B1',
+        80200 + i,
+        80200 + i,
+        'das',
+        'Handbuch$i',
+        'noun',
+        'handbook$i',
+        'হ্যান্ডবুক',
+        2,
+        1,
+        'handbuch$i',
+        'handbuch$i',
+      ]);
+    }
+    word.execute(<Object?>[
+      'uid-hand-target',
+      'B1.1',
+      'B1',
+      80300,
+      80300,
+      'die',
+      'Pfote',
+      'noun',
+      'hand, paw of an animal used informally of a person in some regions',
+      'হাত',
+      4,
+      1,
+      'pfote',
+      'pfote',
+    ]);
+
+    // A meaning with a bracketed gloss, which is how vocabulary lists
+    // disambiguate. `searchKey` only strips the brackets.
+    word.execute(<Object?>[
+      'uid-gloss',
+      'B1.1',
+      'B1',
+      80100,
+      80100,
+      'das',
+      'Ufer',
+      'noun',
+      'bank (river)',
+      'তীর',
+      3,
+      1,
+      'ufer',
+      'ufer',
+    ]);
+
     for (final phrase in const <String>['es gibt', 'zu Hause']) {
       final uid = 'uid-phrase-$uidSeed';
       word.execute(<Object?>[
