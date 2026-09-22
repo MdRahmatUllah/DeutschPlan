@@ -53,7 +53,7 @@ class AppDatabase extends _$AppDatabase {
       );
 
   /// Readable without an instance, which the migration tests need.
-  static const int latestSchemaVersion = 1;
+  static const int latestSchemaVersion = 2;
 
   /// The tables this database actually owns.
   ///
@@ -90,28 +90,26 @@ class AppDatabase extends _$AppDatabase {
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
-    onCreate: (m) async {
-      // Not createAll(): that would build the content tables here too.
-      for (final entity in allSchemaEntities) {
-        if (_belongsToUserDatabase(entity)) await m.create(entity);
-      }
-    },
-    // One step per version, applied in order, from `schema_versions.dart` —
-    // which drift generates from the fixtures in `drift_schemas/`. A version
-    // with no step raises rather than opening a learner's file against a
-    // schema it was never migrated to, which is what an empty onUpgrade would
-    // do silently. `make schema-dump` captures the fixture; migration_test
-    // then opens every previous one and migrates it forward.
-    //
-    // Columns holding data are never dropped: add a nullable column or a new
-    // table.
+    onCreate: (m) => m.createAll(),
     onUpgrade: (m, from, to) async {
       // In a transaction because drift does not put one here and only writes
       // `user_version` once this returns: a step that throws part-way would
       // otherwise leave the file partly migrated at the old version, and the
       // next open would replay the steps against a schema that had already
       // moved. On the learner's device, permanently.
-      await transaction(() => stepByStep()(m, from, to));
+      await transaction(
+        () => stepByStep(
+          // v2: `content_updates.recorded_at`. Nullable, so the rows already
+          // there keep their data — the rule is to add a nullable column
+          // rather than drop or back-fill one. The "updated" chip reads a
+          // null as "before this device started recording", which is exactly
+          // what it means.
+          from1To2: (m, schema) => m.addColumn(
+            schema.contentUpdates,
+            schema.contentUpdates.recordedAt,
+          ),
+        )(m, from, to),
+      );
 
       // `Migrator.alterTable` turns foreign keys off while it recreates a
       // table, so a migration can leave dangling references behind and
@@ -126,6 +124,22 @@ class AppDatabase extends _$AppDatabase {
       }
     },
   );
+
+  /// Only what user.db owns.
+  ///
+  /// `content.drift` is included so drift can type-check `ContentDao`'s
+  /// queries, and that puts the content tables into the generated
+  /// `allSchemaEntities`. Everything that reads this list would then act on
+  /// them: `createAll` would build an empty `words` inside user.db — shadowing
+  /// the attached course, so the app would show a course with nothing in it —
+  /// and the schema verifier would compare a real file against tables nobody
+  /// created.
+  ///
+  /// Filtering here rather than at each call site means there is one answer to
+  /// "what is in this database", and it is the true one.
+  @override
+  List<DatabaseSchemaEntity> get allSchemaEntities =>
+      super.allSchemaEntities.where(_belongsToUserDatabase).toList();
 
   /// True for the tables and indexes user.db owns.
   ///

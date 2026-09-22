@@ -45,6 +45,7 @@ gen: ## Mirror + migration helpers, then build_runner
 schema-dump: ## Capture the CURRENT schema as a fixture. Run after bumping schemaVersion.
 	@cd $(APP) && v=$$(sed -n 's/.*latestSchemaVersion = \([0-9][0-9]*\).*/\1/p' lib/data/db/app_database.dart) && test ! -f drift_schemas/drift_schema_v$$v.json || { echo "app/drift_schemas/drift_schema_v$$v.json already exists. Bump latestSchemaVersion in app_database.dart first, or delete the fixture deliberately if this version has not shipped."; exit 1; }
 	$(DART) dart run drift_dev schema dump lib/data/db/app_database.dart drift_schemas/
+	python tools/trim_schema_fixture.py
 	@echo
 	@echo "Fixture written to app/drift_schemas/. Commit it — it is the only"
 	@echo "record of this schema once user_schema.drift moves on. Then run"

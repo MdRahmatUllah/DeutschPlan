@@ -234,7 +234,15 @@ CREATE TABLE content_updates (
   added        INTEGER NOT NULL DEFAULT 0,
   removed      INTEGER NOT NULL DEFAULT 0,
   changed_json TEXT,
-  seen         INTEGER NOT NULL DEFAULT 0
+  seen         INTEGER NOT NULL DEFAULT 0,
+
+  -- When *this device* recorded the update, UTC ISO-8601. The "updated" chip
+  -- ages from here rather than from `version`, which is the pipeline's build
+  -- time and can be months older than the day the learner received it.
+  --
+  -- Nullable: rows written before schema 2 have none, and a column with data
+  -- is never dropped or back-filled with a guess.
+  recorded_at  TEXT
 );
 
 -- Excluded from export: it is a cache, and it is large.
