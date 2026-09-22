@@ -20,6 +20,7 @@ import yaml
 from openpyxl import load_workbook
 
 from pipeline_steps import (
+    GRAMMAR_TEXT_FIELDS,
     LEVELS,
     check_formula_prefixes,
     PipelineError,
@@ -482,6 +483,7 @@ def derive(sources: list[SourceBook]) -> dict[str, LevelSplit]:
 
     warnings = (
         check_formula_prefixes(words)
+        + check_formula_prefixes(grammar, GRAMMAR_TEXT_FIELDS)
         + assign_uids(words)
         + assign_grammar_uids(grammar)
     )
@@ -494,6 +496,11 @@ def derive(sources: list[SourceBook]) -> dict[str, LevelSplit]:
 #: counted. A build with three hundred formula-looking cells should say so in
 #: one line rather than scroll the real problems off the screen.
 WARNING_SAMPLE = 10
+
+#: Kinds that are never capped. Every line of these names a different word
+#: whose primary key changed, and `word_state` rows key to it — "…and 40 more"
+#: would tell the author that forty words moved and not which.
+UNCAPPED_WARNINGS = frozenset({"uid collision", "grammar uid collision"})
 
 
 def _report(warnings: list[str]) -> None:
@@ -511,11 +518,12 @@ def _report(warnings: list[str]) -> None:
         by_kind.setdefault(kind, []).append(line)
 
     for kind, lines in by_kind.items():
-        for line in lines[:WARNING_SAMPLE]:
+        limit = len(lines) if kind in UNCAPPED_WARNINGS else WARNING_SAMPLE
+        for line in lines[:limit]:
             print(f"warning: {line}", file=sys.stderr)
-        if len(lines) > WARNING_SAMPLE:
+        if len(lines) > limit:
             print(
-                f"warning: ...and {len(lines) - WARNING_SAMPLE} more {kind}",
+                f"warning: ...and {len(lines) - limit} more {kind}",
                 file=sys.stderr,
             )
 

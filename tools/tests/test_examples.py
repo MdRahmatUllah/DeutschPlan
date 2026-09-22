@@ -7,6 +7,8 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
+import pytest  # noqa: E402,F401
+
 from excel_to_sqlite import Word  # noqa: E402
 from pipeline_steps import (  # noqa: E402
     FORMULA_PREFIXES,
@@ -152,3 +154,79 @@ class TestTheBuildOutput:
         assert err.strip().splitlines()[-1] == (
             "warnings: 2 formula-looking cell, 1 uid collision"
         )
+
+
+class TestGrammarCells:
+    """Grammar is free text an author types, so PIPE-05 applies there too."""
+
+    def row(self, **kwargs):
+        from excel_to_sqlite import GrammarRow
+
+        base = {"source_file": "test.xlsx", "row": 4, "topic": "Dative"}
+        return GrammarRow(**{**base, **kwargs})
+
+    def test_a_dash_in_a_rule_is_warned_about(self):
+        from pipeline_steps import GRAMMAR_TEXT_FIELDS
+
+        warnings = check_formula_prefixes(
+            [self.row(rule="-en endings on weak nouns")], GRAMMAR_TEXT_FIELDS
+        )
+        assert len(warnings) == 1 and "rule" in warnings[0]
+
+    def test_every_grammar_text_field_is_checked(self):
+        from pipeline_steps import GRAMMAR_TEXT_FIELDS
+
+        for field in GRAMMAR_TEXT_FIELDS:
+            assert check_formula_prefixes(
+                [self.row(**{field: "=gleich"})], GRAMMAR_TEXT_FIELDS
+            ), field
+
+
+def test_a_prefix_on_the_second_line_is_found():
+    # examples_de holds one sentence per line, which is why the field is in
+    # the list at all; checking only the cell would miss every line but one.
+    warnings = check_formula_prefixes(
+        [word(examples_de="Das ist gut.\n-los bedeutet ohne.")]
+    )
+    assert len(warnings) == 1 and "-los" in warnings[0]
+
+
+def test_uid_collisions_are_never_truncated(capsys):
+    # Each one names a different word whose primary key changed, and
+    # word_state rows key to it. "…and 40 more" would say forty words moved
+    # and not which.
+    from excel_to_sqlite import UNCAPPED_WARNINGS, WARNING_SAMPLE, _report
+
+    assert "uid collision" in UNCAPPED_WARNINGS
+
+    many = [f"uid collision: row {i}" for i in range(WARNING_SAMPLE + 15)]
+    _report(many)
+    err = capsys.readouterr().err
+
+    assert err.count("uid collision: row") == len(many)
+    assert "more uid collision" not in err
+
+
+def test_derive_actually_checks_the_grammar_rows(tmp_path, capsys):
+    """The wiring, not just the function.
+
+    `check_formula_prefixes` is easy to test on its own and easy to forget to
+    call. This goes through `derive`, which is what the build runs.
+    """
+    from excel_to_sqlite import derive, read_workbook
+    from fixtures.make_workbooks import BOOK_LEVELS, write_all
+
+    def total(mutate: bool) -> int:
+        sources = [read_workbook(tmp_path / name) for name in BOOK_LEVELS]
+        if mutate:
+            sources[1].grammar[0].rule = "-en endings on weak nouns"
+        derive(sources)
+        summary = capsys.readouterr().err.strip().splitlines()[-1]
+        return int(summary.split()[1])
+
+    write_all(tmp_path)
+
+    # The total, not the printed lines: the fixture workbooks carry two dozen
+    # formula-looking word cells on purpose, and the cap means one extra
+    # grammar line never reaches the screen. The count still moves.
+    assert total(mutate=True) == total(mutate=False) + 1

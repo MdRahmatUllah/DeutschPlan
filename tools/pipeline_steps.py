@@ -421,7 +421,7 @@ def _strip_latin_marks(text: str) -> str:
 #: and `text_norm.dart` carries the same characters as a regex class. Anything
 #: outside it passes through on both sides, which is the safe direction.
 PUNCTUATION = frozenset(
-    "!\"#%&'()*,-./:;?@[\]_{}"
+    r"""!"#%&'()*,-./:;?@[\]_{}"""
     "¡§«¶·»¿"
 ) | frozenset(chr(c) for c in range(0x2010, 0x2028)) | frozenset(
     chr(c) for c in range(0x2030, 0x205F)
@@ -547,7 +547,14 @@ def _lines(cell: str | None) -> list[str]:
     return [line.strip() for line in cell.splitlines() if line.strip()]
 
 
-def check_formula_prefixes(words: Sequence) -> list[str]:
+#: The same check for grammar rows. An author types a dash into "-en endings"
+#: and an equals into "= gleich" as readily as into a word's collocations.
+GRAMMAR_TEXT_FIELDS = ("topic", "rule", "example_de", "example_en", "watch_out")
+
+
+def check_formula_prefixes(
+    rows: Sequence, fields: tuple[str, ...] = TEXT_FIELDS
+) -> list[str]:
     """PIPE-05: warns about cells Excel would treat as a formula.
 
     Nothing is changed — the value is already text by the time it reaches
@@ -556,16 +563,22 @@ def check_formula_prefixes(words: Sequence) -> list[str]:
     whose cached value is what the next build reads.
     """
     warnings: list[str] = []
-    for word in words:
-        for field in TEXT_FIELDS:
-            value = getattr(word, field, None)
-            if isinstance(value, str) and value.startswith(FORMULA_PREFIXES):
-                warnings.append(
-                    f"formula-looking cell: {word.source_file} row {word.row} "
-                    f"{field} starts with {value[0]!r} ({value[:30]!r}). "
-                    f"Stored as text; prefix it with an apostrophe in Excel so "
-                    f"it stays that way."
-                )
+    for row in rows:
+        for field in fields:
+            value = getattr(row, field, None)
+            if not isinstance(value, str):
+                continue
+            # Line by line: examples_de and examples_en hold one sentence each,
+            # and a dash on the second line is the same hazard as on the first.
+            for line in value.splitlines():
+                text = line.strip()
+                if text.startswith(FORMULA_PREFIXES):
+                    warnings.append(
+                        f"formula-looking cell: {row.source_file} row "
+                        f"{row.row} {field} starts with {text[0]!r} "
+                        f"({text[:30]!r}). Stored as text; prefix it with an "
+                        f"apostrophe in Excel so it stays that way."
+                    )
     return warnings
 
 
