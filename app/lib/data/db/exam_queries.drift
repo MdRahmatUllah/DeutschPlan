@@ -10,6 +10,14 @@ inProgressExam:
   ORDER BY started_at DESC, id DESC
   LIMIT 1;
 
+-- The same thing per seed. The hub has a card per mock (FR-L10-02), so one
+-- answer for the whole step would leave a crashed Mock 1 showing *Start*
+-- while Mock 2 was running.
+inProgressBySeed:
+  SELECT * FROM exam_attempts
+  WHERE sublevel_code = :code AND status = 'in_progress'
+  ORDER BY seed, started_at DESC, id DESC;
+
 -- Where to put the learner back. `given IS NULL` rather than a stored cursor:
 -- the answers are the record, and a cursor could disagree with them.
 firstUnanswered:
@@ -19,18 +27,25 @@ firstUnanswered:
 answersFor:
   SELECT * FROM exam_answers WHERE attempt_id = :id ORDER BY ord;
 
--- What the exam hub draws: one row per seed, whether or not it has been sat.
--- `max_points` can be 0 on an attempt that was finished without grading, so
--- the division is guarded rather than left to produce a NULL best.
+-- What the exam hub draws: one row per seed that has been sat.
+--
+-- Attempts count everything that is no longer running, because FR-L12-04 says
+-- an abandoned attempt shows as an attempt without a score, and because
+-- BR-EXAM-02's *Try another mock* picks the next unused seed — a seed the
+-- learner walked out of has been used. The score is finished-only
+-- (FR-L10-02). `max_points` can be 0 on an attempt finished without grading,
+-- so the division is guarded rather than left to produce a NULL best.
 examSeedSummary:
   SELECT seed,
          COUNT(*) AS attempts,
-         MAX(CASE WHEN max_points > 0
+         SUM(CASE WHEN status = 'finished' THEN 1 ELSE 0 END) AS finished,
+         MAX(CASE WHEN status = 'finished' AND max_points > 0
                   THEN score_points * 100.0 / max_points
                   ELSE 0 END) AS best_percent,
-         MAX(passed) AS ever_passed
+         MAX(CASE WHEN status = 'finished' THEN passed ELSE 0 END)
+           AS ever_passed
   FROM exam_attempts
-  WHERE sublevel_code = :code AND status = 'finished'
+  WHERE sublevel_code = :code AND status != 'in_progress'
   GROUP BY seed
   ORDER BY seed;
 

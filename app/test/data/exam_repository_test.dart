@@ -164,6 +164,41 @@ void main() {
       expect(await exams.resumable('A1.2'), isNull);
     });
 
+    test('the hub gets one answer per seed', () async {
+      // FR-L10-02 is per mock: a crash on Mock 1 must not leave its card
+      // saying *Start* just because Mock 2 was started afterwards.
+      final first = await begin(seed: 1);
+      final second = await begin(seed: 2);
+
+      final resumable = await exams.watchResumable('A1.1').first;
+      expect(resumable.keys, <int>{1, 2});
+      expect(resumable[1]!.id, first);
+      expect(resumable[2]!.id, second);
+    });
+
+    test('starting a seed again closes out the attempt left running', () async {
+      // A crash, or a double-tap on *Begin exam*. The old attempt would
+      // otherwise sit `in_progress` for good and be counted twice.
+      final first = await begin(seed: 1);
+      final second = await begin(seed: 1);
+
+      final resumable = await exams.watchResumable('A1.1').first;
+      expect(resumable[1]!.id, second);
+
+      final old = await (db.select(
+        db.examAttempts,
+      )..where((t) => t.id.equals(first))).getSingle();
+      expect(old.status, 'abandoned');
+    });
+
+    test('starting one seed leaves another running', () async {
+      final first = await begin(seed: 1);
+      await begin(seed: 2);
+
+      final resumable = await exams.watchResumable('A1.1').first;
+      expect(resumable[1]!.id, first);
+    });
+
     test('the first unanswered question is where it picks up', () async {
       final id = await begin();
       expect(await exams.nextQuestion(id), 1);
@@ -275,6 +310,7 @@ void main() {
       final seeds = await exams.watchSeeds('A1.1').first;
       expect(seeds.map((s) => s.seed), <int>[1, 2]);
       expect(seeds.first.attempts, 2);
+      expect(seeds.first.finished, 2);
       expect(seeds.first.bestPercent, closeTo(75, 0.01));
       expect(seeds.first.everPassed, isTrue);
       expect(seeds.last.attempts, 1);
@@ -286,10 +322,48 @@ void main() {
       expect(await exams.watchSeeds('A1.1').first, isEmpty);
     });
 
-    test('an abandoned attempt is not a score either', () async {
+    test('an abandoned attempt shows without a score', () async {
+      // FR-L12-04. It also has to count, or BR-EXAM-02's *Try another mock*
+      // would offer a seed the learner walked out of as never sat.
       final id = await begin();
       await exams.abandon(id);
-      expect(await exams.watchSeeds('A1.1').first, isEmpty);
+
+      final seeds = await exams.watchSeeds('A1.1').first;
+      expect(seeds.single.attempts, 1);
+      expect(seeds.single.finished, 0);
+      expect(seeds.single.bestPercent, 0);
+      expect(seeds.single.everPassed, isFalse);
+    });
+
+    test('an abandoned attempt does not lower the best score', () async {
+      await sat(seed: 1, points: 36, passed: true);
+      final id = await begin(seed: 1);
+      await exams.abandon(id);
+
+      final seeds = await exams.watchSeeds('A1.1').first;
+      expect(seeds.single.attempts, 2);
+      expect(seeds.single.finished, 1);
+      expect(seeds.single.bestPercent, closeTo(75, 0.01));
+      expect(seeds.single.everPassed, isTrue);
+    });
+
+    test('a graded attempt that was then abandoned is not a score', () async {
+      // Nothing grades and then abandons today, but the score comes off
+      // `status`, not off `max_points` being 0 — so the day something does,
+      // the hub does not start reporting a best from an attempt the learner
+      // walked out of.
+      final id = await begin(seed: 2);
+      await db.customStatement(
+        'UPDATE exam_attempts SET score_points = 48, max_points = 48, '
+        "passed = 1, status = 'abandoned' WHERE id = ?",
+        <Object?>[id],
+      );
+
+      final seeds = await exams.watchSeeds('A1.1').first;
+      expect(seeds.single.attempts, 1);
+      expect(seeds.single.finished, 0);
+      expect(seeds.single.bestPercent, 0);
+      expect(seeds.single.everPassed, isFalse);
     });
 
     test('another step has its own seeds', () async {

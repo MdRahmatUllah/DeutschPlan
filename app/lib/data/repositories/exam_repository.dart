@@ -87,12 +87,24 @@ class SeedSummary {
   const SeedSummary({
     required this.seed,
     required this.attempts,
+    required this.finished,
     required this.bestPercent,
     required this.everPassed,
   });
 
   final int seed;
+
+  /// Every attempt that is no longer running, abandoned ones included:
+  /// FR-L12-04 shows one as an attempt without a score, and BR-EXAM-02's
+  /// *Try another mock* must not offer a seed the learner walked out of as
+  /// though it had never been sat.
   final int attempts;
+
+  /// How many of those were graded. [bestPercent] and [everPassed] come from
+  /// these only (FR-L10-02), so `finished == 0` is the card that reads
+  /// "1 attempt · no score".
+  final int finished;
+
   final double bestPercent;
   final bool everPassed;
 }
@@ -122,6 +134,18 @@ class ExamRepository extends DatabaseAccessor<AppDatabase>
     required String startedAt,
     required List<ExamQuestion> questions,
   }) => db.transaction(() async {
+    // A crash mid-exam, or a double-tap on *Begin exam*, leaves an attempt
+    // nothing ever finishes or abandons. It would sit `in_progress` for good
+    // and be counted twice by the hub, so starting this seed again closes it
+    // out — which is what FR-L12-04 calls an unfinished attempt anyway.
+    await (update(db.examAttempts)..where(
+          (t) =>
+              t.sublevelCode.equals(sublevelCode) &
+              t.seed.equals(seed) &
+              t.status.equals('in_progress'),
+        ))
+        .write(const ExamAttemptsCompanion(status: Value('abandoned')));
+
     final id = await into(db.examAttempts).insert(
       ExamAttemptsCompanion.insert(
         sublevelCode: sublevelCode,
@@ -181,9 +205,17 @@ class ExamRepository extends DatabaseAccessor<AppDatabase>
             ..where((t) => t.attemptId.equals(attemptId) & t.ord.equals(ord)))
           .write(ExamAnswersCompanion(flagged: Value(flagged ? 1 : 0)));
 
-  /// The attempt to offer *Continue* on, or null.
+  /// The attempt to offer *Continue* on, or null. Today's *Resume* card.
   Future<ExamAttempt?> resumable(String sublevelCode) =>
       inProgressExam(sublevelCode).getSingleOrNull();
+
+  /// The same, per seed, for the hub's three cards (FR-L10-02): a seed with an
+  /// entry shows *Resume* instead of *Start*.
+  Stream<Map<int, ExamAttempt>> watchResumable(String sublevelCode) =>
+      inProgressBySeed(sublevelCode).watch().map(
+        // At most one row per seed: `begin` abandons the one it replaces.
+        (rows) => <int, ExamAttempt>{for (final row in rows) row.seed: row},
+      );
 
   /// The question to put the learner back on, or null when the paper is full.
   ///
@@ -245,6 +277,7 @@ class ExamRepository extends DatabaseAccessor<AppDatabase>
             SeedSummary(
               seed: row.seed,
               attempts: row.attempts,
+              finished: row.finished ?? 0,
               bestPercent: row.bestPercent ?? 0,
               everPassed: row.everPassed == 1,
             ),
