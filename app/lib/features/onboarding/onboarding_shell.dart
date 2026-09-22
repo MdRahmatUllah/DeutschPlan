@@ -63,6 +63,18 @@ extension OnboardingPageColour on OnboardingPage {
     OnboardingPage.dailyPace => tokens.color.der, // Cobalt
     OnboardingPage.reminderAndVoice => tokens.color.das, // Emerald
   };
+
+  /// The ink on the header, as Foundations writes on each fill: white on
+  /// light-mode Cobalt, dark ink on every other colour. Glass has no fill —
+  /// the pane is frosted paper tinted with the colour — so it takes the page
+  /// ink, which under glass-dark is the light one.
+  Color headerInk(DpTokens tokens) {
+    if (tokens.isGlass) return tokens.color.ink;
+    return switch (this) {
+      OnboardingPage.dailyPace => tokens.color.onDer,
+      _ => tokens.color.onPrimary,
+    };
+  }
 }
 
 /// The frame: coloured header, dots, the page's controls, and the actions.
@@ -207,9 +219,7 @@ class _Header extends StatelessWidget {
                       role: DpTextRole.caption,
                       weight: 700,
                       letterSpacing: 0.6,
-                      // The header colours are all bright fills, so the ink
-                      // on them is the same ink the artboard uses on each.
-                      color: tokens.color.onPrimary,
+                      color: page.headerInk(tokens),
                     ),
                   ),
                   // Only with somewhere to go: a Skip that cannot skip is worse
@@ -220,10 +230,9 @@ class _Header extends StatelessWidget {
                       onPressed: onSkip,
                       kind: DpButtonKind.text,
                       expand: false,
-                      // Ink, as the artboard draws it: the header is a bright
-                      // fill, and link teal on Raspberry or Cobalt would all
-                      // but vanish.
-                      colour: tokens.color.onPrimary,
+                      // The header's ink, not link teal, which on Raspberry
+                      // or Cobalt would all but vanish.
+                      colour: page.headerInk(tokens),
                     ),
                 ],
               ),
@@ -231,7 +240,7 @@ class _Header extends StatelessWidget {
               DpText(
                 headline,
                 role: DpTextRole.headline,
-                color: tokens.color.onPrimary,
+                color: page.headerInk(tokens),
               ),
             ],
           ),

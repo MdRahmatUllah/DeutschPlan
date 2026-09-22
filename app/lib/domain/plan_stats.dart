@@ -189,3 +189,33 @@ bool dayComplete({
     isStudyDay
     ? openPlanItems == 0 && grammarDue == 0 && openSentences == 0
     : true;
+
+/// How many of the seven days [studyDaysMask] marks — Monday at bit 0, as
+/// `PlanEngine.isStudyDay` reads it.
+int studyDaysPerWeek(int studyDaysMask) {
+  var count = 0;
+  for (var day = 0; day < 7; day++) {
+    if (studyDaysMask & (1 << day) != 0) count++;
+  }
+  return count;
+}
+
+/// FR-S2-04: about how many calendar days a step takes.
+///
+/// "The selected step's word count ÷ daily_new × (7 ÷ study days per week)",
+/// in whole numbers: `words × 7 ÷ (dailyNew × days)`, rounded up. Rounded up
+/// because a step with one word left over takes one more day, not none — and
+/// in integers because the same sum in doubles puts 180 words at 7 a day over
+/// six days at 30.000000000000004, which rounds up to 31.
+///
+/// Null when there is nothing to divide by: no study days, or no new words.
+int? courseDays({
+  required int words,
+  required int dailyNew,
+  required int studyDaysMask,
+}) {
+  final perWeek = studyDaysPerWeek(studyDaysMask);
+  final perWeekNew = dailyNew * perWeek;
+  if (perWeekNew <= 0) return null;
+  return (words * 7 + perWeekNew - 1) ~/ perWeekNew;
+}
