@@ -21,10 +21,17 @@ void main() {
 
   late FakeStore store;
 
-  PlanEngine engineWith({int revise = 10, int catchup = 30}) => PlanEngine(
+  PlanEngine engineWith({
+    int revise = 10,
+    int catchup = 30,
+    bool autoAdvance = true,
+    bool pauseNewWhenBacklog = false,
+  }) => PlanEngine(
     store: store,
     reviseCount: revise,
     backlogCatchupDays: catchup,
+    autoAdvance: autoAdvance,
+    pauseNewWhenBacklog: pauseNewWhenBacklog,
   );
 
   setUp(() {
@@ -191,10 +198,10 @@ void main() {
       );
     });
 
-    test('a step that runs out writes nothing for the days after it', () async {
-      // #77 advances to the next step (BR-COURSE-05). Until then, running out
-      // is the end of planning — not an empty plan written for every
-      // remaining day.
+    test('a step that runs out with nowhere to go stops there', () async {
+      // The last step of the course: nothing to advance into, so planning
+      // ends rather than writing an empty plan for every remaining day.
+      store.course = <String>['A1.1'];
       store.vocabulary = <String>['w1', 'w2', 'w3'];
       final engine = engineWith();
 
@@ -309,6 +316,225 @@ void main() {
           reason: 'clearing bit $day should disable $date',
         );
       }
+    });
+  });
+
+  group('BR-PLAN-07 — the backlog pause', () {
+    test('stops new words while the backlog is not empty', () async {
+      // Monday's seven go unfinished, so from Tuesday the pause holds.
+      final engine = engineWith(pauseNewWhenBacklog: true);
+      await engine.openDay(monday);
+      expect(store.plan['$monday/new'], hasLength(7));
+
+      final later = await engine.openDay(addDays(monday, 3));
+
+      expect(later.newToday, isEmpty);
+      expect(later.newPaused, isTrue);
+      for (var day = 1; day <= 3; day++) {
+        expect(
+          store.plan.containsKey('${addDays(monday, day)}/new'),
+          isFalse,
+          reason: 'day $day was planned while paused',
+        );
+      }
+    });
+
+    test('and revisions carry on', () async {
+      // The rule is about new words. A learner who is behind still revises.
+      store.candidates = <RevisionCandidate>[
+        const RevisionCandidate(uid: 'seen', stability: 5, lastReview: monday),
+      ];
+      final engine = engineWith(pauseNewWhenBacklog: true);
+      await engine.openDay(monday);
+
+      final later = await engine.openDay(addDays(monday, 2));
+
+      expect(later.newToday, isEmpty);
+      expect(later.revise, <String>['seen']);
+    });
+
+    test('it resumes once the backlog is cleared', () async {
+      final engine = engineWith(pauseNewWhenBacklog: true);
+      await engine.openDay(monday);
+      await engine.openDay(addDays(monday, 1));
+      expect(store.plan.containsKey('${addDays(monday, 1)}/new'), isFalse);
+
+      store.complete(monday);
+
+      final resumed = await engine.openDay(addDays(monday, 2));
+
+      expect(resumed.newToday, hasLength(7));
+      expect(resumed.newPaused, isFalse);
+    });
+
+    test('and with the flag off a backlog does not stop anything', () async {
+      final engine = engineWith();
+      await engine.openDay(monday);
+
+      final later = await engine.openDay(addDays(monday, 3));
+
+      expect(later.newToday, hasLength(7));
+      expect(later.newPaused, isFalse);
+      expect(later.backlog, isNotEmpty, reason: 'the fixture proves nothing');
+    });
+
+    test('the pause is judged per day, not once for the run', () async {
+      // Planning a day creates the rows that are backlog for the day after.
+      // Checking once at the start would let a catch-up run plan every missed
+      // day and leave the learner deeper in than when they opened the app.
+      store.vocabulary = <String>[for (var i = 1; i <= 100; i++) 'w$i'];
+      final engine = engineWith(pauseNewWhenBacklog: true);
+
+      await engine.openDay(addDays(monday, 5));
+
+      final planned = store.plan.keys.where((k) => k.endsWith('/new'));
+      expect(
+        planned,
+        hasLength(1),
+        reason: 'only the first day had an empty backlog in front of it',
+      );
+    });
+  });
+
+  group('BR-COURSE-05 — auto-advance', () {
+    setUp(() {
+      store.wordsByStep = <String, List<String>>{
+        'A1.1': <String>['a1', 'a2', 'a3'],
+        'A1.2': <String>['b1', 'b2', 'b3', 'b4', 'b5', 'b6', 'b7', 'b8'],
+        'A2.1': <String>['c1', 'c2'],
+      };
+    });
+
+    test('a step that runs out enrols the next one', () async {
+      final engine = engineWith(autoAdvance: true);
+
+      await engine.openDay(monday);
+
+      // Three from A1.1, then four from A1.2 to fill the seven.
+      expect(store.plan['$monday/new'], <String>[
+        'a1',
+        'a2',
+        'a3',
+        'b1',
+        'b2',
+        'b3',
+        'b4',
+      ]);
+      expect(store.completed, <String>['A1.1@$monday']);
+      expect(store.enrolled.single.sublevelCode, 'A1.2');
+    });
+
+    test('the new enrolment keeps the pace and the study days', () async {
+      // BR-PLAN-08 freezes the pace per enrolment; advancing a step is not
+      // the learner changing their mind about it.
+      store.enrollment = const ActiveStep(
+        sublevelCode: 'A1.1',
+        startedOn: monday,
+        dailyNew: 5,
+        studyDaysMask: 0x1F,
+      );
+
+      await engineWith().openDay(monday);
+
+      final next = store.enrolled.single;
+      expect(next.dailyNew, 5);
+      expect(next.studyDaysMask, 0x1F);
+      expect(next.startedOn, monday);
+    });
+
+    test('and it walks more than one step in a day if it has to', () async {
+      // Three from A1.1 and one from A1.2 leave three of the seven unfilled,
+      // so the day reaches into a third step. A2.1 has five, so it finishes
+      // the day *without* running out — otherwise this would be testing the
+      // end of the course rather than a second advance.
+      store.wordsByStep['A1.2'] = <String>['b1'];
+      store.wordsByStep['A2.1'] = <String>['c1', 'c2', 'c3', 'c4', 'c5'];
+      final engine = engineWith();
+
+      await engine.openDay(monday);
+
+      expect(store.completed, <String>['A1.1@$monday', 'A1.2@$monday']);
+      expect(store.enrolled.map((e) => e.sublevelCode), <String>[
+        'A1.2',
+        'A2.1',
+      ]);
+      expect(store.plan['$monday/new'], <String>[
+        'a1',
+        'a2',
+        'a3',
+        'b1',
+        'c1',
+        'c2',
+        'c3',
+      ]);
+    });
+
+    test('running out of course entirely closes the last step too', () async {
+      // Every step exhausted and no next one: the run ends rather than
+      // looping, and the last step is closed like the others.
+      store.wordsByStep['A1.2'] = <String>['b1'];
+      await engineWith().openDay(monday);
+
+      expect(store.completed, <String>[
+        'A1.1@$monday',
+        'A1.2@$monday',
+        'A2.1@$monday',
+      ]);
+      expect(store.plan['$monday/new'], hasLength(6), reason: '3 + 1 + 2');
+    });
+
+    test('with it off the step completes and nothing replaces it', () async {
+      final engine = engineWith(autoAdvance: false);
+
+      final plan = await engine.openDay(monday);
+
+      expect(store.plan['$monday/new'], <String>['a1', 'a2', 'a3']);
+      expect(store.enrolled, isEmpty, reason: 'it advanced anyway');
+      expect(plan.stepComplete, isTrue);
+      expect(plan.activeStep, isNull);
+      expect(plan.nextStep, 'A1.2', reason: 'Today offers Start next step');
+    });
+
+    test('a learner mid-course is offered no next step', () async {
+      // The discriminating case: they have finished A1.1 and are on A1.2, so
+      // `lastCompletedStep` answers A1.1 and the step after it is the one they
+      // are *already* studying. Offering it would put "Start next step" on
+      // Today for a learner who is part way through.
+      // A1.2 needs enough words to still be the active step on day two —
+      // otherwise this tests the end of the course again.
+      store.wordsByStep['A1.2'] = <String>[for (var i = 1; i <= 50; i++) 'b$i'];
+
+      await engineWith().openDay(monday);
+      expect(store.completed, <String>['A1.1@$monday']);
+      expect(store.enrollment!.sublevelCode, 'A1.2');
+
+      final plan = await engineWith().openDay(addDays(monday, 1));
+
+      expect(plan.activeStep, 'A1.2');
+      expect(plan.stepComplete, isFalse);
+      expect(plan.nextStep, isNull, reason: 'it offered the active step');
+    });
+
+    test('at the end of the course there is no next step to offer', () async {
+      store.course = <String>['A1.1'];
+      final engine = engineWith();
+
+      final plan = await engine.openDay(monday);
+
+      expect(plan.stepComplete, isTrue);
+      expect(plan.nextStep, isNull);
+    });
+
+    test('step complete is not the same as never having enrolled', () async {
+      // Both leave `activeStep` null, and Today shows a different thing for
+      // each: one offers the next step, the other is the onboarding case.
+      store.enrollment = null;
+
+      final plan = await engineWith().openDay(monday);
+
+      expect(plan.activeStep, isNull);
+      expect(plan.stepComplete, isFalse);
+      expect(plan.nextStep, isNull);
     });
   });
 
@@ -720,7 +946,7 @@ class FakeStore implements PlanStore {
     String sublevelCode, {
     required int limit,
   }) async => <String>[
-    for (final uid in vocabulary)
+    for (final uid in wordsByStep[sublevelCode] ?? vocabulary)
       if (!_everPlannedNew.contains(uid)) uid,
   ].take(limit).toList();
 
@@ -749,12 +975,22 @@ class FakeStore implements PlanStore {
     }
   }
 
+  /// Marks every row of [date] complete, so it leaves the backlog.
+  void complete(PlanDate date) {
+    for (final key in plan.keys.where((k) => k.startsWith('$date/'))) {
+      _completed.addAll(plan[key]!);
+    }
+  }
+
+  final Set<String> _completed = <String>{};
+
   @override
   Future<List<String>> backlogBefore(PlanDate today) async => <String>[
     for (final entry in plan.entries)
       if (entry.key.endsWith('/new') &&
           daysBetween(entry.key.split('/').first, today) > 0)
-        ...entry.value,
+        for (final uid in entry.value)
+          if (!_completed.contains(uid)) uid,
   ];
 
   @override
@@ -762,4 +998,40 @@ class FakeStore implements PlanStore {
 
   @override
   Future<void> setLastPlannedDate(PlanDate date) async => lastPlanned = date;
+
+  /// The course, in order. `vocabulary` belongs to whichever step is active.
+  List<String> course = <String>['A1.1', 'A1.2', 'A2.1'];
+
+  /// Words per step, for the auto-advance tests. When a step is missing here
+  /// it falls back to [vocabulary], which is what the single-step tests use.
+  Map<String, List<String>> wordsByStep = <String, List<String>>{};
+
+  final List<String> completed = <String>[];
+  final List<ActiveStep> enrolled = <ActiveStep>[];
+
+  @override
+  Future<String?> stepAfter(String sublevelCode) async {
+    final at = course.indexOf(sublevelCode);
+    return at < 0 || at + 1 >= course.length ? null : course[at + 1];
+  }
+
+  @override
+  Future<void> completeStep(String sublevelCode, PlanDate on) async {
+    completed.add('$sublevelCode@$on');
+    if (enrollment?.sublevelCode == sublevelCode) enrollment = null;
+  }
+
+  @override
+  Future<void> enroll(ActiveStep step) async {
+    enrolled.add(step);
+    enrollment = step;
+  }
+
+  @override
+  Future<bool> hasEverEnrolled() async =>
+      enrollment != null || enrolled.isNotEmpty || completed.isNotEmpty;
+
+  @override
+  Future<String?> lastCompletedStep() async =>
+      completed.isEmpty ? null : completed.last.split('@').first;
 }

@@ -5,6 +5,9 @@ import 'dart:io';
 
 import 'package:deutschplan/data/db/app_database.dart';
 import 'package:deutschplan/data/db/content_dao.dart';
+import 'package:deutschplan/data/repositories/plan_repository.dart'
+    show PlanRepository;
+import 'package:deutschplan/data/repositories/plan_repository.dart' as repo;
 import 'package:deutschplan/data/repositories/plan_store.dart';
 import 'package:deutschplan/data/repositories/settings_repository.dart';
 import 'package:deutschplan/domain/plan_engine.dart';
@@ -34,9 +37,17 @@ void main() {
     directory = Directory.systemTemp.createTempSync('deutschplan_plan');
     final content = ContentFixture.write('${directory.path}/content.db').file;
 
-    // The fixture has three words; a seven-a-day plan needs more than that.
     final raw = sqlite.sqlite3.open(content.path);
     try {
+      // The fixture stops at A1.2, so there is no level boundary to cross.
+      // `sublevels.ord` restarts at 1 in every level, which is exactly the
+      // case `stepAfter` has to get right.
+      raw.execute(
+        "INSERT INTO sublevels (code, level_code, ord, word_count, "
+        "grammar_count) VALUES ('A2.1', 'A2', 1, 0, 0)",
+      );
+
+      // The fixture has three words; a seven-a-day plan needs more than that.
       for (var i = 1; i <= 20; i++) {
         raw.execute(
           '''
@@ -489,6 +500,223 @@ VALUES (?, ?, ?, ?, ?)
       await store.setLastPlannedDate('2026-03-04');
 
       expect(await store.lastPlannedDate(), '2026-03-04');
+    });
+  });
+
+  group('the next step (BR-COURSE-05)', () {
+    test('follows course order within a level', () async {
+      expect(await store.stepAfter('A1.1'), 'A1.2');
+    });
+
+    test('and crosses the level boundary', () async {
+      // `sublevels.ord` restarts at 1 in every level, so A2.1 has ord 1 just
+      // as A1.1 does. Ordering on it alone sends the learner back to the
+      // start of the course at every boundary.
+      expect(await store.stepAfter('A1.2'), 'A2.1');
+    });
+
+    test('and is null at the end of the course', () async {
+      expect(await store.stepAfter('A2.1'), isNull);
+    });
+
+    test(
+      'an unknown step has no successor rather than the first one',
+      () async {
+        expect(await store.stepAfter('Z9.9'), isNull);
+      },
+    );
+  });
+
+  group('enrolling and completing', () {
+    test('completing closes the open row', () async {
+      await enroll();
+
+      await store.completeStep('A1.1', '2026-03-10');
+
+      expect(await store.activeStep(), isNull);
+      expect(await store.hasEverEnrolled(), isTrue);
+      expect(await store.lastCompletedStep(), 'A1.1');
+    });
+
+    test('and leaves an already-closed row alone', () async {
+      // BR-COURSE-04 allows one open row; closing must not rewrite history.
+      await enroll(step: 'A1.1', completedOn: '2026-03-05');
+
+      await store.completeStep('A1.1', '2026-03-10');
+
+      final row = await db
+          .customSelect('SELECT completed_on AS c FROM enrollments')
+          .getSingle();
+      expect(row.read<String>('c'), '2026-03-05');
+    });
+
+    test('enrolling opens a step that reads back as active', () async {
+      await store.enroll(
+        const ActiveStep(
+          sublevelCode: 'A1.2',
+          startedOn: '2026-03-10',
+          dailyNew: 5,
+          studyDaysMask: 0x1F,
+        ),
+      );
+
+      final step = await store.activeStep();
+      expect(step!.sublevelCode, 'A1.2');
+      expect(step.dailyNew, 5);
+      expect(step.studyDaysMask, 0x1F);
+    });
+
+    test('completing then enrolling keeps one open row', () async {
+      // The unique index is what enforces BR-COURSE-04, so this is the order
+      // the engine has to use — and the test that says so.
+      await enroll();
+      await store.completeStep('A1.1', '2026-03-10');
+      await store.enroll(
+        const ActiveStep(
+          sublevelCode: 'A1.2',
+          startedOn: '2026-03-10',
+          dailyNew: 7,
+          studyDaysMask: PlanEngine.allDays,
+        ),
+      );
+
+      final open = await db
+          .customSelect(
+            'SELECT COUNT(*) AS n FROM enrollments WHERE completed_on IS NULL',
+          )
+          .getSingle();
+      expect(open.read<int>('n'), 1);
+      expect((await store.activeStep())!.sublevelCode, 'A1.2');
+    });
+
+    test('enrolling never destroys another step’s row', () async {
+      // `INSERT OR REPLACE` resolved the conflict on the open-row index by
+      // *deleting* the other enrollment — start date, frozen pace and all.
+      // The engine calls `completeStep` first so it never hit this, but #92
+      // enrols directly, and losing a row silently is the worst of the
+      // options. Now the partial index refuses it out loud.
+      await enroll(step: 'A1.1', startedOn: '2026-01-05', dailyNew: 3);
+
+      await expectLater(
+        store.enroll(
+          const ActiveStep(
+            sublevelCode: 'A1.2',
+            startedOn: '2026-03-10',
+            dailyNew: 7,
+            studyDaysMask: PlanEngine.allDays,
+          ),
+        ),
+        throwsA(anything),
+      );
+
+      final row = await db
+          .customSelect(
+            'SELECT sublevel_code AS c, started_on AS s, daily_new AS d '
+            'FROM enrollments',
+          )
+          .getSingle();
+      expect(row.read<String>('c'), 'A1.1');
+      expect(row.read<String>('s'), '2026-01-05');
+      expect(row.read<int>('d'), 3, reason: 'the frozen pace was lost');
+    });
+
+    test('a step can be restarted after it was finished', () async {
+      // `INSERT OR REPLACE` rather than a plain insert: coming back to a step
+      // must reopen the row, not fail on the primary key.
+      await enroll(step: 'A1.1', completedOn: '2026-03-05');
+
+      await store.enroll(
+        const ActiveStep(
+          sublevelCode: 'A1.1',
+          startedOn: '2026-03-10',
+          dailyNew: 7,
+          studyDaysMask: PlanEngine.allDays,
+        ),
+      );
+
+      expect((await store.activeStep())!.startedOn, '2026-03-10');
+
+      final count = await db
+          .customSelect('SELECT COUNT(*) AS n FROM enrollments')
+          .getSingle();
+      expect(count.read<int>('n'), 1, reason: 'the restart duplicated the row');
+    });
+
+    test('nobody has enrolled on a fresh install', () async {
+      expect(await store.hasEverEnrolled(), isFalse);
+      expect(await store.lastCompletedStep(), isNull);
+    });
+
+    test('an open step is not a completed one', () async {
+      // The discriminating case for the `completed_on IS NOT NULL` filter.
+      // With a completed row present the ORDER BY hides the bug — SQLite
+      // sorts NULL last under DESC — so it takes a learner who is part way
+      // through their *first* step to show it.
+      await enroll();
+
+      expect(await store.lastCompletedStep(), isNull);
+      expect(await store.hasEverEnrolled(), isTrue);
+    });
+
+    test('the last completed step is the most recent one', () async {
+      await enroll(
+        step: 'A1.1',
+        startedOn: '2026-01-01',
+        completedOn: '2026-02-01',
+      );
+      await enroll(
+        step: 'A1.2',
+        startedOn: '2026-02-01',
+        completedOn: '2026-03-01',
+      );
+
+      expect(await store.lastCompletedStep(), 'A1.2');
+    });
+
+    test('and ties on the day break by when the step started', () async {
+      // A catch-up run can burn through a short step and close two on the
+      // same day. Without the second key the answer is whichever row the
+      // query happens to reach first.
+      await enroll(
+        step: 'A1.1',
+        startedOn: '2026-01-01',
+        completedOn: '2026-03-01',
+      );
+      await enroll(
+        step: 'A1.2',
+        startedOn: '2026-02-01',
+        completedOn: '2026-03-01',
+      );
+
+      expect(await store.lastCompletedStep(), 'A1.2');
+    });
+  });
+
+  group('BR-PLAN-06 — a skipped word', () {
+    test('stays in the backlog from the next day', () async {
+      await store.addToPlan(monday, PlanKind.newWord, <String>['s1', 's2']);
+      await PlanRepository(db)
+          .skip(planDate: monday, uid: 's1', kind: repo.PlanKind.newWord);
+
+      expect(await store.backlogBefore(monday), isEmpty, reason: 'not today');
+      expect(
+        await store.backlogBefore(addDays(monday, 1)),
+        containsAll(<String>['s1', 's2']),
+      );
+    });
+
+    test('and is still skipped, not completed', () async {
+      // The distinction the backlog rests on: `skipped` stops it being
+      // offered again in the same session, `completed_at` takes it out.
+      await store.addToPlan(monday, PlanKind.newWord, <String>['s1']);
+      await PlanRepository(db)
+          .skip(planDate: monday, uid: 's1', kind: repo.PlanKind.newWord);
+
+      final row = await db
+          .customSelect('SELECT skipped, completed_at AS done FROM plan_items')
+          .getSingle();
+      expect(row.read<int>('skipped'), 1);
+      expect(row.read<String?>('done'), isNull);
     });
   });
 
