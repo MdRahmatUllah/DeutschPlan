@@ -23,6 +23,7 @@
 | `modelManager` | keepAlive AsyncNotifier | Me | Download tasks, statuses, storage. |
 | `tts` | keepAlive | app | Engine selection + fallback. |
 | `theme` | keepAlive Notifier | app | light/dark/glass + system following. |
+| `languages` | keepAlive Notifier | app | `meaning_language` + `ui_language`; the root reads `ui_language` for the locale. S2 page 2 sets both from one choice. |
 
 ## Patterns
 

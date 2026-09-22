@@ -71,6 +71,7 @@ class DpSurface extends StatefulWidget {
     this.padding,
     this.radius,
     this.pressed = false,
+    this.selected = false,
     this.onTap,
   });
 
@@ -85,6 +86,12 @@ class DpSurface extends StatefulWidget {
   /// the surface appears pushed into the paper. Ignored under glass, which has
   /// no offset to collapse.
   final bool pressed;
+
+  /// Drawn as the chosen one of a set: a 2 px border in ink — Lagoon under
+  /// glass — and the drop shadow even on a [DpSurfaceKind.bar]. The S2 choice
+  /// cards are a bar each until one is picked; the artboards draw exactly
+  /// that pair.
+  final bool selected;
 
   final VoidCallback? onTap;
 
@@ -162,8 +169,11 @@ class _DpSurfaceState extends State<DpSurface> {
     _ => tokens.surface.blur,
   };
 
-  /// Bars sit flush against a screen edge, so they carry no drop shadow.
-  bool get _hasShadow => widget.kind is! _Bar;
+  /// Bars sit flush against a screen edge, so they carry no drop shadow —
+  /// unless selected, when the shadow is half of what says so.
+  bool get _hasShadow => widget.kind is! _Bar || widget.selected;
+
+  static const double _selectedOutlineWidth = 2;
 
   Widget _solid(DpTokens tokens, BorderRadius borderRadius, Widget body) {
     final surface = tokens.surface;
@@ -171,7 +181,9 @@ class _DpSurfaceState extends State<DpSurface> {
       decoration: BoxDecoration(
         color: _fill(tokens, degraded: tokens.isGlass),
         borderRadius: borderRadius,
-        border: Border.all(color: surface.outline, width: surface.outlineWidth),
+        border: widget.selected
+            ? Border.all(color: tokens.color.ink, width: _selectedOutlineWidth)
+            : Border.all(color: surface.outline, width: surface.outlineWidth),
         boxShadow: _hasShadow && !_pressed
             ? <BoxShadow>[
                 BoxShadow(
@@ -222,10 +234,15 @@ class _DpSurfaceState extends State<DpSurface> {
             child: DecoratedBox(
               decoration: BoxDecoration(
                 borderRadius: borderRadius,
-                border: Border.all(
-                  color: surface.outline,
-                  width: surface.outlineWidth,
-                ),
+                border: widget.selected
+                    ? Border.all(
+                        color: tokens.color.primary,
+                        width: _selectedOutlineWidth,
+                      )
+                    : Border.all(
+                        color: surface.outline,
+                        width: surface.outlineWidth,
+                      ),
                 // The sheen: a light wash over the top 40 % of the panel.
                 gradient: LinearGradient(
                   begin: Alignment.topCenter,

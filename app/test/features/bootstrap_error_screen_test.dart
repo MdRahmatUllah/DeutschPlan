@@ -11,7 +11,8 @@ import 'package:deutschplan/core/theme/dp_tokens.dart';
 import 'package:deutschplan/features/bootstrap/bootstrap_error_screen.dart';
 import 'package:deutschplan/features/splash/splash_screen.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
-import 'package:deutschplan/main.dart' show supportedLocales;
+import 'package:deutschplan/main.dart'
+    show appLocalizationsDelegates, supportedLocales;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 
@@ -52,7 +53,7 @@ void main() {
           DpMode.dark => AppTheme.dark(),
           DpMode.glass => AppTheme.glass(),
         },
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        localizationsDelegates: appLocalizationsDelegates,
         supportedLocales: supportedLocales,
         home: BootstrapErrorScreen(
           failure: failure,
@@ -210,6 +211,25 @@ void main() {
       );
 
       expect(find.byType(AuroraBackdrop), findsOneWidget);
+    });
+  });
+
+  group('on a phone set to Bangla', () {
+    testWidgets('the error app still renders', (tester) async {
+      // It has no settings to read, so it follows the device — and this is
+      // the screen that must render when nothing else can. Before the app's
+      // own delegate list, Bangla had no Material localizations and threw.
+      tester.platformDispatcher.localesTestValue = const <Locale>[Locale('bn')];
+      addTearDown(tester.platformDispatcher.clearLocalesTestValue);
+
+      await tester.pumpWidget(
+        BootstrapErrorApp(failure: failureOf(BootstrapStep.content)),
+      );
+      await tester.pump();
+
+      expect(tester.takeException(), isNull);
+      final bn = await AppLocalizations.delegate.load(const Locale('bn'));
+      expect(find.text(bn.bootstrapErrorContent), findsOneWidget);
     });
   });
 

@@ -1,8 +1,8 @@
 import 'package:deutschplan/core/components/dp_feedback.dart';
 import 'package:deutschplan/core/theme/app_theme.dart';
 import 'package:deutschplan/core/theme/dp_tokens.dart';
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
-import 'package:deutschplan/main.dart' show supportedLocales;
+import 'package:deutschplan/main.dart'
+    show appLocalizationsDelegates, supportedLocales;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 
@@ -14,7 +14,7 @@ void main() {
     await tester.pumpWidget(
       MaterialApp(
         theme: AppTheme.light(),
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        localizationsDelegates: appLocalizationsDelegates,
         supportedLocales: supportedLocales,
         home: Scaffold(body: Center(child: child)),
       ),
@@ -316,7 +316,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           theme: AppTheme.light(),
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          localizationsDelegates: appLocalizationsDelegates,
           supportedLocales: supportedLocales,
           home: Scaffold(
             body: Builder(
@@ -352,7 +352,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           theme: AppTheme.light(),
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          localizationsDelegates: appLocalizationsDelegates,
           supportedLocales: supportedLocales,
           home: Scaffold(
             body: Builder(

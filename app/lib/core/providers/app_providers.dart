@@ -127,6 +127,42 @@ class Theme extends _$Theme {
   }
 }
 
+/// The two languages: the meaning printed beside each German word, and the
+/// app's own. Kept together because S2 sets both from one choice.
+///
+/// A notifier for the same reason as [Theme]: the root reads [UiLanguage] for
+/// the locale, and a write has to reach it on the next frame, not the next
+/// launch.
+@Riverpod(keepAlive: true)
+class Languages extends _$Languages {
+  @override
+  ({MeaningLanguage meaning, UiLanguage ui}) build() {
+    final settings = ref.watch(settingsProvider);
+    return (
+      meaning: settings.read(SettingKeys.meaningLanguage),
+      ui: settings.read(SettingKeys.uiLanguage),
+    );
+  }
+
+  /// S2 page 2. Written as it is tapped rather than held for the finish with
+  /// the plan: the page promises it sets the app language, and the next page
+  /// is the proof. A language is not a plan setting, so #92's one transaction
+  /// is not where it belongs.
+  ///
+  /// Invalidated before the disk write finishes, not after: `write` puts the
+  /// value in memory first, so the tick and the new locale land on the next
+  /// frame instead of waiting on SQLite.
+  Future<void> chooseMeaning(MeaningLanguage meaning) {
+    final settings = ref.read(settingsProvider);
+    final written = Future.wait(<Future<void>>[
+      settings.write(SettingKeys.meaningLanguage, meaning),
+      settings.write(SettingKeys.uiLanguage, meaning.uiLanguage),
+    ]);
+    ref.invalidateSelf();
+    return written;
+  }
+}
+
 // --- Repositories ----------------------------------------------------------
 //
 // All auto-disposing. They hold no state of their own — each is a thin thing

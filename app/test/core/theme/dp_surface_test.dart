@@ -16,6 +16,7 @@ void main() {
     ThemeData theme, {
     DpSurfaceKind kind = DpSurfaceKind.card,
     bool pressed = false,
+    bool selected = false,
     VoidCallback? onTap,
   }) async {
     await tester.pumpWidget(
@@ -26,6 +27,7 @@ void main() {
             child: DpSurface(
               kind: kind,
               pressed: pressed,
+              selected: selected,
               onTap: onTap,
               padding: const EdgeInsets.all(16),
               child: const Text('Revise'),
@@ -213,6 +215,61 @@ void main() {
         hasLength(1),
         reason: 'the glass drop shadow is not a press affordance',
       );
+    });
+  });
+
+  group('selected', () {
+    // The S2 choice cards: a bar each, until one is picked. The artboards draw
+    // the pick as a 2 px edge in ink (Lagoon under glass) with the shadow.
+    Border borderOf(WidgetTester tester) => tester
+        .widgetList<DecoratedBox>(
+          find.descendant(
+            of: find.byType(DpSurface),
+            matching: find.byType(DecoratedBox),
+          ),
+        )
+        .map((box) => (box.decoration as BoxDecoration).border)
+        .whereType<Border>()
+        .first;
+
+    for (final (name, theme, tokens) in <(String, ThemeData, DpTokens)>[
+      ('light', AppTheme.light(), DpTokens.light()),
+      ('dark', AppTheme.dark(), DpTokens.dark()),
+    ]) {
+      testWidgets('$name: a 2 px ink edge, and the shadow even on a bar', (
+        tester,
+      ) async {
+        await pump(tester, theme, kind: DpSurfaceKind.bar, selected: true);
+
+        expect(borderOf(tester).top.width, 2);
+        expect(borderOf(tester).top.color, tokens.color.ink);
+        expect(decorationOf(tester).boxShadow, hasLength(1));
+      });
+    }
+
+    testWidgets('glass: a 2 px Lagoon edge, and the soft shadow', (
+      tester,
+    ) async {
+      final tokens = DpTokens.glass();
+      await pump(
+        tester,
+        AppTheme.glass(),
+        kind: DpSurfaceKind.bar,
+        selected: true,
+      );
+
+      expect(borderOf(tester).top.width, 2);
+      expect(borderOf(tester).top.color, tokens.color.primary);
+      expect(decorationOf(tester).boxShadow, hasLength(1));
+    });
+
+    testWidgets('unselected, a bar is still only the hairline', (tester) async {
+      final tokens = DpTokens.light();
+      await pump(tester, AppTheme.light(), kind: DpSurfaceKind.bar);
+
+      expect(borderOf(tester).top.width, tokens.surface.outlineWidth);
+      expect(borderOf(tester).top.color, tokens.surface.outline);
+      expect(decorationOf(tester).boxShadow, isEmpty);
     });
   });
 

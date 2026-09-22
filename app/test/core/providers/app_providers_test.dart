@@ -10,7 +10,8 @@ import 'package:deutschplan/data/repositories/exam_repository.dart';
 import 'package:deutschplan/data/repositories/setting_keys.dart';
 import 'package:deutschplan/data/repositories/settings_repository.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
-import 'package:deutschplan/main.dart' show supportedLocales;
+import 'package:deutschplan/main.dart'
+    show appLocalizationsDelegates, supportedLocales;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
@@ -279,7 +280,7 @@ void main() {
           overrides: overrides(),
           child: MaterialApp(
             theme: AppTheme.light(),
-            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            localizationsDelegates: appLocalizationsDelegates,
             supportedLocales: supportedLocales,
             home: Scaffold(
               body: Consumer(

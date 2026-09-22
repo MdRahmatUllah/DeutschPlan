@@ -25,6 +25,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
+// The widgets layer is the SDK's own, so its delegate still comes from
+// flutter_localizations; Material and Cupertino come from their packages.
+import 'package:cupertino_ui/cupertino_ui.dart'
+    show GlobalCupertinoLocalizations;
+import 'package:flutter_localizations/flutter_localizations.dart'
+    show GlobalWidgetsLocalizations;
 
 import 'dart:ui' show PlatformDispatcher;
 
@@ -146,7 +152,7 @@ class _BootstrapHostState extends State<BootstrapHost> {
         // the hand-off does not change colour.
         theme: AppTheme.light(),
         darkTheme: AppTheme.dark(),
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        localizationsDelegates: appLocalizationsDelegates,
         supportedLocales: supportedLocales,
         home: const SplashProgressGate(),
       );
@@ -191,6 +197,21 @@ Widget appFor(BootstrapResult result) => switch (result) {
 /// Supported UI languages, English first — see `supportedLocales` in [DeutschPlanApp].
 const List<Locale> supportedLocales = <Locale>[Locale('en'), Locale('bn')];
 
+/// The delegates every `MaterialApp` here takes — not gen_l10n's own list.
+///
+/// gen_l10n names `flutter_localizations`' Material and Cupertino delegates,
+/// which localise the SDK's widgets. This app draws `material_ui`'s and
+/// `cupertino_ui`'s, which look up types of their own. With gen_l10n's list
+/// English only worked because `material_ui` falls back to built-in English;
+/// Bangla had nothing, and the first widget to ask — the nav bar — threw.
+const List<LocalizationsDelegate<Object?>> appLocalizationsDelegates =
+    <LocalizationsDelegate<Object?>>[
+      AppLocalizations.delegate,
+      GlobalMaterialLocalizations.delegate,
+      GlobalCupertinoLocalizations.delegate,
+      GlobalWidgetsLocalizations.delegate,
+    ];
+
 class DeutschPlanApp extends ConsumerWidget {
   DeutschPlanApp({GoRouter? router, super.key})
     : router = router ?? buildRouter();
@@ -217,6 +238,12 @@ class DeutschPlanApp extends ConsumerWidget {
     return MaterialApp.router(
       routerConfig: router,
       onGenerateTitle: (context) => AppLocalizations.of(context).appTitle,
+      // `ui_language`, not the device: S2 page 2 and Settings both set it, and
+      // a learner who chose বাংলা on an English phone means it.
+      locale: switch (ref.watch(languagesProvider).ui) {
+        UiLanguage.english => const Locale('en'),
+        UiLanguage.bangla => const Locale('bn'),
+      },
       theme: AppTheme.light(),
       darkTheme: AppTheme.dark(),
       themeMode: switch (mode) {
@@ -227,7 +254,7 @@ class DeutschPlanApp extends ConsumerWidget {
         DpMode.dark => ThemeMode.dark,
         DpMode.glass => ThemeMode.system,
       },
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      localizationsDelegates: appLocalizationsDelegates,
       // English first: gen_l10n orders supportedLocales alphabetically, which puts
       // Bangla first, and Flutter falls back to the FIRST supported locale when the
       // device locale matches none. `ui_language` defaults to `en`

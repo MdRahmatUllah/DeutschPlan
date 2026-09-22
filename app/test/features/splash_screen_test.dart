@@ -12,7 +12,8 @@ import 'package:deutschplan/core/theme/dp_surface.dart';
 import 'package:deutschplan/core/theme/dp_tokens.dart';
 import 'package:deutschplan/features/splash/splash_screen.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
-import 'package:deutschplan/main.dart' show BootstrapHost, supportedLocales;
+import 'package:deutschplan/main.dart'
+    show BootstrapHost, appLocalizationsDelegates, supportedLocales;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 
@@ -37,7 +38,7 @@ void main() {
     await tester.pumpWidget(
       MaterialApp(
         theme: mode == DpMode.dark ? AppTheme.dark() : AppTheme.light(),
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        localizationsDelegates: appLocalizationsDelegates,
         supportedLocales: supportedLocales,
         home: child,
       ),
@@ -121,7 +122,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           theme: AppTheme.light(),
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          localizationsDelegates: appLocalizationsDelegates,
           supportedLocales: supportedLocales,
           home: const MediaQuery(
             data: MediaQueryData(disableAnimations: true),
@@ -187,7 +188,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           theme: AppTheme.glass(),
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          localizationsDelegates: appLocalizationsDelegates,
           supportedLocales: supportedLocales,
           home: const SplashScreen(),
         ),

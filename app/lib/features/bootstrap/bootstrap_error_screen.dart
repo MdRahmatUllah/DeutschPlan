@@ -8,7 +8,8 @@ import 'package:deutschplan/core/theme/dp_tokens.dart';
 import 'package:deutschplan/core/typography/dp_text.dart';
 import 'package:deutschplan/features/splash/splash_screen.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
-import 'package:deutschplan/main.dart' show supportedLocales;
+import 'package:deutschplan/main.dart'
+    show appLocalizationsDelegates, supportedLocales;
 import 'package:material_ui/material_ui.dart';
 
 /// S1 · the bootstrap error state. FR-S1-03, `docs/04-screens/splash.md`.
@@ -138,7 +139,7 @@ class BootstrapErrorApp extends StatelessWidget {
     debugShowCheckedModeBanner: false,
     theme: AppTheme.light(),
     darkTheme: AppTheme.dark(),
-    localizationsDelegates: AppLocalizations.localizationsDelegates,
+    localizationsDelegates: appLocalizationsDelegates,
     supportedLocales: supportedLocales,
     home: BootstrapErrorScreen(
       failure: failure,
