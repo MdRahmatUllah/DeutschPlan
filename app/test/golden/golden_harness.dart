@@ -1,8 +1,8 @@
 import 'package:deutschplan/core/adaptive/adaptive.dart';
 import 'package:deutschplan/core/theme/app_theme.dart';
 import 'package:deutschplan/core/theme/glass_capability.dart';
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
-import 'package:deutschplan/main.dart' show supportedLocales;
+import 'package:deutschplan/main.dart'
+    show appLocalizationsDelegates, supportedLocales;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 
@@ -79,7 +79,7 @@ Widget goldenApp({
     child: MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: mode.theme,
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      localizationsDelegates: appLocalizationsDelegates,
       supportedLocales: supportedLocales,
       home: Builder(
         builder: (context) => MediaQuery(

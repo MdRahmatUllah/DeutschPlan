@@ -9,7 +9,8 @@ import 'package:deutschplan/core/theme/dp_tokens.dart';
 import 'package:deutschplan/features/onboarding/onboarding_shell.dart';
 import 'package:deutschplan/features/onboarding/onboarding_welcome_page.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
-import 'package:deutschplan/main.dart' show supportedLocales;
+import 'package:deutschplan/main.dart'
+    show appLocalizationsDelegates, supportedLocales;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 
@@ -40,7 +41,7 @@ void main() {
           DpMode.dark => AppTheme.dark(),
           DpMode.glass => AppTheme.glass(),
         },
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        localizationsDelegates: appLocalizationsDelegates,
         supportedLocales: supportedLocales,
         home: OnboardingShell(
           page: page,
@@ -329,7 +330,7 @@ void main() {
             .pumpWidget(
               MaterialApp(
                 theme: AppTheme.light(),
-                localizationsDelegates: AppLocalizations.localizationsDelegates,
+                localizationsDelegates: appLocalizationsDelegates,
                 supportedLocales: supportedLocales,
                 home: OnboardingWelcomePage(onStart: onStart),
               ),

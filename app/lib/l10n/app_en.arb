@@ -141,5 +141,53 @@
   "onboardingPromisePrivate": "Your progress stays on this phone",
   "@onboardingPromisePrivate": {
     "description": "S2 page 1, third promise."
+  },
+  "continueAction": "Continue",
+  "@continueAction": {
+    "description": "The primary action that moves to the next step."
+  },
+  "onboardingMeaningHeadline": "Which language for meanings?",
+  "@onboardingMeaningHeadline": {
+    "description": "S2 page 2 headline."
+  },
+  "onboardingMeaningEnglish": "English",
+  "@onboardingMeaningEnglish": {
+    "description": "S2 page 2 option. An endonym: the same in every locale, so a learner finds their own language by its own name."
+  },
+  "onboardingMeaningBangla": "বাংলা",
+  "@onboardingMeaningBangla": {
+    "description": "S2 page 2 option. An endonym: the same in every locale."
+  },
+  "onboardingMeaningBoth": "Both",
+  "@onboardingMeaningBoth": {
+    "description": "S2 page 2 option: English and Bangla meanings together."
+  },
+  "onboardingMeaningNote": "This also sets the app language. You can change both later in Settings.",
+  "@onboardingMeaningNote": {
+    "description": "S2 page 2, under the options."
+  },
+  "onboardingMeaningSample": "{german} → {meaning}",
+  "@onboardingMeaningSample": {
+    "description": "S2 page 2: the sample word and its meaning in this option. German comes from content.db.",
+    "placeholders": {
+      "german": {
+        "type": "String"
+      },
+      "meaning": {
+        "type": "String"
+      }
+    }
+  },
+  "onboardingMeaningSampleBoth": "{english} · {bangla}",
+  "@onboardingMeaningSampleBoth": {
+    "description": "S2 page 2: the two meanings side by side, for Both.",
+    "placeholders": {
+      "english": {
+        "type": "String"
+      },
+      "bangla": {
+        "type": "String"
+      }
+    }
   }
 }

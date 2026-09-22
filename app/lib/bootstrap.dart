@@ -175,6 +175,10 @@ const Duration glassTimeout = Duration(milliseconds: 150);
 /// step and whatever opened, because the error screen has to offer *Retry* and
 /// *Export progress* rather than an exception the learner cannot read.
 ///
+/// [onUiLanguage] hears the learner's app language as soon as user.db is
+/// open — before the content install, which on a first run is most of the
+/// wait — so the splash already on screen can switch to it.
+///
 /// [openDatabase], [platformBrightness] and [glass] exist for tests;
 /// everything else here is real I/O, and a test that faked the database would
 /// be testing its own fake.
@@ -182,6 +186,7 @@ Future<BootstrapResult> bootstrap({
   AppDatabase Function()? openDatabase,
   Brightness platformBrightness = Brightness.light,
   GlassCapability? glass,
+  void Function(UiLanguage)? onUiLanguage,
 }) async {
   final watch = Stopwatch()..start();
 
@@ -199,6 +204,12 @@ Future<BootstrapResult> bootstrap({
     // on the first screen's query is the whole point.
     await db.fileSchemaVersion();
     opened = db;
+
+    // One row, not the settings step: FR-S1-01 keeps its order, and only the
+    // splash needs this early.
+    onUiLanguage?.call(
+      await SettingsRepository.peek(db, SettingKeys.uiLanguage),
+    );
 
     step = BootstrapStep.content;
     final content = ContentDao(db);

@@ -29,5 +29,14 @@
   "onboardingWelcomeStart": "শুরু করি",
   "onboardingPromiseOffline": "পুরোপুরি অফলাইনে চলে · অ্যাকাউন্ট বা ইন্টারনেট লাগে না",
   "onboardingPromiseSteps": "পরীক্ষার কাঠামো: A1.1 থেকে C2.2 পর্যন্ত ১২টি ধাপ",
-  "onboardingPromisePrivate": "আপনার অগ্রগতি এই ফোনেই থাকে"
+  "onboardingPromisePrivate": "আপনার অগ্রগতি এই ফোনেই থাকে",
+  "continueAction": "চালিয়ে যান",
+  "onboardingMeaningHeadline": "অর্থ কোন ভাষায় দেখবেন?",
+  "onboardingMeaningEnglish": "English",
+  "onboardingMeaningBangla": "বাংলা",
+  "onboardingMeaningBoth": "দুটোই",
+  "onboardingMeaningNote": "এটি অ্যাপের ভাষাও ঠিক করে দেয়। পরে সেটিংসে দুটোই বদলাতে পারবেন।",
+  "onboardingMeaningSample": "{german} → {meaning}",
+  "onboardingMeaningSampleBoth": "{english} · {bangla}",
+  "splashPreparing": "আপনার কোর্স প্রস্তুত হচ্ছে · শুধু প্রথমবার"
 }

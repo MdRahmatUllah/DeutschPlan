@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:deutschplan/core/providers/app_providers.dart';
 import 'package:deutschplan/core/theme/dp_tokens.dart';
 import 'package:deutschplan/data/db/app_database.dart';
@@ -10,7 +12,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart'
-    show Brightness, MaterialApp, ThemeMode, VoidCallback;
+    show Brightness, Locale, MaterialApp, ThemeMode, VoidCallback;
 
 void main() {
   /// The app under a scope with the overrides bootstrap would have supplied.
@@ -87,6 +89,33 @@ void main() {
     expect(
       tester.widget<MaterialApp>(find.byType(MaterialApp)).themeMode,
       ThemeMode.dark,
+    );
+  });
+
+  testWidgets('the app speaks ui_language, and page 2 changes it at once', (
+    tester,
+  ) async {
+    // S2 page 2: "This also sets the app language." Without `locale:` the
+    // setting was stored and nothing read it — the app followed the phone.
+    await pumpApp(tester);
+    Locale? locale() =>
+        tester.widget<MaterialApp>(find.byType(MaterialApp)).locale;
+    expect(locale(), const Locale('en'));
+
+    final container = ProviderScope.containerOf(
+      tester.element(find.byType(MaterialApp)),
+    );
+    unawaited(
+      container
+          .read(languagesProvider.notifier)
+          .chooseMeaning(MeaningLanguage.bangla),
+    );
+    await tester.pump();
+
+    expect(locale(), const Locale('bn'));
+    expect(
+      AppLocalizations.of(tester.element(find.byType(AppShell))).localeName,
+      'bn',
     );
   });
 

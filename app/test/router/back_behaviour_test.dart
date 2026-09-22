@@ -5,7 +5,8 @@ import 'dart:io';
 
 import 'package:deutschplan/core/theme/app_theme.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
-import 'package:deutschplan/main.dart' show supportedLocales;
+import 'package:deutschplan/main.dart'
+    show appLocalizationsDelegates, supportedLocales;
 import 'package:deutschplan/router/app_router.dart';
 import 'package:deutschplan/router/app_shell.dart';
 import 'package:deutschplan/router/back_behaviour.dart';
@@ -35,7 +36,7 @@ void main() {
       MaterialApp.router(
         routerConfig: router,
         theme: AppTheme.light(),
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        localizationsDelegates: appLocalizationsDelegates,
         supportedLocales: supportedLocales,
       ),
     );

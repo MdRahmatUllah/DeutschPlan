@@ -10,6 +10,7 @@
 /// presentation of each route.
 library;
 
+import 'package:deutschplan/features/onboarding/onboarding_meaning_page.dart';
 import 'package:deutschplan/features/onboarding/onboarding_shell.dart';
 import 'package:deutschplan/features/onboarding/onboarding_welcome_page.dart';
 import 'package:deutschplan/features/splash/splash_screen.dart';
@@ -430,9 +431,25 @@ class OnboardingRoute extends GoRouteData with $OnboardingRoute {
         onStart: () => const OnboardingRoute(page: '2').push<void>(context),
       ),
 
-      // #88…#91 replace these.
+      OnboardingPage.meaningLanguage => OnboardingMeaningPage(
+        onContinue: () => const OnboardingRoute(page: '3').push<void>(context),
+        onBack: () => _back(context, OnboardingPage.meaningLanguage),
+      ),
+
+      // #89…#91 replace these.
       _ => PlaceholderScreen(title: 'Welcome', screen: 'S2', detail: page),
     };
+  }
+
+  /// *Back*: the page underneath, which is the previous one when the learner
+  /// walked here. A page opened directly — a deep link, restart setup — has
+  /// nothing under it, and gets the previous page instead of a dead button.
+  static void _back(BuildContext context, OnboardingPage from) {
+    if (context.canPop()) {
+      context.pop();
+    } else {
+      OnboardingRoute(page: from.previous!.slug).go(context);
+    }
   }
 }
 

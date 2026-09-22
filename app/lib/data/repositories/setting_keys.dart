@@ -163,6 +163,18 @@ enum MeaningLanguage { english, bangla, both }
 /// The app's own language. German strings live in content, not in the ARBs.
 enum UiLanguage { english, bangla }
 
+/// S2 page 2: "This also sets the app language."
+///
+/// *Both* gives English, the `ui_language` default: the app can only speak
+/// one, and *Both* lists English first. ponytail: a guess the docs leave
+/// open — if Bangla-first readers pick *Both*, this is the line to change.
+extension MeaningLanguageUi on MeaningLanguage {
+  UiLanguage get uiLanguage => switch (this) {
+    MeaningLanguage.bangla => UiLanguage.bangla,
+    MeaningLanguage.english || MeaningLanguage.both => UiLanguage.english,
+  };
+}
+
 /// `system` follows the platform; the other three are the modes in
 /// `theming.md`.
 enum ThemeModeSetting { system, light, dark, glass }

@@ -446,6 +446,36 @@ void main() {
     );
   });
 
+  test('every MaterialApp takes the app delegates, not the generated ones', () {
+    // gen_l10n's `AppLocalizations.localizationsDelegates` names
+    // flutter_localizations' Material and Cupertino delegates, which localise
+    // the SDK's widgets. This app draws material_ui's, so under Bangla those
+    // found nothing and the nav bar threw. `appLocalizationsDelegates` in
+    // main.dart is the list that works; this keeps anyone from reaching past
+    // it for the one the generator advertises.
+    final offenders = <String>[];
+    for (final file in _dartFilesIn('lib')) {
+      final path = _rel(file);
+      if (path.startsWith('lib/l10n/generated/')) continue;
+
+      final lines = file.readAsLinesSync();
+      for (var i = 0; i < lines.length; i++) {
+        if (lines[i].trimLeft().startsWith('//')) continue;
+        if (lines[i].contains('AppLocalizations.localizationsDelegates')) {
+          offenders.add('$path:${i + 1}');
+        }
+      }
+    }
+
+    expect(
+      offenders,
+      isEmpty,
+      reason:
+          'Use appLocalizationsDelegates from main.dart:\n'
+          '${offenders.join('\n')}',
+    );
+  });
+
   test('the clock is the only source of now', () {
     // state-management.md: "`DateTime Function()`; overridden in tests for
     // date logic." A study day is a local day, and the plan engine, the

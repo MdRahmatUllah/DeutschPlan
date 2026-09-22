@@ -7,9 +7,15 @@ import 'package:deutschplan/core/theme/app_theme.dart';
 import 'package:deutschplan/data/db/app_database.dart';
 import 'package:deutschplan/data/repositories/exam_repository.dart';
 import 'package:deutschplan/data/repositories/plan_repository.dart';
+import 'package:deutschplan/core/providers/app_providers.dart';
+import 'package:deutschplan/data/repositories/settings_repository.dart';
+import 'package:deutschplan/features/onboarding/onboarding_meaning_page.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:deutschplan/features/onboarding/onboarding_welcome_page.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
-import 'package:deutschplan/main.dart' show supportedLocales;
+import 'package:deutschplan/main.dart'
+    show appLocalizationsDelegates, supportedLocales;
 import 'package:deutschplan/router/app_router.dart';
 import 'package:deutschplan/router/app_shell.dart';
 import 'package:deutschplan/router/route_guards.dart';
@@ -35,12 +41,26 @@ void main() {
     router = buildRouter(initialLocation: at, guards: guards);
     addTearDown(router.dispose);
 
+    // S2's pages read settings (page 2 writes the languages), so the router
+    // needs a scope to render them in. Nothing else here reads a provider.
+    final db = AppDatabase.memory();
+    addTearDown(db.close);
+    final settings = SettingsRepository(db);
+    await settings.load();
+    addTearDown(settings.dispose);
+
     await tester.pumpWidget(
-      MaterialApp.router(
-        routerConfig: router,
-        theme: AppTheme.light(),
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: supportedLocales,
+      ProviderScope(
+        overrides: <Override>[
+          settingsProvider.overrideWithValue(settings),
+          meaningSampleProvider.overrideWith((ref) async => null),
+        ],
+        child: MaterialApp.router(
+          routerConfig: router,
+          theme: AppTheme.light(),
+          localizationsDelegates: appLocalizationsDelegates,
+          supportedLocales: supportedLocales,
+        ),
       ),
     );
     await tester.pumpAndSettle();
@@ -310,7 +330,7 @@ void main() {
       // reported URL alone unless `optionURLReflectsImperativeAPIs` is set.
       await tester.tap(find.text(l10n.onboardingWelcomeStart));
       await tester.pumpAndSettle();
-      expect(find.text('S2'), findsOneWidget);
+      expect(find.byType(OnboardingMeaningPage), findsOneWidget);
       expect(find.byType(OnboardingWelcomePage), findsNothing);
 
       // Android back. With `go` there is nothing under page 2, the press is
@@ -320,7 +340,41 @@ void main() {
 
       expect(handled, isTrue);
       expect(find.byType(OnboardingWelcomePage), findsOneWidget);
-      expect(find.text('S2'), findsNothing);
+      expect(find.byType(OnboardingMeaningPage), findsNothing);
+    });
+
+    testWidgets('the Back button on page 2 returns the same way', (
+      tester,
+    ) async {
+      await pumpApp(tester, guards: guardsWith(), at: '/onboarding/1');
+      final l10n = AppLocalizations.of(
+        tester.element(find.byType(OnboardingWelcomePage)),
+      );
+
+      await tester.tap(find.text(l10n.onboardingWelcomeStart));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text(l10n.back));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(OnboardingWelcomePage), findsOneWidget);
+      expect(find.byType(OnboardingMeaningPage), findsNothing);
+    });
+
+    testWidgets('and opened directly, Back still has somewhere to go', (
+      tester,
+    ) async {
+      // A deep link or restart setup lands on a page with nothing under it.
+      // A pop there would do nothing; Back goes to the previous page instead.
+      await pumpApp(tester, guards: guardsWith(), at: '/onboarding/2');
+      final l10n = AppLocalizations.of(
+        tester.element(find.byType(OnboardingMeaningPage)),
+      );
+
+      await tester.tap(find.text(l10n.back));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(OnboardingWelcomePage), findsOneWidget);
+      expect(location(), '/onboarding/1');
     });
 
     testWidgets('and the pages slide sideways, with the edge swipe', (
