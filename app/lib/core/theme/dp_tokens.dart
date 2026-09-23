@@ -140,6 +140,7 @@ class DpPalette {
     required this.ink,
     required this.textSecondary,
     required this.link,
+    required this.inverseLink,
     required this.der,
     required this.onDer,
     required this.derText,
@@ -166,6 +167,7 @@ class DpPalette {
     ink: Color(0xFF15121F),
     textSecondary: Color(0xFF5B5670), // Slate Ink
     link: Color(0xFF007A70),
+    inverseLink: Color(0xFF00C2B2), // Lagoon, on the ink snackbar
     der: Color(0xFF3D5AFE), // Cobalt
     onDer: Color(0xFFFFFFFF), // Foundations writes its Cobalt swatch in white
     derText: Color(0xFF2F46E0),
@@ -197,6 +199,7 @@ class DpPalette {
     ink: Color(0xFFF4F1FF),
     textSecondary: Color(0xFFB7B1CC),
     link: Color(0xFF2EE6D6),
+    inverseLink: Color(0xFF007A70), // deep Lagoon, on the light snackbar
     der: Color(0xFF8C9DFF),
     onDer: Color(0xFF15121F), // the lifted Cobalt is light enough for ink
     derText: Color(0xFF8C9DFF),
@@ -221,6 +224,10 @@ class DpPalette {
   final Color ink;
   final Color textSecondary;
   final Color link;
+
+  /// A link on an inverse surface — ink in light mode, near-white in dark —
+  /// which is where the undo snackbar's *Undo* sits (StudyNew artboard).
+  final Color inverseLink;
 
   /// Gender colours. `*Text` is the accessible variant for text on paper; the
   /// plain value is for fills and bars. Never colour alone — the article is
@@ -273,6 +280,7 @@ class DpPalette {
     ink: Color.lerp(ink, other.ink, t)!,
     textSecondary: Color.lerp(textSecondary, other.textSecondary, t)!,
     link: Color.lerp(link, other.link, t)!,
+    inverseLink: Color.lerp(inverseLink, other.inverseLink, t)!,
     der: Color.lerp(der, other.der, t)!,
     onDer: Color.lerp(onDer, other.onDer, t)!,
     derText: Color.lerp(derText, other.derText, t)!,

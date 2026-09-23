@@ -62,9 +62,13 @@ class StudyWordCard extends ConsumerStatefulWidget {
     super.key,
     this.revealed = false,
     this.onReveal,
+    this.isNew = false,
   });
 
   final Word word;
+
+  /// A word met for the first time (`StudyNew`): the *New* chip.
+  final bool isNew;
 
   /// The back is showing (FR-T2-01).
   final bool revealed;
@@ -131,13 +135,20 @@ class _StudyWordCardState extends ConsumerState<StudyWordCard> {
     _explain();
   }
 
-  void _explain() =>
-      DpToast.show(context, AppLocalizations.of(context).studyNoVoice);
+  void _explain() => DpToast.show(
+    context,
+    AppLocalizations.of(context).studyNoVoice,
+    lift: StudyFrontActions.clearance,
+  );
 
   void _copy() {
     final l10n = AppLocalizations.of(context);
     unawaited(Clipboard.setData(ClipboardData(text: spokenForm(widget.word))));
-    DpToast.show(context, l10n.studyCopied(spokenForm(widget.word)));
+    DpToast.show(
+      context,
+      l10n.studyCopied(spokenForm(widget.word)),
+      lift: StudyFrontActions.clearance,
+    );
   }
 
   @override
@@ -160,9 +171,15 @@ class _StudyWordCardState extends ConsumerState<StudyWordCard> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          Align(
-            alignment: AlignmentDirectional.centerEnd,
-            child: DpChip(label: word.sublevelCode),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: <Widget>[
+              DpChip(label: word.sublevelCode),
+              if (widget.isNew) ...<Widget>[
+                const SizedBox(width: 6),
+                DpChip(label: l10n.studyNewChip, selected: true),
+              ],
+            ],
           ),
           const SizedBox(height: 14),
           Row(
@@ -276,12 +293,62 @@ class _StudyWordCardState extends ConsumerState<StudyWordCard> {
   }
 }
 
+/// Above *Show meaning* on a new word (`StudyNew`): *I know it* and
+/// *Skip → backlog*, as text buttons side by side.
+class StudyNewActions extends StatelessWidget {
+  const StudyNewActions({
+    required this.onKnown,
+    required this.onSkip,
+    super.key,
+  });
+
+  final VoidCallback onKnown;
+  final VoidCallback onSkip;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Row(
+        children: <Widget>[
+          Expanded(
+            child: DpButton(
+              label: l10n.studyKnowIt,
+              onPressed: onKnown,
+              kind: DpButtonKind.text,
+            ),
+          ),
+          Expanded(
+            child: DpButton(
+              label: l10n.studySkip,
+              onPressed: onSkip,
+              kind: DpButtonKind.text,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 /// Under the front: the hint and *Show meaning*. No rating bar before the
 /// card is turned over.
 class StudyFrontActions extends StatelessWidget {
-  const StudyFrontActions({required this.onReveal, super.key});
+  const StudyFrontActions({
+    required this.onReveal,
+    super.key,
+    this.hint = true,
+  });
 
   final VoidCallback onReveal;
+
+  /// How far a snackbar floats up to clear these actions: the StudyNew
+  /// artboard's `bottom: 128px`, less the bar's own 10 px margin.
+  static const double clearance = 118;
+
+  /// The hint line. A new word's two buttons take its place (StudyNew).
+  final bool hint;
 
   @override
   Widget build(BuildContext context) {
@@ -291,13 +358,15 @@ class StudyFrontActions extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
-        DpText(
-          l10n.studyHint,
-          role: DpTextRole.caption,
-          color: tokens.color.textSecondary,
-          textAlign: TextAlign.center,
-        ),
-        const SizedBox(height: 8),
+        if (hint) ...<Widget>[
+          DpText(
+            l10n.studyHint,
+            role: DpTextRole.caption,
+            color: tokens.color.textSecondary,
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 8),
+        ],
         DpButton(
           label: l10n.studyShowMeaning,
           onPressed: onReveal,

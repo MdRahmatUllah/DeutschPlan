@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:deutschplan/core/components/dp_feedback.dart';
 import 'package:deutschplan/core/adaptive/adaptive.dart';
 import 'package:deutschplan/core/components/dp_button.dart';
 import 'package:deutschplan/core/providers/app_providers.dart';
@@ -66,6 +67,23 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
   /// is nothing to lose, and Today continues from what is left. The session
   /// is cleared on the way out, whichever way out — see [build].
   void _close() => Navigator.of(context).maybePop();
+
+  /// FR-T2-04 *I know it* or FR-T2-03 *Skip → backlog*, each with its
+  /// 4 s *Undo*.
+  Future<void> _act(StudyItem item, {required bool known}) async {
+    final l10n = AppLocalizations.of(context);
+    final notifier = ref.read(studySessionProvider(widget.args).notifier);
+    final word = ref.read(studyWordProvider(item.uid)).value?.word;
+    final name = word == null ? item.uid : spokenForm(word);
+    await (known ? notifier.knewIt() : notifier.skip());
+    if (!mounted) return;
+    DpUndo.show(
+      context,
+      message: known ? l10n.studyKnown(name) : l10n.studySkipped(name),
+      lift: StudyFrontActions.clearance,
+      onUndo: () => unawaited(notifier.undo()),
+    );
+  }
 
   /// FR-T2-01: *Show meaning*, or a tap on the card.
   void _reveal() =>
@@ -168,6 +186,7 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
                 if (item != null)
                   _BlockBanner(
                     visible: _banner,
+                    kind: item.kind,
                     label: switch (item.kind) {
                       SessionBlockKind.revise => l10n.studyBannerRevise,
                       SessionBlockKind.newWords => switch (ref
@@ -191,7 +210,21 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
               !revealed)
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 0, 16, 32),
-              child: StudyFrontActions(onReveal: _reveal),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+                  if (item.kind == SessionBlockKind.newWords)
+                    StudyNewActions(
+                      onKnown: () => _act(item, known: true),
+                      onSkip: () => _act(item, known: false),
+                    ),
+                  StudyFrontActions(
+                    onReveal: _reveal,
+                    hint: item.kind != SessionBlockKind.newWords,
+                  ),
+                ],
+              ),
             ),
         ],
       ),
@@ -333,9 +366,14 @@ class _ProgressStrip extends StatelessWidget {
 
 /// FR-T2-06: the block's name, sliding in for a second as the block starts.
 class _BlockBanner extends StatelessWidget {
-  const _BlockBanner({required this.visible, required this.label});
+  const _BlockBanner({
+    required this.visible,
+    required this.kind,
+    required this.label,
+  });
 
   final bool visible;
+  final SessionBlockKind kind;
   final String label;
 
   @override
@@ -353,22 +391,42 @@ class _BlockBanner extends StatelessWidget {
           child: AnimatedOpacity(
             opacity: visible ? 1 : 0,
             duration: duration,
+            // The StudyNew artboard's strip: the block's colour from the
+            // progress strip, a 1.5 px ink edge, 8 px corners, full width.
             child: Padding(
-              padding: const EdgeInsets.only(top: 12),
+              padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
               child: Semantics(
                 liveRegion: true,
-                child: DpSurface(
-                  kind: DpSurfaceKind.cardStrong,
-                  radius: 20,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 8,
-                  ),
-                  child: DpText(
-                    label,
-                    role: DpTextRole.label,
-                    weight: 700,
-                    color: tokens.color.ink,
+                child: SizedBox(
+                  width: double.infinity,
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: switch (kind) {
+                        SessionBlockKind.revise => tokens.color.primary,
+                        SessionBlockKind.newWords => tokens.color.accent,
+                        SessionBlockKind.grammar => tokens.surface.muted,
+                      },
+                      borderRadius: BorderRadius.circular(tokens.shape.chip),
+                      border: Border.all(
+                        color: tokens.color.ink,
+                        width: tokens.surface.outlineWidth + 0.5,
+                      ),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 8,
+                      ),
+                      child: DpText(
+                        label,
+                        role: DpTextRole.label,
+                        weight: 700,
+                        textAlign: TextAlign.center,
+                        color: kind == SessionBlockKind.grammar
+                            ? tokens.color.ink
+                            : tokens.color.onAccent,
+                      ),
+                    ),
                   ),
                 ),
               ),
@@ -402,7 +460,12 @@ class StudyCardSlot extends ConsumerWidget {
         ? null
         : ref.watch(studyWordProvider(item.uid)).value?.word;
     if (word != null) {
-      return StudyWordCard(word: word, revealed: revealed, onReveal: onReveal);
+      return StudyWordCard(
+        word: word,
+        revealed: revealed,
+        onReveal: onReveal,
+        isNew: item.kind == SessionBlockKind.newWords,
+      );
     }
     return DpSurface(
       selected: !tokens.isGlass,

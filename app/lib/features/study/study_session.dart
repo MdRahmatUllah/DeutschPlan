@@ -1,7 +1,8 @@
 import 'package:deutschplan/core/providers/app_providers.dart';
 import 'package:deutschplan/data/repositories/plan_repository.dart'
-    show PlanRepository;
-import 'package:deutschplan/domain/plan_engine.dart' show PlanKind;
+    show PlanKind, PlanRepository;
+import 'package:deutschplan/data/repositories/rating_service.dart';
+import 'package:deutschplan/data/repositories/word_repository.dart';
 import 'package:deutschplan/router/routes.dart';
 import 'package:flutter/foundation.dart' show immutable;
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -109,6 +110,13 @@ class StudySessionState {
     results: <int, CardOutcome>{...results, position: outcome},
   );
 
+  /// Back to the card before, forgetting how it went: an *Undo*.
+  StudySessionState back() => StudySessionState(
+    items: items,
+    position: position - 1,
+    results: <int, CardOutcome>{...results}..remove(position - 1),
+  );
+
   StudySessionState reveal() => StudySessionState(
     items: items,
     position: position,
@@ -153,6 +161,86 @@ class StudySession extends _$StudySession {
             if (wanted(block.kind, uid)) StudyItem(block.kind, uid),
       ],
     );
+  }
+
+  /// Built over the kept-alive database and settings rather than read from
+  /// the auto-disposed `ratingServiceProvider`: a kept-alive notifier must
+  /// not hold one open.
+  RatingService get _rating {
+    final db = ref.read(appDatabaseProvider);
+    final settings = ref.read(settingsProvider);
+    return RatingService(
+      db,
+      settings,
+      PlanRepository(db),
+      WordRepository(db, settings),
+      ref.read(clockProvider),
+    );
+  }
+
+  /// One write at a time: a double tap must not rate a word twice.
+  bool _busy = false;
+
+  Future<void> _act(Future<void> Function(StudyItem item) write) async {
+    final item = state.value?.current;
+    if (item == null || _busy) return;
+    _busy = true;
+    try {
+      await write(item);
+    } finally {
+      _busy = false;
+    }
+  }
+
+  /// FR-T2-04: *I know it* rates the new word Easy (BR-STATUS-04), completes
+  /// its plan row and moves on.
+  Future<void> knewIt() => _act((item) async {
+    await _rating.markKnown(
+      item.uid,
+      planDate: args.planDate,
+      kind: args.planDate == null ? null : PlanKind.newWord,
+    );
+    advance(CardOutcome.knewIt);
+  });
+
+  /// FR-T2-03: *Skip → backlog* leaves the row open and skipped
+  /// (BR-PLAN-06), so it waits in tomorrow's backlog, and moves on.
+  Future<void> skip() => _act((item) async {
+    final date = args.planDate;
+    if (date != null) {
+      await PlanRepository(ref.read(appDatabaseProvider))
+          .skip(planDate: date, uid: item.uid, kind: PlanKind.newWord);
+    }
+    advance(CardOutcome.skipped);
+  });
+
+  /// The *Undo* of [knewIt] or [skip]: the write taken back and the card
+  /// asked again.
+  Future<void> undo() async {
+    final current = state.value;
+    if (current == null || current.position == 0 || _busy) return;
+    final last = current.position - 1;
+    final outcome = current.results[last];
+    if (outcome == null) return;
+    _busy = true;
+    try {
+      final date = args.planDate;
+      if (outcome == CardOutcome.skipped) {
+        if (date != null) {
+          await PlanRepository(ref.read(appDatabaseProvider)).skip(
+            planDate: date,
+            uid: current.items[last].uid,
+            kind: PlanKind.newWord,
+            skipped: false,
+          );
+        }
+      } else {
+        await _rating.undo();
+      }
+      state = AsyncData<StudySessionState>(current.back());
+    } finally {
+      _busy = false;
+    }
   }
 
   /// FR-T2-01: turns the current card over.

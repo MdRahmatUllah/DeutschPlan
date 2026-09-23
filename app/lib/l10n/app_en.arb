@@ -1271,5 +1271,35 @@
   "studyPlaySentence": "Play sentence",
   "@studyPlaySentence": {
     "description": "T2 back: an example's play button, for screen readers."
+  },
+  "studyNewChip": "New",
+  "@studyNewChip": {
+    "description": "T2 new-word card: the chip beside the step code."
+  },
+  "studyKnowIt": "I know it",
+  "@studyKnowIt": {
+    "description": "T2 new-word card: rates the word Easy and moves on (FR-T2-04)."
+  },
+  "studySkip": "Skip → backlog",
+  "@studySkip": {
+    "description": "T2 new-word card: leaves the word for the backlog (FR-T2-03)."
+  },
+  "studySkipped": "Moved {word} to the backlog",
+  "@studySkipped": {
+    "description": "T2 undo snackbar after Skip (FR-T2-03). word is the German with its article.",
+    "placeholders": {
+      "word": {
+        "type": "String"
+      }
+    }
+  },
+  "studyKnown": "Marked {word} as known",
+  "@studyKnown": {
+    "description": "T2 undo snackbar after I know it. word is the German with its article.",
+    "placeholders": {
+      "word": {
+        "type": "String"
+      }
+    }
   }
 }

@@ -211,5 +211,10 @@
   "studyTip": "⚠ {tip}",
   "studyCollocations": "⟶ {collocations}",
   "studyRegister": "≈ {register}",
-  "studyPlaySentence": "বাক্যটি শুনুন"
+  "studyPlaySentence": "বাক্যটি শুনুন",
+  "studyNewChip": "নতুন",
+  "studyKnowIt": "আমি জানি",
+  "studySkip": "বাদ দিন → ব্যাকলগ",
+  "studySkipped": "{word} ব্যাকলগে রাখা হলো",
+  "studyKnown": "{word} জানা হিসেবে চিহ্নিত"
 }
