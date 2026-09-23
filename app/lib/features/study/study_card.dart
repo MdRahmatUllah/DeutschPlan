@@ -110,13 +110,13 @@ class _StudyWordCardState extends ConsumerState<StudyWordCard> {
     if (_mute) return;
     if (!ref.read(settingsProvider).read(SettingKeys.autoplayExample)) return;
     final uid = widget.word.uid;
-    unawaited(
-      ref.read(studyBackProvider(uid).future).then((extras) {
-        final first = extras.examples.firstOrNull;
-        if (!mounted || first == null || widget.word.uid != uid) return;
-        unawaited(_speak(text: first.german));
-      }),
-    );
+    // Best effort: a failed example query means no autoplay, not an
+    // uncaught error.
+    ref.read(studyBackProvider(uid).future).then((extras) {
+      final first = extras.examples.firstOrNull;
+      if (!mounted || first == null || widget.word.uid != uid) return;
+      unawaited(_speak(text: first.german));
+    }).ignore();
   }
 
   /// Says [text], the word with its article unless told otherwise.

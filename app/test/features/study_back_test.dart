@@ -128,6 +128,7 @@ void main() {
       bool revealed = true,
       MeaningLanguage meaning = MeaningLanguage.both,
       bool autoplayExample = false,
+      bool broken = false,
       VoidCallback? onReveal,
     }) async {
       await tester.runAsync(() async {
@@ -153,7 +154,10 @@ void main() {
           overrides: <Override>[
             settingsProvider.overrideWithValue(settings),
             systemTtsProvider.overrideWithValue(tts),
-            studyBackProvider(shown.uid).overrideWith((ref) async => extras),
+            studyBackProvider(shown.uid).overrideWith((ref) async {
+              if (broken) throw StateError('content.db is being replaced');
+              return extras;
+            }),
           ],
           child: MaterialApp(
             theme: AppTheme.light(),
@@ -352,6 +356,16 @@ void main() {
           .markNeedsBuild();
       await tester.pumpAndSettle();
       expect(tts.said, hasLength(1));
+    });
+
+    testWidgets('and a failed example query just means no autoplay', (
+      tester,
+    ) async {
+      await pump(tester, revealed: false, autoplayExample: true, broken: true);
+      turned.value = true;
+      await tester.pumpAndSettle();
+      expect(tts.said, isEmpty);
+      expect(find.text('bill, invoice'), findsOneWidget);
     });
 
     testWidgets('off: nothing plays', (tester) async {
