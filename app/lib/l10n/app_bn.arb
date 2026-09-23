@@ -262,5 +262,17 @@
   "wordStatusSuspended": "স্থগিত",
   "backlogEmptyTitle": "কিছু বাকি নেই। দারুণ।",
   "backlogEmptyBody": "বাদ দেওয়া বা মিস করা নতুন শব্দ এখানে আসে, কোনো সময়সীমা ছাড়াই।",
-  "backlogBackToToday": "আজকের পাতায় ফিরুন"
+  "backlogBackToToday": "আজকের পাতায় ফিরুন",
+  "sentencesPlace": "বাক্য {index} / {total}",
+  "sentencesClose": "বন্ধ করুন",
+  "sentencesSlow": "ধীরে শুনতে চেপে ধরুন",
+  "sentencesShowTranslation": "অনুবাদ দেখুন",
+  "sentencesHint": "যেকোনো শব্দে চাপ দিলে অর্থ দেখাবে। “Not yet” শব্দটিকে আগেই ফিরিয়ে আনে।",
+  "sentencesAsk": "বুঝতে পেরেছেন?",
+  "sentencesUnderstood": "বুঝেছি",
+  "sentencesPartly": "কিছুটা",
+  "sentencesNotYet": "এখনো না",
+  "sentencesOpenWord": "শব্দটি খুলুন",
+  "sentencesNotInCourse": "কোর্সের শব্দ নয়।",
+  "sentencesDuden": "Duden-এ দেখুন"
 }

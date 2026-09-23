@@ -1,3 +1,4 @@
+import 'package:deutschplan/features/sentences/sentences_screen.dart';
 import 'package:deutschplan/core/providers/app_providers.dart';
 import 'package:deutschplan/data/db/app_database.dart';
 import 'package:deutschplan/data/repositories/word_repository.dart';
@@ -119,7 +120,14 @@ List<Override> todayStub([TodayView? view]) => <Override>[
   // T4 without a database: twenty rows, enough to scroll.
   backlogProvider.overrideWith(StubBacklog.new),
   backlogPauseProvider.overrideWith(_StubPause.new),
+  // T5 without a database: nothing to practise.
+  practiceSentencesProvider.overrideWith(_StubSentences.new),
 ];
+
+class _StubSentences extends PracticeSentences {
+  @override
+  Future<List<PracticeSentence>> build() async => const <PracticeSentence>[];
+}
 
 /// Twenty backlog words over two days: "das Wort0" … "das Wort19".
 class StubBacklog extends Backlog {

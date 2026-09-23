@@ -1601,5 +1601,61 @@
   "backlogBackToToday": "Back to Today",
   "@backlogBackToToday": {
     "description": "T4 empty state: returns to the Today tab's root."
+  },
+  "sentencesPlace": "Sentence {index} of {total}",
+  "@sentencesPlace": {
+    "description": "T5 band title.",
+    "placeholders": {
+      "index": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "sentencesClose": "Close",
+  "@sentencesClose": {
+    "description": "T5 band close button, for screen readers."
+  },
+  "sentencesSlow": "Long-press for slow",
+  "@sentencesSlow": {
+    "description": "T5: under the play button."
+  },
+  "sentencesShowTranslation": "Show translation",
+  "@sentencesShowTranslation": {
+    "description": "T5: reveals the sentence's translation."
+  },
+  "sentencesHint": "Tap any word for its meaning. “Not yet” brings the word back sooner.",
+  "@sentencesHint": {
+    "description": "T5 hint above the answers."
+  },
+  "sentencesAsk": "Did you understand it?",
+  "@sentencesAsk": {
+    "description": "T5: heading over the three answers. Shown in capitals."
+  },
+  "sentencesUnderstood": "Understood",
+  "@sentencesUnderstood": {
+    "description": "T5 answer: self_rating 3."
+  },
+  "sentencesPartly": "Partly",
+  "@sentencesPartly": {
+    "description": "T5 answer: self_rating 2."
+  },
+  "sentencesNotYet": "Not yet",
+  "@sentencesNotYet": {
+    "description": "T5 answer: self_rating 1; the headword is rated Hard (BR-FSRS-04)."
+  },
+  "sentencesOpenWord": "Open the word",
+  "@sentencesOpenWord": {
+    "description": "T5 word sheet: opens W1 for a course word (FR-T5-03)."
+  },
+  "sentencesNotInCourse": "Not a word from the course.",
+  "@sentencesNotInCourse": {
+    "description": "T5 word sheet: the tapped word is not in the course."
+  },
+  "sentencesDuden": "Look it up in Duden",
+  "@sentencesDuden": {
+    "description": "T5 word sheet: opens Duden for a word the course lacks (FR-T5-03)."
   }
 }

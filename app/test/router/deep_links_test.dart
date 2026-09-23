@@ -1,6 +1,7 @@
 @TestOn('vm')
 library;
 
+import 'package:deutschplan/features/sentences/sentences_screen.dart';
 import 'package:deutschplan/features/today/today_screen.dart';
 
 import '../features/today_fixtures.dart';
@@ -282,7 +283,7 @@ void main() {
       await pumpApp(tester);
       router.go('/sentences');
       await tester.pumpAndSettle();
-      expect(find.text('T5'), findsOneWidget);
+      expect(find.byType(SentencesScreen), findsOneWidget);
 
       await openLink(tester, 'deutschplan://today');
       expect(location(), '/today');

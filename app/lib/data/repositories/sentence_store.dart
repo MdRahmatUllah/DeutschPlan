@@ -97,6 +97,39 @@ WHERE s.status IN ('learning', 'done')
         }
       });
 
+  /// FR-T5-02: how a sentence went — `self_rating` 3 Understood, 2 Partly,
+  /// 1 Not yet (`sentences.md`).
+  Future<void> rate(PlanDate date, SentenceCandidate sentence, int rating) =>
+      _db.customUpdate(
+        'UPDATE sentence_log SET self_rating = ?4 '
+        'WHERE word_uid = ?1 AND ord = ?2 AND shown_on = ?3',
+        variables: <Variable<Object>>[
+          Variable<String>(sentence.wordUid),
+          Variable<int>(sentence.ord),
+          Variable<String>(date),
+          Variable<int>(rating),
+        ],
+        updates: <TableInfo<Table, Object>>{_db.sentenceLog},
+      );
+
+  /// [date]'s ratings so far, by sentence: where T5 picks up on reopening.
+  Future<Map<(String, int), int>> ratings(PlanDate date) async {
+    final rows = await _db
+        .customSelect(
+          'SELECT word_uid, ord, self_rating FROM sentence_log '
+          'WHERE shown_on = ?1 AND self_rating IS NOT NULL',
+          variables: <Variable<Object>>[Variable<String>(date)],
+          readsFrom: <ResultSetImplementation<Object, Object>>{_db.sentenceLog},
+        )
+        .get();
+    return <(String, int), int>{
+      for (final row in rows)
+        (row.read<String>('word_uid'), row.read<int>('ord')): row.read<int>(
+          'self_rating',
+        ),
+    };
+  }
+
   /// How many of [date]'s sentences have been rated: Today's done count.
   Stream<int> watchRated(PlanDate date) =>
       _rated(date).watchSingle().map((row) => row.read<int>('n'));

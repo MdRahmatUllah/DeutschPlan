@@ -29,6 +29,21 @@ typedef CourseStep = ({String code, String levelCode, int wordCount});
 class ContentDao extends DatabaseAccessor<AppDatabase> with _$ContentDaoMixin {
   ContentDao(super.db);
 
+  /// FR-T5-03: the course word a sentence's token belongs to — its search
+  /// key itself, or the longest key the token starts with ("Wohnungen" for
+  /// "Wohnung"), three letters at least. Null for a word the course lacks.
+  Future<Word?> wordForToken(String key) async {
+    if (key.isEmpty) return null;
+    final row = await customSelect(
+      'SELECT * FROM words WHERE search_key = ?1 '
+      "OR (length(search_key) >= 3 AND ?1 LIKE search_key || '%') "
+      'ORDER BY length(search_key) DESC, seq LIMIT 1',
+      variables: <Variable<Object>>[Variable<String>(key)],
+      readsFrom: <ResultSetImplementation<Object, Object>>{words},
+    ).getSingleOrNull();
+    return row == null ? null : words.map(row.data);
+  }
+
   /// The category most of [uids] belong to: T1's "7 new · Wohnen & Haushalt".
   ///
   /// Null when none of them has one. A tie goes to the lower category id, so
