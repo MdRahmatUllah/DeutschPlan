@@ -14,6 +14,7 @@ import 'package:deutschplan/data/repositories/settings_repository.dart';
 import 'package:deutschplan/features/study/study_back.dart';
 import 'package:deutschplan/features/study/study_screen.dart';
 import 'package:deutschplan/features/study/study_session.dart';
+import 'package:deutschplan/features/study/study_summary.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
 import 'package:deutschplan/main.dart'
     show appLocalizationsDelegates, supportedLocales;
@@ -381,14 +382,20 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code) VALUES
       expect(again?.position, 0, reason: 'cleared, not kept');
     });
 
-    testWidgets('the last card done closes it', (tester) async {
+    testWidgets('the last card done brings up the summary over it (#107)', (
+      tester,
+    ) async {
       final container = await pump(tester);
       final notifier = container.read(studySessionProvider(args).notifier);
       for (var i = 0; i < 4; i++) {
         notifier.advance(CardOutcome.good);
       }
+      await tester.runAsync(
+        () => Future<void>.delayed(const Duration(milliseconds: 50)),
+      );
       await tester.pumpAndSettle();
-      expect(find.byType(StudyScreen), findsNothing);
+      expect(find.byType(StudyScreen), findsOneWidget);
+      expect(find.byType(StudySummarySheet), findsOneWidget);
     });
 
     testWidgets('the menu: auto-play and speech speed are settings', (

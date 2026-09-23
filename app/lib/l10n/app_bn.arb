@@ -228,5 +228,14 @@
   "studyClozeAlmost": "প্রায় · সঠিকটি {answer}",
   "studyClozeWrong": "হয়নি · সঠিকটি {answer}",
   "studyClozeRatePrompt": "কতটা জানতেন?",
-  "studyClozeFootnote": "দুবার Good বা Easy → এই শব্দটি এখন লিখে অনুশীলন হচ্ছে। শব্দের বিস্তারিত থেকে সাধারণ কার্ডে ফিরতে পারেন।"
+  "studyClozeFootnote": "দুবার Good বা Easy → এই শব্দটি এখন লিখে অনুশীলন হচ্ছে। শব্দের বিস্তারিত থেকে সাধারণ কার্ডে ফিরতে পারেন।",
+  "summaryTitle": "Gut gemacht!",
+  "summaryStats": "{cards}টি কার্ড · {minutes} মিনিট",
+  "summaryPill": "{rating} {count}",
+  "summaryWatch": "যে শব্দগুলো খেয়াল রাখবেন",
+  "summaryGrammar": "ব্যাকরণ অনুশীলন · {topics}",
+  "summarySentences": "{count}টি বাক্য অনুশীলন করুন",
+  "summaryBacklog": "ব্যাকলগ দেখুন · {count}",
+  "summaryDone": "আপাতত শেষ",
+  "summaryPlay": "{word} শুনুন"
 }

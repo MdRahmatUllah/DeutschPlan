@@ -47,7 +47,11 @@ class StudySessionState {
     this.position = 0,
     this.results = const <int, CardOutcome>{},
     this.revealed = false,
+    this.startedAt,
   });
+
+  /// When the session opened, for T3's "20 cards · 12 min".
+  final DateTime? startedAt;
 
   /// BR-PLAN-02's order: Revise, then New, then Grammar.
   final List<StudyItem> items;
@@ -64,6 +68,18 @@ class StudySessionState {
 
   StudyItem? get current => finished ? null : items[position];
   bool get finished => position >= items.length;
+
+  /// The words are done: what is left, if anything, is grammar, which L15
+  /// practises on its own screen. T3's summary comes up here.
+  bool get wordsDone =>
+      current?.kind != SessionBlockKind.newWords &&
+      current?.kind != SessionBlockKind.revise;
+
+  /// The grammar topics still to practise: T3's next step when there are any.
+  List<String> get grammarLeft => <String>[
+    for (final item in items.skip(position))
+      if (item.kind == SessionBlockKind.grammar) item.uid,
+  ];
   int get left => items.length - position;
 
   /// The blocks in play order, with how far each has got.
@@ -107,6 +123,7 @@ class StudySessionState {
 
   StudySessionState advance(CardOutcome outcome) => StudySessionState(
     items: items,
+    startedAt: startedAt,
     position: position + 1,
     results: <int, CardOutcome>{...results, position: outcome},
   );
@@ -114,12 +131,14 @@ class StudySessionState {
   /// Back to the card before, forgetting how it went: an *Undo*.
   StudySessionState back() => StudySessionState(
     items: items,
+    startedAt: startedAt,
     position: position - 1,
     results: <int, CardOutcome>{...results}..remove(position - 1),
   );
 
   StudySessionState reveal() => StudySessionState(
     items: items,
+    startedAt: startedAt,
     position: position,
     results: results,
     revealed: true,
@@ -136,7 +155,7 @@ class StudySessionState {
 class StudySession extends _$StudySession {
   @override
   Future<StudySessionState> build(SessionArgs args) async {
-    _shownAt = ref.read(clockProvider)();
+    final now = _shownAt = ref.read(clockProvider)();
     final date = args.planDate;
     // A card rated or skipped since the args were made is not asked again.
     final open = date == null
@@ -157,6 +176,7 @@ class StudySession extends _$StudySession {
     final ordered = <SessionBlock>[...args.blocks]
       ..sort((a, b) => a.kind.index.compareTo(b.kind.index));
     return StudySessionState(
+      startedAt: now,
       items: <StudyItem>[
         for (final block in ordered)
           for (final uid in block.uids)

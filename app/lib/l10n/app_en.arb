@@ -1372,5 +1372,77 @@
   "studyClozeFootnote": "Rated Good or Easy twice → this word is now practised in production. Switch back to plain cards from the word's detail.",
   "@studyClozeFootnote": {
     "description": "T2 cloze card: why the card changed (BR-FSRS-06) and how to change it back."
+  },
+  "summaryTitle": "Gut gemacht!",
+  "@summaryTitle": {
+    "description": "T3 summary headline. German in every UI language — it is part of the course's voice."
+  },
+  "summaryStats": "{cards, plural, =1{1 card} other{{cards} cards}} · {minutes} min",
+  "@summaryStats": {
+    "description": "T3: the session's own count and time (FR-T3-01).",
+    "placeholders": {
+      "cards": {
+        "type": "int"
+      },
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "summaryPill": "{count} {rating}",
+  "@summaryPill": {
+    "description": "T3 rating pill: '2 Again'. rating is the rating button's own label.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "rating": {
+        "type": "String"
+      }
+    }
+  },
+  "summaryWatch": "Words to watch",
+  "@summaryWatch": {
+    "description": "T3: the heading over the words rated Again. Shown in capitals."
+  },
+  "summaryGrammar": "Practice grammar · {topics}",
+  "@summaryGrammar": {
+    "description": "T3 primary when grammar topics are next (FR-T3-02).",
+    "placeholders": {
+      "topics": {
+        "type": "int"
+      }
+    }
+  },
+  "summarySentences": "{count, plural, =1{Practice 1 sentence} other{Practice {count} sentences}}",
+  "@summarySentences": {
+    "description": "T3 primary when the day's sentences are next (FR-T3-02).",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "summaryBacklog": "Review backlog · {count}",
+  "@summaryBacklog": {
+    "description": "T3 secondary when the backlog is not empty (FR-T3-02).",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "summaryDone": "Done for now",
+  "@summaryDone": {
+    "description": "T3: always there; back to Today (FR-T3-02, FR-T3-03)."
+  },
+  "summaryPlay": "Play {word}",
+  "@summaryPlay": {
+    "description": "T3: a word to watch's play button, for screen readers.",
+    "placeholders": {
+      "word": {
+        "type": "String"
+      }
+    }
   }
 }

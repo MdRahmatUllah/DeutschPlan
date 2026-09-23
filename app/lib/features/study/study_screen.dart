@@ -19,6 +19,8 @@ import 'package:deutschplan/features/study/study_cloze.dart';
 import 'package:deutschplan/features/study/study_motion.dart';
 import 'package:deutschplan/features/study/study_rating.dart';
 import 'package:deutschplan/features/study/study_session.dart';
+import 'package:deutschplan/features/study/study_summary.dart';
+import 'package:deutschplan/router/cross_tab.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
 import 'package:deutschplan/router/routes.dart';
 import 'package:flutter/services.dart' show HapticFeedback;
@@ -77,9 +79,24 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
   bool _banner = false;
   Timer? _hide;
 
+  /// Held for [dispose], where `ref` can no longer be used.
+  late final ProviderContainer _container = ProviderScope.containerOf(
+    context,
+    listen: false,
+  );
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _container;
+  }
+
   @override
   void dispose() {
     _hide?.cancel();
+    // A next step from T3 replaces this screen rather than popping it, so
+    // the pop handler never runs: the session is cleared here too.
+    _container.invalidate(studySessionProvider(widget.args));
     super.dispose();
   }
 
@@ -87,6 +104,45 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
   /// is nothing to lose, and Today continues from what is left. The session
   /// is cleared on the way out, whichever way out — see [build].
   void _close() => Navigator.of(context).maybePop();
+
+  /// Set once the screen is on its way out, so a rebuild does not send it
+  /// twice.
+  bool _leaving = false;
+
+  void _once(VoidCallback go) {
+    if (_leaving) return;
+    _leaving = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) go();
+    });
+  }
+
+  /// Out to another screen in this one's place. No pop runs, so the undo
+  /// bar goes here; the session is cleared in [dispose].
+  void _leave(VoidCallback go) {
+    ScaffoldMessenger.maybeOf(context)?.hideCurrentSnackBar();
+    go();
+  }
+
+  /// T3's next step (FR-T3-02, FR-T3-03).
+  void _step(StudyNextStep step, StudySessionState session) {
+    switch (step) {
+      case StudyNextStep.done:
+        _close();
+      case StudyNextStep.grammar:
+        final topics = session.grammarLeft;
+        _leave(
+          () => GrammarPracticeRoute.instead(
+            context,
+            GrammarPracticeArgs(topicUids: topics),
+          ),
+        );
+      case StudyNextStep.sentences:
+        _leave(() => SentencesRoute.instead(context));
+      case StudyNextStep.backlog:
+        _leave(() => context.jumpToTab(const BacklogRoute()));
+    }
+  }
 
   /// FR-T2-04 *I know it* or FR-T2-03 *Skip → backlog*, each with its
   /// 4 s *Undo*.
@@ -164,15 +220,38 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
 
     ref.listen(provider, (_, next) {
       final session = next.value;
-      if (session == null) return;
-      // The last card done: back to Today until the summary (#107) exists.
-      if (session.finished) {
-        _close();
-        return;
-      }
-      _playBanner(session);
+      if (session != null && !session.finished) _playBanner(session);
     });
     final session = ref.watch(provider).value;
+
+    // The words done: T3's summary over the session — or T6 in its place
+    // when the day is complete and no sentences are open. A session that
+    // did nothing (everything already done) just closes.
+    final date = widget.args.planDate;
+    final over =
+        session != null && session.wordsDone && session.results.isNotEmpty;
+    final nextState = over && date != null
+        ? ref.watch(studyNextProvider(date))
+        : null;
+    final next = nextState?.value;
+    final ready = over && (nextState == null || !nextState.isLoading);
+    final dayComplete =
+        ready &&
+        session.grammarLeft.isEmpty &&
+        next != null &&
+        next.dayDone &&
+        next.sentences == 0;
+    if (session != null && session.wordsDone && session.results.isEmpty) {
+      // Nothing studied: no summary of it. Grammar waiting goes straight to
+      // L15; nothing at all, and the session just closes.
+      _once(
+        session.grammarLeft.isEmpty
+            ? _close
+            : () => _step(StudyNextStep.grammar, session),
+      );
+    } else if (dayComplete) {
+      _once(() => _leave(() => DayCompleteRoute.instead(context)));
+    }
     if (session != null && _bannered == null && session.startsBlock) {
       // The first block's banner, once the queue has been built.
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -321,6 +400,24 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
       ),
     );
 
+    final summary = ready && !dayComplete
+        ? StudySummaryOverlay(
+            child: StudySummarySheet(
+              session: session,
+              next: next,
+              onStep: (step) => _step(step, session),
+            ),
+          )
+        : null;
+    final page = summary == null
+        ? body
+        : Stack(
+            children: <Widget>[
+              Positioned.fill(child: body),
+              summary,
+            ],
+          );
+
     // Every way out clears the session: the X, Android's back, the iOS swipe.
     return PopScope(
       onPopInvokedWithResult: (didPop, _) {
@@ -349,9 +446,9 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
                                 .article,
                     ) ??
                     tokens.color.primary,
-                child: body,
+                child: page,
               )
-            : body,
+            : page,
       ),
     );
   }
