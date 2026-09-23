@@ -62,11 +62,9 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
   }
 
   /// FR-T2-07: no prompt. Every card was written as it was rated, so there
-  /// is nothing to lose; the session is cleared and Today continues it.
-  void _close() {
-    ref.invalidate(studySessionProvider(widget.args));
-    Navigator.of(context).maybePop();
-  }
+  /// is nothing to lose, and Today continues from what is left. The session
+  /// is cleared on the way out, whichever way out — see [build].
+  void _close() => Navigator.of(context).maybePop();
 
   void _playBanner(StudySessionState session) {
     if (!session.startsBlock || _bannered == session.position) return;
@@ -170,13 +168,19 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
       ),
     );
 
-    return AdaptiveScaffold(
-      backgroundColor: tokens.isGlass
-          ? tokens.surface.paper.withValues(alpha: 0)
-          : tokens.surface.paper,
-      body: tokens.isGlass
-          ? AuroraBackdrop(leading: tokens.color.primary, child: body)
-          : body,
+    // Every way out clears the session: the X, Android's back, the iOS swipe.
+    return PopScope(
+      onPopInvokedWithResult: (didPop, _) {
+        if (didPop) ref.invalidate(studySessionProvider(widget.args));
+      },
+      child: AdaptiveScaffold(
+        backgroundColor: tokens.isGlass
+            ? tokens.surface.paper.withValues(alpha: 0)
+            : tokens.surface.paper,
+        body: tokens.isGlass
+            ? AuroraBackdrop(leading: tokens.color.primary, child: body)
+            : body,
+      ),
     );
   }
 }

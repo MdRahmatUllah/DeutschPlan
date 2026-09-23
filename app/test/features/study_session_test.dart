@@ -279,6 +279,23 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code) VALUES
       expect(again?.position, 0);
     });
 
+    testWidgets("and so does Android's back", (tester) async {
+      final container = await pump(tester);
+      container
+          .read(studySessionProvider(args).notifier)
+          .advance(CardOutcome.good);
+      await tester.pump();
+
+      await tester.binding.handlePopRoute();
+      await tester.pumpAndSettle();
+
+      expect(find.byType(StudyScreen), findsNothing);
+      final again = await tester.runAsync(
+        () => container.read(studySessionProvider(args).future),
+      );
+      expect(again?.position, 0, reason: 'cleared, not kept');
+    });
+
     testWidgets('the last card done closes it', (tester) async {
       final container = await pump(tester);
       final notifier = container.read(studySessionProvider(args).notifier);
