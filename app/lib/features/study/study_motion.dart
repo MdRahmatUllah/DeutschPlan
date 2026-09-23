@@ -104,9 +104,9 @@ class _StudySwipeToRateState extends State<StudySwipeToRate>
     final flung = velocity.abs() >= StudySwipeToRate.fling;
     if (far || flung) {
       final left = (far ? _dx : velocity) < 0;
+      // It leaves from where the finger let go. No reset: the next card is
+      // a new place in the session, with a swipe of its own at 0.
       widget.onRated(left ? Rating.again : Rating.good);
-      // The card leaves with the rating's own motion; this one resets.
-      setState(() => _dx = 0);
       return;
     }
     _from = _dx;

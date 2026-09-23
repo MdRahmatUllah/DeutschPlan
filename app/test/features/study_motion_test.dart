@@ -144,6 +144,27 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code) VALUES
       expect(current(container), tuer);
     });
 
+    testWidgets('a rated card leaves from where the finger let go', (
+      tester,
+    ) async {
+      await pump(tester, swipe: true);
+      await tester.runAsync(() async {
+        await tester.drag(find.byType(StudyWordCard), const Offset(-300, 0));
+        await Future<void>.delayed(const Duration(milliseconds: 50));
+      });
+      await tester.pump();
+      // The swiped card, on its way out: still where it was dragged to.
+      final swiped = find.ancestor(
+        of: find.text('das Haus', findRichText: true),
+        matching: find.byType(StudySwipeToRate),
+      );
+      final held = tester.widget<Transform>(
+        find.descendant(of: swiped, matching: find.byType(Transform)).first,
+      );
+      expect(held.transform.getTranslation().x, lessThan(-200));
+      await tester.pumpAndSettle();
+    });
+
     testWidgets('a short drag springs back and rates nothing', (tester) async {
       final container = await pump(tester, swipe: true);
       await drag(tester, const Offset(-40, 0));
