@@ -23,6 +23,20 @@ void main() {
       expect(coverage('groß', learned), 1.0, reason: 'groß → gross');
     });
 
+    test('stays quick with a whole course learned', () {
+      // The stem match runs for every token of every sampled sentence, on the
+      // first open of the day. Scanning the vocabulary per token took seconds
+      // at this size; a prefix lookup takes milliseconds.
+      final vocabulary = <String>{for (var i = 0; i < 50000; i++) 'wort$i'};
+      final sentences = <SentenceCandidate>[
+        for (var i = 0; i < 400; i++)
+          s('w$i', 1, 'Das große Haus hat einen schönen Garten mit Bäumen.'),
+      ];
+      final clock = Stopwatch()..start();
+      pickSentences(sentences, learned: vocabulary, count: 3, seed: 1);
+      expect(clock.elapsed, lessThan(const Duration(seconds: 1)));
+    });
+
     test('an empty sentence covers nothing', () {
       expect(coverage('Ja, zu!', learned), 0);
     });

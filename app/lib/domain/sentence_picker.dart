@@ -99,12 +99,17 @@ double coverage(String sentence, Set<String> learned) {
       if (match[0]!.length > 2) searchKey(match[0]!, stripArticle: false),
   ];
   if (tokens.isEmpty) return 0;
-  final known = tokens.where(
-    (token) =>
-        learned.contains(token) ||
-        learned.any((key) => key.isNotEmpty && token.startsWith(key)),
-  );
-  return known.length / tokens.length;
+  // The token's prefixes looked up in the set, longest first: the same rule
+  // as "starts with a learned key", at the token's length rather than the
+  // vocabulary's — thousands of keys by the end of the course.
+  bool known(String token) {
+    for (var end = token.length; end > 0; end--) {
+      if (learned.contains(token.substring(0, end))) return true;
+    }
+    return false;
+  }
+
+  return tokens.where(known).length / tokens.length;
 }
 
 /// Picks [count] sentences with distinct headwords, highest coverage first.
