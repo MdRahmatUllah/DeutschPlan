@@ -68,8 +68,24 @@ Future<TodayView> todayView(Ref ref) async {
             .where((topic) => topic.status == WordStatus.todo)
             .firstOrNull;
   final name = settings.read(SettingKeys.learnerName)?.trim();
+  final seconds = (await plans.statsFor(date))?.seconds ?? 0;
+  final streak = await engine.streak(date);
+  // BR-PLAN-09 for what is left, not for the whole day: the ring's caption is
+  // how long until done.
+  final estimate = await engine.estimate(
+    DailyPlan(
+      date: date,
+      revise: openRevise,
+      newToday: openNew,
+      grammarDue: plan.grammarDue,
+      backlog: const <String>[],
+      activeStep: step,
+      isStudyDay: plan.isStudyDay,
+    ),
+  );
+  final category = await content.mainCategory(plan.newToday);
 
-  return TodayView(
+  TodayView build({TomorrowPreview? tomorrow}) => TodayView(
     date: date,
     hour: now.hour,
     revise: BlockProgress(
@@ -87,20 +103,8 @@ Future<TodayView> todayView(Ref ref) async {
     backlog: plan.backlog.length,
     backlogFrom: backlog.from,
     backlogTo: backlog.to,
-    streak: await engine.streak(date),
-    // BR-PLAN-09 for what is left, not for the whole day: the ring's caption
-    // is how long until done.
-    estimate: await engine.estimate(
-      DailyPlan(
-        date: date,
-        revise: openRevise,
-        newToday: openNew,
-        grammarDue: plan.grammarDue,
-        backlog: const <String>[],
-        activeStep: step,
-        isStudyDay: plan.isStudyDay,
-      ),
-    ),
+    streak: streak,
+    estimate: estimate,
     courseDay: started == null ? 1 : daysBetween(started, date) + 1,
     stepWords: (
       done: counts?.done ?? 0,
@@ -110,7 +114,7 @@ Future<TodayView> todayView(Ref ref) async {
     ),
     step: step,
     learnerName: name == null || name.isEmpty ? null : name,
-    newCategory: await content.mainCategory(plan.newToday),
+    newCategory: category,
     grammar: next == null
         ? null
         : GrammarPreview(
@@ -118,5 +122,23 @@ Future<TodayView> todayView(Ref ref) async {
             topic: next.topic.topic,
             rule: next.topic.rule ?? '',
           ),
+    minutes: seconds ~/ 60,
+    tomorrow: tomorrow,
+  );
+
+  final view = build();
+  if (!view.isDone) return view;
+
+  // #96: tomorrow as opening it will make it, without making it.
+  final ahead = await engine.previewDay(addDays(date, 1));
+  return build(
+    tomorrow: TomorrowPreview(
+      revise: ahead.revise.length,
+      newWords: ahead.newToday.length,
+      grammar: ahead.grammarDue.length,
+      estimate: await engine.estimate(ahead),
+      category: await content.mainCategory(ahead.newToday),
+      restDay: !ahead.isStudyDay,
+    ),
   );
 }

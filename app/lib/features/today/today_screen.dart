@@ -137,76 +137,86 @@ class _Plan extends ConsumerWidget {
     final step = view.step;
     final grammar = view.grammar;
 
-    final sections = <Widget>[
-      PlanSectionCard(
-        icon: Icons.autorenew,
-        tile: tokens.color.primary,
-        title: l10n.todayRevise(view.revise.total),
-        subtitle: switch (view.revise.total) {
-          0 when view.firstDay => l10n.todayReviseFirstDay,
-          0 => l10n.todayReviseNone,
-          final count => l10n.todayReviseDue(count),
-        },
-        trailing: _trailing(view.revise),
-        progress: view.revise,
-        ringColour: tokens.color.primary,
-        onTap: view.openRevise.isEmpty
-            ? null
-            : () => onStudy(<SessionBlock>[
-                SessionBlock(SessionBlockKind.revise, view.openRevise),
-              ], view.date),
-      ),
-      if (view.newToday.total > 0)
-        PlanSectionCard(
-          icon: Icons.star_outline,
-          tile: tokens.color.accent,
-          title: l10n.todayNew(view.newToday.total),
-          subtitle: view.newCategory == null
-              ? l10n.todayNewPlain(view.newToday.total)
-              : l10n.todayNewCategory(view.newToday.total, view.newCategory!),
-          trailing: _trailing(view.newToday),
-          progress: view.newToday,
-          ringColour: tokens.color.accent,
-          onTap: view.openNew.isEmpty
-              ? null
-              : () => onStudy(<SessionBlock>[
-                  SessionBlock(SessionBlockKind.newWords, view.openNew),
-                ], view.date),
-        ),
-      if (view.backlog > 0)
-        PlanSectionCard(
-          icon: Icons.layers_outlined,
-          tile: tokens.surface.muted,
-          title: l10n.todayBacklog(view.backlog),
-          subtitle: _backlogDays(context, l10n),
-          trailing: SectionTrailing.open,
-          onTap: () => context.jumpToTab(const BacklogRoute()),
-        ),
-      if (view.grammarDue.isNotEmpty)
-        PlanSectionCard(
-          icon: Icons.menu_book_outlined,
-          tile: tokens.color.der,
-          tileInk: tokens.color.onDer,
-          title: l10n.todayGrammarDue(view.grammarDue.length),
-          subtitle: l10n.todayGrammarDueTopics(view.grammarDue.length),
-          trailing: SectionTrailing.open,
-          onTap: () => GrammarPracticeRoute.open(
-            context,
-            GrammarPracticeArgs(topicUids: view.grammarDue),
-          ),
-        ),
-      if (view.sentences.total > 0)
-        PlanSectionCard(
-          icon: Icons.chat_bubble_outline,
-          tile: tokens.color.die,
-          title: l10n.todaySentences(view.sentences.total),
-          subtitle: l10n.todaySentencesKnown(view.sentences.total),
-          trailing: view.sentences.finished
-              ? SectionTrailing.done
-              : SectionTrailing.open,
-          onTap: () => SentencesRoute.open(context),
-        ),
-    ];
+    final tomorrow = view.tomorrow;
+    // TodayDone: the blocks collapse into one row, and tomorrow appears.
+    final sections = view.isDone
+        ? <Widget>[
+            TodayDoneCard(view: view),
+            if (tomorrow != null) TomorrowCard(tomorrow: tomorrow),
+          ]
+        : <Widget>[
+            PlanSectionCard(
+              icon: Icons.autorenew,
+              tile: tokens.color.primary,
+              title: l10n.todayRevise(view.revise.total),
+              subtitle: switch (view.revise.total) {
+                0 when view.firstDay => l10n.todayReviseFirstDay,
+                0 => l10n.todayReviseNone,
+                final count => l10n.todayReviseDue(count),
+              },
+              trailing: _trailing(view.revise),
+              progress: view.revise,
+              ringColour: tokens.color.primary,
+              onTap: view.openRevise.isEmpty
+                  ? null
+                  : () => onStudy(<SessionBlock>[
+                      SessionBlock(SessionBlockKind.revise, view.openRevise),
+                    ], view.date),
+            ),
+            if (view.newToday.total > 0)
+              PlanSectionCard(
+                icon: Icons.star_outline,
+                tile: tokens.color.accent,
+                title: l10n.todayNew(view.newToday.total),
+                subtitle: view.newCategory == null
+                    ? l10n.todayNewPlain(view.newToday.total)
+                    : l10n.todayNewCategory(
+                        view.newToday.total,
+                        view.newCategory!,
+                      ),
+                trailing: _trailing(view.newToday),
+                progress: view.newToday,
+                ringColour: tokens.color.accent,
+                onTap: view.openNew.isEmpty
+                    ? null
+                    : () => onStudy(<SessionBlock>[
+                        SessionBlock(SessionBlockKind.newWords, view.openNew),
+                      ], view.date),
+              ),
+            if (view.backlog > 0)
+              PlanSectionCard(
+                icon: Icons.layers_outlined,
+                tile: tokens.surface.muted,
+                title: l10n.todayBacklog(view.backlog),
+                subtitle: _backlogDays(context, l10n),
+                trailing: SectionTrailing.open,
+                onTap: () => context.jumpToTab(const BacklogRoute()),
+              ),
+            if (view.grammarDue.isNotEmpty)
+              PlanSectionCard(
+                icon: Icons.menu_book_outlined,
+                tile: tokens.color.der,
+                tileInk: tokens.color.onDer,
+                title: l10n.todayGrammarDue(view.grammarDue.length),
+                subtitle: l10n.todayGrammarDueTopics(view.grammarDue.length),
+                trailing: SectionTrailing.open,
+                onTap: () => GrammarPracticeRoute.open(
+                  context,
+                  GrammarPracticeArgs(topicUids: view.grammarDue),
+                ),
+              ),
+            if (view.sentences.total > 0)
+              PlanSectionCard(
+                icon: Icons.chat_bubble_outline,
+                tile: tokens.color.die,
+                title: l10n.todaySentences(view.sentences.total),
+                subtitle: l10n.todaySentencesKnown(view.sentences.total),
+                trailing: view.sentences.finished
+                    ? SectionTrailing.done
+                    : SectionTrailing.open,
+                onTap: () => SentencesRoute.open(context),
+              ),
+          ];
 
     final button = todayViewState(view);
     final label = switch (button.action) {
@@ -269,6 +279,7 @@ class _Plan extends ConsumerWidget {
                           const SizedBox(height: 12),
                           GrammarPreviewCard(
                             preview: grammar,
+                            showRule: !view.isDone,
                             onTap: () => context.jumpToTab(
                               GrammarTopicRoute(uid: grammar.uid),
                             ),

@@ -46,6 +46,67 @@ void main() {
       ..vocabulary = <String>[for (var i = 1; i <= 500; i++) 'w$i'];
   });
 
+  group('FR-T6-02 previewDay', () {
+    /// Everything the store holds that planning can change.
+    String snapshot() =>
+        '${store.plan}|${store.lastPlanned}|${store.enrollment?.sublevelCode}'
+        '|${store.completed}|${store.enrolled.length}';
+
+    Future<void> expectPreviewIsTheDay(PlanDate day) async {
+      final engine = engineWith();
+      final before = snapshot();
+
+      final preview = await engine.previewDay(day);
+      expect(snapshot(), before, reason: 'the preview wrote something');
+
+      final opened = await engine.openDay(day);
+      expect(preview.newToday, opened.newToday);
+      expect(preview.revise, opened.revise);
+      expect(preview.grammarDue, opened.grammarDue);
+      expect(preview.backlog, opened.backlog);
+      expect(preview.activeStep, opened.activeStep);
+    }
+
+    test('is what opening the day will do, and writes nothing', () async {
+      await engineWith().openDay(monday);
+      store.complete(monday);
+      store.candidates = <RevisionCandidate>[
+        RevisionCandidate(uid: 'w1', stability: 2, lastReview: monday),
+      ];
+
+      await expectPreviewIsTheDay(addDays(monday, 1));
+    });
+
+    test('across a step that runs out', () async {
+      // Ten words in A1.1: Monday takes seven, so Tuesday finishes the step
+      // and starts A1.2 — in the preview, without closing anything for real.
+      store.wordsByStep = <String, List<String>>{
+        'A1.1': <String>[for (var i = 1; i <= 10; i++) 'a$i'],
+        'A1.2': <String>[for (var i = 1; i <= 50; i++) 'b$i'],
+      };
+      await engineWith().openDay(monday);
+      store.complete(monday);
+
+      final preview = await engineWith().previewDay(addDays(monday, 1));
+      expect(preview.activeStep, 'A1.2');
+      expect(store.enrollment?.sublevelCode, 'A1.1', reason: 'still A1.1');
+      expect(store.completed, isEmpty);
+
+      await expectPreviewIsTheDay(addDays(monday, 1));
+    });
+
+    test('across a missed day, which it shows as backlog', () async {
+      await engineWith().openDay(monday);
+      store.complete(monday);
+
+      final wednesday = addDays(monday, 2);
+      final preview = await engineWith().previewDay(wednesday);
+      expect(preview.backlog, hasLength(7), reason: "Tuesday's words");
+
+      await expectPreviewIsTheDay(wednesday);
+    });
+  });
+
   group('the first day', () {
     test('plans daily_new words and nothing before it', () async {
       final plan = await engineWith().openDay(monday);

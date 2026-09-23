@@ -403,6 +403,95 @@ void main() {
     });
   });
 
+  group('#96 all done', () {
+    testWidgets('the day collapses into one row, and tomorrow appears', (
+      tester,
+    ) async {
+      await pump(tester, view: artboardDone());
+
+      expect(find.text('Tag geschafft, Maruf'), findsOneWidget);
+      expect(find.byType(PlanSectionCard), findsNothing);
+      expect(find.text(l10n.todayDoneTitle), findsOneWidget);
+      expect(
+        find.text(
+          '${l10n.todayDoneRevise(10)} · ${l10n.todayDoneNew(7)} · '
+          '${l10n.todayDoneSentences(3)} · ${l10n.todayBacklogCleared}',
+        ),
+        findsOneWidget,
+      );
+      expect(find.text(l10n.todayDoneLine(34, 17, 12)), findsOneWidget);
+    });
+
+    testWidgets("the Tomorrow card reads the preview's numbers", (
+      tester,
+    ) async {
+      await pump(tester, view: artboardDone());
+
+      expect(find.text(l10n.todayTomorrowRevisions(12)), findsOneWidget);
+      expect(find.text(l10n.todayTomorrowNew(7)), findsOneWidget);
+      expect(find.text(l10n.todayGrammarDue(1)), findsOneWidget);
+      expect(
+        find.text(l10n.todayTomorrowContinues(13, 'Wohnen & Haushalt')),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('the ring turns Lime, with a tick for the time', (
+      tester,
+    ) async {
+      await pump(tester, view: artboardDone());
+      final ring = tester.widget<DpProgressRing>(
+        find.descendant(
+          of: find.byType(ProgressRingCard),
+          matching: find.byType(DpProgressRing),
+        ),
+      );
+      expect(ring.colour, DpPalette.light.easy);
+      expect(ring.caption, isNull);
+      expect(ring.captionIcon, Icons.check);
+    });
+
+    testWidgets('the grammar card keeps only the topic', (tester) async {
+      await pump(tester, view: artboardDone());
+      expect(find.text('Konjunktiv II – Höflichkeit'), findsOneWidget);
+      expect(
+        find.text('Könnten Sie …? — polite requests with könnte and würde'),
+        findsNothing,
+      );
+    });
+
+    testWidgets('BR-PLAN-01 a rest day tomorrow says so, not a plan', (
+      tester,
+    ) async {
+      await pump(
+        tester,
+        view: artboardDone(
+          tomorrow: const TomorrowPreview(
+            revise: 6,
+            newWords: 0,
+            grammar: 0,
+            estimate: Duration(minutes: 3),
+            restDay: true,
+          ),
+        ),
+      );
+      expect(find.text(l10n.todayTomorrowRest), findsOneWidget);
+      expect(find.text(l10n.todayTomorrowRevisions(6)), findsNothing);
+      expect(find.text(l10n.todayEstimate(3)), findsNothing);
+    });
+
+    testWidgets('a backlog is not "cleared", and the button offers it', (
+      tester,
+    ) async {
+      await pump(tester, view: artboardDone(backlog: 4));
+      expect(find.textContaining(l10n.todayBacklogCleared), findsNothing);
+      expect(
+        tester.widget<PrimaryActionBar>(find.byType(PrimaryActionBar)).label,
+        l10n.todayBacklogAction(4),
+      );
+    });
+  });
+
   group('FR-T1-05 midnight, on a real plan', () {
     late DateTime now;
 

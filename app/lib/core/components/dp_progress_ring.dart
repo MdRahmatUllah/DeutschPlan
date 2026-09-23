@@ -19,6 +19,7 @@ class DpProgressRing extends StatelessWidget {
     this.colour,
     this.semanticLabel,
     this.showCount = true,
+    this.captionIcon,
   });
 
   final int completed;
@@ -34,6 +35,9 @@ class DpProgressRing extends StatelessWidget {
   /// Defaults to "completed of total". Pass one where the ring means something
   /// other than cards, so a screen reader says what it is counting.
   final String? semanticLabel;
+
+  /// Drawn under the count instead of a [caption]: TodayDone's tick.
+  final IconData? captionIcon;
 
   /// False for Today's 28 dp section rings, which are too small for a number
   /// and sit beside a title that already says it.
@@ -89,6 +93,12 @@ class DpProgressRing extends StatelessWidget {
                               caption!,
                               role: DpTextRole.caption,
                               color: tokens.color.textSecondary,
+                            )
+                          else if (captionIcon != null)
+                            Icon(
+                              captionIcon,
+                              size: size / 6,
+                              color: tokens.color.ink,
                             ),
                         ],
                       ),

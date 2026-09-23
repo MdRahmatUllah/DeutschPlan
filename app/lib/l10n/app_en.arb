@@ -843,5 +843,97 @@
         "type": "int"
       }
     }
+  },
+  "todayGreetingDone": "Tag geschafft",
+  "@todayGreetingDone": {
+    "description": "T1 header once the day is done. German in every UI language, like the date."
+  },
+  "todayDoneLine": "Day {day} · {words} words · {minutes} min",
+  "@todayDoneLine": {
+    "description": "TodayDone ring card: the course day, the words studied today and the minutes spent.",
+    "placeholders": {
+      "day": {
+        "type": "int"
+      },
+      "words": {
+        "type": "int"
+      },
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "todayDoneTitle": "Today · done",
+  "@todayDoneTitle": {
+    "description": "TodayDone collapsed row title."
+  },
+  "todayDoneRevise": "Revise {count}",
+  "@todayDoneRevise": {
+    "description": "TodayDone summary part.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "todayDoneNew": "New {count}",
+  "@todayDoneNew": {
+    "description": "TodayDone summary part.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "todayDoneSentences": "Sentences {count}",
+  "@todayDoneSentences": {
+    "description": "TodayDone summary part.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "todayBacklogCleared": "backlog cleared",
+  "@todayBacklogCleared": {
+    "description": "TodayDone summary part when nothing waits in the backlog."
+  },
+  "todayTomorrow": "Tomorrow",
+  "@todayTomorrow": {
+    "description": "TodayDone card caption."
+  },
+  "todayTomorrowRevisions": "{count, plural, =1{1 revision} other{{count} revisions}}",
+  "@todayTomorrowRevisions": {
+    "description": "TodayDone Tomorrow pill.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "todayTomorrowNew": "{count} new",
+  "@todayTomorrowNew": {
+    "description": "TodayDone Tomorrow pill.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "todayTomorrowContinues": "≈ {minutes} min · {category} continues",
+  "@todayTomorrowContinues": {
+    "description": "TodayDone Tomorrow card: the estimate and the category that carries on. The category is course content.",
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      },
+      "category": {
+        "type": "String"
+      }
+    }
+  },
+  "todayTomorrowRest": "Rest day tomorrow — nothing is scheduled.",
+  "@todayTomorrowRest": {
+    "description": "TodayDone Tomorrow card when tomorrow is a rest day (BR-PLAN-01)."
   }
 }

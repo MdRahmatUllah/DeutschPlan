@@ -38,6 +38,34 @@ class GrammarPreview {
   final String rule;
 }
 
+/// Tomorrow's plan, from a dry run of `openDay(tomorrow)` (#96).
+@immutable
+class TomorrowPreview {
+  const TomorrowPreview({
+    required this.revise,
+    required this.newWords,
+    required this.grammar,
+    required this.estimate,
+    this.category,
+    this.restDay = false,
+  });
+
+  final int revise;
+  final int newWords;
+  final int grammar;
+  final Duration estimate;
+
+  /// The category tomorrow's new words mostly share: "… continues".
+  final String? category;
+
+  /// Tomorrow is a rest day (BR-PLAN-01): nothing is scheduled, so the card
+  /// says that rather than listing optional revisions as a plan.
+  final bool restDay;
+
+  /// Whole minutes, rounded up.
+  int get minutes => (estimate.inSeconds / 60).ceil();
+}
+
 /// Everything T1 draws, read once from the plan and the database.
 ///
 /// A plain value, so the screen is a function of it and the goldens and
@@ -59,6 +87,8 @@ class TodayView {
     required this.stepWords,
     this.sentences = BlockProgress.none,
     this.isStudyDay = true,
+    this.minutes = 0,
+    this.tomorrow,
     this.backlogFrom,
     this.backlogTo,
     this.step,
@@ -88,6 +118,12 @@ class TodayView {
   /// False on a rest day (BR-PLAN-01): nothing is scheduled, and revising is
   /// optional.
   final bool isStudyDay;
+
+  /// Minutes studied today, from `daily_stats`.
+  final int minutes;
+
+  /// Tomorrow's plan, previewed once today is done; null before that.
+  final TomorrowPreview? tomorrow;
 
   /// New words planned on earlier days and still open (BR-PLAN-05), and the
   /// days they were planned for.
@@ -129,6 +165,14 @@ class TodayView {
       revise.total + newToday.total + grammarDue.length + sentences.total;
 
   int get left => total - completed;
+
+  /// TodayDone: a study day whose plan is all done. A day with nothing
+  /// planned — new words paused, nothing due, a finished step — is not "Tag
+  /// geschafft": nothing was done on it.
+  bool get isDone => isStudyDay && total > 0 && left == 0;
+
+  /// The words studied today: TodayDone's "17 words".
+  int get words => revise.total + newToday.total;
 
   /// "Revision starts tomorrow" rather than "nothing due": nothing can be due
   /// on the first day, and saying so explains the empty card.
