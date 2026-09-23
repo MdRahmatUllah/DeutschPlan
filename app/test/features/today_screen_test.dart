@@ -460,6 +460,26 @@ void main() {
       );
     });
 
+    testWidgets('BR-PLAN-01 a rest day tomorrow says so, not a plan', (
+      tester,
+    ) async {
+      await pump(
+        tester,
+        view: artboardDone(
+          tomorrow: const TomorrowPreview(
+            revise: 6,
+            newWords: 0,
+            grammar: 0,
+            estimate: Duration(minutes: 3),
+            restDay: true,
+          ),
+        ),
+      );
+      expect(find.text(l10n.todayTomorrowRest), findsOneWidget);
+      expect(find.text(l10n.todayTomorrowRevisions(6)), findsNothing);
+      expect(find.text(l10n.todayEstimate(3)), findsNothing);
+    });
+
     testWidgets('a backlog is not "cleared", and the button offers it', (
       tester,
     ) async {

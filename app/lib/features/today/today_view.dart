@@ -47,6 +47,7 @@ class TomorrowPreview {
     required this.grammar,
     required this.estimate,
     this.category,
+    this.restDay = false,
   });
 
   final int revise;
@@ -56,6 +57,10 @@ class TomorrowPreview {
 
   /// The category tomorrow's new words mostly share: "… continues".
   final String? category;
+
+  /// Tomorrow is a rest day (BR-PLAN-01): nothing is scheduled, so the card
+  /// says that rather than listing optional revisions as a plan.
+  final bool restDay;
 
   /// Whole minutes, rounded up.
   int get minutes => (estimate.inSeconds / 60).ceil();

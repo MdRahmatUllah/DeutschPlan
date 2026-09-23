@@ -150,5 +150,6 @@
   "todayTomorrow": "আগামীকাল",
   "todayTomorrowRevisions": "{count, plural, other{{count}টি রিভিশন}}",
   "todayTomorrowNew": "{count}টি নতুন",
-  "todayTomorrowContinues": "≈ {minutes} মিনিট · {category} চলবে"
+  "todayTomorrowContinues": "≈ {minutes} মিনিট · {category} চলবে",
+  "todayTomorrowRest": "আগামীকাল বিশ্রামের দিন — কিছু নির্ধারিত নেই।"
 }

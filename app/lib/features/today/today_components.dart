@@ -517,38 +517,42 @@ class TomorrowCard extends StatelessWidget {
             color: tokens.color.textSecondary,
           ),
           const SizedBox(height: 8),
-          Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            children: <Widget>[
-              if (tomorrow.revise > 0)
-                DpPill(
-                  label: l10n.todayTomorrowRevisions(tomorrow.revise),
-                  fill: tokens.color.primary,
-                  ink: tokens.color.onPrimary,
-                ),
-              if (tomorrow.newWords > 0)
-                DpPill(
-                  label: l10n.todayTomorrowNew(tomorrow.newWords),
-                  fill: tokens.color.accent,
-                ),
-              if (tomorrow.grammar > 0)
-                DpPill(
-                  label: l10n.todayGrammarDue(tomorrow.grammar),
-                  fill: tokens.surface.muted,
-                  // Oat is the muted surface, so it takes the page's ink.
-                  ink: tokens.color.ink,
-                ),
-            ],
-          ),
-          const SizedBox(height: 8),
-          DpText(
-            category == null
-                ? l10n.todayEstimate(tomorrow.minutes)
-                : l10n.todayTomorrowContinues(tomorrow.minutes, category),
-            role: DpTextRole.caption,
-            color: tokens.color.textSecondary,
-          ),
+          if (tomorrow.restDay)
+            DpText(l10n.todayTomorrowRest, role: DpTextRole.body)
+          else ...<Widget>[
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: <Widget>[
+                if (tomorrow.revise > 0)
+                  DpPill(
+                    label: l10n.todayTomorrowRevisions(tomorrow.revise),
+                    fill: tokens.color.primary,
+                    ink: tokens.color.onPrimary,
+                  ),
+                if (tomorrow.newWords > 0)
+                  DpPill(
+                    label: l10n.todayTomorrowNew(tomorrow.newWords),
+                    fill: tokens.color.accent,
+                  ),
+                if (tomorrow.grammar > 0)
+                  DpPill(
+                    label: l10n.todayGrammarDue(tomorrow.grammar),
+                    fill: tokens.surface.muted,
+                    // Oat is the muted surface, so it takes the page's ink.
+                    ink: tokens.color.ink,
+                  ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            DpText(
+              category == null
+                  ? l10n.todayEstimate(tomorrow.minutes)
+                  : l10n.todayTomorrowContinues(tomorrow.minutes, category),
+              role: DpTextRole.caption,
+              color: tokens.color.textSecondary,
+            ),
+          ],
         ],
       ),
     );

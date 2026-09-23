@@ -191,6 +191,18 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code, completed_at, 
       );
     });
 
+    test('BR-PLAN-01 it knows when tomorrow is a rest day', () async {
+      // Tomorrow, the 22nd, is a Tuesday: study every day but Tuesday.
+      await db.customStatement(
+        "UPDATE enrollments SET study_days_mask = 125 WHERE sublevel_code = 'A1.1'",
+      );
+      await finishTheDay();
+      container.invalidate(todayViewProvider);
+      final view = await container.read(todayViewProvider.future);
+
+      expect(view.tomorrow?.restDay, isTrue);
+    });
+
     test('it counts the minutes studied today', () async {
       await db.customStatement(
         "INSERT INTO daily_stats (day, seconds) VALUES ('$today', 750)",

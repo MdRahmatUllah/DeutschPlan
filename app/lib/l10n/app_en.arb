@@ -931,5 +931,9 @@
         "type": "String"
       }
     }
+  },
+  "todayTomorrowRest": "Rest day tomorrow — nothing is scheduled.",
+  "@todayTomorrowRest": {
+    "description": "TodayDone Tomorrow card when tomorrow is a rest day (BR-PLAN-01)."
   }
 }
