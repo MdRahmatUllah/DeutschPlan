@@ -1,13 +1,15 @@
 @TestOn('vm')
 library;
 
+import 'dart:convert';
 import 'dart:io';
-import 'dart:ui' show Color;
+import 'dart:typed_data';
+import 'dart:ui' show Color, Size;
 
 import 'package:deutschplan/core/theme/dp_tokens.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-/// The native launch screens — #85.
+/// The native launch screens — #85, and iOS's in #238.
 ///
 /// "Native launch screen and the first Flutter frame are visually identical."
 /// The Android window is painted before any Dart runs, so its colours cannot
@@ -190,6 +192,122 @@ void main() {
           reason: name,
         );
       }
+    });
+  });
+
+  group('the iOS launch screen', () {
+    const assets = 'ios/Runner/Assets.xcassets';
+    const imageSet = '$assets/LaunchImage.imageset';
+
+    Map<String, dynamic> contents(String path) {
+      final file = File('$path/Contents.json');
+      expect(file.existsSync(), isTrue, reason: '$path is missing');
+      return jsonDecode(file.readAsStringSync()) as Map<String, dynamic>;
+    }
+
+    bool isDark(Map<String, dynamic> entry) =>
+        (entry['appearances'] as List<dynamic>? ?? const <dynamic>[]).any(
+          (a) => (a as Map<String, dynamic>)['value'] == 'dark',
+        );
+
+    /// A PNG's pixel size, from its IHDR chunk.
+    Size pngSize(String path) {
+      final bytes = File(path).readAsBytesSync();
+      final data = ByteData.sublistView(bytes, 16, 24);
+      return Size(data.getUint32(0).toDouble(), data.getUint32(4).toDouble());
+    }
+
+    String storyboard() =>
+        File('ios/Runner/Base.lproj/LaunchScreen.storyboard')
+            .readAsStringSync()
+            .replaceAll(RegExp(r'<!--.*?-->', dotAll: true), '');
+
+    test('the field is Lagoon, and the dark palette at night', () {
+      final colours = <bool, Color>{
+        for (final entry
+            in (contents('$assets/SplashField.colorset')['colors']
+                    as List<dynamic>)
+                .cast<Map<String, dynamic>>())
+          isDark(entry): () {
+            final c =
+                (entry['color'] as Map<String, dynamic>)['components']
+                    as Map<String, dynamic>;
+            int channel(String name) => int.parse(c[name] as String);
+            return Color.fromARGB(
+              255,
+              channel('red'),
+              channel('green'),
+              channel('blue'),
+            );
+          }(),
+      };
+
+      expect(colours[false], DpPalette.light.primary);
+      expect(colours[true], DpPalette.dark.primary);
+    });
+
+    test('the storyboard paints it, not the template white', () {
+      final xml = storyboard();
+
+      expect(
+        xml,
+        contains('<color key="backgroundColor" name="SplashField"/>'),
+      );
+      expect(xml, isNot(contains('<color key="backgroundColor" red=')));
+      expect(xml, contains('image="LaunchImage"'));
+    });
+
+    test('the mark is there at every scale, light and dark', () {
+      final images = (contents(imageSet)['images'] as List<dynamic>)
+          .cast<Map<String, dynamic>>();
+      final listed = <String>{
+        for (final image in images)
+          '${isDark(image) ? 'dark' : 'any'} ${image['scale']}',
+      };
+
+      expect(listed, <String>{
+        for (final look in const <String>['any', 'dark'])
+          for (final scale in const <String>['1x', '2x', '3x']) '$look $scale',
+      });
+      for (final image in images) {
+        // The file the golden writes for that look and scale: a dark entry
+        // naming the light PNG would show the light mark on a dark phone.
+        final scale = image['scale'] as String;
+        final expected =
+            'LaunchImage${isDark(image) ? '-dark' : ''}'
+            '${scale == '1x' ? '' : '@$scale'}.png';
+        expect(image['filename'], expected, reason: '${image['scale']}');
+        final path = '$imageSet/$expected';
+        expect(File(path).existsSync(), isTrue, reason: path);
+      }
+    });
+
+    test('and each scale is the 1x image, scaled', () {
+      // The storyboard lays the image out at its 1x size in points; a 2x
+      // that is not twice that is drawn blurred or cropped.
+      final base = pngSize('$imageSet/LaunchImage.png');
+      for (final look in const <String>['', '-dark']) {
+        for (final scale in const <int>[1, 2, 3]) {
+          final name = 'LaunchImage$look${scale == 1 ? '' : '@${scale}x'}.png';
+          expect(
+            pngSize('$imageSet/$name'),
+            base * scale.toDouble(),
+            reason: name,
+          );
+        }
+      }
+
+      final declared = RegExp(
+        r'<image name="LaunchImage" width="(\d+)" height="(\d+)"/>',
+      ).firstMatch(storyboard());
+      expect(declared, isNotNull);
+      expect(
+        Size(
+          double.parse(declared!.group(1)!),
+          double.parse(declared.group(2)!),
+        ),
+        base,
+      );
     });
   });
 }
