@@ -1,4 +1,8 @@
 import 'package:deutschplan/core/components/dp_coach_mark.dart';
+
+import 'dart:io';
+
+import 'package:deutschplan/data/db/content_dao.dart';
 import 'package:deutschplan/data/repositories/setting_keys.dart';
 import 'package:deutschplan/core/components/dp_button.dart';
 import 'package:deutschplan/core/theme/dp_tokens.dart';
@@ -23,6 +27,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 
+import '../db/content_fixture.dart';
 import 'today_fixtures.dart';
 
 /// T1 · Today in progress — #95.
@@ -712,6 +717,15 @@ void main() {
     Future<void> open(WidgetTester tester, {DateTime? at}) async {
       final db = AppDatabase.memory();
       addTearDown(db.close);
+      // The course, as the app always has it attached: Today reads its
+      // example sentences.
+      await tester.runAsync(() async {
+        final directory = Directory.systemTemp.createTempSync('dp_today');
+        final content = ContentFixture.write('${directory.path}/content.db');
+        await db.customStatement(
+          "ATTACH DATABASE '${ContentDao.attachPath(content.file)}' AS c",
+        );
+      });
       final settings = SettingsRepository(db);
       await settings.load();
       addTearDown(settings.dispose);
