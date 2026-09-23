@@ -1444,5 +1444,150 @@
         "type": "String"
       }
     }
+  },
+  "studyBlockBacklog": "Backlog · {index} / {total}",
+  "@studyBlockBacklog": {
+    "description": "T2 top bar in a backlog session (FR-T4-02).",
+    "placeholders": {
+      "index": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "studyBannerBacklog": "Nachholen",
+  "@studyBannerBacklog": {
+    "description": "T2 banner when the backlog block starts. German in every UI language, as the other block banners."
+  },
+  "backlogTitle": "Backlog",
+  "@backlogTitle": {
+    "description": "T4 top bar title."
+  },
+  "backlogCount": "{count, plural, =1{Backlog · 1 word} other{Backlog · {count} words}}",
+  "@backlogCount": {
+    "description": "T4 headline: how many words wait.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "backlogIntroDay": "From {day} — take them when you have time. Nothing here is overdue.",
+  "@backlogIntroDay": {
+    "description": "T4 intro when the words come from one day. day is a weekday, 'Wed'.",
+    "placeholders": {
+      "day": {
+        "type": "String"
+      }
+    }
+  },
+  "backlogIntroTwo": "From {from} and {to} — take them when you have time. Nothing here is overdue.",
+  "@backlogIntroTwo": {
+    "description": "T4 intro for words from two days. from/to are weekdays.",
+    "placeholders": {
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      }
+    }
+  },
+  "backlogIntroRange": "From {from} to {to} — take them when you have time. Nothing here is overdue.",
+  "@backlogIntroRange": {
+    "description": "T4 intro for words from three or more days. from/to are the first and last weekday.",
+    "placeholders": {
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      }
+    }
+  },
+  "backlogStudyAll": "Study all · {count}",
+  "@backlogStudyAll": {
+    "description": "T4: studies every backlog word as one block (FR-T4-02).",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "backlogPause": "Pause new words until this is clear",
+  "@backlogPause": {
+    "description": "T4 switch title (FR-T4-03, BR-PLAN-07)."
+  },
+  "backlogPauseNote": "Revisions continue as normal",
+  "@backlogPauseNote": {
+    "description": "T4 switch note."
+  },
+  "backlogPauseLabel": "Pause new words until the backlog is clear",
+  "@backlogPauseLabel": {
+    "description": "T4 switch, for screen readers."
+  },
+  "backlogDay": "{date} · {count, plural, =1{1 word} other{{count} words}}",
+  "@backlogDay": {
+    "description": "T4 day header, shown in capitals: 'Wed 16 Sep · 7 words'.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "backlogStudyDay": "Study this day",
+  "@backlogStudyDay": {
+    "description": "T4: studies one day's backlog words (FR-T4-02)."
+  },
+  "backlogMarkKnown": "Mark known",
+  "@backlogMarkKnown": {
+    "description": "T4 row action (FR-T4-04): rates the word Easy."
+  },
+  "backlogSuspend": "Suspend",
+  "@backlogSuspend": {
+    "description": "T4 row action (FR-T4-04)."
+  },
+  "backlogRemove": "Remove from course",
+  "@backlogRemove": {
+    "description": "T4 row action (FR-T4-04): suspends the word and completes its plan row."
+  },
+  "backlogSuspended": "Suspended {word}",
+  "@backlogSuspended": {
+    "description": "T4 undo bar after Suspend.",
+    "placeholders": {
+      "word": {
+        "type": "String"
+      }
+    }
+  },
+  "backlogRemoved": "Removed {word} from the course",
+  "@backlogRemoved": {
+    "description": "T4 undo bar after Remove from course.",
+    "placeholders": {
+      "word": {
+        "type": "String"
+      }
+    }
+  },
+  "wordStatusToDo": "To do",
+  "@wordStatusToDo": {
+    "description": "A word's status chip: not met yet."
+  },
+  "wordStatusLearning": "Learning",
+  "@wordStatusLearning": {
+    "description": "A word's status chip: being reviewed."
+  },
+  "wordStatusDone": "Done",
+  "@wordStatusDone": {
+    "description": "A word's status chip: stable (BR-STATUS-02)."
+  },
+  "wordStatusSuspended": "Suspended",
+  "@wordStatusSuspended": {
+    "description": "A word's status chip: suspended (BR-STATUS-03)."
   }
 }

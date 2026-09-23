@@ -4,6 +4,7 @@ import 'package:deutschplan/data/repositories/plan_repository.dart'
 import 'package:deutschplan/data/repositories/rating_service.dart';
 import 'package:deutschplan/data/repositories/word_repository.dart';
 import 'package:deutschplan/domain/fsrs.dart' show Rating;
+import 'package:deutschplan/domain/plan_engine.dart' show planDate;
 import 'package:deutschplan/router/routes.dart';
 import 'package:flutter/foundation.dart' show immutable;
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -14,12 +15,16 @@ part 'study_session.g.dart';
 /// practice set.
 @immutable
 class StudyItem {
-  const StudyItem(this.kind, this.uid);
+  const StudyItem(this.kind, this.uid, {this.planDate});
 
   final SessionBlockKind kind;
 
   /// A word uid, or a topic uid for [SessionBlockKind.grammar].
   final String uid;
+
+  /// A backlog word's own plan day, which its rating completes: it is not
+  /// today's (FR-T4-02).
+  final String? planDate;
 
   @override
   bool operator ==(Object other) =>
@@ -72,8 +77,7 @@ class StudySessionState {
   /// The words are done: what is left, if anything, is grammar, which L15
   /// practises on its own screen. T3's summary comes up here.
   bool get wordsDone =>
-      current?.kind != SessionBlockKind.newWords &&
-      current?.kind != SessionBlockKind.revise;
+      current == null || current!.kind == SessionBlockKind.grammar;
 
   /// The grammar topics still to practise: T3's next step when there are any.
   List<String> get grammarLeft => <String>[
@@ -164,12 +168,24 @@ class StudySession extends _$StudySession {
         // provider: a kept-alive notifier must not hold one open.
         : await PlanRepository(ref.read(appDatabaseProvider)).stillOpen(date);
 
+    // The backlog words still open, each on the day it was planned for.
+    final backlog = <String, String>{};
+    if (args.blocks.any((b) => b.kind == SessionBlockKind.backlog)) {
+      final today = date ?? planDate(now);
+      for (final row in await PlanRepository(
+        ref.read(appDatabaseProvider),
+      ).backlog(today)) {
+        backlog.putIfAbsent(row.wordUid, () => row.planDate);
+      }
+    }
+
     bool wanted(SessionBlockKind kind, String uid) => switch (kind) {
       SessionBlockKind.revise =>
         open == null || open.contains((PlanKind.revise.wire, uid)),
       SessionBlockKind.newWords =>
         open == null || open.contains((PlanKind.newWord.wire, uid)),
       SessionBlockKind.grammar => true,
+      SessionBlockKind.backlog => backlog.containsKey(uid),
     };
 
     // BR-PLAN-02: the blocks in their fixed order, whatever order they came.
@@ -180,7 +196,8 @@ class StudySession extends _$StudySession {
       items: <StudyItem>[
         for (final block in ordered)
           for (final uid in block.uids)
-            if (wanted(block.kind, uid)) StudyItem(block.kind, uid),
+            if (wanted(block.kind, uid))
+              StudyItem(block.kind, uid, planDate: backlog[uid]),
       ],
     );
   }
@@ -217,20 +234,25 @@ class StudySession extends _$StudySession {
     return seconds.clamp(0, 300);
   }
 
+  /// The plan row a write on [item] completes, if any: today's for the
+  /// day's words, its own day's for a backlog word, none outside the plan.
+  ({String? date, PlanKind? kind}) _row(StudyItem item) => switch (item.kind) {
+    SessionBlockKind.backlog => (date: item.planDate, kind: PlanKind.newWord),
+    _ when args.planDate == null => (date: null, kind: null),
+    SessionBlockKind.newWords => (date: args.planDate, kind: PlanKind.newWord),
+    _ => (date: args.planDate, kind: PlanKind.revise),
+  };
+
   /// FR-T2-02: rates the card — one transaction through [RatingService] —
   /// and moves on.
   Future<void> rate(Rating rating) => _act((item) async {
-    final date = args.planDate;
+    final row = _row(item);
     await _rating.rate(
       item.uid,
       rating,
       source: ReviewSource.daily,
-      planDate: date,
-      kind: date == null
-          ? null
-          : item.kind == SessionBlockKind.newWords
-          ? PlanKind.newWord
-          : PlanKind.revise,
+      planDate: row.date,
+      kind: row.kind,
       seconds: _secondsOnCard(),
     );
     advance(switch (rating) {
@@ -255,18 +277,15 @@ class StudySession extends _$StudySession {
   /// FR-T2-04: *I know it* rates the new word Easy (BR-STATUS-04), completes
   /// its plan row and moves on.
   Future<void> knewIt() => _act((item) async {
-    await _rating.markKnown(
-      item.uid,
-      planDate: args.planDate,
-      kind: args.planDate == null ? null : PlanKind.newWord,
-    );
+    final row = _row(item);
+    await _rating.markKnown(item.uid, planDate: row.date, kind: row.kind);
     advance(CardOutcome.knewIt);
   });
 
   /// FR-T2-03: *Skip → backlog* leaves the row open and skipped
   /// (BR-PLAN-06), so it waits in tomorrow's backlog, and moves on.
   Future<void> skip() => _act((item) async {
-    final date = args.planDate;
+    final date = _row(item).date;
     if (date != null) {
       await PlanRepository(ref.read(appDatabaseProvider))
           .skip(planDate: date, uid: item.uid, kind: PlanKind.newWord);
@@ -284,7 +303,7 @@ class StudySession extends _$StudySession {
     if (outcome == null) return;
     _busy = true;
     try {
-      final date = args.planDate;
+      final date = _row(current.items[last]).date;
       if (outcome == CardOutcome.skipped) {
         if (date != null) {
           await PlanRepository(ref.read(appDatabaseProvider)).skip(

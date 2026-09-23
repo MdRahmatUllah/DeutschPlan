@@ -1,4 +1,7 @@
 import 'package:deutschplan/core/providers/app_providers.dart';
+import 'package:deutschplan/data/db/app_database.dart';
+import 'package:deutschplan/data/repositories/word_repository.dart';
+import 'package:deutschplan/features/backlog/backlog_screen.dart';
 import 'package:deutschplan/features/today/today_providers.dart';
 import 'package:deutschplan/features/today/today_view.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
@@ -113,4 +116,40 @@ TodayView artboardRest({int reviseDone = 0}) => TodayView(
 List<Override> todayStub([TodayView? view]) => <Override>[
   todayViewProvider.overrideWith((ref) async => view ?? artboardToday()),
   coachMarkProvider.overrideWithValue(false),
+  // T4 without a database: twenty rows, enough to scroll.
+  backlogProvider.overrideWith(StubBacklog.new),
+  backlogPauseProvider.overrideWith(_StubPause.new),
 ];
+
+/// Twenty backlog words over two days: "das Wort0" … "das Wort19".
+class StubBacklog extends Backlog {
+  @override
+  Stream<List<BacklogWord>> build() => Stream.value(<BacklogWord>[
+    for (var i = 0; i < 20; i++)
+      (
+        planDate: i < 10 ? '2026-09-16' : '2026-09-15',
+        meaning: 'word $i',
+        word: WordWithState(
+          word: Word(
+            uid: 'w$i',
+            sublevelCode: 'A1.1',
+            levelCode: 'A1',
+            seq: i,
+            seqInSublevel: i,
+            article: 'das',
+            german: 'Wort$i',
+            english: 'word $i',
+            searchKey: 'wort$i',
+            searchKeyAlt: 'wort$i',
+          ),
+          state: null,
+          status: WordStatus.todo,
+        ),
+      ),
+  ]);
+}
+
+class _StubPause extends BacklogPause {
+  @override
+  bool build() => false;
+}

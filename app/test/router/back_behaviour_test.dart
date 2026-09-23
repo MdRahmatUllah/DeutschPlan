@@ -1,6 +1,7 @@
 @TestOn('vm')
 library;
 
+import 'package:deutschplan/features/backlog/backlog_screen.dart';
 import 'package:deutschplan/features/today/today_screen.dart';
 
 import '../features/today_fixtures.dart';
@@ -96,7 +97,7 @@ void main() {
   group('Android back inside the shell', () {
     testWidgets('pops a pushed route', (tester) async {
       await pumpApp(tester, at: '/today/backlog');
-      expect(find.text('T4'), findsOneWidget);
+      expect(find.byType(BacklogScreen), findsOneWidget);
 
       await pressBack(tester);
 

@@ -275,9 +275,17 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
               place.index,
               place.size,
             ),
+            SessionBlockKind.backlog => l10n.studyBlockBacklog(
+              place.index,
+              place.size,
+            ),
           };
     final item = session?.current;
     final revealed = session?.revealed ?? false;
+    // A word met for the first time: today's new, or the backlog's.
+    final fresh =
+        item?.kind == SessionBlockKind.newWords ||
+        item?.kind == SessionBlockKind.backlog;
     // Settled before the thumb zone chooses: a cloze card has no *Show
     // meaning*, and a flash of one is a button pressed by mistake.
     final clozeState = item == null || item.kind == SessionBlockKind.grammar
@@ -354,6 +362,7 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
                         null => l10n.studyBannerNew,
                       },
                       SessionBlockKind.grammar => l10n.studyBannerGrammar,
+                      SessionBlockKind.backlog => l10n.studyBannerBacklog,
                     },
                   ),
               ],
@@ -372,15 +381,15 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
-                  if (item.kind == SessionBlockKind.newWords)
+                  if (fresh)
                     StudyNewActions(
                       onKnown: () => _act(item, known: true),
-                      onSkip: () => _act(item, known: false),
+                      // Already in the backlog: nowhere to skip it to.
+                      onSkip: item.kind == SessionBlockKind.backlog
+                          ? null
+                          : () => _act(item, known: false),
                     ),
-                  StudyFrontActions(
-                    onReveal: _reveal,
-                    hint: item.kind != SessionBlockKind.newWords,
-                  ),
+                  StudyFrontActions(onReveal: _reveal, hint: !fresh),
                 ],
               ),
             ),
@@ -538,7 +547,8 @@ class _ProgressStrip extends StatelessWidget {
                         child: ColoredBox(
                           color: switch (blocks[i].kind) {
                             SessionBlockKind.revise => tokens.color.primary,
-                            SessionBlockKind.newWords => tokens.color.accent,
+                            SessionBlockKind.newWords ||
+                            SessionBlockKind.backlog => tokens.color.accent,
                             SessionBlockKind.grammar =>
                               tokens.color.textSecondary.withValues(alpha: 0.5),
                           },
@@ -595,7 +605,8 @@ class _BlockBanner extends StatelessWidget {
                     decoration: BoxDecoration(
                       color: switch (kind) {
                         SessionBlockKind.revise => tokens.color.primary,
-                        SessionBlockKind.newWords => tokens.color.accent,
+                        SessionBlockKind.newWords ||
+                        SessionBlockKind.backlog => tokens.color.accent,
                         SessionBlockKind.grammar => tokens.surface.muted,
                       },
                       borderRadius: BorderRadius.circular(tokens.shape.chip),
@@ -667,7 +678,9 @@ class StudyCardSlot extends ConsumerWidget {
         word: word,
         revealed: revealed,
         onReveal: onReveal,
-        isNew: item.kind == SessionBlockKind.newWords,
+        isNew:
+            item.kind == SessionBlockKind.newWords ||
+            item.kind == SessionBlockKind.backlog,
       );
     }
     return DpSurface(

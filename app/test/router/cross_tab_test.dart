@@ -1,6 +1,7 @@
 @TestOn('vm')
 library;
 
+import 'package:deutschplan/features/backlog/backlog_screen.dart';
 import 'package:deutschplan/features/today/today_screen.dart';
 
 import '../features/today_fixtures.dart';
@@ -170,7 +171,11 @@ void main() {
       await tester.tap(find.text(l10n.tabToday).last);
       await tester.pumpAndSettle();
 
-      expect(find.text('T4'), findsOneWidget, reason: 'Today was reset');
+      expect(
+        find.byType(BacklogScreen),
+        findsOneWidget,
+        reason: 'Today was reset',
+      );
     });
   });
 
