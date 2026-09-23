@@ -1,6 +1,10 @@
 @TestOn('vm')
 library;
 
+import 'package:deutschplan/features/today/today_screen.dart';
+
+import '../features/today_fixtures.dart';
+
 import 'dart:io';
 
 import 'package:deutschplan/core/theme/app_theme.dart';
@@ -71,6 +75,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: <Override>[
+          ...todayStub(),
           settingsProvider.overrideWithValue(settings),
           meaningSampleProvider.overrideWith((ref) async => null),
           courseStepsProvider.overrideWith(
@@ -179,7 +184,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(location(), studyFallback);
-      expect(find.text('T1'), findsOneWidget);
+      expect(find.byType(TodayScreen), findsOneWidget);
     });
 
     testWidgets('an empty session is no session', (tester) async {
@@ -313,7 +318,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(location(), '/today');
-      expect(find.text('T1'), findsOneWidget);
+      expect(find.byType(TodayScreen), findsOneWidget);
     });
 
     testWidgets('placement too', (tester) async {

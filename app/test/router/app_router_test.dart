@@ -1,6 +1,11 @@
 @TestOn('vm')
 library;
 
+import 'package:deutschplan/features/today/today_view.dart';
+import 'package:deutschplan/features/today/today_screen.dart';
+
+import '../features/today_fixtures.dart';
+
 import 'dart:io';
 
 import 'package:deutschplan/core/providers/app_providers.dart';
@@ -32,6 +37,9 @@ import 'package:material_ui/material_ui.dart';
 /// not to the router should fail, and a test that copied the table would only
 /// ever agree with itself.
 void main() {
+  // Today's first line, which scrolls away first.
+  final todayTop = germanDate(artboardToday().date);
+
   late GoRouter router;
 
   /// What a real caller passes to the routes that take one. `/study` is
@@ -57,6 +65,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: <Override>[
+          ...todayStub(),
           languagesProvider.overrideWith(
             () => _FixedLanguages(MeaningLanguage.english),
           ),
@@ -155,22 +164,22 @@ void main() {
   group('the four branches', () {
     testWidgets('start on Today', (tester) async {
       await pumpApp(tester);
-      expect(find.text('T1'), findsOneWidget);
+      expect(find.byType(TodayScreen), findsOneWidget);
     });
 
     testWidgets('each tab shows its own root', (tester) async {
       await pumpApp(tester);
       final l10n = await AppLocalizations.delegate.load(supportedLocales.first);
 
-      for (final pair in <(String, String)>[
-        (l10n.tabLearn, 'L1'),
-        (l10n.tabSearch, 'R1'),
-        (l10n.tabMe, 'M1'),
-        (l10n.tabToday, 'T1'),
+      for (final pair in <(String, Finder)>[
+        (l10n.tabLearn, find.text('L1')),
+        (l10n.tabSearch, find.text('R1')),
+        (l10n.tabMe, find.text('M1')),
+        (l10n.tabToday, find.byType(TodayScreen)),
       ]) {
         await tester.tap(find.text(pair.$1).last);
         await tester.pumpAndSettle();
-        expect(find.text(pair.$2), findsOneWidget, reason: pair.$1);
+        expect(pair.$2, findsOneWidget, reason: pair.$1);
       }
     });
 
@@ -185,7 +194,7 @@ void main() {
       final l10n = await AppLocalizations.delegate.load(supportedLocales.first);
       await tester.tap(find.text(l10n.tabToday).last);
       await tester.pumpAndSettle();
-      expect(find.text('T1'), findsOneWidget);
+      expect(find.byType(TodayScreen), findsOneWidget);
 
       await tester.tap(find.text(l10n.tabLearn).last);
       await tester.pumpAndSettle();
@@ -194,9 +203,9 @@ void main() {
 
     testWidgets('a tab keeps its scroll position', (tester) async {
       await pumpApp(tester);
-      await tester.drag(find.text('T1 row 1'), const Offset(0, -400));
+      await tester.drag(find.text(todayTop), const Offset(0, -400));
       await tester.pumpAndSettle();
-      expect(find.text('T1 row 1'), findsNothing);
+      expect(find.text(todayTop), findsNothing);
 
       final l10n = await AppLocalizations.delegate.load(supportedLocales.first);
       await tester.tap(find.text(l10n.tabMe).last);
@@ -205,7 +214,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(
-        find.text('T1 row 1'),
+        find.text(todayTop),
         findsNothing,
         reason: 'the branch scrolled back to the top',
       );
@@ -218,14 +227,14 @@ void main() {
 
     testWidgets('scrolls to top', (tester) async {
       await pumpApp(tester);
-      await tester.drag(find.text('T1 row 1'), const Offset(0, -400));
+      await tester.drag(find.text(todayTop), const Offset(0, -400));
       await tester.pumpAndSettle();
-      expect(find.text('T1 row 1'), findsNothing);
+      expect(find.text(todayTop), findsNothing);
 
       await tester.tap(find.text(await tabLabel()).last);
       await tester.pumpAndSettle();
 
-      expect(find.text('T1 row 1'), findsOneWidget);
+      expect(find.text(todayTop), findsOneWidget);
     });
 
     testWidgets('does not pop while there is still somewhere to scroll', (
@@ -252,7 +261,7 @@ void main() {
       await tester.tap(find.text(await tabLabel()).last);
       await tester.pumpAndSettle();
 
-      expect(find.text('T1'), findsOneWidget);
+      expect(find.byType(TodayScreen), findsOneWidget);
       expect(find.text('T4'), findsNothing);
     });
 
@@ -267,7 +276,7 @@ void main() {
 
       await tester.tap(find.text(await tabLabel()).last);
       await tester.pumpAndSettle();
-      expect(find.text('T1'), findsOneWidget);
+      expect(find.byType(TodayScreen), findsOneWidget);
     });
 
     testWidgets('it scrolls the tab that is showing, not the one behind', (
@@ -287,13 +296,13 @@ void main() {
 
       await tester.tap(find.text(l10n.tabToday).last);
       await tester.pumpAndSettle();
-      await tester.drag(find.text('T1 row 1'), const Offset(0, -400));
+      await tester.drag(find.text(todayTop), const Offset(0, -400));
       await tester.pumpAndSettle();
 
       // Re-tap Today. Today comes back to the top; Learn must not move.
       await tester.tap(find.text(l10n.tabToday).last);
       await tester.pumpAndSettle();
-      expect(find.text('T1 row 1'), findsOneWidget);
+      expect(find.text(todayTop), findsOneWidget);
 
       await tester.tap(find.text(l10n.tabLearn).last);
       await tester.pumpAndSettle();
@@ -311,7 +320,7 @@ void main() {
       await tester.tap(find.text(await tabLabel()).last);
       await tester.pumpAndSettle();
 
-      expect(find.text('T1'), findsOneWidget);
+      expect(find.byType(TodayScreen), findsOneWidget);
       expect(location(), '/today');
     });
   });
@@ -428,7 +437,7 @@ void main() {
 
       expect(location(), fallbackLocation);
       expect(find.byType(AppShell), findsOneWidget);
-      expect(find.text('T1'), findsOneWidget);
+      expect(find.byType(TodayScreen), findsOneWidget);
     });
 
     testWidgets('so does a half-right one', (tester) async {

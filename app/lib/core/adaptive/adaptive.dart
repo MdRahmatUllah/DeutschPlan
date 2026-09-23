@@ -101,9 +101,25 @@ class AdaptiveScaffold extends StatelessWidget {
           if (title != null || leading != null || actions.isNotEmpty)
             SafeArea(bottom: false, child: _bar(context)),
           Expanded(
-            child: SafeArea(top: false, bottom: bottomBar == null, child: body),
+            child: bottomBar == null
+                ? SafeArea(top: false, child: body)
+                // The bar below takes the system inset, so the body — and a
+                // tab's own scaffold inside it — must not take it again.
+                : MediaQuery.removePadding(
+                    context: context,
+                    removeBottom: true,
+                    child: body,
+                  ),
           ),
-          if (bottomBar != null) SafeArea(top: false, child: bottomBar!),
+          if (bottomBar != null)
+            // Without the top inset: the body runs edge to edge, so the status
+            // bar's height reaches down here, and Material's NavigationBar
+            // pads its own top by it — a status bar's worth of empty bar.
+            MediaQuery.removePadding(
+              context: context,
+              removeTop: true,
+              child: SafeArea(top: false, child: bottomBar!),
+            ),
         ],
       ),
     );
@@ -532,20 +548,74 @@ class AdaptiveNavBar extends StatelessWidget {
       );
     }
 
-    return NavigationBar(
-      selectedIndex: currentIndex,
+    // The artboards' bar: a hairline on top, a Lagoon pill under the current
+    // tab, and 12 pt labels — ink when chosen, Slate otherwise.
+    final label = Theme.of(context).textTheme.labelSmall!;
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        border: Border(top: BorderSide(color: tokens.surface.outline)),
+      ),
+      child: NavigationBar(
+        selectedIndex: currentIndex,
+        backgroundColor: tokens.surface.card,
+        indicatorColor: tokens.color.primary,
+        labelTextStyle: WidgetStateProperty.resolveWith(
+          (states) => states.contains(WidgetState.selected)
+              ? label.copyWith(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                  color: tokens.color.ink,
+                )
+              : label.copyWith(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                  color: tokens.color.textSecondary,
+                ),
+        ),
+        // Material swallows a tap on the current destination; the shell's
+        // re-tap behaviour depends on hearing it, so this is wired directly.
+        onDestinationSelected: onSelected,
+        destinations: <Widget>[
+          for (final destination in destinations)
+            NavigationDestination(
+              icon: Icon(destination.icon, color: tokens.color.ink),
+              // On the bright pill, the ink made for Lagoon.
+              selectedIcon: Icon(
+                destination.selectedIcon,
+                color: tokens.color.onPrimary,
+              ),
+              label: destination.label,
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Pull-to-refresh round a scrollable.
+///
+/// The scrollable has to be able to scroll with nothing to scroll —
+/// [AlwaysScrollableScrollPhysics] — or a short screen cannot be pulled.
+// ponytail: Material's indicator on both chromes. iOS's own is a sliver
+// control, which needs the screen built from slivers; do it with iOS's pass.
+class AdaptiveRefresh extends StatelessWidget {
+  const AdaptiveRefresh({
+    required this.onRefresh,
+    required this.child,
+    super.key,
+  });
+
+  final Future<void> Function() onRefresh;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    final tokens = context.tokens;
+    return RefreshIndicator(
+      onRefresh: onRefresh,
+      color: tokens.color.ink,
       backgroundColor: tokens.surface.card,
-      // Material swallows a tap on the current destination; the shell's
-      // re-tap behaviour depends on hearing it, so this is wired directly.
-      onDestinationSelected: onSelected,
-      destinations: <Widget>[
-        for (final destination in destinations)
-          NavigationDestination(
-            icon: Icon(destination.icon),
-            selectedIcon: Icon(destination.selectedIcon),
-            label: destination.label,
-          ),
-      ],
+      child: child,
     );
   }
 }

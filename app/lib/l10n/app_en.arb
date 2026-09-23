@@ -576,5 +576,245 @@
   "placementChooseMyself": "Choose myself",
   "@placementChooseMyself": {
     "description": "S3 result: back to setup with nothing chosen."
+  },
+  "todayGreetingMorning": "Guten Morgen",
+  "@todayGreetingMorning": {
+    "description": "T1 header greeting before 11:00. German in every UI language, like the date above it."
+  },
+  "todayGreetingDay": "Guten Tag",
+  "@todayGreetingDay": {
+    "description": "T1 header greeting 11:00 to 18:00. German in every UI language."
+  },
+  "todayGreetingEvening": "Guten Abend",
+  "@todayGreetingEvening": {
+    "description": "T1 header greeting from 18:00. German in every UI language."
+  },
+  "todayGreetingNamed": "{greeting}, {name}",
+  "@todayGreetingNamed": {
+    "description": "T1 header: the German greeting and the learner's name.",
+    "placeholders": {
+      "greeting": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "todayStreak": "{count, plural, =1{1-day streak} other{{count}-day streak}}",
+  "@todayStreak": {
+    "description": "T1 streak pill, for screen readers; opens Progress.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "todaySettings": "Settings",
+  "@todaySettings": {
+    "description": "T1 gear button, for screen readers."
+  },
+  "todayEstimate": "≈ {minutes} min",
+  "@todayEstimate": {
+    "description": "T1 ring caption: time left today (BR-PLAN-09).",
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "todayRing": "{done} of {total} done today",
+  "@todayRing": {
+    "description": "T1 ring, for screen readers.",
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "todayCourseDay": "Day {day} of your course",
+  "@todayCourseDay": {
+    "description": "T1 ring card, beside the ring.",
+    "placeholders": {
+      "day": {
+        "type": "int"
+      }
+    }
+  },
+  "todayStepWords": "{done} of {total} words in {step}",
+  "@todayStepWords": {
+    "description": "T1 ring card, under the mini bar: words done in the active step.",
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      },
+      "step": {
+        "type": "String"
+      }
+    }
+  },
+  "todayRevise": "Revise · {count}",
+  "@todayRevise": {
+    "description": "T1 section card title.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "todayReviseDue": "{count, plural, =1{1 word · due today} other{{count} words · due today}}",
+  "@todayReviseDue": {
+    "description": "T1 Revise card subtitle.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "todayReviseFirstDay": "Revision starts tomorrow",
+  "@todayReviseFirstDay": {
+    "description": "T1 Revise card on the first day, when nothing can be due yet."
+  },
+  "todayReviseNone": "Nothing due today",
+  "@todayReviseNone": {
+    "description": "T1 Revise card when no word is due."
+  },
+  "todayNew": "New today · {count}",
+  "@todayNew": {
+    "description": "T1 section card title.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "todayNewCategory": "{count} new · {category}",
+  "@todayNewCategory": {
+    "description": "T1 New card subtitle. The category is course content.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "category": {
+        "type": "String"
+      }
+    }
+  },
+  "todayNewPlain": "{count} new",
+  "@todayNewPlain": {
+    "description": "T1 New card subtitle when the words have no category.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "todayBacklog": "Backlog · {count}",
+  "@todayBacklog": {
+    "description": "T1 section card title; opens T4.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "todayBacklogRange": "{count} waiting from {from}–{to}",
+  "@todayBacklogRange": {
+    "description": "T1 Backlog card: the weekdays the waiting words were planned for.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      }
+    }
+  },
+  "todayBacklogDay": "{count} waiting from {day}",
+  "@todayBacklogDay": {
+    "description": "T1 Backlog card when every waiting word is from one day.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "day": {
+        "type": "String"
+      }
+    }
+  },
+  "todayGrammarDue": "Grammar due · {count}",
+  "@todayGrammarDue": {
+    "description": "T1 section card title; opens grammar practice.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "todayGrammarDueTopics": "{count, plural, =1{1 topic to practise} other{{count} topics to practise}}",
+  "@todayGrammarDueTopics": {
+    "description": "T1 Grammar due card subtitle.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "todaySentences": "Practice sentences · {count}",
+  "@todaySentences": {
+    "description": "T1 section card title; opens T5.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "todaySentencesKnown": "{count, plural, =1{1 sentence from words you know} other{{count} sentences from words you know}}",
+  "@todaySentencesKnown": {
+    "description": "T1 Practice sentences card subtitle.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "todayGrammarWeek": "Grammar this week",
+  "@todayGrammarWeek": {
+    "description": "T1 grammar card caption."
+  },
+  "todayStart": "{count, plural, =1{Start today · 1 card} other{Start today · {count} cards}}",
+  "@todayStart": {
+    "description": "T1 primary button before anything is done (FR-T1-03).",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "todayContinue": "Continue · {count} left",
+  "@todayContinue": {
+    "description": "T1 primary button once a session has started (FR-T1-03).",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "todayAllDone": "All done — see you tomorrow",
+  "@todayAllDone": {
+    "description": "T1 primary button when nothing is left (FR-T1-03)."
+  },
+  "todayLoadFailed": "Today's plan did not load",
+  "@todayLoadFailed": {
+    "description": "T1 error panel title."
   }
 }

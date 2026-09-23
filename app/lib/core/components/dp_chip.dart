@@ -116,16 +116,18 @@ class DpChip extends StatelessWidget {
         ? height / 2
         : tokens.shape.chip;
 
+    // Sun is bright in every mode, so what sits on it is the dark ink; the
+    // page's ink is light under dark and would vanish into it.
+    final ink = fill == tokens.color.accent
+        ? tokens.color.onAccent
+        : tokens.color.ink;
+
     final fallback = defaultIcon;
     final glyph =
         icon ??
         (fallback == null
             ? null
-            : Icon(
-                fallback.icon,
-                size: fallback.size,
-                color: tokens.color.ink,
-              ));
+            : Icon(fallback.icon, size: fallback.size, color: ink));
     final leading = kind == DpChipKind.webLink ? null : glyph;
     final trailing = kind == DpChipKind.webLink ? glyph : null;
 
@@ -150,7 +152,7 @@ class DpChip extends StatelessWidget {
             leading,
             SizedBox(width: tokens.spacing.xs),
           ],
-          DpText(label, role: role, weight: weight),
+          DpText(label, role: role, weight: weight, color: ink),
           // The web-link mark trails its label, as the artboard draws it.
           if (trailing != null) ...<Widget>[
             SizedBox(width: tokens.spacing.xs),

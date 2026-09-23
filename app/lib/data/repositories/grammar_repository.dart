@@ -96,6 +96,15 @@ class GrammarRepository extends DatabaseAccessor<AppDatabase>
     status: WordStatus.parse(derivedStatus),
   );
 
+  /// [watchStep], once.
+  Future<List<TopicWithState>> step(String code) async => <TopicWithState>[
+    for (final row in await topicsWithStateForStep(
+      _settings.read(SettingKeys.doneStabilityDays).toDouble(),
+      code,
+    ).get())
+      _topic(row.g, row.s, row.derivedStatus),
+  ];
+
   Stream<List<TopicWithState>> watchStep(String code) => _watchTopics(
     (days) => topicsWithStateForStep(days, code).watch(),
     (row) => _topic(row.g, row.s, row.derivedStatus),

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:deutschplan/features/today/today_screen.dart';
 import 'package:deutschplan/core/providers/app_providers.dart';
 import 'package:deutschplan/core/theme/dp_tokens.dart';
 import 'package:deutschplan/data/db/app_database.dart';
@@ -54,7 +55,11 @@ void main() {
     final l10n = await AppLocalizations.delegate.load(supportedLocales.first);
     expect(find.byType(AppShell), findsOneWidget);
     expect(find.text(l10n.tabToday), findsWidgets);
-    expect(find.text('T1'), findsOneWidget, reason: 'Today is the first tab');
+    expect(
+      find.byType(TodayScreen),
+      findsOneWidget,
+      reason: 'Today is the first tab',
+    );
   });
 
   testWidgets('the chosen mode is what the app renders', (tester) async {
@@ -143,7 +148,7 @@ void main() {
     final second = await pumpApp(tester);
     expect(identical(first.router, second.router), isFalse);
     expect(
-      find.text('T1'),
+      find.byType(TodayScreen),
       findsOneWidget,
       reason: 'the second app inherited the first one’s stack',
     );

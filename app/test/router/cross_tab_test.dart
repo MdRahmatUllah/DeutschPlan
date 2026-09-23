@@ -1,6 +1,11 @@
 @TestOn('vm')
 library;
 
+import 'package:deutschplan/features/today/today_screen.dart';
+
+import '../features/today_fixtures.dart';
+
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:deutschplan/core/theme/app_theme.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
 import 'package:deutschplan/main.dart'
@@ -32,11 +37,14 @@ void main() {
     addTearDown(router.dispose);
 
     await tester.pumpWidget(
-      MaterialApp.router(
-        routerConfig: router,
-        theme: AppTheme.light(),
-        localizationsDelegates: appLocalizationsDelegates,
-        supportedLocales: supportedLocales,
+      ProviderScope(
+        overrides: todayStub(),
+        child: MaterialApp.router(
+          routerConfig: router,
+          theme: AppTheme.light(),
+          localizationsDelegates: appLocalizationsDelegates,
+          supportedLocales: supportedLocales,
+        ),
       ),
     );
     await tester.pumpAndSettle();
@@ -61,7 +69,7 @@ void main() {
     testWidgets('T1 -> L2 switches the tab and opens the step', (tester) async {
       // Today's step chip.
       await pumpApp(tester);
-      expect(find.text('T1'), findsOneWidget);
+      expect(find.byType(TodayScreen), findsOneWidget);
 
       await jump(tester, const LearnStepRoute(code: 'A1.1'));
 

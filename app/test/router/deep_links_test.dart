@@ -1,6 +1,12 @@
 @TestOn('vm')
 library;
 
+import 'package:deutschplan/features/today/today_screen.dart';
+
+import '../features/today_fixtures.dart';
+
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import 'dart:io';
 
 import 'package:deutschplan/core/theme/app_theme.dart';
@@ -134,11 +140,14 @@ void main() {
       addTearDown(router.dispose);
 
       await tester.pumpWidget(
-        MaterialApp.router(
-          routerConfig: router,
-          theme: AppTheme.light(),
-          localizationsDelegates: appLocalizationsDelegates,
-          supportedLocales: supportedLocales,
+        ProviderScope(
+          overrides: todayStub(),
+          child: MaterialApp.router(
+            routerConfig: router,
+            theme: AppTheme.light(),
+            localizationsDelegates: appLocalizationsDelegates,
+            supportedLocales: supportedLocales,
+          ),
         ),
       );
       await tester.pumpAndSettle();
@@ -171,7 +180,7 @@ void main() {
       await openLink(tester, 'deutschplan://today');
 
       expect(location(), '/today');
-      expect(find.text('T1'), findsOneWidget);
+      expect(find.byType(TodayScreen), findsOneWidget);
     });
 
     testWidgets('a step link opens the step', (tester) async {
@@ -226,7 +235,7 @@ void main() {
       await openLink(tester, 'deutschplan://nonsense/from/an/old/build');
 
       expect(location(), fallbackLocation);
-      expect(find.text('T1'), findsOneWidget);
+      expect(find.byType(TodayScreen), findsOneWidget);
       expect(find.byType(AppShell), findsOneWidget);
     });
 
@@ -241,11 +250,14 @@ void main() {
       );
       addTearDown(router.dispose);
       await tester.pumpWidget(
-        MaterialApp.router(
-          routerConfig: router,
-          theme: AppTheme.light(),
-          localizationsDelegates: appLocalizationsDelegates,
-          supportedLocales: supportedLocales,
+        ProviderScope(
+          overrides: todayStub(),
+          child: MaterialApp.router(
+            routerConfig: router,
+            theme: AppTheme.light(),
+            localizationsDelegates: appLocalizationsDelegates,
+            supportedLocales: supportedLocales,
+          ),
         ),
       );
       await tester.pumpAndSettle();
@@ -287,11 +299,14 @@ void main() {
       );
       addTearDown(router.dispose);
       await tester.pumpWidget(
-        MaterialApp.router(
-          routerConfig: router,
-          theme: AppTheme.light(),
-          localizationsDelegates: appLocalizationsDelegates,
-          supportedLocales: supportedLocales,
+        ProviderScope(
+          overrides: todayStub(),
+          child: MaterialApp.router(
+            routerConfig: router,
+            theme: AppTheme.light(),
+            localizationsDelegates: appLocalizationsDelegates,
+            supportedLocales: supportedLocales,
+          ),
         ),
       );
       await tester.pumpAndSettle();

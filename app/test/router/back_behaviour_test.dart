@@ -1,6 +1,12 @@
 @TestOn('vm')
 library;
 
+import 'package:deutschplan/features/today/today_screen.dart';
+
+import '../features/today_fixtures.dart';
+
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import 'dart:io';
 
 import 'package:deutschplan/core/theme/app_theme.dart';
@@ -33,11 +39,14 @@ void main() {
     addTearDown(router.dispose);
 
     await tester.pumpWidget(
-      MaterialApp.router(
-        routerConfig: router,
-        theme: AppTheme.light(),
-        localizationsDelegates: appLocalizationsDelegates,
-        supportedLocales: supportedLocales,
+      ProviderScope(
+        overrides: todayStub(),
+        child: MaterialApp.router(
+          routerConfig: router,
+          theme: AppTheme.light(),
+          localizationsDelegates: appLocalizationsDelegates,
+          supportedLocales: supportedLocales,
+        ),
       ),
     );
     await tester.pumpAndSettle();
@@ -91,7 +100,7 @@ void main() {
 
       await pressBack(tester);
 
-      expect(find.text('T1'), findsOneWidget);
+      expect(find.byType(TodayScreen), findsOneWidget);
       expect(location(), '/today');
     });
 
@@ -101,7 +110,7 @@ void main() {
 
       await pressBack(tester);
 
-      expect(find.text('T1'), findsOneWidget);
+      expect(find.byType(TodayScreen), findsOneWidget);
     });
 
     testWidgets('pops within the tab before leaving it', (tester) async {
@@ -114,7 +123,7 @@ void main() {
       expect(find.text('M1'), findsOneWidget, reason: 'it left the tab early');
 
       await pressBack(tester);
-      expect(find.text('T1'), findsOneWidget);
+      expect(find.byType(TodayScreen), findsOneWidget);
     });
 
     testWidgets('a deep stack unwinds one route at a time', (tester) async {
@@ -128,7 +137,7 @@ void main() {
       expect(find.text('M1'), findsOneWidget);
 
       await pressBack(tester);
-      expect(find.text('T1'), findsOneWidget);
+      expect(find.byType(TodayScreen), findsOneWidget);
     });
   });
 
