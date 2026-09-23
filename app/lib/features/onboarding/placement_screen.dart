@@ -441,7 +441,9 @@ class PlacementResultView extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: <Widget>[
                     DpSurface(
-                      selected: true,
+                      // The paper card has the artboard's 2 px ink edge; the
+                      // glass one is a plain panel.
+                      selected: !tokens.isGlass,
                       padding: const EdgeInsets.fromLTRB(20, 24, 20, 24),
                       child: Column(
                         children: <Widget>[
@@ -451,6 +453,7 @@ class PlacementResultView extends StatelessWidget {
                               result.answered,
                             ),
                             strong: strong(result.correct, result.answered),
+                            score: true,
                           ),
                           const SizedBox(height: 14),
                           DpText(
@@ -540,25 +543,34 @@ class PlacementResultView extends StatelessWidget {
 
 /// A score pill: Lime when the area went well, Sun when it went partly.
 class _Pill extends StatelessWidget {
-  const _Pill({required this.label, required this.strong});
+  const _Pill({required this.label, required this.strong, this.score = false});
 
   final String label;
   final bool strong;
+
+  /// The overall score's pill, which the artboard draws a size smaller.
+  final bool score;
 
   @override
   Widget build(BuildContext context) {
     final tokens = context.tokens;
     return Container(
       constraints: const BoxConstraints(minHeight: 24),
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
+      padding: EdgeInsets.symmetric(horizontal: score ? 8 : 10, vertical: 2),
       decoration: BoxDecoration(
         color: strong ? tokens.color.easy : tokens.color.accent,
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: tokens.color.ink, width: 1.5),
+        borderRadius: BorderRadius.circular(score ? 8 : 14),
+        // Under glass the pills take the panel's edge, as the artboard does.
+        border: tokens.isGlass
+            ? Border.all(
+                color: tokens.surface.outline,
+                width: tokens.surface.outlineWidth,
+              )
+            : Border.all(color: tokens.color.ink, width: 1.5),
       ),
       child: DpText(
         label,
-        role: DpTextRole.label,
+        role: score ? DpTextRole.caption : DpTextRole.label,
         weight: 700,
         // Lime and Sun are bright in every mode, so the ink on them is the
         // dark one — the page ink under dark mode would be light on light.

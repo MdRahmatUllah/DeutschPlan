@@ -116,8 +116,8 @@ void main() {
   }
 
   /// A check that settles on A2.2 after nine answers.
-  Future<void> finish(WidgetTester tester) async {
-    await pump(tester);
+  Future<void> finish(WidgetTester tester, {DpMode mode = DpMode.light}) async {
+    await pump(tester, mode: mode);
     for (final right in <bool>[
       true, true, true, true, true, true, true, false, true, //
     ]) {
@@ -236,6 +236,61 @@ void main() {
         );
       }
     });
+
+    for (final mode in <DpMode>[DpMode.light, DpMode.glass]) {
+      testWidgets("draws the ${mode.name} artboard's card and pills", (
+        tester,
+      ) async {
+        // Paper: a 2 px ink card, pills edged in ink. Glass: a plain panel,
+        // pills edged like it — a selected glass card would ring in Lagoon.
+        await finish(tester, mode: mode);
+        final tokens = tester.element(find.byType(PlacementScreen)).tokens;
+        final glass = mode == DpMode.glass;
+
+        final card = tester.widget<DpSurface>(
+          find
+              .ancestor(
+                of: find.text(l10n.placementRationale('A2.2')),
+                matching: find.byType(DpSurface),
+              )
+              .first,
+        );
+        expect(card.selected, !glass);
+
+        BoxDecoration pill(String label) =>
+            tester
+                    .widget<Container>(
+                      find
+                          .ancestor(
+                            of: find.text(label),
+                            matching: find.byType(Container),
+                          )
+                          .first,
+                    )
+                    .decoration!
+                as BoxDecoration;
+        final score = pill(l10n.placementScore(8, 9));
+        final articles = tester
+            .state<PlacementScreenState>(find.byType(PlacementScreen))
+            .currentResult!
+            .areas
+            .singleWhere((a) => a.area == PlacementSession.articles);
+        final area = pill(
+          l10n.placementAreaArticles(articles.correct, articles.total),
+        );
+        expect(
+          (score.border! as Border).top.color,
+          glass ? tokens.surface.outline : tokens.color.ink,
+        );
+        expect(
+          (area.border! as Border).top.color,
+          (score.border! as Border).top.color,
+        );
+        // The score pill is the artboard's smaller one.
+        expect(score.borderRadius, BorderRadius.circular(8));
+        expect(area.borderRadius, BorderRadius.circular(14));
+      });
+    }
 
     test("Lime is the artboard's 9 / 10 and 5 / 5; its 4 / 5 is Sun", () {
       expect(PlacementResultView.strong(9, 10), isTrue);
