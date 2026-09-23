@@ -147,17 +147,30 @@ class _Backlog extends ConsumerWidget {
   final String today;
 
   /// FR-T4-02: exactly these words, as one "Backlog" block.
-  void _study(BuildContext context, List<BacklogWord> words) => StudyRoute.open(
-    context,
-    SessionArgs(
-      planDate: today,
-      blocks: <SessionBlock>[
-        SessionBlock(SessionBlockKind.backlog, <String>[
-          for (final row in words) row.word.word.uid,
-        ]),
-      ],
-    ),
-  );
+  /// The words there are to study: a suspended one stays listed, as
+  /// FR-T4-04 says, but is not studied (BR-STATUS-03).
+  static List<BacklogWord> _open(List<BacklogWord> words) => <BacklogWord>[
+    for (final row in words)
+      if (row.word.status != WordStatus.suspended) row,
+  ];
+
+  /// FR-T4-02: exactly these words, as one "Backlog" block. Null when none
+  /// of them can be studied, so the button holds.
+  VoidCallback? _study(BuildContext context, List<BacklogWord> words) {
+    final open = _open(words);
+    if (open.isEmpty) return null;
+    return () => StudyRoute.open(
+      context,
+      SessionArgs(
+        planDate: today,
+        blocks: <SessionBlock>[
+          SessionBlock(SessionBlockKind.backlog, <String>[
+            for (final row in open) row.word.word.uid,
+          ]),
+        ],
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -247,8 +260,8 @@ class _Backlog extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
                   DpButton(
-                    label: l10n.backlogStudyAll(rows.length),
-                    onPressed: () => _study(context, rows),
+                    label: l10n.backlogStudyAll(_open(rows).length),
+                    onPressed: _study(context, rows),
                   ),
                   const SizedBox(height: 12),
                   const _PauseRow(),
@@ -284,7 +297,7 @@ class _Backlog extends ConsumerWidget {
                       label: l10n.backlogStudyDay,
                       kind: DpButtonKind.text,
                       expand: false,
-                      onPressed: () => _study(context, words),
+                      onPressed: _study(context, words),
                     ),
                   ],
                 ),

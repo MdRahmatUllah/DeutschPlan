@@ -213,6 +213,21 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code, skipped,
       );
     });
 
+    testWidgets('a suspended word is listed but not studied', (tester) async {
+      await pump(tester);
+      await tester.longPress(word('das Haus'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.widgetWithText(DpButton, l10n.backlogSuspend));
+      await settle(tester);
+      await tester.pump(const Duration(seconds: 5));
+      await tester.pumpAndSettle();
+
+      expect(word('das Haus'), findsOneWidget);
+      await tester.tap(find.text(l10n.backlogStudyAll(2)));
+      await tester.pumpAndSettle();
+      expect(find.text('T2 $today backlog $strasse,$tuer'), findsOneWidget);
+    });
+
     testWidgets("Study this day: that day's words only", (tester) async {
       await pump(tester);
       await tester.tap(find.text(l10n.backlogStudyDay).last);
