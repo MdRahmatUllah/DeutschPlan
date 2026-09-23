@@ -207,5 +207,9 @@
   "studyPronounce": "উচ্চারণ শুনুন",
   "studyCopied": "{word} কপি হয়েছে",
   "studyCopyHint": "শব্দটি কপি করুন",
-  "studyNoVoice": "এই ফোনে কোনো জার্মান ভয়েস নেই। ফোনের টেক্সট-টু-স্পিচ সেটিংসে একটি ইনস্টল করুন।"
+  "studyNoVoice": "এই ফোনে কোনো জার্মান ভয়েস নেই। ফোনের টেক্সট-টু-স্পিচ সেটিংসে একটি ইনস্টল করুন।",
+  "studyTip": "⚠ {tip}",
+  "studyCollocations": "⟶ {collocations}",
+  "studyRegister": "≈ {register}",
+  "studyPlaySentence": "বাক্যটি শুনুন"
 }

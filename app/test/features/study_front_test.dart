@@ -7,7 +7,7 @@ import 'package:deutschplan/core/theme/dp_tokens.dart';
 import 'package:deutschplan/data/db/app_database.dart';
 import 'package:deutschplan/data/repositories/setting_keys.dart';
 import 'package:deutschplan/data/repositories/settings_repository.dart';
-import 'package:deutschplan/features/study/study_front.dart';
+import 'package:deutschplan/features/study/study_card.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
 import 'package:deutschplan/main.dart'
     show appLocalizationsDelegates, supportedLocales;
@@ -119,7 +119,7 @@ void main() {
             home: Scaffold(
               body: Padding(
                 padding: const EdgeInsets.all(16),
-                child: StudyFrontCard(word: of ?? word()),
+                child: StudyWordCard(word: of ?? word()),
               ),
             ),
           ),
@@ -288,7 +288,7 @@ void main() {
             home: Scaffold(
               body: Padding(
                 padding: const EdgeInsets.all(16),
-                child: StudyFrontCard(
+                child: StudyWordCard(
                   word: word(uid: 'tisch', article: 'der', german: 'Tisch'),
                 ),
               ),

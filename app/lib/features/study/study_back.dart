@@ -1,0 +1,190 @@
+import 'package:deutschplan/core/components/dp_feedback.dart';
+import 'package:deutschplan/core/providers/app_providers.dart';
+import 'package:deutschplan/core/theme/dp_tokens.dart';
+import 'package:deutschplan/core/typography/dp_text.dart';
+import 'package:deutschplan/data/db/app_database.dart';
+import 'package:deutschplan/data/repositories/setting_keys.dart';
+import 'package:deutschplan/l10n/generated/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part 'study_back.g.dart';
+
+/// An example sentence on the back: the German and its translation.
+typedef StudyExample = ({String german, String? english});
+
+/// An interference tip, in English and, when the course has it, Bangla.
+typedef StudyTip = ({String en, String? bn});
+
+/// What the back shows beyond the word's own row.
+typedef StudyBackExtras = ({List<StudyExample> examples, StudyTip? tip});
+
+/// The back's two examples and its interference tip, if the word has one.
+@riverpod
+Future<StudyBackExtras> studyBack(Ref ref, String uid) async {
+  final dao = ref.watch(contentDaoProvider);
+  final examples = await dao.examplesForWord(uid).get();
+  final tips = await dao.tipsForWord(uid).get();
+  return (
+    examples: <StudyExample>[
+      for (final e in examples.take(2)) (german: e.german, english: e.english),
+    ],
+    tip: tips.isEmpty ? null : (en: tips.first.tipEn, bn: tips.first.tipBn),
+  );
+}
+
+/// The card turned over (`StudyBack`): the meanings per `meaning_language`,
+/// the interference tip, two examples with play and translation, the
+/// collocations (⟶) and the register (≈).
+class StudyBack extends StatelessWidget {
+  const StudyBack({
+    required this.word,
+    required this.meaning,
+    required this.onPlay,
+    super.key,
+    this.extras,
+  });
+
+  final Word word;
+  final MeaningLanguage meaning;
+
+  /// Null until the examples and tip have loaded.
+  final StudyBackExtras? extras;
+
+  /// Plays an example sentence.
+  final ValueChanged<String> onPlay;
+
+  @override
+  Widget build(BuildContext context) {
+    final tokens = context.tokens;
+    final l10n = AppLocalizations.of(context);
+    final bangla = meaning == MeaningLanguage.english ? null : word.bangla;
+    // A Bangla-only learner still gets English where the course has no Bangla.
+    final english = meaning == MeaningLanguage.bangla && bangla != null
+        ? null
+        : word.english;
+    final tip = extras?.tip;
+    final collocations = word.collocations;
+    final register = word.synonymsRegister;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: <Widget>[
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 4),
+          child: SizedBox(
+            height: 1.5,
+            child: ColoredBox(color: tokens.surface.outline),
+          ),
+        ),
+        const SizedBox(height: 14),
+        if (english != null)
+          DpText(english, role: DpTextRole.bodyLarge, weight: 500),
+        if (english != null && bangla != null) const SizedBox(height: 2),
+        if (bangla != null)
+          DpText(
+            bangla,
+            role: DpTextRole.bodyLarge,
+            color: english == null ? null : tokens.color.textSecondary,
+          ),
+        if (tip != null) ...<Widget>[
+          const SizedBox(height: 14),
+          DpCallout.text(l10n.studyTip(_tipText(tip))),
+        ],
+        for (final example in extras?.examples ?? const <StudyExample>[])
+          Padding(
+            padding: const EdgeInsets.only(top: 14),
+            child: _Example(example, onPlay: () => onPlay(example.german)),
+          ),
+        if (collocations != null && collocations.isNotEmpty) ...<Widget>[
+          const SizedBox(height: 14),
+          DpText(
+            // The course separates them with semicolons; the card with dots.
+            l10n.studyCollocations(collocations.split('; ').join(' · ')),
+            role: DpTextRole.caption,
+            color: tokens.color.textSecondary,
+          ),
+        ],
+        if (register != null && register.isNotEmpty) ...<Widget>[
+          const SizedBox(height: 4),
+          DpText(
+            l10n.studyRegister(register),
+            role: DpTextRole.caption,
+            color: tokens.color.textSecondary,
+          ),
+        ],
+      ],
+    );
+  }
+
+  /// The tip in the meaning language, English where there is no Bangla.
+  String _tipText(StudyTip tip) => switch ((meaning, tip.bn)) {
+    (MeaningLanguage.bangla, final bn?) => bn,
+    (MeaningLanguage.both, final bn?) => '${tip.en}\n$bn',
+    _ => tip.en,
+  };
+}
+
+/// One example: the mini play button, the German in italics, its
+/// translation. The whole row plays it, so the target is not just 32 dp.
+class _Example extends StatelessWidget {
+  const _Example(this.example, {required this.onPlay});
+
+  final StudyExample example;
+  final VoidCallback onPlay;
+
+  @override
+  Widget build(BuildContext context) {
+    final tokens = context.tokens;
+    final english = example.english;
+    return Semantics(
+      button: true,
+      label: AppLocalizations.of(context).studyPlaySentence,
+      child: GestureDetector(
+        onTap: onPlay,
+        behavior: HitTestBehavior.opaque,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Container(
+              width: 32,
+              height: 32,
+              decoration: BoxDecoration(
+                color: tokens.surface.muted,
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: tokens.isGlass
+                      ? tokens.surface.outline
+                      : tokens.color.ink,
+                  width: tokens.surface.outlineWidth,
+                ),
+              ),
+              child: Icon(Icons.play_arrow, size: 16, color: tokens.color.ink),
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  DpText(
+                    example.german,
+                    role: DpTextRole.bodyLarge,
+                    italic: true,
+                  ),
+                  if (english != null) ...<Widget>[
+                    const SizedBox(height: 2),
+                    DpText(
+                      english,
+                      role: DpTextRole.body,
+                      color: tokens.color.textSecondary,
+                    ),
+                  ],
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
