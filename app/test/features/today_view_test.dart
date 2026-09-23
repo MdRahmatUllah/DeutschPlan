@@ -128,6 +128,43 @@ void main() {
     });
   });
 
+  group('#96 done', () {
+    test('is a study day with everything planned done', () {
+      expect(artboardDone().isDone, isTrue);
+      expect(artboardToday().isDone, isFalse);
+    });
+
+    test('an empty day is not done: nothing was done on it', () {
+      final empty = TodayView(
+        date: '2026-09-21',
+        hour: 9,
+        revise: BlockProgress.none,
+        newToday: BlockProgress.none,
+        openRevise: const <String>[],
+        openNew: const <String>[],
+        grammarDue: const <String>[],
+        backlog: 0,
+        streak: 0,
+        estimate: Duration.zero,
+        courseDay: 3,
+        stepWords: (done: 0, learning: 0, todo: 0, total: 0),
+      );
+      expect(empty.isDone, isFalse);
+    });
+
+    test('a rest day is never TodayDone', () {
+      expect(
+        artboardToday(
+          reviseDone: 10,
+          newDone: 7,
+          sentencesDone: 3,
+          isStudyDay: false,
+        ).isDone,
+        isFalse,
+      );
+    });
+  });
+
   test('the greeting follows the hour', () {
     expect(dayPart(0), DayPart.morning);
     expect(dayPart(10), DayPart.morning);

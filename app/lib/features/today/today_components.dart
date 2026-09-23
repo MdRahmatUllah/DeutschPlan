@@ -1,5 +1,6 @@
 import 'package:deutschplan/core/components/dp_button.dart';
 import 'package:deutschplan/core/components/dp_chip.dart';
+import 'package:deutschplan/core/components/dp_pill.dart';
 import 'package:deutschplan/core/components/dp_progress_ring.dart';
 import 'package:deutschplan/core/theme/dp_surface.dart';
 import 'package:deutschplan/core/theme/dp_tokens.dart';
@@ -34,11 +35,13 @@ class TodayHeader extends StatelessWidget {
     // Glass tints a white panel, so the ink is the page's; the solid field
     // takes the ink made for Lagoon.
     final ink = tokens.isGlass ? tokens.color.ink : tokens.color.onPrimary;
-    final greeting = switch (dayPart(view.hour)) {
-      DayPart.morning => l10n.todayGreetingMorning,
-      DayPart.day => l10n.todayGreetingDay,
-      DayPart.evening => l10n.todayGreetingEvening,
-    };
+    final greeting = view.isDone
+        ? l10n.todayGreetingDone
+        : switch (dayPart(view.hour)) {
+            DayPart.morning => l10n.todayGreetingMorning,
+            DayPart.day => l10n.todayGreetingDay,
+            DayPart.evening => l10n.todayGreetingEvening,
+          };
 
     final content = Padding(
       padding: EdgeInsets.fromLTRB(
@@ -152,9 +155,12 @@ class ProgressRingCard extends StatelessWidget {
                   completed: value.round(),
                   total: view.total,
                   size: ringSize,
+                  // TodayDone: the ring turns Lime, with a tick for the time.
+                  colour: view.isDone ? tokens.color.easy : null,
                   caption: view.left == 0
                       ? null
                       : l10n.todayEstimate(view.estimateMinutes),
+                  captionIcon: view.isDone ? Icons.check : null,
                   semanticLabel: l10n.todayRing(view.completed, view.total),
                 ),
               ),
@@ -175,7 +181,13 @@ class ProgressRingCard extends StatelessWidget {
                   const SizedBox(height: 8),
                 ],
                 DpText(
-                  l10n.todayCourseDay(view.courseDay),
+                  view.isDone
+                      ? l10n.todayDoneLine(
+                          view.courseDay,
+                          view.words,
+                          view.minutes,
+                        )
+                      : l10n.todayCourseDay(view.courseDay),
                   role: DpTextRole.body,
                 ),
                 if (step != null) ...<Widget>[
@@ -334,9 +346,14 @@ class GrammarPreviewCard extends StatelessWidget {
     required this.preview,
     required this.onTap,
     super.key,
+    this.showRule = true,
   });
 
   final GrammarPreview preview;
+
+  /// TodayDone drops the rule line: the day's work is over, and the card is
+  /// only a pointer to the week's topic.
+  final bool showRule;
 
   /// FR-T1-08: the Learn tab, then the topic.
   final VoidCallback onTap;
@@ -386,7 +403,7 @@ class GrammarPreviewCard extends StatelessWidget {
                           role: DpTextRole.body,
                           weight: 600,
                         ),
-                        if (preview.rule.isNotEmpty) ...<Widget>[
+                        if (showRule && preview.rule.isNotEmpty) ...<Widget>[
                           const SizedBox(height: 2),
                           DpText(
                             preview.rule,
@@ -412,6 +429,127 @@ class GrammarPreviewCard extends StatelessWidget {
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+/// TodayDone's collapsed row: what the day held, all of it done.
+class TodayDoneCard extends StatelessWidget {
+  const TodayDoneCard({required this.view, super.key});
+
+  final TodayView view;
+
+  @override
+  Widget build(BuildContext context) {
+    final tokens = context.tokens;
+    final l10n = AppLocalizations.of(context);
+    final parts = <String>[
+      if (view.revise.total > 0) l10n.todayDoneRevise(view.revise.total),
+      if (view.newToday.total > 0) l10n.todayDoneNew(view.newToday.total),
+      if (view.sentences.total > 0)
+        l10n.todayDoneSentences(view.sentences.total),
+      // Nothing waits: whether there was a backlog this morning or not, it is
+      // clear now. With one still there the button offers it instead.
+      if (view.backlog == 0) l10n.todayBacklogCleared,
+    ];
+
+    return DpSurface(
+      kind: DpSurfaceKind.bar,
+      padding: const EdgeInsets.all(16),
+      child: Row(
+        children: <Widget>[
+          Container(
+            width: 36,
+            height: 36,
+            decoration: BoxDecoration(
+              color: tokens.color.easy,
+              shape: BoxShape.circle,
+              border: Border.all(color: tokens.color.ink, width: 1.5),
+            ),
+            child: Icon(Icons.check, size: 14, color: tokens.color.onAccent),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                DpText(l10n.todayDoneTitle, role: DpTextRole.body, weight: 600),
+                const SizedBox(height: 2),
+                DpText(
+                  parts.join(' · '),
+                  role: DpTextRole.caption,
+                  color: tokens.color.textSecondary,
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// TodayDone's *Tomorrow* card: tomorrow's blocks and roughly how long.
+class TomorrowCard extends StatelessWidget {
+  const TomorrowCard({required this.tomorrow, super.key});
+
+  final TomorrowPreview tomorrow;
+
+  @override
+  Widget build(BuildContext context) {
+    final tokens = context.tokens;
+    final l10n = AppLocalizations.of(context);
+    final category = tomorrow.category;
+
+    return DpSurface(
+      kind: DpSurfaceKind.bar,
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          DpText(
+            l10n.todayTomorrow.toUpperCase(),
+            semanticsLabel: l10n.todayTomorrow,
+            role: DpTextRole.caption,
+            weight: 700,
+            letterSpacing: 0.6,
+            color: tokens.color.textSecondary,
+          ),
+          const SizedBox(height: 8),
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: <Widget>[
+              if (tomorrow.revise > 0)
+                DpPill(
+                  label: l10n.todayTomorrowRevisions(tomorrow.revise),
+                  fill: tokens.color.primary,
+                  ink: tokens.color.onPrimary,
+                ),
+              if (tomorrow.newWords > 0)
+                DpPill(
+                  label: l10n.todayTomorrowNew(tomorrow.newWords),
+                  fill: tokens.color.accent,
+                ),
+              if (tomorrow.grammar > 0)
+                DpPill(
+                  label: l10n.todayGrammarDue(tomorrow.grammar),
+                  fill: tokens.surface.muted,
+                  // Oat is the muted surface, so it takes the page's ink.
+                  ink: tokens.color.ink,
+                ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          DpText(
+            category == null
+                ? l10n.todayEstimate(tomorrow.minutes)
+                : l10n.todayTomorrowContinues(tomorrow.minutes, category),
+            role: DpTextRole.caption,
+            color: tokens.color.textSecondary,
+          ),
+        ],
       ),
     );
   }

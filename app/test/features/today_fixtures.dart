@@ -41,6 +41,39 @@ TodayView artboardToday({
   ),
 );
 
+/// The TodayDone artboard: 20 of 20, day 34 · 17 words · 12 min, and a
+/// Tomorrow of 12 revisions, 7 new and one grammar topic.
+TodayView artboardDone({int backlog = 0}) => TodayView(
+  date: '2026-09-21',
+  hour: 19,
+  revise: const BlockProgress(done: 10, total: 10),
+  newToday: const BlockProgress(done: 7, total: 7),
+  openRevise: const <String>[],
+  openNew: const <String>[],
+  grammarDue: const <String>[],
+  sentences: const BlockProgress(done: 3, total: 3),
+  backlog: backlog,
+  streak: 13,
+  estimate: Duration.zero,
+  courseDay: 34,
+  minutes: 12,
+  stepWords: (done: 191, learning: 60, todo: 289, total: 540),
+  step: 'A2.1',
+  learnerName: 'Maruf',
+  grammar: const GrammarPreview(
+    uid: 'konj2',
+    topic: 'Konjunktiv II – Höflichkeit',
+    rule: 'Könnten Sie …? — polite requests with könnte and würde',
+  ),
+  tomorrow: const TomorrowPreview(
+    revise: 12,
+    newWords: 7,
+    grammar: 1,
+    estimate: Duration(minutes: 13),
+    category: 'Wohnen & Haushalt',
+  ),
+);
+
 /// Today without a database: the artboard's plan, and no coach mark.
 ///
 /// For tests about something else — the router, the shell — that only need

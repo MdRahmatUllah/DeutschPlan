@@ -1,4 +1,5 @@
 import 'package:deutschplan/core/adaptive/adaptive.dart';
+import 'package:deutschplan/core/components/dp_pill.dart';
 import 'package:deutschplan/core/components/dp_button.dart';
 import 'package:deutschplan/core/components/dp_chip.dart';
 import 'package:deutschplan/core/components/dp_speaker_button.dart';
@@ -423,6 +424,9 @@ class PlacementResultView extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final tokens = context.tokens;
+    // A score pill: Lime when the area went well, Sun when it went partly.
+    Color fill(int correct, int total) =>
+        strong(correct, total) ? tokens.color.easy : tokens.color.accent;
 
     return SafeArea(
       child: Column(
@@ -447,13 +451,13 @@ class PlacementResultView extends StatelessWidget {
                       padding: const EdgeInsets.fromLTRB(20, 24, 20, 24),
                       child: Column(
                         children: <Widget>[
-                          _Pill(
+                          DpPill(
                             label: l10n.placementScore(
                               result.correct,
                               result.answered,
                             ),
-                            strong: strong(result.correct, result.answered),
-                            score: true,
+                            fill: fill(result.correct, result.answered),
+                            small: true,
                           ),
                           const SizedBox(height: 14),
                           DpText(
@@ -483,7 +487,7 @@ class PlacementResultView extends StatelessWidget {
                             alignment: WrapAlignment.center,
                             children: <Widget>[
                               for (final area in result.areas)
-                                _Pill(
+                                DpPill(
                                   label: area.area == PlacementSession.articles
                                       ? l10n.placementAreaArticles(
                                           area.correct,
@@ -494,7 +498,7 @@ class PlacementResultView extends StatelessWidget {
                                           area.correct,
                                           area.total,
                                         ),
-                                  strong: strong(area.correct, area.total),
+                                  fill: fill(area.correct, area.total),
                                 ),
                             ],
                           ),
@@ -536,45 +540,6 @@ class PlacementResultView extends StatelessWidget {
             ),
           ),
         ],
-      ),
-    );
-  }
-}
-
-/// A score pill: Lime when the area went well, Sun when it went partly.
-class _Pill extends StatelessWidget {
-  const _Pill({required this.label, required this.strong, this.score = false});
-
-  final String label;
-  final bool strong;
-
-  /// The overall score's pill, which the artboard draws a size smaller.
-  final bool score;
-
-  @override
-  Widget build(BuildContext context) {
-    final tokens = context.tokens;
-    return Container(
-      constraints: const BoxConstraints(minHeight: 24),
-      padding: EdgeInsets.symmetric(horizontal: score ? 8 : 10, vertical: 2),
-      decoration: BoxDecoration(
-        color: strong ? tokens.color.easy : tokens.color.accent,
-        borderRadius: BorderRadius.circular(score ? 8 : 14),
-        // Under glass the pills take the panel's edge, as the artboard does.
-        border: tokens.isGlass
-            ? Border.all(
-                color: tokens.surface.outline,
-                width: tokens.surface.outlineWidth,
-              )
-            : Border.all(color: tokens.color.ink, width: 1.5),
-      ),
-      child: DpText(
-        label,
-        role: score ? DpTextRole.caption : DpTextRole.label,
-        weight: 700,
-        // Lime and Sun are bright in every mode, so the ink on them is the
-        // dark one — the page ink under dark mode would be light on light.
-        color: tokens.color.onAccent,
       ),
     );
   }

@@ -139,5 +139,16 @@
   "todayLoadFailed": "আজকের পরিকল্পনা লোড হয়নি",
   "todaySentencesAction": "বাক্য অনুশীলন · {count}",
   "todayBacklogAction": "জমে থাকা দেখুন · {count}",
-  "todayReviseAnyway": "তবুও রিভিশন করুন · {count}"
+  "todayReviseAnyway": "তবুও রিভিশন করুন · {count}",
+  "todayGreetingDone": "Tag geschafft",
+  "todayDoneLine": "{day} নম্বর দিন · {words}টি শব্দ · {minutes} মিনিট",
+  "todayDoneTitle": "আজ · শেষ",
+  "todayDoneRevise": "রিভিশন {count}",
+  "todayDoneNew": "নতুন {count}",
+  "todayDoneSentences": "বাক্য {count}",
+  "todayBacklogCleared": "জমে থাকা শেষ",
+  "todayTomorrow": "আগামীকাল",
+  "todayTomorrowRevisions": "{count, plural, other{{count}টি রিভিশন}}",
+  "todayTomorrowNew": "{count}টি নতুন",
+  "todayTomorrowContinues": "≈ {minutes} মিনিট · {category} চলবে"
 }

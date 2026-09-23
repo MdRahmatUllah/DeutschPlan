@@ -15,6 +15,7 @@
 /// practice sentences are #80.
 library;
 
+import 'package:deutschplan/domain/dry_run_plan_store.dart';
 import 'package:deutschplan/domain/fsrs.dart';
 import 'package:deutschplan/domain/plan_stats.dart';
 
@@ -344,6 +345,20 @@ class PlanEngine {
   final bool _pauseNewWhenBacklog;
 
   final Fsrs _fsrs;
+
+  /// [openDay] for [date], writing nothing: the plan it would open, for
+  /// Today's Tomorrow card and T6 (FR-T6-02).
+  ///
+  /// The same engine over a [DryRunPlanStore], so the preview is what opening
+  /// the day will actually do rather than a second guess at it.
+  Future<DailyPlan> previewDay(PlanDate date) => PlanEngine._(
+    DryRunPlanStore(_store),
+    _reviseCount,
+    _backlogCatchupDays,
+    _autoAdvance,
+    _pauseNewWhenBacklog,
+    _fsrs,
+  ).openDay(date);
 
   /// Opens [date] and returns its plan. Idempotent (BR-PLAN-04).
   ///

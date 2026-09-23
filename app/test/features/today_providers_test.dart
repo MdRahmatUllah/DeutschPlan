@@ -146,6 +146,61 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code, completed_at, 
     expect(view.openRevise, isEmpty);
   });
 
+  group('#96 all done', () {
+    Future<void> finishTheDay() async {
+      await db.customUpdate(
+        "UPDATE plan_items SET completed_at = '2026-09-21T09:00:00' "
+        "WHERE plan_date = '$today' AND completed_at IS NULL AND skipped = 0",
+        updates: <TableInfo<Table, Object?>>{db.planItems},
+      );
+      await pumpEventQueue();
+    }
+
+    test('before the day is done there is no Tomorrow', () async {
+      final view = await container.read(todayViewProvider.future);
+      expect(view.isDone, isFalse);
+      expect(view.tomorrow, isNull);
+    });
+
+    test('Tomorrow is a dry run of openDay(tomorrow) that writes nothing', () async {
+      await finishTheDay();
+      final view = await container.read(todayViewProvider.future);
+
+      expect(view.isDone, isTrue);
+      // A1.1's two words are both planned, so tomorrow runs out of it and
+      // starts A1.2 — whose one word is tomorrow's new word.
+      expect(view.tomorrow?.newWords, 1);
+      expect(view.tomorrow?.category, 'Wohnen');
+
+      final rows = await db
+          .customSelect(
+            "SELECT COUNT(*) AS n FROM plan_items WHERE plan_date > '$today'",
+          )
+          .getSingle();
+      expect(rows.read<int>('n'), 0, reason: 'nothing planned for real');
+      final open = await db
+          .customSelect(
+            'SELECT sublevel_code FROM enrollments WHERE completed_on IS NULL',
+          )
+          .get();
+      expect(open.single.read<String>('sublevel_code'), 'A1.1');
+      expect(
+        planDate(settings.read(SettingKeys.lastPlannedDate)!),
+        today,
+        reason: 'planning did not move on',
+      );
+    });
+
+    test('it counts the minutes studied today', () async {
+      await db.customStatement(
+        "INSERT INTO daily_stats (day, seconds) VALUES ('$today', 750)",
+      );
+      container.invalidate(todayViewProvider);
+      final view = await container.read(todayViewProvider.future);
+      expect(view.minutes, 12);
+    });
+  });
+
   group('FR-T1-05 midnight', () {
     test('a new date re-plans for it', () async {
       await container.read(todayViewProvider.future);
