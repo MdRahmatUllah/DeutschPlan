@@ -41,22 +41,7 @@ class SplashScreen extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
         Expanded(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              // The mark is decorative. A reader that announced "D,
-              // DeutschPlan" would say nothing about the wait; the caption
-              // below is the screen's actual announcement.
-              const ExcludeSemantics(child: SplashMark()),
-              const SizedBox(height: 40),
-              // The line holds its space whether or not it is drawn, so the
-              // mark does not jump 3 px when bootstrap crosses the threshold.
-              SizedBox(
-                height: _SplashMetrics.ruleHeight,
-                child: showProgress ? const _ProgressRule() : null,
-              ),
-            ],
-          ),
+          child: Center(child: SplashLockup(showProgress: showProgress)),
         ),
         Padding(
           padding: const EdgeInsets.fromLTRB(24, 0, 24, 48),
@@ -91,6 +76,36 @@ class SplashScreen extends StatelessWidget {
           : body,
     );
   }
+}
+
+/// S1's centred column: the mark, the gap under it, and the progress line's
+/// slot.
+///
+/// Public because the iOS launch image is this widget, rendered (#238). The
+/// slot is empty until [showProgress], so the image carries the same space
+/// under the mark, and the storyboard centres the mark where S1 does.
+class SplashLockup extends StatelessWidget {
+  const SplashLockup({super.key, this.showProgress = false});
+
+  final bool showProgress;
+
+  @override
+  Widget build(BuildContext context) => Column(
+    mainAxisSize: MainAxisSize.min,
+    children: <Widget>[
+      // The mark is decorative. A reader that announced "D, DeutschPlan"
+      // would say nothing about the wait; the caption below is the screen's
+      // actual announcement.
+      const ExcludeSemantics(child: SplashMark()),
+      const SizedBox(height: 40),
+      // The line holds its space whether or not it is drawn, so the mark does
+      // not jump 3 px when bootstrap crosses the threshold.
+      SizedBox(
+        height: _SplashMetrics.ruleHeight,
+        child: showProgress ? const _ProgressRule() : null,
+      ),
+    ],
+  );
 }
 
 /// The measurements the artboards give, in one place.

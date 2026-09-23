@@ -1,5 +1,14 @@
-# Launch Screen Assets
+# Launch image
 
-You can customize the launch screen with your own desired assets by replacing the image files in this directory.
+Generated — do not edit by hand. These six PNGs are `SplashLockup` rendered by
+`app/test/golden/ios_launch_image_golden_test.dart`, so the launch screen shows
+the mark Flutter's first frame draws. After changing the mark:
 
-You can also do it by opening your Flutter project's Xcode project with `open ios/Runner.xcworkspace`, selecting `Runner/Assets.xcassets` in the Project Navigator and dropping in the desired images.
+```
+make update-goldens
+```
+
+The field behind it is `SplashField.colorset`, whose values
+`test/features/splash_native_test.dart` checks against `DpPalette`.
+
+Written without a Mac (#238): not yet seen on an iPhone or a simulator.
