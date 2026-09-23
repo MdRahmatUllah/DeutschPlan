@@ -109,12 +109,16 @@ Widget goldenApp({
 ///
 /// [name] becomes the file stem, so it should match the screen's artboard name
 /// in lower case — `today`, `study_front`, `exam_results`.
+///
+/// [act] drives the screen into the state its artboard shows — an answer
+/// typed and checked — before the frame is taken.
 void goldenTest(
   String name, {
   required WidgetBuilder builder,
   List<GoldenMode> modes = GoldenMode.values,
   List<GoldenDevice> devices = GoldenDevice.values,
   AdaptiveChrome? chrome,
+  Future<void> Function(WidgetTester tester)? act,
 }) {
   for (final mode in modes) {
     for (final device in devices) {
@@ -128,6 +132,14 @@ void goldenTest(
             device: device,
             chrome: chrome,
           );
+          if (act != null) {
+            await act(tester);
+            await tester.pumpAndSettle(
+              const Duration(milliseconds: 100),
+              EnginePhase.sendSemanticsUpdate,
+              settleTimeout,
+            );
+          }
 
           await expectLater(
             find.byType(MaterialApp),

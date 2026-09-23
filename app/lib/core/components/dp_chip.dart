@@ -36,6 +36,7 @@ class DpChip extends StatelessWidget {
     this.selected = false,
     this.onTap,
     this.statusColour,
+    this.fill,
     this.icon,
     this.semanticLabel,
   });
@@ -50,6 +51,9 @@ class DpChip extends StatelessWidget {
 
   /// The dot on a status chip — Oat for To do, Sun for Learning, Lime for Done.
   final Color? statusColour;
+
+  /// Overrides the kind's fill: StudyCloze's Lagoon *Cloze* step chip.
+  final Color? fill;
 
   /// Overrides the kind's own icon. Pass `SizedBox.shrink()` to remove it.
   final Widget? icon;
@@ -88,15 +92,17 @@ class DpChip extends StatelessWidget {
     // on a wash, and reads as nothing chosen.
     final glassFilter = tokens.isGlass && kind == DpChipKind.filter;
 
-    final fill = switch (kind) {
-      DpChipKind.step => selected ? tokens.color.accent : null,
-      DpChipKind.status || DpChipKind.webLink => tokens.surface.muted,
-      DpChipKind.streak => tokens.color.accent,
-      DpChipKind.filter when glassFilter =>
-        selected ? tokens.color.primary : tokens.surface.muted,
-      DpChipKind.filter =>
-        selected ? tokens.color.primary.withValues(alpha: 0.22) : null,
-    };
+    final fill =
+        this.fill ??
+        switch (kind) {
+          DpChipKind.step => selected ? tokens.color.accent : null,
+          DpChipKind.status || DpChipKind.webLink => tokens.surface.muted,
+          DpChipKind.streak => tokens.color.accent,
+          DpChipKind.filter when glassFilter =>
+            selected ? tokens.color.primary : tokens.surface.muted,
+          DpChipKind.filter =>
+            selected ? tokens.color.primary.withValues(alpha: 0.22) : null,
+        };
 
     final outline = switch (kind) {
       DpChipKind.step || DpChipKind.streak => tokens.color.ink,
@@ -118,8 +124,12 @@ class DpChip extends StatelessWidget {
 
     // Sun is bright in every mode, so what sits on it is the dark ink; the
     // page's ink is light under dark and would vanish into it.
+    // Dark ink on a bright fill, in dark mode too. The Lagoon rule is for
+    // an explicit [fill] only: glass filter chips keep their own ink.
     final ink = fill == tokens.color.accent
         ? tokens.color.onAccent
+        : this.fill == tokens.color.primary
+        ? tokens.color.onPrimary
         : tokens.color.ink;
 
     final fallback = defaultIcon;

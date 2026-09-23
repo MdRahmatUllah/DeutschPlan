@@ -11,7 +11,11 @@ import 'package:deutschplan/core/typography/dp_text.dart';
 import 'package:deutschplan/data/repositories/setting_keys.dart';
 import 'package:deutschplan/data/repositories/word_repository.dart';
 import 'package:deutschplan/domain/fsrs.dart' show Rating;
+import 'package:deutschplan/data/repositories/rating_service.dart'
+    show CardMode;
+import 'package:deutschplan/features/study/study_back.dart';
 import 'package:deutschplan/features/study/study_card.dart';
+import 'package:deutschplan/features/study/study_cloze.dart';
 import 'package:deutschplan/features/study/study_rating.dart';
 import 'package:deutschplan/features/study/study_session.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
@@ -27,6 +31,18 @@ part 'study_screen.g.dart';
 @riverpod
 Future<WordWithState?> studyWord(Ref ref, String uid) =>
     ref.watch(wordRepositoryProvider).find(uid);
+
+/// FR-T2-10: the cloze a word's card shows instead of its front, or null for
+/// the plain card — its `card_mode` is plain, or no example holds the word.
+@riverpod
+Future<StudyCloze?> studyCloze(Ref ref, String uid) async {
+  final found = await ref.watch(studyWordProvider(uid).future);
+  if (found == null || found.state?.cardMode != CardMode.cloze.name) {
+    return null;
+  }
+  final back = await ref.watch(studyBackProvider(uid).future);
+  return clozeOf(found.word, back.examples);
+}
 
 /// The category most of the session's new words share, for the New block's
 /// banner: "Neue Wörter · Wohnen & Haushalt".
@@ -175,6 +191,13 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
           };
     final item = session?.current;
     final revealed = session?.revealed ?? false;
+    // Settled before the thumb zone chooses: a cloze card has no *Show
+    // meaning*, and a flash of one is a button pressed by mistake.
+    final clozeState = item == null || item.kind == SessionBlockKind.grammar
+        ? null
+        : ref.watch(studyClozeProvider(item.uid));
+    final settled = clozeState == null || !clozeState.isLoading;
+    final cloze = clozeState?.value;
 
     final body = SafeArea(
       child: Column(
@@ -240,7 +263,9 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
           // rating bar until the card is turned over.
           if (item != null &&
               item.kind != SessionBlockKind.grammar &&
-              !revealed)
+              !revealed &&
+              settled &&
+              cloze == null)
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 0, 16, 32),
               child: Column(
@@ -265,7 +290,9 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
               padding: const EdgeInsets.fromLTRB(16, 0, 16, 32),
               child: StudyRatingActions(
                 uid: item.uid,
-                prompt: l10n.studyRatePrompt,
+                prompt: cloze == null
+                    ? l10n.studyRatePrompt
+                    : l10n.studyClozeRatePrompt,
                 onRated: (rating) => _rate(item, rating),
               ),
             ),
@@ -506,7 +533,18 @@ class StudyCardSlot extends ConsumerWidget {
     final word = item.kind == SessionBlockKind.grammar
         ? null
         : ref.watch(studyWordProvider(item.uid)).value?.word;
-    if (word != null) {
+    final cloze = word == null ? null : ref.watch(studyClozeProvider(item.uid));
+    if (word != null && cloze != null && !cloze.isLoading) {
+      final gap = cloze.value;
+      if (gap != null) {
+        return StudyClozeCard(
+          // A clean gap for every word, whatever was built before it.
+          key: ValueKey<String>(word.uid),
+          word: word,
+          cloze: gap,
+          onChecked: () => onReveal?.call(),
+        );
+      }
       return StudyWordCard(
         word: word,
         revealed: revealed,
