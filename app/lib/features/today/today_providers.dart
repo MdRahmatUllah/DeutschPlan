@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:deutschplan/core/providers/app_providers.dart';
 import 'package:deutschplan/data/repositories/model_repository.dart';
 import 'package:deutschplan/data/repositories/setting_keys.dart';
@@ -115,12 +113,9 @@ Future<TodayView> todayView(Ref ref) async {
       ? null
       : await plans.dueBy(addDays(date, 1));
   final update = await updates.unseen();
-  final dismissed = settings.read(SettingKeys.dismissedCards);
   final contextual = contextualFor(
     ContextualFacts(
-      dismissed: dismissed == null
-          ? const <String>{}
-          : (jsonDecode(dismissed) as List<dynamic>).cast<String>().toSet(),
+      dismissed: dismissedIds(settings.read(SettingKeys.dismissedCards)),
       stepComplete: plan.stepComplete,
       nextStep: plan.nextStep,
       contentUpdate: update == null

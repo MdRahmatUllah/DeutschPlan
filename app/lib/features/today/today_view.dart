@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:math' as math;
 
 import 'package:deutschplan/domain/plan_engine.dart';
@@ -166,6 +167,18 @@ class ContextualFacts {
 
   /// The on-device voice is not installed, so the platform's is speaking.
   final bool systemVoice;
+}
+
+/// `dismissed_cards` as ids. Anything unreadable — a value from another
+/// build, a restored backup, a half-written write — counts as nothing
+/// dismissed: a list of hidden cards must never be what hides the plan.
+Set<String> dismissedIds(String? stored) {
+  if (stored == null) return const <String>{};
+  try {
+    return (jsonDecode(stored) as List<dynamic>).cast<String>().toSet();
+  } on Object {
+    return const <String>{};
+  }
 }
 
 /// FR-T1-06: at most one card — the first that applies and was not dismissed,

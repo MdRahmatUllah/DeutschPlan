@@ -360,6 +360,17 @@ void main() {
       expect(kind(facts), ContextualKind.examsUnlocked);
     });
 
+    test('dismissed_cards that cannot be read dismisses nothing', () {
+      expect(dismissedIds(null), isEmpty);
+      expect(dismissedIds('["voice","exams:A2.1"]'), <String>{
+        'voice',
+        'exams:A2.1',
+      });
+      for (final bad in <String>['', 'voice', '{"voice":1}', '[1, 2]', '[']) {
+        expect(dismissedIds(bad), isEmpty, reason: bad);
+      }
+    });
+
     test('what must be answered cannot be dismissed away', () {
       expect(contextualFor(everything)!.dismissible, isFalse);
       expect(

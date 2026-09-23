@@ -327,6 +327,16 @@ INSERT INTO word_state (word_uid, status, introduced_on, due, stability, reps, l
       expect(view.contextual, isNull);
     });
 
+    test('a malformed dismissed_cards does not take Today down', () async {
+      await container.read(voiceInstalledProvider.future);
+      await settings.write(SettingKeys.dismissedCards, '{not json');
+      container.invalidate(todayViewProvider);
+      final view = await container.read(todayViewProvider.future);
+
+      expect(view.date, today);
+      expect(view.contextual?.kind, ContextualKind.voice);
+    });
+
     test(
       'BR-CONTENT-03 an unseen update comes first, with its counts',
       () async {

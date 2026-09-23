@@ -396,9 +396,8 @@ class _Plan extends ConsumerWidget {
       }
     } else if (offer.dismissId case final id?) {
       final settings = ref.read(settingsProvider);
-      final stored = settings.read(SettingKeys.dismissedCards);
       final ids = <String>{
-        if (stored != null) ...(jsonDecode(stored) as List<dynamic>).cast(),
+        ...dismissedIds(settings.read(SettingKeys.dismissedCards)),
         id,
       };
       await settings.write(
