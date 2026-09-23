@@ -215,6 +215,7 @@ class PlanSectionCard extends StatelessWidget {
     required this.subtitle,
     required this.trailing,
     super.key,
+    this.tileInk,
     this.progress = BlockProgress.none,
     this.ringColour,
     this.onTap,
@@ -224,6 +225,11 @@ class PlanSectionCard extends StatelessWidget {
 
   /// The icon tile's fill. The block's colour, from the palette.
   final Color tile;
+
+  /// The icon's colour on [tile], for a fill with an ink of its own — Cobalt
+  /// takes `onDer`. Otherwise the bright fills take the dark ink and Oat the
+  /// page's.
+  final Color? tileInk;
 
   final String title;
   final String subtitle;
@@ -241,11 +247,11 @@ class PlanSectionCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final tokens = context.tokens;
-    // The bright tiles take the dark ink in every mode; Oat, which is the
-    // muted surface, takes the page's.
-    final onTile = tile == tokens.surface.muted
-        ? tokens.color.ink
-        : tokens.color.onAccent;
+    final onTile =
+        tileInk ??
+        (tile == tokens.surface.muted
+            ? tokens.color.ink
+            : tokens.color.onAccent);
 
     return Semantics(
       button: onTap != null,

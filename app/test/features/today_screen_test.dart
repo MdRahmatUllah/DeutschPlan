@@ -1,4 +1,5 @@
 import 'package:deutschplan/core/components/dp_coach_mark.dart';
+import 'package:deutschplan/core/theme/dp_tokens.dart';
 import 'package:deutschplan/data/db/app_database.dart';
 import 'package:deutschplan/data/repositories/settings_repository.dart';
 import 'package:deutschplan/features/today/today_screen.dart';
@@ -342,13 +343,13 @@ void main() {
   group('FR-T1-05 midnight, on a real plan', () {
     late DateTime now;
 
-    Future<void> open(WidgetTester tester) async {
+    Future<void> open(WidgetTester tester, {DateTime? at}) async {
       final db = AppDatabase.memory();
       addTearDown(db.close);
       final settings = SettingsRepository(db);
       await settings.load();
       addTearDown(settings.dispose);
-      now = DateTime(2026, 9, 21, 23, 50);
+      now = at ?? DateTime(2026, 9, 21, 23, 50);
 
       await tester.pumpWidget(
         ProviderScope(
@@ -370,31 +371,44 @@ void main() {
       expect(find.text('Montag, 21. September'), findsOneWidget);
     }
 
-    testWidgets('coming back after midnight is the next day', (tester) async {
-      await open(tester);
-
-      // Step by step, as the platform reports it: the listener only hears a
-      // transition it can make.
-      void walk(List<AppLifecycleState> states) {
-        for (final state in states) {
-          tester.binding.handleAppLifecycleStateChanged(state);
-        }
-      }
-
-      walk(const <AppLifecycleState>[
+    /// Away and back, step by step as the platform reports it: the listener
+    /// only hears a transition it can make.
+    Future<void> leaveUntil(WidgetTester tester, DateTime then) async {
+      for (final state in const <AppLifecycleState>[
         AppLifecycleState.inactive,
         AppLifecycleState.hidden,
         AppLifecycleState.paused,
-      ]);
-      now = DateTime(2026, 9, 22, 0, 10);
-      walk(const <AppLifecycleState>[
+      ]) {
+        tester.binding.handleAppLifecycleStateChanged(state);
+      }
+      now = then;
+      for (final state in const <AppLifecycleState>[
         AppLifecycleState.hidden,
         AppLifecycleState.inactive,
         AppLifecycleState.resumed,
-      ]);
+      ]) {
+        tester.binding.handleAppLifecycleStateChanged(state);
+      }
       await tester.pumpAndSettle();
+    }
+
+    testWidgets('coming back after midnight is the next day', (tester) async {
+      await open(tester);
+      await leaveUntil(tester, DateTime(2026, 9, 22, 0, 10));
 
       expect(find.text('Dienstag, 22. September'), findsOneWidget);
+    });
+
+    testWidgets('coming back the same evening says good evening', (
+      tester,
+    ) async {
+      await open(tester, at: DateTime(2026, 9, 21, 8));
+      expect(find.text('Guten Morgen'), findsOneWidget);
+
+      await leaveUntil(tester, DateTime(2026, 9, 21, 20));
+
+      expect(find.text('Guten Abend'), findsOneWidget);
+      expect(find.text('Montag, 21. September'), findsOneWidget);
     });
 
     testWidgets('and so is a pull after midnight', (tester) async {
@@ -406,6 +420,36 @@ void main() {
 
       expect(find.text('Dienstag, 22. September'), findsOneWidget);
     });
+  });
+
+  testWidgets('a pull that fails does not throw past the screen', (
+    tester,
+  ) async {
+    var reads = 0;
+    await pump(
+      tester,
+      load: todayViewProvider.overrideWith((ref) async {
+        if (reads++ > 0) throw StateError('db');
+        return artboardToday();
+      }),
+    );
+
+    await tester.fling(find.byType(ListView), const Offset(0, 400), 1000);
+    await tester.pumpAndSettle();
+
+    expect(tester.takeException(), isNull);
+    expect(reads, 2, reason: 'the pull read the plan again');
+  });
+
+  testWidgets("the Grammar due tile takes Cobalt's own ink", (tester) async {
+    await pump(tester, view: artboardToday(grammarDue: 1));
+    final icon = tester.widget<Icon>(
+      find.descendant(
+        of: card(l10n.todayGrammarDue(1)),
+        matching: find.byIcon(Icons.menu_book_outlined),
+      ),
+    );
+    expect(icon.color, DpPalette.light.onDer);
   });
 
   testWidgets('a failed load says so, with Retry', (tester) async {

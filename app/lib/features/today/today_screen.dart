@@ -34,7 +34,7 @@ class _TodayScreenState extends ConsumerState<TodayScreen> {
   void initState() {
     super.initState();
     // FR-T1-05: coming back after midnight is a new day.
-    _lifecycle = AppLifecycleListener(onResume: _rereadDate);
+    _lifecycle = AppLifecycleListener(onResume: _reread);
   }
 
   @override
@@ -43,16 +43,23 @@ class _TodayScreenState extends ConsumerState<TodayScreen> {
     super.dispose();
   }
 
-  /// Re-reads the date, and that is all it has to do: the plan watches it, so
-  /// a new date re-plans and the same date changes nothing.
-  void _rereadDate() => ref.invalidate(todayProvider);
-
-  /// FR-T1-05's pull-to-refresh: the date as above, and everything else read
-  /// again so the pull has something to show for itself.
-  Future<void> _refresh() async {
-    _rereadDate();
+  /// Re-reads the date and the view. The plan watches only the date, so a
+  /// new date re-plans and the same date plans nothing; the view is read
+  /// again either way, because the greeting's hour has moved on too.
+  void _reread() {
+    ref.invalidate(todayProvider);
     ref.invalidate(todayViewProvider);
-    await ref.read(todayViewProvider.future);
+  }
+
+  /// FR-T1-05's pull-to-refresh.
+  Future<void> _refresh() async {
+    _reread();
+    try {
+      await ref.read(todayViewProvider.future);
+    } on Object {
+      // The error panel says so; the pull only has to end, not rethrow into
+      // a refresh indicator that nobody awaits.
+    }
   }
 
   /// FR-T1-04: a session with only [uids], from today's plan.
@@ -166,6 +173,7 @@ class _Plan extends ConsumerWidget {
         PlanSectionCard(
           icon: Icons.menu_book_outlined,
           tile: tokens.color.der,
+          tileInk: tokens.color.onDer,
           title: l10n.todayGrammarDue(view.grammarDue.length),
           subtitle: l10n.todayGrammarDueTopics(view.grammarDue.length),
           trailing: SectionTrailing.open,
