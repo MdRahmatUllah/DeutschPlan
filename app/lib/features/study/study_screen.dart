@@ -229,9 +229,7 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
     // did nothing (everything already done) just closes.
     final date = widget.args.planDate;
     final over =
-        session != null &&
-        session.wordsDone &&
-        (session.results.isNotEmpty || session.grammarLeft.isNotEmpty);
+        session != null && session.wordsDone && session.results.isNotEmpty;
     final nextState = over && date != null
         ? ref.watch(studyNextProvider(date))
         : null;
@@ -243,11 +241,14 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
         next != null &&
         next.dayDone &&
         next.sentences == 0;
-    if (session != null &&
-        session.wordsDone &&
-        session.results.isEmpty &&
-        session.grammarLeft.isEmpty) {
-      _once(_close);
+    if (session != null && session.wordsDone && session.results.isEmpty) {
+      // Nothing studied: no summary of it. Grammar waiting goes straight to
+      // L15; nothing at all, and the session just closes.
+      _once(
+        session.grammarLeft.isEmpty
+            ? _close
+            : () => _step(StudyNextStep.grammar, session),
+      );
     } else if (dayComplete) {
       _once(() => _leave(() => DayCompleteRoute.instead(context)));
     }

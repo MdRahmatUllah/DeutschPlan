@@ -438,6 +438,46 @@ VALUES ('$today', 9, 12, 900)
     });
   });
 
+  testWidgets('grammar alone: straight to L15, no summary of nothing', (
+    tester,
+  ) async {
+    await tester.runAsync(open);
+    addTearDown(
+      () => tester.runAsync(() async {
+        await settings.dispose();
+        await db.close();
+      }),
+    );
+    const grammarOnly = SessionArgs(
+      planDate: today,
+      blocks: <SessionBlock>[
+        SessionBlock(SessionBlockKind.grammar, <String>['g1']),
+      ],
+    );
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: <Override>[
+          appDatabaseProvider.overrideWithValue(db),
+          settingsProvider.overrideWithValue(settings),
+          systemTtsProvider.overrideWithValue(_SilentTts()),
+          studyNextProvider(today).overrideWith(
+            (ref) async => (sentences: 3, backlog: 0, dayDone: true),
+          ),
+        ],
+        child: MaterialApp.router(
+          theme: AppTheme.light(),
+          localizationsDelegates: appLocalizationsDelegates,
+          supportedLocales: supportedLocales,
+          routerConfig: router(grammarOnly),
+        ),
+      ),
+    );
+    await tester.tap(find.text('T1 today'));
+    await tester.pumpAndSettle();
+    expect(find.text('L15 g1'), findsOneWidget);
+    expect(find.byType(StudySummarySheet), findsNothing);
+  });
+
   testWidgets('the day complete and no sentences: T6, not the summary', (
     tester,
   ) async {
