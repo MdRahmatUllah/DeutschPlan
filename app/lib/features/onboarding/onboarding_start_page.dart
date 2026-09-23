@@ -5,6 +5,7 @@ import 'package:deutschplan/core/typography/dp_text.dart';
 import 'package:deutschplan/data/db/content_dao.dart';
 import 'package:deutschplan/features/onboarding/onboarding_notifier.dart';
 import 'package:deutschplan/features/onboarding/onboarding_shell.dart';
+import 'package:deutschplan/features/onboarding/setup_flow.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
@@ -45,6 +46,7 @@ class OnboardingStartPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
+    final setup = ref.watch(setupFlowProvider);
     final chosen = ref.watch(onboardingProvider).step;
     final steps = ref.watch(courseStepsProvider).value ?? const <CourseStep>[];
 
@@ -69,6 +71,8 @@ class OnboardingStartPage extends ConsumerWidget {
       onPrimary: onContinue,
       onBack: onBack,
       onSkip: onSkip,
+      busy: setup == SetupStatus.finishing,
+      error: setup == SetupStatus.failed ? l10n.onboardingFinishFailed : null,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[

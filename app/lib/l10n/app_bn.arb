@@ -85,5 +85,7 @@
   "onboardingSupertonicStarted": "পটভূমিতে ডাউনলোড হচ্ছে · চালিয়ে যান",
   "onboardingSupertonicDeferred": "যেকোনো সময় সেটিংস থেকে ডাউনলোড করতে পারবেন",
   "onboardingSupertonicFailed": "ডাউনলোড শুরু হয়নি · আবার চেষ্টা করুন, বা পরে সেটিংস থেকে",
-  "onboardingStartLearning": "শেখা শুরু করুন"
+  "onboardingStartLearning": "শেখা শুরু করুন",
+  "onboardingFinishFailed": "সেটআপ শেষ করা যায়নি · আবার চেষ্টা করুন",
+  "todayCoachMark": "এখান থেকে শুরু করুন · আজকের শব্দ তৈরি"
 }

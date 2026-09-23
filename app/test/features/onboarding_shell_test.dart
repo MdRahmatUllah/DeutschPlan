@@ -326,6 +326,41 @@ void main() {
       expect(find.widgetWithText(DpButton, l10n.skip), findsNothing);
     });
 
+    testWidgets('while finishing, both are drawn and neither responds', (
+      tester,
+    ) async {
+      // A second tap during the commit would start a second one. Drawn, not
+      // hidden, so the page does not jump while it works.
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: AppTheme.light(),
+          localizationsDelegates: appLocalizationsDelegates,
+          supportedLocales: supportedLocales,
+          home: OnboardingShell(
+            page: OnboardingPage.startingPoint,
+            headline: 'A headline',
+            primaryLabel: 'Continue',
+            onPrimary: () {},
+            onSkip: () {},
+            busy: true,
+            error: 'It went wrong',
+            child: const SizedBox(),
+          ),
+        ),
+      );
+      await tester.pump();
+
+      final primary = tester.widget<DpButton>(
+        find.widgetWithText(DpButton, 'Continue'),
+      );
+      final skip = tester.widget<DpButton>(
+        find.widgetWithText(DpButton, l10n.skip),
+      );
+      expect(primary.onPressed, isNull);
+      expect(skip.onPressed, isNull);
+      expect(find.text('It went wrong'), findsOneWidget);
+    });
+
     testWidgets('the primary action calls back', (tester) async {
       var advanced = 0;
       await pumpShell(

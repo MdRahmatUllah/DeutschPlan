@@ -51,6 +51,7 @@ Created on first launch from `lib/data/db/user_schema.drift`, which is the autho
 | `mt_enabled` / `mt_variant` | 0 / `q1_25` | Settings, Model manager |
 | `listening_questions` | 1 | Settings (accessibility) |
 | `last_planned_date` | — | engine |
+| `coach_mark_seen` | 0 | Today — FR-S2-03's one-time mark on the primary button |
 | `learner_name` | — | Me |
 
 ## Migrations

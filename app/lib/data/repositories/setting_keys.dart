@@ -293,6 +293,11 @@ abstract final class SettingKeys {
 
   // No default: the doc leaves both blank.
   static const lastPlannedDate = DateSetting('last_planned_date');
+
+  /// FR-S2-03: the coach mark on Today's primary button is "one-time". Set
+  /// when it has been shown, and never cleared — restart setup is not a
+  /// first run.
+  static const coachMarkSeen = BoolSetting('coach_mark_seen', false);
   static const learnerName = StringSetting('learner_name');
 
   /// Every key, in the order `user-database.md` lists them.
@@ -327,6 +332,7 @@ abstract final class SettingKeys {
     mtVariant,
     listeningQuestions,
     lastPlannedDate,
+    coachMarkSeen,
     learnerName,
   ];
 }

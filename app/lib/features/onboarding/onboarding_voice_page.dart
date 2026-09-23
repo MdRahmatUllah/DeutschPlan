@@ -8,6 +8,7 @@ import 'package:deutschplan/core/typography/dp_text.dart';
 import 'package:deutschplan/data/repositories/setting_keys.dart';
 import 'package:deutschplan/features/onboarding/onboarding_notifier.dart';
 import 'package:deutschplan/features/onboarding/onboarding_shell.dart';
+import 'package:deutschplan/features/onboarding/setup_flow.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
@@ -83,6 +84,7 @@ class _OnboardingVoicePageState extends ConsumerState<OnboardingVoicePage> {
     final l10n = AppLocalizations.of(context);
     final tokens = context.tokens;
     final draft = ref.watch(onboardingProvider);
+    final setup = ref.watch(setupFlowProvider);
     final megabytes = ref.watch(supertonicMegabytesProvider).value;
 
     // The platform's own format — "19:30" or "7:30 PM" — because the picker
@@ -110,6 +112,8 @@ class _OnboardingVoicePageState extends ConsumerState<OnboardingVoicePage> {
       onPrimary: widget.onFinish,
       onBack: widget.onBack,
       onSkip: widget.onSkip,
+      busy: setup == SetupStatus.finishing,
+      error: setup == SetupStatus.failed ? l10n.onboardingFinishFailed : null,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[

@@ -1,5 +1,7 @@
 import 'package:deutschplan/core/providers/app_providers.dart';
 import 'package:deutschplan/data/repositories/setting_keys.dart';
+import 'package:deutschplan/data/repositories/setup_repository.dart';
+import 'package:deutschplan/features/onboarding/onboarding_shell.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'onboarding_notifier.g.dart';
@@ -26,6 +28,7 @@ class OnboardingDraft {
     Clock? reminderTime,
     this.reminderBlocked = false,
     this.voice = VoiceOffer.offered,
+    this.restart = false,
   }) : dailyNew = dailyNew ?? SettingKeys.dailyNew.defaultValue,
        reviseCount = reviseCount ?? SettingKeys.reviseCount.defaultValue,
        studyDaysMask = studyDaysMask ?? SettingKeys.studyDaysMask.defaultValue,
@@ -63,6 +66,10 @@ class OnboardingDraft {
   /// so walking back and forward does not offer — and queue — it twice.
   final VoiceOffer voice;
 
+  /// Restart setup, reached from Settings: page 1 is hidden, the values are
+  /// the learner's own, and finishing changes the plan but not the history.
+  final bool restart;
+
   OnboardingDraft copyWith({
     String? step,
     int? dailyNew,
@@ -72,6 +79,7 @@ class OnboardingDraft {
     Clock? reminderTime,
     bool? reminderBlocked,
     VoiceOffer? voice,
+    bool? restart,
   }) => OnboardingDraft(
     step: step ?? this.step,
     dailyNew: dailyNew ?? this.dailyNew,
@@ -81,6 +89,42 @@ class OnboardingDraft {
     reminderTime: reminderTime ?? this.reminderTime,
     reminderBlocked: reminderBlocked ?? this.reminderBlocked,
     voice: voice ?? this.voice,
+    restart: restart ?? this.restart,
+  );
+
+  /// FR-S2-01: what *Skip* leaves — every value from [page] onwards back at
+  /// its default, the earlier ones as chosen. The languages are page 2's and
+  /// written already, and Skip only appears from page 3.
+  OnboardingDraft withDefaultsFrom(OnboardingPage page) {
+    final defaults = OnboardingDraft();
+    return OnboardingDraft(
+      step: page.step <= OnboardingPage.startingPoint.step
+          ? defaults.step
+          : step,
+      dailyNew: page.step <= OnboardingPage.dailyPace.step
+          ? defaults.dailyNew
+          : dailyNew,
+      reviseCount: page.step <= OnboardingPage.dailyPace.step
+          ? defaults.reviseCount
+          : reviseCount,
+      studyDaysMask: page.step <= OnboardingPage.dailyPace.step
+          ? defaults.studyDaysMask
+          : studyDaysMask,
+      reminderOn: defaults.reminderOn,
+      reminderTime: defaults.reminderTime,
+      voice: voice,
+      restart: restart,
+    );
+  }
+
+  /// The draft as the commit wants it.
+  SetupChoice get choice => SetupChoice(
+    step: step,
+    dailyNew: dailyNew,
+    reviseCount: reviseCount,
+    studyDaysMask: studyDaysMask,
+    reminderOn: reminderOn,
+    reminderTime: reminderTime,
   );
 }
 
@@ -158,6 +202,28 @@ class OnboardingNotifier extends _$OnboardingNotifier {
   }
 
   void deferVoice() => state = state.copyWith(voice: VoiceOffer.deferred);
+
+  /// Restart setup: the learner's current values, so every page opens on
+  /// what they have rather than on the defaults (`onboarding.md`, States).
+  void prefill({
+    required String step,
+    required int dailyNew,
+    required int reviseCount,
+    required int studyDaysMask,
+    required bool reminderOn,
+    required Clock reminderTime,
+  }) => state = OnboardingDraft(
+    step: step,
+    dailyNew: dailyNew,
+    reviseCount: reviseCount,
+    studyDaysMask: studyDaysMask,
+    reminderOn: reminderOn,
+    reminderTime: reminderTime,
+    restart: true,
+  );
+
+  /// FR-S2-01's first half.
+  void skipFrom(OnboardingPage page) => state = state.withDefaultsFrom(page);
 
   /// The model id `assets/models/manifest.json` gives the voice.
   static const String supertonic = 'supertonic3';

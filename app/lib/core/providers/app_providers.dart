@@ -18,6 +18,7 @@ library;
 
 import 'package:deutschplan/core/theme/dp_tokens.dart';
 import 'package:deutschplan/core/theme/theme_mode.dart';
+import 'package:deutschplan/domain/plan_engine.dart';
 import 'package:deutschplan/data/db/app_database.dart';
 import 'package:deutschplan/data/db/content_dao.dart';
 import 'package:deutschplan/data/repositories/backup_repository.dart';
@@ -25,10 +26,12 @@ import 'package:deutschplan/data/repositories/exam_repository.dart';
 import 'package:deutschplan/data/repositories/grammar_repository.dart';
 import 'package:deutschplan/data/repositories/model_repository.dart';
 import 'package:deutschplan/data/repositories/plan_repository.dart';
+import 'package:deutschplan/data/repositories/plan_store.dart';
 import 'package:deutschplan/data/repositories/rating_service.dart';
 import 'package:deutschplan/data/repositories/search_repository.dart';
 import 'package:deutschplan/data/repositories/setting_keys.dart';
 import 'package:deutschplan/data/repositories/settings_repository.dart';
+import 'package:deutschplan/data/repositories/setup_repository.dart';
 import 'package:deutschplan/data/repositories/word_repository.dart';
 import 'package:deutschplan/services/model_downloads.dart';
 import 'package:deutschplan/services/notification_permission.dart';
@@ -242,3 +245,45 @@ NotificationPermission notificationPermission(Ref ref) =>
 @Riverpod(keepAlive: true)
 ModelDownloads modelDownloads(Ref ref) =>
     BackgroundModelDownloads(ref.watch(modelRepositoryProvider));
+
+@riverpod
+SetupRepository setupRepository(Ref ref) => SetupRepository(
+  ref.watch(appDatabaseProvider),
+  ref.watch(settingsProvider),
+);
+
+/// The plan engine over the real store, with the learner's settings as they
+/// stand when it is read. Auto-disposing, so the next read sees a setting
+/// changed in between — BR-PLAN-08's "from the next day" is the engine's to
+/// enforce, not a stale instance's.
+@riverpod
+PlanEngine planEngine(Ref ref) {
+  final settings = ref.watch(settingsProvider);
+  return PlanEngine(
+    store: DriftPlanStore(ref.watch(appDatabaseProvider), settings),
+    reviseCount: settings.read(SettingKeys.reviseCount),
+    backlogCatchupDays: settings.read(SettingKeys.backlogCatchupDays),
+    autoAdvance: settings.read(SettingKeys.autoAdvance),
+    pauseNewWhenBacklog: settings.read(SettingKeys.pauseNewWhenBacklog),
+  );
+}
+
+/// FR-S2-03's coach mark on Today's primary button: whether it still has to
+/// be shown. "One-time" — once shown it is marked, and never again, restart
+/// setup included.
+@riverpod
+class CoachMark extends _$CoachMark {
+  @override
+  bool build() => !ref.watch(settingsProvider).read(SettingKeys.coachMarkSeen);
+
+  /// Called the first frame it is on screen. Shown is enough: a learner who
+  /// never taps it has still seen it, and it does not come back next launch.
+  ///
+  /// Only the flag — the mark already on screen stays until [dismiss].
+  /// Rebuilding here would take it away the frame after it appeared.
+  Future<void> markShown() =>
+      ref.read(settingsProvider).write(SettingKeys.coachMarkSeen, true);
+
+  /// A tap on it: gone for this visit, and — [markShown] having run — for good.
+  void dismiss() => state = false;
+}

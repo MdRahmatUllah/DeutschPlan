@@ -59,7 +59,9 @@ Future<String?> guardRedirect(GoRouterState state, RouteGuards guards) async {
   if (location.startsWith('/onboarding')) {
     // Onboarding is reachable from a deep link and from the first launch. A
     // learner who has already started a step and taps a stale link would
-    // otherwise be walked through setup again and re-enrolled.
+    // otherwise be walked through setup again and re-enrolled. Restart setup
+    // is the one way back in, and says so in its query.
+    if (state.uri.queryParameters['restart'] == 'true') return null;
     return await guards.isEnrolled() ? '/today' : null;
   }
 
