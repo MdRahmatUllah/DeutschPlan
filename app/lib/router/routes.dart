@@ -26,6 +26,7 @@ import 'package:deutschplan/router/app_shell.dart';
 import 'package:deutschplan/router/back_behaviour.dart';
 import 'package:deutschplan/router/deep_links.dart';
 import 'package:deutschplan/router/route_guards.dart';
+import 'package:deutschplan/features/today/today_screen.dart';
 import 'package:deutschplan/router/placeholder_screen.dart';
 import 'package:cupertino_ui/cupertino_ui.dart' show CupertinoPage;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -205,7 +206,7 @@ class TodayRoute extends GoRouteData with $TodayRoute {
 
   @override
   Widget build(BuildContext context, GoRouterState state) =>
-      const PlaceholderScreen(title: 'Today', screen: 'T1');
+      const TodayScreen();
 }
 
 class BacklogRoute extends GoRouteData with $BacklogRoute {
@@ -565,6 +566,11 @@ class OnboardingRoute extends GoRouteData with $OnboardingRoute {
 class StudyRoute extends GoRouteData with $StudyRoute {
   const StudyRoute();
 
+  /// Starts a session over the shell. Full-screen, so a plain push: closing
+  /// it returns to whoever opened it.
+  static void open(BuildContext context, SessionArgs args) =>
+      unawaited(context.push<void>(const StudyRoute().location, extra: args));
+
   @override
   Widget build(BuildContext context, GoRouterState state) {
     final args = state.extra as SessionArgs?;
@@ -579,6 +585,10 @@ class StudyRoute extends GoRouteData with $StudyRoute {
 @TypedGoRoute<SentencesRoute>(path: '/sentences')
 class SentencesRoute extends GoRouteData with $SentencesRoute {
   const SentencesRoute();
+
+  /// T5 over the shell, as [StudyRoute.open].
+  static void open(BuildContext context) =>
+      unawaited(context.push<void>(const SentencesRoute().location));
 
   @override
   Widget build(BuildContext context, GoRouterState state) =>
@@ -597,6 +607,11 @@ class DayCompleteRoute extends GoRouteData with $DayCompleteRoute {
 @TypedGoRoute<GrammarPracticeRoute>(path: '/grammar-practice')
 class GrammarPracticeRoute extends GoRouteData with $GrammarPracticeRoute {
   const GrammarPracticeRoute();
+
+  /// L15 over the shell, as [StudyRoute.open].
+  static void open(BuildContext context, GrammarPracticeArgs args) => unawaited(
+    context.push<void>(const GrammarPracticeRoute().location, extra: args),
+  );
 
   @override
   Widget build(BuildContext context, GoRouterState state) {

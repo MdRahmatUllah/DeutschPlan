@@ -18,6 +18,7 @@ class DpProgressRing extends StatelessWidget {
     this.caption,
     this.colour,
     this.semanticLabel,
+    this.showCount = true,
   });
 
   final int completed;
@@ -33,6 +34,10 @@ class DpProgressRing extends StatelessWidget {
   /// Defaults to "completed of total". Pass one where the ring means something
   /// other than cards, so a screen reader says what it is counting.
   final String? semanticLabel;
+
+  /// False for Today's 28 dp section rings, which are too small for a number
+  /// and sit beside a title that already says it.
+  final bool showCount;
 
   /// Fractions of the artboard's 120 unit box, so any [size] keeps the
   /// proportions the design was drawn at.
@@ -66,27 +71,29 @@ class DpProgressRing extends StatelessWidget {
             // DpHeadword in #190, and deliberately: a headword is the content
             // and must stay legible, whereas these numbers are repeated in the
             // section cards beside the ring.
-            child: Center(
-              child: FittedBox(
-                fit: BoxFit.scaleDown,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    DpText(
-                      '$completed / $total',
-                      role: DpTextRole.title,
-                      weight: 600,
-                    ),
-                    if (caption != null)
-                      DpText(
-                        caption!,
-                        role: DpTextRole.caption,
-                        color: tokens.color.textSecondary,
+            child: !showCount
+                ? null
+                : Center(
+                    child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          DpText(
+                            '$completed / $total',
+                            role: DpTextRole.title,
+                            weight: 600,
+                          ),
+                          if (caption != null)
+                            DpText(
+                              caption!,
+                              role: DpTextRole.caption,
+                              color: tokens.color.textSecondary,
+                            ),
+                        ],
                       ),
-                  ],
-                ),
-              ),
-            ),
+                    ),
+                  ),
           ),
         ),
       ),
@@ -188,7 +195,11 @@ class DpSegmentedBar extends StatelessWidget {
       child: ExcludeSemantics(
         child: ClipRRect(
           borderRadius: BorderRadius.circular(height / 2),
+          // The full width, and rows that stretch to the height: a childless
+          // ColoredBox takes the smallest size it is allowed, and under loose
+          // constraints that is nothing — the bar used to draw no segments.
           child: SizedBox(
+            width: double.infinity,
             height: height,
             child: total == 0
                 ? ColoredBox(color: tokens.surface.muted)
@@ -212,6 +223,7 @@ class DpSegmentedBar extends StatelessWidget {
                       // nothing, and at this width nothing is legible anyway.
                       if (available < minimumSegment * segments.length) {
                         return Row(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: <Widget>[
                             for (
                               var i = 0;
@@ -246,6 +258,7 @@ class DpSegmentedBar extends StatelessWidget {
                       }
 
                       return Row(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: <Widget>[
                           for (var i = 0; i < segments.length; i++) ...<Widget>[
                             if (i > 0) const SizedBox(width: 2),

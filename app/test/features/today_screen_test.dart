@@ -1,0 +1,431 @@
+import 'package:deutschplan/core/components/dp_coach_mark.dart';
+import 'package:deutschplan/data/db/app_database.dart';
+import 'package:deutschplan/data/repositories/settings_repository.dart';
+import 'package:deutschplan/features/today/today_screen.dart';
+import 'package:deutschplan/core/components/dp_feedback.dart';
+import 'package:deutschplan/core/components/dp_progress_ring.dart';
+import 'package:deutschplan/core/providers/app_providers.dart';
+import 'package:deutschplan/core/theme/app_theme.dart';
+import 'package:deutschplan/features/today/today_components.dart';
+import 'package:deutschplan/features/today/today_providers.dart';
+import 'package:deutschplan/features/today/today_view.dart';
+import 'package:deutschplan/l10n/generated/app_localizations.dart';
+import 'package:deutschplan/main.dart'
+    show appLocalizationsDelegates, supportedLocales;
+import 'package:deutschplan/router/app_router.dart';
+import 'package:deutschplan/router/routes.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart' show Override;
+import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
+import 'package:material_ui/material_ui.dart';
+
+import 'today_fixtures.dart';
+
+/// T1 · Today in progress — #95.
+void main() {
+  late GoRouter router;
+  late AppLocalizations l10n;
+
+  setUpAll(() async {
+    l10n = await AppLocalizations.delegate.load(supportedLocales.first);
+  });
+
+  Future<void> pump(
+    WidgetTester tester, {
+    TodayView? view,
+    Override? load,
+    bool coachMark = false,
+    Locale? locale,
+  }) async {
+    router = buildRouter();
+    addTearDown(router.dispose);
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: <Override>[
+          load ??
+              todayViewProvider.overrideWith(
+                (ref) async => view ?? artboardToday(),
+              ),
+          if (coachMark)
+            coachMarkProvider.overrideWith(_ShowingCoachMark.new)
+          else
+            coachMarkProvider.overrideWithValue(false),
+        ],
+        child: MaterialApp.router(
+          routerConfig: router,
+          theme: AppTheme.light(),
+          locale: locale,
+          localizationsDelegates: appLocalizationsDelegates,
+          supportedLocales: supportedLocales,
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+  }
+
+  String location() =>
+      router.routerDelegate.currentConfiguration.uri.toString();
+
+  /// What a pushed full-screen route was opened with. A push leaves the
+  /// configuration's URI where it was, so it is read off the screen's own
+  /// route state; the placeholder for [screen] is what is showing.
+  Object? opened(WidgetTester tester, String screen) {
+    expect(find.text(screen), findsOneWidget, reason: '$screen is not open');
+    return GoRouterState.of(tester.element(find.text(screen))).extra;
+  }
+
+  SessionArgs? session(WidgetTester tester) =>
+      opened(tester, 'T2') as SessionArgs?;
+
+  Finder card(String title) => find.ancestor(
+    of: find.text(title),
+    matching: find.byType(PlanSectionCard),
+  );
+
+  Future<void> tapCard(WidgetTester tester, String title) async {
+    await tester.ensureVisible(card(title));
+    // The jump lands on the next frame; tapping before it hits where the
+    // card used to be.
+    await tester.pump();
+    await tester.tap(card(title));
+    await tester.pumpAndSettle();
+  }
+
+  group('the header', () {
+    testWidgets('German date and greeting, whatever the UI language', (
+      tester,
+    ) async {
+      await pump(tester, locale: const Locale('bn'));
+
+      expect(find.text('Montag, 21. September'), findsOneWidget);
+      expect(find.text('Guten Morgen, Maruf'), findsOneWidget);
+    });
+
+    testWidgets('no name, no comma', (tester) async {
+      await pump(tester, view: artboardToday(learnerName: null));
+      expect(find.text('Guten Morgen'), findsOneWidget);
+    });
+
+    testWidgets('the streak opens Progress and the gear Settings', (
+      tester,
+    ) async {
+      await pump(tester);
+      await tester.tap(find.bySemanticsLabel(l10n.todayStreak(12)));
+      await tester.pumpAndSettle();
+      expect(location(), '/me/progress');
+
+      router.go('/today');
+      await tester.pumpAndSettle();
+      await tester.tap(find.bySemanticsLabel(l10n.todaySettings));
+      await tester.pumpAndSettle();
+      expect(location(), '/me/settings');
+    });
+  });
+
+  group('the ring card', () {
+    testWidgets('FR-T1-02 shows done over total and the time left', (
+      tester,
+    ) async {
+      await pump(tester);
+
+      final ring = tester.widget<DpProgressRing>(
+        find.descendant(
+          of: find.byType(ProgressRingCard),
+          matching: find.byType(DpProgressRing),
+        ),
+      );
+      expect((ring.completed, ring.total), (12, 20));
+      expect(ring.caption, l10n.todayEstimate(6));
+      expect(find.text(l10n.todayCourseDay(34)), findsOneWidget);
+      expect(find.text(l10n.todayStepWords(184, 540, 'A2.1')), findsOneWidget);
+    });
+
+    testWidgets('FR-T1-08 the step chip switches to Learn and opens it', (
+      tester,
+    ) async {
+      await pump(tester);
+      await tester.tap(find.text('A2.1'));
+      await tester.pumpAndSettle();
+
+      expect(location(), '/learn/step/A2.1');
+    });
+  });
+
+  group('FR-T1-04 the section cards', () {
+    testWidgets('Revise starts a session with only its open words', (
+      tester,
+    ) async {
+      await pump(tester, view: artboardToday(reviseDone: 7));
+      await tapCard(tester, l10n.todayRevise(10));
+
+      expect(session(tester)?.wordUids, <String>['r7', 'r8', 'r9']);
+      expect(session(tester)?.planDate, '2026-09-21');
+    });
+
+    testWidgets('New today starts a session with only its open words', (
+      tester,
+    ) async {
+      await pump(tester);
+      await tapCard(tester, l10n.todayNew(7));
+
+      expect(session(tester)?.wordUids, <String>['n2', 'n3', 'n4', 'n5', 'n6']);
+    });
+
+    testWidgets('a finished block has nothing to start', (tester) async {
+      await pump(tester);
+      // Revise is 10 of 10 on the artboard.
+      await tapCard(tester, l10n.todayRevise(10));
+      expect(location(), '/today');
+    });
+
+    testWidgets('Backlog opens T4', (tester) async {
+      await pump(tester);
+      await tapCard(tester, l10n.todayBacklog(14));
+      expect(location(), '/today/backlog');
+    });
+
+    testWidgets('Practice sentences opens T5', (tester) async {
+      await pump(tester);
+      await tapCard(tester, l10n.todaySentences(3));
+      opened(tester, 'T5');
+    });
+
+    testWidgets('Grammar due opens practice with the due topics', (
+      tester,
+    ) async {
+      await pump(tester, view: artboardToday(grammarDue: 2));
+      await tapCard(tester, l10n.todayGrammarDue(2));
+
+      final args = opened(tester, 'L15') as GrammarPracticeArgs?;
+      expect(args?.topicUids, <String>['g0', 'g1']);
+    });
+
+    testWidgets('the backlog card is only there with a backlog', (
+      tester,
+    ) async {
+      await pump(tester, view: artboardToday(backlog: 0));
+      expect(card(l10n.todayBacklog(0)), findsNothing);
+    });
+
+    testWidgets('it says when the waiting words were planned', (tester) async {
+      await pump(tester);
+      expect(
+        find.text(l10n.todayBacklogRange(14, 'Tue', 'Wed')),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('on the first day Revise says when it starts', (tester) async {
+      await pump(
+        tester,
+        view: TodayView(
+          date: '2026-09-21',
+          hour: 9,
+          revise: BlockProgress.none,
+          newToday: const BlockProgress(done: 0, total: 7),
+          openRevise: const <String>[],
+          openNew: const <String>['n0'],
+          grammarDue: const <String>[],
+          backlog: 0,
+          streak: 0,
+          estimate: const Duration(minutes: 5),
+          courseDay: 1,
+          stepWords: (done: 0, learning: 0, todo: 637, total: 637),
+          step: 'A1.1',
+        ),
+      );
+      expect(find.text(l10n.todayReviseFirstDay), findsOneWidget);
+    });
+
+    testWidgets('each block shows a ring, or a check when done', (
+      tester,
+    ) async {
+      await pump(tester);
+      PlanSectionCard of(String title) =>
+          tester.widget<PlanSectionCard>(card(title));
+
+      expect(of(l10n.todayRevise(10)).trailing, SectionTrailing.done);
+      expect(of(l10n.todayNew(7)).trailing, SectionTrailing.progress);
+      expect(of(l10n.todayBacklog(14)).trailing, SectionTrailing.open);
+    });
+  });
+
+  group('the grammar card', () {
+    testWidgets('shows the next topic and the start of its rule', (
+      tester,
+    ) async {
+      await pump(tester);
+      expect(find.text('Konjunktiv II – Höflichkeit'), findsOneWidget);
+    });
+
+    testWidgets('FR-T1-08 switches to Learn and opens the topic', (
+      tester,
+    ) async {
+      await pump(tester);
+      await tester.ensureVisible(find.byType(GrammarPreviewCard));
+      await tester.pump();
+      await tester.tap(find.byType(GrammarPreviewCard));
+      await tester.pumpAndSettle();
+
+      expect(location(), '/learn/grammar/konj2');
+    });
+  });
+
+  group('the docked button', () {
+    String label(WidgetTester tester) =>
+        tester.widget<PrimaryActionBar>(find.byType(PrimaryActionBar)).label;
+
+    testWidgets('before anything is done it starts the day', (tester) async {
+      await pump(tester, view: artboardToday(reviseDone: 0, newDone: 0));
+      expect(label(tester), l10n.todayStart(20));
+    });
+
+    testWidgets('once started it says what is left', (tester) async {
+      await pump(tester);
+      expect(label(tester), l10n.todayContinue(8));
+    });
+
+    testWidgets('it starts Revise then New, open words only', (tester) async {
+      await pump(tester, view: artboardToday(reviseDone: 8));
+      await tester.tap(find.byType(PrimaryActionBar));
+      await tester.pumpAndSettle();
+
+      expect(session(tester)?.wordUids, <String>[
+        'r8', 'r9', 'n2', 'n3', 'n4', 'n5', 'n6', //
+      ]);
+    });
+
+    testWidgets('with nothing left it is done, and disabled', (tester) async {
+      await pump(
+        tester,
+        view: TodayView(
+          date: '2026-09-21',
+          hour: 20,
+          revise: const BlockProgress(done: 10, total: 10),
+          newToday: const BlockProgress(done: 7, total: 7),
+          openRevise: const <String>[],
+          openNew: const <String>[],
+          grammarDue: const <String>[],
+          backlog: 0,
+          streak: 12,
+          estimate: Duration.zero,
+          courseDay: 34,
+          stepWords: (done: 184, learning: 60, todo: 296, total: 540),
+          step: 'A2.1',
+        ),
+      );
+      expect(label(tester), l10n.todayAllDone);
+      expect(
+        tester
+            .widget<PrimaryActionBar>(find.byType(PrimaryActionBar))
+            .onPressed,
+        isNull,
+      );
+    });
+
+    testWidgets('FR-S2-03 carries the one-time coach mark', (tester) async {
+      await pump(tester, coachMark: true);
+      final mark = tester.widget<DpCoachMark>(find.byType(DpCoachMark));
+      expect(mark.visible, isTrue);
+      expect(find.text(l10n.todayCoachMark), findsOneWidget);
+      expect(
+        find.descendant(
+          of: find.byType(DpCoachMark),
+          matching: find.byType(PrimaryActionBar),
+        ),
+        findsOneWidget,
+      );
+    });
+  });
+
+  group('FR-T1-05 midnight, on a real plan', () {
+    late DateTime now;
+
+    Future<void> open(WidgetTester tester) async {
+      final db = AppDatabase.memory();
+      addTearDown(db.close);
+      final settings = SettingsRepository(db);
+      await settings.load();
+      addTearDown(settings.dispose);
+      now = DateTime(2026, 9, 21, 23, 50);
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: <Override>[
+            appDatabaseProvider.overrideWithValue(db),
+            settingsProvider.overrideWithValue(settings),
+            clockProvider.overrideWithValue(() => now),
+            coachMarkProvider.overrideWithValue(false),
+          ],
+          child: MaterialApp(
+            theme: AppTheme.light(),
+            localizationsDelegates: appLocalizationsDelegates,
+            supportedLocales: supportedLocales,
+            home: const TodayScreen(),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('Montag, 21. September'), findsOneWidget);
+    }
+
+    testWidgets('coming back after midnight is the next day', (tester) async {
+      await open(tester);
+
+      // Step by step, as the platform reports it: the listener only hears a
+      // transition it can make.
+      void walk(List<AppLifecycleState> states) {
+        for (final state in states) {
+          tester.binding.handleAppLifecycleStateChanged(state);
+        }
+      }
+
+      walk(const <AppLifecycleState>[
+        AppLifecycleState.inactive,
+        AppLifecycleState.hidden,
+        AppLifecycleState.paused,
+      ]);
+      now = DateTime(2026, 9, 22, 0, 10);
+      walk(const <AppLifecycleState>[
+        AppLifecycleState.hidden,
+        AppLifecycleState.inactive,
+        AppLifecycleState.resumed,
+      ]);
+      await tester.pumpAndSettle();
+
+      expect(find.text('Dienstag, 22. September'), findsOneWidget);
+    });
+
+    testWidgets('and so is a pull after midnight', (tester) async {
+      await open(tester);
+
+      now = DateTime(2026, 9, 22, 0, 10);
+      await tester.fling(find.byType(ListView), const Offset(0, 400), 1000);
+      await tester.pumpAndSettle();
+
+      expect(find.text('Dienstag, 22. September'), findsOneWidget);
+    });
+  });
+
+  testWidgets('a failed load says so, with Retry', (tester) async {
+    await pump(
+      tester,
+      load: todayViewProvider.overrideWith(
+        (ref) async => throw StateError('db'),
+      ),
+    );
+    expect(find.byType(DpErrorPanel), findsOneWidget);
+    expect(find.text(l10n.todayLoadFailed), findsOneWidget);
+    expect(find.text(l10n.retry), findsOneWidget);
+  });
+}
+
+/// A first launch's coach mark, without the settings behind it.
+class _ShowingCoachMark extends CoachMark {
+  @override
+  bool build() => true;
+
+  @override
+  Future<void> markShown() async {}
+}

@@ -162,6 +162,13 @@ class WordRepository extends DatabaseAccessor<AppDatabase>
           );
   }
 
+  /// [watchStatusCounts], once.
+  Future<StatusCountsForStepResult> statusCounts(String code) =>
+      statusCountsForStep(
+        _settings.read(SettingKeys.doneStabilityDays).toDouble(),
+        code,
+      ).getSingle();
+
   Stream<StatusCountsForStepResult> watchStatusCounts(String code) =>
       _settings.switchOn(
         SettingKeys.doneStabilityDays,

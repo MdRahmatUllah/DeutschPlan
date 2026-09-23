@@ -29,6 +29,23 @@ typedef CourseStep = ({String code, String levelCode, int wordCount});
 class ContentDao extends DatabaseAccessor<AppDatabase> with _$ContentDaoMixin {
   ContentDao(super.db);
 
+  /// The category most of [uids] belong to: T1's "7 new · Wohnen & Haushalt".
+  ///
+  /// Null when none of them has one. A tie goes to the lower category id, so
+  /// the card does not flip between two names from one build to the next.
+  Future<String?> mainCategory(List<String> uids) async {
+    if (uids.isEmpty) return null;
+    final row = await customSelect(
+      'SELECT k.name FROM words w JOIN categories k ON k.id = w.category_id '
+      'WHERE w.uid IN (${List.filled(uids.length, '?').join(', ')}) '
+      'GROUP BY k.id ORDER BY COUNT(*) DESC, k.id LIMIT 1',
+      variables: <Variable<Object>>[
+        for (final uid in uids) Variable<String>(uid),
+      ],
+    ).getSingleOrNull();
+    return row?.read<String>('name');
+  }
+
   /// S3's pool for one step: its words, with their example sentences for a
   /// gap item. Read-only, like everything on the attached course.
   Future<List<PlacementWord>> placementPool(String step) async {

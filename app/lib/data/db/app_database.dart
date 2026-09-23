@@ -50,9 +50,16 @@ class AppDatabase extends _$AppDatabase {
 
   /// In-memory, for tests. `testing.md` asks for exactly this plus the real
   /// content.db attached.
+  ///
+  /// Streams close synchronously: drift otherwise keeps a cancelled query
+  /// cached for one more event-loop turn on a timer, and a widget test whose
+  /// screen watches a query ends with that timer pending when the tree goes.
   AppDatabase.memory()
     : this(
-        DatabaseConnection(NativeDatabase.memory(setup: configureConnection)),
+        DatabaseConnection(
+          NativeDatabase.memory(setup: configureConnection),
+          closeStreamsSynchronously: true,
+        ),
       );
 
   /// Readable without an instance, which the migration tests need.

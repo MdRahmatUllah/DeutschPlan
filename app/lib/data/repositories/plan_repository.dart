@@ -345,6 +345,40 @@ class PlanRepository {
   /// "/onboarding/* redirects to /today once enrolled"). It counts every
   /// enrollment, not just the open one — someone who has finished a step and
   /// not yet started the next is still not a new learner.
+  /// The first and last day the backlog's words were planned for: T1's
+  /// "14 waiting from Tue–Wed". Both null when the backlog is empty.
+  Future<({String? from, String? to})> backlogDays(String today) async {
+    final row = await _db
+        .customSelect(
+          '''
+SELECT MIN(plan_date) AS first, MAX(plan_date) AS last
+FROM plan_items
+WHERE kind = 'new' AND completed_at IS NULL AND plan_date < ?1
+''',
+          variables: <Variable<Object>>[Variable<String>(today)],
+          readsFrom: <ResultSetImplementation<Object, Object>>{_db.planItems},
+        )
+        .getSingle();
+    return (
+      from: row.readNullable<String>('first'),
+      to: row.readNullable<String>('last'),
+    );
+  }
+
+  /// The day the first step was started: T1's "Day 34 of your course".
+  ///
+  /// The earliest enrollment rather than the active one, because a new step is
+  /// a new enrollment and the course did not restart with it.
+  Future<String?> courseStartedOn() async {
+    final row = await _db
+        .customSelect(
+          'SELECT MIN(started_on) AS started FROM enrollments',
+          readsFrom: <ResultSetImplementation<Object, Object>>{_db.enrollments},
+        )
+        .getSingle();
+    return row.readNullable<String>('started');
+  }
+
   Future<bool> hasEnrollment() async {
     final row = await _db
         .customSelect('SELECT COUNT(*) AS n FROM enrollments')

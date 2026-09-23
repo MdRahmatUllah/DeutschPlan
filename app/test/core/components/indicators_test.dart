@@ -127,6 +127,38 @@ void main() {
       expect(tester.getSize(find.byType(DpSegmentedBar)).height, 8);
     });
 
+    testWidgets('every segment fills the bar, even in a start-aligned column', (
+      tester,
+    ) async {
+      // A childless ColoredBox takes the smallest size it may. Under a row's
+      // loose height that was zero, and the bar drew no segments at all —
+      // which widths alone never showed. Today's ring card is such a column.
+      await pump(
+        tester,
+        const SizedBox(
+          width: 300,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              DpSegmentedBar(done: 184, learning: 60, todo: 296, height: 6),
+            ],
+          ),
+        ),
+      );
+
+      final segments = find.descendant(
+        of: find.byType(DpSegmentedBar),
+        matching: find.byType(ColoredBox),
+      );
+      expect(segments, findsNWidgets(3));
+      for (final segment in segments.evaluate()) {
+        final size = tester.getSize(find.byWidget(segment.widget));
+        expect(size.height, 6);
+        expect(size.width, greaterThan(0));
+      }
+      expect(tester.getSize(find.byType(DpSegmentedBar)).width, 300);
+    });
+
     testWidgets('segments are weighted by count', (tester) async {
       await pump(
         tester,

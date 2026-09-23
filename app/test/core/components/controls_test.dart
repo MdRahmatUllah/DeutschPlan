@@ -399,6 +399,30 @@ void main() {
       },
     );
 
+    for (final chip in const <DpChip>[
+      DpChip(label: '12', kind: DpChipKind.streak),
+      DpChip(label: 'A2.1', selected: true),
+    ]) {
+      testWidgets('a ${chip.kind.name} chip on Sun keeps dark ink at night', (
+        tester,
+      ) async {
+        // The dark artboard's streak pill and step chip are #15121F on Sun.
+        // The page ink is light at night and would vanish into the fill.
+        await pump(tester, chip, theme: AppTheme.dark());
+        final label = tester.widget<Text>(
+          find.descendant(of: find.byType(DpChip), matching: find.byType(Text)),
+        );
+        expect(label.style?.color, DpPalette.dark.onAccent);
+        final icon = find.descendant(
+          of: find.byType(DpChip),
+          matching: find.byType(Icon),
+        );
+        if (chip.kind == DpChipKind.streak) {
+          expect(tester.widget<Icon>(icon).color, DpPalette.dark.onAccent);
+        }
+      });
+    }
+
     testWidgets('the streak pill is fully rounded', (tester) async {
       await pump(tester, const DpChip(label: '12', kind: DpChipKind.streak));
       final decoration =

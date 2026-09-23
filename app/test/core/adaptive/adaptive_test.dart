@@ -86,6 +86,45 @@ void main() {
   });
 
   group('AdaptiveScaffold', () {
+    testWidgets('with a tab bar, each inset is taken once', (tester) async {
+      // An edge-to-edge phone: a status bar on top, a gesture bar below. The
+      // bar takes the bottom inset; the body must not take it again, and the
+      // bar must not see the status bar at all — Material's NavigationBar
+      // pads its top by whatever top inset reaches it, and it did, leaving a
+      // status bar's height of empty bar above the tabs.
+      late EdgeInsets body;
+      late EdgeInsets bar;
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: AppTheme.light(),
+          home: MediaQuery(
+            data: const MediaQueryData(
+              size: Size(400, 800),
+              padding: EdgeInsets.only(top: 50, bottom: 24),
+            ),
+            child: AdaptiveScaffold(
+              body: Builder(
+                builder: (context) {
+                  body = MediaQuery.paddingOf(context);
+                  return const SizedBox.expand();
+                },
+              ),
+              bottomBar: Builder(
+                builder: (context) {
+                  bar = MediaQuery.paddingOf(context);
+                  return const SizedBox(height: 80);
+                },
+              ),
+            ),
+          ),
+        ),
+      );
+
+      expect(body.bottom, 0, reason: 'the bar already took it');
+      expect(body.top, 50, reason: 'the body runs under the status bar');
+      expect(bar, EdgeInsets.zero);
+    });
+
     Future<double> barHeight(WidgetTester tester, AdaptiveChrome chrome) async {
       await tester.pumpWidget(
         MaterialApp(
