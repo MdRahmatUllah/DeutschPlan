@@ -228,6 +228,26 @@ void main() {
       expect(steps.first.wordCount, 2, reason: "the fixture's own count");
     });
 
+    test("S3's pool is a step's words, with their examples", () async {
+      final pool = await dao.placementPool('A1.1');
+
+      expect(pool.map((w) => w.german), containsAll(<String>['Haus', 'Tür']));
+      final haus = pool.firstWhere((w) => w.uid == ContentFixture.haus);
+      expect((haus.article, haus.pos.isNotEmpty), ('das', true));
+      expect(
+        pool.every((w) => w.uid != ContentFixture.strasse),
+        isTrue,
+        reason: 'another step',
+      );
+      expect(
+        pool.expand((w) => w.examples),
+        isNotEmpty,
+        reason: 'the fixture gives its words examples',
+      );
+      // One word, however many examples — the join must not repeat it.
+      expect(pool.map((w) => w.uid).toSet(), hasLength(pool.length));
+    });
+
     test('grammar carries the tags the generator reads', () async {
       final topics = await dao.grammarForStep('A1.1').get();
       expect(topics.single.tags.split(','), contains('word-order'));

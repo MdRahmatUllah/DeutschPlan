@@ -436,5 +436,145 @@
   "todayCoachMark": "Start here · today's words are ready",
   "@todayCoachMark": {
     "description": "FR-S2-03's one-time coach mark on Today's primary button, the first time Today opens after setup."
+  },
+  "placementQuestionOf": "Question {n} of {total}",
+  "@placementQuestionOf": {
+    "description": "S3: the top bar while the check runs.",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "placementTagMeaning": "{level} · word meaning",
+  "@placementTagMeaning": {
+    "description": "S3: the level tag on a meaning item. level is A1, A2…",
+    "placeholders": {
+      "level": {
+        "type": "String"
+      }
+    }
+  },
+  "placementTagArticle": "{level} · article",
+  "@placementTagArticle": {
+    "description": "S3: the level tag on an article item.",
+    "placeholders": {
+      "level": {
+        "type": "String"
+      }
+    }
+  },
+  "placementTagGap": "{level} · sentence gap",
+  "@placementTagGap": {
+    "description": "S3: the level tag on a gap item.",
+    "placeholders": {
+      "level": {
+        "type": "String"
+      }
+    }
+  },
+  "placementAskMeaning": "What does this word mean?",
+  "@placementAskMeaning": {
+    "description": "S3: the prompt on a meaning item."
+  },
+  "placementAskArticle": "Which article does it take?",
+  "@placementAskArticle": {
+    "description": "S3: the prompt on an article item."
+  },
+  "placementAskGap": "Which word fills the gap?",
+  "@placementAskGap": {
+    "description": "S3: the prompt on a gap item."
+  },
+  "placementRule": "Two right answers in a row move you up a level; two wrong move you down. Nothing is saved until you choose a step.",
+  "@placementRule": {
+    "description": "S3: the note under the options (FR-S3-01, FR-S3-03)."
+  },
+  "placementNext": "Next",
+  "@placementNext": {
+    "description": "S3: moves to the next question."
+  },
+  "placementClose": "Close the check",
+  "@placementClose": {
+    "description": "S3: the close button, for a screen reader (FR-S3-04)."
+  },
+  "placementPronounce": "Pronounce",
+  "@placementPronounce": {
+    "description": "S3: the speaker button, for a screen reader."
+  },
+  "placementResultTitle": "Your result",
+  "@placementResultTitle": {
+    "description": "S3: the result's top bar."
+  },
+  "placementScore": "{correct} of {total} correct",
+  "@placementScore": {
+    "description": "S3 result: the score chip.",
+    "placeholders": {
+      "correct": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "placementSuggest": "We suggest starting at",
+  "@placementSuggest": {
+    "description": "S3 result: over the suggested step."
+  },
+  "placementRationale": "Your answers settled at {step} — the first step with words you are still learning.",
+  "@placementRationale": {
+    "description": "S3 result: the one-sentence rationale.",
+    "placeholders": {
+      "step": {
+        "type": "String"
+      }
+    }
+  },
+  "placementAreaWords": "{level} words: {correct} / {total}",
+  "@placementAreaWords": {
+    "description": "S3 result: one level's word items.",
+    "placeholders": {
+      "level": {
+        "type": "String"
+      },
+      "correct": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "placementAreaArticles": "Articles: {correct} / {total}",
+  "@placementAreaArticles": {
+    "description": "S3 result: the article items.",
+    "placeholders": {
+      "correct": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "placementBrowsable": "Skipped steps are not marked as known — they stay browsable in Learn, and you can revisit any of them.",
+  "@placementBrowsable": {
+    "description": "S3 result: BR-COURSE-04's note."
+  },
+  "placementUse": "Use {step}",
+  "@placementUse": {
+    "description": "S3 result: takes the suggestion back to setup.",
+    "placeholders": {
+      "step": {
+        "type": "String"
+      }
+    }
+  },
+  "placementChooseMyself": "Choose myself",
+  "@placementChooseMyself": {
+    "description": "S3 result: back to setup with nothing chosen."
   }
 }
