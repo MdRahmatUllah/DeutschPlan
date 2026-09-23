@@ -121,6 +121,9 @@ class _SentencesScreenState extends ConsumerState<SentencesScreen> {
   int _page = 0;
   bool _leaving = false;
 
+  /// One answer at a time: a double tap must not rate the word twice.
+  bool _busy = false;
+
   @override
   void dispose() {
     _pages?.dispose();
@@ -130,7 +133,13 @@ class _SentencesScreenState extends ConsumerState<SentencesScreen> {
   /// FR-T5-04: a rating moves on; the last one closes to T6 when the day is
   /// complete, else back to Today.
   Future<void> _rate(int index, int count, SentenceRating rating) async {
-    await ref.read(practiceSentencesProvider.notifier).rate(index, rating);
+    if (_busy || _leaving) return;
+    _busy = true;
+    try {
+      await ref.read(practiceSentencesProvider.notifier).rate(index, rating);
+    } finally {
+      _busy = false;
+    }
     if (!mounted) return;
     final left = ref
         .read(practiceSentencesProvider)

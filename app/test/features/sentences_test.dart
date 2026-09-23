@@ -231,6 +231,20 @@ INSERT INTO sentence_log (word_uid, ord, shown_on, self_rating) VALUES
       });
     });
 
+    testWidgets('a double tap on Not yet rates the word once', (tester) async {
+      await pump(tester);
+      await tester.runAsync(() async {
+        await tester.tap(find.text(l10n.sentencesNotYet));
+        await tester.tap(find.text(l10n.sentencesNotYet));
+        await Future<void>.delayed(const Duration(milliseconds: 120));
+      });
+      await tester.pumpAndSettle();
+      final reviews = await tester.runAsync(
+        () => db.customSelect('SELECT 1 FROM review_log').get(),
+      );
+      expect(reviews, hasLength(1));
+    });
+
     testWidgets('only Not yet touches the word', (tester) async {
       await pump(tester);
       await answer(tester, l10n.sentencesUnderstood);
