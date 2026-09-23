@@ -1589,5 +1589,17 @@
   "wordStatusSuspended": "Suspended",
   "@wordStatusSuspended": {
     "description": "A word's status chip: suspended (BR-STATUS-03)."
+  },
+  "backlogEmptyTitle": "Nothing waiting. Nice.",
+  "@backlogEmptyTitle": {
+    "description": "T4 empty state headline."
+  },
+  "backlogEmptyBody": "Skipped or missed new words land here, without a deadline.",
+  "@backlogEmptyBody": {
+    "description": "T4 empty state: what the backlog is for."
+  },
+  "backlogBackToToday": "Back to Today",
+  "@backlogBackToToday": {
+    "description": "T4 empty state: returns to the Today tab's root."
   }
 }

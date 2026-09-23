@@ -259,5 +259,8 @@
   "wordStatusToDo": "বাকি",
   "wordStatusLearning": "শিখছি",
   "wordStatusDone": "শেখা হয়েছে",
-  "wordStatusSuspended": "স্থগিত"
+  "wordStatusSuspended": "স্থগিত",
+  "backlogEmptyTitle": "কিছু বাকি নেই। দারুণ।",
+  "backlogEmptyBody": "বাদ দেওয়া বা মিস করা নতুন শব্দ এখানে আসে, কোনো সময়সীমা ছাড়াই।",
+  "backlogBackToToday": "আজকের পাতায় ফিরুন"
 }

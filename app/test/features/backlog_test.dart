@@ -6,6 +6,7 @@ import 'package:deutschplan/core/providers/app_providers.dart';
 import 'package:deutschplan/core/theme/app_theme.dart';
 import 'package:deutschplan/core/theme/dp_tokens.dart';
 import 'package:deutschplan/data/db/app_database.dart';
+import 'package:drift/drift.dart' as drift show Table, TableInfo;
 import 'package:deutschplan/data/db/content_dao.dart';
 import 'package:deutschplan/data/repositories/setting_keys.dart';
 import 'package:deutschplan/data/repositories/settings_repository.dart';
@@ -72,9 +73,18 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code, skipped,
     clockProvider.overrideWithValue(() => DateTime(2026, 9, 21, 9)),
   ];
 
-  GoRouter router() => GoRouter(
-    initialLocation: '/today/backlog',
+  GoRouter router({String at = '/today/backlog'}) => GoRouter(
+    initialLocation: at,
     routes: <RouteBase>[
+      GoRoute(
+        path: '/elsewhere',
+        builder: (context, _) => Scaffold(
+          body: TextButton(
+            onPressed: () => context.push('/today/backlog'),
+            child: const Text('M1 schedule'),
+          ),
+        ),
+      ),
       GoRoute(
         path: '/today',
         builder: (_, _) => const Text('T1 today'),
@@ -103,9 +113,18 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code, skipped,
   Future<void> pump(
     WidgetTester tester, {
     AdaptiveChrome chrome = AdaptiveChrome.material,
+    bool empty = false,
+    String at = '/today/backlog',
   }) async {
     spoken = <String>[];
     await tester.runAsync(open);
+    if (empty) {
+      await tester.runAsync(
+        () => db.customStatement(
+          "UPDATE plan_items SET completed_at = '2026-09-20T08:00:00Z'",
+        ),
+      );
+    }
     addTearDown(
       () => tester.runAsync(() async {
         await settings.dispose();
@@ -121,7 +140,7 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code, skipped,
             theme: AppTheme.light(),
             localizationsDelegates: appLocalizationsDelegates,
             supportedLocales: supportedLocales,
-            routerConfig: router(),
+            routerConfig: router(at: at),
           ),
         ),
       ),
@@ -150,6 +169,55 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code, skipped,
           .data;
 
   Finder word(String german) => find.text(german, findRichText: true);
+
+  group('#109 nothing waiting', () {
+    testWidgets('the tray, "Nothing waiting. Nice." and where words come '
+        'from', (tester) async {
+      await pump(tester, empty: true);
+      expect(find.byType(BacklogEmpty), findsOneWidget);
+      expect(find.text(l10n.backlogEmptyTitle), findsOneWidget);
+      expect(find.text(l10n.backlogEmptyBody), findsOneWidget);
+      final tray = tester.widget<CustomPaint>(
+        find.descendant(
+          of: find.byType(BacklogEmpty),
+          matching: find.byType(CustomPaint),
+        ),
+      );
+      expect(tray.painter, isA<EmptyTrayPainter>());
+      expect((tray.painter! as EmptyTrayPainter).tick, DpPalette.light.easy);
+      // The headline is the screen's name alone: no count, no study.
+      expect(find.text(l10n.backlogTitle), findsNWidgets(2));
+      expect(find.textContaining(l10n.backlogStudyAll(0)), findsNothing);
+      expect(find.byType(AdaptiveSwitch), findsNothing);
+    });
+
+    testWidgets('Back to Today returns to the tab root', (tester) async {
+      // Opened from elsewhere (M1's schedule card), so a plain pop would go
+      // back there rather than to Today.
+      await pump(tester, empty: true, at: '/elsewhere');
+      await tester.tap(find.text('M1 schedule'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text(l10n.backlogBackToToday));
+      await tester.pumpAndSettle();
+      expect(find.text('T1 today'), findsOneWidget);
+      expect(find.byType(BacklogScreen), findsNothing);
+      expect(find.text('M1 schedule'), findsNothing);
+    });
+
+    testWidgets('and it comes when the last word is done', (tester) async {
+      await pump(tester);
+      expect(find.byType(BacklogEmpty), findsNothing);
+      // As a rating would: through drift, so the watchers hear it.
+      await tester.runAsync(
+        () => db.customUpdate(
+          "UPDATE plan_items SET completed_at = '2026-09-21T08:00:00Z'",
+          updates: <drift.TableInfo<drift.Table, Object?>>{db.planItems},
+        ),
+      );
+      await settle(tester);
+      expect(find.byType(BacklogEmpty), findsOneWidget);
+    });
+  });
 
   group('FR-T4-01 the rows', () {
     testWidgets('uncompleted new rows from before today, newest day first', (

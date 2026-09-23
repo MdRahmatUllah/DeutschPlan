@@ -14,6 +14,7 @@ import 'package:drift/drift.dart' show DatabaseConnection, Table, TableInfo;
 import 'package:drift/native.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
+import 'package:drift/drift.dart' as drift show Table, TableInfo;
 import 'package:flutter_test/flutter_test.dart';
 
 import '../db/content_fixture.dart';
@@ -113,6 +114,23 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code, completed_at, 
       expect(view.left, 2);
     },
   );
+
+  test('the backlog count follows the backlog, not the plan at dawn', () async {
+    expect((await container.read(todayViewProvider.future)).backlog, 2);
+
+    // A word studied from T4: its own day's row completes.
+    await db.customUpdate(
+      "UPDATE plan_items SET completed_at = '2026-09-21T08:00:00Z' "
+      "WHERE plan_date = '2026-09-15'",
+      updates: <drift.TableInfo<drift.Table, Object?>>{db.planItems},
+    );
+    await pumpEventQueue();
+
+    final view = await container.read(todayViewProvider.future);
+    expect(view.backlog, 1);
+    expect(view.backlogFrom, '2026-09-16');
+    expect(view.backlogTo, '2026-09-16');
+  });
 
   test('BR-PLAN-09 the estimate is for what is left', () async {
     final view = await container.read(todayViewProvider.future);

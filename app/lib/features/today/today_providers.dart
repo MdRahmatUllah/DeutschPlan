@@ -61,6 +61,15 @@ Future<bool> voiceInstalled(Ref ref) async {
   }
 }
 
+/// The backlog's plan days, newest first, as they change (BR-PLAN-05): a
+/// word studied or removed from T4 takes Today's backlog card with it,
+/// rather than the count the day's plan held at dawn.
+@riverpod
+Stream<List<String>> todayBacklog(Ref ref) => ref
+    .watch(planRepositoryProvider)
+    .watchBacklog(ref.watch(todayProvider))
+    .map((rows) => <String>[for (final row in rows) row.planDate]);
+
 /// Everything T1 draws, rendered from the persisted plan.
 @riverpod
 Future<TodayView> todayView(Ref ref) async {
@@ -80,6 +89,7 @@ Future<TodayView> todayView(Ref ref) async {
   final changes = ref.watch(todayOpenProvider.future);
   final picker = ref.watch(sentencePickerProvider);
   final rating = ref.watch(todaySentencesRatedProvider.future);
+  final waiting = ref.watch(todayBacklogProvider.future);
 
   final plan = await planning;
   final open = await changes;
@@ -94,7 +104,7 @@ Future<TodayView> todayView(Ref ref) async {
   final openRevise = stillOpen(PlanKind.revise, plan.revise);
   final openNew = stillOpen(PlanKind.newWord, plan.newToday);
 
-  final backlog = await plans.backlogDays(date);
+  final backlog = await waiting;
   final started = await plans.courseStartedOn();
   final step = plan.activeStep;
   final counts = step == null ? null : await words.statusCounts(step);
@@ -139,7 +149,7 @@ Future<TodayView> todayView(Ref ref) async {
               removed: update.removed.length,
               changed: update.changed.length,
             ),
-      backlog: plan.backlog.length,
+      backlog: backlog.length,
       dailyNew: settings.read(SettingKeys.dailyNew),
       pauseOn: settings.read(SettingKeys.pauseNewWhenBacklog),
       step: step,
@@ -167,9 +177,9 @@ Future<TodayView> todayView(Ref ref) async {
     grammarDue: plan.grammarDue,
     sentences: BlockProgress(done: rated, total: sentences.length),
     isStudyDay: plan.isStudyDay,
-    backlog: plan.backlog.length,
-    backlogFrom: backlog.from,
-    backlogTo: backlog.to,
+    backlog: backlog.length,
+    backlogFrom: backlog.lastOrNull,
+    backlogTo: backlog.firstOrNull,
     streak: streak,
     estimate: estimate,
     courseDay: started == null ? 1 : daysBetween(started, date) + 1,
