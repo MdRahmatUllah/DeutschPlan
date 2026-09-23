@@ -15,6 +15,7 @@ import 'package:deutschplan/domain/plan_engine.dart' show parsePlanDate;
 import 'package:deutschplan/features/study/study_card.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
 import 'package:flutter/semantics.dart' show CustomSemanticsAction;
+import 'package:deutschplan/router/cross_tab.dart';
 import 'package:deutschplan/router/routes.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -198,58 +199,74 @@ class _Backlog extends ConsumerWidget {
       ),
     };
 
+    // The Oat header, under the status bar.
+    final header = ColoredBox(
+      color: tokens.surface.muted,
+      child: SafeArea(
+        bottom: false,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(8, 0, 16, 16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              SizedBox(
+                height: 56,
+                child: Row(
+                  children: <Widget>[
+                    AdaptiveBackButton(
+                      onPressed: () => Navigator.of(context).maybePop(),
+                    ),
+                    const SizedBox(width: 4),
+                    DpText(l10n.backlogTitle, role: DpTextRole.title),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 8),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    DpText(
+                      // Empty, the headline is the screen's name alone.
+                      rows.isEmpty
+                          ? l10n.backlogTitle
+                          : l10n.backlogCount(rows.length),
+                      role: DpTextRole.headline,
+                    ),
+                    if (intro != null) ...<Widget>[
+                      const SizedBox(height: 4),
+                      DpText(
+                        intro,
+                        role: DpTextRole.label,
+                        weight: 400,
+                        color: tokens.color.textSecondary,
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+
+    // #109: nothing waiting.
+    if (rows.isEmpty) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          header,
+          const Expanded(child: BacklogEmpty()),
+        ],
+      );
+    }
+
     return ListView(
       padding: EdgeInsets.zero,
       children: <Widget>[
-        // The Oat header, under the status bar.
-        ColoredBox(
-          color: tokens.surface.muted,
-          child: SafeArea(
-            bottom: false,
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(8, 0, 16, 16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  SizedBox(
-                    height: 56,
-                    child: Row(
-                      children: <Widget>[
-                        AdaptiveBackButton(
-                          onPressed: () => Navigator.of(context).maybePop(),
-                        ),
-                        const SizedBox(width: 4),
-                        DpText(l10n.backlogTitle, role: DpTextRole.title),
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 8),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        DpText(
-                          l10n.backlogCount(rows.length),
-                          role: DpTextRole.headline,
-                        ),
-                        if (intro != null) ...<Widget>[
-                          const SizedBox(height: 4),
-                          DpText(
-                            intro,
-                            role: DpTextRole.label,
-                            weight: 400,
-                            color: tokens.color.textSecondary,
-                          ),
-                        ],
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-        if (rows.isNotEmpty) ...<Widget>[
+        header,
+        ...<Widget>[
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
             // The artboard's outlined panel: no hard shadow on this screen.
@@ -324,6 +341,110 @@ class _Backlog extends ConsumerWidget {
       ],
     );
   }
+}
+
+/// T4's empty state (`BacklogEmpty`): the tray with its Lime tick,
+/// "Nothing waiting. Nice.", where these words come from, and the way back.
+class BacklogEmpty extends StatelessWidget {
+  const BacklogEmpty({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final tokens = context.tokens;
+    final l10n = AppLocalizations.of(context);
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 32),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          Center(
+            child: CustomPaint(
+              size: const Size(140, 110),
+              painter: EmptyTrayPainter(
+                ink: tokens.color.ink,
+                tick: tokens.color.easy,
+              ),
+            ),
+          ),
+          const SizedBox(height: 16),
+          DpText(
+            l10n.backlogEmptyTitle,
+            role: DpTextRole.title,
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 16),
+          DpText(
+            l10n.backlogEmptyBody,
+            role: DpTextRole.caption,
+            color: tokens.color.textSecondary,
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 24),
+          DpButton(
+            label: l10n.backlogBackToToday,
+            // The tab's root, not whatever opened T4.
+            onPressed: () => context.jumpToTab(const TodayRoute()),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// The empty tray from the artboard: a 3 px ink outline with a Lime tick,
+/// drawn on a 140 × 110 grid.
+class EmptyTrayPainter extends CustomPainter {
+  const EmptyTrayPainter({required this.ink, required this.tick});
+
+  final Color ink;
+  final Color tick;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    canvas.scale(size.width / 140, size.height / 110);
+    final line = Paint()
+      ..color = ink
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 3
+      ..strokeCap = StrokeCap.round
+      ..strokeJoin = StrokeJoin.round;
+    canvas
+      ..drawPath(
+        Path()
+          ..moveTo(20, 60)
+          ..lineTo(34, 30)
+          ..lineTo(106, 30)
+          ..lineTo(120, 60)
+          ..lineTo(120, 94)
+          ..lineTo(20, 94)
+          ..close(),
+        line,
+      )
+      ..drawPath(
+        Path()
+          ..moveTo(20, 60)
+          ..lineTo(54, 60)
+          ..lineTo(62, 72)
+          ..lineTo(78, 72)
+          ..lineTo(86, 60)
+          ..lineTo(120, 60),
+        line,
+      )
+      ..drawCircle(const Offset(108, 26), 14, Paint()..color = tick)
+      ..drawCircle(const Offset(108, 26), 14, line)
+      ..drawPath(
+        Path()
+          ..moveTo(101, 26)
+          ..lineTo(106, 31)
+          ..lineTo(115, 21),
+        line,
+      );
+  }
+
+  @override
+  bool shouldRepaint(EmptyTrayPainter old) =>
+      old.ink != ink || old.tick != tick;
 }
 
 /// "Pause new words until this is clear" (FR-T4-03).
