@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:deutschplan/core/components/dp_rating_bar.dart';
+import 'package:deutschplan/services/tts/tts_engine.dart';
 import 'package:deutschplan/core/adaptive/adaptive.dart';
 import 'package:deutschplan/core/providers/app_providers.dart';
 import 'package:deutschplan/core/theme/app_theme.dart';
@@ -54,9 +56,11 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code) VALUES
     await settings.load();
   }
 
+  final spoken = <String>[];
   List<Override> overrides() => <Override>[
     appDatabaseProvider.overrideWithValue(db),
     settingsProvider.overrideWithValue(settings),
+    systemTtsProvider.overrideWithValue(_Tts(spoken)),
   ];
 
   const args = SessionArgs(
@@ -192,6 +196,47 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code) VALUES
         tester.element(find.byType(StudyScreen)),
       );
     }
+
+    testWidgets('no rating bar before the card is turned over', (tester) async {
+      final container = await pump(tester);
+      expect(find.byType(DpRatingBar), findsNothing);
+      expect(find.text(l10n.studyShowMeaning), findsOneWidget);
+
+      await tester.tap(find.text(l10n.studyShowMeaning));
+      await tester.pump();
+
+      expect(
+        container.read(studySessionProvider(args)).value?.revealed,
+        isTrue,
+      );
+      expect(find.text(l10n.studyShowMeaning), findsNothing);
+    });
+
+    testWidgets('each card starts face down again', (tester) async {
+      final container = await pump(tester);
+      final notifier = container.read(studySessionProvider(args).notifier)
+        ..reveal()
+        ..advance(CardOutcome.good);
+      await tester.pump();
+      expect(notifier.state.value?.revealed, isFalse);
+      expect(find.text(l10n.studyShowMeaning), findsOneWidget);
+    });
+
+    testWidgets('autoplay_headword plays each new card as it comes', (
+      tester,
+    ) async {
+      spoken.clear();
+      final container = await pump(tester);
+      await tester.pump();
+      expect(spoken, <String>['die Straße']);
+
+      container
+          .read(studySessionProvider(args).notifier)
+          .advance(CardOutcome.good);
+      await tester.pump();
+      await tester.pump();
+      expect(spoken, <String>['die Straße', 'das Haus']);
+    });
 
     testWidgets('shows the block and the place in it', (tester) async {
       await pump(tester);
@@ -402,4 +447,19 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code) VALUES
       expect(inside(ClipRRect), findsNothing);
     });
   });
+}
+
+class _Tts implements TtsEngine {
+  _Tts(this.spoken);
+
+  final List<String> spoken;
+
+  @override
+  Future<bool> speak(String text, {double rate = 1}) async {
+    spoken.add(text);
+    return true;
+  }
+
+  @override
+  Future<void> stop() async {}
 }

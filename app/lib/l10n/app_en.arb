@@ -1167,5 +1167,74 @@
   "studyMenuReport": "Report a problem",
   "@studyMenuReport": {
     "description": "T2 overflow menu: open a pre-filled issue on the project."
+  },
+  "studyPosNoun": "Nomen",
+  "@studyPosNoun": {
+    "description": "T2 card caption: the part of speech (noun). German in every UI language — it is part of the course."
+  },
+  "studyPosVerb": "Verb",
+  "@studyPosVerb": {
+    "description": "T2 card caption: the part of speech (verb). German in every UI language — it is part of the course."
+  },
+  "studyPosAdjective": "Adjektiv",
+  "@studyPosAdjective": {
+    "description": "T2 card caption: the part of speech (adjective). German in every UI language — it is part of the course."
+  },
+  "studyPosAdverb": "Adverb",
+  "@studyPosAdverb": {
+    "description": "T2 card caption: the part of speech (adverb). German in every UI language — it is part of the course."
+  },
+  "studyPosPreposition": "Präposition",
+  "@studyPosPreposition": {
+    "description": "T2 card caption: the part of speech (preposition). German in every UI language — it is part of the course."
+  },
+  "studyPosConjunction": "Konjunktion",
+  "@studyPosConjunction": {
+    "description": "T2 card caption: the part of speech (conjunction). German in every UI language — it is part of the course."
+  },
+  "studyPosPronoun": "Pronomen",
+  "@studyPosPronoun": {
+    "description": "T2 card caption: the part of speech (pronoun). German in every UI language — it is part of the course."
+  },
+  "studyPosNumber": "Zahl",
+  "@studyPosNumber": {
+    "description": "T2 card caption: the part of speech (number). German in every UI language — it is part of the course."
+  },
+  "studyPosParticle": "Partikel",
+  "@studyPosParticle": {
+    "description": "T2 card caption: the part of speech (particle). German in every UI language — it is part of the course."
+  },
+  "studyPosArticle": "Artikel",
+  "@studyPosArticle": {
+    "description": "T2 card caption: the part of speech (article). German in every UI language — it is part of the course."
+  },
+  "studyPosPhrase": "Wendung",
+  "@studyPosPhrase": {
+    "description": "T2 card caption: the part of speech (phrase). German in every UI language — it is part of the course."
+  },
+  "studyHint": "Hear it, think of the meaning, then reveal.",
+  "@studyHint": {
+    "description": "T2 hint above Show meaning."
+  },
+  "studyShowMeaning": "Show meaning",
+  "@studyShowMeaning": {
+    "description": "T2 button that turns the card over (FR-T2-01)."
+  },
+  "studyPronounce": "Pronounce",
+  "@studyPronounce": {
+    "description": "T2 speaker button, for screen readers. A long-press plays it slowly."
+  },
+  "studyCopied": "Copied {word}",
+  "@studyCopied": {
+    "description": "T2 toast after a long-press copies the headword (FR-T2-09).",
+    "placeholders": {
+      "word": {
+        "type": "String"
+      }
+    }
+  },
+  "studyCopyHint": "copy the word",
+  "@studyCopyHint": {
+    "description": "T2 headword long-press hint, for screen readers."
   }
 }

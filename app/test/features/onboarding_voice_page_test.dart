@@ -406,7 +406,7 @@ class _FakeTts implements TtsEngine {
   final List<String> spoken = <String>[];
 
   @override
-  Future<bool> speak(String text) async {
+  Future<bool> speak(String text, {double rate = 1}) async {
     if (!available) return false;
     spoken.add(text);
     return true;

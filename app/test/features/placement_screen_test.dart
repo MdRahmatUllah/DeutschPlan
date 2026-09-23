@@ -472,7 +472,7 @@ class _PoolDao extends ContentDao {
 
 class _SilentTts implements TtsEngine {
   @override
-  Future<bool> speak(String text) async => true;
+  Future<bool> speak(String text, {double rate = 1}) async => true;
 
   @override
   Future<void> stop() async {}

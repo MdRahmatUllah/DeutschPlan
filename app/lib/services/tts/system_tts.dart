@@ -16,13 +16,16 @@ class SystemTts implements TtsEngine {
   static const String language = 'de-DE';
 
   @override
-  Future<bool> speak(String text) async {
+  Future<bool> speak(String text, {double rate = 1}) async {
     try {
       // `isLanguageAvailable` answers `true`, `false` or — on some engines —
       // an int. Only a plain yes is a yes: "maybe" is how a learner ends up
       // tapping a speaker that says nothing.
       if (await _tts.isLanguageAvailable(language) != true) return false;
       await _tts.setLanguage(language);
+      // flutter_tts reads 0.5 as the normal rate on both platforms — its
+      // Android side doubles what it is given — so 1 here is 0.5 there.
+      await _tts.setSpeechRate(rate / 2);
       await _tts.speak(text);
       return true;
     } on PlatformException {

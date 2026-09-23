@@ -360,6 +360,32 @@ class DpVerdictRow extends StatelessWidget {
   }
 }
 
+/// A short note that something happened: "Copied".
+abstract final class DpToast {
+  static const Duration duration = Duration(seconds: 2);
+
+  static void show(BuildContext context, String message) {
+    final tokens = context.tokens;
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(
+        SnackBar(
+          duration: duration,
+          backgroundColor: tokens.surface.cardStrong,
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(tokens.shape.button),
+            side: BorderSide(
+              color: tokens.color.ink,
+              width: tokens.surface.outlineWidth,
+            ),
+          ),
+          content: DpText(message, role: DpTextRole.body),
+        ),
+      );
+  }
+}
+
 /// The shared undo affordance.
 ///
 /// Rating, skipping and every word action show one. Four seconds, one action,

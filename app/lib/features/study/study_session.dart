@@ -44,6 +44,7 @@ class StudySessionState {
     required this.items,
     this.position = 0,
     this.results = const <int, CardOutcome>{},
+    this.revealed = false,
   });
 
   /// BR-PLAN-02's order: Revise, then New, then Grammar.
@@ -54,6 +55,10 @@ class StudySessionState {
 
   /// How each card went, by its place in [items].
   final Map<int, CardOutcome> results;
+
+  /// The current card has been turned over (FR-T2-01). Each card starts face
+  /// down, so the rating bar is hidden until then.
+  final bool revealed;
 
   StudyItem? get current => finished ? null : items[position];
   bool get finished => position >= items.length;
@@ -103,6 +108,13 @@ class StudySessionState {
     position: position + 1,
     results: <int, CardOutcome>{...results, position: outcome},
   );
+
+  StudySessionState reveal() => StudySessionState(
+    items: items,
+    position: position,
+    results: results,
+    revealed: true,
+  );
 }
 
 /// T2's session (`docs/04-screens/study-session.md`).
@@ -141,6 +153,13 @@ class StudySession extends _$StudySession {
             if (wanted(block.kind, uid)) StudyItem(block.kind, uid),
       ],
     );
+  }
+
+  /// FR-T2-01: turns the current card over.
+  void reveal() {
+    final current = state.value;
+    if (current == null || current.finished || current.revealed) return;
+    state = AsyncData<StudySessionState>(current.reveal());
   }
 
   /// Moves past the current card, recording how it went.
