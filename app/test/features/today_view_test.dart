@@ -195,6 +195,190 @@ void main() {
     });
   });
 
+  group('FR-T1-06 contextual cards', () {
+    ContextualKind? kind(ContextualFacts facts) => contextualFor(facts)?.kind;
+
+    // Every offer applies at once, so each test can take one away.
+    const everything = ContextualFacts(
+      stepComplete: true,
+      nextStep: 'A2.2',
+      contentUpdate: (
+        version: '202609201200',
+        added: 12,
+        removed: 3,
+        changed: 40,
+      ),
+      backlog: 30,
+      step: 'A2.1',
+      introduced: 500,
+      stepWords: 540,
+      systemVoice: true,
+    );
+
+    test('nothing applies, nothing shows', () {
+      expect(contextualFor(const ContextualFacts()), isNull);
+    });
+
+    test('the order: finished step, update, pause, exams, voice', () {
+      expect(kind(everything), ContextualKind.stepComplete);
+      expect(
+        kind(
+          const ContextualFacts(
+            contentUpdate: (version: 'v', added: 1, removed: 0, changed: 0),
+            backlog: 30,
+            step: 'A2.1',
+            introduced: 500,
+            stepWords: 540,
+            systemVoice: true,
+          ),
+        ),
+        ContextualKind.contentUpdate,
+      );
+      expect(
+        kind(
+          const ContextualFacts(
+            backlog: 30,
+            step: 'A2.1',
+            introduced: 500,
+            stepWords: 540,
+            systemVoice: true,
+          ),
+        ),
+        ContextualKind.pauseOffer,
+      );
+      expect(
+        kind(
+          const ContextualFacts(
+            step: 'A2.1',
+            introduced: 500,
+            stepWords: 540,
+            systemVoice: true,
+          ),
+        ),
+        ContextualKind.examsUnlocked,
+      );
+      expect(
+        kind(const ContextualFacts(systemVoice: true)),
+        ContextualKind.voice,
+      );
+    });
+
+    test('BR-COURSE-05 the last step finished is the course', () {
+      expect(
+        kind(const ContextualFacts(stepComplete: true)),
+        ContextualKind.courseComplete,
+      );
+      expect(contextualFor(everything)?.step, 'A2.2');
+    });
+
+    test('BR-CONTENT-03 the update carries its counts', () {
+      final offer = contextualFor(
+        const ContextualFacts(
+          contentUpdate: (version: 'v1', added: 12, removed: 3, changed: 40),
+        ),
+      )!;
+      expect(
+        (offer.added, offer.removed, offer.changed, offer.version),
+        (12, 3, 40, 'v1'),
+      );
+    });
+
+    test('BR-PLAN-07 the pause offer needs more than 3 × daily_new', () {
+      expect(kind(const ContextualFacts(backlog: 21)), isNull, reason: '= 3×');
+      expect(
+        kind(const ContextualFacts(backlog: 22)),
+        ContextualKind.pauseOffer,
+      );
+      expect(
+        kind(const ContextualFacts(backlog: 22, pauseOn: true)),
+        isNull,
+        reason: 'already paused',
+      );
+      expect(
+        kind(const ContextualFacts(backlog: 16, dailyNew: 5)),
+        ContextualKind.pauseOffer,
+      );
+    });
+
+    test('BR-EXAM-01 exams unlock at exam_unlock_percent of the step', () {
+      const at90 = ContextualFacts(
+        step: 'A2.1',
+        introduced: 486,
+        stepWords: 540,
+      );
+      expect(kind(at90), ContextualKind.examsUnlocked);
+      expect(contextualFor(at90)?.percent, 90);
+      expect(
+        kind(
+          const ContextualFacts(step: 'A2.1', introduced: 485, stepWords: 540),
+        ),
+        isNull,
+      );
+      expect(
+        kind(
+          const ContextualFacts(
+            step: 'A2.1',
+            introduced: 400,
+            stepWords: 540,
+            examUnlockPercent: 70,
+          ),
+        ),
+        ContextualKind.examsUnlocked,
+      );
+    });
+
+    test('a dismissed offer gives way to the next', () {
+      expect(
+        kind(
+          const ContextualFacts(
+            dismissed: <String>{'pause'},
+            backlog: 30,
+            systemVoice: true,
+          ),
+        ),
+        ContextualKind.voice,
+      );
+      expect(
+        kind(
+          const ContextualFacts(
+            dismissed: <String>{'pause', 'voice'},
+            backlog: 30,
+            systemVoice: true,
+          ),
+        ),
+        isNull,
+      );
+    });
+
+    test("a step's exams dismissed do not hide the next step's", () {
+      const facts = ContextualFacts(
+        dismissed: <String>{'exams:A2.1'},
+        step: 'A2.2',
+        introduced: 500,
+        stepWords: 540,
+      );
+      expect(kind(facts), ContextualKind.examsUnlocked);
+    });
+
+    test('what must be answered cannot be dismissed away', () {
+      expect(contextualFor(everything)!.dismissible, isFalse);
+      expect(
+        contextualFor(const ContextualFacts(stepComplete: true))!.dismissible,
+        isFalse,
+      );
+      expect(
+        contextualFor(
+          const ContextualFacts(
+            dismissed: <String>{'pause', 'voice', 'exams:A2.1'},
+            stepComplete: true,
+            nextStep: 'A2.2',
+          ),
+        )?.kind,
+        ContextualKind.stepComplete,
+      );
+    });
+  });
+
   test('the greeting follows the hour', () {
     expect(dayPart(0), DayPart.morning);
     expect(dayPart(10), DayPart.morning);

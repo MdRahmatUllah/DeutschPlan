@@ -149,6 +149,23 @@ void main() {
     }
   });
 
+  test('an update with nothing to report is not shown', () async {
+    // A first install is recorded as a change of nothing; Today must not
+    // announce "0 added · 0 removed · 0 changed".
+    await db.customStatement(
+      "INSERT INTO content_updates (version, changed_json, seen) VALUES "
+      "('202601011200', '{\"added\":[],\"removed\":[],\"changed\":[]}', 0)",
+    );
+    expect(await updater.unseen(), isNull);
+
+    // And it does not hide a real one behind it.
+    await db.customStatement(
+      "INSERT INTO content_updates (version, changed_json, seen) VALUES "
+      "('202512010000', '{\"added\":[\"x\"],\"removed\":[],\"changed\":[]}', 0)",
+    );
+    expect((await updater.unseen())?.version, '202512010000');
+  });
+
   test('an unchanged asset is not an update', () async {
     expect(await updater.runIfNeeded(), isNull);
     expect(await updater.unseen(), isNull);

@@ -46,6 +46,72 @@ void main() {
       ..vocabulary = <String>[for (var i = 1; i <= 500; i++) 'w$i'];
   });
 
+  group('BR-COURSE-05 startNextStep', () {
+    setUp(() {
+      store.wordsByStep = <String, List<String>>{
+        'A1.1': <String>[for (var i = 1; i <= 7; i++) 'a$i'],
+        'A1.2': <String>[for (var i = 1; i <= 50; i++) 'b$i'],
+      };
+    });
+
+    test('enrolls the next step, and today gets its new words', () async {
+      // Auto-advance off: A1.1 runs out on Monday and nothing replaces it.
+      final engine = engineWith(autoAdvance: false);
+      await engine.openDay(monday);
+      store.complete(monday);
+      final tuesday = addDays(monday, 1);
+      final stuck = await engine.openDay(tuesday);
+      expect(stuck.stepComplete, isTrue);
+      expect(stuck.nextStep, 'A1.2');
+
+      final started = await engine.startNextStep(
+        tuesday,
+        dailyNew: 5,
+        studyDaysMask: PlanEngine.allDays,
+      );
+      expect(started, 'A1.2');
+      expect(store.enrollment?.sublevelCode, 'A1.2');
+      expect(store.enrollment?.dailyNew, 5, reason: "the learner's pace now");
+
+      final opened = await engine.openDay(tuesday);
+      expect(opened.activeStep, 'A1.2');
+      expect(opened.newToday, <String>['b1', 'b2', 'b3', 'b4', 'b5']);
+    });
+
+    test('does nothing while a step is active', () async {
+      final engine = engineWith(autoAdvance: false);
+      expect(
+        await engine.startNextStep(
+          monday,
+          dailyNew: 7,
+          studyDaysMask: PlanEngine.allDays,
+        ),
+        isNull,
+      );
+      expect(store.enrolled, isEmpty);
+    });
+
+    test('does nothing at the end of the course', () async {
+      store
+        ..course = <String>['A1.1']
+        ..wordsByStep = <String, List<String>>{
+          'A1.1': <String>[for (var i = 1; i <= 7; i++) 'a$i'],
+        };
+      final engine = engineWith(autoAdvance: false);
+      await engine.openDay(monday);
+      await engine.openDay(addDays(monday, 1));
+
+      expect(
+        await engine.startNextStep(
+          addDays(monday, 1),
+          dailyNew: 7,
+          studyDaysMask: PlanEngine.allDays,
+        ),
+        isNull,
+      );
+    });
+  });
+
   group('FR-T6-02 previewDay', () {
     /// Everything the store holds that planning can change.
     String snapshot() =>

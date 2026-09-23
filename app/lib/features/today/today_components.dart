@@ -470,6 +470,131 @@ class GrammarPreviewCard extends StatelessWidget {
   }
 }
 
+/// FR-T1-06's one contextual card: a coloured strip, what happened, one
+/// action, and a dismiss button where dismissing makes sense.
+///
+/// No artboard draws these on Today, so it borrows the grammar card's shape:
+/// the same bar surface and 6 dp strip, which is what the page already uses
+/// for "something beside the plan".
+class ContextualCard extends StatelessWidget {
+  const ContextualCard({
+    required this.offer,
+    required this.onAction,
+    required this.onDismiss,
+    super.key,
+  });
+
+  final ContextualOffer offer;
+  final VoidCallback onAction;
+  final VoidCallback onDismiss;
+
+  @override
+  Widget build(BuildContext context) {
+    final tokens = context.tokens;
+    final l10n = AppLocalizations.of(context);
+    final edge = tokens.surface.outlineWidth;
+    final step = offer.step ?? '';
+
+    final (
+      Color strip,
+      String title,
+      String body,
+      String? action,
+    ) = switch (offer.kind) {
+      ContextualKind.stepComplete => (
+        tokens.color.easy,
+        l10n.todayCardStepTitle,
+        l10n.todayCardStepBody(step),
+        l10n.todayCardStepAction,
+      ),
+      ContextualKind.courseComplete => (
+        tokens.color.easy,
+        l10n.todayCardCourseTitle,
+        l10n.todayCardCourseBody,
+        null,
+      ),
+      ContextualKind.contentUpdate => (
+        tokens.color.der,
+        l10n.todayCardUpdateTitle,
+        l10n.todayCardUpdateBody(offer.added, offer.removed, offer.changed),
+        null,
+      ),
+      ContextualKind.pauseOffer => (
+        tokens.color.hard,
+        l10n.todayCardPauseTitle,
+        l10n.todayCardPauseBody(offer.backlog),
+        l10n.todayCardPauseAction,
+      ),
+      ContextualKind.examsUnlocked => (
+        tokens.color.primary,
+        l10n.todayCardExamsTitle,
+        l10n.todayCardExamsBody(offer.percent, step),
+        l10n.todayCardExamsAction,
+      ),
+      ContextualKind.voice => (
+        tokens.color.accent,
+        l10n.todayCardVoiceTitle,
+        l10n.todayCardVoiceBody,
+        l10n.todayCardVoiceAction,
+      ),
+    };
+
+    return DpSurface(
+      kind: DpSurfaceKind.bar,
+      padding: EdgeInsets.all(edge),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(tokens.shape.card - edge),
+        child: IntrinsicHeight(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              ColoredBox(color: strip, child: const SizedBox(width: 6)),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      DpText(title, role: DpTextRole.body, weight: 600),
+                      const SizedBox(height: 2),
+                      DpText(
+                        body,
+                        role: DpTextRole.label,
+                        weight: 400,
+                        color: tokens.color.textSecondary,
+                      ),
+                      if (action != null)
+                        DpButton(
+                          label: action,
+                          onPressed: onAction,
+                          kind: DpButtonKind.text,
+                          expand: false,
+                        ),
+                    ],
+                  ),
+                ),
+              ),
+              if (offer.dismissible)
+                Align(
+                  alignment: Alignment.topCenter,
+                  child: _IconAction(
+                    icon: Icons.close,
+                    label: l10n.todayCardDismiss,
+                    colour: tokens.color.textSecondary,
+                    onTap: onDismiss,
+                  ),
+                )
+              else
+                const SizedBox(width: 12),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 /// TodayRest's note: why nothing is planned, and what revising anyway buys.
 class RestDayNote extends StatelessWidget {
   const RestDayNote({required this.view, super.key});

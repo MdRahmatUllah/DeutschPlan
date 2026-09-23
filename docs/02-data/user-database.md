@@ -52,6 +52,7 @@ Created on first launch from `lib/data/db/user_schema.drift`, which is the autho
 | `listening_questions` | 1 | Settings (accessibility) |
 | `last_planned_date` | — | engine |
 | `coach_mark_seen` | 0 | Today — FR-S2-03's one-time mark on the primary button |
+| `dismissed_cards` | — | Today — FR-T1-06's dismissed contextual cards, a JSON list of ids (`pause`, `voice`, `exams:A2.1`) |
 | `learner_name` | — | Me |
 
 ## Migrations

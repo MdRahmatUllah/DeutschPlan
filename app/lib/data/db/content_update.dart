@@ -113,19 +113,25 @@ class ContentUpdater {
   ///
   /// BR-CONTENT-03: the card stays until the learner dismisses it, which is
   /// what `seen` records.
+  ///
+  /// An update with nothing to report is not one to show: a first install is
+  /// recorded as [ContentChange.none], and a card reading "0 added · 0
+  /// removed · 0 changed" would announce a change that did not happen.
   Future<ContentChange?> unseen() async {
-    final row = await _db
+    final rows = await _db
         .customSelect(
           'SELECT version, changed_json FROM content_updates '
-          'WHERE seen = 0 ORDER BY version DESC LIMIT 1',
+          'WHERE seen = 0 ORDER BY version DESC',
         )
-        .getSingleOrNull();
-    if (row == null) return null;
-
-    return ContentChange.fromJson(
-      row.read<String>('version'),
-      row.read<String?>('changed_json') ?? '{}',
-    );
+        .get();
+    for (final row in rows) {
+      final change = ContentChange.fromJson(
+        row.read<String>('version'),
+        row.read<String?>('changed_json') ?? '{}',
+      );
+      if (!change.isEmpty) return change;
+    }
+    return null;
   }
 
   Future<void> markSeen(String version) => _db.customStatement(

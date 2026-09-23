@@ -14,6 +14,7 @@ TodayView artboardToday({
   bool isStudyDay = true,
   int courseDay = 34,
   String? learnerName = 'Maruf',
+  ContextualOffer? contextual,
 }) => TodayView(
   date: '2026-09-21',
   hour: 8,
@@ -24,6 +25,7 @@ TodayView artboardToday({
   grammarDue: <String>[for (var i = 0; i < grammarDue; i++) 'g$i'],
   sentences: BlockProgress(done: sentencesDone, total: 3),
   isStudyDay: isStudyDay,
+  contextual: contextual,
   backlog: backlog,
   backlogFrom: backlog == 0 ? null : '2026-09-15',
   backlogTo: backlog == 0 ? null : '2026-09-16',
