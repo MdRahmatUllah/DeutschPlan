@@ -252,7 +252,7 @@ void main() {
       expect(find.text(l10n.placementBrowsable), findsOneWidget);
     });
 
-    testWidgets('Use takes the step back to page 3', (tester) async {
+    testWidgets('FR-S3-03 Use takes the step back to page 3', (tester) async {
       await finish(tester);
 
       await tester.tap(find.text(l10n.placementUse('A2.2')));
@@ -261,7 +261,7 @@ void main() {
       expect(done, <String?>['A2.2']);
     });
 
-    testWidgets('Choose myself takes nothing back', (tester) async {
+    testWidgets('FR-S3-04 Choose myself takes nothing back', (tester) async {
       await finish(tester);
       await tester.tap(find.text(l10n.placementChooseMyself));
       await tester.pump();
