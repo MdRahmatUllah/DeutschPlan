@@ -216,5 +216,8 @@
   "studyKnowIt": "আমি জানি",
   "studySkip": "বাদ দিন → ব্যাকলগ",
   "studySkipped": "{word} ব্যাকলগে রাখা হলো",
-  "studyKnown": "{word} জানা হিসেবে চিহ্নিত"
+  "studyKnown": "{word} জানা হিসেবে চিহ্নিত",
+  "studyIntervalDays": "{days} দি",
+  "studyRatePrompt": "কতটা মনে ছিল? ব্যবধান দেখায় কবে আবার আসবে।",
+  "studyRated": "{word}: {rating}"
 }

@@ -50,14 +50,8 @@ class RatingService {
     final now = _now();
     final today = _today(now);
 
-    final before = await (_db.select(
-      _db.wordState,
-    )..where((t) => t.wordUid.equals(uid))).getSingleOrNull();
-
-    final scheduler = Fsrs(
-      desiredRetention: _settings.read(SettingKeys.desiredRetention),
-    );
-    final next = scheduler.review(_cardStateOf(before), rating, now.toUtc());
+    final before = await _stateOf(uid);
+    final next = _scheduler().review(_cardStateOf(before), rating, now.toUtc());
 
     await _plan.rate(
       uid: uid,
@@ -82,6 +76,27 @@ class RatingService {
       seconds: seconds,
     );
   }
+
+  /// FR-T2-05: the days each rating would schedule [uid] for.
+  ///
+  /// The same row, scheduler and clock [rate] uses, so the interval under a
+  /// button is the interval that button writes.
+  Future<Map<Rating, int>> preview(String uid) async {
+    final state = _cardStateOf(await _stateOf(uid));
+    final scheduler = _scheduler();
+    final now = _now().toUtc();
+    return <Rating, int>{
+      for (final rating in Rating.values)
+        rating: scheduler.review(state, rating, now).scheduledDays,
+    };
+  }
+
+  Future<WordStateData?> _stateOf(String uid) => (_db.select(
+    _db.wordState,
+  )..where((t) => t.wordUid.equals(uid))).getSingleOrNull();
+
+  Fsrs _scheduler() =>
+      Fsrs(desiredRetention: _settings.read(SettingKeys.desiredRetention));
 
   /// BR-STATUS-04: "I know it" is a first review rated Easy.
   ///

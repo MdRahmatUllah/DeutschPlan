@@ -10,7 +10,9 @@ import 'package:deutschplan/core/theme/dp_tokens.dart';
 import 'package:deutschplan/core/typography/dp_text.dart';
 import 'package:deutschplan/data/repositories/setting_keys.dart';
 import 'package:deutschplan/data/repositories/word_repository.dart';
+import 'package:deutschplan/domain/fsrs.dart' show Rating;
 import 'package:deutschplan/features/study/study_card.dart';
+import 'package:deutschplan/features/study/study_rating.dart';
 import 'package:deutschplan/features/study/study_session.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
 import 'package:deutschplan/router/routes.dart';
@@ -70,16 +72,47 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
 
   /// FR-T2-04 *I know it* or FR-T2-03 *Skip → backlog*, each with its
   /// 4 s *Undo*.
-  Future<void> _act(StudyItem item, {required bool known}) async {
+  Future<void> _act(StudyItem item, {required bool known}) {
+    final notifier = ref.read(studySessionProvider(widget.args).notifier);
     final l10n = AppLocalizations.of(context);
+    return _withUndo(
+      item,
+      known ? notifier.knewIt() : notifier.skip(),
+      (name) => known ? l10n.studyKnown(name) : l10n.studySkipped(name),
+    );
+  }
+
+  /// FR-T2-02: a rating, written and moved past, with its 4 s *Undo*.
+  Future<void> _rate(StudyItem item, Rating rating) {
+    final notifier = ref.read(studySessionProvider(widget.args).notifier);
+    final l10n = AppLocalizations.of(context);
+    final label = switch (rating) {
+      Rating.again => l10n.ratingAgain,
+      Rating.hard => l10n.ratingHard,
+      Rating.good => l10n.ratingGood,
+      Rating.easy => l10n.ratingEasy,
+    };
+    return _withUndo(
+      item,
+      notifier.rate(rating),
+      (name) => l10n.studyRated(name, label),
+    );
+  }
+
+  /// Waits for [write], then offers its *Undo* — the same bar for every
+  /// card action (DpUndo).
+  Future<void> _withUndo(
+    StudyItem item,
+    Future<void> write,
+    String Function(String word) message,
+  ) async {
     final notifier = ref.read(studySessionProvider(widget.args).notifier);
     final word = ref.read(studyWordProvider(item.uid)).value?.word;
-    final name = word == null ? item.uid : spokenForm(word);
-    await (known ? notifier.knewIt() : notifier.skip());
+    await write;
     if (!mounted) return;
     DpUndo.show(
       context,
-      message: known ? l10n.studyKnown(name) : l10n.studySkipped(name),
+      message: message(word == null ? item.uid : spokenForm(word)),
       lift: StudyFrontActions.clearance,
       onUndo: () => unawaited(notifier.undo()),
     );
@@ -224,6 +257,16 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
                     hint: item.kind != SessionBlockKind.newWords,
                   ),
                 ],
+              ),
+            ),
+          // Turned over: the prompt and the rating bar (FR-T2-02, FR-T2-05).
+          if (item != null && item.kind != SessionBlockKind.grammar && revealed)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 32),
+              child: StudyRatingActions(
+                uid: item.uid,
+                prompt: l10n.studyRatePrompt,
+                onRated: (rating) => _rate(item, rating),
               ),
             ),
         ],

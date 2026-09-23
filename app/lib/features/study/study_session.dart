@@ -1,8 +1,9 @@
 import 'package:deutschplan/core/providers/app_providers.dart';
 import 'package:deutschplan/data/repositories/plan_repository.dart'
-    show PlanKind, PlanRepository;
+    show PlanKind, PlanRepository, ReviewSource;
 import 'package:deutschplan/data/repositories/rating_service.dart';
 import 'package:deutschplan/data/repositories/word_repository.dart';
+import 'package:deutschplan/domain/fsrs.dart' show Rating;
 import 'package:deutschplan/router/routes.dart';
 import 'package:flutter/foundation.dart' show immutable;
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -135,6 +136,7 @@ class StudySessionState {
 class StudySession extends _$StudySession {
   @override
   Future<StudySessionState> build(SessionArgs args) async {
+    _shownAt = ref.read(clockProvider)();
     final date = args.planDate;
     // A card rated or skipped since the args were made is not asked again.
     final open = date == null
@@ -180,6 +182,44 @@ class StudySession extends _$StudySession {
 
   /// One write at a time: a double tap must not rate a word twice.
   bool _busy = false;
+
+  /// When the current card came up, for the time a rating records.
+  DateTime? _shownAt;
+
+  /// Seconds on the current card, for `daily_stats` and BR-PLAN-09's
+  /// estimate. ponytail: capped at five minutes, so a phone left on the
+  /// table does not become a 40-minute card; a real idle detector if the
+  /// estimate drifts.
+  int _secondsOnCard() {
+    final shown = _shownAt;
+    if (shown == null) return 0;
+    final seconds = ref.read(clockProvider)().difference(shown).inSeconds;
+    return seconds.clamp(0, 300);
+  }
+
+  /// FR-T2-02: rates the card — one transaction through [RatingService] —
+  /// and moves on.
+  Future<void> rate(Rating rating) => _act((item) async {
+    final date = args.planDate;
+    await _rating.rate(
+      item.uid,
+      rating,
+      source: ReviewSource.daily,
+      planDate: date,
+      kind: date == null
+          ? null
+          : item.kind == SessionBlockKind.newWords
+          ? PlanKind.newWord
+          : PlanKind.revise,
+      seconds: _secondsOnCard(),
+    );
+    advance(switch (rating) {
+      Rating.again => CardOutcome.again,
+      Rating.hard => CardOutcome.hard,
+      Rating.good => CardOutcome.good,
+      Rating.easy => CardOutcome.easy,
+    });
+  });
 
   Future<void> _act(Future<void> Function(StudyItem item) write) async {
     final item = state.value?.current;
@@ -238,6 +278,7 @@ class StudySession extends _$StudySession {
         await _rating.undo();
       }
       state = AsyncData<StudySessionState>(current.back());
+      _shownAt = ref.read(clockProvider)();
     } finally {
       _busy = false;
     }
@@ -255,5 +296,6 @@ class StudySession extends _$StudySession {
     final current = state.value;
     if (current == null || current.finished) return;
     state = AsyncData<StudySessionState>(current.advance(outcome));
+    _shownAt = ref.read(clockProvider)();
   }
 }
