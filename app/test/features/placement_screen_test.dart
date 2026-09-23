@@ -115,6 +115,16 @@ void main() {
     await tester.pump();
   }
 
+  /// A check that settles on A2.2 after nine answers.
+  Future<void> finish(WidgetTester tester) async {
+    await pump(tester);
+    for (final right in <bool>[
+      true, true, true, true, true, true, true, false, true, //
+    ]) {
+      await answer(tester, right: right);
+    }
+  }
+
   group('the check', () {
     testWidgets('starts at A1.1, question 1 of 20', (tester) async {
       await pump(tester);
@@ -145,17 +155,13 @@ void main() {
       expect(dao.asked.last, 'A1.2');
     });
 
-    testWidgets('and it ends with the step it settled on', (tester) async {
+    testWidgets('and it ends on the step it settled on', (tester) async {
       // Six right climb to A2.2; then right, wrong, right hold it there for
-      // three, and after the ninth the check stops.
-      await pump(tester);
-      for (final right in <bool>[
-        true, true, true, true, true, true, true, false, true, //
-      ]) {
-        await answer(tester, right: right);
-      }
+      // three, and after the ninth the check stops — on the result.
+      await finish(tester);
 
-      expect(done, <String?>['A2.2']);
+      expect(find.text('A2.2'), findsOneWidget);
+      expect(done, isEmpty, reason: 'the result waits for a choice');
     });
 
     testWidgets('FR-S3-02 each step is read once, however often it returns', (
@@ -170,6 +176,103 @@ void main() {
       await answer(tester, right: true);
 
       expect(dao.asked.where((s) => s == 'A1.1'), hasLength(1));
+    });
+  });
+
+  group('#94 the result', () {
+    testWidgets('says the score, the step and why', (tester) async {
+      await finish(tester);
+
+      expect(find.text(l10n.placementResultTitle), findsOneWidget);
+      expect(find.text(l10n.placementScore(8, 9)), findsOneWidget);
+      expect(find.text(l10n.placementSuggest.toUpperCase()), findsOneWidget);
+      expect(find.text(l10n.placementRationale('A2.2')), findsOneWidget);
+    });
+
+    testWidgets("breaks it down by the session's own items", (tester) async {
+      // Nine items: A1 had the first four, A2 the other five — word items by
+      // level, and the article items apart, whatever step they were at.
+      await finish(tester);
+      final state = tester.state<PlacementScreenState>(
+        find.byType(PlacementScreen),
+      );
+      final areas = state.currentResult!.areas;
+
+      expect(areas.fold(0, (sum, a) => sum + a.total), 9);
+      for (final area in areas) {
+        final label = area.area == PlacementSession.articles
+            ? l10n.placementAreaArticles(area.correct, area.total)
+            : l10n.placementAreaWords(area.area, area.correct, area.total);
+        expect(find.text(label), findsOneWidget, reason: area.area);
+      }
+    });
+
+    testWidgets('and colours an area Lime from nine in ten, Sun below', (
+      tester,
+    ) async {
+      await finish(tester);
+      final tokens = tester.element(find.byType(PlacementScreen)).tokens;
+      final areas = tester
+          .state<PlacementScreenState>(find.byType(PlacementScreen))
+          .currentResult!
+          .areas;
+
+      for (final area in areas) {
+        final label = area.area == PlacementSession.articles
+            ? l10n.placementAreaArticles(area.correct, area.total)
+            : l10n.placementAreaWords(area.area, area.correct, area.total);
+        final pill = tester.widget<Container>(
+          find
+              .ancestor(of: find.text(label), matching: find.byType(Container))
+              .first,
+        );
+        final fill = (pill.decoration! as BoxDecoration).color;
+        expect(
+          fill,
+          area.correct / area.total >= 0.9
+              ? tokens.color.easy
+              : tokens.color.accent,
+          reason: '${area.area} ${area.correct}/${area.total}',
+        );
+      }
+    });
+
+    test("Lime is the artboard's 9 / 10 and 5 / 5; its 4 / 5 is Sun", () {
+      expect(PlacementResultView.strong(9, 10), isTrue);
+      expect(PlacementResultView.strong(5, 5), isTrue);
+      expect(PlacementResultView.strong(4, 5), isFalse);
+      expect(PlacementResultView.strong(0, 0), isFalse, reason: 'no items');
+    });
+
+    testWidgets('BR-COURSE-04 says the steps skipped stay browsable', (
+      tester,
+    ) async {
+      await finish(tester);
+
+      expect(find.text(l10n.placementBrowsable), findsOneWidget);
+    });
+
+    testWidgets('Use takes the step back to page 3', (tester) async {
+      await finish(tester);
+
+      await tester.tap(find.text(l10n.placementUse('A2.2')));
+      await tester.pump();
+
+      expect(done, <String?>['A2.2']);
+    });
+
+    testWidgets('Choose myself takes nothing back', (tester) async {
+      await finish(tester);
+      await tester.tap(find.text(l10n.placementChooseMyself));
+      await tester.pump();
+      expect(done, <String?>[null]);
+    });
+
+    testWidgets('and nor does closing the result', (tester) async {
+      await finish(tester);
+      await tester.tap(find.bySemanticsLabel(l10n.placementClose));
+      await tester.pump();
+      expect(done, <String?>[null]);
     });
   });
 
