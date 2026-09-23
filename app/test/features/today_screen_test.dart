@@ -492,6 +492,71 @@ void main() {
     });
   });
 
+  group('#97 a rest day', () {
+    testWidgets('says so, with no plan and a safe streak', (tester) async {
+      await pump(tester, view: artboardRest());
+
+      expect(find.text(l10n.todayRestDay), findsOneWidget, reason: 'no name');
+      expect(find.text(l10n.todayRestOff('Sunday')), findsOneWidget);
+      final ring = tester.widget<DpProgressRing>(
+        find.descendant(
+          of: find.byType(ProgressRingCard),
+          matching: find.byType(DpProgressRing),
+        ),
+      );
+      expect(ring.countLabel, l10n.todayRestFree);
+      expect(ring.caption, l10n.todayRestNoPlan);
+      expect(find.text(l10n.todayStreak(12)), findsNothing);
+      expect(find.bySemanticsLabel(l10n.todayStreak(12)), findsOneWidget);
+    });
+
+    testWidgets('Revise is optional, and opens a Revise-only session', (
+      tester,
+    ) async {
+      await pump(tester, view: artboardRest());
+      expect(find.text(l10n.todayReviseOptional(6)), findsOneWidget);
+
+      await tapCard(tester, l10n.todayRevise(6));
+      final blocks = session(tester)!.blocks;
+      expect(blocks.single.kind, SessionBlockKind.revise);
+      expect(blocks.single.uids, hasLength(6));
+    });
+
+    testWidgets('the note says what revising anyway buys: 12 → 6', (
+      tester,
+    ) async {
+      await pump(tester, view: artboardRest());
+      expect(find.text(l10n.todayRestNote), findsOneWidget);
+      expect(find.text(l10n.todayRestLighterLead), findsOneWidget);
+      expect(find.text(l10n.todayRestLighter(12, 6)), findsOneWidget);
+    });
+
+    testWidgets('with today revised, the note has nothing to promise', (
+      tester,
+    ) async {
+      await pump(tester, view: artboardRest(reviseDone: 6));
+      expect(find.text(l10n.todayRestNote), findsOneWidget);
+      // Nothing open to revise: neither the lead nor a "12 → 12" after it.
+      expect(find.text(l10n.todayRestLighterLead), findsNothing);
+      expect(find.text(l10n.todayRestLighter(12, 12)), findsNothing);
+    });
+
+    testWidgets('the study-days link opens Reminder & days', (tester) async {
+      await pump(tester, view: artboardRest());
+      await tester.tap(find.text(l10n.todayRestStudyDays));
+      await tester.pumpAndSettle();
+      expect(location(), '/me/settings/reminder');
+    });
+
+    testWidgets('there is no grammar card and no new-word card', (
+      tester,
+    ) async {
+      await pump(tester, view: artboardRest());
+      expect(find.byType(GrammarPreviewCard), findsNothing);
+      expect(card(l10n.todayNew(0)), findsNothing);
+    });
+  });
+
   group('FR-T1-05 midnight, on a real plan', () {
     late DateTime now;
 

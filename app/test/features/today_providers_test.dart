@@ -213,6 +213,53 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code, completed_at, 
     });
   });
 
+  group('#97 a rest day', () {
+    setUp(() async {
+      // Monday the 21st off, and today not planned yet: the rest day opens
+      // from scratch, with three words due by tomorrow.
+      await db.customStatement(
+        "UPDATE enrollments SET study_days_mask = 126 WHERE sublevel_code = 'A1.1'",
+      );
+      await db.customStatement(
+        "DELETE FROM plan_items WHERE plan_date = '$today'",
+      );
+      await settings.write(
+        SettingKeys.lastPlannedDate,
+        DateTime.utc(2026, 9, 20),
+      );
+      // Course words: a plan row takes its step from the course, so a uid
+      // the course does not have is never planned.
+      await db.customStatement('''
+INSERT INTO word_state (word_uid, status, introduced_on, due, stability, reps, last_review) VALUES
+  ('${ContentFixture.haus}', 'learning', '2026-09-10', '2026-09-21', 2, 2, '2026-09-19'),
+  ('${ContentFixture.tuer}', 'learning', '2026-09-10', '2026-09-21', 2, 2, '2026-09-19'),
+  ('${ContentFixture.strasse}', 'learning', '2026-09-10', '2026-09-22', 3, 2, '2026-09-19'),
+  ('paused', 'suspended', '2026-09-10', '2026-09-21', 2, 2, '2026-09-19')
+''');
+      // The outer setUp already started a build, which raced these writes;
+      // start again from what they left.
+      container
+        ..invalidate(todayPlanProvider)
+        ..invalidate(todayViewProvider);
+    });
+
+    test('BR-PLAN-01 no new words and no backlog growth', () async {
+      final view = await container.read(todayViewProvider.future);
+
+      expect(view.isRestDay, isTrue);
+      expect(view.newToday.total, 0);
+      expect(view.backlog, 2, reason: 'what was waiting still is, no more');
+    });
+
+    test('it knows what revising anyway would take off tomorrow', () async {
+      final view = await container.read(todayViewProvider.future);
+
+      expect(view.dueTomorrow, 3, reason: 'a suspended word is not due');
+      expect(view.revise.open, 3, reason: 'revisions are still picked');
+      expect(view.dueTomorrowIfRevised, 0);
+    });
+  });
+
   group('FR-T1-05 midnight', () {
     test('a new date re-plans for it', () async {
       await container.read(todayViewProvider.future);

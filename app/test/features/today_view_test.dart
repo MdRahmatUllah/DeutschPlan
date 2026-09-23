@@ -165,6 +165,36 @@ void main() {
     });
   });
 
+  group('#97 rest day', () {
+    test('revising anyway takes today\'s open revisions off tomorrow', () {
+      expect(artboardRest().dueTomorrowIfRevised, 12 - 6);
+      expect(artboardRest(reviseDone: 2).dueTomorrowIfRevised, 12 - 4);
+    });
+
+    test('never below zero', () {
+      final view = artboardRest();
+      expect(
+        TodayView(
+          date: view.date,
+          hour: view.hour,
+          revise: view.revise,
+          newToday: view.newToday,
+          openRevise: view.openRevise,
+          openNew: view.openNew,
+          grammarDue: view.grammarDue,
+          isStudyDay: false,
+          backlog: 0,
+          streak: 0,
+          estimate: Duration.zero,
+          courseDay: 1,
+          stepWords: view.stepWords,
+          dueTomorrow: 2,
+        ).dueTomorrowIfRevised,
+        0,
+      );
+    });
+  });
+
   test('the greeting follows the hour', () {
     expect(dayPart(0), DayPart.morning);
     expect(dayPart(10), DayPart.morning);

@@ -151,5 +151,14 @@
   "todayTomorrowRevisions": "{count, plural, other{{count}টি রিভিশন}}",
   "todayTomorrowNew": "{count}টি নতুন",
   "todayTomorrowContinues": "≈ {minutes} মিনিট · {category} চলবে",
-  "todayTomorrowRest": "আগামীকাল বিশ্রামের দিন — কিছু নির্ধারিত নেই।"
+  "todayTomorrowRest": "আগামীকাল বিশ্রামের দিন — কিছু নির্ধারিত নেই।",
+  "todayRestDay": "বিশ্রামের দিন",
+  "todayRestFree": "Frei",
+  "todayRestNoPlan": "কোনো পরিকল্পনা নেই",
+  "todayRestOff": "আপনার পড়ার দিনে {weekday} ছুটি। ধারা নিরাপদ।",
+  "todayRestStudyDays": "সেটিংস → পড়ার দিন থেকে দিন বদলান",
+  "todayReviseOptional": "{count}টি বাকি · আজ ঐচ্ছিক",
+  "todayRestNote": "আজ কিছু নির্ধারিত নেই, জমেও কিছু যাবে না।",
+  "todayRestLighterLead": "তবুও রিভিশন করলে কাল হালকা থাকবে:",
+  "todayRestLighter": "{before} → {after}টি রিভিশন।"
 }
