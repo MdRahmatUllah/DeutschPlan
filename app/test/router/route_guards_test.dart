@@ -167,7 +167,11 @@ void main() {
 
       router.go(
         '/study',
-        extra: const SessionArgs(wordUids: <String>['uid-haus']),
+        extra: const SessionArgs(
+          blocks: <SessionBlock>[
+            SessionBlock(SessionBlockKind.revise, <String>['uid-haus']),
+          ],
+        ),
       );
       await tester.pumpAndSettle();
 
@@ -190,7 +194,14 @@ void main() {
     testWidgets('an empty session is no session', (tester) async {
       await pumpApp(tester, guards: guardsWith());
 
-      router.go('/study', extra: const SessionArgs(wordUids: <String>[]));
+      router.go(
+        '/study',
+        extra: const SessionArgs(
+          blocks: <SessionBlock>[
+            SessionBlock(SessionBlockKind.revise, <String>[]),
+          ],
+        ),
+      );
       await tester.pumpAndSettle();
 
       expect(location(), studyFallback);
@@ -262,7 +273,11 @@ void main() {
 
       router.go(
         '/quiz',
-        extra: const SessionArgs(wordUids: <String>['uid-haus']),
+        extra: const SessionArgs(
+          blocks: <SessionBlock>[
+            SessionBlock(SessionBlockKind.revise, <String>['uid-haus']),
+          ],
+        ),
       );
       await tester.pumpAndSettle();
 
@@ -701,7 +716,11 @@ void main() {
 
       router.push(
         '/study',
-        extra: const SessionArgs(wordUids: <String>['uid-haus']),
+        extra: const SessionArgs(
+          blocks: <SessionBlock>[
+            SessionBlock(SessionBlockKind.revise, <String>['uid-haus']),
+          ],
+        ),
       );
       await tester.pumpAndSettle();
       expect(find.text('T2'), findsOneWidget);

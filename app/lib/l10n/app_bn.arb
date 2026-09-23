@@ -136,5 +136,8 @@
   "todayStart": "{count, plural, other{আজ শুরু করুন · {count}টি কার্ড}}",
   "todayContinue": "চালিয়ে যান · আর {count}টি",
   "todayAllDone": "সব শেষ — কাল দেখা হবে",
-  "todayLoadFailed": "আজকের পরিকল্পনা লোড হয়নি"
+  "todayLoadFailed": "আজকের পরিকল্পনা লোড হয়নি",
+  "todaySentencesAction": "বাক্য অনুশীলন · {count}",
+  "todayBacklogAction": "জমে থাকা দেখুন · {count}",
+  "todayReviseAnyway": "তবুও রিভিশন করুন · {count}"
 }

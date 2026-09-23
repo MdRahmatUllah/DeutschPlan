@@ -62,9 +62,10 @@ class _TodayScreenState extends ConsumerState<TodayScreen> {
     }
   }
 
-  /// FR-T1-04: a session with only [uids], from today's plan.
-  void _study(List<String> uids, String date) =>
-      StudyRoute.open(context, SessionArgs(wordUids: uids, planDate: date));
+  /// A session with [blocks], from today's plan: one block for a section
+  /// card (FR-T1-04), every open one for the button (FR-T1-03).
+  void _study(List<SessionBlock> blocks, String date) =>
+      StudyRoute.open(context, SessionArgs(blocks: blocks, planDate: date));
 
   @override
   Widget build(BuildContext context) {
@@ -117,13 +118,21 @@ class _Plan extends ConsumerWidget {
 
   final TodayView view;
   final Future<void> Function() onRefresh;
-  final void Function(List<String> uids, String date) onStudy;
+  final void Function(List<SessionBlock> blocks, String date) onStudy;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tokens = context.tokens;
     final l10n = AppLocalizations.of(context);
-    final open = <String>[...view.openRevise, ...view.openNew];
+    // Every open block, in BR-PLAN-02's order.
+    final open = <SessionBlock>[
+      if (view.openRevise.isNotEmpty)
+        SessionBlock(SessionBlockKind.revise, view.openRevise),
+      if (view.openNew.isNotEmpty)
+        SessionBlock(SessionBlockKind.newWords, view.openNew),
+      if (view.grammarDue.isNotEmpty)
+        SessionBlock(SessionBlockKind.grammar, view.grammarDue),
+    ];
     final start = open.isEmpty ? null : () => onStudy(open, view.date);
     final step = view.step;
     final grammar = view.grammar;
@@ -143,7 +152,9 @@ class _Plan extends ConsumerWidget {
         ringColour: tokens.color.primary,
         onTap: view.openRevise.isEmpty
             ? null
-            : () => onStudy(view.openRevise, view.date),
+            : () => onStudy(<SessionBlock>[
+                SessionBlock(SessionBlockKind.revise, view.openRevise),
+              ], view.date),
       ),
       if (view.newToday.total > 0)
         PlanSectionCard(
@@ -158,7 +169,9 @@ class _Plan extends ConsumerWidget {
           ringColour: tokens.color.accent,
           onTap: view.openNew.isEmpty
               ? null
-              : () => onStudy(view.openNew, view.date),
+              : () => onStudy(<SessionBlock>[
+                  SessionBlock(SessionBlockKind.newWords, view.openNew),
+                ], view.date),
         ),
       if (view.backlog > 0)
         PlanSectionCard(
@@ -195,10 +208,23 @@ class _Plan extends ConsumerWidget {
         ),
     ];
 
-    final label = switch (todayAction(view)) {
-      TodayAction.start => l10n.todayStart(view.total),
-      TodayAction.resume => l10n.todayContinue(view.left),
+    final button = todayViewState(view);
+    final label = switch (button.action) {
+      TodayAction.start => l10n.todayStart(button.count),
+      TodayAction.resume => l10n.todayContinue(button.count),
+      TodayAction.sentences => l10n.todaySentencesAction(button.count),
+      TodayAction.backlog => l10n.todayBacklogAction(button.count),
       TodayAction.done => l10n.todayAllDone,
+      TodayAction.reviseAnyway => l10n.todayReviseAnyway(button.count),
+    };
+    final VoidCallback? press = switch (button.action) {
+      TodayAction.start || TodayAction.resume => start,
+      TodayAction.sentences => () => SentencesRoute.open(context),
+      TodayAction.backlog => () => context.jumpToTab(const BacklogRoute()),
+      TodayAction.done => null,
+      TodayAction.reviseAnyway => () => onStudy(<SessionBlock>[
+        SessionBlock(SessionBlockKind.revise, view.openRevise),
+      ], view.date),
     };
 
     return Column(
@@ -262,7 +288,11 @@ class _Plan extends ConsumerWidget {
           visible: ref.watch(coachMarkProvider),
           onShown: () => ref.read(coachMarkProvider.notifier).markShown(),
           onDismissed: () => ref.read(coachMarkProvider.notifier).dismiss(),
-          child: PrimaryActionBar(label: label, onPressed: start),
+          child: PrimaryActionBar(
+            action: button.action,
+            label: label,
+            onPressed: press,
+          ),
         ),
       ],
     );

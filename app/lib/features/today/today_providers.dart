@@ -83,6 +83,7 @@ Future<TodayView> todayView(Ref ref) async {
     openRevise: openRevise,
     openNew: openNew,
     grammarDue: plan.grammarDue,
+    isStudyDay: plan.isStudyDay,
     backlog: plan.backlog.length,
     backlogFrom: backlog.from,
     backlogTo: backlog.to,
