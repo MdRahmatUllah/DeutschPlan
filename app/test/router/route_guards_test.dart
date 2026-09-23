@@ -1,6 +1,7 @@
 @TestOn('vm')
 library;
 
+import 'package:deutschplan/features/study/study_screen.dart';
 import 'package:deutschplan/features/today/today_screen.dart';
 
 import '../features/today_fixtures.dart';
@@ -176,7 +177,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(location(), '/study');
-      expect(find.text('T2'), findsOneWidget);
+      expect(find.byType(StudyScreen), findsOneWidget);
     });
 
     testWidgets('without one it goes to Today', (tester) async {
@@ -723,7 +724,7 @@ void main() {
         ),
       );
       await tester.pumpAndSettle();
-      expect(find.text('T2'), findsOneWidget);
+      expect(find.byType(StudyScreen), findsOneWidget);
       expect(find.byType(AppShell), findsNothing);
 
       router.pop();

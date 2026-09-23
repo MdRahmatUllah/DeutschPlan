@@ -67,8 +67,11 @@ class _TodayScreenState extends ConsumerState<TodayScreen> {
 
   /// A session with [blocks], from today's plan: one block for a section
   /// card (FR-T1-04), every open one for the button (FR-T1-03).
-  void _study(List<SessionBlock> blocks, String date) =>
-      StudyRoute.open(context, SessionArgs(blocks: blocks, planDate: date));
+  void _study(List<SessionBlock> blocks, String date, [Rect? origin]) =>
+      StudyRoute.open(
+        context,
+        SessionArgs(blocks: blocks, planDate: date, origin: origin),
+      );
 
   @override
   Widget build(BuildContext context) {
@@ -121,7 +124,8 @@ class _Plan extends ConsumerWidget {
 
   final TodayView view;
   final Future<void> Function() onRefresh;
-  final void Function(List<SessionBlock> blocks, String date) onStudy;
+  final void Function(List<SessionBlock> blocks, String date, [Rect? origin])
+  onStudy;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -136,7 +140,9 @@ class _Plan extends ConsumerWidget {
       if (view.grammarDue.isNotEmpty)
         SessionBlock(SessionBlockKind.grammar, view.grammarDue),
     ];
-    final start = open.isEmpty ? null : () => onStudy(open, view.date);
+    final start = open.isEmpty
+        ? null
+        : ([Rect? origin]) => onStudy(open, view.date, origin);
     final step = view.step;
     final grammar = view.grammar;
 
@@ -145,17 +151,23 @@ class _Plan extends ConsumerWidget {
     // TodayRest: revising is optional, and a note says what it buys.
     final restDay = <Widget>[
       if (view.revise.total > 0)
-        PlanSectionCard(
-          icon: Icons.autorenew,
-          tile: tokens.color.primary,
-          title: l10n.todayRevise(view.revise.total),
-          subtitle: l10n.todayReviseOptional(view.revise.open),
-          trailing: SectionTrailing.open,
-          onTap: view.openRevise.isEmpty
-              ? null
-              : () => onStudy(<SessionBlock>[
-                  SessionBlock(SessionBlockKind.revise, view.openRevise),
-                ], view.date),
+        Builder(
+          builder: (card) => PlanSectionCard(
+            icon: Icons.autorenew,
+            tile: tokens.color.primary,
+            title: l10n.todayRevise(view.revise.total),
+            subtitle: l10n.todayReviseOptional(view.revise.open),
+            trailing: SectionTrailing.open,
+            onTap: view.openRevise.isEmpty
+                ? null
+                : () => onStudy(
+                    <SessionBlock>[
+                      SessionBlock(SessionBlockKind.revise, view.openRevise),
+                    ],
+                    view.date,
+                    originOf(card),
+                  ),
+          ),
         ),
       if (view.sentences.total > 0)
         PlanSectionCard(
@@ -176,43 +188,61 @@ class _Plan extends ConsumerWidget {
             if (tomorrow != null) TomorrowCard(tomorrow: tomorrow),
           ]
         : <Widget>[
-            PlanSectionCard(
-              icon: Icons.autorenew,
-              tile: tokens.color.primary,
-              title: l10n.todayRevise(view.revise.total),
-              subtitle: switch (view.revise.total) {
-                0 when view.firstDay => l10n.todayReviseFirstDay,
-                0 => l10n.todayReviseNone,
-                final count => l10n.todayReviseDue(count),
-              },
-              trailing: _trailing(view.revise),
-              progress: view.revise,
-              ringColour: tokens.color.primary,
-              onTap: view.openRevise.isEmpty
-                  ? null
-                  : () => onStudy(<SessionBlock>[
-                      SessionBlock(SessionBlockKind.revise, view.openRevise),
-                    ], view.date),
+            Builder(
+              builder: (card) => PlanSectionCard(
+                icon: Icons.autorenew,
+                tile: tokens.color.primary,
+                title: l10n.todayRevise(view.revise.total),
+                subtitle: switch (view.revise.total) {
+                  0 when view.firstDay => l10n.todayReviseFirstDay,
+                  0 => l10n.todayReviseNone,
+                  final count => l10n.todayReviseDue(count),
+                },
+                trailing: _trailing(view.revise),
+                progress: view.revise,
+                ringColour: tokens.color.primary,
+                onTap: view.openRevise.isEmpty
+                    ? null
+                    : () => onStudy(
+                        <SessionBlock>[
+                          SessionBlock(
+                            SessionBlockKind.revise,
+                            view.openRevise,
+                          ),
+                        ],
+                        view.date,
+                        originOf(card),
+                      ),
+              ),
             ),
             if (view.newToday.total > 0)
-              PlanSectionCard(
-                icon: Icons.star_outline,
-                tile: tokens.color.accent,
-                title: l10n.todayNew(view.newToday.total),
-                subtitle: view.newCategory == null
-                    ? l10n.todayNewPlain(view.newToday.total)
-                    : l10n.todayNewCategory(
-                        view.newToday.total,
-                        view.newCategory!,
-                      ),
-                trailing: _trailing(view.newToday),
-                progress: view.newToday,
-                ringColour: tokens.color.accent,
-                onTap: view.openNew.isEmpty
-                    ? null
-                    : () => onStudy(<SessionBlock>[
-                        SessionBlock(SessionBlockKind.newWords, view.openNew),
-                      ], view.date),
+              Builder(
+                builder: (card) => PlanSectionCard(
+                  icon: Icons.star_outline,
+                  tile: tokens.color.accent,
+                  title: l10n.todayNew(view.newToday.total),
+                  subtitle: view.newCategory == null
+                      ? l10n.todayNewPlain(view.newToday.total)
+                      : l10n.todayNewCategory(
+                          view.newToday.total,
+                          view.newCategory!,
+                        ),
+                  trailing: _trailing(view.newToday),
+                  progress: view.newToday,
+                  ringColour: tokens.color.accent,
+                  onTap: view.openNew.isEmpty
+                      ? null
+                      : () => onStudy(
+                          <SessionBlock>[
+                            SessionBlock(
+                              SessionBlockKind.newWords,
+                              view.openNew,
+                            ),
+                          ],
+                          view.date,
+                          originOf(card),
+                        ),
+                ),
               ),
             if (view.backlog > 0)
               PlanSectionCard(
@@ -258,14 +288,16 @@ class _Plan extends ConsumerWidget {
       TodayAction.done => l10n.todayAllDone,
       TodayAction.reviseAnyway => l10n.todayReviseAnyway(button.count),
     };
-    final VoidCallback? press = switch (button.action) {
+    final void Function([Rect? origin])? press = switch (button.action) {
       TodayAction.start || TodayAction.resume => start,
-      TodayAction.sentences => () => SentencesRoute.open(context),
-      TodayAction.backlog => () => context.jumpToTab(const BacklogRoute()),
+      TodayAction.sentences => ([_]) => SentencesRoute.open(context),
+      TodayAction.backlog => ([_]) => context.jumpToTab(const BacklogRoute()),
       TodayAction.done => null,
-      TodayAction.reviseAnyway => () => onStudy(<SessionBlock>[
-        SessionBlock(SessionBlockKind.revise, view.openRevise),
-      ], view.date),
+      TodayAction.reviseAnyway => ([origin]) => onStudy(
+        <SessionBlock>[SessionBlock(SessionBlockKind.revise, view.openRevise)],
+        view.date,
+        origin,
+      ),
     };
 
     return Column(
@@ -293,16 +325,21 @@ class _Plan extends ConsumerWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: <Widget>[
-                        ProgressRingCard(
-                          view: view,
-                          onStart: start,
-                          onStep: () {
-                            if (step != null) {
-                              context.jumpToTab(LearnStepRoute(code: step));
-                            }
-                          },
-                          onStudyDays: () =>
-                              context.jumpToTab(const ReminderSettingsRoute()),
+                        Builder(
+                          builder: (ring) => ProgressRingCard(
+                            view: view,
+                            onStart: start == null
+                                ? null
+                                : () => start(originOf(ring)),
+                            onStep: () {
+                              if (step != null) {
+                                context.jumpToTab(LearnStepRoute(code: step));
+                              }
+                            },
+                            onStudyDays: () => context.jumpToTab(
+                              const ReminderSettingsRoute(),
+                            ),
+                          ),
                         ),
                         for (var i = 0; i < sections.length; i++) ...<Widget>[
                           SizedBox(height: i == 0 ? 16 : 10),
@@ -340,10 +377,12 @@ class _Plan extends ConsumerWidget {
           visible: ref.watch(coachMarkProvider),
           onShown: () => ref.read(coachMarkProvider.notifier).markShown(),
           onDismissed: () => ref.read(coachMarkProvider.notifier).dismiss(),
-          child: PrimaryActionBar(
-            action: button.action,
-            label: label,
-            onPressed: press,
+          child: Builder(
+            builder: (bar) => PrimaryActionBar(
+              action: button.action,
+              label: label,
+              onPressed: press == null ? null : () => press(originOf(bar)),
+            ),
           ),
         ),
       ],
@@ -406,6 +445,14 @@ class _Plan extends ConsumerWidget {
       );
     }
     ref.invalidate(todayViewProvider);
+  }
+
+  /// Where [context]'s widget is on screen: the rect a session grows from.
+  static Rect? originOf(BuildContext context) {
+    final box = context.findRenderObject();
+    return box is RenderBox && box.hasSize
+        ? box.localToGlobal(Offset.zero) & box.size
+        : null;
   }
 
   static SectionTrailing _trailing(BlockProgress block) {

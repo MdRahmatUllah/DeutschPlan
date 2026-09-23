@@ -70,5 +70,11 @@
         <intent>
             <action android:name="android.intent.action.TTS_SERVICE"/>
         </intent>
+        <!-- Web links: T2's "Report a problem", and the dictionary links.
+             Android 11+ will not say a browser can open them otherwise. -->
+        <intent>
+            <action android:name="android.intent.action.VIEW"/>
+            <data android:scheme="https"/>
+        </intent>
     </queries>
 </manifest>

@@ -177,5 +177,18 @@
   "todayCardVoiceTitle": "আরও ভালো কণ্ঠ",
   "todayCardVoiceBody": "Supertonic আরও স্বাভাবিক জার্মান বলে এবং অফলাইনে চলে।",
   "todayCardVoiceAction": "কণ্ঠের সেটিংস",
-  "todayCardDismiss": "সরিয়ে দিন"
+  "todayCardDismiss": "সরিয়ে দিন",
+  "studyBlockRevise": "রিভিশন · {index} / {total}",
+  "studyBlockNew": "আজ নতুন · {index} / {total}",
+  "studyBlockGrammar": "ব্যাকরণ · {index} / {total}",
+  "studyBannerRevise": "Wiederholen",
+  "studyBannerNew": "Neue Wörter",
+  "studyBannerNewCategory": "Neue Wörter · {category}",
+  "studyBannerGrammar": "Grammatik",
+  "studyClose": "সেশন বন্ধ করুন",
+  "studyMenu": "আরও",
+  "studyMenuAutoplay": "শব্দটি নিজে থেকে বাজান",
+  "studyMenuSpeed": "কথার গতি",
+  "studyMenuWordDetails": "শব্দের বিস্তারিত",
+  "studyMenuReport": "সমস্যা জানান"
 }
