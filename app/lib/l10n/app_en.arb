@@ -332,5 +332,101 @@
   "weekdaySun": "Sunday",
   "@weekdaySun": {
     "description": "Sunday, read aloud for its chip."
+  },
+  "onboardingVoiceHeadline": "Reminder and voice",
+  "@onboardingVoiceHeadline": {
+    "description": "S2 page 5 headline."
+  },
+  "onboardingReminder": "Daily reminder",
+  "@onboardingReminder": {
+    "description": "S2 page 5: the reminder switch's label."
+  },
+  "onboardingReminderOff": "Off · asks for permission only when switched on",
+  "@onboardingReminderOff": {
+    "description": "S2 page 5, under the reminder while it is off (FR-S2-05)."
+  },
+  "onboardingReminderOn": "On · every study day at {time}",
+  "@onboardingReminderOn": {
+    "description": "S2 page 5, under the reminder while it is on.",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "onboardingReminderBlocked": "Notifications are blocked · allow them in your phone's settings",
+  "@onboardingReminderBlocked": {
+    "description": "S2 page 5: the learner switched the reminder on and the platform refused."
+  },
+  "onboardingReminderTime": "Reminder time, {time}",
+  "@onboardingReminderTime": {
+    "description": "S2 page 5: the time button, for a screen reader.",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "onboardingVoiceSample": "Guten Tag!",
+  "@onboardingVoiceSample": {
+    "description": "Fixed German UI copy — the phrase the voice preview speaks. The same in every locale; it is the German being heard."
+  },
+  "onboardingVoiceHear": "Hear it: „{sample}“",
+  "@onboardingVoiceHear": {
+    "description": "S2 page 5: the voice preview's label. sample is the fixed German phrase.",
+    "placeholders": {
+      "sample": {
+        "type": "String"
+      }
+    }
+  },
+  "onboardingVoiceSystem": "Plays with your phone's German voice",
+  "@onboardingVoiceSystem": {
+    "description": "S2 page 5, under the preview."
+  },
+  "onboardingVoiceMissing": "No German voice on this phone · the voice below works offline",
+  "@onboardingVoiceMissing": {
+    "description": "S2 page 5: the preview found no German system voice."
+  },
+  "onboardingVoicePlay": "Play sample",
+  "@onboardingVoicePlay": {
+    "description": "S2 page 5: the speaker button, for a screen reader."
+  },
+  "onboardingSupertonicTitle": "A better voice, optional",
+  "@onboardingSupertonicTitle": {
+    "description": "S2 page 5: the Supertonic card's title."
+  },
+  "onboardingSupertonicBody": "Supertonic speaks German more naturally and works offline. About {megabytes} MB, downloaded once.",
+  "@onboardingSupertonicBody": {
+    "description": "S2 page 5: the Supertonic card. megabytes is the manifest's size, rounded.",
+    "placeholders": {
+      "megabytes": {
+        "type": "int"
+      }
+    }
+  },
+  "onboardingSupertonicDownload": "Download now",
+  "@onboardingSupertonicDownload": {
+    "description": "S2 page 5: starts the Supertonic download (FR-S2-06)."
+  },
+  "onboardingSupertonicLater": "Later",
+  "@onboardingSupertonicLater": {
+    "description": "S2 page 5: declines the download for now."
+  },
+  "onboardingSupertonicStarted": "Downloading in the background · keep going",
+  "@onboardingSupertonicStarted": {
+    "description": "S2 page 5: the download is queued; onboarding carries on."
+  },
+  "onboardingSupertonicDeferred": "You can download it any time in Settings",
+  "@onboardingSupertonicDeferred": {
+    "description": "S2 page 5: after Later."
+  },
+  "onboardingSupertonicFailed": "Couldn't start the download · try again, or later in Settings",
+  "@onboardingSupertonicFailed": {
+    "description": "S2 page 5: queueing the download failed."
+  },
+  "onboardingStartLearning": "Start learning",
+  "@onboardingStartLearning": {
+    "description": "S2 page 5: finishes setup (FR-S2-03)."
   }
 }

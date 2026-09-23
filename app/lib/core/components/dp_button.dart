@@ -33,6 +33,7 @@ class DpButton extends StatefulWidget {
     this.icon,
     this.expand = true,
     this.colour,
+    this.onColour,
   });
 
   final String label;
@@ -51,6 +52,10 @@ class DpButton extends StatefulWidget {
   /// button has no fill, so on one this is the label: S2's *Skip* is ink on
   /// the coloured header, where the link colour would all but vanish.
   final Color? colour;
+
+  /// The label on a [colour] fill, when the kind's own would not read on it —
+  /// dark ink on dark mode's Sun, where the page ink is the light one.
+  final Color? onColour;
 
   /// Visual heights from the artboard. These are the drawn sizes; the hit area
   /// is padded to [minimumTapTarget] where the drawing is smaller, because
@@ -89,11 +94,13 @@ class _DpButtonState extends State<DpButton> {
       DpButtonKind.text => null,
     };
 
-    final foreground = switch (kind) {
-      DpButtonKind.primary => tokens.color.onPrimary,
-      DpButtonKind.secondary => tokens.color.ink,
-      DpButtonKind.text => widget.colour ?? tokens.color.link,
-    };
+    final foreground =
+        widget.onColour ??
+        switch (kind) {
+          DpButtonKind.primary => tokens.color.onPrimary,
+          DpButtonKind.secondary => tokens.color.ink,
+          DpButtonKind.text => widget.colour ?? tokens.color.link,
+        };
 
     final role = kind == DpButtonKind.primary
         ? DpTextRole.bodyLarge
