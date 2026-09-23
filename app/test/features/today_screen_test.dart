@@ -527,6 +527,7 @@ void main() {
     ) async {
       await pump(tester, view: artboardRest());
       expect(find.text(l10n.todayRestNote), findsOneWidget);
+      expect(find.text(l10n.todayRestLighterLead), findsOneWidget);
       expect(find.text(l10n.todayRestLighter(12, 6)), findsOneWidget);
     });
 
@@ -535,7 +536,8 @@ void main() {
     ) async {
       await pump(tester, view: artboardRest(reviseDone: 6));
       expect(find.text(l10n.todayRestNote), findsOneWidget);
-      // Nothing open to revise, so no "12 → 12" promise either.
+      // Nothing open to revise: neither the lead nor a "12 → 12" after it.
+      expect(find.text(l10n.todayRestLighterLead), findsNothing);
       expect(find.text(l10n.todayRestLighter(12, 12)), findsNothing);
     });
 

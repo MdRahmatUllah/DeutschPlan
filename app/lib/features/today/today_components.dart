@@ -487,15 +487,19 @@ class RestDayNote extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           DpText(l10n.todayRestNote, role: DpTextRole.body),
-          // ponytail: the artboard bolds this inline; DpText has no spans,
-          // so it takes its own line. Add emphasis to DpText if another
-          // screen needs the same.
-          if (view.revise.open > 0 && before > 0)
+          // Only with something to revise: a lead with no numbers after it
+          // would promise and stop.
+          if (view.revise.open > 0 && before > 0) ...<Widget>[
+            DpText(l10n.todayRestLighterLead, role: DpTextRole.body),
+            // ponytail: the artboard bolds this inline; DpText has no spans,
+            // so it takes its own line. Add emphasis to DpText if another
+            // screen needs the same.
             DpText(
               l10n.todayRestLighter(before, view.dueTomorrowIfRevised),
               role: DpTextRole.body,
               weight: 700,
             ),
+          ],
         ],
       ),
     );

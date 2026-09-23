@@ -158,6 +158,7 @@
   "todayRestOff": "আপনার পড়ার দিনে {weekday} ছুটি। ধারা নিরাপদ।",
   "todayRestStudyDays": "সেটিংস → পড়ার দিন থেকে দিন বদলান",
   "todayReviseOptional": "{count}টি বাকি · আজ ঐচ্ছিক",
-  "todayRestNote": "আজ কিছু নির্ধারিত নেই, জমেও কিছু যাবে না। তবুও রিভিশন করলে কাল হালকা থাকবে:",
+  "todayRestNote": "আজ কিছু নির্ধারিত নেই, জমেও কিছু যাবে না।",
+  "todayRestLighterLead": "তবুও রিভিশন করলে কাল হালকা থাকবে:",
   "todayRestLighter": "{before} → {after}টি রিভিশন।"
 }

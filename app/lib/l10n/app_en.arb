@@ -970,9 +970,13 @@
       }
     }
   },
-  "todayRestNote": "Nothing is scheduled and nothing moves to the backlog. Revising anyway keeps tomorrow lighter:",
+  "todayRestNote": "Nothing is scheduled and nothing moves to the backlog.",
   "@todayRestNote": {
     "description": "TodayRest note (BR-PLAN-01)."
+  },
+  "todayRestLighterLead": "Revising anyway keeps tomorrow lighter:",
+  "@todayRestLighterLead": {
+    "description": "TodayRest note, second sentence; shown only with the numbers after it."
   },
   "todayRestLighter": "{before} → {after} revisions.",
   "@todayRestLighter": {
