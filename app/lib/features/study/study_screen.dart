@@ -233,7 +233,11 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
     // Every way out clears the session: the X, Android's back, the iOS swipe.
     return PopScope(
       onPopInvokedWithResult: (didPop, _) {
-        if (didPop) ref.invalidate(studySessionProvider(widget.args));
+        if (!didPop) return;
+        // The undo bar belongs to the app's messenger, not this route: left
+        // up, its *Undo* would reach a session that no longer exists.
+        ScaffoldMessenger.maybeOf(context)?.hideCurrentSnackBar();
+        ref.invalidate(studySessionProvider(widget.args));
       },
       child: AdaptiveScaffold(
         backgroundColor: tokens.isGlass

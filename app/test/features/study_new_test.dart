@@ -293,6 +293,62 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code) VALUES
       expect((await tester.runAsync(() => row(haus)))!['skipped'], 0);
     });
 
+    testWidgets('closing the session takes its undo bar with it', (
+      tester,
+    ) async {
+      await tester.runAsync(open);
+      addTearDown(
+        () => tester.runAsync(() async {
+          await settings.dispose();
+          await db.close();
+        }),
+      );
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: overrides(),
+          child: MaterialApp(
+            theme: AppTheme.light(),
+            localizationsDelegates: appLocalizationsDelegates,
+            supportedLocales: supportedLocales,
+            home: Builder(
+              builder: (context) => Scaffold(
+                body: Center(
+                  child: TextButton(
+                    onPressed: () => Navigator.of(context).push(
+                      MaterialPageRoute<void>(
+                        builder: (_) => const StudyScreen(args: args),
+                      ),
+                    ),
+                    child: const Text('open'),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.tap(find.text('open'));
+      await tester.pumpAndSettle();
+      await tester.pump(StudyScreen.bannerTime);
+      await tester.pumpAndSettle();
+      final container = ProviderScope.containerOf(
+        tester.element(find.byType(StudyScreen)),
+      );
+      await toNew(tester, container);
+      await tester.runAsync(() async {
+        await tester.tap(find.text(l10n.studySkip));
+        await Future<void>.delayed(const Duration(milliseconds: 50));
+      });
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 750));
+      expect(find.text(l10n.studySkipped('das Haus')), findsOneWidget);
+
+      await tester.tap(find.bySemanticsLabel(l10n.studyClose));
+      await tester.pumpAndSettle();
+      expect(find.byType(StudyScreen), findsNothing);
+      expect(find.text(l10n.undo), findsNothing);
+    });
+
     testWidgets('FR-T2-04 I know it moves on, with its own Undo', (
       tester,
     ) async {
