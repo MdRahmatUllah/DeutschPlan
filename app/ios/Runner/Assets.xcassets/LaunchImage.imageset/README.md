@@ -1,6 +1,6 @@
 # Launch image
 
-Generated — do not edit by hand. These six PNGs are `SplashMark` rendered by
+Generated — do not edit by hand. These six PNGs are `SplashLockup` rendered by
 `app/test/golden/ios_launch_image_golden_test.dart`, so the launch screen shows
 the mark Flutter's first frame draws. After changing the mark:
 
