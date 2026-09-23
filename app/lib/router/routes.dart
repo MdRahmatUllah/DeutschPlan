@@ -717,6 +717,11 @@ class SentencesRoute extends GoRouteData with $SentencesRoute {
   static void open(BuildContext context) =>
       unawaited(context.push<void>(const SentencesRoute().location));
 
+  /// T5 in place of the screen on top — T3's next step, so closing T5
+  /// returns to Today rather than to a finished session.
+  static void instead(BuildContext context) =>
+      context.pushReplacement(const SentencesRoute().location);
+
   @override
   Widget build(BuildContext context, GoRouterState state) =>
       const PlaceholderScreen(title: 'Sentences', screen: 'T5');
@@ -725,6 +730,11 @@ class SentencesRoute extends GoRouteData with $SentencesRoute {
 @TypedGoRoute<DayCompleteRoute>(path: '/day-complete')
 class DayCompleteRoute extends GoRouteData with $DayCompleteRoute {
   const DayCompleteRoute();
+
+  /// T6 in place of the finished session (T3: "skipped entirely — T6 shown
+  /// instead — when the day is complete and no sentences are open").
+  static void instead(BuildContext context) =>
+      context.pushReplacement(const DayCompleteRoute().location);
 
   @override
   Widget build(BuildContext context, GoRouterState state) =>
@@ -739,6 +749,10 @@ class GrammarPracticeRoute extends GoRouteData with $GrammarPracticeRoute {
   static void open(BuildContext context, GrammarPracticeArgs args) => unawaited(
     context.push<void>(const GrammarPracticeRoute().location, extra: args),
   );
+
+  /// L15 in place of the finished session: T3's next step.
+  static void instead(BuildContext context, GrammarPracticeArgs args) => context
+      .pushReplacement(const GrammarPracticeRoute().location, extra: args);
 
   @override
   Widget build(BuildContext context, GoRouterState state) {

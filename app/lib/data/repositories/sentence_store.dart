@@ -98,13 +98,17 @@ WHERE s.status IN ('learning', 'done')
       });
 
   /// How many of [date]'s sentences have been rated: Today's done count.
-  Stream<int> watchRated(PlanDate date) => _db
-      .customSelect(
-        'SELECT COUNT(*) AS n FROM sentence_log '
-        'WHERE shown_on = ?1 AND self_rating IS NOT NULL',
-        variables: <Variable<Object>>[Variable<String>(date)],
-        readsFrom: <ResultSetImplementation<Object, Object>>{_db.sentenceLog},
-      )
-      .watchSingle()
-      .map((row) => row.read<int>('n'));
+  Stream<int> watchRated(PlanDate date) =>
+      _rated(date).watchSingle().map((row) => row.read<int>('n'));
+
+  /// [watchRated], once: T3's "Practice 3 sentences".
+  Future<int> rated(PlanDate date) async =>
+      (await _rated(date).getSingle()).read<int>('n');
+
+  Selectable<QueryRow> _rated(PlanDate date) => _db.customSelect(
+    'SELECT COUNT(*) AS n FROM sentence_log '
+    'WHERE shown_on = ?1 AND self_rating IS NOT NULL',
+    variables: <Variable<Object>>[Variable<String>(date)],
+    readsFrom: <ResultSetImplementation<Object, Object>>{_db.sentenceLog},
+  );
 }

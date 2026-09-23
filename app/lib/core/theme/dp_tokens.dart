@@ -321,6 +321,7 @@ class DpSurfaceTokens {
     this.highlight = const Color(0x00FFFFFF),
     this.sheen = const Color(0x00FFFFFF),
     this.auroraOpacity = 0,
+    this.scrim = const Color(0x5215121F),
   });
 
   static const DpSurfaceTokens light = DpSurfaceTokens(
@@ -398,6 +399,10 @@ class DpSurfaceTokens {
   final Color cardStrong;
   final Color muted;
   final Color outline;
+
+  /// Behind a sheet laid over a screen: the Summary artboards' ink at 32 %,
+  /// the same in every mode.
+  final Color scrim;
   final double outlineWidth;
   final double strongOutlineWidth;
 
@@ -422,6 +427,7 @@ class DpSurfaceTokens {
 
   DpSurfaceTokens lerp(DpSurfaceTokens other, double t) => DpSurfaceTokens(
     paper: Color.lerp(paper, other.paper, t)!,
+    scrim: Color.lerp(scrim, other.scrim, t)!,
     card: Color.lerp(card, other.card, t)!,
     cardStrong: Color.lerp(cardStrong, other.cardStrong, t)!,
     muted: Color.lerp(muted, other.muted, t)!,

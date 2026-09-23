@@ -31,6 +31,7 @@ Container(color: t.surface.card, …)  // never Color(0xFFFFFFFF)
 | `textSecondary` | #5B5670 | #B7B1CC | #5B5670 |
 | `inverseLink` (on the ink snackbar) | #00C2B2 | #007A70 | as light |
 | `outline` | ink 20 % | #F4F1FF 22 % | rgba(255,255,255,0.65) |
+| `scrim` (behind a sheet over a screen) | #15121F 32 % | as light | as light |
 | `der` | #3D5AFE (text #2F46E0) | #8C9DFF | as light |
 | `die` | #FF3D7F (text #D6155C) | #FF8AB2 | as light |
 | `das` | #00B86B (text #00804A) | #4FE3A0 | as light |
