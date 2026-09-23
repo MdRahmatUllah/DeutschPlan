@@ -1,6 +1,7 @@
 @TestOn('vm')
 library;
 
+import 'package:deutschplan/features/study/study_screen.dart';
 import 'package:deutschplan/features/today/today_view.dart';
 import 'package:deutschplan/features/today/today_screen.dart';
 
@@ -337,7 +338,7 @@ void main() {
       router.go('/study', extra: extraFor('/study'));
       await tester.pumpAndSettle();
 
-      expect(find.text('T2'), findsOneWidget);
+      expect(find.byType(StudyScreen), findsOneWidget);
       expect(
         find.byType(AppShell),
         findsNothing,
@@ -385,7 +386,10 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      expect(find.text('3 cards'), findsOneWidget);
+      expect(
+        tester.widget<StudyScreen>(find.byType(StudyScreen)).args.wordUids,
+        <String>['a', 'b', 'c'],
+      );
     });
 
     testWidgets('an exam carries its id in the path instead', (tester) async {

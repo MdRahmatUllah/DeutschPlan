@@ -1086,5 +1086,86 @@
   "todayCardDismiss": "Dismiss",
   "@todayCardDismiss": {
     "description": "T1 contextual card close button, for screen readers."
+  },
+  "studyBlockRevise": "Revise · {index} / {total}",
+  "@studyBlockRevise": {
+    "description": "T2 top bar: the card's place in the Revise block.",
+    "placeholders": {
+      "index": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "studyBlockNew": "New today · {index} / {total}",
+  "@studyBlockNew": {
+    "description": "T2 top bar: the card's place in the New block.",
+    "placeholders": {
+      "index": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "studyBlockGrammar": "Grammar · {index} / {total}",
+  "@studyBlockGrammar": {
+    "description": "T2 top bar: the card's place in the Grammar block.",
+    "placeholders": {
+      "index": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "studyBannerRevise": "Wiederholen",
+  "@studyBannerRevise": {
+    "description": "T2 block banner as Revise starts (FR-T2-06). German in every UI language."
+  },
+  "studyBannerNew": "Neue Wörter",
+  "@studyBannerNew": {
+    "description": "T2 block banner as New starts, when the words share no category. German in every UI language."
+  },
+  "studyBannerNewCategory": "Neue Wörter · {category}",
+  "@studyBannerNewCategory": {
+    "description": "T2 block banner as New starts. German in every UI language; the category is course content.",
+    "placeholders": {
+      "category": {
+        "type": "String"
+      }
+    }
+  },
+  "studyBannerGrammar": "Grammatik",
+  "@studyBannerGrammar": {
+    "description": "T2 block banner as Grammar starts. German in every UI language."
+  },
+  "studyClose": "Close the session",
+  "@studyClose": {
+    "description": "T2 close button, for screen readers."
+  },
+  "studyMenu": "More",
+  "@studyMenu": {
+    "description": "T2 overflow button, for screen readers."
+  },
+  "studyMenuAutoplay": "Play the word automatically",
+  "@studyMenuAutoplay": {
+    "description": "T2 overflow menu: autoplay_headword."
+  },
+  "studyMenuSpeed": "Speech speed",
+  "@studyMenuSpeed": {
+    "description": "T2 overflow menu: tts_speed."
+  },
+  "studyMenuWordDetails": "Word details",
+  "@studyMenuWordDetails": {
+    "description": "T2 overflow menu: open W1 for the card's word."
+  },
+  "studyMenuReport": "Report a problem",
+  "@studyMenuReport": {
+    "description": "T2 overflow menu: open a pre-filled issue on the project."
   }
 }

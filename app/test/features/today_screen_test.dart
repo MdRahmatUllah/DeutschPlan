@@ -1,5 +1,7 @@
 import 'package:deutschplan/core/components/dp_coach_mark.dart';
 
+import 'package:deutschplan/features/study/study_screen.dart';
+
 import 'dart:io';
 
 import 'package:deutschplan/data/db/content_dao.dart';
@@ -86,7 +88,7 @@ void main() {
   }
 
   SessionArgs? session(WidgetTester tester) =>
-      opened(tester, 'T2') as SessionArgs?;
+      tester.widget<StudyScreen>(find.byType(StudyScreen)).args;
 
   Finder card(String title) => find.ancestor(
     of: find.text(title),

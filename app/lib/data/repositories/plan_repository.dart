@@ -365,6 +365,23 @@ WHERE kind = 'new' AND completed_at IS NULL AND plan_date < ?1
     );
   }
 
+  /// [date]'s plan rows that are neither done nor skipped, as `(kind, uid)`:
+  /// what a session reopened after a crash still has to ask.
+  Future<Set<(String, String)>> stillOpen(String date) async {
+    final rows = await _db
+        .customSelect(
+          'SELECT kind, word_uid FROM plan_items '
+          'WHERE plan_date = ?1 AND completed_at IS NULL AND skipped = 0',
+          variables: <Variable<Object>>[Variable<String>(date)],
+          readsFrom: <ResultSetImplementation<Object, Object>>{_db.planItems},
+        )
+        .get();
+    return <(String, String)>{
+      for (final row in rows)
+        (row.read<String>('kind'), row.read<String>('word_uid')),
+    };
+  }
+
   /// How many words are due on or before [date], suspended ones aside: the
   /// "12" of TodayRest's "12 → 6 revisions".
   Future<int> dueBy(String date) async {

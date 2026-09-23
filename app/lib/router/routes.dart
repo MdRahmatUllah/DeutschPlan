@@ -12,6 +12,7 @@ library;
 
 import 'dart:async';
 
+import 'package:flutter/foundation.dart' show listEquals;
 import 'package:deutschplan/features/onboarding/onboarding_meaning_page.dart';
 import 'package:deutschplan/features/onboarding/onboarding_pace_page.dart';
 import 'package:deutschplan/features/onboarding/onboarding_shell.dart';
@@ -27,6 +28,8 @@ import 'package:deutschplan/router/back_behaviour.dart';
 import 'package:deutschplan/router/deep_links.dart';
 import 'package:deutschplan/router/route_guards.dart';
 import 'package:deutschplan/features/today/today_screen.dart';
+import 'package:deutschplan/features/study/study_screen.dart';
+import 'package:deutschplan/core/adaptive/adaptive.dart';
 import 'package:deutschplan/router/placeholder_screen.dart';
 import 'package:cupertino_ui/cupertino_ui.dart' show CupertinoPage;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -56,7 +59,7 @@ final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>(
 /// does not.
 @immutable
 class SessionArgs {
-  const SessionArgs({required this.blocks, this.planDate});
+  const SessionArgs({required this.blocks, this.planDate, this.origin});
 
   /// The session's blocks, in the order it plays them: Revise, New, Grammar
   /// (BR-PLAN-02). A block's banner plays as it starts (FR-T2-06).
@@ -65,11 +68,26 @@ class SessionArgs {
   /// The day whose plan they came from, when they came from one.
   final String? planDate;
 
+  /// Where on screen the session was opened from, for Android's container
+  /// transform. Not part of the session: the same blocks opened from the
+  /// button or from a card are one session.
+  final Rect? origin;
+
   /// Every word card, in order. Grammar topics are practice sets, not words.
   List<String> get wordUids => <String>[
     for (final block in blocks)
       if (block.kind != SessionBlockKind.grammar) ...block.uids,
   ];
+
+  // Value equality: these key the study session's notifier.
+  @override
+  bool operator ==(Object other) =>
+      other is SessionArgs &&
+      other.planDate == planDate &&
+      listEquals(other.blocks, blocks);
+
+  @override
+  int get hashCode => Object.hash(planDate, Object.hashAll(blocks));
 }
 
 /// What a session block holds.
@@ -84,6 +102,15 @@ class SessionBlock {
 
   /// Word uids, or topic uids for [SessionBlockKind.grammar].
   final List<String> uids;
+
+  @override
+  bool operator ==(Object other) =>
+      other is SessionBlock &&
+      other.kind == kind &&
+      listEquals(other.uids, uids);
+
+  @override
+  int get hashCode => Object.hash(kind, Object.hashAll(uids));
 }
 
 /// Which quiz to build. Ephemeral for the same reason [SessionArgs] is.
@@ -593,14 +620,93 @@ class StudyRoute extends GoRouteData with $StudyRoute {
       unawaited(context.push<void>(const StudyRoute().location, extra: args));
 
   @override
-  Widget build(BuildContext context, GoRouterState state) {
-    final args = state.extra as SessionArgs?;
-    return PlaceholderScreen(
-      title: 'Study',
-      screen: 'T2',
-      detail: '${args?.wordUids.length ?? 0} cards',
+  Page<void> buildPage(BuildContext context, GoRouterState state) {
+    final args =
+        state.extra as SessionArgs? ??
+        const SessionArgs(blocks: <SessionBlock>[]);
+    return CustomTransitionPage<void>(
+      key: state.pageKey,
+      child: StudyScreen(args: args),
+      transitionDuration: const Duration(milliseconds: 320),
+      reverseTransitionDuration: const Duration(milliseconds: 260),
+      transitionsBuilder: (context, animation, _, child) => StudyTransition(
+        animation: animation,
+        origin: args.origin,
+        child: child,
+      ),
     );
   }
+}
+
+/// How T2 arrives (`study-session.md`, Presentation): on Android a container
+/// transform from the tapped card, on iOS a modal slide-up. Reduce motion is
+/// a cross-fade on both.
+class StudyTransition extends StatelessWidget {
+  const StudyTransition({
+    required this.animation,
+    required this.child,
+    super.key,
+    this.origin,
+  });
+
+  final Animation<double> animation;
+  final Widget child;
+
+  /// The tapped card's rect, in global coordinates.
+  final Rect? origin;
+
+  @override
+  Widget build(BuildContext context) {
+    final curved = CurvedAnimation(
+      parent: animation,
+      curve: Curves.easeOutCubic,
+      reverseCurve: Curves.easeInCubic,
+    );
+    if (MediaQuery.disableAnimationsOf(context)) {
+      return FadeTransition(opacity: animation, child: child);
+    }
+    if (context.isCupertino) {
+      return SlideTransition(
+        position: Tween<Offset>(
+          begin: const Offset(0, 1),
+          end: Offset.zero,
+        ).animate(curved),
+        child: child,
+      );
+    }
+    final from = origin;
+    if (from == null) return FadeTransition(opacity: curved, child: child);
+
+    // The session grows out of the card: its clip runs from the card's rect
+    // to the screen, and its content fades in over the first half.
+    return AnimatedBuilder(
+      animation: curved,
+      builder: (context, child) {
+        final t = curved.value;
+        final screen = Offset.zero & MediaQuery.sizeOf(context);
+        return ClipRRect(
+          clipper: _GrowingClip(Rect.lerp(from, screen, t)!, 16 * (1 - t)),
+          child: Opacity(opacity: (t * 2).clamp(0.0, 1.0), child: child),
+        );
+      },
+      child: child,
+    );
+  }
+}
+
+class _GrowingClip extends CustomClipper<RRect> {
+  const _GrowingClip(this.rect, this.radius);
+
+  final Rect rect;
+  final double radius;
+
+  @override
+  RRect getClip(Size size) =>
+      RRect.fromRectAndRadius(rect, Radius.circular(radius));
+
+  @override
+  bool shouldReclip(_GrowingClip old) =>
+      old.rect != rect || old.radius != radius;
 }
 
 @TypedGoRoute<SentencesRoute>(path: '/sentences')
@@ -693,6 +799,10 @@ class ExamRoute extends GoRouteData with $ExamRoute {
 @TypedGoRoute<WordRoute>(path: '/word/:uid')
 class WordRoute extends GoRouteData with $WordRoute {
   const WordRoute({required this.uid, this.speak});
+
+  /// W1 over whatever is showing — T2's "open word details".
+  static void open(BuildContext context, String uid) =>
+      unawaited(context.push<void>(WordRoute(uid: uid).location));
 
   final String uid;
 
