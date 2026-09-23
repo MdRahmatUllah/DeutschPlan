@@ -241,6 +241,9 @@ class ModelRepository {
   /// Where the manifest is bundled. FR-M4-02.
   static const String manifestAsset = 'assets/models/manifest.json';
 
+  /// The model id the manifest gives the on-device voice.
+  static const String voiceModel = 'supertonic3';
+
   static const String _stagingSuffix = '.staging';
 
   /// Where the model being replaced waits while the new one is put in place.

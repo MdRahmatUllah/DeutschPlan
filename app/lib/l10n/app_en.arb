@@ -989,5 +989,102 @@
         "type": "int"
       }
     }
+  },
+  "todayCardStepTitle": "Step complete",
+  "@todayCardStepTitle": {
+    "description": "T1 contextual card: the active step ran out with auto-advance off (BR-COURSE-05)."
+  },
+  "todayCardStepBody": "{step} is next, whenever you are ready.",
+  "@todayCardStepBody": {
+    "description": "T1 step-complete card body.",
+    "placeholders": {
+      "step": {
+        "type": "String"
+      }
+    }
+  },
+  "todayCardStepAction": "Start next step",
+  "@todayCardStepAction": {
+    "description": "T1 step-complete card action."
+  },
+  "todayCardCourseTitle": "Course complete",
+  "@todayCardCourseTitle": {
+    "description": "T1 contextual card: the last step ran out."
+  },
+  "todayCardCourseBody": "Every step is done. Revision carries on each day.",
+  "@todayCardCourseBody": {
+    "description": "T1 course-complete card body."
+  },
+  "todayCardUpdateTitle": "Course updated",
+  "@todayCardUpdateTitle": {
+    "description": "T1 contextual card: a content update (BR-CONTENT-03)."
+  },
+  "todayCardUpdateBody": "{added} added · {removed} removed · {changed} changed",
+  "@todayCardUpdateBody": {
+    "description": "T1 content-update card: the counts.",
+    "placeholders": {
+      "added": {
+        "type": "int"
+      },
+      "removed": {
+        "type": "int"
+      },
+      "changed": {
+        "type": "int"
+      }
+    }
+  },
+  "todayCardPauseTitle": "Your backlog is growing",
+  "@todayCardPauseTitle": {
+    "description": "T1 contextual card: the backlog pause offer (BR-PLAN-07)."
+  },
+  "todayCardPauseBody": "{count} words are waiting. Pause new words until it is clear — revisions carry on.",
+  "@todayCardPauseBody": {
+    "description": "T1 pause-offer card body.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "todayCardPauseAction": "Pause new words",
+  "@todayCardPauseAction": {
+    "description": "T1 pause-offer card action."
+  },
+  "todayCardExamsTitle": "Mock exams unlocked",
+  "@todayCardExamsTitle": {
+    "description": "T1 contextual card: the step's mock exams are unlocked (BR-EXAM-01)."
+  },
+  "todayCardExamsBody": "{percent}% of {step} is introduced — try a mock exam.",
+  "@todayCardExamsBody": {
+    "description": "T1 exams-unlocked card body.",
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      },
+      "step": {
+        "type": "String"
+      }
+    }
+  },
+  "todayCardExamsAction": "See exams",
+  "@todayCardExamsAction": {
+    "description": "T1 exams-unlocked card action."
+  },
+  "todayCardVoiceTitle": "A better voice",
+  "@todayCardVoiceTitle": {
+    "description": "T1 contextual card: the on-device voice is not in use."
+  },
+  "todayCardVoiceBody": "Supertonic speaks German more naturally and works offline.",
+  "@todayCardVoiceBody": {
+    "description": "T1 voice card body."
+  },
+  "todayCardVoiceAction": "Voice settings",
+  "@todayCardVoiceAction": {
+    "description": "T1 voice card action."
+  },
+  "todayCardDismiss": "Dismiss",
+  "@todayCardDismiss": {
+    "description": "T1 contextual card close button, for screen readers."
   }
 }

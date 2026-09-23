@@ -1,5 +1,8 @@
+import 'dart:async';
 import 'dart:io';
 
+import 'package:deutschplan/data/repositories/model_repository.dart';
+import 'package:deutschplan/features/today/today_view.dart';
 import 'package:deutschplan/core/providers/app_providers.dart';
 import 'package:deutschplan/data/db/app_database.dart';
 import 'package:deutschplan/data/db/content_dao.dart';
@@ -22,6 +25,7 @@ void main() {
   late SettingsRepository settings;
   late DateTime now;
   late ProviderContainer container;
+  var voiceReady = false;
 
   const today = '2026-09-21';
 
@@ -58,11 +62,15 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code, completed_at, 
 ''');
 
     now = DateTime(2026, 9, 21, 8);
+    voiceReady = false;
     container = ProviderContainer(
       overrides: <Override>[
         appDatabaseProvider.overrideWithValue(db),
         settingsProvider.overrideWithValue(settings),
         clockProvider.overrideWithValue(() => now),
+        // The model files live outside the test; whether they are there is
+        // the one thing about them Today asks.
+        voiceInstalledProvider.overrideWith((ref) async => voiceReady),
       ],
     );
     // Held open, as the screen holds it: an auto-dispose provider nobody
@@ -258,6 +266,93 @@ INSERT INTO word_state (word_uid, status, introduced_on, due, stability, reps, l
       expect(view.revise.open, 3, reason: 'revisions are still picked');
       expect(view.dueTomorrowIfRevised, 0);
     });
+  });
+
+  group('FR-T1-06 the contextual card, from what is stored', () {
+    test('without the on-device voice, it is offered', () async {
+      await container.read(voiceInstalledProvider.future);
+      final view = await container.read(todayViewProvider.future);
+      expect(view.contextual?.kind, ContextualKind.voice);
+    });
+
+    test('with it installed, there is nothing to offer', () async {
+      voiceReady = true;
+      container.invalidate(voiceInstalledProvider);
+      await container.read(voiceInstalledProvider.future);
+      final view = await container.read(todayViewProvider.future);
+      expect(view.contextual, isNull);
+    });
+
+    test('Today does not wait for the voice check', () async {
+      // A check that never answers: the view still comes, without the card.
+      final hanging = ProviderContainer(
+        overrides: <Override>[
+          appDatabaseProvider.overrideWithValue(db),
+          settingsProvider.overrideWithValue(settings),
+          clockProvider.overrideWithValue(() => now),
+          voiceInstalledProvider.overrideWith(
+            (ref) => Completer<bool>().future,
+          ),
+        ],
+      );
+      addTearDown(hanging.dispose);
+      hanging.listen(todayViewProvider, (_, _) {});
+
+      final view = await hanging.read(todayViewProvider.future);
+      expect(view.date, today);
+      expect(view.contextual, isNull);
+    });
+
+    test('the voice is not installed until its files are there', () async {
+      final support = Directory.systemTemp.createTempSync('deutschplan_voice');
+      addTearDown(() => support.deleteSync(recursive: true));
+      final models = ProviderContainer(
+        overrides: <Override>[
+          settingsProvider.overrideWithValue(settings),
+          modelRepositoryProvider.overrideWithValue(
+            ModelRepository(settings, support: support),
+          ),
+        ],
+      );
+      addTearDown(models.dispose);
+
+      expect(await models.read(voiceInstalledProvider.future), isFalse);
+    });
+
+    test('a dismissal in dismissed_cards is honoured', () async {
+      await container.read(voiceInstalledProvider.future);
+      await settings.write(SettingKeys.dismissedCards, '["voice"]');
+      container.invalidate(todayViewProvider);
+      final view = await container.read(todayViewProvider.future);
+      expect(view.contextual, isNull);
+    });
+
+    test('a malformed dismissed_cards does not take Today down', () async {
+      await container.read(voiceInstalledProvider.future);
+      await settings.write(SettingKeys.dismissedCards, '{not json');
+      container.invalidate(todayViewProvider);
+      final view = await container.read(todayViewProvider.future);
+
+      expect(view.date, today);
+      expect(view.contextual?.kind, ContextualKind.voice);
+    });
+
+    test(
+      'BR-CONTENT-03 an unseen update comes first, with its counts',
+      () async {
+        await db.customStatement(
+          "INSERT INTO content_updates (version, changed_json, seen) VALUES "
+          "('202609201200', '{\"added\":[\"a\",\"b\"],\"removed\":[\"c\"],\"changed\":[]}', 0)",
+        );
+        container.invalidate(todayViewProvider);
+        final view = await container.read(todayViewProvider.future);
+
+        final offer = view.contextual!;
+        expect(offer.kind, ContextualKind.contentUpdate);
+        expect((offer.added, offer.removed, offer.changed), (2, 1, 0));
+        expect(offer.version, '202609201200');
+      },
+    );
   });
 
   group('FR-T1-05 midnight', () {

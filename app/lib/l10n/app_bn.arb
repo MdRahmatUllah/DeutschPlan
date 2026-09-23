@@ -160,5 +160,22 @@
   "todayReviseOptional": "{count}টি বাকি · আজ ঐচ্ছিক",
   "todayRestNote": "আজ কিছু নির্ধারিত নেই, জমেও কিছু যাবে না।",
   "todayRestLighterLead": "তবুও রিভিশন করলে কাল হালকা থাকবে:",
-  "todayRestLighter": "{before} → {after}টি রিভিশন।"
+  "todayRestLighter": "{before} → {after}টি রিভিশন।",
+  "todayCardStepTitle": "ধাপ শেষ",
+  "todayCardStepBody": "পরের ধাপ {step}, যখন আপনি প্রস্তুত।",
+  "todayCardStepAction": "পরের ধাপ শুরু করুন",
+  "todayCardCourseTitle": "কোর্স শেষ",
+  "todayCardCourseBody": "সব ধাপ শেষ। রিভিশন প্রতিদিন চলবে।",
+  "todayCardUpdateTitle": "কোর্স হালনাগাদ হয়েছে",
+  "todayCardUpdateBody": "{added}টি যোগ · {removed}টি বাদ · {changed}টি বদল",
+  "todayCardPauseTitle": "জমে থাকা বাড়ছে",
+  "todayCardPauseBody": "{count}টি শব্দ অপেক্ষায়। শেষ না হওয়া পর্যন্ত নতুন শব্দ থামান — রিভিশন চলবে।",
+  "todayCardPauseAction": "নতুন শব্দ থামান",
+  "todayCardExamsTitle": "মক পরীক্ষা খুলেছে",
+  "todayCardExamsBody": "{step}-এর {percent}% শুরু হয়েছে — একটি মক পরীক্ষা দিন।",
+  "todayCardExamsAction": "পরীক্ষা দেখুন",
+  "todayCardVoiceTitle": "আরও ভালো কণ্ঠ",
+  "todayCardVoiceBody": "Supertonic আরও স্বাভাবিক জার্মান বলে এবং অফলাইনে চলে।",
+  "todayCardVoiceAction": "কণ্ঠের সেটিংস",
+  "todayCardDismiss": "সরিয়ে দিন"
 }

@@ -346,6 +346,36 @@ class PlanEngine {
 
   final Fsrs _fsrs;
 
+  /// BR-COURSE-05 with auto-advance off: Today's *Start next step*.
+  ///
+  /// Enrolls the step after the last finished one, at the learner's current
+  /// pace, and lets planning reach today again so its first new words are
+  /// today's rather than tomorrow's. Returns the step, or null when a step is
+  /// already active or the course is finished.
+  Future<String?> startNextStep(
+    PlanDate today, {
+    required int dailyNew,
+    required int studyDaysMask,
+  }) async {
+    if (await _store.activeStep() != null) return null;
+    final next = await _nextStepAfterFinishing(true);
+    if (next == null) return null;
+
+    await _store.enroll(
+      ActiveStep(
+        sublevelCode: next,
+        startedOn: today,
+        dailyNew: dailyNew,
+        studyDaysMask: studyDaysMask,
+      ),
+    );
+    final last = await _store.lastPlannedDate();
+    if (last != null && daysBetween(today, last) >= 0) {
+      await _store.setLastPlannedDate(addDays(today, -1));
+    }
+    return next;
+  }
+
   /// [openDay] for [date], writing nothing: the plan it would open, for
   /// Today's Tomorrow card and T6 (FR-T6-02).
   ///

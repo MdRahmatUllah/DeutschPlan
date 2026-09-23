@@ -1,4 +1,5 @@
 import 'package:deutschplan/core/components/dp_coach_mark.dart';
+import 'package:deutschplan/data/repositories/setting_keys.dart';
 import 'package:deutschplan/core/components/dp_button.dart';
 import 'package:deutschplan/core/theme/dp_tokens.dart';
 import 'package:deutschplan/data/db/app_database.dart';
@@ -39,6 +40,7 @@ void main() {
     Override? load,
     bool coachMark = false,
     Locale? locale,
+    List<Override> also = const <Override>[],
   }) async {
     router = buildRouter();
     addTearDown(router.dispose);
@@ -53,6 +55,7 @@ void main() {
             coachMarkProvider.overrideWith(_ShowingCoachMark.new)
           else
             coachMarkProvider.overrideWithValue(false),
+          ...also,
         ],
         child: MaterialApp.router(
           routerConfig: router,
@@ -557,6 +560,152 @@ void main() {
     });
   });
 
+  group('FR-T1-06 the contextual card', () {
+    late AppDatabase db;
+    late SettingsRepository settings;
+
+    /// Today with [offer], over real settings, so what a card writes can be
+    /// read back.
+    Future<void> show(WidgetTester tester, ContextualOffer offer) async {
+      db = AppDatabase.memory();
+      addTearDown(db.close);
+      settings = SettingsRepository(db);
+      await settings.load();
+      addTearDown(settings.dispose);
+      await pump(
+        tester,
+        view: artboardToday(contextual: offer),
+        also: <Override>[
+          appDatabaseProvider.overrideWithValue(db),
+          settingsProvider.overrideWithValue(settings),
+        ],
+      );
+      await tester.ensureVisible(find.byType(ContextualCard));
+      await tester.pump();
+    }
+
+    Future<void> tapText(WidgetTester tester, String text) async {
+      await tester.tap(
+        find.descendant(
+          of: find.byType(ContextualCard),
+          matching: find.text(text),
+        ),
+      );
+      await tester.pumpAndSettle();
+    }
+
+    Future<void> dismiss(WidgetTester tester) async {
+      await tester.tap(find.bySemanticsLabel(l10n.todayCardDismiss));
+      await tester.pumpAndSettle();
+    }
+
+    testWidgets('sits after the plan, before the grammar card', (tester) async {
+      await show(tester, const ContextualOffer(ContextualKind.voice));
+      final card = tester.getTopLeft(find.byType(ContextualCard)).dy;
+      expect(card, greaterThan(tester.getTopLeft(firstSection()).dy));
+      expect(
+        card,
+        lessThan(tester.getTopLeft(find.byType(GrammarPreviewCard)).dy),
+      );
+    });
+
+    testWidgets('BR-PLAN-07 the pause offer turns the pause on', (
+      tester,
+    ) async {
+      await show(
+        tester,
+        const ContextualOffer(ContextualKind.pauseOffer, backlog: 30),
+      );
+      expect(find.text(l10n.todayCardPauseBody(30)), findsOneWidget);
+
+      await tapText(tester, l10n.todayCardPauseAction);
+      expect(settings.read(SettingKeys.pauseNewWhenBacklog), isTrue);
+    });
+
+    testWidgets('dismissing an offer records it in dismissed_cards', (
+      tester,
+    ) async {
+      await show(tester, const ContextualOffer(ContextualKind.voice));
+      await dismiss(tester);
+
+      expect(settings.read(SettingKeys.dismissedCards), '["voice"]');
+    });
+
+    testWidgets('and keeps what was dismissed before', (tester) async {
+      await show(
+        tester,
+        const ContextualOffer(ContextualKind.examsUnlocked, step: 'A2.1'),
+      );
+      await settings.write(SettingKeys.dismissedCards, '["voice"]');
+      await dismiss(tester);
+
+      expect(
+        settings.read(SettingKeys.dismissedCards),
+        '["voice","exams:A2.1"]',
+      );
+    });
+
+    testWidgets('BR-CONTENT-03 dismissing an update marks it seen', (
+      tester,
+    ) async {
+      await show(
+        tester,
+        const ContextualOffer(
+          ContextualKind.contentUpdate,
+          version: '202609201200',
+          added: 12,
+          removed: 3,
+          changed: 40,
+        ),
+      );
+      await db.customStatement(
+        "INSERT INTO content_updates (version, seen, recorded_at) "
+        "VALUES ('202609201200', 0, '2026-09-20T12:00:00Z')",
+      );
+      expect(find.text(l10n.todayCardUpdateBody(12, 3, 40)), findsOneWidget);
+
+      await dismiss(tester);
+      final row = await db
+          .customSelect('SELECT seen FROM content_updates')
+          .getSingle();
+      expect(row.read<int>('seen'), 1);
+      expect(settings.read(SettingKeys.dismissedCards), isNull);
+    });
+
+    testWidgets("BR-EXAM-01 exams open the step's exams tab", (tester) async {
+      await show(
+        tester,
+        const ContextualOffer(
+          ContextualKind.examsUnlocked,
+          step: 'A2.1',
+          percent: 91,
+        ),
+      );
+      expect(find.text(l10n.todayCardExamsBody(91, 'A2.1')), findsOneWidget);
+
+      await tapText(tester, l10n.todayCardExamsAction);
+      expect(location(), '/learn/step/A2.1?tab=exams');
+    });
+
+    testWidgets('the voice card opens Voice & translation', (tester) async {
+      await show(tester, const ContextualOffer(ContextualKind.voice));
+      await tapText(tester, l10n.todayCardVoiceAction);
+      expect(location(), '/me/models');
+    });
+
+    testWidgets('BR-COURSE-05 a finished step asks, and cannot be dismissed', (
+      tester,
+    ) async {
+      await show(
+        tester,
+        const ContextualOffer(ContextualKind.stepComplete, step: 'A2.2'),
+      );
+      expect(find.text(l10n.todayCardStepBody('A2.2')), findsOneWidget);
+      expect(find.text(l10n.todayCardStepAction), findsOneWidget);
+      expect(find.bySemanticsLabel(l10n.todayCardDismiss), findsNothing);
+    });
+  });
+
   group('FR-T1-05 midnight, on a real plan', () {
     late DateTime now;
 
@@ -690,3 +839,6 @@ class _ShowingCoachMark extends CoachMark {
   @override
   Future<void> markShown() async {}
 }
+
+/// The first section card, Revise, whichever state the day is in.
+Finder firstSection() => find.byType(PlanSectionCard).first;

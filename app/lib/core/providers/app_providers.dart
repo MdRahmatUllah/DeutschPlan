@@ -16,6 +16,7 @@
 /// the doc rather than restated here.
 library;
 
+import 'package:deutschplan/data/db/content_update.dart';
 import 'package:deutschplan/core/theme/dp_tokens.dart';
 import 'package:deutschplan/core/theme/theme_mode.dart';
 import 'package:deutschplan/domain/plan_engine.dart';
@@ -179,6 +180,13 @@ class Languages extends _$Languages {
 
 @riverpod
 ContentDao contentDao(Ref ref) => ContentDao(ref.watch(appDatabaseProvider));
+
+/// BR-CONTENT-03's record of course updates, for Today's update card.
+@riverpod
+ContentUpdater contentUpdater(Ref ref) => ContentUpdater(
+  ref.watch(appDatabaseProvider),
+  ref.watch(contentDaoProvider),
+);
 
 @riverpod
 WordRepository wordRepository(Ref ref) =>

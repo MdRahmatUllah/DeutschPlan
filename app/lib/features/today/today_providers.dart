@@ -1,4 +1,5 @@
 import 'package:deutschplan/core/providers/app_providers.dart';
+import 'package:deutschplan/data/repositories/model_repository.dart';
 import 'package:deutschplan/data/repositories/setting_keys.dart';
 import 'package:deutschplan/data/repositories/word_repository.dart'
     show WordStatus;
@@ -35,6 +36,25 @@ Stream<Set<(String, String)>> todayOpen(Ref ref) => ref
       },
     );
 
+/// Whether the on-device voice is installed and verified: Today's voice card
+/// offers it until it is.
+///
+/// Not installed when the manifest has no such model or the check itself
+/// fails — offering the voice again is harmless, and Today must not fail on
+/// a file check.
+@riverpod
+Future<bool> voiceInstalled(Ref ref) async {
+  final models = ref.watch(modelRepositoryProvider);
+  try {
+    final entry = (await models.manifest()).model(ModelRepository.voiceModel);
+    final variant = entry?.variants.firstOrNull;
+    if (entry == null || variant == null) return false;
+    return await models.verify(entry.id, variant) == ModelStatus.ready;
+  } on Exception {
+    return false;
+  }
+}
+
 /// Everything T1 draws, rendered from the persisted plan.
 @riverpod
 Future<TodayView> todayView(Ref ref) async {
@@ -46,6 +66,10 @@ Future<TodayView> todayView(Ref ref) async {
   final grammar = ref.watch(grammarRepositoryProvider);
   final content = ref.watch(contentDaoProvider);
   final settings = ref.watch(settingsProvider);
+  final updates = ref.watch(contentUpdaterProvider);
+  // Not awaited: Today does not wait on a file check. Until it answers the
+  // voice counts as installed, so the card appears late rather than wrongly.
+  final voiceReady = ref.watch(voiceInstalledProvider).value ?? true;
   final planning = ref.watch(todayPlanProvider.future);
   final changes = ref.watch(todayOpenProvider.future);
 
@@ -88,6 +112,31 @@ Future<TodayView> todayView(Ref ref) async {
   final dueTomorrow = plan.isStudyDay
       ? null
       : await plans.dueBy(addDays(date, 1));
+  final update = await updates.unseen();
+  final contextual = contextualFor(
+    ContextualFacts(
+      dismissed: dismissedIds(settings.read(SettingKeys.dismissedCards)),
+      stepComplete: plan.stepComplete,
+      nextStep: plan.nextStep,
+      contentUpdate: update == null
+          ? null
+          : (
+              version: update.version,
+              added: update.added.length,
+              removed: update.removed.length,
+              changed: update.changed.length,
+            ),
+      backlog: plan.backlog.length,
+      dailyNew: settings.read(SettingKeys.dailyNew),
+      pauseOn: settings.read(SettingKeys.pauseNewWhenBacklog),
+      step: step,
+      introduced: (counts?.done ?? 0) + (counts?.learning ?? 0),
+      stepWords:
+          (counts?.done ?? 0) + (counts?.learning ?? 0) + (counts?.todo ?? 0),
+      examUnlockPercent: settings.read(SettingKeys.examUnlockPercent),
+      systemVoice: !voiceReady,
+    ),
+  );
 
   TodayView build({TomorrowPreview? tomorrow}) => TodayView(
     date: date,
@@ -129,6 +178,7 @@ Future<TodayView> todayView(Ref ref) async {
     minutes: seconds ~/ 60,
     tomorrow: tomorrow,
     dueTomorrow: dueTomorrow,
+    contextual: contextual,
   );
 
   final view = build();

@@ -294,6 +294,10 @@ abstract final class SettingKeys {
   // No default: the doc leaves both blank.
   static const lastPlannedDate = DateSetting('last_planned_date');
 
+  /// FR-T1-06: the contextual cards the learner dismissed, as a JSON list of
+  /// their ids — `pause`, `voice`, `exams:A2.1`. Empty when unset.
+  static const dismissedCards = StringSetting('dismissed_cards');
+
   /// FR-S2-03: the coach mark on Today's primary button is "one-time". Set
   /// when it has been shown, and never cleared — restart setup is not a
   /// first run.
@@ -333,6 +337,7 @@ abstract final class SettingKeys {
     listeningQuestions,
     lastPlannedDate,
     coachMarkSeen,
+    dismissedCards,
     learnerName,
   ];
 }

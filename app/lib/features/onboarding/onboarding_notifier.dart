@@ -1,4 +1,5 @@
 import 'package:deutschplan/core/providers/app_providers.dart';
+import 'package:deutschplan/data/repositories/model_repository.dart';
 import 'package:deutschplan/data/repositories/setting_keys.dart';
 import 'package:deutschplan/data/repositories/setup_repository.dart';
 import 'package:deutschplan/features/onboarding/onboarding_shell.dart';
@@ -231,7 +232,7 @@ class OnboardingNotifier extends _$OnboardingNotifier {
   void skipFrom(OnboardingPage page) => state = state.withDefaultsFrom(page);
 
   /// The model id `assets/models/manifest.json` gives the voice.
-  static const String supertonic = 'supertonic3';
+  static const String supertonic = ModelRepository.voiceModel;
 }
 
 /// Page 5's offer of the better voice.

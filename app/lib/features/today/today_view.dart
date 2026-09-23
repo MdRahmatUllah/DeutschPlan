@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:math' as math;
 
 import 'package:deutschplan/domain/plan_engine.dart';
@@ -66,6 +67,164 @@ class TomorrowPreview {
   int get minutes => (estimate.inSeconds / 60).ceil();
 }
 
+/// T1's contextual cards (FR-T1-06), in priority order.
+enum ContextualKind {
+  /// BR-COURSE-05 with auto-advance off: the step ran out, *Start next step*.
+  stepComplete,
+
+  /// The last step ran out: revision carries on.
+  courseComplete,
+
+  /// BR-CONTENT-03: the course was updated, with its counts.
+  contentUpdate,
+
+  /// BR-PLAN-07: the backlog passed three times `daily_new`.
+  pauseOffer,
+
+  /// BR-EXAM-01: enough of the step is introduced for its mock exams.
+  examsUnlocked,
+
+  /// The on-device voice is not in use yet.
+  voice,
+}
+
+/// The one contextual card Today shows, and what it needs to say.
+@immutable
+class ContextualOffer {
+  const ContextualOffer(
+    this.kind, {
+    this.step,
+    this.added = 0,
+    this.removed = 0,
+    this.changed = 0,
+    this.version,
+    this.backlog = 0,
+    this.percent = 0,
+  });
+
+  final ContextualKind kind;
+
+  /// The step it is about: the next one to start, or the one whose exams are
+  /// unlocked.
+  final String? step;
+
+  /// A content update's counts, and its version for `markSeen`.
+  final int added;
+  final int removed;
+  final int changed;
+  final String? version;
+
+  final int backlog;
+
+  /// How much of the step is introduced, for the exams card.
+  final int percent;
+
+  /// What `dismissed_cards` records for it. Null when it cannot be dismissed
+  /// that way: a finished step waits for an answer, and a content update is
+  /// marked seen in its own table.
+  String? get dismissId => switch (kind) {
+    ContextualKind.pauseOffer => 'pause',
+    ContextualKind.examsUnlocked => 'exams:$step',
+    ContextualKind.voice => 'voice',
+    _ => null,
+  };
+
+  /// Whether it has a dismiss button at all.
+  bool get dismissible =>
+      kind != ContextualKind.stepComplete &&
+      kind != ContextualKind.courseComplete;
+}
+
+/// What the contextual cards are chosen from, gathered by the provider.
+@immutable
+class ContextualFacts {
+  const ContextualFacts({
+    this.dismissed = const <String>{},
+    this.stepComplete = false,
+    this.nextStep,
+    this.contentUpdate,
+    this.backlog = 0,
+    this.dailyNew = 7,
+    this.pauseOn = false,
+    this.step,
+    this.introduced = 0,
+    this.stepWords = 0,
+    this.examUnlockPercent = 90,
+    this.systemVoice = false,
+  });
+
+  final Set<String> dismissed;
+  final bool stepComplete;
+  final String? nextStep;
+  final ({String version, int added, int removed, int changed})? contentUpdate;
+  final int backlog;
+  final int dailyNew;
+  final bool pauseOn;
+  final String? step;
+  final int introduced;
+  final int stepWords;
+  final int examUnlockPercent;
+
+  /// The on-device voice is not installed, so the platform's is speaking.
+  final bool systemVoice;
+}
+
+/// `dismissed_cards` as ids. Anything unreadable — a value from another
+/// build, a restored backup, a half-written write — counts as nothing
+/// dismissed: a list of hidden cards must never be what hides the plan.
+Set<String> dismissedIds(String? stored) {
+  if (stored == null) return const <String>{};
+  try {
+    return (jsonDecode(stored) as List<dynamic>).cast<String>().toSet();
+  } on Object {
+    return const <String>{};
+  }
+}
+
+/// FR-T1-06: at most one card — the first that applies and was not dismissed,
+/// in [ContextualKind]'s order. What must be answered comes first (a finished
+/// step), then news (a content update), then offers, most useful first.
+ContextualOffer? contextualFor(ContextualFacts facts) {
+  ContextualOffer? unlessDismissed(ContextualOffer offer) =>
+      facts.dismissed.contains(offer.dismissId) ? null : offer;
+
+  if (facts.stepComplete) {
+    return facts.nextStep == null
+        ? const ContextualOffer(ContextualKind.courseComplete)
+        : ContextualOffer(ContextualKind.stepComplete, step: facts.nextStep);
+  }
+  final update = facts.contentUpdate;
+  if (update != null) {
+    return ContextualOffer(
+      ContextualKind.contentUpdate,
+      version: update.version,
+      added: update.added,
+      removed: update.removed,
+      changed: update.changed,
+    );
+  }
+  final offers = <ContextualOffer>[
+    // BR-PLAN-07: "Today offers this when backlog > 3 × daily_new".
+    if (!facts.pauseOn && facts.backlog > 3 * facts.dailyNew)
+      ContextualOffer(ContextualKind.pauseOffer, backlog: facts.backlog),
+    // BR-EXAM-01: "≥ exam_unlock_percent of the step's words are introduced".
+    if (facts.step != null &&
+        facts.stepWords > 0 &&
+        facts.introduced * 100 >= facts.examUnlockPercent * facts.stepWords)
+      ContextualOffer(
+        ContextualKind.examsUnlocked,
+        step: facts.step,
+        percent: facts.introduced * 100 ~/ facts.stepWords,
+      ),
+    if (facts.systemVoice) const ContextualOffer(ContextualKind.voice),
+  ];
+  for (final offer in offers) {
+    final shown = unlessDismissed(offer);
+    if (shown != null) return shown;
+  }
+  return null;
+}
+
 /// Everything T1 draws, read once from the plan and the database.
 ///
 /// A plain value, so the screen is a function of it and the goldens and
@@ -90,6 +249,7 @@ class TodayView {
     this.minutes = 0,
     this.tomorrow,
     this.dueTomorrow,
+    this.contextual,
     this.backlogFrom,
     this.backlogTo,
     this.step,
@@ -128,6 +288,9 @@ class TodayView {
 
   /// On a rest day: the words due by tomorrow, if today's are left alone.
   final int? dueTomorrow;
+
+  /// FR-T1-06's one contextual card, if any applies.
+  final ContextualOffer? contextual;
 
   /// TodayRest: a day off in the study days (BR-PLAN-01).
   bool get isRestDay => !isStudyDay;

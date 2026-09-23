@@ -1,8 +1,11 @@
+import 'dart:convert';
+
 import 'package:deutschplan/core/adaptive/adaptive.dart';
 import 'package:deutschplan/core/components/dp_coach_mark.dart';
 import 'package:deutschplan/core/components/dp_feedback.dart';
 import 'package:deutschplan/core/providers/app_providers.dart';
 import 'package:deutschplan/core/theme/aurora_backdrop.dart';
+import 'package:deutschplan/data/repositories/setting_keys.dart';
 import 'package:deutschplan/core/theme/dp_tokens.dart';
 import 'package:deutschplan/domain/plan_engine.dart' show parsePlanDate;
 import 'package:deutschplan/features/today/today_components.dart';
@@ -305,6 +308,14 @@ class _Plan extends ConsumerWidget {
                           SizedBox(height: i == 0 ? 16 : 10),
                           sections[i],
                         ],
+                        if (view.contextual case final offer?) ...<Widget>[
+                          const SizedBox(height: 12),
+                          ContextualCard(
+                            offer: offer,
+                            onAction: () => _act(context, ref, offer),
+                            onDismiss: () => _dismiss(ref, offer),
+                          ),
+                        ],
                         if (grammar != null && !view.isRestDay) ...<Widget>[
                           const SizedBox(height: 12),
                           GrammarPreviewCard(
@@ -337,6 +348,64 @@ class _Plan extends ConsumerWidget {
         ),
       ],
     );
+  }
+
+  /// What a contextual card's button does.
+  Future<void> _act(
+    BuildContext context,
+    WidgetRef ref,
+    ContextualOffer offer,
+  ) async {
+    final settings = ref.read(settingsProvider);
+    switch (offer.kind) {
+      case ContextualKind.stepComplete:
+        await ref
+            .read(planEngineProvider)
+            .startNextStep(
+              view.date,
+              dailyNew: settings.read(SettingKeys.dailyNew),
+              studyDaysMask: settings.read(SettingKeys.studyDaysMask),
+            );
+        ref.invalidate(todayPlanProvider);
+      case ContextualKind.pauseOffer:
+        // BR-PLAN-07 / FR-T4-03: from the next plan generation.
+        await settings.write(SettingKeys.pauseNewWhenBacklog, true);
+        ref.invalidate(planEngineProvider);
+      case ContextualKind.examsUnlocked:
+        if (offer.step case final step?) {
+          context.jumpToTab(LearnStepRoute(code: step, tab: StepTab.exams));
+        }
+        return;
+      case ContextualKind.voice:
+        context.jumpToTab(const ModelsRoute());
+        return;
+      case ContextualKind.courseComplete || ContextualKind.contentUpdate:
+        return;
+    }
+    ref.invalidate(todayViewProvider);
+  }
+
+  /// FR-T1-06: a dismissed card stays dismissed. A content update is marked
+  /// seen in its own table (BR-CONTENT-03); the rest go into
+  /// `dismissed_cards`.
+  Future<void> _dismiss(WidgetRef ref, ContextualOffer offer) async {
+    if (offer.kind == ContextualKind.contentUpdate) {
+      final version = offer.version;
+      if (version != null) {
+        await ref.read(contentUpdaterProvider).markSeen(version);
+      }
+    } else if (offer.dismissId case final id?) {
+      final settings = ref.read(settingsProvider);
+      final ids = <String>{
+        ...dismissedIds(settings.read(SettingKeys.dismissedCards)),
+        id,
+      };
+      await settings.write(
+        SettingKeys.dismissedCards,
+        jsonEncode(ids.toList()),
+      );
+    }
+    ref.invalidate(todayViewProvider);
   }
 
   static SectionTrailing _trailing(BlockProgress block) {
