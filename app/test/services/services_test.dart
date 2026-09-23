@@ -81,8 +81,22 @@ void main() {
       final tts = _FakeFlutterTts(available: true);
 
       expect(await SystemTts(tts).speak('Guten Tag!'), isTrue);
-      expect(tts.calls, <String>['setLanguage de-DE', 'speak Guten Tag!']);
+      expect(tts.calls, <String>[
+        'setLanguage de-DE',
+        'setSpeechRate 0.5',
+        'speak Guten Tag!',
+      ]);
     });
+
+    test(
+      'FR-T2-09 the rate is halved: flutter_tts reads 0.5 as normal',
+      () async {
+        final tts = _FakeFlutterTts(available: true);
+
+        await SystemTts(tts).speak('Guten Tag!', rate: 0.75);
+        expect(tts.calls, contains('setSpeechRate 0.375'));
+      },
+    );
 
     test('and says no, silently, when it does not', () async {
       // False rather than a speak call into nothing: page 5 tells the learner
@@ -138,6 +152,12 @@ class _FakeFlutterTts implements FlutterTts {
   @override
   Future<dynamic> setLanguage(String language) async {
     calls.add('setLanguage $language');
+    return 1;
+  }
+
+  @override
+  Future<dynamic> setSpeechRate(double rate) async {
+    calls.add('setSpeechRate $rate');
     return 1;
   }
 

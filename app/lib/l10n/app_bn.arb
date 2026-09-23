@@ -190,5 +190,22 @@
   "studyMenuAutoplay": "শব্দটি নিজে থেকে বাজান",
   "studyMenuSpeed": "কথার গতি",
   "studyMenuWordDetails": "শব্দের বিস্তারিত",
-  "studyMenuReport": "সমস্যা জানান"
+  "studyMenuReport": "সমস্যা জানান",
+  "studyPosNoun": "Nomen",
+  "studyPosVerb": "Verb",
+  "studyPosAdjective": "Adjektiv",
+  "studyPosAdverb": "Adverb",
+  "studyPosPreposition": "Präposition",
+  "studyPosConjunction": "Konjunktion",
+  "studyPosPronoun": "Pronomen",
+  "studyPosNumber": "Zahl",
+  "studyPosParticle": "Partikel",
+  "studyPosArticle": "Artikel",
+  "studyPosPhrase": "Wendung",
+  "studyHint": "শুনুন, অর্থটা ভাবুন, তারপর দেখুন।",
+  "studyShowMeaning": "অর্থ দেখুন",
+  "studyPronounce": "উচ্চারণ শুনুন",
+  "studyCopied": "{word} কপি হয়েছে",
+  "studyCopyHint": "শব্দটি কপি করুন",
+  "studyNoVoice": "এই ফোনে কোনো জার্মান ভয়েস নেই। ফোনের টেক্সট-টু-স্পিচ সেটিংসে একটি ইনস্টল করুন।"
 }

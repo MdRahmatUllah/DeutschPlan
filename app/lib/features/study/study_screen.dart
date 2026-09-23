@@ -9,6 +9,7 @@ import 'package:deutschplan/core/theme/dp_tokens.dart';
 import 'package:deutschplan/core/typography/dp_text.dart';
 import 'package:deutschplan/data/repositories/setting_keys.dart';
 import 'package:deutschplan/data/repositories/word_repository.dart';
+import 'package:deutschplan/features/study/study_front.dart';
 import 'package:deutschplan/features/study/study_session.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
 import 'package:deutschplan/router/routes.dart';
@@ -143,7 +144,11 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
                       horizontal: 16,
                       vertical: 24,
                     ),
-                    child: Center(child: StudyCardSlot(item: item)),
+                    child: Center(
+                      child: SingleChildScrollView(
+                        child: StudyCardSlot(item: item),
+                      ),
+                    ),
                   ),
                 if (item != null)
                   _BlockBanner(
@@ -164,6 +169,19 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
               ],
             ),
           ),
+          // The thumb zone. Face down: the hint and *Show meaning*, and no
+          // rating bar until the card is turned over.
+          if (item != null &&
+              item.kind != SessionBlockKind.grammar &&
+              !(session?.revealed ?? false))
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 32),
+              child: StudyFrontActions(
+                onReveal: () => ref
+                    .read(studySessionProvider(widget.args).notifier)
+                    .reveal(),
+              ),
+            ),
         ],
       ),
     );
@@ -178,7 +196,22 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
             ? tokens.surface.paper.withValues(alpha: 0)
             : tokens.surface.paper,
         body: tokens.isGlass
-            ? AuroraBackdrop(leading: tokens.color.primary, child: body)
+            ? AuroraBackdrop(
+                // study-session.md: under glass the aurora leads with the
+                // word's gender colour.
+                leading:
+                    tokens.color.forArticle(
+                      item == null || item.kind == SessionBlockKind.grammar
+                          ? null
+                          : ref
+                                .watch(studyWordProvider(item.uid))
+                                .value
+                                ?.word
+                                .article,
+                    ) ??
+                    tokens.color.primary,
+                child: body,
+              )
             : body,
       ),
     );
@@ -336,8 +369,9 @@ class _BlockBanner extends StatelessWidget {
   }
 }
 
-/// The card slot. The card states — front, back, new, cloze — are #101–#104;
-/// until then it shows the word, or the topic of a grammar set.
+/// The card slot: the word's front (#101); the back, the new-word card and
+/// the cloze card follow (#102–#104). A grammar set shows its topic until
+/// L15 exists.
 class StudyCardSlot extends ConsumerWidget {
   const StudyCardSlot({required this.item, super.key});
 
@@ -349,18 +383,13 @@ class StudyCardSlot extends ConsumerWidget {
     final word = item.kind == SessionBlockKind.grammar
         ? null
         : ref.watch(studyWordProvider(item.uid)).value?.word;
+    if (word != null) return StudyFrontCard(word: word);
     return DpSurface(
       selected: !tokens.isGlass,
       padding: const EdgeInsets.fromLTRB(26, 20, 20, 20),
       child: SizedBox(
         width: double.infinity,
-        child: word == null
-            ? const SizedBox(height: 48)
-            : DpHeadword(
-                word.german,
-                article: word.article,
-                role: DpTextRole.display,
-              ),
+        child: const SizedBox(height: 48),
       ),
     );
   }
