@@ -328,18 +328,39 @@ class PlanRepository {
   ///
   /// BR-PLAN-05 — there is no backlog table, because an incomplete plan row
   /// *is* the backlog. A second table would be a second truth.
-  Stream<List<PlanItem>> watchBacklog(String today) =>
-      (_db.select(_db.planItems)
-            ..where(
-              (t) =>
-                  t.kind.equals(PlanKind.newWord.wire) &
-                  t.completedAt.isNull() &
-                  t.planDate.isSmallerThanValue(today),
-            )
-            ..orderBy(<OrderClauseGenerator<PlanItems>>[
-              (t) => OrderingTerm.desc(t.planDate),
-            ]))
-          .watch();
+  Stream<List<PlanItem>> watchBacklog(String today) => _backlog(today).watch();
+
+  /// [watchBacklog], once: what a backlog session starts from.
+  Future<List<PlanItem>> backlog(String today) => _backlog(today).get();
+
+  SimpleSelectStatement<PlanItems, PlanItem> _backlog(String today) =>
+      _db.select(_db.planItems)
+        ..where(
+          (t) =>
+              t.kind.equals(PlanKind.newWord.wire) &
+              t.completedAt.isNull() &
+              t.planDate.isSmallerThanValue(today),
+        )
+        ..orderBy(<OrderClauseGenerator<PlanItems>>[
+          (t) => OrderingTerm.desc(t.planDate),
+          (t) => OrderingTerm.asc(t.wordUid),
+        ]);
+
+  /// Completes a plan row without a rating: T4's *Remove from course*.
+  /// [at] null opens it again — the *Undo*.
+  Future<void> complete({
+    required String planDate,
+    required String uid,
+    required PlanKind kind,
+    required String? at,
+  }) =>
+      (_db.update(_db.planItems)..where(
+            (t) =>
+                t.planDate.equals(planDate) &
+                t.wordUid.equals(uid) &
+                t.kind.equals(kind.wire),
+          ))
+          .write(PlanItemsCompanion(completedAt: Value(at)));
 
   /// Whether the learner has started a step.
   ///

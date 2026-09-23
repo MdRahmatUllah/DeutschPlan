@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:deutschplan/features/backlog/backlog_screen.dart';
 import 'package:deutschplan/features/today/today_screen.dart';
 import 'package:deutschplan/core/providers/app_providers.dart';
 import 'package:deutschplan/core/theme/dp_tokens.dart';
@@ -143,7 +144,7 @@ void main() {
 
     first.router.go('/today/backlog');
     await tester.pumpAndSettle();
-    expect(find.text('T4'), findsOneWidget);
+    expect(find.byType(BacklogScreen), findsOneWidget);
 
     final second = await pumpApp(tester);
     expect(identical(first.router, second.router), isFalse);

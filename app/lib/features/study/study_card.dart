@@ -317,7 +317,9 @@ class StudyNewActions extends StatelessWidget {
   });
 
   final VoidCallback onKnown;
-  final VoidCallback onSkip;
+
+  /// Null leaves *Skip → backlog* out: a backlog word is already there.
+  final VoidCallback? onSkip;
 
   @override
   Widget build(BuildContext context) {
@@ -333,13 +335,14 @@ class StudyNewActions extends StatelessWidget {
               kind: DpButtonKind.text,
             ),
           ),
-          Expanded(
-            child: DpButton(
-              label: l10n.studySkip,
-              onPressed: onSkip,
-              kind: DpButtonKind.text,
+          if (onSkip != null)
+            Expanded(
+              child: DpButton(
+                label: l10n.studySkip,
+                onPressed: onSkip,
+                kind: DpButtonKind.text,
+              ),
             ),
-          ),
         ],
       ),
     );

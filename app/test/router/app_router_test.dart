@@ -1,6 +1,7 @@
 @TestOn('vm')
 library;
 
+import 'package:deutschplan/features/backlog/backlog_screen.dart';
 import 'package:deutschplan/features/study/study_screen.dart';
 import 'package:deutschplan/features/today/today_view.dart';
 import 'package:deutschplan/features/today/today_screen.dart';
@@ -248,36 +249,46 @@ void main() {
       // The order matters: a re-tap that popped straight to root would throw
       // away the screen the learner is reading.
       await pumpApp(tester, at: '/today/backlog');
-      await tester.drag(find.text('T4 row 1'), const Offset(0, -400));
+      await tester.drag(
+        find.text('das Wort1', findRichText: true),
+        const Offset(0, -400),
+      );
       await tester.pumpAndSettle();
 
       await tester.tap(find.text(await tabLabel()).last);
       await tester.pumpAndSettle();
 
-      expect(find.text('T4'), findsOneWidget, reason: 'it popped too early');
-      expect(find.text('T4 row 1'), findsOneWidget);
+      expect(
+        find.byType(BacklogScreen),
+        findsOneWidget,
+        reason: 'it popped too early',
+      );
+      expect(find.text('das Wort1', findRichText: true), findsOneWidget);
     });
 
     testWidgets('the second re-tap pops to root', (tester) async {
       await pumpApp(tester, at: '/today/backlog');
-      expect(find.text('T4'), findsOneWidget);
+      expect(find.byType(BacklogScreen), findsOneWidget);
 
       // Already at the top, so the first re-tap has nothing to scroll.
       await tester.tap(find.text(await tabLabel()).last);
       await tester.pumpAndSettle();
 
       expect(find.byType(TodayScreen), findsOneWidget);
-      expect(find.text('T4'), findsNothing);
+      expect(find.byType(BacklogScreen), findsNothing);
     });
 
     testWidgets('scroll then pop, in that order', (tester) async {
       await pumpApp(tester, at: '/today/backlog');
-      await tester.drag(find.text('T4 row 1'), const Offset(0, -400));
+      await tester.drag(
+        find.text('das Wort1', findRichText: true),
+        const Offset(0, -400),
+      );
       await tester.pumpAndSettle();
 
       await tester.tap(find.text(await tabLabel()).last);
       await tester.pumpAndSettle();
-      expect(find.text('T4'), findsOneWidget);
+      expect(find.byType(BacklogScreen), findsOneWidget);
 
       await tester.tap(find.text(await tabLabel()).last);
       await tester.pumpAndSettle();

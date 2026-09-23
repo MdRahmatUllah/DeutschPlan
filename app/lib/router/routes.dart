@@ -28,6 +28,7 @@ import 'package:deutschplan/router/back_behaviour.dart';
 import 'package:deutschplan/router/deep_links.dart';
 import 'package:deutschplan/router/route_guards.dart';
 import 'package:deutschplan/features/today/today_screen.dart';
+import 'package:deutschplan/features/backlog/backlog_screen.dart';
 import 'package:deutschplan/features/study/study_screen.dart';
 import 'package:deutschplan/core/adaptive/adaptive.dart';
 import 'package:deutschplan/router/placeholder_screen.dart';
@@ -91,7 +92,15 @@ class SessionArgs {
 }
 
 /// What a session block holds.
-enum SessionBlockKind { revise, newWords, grammar }
+enum SessionBlockKind {
+  revise,
+  newWords,
+  grammar,
+
+  /// T4's words, missed or skipped on earlier days (FR-T4-02): new words
+  /// whose plan rows keep their own dates.
+  backlog,
+}
 
 /// One block of a session.
 @immutable
@@ -262,7 +271,7 @@ class BacklogRoute extends GoRouteData with $BacklogRoute {
 
   @override
   Widget build(BuildContext context, GoRouterState state) =>
-      const PlaceholderScreen(title: 'Backlog', screen: 'T4');
+      const BacklogScreen();
 }
 
 class LearnRoute extends GoRouteData with $LearnRoute {
