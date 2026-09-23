@@ -16,10 +16,12 @@ import 'package:deutschplan/data/repositories/rating_service.dart'
 import 'package:deutschplan/features/study/study_back.dart';
 import 'package:deutschplan/features/study/study_card.dart';
 import 'package:deutschplan/features/study/study_cloze.dart';
+import 'package:deutschplan/features/study/study_motion.dart';
 import 'package:deutschplan/features/study/study_rating.dart';
 import 'package:deutschplan/features/study/study_session.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
 import 'package:deutschplan/router/routes.dart';
+import 'package:flutter/services.dart' show HapticFeedback;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -98,8 +100,14 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
     );
   }
 
-  /// FR-T2-02: a rating, written and moved past, with its 4 s *Undo*.
+  /// FR-T2-02: a rating, written and moved past, with its 4 s *Undo*. The
+  /// haptic comes first, as the finger lifts: light, and medium for Again.
   Future<void> _rate(StudyItem item, Rating rating) {
+    unawaited(
+      rating == Rating.again
+          ? HapticFeedback.mediumImpact()
+          : HapticFeedback.lightImpact(),
+    );
     final notifier = ref.read(studySessionProvider(widget.args).notifier);
     final l10n = AppLocalizations.of(context);
     final label = switch (rating) {
@@ -217,24 +225,37 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
           Expanded(
             child: Stack(
               children: <Widget>[
-                if (item != null)
+                if (item != null && session != null)
                   Padding(
                     padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-                    // Face down the card sits in the middle; turned over it
-                    // rises to the top to make room for its back.
-                    child: AnimatedAlign(
-                      alignment: revealed
-                          ? Alignment.topCenter
-                          : Alignment.center,
-                      duration: MediaQuery.disableAnimationsOf(context)
-                          ? Duration.zero
-                          : tokens.motion.quick,
-                      curve: Curves.easeOut,
-                      child: SingleChildScrollView(
-                        child: StudyCardSlot(
-                          item: item,
-                          revealed: revealed,
-                          onReveal: _reveal,
+                    child: StudyCardMotion(
+                      position: session.position,
+                      left: session.results[session.position - 1],
+                      // Face down the card sits in the middle; turned over it
+                      // rises to the top to make room for its back.
+                      child: AnimatedAlign(
+                        alignment: revealed
+                            ? Alignment.topCenter
+                            : Alignment.center,
+                        duration: MediaQuery.disableAnimationsOf(context)
+                            ? Duration.zero
+                            : tokens.motion.quick,
+                        curve: Curves.easeOut,
+                        child: SingleChildScrollView(
+                          child: StudySwipeToRate(
+                            enabled:
+                                revealed &&
+                                item.kind != SessionBlockKind.grammar &&
+                                ref
+                                    .watch(settingsProvider)
+                                    .read(SettingKeys.swipeToRate),
+                            onRated: (rating) => _rate(item, rating),
+                            child: StudyCardSlot(
+                              item: item,
+                              revealed: revealed,
+                              onReveal: _reveal,
+                            ),
+                          ),
                         ),
                       ),
                     ),
