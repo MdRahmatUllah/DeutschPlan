@@ -29,6 +29,7 @@ import 'package:deutschplan/router/deep_links.dart';
 import 'package:deutschplan/router/route_guards.dart';
 import 'package:deutschplan/features/today/today_screen.dart';
 import 'package:deutschplan/features/backlog/backlog_screen.dart';
+import 'package:deutschplan/features/sentences/sentences_screen.dart';
 import 'package:deutschplan/features/study/study_screen.dart';
 import 'package:deutschplan/core/adaptive/adaptive.dart';
 import 'package:deutschplan/router/placeholder_screen.dart';
@@ -733,7 +734,7 @@ class SentencesRoute extends GoRouteData with $SentencesRoute {
 
   @override
   Widget build(BuildContext context, GoRouterState state) =>
-      const PlaceholderScreen(title: 'Sentences', screen: 'T5');
+      const SentencesScreen();
 }
 
 @TypedGoRoute<DayCompleteRoute>(path: '/day-complete')

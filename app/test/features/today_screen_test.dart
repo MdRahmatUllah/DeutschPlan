@@ -1,3 +1,4 @@
+import 'package:deutschplan/features/sentences/sentences_screen.dart';
 import 'package:deutschplan/core/components/dp_coach_mark.dart';
 
 import 'package:deutschplan/features/study/study_screen.dart';
@@ -200,7 +201,7 @@ void main() {
     testWidgets('Practice sentences opens T5', (tester) async {
       await pump(tester);
       await tapCard(tester, l10n.todaySentences(3));
-      opened(tester, 'T5');
+      expect(find.byType(SentencesScreen), findsOneWidget);
     });
 
     testWidgets('Grammar due opens practice with the due topics', (
@@ -334,7 +335,7 @@ void main() {
 
       await tester.tap(find.byType(PrimaryActionBar));
       await tester.pumpAndSettle();
-      opened(tester, 'T5');
+      expect(find.byType(SentencesScreen), findsOneWidget);
     });
 
     testWidgets('with the day done it reviews the backlog', (tester) async {
