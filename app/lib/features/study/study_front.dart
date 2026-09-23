@@ -52,7 +52,8 @@ String frontCaption(Word word, AppLocalizations l10n, {required bool pron}) {
 /// The gender bar and, under glass, the card's tint are the article's
 /// colour. The headword copies on a long-press, the speaker plays on a tap
 /// and slowly on a long-press (FR-T2-09), and the word plays by itself when
-/// `autoplay_headword` is on.
+/// `autoplay_headword` is on. With no German voice on the phone the speaker
+/// shows slashed, and a tap says how to install one.
 class StudyFrontCard extends ConsumerStatefulWidget {
   const StudyFrontCard({required this.word, super.key});
 
@@ -66,6 +67,10 @@ class StudyFrontCard extends ConsumerStatefulWidget {
 }
 
 class _StudyFrontCardState extends ConsumerState<StudyFrontCard> {
+  /// The phone said it has no German voice (accessibility-performance.md).
+  /// Kept across cards: the state outlives each word, so the toast is once.
+  bool _mute = false;
+
   @override
   void initState() {
     super.initState();
@@ -82,18 +87,23 @@ class _StudyFrontCardState extends ConsumerState<StudyFrontCard> {
   void _autoplay() {
     if (!ref.read(settingsProvider).read(SettingKeys.autoplayHeadword)) return;
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) _speak();
+      if (mounted && !_mute) unawaited(_speak());
     });
   }
 
-  void _speak({double pace = 1}) {
+  Future<void> _speak({double pace = 1}) async {
+    if (_mute) return _explain();
     final speed = ref.read(settingsProvider).read(SettingKeys.ttsSpeed);
-    unawaited(
-      ref
-          .read(systemTtsProvider)
-          .speak(spokenForm(widget.word), rate: speed * pace),
-    );
+    final spoke = await ref
+        .read(systemTtsProvider)
+        .speak(spokenForm(widget.word), rate: speed * pace);
+    if (spoke || !mounted) return;
+    setState(() => _mute = true);
+    _explain();
   }
+
+  void _explain() =>
+      DpToast.show(context, AppLocalizations.of(context).studyNoVoice);
 
   void _copy() {
     final l10n = AppLocalizations.of(context);
@@ -152,8 +162,9 @@ class _StudyFrontCardState extends ConsumerState<StudyFrontCard> {
               const SizedBox(width: 12),
               DpSpeakerButton(
                 semanticLabel: l10n.studyPronounce,
-                onPressed: _speak,
-                onLongPress: () => _speak(pace: StudyFrontCard.slow),
+                state: _mute ? DpSpeakerState.unavailable : DpSpeakerState.idle,
+                onPressed: () => unawaited(_speak()),
+                onLongPress: () => unawaited(_speak(pace: StudyFrontCard.slow)),
               ),
             ],
           ),

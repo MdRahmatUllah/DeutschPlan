@@ -1236,5 +1236,9 @@
   "studyCopyHint": "copy the word",
   "@studyCopyHint": {
     "description": "T2 headword long-press hint, for screen readers."
+  },
+  "studyNoVoice": "No German voice on this phone. Install one in its text-to-speech settings.",
+  "@studyNoVoice": {
+    "description": "T2 toast when the phone has no German system voice: once when it first fails, and on each tap of the slashed speaker (accessibility-performance.md)."
   }
 }

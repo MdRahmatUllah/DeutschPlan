@@ -1,3 +1,4 @@
+import 'package:deutschplan/core/components/dp_feedback.dart';
 import 'package:deutschplan/core/components/dp_speaker_button.dart';
 import 'package:deutschplan/core/providers/app_providers.dart';
 import 'package:deutschplan/core/theme/app_theme.dart';
@@ -89,6 +90,7 @@ void main() {
       WidgetTester tester, {
       Word? of,
       bool autoplay = false,
+      bool voice = true,
       ThemeData? theme,
     }) async {
       await tester.runAsync(() async {
@@ -103,7 +105,7 @@ void main() {
           await db.close();
         }),
       );
-      tts = _RecordingTts();
+      tts = _RecordingTts(voice: voice);
       await tester.pumpWidget(
         ProviderScope(
           overrides: <Override>[
@@ -239,16 +241,78 @@ void main() {
       await tester.pump();
       expect(tts.said, isEmpty);
     });
+
+    testWidgets('no German voice: the speaker is slashed and says why', (
+      tester,
+    ) async {
+      await pump(tester, voice: false);
+      await tester.tap(find.byType(DpSpeakerButton));
+      await tester.pump();
+
+      expect(
+        tester.widget<DpSpeakerButton>(find.byType(DpSpeakerButton)).state,
+        DpSpeakerState.unavailable,
+      );
+      expect(find.text(l10n.studyNoVoice), findsOneWidget);
+
+      // A tap on the slashed speaker explains again and asks nothing more
+      // of the engine.
+      await tester.pumpAndSettle();
+      await tester.pump(DpToast.duration);
+      await tester.pumpAndSettle();
+      expect(find.text(l10n.studyNoVoice), findsNothing);
+      await tester.tap(find.byType(DpSpeakerButton));
+      await tester.pump();
+      expect(find.text(l10n.studyNoVoice), findsOneWidget);
+      expect(tts.said, hasLength(1));
+    });
+
+    testWidgets('and autoplay says so once, not on every card', (tester) async {
+      await pump(tester, autoplay: true, voice: false);
+      await tester.pump();
+      expect(find.text(l10n.studyNoVoice), findsOneWidget);
+
+      await tester.pumpAndSettle();
+      await tester.pump(DpToast.duration);
+      await tester.pumpAndSettle();
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: <Override>[
+            settingsProvider.overrideWithValue(settings),
+            systemTtsProvider.overrideWithValue(tts),
+          ],
+          child: MaterialApp(
+            theme: AppTheme.light(),
+            localizationsDelegates: appLocalizationsDelegates,
+            supportedLocales: supportedLocales,
+            home: Scaffold(
+              body: Padding(
+                padding: const EdgeInsets.all(16),
+                child: StudyFrontCard(
+                  word: word(uid: 'tisch', article: 'der', german: 'Tisch'),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pump();
+      expect(find.text(l10n.studyNoVoice), findsNothing);
+      expect(tts.said, hasLength(1));
+    });
   });
 }
 
 class _RecordingTts implements TtsEngine {
+  _RecordingTts({this.voice = true});
+
+  final bool voice;
   final List<(String, double)> said = <(String, double)>[];
 
   @override
   Future<bool> speak(String text, {double rate = 1}) async {
     said.add((text, rate));
-    return true;
+    return voice;
   }
 
   @override
