@@ -1326,5 +1326,51 @@
         "type": "String"
       }
     }
+  },
+  "studyClozeChip": "Cloze",
+  "@studyClozeChip": {
+    "description": "T2 cloze card: the chip beside the step code."
+  },
+  "studyClozePrompt": "Fill the gap",
+  "@studyClozePrompt": {
+    "description": "T2 cloze card: the label above the sentence. Shown in capitals."
+  },
+  "studyClozeHint": "Type the missing word",
+  "@studyClozeHint": {
+    "description": "T2 cloze card: the answer field's placeholder."
+  },
+  "studyClozeCheck": "Check",
+  "@studyClozeCheck": {
+    "description": "T2 cloze card: checks the typed answer."
+  },
+  "studyClozeCorrect": "Correct · the sentence plays",
+  "@studyClozeCorrect": {
+    "description": "T2 cloze card: the answer was right; the sentence is spoken."
+  },
+  "studyClozeAlmost": "Almost · it's {answer}",
+  "@studyClozeAlmost": {
+    "description": "T2 cloze card: a near miss (BR-ANS-01). answer is the German as the sentence spells it.",
+    "placeholders": {
+      "answer": {
+        "type": "String"
+      }
+    }
+  },
+  "studyClozeWrong": "Not quite · it's {answer}",
+  "@studyClozeWrong": {
+    "description": "T2 cloze card: a wrong answer. answer is the German as the sentence spells it.",
+    "placeholders": {
+      "answer": {
+        "type": "String"
+      }
+    }
+  },
+  "studyClozeRatePrompt": "How well did you know it?",
+  "@studyClozeRatePrompt": {
+    "description": "T2 cloze card: the prompt above the rating bar."
+  },
+  "studyClozeFootnote": "Rated Good or Easy twice → this word is now practised in production. Switch back to plain cards from the word's detail.",
+  "@studyClozeFootnote": {
+    "description": "T2 cloze card: why the card changed (BR-FSRS-06) and how to change it back."
   }
 }

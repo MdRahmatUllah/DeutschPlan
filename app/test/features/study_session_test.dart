@@ -257,7 +257,7 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code) VALUES
       final notifier = container.read(studySessionProvider(args).notifier)
         ..reveal()
         ..advance(CardOutcome.good);
-      await tester.pump();
+      await tester.pumpAndSettle();
       expect(notifier.state.value?.revealed, isFalse);
       expect(find.text(l10n.studyShowMeaning), findsOneWidget);
     });

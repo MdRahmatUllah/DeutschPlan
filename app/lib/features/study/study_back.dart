@@ -125,6 +125,51 @@ class StudyBack extends StatelessWidget {
   };
 }
 
+/// The 32 dp mini play button: Oat with an ink edge on paper, frosted under
+/// glass. With [onPressed] it is its own button; without, it only draws, for
+/// a row that is the target as a whole.
+class StudyPlayButton extends StatelessWidget {
+  const StudyPlayButton({super.key, this.label, this.onPressed});
+
+  /// For screen readers, when it is its own button.
+  final String? label;
+  final VoidCallback? onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    final tokens = context.tokens;
+    final dot = Container(
+      width: 32,
+      height: 32,
+      decoration: BoxDecoration(
+        color: tokens.surface.muted,
+        shape: BoxShape.circle,
+        border: Border.all(
+          color: tokens.isGlass ? tokens.surface.outline : tokens.color.ink,
+          width: tokens.surface.outlineWidth,
+        ),
+      ),
+      child: Icon(Icons.play_arrow, size: 16, color: tokens.color.ink),
+    );
+    final tap = onPressed;
+    if (tap == null) return dot;
+    return Semantics(
+      button: true,
+      label: label,
+      child: GestureDetector(
+        onTap: tap,
+        behavior: HitTestBehavior.opaque,
+        // 32 dp drawn, 48 dp tall to hit, and the gap after it part of the
+        // target, so the dot keeps the text's left edge.
+        child: Padding(
+          padding: const EdgeInsetsDirectional.only(top: 8, bottom: 8, end: 10),
+          child: dot,
+        ),
+      ),
+    );
+  }
+}
+
 /// One example: the mini play button, the German in italics, its
 /// translation. The whole row plays it, so the target is not just 32 dp.
 class _Example extends StatelessWidget {
@@ -146,21 +191,8 @@ class _Example extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Container(
-              width: 32,
-              height: 32,
-              decoration: BoxDecoration(
-                color: tokens.surface.muted,
-                shape: BoxShape.circle,
-                border: Border.all(
-                  color: tokens.isGlass
-                      ? tokens.surface.outline
-                      : tokens.color.ink,
-                  width: tokens.surface.outlineWidth,
-                ),
-              ),
-              child: Icon(Icons.play_arrow, size: 16, color: tokens.color.ink),
-            ),
+            // The row is the target, so the dot draws only.
+            const StudyPlayButton(),
             const SizedBox(width: 10),
             Expanded(
               child: Column(

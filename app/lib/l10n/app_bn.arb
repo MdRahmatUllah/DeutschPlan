@@ -219,5 +219,14 @@
   "studyKnown": "{word} জানা হিসেবে চিহ্নিত",
   "studyIntervalDays": "{days} দি",
   "studyRatePrompt": "কতটা মনে ছিল? ব্যবধান দেখায় কবে আবার আসবে।",
-  "studyRated": "{word}: {rating}"
+  "studyRated": "{word}: {rating}",
+  "studyClozeChip": "ক্লোজ",
+  "studyClozePrompt": "ফাঁকা ঘরটি পূরণ করুন",
+  "studyClozeHint": "হারানো শব্দটি লিখুন",
+  "studyClozeCheck": "যাচাই করুন",
+  "studyClozeCorrect": "সঠিক · বাক্যটি বাজছে",
+  "studyClozeAlmost": "প্রায় · সঠিকটি {answer}",
+  "studyClozeWrong": "হয়নি · সঠিকটি {answer}",
+  "studyClozeRatePrompt": "কতটা জানতেন?",
+  "studyClozeFootnote": "দুবার Good বা Easy → এই শব্দটি এখন লিখে অনুশীলন হচ্ছে। শব্দের বিস্তারিত থেকে সাধারণ কার্ডে ফিরতে পারেন।"
 }

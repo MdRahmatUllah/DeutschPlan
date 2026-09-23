@@ -156,13 +156,10 @@ class _StudyWordCardState extends ConsumerState<StudyWordCard> {
     final tokens = context.tokens;
     final l10n = AppLocalizations.of(context);
     final word = widget.word;
-    final gender =
-        tokens.color.forArticle(word.article) ?? tokens.surface.muted;
     final settings = ref.watch(settingsProvider);
     final pron = settings.read(SettingKeys.showPronBn);
     // Watched from the front, so the back has its examples when it opens.
     final extras = ref.watch(studyBackProvider(word.uid)).value;
-    final edge = tokens.isGlass ? 0.0 : 2.0;
     final still = MediaQuery.disableAnimationsOf(context);
     final quick = still ? Duration.zero : tokens.motion.quick;
 
@@ -248,9 +245,44 @@ class _StudyWordCardState extends ConsumerState<StudyWordCard> {
       ),
     );
 
-    final card = DpSurface(
-      // Paper: the artboard's 2 px ink card with its offset shadow. Glass:
-      // the card itself takes the gender tint as well as the bar.
+    final card = StudyCardFrame(
+      article: word.article,
+      // Reduced motion: no growing at all. AnimatedSize cannot take a zero
+      // duration — it re-dirties itself during layout.
+      child: still
+          ? face
+          : AnimatedSize(
+              duration: quick,
+              curve: Curves.easeOut,
+              alignment: Alignment.topCenter,
+              child: face,
+            ),
+    );
+
+    // *Show meaning* is the labelled way to turn it; the tap is a shortcut.
+    return GestureDetector(
+      onTap: widget.revealed ? null : widget.onReveal,
+      excludeFromSemantics: true,
+      child: card,
+    );
+  }
+}
+
+/// The word card's frame: the article's 6 px gender bar down the left edge.
+/// On paper, the artboard's 2 px ink card with its offset shadow; under
+/// glass, the card itself takes the gender tint as well as the bar.
+class StudyCardFrame extends StatelessWidget {
+  const StudyCardFrame({required this.article, required this.child, super.key});
+
+  final String? article;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    final tokens = context.tokens;
+    final gender = tokens.color.forArticle(article) ?? tokens.surface.muted;
+    final edge = tokens.isGlass ? 0.0 : 2.0;
+    return DpSurface(
       kind: tokens.isGlass
           ? DpSurfaceKind.tint(gender, opacity: 0.22)
           : DpSurfaceKind.card,
@@ -260,7 +292,6 @@ class _StudyWordCardState extends ConsumerState<StudyWordCard> {
         borderRadius: BorderRadius.circular(tokens.shape.card - edge),
         child: Stack(
           children: <Widget>[
-            // The 6 px gender bar down the left edge.
             PositionedDirectional(
               start: 0,
               top: 0,
@@ -268,27 +299,10 @@ class _StudyWordCardState extends ConsumerState<StudyWordCard> {
               width: 6,
               child: ColoredBox(color: gender),
             ),
-            // Reduced motion: no growing at all. AnimatedSize cannot take a
-            // zero duration — it re-dirties itself during layout.
-            if (still)
-              face
-            else
-              AnimatedSize(
-                duration: quick,
-                curve: Curves.easeOut,
-                alignment: Alignment.topCenter,
-                child: face,
-              ),
+            child,
           ],
         ),
       ),
-    );
-
-    // *Show meaning* is the labelled way to turn it; the tap is a shortcut.
-    return GestureDetector(
-      onTap: widget.revealed ? null : widget.onReveal,
-      excludeFromSemantics: true,
-      child: card,
     );
   }
 }
