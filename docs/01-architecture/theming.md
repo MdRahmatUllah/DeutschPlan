@@ -29,6 +29,7 @@ Container(color: t.surface.card, …)  // never Color(0xFFFFFFFF)
 | `cardStrong` | #FFFFFF | #1E1B2C | rgba(255,255,255,0.72) blur 32 |
 | `muted` Oat | #F3EADB | #29253A | rgba(255,255,255,0.35) |
 | `textSecondary` | #5B5670 | #B7B1CC | #5B5670 |
+| `inverseLink` (on the ink snackbar) | #00C2B2 | #007A70 | as light |
 | `outline` | ink 20 % | #F4F1FF 22 % | rgba(255,255,255,0.65) |
 | `der` | #3D5AFE (text #2F46E0) | #8C9DFF | as light |
 | `die` | #FF3D7F (text #D6155C) | #FF8AB2 | as light |

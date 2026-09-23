@@ -360,30 +360,49 @@ class DpVerdictRow extends StatelessWidget {
   }
 }
 
+/// The one snackbar the artboards draw (StudyNew): inverse — ink with paper
+/// text in light mode, the other way round in dark — 8 px corners, a soft
+/// shadow, and the action in [DpPalette.inverseLink].
+///
+/// One at a time: a queue of bars is a queue the learner cannot use, because
+/// the older ones expire while they read.
+void _showInverse(
+  BuildContext context, {
+  required String message,
+  required Duration duration,
+  SnackBarAction? action,
+  double lift = 0,
+}) {
+  final tokens = context.tokens;
+  ScaffoldMessenger.of(context)
+    ..hideCurrentSnackBar()
+    ..showSnackBar(
+      SnackBar(
+        duration: duration,
+        backgroundColor: tokens.color.ink,
+        behavior: SnackBarBehavior.floating,
+        margin: EdgeInsets.fromLTRB(16, 0, 16, 10 + lift),
+        elevation: 4,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(tokens.shape.chip),
+        ),
+        content: DpText(
+          message,
+          role: DpTextRole.body,
+          color: tokens.surface.paper.withValues(alpha: 1),
+        ),
+        action: action,
+      ),
+    );
+}
+
 /// A short note that something happened: "Copied".
 abstract final class DpToast {
   static const Duration duration = Duration(seconds: 2);
 
-  static void show(BuildContext context, String message) {
-    final tokens = context.tokens;
-    ScaffoldMessenger.of(context)
-      ..hideCurrentSnackBar()
-      ..showSnackBar(
-        SnackBar(
-          duration: duration,
-          backgroundColor: tokens.surface.cardStrong,
-          behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(tokens.shape.button),
-            side: BorderSide(
-              color: tokens.color.ink,
-              width: tokens.surface.outlineWidth,
-            ),
-          ),
-          content: DpText(message, role: DpTextRole.body),
-        ),
-      );
-  }
+  /// [lift] floats it clear of a thumb zone, as [DpUndo.show]'s does.
+  static void show(BuildContext context, String message, {double lift = 0}) =>
+      _showInverse(context, message: message, duration: duration, lift: lift);
 }
 
 /// The shared undo affordance.
@@ -396,36 +415,25 @@ abstract final class DpUndo {
 
   /// The label is read from ARB rather than passed in: it is the same word at
   /// every call site, and a parameter is a chance to pass an unlocalised one.
+  ///
+  /// [lift] floats it clear of a screen's thumb zone: the StudyNew artboard
+  /// holds it 128 px up, above *Show meaning*, rather than over it.
   static void show(
     BuildContext context, {
     required String message,
     required VoidCallback onUndo,
+    double lift = 0,
   }) {
-    final tokens = context.tokens;
-
-    ScaffoldMessenger.of(context)
-      // One at a time: a queue of undo bars is a queue the learner cannot use,
-      // because the older ones expire while they read.
-      ..hideCurrentSnackBar()
-      ..showSnackBar(
-        SnackBar(
-          duration: duration,
-          backgroundColor: tokens.surface.cardStrong,
-          behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(tokens.shape.button),
-            side: BorderSide(
-              color: tokens.color.ink,
-              width: tokens.surface.outlineWidth,
-            ),
-          ),
-          content: DpText(message, role: DpTextRole.body),
-          action: SnackBarAction(
-            label: AppLocalizations.of(context).undo,
-            textColor: tokens.color.link,
-            onPressed: onUndo,
-          ),
-        ),
-      );
+    _showInverse(
+      context,
+      message: message,
+      duration: duration,
+      lift: lift,
+      action: SnackBarAction(
+        label: AppLocalizations.of(context).undo,
+        textColor: context.tokens.color.inverseLink,
+        onPressed: onUndo,
+      ),
+    );
   }
 }

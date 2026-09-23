@@ -380,5 +380,42 @@ void main() {
     test('the duration is the 4 s FR-T2-02 asks for', () {
       expect(DpUndo.duration, const Duration(seconds: 4));
     });
+
+    for (final (name, theme, palette) in <(String, ThemeData, DpPalette)>[
+      ('light', AppTheme.light(), DpPalette.light),
+      ('dark', AppTheme.dark(), DpPalette.dark),
+    ]) {
+      testWidgets('it is the StudyNew artboard\'s inverse bar ($name)', (
+        tester,
+      ) async {
+        await tester.pumpWidget(
+          MaterialApp(
+            theme: theme,
+            localizationsDelegates: appLocalizationsDelegates,
+            supportedLocales: supportedLocales,
+            home: Scaffold(
+              body: Builder(
+                builder: (context) => GestureDetector(
+                  onTap: () => DpUndo.show(
+                    context,
+                    message: 'Moved die Kaution to the backlog',
+                    onUndo: () {},
+                  ),
+                  child: const Text('rate'),
+                ),
+              ),
+            ),
+          ),
+        );
+        await tester.tap(find.text('rate'));
+        await tester.pump();
+
+        final bar = tester.widget<SnackBar>(find.byType(SnackBar));
+        expect(bar.backgroundColor, palette.ink);
+        expect(bar.action?.textColor, palette.inverseLink);
+        final shape = bar.shape! as RoundedRectangleBorder;
+        expect(shape.side, BorderSide.none);
+      });
+    }
   });
 }

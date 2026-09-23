@@ -294,10 +294,12 @@ class PlanRepository {
   });
 
   /// Marks a plan row skipped. It stays in the backlog rather than completing.
+  /// [skipped] false takes it back — the skip's *Undo*.
   Future<void> skip({
     required String planDate,
     required String uid,
     required PlanKind kind,
+    bool skipped = true,
   }) =>
       (_db.update(_db.planItems)..where(
             (t) =>
@@ -309,7 +311,7 @@ class PlanRepository {
             // 1, not true: the DDL says INTEGER, so drift types it as an int.
             // SQLite has no boolean, and declaring BOOLEAN here would be a
             // schema change for a column that already stores the same byte.
-            const PlanItemsCompanion(skipped: Value(1)),
+            PlanItemsCompanion(skipped: Value(skipped ? 1 : 0)),
           );
 
   /// Today's plan rows, in the order the session presents them.
