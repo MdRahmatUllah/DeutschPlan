@@ -51,25 +51,80 @@ void main() {
     });
   });
 
-  group('FR-T1-03 the in-progress labels', () {
-    test('nothing done starts the day', () {
+  group('FR-T1-03 the button, every transition', () {
+    TodayViewState of(TodayView view) => todayViewState(view);
+
+    test('nothing done: Start today · every card', () {
       expect(
-        todayAction(artboardToday(reviseDone: 0, newDone: 0)),
-        TodayAction.start,
+        of(artboardToday(reviseDone: 0, newDone: 0)),
+        const TodayViewState(TodayAction.start, 20),
       );
     });
 
-    test('something done continues it', () {
-      expect(todayAction(artboardToday()), TodayAction.resume);
+    test('something done: Continue · what is left, sentences included', () {
+      // The artboard's 12 / 20: five new words and three sentences left.
+      expect(of(artboardToday()), const TodayViewState(TodayAction.resume, 8));
     });
 
-    test('sentences still to do keep the day going', () {
-      // Sentences are part of the day, so Revise and New alone do not end it.
-      // Nothing left at all is the widget test's "done, and disabled".
+    test('grammar alone still open is still a study block', () {
       expect(
-        todayAction(artboardToday(reviseDone: 10, newDone: 7)),
+        of(artboardToday(reviseDone: 10, newDone: 7, grammarDue: 1)).action,
         TodayAction.resume,
       );
+    });
+
+    test('the study blocks done: Practice sentences · those left', () {
+      expect(
+        of(artboardToday(reviseDone: 10, newDone: 7, sentencesDone: 1)),
+        const TodayViewState(TodayAction.sentences, 2),
+      );
+    });
+
+    test('the day done with a backlog: Review backlog · its size', () {
+      expect(
+        of(artboardToday(reviseDone: 10, newDone: 7, sentencesDone: 3)),
+        const TodayViewState(TodayAction.backlog, 14),
+      );
+    });
+
+    test('the backlog waits until the day is done', () {
+      // Sentences are still open, so they come first.
+      expect(
+        of(artboardToday(reviseDone: 10, newDone: 7)).action,
+        TodayAction.sentences,
+      );
+    });
+
+    test('nothing left and no backlog: All done, disabled', () {
+      final state = of(
+        artboardToday(reviseDone: 10, newDone: 7, sentencesDone: 3, backlog: 0),
+      );
+      expect(state, const TodayViewState(TodayAction.done));
+      expect(state.enabled, isFalse);
+    });
+
+    test('BR-PLAN-01 a rest day with revisions: Revise anyway · those due', () {
+      expect(
+        of(artboardToday(reviseDone: 4, isStudyDay: false)),
+        const TodayViewState(TodayAction.reviseAnyway, 6),
+      );
+    });
+
+    test('a rest day with nothing due is done', () {
+      expect(
+        of(artboardToday(reviseDone: 10, isStudyDay: false)).action,
+        TodayAction.done,
+      );
+    });
+
+    test('only done is disabled', () {
+      for (final action in TodayAction.values) {
+        expect(
+          TodayViewState(action).enabled,
+          action != TodayAction.done,
+          reason: action.name,
+        );
+      }
     });
   });
 

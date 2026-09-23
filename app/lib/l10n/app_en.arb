@@ -816,5 +816,32 @@
   "todayLoadFailed": "Today's plan did not load",
   "@todayLoadFailed": {
     "description": "T1 error panel title."
+  },
+  "todaySentencesAction": "Practice sentences · {count}",
+  "@todaySentencesAction": {
+    "description": "T1 primary button once the study blocks are done (FR-T1-03).",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "todayBacklogAction": "Review backlog · {count}",
+  "@todayBacklogAction": {
+    "description": "T1 primary button once the day is done and a backlog is waiting (FR-T1-03).",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "todayReviseAnyway": "Revise anyway · {count}",
+  "@todayReviseAnyway": {
+    "description": "T1 primary button on a rest day with revisions due (FR-T1-03).",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   }
 }

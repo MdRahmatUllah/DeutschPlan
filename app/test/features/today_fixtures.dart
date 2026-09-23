@@ -10,6 +10,8 @@ TodayView artboardToday({
   int newDone = 2,
   int backlog = 14,
   int grammarDue = 0,
+  int sentencesDone = 0,
+  bool isStudyDay = true,
   int courseDay = 34,
   String? learnerName = 'Maruf',
 }) => TodayView(
@@ -20,7 +22,8 @@ TodayView artboardToday({
   openRevise: <String>[for (var i = reviseDone; i < 10; i++) 'r$i'],
   openNew: <String>[for (var i = newDone; i < 7; i++) 'n$i'],
   grammarDue: <String>[for (var i = 0; i < grammarDue; i++) 'g$i'],
-  sentences: const BlockProgress(done: 0, total: 3),
+  sentences: BlockProgress(done: sentencesDone, total: 3),
+  isStudyDay: isStudyDay,
   backlog: backlog,
   backlogFrom: backlog == 0 ? null : '2026-09-15',
   backlogTo: backlog == 0 ? null : '2026-09-16',

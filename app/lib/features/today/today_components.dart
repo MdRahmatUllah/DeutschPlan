@@ -417,24 +417,47 @@ class GrammarPreviewCard extends StatelessWidget {
   }
 }
 
-/// The docked button under the plan.
+/// The docked button under the plan, in the look its [action] takes.
 class PrimaryActionBar extends StatelessWidget {
   const PrimaryActionBar({
+    required this.action,
     required this.label,
     required this.onPressed,
     super.key,
   });
 
+  final TodayAction action;
   final String label;
 
   /// Null disables it, as "All done" is.
   final VoidCallback? onPressed;
 
   @override
-  Widget build(BuildContext context) => Padding(
-    padding: const EdgeInsets.all(16),
-    child: DpButton(label: label, onPressed: onPressed),
-  );
+  Widget build(BuildContext context) {
+    final tokens = context.tokens;
+    final button = switch (action) {
+      // TodayDone: Lime with a tick, ink on it, a little faded, no shadow.
+      TodayAction.done => Opacity(
+        opacity: 0.85,
+        child: DpButton(
+          label: label,
+          onPressed: null,
+          colour: tokens.color.easy,
+          onColour: tokens.color.onAccent,
+          icon: Icon(Icons.check, size: 20, color: tokens.color.onAccent),
+        ),
+      ),
+      // TodayRest: optional, so Oat rather than Lagoon.
+      TodayAction.reviseAnyway => DpButton(
+        label: label,
+        onPressed: onPressed,
+        colour: tokens.surface.muted,
+        onColour: tokens.color.ink,
+      ),
+      _ => DpButton(label: label, onPressed: onPressed),
+    };
+    return Padding(padding: const EdgeInsets.all(16), child: button);
+  }
 }
 
 /// A 44 dp icon button: the header's gear.

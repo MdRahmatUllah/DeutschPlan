@@ -46,7 +46,11 @@ void main() {
   /// guarded on it (#68), so a test that navigated there empty would be
   /// redirected — which is the guard working, not the route missing.
   Object? extraFor(String path) => switch (path) {
-    '/study' => const SessionArgs(wordUids: <String>['uid-haus']),
+    '/study' => const SessionArgs(
+      blocks: <SessionBlock>[
+        SessionBlock(SessionBlockKind.revise, <String>['uid-haus']),
+      ],
+    ),
     '/quiz' => const QuizArgs(direction: 'deEn', source: 'allLearned', seed: 1),
     '/grammar-practice' => const GrammarPracticeArgs(topicUids: <String>['g1']),
     _ => null,
@@ -373,7 +377,11 @@ void main() {
 
       router.go(
         '/study',
-        extra: const SessionArgs(wordUids: <String>['a', 'b', 'c']),
+        extra: const SessionArgs(
+          blocks: <SessionBlock>[
+            SessionBlock(SessionBlockKind.revise, <String>['a', 'b', 'c']),
+          ],
+        ),
       );
       await tester.pumpAndSettle();
 

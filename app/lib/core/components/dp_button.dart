@@ -123,7 +123,11 @@ class _DpButtonState extends State<DpButton> {
             widget.label,
             role: role,
             weight: 600,
-            color: _enabled ? foreground : tokens.color.textSecondary,
+            // A caller that chose the ink keeps it when disabled: Today's
+            // "All done" is ink on Lime, not grey.
+            color: _enabled || widget.onColour != null
+                ? foreground
+                : tokens.color.textSecondary,
             // No maxLines: at 200 % a long label needs a second line, and
             // clipping it is worse than a taller button. The button grows with
             // it — its artboard height is a floor, not a fixed size.
@@ -133,10 +137,14 @@ class _DpButtonState extends State<DpButton> {
       ],
     );
 
+    // A disabled button greys out — unless the caller chose its colour, which
+    // is a disabled state designed on purpose: Today's Lime "All done".
+    final live = _enabled || widget.colour != null;
+
     if (kind != DpButtonKind.text) {
       content = DecoratedBox(
         decoration: BoxDecoration(
-          color: _enabled ? fill : tokens.surface.muted,
+          color: live ? fill : tokens.surface.muted,
           borderRadius: BorderRadius.circular(tokens.shape.button),
           // The glass PRIMARY is the borderless one — the artboard draws
           // `background:#00C2B2; border:none`. Branch on the kind rather than
@@ -145,7 +153,7 @@ class _DpButtonState extends State<DpButton> {
           border: borderless
               ? null
               : Border.all(
-                  color: _enabled ? tokens.color.ink : tokens.surface.outline,
+                  color: live ? tokens.color.ink : tokens.surface.outline,
                   width: 2,
                 ),
           boxShadow: shadowed

@@ -1,4 +1,5 @@
 import 'package:deutschplan/core/components/dp_coach_mark.dart';
+import 'package:deutschplan/core/components/dp_button.dart';
 import 'package:deutschplan/core/theme/dp_tokens.dart';
 import 'package:deutschplan/data/db/app_database.dart';
 import 'package:deutschplan/data/repositories/settings_repository.dart';
@@ -287,14 +288,66 @@ void main() {
       expect(label(tester), l10n.todayContinue(8));
     });
 
-    testWidgets('it starts Revise then New, open words only', (tester) async {
-      await pump(tester, view: artboardToday(reviseDone: 8));
+    testWidgets('FR-T1-03 it starts every open block: Revise, New, Grammar', (
+      tester,
+    ) async {
+      await pump(tester, view: artboardToday(reviseDone: 8, grammarDue: 1));
       await tester.tap(find.byType(PrimaryActionBar));
       await tester.pumpAndSettle();
 
-      expect(session(tester)?.wordUids, <String>[
-        'r8', 'r9', 'n2', 'n3', 'n4', 'n5', 'n6', //
+      final blocks = session(tester)!.blocks;
+      expect(blocks.map((b) => b.kind), <SessionBlockKind>[
+        SessionBlockKind.revise,
+        SessionBlockKind.newWords,
+        SessionBlockKind.grammar,
       ]);
+      expect(blocks[0].uids, <String>['r8', 'r9']);
+      expect(blocks[1].uids, <String>['n2', 'n3', 'n4', 'n5', 'n6']);
+      expect(blocks[2].uids, <String>['g0']);
+    });
+
+    testWidgets('a finished block is left out', (tester) async {
+      await pump(tester);
+      await tester.tap(find.byType(PrimaryActionBar));
+      await tester.pumpAndSettle();
+
+      expect(session(tester)!.blocks.map((b) => b.kind), <SessionBlockKind>[
+        SessionBlockKind.newWords,
+      ]);
+    });
+
+    testWidgets('with the study blocks done it practises sentences', (
+      tester,
+    ) async {
+      await pump(tester, view: artboardToday(reviseDone: 10, newDone: 7));
+      expect(label(tester), l10n.todaySentencesAction(3));
+
+      await tester.tap(find.byType(PrimaryActionBar));
+      await tester.pumpAndSettle();
+      opened(tester, 'T5');
+    });
+
+    testWidgets('with the day done it reviews the backlog', (tester) async {
+      await pump(
+        tester,
+        view: artboardToday(reviseDone: 10, newDone: 7, sentencesDone: 3),
+      );
+      expect(label(tester), l10n.todayBacklogAction(14));
+
+      await tester.tap(find.byType(PrimaryActionBar));
+      await tester.pumpAndSettle();
+      expect(location(), '/today/backlog');
+    });
+
+    testWidgets('on a rest day it revises, and only revises', (tester) async {
+      await pump(tester, view: artboardToday(reviseDone: 4, isStudyDay: false));
+      expect(label(tester), l10n.todayReviseAnyway(6));
+
+      await tester.tap(find.byType(PrimaryActionBar));
+      await tester.pumpAndSettle();
+      final blocks = session(tester)!.blocks;
+      expect(blocks.single.kind, SessionBlockKind.revise);
+      expect(blocks.single.uids, hasLength(6));
     });
 
     testWidgets('with nothing left it is done, and disabled', (tester) async {
@@ -323,6 +376,16 @@ void main() {
             .onPressed,
         isNull,
       );
+      // TodayDone: Lime, and the ink stays ink rather than greying out.
+      final button = tester.widget<DpButton>(find.byType(DpButton));
+      expect(button.colour, DpPalette.light.easy);
+      final text = tester.widget<Text>(
+        find.descendant(
+          of: find.byType(DpButton),
+          matching: find.text(l10n.todayAllDone),
+        ),
+      );
+      expect(text.style?.color, DpPalette.light.onAccent);
     });
 
     testWidgets('FR-S2-03 carries the one-time coach mark', (tester) async {

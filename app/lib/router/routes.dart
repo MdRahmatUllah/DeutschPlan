@@ -56,13 +56,34 @@ final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>(
 /// does not.
 @immutable
 class SessionArgs {
-  const SessionArgs({required this.wordUids, this.planDate});
+  const SessionArgs({required this.blocks, this.planDate});
 
-  /// The cards this session will show, in order.
-  final List<String> wordUids;
+  /// The session's blocks, in the order it plays them: Revise, New, Grammar
+  /// (BR-PLAN-02). A block's banner plays as it starts (FR-T2-06).
+  final List<SessionBlock> blocks;
 
   /// The day whose plan they came from, when they came from one.
   final String? planDate;
+
+  /// Every word card, in order. Grammar topics are practice sets, not words.
+  List<String> get wordUids => <String>[
+    for (final block in blocks)
+      if (block.kind != SessionBlockKind.grammar) ...block.uids,
+  ];
+}
+
+/// What a session block holds.
+enum SessionBlockKind { revise, newWords, grammar }
+
+/// One block of a session.
+@immutable
+class SessionBlock {
+  const SessionBlock(this.kind, this.uids);
+
+  final SessionBlockKind kind;
+
+  /// Word uids, or topic uids for [SessionBlockKind.grammar].
+  final List<String> uids;
 }
 
 /// Which quiz to build. Ephemeral for the same reason [SessionArgs] is.

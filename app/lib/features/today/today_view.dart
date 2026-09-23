@@ -58,6 +58,7 @@ class TodayView {
     required this.courseDay,
     required this.stepWords,
     this.sentences = BlockProgress.none,
+    this.isStudyDay = true,
     this.backlogFrom,
     this.backlogTo,
     this.step,
@@ -83,6 +84,10 @@ class TodayView {
 
   /// Practice sentences. Empty until the sentence picker (#80) fills it.
   final BlockProgress sentences;
+
+  /// False on a rest day (BR-PLAN-01): nothing is scheduled, and revising is
+  /// optional.
+  final bool isStudyDay;
 
   /// New words planned on earlier days and still open (BR-PLAN-05), and the
   /// days they were planned for.
@@ -135,13 +140,72 @@ class TodayView {
       left == 0 ? 0 : math.max(1, (estimate.inSeconds / 60).ceil());
 }
 
-/// What the docked button says. The full table is FR-T1-03 (#99); this is
-/// the in-progress part of it.
-enum TodayAction { start, resume, done }
+/// What the docked button offers, in FR-T1-03's order.
+enum TodayAction {
+  /// "Start today · {n} cards" — nothing done yet.
+  start,
 
-TodayAction todayAction(TodayView view) {
-  if (view.left == 0) return TodayAction.done;
-  return view.completed == 0 ? TodayAction.start : TodayAction.resume;
+  /// "Continue · {n} left" — a study block is still open.
+  resume,
+
+  /// "Practice sentences · {n}" — the study blocks are done.
+  sentences,
+
+  /// "Review backlog · {n}" — only once the day itself is done.
+  backlog,
+
+  /// "All done — see you tomorrow": Lime, and disabled.
+  done,
+
+  /// "Revise anyway · {n}" — a rest day with revisions due.
+  reviseAnyway,
+}
+
+/// FR-T1-03's button: what it offers, and the number on it.
+@immutable
+class TodayViewState {
+  const TodayViewState(this.action, [this.count = 0]);
+
+  final TodayAction action;
+  final int count;
+
+  bool get enabled => action != TodayAction.done;
+
+  @override
+  bool operator ==(Object other) =>
+      other is TodayViewState && other.action == action && other.count == count;
+
+  @override
+  int get hashCode => Object.hash(action, count);
+
+  @override
+  String toString() => 'TodayViewState(${action.name}, $count)';
+}
+
+/// FR-T1-03, as a pure function of the day.
+///
+/// The counts are the ring's: "Continue · 8 left" beside 12 / 20 counts the
+/// sentences still to come, as the ring does.
+TodayViewState todayViewState(TodayView view) {
+  if (!view.isStudyDay) {
+    // BR-PLAN-01: nothing is due on a rest day, so an empty one is done.
+    return view.revise.open > 0
+        ? TodayViewState(TodayAction.reviseAnyway, view.revise.open)
+        : const TodayViewState(TodayAction.done);
+  }
+  final study = view.revise.open + view.newToday.open + view.grammarDue.length;
+  if (study > 0) {
+    return view.completed == 0
+        ? TodayViewState(TodayAction.start, view.total)
+        : TodayViewState(TodayAction.resume, view.left);
+  }
+  if (view.sentences.open > 0) {
+    return TodayViewState(TodayAction.sentences, view.sentences.open);
+  }
+  if (view.backlog > 0) {
+    return TodayViewState(TodayAction.backlog, view.backlog);
+  }
+  return const TodayViewState(TodayAction.done);
 }
 
 /// The greeting's three parts of the day.
