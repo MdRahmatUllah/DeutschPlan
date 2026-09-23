@@ -95,7 +95,12 @@ class OnboardingDraft {
   /// FR-S2-01: what *Skip* leaves — every value from [page] onwards back at
   /// its default, the earlier ones as chosen. The languages are page 2's and
   /// written already, and Skip only appears from page 3.
+  ///
+  /// In restart setup the pages open on the learner's own values, and those
+  /// are what Skip keeps: first-run defaults there would move them back to
+  /// A1.1 and close the step they are in.
   OnboardingDraft withDefaultsFrom(OnboardingPage page) {
+    if (restart) return this;
     final defaults = OnboardingDraft();
     return OnboardingDraft(
       step: page.step <= OnboardingPage.startingPoint.step

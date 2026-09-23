@@ -168,15 +168,18 @@ VALUES (?, ?, 'A1', ?, ?, ?, ?, ?, ?)
       expect(await plannedToday('new'), 7);
     });
 
-    test('and clears the draft for next time', () async {
+    test('and leaves the draft for the route to clear', () async {
+      // Cleared here, the page still on screen would redraw with the
+      // defaults for a frame before Today arrived (route_guards_test holds
+      // the clearing).
       draft()
         ..chooseStep('A1.2')
         ..setDailyNew(20);
 
       await flow().finish();
 
-      final next = container.read(onboardingProvider);
-      expect((next.step, next.dailyNew), ('A1.1', 7));
+      final left = container.read(onboardingProvider);
+      expect((left.step, left.dailyNew), ('A1.2', 20));
     });
 
     test('in one transaction: a failure leaves nothing half-written', () async {
@@ -271,7 +274,26 @@ VALUES (?, ?, 'A1', ?, ?, ?, ?, ?, ?)
         ..chooseStep(step)
         ..setDailyNew(7);
       await flow().finish();
+      container.invalidate(onboardingProvider);
     }
+
+    test('Skip keeps the values the pages opened on', () async {
+      // Restart setup opens on the learner's own values. Skip taking the
+      // first-run defaults instead would move them back to A1.1 and close
+      // the step they are in.
+      await firstRun(step: 'A1.2');
+      await settings.write(SettingKeys.dailyNew, 12);
+
+      await flow().beginRestart();
+      await flow().finish(skippingFrom: OnboardingPage.startingPoint);
+
+      final rows = await enrollments();
+      expect(rows, hasLength(1), reason: 'the step was not switched');
+      expect(
+        (rows.single['sublevel_code'], rows.single['daily_new']),
+        ('A1.2', 12),
+      );
+    });
 
     test('pre-fills every page with what the learner has now', () async {
       await firstRun(step: 'A1.2');

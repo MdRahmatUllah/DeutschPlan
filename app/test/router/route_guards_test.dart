@@ -15,6 +15,7 @@ import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:deutschplan/features/onboarding/onboarding_welcome_page.dart';
 import 'package:deutschplan/features/onboarding/onboarding_voice_page.dart';
 import 'package:deutschplan/features/onboarding/onboarding_shell.dart';
+import 'package:deutschplan/features/onboarding/onboarding_notifier.dart';
 import 'package:deutschplan/features/onboarding/setup_flow.dart';
 import 'package:deutschplan/features/onboarding/onboarding_start_page.dart';
 import 'package:deutschplan/features/onboarding/onboarding_pace_page.dart';
@@ -462,6 +463,22 @@ void main() {
       expect(flowLog, <String>['finish']);
       expect(location(), '/today');
       expect(find.byType(AppShell), findsOneWidget);
+    });
+
+    testWidgets('and clears the draft once Today is showing', (tester) async {
+      await pumpApp(tester, guards: guardsWith(), at: '/onboarding/5');
+      final container = ProviderScope.containerOf(
+        tester.element(find.byType(OnboardingVoicePage)),
+      );
+      container.read(onboardingProvider.notifier).chooseStep('A2.1');
+      final l10n = AppLocalizations.of(
+        tester.element(find.byType(OnboardingVoicePage)),
+      );
+
+      await tester.tap(find.text(l10n.onboardingStartLearning));
+      await tester.pumpAndSettle();
+
+      expect(container.read(onboardingProvider).step, 'A1.1');
     });
 
     testWidgets('FR-S2-01 Skip finishes from the page it is on', (

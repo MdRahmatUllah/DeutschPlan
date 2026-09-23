@@ -20,8 +20,8 @@ class SetupFlow extends _$SetupFlow {
   @override
   SetupStatus build() => SetupStatus.idle;
 
-  /// FR-S2-03: commits the draft in one transaction, plans day 1, and clears
-  /// the draft. [skippingFrom] is FR-S2-01 — every page from there on takes
+  /// FR-S2-03: commits the draft in one transaction and plans day 1.
+  /// [skippingFrom] is FR-S2-01 — every page from there on takes
   /// its defaults first. True when setup is done and Today can open.
   Future<bool> finish({OnboardingPage? skippingFrom}) async {
     if (state == SetupStatus.finishing) return false;
@@ -44,9 +44,9 @@ class SetupFlow extends _$SetupFlow {
       return false;
     }
 
-    // A later restart starts from the learner's values, not from this run's
-    // leftovers.
-    ref.invalidate(onboardingProvider);
+    // The draft is left for the caller to clear once it has left the page:
+    // cleared here, the page still on screen redraws with the defaults for a
+    // frame before Today arrives.
     if (ref.mounted) state = SetupStatus.idle;
     return true;
   }

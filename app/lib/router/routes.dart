@@ -17,6 +17,7 @@ import 'package:deutschplan/features/onboarding/onboarding_pace_page.dart';
 import 'package:deutschplan/features/onboarding/onboarding_shell.dart';
 import 'package:deutschplan/features/onboarding/onboarding_start_page.dart';
 import 'package:deutschplan/features/onboarding/onboarding_voice_page.dart';
+import 'package:deutschplan/features/onboarding/onboarding_notifier.dart';
 import 'package:deutschplan/features/onboarding/setup_flow.dart';
 import 'package:deutschplan/features/onboarding/onboarding_welcome_page.dart';
 import 'package:deutschplan/features/splash/splash_screen.dart';
@@ -526,7 +527,12 @@ class OnboardingRoute extends GoRouteData with $OnboardingRoute {
       final done = await container
           .read(setupFlowProvider.notifier)
           .finish(skippingFrom: skippingFrom);
-      if (done && context.mounted) const TodayRoute().go(context);
+      if (done && context.mounted) {
+        const TodayRoute().go(context);
+        // After leaving, so the page does not redraw with the defaults on
+        // its way out; a later restart starts from the learner's values.
+        container.invalidate(onboardingProvider);
+      }
     } finally {
       keep.close();
     }
