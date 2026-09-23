@@ -6,6 +6,7 @@ import 'dart:io';
 import 'package:deutschplan/core/providers/app_providers.dart';
 import 'package:deutschplan/data/db/app_database.dart';
 import 'package:deutschplan/data/db/content_dao.dart';
+import 'package:deutschplan/data/repositories/setting_keys.dart';
 import 'package:deutschplan/domain/placement.dart';
 import 'package:deutschplan/features/onboarding/onboarding_start_page.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -56,6 +57,9 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: <Override>[
+          languagesProvider.overrideWith(
+            () => _FixedLanguages(MeaningLanguage.english),
+          ),
           contentDaoProvider.overrideWithValue(_OneStepDao(db)),
           courseStepsProvider.overrideWith(
             (ref) async => const <CourseStep>[
@@ -456,4 +460,14 @@ class _OneStepDao extends ContentDao {
   @override
   Future<List<PlacementWord>> placementPool(String step) async =>
       <PlacementWord>[for (var i = 0; i < 12; i++) wordFor(step, i)];
+}
+
+class _FixedLanguages extends Languages {
+  _FixedLanguages(this.meaning);
+
+  final MeaningLanguage meaning;
+
+  @override
+  ({MeaningLanguage meaning, UiLanguage ui}) build() =>
+      (meaning: meaning, ui: UiLanguage.english);
 }

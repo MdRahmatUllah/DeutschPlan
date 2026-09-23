@@ -5,6 +5,7 @@
 import 'package:deutschplan/core/providers/app_providers.dart';
 import 'package:deutschplan/data/db/app_database.dart';
 import 'package:deutschplan/data/db/content_dao.dart';
+import 'package:deutschplan/data/repositories/setting_keys.dart';
 import 'package:deutschplan/domain/placement.dart';
 import 'package:deutschplan/features/onboarding/onboarding_start_page.dart';
 import 'package:deutschplan/features/onboarding/placement_screen.dart';
@@ -24,6 +25,9 @@ void main() {
     'placement',
     builder: (context) => ProviderScope(
       overrides: <Override>[
+        languagesProvider.overrideWith(
+          () => _FixedLanguages(MeaningLanguage.english),
+        ),
         contentDaoProvider.overrideWithValue(_A1Dao(db)),
         courseStepsProvider.overrideWith(
           (ref) async => const <CourseStep>[
@@ -60,4 +64,14 @@ class _A1Dao extends ContentDao {
             pos: 'noun',
           ),
       ];
+}
+
+class _FixedLanguages extends Languages {
+  _FixedLanguages(this.meaning);
+
+  final MeaningLanguage meaning;
+
+  @override
+  ({MeaningLanguage meaning, UiLanguage ui}) build() =>
+      (meaning: meaning, ui: UiLanguage.english);
 }

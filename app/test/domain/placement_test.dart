@@ -276,6 +276,32 @@ void main() {
       );
     });
 
+    test('meanings come in Bangla when asked for, English where none', () {
+      final pool = <PlacementWord>[
+        for (var i = 0; i < 5; i++)
+          PlacementWord(
+            uid: 'n$i',
+            german: 'Nomen$i',
+            english: 'noun $i',
+            bangla: i == 0 ? null : 'বিশেষ্য $i',
+            pos: 'noun',
+          ),
+      ];
+      final session = PlacementSession(steps: steps, seed: 1, useBangla: true);
+      final item = session.next(pool)!;
+
+      expect(item.kind, PlacementKind.meaning);
+      final expected = item.word.bangla ?? item.word.english;
+      expect(item.options[item.answer], expected);
+      for (final option in item.options) {
+        expect(
+          option.startsWith('বিশেষ্য') || option == 'noun 0',
+          isTrue,
+          reason: option,
+        );
+      }
+    });
+
     test('no word is asked twice', () {
       final session = PlacementSession(steps: steps, seed: 9);
       final seen = <String>{};
@@ -318,6 +344,7 @@ PlacementWord wordFor(String step, int i) {
         : null,
     german: german,
     english: 'meaning $step $i',
+    bangla: 'অর্থ $step $i',
     pos: pos,
     examples: <String>['Ein Satz mit $german darin.'],
   );

@@ -7,6 +7,7 @@ import 'package:deutschplan/core/theme/aurora_backdrop.dart';
 import 'package:deutschplan/core/theme/dp_surface.dart';
 import 'package:deutschplan/core/theme/dp_tokens.dart';
 import 'package:deutschplan/core/typography/dp_text.dart';
+import 'package:deutschplan/data/repositories/setting_keys.dart';
 import 'package:deutschplan/domain/placement.dart';
 import 'package:deutschplan/features/onboarding/onboarding_start_page.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
@@ -59,6 +60,10 @@ class PlacementScreenState extends ConsumerState<PlacementScreen> {
       _session = PlacementSession(
         steps: <String>[for (final step in steps) step.code],
         seed: widget.seed ?? ref.read(clockProvider)().microsecondsSinceEpoch,
+        // Page 2's choice: Bangla meanings for a learner who reads them in
+        // Bangla. Both keeps English, which keeps the options short.
+        useBangla:
+            ref.read(languagesProvider).meaning == MeaningLanguage.bangla,
       );
       await _advance();
     } on Object {
@@ -94,6 +99,12 @@ class PlacementScreenState extends ConsumerState<PlacementScreen> {
   }
 
   void _submit() {
+    // Two taps in one frame would answer twice: the button only greys out
+    // once the next frame is built. And with the step's words already read,
+    // the next item arrives between the two taps — so the second finds
+    // nothing picked, not a check still loading, and would count as wrong.
+    if (_loading || _picked == null) return;
+    _loading = true;
     final item = _item!;
     _session!.answer(item, correct: _picked == item.answer);
     _advance();

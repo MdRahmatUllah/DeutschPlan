@@ -16,6 +16,7 @@ class PlacementWord {
     required this.english,
     required this.pos,
     this.article,
+    this.bangla,
     this.examples = const <String>[],
   });
 
@@ -23,6 +24,9 @@ class PlacementWord {
   final String? article;
   final String german;
   final String english;
+
+  /// Nullable in the schema, as everywhere else it is read.
+  final String? bangla;
 
   /// `words.pos`, as the pipeline writes it — `noun`, `verb`, `adj`…
   final String pos;
@@ -83,10 +87,13 @@ class PlacementResult {
 }
 
 class PlacementSession {
-  PlacementSession({required List<String> steps, required this.seed})
-    : assert(steps.isNotEmpty, 'a check needs somewhere to start'),
-      _steps = List<String>.unmodifiable(steps),
-      _random = Random(seed);
+  PlacementSession({
+    required List<String> steps,
+    required this.seed,
+    this.useBangla = false,
+  }) : assert(steps.isNotEmpty, 'a check needs somewhere to start'),
+       _steps = List<String>.unmodifiable(steps),
+       _random = Random(seed);
 
   /// FR-S3-01's limits.
   static const int maxItems = 20;
@@ -102,6 +109,15 @@ class PlacementSession {
 
   /// FR-S3-02: the same seed draws the same items in the same order.
   final int seed;
+
+  /// The meaning options in Bangla — page 2's choice, made just before this.
+  /// A learner who reads meanings in Bangla would otherwise be tested on
+  /// their English, and placed below their German. Where a word has no
+  /// Bangla, its English stands in.
+  final bool useBangla;
+
+  String _meaningOf(PlacementWord word) =>
+      useBangla ? (word.bangla ?? word.english) : word.english;
   final Random _random;
 
   int _index = 0;
@@ -230,7 +246,7 @@ class PlacementSession {
     // a noun is never told apart from three verbs by its shape alone. Other
     // parts of speech only when the step has too few of this one.
     String shown(PlacementWord w) =>
-        kind == PlacementKind.gap ? w.german : w.english;
+        kind == PlacementKind.gap ? w.german : _meaningOf(w);
     final target = shown(word);
     // Not the answer again under another uid, and — in a gap — not the
     // answer spelt with another case, which would look the same on screen.

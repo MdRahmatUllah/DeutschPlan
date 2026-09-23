@@ -10,6 +10,7 @@ import 'package:deutschplan/core/theme/dp_surface.dart';
 import 'package:deutschplan/core/theme/dp_tokens.dart';
 import 'package:deutschplan/data/db/app_database.dart';
 import 'package:deutschplan/data/db/content_dao.dart';
+import 'package:deutschplan/data/repositories/setting_keys.dart';
 import 'package:deutschplan/domain/placement.dart';
 import 'package:deutschplan/features/onboarding/onboarding_start_page.dart';
 import 'package:deutschplan/features/onboarding/placement_screen.dart';
@@ -46,6 +47,7 @@ void main() {
     WidgetTester tester, {
     DpMode mode = DpMode.light,
     double textScale = 1,
+    MeaningLanguage meaning = MeaningLanguage.english,
   }) async {
     tester.view
       ..physicalSize = const Size(390, 844) * 3
@@ -68,6 +70,7 @@ void main() {
             ],
           ),
           systemTtsProvider.overrideWithValue(_SilentTts()),
+          languagesProvider.overrideWith(() => _FixedLanguages(meaning)),
         ],
         child: MaterialApp(
           theme: switch (mode) {
@@ -170,6 +173,52 @@ void main() {
     });
   });
 
+  group('the meanings', () {
+    testWidgets('are in the language page 2 chose', (tester) async {
+      // A learner who reads meanings in Bangla, tested on their English,
+      // would place below their German.
+      await pump(tester, meaning: MeaningLanguage.bangla);
+
+      final item = tester
+          .state<PlacementScreenState>(find.byType(PlacementScreen))
+          .currentItem!;
+      expect(item.kind, PlacementKind.meaning);
+      expect(find.text(item.word.bangla!), findsOneWidget);
+      expect(find.text(item.word.english), findsNothing);
+    });
+
+    testWidgets('and in English otherwise', (tester) async {
+      await pump(tester);
+
+      final item = tester
+          .state<PlacementScreenState>(find.byType(PlacementScreen))
+          .currentItem!;
+      expect(find.text(item.word.english), findsOneWidget);
+    });
+  });
+
+  group('Next', () {
+    testWidgets('twice in one frame answers once', (tester) async {
+      await pump(tester);
+      final state = tester.state<PlacementScreenState>(
+        find.byType(PlacementScreen),
+      );
+
+      await tester.tap(options().first);
+      await tester.pump();
+      final next = find.widgetWithText(DpButton, l10n.placementNext);
+      await tester.tap(next);
+      await tester.tap(next);
+      await tester.pump();
+      await tester.pump();
+      await tester.pump();
+
+      // One answer: question 2, not 3.
+      expect(find.text(l10n.placementQuestionOf(2, 20)), findsOneWidget);
+      expect(state.currentItem, isNotNull);
+    });
+  });
+
   group('FR-S3-04 closing', () {
     testWidgets('hands back nothing, however far in', (tester) async {
       await pump(tester);
@@ -269,4 +318,14 @@ class _SilentTts implements TtsEngine {
 
   @override
   Future<void> stop() async {}
+}
+
+class _FixedLanguages extends Languages {
+  _FixedLanguages(this.meaning);
+
+  final MeaningLanguage meaning;
+
+  @override
+  ({MeaningLanguage meaning, UiLanguage ui}) build() =>
+      (meaning: meaning, ui: UiLanguage.english);
 }

@@ -33,7 +33,8 @@ class ContentDao extends DatabaseAccessor<AppDatabase> with _$ContentDaoMixin {
   /// gap item. Read-only, like everything on the attached course.
   Future<List<PlacementWord>> placementPool(String step) async {
     final rows = await customSelect(
-      'SELECT w.uid, w.article, w.german, w.english, w.pos, e.german AS example '
+      'SELECT w.uid, w.article, w.german, w.english, w.bangla, w.pos, '
+      'e.german AS example '
       'FROM words w LEFT JOIN word_examples e ON e.word_uid = w.uid '
       'WHERE w.sublevel_code = ?1 ORDER BY w.seq_in_sublevel, e.ord',
       variables: <Variable<Object>>[Variable<String>(step)],
@@ -50,6 +51,7 @@ class ContentDao extends DatabaseAccessor<AppDatabase> with _$ContentDaoMixin {
           article: row.readNullable<String>('article'),
           german: row.read<String>('german'),
           english: row.read<String>('english'),
+          bangla: row.readNullable<String>('bangla'),
           pos: row.readNullable<String>('pos') ?? '',
           examples: examples.putIfAbsent(uid, () => <String>[]),
         ),
