@@ -10,11 +10,15 @@
 /// presentation of each route.
 library;
 
+import 'dart:async';
+
 import 'package:deutschplan/features/onboarding/onboarding_meaning_page.dart';
 import 'package:deutschplan/features/onboarding/onboarding_pace_page.dart';
 import 'package:deutschplan/features/onboarding/onboarding_shell.dart';
 import 'package:deutschplan/features/onboarding/onboarding_start_page.dart';
 import 'package:deutschplan/features/onboarding/onboarding_voice_page.dart';
+import 'package:deutschplan/features/onboarding/onboarding_notifier.dart';
+import 'package:deutschplan/features/onboarding/setup_flow.dart';
 import 'package:deutschplan/features/onboarding/onboarding_welcome_page.dart';
 import 'package:deutschplan/features/splash/splash_screen.dart';
 import 'package:deutschplan/router/app_shell.dart';
@@ -23,6 +27,7 @@ import 'package:deutschplan/router/deep_links.dart';
 import 'package:deutschplan/router/route_guards.dart';
 import 'package:deutschplan/router/placeholder_screen.dart';
 import 'package:cupertino_ui/cupertino_ui.dart' show CupertinoPage;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 
@@ -399,9 +404,34 @@ class SplashRoute extends GoRouteData with $SplashRoute {
 
 @TypedGoRoute<OnboardingRoute>(path: '/onboarding/:page')
 class OnboardingRoute extends GoRouteData with $OnboardingRoute {
-  const OnboardingRoute({required this.page});
+  const OnboardingRoute({required this.page, this.restart = false});
 
   final String page;
+
+  /// Restart setup, from Settings (`onboarding.md`, States). A query
+  /// parameter, so the guard can tell it from a stale link: an enrolled
+  /// learner is sent to Today from `/onboarding/*` unless this is set.
+  final bool restart;
+
+  /// Settings → *Restart setup*: page 1 hidden, every page pre-filled with
+  /// what the learner has now, and finishing changes the plan but not the
+  /// history. Settings is M3's; this is what it calls.
+  static Future<void> restartSetup(BuildContext context) async {
+    final container = ProviderScope.containerOf(context, listen: false);
+    final keep = container.listen(setupFlowProvider, (_, _) {});
+    try {
+      await container.read(setupFlowProvider.notifier).beginRestart();
+    } finally {
+      keep.close();
+    }
+    // Opened, not awaited: `push` completes when the page pops, which is the
+    // end of setup — Settings would sit waiting on it the whole way through.
+    if (context.mounted) {
+      unawaited(
+        const OnboardingRoute(page: '2', restart: true).push<void>(context),
+      );
+    }
+  }
 
   /// A horizontal slide between pages, and the edge swipe back — #87's "system
   /// back / edge swipe goes to the previous page". `CupertinoPage` gives both
@@ -424,53 +454,87 @@ class OnboardingRoute extends GoRouteData with $OnboardingRoute {
       );
     }
 
+    // `push`, not `go`: each page sits on the one before it, so system back
+    // returns there. Onboarding is outside the tab shell, so nothing else
+    // would catch the press, and `go` would leave the page with nothing under
+    // it — back would close the app. Restart setup carries on to each page.
+    void next(OnboardingPage to) =>
+        OnboardingRoute(page: to.slug, restart: restart).push<void>(context);
+
     return switch (OnboardingPage.parse(page)) {
-      // A bad `:page` gets the start of setup rather than a blank screen.
+      // A bad `:page` gets the start of setup rather than a blank screen. So
+      // does page 1 in restart mode, which never links there itself.
       OnboardingPage.welcome || null => OnboardingWelcomePage(
-        // `push`, not `go`: each page sits on the one before it, so system
-        // back returns there. Onboarding is outside the tab shell, so nothing
-        // else would catch the press, and `go` would leave page 2 with nothing
-        // under it — back would close the app.
-        onStart: () => const OnboardingRoute(page: '2').push<void>(context),
+        onStart: () => next(OnboardingPage.meaningLanguage),
       ),
 
       OnboardingPage.meaningLanguage => OnboardingMeaningPage(
-        onContinue: () => const OnboardingRoute(page: '3').push<void>(context),
+        onContinue: () => next(OnboardingPage.startingPoint),
         onBack: () => _back(context, OnboardingPage.meaningLanguage),
       ),
 
       OnboardingPage.startingPoint => OnboardingStartPage(
-        onContinue: () => const OnboardingRoute(page: '4').push<void>(context),
+        onContinue: () => next(OnboardingPage.dailyPace),
         onBack: () => _back(context, OnboardingPage.startingPoint),
+        onSkip: () =>
+            _finish(context, skippingFrom: OnboardingPage.startingPoint),
         // S3 pops with the step it suggests (#93, #94), or with nothing.
         onPlacement: () =>
             const OnboardingRoute(page: 'placement').push<String>(context),
-        // FR-S2-01's Skip finishes setup, and finishing is #92's. Until then
-        // there is no `onSkip`, and the shell leaves Skip out rather than
-        // drawing a button that does nothing.
       ),
 
       OnboardingPage.dailyPace => OnboardingPacePage(
-        onContinue: () => const OnboardingRoute(page: '5').push<void>(context),
+        onContinue: () => next(OnboardingPage.reminderAndVoice),
         onBack: () => _back(context, OnboardingPage.dailyPace),
+        onSkip: () => _finish(context, skippingFrom: OnboardingPage.dailyPace),
       ),
 
       OnboardingPage.reminderAndVoice => OnboardingVoicePage(
+        onFinish: () => _finish(context),
         onBack: () => _back(context, OnboardingPage.reminderAndVoice),
-        // `onFinish` is FR-S2-03's commit, #92's. Until then *Start learning*
-        // is drawn disabled: there is nothing yet for it to do.
+        onSkip: () =>
+            _finish(context, skippingFrom: OnboardingPage.reminderAndVoice),
       ),
     };
   }
 
   /// *Back*: the page underneath, which is the previous one when the learner
   /// walked here. A page opened directly — a deep link, restart setup — has
-  /// nothing under it, and gets the previous page instead of a dead button.
-  static void _back(BuildContext context, OnboardingPage from) {
+  /// nothing under it, and gets the previous page instead of a dead button;
+  /// restart setup's first page has no previous, and leaves setup instead.
+  void _back(BuildContext context, OnboardingPage from) {
     if (context.canPop()) {
       context.pop();
+    } else if (restart && from == OnboardingPage.meaningLanguage) {
+      const TodayRoute().go(context);
     } else {
-      OnboardingRoute(page: from.previous!.slug).go(context);
+      OnboardingRoute(page: from.previous!.slug, restart: restart).go(context);
+    }
+  }
+
+  /// FR-S2-03 — and FR-S2-01's Skip, from [skippingFrom]: commit the draft,
+  /// plan day 1, open Today. A failure leaves the learner where they are,
+  /// and the page says so.
+  static Future<void> _finish(
+    BuildContext context, {
+    OnboardingPage? skippingFrom,
+  }) async {
+    final container = ProviderScope.containerOf(context, listen: false);
+    // Held for the whole finish: the notifier auto-disposes, and one with no
+    // listener could go between the commit and the plan.
+    final keep = container.listen(setupFlowProvider, (_, _) {});
+    try {
+      final done = await container
+          .read(setupFlowProvider.notifier)
+          .finish(skippingFrom: skippingFrom);
+      if (done && context.mounted) {
+        const TodayRoute().go(context);
+        // After leaving, so the page does not redraw with the defaults on
+        // its way out; a later restart starts from the learner's values.
+        container.invalidate(onboardingProvider);
+      }
+    } finally {
+      keep.close();
     }
   }
 }

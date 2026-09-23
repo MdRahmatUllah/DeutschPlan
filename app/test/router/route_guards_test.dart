@@ -13,6 +13,10 @@ import 'package:deutschplan/features/onboarding/onboarding_meaning_page.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:deutschplan/features/onboarding/onboarding_welcome_page.dart';
+import 'package:deutschplan/features/onboarding/onboarding_voice_page.dart';
+import 'package:deutschplan/features/onboarding/onboarding_shell.dart';
+import 'package:deutschplan/features/onboarding/onboarding_notifier.dart';
+import 'package:deutschplan/features/onboarding/setup_flow.dart';
 import 'package:deutschplan/features/onboarding/onboarding_start_page.dart';
 import 'package:deutschplan/features/onboarding/onboarding_pace_page.dart';
 import 'package:deutschplan/data/db/content_dao.dart';
@@ -37,11 +41,17 @@ import 'package:material_ui/material_ui.dart';
 void main() {
   late GoRouter router;
 
+  // S2's finish, recorded rather than run: the commit and the plan are
+  // setup_flow_test's, against SQLite. Here it is where the finish goes.
+  late List<String> flowLog;
+  var finishSucceeds = true;
+
   Future<void> pumpApp(
     WidgetTester tester, {
     required RouteGuards guards,
     String at = '/today',
   }) async {
+    flowLog = <String>[];
     router = buildRouter(initialLocation: at, guards: guards);
     addTearDown(router.dispose);
 
@@ -65,6 +75,9 @@ void main() {
               (code: 'A2.1', levelCode: 'A2', wordCount: 540),
               (code: 'A2.2', levelCode: 'A2', wordCount: 498),
             ],
+          ),
+          setupFlowProvider.overrideWith(
+            () => _RecordingFlow(flowLog, succeed: finishSucceeds),
           ),
         ],
         child: MaterialApp.router(
@@ -436,6 +449,68 @@ void main() {
       );
     });
 
+    testWidgets('FR-S2-03 Start learning finishes and opens Today', (
+      tester,
+    ) async {
+      await pumpApp(tester, guards: guardsWith(), at: '/onboarding/5');
+      final l10n = AppLocalizations.of(
+        tester.element(find.byType(OnboardingVoicePage)),
+      );
+
+      await tester.tap(find.text(l10n.onboardingStartLearning));
+      await tester.pumpAndSettle();
+
+      expect(flowLog, <String>['finish']);
+      expect(location(), '/today');
+      expect(find.byType(AppShell), findsOneWidget);
+    });
+
+    testWidgets('and clears the draft once Today is showing', (tester) async {
+      await pumpApp(tester, guards: guardsWith(), at: '/onboarding/5');
+      final container = ProviderScope.containerOf(
+        tester.element(find.byType(OnboardingVoicePage)),
+      );
+      container.read(onboardingProvider.notifier).chooseStep('A2.1');
+      final l10n = AppLocalizations.of(
+        tester.element(find.byType(OnboardingVoicePage)),
+      );
+
+      await tester.tap(find.text(l10n.onboardingStartLearning));
+      await tester.pumpAndSettle();
+
+      expect(container.read(onboardingProvider).step, 'A1.1');
+    });
+
+    testWidgets('FR-S2-01 Skip finishes from the page it is on', (
+      tester,
+    ) async {
+      await pumpApp(tester, guards: guardsWith(), at: '/onboarding/3');
+      final l10n = AppLocalizations.of(
+        tester.element(find.byType(OnboardingStartPage)),
+      );
+
+      await tester.tap(find.text(l10n.skip));
+      await tester.pumpAndSettle();
+
+      expect(flowLog, <String>['finish from 3']);
+      expect(location(), '/today');
+    });
+
+    testWidgets('a finish that fails stays put and says so', (tester) async {
+      finishSucceeds = false;
+      addTearDown(() => finishSucceeds = true);
+      await pumpApp(tester, guards: guardsWith(), at: '/onboarding/5');
+      final l10n = AppLocalizations.of(
+        tester.element(find.byType(OnboardingVoicePage)),
+      );
+
+      await tester.tap(find.text(l10n.onboardingStartLearning));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(OnboardingVoicePage), findsOneWidget);
+      expect(find.text(l10n.onboardingFinishFailed), findsOneWidget);
+    });
+
     testWidgets('and the pages slide sideways, with the edge swipe', (
       tester,
     ) async {
@@ -444,6 +519,68 @@ void main() {
       await pumpApp(tester, guards: guardsWith(), at: '/onboarding/1');
 
       expect(find.byType(CupertinoPageTransition), findsOneWidget);
+    });
+  });
+
+  group('restart setup', () {
+    testWidgets('lets an enrolled learner back in, on page 2', (tester) async {
+      await pumpApp(tester, guards: guardsWith(enrolled: true));
+
+      await OnboardingRoute.restartSetup(tester.element(find.byType(AppShell)));
+      await tester.pumpAndSettle();
+
+      // Pre-filled first, then opened — page 1 is not part of restart.
+      expect(flowLog, <String>['restart']);
+      expect(find.byType(OnboardingMeaningPage), findsOneWidget);
+      expect(find.byType(OnboardingWelcomePage), findsNothing);
+    });
+
+    testWidgets('while a plain link to setup still goes to Today', (
+      tester,
+    ) async {
+      await pumpApp(tester, guards: guardsWith(enrolled: true));
+
+      router.go('/onboarding/2');
+      await tester.pumpAndSettle();
+      expect(location(), '/today');
+
+      router.go('/onboarding/2?restart=true');
+      await tester.pumpAndSettle();
+      expect(find.byType(OnboardingMeaningPage), findsOneWidget);
+    });
+
+    testWidgets('and carries on through every page it pushes', (tester) async {
+      await pumpApp(tester, guards: guardsWith(enrolled: true));
+      await OnboardingRoute.restartSetup(tester.element(find.byType(AppShell)));
+      await tester.pumpAndSettle();
+      final l10n = AppLocalizations.of(
+        tester.element(find.byType(OnboardingMeaningPage)),
+      );
+
+      // Without `restart` on the next page's link, the guard would send an
+      // enrolled learner back to Today halfway through.
+      await tester.tap(find.text(l10n.continueAction));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(OnboardingStartPage), findsOneWidget);
+    });
+
+    testWidgets("Back from its first page leaves setup", (tester) async {
+      await pumpApp(
+        tester,
+        guards: guardsWith(enrolled: true),
+        at: '/onboarding/2?restart=true',
+      );
+      final l10n = AppLocalizations.of(
+        tester.element(find.byType(OnboardingMeaningPage)),
+      );
+
+      // Opened directly, there is nothing under it — and page 1 is not
+      // somewhere restart setup goes.
+      await tester.tap(find.text(l10n.back));
+      await tester.pumpAndSettle();
+
+      expect(location(), '/today');
     });
   });
 
@@ -568,4 +705,26 @@ void main() {
     expect(await guards.hasExamAttempt(1), isTrue);
     expect(await guards.isEnrolled(), isFalse);
   });
+}
+
+class _RecordingFlow extends SetupFlow {
+  _RecordingFlow(this.log, {required this.succeed});
+
+  final List<String> log;
+  final bool succeed;
+
+  @override
+  SetupStatus build() => SetupStatus.idle;
+
+  @override
+  Future<bool> finish({OnboardingPage? skippingFrom}) async {
+    log.add(
+      skippingFrom == null ? 'finish' : 'finish from ${skippingFrom.step}',
+    );
+    if (!succeed) state = SetupStatus.failed;
+    return succeed;
+  }
+
+  @override
+  Future<void> beginRestart() async => log.add('restart');
 }

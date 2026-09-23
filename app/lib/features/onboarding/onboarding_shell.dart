@@ -93,6 +93,8 @@ class OnboardingShell extends StatelessWidget {
     this.onBack,
     this.onSkip,
     this.headerArt,
+    this.busy = false,
+    this.error,
   });
 
   final OnboardingPage page;
@@ -113,6 +115,13 @@ class OnboardingShell extends StatelessWidget {
   /// rising chart; the other pages have none.
   final Widget? headerArt;
 
+  /// Setup is being committed: the actions are drawn but do nothing, so a
+  /// second tap cannot start a second commit.
+  final bool busy;
+
+  /// Why the last finish did not, shown over the primary action.
+  final String? error;
+
   @override
   Widget build(BuildContext context) {
     final tokens = context.tokens;
@@ -121,7 +130,13 @@ class OnboardingShell extends StatelessWidget {
     final body = Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
-        _Header(page: page, headline: headline, art: headerArt, onSkip: onSkip),
+        _Header(
+          page: page,
+          headline: headline,
+          art: headerArt,
+          onSkip: onSkip,
+          busy: busy,
+        ),
         _StepDots(page: page),
         Expanded(
           child: SingleChildScrollView(
@@ -134,7 +149,20 @@ class OnboardingShell extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
-              DpButton(label: primaryLabel, onPressed: onPrimary),
+              if (error != null) ...<Widget>[
+                Semantics(
+                  liveRegion: true,
+                  child: DpText(
+                    error!,
+                    role: DpTextRole.caption,
+                    weight: 600,
+                    color: tokens.color.wrongText,
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                const SizedBox(height: 8),
+              ],
+              DpButton(label: primaryLabel, onPressed: busy ? null : onPrimary),
               if (page.hasBack) ...<Widget>[
                 const SizedBox(height: 8),
                 // A link at the start edge, as the artboard draws it — not a
@@ -176,12 +204,14 @@ class _Header extends StatelessWidget {
     required this.headline,
     required this.art,
     required this.onSkip,
+    required this.busy,
   });
 
   final OnboardingPage page;
   final String headline;
   final Widget? art;
   final VoidCallback? onSkip;
+  final bool busy;
 
   @override
   Widget build(BuildContext context) {
@@ -227,7 +257,7 @@ class _Header extends StatelessWidget {
                   if (page.hasSkip && onSkip != null)
                     DpButton(
                       label: l10n.skip,
-                      onPressed: onSkip,
+                      onPressed: busy ? null : onSkip,
                       kind: DpButtonKind.text,
                       expand: false,
                       // The header's ink, not link teal, which on Raspberry

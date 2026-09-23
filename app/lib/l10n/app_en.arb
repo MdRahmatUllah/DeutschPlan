@@ -428,5 +428,13 @@
   "onboardingStartLearning": "Start learning",
   "@onboardingStartLearning": {
     "description": "S2 page 5: finishes setup (FR-S2-03)."
+  },
+  "onboardingFinishFailed": "Couldn't finish setup · try again",
+  "@onboardingFinishFailed": {
+    "description": "S2: committing the setup failed (FR-S2-03). The learner stays on the page and can try again."
+  },
+  "todayCoachMark": "Start here · today's words are ready",
+  "@todayCoachMark": {
+    "description": "FR-S2-03's one-time coach mark on Today's primary button, the first time Today opens after setup."
   }
 }
