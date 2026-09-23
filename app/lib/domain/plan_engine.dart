@@ -253,9 +253,8 @@ class DailyPlan {
   final PlanDate date;
 
   /// BR-PLAN-02 puts these in order: Revise, then New today, then Grammar due,
-  /// then Practice sentences. Sentences join at #80; until then this is the
-  /// whole plan and [blocks] says so rather than returning an empty list that
-  /// looks like "no sentences today".
+  /// then Practice sentences. Sentences are not plan rows: the sentence picker
+  /// keeps them in `sentence_log`, and Today reads them from there.
   final List<String> revise;
   final List<String> newToday;
   final List<String> grammarDue;
@@ -290,8 +289,8 @@ class DailyPlan {
   ///
   /// Only the word blocks. `PlanKind` is `plan_items.kind`, which has no value
   /// for grammar or for sentences, so this cannot name the other two blocks
-  /// BR-PLAN-02 lists — [grammarDue] is read directly, and sentences arrive at
-  /// #80. Named `wordBlocks` rather than `blocks` so it stops reading as the
+  /// BR-PLAN-02 lists — [grammarDue] is read directly, and sentences live in
+  /// `sentence_log` (#80). Named `wordBlocks` rather than `blocks` so it stops reading as the
   /// whole day: a screen that rendered `blocks` would silently show no
   /// grammar.
   List<(PlanKind, List<String>)> get wordBlocks => <(PlanKind, List<String>)>[

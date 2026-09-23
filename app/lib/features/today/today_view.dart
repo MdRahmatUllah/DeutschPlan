@@ -273,7 +273,7 @@ class TodayView {
   /// Topics due today (BR-PLAN-02's third block).
   final List<String> grammarDue;
 
-  /// Practice sentences. Empty until the sentence picker (#80) fills it.
+  /// Practice sentences (#80): the day's picked ones, and how many are rated.
   final BlockProgress sentences;
 
   /// False on a rest day (BR-PLAN-01): nothing is scheduled, and revising is

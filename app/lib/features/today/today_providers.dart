@@ -36,6 +36,12 @@ Stream<Set<(String, String)>> todayOpen(Ref ref) => ref
       },
     );
 
+/// How many of today's practice sentences have been rated, as it changes:
+/// T5 finishing moves Today's sentence card without Today having to ask.
+@riverpod
+Stream<int> todaySentencesRated(Ref ref) =>
+    ref.watch(sentenceStoreProvider).watchRated(ref.watch(todayProvider));
+
 /// Whether the on-device voice is installed and verified: Today's voice card
 /// offers it until it is.
 ///
@@ -72,9 +78,15 @@ Future<TodayView> todayView(Ref ref) async {
   final voiceReady = ref.watch(voiceInstalledProvider).value ?? true;
   final planning = ref.watch(todayPlanProvider.future);
   final changes = ref.watch(todayOpenProvider.future);
+  final picker = ref.watch(sentencePickerProvider);
+  final rating = ref.watch(todaySentencesRatedProvider.future);
 
   final plan = await planning;
   final open = await changes;
+  // FR-T5-01: the day's sentences, picked once and kept in sentence_log.
+  final sentences = await picker.forDay(date);
+  final rated = await rating;
+  final openSentences = sentences.length - rated;
   List<String> stillOpen(PlanKind kind, List<String> planned) => <String>[
     for (final uid in planned)
       if (open.contains((kind.wire, uid))) uid,
@@ -106,6 +118,7 @@ Future<TodayView> todayView(Ref ref) async {
       activeStep: step,
       isStudyDay: plan.isStudyDay,
     ),
+    sentences: openSentences,
   );
   final category = await content.mainCategory(plan.newToday);
   // TodayRest's note: what revising anyway would take off tomorrow.
@@ -152,6 +165,7 @@ Future<TodayView> todayView(Ref ref) async {
     openRevise: openRevise,
     openNew: openNew,
     grammarDue: plan.grammarDue,
+    sentences: BlockProgress(done: rated, total: sentences.length),
     isStudyDay: plan.isStudyDay,
     backlog: plan.backlog.length,
     backlogFrom: backlog.from,

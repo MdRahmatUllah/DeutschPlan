@@ -154,6 +154,47 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code, completed_at, 
     expect(view.openRevise, isEmpty);
   });
 
+  group('#80 practice sentences', () {
+    setUp(() async {
+      // Haus is learned; its two examples are the only candidates, so one
+      // sentence — one per headword.
+      await db.customStatement(
+        "INSERT INTO word_state (word_uid, status, introduced_on) VALUES "
+        "('${ContentFixture.haus}', 'learning', '2026-09-10')",
+      );
+      container.invalidate(todayViewProvider);
+    });
+
+    test("FR-T5-01 Today counts the day's sentences, picked once", () async {
+      final view = await container.read(todayViewProvider.future);
+      expect(view.sentences.total, 1);
+      expect(view.sentences.done, 0);
+
+      final logged = await db
+          .customSelect(
+            "SELECT COUNT(*) AS n FROM sentence_log WHERE shown_on = '$today'",
+          )
+          .getSingle();
+      expect(logged.read<int>('n'), 1, reason: 'kept for the day');
+    });
+
+    test('a rated sentence moves the card, and the estimate', () async {
+      final before = await container.read(todayViewProvider.future);
+      // BR-PLAN-09: an open sentence is 40 s on top of the 70 s of words.
+      expect(before.estimate, const Duration(seconds: 110));
+
+      await db.customUpdate(
+        "UPDATE sentence_log SET self_rating = 2 WHERE shown_on = '$today'",
+        updates: <TableInfo<Table, Object?>>{db.sentenceLog},
+      );
+      await pumpEventQueue();
+      final after = await container.read(todayViewProvider.future);
+
+      expect(after.sentences.done, 1);
+      expect(after.estimate, const Duration(seconds: 70));
+    });
+  });
+
   group('#96 all done', () {
     Future<void> finishTheDay() async {
       await db.customUpdate(

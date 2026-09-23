@@ -16,6 +16,8 @@
 /// the doc rather than restated here.
 library;
 
+import 'package:deutschplan/data/repositories/sentence_store.dart';
+import 'package:deutschplan/domain/sentence_picker.dart';
 import 'package:deutschplan/data/db/content_update.dart';
 import 'package:deutschplan/core/theme/dp_tokens.dart';
 import 'package:deutschplan/core/theme/theme_mode.dart';
@@ -273,6 +275,23 @@ PlanEngine planEngine(Ref ref) {
     backlogCatchupDays: settings.read(SettingKeys.backlogCatchupDays),
     autoAdvance: settings.read(SettingKeys.autoAdvance),
     pauseNewWhenBacklog: settings.read(SettingKeys.pauseNewWhenBacklog),
+  );
+}
+
+/// The drift side of the sentence picker, shared by the picker and Today's
+/// count of rated sentences.
+@riverpod
+DriftSentenceStore sentenceStore(Ref ref) =>
+    DriftSentenceStore(ref.watch(appDatabaseProvider));
+
+/// `docs/03-domain/sentences.md`: the day's practice sentences.
+@riverpod
+SentencePicker sentencePicker(Ref ref) {
+  final settings = ref.watch(settingsProvider);
+  return SentencePicker(
+    ref.watch(sentenceStoreProvider),
+    count: settings.read(SettingKeys.sentenceCount),
+    gapDays: settings.read(SettingKeys.sentenceRepeatGapDays),
   );
 }
 
