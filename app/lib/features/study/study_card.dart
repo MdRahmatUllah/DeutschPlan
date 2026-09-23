@@ -10,6 +10,7 @@ import 'package:deutschplan/core/theme/dp_tokens.dart';
 import 'package:deutschplan/core/typography/dp_text.dart';
 import 'package:deutschplan/data/db/app_database.dart';
 import 'package:deutschplan/data/repositories/setting_keys.dart';
+import 'package:deutschplan/features/study/study_back.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
 import 'package:flutter/services.dart' show Clipboard, ClipboardData;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -47,26 +48,38 @@ String frontCaption(Word word, AppLocalizations l10n, {required bool pron}) {
   ].join(' · ');
 }
 
-/// T2's word card, face up to the German (`StudyFront`).
+/// T2's word card: face up to the German (`StudyFront`) and, once
+/// [revealed], with its back unfolded under the headword (`StudyBack`).
 ///
 /// The gender bar and, under glass, the card's tint are the article's
 /// colour. The headword copies on a long-press, the speaker plays on a tap
 /// and slowly on a long-press (FR-T2-09), and the word plays by itself when
 /// `autoplay_headword` is on. With no German voice on the phone the speaker
 /// shows slashed, and a tap says how to install one.
-class StudyFrontCard extends ConsumerStatefulWidget {
-  const StudyFrontCard({required this.word, super.key});
+class StudyWordCard extends ConsumerStatefulWidget {
+  const StudyWordCard({
+    required this.word,
+    super.key,
+    this.revealed = false,
+    this.onReveal,
+  });
 
   final Word word;
+
+  /// The back is showing (FR-T2-01).
+  final bool revealed;
+
+  /// FR-T2-01: a tap on the card, like *Show meaning*, turns it over.
+  final VoidCallback? onReveal;
 
   /// FR-T2-09's slow playback.
   static const double slow = 0.75;
 
   @override
-  ConsumerState<StudyFrontCard> createState() => _StudyFrontCardState();
+  ConsumerState<StudyWordCard> createState() => _StudyWordCardState();
 }
 
-class _StudyFrontCardState extends ConsumerState<StudyFrontCard> {
+class _StudyWordCardState extends ConsumerState<StudyWordCard> {
   /// The phone said it has no German voice (accessibility-performance.md).
   /// Kept across cards: the state outlives each word, so the toast is once.
   bool _mute = false;
@@ -78,9 +91,10 @@ class _StudyFrontCardState extends ConsumerState<StudyFrontCard> {
   }
 
   @override
-  void didUpdateWidget(StudyFrontCard old) {
+  void didUpdateWidget(StudyWordCard old) {
     super.didUpdateWidget(old);
     if (old.word.uid != widget.word.uid) _autoplay();
+    if (widget.revealed && !old.revealed) _autoplayExample();
   }
 
   /// `autoplay_headword`: the word plays as its card appears.
@@ -91,12 +105,27 @@ class _StudyFrontCardState extends ConsumerState<StudyFrontCard> {
     });
   }
 
-  Future<void> _speak({double pace = 1}) async {
+  /// `autoplay_example`: the first example plays as the back appears.
+  void _autoplayExample() {
+    if (_mute) return;
+    if (!ref.read(settingsProvider).read(SettingKeys.autoplayExample)) return;
+    final uid = widget.word.uid;
+    unawaited(
+      ref.read(studyBackProvider(uid).future).then((extras) {
+        final first = extras.examples.firstOrNull;
+        if (!mounted || first == null || widget.word.uid != uid) return;
+        unawaited(_speak(text: first.german));
+      }),
+    );
+  }
+
+  /// Says [text], the word with its article unless told otherwise.
+  Future<void> _speak({String? text, double pace = 1}) async {
     if (_mute) return _explain();
     final speed = ref.read(settingsProvider).read(SettingKeys.ttsSpeed);
     final spoke = await ref
         .read(systemTtsProvider)
-        .speak(spokenForm(widget.word), rate: speed * pace);
+        .speak(text ?? spokenForm(widget.word), rate: speed * pace);
     if (spoke || !mounted) return;
     setState(() => _mute = true);
     _explain();
@@ -118,8 +147,13 @@ class _StudyFrontCardState extends ConsumerState<StudyFrontCard> {
     final word = widget.word;
     final gender =
         tokens.color.forArticle(word.article) ?? tokens.surface.muted;
-    final pron = ref.watch(settingsProvider).read(SettingKeys.showPronBn);
+    final settings = ref.watch(settingsProvider);
+    final pron = settings.read(SettingKeys.showPronBn);
+    // Watched from the front, so the back has its examples when it opens.
+    final extras = ref.watch(studyBackProvider(word.uid)).value;
     final edge = tokens.isGlass ? 0.0 : 2.0;
+    final still = MediaQuery.disableAnimationsOf(context);
+    final quick = still ? Duration.zero : tokens.motion.quick;
 
     final face = Padding(
       padding: const EdgeInsets.fromLTRB(26, 16, 20, 20),
@@ -164,15 +198,40 @@ class _StudyFrontCardState extends ConsumerState<StudyFrontCard> {
                 semanticLabel: l10n.studyPronounce,
                 state: _mute ? DpSpeakerState.unavailable : DpSpeakerState.idle,
                 onPressed: () => unawaited(_speak()),
-                onLongPress: () => unawaited(_speak(pace: StudyFrontCard.slow)),
+                onLongPress: () => unawaited(_speak(pace: StudyWordCard.slow)),
               ),
             ],
           ),
+          if (widget.revealed)
+            // The reveal: the back fades in and slides up 4 px while the card
+            // grows to hold it (study-session.md, Motion).
+            TweenAnimationBuilder<double>(
+              key: ValueKey<String>(word.uid),
+              tween: Tween<double>(begin: 0, end: 1),
+              duration: quick,
+              curve: Curves.easeOut,
+              builder: (context, t, child) => Opacity(
+                opacity: t,
+                child: Transform.translate(
+                  offset: Offset(0, 4 * (1 - t)),
+                  child: child,
+                ),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.only(top: 14),
+                child: StudyBack(
+                  word: word,
+                  meaning: settings.read(SettingKeys.meaningLanguage),
+                  extras: extras,
+                  onPlay: (sentence) => unawaited(_speak(text: sentence)),
+                ),
+              ),
+            ),
         ],
       ),
     );
 
-    return DpSurface(
+    final card = DpSurface(
       // Paper: the artboard's 2 px ink card with its offset shadow. Glass:
       // the card itself takes the gender tint as well as the bar.
       kind: tokens.isGlass
@@ -192,10 +251,27 @@ class _StudyFrontCardState extends ConsumerState<StudyFrontCard> {
               width: 6,
               child: ColoredBox(color: gender),
             ),
-            face,
+            // Reduced motion: no growing at all. AnimatedSize cannot take a
+            // zero duration — it re-dirties itself during layout.
+            if (still)
+              face
+            else
+              AnimatedSize(
+                duration: quick,
+                curve: Curves.easeOut,
+                alignment: Alignment.topCenter,
+                child: face,
+              ),
           ],
         ),
       ),
+    );
+
+    // *Show meaning* is the labelled way to turn it; the tap is a shortcut.
+    return GestureDetector(
+      onTap: widget.revealed ? null : widget.onReveal,
+      excludeFromSemantics: true,
+      child: card,
     );
   }
 }

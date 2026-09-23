@@ -9,7 +9,7 @@ import 'package:deutschplan/core/theme/dp_tokens.dart';
 import 'package:deutschplan/core/typography/dp_text.dart';
 import 'package:deutschplan/data/repositories/setting_keys.dart';
 import 'package:deutschplan/data/repositories/word_repository.dart';
-import 'package:deutschplan/features/study/study_front.dart';
+import 'package:deutschplan/features/study/study_card.dart';
 import 'package:deutschplan/features/study/study_session.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
 import 'package:deutschplan/router/routes.dart';
@@ -67,6 +67,10 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
   /// is cleared on the way out, whichever way out — see [build].
   void _close() => Navigator.of(context).maybePop();
 
+  /// FR-T2-01: *Show meaning*, or a tap on the card.
+  void _reveal() =>
+      ref.read(studySessionProvider(widget.args).notifier).reveal();
+
   void _playBanner(StudySessionState session) {
     if (!session.startsBlock || _bannered == session.position) return;
     _bannered = session.position;
@@ -119,6 +123,7 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
             ),
           };
     final item = session?.current;
+    final revealed = session?.revealed ?? false;
 
     final body = SafeArea(
       child: Column(
@@ -140,13 +145,23 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
               children: <Widget>[
                 if (item != null)
                   Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 24,
-                    ),
-                    child: Center(
+                    padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+                    // Face down the card sits in the middle; turned over it
+                    // rises to the top to make room for its back.
+                    child: AnimatedAlign(
+                      alignment: revealed
+                          ? Alignment.topCenter
+                          : Alignment.center,
+                      duration: MediaQuery.disableAnimationsOf(context)
+                          ? Duration.zero
+                          : tokens.motion.quick,
+                      curve: Curves.easeOut,
                       child: SingleChildScrollView(
-                        child: StudyCardSlot(item: item),
+                        child: StudyCardSlot(
+                          item: item,
+                          revealed: revealed,
+                          onReveal: _reveal,
+                        ),
                       ),
                     ),
                   ),
@@ -173,14 +188,10 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
           // rating bar until the card is turned over.
           if (item != null &&
               item.kind != SessionBlockKind.grammar &&
-              !(session?.revealed ?? false))
+              !revealed)
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 0, 16, 32),
-              child: StudyFrontActions(
-                onReveal: () => ref
-                    .read(studySessionProvider(widget.args).notifier)
-                    .reveal(),
-              ),
+              child: StudyFrontActions(onReveal: _reveal),
             ),
         ],
       ),
@@ -369,13 +380,20 @@ class _BlockBanner extends StatelessWidget {
   }
 }
 
-/// The card slot: the word's front (#101); the back, the new-word card and
-/// the cloze card follow (#102–#104). A grammar set shows its topic until
-/// L15 exists.
+/// The card slot: the word card, front and back (#101, #102); the new-word
+/// card and the cloze card follow (#103, #104). A grammar set shows its topic
+/// until L15 exists.
 class StudyCardSlot extends ConsumerWidget {
-  const StudyCardSlot({required this.item, super.key});
+  const StudyCardSlot({
+    required this.item,
+    super.key,
+    this.revealed = false,
+    this.onReveal,
+  });
 
   final StudyItem item;
+  final bool revealed;
+  final VoidCallback? onReveal;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -383,7 +401,9 @@ class StudyCardSlot extends ConsumerWidget {
     final word = item.kind == SessionBlockKind.grammar
         ? null
         : ref.watch(studyWordProvider(item.uid)).value?.word;
-    if (word != null) return StudyFrontCard(word: word);
+    if (word != null) {
+      return StudyWordCard(word: word, revealed: revealed, onReveal: onReveal);
+    }
     return DpSurface(
       selected: !tokens.isGlass,
       padding: const EdgeInsets.fromLTRB(26, 20, 20, 20),

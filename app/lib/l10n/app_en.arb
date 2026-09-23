@@ -1240,5 +1240,36 @@
   "studyNoVoice": "No German voice on this phone. Install one in its text-to-speech settings.",
   "@studyNoVoice": {
     "description": "T2 toast when the phone has no German system voice: once when it first fails, and on each tap of the slashed speaker (accessibility-performance.md)."
+  },
+  "studyTip": "⚠ {tip}",
+  "@studyTip": {
+    "description": "T2 back: the interference-tip callout. tip is the course's own text.",
+    "placeholders": {
+      "tip": {
+        "type": "String"
+      }
+    }
+  },
+  "studyCollocations": "⟶ {collocations}",
+  "@studyCollocations": {
+    "description": "T2 back: the word's collocations, German course text.",
+    "placeholders": {
+      "collocations": {
+        "type": "String"
+      }
+    }
+  },
+  "studyRegister": "≈ {register}",
+  "@studyRegister": {
+    "description": "T2 back: synonyms and register, course text.",
+    "placeholders": {
+      "register": {
+        "type": "String"
+      }
+    }
+  },
+  "studyPlaySentence": "Play sentence",
+  "@studyPlaySentence": {
+    "description": "T2 back: an example's play button, for screen readers."
   }
 }

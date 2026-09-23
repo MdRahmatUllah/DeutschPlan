@@ -11,6 +11,7 @@ import 'package:deutschplan/data/db/app_database.dart';
 import 'package:deutschplan/data/db/content_dao.dart';
 import 'package:deutschplan/data/repositories/setting_keys.dart';
 import 'package:deutschplan/data/repositories/settings_repository.dart';
+import 'package:deutschplan/features/study/study_back.dart';
 import 'package:deutschplan/features/study/study_screen.dart';
 import 'package:deutschplan/features/study/study_session.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
@@ -233,6 +234,22 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code) VALUES
         isTrue,
       );
       expect(find.text(l10n.studyShowMeaning), findsNothing);
+    });
+
+    testWidgets('FR-T2-01 a tap on the card turns it over too', (tester) async {
+      final container = await pump(tester);
+      expect(find.byType(StudyBack), findsNothing);
+
+      await tester.tap(find.textContaining('Nomen'));
+      await tester.pumpAndSettle();
+
+      expect(
+        container.read(studySessionProvider(args)).value?.revealed,
+        isTrue,
+      );
+      // Straße's back: its meaning and its example.
+      expect(find.byType(StudyBack), findsOneWidget);
+      expect(find.text('Die Straße ist lang.'), findsOneWidget);
     });
 
     testWidgets('each card starts face down again', (tester) async {
