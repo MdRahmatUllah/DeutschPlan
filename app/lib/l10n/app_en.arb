@@ -935,5 +935,55 @@
   "todayTomorrowRest": "Rest day tomorrow — nothing is scheduled.",
   "@todayTomorrowRest": {
     "description": "TodayDone Tomorrow card when tomorrow is a rest day (BR-PLAN-01)."
+  },
+  "todayRestDay": "Rest day",
+  "@todayRestDay": {
+    "description": "TodayRest header, in place of the greeting (BR-PLAN-01)."
+  },
+  "todayRestFree": "Frei",
+  "@todayRestFree": {
+    "description": "TodayRest ring centre. German in every UI language, like the greetings."
+  },
+  "todayRestNoPlan": "no plan",
+  "@todayRestNoPlan": {
+    "description": "TodayRest ring caption."
+  },
+  "todayRestOff": "{weekday} is off in your study days. The streak is safe.",
+  "@todayRestOff": {
+    "description": "TodayRest ring card: which weekday is off.",
+    "placeholders": {
+      "weekday": {
+        "type": "String"
+      }
+    }
+  },
+  "todayRestStudyDays": "Change days in Settings → Study days",
+  "@todayRestStudyDays": {
+    "description": "TodayRest link into the study-days setting."
+  },
+  "todayReviseOptional": "{count} due · optional today",
+  "@todayReviseOptional": {
+    "description": "TodayRest Revise card subtitle.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "todayRestNote": "Nothing is scheduled and nothing moves to the backlog. Revising anyway keeps tomorrow lighter:",
+  "@todayRestNote": {
+    "description": "TodayRest note (BR-PLAN-01)."
+  },
+  "todayRestLighter": "{before} → {after} revisions.",
+  "@todayRestLighter": {
+    "description": "TodayRest note: tomorrow's due words now, and after revising today's.",
+    "placeholders": {
+      "before": {
+        "type": "int"
+      },
+      "after": {
+        "type": "int"
+      }
+    }
   }
 }

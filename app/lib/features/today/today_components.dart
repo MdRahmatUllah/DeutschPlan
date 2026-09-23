@@ -5,8 +5,10 @@ import 'package:deutschplan/core/components/dp_progress_ring.dart';
 import 'package:deutschplan/core/theme/dp_surface.dart';
 import 'package:deutschplan/core/theme/dp_tokens.dart';
 import 'package:deutschplan/core/typography/dp_text.dart';
+import 'package:deutschplan/domain/plan_engine.dart' show parsePlanDate;
 import 'package:deutschplan/features/today/today_view.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
+import 'package:intl/intl.dart';
 import 'package:material_ui/material_ui.dart';
 
 /// T1's header block: the German date and greeting, the streak, the gear.
@@ -35,7 +37,9 @@ class TodayHeader extends StatelessWidget {
     // Glass tints a white panel, so the ink is the page's; the solid field
     // takes the ink made for Lagoon.
     final ink = tokens.isGlass ? tokens.color.ink : tokens.color.onPrimary;
-    final greeting = view.isDone
+    final greeting = view.isRestDay
+        ? l10n.todayRestDay
+        : view.isDone
         ? l10n.todayGreetingDone
         : switch (dayPart(view.hour)) {
             DayPart.morning => l10n.todayGreetingMorning,
@@ -66,7 +70,8 @@ class TodayHeader extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
                   DpText(
-                    view.learnerName == null
+                    // "Rest day" is a heading, not a greeting: no name on it.
+                    view.learnerName == null || view.isRestDay
                         ? greeting
                         : l10n.todayGreetingNamed(greeting, view.learnerName!),
                     role: DpTextRole.headline,
@@ -111,6 +116,7 @@ class ProgressRingCard extends StatelessWidget {
     required this.onStart,
     required this.onStep,
     super.key,
+    this.onStudyDays,
   });
 
   final TodayView view;
@@ -120,6 +126,9 @@ class ProgressRingCard extends StatelessWidget {
 
   /// FR-T1-08: the step chip goes to the Learn tab.
   final VoidCallback onStep;
+
+  /// TodayRest's "Change days in Settings → Study days".
+  final VoidCallback? onStudyDays;
 
   static const double ringSize = 132;
 
@@ -157,10 +166,14 @@ class ProgressRingCard extends StatelessWidget {
                   size: ringSize,
                   // TodayDone: the ring turns Lime, with a tick for the time.
                   colour: view.isDone ? tokens.color.easy : null,
-                  caption: view.left == 0
+                  caption: view.isRestDay
+                      ? l10n.todayRestNoPlan
+                      : view.left == 0
                       ? null
                       : l10n.todayEstimate(view.estimateMinutes),
                   captionIcon: view.isDone ? Icons.check : null,
+                  // TodayRest: nothing planned, and the ring says so.
+                  countLabel: view.isRestDay ? l10n.todayRestFree : null,
                   semanticLabel: l10n.todayRing(view.completed, view.total),
                 ),
               ),
@@ -180,17 +193,40 @@ class ProgressRingCard extends StatelessWidget {
                   ),
                   const SizedBox(height: 8),
                 ],
-                DpText(
-                  view.isDone
-                      ? l10n.todayDoneLine(
-                          view.courseDay,
-                          view.words,
-                          view.minutes,
-                        )
-                      : l10n.todayCourseDay(view.courseDay),
-                  role: DpTextRole.body,
-                ),
-                if (step != null) ...<Widget>[
+                if (view.isRestDay) ...<Widget>[
+                  DpText(
+                    l10n.todayRestOff(
+                      DateFormat.EEEE(
+                        Localizations.localeOf(context).toString(),
+                      ).format(parsePlanDate(view.date)),
+                    ),
+                    role: DpTextRole.body,
+                  ),
+                  const SizedBox(height: 8),
+                  Semantics(
+                    link: true,
+                    child: GestureDetector(
+                      onTap: onStudyDays,
+                      behavior: HitTestBehavior.opaque,
+                      child: DpText(
+                        l10n.todayRestStudyDays,
+                        role: DpTextRole.caption,
+                        color: tokens.color.textSecondary,
+                      ),
+                    ),
+                  ),
+                ] else
+                  DpText(
+                    view.isDone
+                        ? l10n.todayDoneLine(
+                            view.courseDay,
+                            view.words,
+                            view.minutes,
+                          )
+                        : l10n.todayCourseDay(view.courseDay),
+                    role: DpTextRole.body,
+                  ),
+                if (step != null && !view.isRestDay) ...<Widget>[
                   const SizedBox(height: 8),
                   DpSegmentedBar(
                     done: words.done,
@@ -429,6 +465,38 @@ class GrammarPreviewCard extends StatelessWidget {
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+/// TodayRest's note: why nothing is planned, and what revising anyway buys.
+class RestDayNote extends StatelessWidget {
+  const RestDayNote({required this.view, super.key});
+
+  final TodayView view;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final before = view.dueTomorrow ?? 0;
+    return DpSurface(
+      kind: DpSurfaceKind.bar,
+      padding: const EdgeInsets.all(14),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          DpText(l10n.todayRestNote, role: DpTextRole.body),
+          // ponytail: the artboard bolds this inline; DpText has no spans,
+          // so it takes its own line. Add emphasis to DpText if another
+          // screen needs the same.
+          if (view.revise.open > 0 && before > 0)
+            DpText(
+              l10n.todayRestLighter(before, view.dueTomorrowIfRevised),
+              role: DpTextRole.body,
+              weight: 700,
+            ),
+        ],
       ),
     );
   }

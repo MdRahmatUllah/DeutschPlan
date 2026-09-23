@@ -89,6 +89,7 @@ class TodayView {
     this.isStudyDay = true,
     this.minutes = 0,
     this.tomorrow,
+    this.dueTomorrow,
     this.backlogFrom,
     this.backlogTo,
     this.step,
@@ -124,6 +125,15 @@ class TodayView {
 
   /// Tomorrow's plan, previewed once today is done; null before that.
   final TomorrowPreview? tomorrow;
+
+  /// On a rest day: the words due by tomorrow, if today's are left alone.
+  final int? dueTomorrow;
+
+  /// TodayRest: a day off in the study days (BR-PLAN-01).
+  bool get isRestDay => !isStudyDay;
+
+  /// TodayRest's "12 → 6": tomorrow's due words after revising today's.
+  int get dueTomorrowIfRevised => math.max(0, (dueTomorrow ?? 0) - revise.open);
 
   /// New words planned on earlier days and still open (BR-PLAN-05), and the
   /// days they were planned for.

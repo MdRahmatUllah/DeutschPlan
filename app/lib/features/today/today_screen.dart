@@ -139,7 +139,35 @@ class _Plan extends ConsumerWidget {
 
     final tomorrow = view.tomorrow;
     // TodayDone: the blocks collapse into one row, and tomorrow appears.
-    final sections = view.isDone
+    // TodayRest: revising is optional, and a note says what it buys.
+    final restDay = <Widget>[
+      if (view.revise.total > 0)
+        PlanSectionCard(
+          icon: Icons.autorenew,
+          tile: tokens.color.primary,
+          title: l10n.todayRevise(view.revise.total),
+          subtitle: l10n.todayReviseOptional(view.revise.open),
+          trailing: SectionTrailing.open,
+          onTap: view.openRevise.isEmpty
+              ? null
+              : () => onStudy(<SessionBlock>[
+                  SessionBlock(SessionBlockKind.revise, view.openRevise),
+                ], view.date),
+        ),
+      if (view.sentences.total > 0)
+        PlanSectionCard(
+          icon: Icons.chat_bubble_outline,
+          tile: tokens.color.die,
+          title: l10n.todaySentences(view.sentences.total),
+          subtitle: l10n.todaySentencesKnown(view.sentences.total),
+          trailing: SectionTrailing.open,
+          onTap: () => SentencesRoute.open(context),
+        ),
+      RestDayNote(view: view),
+    ];
+    final sections = view.isRestDay
+        ? restDay
+        : view.isDone
         ? <Widget>[
             TodayDoneCard(view: view),
             if (tomorrow != null) TomorrowCard(tomorrow: tomorrow),
@@ -270,12 +298,14 @@ class _Plan extends ConsumerWidget {
                               context.jumpToTab(LearnStepRoute(code: step));
                             }
                           },
+                          onStudyDays: () =>
+                              context.jumpToTab(const ReminderSettingsRoute()),
                         ),
                         for (var i = 0; i < sections.length; i++) ...<Widget>[
                           SizedBox(height: i == 0 ? 16 : 10),
                           sections[i],
                         ],
-                        if (grammar != null) ...<Widget>[
+                        if (grammar != null && !view.isRestDay) ...<Widget>[
                           const SizedBox(height: 12),
                           GrammarPreviewCard(
                             preview: grammar,

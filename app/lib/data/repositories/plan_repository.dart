@@ -365,6 +365,22 @@ WHERE kind = 'new' AND completed_at IS NULL AND plan_date < ?1
     );
   }
 
+  /// How many words are due on or before [date], suspended ones aside: the
+  /// "12" of TodayRest's "12 → 6 revisions".
+  Future<int> dueBy(String date) async {
+    final row = await _db
+        .customSelect(
+          '''
+SELECT COUNT(*) AS n FROM word_state
+WHERE due IS NOT NULL AND due <= ?1 AND status != 'suspended'
+''',
+          variables: <Variable<Object>>[Variable<String>(date)],
+          readsFrom: <ResultSetImplementation<Object, Object>>{_db.wordState},
+        )
+        .getSingle();
+    return row.read<int>('n');
+  }
+
   /// The day the first step was started: T1's "Day 34 of your course".
   ///
   /// The earliest enrollment rather than the active one, because a new step is

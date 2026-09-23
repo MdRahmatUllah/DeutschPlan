@@ -84,6 +84,10 @@ Future<TodayView> todayView(Ref ref) async {
     ),
   );
   final category = await content.mainCategory(plan.newToday);
+  // TodayRest's note: what revising anyway would take off tomorrow.
+  final dueTomorrow = plan.isStudyDay
+      ? null
+      : await plans.dueBy(addDays(date, 1));
 
   TodayView build({TomorrowPreview? tomorrow}) => TodayView(
     date: date,
@@ -124,6 +128,7 @@ Future<TodayView> todayView(Ref ref) async {
           ),
     minutes: seconds ~/ 60,
     tomorrow: tomorrow,
+    dueTomorrow: dueTomorrow,
   );
 
   final view = build();
