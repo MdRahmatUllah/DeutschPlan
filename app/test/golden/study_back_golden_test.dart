@@ -7,7 +7,9 @@ import 'package:deutschplan/data/db/app_database.dart';
 import 'package:deutschplan/data/repositories/setting_keys.dart';
 import 'package:deutschplan/data/repositories/settings_repository.dart';
 import 'package:deutschplan/data/repositories/word_repository.dart';
+import 'package:deutschplan/domain/fsrs.dart' show Rating;
 import 'package:deutschplan/features/study/study_back.dart';
+import 'package:deutschplan/features/study/study_rating.dart';
 import 'package:deutschplan/features/study/study_screen.dart';
 import 'package:deutschplan/features/study/study_session.dart';
 import 'package:deutschplan/router/routes.dart';
@@ -17,7 +19,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'golden_harness.dart';
 
 /// T2 · StudyBack — #102. The artboard's card turned over: die Rechnung's
-/// meanings, two examples, its collocations and register.
+/// meanings, two examples, its collocations and register, and the rating
+/// bar with its intervals (#105).
 void main() {
   late AppDatabase db;
   late SettingsRepository settings;
@@ -70,6 +73,14 @@ void main() {
       overrides: [
         settingsProvider.overrideWithValue(settings),
         studySessionProvider(args).overrideWith(_Fourth.new),
+        studyIntervalsProvider('r3').overrideWith(
+          (ref) async => <Rating, int>{
+            Rating.again: 1,
+            Rating.hard: 3,
+            Rating.good: 8,
+            Rating.easy: 21,
+          },
+        ),
         studyBackProvider('r3').overrideWith(
           (ref) async => (
             examples: <StudyExample>[

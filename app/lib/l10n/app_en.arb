@@ -1301,5 +1301,30 @@
         "type": "String"
       }
     }
+  },
+  "studyIntervalDays": "{days} d",
+  "@studyIntervalDays": {
+    "description": "T2 rating bar: the interval under a rating, in days (FR-T2-05).",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "studyRatePrompt": "How well did you remember it? The interval shows when it comes back.",
+  "@studyRatePrompt": {
+    "description": "T2 back: the prompt above the rating bar."
+  },
+  "studyRated": "Rated {word}: {rating}",
+  "@studyRated": {
+    "description": "T2 undo snackbar after a rating (FR-T2-02). rating is the button's own label.",
+    "placeholders": {
+      "word": {
+        "type": "String"
+      },
+      "rating": {
+        "type": "String"
+      }
+    }
   }
 }
