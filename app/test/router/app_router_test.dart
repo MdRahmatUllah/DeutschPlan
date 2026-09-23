@@ -3,6 +3,17 @@ library;
 
 import 'dart:io';
 
+import 'package:deutschplan/core/providers/app_providers.dart';
+import 'package:deutschplan/data/db/app_database.dart';
+import 'package:deutschplan/data/db/content_dao.dart';
+import 'package:deutschplan/data/repositories/setting_keys.dart';
+import 'package:deutschplan/domain/placement.dart';
+import 'package:deutschplan/features/onboarding/onboarding_start_page.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart' show Override;
+
+import '../domain/placement_test.dart' show wordFor;
+
 import 'package:deutschplan/core/theme/app_theme.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
 import 'package:deutschplan/main.dart'
@@ -37,12 +48,31 @@ void main() {
     router = buildRouter(initialLocation: at);
     addTearDown(router.dispose);
 
+    // S3 reads the course to draw its first question; with nothing to read
+    // it would end at once and leave for page 3, and the path would look
+    // unreachable. A course of one step keeps it where the table puts it.
+    final db = AppDatabase.memory();
+    addTearDown(db.close);
+
     await tester.pumpWidget(
-      MaterialApp.router(
-        routerConfig: router,
-        theme: AppTheme.light(),
-        localizationsDelegates: appLocalizationsDelegates,
-        supportedLocales: supportedLocales,
+      ProviderScope(
+        overrides: <Override>[
+          languagesProvider.overrideWith(
+            () => _FixedLanguages(MeaningLanguage.english),
+          ),
+          contentDaoProvider.overrideWithValue(_OneStepDao(db)),
+          courseStepsProvider.overrideWith(
+            (ref) async => const <CourseStep>[
+              (code: 'A1.1', levelCode: 'A1', wordCount: 12),
+            ],
+          ),
+        ],
+        child: MaterialApp.router(
+          routerConfig: router,
+          theme: AppTheme.light(),
+          localizationsDelegates: appLocalizationsDelegates,
+          supportedLocales: supportedLocales,
+        ),
       ),
     );
     await tester.pumpAndSettle();
@@ -422,4 +452,22 @@ void main() {
     expect(const ExamRoute(attemptId: 9).location, '/exam/9');
     expect(const WordRoute(uid: 'uid-haus').location, '/word/uid-haus');
   });
+}
+
+class _OneStepDao extends ContentDao {
+  _OneStepDao(super.db);
+
+  @override
+  Future<List<PlacementWord>> placementPool(String step) async =>
+      <PlacementWord>[for (var i = 0; i < 12; i++) wordFor(step, i)];
+}
+
+class _FixedLanguages extends Languages {
+  _FixedLanguages(this.meaning);
+
+  final MeaningLanguage meaning;
+
+  @override
+  ({MeaningLanguage meaning, UiLanguage ui}) build() =>
+      (meaning: meaning, ui: UiLanguage.english);
 }

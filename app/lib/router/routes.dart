@@ -17,6 +17,7 @@ import 'package:deutschplan/features/onboarding/onboarding_pace_page.dart';
 import 'package:deutschplan/features/onboarding/onboarding_shell.dart';
 import 'package:deutschplan/features/onboarding/onboarding_start_page.dart';
 import 'package:deutschplan/features/onboarding/onboarding_voice_page.dart';
+import 'package:deutschplan/features/onboarding/placement_screen.dart';
 import 'package:deutschplan/features/onboarding/onboarding_notifier.dart';
 import 'package:deutschplan/features/onboarding/setup_flow.dart';
 import 'package:deutschplan/features/onboarding/onboarding_welcome_page.dart';
@@ -447,10 +448,27 @@ class OnboardingRoute extends GoRouteData with $OnboardingRoute {
   @override
   Widget build(BuildContext context, GoRouterState state) {
     if (page == 'placement') {
-      return const PlaceholderScreen(
-        title: 'Welcome',
-        screen: 'S3',
-        detail: 'placement',
+      // Popped with the suggestion, which page 3 picks; popped with nothing
+      // on close (FR-S3-04), which leaves page 3 as it was. Opened directly —
+      // a deep link — there is no page 3 under it, so it goes there, and a
+      // suggestion goes to the draft that page reads.
+      return PlacementScreen(
+        onDone: (step) {
+          if (context.canPop()) {
+            context.pop(step);
+            return;
+          }
+          if (step != null) {
+            ProviderScope.containerOf(
+              context,
+              listen: false,
+            ).read(onboardingProvider.notifier).chooseStep(step);
+          }
+          OnboardingRoute(
+            page: OnboardingPage.startingPoint.slug,
+            restart: restart,
+          ).go(context);
+        },
       );
     }
 
@@ -479,8 +497,12 @@ class OnboardingRoute extends GoRouteData with $OnboardingRoute {
         onSkip: () =>
             _finish(context, skippingFrom: OnboardingPage.startingPoint),
         // S3 pops with the step it suggests (#93, #94), or with nothing.
-        onPlacement: () =>
-            const OnboardingRoute(page: 'placement').push<String>(context),
+        // `restart` too: in restart setup the learner is enrolled, and the
+        // guard would send a plain link to Today.
+        onPlacement: () => OnboardingRoute(
+          page: 'placement',
+          restart: restart,
+        ).push<String>(context),
       ),
 
       OnboardingPage.dailyPace => OnboardingPacePage(

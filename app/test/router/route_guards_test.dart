@@ -17,6 +17,11 @@ import 'package:deutschplan/features/onboarding/onboarding_voice_page.dart';
 import 'package:deutschplan/features/onboarding/onboarding_shell.dart';
 import 'package:deutschplan/features/onboarding/onboarding_notifier.dart';
 import 'package:deutschplan/features/onboarding/setup_flow.dart';
+import 'package:deutschplan/features/onboarding/placement_screen.dart';
+import 'package:deutschplan/domain/placement.dart';
+
+import '../domain/placement_test.dart' show wordFor;
+
 import 'package:deutschplan/features/onboarding/onboarding_start_page.dart';
 import 'package:deutschplan/features/onboarding/onboarding_pace_page.dart';
 import 'package:deutschplan/data/db/content_dao.dart';
@@ -79,6 +84,7 @@ void main() {
           setupFlowProvider.overrideWith(
             () => _RecordingFlow(flowLog, succeed: finishSucceeds),
           ),
+          contentDaoProvider.overrideWithValue(_PoolDao(db)),
         ],
         child: MaterialApp.router(
           routerConfig: router,
@@ -415,7 +421,7 @@ void main() {
 
       await tester.tap(find.text(l10n.onboardingPlacementLink));
       await tester.pumpAndSettle();
-      expect(find.byType(OnboardingStartPage), findsNothing);
+      expect(find.byType(PlacementScreen), findsOneWidget);
 
       router.pop('A2.1');
       await tester.pumpAndSettle();
@@ -425,6 +431,22 @@ void main() {
         matching: find.byType(DpSurface),
       );
       expect(tester.widget<DpSurface>(chosen).selected, isTrue);
+    });
+
+    testWidgets('S3 opened directly closes to page 3, not to nothing', (
+      tester,
+    ) async {
+      // A deep link to the check has no page 3 under it to pop back to.
+      await pumpApp(tester, guards: guardsWith(), at: '/onboarding/placement');
+      final l10n = AppLocalizations.of(
+        tester.element(find.byType(PlacementScreen)),
+      );
+
+      await tester.tap(find.bySemanticsLabel(l10n.placementClose));
+      await tester.pumpAndSettle();
+
+      expect(tester.takeException(), isNull);
+      expect(find.byType(OnboardingStartPage), findsOneWidget);
     });
 
     testWidgets("page 4's estimate is for the step page 3 picked", (
@@ -563,6 +585,23 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.byType(OnboardingStartPage), findsOneWidget);
+    });
+
+    testWidgets('and its placement link is not sent to Today', (tester) async {
+      // The learner is enrolled, so a plain link to S3 would be redirected.
+      await pumpApp(
+        tester,
+        guards: guardsWith(enrolled: true),
+        at: '/onboarding/3?restart=true',
+      );
+      final l10n = AppLocalizations.of(
+        tester.element(find.byType(OnboardingStartPage)),
+      );
+
+      await tester.tap(find.text(l10n.onboardingPlacementLink));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(PlacementScreen), findsOneWidget);
     });
 
     testWidgets("Back from its first page leaves setup", (tester) async {
@@ -727,4 +766,12 @@ class _RecordingFlow extends SetupFlow {
 
   @override
   Future<void> beginRestart() async => log.add('restart');
+}
+
+class _PoolDao extends ContentDao {
+  _PoolDao(super.db);
+
+  @override
+  Future<List<PlacementWord>> placementPool(String step) async =>
+      <PlacementWord>[for (var i = 0; i < 12; i++) wordFor(step, i)];
 }
