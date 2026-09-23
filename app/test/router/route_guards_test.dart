@@ -433,6 +433,48 @@ void main() {
       expect(tester.widget<DpSurface>(chosen).selected, isTrue);
     });
 
+    testWidgets('FR-S3-03 its result pre-selects the step on page 3', (
+      tester,
+    ) async {
+      // #94: the check ends on its result, and "Use <step>" is the way the
+      // suggestion reaches page 3. Every answer right, so it climbs off A1.1.
+      await pumpApp(tester, guards: guardsWith(), at: '/onboarding/3');
+      final l10n = AppLocalizations.of(
+        tester.element(find.byType(OnboardingStartPage)),
+      );
+      await tester.tap(find.text(l10n.onboardingPlacementLink));
+      await tester.pumpAndSettle();
+
+      PlacementScreenState check() =>
+          tester.state<PlacementScreenState>(find.byType(PlacementScreen));
+      while (check().currentResult == null) {
+        final item = check().currentItem!;
+        await tester.tap(
+          find
+              .descendant(
+                of: find.byType(PlacementScreen),
+                matching: find.text(item.options[item.answer]),
+              )
+              .last,
+        );
+        await tester.pump();
+        await tester.tap(find.text(l10n.placementNext));
+        await tester.pumpAndSettle();
+      }
+      final step = check().currentResult!.step;
+      expect(step, isNot('A1.1'));
+
+      await tester.tap(find.text(l10n.placementUse(step)));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(OnboardingStartPage), findsOneWidget);
+      final chosen = find.ancestor(
+        of: find.text(step),
+        matching: find.byType(DpSurface),
+      );
+      expect(tester.widget<DpSurface>(chosen).selected, isTrue);
+    });
+
     testWidgets('S3 opened directly closes to page 3, not to nothing', (
       tester,
     ) async {

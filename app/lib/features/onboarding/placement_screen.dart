@@ -36,9 +36,16 @@ class PlacementScreenState extends ConsumerState<PlacementScreen> {
   PlacementSession? _session;
   PlacementItem? _item;
 
+  /// Set when the check is over: the result screen replaces the question.
+  PlacementResult? _result;
+
   /// The item on screen, so a test can answer it right or wrong on purpose.
   @visibleForTesting
   PlacementItem? get currentItem => _item;
+
+  /// The result once the check is over, so a test can read what it shows.
+  @visibleForTesting
+  PlacementResult? get currentResult => _result;
   int? _picked;
   bool _loading = true;
 
@@ -88,7 +95,10 @@ class PlacementScreenState extends ConsumerState<PlacementScreen> {
     if (!mounted) return;
 
     if (next == null) {
-      widget.onDone(session.result().step);
+      setState(() {
+        _result = session.result();
+        _loading = false;
+      });
       return;
     }
     setState(() {
@@ -113,59 +123,74 @@ class PlacementScreenState extends ConsumerState<PlacementScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final tokens = context.tokens;
     final item = _item;
     final answered = _session?.answered ?? 0;
+    final result = _result;
 
-    final body = SafeArea(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>[
-          _TopBar(
-            title: l10n.placementQuestionOf(
-              answered + 1,
-              PlacementSession.maxItems,
-            ),
-            closeLabel: l10n.placementClose,
-            onClose: () => widget.onDone(null),
-          ),
-          // The question on screen, as the artboard fills it: question 4 of
-          // 20 is a fifth of the way.
-          _Progress(fraction: (answered + 1) / PlacementSession.maxItems),
-          Expanded(
-            child: item == null
-                ? const SizedBox()
-                : SingleChildScrollView(
-                    padding: const EdgeInsets.fromLTRB(16, 24, 16, 16),
-                    child: _Question(
-                      item: item,
-                      picked: _picked,
-                      onPick: _loading
-                          ? null
-                          : (index) => setState(() => _picked = index),
-                    ),
+    final body = result != null
+        ? PlacementResultView(result: result, onDone: widget.onDone)
+        : SafeArea(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                _TopBar(
+                  title: l10n.placementQuestionOf(
+                    answered + 1,
+                    PlacementSession.maxItems,
                   ),
-          ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 16, 16, 32),
-            child: DpButton(
-              label: l10n.placementNext,
-              onPressed: _picked == null || _loading ? null : _submit,
+                  closeLabel: l10n.placementClose,
+                  onClose: () => widget.onDone(null),
+                ),
+                // The question on screen, as the artboard fills it: question 4 of
+                // 20 is a fifth of the way.
+                _Progress(fraction: (answered + 1) / PlacementSession.maxItems),
+                Expanded(
+                  child: item == null
+                      ? const SizedBox()
+                      : SingleChildScrollView(
+                          padding: const EdgeInsets.fromLTRB(16, 24, 16, 16),
+                          child: _Question(
+                            item: item,
+                            picked: _picked,
+                            onPick: _loading
+                                ? null
+                                : (index) => setState(() => _picked = index),
+                          ),
+                        ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 16, 16, 32),
+                  child: DpButton(
+                    label: l10n.placementNext,
+                    onPressed: _picked == null || _loading ? null : _submit,
+                  ),
+                ),
+              ],
             ),
-          ),
-        ],
-      ),
-    );
+          );
 
-    // Under glass the paper is the aurora, led by page 3's Raspberry, which
-    // is where the check was opened from.
+    return PlacementFrame(child: body);
+  }
+}
+
+/// The paper both S3 screens sit on. Under glass it is the aurora, led by
+/// page 3's Raspberry, which is where the check was opened from — glass has
+/// no paper of its own, and without it the screen is black.
+class PlacementFrame extends StatelessWidget {
+  const PlacementFrame({required this.child, super.key});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    final tokens = context.tokens;
     return AdaptiveScaffold(
       backgroundColor: tokens.isGlass
           ? tokens.surface.paper.withValues(alpha: 0)
           : tokens.surface.paper,
       body: tokens.isGlass
-          ? AuroraBackdrop(leading: tokens.color.die, child: body)
-          : body,
+          ? AuroraBackdrop(leading: tokens.color.die, child: child)
+          : child,
     );
   }
 }
@@ -371,6 +396,186 @@ class _Question extends ConsumerWidget {
           color: tokens.color.textSecondary,
         ),
       ],
+    );
+  }
+}
+
+/// S3's result. `PlacementResult-android.html`.
+///
+/// The score, the step to suggest, why, how each area went, and the two ways
+/// out: take the suggestion back to page 3, or go back and choose.
+class PlacementResultView extends StatelessWidget {
+  const PlacementResultView({
+    required this.result,
+    required this.onDone,
+    super.key,
+  });
+
+  final PlacementResult result;
+  final void Function(String? step) onDone;
+
+  /// Lime from nine in ten, Sun below — the artboard's 9/10 and 5/5 are
+  /// Lime and its 4/5 is Sun.
+  static bool strong(int correct, int total) =>
+      total > 0 && correct / total >= 0.9;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final tokens = context.tokens;
+
+    return SafeArea(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          _TopBar(
+            title: l10n.placementResultTitle,
+            closeLabel: l10n.placementClose,
+            onClose: () => onDone(null),
+          ),
+          Expanded(
+            child: Center(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: <Widget>[
+                    DpSurface(
+                      // The paper card has the artboard's 2 px ink edge; the
+                      // glass one is a plain panel.
+                      selected: !tokens.isGlass,
+                      padding: const EdgeInsets.fromLTRB(20, 24, 20, 24),
+                      child: Column(
+                        children: <Widget>[
+                          _Pill(
+                            label: l10n.placementScore(
+                              result.correct,
+                              result.answered,
+                            ),
+                            strong: strong(result.correct, result.answered),
+                            score: true,
+                          ),
+                          const SizedBox(height: 14),
+                          DpText(
+                            l10n.placementSuggest.toUpperCase(),
+                            semanticsLabel: l10n.placementSuggest,
+                            role: DpTextRole.caption,
+                            weight: 700,
+                            letterSpacing: 0.6,
+                            color: tokens.color.textSecondary,
+                          ),
+                          const SizedBox(height: 14),
+                          DpText(
+                            result.step,
+                            role: DpTextRole.display,
+                            weight: 700,
+                          ),
+                          const SizedBox(height: 14),
+                          DpText(
+                            l10n.placementRationale(result.step),
+                            role: DpTextRole.body,
+                            textAlign: TextAlign.center,
+                          ),
+                          const SizedBox(height: 14),
+                          Wrap(
+                            spacing: 8,
+                            runSpacing: 8,
+                            alignment: WrapAlignment.center,
+                            children: <Widget>[
+                              for (final area in result.areas)
+                                _Pill(
+                                  label: area.area == PlacementSession.articles
+                                      ? l10n.placementAreaArticles(
+                                          area.correct,
+                                          area.total,
+                                        )
+                                      : l10n.placementAreaWords(
+                                          area.area,
+                                          area.correct,
+                                          area.total,
+                                        ),
+                                  strong: strong(area.correct, area.total),
+                                ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    // BR-COURSE-04: starting further on marks nothing known.
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                      child: DpText(
+                        l10n.placementBrowsable,
+                        role: DpTextRole.caption,
+                        color: tokens.color.textSecondary,
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 32),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                DpButton(
+                  label: l10n.placementUse(result.step),
+                  onPressed: () => onDone(result.step),
+                ),
+                const SizedBox(height: 8),
+                DpButton(
+                  label: l10n.placementChooseMyself,
+                  onPressed: () => onDone(null),
+                  kind: DpButtonKind.secondary,
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// A score pill: Lime when the area went well, Sun when it went partly.
+class _Pill extends StatelessWidget {
+  const _Pill({required this.label, required this.strong, this.score = false});
+
+  final String label;
+  final bool strong;
+
+  /// The overall score's pill, which the artboard draws a size smaller.
+  final bool score;
+
+  @override
+  Widget build(BuildContext context) {
+    final tokens = context.tokens;
+    return Container(
+      constraints: const BoxConstraints(minHeight: 24),
+      padding: EdgeInsets.symmetric(horizontal: score ? 8 : 10, vertical: 2),
+      decoration: BoxDecoration(
+        color: strong ? tokens.color.easy : tokens.color.accent,
+        borderRadius: BorderRadius.circular(score ? 8 : 14),
+        // Under glass the pills take the panel's edge, as the artboard does.
+        border: tokens.isGlass
+            ? Border.all(
+                color: tokens.surface.outline,
+                width: tokens.surface.outlineWidth,
+              )
+            : Border.all(color: tokens.color.ink, width: 1.5),
+      ),
+      child: DpText(
+        label,
+        role: score ? DpTextRole.caption : DpTextRole.label,
+        weight: 700,
+        // Lime and Sun are bright in every mode, so the ink on them is the
+        // dark one — the page ink under dark mode would be light on light.
+        color: tokens.color.onAccent,
+      ),
     );
   }
 }
