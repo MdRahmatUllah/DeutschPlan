@@ -5,6 +5,8 @@ import 'package:deutschplan/services/tts/tts_engine.dart';
 import 'package:deutschplan/core/adaptive/adaptive.dart';
 import 'package:deutschplan/core/providers/app_providers.dart';
 import 'package:deutschplan/core/theme/app_theme.dart';
+import 'package:deutschplan/core/theme/aurora_backdrop.dart';
+import 'package:deutschplan/core/theme/dp_tokens.dart';
 import 'package:deutschplan/data/db/app_database.dart';
 import 'package:deutschplan/data/db/content_dao.dart';
 import 'package:deutschplan/data/repositories/setting_keys.dart';
@@ -158,7 +160,10 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code) VALUES
   });
 
   group('the screen', () {
-    Future<ProviderContainer> pump(WidgetTester tester) async {
+    Future<ProviderContainer> pump(
+      WidgetTester tester, {
+      ThemeData? theme,
+    }) async {
       await tester.runAsync(open);
       addTearDown(
         () => tester.runAsync(() async {
@@ -170,7 +175,7 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code) VALUES
         ProviderScope(
           overrides: overrides(),
           child: MaterialApp(
-            theme: AppTheme.light(),
+            theme: theme ?? AppTheme.light(),
             localizationsDelegates: appLocalizationsDelegates,
             supportedLocales: supportedLocales,
             home: Builder(
@@ -196,6 +201,24 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code) VALUES
         tester.element(find.byType(StudyScreen)),
       );
     }
+
+    testWidgets("under glass the aurora leads with the word's gender", (
+      tester,
+    ) async {
+      // The aurora drifts forever unless motion is reduced.
+      tester.platformDispatcher.accessibilityFeaturesTestValue =
+          const FakeAccessibilityFeatures(disableAnimations: true);
+      addTearDown(
+        tester.platformDispatcher.clearAccessibilityFeaturesTestValue,
+      );
+      await pump(tester, theme: AppTheme.glass());
+      await tester.pump();
+      // Straße, the first card, is feminine.
+      expect(
+        tester.widget<AuroraBackdrop>(find.byType(AuroraBackdrop)).leading,
+        tester.element(find.byType(StudyScreen)).tokens.color.die,
+      );
+    });
 
     testWidgets('no rating bar before the card is turned over', (tester) async {
       final container = await pump(tester);

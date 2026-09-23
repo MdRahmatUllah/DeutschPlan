@@ -196,7 +196,22 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
             ? tokens.surface.paper.withValues(alpha: 0)
             : tokens.surface.paper,
         body: tokens.isGlass
-            ? AuroraBackdrop(leading: tokens.color.primary, child: body)
+            ? AuroraBackdrop(
+                // study-session.md: under glass the aurora leads with the
+                // word's gender colour.
+                leading:
+                    tokens.color.forArticle(
+                      item == null || item.kind == SessionBlockKind.grammar
+                          ? null
+                          : ref
+                                .watch(studyWordProvider(item.uid))
+                                .value
+                                ?.word
+                                .article,
+                    ) ??
+                    tokens.color.primary,
+                child: body,
+              )
             : body,
       ),
     );
