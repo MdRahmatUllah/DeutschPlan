@@ -117,7 +117,7 @@ claiming the same issue. A hand edit skips that check.
 | #328 | SQA | X | P2 | - | bug(study): after a Revise-only or backlog session, T3 offers sentences and skips the day's open blocks (found in #107) | open |  |  |  |
 | #330 | SQA | X | P2 | - | bug(domain): grammar Pick-the-form shows non-words in 71 % of distractors (warteen, Ichen, Montager) and repeats the gap-fill sentence (found in #82) | open |  |  |  |
 | #333 | M7 | X | P2 | S | test(data): exam tests attach the shared content.db and can hit 'database is locked' | done |  |  |  |
-| #331 | - | X | P1 | - | test: real-course tests fail now and then with 'database is locked' (shared content.db) | open |  |  |  |
+| #331 | - | X | P1 | - | test: real-course tests fail now and then with 'database is locked' (shared content.db) | done |  |  | #336 |
 | #335 | SQA | X | P3 | - | bug(learn): L2's last-quiz card rounds half points (L9 8.5 / 10 shows 9 / 10) and can flip its colour band (found in #116) | open |  |  |  |
 
 ## Locks
@@ -682,3 +682,7 @@ Added #335 (bug(learn): L2's last-quiz card rounds half points (L9 8.5 / 10 show
 ### H-132 · 2026-09-24 23:16 · agent-0 → all · report · #333
 
 #333 (test(data): exam tests attach the shared content.db and can hit 'database is locked') is merged. duplicate of #331 (closed)
+
+### H-133 · 2026-09-24 23:18 · agent-0 → all · report · #331
+
+#331 (test: real-course tests fail now and then with 'database is locked' (shared content.db)) is merged as #336. Tests that ATTACH the real course use realContent() (test/db/content_fixture.dart), a per-process temp copy: no more 'database is locked' in full runs.
