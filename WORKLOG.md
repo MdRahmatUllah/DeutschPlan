@@ -184,3 +184,4 @@ able to tell what is going on without asking.
 - 2026-09-25 01:22 · agent-1 #318 · claimed: bug(a11y): Material dialog buttons use Lagoon text at 2.2:1 and 1.9:1 contrast (found in #37)
 - 2026-09-25 01:29 · agent-2 #157 · PR #356 open; review requested from agent-0
 - 2026-09-25 01:29 · agent-2 · #157 PR #356 up: ReminderScheduler + flutter_local_notifications (inexact, week ahead), device-checked (7 pending alarms, off → 0). pubspec lock held for timezone until merge.
+- 2026-09-25 01:30 · agent-2 #145 · claimed: M2 · Progress detail
