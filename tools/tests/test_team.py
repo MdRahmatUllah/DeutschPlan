@@ -259,3 +259,25 @@ def test_status_prints_the_board_on_a_cp1252_console(team_repo, monkeypatch):
     assert team.main(["status"]) == 0
     console.flush()
     assert "বাংলা → fine" in raw.getvalue().decode("utf-8")
+
+
+def test_add_reads_an_issue_with_bangla_on_a_cp1252_host(team_repo, monkeypatch, tmp_path):
+    """#322: gh writes UTF-8; a Windows host's locale decodes as cp1252."""
+    import json
+    issue = tmp_path / "issue.json"
+    issue.write_text(json.dumps({
+        "title": "bug: বাংলা → the meaning", "milestone": None,
+        "labels": [{"name": "P2"}], "body": "উদাহরণ",
+    }, ensure_ascii=False), encoding="utf-8")
+    real = subprocess.run
+
+    def host(args, **kw):
+        if args[0] != "gh":
+            return real(args, **kw)
+        kw.setdefault("encoding", "cp1252")  # what text=True picks on the host
+        copy = "import sys; sys.stdout.buffer.write(open(sys.argv[1], 'rb').read())"
+        return real([sys.executable, "-c", copy, str(issue)], **kw)
+
+    monkeypatch.setattr(team.subprocess, "run", host)
+    team.cmd_add(team_repo["agent-1"], "agent-1", 320, "X")
+    assert board(team_repo["agent-2"]).task(320).title == "bug: বাংলা → the meaning"
