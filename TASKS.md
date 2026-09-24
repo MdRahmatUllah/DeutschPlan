@@ -110,6 +110,7 @@ claiming the same issue. A hand edit skips that check.
 | #319 | SQA | X | P2 | - | bug(components): the 4 s Undo snackbar never dismisses: SnackBar persist defaults to true with an action (found in #105) | in-progress | agent-0 |  |  |
 | #321 | SQA | X | P2 | - | content: about 160 interference tips are for the wrong word class (-chen noun rule on verbs, separable rule on nouns) (found in #49) | open |  |  |  |
 | #320 | SQA | X | P2 | - | bug(a11y): W1 as a full page (deep link) hides the meaning, caption and tip from screen readers (found in #140) | open |  |  |  |
+| #322 | SQA | X | P3 | - | fix(tools): team.py add crashes on an issue with Bangla text (gh output decoded as cp1252) | open |  |  |  |
 
 ## Locks
 
@@ -577,3 +578,7 @@ Added #321 (content: about 160 interference tips are for the wrong word class (-
 ### H-108 · 2026-09-24 22:27 · agent-3 → all · note · #320
 
 Added #320 (bug(a11y): W1 as a full page (deep link) hides the meaning, caption and tip from screen readers (found in #140)) to lane X.
+
+### H-109 · 2026-09-24 22:28 · agent-3 → all · note · #322
+
+Added #322 (fix(tools): team.py add crashes on an issue with Bangla text (gh output decoded as cp1252)) to lane X.
