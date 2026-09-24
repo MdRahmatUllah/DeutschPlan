@@ -76,6 +76,28 @@ void main() {
     expect(queue.next(), isFalse);
   });
 
+  test('FR-L8-03 a re-asked item is the same question, its tiles moved', () {
+    const tiles = QuizItem(
+      ord: 1,
+      wordUid: 'haus',
+      direction: QuizDirection.deBn,
+      prompt: 'das Haus',
+      expected: 'বাড়ি',
+      options: <String>['গাড়ি', 'বাড়ি', 'দরজা', 'রাস্তা'],
+    );
+    final queue = QuizQueue(<QuizItem>[tiles])..answered(Verdict.wrong);
+    expect(queue.next(), isTrue);
+    final again = queue.current;
+    expect(
+      (again.ord, again.wordUid, again.prompt, again.expected, again.tiles),
+      (1, 'haus', 'das Haus', 'বাড়ি', true),
+    );
+    expect(again.options.toSet(), tiles.options.toSet());
+    for (var i = 0; i < tiles.options.length; i++) {
+      expect(again.options[i], isNot(tiles.options[i]), reason: 'tile $i');
+    }
+  });
+
   test('an empty quiz has nothing to move to', () {
     expect(QuizQueue(const <QuizItem>[]).next(), isFalse);
   });
