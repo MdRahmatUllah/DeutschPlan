@@ -527,6 +527,13 @@ class ExamRepository extends DatabaseAccessor<AppDatabase>
         ),
       );
 
+  /// FR-L8-03: [ord] was asked again at the end of the run. Its answer is
+  /// left as it was: the re-ask doesn't change the score.
+  Future<void> markQuizReAsked({required int attemptId, required int ord}) =>
+      (update(db.quizAnswers)
+            ..where((t) => t.attemptId.equals(attemptId) & t.ord.equals(ord)))
+          .write(const QuizAnswersCompanion(reAsked: Value(1)));
+
   Future<void> finishQuiz({
     required int attemptId,
     required String finishedAt,

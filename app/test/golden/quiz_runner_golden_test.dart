@@ -52,29 +52,30 @@ void main() {
   goldenTest('quiz_runner', builder: screen, act: toTheSeventh);
 
   // #124: each item type, first in its own quiz.
-  Widget only(QuizItem item) => ProviderScope(
-    overrides: <Override>[
-      todayProvider.overrideWithValue('2026-09-21'),
-      ...quizStub(
-        StubQuizRun(
-          quiz: Quiz(
-            direction: QuizDirection.mixed,
-            source: QuizSource.stepLearned,
+  Widget only(QuizItem item, [List<QuizItem> more = const <QuizItem>[]]) =>
+      ProviderScope(
+        overrides: <Override>[
+          todayProvider.overrideWithValue('2026-09-21'),
+          ...quizStub(
+            StubQuizRun(
+              quiz: Quiz(
+                direction: QuizDirection.mixed,
+                source: QuizSource.stepLearned,
+                seed: 7,
+                items: <QuizItem>[item, ...more],
+              ),
+            ),
+          ),
+        ],
+        child: const QuizScreen(
+          args: QuizArgs(
+            direction: 'mixed',
+            source: 'stepLearned',
+            sourceRef: 'A2.1',
             seed: 7,
-            items: <QuizItem>[item],
           ),
         ),
-      ),
-    ],
-    child: const QuizScreen(
-      args: QuizArgs(
-        direction: 'mixed',
-        source: 'stepLearned',
-        sourceRef: 'A2.1',
-        seed: 7,
-      ),
-    ),
-  );
+      );
 
   Future<void> type(WidgetTester tester, String text) async {
     await tester.enterText(find.byType(TextField), text);
@@ -166,6 +167,39 @@ void main() {
       act: act,
     );
   }
+
+  // #125: a mistake, asked once more at the end.
+  goldenTest(
+    'quiz_runner_reask',
+    modes: const <GoldenMode>[GoldenMode.light],
+    devices: const <GoldenDevice>[GoldenDevice.phone],
+    builder: (context) => only(
+      const QuizItem(
+        ord: 1,
+        wordUid: 'kaution',
+        direction: QuizDirection.deEn,
+        prompt: 'die Kaution',
+        expected: 'deposit',
+      ),
+      const <QuizItem>[
+        QuizItem(
+          ord: 2,
+          wordUid: 'miete',
+          direction: QuizDirection.deEn,
+          prompt: 'die Miete',
+          expected: 'rent',
+        ),
+      ],
+    ),
+    act: (tester) async {
+      await type(tester, 'rent');
+      await tester.tap(find.text('Next'));
+      await tester.pumpAndSettle();
+      await type(tester, 'rent');
+      await tester.tap(find.text('Next'));
+      await tester.pumpAndSettle();
+    },
+  );
 
   goldenTest(
     'quiz_runner_ios',

@@ -2599,6 +2599,10 @@
   "@quizPlay": {
     "description": "L8 speaker button, for screen readers."
   },
+  "quizOnceMore": "Once more",
+  "@quizOnceMore": {
+    "description": "L8 chip on an item asked again at the end because it was answered wrong (FR-L8-03)."
+  },
   "quizAnswerIs": "The answer is {answer}",
   "@quizAnswerIs": {
     "description": "L8 verdict line, wrong. answer is German course text or a meaning.",

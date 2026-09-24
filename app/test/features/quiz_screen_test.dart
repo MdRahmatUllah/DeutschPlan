@@ -193,7 +193,18 @@ void main() {
     await answer(tester, 'der Mietvertag');
     expect(run.finished, isNull);
     await next(tester);
-    expect(run.finished, 1.5, reason: 'correct 1 + almost 0.5');
+
+    // FR-L8-03: the almost is asked once more at the end, unscored.
+    expect(find.text(l10n.quizOnceMore), findsOneWidget);
+    expect(find.text('1 / 1'), findsOneWidget);
+    expect(find.text('rental contract, lease'), findsOneWidget);
+    await answer(tester, 'der Mietvertrag');
+    expect(run.again, [2]);
+    expect(run.answers, hasLength(2), reason: 'the first answer stands');
+    expect(run.finished, isNull);
+
+    await next(tester);
+    expect(run.finished, 1.5, reason: 'correct 1 + almost 0.5, not the re-ask');
     expect(find.text('opener'), findsOneWidget);
   });
 
