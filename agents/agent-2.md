@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-09-24 15:29
+last-seen: 2026-09-24 15:31
 last-read: 40
 
 ## Now
 
-Nothing claimed.
+#84 Exam grading including writing and speaking scoring — claimed 2026-09-24 15:31.
 
 ## Next
 

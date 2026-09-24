@@ -27,7 +27,7 @@ claiming the same issue. A hand edit skips that check.
 |---|---|---|---|---|---|---|---|---|---|
 | #81 | M4 | A | P1 | M | quiz_builder.dart | done | agent-0 | #58 #74 #75 | #289 |
 | #83 | M4 | C | P1 | L | exam_generator.dart — nine sections, three seeds, no repeats | done | agent-2 | #81 #82 | #296 |
-| #84 | M4 | C | P1 | M | Exam grading including writing and speaking scoring | open |  | #61 #83 |  |
+| #84 | M4 | C | P1 | M | Exam grading including writing and speaking scoring | in-progress | agent-2 | #61 #83 |  |
 | #122 | M4 | A | P1 | M | L7 · Custom quiz sheet | done | agent-0 | #37 #81 #116 | #295 |
 | #123 | M4 | A | P1 | M | L8 · Quiz runner shell, timer and per-item persistence | done | agent-0 | #61 #68 #122 | #297 |
 | #124 | M4 | A | P1 | M | L8 · Item layouts and feedback | in-progress | agent-0 | #40 #75 #123 |  |
