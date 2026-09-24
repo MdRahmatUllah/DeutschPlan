@@ -122,7 +122,7 @@ The emulator lock is local, not here: `team.py device`.
 | adr-number |  |  |  |
 | pubspec |  |  |  |
 | ci-config |  |  |  |
-| shared-look |  |  |  |
+| shared-look | agent-2 | 2026-09-24 21:08 | #146: DpStepper's iOS pill (Settings-ios, OnboardingPace-ios) and DpSlider's compact size |
 
 ## Handoffs
 
