@@ -1,3 +1,4 @@
+import 'content_schema.drift';
 import 'user_schema.drift';
 
 -- Mock exams and quizzes. One query per thing a screen asks for.
@@ -77,4 +78,64 @@ lastStepQuiz:
   WHERE source = 'stepLearned' AND source_ref = :code
     AND finished_at IS NOT NULL
   ORDER BY finished_at DESC, id DESC
+  LIMIT 1;
+
+-- #83 (exam-generator.md, step 1): what a step's mocks are built from. Its
+-- words at any status but suspended, in course order.
+examWords:
+  SELECT w.uid AS uid, w.german AS german, w.article AS article, w.pos AS pos,
+    w.english AS english, w.bangla AS bangla, w.forms AS forms,
+    w.synonyms_register AS synonyms, w.category_id AS category_id
+  FROM words w
+  LEFT JOIN word_state s ON s.word_uid = w.uid
+  WHERE w.sublevel_code = :step AND COALESCE(s.status, '') != 'suspended'
+  ORDER BY w.seq;
+
+-- Their example sentences, the gap fills' source.
+examExamples:
+  SELECT e.word_uid AS uid, e.german AS german, e.english AS english
+  FROM word_examples e
+  JOIN words w ON w.uid = e.word_uid
+  WHERE w.sublevel_code = :step
+  ORDER BY w.seq, e.ord;
+
+-- The step's grammar topics, every one (the doc's pool).
+examTopics:
+  SELECT * FROM grammar_topics WHERE sublevel_code = :step ORDER BY seq;
+
+-- The names of the categories the step's words fall in.
+examCategories:
+  SELECT c.id AS id, c.name AS name FROM categories c
+  WHERE c.id IN (SELECT category_id FROM words WHERE sublevel_code = :step);
+
+-- The writing check's connectors: the course's conjunctions up to and
+-- including the step, each once. Course order is `sublevels.ord`, 1 to 12;
+-- `words.seq` interleaves the steps. Entries a learner does not type as
+-- written ("denn ↔ weil", "obgleich / obschon", "allein (= aber)") are left
+-- out.
+examConnectors:
+  SELECT DISTINCT w.german AS german FROM words w
+  JOIN sublevels sl ON sl.code = w.sublevel_code
+  WHERE w.pos = 'conj'
+    AND sl.ord <= (SELECT ord FROM sublevels WHERE code = :step)
+    AND instr(w.german, '↔') = 0
+    AND instr(w.german, '/') = 0
+    AND instr(w.german, '(') = 0
+  ORDER BY sl.ord, w.seq;
+
+-- The refs of every paper sat for a step, whatever became of it: what a new
+-- paper must not repeat (BR-EXAM-02).
+examSatRefs:
+  SELECT a.seed AS seed, x.item_ref AS ref
+  FROM exam_attempts a
+  JOIN exam_answers x ON x.attempt_id = a.id
+  WHERE a.sublevel_code = :code AND x.item_ref IS NOT NULL
+  -- A fixed order: buildExam hands out its least-recently-used clock in it.
+  ORDER BY a.seed, a.id, x.ord;
+
+-- A seed's latest attempt: its paper is what a retake sits again.
+latestAttempt:
+  SELECT * FROM exam_attempts
+  WHERE sublevel_code = :code AND seed = :seed
+  ORDER BY started_at DESC, id DESC
   LIMIT 1;

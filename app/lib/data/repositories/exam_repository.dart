@@ -1,4 +1,7 @@
 import 'package:deutschplan/data/db/app_database.dart';
+import 'package:deutschplan/domain/exam_generator.dart';
+import 'package:deutschplan/domain/grammar_item_generator.dart';
+import 'package:deutschplan/domain/quiz_builder.dart';
 import 'package:drift/drift.dart';
 import 'package:flutter/foundation.dart' show immutable;
 
@@ -23,7 +26,9 @@ class ExamQuestion {
   final String section;
   final String prompt;
 
-  /// The word or grammar uid this came from, so a result screen can link back.
+  /// The item's ref (`exam-generator.md`): a word's uid, `<topic uid>#<n>`,
+  /// or `writing:` / `speaking:` and a category id. What never repeats across
+  /// a step's mocks, and what a result screen links back from.
   final String? itemRef;
 
   /// Multiple-choice options. Null for a typed question.
@@ -31,6 +36,19 @@ class ExamQuestion {
 
   /// Null for Writing and Speaking, which are graded by rubric.
   final String? expected;
+
+  /// [item] as row [ord] of its paper (`exam-generator.md`).
+  static ExamQuestion of(int ord, ExamItem item) {
+    final row = item.encode();
+    return ExamQuestion(
+      ord: ord,
+      section: row.section,
+      prompt: row.prompt,
+      itemRef: row.ref,
+      optionsJson: row.options,
+      expected: row.expected,
+    );
+  }
 }
 
 /// One question of a quiz.
@@ -181,6 +199,89 @@ class ExamRepository extends DatabaseAccessor<AppDatabase>
 
     return id;
   });
+
+  /// What [step]'s three mocks are drawn from (#83): its words but the
+  /// suspended ones, with their examples and categories, its grammar topics,
+  /// and the connectors the writing check counts.
+  Future<ExamPool> pool(String step) async {
+    final examples = <String, List<({String german, String english})>>{};
+    for (final row in await examExamples(step).get()) {
+      (examples[row.uid] ??= <({String german, String english})>[]).add((
+        german: row.german,
+        english: row.english ?? '',
+      ));
+    }
+    return ExamPool(
+      step: step,
+      level: step.split('.').first,
+      words: <ExamWord>[
+        for (final row in await examWords(step).get())
+          ExamWord(
+            word: QuizWord(
+              uid: row.uid,
+              german: row.german,
+              english: row.english,
+              step: step,
+              article: row.article,
+              pos: row.pos,
+              bangla: row.bangla,
+              forms: row.forms,
+              synonyms: row.synonyms,
+            ),
+            category: row.categoryId,
+            examples: examples[row.uid] ?? const [],
+          ),
+      ],
+      topics: <GrammarSource>[
+        for (final topic in await examTopics(step).get())
+          GrammarSource(
+            uid: topic.uid,
+            topic: topic.topic,
+            rule: topic.rule ?? '',
+            exampleDe: topic.exampleDe ?? '',
+            exampleEn: topic.exampleEn ?? '',
+            watchOut: topic.watchOut ?? '',
+            tags: topic.tags.split(','),
+            levelCode: topic.levelCode,
+          ),
+      ],
+      categories: <int, String>{
+        for (final row in await examCategories(step).get()) row.id: row.name,
+      },
+      connectors: <String>[
+        for (final row in await examConnectors(step).get()) row,
+      ],
+    );
+  }
+
+  /// The refs of every paper sat for [step], by seed: `buildExam`'s `sat`,
+  /// so a new mock shares nothing with one already stored (BR-EXAM-02).
+  Future<Map<int, Set<String>>> satRefs(String step) async {
+    final refs = <int, Set<String>>{};
+    for (final row in await examSatRefs(step).get()) {
+      (refs[row.seed] ??= <String>{}).add(row.ref!);
+    }
+    return refs;
+  }
+
+  /// The paper [seed] of [step] was sat with, to sit again: a retake is the
+  /// same mock, whatever has changed in the course since. Null before the
+  /// seed has been sat.
+  Future<List<ExamQuestion>?> storedPaper(String step, int seed) async {
+    final attempt = await latestAttempt(step, seed).getSingleOrNull();
+    if (attempt == null) return null;
+    return <ExamQuestion>[
+      for (final row in await answersFor(attempt.id).get())
+        ExamQuestion(
+          ord: row.ord,
+          section: row.section,
+          prompt: row.prompt,
+          itemRef: row.itemRef,
+          optionsJson: row.optionsJson,
+          expected: row.expected,
+        ),
+    ];
+  }
 
   /// Writes one answer in place. Called as the learner moves on, not on submit.
   ///
