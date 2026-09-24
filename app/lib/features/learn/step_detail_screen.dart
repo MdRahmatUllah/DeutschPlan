@@ -10,6 +10,7 @@ import 'package:deutschplan/data/repositories/word_repository.dart';
 import 'package:deutschplan/domain/plan_engine.dart' show parsePlanDate;
 import 'package:deutschplan/domain/plan_stats.dart' show courseDays;
 import 'package:deutschplan/features/learn/learn_screen.dart';
+import 'package:deutschplan/features/learn/step_exams.dart';
 import 'package:deutschplan/features/learn/step_grammar.dart';
 import 'package:deutschplan/features/learn/step_quiz.dart';
 import 'package:deutschplan/features/learn/step_words.dart';
@@ -256,9 +257,7 @@ String paceLine(AppLocalizations l10n, Locale locale, StepProgress step) {
   return l10n.stepNotStarted(days, step.dailyNew);
 }
 
-/// What each inner tab holds. Exams arrive with M4's exam hub; until then
-/// the tab says which it is, so a deep link to `?tab=exams` visibly lands
-/// on Exams.
+/// What each inner tab holds.
 class StepTabBody extends StatelessWidget {
   const StepTabBody({required this.step, required this.tab, super.key});
 
@@ -266,24 +265,10 @@ class StepTabBody extends StatelessWidget {
   final StepTab tab;
 
   @override
-  Widget build(BuildContext context) {
-    if (tab == StepTab.words) return StepWordsTab(step: step);
-    if (tab == StepTab.grammar) return StepGrammarTab(code: step.code);
-    if (tab == StepTab.quiz) return StepQuizTab(step: step);
-    final tokens = context.tokens;
-    final l10n = AppLocalizations.of(context);
-    // ponytail: a placeholder until M4's exam hub (#127, #128).
-    return Center(
-      child: DpText(
-        switch (tab) {
-          StepTab.words => l10n.stepTabWords,
-          StepTab.grammar => l10n.stepTabGrammar,
-          StepTab.quiz => l10n.stepTabQuiz,
-          StepTab.exams => l10n.stepTabExams,
-        },
-        role: DpTextRole.body,
-        color: tokens.color.textSecondary,
-      ),
-    );
-  }
+  Widget build(BuildContext context) => switch (tab) {
+    StepTab.words => StepWordsTab(step: step),
+    StepTab.grammar => StepGrammarTab(code: step.code),
+    StepTab.quiz => StepQuizTab(step: step),
+    StepTab.exams => StepExamsTab(step: step),
+  };
 }

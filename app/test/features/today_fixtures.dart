@@ -15,6 +15,7 @@ import 'package:deutschplan/features/today/today_providers.dart';
 import 'package:deutschplan/features/today/today_view.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 
+import 'exam_fixtures.dart';
 import 'me_fixtures.dart';
 import 'quiz_fixtures.dart';
 
@@ -480,6 +481,8 @@ List<Override> todayStub([
   ),
   // M1 without a database: the Me artboard.
   ...meStub(),
+  // L10 without a database: the ExamHub artboard.
+  ...examStub(),
   // L8 without a database: the QuizRunner artboard's run.
   ...quizStub(),
 ];
