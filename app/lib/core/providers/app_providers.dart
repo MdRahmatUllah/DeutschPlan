@@ -45,6 +45,9 @@ import 'package:deutschplan/services/model_downloads.dart';
 import 'package:deutschplan/services/notification_permission.dart';
 import 'package:deutschplan/services/tts/system_tts.dart';
 import 'package:deutschplan/services/tts/tts_engine.dart';
+import 'package:deutschplan/data/repositories/translation_repository.dart';
+import 'package:deutschplan/data/repositories/word_actions.dart';
+import 'package:deutschplan/services/translation/translator.dart';
 import 'package:material_ui/material_ui.dart' show Brightness;
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -241,6 +244,14 @@ RatingService ratingService(Ref ref) => RatingService(
   ref.watch(clockProvider),
 );
 
+/// W1's actions (FR-W1-01…03), each with its undo.
+@riverpod
+WordActions wordActions(Ref ref) => WordActions(
+  ref.watch(appDatabaseProvider),
+  ref.watch(ratingServiceProvider),
+  DriftPlanStore(ref.watch(appDatabaseProvider), ref.watch(settingsProvider)),
+);
+
 /// Rating a grammar topic: FSRS joined to `grammar_state` (FR-L4-01,
 /// FR-L15-03).
 @riverpod
@@ -260,6 +271,19 @@ ModelRepository modelRepository(Ref ref) =>
 //
 // `project-structure.md`: platform plugins behind small interfaces, so a test
 // can put a fake in the scope instead of a method channel that is not there.
+
+/// On-device translation: nothing yet. #154 puts the Hy-MT model here, and
+/// until it does `mt_enabled` cannot be on.
+@riverpod
+Translator translator(Ref ref) => const UnavailableTranslator();
+
+/// W1's *Translate* (FR-W1-05): the translator through `translation_cache`.
+@riverpod
+TranslationRepository translationRepository(Ref ref) => TranslationRepository(
+  ref.watch(appDatabaseProvider),
+  ref.watch(translatorProvider),
+  ref.watch(clockProvider),
+);
 
 /// Opens a web page in an in-app browser tab: R1's Duden · DWDS · Wiktionary
 /// · Linguee · Google chips (FR-R1-06). The app makes no request of its own

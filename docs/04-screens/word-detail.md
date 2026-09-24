@@ -16,7 +16,17 @@
 **Filled in by #140** (the artboard shows only a reviewed noun):
 - The header is the gender's colour. On paper, the article and headword take that colour's ink. The article is still printed, so the gender is never shown by colour alone. Under glass the header is a wash, and the article keeps its usual colour. A word with no article sits on Oat.
 - The history caption shows only for a word reviewed at least once: "Next review in N days" (or "Due today", "Next review tomorrow") · "reviewed N times" · "last: <rating>". It counts every `review_log` row. A suspended word has no next review, so that part is left out.
-- The actions row is #141.
+- **The actions row (#141).** In this order:
+  - *Add to today*, for a To-do word only. The row goes in the active step's plan, or the word's own step's when no step is under way.
+  - *Mark known*.
+  - *Suspend*, or *Resume* for a suspended word.
+  - *Reset word*, when the word has a state to reset.
+  - *Copy*.
+  - *Translate*, only with `mt_enabled`.
+  - Then the *Plain card / Cloze card* chips, and the Duden · DWDS · Wiktionary chips.
+- **Mark known** also closes an open plan row for the word, whether today's or the backlog's, so a known word isn't served as new.
+- **Reset word** clears `word_state` and the word's plan rows from today on. Rows already done stay, because they are the day's history, and `review_log` stays. *Undo* restores exactly what went.
+- **One action at a time.** A second tap while one is running does nothing.
 
 **Functional requirements**
 - FR-W1-01 *Add to today* inserts a `plan_items(today, uid, 'new')` row for the active step (allowed for any step's To-do word).

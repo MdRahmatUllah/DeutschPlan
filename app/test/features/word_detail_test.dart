@@ -20,12 +20,20 @@ import 'package:deutschplan/l10n/generated/app_localizations.dart';
 import 'package:deutschplan/main.dart'
     show appLocalizationsDelegates, supportedLocales;
 import 'package:deutschplan/router/routes.dart';
+import 'package:deutschplan/core/components/dp_button.dart';
+import 'package:deutschplan/core/components/dp_chip.dart';
+import 'package:deutschplan/data/repositories/rating_service.dart'
+    show CardMode;
+import 'package:deutschplan/data/repositories/search_repository.dart';
+import 'package:deutschplan/data/repositories/translation_repository.dart';
+import 'package:deutschplan/data/repositories/word_actions.dart';
 import 'package:drift/drift.dart' hide isNotNull, isNull;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:flutter/services.dart';
 
 import '../db/content_fixture.dart';
 import '../services/fake_tts.dart';
@@ -36,6 +44,8 @@ void main() {
   late AppLocalizations l10n;
   late SettingsRepository settings;
   late FakeTts tts;
+  late _Actions actions;
+  late List<Uri> opened;
   String? went;
 
   setUpAll(() async {
@@ -104,7 +114,10 @@ void main() {
     ThemeData? theme,
     bool voice = true,
     AdaptiveChrome chrome = AdaptiveChrome.material,
+    List<Override> extra = const <Override>[],
   }) async {
+    actions = _Actions();
+    opened = <Uri>[];
     tester.view
       ..physicalSize = size * ratio
       ..devicePixelRatio = ratio;
@@ -129,6 +142,12 @@ void main() {
                   ),
           ),
           wordHistoryProvider.overrideWith((ref, uid) => Stream.value(history)),
+          wordActionsProvider.overrideWithValue(actions),
+          openWebProvider.overrideWithValue((page) async {
+            opened.add(page);
+            return true;
+          }),
+          ...extra,
         ],
         child: MaterialApp.router(
           theme: theme ?? AppTheme.light(),
@@ -507,6 +526,190 @@ void main() {
     });
   });
 
+  group('#141 W1 actions', () {
+    Finder action(String label) => find.widgetWithText(DpButton, label);
+
+    Future<void> tapAction(WidgetTester tester, String label) async {
+      await tester.ensureVisible(action(label));
+      await tester.pumpAndSettle();
+      await tester.tap(action(label));
+      await tester.pumpAndSettle();
+    }
+
+    testWidgets("FR-W1-02 a Done word's row, as the artboard draws it", (
+      tester,
+    ) async {
+      await pump(tester);
+      expect(action(l10n.wordMarkKnown), findsOneWidget);
+      expect(action(l10n.wordSuspend), findsOneWidget);
+      expect(action(l10n.wordReset), findsOneWidget);
+      expect(action(l10n.wordCopy), findsOneWidget);
+      expect(action(l10n.wordAddToday), findsNothing, reason: 'To do only');
+      expect(action(l10n.wordResume), findsNothing);
+      expect(action(l10n.wordTranslate), findsNothing, reason: 'mt is off');
+      expect(find.text('Duden'), findsOneWidget);
+      expect(find.text('Linguee'), findsNothing, reason: "R1's, not W1's");
+    });
+
+    testWidgets("FR-W1-01 a To-do word offers Add to today; FR-W1-04 its "
+        'snackbar undoes it', (tester) async {
+      await pump(tester, detail: artboardWordDetail(status: WordStatus.todo));
+      await tapAction(tester, l10n.wordAddToday);
+      expect(actions.calls, <String>['addToToday uid-strasse A1.1 2026-09-21']);
+      expect(
+        find.text(l10n.wordAddedToday('die Straße')).hitTestable(),
+        findsOneWidget,
+      );
+
+      await tester.tap(find.text(l10n.undo));
+      await tester.pumpAndSettle();
+      expect(actions.undone, <String>['addToToday']);
+    });
+
+    testWidgets('FR-W1-02 Mark known, with its Undo', (tester) async {
+      await pump(tester);
+      await tapAction(tester, l10n.wordMarkKnown);
+      expect(actions.calls, <String>['markKnown uid-strasse 2026-09-21']);
+      expect(
+        find.text(l10n.wordMarkedKnown('die Straße')).hitTestable(),
+        findsOneWidget,
+      );
+      await tester.tap(find.text(l10n.undo));
+      await tester.pumpAndSettle();
+      expect(actions.undone, <String>['markKnown']);
+    });
+
+    testWidgets('BR-STATUS-03 Suspend; a suspended word offers Resume', (
+      tester,
+    ) async {
+      await pump(tester);
+      await tapAction(tester, l10n.wordSuspend);
+      expect(actions.calls, <String>['suspend uid-strasse']);
+
+      await pump(
+        tester,
+        detail: artboardWordDetail(status: WordStatus.suspended),
+      );
+      await tapAction(tester, l10n.wordResume);
+      expect(actions.calls, <String>['resume uid-strasse']);
+    });
+
+    testWidgets('FR-W1-02 Reset asks first: keeping it changes nothing', (
+      tester,
+    ) async {
+      await pump(tester);
+      await tapAction(tester, l10n.wordReset);
+      expect(find.text(l10n.wordResetTitle('die Straße')), findsOneWidget);
+      await tester.tap(find.text(l10n.wordResetCancel));
+      await tester.pumpAndSettle();
+      expect(actions.calls, isEmpty);
+
+      await tapAction(tester, l10n.wordReset);
+      await tester.tap(find.text(l10n.wordResetConfirm));
+      await tester.pumpAndSettle();
+      expect(actions.calls, <String>['reset uid-strasse 2026-09-21']);
+      expect(
+        find.text(l10n.wordWasReset('die Straße')).hitTestable(),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('FR-W1-03 the card toggle writes the mode; the chosen one '
+        'is inert', (tester) async {
+      await pump(tester);
+      Finder chip(String label) =>
+          find.byWidgetPredicate((w) => w is DpChip && w.label == label);
+      await tester.ensureVisible(chip(l10n.wordPlainCard));
+      await tester.tap(chip(l10n.wordPlainCard));
+      await tester.pumpAndSettle();
+      expect(actions.calls, isEmpty, reason: 'already plain');
+
+      await tester.tap(chip(l10n.wordClozeCard));
+      await tester.pumpAndSettle();
+      expect(actions.calls, <String>['setCardMode uid-strasse cloze']);
+      expect(
+        find.text(l10n.wordNowCloze('die Straße')).hitTestable(),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('FR-W1-04 a double tap acts once', (tester) async {
+      await pump(tester);
+      await tester.ensureVisible(action(l10n.wordMarkKnown));
+      await tester.pumpAndSettle();
+      actions.hold = true;
+      await tester.tap(action(l10n.wordMarkKnown));
+      await tester.pump();
+      await tester.tap(action(l10n.wordMarkKnown), warnIfMissed: false);
+      await tester.pump();
+      actions.release();
+      await tester.pumpAndSettle();
+      expect(actions.calls, <String>['markKnown uid-strasse 2026-09-21']);
+    });
+
+    testWidgets('Copy copies the word with its article', (tester) async {
+      final copied = <String>[];
+      tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+        SystemChannels.platform,
+        (call) async {
+          if (call.method == 'Clipboard.setData') {
+            copied.add(
+              (call.arguments as Map<Object?, Object?>)['text']! as String,
+            );
+          }
+          return null;
+        },
+      );
+      addTearDown(
+        () => tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+          SystemChannels.platform,
+          null,
+        ),
+      );
+      await pump(tester);
+      await tapAction(tester, l10n.wordCopy);
+      expect(copied, <String>['die Straße']);
+      expect(
+        find.text(l10n.wordCopied('die Straße')).hitTestable(),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('the web chips open the headword', (tester) async {
+      await pump(tester);
+      await tester.ensureVisible(find.text('DWDS'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('DWDS'));
+      await tester.pump();
+      expect(opened, <Uri>[
+        SearchRepository.webLinks('Straße')[WebSource.dwds]!,
+      ]);
+    });
+
+    testWidgets('FR-W1-05 with translation on, Translate puts each '
+        'example in the meaning language under it', (tester) async {
+      final asked = <(String, String)>[];
+      await pump(
+        tester,
+        detail: artboardWordDetail(translate: true),
+        extra: <Override>[
+          translationRepositoryProvider.overrideWithValue(
+            _Translations((text, to) {
+              asked.add((text, to));
+              return 'অনুবাদ';
+            }),
+          ),
+        ],
+      );
+      await tapAction(tester, l10n.wordTranslate);
+      expect(asked, <(String, String)>[
+        ('Die Straße ist wegen Bauarbeiten gesperrt.', 'bn'),
+        ('Wir wohnen in einer ruhigen Straße.', 'bn'),
+      ]);
+      expect(find.text('অনুবাদ'), findsNWidgets(2));
+    });
+  });
+
   group('R04 states', () {
     testWidgets('a word the course does not have says so', (tester) async {
       await pump(tester, missing: true);
@@ -648,4 +851,64 @@ void main() {
       expect(find.text(l10n.wordStatusLearning), findsOneWidget);
     });
   });
+}
+
+/// W1's actions, recorded; each undo records its name.
+class _Actions implements WordActions {
+  final List<String> calls = <String>[];
+  final List<String> undone = <String>[];
+
+  /// While set, an action waits for [release]: a second tap lands mid-action.
+  bool hold = false;
+  Completer<void>? _gate;
+
+  void release() => _gate?.complete();
+
+  Future<Undo> _record(String call) async {
+    calls.add(call);
+    if (hold) {
+      _gate = Completer<void>();
+      await _gate!.future;
+    }
+    final name = call.split(' ').first;
+    return () async => undone.add(name);
+  }
+
+  @override
+  Future<Undo> addToToday(
+    String uid, {
+    required String today,
+    required String step,
+  }) => _record('addToToday $uid $step $today');
+
+  @override
+  Future<Undo> markKnown(String uid, {required String today}) =>
+      _record('markKnown $uid $today');
+
+  @override
+  Future<Undo> suspend(String uid) => _record('suspend $uid');
+
+  @override
+  Future<Undo> resume(String uid) => _record('resume $uid');
+
+  @override
+  Future<Undo> reset(String uid, {required String today}) =>
+      _record('reset $uid $today');
+
+  @override
+  Future<Undo> setCardMode(String uid, CardMode mode) =>
+      _record('setCardMode $uid ${mode.name}');
+}
+
+class _Translations implements TranslationRepository {
+  _Translations(this.answer);
+
+  final String Function(String text, String to) answer;
+
+  @override
+  Future<String?> translate(
+    String text, {
+    required String from,
+    required String to,
+  }) async => answer(text, to);
 }

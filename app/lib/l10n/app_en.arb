@@ -1865,6 +1865,135 @@
   "@wordNotFound": {
     "description": "W1 opened by a link to a word the course doesn't have."
   },
+  "wordAddToday": "Add to today",
+  "@wordAddToday": {
+    "description": "W1 action: puts a To-do word in today's plan (FR-W1-01)."
+  },
+  "wordMarkKnown": "Mark known",
+  "@wordMarkKnown": {
+    "description": "W1 action: rates the word Easy (FR-W1-02, BR-STATUS-04)."
+  },
+  "wordSuspend": "Suspend",
+  "@wordSuspend": {
+    "description": "W1 action: takes the word out of plans and revision (BR-STATUS-03)."
+  },
+  "wordResume": "Resume",
+  "@wordResume": {
+    "description": "W1 action on a suspended word: puts it back (BR-STATUS-03)."
+  },
+  "wordReset": "Reset word",
+  "@wordReset": {
+    "description": "W1 action: clears the word's progress, after a confirm (FR-W1-02)."
+  },
+  "wordCopy": "Copy",
+  "@wordCopy": {
+    "description": "W1 action: copies the word with its article."
+  },
+  "wordPlainCard": "Plain card",
+  "@wordPlainCard": {
+    "description": "W1 card-mode toggle: revise with the plain card (FR-W1-03)."
+  },
+  "wordClozeCard": "Cloze card",
+  "@wordClozeCard": {
+    "description": "W1 card-mode toggle: revise with the gap-fill card (FR-W1-03)."
+  },
+  "wordTranslate": "Translate",
+  "@wordTranslate": {
+    "description": "W1 action, only when on-device translation is on: the examples into the meaning language (FR-W1-05)."
+  },
+  "wordAddedToday": "{word} is in today's plan",
+  "@wordAddedToday": {
+    "description": "W1 snackbar with Undo after Add to today (FR-W1-04). {word} has its article.",
+    "placeholders": {
+      "word": {
+        "type": "String"
+      }
+    }
+  },
+  "wordMarkedKnown": "Marked {word} as known",
+  "@wordMarkedKnown": {
+    "description": "W1 snackbar with Undo after Mark known (FR-W1-04).",
+    "placeholders": {
+      "word": {
+        "type": "String"
+      }
+    }
+  },
+  "wordSuspended": "Suspended {word}",
+  "@wordSuspended": {
+    "description": "W1 snackbar with Undo after Suspend (FR-W1-04).",
+    "placeholders": {
+      "word": {
+        "type": "String"
+      }
+    }
+  },
+  "wordResumed": "Resumed {word}",
+  "@wordResumed": {
+    "description": "W1 snackbar with Undo after Resume (FR-W1-04).",
+    "placeholders": {
+      "word": {
+        "type": "String"
+      }
+    }
+  },
+  "wordWasReset": "{word} is back to To do",
+  "@wordWasReset": {
+    "description": "W1 snackbar with Undo after Reset word (FR-W1-04).",
+    "placeholders": {
+      "word": {
+        "type": "String"
+      }
+    }
+  },
+  "wordNowPlain": "{word} revises as a plain card",
+  "@wordNowPlain": {
+    "description": "W1 snackbar with Undo after the card-mode toggle (FR-W1-03, FR-W1-04).",
+    "placeholders": {
+      "word": {
+        "type": "String"
+      }
+    }
+  },
+  "wordNowCloze": "{word} revises as a cloze card",
+  "@wordNowCloze": {
+    "description": "W1 snackbar with Undo after the card-mode toggle (FR-W1-03, FR-W1-04).",
+    "placeholders": {
+      "word": {
+        "type": "String"
+      }
+    }
+  },
+  "wordCopied": "Copied {word}",
+  "@wordCopied": {
+    "description": "W1 toast after Copy.",
+    "placeholders": {
+      "word": {
+        "type": "String"
+      }
+    }
+  },
+  "wordResetTitle": "Reset {word}?",
+  "@wordResetTitle": {
+    "description": "W1 Reset word confirm dialog title (FR-W1-02).",
+    "placeholders": {
+      "word": {
+        "type": "String"
+      }
+    }
+  },
+  "wordResetBody": "Its progress and schedule are cleared and it goes back to To do. Your past reviews stay in your history.",
+  "@wordResetBody": {
+    "description": "W1 Reset word confirm dialog message."
+  },
+  "wordResetConfirm": "Reset",
+  "@wordResetConfirm": {
+    "description": "W1 Reset word confirm button (destructive)."
+  },
+  "wordResetCancel": "Keep it",
+  "@wordResetCancel": {
+    "description": "W1 Reset word dialog: cancel."
+  },
   "backlogEmptyTitle": "Nothing waiting. Nice.",
   "@backlogEmptyTitle": {
     "description": "T4 empty state headline."
