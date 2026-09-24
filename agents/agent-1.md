@@ -6,7 +6,7 @@ last-read: 130
 
 ## Now
 
-#312 in review as PR #334: answer review threads; re-run the gate if main moved, then merge.
+#315 bug(a11y): the back button (8 screens) and T1's ring are clickable nodes with no label (found in #37) — claimed 2026-09-24 23:14.
 
 ## Next
 
