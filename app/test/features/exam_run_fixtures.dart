@@ -176,6 +176,9 @@ class StubExamRun implements ExamRunService {
   /// Makes the next submits throw, as a failed write would.
   bool failSubmit = false;
 
+  /// How often *Leave* abandoned the attempt.
+  int abandoned = 0;
+
   @override
   Future<ExamPaperRun?> load(int attemptId) async {
     if (missing) return null;
@@ -210,6 +213,9 @@ class StubExamRun implements ExamRunService {
     int running = 0,
     int paused = 0,
   }) async => times.add((running, paused));
+
+  @override
+  Future<void> abandon(int attemptId) async => abandoned++;
 
   @override
   Future<ExamScore> submit(int attemptId) async {

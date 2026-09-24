@@ -66,7 +66,14 @@ class ShellBackHandler extends StatelessWidget {
 /// predictive-back preview for this route, which is the rest of #69's
 /// criteria: one mechanism, not three.
 class ExamBackGuard extends StatefulWidget {
-  const ExamBackGuard({required this.child, required this.onLeave, super.key});
+  const ExamBackGuard({
+    required this.child,
+    required this.onLeave,
+    required this.mock,
+    super.key,
+    this.onAsk,
+    this.onStay,
+  });
 
   final Widget child;
 
@@ -74,11 +81,20 @@ class ExamBackGuard extends StatefulWidget {
   /// the runner's job, not this widget's.
   final VoidCallback onLeave;
 
+  /// As the dialog opens: "The timer stops", so the runner stops its clock.
+  final VoidCallback? onAsk;
+
+  /// *Keep going*: the runner starts its clock again.
+  final VoidCallback? onStay;
+
+  /// The mock's number: "You can start Mock 2 again from the exam hub."
+  final int mock;
+
   @override
-  State<ExamBackGuard> createState() => _ExamBackGuardState();
+  State<ExamBackGuard> createState() => ExamBackGuardState();
 }
 
-class _ExamBackGuardState extends State<ExamBackGuard> {
+class ExamBackGuardState extends State<ExamBackGuard> {
   /// Whether the dialog is already up.
   ///
   /// Not defensive coding. The handler is async and shows a dialog, so a
@@ -89,9 +105,13 @@ class _ExamBackGuardState extends State<ExamBackGuard> {
   /// behaviour is undefined rather than absent.
   var _asking = false;
 
-  Future<void> _ask() async {
+  /// Asks to leave, as back does. The band's pause button calls this: the
+  /// ExamRunner artboard takes it to ExamLeave (#132).
+  Future<void> ask() async {
     if (_asking) return;
     setState(() => _asking = true);
+    widget.onAsk?.call();
+    var leave = false;
 
     try {
       // A frame before the dialog goes up. Without it a second press landing
@@ -104,18 +124,23 @@ class _ExamBackGuardState extends State<ExamBackGuard> {
       if (!mounted) return;
 
       final l10n = AppLocalizations.of(context);
-      final leave = await Adaptive.showConfirm(
-        context: context,
-        title: l10n.examLeaveTitle,
-        message: l10n.examLeaveMessage,
-        confirmLabel: l10n.examLeaveConfirm,
-        cancelLabel: l10n.examLeaveCancel,
-        destructive: true,
-      );
+      leave =
+          await Adaptive.showConfirm(
+            context: context,
+            title: l10n.examLeaveTitle,
+            message: l10n.examLeaveMessage(widget.mock),
+            confirmLabel: l10n.examLeaveConfirm,
+            cancelLabel: l10n.examLeaveCancel,
+            destructive: true,
+          ) ??
+          false;
 
-      if ((leave ?? false) && mounted) widget.onLeave();
+      if (leave && mounted) widget.onLeave();
     } finally {
-      if (mounted) setState(() => _asking = false);
+      if (mounted) {
+        setState(() => _asking = false);
+        if (!leave) widget.onStay?.call();
+      }
     }
   }
 
@@ -124,7 +149,7 @@ class _ExamBackGuardState extends State<ExamBackGuard> {
     canPop: false,
     onPopInvokedWithResult: (didPop, _) {
       if (didPop) return;
-      unawaited(_ask());
+      unawaited(ask());
     },
     child: widget.child,
   );

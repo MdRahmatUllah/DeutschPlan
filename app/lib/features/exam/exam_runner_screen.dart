@@ -15,6 +15,7 @@ import 'package:deutschplan/features/exam/exam_question_view.dart';
 import 'package:deutschplan/features/learn/step_exams.dart'
     show examMinutes, examSectionName;
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
+import 'package:deutschplan/router/back_behaviour.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 
@@ -29,10 +30,14 @@ class ExamRunnerScreen extends ConsumerStatefulWidget {
   const ExamRunnerScreen({
     required this.attemptId,
     required this.results,
+    required this.onLeft,
     super.key,
   });
 
   final int attemptId;
+
+  /// After *Leave*: back to the hub (FR-L12-04). The route navigates.
+  final VoidCallback onLeft;
 
   /// What follows the submit: L13 (#135).
   final WidgetBuilder results;
@@ -62,7 +67,11 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
   final TextEditingController _field = TextEditingController();
 
   bool _timed = true;
+
+  /// The leave dialog is up: its clock is stopped, and seconds count as
+  /// paused (FR-L12-03, FR-L12-04's "The timer stops").
   bool _paused = false;
+  final GlobalKey<ExamBackGuardState> _guard = GlobalKey<ExamBackGuardState>();
   int _left = ExamRunnerScreen.limitSeconds;
   Timer? _tick;
 
@@ -102,6 +111,11 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
       }
       if (paper.attempt.status == 'finished') {
         setState(() => _done = true);
+        return;
+      }
+      // Left once (FR-L12-04), it is closed: a deep link doesn't reopen it.
+      if (paper.attempt.status == 'abandoned') {
+        widget.onLeft();
         return;
       }
       setState(() {
@@ -244,6 +258,16 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
     );
   }
 
+  /// FR-L12-04 *Leave*: what was typed and the time are written, and the
+  /// attempt is abandoned: the hub shows it as an attempt without a score.
+  Future<void> _leave() async {
+    _tick?.cancel();
+    _saveTyped();
+    await _flush();
+    await _service.abandon(widget.attemptId);
+    if (mounted) widget.onLeft();
+  }
+
   /// The submit. By hand with questions unanswered, it asks first
   /// (FR-L12-05); the clock running out does not ask.
   Future<void> _submit({bool asked = false}) async {
@@ -319,11 +343,8 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
               inSection.length,
             ),
             left: _timed ? _left : null,
-            paused: _paused,
-            onPause: () => setState(() => _paused = !_paused),
-            onNavigator: _paused
-                ? null
-                : () => unawaited(_openNavigator(questions)),
+            onPause: () => unawaited(_guard.currentState?.ask()),
+            onNavigator: () => unawaited(_openNavigator(questions)),
           ),
           Padding(
             padding: const EdgeInsetsDirectional.fromSTEB(16, 8, 8, 0),
@@ -361,28 +382,26 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
             ),
           ),
           Expanded(
-            child: _paused
-                ? _Paused(onResume: () => setState(() => _paused = false))
-                : ListView(
-                    padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
-                    children: <Widget>[
-                      ExamQuestionView(
-                        key: ValueKey<int>(questions[_at].ord),
-                        item: item,
-                        given: _given[_at],
-                        field: _field,
-                        onGiven: _record,
-                        plays: _plays[questions[_at].ord] ?? 0,
-                        onPlay: () => setState(
-                          () => _plays.update(
-                            questions[_at].ord,
-                            (n) => n + 1,
-                            ifAbsent: () => 1,
-                          ),
-                        ),
-                      ),
-                    ],
+            child: ListView(
+              padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
+              children: <Widget>[
+                ExamQuestionView(
+                  key: ValueKey<int>(questions[_at].ord),
+                  item: item,
+                  given: _given[_at],
+                  field: _field,
+                  onGiven: _record,
+                  plays: _plays[questions[_at].ord] ?? 0,
+                  onPlay: () => setState(
+                    () => _plays.update(
+                      questions[_at].ord,
+                      (n) => n + 1,
+                      ifAbsent: () => 1,
+                    ),
                   ),
+                ),
+              ],
+            ),
           ),
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
@@ -392,16 +411,14 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
                   child: DpButton(
                     label: l10n.examRunPrevious,
                     kind: DpButtonKind.secondary,
-                    onPressed: _at == 0 || _paused ? null : () => _go(_at - 1),
+                    onPressed: _at == 0 ? null : () => _go(_at - 1),
                   ),
                 ),
                 const SizedBox(width: 10),
                 Expanded(
                   child: DpButton(
                     label: last ? l10n.examRunSubmit : l10n.examRunNext,
-                    onPressed: _paused
-                        ? null
-                        : last
+                    onPressed: last
                         ? () => unawaited(_submit())
                         : () => _go(_at + 1),
                   ),
@@ -409,7 +426,7 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
               ],
             ),
           ),
-          if (!_paused && examTypesGerman(item))
+          if (examTypesGerman(item))
             DpSurface(
               kind: DpSurfaceKind.bar,
               radius: 0,
@@ -426,9 +443,23 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
           : tokens.surface.paper,
       body: body,
     );
-    return tokens.isGlass
+    final screen = tokens.isGlass
         ? AuroraBackdrop(leading: tokens.color.der, child: scaffold)
         : scaffold;
+    // FR-L12-04: back and the band's pause both ask before leaving. Nothing
+    // to lose while the paper loads or fails, so no guard then.
+    return paper == null
+        ? screen
+        : ExamBackGuard(
+            key: _guard,
+            mock: paper.attempt.seed,
+            onAsk: () => setState(() => _paused = true),
+            onStay: () {
+              if (mounted) setState(() => _paused = false);
+            },
+            onLeave: () => unawaited(_leave()),
+            child: screen,
+          );
   }
 }
 
@@ -436,13 +467,13 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
 String _clock(int seconds) =>
     '${seconds ~/ 60}:${'${seconds % 60}'.padLeft(2, '0')}';
 
-/// The Cobalt band: pause, the section, the clock — Coral in the last two
-/// minutes — and the navigator.
+/// The Cobalt band: pause (which asks to leave, as the artboard wires it),
+/// the section, the clock — Coral in the last two minutes — and the
+/// navigator.
 class _Band extends StatelessWidget {
   const _Band({
     required this.title,
     required this.left,
-    required this.paused,
     required this.onPause,
     required this.onNavigator,
   });
@@ -451,11 +482,10 @@ class _Band extends StatelessWidget {
 
   /// Seconds left; null when the timer is off.
   final int? left;
-  final bool paused;
   final VoidCallback onPause;
 
-  /// Opens the navigator (#131); null while paused.
-  final VoidCallback? onNavigator;
+  /// Opens the navigator (#131).
+  final VoidCallback onNavigator;
 
   @override
   Widget build(BuildContext context) {
@@ -475,17 +505,14 @@ class _Band extends StatelessWidget {
               const SizedBox(width: 4),
               Semantics(
                 button: true,
-                label: paused ? l10n.examRunResume : l10n.examRunPause,
+                label: l10n.examRunPause,
                 excludeSemantics: true,
                 child: GestureDetector(
                   behavior: HitTestBehavior.opaque,
                   onTap: onPause,
                   child: SizedBox.square(
                     dimension: 48,
-                    child: Icon(
-                      paused ? Icons.play_arrow : Icons.pause,
-                      color: ink,
-                    ),
+                    child: Icon(Icons.pause, color: ink),
                   ),
                 ),
               ),
@@ -523,7 +550,6 @@ class _Band extends StatelessWidget {
                 ),
               Semantics(
                 button: true,
-                enabled: onNavigator != null,
                 label: l10n.examNavOpen,
                 excludeSemantics: true,
                 child: GestureDetector(
@@ -548,38 +574,5 @@ class _Band extends StatelessWidget {
             child: content,
           )
         : ColoredBox(color: tokens.color.der, child: content);
-  }
-}
-
-/// Paused: the paper is hidden and the clock stopped until *Resume*.
-class _Paused extends StatelessWidget {
-  const _Paused({required this.onResume});
-
-  final VoidCallback onResume;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            DpText(
-              l10n.examRunPaused,
-              role: DpTextRole.title,
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 16),
-            DpButton(
-              label: l10n.examRunResume,
-              expand: false,
-              onPressed: onResume,
-            ),
-          ],
-        ),
-      ),
-    );
   }
 }

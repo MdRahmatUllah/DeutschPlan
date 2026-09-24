@@ -74,6 +74,9 @@ class ExamRunService {
   Future<void> recordTime(int attemptId, {int running = 0, int paused = 0}) =>
       _exams.recordTime(attemptId: attemptId, running: running, paused: paused);
 
+  /// FR-L12-04: left. The answers stay, as an attempt without a score.
+  Future<void> abandon(int attemptId) => _exams.abandon(attemptId);
+
   /// The submit: graded as the answers stand, and finished.
   Future<ExamScore> submit(int attemptId) => _exams.grade(
     attemptId,

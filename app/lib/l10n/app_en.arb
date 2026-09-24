@@ -300,9 +300,14 @@
   "@examLeaveTitle": {
     "description": "Title of the dialog Android back opens inside the exam runner. docs/04-screens/exam-runner.md, FR-L12-04."
   },
-  "examLeaveMessage": "Your answers so far are saved as an unfinished attempt. The timer stops. You can start this mock again from the exam hub.",
+  "examLeaveMessage": "Your answers so far are saved as an unfinished attempt. The timer stops. You can start Mock {mock} again from the exam hub.",
   "@examLeaveMessage": {
-    "description": "Body of the leave-the-exam dialog. Says what is kept and what is lost, because the answers survive and the time does not."
+    "description": "Body of the leave-the-exam dialog (ExamLeave artboard, FR-L12-04). Says what is kept and what is lost, because the answers survive and the time does not. mock is the mock's number, 1 to 3.",
+    "placeholders": {
+      "mock": {
+        "type": "int"
+      }
+    }
   },
   "examLeaveConfirm": "Leave",
   "@examLeaveConfirm": {
@@ -3396,14 +3401,6 @@
   "examRunPause": "Pause exam",
   "@examRunPause": {
     "description": "L12 band button, for screen readers (FR-L12-03)."
-  },
-  "examRunResume": "Resume",
-  "@examRunResume": {
-    "description": "L12 paused: carry on (FR-L12-03)."
-  },
-  "examRunPaused": "Paused. The clock has stopped.",
-  "@examRunPaused": {
-    "description": "L12 while paused (FR-L12-03)."
   },
   "examRunTimeLeft": "{minutes} min {seconds} s left",
   "@examRunTimeLeft": {

@@ -233,9 +233,11 @@ void main() {
       await pumpApp(tester, at: '/exam/7');
       await pressBack(tester);
 
-      expect(find.text(l10n.examLeaveMessage), findsOneWidget);
-      expect(l10n.examLeaveMessage, contains('saved'));
-      expect(l10n.examLeaveMessage, contains('timer'));
+      // The stub's attempt is Mock 2 (exam_run_fixtures.dart).
+      expect(find.text(l10n.examLeaveMessage(2)), findsOneWidget);
+      expect(l10n.examLeaveMessage(2), contains('saved'));
+      expect(l10n.examLeaveMessage(2), contains('timer'));
+      expect(l10n.examLeaveMessage(2), contains('Mock 2'));
     });
 
     testWidgets('two quick back presses ask once, not twice', (tester) async {

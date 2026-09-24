@@ -21,6 +21,7 @@ void main() {
     child: ExamRunnerScreen(
       attemptId: 7,
       results: (_) => const SizedBox.shrink(),
+      onLeft: () {},
     ),
   );
 
@@ -87,14 +88,24 @@ void main() {
     },
   );
 
+  // #132: pause asks to leave, as ExamLeave draws it.
+  Future<void> askToLeave(WidgetTester tester) async {
+    await tester.tap(find.byIcon(Icons.pause));
+    await tester.pumpAndSettle();
+  }
+
   goldenTest(
-    'exam_runner_paused',
+    'exam_leave',
+    builder: (context) => runner(StubExamRun()),
+    act: askToLeave,
+  );
+
+  goldenTest(
+    'exam_leave_ios',
     modes: const <GoldenMode>[GoldenMode.light],
     devices: const <GoldenDevice>[GoldenDevice.phone],
+    chrome: AdaptiveChrome.cupertino,
     builder: (context) => runner(StubExamRun()),
-    act: (tester) async {
-      await tester.tap(find.byIcon(Icons.pause));
-      await tester.pumpAndSettle();
-    },
+    act: askToLeave,
   );
 }
