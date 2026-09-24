@@ -28,6 +28,7 @@ import 'package:deutschplan/data/db/app_database.dart';
 import 'package:deutschplan/data/db/content_dao.dart';
 import 'package:deutschplan/data/repositories/backup_repository.dart';
 import 'package:deutschplan/data/repositories/exam_repository.dart';
+import 'package:deutschplan/data/repositories/exam_run_service.dart';
 import 'package:deutschplan/data/repositories/grammar_repository.dart';
 import 'package:deutschplan/data/repositories/model_repository.dart';
 import 'package:deutschplan/data/repositories/plan_repository.dart';
@@ -349,6 +350,14 @@ QuizBuilder quizBuilder(Ref ref) => QuizBuilder(
         .watch(settingsProvider)
         .read(SettingKeys.desiredRetention),
   ),
+);
+
+/// L12's data (#130): the paper, its answers and time, and the submit.
+@riverpod
+ExamRunService examRunService(Ref ref) => ExamRunService(
+  ref.watch(examRepositoryProvider),
+  ref.watch(settingsProvider),
+  ref.watch(clockProvider),
 );
 
 /// L8's data (#123): the quiz built, recorded and finished.

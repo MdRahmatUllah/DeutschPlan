@@ -19,7 +19,7 @@
 | `wordDetail(uid)` | autoDispose Stream | sheet | Word + state (watched) + examples + tip, with the meaning language and `show_pron_bn`. `wordHistory(uid)` watches `review_log` for the history caption. |
 | `searchResults(query)` | autoDispose, debounced | Search | Runs in a drift background isolate. |
 | `stepProgress` | Stream | Learn/Me | Aggregates per sub-level. |
-| `examAttempt(id)` | keepAlive Notifier | exam modal | Timer, answers, flags; persisted per answer. |
+| `examRunService` | autoDispose | exam modal | L12's reads and writes. The timer, answers and flags are the runner's widget state, each answer and flag written as given and the clock every 10 s (#130). |
 | `modelManager` | keepAlive AsyncNotifier | Me | Download tasks, statuses, storage. |
 | `tts` | keepAlive | app | Engine selection + fallback. Every speaker speaks through it; until #153 it is `systemTts`. |
 | `systemTts` | keepAlive | app | The phone's German voice (`SystemTts`): S2's preview and the fallback. One instance, because flutter_tts reports playback to the last one made. |

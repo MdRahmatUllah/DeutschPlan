@@ -396,6 +396,14 @@ class ExamRepository extends DatabaseAccessor<AppDatabase>
   Future<int?> nextQuestion(int attemptId) =>
       firstUnanswered(attemptId).getSingle();
 
+  /// One attempt, or null for an id that isn't there.
+  Future<ExamAttempt?> attempt(int attemptId) =>
+      examAttemptById(attemptId).getSingleOrNull();
+
+  /// Its answer rows, in paper order.
+  Future<List<ExamAnswer>> answers(int attemptId) =>
+      answersFor(attemptId).get();
+
   Stream<List<ExamAnswer>> watchAnswers(int attemptId) =>
       answersFor(attemptId).watch();
 

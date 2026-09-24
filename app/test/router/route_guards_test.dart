@@ -1,6 +1,7 @@
 @TestOn('vm')
 library;
 
+import 'package:deutschplan/features/exam/exam_runner_screen.dart';
 import 'package:deutschplan/features/study/study_screen.dart';
 import 'package:deutschplan/features/today/today_screen.dart';
 
@@ -123,7 +124,12 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(location(), '/exam/7');
-      expect(find.text('attempt 7'), findsOneWidget);
+      expect(
+        tester
+            .widget<ExamRunnerScreen>(find.byType(ExamRunnerScreen))
+            .attemptId,
+        7,
+      );
     });
 
     testWidgets('one that does not goes to the Learn tab', (tester) async {
@@ -161,7 +167,7 @@ void main() {
       await pumpApp(tester, guards: guardsWith());
       router.go('/exam/7');
       await tester.pumpAndSettle();
-      expect(find.text('L12'), findsOneWidget);
+      expect(find.byType(ExamRunnerScreen), findsOneWidget);
     });
   });
 

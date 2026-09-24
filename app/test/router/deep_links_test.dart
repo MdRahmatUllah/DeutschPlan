@@ -1,6 +1,7 @@
 @TestOn('vm')
 library;
 
+import 'package:deutschplan/features/exam/exam_runner_screen.dart';
 import 'package:deutschplan/features/sentences/sentences_screen.dart';
 import 'package:deutschplan/features/today/today_screen.dart';
 
@@ -323,12 +324,12 @@ void main() {
         ),
       );
       await tester.pumpAndSettle();
-      expect(find.text('L12'), findsOneWidget);
+      expect(find.byType(ExamRunnerScreen), findsOneWidget);
 
       await openLink(tester, 'deutschplan://today');
 
       expect(location(), '/exam/7');
-      expect(find.text('L12'), findsOneWidget);
+      expect(find.byType(ExamRunnerScreen), findsOneWidget);
     });
 
     testWidgets('and works again once the exam is done', (tester) async {

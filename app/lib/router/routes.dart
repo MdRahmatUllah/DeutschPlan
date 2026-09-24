@@ -30,6 +30,7 @@ import 'package:deutschplan/router/route_guards.dart';
 import 'package:deutschplan/features/today/today_screen.dart';
 import 'package:deutschplan/features/backlog/backlog_screen.dart';
 import 'package:deutschplan/features/day_complete/day_complete_screen.dart';
+import 'package:deutschplan/features/exam/exam_runner_screen.dart';
 import 'package:deutschplan/features/learn/categories_screen.dart';
 import 'package:deutschplan/features/learn/category_words_screen.dart';
 import 'package:deutschplan/features/learn/exam_intro_screen.dart';
@@ -857,16 +858,18 @@ class ExamRoute extends GoRouteData with $ExamRoute {
     // FR-L12-04: back asks rather than pops, and `canPop: false` is also
     // what turns off the iOS edge swipe for this route (#69).
     //
-    // TODO(#119): *Leave* has to set `status = 'abandoned'` as well —
-    // `ExamRepository.abandon(attemptId)` — or the hub keeps offering
-    // *Resume* for an exam the learner walked out of. The runner owns the
-    // attempt; this placeholder only navigates, and leaving that unsaid
-    // would make a half-wired path look finished.
+    // TODO(#132): the leave dialog's *Leave* sets `status = 'abandoned'`
+    // (`ExamRepository.abandon`) and stops the clock, or the hub keeps
+    // offering *Resume* for an exam the learner walked out of.
     onLeave: () => context.go(examFallback),
-    child: PlaceholderScreen(
-      title: 'Mock exam',
-      screen: 'L12',
-      detail: 'attempt $attemptId',
+    child: ExamRunnerScreen(
+      attemptId: attemptId,
+      // ponytail: L13 (#135) takes over from here.
+      results: (_) => PlaceholderScreen(
+        title: 'Exam results',
+        screen: 'L13',
+        detail: 'attempt $attemptId',
+      ),
     ),
   );
 }

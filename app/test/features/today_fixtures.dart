@@ -16,6 +16,7 @@ import 'package:deutschplan/features/today/today_view.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 
 import 'exam_fixtures.dart';
+import 'exam_run_fixtures.dart';
 import 'me_fixtures.dart';
 import 'quiz_fixtures.dart';
 import 'word_fixtures.dart';
@@ -486,6 +487,8 @@ List<Override> todayStub([
   ...examStub(),
   // L8 without a database: the QuizRunner artboard's run.
   ...quizStub(),
+  // L12 without a database: the ExamRunner artboard's paper.
+  ...examRunStub(),
   // W1 without a database: the WordDetail artboard's word.
   ...wordStub(),
 ];

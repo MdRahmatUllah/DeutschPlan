@@ -23,8 +23,19 @@
 - FR-L12-05 Submit with unanswered questions requires confirmation.
 - FR-L12-06 Listening questions play through TTS; replay allowed twice.
 
-**Data.** `examAttemptProvider(id)`, `ExamRepository`.
+**Data.** `examRunServiceProvider` (`ExamRunService` over `ExamRepository`). The runner's state (the question on screen, the clock, the plays) is widget state: every answer and flag is written as it is given and the clock every 10 s, so the database is the attempt and a keepAlive notifier would only hold a second copy of it (#130).
 
-**Developer notes.** Keep the timer in the notifier with a `Ticker`; persist `remaining_sec` every 10 s so a crash loses ≤ 10 s. Disable predictive back in this route.
+**Developer notes.** A one-second timer in the screen; `duration_sec` is written every 10 s, so a crash loses ≤ 10 s, and the time left is derived from it. Disable predictive back in this route.
 
 **Tests.** FR-L12-01 resume; FR-L12-03 timer/pause maths; widget: navigator jump and confirm.
+
+## Details the runner settles (#130)
+
+- **Numbering.** "Question 21 of 40" numbers the questions. Writing and Speaking are tasks, not numbered, so a full paper reads "of 40" with 42 items. The band names the section and the item's place in it ("Articles · 3 of 6").
+- **The clock.** Seconds run into `duration_sec` and seconds paused into `paused_sec`, both written every 10 s (and on leaving), so a crash loses at most 10 s. Time left is 20 min (`examMinutes`) minus `duration_sec`. *Pause* hides the paper until *Resume*. At 0:00 the exam submits without asking. A submit that fails keeps the learner on the paper with a toast, the clock running again; the answers are already written.
+- **Timer off** (L11's switch, `SettingKeys.examTimer`, read when the runner opens, fresh or resumed): no clock and no auto-submit. `duration_sec` still counts, for L13's time.
+- **When answers are written.** A tap (article, choice, word) is written at once. A typed answer is written when the learner moves on (*Previous*, *Next*, submit, leaving), so a crash loses at most the answer being typed.
+- **What a grammar item records**, as #84 grades it: pick the form, the form; rule recall, the rule's index; spot the error, the word's index; order the sentence, the words in order joined by a space.
+- **Listening** (FR-L12-06): one play and two replays, then the speaker is off. Gap: the plays are counted in memory, so a resumed attempt gives each word three plays again; persisting them waits for a column.
+- **Submit** is the last question's button. With questions unanswered it asks first (FR-L12-05); the navigator's *Submit exam* is #131's.
+- Until #133 and #134, Writing and Speaking say they arrive in a later update, and a skipped task scores nothing (FR-L12S-01). The navigator icon is #131's, and the leave dialog's abandon is #132's.

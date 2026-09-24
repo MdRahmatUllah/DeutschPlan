@@ -3158,5 +3158,150 @@
         "type": "int"
       }
     }
+  },
+  "examRunSection": "{section} · {n} of {count}",
+  "@examRunSection": {
+    "description": "L12 band title: the section and the question's place in it (e.g. Articles · 3 of 6).",
+    "placeholders": {
+      "section": {
+        "type": "String"
+      },
+      "n": {
+        "type": "int"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "examRunQuestion": "Question {n} of {count} · no feedback until the end",
+  "@examRunQuestion": {
+    "description": "L12 line under the band (BR-EXAM-05).",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "examRunAskMeaning": "What does it mean?",
+  "@examRunAskMeaning": {
+    "description": "L12 caption over a Vocabulary question."
+  },
+  "examRunAskGerman": "What is it in German?",
+  "@examRunAskGerman": {
+    "description": "L12 caption over a Reverse question."
+  },
+  "examRunAskArticle": "Which article?",
+  "@examRunAskArticle": {
+    "description": "L12 caption over an Articles question (artboard)."
+  },
+  "examRunAskForm": "Which form?",
+  "@examRunAskForm": {
+    "description": "L12 caption over a Word forms question."
+  },
+  "examRunAskListening": "What do you hear?",
+  "@examRunAskListening": {
+    "description": "L12 caption over a Listening question."
+  },
+  "examRunAskGap": "Fill the gap",
+  "@examRunAskGap": {
+    "description": "L12 caption over a Gap fill question."
+  },
+  "examRunTapArticle": "Tap the article, then Next",
+  "@examRunTapArticle": {
+    "description": "L12 hint under an Articles question (artboard)."
+  },
+  "examRunTapOne": "Tap one, then Next",
+  "@examRunTapOne": {
+    "description": "L12 hint under a question answered by tapping."
+  },
+  "examRunPlaysLeft": "{count, plural, =0{No more plays} =1{1 play left} other{{count} plays left}}",
+  "@examRunPlaysLeft": {
+    "description": "L12 Listening: how often the word can still be played (FR-L12-06: replay twice).",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "examRunPrevious": "Previous",
+  "@examRunPrevious": {
+    "description": "L12 footer button."
+  },
+  "examRunNext": "Next",
+  "@examRunNext": {
+    "description": "L12 footer button."
+  },
+  "examRunSubmit": "Submit exam",
+  "@examRunSubmit": {
+    "description": "L12 footer button on the last question."
+  },
+  "examRunSubmitFailed": "The exam couldn't be submitted. Your answers are saved: try again.",
+  "@examRunSubmitFailed": {
+    "description": "L12 toast when the submit fails; the learner stays on the paper."
+  },
+  "examRunSubmitTitle": "Submit the exam?",
+  "@examRunSubmitTitle": {
+    "description": "L12 confirm when questions are unanswered (FR-L12-05)."
+  },
+  "examRunSubmitUnanswered": "{count, plural, =1{1 question is unanswered and scores nothing.} other{{count} questions are unanswered and score nothing.}}",
+  "@examRunSubmitUnanswered": {
+    "description": "L12 confirm body (FR-L12-05).",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "examRunSubmitConfirm": "Submit",
+  "@examRunSubmitConfirm": {
+    "description": "L12 confirm: submit anyway."
+  },
+  "examRunKeepAnswering": "Keep answering",
+  "@examRunKeepAnswering": {
+    "description": "L12 confirm: back to the exam."
+  },
+  "examRunPause": "Pause exam",
+  "@examRunPause": {
+    "description": "L12 band button, for screen readers (FR-L12-03)."
+  },
+  "examRunResume": "Resume",
+  "@examRunResume": {
+    "description": "L12 paused: carry on (FR-L12-03)."
+  },
+  "examRunPaused": "Paused. The clock has stopped.",
+  "@examRunPaused": {
+    "description": "L12 while paused (FR-L12-03)."
+  },
+  "examRunTimeLeft": "{minutes} min {seconds} s left",
+  "@examRunTimeLeft": {
+    "description": "L12 timer, for screen readers.",
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      },
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "examRunFlag": "Flag for review",
+  "@examRunFlag": {
+    "description": "L12 flag button, for screen readers."
+  },
+  "examRunFlagged": "Flagged for review",
+  "@examRunFlagged": {
+    "description": "L12 flag button when flagged, for screen readers."
+  },
+  "examRunLater": "This part arrives in a later update. Tap Next to go on.",
+  "@examRunLater": {
+    "description": "L12 Writing and Speaking until their screens are built."
+  },
+  "examRunLoadFailed": "This exam could not be opened.",
+  "@examRunLoadFailed": {
+    "description": "L12 error panel."
   }
 }
