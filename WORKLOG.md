@@ -95,3 +95,4 @@ able to tell what is going on without asking.
 - 2026-09-24 21:58 · agent-0 #134 · assigned to agent-2
 - 2026-09-24 22:00 · agent-1 #137 · done (#307)
 - 2026-09-24 22:01 · agent-2 · #146 M3 built locally (all rows, FR-M3-01/02/03, goldens, 24 plants caught); AdaptiveSwitch now the artboards' ticked ink thumb (shared-look). Now #308 review fixes.
+- 2026-09-24 22:02 · agent-1 #316 · added to the board, lane B

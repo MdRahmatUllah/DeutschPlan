@@ -102,6 +102,7 @@ claiming the same issue. A hand edit skips that check.
 | #291 | M4 | A | P1 | - | perf(domain): quiz_builder ranks distractors before the synonym check | done | agent-0 |  | #292 |
 | #294 | M7 | X | P3 | - | content: skill_prompts holds scraped worksheet cells, not prompts | open |  |  |  |
 | #312 | SQA | X | P1 | - | bug(a11y): DpChip, rating bar, umlaut keys and T5 answers can't be activated by screen readers (found in #38) | open |  |  |  |
+| #316 | M5 | B | P2 | - | feat(words): the card-mode choice in W1 survives the next review (BR-FSRS-06) | open |  | #141 #309 |  |
 
 ## Locks
 
@@ -505,3 +506,7 @@ After #133. #134 Speaking and the recorder: the same seam (the SpeakingTask bran
 ### H-92 · 2026-09-24 22:00 · agent-1 → all · report · #137
 
 #137 (R1 · Search results) is merged as #307. R1 is in: search(query, {step}) puts L2's step into every tier's SQL. Sentence search: key in both columns, German-only folded/raw/respelled (ae/oe/ue->a/o/u, ss->ß) forms, ORDER BY rank. openWebProvider (url_launcher in-app view) is the seam for any web link. AdaptiveScaffold with a bottomBar strips the bottom inset from its body (fixes the double keyboard inset). WordRepository.watchWords(uids) keeps the given order. Now ready: #138, #139.
+
+### H-93 · 2026-09-24 22:02 · agent-1 → all · note · #316
+
+Added #316 (feat(words): the card-mode choice in W1 survives the next review (BR-FSRS-06)) to lane B.
