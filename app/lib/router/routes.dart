@@ -839,7 +839,8 @@ class QuizRoute extends GoRouteData with $QuizRoute {
 class ExamRoute extends GoRouteData with $ExamRoute {
   const ExamRoute({required this.attemptId});
 
-  /// L12 over the shell, from L10's *Resume* (FR-L10-02).
+  /// L12 over the shell: L10's *Resume* (FR-L10-02) and L11's *Begin exam*
+  /// (FR-L10-03).
   static void open(BuildContext context, int attemptId) =>
       unawaited(context.push<void>(ExamRoute(attemptId: attemptId).location));
 

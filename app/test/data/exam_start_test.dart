@@ -99,7 +99,8 @@ void main() {
     );
   });
 
-  test('Begin exam keeps the timer for L12, and a second tap waits', () async {
+  test('FR-L10-03 Begin exam keeps the timer for L12, and a second tap '
+      'waits', () async {
     final settings = SettingsRepository(db);
     await settings.load();
     addTearDown(settings.dispose);
@@ -130,7 +131,7 @@ void main() {
     expect(container.read(examStartProvider), isFalse);
   });
 
-  test("Begin exam asks in the learner's meaning language", () async {
+  test("FR-L10-03 Begin exam asks in the learner's meaning language", () async {
     final settings = SettingsRepository(db);
     await settings.load();
     addTearDown(settings.dispose);
@@ -155,5 +156,66 @@ void main() {
       vocabulary.where((r) => RegExp(r'[ঀ-৿]').hasMatch(r.expected!)),
       isNotEmpty,
     );
+  });
+
+  test('BR-EXAM-02 a paper drawn again replaces the old one in what later '
+      'mocks avoid', () async {
+    await start(1);
+    final redrawn = await rows(await start(1, listening: false));
+
+    expect((await exams.satRefs('A2.1'))[1], <String>{
+      for (final r in redrawn) r.itemRef!,
+    });
+  });
+
+  group('with settings', () {
+    late SettingsRepository settings;
+    late ProviderContainer container;
+
+    setUp(() async {
+      settings = SettingsRepository(db);
+      await settings.load();
+      container = ProviderContainer(
+        overrides: <Override>[
+          appDatabaseProvider.overrideWithValue(db),
+          settingsProvider.overrideWithValue(settings),
+        ],
+      );
+    });
+
+    tearDown(() async {
+      container.dispose();
+      await settings.dispose();
+    });
+
+    test('FR-L10-03 a start that fails leaves the timer as it was', () async {
+      container.listen(examStartProvider, (_, _) {});
+
+      // Seed 4 is no mock: the draw refuses it.
+      await expectLater(
+        container
+            .read(examStartProvider.notifier)
+            .begin('A2.1', 4, timer: false),
+        throwsRangeError,
+      );
+      expect(settings.read(SettingKeys.examTimer), isTrue);
+    });
+
+    test('L11 follows the settings it shows', () async {
+      container.listen(examIntroProvider('A2.1', 1), (_, _) {});
+      Future<ExamIntro> intro() =>
+          container.read(examIntroProvider('A2.1', 1).future);
+      expect((await intro()).passPercent, 60);
+
+      await settings.write(SettingKeys.examPassPercent, 70);
+      await settings.write(SettingKeys.listeningQuestions, false);
+      await settings.write(SettingKeys.examTimerDefault, false);
+      await pumpEventQueue();
+
+      final now = await intro();
+      expect(now.passPercent, 70);
+      expect(now.listening, isFalse);
+      expect(now.timer, isFalse);
+    });
   });
 }

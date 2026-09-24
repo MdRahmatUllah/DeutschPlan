@@ -35,6 +35,7 @@ void main() {
     WidgetTester tester, [
     ExamIntro? intro,
     bool wide = false,
+    AdaptiveChrome chrome = AdaptiveChrome.material,
   ]) async {
     went = null;
     tester.view
@@ -46,6 +47,8 @@ void main() {
         key: UniqueKey(),
         overrides: examStub(intro: intro),
         child: MaterialApp.router(
+          builder: (context, child) =>
+              AdaptiveChromeScope(chrome: chrome, child: child!),
           theme: AppTheme.light(),
           localizationsDelegates: appLocalizationsDelegates,
           supportedLocales: supportedLocales,
@@ -77,9 +80,8 @@ void main() {
     await tester.pumpAndSettle();
   }
 
-  testWidgets('the mock, its size, the pass mark and the best so far', (
-    tester,
-  ) async {
+  testWidgets('FR-L10-02 the mock, its size, the pass mark and the best so '
+      'far', (tester) async {
     await pump(tester);
 
     expect(find.text('A1.2 · Mock 2'), findsWidgets);
@@ -91,7 +93,7 @@ void main() {
     );
   });
 
-  testWidgets('never finished: no best', (tester) async {
+  testWidgets('FR-L10-02 never finished: no best', (tester) async {
     await pump(
       tester,
       artboardExamIntro(
@@ -163,6 +165,16 @@ void main() {
       expect(find.text('11'), findsOneWidget);
       expect(find.text('9'), findsOneWidget);
     });
+  });
+
+  testWidgets('iOS: "Mock 2" in the bar, beside the step to go back to', (
+    tester,
+  ) async {
+    await pump(tester, null, false, AdaptiveChrome.cupertino);
+
+    expect(find.text(l10n.examHubMock(2)), findsOneWidget);
+    expect(find.text('A1.2 · Mock 2'), findsOneWidget);
+    expect(find.textContaining('A1.2'), findsWidgets);
   });
 
   testWidgets('BR-EXAM-05 the rules', (tester) async {

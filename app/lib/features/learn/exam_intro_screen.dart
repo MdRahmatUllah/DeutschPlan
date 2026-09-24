@@ -30,6 +30,17 @@ typedef ExamIntro = ({
 @riverpod
 Future<ExamIntro> examIntro(Ref ref, String step, int seed) async {
   final settings = ref.watch(settingsProvider);
+  // Followed, as L10's hub is: the Learn tab keeps L11 alive while Settings
+  // moves the pass mark, listening or the timer's default.
+  final changes = settings.changes
+      .where(
+        (key) =>
+            key == SettingKeys.examPassPercent ||
+            key == SettingKeys.listeningQuestions ||
+            key == SettingKeys.examTimerDefault,
+      )
+      .listen((_) => ref.invalidateSelf());
+  ref.onDispose(changes.cancel);
   final seeds = await ref.watch(examSeedsProvider(step).future);
   return (
     best: seeds.where((s) => s.seed == seed).firstOrNull,
@@ -54,8 +65,7 @@ class ExamStart extends _$ExamStart {
     state = true;
     try {
       final settings = ref.read(settingsProvider);
-      await settings.write(SettingKeys.examTimer, timer);
-      return await ref
+      final id = await ref
           .read(examRepositoryProvider)
           .start(
             step: step,
@@ -66,6 +76,10 @@ class ExamStart extends _$ExamStart {
                 MeaningLanguage.bangla,
             startedAt: ref.read(clockProvider)().toUtc().toIso8601String(),
           );
+      // Only once the attempt exists: a failed start must not change the
+      // timer another mock resumes with.
+      await settings.write(SettingKeys.examTimer, timer);
+      return id;
     } finally {
       state = false;
     }
@@ -207,7 +221,9 @@ class _ExamIntroScreenState extends ConsumerState<ExamIntroScreen> {
     }
 
     final scaffold = AdaptiveScaffold(
-      title: title,
+      // ExamIntro-ios: "‹ A1.2" and "Mock 2" in the bar, the step and mock in
+      // the heading. Android's bar has room for both.
+      title: context.isCupertino ? l10n.examHubMock(widget.seed) : title,
       leading: AdaptiveBackButton(
         label: widget.step,
         onPressed: () => Navigator.of(context).maybePop(),
