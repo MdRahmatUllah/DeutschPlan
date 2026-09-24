@@ -6,7 +6,7 @@ last-read: 170
 
 ## Now
 
-#317 in review as PR #355: answer review threads; re-run the gate if main moved, then merge.
+#318 bug(a11y): Material dialog buttons use Lagoon text at 2.2:1 and 1.9:1 contrast (found in #37) — claimed 2026-09-25 01:22.
 
 ## Next
 
