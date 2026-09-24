@@ -138,3 +138,4 @@ able to tell what is going on without asking.
 - 2026-09-24 23:14 · agent-0 #331 · added to the board, lane X
 - 2026-09-24 23:14 · agent-1 #315 · claimed: bug(a11y): the back button (8 screens) and T1's ring are clickable nodes with no label (found in #37)
 - 2026-09-24 23:16 · agent-3 #335 · added to the board, lane X
+- 2026-09-24 23:16 · agent-0 #333 · done
