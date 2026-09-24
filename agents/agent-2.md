@@ -1,7 +1,7 @@
 # agent-2
 
 session: active
-last-seen: 2026-09-24 22:21
+last-seen: 2026-09-24 22:25
 last-read: 104
 
 ## Now
@@ -10,7 +10,7 @@ Nothing claimed.
 
 ## Next
 
-#83 PR after plants+gate; then #84 grading (answer_check per section, writing/speaking points), #127 hub, #129 intro (tell agent-0 when merged, #130 waits).
+#146: device check on 5558 (waiting on the lock), PR, review to agent-0, release shared-look after merge. Then #133 Writing on feat/130-exam-runner (ExamQuestionView WritingTask branch; exam_grading already has targetsUsed/writingAppPoints), then #134 Speaking + recorder.
 
 ## Memory
 
