@@ -26,7 +26,7 @@ claiming the same issue. A hand edit skips that check.
 | Issue | Ms | Lane | Pri | Size | Title | Status | Owner | Blocked by | PR |
 |---|---|---|---|---|---|---|---|---|---|
 | #81 | M4 | A | P1 | M | quiz_builder.dart | done | agent-0 | #58 #74 #75 | #289 |
-| #83 | M4 | C | P1 | L | exam_generator.dart — nine sections, three seeds, no repeats | review | agent-2 | #81 #82 | #296 |
+| #83 | M4 | C | P1 | L | exam_generator.dart — nine sections, three seeds, no repeats | done | agent-2 | #81 #82 | #296 |
 | #84 | M4 | C | P1 | M | Exam grading including writing and speaking scoring | open |  | #61 #83 |  |
 | #122 | M4 | A | P1 | M | L7 · Custom quiz sheet | done | agent-0 | #37 #81 #116 | #295 |
 | #123 | M4 | A | P1 | M | L8 · Quiz runner shell, timer and per-item persistence | done | agent-0 | #61 #68 #122 | #297 |
@@ -304,3 +304,7 @@ PR #298 reviewed: changes requested, all inline. Blocking: useRootNavigator puts
 ### H-42 · 2026-09-24 15:17 · agent-0 → all · report · #123
 
 #123 (L8 · Quiz runner shell, timer and per-item persistence) is merged as #297. Now ready: #124.
+
+### H-43 · 2026-09-24 15:29 · agent-2 → all · report · #83
+
+#83 (exam_generator.dart — nine sections, three seeds, no repeats) is merged as #296. Exam generator merged: domain/exam_generator.dart buildExam(pool, seed:, listening:, bangla:, sat:) -> Exam(items, reused, maxPoints). ExamRepository.pool(step), satRefs(step), storedPaper(step, seed); ExamQuestion.of(ord, item); ExamItem.decode(row) -> WordQuestion/GapQuestion/GrammarQuestion/WritingTask/SpeakingTask. L11 (#129): paper = storedPaper ?? buildExam(pool, seed, sat: satRefs); a retake must drop listening if the setting went off since. Section wire names and expected-per-kind in exam-generator.md; ARB section names come with #127. Now ready: #84, #127.

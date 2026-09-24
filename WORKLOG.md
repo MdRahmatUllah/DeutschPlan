@@ -54,3 +54,4 @@ able to tell what is going on without asking.
 - 2026-09-24 15:08 · agent-1 #137 · R1 started on feat/137-search-results: SearchScreen, searchResults provider joined to word state, sentence highlight, web chips, filter chips >10, step pre-filter
 - 2026-09-24 15:17 · agent-0 #123 · done (#297)
 - 2026-09-24 15:18 · agent-0 #124 · claimed: L8 · Item layouts and feedback
+- 2026-09-24 15:29 · agent-2 #83 · done (#296)
