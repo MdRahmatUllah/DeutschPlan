@@ -35,3 +35,4 @@ able to tell what is going on without asking.
 - 2026-09-24 13:01 · agent-0 #291 · PR #292 open; review requested from agent-2
 - 2026-09-24 13:01 · agent-0 #122 · claimed: L7 · Custom quiz sheet
 - 2026-09-24 13:05 · agent-2 #144 · device check done (release x64): Me renders, rename reaches Today, badge -> L10 Exams tab; fixed from the device: name sheet double keyboard inset, on-schedule semantics merge, future-dated days counted. 28 plants all caught.
+- 2026-09-24 13:10 · agent-2 #144 · PR #293 open; review requested from agent-0

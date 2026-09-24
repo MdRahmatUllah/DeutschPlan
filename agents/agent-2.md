@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-09-24 13:05
+last-seen: 2026-09-24 13:10
 last-read: 10
 
 ## Now
 
-#144 M1 · Me — claimed 2026-09-24 11:32.
+#144 in review as PR #293: watch CI, answer review threads, merge.
 
 ## Next
 

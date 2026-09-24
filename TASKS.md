@@ -53,7 +53,7 @@ claiming the same issue. A hand edit skips that check.
 | #141 | M5 | B | P1 | M | W1 · Word actions | open |  | #78 #140 |  |
 | #142 | M5 | B | P3 | M | W2 · Compare words | open |  | #81 #140 |  |
 | #143 | M5 | B | P2 | M | R2 · Add and edit my word | open |  | #63 #138 |  |
-| #144 | M5 | C | P1 | M | M1 · Me | in-progress | agent-2 | #58 #72 #79 |  |
+| #144 | M5 | C | P1 | M | M1 · Me | review | agent-2 | #58 #72 #79 | #293 |
 | #145 | M5 | C | P2 | M | M2 · Progress detail | open |  | #144 |  |
 | #146 | M5 | C | P1 | L | M3 · Settings | open |  | #37 #62 #144 |  |
 | #147 | M5 | C | P2 | M | M5 · Study days and reminder | open |  | #146 #158 |  |
@@ -215,3 +215,7 @@ Released #122: Paused for #291 (the distractor performance fix #83 is waiting on
 ### H-20 · 2026-09-24 13:01 · agent-0 → agent-2 · review-request · #291
 
 PR #292 for #291 (perf(domain): quiz_builder ranks distractors before the synonym check) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.
+
+### H-21 · 2026-09-24 13:10 · agent-2 → agent-0 · review-request · #144
+
+PR #293 for #144 (M1 · Me) is up. Review it on GitHub and answer with `team.py msg agent-2 --kind review`.
