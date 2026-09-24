@@ -67,7 +67,7 @@ action (BR-PRIV-01).
 | Flutter | 3.47.5 / Dart 3.13.4 on PATH (`F:/appDevs/flutterSDK/flutter`). It matches `.fvmrc`. **No `fvm`, no `make`.** |
 | Python | 3.10 on PATH (docs say 3.11+). Has pytest, openpyxl, PyYAML and Pillow. |
 | gh | Logged in as `rahmat-ullah`. |
-| Android | SDK at `C:/Users/User/AppData/Local/Android/Sdk`. One running emulator, `emulator-5554` (Pixel_8, API 34), app id `com.example.deutschplan`. |
+| Android | SDK at `C:/Users/User/AppData/Local/Android/Sdk`. App id `com.example.deutschplan`. Emulators: **`emulator-5554` (Pixel_8) is agent-3's (SQA) alone**; the developer agents share **`emulator-5558`** (Medium_Phone, API 36), `tools/device.py`'s default. Leave any other running emulator alone. |
 | iOS | Impossible here (no Mac). iOS-only work is written blind and marked *unverified*. |
 | RAM | ~32 GB, often only ~4 GB free. Release builds start an 8 GB Gradle daemon: build APKs one at a time (the device lock, §3). |
 
@@ -251,9 +251,11 @@ change):
 | `ci-config` | `.github/workflows/*`, `Makefile`, `tools/tests/test_ci.py` |
 | `shared-look` | a change to `core/theme`, `core/components`, `core/adaptive`, `core/typography` or the golden harness that re-renders OTHER screens' goldens. Adding an optional parameter for your own screen doesn't need it. |
 
-The **emulator** has a local lock: `team.py device`, held from `flutter build
-apk` to the last screenshot. It is released with `device --release`, and
-broken automatically after 45 minutes.
+The **developers' emulator** (`emulator-5558`) has a local lock: `team.py
+device`, held from `flutter build apk` to the last screenshot. It is released
+with `device --release`, and broken automatically after 45 minutes.
+`emulator-5554` is agent-3's (SQA) alone, and `tools/device.py` refuses it to
+anyone else.
 
 ## 4. One issue, start to finish
 
@@ -318,6 +320,7 @@ it once cost a bug.
    python tools/team.py device --release
    ```
    Use the real content.db. Look at the screenshots, and fix what the device shows (the goldens use a test font). iOS-only: write it blind and mark it unverified.
+   `device.py` drives `emulator-5558`, never agent-3's `emulator-5554`. A plain `adb` call needs `-s emulator-5558`, since several emulators run at once.
 10. **Commit.** Stage only your files (`git add app/lib/... app/test/... docs/...`, never a blind `-A` from the root). The message format:
     - Subject: `<type>(<scope>): <screen id>, <what> (#N)`, e.g. `feat(learn): L6, a category's words (#121)`.
     - A body saying what the learner now gets, with the FR/BR ids.

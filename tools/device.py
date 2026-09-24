@@ -1,7 +1,8 @@
 """Drive the Android emulator: install the release APK, tap by label, screenshot.
 
-There is one emulator on this machine and several agents, so hold the
-device lock for the whole check:
+emulator-5554 is agent-3's (SQA) alone, and this refuses it to anyone else.
+The developer agents share emulator-5558, the default, so hold the device lock
+for the whole check:
 
     python tools/team.py device                # take it (or be told who has it)
     cd app && flutter build apk --release --target-platform android-x64
@@ -37,6 +38,29 @@ import time
 from pathlib import Path
 
 PACKAGE = "com.example.deutschplan"
+
+# The owner, 2026-09-24: one emulator for SQA, one for the developers.
+# ANDROID_SERIAL or --serial picks another, but never SQA_SERIAL for a
+# developer.
+SQA_AGENT = "agent-3"
+SQA_SERIAL = "emulator-5554"
+DEV_SERIAL = "emulator-5558"
+
+
+def agent() -> str:
+    """This worktree's agent, from the `.dp-agent` that `team.py join` wrote."""
+    marker = Path(__file__).resolve().parents[1] / ".dp-agent"
+    return marker.read_text(encoding="utf-8").strip() if marker.exists() else ""
+
+
+def pick_serial(serial: str | None, who: str) -> str:
+    """The emulator [who] drives: [serial] if given, else theirs."""
+    chosen = serial or (SQA_SERIAL if who == SQA_AGENT else DEV_SERIAL)
+    if chosen == SQA_SERIAL and who != SQA_AGENT:
+        raise SystemExit(
+            f"{SQA_SERIAL} is {SQA_AGENT}'s (SQA) alone: use {DEV_SERIAL}, the default"
+        )
+    return chosen
 APK = Path(__file__).resolve().parents[1] / "app" / "build" / "app" / "outputs" / "flutter-apk" / "app-release.apk"
 
 
@@ -54,7 +78,7 @@ def adb_path() -> str:
 class Device:
     def __init__(self, serial: str | None = None, out: Path | None = None):
         self.adb = adb_path()
-        self.serial = serial or os.environ.get("ANDROID_SERIAL")
+        self.serial = pick_serial(serial or os.environ.get("ANDROID_SERIAL"), agent())
         self.out = out or Path(tempfile.gettempdir())
 
     def run(self, *args: str, check: bool = False) -> subprocess.CompletedProcess:
