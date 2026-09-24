@@ -8,6 +8,7 @@ import 'package:deutschplan/core/components/dp_pill.dart';
 import 'package:deutschplan/core/components/dp_speaker_button.dart';
 import 'package:deutschplan/core/providers/app_providers.dart';
 import 'package:deutschplan/core/theme/aurora_backdrop.dart';
+import 'package:deutschplan/core/theme/dp_surface.dart';
 import 'package:deutschplan/core/theme/dp_tokens.dart';
 import 'package:deutschplan/core/typography/dp_text.dart';
 import 'package:deutschplan/data/repositories/quiz_run_service.dart';
@@ -16,8 +17,7 @@ import 'package:deutschplan/domain/quiz_builder.dart';
 import 'package:deutschplan/features/learn/grammar_practice_screen.dart'
     show PracticeHeader;
 import 'package:deutschplan/features/learn/step_quiz.dart';
-import 'package:deutschplan/features/study/study_cloze.dart'
-    show StudyAnswerField;
+import 'package:deutschplan/features/quiz/quiz_item_view.dart';
 import 'package:deutschplan/features/words/speak.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
 import 'package:deutschplan/router/routes.dart';
@@ -54,6 +54,7 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
 
   /// The current item's verdict once answered; null before.
   Verdict? _verdict;
+  String _given = '';
   bool _timedOut = false;
   double _points = 0;
 
@@ -127,6 +128,7 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
     final verdict = timedOut ? Verdict.wrong : grade(item, given);
     setState(() {
       _verdict = verdict;
+      _given = given.trim();
       _timedOut = timedOut;
       _points += verdict.score;
     });
@@ -222,6 +224,7 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
       final items = run.quiz.items;
       final item = items[_index];
       final verdict = _verdict;
+      final typed = item.direction != QuizDirection.articles && !item.tiles;
       body = Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
@@ -232,10 +235,7 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
               children: <Widget>[
                 Row(
                   children: <Widget>[
-                    DpChip(
-                      label: askName(l10n, item.direction),
-                      kind: DpChipKind.status,
-                    ),
+                    DpChip(label: askName(l10n, item), kind: DpChipKind.status),
                     const Spacer(),
                     if (widget.args.timer && verdict == null)
                       DpPill(
@@ -247,55 +247,53 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
                   ],
                 ),
                 const SizedBox(height: 10),
-                KeyedSubtree(
+                QuizItemView(
                   key: ValueKey<int>(_answers),
-                  child: QuizPrompt(item: item),
-                ),
-                const SizedBox(height: 20),
-                DpText(
-                  l10n.quizYourAnswer.toUpperCase(),
-                  role: DpTextRole.caption,
-                  weight: 700,
-                  letterSpacing: 0.6,
-                  color: tokens.color.textSecondary,
-                ),
-                const SizedBox(height: 8),
-                StudyAnswerField(
-                  controller: _field,
-                  hint: l10n.quizYourAnswer,
-                  onSubmitted: () => unawaited(_submit(_field.text)),
+                  item: item,
+                  field: _field,
+                  picked: verdict == null ? null : _given,
+                  onAnswer: (given) => unawaited(_submit(given)),
                 ),
                 if (verdict != null) ...<Widget>[
                   const SizedBox(height: 12),
-                  DpVerdictRow(
-                    verdict: DpVerdict.values.byName(verdict.name),
-                    message: switch (verdict) {
-                      Verdict.correct => l10n.quizCorrect,
-                      Verdict.almost => l10n.quizAlmost(item.expected),
-                      _ when _timedOut => l10n.quizTimeUp(item.expected),
-                      _ => l10n.quizAnswerIs(item.expected),
-                    },
+                  _Feedback(
+                    item: item,
+                    verdict: verdict,
+                    given: _given,
+                    timedOut: _timedOut,
                   ),
                 ],
               ],
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
-            // Check waits for an answer, as L13's does; only the timer
-            // sends an empty one.
-            child: ListenableBuilder(
-              listenable: _field,
-              builder: (context, _) => DpButton(
-                label: verdict == null ? l10n.quizCheck : l10n.practiceNext,
-                onPressed: verdict != null
-                    ? () => unawaited(_next())
-                    : _field.text.trim().isEmpty
-                    ? null
-                    : () => unawaited(_submit(_field.text)),
+          // A tile or an article button answers by itself; only a typed
+          // answer needs *Check*, and it waits for one: only the timer sends
+          // an empty answer.
+          if (typed || verdict != null)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
+              child: ListenableBuilder(
+                listenable: _field,
+                builder: (context, _) => DpButton(
+                  label: verdict == null ? l10n.quizCheck : l10n.practiceNext,
+                  onPressed: verdict != null
+                      ? () => unawaited(_next())
+                      : _field.text.trim().isEmpty
+                      ? null
+                      : () => unawaited(_submit(_field.text)),
+                ),
               ),
             ),
-          ),
+          // The umlaut row stays above the keyboard on a German field.
+          if (typesGerman(item))
+            DpSurface(
+              kind: DpSurfaceKind.bar,
+              radius: 0,
+              padding: const EdgeInsets.fromLTRB(16, 10, 16, 16),
+              child: DpUmlautBar(controller: _field, enabled: verdict == null),
+            )
+          else
+            const SizedBox(height: 12),
         ],
       );
     }
@@ -331,50 +329,6 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
   }
 }
 
-/// What an item asks, as its chip names it.
-String askName(AppLocalizations l10n, QuizDirection direction) =>
-    switch (direction) {
-      QuizDirection.deEn || QuizDirection.deBn => l10n.quizAskMeaning,
-      QuizDirection.enDe => l10n.quizAskGerman,
-      QuizDirection.articles => l10n.quizAskArticle,
-      QuizDirection.listening => l10n.quizAskListening,
-      QuizDirection.forms || QuizDirection.mixed => l10n.quizAskForm,
-    };
-
-/// The question: the word or meaning to answer, a speaker for listening
-/// (the word itself is the answer), "Perfekt of arbeiten" for forms.
-// ponytail: one plain layout for every direction; #124 gives articles its
-// three buttons, the meanings their tiles, and each its feedback line.
-class QuizPrompt extends ConsumerWidget {
-  const QuizPrompt({required this.item, super.key});
-
-  final QuizItem item;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final l10n = AppLocalizations.of(context);
-    if (item.direction == QuizDirection.listening) {
-      return Align(
-        alignment: AlignmentDirectional.centerStart,
-        child: DpSpeakerButton(
-          state: speakerState(ref),
-          semanticLabel: l10n.quizAskListening,
-          onPressed: () => unawaited(say(ref, context, item.prompt)),
-        ),
-      );
-    }
-    final text = switch (item.form) {
-      FormLabel.plural => l10n.quizFormPlural(item.prompt),
-      FormLabel.thirdPerson => l10n.quizFormThirdPerson(item.prompt),
-      FormLabel.perfekt => l10n.quizFormPerfekt(item.prompt),
-      FormLabel.comparative => l10n.quizFormComparative(item.prompt),
-      FormLabel.superlative => l10n.quizFormSuperlative(item.prompt),
-      null => item.prompt,
-    };
-    return DpText(text, role: DpTextRole.headline, weight: 600);
-  }
-}
-
 /// How far through the run: one continuous Sun bar, as the artboard draws it
 /// — at 30 items, segments would be slivers.
 class _QuizStrip extends StatelessWidget {
@@ -406,5 +360,72 @@ class _QuizStrip extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+/// Under an answered item (`quiz.md`): ✓ Correct · ≈ Almost — watch the
+/// spelling: *der Mietvertrag* · Article: *die*, not *der* · ✗ and the
+/// answer. A German answer can be heard.
+class _Feedback extends ConsumerWidget {
+  const _Feedback({
+    required this.item,
+    required this.verdict,
+    required this.given,
+    required this.timedOut,
+  });
+
+  final QuizItem item;
+  final Verdict verdict;
+  final String given;
+  final bool timedOut;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
+    final answer = item.expected;
+    final (message, emphasis) = switch (verdict) {
+      Verdict.correct => (l10n.quizCorrect, const <String>[]),
+      Verdict.almost => (l10n.quizAlmost(answer), <String>[answer]),
+      // Only a right noun under a wrong article gets here, so both carry
+      // one.
+      Verdict.wrongArticle => _articles(l10n),
+      Verdict.wrong when timedOut => (
+        l10n.quizTimeUp(answer),
+        <String>[answer],
+      ),
+      Verdict.wrong => (l10n.quizAnswerIs(answer), <String>[answer]),
+    };
+    final heard = switch (item.direction) {
+      QuizDirection.articles => '$answer ${item.prompt}',
+      _ when typesGerman(item) => answer,
+      _ => null,
+    };
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Expanded(
+          child: DpVerdictRow(
+            verdict: DpVerdict.values.byName(verdict.name),
+            message: message,
+            emphasis: emphasis,
+          ),
+        ),
+        if (heard != null) ...<Widget>[
+          const SizedBox(width: 8),
+          DpSpeakerButton(
+            size: 32,
+            state: speakerState(ref),
+            semanticLabel: l10n.quizPlay,
+            onPressed: () => unawaited(say(ref, context, heard)),
+          ),
+        ],
+      ],
+    );
+  }
+
+  (String, List<String>) _articles(AppLocalizations l10n) {
+    final wanted = item.expected.split(' ').first;
+    final wrote = given.split(RegExp(r'\s+')).first.toLowerCase();
+    return (l10n.quizArticleWrong(wanted, wrote), <String>[wanted, wrote]);
   }
 }

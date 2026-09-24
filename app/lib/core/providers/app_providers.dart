@@ -346,6 +346,7 @@ QuizBuilder quizBuilder(Ref ref) => QuizBuilder(
 QuizRunService quizRunService(Ref ref) => QuizRunService(
   ref.watch(quizBuilderProvider),
   ref.watch(examRepositoryProvider),
+  ref.watch(ratingServiceProvider),
   ref.watch(clockProvider),
 );
 

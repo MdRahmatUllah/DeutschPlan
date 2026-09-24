@@ -7,11 +7,14 @@ import 'package:deutschplan/data/db/app_database.dart';
 import 'package:deutschplan/data/db/content_dao.dart';
 import 'package:deutschplan/data/repositories/exam_repository.dart'
     show ExamRepository;
+import 'package:deutschplan/data/repositories/plan_repository.dart';
 import 'package:deutschplan/data/repositories/quiz_run_service.dart';
+import 'package:deutschplan/data/repositories/rating_service.dart';
 import 'package:deutschplan/data/repositories/quiz_store.dart';
 import 'package:deutschplan/data/repositories/settings_repository.dart';
 import 'package:deutschplan/data/repositories/word_repository.dart';
 import 'package:deutschplan/domain/answer_check.dart';
+import 'package:deutschplan/domain/fsrs.dart' show Rating;
 import 'package:deutschplan/domain/quiz_builder.dart';
 import 'package:drift/drift.dart' hide isNotNull, isNull;
 import 'package:drift/native.dart';
@@ -40,10 +43,13 @@ void main() {
     settings = SettingsRepository(db);
     await settings.load();
     exams = ExamRepository(db);
+    DateTime now() => DateTime.utc(2026, 9, 21, 19);
+    final words = WordRepository(db, settings);
     service = QuizRunService(
-      QuizBuilder(DriftQuizStore(WordRepository(db, settings))),
+      QuizBuilder(DriftQuizStore(words)),
       exams,
-      () => DateTime.utc(2026, 9, 21, 19),
+      RatingService(db, settings, PlanRepository(db), words, now),
+      now,
     );
     for (final uid in <String>[ContentFixture.haus, ContentFixture.strasse]) {
       await db
@@ -118,6 +124,30 @@ void main() {
       [for (final a in answers) (a.ord, a.given, a.verdict, a.points)],
       [(1, 'x', 'wrong', 0.0), (2, 'die Straße', 'almost', 0.5)],
     );
+  });
+
+  test('FR-L8-02 BR-FSRS-03 each answer is rated, source quiz', () async {
+    final run = await start();
+    final (first, second) = (run.quiz.items[0], run.quiz.items[1]);
+    await service.answer(run, first, given: 'x', verdict: Verdict.wrong);
+    await service.answer(run, second, given: 'y', verdict: Verdict.almost);
+    final log = await (db.select(
+      db.reviewLog,
+    )..orderBy([(r) => OrderingTerm.asc(r.id)])).get();
+    expect(
+      [for (final r in log) (r.wordUid, r.rating, r.source)],
+      [
+        (first.wordUid, Rating.again.value, 'quiz'),
+        (second.wordUid, Rating.hard.value, 'quiz'),
+      ],
+    );
+  });
+
+  test('BR-FSRS-03 the rating for each verdict', () {
+    expect(ratingFor(Verdict.correct), Rating.good);
+    expect(ratingFor(Verdict.almost), Rating.hard);
+    expect(ratingFor(Verdict.wrongArticle), Rating.again);
+    expect(ratingFor(Verdict.wrong), Rating.again);
   });
 
   test('BR-ANS-04 the finish scores out of one point an item', () async {

@@ -1,5 +1,9 @@
 import 'package:deutschplan/data/repositories/exam_repository.dart' as exam;
+import 'package:deutschplan/data/repositories/plan_repository.dart'
+    show ReviewSource;
+import 'package:deutschplan/data/repositories/rating_service.dart';
 import 'package:deutschplan/domain/answer_check.dart';
+import 'package:deutschplan/domain/fsrs.dart' show Rating;
 import 'package:deutschplan/domain/plan_engine.dart' show PlanDate;
 import 'package:deutschplan/domain/quiz_builder.dart';
 
@@ -16,10 +20,11 @@ class QuizRun {
 /// as it is given, and finishes it. The runner talks to this and nothing
 /// else, so a test or a golden can hand it a quiz without a database.
 class QuizRunService {
-  QuizRunService(this._builder, this._exams, this._now);
+  QuizRunService(this._builder, this._exams, this._rating, this._now);
 
   final QuizBuilder _builder;
   final exam.ExamRepository _exams;
+  final RatingService _rating;
   final DateTime Function() _now;
 
   /// FR-L8-01: built by `QuizBuilder`, the seed stored in `quiz_attempts`,
@@ -60,20 +65,27 @@ class QuizRunService {
     return QuizRun(quiz: quiz, attemptId: id);
   }
 
-  /// One answer, persisted as it is given: a quiz left half way keeps what
-  /// was answered (FR-L8-04).
+  /// One answer, persisted as it is given — a quiz left half way keeps what
+  /// was answered (FR-L8-04) — and rated into FSRS (FR-L8-02).
   Future<void> answer(
     QuizRun run,
     QuizItem item, {
     required String given,
     required Verdict verdict,
-  }) => _exams.answerQuiz(
-    attemptId: run.attemptId!,
-    ord: item.ord,
-    given: given,
-    verdict: exam.Verdict.parse(verdict.name)!,
-    points: verdict.score,
-  );
+  }) async {
+    await _exams.answerQuiz(
+      attemptId: run.attemptId!,
+      ord: item.ord,
+      given: given,
+      verdict: exam.Verdict.parse(verdict.name)!,
+      points: verdict.score,
+    );
+    await _rating.rate(
+      item.wordUid,
+      ratingFor(verdict),
+      source: ReviewSource.quiz,
+    );
+  }
 
   /// The run is over: its score out of one point an item (BR-ANS-04).
   Future<void> finish(QuizRun run, {required double points}) =>
@@ -84,3 +96,10 @@ class QuizRunService {
         maxPoints: run.quiz.items.length.toDouble(),
       );
 }
+
+/// BR-FSRS-03: correct → Good, almost → Hard, anything else → Again.
+Rating ratingFor(Verdict verdict) => switch (verdict) {
+  Verdict.correct => Rating.good,
+  Verdict.almost => Rating.hard,
+  Verdict.wrongArticle || Verdict.wrong => Rating.again,
+};

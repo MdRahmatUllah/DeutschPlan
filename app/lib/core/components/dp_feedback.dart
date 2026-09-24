@@ -293,12 +293,22 @@ enum DpVerdict { correct, almost, wrongArticle, wrong }
 /// statuses labelled, verdicts have icons and words." So every verdict renders
 /// an icon *and* text, and the colour is the third signal, not the only one.
 class DpVerdictRow extends StatelessWidget {
-  const DpVerdictRow({required this.verdict, required this.message, super.key});
+  const DpVerdictRow({
+    required this.verdict,
+    required this.message,
+    super.key,
+    this.emphasis = const <String>[],
+  });
 
   final DpVerdict verdict;
 
   /// "Correct", "Almost — watch the spelling: der Mietvertrag", "die, not der".
   final String message;
+
+  /// The parts of [message] set in ink rather than the verdict's colour — the
+  /// answer, as the QuizRunner artboard sets "der Mietvertrag". Found in
+  /// order, so a translation may put them anywhere.
+  final List<String> emphasis;
 
   /// `correct` and `wrong` are a tick and a cross in the artboard, which
   /// Material has. `almost` is the mathematical "approximately equal" sign, and
@@ -347,16 +357,46 @@ class DpVerdictRow extends StatelessWidget {
             ),
           SizedBox(width: tokens.spacing.sm),
           Expanded(
-            child: DpText(
-              message,
-              role: DpTextRole.body,
-              weight: 600,
-              color: colour,
-            ),
+            child: emphasis.isEmpty
+                ? DpText(
+                    message,
+                    role: DpTextRole.body,
+                    weight: 600,
+                    color: colour,
+                  )
+                : Text.rich(
+                    TextSpan(children: _spans(tokens.color.ink)),
+                    style: DpText.styleFor(
+                      tokens,
+                      DpTextRole.body,
+                      color: colour,
+                    ).copyWith(fontWeight: FontWeight.w600),
+                  ),
           ),
         ],
       ),
     );
+  }
+}
+
+extension on DpVerdictRow {
+  List<InlineSpan> _spans(Color ink) {
+    final spans = <InlineSpan>[];
+    var at = 0;
+    for (final part in emphasis) {
+      final found = part.isEmpty ? -1 : message.indexOf(part, at);
+      if (found < 0) continue;
+      if (found > at) spans.add(TextSpan(text: message.substring(at, found)));
+      spans.add(
+        TextSpan(
+          text: part,
+          style: TextStyle(color: ink),
+        ),
+      );
+      at = found + part.length;
+    }
+    if (at < message.length) spans.add(TextSpan(text: message.substring(at)));
+    return spans;
   }
 }
 

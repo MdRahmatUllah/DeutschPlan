@@ -1,8 +1,10 @@
 import 'dart:async';
 
+import 'package:deutschplan/core/components/dp_feedback.dart';
 import 'package:deutschplan/core/components/dp_speaker_button.dart';
 import 'package:deutschplan/core/providers/app_providers.dart';
 import 'package:deutschplan/core/theme/app_theme.dart';
+import 'package:deutschplan/core/theme/dp_surface.dart';
 import 'package:deutschplan/domain/answer_check.dart';
 import 'package:deutschplan/domain/quiz_builder.dart';
 import 'package:deutschplan/features/quiz/quiz_screen.dart';
@@ -108,6 +110,9 @@ void main() {
   }
 
   Finder close() => find.bySemanticsLabel(l10n.quizClose);
+
+  String field(WidgetTester tester) =>
+      tester.widget<TextField>(find.byType(TextField)).controller!.text;
 
   testWidgets('FR-L8-01 the quiz is built from its args, seed and all', (
     tester,
@@ -355,6 +360,138 @@ void main() {
     expect(find.text(l10n.quizAskListening), findsOneWidget);
     expect(find.byType(DpSpeakerButton), findsOneWidget);
     expect(find.text('das Haus'), findsNothing);
+  });
+
+  group('the item layouts', () {
+    Future<void> one(WidgetTester tester, QuizItem item) => pump(
+      tester,
+      args: const QuizArgs(direction: 'mixed', source: 'allLearned', seed: 1),
+      stub: StubQuizRun(quiz: quizOf(<QuizItem>[item, haus])),
+    );
+
+    testWidgets('DE → বাংলা: four tiles, and a tap answers', (tester) async {
+      await one(
+        tester,
+        const QuizItem(
+          ord: 1,
+          wordUid: 'haus',
+          direction: QuizDirection.deBn,
+          prompt: 'das Haus',
+          expected: 'বাড়ি',
+          options: <String>['গাড়ি', 'বাড়ি', 'দরজা', 'রাস্তা'],
+        ),
+      );
+      expect(find.text(l10n.quizAskPick), findsOneWidget);
+      expect(find.byType(TextField), findsNothing);
+      expect(find.text(l10n.quizCheck), findsNothing, reason: 'a tap answers');
+      await tester.tap(find.text('দরজা'));
+      await tester.pumpAndSettle();
+      expect(run.answers, [(1, 'দরজা', Verdict.wrong)]);
+      expect(find.text(l10n.quizAnswerIs('বাড়ি')), findsOneWidget);
+      bool selected(String tile) => tester
+          .widget<DpSurface>(
+            find
+                .ancestor(of: find.text(tile), matching: find.byType(DpSurface))
+                .first,
+          )
+          .selected;
+      expect((selected('দরজা'), selected('গাড়ি')), (true, false));
+
+      await tester.tap(find.text('বাড়ি'));
+      await tester.pumpAndSettle();
+      expect(run.answers, hasLength(1), reason: 'graded once');
+    });
+
+    testWidgets('articles: der, die, das, and a tap answers', (tester) async {
+      await one(
+        tester,
+        const QuizItem(
+          ord: 1,
+          wordUid: 'tuer',
+          direction: QuizDirection.articles,
+          prompt: 'Tür',
+          expected: 'die',
+        ),
+      );
+      expect(find.text(l10n.quizAskArticle), findsOneWidget);
+      expect(find.byType(TextField), findsNothing);
+      final xs = [
+        for (final a in <String>['der', 'die', 'das'])
+          tester.getCenter(find.text(a)).dx,
+      ];
+      expect(xs, orderedEquals([...xs]..sort()), reason: 'der, die, das');
+      await tester.tap(find.text('die'));
+      await tester.pumpAndSettle();
+      expect(run.answers, [(1, 'die', Verdict.correct)]);
+      expect(find.text(l10n.quizCorrect), findsOneWidget);
+    });
+
+    testWidgets('BR-ANS-02 a right noun under the wrong article names both', (
+      tester,
+    ) async {
+      await one(
+        tester,
+        const QuizItem(
+          ord: 1,
+          wordUid: 'vertrag',
+          direction: QuizDirection.enDe,
+          prompt: 'rental contract, lease',
+          expected: 'der Mietvertrag',
+          hint: 'ভাড়ার চুক্তি',
+        ),
+      );
+      await answer(tester, 'Die Mietvertrag');
+      expect(find.text(l10n.quizArticleWrong('der', 'die')), findsOneWidget);
+      expect(run.answers, [(1, 'Die Mietvertrag', Verdict.wrongArticle)]);
+    });
+
+    testWidgets('EN → DE: the Bangla line under it, and the umlaut row', (
+      tester,
+    ) async {
+      await one(
+        tester,
+        const QuizItem(
+          ord: 1,
+          wordUid: 'tuer',
+          direction: QuizDirection.enDe,
+          prompt: 'door',
+          expected: 'die Tür',
+          hint: 'দরজা',
+        ),
+      );
+      expect(find.text('দরজা'), findsOneWidget);
+      expect(find.byType(DpUmlautBar), findsOneWidget);
+      await tester.enterText(find.byType(TextField), 'die T');
+      await tester.tap(find.text('ü'));
+      await tester.enterText(find.byType(TextField), '${field(tester)}r');
+      await tester.pump();
+      await tester.tap(find.text(l10n.quizCheck));
+      await tester.pumpAndSettle();
+      expect(run.answers, [(1, 'die Tür', Verdict.correct)]);
+    });
+
+    testWidgets('a meaning is typed without the umlaut row', (tester) async {
+      await one(tester, haus);
+      expect(find.byType(TextField), findsOneWidget);
+      expect(find.byType(DpUmlautBar), findsNothing);
+      expect(find.byType(DpSpeakerButton), findsOneWidget, reason: 'play');
+    });
+
+    testWidgets('almost: the answer is set apart in ink', (tester) async {
+      await one(
+        tester,
+        const QuizItem(
+          ord: 1,
+          wordUid: 'vertrag',
+          direction: QuizDirection.enDe,
+          prompt: 'rental contract, lease',
+          expected: 'der Mietvertrag',
+        ),
+      );
+      await answer(tester, 'der Mietvertag');
+      final row = tester.widget<DpVerdictRow>(find.byType(DpVerdictRow));
+      expect(row.emphasis, <String>['der Mietvertrag']);
+    });
   });
 
   test('the title: the length names the kind; Forms is Forms', () {
