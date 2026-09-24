@@ -43,6 +43,7 @@ Details M3 settles (#146):
 - FR-M3-01's sample is every n-th of at most 1,000 learned words (rated, not suspended), scaled back up. The stabilities are read once per visit; the slider re-sums them.
 - FR-M3-03: "the model is ready" is `ModelStatus.ready`. A download in progress is not ready, so the switch stays off and M4 opens.
 - *Reset* opens M7 once #150 builds it; until then the row is there and does nothing.
+- FR-M3-02: *Glass* gives the app `AppTheme.glass`, its light and smoked dark variants picked by the phone's light/dark, as theming.md says. Before #146 the root drew paper whatever was chosen.
 - Android: a Cobalt header over flat rows (on the aurora under glass). iOS: an upper-case header over an inset panel, and the stepper is the number beside UIStepper's − | + pill (as OnboardingPace-ios draws it too). Every row is 52 dp.
 
 **Functional requirements**

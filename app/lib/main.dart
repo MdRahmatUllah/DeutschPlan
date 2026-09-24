@@ -262,11 +262,13 @@ class DeutschPlanApp extends ConsumerWidget {
       // `ui_language`, not the device: S2 page 2 and Settings both set it, and
       // a learner who chose বাংলা on an English phone means it.
       locale: ref.watch(languagesProvider).ui.locale,
-      theme: AppTheme.light(),
-      darkTheme: AppTheme.dark(),
+      // FR-M3-02: Glass is a theme of its own, in a light and a smoked dark
+      // variant; the platform's light/dark picks between them (theming.md).
+      theme: mode == DpMode.glass ? AppTheme.glass() : AppTheme.light(),
+      darkTheme: mode == DpMode.glass
+          ? AppTheme.glass(dark: true)
+          : AppTheme.dark(),
       themeMode: switch (mode) {
-        // Glass has its own light and dark variants inside `AppTheme.glass`,
-        // so the platform decides which one shows either way. #143 wires it.
         _ when followsPlatform || mode == DpMode.glass => ThemeMode.system,
         DpMode.light => ThemeMode.light,
         DpMode.dark => ThemeMode.dark,
