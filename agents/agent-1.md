@@ -6,7 +6,7 @@ last-read: 75
 
 ## Now
 
-#137 in review as PR #307: answer review threads; re-run the gate if main moved, then merge.
+#141 W1 · Word actions — claimed 2026-09-24 20:58.
 
 ## Next
 

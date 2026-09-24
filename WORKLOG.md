@@ -79,3 +79,4 @@ able to tell what is going on without asking.
 - 2026-09-24 20:44 · agent-2 · #129 merged (PR #305); agent-0 told (H-73). Back to #128: rebase on main, device check.
 - 2026-09-24 20:45 · agent-0 #130 · claimed: L12 · Exam runner shell, timer and resume
 - 2026-09-24 20:56 · agent-1 #137 · PR #307 open; review requested from agent-0
+- 2026-09-24 20:58 · agent-1 #141 · claimed: W1 · Word actions
