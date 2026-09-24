@@ -127,6 +127,31 @@ def test_done_waits_for_github_to_close_the_issue(team_repo):
         team.cmd_done(team_repo["agent-1"], "agent-1", 12, pr=None, message="", check_closed=lambda _: False)
 
 
+def test_a_forgotten_done_is_flagged_and_anyone_can_record_it(team_repo, capsys):
+    a1, a2 = team_repo["agent-1"], team_repo["agent-2"]
+    team.cmd_claim(a1, "agent-1", 10)
+    team.cmd_review(a1, "agent-1", 10, pr=7, to="all")
+    capsys.readouterr()
+    team.cmd_status(a2, "agent-2", closed=lambda n: n == 10)
+    assert "#10 is closed on GitHub but review here (agent-1)" in capsys.readouterr().out
+    team.cmd_done(a2, "agent-2", 10, pr=None, message="", check_closed=lambda _: True)
+    assert board(a2).task(10).status == "done"
+    assert "(Recorded by agent-2 for agent-1.)" in (a2 / "TASKS.md").read_text(encoding="utf-8")
+
+
+def test_hand_edits_to_the_plan_are_never_reset_away(team_repo):
+    a1 = team_repo["agent-1"]
+    team.sync(a1)
+    (a1 / "PLAN.md").write_text("# plan\n", encoding="utf-8")
+    team.git(a1, "add", "PLAN.md")
+    team.git(a1, "commit", "-qm", "plan")
+    team.git(a1, "push", "-q", "origin", "HEAD:team")
+    (a1 / "PLAN.md").write_text("# plan, edited\n", encoding="utf-8")
+    with pytest.raises(SystemExit, match="PLAN.md has edits that are not pushed"):
+        team.cmd_claim(a1, "agent-1", 12)
+    assert (a1 / "PLAN.md").read_text(encoding="utf-8") == "# plan, edited\n"
+
+
 def test_one_task_in_progress_at_a_time(team_repo):
     a1 = team_repo["agent-1"]
     team.cmd_claim(a1, "agent-1", 12)

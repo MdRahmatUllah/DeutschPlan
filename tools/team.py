@@ -319,8 +319,18 @@ def git(root: Path, *args: str, check: bool = True) -> subprocess.CompletedProce
 
 
 def sync(root: Path) -> None:
-    git(root, "fetch", "--quiet", "origin", BRANCH)
+    """The clone becomes exactly origin/team: a refused change may have left
+    edits, or a new untracked file, behind."""
+    fetched = git(root, "fetch", "--quiet", "origin", BRANCH, check=False)
+    if fetched.returncode != 0:
+        raise SystemExit(f"cannot reach the board (git fetch failed): {fetched.stderr.strip()}")
+    # PLAN.md is the one file edited by hand; the reset below would drop
+    # those edits without a word.
+    if "PLAN.md" in git(root, "status", "--porcelain", "--", "PLAN.md").stdout:
+        raise SystemExit(f"{root / 'PLAN.md'} has edits that are not pushed: "
+                         f"`git -C {root} commit -am \"plan: ...\"` and push them first")
     git(root, "reset", "--quiet", "--hard", f"origin/{BRANCH}")
+    git(root, "clean", "--quiet", "-fd")
 
 
 def transact(root: Path, agent: str, message: str, change, attempts: int = 8):
@@ -338,8 +348,12 @@ def transact(root: Path, agent: str, message: str, change, attempts: int = 8):
         render_status(root)
         git(root, "add", "-A")
         git(root, "commit", "--quiet", "-m", f"{agent}: {message}")
-        if git(root, "push", "--quiet", "origin", f"HEAD:{BRANCH}", check=False).returncode == 0:
+        pushed = git(root, "push", "--quiet", "origin", f"HEAD:{BRANCH}", check=False)
+        if pushed.returncode == 0:
             return result
+        if not re.search(r"rejected|fetch first|non-fast-forward|failed to update ref|cannot lock ref", pushed.stderr):
+            # Not a race: auth, network, permissions. Retrying won't help.
+            raise SystemExit(f"cannot push the board: {pushed.stderr.strip()}")
         time.sleep(0.3 + random.random() * (attempt + 1))
     raise SystemExit("the board is busy: gave up after several rejected pushes — try again")
 
@@ -428,19 +442,25 @@ def cmd_done(root: Path, agent: str, issue: int, pr: int | None, message: str, c
         raise Refused(f"#{issue} is still open on GitHub: merge its PR (with 'Closes #{issue}') first")
     def change(root, board):
         task = board.task(issue)
-        if task.owner != agent:
-            raise Refused(f"#{issue} is not yours ({task.owner or 'nobody'})")
+        if task.status == "done":
+            raise Refused(f"#{issue} is already done")
+        # GitHub says it is closed, so anyone may record it: an owner that
+        # forgot `done` must not leave everything it unblocks waiting.
+        owner = task.owner
         task.status = "done"
         if pr:
             task.pr = f"#{pr}"
         freed = [t for t in board.tasks if t.status == "open" and issue in t.blocked_by and board.ready(t)]
         report = f"#{issue} ({task.title}) is merged" + (f" as {task.pr}" if task.pr else "") + "."
+        if owner and owner != agent:
+            report += f" (Recorded by {agent} for {owner}.)"
         if message:
             report += f" {message}"
         if freed:
             report += " Now ready: " + ", ".join(f"#{t.issue}" for t in freed) + "."
         board.handoff(agent, "all", "report", report, issue)
-        set_section(root, agent, "Now", "Nothing claimed.")
+        if owner == agent:
+            set_section(root, agent, "Now", "Nothing claimed.")
         append_log(root, agent, "done" + (f" ({task.pr})" if task.pr else ""), issue)
     transact(root, agent, f"done #{issue}", on_board(change))
     print(f"#{issue} done")
@@ -541,7 +561,7 @@ def cmd_leave(root: Path, agent: str, message: str) -> None:
     print(f"{agent} is idle; its memory is in agents/{agent}.md")
 
 
-def cmd_status(root: Path, agent: str) -> None:
+def cmd_status(root: Path, agent: str, closed=issue_closed) -> None:
     sync(root)
     text = (root / "TASKS.md").read_text(encoding="utf-8")
     board = Board(text)
@@ -566,6 +586,10 @@ def cmd_status(root: Path, agent: str) -> None:
         print(f"   #{t.issue} {t.ms} lane {t.lane} {t.pri} {t.size} — {t.title}" + (" [assigned to you]" if t.owner == agent else ""))
     held = [lk for lk in board.locks if lk.owner]
     print("== locks held: " + (", ".join(f"{lk.resource} by {lk.owner} ({lk.why})" for lk in held) or "none"))
+    # A merged PR whose `done` was forgotten keeps everything after it blocked.
+    for t in board.tasks:
+        if t.status in ("in-progress", "review") and closed(t.issue):
+            print(f"!! #{t.issue} is closed on GitHub but {t.status} here ({t.owner}): `team.py done {t.issue}` records it")
 
 
 def cmd_agents(root: Path) -> None:

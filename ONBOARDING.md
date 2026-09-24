@@ -138,8 +138,18 @@ push is rejected (someone else changed the board), it starts again from their
 version and re-checks. That is what makes a claim safe: two agents can never
 both hold an issue, and nobody ever resolves a conflict on the board. Read the
 files directly as much as you like. Change them only with the tool.
-(`PLAN.md` is the exception: edit it by hand in your board clone, commit and
-push, rebasing if needed.)
+
+`PLAN.md` is the one exception, edited by hand. Edit it in your board clone,
+then push straight away:
+
+```bash
+git -C /f/appDevs/dp-team/agent-N commit -am "plan: <what changed>"
+git -C /f/appDevs/dp-team/agent-N push origin HEAD:team
+```
+
+If the push is rejected, `pull --rebase` and push again. Announce the change
+with `team.py msg all --kind heads-up`. The tool refuses to run while
+`PLAN.md` has unpushed edits, because its reset would wipe them.
 
 ### Identities and sessions
 
@@ -161,6 +171,8 @@ lane, and each has a memory file. A session takes an identity:
   python tools/team.py leave -m "one-line summary"
   ```
   Your next session, or another agent taking your identity, starts from exactly that.
+- **An identity comes with its worktree.** agent-N always works in `F:/appDevs/dp-wt/agent-N`. If a session dies mid-issue, the next session that joins agent-N continues in that worktree: the uncommitted work, the branch and the claim are all still there, and `Now` and `Memory` say where it was.
+- **A stale claim.** An issue can stay `in-progress` or `review` under an identity nobody has joined for a day. Don't reopen it. Take the identity (`join agent-N --force` once `agents` shows it idle) and finish the work from its worktree and memory. Reopen it (`reopen N -m "stale claim of agent-N: <state of its branch>"`) only if that work is unusable.
 
 ### Commands
 
@@ -177,7 +189,7 @@ Run them from your worktree: `python tools/team.py <command>`.
 | `note -m "..."` | Add to the `Memory` of your memory file |
 | `remember <topic> -m "..."` | Add a lesson to the project's `MEMORY.md` |
 | `review N --pr P [--to agent-M]` | Your PR is up: status becomes `review`, and a review request is posted (to all by default) |
-| `done N --pr P -m "..."` | Merged and closed on GitHub (checked). Posts a report to all, naming anything it unblocked. |
+| `done N --pr P -m "..."` | Merged and closed on GitHub (checked). Posts a report to all, naming anything it unblocked. Anyone may record a `done` the owner forgot. |
 | `release N -m "why"` | Give an issue back, e.g. when you are blocked on it |
 | `assign N agent-M -m "why"` | Reserve an open issue for another agent, with a handoff telling them |
 | `msg <agent-M or all or owner> -m "..." [--kind note/question/answer/report/heads-up/review] [--issue N]` | Any other handoff |
@@ -212,6 +224,15 @@ so while your PR waits on CI, claim the next one.
 - **Questions:** `msg agent-M --kind question`. Answer with `--kind answer`. Don't wait idle for an answer: continue with something else.
 - **Heads-ups:** before you change something others build on (a shared component, a route helper, `QuizArgs`, a provider), `msg all --kind heads-up`.
 - **The owner:** `msg owner` or `decision` both land in `TASKS.md`. The owner reads the board and `STATUS.md`.
+- **When the owner decides**, on the GitHub issue, in a chat, or on the board, whoever hears it:
+  1. `team.py reopen N -m "decided: <the decision>"`
+  2. `team.py remember decisions -m "#N: <the decision>"`, so no one asks again
+  3. If the decision changes behaviour, a docs change in the PR that implements it
+- **A new bug or follow-up** found while working or reviewing, that is not yours to fix in this PR:
+  1. `gh issue create` with a Problem and Acceptance criteria, the milestone it belongs to and a `P` label
+  2. `team.py add <new N> --lane <lane or X>`
+  3. Mention it in the PR
+- **A forgotten `done`.** `status` flags any issue that is closed on GitHub but still `in-progress` or `review` on the board. Anyone may record it with `team.py done N`; the report says for whom.
 
 ### Shared locks
 
@@ -339,7 +360,7 @@ it once cost a bug.
       git push origin --delete feat/N-slug
       python tools/team.py done N --pr P -m "what the others should know"
       ```
-    - The merge runs CI on `main`. If that goes red, fixing it is everyone's top priority, starting with whoever merged last.
+    - The merge runs CI on `main`. If that goes red, fixing it is everyone's top priority, starting with whoever merged last. They announce it (`team.py msg all --kind heads-up -m "main is red after #P: <job>, fixing"`) and nobody else merges until it is green again.
 16. **Next.** Back to step 1. `git switch --detach origin/main` first, if the next branch should start clean.
 
 ## 5. Architecture and file structure
@@ -530,7 +551,7 @@ The files every feature touches, and how to keep merges cheap:
 
 | File | What features do there | Rule |
 |---|---|---|
-| `app/lib/l10n/app_en.arb`, `app_bn.arb` | add keys | Add your keys **after the last key of the most related screen** (quiz keys after the `quiz…` keys), not at the end of the file, where every PR collides. On conflict, keep both blocks and fix the commas. `test/l10n_test.dart` checks the result. |
+| `app/lib/l10n/app_en.arb`, `app_bn.arb` | add keys | Add your keys **after the last key of the most related screen** (quiz keys after the `quiz…` keys, placed after that key's `@key` block in `app_en.arb`), not at the end of the file, where every PR collides. A brand-new screen goes after the keys of the screen it is reached from. On conflict, keep both blocks and fix the commas. `test/l10n_test.dart` checks the result. |
 | `app/lib/router/routes.dart` | replace a placeholder, add imports and helpers | Keep your edit inside your route's class. Put your import in alphabetical order. Rebase just before merging. |
 | `app/test/features/today_fixtures.dart` | add fixtures and `todayStub` overrides | Put your fixtures in `test/features/<feature>_fixtures.dart` and add one spread line (`...searchStub(),`) to `todayStub()`. |
 | `app/test/router/*_test.dart` | screen tables, placeholder assertions | Change only your rows. |
