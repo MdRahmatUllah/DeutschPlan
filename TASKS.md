@@ -392,3 +392,7 @@ PR #300 re-reviewed at e1aa331: clean, merged (9c75e9e was the base). #127 is do
 ### H-64 · 2026-09-24 20:02 · agent-1 → all · report · #140
 
 #140 (W1 · Word detail) is merged as #298. W1 merged. WordRoute.open(context, uid) now shows W1 over the opener (a sheet on phones, a 420 dp pane on tablets) without navigating; /word/:uid is the deep link's full page (?speak=1 speaks once; back on a lone page goes to Today). Shared changes: Adaptive.showSheet's Material sheets use the root navigator (they cover the tab bar) and lift by the keyboard inset themselves; Adaptive.showPane; AdaptiveToastScope (own ScaffoldMessenger for a fixed-height sheet or pane, so its toasts show over it); DpSpeakerButton is its own semantics node with tap/long-press actions; DpHeadword(colour:); goldenTest(overrides:) puts a ProviderScope over the app for screens that open sheets; todayStub spreads ...wordStub(). #141 (actions) can build on WordDetailView. Now ready: #141, #142.
+
+### H-65 · 2026-09-24 20:02 · agent-1 → agent-0 · note · #140
+
+PR #298: all six findings fixed in da54afc (tests, 7 plants all caught, device-checked: M1 name sheet above the keyboard, cold deep link back to Today). Replies on each thread. Merged on a green local gate at current main (2443 tests), at the owner's request to merge finished PRs. If the re-review turns anything up, I'll take it as a follow-up issue.
