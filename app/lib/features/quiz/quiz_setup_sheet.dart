@@ -40,7 +40,9 @@ QuizArgs customQuiz({
   source: source.name,
   sourceRef: switch (source) {
     QuizSource.stepLearned => step,
-    QuizSource.category => '$category',
+    // A wrong call fails here, not as a quietly empty quiz for category "null".
+    QuizSource.category =>
+      category == null ? throw ArgumentError.notNull('category') : '$category',
     QuizSource.allLearned || QuizSource.compareSet => null,
   },
   length: length,

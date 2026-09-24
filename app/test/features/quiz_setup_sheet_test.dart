@@ -253,6 +253,19 @@ void main() {
     expect(customDirections, isNot(contains(QuizDirection.forms)));
   });
 
+  test('a category quiz needs its category', () {
+    expect(
+      () => customQuiz(
+        direction: QuizDirection.deEn,
+        length: 10,
+        source: QuizSource.category,
+        step: 'A2.1',
+        timer: false,
+      ),
+      throwsArgumentError,
+    );
+  });
+
   test('a seed can be given, so a quiz can be rebuilt', () {
     final a = customQuiz(
       direction: QuizDirection.deEn,
