@@ -3,6 +3,7 @@ library;
 
 import 'package:deutschplan/features/exam/exam_runner_screen.dart';
 import 'package:deutschplan/features/study/study_screen.dart';
+import 'package:deutschplan/features/me/settings_screen.dart';
 import 'package:deutschplan/features/today/today_screen.dart';
 
 import '../features/today_fixtures.dart';
@@ -722,7 +723,7 @@ void main() {
       // opener." The modal is on the root navigator, so what it returns to is
       // whatever branch the shell was showing.
       await pumpApp(tester, guards: guardsWith(), at: '/me/settings');
-      expect(find.text('M3'), findsOneWidget);
+      expect(find.byType(SettingsScreen), findsOneWidget);
 
       router.push(
         '/study',
@@ -739,7 +740,11 @@ void main() {
       router.pop();
       await tester.pumpAndSettle();
 
-      expect(find.text('M3'), findsOneWidget, reason: 'it lost the opener');
+      expect(
+        find.byType(SettingsScreen),
+        findsOneWidget,
+        reason: 'it lost the opener',
+      );
       expect(find.byType(AppShell), findsOneWidget);
     });
 

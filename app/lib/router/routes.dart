@@ -38,6 +38,7 @@ import 'package:deutschplan/features/learn/grammar_topic_screen.dart';
 import 'package:deutschplan/features/learn/learn_screen.dart';
 import 'package:deutschplan/features/learn/step_detail_screen.dart';
 import 'package:deutschplan/features/me/me_screen.dart';
+import 'package:deutschplan/features/me/settings_screen.dart';
 import 'package:deutschplan/features/quiz/quiz_screen.dart';
 import 'package:deutschplan/features/search/search_screen.dart';
 import 'package:deutschplan/features/sentences/sentences_screen.dart';
@@ -433,7 +434,7 @@ class SettingsRoute extends GoRouteData with $SettingsRoute {
 
   @override
   Widget build(BuildContext context, GoRouterState state) =>
-      const PlaceholderScreen(title: 'Settings', screen: 'M3');
+      const SettingsScreen();
 }
 
 class ReminderSettingsRoute extends GoRouteData with $ReminderSettingsRoute {
@@ -447,6 +448,11 @@ class ReminderSettingsRoute extends GoRouteData with $ReminderSettingsRoute {
 class ModelsRoute extends GoRouteData with $ModelsRoute {
   const ModelsRoute();
 
+  /// Pushed (navigation.md), so back returns to what opened it: M3's voice
+  /// and translation rows (FR-M3-03), M1's link.
+  static void open(BuildContext context) =>
+      unawaited(context.push<void>(const ModelsRoute().location));
+
   @override
   Widget build(BuildContext context, GoRouterState state) =>
       const PlaceholderScreen(title: 'Voice & translation', screen: 'M4');
@@ -454,6 +460,10 @@ class ModelsRoute extends GoRouteData with $ModelsRoute {
 
 class ExportImportRoute extends GoRouteData with $ExportImportRoute {
   const ExportImportRoute();
+
+  /// Pushed (navigation.md), so back returns to M3.
+  static void open(BuildContext context) =>
+      unawaited(context.push<void>(const ExportImportRoute().location));
 
   @override
   Widget build(BuildContext context, GoRouterState state) =>

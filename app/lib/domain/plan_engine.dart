@@ -86,8 +86,9 @@ class ActiveStep {
   final String sublevelCode;
   final PlanDate startedOn;
 
-  /// Frozen at enrollment (BR-PLAN-08): a change to the setting takes effect
-  /// from the next step, not retroactively across days already planned.
+  /// The step's pace, set at enrollment and moved by M3 and restart setup.
+  /// BR-PLAN-08: a change reaches the plan from tomorrow; days already
+  /// planned are not rewritten.
   final int dailyNew;
   final int studyDaysMask;
 }

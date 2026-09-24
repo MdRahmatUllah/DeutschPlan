@@ -4,6 +4,7 @@ library;
 import 'package:deutschplan/features/exam/exam_runner_screen.dart';
 import 'package:deutschplan/features/backlog/backlog_screen.dart';
 import 'package:deutschplan/features/me/me_screen.dart';
+import 'package:deutschplan/features/me/settings_screen.dart';
 import 'package:deutschplan/features/today/today_screen.dart';
 
 import '../features/today_fixtures.dart';
@@ -121,7 +122,7 @@ void main() {
       // Two presses from a pushed route in another tab: the first pops, the
       // second goes to Today. Not one press for both.
       await pumpApp(tester, at: '/me/settings');
-      expect(find.text('M3'), findsOneWidget);
+      expect(find.byType(SettingsScreen), findsOneWidget);
 
       await pressBack(tester);
       expect(
@@ -139,7 +140,7 @@ void main() {
       expect(find.text('M5'), findsOneWidget);
 
       await pressBack(tester);
-      expect(find.text('M3'), findsOneWidget);
+      expect(find.byType(SettingsScreen), findsOneWidget);
 
       await pressBack(tester);
       expect(find.byType(MeScreen), findsOneWidget);

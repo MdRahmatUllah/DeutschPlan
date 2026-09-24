@@ -296,6 +296,9 @@ class WordRepository extends DatabaseAccessor<AppDatabase>
     (row) => _word(row.w, row.s, row.derivedStatus),
   );
 
+  /// FR-M3-01: the stabilities Settings' retention estimate sums over.
+  Future<List<double>> learnedStabilities() => stabilitiesOfLearned().get();
+
   Future<WordWithState?> find(String uid) async {
     final rows = await wordWithState(_doneAfter, uid).get();
     return rows.isEmpty

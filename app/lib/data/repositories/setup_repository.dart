@@ -1,4 +1,5 @@
 import 'package:deutschplan/data/db/app_database.dart';
+import 'package:drift/drift.dart' show Value;
 import 'package:deutschplan/data/repositories/plan_store.dart';
 import 'package:deutschplan/data/repositories/setting_keys.dart';
 import 'package:deutschplan/data/repositories/settings_repository.dart';
@@ -39,6 +40,18 @@ class SetupRepository {
   /// For `enroll` and `activeStep`, which run inside the transaction here
   /// exactly as they do on their own.
   final DriftPlanStore _store;
+
+  /// M3's *New words per day*: the setting, and the pace of the open
+  /// enrollment, which is what the plan engine reads. BR-PLAN-08 has it reach
+  /// the plan from tomorrow — days already planned are not rewritten.
+  ///
+  /// Through drift's typed update, not a raw statement, so the step lines
+  /// that show the pace ("about 41 days left at 15 words/day") hear it.
+  Future<void> setDailyNew(int count) => _db.transaction(() async {
+    await _settings.write(SettingKeys.dailyNew, count);
+    await (_db.update(_db.enrollments)..where((e) => e.completedOn.isNull()))
+        .write(EnrollmentsCompanion(dailyNew: Value(count)));
+  });
 
   /// Writes [choice] as of [today]. Progress — word states, the review log,
   /// days already planned — is not touched: restart setup changes the plan,

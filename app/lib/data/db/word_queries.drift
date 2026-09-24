@@ -226,3 +226,11 @@ quizPool:
   FROM words w
   WHERE w.sublevel_code = :step
   ORDER BY w.seq;
+
+-- FR-M3-01: what Settings' retention estimate sums over — every word that has
+-- been rated and is not suspended. One never rated has no stability, and asks
+-- for no review until it has one.
+stabilitiesOfLearned:
+  SELECT stability FROM word_state
+  WHERE status <> 'suspended' AND stability > 0
+  ORDER BY word_uid;

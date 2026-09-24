@@ -244,6 +244,9 @@ class ModelRepository {
   /// The model id the manifest gives the on-device voice.
   static const String voiceModel = 'supertonic3';
 
+  /// The model id the manifest gives on-device translation.
+  static const String translationModel = 'hymt';
+
   static const String _stagingSuffix = '.staging';
 
   /// Where the model being replaced waits while the new one is put in place.

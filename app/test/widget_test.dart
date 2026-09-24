@@ -24,6 +24,7 @@ void main() {
   Future<DeutschPlanApp> pumpApp(
     WidgetTester tester, {
     ThemeModeSetting? choose,
+    bool settle = true,
   }) async {
     final db = AppDatabase.memory();
     addTearDown(db.close);
@@ -44,7 +45,8 @@ void main() {
         child: app,
       ),
     );
-    await tester.pumpAndSettle();
+    // The aurora drifts for ever under glass: nothing to settle.
+    settle ? await tester.pumpAndSettle() : await tester.pump();
     return app;
   }
 
@@ -75,6 +77,17 @@ void main() {
       final app = tester.widget<MaterialApp>(find.byType(MaterialApp));
       expect(app.themeMode, pair.$2, reason: '${pair.$1}');
     }
+  });
+
+  testWidgets('FR-M3-02 Glass renders glass, light or smoked as the phone '
+      'is', (tester) async {
+    await pumpApp(tester, choose: ThemeModeSetting.glass, settle: false);
+
+    final app = tester.widget<MaterialApp>(find.byType(MaterialApp));
+    expect(app.themeMode, ThemeMode.system);
+    expect(app.theme!.extension<DpTokens>()!.isGlass, isTrue);
+    expect(app.darkTheme!.extension<DpTokens>()!.isGlass, isTrue);
+    expect(app.darkTheme!.brightness, Brightness.dark);
   });
 
   testWidgets('a Settings change reaches the next frame', (tester) async {

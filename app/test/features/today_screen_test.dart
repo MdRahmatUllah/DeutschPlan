@@ -32,6 +32,7 @@ import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 
 import '../db/content_fixture.dart';
+import 'settings_fixtures.dart';
 import 'today_fixtures.dart';
 
 /// T1 · Today in progress — #95.
@@ -64,6 +65,8 @@ void main() {
             coachMarkProvider.overrideWith(_ShowingCoachMark.new)
           else
             coachMarkProvider.overrideWithValue(false),
+          // The gear and the study-days link open M3.
+          ...settingsStub(),
           ...also,
         ],
         child: MaterialApp.router(
