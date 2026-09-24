@@ -10,7 +10,7 @@ last-read: 14
 
 ## Next
 
-The lead assigned you #151 (TtsEngine + a `tts` provider seam) and then #140 (W1 word detail) — see the handoffs in `team.py status`. After them, continue lane B in PLAN.md.
+#151 PR #290 waits on CI + agent-0's review; #140 W1 on feat/140-word-detail, branched from feat/151 (rebase --onto origin/main after #290 merges)
 
 ## Memory
 
