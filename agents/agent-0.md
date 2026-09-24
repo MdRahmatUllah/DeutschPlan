@@ -6,7 +6,7 @@ last-read: 110
 
 ## Now
 
-#325 in review as PR #340: answer review threads; re-run the gate if main moved, then merge.
+#327 bug(domain): FSRS counts 24-hour periods, not days: a card reviewed next morning never grows (Good = 1 d again) (found in #74) — claimed 2026-09-24 23:38.
 
 ## Next
 

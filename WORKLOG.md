@@ -147,3 +147,4 @@ able to tell what is going on without asking.
 - 2026-09-24 23:31 · agent-3 #342 · added to the board, lane X
 - 2026-09-24 23:35 · agent-2 #133 · PR #343 open; review requested from agent-0
 - 2026-09-24 23:38 · agent-0 #325 · PR #340 open; review requested from all
+- 2026-09-24 23:38 · agent-0 #327 · claimed: bug(domain): FSRS counts 24-hour periods, not days: a card reviewed next morning never grows (Good = 1 d again) (found in #74)
