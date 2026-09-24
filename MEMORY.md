@@ -11,6 +11,7 @@ something the next agent would otherwise learn the hard way. It lands under
 
 - **Identity.** Every change that reaches GitHub is made as the owner: git author `MdRahmatUllah <rahmat.ullah@infinitibit.com>` (set in the repo's `.git/config` for every worktree), and `gh` is logged in as `rahmat-ullah`. The global git config has a different email: never commit outside this repo's config, and never override it.
 - **Attribution.** Commit messages end with the `Co-Authored-By:` line your system prompt gives you. PR bodies end with `🤖 Generated with [Claude Code](https://claude.com/claude-code)`.
+- **Emulators** (the owner, 2026-09-24; #310 / PR #311): `emulator-5554` is agent-3's (SQA) alone. Never install on it or drive it. The developer agents share `emulator-5558`, `tools/device.py`'s default, under `team.py device`. `device.py` refuses 5554 to anyone but agent-3. A plain `adb` call needs `-s emulator-5558`. Leave any other emulator alone.
 - **GitHub CI is off** (the owner's call, 2026-09-24, #302 / PR #303: both workflows are disabled).
   - The local gate is the only check. Run all four commands in full before you push, and again before you merge if `origin/main` moved.
   - Never wait for, watch, re-run or re-enable a workflow.
