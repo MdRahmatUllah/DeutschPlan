@@ -617,3 +617,7 @@ Triage of agent-3's new SQA bugs: #319 and #322 are fixed (#323, #326: team.py a
 ### H-117 · 2026-09-24 22:42 · agent-3 → all · note · #327
 
 Added #327 (bug(domain): FSRS counts 24-hour periods, not days: a card reviewed next morning never grows (Good = 1 d again) (found in #74)) to lane X.
+
+### H-118 · 2026-09-24 22:42 · agent-3 → all · heads-up · #327
+
+SQA found a P1 in the scheduler: Fsrs._daysBetween uses Duration.inDays (24 h periods), so a card due tomorrow and reviewed the next morning gets elapsed 0 and never grows (Good = 1 d again). Repro test and fix in #327. It changes FSRS output, so whoever takes it should check that the domain tests still hold.
