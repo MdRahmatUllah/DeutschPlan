@@ -7,11 +7,11 @@ import 'package:deutschplan/core/providers/app_providers.dart';
 import 'package:deutschplan/core/theme/dp_tokens.dart';
 import 'package:deutschplan/core/typography/dp_text.dart';
 import 'package:deutschplan/data/db/app_database.dart';
-import 'package:deutschplan/data/repositories/setting_keys.dart';
 import 'package:deutschplan/domain/answer_check.dart';
 import 'package:deutschplan/domain/cloze.dart';
 import 'package:deutschplan/features/study/study_back.dart';
 import 'package:deutschplan/features/study/study_card.dart';
+import 'package:deutschplan/features/words/speak.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
@@ -75,21 +75,21 @@ class _StudyClozeCardState extends ConsumerState<StudyClozeCard> {
     if (_verdict != null || _answer.text.trim().isEmpty) return;
     final verdict = checkGerman(_answer.text, _expected);
     setState(() => _verdict = verdict);
-    if (verdict.isRight) _play();
+    // The autoplay stays quiet once the phone is known to have no German
+    // voice: T2's front card has already said so once this session. A tap on
+    // play still explains, every time (accessibility-performance.md).
+    if (verdict.isRight && ref.read(ttsAvailableProvider).value != false) {
+      _play();
+    }
     widget.onChecked();
   }
 
-  void _play() {
-    final speed = ref.read(settingsProvider).read(SettingKeys.ttsSpeed);
-    unawaited(
-      ref
-          .read(systemTtsProvider)
-          .speak(widget.cloze.example.german, rate: speed),
-    );
-  }
+  void _play() => unawaited(say(ref, context, widget.cloze.example.german));
 
   @override
   Widget build(BuildContext context) {
+    // Watched so [_check] can read it: whether the phone can speak German.
+    ref.watch(ttsAvailableProvider);
     final tokens = context.tokens;
     final l10n = AppLocalizations.of(context);
     final word = widget.word;

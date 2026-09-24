@@ -16,11 +16,12 @@ import 'package:deutschplan/l10n/generated/app_localizations.dart';
 import 'package:deutschplan/main.dart'
     show appLocalizationsDelegates, supportedLocales;
 import 'package:deutschplan/router/routes.dart';
-import 'package:deutschplan/services/tts/tts_engine.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
+
+import '../services/fake_tts.dart';
 
 import '../db/content_fixture.dart';
 
@@ -61,7 +62,7 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code) VALUES
   List<Override> overrides() => <Override>[
     appDatabaseProvider.overrideWithValue(db),
     settingsProvider.overrideWithValue(settings),
-    systemTtsProvider.overrideWithValue(_SilentTts()),
+    ttsProvider.overrideWithValue(FakeTts()),
     clockProvider.overrideWithValue(() => DateTime(2026, 9, 21, 9)),
   ];
 
@@ -436,12 +437,4 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code) VALUES
       await tester.pumpAndSettle();
     });
   });
-}
-
-class _SilentTts implements TtsEngine {
-  @override
-  Future<bool> speak(String text, {double rate = 1}) async => true;
-
-  @override
-  Future<void> stop() async {}
 }

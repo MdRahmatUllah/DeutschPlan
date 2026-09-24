@@ -11,12 +11,13 @@ import 'package:deutschplan/features/study/study_card.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
 import 'package:deutschplan/main.dart'
     show appLocalizationsDelegates, supportedLocales;
-import 'package:deutschplan/services/tts/tts_engine.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
+
+import '../services/fake_tts.dart';
 
 /// T2 · StudyFront — #101.
 void main() {
@@ -84,7 +85,7 @@ void main() {
   group('the card', () {
     late AppDatabase db;
     late SettingsRepository settings;
-    late _RecordingTts tts;
+    late FakeTts tts;
 
     Future<void> pump(
       WidgetTester tester, {
@@ -105,12 +106,12 @@ void main() {
           await db.close();
         }),
       );
-      tts = _RecordingTts(voice: voice);
+      tts = FakeTts(voice: voice);
       await tester.pumpWidget(
         ProviderScope(
           overrides: <Override>[
             settingsProvider.overrideWithValue(settings),
-            systemTtsProvider.overrideWithValue(tts),
+            ttsProvider.overrideWithValue(tts),
           ],
           child: MaterialApp(
             theme: theme ?? AppTheme.light(),
@@ -253,24 +254,34 @@ void main() {
         tester.widget<DpSpeakerButton>(find.byType(DpSpeakerButton)).state,
         DpSpeakerState.unavailable,
       );
-      expect(find.text(l10n.studyNoVoice), findsOneWidget);
+      expect(find.text(l10n.speakerNoVoice), findsOneWidget);
 
       // A tap on the slashed speaker explains again and asks nothing more
       // of the engine.
       await tester.pumpAndSettle();
       await tester.pump(DpToast.duration);
       await tester.pumpAndSettle();
-      expect(find.text(l10n.studyNoVoice), findsNothing);
+      expect(find.text(l10n.speakerNoVoice), findsNothing);
       await tester.tap(find.byType(DpSpeakerButton));
       await tester.pump();
-      expect(find.text(l10n.studyNoVoice), findsOneWidget);
+      expect(find.text(l10n.speakerNoVoice), findsOneWidget);
       expect(tts.said, hasLength(1));
+    });
+
+    testWidgets('V01 and slashed before the first tap, when the phone says '
+        'so', (tester) async {
+      await pump(tester, voice: false);
+      expect(
+        tester.widget<DpSpeakerButton>(find.byType(DpSpeakerButton)).state,
+        DpSpeakerState.unavailable,
+      );
+      expect(tts.said, isEmpty);
     });
 
     testWidgets('and autoplay says so once, not on every card', (tester) async {
       await pump(tester, autoplay: true, voice: false);
       await tester.pump();
-      expect(find.text(l10n.studyNoVoice), findsOneWidget);
+      expect(find.text(l10n.speakerNoVoice), findsOneWidget);
 
       await tester.pumpAndSettle();
       await tester.pump(DpToast.duration);
@@ -279,7 +290,7 @@ void main() {
         ProviderScope(
           overrides: <Override>[
             settingsProvider.overrideWithValue(settings),
-            systemTtsProvider.overrideWithValue(tts),
+            ttsProvider.overrideWithValue(tts),
           ],
           child: MaterialApp(
             theme: AppTheme.light(),
@@ -297,24 +308,8 @@ void main() {
         ),
       );
       await tester.pump();
-      expect(find.text(l10n.studyNoVoice), findsNothing);
+      expect(find.text(l10n.speakerNoVoice), findsNothing);
       expect(tts.said, hasLength(1));
     });
   });
-}
-
-class _RecordingTts implements TtsEngine {
-  _RecordingTts({this.voice = true});
-
-  final bool voice;
-  final List<(String, double)> said = <(String, double)>[];
-
-  @override
-  Future<bool> speak(String text, {double rate = 1}) async {
-    said.add((text, rate));
-    return voice;
-  }
-
-  @override
-  Future<void> stop() async {}
 }

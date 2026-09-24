@@ -1,12 +1,11 @@
 import 'dart:async';
 
 import 'package:deutschplan/core/components/dp_chip.dart';
-import 'package:deutschplan/core/providers/app_providers.dart';
 import 'package:deutschplan/core/theme/dp_tokens.dart';
 import 'package:deutschplan/core/typography/dp_text.dart';
-import 'package:deutschplan/data/repositories/setting_keys.dart';
 import 'package:deutschplan/data/repositories/word_repository.dart';
 import 'package:deutschplan/features/study/study_card.dart';
+import 'package:deutschplan/features/words/speak.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
@@ -115,10 +114,7 @@ class WordPlayButton extends ConsumerWidget {
       label: AppLocalizations.of(context).summaryPlay(word),
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
-        onTap: () {
-          final speed = ref.read(settingsProvider).read(SettingKeys.ttsSpeed);
-          unawaited(ref.read(systemTtsProvider).speak(word, rate: speed));
-        },
+        onTap: () => unawaited(say(ref, context, word)),
         child: SizedBox(
           width: 40,
           height: 40,

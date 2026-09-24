@@ -11,12 +11,13 @@ import 'package:deutschplan/l10n/generated/app_localizations.dart';
 import 'package:deutschplan/main.dart'
     show appLocalizationsDelegates, supportedLocales;
 import 'package:deutschplan/router/routes.dart';
-import 'package:deutschplan/services/tts/tts_engine.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
+
+import '../services/fake_tts.dart';
 
 import 'today_fixtures.dart';
 
@@ -35,7 +36,11 @@ void main() {
     l10n = await AppLocalizations.delegate.load(supportedLocales.first);
   });
 
-  Future<void> pump(WidgetTester tester, {TopicWithState? topic}) async {
+  Future<void> pump(
+    WidgetTester tester, {
+    TopicWithState? topic,
+    bool voice = true,
+  }) async {
     spoken = <String>[];
     marked = <String>[];
     went = null;
@@ -72,7 +77,7 @@ void main() {
         overrides: <Override>[
           ...todayStub(null, null, null, topic),
           settingsProvider.overrideWithValue(settings),
-          systemTtsProvider.overrideWithValue(_Tts(spoken)),
+          ttsProvider.overrideWithValue(FakeTts(voice: voice, spoken: spoken)),
           grammarRatingServiceProvider.overrideWithValue(_Rating(marked)),
         ],
         child: MaterialApp.router(
@@ -112,6 +117,17 @@ void main() {
     );
     await tester.pump();
     expect(spoken, <String>['Könnten Sie mir bitte helfen?']);
+  });
+
+  testWidgets('V01 no German voice: play says how to install one', (
+    tester,
+  ) async {
+    await pump(tester, voice: false);
+    await tester.tap(
+      find.bySemanticsLabel(l10n.topicPlay('Könnten Sie mir bitte helfen?')),
+    );
+    await tester.pump();
+    expect(find.text(l10n.speakerNoVoice), findsOneWidget);
   });
 
   testWidgets('FR-L4-02 Practise opens L15 for this topic, as many items as '
@@ -181,21 +197,6 @@ void main() {
     // In place of this topic, not on top of it: back leaves the topics.
     expect(routes.canPop(), isFalse);
   });
-}
-
-class _Tts implements TtsEngine {
-  _Tts(this.spoken);
-
-  final List<String> spoken;
-
-  @override
-  Future<bool> speak(String text, {double rate = 1}) async {
-    spoken.add(text);
-    return true;
-  }
-
-  @override
-  Future<void> stop() async {}
 }
 
 /// Holds each markLearned open until [release] completes, as a real write

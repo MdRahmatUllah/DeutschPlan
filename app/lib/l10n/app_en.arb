@@ -1237,9 +1237,9 @@
   "@studyCopyHint": {
     "description": "T2 headword long-press hint, for screen readers."
   },
-  "studyNoVoice": "No German voice on this phone. Install one in its text-to-speech settings.",
-  "@studyNoVoice": {
-    "description": "T2 toast when the phone has no German system voice: once when it first fails, and on each tap of the slashed speaker (accessibility-performance.md)."
+  "speakerNoVoice": "No German voice on this phone. Install one in its text-to-speech settings.",
+  "@speakerNoVoice": {
+    "description": "Toast on any speaker (T2, T3, T5, L4, L6, S3…) when the phone has no German system voice: on a tap that could not speak, and on each tap of the slashed speaker. T2's autoplay says it once (accessibility-performance.md)."
   },
   "studyTip": "⚠ {tip}",
   "@studyTip": {
