@@ -65,6 +65,7 @@ class AdaptiveScaffold extends StatelessWidget {
     this.actions = const <Widget>[],
     this.bottomBar,
     this.backgroundColor,
+    this.statusBarColour,
   });
 
   final Widget body;
@@ -73,6 +74,12 @@ class AdaptiveScaffold extends StatelessWidget {
   final List<Widget> actions;
   final Widget? bottomBar;
   final Color? backgroundColor;
+
+  /// A tab's header colour, for the strip behind the status bar once its
+  /// content scrolls (#317). The app is edge to edge: at rest the header
+  /// bleeds to the top as the artboards draw it, and scrolled, cards would
+  /// run under the clock and icons without it. Frosted under glass.
+  final Color? statusBarColour;
 
   /// Android 56 dp, iOS 44 pt — the artboards draw exactly these.
   static const double materialBarHeight = 56;
@@ -102,7 +109,12 @@ class AdaptiveScaffold extends StatelessWidget {
             SafeArea(bottom: false, child: _bar(context)),
           Expanded(
             child: bottomBar == null
-                ? SafeArea(top: false, child: body)
+                ? SafeArea(
+                    top: false,
+                    child: statusBarColour == null
+                        ? body
+                        : _StatusStrip(colour: statusBarColour!, child: body),
+                  )
                 // The bar below takes the system inset, so the body — and a
                 // tab's own scaffold inside it — must not take it again. The
                 // same for the keyboard: this scaffold already rises above
@@ -168,6 +180,59 @@ class AdaptiveScaffold extends StatelessWidget {
             : Row(mainAxisSize: MainAxisSize.min, children: actions),
         middleSpacing: 8,
       ),
+    );
+  }
+}
+
+/// [child], with a strip of [colour] over the status bar while its own
+/// vertical scroll is away from the top.
+class _StatusStrip extends StatefulWidget {
+  const _StatusStrip({required this.colour, required this.child});
+
+  final Color colour;
+  final Widget child;
+
+  @override
+  State<_StatusStrip> createState() => _StatusStripState();
+}
+
+class _StatusStripState extends State<_StatusStrip> {
+  bool _scrolled = false;
+
+  bool _moved(ScrollNotification notification) {
+    final metrics = notification.metrics;
+    // The tab's own list, not a chip row or a list inside it.
+    if (notification.depth != 0 || metrics.axis != Axis.vertical) return false;
+    final scrolled = metrics.pixels > metrics.minScrollExtent;
+    if (scrolled != _scrolled) setState(() => _scrolled = scrolled);
+    return false;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final tokens = context.tokens;
+    final top = MediaQuery.paddingOf(context).top;
+    return Stack(
+      children: <Widget>[
+        NotificationListener<ScrollNotification>(
+          onNotification: _moved,
+          child: widget.child,
+        ),
+        if (_scrolled && top > 0)
+          Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            height: top,
+            child: tokens.isGlass
+                ? DpSurface(
+                    kind: DpSurfaceKind.tint(widget.colour),
+                    radius: 0,
+                    child: const SizedBox.expand(),
+                  )
+                : ColoredBox(color: widget.colour),
+          ),
+      ],
     );
   }
 }

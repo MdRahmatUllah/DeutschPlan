@@ -1,3 +1,4 @@
+import 'package:deutschplan/core/adaptive/adaptive.dart';
 import 'package:deutschplan/features/sentences/sentences_screen.dart';
 import 'package:deutschplan/core/components/dp_coach_mark.dart';
 
@@ -135,6 +136,23 @@ void main() {
       await tester.pumpAndSettle();
       expect(location(), '/me/settings');
     });
+  });
+
+  testWidgets("#317 Today's Lagoon stays behind the status bar when "
+      'scrolled', (tester) async {
+    await pump(tester);
+    final scaffold = tester.widget<AdaptiveScaffold>(
+      find
+          .descendant(
+            of: find.byType(TodayScreen),
+            matching: find.byType(AdaptiveScaffold),
+          )
+          .first,
+    );
+    expect(
+      scaffold.statusBarColour,
+      tester.element(find.byType(TodayScreen)).tokens.color.primary,
+    );
   });
 
   group('the ring card', () {

@@ -151,6 +151,7 @@ class MeScreen extends ConsumerWidget {
       backgroundColor: tokens.isGlass
           ? tokens.surface.paper.withValues(alpha: 0)
           : tokens.surface.paper,
+      statusBarColour: tokens.color.der,
       body: tokens.isGlass
           ? AuroraBackdrop(leading: tokens.color.der, child: body)
           : body,
