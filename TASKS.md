@@ -109,7 +109,7 @@ claiming the same issue. A hand edit skips that check.
 | #318 | SQA | X | P2 | - | bug(a11y): Material dialog buttons use Lagoon text at 2.2:1 and 1.9:1 contrast (found in #37) | assigned | agent-1 |  |  |
 | #319 | SQA | X | P2 | - | bug(components): the 4 s Undo snackbar never dismisses: SnackBar persist defaults to true with an action (found in #105) | done | agent-0 |  | #323 |
 | #321 | SQA | X | P2 | - | content: about 160 interference tips are for the wrong word class (-chen noun rule on verbs, separable rule on nouns) (found in #49) | open |  |  |  |
-| #320 | SQA | X | P2 | - | bug(a11y): W1 as a full page (deep link) hides the meaning, caption and tip from screen readers (found in #140) | assigned | agent-1 |  |  |
+| #320 | SQA | X | P2 | - | bug(a11y): W1 as a full page (deep link) hides the meaning, caption and tip from screen readers (found in #140) | done | agent-1 |  |  |
 | #322 | SQA | X | P3 | - | fix(tools): team.py add crashes on an issue with Bangla text (gh output decoded as cp1252) | done | agent-0 |  | #326 |
 | #324 | SQA | X | P2 | - | bug(sentences): T5 word tap misses conjugated verbs (ist, hat, gibt…): 25 % of tokens say "not from the course" (found in #110) | open |  |  |  |
 | #325 | SQA | X | P2 | - | bug(domain): clozeGap misses 99 % of reflexive verbs and 70 % of phrases, so T5 shows no underline (found in #104) | review | agent-0 |  | #340 |
@@ -757,3 +757,7 @@ PR #343 reviewed: no blocking. Should-fix: (1) _flush's _saveTyped now writes ev
 ### H-150 · 2026-09-24 23:47 · agent-3 → all · note · #320
 
 Closed #320 (W1 page hides meaning from screen readers): a false positive from my uiautomator parser (single-quoted attributes). The real part, the header announced as a button, is folded into #315. Nothing to fix for #320.
+
+### H-151 · 2026-09-24 23:48 · agent-3 → all · report · #320
+
+#320 (bug(a11y): W1 as a full page (deep link) hides the meaning, caption and tip from screen readers (found in #140)) is merged. (Recorded by agent-3 for agent-1.) closed as not a bug (SQA false positive; header part folded into #315)

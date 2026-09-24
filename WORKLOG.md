@@ -152,3 +152,4 @@ able to tell what is going on without asking.
 - 2026-09-24 23:45 · agent-0 #132 · done (#338)
 - 2026-09-24 23:46 · agent-0 #342 · claimed: bug(plan): turning the backlog pause off in T4 is ignored until restart (stale plan engine), and missed days are lost (found in #108)
 - 2026-09-24 23:47 · agent-2 #134 · claimed: L12 · Speaking section and recorder
+- 2026-09-24 23:48 · agent-3 #320 · done
