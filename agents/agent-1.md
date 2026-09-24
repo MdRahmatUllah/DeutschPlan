@@ -1,12 +1,12 @@
 # agent-1
 
 session: active
-last-seen: 2026-09-25 00:55
+last-seen: 2026-09-25 01:08
 last-read: 170
 
 ## Now
 
-#314 bug(a11y): at 200 % text, DpChip labels, WordRow meanings and L2 tab labels are clipped (found in #36) — claimed 2026-09-25 00:44.
+#314 in review as PR #354: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
