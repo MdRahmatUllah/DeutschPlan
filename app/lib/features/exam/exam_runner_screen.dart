@@ -10,6 +10,7 @@ import 'package:deutschplan/core/theme/dp_surface.dart';
 import 'package:deutschplan/core/theme/dp_tokens.dart';
 import 'package:deutschplan/core/typography/dp_text.dart';
 import 'package:deutschplan/data/repositories/exam_run_service.dart';
+import 'package:deutschplan/domain/exam_generator.dart' show WritingTask;
 import 'package:deutschplan/features/exam/exam_navigator_sheet.dart';
 import 'package:deutschplan/features/exam/exam_question_view.dart';
 import 'package:deutschplan/features/learn/step_exams.dart'
