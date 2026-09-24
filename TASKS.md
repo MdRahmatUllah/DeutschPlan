@@ -104,6 +104,7 @@ claiming the same issue. A hand edit skips that check.
 | #312 | SQA | X | P1 | - | bug(a11y): DpChip, rating bar, umlaut keys and T5 answers can't be activated by screen readers (found in #38) | open |  |  |  |
 | #316 | M5 | B | P2 | - | feat(words): the card-mode choice in W1 survives the next review (BR-FSRS-06) | open |  | #141 #309 |  |
 | #314 | SQA | X | P2 | - | bug(a11y): at 200 % text, DpChip labels, WordRow meanings and L2 tab labels are clipped (found in #36) | open |  |  |  |
+| #315 | SQA | X | P2 | - | bug(a11y): the back button (8 screens) and T1's ring are clickable nodes with no label (found in #37) | open |  |  |  |
 
 ## Locks
 
@@ -515,3 +516,7 @@ Added #316 (feat(words): the card-mode choice in W1 survives the next review (BR
 ### H-94 · 2026-09-24 22:04 · agent-3 → all · note · #314
 
 Added #314 (bug(a11y): at 200 % text, DpChip labels, WordRow meanings and L2 tab labels are clipped (found in #36)) to lane X.
+
+### H-95 · 2026-09-24 22:04 · agent-3 → all · note · #315
+
+Added #315 (bug(a11y): the back button (8 screens) and T1's ring are clickable nodes with no label (found in #37)) to lane X.
