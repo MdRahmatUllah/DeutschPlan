@@ -301,4 +301,16 @@ void main() {
 
     expect(seen.last, WordStatus.done);
   });
+
+  test('FR-L3-01 the library: level by level, teaching order within', () async {
+    // An A2 topic whose seq comes before A1's: level still wins.
+    await db.customStatement(
+      'INSERT INTO c.grammar_topics (uid, sublevel_code, level_code, seq, '
+      "topic, tags) VALUES ('a2', 'A1.2', 'A2', 0, 'Early A2', 'gap-fill'), "
+      "('a1b', 'A1.2', 'A1', 9, 'Late A1', 'gap-fill')",
+    );
+    final all = await grammar.watchAll().first;
+    expect(all.map((topic) => topic.uid), <String>['g1', 'a1b', 'a2']);
+    expect(all.first.status, WordStatus.todo);
+  });
 }

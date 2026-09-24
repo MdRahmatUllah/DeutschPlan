@@ -3,6 +3,7 @@ import 'package:deutschplan/core/providers/app_providers.dart';
 import 'package:deutschplan/data/db/app_database.dart';
 import 'package:deutschplan/data/repositories/word_repository.dart';
 import 'package:deutschplan/features/backlog/backlog_screen.dart';
+import 'package:deutschplan/features/learn/grammar_library_screen.dart';
 import 'package:deutschplan/features/learn/step_grammar.dart';
 import 'package:deutschplan/features/learn/step_quiz.dart';
 import 'package:deutschplan/features/learn/step_words.dart';
@@ -258,6 +259,70 @@ List<TopicWithState> artboardTopics() {
   ];
 }
 
+/// The GrammarLibrary artboard: 182 topics, 145 not learned yet and 2 due
+/// on 21 September. A1 and A2 are the artboard's rows; B1 starts with its
+/// two, and the rest of the course fills in below the fold.
+List<TopicWithState> artboardLibrary() {
+  // (step, title, due date or null for not learned)
+  final rows = <(String, String, String?)>[
+    ('A1.1', 'Präsens: regelmäßige Verben', '2026-10-02'),
+    ('A1.1', 'Artikel und Genus', '2026-10-05'),
+    ('A1.2', 'Perfekt mit haben', '2026-09-28'),
+    ('A2.1', 'Modalverben im Präteritum', '2026-09-25'),
+    ('A2.1', 'Konjunktiv II – Höflichkeit', '2026-09-21'),
+    ('A2.1', 'Dativ nach Präpositionen', null),
+    ('A2.2', 'Relativsätze im Nominativ', null),
+    ('B1.1', 'Passiv Präsens', null),
+    ('B1.1', 'Genitiv', null),
+  ];
+  // 173 more: 31 scheduled and one due among them, the rest not learned.
+  const steps = <String>[
+    'B1.2',
+    'B2.1',
+    'B2.2',
+    'C1.1',
+    'C1.2',
+    'C2.1',
+    'C2.2',
+  ];
+  for (var i = 0; i < 173; i++) {
+    rows.add((
+      steps[i * steps.length ~/ 173],
+      'Topic ${i + 10}',
+      i < 31
+          ? '2026-11-01'
+          : i == 31
+          ? '2026-09-20'
+          : null,
+    ));
+  }
+  return <TopicWithState>[
+    for (final (i, (step, title, due)) in rows.indexed)
+      TopicWithState(
+        topic: GrammarTopic(
+          uid: 'lib$i',
+          sublevelCode: step,
+          levelCode: step.split('.').first,
+          seq: i,
+          topic: title,
+          tags: 'gap-fill,pick-the-form',
+        ),
+        state: due == null
+            ? null
+            : GrammarStateData(
+                grammarUid: 'lib$i',
+                status: 'learning',
+                due: due,
+                stability: 4,
+                difficulty: 5,
+                reps: 2,
+                lapses: 0,
+              ),
+        status: due == null ? WordStatus.todo : WordStatus.learning,
+      ),
+  ];
+}
+
 /// Today without a database: the artboard's plan, and no coach mark.
 ///
 /// For tests about something else — the router, the shell — that only need
@@ -302,6 +367,8 @@ List<Override> todayStub([
       finishedAt: '2026-09-20T19:05:00',
     )),
   ),
+  // L3 without a database: the GrammarLibrary artboard's 182.
+  libraryTopicsProvider.overrideWith((ref) => Stream.value(artboardLibrary())),
   // L1 without a database: the Learn artboard's course.
   stepProgressProvider.overrideWith(
     (ref) => Stream.value(course ?? artboardCourse()),

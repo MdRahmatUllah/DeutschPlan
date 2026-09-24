@@ -336,5 +336,10 @@
   "quizDirectionArticles": "আর্টিকেল",
   "quizDirectionListening": "শোনা",
   "quizDirectionMixed": "মিশ্র",
-  "quizLastLineForms": "রূপ · {date}"
+  "quizLastLineForms": "রূপ · {date}",
+  "libraryTitle": "ব্যাকরণ লাইব্রেরি",
+  "libraryAll": "সব · {count}",
+  "libraryNotLearned": "এখনও শেখা হয়নি · {count}",
+  "libraryDue": "বাকি · {count}",
+  "libraryNone": "এখানে কোনো বিষয় নেই।"
 }

@@ -30,6 +30,7 @@ import 'package:deutschplan/router/route_guards.dart';
 import 'package:deutschplan/features/today/today_screen.dart';
 import 'package:deutschplan/features/backlog/backlog_screen.dart';
 import 'package:deutschplan/features/day_complete/day_complete_screen.dart';
+import 'package:deutschplan/features/learn/grammar_library_screen.dart';
 import 'package:deutschplan/features/learn/learn_screen.dart';
 import 'package:deutschplan/features/learn/step_detail_screen.dart';
 import 'package:deutschplan/features/sentences/sentences_screen.dart';
@@ -308,7 +309,7 @@ class GrammarLibraryRoute extends GoRouteData with $GrammarLibraryRoute {
 
   @override
   Widget build(BuildContext context, GoRouterState state) =>
-      const PlaceholderScreen(title: 'Grammar', screen: 'L3');
+      const GrammarLibraryScreen();
 }
 
 class GrammarTopicRoute extends GoRouteData with $GrammarTopicRoute {
