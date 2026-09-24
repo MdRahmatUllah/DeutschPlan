@@ -27,6 +27,8 @@ import 'package:deutschplan/data/repositories/rating_service.dart'
 import 'package:deutschplan/data/repositories/search_repository.dart';
 import 'package:deutschplan/data/repositories/translation_repository.dart';
 import 'package:deutschplan/data/repositories/word_actions.dart';
+import 'package:deutschplan/domain/plan_engine.dart';
+import 'package:deutschplan/features/today/today_providers.dart';
 import 'package:drift/drift.dart' hide isNotNull, isNull;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
@@ -564,6 +566,40 @@ void main() {
       await tester.tap(find.text(l10n.undo));
       await tester.pumpAndSettle();
       expect(actions.undone, <String>['addToToday']);
+    });
+
+    testWidgets("FR-W1-01 an action and its Undo each re-read Today's plan, "
+        'which is read once when the day opens', (tester) async {
+      var reads = 0;
+      await pump(
+        tester,
+        extra: <Override>[
+          todayPlanProvider.overrideWith((ref) async {
+            reads++;
+            return const DailyPlan(
+              date: '2026-09-21',
+              revise: <String>[],
+              newToday: <String>[],
+              grammarDue: <String>[],
+              backlog: <String>[],
+              activeStep: 'A1.1',
+              isStudyDay: true,
+            );
+          }),
+        ],
+      );
+      final today = ProviderScope.containerOf(
+        tester.element(find.byType(WordDetailView)),
+      ).listen(todayPlanProvider.future, (_, _) {});
+      addTearDown(today.close);
+      await tester.pump();
+      expect(reads, 1);
+
+      await tapAction(tester, l10n.wordMarkKnown);
+      expect(reads, 2);
+      await tester.tap(find.text(l10n.undo));
+      await tester.pumpAndSettle();
+      expect(reads, 3);
     });
 
     testWidgets('FR-W1-02 Mark known, with its Undo', (tester) async {

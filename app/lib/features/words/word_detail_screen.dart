@@ -15,6 +15,7 @@ import 'package:deutschplan/domain/fsrs.dart' show Rating;
 import 'package:deutschplan/domain/plan_engine.dart' show daysBetween;
 import 'package:deutschplan/features/study/study_back.dart';
 import 'package:deutschplan/features/study/study_card.dart';
+import 'package:deutschplan/features/today/today_providers.dart';
 import 'package:deutschplan/features/words/speak.dart';
 import 'package:deutschplan/features/words/word_row.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
@@ -620,10 +621,20 @@ class _ActionsState extends ConsumerState<_Actions> {
   ) async {
     if (_busy) return;
     setState(() => _busy = true);
+    // Today's plan is read once, when the day opens: a row W1 adds, closes
+    // or drops reaches Today's list and ring only when it is read again. The
+    // container, because *Undo* can come after the sheet has gone.
+    final container = ProviderScope.containerOf(context, listen: false);
+    void replan() => container.invalidate(todayPlanProvider);
     try {
       final undo = await action(ref.read(wordActionsProvider));
+      replan();
       if (!mounted) return;
-      DpUndo.show(context, message: message, onUndo: () => unawaited(undo()));
+      DpUndo.show(
+        context,
+        message: message,
+        onUndo: () => unawaited(undo().then((_) => replan())),
+      );
     } finally {
       if (mounted) setState(() => _busy = false);
     }
