@@ -2233,6 +2233,51 @@
       }
     }
   },
+  "quizSetupTitle": "Custom quiz",
+  "@quizSetupTitle": {
+    "description": "L7 custom quiz sheet title (quiz.md)."
+  },
+  "quizSetupDirection": "Direction",
+  "@quizSetupDirection": {
+    "description": "L7 section label."
+  },
+  "quizSetupLength": "Length",
+  "@quizSetupLength": {
+    "description": "L7 section label."
+  },
+  "quizSetupSource": "Source",
+  "@quizSetupSource": {
+    "description": "L7 section label."
+  },
+  "quizSourceStep": "This step's learned words",
+  "@quizSourceStep": {
+    "description": "L7 source chip: the step's learned words (BR-QUIZ-01)."
+  },
+  "quizSourceAll": "All learned",
+  "@quizSourceAll": {
+    "description": "L7 source chip: every learned word (BR-QUIZ-01)."
+  },
+  "quizSetupTimer": "Timer",
+  "@quizSetupTimer": {
+    "description": "L7 timer switch label (FR-L8-05)."
+  },
+  "quizSetupTimerOff": "Off · 15 s per question when on",
+  "@quizSetupTimerOff": {
+    "description": "L7 timer line while the timer is off."
+  },
+  "quizSetupTimerOn": "On · 15 s per question",
+  "@quizSetupTimerOn": {
+    "description": "L7 timer line while the timer is on."
+  },
+  "quizStart": "Start quiz · {questions}",
+  "@quizStart": {
+    "description": "L7 primary button. questions is quizQuestions, e.g. \"20 questions\".",
+    "placeholders": {
+      "questions": {
+        "type": "String"
+      }
+    }
+  },
   "libraryTitle": "Grammar library",
   "@libraryTitle": {
     "description": "L3 title."

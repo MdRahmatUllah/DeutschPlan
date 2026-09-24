@@ -442,16 +442,28 @@ abstract final class Adaptive {
     final tokens = context.tokens;
     final chrome = context.chrome;
 
-    Widget wrap(BuildContext sheetContext) => DpSurface(
-      kind: DpSurfaceKind.cardStrong,
-      radius: tokens.shape.sheet,
-      child: SafeArea(top: false, child: builder(sheetContext)),
+    // The sheet is a route of its own, above wherever the opener's chrome
+    // scope sits: it carries the chrome with it, or an iOS sheet would draw
+    // Material controls.
+    Widget wrap(BuildContext sheetContext) => AdaptiveChromeScope(
+      chrome: chrome,
+      child: DpSurface(
+        kind: DpSurfaceKind.cardStrong,
+        radius: tokens.shape.sheet,
+        child: SafeArea(top: false, child: builder(sheetContext)),
+      ),
     );
 
     if (chrome == AdaptiveChrome.cupertino) {
+      // A Cupertino popup has no Material under it, and a sheet's buttons,
+      // fields and text styles need one: without it every line came out with
+      // the yellow "no Material" underline and a DpButton threw (#122).
       return cupertino.showCupertinoModalPopup<T>(
         context: context,
-        builder: wrap,
+        builder: (sheetContext) => Material(
+          type: MaterialType.transparency,
+          child: wrap(sheetContext),
+        ),
       );
     }
 

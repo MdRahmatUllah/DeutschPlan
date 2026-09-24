@@ -12,6 +12,7 @@ device lock for the whole check:
 Steps run in order:
     tap:<label>    tap the first element whose content-desc starts with <label>
     find:<text>    as tap, but matching anywhere in the content-desc
+    at:<x>,<y>     tap a point (a switch whose label repeats its row's text)
     wait:<label>   wait (up to a minute) until an element starts with <label>
     shot:<file>    screenshot into --out (default: the system temp dir)
     back           the Android back key
@@ -117,6 +118,9 @@ class Device:
 
 
 def main(argv: list[str]) -> int:
+    # Labels carry arrows and Bangla; a Windows console is cp1252.
+    if hasattr(sys.stdout, "reconfigure"):
+        sys.stdout.reconfigure(encoding="utf-8", errors="replace")
     if not argv:
         print(__doc__)
         return 2
@@ -154,6 +158,10 @@ def main(argv: list[str]) -> int:
             device.tap(step[4:])
         elif step.startswith("find:"):
             device.tap(step[5:], anywhere=True)
+        elif step.startswith("at:"):
+            x, y = step[3:].split(",")
+            device.sh("input", "tap", x.strip(), y.strip())
+            time.sleep(1.2)
         elif step.startswith("wait:"):
             device.wait(step[5:])
         elif step.startswith("shot:"):
