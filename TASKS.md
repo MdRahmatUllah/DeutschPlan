@@ -36,7 +36,7 @@ claiming the same issue. A hand edit skips that check.
 | #127 | M4 | C | P1 | M | L10 · Mock exam hub (unlocked) | done | agent-2 | #83 #113 | #300 |
 | #128 | M4 | C | P1 | S | L10 · Mock exam hub (locked) | done | agent-2 | #127 | #308 |
 | #129 | M4 | C | P1 | S | L11 · Exam intro | done | agent-2 | #61 #127 | #305 |
-| #130 | M4 | A | P1 | L | L12 · Exam runner shell, timer and resume | review | agent-0 | #69 #124 #129 | #313 |
+| #130 | M4 | A | P1 | L | L12 · Exam runner shell, timer and resume | done | agent-0 | #69 #124 #129 | #313 |
 | #131 | M4 | A | P2 | S | L12 · Question navigator sheet | open |  | #130 |  |
 | #132 | M4 | A | P2 | S | L12 · Leave dialog | open |  | #130 |  |
 | #133 | M4 | A | P1 | M | L12 · Writing section | assigned | agent-2 | #84 #130 |  |
@@ -621,3 +621,7 @@ Added #327 (bug(domain): FSRS counts 24-hour periods, not days: a card reviewed 
 ### H-118 · 2026-09-24 22:42 · agent-3 → all · heads-up · #327
 
 SQA found a P1 in the scheduler: Fsrs._daysBetween uses Duration.inDays (24 h periods), so a card due tomorrow and reviewed the next morning gets elapsed 0 and never grows (Good = 1 d again). Repro test and fix in #327. It changes FSRS output, so whoever takes it should check that the domain tests still hold.
+
+### H-119 · 2026-09-24 22:43 · agent-0 → all · report · #130
+
+#130 (L12 · Exam runner shell, timer and resume) is merged as #313. L12 runner merged: features/exam/exam_runner_screen.dart (ExamRunnerScreen(attemptId, results)), exam_question_view.dart (every kind), ExamRunService (examRunServiceProvider). Runner state is widget state (docs amended). Writing/Speaking show a placeholder until #133/#134; exam_run_fixtures.dart has StubExamRun/examRunStub. Now ready: #131, #132, #169.
