@@ -618,6 +618,17 @@ class PlanEngine {
     );
   }
 
+  /// FR-M2-02: the longest streak so far, rest days as [streak] counts them.
+  Future<int> bestStreak(PlanDate today) async {
+    final step = await _store.activeStep();
+    final mask = step?.studyDaysMask ?? allDays;
+    return longestStreak(
+      activeDays: await _store.activeDays(today, lookbackDays: 36500),
+      isStudyDay: (day) => isStudyDay(day, mask),
+      today: today,
+    );
+  }
+
   /// "Am I on schedule?" — planned against introduced.
   ///
   /// [fallbackDailyNew] is the pace to divide by when there is no open

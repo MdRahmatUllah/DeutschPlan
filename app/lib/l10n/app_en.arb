@@ -4042,5 +4042,204 @@
         "type": "String"
       }
     }
+  },
+  "progressTitle": "Progress",
+  "@progressTitle": {
+    "description": "M2 bar title."
+  },
+  "progressWeek": "Week",
+  "@progressWeek": {
+    "description": "M2 segment: this week."
+  },
+  "progressMonth": "Month",
+  "@progressMonth": {
+    "description": "M2 segment: the last 30 days."
+  },
+  "progressAll": "All",
+  "@progressAll": {
+    "description": "M2 segment: everything so far."
+  },
+  "progressPeriodWeek": "this week",
+  "@progressPeriodWeek": {
+    "description": "M2: the Week segment's period, inside a line."
+  },
+  "progressPeriodMonth": "last 30 days",
+  "@progressPeriodMonth": {
+    "description": "M2: the Month segment's period, inside a line."
+  },
+  "progressPeriodAll": "all time",
+  "@progressPeriodAll": {
+    "description": "M2: the All segment's period, inside a line."
+  },
+  "progressCardsPerDay": "Cards per day",
+  "@progressCardsPerDay": {
+    "description": "M2 chart title for Week and Month."
+  },
+  "progressCardsPerMonth": "Cards per month",
+  "@progressCardsPerMonth": {
+    "description": "M2 chart title for All, whose bars are months."
+  },
+  "progressCardsLine": "{period} · {count}",
+  "@progressCardsLine": {
+    "description": "M2 chart's corner: the period and its cards, e.g. 'this week · 85'.",
+    "placeholders": {
+      "period": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "progressRevisions": "Revisions",
+  "@progressRevisions": {
+    "description": "M2 chart legend: the Lagoon part of a bar."
+  },
+  "progressNew": "New",
+  "@progressNew": {
+    "description": "M2 chart legend: the Sun part of a bar."
+  },
+  "progressBar": "{when}: {revisions} revisions, {newWords} new",
+  "@progressBar": {
+    "description": "M2 chart, for screen readers: one bar.",
+    "placeholders": {
+      "when": {
+        "type": "String"
+      },
+      "revisions": {
+        "type": "int"
+      },
+      "newWords": {
+        "type": "int"
+      }
+    }
+  },
+  "progressRetention": "Retention",
+  "@progressRetention": {
+    "description": "M2 chart title (FR-M2-01)."
+  },
+  "progressRetentionLine": "{percent}% {period} · target {target}%",
+  "@progressRetentionLine": {
+    "description": "M2 retention's corner: the period's share remembered and desired_retention.",
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      },
+      "period": {
+        "type": "String"
+      },
+      "target": {
+        "type": "int"
+      }
+    }
+  },
+  "progressRetentionNone": "No revisions {period} · target {target}%",
+  "@progressRetentionNone": {
+    "description": "M2 retention's corner when the period has no revisions.",
+    "placeholders": {
+      "period": {
+        "type": "String"
+      },
+      "target": {
+        "type": "int"
+      }
+    }
+  },
+  "progressRemembered": "Remembered (Hard / Good / Easy)",
+  "@progressRemembered": {
+    "description": "M2 retention legend: the line."
+  },
+  "progressTarget": "Target",
+  "@progressTarget": {
+    "description": "M2 retention legend: the dashed line, desired_retention."
+  },
+  "progressRetentionPoint": "{when}: {percent}% remembered",
+  "@progressRetentionPoint": {
+    "description": "M2 retention, for screen readers: one point.",
+    "placeholders": {
+      "when": {
+        "type": "String"
+      },
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "progressRetentionLater": "{days, plural, =1{Retention shows after 30 days of study: 1 day to go.} other{Retention shows after 30 days of study: {days} days to go.}}",
+  "@progressRetentionLater": {
+    "description": "M2: instead of the retention chart before 30 days of data (progress.md).",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "progressByStep": "By step",
+  "@progressByStep": {
+    "description": "M2 card heading, shown upper case."
+  },
+  "progressStepCount": "{done} / {words}",
+  "@progressStepCount": {
+    "description": "M2 by-step row: the step's words done of all.",
+    "placeholders": {
+      "done": {
+        "type": "int",
+        "format": "decimalPattern"
+      },
+      "words": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "progressHours": "{hours} h {minutes}",
+  "@progressHours": {
+    "description": "M2 total: study time, e.g. '6 h 48'.",
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      },
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "progressMinutes": "{minutes} min",
+  "@progressMinutes": {
+    "description": "M2 total: study time under an hour.",
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "progressStudyTime": "study time",
+  "@progressStudyTime": {
+    "description": "M2 total label (FR-M2-03)."
+  },
+  "progressIntroduced": "words introduced",
+  "@progressIntroduced": {
+    "description": "M2 total label."
+  },
+  "progressReviews": "reviews",
+  "@progressReviews": {
+    "description": "M2 total label: every rating given."
+  },
+  "progressStreakBest": "{streak} / {best}",
+  "@progressStreakBest": {
+    "description": "M2 total: the streak and the best there has been (FR-M2-02).",
+    "placeholders": {
+      "streak": {
+        "type": "int"
+      },
+      "best": {
+        "type": "int"
+      }
+    }
+  },
+  "progressStreakLabel": "streak / best",
+  "@progressStreakLabel": {
+    "description": "M2 total label."
   }
 }

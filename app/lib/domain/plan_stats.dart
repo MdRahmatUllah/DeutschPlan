@@ -44,6 +44,36 @@ int streakLength({
   return length;
 }
 
+/// FR-M2-02: the longest streak there has been, rest days kept as
+/// `streakLength` keeps them — they carry a run without lengthening it.
+///
+/// ponytail: rest days are today's study days; the mask a past week had is
+/// not recorded.
+int longestStreak({
+  required Set<PlanDate> activeDays,
+  required bool Function(PlanDate) isStudyDay,
+  required PlanDate today,
+}) {
+  if (activeDays.isEmpty) return 0;
+  final sorted = activeDays.toList()..sort();
+  var best = 0;
+  var run = 0;
+  for (
+    var day = sorted.first;
+    day.compareTo(today) <= 0;
+    day = addDays(day, 1)
+  ) {
+    if (activeDays.contains(day)) {
+      run++;
+      if (run > best) best = run;
+    } else if (isStudyDay(day) && day != today) {
+      // A study day with nothing done ends the run. Today is still open.
+      run = 0;
+    }
+  }
+  return best;
+}
+
 /// "Am I on schedule?" — how far behind the plan the learner is.
 class ScheduleStatus {
   const ScheduleStatus({
