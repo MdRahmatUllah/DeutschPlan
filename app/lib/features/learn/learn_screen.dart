@@ -309,17 +309,28 @@ class LevelBand extends StatelessWidget {
         color: tokens.isGlass ? tokens.color.ink : onFill,
       ),
     );
-    // The path runs on over the band, as the artboard draws it.
-    return Stack(
-      // Passthrough: the band takes the path's full width, not its label's.
-      fit: StackFit.passthrough,
-      children: <Widget>[
-        if (tokens.isGlass)
-          DpSurface(kind: DpSurfaceKind.tint(fill), radius: 0, child: label)
-        else
-          ColoredBox(color: fill, child: label),
-        const Positioned(left: 29, top: 0, bottom: 0, width: 2, child: _Path()),
-      ],
+    // A heading of its own, read before its two tiles rather than merged
+    // with the other bands. The path runs on over it, as the artboard draws.
+    return Semantics(
+      container: true,
+      header: true,
+      child: Stack(
+        // Passthrough: the band takes the path's full width, not its label's.
+        fit: StackFit.passthrough,
+        children: <Widget>[
+          if (tokens.isGlass)
+            DpSurface(kind: DpSurfaceKind.tint(fill), radius: 0, child: label)
+          else
+            ColoredBox(color: fill, child: label),
+          const Positioned(
+            left: 29,
+            top: 0,
+            bottom: 0,
+            width: 2,
+            child: _Path(),
+          ),
+        ],
+      ),
     );
   }
 }

@@ -154,6 +154,19 @@ void main() {
     semantics.dispose();
   });
 
+  testWidgets('each level band is a heading of its own', (tester) async {
+    final semantics = tester.ensureSemantics();
+    await pump(tester);
+    for (final band in <String>['A1 · ANFÄNGER', 'A2 · GRUNDSTUFE']) {
+      expect(
+        tester.getSemantics(find.text(band)),
+        matchesSemantics(label: band, isHeader: true),
+        reason: band,
+      );
+    }
+    semantics.dispose();
+  });
+
   testWidgets('FR-L1-01 the current tile: what is left of today', (
     tester,
   ) async {
