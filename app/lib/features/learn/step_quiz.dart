@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:math' as math;
 
-import 'package:deutschplan/core/adaptive/adaptive.dart';
 import 'package:deutschplan/core/providers/app_providers.dart';
 import 'package:deutschplan/core/theme/dp_surface.dart';
 import 'package:deutschplan/core/theme/dp_tokens.dart';
@@ -9,6 +8,7 @@ import 'package:deutschplan/core/typography/dp_text.dart';
 import 'package:deutschplan/data/repositories/exam_repository.dart';
 import 'package:deutschplan/data/repositories/word_repository.dart';
 import 'package:deutschplan/domain/plan_engine.dart' show parsePlanDate;
+import 'package:deutschplan/features/quiz/quiz_setup_sheet.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
 import 'package:deutschplan/router/routes.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -123,24 +123,12 @@ class StepQuizTab extends ConsumerWidget {
     );
   }
 
-  /// L7's custom quiz sheet.
-  // ponytail: #122 builds the sheet; until then it names the screen, as the
-  // placeholder routes do.
-  Future<void> _custom(BuildContext context) => Adaptive.showSheet<void>(
-    context: context,
-    builder: (sheet) => Container(
-      width: double.infinity,
-      padding: const EdgeInsets.fromLTRB(20, 16, 20, 32),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          const DpText('L7', role: DpTextRole.display),
-          DpText(AppLocalizations.of(sheet).quizCustom, role: DpTextRole.title),
-        ],
-      ),
-    ),
-  );
+  /// L7's custom quiz sheet: the quiz it builds starts here, from the tab
+  /// that opened it, once the sheet has closed.
+  Future<void> _custom(BuildContext context) async {
+    final args = await QuizSetupSheet.show(context, step.code);
+    if (args != null && context.mounted) QuizRoute.open(context, args);
+  }
 }
 
 /// A quiz tile: its name and what it holds. Greyed and inert while the

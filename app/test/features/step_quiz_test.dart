@@ -3,6 +3,7 @@ import 'package:deutschplan/core/theme/dp_tokens.dart';
 import 'package:deutschplan/data/repositories/exam_repository.dart';
 import 'package:deutschplan/features/learn/step_detail_screen.dart';
 import 'package:deutschplan/features/learn/step_quiz.dart';
+import 'package:deutschplan/features/quiz/quiz_setup_sheet.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
 import 'package:deutschplan/main.dart'
     show appLocalizationsDelegates, supportedLocales;
@@ -106,8 +107,8 @@ void main() {
     await pump(tester);
     await tester.tap(find.text(l10n.quizCustom));
     await tester.pumpAndSettle();
-    expect(find.text('L7'), findsOneWidget);
-    expect(started, isNull);
+    expect(find.byType(QuizSetupSheet), findsOneWidget);
+    expect(started, isNull, reason: 'nothing starts until the sheet says so');
   });
 
   testWidgets('under ten learned: closed, saying why', (tester) async {
@@ -118,7 +119,7 @@ void main() {
     await tester.tap(find.text(l10n.quizCustom));
     await tester.pumpAndSettle();
     expect(started, isNull);
-    expect(find.text('L7'), findsNothing);
+    expect(find.byType(QuizSetupSheet), findsNothing);
   });
 
   testWidgets('the last quiz: 16 / 20 · Standard · DE → EN · Sun 20 Sep', (

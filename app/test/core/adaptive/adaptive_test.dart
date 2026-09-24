@@ -559,6 +559,50 @@ void main() {
       }
     });
 
+    testWidgets('an iOS sheet keeps its chrome and gives its content a '
+        'Material, wherever the chrome scope sits', (tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: AppTheme.light(),
+          // The scope inside the app's home, as in the golden harness: the
+          // sheet's route is above it, so the sheet must carry the chrome.
+          home: AdaptiveChromeScope(
+            chrome: AdaptiveChrome.cupertino,
+            child: Scaffold(
+              body: Builder(
+                builder: (context) => TextButton(
+                  onPressed: () => Adaptive.showSheet<void>(
+                    context: context,
+                    builder: (_) => Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        const Text('Timer'),
+                        AdaptiveSwitch(
+                          value: false,
+                          onChanged: (_) {},
+                          semanticLabel: 'Timer',
+                        ),
+                      ],
+                    ),
+                  ),
+                  child: const Text('Open'),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.tap(find.text('Open'));
+      await tester.pumpAndSettle();
+      expect(tester.takeException(), isNull);
+      expect(find.byType(cupertino.CupertinoSwitch), findsOneWidget);
+      expect(
+        find.ancestor(of: find.text('Timer'), matching: find.byType(Material)),
+        findsWidgets,
+        reason: 'text in a Cupertino popup needs a Material for its style',
+      );
+    });
+
     testWidgets('the confirm dialog uses the platform dialog and returns', (
       tester,
     ) async {
