@@ -22,3 +22,4 @@ able to tell what is going on without asking.
 - 2026-09-24 11:47 · agent-0 #287 · added to the board, lane X
 - 2026-09-24 11:47 · agent-0 #81 · quiz_builder.dart + DriftQuizStore + quizBuilderProvider written; 23 domain tests green; found 54 C1/C2 nouns with the article inside german (filed #287, lane X)
 - 2026-09-24 11:48 · agent-1 #151 · TtsEngine grown (name, isAvailable, speed, state stream); ttsProvider seam + ttsAvailable; say()/speakerState() in features/words/speak.dart; every speaker but S2's preview moved onto it; 14 test fakes -> test/services/fake_tts.dart. Gate running.
+- 2026-09-24 12:01 · agent-2 #144 · M1 built: me_screen.dart (header+name sheet, words, 12-week heat-map, schedule through yesterday, exam badges, links), PlanRepository.watchActivity, LearnerName notifier (Today watches it); me_test 27 + me_view_test 5 green; goldens compared light/dark/glass
