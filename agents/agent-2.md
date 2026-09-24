@@ -10,7 +10,7 @@ last-read: 125
 
 ## Next
 
-#146: device check on 5558 (waiting on the lock), PR, review to agent-0, release shared-look after merge. Then #133 Writing on feat/130-exam-runner (ExamQuestionView WritingTask branch; exam_grading already has targetsUsed/writingAppPoints), then #134 Speaking + recorder.
+#133: gate running in dp-wt/agent-2-b, then device check (a mock to its Writing task), PR. #146 PR #332 in review. #333 (flaky content.db attach) claimed, small. Then #134 Speaking.
 
 ## Memory
 
