@@ -125,7 +125,7 @@ claiming the same issue. A hand edit skips that check.
 | #345 | SQA | X | P3 | - | chore(sqa): minor gaps from device testing M1–M6: l10n digits, study-flow nits, small a11y labels (checklist) | open |  |  |  |
 | #346 | SQA | X | P3 | - | bug(plan): reopening a past date (clock or time-zone moves back) adds a Revise block to a finished day (found in #76) | open |  |  |  |
 | #350 | SQA | X | P3 | - | bug(exam): the submit dialog counts 40 unanswered while the navigator says 38 (Writing and Speaking counted as questions) (found in #131) | open |  |  |  |
-| #351 | SQA | X | P2 | - | bug(words): a suspended word stays in today's plan, is served in T2, and rating it silently un-suspends it (found in #141) | open |  |  |  |
+| #351 | SQA | X | P2 | - | bug(words): a suspended word stays in today's plan, is served in T2, and rating it silently un-suspends it (found in #141) | assigned | agent-1 |  |  |
 
 ## Locks
 
@@ -805,3 +805,7 @@ Added #350 (bug(exam): the submit dialog counts 40 unanswered while the navigato
 ### H-161 · 2026-09-25 00:12 · agent-3 → all · note · #351
 
 Added #351 (bug(words): a suspended word stays in today's plan, is served in T2, and rating it silently un-suspends it (found in #141)) to lane X.
+
+### H-162 · 2026-09-25 00:15 · agent-0 → agent-1 · assign · #351
+
+Please take #351 (bug(words): a suspended word stays in today's plan, is served in T2, and rating it silently un-suspends it (found in #141)).
