@@ -113,12 +113,28 @@ void main() {
         )).items.single;
         final word = twelve.firstWhere((w) => w.uid == item.wordUid);
         expect(
-          (item.prompt, item.expected),
-          (word.english, 'die ${word.german}'),
+          (item.prompt, item.expected, item.hint),
+          (word.english, 'die ${word.german}', word.bangla),
+          reason: 'the Bangla meaning goes under the English (quiz.md)',
         );
         expect(item.options, contains('die ${word.german}'));
+        expect(item.tiles, isFalse, reason: 'typed, with the umlaut row');
       },
     );
+
+    test('only DE → বাংলা asks with the four tiles', () async {
+      for (final direction in QuizDirection.values) {
+        if (direction == QuizDirection.mixed) continue;
+        final quiz = await build(twelve, direction: direction, length: 3);
+        for (final item in quiz.items) {
+          expect(
+            item.tiles,
+            direction == QuizDirection.deBn,
+            reason: direction.name,
+          );
+        }
+      }
+    });
 
     test(
       'articles needs an article: the noun without it, der/die/das expected',
@@ -571,6 +587,21 @@ void main() {
         Verdict.correct,
       );
       expect(grade(item(QuizDirection.deBn, 'ঘর'), 'ঘর'), Verdict.correct);
+    });
+
+    test('a tile is exactly the answer, commas and brackets and all', () {
+      const meaning = 'হ্যাঁ, অবশ্যই (নেতিবাচক প্রশ্নের উত্তরে)';
+      const tile = QuizItem(
+        ord: 1,
+        wordUid: 'doch',
+        direction: QuizDirection.deBn,
+        prompt: 'doch',
+        expected: meaning,
+        options: <String>['ধন্যবাদ', meaning, 'কেন', 'দয়া করে / স্বাগতম'],
+      );
+      expect(grade(tile, meaning), Verdict.correct);
+      expect(grade(tile, 'কেন'), Verdict.wrong);
+      expect(grade(tile, 'হ্যাঁ'), Verdict.wrong, reason: 'a tile is whole');
     });
 
     test('BR-ANS-02 the German names the article it wanted', () {

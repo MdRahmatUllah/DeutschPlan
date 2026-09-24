@@ -258,6 +258,31 @@ void main() {
       }
     });
 
+    testWidgets('emphasis sets its parts in ink, in order, wherever they are', (
+      tester,
+    ) async {
+      await pump(
+        tester,
+        const DpVerdictRow(
+          verdict: DpVerdict.wrongArticle,
+          message: 'Artikel: der, nicht die!',
+          emphasis: <String>['der', 'die'],
+        ),
+      );
+      final text = tester.widget<Text>(find.text('Artikel: der, nicht die!'));
+      final spans = (text.textSpan! as TextSpan).children!.cast<TextSpan>();
+      expect(
+        [for (final s in spans) (s.text, s.style?.color)],
+        [
+          ('Artikel: ', null),
+          ('der', DpPalette.light.ink),
+          (', nicht ', null),
+          ('die', DpPalette.light.ink),
+          ('!', null),
+        ],
+      );
+    });
+
     testWidgets('the colours are the artboard verdict colours', (tester) async {
       const palette = DpPalette.light;
       for (final (verdict, colour) in <(DpVerdict, Color)>[

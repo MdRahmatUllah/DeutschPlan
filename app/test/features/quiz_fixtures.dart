@@ -21,6 +21,7 @@ Quiz artboardQuiz() => Quiz(
               direction: QuizDirection.enDe,
               prompt: 'rental contract, lease',
               expected: 'der Mietvertrag',
+              hint: 'ভাড়ার চুক্তি',
             )
           : QuizItem(
               ord: ord,

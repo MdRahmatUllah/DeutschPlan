@@ -105,6 +105,7 @@ class QuizItem {
     required this.expected,
     this.options = const <String>[],
     this.form,
+    this.hint,
   });
 
   /// 1-based, as `quiz_answers.ord`.
@@ -130,6 +131,16 @@ class QuizItem {
 
   /// Which form a forms item asks for.
   final FormLabel? form;
+
+  /// The Bangla meaning under an EN → DE prompt (`quiz.md`: "EN/BN
+  /// prompt"); null for the other directions and for a word without one.
+  final String? hint;
+
+  /// Whether the runner asks with the four tiles rather than a field. Only
+  /// DE → বাংলা: typing Bangla needs a Bangla keyboard, which a learner of
+  /// German can't be assumed to have. The other meaning items are typed, as
+  /// `quiz.md` lays them out.
+  bool get tiles => direction == QuizDirection.deBn && options.length == 4;
 }
 
 class Quiz {
@@ -246,6 +257,7 @@ class QuizBuilder {
           prompt: word.english,
           expected: word.headword,
           options: await tiles((w) => w.headword),
+          hint: word.bangla,
         );
       case QuizDirection.articles:
         return QuizItem(
@@ -285,6 +297,9 @@ class QuizBuilder {
 /// with BR-ANS-02's article rules for EN → DE and listening, the article
 /// alone, or the form.
 Verdict grade(QuizItem item, String given) => switch (item.direction) {
+  // A tile is the answer or it isn't. Its text is the whole meaning cell,
+  // which `checkMeaning` would split into synonyms and match none of.
+  _ when item.tiles => given == item.expected ? Verdict.correct : Verdict.wrong,
   QuizDirection.deEn ||
   QuizDirection.deBn => checkMeaning(given, item.expected),
   QuizDirection.enDe ||

@@ -2384,6 +2384,26 @@
       }
     }
   },
+  "quizAskPick": "Pick the meaning",
+  "@quizAskPick": {
+    "description": "L8 item chip: the four tiles (DE → বাংলা)."
+  },
+  "quizArticleWrong": "Article: {article}, not {given}",
+  "@quizArticleWrong": {
+    "description": "L8 verdict line when the noun was right and the article not (BR-ANS-02). article and given are der/die/das.",
+    "placeholders": {
+      "article": {
+        "type": "String"
+      },
+      "given": {
+        "type": "String"
+      }
+    }
+  },
+  "quizPlay": "Play the word",
+  "@quizPlay": {
+    "description": "L8 speaker button, for screen readers."
+  },
   "quizAnswerIs": "The answer is {answer}",
   "@quizAnswerIs": {
     "description": "L8 verdict line, wrong. answer is German course text or a meaning.",
