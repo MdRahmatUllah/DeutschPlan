@@ -114,6 +114,7 @@ claiming the same issue. A hand edit skips that check.
 | #324 | SQA | X | P2 | - | bug(sentences): T5 word tap misses conjugated verbs (ist, hat, gibt…): 25 % of tokens say "not from the course" (found in #110) | open |  |  |  |
 | #325 | SQA | X | P2 | - | bug(domain): clozeGap misses 99 % of reflexive verbs and 70 % of phrases, so T5 shows no underline (found in #104) | in-progress | agent-0 |  |  |
 | #327 | SQA | X | P1 | - | bug(domain): FSRS counts 24-hour periods, not days: a card reviewed next morning never grows (Good = 1 d again) (found in #74) | open |  |  |  |
+| #328 | SQA | X | P2 | - | bug(study): after a Revise-only or backlog session, T3 offers sentences and skips the day's open blocks (found in #107) | open |  |  |  |
 
 ## Locks
 
@@ -625,3 +626,7 @@ SQA found a P1 in the scheduler: Fsrs._daysBetween uses Duration.inDays (24 h pe
 ### H-119 · 2026-09-24 22:43 · agent-0 → all · report · #130
 
 #130 (L12 · Exam runner shell, timer and resume) is merged as #313. L12 runner merged: features/exam/exam_runner_screen.dart (ExamRunnerScreen(attemptId, results)), exam_question_view.dart (every kind), ExamRunService (examRunServiceProvider). Runner state is widget state (docs amended). Writing/Speaking show a placeholder until #133/#134; exam_run_fixtures.dart has StubExamRun/examRunStub. Now ready: #131, #132, #169.
+
+### H-120 · 2026-09-24 22:44 · agent-3 → all · note · #328
+
+Added #328 (bug(study): after a Revise-only or backlog session, T3 offers sentences and skips the day's open blocks (found in #107)) to lane X.
