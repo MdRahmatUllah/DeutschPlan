@@ -261,6 +261,7 @@ class DpHeadword extends StatelessWidget {
     this.article,
     this.role = DpTextRole.display,
     this.textAlign,
+    this.weight,
   });
 
   final String word;
@@ -271,10 +272,19 @@ class DpHeadword extends StatelessWidget {
   final DpTextRole role;
   final TextAlign? textAlign;
 
+  /// The role's own unless given: a list row sets its headword at 600.
+  final double? weight;
+
   @override
   Widget build(BuildContext context) {
     final tokens = context.tokens;
     final articleColour = tokens.color.textForArticle(article);
+    TextStyle style(Color colour) {
+      final base = DpText.styleFor(tokens, role, color: colour);
+      return weight == null
+          ? base
+          : base.copyWith(fontVariations: AppFonts.weight(weight!));
+    }
 
     return Text.rich(
       TextSpan(
@@ -282,15 +292,11 @@ class DpHeadword extends StatelessWidget {
           if (article != null)
             TextSpan(
               text: '$article ',
-              style: DpText.styleFor(
-                tokens,
-                role,
-                color: articleColour ?? tokens.color.ink,
-              ),
+              style: style(articleColour ?? tokens.color.ink),
             ),
           TextSpan(
             text: DpScript.allowBreaks(word),
-            style: DpText.styleFor(tokens, role, color: tokens.color.ink),
+            style: style(tokens.color.ink),
             locale: const Locale('de', 'DE'),
           ),
         ],

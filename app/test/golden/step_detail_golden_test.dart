@@ -32,6 +32,16 @@ void main() {
     ),
   );
 
+  // A step that is not the active one: the Words tab's Start banner
+  // (FR-L2-03) over the words.
+  goldenTest(
+    'step_detail_not_started',
+    builder: (context) => ProviderScope(
+      overrides: todayStub(),
+      child: const StepDetailScreen(code: 'A2.2'),
+    ),
+  );
+
   // iOS draws the tabs as a segmented control and centres the code in the
   // bar, with a labelled back chevron.
   goldenTest(

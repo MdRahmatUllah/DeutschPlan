@@ -375,6 +375,34 @@ class PlanEngine {
     return next;
   }
 
+  /// FR-L2-03's *Start*: [code] becomes the active step (BR-COURSE-04). The
+  /// current enrollment, if any, completes [today] and [code]'s opens with
+  /// [dailyNew] and [studyDaysMask].
+  ///
+  /// Today's plan is left as it is (BR-PLAN-08): unlike [startNextStep],
+  /// the last planned date does not move back, so the new step's words start
+  /// tomorrow.
+  Future<void> switchStep(
+    String code,
+    PlanDate today, {
+    required int dailyNew,
+    required int studyDaysMask,
+  }) async {
+    final current = await _store.activeStep();
+    if (current?.sublevelCode == code) return;
+    if (current != null) {
+      await _store.completeStep(current.sublevelCode, today);
+    }
+    await _store.enroll(
+      ActiveStep(
+        sublevelCode: code,
+        startedOn: today,
+        dailyNew: dailyNew,
+        studyDaysMask: studyDaysMask,
+      ),
+    );
+  }
+
   /// [openDay] for [date], writing nothing: the plan it would open, for
   /// Today's Tomorrow card and T6 (FR-T6-02).
   ///

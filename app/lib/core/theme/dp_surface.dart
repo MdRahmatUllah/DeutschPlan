@@ -157,6 +157,14 @@ class _DpSurfaceState extends State<DpSurface> {
     final base = switch (widget.kind) {
       _Card() || _Bar() => tokens.surface.card,
       _CardStrong() => tokens.surface.cardStrong,
+      // On paper a wash is laid over the paper, not left see-through: the
+      // hard shadow sits under the whole panel, and through a 22 % fill it
+      // turned L2's Start banner olive (#114).
+      _Tint(:final colour, :final opacity) when !tokens.isGlass =>
+        Color.alphaBlend(
+          colour.withValues(alpha: opacity),
+          tokens.surface.paper,
+        ),
       _Tint(:final colour, :final opacity) => colour.withValues(alpha: opacity),
     };
 

@@ -326,7 +326,8 @@ void main() {
       expect(decorationOf(tester).boxShadow, isEmpty);
     });
 
-    testWidgets('tint fills with the given colour at its opacity', (
+    testWidgets('on paper, a tint is its colour at its opacity laid over the '
+        'paper: opaque, so the hard shadow stays under it (#114)', (
       tester,
     ) async {
       await pump(
@@ -334,10 +335,14 @@ void main() {
         AppTheme.light(),
         kind: DpSurfaceKind.tint(DpPalette.light.die),
       );
-      final colour = decorationOf(tester).color!;
-      expect((colour.r * 255).round(), (DpPalette.light.die.r * 255).round());
-      expect((colour.g * 255).round(), (DpPalette.light.die.g * 255).round());
-      expect(colour.a, closeTo(0.22, 0.01));
+      expect(
+        decorationOf(tester).color,
+        Color.alphaBlend(
+          DpPalette.light.die.withValues(alpha: 0.22),
+          DpTokens.light().surface.paper,
+        ),
+      );
+      expect(decorationOf(tester).color!.a, 1);
     });
 
     testWidgets('cardStrong uses the denser fill in every mode', (

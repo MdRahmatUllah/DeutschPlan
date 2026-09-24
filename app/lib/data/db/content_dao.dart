@@ -61,6 +61,22 @@ class ContentDao extends DatabaseAccessor<AppDatabase> with _$ContentDaoMixin {
     return row?.read<String>('name');
   }
 
+  /// L2's category chips (FR-L2-02): the categories [step]'s words fall in,
+  /// the biggest first, a tie to the lower id.
+  Future<List<({int id, String name})>> stepCategories(String step) async {
+    final rows = await customSelect(
+      'SELECT k.id, k.name FROM words w '
+      'JOIN categories k ON k.id = w.category_id '
+      'WHERE w.sublevel_code = ?1 '
+      'GROUP BY k.id, k.name ORDER BY COUNT(*) DESC, k.id',
+      variables: <Variable<Object>>[Variable<String>(step)],
+    ).get();
+    return <({int id, String name})>[
+      for (final row in rows)
+        (id: row.read<int>('id'), name: row.read<String>('name')),
+    ];
+  }
+
   /// S3's pool for one step: its words, with their example sentences for a
   /// gap item. Read-only, like everything on the attached course.
   Future<List<PlacementWord>> placementPool(String step) async {
