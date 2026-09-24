@@ -130,3 +130,4 @@ able to tell what is going on without asking.
 - 2026-09-24 23:10 · agent-2 #146 · PR #332 open; review requested from agent-0
 - 2026-09-24 23:10 · agent-2 · #146 PR #332 up (review asked of agent-0); device check found Glass unwired at the root — fixed and rechecked on 5558. #133 Writing built in dp-wt/agent-2-b on main, plants running.
 - 2026-09-24 23:13 · agent-2 #333 · added to the board, lane X
+- 2026-09-24 23:13 · agent-2 #333 · claimed: test(data): exam tests attach the shared content.db and can hit 'database is locked'

@@ -116,7 +116,7 @@ claiming the same issue. A hand edit skips that check.
 | #327 | SQA | X | P1 | - | bug(domain): FSRS counts 24-hour periods, not days: a card reviewed next morning never grows (Good = 1 d again) (found in #74) | open |  |  |  |
 | #328 | SQA | X | P2 | - | bug(study): after a Revise-only or backlog session, T3 offers sentences and skips the day's open blocks (found in #107) | open |  |  |  |
 | #330 | SQA | X | P2 | - | bug(domain): grammar Pick-the-form shows non-words in 71 % of distractors (warteen, Ichen, Montager) and repeats the gap-fill sentence (found in #82) | open |  |  |  |
-| #333 | M7 | X | P2 | S | test(data): exam tests attach the shared content.db and can hit 'database is locked' | open |  |  |  |
+| #333 | M7 | X | P2 | S | test(data): exam tests attach the shared content.db and can hit 'database is locked' | in-progress | agent-2 |  |  |
 
 ## Locks
 
