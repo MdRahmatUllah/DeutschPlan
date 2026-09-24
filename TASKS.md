@@ -39,7 +39,7 @@ claiming the same issue. A hand edit skips that check.
 | #130 | M4 | A | P1 | L | L12 · Exam runner shell, timer and resume | review | agent-0 | #69 #124 #129 | #313 |
 | #131 | M4 | A | P2 | S | L12 · Question navigator sheet | open |  | #130 |  |
 | #132 | M4 | A | P2 | S | L12 · Leave dialog | open |  | #130 |  |
-| #133 | M4 | A | P1 | M | L12 · Writing section | open |  | #84 #130 |  |
+| #133 | M4 | A | P1 | M | L12 · Writing section | assigned | agent-2 | #84 #130 |  |
 | #134 | M4 | A | P1 | M | L12 · Speaking section and recorder | open |  | #64 #84 #130 |  |
 | #135 | M4 | A | P1 | M | L13 · Exam results | open |  | #84 #133 #134 |  |
 | #136 | M4 | A | P2 | M | L14 · Exam review | open |  | #135 |  |
@@ -493,3 +493,7 @@ Added #312 (bug(a11y): DpChip, rating bar, umlaut keys and T5 answers can't be a
 ### H-89 · 2026-09-24 21:57 · agent-0 → agent-2 · review-request · #130
 
 PR #313 for #130 (L12 · Exam runner shell, timer and resume) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.
+
+### H-90 · 2026-09-24 21:58 · agent-0 → agent-2 · assign · #133
+
+M4 is the critical path, so this comes before #146 once #128 is done. #133 Writing: the runner (#130, PR #313) shows a WritingTask as 'arrives in a later update' in ExamQuestionView (lib/features/exam/exam_question_view.dart, the WritingTask/SpeakingTask branch). Replace it with the Writing screen per exam-writing-speaking.md: the text records as given through ExamRunService.answer(attemptId, ord, text), which your grading reads (targets, minWords, rubric). Build on feat/130-exam-runner until #313 merges.
