@@ -1,10 +1,14 @@
+import 'dart:io';
+
 import 'package:deutschplan/core/components/dp_button.dart';
 import 'package:deutschplan/core/providers/app_providers.dart';
 import 'package:deutschplan/core/theme/app_theme.dart';
 import 'package:deutschplan/data/db/app_database.dart';
+import 'package:deutschplan/data/db/content_dao.dart';
 import 'package:deutschplan/data/repositories/plan_repository.dart';
 import 'package:deutschplan/data/repositories/settings_repository.dart';
 import 'package:deutschplan/features/day_complete/day_complete_screen.dart';
+import 'package:deutschplan/features/study/study_summary.dart';
 import 'package:deutschplan/features/today/today_providers.dart';
 import 'package:deutschplan/features/today/today_view.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
@@ -16,6 +20,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 
+import '../db/content_fixture.dart';
 import 'today_fixtures.dart';
 
 /// T6 · Day complete — #111.
@@ -275,5 +280,39 @@ void main() {
       'seconds': 720,
       'completed_shown': 1,
     });
+  });
+  test('FR-T6-01 a day already celebrated is not done again: a later '
+      'session ends on its summary, not T6', () async {
+    final db = AppDatabase.memory();
+    addTearDown(db.close);
+    // The sentence picker reads the course's examples.
+    final directory = Directory.systemTemp.createTempSync('dp_t6');
+    final content = ContentFixture.write('${directory.path}/content.db');
+    await db.customStatement(
+      "ATTACH DATABASE '${ContentDao.attachPath(content.file)}' AS c",
+    );
+    final settings = SettingsRepository(db);
+    await settings.load();
+    addTearDown(settings.dispose);
+    final container = ProviderContainer(
+      overrides: <Override>[
+        appDatabaseProvider.overrideWithValue(db),
+        settingsProvider.overrideWithValue(settings),
+      ],
+    );
+    addTearDown(container.dispose);
+    Future<bool> dayDone() async {
+      container.invalidate(studyNextProvider(today));
+      final hold = container.listen(studyNextProvider(today), (_, _) {});
+      addTearDown(hold.close);
+      return (await container.read(studyNextProvider(today).future)).dayDone;
+    }
+
+    final plans = PlanRepository(db);
+    expect(await plans.dayCompleteShown(today), isFalse);
+    expect(await dayDone(), isTrue);
+    await plans.claimDayComplete(today);
+    expect(await plans.dayCompleteShown(today), isTrue);
+    expect(await dayDone(), isFalse);
   });
 }

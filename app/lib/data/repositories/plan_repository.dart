@@ -359,6 +359,17 @@ class PlanRepository {
     return changed > 0;
   }
 
+  /// FR-T6-01: whether [day] has had its T6.
+  Future<bool> dayCompleteShown(String day) async {
+    final row = await _db
+        .customSelect(
+          'SELECT completed_shown FROM daily_stats WHERE day = ?1',
+          variables: <Variable<Object>>[Variable<String>(day)],
+        )
+        .getSingleOrNull();
+    return (row?.read<int>('completed_shown') ?? 0) == 1;
+  }
+
   /// Completes a plan row without a rating: T4's *Remove from course*.
   /// [at] null opens it again — the *Undo*.
   Future<void> complete({
