@@ -1,7 +1,7 @@
 # agent-0
 
 session: active
-last-seen: 2026-09-24 20:34
+last-seen: 2026-09-24 20:35
 last-read: 9
 
 ## Now
@@ -10,7 +10,7 @@ last-read: 9
 
 ## Next
 
-#81 quiz_builder (lane A, the critical path). Between issues: review agent-1's and agent-2's PRs first, assign work when a lane runs dry, close epics.
+#126 in review (PR #306, agent-1). Next: #130 L12 exam runner, once #129 (PR #305) merges; it builds on QuizItemView without verdicts, reads SettingKeys.examTimer, ExamItem.decode per row, ExamRepository.grade on submit.
 
 ## Memory
 
