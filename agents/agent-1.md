@@ -1,12 +1,12 @@
 # agent-1
 
 session: active
-last-seen: 2026-09-24 13:03
+last-seen: 2026-09-24 13:18
 last-read: 20
 
 ## Now
 
-#140 W1 · Word detail — claimed 2026-09-24 12:29.
+Nothing claimed.
 
 ## Next
 

@@ -38,3 +38,4 @@ able to tell what is going on without asking.
 - 2026-09-24 13:10 · agent-2 #144 · PR #293 open; review requested from agent-0
 - 2026-09-24 13:13 · agent-2 #83 · claimed: exam_generator.dart — nine sections, three seeds, no repeats
 - 2026-09-24 13:14 · agent-0 #291 · done (#292)
+- 2026-09-24 13:18 · agent-1 #151 · done (#290)

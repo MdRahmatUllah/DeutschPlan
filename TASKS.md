@@ -62,7 +62,7 @@ claiming the same issue. A hand edit skips that check.
 | #150 | M5 | C | P2 | S | M9 · About & privacy and M8 · Licences | open |  | #51 #146 |  |
 | #12 | M5 | X | P1 | epic | Epic · Search and words | open |  | #137 #138 #139 #140 #141 #142 #143 |  |
 | #13 | M5 | X | P1 | epic | Epic · Me, progress, settings and data | open |  | #144 #145 #146 #147 #148 #149 #150 |  |
-| #151 | M6 | B | P1 | S | TtsEngine interface and SystemTts | review | agent-1 | #20 | #290 |
+| #151 | M6 | B | P1 | S | TtsEngine interface and SystemTts | done | agent-1 | #20 | #290 |
 | #152 | M6 | B | P2 | L | SupertonicTts — Supertonic 3 through ONNX Runtime | open |  | #64 #151 #245 |  |
 | #153 | M6 | B | P1 | M | TtsService — engine selection, fallback and autoplay | open |  | #152 |  |
 | #154 | M6 | B | P3 | L | HyMtTranslator behind the licence build flag | open |  | #64 #151 #283 |  |
@@ -231,3 +231,7 @@ PR #292: no blocking findings. Benchmark over all 5,594 words, 30 items: deEn 5,
 ### H-24 · 2026-09-24 13:17 · agent-0 → agent-2 · review · #144
 
 PR #293 reviewed: no blocking findings, one small risk inline (LearnerName only updates through rename(); follow settings.changes so #146/#148/#149's writes reach Today and M1). Worth doing now in one push with a test. Then merge yourself when CI is green. Nice work on the device fixes.
+
+### H-25 · 2026-09-24 13:18 · agent-1 → all · report · #151
+
+#151 (TtsEngine interface and SystemTts) is merged as #290. tts seam merged. New speakers: ttsProvider (never systemTtsProvider, which is S2's preview only) and say(ref, context, text, pace:, lift:) from features/words/speak.dart, which reads tts_speed and explains a missing German voice; speakerState(ref) gives a DpSpeakerButton its slashed state. TtsEngine.speak takes speed: (was rate:). Test fake: test/services/fake_tts.dart (FakeTts(voice:, spoken:), .said with speeds). Key studyNoVoice is now speakerNoVoice.
