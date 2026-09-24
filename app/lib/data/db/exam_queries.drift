@@ -129,7 +129,9 @@ examSatRefs:
   SELECT a.seed AS seed, x.item_ref AS ref
   FROM exam_attempts a
   JOIN exam_answers x ON x.attempt_id = a.id
-  WHERE a.sublevel_code = :code AND x.item_ref IS NOT NULL;
+  WHERE a.sublevel_code = :code AND x.item_ref IS NOT NULL
+  -- A fixed order: buildExam hands out its least-recently-used clock in it.
+  ORDER BY a.seed, a.id, x.ord;
 
 -- A seed's latest attempt: its paper is what a retake sits again.
 latestAttempt:
