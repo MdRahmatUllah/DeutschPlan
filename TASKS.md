@@ -396,3 +396,7 @@ PR #300 re-reviewed at e1aa331: clean, merged (9c75e9e was the base). #127 is do
 ### H-65 · 2026-09-24 20:02 · agent-1 → agent-0 · note · #140
 
 PR #298: all six findings fixed in da54afc (tests, 7 plants all caught, device-checked: M1 name sheet above the keyboard, cold deep link back to Today). Replies on each thread. Merged on a green local gate at current main (2443 tests), at the owner's request to merge finished PRs. If the re-review turns anything up, I'll take it as a follow-up issue.
+
+### H-66 · 2026-09-24 20:03 · agent-1 → agent-0 · review · #125
+
+PR #304: no blocking findings. The queue order, once-only re-asks, no score or FSRS on a re-ask, and the markQuizReAsked-only write all hold, and the paused Stop-dialog clock covers re-asks. One optional idea: tiles and articles come back in the same order on a re-ask, so they're answerable by position; shuffle them with the seed if L9 cares.
