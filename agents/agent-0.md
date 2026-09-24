@@ -6,7 +6,7 @@ last-read: 9
 
 ## Now
 
-#123 in review as PR #297: watch CI, answer review threads, merge.
+Nothing claimed.
 
 ## Next
 
