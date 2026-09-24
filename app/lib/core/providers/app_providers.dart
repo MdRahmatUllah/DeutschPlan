@@ -359,3 +359,33 @@ class CoachMark extends _$CoachMark {
   /// A tap on it: gone for this visit, and — [markShown] having run — for good.
   void dismiss() => state = false;
 }
+
+/// The learner's name, trimmed; null when there is none. M1's header edits it
+/// and T1's greeting says it, so a rename reaches both at once.
+@riverpod
+class LearnerName extends _$LearnerName {
+  @override
+  String? build() {
+    final settings = ref.watch(settingsProvider);
+    // Followed, not read once: Settings, import and reset write the name
+    // too, and Today's tab stays alive to show it.
+    final changes = settings.changes
+        .where((key) => key == SettingKeys.learnerName)
+        .listen((_) => state = _clean(settings.read(SettingKeys.learnerName)));
+    ref.onDispose(changes.cancel);
+    return _clean(settings.read(SettingKeys.learnerName));
+  }
+
+  /// M1's *edit name*. A blank name clears it. The state is set here as well
+  /// as by the write's change, so it is new the moment this returns.
+  Future<void> rename(String name) async {
+    final clean = _clean(name);
+    await ref.read(settingsProvider).write(SettingKeys.learnerName, clean);
+    state = clean;
+  }
+
+  static String? _clean(String? name) {
+    final trimmed = name?.trim();
+    return trimmed == null || trimmed.isEmpty ? null : trimmed;
+  }
+}

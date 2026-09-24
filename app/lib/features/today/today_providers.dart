@@ -91,6 +91,8 @@ Future<TodayView> todayView(Ref ref) async {
   final content = ref.watch(contentDaoProvider);
   final settings = ref.watch(settingsProvider);
   final updates = ref.watch(contentUpdaterProvider);
+  // Watched: a rename on Me reaches the greeting of a Today kept alive.
+  final name = ref.watch(learnerNameProvider);
   // Not awaited: Today does not wait on a file check. Until it answers the
   // voice counts as installed, so the card appears late rather than wrongly.
   final voiceReady = ref.watch(voiceInstalledProvider).value ?? true;
@@ -130,7 +132,6 @@ Future<TodayView> todayView(Ref ref) async {
       : (await grammar.step(step))
             .where((topic) => topic.status == WordStatus.todo)
             .firstOrNull;
-  final name = settings.read(SettingKeys.learnerName)?.trim();
   final seconds = (await plans.statsFor(date))?.seconds ?? 0;
   final streak = await engine.streak(date);
   // BR-PLAN-09 for what is left, not for the whole day: the ring's caption is
@@ -208,7 +209,7 @@ Future<TodayView> todayView(Ref ref) async {
       total: counts?.total ?? 0,
     ),
     step: step,
-    learnerName: name == null || name.isEmpty ? null : name,
+    learnerName: name,
     newCategory: category,
     grammar: next == null
         ? null

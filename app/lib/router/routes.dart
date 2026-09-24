@@ -37,6 +37,7 @@ import 'package:deutschplan/features/learn/grammar_practice_screen.dart';
 import 'package:deutschplan/features/learn/grammar_topic_screen.dart';
 import 'package:deutschplan/features/learn/learn_screen.dart';
 import 'package:deutschplan/features/learn/step_detail_screen.dart';
+import 'package:deutschplan/features/me/me_screen.dart';
 import 'package:deutschplan/features/sentences/sentences_screen.dart';
 import 'package:deutschplan/features/study/study_screen.dart';
 import 'package:deutschplan/core/adaptive/adaptive.dart';
@@ -407,8 +408,7 @@ class MeRoute extends GoRouteData with $MeRoute {
   const MeRoute();
 
   @override
-  Widget build(BuildContext context, GoRouterState state) =>
-      const PlaceholderScreen(title: 'Me', screen: 'M1');
+  Widget build(BuildContext context, GoRouterState state) => const MeScreen();
 }
 
 class ProgressRoute extends GoRouteData with $ProgressRoute {

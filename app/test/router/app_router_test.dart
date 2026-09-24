@@ -4,6 +4,7 @@ library;
 import 'package:deutschplan/features/backlog/backlog_screen.dart';
 import 'package:deutschplan/features/study/study_screen.dart';
 import 'package:deutschplan/features/today/today_view.dart';
+import 'package:deutschplan/features/me/me_screen.dart';
 import 'package:deutschplan/features/today/today_screen.dart';
 
 import '../features/today_fixtures.dart';
@@ -203,7 +204,7 @@ void main() {
       for (final pair in <(String, Finder)>[
         (l10n.tabLearn, find.byType(LearnScreen)),
         (l10n.tabSearch, find.text('R1')),
-        (l10n.tabMe, find.text('M1')),
+        (l10n.tabMe, find.byType(MeScreen)),
         (l10n.tabToday, find.byType(TodayScreen)),
       ]) {
         await tester.tap(find.text(pair.$1).last);
