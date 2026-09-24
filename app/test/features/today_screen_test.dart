@@ -153,26 +153,29 @@ void main() {
       expect(find.text(l10n.todayStepWords(184, 540, 'A2.1')), findsOneWidget);
     });
 
-    testWidgets('#315 the ring is one node: its name and value, and the tap '
-        'that starts the day', (tester) async {
-      final semantics = tester.ensureSemantics();
-      await pump(tester);
-      final node = tester.getSemantics(
-        find.descendant(
-          of: find.byType(ProgressRingCard),
-          matching: find.byType(DpProgressRing),
-        ),
-      );
-      final data = node.getSemanticsData();
-      expect(data.label, l10n.todayRing(12, 20));
-      expect(data.value, '60%');
-      expect(data.flagsCollection.isButton, isTrue);
+    testWidgets(
+      'FR-T1-02 #315 the ring is one node: its name and value, and the tap '
+      'that starts the day',
+      (tester) async {
+        final semantics = tester.ensureSemantics();
+        await pump(tester);
+        final node = tester.getSemantics(
+          find.descendant(
+            of: find.byType(ProgressRingCard),
+            matching: find.byType(DpProgressRing),
+          ),
+        );
+        final data = node.getSemanticsData();
+        expect(data.label, l10n.todayRing(12, 20));
+        expect(data.value, '60%');
+        expect(data.flagsCollection.isButton, isTrue);
 
-      tester.semantics.tap(find.semantics.byLabel(l10n.todayRing(12, 20)));
-      await tester.pumpAndSettle();
-      expect(session(tester), isNotNull);
-      semantics.dispose();
-    });
+        tester.semantics.tap(find.semantics.byLabel(l10n.todayRing(12, 20)));
+        await tester.pumpAndSettle();
+        expect(session(tester), isNotNull);
+        semantics.dispose();
+      },
+    );
 
     testWidgets('FR-T1-08 the step chip switches to Learn and opens it', (
       tester,
