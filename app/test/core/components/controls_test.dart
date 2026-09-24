@@ -617,6 +617,42 @@ void main() {
       semantics.dispose();
     });
 
+    testWidgets('a held DpRatingBar offers nothing to press', (tester) async {
+      final semantics = tester.ensureSemantics();
+      await pump(
+        tester,
+        DpRatingBar(
+          onRated: (_) {},
+          intervals: const <DpRating, String>{DpRating.good: '8 d'},
+          enabled: false,
+        ),
+      );
+      expect(
+        tester.getSemantics(find.text('Good')),
+        isSemantics(isButton: true, hasEnabledState: true, hasTapAction: false),
+      );
+      semantics.dispose();
+    });
+
+    testWidgets('a disabled DpUmlautBar offers no tap or long press', (
+      tester,
+    ) async {
+      final semantics = tester.ensureSemantics();
+      final controller = TextEditingController();
+      addTearDown(controller.dispose);
+      await pump(tester, DpUmlautBar(controller: controller, enabled: false));
+      expect(
+        tester.getSemantics(find.text('ä')),
+        isSemantics(
+          isButton: true,
+          hasEnabledState: true,
+          hasTapAction: false,
+          hasLongPressAction: false,
+        ),
+      );
+      semantics.dispose();
+    });
+
     testWidgets("DpUmlautBar's keys, tap and long press", (tester) async {
       final semantics = tester.ensureSemantics();
       final controller = TextEditingController();

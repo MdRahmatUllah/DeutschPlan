@@ -532,9 +532,18 @@ void main() {
         final hides =
             call.args.contains('excludeSemantics: true') ||
             call.child.trimLeft().startsWith('ExcludeSemantics(');
-        final gesture = RegExp(r'\b(?:GestureDetector|InkWell)\(')
-            .hasMatch(call.child);
-        if (button && hides && gesture && !call.args.contains('onTap:')) {
+        // A gesture by name, or any handler: `DpSurface(onTap: …)` is as
+        // dead behind an excluded subtree as a GestureDetector is.
+        final gesture = RegExp(
+          r'\b(?:GestureDetector|InkWell)\(|onTap:|onPressed:|onLongPress:',
+        ).hasMatch(call.child);
+        final longPress =
+            call.child.contains('onLongPress:') &&
+            !call.args.contains('onLongPress:');
+        if (button &&
+            hides &&
+            gesture &&
+            (!call.args.contains('onTap:') || longPress)) {
           offenders.add('${_rel(file)}:${call.line}');
         }
       }

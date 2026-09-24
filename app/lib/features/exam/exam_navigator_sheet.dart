@@ -180,6 +180,7 @@ class _Cell extends StatelessWidget {
           : cell.answered
           ? l10n.examNavAnsweredState
           : l10n.examNavEmptyState,
+      onTap: onTap,
       excludeSemantics: true,
       // ponytail: 40 dp tall, as the artboard draws it; eight to a row
       // leaves no room for 48 on a phone.

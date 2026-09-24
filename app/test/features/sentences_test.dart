@@ -206,7 +206,8 @@ INSERT INTO sentence_log (word_uid, ord, shown_on, self_rating) VALUES
       expect(find.text(l10n.sentencesPlace(2, 3)), findsOneWidget);
     });
 
-    testWidgets('#312 a screen reader can answer: Understood by its tap '
+    testWidgets('FR-T5-02 #312 a screen reader can answer: Understood by '
+        'its tap '
         'action writes 3', (tester) async {
       final semantics = tester.ensureSemantics();
       await pump(tester);

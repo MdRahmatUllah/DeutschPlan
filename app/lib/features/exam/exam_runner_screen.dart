@@ -562,6 +562,7 @@ class _Band extends StatelessWidget {
               Semantics(
                 button: true,
                 label: l10n.examNavOpen,
+                onTap: onNavigator,
                 excludeSemantics: true,
                 child: GestureDetector(
                   behavior: HitTestBehavior.opaque,
