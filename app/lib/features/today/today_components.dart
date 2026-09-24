@@ -146,35 +146,42 @@ class ProgressRingCard extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       child: Row(
         children: <Widget>[
-          Semantics(
-            button: onStart != null,
-            onTap: onStart,
-            child: GestureDetector(
+          // One node (#315): the ring's name and value, with the tap. Apart, a
+          // screen reader found a nameless button over the ring's label.
+          MergeSemantics(
+            child: Semantics(
+              button: onStart != null,
               onTap: onStart,
-              behavior: HitTestBehavior.opaque,
-              // Tweens from 0 on open, and on to the new count after a
-              // session. Still under reduce motion.
-              child: TweenAnimationBuilder<double>(
-                tween: Tween<double>(begin: 0, end: view.completed.toDouble()),
-                duration: MediaQuery.disableAnimationsOf(context)
-                    ? Duration.zero
-                    : const Duration(milliseconds: 700),
-                curve: Curves.easeOutCubic,
-                builder: (context, value, _) => DpProgressRing(
-                  completed: value.round(),
-                  total: view.total,
-                  size: ringSize,
-                  // TodayDone: the ring turns Lime, with a tick for the time.
-                  colour: view.isDone ? tokens.color.easy : null,
-                  caption: view.isRestDay
-                      ? l10n.todayRestNoPlan
-                      : view.left == 0
-                      ? null
-                      : l10n.todayEstimate(view.estimateMinutes),
-                  captionIcon: view.isDone ? Icons.check : null,
-                  // TodayRest: nothing planned, and the ring says so.
-                  countLabel: view.isRestDay ? l10n.todayRestFree : null,
-                  semanticLabel: l10n.todayRing(view.completed, view.total),
+              child: GestureDetector(
+                onTap: onStart,
+                behavior: HitTestBehavior.opaque,
+                // Tweens from 0 on open, and on to the new count after a
+                // session. Still under reduce motion.
+                child: TweenAnimationBuilder<double>(
+                  tween: Tween<double>(
+                    begin: 0,
+                    end: view.completed.toDouble(),
+                  ),
+                  duration: MediaQuery.disableAnimationsOf(context)
+                      ? Duration.zero
+                      : const Duration(milliseconds: 700),
+                  curve: Curves.easeOutCubic,
+                  builder: (context, value, _) => DpProgressRing(
+                    completed: value.round(),
+                    total: view.total,
+                    size: ringSize,
+                    // TodayDone: the ring turns Lime, with a tick for the time.
+                    colour: view.isDone ? tokens.color.easy : null,
+                    caption: view.isRestDay
+                        ? l10n.todayRestNoPlan
+                        : view.left == 0
+                        ? null
+                        : l10n.todayEstimate(view.estimateMinutes),
+                    captionIcon: view.isDone ? Icons.check : null,
+                    // TodayRest: nothing planned, and the ring says so.
+                    countLabel: view.isRestDay ? l10n.todayRestFree : null,
+                    semanticLabel: l10n.todayRing(view.completed, view.total),
+                  ),
                 ),
               ),
             ),
