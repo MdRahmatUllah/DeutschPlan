@@ -105,8 +105,9 @@ class StubQuizRun implements QuizRunService {
   /// What L9 reads back (#126).
   final QuizResult? outcome;
 
-  /// Each *Add mistakes to revision*: its uids and the day it was asked.
-  final List<(List<String>, String)> added = <(List<String>, String)>[];
+  /// Each *Add mistakes to revision*: its mistakes and the day it was asked.
+  final List<(List<({String uid, String? verdict})>, String)> added =
+      <(List<({String uid, String? verdict})>, String)>[];
 
   @override
   Future<QuizRun> start({
@@ -142,9 +143,9 @@ class StubQuizRun implements QuizRunService {
 
   @override
   Future<void> addToRevision(
-    List<String> uids, {
+    List<({String uid, String? verdict})> mistakes, {
     required PlanDate today,
-  }) async => added.add((uids, today));
+  }) async => added.add((mistakes, today));
 }
 
 List<Override> quizStub([StubQuizRun? run]) => <Override>[

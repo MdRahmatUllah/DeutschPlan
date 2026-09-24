@@ -210,13 +210,26 @@ void main() {
     expect(await service.result(99), isNull);
   });
 
-  test('FR-L9-01 Add mistakes to revision: due tomorrow, those only', () async {
-    await service.addToRevision([ContentFixture.haus], today: '2026-09-21');
+  test('FR-L9-01 BR-FSRS-03 Add mistakes to revision: an almost rated '
+      'Again, a wrong not twice, both due tomorrow, those only', () async {
     Future<String?> due(String uid) async => (await (db.select(
       db.wordState,
     )..where((s) => s.wordUid.equals(uid))).getSingle()).due;
+    final before = await due(ContentFixture.strasse);
+
+    await service.addToRevision(<({String uid, String? verdict})>[
+      (uid: ContentFixture.haus, verdict: 'almost'),
+      (uid: 'uid-not-learned', verdict: 'wrong'),
+    ], today: '2026-09-21');
+
     expect(await due(ContentFixture.haus), '2026-09-22');
-    expect(await due(ContentFixture.strasse), isNull);
+    expect(await due(ContentFixture.strasse), before, reason: 'not a mistake');
+    final log = await db.select(db.reviewLog).get();
+    expect(
+      [for (final r in log) (r.wordUid, r.rating, r.source)],
+      [(ContentFixture.haus, Rating.again.value, 'quiz')],
+      reason: 'the almost is rated Again; the wrong already was',
+    );
   });
 
   test('a source with nothing learned records nothing', () async {

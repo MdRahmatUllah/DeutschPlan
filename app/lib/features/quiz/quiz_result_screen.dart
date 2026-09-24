@@ -65,16 +65,19 @@ class _QuizResultViewState extends ConsumerState<QuizResultView> {
     ),
   );
 
-  /// FR-L9-01: the mistakes due tomorrow, explicitly.
-  Future<void> _addToRevision(List<String> uids) async {
+  /// FR-L9-01: the mistakes rated Again and due tomorrow, explicitly.
+  Future<void> _addToRevision(List<QuizMistakeRowsResult> mistakes) async {
     setState(() => _added = true);
-    await ref
-        .read(quizRunServiceProvider)
-        .addToRevision(uids, today: ref.read(todayProvider));
+    await ref.read(quizRunServiceProvider).addToRevision(
+      <({String uid, String? verdict})>[
+        for (final m in mistakes) (uid: m.uid, verdict: m.verdict),
+      ],
+      today: ref.read(todayProvider),
+    );
     if (!mounted) return;
     DpToast.show(
       context,
-      AppLocalizations.of(context).quizAddedToRevision(uids.length),
+      AppLocalizations.of(context).quizAddedToRevision(mistakes.length),
     );
   }
 
@@ -164,7 +167,7 @@ class _QuizResultViewState extends ConsumerState<QuizResultView> {
                     kind: DpButtonKind.secondary,
                     onPressed: _added
                         ? null
-                        : () => unawaited(_addToRevision(uids)),
+                        : () => unawaited(_addToRevision(result.mistakes)),
                   ),
                   const SizedBox(height: 8),
                 ],

@@ -105,10 +105,23 @@ class QuizRunService {
   Future<exam.QuizResult?> result(int attemptId) =>
       _exams.quizResult(attemptId);
 
-  /// FR-L9-01 *Add mistakes to revision*: due tomorrow, explicitly. The
-  /// quiz already rated them Again; this pins the day.
-  Future<void> addToRevision(List<String> uids, {required PlanDate today}) =>
-      _words.dueOn(uids, addDays(today, 1));
+  /// FR-L9-01 *Add mistakes to revision*: every mistake rated Again
+  /// (BR-FSRS-03), then due tomorrow, explicitly. A wrong answer was rated
+  /// Again as it was given; an almost was rated Hard, so it is rated Again
+  /// now, and FSRS, `review_log` and its status agree.
+  Future<void> addToRevision(
+    List<({String uid, String? verdict})> mistakes, {
+    required PlanDate today,
+  }) async {
+    for (final m in mistakes) {
+      if (m.verdict == Verdict.almost.name) {
+        await _rating.rate(m.uid, Rating.again, source: ReviewSource.quiz);
+      }
+    }
+    await _words.dueOn(<String>[
+      for (final m in mistakes) m.uid,
+    ], addDays(today, 1));
+  }
 
   /// The run is over: its score out of one point an item (BR-ANS-04).
   Future<void> finish(QuizRun run, {required double points}) =>

@@ -196,11 +196,11 @@ void main() {
     await pump(tester);
     await tester.tap(find.text(l10n.quizAddToRevision));
     await tester.pumpAndSettle();
-    expect(run.added.single.$1, <String>[
-      'kaution',
-      'umziehen',
-      'vermieter',
-      'nebenkosten',
+    expect(run.added.single.$1, <({String uid, String? verdict})>[
+      (uid: 'kaution', verdict: 'almost'),
+      (uid: 'umziehen', verdict: 'almost'),
+      (uid: 'vermieter', verdict: 'wrongArticle'),
+      (uid: 'nebenkosten', verdict: 'almost'),
     ]);
     expect(
       run.added.single.$2,
