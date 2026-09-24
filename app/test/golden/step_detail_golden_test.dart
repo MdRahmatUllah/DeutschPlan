@@ -41,6 +41,26 @@ void main() {
     ),
   );
 
+  // The QuizSetup artboard under its sheet: the five tiles and the last
+  // quiz, 16 / 20.
+  goldenTest(
+    'step_quiz',
+    builder: (context) => ProviderScope(
+      overrides: todayStub(),
+      child: const StepDetailScreen(code: 'A2.1', tab: StepTab.quiz),
+    ),
+  );
+
+  // A step with fewer than ten learned words: the tiles closed, and why.
+  goldenTest(
+    'step_quiz_locked',
+    modes: const <GoldenMode>[GoldenMode.light],
+    builder: (context) => ProviderScope(
+      overrides: todayStub(),
+      child: const StepDetailScreen(code: 'A2.2', tab: StepTab.quiz),
+    ),
+  );
+
   // A step that is not the active one: the Words tab's Start banner
   // (FR-L2-03) over the words.
   goldenTest(

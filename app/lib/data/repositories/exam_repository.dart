@@ -68,6 +68,16 @@ enum Verdict {
 }
 
 /// What an exam attempt ended up being worth.
+/// A finished quiz as L2's last quiz card shows it. A record rather than
+/// drift's row, so a provider can return it.
+typedef LastQuiz = ({
+  int score,
+  int outOf,
+  int length,
+  String direction,
+  String finishedAt,
+});
+
 @immutable
 class ExamScore {
   const ExamScore({
@@ -386,4 +396,19 @@ class ExamRepository extends DatabaseAccessor<AppDatabase>
 
   Stream<List<QuizAttempt>> watchRecentQuizzes({int limit = 10}) =>
       recentQuizzes(limit).watch();
+
+  /// L2's "Last quiz · 16 / 20 · Standard · DE → EN · Sun 20 Sep": the
+  /// step's latest finished quiz, or null before the first.
+  Stream<LastQuiz?> watchLastStepQuiz(String code) =>
+      lastStepQuiz(code).watch().map(
+        (rows) => rows.isEmpty
+            ? null
+            : (
+                score: rows.single.scorePoints.round(),
+                outOf: rows.single.maxPoints.round(),
+                length: rows.single.length,
+                direction: rows.single.direction,
+                finishedAt: rows.single.finishedAt!,
+              ),
+      );
 }
