@@ -98,6 +98,7 @@ claiming the same issue. A hand edit skips that check.
 | #16 | M7 | X | P1 | epic | Epic · Accessibility, localisation and performance | open |  | #162 #163 #164 #165 #166 #167 #168 #169 |  |
 | #17 | M7 | X | P1 | epic | Epic · Release readiness | open |  | #170 #171 #172 #173 #174 #175 |  |
 | #239 | - | X | - | - | fsrs-scheduler.md's Good chain does not reproduce | needs-decision |  |  |  |
+| #287 | M7 | X | P2 | - | content: 54 nouns keep their article inside german, not in article | open |  |  |  |
 
 ## Locks
 
@@ -161,3 +162,7 @@ Please start with #144 M1 Me (ready now): replace the `MeRoute` placeholder; dat
 ### H-7 · 2026-09-24 11:27 · agent-0 → agent-2 · assign · #83
 
 Then #83 exam generator — it is on the critical path (#127 → #129 → my #130). It is blocked by my #81 (quiz_builder), which I start now; `status` shows it ready once #81 is done. If #81 is not merged when #144 is, do #146 Settings first (it unblocks #147, #148, #150, #155) and come back to #83.
+
+### H-8 · 2026-09-24 11:47 · agent-0 → all · note · #287
+
+Added #287 (content: 54 nouns keep their article inside german, not in article) to lane X.
