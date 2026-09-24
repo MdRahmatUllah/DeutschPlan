@@ -21,7 +21,8 @@ part 'study_summary.g.dart';
 
 /// What is left of the day once a session ends (FR-T3-02): today's open
 /// practice sentences, the backlog, and whether every plan row is done or
-/// skipped (BR-PLAN-10).
+/// skipped (BR-PLAN-10) with T6 still to come — a day already celebrated is
+/// not done again (FR-T6-01).
 typedef StudyNext = ({int sentences, int backlog, bool dayDone});
 
 @riverpod
@@ -33,7 +34,9 @@ Future<StudyNext> studyNext(Ref ref, String date) async {
   return (
     sentences: math.max(0, picked.length - rated),
     backlog: (await plans.backlogBefore(date)).length,
-    dayDone: await plans.openPlanItems(date) == 0,
+    dayDone:
+        await plans.openPlanItems(date) == 0 &&
+        !await ref.watch(planRepositoryProvider).dayCompleteShown(date),
   );
 }
 

@@ -346,6 +346,30 @@ class PlanRepository {
           (t) => OrderingTerm.asc(t.wordUid),
         ]);
 
+  /// FR-T6-01: marks [day]'s T6 as shown, once. True for the call that
+  /// marked it; false when the day had already had its T6.
+  Future<bool> claimDayComplete(String day) async {
+    final changed = await _db.customUpdate(
+      'INSERT INTO daily_stats (day, completed_shown) VALUES (?1, 1) '
+      'ON CONFLICT (day) DO UPDATE SET completed_shown = 1 '
+      'WHERE completed_shown = 0',
+      variables: <Variable<Object>>[Variable<String>(day)],
+      updates: <TableInfo<Table, Object?>>{_db.dailyStats},
+    );
+    return changed > 0;
+  }
+
+  /// FR-T6-01: whether [day] has had its T6.
+  Future<bool> dayCompleteShown(String day) async {
+    final row = await _db
+        .customSelect(
+          'SELECT completed_shown FROM daily_stats WHERE day = ?1',
+          variables: <Variable<Object>>[Variable<String>(day)],
+        )
+        .getSingleOrNull();
+    return (row?.read<int>('completed_shown') ?? 0) == 1;
+  }
+
   /// Completes a plan row without a rating: T4's *Remove from course*.
   /// [at] null opens it again — the *Undo*.
   Future<void> complete({

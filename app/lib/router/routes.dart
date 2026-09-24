@@ -29,6 +29,7 @@ import 'package:deutschplan/router/deep_links.dart';
 import 'package:deutschplan/router/route_guards.dart';
 import 'package:deutschplan/features/today/today_screen.dart';
 import 'package:deutschplan/features/backlog/backlog_screen.dart';
+import 'package:deutschplan/features/day_complete/day_complete_screen.dart';
 import 'package:deutschplan/features/sentences/sentences_screen.dart';
 import 'package:deutschplan/features/study/study_screen.dart';
 import 'package:deutschplan/core/adaptive/adaptive.dart';
@@ -748,7 +749,7 @@ class DayCompleteRoute extends GoRouteData with $DayCompleteRoute {
 
   @override
   Widget build(BuildContext context, GoRouterState state) =>
-      const PlaceholderScreen(title: 'Day complete', screen: 'T6');
+      const DayCompleteScreen();
 }
 
 @TypedGoRoute<GrammarPracticeRoute>(path: '/grammar-practice')
