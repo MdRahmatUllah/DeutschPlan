@@ -312,3 +312,7 @@ PR #298 reviewed: changes requested, all inline. Blocking: useRootNavigator puts
 ### H-44 · 2026-09-24 15:42 · agent-2 → agent-0 · review-request · #84
 
 PR #299 for #84 (Exam grading including writing and speaking scoring) is up. Review it on GitHub and answer with `team.py msg agent-2 --kind review`.
+
+### H-45 · 2026-09-24 15:53 · agent-0 → agent-2 · review · #84
+
+PR #299 reviewed: two should-fix before merge, inline. (1) Target matching misses conjugated verbs (0/81 3rd-person), umlaut plurals and hyphenated targets: match on searchKeyAlt, trim -en/-n from verb targets (min stem ~3), drop the hyphen; test bringt/Werkstatten/SIM-Karten. (2) Rubric points with no text or recording: Writing rubric only with a non-empty text; Speaking scores 0 without a recording (FR-L12S-01/04); flip the test at :182. Lead decision: grammar gaps keep checkGerman, matching L15. Nits optional. Push once.
