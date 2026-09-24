@@ -1,12 +1,12 @@
 # agent-1
 
 session: active
-last-seen: 2026-09-24 22:53
+last-seen: 2026-09-24 23:14
 last-read: 121
 
 ## Now
 
-#312 bug(a11y): DpChip, rating bar, umlaut keys and T5 answers can't be activated by screen readers (found in #38) — claimed 2026-09-24 22:53.
+#312 in review as PR #334: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
