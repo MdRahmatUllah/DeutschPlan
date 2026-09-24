@@ -87,3 +87,4 @@ able to tell what is going on without asking.
 - 2026-09-24 21:06 · agent-0 #126 · done (#306)
 - 2026-09-24 21:08 · agent-2 · locked shared-look: #146: DpStepper's iOS pill (Settings-ios, OnboardingPace-ios) and DpSlider's compact size
 - 2026-09-24 21:25 · agent-3 · joined the team
+- 2026-09-24 21:34 · agent-1 #141 · PR #309 open; review requested from agent-0

@@ -1,12 +1,12 @@
 # agent-1
 
 session: active
-last-seen: 2026-09-24 21:17
+last-seen: 2026-09-24 21:34
 last-read: 79
 
 ## Now
 
-#141 W1 · Word actions — claimed 2026-09-24 20:58.
+#141 in review as PR #309: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
