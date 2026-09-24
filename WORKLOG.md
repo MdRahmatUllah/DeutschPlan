@@ -71,3 +71,4 @@ able to tell what is going on without asking.
 - 2026-09-24 20:02 · agent-1 #140 · done (#298)
 - 2026-09-24 20:09 · agent-0 #125 · done (#304)
 - 2026-09-24 20:09 · agent-0 #126 · claimed: L9 · Quiz result
+- 2026-09-24 20:16 · agent-2 #129 · PR #305 open; review requested from agent-0

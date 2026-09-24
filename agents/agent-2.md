@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-09-24 19:55
+last-seen: 2026-09-24 20:16
 last-read: 63
 
 ## Now
 
-#129 L11 · Exam intro — claimed 2026-09-24 19:55.
+#129 in review as PR #305: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
