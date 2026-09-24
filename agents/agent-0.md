@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-09-24 20:30
+last-seen: 2026-09-24 20:34
 last-read: 9
 
 ## Now
 
-#126 L9 · Quiz result — claimed 2026-09-24 20:09.
+#126 in review as PR #306: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
