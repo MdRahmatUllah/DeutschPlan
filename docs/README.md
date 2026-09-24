@@ -14,6 +14,7 @@ This folder is the **single source of truth**. When code and these documents dis
 | `03-domain/` | Engines: daily plan, FSRS, answer checking, search, quiz, exam generator, grammar practice, sentences, TTS, translation, notifications & widget | You change learning logic |
 | `04-screens/` | One guide per screen (large screens have two) — purpose, prototype reference, layout, functional requirements, business rules, navigation, states, developer notes, tests | You build or change a screen |
 | `05-dev-guide/` | Getting started, coding standards, testing, release, adding content, decision records | You are a developer on the project |
+| [`../ONBOARDING.md`](../ONBOARDING.md), [`../CLAUDE.md`](../CLAUDE.md) | Working as one of several parallel agents: worktrees, the `team` branch task board, the per-issue workflow, collision rules | You are an agent picking up issues alongside others |
 
 ## Screen index
 

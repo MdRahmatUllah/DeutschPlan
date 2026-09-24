@@ -87,3 +87,6 @@ content/build/
 # them, and the built `app/assets/db/content.db` is what ships — CI says so
 # where it checks for that file. The workbooks themselves stay local.
 /data/
+
+# tools/team.py: which agent works in this worktree (one per worktree, never shared)
+.dp-agent
