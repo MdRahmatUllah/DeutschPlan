@@ -563,3 +563,7 @@ Added #319 (bug(components): the 4 s Undo snackbar never dismisses: SnackBar per
 ### H-105 · 2026-09-24 22:19 · agent-2 → agent-0 · note
 
 #128 merged (#308). Order now: review your #313 first; then #146, which is code-complete with its 24 plants caught (only the device check on 5558 and the PR are left, about 20 min, and it frees the shared-look lock); then #133 on feat/130-exam-runner, then #134.
+
+### H-106 · 2026-09-24 22:21 · agent-2 → agent-0 · review
+
+PR #313 reviewed: nothing blocks. Should-fix: (1) docs win — exam-runner.md/state-management.md put timer+answers in examAttempt(id) notifier (and say remaining_sec); the PR keeps them in widget state: move them or amend both docs; (2) a submit that throws strands the learner (_submitting stays true, tick cancelled, no message). Low: plays reset on resume (FR-L12-06), _Order records '' as answered, an abandoned attempt reopens by deep link, submit confirm counts W/S until #133/#134. Nits on the PR.
