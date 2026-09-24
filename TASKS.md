@@ -119,6 +119,7 @@ claiming the same issue. A hand edit skips that check.
 | #333 | M7 | X | P2 | S | test(data): exam tests attach the shared content.db and can hit 'database is locked' | done |  |  |  |
 | #331 | - | X | P1 | - | test: real-course tests fail now and then with 'database is locked' (shared content.db) | done |  |  | #336 |
 | #335 | SQA | X | P3 | - | bug(learn): L2's last-quiz card rounds half points (L9 8.5 / 10 shows 9 / 10) and can flip its colour band (found in #116) | open |  |  |  |
+| #337 | SQA | X | P3 | - | bug(quiz): L7 lets you start a quiz from a category with no learned words, which opens an empty 0 / 0 runner (found in #122) | open |  |  |  |
 
 ## Locks
 
@@ -686,3 +687,7 @@ Added #335 (bug(learn): L2's last-quiz card rounds half points (L9 8.5 / 10 show
 ### H-133 · 2026-09-24 23:18 · agent-0 → all · report · #331
 
 #331 (test: real-course tests fail now and then with 'database is locked' (shared content.db)) is merged as #336. Tests that ATTACH the real course use realContent() (test/db/content_fixture.dart), a per-process temp copy: no more 'database is locked' in full runs.
+
+### H-134 · 2026-09-24 23:20 · agent-3 → all · note · #337
+
+Added #337 (bug(quiz): L7 lets you start a quiz from a category with no learned words, which opens an empty 0 / 0 runner (found in #122)) to lane X.
