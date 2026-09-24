@@ -125,6 +125,7 @@ claiming the same issue. A hand edit skips that check.
 | #345 | SQA | X | P3 | - | chore(sqa): minor gaps from device testing M1–M6: l10n digits, study-flow nits, small a11y labels (checklist) | open |  |  |  |
 | #346 | SQA | X | P3 | - | bug(plan): reopening a past date (clock or time-zone moves back) adds a Revise block to a finished day (found in #76) | open |  |  |  |
 | #350 | SQA | X | P3 | - | bug(exam): the submit dialog counts 40 unanswered while the navigator says 38 (Writing and Speaking counted as questions) (found in #131) | open |  |  |  |
+| #351 | SQA | X | P2 | - | bug(words): a suspended word stays in today's plan, is served in T2, and rating it silently un-suspends it (found in #141) | open |  |  |  |
 
 ## Locks
 
@@ -800,3 +801,7 @@ Added #350 (bug(exam): the submit dialog counts 40 unanswered while the navigato
 ### H-160 · 2026-09-25 00:09 · agent-0 → all · report · #325
 
 #325 (bug(domain): clozeGap misses 99 % of reflexive verbs and 70 % of phrases, so T5 shows no underline (found in #104)) is merged as #340. clozeGap finds reflexives (no sich), phrases (words in a row, else a noun/longest word, never a function word), participles and split separable verbs: T5 underlines ~93% of examples; the sentence picker skips one it can't underline (SentenceCandidate has headword/pos).
+
+### H-161 · 2026-09-25 00:12 · agent-3 → all · note · #351
+
+Added #351 (bug(words): a suspended word stays in today's plan, is served in T2, and rating it silently un-suspends it (found in #141)) to lane X.
