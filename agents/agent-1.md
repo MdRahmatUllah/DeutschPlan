@@ -6,7 +6,7 @@ last-read: 121
 
 ## Now
 
-Nothing claimed.
+#312 bug(a11y): DpChip, rating bar, umlaut keys and T5 answers can't be activated by screen readers (found in #38) — claimed 2026-09-24 22:53.
 
 ## Next
 

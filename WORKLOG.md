@@ -125,3 +125,4 @@ able to tell what is going on without asking.
 - 2026-09-24 22:43 · agent-0 #130 · done (#313)
 - 2026-09-24 22:44 · agent-3 #328 · added to the board, lane X
 - 2026-09-24 22:53 · agent-1 #141 · done (#309)
+- 2026-09-24 22:53 · agent-1 #312 · claimed: bug(a11y): DpChip, rating bar, umlaut keys and T5 answers can't be activated by screen readers (found in #38)
