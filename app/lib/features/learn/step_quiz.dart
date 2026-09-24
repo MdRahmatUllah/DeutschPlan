@@ -203,12 +203,7 @@ class LastQuizCard extends StatelessWidget {
         : share >= 0.5
         ? tokens.color.learning
         : tokens.color.again;
-    final kind = switch (quiz.length) {
-      10 => l10n.quizQuick,
-      20 => l10n.quizStandard,
-      30 => l10n.quizLong,
-      _ => l10n.quizCustom,
-    };
+    final kind = quizKindName(l10n, quiz.length);
     final date = DateFormat(
       'EEE d MMM',
       Localizations.localeOf(context).toString(),
@@ -269,6 +264,14 @@ class LastQuizCard extends StatelessWidget {
 }
 
 /// A quiz direction as the app names it: "DE → EN", "Articles".
+/// A quiz named by its length, as L2's tiles name them.
+String quizKindName(AppLocalizations l10n, int length) => switch (length) {
+  10 => l10n.quizQuick,
+  20 => l10n.quizStandard,
+  30 => l10n.quizLong,
+  _ => l10n.quizCustom,
+};
+
 String quizDirectionName(AppLocalizations l10n, String direction) =>
     switch (direction) {
       'deEn' => 'DE → EN',

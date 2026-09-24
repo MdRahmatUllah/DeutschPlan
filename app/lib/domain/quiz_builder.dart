@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:deutschplan/domain/answer_check.dart' show splitMeanings;
+import 'package:deutschplan/domain/answer_check.dart';
 import 'package:deutschplan/domain/fsrs.dart';
 import 'package:deutschplan/domain/plan_engine.dart' show PlanDate, daysBetween;
 
@@ -279,6 +279,20 @@ class QuizBuilder {
     }
   }
 }
+
+/// FR-L8-02: [given] against [item], checked the way its direction asks
+/// (`quiz-engine.md`'s table): meanings for DE → EN and DE → বাংলা, German
+/// with BR-ANS-02's article rules for EN → DE and listening, the article
+/// alone, or the form.
+Verdict grade(QuizItem item, String given) => switch (item.direction) {
+  QuizDirection.deEn ||
+  QuizDirection.deBn => checkMeaning(given, item.expected),
+  QuizDirection.enDe ||
+  QuizDirection.listening => checkGerman(given, item.expected),
+  QuizDirection.articles => checkArticle(given, item.expected),
+  QuizDirection.forms => checkForm(given, item.expected),
+  QuizDirection.mixed => throw StateError('an item has its own direction'),
+};
 
 /// The directions a mixed quiz rotates through, in order.
 const List<QuizDirection> rotation = <QuizDirection>[

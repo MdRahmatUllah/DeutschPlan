@@ -2278,6 +2278,147 @@
       }
     }
   },
+  "quizClose": "Close quiz",
+  "@quizClose": {
+    "description": "L8 top bar close button, for screen readers."
+  },
+  "quizStopTitle": "Stop quiz?",
+  "@quizStopTitle": {
+    "description": "L8 close dialog title (FR-L8-04)."
+  },
+  "quizStopBody": "Your answers so far are saved to revision",
+  "@quizStopBody": {
+    "description": "L8 close dialog body (FR-L8-04)."
+  },
+  "quizStop": "Stop",
+  "@quizStop": {
+    "description": "L8 close dialog: stop the quiz."
+  },
+  "quizKeepGoing": "Keep going",
+  "@quizKeepGoing": {
+    "description": "L8 close dialog: stay in the quiz."
+  },
+  "quizAskMeaning": "Type the meaning",
+  "@quizAskMeaning": {
+    "description": "L8 item chip: DE → EN and DE → বাংলা."
+  },
+  "quizAskGerman": "Type the German",
+  "@quizAskGerman": {
+    "description": "L8 item chip: EN → DE."
+  },
+  "quizAskArticle": "Pick the article",
+  "@quizAskArticle": {
+    "description": "L8 item chip: articles."
+  },
+  "quizAskListening": "Type what you hear",
+  "@quizAskListening": {
+    "description": "L8 item chip: listening."
+  },
+  "quizAskForm": "Type the form",
+  "@quizAskForm": {
+    "description": "L8 item chip: forms."
+  },
+  "quizFormPlural": "Plural of {word}",
+  "@quizFormPlural": {
+    "description": "L8 forms prompt. word is German course text.",
+    "placeholders": {
+      "word": {
+        "type": "String"
+      }
+    }
+  },
+  "quizFormThirdPerson": "3rd person of {word}",
+  "@quizFormThirdPerson": {
+    "description": "L8 forms prompt: er/sie/es. word is German course text.",
+    "placeholders": {
+      "word": {
+        "type": "String"
+      }
+    }
+  },
+  "quizFormPerfekt": "Perfekt of {word}",
+  "@quizFormPerfekt": {
+    "description": "L8 forms prompt. word is German course text.",
+    "placeholders": {
+      "word": {
+        "type": "String"
+      }
+    }
+  },
+  "quizFormComparative": "Comparative of {word}",
+  "@quizFormComparative": {
+    "description": "L8 forms prompt. word is German course text.",
+    "placeholders": {
+      "word": {
+        "type": "String"
+      }
+    }
+  },
+  "quizFormSuperlative": "Superlative of {word}",
+  "@quizFormSuperlative": {
+    "description": "L8 forms prompt. word is German course text.",
+    "placeholders": {
+      "word": {
+        "type": "String"
+      }
+    }
+  },
+  "quizYourAnswer": "Your answer",
+  "@quizYourAnswer": {
+    "description": "L8 answer field label."
+  },
+  "quizCheck": "Check",
+  "@quizCheck": {
+    "description": "L8 button: check the typed answer."
+  },
+  "quizCorrect": "Correct",
+  "@quizCorrect": {
+    "description": "L8 verdict line, right."
+  },
+  "quizAlmost": "Almost — watch the spelling: {answer}",
+  "@quizAlmost": {
+    "description": "L8 verdict line, almost (quiz.md). answer is German course text or a meaning.",
+    "placeholders": {
+      "answer": {
+        "type": "String"
+      }
+    }
+  },
+  "quizAnswerIs": "The answer is {answer}",
+  "@quizAnswerIs": {
+    "description": "L8 verdict line, wrong. answer is German course text or a meaning.",
+    "placeholders": {
+      "answer": {
+        "type": "String"
+      }
+    }
+  },
+  "quizTimeUp": "Time's up — the answer is {answer}",
+  "@quizTimeUp": {
+    "description": "L8 verdict line when the 15 s timer ran out (FR-L8-05).",
+    "placeholders": {
+      "answer": {
+        "type": "String"
+      }
+    }
+  },
+  "quizSecondsLeft": "{seconds} s",
+  "@quizSecondsLeft": {
+    "description": "L8 timer: seconds left for this question (FR-L8-05).",
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "quizEmpty": "No learned words to quiz here yet.",
+  "@quizEmpty": {
+    "description": "L8 when the source has no learned words."
+  },
+  "quizLoadFailed": "This quiz could not be built.",
+  "@quizLoadFailed": {
+    "description": "L8 error panel."
+  },
   "libraryTitle": "Grammar library",
   "@libraryTitle": {
     "description": "L3 title."

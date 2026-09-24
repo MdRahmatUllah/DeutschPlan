@@ -32,6 +32,7 @@ import 'package:deutschplan/data/repositories/grammar_repository.dart';
 import 'package:deutschplan/data/repositories/model_repository.dart';
 import 'package:deutschplan/data/repositories/plan_repository.dart';
 import 'package:deutschplan/data/repositories/plan_store.dart';
+import 'package:deutschplan/data/repositories/quiz_run_service.dart';
 import 'package:deutschplan/data/repositories/quiz_store.dart';
 import 'package:deutschplan/data/repositories/rating_service.dart';
 import 'package:deutschplan/data/repositories/search_repository.dart';
@@ -338,6 +339,14 @@ QuizBuilder quizBuilder(Ref ref) => QuizBuilder(
         .watch(settingsProvider)
         .read(SettingKeys.desiredRetention),
   ),
+);
+
+/// L8's data (#123): the quiz built, recorded and finished.
+@riverpod
+QuizRunService quizRunService(Ref ref) => QuizRunService(
+  ref.watch(quizBuilderProvider),
+  ref.watch(examRepositoryProvider),
+  ref.watch(clockProvider),
 );
 
 /// FR-S2-03's coach mark on Today's primary button: whether it still has to
