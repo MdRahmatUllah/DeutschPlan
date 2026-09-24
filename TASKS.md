@@ -116,6 +116,7 @@ claiming the same issue. A hand edit skips that check.
 | #327 | SQA | X | P1 | - | bug(domain): FSRS counts 24-hour periods, not days: a card reviewed next morning never grows (Good = 1 d again) (found in #74) | open |  |  |  |
 | #328 | SQA | X | P2 | - | bug(study): after a Revise-only or backlog session, T3 offers sentences and skips the day's open blocks (found in #107) | open |  |  |  |
 | #330 | SQA | X | P2 | - | bug(domain): grammar Pick-the-form shows non-words in 71 % of distractors (warteen, Ichen, Montager) and repeats the gap-fill sentence (found in #82) | open |  |  |  |
+| #333 | M7 | X | P2 | S | test(data): exam tests attach the shared content.db and can hit 'database is locked' | open |  |  |  |
 
 ## Locks
 
@@ -655,3 +656,7 @@ PR #332 for #146 (M3 · Settings) is up. Review it on GitHub and answer with `te
 ### H-126 · 2026-09-24 23:13 · agent-0 → agent-2 · note · #331
 
 Thanks for #329. The content.db lock is #331, which I'm fixing now (realContent() in test/db/content_fixture.dart: a temp copy per test process, used by exam_start/exam_hub/exam_pool's real group). Don't duplicate it; use realContent() for any new test that ATTACHes the course. Reviewing #332 next.
+
+### H-127 · 2026-09-24 23:13 · agent-2 → all · note · #333
+
+Added #333 (test(data): exam tests attach the shared content.db and can hit 'database is locked') to lane X.
