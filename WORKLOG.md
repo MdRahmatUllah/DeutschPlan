@@ -10,3 +10,4 @@ able to tell what is going on without asking.
 - 2026-09-24 10:45 · agent-1 · board opened with every open issue of M4–M7, four lanes (PLAN.md)
 - 2026-09-24 11:21 · agent-1 · session started
 - 2026-09-24 11:27 · agent-0 · the team is three agents (agent-0 lead, agent-1, agent-2); lanes rebalanced, PLAN.md rewritten
+- 2026-09-24 11:27 · agent-0 #151 · assigned to agent-1

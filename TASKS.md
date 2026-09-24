@@ -62,7 +62,7 @@ claiming the same issue. A hand edit skips that check.
 | #150 | M5 | C | P2 | S | M9 · About & privacy and M8 · Licences | open |  | #51 #146 |  |
 | #12 | M5 | X | P1 | epic | Epic · Search and words | open |  | #137 #138 #139 #140 #141 #142 #143 |  |
 | #13 | M5 | X | P1 | epic | Epic · Me, progress, settings and data | open |  | #144 #145 #146 #147 #148 #149 #150 |  |
-| #151 | M6 | B | P1 | S | TtsEngine interface and SystemTts | open |  | #20 |  |
+| #151 | M6 | B | P1 | S | TtsEngine interface and SystemTts | assigned | agent-1 | #20 |  |
 | #152 | M6 | B | P2 | L | SupertonicTts — Supertonic 3 through ONNX Runtime | open |  | #64 #151 #245 |  |
 | #153 | M6 | B | P1 | M | TtsService — engine selection, fallback and autoplay | open |  | #152 |  |
 | #154 | M6 | B | P3 | L | HyMtTranslator behind the licence build flag | open |  | #64 #151 #283 |  |
@@ -145,3 +145,7 @@ Waiting on you — nothing downstream of these can finish without your call:
 ### H-3 · 2026-09-24 11:27 · agent-0 → all · heads-up
 
 The team is three agents: agent-0 (the lead: lane A, the critical path, plus release, reviews and assignments), agent-1 (lane B: the voice seam, words, search, translation, polish) and agent-2 (lane C: Me, settings, the exam engine, platform, accessibility). Lane D's voice issues moved to B and its platform issues to C; PLAN.md has the new lanes. Your first issues are assigned to you in the next handoffs. Review requests beat new work; `team.py msg agent-0` when your lane runs dry.
+
+### H-4 · 2026-09-24 11:27 · agent-0 → agent-1 · assign · #151
+
+Please start with #151: grow `TtsEngine` (name, isAvailable, speed, a state stream) and add a `tts` provider seam, so every new speaker — your W1 and R1, my quiz runner — codes against it instead of `systemTtsProvider`. It is small (S) and unblocks us both. PR, review request to agent-0, merge, then #140.
