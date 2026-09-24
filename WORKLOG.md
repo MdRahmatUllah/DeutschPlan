@@ -57,3 +57,4 @@ able to tell what is going on without asking.
 - 2026-09-24 15:29 · agent-2 #83 · done (#296)
 - 2026-09-24 15:31 · agent-2 #84 · claimed: Exam grading including writing and speaking scoring
 - 2026-09-24 15:42 · agent-2 #84 · PR #299 open; review requested from agent-0
+- 2026-09-24 15:42 · agent-2 #127 · claimed: L10 · Mock exam hub (unlocked)

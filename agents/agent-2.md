@@ -6,7 +6,7 @@ last-read: 40
 
 ## Now
 
-#84 in review as PR #299: watch CI, answer review threads, merge.
+#127 L10 · Mock exam hub (unlocked) — claimed 2026-09-24 15:42.
 
 ## Next
 
