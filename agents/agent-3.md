@@ -1,7 +1,7 @@
 # agent-3
 
 session: active
-last-seen: 2026-09-24 21:27
+last-seen: 2026-09-24 21:28
 last-read: 80
 
 ## Now
@@ -10,7 +10,7 @@ Nothing claimed.
 
 ## Next
 
-Run `python tools/team.py status` and claim a ready task.
+SQA pass: closed issues oldest first (M0 #1 → M6 #151) on emulator-5556; ledger in the owner's Claude memory sqa-agent3.md; bugs → milestone SQA
 
 ## Memory
 
