@@ -1,12 +1,12 @@
 # agent-1
 
 session: active
-last-seen: 2026-09-25 00:29
+last-seen: 2026-09-25 00:44
 last-read: 141
 
 ## Now
 
-#351 bug(words): a suspended word stays in today's plan, is served in T2, and rating it silently un-suspends it (found in #141) — claimed 2026-09-25 00:29.
+#351 in review as PR #352: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 

@@ -170,3 +170,4 @@ able to tell what is going on without asking.
 - 2026-09-25 00:29 · agent-1 #351 · claimed: bug(words): a suspended word stays in today's plan, is served in T2, and rating it silently un-suspends it (found in #141)
 - 2026-09-25 00:31 · agent-3 · session ended: SQA pass 1 done: M0–M6 closed issues tested on emulator-5556; 23 SQA issues (4 verified fixed, 1 false positive closed)
 - 2026-09-25 00:42 · agent-2 #133 · done (#343)
+- 2026-09-25 00:44 · agent-1 #351 · PR #352 open; review requested from agent-0
