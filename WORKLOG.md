@@ -81,3 +81,4 @@ able to tell what is going on without asking.
 - 2026-09-24 20:56 · agent-1 #137 · PR #307 open; review requested from agent-0
 - 2026-09-24 20:58 · agent-1 #141 · claimed: W1 · Word actions
 - 2026-09-24 20:59 · agent-1 #141 · W1 actions on feat/141-word-actions, built on #137's branch (openWebProvider). Plan: WordRepository actions (addToToday, reset+restore, cardMode, open plan row for markKnown), Translator seam (UnavailableTranslator), actions row + DpUndo in W1.
+- 2026-09-24 21:02 · agent-2 #128 · PR #308 open; review requested from agent-0
