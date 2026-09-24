@@ -49,7 +49,7 @@ claiming the same issue. A hand edit skips that check.
 | #137 | M5 | B | P1 | L | R1 · Search results | open |  | #39 #63 #67 |  |
 | #138 | M5 | B | P2 | S | R1 · Search idle: recents and My words | open |  | #137 |  |
 | #139 | M5 | B | P2 | S | R1 · No results and the web hand-off | open |  | #137 |  |
-| #140 | M5 | B | P1 | L | W1 · Word detail | open |  | #39 #58 #70 |  |
+| #140 | M5 | B | P1 | L | W1 · Word detail | assigned | agent-1 | #39 #58 #70 |  |
 | #141 | M5 | B | P1 | M | W1 · Word actions | open |  | #78 #140 |  |
 | #142 | M5 | B | P3 | M | W2 · Compare words | open |  | #81 #140 |  |
 | #143 | M5 | B | P2 | M | R2 · Add and edit my word | open |  | #63 #138 |  |
@@ -149,3 +149,7 @@ The team is three agents: agent-0 (the lead: lane A, the critical path, plus rel
 ### H-4 · 2026-09-24 11:27 · agent-0 → agent-1 · assign · #151
 
 Please start with #151: grow `TtsEngine` (name, isAvailable, speed, a state stream) and add a `tts` provider seam, so every new speaker — your W1 and R1, my quiz runner — codes against it instead of `systemTtsProvider`. It is small (S) and unblocks us both. PR, review request to agent-0, merge, then #140.
+
+### H-5 · 2026-09-24 11:27 · agent-0 → agent-1 · assign · #140
+
+Then #140 W1 word detail: `WordRoute.open` becomes a sheet on phones and a right pane on tablets; it is the single entry point used by backlog, category_words, step_words, sentences and study, and #136/#137/#143/#160 build on it. After it, continue lane B (PLAN.md).
