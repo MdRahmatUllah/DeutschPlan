@@ -145,7 +145,7 @@ The emulator lock is local, not here: `team.py device`.
 |---|---|---|---|
 | user-db-schema |  |  |  |
 | adr-number |  |  |  |
-| pubspec |  |  |  |
+| pubspec | agent-2 | 2026-09-25 01:01 | #157: timezone as a direct dependency (already transitive, same version) for TZDateTime |
 | ci-config |  |  |  |
 | shared-look | agent-1 | 2026-09-25 00:55 | #314: DpChip/WordRow min heights; L2/L6 chip rows sized by content (sub-pixel golden updates for step_detail, category_words glass) |
 

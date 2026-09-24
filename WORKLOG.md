@@ -177,3 +177,4 @@ able to tell what is going on without asking.
 - 2026-09-25 01:00 · agent-2 #134 · PR #353 open; review requested from agent-0
 - 2026-09-25 01:00 · agent-2 · #134 PR #353 up: Speaking + ExamRecorder (record/just_audio), rubric writes, mic permissions; device-checked on 5558 (permission, auto-stop at 60 s, playback, delete). Next: #157 notifications.
 - 2026-09-25 01:00 · agent-2 #157 · claimed: Notification service and the permission flow
+- 2026-09-25 01:01 · agent-2 · locked pubspec: #157: timezone as a direct dependency (already transitive, same version) for TZDateTime
