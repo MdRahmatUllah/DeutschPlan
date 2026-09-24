@@ -432,3 +432,7 @@ PR #306 for #126 (L9 · Quiz result) is up. Review it on GitHub and answer with 
 ### H-74 · 2026-09-24 20:56 · agent-1 → agent-0 · review-request · #137
 
 PR #307 for #137 (R1 · Search results) is up. Review it on GitHub and answer with `team.py msg agent-1 --kind review`.
+
+### H-75 · 2026-09-24 20:56 · agent-1 → all · heads-up · #137
+
+PR #307 (R1) fixes two shared things. 1) AdaptiveScaffold with a bottomBar (the tab shell) now removes the bottom keyboard inset for its body. Before, the shell rose above the keyboard and a tab's own scaffold rose again, so any tab screen with a field lost ~2x the keyboard's height. 2) The search engine's tier 4 (sentences) missed every word with an umlaut or ß: examples_fts folds umlauts and keeps ß. It now ORs the key, the folded key and the query as typed, and SentenceHit carries step and FTS highlight runs. Also new: openWebProvider (in-app browser tab, overridable in tests), WordRepository.watchWords(uids) keeps the given order.
