@@ -197,36 +197,48 @@ class AdaptiveBackButton extends StatelessWidget {
     final tokens = context.tokens;
     final cupertinoChrome = context.isCupertino;
 
-    return Semantics(
-      button: true,
-      label: label,
-      child: SizedBox(
-        height: 44,
-        child: TextButton(
-          onPressed: onPressed,
-          style: TextButton.styleFrom(
-            foregroundColor: colour ?? tokens.color.link,
-            padding: EdgeInsets.symmetric(horizontal: cupertinoChrome ? 8 : 12),
-            minimumSize: const Size(44, 44),
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              Icon(
-                cupertinoChrome
-                    ? cupertino.CupertinoIcons.back
-                    : Icons.arrow_back,
-                color: colour ?? tokens.color.link,
+    // One node, named (#315). The TextButton gives the tap and this the
+    // name; apart, a screen reader found a nameless button beside a name it
+    // could not press. Android says "Back", as a Material back button does;
+    // iOS reads the title its chevron shows.
+    return MergeSemantics(
+      child: Semantics(
+        button: true,
+        label: cupertinoChrome && label != null
+            ? label
+            : MaterialLocalizations.of(context).backButtonTooltip,
+        child: SizedBox(
+          height: 44,
+          child: TextButton(
+            onPressed: onPressed,
+            style: TextButton.styleFrom(
+              foregroundColor: colour ?? tokens.color.link,
+              padding: EdgeInsets.symmetric(
+                horizontal: cupertinoChrome ? 8 : 12,
               ),
-              if (cupertinoChrome && label != null) ...<Widget>[
-                const SizedBox(width: 2),
-                DpText(
-                  label!,
-                  role: DpTextRole.bodyLarge,
-                  color: colour ?? tokens.color.link,
-                ),
-              ],
-            ],
+              minimumSize: const Size(44, 44),
+            ),
+            child: ExcludeSemantics(
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Icon(
+                    cupertinoChrome
+                        ? cupertino.CupertinoIcons.back
+                        : Icons.arrow_back,
+                    color: colour ?? tokens.color.link,
+                  ),
+                  if (cupertinoChrome && label != null) ...<Widget>[
+                    const SizedBox(width: 2),
+                    DpText(
+                      label!,
+                      role: DpTextRole.bodyLarge,
+                      color: colour ?? tokens.color.link,
+                    ),
+                  ],
+                ],
+              ),
+            ),
           ),
         ),
       ),

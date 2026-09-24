@@ -306,6 +306,53 @@ void main() {
       }
     });
 
+    testWidgets('#315 the back button is one node, named and pressable: '
+        '"Back" on Android, the title it shows on iOS', (tester) async {
+      final semantics = tester.ensureSemantics();
+      for (final (chrome, title, name) in <(AdaptiveChrome, String?, String)>[
+        (AdaptiveChrome.material, 'Learn', 'Back'),
+        (AdaptiveChrome.cupertino, 'Learn', 'Learn'),
+        // No title: every default back button on a pushed route, T4 and W1.
+        (AdaptiveChrome.cupertino, null, 'Back'),
+      ]) {
+        final at = '$chrome, title $title';
+        var pressed = 0;
+        await tester.pumpWidget(
+          MaterialApp(
+            key: ValueKey(at),
+            theme: AppTheme.light(),
+            home: AdaptiveChromeScope(
+              chrome: chrome,
+              child: AdaptiveScaffold(
+                title: 'A1.1',
+                leading: AdaptiveBackButton(
+                  label: title,
+                  onPressed: () => pressed++,
+                ),
+                body: const SizedBox.shrink(),
+              ),
+            ),
+          ),
+        );
+        await tester.pumpAndSettle();
+        final node = tester.getSemantics(find.byType(AdaptiveBackButton));
+        final data = node.getSemanticsData();
+        expect(data.label, name, reason: at);
+        expect(data.flagsCollection.isButton, isTrue, reason: at);
+        // The TextButton's node is merged into this one: the platform sees
+        // one node, not a nameless button beside a name.
+        var apart = 0;
+        node.visitChildren((child) {
+          if (!child.isMergedIntoParent) apart++;
+          return true;
+        });
+        expect(apart, 0, reason: '$at: a second node beside it');
+        tester.semantics.tap(find.semantics.byLabel(name));
+        expect(pressed, 1, reason: at);
+      }
+      semantics.dispose();
+    });
+
     testWidgets('a root route gets no back button', (tester) async {
       await tester.pumpWidget(
         MaterialApp(
