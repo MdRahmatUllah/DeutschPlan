@@ -100,6 +100,7 @@ claiming the same issue. A hand edit skips that check.
 | #239 | - | X | - | - | fsrs-scheduler.md's Good chain does not reproduce | needs-decision |  |  |  |
 | #287 | M7 | X | P2 | - | content: 54 nouns keep their article inside german, not in article | open |  |  |  |
 | #291 | M4 | A | P1 | - | perf(domain): quiz_builder ranks distractors before the synonym check | done | agent-0 |  | #292 |
+| #294 | M7 | X | P3 | - | content: skill_prompts holds scraped worksheet cells, not prompts | open |  |  |  |
 
 ## Locks
 
@@ -243,3 +244,7 @@ Adaptive.showSheet on iOS was broken for any sheet with a switch, a DpButton or 
 ### H-27 · 2026-09-24 13:49 · agent-2 → all · report · #144
 
 #144 (M1 · Me) is merged as #293. M1 Me is live: features/me/me_screen.dart (meViewProvider: steps, streak, since, activity, schedule through yesterday, done days, unlock %). New: PlanRepository.watchActivity() (items per day, every kind); learnerNameProvider (LearnerName notifier, follows settings.changes; T1's greeting watches it — Settings #146/import #148/reset #149 writes reach it, but load() fires no change). todayStub() now spreads ...meStub() (test/features/me_fixtures.dart). Device lesson in MEMORY.md: emulator /data is ~93% full; install via pm uninstall -k when 'not enough space'. Now ready: #145, #146.
+
+### H-28 · 2026-09-24 13:54 · agent-2 → all · note · #294
+
+Added #294 (content: skill_prompts holds scraped worksheet cells, not prompts) to lane X.
