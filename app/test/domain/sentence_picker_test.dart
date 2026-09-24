@@ -83,6 +83,38 @@ void main() {
       expect(pick(20260921), pick(20260921));
       expect(pick(20260921), isNot(pick(20260922)), reason: 'the jitter');
     });
+
+    test(
+      '#325 FR-T5-02 not a sentence its headword cannot be underlined in',
+      () {
+        SentenceCandidate w(int ord, String german) => SentenceCandidate(
+          wordUid: 'haus',
+          ord: ord,
+          german: german,
+          headword: 'Haus',
+          pos: 'noun',
+        );
+        final picked = pickSentences(
+          <SentenceCandidate>[
+            w(1, 'Der Garten hat groß.'), // 3 / 4, but no Haus to underline
+            w(2, 'Das Haus ist offen.'), // 1 / 4
+          ],
+          learned: learned,
+          count: 3,
+          seed: 1,
+        );
+        expect(picked.single.ord, 2);
+        expect(
+          pickSentences(
+            <SentenceCandidate>[w(1, 'Der Garten hat groß.')],
+            learned: learned,
+            count: 3,
+            seed: 1,
+          ),
+          isEmpty,
+        );
+      },
+    );
   });
 
   group('forDay', () {

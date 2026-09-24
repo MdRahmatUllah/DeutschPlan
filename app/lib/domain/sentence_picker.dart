@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:deutschplan/domain/cloze.dart';
 import 'package:deutschplan/domain/plan_engine.dart' show PlanDate;
 import 'package:deutschplan/domain/text_norm.dart';
 
@@ -11,12 +12,26 @@ class SentenceCandidate {
     required this.ord,
     required this.german,
     this.english,
+    this.headword,
+    this.pos,
   });
 
   final String wordUid;
   final int ord;
   final String german;
   final String? english;
+
+  /// The word's German and part of speech, where the sentence's underline
+  /// is looked for (#325); null when the caller didn't say.
+  final String? headword;
+  final String? pos;
+
+  /// T5 underlines the headword: a sentence where it can't be found is not
+  /// picked (#325).
+  bool get showsHeadword {
+    final headword = this.headword;
+    return headword == null || clozeGap(german, headword, pos: pos) != null;
+  }
 
   @override
   bool operator ==(Object other) =>
@@ -112,7 +127,8 @@ double coverage(String sentence, Set<String> learned) {
   return tokens.where(known).length / tokens.length;
 }
 
-/// Picks [count] sentences with distinct headwords, highest coverage first.
+/// Picks [count] sentences with distinct headwords, highest coverage first,
+/// each one where its headword can be underlined.
 ///
 /// A seeded sample of [sentenceSampleSize], scored with a seeded jitter, so a
 /// day's choice can be reproduced — though `sentence_log` is what makes it
@@ -140,7 +156,10 @@ List<SentenceCandidate> pickSentences(
   final headwords = <String>{};
   return <SentenceCandidate>[
     for (final (candidate, _) in scored)
-      if (headwords.length < count && headwords.add(candidate.wordUid))
+      if (headwords.length < count &&
+          !headwords.contains(candidate.wordUid) &&
+          candidate.showsHeadword &&
+          headwords.add(candidate.wordUid))
         candidate,
   ];
 }

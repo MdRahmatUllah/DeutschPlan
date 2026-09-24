@@ -57,6 +57,17 @@ INSERT INTO word_state (word_uid, status, introduced_on) VALUES
     });
   });
 
+  test(
+    "#325 a candidate carries its word's German and part of speech",
+    () async {
+      final haus = (await store.candidates(
+        today,
+        gapDays: 14,
+      )).firstWhere((c) => c.wordUid == ContentFixture.haus);
+      expect((haus.headword, haus.pos), ('Haus', 'noun'));
+    },
+  );
+
   test('a sentence shown within the gap is left out', () async {
     await db.customStatement(
       "INSERT INTO sentence_log (word_uid, ord, shown_on) VALUES "
