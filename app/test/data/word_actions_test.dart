@@ -12,6 +12,7 @@ import 'package:deutschplan/data/repositories/settings_repository.dart';
 import 'package:deutschplan/data/repositories/translation_repository.dart';
 import 'package:deutschplan/data/repositories/word_actions.dart';
 import 'package:deutschplan/data/repositories/word_repository.dart';
+import 'package:deutschplan/domain/fsrs.dart' show Rating;
 import 'package:deutschplan/services/translation/translator.dart';
 import 'package:drift/drift.dart' hide isNotNull, isNull;
 import 'package:drift/native.dart';
@@ -32,6 +33,7 @@ void main() {
   late SettingsRepository settings;
   late WordActions actions;
   late DriftPlanStore store;
+  late RatingService rating;
 
   setUp(() async {
     directory = Directory.systemTemp.createTempSync('deutschplan_actions');
@@ -44,17 +46,14 @@ void main() {
     await settings.load();
     final words = WordRepository(db, settings);
     store = DriftPlanStore(db, settings);
-    actions = WordActions(
+    rating = RatingService(
       db,
-      RatingService(
-        db,
-        settings,
-        PlanRepository(db),
-        words,
-        () => DateTime(2026, 3, 2, 9),
-      ),
-      store,
+      settings,
+      PlanRepository(db),
+      words,
+      () => DateTime(2026, 3, 2, 9),
     );
+    actions = WordActions(db, rating, store);
   });
 
   tearDown(() async {
@@ -199,6 +198,33 @@ void main() {
       final undo = await actions.suspend(uid);
       await undo();
       expect(await state(), isNull);
+    });
+
+    test("#351 a planned word leaves every open plan row, today's and the "
+        "backlog's; Undo puts them back", () async {
+      await planned(today);
+      await planned('2026-02-27');
+      await planned('2026-02-20', kind: 'revise', done: '2026-02-20T08:00:00Z');
+      final undo = await actions.suspend(uid);
+      expect(await open(), isEmpty);
+      expect(await plan(), hasLength(1), reason: 'a done row is history');
+
+      await undo();
+      expect(
+        (await open()).map((row) => row.planDate),
+        unorderedEquals(<String>[today, '2026-02-27']),
+      );
+      expect(await state(), isNull);
+    });
+
+    test('#351 a rating never resumes a suspended word; the schedule still '
+        'moves', () async {
+      await actions.markKnown(uid, today: today);
+      await actions.suspend(uid);
+      final reps = (await state())!.reps;
+      await rating.rate(uid, Rating.good, source: ReviewSource.daily);
+      expect((await state())!.status, 'suspended');
+      expect((await state())!.reps, reps + 1);
     });
 
     test('resume, and Undo suspends again', () async {

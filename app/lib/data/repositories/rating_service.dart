@@ -64,7 +64,11 @@ class RatingService {
         fsrsState: next.state.value,
         reps: next.reps,
         lapses: next.lapses,
-        status: _statusFor(next).name,
+        // BR-STATUS-03: a rating never resumes a suspended word. The
+        // schedule still moves, and *Resume* derives the status from it.
+        status: before?.status == WordStatus.suspended.name
+            ? WordStatus.suspended.name
+            : _statusFor(next).name,
         cardMode: (await _cardModeFor(uid, rating)).name,
         elapsedDays: _elapsedDays(before, now),
         scheduledDays: next.scheduledDays,

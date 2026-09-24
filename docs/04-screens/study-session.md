@@ -16,6 +16,8 @@
 
 **Session queue.** Built once from the plan (`SessionArgs.blocks`): Revise items → New items → Grammar due (each grammar topic inserted as an `L15` practice set inline) . Position and per-card results are persisted in `studySession` notifier state and mirrored to the DB after each card, so backgrounding or a crash resumes at the same card.
 
+A word suspended mid-session (W1 opened from the overflow) stays in the queue it was built with. Rating it keeps it suspended (BR-STATUS-03) and completes no plan row, because the suspend dropped the row (#351).
+
 **Functional requirements**
 - FR-T2-01 Tapping the card or *Show meaning* MUST reveal; auto-play rules per `03-domain/tts.md`.
 - FR-T2-02 Rating MUST write one transaction (plan engine `rate`) and advance; a 4 s snackbar *Undo* MUST revert it fully.
