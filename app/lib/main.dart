@@ -8,21 +8,21 @@ import 'package:flutter/services.dart';
 import 'dart:io';
 
 import 'package:deutschplan/data/repositories/backup_repository.dart';
+import 'package:deutschplan/data/repositories/reminder_scheduler.dart';
 import 'package:deutschplan/core/theme/system_bars.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:deutschplan/bootstrap.dart';
 import 'package:deutschplan/core/theme/app_theme.dart';
 import 'package:deutschplan/core/providers/app_providers.dart';
-import 'package:deutschplan/services/reminder_notifications.dart';
-import 'package:deutschplan/router/deep_links.dart';
-import 'package:deutschplan/data/repositories/reminder_scheduler.dart';
 import 'package:deutschplan/core/theme/dp_tokens.dart';
 import 'package:deutschplan/core/theme/glass_capability.dart';
 import 'package:deutschplan/core/theme/theme_mode.dart';
 import 'package:deutschplan/data/repositories/setting_keys.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
 import 'package:deutschplan/router/app_router.dart';
+import 'package:deutschplan/router/deep_links.dart';
+import 'package:deutschplan/services/reminder_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 // `Override` is not in the main barrel in Riverpod 3.
 import 'package:flutter_riverpod/misc.dart' show Override;
@@ -194,8 +194,12 @@ Future<StreamSubscription<SettingKey<Object?>>?> startReminders(
   ReminderNotifications notifications, {
   required void Function(String location) open,
 }) async {
+  void go(String link) => open(resolveDeepLink(Uri.parse(link)));
   try {
-    await notifications.init((link) => open(resolveDeepLink(Uri.parse(link))));
+    await notifications.init(go);
+    // A tap that started the app arrives here, not through [init]'s
+    // callback, which hears only taps while it runs.
+    if (await notifications.launchedWith() case final link?) go(link);
   } on Object catch (error) {
     debugPrint('reminders: $error');
     return null;

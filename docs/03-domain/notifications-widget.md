@@ -10,7 +10,8 @@ Details the reminder settles (#157):
 - `ReminderNotifications` (`services/reminder_notifications.dart`) is `flutter_local_notifications`: an inexact alarm on Android (`inexactAllowWhileIdle`, so no exact-alarm permission), a UNUserNotificationCenter request on iOS. The scheduled reminders come back after a reboot (`ScheduledNotificationBootReceiver`, `RECEIVE_BOOT_COMPLETED`).
 - It never asks for the permission. `NotificationPermission` asks when the reminder is switched on (S2 page 5, and M5 in #147), and a phone that said no simply doesn't show the notification.
 - Until #158's `reminder_compose` builds the text from the plan, the reminder reads "Time for German — Today's plan is ready. A few minutes is enough.", in the app language. `reminder_only_when_due` leaves the schedule as it is; cancelling a day with nothing due is that task's job.
-- A tap opens `deutschplan://today`, through `resolveDeepLink`.
+- A tap opens `deutschplan://today`, through `resolveDeepLink`: a tap while the app runs, and the one that starts it (the plugin's launch details).
+- Each reminder is an instant, the local `reminder_time` when it was scheduled. A learner who changes time zone hears the old zone's 19:30 until the app next starts and reschedules.
 
 ## Background tasks (`workmanager`)
 

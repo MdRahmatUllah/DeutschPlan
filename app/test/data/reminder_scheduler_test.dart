@@ -14,9 +14,15 @@ class FakeReminders implements ReminderNotifications {
   int cancelled = 0;
   void Function(String link)? onTap;
 
+  /// The link a tap that started the app carried.
+  String? launched;
+
   @override
   Future<void> init(void Function(String link) onTap) async =>
       this.onTap = onTap;
+
+  @override
+  Future<String?> launchedWith() async => launched;
 
   /// Holds a schedule open, as a slow plugin would.
   Completer<void>? gate;

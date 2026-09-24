@@ -54,6 +54,30 @@ void main() {
     expect(opened, <String>['/today']);
   });
 
+  test('a tap that started the app opens what it links to', () async {
+    final reminders = FakeReminders()
+      ..launched = PlatformReminderNotifications.link;
+    final opened = <String>[];
+    final following = await startReminders(
+      container,
+      reminders,
+      open: opened.add,
+    );
+    addTearDown(() => following?.cancel());
+    expect(opened, <String>['/today']);
+  });
+
+  test('an ordinary start opens nothing', () async {
+    final opened = <String>[];
+    final following = await startReminders(
+      container,
+      FakeReminders(),
+      open: opened.add,
+    );
+    addTearDown(() => following?.cancel());
+    expect(opened, isEmpty);
+  });
+
   test("the schedule follows the settings, in the app's language", () async {
     final reminders = FakeReminders();
     final following = await startReminders(container, reminders, open: (_) {});

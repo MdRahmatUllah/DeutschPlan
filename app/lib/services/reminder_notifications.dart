@@ -14,6 +14,9 @@ abstract interface class ReminderNotifications {
   /// Sets the plugin up. [onTap] gets the link a tapped reminder carries.
   Future<void> init(void Function(String link) onTap);
 
+  /// The link of the reminder whose tap started the app, if one did.
+  Future<String?> launchedWith();
+
   /// Replaces every scheduled reminder with one at each of [at].
   Future<void> schedule(List<DateTime> at, ReminderCopy copy);
 
@@ -49,6 +52,16 @@ class PlatformReminderNotifications implements ReminderNotifications {
     );
   }
 
+  @override
+  Future<String?> launchedWith() async {
+    final launch = await _plugin.getNotificationAppLaunchDetails();
+    return launch?.didNotificationLaunchApp ?? false
+        ? launch?.notificationResponse?.payload ?? link
+        : null;
+  }
+
+  // ponytail: clears every notification the app has, fine while the
+  // reminder is the only one; cancel by id once #158 adds others.
   @override
   Future<void> schedule(List<DateTime> at, ReminderCopy copy) async {
     await _plugin.cancelAll();
