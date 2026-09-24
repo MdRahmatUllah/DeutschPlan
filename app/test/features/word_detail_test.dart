@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:deutschplan/core/adaptive/adaptive.dart';
 import 'package:deutschplan/core/components/dp_feedback.dart';
 import 'package:deutschplan/core/components/dp_speaker_button.dart';
 import 'package:deutschplan/core/providers/app_providers.dart';
@@ -102,6 +103,7 @@ void main() {
     double ratio = 3,
     ThemeData? theme,
     bool voice = true,
+    AdaptiveChrome chrome = AdaptiveChrome.material,
   }) async {
     tester.view
       ..physicalSize = size * ratio
@@ -133,6 +135,8 @@ void main() {
           localizationsDelegates: appLocalizationsDelegates,
           supportedLocales: supportedLocales,
           routerConfig: router(uid),
+          builder: (context, child) =>
+              AdaptiveChromeScope(chrome: chrome, child: child!),
         ),
       ),
     );
@@ -263,6 +267,69 @@ void main() {
         tester.widget<DpSpeakerButton>(find.byType(DpSpeakerButton)).state,
         DpSpeakerState.unavailable,
       );
+    });
+
+    for (final (device, size, ratio) in <(String, Size, double)>[
+      ('a phone', const Size(390, 844), 3),
+      ('a tablet', const Size(1024, 768), 2),
+    ]) {
+      testWidgets('on $device, the no-voice toast shows over W1, not under '
+          'it', (tester) async {
+        await pump(tester, voice: false, size: size, ratio: ratio);
+        await tester.tap(find.byType(DpSpeakerButton));
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 300));
+        expect(find.text(l10n.speakerNoVoice).hitTestable(), findsOneWidget);
+        // Its own messenger: the page's Scaffold under the sheet gets no
+        // copy of it.
+        expect(find.text(l10n.speakerNoVoice), findsOneWidget);
+      });
+    }
+
+    testWidgets('?speak=1 once only, when the word is already loaded', (
+      tester,
+    ) async {
+      tts = FakeTts();
+      await openSettings(tester, AppDatabase.memory());
+      final words = StreamController<WordDetail?>();
+      addTearDown(words.close);
+      final container = ProviderContainer(
+        overrides: <Override>[
+          settingsProvider.overrideWithValue(settings),
+          ttsProvider.overrideWithValue(tts),
+          todayProvider.overrideWithValue('2026-09-21'),
+          wordDetailProvider.overrideWith((ref, uid) => words.stream),
+          wordHistoryProvider.overrideWith(
+            (ref, uid) => Stream.value(artboardHistory),
+          ),
+        ],
+      );
+      addTearDown(container.dispose);
+      // Someone else is already watching the word, so it has data when the
+      // page subscribes: the listener then fires inside `listenManual`.
+      final held = container.listen(
+        wordDetailProvider('uid-strasse'),
+        (_, _) {},
+      );
+      addTearDown(held.close);
+      words.add(artboardWordDetail());
+      await tester.runAsync(pumpEventQueue);
+
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: container,
+          child: MaterialApp(
+            theme: AppTheme.light(),
+            localizationsDelegates: appLocalizationsDelegates,
+            supportedLocales: supportedLocales,
+            home: const WordDetailScreen(uid: 'uid-strasse', speak: true),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      words.add(artboardWordDetail(status: WordStatus.learning));
+      await tester.pumpAndSettle();
+      expect(tts.spoken, <String>['die Straße']);
     });
 
     testWidgets('?speak=1 plays the headword once it has loaded, and once '
@@ -413,6 +480,17 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.byType(WordDetailView), findsNothing);
       expect(find.text('open'), findsOneWidget, reason: 'the opener is back');
+    });
+
+    testWidgets('on iOS too, dragged below medium it closes', (tester) async {
+      await pump(tester, chrome: AdaptiveChrome.cupertino);
+      await tester.timedDrag(
+        find.text('die Straße', findRichText: true),
+        const Offset(0, 600),
+        const Duration(milliseconds: 1200),
+      );
+      await tester.pumpAndSettle();
+      expect(find.byType(WordDetailView), findsNothing);
     });
 
     testWidgets('a tablet: a pane along the right edge; a tap beside it '

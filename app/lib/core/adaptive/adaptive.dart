@@ -423,6 +423,29 @@ class _AdaptiveTabBarState<T extends Object> extends State<AdaptiveTabBar<T>>
   }
 }
 
+/// Somewhere in a sheet or pane for its toasts to show.
+///
+/// A `DpToast` goes to the nearest `ScaffoldMessenger`, which draws it in the
+/// page's `Scaffold`: under a sheet that covers the page, and under a pane's
+/// scrim. This gives [child] a messenger and a transparent scaffold of its
+/// own, so "No German voice…" and #141's Undo show above it. It fills its
+/// space, so it suits a sheet or pane of a set height (W1's), not one that
+/// sizes to its content.
+class AdaptiveToastScope extends StatelessWidget {
+  const AdaptiveToastScope({required this.child, super.key});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) => ScaffoldMessenger(
+    child: Scaffold(
+      backgroundColor: context.tokens.surface.paper.withValues(alpha: 0),
+      resizeToAvoidBottomInset: false,
+      body: child,
+    ),
+  );
+}
+
 /// Platform-appropriate modal presentations.
 ///
 /// These are functions rather than widgets because that is how Flutter presents
@@ -445,12 +468,20 @@ abstract final class Adaptive {
     // The sheet is a route of its own, above wherever the opener's chrome
     // scope sits: it carries the chrome with it, or an iOS sheet would draw
     // Material controls.
+    //
+    // On the root navigator nothing above the sheet shrinks for the keyboard,
+    // so the sheet rises by the inset itself: M1's name field stays in view.
     Widget wrap(BuildContext sheetContext) => AdaptiveChromeScope(
       chrome: chrome,
-      child: DpSurface(
-        kind: DpSurfaceKind.cardStrong,
-        radius: tokens.shape.sheet,
-        child: SafeArea(top: false, child: builder(sheetContext)),
+      child: Padding(
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.viewInsetsOf(sheetContext).bottom,
+        ),
+        child: DpSurface(
+          kind: DpSurfaceKind.cardStrong,
+          radius: tokens.shape.sheet,
+          child: SafeArea(top: false, child: builder(sheetContext)),
+        ),
       ),
     );
 
@@ -519,7 +550,10 @@ abstract final class Adaptive {
               child: DpSurface(
                 kind: DpSurfaceKind.cardStrong,
                 radius: 0,
-                child: SafeArea(left: false, child: builder(paneContext)),
+                child: SafeArea(
+                  left: false,
+                  child: AdaptiveToastScope(child: builder(paneContext)),
+                ),
               ),
             ),
           ),

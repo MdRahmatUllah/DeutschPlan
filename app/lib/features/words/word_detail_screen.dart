@@ -18,6 +18,7 @@ import 'package:deutschplan/features/study/study_card.dart';
 import 'package:deutschplan/features/words/speak.dart';
 import 'package:deutschplan/features/words/word_row.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
+import 'package:deutschplan/router/cross_tab.dart';
 import 'package:deutschplan/router/routes.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
@@ -50,7 +51,11 @@ class WordDetail {
 
 @riverpod
 Stream<WordDetail?> wordDetail(Ref ref, String uid) async* {
+  // Everything the provider watches is read before the first await: a sheet
+  // closed mid-query disposes it, and a ref used after that throws.
   final dao = ref.watch(contentDaoProvider);
+  final settings = ref.watch(settingsProvider);
+  final words = ref.watch(wordRepositoryProvider);
   // The course is read-only, so its part is read once; the state is watched.
   final examples = <StudyExample>[
     for (final e in await dao.examplesForWord(uid).get())
@@ -60,9 +65,7 @@ Stream<WordDetail?> wordDetail(Ref ref, String uid) async* {
   final StudyTip? tip = tips.isEmpty
       ? null
       : (en: tips.first.tipEn, bn: tips.first.tipBn);
-  final settings = ref.watch(settingsProvider);
-  yield* ref
-      .watch(wordRepositoryProvider)
+  yield* words
       .watchWord(uid)
       .map(
         (word) => word == null
@@ -119,11 +122,28 @@ void showWordDetail(BuildContext context, String uid) {
         minChildSize: WordDetailView.closed,
         snap: true,
         snapSizes: const <double>[WordDetailView.medium],
-        builder: (_, scroll) => WordDetailView(
-          uid: uid,
-          scroll: scroll,
-          presentation: WordDetailPresentation.sheet,
-        ),
+        builder: (sheet, scroll) {
+          final view = AdaptiveToastScope(
+            child: WordDetailView(
+              uid: uid,
+              scroll: scroll,
+              presentation: WordDetailPresentation.sheet,
+            ),
+          );
+          if (!sheet.isCupertino) return view;
+          // Material's bottom sheet closes itself when the sheet is dragged to
+          // its smallest; a Cupertino popup does not, and would sit there a
+          // quarter open.
+          return NotificationListener<DraggableScrollableNotification>(
+            onNotification: (notification) {
+              if (notification.extent <= notification.minExtent + 0.001) {
+                Navigator.of(sheet).maybePop();
+              }
+              return false;
+            },
+            child: view,
+          );
+        },
       ),
     ),
   );
@@ -151,9 +171,27 @@ class WordDetailScreen extends StatelessWidget {
         presentation: WordDetailPresentation.page,
       ),
     );
-    return tokens.isGlass
-        ? AuroraBackdrop(leading: tokens.color.die, child: scaffold)
-        : scaffold;
+    // A link opens this page alone, with nothing under it to go back to:
+    // back goes to Today rather than out of the app.
+    return PopScope(
+      canPop: Navigator.of(context).canPop(),
+      onPopInvokedWithResult: (didPop, _) {
+        if (!didPop) leaveWordPage(context);
+      },
+      child: tokens.isGlass
+          ? AuroraBackdrop(leading: tokens.color.die, child: scaffold)
+          : scaffold,
+    );
+  }
+}
+
+/// Back from W1's page: to where the learner came from, or to Today when a
+/// link opened it cold.
+void leaveWordPage(BuildContext context) {
+  if (Navigator.of(context).canPop()) {
+    unawaited(Navigator.of(context).maybePop());
+  } else {
+    context.jumpToTab(const TodayRoute());
   }
 }
 
@@ -195,16 +233,19 @@ class WordDetailView extends ConsumerStatefulWidget {
 }
 
 class _WordDetailViewState extends ConsumerState<WordDetailView> {
+  /// Once, when the word is there to say — not on every state change. A flag
+  /// rather than closing the subscription: with the data already there, the
+  /// listener runs before `listenManual` has returned it.
+  bool _spoken = false;
+
   @override
   void initState() {
     super.initState();
     if (!widget.speak) return;
-    // Once, when the word is there to say — not on every state change.
-    ProviderSubscription<AsyncValue<WordDetail?>>? once;
-    once = ref.listenManual(wordDetailProvider(widget.uid), (_, next) {
+    ref.listenManual(wordDetailProvider(widget.uid), (_, next) {
       final word = next.value?.word.word;
-      if (word == null) return;
-      once?.close();
+      if (word == null || _spoken) return;
+      _spoken = true;
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted) unawaited(say(ref, context, spokenForm(word)));
       });
@@ -311,7 +352,7 @@ class _BackRow extends StatelessWidget {
             const SizedBox(width: 4),
             AdaptiveBackButton(
               colour: context.isCupertino ? null : colour,
-              onPressed: () => Navigator.of(context).maybePop(),
+              onPressed: () => leaveWordPage(context),
             ),
           ],
         ),

@@ -11,6 +11,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'dart:io';
 
+import 'package:deutschplan/core/adaptive/adaptive.dart';
 import 'package:deutschplan/core/theme/app_theme.dart';
 import 'package:deutschplan/main.dart'
     show appLocalizationsDelegates, supportedLocales;
@@ -248,6 +249,23 @@ void main() {
       // Once, with its article, and not again as the page settles.
       await tester.pumpAndSettle();
       expect(tts.spoken, <String>['die Straße']);
+    });
+
+    testWidgets('a word link opened cold: back goes to Today, not out of '
+        'the app', (tester) async {
+      await pumpApp(tester);
+      await openLink(tester, 'deutschplan://word/uid-haus');
+      expect(location(), '/word/uid-haus');
+
+      await tester.tap(find.byType(AdaptiveBackButton));
+      await tester.pumpAndSettle();
+      expect(location(), '/today');
+
+      await openLink(tester, 'deutschplan://word/uid-haus');
+      // Android's back, which a lone page would otherwise answer by leaving.
+      await tester.binding.handlePopRoute();
+      await tester.pumpAndSettle();
+      expect(location(), '/today');
     });
 
     testWidgets('the same link without it does not', (tester) async {

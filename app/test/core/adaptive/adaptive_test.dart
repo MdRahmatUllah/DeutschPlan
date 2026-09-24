@@ -1,5 +1,6 @@
 import 'package:cupertino_ui/cupertino_ui.dart' as cupertino;
 import 'package:deutschplan/core/adaptive/adaptive.dart';
+import 'package:deutschplan/core/theme/dp_surface.dart';
 import 'package:deutschplan/core/theme/app_theme.dart';
 import 'package:deutschplan/core/theme/dp_tokens.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -602,6 +603,56 @@ void main() {
         reason: 'text in a Cupertino popup needs a Material for its style',
       );
     });
+
+    for (final chrome in AdaptiveChrome.values) {
+      testWidgets('a ${chrome.name} sheet rises above the keyboard, and '
+          'covers the tab bar', (tester) async {
+        tester.view
+          ..physicalSize = const Size(390, 844) * 3
+          ..devicePixelRatio = 3;
+        addTearDown(tester.view.reset);
+        await tester.pumpWidget(
+          MaterialApp(
+            theme: AppTheme.light(),
+            home: AdaptiveChromeScope(
+              chrome: chrome,
+              // A tab's navigator under a bar, as the shell has it.
+              child: Scaffold(
+                bottomNavigationBar: const SizedBox(
+                  height: 80,
+                  child: Text('tabs'),
+                ),
+                body: Navigator(
+                  onGenerateRoute: (_) => MaterialPageRoute<void>(
+                    builder: (context) => TextButton(
+                      onPressed: () => Adaptive.showSheet<void>(
+                        context: context,
+                        builder: (_) => const SizedBox(
+                          height: 200,
+                          child: TextField(key: Key('name')),
+                        ),
+                      ),
+                      child: const Text('Open'),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
+        await tester.tap(find.text('Open'));
+        await tester.pumpAndSettle();
+        final sheet = find.ancestor(
+          of: find.byKey(const Key('name')),
+          matching: find.byType(DpSurface),
+        );
+        expect(tester.getRect(sheet).bottom, 844, reason: 'over the tab bar');
+
+        tester.view.viewInsets = const FakeViewPadding(bottom: 300 * 3);
+        await tester.pumpAndSettle();
+        expect(tester.getRect(sheet).bottom, 844 - 300);
+      });
+    }
 
     testWidgets('the confirm dialog uses the platform dialog and returns', (
       tester,
