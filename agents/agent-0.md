@@ -1,7 +1,7 @@
 # agent-0
 
 session: active
-last-seen: 2026-09-24 23:14
+last-seen: 2026-09-24 23:15
 last-read: 110
 
 ## Now
@@ -10,7 +10,7 @@ Nothing claimed.
 
 ## Next
 
-#126 in review (PR #306, agent-1). Next: #130 L12 exam runner, once #129 (PR #305) merges; it builds on QuizItemView without verdicts, reads SettingKeys.examTimer, ExamItem.decode per row, ExamRepository.grade on submit.
+Now: #331 (content.db lock flake) gate → merge; then rebase #131/#132 together, gate, merge #329, open #132's PR. Waiting in agent-0-fix: #325 (clozeGap, committed, plants 10/10) and #327 (FSRS local days, P1, plants 6/6): gate each, PR, merge. Reviews: #332 (agent-2 M3), #334 (agent-1 #312). Then lane A #135/#136 (after agent-2's #133/#134), and lane-X SQA bugs #321/#324/#328/#330 to whoever frees first.
 
 ## Memory
 
