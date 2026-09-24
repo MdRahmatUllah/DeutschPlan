@@ -15,6 +15,8 @@ class DriftSentenceStore implements SentenceStore {
     ord: row.read<int>('ord'),
     german: row.read<String>('german'),
     english: row.readNullable<String>('english'),
+    headword: row.data['headword'] as String?,
+    pos: row.data['pos'] as String?,
   );
 
   @override
@@ -43,8 +45,9 @@ ORDER BY l.rowid
     final rows = await _db
         .customSelect(
           '''
-SELECT e.word_uid, e.ord, e.german, e.english
+SELECT e.word_uid, e.ord, e.german, e.english, w.german AS headword, w.pos
 FROM word_examples e
+JOIN words w ON w.uid = e.word_uid
 JOIN word_state s ON s.word_uid = e.word_uid
 WHERE s.status IN ('learning', 'done')
   AND NOT EXISTS (
