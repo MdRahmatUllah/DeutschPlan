@@ -365,10 +365,19 @@ class CoachMark extends _$CoachMark {
 @riverpod
 class LearnerName extends _$LearnerName {
   @override
-  String? build() =>
-      _clean(ref.watch(settingsProvider).read(SettingKeys.learnerName));
+  String? build() {
+    final settings = ref.watch(settingsProvider);
+    // Followed, not read once: Settings, import and reset write the name
+    // too, and Today's tab stays alive to show it.
+    final changes = settings.changes
+        .where((key) => key == SettingKeys.learnerName)
+        .listen((_) => state = _clean(settings.read(SettingKeys.learnerName)));
+    ref.onDispose(changes.cancel);
+    return _clean(settings.read(SettingKeys.learnerName));
+  }
 
-  /// M1's *edit name*. A blank name clears it.
+  /// M1's *edit name*. A blank name clears it. The state is set here as well
+  /// as by the write's change, so it is new the moment this returns.
   Future<void> rename(String name) async {
     final clean = _clean(name);
     await ref.read(settingsProvider).write(SettingKeys.learnerName, clean);

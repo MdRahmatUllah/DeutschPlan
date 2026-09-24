@@ -175,4 +175,25 @@ INSERT INTO daily_stats (day, new_done, reviews_done, grammar_done, sentences_do
     expect(container.read(learnerNameProvider), isNull);
     expect(settings.read(SettingKeys.learnerName), isNull);
   });
+
+  test('a name written anywhere else reaches M1 and Today', () async {
+    container
+      ..listen(todayViewProvider, (_, _) {})
+      ..listen(learnerNameProvider, (_, _) {});
+    expect(
+      (await container.read(todayViewProvider.future)).learnerName,
+      isNull,
+    );
+    await pumpEventQueue();
+
+    // As Settings, import or reset would: straight to the repository.
+    await settings.write(SettingKeys.learnerName, ' Maruf ');
+    await pumpEventQueue();
+
+    expect(container.read(learnerNameProvider), 'Maruf');
+    expect(
+      (await container.read(todayViewProvider.future)).learnerName,
+      'Maruf',
+    );
+  });
 }
