@@ -54,6 +54,7 @@ void main() {
           builder: (_, _) => ExamRunnerScreen(
             attemptId: 7,
             results: (_) => const Scaffold(body: Text('L13')),
+            onLeft: (_) {},
           ),
         ),
       ],

@@ -34,6 +34,7 @@ void main() {
     child: ExamRunnerScreen(
       attemptId: 7,
       results: (_) => const SizedBox.shrink(),
+      onLeft: (_) {},
     ),
   );
 
