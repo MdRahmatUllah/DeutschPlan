@@ -518,6 +518,7 @@
   "examRunPrevious": "আগের",
   "examRunNext": "পরবর্তী",
   "examRunSubmit": "পরীক্ষা জমা দিন",
+  "examRunSubmitFailed": "পরীক্ষা জমা দেওয়া যায়নি। আপনার উত্তরগুলো সংরক্ষিত আছে: আবার চেষ্টা করুন।",
   "examRunSubmitTitle": "পরীক্ষা জমা দেবেন?",
   "examRunSubmitUnanswered": "{count, plural, other{{count}টি প্রশ্নের উত্তর দেওয়া হয়নি, সেগুলো কোনো নম্বর পাবে না।}}",
   "examRunSubmitConfirm": "জমা দিন",

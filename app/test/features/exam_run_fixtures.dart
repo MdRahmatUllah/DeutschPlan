@@ -169,6 +169,9 @@ class StubExamRun implements ExamRunService {
 
   int submitted = 0;
 
+  /// Makes the next submits throw, as a failed write would.
+  bool failSubmit = false;
+
   @override
   Future<ExamPaperRun?> load(int attemptId) async {
     if (missing) return null;
@@ -202,6 +205,7 @@ class StubExamRun implements ExamRunService {
   @override
   Future<ExamScore> submit(int attemptId) async {
     submitted++;
+    if (failSubmit) throw StateError('disk full');
     return const ExamScore(scorePoints: 30, maxPoints: 48, passed: true);
   }
 }

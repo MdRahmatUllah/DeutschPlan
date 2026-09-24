@@ -251,6 +251,29 @@ void main() {
       await tap(tester, l10n.examRunSubmit);
       expect(run.submitted, 1);
     });
+
+    testWidgets('one that fails keeps the paper, says so and can be sent '
+        'again', (tester) async {
+      await pump(
+        tester,
+        stub: StubExamRun(items: two, given: <int, String>{1: 'die', 2: 'das'})
+          ..failSubmit = true,
+      );
+      await tap(tester, l10n.examRunNext);
+      await tap(tester, l10n.examRunSubmit);
+      expect(find.text(l10n.examRunSubmitFailed), findsOneWidget);
+      expect(find.text('L13'), findsNothing);
+
+      run.times.clear();
+      await tester.pump(const Duration(seconds: 10));
+      expect(run.times, isNotEmpty, reason: 'the clock runs again');
+      await tester.pumpAndSettle(); // the toast's 2 s are over
+
+      run.failSubmit = false;
+      await tap(tester, l10n.examRunSubmit);
+      expect(run.submitted, 2);
+      expect(find.text('L13'), findsOneWidget);
+    });
   });
 
   testWidgets('a finished attempt opens on its results', (tester) async {
@@ -314,6 +337,24 @@ void main() {
       await tester.tap(find.text('helfen?').last);
       await tester.pumpAndSettle();
       expect(run.answers.last, (1, 'Könnten Sie helfen?'));
+    });
+
+    testWidgets('order the sentence: every chip taken back is unanswered', (
+      tester,
+    ) async {
+      await one(
+        tester,
+        const OrderTheSentence(
+          chips: <String>['Sie', 'helfen?', 'Könnten'],
+          answer: <String>['Könnten', 'Sie', 'helfen?'],
+        ),
+      );
+      await tap(tester, 'Könnten');
+      expect(run.answers.last, (1, 'Könnten'));
+      // The placed row is drawn above the chips.
+      await tester.tap(find.text('Könnten').first);
+      await tester.pumpAndSettle();
+      expect(run.answers.last, (1, null));
     });
 
     testWidgets('pick the form: the form', (tester) async {

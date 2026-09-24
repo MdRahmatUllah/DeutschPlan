@@ -56,6 +56,8 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
   int _at = 0;
   final List<String?> _given = <String?>[];
   final List<bool> _flagged = <bool>[];
+  // ponytail: FR-L12-06's plays live in memory, so a resumed attempt
+  // gives each word three again; a column on exam_answers when it matters.
   final Map<int, int> _plays = <int, int>{};
   final TextEditingController _field = TextEditingController();
 
@@ -176,7 +178,8 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
     );
   }
 
-  /// A choice tapped, or the field submitted: written at once.
+  /// A choice tapped, or the field submitted: written at once. Nothing
+  /// (an ordered sentence taken back to no chips) is unanswered.
   void _record(String value) {
     final paper = _paper;
     if (paper == null) return;
@@ -184,9 +187,10 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
       _saveTyped();
       return;
     }
-    setState(() => _given[_at] = value);
+    final given = value.isEmpty ? null : value;
+    setState(() => _given[_at] = given);
     unawaited(
-      _service.answer(widget.attemptId, paper.questions[_at].ord, value),
+      _service.answer(widget.attemptId, paper.questions[_at].ord, given),
     );
   }
 
@@ -231,8 +235,18 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
     }
     _submitting = true;
     _tick?.cancel();
-    await _flush();
-    await _service.submit(widget.attemptId);
+    try {
+      await _flush();
+      await _service.submit(widget.attemptId);
+    } on Object {
+      // The answers are written already: stay on the paper, clock running,
+      // and let the learner submit again.
+      _submitting = false;
+      if (!mounted) return;
+      _tick = Timer.periodic(const Duration(seconds: 1), (_) => _second());
+      DpToast.show(context, AppLocalizations.of(context).examRunSubmitFailed);
+      return;
+    }
     if (mounted) setState(() => _done = true);
   }
 

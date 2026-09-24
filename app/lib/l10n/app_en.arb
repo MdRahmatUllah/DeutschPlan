@@ -3239,6 +3239,10 @@
   "@examRunSubmit": {
     "description": "L12 footer button on the last question."
   },
+  "examRunSubmitFailed": "The exam couldn't be submitted. Your answers are saved: try again.",
+  "@examRunSubmitFailed": {
+    "description": "L12 toast when the submit fails; the learner stays on the paper."
+  },
   "examRunSubmitTitle": "Submit the exam?",
   "@examRunSubmitTitle": {
     "description": "L12 confirm when questions are unanswered (FR-L12-05)."

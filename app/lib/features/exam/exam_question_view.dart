@@ -366,8 +366,9 @@ class _Words extends StatelessWidget {
 }
 
 /// Order the sentence: tap the chips in order; tap a placed one to take it
-/// back. Recorded only once every chip is placed, as the words joined by a
-/// space (#84 compares it whole).
+/// back. Every tap records the words placed so far, joined by a space (#84
+/// compares it whole, so a partial one is wrong); none placed records
+/// nothing, and the question is unanswered again.
 class _Order extends StatelessWidget {
   const _Order({
     required this.chips,
