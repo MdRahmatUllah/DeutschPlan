@@ -32,6 +32,15 @@ void main() {
     ),
   );
 
+  // The StepGrammar artboard: two due, two scheduled, six not learned.
+  goldenTest(
+    'step_grammar',
+    builder: (context) => ProviderScope(
+      overrides: todayStub(),
+      child: const StepDetailScreen(code: 'A2.1', tab: StepTab.grammar),
+    ),
+  );
+
   // A step that is not the active one: the Words tab's Start banner
   // (FR-L2-03) over the words.
   goldenTest(

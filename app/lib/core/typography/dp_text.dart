@@ -244,6 +244,77 @@ class DpText extends StatelessWidget {
   }
 }
 
+/// One line of [text], cut at a word rather than inside one: "konnte,
+/// musste, wollte — no …" and never "wol…". L2's rule previews.
+class DpOneLine extends StatelessWidget {
+  const DpOneLine(
+    this.text, {
+    required this.role,
+    super.key,
+    this.color,
+    this.weight,
+  });
+
+  final String text;
+  final DpTextRole role;
+  final Color? color;
+  final double? weight;
+
+  static const String ellipsis = '…';
+
+  @override
+  Widget build(BuildContext context) {
+    final base = DpText.styleFor(context.tokens, role, color: color);
+    final style = weight == null
+        ? base
+        : base.copyWith(fontVariations: AppFonts.weight(weight!));
+    final scaler = MediaQuery.textScalerOf(context);
+    final direction = Directionality.of(context);
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        bool fits(String candidate) {
+          final painter = TextPainter(
+            text: TextSpan(text: candidate, style: style),
+            textDirection: direction,
+            textScaler: scaler,
+            maxLines: 1,
+          )..layout(maxWidth: constraints.maxWidth);
+          final over = painter.didExceedMaxLines;
+          painter.dispose();
+          return !over;
+        }
+
+        var shown = text;
+        if (!fits(text)) {
+          // The most words that fit with the ellipsis after them.
+          final words = text.split(' ');
+          var low = 0;
+          var high = words.length - 1;
+          while (low < high) {
+            final middle = (low + high + 1) ~/ 2;
+            if (fits('${words.take(middle).join(' ')}$ellipsis')) {
+              low = middle;
+            } else {
+              high = middle - 1;
+            }
+          }
+          shown = low == 0
+              ? ellipsis
+              : '${words.take(low).join(' ').replaceAll(RegExp(r'[,;:—–-]+$'), '').trimRight()}$ellipsis';
+        }
+        return Text(
+          shown,
+          style: style,
+          maxLines: 1,
+          softWrap: false,
+          overflow: TextOverflow.clip,
+          semanticsLabel: text,
+        );
+      },
+    );
+  }
+}
+
 /// A headword that wraps rather than clipping or shrinking.
 ///
 /// `accessibility-performance.md`: "Text scaling to 200 %; long compounds

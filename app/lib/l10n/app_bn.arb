@@ -317,5 +317,8 @@
   "stepStartConfirmTitle": "{code} শুরু করবেন?",
   "stepStartConfirm": "{active} আজ শেষ হবে; এর শব্দগুলো রিভিশনে ফিরে আসতে থাকবে। আগামীকাল থেকে নতুন শব্দ এই ধাপ থেকে আসবে।",
   "stepStartConfirmFirst": "আগামীকাল থেকে নতুন শব্দ এই ধাপ থেকে আসবে।",
-  "stepStartCancel": "এখন নয়"
+  "stepStartCancel": "এখন নয়",
+  "stepPractiseDue": "সব বাকি অনুশীলন · {count}",
+  "stepTopicDueToday": "আজ অনুশীলন",
+  "stepTopicNextIn": "পরের অনুশীলন {days} দিন পর"
 }

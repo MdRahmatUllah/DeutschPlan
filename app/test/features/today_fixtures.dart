@@ -3,7 +3,9 @@ import 'package:deutschplan/core/providers/app_providers.dart';
 import 'package:deutschplan/data/db/app_database.dart';
 import 'package:deutschplan/data/repositories/word_repository.dart';
 import 'package:deutschplan/features/backlog/backlog_screen.dart';
+import 'package:deutschplan/features/learn/step_grammar.dart';
 import 'package:deutschplan/features/learn/step_words.dart';
+import 'package:deutschplan/data/repositories/grammar_repository.dart';
 import 'package:deutschplan/features/today/today_providers.dart';
 import 'package:deutschplan/features/today/today_view.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
@@ -200,6 +202,61 @@ List<StepWord> artboardWords() {
   ];
 }
 
+/// The StepGrammar artboard's ten topics on 21 September: two learned and
+/// coming round in 4 and 9 days, two due today, six not learned yet.
+List<TopicWithState> artboardTopics() {
+  const rows = <(String, String, String?)>[
+    (
+      'Modalverben im Präteritum',
+      'konnte, musste, wollte — no umlaut, no ge-',
+      '2026-09-25',
+    ),
+    ('Nebensätze mit weil', 'weil sends the verb to the end', '2026-09-30'),
+    (
+      'Perfekt mit sein',
+      'Movement and change: sein + Partizip II',
+      '2026-09-21',
+    ),
+    (
+      'Konjunktiv II – Höflichkeit',
+      'könnte / würde + infinitive',
+      '2026-09-19',
+    ),
+    ('Dativ nach Präpositionen', 'aus, bei, mit, nach, seit, von, zu', null),
+    ('Reflexive Verben', 'sich freuen, sich waschen', null),
+    ('Komparativ und Superlativ', 'schneller, am schnellsten', null),
+    ('Wechselpräpositionen', 'in, an, auf: wohin takes the accusative', null),
+    ('Relativsätze', 'der, die, das as relative pronouns', null),
+    ('Genitiv', 'des Mannes, der Frau — wegen, trotz', null),
+  ];
+  return <TopicWithState>[
+    for (final (i, (title, rule, due)) in rows.indexed)
+      TopicWithState(
+        topic: GrammarTopic(
+          uid: 'g$i',
+          sublevelCode: 'A2.1',
+          levelCode: 'A2',
+          seq: i,
+          topic: title,
+          rule: rule,
+          tags: 'gap-fill,pick-the-form',
+        ),
+        state: due == null
+            ? null
+            : GrammarStateData(
+                grammarUid: 'g$i',
+                status: 'learning',
+                due: due,
+                stability: 4,
+                difficulty: 5,
+                reps: 2,
+                lapses: 0,
+              ),
+        status: due == null ? WordStatus.todo : WordStatus.learning,
+      ),
+  ];
+}
+
 /// Today without a database: the artboard's plan, and no coach mark.
 ///
 /// For tests about something else — the router, the shell — that only need
@@ -226,6 +283,13 @@ List<Override> todayStub([
     (ref, code) async => const <({int id, String name})>[
       (id: 1, name: 'Wohnen & Haushalt'),
     ],
+  ),
+  // The artboards' Monday, so a due date reads the same on any day the
+  // tests run.
+  todayProvider.overrideWithValue('2026-09-21'),
+  // L2's Grammar tab without a database: the StepGrammar artboard's ten.
+  stepTopicsProvider.overrideWith(
+    (ref, code) => Stream.value(artboardTopics()),
   ),
   // L1 without a database: the Learn artboard's course.
   stepProgressProvider.overrideWith(

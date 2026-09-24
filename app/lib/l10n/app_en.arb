@@ -1964,5 +1964,27 @@
   "stepStartCancel": "Not now",
   "@stepStartCancel": {
     "description": "L2 Start confirmation: keeps the current step."
+  },
+  "stepPractiseDue": "Practise all due · {count}",
+  "@stepPractiseDue": {
+    "description": "L2 Grammar tab: opens L15 with every due topic.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "stepTopicDueToday": "due today",
+  "@stepTopicDueToday": {
+    "description": "L2 Grammar tab row: a learned topic whose practice is due."
+  },
+  "stepTopicNextIn": "next practice in {days} d",
+  "@stepTopicNextIn": {
+    "description": "L2 Grammar tab row: days until a learned topic is due.",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
   }
 }

@@ -10,6 +10,7 @@ import 'package:deutschplan/data/repositories/word_repository.dart';
 import 'package:deutschplan/domain/plan_engine.dart' show parsePlanDate;
 import 'package:deutschplan/domain/plan_stats.dart' show courseDays;
 import 'package:deutschplan/features/learn/learn_screen.dart';
+import 'package:deutschplan/features/learn/step_grammar.dart';
 import 'package:deutschplan/features/learn/step_words.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
 import 'package:deutschplan/router/cross_tab.dart';
@@ -254,9 +255,9 @@ String paceLine(AppLocalizations l10n, Locale locale, StepProgress step) {
   return l10n.stepNotStarted(days, step.dailyNew);
 }
 
-/// What each inner tab holds. Grammar (#115) and Quiz (#116) arrive in
-/// their own issues and Exams with M4; until then a tab says which it is,
-/// so a deep link to `?tab=exams` visibly lands on Exams.
+/// What each inner tab holds. Quiz (#116) arrives in its own issue and
+/// Exams with M4; until then a tab says which it is, so a deep link to
+/// `?tab=exams` visibly lands on Exams.
 class StepTabBody extends StatelessWidget {
   const StepTabBody({required this.step, required this.tab, super.key});
 
@@ -266,9 +267,10 @@ class StepTabBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (tab == StepTab.words) return StepWordsTab(step: step);
+    if (tab == StepTab.grammar) return StepGrammarTab(code: step.code);
     final tokens = context.tokens;
     final l10n = AppLocalizations.of(context);
-    // ponytail: placeholders until #115, #116 and M4's exam hub.
+    // ponytail: placeholders until #116 and M4's exam hub.
     return Center(
       child: DpText(
         switch (tab) {

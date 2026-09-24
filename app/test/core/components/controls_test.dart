@@ -91,6 +91,20 @@ void main() {
       expect(taps, 1);
     });
 
+    testWidgets('a primary drawn at 48 where the artboard says so', (
+      tester,
+    ) async {
+      await pump(
+        tester,
+        DpButton(
+          label: 'Practise all due · 2',
+          drawnHeight: 48,
+          onPressed: () {},
+        ),
+      );
+      expect(tester.getSize(find.byType(DpButton)).height, 48);
+    });
+
     testWidgets('only the primary carries the hard offset shadow', (
       tester,
     ) async {
