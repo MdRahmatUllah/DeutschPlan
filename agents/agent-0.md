@@ -6,7 +6,7 @@ last-read: 9
 
 ## Now
 
-#291 in review as PR #292: watch CI, answer review threads, merge.
+#122 L7 · Custom quiz sheet — claimed 2026-09-24 13:01.
 
 ## Next
 
