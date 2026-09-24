@@ -39,7 +39,7 @@ claiming the same issue. A hand edit skips that check.
 | #130 | M4 | A | P1 | L | L12 · Exam runner shell, timer and resume | done | agent-0 | #69 #124 #129 | #313 |
 | #131 | M4 | A | P2 | S | L12 · Question navigator sheet | open |  | #130 |  |
 | #132 | M4 | A | P2 | S | L12 · Leave dialog | open |  | #130 |  |
-| #133 | M4 | A | P1 | M | L12 · Writing section | assigned | agent-2 | #84 #130 |  |
+| #133 | M4 | A | P1 | M | L12 · Writing section | in-progress | agent-2 | #84 #130 |  |
 | #134 | M4 | A | P1 | M | L12 · Speaking section and recorder | assigned | agent-2 | #64 #84 #130 |  |
 | #135 | M4 | A | P1 | M | L13 · Exam results | open |  | #84 #133 #134 |  |
 | #136 | M4 | A | P2 | M | L14 · Exam review | open |  | #135 |  |

@@ -132,3 +132,4 @@ able to tell what is going on without asking.
 - 2026-09-24 23:13 · agent-2 #333 · added to the board, lane X
 - 2026-09-24 23:13 · agent-2 #333 · claimed: test(data): exam tests attach the shared content.db and can hit 'database is locked'
 - 2026-09-24 23:13 · agent-2 #333 · released: after #133: one issue in progress at a time
+- 2026-09-24 23:13 · agent-2 #133 · claimed: L12 · Writing section
