@@ -276,6 +276,106 @@ void main() {
     });
   });
 
+  group('#131 the navigator', () {
+    Future<void> open(WidgetTester tester) async {
+      await tester.tap(find.bySemanticsLabel(l10n.examNavOpen));
+      await tester.pumpAndSettle();
+    }
+
+    testWidgets('lists the numbered questions with their counts', (
+      tester,
+    ) async {
+      final semantics = tester.ensureSemantics();
+      await pump(tester);
+      await open(tester);
+      expect(find.text(l10n.examNavTitle), findsOneWidget);
+      expect(find.text(l10n.examNavLeft('14:32')), findsOneWidget);
+      expect(find.text(l10n.examNavAnswered(20)), findsOneWidget);
+      expect(find.text(l10n.examNavFlagged(0)), findsOneWidget);
+      expect(find.text(l10n.examNavEmpty(20)), findsOneWidget);
+      expect(find.text(l10n.examNavUnanswered(20)), findsOneWidget);
+      expect(find.text('40'), findsOneWidget, reason: 'the tasks have no cell');
+      expect(find.text('41'), findsNothing);
+      expect(
+        tester.getSemantics(find.bySemanticsLabel(l10n.examNavQuestion(21))),
+        isSemantics(isSelected: true),
+        reason: 'the question on screen',
+      );
+      semantics.dispose();
+    });
+
+    testWidgets('a flag counts as flagged, not answered', (tester) async {
+      final semantics = tester.ensureSemantics();
+      await pump(tester);
+      await tester.tap(find.bySemanticsLabel(l10n.examRunFlag));
+      await tester.pumpAndSettle();
+      await open(tester);
+      expect(find.text(l10n.examNavFlagged(1)), findsOneWidget);
+      expect(find.text(l10n.examNavEmpty(19)), findsOneWidget);
+      expect(
+        find.text(l10n.examNavUnanswered(20)),
+        findsOneWidget,
+        reason: 'a flagged question with no answer is still unanswered',
+      );
+      semantics.dispose();
+    });
+
+    testWidgets('an answered question flagged counts once, as flagged', (
+      tester,
+    ) async {
+      final semantics = tester.ensureSemantics();
+      await pump(tester, stub: StubExamRun(flagged: const <int>{7}));
+      await open(tester);
+      expect(find.text(l10n.examNavAnswered(19)), findsOneWidget);
+      expect(find.text(l10n.examNavFlagged(1)), findsOneWidget);
+      expect(find.text(l10n.examNavEmpty(20)), findsOneWidget);
+      semantics.dispose();
+    });
+
+    testWidgets('a number goes to its question', (tester) async {
+      final semantics = tester.ensureSemantics();
+      await pump(tester);
+      await open(tester);
+      await tester.tap(find.bySemanticsLabel(l10n.examNavQuestion(5)));
+      await tester.pumpAndSettle();
+      expect(find.text(l10n.examNavTitle), findsNothing, reason: 'closed');
+      expect(find.text(l10n.examRunQuestion(5, 40)), findsOneWidget);
+      semantics.dispose();
+    });
+
+    testWidgets('FR-L12-05 Submit exam asks about the open questions', (
+      tester,
+    ) async {
+      final semantics = tester.ensureSemantics();
+      await pump(tester);
+      await open(tester);
+      await tester.tap(find.text(l10n.examRunSubmit).last);
+      await tester.pumpAndSettle();
+      expect(find.text(l10n.examRunSubmitUnanswered(22)), findsOneWidget);
+      await tap(tester, l10n.examRunSubmitConfirm);
+      expect(run.submitted, 1);
+      semantics.dispose();
+    });
+
+    testWidgets('timer off: no time in the sheet', (tester) async {
+      final semantics = tester.ensureSemantics();
+      await pump(tester, stub: StubExamRun(timed: false));
+      await open(tester);
+      expect(find.textContaining('left'), findsNothing);
+      semantics.dispose();
+    });
+
+    testWidgets('paused, it does not open', (tester) async {
+      final semantics = tester.ensureSemantics();
+      await pump(tester);
+      await tester.tap(find.bySemanticsLabel(l10n.examRunPause));
+      await tester.pumpAndSettle();
+      await open(tester);
+      expect(find.text(l10n.examNavTitle), findsNothing);
+      semantics.dispose();
+    });
+  });
+
   testWidgets('a finished attempt opens on its results', (tester) async {
     await pump(
       tester,

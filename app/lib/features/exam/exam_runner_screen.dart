@@ -10,7 +10,7 @@ import 'package:deutschplan/core/theme/dp_surface.dart';
 import 'package:deutschplan/core/theme/dp_tokens.dart';
 import 'package:deutschplan/core/typography/dp_text.dart';
 import 'package:deutschplan/data/repositories/exam_run_service.dart';
-import 'package:deutschplan/domain/exam_generator.dart';
+import 'package:deutschplan/features/exam/exam_navigator_sheet.dart';
 import 'package:deutschplan/features/exam/exam_question_view.dart';
 import 'package:deutschplan/features/learn/step_exams.dart'
     show examMinutes, examSectionName;
@@ -202,6 +202,34 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
     });
   }
 
+  /// #131: the navigator. A tap goes to that question; *Submit exam*
+  /// submits, asking first when questions are open.
+  Future<void> _openNavigator(List<ExamRunQuestion> questions) async {
+    _saveTyped();
+    final numbered = <int>[
+      for (final (i, q) in questions.indexed)
+        if (examNumbered(q.item)) i,
+    ];
+    final left = _timed ? _clock(_left) : null;
+    final pick = await Adaptive.showSheet<NavChoice>(
+      context: context,
+      builder: (_) => ExamNavigatorSheet(
+        cells: <NavCell>[
+          for (final i in numbered)
+            (answered: _given[i] != null, flagged: _flagged[i]),
+        ],
+        current: numbered.contains(_at) ? numbered.indexOf(_at) : null,
+        left: left,
+      ),
+    );
+    if (pick == null || !mounted) return;
+    if (pick.jump case final cell?) {
+      _go(numbered[cell]);
+    } else {
+      await _submit();
+    }
+  }
+
   void _toggleFlag() {
     final paper = _paper;
     if (paper == null) return;
@@ -279,10 +307,8 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
           if (q.item.section == item.section) q,
       ];
       final last = _at == questions.length - 1;
-      // "Question 21 of 40": Writing and Speaking are tasks, not numbered.
-      bool numbered(ExamItem it) => it is! WritingTask && it is! SpeakingTask;
-      final count = questions.where((q) => numbered(q.item)).length;
-      final number = questions.take(_at + 1).where((q) => numbered(q.item));
+      final count = questions.where((q) => examNumbered(q.item)).length;
+      final number = questions.take(_at + 1).where((q) => examNumbered(q.item));
       body = Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
@@ -295,6 +321,9 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
             left: _timed ? _left : null,
             paused: _paused,
             onPause: () => setState(() => _paused = !_paused),
+            onNavigator: _paused
+                ? null
+                : () => unawaited(_openNavigator(questions)),
           ),
           Padding(
             padding: const EdgeInsetsDirectional.fromSTEB(16, 8, 8, 0),
@@ -302,7 +331,7 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
               children: <Widget>[
                 Expanded(
                   child: DpText(
-                    numbered(item)
+                    examNumbered(item)
                         ? l10n.examRunQuestion(number.length, count)
                         : '',
                     role: DpTextRole.caption,
@@ -403,14 +432,19 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
   }
 }
 
-/// The Cobalt band: pause, the section, and the clock — Coral in the last
-/// two minutes.
+/// "14:32".
+String _clock(int seconds) =>
+    '${seconds ~/ 60}:${'${seconds % 60}'.padLeft(2, '0')}';
+
+/// The Cobalt band: pause, the section, the clock — Coral in the last two
+/// minutes — and the navigator.
 class _Band extends StatelessWidget {
   const _Band({
     required this.title,
     required this.left,
     required this.paused,
     required this.onPause,
+    required this.onNavigator,
   });
 
   final String title;
@@ -419,6 +453,9 @@ class _Band extends StatelessWidget {
   final int? left;
   final bool paused;
   final VoidCallback onPause;
+
+  /// Opens the navigator (#131); null while paused.
+  final VoidCallback? onNavigator;
 
   @override
   Widget build(BuildContext context) {
@@ -477,14 +514,28 @@ class _Band extends StatelessWidget {
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: DpText(
-                      '${seconds ~/ 60}:${'${seconds % 60}'.padLeft(2, '0')}',
+                      _clock(seconds),
                       role: DpTextRole.body,
                       weight: 700,
                       color: coral ? tokens.color.ink : ink,
                     ),
                   ),
                 ),
-              const SizedBox(width: 12),
+              Semantics(
+                button: true,
+                enabled: onNavigator != null,
+                label: l10n.examNavOpen,
+                excludeSemantics: true,
+                child: GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: onNavigator,
+                  child: SizedBox.square(
+                    dimension: 48,
+                    child: Icon(Icons.grid_view_outlined, color: ink),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 4),
             ],
           ),
         ),

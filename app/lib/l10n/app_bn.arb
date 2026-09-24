@@ -551,5 +551,16 @@
   "examRunFlag": "পরে দেখার জন্য চিহ্নিত করুন",
   "examRunFlagged": "পরে দেখার জন্য চিহ্নিত",
   "examRunLater": "এই অংশটি পরের আপডেটে আসবে। এগিয়ে যেতে পরবর্তী ট্যাপ করুন।",
-  "examRunLoadFailed": "এই পরীক্ষাটি খোলা যায়নি।"
+  "examRunLoadFailed": "এই পরীক্ষাটি খোলা যায়নি।",
+  "examNavOpen": "প্রশ্নের তালিকা",
+  "examNavTitle": "প্রশ্ন",
+  "examNavLeft": "{time} বাকি",
+  "examNavAnswered": "উত্তর দেওয়া · {count}",
+  "examNavFlagged": "চিহ্নিত · {count}",
+  "examNavEmpty": "ফাঁকা · {count}",
+  "examNavUnanswered": "{count, plural, =0{সব প্রশ্নের উত্তর দেওয়া হয়েছে} other{{count}টির উত্তর নেই — জমা দিলে নিশ্চিত করতে বলা হবে}}",
+  "examNavQuestion": "প্রশ্ন {n}",
+  "examNavAnsweredState": "উত্তর দেওয়া",
+  "examNavFlaggedState": "চিহ্নিত",
+  "examNavEmptyState": "ফাঁকা"
 }
