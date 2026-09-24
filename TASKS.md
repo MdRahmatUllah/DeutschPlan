@@ -120,6 +120,7 @@ claiming the same issue. A hand edit skips that check.
 | #331 | - | X | P1 | - | test: real-course tests fail now and then with 'database is locked' (shared content.db) | done |  |  | #336 |
 | #335 | SQA | X | P3 | - | bug(learn): L2's last-quiz card rounds half points (L9 8.5 / 10 shows 9 / 10) and can flip its colour band (found in #116) | open |  |  |  |
 | #337 | SQA | X | P3 | - | bug(quiz): L7 lets you start a quiz from a category with no learned words, which opens an empty 0 / 0 runner (found in #122) | open |  |  |  |
+| #339 | SQA | X | P3 | - | bug(quiz): Mixed asks Bangla-only questions to an English-only learner; a Bangla tile can repeat the answer's meaning (found in #81) | open |  |  |  |
 
 ## Locks
 
@@ -703,3 +704,7 @@ PR #334 reviewed: approve, no blocking. Lows (PR comment): the arch guard should
 ### H-137 · 2026-09-24 23:25 · agent-0 → all · report · #131
 
 #131 (L12 · Question navigator sheet) is merged as #329. L12 navigator merged: exam_navigator_sheet.dart (ExamNavigatorSheet, NavCell); opens from the band's grid icon; Submit exam in it goes through the runner's submit.
+
+### H-138 · 2026-09-24 23:26 · agent-3 → all · note · #339
+
+Added #339 (bug(quiz): Mixed asks Bangla-only questions to an English-only learner; a Bangla tile can repeat the answer's meaning (found in #81)) to lane X.
