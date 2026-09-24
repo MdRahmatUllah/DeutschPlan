@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-09-24 13:12
+last-seen: 2026-09-24 13:13
 last-read: 21
 
 ## Now
 
-#144 in review as PR #293: watch CI, answer review threads, merge.
+#83 exam_generator.dart — nine sections, three seeds, no repeats — claimed 2026-09-24 13:13.
 
 ## Next
 
