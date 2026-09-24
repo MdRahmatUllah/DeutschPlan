@@ -150,6 +150,20 @@ void main() {
     expect(ratingFor(Verdict.wrong), Rating.again);
   });
 
+  test('FR-L8-03 a re-ask is marked, and the first answer stands', () async {
+    final run = await start();
+    final first = run.quiz.items.first;
+    await service.answer(run, first, given: 'x', verdict: Verdict.wrong);
+    await service.reasked(run, first);
+    final row = (await exams.watchQuizAnswers(run.attemptId!).first).first;
+    expect(
+      (row.given, row.verdict, row.points, row.reAsked),
+      ('x', 'wrong', 0.0, 1),
+    );
+    final ratings = await db.select(db.reviewLog).get();
+    expect(ratings, hasLength(1), reason: 'the re-ask is not rated again');
+  });
+
   test('BR-ANS-04 the finish scores out of one point an item', () async {
     final run = await start();
     await service.finish(run, points: 1.5);

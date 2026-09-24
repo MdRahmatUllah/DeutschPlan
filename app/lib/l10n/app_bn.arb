@@ -423,6 +423,7 @@
   "quizAskPick": "অর্থ বেছে নিন",
   "quizArticleWrong": "আর্টিকেল: {article}, {given} নয়",
   "quizPlay": "শব্দটি শুনুন",
+  "quizOnceMore": "আরেকবার",
   "quizAnswerIs": "উত্তর হলো {answer}",
   "quizTimeUp": "সময় শেষ — উত্তর হলো {answer}",
   "quizSecondsLeft": "{seconds} সে.",

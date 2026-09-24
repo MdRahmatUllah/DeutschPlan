@@ -14,6 +14,7 @@ import 'package:deutschplan/core/typography/dp_text.dart';
 import 'package:deutschplan/data/repositories/quiz_run_service.dart';
 import 'package:deutschplan/domain/answer_check.dart';
 import 'package:deutschplan/domain/quiz_builder.dart';
+import 'package:deutschplan/domain/quiz_queue.dart';
 import 'package:deutschplan/features/learn/grammar_practice_screen.dart'
     show PracticeHeader;
 import 'package:deutschplan/features/learn/step_quiz.dart';
@@ -50,7 +51,9 @@ class QuizScreen extends ConsumerStatefulWidget {
 class _QuizScreenState extends ConsumerState<QuizScreen> {
   QuizRun? _run;
   Object? _error;
-  int _index = 0;
+
+  /// The quiz, then its mistakes once more (FR-L8-03).
+  QuizQueue _queue = QuizQueue(const <QuizItem>[]);
 
   /// The current item's verdict once answered; null before.
   Verdict? _verdict;
@@ -95,7 +98,10 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
         today: ref.read(todayProvider),
       );
       if (!mounted) return;
-      setState(() => _run = run);
+      setState(() {
+        _run = run;
+        _queue = QuizQueue(run.quiz.items);
+      });
       _startClock();
     } on Object catch (error) {
       if (mounted) setState(() => _error = error);
@@ -124,24 +130,30 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
     if (run == null || _verdict != null) return;
     if (!timedOut && given.trim().isEmpty) return;
     _tick?.cancel();
-    final item = run.quiz.items[_index];
+    final item = _queue.current;
+    final reask = _queue.reasking;
     final verdict = timedOut ? Verdict.wrong : grade(item, given);
+    _queue.answered(verdict);
     setState(() {
       _verdict = verdict;
       _given = given.trim();
       _timedOut = timedOut;
-      _points += verdict.score;
+      // FR-L8-03: a re-ask is feedback, not score.
+      if (!reask) _points += verdict.score;
     });
-    await _service.answer(run, item, given: given.trim(), verdict: verdict);
+    if (reask) {
+      await _service.reasked(run, item);
+    } else {
+      await _service.answer(run, item, given: given.trim(), verdict: verdict);
+    }
   }
 
   /// *Next*: the next item, or the run finished and closed.
   Future<void> _next() async {
     final run = _run;
     if (run == null || _verdict == null || _leaving) return;
-    if (_index < run.quiz.items.length - 1) {
+    if (_queue.next()) {
       setState(() {
-        _index++;
         _verdict = null;
         _timedOut = false;
         _answers++;
@@ -222,19 +234,26 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
       );
     } else {
       final items = run.quiz.items;
-      final item = items[_index];
+      final item = _queue.current;
       final verdict = _verdict;
       final typed = item.direction != QuizDirection.articles && !item.tiles;
       body = Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          _QuizStrip(done: _index + 1, of: items.length),
+          _QuizStrip(
+            done: _queue.reasking ? items.length : item.ord,
+            of: items.length,
+          ),
           Expanded(
             child: ListView(
               padding: const EdgeInsets.fromLTRB(16, 20, 16, 16),
               children: <Widget>[
                 Row(
                   children: <Widget>[
+                    if (_queue.reasking) ...<Widget>[
+                      DpChip(label: l10n.quizOnceMore, kind: DpChipKind.status),
+                      const SizedBox(width: 8),
+                    ],
                     DpChip(label: askName(l10n, item), kind: DpChipKind.status),
                     const Spacer(),
                     if (widget.args.timer && verdict == null)
@@ -308,7 +327,12 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
         children: <Widget>[
           PracticeHeader(
             title: quizTitle(l10n, widget.args),
-            place: (items.isEmpty ? 0 : _index + 1, items.length),
+            // A re-ask counts among the re-asks: "Once more · 2 / 4".
+            place: items.isEmpty
+                ? (0, 0)
+                : _queue.reasking
+                ? _queue.reask
+                : (_queue.current.ord, items.length),
             closeLabel: l10n.quizClose,
             onClose: () => unawaited(_close()),
           ),

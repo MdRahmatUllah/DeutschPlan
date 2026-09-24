@@ -49,6 +49,9 @@ class StubQuizRun implements QuizRunService {
   /// Each answer's ord, what was given and its verdict.
   final List<(int, String, Verdict)> answers = <(int, String, Verdict)>[];
 
+  /// The ords asked again at the end (FR-L8-03).
+  final List<int> again = <int>[];
+
   /// The finish's points; null until then.
   double? finished;
 
@@ -73,6 +76,9 @@ class StubQuizRun implements QuizRunService {
     required String given,
     required Verdict verdict,
   }) async => answers.add((item.ord, given, verdict));
+
+  @override
+  Future<void> reasked(QuizRun run, QuizItem item) async => again.add(item.ord);
 
   @override
   Future<void> finish(QuizRun run, {required double points}) async =>

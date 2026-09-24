@@ -87,6 +87,12 @@ class QuizRunService {
     );
   }
 
+  /// FR-L8-03: [item] was asked again at the end. Its first answer stands:
+  /// a re-ask changes neither the score nor FSRS, which the first answer
+  /// already rated.
+  Future<void> reasked(QuizRun run, QuizItem item) =>
+      _exams.markQuizReAsked(attemptId: run.attemptId!, ord: item.ord);
+
   /// The run is over: its score out of one point an item (BR-ANS-04).
   Future<void> finish(QuizRun run, {required double points}) =>
       _exams.finishQuiz(
