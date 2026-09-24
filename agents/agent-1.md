@@ -1,12 +1,12 @@
 # agent-1
 
 session: active
-last-seen: 2026-09-24 12:09
+last-seen: 2026-09-24 12:27
 last-read: 8
 
 ## Now
 
-#151 TtsEngine interface and SystemTts — claimed 2026-09-24 11:31.
+#151 in review as PR #290: watch CI, answer review threads, merge.
 
 ## Next
 
