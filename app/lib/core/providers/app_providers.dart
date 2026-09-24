@@ -352,12 +352,20 @@ SetupRepository setupRepository(Ref ref) => SetupRepository(
 );
 
 /// The plan engine over the real store, with the learner's settings as they
-/// stand when it is read. Auto-disposing, so the next read sees a setting
-/// changed in between — BR-PLAN-08's "from the next day" is the engine's to
-/// enforce, not a stale instance's.
+/// stand. BR-PLAN-08's "from the next day" is the engine's to enforce, not a
+/// stale instance's.
+///
+/// Rebuilt whenever a setting it holds is written (#342), by whichever
+/// screen: auto-disposing isn't enough, because Today's tab stays mounted
+/// and keeps it watched. A stale copy planned the catch-up days with T4's
+/// old pause and walked them as paused, so they were lost.
 @riverpod
 PlanEngine planEngine(Ref ref) {
   final settings = ref.watch(settingsProvider);
+  final changes = settings.changes
+      .where(_planEngineKeys.contains)
+      .listen((_) => ref.invalidateSelf());
+  ref.onDispose(changes.cancel);
   return PlanEngine(
     store: DriftPlanStore(ref.watch(appDatabaseProvider), settings),
     reviseCount: settings.read(SettingKeys.reviseCount),
@@ -366,6 +374,14 @@ PlanEngine planEngine(Ref ref) {
     pauseNewWhenBacklog: settings.read(SettingKeys.pauseNewWhenBacklog),
   );
 }
+
+/// What [planEngine] copies out of the settings.
+const Set<SettingKey<Object?>> _planEngineKeys = <SettingKey<Object?>>{
+  SettingKeys.reviseCount,
+  SettingKeys.backlogCatchupDays,
+  SettingKeys.autoAdvance,
+  SettingKeys.pauseNewWhenBacklog,
+};
 
 /// The drift side of the sentence picker, shared by the picker and Today's
 /// count of rated sentences.

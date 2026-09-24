@@ -230,6 +230,34 @@ void main() {
     });
   });
 
+  group('#342 the plan engine', () {
+    test('a setting it holds rebuilds it, from any writer', () async {
+      final c = container();
+      c.listen(planEngineProvider, (_, _) {}); // as Today's tab keeps it
+      final writes = <Future<void> Function()>[
+        () => settings.write(SettingKeys.pauseNewWhenBacklog, true),
+        () => settings.write(SettingKeys.reviseCount, 12),
+        () => settings.write(SettingKeys.autoAdvance, false),
+        () => settings.write(SettingKeys.backlogCatchupDays, 10),
+      ];
+      for (final write in writes) {
+        final before = c.read(planEngineProvider);
+        await write();
+        await pumpEventQueue();
+        expect(c.read(planEngineProvider), isNot(same(before)));
+      }
+    });
+
+    test('one it does not hold leaves it be', () async {
+      final c = container();
+      c.listen(planEngineProvider, (_, _) {});
+      final before = c.read(planEngineProvider);
+      await settings.write(SettingKeys.learnerName, 'Rahim');
+      await pumpEventQueue();
+      expect(c.read(planEngineProvider), same(before));
+    });
+  });
+
   group('the repositories', () {
     test('are built over the database bootstrap opened', () {
       final ref = container();
