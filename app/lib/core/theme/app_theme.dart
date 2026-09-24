@@ -60,6 +60,15 @@ abstract final class AppTheme {
       fontFamily: AppFonts.latin,
       fontFamilyFallback: AppFonts.fallback,
       textTheme: textTheme(tokens),
+      // Lagoon is a fill, and as text it is 2.2:1 on a dialog (#318). A
+      // dialog's or picker's text buttons take `link`, Lagoon's text colour.
+      textButtonTheme: TextButtonThemeData(
+        style: TextButton.styleFrom(foregroundColor: tokens.color.link),
+      ),
+      // The picker on the dialog's card: `link` is 5.2:1 there, 4.4 on Oat.
+      timePickerTheme: TimePickerThemeData(
+        backgroundColor: tokens.surface.card,
+      ),
       extensions: <ThemeExtension<dynamic>>[tokens],
     );
   }

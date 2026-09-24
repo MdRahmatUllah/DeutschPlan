@@ -644,10 +644,12 @@ abstract final class Adaptive {
           ),
           TextButton(
             onPressed: () => Navigator.of(dialogContext).pop(true),
+            // Text colours, not the fills (#318): Coral is 3.0:1 on the card
+            // and Lagoon 2.2; their text variants clear 4.5.
             style: TextButton.styleFrom(
               foregroundColor: destructive
-                  ? tokens.color.again
-                  : tokens.color.primary,
+                  ? tokens.color.wrongText
+                  : tokens.color.link,
             ),
             child: Text(confirmLabel),
           ),
