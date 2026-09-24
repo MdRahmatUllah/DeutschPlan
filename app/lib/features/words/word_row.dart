@@ -63,6 +63,7 @@ class WordRow extends StatelessWidget {
                 article: word.word.article,
                 role: DpTextRole.bodyLarge,
                 weight: 600,
+                maxLines: 1,
               ),
               const SizedBox(height: 2),
               DpText(

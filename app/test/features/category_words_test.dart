@@ -19,7 +19,7 @@ import 'package:deutschplan/main.dart'
 import 'package:deutschplan/router/routes.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
-import 'package:drift/drift.dart' show DatabaseConnection;
+import 'package:drift/drift.dart' show DatabaseConnection, Value;
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
@@ -214,6 +214,41 @@ void main() {
     expect(LevelFilter.a1.holds(at('A1')), isTrue);
     expect(LevelFilter.a1.holds(at('A2')), isFalse);
     expect(LevelFilter.all.holds(at('C2')), isTrue);
+  });
+
+  testWidgets('the longest headword keeps to its 64 dp row', (tester) async {
+    // content.db's longest: a C2.2 proverb, beside a step chip.
+    const proverb =
+        'Was du heute kannst besorgen, das verschiebe nicht auf morgen';
+    final first = artboardCategoryWords().first;
+    await pump(
+      tester,
+      words: <StepWord>[
+        (
+          meaning: 'never put off till tomorrow what you can do today',
+          word: WordWithState(
+            word: first.word.word.copyWith(
+              german: proverb,
+              article: const Value<String?>(null),
+              sublevelCode: 'C2.2',
+              levelCode: 'C2',
+            ),
+            state: null,
+            status: first.word.status,
+          ),
+        ),
+      ],
+    );
+    expect(tester.takeException(), isNull);
+    final headword = find.descendant(
+      of: row(proverb),
+      matching: find.byWidgetPredicate(
+        (widget) =>
+            widget is RichText && widget.text.toPlainText().contains('Was du'),
+      ),
+    );
+    expect(tester.getSize(headword).height, 24, reason: 'one 17/24 line');
+    expect(tester.getSize(row(proverb)).height, WordRow.height);
   });
 
   testWidgets('a row opens its word', (tester) async {
