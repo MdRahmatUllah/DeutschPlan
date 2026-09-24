@@ -46,7 +46,12 @@ void main() {
     }
   });
 
-  Future<void> state(String uid, String status, {double stability = 3}) => db
+  Future<void> state(
+    String uid,
+    String status, {
+    double stability = 3,
+    String? lastReview,
+  }) => db
       .into(db.wordState)
       .insertOnConflictUpdate(
         WordStateCompanion.insert(
@@ -54,7 +59,10 @@ void main() {
           status: Value(status),
           stability: Value(stability),
           reps: const Value(2),
-          lastReview: const Value('2026-09-10T21:30:00Z'),
+          // Local wall-clock times, so the day is the same in any zone.
+          lastReview: Value(
+            lastReview ?? DateTime(2026, 9, 10, 20).toUtc().toIso8601String(),
+          ),
         ),
       );
 
@@ -116,6 +124,31 @@ void main() {
         haus.lastReview,
         '2026-09-10',
         reason: 'the instant, cut to its day',
+      );
+    });
+
+    test("#327 last_review becomes its local day, not its UTC one", () async {
+      // Just after local midnight and just before it: east of Greenwich the
+      // first is the day before in UTC, west of it the second is the day
+      // after.
+      await state(
+        ContentFixture.haus,
+        'learning',
+        lastReview: DateTime(2026, 9, 11, 0, 30).toUtc().toIso8601String(),
+      );
+      await state(
+        ContentFixture.tuer,
+        'learning',
+        lastReview: DateTime(2026, 9, 11, 23, 30).toUtc().toIso8601String(),
+      );
+      final words = await store.learned(QuizSource.allLearned);
+      expect(
+        {
+          for (final w in words)
+            if (w.uid == ContentFixture.haus || w.uid == ContentFixture.tuer)
+              w.uid: w.lastReview,
+        },
+        {ContentFixture.haus: '2026-09-11', ContentFixture.tuer: '2026-09-11'},
       );
     });
   });
