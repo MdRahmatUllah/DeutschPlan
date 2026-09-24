@@ -30,6 +30,7 @@ import 'package:deutschplan/router/route_guards.dart';
 import 'package:deutschplan/features/today/today_screen.dart';
 import 'package:deutschplan/features/backlog/backlog_screen.dart';
 import 'package:deutschplan/features/day_complete/day_complete_screen.dart';
+import 'package:deutschplan/features/learn/categories_screen.dart';
 import 'package:deutschplan/features/learn/grammar_library_screen.dart';
 import 'package:deutschplan/features/learn/grammar_practice_screen.dart';
 import 'package:deutschplan/features/learn/grammar_topic_screen.dart';
@@ -339,7 +340,7 @@ class CategoriesRoute extends GoRouteData with $CategoriesRoute {
 
   @override
   Widget build(BuildContext context, GoRouterState state) =>
-      const PlaceholderScreen(title: 'Categories', screen: 'L5');
+      const CategoriesScreen();
 }
 
 class CategoryRoute extends GoRouteData with $CategoryRoute {

@@ -2290,5 +2290,18 @@
   "practiceBackToItem": "Back to the question",
   "@practiceBackToItem": {
     "description": "L15 rule sheet: closes it."
+  },
+  "categoriesLine": "Every word belongs to one category across all 12 steps.",
+  "@categoriesLine": {
+    "description": "L5 header copy, under the title."
+  },
+  "categoriesWords": "{count, plural, =1{1 word} other{{count} words}}",
+  "@categoriesWords": {
+    "description": "L5 card: the category's words across the course.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   }
 }

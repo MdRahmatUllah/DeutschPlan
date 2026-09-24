@@ -3,6 +3,7 @@ import 'package:deutschplan/core/providers/app_providers.dart';
 import 'package:deutschplan/data/db/app_database.dart';
 import 'package:deutschplan/data/repositories/word_repository.dart';
 import 'package:deutschplan/features/backlog/backlog_screen.dart';
+import 'package:deutschplan/features/learn/categories_screen.dart';
 import 'package:deutschplan/features/learn/grammar_library_screen.dart';
 import 'package:deutschplan/features/learn/grammar_topic_screen.dart';
 import 'package:deutschplan/features/learn/step_grammar.dart';
@@ -348,6 +349,28 @@ TopicWithState artboardTopic({GrammarStateData? state}) => TopicWithState(
   status: state == null ? WordStatus.todo : WordStatus.learning,
 );
 
+/// The Categories artboard's eight, biggest first, with its bars.
+List<CategoryProgress> artboardCategories() => <CategoryProgress>[
+  for (final (id, name, done, learning, todo) in <(int, String, int, int, int)>[
+    (1, 'Wohnen & Haushalt', 150, 40, 222),
+    (2, 'Arbeit & Beruf', 96, 22, 270),
+    (3, 'Essen & Trinken', 210, 18, 128),
+    (4, 'Reisen & Verkehr', 120, 30, 194),
+    (5, 'Behörden & Formulare', 40, 12, 246),
+    (6, 'Gesundheit', 64, 8, 204),
+    (7, 'Familie & Freunde', 180, 14, 46),
+    (8, 'Einkaufen & Geld', 130, 20, 82),
+  ])
+    CategoryProgress(
+      id: id,
+      name: name,
+      words: done + learning + todo,
+      todo: todo,
+      learning: learning,
+      done: done,
+    ),
+];
+
 /// Today without a database: the artboard's plan, and no coach mark.
 ///
 /// For tests about something else — the router, the shell — that only need
@@ -399,6 +422,8 @@ List<Override> todayStub([
   grammarTopicProvider.overrideWith(
     (ref, uid) => Stream.value(topic ?? artboardTopic()),
   ),
+  // L5 without a database: the Categories artboard's eight.
+  categoriesProvider.overrideWith((ref) => Stream.value(artboardCategories())),
   // L1 without a database: the Learn artboard's course.
   stepProgressProvider.overrideWith(
     (ref) => Stream.value(course ?? artboardCourse()),
