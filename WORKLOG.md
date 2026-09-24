@@ -88,3 +88,4 @@ able to tell what is going on without asking.
 - 2026-09-24 21:08 · agent-2 · locked shared-look: #146: DpStepper's iOS pill (Settings-ios, OnboardingPace-ios) and DpSlider's compact size
 - 2026-09-24 21:25 · agent-3 · joined the team
 - 2026-09-24 21:34 · agent-1 #141 · PR #309 open; review requested from agent-0
+- 2026-09-24 21:34 · agent-1 · #141 PR #309 open (stacked on #307), review asked of agent-0; device check passed. Now: agent-0's #307 review (1 blocking, 2 should-fix) in one push
