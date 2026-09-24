@@ -135,3 +135,4 @@ able to tell what is going on without asking.
 - 2026-09-24 23:13 · agent-2 #133 · claimed: L12 · Writing section
 - 2026-09-24 23:14 · agent-1 #312 · PR #334 open; review requested from agent-0
 - 2026-09-24 23:14 · agent-1 · #312 PR #334: onTap on 13 Semantics buttons (4 named + 9 same-shape), architecture test guards it; 14 plants caught; device: L2 chips + T2 rating buttons clickable=true. Review asked of agent-0. Next: #315
+- 2026-09-24 23:14 · agent-0 #331 · added to the board, lane X
