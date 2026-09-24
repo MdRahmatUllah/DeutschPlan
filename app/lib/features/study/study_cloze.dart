@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:deutschplan/core/components/dp_button.dart';
 import 'package:deutschplan/core/components/dp_chip.dart';
 import 'package:deutschplan/core/components/dp_feedback.dart';
+import 'package:deutschplan/core/providers/app_providers.dart';
 import 'package:deutschplan/core/theme/dp_tokens.dart';
 import 'package:deutschplan/core/typography/dp_text.dart';
 import 'package:deutschplan/data/db/app_database.dart';
@@ -74,7 +75,12 @@ class _StudyClozeCardState extends ConsumerState<StudyClozeCard> {
     if (_verdict != null || _answer.text.trim().isEmpty) return;
     final verdict = checkGerman(_answer.text, _expected);
     setState(() => _verdict = verdict);
-    if (verdict.isRight) _play();
+    // The autoplay stays quiet once the phone is known to have no German
+    // voice: T2's front card has already said so once this session. A tap on
+    // play still explains, every time (accessibility-performance.md).
+    if (verdict.isRight && ref.read(ttsAvailableProvider).value != false) {
+      _play();
+    }
     widget.onChecked();
   }
 
@@ -82,6 +88,8 @@ class _StudyClozeCardState extends ConsumerState<StudyClozeCard> {
 
   @override
   Widget build(BuildContext context) {
+    // Watched so [_check] can read it: whether the phone can speak German.
+    ref.watch(ttsAvailableProvider);
     final tokens = context.tokens;
     final l10n = AppLocalizations.of(context);
     final word = widget.word;

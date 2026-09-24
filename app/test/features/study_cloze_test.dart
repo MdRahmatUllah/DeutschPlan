@@ -238,6 +238,15 @@ VALUES ('$strasse', 'learning', '2026-09-10', '2026-09-21', 4.5, 5.2, 2, 0,
     expect(spoken, <String>['Die Straße ist lang.']);
   });
 
+  testWidgets('V01 with no German voice, a right answer plays nothing and '
+      'says nothing: T2 has said it once already', (tester) async {
+    await pump(tester, voice: false);
+    await answer(tester, 'Straße');
+    await tester.pump();
+    expect(spoken, isEmpty);
+    expect(find.text(l10n.speakerNoVoice), findsNothing);
+  });
+
   testWidgets('V01 with no German voice, it says how to install one', (
     tester,
   ) async {

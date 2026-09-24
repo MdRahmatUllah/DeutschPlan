@@ -148,6 +148,17 @@ void main() {
       );
     });
 
+    test('V01 a callback after dispose is ignored, not thrown', () async {
+      // An utterance can finish after its container is gone.
+      final tts = _FakeFlutterTts(available: true);
+      final engine = SystemTts(tts);
+      await engine.dispose();
+
+      tts.onDone!();
+      tts.onStart!();
+      await engine.stop();
+    });
+
     test('V01 state: playing while sound is out, idle when it ends, is '
         'cancelled, fails or is stopped', () async {
       final tts = _FakeFlutterTts(available: true);

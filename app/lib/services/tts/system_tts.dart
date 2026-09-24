@@ -15,10 +15,10 @@ class SystemTts implements TtsEngine {
     // The plugin calls back whichever FlutterTts registered last, so there is
     // one per app: `systemTtsProvider` keeps this alive.
     _tts
-      ..setStartHandler(() => _state.add(TtsState.playing))
-      ..setCompletionHandler(() => _state.add(TtsState.idle))
-      ..setCancelHandler(() => _state.add(TtsState.idle))
-      ..setErrorHandler((_) => _state.add(TtsState.idle));
+      ..setStartHandler(() => _emit(TtsState.playing))
+      ..setCompletionHandler(() => _emit(TtsState.idle))
+      ..setCancelHandler(() => _emit(TtsState.idle))
+      ..setErrorHandler((_) => _emit(TtsState.idle));
   }
 
   final FlutterTts _tts;
@@ -69,7 +69,13 @@ class SystemTts implements TtsEngine {
   @override
   Future<void> stop() async {
     await _tts.stop();
-    _state.add(TtsState.idle);
+    _emit(TtsState.idle);
+  }
+
+  /// The platform can call back after [dispose] — an utterance finishing as
+  /// its container goes — and a closed stream would throw.
+  void _emit(TtsState state) {
+    if (!_state.isClosed) _state.add(state);
   }
 
   Future<void> dispose() => _state.close();
