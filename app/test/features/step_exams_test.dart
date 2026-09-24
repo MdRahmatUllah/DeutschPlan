@@ -423,6 +423,22 @@ void main() {
       expect(went, '/today');
     });
 
+    testWidgets('a screen reader hears the count once, and Study now as a '
+        'button of its own', (tester) async {
+      final semantics = tester.ensureSemantics();
+      await pump(tester, progress: locked());
+
+      final card = tester
+          .getSemantics(find.text(l10n.examHubUnlocksWhen(90, 'A1.2')))
+          .label;
+      expect(l10n.examHubIntroduced(244, 486).allMatches(card), hasLength(1));
+      expect(
+        tester.getSemantics(find.text(l10n.examHubStudyNow)),
+        isSemantics(label: l10n.examHubStudyNow, isButton: true),
+      );
+      semantics.dispose();
+    });
+
     testWidgets('the panel says where the threshold is changed', (
       tester,
     ) async {

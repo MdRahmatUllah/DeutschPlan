@@ -432,16 +432,18 @@ class LockedExams extends ConsumerWidget {
             ],
           ),
           const SizedBox(height: 12),
-          DpSegmentedBar(
-            done: step.introduced,
-            learning: 0,
-            todo: left,
-            height: 10,
-            semanticLabel: l10n.examHubIntroduced(step.introduced, goal),
-            colours: (
-              done: ink,
-              learning: ink,
-              todo: ink.withValues(alpha: 0.15),
+          // The line under it says the same; a screen reader hears it once.
+          ExcludeSemantics(
+            child: DpSegmentedBar(
+              done: step.introduced,
+              learning: 0,
+              todo: left,
+              height: 10,
+              colours: (
+                done: ink,
+                learning: ink,
+                todo: ink.withValues(alpha: 0.15),
+              ),
             ),
           ),
           const SizedBox(height: 12),
@@ -457,23 +459,28 @@ class LockedExams extends ConsumerWidget {
           const SizedBox(height: 12),
           // FR-L10-01's *Study now*: today's session, as L1's *Study* opens
           // it, or Today itself once the day is done.
-          Builder(
-            builder: (button) => DpButton(
-              label: l10n.examHubStudyNow,
-              // White on Sun; under glass the call to action stays Lagoon.
-              kind: tokens.isGlass
-                  ? DpButtonKind.primary
-                  : DpButtonKind.secondary,
-              onPressed: blocks.isEmpty || today == null
-                  ? () => context.jumpToTab(const TodayRoute())
-                  : () => StudyRoute.open(
-                      context,
-                      SessionArgs(
-                        blocks: blocks,
-                        planDate: today.date,
-                        origin: originOf(button),
+          // Its own node: folded into the card's, the whole card would read
+          // as one button.
+          Semantics(
+            container: true,
+            child: Builder(
+              builder: (button) => DpButton(
+                label: l10n.examHubStudyNow,
+                // White on Sun; under glass the call to action stays Lagoon.
+                kind: tokens.isGlass
+                    ? DpButtonKind.primary
+                    : DpButtonKind.secondary,
+                onPressed: blocks.isEmpty || today == null
+                    ? () => context.jumpToTab(const TodayRoute())
+                    : () => StudyRoute.open(
+                        context,
+                        SessionArgs(
+                          blocks: blocks,
+                          planDate: today.date,
+                          origin: originOf(button),
+                        ),
                       ),
-                    ),
+              ),
             ),
           ),
         ],
