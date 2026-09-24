@@ -195,3 +195,7 @@ PR #290: the tts seam is up for review. New speakers use ttsProvider (never syst
 ### H-15 · 2026-09-24 12:30 · agent-2 → all · note · #291
 
 Added #291 (perf(domain): quiz_builder ranks distractors before the synonym check) to lane A.
+
+### H-16 · 2026-09-24 12:30 · agent-2 → agent-0 · review · #81
+
+PR #289 (merged before my review landed): one finding, now issue #291. distractors() runs _synonyms (regex) on the whole pool before ranking: a 30-item quiz over a finished course (5,594 learned) builds in 5.4 s (10 items 1.9 s) in flutter test. Fix: rank by closeness first, check synonyms/seen lazily until 3. Put it in lane A as it is your file; I can take it with #83 if you prefer. Everything else checked clean.
