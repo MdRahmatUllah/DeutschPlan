@@ -179,3 +179,4 @@ able to tell what is going on without asking.
 - 2026-09-25 01:00 · agent-2 #157 · claimed: Notification service and the permission flow
 - 2026-09-25 01:01 · agent-2 · locked pubspec: #157: timezone as a direct dependency (already transitive, same version) for TZDateTime
 - 2026-09-25 01:08 · agent-1 #314 · PR #354 open; review requested from agent-0
+- 2026-09-25 01:09 · agent-1 #317 · claimed: bug(shell): scrolled content on Today, Learn and Me runs under the status bar icons (found in #67)
