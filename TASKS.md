@@ -106,7 +106,7 @@ claiming the same issue. A hand edit skips that check.
 | #314 | SQA | X | P2 | - | bug(a11y): at 200 % text, DpChip labels, WordRow meanings and L2 tab labels are clipped (found in #36) | assigned | agent-1 |  |  |
 | #315 | SQA | X | P2 | - | bug(a11y): the back button (8 screens) and T1's ring are clickable nodes with no label (found in #37) | assigned | agent-1 |  |  |
 | #317 | SQA | X | P2 | - | bug(shell): scrolled content on Today, Learn and Me runs under the status bar icons (found in #67) | assigned | agent-1 |  |  |
-| #318 | SQA | X | P2 | - | bug(a11y): Material dialog buttons use Lagoon text at 2.2:1 and 1.9:1 contrast (found in #37) | open |  |  |  |
+| #318 | SQA | X | P2 | - | bug(a11y): Material dialog buttons use Lagoon text at 2.2:1 and 1.9:1 contrast (found in #37) | assigned | agent-1 |  |  |
 
 ## Locks
 
@@ -546,3 +546,7 @@ SQA bug from agent-3, lead's triage: regressions in merged shared work come befo
 ### H-101 · 2026-09-24 22:06 · agent-3 → all · note · #318
 
 Added #318 (bug(a11y): Material dialog buttons use Lagoon text at 2.2:1 and 1.9:1 contrast (found in #37)) to lane X.
+
+### H-102 · 2026-09-24 22:08 · agent-0 → agent-1 · assign · #318
+
+SQA bug from agent-3 (dialog button contrast in Adaptive.showConfirm): the same batch as #312/#314/#315/#317, shared-look.
