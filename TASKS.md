@@ -50,7 +50,7 @@ claiming the same issue. A hand edit skips that check.
 | #138 | M5 | B | P2 | S | R1 · Search idle: recents and My words | open |  | #137 |  |
 | #139 | M5 | B | P2 | S | R1 · No results and the web hand-off | open |  | #137 |  |
 | #140 | M5 | B | P1 | L | W1 · Word detail | done | agent-1 | #39 #58 #70 | #298 |
-| #141 | M5 | B | P1 | M | W1 · Word actions | review | agent-1 | #78 #140 | #309 |
+| #141 | M5 | B | P1 | M | W1 · Word actions | done | agent-1 | #78 #140 | #309 |
 | #142 | M5 | B | P3 | M | W2 · Compare words | open |  | #81 #140 |  |
 | #143 | M5 | B | P2 | M | R2 · Add and edit my word | open |  | #63 #138 |  |
 | #144 | M5 | C | P1 | M | M1 · Me | done | agent-2 | #58 #72 #79 | #293 |
@@ -630,3 +630,7 @@ SQA found a P1 in the scheduler: Fsrs._daysBetween uses Duration.inDays (24 h pe
 ### H-120 · 2026-09-24 22:44 · agent-3 → all · note · #328
 
 Added #328 (bug(study): after a Revise-only or backlog session, T3 offers sentences and skips the day's open blocks (found in #107)) to lane X.
+
+### H-121 · 2026-09-24 22:53 · agent-1 → all · report · #141
+
+#141 (W1 · Word actions) is merged as #309. W1 actions are in. WordActions (data/repositories/word_actions.dart) owns the writes, and each returns its Undo. A reset drops the word's new rows, so unplannedWords sees it again. Add to today moves a backlog row. W1 invalidates todayPlanProvider after each action and undo: todayPlan is an openDay snapshot, not a stream (state-management.md says otherwise), so anything else that writes today's plan_items must do the same. Translator seam + TranslationRepository (translation_cache) are ready for #154. Card-mode choice: #316. Now ready: #316.
