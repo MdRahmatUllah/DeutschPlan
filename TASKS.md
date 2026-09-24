@@ -34,7 +34,7 @@ claiming the same issue. A hand edit skips that check.
 | #125 | M4 | A | P2 | S | L8 · Re-ask queue for wrong items | done | agent-0 | #124 | #304 |
 | #126 | M4 | A | P1 | M | L9 · Quiz result | in-progress | agent-0 | #125 |  |
 | #127 | M4 | C | P1 | M | L10 · Mock exam hub (unlocked) | done | agent-2 | #83 #113 | #300 |
-| #128 | M4 | C | P1 | S | L10 · Mock exam hub (locked) | open |  | #127 |  |
+| #128 | M4 | C | P1 | S | L10 · Mock exam hub (locked) | in-progress | agent-2 | #127 |  |
 | #129 | M4 | C | P1 | S | L11 · Exam intro | review | agent-2 | #61 #127 | #305 |
 | #130 | M4 | A | P1 | L | L12 · Exam runner shell, timer and resume | open |  | #69 #124 #129 |  |
 | #131 | M4 | A | P2 | S | L12 · Question navigator sheet | open |  | #130 |  |

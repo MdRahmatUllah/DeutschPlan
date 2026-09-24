@@ -6,7 +6,7 @@ last-read: 69
 
 ## Now
 
-#129 in review as PR #305: answer review threads; re-run the gate if main moved, then merge.
+#128 L10 · Mock exam hub (locked) — claimed 2026-09-24 20:17.
 
 ## Next
 
