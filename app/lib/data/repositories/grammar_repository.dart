@@ -1,4 +1,5 @@
 import 'package:deutschplan/data/db/app_database.dart';
+import 'package:deutschplan/domain/grammar_item_generator.dart';
 import 'package:deutschplan/data/repositories/setting_keys.dart';
 import 'package:deutschplan/data/repositories/settings_repository.dart';
 import 'package:deutschplan/data/repositories/word_repository.dart'
@@ -45,14 +46,9 @@ class PracticeResult {
   final int correct;
   final String practisedAt;
 
-  /// `grammar-practice.md`: all correct → Good, one wrong → Hard, more →
-  /// Again. The mapping lives here because it is the only place that knows
-  /// both numbers.
-  int get rating {
-    final wrong = items - correct;
-    if (wrong == 0) return 3;
-    return wrong == 1 ? 2 : 1;
-  }
+  /// `grammar-practice.md`'s rating (BR-FSRS-05), as the generator states
+  /// it.
+  int get rating => practiceRating(items: items, correct: correct);
 }
 
 /// Grammar topics, their scheduling and their practice history.
