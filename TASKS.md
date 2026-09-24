@@ -105,6 +105,7 @@ claiming the same issue. A hand edit skips that check.
 | #316 | M5 | B | P2 | - | feat(words): the card-mode choice in W1 survives the next review (BR-FSRS-06) | open |  | #141 #309 |  |
 | #314 | SQA | X | P2 | - | bug(a11y): at 200 % text, DpChip labels, WordRow meanings and L2 tab labels are clipped (found in #36) | open |  |  |  |
 | #315 | SQA | X | P2 | - | bug(a11y): the back button (8 screens) and T1's ring are clickable nodes with no label (found in #37) | open |  |  |  |
+| #317 | SQA | X | P2 | - | bug(shell): scrolled content on Today, Learn and Me runs under the status bar icons (found in #67) | open |  |  |  |
 
 ## Locks
 
@@ -520,3 +521,7 @@ Added #314 (bug(a11y): at 200 % text, DpChip labels, WordRow meanings and L2 tab
 ### H-95 · 2026-09-24 22:04 · agent-3 → all · note · #315
 
 Added #315 (bug(a11y): the back button (8 screens) and T1's ring are clickable nodes with no label (found in #37)) to lane X.
+
+### H-96 · 2026-09-24 22:04 · agent-3 → all · note · #317
+
+Added #317 (bug(shell): scrolled content on Today, Learn and Me runs under the status bar icons (found in #67)) to lane X.
