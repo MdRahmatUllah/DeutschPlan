@@ -502,6 +502,49 @@ void main() {
     });
   });
 
+  test('#291 a late-course quiz builds fast: every word of content.db learned, '
+      '30 items with tiles', () async {
+    final db = sqlite3.open('assets/db/content.db', mode: OpenMode.readOnly);
+    addTearDown(db.close);
+    final words = <QuizWord>[
+      for (final row in db.select(
+        'SELECT uid, german, article, pos, english, bangla, forms, '
+        'sublevel_code, synonyms_register FROM words',
+      ))
+        QuizWord(
+          uid: row['uid'] as String,
+          german: row['german'] as String,
+          article: row['article'] as String?,
+          pos: row['pos'] as String?,
+          english: row['english'] as String,
+          bangla: row['bangla'] as String?,
+          forms: row['forms'] as String?,
+          step: row['sublevel_code'] as String,
+          synonyms: row['synonyms_register'] as String?,
+          stability: 5,
+          lastReview: '2026-09-10',
+        ),
+    ];
+    expect(words.length, greaterThan(5000));
+    final builder = QuizBuilder(_Store(words, words));
+    final watch = Stopwatch()..start();
+    final quiz = await builder.build(
+      direction: QuizDirection.deEn,
+      source: QuizSource.allLearned,
+      length: 30,
+      seed: 11,
+      today: today,
+    );
+    watch.stop();
+    expect(quiz.items, hasLength(30));
+    for (final item in quiz.items) {
+      expect(item.options.toSet(), hasLength(4), reason: item.prompt);
+    }
+    // Checking every candidate before ranking took 5.4 s here; ranking
+    // first and checking lazily takes a small fraction of a second.
+    expect(watch.elapsedMilliseconds, lessThan(1500));
+  });
+
   test('the wire names round-trip', () {
     for (final d in QuizDirection.values) {
       expect(QuizDirection.parse(d.name), d);

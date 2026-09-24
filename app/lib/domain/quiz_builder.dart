@@ -394,34 +394,47 @@ List<String> distractors(
   Random random, {
   int count = 3,
 }) {
-  final right = value(answer).trim().toLowerCase();
-  final seen = <String>{right};
-  final candidates = <QuizWord>[];
-  for (final word in pool) {
-    final shown = value(word).trim().toLowerCase();
-    if (word.uid == answer.uid || shown.isEmpty || !seen.add(shown)) continue;
-    if (_synonyms(answer, word)) continue;
-    candidates.add(word);
-  }
-  // Seeded, then stably sorted by closeness: the order among equally close
-  // words is the seed's, so the same quiz gets the same tiles.
-  candidates.shuffle(random);
+  // Rank first, check late (#291): the pool is a step plus every learned
+  // word — thousands late in the course — and the synonym check is regex
+  // work. Ranking is cheap; the checks run only until [count] are found.
+  final candidates = <QuizWord>[
+    for (final word in pool)
+      if (word.uid != answer.uid) word,
+  ]..shuffle(random);
+  // Stably sorted by closeness, so among equally close words the order is
+  // the seed's and the same quiz gets the same tiles.
   int closeness(QuizWord word) =>
       (word.pos == answer.pos ? 0 : 2) + (word.step == answer.step ? 0 : 1);
   final ranked = <(int, int, QuizWord)>[
     for (final (i, word) in candidates.indexed) (closeness(word), i, word),
   ]..sort((a, b) => a.$1 != b.$1 ? a.$1.compareTo(b.$1) : a.$2.compareTo(b.$2));
-  return <String>[for (final (_, _, word) in ranked.take(count)) value(word)];
+
+  final seen = <String>{value(answer).trim().toLowerCase()};
+  final meanings = _meanings(answer);
+  final picked = <String>[];
+  for (final (_, _, word) in ranked) {
+    final shown = value(word).trim().toLowerCase();
+    if (shown.isEmpty || seen.contains(shown)) continue;
+    if (_synonyms(answer, meanings, word)) continue;
+    seen.add(shown);
+    picked.add(value(word));
+    if (picked.length == count) break;
+  }
+  return picked;
 }
 
-/// Whether [a] and [b] would both be right: a meaning they share, or one
-/// named in the other's synonyms cell.
-bool _synonyms(QuizWord a, QuizWord b) {
-  Set<String> meanings(QuizWord w) => <String>{
-    for (final m in splitMeanings(w.english))
-      m.toLowerCase().replaceFirst(RegExp(r'^to\s+'), ''),
-  };
-  if (meanings(a).intersection(meanings(b)).isNotEmpty) return true;
+/// [w]'s meanings as a synonym check compares them: lower case, no "to ".
+Set<String> _meanings(QuizWord w) => <String>{
+  for (final m in splitMeanings(w.english))
+    m.toLowerCase().replaceFirst(_infinitiveTo, ''),
+};
+
+final RegExp _infinitiveTo = RegExp(r'^to\s+');
+
+/// Whether [a] (whose [meanings] are given) and [b] would both be right: a
+/// meaning they share, or one named in the other's synonyms cell.
+bool _synonyms(QuizWord a, Set<String> meanings, QuizWord b) {
+  if (meanings.intersection(_meanings(b)).isNotEmpty) return true;
   if ((a.bangla ?? '').trim().isNotEmpty &&
       a.bangla!.trim() == b.bangla?.trim()) {
     return true;
@@ -434,11 +447,8 @@ bool _synonyms(QuizWord a, QuizWord b) {
 /// Whether [phrase]'s words appear in [text] as whole words, in order: "an"
 /// is not named by "das Anliegen".
 bool _hasWords(String text, String phrase) {
-  List<String> words(String s) => s
-      .toLowerCase()
-      .split(RegExp(r'[^\p{L}\p{N}-]+', unicode: true))
-      .where((w) => w.isNotEmpty)
-      .toList();
+  List<String> words(String s) =>
+      s.toLowerCase().split(_nonWord).where((w) => w.isNotEmpty).toList();
   final haystack = words(text);
   final needle = words(phrase);
   if (needle.isEmpty || needle.length > haystack.length) return false;
@@ -451,3 +461,5 @@ bool _hasWords(String text, String phrase) {
   }
   return false;
 }
+
+final RegExp _nonWord = RegExp(r'[^\p{L}\p{N}-]+', unicode: true);
