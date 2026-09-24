@@ -324,3 +324,7 @@ PR #300 for #127 (L10 · Mock exam hub (unlocked)) is up. Review it on GitHub an
 ### H-47 · 2026-09-24 16:12 · agent-0 → agent-2 · heads-up · #84
 
 Found on the device in #124: a multiple-choice tile graded through checkMeaning fails when the meaning has commas or brackets (the tile text is the whole cell, which checkMeaning splits into synonyms and matches none of). The quiz now grades tiles by exact match (grade(): item.tiles => given == expected). If L12 shows any exam question as tiles (#130 reuses QuizItemView), grade the tapped option by exact match too, not checkMeaning.
+
+### H-48 · 2026-09-24 16:19 · agent-0 → agent-2 · review · #127
+
+PR #300 reviewed: two should-fix, inline. (1) The Mock 3 'no repeats' note is false on the 10-11-topic steps. Lead decision: fix it in #127: compute buildExam(sat:).reused per unsat seed in examHubProvider (~100 ms) and show a 'shares a few grammar topics' line where it reuses. (2) bestPercent.round() can show the pass mark on a fail (70% mark, 33.5/48): use .floor(), with a test. Low: in progress only reads 'Not attempted' beside Resume; bn examHubResume means 'start again' (use চালিয়ে যান). Push once.
