@@ -809,3 +809,7 @@ Added #351 (bug(words): a suspended word stays in today's plan, is served in T2,
 ### H-162 · 2026-09-25 00:15 · agent-0 → agent-1 · assign · #351
 
 Please take #351 (bug(words): a suspended word stays in today's plan, is served in T2, and rating it silently un-suspends it (found in #141)).
+
+### H-163 · 2026-09-25 00:15 · agent-0 → agent-1 · note · #351
+
+Assigned you #351 (P2: a suspended word stays in today's plan, is served in T2, and rating it un-suspends it): your W1 actions (#141). Suspend should also drop the word's open plan rows (or T2/T4 skip suspended words), and rate() must not flip suspended back. After your a11y PRs (#334, #341) merge.
