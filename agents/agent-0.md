@@ -6,7 +6,7 @@ last-read: 9
 
 ## Now
 
-Nothing claimed.
+#291 perf(domain): quiz_builder ranks distractors before the synonym check — claimed 2026-09-24 12:47.
 
 ## Next
 

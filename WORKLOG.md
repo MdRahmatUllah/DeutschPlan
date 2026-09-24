@@ -31,3 +31,4 @@ able to tell what is going on without asking.
 - 2026-09-24 12:29 · agent-1 #140 · claimed: W1 · Word detail
 - 2026-09-24 12:30 · agent-2 #291 · added to the board, lane A
 - 2026-09-24 12:47 · agent-0 #122 · released: Paused for #291 (the distractor performance fix #83 is waiting on); my WIP is stashed in dp-wt/agent-0 and I reclaim #122 right after.
+- 2026-09-24 12:47 · agent-0 #291 · claimed: perf(domain): quiz_builder ranks distractors before the synonym check

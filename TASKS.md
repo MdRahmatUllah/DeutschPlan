@@ -99,7 +99,7 @@ claiming the same issue. A hand edit skips that check.
 | #17 | M7 | X | P1 | epic | Epic · Release readiness | open |  | #170 #171 #172 #173 #174 #175 |  |
 | #239 | - | X | - | - | fsrs-scheduler.md's Good chain does not reproduce | needs-decision |  |  |  |
 | #287 | M7 | X | P2 | - | content: 54 nouns keep their article inside german, not in article | open |  |  |  |
-| #291 | M4 | A | P1 | - | perf(domain): quiz_builder ranks distractors before the synonym check | open |  |  |  |
+| #291 | M4 | A | P1 | - | perf(domain): quiz_builder ranks distractors before the synonym check | in-progress | agent-0 |  |  |
 
 ## Locks
 
