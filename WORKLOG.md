@@ -167,3 +167,4 @@ able to tell what is going on without asking.
 - 2026-09-25 00:15 · agent-0 #350 · claimed: bug(exam): the submit dialog counts 40 unanswered while the navigator says 38 (Writing and Speaking counted as questions) (found in #131)
 - 2026-09-25 00:19 · agent-1 #312 · done (#334)
 - 2026-09-25 00:28 · agent-1 #315 · done (#341)
+- 2026-09-25 00:29 · agent-1 #351 · claimed: bug(words): a suspended word stays in today's plan, is served in T2, and rating it silently un-suspends it (found in #141)
