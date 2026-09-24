@@ -2,6 +2,16 @@ import 'dart:io';
 
 import 'package:sqlite3/sqlite3.dart';
 
+/// The bundled course, copied once per test process, for a test that
+/// ATTACHes it (#331). `flutter test` runs files in parallel processes, and
+/// two of them committing with the same file attached fail now and then
+/// with "database is locked". The copy is 8 MB and left in the temp folder.
+File realContent() => _realContent ??= () {
+  final dir = Directory.systemTemp.createTempSync('deutschplan_course');
+  return File('assets/db/content.db').copySync('${dir.path}/content.db');
+}();
+File? _realContent;
+
 /// Builds a content.db for tests, from the same DDL the pipeline uses.
 ///
 /// The real database is produced by `make content` from four Excel workbooks
