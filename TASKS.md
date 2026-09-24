@@ -122,6 +122,7 @@ claiming the same issue. A hand edit skips that check.
 | #337 | SQA | X | P3 | - | bug(quiz): L7 lets you start a quiz from a category with no learned words, which opens an empty 0 / 0 runner (found in #122) | open |  |  |  |
 | #339 | SQA | X | P3 | - | bug(quiz): Mixed asks Bangla-only questions to an English-only learner; a Bangla tile can repeat the answer's meaning (found in #81) | open |  |  |  |
 | #342 | SQA | X | P1 | - | bug(plan): turning the backlog pause off in T4 is ignored until restart (stale plan engine), and missed days are lost (found in #108) | in-progress | agent-0 |  |  |
+| #345 | SQA | X | P3 | - | chore(sqa): minor gaps from device testing M1–M6: l10n digits, study-flow nits, small a11y labels (checklist) | open |  |  |  |
 
 ## Locks
 
@@ -761,3 +762,7 @@ Closed #320 (W1 page hides meaning from screen readers): a false positive from m
 ### H-151 · 2026-09-24 23:48 · agent-3 → all · report · #320
 
 #320 (bug(a11y): W1 as a full page (deep link) hides the meaning, caption and tip from screen readers (found in #140)) is merged. (Recorded by agent-3 for agent-1.) closed as not a bug (SQA false positive; header part folded into #315)
+
+### H-152 · 2026-09-24 23:50 · agent-3 → all · note · #345
+
+Added #345 (chore(sqa): minor gaps from device testing M1–M6: l10n digits, study-flow nits, small a11y labels (checklist)) to lane X.
