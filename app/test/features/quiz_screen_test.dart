@@ -7,6 +7,7 @@ import 'package:deutschplan/core/theme/app_theme.dart';
 import 'package:deutschplan/core/theme/dp_surface.dart';
 import 'package:deutschplan/domain/answer_check.dart';
 import 'package:deutschplan/domain/quiz_builder.dart';
+import 'package:deutschplan/features/quiz/quiz_result_screen.dart';
 import 'package:deutschplan/features/quiz/quiz_screen.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
 import 'package:deutschplan/main.dart'
@@ -181,7 +182,7 @@ void main() {
     expect(run.answers.last, (7, 'der Mietvertag', Verdict.almost));
   });
 
-  testWidgets('the last answer finishes the run, scored, and closes it', (
+  testWidgets('the last answer finishes the run, scored, and shows L9', (
     tester,
   ) async {
     await pump(
@@ -205,6 +206,10 @@ void main() {
 
     await next(tester);
     expect(run.finished, 1.5, reason: 'correct 1 + almost 0.5, not the re-ask');
+    expect(find.byType(QuizResultView), findsOneWidget);
+
+    await tester.tap(find.text(l10n.done));
+    await tester.pumpAndSettle();
     expect(find.text('opener'), findsOneWidget);
   });
 

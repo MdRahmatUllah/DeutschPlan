@@ -66,6 +66,21 @@ quizMistakes:
   WHERE attempt_id = :id AND verdict IS NOT NULL AND verdict != 'correct'
   ORDER BY ord;
 
+-- L9's mistake rows (#126): each answer that wasn't right, with its word as
+-- the course writes it. LEFT JOIN: a word a content update removed still
+-- shows, by what it expected.
+quizMistakeRows:
+  SELECT a.ord AS ord, a.word_uid AS uid, a.given AS given,
+    a.verdict AS verdict, a.expected AS expected,
+    w.german AS german, w.article AS article
+  FROM quiz_answers a
+  LEFT JOIN words w ON w.uid = a.word_uid
+  WHERE a.attempt_id = :id AND a.verdict IS NOT NULL AND a.verdict != 'correct'
+  ORDER BY a.ord;
+
+quizAttemptById:
+  SELECT * FROM quiz_attempts WHERE id = :id;
+
 recentQuizzes:
   SELECT * FROM quiz_attempts
   WHERE finished_at IS NOT NULL
