@@ -25,7 +25,7 @@ claiming the same issue. A hand edit skips that check.
 
 | Issue | Ms | Lane | Pri | Size | Title | Status | Owner | Blocked by | PR |
 |---|---|---|---|---|---|---|---|---|---|
-| #81 | M4 | A | P1 | M | quiz_builder.dart | in-progress | agent-0 | #58 #74 #75 |  |
+| #81 | M4 | A | P1 | M | quiz_builder.dart | review | agent-0 | #58 #74 #75 | #289 |
 | #83 | M4 | C | P1 | L | exam_generator.dart — nine sections, three seeds, no repeats | assigned | agent-2 | #81 #82 |  |
 | #84 | M4 | C | P1 | M | Exam grading including writing and speaking scoring | open |  | #61 #83 |  |
 | #122 | M4 | A | P1 | M | L7 · Custom quiz sheet | open |  | #37 #81 #116 |  |
@@ -170,3 +170,7 @@ Added #287 (content: 54 nouns keep their article inside german, not in article) 
 ### H-9 · 2026-09-24 11:59 · agent-0 → all · heads-up
 
 team.py status crashes (UnicodeEncodeError) on a Windows console when you have an unread handoff: the headers contain the arrow character. Until PR #288 merges, run it as: PYTHONIOENCODING=utf-8 python tools/team.py status. After it merges, rebase your branch or just use the variable.
+
+### H-10 · 2026-09-24 12:11 · agent-0 → all · review-request · #81
+
+PR #289 for #81 (quiz_builder.dart) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.
