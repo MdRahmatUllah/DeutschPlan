@@ -71,3 +71,15 @@ Grading on submit: `answer_check` per item; Listening compares the typed text wi
 
   Each writing task adds "Use at least 6 of these words:" with the targets, and "at least {min} words".
 
+## Details grading settles (#84)
+
+`domain/exam_grading.dart` scores a stored paper, and `ExamRepository.grade(attemptId, passPercent:, finishedAt:)` writes it back.
+
+- **Per item.** Each item is checked by `answer_check` with the check in the table above. Points are BR-ANS-04's: correct 1, almost 0.5, wrong article or wrong 0. An empty answer is 0.
+- **Writing** (FR-L12W-01, -03). A target counts when a word of the text has a search key starting with the target's ("Heizungen" uses "Heizung"; umlauts fold as search does). 6 targets or more is 1 point, and at least the level's minimum number of words is 1 point. Words are runs of letters. The rubric adds 0.5 for each of its first two ticks.
+- **Speaking.** 1 point for each of its four rubric ticks.
+- **The rubric.** `self_rubric_json` is a JSON list of booleans in the rubric's order. Ticks beyond a section's count are ignored.
+- **The score.** The points add up out of the paper's (48). `passed` means points × 100 ≥ `exam_pass_percent` × max, so exactly the mark passes. `grade` writes every row's points and the attempt's score in one transaction.
+  - With `finishedAt` it is the submit: the attempt becomes `finished`, and a pass marks the step through the `stepPassed` query (BR-EXAM-04).
+  - Without it, it is L13's re-grade after a rubric tick (FR-L13-03), and the finish time stays as it was.
+

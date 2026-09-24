@@ -1,5 +1,6 @@
 import 'package:deutschplan/data/db/app_database.dart';
 import 'package:deutschplan/domain/exam_generator.dart';
+import 'package:deutschplan/domain/exam_grading.dart';
 import 'package:deutschplan/domain/grammar_item_generator.dart';
 import 'package:deutschplan/domain/quiz_builder.dart';
 import 'package:drift/drift.dart';
@@ -385,6 +386,59 @@ class ExamRepository extends DatabaseAccessor<AppDatabase>
       status: const Value('finished'),
     ),
   );
+
+  /// Grades [attemptId] as its answers stand (#84): each row's points, and
+  /// the attempt's score, out of the paper's points, passed at
+  /// [passPercent] (`exam_pass_percent`, BR-EXAM-04). With [finishedAt] it
+  /// is the submit that finishes the attempt; without, L13's re-grade after
+  /// a rubric tick (FR-L13-03). One transaction: a score never disagrees
+  /// with the rows it adds up.
+  Future<ExamScore> grade(
+    int attemptId, {
+    required int passPercent,
+    String? finishedAt,
+  }) => db.transaction(() async {
+    final rows = await answersFor(attemptId).get();
+    final paper = scorePaper(<({ExamItem item, String? given, String? rubric})>[
+      for (final row in rows)
+        (
+          item: ExamItem.decode((
+            section: row.section,
+            ref: row.itemRef,
+            prompt: row.prompt,
+            options: row.optionsJson,
+            expected: row.expected,
+          )),
+          given: row.given,
+          rubric: row.selfRubricJson,
+        ),
+    ], passPercent: passPercent);
+    for (final (i, row) in rows.indexed) {
+      await (update(db.examAnswers)..where(
+            (t) => t.attemptId.equals(attemptId) & t.ord.equals(row.ord),
+          ))
+          .write(ExamAnswersCompanion(points: Value(paper.points[i])));
+    }
+    final score = ExamScore(
+      scorePoints: paper.total,
+      maxPoints: paper.max,
+      passed: paper.passed,
+    );
+    await (update(db.examAttempts)..where((t) => t.id.equals(attemptId))).write(
+      ExamAttemptsCompanion(
+        scorePoints: Value(score.scorePoints),
+        maxPoints: Value(score.maxPoints),
+        passed: Value(score.passed ? 1 : 0),
+        finishedAt: finishedAt == null
+            ? const Value.absent()
+            : Value(finishedAt),
+        status: finishedAt == null
+            ? const Value.absent()
+            : const Value('finished'),
+      ),
+    );
+    return score;
+  });
 
   /// Leaving an exam. FR-L12-04: the answers stay, so the result screen can
   /// still show what was done.
