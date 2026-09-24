@@ -15,6 +15,7 @@ import 'package:deutschplan/domain/fsrs.dart' show Rating;
 import 'package:deutschplan/domain/plan_engine.dart' show daysBetween;
 import 'package:deutschplan/features/study/study_back.dart';
 import 'package:deutschplan/features/study/study_card.dart';
+import 'package:deutschplan/features/today/today_providers.dart';
 import 'package:deutschplan/features/words/speak.dart';
 import 'package:deutschplan/features/words/word_row.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
@@ -23,6 +24,12 @@ import 'package:deutschplan/router/routes.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:deutschplan/core/components/dp_button.dart';
+import 'package:deutschplan/data/repositories/rating_service.dart'
+    show CardMode;
+import 'package:deutschplan/data/repositories/search_repository.dart';
+import 'package:deutschplan/data/repositories/word_actions.dart';
+import 'package:flutter/services.dart' show Clipboard, ClipboardData;
 
 part 'word_detail_screen.g.dart';
 
@@ -37,6 +44,7 @@ class WordDetail {
     required this.meaning,
     required this.pron,
     this.tip,
+    this.translate = false,
   });
 
   final WordWithState word;
@@ -47,6 +55,9 @@ class WordDetail {
   /// L2's rows read theirs, so the view itself reads no settings.
   final MeaningLanguage meaning;
   final bool pron;
+
+  /// `mt_enabled`: whether *Translate* is offered (FR-W1-05).
+  final bool translate;
 }
 
 @riverpod
@@ -76,8 +87,28 @@ Stream<WordDetail?> wordDetail(Ref ref, String uid) async* {
                 tip: tip,
                 meaning: settings.read(SettingKeys.meaningLanguage),
                 pron: settings.read(SettingKeys.showPronBn),
+                translate: settings.read(SettingKeys.mtEnabled),
               ),
       );
+}
+
+/// FR-W1-05: the examples [ExampleTranslations.translate] has translated,
+/// by their German, shown under each until the sheet closes.
+@riverpod
+class ExampleTranslations extends _$ExampleTranslations {
+  @override
+  Map<String, String> build(String uid) => const <String, String>{};
+
+  /// Runs [germans] through the translator, cached, into [to].
+  Future<void> translate(List<String> germans, {required String to}) async {
+    final translations = ref.read(translationRepositoryProvider);
+    final found = <String, String>{...state};
+    for (final german in germans) {
+      final result = await translations.translate(german, from: 'de', to: to);
+      if (result != null) found[german] = result;
+    }
+    if (ref.mounted) state = found;
+  }
 }
 
 /// The history caption's counts, from `review_log`.
@@ -487,6 +518,7 @@ class _Body extends ConsumerWidget {
       if (register != null && register.isNotEmpty) l10n.studyRegister(register),
     ];
     final compare = comparesSet(word.german);
+    final translated = ref.watch(exampleTranslationsProvider(word.uid));
     final tip = detail.tip;
 
     Widget gap(double height) => SizedBox(height: height);
@@ -526,6 +558,15 @@ class _Body extends ConsumerWidget {
                 example,
                 onPlay: () => unawaited(say(ref, context, example.german)),
               ),
+              if (translated[example.german] case final line?)
+                Padding(
+                  padding: const EdgeInsets.only(left: 42, top: 2),
+                  child: DpText(
+                    line,
+                    role: DpTextRole.body,
+                    color: tokens.color.textSecondary,
+                  ),
+                ),
             ],
           ],
           if (tip != null) ...<Widget>[
@@ -548,8 +589,221 @@ class _Body extends ConsumerWidget {
               color: tokens.color.textSecondary,
             ),
           ],
+          gap(12),
+          _Actions(detail: detail),
         ],
       ),
+    );
+  }
+}
+
+/// FR-W1-01…05: what the learner can do with the word, each with *Undo* in
+/// the snackbar (FR-W1-04); the card-mode toggle; and the web chips.
+class _Actions extends ConsumerStatefulWidget {
+  const _Actions({required this.detail});
+
+  final WordDetail detail;
+
+  @override
+  ConsumerState<_Actions> createState() => _ActionsState();
+}
+
+class _ActionsState extends ConsumerState<_Actions> {
+  /// One action at a time: a double tap on *Mark known* must not rate twice,
+  /// and its *Undo* must undo the one it names.
+  bool _busy = false;
+
+  WordWithState get _word => widget.detail.word;
+
+  Future<void> _run(
+    Future<Undo> Function(WordActions actions) action,
+    String message,
+  ) async {
+    if (_busy) return;
+    setState(() => _busy = true);
+    // Today's plan is read once, when the day opens: a row W1 adds, closes
+    // or drops reaches Today's list and ring only when it is read again. The
+    // container, because *Undo* can come after the sheet has gone.
+    final container = ProviderScope.containerOf(context, listen: false);
+    void replan() => container.invalidate(todayPlanProvider);
+    try {
+      final undo = await action(ref.read(wordActionsProvider));
+      replan();
+      if (!mounted) return;
+      DpUndo.show(
+        context,
+        message: message,
+        onUndo: () => unawaited(undo().then((_) => replan())),
+      );
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
+  }
+
+  /// FR-W1-02: a reset clears the word's progress, so it asks first.
+  Future<void> _reset(String name) async {
+    final l10n = AppLocalizations.of(context);
+    final sure = await Adaptive.showConfirm(
+      context: context,
+      title: l10n.wordResetTitle(name),
+      message: l10n.wordResetBody,
+      confirmLabel: l10n.wordResetConfirm,
+      cancelLabel: l10n.wordResetCancel,
+      destructive: true,
+    );
+    if (sure != true || !mounted) return;
+    await _run(
+      (actions) => actions.reset(_word.uid, today: ref.read(todayProvider)),
+      l10n.wordWasReset(name),
+    );
+  }
+
+  void _translate() {
+    final detail = widget.detail;
+    unawaited(
+      ref.read(exampleTranslationsProvider(_word.uid).notifier).translate(
+        <String>[for (final example in detail.examples) example.german],
+        // Into the meaning language (`translation.md`): Bangla, since an
+        // English learner is not offered it.
+        to: 'bn',
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final word = _word;
+    final uid = word.uid;
+    final name = spokenForm(word.word);
+    final cloze = word.state?.cardMode == CardMode.cloze.name;
+    final detail = widget.detail;
+
+    Widget button(IconData icon, String label, VoidCallback onPressed) =>
+        DpButton(
+          label: label,
+          kind: DpButtonKind.secondary,
+          compact: true,
+          expand: false,
+          icon: Icon(icon, size: 18),
+          onPressed: _busy ? null : onPressed,
+        );
+
+    void act(Future<Undo> Function(WordActions actions) action, String done) =>
+        unawaited(_run(action, done));
+
+    void mode(CardMode to) => act(
+      (actions) => actions.setCardMode(uid, to),
+      to == CardMode.cloze ? l10n.wordNowCloze(name) : l10n.wordNowPlain(name),
+    );
+
+    final links = SearchRepository.webLinks(word.word.german);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          children: <Widget>[
+            if (word.status == WordStatus.todo)
+              button(
+                Icons.add,
+                l10n.wordAddToday,
+                () => act(
+                  (actions) => actions.addToToday(
+                    uid,
+                    today: ref.read(todayProvider),
+                    step: word.word.sublevelCode,
+                  ),
+                  l10n.wordAddedToday(name),
+                ),
+              ),
+            // A rating writes the status it derives, so marking a suspended
+            // word known would resume it unasked (BR-STATUS-03).
+            if (!word.isSuspended)
+              button(
+                Icons.check,
+                l10n.wordMarkKnown,
+                () => act(
+                  (actions) =>
+                      actions.markKnown(uid, today: ref.read(todayProvider)),
+                  l10n.wordMarkedKnown(name),
+                ),
+              ),
+            if (word.isSuspended)
+              button(
+                Icons.play_arrow,
+                l10n.wordResume,
+                () => act(
+                  (actions) => actions.resume(uid),
+                  l10n.wordResumed(name),
+                ),
+              )
+            else
+              button(
+                Icons.pause,
+                l10n.wordSuspend,
+                () => act(
+                  (actions) => actions.suspend(uid),
+                  l10n.wordSuspended(name),
+                ),
+              ),
+            if (word.state != null)
+              button(
+                Icons.restart_alt,
+                l10n.wordReset,
+                () => unawaited(_reset(name)),
+              ),
+            button(Icons.copy, l10n.wordCopy, () {
+              unawaited(Clipboard.setData(ClipboardData(text: name)));
+              DpToast.show(context, l10n.wordCopied(name));
+            }),
+            // An English learner's examples come translated already.
+            if (detail.translate &&
+                detail.meaning != MeaningLanguage.english &&
+                detail.examples.isNotEmpty)
+              button(Icons.translate, l10n.wordTranslate, _translate),
+          ],
+        ),
+        const SizedBox(height: 10),
+        Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          children: <Widget>[
+            DpChip(
+              label: l10n.wordPlainCard,
+              kind: DpChipKind.filter,
+              selected: !cloze,
+              onTap: cloze && !_busy ? () => mode(CardMode.plain) : null,
+            ),
+            DpChip(
+              label: l10n.wordClozeCard,
+              kind: DpChipKind.filter,
+              selected: cloze,
+              onTap: !cloze && !_busy ? () => mode(CardMode.cloze) : null,
+            ),
+          ],
+        ),
+        const SizedBox(height: 10),
+        Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          children: <Widget>[
+            for (final source in <WebSource>[
+              WebSource.duden,
+              WebSource.dwds,
+              WebSource.wiktionary,
+            ])
+              DpChip(
+                label: source.label,
+                kind: DpChipKind.webLink,
+                semanticLabel: l10n.searchOpenWeb(source.label),
+                onTap: () =>
+                    unawaited(ref.read(openWebProvider)(links[source]!)),
+              ),
+          ],
+        ),
+      ],
     );
   }
 }

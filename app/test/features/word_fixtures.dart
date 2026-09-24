@@ -13,9 +13,11 @@ WordDetail artboardWordDetail({
   String german = 'Straße',
   WordStatus status = WordStatus.done,
   MeaningLanguage meaning = MeaningLanguage.both,
+  bool translate = false,
 }) => WordDetail(
   meaning: meaning,
   pron: true,
+  translate: translate,
   word: WordWithState(
     word: Word(
       uid: uid,
