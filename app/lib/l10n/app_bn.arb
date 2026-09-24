@@ -274,5 +274,11 @@
   "sentencesNotYet": "এখনো না",
   "sentencesOpenWord": "শব্দটি খুলুন",
   "sentencesNotInCourse": "কোর্সের শব্দ নয়।",
-  "sentencesDuden": "Duden-এ দেখুন"
+  "sentencesDuden": "Duden-এ দেখুন",
+  "dayCompleteTitle": "Tag geschafft!",
+  "dayCompleteStats": "{words}টি শব্দ · {minutes} মিনিট",
+  "dayCompleteStreak": "দিনের ধারা",
+  "dayCompleteTomorrow": "আগামীকাল: {revise}টি রিভিশন · {fresh}টি নতুন",
+  "dayCompleteTomorrowRest": "আগামীকাল বিশ্রামের দিন",
+  "dayCompleteBack": "আজকের পাতায় ফিরুন"
 }

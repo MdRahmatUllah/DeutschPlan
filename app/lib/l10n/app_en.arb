@@ -1657,5 +1657,50 @@
   "sentencesDuden": "Look it up in Duden",
   "@sentencesDuden": {
     "description": "T5 word sheet: opens Duden for a word the course lacks (FR-T5-03)."
+  },
+  "dayCompleteTitle": "Tag geschafft!",
+  "@dayCompleteTitle": {
+    "description": "T6 headline. German in every UI language — part of the course's voice."
+  },
+  "dayCompleteStats": "{words, plural, =1{1 word} other{{words} words}} · {minutes} min",
+  "@dayCompleteStats": {
+    "description": "T6: today's words and minutes.",
+    "placeholders": {
+      "words": {
+        "type": "int"
+      },
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "dayCompleteStreak": "{days, plural, =1{day streak} other{day streak}}",
+  "@dayCompleteStreak": {
+    "description": "T6: beside the streak chip, which shows the number.",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "dayCompleteTomorrow": "Tomorrow: {revise} revisions · {fresh} new",
+  "@dayCompleteTomorrow": {
+    "description": "T6: tomorrow's plan from a dry run (FR-T6-02).",
+    "placeholders": {
+      "revise": {
+        "type": "int"
+      },
+      "fresh": {
+        "type": "int"
+      }
+    }
+  },
+  "dayCompleteTomorrowRest": "Tomorrow is a rest day",
+  "@dayCompleteTomorrowRest": {
+    "description": "T6 when tomorrow is not a study day (BR-PLAN-01)."
+  },
+  "dayCompleteBack": "Back to Today",
+  "@dayCompleteBack": {
+    "description": "T6: returns to Today (also on a tap anywhere, or after 4 s)."
   }
 }

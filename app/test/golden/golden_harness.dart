@@ -73,6 +73,7 @@ Widget goldenApp({
   required GoldenMode mode,
   required GoldenDevice device,
   AdaptiveChrome? chrome,
+  bool still = true,
 }) {
   return GlassCapabilityScope(
     notifier: GlassCapability.always(),
@@ -94,7 +95,7 @@ Widget goldenApp({
           // `Scaffold` reading insets, a layout builder — then lays out
           // against nothing. It renders, so it looks like a screen with a
           // layout bug rather than a harness with one.
-          data: MediaQuery.of(context).copyWith(disableAnimations: true),
+          data: MediaQuery.of(context).copyWith(disableAnimations: still),
           child: AdaptiveChromeScope(
             chrome: chrome ?? AdaptiveChrome.material,
             child: child,
@@ -112,6 +113,10 @@ Widget goldenApp({
 ///
 /// [act] drives the screen into the state its artboard shows — an answer
 /// typed and checked — before the frame is taken.
+///
+/// [still] false lets a one-off animation play — T6's confetti, which the
+/// artboard draws at rest. Only for modes without a drifting aurora: it
+/// never settles.
 void goldenTest(
   String name, {
   required WidgetBuilder builder,
@@ -119,6 +124,7 @@ void goldenTest(
   List<GoldenDevice> devices = GoldenDevice.values,
   AdaptiveChrome? chrome,
   Future<void> Function(WidgetTester tester)? act,
+  bool still = true,
 }) {
   for (final mode in modes) {
     for (final device in devices) {
@@ -131,6 +137,7 @@ void goldenTest(
             mode: mode,
             device: device,
             chrome: chrome,
+            still: still,
           );
           if (act != null) {
             await act(tester);
@@ -161,6 +168,7 @@ extension GoldenTester on WidgetTester {
     required GoldenMode mode,
     required GoldenDevice device,
     AdaptiveChrome? chrome,
+    bool still = true,
   }) async {
     view
       ..physicalSize = device.size * device.pixelRatio
@@ -176,6 +184,7 @@ extension GoldenTester on WidgetTester {
         mode: mode,
         device: device,
         chrome: chrome,
+        still: still,
         child: Builder(builder: builder),
       ),
     );
