@@ -362,10 +362,12 @@ SetupRepository setupRepository(Ref ref) => SetupRepository(
 @riverpod
 PlanEngine planEngine(Ref ref) {
   final settings = ref.watch(settingsProvider);
-  final changes = settings.changes
-      .where(_planEngineKeys.contains)
-      .listen((_) => ref.invalidateSelf());
-  ref.onDispose(changes.cancel);
+  _followSettings(ref, settings, const <SettingKey<Object?>>{
+    SettingKeys.reviseCount,
+    SettingKeys.backlogCatchupDays,
+    SettingKeys.autoAdvance,
+    SettingKeys.pauseNewWhenBacklog,
+  });
   return PlanEngine(
     store: DriftPlanStore(ref.watch(appDatabaseProvider), settings),
     reviseCount: settings.read(SettingKeys.reviseCount),
@@ -375,13 +377,19 @@ PlanEngine planEngine(Ref ref) {
   );
 }
 
-/// What [planEngine] copies out of the settings.
-const Set<SettingKey<Object?>> _planEngineKeys = <SettingKey<Object?>>{
-  SettingKeys.reviseCount,
-  SettingKeys.backlogCatchupDays,
-  SettingKeys.autoAdvance,
-  SettingKeys.pauseNewWhenBacklog,
-};
+/// Rebuilds [ref]'s provider when one of [keys], the settings it copies, is
+/// written (#342). Its callers stay watched by Today's tab, which the shell
+/// keeps mounted, so auto-disposing never gets them a fresh copy.
+void _followSettings(
+  Ref ref,
+  SettingsRepository settings,
+  Set<SettingKey<Object?>> keys,
+) {
+  final changes = settings.changes
+      .where(keys.contains)
+      .listen((_) => ref.invalidateSelf());
+  ref.onDispose(changes.cancel);
+}
 
 /// The drift side of the sentence picker, shared by the picker and Today's
 /// count of rated sentences.
@@ -393,6 +401,10 @@ DriftSentenceStore sentenceStore(Ref ref) =>
 @riverpod
 SentencePicker sentencePicker(Ref ref) {
   final settings = ref.watch(settingsProvider);
+  _followSettings(ref, settings, const <SettingKey<Object?>>{
+    SettingKeys.sentenceCount,
+    SettingKeys.sentenceRepeatGapDays,
+  });
   return SentencePicker(
     ref.watch(sentenceStoreProvider),
     count: settings.read(SettingKeys.sentenceCount),

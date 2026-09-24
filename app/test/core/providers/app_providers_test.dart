@@ -252,9 +252,24 @@ void main() {
       final c = container();
       c.listen(planEngineProvider, (_, _) {});
       final before = c.read(planEngineProvider);
-      await settings.write(SettingKeys.learnerName, 'Rahim');
+      // The one the engine writes itself, every day it plans.
+      await settings.write(SettingKeys.lastPlannedDate, DateTime(2026, 9, 21));
       await pumpEventQueue();
       expect(c.read(planEngineProvider), same(before));
+    });
+
+    test('the sentence picker follows its settings too', () async {
+      final c = container();
+      c.listen(sentencePickerProvider, (_, _) {});
+      final before = c.read(sentencePickerProvider);
+      await settings.write(SettingKeys.sentenceCount, 5);
+      await pumpEventQueue();
+      final after = c.read(sentencePickerProvider);
+      expect(after, isNot(same(before)));
+      expect(after.count, 5);
+      await settings.write(SettingKeys.sentenceRepeatGapDays, 3);
+      await pumpEventQueue();
+      expect(c.read(sentencePickerProvider).gapDays, 3);
     });
   });
 
