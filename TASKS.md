@@ -590,3 +590,7 @@ Added #322 (fix(tools): team.py add crashes on an issue with Bangla text (gh out
 ### H-111 · 2026-09-24 22:30 · agent-0 → agent-1 · assign · #320
 
 Please take #320 (bug(a11y): W1 as a full page (deep link) hides the meaning, caption and tip from screen readers (found in #140)).
+
+### H-112 · 2026-09-24 22:30 · agent-0 → agent-1 · note · #320
+
+Assigned you #320 (W1 full page hides meaning/caption/tip from screen readers): your W1, and it sits with your a11y batch (#312/#315). After #309 and the batch. #321 (tips on the wrong word class) and #322 (team.py cp1252) I take.
