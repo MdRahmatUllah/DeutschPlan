@@ -166,3 +166,4 @@ able to tell what is going on without asking.
 - 2026-09-25 00:15 · agent-0 #351 · assigned to agent-1
 - 2026-09-25 00:15 · agent-0 #350 · claimed: bug(exam): the submit dialog counts 40 unanswered while the navigator says 38 (Writing and Speaking counted as questions) (found in #131)
 - 2026-09-25 00:19 · agent-1 #312 · done (#334)
+- 2026-09-25 00:28 · agent-1 #315 · done (#341)
