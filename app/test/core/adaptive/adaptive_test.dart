@@ -788,12 +788,19 @@ void main() {
         return x > y ? x / y : y / x;
       }
 
-      // What the dialog is drawn on: its own Material, not a token.
-      Color behind(WidgetTester tester, Finder dialog) => tester
-          .widget<Material>(
-            find.descendant(of: dialog, matching: find.byType(Material)).first,
-          )
-          .color!;
+      // What the dialog is drawn on: its own Material, not a token. Opaque,
+      // or the ratio would depend on whatever shows through it.
+      Color behind(WidgetTester tester, Finder dialog) {
+        final colour = tester
+            .widget<Material>(
+              find
+                  .descendant(of: dialog, matching: find.byType(Material))
+                  .first,
+            )
+            .color!;
+        expect(colour.a, 1, reason: 'the dialog is see-through');
+        return colour;
+      }
 
       Color drawn(WidgetTester tester, String label) => tester
           .renderObject<RenderParagraph>(find.text(label))

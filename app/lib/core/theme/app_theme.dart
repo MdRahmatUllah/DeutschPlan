@@ -22,6 +22,7 @@ abstract final class AppTheme {
       _build(dark ? DpTokens.glassDark() : DpTokens.glass());
 
   static ThemeData _build(DpTokens tokens) {
+    final dialog = Color.alphaBlend(tokens.surface.card, tokens.surface.paper);
     final scheme = ColorScheme.fromSeed(
       seedColor: tokens.color.primary,
       // Derived from the surface, not the mode name: glass has a dark variant
@@ -65,10 +66,11 @@ abstract final class AppTheme {
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(foregroundColor: tokens.color.link),
       ),
-      // The picker on the dialog's card: `link` is 5.2:1 there, 4.4 on Oat.
-      timePickerTheme: TimePickerThemeData(
-        backgroundColor: tokens.surface.card,
-      ),
+      // Dialogs and the picker on the card, opaque: `link` is 5.2:1 there
+      // and 4.4 on Oat. Under glass the card is 55 % see-through, and the
+      // scrim would show through the buttons and digits.
+      dialogTheme: DialogThemeData(backgroundColor: dialog),
+      timePickerTheme: TimePickerThemeData(backgroundColor: dialog),
       extensions: <ThemeExtension<dynamic>>[tokens],
     );
   }

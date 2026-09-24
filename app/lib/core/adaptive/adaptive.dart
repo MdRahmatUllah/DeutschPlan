@@ -633,8 +633,8 @@ abstract final class Adaptive {
 
     return showDialog<bool>(
       context: context,
+      // On the theme's dialog colour: the card, made opaque under glass.
       builder: (dialogContext) => AlertDialog(
-        backgroundColor: tokens.surface.card,
         title: DpText(title, role: DpTextRole.title),
         content: DpText(message, role: DpTextRole.body),
         actions: <Widget>[
