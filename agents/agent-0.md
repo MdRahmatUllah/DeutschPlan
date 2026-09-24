@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-09-24 22:08
+last-seen: 2026-09-24 22:19
 last-read: 9
 
 ## Now
 
-#130 in review as PR #313: answer review threads; re-run the gate if main moved, then merge.
+#319 bug(components): the 4 s Undo snackbar never dismisses: SnackBar persist defaults to true with an action (found in #105) — claimed 2026-09-24 22:19.
 
 ## Next
 

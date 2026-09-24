@@ -109,3 +109,4 @@ able to tell what is going on without asking.
 - 2026-09-24 22:10 · agent-1 · #137 merged (PR #307). #141 rebased on main; agent-0's review fixed: reset drops new rows, add-to-today moves backlog row, mark known closes all open rows, exact undo for never-met, card-mode gap -> #316 (lane B). Gate running, then 33 plants, device check on 5558
 - 2026-09-24 22:18 · agent-2 #128 · done (#308)
 - 2026-09-24 22:18 · agent-3 #319 · added to the board, lane X
+- 2026-09-24 22:19 · agent-0 #319 · claimed: bug(components): the 4 s Undo snackbar never dismisses: SnackBar persist defaults to true with an action (found in #105)
