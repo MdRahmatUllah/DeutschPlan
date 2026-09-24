@@ -293,6 +293,24 @@ VALUES (?, ?, ?, ?, ?)
         reason: 'the engine could not parse it',
       );
     });
+
+    test('#327 its local date, not its UTC one', () async {
+      // Just after local midnight and just before it: east of Greenwich the
+      // first is still the day before in UTC, west of it the second is
+      // already the day after.
+      await wordState(
+        's1',
+        lastReview: DateTime(2026, 2, 21, 0, 30).toUtc().toIso8601String(),
+      );
+      await wordState(
+        's2',
+        lastReview: DateTime(2026, 2, 21, 23, 30).toUtc().toIso8601String(),
+      );
+
+      final candidates = await store.revisionCandidates();
+
+      expect(candidates.map((c) => c.lastReview), everyElement('2026-02-21'));
+    });
   });
 
   group('writing the plan', () {

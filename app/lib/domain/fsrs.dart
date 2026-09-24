@@ -223,7 +223,7 @@ class Fsrs {
   CardState review(CardState state, Rating rating, DateTime now) {
     final elapsed = state.isFresh || state.lastReview == null
         ? 0
-        : _daysBetween(state.lastReview!, now);
+        : elapsedDays(state.lastReview!, now);
 
     final (stability, difficulty) = state.isFresh
         ? _first(rating)
@@ -314,16 +314,6 @@ class Fsrs {
     return math.min(lapsed, stability);
   }
 
-  /// Whole days between two instants, floored and never negative.
-  ///
-  /// Floored because a review taken a few hours early is the same study day,
-  /// and never negative because a learner whose clock moves backwards would
-  /// otherwise get a negative elapsed time and a nonsense retrievability.
-  static int _daysBetween(DateTime from, DateTime to) {
-    final days = to.difference(from).inDays;
-    return days < 0 ? 0 : days;
-  }
-
   static DateTime _startOfDay(DateTime local) =>
       DateTime(local.year, local.month, local.day);
 
@@ -337,4 +327,22 @@ class Fsrs {
   /// evening. `DateTime` normalises an overflowing day field instead.
   static DateTime _addDays(DateTime day, int days) =>
       DateTime(day.year, day.month, day.day + days);
+}
+
+/// Local calendar days from [from] to [to], never negative (#327).
+///
+/// A study day is a local day, as `word_state.due` is: a card rated in the
+/// evening and reviewed next morning has one day elapsed, however few hours
+/// passed — 24-hour periods would give it 0, and Good would leave it at
+/// 1 d forever. Counted on the calendar dates, so a daylight-saving change
+/// doesn't give 0 or 2. Never negative, because a learner whose clock moves
+/// backwards would otherwise get a nonsense retrievability.
+int elapsedDays(DateTime from, DateTime to) {
+  DateTime date(DateTime instant) {
+    final local = instant.toLocal();
+    return DateTime.utc(local.year, local.month, local.day);
+  }
+
+  final days = date(to).difference(date(from)).inDays;
+  return days < 0 ? 0 : days;
 }

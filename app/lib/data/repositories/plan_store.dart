@@ -88,14 +88,16 @@ LIMIT ?2
   /// a second copy of the forgetting curve that could drift from the first.
   /// At course scale this is a few thousand rows of four columns.
   ///
-  /// `last_review` is stored as an instant and the engine works in local days,
-  /// so it is cut to its date here — the one piece of shaping in this file.
+  /// `last_review` is stored as a UTC instant and the engine works in local
+  /// days, so it becomes its local date here — the one piece of shaping in
+  /// this file. Not `substr(…, 1, 10)`: that is the UTC date, a day off for
+  /// a review east of Greenwich before its UTC midnight (#327).
   @override
   Future<List<RevisionCandidate>> revisionCandidates() async {
     final rows = await _db
         .customSelect(
           '''
-SELECT word_uid AS uid, stability, due, substr(last_review, 1, 10) AS reviewed
+SELECT word_uid AS uid, stability, due, last_review
 FROM word_state
 WHERE status IN ('learning', 'done')
   AND last_review IS NOT NULL
@@ -109,7 +111,9 @@ WHERE status IN ('learning', 'done')
         RevisionCandidate(
           uid: row.read<String>('uid'),
           stability: row.read<double>('stability'),
-          lastReview: row.read<String>('reviewed'),
+          lastReview: planDate(
+            DateTime.parse(row.read<String>('last_review')).toLocal(),
+          ),
           due: row.read<String?>('due'),
         ),
     ];
