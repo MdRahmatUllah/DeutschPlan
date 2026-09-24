@@ -29,6 +29,11 @@ typedef ExamHub = ({
 
   /// `listening_questions` (FR-L10-04).
   bool listening,
+
+  /// The seeds whose paper shares grammar topics with another mock's
+  /// (`Exam.reused`): a step with fewer than twelve topics can't keep
+  /// three papers apart.
+  Set<int> reused,
 });
 
 @riverpod
@@ -58,13 +63,44 @@ Future<ExamHub> examHub(Ref ref, String code) async {
       )
       .listen((_) => ref.invalidateSelf());
   ref.onDispose(changes.cancel);
+  final exams = ref.watch(examRepositoryProvider);
   final seeds = ref.watch(examSeedsProvider(code).future);
   final resume = ref.watch(examResumeProvider(code).future);
+  final listening = settings.read(SettingKeys.listeningQuestions);
+  final summaries = await seeds;
+  final open = await resume;
+
+  // BR-EXAM-02, honestly: a paper not sat yet reuses what buildExam says
+  // it would (about 100 ms on real data); a stored one, whatever it shares
+  // with the other stored papers.
+  final sat = await exams.satRefs(code);
+  final pool = await exams.pool(code);
+  Set<String> topics(Set<String> refs) => <String>{
+    for (final ref in refs)
+      if (ref.contains('#')) ref.split('#').first,
+  };
+  bool shares(int seed) => sat.entries.any(
+    (other) =>
+        other.key != seed &&
+        topics(other.value).intersection(topics(sat[seed]!)).isNotEmpty,
+  );
   return (
-    seeds: await seeds,
-    resume: await resume,
+    seeds: summaries,
+    resume: open,
     passPercent: settings.read(SettingKeys.examPassPercent),
-    listening: settings.read(SettingKeys.listeningQuestions),
+    listening: listening,
+    reused: <int>{
+      for (var seed = 1; seed <= 3; seed++)
+        if (sat.containsKey(seed)
+            ? shares(seed)
+            : buildExam(
+                pool,
+                seed: seed,
+                listening: listening,
+                sat: sat,
+              ).reused)
+          seed,
+    },
   );
 }
 
@@ -115,6 +151,7 @@ class StepExamsTab extends ConsumerWidget {
             seed: seed,
             summary: hub.seeds.where((s) => s.seed == seed).firstOrNull,
             resume: hub.resume[seed],
+            reused: hub.reused.contains(seed),
             onStart: () => ExamIntroRoute.open(context, step.code, seed),
             onResume: (id) => ExamRoute.open(context, id),
           ),
@@ -135,6 +172,7 @@ class MockCard extends StatelessWidget {
     required this.onStart,
     required this.onResume,
     super.key,
+    this.reused = false,
   });
 
   final int seed;
@@ -144,6 +182,9 @@ class MockCard extends StatelessWidget {
 
   /// The attempt to resume, if one is unfinished.
   final int? resume;
+
+  /// Its paper shares grammar topics with another mock's.
+  final bool reused;
   final VoidCallback onStart;
   final ValueChanged<int> onResume;
 
@@ -153,7 +194,8 @@ class MockCard extends StatelessWidget {
     final l10n = AppLocalizations.of(context);
     final line = summary;
     final attempts = line?.attempts ?? 0;
-    final best = (line?.bestPercent ?? 0).round();
+    // Down, never up: a fail at 69.8 % must not read as the 70 % mark.
+    final best = (line?.bestPercent ?? 0).floor();
 
     // FR-L10-02: the best finished score. An attempt left unfinished counts
     // as an attempt with no score (FR-L12-04), and so has no pill.
@@ -167,7 +209,8 @@ class MockCard extends StatelessWidget {
         label: l10n.examHubNotYet(best),
         fill: tokens.color.again,
       ),
-      _ when attempts == 0 => DpText(
+      // Begun but never finished: Resume says it all.
+      _ when attempts == 0 && resume == null => DpText(
         l10n.examHubNotAttempted,
         role: DpTextRole.caption,
         color: tokens.color.textSecondary,
@@ -177,8 +220,12 @@ class MockCard extends StatelessWidget {
     final details = <String>[
       l10n.examHubLine(examQuestions, examMinutes),
       if (attempts > 0) l10n.examHubAttempts(attempts),
-      // BR-EXAM-02, said once, on the last of the three.
-      if (seed == 3) l10n.examHubNoRepeats(seed),
+      // BR-EXAM-02, said once, on the last of the three, and only where it
+      // is true; a paper that reuses says so instead.
+      if (reused)
+        l10n.examHubShares
+      else if (seed == 3)
+        l10n.examHubNoRepeats(seed),
     ].join(' · ');
     final open = resume;
 

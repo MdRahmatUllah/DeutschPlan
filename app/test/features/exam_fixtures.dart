@@ -9,6 +9,7 @@ ExamHub artboardExamHub({
   Map<int, int> resume = const <int, int>{},
   int passPercent = 60,
   bool listening = true,
+  Set<int> reused = const <int>{},
 }) => (
   seeds:
       seeds ??
@@ -31,6 +32,7 @@ ExamHub artboardExamHub({
   resume: resume,
   passPercent: passPercent,
   listening: listening,
+  reused: reused,
 );
 
 /// L10 without a database: the ExamHub artboard, for every step.

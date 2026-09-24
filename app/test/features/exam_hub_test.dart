@@ -1,7 +1,10 @@
 @TestOn('vm')
 library;
 
+import 'dart:io';
+
 import 'package:deutschplan/core/providers/app_providers.dart';
+import 'package:deutschplan/data/db/content_dao.dart';
 import 'package:deutschplan/data/db/app_database.dart';
 import 'package:deutschplan/data/repositories/exam_repository.dart';
 import 'package:deutschplan/data/repositories/setting_keys.dart';
@@ -23,6 +26,10 @@ void main() {
 
   setUp(() async {
     db = AppDatabase.memory();
+    // The real course: the hub asks the generator whether a paper reuses.
+    await db.customStatement(
+      "ATTACH DATABASE '${ContentDao.attachPath(File('assets/db/content.db'))}' AS c",
+    );
     settings = SettingsRepository(db);
     await settings.load();
     exams = ExamRepository(db);
@@ -83,6 +90,33 @@ void main() {
 
     expect((await hub()).passPercent, 70);
     expect((await hub()).listening, isFalse);
+  });
+
+  test('BR-EXAM-02 eleven topics for twelve slots: Mock 3 shares', () async {
+    // A1.2 has 11 grammar topics; B2.1 has 20.
+    expect((await hub()).reused, <int>{3});
+    container.listen(examHubProvider('B2.1'), (_, _) {});
+    expect(
+      (await container.read(examHubProvider('B2.1').future)).reused,
+      isEmpty,
+    );
+  });
+
+  test('BR-EXAM-02 two stored papers that share a topic both say so', () async {
+    Future<void> store(int seed, String ref) => exams.begin(
+      sublevelCode: 'A1.2',
+      seed: seed,
+      startedAt: '2026-09-2${seed}T08:00:00Z',
+      questions: <ExamQuestion>[
+        ExamQuestion(ord: 1, section: 'grammar', prompt: '{}', itemRef: ref),
+      ],
+    );
+    await store(1, 'topic#0');
+    await store(2, 'topic#1');
+    await pumpEventQueue();
+
+    // Mock 3, drawn against them, has eleven fresh topics for four slots.
+    expect((await hub()).reused, <int>{1, 2});
   });
 
   test('an attempt begun elsewhere moves the hub without asking', () async {

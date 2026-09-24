@@ -178,6 +178,56 @@ void main() {
       );
     });
 
+    testWidgets(
+      'BR-EXAM-04 a fail never shows the pass mark: 69.8 % reads 69',
+      (tester) async {
+        // 33.5 of 48 at a 70 % mark.
+        await pump(
+          tester,
+          hub: artboardExamHub(
+            passPercent: 70,
+            seeds: const <SeedSummary>[
+              SeedSummary(
+                seed: 2,
+                attempts: 1,
+                finished: 1,
+                bestPercent: 33.5 * 100 / 48,
+                everPassed: false,
+              ),
+            ],
+          ),
+        );
+
+        expect(find.text(l10n.examHubNotYet(69)), findsOneWidget);
+      },
+    );
+
+    testWidgets('BR-EXAM-02 a mock that shares grammar topics says so', (
+      tester,
+    ) async {
+      await pump(tester, hub: artboardExamHub(reused: <int>{3}));
+
+      expect(
+        find.text('${l10n.examHubLine(40, 20)} · ${l10n.examHubShares}'),
+        findsOneWidget,
+      );
+      expect(find.textContaining(l10n.examHubNoRepeats(3)), findsNothing);
+    });
+
+    testWidgets('and only that mock: Mock 3 keeps its note when Mock 2 '
+        'shares', (tester) async {
+      await pump(tester, hub: artboardExamHub(reused: <int>{2}));
+
+      expect(
+        find.descendant(
+          of: card(2),
+          matching: find.textContaining(l10n.examHubShares),
+        ),
+        findsOneWidget,
+      );
+      expect(find.textContaining(l10n.examHubNoRepeats(3)), findsOneWidget);
+    });
+
     testWidgets('Start opens L11 for that mock', (tester) async {
       await pump(tester);
       await tester.tap(
@@ -195,6 +245,14 @@ void main() {
 
       expect(
         find.descendant(of: card(3), matching: find.text(l10n.examHubStart)),
+        findsNothing,
+      );
+      // Begun, never finished: no "Not attempted" beside Resume.
+      expect(
+        find.descendant(
+          of: card(3),
+          matching: find.text(l10n.examHubNotAttempted),
+        ),
         findsNothing,
       );
       await tester.tap(

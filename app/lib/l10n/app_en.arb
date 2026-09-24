@@ -2294,6 +2294,10 @@
       }
     }
   },
+  "examHubShares": "shares a few grammar topics with your other mocks",
+  "@examHubShares": {
+    "description": "L10 mock card, in place of examHubNoRepeats: the step has too few grammar topics to keep the three papers apart (Exam.reused)."
+  },
   "examHubStart": "Start",
   "@examHubStart": {
     "description": "L10 mock card button: opens L11."
