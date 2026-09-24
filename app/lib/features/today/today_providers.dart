@@ -42,6 +42,15 @@ Stream<Set<(String, String)>> todayOpen(Ref ref) => ref
 Stream<int> todaySentencesRated(Ref ref) =>
     ref.watch(sentenceStoreProvider).watchRated(ref.watch(todayProvider));
 
+/// The grammar topics due today, as they change: a topic practised in L15
+/// moves its `due` on and leaves Today's grammar block without Today having
+/// to ask.
+@riverpod
+Stream<Set<String>> todayGrammarDue(Ref ref) => ref
+    .watch(grammarRepositoryProvider)
+    .watchDue(ref.watch(todayProvider))
+    .map((topics) => <String>{for (final topic in topics) topic.uid});
+
 /// Whether the on-device voice is installed and verified: Today's voice card
 /// offers it until it is.
 ///
@@ -90,6 +99,7 @@ Future<TodayView> todayView(Ref ref) async {
   final picker = ref.watch(sentencePickerProvider);
   final rating = ref.watch(todaySentencesRatedProvider.future);
   final waiting = ref.watch(todayBacklogProvider.future);
+  final grammarChanges = ref.watch(todayGrammarDueProvider.future);
 
   final plan = await planning;
   final open = await changes;
@@ -103,6 +113,13 @@ Future<TodayView> todayView(Ref ref) async {
   ];
   final openRevise = stillOpen(PlanKind.revise, plan.revise);
   final openNew = stillOpen(PlanKind.newWord, plan.newToday);
+  // The day's topics are the ones due when it opened; one practised since is
+  // done, and one falling due later in the day waits for tomorrow's plan.
+  final dueNow = await grammarChanges;
+  final openGrammar = <String>[
+    for (final uid in plan.grammarDue)
+      if (dueNow.contains(uid)) uid,
+  ];
 
   final backlog = await waiting;
   final started = await plans.courseStartedOn();
@@ -123,7 +140,7 @@ Future<TodayView> todayView(Ref ref) async {
       date: date,
       revise: openRevise,
       newToday: openNew,
-      grammarDue: plan.grammarDue,
+      grammarDue: openGrammar,
       backlog: const <String>[],
       activeStep: step,
       isStudyDay: plan.isStudyDay,
@@ -174,7 +191,8 @@ Future<TodayView> todayView(Ref ref) async {
     ),
     openRevise: openRevise,
     openNew: openNew,
-    grammarDue: plan.grammarDue,
+    grammarDue: openGrammar,
+    grammarDone: plan.grammarDue.length - openGrammar.length,
     sentences: BlockProgress(done: rated, total: sentences.length),
     isStudyDay: plan.isStudyDay,
     backlog: backlog.length,
