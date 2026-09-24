@@ -270,6 +270,30 @@ void main() {
       );
     });
 
+    testWidgets(
+      'FR-L8-04 the clock stops under the Stop dialog, and Keep going '
+      'carries on from the seconds left',
+      (tester) async {
+        final semantics = tester.ensureSemantics();
+        await pump(tester, args: timed);
+        await tester.pump(const Duration(seconds: 5));
+        expect(find.text(l10n.quizSecondsLeft(10)), findsOneWidget);
+
+        await tester.tap(close());
+        await tester.pumpAndSettle();
+        await tester.pump(const Duration(seconds: 20));
+        expect(run.answers, isEmpty, reason: 'no time runs out under it');
+
+        await tester.tap(find.text(l10n.quizKeepGoing));
+        await tester.pumpAndSettle();
+        expect(find.text(l10n.quizSecondsLeft(10)), findsOneWidget);
+        await tester.pump(const Duration(seconds: 10));
+        await tester.pumpAndSettle();
+        expect(run.answers, [(1, '', Verdict.wrong)]);
+        semantics.dispose();
+      },
+    );
+
     testWidgets('an answer in time stops the clock', (tester) async {
       await pump(tester, args: timed);
       await tester.pump(const Duration(seconds: 5));

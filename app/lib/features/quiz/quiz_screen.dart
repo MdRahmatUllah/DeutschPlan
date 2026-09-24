@@ -102,11 +102,12 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
   }
 
   /// FR-L8-05: 15 s for the question when the timer is on; at 0 an empty
-  /// answer goes in, and it is wrong.
-  void _startClock() {
+  /// answer goes in, and it is wrong. [resume] carries on from the seconds
+  /// left.
+  void _startClock({bool resume = false}) {
     _tick?.cancel();
     if (!widget.args.timer || (_run?.quiz.items.isEmpty ?? true)) return;
-    _left = QuizScreen.questionSeconds;
+    if (!resume) _left = QuizScreen.questionSeconds;
     _tick = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (!mounted) return;
       setState(() => _left--);
@@ -162,6 +163,10 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
       return;
     }
     final l10n = AppLocalizations.of(context);
+    // The clock stops while the learner decides: *Keep going* must not
+    // come back to a question the timer has already failed.
+    final ticking = _tick?.isActive ?? false;
+    _tick?.cancel();
     final stop = await Adaptive.showConfirm(
       context: context,
       title: l10n.quizStopTitle,
@@ -169,9 +174,12 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
       confirmLabel: l10n.quizStop,
       cancelLabel: l10n.quizKeepGoing,
     );
-    if (stop != true || !mounted) return;
+    if (!mounted) return;
+    if (stop != true) {
+      if (ticking) _startClock(resume: true);
+      return;
+    }
     _leaving = true;
-    _tick?.cancel();
     Navigator.of(context).pop();
   }
 
