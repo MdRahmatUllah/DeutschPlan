@@ -33,8 +33,9 @@ void main() {
   Future<void> pump(
     WidgetTester tester, {
     List<ExamItem> items = const <ExamItem>[artboardWriting, speaking],
+    StubExamRun? stub,
   }) async {
-    run = StubExamRun(items: items, given: <int, String>{});
+    run = stub ?? StubExamRun(items: items, given: <int, String>{});
     final routes = GoRouter(
       initialLocation: '/exam',
       routes: <RouteBase>[
@@ -43,6 +44,7 @@ void main() {
           builder: (_, _) => ExamRunnerScreen(
             attemptId: 7,
             results: (_) => const Scaffold(body: Text('L13')),
+            onLeft: (_) {},
           ),
         ),
       ],
@@ -149,6 +151,73 @@ void main() {
       await tester.pump(const Duration(seconds: 10));
       expect(run.answers, <(int, String?)>[(1, 'Die Heizung ist kaputt.')]);
     });
+  });
+
+  testWidgets('Submit exam, not Submit text, when Writing is last', (
+    tester,
+  ) async {
+    await pump(tester, items: const <ExamItem>[artboardWriting]);
+    expect(find.text(l10n.examRunSubmit), findsOneWidget);
+    expect(find.text(l10n.examWritingSubmit), findsNothing);
+  });
+
+  testWidgets('a text cleared again is unanswered', (tester) async {
+    await pump(tester);
+    await write(tester, 'Die Heizung ist kaputt.');
+    await tester.pump(const Duration(seconds: 10));
+    await write(tester, '   ');
+    await tester.pump(const Duration(seconds: 10));
+
+    expect(run.answers.last, (1, null));
+  });
+
+  testWidgets('a resumed text is back in the field', (tester) async {
+    // Writing alone: the runner resumes at the first unanswered item.
+    run = StubExamRun(
+      items: const <ExamItem>[artboardWriting],
+      given: const <int, String>{1: 'Die Heizung ist kaputt.'},
+    );
+    await pump(tester, stub: run);
+    expect(find.text('Die Heizung ist kaputt.'), findsOneWidget);
+    expect(find.text(l10n.examWritingUsed(2, 10, 30, 'A1')), findsOneWidget);
+  });
+
+  testWidgets("the clock saves Writing's text, and no other typed answer", (
+    tester,
+  ) async {
+    const gap = GapQuestion(
+      'gap:1',
+      before: 'Das',
+      after: 'ist groß.',
+      translation: 'The house is big.',
+      answer: 'Haus',
+    );
+    await pump(tester, items: const <ExamItem>[gap, artboardWriting]);
+    await write(tester, 'Hau');
+    await tester.pump(const Duration(seconds: 20));
+
+    expect(run.answers, isEmpty, reason: 'a half-typed gap is not answered');
+  });
+
+  testWidgets("the keyboard doesn't spell the German", (tester) async {
+    await pump(tester);
+    final field = tester.widget<TextField>(find.byType(TextField));
+    expect((field.autocorrect, field.enableSuggestions), (false, false));
+  });
+
+  testWidgets('the field is named for a screen reader', (tester) async {
+    final semantics = tester.ensureSemantics();
+    await pump(tester);
+    expect(
+      tester.getSemantics(find.byType(EditableText)),
+      isSemantics(
+        isTextField: true,
+        label:
+            '${l10n.examWritingYourText.toUpperCase()}\n'
+            '${l10n.examWritingFieldHint}',
+      ),
+    );
+    semantics.dispose();
   });
 
   testWidgets('with no category, a topic still', (tester) async {

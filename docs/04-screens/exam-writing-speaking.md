@@ -14,7 +14,8 @@ Details Writing settles (#133):
 - The task is exam-generator.md's per level with the paper's category ("Write a short message to a friend about Wohnen."), then "Use at least 6 of these words:". The artboard's landlord letter is a sample of one. A step with no category writes about "your week".
 - A chip is an outline until the text uses the word (FR-L12W-01's matching, as #84 grades it), then Lime with a tick; a screen reader hears "Heizung, used". Under them, "7 of 10 used · minimum 30 words at A1".
 - Under the text, live: "43 words · min 30", and "Connectors found: seit, bitte" once there are any. A connector is found as a whole word, case aside; a two-word one ("ohne dass") only as the two together. Shown, not scored.
-- The text is the runner's typed answer: written when the learner moves on, and with the clock every 10 s, so a crash loses at most 10 s of typing (FR-L12W-04).
+- The text is the runner's typed answer: written when the learner moves on, and with the clock every 10 s, so a crash loses at most 10 s of typing (FR-L12W-04). Only Writing is saved with the clock; any other typed answer still waits for a move, or a half-typed one would count as answered on resume.
+- The keyboard's autocorrect and suggestions are off, as for the runner's other typed answers: in an exam the keyboard must not spell the German. The empty field's hint, "Write your text here, in German", is also what a screen reader hears on it.
 - *Submit text* stands where *Next* is (on the last item, *Submit exam*). The runner's *Previous* and flag stay: the artboard's single button would leave no way back until the navigator (#131).
 
 ## Speaking · 1 of 1

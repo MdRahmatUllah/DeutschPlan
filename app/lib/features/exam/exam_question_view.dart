@@ -480,39 +480,44 @@ class ExamWriting extends StatelessWidget {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            panel(
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  DpText(
-                    <String>[
-                      l10n.examWritingTask(task.level, topic),
-                      l10n.examWritingUse,
-                    ].join(' '),
-                    role: DpTextRole.body,
-                    weight: 600,
-                  ),
-                  const SizedBox(height: 8),
-                  Wrap(
-                    spacing: 6,
-                    runSpacing: 6,
-                    children: <Widget>[
-                      for (final target in task.targets)
-                        _Target(word: target, used: used.contains(target)),
-                    ],
-                  ),
-                  const SizedBox(height: 8),
-                  DpText(
-                    l10n.examWritingUsed(
-                      used.length,
-                      task.targets.length,
-                      task.minWords,
-                      task.level,
+            // Nodes of their own: merged, the task and the counts would be
+            // read as the text field's label.
+            Semantics(
+              container: true,
+              child: panel(
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    DpText(
+                      <String>[
+                        l10n.examWritingTask(task.level, topic),
+                        l10n.examWritingUse,
+                      ].join(' '),
+                      role: DpTextRole.body,
+                      weight: 600,
                     ),
-                    role: DpTextRole.caption,
-                    color: tokens.color.textSecondary,
-                  ),
-                ],
+                    const SizedBox(height: 8),
+                    Wrap(
+                      spacing: 6,
+                      runSpacing: 6,
+                      children: <Widget>[
+                        for (final target in task.targets)
+                          _Target(word: target, used: used.contains(target)),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    DpText(
+                      l10n.examWritingUsed(
+                        used.length,
+                        task.targets.length,
+                        task.minWords,
+                        task.level,
+                      ),
+                      role: DpTextRole.caption,
+                      color: tokens.color.textSecondary,
+                    ),
+                  ],
+                ),
               ),
             ),
             const SizedBox(height: 14),
@@ -531,6 +536,10 @@ class ExamWriting extends StatelessWidget {
                 expands: true,
                 maxLines: null,
                 keyboardType: TextInputType.multiline,
+                // An exam: the keyboard must not spell or complete the German,
+                // as the runner's other typed answers don't let it.
+                autocorrect: false,
+                enableSuggestions: false,
                 textAlignVertical: TextAlignVertical.top,
                 style: DpText.styleFor(
                   tokens,
@@ -546,29 +555,38 @@ class ExamWriting extends StatelessWidget {
                   border: edge,
                   enabledBorder: edge,
                   focusedBorder: edge,
+                  // "Your text" above is its own line; the hint is what a
+                  // screen reader hears on the field, not a bare edit box.
+                  hintText: l10n.examWritingFieldHint,
                 ),
               ),
             ),
             const SizedBox(height: 6),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                DpText(
-                  l10n.examWritingCount(textWords(text).length, task.minWords),
-                  role: DpTextRole.caption,
-                  color: tokens.color.textSecondary,
-                ),
-                const SizedBox(width: 12),
-                if (connectors.isNotEmpty)
-                  Expanded(
-                    child: DpText(
-                      l10n.examWritingConnectors(connectors.join(', ')),
-                      role: DpTextRole.caption,
-                      color: tokens.color.correctText,
-                      textAlign: TextAlign.end,
+            Semantics(
+              container: true,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  DpText(
+                    l10n.examWritingCount(
+                      textWords(text).length,
+                      task.minWords,
                     ),
+                    role: DpTextRole.caption,
+                    color: tokens.color.textSecondary,
                   ),
-              ],
+                  const SizedBox(width: 12),
+                  if (connectors.isNotEmpty)
+                    Expanded(
+                      child: DpText(
+                        l10n.examWritingConnectors(connectors.join(', ')),
+                        role: DpTextRole.caption,
+                        color: tokens.color.correctText,
+                        textAlign: TextAlign.end,
+                      ),
+                    ),
+                ],
+              ),
             ),
           ],
         );

@@ -3907,5 +3907,9 @@
   "examWritingSubmit": "Submit text",
   "@examWritingSubmit": {
     "description": "L12 Writing: the footer's forward button on the Writing task, in Next's place."
+  },
+  "examWritingFieldHint": "Write your text here, in German",
+  "@examWritingFieldHint": {
+    "description": "L12 Writing: the empty text area's hint, and what a screen reader hears on it."
   }
 }

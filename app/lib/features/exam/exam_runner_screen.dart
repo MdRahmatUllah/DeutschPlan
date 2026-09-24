@@ -165,9 +165,10 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
   }
 
   Future<void> _flush() async {
-    // A text is long to lose: it is written with the clock, not only when
-    // the learner moves on (FR-L12W-04).
-    _saveTyped();
+    // Writing's text is long to lose: it is written with the clock too
+    // (FR-L12W-04). Any other typed answer waits for the learner to move on,
+    // or a half-typed "Hau" would count as answered and skip the resume.
+    if (_paper?.questions[_at].item is WritingTask) _saveTyped();
     final (running, paused) = (_runPending, _pausePending);
     if (running == 0 && paused == 0) return;
     _runPending = 0;

@@ -640,5 +640,6 @@
   "examWritingYourText": "আপনার লেখা",
   "examWritingCount": "{count, plural, other{{count}টি শব্দ · ন্যূনতম {min}}}",
   "examWritingConnectors": "সংযোজক পাওয়া গেছে: {found}",
-  "examWritingSubmit": "লেখা জমা দিন"
+  "examWritingSubmit": "লেখা জমা দিন",
+  "examWritingFieldHint": "আপনার লেখা এখানে লিখুন, জার্মানে"
 }
