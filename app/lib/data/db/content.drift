@@ -29,8 +29,8 @@ countForStep:
 -- column as typed.
 --
 -- Every search query takes L2's `:step` (null for the whole course) in SQL,
--- not after: a filter after the caps keeps only what the whole course's
--- first rows happened to have from that step.
+-- not after: filtered after the caps, a step keeps only its share of the
+-- course-wide first rows.
 exactMatches(:step AS TEXT OR NULL):
   SELECT * FROM words
   WHERE (search_key = :key OR search_key_alt = :alt OR bangla = :raw)
