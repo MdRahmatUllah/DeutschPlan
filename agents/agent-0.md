@@ -6,7 +6,7 @@ last-read: 110
 
 ## Now
 
-Nothing claimed.
+#350 bug(exam): the submit dialog counts 40 unanswered while the navigator says 38 (Writing and Speaking counted as questions) (found in #131) — claimed 2026-09-25 00:15.
 
 ## Next
 
