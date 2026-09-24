@@ -294,6 +294,27 @@ List<GrammarItem> generateItems(
   return items.take(maxItems).toList();
 }
 
+/// The example as L4 lists it: each German sentence with its translation
+/// when the two split alike, else the whole example as one. Empty for a
+/// topic with none ("—").
+List<({String german, String? english})> examplePairs(
+  String exampleDe,
+  String exampleEn,
+) {
+  if (_blank(exampleDe)) return const <({String german, String? english})>[];
+  final german = _sentences(exampleDe);
+  final english = _blank(exampleEn) ? <String>[] : _sentences(exampleEn);
+  if (german.length == english.length) {
+    return <({String german, String? english})>[
+      for (var i = 0; i < german.length; i++)
+        (german: german[i], english: english[i]),
+    ];
+  }
+  return <({String german, String? english})>[
+    (german: exampleDe.trim(), english: _blank(exampleEn) ? null : exampleEn),
+  ];
+}
+
 /// The example's sentences: split after . ! ? before a capital, and on " / ".
 List<String> _sentences(String text) => <String>[
   for (final part in text.split(RegExp(r'(?<=[.!?])\s+(?=[A-ZÄÖÜ„])|\s+/\s+')))

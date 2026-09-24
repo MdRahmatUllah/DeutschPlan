@@ -4,6 +4,7 @@ import 'package:deutschplan/data/db/app_database.dart';
 import 'package:deutschplan/data/repositories/word_repository.dart';
 import 'package:deutschplan/features/backlog/backlog_screen.dart';
 import 'package:deutschplan/features/learn/grammar_library_screen.dart';
+import 'package:deutschplan/features/learn/grammar_topic_screen.dart';
 import 'package:deutschplan/features/learn/step_grammar.dart';
 import 'package:deutschplan/features/learn/step_quiz.dart';
 import 'package:deutschplan/features/learn/step_words.dart';
@@ -323,6 +324,30 @@ List<TopicWithState> artboardLibrary() {
   ];
 }
 
+/// The GrammarTopic artboard: Konjunktiv II – Höflichkeit, fourth of A2.1's
+/// ten, not learned yet.
+TopicWithState artboardTopic({GrammarStateData? state}) => TopicWithState(
+  topic: const GrammarTopic(
+    uid: 'g3',
+    sublevelCode: 'A2.1',
+    levelCode: 'A2',
+    seq: 3,
+    topic: 'Konjunktiv II – Höflichkeit',
+    rule:
+        'To ask politely, use könnte or würde with the infinitive at the end '
+        'of the sentence — Könnten Sie mir helfen? instead of Können Sie mir '
+        'helfen?',
+    exampleDe: 'Könnten Sie mir bitte helfen? Ich hätte gern einen Kaffee.',
+    exampleEn: "Could you help me, please? I'd like a coffee.",
+    watchOut:
+        '„Kann ich …?“ is fine with friends. With strangers, at work and in '
+        'emails, use könnte / würde — it sounds much friendlier.',
+    tags: 'gap-fill,pick-the-form,subjunctive',
+  ),
+  state: state,
+  status: state == null ? WordStatus.todo : WordStatus.learning,
+);
+
 /// Today without a database: the artboard's plan, and no coach mark.
 ///
 /// For tests about something else — the router, the shell — that only need
@@ -331,6 +356,7 @@ List<Override> todayStub([
   TodayView? view,
   List<StepProgress>? course,
   Duration? dayAfter,
+  TopicWithState? topic,
 ]) => <Override>[
   todayViewProvider.overrideWith((ref) async {
     // A day that arrives after the rest of the screen, as a slow plan does.
@@ -369,6 +395,10 @@ List<Override> todayStub([
   ),
   // L3 without a database: the GrammarLibrary artboard's 182.
   libraryTopicsProvider.overrideWith((ref) => Stream.value(artboardLibrary())),
+  // L4 without a database: the GrammarTopic artboard's rule.
+  grammarTopicProvider.overrideWith(
+    (ref, uid) => Stream.value(topic ?? artboardTopic()),
+  ),
   // L1 without a database: the Learn artboard's course.
   stepProgressProvider.overrideWith(
     (ref) => Stream.value(course ?? artboardCourse()),

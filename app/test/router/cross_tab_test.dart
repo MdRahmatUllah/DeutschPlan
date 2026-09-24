@@ -18,6 +18,7 @@ import 'package:deutschplan/router/route_guards.dart';
 import 'package:deutschplan/router/routes.dart';
 import 'package:deutschplan/features/learn/learn_screen.dart';
 import 'package:deutschplan/features/learn/step_detail_screen.dart';
+import 'package:deutschplan/features/learn/grammar_topic_screen.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
@@ -106,7 +107,7 @@ void main() {
       await jump(tester, const GrammarTopicRoute(uid: 'g1'));
 
       expect(location(), '/learn/grammar/g1');
-      expect(find.text('L4'), findsOneWidget);
+      expect(find.byType(GrammarTopicScreen), findsOneWidget);
     });
 
     testWidgets('and within the same tab it is just a push', (tester) async {
