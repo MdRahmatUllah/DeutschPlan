@@ -27,29 +27,36 @@ countForStep:
 -- Search tier 1. `search.md`: search_key, search_key_alt, and the Bangla
 -- meaning matched raw — a Bangla query is not normalised, so it has to hit the
 -- column as typed.
-exactMatches:
+--
+-- Every search query takes L2's `:step` (null for the whole course) in SQL,
+-- not after: a filter after the caps keeps only what the whole course's
+-- first rows happened to have from that step.
+exactMatches(:step AS TEXT OR NULL):
   SELECT * FROM words
-  WHERE search_key = :key OR search_key_alt = :alt OR bangla = :raw
+  WHERE (search_key = :key OR search_key_alt = :alt OR bangla = :raw)
+    AND (:step IS NULL OR sublevel_code = :step)
   ORDER BY freq DESC, seq;
 
 -- Search tier 2. MATCH names the virtual table without a schema prefix, which
 -- is what FTS5 requires; the query string is quoted and column-filtered by the
 -- caller.
-prefixMatches:
+prefixMatches(:step AS TEXT OR NULL):
   SELECT w.**, f.rank AS rank FROM words w
   JOIN (
     SELECT uid, rank FROM words_fts WHERE words_fts MATCH :query
   ) f ON f.uid = w.uid
+  WHERE :step IS NULL OR w.sublevel_code = :step
   ORDER BY f.rank
   LIMIT :limit;
 
 -- Search tier 3. Candidates only: `search.md` filters these by edit distance
 -- in Dart, because SQLite has no OSA distance and 400 rows is cheap to rank.
-trigramCandidates:
+trigramCandidates(:step AS TEXT OR NULL):
   SELECT w.* FROM words w
   JOIN (
     SELECT uid FROM words_trigram WHERE words_trigram MATCH :query
   ) f ON f.uid = w.uid
+  WHERE :step IS NULL OR w.sublevel_code = :step
   LIMIT :limit;
 
 -- Search tier 4, "in sentences". The headword comes back with the sentence
@@ -62,7 +69,7 @@ trigramCandidates:
 --
 -- `marked` is the sentence with each matched word between  and 
 -- (FTS5's own `highlight()`), so R1 marks exactly what matched.
-sentenceMatches:
+sentenceMatches(:step AS TEXT OR NULL):
   SELECT e.word_uid AS wordUid, e.german AS german,
          NULLIF(e.english, '') AS english,
          w.german AS head, w.article AS article, w.sublevel_code AS step,
@@ -70,6 +77,8 @@ sentenceMatches:
   FROM examples_fts e
   JOIN words w ON w.uid = e.word_uid
   WHERE examples_fts MATCH :query
+    AND (:step IS NULL OR w.sublevel_code = :step)
+  ORDER BY e.rank
   LIMIT :limit;
 
 wordByUid:

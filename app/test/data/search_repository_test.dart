@@ -176,7 +176,7 @@ void main() {
       });
 
       test(
-        '#137 a word typed with its umlaut or ß finds its sentences',
+        'BR-SEARCH-02 a word typed with its umlaut or ß finds its sentences',
         () async {
           // examples_fts folds umlauts and keeps ß: the key alone (tuer,
           // strasse) matched neither.
@@ -201,7 +201,47 @@ void main() {
         expect(hit.step, 'A1.1');
       });
 
-      test('markedRuns reads highlight() markers', () {
+      test('BR-SEARCH-02 typed with ae/oe/ue or ss, the sentences are '
+          'still found', () async {
+        // The index has `tur` and `straße`; the key is `tuer`, `strasse`.
+        expect(
+          (await search.search('tuer')).sentences.map((s) => s.german),
+          contains('Die Tür ist offen.'),
+        );
+        expect(
+          (await search.search('strasse')).sentences.map((s) => s.german),
+          contains('Die Straße ist lang.'),
+        );
+      });
+
+      test('FR-R1-01 the German forms search the German only: "Tür" is not '
+          '"Turn"', () async {
+        await db.customStatement(
+          "INSERT INTO c.examples_fts (word_uid, german, english) VALUES "
+          "('${ContentFixture.haus}', 'Mach das Licht an.', "
+          "'Turn on the light.')",
+        );
+        final hits = (await search.search('Tür')).sentences;
+        expect(hits, isNotEmpty);
+        for (final hit in hits) {
+          expect(
+            hit.runs.any((run) => run.$2),
+            isTrue,
+            reason: '${hit.german} has nothing marked',
+          );
+        }
+        // The key still searches the English: "house" finds what means it.
+        expect(
+          (await search.search('turn')).sentences.map((s) => s.german),
+          contains('Mach das Licht an.'),
+        );
+        expect(
+          (await search.search('house')).sentences.map((s) => s.german),
+          contains('Das Haus ist groß.'),
+        );
+      });
+
+      test('FR-R1-01 markedRuns reads highlight() markers', () {
         expect(markedRuns('a b c d'), <(String, bool)>[
           ('a ', false),
           ('b', true),
@@ -216,6 +256,23 @@ void main() {
         expect(results.words, isEmpty);
         expect(results.sentences, isNotEmpty);
         expect(results.tiers, <SearchTier>[SearchTier.inSentences]);
+      });
+    });
+
+    group("L2's step", () {
+      test('goes into every tier, before the caps', () async {
+        final other = await search.search('Haus', step: 'A1.2');
+        expect(other.words, isEmpty);
+        expect(other.sentences, isEmpty);
+
+        final own = await search.search('Straße', step: 'A1.2');
+        expect(own.inTier(SearchTier.exact).single.word.german, 'Straße');
+      });
+
+      test('keeps the sentences to it', () async {
+        final hits = (await search.search('ist', step: 'A1.2')).sentences;
+        expect(hits.map((s) => s.german), <String>['Die Straße ist lang.']);
+        expect((await search.search('ist')).sentences, hasLength(3));
       });
     });
 

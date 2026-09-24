@@ -13,6 +13,7 @@ import 'package:deutschplan/data/repositories/word_repository.dart';
 import 'package:deutschplan/features/learn/step_words.dart';
 import 'package:deutschplan/features/words/word_row.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
+import 'package:deutschplan/router/cross_tab.dart';
 import 'package:deutschplan/router/routes.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
@@ -36,13 +37,15 @@ class SearchView {
 
 /// FR-R1-01: [query] through `search.md`'s four tiers, the words joined to
 /// the learner's state and meaning language — and again as those change, so
-/// a word rated in W1 shows its new chip here.
+/// a word rated in W1 shows its new chip here. [step] is L2's.
 @riverpod
-Stream<SearchView> searchResults(Ref ref, String query) async* {
+Stream<SearchView> searchResults(Ref ref, String query, {String? step}) async* {
   // Read before the first await: a query typed past disposes this one, and
   // a ref used after that throws.
   final words = ref.watch(wordRepositoryProvider);
-  final results = await ref.watch(searchRepositoryProvider).search(query);
+  final results = await ref
+      .watch(searchRepositoryProvider)
+      .search(query, step: step);
   final tiers = <String, SearchTier>{
     for (final hit in results.words) hit.uid: hit.tier,
   };
@@ -96,6 +99,10 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   WordStatus? _status;
   String? _chipStep;
 
+  /// The last answer, shown while the next query loads, so the list does
+  /// not drop to the web row and lose its scroll between keystrokes.
+  SearchView? _last;
+
   @override
   void initState() {
     super.initState();
@@ -131,6 +138,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   void _clear() {
     _debounce?.cancel();
     _field.clear();
+    _last = null;
     setState(() {
       _query = '';
       _status = null;
@@ -143,12 +151,19 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     final query = text.trim();
     if (query.isEmpty) return;
     _debounce?.cancel();
-    if (query != _query) setState(() => _query = query);
+    if (query != _query) {
+      setState(() {
+        _query = query;
+        _status = null;
+        _chipStep = null;
+      });
+    }
+    final provider = searchResultsProvider(query, step: _step);
     // Held while it answers: the screen may not have rebuilt to watch it yet.
-    final held = ref.listenManual(searchResultsProvider(query), (_, _) {});
+    final held = ref.listenManual(provider, (_, _) {});
     final SearchView view;
     try {
-      view = await ref.read(searchResultsProvider(query).future);
+      view = await ref.read(provider.future);
     } finally {
       held.close();
     }
@@ -158,10 +173,9 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     if (exact.isNotEmpty) WordRoute.open(context, exact.first.word.word.uid);
   }
 
-  /// [view] with L2's step and FR-R1-07's chips applied.
+  /// [view] with FR-R1-07's chips applied. L2's step is the query's own.
   SearchView _shown(SearchView view) {
     bool keep(String step, WordStatus? status) =>
-        (_step == null || step == _step) &&
         (_chipStep == null || step == _chipStep) &&
         (_status == null || status == null || status == _status);
     return SearchView(
@@ -184,8 +198,10 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     final query = _query;
     final results = query.isEmpty
         ? null
-        : ref.watch(searchResultsProvider(query));
-    final view = results?.value;
+        : ref.watch(searchResultsProvider(query, step: _step));
+    final view =
+        results?.value ?? ((results?.isLoading ?? false) ? _last : null);
+    _last = view;
 
     final scaffold = AdaptiveScaffold(
       backgroundColor: tokens.isGlass
@@ -200,7 +216,9 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
             onChanged: _changed,
             onSubmitted: (text) => unawaited(_submitted(text)),
             onClear: _clear,
-            onRemoveStep: () => setState(() => _step = null),
+            // Through the route, so the route and the screen agree: a second
+            // trip from the same step then brings the chip back.
+            onRemoveStep: () => context.jumpToTab(const SearchRoute()),
           ),
           Expanded(
             // ponytail: the idle list (#138) and the no-results page (#139)
@@ -215,8 +233,9 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                       child: DpErrorPanel(
                         message: l10n.searchFailed,
                         retryLabel: l10n.retry,
-                        onRetry: () =>
-                            ref.invalidate(searchResultsProvider(query)),
+                        onRetry: () => ref.invalidate(
+                          searchResultsProvider(query, step: _step),
+                        ),
                       ),
                     ),
                   )
@@ -416,49 +435,58 @@ class _Results extends StatelessWidget {
                   selected: status == value,
                   onTap: () => onStatus(value),
                 ),
-              for (final code in steps)
-                DpChip(
-                  label: code,
-                  kind: DpChipKind.filter,
-                  selected: step == code,
-                  onTap: () => onStep(code),
-                ),
+              // One step (L2's, or a query that only has one) is no filter.
+              if (steps.length > 1)
+                for (final code in steps)
+                  DpChip(
+                    label: code,
+                    kind: DpChipKind.filter,
+                    selected: step == code,
+                    onTap: () => onStep(code),
+                  ),
             ],
           ),
         ],
-        if (shown != null)
-          for (final tier in SearchTier.values) ..._group(context, tier, shown),
+        if (shown != null) ...<Widget>[
+          for (final (tier, heading) in <(SearchTier, String Function(int))>[
+            (SearchTier.exact, l10n.searchExact),
+            (SearchTier.startsWith, l10n.searchStartsWith),
+            (SearchTier.similar, l10n.searchSimilar),
+          ])
+            ..._words(context, shown, tier, heading),
+          ..._sentences(context, shown),
+        ],
       ],
     );
   }
 
-  List<Widget> _group(BuildContext context, SearchTier tier, SearchView view) {
-    final l10n = AppLocalizations.of(context);
-    if (tier == SearchTier.inSentences) {
-      final sentences = view.sentences;
-      if (sentences.isEmpty) return const <Widget>[];
-      return <Widget>[
-        _Heading(l10n.searchSentences(sentences.length)),
-        _Framed(
-          children: <Widget>[
-            for (final (index, sentence) in sentences.indexed)
-              _SentenceRow(
-                sentence: sentence,
-                last: index == sentences.length - 1,
-              ),
-          ],
-        ),
-      ];
-    }
+  List<Widget> _sentences(BuildContext context, SearchView view) {
+    final sentences = view.sentences;
+    if (sentences.isEmpty) return const <Widget>[];
+    return <Widget>[
+      _Heading(AppLocalizations.of(context).searchSentences(sentences.length)),
+      _Framed(
+        children: <Widget>[
+          for (final (index, sentence) in sentences.indexed)
+            _SentenceRow(
+              sentence: sentence,
+              last: index == sentences.length - 1,
+            ),
+        ],
+      ),
+    ];
+  }
+
+  List<Widget> _words(
+    BuildContext context,
+    SearchView view,
+    SearchTier tier,
+    String Function(int) heading,
+  ) {
     final rows = view.words.where((row) => row.tier == tier).toList();
     if (rows.isEmpty) return const <Widget>[];
     return <Widget>[
-      _Heading(switch (tier) {
-        SearchTier.exact => l10n.searchExact(rows.length),
-        SearchTier.startsWith => l10n.searchStartsWith(rows.length),
-        SearchTier.similar => l10n.searchSimilar(rows.length),
-        SearchTier.inSentences => '',
-      }),
+      _Heading(heading(rows.length)),
       _Framed(
         children: <Widget>[
           for (final (index, row) in rows.indexed)

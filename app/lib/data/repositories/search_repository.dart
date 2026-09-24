@@ -149,7 +149,9 @@ class SearchRepository {
   /// compound is further from the word than a typo in "Haus".
   static const int _longQueryLength = 5;
 
-  Future<SearchResults> search(String query) async {
+  /// [step] keeps every tier to one step (L2's search icon), in each query,
+  /// so the caps count that step's rows only.
+  Future<SearchResults> search(String query, {String? step}) async {
     final raw = query.trim();
     if (raw.isEmpty) return const SearchResults.empty();
 
@@ -179,15 +181,17 @@ class SearchRepository {
     // one it was meant to search.
     final prefixed = key.isEmpty
         ? const <PrefixMatchesResult>[]
-        : await _content.prefixMatches(_prefixQuery(key), _prefixLimit).get();
+        : await _content
+              .prefixMatches(_prefixQuery(key), step, _prefixLimit)
+              .get();
 
-    take(await _exact(raw, key, alt, prefixed), exactLimit);
+    take(await _exact(raw, key, alt, step, prefixed), exactLimit);
     take(_startsWith(prefixed), startsWithLimit);
-    take(await _similar(key, alt), similarLimit);
+    take(await _similar(key, alt, step), similarLimit);
 
     return SearchResults(
       words: words,
-      sentences: await _sentences(raw, key, alt),
+      sentences: await _sentences(raw, key, alt, step),
     );
   }
 
@@ -199,9 +203,10 @@ class SearchRepository {
     String raw,
     String key,
     String alt,
+    String? step,
     List<PrefixMatchesResult> prefixed,
   ) async {
-    final rows = await _content.exactMatches(key, alt, raw).get();
+    final rows = await _content.exactMatches(key, alt, raw, step).get();
     final hits = <String, WordHit>{
       for (final row in rows)
         row.uid: WordHit(word: row, tier: SearchTier.exact, rank: -_freq(row)),
@@ -244,12 +249,12 @@ class SearchRepository {
 
   /// Tier 3. Trigram candidates, kept if they are within BR-SEARCH-03's
   /// distance, ranked by distance first and frequency second.
-  Future<List<WordHit>> _similar(String key, String alt) async {
+  Future<List<WordHit>> _similar(String key, String alt, String? step) async {
     if (key.length < _minimumTrigramLength) return const <WordHit>[];
 
     final budget = key.length > _longQueryLength ? 3 : 2;
     final rows = await _content
-        .trigramCandidates(_trigramQuery(key), _trigramCandidateLimit)
+        .trigramCandidates(_trigramQuery(key), step, _trigramCandidateLimit)
         .get();
 
     final hits = <WordHit>[];
@@ -278,20 +283,28 @@ class SearchRepository {
   ///
   /// `examples_fts` folds umlauts but keeps ß: "Tür" is indexed as `tur`,
   /// "Straße" as `straße`. The key alone (`tuer`, `strasse`) matched neither,
-  /// so the query asks for every form the text can take: the key, the folded
-  /// key, and the text as typed.
-  /// ponytail: "strasse" still misses "Straße"; indexing the sentences' keys
-  /// in the pipeline would close that.
+  /// so the query asks for every form the German can take: the folded key,
+  /// the text as typed, and the key respelled (`tuer` → `tur`, `strasse` →
+  /// `straße`). Those go to the German column only: `tur`* in the English
+  /// is "Turn on the light". The key itself searches both, so "house" still
+  /// finds the sentences that mean it.
   Future<List<SentenceHit>> _sentences(
     String raw,
     String key,
     String alt,
+    String? step,
   ) async {
     if (key.isEmpty) return const <SentenceHit>[];
-    final forms = <String>{key, alt, raw.toLowerCase()};
+    final german = <String>{alt, raw.toLowerCase(), _respelled(key)}
+      ..remove(key);
+    String any(Iterable<String> forms) =>
+        forms.map((form) => _prefixQuery(form, columns: false)).join(' OR ');
     final rows = await _content
         .sentenceMatches(
-          forms.map((form) => _prefixQuery(form, columns: false)).join(' OR '),
+          german.isEmpty
+              ? any(<String>[key])
+              : '${any(<String>[key])} OR german : (${any(german)})',
+          step,
           sentenceLimit,
         )
         .get();
@@ -308,6 +321,13 @@ class SearchRepository {
         ),
     ];
   }
+
+  /// The key as the German may be spelled: ae/oe/ue folded to the bare
+  /// vowel, as `examples_fts` indexes an umlaut, and ss as ß, which it keeps.
+  /// Over-generating ("neue" → `neu`) only widens an OR.
+  static String _respelled(String key) => key
+      .replaceAllMapped(RegExp('ae|oe|ue'), (match) => match[0]![0])
+      .replaceAll('ss', 'ß');
 
   int _closest(Word row, String key, String alt, int budget) {
     final first = editDistance(row.searchKey, key, limit: budget);

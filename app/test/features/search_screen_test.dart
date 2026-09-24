@@ -17,9 +17,11 @@ import 'package:deutschplan/main.dart'
     show appLocalizationsDelegates, supportedLocales;
 import 'package:deutschplan/router/app_router.dart';
 import 'package:deutschplan/router/route_guards.dart';
+import 'package:deutschplan/router/routes.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 
 import '../db/content_fixture.dart';
@@ -35,6 +37,7 @@ void main() {
   late SettingsRepository settings;
   late FakeTts tts;
   late List<Uri> opened;
+  GoRouter? router;
 
   setUpAll(() async {
     l10n = await AppLocalizations.delegate.load(supportedLocales.first);
@@ -49,9 +52,13 @@ void main() {
 
   /// R1 over the content fixture: das Haus, die Tür (A1.1), die Straße
   /// (A1.2), and their sentences.
+  ///
+  /// [routed] puts it under the app's router at `/search`, for what goes
+  /// through the route.
   Future<void> pump(
     WidgetTester tester, {
     String? step,
+    bool routed = false,
     List<Override> extra = const <Override>[],
   }) async {
     tester.view
@@ -90,15 +97,25 @@ void main() {
           }),
           ...extra,
         ],
-        child: MaterialApp(
-          theme: AppTheme.light(),
-          localizationsDelegates: appLocalizationsDelegates,
-          supportedLocales: supportedLocales,
-          home: SearchScreen(step: step),
-        ),
+        child: routed
+            ? MaterialApp.router(
+                routerConfig: router = buildRouter(
+                  initialLocation: SearchRoute(step: step).location,
+                ),
+                theme: AppTheme.light(),
+                localizationsDelegates: appLocalizationsDelegates,
+                supportedLocales: supportedLocales,
+              )
+            : MaterialApp(
+                theme: AppTheme.light(),
+                localizationsDelegates: appLocalizationsDelegates,
+                supportedLocales: supportedLocales,
+                home: SearchScreen(step: step),
+              ),
       ),
     );
     await tester.pumpAndSettle();
+    if (routed) addTearDown(router!.dispose);
   }
 
   Future<void> type(WidgetTester tester, String text) async {
@@ -176,15 +193,19 @@ void main() {
       expect(marked, <String>['offen']);
     });
 
-    testWidgets('#137 a word typed with its umlaut finds its sentences', (
-      tester,
-    ) async {
-      await pump(tester);
-      await type(tester, 'Tür');
-      expect(find.text('Die Tür ist offen.', findRichText: true), findsWidgets);
-    });
+    testWidgets(
+      'BR-SEARCH-02 a word typed with its umlaut finds its sentences',
+      (tester) async {
+        await pump(tester);
+        await type(tester, 'Tür');
+        expect(
+          find.text('Die Tür ist offen.', findRichText: true),
+          findsWidgets,
+        );
+      },
+    );
 
-    testWidgets('a row opens W1 over the results', (tester) async {
+    testWidgets('FR-R1-01 a row opens W1 over the results', (tester) async {
       await pump(tester);
       await type(tester, 'Haus');
       await tester.tap(find.text('das Haus', findRichText: true));
@@ -195,7 +216,26 @@ void main() {
       );
     });
 
-    testWidgets('clearing empties the field and the results', (tester) async {
+    testWidgets('FR-R1-01 the last results stay up while the next query '
+        'loads', (tester) async {
+      await pump(
+        tester,
+        extra: <Override>[
+          searchResultsProvider.overrideWith(
+            (ref, args) => args.$1 == 'strase'
+                ? Stream.value(artboardSearch())
+                : const Stream<SearchView>.empty(),
+          ),
+        ],
+      );
+      await type(tester, 'strase');
+      await type(tester, 'strasse');
+      expect(heading(l10n.searchExact(1)), findsOneWidget);
+    });
+
+    testWidgets('FR-R1-01 clearing empties the field and the results', (
+      tester,
+    ) async {
       await pump(tester);
       await type(tester, 'Haus');
       await tester.tap(find.bySemanticsLabel(l10n.searchClear));
@@ -208,7 +248,9 @@ void main() {
     });
   });
 
-  testWidgets('a failed search says so, and Retry asks again', (tester) async {
+  testWidgets('FR-R1-01 a failed search says so, and Retry asks again', (
+    tester,
+  ) async {
     var fail = true;
     await pump(
       tester,
@@ -230,21 +272,22 @@ void main() {
     expect(heading(l10n.searchExact(1)), findsOneWidget);
   });
 
-  testWidgets('each group heading is a heading to a screen reader', (
-    tester,
-  ) async {
-    final semantics = tester.ensureSemantics();
-    await pump(tester);
-    await type(tester, 'Haus');
-    expect(
-      tester.getSemantics(heading(l10n.searchExact(1))),
-      matchesSemantics(
-        label: l10n.searchExact(1).toUpperCase(),
-        isHeader: true,
-      ),
-    );
-    semantics.dispose();
-  });
+  testWidgets(
+    'BR-SEARCH-01 each group heading is a heading to a screen reader',
+    (tester) async {
+      final semantics = tester.ensureSemantics();
+      await pump(tester);
+      await type(tester, 'Haus');
+      expect(
+        tester.getSemantics(heading(l10n.searchExact(1))),
+        matchesSemantics(
+          label: l10n.searchExact(1).toUpperCase(),
+          isHeader: true,
+        ),
+      );
+      semantics.dispose();
+    },
+  );
 
   testWidgets('FR-R1-02 the search key opens the first exact match', (
     tester,
@@ -329,7 +372,7 @@ void main() {
   });
 
   group('FR-R1-07 filter chips', () {
-    List<Override> many(int count) => <Override>[
+    List<Override> many(int count, {String Function(int)? step}) => <Override>[
       searchResultsProvider.overrideWith(
         (ref, query) => Stream.value(
           SearchView(
@@ -341,7 +384,7 @@ void main() {
                   german: 'Wort$i',
                   meaning: 'word $i',
                   tier: SearchTier.startsWith,
-                  step: i.isEven ? 'A1.1' : 'A2.1',
+                  step: step?.call(i) ?? (i.isEven ? 'A1.1' : 'A2.1'),
                   status: i < 3 ? WordStatus.done : WordStatus.todo,
                 ),
             ],
@@ -379,19 +422,38 @@ void main() {
       // Done and A2.1: Wort1 only.
       expect(find.byType(WordRow), findsOneWidget);
       expect(find.text('das Wort1', findRichText: true), findsOneWidget);
+
+      // A new search, submitted, starts unfiltered.
+      await tester.enterText(find.byType(TextField), 'worte');
+      await tester.testTextInput.receiveAction(TextInputAction.search);
+      await settle(tester);
+      expect(tester.widget<DpChip>(chip(l10n.wordStatusDone)).selected, false);
+      expect(tester.widget<DpChip>(chip('A2.1')).selected, false);
+    });
+
+    testWidgets('results in one step get no step chip', (tester) async {
+      await pump(tester, extra: many(11, step: (_) => 'A1.1'));
+      await type(tester, 'wort');
+      expect(chip(l10n.wordStatusDone), findsOneWidget);
+      expect(chip('A1.1'), findsNothing);
     });
   });
 
-  testWidgets("L2's step keeps the results to it, until its chip goes", (
-    tester,
-  ) async {
-    await pump(tester, step: 'A1.2');
+  testWidgets("FR-R1-07 L2's step keeps the results to it, until its chip "
+      'goes; a second trip brings it back', (tester) async {
+    await pump(tester, step: 'A1.2', routed: true);
     await type(tester, 'ist');
     expect(heading(l10n.searchSentences(1)), findsOneWidget);
     expect(find.text('die Straße · A1.2'), findsOneWidget);
 
     await tester.tap(find.bySemanticsLabel(l10n.searchRemoveStep('A1.2')));
-    await tester.pumpAndSettle();
+    await settle(tester);
     expect(heading(l10n.searchSentences(3)), findsOneWidget);
+    expect(router!.state.uri.queryParameters, isEmpty);
+
+    router!.go(const SearchRoute(step: 'A1.2').location);
+    await settle(tester);
+    expect(find.bySemanticsLabel(l10n.searchRemoveStep('A1.2')), findsOne);
+    expect(heading(l10n.searchSentences(1)), findsOneWidget);
   });
 }
