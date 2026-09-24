@@ -244,3 +244,18 @@ def test_a_github_issue_becomes_a_row():
     task = team.task_from_issue(122, data, "A")
     assert (task.ms, task.pri, task.size, task.blocked_by) == ("M4", "P1", "M", [37, 81, 116])
     assert task.row().startswith("| #122 | M4 | A | P1 | M | L7 · Custom quiz sheet | open |")
+
+
+def test_status_prints_the_board_on_a_cp1252_console(team_repo, monkeypatch):
+    """A Windows console is cp1252; the board has arrows, dots and Bangla."""
+    import io
+    a1, a2 = team_repo["agent-1"], team_repo["agent-2"]
+    team.cmd_msg(a1, "agent-1", "agent-2", "note", "বাংলা → fine · yes", None)
+    raw = io.BytesIO()
+    console = io.TextIOWrapper(raw, encoding="cp1252")
+    monkeypatch.setattr(sys, "stdout", console)
+    monkeypatch.setattr(team, "my_agent", lambda: "agent-2")
+    monkeypatch.setattr(team, "board_checkout", lambda agent: a2)
+    assert team.main(["status"]) == 0
+    console.flush()
+    assert "বাংলা → fine" in raw.getvalue().decode("utf-8")
