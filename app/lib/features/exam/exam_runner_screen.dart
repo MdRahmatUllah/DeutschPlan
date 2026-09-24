@@ -292,18 +292,39 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
     if (mounted) widget.onLeft(paper.attempt.sublevelCode);
   }
 
+  /// What the submit asks about (#350): the numbered questions with no
+  /// answer, counted as the navigator counts them, and the Writing and
+  /// Speaking tasks left empty, named apart.
+  ({int questions, int tasks}) _open(List<ExamRunQuestion> paper) {
+    var questions = 0;
+    var tasks = 0;
+    for (final (i, q) in paper.indexed) {
+      if (_given[i] != null) continue;
+      if (examNumbered(q.item)) {
+        questions++;
+      } else {
+        tasks++;
+      }
+    }
+    return (questions: questions, tasks: tasks);
+  }
+
   /// The submit. By hand with questions unanswered, it asks first
   /// (FR-L12-05); the clock running out does not ask.
   Future<void> _submit({bool asked = false}) async {
-    if (_submitting || _done) return;
+    final paper = _paper;
+    if (paper == null || _submitting || _done) return;
     _saveTyped();
-    final open = _given.where((g) => g == null).length;
-    if (!asked && open > 0) {
+    final open = _open(paper.questions);
+    if (!asked && (open.questions > 0 || open.tasks > 0)) {
       final l10n = AppLocalizations.of(context);
       final sure = await Adaptive.showConfirm(
         context: context,
         title: l10n.examRunSubmitTitle,
-        message: l10n.examRunSubmitUnanswered(open),
+        message: <String>[
+          if (open.questions > 0) l10n.examRunSubmitUnanswered(open.questions),
+          if (open.tasks > 0) l10n.examRunSubmitTasksEmpty(open.tasks),
+        ].join(' '),
         confirmLabel: l10n.examRunSubmitConfirm,
         cancelLabel: l10n.examRunKeepAnswering,
       );
