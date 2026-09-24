@@ -1,12 +1,12 @@
 # agent-1
 
 session: active
-last-seen: 2026-09-25 01:21
+last-seen: 2026-09-25 01:22
 last-read: 170
 
 ## Now
 
-#317 bug(shell): scrolled content on Today, Learn and Me runs under the status bar icons (found in #67) — claimed 2026-09-25 01:09.
+#317 in review as PR #355: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
