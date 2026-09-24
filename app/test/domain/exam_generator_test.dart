@@ -8,15 +8,42 @@ String tag(int i) => String.fromCharCodes(<int>[97 + i ~/ 26, 97 + i % 26]);
 
 bool noun(int i, bool nouns) => nouns || i % 3 == 0;
 
+/// Word [i] of [count]'s category: half the step in 0, a quarter in 1, the
+/// rest spread over 2–6 — so the biggest is plain.
+int category(int i, int count) => i < count ~/ 2
+    ? 0
+    : i < count * 3 ~/ 4
+    ? 1
+    : 2 + i % 5;
+
+/// The sentence a grammar item is about, however it asks it.
+String sentence(GrammarItem item) => switch (item) {
+  GapFill(:final before, :final answer, :final after) ||
+  PickTheForm(
+    :final before,
+    :final answer,
+    :final after,
+  ) => '$before$answer$after',
+  SpotTheError(:final tokens, :final wrong, :final correction) => <String>[
+    for (final (i, token) in tokens.indexed) i == wrong ? correction : token,
+  ].join(' '),
+  OrderTheSentence(:final answer) => answer.join(' '),
+  RuleRecall(:final question) => question,
+};
+
+/// What never repeats for [ref]: a grammar item's topic.
+String key(String ref) => ref.split('#').first;
+
 /// `exam_generator.dart` — #83.
 void main() {
   /// A step of [count] words: every third a der/die/das noun with a plural
   /// (all of them with [nouns]), the rest verbs with forms; every other with
-  /// an example that says it (all of them with [nouns]), a category per ten
-  /// words, Bangla on all but every fifth; and [topics] grammar topics.
+  /// an example that says it (all of them with [nouns]), categories as
+  /// [category] spreads them, Bangla on all but every fifth; and [topics]
+  /// grammar topics, each with its own example.
   ExamPool pool({
     int count = 200,
-    int topics = 10,
+    int topics = 12,
     String step = 'A2.1',
     bool nouns = false,
   }) => ExamPool(
@@ -37,7 +64,7 @@ void main() {
                 ? '-er'
                 : 'sag${tag(i)}t · hat gesag${tag(i)}t',
           ),
-          category: i ~/ 10,
+          category: category(i, count),
           examples: i.isEven || nouns
               ? <({String german, String english})>[
                   (
@@ -56,16 +83,18 @@ void main() {
           uid: 'g$t',
           topic: 'Topic $t',
           rule: 'Rule $t: the verb comes second in a main clause.',
-          exampleDe: 'Ich gehe heute nach Hause. Morgen arbeite ich.',
-          exampleEn: 'I am going home today. Tomorrow I work.',
+          exampleDe:
+              'Wir besuchen heute das Dorf${tag(t)}. '
+              'Morgen fahren wir nach Stadt${tag(t)}.',
+          exampleEn:
+              'Today we visit the village ${tag(t)}. '
+              'Tomorrow we go to town ${tag(t)}.',
           watchOut: '—',
           tags: const <String>['gap-fill', 'pick-the-form', 'word-order'],
           levelCode: step.split('.').first,
         ),
     ],
-    categories: <int, String>{
-      for (var c = 0; c <= count ~/ 10; c++) c: 'Kategorie $c',
-    },
+    categories: <int, String>{for (var c = 0; c < 7; c++) c: 'Kategorie $c'},
     connectors: const <String>['und', 'aber', 'weil'],
   );
 
@@ -160,7 +189,7 @@ void main() {
     });
 
     test('too small a step reuses, never within a paper, and says so', () {
-      final small = pool(count: 60, topics: 2);
+      final small = pool(count: 60, topics: 4);
       final papers = <Exam>[
         for (var seed = 1; seed <= 3; seed++) buildExam(small, seed: seed),
       ];
@@ -200,6 +229,95 @@ void main() {
       expect(two.reused, isTrue);
     });
 
+    test('no grammar sentence is asked in two papers', () {
+      final sentences = <String>[
+        for (var seed = 1; seed <= 3; seed++)
+          for (final item in buildExam(pool(), seed: seed).items)
+            if (item is GrammarQuestion) sentence(item.item),
+      ];
+
+      expect(sentences, hasLength(12));
+      expect(sentences.toSet(), hasLength(12));
+    });
+
+    test('ten topics for twelve slots: the last paper reuses the two drawn '
+        'longest ago, and says so', () {
+      final few = pool(topics: 10);
+      final papers = <Exam>[
+        for (var seed = 1; seed <= 3; seed++) buildExam(few, seed: seed),
+      ];
+      Set<String> topics(Exam exam) => <String>{
+        for (final item in exam.items)
+          if (item is GrammarQuestion) key(item.ref),
+      };
+
+      expect(papers.map((p) => p.reused), <bool>[false, false, true]);
+      final shared = topics(papers[2])
+          .intersection(topics(papers[0]).union(topics(papers[1])));
+      expect(shared, hasLength(2));
+      expect(topics(papers[0]).containsAll(shared), isTrue);
+    });
+
+    test('a paper built after the pool changed shares nothing with a stored '
+        'one', () {
+      final first = buildExam(pool(), seed: 1);
+      final stored = <String>{for (final item in first.items) item.ref};
+      // A word the first paper never asked is suspended in between.
+      final full = pool();
+      final unasked = full.words.firstWhere(
+        (w) => !stored.contains(w.word.uid),
+      );
+      final changed = ExamPool(
+        step: full.step,
+        level: full.level,
+        words: <ExamWord>[
+          for (final w in full.words)
+            if (w != unasked) w,
+        ],
+        topics: full.topics,
+        categories: full.categories,
+        connectors: full.connectors,
+      );
+
+      final second = buildExam(
+        changed,
+        seed: 2,
+        sat: <int, Set<String>>{1: stored},
+      );
+
+      expect(second.items, hasLength(42));
+      expect(
+        second.items
+            .map((i) => key(i.ref))
+            .toSet()
+            .intersection(stored.map(key).toSet()),
+        isEmpty,
+      );
+    });
+
+    test(
+      'stored seeds are not drawn again, and the last paper still fills',
+      () {
+        final refs = <int, Set<String>>{
+          for (var seed = 1; seed <= 2; seed++)
+            seed: <String>{
+              for (final item in buildExam(pool(), seed: seed).items) item.ref,
+            },
+        };
+
+        final third = buildExam(pool(), seed: 3, sat: refs);
+
+        expect(third.items, hasLength(42));
+        expect(third.reused, isFalse);
+        expect(
+          third.items.map((i) => key(i.ref)).toSet().intersection(<String>{
+            for (final ref in refs.values.expand((r) => r)) key(ref),
+          }),
+          isEmpty,
+        );
+      },
+    );
+
     test('grammar items come from four topics when there are four', () {
       for (final step in <String>['A2.1', 'A2.2', 'B1.1']) {
         for (var seed = 1; seed <= 3; seed++) {
@@ -215,7 +333,7 @@ void main() {
     });
   });
 
-  group('what each section asks', () {
+  group('BR-EXAM-03 what each section asks', () {
     final exam = buildExam(pool(), seed: 1);
     List<T> of<T extends ExamItem>(ExamSection section) =>
         exam.items.where((i) => i.section == section).cast<T>().toList();
@@ -332,6 +450,50 @@ void main() {
       expect(task.expected, isNull);
     });
 
+    test('the biggest categories go to papers 1, 2 and 3', () {
+      expect(
+        <String?>[
+          for (var seed = 1; seed <= 3; seed++)
+            buildExam(
+              pool(),
+              seed: seed,
+            ).items.whereType<WritingTask>().single.category,
+        ],
+        <String>['Kategorie 0', 'Kategorie 1', 'Kategorie 2'],
+      );
+    });
+
+    test('Speaking is about another category than the paper\'s writing', () {
+      for (var seed = 1; seed <= 3; seed++) {
+        final exam = buildExam(pool(), seed: seed);
+        expect(
+          exam.items.whereType<SpeakingTask>().single.category,
+          isNot(exam.items.whereType<WritingTask>().single.category),
+        );
+      }
+    });
+
+    test('no target is a word the paper asks', () {
+      final german = <String, String>{
+        for (final w in pool().words) w.word.uid: w.word.german,
+      };
+      for (var seed = 1; seed <= 3; seed++) {
+        final exam = buildExam(pool(), seed: seed);
+        final asked = <String>{
+          for (final item in exam.items) ?german[item.ref],
+        };
+        expect(
+          exam.items
+              .whereType<WritingTask>()
+              .single
+              .targets
+              .toSet()
+              .intersection(asked),
+          isEmpty,
+        );
+      }
+    });
+
     test('Speaking: a category, and the level\'s length', () {
       final task = of<SpeakingTask>(ExamSection.speaking).single;
       expect(task.seconds, 60);
@@ -356,7 +518,7 @@ void main() {
     );
   });
 
-  group('a paper survives being stored', () {
+  group('FR-L12-01 a paper survives being stored', () {
     test('every item decodes to what was encoded', () {
       for (var seed = 1; seed <= 3; seed++) {
         for (final item in buildExam(pool(), seed: seed).items) {

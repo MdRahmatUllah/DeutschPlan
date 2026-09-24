@@ -109,10 +109,31 @@ examCategories:
   WHERE c.id IN (SELECT category_id FROM words WHERE sublevel_code = :step);
 
 -- The writing check's connectors: the course's conjunctions up to and
--- including the step. `seq` is course order across levels, which the
--- per-level `sublevels.ord` is not.
+-- including the step, each once. Course order is `sublevels.ord`, 1 to 12;
+-- `words.seq` interleaves the steps. Entries a learner does not type as
+-- written ("denn ↔ weil", "obgleich / obschon", "allein (= aber)") are left
+-- out.
 examConnectors:
-  SELECT w.german AS german FROM words w
+  SELECT DISTINCT w.german AS german FROM words w
+  JOIN sublevels sl ON sl.code = w.sublevel_code
   WHERE w.pos = 'conj'
-    AND w.seq <= (SELECT MAX(seq) FROM words WHERE sublevel_code = :step)
-  ORDER BY w.seq;
+    AND sl.ord <= (SELECT ord FROM sublevels WHERE code = :step)
+    AND instr(w.german, '↔') = 0
+    AND instr(w.german, '/') = 0
+    AND instr(w.german, '(') = 0
+  ORDER BY sl.ord, w.seq;
+
+-- The refs of every paper sat for a step, whatever became of it: what a new
+-- paper must not repeat (BR-EXAM-02).
+examSatRefs:
+  SELECT a.seed AS seed, x.item_ref AS ref
+  FROM exam_attempts a
+  JOIN exam_answers x ON x.attempt_id = a.id
+  WHERE a.sublevel_code = :code AND x.item_ref IS NOT NULL;
+
+-- A seed's latest attempt: its paper is what a retake sits again.
+latestAttempt:
+  SELECT * FROM exam_attempts
+  WHERE sublevel_code = :code AND seed = :seed
+  ORDER BY started_at DESC, id DESC
+  LIMIT 1;

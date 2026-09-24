@@ -128,7 +128,8 @@ class Exam {
   /// one reuses the least recently used of another's — the hub says so.
   final bool reused;
 
-  /// 48, whatever sections the paper has (FR-L10-04).
+  /// 48 for a full paper, listening or not (FR-L10-04). A step too small to
+  /// fill every section gives fewer.
   int get maxPoints => items.fold(0, (sum, item) => sum + item.section.points);
 }
 
@@ -437,18 +438,24 @@ final class SpeakingTask extends ExamItem {
 }
 
 /// The order the sections draw from the pool: the scarcest first, so a
-/// small step spends its few nouns and forms where only they will do.
+/// small step spends its few nouns and forms where only they will do; and
+/// Writing and Speaking last, so the targets can leave out every word the
+/// paper asks.
 const List<ExamSection> _drawOrder = <ExamSection>[
   ExamSection.wordForms,
   ExamSection.gapFill,
   ExamSection.articles,
   ExamSection.grammar,
-  ExamSection.writing,
-  ExamSection.speaking,
   ExamSection.listening,
   ExamSection.reverse,
   ExamSection.vocabulary,
+  ExamSection.writing,
+  ExamSection.speaking,
 ];
+
+/// What never repeats for [ref]: a grammar item's topic (a topic's items
+/// share their sentence), anything else itself.
+String _key(String ref) => ref.split('#').first;
 
 /// Mock [seed] (1–3) of [pool]'s step.
 ///
@@ -459,6 +466,12 @@ const List<ExamSection> _drawOrder = <ExamSection>[
 /// longest ago, and [Exam.reused] says so. The same pool always gives the
 /// same papers.
 ///
+/// [sat] holds the refs of the papers already stored, by seed. Those seeds
+/// are not drawn again: their refs count as drawn before anything else, so
+/// a paper built after the pool has changed — a word suspended, a setting
+/// moved, a content update — still shares nothing with them. A retake is
+/// the stored paper, not a new one.
+///
 /// [bangla] asks Vocabulary for the Bangla meaning and words Reverse's
 /// prompt in Bangla, where the course has one — the learner's meaning
 /// language. [listening] false is FR-L10-04.
@@ -467,54 +480,56 @@ Exam buildExam(
   required int seed,
   bool listening = true,
   bool bangla = false,
+  Map<int, Set<String>> sat = const <int, Set<String>>{},
 }) {
   if (seed < 1 || seed > 3) throw RangeError.range(seed, 1, 3, 'seed');
+  final seeds = <int>[
+    for (var s = 1; s <= 3; s++)
+      if (s == seed || !sat.containsKey(s)) s,
+  ];
   final randoms = <int, Random>{
-    for (var s = 1; s <= 3; s++) s: Random(practiceSeed(pool.step, 'mock $s')),
+    for (final s in seeds) s: Random(practiceSeed(pool.step, 'mock $s')),
   };
   final papers = <int, Map<ExamSection, List<ExamItem>>>{
-    for (var s = 1; s <= 3; s++) s: <ExamSection, List<ExamItem>>{},
+    for (final s in seeds) s: <ExamSection, List<ExamItem>>{},
   };
-  final taken = <int, Set<String>>{for (var s = 1; s <= 3; s++) s: <String>{}};
-  // When each ref was last drawn, for the least-recently-used reuse.
+  final taken = <int, Set<String>>{for (final s in seeds) s: <String>{}};
+  // When each key was last drawn, for the least-recently-used reuse; the
+  // stored papers' first.
   final drawn = <String, int>{};
   var clock = 0;
+  for (final MapEntry(key: s, value: refs) in sat.entries) {
+    if (s == seed) continue;
+    for (final ref in refs) {
+      drawn[_key(ref)] = clock++;
+    }
+  }
   final reused = <int>{};
 
   /// [n] of [candidates] for paper [s]: fresh ones first, in the paper's
-  /// seeded order, one per [group] while there are enough; then another
-  /// paper's, the longest ago first.
+  /// seeded order ([ordered]: as given); then another paper's, the longest
+  /// ago first. Never one the paper already has.
   List<T> draw<T>(
     int s,
     List<T> candidates,
     int n,
-    String Function(T) ref, {
-    String Function(T)? group,
+    String Function(T) key, {
+    bool ordered = false,
   }) {
     final fresh = <T>[
       for (final c in candidates)
-        if (!drawn.containsKey(ref(c))) c,
-    ]..shuffle(randoms[s]);
+        if (!drawn.containsKey(key(c))) c,
+    ];
+    if (!ordered) fresh.shuffle(randoms[s]);
     final old = <T>[
       for (final c in candidates)
-        if (drawn.containsKey(ref(c)) && !taken[s]!.contains(ref(c))) c,
-    ]..sort((a, b) => drawn[ref(a)]!.compareTo(drawn[ref(b)]!));
-    final picked = <T>[];
-    final groups = <String>{};
-    for (final list in <List<T>>[fresh, old]) {
-      for (final spread in <bool>[true, false]) {
-        for (final c in list) {
-          if (picked.length == n) break;
-          if (picked.contains(c)) continue;
-          if (spread && group != null && !groups.add(group(c))) continue;
-          picked.add(c);
-        }
-      }
-    }
+        if (drawn.containsKey(key(c)) && !taken[s]!.contains(key(c))) c,
+    ]..sort((a, b) => drawn[key(a)]!.compareTo(drawn[key(b)]!));
+    final picked = <T>[...fresh, ...old].take(n).toList();
     for (final c in picked) {
-      if (drawn.containsKey(ref(c))) reused.add(s);
-      drawn[ref(c)] = clock++;
-      taken[s]!.add(ref(c));
+      if (drawn.containsKey(key(c))) reused.add(s);
+      drawn[key(c)] = clock++;
+      taken[s]!.add(key(c));
     }
     return picked;
   }
@@ -524,48 +539,78 @@ Exam buildExam(
   for (final w in words) {
     if (w.category != null) (byCategory[w.category!] ??= <ExamWord>[]).add(w);
   }
-  // The categories a task can be about, the biggest first.
-  final categories = byCategory.keys.toList()
-    ..sort((a, b) {
+  // The categories a task can be about, the biggest first: a big one gives
+  // the learner the most to write about, so papers 1–3 take the first three.
+  final categories = <int?>[
+    ...byCategory.keys.toList()..sort((a, b) {
       final bySize = byCategory[b]!.length.compareTo(byCategory[a]!.length);
       return bySize != 0 ? bySize : a.compareTo(b);
-    });
-  final grammar = <(String, String, GrammarItem)>[
+    }),
+  ];
+  if (categories.isEmpty) categories.add(null);
+  final writingAbout = <int, int?>{};
+  // Each topic's items; a paper that draws a topic asks one of them.
+  final topics = <(String, List<GrammarItem>)>[
     for (final topic in pool.topics)
-      for (final (i, item) in generateItems(
-        topic,
-        seed: practiceSeed(topic.uid, pool.step),
-        siblings: <String>[
-          for (final other in pool.topics)
-            if (other.uid != topic.uid) other.rule,
-        ],
-      ).indexed)
-        ('${topic.uid}#$i', topic.uid, item),
+      if (generateItems(
+            topic,
+            seed: practiceSeed(topic.uid, pool.step),
+            siblings: <String>[
+              for (final other in pool.topics)
+                if (other.uid != topic.uid) other.rule,
+            ],
+          )
+          case final items when items.isNotEmpty)
+        (topic.uid, items),
   ];
 
   for (final section in _drawOrder) {
-    for (var s = 1; s <= 3; s++) {
+    for (final s in seeds) {
       final n = sectionCount(section, listening: listening);
       if (n == 0) continue;
       papers[s]![section] = switch (section) {
         ExamSection.grammar => <ExamItem>[
-          for (final (ref, _, item) in draw(
-            s,
-            grammar,
-            n,
-            (g) => g.$1,
-            group: (g) => g.$2,
-          ))
-            GrammarQuestion(ref, item),
+          for (final (uid, items) in draw(s, topics, n, (t) => t.$1))
+            if (randoms[s]!.nextInt(items.length) case final i)
+              GrammarQuestion('$uid#$i', items[i]),
         ],
-        ExamSection.writing || ExamSection.speaking => <ExamItem>[
+        ExamSection.writing => <ExamItem>[
           for (final id in draw(
             s,
-            <int?>[...categories, if (categories.isEmpty) null],
+            categories,
             n,
-            (id) => '${section.name}:${id ?? '-'}',
+            (id) => 'writing:${id ?? '-'}',
+            ordered: true,
           ))
-            _task(section, pool, id, byCategory[id] ?? words, randoms[s]!),
+            _writing(
+              pool,
+              writingAbout[s] = id,
+              byCategory[id] ?? words,
+              taken[s]!,
+              randoms[s]!,
+            ),
+        ],
+        // About something other than the paper's writing, where there is.
+        ExamSection.speaking => <ExamItem>[
+          for (final id in draw(
+            s,
+            switch (<int?>[
+              for (final c in categories)
+                if (c != writingAbout[s]) c,
+            ]) {
+              final others when others.isNotEmpty => others,
+              _ => categories,
+            },
+            n,
+            (id) => 'speaking:${id ?? '-'}',
+            ordered: true,
+          ))
+            SpeakingTask(
+              'speaking:${id ?? '-'}',
+              level: pool.level,
+              category: id == null ? null : pool.categories[id],
+              seconds: speakingSeconds(pool.level),
+            ),
         ],
         ExamSection.gapFill => <ExamItem>[
           for (final (_, gap) in draw(
@@ -682,39 +727,37 @@ GapQuestion? _gap(ExamWord word, Random random) {
   return gaps.isEmpty ? null : gaps[random.nextInt(gaps.length)];
 }
 
-/// A Writing or Speaking task about category [id], its targets drawn from
-/// [words]: single words, so FR-L12W-01's token match can find them.
-ExamItem _task(
-  ExamSection section,
+/// The Writing task about category [id]: ten targets from [words], single
+/// words so FR-L12W-01's token match can find them, and none the paper
+/// already [asked] (by uid) — the runner goes back and forth, and a target
+/// must not be an answer to copy. Nor its spelling under another uid: the
+/// course has homographs.
+WritingTask _writing(
   ExamPool pool,
   int? id,
   List<ExamWord> words,
+  Set<String> asked,
   Random random,
 ) {
-  final ref = '${section.name}:${id ?? '-'}';
-  final category = id == null ? null : pool.categories[id];
-  if (section == ExamSection.speaking) {
-    return SpeakingTask(
-      ref,
-      level: pool.level,
-      category: category,
-      seconds: speakingSeconds(pool.level),
-    );
-  }
-  bool single(ExamWord w) => !w.word.german.trim().contains(' ');
+  final spelled = <String>{
+    for (final w in pool.words)
+      if (asked.contains(w.word.uid)) w.word.german,
+  };
+  bool fits(ExamWord w) =>
+      !w.word.german.trim().contains(' ') && !spelled.contains(w.word.german);
   final own = <String>[
     for (final w in words)
-      if (single(w)) w.word.german,
+      if (fits(w)) w.word.german,
   ]..shuffle(random);
   // Topped up from the rest of the step when the category is small.
   final rest = <String>[
     for (final w in pool.words)
-      if (single(w) && !own.contains(w.word.german)) w.word.german,
+      if (fits(w) && !own.contains(w.word.german)) w.word.german,
   ]..shuffle(random);
   return WritingTask(
-    ref,
+    'writing:${id ?? '-'}',
     level: pool.level,
-    category: category,
+    category: id == null ? null : pool.categories[id],
     targets: <String>{...own, ...rest}.take(10).toList(),
     minWords: writingMinWords(pool.level),
     connectors: pool.connectors,

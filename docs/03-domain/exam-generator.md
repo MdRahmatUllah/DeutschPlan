@@ -3,7 +3,7 @@
 `domain/exam_generator.dart` — one algorithm, seeded (BR-EXAM-02).
 
 ```
-ExamGenerator(step, seed).build() → Exam(sections)
+buildExam(ExamPool pool, seed:, listening:, bangla:, sat:) → Exam(items, reused)
 ```
 
 1. Pool = all words of the step (any status, suspended excluded) and all grammar topics of the step.
@@ -19,14 +19,21 @@ Grading on submit: `answer_check` per item; Listening compares the typed text wi
 
 ## Details the generator settles (#83)
 
-`buildExam(ExamPool pool, seed:, listening:, bangla:)` in `domain/exam_generator.dart`; `ExamRepository.pool(step)` reads the pool.
+`buildExam(ExamPool pool, seed:, listening:, bangla:, sat:)` in `domain/exam_generator.dart`. `ExamRepository.pool(step)` reads the pool, `satRefs(step)` the papers already sat, and `storedPaper(step, seed)` a seed's stored paper.
 
 - **Items and what never repeats.** An item's ref is:
   - a word's uid, in every word section: a word is asked once in a paper, and in one paper of the three;
-  - `<topic uid>#<n>` for the *n*-th grammar item the topic yields, seeded by the topic and the step;
+  - `<topic uid>#<n>` for the *n*-th grammar item the topic yields, seeded by the topic and the step. What never repeats is the *topic*: a topic's items share their sentence, so two papers never draw the same topic, and a paper asks one item of each topic it draws;
   - `writing:<category id>` or `speaking:<category id>` for the two tasks.
-- **Drawing.** The three papers are drawn together, section by section, each from its own `Random(hash(step, seed))` (FNV-1a over `step|mock seed`). An item one paper takes is out of the others' pools. The scarcest sections draw first (Word forms, Gap fill, Articles, Grammar, Writing, Speaking, Listening, Reverse, Vocabulary), so a small step spends its nouns and forms where only they will do. The paper itself is in BR-EXAM-03's order.
-- **Reuse.** When a section runs out of fresh items, a paper takes the one another paper drew longest ago, never one it already has, and `Exam.reused` tells the hub. Every step of the course fills three disjoint papers with no reuse (a test over the real content.db pins this).
+- **Drawing.** The three papers are drawn together, section by section, each from its own `Random(hash(step, seed))` (FNV-1a over `step|mock seed`). An item one paper takes is out of the others' pools. The order is Word forms, Gap fill, Articles, Grammar, Listening, Reverse, Vocabulary, Writing, Speaking:
+  - the scarcest sections first, so a small step spends its nouns and forms where only they will do;
+  - the two tasks last, so the writing targets can leave out the paper's words.
+
+  The paper itself is in BR-EXAM-03's order.
+- **Reuse.** When a section runs out of fresh items, a paper takes the one another paper drew longest ago, never one it already has, and `Exam.reused` tells the hub. Words and tasks never run out on the real course. Grammar needs twelve topics for three papers: A1.1 to B1.2 have 10 or 11, so their third paper reuses one or two topics and says so (a test over the real content.db pins both). A step with fewer than three categories reuses a task the same way.
+- **Sittings days apart.** A paper is stored when it is begun (FR-L10-03), and the course can change before the next: a word suspended, listening turned off, a content update. So:
+  - L11 passes the refs of every paper already sat as `sat` (`satRefs`). Those seeds are not drawn again, and their refs count as drawn before anything else, so a new paper shares nothing with them.
+  - A retake sits the stored paper (`storedPaper`), not a newly drawn one.
 - **FR-L10-04.** Without listening, Vocabulary gets 11 items and Reverse 9: still 40 questions and 48 points.
 - **Meanings.** With the meaning language set to Bangla, Vocabulary expects the Bangla meaning and Reverse shows it, where the course has one; otherwise English, as the word lists do.
 - **What each item asks:**
@@ -44,8 +51,13 @@ Grading on submit: `answer_check` per item; Listening compares the typed text wi
   | Speaking | see below | — | rubric |
 
 - **Stored.** `exam_answers.prompt` is the item as JSON, so every kind comes back whole after a restart (`ExamItem.decode`). `options_json` holds the buttons (Articles, pick the form, rule recall). `item_ref` is the ref above.
-- **Writing.** A category of the step, the biggest first, one per paper. It has 10 target words, single words from that category (so FR-L12W-01's token match can find them), topped up from the step. The minimum length is FR-L12W-02's. Connectors are the course's conjunctions up to and including the step. content.db has no connector list, and `skill_prompts` holds spreadsheet headers, not prompts (a pipeline defect).
-- **Speaking.** A category of the step, one per paper, and FR-L12S-02's length.
+- **Writing.** The step's biggest categories go to papers 1, 2 and 3 in turn: a big category gives the most to write about.
+  - It has 10 target words, single words from that category (so FR-L12W-01's token match can find them), topped up from the step.
+  - The targets never include a word the paper asks, by uid or by spelling. The runner goes back and forth, and a target must not be an answer to copy.
+  - The minimum length is FR-L12W-02's.
+  - Connectors are the course's conjunctions up to and including the step (course order is `sublevels.ord`), each once. Entries a learner doesn't type as written (`denn ↔ weil`, `obgleich / obschon`, `allein (= aber)`) are left out.
+  - content.db has no connector list, and `skill_prompts` holds scraped worksheet cells, not prompts (#294).
+- **Speaking.** A category of the step other than the paper's writing, biggest first, one per paper, and FR-L12S-02's length.
 - **The task per level.** L12 words these in ARB (#133, #134), with `{category}` the category's German name:
 
   | Level | Writing | Speaking |

@@ -28,7 +28,7 @@ void main() {
     exams = ExamRepository(db);
   }
 
-  group('the pool, over the fixture', () {
+  group('BR-EXAM-02 the pool, over the fixture', () {
     late Directory directory;
 
     setUp(() async {
@@ -125,6 +125,39 @@ void main() {
         expect(row.ord, i + 1);
       }
     });
+
+    test('what was sat, by seed, and the paper a retake sits again', () async {
+      expect(await exams.satRefs('A1.1'), isEmpty);
+      expect(await exams.storedPaper('A1.1', 1), isNull);
+
+      final exam = buildExam(await exams.pool('A1.1'), seed: 1);
+      final questions = <ExamQuestion>[
+        for (final (i, item) in exam.items.indexed)
+          ExamQuestion.of(i + 1, item),
+      ];
+      final first = await exams.begin(
+        sublevelCode: 'A1.1',
+        seed: 1,
+        startedAt: '2026-09-21T08:00:00Z',
+        questions: questions,
+      );
+      await exams.abandon(first);
+
+      expect(await exams.satRefs('A1.1'), <int, Set<String>>{
+        1: <String>{for (final item in exam.items) item.ref},
+      });
+      final again = await exams.storedPaper('A1.1', 1);
+      expect(
+        <String>[for (final q in again!) '${q.ord} ${q.section} ${q.prompt}'],
+        <String>[
+          for (final q in questions) '${q.ord} ${q.section} ${q.prompt}',
+        ],
+      );
+      expect(again.map((q) => q.itemRef), questions.map((q) => q.itemRef));
+      expect(again.map((q) => q.expected), questions.map((q) => q.expected));
+      expect(await exams.storedPaper('A1.1', 2), isNull);
+      expect(await exams.satRefs('A1.2'), isEmpty);
+    });
   });
 
   group('every step of the real course', () {
@@ -136,6 +169,8 @@ void main() {
       'B2.1', 'B2.2', 'C1.1', 'C1.2', 'C2.1', 'C2.2',
     ];
 
+    String key(String ref) => ref.split('#').first;
+
     for (final listening in <bool>[true, false]) {
       test('BR-EXAM-02/03 three full papers that never share an item'
           '${listening ? '' : ', listening off'}', () async {
@@ -145,18 +180,41 @@ void main() {
             for (var seed = 1; seed <= 3; seed++)
               buildExam(pool, seed: seed, listening: listening),
           ];
-          final refs = <String>[];
+          final german = <String, String>{
+            for (final w in pool.words) w.word.uid: w.word.german,
+          };
+          final grammar = <String>[];
+          final rest = <String>[];
           for (final paper in papers) {
-            expect(paper.items, hasLength(42), reason: '$step ${paper.seed}');
-            expect(paper.maxPoints, 48, reason: step);
-            expect(paper.reused, isFalse, reason: '$step ${paper.seed}');
-            refs.addAll(paper.items.map((item) => item.ref));
-            // FR-L12W-01 matches tokens: a phrase could never be found.
+            final why = '$step ${paper.seed}';
+            expect(paper.items, hasLength(42), reason: why);
+            expect(paper.maxPoints, 48, reason: why);
+            for (final item in paper.items) {
+              (item is GrammarQuestion ? grammar : rest).add(key(item.ref));
+            }
+            // FR-L12W-01 matches tokens: a phrase could never be found; and
+            // no target is an answer the learner could go back and copy.
             final task = paper.items.whereType<WritingTask>().single;
-            expect(task.targets.toSet(), hasLength(10), reason: step);
+            expect(task.targets.toSet(), hasLength(10), reason: why);
             expect(task.targets.where((t) => t.contains(' ')), isEmpty);
+            expect(
+              task.targets.toSet().intersection(<String>{
+                for (final item in paper.items) ?german[item.ref],
+              }),
+              isEmpty,
+              reason: why,
+            );
           }
-          expect(refs.toSet(), hasLength(refs.length), reason: step);
+          // Words and tasks never repeat. Grammar needs twelve topics for
+          // that; with fewer, the last paper reuses and says so.
+          expect(rest.toSet(), hasLength(rest.length), reason: step);
+          final enough = pool.topics.length >= 12;
+          expect(grammar.toSet().length, enough ? 12 : pool.topics.length);
+          expect(papers.map((p) => p.reused), <bool>[
+            false,
+            false,
+            !enough,
+          ], reason: step);
         }
       });
     }
@@ -174,5 +232,21 @@ void main() {
       expect(c2.connectors.length, greaterThan(a1.connectors.length));
       expect(c2.connectors, containsAll(a1.connectors));
     });
+
+    test(
+      'the connectors are the course\'s so far, each once, as typed',
+      () async {
+        // `weil` is A2.1's: A1.2 has only A1.1's three.
+        expect((await exams.pool('A1.2')).connectors, <String>[
+          'aber',
+          'oder',
+          'und',
+        ]);
+        final all = (await exams.pool('C2.2')).connectors;
+        expect(all.toSet(), hasLength(all.length));
+        expect(all, containsAll(<String>['weil', 'falls', 'sintemal']));
+        expect(all.where((c) => c.contains(RegExp(r'[↔/(]'))), isEmpty);
+      },
+    );
   });
 }
