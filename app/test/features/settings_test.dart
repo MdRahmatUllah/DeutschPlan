@@ -6,11 +6,14 @@ import 'package:deutschplan/core/theme/app_theme.dart';
 import 'package:deutschplan/core/theme/dp_surface.dart';
 import 'package:deutschplan/core/theme/dp_tokens.dart';
 import 'package:deutschplan/data/db/app_database.dart';
+import 'package:deutschplan/data/db/content_dao.dart';
+import 'package:deutschplan/data/repositories/plan_store.dart';
 import 'package:deutschplan/data/repositories/model_repository.dart';
 import 'package:deutschplan/data/repositories/setting_keys.dart';
 import 'package:deutschplan/data/repositories/settings_repository.dart';
 import 'package:deutschplan/data/repositories/word_repository.dart';
 import 'package:deutschplan/domain/fsrs.dart';
+import 'package:deutschplan/domain/plan_engine.dart';
 import 'package:deutschplan/features/me/settings_screen.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
 import 'package:deutschplan/main.dart'
@@ -21,6 +24,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 
+import '../db/content_fixture.dart';
 import 'settings_fixtures.dart';
 
 /// M3 · Settings — #146.
@@ -78,9 +82,11 @@ void main() {
           routerConfig: GoRouter(
             initialLocation: '/me/settings',
             routes: <RouteBase>[
+              // M1 itself records nothing: it is built under whatever is
+              // opened over it, pushed or not.
               GoRoute(
                 path: '/me',
-                builder: (_, state) => away(state),
+                builder: (_, _) => const SizedBox(),
                 routes: <RouteBase>[
                   GoRoute(
                     path: 'settings',
@@ -102,8 +108,6 @@ void main() {
       ),
     );
     await tester.pumpAndSettle();
-    // `/me` under M3 builds too; only what M3 opens counts.
-    went = '';
   }
 
   Finder switchFor(String label) => find.byWidgetPredicate(
@@ -220,6 +224,19 @@ void main() {
     expect(find.text(l10n.settingsSpeedLine('0.5')), findsOneWidget);
   });
 
+  testWidgets("speech speed is on the study menu's grid: 0.75 and 1.25 read "
+      'as they are', (tester) async {
+    await settings.write(SettingKeys.ttsSpeed, 0.75);
+    await pump(tester);
+    expect(find.text(l10n.settingsSpeedLine('0.75')), findsOneWidget);
+    final slider = tester.widget<DpSlider>(sliderFor(l10n.settingsSpeed));
+    expect((slider.min, slider.value, slider.max), (2, 3, 6));
+
+    await settings.write(SettingKeys.ttsSpeed, 1.25);
+    await tester.pumpAndSettle();
+    expect(find.text(l10n.settingsSpeedLine('1.25')), findsOneWidget);
+  });
+
   testWidgets('each choice writes its key', (tester) async {
     await pump(tester);
 
@@ -263,6 +280,44 @@ void main() {
     await tester.pumpAndSettle();
     expect(settings.read(SettingKeys.examPassPercent), 70);
     expect(find.text(l10n.settingsPercent(70)), findsOneWidget);
+  });
+
+  testWidgets('BR-PLAN-08 New words per day reaches tomorrow\'s plan, and '
+      'today\'s stays as it was', (tester) async {
+    await tester.runAsync(() async {
+      await db.customStatement(
+        "ATTACH DATABASE '${ContentDao.attachPath(realContent())}' AS c",
+      );
+      await DriftPlanStore(db, settings).enroll(
+        const ActiveStep(
+          sublevelCode: 'A1.1',
+          startedOn: '2026-09-21',
+          dailyNew: 7,
+          studyDaysMask: 127,
+        ),
+      );
+    });
+    PlanEngine engine() => PlanEngine(
+      store: DriftPlanStore(db, settings),
+      reviseCount: 10,
+      backlogCatchupDays: 30,
+    );
+    final today = await tester.runAsync(() => engine().openDay('2026-09-21'));
+    expect(today!.newToday, hasLength(7));
+
+    await pump(tester);
+    await tester.tap(find.bySemanticsLabel(l10n.settingsDailyNewIncrease));
+    await tester.pumpAndSettle();
+
+    final (again, tomorrow) = (await tester.runAsync(
+      () async => (
+        await engine().openDay('2026-09-21'),
+        await engine().openDay('2026-09-22'),
+      ),
+    ))!;
+    expect(settings.read(SettingKeys.dailyNew), 8);
+    expect(again.newToday, hasLength(7));
+    expect(tomorrow.newToday, hasLength(8));
   });
 
   testWidgets('BR-PLAN-08 new words and revisions apply from tomorrow', (
@@ -333,6 +388,15 @@ void main() {
       expect(settings.read(SettingKeys.mtEnabled), isFalse);
     });
 
+    testWidgets('an update waiting is still a whole model', (tester) async {
+      await pump(tester, model: downloadingModel(ModelStatus.updateAvailable));
+
+      await tester.tap(switchFor(l10n.settingsTranslation));
+      await tester.pumpAndSettle();
+      expect(settings.read(SettingKeys.mtEnabled), isTrue);
+      expect(went, isEmpty);
+    });
+
     testWidgets('on with the model ready, and off again', (tester) async {
       await pump(tester, model: downloadingModel(ModelStatus.ready));
 
@@ -374,6 +438,12 @@ void main() {
       expect(find.text('Mon, Wed, Fri · 7:30 PM'), findsOneWidget);
     });
 
+    testWidgets("a run across the week's end", (tester) async {
+      await settings.write(SettingKeys.studyDaysMask, 16 | 32 | 64 | 1);
+      await pump(tester);
+      expect(find.text('Fri–Mon · ${l10n.settingsNoReminder}'), findsOneWidget);
+    });
+
     testWidgets('two days in a row are two days', (tester) async {
       await settings.write(SettingKeys.studyDaysMask, 32 | 64);
       await pump(tester);
@@ -405,6 +475,22 @@ void main() {
         await tester.pumpAndSettle();
         expect(went, to);
       });
+    }
+  });
+
+  testWidgets('M4 and M6 are pushed: back returns to Settings', (tester) async {
+    await pump(tester);
+    for (final (row, to) in <(String, String)>[
+      (l10n.settingsVoiceEngine, '/me/models'),
+      (l10n.settingsExport, '/me/export'),
+    ]) {
+      await tester.tap(find.text(row));
+      await tester.pumpAndSettle();
+      expect(went, to);
+
+      await tester.binding.handlePopRoute();
+      await tester.pumpAndSettle();
+      expect(find.byType(SettingsScreen), findsOneWidget, reason: to);
     }
   });
 

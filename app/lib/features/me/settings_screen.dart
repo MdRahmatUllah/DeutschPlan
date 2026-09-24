@@ -72,12 +72,21 @@ class SettingsEditor extends _$SettingsEditor {
   Future<void> set<T>(SettingKey<T> key, T value) =>
       ref.read(settingsSourceProvider).write(key, value);
 
+  /// *New words per day* reaches the open enrollment too, which is where
+  /// the plan engine reads the pace (BR-PLAN-08).
+  Future<void> dailyNew(int count) =>
+      ref.read(setupRepositoryProvider).setDailyNew(count);
+
   /// FR-M3-03: on only once the model is ready. False otherwise, with the
   /// switch left off, and M3 opens M4 to get it.
   Future<bool> translation({required bool on}) async {
     if (on) {
       final model = await ref.read(translationModelProvider.future);
-      if (model == null || !model.isReady) return false;
+      // An update waiting still leaves the old model whole on disk.
+      final usable =
+          model != null &&
+          (model.isReady || model.status == ModelStatus.updateAvailable);
+      if (!usable) return false;
     }
     await set(SettingKeys.mtEnabled, on);
     return true;
@@ -97,9 +106,9 @@ class SettingsScreen extends ConsumerWidget {
   static const unlockPercent = (min: 50, max: 100);
   static const passPercent = (min: 50, max: 90);
 
-  /// Speech speed in tenths: 0.5× to 1.5×, around the 1.0× the artboard
-  /// draws at the middle.
-  static const speed = (min: 5, max: 15);
+  /// Speech speed in quarters: 0.5× to 1.5×, around the 1.0× the artboard
+  /// draws at the middle, on the grid the study menu's 0.75 / 1 / 1.25 use.
+  static const speed = (min: 2, max: 6);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -125,7 +134,7 @@ class SettingsScreen extends ConsumerWidget {
     final theme = settings.read(SettingKeys.themeMode);
     final unlock = settings.read(SettingKeys.examUnlockPercent);
     final pass = settings.read(SettingKeys.examPassPercent);
-    final speedTenths = (settings.read(SettingKeys.ttsSpeed) * 10).round();
+    final speedQuarters = (settings.read(SettingKeys.ttsSpeed) * 4).round();
 
     String meaningName(MeaningLanguage language) => switch (language) {
       MeaningLanguage.english => l10n.settingsEnglish,
@@ -175,7 +184,7 @@ class SettingsScreen extends ConsumerWidget {
                   dailyNew,
                   l10n.settingsDailyNewDecrease,
                   l10n.settingsDailyNewIncrease,
-                  set,
+                  <T>(key, value) => editor.dailyNew(value as int),
                 ),
               ),
               _Row(
@@ -358,22 +367,24 @@ class SettingsScreen extends ConsumerWidget {
                   ),
                   TtsEngineSetting.system => l10n.settingsVoicePhone,
                 },
-                onTap: () => context.jumpToTab(const ModelsRoute()),
+                onTap: () => ModelsRoute.open(context),
               ),
               _Row(
                 title: l10n.settingsSpeed,
-                subtitle: l10n.settingsSpeedLine(_times(speedTenths)),
+                subtitle: l10n.settingsSpeedLine(
+                  _times(speedQuarters.clamp(speed.min, speed.max)),
+                ),
                 labelledByControl: true,
                 trailing: _slider(
                   DpSlider(
-                    value: speedTenths.clamp(speed.min, speed.max),
+                    value: speedQuarters.clamp(speed.min, speed.max),
                     min: speed.min,
                     max: speed.max,
                     compact: true,
                     label: l10n.settingsSpeed,
-                    describe: (tenths) => '${_times(tenths)}×',
-                    onChanged: (tenths) =>
-                        set(SettingKeys.ttsSpeed, tenths / 10),
+                    describe: (quarters) => '${_times(quarters)}×',
+                    onChanged: (quarters) =>
+                        set(SettingKeys.ttsSpeed, quarters / 4),
                   ),
                 ),
               ),
@@ -473,7 +484,7 @@ class SettingsScreen extends ConsumerWidget {
                   onChanged: (on) async {
                     final done = await editor.translation(on: on);
                     if (!done && context.mounted) {
-                      context.jumpToTab(const ModelsRoute());
+                      ModelsRoute.open(context);
                     }
                   },
                 ),
@@ -486,7 +497,7 @@ class SettingsScreen extends ConsumerWidget {
               _Row(
                 title: l10n.settingsExport,
                 subtitle: l10n.settingsExportNote,
-                onTap: () => context.jumpToTab(const ExportImportRoute()),
+                onTap: () => ExportImportRoute.open(context),
               ),
               _Row(
                 title: l10n.settingsReset,
@@ -529,8 +540,10 @@ class SettingsScreen extends ConsumerWidget {
   /// The artboard's 120 dp slider beside its row's text.
   static Widget _slider(DpSlider slider) => SizedBox(width: 120, child: slider);
 
-  /// Tenths as the speed reads: 10 is "1.0".
-  static String _times(int tenths) => (tenths / 10).toStringAsFixed(1);
+  /// Quarters as the speed reads: 4 is "1.0", 3 is "0.75".
+  static String _times(int quarters) => quarters.isEven
+      ? (quarters / 4).toStringAsFixed(1)
+      : (quarters / 4).toStringAsFixed(2);
 
   /// "Mon–Sat · 19:30 · only when something is due", from M5's settings.
   static String _studyDays(BuildContext context, SettingsRepository settings) {
@@ -544,11 +557,15 @@ class SettingsScreen extends ConsumerWidget {
     final weekday = DateFormat.E(Localizations.localeOf(context).toString());
     String name(int day) => weekday.format(DateTime(2024, 1, 1 + day));
 
+    // A run of days in a row, across the week's end too: it starts on the
+    // day whose day before is not a study day ("Fri–Mon").
+    final start = days.where((day) => !days.contains((day + 6) % 7));
+    final run = start.length == 1 && days.length >= 3 ? start.single : null;
     final parts = <String>[
       if (days.length == 7)
         l10n.settingsEveryDay
-      else if (days.length >= 3 && days.last - days.first == days.length - 1)
-        l10n.settingsDayRange(name(days.first), name(days.last))
+      else if (run != null)
+        l10n.settingsDayRange(name(run), name((run + days.length - 1) % 7))
       else if (days.isNotEmpty)
         days.map(name).join(', '),
     ];
@@ -591,32 +608,47 @@ class SettingsScreen extends ConsumerWidget {
               child: DpText(title, role: DpTextRole.title),
             ),
             const SizedBox(height: 8),
-            for (final (value, label) in options)
-              Semantics(
-                container: true,
-                button: true,
-                selected: value == current,
-                child: GestureDetector(
-                  behavior: HitTestBehavior.opaque,
-                  onTap: () => Navigator.of(sheet).pop(value),
-                  child: ConstrainedBox(
-                    constraints: const BoxConstraints(minHeight: 48),
-                    child: Row(
-                      children: <Widget>[
-                        Expanded(
-                          child: DpText(
-                            label,
-                            role: DpTextRole.body,
-                            weight: value == current ? 600 : 400,
+            // Scrolls: Unlock's eleven rows outgrow a phone held sideways,
+            // and any list outgrows 200 % text.
+            Flexible(
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: <Widget>[
+                    for (final (value, label) in options)
+                      Semantics(
+                        container: true,
+                        button: true,
+                        selected: value == current,
+                        child: GestureDetector(
+                          behavior: HitTestBehavior.opaque,
+                          onTap: () => Navigator.of(sheet).pop(value),
+                          child: ConstrainedBox(
+                            constraints: const BoxConstraints(minHeight: 48),
+                            child: Row(
+                              children: <Widget>[
+                                Expanded(
+                                  child: DpText(
+                                    label,
+                                    role: DpTextRole.body,
+                                    weight: value == current ? 600 : 400,
+                                  ),
+                                ),
+                                if (value == current)
+                                  Icon(
+                                    Icons.check,
+                                    size: 20,
+                                    color: tokens.color.link,
+                                  ),
+                              ],
+                            ),
                           ),
                         ),
-                        if (value == current)
-                          Icon(Icons.check, size: 20, color: tokens.color.link),
-                      ],
-                    ),
-                  ),
+                      ),
+                  ],
                 ),
               ),
+            ),
           ],
         ),
       );
