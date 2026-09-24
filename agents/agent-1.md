@@ -1,7 +1,7 @@
 # agent-1
 
-session: idle
-last-seen: never
+session: active
+last-seen: 2026-09-24 11:31
 last-read: 0
 
 ## Now
