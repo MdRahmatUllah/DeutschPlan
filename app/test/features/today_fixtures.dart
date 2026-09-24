@@ -110,18 +110,70 @@ TodayView artboardRest({int reviseDone = 0}) => TodayView(
   ),
 );
 
+/// The Learn artboard's course: A1.1 and A1.2 passed, A2.1 current with
+/// 184 done, 60 learning and 296 to do, and everything after it not started.
+List<StepProgress> artboardCourse({
+  String active = 'A2.1',
+  Set<String> passed = const <String>{'A1.1', 'A1.2'},
+}) {
+  const shape = <(String, String, int, int)>[
+    ('A1.1', 'A1', 480, 14),
+    ('A1.2', 'A1', 470, 12),
+    ('A2.1', 'A2', 540, 10),
+    ('A2.2', 'A2', 520, 11),
+    ('B1.1', 'B1', 460, 16),
+    ('B1.2', 'B1', 440, 16),
+    ('B2.1', 'B2', 520, 18),
+    ('B2.2', 'B2', 500, 18),
+    ('C1.1', 'C1', 430, 17),
+    ('C1.2', 'C1', 420, 17),
+    ('C2.1', 'C2', 410, 16),
+    ('C2.2', 'C2', 404, 17),
+  ];
+  return <StepProgress>[
+    for (final (code, level, words, grammar) in shape)
+      StepProgress(
+        code: code,
+        levelCode: level,
+        words: words,
+        todo: code == 'A2.1' ? 296 : (passed.contains(code) ? 0 : words),
+        learning: code == 'A2.1' ? 60 : 0,
+        done: code == 'A2.1' ? 184 : (passed.contains(code) ? words : 0),
+        grammar: grammar,
+        grammarLearned: code == 'A2.1'
+            ? 4
+            : (passed.contains(code) ? grammar : 0),
+        passed: passed.contains(code),
+        active: code == active,
+        unlocked: passed.contains(code),
+      ),
+  ];
+}
+
 /// Today without a database: the artboard's plan, and no coach mark.
 ///
 /// For tests about something else — the router, the shell — that only need
 /// the first tab to draw.
-List<Override> todayStub([TodayView? view]) => <Override>[
-  todayViewProvider.overrideWith((ref) async => view ?? artboardToday()),
+List<Override> todayStub([
+  TodayView? view,
+  List<StepProgress>? course,
+  Duration? dayAfter,
+]) => <Override>[
+  todayViewProvider.overrideWith((ref) async {
+    // A day that arrives after the rest of the screen, as a slow plan does.
+    if (dayAfter != null) await Future<void>.delayed(dayAfter);
+    return view ?? artboardToday();
+  }),
   coachMarkProvider.overrideWithValue(false),
   // T4 without a database: twenty rows, enough to scroll.
   backlogProvider.overrideWith(StubBacklog.new),
   backlogPauseProvider.overrideWith(_StubPause.new),
   // T5 without a database: nothing to practise.
   practiceSentencesProvider.overrideWith(_StubSentences.new),
+  // L1 without a database: the Learn artboard's course.
+  stepProgressProvider.overrideWith(
+    (ref) => Stream.value(course ?? artboardCourse()),
+  ),
 ];
 
 class _StubSentences extends PracticeSentences {

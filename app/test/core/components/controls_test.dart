@@ -63,6 +63,34 @@ void main() {
       }
     });
 
+    testWidgets('the compact primary is drawn at 40 and touched at 48', (
+      tester,
+    ) async {
+      var taps = 0;
+      await pump(
+        tester,
+        DpButton(
+          label: 'Study',
+          compact: true,
+          expand: false,
+          onPressed: () => taps++,
+        ),
+      );
+      final drawn = find.descendant(
+        of: find.byType(DpButton),
+        matching: find.byType(DecoratedBox),
+      );
+      expect(tester.getSize(drawn.first).height, DpButton.compactHeight);
+      expect(
+        tester.getSize(find.byType(DpButton)).height,
+        DpButton.minimumTapTarget,
+      );
+      // Just outside the drawing, still inside the hit area.
+      final box = tester.getRect(drawn.first);
+      await tester.tapAt(Offset(box.center.dx, box.bottom + 3));
+      expect(taps, 1);
+    });
+
     testWidgets('only the primary carries the hard offset shadow', (
       tester,
     ) async {

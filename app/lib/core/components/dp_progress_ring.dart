@@ -180,6 +180,7 @@ class DpSegmentedBar extends StatelessWidget {
     super.key,
     this.height = 8,
     this.semanticLabel,
+    this.colours,
   });
 
   final int done;
@@ -187,6 +188,10 @@ class DpSegmentedBar extends StatelessWidget {
   final int todo;
   final double height;
   final String? semanticLabel;
+
+  /// Done, Learning and To do on a coloured field, where Lime, Sun and Oat
+  /// would not read: L1's course bar on its Sun header.
+  final ({Color done, Color learning, Color todo})? colours;
 
   /// A segment never disappears entirely — one learned word out of five hundred
   /// still earns a sliver, which is the point of showing progress at all.
@@ -198,10 +203,11 @@ class DpSegmentedBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final tokens = context.tokens;
 
+    final track = colours?.todo ?? tokens.surface.muted;
     final segments = <(int, Color)>[
-      (done, tokens.color.easy),
-      (learning, tokens.color.learning),
-      (todo, tokens.surface.muted),
+      (done, colours?.done ?? tokens.color.easy),
+      (learning, colours?.learning ?? tokens.color.learning),
+      (todo, track),
     ].where((s) => s.$1 > 0).toList();
 
     return Semantics(
@@ -216,7 +222,7 @@ class DpSegmentedBar extends StatelessWidget {
             width: double.infinity,
             height: height,
             child: total == 0
-                ? ColoredBox(color: tokens.surface.muted)
+                ? ColoredBox(color: track)
                 : LayoutBuilder(
                     builder: (context, constraints) {
                       // Widths are computed rather than left to flex: a

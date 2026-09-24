@@ -34,6 +34,7 @@ class DpButton extends StatefulWidget {
     this.expand = true,
     this.colour,
     this.onColour,
+    this.compact = false,
   });
 
   final String label;
@@ -57,6 +58,11 @@ class DpButton extends StatefulWidget {
   /// dark ink on dark mode's Sun, where the page ink is the light one.
   final Color? onColour;
 
+  /// The artboards' inline primary: 40 dp and the body text, beside the
+  /// line it acts on — L1's *Study*. Its hit area is still
+  /// [minimumTapTarget] tall.
+  final bool compact;
+
   /// Visual heights from the artboard. These are the drawn sizes; the hit area
   /// is padded to [minimumTapTarget] where the drawing is smaller, because
   /// accessibility-performance.md asks for ">= 48 dp / 44 pt" and 44 is the iOS
@@ -64,11 +70,13 @@ class DpButton extends StatefulWidget {
   static const double primaryHeight = 56;
   static const double secondaryHeight = 48;
   static const double textHeight = 44;
+  static const double compactHeight = 40;
 
   /// Android's minimum. iOS is satisfied by 44.
   static const double minimumTapTarget = 48;
 
   double get height => switch (kind) {
+    _ when compact => compactHeight,
     DpButtonKind.primary => primaryHeight,
     DpButtonKind.secondary => secondaryHeight,
     DpButtonKind.text => textHeight,
@@ -102,7 +110,7 @@ class _DpButtonState extends State<DpButton> {
           DpButtonKind.text => widget.colour ?? tokens.color.link,
         };
 
-    final role = kind == DpButtonKind.primary
+    final role = kind == DpButtonKind.primary && !widget.compact
         ? DpTextRole.bodyLarge
         : DpTextRole.body;
 
@@ -170,7 +178,7 @@ class _DpButtonState extends State<DpButton> {
         // minHeight below would stop being a floor.
         child: Padding(
           padding: EdgeInsets.symmetric(
-            horizontal: tokens.spacing.lg,
+            horizontal: widget.compact ? 18 : tokens.spacing.lg,
             vertical: tokens.spacing.sm,
           ),
           child: content,
@@ -180,7 +188,7 @@ class _DpButtonState extends State<DpButton> {
 
     // The artboard height is a floor, not a fixed size: at 200 % the label
     // needs a second line and the button grows to hold it.
-    final button = Align(
+    Widget button = Align(
       alignment: Alignment.center,
       widthFactor: widget.expand ? null : 1,
       heightFactor: 1,
@@ -196,6 +204,14 @@ class _DpButtonState extends State<DpButton> {
         child: content,
       ),
     );
+    if (widget.compact) {
+      // Drawn at 40, touched at 48: the Align above centres the drawing in
+      // the taller box.
+      button = ConstrainedBox(
+        constraints: const BoxConstraints(minHeight: DpButton.minimumTapTarget),
+        child: button,
+      );
+    }
 
     return Semantics(
       button: true,

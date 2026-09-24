@@ -1702,5 +1702,106 @@
   "dayCompleteBack": "Back to Today",
   "@dayCompleteBack": {
     "description": "T6: returns to Today (also on a tap anywhere, or after 4 s)."
+  },
+  "learnTitle": "Your course",
+  "@learnTitle": {
+    "description": "L1 header title."
+  },
+  "learnCourseLine": "{done} of {words} words · {learned} of {topics} grammar topics",
+  "@learnCourseLine": {
+    "description": "L1 header: course-wide words done and grammar topics learned.",
+    "placeholders": {
+      "done": {
+        "type": "int",
+        "format": "decimalPattern"
+      },
+      "words": {
+        "type": "int",
+        "format": "decimalPattern"
+      },
+      "learned": {
+        "type": "int",
+        "format": "decimalPattern"
+      },
+      "topics": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "learnStepLine": "{words, plural, =1{1 word} other{{words} words}} · {topics, plural, =1{1 grammar topic} other{{topics} grammar topics}}",
+  "@learnStepLine": {
+    "description": "L1 step tile: the step's words and grammar topics.",
+    "placeholders": {
+      "words": {
+        "type": "int"
+      },
+      "topics": {
+        "type": "int"
+      }
+    }
+  },
+  "learnPassed": "Passed",
+  "@learnPassed": {
+    "description": "L1 step badge: a mock exam of the step was passed."
+  },
+  "learnCurrent": "Current",
+  "@learnCurrent": {
+    "description": "L1 step badge: the active step."
+  },
+  "learnExamsUnlocked": "Exams unlocked",
+  "@learnExamsUnlocked": {
+    "description": "L1 step badge: enough words introduced for the mock exams."
+  },
+  "learnNotStarted": "Not started",
+  "@learnNotStarted": {
+    "description": "L1: read out for the lock on a step not yet started."
+  },
+  "learnTodayLeft": "Today · {count, plural, =1{1 card left} other{{count} cards left}}",
+  "@learnTodayLeft": {
+    "description": "L1 current tile: what is left of today's study blocks.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "learnTodayDone": "Today · all cards done",
+  "@learnTodayDone": {
+    "description": "L1 current tile when today's study blocks are done."
+  },
+  "learnStudy": "Study",
+  "@learnStudy": {
+    "description": "L1 current tile: opens the study session."
+  },
+  "learnGrammarLibrary": "Grammar library",
+  "@learnGrammarLibrary": {
+    "description": "L1 card: opens L3."
+  },
+  "learnGrammarLibraryLine": "{topics} topics · {learned} learned",
+  "@learnGrammarLibraryLine": {
+    "description": "L1 grammar library card subtitle.",
+    "placeholders": {
+      "topics": {
+        "type": "int",
+        "format": "decimalPattern"
+      },
+      "learned": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "learnCategories": "Word categories",
+  "@learnCategories": {
+    "description": "L1 card: opens L5."
+  },
+  "learnCategoriesLine": "Browse by topic across all steps",
+  "@learnCategoriesLine": {
+    "description": "L1 word categories card subtitle."
+  },
+  "learnLoadFailed": "Your course could not be loaded.",
+  "@learnLoadFailed": {
+    "description": "L1 when the course cannot be read."
   }
 }

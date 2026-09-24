@@ -16,6 +16,7 @@ import 'package:deutschplan/router/app_shell.dart';
 import 'package:deutschplan/router/cross_tab.dart';
 import 'package:deutschplan/router/route_guards.dart';
 import 'package:deutschplan/router/routes.dart';
+import 'package:deutschplan/features/learn/learn_screen.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
@@ -166,7 +167,7 @@ void main() {
       // learner had open, not /today.
       await pumpApp(tester, at: '/today/backlog');
       await jump(tester, const LearnRoute());
-      expect(find.text('L1'), findsOneWidget);
+      expect(find.byType(LearnScreen), findsOneWidget);
 
       await tester.tap(find.text(l10n.tabToday).last);
       await tester.pumpAndSettle();

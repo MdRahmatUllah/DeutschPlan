@@ -2,7 +2,8 @@ import 'package:deutschplan/core/theme/dp_tokens.dart';
 import 'package:deutschplan/core/typography/dp_text.dart';
 import 'package:material_ui/material_ui.dart';
 
-/// A count on a coloured pill: S3's scores, Today's Tomorrow card.
+/// A count on a coloured pill: S3's scores, Today's Tomorrow card, L1's
+/// step badges.
 ///
 /// 24 dp, a 1.5 px ink edge — the panel's edge under glass, as the glass
 /// artboards draw it — and a bold label.
@@ -13,6 +14,7 @@ class DpPill extends StatelessWidget {
     super.key,
     this.ink,
     this.small = false,
+    this.icon,
   });
 
   final String label;
@@ -25,9 +27,19 @@ class DpPill extends StatelessWidget {
   /// The artboards' smaller pill: S3's overall score.
   final bool small;
 
+  /// A 16 dp mark before the label: L1's *Passed* tick.
+  final IconData? icon;
+
   @override
   Widget build(BuildContext context) {
     final tokens = context.tokens;
+    final colour = ink ?? tokens.color.onAccent;
+    final text = DpText(
+      label,
+      role: small ? DpTextRole.caption : DpTextRole.label,
+      weight: 700,
+      color: colour,
+    );
     return Container(
       constraints: const BoxConstraints(minHeight: 24),
       padding: EdgeInsets.symmetric(horizontal: small ? 8 : 10, vertical: 2),
@@ -41,12 +53,16 @@ class DpPill extends StatelessWidget {
               )
             : Border.all(color: tokens.color.ink, width: 1.5),
       ),
-      child: DpText(
-        label,
-        role: small ? DpTextRole.caption : DpTextRole.label,
-        weight: 700,
-        color: ink ?? tokens.color.onAccent,
-      ),
+      child: icon == null
+          ? text
+          : Row(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Icon(icon, size: 16, color: colour),
+                const SizedBox(width: 4),
+                text,
+              ],
+            ),
     );
   }
 }

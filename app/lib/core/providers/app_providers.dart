@@ -194,6 +194,12 @@ ContentUpdater contentUpdater(Ref ref) => ContentUpdater(
 WordRepository wordRepository(Ref ref) =>
     WordRepository(ref.watch(appDatabaseProvider), ref.watch(settingsProvider));
 
+/// Every step and the learner's place in it: L1's tiles, the Me card
+/// (`state-management.md`: Stream, Learn/Me).
+@riverpod
+Stream<List<StepProgress>> stepProgress(Ref ref) =>
+    ref.watch(wordRepositoryProvider).watchStepProgress();
+
 @riverpod
 GrammarRepository grammarRepository(Ref ref) => GrammarRepository(
   ref.watch(appDatabaseProvider),

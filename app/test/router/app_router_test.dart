@@ -22,12 +22,14 @@ import 'package:flutter_riverpod/misc.dart' show Override;
 import '../domain/placement_test.dart' show wordFor;
 
 import 'package:deutschplan/core/theme/app_theme.dart';
+import 'package:deutschplan/core/theme/dp_tokens.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
 import 'package:deutschplan/main.dart'
     show appLocalizationsDelegates, supportedLocales;
 import 'package:deutschplan/router/app_router.dart';
 import 'package:deutschplan/router/app_shell.dart';
 import 'package:deutschplan/router/routes.dart';
+import 'package:deutschplan/features/learn/learn_screen.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
@@ -178,7 +180,7 @@ void main() {
       final l10n = await AppLocalizations.delegate.load(supportedLocales.first);
 
       for (final pair in <(String, Finder)>[
-        (l10n.tabLearn, find.text('L1')),
+        (l10n.tabLearn, find.byType(LearnScreen)),
         (l10n.tabSearch, find.text('R1')),
         (l10n.tabMe, find.text('M1')),
         (l10n.tabToday, find.byType(TodayScreen)),
@@ -186,6 +188,29 @@ void main() {
         await tester.tap(find.text(pair.$1).last);
         await tester.pumpAndSettle();
         expect(pair.$2, findsOneWidget, reason: pair.$1);
+      }
+    });
+
+    testWidgets("each tab's pill is its own colour", (tester) async {
+      // The artboards: Today Lagoon, Learn Sun, Search Raspberry, Me Cobalt.
+      await pumpApp(tester);
+      final l10n = await AppLocalizations.delegate.load(supportedLocales.first);
+      final colours = tester.element(find.byType(AppShell)).tokens.color;
+      for (final (tab, pill) in <(String, Color)>[
+        (l10n.tabLearn, colours.accent),
+        (l10n.tabSearch, colours.die),
+        (l10n.tabMe, colours.der),
+        (l10n.tabToday, colours.primary),
+      ]) {
+        await tester.tap(find.text(tab).last);
+        await tester.pumpAndSettle();
+        expect(
+          tester
+              .widget<NavigationBar>(find.byType(NavigationBar))
+              .indicatorColor,
+          pill,
+          reason: tab,
+        );
       }
     });
 
@@ -306,9 +331,9 @@ void main() {
 
       await tester.tap(find.text(l10n.tabLearn).last);
       await tester.pumpAndSettle();
-      await tester.drag(find.text('L1 row 1'), const Offset(0, -400));
+      await tester.drag(find.text(l10n.learnTitle), const Offset(0, -400));
       await tester.pumpAndSettle();
-      expect(find.text('L1 row 1'), findsNothing);
+      expect(find.text(l10n.learnTitle), findsNothing);
 
       await tester.tap(find.text(l10n.tabToday).last);
       await tester.pumpAndSettle();
@@ -323,7 +348,7 @@ void main() {
       await tester.tap(find.text(l10n.tabLearn).last);
       await tester.pumpAndSettle();
       expect(
-        find.text('L1 row 1'),
+        find.text(l10n.learnTitle),
         findsNothing,
         reason: 'the offstage branch was scrolled too',
       );
