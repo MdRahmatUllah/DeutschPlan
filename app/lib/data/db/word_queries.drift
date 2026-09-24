@@ -110,10 +110,11 @@ statusCountsForStep:
 wordStateFor:
   SELECT * FROM word_state WHERE word_uid = :uid;
 
--- FR-L1-01 / FR-M1-01: the whole course, a row per step in BR-COURSE-01's
--- order. Its words by status, derived as in statusCountsForStep; its grammar
--- topics learned; whether any mock was passed (BR-EXAM-04); and whether it
--- is the active step. One grouped query rather than twelve of each.
+-- FR-L1-01 / FR-M1-01 / FR-L2-01: the whole course, a row per step in
+-- BR-COURSE-01's order. Its words by status, derived as in
+-- statusCountsForStep; its grammar topics learned; the first mock passed
+-- (BR-EXAM-04); and its enrollment, if it has one — `sublevel_code` is the
+-- key, so a step has at most one. One grouped query rather than twelve.
 stepProgress:
   SELECT
     sl.code AS code,
@@ -127,13 +128,17 @@ stepProgress:
       JOIN grammar_state gs ON gs.grammar_uid = g.uid
       WHERE g.sublevel_code = sl.code
         AND gs.status IN ('learning', 'done')) AS grammar_learned,
-    EXISTS(SELECT 1 FROM exam_attempts a
+    (SELECT a.seed FROM exam_attempts a
       WHERE a.sublevel_code = sl.code AND a.status = 'finished'
-        AND a.passed = 1) AS passed,
-    EXISTS(SELECT 1 FROM enrollments e
-      WHERE e.sublevel_code = sl.code AND e.completed_on IS NULL) AS active
+        AND a.passed = 1
+      ORDER BY a.finished_at, a.id LIMIT 1) AS passed_seed,
+    e.started_on AS started_on,
+    e.completed_on AS completed_on,
+    e.daily_new AS daily_new,
+    e.study_days_mask AS study_days_mask
   FROM sublevels sl
   JOIN levels l ON l.code = sl.level_code
+  LEFT JOIN enrollments e ON e.sublevel_code = sl.code
   LEFT JOIN (
     SELECT
       wd.sublevel_code AS sublevel_code,

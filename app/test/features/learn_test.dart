@@ -96,9 +96,11 @@ void main() {
     done: done,
     grammar: 10,
     grammarLearned: 0,
-    passed: passed,
-    active: active,
     unlocked: unlocked,
+    passedSeed: passed ? 1 : null,
+    startedOn: active ? '2026-08-19' : null,
+    dailyNew: 7,
+    studyDaysMask: 127,
   );
 
   group('FR-L1-01 the badge', () {

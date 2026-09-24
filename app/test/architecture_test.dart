@@ -124,6 +124,7 @@ void main() {
       'Switch(': 'AdaptiveSwitch',
       'CupertinoSwitch(': 'AdaptiveSwitch',
       'SegmentedButton': 'AdaptiveSegmented',
+      'TabBar(': 'AdaptiveTabBar',
       'CupertinoSegmentedControl': 'AdaptiveSegmented',
       'CupertinoSlidingSegmentedControl': 'AdaptiveSegmented',
       'showModalBottomSheet(': 'Adaptive.showSheet',

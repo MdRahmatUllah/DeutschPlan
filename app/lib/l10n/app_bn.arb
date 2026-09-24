@@ -295,5 +295,16 @@
   "learnGrammarLibraryLine": "{topics}টি বিষয় · {learned}টি শেখা",
   "learnCategories": "শব্দের বিভাগ",
   "learnCategoriesLine": "সব ধাপ জুড়ে বিষয় অনুযায়ী দেখুন",
-  "learnLoadFailed": "আপনার কোর্স লোড করা যায়নি।"
+  "learnLoadFailed": "আপনার কোর্স লোড করা যায়নি।",
+  "stepHeaderCounts": "{words}টি শব্দ · {topics}টি ব্যাকরণ বিষয়",
+  "stepStarted": "{date} শুরু · দিনে {pace}টি শব্দে আর প্রায় {days} দিন",
+  "stepStartedAllIntroduced": "{date} শুরু · সব শব্দ শুরু হয়েছে",
+  "stepNotStarted": "শুরু হয়নি · দিনে {pace}টি শব্দে প্রায় {days} দিন",
+  "stepCompleted": "{date} শেষ · রিভিশন চলবে",
+  "stepCompletedPassed": "{date} শেষ · মক {mock} পাস · রিভিশন চলবে",
+  "stepTabWords": "শব্দ",
+  "stepTabGrammar": "ব্যাকরণ",
+  "stepTabQuiz": "কুইজ",
+  "stepTabExams": "পরীক্ষা",
+  "stepSearch": "এই ধাপে খুঁজুন"
 }

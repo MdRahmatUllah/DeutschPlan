@@ -31,6 +31,7 @@ import 'package:deutschplan/features/today/today_screen.dart';
 import 'package:deutschplan/features/backlog/backlog_screen.dart';
 import 'package:deutschplan/features/day_complete/day_complete_screen.dart';
 import 'package:deutschplan/features/learn/learn_screen.dart';
+import 'package:deutschplan/features/learn/step_detail_screen.dart';
 import 'package:deutschplan/features/sentences/sentences_screen.dart';
 import 'package:deutschplan/features/study/study_screen.dart';
 import 'package:deutschplan/core/adaptive/adaptive.dart';
@@ -298,11 +299,8 @@ class LearnStepRoute extends GoRouteData with $LearnStepRoute {
   final StepTab? tab;
 
   @override
-  Widget build(BuildContext context, GoRouterState state) => PlaceholderScreen(
-    title: 'Step $code',
-    screen: 'L2',
-    detail: (tab ?? StepTab.words).name,
-  );
+  Widget build(BuildContext context, GoRouterState state) =>
+      StepDetailScreen(code: code, tab: tab);
 }
 
 class GrammarLibraryRoute extends GoRouteData with $GrammarLibraryRoute {
@@ -353,11 +351,15 @@ class ExamIntroRoute extends GoRouteData with $ExamIntroRoute {
 }
 
 class SearchRoute extends GoRouteData with $SearchRoute {
-  const SearchRoute();
+  const SearchRoute({this.step});
+
+  /// L2's search icon: R1 filtered to a step, with a removable chip
+  /// (`search.md`). A query, so `/search` stays the tab root.
+  final String? step;
 
   @override
   Widget build(BuildContext context, GoRouterState state) =>
-      const PlaceholderScreen(title: 'Search', screen: 'R1');
+      PlaceholderScreen(title: 'Search', screen: 'R1', detail: step);
 }
 
 class AddWordRoute extends GoRouteData with $AddWordRoute {

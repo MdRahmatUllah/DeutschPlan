@@ -143,9 +143,16 @@ List<StepProgress> artboardCourse({
         grammarLearned: code == 'A2.1'
             ? 4
             : (passed.contains(code) ? grammar : 0),
-        passed: passed.contains(code),
-        active: code == active,
         unlocked: passed.contains(code),
+        passedSeed: passed.contains(code) ? 1 : null,
+        // A1.2 completed on 18 Aug and A2.1 started the day after, as the
+        // artboards date them.
+        startedOn: code == active
+            ? '2026-08-19'
+            : (passed.contains(code) ? '2026-07-01' : null),
+        completedOn: passed.contains(code) ? '2026-08-18' : null,
+        dailyNew: 7,
+        studyDaysMask: 127,
       ),
   ];
 }

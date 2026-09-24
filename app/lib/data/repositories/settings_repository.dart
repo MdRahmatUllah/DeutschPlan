@@ -104,23 +104,28 @@ class SettingsRepository {
   /// one BR-STATUS-02 cares about — has to rebuild the query, not just
   /// re-emit it. The old subscription is dropped as soon as the new one is
   /// made, so nothing arrives from the stale query.
-  Stream<R> switchOn<T, R>(SettingKey<T> key, Stream<R> Function(T) query) {
+  Stream<R> switchOn<T, R>(SettingKey<T> key, Stream<R> Function(T) query) =>
+      switchOnAny(<SettingKey<Object?>>{key}, () => query(read(key)));
+
+  /// [switchOn] for a query that reads several settings: run again when any
+  /// of [keys] changes. [query] reads them itself.
+  Stream<R> switchOnAny<R>(
+    Set<SettingKey<Object?>> keys,
+    Stream<R> Function() query,
+  ) {
     StreamSubscription<R>? inner;
     StreamSubscription<SettingKey<Object?>>? outer;
     late StreamController<R> controller;
 
     void run() {
       inner?.cancel();
-      inner = query(read(key))
-          .listen(controller.add, onError: controller.addError);
+      inner = query().listen(controller.add, onError: controller.addError);
     }
 
     controller = StreamController<R>(
       onListen: () {
         run();
-        outer = _changes.stream
-            .where((changed) => changed == key)
-            .listen((_) => run());
+        outer = _changes.stream.where(keys.contains).listen((_) => run());
       },
       onCancel: () async {
         await outer?.cancel();

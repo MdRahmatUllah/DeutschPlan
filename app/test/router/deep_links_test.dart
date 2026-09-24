@@ -19,6 +19,7 @@ import 'package:deutschplan/router/deep_links.dart';
 import 'package:deutschplan/router/route_guards.dart';
 import 'package:deutschplan/router/routes.dart';
 import 'package:flutter/services.dart';
+import 'package:deutschplan/features/learn/step_detail_screen.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
@@ -176,7 +177,7 @@ void main() {
     testWidgets('the notification link opens Today', (tester) async {
       await pumpApp(tester);
       await openLink(tester, 'deutschplan://learn/A2.1');
-      expect(find.text('L2'), findsOneWidget);
+      expect(find.byType(StepDetailScreen), findsOneWidget);
 
       await openLink(tester, 'deutschplan://today');
 
@@ -189,7 +190,7 @@ void main() {
       await openLink(tester, 'deutschplan://learn/A2.1');
 
       expect(location(), '/learn/step/A2.1');
-      expect(find.text('L2'), findsOneWidget);
+      expect(find.byType(StepDetailScreen), findsOneWidget);
       expect(find.byType(AppShell), findsOneWidget);
     });
 
@@ -225,8 +226,11 @@ void main() {
       await openLink(tester, 'deutschplan://exam/A1.2');
 
       expect(location(), '/learn/step/A1.2?tab=exams');
-      expect(find.text('L2'), findsOneWidget);
-      expect(find.text('exams'), findsOneWidget);
+      expect(find.byType(StepDetailScreen), findsOneWidget);
+      expect(
+        tester.widget<StepDetailScreen>(find.byType(StepDetailScreen)).tab,
+        StepTab.exams,
+      );
     });
 
     testWidgets('an unknown link lands on Today, not on an error', (

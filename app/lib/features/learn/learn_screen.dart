@@ -29,6 +29,9 @@ abstract final class CourseLevel {
     'B1': 'Mittelstufe',
   };
 
+  /// "Anfänger"; null for a level with no name of its own.
+  static String? name(String code) => _names[code];
+
   /// "A1 · Anfänger"; "B2" for a level with no name of its own.
   static String band(String code) =>
       _names[code] == null ? code : '$code · ${_names[code]}';

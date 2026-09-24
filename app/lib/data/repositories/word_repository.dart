@@ -71,9 +71,12 @@ class StepProgress {
     required this.done,
     required this.grammar,
     required this.grammarLearned,
-    required this.passed,
-    required this.active,
     required this.unlocked,
+    required this.dailyNew,
+    required this.studyDaysMask,
+    this.passedSeed,
+    this.startedOn,
+    this.completedOn,
   });
 
   final String code;
@@ -89,14 +92,26 @@ class StepProgress {
   /// Topics whose `grammar_state` is learning or done.
   final int grammarLearned;
 
-  /// BR-EXAM-04: any finished mock of the step passed.
-  final bool passed;
-
-  /// BR-COURSE-04: the one open enrollment.
-  final bool active;
-
   /// BR-EXAM-01: introduced >= `exam_unlock_percent` of the step's words.
   final bool unlocked;
+
+  /// The first mock passed, by when: "Mock 1 passed" (BR-EXAM-04).
+  final int? passedSeed;
+
+  /// The step's enrollment, if it has one.
+  final String? startedOn;
+  final String? completedOn;
+
+  /// The step's pace: frozen at enrollment (BR-PLAN-08), or today's
+  /// settings for a step not yet started.
+  final int dailyNew;
+  final int studyDaysMask;
+
+  /// BR-EXAM-04: any finished mock of the step passed.
+  bool get passed => passedSeed != null;
+
+  /// BR-COURSE-04: the one open enrollment.
+  bool get active => startedOn != null && completedOn == null;
 
   /// Met at least once.
   int get introduced => learning + done;
@@ -218,12 +233,19 @@ class WordRepository extends DatabaseAccessor<AppDatabase>
   }
 
   /// Every step, in course order ([StepProgress]); again whenever the
-  /// learner moves either threshold it depends on.
-  Stream<List<StepProgress>> watchStepProgress() => _settings.switchOn(
-    SettingKeys.doneStabilityDays,
-    (int days) => _settings.switchOn(
+  /// learner moves a setting it depends on.
+  Stream<List<StepProgress>> watchStepProgress() => _settings.switchOnAny(
+    <SettingKey<Object?>>{
+      SettingKeys.doneStabilityDays,
       SettingKeys.examUnlockPercent,
-      (int percent) => stepProgress(days.toDouble()).watch().map(
+      SettingKeys.dailyNew,
+      SettingKeys.studyDaysMask,
+    },
+    () {
+      final percent = _settings.read(SettingKeys.examUnlockPercent);
+      final dailyNew = _settings.read(SettingKeys.dailyNew);
+      final mask = _settings.read(SettingKeys.studyDaysMask);
+      return stepProgress(_doneAfter).watch().map(
         (rows) => <StepProgress>[
           for (final row in rows)
             StepProgress(
@@ -235,17 +257,20 @@ class WordRepository extends DatabaseAccessor<AppDatabase>
               done: row.done,
               grammar: row.grammarCount,
               grammarLearned: row.grammarLearned,
-              passed: row.passed,
-              active: row.active,
               unlocked: StepProgress.unlocks(
                 todo: row.todo,
                 introduced: row.learning + row.done,
                 percent: percent,
               ),
+              passedSeed: row.passedSeed,
+              startedOn: row.startedOn,
+              completedOn: row.completedOn,
+              dailyNew: row.dailyNew ?? dailyNew,
+              studyDaysMask: row.studyDaysMask ?? mask,
             ),
         ],
-      ),
-    ),
+      );
+    },
   );
 
   /// [watchStatusCounts], once.
