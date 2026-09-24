@@ -49,7 +49,7 @@ AUTHOR_NAME = "MdRahmatUllah"
 AUTHOR_EMAIL = "rahmat.ullah@infinitibit.com"
 
 STATUSES = ("open", "assigned", "in-progress", "review", "done", "needs-decision")
-AGENT_ID = re.compile(r"^agent-[1-9]$")
+AGENT_ID = re.compile(r"^agent-[0-9]$")  # agent-0 is the lead
 STAMP = "%Y-%m-%d %H:%M"
 
 # An identity nobody has used for this long is free to take over: its last
@@ -631,7 +631,7 @@ def cmd_device(team_root: Path, agent: str, release: bool) -> None:
 
 def check_agent(agent: str) -> str:
     if not AGENT_ID.match(agent):
-        raise SystemExit(f"agent ids are agent-1 … agent-9, not {agent!r}")
+        raise SystemExit(f"agent ids are agent-0 … agent-9, not {agent!r}")
     return agent
 
 
