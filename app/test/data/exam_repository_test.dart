@@ -147,6 +147,18 @@ void main() {
       expect(await exams.resumable('A1.1'), isNull);
     });
 
+    test('#132 abandon leaves a finished attempt finished', () async {
+      // A *Leave* racing the submit must not turn a graded paper abandoned.
+      final id = await begin();
+      await exams.finish(
+        attemptId: id,
+        finishedAt: '2026-03-04T10:00:00Z',
+        score: const ExamScore(scorePoints: 30, maxPoints: 48, passed: true),
+      );
+      await exams.abandon(id);
+      expect((await exams.attempt(id))!.status, 'finished');
+    });
+
     test('an abandoned attempt is not offered but keeps its answers', () async {
       // FR-L12-04: leaving an exam keeps what was done, so the result screen
       // can still show it.

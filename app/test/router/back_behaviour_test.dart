@@ -20,6 +20,7 @@ import 'package:deutschplan/router/app_router.dart';
 import 'package:deutschplan/router/app_shell.dart';
 import 'package:deutschplan/router/back_behaviour.dart';
 import 'package:deutschplan/router/route_guards.dart';
+import 'package:deutschplan/router/routes.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
@@ -221,7 +222,11 @@ void main() {
       await tester.tap(find.text(l10n.examLeaveConfirm));
       await tester.pumpAndSettle();
 
-      expect(location(), examFallback);
+      // To the attempt's step, on its Exams tab: L10 (the stub's is A1.2).
+      expect(
+        location(),
+        const LearnStepRoute(code: 'A1.2', tab: StepTab.exams).location,
+      );
       expect(find.byType(AppShell), findsOneWidget);
     });
 
@@ -233,9 +238,11 @@ void main() {
       await pumpApp(tester, at: '/exam/7');
       await pressBack(tester);
 
-      expect(find.text(l10n.examLeaveMessage), findsOneWidget);
-      expect(l10n.examLeaveMessage, contains('saved'));
-      expect(l10n.examLeaveMessage, contains('timer'));
+      // The stub's attempt is Mock 2 (exam_run_fixtures.dart).
+      expect(find.text(l10n.examLeaveMessage(2)), findsOneWidget);
+      expect(l10n.examLeaveMessage(2), contains('saved'));
+      expect(l10n.examLeaveMessage(2), contains('timer'));
+      expect(l10n.examLeaveMessage(2), contains('Mock 2'));
     });
 
     testWidgets('two quick back presses ask once, not twice', (tester) async {

@@ -31,6 +31,7 @@ void main() {
   });
 
   late StubExamRun run;
+  late List<String> left;
 
   Future<void> pump(
     WidgetTester tester, {
@@ -38,6 +39,7 @@ void main() {
     List<Override> more = const <Override>[],
   }) async {
     run = stub ?? StubExamRun();
+    left = <String>[];
     final routes = GoRouter(
       initialLocation: '/opener',
       routes: <RouteBase>[
@@ -50,6 +52,7 @@ void main() {
           builder: (_, _) => ExamRunnerScreen(
             attemptId: 7,
             results: (_) => const Scaffold(body: Text('L13')),
+            onLeft: left.add,
           ),
         ),
       ],
@@ -135,25 +138,6 @@ void main() {
       expect(find.text('14:31'), findsOneWidget);
       await tester.pump(const Duration(seconds: 9));
       expect(run.times, [(10, 0)]);
-    });
-
-    testWidgets('pause stops it, hides the paper and keeps paused apart', (
-      tester,
-    ) async {
-      final semantics = tester.ensureSemantics();
-      await pump(tester);
-      await tester.tap(find.bySemanticsLabel(l10n.examRunPause));
-      await tester.pumpAndSettle();
-      expect(find.text(l10n.examRunPaused), findsOneWidget);
-      expect(find.text('Wohnung'), findsNothing);
-      await tester.pump(const Duration(seconds: 10));
-      expect(find.text('14:32'), findsOneWidget, reason: 'stopped');
-      expect(run.times, [(0, 10)]);
-
-      await tap(tester, l10n.examRunResume);
-      await tester.pump(const Duration(seconds: 1));
-      expect(find.text('14:31'), findsOneWidget);
-      semantics.dispose();
     });
 
     testWidgets('at 0:00 the exam submits itself', (tester) async {
@@ -364,16 +348,141 @@ void main() {
       expect(find.textContaining('left'), findsNothing);
       semantics.dispose();
     });
+  });
 
-    testWidgets('paused, it does not open', (tester) async {
-      final semantics = tester.ensureSemantics();
-      await pump(tester);
+  group('#132 FR-L12-04 leaving', () {
+    Future<void> pause(WidgetTester tester) async {
       await tester.tap(find.bySemanticsLabel(l10n.examRunPause));
       await tester.pumpAndSettle();
-      await open(tester);
-      expect(find.text(l10n.examNavTitle), findsNothing);
+    }
+
+    testWidgets('pause asks, and the clock stops while it asks', (
+      tester,
+    ) async {
+      final semantics = tester.ensureSemantics();
+      await pump(tester);
+      await pause(tester);
+      expect(find.text(l10n.examLeaveTitle), findsOneWidget);
+      expect(find.text(l10n.examLeaveMessage(2)), findsOneWidget);
+      await tester.pump(const Duration(seconds: 10));
+      expect(find.text('14:32'), findsOneWidget, reason: 'the timer stops');
+      expect(run.times, [(0, 10)], reason: 'kept as paused');
+
+      await tap(tester, l10n.examLeaveCancel);
+      expect(find.text(l10n.examLeaveTitle), findsNothing);
+      await tester.pump(const Duration(seconds: 1));
+      // The dialog's close takes its own moment, so not an exact second.
+      expect(find.text('14:32'), findsNothing, reason: 'running again');
+      expect(left, isEmpty);
       semantics.dispose();
     });
+
+    testWidgets('Keep going runs one clock, not two', (tester) async {
+      final semantics = tester.ensureSemantics();
+      await pump(tester);
+      await pause(tester);
+      await tap(tester, l10n.examLeaveCancel);
+      run.times.clear();
+      await tester.pump(const Duration(seconds: 20));
+      final running = run.times.fold(0, (sum, t) => sum + t.$1);
+      expect(running, inInclusiveRange(18, 20), reason: '20 s, not 40');
+      semantics.dispose();
+    });
+
+    testWidgets('with the timer off, the seconds it asks are paused ones', (
+      tester,
+    ) async {
+      final semantics = tester.ensureSemantics();
+      await pump(tester, stub: StubExamRun(timed: false));
+      await pause(tester);
+      await tester.pump(const Duration(seconds: 10));
+      expect(run.times, [(0, 10)]);
+      semantics.dispose();
+    });
+
+    testWidgets('Leave keeps the answers, abandons the attempt, and leaves', (
+      tester,
+    ) async {
+      final semantics = tester.ensureSemantics();
+      await pump(tester, stub: StubExamRun(given: <int, String>{}));
+      await tester.enterText(find.byType(TextField), 'word 1');
+      await tester.pump(const Duration(seconds: 3));
+      await pause(tester);
+      await tap(tester, l10n.examLeaveConfirm);
+      expect(run.answers, [(1, 'word 1')], reason: 'what was typed stays');
+      expect(run.times.single.$1, 3, reason: 'the seconds run are written');
+      expect(run.abandoned, 1);
+      expect(left, <String>['A1.2'], reason: "back to the attempt's step");
+      semantics.dispose();
+    });
+
+    testWidgets('a Leave whose write fails still leaves', (tester) async {
+      final semantics = tester.ensureSemantics();
+      await pump(tester, stub: StubExamRun()..failAbandon = true);
+      await pause(tester);
+      await tap(tester, l10n.examLeaveConfirm);
+      expect(left, <String>['A1.2']);
+      expect(tester.takeException(), isNull);
+      semantics.dispose();
+    });
+
+    testWidgets('a Leave during the submit leaves the submit alone', (
+      tester,
+    ) async {
+      final semantics = tester.ensureSemantics();
+      final hold = Completer<void>();
+      await pump(
+        tester,
+        stub: StubExamRun(
+          items: artboardPaper().take(1).toList(),
+          given: <int, String>{1: 'x'},
+        )..holdSubmit = hold,
+      );
+      await tester.tap(find.text(l10n.examRunSubmit));
+      await tester.pump();
+      await pause(tester);
+      await tap(tester, l10n.examLeaveConfirm);
+      expect(run.abandoned, 0);
+      expect(left, isEmpty);
+      hold.complete();
+      await tester.pumpAndSettle();
+      expect(find.text('L13'), findsOneWidget);
+      semantics.dispose();
+    });
+
+    testWidgets('after the submit, back does not ask', (tester) async {
+      await pump(
+        tester,
+        stub: StubExamRun(
+          items: artboardPaper().take(1).toList(),
+          given: <int, String>{1: 'x'},
+        ),
+      );
+      await tap(tester, l10n.examRunSubmit);
+      expect(find.text('L13'), findsOneWidget);
+      await tester.binding.handlePopRoute();
+      await tester.pumpAndSettle();
+      expect(find.text(l10n.examLeaveTitle), findsNothing);
+    });
+
+    testWidgets('back asks as pause does', (tester) async {
+      await pump(tester);
+      await tester.binding.handlePopRoute();
+      await tester.pumpAndSettle();
+      expect(find.text(l10n.examLeaveTitle), findsOneWidget);
+      expect(run.abandoned, 0);
+    });
+  });
+
+  testWidgets('FR-L12-04 an abandoned attempt is closed: back to the hub', (
+    tester,
+  ) async {
+    await pump(
+      tester,
+      stub: StubExamRun(attempt: artboardAttempt(status: 'abandoned')),
+    );
+    expect(left, <String>['A1.2']);
+    expect(run.answers, isEmpty);
   });
 
   testWidgets('a finished attempt opens on its results', (tester) async {

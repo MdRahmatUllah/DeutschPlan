@@ -24,9 +24,7 @@ import 'package:deutschplan/features/onboarding/setup_flow.dart';
 import 'package:deutschplan/features/onboarding/onboarding_welcome_page.dart';
 import 'package:deutschplan/features/splash/splash_screen.dart';
 import 'package:deutschplan/router/app_shell.dart';
-import 'package:deutschplan/router/back_behaviour.dart';
 import 'package:deutschplan/router/deep_links.dart';
-import 'package:deutschplan/router/route_guards.dart';
 import 'package:deutschplan/features/today/today_screen.dart';
 import 'package:deutschplan/features/backlog/backlog_screen.dart';
 import 'package:deutschplan/features/day_complete/day_complete_screen.dart';
@@ -854,22 +852,18 @@ class ExamRoute extends GoRouteData with $ExamRoute {
   final int attemptId;
 
   @override
-  Widget build(BuildContext context, GoRouterState state) => ExamBackGuard(
-    // FR-L12-04: back asks rather than pops, and `canPop: false` is also
-    // what turns off the iOS edge swipe for this route (#69).
-    //
-    // TODO(#132): the leave dialog's *Leave* sets `status = 'abandoned'`
-    // (`ExamRepository.abandon`) and stops the clock, or the hub keeps
-    // offering *Resume* for an exam the learner walked out of.
-    onLeave: () => context.go(examFallback),
-    child: ExamRunnerScreen(
-      attemptId: attemptId,
-      // ponytail: L13 (#135) takes over from here.
-      results: (_) => PlaceholderScreen(
-        title: 'Exam results',
-        screen: 'L13',
-        detail: 'attempt $attemptId',
-      ),
+  Widget build(BuildContext context, GoRouterState state) => ExamRunnerScreen(
+    attemptId: attemptId,
+    // FR-L12-04: the runner asks (back and its pause button), abandons the
+    // attempt, then leaves for its step's exam hub (L10, L2's Exams tab). `canPop: false` in its guard is also what
+    // turns off the iOS edge swipe for this route (#69).
+    onLeft: (step) =>
+        LearnStepRoute(code: step, tab: StepTab.exams).go(context),
+    // ponytail: L13 (#135) takes over from here.
+    results: (_) => PlaceholderScreen(
+      title: 'Exam results',
+      screen: 'L13',
+      detail: 'attempt $attemptId',
     ),
   );
 }
