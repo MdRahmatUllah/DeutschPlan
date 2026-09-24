@@ -123,13 +123,28 @@ class WordActions {
     });
   }
 
-  /// FR-W1-02, BR-STATUS-03. *Undo* restores the row as it was, which for a
-  /// word never met is no row at all.
-  Future<Undo> suspend(String uid) async {
+  /// FR-W1-02, BR-STATUS-03: a suspended word is out of every plan, so its
+  /// open plan rows go with it (#351), today's and the backlog's. Otherwise
+  /// Today would still count it and the session serve it. *Resume* doesn't
+  /// bring them back; the plan picks the word up again as it would any other.
+  /// *Undo* restores the rows and the state as they were, which for a word
+  /// never met is no state row at all.
+  Future<Undo> suspend(String uid) => _db.transaction(() async {
+    Expression<bool> open(PlanItems t) =>
+        t.wordUid.equals(uid) & t.completedAt.isNull();
     final before = await _stateOf(uid);
+    final rows = await (_db.select(_db.planItems)..where(open)).get();
     await _rating.suspend(uid);
-    return () => _restore(uid, before);
-  }
+    await (_db.delete(_db.planItems)..where(open)).go();
+    return () => _db.transaction(() async {
+      await _restore(uid, before);
+      for (final row in rows) {
+        await _db
+            .into(_db.planItems)
+            .insertOnConflictUpdate(row.toCompanion(false));
+      }
+    });
+  });
 
   Future<Undo> resume(String uid) async {
     final before = await _stateOf(uid);

@@ -718,8 +718,7 @@ class _ActionsState extends ConsumerState<_Actions> {
                   l10n.wordAddedToday(name),
                 ),
               ),
-            // A rating writes the status it derives, so marking a suspended
-            // word known would resume it unasked (BR-STATUS-03).
+            // A suspended word is out of review until resumed (BR-STATUS-03).
             if (!word.isSuspended)
               button(
                 Icons.check,
