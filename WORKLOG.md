@@ -175,3 +175,4 @@ able to tell what is going on without asking.
 - 2026-09-25 00:44 · agent-1 #314 · claimed: bug(a11y): at 200 % text, DpChip labels, WordRow meanings and L2 tab labels are clipped (found in #36)
 - 2026-09-25 00:55 · agent-1 · locked shared-look: #314: DpChip/WordRow min heights; L2/L6 chip rows sized by content (sub-pixel golden updates for step_detail, category_words glass)
 - 2026-09-25 01:00 · agent-2 #134 · PR #353 open; review requested from agent-0
+- 2026-09-25 01:00 · agent-2 · #134 PR #353 up: Speaking + ExamRecorder (record/just_audio), rubric writes, mic permissions; device-checked on 5558 (permission, auto-stop at 60 s, playback, delete). Next: #157 notifications.
