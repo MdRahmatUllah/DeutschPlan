@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:deutschplan/data/db/app_database.dart';
 import 'package:deutschplan/data/repositories/exam_repository.dart';
 import 'package:deutschplan/data/repositories/exam_run_service.dart';
+import 'package:deutschplan/data/repositories/model_repository.dart';
 import 'package:deutschplan/data/repositories/setting_keys.dart';
 import 'package:deutschplan/data/repositories/settings_repository.dart';
 import 'package:deutschplan/domain/exam_generator.dart';
@@ -23,6 +26,10 @@ void main() {
       exams,
       settings,
       () => DateTime.utc(2026, 9, 21, 19),
+      ModelRepository(
+        settings,
+        support: Directory.systemTemp.createTempSync('dp_recordings'),
+      ),
     );
   });
 
@@ -115,6 +122,36 @@ void main() {
     await service.answer(id, 2, null);
     expect((await row(id, 2)).given, isNull, reason: 'cleared is unanswered');
   });
+
+  test(
+    'FR-L12S-03 the rubric is written alone, and read back with the paper',
+    () async {
+      final id = await sit();
+      await service.answer(id, 2, '/recordings/1.m4a');
+      await service.rubric(id, 2, <bool>[true, false, true, false]);
+
+      final written = await row(id, 2);
+      expect(written.given, '/recordings/1.m4a', reason: 'the answer stays');
+      expect(written.selfRubricJson, '[true,false,true,false]');
+      final paper = (await service.load(id))!;
+      expect(paper.questions[1].rubric, <bool>[true, false, true, false]);
+      expect(paper.questions[0].rubric, isEmpty);
+    },
+  );
+
+  test(
+    "FR-L12S-02 and -04: the attempt's recording, and its file deleted",
+    () async {
+      final path = await service.recordingPath(7);
+      expect(path.replaceAll(r'\', '/'), endsWith('/recordings/7.m4a'));
+      File(path).writeAsStringSync('aac');
+
+      await service.discard(path);
+      expect(File(path).existsSync(), isFalse);
+      // Twice is harmless: L13 can delete what L12 already did.
+      await service.discard(path);
+    },
+  );
 
   test('FR-L12-03 run and paused seconds add up apart', () async {
     final id = await sit();

@@ -8,6 +8,8 @@
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
 	<string>Deutschplan</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>DeutschPlan records your answer to a mock exam's Speaking task so you can listen back. The recording stays on this phone.</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>

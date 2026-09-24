@@ -42,6 +42,7 @@ import 'package:deutschplan/data/repositories/settings_repository.dart';
 import 'package:deutschplan/data/repositories/setup_repository.dart';
 import 'package:deutschplan/data/repositories/word_repository.dart';
 import 'package:deutschplan/services/model_downloads.dart';
+import 'package:deutschplan/services/exam_recorder.dart';
 import 'package:deutschplan/services/notification_permission.dart';
 import 'package:deutschplan/services/tts/system_tts.dart';
 import 'package:deutschplan/services/tts/tts_engine.dart';
@@ -400,7 +401,17 @@ ExamRunService examRunService(Ref ref) => ExamRunService(
   ref.watch(examRepositoryProvider),
   ref.watch(settingsProvider),
   ref.watch(clockProvider),
+  ref.watch(modelRepositoryProvider),
 );
+
+/// L12's Speaking (#134): the microphone and the playback, while the task is
+/// on screen.
+@riverpod
+ExamRecorder examRecorder(Ref ref) {
+  final recorder = PlatformExamRecorder();
+  ref.onDispose(recorder.dispose);
+  return recorder;
+}
 
 /// L8's data (#123): the quiz built, recorded and finished.
 @riverpod

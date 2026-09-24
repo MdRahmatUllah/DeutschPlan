@@ -26,4 +26,12 @@ Prompt "Describe your morning routine — 1 minute." + hint "Say what you do, wh
 - FR-L12S-03 Rubric ticks → `self_rubric_json`; 1 point each.
 - FR-L12S-04 *Delete recording* from here or from L13 removes the file and zeros the section.
 
+Details Speaking settles (#134):
+- The task is exam-generator.md's per level with the paper's category, then its length ("— 1 minute", "— 90 seconds"), and the hint "Speak in whole sentences. Then listen back and tick what you managed." The artboard's morning routine is a sample of one.
+- Before recording, the round Coral button records, and the line under the time says why the phone will ask: "The first time, your phone asks for the microphone. The recording never leaves this phone." The permission is asked on the first tap (FR-L12S-01). Refused, the line says so, *Open settings* opens the phone's settings for the app, and *Next* moves on: nothing recorded scores 0.
+- Recording: the button stops, the time counts up to the level's length, and at the length it stops by itself. Leaving the exam mid-recording stops it and keeps what was said.
+- Recorded: the Lagoon button plays it back (and stops), "00:52 / 01:00", "Recorded · stays on this phone", the bars of the levels heard (even bars for a recording made before this visit), *Retake · 1 left* and *Delete recording*. A retake records over the same file. The retake left is counted in memory, so a resumed attempt offers it again.
+- The recording is the row's `given` (the path); deleting it removes the file and clears `given`, which zeros the section as #84 grades it (FR-L12S-04). Each tick is written to `self_rubric_json` as it is ticked, and the ticks come back on resume (FR-L12S-03).
+- The recorder is `ExamRecorder` (`services/exam_recorder.dart`): `record` for AAC mono at 32 kbps, `just_audio` to play back. `RECORD_AUDIO` and `NSMicrophoneUsageDescription` are declared for it.
+
 **Tests.** FR-L12W-01 stem matching; FR-L12W-03 scoring; recorder state machine (fake recorder).
