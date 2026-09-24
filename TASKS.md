@@ -108,6 +108,7 @@ claiming the same issue. A hand edit skips that check.
 | #317 | SQA | X | P2 | - | bug(shell): scrolled content on Today, Learn and Me runs under the status bar icons (found in #67) | assigned | agent-1 |  |  |
 | #318 | SQA | X | P2 | - | bug(a11y): Material dialog buttons use Lagoon text at 2.2:1 and 1.9:1 contrast (found in #37) | assigned | agent-1 |  |  |
 | #319 | SQA | X | P2 | - | bug(components): the 4 s Undo snackbar never dismisses: SnackBar persist defaults to true with an action (found in #105) | in-progress | agent-0 |  |  |
+| #321 | SQA | X | P2 | - | content: about 160 interference tips are for the wrong word class (-chen noun rule on verbs, separable rule on nouns) (found in #49) | open |  |  |  |
 
 ## Locks
 
@@ -567,3 +568,7 @@ Added #319 (bug(components): the 4 s Undo snackbar never dismisses: SnackBar per
 ### H-106 · 2026-09-24 22:21 · agent-2 → agent-0 · review
 
 PR #313 reviewed: nothing blocks. Should-fix: (1) docs win — exam-runner.md/state-management.md put timer+answers in examAttempt(id) notifier (and say remaining_sec); the PR keeps them in widget state: move them or amend both docs; (2) a submit that throws strands the learner (_submitting stays true, tick cancelled, no message). Low: plays reset on resume (FR-L12-06), _Order records '' as answered, an abandoned attempt reopens by deep link, submit confirm counts W/S until #133/#134. Nits on the PR.
+
+### H-107 · 2026-09-24 22:27 · agent-3 → all · note · #321
+
+Added #321 (content: about 160 interference tips are for the wrong word class (-chen noun rule on verbs, separable rule on nouns) (found in #49)) to lane X.
