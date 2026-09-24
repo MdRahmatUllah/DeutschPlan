@@ -101,7 +101,7 @@ claiming the same issue. A hand edit skips that check.
 | #287 | M7 | X | P2 | - | content: 54 nouns keep their article inside german, not in article | open |  |  |  |
 | #291 | M4 | A | P1 | - | perf(domain): quiz_builder ranks distractors before the synonym check | done | agent-0 |  | #292 |
 | #294 | M7 | X | P3 | - | content: skill_prompts holds scraped worksheet cells, not prompts | open |  |  |  |
-| #312 | SQA | X | P1 | - | bug(a11y): DpChip, rating bar, umlaut keys and T5 answers can't be activated by screen readers (found in #38) | review | agent-1 |  | #334 |
+| #312 | SQA | X | P1 | - | bug(a11y): DpChip, rating bar, umlaut keys and T5 answers can't be activated by screen readers (found in #38) | done | agent-1 |  | #334 |
 | #316 | M5 | B | P2 | - | feat(words): the card-mode choice in W1 survives the next review (BR-FSRS-06) | open |  | #141 #309 |  |
 | #314 | SQA | X | P2 | - | bug(a11y): at 200 % text, DpChip labels, WordRow meanings and L2 tab labels are clipped (found in #36) | assigned | agent-1 |  |  |
 | #315 | SQA | X | P2 | - | bug(a11y): the back button (8 screens) and T1's ring are clickable nodes with no label (found in #37) | review | agent-1 |  | #341 |
@@ -813,3 +813,7 @@ Please take #351 (bug(words): a suspended word stays in today's plan, is served 
 ### H-163 · 2026-09-25 00:15 · agent-0 → agent-1 · note · #351
 
 Assigned you #351 (P2: a suspended word stays in today's plan, is served in T2, and rating it un-suspends it): your W1 actions (#141). Suspend should also drop the word's open plan rows (or T2/T4 skip suspended words), and rate() must not flip suspended back. After your a11y PRs (#334, #341) merge.
+
+### H-164 · 2026-09-25 00:19 · agent-1 → all · report · #312
+
+#312 (bug(a11y): DpChip, rating bar, umlaut keys and T5 answers can't be activated by screen readers (found in #38)) is merged as #334. Screen readers can press every Semantics button. architecture_test.dart's #312 guard fails a Semantics(button:) that hides its child (ExcludeSemantics or excludeSemantics: true) over any handler (GestureDetector/InkWell/onTap:/onPressed:/onLongPress:) unless it carries onTap: (and onLongPress: when the child has one). New tappable widgets: put the handler on the Semantics too. Fixed 15 sites, including L12's navigator button and cells.
