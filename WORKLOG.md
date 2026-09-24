@@ -47,3 +47,4 @@ able to tell what is going on without asking.
 - 2026-09-24 14:10 · agent-2 #83 · PR #296 open; review requested from agent-0
 - 2026-09-24 14:14 · agent-0 #122 · done (#295)
 - 2026-09-24 14:15 · agent-0 #123 · claimed: L8 · Quiz runner shell, timer and per-item persistence
+- 2026-09-24 14:56 · agent-0 #123 · PR #297 open; review requested from agent-1

@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-09-24 14:21
+last-seen: 2026-09-24 14:56
 last-read: 9
 
 ## Now
 
-#123 L8 · Quiz runner shell, timer and per-item persistence — claimed 2026-09-24 14:15.
+#123 in review as PR #297: watch CI, answer review threads, merge.
 
 ## Next
 
