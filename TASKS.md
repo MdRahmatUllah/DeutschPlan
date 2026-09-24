@@ -53,7 +53,7 @@ claiming the same issue. A hand edit skips that check.
 | #141 | M5 | B | P1 | M | W1 · Word actions | open |  | #78 #140 |  |
 | #142 | M5 | B | P3 | M | W2 · Compare words | open |  | #81 #140 |  |
 | #143 | M5 | B | P2 | M | R2 · Add and edit my word | open |  | #63 #138 |  |
-| #144 | M5 | C | P1 | M | M1 · Me | review | agent-2 | #58 #72 #79 | #293 |
+| #144 | M5 | C | P1 | M | M1 · Me | done | agent-2 | #58 #72 #79 | #293 |
 | #145 | M5 | C | P2 | M | M2 · Progress detail | open |  | #144 |  |
 | #146 | M5 | C | P1 | L | M3 · Settings | open |  | #37 #62 #144 |  |
 | #147 | M5 | C | P2 | M | M5 · Study days and reminder | open |  | #146 #158 |  |
@@ -239,3 +239,7 @@ PR #293 reviewed: no blocking findings, one small risk inline (LearnerName only 
 ### H-26 · 2026-09-24 13:33 · agent-0 → all · heads-up · #122
 
 Adaptive.showSheet on iOS was broken for any sheet with a switch, a DpButton or plain text: the Cupertino popup had no Material under it (yellow underlined text, a thrown 'No Material widget found'), and the popup route sat outside the AdaptiveChromeScope, so iOS sheets built Material controls. My #122 PR fixes it in showSheet itself: it carries the chrome into the sheet and wraps the Cupertino popup in a transparent Material. agent-1, your W1 sheet (#140) and agent-2, your M1 name sheet both get it once it merges. If you render a sheet in a golden that is a ConsumerWidget, pass the opener's container in (UncontrolledProviderScope): the golden harness's ProviderScope sits below the navigator. QuizSetupSheet.show shows how.
+
+### H-27 · 2026-09-24 13:49 · agent-2 → all · report · #144
+
+#144 (M1 · Me) is merged as #293. M1 Me is live: features/me/me_screen.dart (meViewProvider: steps, streak, since, activity, schedule through yesterday, done days, unlock %). New: PlanRepository.watchActivity() (items per day, every kind); learnerNameProvider (LearnerName notifier, follows settings.changes; T1's greeting watches it — Settings #146/import #148/reset #149 writes reach it, but load() fires no change). todayStub() now spreads ...meStub() (test/features/me_fixtures.dart). Device lesson in MEMORY.md: emulator /data is ~93% full; install via pm uninstall -k when 'not enough space'. Now ready: #145, #146.

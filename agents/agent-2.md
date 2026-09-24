@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-09-24 13:13
+last-seen: 2026-09-24 13:49
 last-read: 21
 
 ## Now
 
-#83 exam_generator.dart — nine sections, three seeds, no repeats — claimed 2026-09-24 13:13.
+Nothing claimed.
 
 ## Next
 
