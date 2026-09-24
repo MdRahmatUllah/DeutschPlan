@@ -30,6 +30,7 @@ import 'package:deutschplan/router/app_router.dart';
 import 'package:deutschplan/router/app_shell.dart';
 import 'package:deutschplan/router/routes.dart';
 import 'package:deutschplan/features/learn/learn_screen.dart';
+import 'package:deutschplan/features/learn/step_detail_screen.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
@@ -220,7 +221,7 @@ void main() {
       // What `indexedStack` buys: leaving Learn on a step and coming back
       // finds the step, not /learn.
       await pumpApp(tester, at: '/learn/step/A1.1');
-      expect(find.text('L2'), findsOneWidget);
+      expect(find.byType(StepDetailScreen), findsOneWidget);
 
       final l10n = await AppLocalizations.delegate.load(supportedLocales.first);
       await tester.tap(find.text(l10n.tabToday).last);
@@ -229,7 +230,11 @@ void main() {
 
       await tester.tap(find.text(l10n.tabLearn).last);
       await tester.pumpAndSettle();
-      expect(find.text('L2'), findsOneWidget, reason: 'the branch was reset');
+      expect(
+        find.byType(StepDetailScreen),
+        findsOneWidget,
+        reason: 'the branch was reset',
+      );
     });
 
     testWidgets('a tab keeps its scroll position', (tester) async {

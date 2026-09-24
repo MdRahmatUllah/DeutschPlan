@@ -17,6 +17,7 @@ import 'package:deutschplan/router/cross_tab.dart';
 import 'package:deutschplan/router/route_guards.dart';
 import 'package:deutschplan/router/routes.dart';
 import 'package:deutschplan/features/learn/learn_screen.dart';
+import 'package:deutschplan/features/learn/step_detail_screen.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
@@ -76,7 +77,7 @@ void main() {
       await jump(tester, const LearnStepRoute(code: 'A1.1'));
 
       expect(location(), '/learn/step/A1.1');
-      expect(find.text('L2'), findsOneWidget);
+      expect(find.byType(StepDetailScreen), findsOneWidget);
       expect(
         find.byType(AppShell),
         findsOneWidget,
@@ -94,7 +95,10 @@ void main() {
       );
 
       expect(location(), '/learn/step/A1.2?tab=exams');
-      expect(find.text('exams'), findsOneWidget);
+      expect(
+        tester.widget<StepDetailScreen>(find.byType(StepDetailScreen)).tab,
+        StepTab.exams,
+      );
     });
 
     testWidgets('T1 -> the grammar card', (tester) async {

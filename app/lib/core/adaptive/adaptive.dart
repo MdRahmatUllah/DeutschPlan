@@ -180,12 +180,20 @@ class AdaptiveScaffold extends StatelessWidget {
 /// Android is a chevron alone; iOS is a chevron with the 17 pt label the
 /// artboards show. Both are 44 pt wide, which clears the minimum tap target.
 class AdaptiveBackButton extends StatelessWidget {
-  const AdaptiveBackButton({required this.onPressed, super.key, this.label});
+  const AdaptiveBackButton({
+    required this.onPressed,
+    super.key,
+    this.label,
+    this.colour,
+  });
 
   final VoidCallback onPressed;
 
   /// The iOS label. Android ignores it — Material back buttons carry no text.
   final String? label;
+
+  /// The link colour unless given: L2's arrow is ink on its Sun header.
+  final Color? colour;
 
   @override
   Widget build(BuildContext context) {
@@ -200,7 +208,7 @@ class AdaptiveBackButton extends StatelessWidget {
         child: TextButton(
           onPressed: onPressed,
           style: TextButton.styleFrom(
-            foregroundColor: tokens.color.link,
+            foregroundColor: colour ?? tokens.color.link,
             padding: EdgeInsets.symmetric(horizontal: cupertinoChrome ? 8 : 12),
             minimumSize: const Size(44, 44),
           ),
@@ -211,14 +219,14 @@ class AdaptiveBackButton extends StatelessWidget {
                 cupertinoChrome
                     ? cupertino.CupertinoIcons.back
                     : Icons.arrow_back,
-                color: tokens.color.link,
+                color: colour ?? tokens.color.link,
               ),
               if (cupertinoChrome && label != null) ...<Widget>[
                 const SizedBox(width: 2),
                 DpText(
                   label!,
                   role: DpTextRole.bodyLarge,
-                  color: tokens.color.link,
+                  color: colour ?? tokens.color.link,
                 ),
               ],
             ],
@@ -328,6 +336,96 @@ class AdaptiveSegmented<T extends Object> extends StatelessWidget {
       selected: <T>{value},
       showSelectedIcon: false,
       onSelectionChanged: (selection) => onChanged(selection.first),
+    );
+  }
+}
+
+/// A screen's inner tabs — L2's Words · Grammar · Quiz · Exams.
+///
+/// Android draws a Material `TabBar`: labels across the width, a 3 dp ink
+/// indicator inset 12 from each side, a hairline under it. iOS draws the
+/// sliding segmented control in a 16 pt gutter, as `AdaptiveSegmented` does.
+class AdaptiveTabBar<T extends Object> extends StatefulWidget {
+  const AdaptiveTabBar({
+    required this.tabs,
+    required this.value,
+    required this.onChanged,
+    super.key,
+  });
+
+  /// Ordered; the keys are the values and the strings the labels.
+  final Map<T, String> tabs;
+  final T value;
+  final ValueChanged<T> onChanged;
+
+  @override
+  State<AdaptiveTabBar<T>> createState() => _AdaptiveTabBarState<T>();
+}
+
+class _AdaptiveTabBarState<T extends Object> extends State<AdaptiveTabBar<T>>
+    with SingleTickerProviderStateMixin {
+  late final TabController _controller = TabController(
+    length: widget.tabs.length,
+    initialIndex: _index,
+    vsync: this,
+  );
+
+  int get _index => widget.tabs.keys.toList().indexOf(widget.value);
+
+  @override
+  void didUpdateWidget(AdaptiveTabBar<T> old) {
+    super.didUpdateWidget(old);
+    if (_controller.index != _index) _controller.animateTo(_index);
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final tokens = context.tokens;
+    if (context.isCupertino) {
+      return Padding(
+        padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
+        child: SizedBox(
+          width: double.infinity,
+          child: AdaptiveSegmented<T>(
+            segments: widget.tabs,
+            value: widget.value,
+            onChanged: widget.onChanged,
+          ),
+        ),
+      );
+    }
+    final keys = widget.tabs.keys.toList();
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        border: Border(bottom: BorderSide(color: tokens.surface.outline)),
+      ),
+      child: TabBar(
+        controller: _controller,
+        onTap: (index) => widget.onChanged(keys[index]),
+        labelColor: tokens.color.ink,
+        unselectedLabelColor: tokens.color.textSecondary,
+        // 14 on the artboard, between the label and body roles.
+        labelStyle: DpText.styleFor(
+          tokens,
+          DpTextRole.label,
+        ).copyWith(fontSize: 14),
+        indicator: UnderlineTabIndicator(
+          borderSide: BorderSide(color: tokens.color.ink, width: 3),
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(2)),
+          insets: const EdgeInsets.symmetric(horizontal: 12),
+        ),
+        indicatorSize: TabBarIndicatorSize.tab,
+        dividerHeight: 0,
+        tabs: <Widget>[
+          for (final label in widget.tabs.values) Tab(height: 48, text: label),
+        ],
+      ),
     );
   }
 }

@@ -1803,5 +1803,107 @@
   "learnLoadFailed": "Your course could not be loaded.",
   "@learnLoadFailed": {
     "description": "L1 when the course cannot be read."
+  },
+  "stepHeaderCounts": "{words, plural, =1{1 word} other{{words} words}} · {topics, plural, =1{1 grammar topic} other{{topics} grammar topics}}",
+  "@stepHeaderCounts": {
+    "description": "L2 header beside the step code, after the level's name.",
+    "placeholders": {
+      "words": {
+        "type": "int"
+      },
+      "topics": {
+        "type": "int"
+      }
+    }
+  },
+  "stepStarted": "Started {date} · about {days, plural, =1{1 day} other{{days} days}} left at {pace} words/day",
+  "@stepStarted": {
+    "description": "L2 pace line for the active step (FR-L2-01). date is like \"19 Aug\".",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "days": {
+        "type": "int"
+      },
+      "pace": {
+        "type": "int"
+      }
+    }
+  },
+  "stepStartedAllIntroduced": "Started {date} · every word introduced",
+  "@stepStartedAllIntroduced": {
+    "description": "L2 pace line for the active step once no word is left to do.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "stepNotStarted": "Not started · about {days, plural, =1{1 day} other{{days} days}} at {pace} words/day",
+  "@stepNotStarted": {
+    "description": "L2 pace line for a step never enrolled.",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      },
+      "pace": {
+        "type": "int"
+      }
+    }
+  },
+  "stepCompleted": "Completed {date} · revision continues",
+  "@stepCompleted": {
+    "description": "L2 pace line for a completed step with no mock passed.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "stepCompletedPassed": "Completed {date} · Mock {mock} passed · revision continues",
+  "@stepCompletedPassed": {
+    "description": "L2 pace line for a completed step: the first mock passed.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "mock": {
+        "type": "int"
+      }
+    }
+  },
+  "stepTabWords": "Words",
+  "@stepTabWords": {
+    "description": "L2 inner tab."
+  },
+  "stepTabGrammar": "Grammar",
+  "@stepTabGrammar": {
+    "description": "L2 inner tab."
+  },
+  "stepTabQuiz": "Quiz",
+  "@stepTabQuiz": {
+    "description": "L2 inner tab."
+  },
+  "stepTabExams": "Exams",
+  "@stepTabExams": {
+    "description": "L2 inner tab."
+  },
+  "stepSearch": "Search in this step",
+  "@stepSearch": {
+    "description": "L2 search icon: R1 filtered to the step."
+  },
+  "stepNotFound": "There is no step {code} in this course.",
+  "@stepNotFound": {
+    "description": "L2 for a step code the course does not have, from a stale link.",
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "stepBackToCourse": "Back to your course",
+  "@stepBackToCourse": {
+    "description": "L2 not-found: opens L1."
   }
 }

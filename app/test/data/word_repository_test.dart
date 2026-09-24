@@ -447,6 +447,46 @@ void main() {
       expect(a12.active, isTrue);
     });
 
+    test('FR-L2-01 the enrollment: its dates, its frozen pace, and the first '
+        'mock passed', () async {
+      await db.customStatement(
+        'INSERT INTO enrollments (sublevel_code, started_on, daily_new, '
+        "study_days_mask, completed_on) VALUES ('A1.1', '2026-01-01', 10, 31, "
+        "'2026-02-10')",
+      );
+      await db.customStatement(
+        'INSERT INTO exam_attempts (sublevel_code, seed, started_at, '
+        "finished_at, status, passed) VALUES "
+        "('A1.1', 3, '2026-02-01', '2026-02-01T10:00', 'finished', 1), "
+        "('A1.1', 2, '2026-02-02', '2026-02-02T10:00', 'finished', 1), "
+        "('A1.1', 1, '2026-01-20', '2026-01-20T10:00', 'finished', 0)",
+      );
+      final [a11, a12] = await course();
+      expect(a11.startedOn, '2026-01-01');
+      expect(a11.completedOn, '2026-02-10');
+      expect((a11.dailyNew, a11.studyDaysMask), (10, 31));
+      expect(a11.passedSeed, 3, reason: 'the first passed, not the lowest');
+      expect(a11.active, isFalse);
+      // Never enrolled: the pace a start would freeze, from Settings.
+      expect(
+        (a12.startedOn, a12.completedOn, a12.passedSeed),
+        (null, null, null),
+      );
+      expect((a12.dailyNew, a12.studyDaysMask), (7, 127));
+    });
+
+    test("a step not started follows Settings' pace, live", () async {
+      final seen = <int>[];
+      final sub = words.watchStepProgress().listen(
+        (steps) => seen.add(steps.first.dailyNew),
+      );
+      addTearDown(sub.cancel);
+      await pumpEventQueue();
+      await settings.write(SettingKeys.dailyNew, 12);
+      await pumpEventQueue();
+      expect(seen, <int>[7, 12]);
+    });
+
     test('BR-EXAM-01 unlocked against exam_unlock_percent, live', () async {
       await state(ContentFixture.haus, stability: 1);
       // One open stream across the change, as the Learn tab holds it.
