@@ -10,7 +10,7 @@ Nothing claimed.
 
 ## Next
 
-#141: gate → plants → device check on emulator-5558 → push → merge; then lane B (#142 W2 compare, #164, #166, #280, #316)
+#141 merge (gate rerun) → SQA batch (shared-look): #312 a11y activation, #315 unlabeled nodes, #314 200% text clipping, #317 status bar overlap, #318 dialog contrast → #320 W1 page a11y → #142, #316
 
 ## Memory
 
