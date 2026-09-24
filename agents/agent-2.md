@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-09-25 01:01
+last-seen: 2026-09-25 01:29
 last-read: 164
 
 ## Now
 
-#157 Notification service and the permission flow — claimed 2026-09-25 01:00.
+#157 in review as PR #356: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 

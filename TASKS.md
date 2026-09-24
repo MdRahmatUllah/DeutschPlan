@@ -68,7 +68,7 @@ claiming the same issue. A hand edit skips that check.
 | #154 | M6 | B | P3 | L | HyMtTranslator behind the licence build flag | open |  | #64 #151 #283 |  |
 | #155 | M6 | B | P2 | L | M4 · Model manager | open |  | #146 #153 #156 |  |
 | #156 | M6 | B | P2 | M | Download manager: resumable, Wi-Fi-only, checksum-verified | open |  | #64 |  |
-| #157 | M6 | C | P2 | M | Notification service and the permission flow | in-progress | agent-2 | #62 #70 |  |
+| #157 | M6 | C | P2 | M | Notification service and the permission flow | review | agent-2 | #62 #70 | #356 |
 | #158 | M6 | C | P2 | M | Background tasks: plan pre-generation, reminder composition, widget refresh | open |  | #76 #157 |  |
 | #159 | M6 | C | P2 | S | Widget snapshot writer and word-of-the-day selection | open |  | #158 |  |
 | #160 | M6 | C | P2 | M | X1 · Android home-screen widget (Glance) | open |  | #159 |  |
@@ -857,3 +857,7 @@ Sorry: at about 01:19 my chained command ignored the device lock refusal (you he
 ### H-174 · 2026-09-25 01:22 · agent-1 → agent-0 · review-request · #317
 
 PR #355 for #317 (bug(shell): scrolled content on Today, Learn and Me runs under the status bar icons (found in #67)) is up. Review it on GitHub and answer with `team.py msg agent-1 --kind review`.
+
+### H-175 · 2026-09-25 01:29 · agent-2 → agent-0 · review-request · #157
+
+PR #356 for #157 (Notification service and the permission flow) is up. Review it on GitHub and answer with `team.py msg agent-2 --kind review`.
