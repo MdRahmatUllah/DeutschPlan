@@ -1,5 +1,6 @@
 import 'package:deutschplan/core/components/dp_button.dart';
 import 'package:deutschplan/core/components/dp_pill.dart';
+import 'package:deutschplan/core/components/dp_progress_ring.dart';
 import 'package:deutschplan/core/providers/app_providers.dart';
 import 'package:deutschplan/core/theme/dp_surface.dart';
 import 'package:deutschplan/core/theme/dp_tokens.dart';
@@ -8,7 +9,11 @@ import 'package:deutschplan/data/repositories/exam_repository.dart';
 import 'package:deutschplan/data/repositories/setting_keys.dart';
 import 'package:deutschplan/data/repositories/word_repository.dart';
 import 'package:deutschplan/domain/exam_generator.dart';
+import 'package:deutschplan/domain/plan_stats.dart' show courseDays;
+import 'package:deutschplan/features/today/today_providers.dart';
+import 'package:deutschplan/features/today/today_screen.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
+import 'package:deutschplan/router/cross_tab.dart';
 import 'package:deutschplan/router/routes.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
@@ -26,6 +31,9 @@ typedef ExamHub = ({
 
   /// `exam_pass_percent` (BR-EXAM-04).
   int passPercent,
+
+  /// `exam_unlock_percent` (BR-EXAM-01), for the locked hub.
+  int unlockPercent,
 
   /// `listening_questions` (FR-L10-04).
   bool listening,
@@ -59,6 +67,7 @@ Future<ExamHub> examHub(Ref ref, String code) async {
       .where(
         (key) =>
             key == SettingKeys.examPassPercent ||
+            key == SettingKeys.examUnlockPercent ||
             key == SettingKeys.listeningQuestions,
       )
       .listen((_) => ref.invalidateSelf());
@@ -88,6 +97,7 @@ Future<ExamHub> examHub(Ref ref, String code) async {
     seeds: summaries,
     resume: open,
     passPercent: settings.read(SettingKeys.examPassPercent),
+    unlockPercent: settings.read(SettingKeys.examUnlockPercent),
     listening: listening,
     reused: <int>{
       for (var seed = 1; seed <= 3; seed++)
@@ -126,20 +136,26 @@ class StepExamsTab extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final tokens = context.tokens;
-    final l10n = AppLocalizations.of(context);
-    if (!step.unlocked && !step.passed) {
-      // ponytail: the locked hub is #128; until then the tab names itself.
-      return Center(
-        child: DpText(
-          l10n.stepTabExams,
-          role: DpTextRole.body,
-          color: tokens.color.textSecondary,
-        ),
-      );
-    }
     final hub = ref.watch(examHubProvider(step.code)).value;
     if (hub == null) return const SizedBox.expand();
+
+    // FR-L10-01: locked until enough of the step is introduced, and a
+    // passed step stays open.
+    if (!step.unlocked && !step.passed) {
+      return ListView(
+        key: PageStorageKey<String>('step-exams-${step.code}'),
+        padding: const EdgeInsets.fromLTRB(16, 14, 16, 16),
+        children: <Widget>[
+          LockedExams(step: step, unlockPercent: hub.unlockPercent),
+          const SizedBox(height: 14),
+          ExamContents(
+            listening: hub.listening,
+            passPercent: hub.passPercent,
+            locked: true,
+          ),
+        ],
+      );
+    }
 
     return ListView(
       key: PageStorageKey<String>('step-exams-${step.code}'),
@@ -294,10 +310,14 @@ class ExamContents extends StatelessWidget {
     required this.listening,
     required this.passPercent,
     super.key,
+    this.locked = false,
   });
 
   final bool listening;
   final int passPercent;
+
+  /// The locked hub also says where the threshold is changed.
+  final bool locked;
 
   @override
   Widget build(BuildContext context) {
@@ -333,9 +353,128 @@ class ExamContents extends StatelessWidget {
           DpText(sections, role: DpTextRole.label, weight: 400),
           const SizedBox(height: 6),
           DpText(
-            l10n.examHubDisclaimer(passPercent),
+            <String>[
+              l10n.examHubDisclaimer(passPercent),
+              if (locked) l10n.examHubThreshold,
+            ].join(' '),
             role: DpTextRole.caption,
             color: tokens.color.textSecondary,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// FR-L10-01's locked hub: how much of the step is introduced of what
+/// unlocks its mocks, how long that is at the step's pace, and *Study now*.
+class LockedExams extends ConsumerWidget {
+  const LockedExams({
+    required this.step,
+    required this.unlockPercent,
+    super.key,
+  });
+
+  final StepProgress step;
+
+  /// BR-EXAM-01's `exam_unlock_percent`.
+  final int unlockPercent;
+
+  /// The words that unlock the mocks: [percent] of the step's, suspended
+  /// ones left out as the unlock leaves them out (BR-EXAM-01).
+  static int target(StepProgress step, int percent) =>
+      ((step.todo + step.introduced) * percent / 100).ceil();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final tokens = context.tokens;
+    final l10n = AppLocalizations.of(context);
+    // Sun's own ink on paper and dark; the page's under glass, as L2's
+    // header does.
+    final ink = tokens.isGlass ? tokens.color.ink : tokens.color.onAccent;
+    final goal = target(step, unlockPercent);
+    final left = goal - step.introduced < 0 ? 0 : goal - step.introduced;
+    // FR-L10-01: the words left at the step's pace, over its study days.
+    final days = courseDays(
+      words: left,
+      dailyNew: step.dailyNew,
+      studyDaysMask: step.studyDaysMask,
+    );
+    final today = ref.watch(todayViewProvider).value;
+    final blocks = today == null ? const <SessionBlock>[] : openBlocks(today);
+
+    return DpSurface(
+      // Solid Sun on paper and dark; a Sun wash under glass, as the glass
+      // artboard draws it.
+      kind: DpSurfaceKind.tint(
+        tokens.color.accent,
+        opacity: tokens.isGlass ? 0.22 : 1,
+      ),
+      // The ink border and hard shadow of a raised card on paper; a plain
+      // panel edge under glass.
+      selected: !tokens.isGlass,
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          Row(
+            children: <Widget>[
+              Icon(Icons.lock_outline, size: 20, color: ink),
+              const SizedBox(width: 10),
+              Expanded(
+                child: DpText(
+                  l10n.examHubUnlocksWhen(unlockPercent, step.code),
+                  role: DpTextRole.bodyLarge,
+                  weight: 600,
+                  color: ink,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          DpSegmentedBar(
+            done: step.introduced,
+            learning: 0,
+            todo: left,
+            height: 10,
+            semanticLabel: l10n.examHubIntroduced(step.introduced, goal),
+            colours: (
+              done: ink,
+              learning: ink,
+              todo: ink.withValues(alpha: 0.15),
+            ),
+          ),
+          const SizedBox(height: 12),
+          DpText(
+            <String>[
+              l10n.examHubIntroduced(step.introduced, goal),
+              if (days != null && days > 0)
+                l10n.examHubDaysAt(days, step.dailyNew),
+            ].join(' · '),
+            role: DpTextRole.label,
+            color: ink,
+          ),
+          const SizedBox(height: 12),
+          // FR-L10-01's *Study now*: today's session, as L1's *Study* opens
+          // it, or Today itself once the day is done.
+          Builder(
+            builder: (button) => DpButton(
+              label: l10n.examHubStudyNow,
+              // White on Sun; under glass the call to action stays Lagoon.
+              kind: tokens.isGlass
+                  ? DpButtonKind.primary
+                  : DpButtonKind.secondary,
+              onPressed: blocks.isEmpty || today == null
+                  ? () => context.jumpToTab(const TodayRoute())
+                  : () => StudyRoute.open(
+                      context,
+                      SessionArgs(
+                        blocks: blocks,
+                        planDate: today.date,
+                        origin: originOf(button),
+                      ),
+                    ),
+            ),
           ),
         ],
       ),

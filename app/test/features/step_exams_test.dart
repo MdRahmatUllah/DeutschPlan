@@ -4,17 +4,21 @@ import 'package:deutschplan/core/components/dp_pill.dart';
 import 'package:deutschplan/data/repositories/exam_repository.dart';
 import 'package:deutschplan/data/repositories/word_repository.dart';
 import 'package:deutschplan/features/learn/step_exams.dart';
+import 'package:deutschplan/features/today/today_providers.dart';
+import 'package:deutschplan/features/today/today_view.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
 import 'package:deutschplan/main.dart'
     show appLocalizationsDelegates, supportedLocales;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 
 import 'exam_fixtures.dart';
+import 'today_fixtures.dart';
 
-/// L10 · Mock exam hub — #127.
+/// L10 · Mock exam hub — #127 (unlocked), #128 (locked).
 void main() {
   late AppLocalizations l10n;
 
@@ -25,27 +29,46 @@ void main() {
   /// Where L10 went.
   late String? went;
 
-  StepProgress step({bool unlocked = true, bool passed = false}) =>
-      StepProgress(
-        code: 'A1.2',
-        levelCode: 'A1',
-        words: 470,
-        todo: 0,
-        learning: 20,
-        done: 450,
-        grammar: 12,
-        grammarLearned: 12,
-        unlocked: unlocked,
-        passedSeed: passed ? 1 : null,
-        startedOn: '2026-07-01',
-        dailyNew: 7,
-        studyDaysMask: 127,
+  StepProgress step({
+    bool unlocked = true,
+    bool passed = false,
+    int todo = 0,
+    int learning = 20,
+    int done = 450,
+    int mask = 127,
+    int suspended = 0,
+  }) => StepProgress(
+    code: 'A1.2',
+    levelCode: 'A1',
+    words: todo + learning + done + suspended,
+    todo: todo,
+    learning: learning,
+    done: done,
+    grammar: 12,
+    grammarLearned: 12,
+    unlocked: unlocked,
+    passedSeed: passed ? 1 : null,
+    startedOn: '2026-07-01',
+    dailyNew: 7,
+    studyDaysMask: mask,
+  );
+
+  /// The ExamHubLocked artboard's step: 184 done and 60 learning of 540.
+  StepProgress locked({int mask = 127, int todo = 296, int suspended = 0}) =>
+      step(
+        unlocked: false,
+        todo: todo,
+        learning: 60,
+        done: 184,
+        mask: mask,
+        suspended: suspended,
       );
 
   Future<void> pump(
     WidgetTester tester, {
     ExamHub? hub,
     StepProgress? progress,
+    TodayView? today,
   }) async {
     went = null;
     Widget away(GoRouterState state) {
@@ -56,7 +79,12 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         key: UniqueKey(),
-        overrides: examStub(hub: hub),
+        overrides: <Override>[
+          ...examStub(hub: hub),
+          todayViewProvider.overrideWith(
+            (ref) async => today ?? artboardToday(),
+          ),
+        ],
         child: MaterialApp.router(
           theme: AppTheme.light(),
           localizationsDelegates: appLocalizationsDelegates,
@@ -79,6 +107,8 @@ void main() {
                 path: '/exam/:attemptId',
                 builder: (_, state) => away(state),
               ),
+              for (final path in <String>['/study', '/today'])
+                GoRoute(path: path, builder: (_, state) => away(state)),
             ],
           ),
         ),
@@ -310,11 +340,101 @@ void main() {
     });
   });
 
-  testWidgets('BR-EXAM-01 a locked step has no hub yet', (tester) async {
-    await pump(tester, progress: step(unlocked: false));
+  group('FR-L10-01 a locked step', () {
+    testWidgets('no mocks: what unlocks them, how far, and how long', (
+      tester,
+    ) async {
+      await pump(tester, progress: locked());
 
-    expect(find.byType(MockCard), findsNothing);
-    expect(find.text(l10n.stepTabExams), findsOneWidget);
+      expect(find.byType(MockCard), findsNothing);
+      expect(find.text(l10n.examHubUnlocksWhen(90, 'A1.2')), findsOneWidget);
+      // 90 % of 540 is 486; 242 left at 7 a day is 35 days.
+      expect(
+        find.text(
+          '${l10n.examHubIntroduced(244, 486)} · ${l10n.examHubDaysAt(35, 7)}',
+        ),
+        findsOneWidget,
+      );
+      expect(
+        find.text('244 of 486 words introduced · about 35 days at 7 a day'),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('the days follow the study days', (tester) async {
+      // Five study days a week: 242 ÷ 7 × 7 ÷ 5, rounded up.
+      await pump(tester, progress: locked(mask: 31));
+      expect(find.textContaining(l10n.examHubDaysAt(49, 7)), findsOneWidget);
+
+      // None: no end to promise.
+      await pump(tester, progress: locked(mask: 0));
+      expect(find.text(l10n.examHubIntroduced(244, 486)), findsOneWidget);
+    });
+
+    testWidgets('BR-EXAM-01 the threshold is the setting\'s', (tester) async {
+      await pump(
+        tester,
+        progress: locked(),
+        hub: artboardExamHub(unlockPercent: 80),
+      );
+
+      expect(find.text(l10n.examHubUnlocksWhen(80, 'A1.2')), findsOneWidget);
+      expect(
+        find.textContaining(l10n.examHubIntroduced(244, 432)),
+        findsOneWidget,
+      );
+
+      // Rounded up: 80 % of 543 is 434.4, so 435 words.
+      await pump(
+        tester,
+        progress: locked(todo: 299),
+        hub: artboardExamHub(unlockPercent: 80),
+      );
+      expect(
+        find.textContaining(l10n.examHubIntroduced(244, 435)),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('BR-EXAM-01 suspended words are left out of the target', (
+      tester,
+    ) async {
+      await pump(tester, progress: locked(suspended: 40));
+
+      expect(
+        find.textContaining(l10n.examHubIntroduced(244, 486)),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('Study now opens today\'s session', (tester) async {
+      await pump(tester, progress: locked());
+      await tester.tap(find.text(l10n.examHubStudyNow));
+      await tester.pumpAndSettle();
+
+      expect(went, '/study');
+    });
+
+    testWidgets('and Today once the day is done', (tester) async {
+      await pump(tester, progress: locked(), today: artboardDone());
+      await tester.tap(find.text(l10n.examHubStudyNow));
+      await tester.pumpAndSettle();
+
+      expect(went, '/today');
+    });
+
+    testWidgets('the panel says where the threshold is changed', (
+      tester,
+    ) async {
+      await pump(tester, progress: locked());
+      expect(
+        find.text('${l10n.examHubDisclaimer(60)} ${l10n.examHubThreshold}'),
+        findsOneWidget,
+      );
+
+      await pump(tester);
+      expect(find.textContaining(l10n.examHubThreshold), findsNothing);
+    });
   });
 
   testWidgets('a passed step keeps its hub', (tester) async {

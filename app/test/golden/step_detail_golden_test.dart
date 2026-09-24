@@ -32,6 +32,16 @@ void main() {
     ),
   );
 
+  // L10 locked · The ExamHubLocked artboard (#128): A2.1, current, its
+  // mocks unlocking at 90 %.
+  goldenTest(
+    'exam_hub_locked',
+    builder: (context) => ProviderScope(
+      overrides: todayStub(),
+      child: const StepDetailScreen(code: 'A2.1', tab: StepTab.exams),
+    ),
+  );
+
   // The StepGrammar artboard: two due, two scheduled, six not learned.
   goldenTest(
     'step_grammar',

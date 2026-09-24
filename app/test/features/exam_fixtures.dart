@@ -9,6 +9,7 @@ ExamHub artboardExamHub({
   List<SeedSummary>? seeds,
   Map<int, int> resume = const <int, int>{},
   int passPercent = 60,
+  int unlockPercent = 90,
   bool listening = true,
   Set<int> reused = const <int>{},
 }) => (
@@ -32,6 +33,7 @@ ExamHub artboardExamHub({
       ],
   resume: resume,
   passPercent: passPercent,
+  unlockPercent: unlockPercent,
   listening: listening,
   reused: reused,
 );

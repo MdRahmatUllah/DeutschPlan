@@ -87,7 +87,11 @@ void main() {
     await settings.write(SettingKeys.examPassPercent, 70);
     await settings.write(SettingKeys.listeningQuestions, false);
     await pumpEventQueue();
+    expect((await hub()).unlockPercent, 90);
+    await settings.write(SettingKeys.examUnlockPercent, 80);
+    await pumpEventQueue();
 
+    expect((await hub()).unlockPercent, 80);
     expect((await hub()).passPercent, 70);
     expect((await hub()).listening, isFalse);
   });
