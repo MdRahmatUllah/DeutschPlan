@@ -2196,5 +2196,99 @@
         "type": "String"
       }
     }
+  },
+  "practiceNextTopic": "Topic {at} of {of} · {title}",
+  "@practiceNextTopic": {
+    "description": "L15 banner as the next due topic starts (FR-L15-04).",
+    "placeholders": {
+      "at": {
+        "type": "int"
+      },
+      "of": {
+        "type": "int"
+      },
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "practiceNext": "Next",
+  "@practiceNext": {
+    "description": "L15: the next item, or out after the last."
+  },
+  "practiceClose": "Close practice",
+  "@practiceClose": {
+    "description": "L15 close button, read out."
+  },
+  "practiceGapFill": "Gap fill",
+  "@practiceGapFill": {
+    "description": "L15 item kind chip."
+  },
+  "practicePickTheForm": "Pick the form",
+  "@practicePickTheForm": {
+    "description": "L15 item kind chip."
+  },
+  "practiceSpotTheError": "Spot the error",
+  "@practiceSpotTheError": {
+    "description": "L15 item kind chip."
+  },
+  "practiceOrderTheSentence": "Order the sentence",
+  "@practiceOrderTheSentence": {
+    "description": "L15 item kind chip."
+  },
+  "practiceRuleRecall": "Rule recall",
+  "@practiceRuleRecall": {
+    "description": "L15 item kind chip."
+  },
+  "practiceRecallQuestion": "Which rule is “{topic}”?",
+  "@practiceRecallQuestion": {
+    "description": "L15 rule recall question; topic is the grammar topic title.",
+    "placeholders": {
+      "topic": {
+        "type": "String"
+      }
+    }
+  },
+  "practiceCheck": "Check",
+  "@practiceCheck": {
+    "description": "L15: checks a typed or ordered answer."
+  },
+  "practiceSpotPrompt": "Tap the word that is wrong.",
+  "@practiceSpotPrompt": {
+    "description": "L15 spot the error instruction."
+  },
+  "practiceOrderPrompt": "Tap the words in the right order.",
+  "@practiceOrderPrompt": {
+    "description": "L15 order the sentence instruction."
+  },
+  "practiceRight": "Correct",
+  "@practiceRight": {
+    "description": "L15 feedback, right."
+  },
+  "practiceNotQuite": "Not quite — the answer is {answer}",
+  "@practiceNotQuite": {
+    "description": "L15 feedback, wrong (FR-L15-02).",
+    "placeholders": {
+      "answer": {
+        "type": "String"
+      }
+    }
+  },
+  "practiceRuleLine": "Rule: {rule}",
+  "@practiceRuleLine": {
+    "description": "L15 feedback: the rule's first line, on a wrong answer.",
+    "placeholders": {
+      "rule": {
+        "type": "String"
+      }
+    }
+  },
+  "practiceSeeRule": "See rule",
+  "@practiceSeeRule": {
+    "description": "L15 feedback: shows the whole rule."
+  },
+  "practiceBackToItem": "Back to the question",
+  "@practiceBackToItem": {
+    "description": "L15 rule sheet: closes it."
   }
 }

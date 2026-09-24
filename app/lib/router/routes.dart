@@ -31,6 +31,7 @@ import 'package:deutschplan/features/today/today_screen.dart';
 import 'package:deutschplan/features/backlog/backlog_screen.dart';
 import 'package:deutschplan/features/day_complete/day_complete_screen.dart';
 import 'package:deutschplan/features/learn/grammar_library_screen.dart';
+import 'package:deutschplan/features/learn/grammar_practice_screen.dart';
 import 'package:deutschplan/features/learn/grammar_topic_screen.dart';
 import 'package:deutschplan/features/learn/learn_screen.dart';
 import 'package:deutschplan/features/learn/step_detail_screen.dart';
@@ -783,11 +784,7 @@ class GrammarPracticeRoute extends GoRouteData with $GrammarPracticeRoute {
   @override
   Widget build(BuildContext context, GoRouterState state) {
     final args = state.extra as GrammarPracticeArgs?;
-    return PlaceholderScreen(
-      title: 'Grammar practice',
-      screen: 'L15',
-      detail: '${args?.topicUids.length ?? 0} topics',
-    );
+    return GrammarPracticeScreen(topicUids: args?.topicUids ?? const []);
   }
 }
 

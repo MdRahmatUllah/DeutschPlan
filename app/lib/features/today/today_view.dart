@@ -244,6 +244,7 @@ class TodayView {
     required this.estimate,
     required this.courseDay,
     required this.stepWords,
+    this.grammarDone = 0,
     this.sentences = BlockProgress.none,
     this.isStudyDay = true,
     this.minutes = 0,
@@ -270,8 +271,11 @@ class TodayView {
   final List<String> openRevise;
   final List<String> openNew;
 
-  /// Topics due today (BR-PLAN-02's third block).
+  /// Topics due today (BR-PLAN-02's third block) and not yet practised.
   final List<String> grammarDue;
+
+  /// Today's topics practised since the day opened.
+  final int grammarDone;
 
   /// Practice sentences (#80): the day's picked ones, and how many are rated.
   final BlockProgress sentences;
@@ -327,15 +331,17 @@ class TodayView {
 
   final GrammarPreview? grammar;
 
-  /// FR-T1-02's numerator. Grammar counts nothing done yet: a practised topic
-  /// leaves the due list, so it drops out of [total] instead.
-  // ponytail: grammar practice is L15 (M3); when it logs a practice, count
-  // today's practised topics here and in [total] so the ring does not shrink.
-  int get completed => revise.done + newToday.done + sentences.done;
+  /// FR-T1-02's numerator.
+  int get completed =>
+      revise.done + newToday.done + grammarDone + sentences.done;
 
   /// FR-T1-02's denominator: revise + new + grammar + sentences.
   int get total =>
-      revise.total + newToday.total + grammarDue.length + sentences.total;
+      revise.total +
+      newToday.total +
+      grammarDue.length +
+      grammarDone +
+      sentences.total;
 
   int get left => total - completed;
 

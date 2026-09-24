@@ -262,6 +262,35 @@ class GrammarRatingService {
     );
   }
 
+  /// FR-L15-03: a finished run, rated as a whole (BR-FSRS-05: all right
+  /// Good, one wrong Hard, more Again), scheduled and logged.
+  Future<void> ratePractice(
+    String uid, {
+    required int items,
+    required int correct,
+  }) async {
+    final now = _now();
+    final result = PracticeResult(
+      items: items,
+      correct: correct,
+      practisedAt: now.toUtc().toIso8601String(),
+    );
+    final before = (await _grammar.find(uid))?.state;
+    final next = Fsrs(
+      desiredRetention: _settings.read(SettingKeys.desiredRetention),
+    ).review(_cardStateOf(before), Rating.parse(result.rating), now.toUtc());
+    await _grammar.recordPractice(
+      uid: uid,
+      result: result,
+      stability: next.stability,
+      difficulty: next.difficulty,
+      due: planDate(next.due!),
+      reps: next.reps,
+      lapses: next.lapses,
+      today: planDate(now),
+    );
+  }
+
   /// The FSRS view of a topic's row. `grammar_state` keeps no FSRS state
   /// column: a topic reviewed before is in review, one never reviewed is
   /// fresh.

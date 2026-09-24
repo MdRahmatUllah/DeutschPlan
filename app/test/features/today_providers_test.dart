@@ -172,6 +172,58 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code, completed_at, 
     expect(view.openRevise, isEmpty);
   });
 
+  test(
+    'a topic practised in L15 leaves Grammar due and fills the ring',
+    () async {
+      await db.customUpdate(
+        'INSERT INTO grammar_state '
+        '(grammar_uid, status, due, stability, reps, last_review) '
+        "VALUES ('g1', 'learning', '$today', 1, 1, '2026-09-20T09:00:00Z')",
+        updates: <TableInfo<Table, Object?>>{db.grammarState},
+      );
+      // The day opens with it due.
+      container.invalidate(todayPlanProvider);
+      var view = await container.read(todayViewProvider.future);
+      expect(view.grammarDue, <String>['g1']);
+      expect(view.completed, 2);
+      expect(view.total, 5);
+      final before = view.estimate;
+
+      await container
+          .read(grammarRatingServiceProvider)
+          .ratePractice('g1', items: 5, correct: 5);
+      await pumpEventQueue();
+      view = await container.read(todayViewProvider.future);
+
+      expect(view.grammarDue, isEmpty, reason: 'not offered again today');
+      expect(view.grammarDone, 1);
+      expect(view.completed, 3);
+      expect(view.total, 5, reason: 'the ring does not shrink');
+      expect(view.estimate, lessThan(before));
+    },
+  );
+
+  test('a topic falling due after the day opened waits for tomorrow', () async {
+    await db.customUpdate(
+      'INSERT INTO grammar_state (grammar_uid, status, due, last_review) '
+      "VALUES ('g1', 'suspended', '$today', '2026-09-20T09:00:00Z')",
+      updates: <TableInfo<Table, Object?>>{db.grammarState},
+    );
+    container.invalidate(todayPlanProvider);
+    expect((await container.read(todayViewProvider.future)).total, 4);
+
+    // Resumed mid-day, the way a resumed word waits for tomorrow's plan.
+    await db.customUpdate(
+      "UPDATE grammar_state SET status = 'learning' WHERE grammar_uid = 'g1'",
+      updates: <TableInfo<Table, Object?>>{db.grammarState},
+    );
+    await pumpEventQueue();
+    final view = await container.read(todayViewProvider.future);
+
+    expect(view.grammarDue, isEmpty);
+    expect(view.total, 4);
+  });
+
   group('#80 practice sentences', () {
     setUp(() async {
       // Haus is learned; its two examples are the only candidates, so one

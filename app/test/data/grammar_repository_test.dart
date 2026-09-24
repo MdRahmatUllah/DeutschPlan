@@ -365,4 +365,42 @@ void main() {
       expect((await grammar.find('g1'))!.status, WordStatus.suspended);
     });
   });
+
+  group('FR-L15-03 a finished run, rated as a whole', () {
+    GrammarRatingService service() =>
+        GrammarRatingService(grammar, settings, () => DateTime(2026, 9, 21, 9));
+
+    Future<double> stabilityAfter(int correct) async {
+      await db.customStatement('DELETE FROM grammar_state');
+      await service().ratePractice('g1', items: 5, correct: correct);
+      return (await grammar.find('g1'))!.state!.stability;
+    }
+
+    test('logged, counted for the day, and the topic learned', () async {
+      await service().ratePractice('g1', items: 5, correct: 5);
+      final topic = (await grammar.find('g1'))!;
+      expect(topic.status, WordStatus.learning);
+      final log = await grammar.watchPractice('g1').first;
+      expect(log.single.items, 5);
+      expect(log.single.correct, 5);
+      final stats = await db
+          .customSelect(
+            "SELECT grammar_done FROM daily_stats WHERE day = '2026-09-21'",
+          )
+          .getSingle();
+      expect(stats.read<int>('grammar_done'), 1);
+    });
+
+    test('BR-FSRS-05: all right Good, one wrong Hard, more Again', () async {
+      final fsrs = Fsrs(
+        desiredRetention: settings.read(SettingKeys.desiredRetention),
+      );
+      final now = DateTime(2026, 9, 21, 9).toUtc();
+      double first(Rating rating) =>
+          fsrs.review(const CardState(), rating, now).stability;
+      expect(await stabilityAfter(5), closeTo(first(Rating.good), 1e-9));
+      expect(await stabilityAfter(4), closeTo(first(Rating.hard), 1e-9));
+      expect(await stabilityAfter(2), closeTo(first(Rating.again), 1e-9));
+    });
+  });
 }

@@ -352,5 +352,22 @@
   "topicPlace": "বিষয় {at} / {of}",
   "topicPlay": "শুনুন: {sentence}",
   "topicNext": "পরের বিষয়: {title}",
-  "topicPrevious": "আগের বিষয়: {title}"
+  "topicPrevious": "আগের বিষয়: {title}",
+  "practiceNextTopic": "বিষয় {at} / {of} · {title}",
+  "practiceNext": "পরের",
+  "practiceClose": "অনুশীলন বন্ধ করুন",
+  "practiceGapFill": "ফাঁকা পূরণ",
+  "practicePickTheForm": "সঠিক রূপ বাছুন",
+  "practiceSpotTheError": "ভুলটি খুঁজুন",
+  "practiceOrderTheSentence": "বাক্য সাজান",
+  "practiceRuleRecall": "নিয়ম মনে করুন",
+  "practiceRecallQuestion": "“{topic}”-এর নিয়ম কোনটি?",
+  "practiceCheck": "যাচাই করুন",
+  "practiceSpotPrompt": "যে শব্দটি ভুল, সেটিতে ট্যাপ করুন।",
+  "practiceOrderPrompt": "শব্দগুলো সঠিক ক্রমে ট্যাপ করুন।",
+  "practiceRight": "সঠিক",
+  "practiceNotQuite": "ঠিক হয়নি — উত্তর হলো {answer}",
+  "practiceRuleLine": "নিয়ম: {rule}",
+  "practiceSeeRule": "নিয়ম দেখুন",
+  "practiceBackToItem": "প্রশ্নে ফিরুন"
 }

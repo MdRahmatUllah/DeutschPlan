@@ -62,12 +62,14 @@ final class PickTheForm extends GrammarItem {
     required this.after,
     required this.options,
     required this.answer,
+    this.translation = '',
   });
 
   final String before;
   final String after;
   final List<String> options;
   final String answer;
+  final String translation;
 }
 
 /// A sentence with one wrong word, tapped (token index).
@@ -196,6 +198,7 @@ List<GrammarItem> generateItems(
       after: after,
       options: (<String>[answer, ...distractors.take(2)]..shuffle(random)),
       answer: answer,
+      translation: translation,
     ),
   );
 
@@ -287,6 +290,7 @@ List<GrammarItem> generateItems(
             ..._distractors(other, source, random).take(2),
           ]..shuffle(random),
           answer: other,
+          translation: translation,
         ),
       );
     }
