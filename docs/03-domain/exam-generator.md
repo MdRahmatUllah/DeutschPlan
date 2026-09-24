@@ -16,3 +16,46 @@ ExamGenerator(step, seed).build() → Exam(sections)
 Persistence: on *Begin exam* an `exam_attempts` row is created with all `exam_answers` pre-inserted (prompt, options, expected); answering updates rows in place, so a crash resumes exactly. Timer: `duration_sec` accumulates only while running; pauses are recorded.
 
 Grading on submit: `answer_check` per item; Listening compares the typed text with `checkGerman`; Writing app-checks computed from the text; rubric ticks stored in `self_rubric_json`. `passed = score% >= exam_pass_percent`. Passing marks the step (query, not a flag: any finished passed attempt for the step).
+
+## Details the generator settles (#83)
+
+`buildExam(ExamPool pool, seed:, listening:, bangla:)` in `domain/exam_generator.dart`; `ExamRepository.pool(step)` reads the pool.
+
+- **Items and what never repeats.** An item's ref is:
+  - a word's uid, in every word section: a word is asked once in a paper, and in one paper of the three;
+  - `<topic uid>#<n>` for the *n*-th grammar item the topic yields, seeded by the topic and the step;
+  - `writing:<category id>` or `speaking:<category id>` for the two tasks.
+- **Drawing.** The three papers are drawn together, section by section, each from its own `Random(hash(step, seed))` (FNV-1a over `step|mock seed`). An item one paper takes is out of the others' pools. The scarcest sections draw first (Word forms, Gap fill, Articles, Grammar, Writing, Speaking, Listening, Reverse, Vocabulary), so a small step spends its nouns and forms where only they will do. The paper itself is in BR-EXAM-03's order.
+- **Reuse.** When a section runs out of fresh items, a paper takes the one another paper drew longest ago, never one it already has, and `Exam.reused` tells the hub. Every step of the course fills three disjoint papers with no reuse (a test over the real content.db pins this).
+- **FR-L10-04.** Without listening, Vocabulary gets 11 items and Reverse 9: still 40 questions and 48 points.
+- **Meanings.** With the meaning language set to Bangla, Vocabulary expects the Bangla meaning and Reverse shows it, where the course has one; otherwise English, as the word lists do.
+- **What each item asks:**
+
+  | Section | Prompt | Expected | Check |
+  |---|---|---|---|
+  | Vocabulary | the headword with its article | the meaning list | `checkMeaning` |
+  | Reverse | the meaning | the headword (article optional) | `checkGerman` |
+  | Articles | the noun; buttons der · die · das | `der`/`die`/`das` | `checkArticle` |
+  | Word forms | the word and a form label (`parseForms`) | the form | `checkForm` |
+  | Gap fill | one of the word's examples, blanked by the cloze rules (`clozeGap`), with its translation | the form the sentence uses | `checkGerman` |
+  | Grammar | an L15 item (`generateItems`), spread over as many topics as there are | the missing word · the right form · the wrong token's index · the words in order, space-separated · the right rule's index | `checkGerman` for a gap fill, exact otherwise |
+  | Listening | the headword, played | the headword, typed | `checkGerman` |
+  | Writing | see below | — | FR-L12W-03 |
+  | Speaking | see below | — | rubric |
+
+- **Stored.** `exam_answers.prompt` is the item as JSON, so every kind comes back whole after a restart (`ExamItem.decode`). `options_json` holds the buttons (Articles, pick the form, rule recall). `item_ref` is the ref above.
+- **Writing.** A category of the step, the biggest first, one per paper. It has 10 target words, single words from that category (so FR-L12W-01's token match can find them), topped up from the step. The minimum length is FR-L12W-02's. Connectors are the course's conjunctions up to and including the step. content.db has no connector list, and `skill_prompts` holds spreadsheet headers, not prompts (a pipeline defect).
+- **Speaking.** A category of the step, one per paper, and FR-L12S-02's length.
+- **The task per level.** L12 words these in ARB (#133, #134), with `{category}` the category's German name:
+
+  | Level | Writing | Speaking |
+  |---|---|---|
+  | A1 | Write a short message to a friend about {category}. | Say what you do and like around {category}. |
+  | A2 | Write an email to a friend about {category}. | Describe an experience with {category}. |
+  | B1 | Write a personal letter about {category}: what happened and what you think. | Talk about {category}: your experience and your opinion. |
+  | B2 | Write a formal letter or opinion text on {category}. | Give your opinion on {category}, with reasons and an example. |
+  | C1 | Write an argumentative text on {category}: both sides, then your view. | Argue a position on {category} and answer the other side. |
+  | C2 | Write a commentary on {category} for a newspaper. | Give a short talk on {category} as if to an audience. |
+
+  Each writing task adds "Use at least 6 of these words:" with the targets, and "at least {min} words".
+

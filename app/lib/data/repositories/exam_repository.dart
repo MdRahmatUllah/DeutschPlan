@@ -1,4 +1,7 @@
 import 'package:deutschplan/data/db/app_database.dart';
+import 'package:deutschplan/domain/exam_generator.dart';
+import 'package:deutschplan/domain/grammar_item_generator.dart';
+import 'package:deutschplan/domain/quiz_builder.dart';
 import 'package:drift/drift.dart';
 import 'package:flutter/foundation.dart' show immutable;
 
@@ -31,6 +34,19 @@ class ExamQuestion {
 
   /// Null for Writing and Speaking, which are graded by rubric.
   final String? expected;
+
+  /// [item] as row [ord] of its paper (`exam-generator.md`).
+  static ExamQuestion of(int ord, ExamItem item) {
+    final row = item.encode();
+    return ExamQuestion(
+      ord: ord,
+      section: row.section,
+      prompt: row.prompt,
+      itemRef: row.ref,
+      optionsJson: row.options,
+      expected: row.expected,
+    );
+  }
 }
 
 /// One question of a quiz.
@@ -181,6 +197,60 @@ class ExamRepository extends DatabaseAccessor<AppDatabase>
 
     return id;
   });
+
+  /// What [step]'s three mocks are drawn from (#83): its words but the
+  /// suspended ones, with their examples and categories, its grammar topics,
+  /// and the connectors the writing check counts.
+  Future<ExamPool> pool(String step) async {
+    final examples = <String, List<({String german, String english})>>{};
+    for (final row in await examExamples(step).get()) {
+      (examples[row.uid] ??= <({String german, String english})>[]).add((
+        german: row.german,
+        english: row.english ?? '',
+      ));
+    }
+    return ExamPool(
+      step: step,
+      level: step.split('.').first,
+      words: <ExamWord>[
+        for (final row in await examWords(step).get())
+          ExamWord(
+            word: QuizWord(
+              uid: row.uid,
+              german: row.german,
+              english: row.english,
+              step: step,
+              article: row.article,
+              pos: row.pos,
+              bangla: row.bangla,
+              forms: row.forms,
+              synonyms: row.synonyms,
+            ),
+            category: row.categoryId,
+            examples: examples[row.uid] ?? const [],
+          ),
+      ],
+      topics: <GrammarSource>[
+        for (final topic in await examTopics(step).get())
+          GrammarSource(
+            uid: topic.uid,
+            topic: topic.topic,
+            rule: topic.rule ?? '',
+            exampleDe: topic.exampleDe ?? '',
+            exampleEn: topic.exampleEn ?? '',
+            watchOut: topic.watchOut ?? '',
+            tags: topic.tags.split(','),
+            levelCode: topic.levelCode,
+          ),
+      ],
+      categories: <int, String>{
+        for (final row in await examCategories(step).get()) row.id: row.name,
+      },
+      connectors: <String>[
+        for (final row in await examConnectors(step).get()) row,
+      ],
+    );
+  }
 
   /// Writes one answer in place. Called as the learner moves on, not on submit.
   ///
