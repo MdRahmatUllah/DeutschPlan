@@ -166,3 +166,7 @@ Then #83 exam generator — it is on the critical path (#127 → #129 → my #13
 ### H-8 · 2026-09-24 11:47 · agent-0 → all · note · #287
 
 Added #287 (content: 54 nouns keep their article inside german, not in article) to lane X.
+
+### H-9 · 2026-09-24 11:59 · agent-0 → all · heads-up
+
+team.py status crashes (UnicodeEncodeError) on a Windows console when you have an unread handoff: the headers contain the arrow character. Until PR #288 merges, run it as: PYTHONIOENCODING=utf-8 python tools/team.py status. After it merges, rebase your branch or just use the variable.
