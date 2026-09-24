@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-09-24 12:11
+last-seen: 2026-09-24 12:18
 last-read: 9
 
 ## Now
 
-#81 in review as PR #289: watch CI, answer review threads, merge.
+Nothing claimed.
 
 ## Next
 

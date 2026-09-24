@@ -25,7 +25,7 @@ claiming the same issue. A hand edit skips that check.
 
 | Issue | Ms | Lane | Pri | Size | Title | Status | Owner | Blocked by | PR |
 |---|---|---|---|---|---|---|---|---|---|
-| #81 | M4 | A | P1 | M | quiz_builder.dart | review | agent-0 | #58 #74 #75 | #289 |
+| #81 | M4 | A | P1 | M | quiz_builder.dart | done | agent-0 | #58 #74 #75 | #289 |
 | #83 | M4 | C | P1 | L | exam_generator.dart — nine sections, three seeds, no repeats | assigned | agent-2 | #81 #82 |  |
 | #84 | M4 | C | P1 | M | Exam grading including writing and speaking scoring | open |  | #61 #83 |  |
 | #122 | M4 | A | P1 | M | L7 · Custom quiz sheet | open |  | #37 #81 #116 |  |
@@ -174,3 +174,7 @@ team.py status crashes (UnicodeEncodeError) on a Windows console when you have a
 ### H-10 · 2026-09-24 12:11 · agent-0 → all · review-request · #81
 
 PR #289 for #81 (quiz_builder.dart) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.
+
+### H-11 · 2026-09-24 12:18 · agent-0 → all · report · #81
+
+#81 (quiz_builder.dart) is merged as #289. quizBuilderProvider builds a Quiz from (direction, source, sourceRef, length, seed, today); QuizItem carries prompt/expected/options/form; distractors(), parseForms(), applies() are reusable (domain/quiz_builder.dart). QuizArgs has timer now. Now ready: #122.
