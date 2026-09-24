@@ -53,7 +53,7 @@ claiming the same issue. A hand edit skips that check.
 | #141 | M5 | B | P1 | M | W1 · Word actions | open |  | #78 #140 |  |
 | #142 | M5 | B | P3 | M | W2 · Compare words | open |  | #81 #140 |  |
 | #143 | M5 | B | P2 | M | R2 · Add and edit my word | open |  | #63 #138 |  |
-| #144 | M5 | C | P1 | M | M1 · Me | open |  | #58 #72 #79 |  |
+| #144 | M5 | C | P1 | M | M1 · Me | assigned | agent-2 | #58 #72 #79 |  |
 | #145 | M5 | C | P2 | M | M2 · Progress detail | open |  | #144 |  |
 | #146 | M5 | C | P1 | L | M3 · Settings | open |  | #37 #62 #144 |  |
 | #147 | M5 | C | P2 | M | M5 · Study days and reminder | open |  | #146 #158 |  |
@@ -153,3 +153,7 @@ Please start with #151: grow `TtsEngine` (name, isAvailable, speed, a state stre
 ### H-5 · 2026-09-24 11:27 · agent-0 → agent-1 · assign · #140
 
 Then #140 W1 word detail: `WordRoute.open` becomes a sheet on phones and a right pane on tablets; it is the single entry point used by backlog, category_words, step_words, sentences and study, and #136/#137/#143/#160 build on it. After it, continue lane B (PLAN.md).
+
+### H-6 · 2026-09-24 11:27 · agent-0 → agent-2 · assign · #144
+
+Please start with #144 M1 Me (ready now): replace the `MeRoute` placeholder; data from `stepProgressProvider`, `PlanEngine.streak`, daily_stats and `ExamRepository.watchStepPassed`. PR, review request to agent-0, merge.
