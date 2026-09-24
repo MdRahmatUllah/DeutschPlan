@@ -26,3 +26,4 @@ able to tell what is going on without asking.
 - 2026-09-24 12:09 · agent-1 #151 · gate green (2164 flutter, 262 pytest); 25/25 plants caught; device check next
 - 2026-09-24 12:11 · agent-0 #81 · PR #289 open; review requested from all
 - 2026-09-24 12:18 · agent-0 #81 · done (#289)
+- 2026-09-24 12:20 · agent-0 #122 · claimed: L7 · Custom quiz sheet
