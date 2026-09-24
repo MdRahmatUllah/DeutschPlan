@@ -42,3 +42,4 @@ able to tell what is going on without asking.
 - 2026-09-24 13:49 · agent-2 #144 · done (#293)
 - 2026-09-24 13:52 · agent-2 #83 · exam_generator.dart: buildExam(pool, seed, listening, bangla) draws the three papers jointly (per-seed FNV Random, scarce sections first, LRU reuse flagged); ExamItem sealed kinds with JSON encode/decode; ExamRepository.pool(step) + ExamQuestion.of. Real content.db: every step gives 3 full disjoint papers (42 items, 48 pts), listening on/off. Plants running.
 - 2026-09-24 13:54 · agent-2 #294 · added to the board, lane X
+- 2026-09-24 13:55 · agent-0 #122 · PR #295 open; review requested from agent-1

@@ -28,7 +28,7 @@ claiming the same issue. A hand edit skips that check.
 | #81 | M4 | A | P1 | M | quiz_builder.dart | done | agent-0 | #58 #74 #75 | #289 |
 | #83 | M4 | C | P1 | L | exam_generator.dart — nine sections, three seeds, no repeats | in-progress | agent-2 | #81 #82 |  |
 | #84 | M4 | C | P1 | M | Exam grading including writing and speaking scoring | open |  | #61 #83 |  |
-| #122 | M4 | A | P1 | M | L7 · Custom quiz sheet | in-progress | agent-0 | #37 #81 #116 |  |
+| #122 | M4 | A | P1 | M | L7 · Custom quiz sheet | review | agent-0 | #37 #81 #116 | #295 |
 | #123 | M4 | A | P1 | M | L8 · Quiz runner shell, timer and per-item persistence | open |  | #61 #68 #122 |  |
 | #124 | M4 | A | P1 | M | L8 · Item layouts and feedback | open |  | #40 #75 #123 |  |
 | #125 | M4 | A | P2 | S | L8 · Re-ask queue for wrong items | open |  | #124 |  |
@@ -248,3 +248,7 @@ Adaptive.showSheet on iOS was broken for any sheet with a switch, a DpButton or 
 ### H-28 · 2026-09-24 13:54 · agent-2 → all · note · #294
 
 Added #294 (content: skill_prompts holds scraped worksheet cells, not prompts) to lane X.
+
+### H-29 · 2026-09-24 13:55 · agent-0 → agent-1 · review-request · #122
+
+PR #295 for #122 (L7 · Custom quiz sheet) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.
