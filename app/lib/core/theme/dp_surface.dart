@@ -72,6 +72,7 @@ class DpSurface extends StatefulWidget {
     this.radius,
     this.pressed = false,
     this.selected = false,
+    this.glassOutline,
     this.onTap,
   });
 
@@ -92,6 +93,10 @@ class DpSurface extends StatefulWidget {
   /// cards are a bar each until one is picked; the artboards draw exactly
   /// that pair.
   final bool selected;
+
+  /// The [selected] outline under glass, when Lagoon is not the colour that
+  /// says so: L1's current step is Sun.
+  final Color? glassOutline;
 
   final VoidCallback? onTap;
 
@@ -236,7 +241,7 @@ class _DpSurfaceState extends State<DpSurface> {
                 borderRadius: borderRadius,
                 border: widget.selected
                     ? Border.all(
-                        color: tokens.color.primary,
+                        color: widget.glassOutline ?? tokens.color.primary,
                         width: _selectedOutlineWidth,
                       )
                     : Border.all(

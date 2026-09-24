@@ -30,6 +30,7 @@ import 'package:deutschplan/router/route_guards.dart';
 import 'package:deutschplan/features/today/today_screen.dart';
 import 'package:deutschplan/features/backlog/backlog_screen.dart';
 import 'package:deutschplan/features/day_complete/day_complete_screen.dart';
+import 'package:deutschplan/features/learn/learn_screen.dart';
 import 'package:deutschplan/features/sentences/sentences_screen.dart';
 import 'package:deutschplan/features/study/study_screen.dart';
 import 'package:deutschplan/core/adaptive/adaptive.dart';
@@ -281,7 +282,7 @@ class LearnRoute extends GoRouteData with $LearnRoute {
 
   @override
   Widget build(BuildContext context, GoRouterState state) =>
-      const PlaceholderScreen(title: 'Learn', screen: 'L1');
+      const LearnScreen();
 }
 
 class LearnStepRoute extends GoRouteData with $LearnStepRoute {

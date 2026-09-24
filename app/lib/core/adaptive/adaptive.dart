@@ -495,6 +495,8 @@ class AdaptiveNavDestination {
     required this.icon,
     required this.selectedIcon,
     required this.label,
+    this.colour,
+    this.onColour,
   });
 
   final IconData icon;
@@ -503,6 +505,14 @@ class AdaptiveNavDestination {
   final IconData selectedIcon;
 
   final String label;
+
+  /// The pill under the tab when it is the current one: each tab has its
+  /// own on the artboards — Today Lagoon, Learn Sun, Search Raspberry, Me
+  /// Cobalt. Lagoon when null.
+  final Color? colour;
+
+  /// The selected icon on [colour].
+  final Color? onColour;
 }
 
 /// The four-tab bar at the foot of the shell.
@@ -548,9 +558,10 @@ class AdaptiveNavBar extends StatelessWidget {
       );
     }
 
-    // The artboards' bar: a hairline on top, a Lagoon pill under the current
-    // tab, and 12 pt labels — ink when chosen, Slate otherwise.
+    // The artboards' bar: a hairline on top, the tab's own pill under the
+    // current tab, and 12 pt labels — ink when chosen, Slate otherwise.
     final label = Theme.of(context).textTheme.labelSmall!;
+    final current = destinations[currentIndex];
     return DecoratedBox(
       decoration: BoxDecoration(
         border: Border(top: BorderSide(color: tokens.surface.outline)),
@@ -558,7 +569,7 @@ class AdaptiveNavBar extends StatelessWidget {
       child: NavigationBar(
         selectedIndex: currentIndex,
         backgroundColor: tokens.surface.card,
-        indicatorColor: tokens.color.primary,
+        indicatorColor: current.colour ?? tokens.color.primary,
         labelTextStyle: WidgetStateProperty.resolveWith(
           (states) => states.contains(WidgetState.selected)
               ? label.copyWith(
@@ -579,10 +590,10 @@ class AdaptiveNavBar extends StatelessWidget {
           for (final destination in destinations)
             NavigationDestination(
               icon: Icon(destination.icon, color: tokens.color.ink),
-              // On the bright pill, the ink made for Lagoon.
+              // On the bright pill, the ink made for its colour.
               selectedIcon: Icon(
                 destination.selectedIcon,
-                color: tokens.color.onPrimary,
+                color: destination.onColour ?? tokens.color.onPrimary,
               ),
               label: destination.label,
             ),

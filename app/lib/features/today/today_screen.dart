@@ -115,6 +115,25 @@ class _TodayScreenState extends ConsumerState<TodayScreen> {
   }
 }
 
+/// Where [context]'s widget is on screen: the rect a session grows from.
+Rect? originOf(BuildContext context) {
+  final box = context.findRenderObject();
+  return box is RenderBox && box.hasSize
+      ? box.localToGlobal(Offset.zero) & box.size
+      : null;
+}
+
+/// Every open block of the day, in BR-PLAN-02's order: what Today's button
+/// studies (FR-T1-03), and L1's *Study* with it (FR-L1-04).
+List<SessionBlock> openBlocks(TodayView view) => <SessionBlock>[
+  if (view.openRevise.isNotEmpty)
+    SessionBlock(SessionBlockKind.revise, view.openRevise),
+  if (view.openNew.isNotEmpty)
+    SessionBlock(SessionBlockKind.newWords, view.openNew),
+  if (view.grammarDue.isNotEmpty)
+    SessionBlock(SessionBlockKind.grammar, view.grammarDue),
+];
+
 class _Plan extends ConsumerWidget {
   const _Plan({
     required this.view,
@@ -131,15 +150,7 @@ class _Plan extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final tokens = context.tokens;
     final l10n = AppLocalizations.of(context);
-    // Every open block, in BR-PLAN-02's order.
-    final open = <SessionBlock>[
-      if (view.openRevise.isNotEmpty)
-        SessionBlock(SessionBlockKind.revise, view.openRevise),
-      if (view.openNew.isNotEmpty)
-        SessionBlock(SessionBlockKind.newWords, view.openNew),
-      if (view.grammarDue.isNotEmpty)
-        SessionBlock(SessionBlockKind.grammar, view.grammarDue),
-    ];
+    final open = openBlocks(view);
     final start = open.isEmpty
         ? null
         : ([Rect? origin]) => onStudy(open, view.date, origin);
@@ -445,14 +456,6 @@ class _Plan extends ConsumerWidget {
       );
     }
     ref.invalidate(todayViewProvider);
-  }
-
-  /// Where [context]'s widget is on screen: the rect a session grows from.
-  static Rect? originOf(BuildContext context) {
-    final box = context.findRenderObject();
-    return box is RenderBox && box.hasSize
-        ? box.localToGlobal(Offset.zero) & box.size
-        : null;
   }
 
   static SectionTrailing _trailing(BlockProgress block) {

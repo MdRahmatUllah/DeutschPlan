@@ -137,6 +137,7 @@ class DpPalette {
     required this.onPrimary,
     required this.accent,
     required this.onAccent,
+    required this.onAccentMark,
     required this.ink,
     required this.textSecondary,
     required this.link,
@@ -164,6 +165,7 @@ class DpPalette {
     onPrimary: Color(0xFF15121F),
     accent: Color(0xFFFFC61A), // Sun
     onAccent: Color(0xFF15121F),
+    onAccentMark: Color(0xFFFFFFFF),
     ink: Color(0xFF15121F),
     textSecondary: Color(0xFF5B5670), // Slate Ink
     link: Color(0xFF007A70),
@@ -196,6 +198,7 @@ class DpPalette {
     onPrimary: Color(0xFF15121F), // dark ink on a bright fill
     accent: Color(0xFFFFD54A), // Sun, lifted
     onAccent: Color(0xFF15121F),
+    onAccentMark: Color(0xFFFFFFFF),
     ink: Color(0xFFF4F1FF),
     textSecondary: Color(0xFFB7B1CC),
     link: Color(0xFF2EE6D6),
@@ -221,6 +224,10 @@ class DpPalette {
   final Color onPrimary;
   final Color accent;
   final Color onAccent;
+
+  /// White on a Sun field, in dark mode too: the Learning share of L1's
+  /// course bar, beside the ink Done share.
+  final Color onAccentMark;
   final Color ink;
   final Color textSecondary;
   final Color link;
@@ -277,6 +284,7 @@ class DpPalette {
     onPrimary: Color.lerp(onPrimary, other.onPrimary, t)!,
     accent: Color.lerp(accent, other.accent, t)!,
     onAccent: Color.lerp(onAccent, other.onAccent, t)!,
+    onAccentMark: Color.lerp(onAccentMark, other.onAccentMark, t)!,
     ink: Color.lerp(ink, other.ink, t)!,
     textSecondary: Color.lerp(textSecondary, other.textSecondary, t)!,
     link: Color.lerp(link, other.link, t)!,

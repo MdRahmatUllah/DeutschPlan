@@ -380,4 +380,106 @@ void main() {
     expect(found!.state!.introducedOn, '2026-01-05');
     expect(found.status, WordStatus.learning);
   });
+
+  group('FR-L1-01 the course, a row per step', () {
+    Future<List<StepProgress>> course() => words.watchStepProgress().first;
+
+    test('in course order, every word to do before anything is met', () async {
+      final steps = await course();
+      expect(steps.map((step) => step.code), <String>['A1.1', 'A1.2']);
+      final first = steps.first;
+      expect(first.levelCode, 'A1');
+      expect(first.words, 2);
+      expect((first.todo, first.learning, first.done), (2, 0, 0));
+      expect(first.grammar, 1);
+      expect(first.grammarLearned, 0);
+      expect(first.passed, isFalse);
+      expect(first.active, isFalse);
+    });
+
+    test(
+      'words by derived status, suspended ones counted but not split',
+      () async {
+        await state(ContentFixture.haus, stability: 30);
+        await state(ContentFixture.tuer, stability: 1);
+        await state(ContentFixture.strasse, status: 'suspended', stability: 30);
+        final [a11, a12] = await course();
+        expect((a11.todo, a11.learning, a11.done), (0, 1, 1));
+        expect(a12.words, 1);
+        expect((a12.todo, a12.learning, a12.done), (0, 0, 0));
+      },
+    );
+
+    test('BR-STATUS-02 done follows done_stability_days', () async {
+      await state(ContentFixture.haus, stability: 10);
+      expect((await course()).first.done, 1);
+      await settings.write(SettingKeys.doneStabilityDays, 21);
+      expect((await course()).first.done, 0);
+    });
+
+    test('a topic with a state row but never learned is not learned', () async {
+      await db.customStatement(
+        "INSERT INTO grammar_state (grammar_uid, status) VALUES ('g1', 'todo')",
+      );
+      expect((await course()).first.grammarLearned, 0);
+    });
+
+    test('grammar learned, a passed mock, and the active step', () async {
+      await db.customStatement(
+        "INSERT INTO grammar_state (grammar_uid, status) VALUES ('g1', 'learning')",
+      );
+      await db.customStatement(
+        'INSERT INTO exam_attempts (sublevel_code, seed, started_at, status, '
+        "passed) VALUES ('A1.1', 1, '2026-01-01', 'finished', 1), "
+        "('A1.2', 1, '2026-01-01', 'in_progress', 1), "
+        "('A1.2', 2, '2026-01-01', 'finished', 0)",
+      );
+      await db.customStatement(
+        'INSERT INTO enrollments (sublevel_code, started_on, daily_new, '
+        "study_days_mask, completed_on) VALUES ('A1.1', '2026-01-01', 7, 127, "
+        "'2026-01-10'), ('A1.2', '2026-01-10', 7, 127, NULL)",
+      );
+      final [a11, a12] = await course();
+      expect(a11.grammarLearned, 1);
+      expect(a11.passed, isTrue);
+      expect(a12.passed, isFalse, reason: 'in progress or failed');
+      expect(a11.active, isFalse, reason: 'its enrollment is completed');
+      expect(a12.active, isTrue);
+    });
+
+    test('BR-EXAM-01 unlocked against exam_unlock_percent, live', () async {
+      await state(ContentFixture.haus, stability: 1);
+      // One open stream across the change, as the Learn tab holds it.
+      final seen = <bool>[];
+      final sub = words.watchStepProgress().listen(
+        (steps) => seen.add(steps.first.unlocked),
+      );
+      addTearDown(sub.cancel);
+      await pumpEventQueue();
+      expect(seen, <bool>[false], reason: '1 of 2 introduced, under 90 %');
+      await settings.write(SettingKeys.examUnlockPercent, 50);
+      await pumpEventQueue();
+      expect(seen.last, isTrue);
+    });
+
+    test('a rating shows on the map without a refresh', () async {
+      final seen = <int>[];
+      final sub = words.watchStepProgress().listen(
+        (steps) => seen.add(steps.first.learning),
+      );
+      addTearDown(sub.cancel);
+      await pumpEventQueue();
+      await state(ContentFixture.haus, stability: 1);
+      await pumpEventQueue();
+      expect(seen, <int>[0, 1]);
+    });
+  });
+
+  test('BR-EXAM-01 unlocked once introduced reaches the percent', () {
+    bool unlocks(int introduced, int todo) =>
+        StepProgress.unlocks(todo: todo, introduced: introduced, percent: 90);
+    expect(unlocks(90, 10), isTrue);
+    expect(unlocks(89, 11), isFalse);
+    expect(unlocks(0, 0), isFalse, reason: 'an empty step');
+  });
 }

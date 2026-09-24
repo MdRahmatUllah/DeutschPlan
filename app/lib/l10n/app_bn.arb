@@ -280,5 +280,20 @@
   "dayCompleteStreak": "দিনের ধারা",
   "dayCompleteTomorrow": "আগামীকাল: {revise}টি রিভিশন · {fresh}টি নতুন",
   "dayCompleteTomorrowRest": "আগামীকাল বিশ্রামের দিন",
-  "dayCompleteBack": "আজকের পাতায় ফিরুন"
+  "dayCompleteBack": "আজকের পাতায় ফিরুন",
+  "learnTitle": "আপনার কোর্স",
+  "learnCourseLine": "{words}টির মধ্যে {done}টি শব্দ · {topics}টির মধ্যে {learned}টি ব্যাকরণ বিষয়",
+  "learnStepLine": "{words}টি শব্দ · {topics}টি ব্যাকরণ বিষয়",
+  "learnPassed": "পাস",
+  "learnCurrent": "চলতি",
+  "learnExamsUnlocked": "পরীক্ষা খোলা",
+  "learnNotStarted": "শুরু হয়নি",
+  "learnTodayLeft": "আজ · আর {count}টি কার্ড",
+  "learnTodayDone": "আজ · সব কার্ড শেষ",
+  "learnStudy": "পড়ুন",
+  "learnGrammarLibrary": "ব্যাকরণ লাইব্রেরি",
+  "learnGrammarLibraryLine": "{topics}টি বিষয় · {learned}টি শেখা",
+  "learnCategories": "শব্দের বিভাগ",
+  "learnCategoriesLine": "সব ধাপ জুড়ে বিষয় অনুযায়ী দেখুন",
+  "learnLoadFailed": "আপনার কোর্স লোড করা যায়নি।"
 }

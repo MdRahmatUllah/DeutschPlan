@@ -38,6 +38,7 @@ import 'package:deutschplan/router/app_router.dart';
 import 'package:deutschplan/router/app_shell.dart';
 import 'package:deutschplan/router/route_guards.dart';
 import 'package:deutschplan/router/routes.dart';
+import 'package:deutschplan/features/learn/learn_screen.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:cupertino_ui/cupertino_ui.dart' show CupertinoPageTransition;
 import 'package:go_router/go_router.dart';
@@ -133,7 +134,7 @@ void main() {
 
       expect(location(), examFallback);
       expect(find.byType(AppShell), findsOneWidget);
-      expect(find.text('L1'), findsOneWidget);
+      expect(find.byType(LearnScreen), findsOneWidget);
     });
 
     testWidgets('an id that is not a number does too', (tester) async {

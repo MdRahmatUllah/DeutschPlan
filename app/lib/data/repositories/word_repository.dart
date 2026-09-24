@@ -58,6 +58,61 @@ class WordWithState {
   bool get isSuspended => status == WordStatus.suspended;
 }
 
+/// One step of the course and how far the learner is through it: L1's tile
+/// and the Me card's share (FR-L1-01, FR-M1-01).
+@immutable
+class StepProgress {
+  const StepProgress({
+    required this.code,
+    required this.levelCode,
+    required this.words,
+    required this.todo,
+    required this.learning,
+    required this.done,
+    required this.grammar,
+    required this.grammarLearned,
+    required this.passed,
+    required this.active,
+    required this.unlocked,
+  });
+
+  final String code;
+  final String levelCode;
+
+  /// Every word of the step, suspended ones included.
+  final int words;
+  final int todo;
+  final int learning;
+  final int done;
+  final int grammar;
+
+  /// Topics whose `grammar_state` is learning or done.
+  final int grammarLearned;
+
+  /// BR-EXAM-04: any finished mock of the step passed.
+  final bool passed;
+
+  /// BR-COURSE-04: the one open enrollment.
+  final bool active;
+
+  /// BR-EXAM-01: introduced >= `exam_unlock_percent` of the step's words.
+  final bool unlocked;
+
+  /// Met at least once.
+  int get introduced => learning + done;
+
+  /// BR-EXAM-01 for [percent], suspended words left out as the bar leaves
+  /// them out.
+  static bool unlocks({
+    required int todo,
+    required int introduced,
+    required int percent,
+  }) {
+    final counted = todo + introduced;
+    return counted > 0 && introduced * 100 >= percent * counted;
+  }
+}
+
 /// Words, their state, and the transitions between statuses.
 ///
 /// `docs/02-data/user-database.md` and `docs/04-screens/word-detail.md`.
@@ -161,6 +216,37 @@ class WordRepository extends DatabaseAccessor<AppDatabase>
             status: WordStatus.parse(rows.single.derivedStatus),
           );
   }
+
+  /// Every step, in course order ([StepProgress]); again whenever the
+  /// learner moves either threshold it depends on.
+  Stream<List<StepProgress>> watchStepProgress() => _settings.switchOn(
+    SettingKeys.doneStabilityDays,
+    (int days) => _settings.switchOn(
+      SettingKeys.examUnlockPercent,
+      (int percent) => stepProgress(days.toDouble()).watch().map(
+        (rows) => <StepProgress>[
+          for (final row in rows)
+            StepProgress(
+              code: row.code,
+              levelCode: row.levelCode,
+              words: row.total,
+              todo: row.todo,
+              learning: row.learning,
+              done: row.done,
+              grammar: row.grammarCount,
+              grammarLearned: row.grammarLearned,
+              passed: row.passed,
+              active: row.active,
+              unlocked: StepProgress.unlocks(
+                todo: row.todo,
+                introduced: row.learning + row.done,
+                percent: percent,
+              ),
+            ),
+        ],
+      ),
+    ),
+  );
 
   /// [watchStatusCounts], once.
   Future<StatusCountsForStepResult> statusCounts(String code) =>

@@ -30,6 +30,7 @@ Container(color: t.surface.card, …)  // never Color(0xFFFFFFFF)
 | `muted` Oat | #F3EADB | #29253A | rgba(255,255,255,0.35) |
 | `textSecondary` | #5B5670 | #B7B1CC | #5B5670 |
 | `inverseLink` (on the ink snackbar) | #00C2B2 | #007A70 | as light |
+| `onAccentMark` (white on Sun: L1's course bar) | #FFFFFF | #FFFFFF | as light |
 | `outline` | ink 20 % | #F4F1FF 22 % | rgba(255,255,255,0.65) |
 | `scrim` (behind a sheet over a screen) | #15121F 32 % | as light | as light |
 | `der` | #3D5AFE (text #2F46E0) | #8C9DFF | as light |

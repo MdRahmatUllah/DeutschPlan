@@ -109,3 +109,46 @@ statusCountsForStep:
 
 wordStateFor:
   SELECT * FROM word_state WHERE word_uid = :uid;
+
+-- FR-L1-01 / FR-M1-01: the whole course, a row per step in BR-COURSE-01's
+-- order. Its words by status, derived as in statusCountsForStep; its grammar
+-- topics learned; whether any mock was passed (BR-EXAM-04); and whether it
+-- is the active step. One grouped query rather than twelve of each.
+stepProgress:
+  SELECT
+    sl.code AS code,
+    sl.level_code AS level_code,
+    sl.grammar_count AS grammar_count,
+    COALESCE(w.total, 0) AS total,
+    COALESCE(w.todo, 0) AS todo,
+    COALESCE(w.learning, 0) AS learning,
+    COALESCE(w.done, 0) AS done,
+    (SELECT COUNT(*) FROM grammar_topics g
+      JOIN grammar_state gs ON gs.grammar_uid = g.uid
+      WHERE g.sublevel_code = sl.code
+        AND gs.status IN ('learning', 'done')) AS grammar_learned,
+    EXISTS(SELECT 1 FROM exam_attempts a
+      WHERE a.sublevel_code = sl.code AND a.status = 'finished'
+        AND a.passed = 1) AS passed,
+    EXISTS(SELECT 1 FROM enrollments e
+      WHERE e.sublevel_code = sl.code AND e.completed_on IS NULL) AS active
+  FROM sublevels sl
+  JOIN levels l ON l.code = sl.level_code
+  LEFT JOIN (
+    SELECT
+      wd.sublevel_code AS sublevel_code,
+      COUNT(*) AS total,
+      SUM(CASE WHEN s.word_uid IS NULL THEN 1
+        WHEN s.status != 'suspended' AND s.introduced_on IS NULL
+          AND s.reps = 0 THEN 1 ELSE 0 END) AS todo,
+      SUM(CASE WHEN s.status != 'suspended'
+        AND NOT (s.introduced_on IS NULL AND s.reps = 0)
+        AND s.stability < :doneAfter THEN 1 ELSE 0 END) AS learning,
+      SUM(CASE WHEN s.status != 'suspended'
+        AND NOT (s.introduced_on IS NULL AND s.reps = 0)
+        AND s.stability >= :doneAfter THEN 1 ELSE 0 END) AS done
+    FROM words wd
+    LEFT JOIN word_state s ON s.word_uid = wd.uid
+    GROUP BY wd.sublevel_code
+  ) w ON w.sublevel_code = sl.code
+  ORDER BY l.ord, sl.ord;
