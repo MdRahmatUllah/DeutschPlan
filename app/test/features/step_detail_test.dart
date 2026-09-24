@@ -198,6 +198,16 @@ void main() {
     );
   });
 
+  testWidgets('a step the course does not have says so, with a way back', (
+    tester,
+  ) async {
+    await pump(tester, '/learn/step/Z9.9');
+    expect(find.text(l10n.stepNotFound('Z9.9')), findsOneWidget);
+    await tester.tap(find.text(l10n.stepBackToCourse));
+    await tester.pumpAndSettle();
+    expect(find.text('L1'), findsOneWidget);
+  });
+
   testWidgets('four inner tabs, Words first', (tester) async {
     await pump(tester, '/learn/step/A2.1');
     for (final label in <String>[

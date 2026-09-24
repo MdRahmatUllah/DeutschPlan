@@ -306,5 +306,7 @@
   "stepTabGrammar": "ব্যাকরণ",
   "stepTabQuiz": "কুইজ",
   "stepTabExams": "পরীক্ষা",
-  "stepSearch": "এই ধাপে খুঁজুন"
+  "stepSearch": "এই ধাপে খুঁজুন",
+  "stepNotFound": "এই কোর্সে {code} নামে কোনো ধাপ নেই।",
+  "stepBackToCourse": "আপনার কোর্সে ফিরুন"
 }

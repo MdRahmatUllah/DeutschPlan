@@ -1892,5 +1892,18 @@
   "stepSearch": "Search in this step",
   "@stepSearch": {
     "description": "L2 search icon: R1 filtered to the step."
+  },
+  "stepNotFound": "There is no step {code} in this course.",
+  "@stepNotFound": {
+    "description": "L2 for a step code the course does not have, from a stale link.",
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "stepBackToCourse": "Back to your course",
+  "@stepBackToCourse": {
+    "description": "L2 not-found: opens L1."
   }
 }

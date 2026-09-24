@@ -47,7 +47,8 @@ class _StepDetailScreenState extends ConsumerState<StepDetailScreen> {
     final tokens = context.tokens;
     final l10n = AppLocalizations.of(context);
     final state = ref.watch(stepProgressProvider);
-    final step = state.value
+    final steps = state.value;
+    final step = steps
         ?.where((candidate) => candidate.code == widget.code)
         .firstOrNull;
 
@@ -76,6 +77,18 @@ class _StepDetailScreenState extends ConsumerState<StepDetailScreen> {
             child: StepTabBody(step: step, tab: _tab),
           ),
         ],
+      );
+    } else if (steps != null) {
+      // A code the course does not have — a stale link, a typo.
+      body = Center(
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: DpErrorPanel(
+            message: l10n.stepNotFound(widget.code),
+            retryLabel: l10n.stepBackToCourse,
+            onRetry: () => context.jumpToTab(const LearnRoute()),
+          ),
+        ),
       );
     } else if (state.hasError) {
       body = Center(
