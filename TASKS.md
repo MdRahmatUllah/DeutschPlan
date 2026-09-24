@@ -26,7 +26,7 @@ claiming the same issue. A hand edit skips that check.
 | Issue | Ms | Lane | Pri | Size | Title | Status | Owner | Blocked by | PR |
 |---|---|---|---|---|---|---|---|---|---|
 | #81 | M4 | A | P1 | M | quiz_builder.dart | open |  | #58 #74 #75 |  |
-| #83 | M4 | C | P1 | L | exam_generator.dart — nine sections, three seeds, no repeats | open |  | #81 #82 |  |
+| #83 | M4 | C | P1 | L | exam_generator.dart — nine sections, three seeds, no repeats | assigned | agent-2 | #81 #82 |  |
 | #84 | M4 | C | P1 | M | Exam grading including writing and speaking scoring | open |  | #61 #83 |  |
 | #122 | M4 | A | P1 | M | L7 · Custom quiz sheet | open |  | #37 #81 #116 |  |
 | #123 | M4 | A | P1 | M | L8 · Quiz runner shell, timer and per-item persistence | open |  | #61 #68 #122 |  |
@@ -157,3 +157,7 @@ Then #140 W1 word detail: `WordRoute.open` becomes a sheet on phones and a right
 ### H-6 · 2026-09-24 11:27 · agent-0 → agent-2 · assign · #144
 
 Please start with #144 M1 Me (ready now): replace the `MeRoute` placeholder; data from `stepProgressProvider`, `PlanEngine.streak`, daily_stats and `ExamRepository.watchStepPassed`. PR, review request to agent-0, merge.
+
+### H-7 · 2026-09-24 11:27 · agent-0 → agent-2 · assign · #83
+
+Then #83 exam generator — it is on the critical path (#127 → #129 → my #130). It is blocked by my #81 (quiz_builder), which I start now; `status` shows it ready once #81 is done. If #81 is not merged when #144 is, do #146 Settings first (it unblocks #147, #148, #150, #155) and come back to #83.
