@@ -9,10 +9,10 @@ import 'package:deutschplan/core/theme/dp_surface.dart';
 import 'package:deutschplan/core/theme/dp_tokens.dart';
 import 'package:deutschplan/core/typography/dp_text.dart';
 import 'package:deutschplan/data/repositories/grammar_repository.dart';
-import 'package:deutschplan/data/repositories/setting_keys.dart';
 import 'package:deutschplan/domain/grammar_item_generator.dart';
 import 'package:deutschplan/domain/plan_engine.dart' show daysBetween;
 import 'package:deutschplan/features/learn/step_grammar.dart';
+import 'package:deutschplan/features/words/speak.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
 import 'package:deutschplan/router/routes.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -330,14 +330,7 @@ class _Example extends ConsumerWidget {
           label: l10n.topicPlay(german),
           child: GestureDetector(
             behavior: HitTestBehavior.opaque,
-            onTap: () => unawaited(
-              ref
-                  .read(systemTtsProvider)
-                  .speak(
-                    german,
-                    rate: ref.read(settingsProvider).read(SettingKeys.ttsSpeed),
-                  ),
-            ),
+            onTap: () => unawaited(say(ref, context, german)),
             child: SizedBox(
               width: 44,
               height: 44,

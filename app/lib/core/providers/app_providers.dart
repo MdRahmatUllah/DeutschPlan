@@ -258,10 +258,25 @@ ModelRepository modelRepository(Ref ref) =>
 // `project-structure.md`: platform plugins behind small interfaces, so a test
 // can put a fake in the scope instead of a method channel that is not there.
 
-/// The phone's German voice. `tts` — engine selection and fallback — is
-/// #153's, and will sit in front of this.
+/// The phone's German voice: S2's preview (FR-S2-06) and `tts.md`'s fallback.
+/// Kept alive because the plugin reports playback to one instance only.
+@Riverpod(keepAlive: true)
+TtsEngine systemTts(Ref ref) {
+  final tts = SystemTts();
+  ref.onDispose(tts.dispose);
+  return tts;
+}
+
+/// The voice every speaker uses (`tts.md`). #153 puts `TtsService` — engine
+/// choice and the fallback — here, so no speaker changes when it lands.
+@Riverpod(keepAlive: true)
+TtsEngine tts(Ref ref) => ref.watch(systemTtsProvider);
+
+/// Whether [tts] can speak German now: a speaker is slashed when it cannot
+/// (accessibility-performance.md). Asked afresh whenever a screen starts
+/// watching it, and after a failed [TtsEngine.speak].
 @riverpod
-TtsEngine systemTts(Ref ref) => SystemTts();
+Future<bool> ttsAvailable(Ref ref) => ref.watch(ttsProvider).isAvailable();
 
 /// Kept alive with the onboarding draft that asks it (FR-S2-05). Stateless,
 /// so there is nothing to hold on to but the object.

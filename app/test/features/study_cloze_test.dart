@@ -18,11 +18,12 @@ import 'package:deutschplan/l10n/generated/app_localizations.dart';
 import 'package:deutschplan/main.dart'
     show appLocalizationsDelegates, supportedLocales;
 import 'package:deutschplan/router/routes.dart';
-import 'package:deutschplan/services/tts/tts_engine.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
+
+import '../services/fake_tts.dart';
 
 import '../db/content_fixture.dart';
 
@@ -83,6 +84,7 @@ VALUES ('$strasse', 'learning', '2026-09-10', '2026-09-21', 4.5, 5.2, 2, 0,
     WidgetTester tester, {
     String mode = 'cloze',
     String? example,
+    bool voice = true,
   }) async {
     spoken = <String>[];
     await tester.runAsync(() => open(mode: mode, example: example));
@@ -97,7 +99,7 @@ VALUES ('$strasse', 'learning', '2026-09-10', '2026-09-21', 4.5, 5.2, 2, 0,
         overrides: <Override>[
           appDatabaseProvider.overrideWithValue(db),
           settingsProvider.overrideWithValue(settings),
-          systemTtsProvider.overrideWithValue(_Tts(spoken)),
+          ttsProvider.overrideWithValue(FakeTts(voice: voice, spoken: spoken)),
           clockProvider.overrideWithValue(() => DateTime(2026, 9, 21, 9)),
         ],
         child: MaterialApp(
@@ -236,6 +238,16 @@ VALUES ('$strasse', 'learning', '2026-09-10', '2026-09-21', 4.5, 5.2, 2, 0,
     expect(spoken, <String>['Die Straße ist lang.']);
   });
 
+  testWidgets('V01 with no German voice, it says how to install one', (
+    tester,
+  ) async {
+    await pump(tester, voice: false);
+    await answer(tester, 'Haus');
+    await tester.tap(find.bySemanticsLabel(l10n.studyPlaySentence));
+    await tester.pump();
+    expect(find.text(l10n.speakerNoVoice), findsOneWidget);
+  });
+
   testWidgets('rated, the next card; undone, a clean gap again', (
     tester,
   ) async {
@@ -314,19 +326,4 @@ VALUES ('$haus', 'learning', 8, 5, 2, 0, 2, 'cloze')
     expect(cloze?.example.german, 'Das Haus ist groß.');
     expect(cloze?.gap, (start: 4, end: 8));
   });
-}
-
-class _Tts implements TtsEngine {
-  _Tts(this.spoken);
-
-  final List<String> spoken;
-
-  @override
-  Future<bool> speak(String text, {double rate = 1}) async {
-    spoken.add(text);
-    return true;
-  }
-
-  @override
-  Future<void> stop() async {}
 }

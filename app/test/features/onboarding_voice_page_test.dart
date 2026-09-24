@@ -18,12 +18,13 @@ import 'package:deutschplan/main.dart'
     show appLocalizationsDelegates, supportedLocales;
 import 'package:deutschplan/services/model_downloads.dart';
 import 'package:deutschplan/services/notification_permission.dart';
-import 'package:deutschplan/services/tts/tts_engine.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
+
+import '../services/fake_tts.dart';
 
 /// S2 page 5 · Reminder and voice — #91.
 void main() {
@@ -36,7 +37,7 @@ void main() {
   });
 
   late _FakePermission permission;
-  late _FakeTts tts;
+  late FakeTts tts;
   late _FakeDownloads downloads;
   late ProviderContainer container;
 
@@ -59,7 +60,7 @@ void main() {
     addTearDown(tester.view.reset);
 
     permission = _FakePermission(allowed: allowed, throws: permissionThrows);
-    tts = _FakeTts(available: germanVoice);
+    tts = FakeTts(voice: germanVoice);
     downloads = _FakeDownloads(fails: downloadFails);
     container = ProviderContainer(
       overrides: <Override>[
@@ -397,23 +398,6 @@ class _FakePermission implements NotificationPermission {
     }
     return allowed;
   }
-}
-
-class _FakeTts implements TtsEngine {
-  _FakeTts({required this.available});
-
-  final bool available;
-  final List<String> spoken = <String>[];
-
-  @override
-  Future<bool> speak(String text, {double rate = 1}) async {
-    if (!available) return false;
-    spoken.add(text);
-    return true;
-  }
-
-  @override
-  Future<void> stop() async {}
 }
 
 class _FakeDownloads implements ModelDownloads {

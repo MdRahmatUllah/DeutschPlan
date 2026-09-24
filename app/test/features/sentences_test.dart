@@ -12,12 +12,13 @@ import 'package:deutschplan/features/sentences/sentences_screen.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
 import 'package:deutschplan/main.dart'
     show appLocalizationsDelegates, supportedLocales;
-import 'package:deutschplan/services/tts/tts_engine.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
+
+import '../services/fake_tts.dart';
 
 import '../db/content_fixture.dart';
 
@@ -31,7 +32,7 @@ void main() {
   late AppDatabase db;
   late SettingsRepository settings;
   late AppLocalizations l10n;
-  late List<(String, double)> spoken;
+  late FakeTts tts;
 
   setUpAll(() async {
     l10n = await AppLocalizations.delegate.load(supportedLocales.first);
@@ -102,8 +103,9 @@ INSERT INTO sentence_log (word_uid, ord, shown_on, self_rating) VALUES
     WidgetTester tester, {
     bool planOpen = true,
     String? rated,
+    bool voice = true,
   }) async {
-    spoken = <(String, double)>[];
+    tts = FakeTts(voice: voice);
     await tester.runAsync(() => open(planOpen: planOpen, rated: rated));
     addTearDown(
       () => tester.runAsync(() async {
@@ -116,7 +118,7 @@ INSERT INTO sentence_log (word_uid, ord, shown_on, self_rating) VALUES
         overrides: <Override>[
           appDatabaseProvider.overrideWithValue(db),
           settingsProvider.overrideWithValue(settings),
-          systemTtsProvider.overrideWithValue(_Tts(spoken)),
+          ttsProvider.overrideWithValue(tts),
           clockProvider.overrideWithValue(() => DateTime(2026, 9, 21, 9)),
         ],
         child: MaterialApp.router(
@@ -324,11 +326,28 @@ INSERT INTO sentence_log (word_uid, ord, shown_on, self_rating) VALUES
       await tester.tap(find.byType(DpSpeakerButton));
       await tester.longPress(find.byType(DpSpeakerButton));
       await tester.pump();
-      expect(spoken, <(String, double)>[
+      expect(tts.said, <(String, double)>[
         ('Die Straße ist lang.', 1),
         ('Die Straße ist lang.', 0.75),
       ]);
     });
+
+    testWidgets(
+      'V01 no German voice: the speaker is slashed, and a tap says how to '
+      'install one',
+      (tester) async {
+        await pump(tester, voice: false);
+        expect(
+          tester.widget<DpSpeakerButton>(find.byType(DpSpeakerButton)).state,
+          DpSpeakerState.unavailable,
+        );
+        expect(find.text(l10n.speakerNoVoice), findsNothing);
+
+        await tester.tap(find.byType(DpSpeakerButton));
+        await tester.pump();
+        expect(find.text(l10n.speakerNoVoice), findsOneWidget);
+      },
+    );
 
     testWidgets('Show translation reveals the English', (tester) async {
       await pump(tester);
@@ -392,19 +411,4 @@ VALUES ('uid-in', 'A1.1', 'A1', 9, 9, 'in', 'in', 'in', 'in')
       expect(await dao.wordForToken('innen'), isNull);
     });
   });
-}
-
-class _Tts implements TtsEngine {
-  _Tts(this.spoken);
-
-  final List<(String, double)> spoken;
-
-  @override
-  Future<bool> speak(String text, {double rate = 1}) async {
-    spoken.add((text, rate));
-    return true;
-  }
-
-  @override
-  Future<void> stop() async {}
 }

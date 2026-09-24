@@ -15,12 +15,13 @@ import 'package:deutschplan/l10n/generated/app_localizations.dart';
 import 'package:deutschplan/main.dart'
     show appLocalizationsDelegates, supportedLocales;
 import 'package:deutschplan/router/routes.dart';
-import 'package:deutschplan/services/tts/tts_engine.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
+
+import '../services/fake_tts.dart';
 
 import '../db/content_fixture.dart';
 
@@ -78,7 +79,7 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code) VALUES
         overrides: <Override>[
           appDatabaseProvider.overrideWithValue(db),
           settingsProvider.overrideWithValue(settings),
-          systemTtsProvider.overrideWithValue(_SilentTts()),
+          ttsProvider.overrideWithValue(FakeTts()),
           clockProvider.overrideWithValue(() => DateTime(2026, 9, 21, 9)),
         ],
         child: MaterialApp(
@@ -346,12 +347,4 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code) VALUES
     final open = source.substring(source.indexOf('AppDatabase.open('));
     expect(open.substring(0, open.indexOf(';')), contains('driftDatabase('));
   });
-}
-
-class _SilentTts implements TtsEngine {
-  @override
-  Future<bool> speak(String text, {double rate = 1}) async => true;
-
-  @override
-  Future<void> stop() async {}
 }

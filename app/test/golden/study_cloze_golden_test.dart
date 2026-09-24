@@ -14,10 +14,11 @@ import 'package:deutschplan/features/study/study_rating.dart';
 import 'package:deutschplan/features/study/study_screen.dart';
 import 'package:deutschplan/features/study/study_session.dart';
 import 'package:deutschplan/router/routes.dart';
-import 'package:deutschplan/services/tts/tts_engine.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart' show TextField;
+
+import '../services/fake_tts.dart';
 
 import 'golden_harness.dart';
 
@@ -75,7 +76,7 @@ void main() {
     builder: (context) => ProviderScope(
       overrides: [
         settingsProvider.overrideWithValue(settings),
-        systemTtsProvider.overrideWithValue(_SilentTts()),
+        ttsProvider.overrideWithValue(FakeTts()),
         studySessionProvider(args).overrideWith(_Fourth.new),
         studyIntervalsProvider('r3').overrideWith(
           (ref) async => <Rating, int>{
@@ -139,12 +140,4 @@ class _Fourth extends StudySession {
     ],
     position: 3,
   );
-}
-
-class _SilentTts implements TtsEngine {
-  @override
-  Future<bool> speak(String text, {double rate = 1}) async => true;
-
-  @override
-  Future<void> stop() async {}
 }

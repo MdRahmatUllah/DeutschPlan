@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:deutschplan/core/adaptive/adaptive.dart';
 import 'package:deutschplan/core/components/dp_pill.dart';
 import 'package:deutschplan/core/components/dp_button.dart';
@@ -11,6 +13,7 @@ import 'package:deutschplan/core/typography/dp_text.dart';
 import 'package:deutschplan/data/repositories/setting_keys.dart';
 import 'package:deutschplan/domain/placement.dart';
 import 'package:deutschplan/features/onboarding/onboarding_start_page.dart';
+import 'package:deutschplan/features/words/speak.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
@@ -355,7 +358,8 @@ class _Question extends ConsumerWidget {
               DpSpeakerButton(
                 size: 48,
                 semanticLabel: l10n.placementPronounce,
-                onPressed: () => ref.read(systemTtsProvider).speak(word.german),
+                state: speakerState(ref),
+                onPressed: () => unawaited(say(ref, context, word.german)),
               ),
             ],
           ),

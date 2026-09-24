@@ -17,6 +17,7 @@ import 'package:deutschplan/domain/fsrs.dart' show Rating;
 import 'package:deutschplan/domain/sentence_picker.dart';
 import 'package:deutschplan/domain/text_norm.dart' show searchKey;
 import 'package:deutschplan/features/study/study_summary.dart';
+import 'package:deutschplan/features/words/speak.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
 import 'package:deutschplan/router/routes.dart';
 import 'package:flutter/gestures.dart' show TapGestureRecognizer;
@@ -358,14 +359,8 @@ class _SentencePageState extends ConsumerState<_SentencePage> {
     super.dispose();
   }
 
-  void _play({double pace = 1}) {
-    final speed = ref.read(settingsProvider).read(SettingKeys.ttsSpeed);
-    unawaited(
-      ref
-          .read(systemTtsProvider)
-          .speak(widget.item.sentence.german, rate: speed * pace),
-    );
-  }
+  void _play({double pace = 1}) =>
+      unawaited(say(ref, context, widget.item.sentence.german, pace: pace));
 
   /// FR-T5-03: the word's course meaning, or a way to look it up.
   Future<void> _lookUp(String token) async {
@@ -448,6 +443,7 @@ class _SentencePageState extends ConsumerState<_SentencePage> {
               DpSpeakerButton(
                 size: 72,
                 semanticLabel: l10n.studyPlaySentence,
+                state: speakerState(ref),
                 onPressed: _play,
                 onLongPress: () => _play(pace: 0.75),
               ),

@@ -18,12 +18,13 @@ import 'package:deutschplan/l10n/generated/app_localizations.dart';
 import 'package:deutschplan/main.dart'
     show appLocalizationsDelegates, supportedLocales;
 import 'package:deutschplan/router/routes.dart';
-import 'package:deutschplan/services/tts/tts_engine.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
+
+import '../services/fake_tts.dart';
 
 import '../db/content_fixture.dart';
 
@@ -38,6 +39,7 @@ void main() {
   late SettingsRepository settings;
   late AppLocalizations l10n;
   late List<String> spoken;
+  var voice = true;
 
   setUpAll(() async {
     l10n = await AppLocalizations.delegate.load(supportedLocales.first);
@@ -69,7 +71,7 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code, skipped,
   List<Override> overrides() => <Override>[
     appDatabaseProvider.overrideWithValue(db),
     settingsProvider.overrideWithValue(settings),
-    systemTtsProvider.overrideWithValue(_Tts(spoken)),
+    ttsProvider.overrideWithValue(FakeTts(voice: voice, spoken: spoken)),
     clockProvider.overrideWithValue(() => DateTime(2026, 9, 21, 9)),
   ];
 
@@ -260,6 +262,17 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code, skipped,
       await tester.tap(find.bySemanticsLabel(l10n.summaryPlay('das Haus')));
       await tester.pump();
       expect(spoken, <String>['das Haus']);
+    });
+
+    testWidgets('V01 and with no German voice, says how to install one', (
+      tester,
+    ) async {
+      voice = false;
+      addTearDown(() => voice = true);
+      await pump(tester);
+      await tester.tap(find.bySemanticsLabel(l10n.summaryPlay('das Haus')));
+      await tester.pump();
+      expect(find.text(l10n.speakerNoVoice), findsOneWidget);
     });
 
     testWidgets('a tap opens the word', (tester) async {
@@ -541,19 +554,4 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code, skipped,
     // Already in the backlog: nowhere to skip it to.
     expect(find.text(l10n.studySkip), findsNothing);
   });
-}
-
-class _Tts implements TtsEngine {
-  _Tts(this.spoken);
-
-  final List<String> spoken;
-
-  @override
-  Future<bool> speak(String text, {double rate = 1}) async {
-    spoken.add(text);
-    return true;
-  }
-
-  @override
-  Future<void> stop() async {}
 }

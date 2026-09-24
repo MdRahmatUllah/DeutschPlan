@@ -17,12 +17,13 @@ import 'package:deutschplan/l10n/generated/app_localizations.dart';
 import 'package:deutschplan/main.dart'
     show appLocalizationsDelegates, supportedLocales;
 import 'package:deutschplan/router/routes.dart';
-import 'package:deutschplan/services/tts/tts_engine.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
+
+import '../services/fake_tts.dart';
 
 import '../db/content_fixture.dart';
 
@@ -124,6 +125,7 @@ VALUES ('$today', 9, 12, 900)
     WidgetTester tester, {
     SessionArgs args = words,
     StudyNext? next,
+    FakeTts? tts,
   }) async {
     await tester.runAsync(open);
     addTearDown(
@@ -137,7 +139,7 @@ VALUES ('$today', 9, 12, 900)
         overrides: <Override>[
           appDatabaseProvider.overrideWithValue(db),
           settingsProvider.overrideWithValue(settings),
-          systemTtsProvider.overrideWithValue(_SilentTts()),
+          ttsProvider.overrideWithValue(tts ?? FakeTts()),
           clockProvider.overrideWithValue(() => DateTime(2026, 9, 21, 9)),
           if (next != null)
             studyNextProvider(today).overrideWith((ref) async => next),
@@ -214,6 +216,27 @@ VALUES ('$today', 9, 12, 900)
       expect(find.text('die Straße', findRichText: true), findsOneWidget);
       expect(find.text('die Tür', findRichText: true), findsOneWidget);
       expect(find.text('das Haus', findRichText: true), findsNothing);
+    });
+
+    testWidgets('V01 a word to watch plays; with no German voice it says how '
+        'to install one', (tester) async {
+      final tts = FakeTts(voice: false);
+      final container = await pump(tester, tts: tts);
+      await session(tester, container, (n) async {
+        await n.rate(Rating.again);
+        await n.rate(Rating.again);
+        await n.rate(Rating.again);
+      });
+      final play = find.byWidgetPredicate(
+        (w) =>
+            w is StudyPlayButton && w.label == l10n.summaryPlay('die Straße'),
+      );
+      await tester.ensureVisible(play);
+      await tester.pumpAndSettle();
+      await tester.tap(play);
+      await tester.pump();
+      expect(tts.spoken, <String>['die Straße']);
+      expect(find.text(l10n.speakerNoVoice), findsOneWidget);
     });
 
     testWidgets('none rated Again: no words to watch', (tester) async {
@@ -459,7 +482,7 @@ VALUES ('$today', 9, 12, 900)
         overrides: <Override>[
           appDatabaseProvider.overrideWithValue(db),
           settingsProvider.overrideWithValue(settings),
-          systemTtsProvider.overrideWithValue(_SilentTts()),
+          ttsProvider.overrideWithValue(FakeTts()),
           studyNextProvider(today).overrideWith(
             (ref) async => (sentences: 3, backlog: 0, dayDone: true),
           ),
@@ -542,11 +565,3 @@ VALUES ('$today', 9, 12, 900)
 String Function(AppLocalizations) l10n0(
   String Function(AppLocalizations) make,
 ) => make;
-
-class _SilentTts implements TtsEngine {
-  @override
-  Future<bool> speak(String text, {double rate = 1}) async => true;
-
-  @override
-  Future<void> stop() async {}
-}

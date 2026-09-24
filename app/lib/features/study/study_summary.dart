@@ -7,11 +7,11 @@ import 'package:deutschplan/core/theme/dp_surface.dart';
 import 'package:deutschplan/core/theme/dp_tokens.dart';
 import 'package:deutschplan/core/typography/dp_text.dart';
 import 'package:deutschplan/data/repositories/plan_store.dart';
-import 'package:deutschplan/data/repositories/setting_keys.dart';
 import 'package:deutschplan/features/study/study_back.dart';
 import 'package:deutschplan/features/study/study_card.dart';
 import 'package:deutschplan/features/study/study_screen.dart';
 import 'package:deutschplan/features/study/study_session.dart';
+import 'package:deutschplan/features/words/speak.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
@@ -94,10 +94,7 @@ class _StudySummarySheetState extends ConsumerState<StudySummarySheet> {
     setState(() => _drag = 0);
   }
 
-  void _play(String text) {
-    final speed = ref.read(settingsProvider).read(SettingKeys.ttsSpeed);
-    unawaited(ref.read(systemTtsProvider).speak(text, rate: speed));
-  }
+  void _play(String text) => unawaited(say(ref, context, text));
 
   @override
   Widget build(BuildContext context) {

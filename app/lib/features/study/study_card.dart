@@ -11,6 +11,7 @@ import 'package:deutschplan/core/typography/dp_text.dart';
 import 'package:deutschplan/data/db/app_database.dart';
 import 'package:deutschplan/data/repositories/setting_keys.dart';
 import 'package:deutschplan/features/study/study_back.dart';
+import 'package:deutschplan/features/words/speak.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
 import 'package:flutter/services.dart' show Clipboard, ClipboardData;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -126,18 +127,19 @@ class _StudyWordCardState extends ConsumerState<StudyWordCard> {
   /// Says [text], the word with its article unless told otherwise.
   Future<void> _speak({String? text, double pace = 1}) async {
     if (_mute) return _explain();
-    final speed = ref.read(settingsProvider).read(SettingKeys.ttsSpeed);
-    final spoke = await ref
-        .read(systemTtsProvider)
-        .speak(text ?? spokenForm(widget.word), rate: speed * pace);
-    if (spoke || !mounted) return;
-    setState(() => _mute = true);
-    _explain();
+    final spoke = await say(
+      ref,
+      context,
+      text ?? spokenForm(widget.word),
+      pace: pace,
+      lift: StudyFrontActions.clearance,
+    );
+    if (!spoke && mounted) setState(() => _mute = true);
   }
 
   void _explain() => DpToast.show(
     context,
-    AppLocalizations.of(context).studyNoVoice,
+    AppLocalizations.of(context).speakerNoVoice,
     lift: StudyFrontActions.clearance,
   );
 
@@ -210,7 +212,7 @@ class _StudyWordCardState extends ConsumerState<StudyWordCard> {
               const SizedBox(width: 12),
               DpSpeakerButton(
                 semanticLabel: l10n.studyPronounce,
-                state: _mute ? DpSpeakerState.unavailable : DpSpeakerState.idle,
+                state: _mute ? DpSpeakerState.unavailable : speakerState(ref),
                 onPressed: () => unawaited(_speak()),
                 onLongPress: () => unawaited(_speak(pace: StudyWordCard.slow)),
               ),

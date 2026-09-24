@@ -14,12 +14,13 @@ import 'package:deutschplan/features/study/study_card.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
 import 'package:deutschplan/main.dart'
     show appLocalizationsDelegates, supportedLocales;
-import 'package:deutschplan/services/tts/tts_engine.dart';
 import 'package:drift/drift.dart' show Value;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
+
+import '../services/fake_tts.dart';
 
 import '../db/content_fixture.dart';
 
@@ -81,7 +82,7 @@ void main() {
   group('the card turned over', () {
     late AppDatabase db;
     late SettingsRepository settings;
-    late _RecordingTts tts;
+    late FakeTts tts;
 
     final rechnung = Word(
       uid: 'rechnung',
@@ -145,7 +146,7 @@ void main() {
           await db.close();
         }),
       );
-      tts = _RecordingTts();
+      tts = FakeTts();
       turned = ValueNotifier<bool>(revealed);
       addTearDown(turned.dispose);
       final shown = word ?? rechnung;
@@ -153,7 +154,7 @@ void main() {
         ProviderScope(
           overrides: <Override>[
             settingsProvider.overrideWithValue(settings),
-            systemTtsProvider.overrideWithValue(tts),
+            ttsProvider.overrideWithValue(tts),
             studyBackProvider(shown.uid).overrideWith((ref) async {
               if (broken) throw StateError('content.db is being replaced');
               return extras;
@@ -437,17 +438,4 @@ void main() {
       expect(find.text('bill, invoice'), findsOneWidget);
     });
   });
-}
-
-class _RecordingTts implements TtsEngine {
-  final List<(String, double)> said = <(String, double)>[];
-
-  @override
-  Future<bool> speak(String text, {double rate = 1}) async {
-    said.add((text, rate));
-    return true;
-  }
-
-  @override
-  Future<void> stop() async {}
 }

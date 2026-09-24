@@ -3,6 +3,7 @@ library;
 
 import 'package:deutschplan/core/adaptive/adaptive.dart';
 import 'package:deutschplan/core/components/dp_button.dart';
+import 'package:deutschplan/core/components/dp_speaker_button.dart';
 import 'package:deutschplan/core/providers/app_providers.dart';
 import 'package:deutschplan/core/theme/app_theme.dart';
 import 'package:deutschplan/core/theme/aurora_backdrop.dart';
@@ -11,17 +12,19 @@ import 'package:deutschplan/core/theme/dp_tokens.dart';
 import 'package:deutschplan/data/db/app_database.dart';
 import 'package:deutschplan/data/db/content_dao.dart';
 import 'package:deutschplan/data/repositories/setting_keys.dart';
+import 'package:deutschplan/data/repositories/settings_repository.dart';
 import 'package:deutschplan/domain/placement.dart';
 import 'package:deutschplan/features/onboarding/onboarding_start_page.dart';
 import 'package:deutschplan/features/onboarding/placement_screen.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
 import 'package:deutschplan/main.dart'
     show appLocalizationsDelegates, supportedLocales;
-import 'package:deutschplan/services/tts/tts_engine.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
+
+import '../services/fake_tts.dart';
 
 import '../domain/placement_test.dart' show wordFor;
 
@@ -48,6 +51,7 @@ void main() {
     DpMode mode = DpMode.light,
     double textScale = 1,
     MeaningLanguage meaning = MeaningLanguage.english,
+    bool voice = true,
   }) async {
     tester.view
       ..physicalSize = const Size(390, 844) * 3
@@ -56,6 +60,10 @@ void main() {
 
     db = AppDatabase.memory();
     addTearDown(db.close);
+    // A speaker reads the learner's speech speed.
+    final settings = SettingsRepository(db);
+    await tester.runAsync(settings.load);
+    addTearDown(settings.dispose);
     dao = _PoolDao(db);
     done = <String?>[];
 
@@ -63,13 +71,14 @@ void main() {
       ProviderScope(
         overrides: <Override>[
           contentDaoProvider.overrideWithValue(dao),
+          settingsProvider.overrideWithValue(settings),
           courseStepsProvider.overrideWith(
             (ref) async => <CourseStep>[
               for (final code in steps)
                 (code: code, levelCode: code.split('.').first, wordCount: 12),
             ],
           ),
-          systemTtsProvider.overrideWithValue(_SilentTts()),
+          ttsProvider.overrideWithValue(FakeTts(voice: voice)),
           languagesProvider.overrideWith(() => _FixedLanguages(meaning)),
         ],
         child: MaterialApp(
@@ -133,6 +142,23 @@ void main() {
       expect(dao.asked.first, 'A1.1');
       expect(options(), findsWidgets);
     });
+
+    testWidgets(
+      'V01 no German voice: the speaker is slashed, and a tap says how to '
+      'install one',
+      (tester) async {
+        await pump(tester, voice: false);
+        final speaker = find.byType(DpSpeakerButton);
+        expect(
+          tester.widget<DpSpeakerButton>(speaker).state,
+          DpSpeakerState.unavailable,
+        );
+
+        await tester.tap(speaker);
+        await tester.pump();
+        expect(find.text(l10n.speakerNoVoice), findsOneWidget);
+      },
+    );
 
     testWidgets('Next waits for an answer', (tester) async {
       await pump(tester);
@@ -468,14 +494,6 @@ class _PoolDao extends ContentDao {
     asked.add(step);
     return <PlacementWord>[for (var i = 0; i < 12; i++) wordFor(step, i)];
   }
-}
-
-class _SilentTts implements TtsEngine {
-  @override
-  Future<bool> speak(String text, {double rate = 1}) async => true;
-
-  @override
-  Future<void> stop() async {}
 }
 
 class _FixedLanguages extends Languages {

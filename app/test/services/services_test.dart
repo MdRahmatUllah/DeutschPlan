@@ -6,6 +6,7 @@ import 'package:deutschplan/data/repositories/model_repository.dart';
 import 'package:deutschplan/data/repositories/settings_repository.dart';
 import 'package:deutschplan/services/model_downloads.dart';
 import 'package:deutschplan/services/tts/system_tts.dart';
+import 'package:deutschplan/services/tts/tts_engine.dart';
 import 'package:flutter/services.dart' show PlatformException;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_tts/flutter_tts.dart';
@@ -76,7 +77,11 @@ void main() {
     });
   });
 
-  group('SystemTts', () {
+  group('V01 SystemTts', () {
+    test('is the `system` engine of the tts_engine setting', () {
+      expect(SystemTts(_FakeFlutterTts(available: true)).name, 'system');
+    });
+
     test('speaks German when the phone has a German voice', () async {
       final tts = _FakeFlutterTts(available: true);
 
@@ -89,11 +94,11 @@ void main() {
     });
 
     test(
-      'FR-T2-09 the rate is halved: flutter_tts reads 0.5 as normal',
+      'FR-T2-09 the speed is halved: flutter_tts reads 0.5 as normal',
       () async {
         final tts = _FakeFlutterTts(available: true);
 
-        await SystemTts(tts).speak('Guten Tag!', rate: 0.75);
+        await SystemTts(tts).speak('Guten Tag!', speed: 0.75);
         expect(tts.calls, contains('setSpeechRate 0.375'));
       },
     );
@@ -119,6 +124,56 @@ void main() {
       final tts = _FakeFlutterTts(available: 1);
 
       expect(await SystemTts(tts).speak('Guten Tag!'), isFalse);
+    });
+
+    test('V01 isAvailable reports the German voice honestly', () async {
+      // The speaker is slashed on this answer (accessibility-performance.md),
+      // so "maybe" and "the engine threw" are both no.
+      expect(
+        await SystemTts(_FakeFlutterTts(available: true)).isAvailable(),
+        isTrue,
+      );
+      expect(
+        await SystemTts(_FakeFlutterTts(available: false)).isAvailable(),
+        isFalse,
+      );
+      expect(
+        await SystemTts(_FakeFlutterTts(available: 1)).isAvailable(),
+        isFalse,
+      );
+      expect(
+        await SystemTts(_FakeFlutterTts(available: true, throws: true))
+            .isAvailable(),
+        isFalse,
+      );
+    });
+
+    test('V01 state: playing while sound is out, idle when it ends, is '
+        'cancelled, fails or is stopped', () async {
+      final tts = _FakeFlutterTts(available: true);
+      final engine = SystemTts(tts);
+      final states = <TtsState>[];
+      final sub = engine.state.listen(states.add);
+
+      tts.onStart!();
+      tts.onDone!();
+      tts.onStart!();
+      tts.onCancel!();
+      tts.onStart!();
+      tts.onError!('synthesis failed');
+      tts.onStart!();
+      await engine.stop();
+      await pumpEventQueue();
+
+      expect(states, <TtsState>[
+        for (var i = 0; i < 4; i++) ...<TtsState>[
+          TtsState.playing,
+          TtsState.idle,
+        ],
+      ]);
+      expect(tts.calls, <String>['stop']);
+      await sub.cancel();
+      await engine.dispose();
     });
   });
 }
@@ -166,6 +221,29 @@ class _FakeFlutterTts implements FlutterTts {
     calls.add('speak $text');
     return 1;
   }
+
+  @override
+  Future<dynamic> stop() async {
+    calls.add('stop');
+    return 1;
+  }
+
+  void Function()? onStart;
+  void Function()? onDone;
+  void Function()? onCancel;
+  void Function(dynamic)? onError;
+
+  @override
+  void setStartHandler(void Function() callback) => onStart = callback;
+
+  @override
+  void setCompletionHandler(void Function() callback) => onDone = callback;
+
+  @override
+  void setCancelHandler(void Function() callback) => onCancel = callback;
+
+  @override
+  void setErrorHandler(void Function(dynamic) handler) => onError = handler;
 
   @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);

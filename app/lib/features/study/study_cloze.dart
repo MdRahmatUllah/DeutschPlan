@@ -3,15 +3,14 @@ import 'dart:async';
 import 'package:deutschplan/core/components/dp_button.dart';
 import 'package:deutschplan/core/components/dp_chip.dart';
 import 'package:deutschplan/core/components/dp_feedback.dart';
-import 'package:deutschplan/core/providers/app_providers.dart';
 import 'package:deutschplan/core/theme/dp_tokens.dart';
 import 'package:deutschplan/core/typography/dp_text.dart';
 import 'package:deutschplan/data/db/app_database.dart';
-import 'package:deutschplan/data/repositories/setting_keys.dart';
 import 'package:deutschplan/domain/answer_check.dart';
 import 'package:deutschplan/domain/cloze.dart';
 import 'package:deutschplan/features/study/study_back.dart';
 import 'package:deutschplan/features/study/study_card.dart';
+import 'package:deutschplan/features/words/speak.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
@@ -79,14 +78,7 @@ class _StudyClozeCardState extends ConsumerState<StudyClozeCard> {
     widget.onChecked();
   }
 
-  void _play() {
-    final speed = ref.read(settingsProvider).read(SettingKeys.ttsSpeed);
-    unawaited(
-      ref
-          .read(systemTtsProvider)
-          .speak(widget.cloze.example.german, rate: speed),
-    );
-  }
+  void _play() => unawaited(say(ref, context, widget.cloze.example.german));
 
   @override
   Widget build(BuildContext context) {
