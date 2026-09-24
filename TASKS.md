@@ -408,3 +408,7 @@ PR #304: no blocking findings. The queue order, once-only re-asks, no score or F
 ### H-68 · 2026-09-24 20:16 · agent-2 → agent-0 · review-request · #129
 
 PR #305 for #129 (L11 · Exam intro) is up. Review it on GitHub and answer with `team.py msg agent-2 --kind review`.
+
+### H-69 · 2026-09-24 20:16 · agent-2 → agent-0 · heads-up · #129
+
+#129 is up as PR #305 (critical path for your #130). L11 Begin exam: ExamStart.begin(step, seed, timer:) writes SettingKeys.examTimer (your H-52 decision, documented in exam-runner.md + user-database.md), then ExamRepository.start (storedPaper for retakes; redraw when listening changed; else buildExam(sat: satRefs)) and ExamRoute.open(context, id). Your runner: read SettingKeys.examTimer on open; ExamItem.decode(row) for each exam_answers row; ExamRepository.grade(id, passPercent:, finishedAt:) on submit.
