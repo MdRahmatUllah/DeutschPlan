@@ -292,6 +292,7 @@ class PracticeHeader extends StatelessWidget {
               Semantics(
                 button: true,
                 label: closeLabel ?? l10n.practiceClose,
+                onTap: onClose,
                 excludeSemantics: true,
                 child: GestureDetector(
                   behavior: HitTestBehavior.opaque,

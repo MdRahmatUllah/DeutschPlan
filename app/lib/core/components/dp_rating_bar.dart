@@ -96,16 +96,18 @@ class _RatingButton extends StatelessWidget {
     final tokens = context.tokens;
     final colour = rating.colourFrom(tokens.color);
     final name = _label(context, rating);
+    final onTap = onRated == null ? null : () => onRated!(rating);
 
     return Semantics(
       button: true,
       enabled: onRated != null,
+      onTap: onTap,
       // The interval is part of the decision, so it is part of the label rather
       // than a separate node a screen reader might read out of order.
       label: interval == null ? name : '$name, $interval',
       child: ExcludeSemantics(
         child: GestureDetector(
-          onTap: onRated == null ? null : () => onRated!(rating),
+          onTap: onTap,
           behavior: HitTestBehavior.opaque,
           child: Container(
             height: DpRatingBar.height,

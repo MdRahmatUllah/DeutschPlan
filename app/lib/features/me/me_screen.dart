@@ -295,6 +295,7 @@ class MeHeader extends StatelessWidget {
                     button: true,
                     label: shown,
                     hint: l10n.meEditName,
+                    onTap: onEditName,
                     excludeSemantics: true,
                     child: GestureDetector(
                       behavior: HitTestBehavior.opaque,
@@ -782,6 +783,7 @@ class _Badge extends StatelessWidget {
       container: true,
       button: true,
       label: l10n.meBadge(step.code, state),
+      onTap: onTap,
       excludeSemantics: true,
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,

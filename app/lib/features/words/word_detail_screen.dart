@@ -854,13 +854,15 @@ class _CompareLink extends StatelessWidget {
   Widget build(BuildContext context) {
     final tokens = context.tokens;
     final label = AppLocalizations.of(context).wordCompare(set);
+    void open() => CompareRoute.open(context, uid);
     return Semantics(
       button: true,
       label: label,
+      onTap: open,
       excludeSemantics: true,
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
-        onTap: () => CompareRoute.open(context, uid),
+        onTap: open,
         child: ConstrainedBox(
           // 48 dp to hit, however short the line is drawn.
           constraints: const BoxConstraints(minHeight: 48),

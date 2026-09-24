@@ -112,6 +112,8 @@ class _UmlautKey extends StatelessWidget {
       button: true,
       enabled: onTap != null,
       label: AppLocalizations.of(context).umlautLongPressHint(label, shifted),
+      onTap: onTap,
+      onLongPress: onLongPress,
       child: ExcludeSemantics(
         child: GestureDetector(
           onTap: onTap,

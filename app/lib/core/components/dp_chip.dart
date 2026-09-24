@@ -185,6 +185,9 @@ class DpChip extends StatelessWidget {
           ? selected
           : null,
       button: onTap != null,
+      // The handler here too: ExcludeSemantics drops the one the gesture
+      // below would give, and a button nobody can press is worse than none.
+      onTap: onTap,
       child: ExcludeSemantics(
         child: onTap == null
             ? chip

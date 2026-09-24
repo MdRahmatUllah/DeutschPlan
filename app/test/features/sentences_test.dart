@@ -206,6 +206,20 @@ INSERT INTO sentence_log (word_uid, ord, shown_on, self_rating) VALUES
       expect(find.text(l10n.sentencesPlace(2, 3)), findsOneWidget);
     });
 
+    testWidgets('FR-T5-02 #312 a screen reader can answer: Understood by '
+        'its tap '
+        'action writes 3', (tester) async {
+      final semantics = tester.ensureSemantics();
+      await pump(tester);
+      await tester.runAsync(() async {
+        tester.semantics.tap(find.semantics.byLabel(l10n.sentencesUnderstood));
+        await Future<void>.delayed(const Duration(milliseconds: 80));
+      });
+      await tester.pumpAndSettle();
+      expect((await tester.runAsync(log))!.first['self_rating'], 3);
+      semantics.dispose();
+    });
+
     testWidgets('Partly writes 2', (tester) async {
       await pump(tester);
       await answer(tester, l10n.sentencesPartly);

@@ -248,6 +248,7 @@ class _Score extends StatelessWidget {
             child: Semantics(
               button: true,
               label: closeLabel,
+              onTap: onClose,
               excludeSemantics: true,
               child: GestureDetector(
                 behavior: HitTestBehavior.opaque,

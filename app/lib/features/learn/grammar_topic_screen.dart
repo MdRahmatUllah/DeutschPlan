@@ -437,15 +437,17 @@ class _Neighbour extends StatelessWidget {
       size: 18,
       color: tokens.color.link,
     );
+    void open() => GrammarTopicRoute.instead(context, topic.uid);
     return Semantics(
       button: true,
       label: forward
           ? l10n.topicNext(topic.topic.topic)
           : l10n.topicPrevious(topic.topic.topic),
+      onTap: open,
       excludeSemantics: true,
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
-        onTap: () => GrammarTopicRoute.instead(context, topic.uid),
+        onTap: open,
         child: SizedBox(
           height: 48,
           child: Row(
