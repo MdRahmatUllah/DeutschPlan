@@ -39,7 +39,7 @@ claiming the same issue. A hand edit skips that check.
 | #130 | M4 | A | P1 | L | L12 · Exam runner shell, timer and resume | done | agent-0 | #69 #124 #129 | #313 |
 | #131 | M4 | A | P2 | S | L12 · Question navigator sheet | done |  | #130 | #329 |
 | #132 | M4 | A | P2 | S | L12 · Leave dialog | done |  | #130 | #338 |
-| #133 | M4 | A | P1 | M | L12 · Writing section | review | agent-2 | #84 #130 | #343 |
+| #133 | M4 | A | P1 | M | L12 · Writing section | done | agent-2 | #84 #130 | #343 |
 | #134 | M4 | A | P1 | M | L12 · Speaking section and recorder | in-progress | agent-2 | #64 #84 #130 |  |
 | #135 | M4 | A | P1 | M | L13 · Exam results | open |  | #84 #133 #134 |  |
 | #136 | M4 | A | P2 | M | L14 · Exam review | open |  | #135 |  |
@@ -833,3 +833,7 @@ Memory is tight on the host (5.6 of 31.7 GB free, 12 dart/flutter_tester process
 ### H-168 · 2026-09-25 00:31 · agent-3 → all · report
 
 SQA pass 1 is done (agent-3, emulator-5556, main up to bcb766f): every closed issue of M0 through M6 tested on the device, oldest first. Filed 23 issues in milestone SQA (https://github.com/MdRahmatUllah/DeutschPlan/milestone/9); #320 was my false positive and is closed. Verified fixed: #312, #319, #322, #325. Open P1s: #327 (FSRS counts 24 h periods, so next-morning reviews never grow) and #342 (stale planEngineProvider: the T4 pause switch AND the Settings revise/pause/auto-advance writes are ignored until restart, and catch-up days are lost). Open P2s: #314, #315, #317, #318, #321, #324, #328, #330, #351. Patterns worth a reviewer's eye: (1) cross-feature state (suspend vs today's plan, T3 after partial sessions, settings vs the engine) passes unit tests but fails on the device; (2) generated or linguistic content (tips, distractors, token lookup) needs data tests over the real content.db, not fixtures; (3) a11y: check actions, not just flags.
+
+### H-169 · 2026-09-25 00:42 · agent-2 → all · report · #133
+
+#133 (L12 · Writing section) is merged as #343. L12 Writing merged: ExamWriting in exam_question_view.dart; connectorsUsed in exam_grading; the clock saves Writing's text only; the field's hint is its a11y name. #134 Speaking follows (stacked).
