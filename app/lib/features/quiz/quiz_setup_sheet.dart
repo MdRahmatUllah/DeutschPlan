@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'package:deutschplan/core/adaptive/adaptive.dart';
 import 'package:deutschplan/core/components/dp_button.dart';
 import 'package:deutschplan/core/components/dp_chip.dart';
+import 'package:deutschplan/core/providers/app_providers.dart';
 import 'package:deutschplan/core/theme/dp_tokens.dart';
 import 'package:deutschplan/core/typography/dp_text.dart';
 import 'package:deutschplan/domain/quiz_builder.dart';
@@ -12,6 +13,9 @@ import 'package:deutschplan/l10n/generated/app_localizations.dart';
 import 'package:deutschplan/router/routes.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part 'quiz_setup_sheet.g.dart';
 
 /// The six directions L7 offers. Forms has its own tile on L2.
 const List<QuizDirection> customDirections = <QuizDirection>[
@@ -25,6 +29,19 @@ const List<QuizDirection> customDirections = <QuizDirection>[
 
 /// BR-QUIZ-01's lengths.
 const List<int> quizLengths = <int>[10, 20, 30];
+
+/// Learned words by category, as L7's category source counts them: every
+/// learned word in it, from any step, as `DriftQuizStore` draws them (#337).
+@riverpod
+Future<Map<int, int>> learnedByCategory(Ref ref) async {
+  final counts = <int, int>{};
+  for (final row in await ref.watch(wordRepositoryProvider).quizWords().get()) {
+    if (row.categoryId case final id?) {
+      counts.update(id, (n) => n + 1, ifAbsent: () => 1);
+    }
+  }
+  return counts;
+}
 
 /// The quiz L7's *Start* builds, for any of its combinations.
 QuizArgs customQuiz({
@@ -91,12 +108,22 @@ class _QuizSetupSheetState extends ConsumerState<QuizSetupSheet> {
   Widget build(BuildContext context) {
     final tokens = context.tokens;
     final l10n = AppLocalizations.of(context);
-    // The third source is the step's main category — the one most of its
-    // words fall in, as L2's category chips put first.
+    // The third source: of the step's categories, the one with the most
+    // learned words (#337), the step's biggest on a tie. Closed, with the
+    // reason, until it has as many as L2's quizzes need.
+    final learned = ref.watch(learnedByCategoryProvider).value ?? const {};
     final category = ref
         .watch(stepCategoriesProvider(widget.step))
         .value
-        ?.firstOrNull;
+        ?.fold<({int id, String name})?>(
+          null,
+          (best, c) =>
+              best == null || (learned[c.id] ?? 0) > (learned[best.id] ?? 0)
+              ? c
+              : best,
+        );
+    final categoryLearned = learned[category?.id] ?? 0;
+    final categoryOpen = categoryLearned >= StepQuizTab.minimumLearned;
 
     Widget section(String label, List<Widget> chips) => Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -116,7 +143,7 @@ class _QuizSetupSheetState extends ConsumerState<QuizSetupSheet> {
     DpChip chip(
       String label, {
       required bool selected,
-      required VoidCallback onTap,
+      required VoidCallback? onTap,
     }) => DpChip(
       label: label,
       kind: DpChipKind.filter,
@@ -186,10 +213,20 @@ class _QuizSetupSheetState extends ConsumerState<QuizSetupSheet> {
                       chip(
                         category.name,
                         selected: _source == QuizSource.category,
-                        onTap: () =>
-                            setState(() => _source = QuizSource.category),
+                        onTap: categoryOpen
+                            ? () =>
+                                  setState(() => _source = QuizSource.category)
+                            : null,
                       ),
                   ]),
+                  if (category != null && !categoryOpen) ...<Widget>[
+                    const SizedBox(height: 6),
+                    DpText(
+                      l10n.quizSourceLocked(category.name, categoryLearned),
+                      role: DpTextRole.caption,
+                      color: tokens.color.textSecondary,
+                    ),
+                  ],
                   const SizedBox(height: 16),
                   Row(
                     children: <Widget>[

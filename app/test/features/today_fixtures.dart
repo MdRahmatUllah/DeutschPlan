@@ -11,6 +11,7 @@ import 'package:deutschplan/features/learn/grammar_library_screen.dart';
 import 'package:deutschplan/features/learn/grammar_topic_screen.dart';
 import 'package:deutschplan/features/learn/step_grammar.dart';
 import 'package:deutschplan/features/learn/step_quiz.dart';
+import 'package:deutschplan/features/quiz/quiz_setup_sheet.dart';
 import 'package:deutschplan/features/learn/step_words.dart';
 import 'package:deutschplan/data/repositories/grammar_repository.dart';
 import 'package:deutschplan/features/today/today_providers.dart';
@@ -457,6 +458,8 @@ List<Override> todayStub([
       (id: 1, name: 'Wohnen & Haushalt'),
     ],
   ),
+  // L7's category source is open: 12 of its words learned (#337).
+  learnedByCategoryProvider.overrideWith((ref) async => const {1: 12}),
   // The artboards' Monday, so a due date reads the same on any day the
   // tests run.
   todayProvider.overrideWithValue('2026-09-21'),

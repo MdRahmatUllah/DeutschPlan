@@ -149,6 +149,59 @@ void main() {
     expect(chip('Wohnen & Haushalt'), findsNothing);
   });
 
+  group('#337 the category source counts learned words', () {
+    Future<void> sheet(WidgetTester tester, Map<int, int> learned) async {
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: <Override>[
+            stepCategoriesProvider.overrideWith(
+              (ref, code) async => const <({int id, String name})>[
+                (id: 1, name: 'Wohnen & Haushalt'), // the step's biggest
+                (id: 2, name: 'Auto & Verkehr'),
+              ],
+            ),
+            learnedByCategoryProvider.overrideWith((ref) async => learned),
+          ],
+          child: MaterialApp(
+            theme: AppTheme.light(),
+            localizationsDelegates: appLocalizationsDelegates,
+            supportedLocales: supportedLocales,
+            home: const Scaffold(body: QuizSetupSheet(step: 'A2.1')),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+    }
+
+    testWidgets('the category with the most learned, not the biggest', (
+      tester,
+    ) async {
+      await sheet(tester, const {1: 2, 2: 14});
+      expect(chip('Auto & Verkehr'), findsOneWidget);
+      expect(chip('Wohnen & Haushalt'), findsNothing);
+      await tester.tap(chip('Auto & Verkehr'));
+      await tester.pumpAndSettle();
+      expect(selected(tester, 'Auto & Verkehr'), isTrue);
+    });
+
+    testWidgets('under 10 learned it is closed, and says why', (tester) async {
+      await sheet(tester, const {2: 3});
+      expect(find.text(l10n.quizSourceLocked('Auto & Verkehr', 3)), findsOne);
+      await tester.tap(chip('Auto & Verkehr'), warnIfMissed: false);
+      await tester.pumpAndSettle();
+      expect(selected(tester, 'Auto & Verkehr'), isFalse);
+      expect(selected(tester, l10n.quizSourceStep), isTrue);
+    });
+
+    testWidgets('none learned: the biggest, closed at 0', (tester) async {
+      await sheet(tester, const {});
+      expect(
+        find.text(l10n.quizSourceLocked('Wohnen & Haushalt', 0)),
+        findsOne,
+      );
+    });
+  });
+
   testWidgets('FR-L8-05 the timer says what it does, off and on', (
     tester,
   ) async {

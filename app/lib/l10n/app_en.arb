@@ -2768,6 +2768,18 @@
   "@quizSetupSource": {
     "description": "L7 section label."
   },
+  "quizSourceLocked": "{category} opens once 10 of its words are learned · {learned} so far",
+  "@quizSourceLocked": {
+    "description": "L7 caption under the source chips while the category chip is closed: fewer than 10 of its words learned (#337).",
+    "placeholders": {
+      "category": {
+        "type": "String"
+      },
+      "learned": {
+        "type": "int"
+      }
+    }
+  },
   "quizSourceStep": "This step's learned words",
   "@quizSourceStep": {
     "description": "L7 source chip: the step's learned words (BR-QUIZ-01)."

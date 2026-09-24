@@ -443,6 +443,7 @@
   "quizSetupDirection": "দিক",
   "quizSetupLength": "দৈর্ঘ্য",
   "quizSetupSource": "উৎস",
+  "quizSourceLocked": "{category}-এর ১০টি শব্দ শেখা হলে এটি খুলবে · এখন পর্যন্ত {learned}টি",
   "quizSourceStep": "এই ধাপের শেখা শব্দ",
   "quizSourceAll": "সব শেখা শব্দ",
   "quizSetupTimer": "টাইমার",
