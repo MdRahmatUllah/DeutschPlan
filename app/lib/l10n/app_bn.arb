@@ -369,5 +369,7 @@
   "practiceNotQuite": "ঠিক হয়নি — উত্তর হলো {answer}",
   "practiceRuleLine": "নিয়ম: {rule}",
   "practiceSeeRule": "নিয়ম দেখুন",
-  "practiceBackToItem": "প্রশ্নে ফিরুন"
+  "practiceBackToItem": "প্রশ্নে ফিরুন",
+  "categoriesLine": "প্রতিটি শব্দ ১২টি ধাপ জুড়ে একটি বিভাগের অন্তর্ভুক্ত।",
+  "categoriesWords": "{count, plural, other{{count}টি শব্দ}}"
 }

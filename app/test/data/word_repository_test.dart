@@ -515,6 +515,57 @@ void main() {
     });
   });
 
+  group('FR-L5-01 the categories, from one grouped query', () {
+    Future<List<CategoryProgress>> categories() =>
+        words.watchCategoryProgress().first;
+
+    setUp(() async {
+      // Wohnen keeps Haus; Arbeit takes Tür and Straße; Leer has no words.
+      await db.customStatement(
+        "INSERT INTO c.categories (id, name) VALUES (2, 'Arbeit'), (3, 'Leer')",
+      );
+      await db.customStatement(
+        'UPDATE c.words SET category_id = 2 WHERE uid IN '
+        "('${ContentFixture.tuer}', '${ContentFixture.strasse}')",
+      );
+    });
+
+    test('the biggest first, and a category with no words left out', () async {
+      final shown = await categories();
+      expect(shown.map((c) => (c.id, c.name, c.words)), <(int, String, int)>[
+        (2, 'Arbeit', 2),
+        (1, 'Wohnen', 1),
+      ]);
+    });
+
+    test(
+      'words by derived status, suspended ones counted but not split',
+      () async {
+        await state(ContentFixture.tuer, stability: 30);
+        await state(ContentFixture.strasse, status: 'suspended', stability: 30);
+        final [arbeit, wohnen] = await categories();
+        expect((arbeit.todo, arbeit.learning, arbeit.done), (0, 0, 1));
+        expect(arbeit.words, 2);
+        expect((wohnen.todo, wohnen.learning, wohnen.done), (1, 0, 0));
+      },
+    );
+
+    test('BR-STATUS-02 done follows done_stability_days, live', () async {
+      await state(ContentFixture.tuer, stability: 10);
+      final seen = <(int, int)>[];
+      final sub = words.watchCategoryProgress().listen(
+        (shown) => seen.add((shown.first.learning, shown.first.done)),
+      );
+      addTearDown(sub.cancel);
+      await pumpEventQueue();
+      await settings.write(SettingKeys.doneStabilityDays, 21);
+      await pumpEventQueue();
+      await state(ContentFixture.strasse, stability: 1);
+      await pumpEventQueue();
+      expect(seen, <(int, int)>[(0, 1), (1, 0), (2, 0)]);
+    });
+  });
+
   test('BR-EXAM-01 unlocked once introduced reaches the percent', () {
     bool unlocks(int introduced, int todo) =>
         StepProgress.unlocks(todo: todo, introduced: introduced, percent: 90);

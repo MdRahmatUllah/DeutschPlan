@@ -59,6 +59,29 @@ wordsWithStateForCategory:
   WHERE w.category_id = :category
   ORDER BY sub.ord, w.freq DESC, w.seq;
 
+-- FR-L5-01: every category that has words, its words by status as
+-- stepProgress derives them, the biggest first (as L2's chips). One grouped
+-- query rather than one per card.
+categoryProgress:
+  SELECT
+    k.id AS id,
+    k.name AS name,
+    COUNT(*) AS total,
+    COALESCE(SUM(CASE WHEN s.word_uid IS NULL THEN 1
+      WHEN s.status != 'suspended' AND s.introduced_on IS NULL
+        AND s.reps = 0 THEN 1 ELSE 0 END), 0) AS todo,
+    COALESCE(SUM(CASE WHEN s.status != 'suspended'
+      AND NOT (s.introduced_on IS NULL AND s.reps = 0)
+      AND s.stability < :doneAfter THEN 1 ELSE 0 END), 0) AS learning,
+    COALESCE(SUM(CASE WHEN s.status != 'suspended'
+      AND NOT (s.introduced_on IS NULL AND s.reps = 0)
+      AND s.stability >= :doneAfter THEN 1 ELSE 0 END), 0) AS done
+  FROM categories k
+  JOIN words w ON w.category_id = k.id
+  LEFT JOIN word_state s ON s.word_uid = w.uid
+  GROUP BY k.id
+  ORDER BY total DESC, k.id;
+
 wordWithState:
   SELECT w.**, s.**, CASE
     WHEN s.status = 'suspended' THEN 'suspended'

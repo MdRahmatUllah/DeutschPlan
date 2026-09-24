@@ -58,6 +58,27 @@ class WordWithState {
   bool get isSuspended => status == WordStatus.suspended;
 }
 
+/// One category's card on L5 (FR-L5-01): its words, suspended ones
+/// included, and the bar's split.
+@immutable
+class CategoryProgress {
+  const CategoryProgress({
+    required this.id,
+    required this.name,
+    required this.words,
+    required this.todo,
+    required this.learning,
+    required this.done,
+  });
+
+  final int id;
+  final String name;
+  final int words;
+  final int todo;
+  final int learning;
+  final int done;
+}
+
 /// One step of the course and how far the learner is through it: L1's tile
 /// and the Me card's share (FR-L1-01, FR-M1-01).
 @immutable
@@ -199,6 +220,24 @@ class WordRepository extends DatabaseAccessor<AppDatabase>
   Stream<List<WordWithState>> watchCategory(int categoryId) => _watchWords(
     (days) => wordsWithStateForCategory(days, categoryId).watch(),
     (row) => _word(row.w, row.s, row.derivedStatus),
+  );
+
+  /// L5's cards, as the learner's progress and `done_stability_days` move.
+  Stream<List<CategoryProgress>> watchCategoryProgress() => _settings.switchOn(
+    SettingKeys.doneStabilityDays,
+    (int days) => categoryProgress(days.toDouble()).watch().map(
+      (rows) => <CategoryProgress>[
+        for (final row in rows)
+          CategoryProgress(
+            id: row.id,
+            name: row.name,
+            words: row.total,
+            todo: row.todo,
+            learning: row.learning,
+            done: row.done,
+          ),
+      ],
+    ),
   );
 
   Stream<WordWithState?> watchWord(String uid) => _settings
