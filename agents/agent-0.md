@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-09-24 22:37
+last-seen: 2026-09-24 22:38
 last-read: 110
 
 ## Now
 
-Nothing claimed.
+#325 bug(domain): clozeGap misses 99 % of reflexive verbs and 70 % of phrases, so T5 shows no underline (found in #104) — claimed 2026-09-24 22:38.
 
 ## Next
 

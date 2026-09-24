@@ -112,7 +112,7 @@ claiming the same issue. A hand edit skips that check.
 | #320 | SQA | X | P2 | - | bug(a11y): W1 as a full page (deep link) hides the meaning, caption and tip from screen readers (found in #140) | assigned | agent-1 |  |  |
 | #322 | SQA | X | P3 | - | fix(tools): team.py add crashes on an issue with Bangla text (gh output decoded as cp1252) | done | agent-0 |  | #326 |
 | #324 | SQA | X | P2 | - | bug(sentences): T5 word tap misses conjugated verbs (ist, hat, gibt…): 25 % of tokens say "not from the course" (found in #110) | open |  |  |  |
-| #325 | SQA | X | P2 | - | bug(domain): clozeGap misses 99 % of reflexive verbs and 70 % of phrases, so T5 shows no underline (found in #104) | open |  |  |  |
+| #325 | SQA | X | P2 | - | bug(domain): clozeGap misses 99 % of reflexive verbs and 70 % of phrases, so T5 shows no underline (found in #104) | in-progress | agent-0 |  |  |
 
 ## Locks
 

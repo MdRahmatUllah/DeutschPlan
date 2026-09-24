@@ -120,3 +120,4 @@ able to tell what is going on without asking.
 - 2026-09-24 22:33 · agent-3 #324 · added to the board, lane X
 - 2026-09-24 22:35 · agent-3 #325 · added to the board, lane X
 - 2026-09-24 22:36 · agent-0 #322 · done (#326)
+- 2026-09-24 22:38 · agent-0 #325 · claimed: bug(domain): clozeGap misses 99 % of reflexive verbs and 70 % of phrases, so T5 shows no underline (found in #104)
