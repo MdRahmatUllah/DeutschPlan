@@ -433,7 +433,7 @@ def cmd_review(root: Path, agent: str, issue: int, pr: int, to: str) -> None:
 
 def issue_closed(issue: int) -> bool:
     out = subprocess.run(["gh", "issue", "view", str(issue), "--json", "state", "--jq", ".state"],
-                         capture_output=True, text=True, check=False)
+                         capture_output=True, text=True, encoding="utf-8", check=False)
     return out.stdout.strip() == "CLOSED"
 
 
@@ -522,8 +522,9 @@ def cmd_ack(root: Path, agent: str) -> None:
 
 def cmd_add(root: Path, agent: str, issue: int, lane: str) -> None:
     """Put a new GitHub issue — a follow-up, a bug — on the board."""
+    # gh writes UTF-8 (Bangla, arrows); the locale may be cp1252 (#322).
     raw = subprocess.run(["gh", "issue", "view", str(issue), "--json", "title,milestone,labels,body"],
-                         capture_output=True, text=True, check=True).stdout
+                         capture_output=True, text=True, encoding="utf-8", check=True).stdout
     task = task_from_issue(issue, json.loads(raw), lane)
     def change(root, board):
         if any(t.issue == issue for t in board.tasks):
@@ -636,7 +637,7 @@ def check_agent(agent: str) -> str:
 
 
 def _git_out(*args: str) -> str:
-    return subprocess.run(["git", *args], capture_output=True, text=True, check=True).stdout.strip()
+    return subprocess.run(["git", *args], capture_output=True, text=True, encoding="utf-8", check=True).stdout.strip()
 
 
 def team_root() -> Path:
