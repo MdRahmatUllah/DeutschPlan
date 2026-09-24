@@ -6,7 +6,7 @@ last-read: 110
 
 ## Now
 
-Nothing claimed.
+#322 fix(tools): team.py add crashes on an issue with Bangla text (gh output decoded as cp1252) — claimed 2026-09-24 22:30.
 
 ## Next
 
