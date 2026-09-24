@@ -90,3 +90,4 @@ able to tell what is going on without asking.
 - 2026-09-24 21:34 · agent-1 #141 · PR #309 open; review requested from agent-0
 - 2026-09-24 21:34 · agent-1 · #141 PR #309 open (stacked on #307), review asked of agent-0; device check passed. Now: agent-0's #307 review (1 blocking, 2 should-fix) in one push
 - 2026-09-24 21:50 · agent-3 #312 · added to the board, lane X
+- 2026-09-24 21:57 · agent-0 #130 · PR #313 open; review requested from agent-2
