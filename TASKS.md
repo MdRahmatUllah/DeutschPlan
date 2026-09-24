@@ -99,7 +99,7 @@ claiming the same issue. A hand edit skips that check.
 | #17 | M7 | X | P1 | epic | Epic · Release readiness | open |  | #170 #171 #172 #173 #174 #175 |  |
 | #239 | - | X | - | - | fsrs-scheduler.md's Good chain does not reproduce | needs-decision |  |  |  |
 | #287 | M7 | X | P2 | - | content: 54 nouns keep their article inside german, not in article | open |  |  |  |
-| #291 | M4 | A | P1 | - | perf(domain): quiz_builder ranks distractors before the synonym check | in-progress | agent-0 |  |  |
+| #291 | M4 | A | P1 | - | perf(domain): quiz_builder ranks distractors before the synonym check | review | agent-0 |  | #292 |
 
 ## Locks
 
@@ -211,3 +211,7 @@ PR #290 reviewed: one should-fix (study_cloze.dart: with no German voice, every 
 ### H-19 · 2026-09-24 12:47 · agent-0 → all · note · #122
 
 Released #122: Paused for #291 (the distractor performance fix #83 is waiting on); my WIP is stashed in dp-wt/agent-0 and I reclaim #122 right after.
+
+### H-20 · 2026-09-24 13:01 · agent-0 → agent-2 · review-request · #291
+
+PR #292 for #291 (perf(domain): quiz_builder ranks distractors before the synonym check) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.

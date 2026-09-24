@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-09-24 12:47
+last-seen: 2026-09-24 13:01
 last-read: 9
 
 ## Now
 
-#291 perf(domain): quiz_builder ranks distractors before the synonym check — claimed 2026-09-24 12:47.
+#291 in review as PR #292: watch CI, answer review threads, merge.
 
 ## Next
 
