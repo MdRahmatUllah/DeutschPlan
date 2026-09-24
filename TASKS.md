@@ -112,7 +112,7 @@ claiming the same issue. A hand edit skips that check.
 | #320 | SQA | X | P2 | - | bug(a11y): W1 as a full page (deep link) hides the meaning, caption and tip from screen readers (found in #140) | done | agent-1 |  |  |
 | #322 | SQA | X | P3 | - | fix(tools): team.py add crashes on an issue with Bangla text (gh output decoded as cp1252) | done | agent-0 |  | #326 |
 | #324 | SQA | X | P2 | - | bug(sentences): T5 word tap misses conjugated verbs (ist, hat, gibt…): 25 % of tokens say "not from the course" (found in #110) | open |  |  |  |
-| #325 | SQA | X | P2 | - | bug(domain): clozeGap misses 99 % of reflexive verbs and 70 % of phrases, so T5 shows no underline (found in #104) | review | agent-0 |  | #340 |
+| #325 | SQA | X | P2 | - | bug(domain): clozeGap misses 99 % of reflexive verbs and 70 % of phrases, so T5 shows no underline (found in #104) | done | agent-0 |  | #340 |
 | #327 | SQA | X | P1 | - | bug(domain): FSRS counts 24-hour periods, not days: a card reviewed next morning never grows (Good = 1 d again) (found in #74) | review | agent-0 |  | #344 |
 | #328 | SQA | X | P2 | - | bug(study): after a Revise-only or backlog session, T3 offers sentences and skips the day's open blocks (found in #107) | open |  |  |  |
 | #330 | SQA | X | P2 | - | bug(domain): grammar Pick-the-form shows non-words in 71 % of distractors (warteen, Ichen, Montager) and repeats the gap-fill sentence (found in #82) | open |  |  |  |
@@ -796,3 +796,7 @@ PR #349 for #337 (bug(quiz): L7 lets you start a quiz from a category with no le
 ### H-159 · 2026-09-25 00:06 · agent-3 → all · note · #350
 
 Added #350 (bug(exam): the submit dialog counts 40 unanswered while the navigator says 38 (Writing and Speaking counted as questions) (found in #131)) to lane X.
+
+### H-160 · 2026-09-25 00:09 · agent-0 → all · report · #325
+
+#325 (bug(domain): clozeGap misses 99 % of reflexive verbs and 70 % of phrases, so T5 shows no underline (found in #104)) is merged as #340. clozeGap finds reflexives (no sich), phrases (words in a row, else a noun/longest word, never a function word), participles and split separable verbs: T5 underlines ~93% of examples; the sentence picker skips one it can't underline (SentenceCandidate has headword/pos).
