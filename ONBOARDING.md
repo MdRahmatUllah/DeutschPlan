@@ -65,7 +65,7 @@ action (BR-PRIV-01).
 |---|---|
 | OS | Windows 11. Use Git Bash for commands, PowerShell where noted. |
 | Flutter | 3.47.5 / Dart 3.13.4 on PATH (`F:/appDevs/flutterSDK/flutter`). It matches `.fvmrc`. **No `fvm`, no `make`.** |
-| Python | 3.10 on PATH (docs say 3.11+; CI uses 3.12). Has pytest, openpyxl, PyYAML and Pillow. |
+| Python | 3.10 on PATH (docs say 3.11+). Has pytest, openpyxl, PyYAML and Pillow. |
 | gh | Logged in as `rahmat-ullah`. |
 | Android | SDK at `C:/Users/User/AppData/Local/Android/Sdk`. One running emulator, `emulator-5554` (Pixel_8, API 34), app id `com.example.deutschplan`. |
 | iOS | Impossible here (no Mac). iOS-only work is written blind and marked *unverified*. |
@@ -119,8 +119,7 @@ anywhere else. `gh` acts as `rahmat-ullah`. Commit messages end with the
 ### The files
 
 The coordination state lives on the **`team` branch**. It is never merged into
-`main`, and CI never runs on it (CI triggers on PRs and on pushes to `main`,
-which is why this is not on `main`). `team.py join` clones it to
+`main`: the board changes all day, and `main` is the code. `team.py join` clones it to
 `F:/appDevs/dp-team/<you>/`:
 
 | File | What it is | Who writes it |
@@ -171,7 +170,7 @@ the lead gives it work in a handoff. A session takes an identity:
 - **End of session** (or when you stop for a while):
   ```bash
   python tools/team.py next -m "what I will do next, concretely"
-  python tools/team.py note -m "worktree dp-wt/agent-N on feat/140-word-detail; PR #290 waits on CI run 123; review thread 456 answered"
+  python tools/team.py note -m "worktree dp-wt/agent-N on feat/140-word-detail; PR #290 waits on agent-1's review; review thread 456 answered"
   python tools/team.py leave -m "one-line summary"
   ```
   Your next session, or another agent taking your identity, starts from exactly that.
@@ -218,7 +217,7 @@ Run them from your worktree: `python tools/team.py <command>`.
 **Ready** means `open` (or assigned to you) with every blocker `done`.
 
 Hold one issue `in-progress` at a time. An issue in `review` does not count,
-so while your PR waits on CI, claim the next one.
+so while your PR waits on its review, claim the next one.
 
 ### Handoffs: how agents talk
 
@@ -298,7 +297,11 @@ it once cost a bug.
    python -m pytest ../tools/tests -q
    flutter test --timeout 60s                         # the whole suite, goldens included
    ```
-   All green, or you don't go on.
+   All green, or you don't go on. **GitHub CI is off (#302): this gate is the
+   only check the code gets**, so run all four, in full, every time. If you
+   changed the content pipeline (`tools/excel_to_sqlite.py`, `content/`), also
+   rebuild and verify it: `python tools/excel_to_sqlite.py`, then
+   `python tools/verify_content.py` (`docs/02-data/content-pipeline.md`).
 8. **Planted violations.** Write a plants file (outside the repo, e.g. `$TEMP/plants-N.json`; use your editor, not a heredoc) with one plant per behaviour you claim: the ordering, the edge case, the route, the l10n key, the bar value… Then run it:
    ```bash
    python tools/plant.py "$TEMP/plants-N.json"
@@ -345,17 +348,17 @@ it once cost a bug.
 13. **Fix.**
     - Fix every finding with a test and a plant.
     - Push once, and reply on the thread: `gh api repos/MdRahmatUllah/DeutschPlan/pulls/P/comments/<id>/replies -f body="Fixed in <sha>. …"`.
-    - `gh run cancel` the superseded CI run.
     - Check the push reached the PR: `gh api repos/MdRahmatUllah/DeutschPlan/pulls/P --jq .head.sha`.
-14. **CI.** Watch the run named **`CI`**, not `PR title`:
-    ```bash
-    id=$(gh run list --workflow CI --branch feat/N-slug --limit 1 --json databaseId --jq '.[0].databaseId')
-    gh run watch $id --exit-status
-    ```
-    It has three jobs: analyze/format/test on Ubuntu, the content pipeline, and goldens on Windows. Six minutes or so. Claim your next issue while it runs.
+14. **No CI.** GitHub CI is off (the owner's call, 2026-09-24, #302): both
+    workflows are disabled, so a push starts nothing and there is nothing to
+    wait for. Don't watch, re-run or re-enable a workflow. What it used to check
+    is now yours:
+    - analyze, format, tests and goldens: the gate (step 7), in full;
+    - the PR title (`<type>(<scope>): <what> (#N)`): check it yourself;
+    - the content pipeline: rebuild and verify locally when you touch it (step 7).
 15. **Merge.**
     - If `gh pr view P --json mergeable` says `CONFLICTING`, rebase on `origin/main`, regenerate, run the gate, and push.
-    - If `main` moved under your files but doesn't conflict, rebase locally and run the gate before merging.
+    - If `main` moved since your last gate run, rebase on `origin/main`, regenerate, and run the gate again before merging, even if nothing conflicts. With no CI on `main`, this is what keeps `main` green.
     - Then:
       ```bash
       gh pr merge P --squash --subject "<PR title> (#P)"      # never --delete-branch in a worktree
@@ -364,7 +367,7 @@ it once cost a bug.
       git push origin --delete feat/N-slug
       python tools/team.py done N --pr P -m "what the others should know"
       ```
-    - The merge runs CI on `main`. If that goes red, fixing it is everyone's top priority, starting with whoever merged last. They announce it (`team.py msg all --kind heads-up -m "main is red after #P: <job>, fixing"`) and nobody else merges until it is green again.
+    - If you find `main` red (the gate fails on a clean `origin/main`), fixing it is everyone's top priority, starting with whoever merged last. Announce it (`team.py msg all --kind heads-up -m "main is red after #P: <what fails>, fixing"`), and nobody else merges until it is green again.
 16. **Next.** Back to step 1. `git switch --detach origin/main` first, if the next branch should start clean.
 
 ## 5. Architecture and file structure
@@ -539,7 +542,7 @@ Layers, per `docs/05-dev-guide/testing.md`:
   - Load l10n with `AppLocalizations.delegate.load(supportedLocales.first)`.
   - The test font draws every glyph 1 em wide, so wrapping tests need short strings.
 - **Shared stubs:** `test/features/today_fixtures.dart`. `todayStub()` overrides every DB-backed screen provider with artboard fixtures (`artboardToday`, `artboardCourse`, `artboardCategories`, …). The router and golden tests pump the real route table with it and no database, so **a new DB-backed screen must add its providers to `todayStub()`**, or unrelated tests fail.
-- **Goldens:** `goldenTest('<artboard_name>', builder: ...)` from `test/golden/golden_harness.dart` gives six files, `test/golden/goldens/<name>_{light,dark,glass}_{phone,tablet}.png`. For an iOS variant, add `goldenTest('<name>_ios', modes: [GoldenMode.light], devices: [GoldenDevice.phone], chrome: AdaptiveChrome.cupertino, …)`. Generate them per file, on Windows. CI verifies them on `windows-latest`.
+- **Goldens:** `goldenTest('<artboard_name>', builder: ...)` from `test/golden/golden_harness.dart` gives six files, `test/golden/goldens/<name>_{light,dark,glass}_{phone,tablet}.png`. For an iOS variant, add `goldenTest('<name>_ios', modes: [GoldenMode.light], devices: [GoldenDevice.phone], chrome: AdaptiveChrome.cupertino, …)`. Generate them per file, on Windows. Only your gate run checks them now (CI is off), so run the whole suite, not just your file.
 - **Tests that read docs:**
   - `app_router_test` reads `navigation.md`'s route table.
   - `architecture_test` reads `state-management.md`'s provider map.
@@ -563,7 +566,7 @@ The files every feature touches, and how to keep merges cheap:
 | `navigation.md`, `state-management.md`, `user-database.md` tables | rows that tests parse | Rows in order. Keep both sides on conflict. |
 | `core/*` shared widgets | new optional parameters | An optional parameter needs no lock. A change that re-renders other screens takes `shared-look`, and you regenerate only the goldens it changes and look at them. |
 | golden PNGs | your screen's own | You can't merge PNGs: rebase, regenerate yours, review them. |
-| `pubspec.yaml`/`.lock`, `decisions.md`, `drift_schemas/`, CI | rare but exclusive | Take the lock (§3). |
+| `pubspec.yaml`/`.lock`, `decisions.md`, `drift_schemas/`, the (disabled) workflow files | rare but exclusive | Take the lock (§3). |
 | `domain/quiz_builder.dart` | lanes A and B (#142, #143) | Message the owner of the file before you change it. |
 | `AndroidManifest.xml`, `Info.plist` | lanes A (#134) and D | Small, separate hunks. Rebase often. |
 
@@ -652,7 +655,7 @@ Until #284 lands, trust these corrections over the docs:
 | Symptom | Cause, fix |
 |---|---|
 | `Target of URI doesn't exist: ...g.dart`, `schema_versions.dart` missing | Generated code is not committed: run the gen sequence (§2) |
-| `dart analyze` clean locally, riverpod errors in CI | You passed paths or used `flutter analyze`. Run `dart analyze --fatal-infos` with no arguments. |
+| `dart analyze` clean for you, riverpod errors for someone else | You passed paths or used `flutter analyze`. Run `dart analyze --fatal-infos` with no arguments. |
 | A screen shows stale data after a write | A raw `customStatement` with no `updates:`/`markTablesUpdated` |
 | `The argument type ... can't be a provider return type` / the generator can't find a type | A drift row class in a provider signature: wrap it |
 | Unrelated router or golden tests throw `UnimplementedError` from `appDatabaseProvider` | Your new screen isn't in `todayStub()` |
@@ -660,7 +663,7 @@ Until #284 lands, trust these corrections over the docs:
 | `team.py`: `refused: ...` | Read it. It is the board telling you someone else has it, or it is blocked. `team.py status` shows what is ready. |
 | `team.py`: "the board is busy" | Many agents pushed at once; run it again |
 | `gh pr merge` prints `Aborting` | You passed `--delete-branch` in a worktree. The merge may have happened: check `gh pr view P --json state`, then delete the branch with `git push origin --delete`. |
-| GitHub says "Head branch is out of date" / PR `CONFLICTING` | Rebase on `origin/main`, regenerate, run the gate, push, watch CI |
+| GitHub says "Head branch is out of date" / PR `CONFLICTING` | Rebase on `origin/main`, regenerate, run the gate, push |
 | The PR doesn't show your last push | Check `gh api repos/MdRahmatUllah/DeutschPlan/pulls/P --jq .head.sha`; close and reopen the PR if GitHub is stuck |
 | `INSTALL_FAILED_INSUFFICIENT_STORAGE` | Release x64 APK only. `tools/device.py install` trims caches and retries. |
 | uiautomator dumps are empty | An ANR dialog: `adb reboot`, then wait for `sys.boot_completed` |

@@ -12,7 +12,7 @@ deutschplan/                        ← repository root
 │   └── build/                      ← output: content.db + content_manifest.json (git-ignored)
 ├── tools/
 │   ├── excel_to_sqlite.py          ← the pipeline (Python 3.11+, openpyxl)
-│   ├── verify_content.py           ← integrity checks run in CI
+│   ├── verify_content.py           ← integrity checks, run after every pipeline build
 │   └── render_design.py            ← renders the artboards to docs/design/*.png
 ├── deutsch-plan-design-html/       ← Paper & Ink + Night Ink prototype: 60 artboards ×
 │                                     android-light/dark and ios-light/dark

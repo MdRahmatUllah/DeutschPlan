@@ -2,7 +2,7 @@
 
 `ONBOARDING.md` (§3, the team) is the protocol; this is the only thing
 that edits the board. The board is the `team` branch, kept off `main` because
-CI runs on every push to `main` and the board changes all day:
+the board changes all day and `main` is the code:
 
     TASKS.md        the task file: every issue, who has it, the shared locks,
                     and the handoffs — assignments, review requests, reports
@@ -425,7 +425,7 @@ def cmd_review(root: Path, agent: str, issue: int, pr: int, to: str) -> None:
         task.status, task.pr = "review", f"#{pr}"
         board.handoff(agent, to, "review-request",
                       f"PR #{pr} for #{issue} ({task.title}) is up. Review it on GitHub and answer with `team.py msg {agent} --kind review`.", issue)
-        set_section(root, agent, "Now", f"#{issue} in review as PR #{pr}: watch CI, answer review threads, merge.")
+        set_section(root, agent, "Now", f"#{issue} in review as PR #{pr}: answer review threads; re-run the gate if main moved, then merge.")
         append_log(root, agent, f"PR #{pr} open; review requested from {to}", issue)
     transact(root, agent, f"review #{issue} (PR #{pr})", on_board(change))
     print(f"#{issue} in review as PR #{pr}")
