@@ -31,6 +31,7 @@ void main() {
   late AppDatabase db;
   late SettingsRepository settings;
   late WordActions actions;
+  late DriftPlanStore store;
 
   setUp(() async {
     directory = Directory.systemTemp.createTempSync('deutschplan_actions');
@@ -42,6 +43,7 @@ void main() {
     settings = SettingsRepository(db);
     await settings.load();
     final words = WordRepository(db, settings);
+    store = DriftPlanStore(db, settings);
     actions = WordActions(
       db,
       RatingService(
@@ -51,7 +53,7 @@ void main() {
         words,
         () => DateTime(2026, 3, 2, 9),
       ),
-      DriftPlanStore(db, settings),
+      store,
     );
   });
 
@@ -70,17 +72,28 @@ void main() {
     db.wordState,
   )..where((t) => t.wordUid.equals(uid))).getSingleOrNull();
 
-  Future<void> planned(String date, {String? done}) => db
+  Future<void> planned(
+    String date, {
+    String? done,
+    String kind = 'new',
+    bool skipped = false,
+  }) => db
       .into(db.planItems)
       .insert(
         PlanItemsCompanion.insert(
           planDate: date,
           wordUid: uid,
-          kind: 'new',
+          kind: kind,
           sublevelCode: 'A1.1',
           completedAt: Value(done),
+          skipped: Value(skipped ? 1 : 0),
         ),
       );
+
+  Future<List<PlanItem>> open() async => <PlanItem>[
+    for (final row in await plan())
+      if (row.completedAt == null) row,
+  ];
 
   group('FR-W1-01 Add to today', () {
     test("today's plan gains the word as new, in the active step", () async {
@@ -115,6 +128,20 @@ void main() {
       await undo();
       expect(await plan(), hasLength(1));
     });
+
+    test('a backlog word: its one open row moves to today, and back on '
+        'Undo', () async {
+      await planned('2026-02-27', skipped: true);
+      final undo = await actions.addToToday(uid, today: today, step: 'A1.1');
+      final moved = (await open()).single;
+      expect(moved.planDate, today);
+      expect(moved.skipped, 0, reason: 'added to study, so not skipped');
+
+      await undo();
+      final back = (await open()).single;
+      expect(back.planDate, '2026-02-27');
+      expect(back.skipped, 1);
+    });
   });
 
   group('FR-W1-02 Mark known', () {
@@ -133,6 +160,21 @@ void main() {
       expect((await plan()).single.completedAt, isNotNull);
     });
 
+    test('closes every open row, and Undo reopens them all; a skipped row '
+        'stays skipped', () async {
+      await planned('2026-02-27');
+      await planned(today, kind: 'revise');
+      await planned('2026-02-26', skipped: true);
+      final undo = await actions.markKnown(uid, today: today);
+      expect((await open()).map((row) => row.planDate), <String>['2026-02-26']);
+
+      await undo();
+      expect(
+        (await open()).map((row) => row.planDate),
+        unorderedEquals(<String>['2026-02-27', today, '2026-02-26']),
+      );
+    });
+
     test('FR-W1-04 Undo takes the rating back', () async {
       await planned(today);
       final undo = await actions.markKnown(uid, today: today);
@@ -145,10 +187,18 @@ void main() {
 
   group('FR-W1-02 BR-STATUS-03 Suspend and Resume', () {
     test('suspend, and Undo resumes', () async {
+      await actions.markKnown(uid, today: today);
+      final before = await state();
       final undo = await actions.suspend(uid);
       expect((await state())!.status, 'suspended');
       await undo();
-      expect((await state())!.status, 'todo');
+      expect(await state(), before);
+    });
+
+    test('FR-W1-04 a word never met: Undo leaves no row, as before', () async {
+      final undo = await actions.suspend(uid);
+      await undo();
+      expect(await state(), isNull);
     });
 
     test('resume, and Undo suspends again', () async {
@@ -165,20 +215,31 @@ void main() {
       await actions.markKnown(uid, today: today);
     });
 
-    test('its state and its plan rows from today on go; done rows, earlier '
-        'rows and the review log stay', () async {
+    test('its state, its open rows from today on and every new row go; done '
+        'and earlier revisions and the review log stay', () async {
       await planned('2026-02-20');
-      await planned(today, done: '2026-03-02T08:00:00Z');
-      await planned('2026-03-05');
+      await planned('2026-02-24', kind: 'revise', done: '2026-02-24T08:00:00Z');
+      await planned(today, kind: 'revise', done: '2026-03-02T08:00:00Z');
+      await planned('2026-02-28', kind: 'revise');
+      await planned('2026-03-05', kind: 'revise');
       await actions.reset(uid, today: today);
 
       expect(await state(), isNull);
       expect(
         (await plan()).map((row) => row.planDate),
-        unorderedEquals(<String>['2026-02-20', today]),
+        unorderedEquals(<String>['2026-02-24', today, '2026-02-28']),
       );
       expect(await db.select(db.reviewLog).get(), hasLength(1));
     });
+
+    test(
+      'the word can be planned again: it is To do, with no new row',
+      () async {
+        await planned('2026-02-20', done: '2026-02-20T08:00:00Z');
+        await actions.reset(uid, today: today);
+        expect(await store.unplannedWords('A1.1', limit: 10), contains(uid));
+      },
+    );
 
     test('FR-W1-04 Undo puts back exactly what went', () async {
       await planned('2026-03-05');
@@ -196,7 +257,15 @@ void main() {
       expect((await state())!.cardMode, 'cloze');
       expect((await state())!.status, 'todo', reason: 'still To do');
       await undo();
-      expect((await state())!.cardMode, 'plain');
+      expect(await state(), isNull, reason: 'never met, so no row, as before');
+    });
+
+    test('FR-W1-04 Undo puts back the mode a met word had', () async {
+      await actions.markKnown(uid, today: today);
+      await actions.setCardMode(uid, CardMode.cloze);
+      final undo = await actions.setCardMode(uid, CardMode.plain);
+      await undo();
+      expect((await state())!.cardMode, 'cloze');
     });
   });
 

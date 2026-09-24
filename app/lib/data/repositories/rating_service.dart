@@ -163,14 +163,12 @@ class RatingService {
   /// are ready to produce from a gap.
   ///
   /// **It does not yet respect a manual switch.** BR-FSRS-06 also says the
-  /// learner can put a cloze card back to plain from Word detail, and this
-  /// would hand them cloze again on their next Good, because it reads only the
-  /// ratings and cannot tell their `plain` from a run-broken one. Nothing
-  /// writes `card_mode` by hand today — Word detail is #? in M5 — so the rule
-  /// is not broken yet; telling that issue what it has to carry is the point
-  /// of saying so here rather than leaving a comment claiming it is fine.
-  /// Respecting it needs somewhere to record the choice, which is a schema
-  /// change and belongs with the screen that offers it.
+  /// learner can put a cloze card back to plain from Word detail, and W1's
+  /// card toggle (#141) writes `card_mode` by hand. This reads only the
+  /// ratings and cannot tell that choice from a run-broken `plain`, so the
+  /// choice lasts until the next review: set back to plain, a word goes cloze
+  /// again on its next Good. Respecting it needs somewhere to record the
+  /// choice, a schema change, which is #316.
   Future<CardMode> _cardModeFor(String uid, Rating rating) async {
     if (rating.value < Rating.good.value) return CardMode.plain;
 

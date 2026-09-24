@@ -590,6 +590,11 @@ void main() {
         tester,
         detail: artboardWordDetail(status: WordStatus.suspended),
       );
+      expect(
+        action(l10n.wordMarkKnown),
+        findsNothing,
+        reason: 'rating it would resume it unasked',
+      );
       await tapAction(tester, l10n.wordResume);
       expect(actions.calls, <String>['resume uid-strasse']);
     });
@@ -707,6 +712,18 @@ void main() {
         ('Wir wohnen in einer ruhigen Straße.', 'bn'),
       ]);
       expect(find.text('অনুবাদ'), findsNWidgets(2));
+    });
+
+    testWidgets('FR-W1-05 an English learner is not offered Translate: the '
+        'examples come in English already', (tester) async {
+      await pump(
+        tester,
+        detail: artboardWordDetail(
+          translate: true,
+          meaning: MeaningLanguage.english,
+        ),
+      );
+      expect(action(l10n.wordTranslate), findsNothing);
     });
   });
 

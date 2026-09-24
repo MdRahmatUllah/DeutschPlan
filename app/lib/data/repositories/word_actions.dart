@@ -18,20 +18,47 @@ class WordActions {
 
   /// FR-W1-01: [uid] joins today's plan as a new word, in the active step's
   /// plan — any step's To-do word may ([step] is the word's own, for a
-  /// learner with no active step). Nothing to undo when it was there already.
+  /// learner with no active step).
+  ///
+  /// A word already planned and not yet studied keeps its one row: a backlog
+  /// row moves to today, and back on *Undo*. A second open row would outlive
+  /// the first being studied, and serve a learned word again.
   Future<Undo> addToToday(
     String uid, {
     required String today,
     required String step,
   }) async {
+    final open =
+        await (_db.select(_db.planItems)
+              ..where(
+                (t) =>
+                    t.wordUid.equals(uid) &
+                    t.kind.equals(PlanKind.newWord.wire) &
+                    t.completedAt.isNull(),
+              )
+              ..orderBy(<OrderClauseGenerator<PlanItems>>[
+                (t) => OrderingTerm.desc(t.planDate),
+              ])
+              ..limit(1))
+            .getSingleOrNull();
+    if (open != null) {
+      if (open.planDate == today && open.skipped == 0) return () async {};
+      Future<void> move(String from, PlanItem to) =>
+          (_db.update(_db.planItems)..where(
+                (t) =>
+                    t.planDate.equals(from) &
+                    t.wordUid.equals(uid) &
+                    t.kind.equals(PlanKind.newWord.wire),
+              ))
+              .write(to.toCompanion(false));
+      await move(open.planDate, open.copyWith(planDate: today, skipped: 0));
+      return () => move(today, open);
+    }
+
     Expression<bool> row(PlanItems t) =>
         t.planDate.equals(today) &
         t.wordUid.equals(uid) &
         t.kind.equals(PlanKind.newWord.wire);
-    final there = await (_db.select(
-      _db.planItems,
-    )..where(row)).getSingleOrNull();
-    if (there != null) return () async {};
     await _db
         .into(_db.planItems)
         .insert(
@@ -45,9 +72,10 @@ class WordActions {
     return () => (_db.delete(_db.planItems)..where(row)).go();
   }
 
-  /// FR-W1-02, BR-STATUS-04: a review rated Easy. A plan row still open for
-  /// the word — today's, or the backlog's — closes with it, or the word it
-  /// was just marked known would still be served as new.
+  /// FR-W1-02, BR-STATUS-04: a review rated Easy. Every plan row still open
+  /// for the word — today's, or the backlog's — closes with it, or the word
+  /// just marked known would still be served. A skipped row stays skipped:
+  /// the day it belongs to is already complete (BR-PLAN-10).
   Future<Undo> markKnown(String uid, {required String today}) async {
     final open =
         await (_db.select(_db.planItems)
@@ -55,78 +83,114 @@ class WordActions {
                 (t) =>
                     t.wordUid.equals(uid) &
                     t.completedAt.isNull() &
+                    t.skipped.equals(0) &
                     t.planDate.isSmallerOrEqualValue(today),
               )
               ..orderBy(<OrderClauseGenerator<PlanItems>>[
                 (t) => OrderingTerm.desc(t.planDate),
-              ])
-              ..limit(1))
-            .getSingleOrNull();
+              ]))
+            .get();
+    final first = open.firstOrNull;
+    // The newest goes with the rating, so the rating's undo reopens it; the
+    // rest close at the same moment and reopen with it.
     await _rating.markKnown(
       uid,
-      planDate: open?.planDate,
-      kind: switch (open?.kind) {
+      planDate: first?.planDate,
+      kind: switch (first?.kind) {
         null => null,
         'new' => PlanKind.newWord,
         _ => PlanKind.revise,
       },
     );
-    return () async {
+    final rest = open.skip(1).toList();
+    if (first != null && rest.isNotEmpty) {
+      final closed = await (_db.select(
+        _db.planItems,
+      )..where((t) => _same(t, first))).getSingle();
+      for (final row in rest) {
+        await (_db.update(_db.planItems)..where((t) => _same(t, row))).write(
+          PlanItemsCompanion(completedAt: Value(closed.completedAt)),
+        );
+      }
+    }
+    return () => _db.transaction(() async {
       await _rating.undo();
-    };
+      for (final row in rest) {
+        await _db
+            .into(_db.planItems)
+            .insertOnConflictUpdate(row.toCompanion(false));
+      }
+    });
   }
 
-  /// FR-W1-02, BR-STATUS-03.
+  /// FR-W1-02, BR-STATUS-03. *Undo* restores the row as it was, which for a
+  /// word never met is no row at all.
   Future<Undo> suspend(String uid) async {
+    final before = await _stateOf(uid);
     await _rating.suspend(uid);
-    return () => _rating.resume(uid);
+    return () => _restore(uid, before);
   }
 
   Future<Undo> resume(String uid) async {
+    final before = await _stateOf(uid);
     await _rating.resume(uid);
-    return () => _rating.suspend(uid);
+    return () => _restore(uid, before);
   }
 
-  /// FR-W1-02 *Reset word*: its state and its plan rows from today on. Rows
-  /// already done stay: they are the day's history. The review log stays
-  /// too. *Undo* puts back exactly what went.
+  /// FR-W1-02 *Reset word*: its state, its open plan rows from today on, and
+  /// every `new` row, done or not — a word with a `new` row is never planned
+  /// again (`DriftPlanStore.unplannedWords`), and a reset word is To do
+  /// again. Its done revisions stay, as the day's history, and so do
+  /// `daily_stats` and the review log. *Undo* puts back exactly what went.
   Future<Undo> reset(String uid, {required String today}) =>
       _db.transaction(() async {
         Expression<bool> planned(PlanItems t) =>
             t.wordUid.equals(uid) &
-            t.planDate.isBiggerOrEqualValue(today) &
-            t.completedAt.isNull();
-        final state = await (_db.select(
-          _db.wordState,
-        )..where((t) => t.wordUid.equals(uid))).getSingleOrNull();
+            ((t.planDate.isBiggerOrEqualValue(today) & t.completedAt.isNull()) |
+                t.kind.equals(PlanKind.newWord.wire));
+        final state = await _stateOf(uid);
         final rows = await (_db.select(_db.planItems)..where(planned)).get();
         await (_db.delete(
           _db.wordState,
         )..where((t) => t.wordUid.equals(uid))).go();
         await (_db.delete(_db.planItems)..where(planned)).go();
         return () => _db.transaction(() async {
-          if (state != null) {
-            await _db.into(_db.wordState).insertOnConflictUpdate(state);
-          }
+          await _restore(uid, state);
           for (final row in rows) {
-            await _db.into(_db.planItems).insertOnConflictUpdate(row);
+            await _db
+                .into(_db.planItems)
+                .insertOnConflictUpdate(row.toCompanion(false));
           }
         });
       });
 
   /// FR-W1-03: the card the word's revisions show, plain or cloze.
+  // ponytail: BR-FSRS-06's rule works card_mode out again on every review, so
+  // the choice lasts until the next one; #316 records it so the rule keeps it.
   Future<Undo> setCardMode(String uid, CardMode mode) async {
-    final before =
-        (await (_db.select(
-          _db.wordState,
-        )..where((t) => t.wordUid.equals(uid))).getSingleOrNull())?.cardMode ??
-        CardMode.plain.name;
-    Future<void> write(String value) => _db
+    final before = await _stateOf(uid);
+    await _db
         .into(_db.wordState)
         .insertOnConflictUpdate(
-          WordStateCompanion.insert(wordUid: uid, cardMode: Value(value)),
+          WordStateCompanion.insert(wordUid: uid, cardMode: Value(mode.name)),
         );
-    await write(mode.name);
-    return () => write(before);
+    return () => _restore(uid, before);
   }
+
+  // The rows go back as companions with their nulls kept: a data class
+  // leaves a null column out of the update, so a reopened row would stay done.
+  Future<WordStateData?> _stateOf(String uid) => (_db.select(
+    _db.wordState,
+  )..where((t) => t.wordUid.equals(uid))).getSingleOrNull();
+
+  Future<void> _restore(String uid, WordStateData? before) => before == null
+      ? (_db.delete(_db.wordState)..where((t) => t.wordUid.equals(uid))).go()
+      : _db
+            .into(_db.wordState)
+            .insertOnConflictUpdate(before.toCompanion(false));
+
+  static Expression<bool> _same(PlanItems t, PlanItem row) =>
+      t.planDate.equals(row.planDate) &
+      t.wordUid.equals(row.wordUid) &
+      t.kind.equals(row.kind);
 }

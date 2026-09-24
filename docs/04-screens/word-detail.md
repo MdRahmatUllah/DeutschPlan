@@ -17,20 +17,22 @@
 - The header is the gender's colour. On paper, the article and headword take that colour's ink. The article is still printed, so the gender is never shown by colour alone. Under glass the header is a wash, and the article keeps its usual colour. A word with no article sits on Oat.
 - The history caption shows only for a word reviewed at least once: "Next review in N days" (or "Due today", "Next review tomorrow") · "reviewed N times" · "last: <rating>". It counts every `review_log` row. A suspended word has no next review, so that part is left out.
 - **The actions row (#141).** In this order:
-  - *Add to today*, for a To-do word only. The row goes in the active step's plan, or the word's own step's when no step is under way.
-  - *Mark known*.
+  - *Add to today*, for a To-do word only. The row goes in the active step's plan, or the word's own step's when no step is under way. A word already planned and not studied keeps its one row: a backlog row moves to today (unskipped), and back on *Undo*.
+  - *Mark known*, except for a suspended word: a rating writes the status it derives, so it would resume the word unasked (BR-STATUS-03).
   - *Suspend*, or *Resume* for a suspended word.
   - *Reset word*, when the word has a state to reset.
   - *Copy*.
-  - *Translate*, only with `mt_enabled`.
+  - *Translate*, only with `mt_enabled`, into Bangla. An English learner isn't offered it, since the examples come in English already.
   - Then the *Plain card / Cloze card* chips, and the Duden · DWDS · Wiktionary chips.
-- **Mark known** also closes an open plan row for the word, whether today's or the backlog's, so a known word isn't served as new.
-- **Reset word** clears `word_state` and the word's plan rows from today on. Rows already done stay, because they are the day's history, and `review_log` stays. *Undo* restores exactly what went.
+- **Mark known** also closes every open plan row for the word, whether today's or the backlog's, so a known word isn't served again. A skipped row stays skipped, since its day is already complete (BR-PLAN-10).
+- **Reset word** clears `word_state`, the word's open plan rows from today on, and every `new` row, done or not. A word with a `new` row is never planned again (`DriftPlanStore.unplannedWords`), and a reset word is To do again, so it goes back into the pool. Done revisions stay, because they are the day's history, and so do `daily_stats` and `review_log`. *Undo* restores exactly what went.
+- **Undo** restores the row as it was. For a word never met, that means no `word_state` row at all.
+- **Gap: the card toggle lasts until the next review.** BR-FSRS-06's rule works `card_mode` out again from the ratings on every review, so a word set back to plain goes cloze on its next Good. Recording the choice so the rule keeps it is #316.
 - **One action at a time.** A second tap while one is running does nothing.
 
 **Functional requirements**
 - FR-W1-01 *Add to today* inserts a `plan_items(today, uid, 'new')` row for the active step (allowed for any step's To-do word).
-- FR-W1-02 *Mark known* = rate Easy; *Suspend* / *Resume* per BR-STATUS-03; *Reset word* deletes `word_state` and future `plan_items` for the uid after a confirm.
+- FR-W1-02 *Mark known* = rate Easy; *Suspend* / *Resume* per BR-STATUS-03; *Reset word* deletes `word_state` and future `plan_items` for the uid after a confirm (and its `new` rows, above).
 - FR-W1-03 Card mode toggle writes `word_state.card_mode`.
 - FR-W1-04 Every action shows a snackbar with *Undo*; audio never closes the sheet.
 - FR-W1-05 *Translate* runs the examples through the translator (cached) and shows results inline.

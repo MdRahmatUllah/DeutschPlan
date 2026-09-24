@@ -652,9 +652,9 @@ class _ActionsState extends ConsumerState<_Actions> {
     unawaited(
       ref.read(exampleTranslationsProvider(_word.uid).notifier).translate(
         <String>[for (final example in detail.examples) example.german],
-        // Into the meaning language (`translation.md`); an English
-        // learner's examples come translated already.
-        to: detail.meaning == MeaningLanguage.english ? 'en' : 'bn',
+        // Into the meaning language (`translation.md`): Bangla, since an
+        // English learner is not offered it.
+        to: 'bn',
       ),
     );
   }
@@ -707,15 +707,18 @@ class _ActionsState extends ConsumerState<_Actions> {
                   l10n.wordAddedToday(name),
                 ),
               ),
-            button(
-              Icons.check,
-              l10n.wordMarkKnown,
-              () => act(
-                (actions) =>
-                    actions.markKnown(uid, today: ref.read(todayProvider)),
-                l10n.wordMarkedKnown(name),
+            // A rating writes the status it derives, so marking a suspended
+            // word known would resume it unasked (BR-STATUS-03).
+            if (!word.isSuspended)
+              button(
+                Icons.check,
+                l10n.wordMarkKnown,
+                () => act(
+                  (actions) =>
+                      actions.markKnown(uid, today: ref.read(todayProvider)),
+                  l10n.wordMarkedKnown(name),
+                ),
               ),
-            ),
             if (word.isSuspended)
               button(
                 Icons.play_arrow,
@@ -744,7 +747,10 @@ class _ActionsState extends ConsumerState<_Actions> {
               unawaited(Clipboard.setData(ClipboardData(text: name)));
               DpToast.show(context, l10n.wordCopied(name));
             }),
-            if (detail.translate && detail.examples.isNotEmpty)
+            // An English learner's examples come translated already.
+            if (detail.translate &&
+                detail.meaning != MeaningLanguage.english &&
+                detail.examples.isNotEmpty)
               button(Icons.translate, l10n.wordTranslate, _translate),
           ],
         ),
