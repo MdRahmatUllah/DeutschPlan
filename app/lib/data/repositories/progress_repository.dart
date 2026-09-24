@@ -8,8 +8,9 @@ typedef ProgressTotals = ({
   /// FR-M2-03: `daily_stats.seconds`, summed.
   int seconds,
 
-  /// Words met at least once: a `word_state` row with a day it was
-  /// introduced.
+  /// Words met at least once: as `WordRepository` tells To-do from the rest,
+  /// a day it was introduced or a rating given — one rated from search or a
+  /// quiz has no `introduced_on`.
   int introduced,
 
   /// Every rating ever given.
@@ -72,7 +73,8 @@ class ProgressRepository {
           '''
 SELECT
   (SELECT COALESCE(SUM(seconds), 0) FROM daily_stats) AS seconds,
-  (SELECT COUNT(*) FROM word_state WHERE introduced_on IS NOT NULL)
+  (SELECT COUNT(*) FROM word_state
+    WHERE introduced_on IS NOT NULL OR reps > 0)
     AS introduced,
   (SELECT COUNT(*) FROM review_log) AS reviews
 ''',

@@ -53,11 +53,13 @@ VALUES
   test('FR-M2-03 the totals: study time, words met, every rating', () async {
     await db.customStatement('''
 INSERT INTO daily_stats (day, seconds) VALUES ('2026-09-21', 600), ('2026-09-22', 150);
-INSERT INTO word_state (word_uid, status, introduced_on) VALUES
-  ('a', 'learning', '2026-09-21'), ('b', 'todo', NULL), ('c', 'done', '2026-09-01');
+INSERT INTO word_state (word_uid, status, introduced_on, reps) VALUES
+  ('a', 'learning', '2026-09-21', 1), ('b', 'todo', NULL, 0),
+  ('c', 'done', '2026-09-01', 4), ('d', 'learning', NULL, 1);
 INSERT INTO review_log (word_uid, reviewed_at, rating, source) VALUES
   ('a', '2026-09-21T10:00:00Z', 3, 'daily'), ('c', '2026-09-21T10:00:00Z', 1, 'quiz');
 ''');
-    expect(await progress.totals(), (seconds: 750, introduced: 2, reviews: 2));
+    // d was rated from search: met, with no day it was introduced.
+    expect(await progress.totals(), (seconds: 750, introduced: 3, reviews: 2));
   });
 }
