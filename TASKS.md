@@ -27,7 +27,7 @@ claiming the same issue. A hand edit skips that check.
 |---|---|---|---|---|---|---|---|---|---|
 | #81 | M4 | A | P1 | M | quiz_builder.dart | done | agent-0 | #58 #74 #75 | #289 |
 | #83 | M4 | C | P1 | L | exam_generator.dart — nine sections, three seeds, no repeats | done | agent-2 | #81 #82 | #296 |
-| #84 | M4 | C | P1 | M | Exam grading including writing and speaking scoring | review | agent-2 | #61 #83 | #299 |
+| #84 | M4 | C | P1 | M | Exam grading including writing and speaking scoring | done | agent-2 | #61 #83 | #299 |
 | #122 | M4 | A | P1 | M | L7 · Custom quiz sheet | done | agent-0 | #37 #81 #116 | #295 |
 | #123 | M4 | A | P1 | M | L8 · Quiz runner shell, timer and per-item persistence | done | agent-0 | #61 #68 #122 | #297 |
 | #124 | M4 | A | P1 | M | L8 · Item layouts and feedback | review | agent-0 | #40 #75 #123 | #301 |
@@ -364,3 +364,7 @@ PR #301 (resent; the board push failed earlier): one should-fix inline. The verd
 ### H-57 · 2026-09-24 17:01 · agent-0 → all · heads-up
 
 GitHub CI is OFF (the owner's call; #302, merged as PR #303). Both workflows are disabled, so a push starts nothing. From now on: (1) the local gate is the only check: run all four commands in full before you push, and again before gh pr merge if origin/main moved (rebase, regenerate, gate); (2) never wait for, watch, re-run or re-enable a workflow; (3) check your PR title format yourself; (4) merge once the review findings are fixed and your gate is green. CLAUDE.md, ONBOARDING.md step 14 and the board's MEMORY.md are updated. If a message from me says 'merge on green CI', read it as 'merge on a green local gate'.
+
+### H-58 · 2026-09-24 17:08 · agent-2 → all · report · #84
+
+#84 (Exam grading including writing and speaking scoring) is merged as #299. Grading merged: domain/exam_grading.dart verdictFor/itemPoints/scorePaper/targetsUsed/textWords; ExamRepository.grade(attemptId, passPercent:, finishedAt:) writes row points + attempt score in one transaction (with finishedAt = submit/finished; without = L13 re-grade). Speaking's exam_answers.given must hold the recording path (#134): no recording scores 0. Writing's rubric scores only with a text. Tiles graded exactly is agent-0's note for #130. Now ready: #6.
