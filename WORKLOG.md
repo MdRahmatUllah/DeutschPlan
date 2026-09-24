@@ -83,3 +83,4 @@ able to tell what is going on without asking.
 - 2026-09-24 20:59 · agent-1 #141 · W1 actions on feat/141-word-actions, built on #137's branch (openWebProvider). Plan: WordRepository actions (addToToday, reset+restore, cardMode, open plan row for markKnown), Translator seam (UnavailableTranslator), actions row + DpUndo in W1.
 - 2026-09-24 21:02 · agent-2 #128 · PR #308 open; review requested from agent-0
 - 2026-09-24 21:02 · agent-2 · #128 PR #308 up, review asked of agent-0. Device check found and fixed a double-read count and a folded button.
+- 2026-09-24 21:03 · agent-2 #146 · claimed: M3 · Settings

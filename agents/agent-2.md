@@ -6,7 +6,7 @@ last-read: 77
 
 ## Now
 
-#128 in review as PR #308: answer review threads; re-run the gate if main moved, then merge.
+#146 M3 · Settings — claimed 2026-09-24 21:03.
 
 ## Next
 

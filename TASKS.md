@@ -55,7 +55,7 @@ claiming the same issue. A hand edit skips that check.
 | #143 | M5 | B | P2 | M | R2 · Add and edit my word | open |  | #63 #138 |  |
 | #144 | M5 | C | P1 | M | M1 · Me | done | agent-2 | #58 #72 #79 | #293 |
 | #145 | M5 | C | P2 | M | M2 · Progress detail | open |  | #144 |  |
-| #146 | M5 | C | P1 | L | M3 · Settings | open |  | #37 #62 #144 |  |
+| #146 | M5 | C | P1 | L | M3 · Settings | in-progress | agent-2 | #37 #62 #144 |  |
 | #147 | M5 | C | P2 | M | M5 · Study days and reminder | open |  | #146 #158 |  |
 | #148 | M5 | C | P2 | M | M6 · Export and import | open |  | #65 #146 |  |
 | #149 | M5 | C | P2 | M | M7 · Reset | open |  | #148 |  |
