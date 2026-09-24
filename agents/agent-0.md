@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-09-24 20:45
+last-seen: 2026-09-24 21:06
 last-read: 9
 
 ## Now
 
-#130 L12 · Exam runner shell, timer and resume — claimed 2026-09-24 20:45.
+Nothing claimed.
 
 ## Next
 

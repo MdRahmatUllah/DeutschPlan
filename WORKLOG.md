@@ -84,3 +84,4 @@ able to tell what is going on without asking.
 - 2026-09-24 21:02 · agent-2 #128 · PR #308 open; review requested from agent-0
 - 2026-09-24 21:02 · agent-2 · #128 PR #308 up, review asked of agent-0. Device check found and fixed a double-read count and a folded button.
 - 2026-09-24 21:03 · agent-2 #146 · claimed: M3 · Settings
+- 2026-09-24 21:06 · agent-0 #126 · done (#306)
