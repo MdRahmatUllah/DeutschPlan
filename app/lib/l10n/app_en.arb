@@ -1938,5 +1938,31 @@
   "stepWordsNone": "No words match these filters.",
   "@stepWordsNone": {
     "description": "L2 Words tab when the filters leave nothing."
+  },
+  "stepStartConfirmTitle": "Start {code}?",
+  "@stepStartConfirmTitle": {
+    "description": "L2 Start confirmation title.",
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "stepStartConfirm": "{active} is completed today; its words keep coming back for revision. New words come from this step from tomorrow.",
+  "@stepStartConfirm": {
+    "description": "L2 Start confirmation when another step is active.",
+    "placeholders": {
+      "active": {
+        "type": "String"
+      }
+    }
+  },
+  "stepStartConfirmFirst": "New words come from this step from tomorrow.",
+  "@stepStartConfirmFirst": {
+    "description": "L2 Start confirmation when no step is active."
+  },
+  "stepStartCancel": "Not now",
+  "@stepStartCancel": {
+    "description": "L2 Start confirmation: keeps the current step."
   }
 }

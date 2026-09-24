@@ -313,5 +313,9 @@
   "stepStartBannerFirst": "{code} এখনই শুরু করবেন?",
   "stepStart": "শুরু করুন",
   "stepFilterAll": "সব",
-  "stepWordsNone": "এই ফিল্টারে কোনো শব্দ নেই।"
+  "stepWordsNone": "এই ফিল্টারে কোনো শব্দ নেই।",
+  "stepStartConfirmTitle": "{code} শুরু করবেন?",
+  "stepStartConfirm": "{active} আজ শেষ হবে; এর শব্দগুলো রিভিশনে ফিরে আসতে থাকবে। আগামীকাল থেকে নতুন শব্দ এই ধাপ থেকে আসবে।",
+  "stepStartConfirmFirst": "আগামীকাল থেকে নতুন শব্দ এই ধাপ থেকে আসবে।",
+  "stepStartCancel": "এখন নয়"
 }

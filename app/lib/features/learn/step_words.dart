@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:deutschplan/core/adaptive/adaptive.dart';
 import 'package:deutschplan/core/components/dp_button.dart';
 import 'package:deutschplan/core/components/dp_chip.dart';
 import 'package:deutschplan/core/providers/app_providers.dart';
@@ -90,8 +91,23 @@ class _StepWordsTabState extends ConsumerState<StepWordsTab> {
 
   /// FR-L2-03: the current enrollment completes today and this step's
   /// opens at Settings' pace. Today's plan is left alone (BR-PLAN-08).
-  Future<void> _start() async {
+  ///
+  /// Asked first: going back later re-enrols the old step from that day,
+  /// its start date and pace overwritten, so a stray tap is not free.
+  Future<void> _start(String? active) async {
     if (_starting) return;
+    final l10n = AppLocalizations.of(context);
+    final code = widget.step.code;
+    final go = await Adaptive.showConfirm(
+      context: context,
+      title: l10n.stepStartConfirmTitle(code),
+      message: active == null
+          ? l10n.stepStartConfirmFirst
+          : l10n.stepStartConfirm(active),
+      confirmLabel: l10n.stepStart,
+      cancelLabel: l10n.stepStartCancel,
+    );
+    if (go != true || !mounted) return;
     setState(() => _starting = true);
     final settings = ref.read(settingsProvider);
     try {
@@ -136,7 +152,7 @@ class _StepWordsTabState extends ConsumerState<StepWordsTab> {
               message: active == null
                   ? l10n.stepStartBannerFirst(code)
                   : l10n.stepStartBanner(active.code, code),
-              onStart: _starting ? null : () => unawaited(_start()),
+              onStart: _starting ? null : () => unawaited(_start(active?.code)),
             ),
           ),
         SizedBox(

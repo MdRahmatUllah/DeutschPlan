@@ -347,7 +347,19 @@ void main() {
     await settle();
     expect(find.text(l10n.stepStartBanner('A1.1', 'A1.2')), findsOneWidget);
 
+    // Asked first, and Not now writes nothing.
     await tester.tap(find.text(l10n.stepStart));
+    await tester.pumpAndSettle();
+    expect(find.text(l10n.stepStartConfirmTitle('A1.2')), findsOneWidget);
+    expect(find.text(l10n.stepStartConfirm('A1.1')), findsOneWidget);
+    await tester.tap(find.text(l10n.stepStartCancel));
+    await tester.pumpAndSettle();
+    await settle();
+    expect(find.byType(StartBanner), findsOneWidget);
+
+    await tester.tap(find.text(l10n.stepStart));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text(l10n.stepStart).last);
     await settle();
 
     final rows = await tester.runAsync(
