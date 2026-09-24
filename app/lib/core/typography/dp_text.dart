@@ -264,10 +264,15 @@ class DpOneLine extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final base = DpText.styleFor(context.tokens, role, color: color);
-    final style = weight == null
-        ? base
-        : base.copyWith(fontVariations: AppFonts.weight(weight!));
+    final own = DpText.styleFor(context.tokens, role, color: color);
+    // Measured as it will be drawn: `Text` merges the ambient text style —
+    // a Material body's letter spacing — and a measure without it cut the
+    // line a few pixels too late, clipping a letter in half.
+    final style = DefaultTextStyle.of(context).style.merge(
+      weight == null
+          ? own
+          : own.copyWith(fontVariations: AppFonts.weight(weight!)),
+    );
     final scaler = MediaQuery.textScalerOf(context);
     final direction = Directionality.of(context);
     return LayoutBuilder(

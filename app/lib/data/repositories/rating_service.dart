@@ -1,4 +1,5 @@
 import 'package:deutschplan/data/db/app_database.dart';
+import 'package:deutschplan/data/repositories/grammar_repository.dart';
 import 'package:deutschplan/data/repositories/plan_repository.dart';
 import 'package:deutschplan/data/repositories/setting_keys.dart';
 import 'package:deutschplan/data/repositories/settings_repository.dart';
@@ -232,3 +233,48 @@ WordStatus statusForStability(double stability, int doneStabilityDays) =>
 
 /// What `word_state.card_mode` stores (BR-FSRS-06).
 enum CardMode { plain, cloze }
+
+/// Rating a grammar topic (BR-FSRS-05): `domain/fsrs.dart` over
+/// `grammar_state`, as [RatingService] is for words.
+class GrammarRatingService {
+  GrammarRatingService(this._grammar, this._settings, this._now);
+
+  final GrammarRepository _grammar;
+  final SettingsRepository _settings;
+  final DateTime Function() _now;
+
+  /// FR-L4-01: *Mark as learned* — a first review rated Good, so the topic
+  /// enters the schedule as learning.
+  Future<void> markLearned(String uid) async {
+    final now = _now();
+    final before = (await _grammar.find(uid))?.state;
+    final next = Fsrs(
+      desiredRetention: _settings.read(SettingKeys.desiredRetention),
+    ).review(_cardStateOf(before), Rating.good, now.toUtc());
+    await _grammar.schedule(
+      uid: uid,
+      stability: next.stability,
+      difficulty: next.difficulty,
+      due: planDate(next.due!),
+      reps: next.reps,
+      lapses: next.lapses,
+      lastReview: now.toUtc().toIso8601String(),
+    );
+  }
+
+  /// The FSRS view of a topic's row. `grammar_state` keeps no FSRS state
+  /// column: a topic reviewed before is in review, one never reviewed is
+  /// fresh.
+  CardState _cardStateOf(GrammarStateData? row) {
+    if (row == null || row.lastReview == null) return const CardState();
+    return CardState(
+      stability: row.stability,
+      difficulty: row.difficulty,
+      reps: row.reps,
+      lapses: row.lapses,
+      state: FsrsState.review,
+      lastReview: DateTime.parse(row.lastReview!),
+      due: row.due == null ? null : DateTime.parse(row.due!),
+    );
+  }
+}

@@ -13,6 +13,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter/rendering.dart' show RenderParagraph;
 import 'package:material_ui/material_ui.dart';
 
 import 'today_fixtures.dart';
@@ -187,6 +188,35 @@ void main() {
         // was cut.
         final next = rule.substring(kept.length);
         expect(next, matches(RegExp(r'^[\s,—-]')), reason: '$width: $text');
+      }
+    });
+
+    testWidgets('under a spaced-out ambient style, still never clipped', (
+      tester,
+    ) async {
+      for (final width in <double>[90, 150, 210]) {
+        await tester.pumpWidget(
+          MaterialApp(
+            theme: AppTheme.light(),
+            home: Center(
+              child: DefaultTextStyle(
+                style: const TextStyle(letterSpacing: 2),
+                child: SizedBox(
+                  width: width,
+                  child: const DpOneLine(rule, role: DpTextRole.label),
+                ),
+              ),
+            ),
+          ),
+        );
+        final paragraph = tester.renderObject<RenderParagraph>(
+          find.byType(RichText),
+        );
+        expect(
+          paragraph.getMaxIntrinsicWidth(double.infinity),
+          lessThanOrEqualTo(width + 0.5),
+          reason: '$width: ${paragraph.text.toPlainText()}',
+        );
       }
     });
 

@@ -341,5 +341,16 @@
   "libraryAll": "সব · {count}",
   "libraryNotLearned": "এখনও শেখা হয়নি · {count}",
   "libraryDue": "বাকি · {count}",
-  "libraryNone": "এখানে কোনো বিষয় নেই।"
+  "libraryNone": "এখানে কোনো বিষয় নেই।",
+  "topicRule": "নিয়ম",
+  "topicExamples": "উদাহরণ",
+  "topicWatchOut": "সাবধান",
+  "topicPractise": "এই নিয়ম অনুশীলন · {count}টি প্রশ্ন",
+  "topicMarkLearned": "শেখা হয়েছে বলে চিহ্নিত করুন",
+  "topicLearnedDue": "শেখা · আজ অনুশীলন",
+  "topicLearnedNext": "শেখা · পরের অনুশীলন {days} দিন পর",
+  "topicPlace": "বিষয় {at} / {of}",
+  "topicPlay": "শুনুন: {sentence}",
+  "topicNext": "পরের বিষয়: {title}",
+  "topicPrevious": "আগের বিষয়: {title}"
 }

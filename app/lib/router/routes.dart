@@ -31,6 +31,7 @@ import 'package:deutschplan/features/today/today_screen.dart';
 import 'package:deutschplan/features/backlog/backlog_screen.dart';
 import 'package:deutschplan/features/day_complete/day_complete_screen.dart';
 import 'package:deutschplan/features/learn/grammar_library_screen.dart';
+import 'package:deutschplan/features/learn/grammar_topic_screen.dart';
 import 'package:deutschplan/features/learn/learn_screen.dart';
 import 'package:deutschplan/features/learn/step_detail_screen.dart';
 import 'package:deutschplan/features/sentences/sentences_screen.dart';
@@ -320,11 +321,16 @@ class GrammarTopicRoute extends GoRouteData with $GrammarTopicRoute {
   static void open(BuildContext context, String uid) =>
       unawaited(context.push<void>(GrammarTopicRoute(uid: uid).location));
 
+  /// The previous or next topic in place of this one (FR-L4-04), so back
+  /// still returns to whatever opened the first.
+  static void instead(BuildContext context, String uid) =>
+      context.pushReplacement(GrammarTopicRoute(uid: uid).location);
+
   final String uid;
 
   @override
   Widget build(BuildContext context, GoRouterState state) =>
-      PlaceholderScreen(title: 'Topic', screen: 'L4', detail: uid);
+      GrammarTopicScreen(uid: uid);
 }
 
 class CategoriesRoute extends GoRouteData with $CategoriesRoute {

@@ -6,6 +6,9 @@ import 'dart:io';
 import 'package:deutschplan/data/db/app_database.dart';
 import 'package:deutschplan/data/db/content_dao.dart';
 import 'package:deutschplan/data/repositories/grammar_repository.dart';
+import 'package:deutschplan/data/repositories/rating_service.dart';
+import 'package:deutschplan/domain/fsrs.dart';
+import 'package:deutschplan/domain/plan_engine.dart' show planDate;
 import 'package:deutschplan/data/repositories/setting_keys.dart';
 import 'package:deutschplan/data/repositories/settings_repository.dart';
 import 'package:deutschplan/data/repositories/word_repository.dart'
@@ -312,5 +315,54 @@ void main() {
     final all = await grammar.watchAll().first;
     expect(all.map((topic) => topic.uid), <String>['g1', 'a1b', 'a2']);
     expect(all.first.status, WordStatus.todo);
+  });
+
+  group('FR-L4-01 Mark as learned', () {
+    GrammarRatingService service() =>
+        GrammarRatingService(grammar, settings, () => DateTime(2026, 9, 21, 9));
+
+    test(
+      'a first review rated Good: learning, due in days, in the schedule',
+      () async {
+        await service().markLearned('g1');
+        final topic = (await grammar.find('g1'))!;
+        expect(topic.status, WordStatus.learning);
+        expect(topic.state!.reps, 1);
+        // Exactly FSRS's first review rated Good, not merely "some" review.
+        final good =
+            Fsrs(desiredRetention: settings.read(SettingKeys.desiredRetention))
+                .review(
+                  const CardState(),
+                  Rating.good,
+                  DateTime(2026, 9, 21, 9).toUtc(),
+                );
+        expect(topic.state!.stability, closeTo(good.stability, 1e-9));
+        expect(topic.state!.due, planDate(good.due!));
+        expect(topic.state!.lastReview, isNotNull);
+        expect(topic.state!.due!.compareTo('2026-09-21'), greaterThan(0));
+        // What due topics the plan engine reads comes round on that day.
+        expect(await grammar.watchDue(topic.state!.due!).first, hasLength(1));
+      },
+    );
+
+    test('nothing was practised: no log row, no grammar_done', () async {
+      await service().markLearned('g1');
+      final logs = await db
+          .customSelect('SELECT COUNT(*) AS n FROM grammar_practice_log')
+          .getSingle();
+      expect(logs.read<int>('n'), 0);
+      final stats = await db
+          .customSelect(
+            'SELECT COUNT(*) AS n FROM daily_stats WHERE grammar_done > 0',
+          )
+          .getSingle();
+      expect(stats.read<int>('n'), 0);
+    });
+
+    test('a suspended topic stays suspended', () async {
+      await grammar.suspend('g1');
+      await service().markLearned('g1');
+      expect((await grammar.find('g1'))!.status, WordStatus.suspended);
+    });
   });
 }

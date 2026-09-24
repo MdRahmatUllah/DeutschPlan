@@ -235,6 +235,15 @@ RatingService ratingService(Ref ref) => RatingService(
   ref.watch(clockProvider),
 );
 
+/// Rating a grammar topic: FSRS joined to `grammar_state` (FR-L4-01,
+/// FR-L15-03).
+@riverpod
+GrammarRatingService grammarRatingService(Ref ref) => GrammarRatingService(
+  ref.watch(grammarRepositoryProvider),
+  ref.watch(settingsProvider),
+  ref.watch(clockProvider),
+);
+
 /// Kept alive: it caches the parsed manifest, and the onboarding draft —
 /// itself kept alive — reaches it through [modelDownloads].
 @Riverpod(keepAlive: true)

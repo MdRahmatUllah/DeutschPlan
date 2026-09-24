@@ -2119,5 +2119,82 @@
   "libraryNone": "No topics here.",
   "@libraryNone": {
     "description": "L3 when a filter leaves nothing."
+  },
+  "topicRule": "Rule",
+  "@topicRule": {
+    "description": "L4 section label."
+  },
+  "topicExamples": "Examples",
+  "@topicExamples": {
+    "description": "L4 section label."
+  },
+  "topicWatchOut": "Watch out",
+  "@topicWatchOut": {
+    "description": "L4 callout label."
+  },
+  "topicPractise": "Practise this rule · {count, plural, =1{1 item} other{{count} items}}",
+  "@topicPractise": {
+    "description": "L4 primary button: opens L15 for this topic.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "topicMarkLearned": "Mark as learned",
+  "@topicMarkLearned": {
+    "description": "L4: schedules the topic with a first review rated Good (FR-L4-01)."
+  },
+  "topicLearnedDue": "Learned · practice due today",
+  "@topicLearnedDue": {
+    "description": "L4 in place of Mark as learned, when the topic is due."
+  },
+  "topicLearnedNext": "Learned · next practice in {days, plural, =1{1 day} other{{days} days}}",
+  "@topicLearnedNext": {
+    "description": "L4 in place of Mark as learned, when the topic is scheduled.",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "topicPlace": "Topic {at} of {of}",
+  "@topicPlace": {
+    "description": "L4 header: the topic's place in its step.",
+    "placeholders": {
+      "at": {
+        "type": "int"
+      },
+      "of": {
+        "type": "int"
+      }
+    }
+  },
+  "topicPlay": "Play: {sentence}",
+  "@topicPlay": {
+    "description": "L4 example play button, read out.",
+    "placeholders": {
+      "sentence": {
+        "type": "String"
+      }
+    }
+  },
+  "topicNext": "Next topic: {title}",
+  "@topicNext": {
+    "description": "L4 footer, read out.",
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "topicPrevious": "Previous topic: {title}",
+  "@topicPrevious": {
+    "description": "L4 footer, read out.",
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
   }
 }

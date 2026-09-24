@@ -178,23 +178,15 @@ class GrammarRepository extends DatabaseAccessor<AppDatabase>
       ),
     );
 
-    await into(db.grammarState).insertOnConflictUpdate(
-      GrammarStateCompanion.insert(
-        grammarUid: uid,
-        // Suspension survives a practice run: the learner suspended the
-        // topic, and finishing a run they started does not un-suspend it.
-        status: Value(
-          before?.status == WordStatus.suspended.wire
-              ? WordStatus.suspended.wire
-              : _statusFor(stability),
-        ),
-        due: Value(due),
-        stability: Value(stability),
-        difficulty: Value(difficulty),
-        reps: Value(reps),
-        lapses: Value(lapses),
-        lastReview: Value(result.practisedAt),
-      ),
+    await _writeState(
+      uid: uid,
+      suspended: before?.status == WordStatus.suspended.wire,
+      stability: stability,
+      difficulty: difficulty,
+      due: due,
+      reps: reps,
+      lapses: lapses,
+      lastReview: result.practisedAt,
     );
 
     // One statement rather than read-then-write, the same way `PlanRepository`
@@ -208,6 +200,59 @@ class GrammarRepository extends DatabaseAccessor<AppDatabase>
     // A raw statement, so drift has to be told which streams to re-emit.
     db.markTablesUpdated(<TableInfo<Table, Object?>>{db.dailyStats});
   });
+
+  /// FR-L4-01: a topic scheduled without a practice run — *Mark as
+  /// learned*. No log row and no `grammar_done`: nothing was practised.
+  Future<void> schedule({
+    required String uid,
+    required double stability,
+    required double difficulty,
+    required String due,
+    required int reps,
+    required int lapses,
+    required String lastReview,
+  }) => db.transaction(() async {
+    final before = await (select(
+      db.grammarState,
+    )..where((t) => t.grammarUid.equals(uid))).getSingleOrNull();
+    await _writeState(
+      uid: uid,
+      suspended: before?.status == WordStatus.suspended.wire,
+      stability: stability,
+      difficulty: difficulty,
+      due: due,
+      reps: reps,
+      lapses: lapses,
+      lastReview: lastReview,
+    );
+  });
+
+  /// The scheduling a rating leaves. Suspension survives it: the learner
+  /// suspended the topic, and finishing a run they started does not
+  /// un-suspend it.
+  Future<void> _writeState({
+    required String uid,
+    required bool suspended,
+    required double stability,
+    required double difficulty,
+    required String due,
+    required int reps,
+    required int lapses,
+    required String lastReview,
+  }) => into(db.grammarState).insertOnConflictUpdate(
+    GrammarStateCompanion.insert(
+      grammarUid: uid,
+      status: Value(
+        suspended ? WordStatus.suspended.wire : _statusFor(stability),
+      ),
+      due: Value(due),
+      stability: Value(stability),
+      difficulty: Value(difficulty),
+      reps: Value(reps),
+      lapses: Value(lapses),
+      lastReview: Value(lastReview),
+    ),
+  );
 
   Future<void> suspend(String uid) => _setStatus(uid, WordStatus.suspended);
 

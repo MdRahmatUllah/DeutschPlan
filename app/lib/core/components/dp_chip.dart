@@ -39,6 +39,7 @@ class DpChip extends StatelessWidget {
     this.fill,
     this.icon,
     this.semanticLabel,
+    this.ink,
   });
 
   final String label;
@@ -57,6 +58,10 @@ class DpChip extends StatelessWidget {
 
   /// Overrides the kind's own icon. Pass `SizedBox.shrink()` to remove it.
   final Widget? icon;
+
+  /// The label and outline on a coloured field, where the page's ink would
+  /// not read: L4's step chip on its Sun header, in dark mode too.
+  final Color? ink;
 
   /// The icon the artboard draws for this kind, at the size it draws it: a
   /// 16 dp flame on the streak pill, a 14 dp tick on a selected filter, a 14 dp
@@ -105,7 +110,7 @@ class DpChip extends StatelessWidget {
         };
 
     final outline = switch (kind) {
-      DpChipKind.step || DpChipKind.streak => tokens.color.ink,
+      DpChipKind.step || DpChipKind.streak => this.ink ?? tokens.color.ink,
       DpChipKind.filter when glassFilter => tokens.surface.outline,
       DpChipKind.filter => selected ? tokens.color.ink : tokens.surface.outline,
       DpChipKind.status || DpChipKind.webLink => null,
@@ -126,11 +131,13 @@ class DpChip extends StatelessWidget {
     // page's ink is light under dark and would vanish into it.
     // Dark ink on a bright fill, in dark mode too. The Lagoon rule is for
     // an explicit [fill] only: glass filter chips keep their own ink.
-    final ink = fill == tokens.color.accent
-        ? tokens.color.onAccent
-        : this.fill == tokens.color.primary
-        ? tokens.color.onPrimary
-        : tokens.color.ink;
+    final ink =
+        this.ink ??
+        (fill == tokens.color.accent
+            ? tokens.color.onAccent
+            : this.fill == tokens.color.primary
+            ? tokens.color.onPrimary
+            : tokens.color.ink);
 
     final fallback = defaultIcon;
     final glyph =
