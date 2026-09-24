@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-09-24 15:42
+last-seen: 2026-09-24 16:10
 last-read: 40
 
 ## Now
 
-#127 L10 · Mock exam hub (unlocked) — claimed 2026-09-24 15:42.
+#127 in review as PR #300: watch CI, answer review threads, merge.
 
 ## Next
 
