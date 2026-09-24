@@ -180,3 +180,28 @@ stepProgress:
     GROUP BY wd.sublevel_code
   ) w ON w.sublevel_code = sl.code
   ORDER BY l.ord, sl.ord;
+
+-- #81 (quiz-engine.md): the words a quiz draws from. Learned is learning or
+-- done, which also leaves suspended words out (BR-STATUS-03). The store
+-- narrows to a source's step, category or uids. `last_review` is an instant
+-- and the builder ranks in local days, so it is cut to its date, as the plan
+-- store's revision candidates are.
+quizWords:
+  SELECT w.uid AS uid, w.german AS german, w.article AS article, w.pos AS pos,
+    w.english AS english, w.bangla AS bangla, w.forms AS forms,
+    w.sublevel_code AS step, w.category_id AS category_id,
+    w.synonyms_register AS synonyms, s.stability AS stability,
+    substr(s.last_review, 1, 10) AS reviewed
+  FROM word_state s
+  JOIN words w ON w.uid = s.word_uid
+  WHERE s.status IN ('learning', 'done')
+  ORDER BY w.seq;
+
+-- A step's distractor pool: every word, whatever its status.
+quizPool:
+  SELECT w.uid AS uid, w.german AS german, w.article AS article, w.pos AS pos,
+    w.english AS english, w.bangla AS bangla, w.sublevel_code AS step,
+    w.synonyms_register AS synonyms
+  FROM words w
+  WHERE w.sublevel_code = :step
+  ORDER BY w.seq;
