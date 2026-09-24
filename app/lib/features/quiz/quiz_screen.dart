@@ -412,11 +412,32 @@ class _Feedback extends ConsumerWidget {
         ),
         if (heard != null) ...<Widget>[
           const SizedBox(width: 8),
-          DpSpeakerButton(
-            size: 32,
-            state: speakerState(ref),
-            semanticLabel: l10n.quizPlay,
-            onPressed: () => unawaited(say(ref, context, heard)),
+          // Drawn at the artboard's 32, tapped at 48 (accessibility-
+          // performance.md): the button itself only takes taps on what it
+          // draws, so the ring is this detector's, and one node speaks for
+          // both.
+          Semantics(
+            container: true,
+            button: true,
+            label: l10n.quizPlay,
+            onTap: () => unawaited(say(ref, context, heard)),
+            child: ExcludeSemantics(
+              child: GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: () => unawaited(say(ref, context, heard)),
+                child: SizedBox.square(
+                  dimension: 48,
+                  child: Center(
+                    child: DpSpeakerButton(
+                      size: 32,
+                      state: speakerState(ref),
+                      semanticLabel: l10n.quizPlay,
+                      onPressed: () => unawaited(say(ref, context, heard)),
+                    ),
+                  ),
+                ),
+              ),
+            ),
           ),
         ],
       ],

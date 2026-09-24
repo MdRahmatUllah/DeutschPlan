@@ -491,6 +491,14 @@ void main() {
       await answer(tester, 'der Mietvertag');
       final row = tester.widget<DpVerdictRow>(find.byType(DpVerdictRow));
       expect(row.emphasis, <String>['der Mietvertrag']);
+
+      // Its speaker is drawn small and tapped at 48 dp.
+      final semantics = tester.ensureSemantics();
+      await tester.pump();
+      final node = tester.getSemantics(find.bySemanticsLabel(l10n.quizPlay));
+      expect(node.rect.width, greaterThanOrEqualTo(48));
+      expect(node.rect.height, greaterThanOrEqualTo(48));
+      semantics.dispose();
     });
   });
 

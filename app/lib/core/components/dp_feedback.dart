@@ -307,7 +307,8 @@ class DpVerdictRow extends StatelessWidget {
 
   /// The parts of [message] set in ink rather than the verdict's colour — the
   /// answer, as the QuizRunner artboard sets "der Mietvertrag". Found in
-  /// order, so a translation may put them anywhere.
+  /// order: a translation may put text around them, but must keep them in
+  /// this order.
   final List<String> emphasis;
 
   /// `correct` and `wrong` are a tick and a cross in the artboard, which
