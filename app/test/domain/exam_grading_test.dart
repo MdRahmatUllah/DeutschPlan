@@ -185,6 +185,22 @@ void main() {
       expect(targetsUsed('Die Tür ist zu.', <String>['Tür']), <String>['Tür']);
     });
 
+    test('the connectors a text uses: whole words, case aside, two words '
+        'only together', () {
+      const connectors = <String>['und', 'aber', 'dass', 'ohne dass'];
+      expect(
+        connectorsUsed('Aber ich weiß, dass es geht, und ohne dass du', [
+          ...connectors,
+        ]),
+        connectors,
+      );
+      // "Unden" is not und, and "ohne … dass" apart is not ohne dass.
+      expect(connectorsUsed('Unden ohne Geld, dass', connectors), <String>[
+        'dass',
+      ]);
+      expect(connectorsUsed('', connectors), isEmpty);
+    });
+
     test('FR-L12W-01 only a verb ending follows a verb\'s stem', () {
       for (final (text, target) in <(String, String)>[
         ('Das ist sehr gut.', 'sehen'),

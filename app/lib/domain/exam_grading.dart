@@ -116,6 +116,17 @@ List<String> targetsUsed(String text, List<String> targets) {
   ];
 }
 
+/// The [connectors] [text] uses, as the Writing screen lists them: whole
+/// words, case aside, and a two-word one ("ohne dass") only as the two in a
+/// row. Shown, not scored.
+List<String> connectorsUsed(String text, List<String> connectors) {
+  final words = ' ${textWords(text).join(' ').toLowerCase()} ';
+  return <String>[
+    for (final connector in connectors)
+      if (words.contains(' ${connector.toLowerCase()} ')) connector,
+  ];
+}
+
 /// FR-L12W-03's app points: 1 for at least 6 targets used, 1 for at least
 /// the level's minimum length.
 double writingAppPoints(WritingTask task, String text) =>

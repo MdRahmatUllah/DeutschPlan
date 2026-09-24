@@ -10,6 +10,7 @@ import 'package:deutschplan/core/theme/dp_surface.dart';
 import 'package:deutschplan/core/theme/dp_tokens.dart';
 import 'package:deutschplan/core/typography/dp_text.dart';
 import 'package:deutschplan/data/repositories/exam_run_service.dart';
+import 'package:deutschplan/domain/exam_generator.dart' show WritingTask;
 import 'package:deutschplan/features/exam/exam_navigator_sheet.dart';
 import 'package:deutschplan/features/exam/exam_question_view.dart';
 import 'package:deutschplan/features/learn/step_exams.dart'
@@ -164,6 +165,10 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
   }
 
   Future<void> _flush() async {
+    // Writing's text is long to lose: it is written with the clock too
+    // (FR-L12W-04). Any other typed answer waits for the learner to move on,
+    // or a half-typed "Hau" would count as answered and skip the resume.
+    if (_paper?.questions[_at].item is WritingTask) _saveTyped();
     final (running, paused) = (_runPending, _pausePending);
     if (running == 0 && paused == 0) return;
     _runPending = 0;
@@ -427,7 +432,11 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
                 const SizedBox(width: 10),
                 Expanded(
                   child: DpButton(
-                    label: last ? l10n.examRunSubmit : l10n.examRunNext,
+                    label: last
+                        ? l10n.examRunSubmit
+                        : item is WritingTask
+                        ? l10n.examWritingSubmit
+                        : l10n.examRunNext,
                     onPressed: last
                         ? () => unawaited(_submit())
                         : () => _go(_at + 1),
