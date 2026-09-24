@@ -664,6 +664,11 @@ def board_checkout(agent: str) -> Path:
 
 
 def main(argv: list[str] | None = None) -> int:
+    # The board is UTF-8 (→, ·, Bangla), and a Windows console is cp1252: a
+    # handoff printed as-is crashed `status` for whoever had one unread.
+    for stream in (sys.stdout, sys.stderr):
+        if hasattr(stream, "reconfigure"):
+            stream.reconfigure(encoding="utf-8", errors="replace")
     parser = argparse.ArgumentParser(prog="team.py", description=__doc__.split("\n\n")[0])
     sub = parser.add_subparsers(dest="cmd", required=True)
     sub.add_parser("agents")
