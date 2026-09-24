@@ -1,7 +1,7 @@
 # Onboarding: building DeutschPlan as a team of agents
 
-This is for every coding agent that works on DeutschPlan. Three or four of
-you work at the same time, each on its own issue in its own worktree,
+This is for every coding agent that works on DeutschPlan. Three of you
+(`agent-0`, the lead, and `agent-1`, `agent-2`) work at the same time, each on its own issue in its own worktree,
 coordinating through a shared task board. `CLAUDE.md` is the one-page
 summary; this is the whole of it. Read it once when you take an identity,
 then again whenever something surprises you.
@@ -153,8 +153,12 @@ with `team.py msg all --kind heads-up`. The tool refuses to run while
 
 ### Identities and sessions
 
-The team has four identities, `agent-1` … `agent-4`. Each is pre-assigned a
-lane, and each has a memory file. A session takes an identity:
+The team is `agent-0` (the lead), `agent-1` and `agent-2`. Each has a lane
+(PLAN.md) and a memory file. **The lead** takes the critical path, assigns
+work (`team.py assign`), reviews the others' PRs, closes epics and
+milestones, and relays the owner's decisions. The others take their
+assignments first, then their lane. A fourth agent joins as `agent-3`, and
+the lead gives it work in a handoff. A session takes an identity:
 
 - `team.py agents` lists them as `ACTIVE` or `idle`. An identity is idle when its last session ran `leave`, or when it has not been seen for 2 hours.
 - `team.py join agent-N` refuses an active identity. Use `--force` only if you know that session is gone.
@@ -590,10 +594,9 @@ they are deliberately changed, in the same PR as the code.
 
 | Lane | Agent | Focus | Order |
 |---|---|---|---|
-| **A** | agent-1 | the quiz and exam runner (the critical path) | #81 → #122 → #123 → #124 → #125 → #126 → #130 → #131–#134 → #135 → #136 → #169 |
-| **B** | agent-2 | search, words, translation seam, polish | #140 → #137 → #141 → #138 → #139 → #142 → #143 → #280 → #154 → #173 → #166 → #164 → #167 → #174 → #163 |
-| **C** | agent-3 | Me, settings, exam engine, accessibility | #144 → #83 → #84 → #127 → #129 → #128 → #146 → #145 → #148 → #149 → #150 → #172 → #162 → #165 → #168 |
-| **D** | agent-4 | voice, platform, release | #151 → #156 → #157 → #158 → #159 → #160 → #147 → #152 → #153 → #155 → #161 → #170 → #171 → #175 |
+| **A** | agent-0 (lead) | the quiz and exam runner (the critical path), then release | #81 → #122 → #123 → #124 → #125 → #126 → #130 → #131–#134 → #135 → #136 → #169 → #170 → #171 → #175 |
+| **B** | agent-1 | the voice seam, words, search, translation, polish | #151 → #140 → #137 → #141 → #138 → #139 → #156 → #142 → #143 → #280 → #152 → #153 → #155 → #154 → #173 → #166 → #164 → #167 → #174 → #163 |
+| **C** | agent-2 | Me, settings, exam engine, platform, accessibility | #144 → #83 → #84 → #127 → #129 → #128 → #146 → #157 → #158 → #159 → #160 → #147 → #145 → #148 → #149 → #150 → #172 → #161 → #162 → #165 → #168 |
 | **X** | anyone | follow-ups #281, #282, #284, and closing epics | — |
 
 Things only the owner decides:

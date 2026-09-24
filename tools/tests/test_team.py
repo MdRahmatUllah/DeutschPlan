@@ -226,6 +226,14 @@ def test_the_device_has_one_holder_until_the_lock_goes_stale(tmp_path):
     assert not (tmp_path / ".device.lock").exists()
 
 
+def test_identities_run_from_the_lead_to_agent_9():
+    for good in ("agent-0", "agent-1", "agent-9"):
+        assert team.check_agent(good) == good
+    for bad in ("agent-10", "agent", "Agent-1", "agent-01", "owner"):
+        with pytest.raises(SystemExit):
+            team.check_agent(bad)
+
+
 def test_a_github_issue_becomes_a_row():
     data = {
         "title": "L7 · Custom quiz sheet",

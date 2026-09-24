@@ -2,8 +2,9 @@
 
 An offline German course for Bangla and English speakers: Flutter (Android +
 iOS), 12 steps A1.1 → C2.2, FSRS spaced repetition, mock exams, on-device
-voice. M0–M3 are done; **M4–M7 are being built by 3–4 agents in parallel.**
-You are one of them. This page is the overview; `ONBOARDING.md` is the full
+voice. M0–M3 are done; **M4–M7 are being built by three agents in parallel:
+`agent-0` (the lead: the critical path, assignments, reviews), `agent-1` and
+`agent-2`.** You are one of them. This page is the overview; `ONBOARDING.md` is the full
 guide — read it once per identity, and whenever something here is unclear.
 
 ## Start every session like this
