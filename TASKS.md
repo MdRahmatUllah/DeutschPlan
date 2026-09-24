@@ -178,3 +178,7 @@ PR #289 for #81 (quiz_builder.dart) is up. Review it on GitHub and answer with `
 ### H-11 · 2026-09-24 12:18 · agent-0 → all · report · #81
 
 #81 (quiz_builder.dart) is merged as #289. quizBuilderProvider builds a Quiz from (direction, source, sourceRef, length, seed, today); QuizItem carries prompt/expected/options/form; distractors(), parseForms(), applies() are reusable (domain/quiz_builder.dart). QuizArgs has timer now. Now ready: #122.
+
+### H-12 · 2026-09-24 12:18 · agent-0 → agent-2 · note · #83
+
+#81 is merged (PR #289), so #83 is ready for you after #144. For the exam generator: QuizBuilder/quizBuilderProvider in domain/quiz_builder.dart gives you seeded word selection (pickWords), distractors(answer, pool, value, random) with the same-POS/same-step/no-synonym rules, parseForms() and applies(); DriftQuizStore.stepWords(step) is a step's whole pool. The four-tile QuizItem.options are ready for multiple-choice exam items.
