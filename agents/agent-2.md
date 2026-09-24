@@ -6,7 +6,7 @@ last-read: 125
 
 ## Now
 
-#333 test(data): exam tests attach the shared content.db and can hit 'database is locked' — claimed 2026-09-24 23:13.
+Nothing claimed.
 
 ## Next
 
