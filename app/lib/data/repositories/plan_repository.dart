@@ -470,6 +470,28 @@ WHERE due IS NOT NULL AND due <= ?1 AND status != 'suspended'
     _db.dailyStats,
   )..where((t) => t.day.equals(day))).getSingleOrNull();
 
+  /// M1's activity: how many items were practised on each day, as it changes
+  /// — the heat-map's cells (FR-M1-02) and the header's days studied.
+  ///
+  /// Every kind of item counts, the activity the streak counts
+  /// (`PlanStore.activeDays`), so a day inside the streak never shows as
+  /// empty. Days with nothing are left out.
+  ///
+  /// ponytail: every day ever, one row a day — a few hundred rows after a
+  /// year of study. Bound it by date if it ever shows in a profile.
+  Stream<Map<String, int>> watchActivity() => _db
+      .select(_db.dailyStats)
+      .watch()
+      .map(
+        (rows) => <String, int>{
+          for (final row in rows)
+            if (_items(row) > 0) row.day: _items(row),
+        },
+      );
+
+  static int _items(DailyStat row) =>
+      row.newDone + row.reviewsDone + row.grammarDone + row.sentencesDone;
+
   Future<int> undoDepthNow() async {
     final row = await _db
         .customSelect('SELECT COUNT(*) AS n FROM undo_stack')

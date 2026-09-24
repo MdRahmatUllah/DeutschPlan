@@ -2,6 +2,7 @@
 library;
 
 import 'package:deutschplan/features/backlog/backlog_screen.dart';
+import 'package:deutschplan/features/me/me_screen.dart';
 import 'package:deutschplan/features/today/today_screen.dart';
 
 import '../features/today_fixtures.dart';
@@ -107,7 +108,7 @@ void main() {
 
     testWidgets('returns to Today from another tab root', (tester) async {
       await pumpApp(tester, at: '/me');
-      expect(find.text('M1'), findsOneWidget);
+      expect(find.byType(MeScreen), findsOneWidget);
 
       await pressBack(tester);
 
@@ -121,7 +122,11 @@ void main() {
       expect(find.text('M3'), findsOneWidget);
 
       await pressBack(tester);
-      expect(find.text('M1'), findsOneWidget, reason: 'it left the tab early');
+      expect(
+        find.byType(MeScreen),
+        findsOneWidget,
+        reason: 'it left the tab early',
+      );
 
       await pressBack(tester);
       expect(find.byType(TodayScreen), findsOneWidget);
@@ -135,7 +140,7 @@ void main() {
       expect(find.text('M3'), findsOneWidget);
 
       await pressBack(tester);
-      expect(find.text('M1'), findsOneWidget);
+      expect(find.byType(MeScreen), findsOneWidget);
 
       await pressBack(tester);
       expect(find.byType(TodayScreen), findsOneWidget);

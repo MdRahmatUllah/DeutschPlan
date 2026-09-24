@@ -82,6 +82,154 @@
   "@tabMe": {
     "description": "Fourth tab of the shell (branch 3): progress, settings and data."
   },
+  "meNameEmpty": "Add your name",
+  "@meNameEmpty": {
+    "description": "M1 header, in place of the name while there is none; opens the name sheet."
+  },
+  "meEditName": "Edit name",
+  "@meEditName": {
+    "description": "M1 header: read after the name by screen readers; opens the name sheet."
+  },
+  "meNameTitle": "Your name",
+  "@meNameTitle": {
+    "description": "M1 name sheet: its title and the field's label."
+  },
+  "meNameSave": "Save",
+  "@meNameSave": {
+    "description": "M1 name sheet: saves the name."
+  },
+  "meSince": "Learning since {date}",
+  "@meSince": {
+    "description": "M1 header: the day the first step started, e.g. 19 Aug 2026.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "meDaysStudied": "{count, plural, =1{1 day studied} other{{count} days studied}}",
+  "@meDaysStudied": {
+    "description": "M1 header, after meSince: days with any practice.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "meWordsLegend": "Learning = seen, still being reviewed · Done = remembered for {days}+ days · Suspended = paused by you",
+  "@meWordsLegend": {
+    "description": "M1 words card legend; days is the done_stability_days setting (FR-M1-01).",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "meActivity": "Activity",
+  "@meActivity": {
+    "description": "M1 activity card title (FR-M1-02)."
+  },
+  "meActivityRange": "Last 12 weeks",
+  "@meActivityRange": {
+    "description": "M1 activity card: the span of the heat-map."
+  },
+  "meActivityLabel": "{count, plural, =1{Practice per day, last 12 weeks: 1 day with practice} other{Practice per day, last 12 weeks: {count} days with practice}}",
+  "@meActivityLabel": {
+    "description": "M1 activity heat-map, for screen readers.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "meBehind": "{count, plural, =1{1 day behind} other{{count} days behind}}",
+  "@meBehind": {
+    "description": "M1 schedule card title when behind the plan (FR-M1-03); opens the backlog.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "meBehindUnderADay": "Less than a day behind",
+  "@meBehindUnderADay": {
+    "description": "M1 schedule card title when behind by less than a day's new words."
+  },
+  "meBehindLine": "{count, plural, =1{1 word in backlog · tap to catch up} other{{count} words in backlog · tap to catch up}}",
+  "@meBehindLine": {
+    "description": "M1 schedule card, under the title when behind.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "meOnSchedule": "On schedule",
+  "@meOnSchedule": {
+    "description": "M1 schedule card title when nothing is behind."
+  },
+  "meExams": "Mock exams",
+  "@meExams": {
+    "description": "M1 mock exams card title."
+  },
+  "meExamsPassed": "{count} passed",
+  "@meExamsPassed": {
+    "description": "M1 mock exams card: steps with a passed mock.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "meExamsUnlocksAt": "{step} unlocks at {percent}%",
+  "@meExamsUnlocksAt": {
+    "description": "M1 mock exams card, after meExamsPassed: the current step's exams are still locked.",
+    "placeholders": {
+      "step": {
+        "type": "String"
+      },
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "meExamsUnlocked": "{step} unlocked",
+  "@meExamsUnlocked": {
+    "description": "M1 mock exams card, after meExamsPassed: the current step's exams are open.",
+    "placeholders": {
+      "step": {
+        "type": "String"
+      }
+    }
+  },
+  "meBadge": "{step}, {state}",
+  "@meBadge": {
+    "description": "M1 mock exam badge, for screen readers: the step, then its state (learnPassed, learnExamsUnlocked, learnCurrent or learnNotStarted).",
+    "placeholders": {
+      "step": {
+        "type": "String"
+      },
+      "state": {
+        "type": "String"
+      }
+    }
+  },
+  "meSettings": "Settings",
+  "@meSettings": {
+    "description": "M1 list: opens M3."
+  },
+  "meVoice": "Voice & translation",
+  "@meVoice": {
+    "description": "M1 list: opens M4, the model manager."
+  },
+  "meAbout": "About & privacy",
+  "@meAbout": {
+    "description": "M1 list: opens M9."
+  },
+  "meLoadFailed": "Your progress could not be loaded.",
+  "@meLoadFailed": {
+    "description": "M1 when the course cannot be read."
+  },
   "examLeaveTitle": "Leave the exam?",
   "@examLeaveTitle": {
     "description": "Title of the dialog Android back opens inside the exam runner. docs/04-screens/exam-runner.md, FR-L12-04."
@@ -603,7 +751,7 @@
   },
   "todayStreak": "{count, plural, =1{1-day streak} other{{count}-day streak}}",
   "@todayStreak": {
-    "description": "T1 streak pill, for screen readers; opens Progress.",
+    "description": "T1 and M1 streak pill, for screen readers; T1's opens Progress.",
     "placeholders": {
       "count": {
         "type": "int"

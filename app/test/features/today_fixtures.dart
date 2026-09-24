@@ -15,6 +15,8 @@ import 'package:deutschplan/features/today/today_providers.dart';
 import 'package:deutschplan/features/today/today_view.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 
+import 'me_fixtures.dart';
+
 /// The Today artboard's values: 12 of 20 done, A2.1, day 34, a backlog from
 /// Tuesday to Wednesday and Konjunktiv II this week.
 TodayView artboardToday({
@@ -475,6 +477,8 @@ List<Override> todayStub([
   stepProgressProvider.overrideWith(
     (ref) => Stream.value(course ?? artboardCourse()),
   ),
+  // M1 without a database: the Me artboard.
+  ...meStub(),
 ];
 
 class _StubSentences extends PracticeSentences {
