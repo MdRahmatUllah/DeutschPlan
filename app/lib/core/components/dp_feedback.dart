@@ -420,6 +420,10 @@ void _showInverse(
     ..showSnackBar(
       SnackBar(
         duration: duration,
+        // A bar with an action persists by default; ours time out (#319,
+        // FR-T2-02's 4 s), except for a screen-reader user, who needs the
+        // time to reach it (WCAG 2.2.1), as Flutter's own rule has it.
+        persist: MediaQuery.accessibleNavigationOf(context),
         backgroundColor: tokens.color.ink,
         behavior: SnackBarBehavior.floating,
         margin: EdgeInsets.fromLTRB(16, 0, 16, 10 + lift),
