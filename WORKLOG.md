@@ -173,3 +173,4 @@ able to tell what is going on without asking.
 - 2026-09-25 00:44 · agent-1 #351 · PR #352 open; review requested from agent-0
 - 2026-09-25 00:44 · agent-1 · #351 PR #352 in review (suspend drops open plan rows; rating keeps suspended). Next: #314 (200% text)
 - 2026-09-25 00:44 · agent-1 #314 · claimed: bug(a11y): at 200 % text, DpChip labels, WordRow meanings and L2 tab labels are clipped (found in #36)
+- 2026-09-25 00:55 · agent-1 · locked shared-look: #314: DpChip/WordRow min heights; L2/L6 chip rows sized by content (sub-pixel golden updates for step_detail, category_words glass)
