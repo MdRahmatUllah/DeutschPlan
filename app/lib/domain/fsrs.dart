@@ -191,6 +191,24 @@ class Fsrs {
     return raw.round().clamp(1, maxInterval);
   }
 
+  /// FR-M3-01: about how many reviews a day cards of these [stabilities] ask
+  /// for at [desiredRetention] — each comes round once per interval, so the
+  /// sum of `1 ÷ intervalDays`.
+  ///
+  /// Sampled: every n-th of at most [sample] of them, scaled back up, so the
+  /// Settings slider dragged over five thousand learned words stays cheap.
+  double reviewsPerDay(List<double> stabilities, {int sample = 1000}) {
+    if (stabilities.isEmpty) return 0;
+    final every = (stabilities.length / sample).ceil();
+    var sum = 0.0;
+    var counted = 0;
+    for (var i = 0; i < stabilities.length; i += every) {
+      sum += 1 / intervalDays(stabilities[i]);
+      counted++;
+    }
+    return sum * stabilities.length / counted;
+  }
+
   /// The four intervals the rating bar previews, in Again/Hard/Good/Easy
   /// order. `fsrs-scheduler.md`: computed on reveal, one `review` per rating.
   List<int> preview(CardState state, DateTime now) => <int>[

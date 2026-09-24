@@ -33,6 +33,18 @@ Grouped list (Material headers / Cupertino inset groups). Changes save instantly
 | | Reset | → M7, "One step, or everything" | |
 | | Restart setup | → S2 (restart mode) | |
 
+Details M3 settles (#146):
+- The rows are the table's, in its order. The artboards leave some out (practice sentences, the backlog pause, Mark Done, app language, Bangla pronunciation, listening questions); each sits where the table puts it, drawn as its neighbours are.
+- "Applies from tomorrow" is on *New words per day* and *Revisions per day*, the two BR-PLAN-08 names that M3 shows (the study days are M5's).
+- *Unlock mock exams at* and *Pass mark* show the value and a chevron, as the artboards draw them, and open a choice in steps of five across the ranges above. *Meaning language*, *App language* and *Theme* open the same kind of choice. The two languages are set apart here; S2's one choice sets both.
+- *Speech speed* runs 0.5–1.5× in tenths, with the artboard's 1.0× at the middle.
+- *Study days & reminder* reads "Mon–Sat · 19:30 · only when something is due": a run of three or more days as a range, otherwise the days listed ("Mon, Wed, Fri"), "Every day" for all seven; then the time in the phone's format, or "no reminder".
+- *Voice engine* reads "Supertonic · Anna" or "Phone voice". *On-device translation* reads the model's state: "Hy-MT 1.5 · downloading 42%", "· ready", "· not downloaded", and so on.
+- FR-M3-01's sample is every n-th of at most 1,000 learned words (rated, not suspended), scaled back up. The stabilities are read once per visit; the slider re-sums them.
+- FR-M3-03: "the model is ready" is `ModelStatus.ready`. A download in progress is not ready, so the switch stays off and M4 opens.
+- *Reset* opens M7 once #150 builds it; until then the row is there and does nothing.
+- Android: a Cobalt header over flat rows (on the aurora under glass). iOS: an upper-case header over an inset panel, and the stepper is the number beside UIStepper's − | + pill (as OnboardingPace-ios draws it too). Every row is 52 dp.
+
 **Functional requirements**
 - FR-M3-01 The retention subtitle estimates reviews/day = Σ over learned words of 1 ÷ intervalDays(stability) at the chosen retention (sampled, cached).
 - FR-M3-02 Theme changes apply immediately app-wide (`themeProvider`).

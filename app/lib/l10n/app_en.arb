@@ -3503,5 +3503,325 @@
   "examNavEmptyState": "empty",
   "@examNavEmptyState": {
     "description": "L12 navigator cell state, for screen readers."
+  },
+  "settingsTitle": "Settings",
+  "@settingsTitle": {
+    "description": "M3 bar title."
+  },
+  "settingsGroupDailyPlan": "Daily plan",
+  "@settingsGroupDailyPlan": {
+    "description": "M3 group header (upper case on iOS)."
+  },
+  "settingsGroupRevision": "Revision",
+  "@settingsGroupRevision": {
+    "description": "M3 group header."
+  },
+  "settingsGroupDisplay": "Display",
+  "@settingsGroupDisplay": {
+    "description": "M3 group header."
+  },
+  "settingsGroupAudio": "Audio",
+  "@settingsGroupAudio": {
+    "description": "M3 group header."
+  },
+  "settingsGroupExams": "Exams",
+  "@settingsGroupExams": {
+    "description": "M3 group header."
+  },
+  "settingsGroupTranslation": "Translation",
+  "@settingsGroupTranslation": {
+    "description": "M3 group header."
+  },
+  "settingsGroupData": "Data",
+  "@settingsGroupData": {
+    "description": "M3 group header."
+  },
+  "settingsFromTomorrow": "Applies from tomorrow",
+  "@settingsFromTomorrow": {
+    "description": "M3 subtitle of a row whose change reaches the plan tomorrow (BR-PLAN-08): today's plan is fixed."
+  },
+  "settingsDailyNew": "New words per day",
+  "@settingsDailyNew": {
+    "description": "M3 row: daily_new, a stepper 1–50."
+  },
+  "settingsDailyNewDecrease": "Decrease new words per day",
+  "@settingsDailyNewDecrease": {
+    "description": "M3 stepper button, for screen readers."
+  },
+  "settingsDailyNewIncrease": "Increase new words per day",
+  "@settingsDailyNewIncrease": {
+    "description": "M3 stepper button, for screen readers."
+  },
+  "settingsReviseCount": "Revisions per day",
+  "@settingsReviseCount": {
+    "description": "M3 row: revise_count, a stepper 0–100."
+  },
+  "settingsReviseCountDecrease": "Decrease revisions per day",
+  "@settingsReviseCountDecrease": {
+    "description": "M3 stepper button, for screen readers."
+  },
+  "settingsReviseCountIncrease": "Increase revisions per day",
+  "@settingsReviseCountIncrease": {
+    "description": "M3 stepper button, for screen readers."
+  },
+  "settingsSentenceCount": "Practice sentences per day",
+  "@settingsSentenceCount": {
+    "description": "M3 row: sentence_count, a stepper 0–20."
+  },
+  "settingsSentenceCountDecrease": "Decrease practice sentences per day",
+  "@settingsSentenceCountDecrease": {
+    "description": "M3 stepper button, for screen readers."
+  },
+  "settingsSentenceCountIncrease": "Increase practice sentences per day",
+  "@settingsSentenceCountIncrease": {
+    "description": "M3 stepper button, for screen readers."
+  },
+  "settingsStudyDays": "Study days & reminder",
+  "@settingsStudyDays": {
+    "description": "M3 row: opens M5."
+  },
+  "settingsDayRange": "{first}–{last}",
+  "@settingsDayRange": {
+    "description": "M3 study-days summary: a run of three or more days in a row, e.g. 'Mon–Sat'. first and last are short weekday names.",
+    "placeholders": {
+      "first": {
+        "type": "String"
+      },
+      "last": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsEveryDay": "Every day",
+  "@settingsEveryDay": {
+    "description": "M3 study-days summary when all seven days are study days."
+  },
+  "settingsNoReminder": "no reminder",
+  "@settingsNoReminder": {
+    "description": "M3 study-days summary, after the days, when the reminder is off."
+  },
+  "settingsOnlyWhenDue": "only when something is due",
+  "@settingsOnlyWhenDue": {
+    "description": "M3 study-days summary, after the time, when reminder_only_when_due is on."
+  },
+  "settingsAutoAdvance": "Continue into the next step automatically",
+  "@settingsAutoAdvance": {
+    "description": "M3 switch: auto_advance."
+  },
+  "settingsPauseNew": "Pause new words when backlog is large",
+  "@settingsPauseNew": {
+    "description": "M3 switch: pause_new_when_backlog (BR-PLAN-07)."
+  },
+  "settingsPauseNewNote": "Revisions continue",
+  "@settingsPauseNewNote": {
+    "description": "M3 subtitle of the backlog pause switch."
+  },
+  "settingsRetention": "Target retention",
+  "@settingsRetention": {
+    "description": "M3 row: desired_retention, a slider 80–97 %."
+  },
+  "settingsRetentionLine": "{percent}% · ≈ {reviews} reviews/day at your pace",
+  "@settingsRetentionLine": {
+    "description": "M3 retention subtitle (FR-M3-01): the chosen retention and the reviews a day the learned words would ask for at it.",
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      },
+      "reviews": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsDoneDays": "Mark Done after {days} days remembered",
+  "@settingsDoneDays": {
+    "description": "M3 row: done_stability_days, a stepper 3–60 (BR-STATUS-02).",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsDoneDaysDecrease": "Decrease the days before Done",
+  "@settingsDoneDaysDecrease": {
+    "description": "M3 stepper button, for screen readers."
+  },
+  "settingsDoneDaysIncrease": "Increase the days before Done",
+  "@settingsDoneDaysIncrease": {
+    "description": "M3 stepper button, for screen readers."
+  },
+  "settingsSwipeToRate": "Swipe to rate",
+  "@settingsSwipeToRate": {
+    "description": "M3 switch: swipe_to_rate."
+  },
+  "settingsSwipeToRateNote": "Left = Again, right = Good",
+  "@settingsSwipeToRateNote": {
+    "description": "M3 subtitle of the swipe switch."
+  },
+  "settingsMeaning": "Meaning language",
+  "@settingsMeaning": {
+    "description": "M3 row: meaning_language; opens a choice."
+  },
+  "settingsEnglish": "EN",
+  "@settingsEnglish": {
+    "description": "M3: English, as the value of the meaning and app language rows."
+  },
+  "settingsBangla": "বাংলা",
+  "@settingsBangla": {
+    "description": "M3: Bangla, as the value of the meaning and app language rows. Written in Bangla in both languages."
+  },
+  "settingsBoth": "Both",
+  "@settingsBoth": {
+    "description": "M3: both meanings, English and Bangla."
+  },
+  "settingsUiLanguage": "App language",
+  "@settingsUiLanguage": {
+    "description": "M3 row: ui_language; opens a choice."
+  },
+  "settingsTheme": "Theme",
+  "@settingsTheme": {
+    "description": "M3 row: theme_mode; opens a choice (FR-M3-02)."
+  },
+  "settingsThemeSystem": "System",
+  "@settingsThemeSystem": {
+    "description": "M3 theme: follow the phone's light or dark."
+  },
+  "settingsThemeLight": "Light",
+  "@settingsThemeLight": {
+    "description": "M3 theme: Paper & Ink light."
+  },
+  "settingsThemeDark": "Dark",
+  "@settingsThemeDark": {
+    "description": "M3 theme: Paper & Ink dark."
+  },
+  "settingsThemeGlass": "Glass",
+  "@settingsThemeGlass": {
+    "description": "M3 theme: Aurora Glass."
+  },
+  "settingsShowPronBn": "Show Bangla pronunciation",
+  "@settingsShowPronBn": {
+    "description": "M3 switch: show_pron_bn."
+  },
+  "settingsVoiceEngine": "Voice engine",
+  "@settingsVoiceEngine": {
+    "description": "M3 row: tts_engine and tts_voice; opens M4."
+  },
+  "settingsVoiceSupertonic": "Supertonic · {voice}",
+  "@settingsVoiceSupertonic": {
+    "description": "M3 voice engine subtitle: the on-device voice and which of its voices. voice is a name, e.g. Anna.",
+    "placeholders": {
+      "voice": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsVoicePhone": "Phone voice",
+  "@settingsVoicePhone": {
+    "description": "M3 voice engine subtitle: the phone's own German voice."
+  },
+  "settingsSpeed": "Speech speed",
+  "@settingsSpeed": {
+    "description": "M3 row: tts_speed, a slider 0.5–1.5×."
+  },
+  "settingsSpeedLine": "{speed}× · long-press any speaker for 0.75×",
+  "@settingsSpeedLine": {
+    "description": "M3 speed subtitle. speed is formatted with one decimal, e.g. 1.0.",
+    "placeholders": {
+      "speed": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsAutoplayHeadword": "Auto-play headword",
+  "@settingsAutoplayHeadword": {
+    "description": "M3 switch: autoplay_headword."
+  },
+  "settingsAutoplayHeadwordNote": "When a card appears",
+  "@settingsAutoplayHeadwordNote": {
+    "description": "M3 subtitle of the headword switch."
+  },
+  "settingsAutoplayExample": "Auto-play first example",
+  "@settingsAutoplayExample": {
+    "description": "M3 switch: autoplay_example."
+  },
+  "settingsAutoplayExampleNote": "On reveal",
+  "@settingsAutoplayExampleNote": {
+    "description": "M3 subtitle of the example switch."
+  },
+  "settingsListening": "Listening questions",
+  "@settingsListening": {
+    "description": "M3 switch: listening_questions (accessibility)."
+  },
+  "settingsListeningNote": "Off: no questions that need sound, in quizzes or exams",
+  "@settingsListeningNote": {
+    "description": "M3 subtitle of the listening switch."
+  },
+  "settingsUnlockAt": "Unlock mock exams at",
+  "@settingsUnlockAt": {
+    "description": "M3 row: exam_unlock_percent, 50–100 % (BR-EXAM-01); opens a choice."
+  },
+  "settingsUnlockAtNote": "Share of the step introduced",
+  "@settingsUnlockAtNote": {
+    "description": "M3 subtitle of the unlock row."
+  },
+  "settingsPassMark": "Pass mark",
+  "@settingsPassMark": {
+    "description": "M3 row: exam_pass_percent, 50–90 %; opens a choice."
+  },
+  "settingsPercent": "{percent}%",
+  "@settingsPercent": {
+    "description": "M3: a percentage, as the value of the exam rows and their choices.",
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsTimerDefault": "Timer on by default",
+  "@settingsTimerDefault": {
+    "description": "M3 switch: exam_timer_default."
+  },
+  "settingsTimerDefaultNote": "Can be paused during an exam",
+  "@settingsTimerDefaultNote": {
+    "description": "M3 subtitle of the timer switch."
+  },
+  "settingsTranslation": "On-device translation",
+  "@settingsTranslation": {
+    "description": "M3 switch: mt_enabled (FR-M3-03)."
+  },
+  "settingsTranslationStatus": "Hy-MT 1.5 · {status, select, downloading{downloading {percent}%} verifying{checking the download} ready{ready} update{update available} failed{download failed} other{not downloaded}}",
+  "@settingsTranslationStatus": {
+    "description": "M3 translation subtitle: the model's state (model-manager.md). Hy-MT 1.5 is the model's name.",
+    "placeholders": {
+      "status": {
+        "type": "String"
+      },
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsExport": "Export / import",
+  "@settingsExport": {
+    "description": "M3 row: opens M6."
+  },
+  "settingsExportNote": "JSON file · never leaves the phone unless you share it",
+  "@settingsExportNote": {
+    "description": "M3 subtitle of the export row."
+  },
+  "settingsReset": "Reset",
+  "@settingsReset": {
+    "description": "M3 row: opens M7."
+  },
+  "settingsResetNote": "One step, or everything",
+  "@settingsResetNote": {
+    "description": "M3 subtitle of the reset row."
+  },
+  "settingsRestart": "Restart setup",
+  "@settingsRestart": {
+    "description": "M3 row: opens S2 in restart mode."
+  },
+  "settingsRestartNote": "Keeps progress, changes plan settings",
+  "@settingsRestartNote": {
+    "description": "M3 subtitle of the restart row."
   }
 }

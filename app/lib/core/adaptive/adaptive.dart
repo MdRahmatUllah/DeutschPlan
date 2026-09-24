@@ -274,14 +274,27 @@ class AdaptiveSwitch extends StatelessWidget {
             onChanged: onChanged,
             activeTrackColor: tokens.color.primary,
           )
+        // The artboards' Paper & Ink switch: on, an ink thumb with a Lagoon
+        // tick on Lagoon; off, a Slate thumb on Oat; each inside a 2 px border
+        // of its thumb's colour.
         : Switch(
             value: value,
             onChanged: onChanged,
-            activeThumbColor: tokens.surface.card,
+            activeThumbColor: tokens.color.ink,
+            inactiveThumbColor: tokens.color.textSecondary,
             activeTrackColor: tokens.color.primary,
             inactiveTrackColor: tokens.surface.muted,
-            trackOutlineColor: WidgetStatePropertyAll<Color>(tokens.color.ink),
+            trackOutlineColor: WidgetStateProperty.resolveWith(
+              (states) => states.contains(WidgetState.selected)
+                  ? tokens.color.ink
+                  : tokens.color.textSecondary,
+            ),
             trackOutlineWidth: const WidgetStatePropertyAll<double>(2),
+            thumbIcon: WidgetStateProperty.resolveWith(
+              (states) => states.contains(WidgetState.selected)
+                  ? Icon(Icons.check, color: tokens.color.primary)
+                  : null,
+            ),
           );
 
     return Semantics(label: semanticLabel, child: control);

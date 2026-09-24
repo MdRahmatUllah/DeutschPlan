@@ -394,11 +394,11 @@ void main() {
       );
     });
 
-    testWidgets('the Android track carries the 2 px ink border', (
-      tester,
-    ) async {
-      // Paper & Ink, not stock Material: the artboard draws
-      // `border:2px solid #15121F` around a 52x32 track.
+    testWidgets('the Android track carries a 2 px border: ink with a ticked '
+        'ink thumb when on, Slate when off', (tester) async {
+      // Paper & Ink, not stock Material: the artboards draw
+      // `border:2px solid #15121F` around a 52x32 Lagoon track and an ink
+      // thumb with a Lagoon tick; off, a Slate border and thumb on Oat.
       await pump(
         tester,
         AdaptiveChrome.material,
@@ -409,11 +409,17 @@ void main() {
         ),
       );
       final control = tester.widget<Switch>(find.byType(Switch));
-      expect(control.trackOutlineWidth!.resolve(<WidgetState>{}), 2);
+      const on = <WidgetState>{WidgetState.selected};
+      expect(control.trackOutlineWidth!.resolve(on), 2);
+      expect(control.trackOutlineColor!.resolve(on), DpPalette.light.ink);
       expect(
         control.trackOutlineColor!.resolve(<WidgetState>{}),
-        DpPalette.light.ink,
+        DpPalette.light.textSecondary,
       );
+      expect(control.activeThumbColor, DpPalette.light.ink);
+      expect(control.inactiveThumbColor, DpPalette.light.textSecondary);
+      expect(control.thumbIcon!.resolve(on)!.icon, Icons.check);
+      expect(control.thumbIcon!.resolve(<WidgetState>{}), isNull);
     });
 
     testWidgets('the tap target clears 48 dp even though the track is smaller', (

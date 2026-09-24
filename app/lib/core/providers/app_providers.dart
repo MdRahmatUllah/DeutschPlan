@@ -181,6 +181,24 @@ class Languages extends _$Languages {
     ref.invalidateSelf();
     return written;
   }
+
+  /// Settings (M3) sets the two apart: Bangla meanings in an English app is
+  /// what its two rows are for.
+  Future<void> setMeaning(MeaningLanguage meaning) {
+    final written = ref
+        .read(settingsProvider)
+        .write(SettingKeys.meaningLanguage, meaning);
+    ref.invalidateSelf();
+    return written;
+  }
+
+  Future<void> setUi(UiLanguage ui) {
+    final written = ref
+        .read(settingsProvider)
+        .write(SettingKeys.uiLanguage, ui);
+    ref.invalidateSelf();
+    return written;
+  }
 }
 
 // --- Repositories ----------------------------------------------------------

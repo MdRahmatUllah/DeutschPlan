@@ -1,9 +1,11 @@
+import 'package:deutschplan/core/adaptive/adaptive.dart';
 import 'package:deutschplan/core/theme/dp_tokens.dart';
 import 'package:deutschplan/core/typography/dp_text.dart';
 import 'package:material_ui/material_ui.dart';
 
 /// − value +, as `OnboardingPace` and `Settings` both draw it: two 36 dp
-/// outlined circles either side of the number.
+/// outlined circles either side of the number. On iOS both draw the number
+/// and then UIStepper's pill: − | + on Oat.
 class DpStepper extends StatelessWidget {
   const DpStepper({
     required this.value,
@@ -34,17 +36,70 @@ class DpStepper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final changed = onChanged;
+    final VoidCallback? decrease = changed != null && value > min
+        ? () => changed((value - step).clamp(min, max))
+        : null;
+    final VoidCallback? increase = changed != null && value < max
+        ? () => changed((value + step).clamp(min, max))
+        : null;
+
+    if (context.isCupertino) {
+      final tokens = context.tokens;
+      return Row(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          DpText(
+            '$value',
+            role: DpTextRole.bodyLarge,
+            color: tokens.color.textSecondary,
+          ),
+          const SizedBox(width: 12),
+          // The pill is 32 pt, as the artboards and UIStepper draw it; the
+          // buttons over it are 44 pt, as accessibility-performance.md asks.
+          Stack(
+            alignment: Alignment.center,
+            children: <Widget>[
+              Positioned(
+                left: 0,
+                right: 0,
+                child: Container(
+                  height: 32,
+                  decoration: BoxDecoration(
+                    color: tokens.surface.muted,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+              ),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  _PillButton(
+                    icon: Icons.remove,
+                    label: decreaseLabel,
+                    onTap: decrease,
+                  ),
+                  Container(
+                    width: 1,
+                    height: 20,
+                    color: tokens.surface.outline,
+                  ),
+                  _PillButton(
+                    icon: Icons.add,
+                    label: increaseLabel,
+                    onTap: increase,
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ],
+      );
+    }
 
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
-        _RoundButton(
-          icon: Icons.remove,
-          label: decreaseLabel,
-          onTap: changed != null && value > min
-              ? () => changed((value - step).clamp(min, max))
-              : null,
-        ),
+        _RoundButton(icon: Icons.remove, label: decreaseLabel, onTap: decrease),
         const SizedBox(width: 8),
         ConstrainedBox(
           constraints: const BoxConstraints(minWidth: 24),
@@ -56,13 +111,7 @@ class DpStepper extends StatelessWidget {
           ),
         ),
         const SizedBox(width: 8),
-        _RoundButton(
-          icon: Icons.add,
-          label: increaseLabel,
-          onTap: changed != null && value < max
-              ? () => changed((value + step).clamp(min, max))
-              : null,
-        ),
+        _RoundButton(icon: Icons.add, label: increaseLabel, onTap: increase),
       ],
     );
   }
@@ -112,6 +161,44 @@ class _RoundButton extends StatelessWidget {
               ),
               child: Icon(icon, size: 18, color: colour),
             ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _PillButton extends StatelessWidget {
+  const _PillButton({
+    required this.icon,
+    required this.label,
+    required this.onTap,
+  });
+
+  final IconData icon;
+  final String label;
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final tokens = context.tokens;
+    return Semantics(
+      button: true,
+      enabled: onTap != null,
+      label: label,
+      excludeSemantics: true,
+      onTap: onTap,
+      child: GestureDetector(
+        onTap: onTap,
+        behavior: HitTestBehavior.opaque,
+        child: SizedBox.square(
+          dimension: 44,
+          child: Icon(
+            icon,
+            size: 18,
+            color: onTap == null
+                ? tokens.color.textSecondary
+                : tokens.color.ink,
           ),
         ),
       ),

@@ -19,6 +19,7 @@ import 'exam_fixtures.dart';
 import 'exam_run_fixtures.dart';
 import 'me_fixtures.dart';
 import 'quiz_fixtures.dart';
+import 'settings_fixtures.dart';
 import 'word_fixtures.dart';
 
 /// The Today artboard's values: 12 of 20 done, A2.1, day 34, a backlog from
@@ -491,6 +492,8 @@ List<Override> todayStub([
   ...examRunStub(),
   // W1 without a database: the WordDetail artboard's word.
   ...wordStub(),
+  // M3 without a database: the defaults.
+  ...settingsStub(),
 ];
 
 class _StubSentences extends PracticeSentences {
