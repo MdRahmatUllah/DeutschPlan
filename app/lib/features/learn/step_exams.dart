@@ -1,5 +1,8 @@
+import 'dart:math' as math;
+
 import 'package:deutschplan/core/components/dp_button.dart';
 import 'package:deutschplan/core/components/dp_pill.dart';
+import 'package:deutschplan/core/components/dp_progress_ring.dart';
 import 'package:deutschplan/core/providers/app_providers.dart';
 import 'package:deutschplan/core/theme/dp_surface.dart';
 import 'package:deutschplan/core/theme/dp_tokens.dart';
@@ -8,7 +11,11 @@ import 'package:deutschplan/data/repositories/exam_repository.dart';
 import 'package:deutschplan/data/repositories/setting_keys.dart';
 import 'package:deutschplan/data/repositories/word_repository.dart';
 import 'package:deutschplan/domain/exam_generator.dart';
+import 'package:deutschplan/domain/plan_stats.dart' show courseDays;
+import 'package:deutschplan/features/today/today_providers.dart';
+import 'package:deutschplan/features/today/today_screen.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
+import 'package:deutschplan/router/cross_tab.dart';
 import 'package:deutschplan/router/routes.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
@@ -16,25 +23,53 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'step_exams.g.dart';
 
-/// What L10 draws for a step: each sat seed's line, the attempts to resume
-/// by seed, and the two settings the hub shows.
+/// What L10 draws for an unlocked step: each sat seed's line, and the
+/// attempts to resume by seed.
 typedef ExamHub = ({
   List<SeedSummary> seeds,
 
   /// Seed → the unfinished attempt's id (FR-L10-02).
   Map<int, int> resume,
 
-  /// `exam_pass_percent` (BR-EXAM-04).
-  int passPercent,
-
-  /// `listening_questions` (FR-L10-04).
-  bool listening,
-
   /// The seeds whose paper shares grammar topics with another mock's
   /// (`Exam.reused`): a step with fewer than twelve topics can't keep
   /// three papers apart.
   Set<int> reused,
 });
+
+/// The three settings L10 shows, locked or not.
+typedef ExamRules = ({
+  /// `exam_pass_percent` (BR-EXAM-04).
+  int passPercent,
+
+  /// `exam_unlock_percent` (BR-EXAM-01), for the locked hub.
+  int unlockPercent,
+
+  /// `listening_questions` (FR-L10-04).
+  bool listening,
+});
+
+/// [ExamRules], followed: the Learn tab stays alive while Settings moves
+/// them. Apart from [examHub] so that a locked tab — most steps, most of the
+/// time — draws at once, not after papers nobody will see.
+@riverpod
+ExamRules examRules(Ref ref) {
+  final settings = ref.watch(settingsProvider);
+  final changes = settings.changes
+      .where(
+        (key) =>
+            key == SettingKeys.examPassPercent ||
+            key == SettingKeys.examUnlockPercent ||
+            key == SettingKeys.listeningQuestions,
+      )
+      .listen((_) => ref.invalidateSelf());
+  ref.onDispose(changes.cancel);
+  return (
+    passPercent: settings.read(SettingKeys.examPassPercent),
+    unlockPercent: settings.read(SettingKeys.examUnlockPercent),
+    listening: settings.read(SettingKeys.listeningQuestions),
+  );
+}
 
 @riverpod
 Stream<List<SeedSummary>> examSeeds(Ref ref, String code) =>
@@ -52,21 +87,14 @@ Stream<Map<int, int>> examResume(Ref ref, String code) => ref
 /// moves its card without the hub asking.
 @riverpod
 Future<ExamHub> examHub(Ref ref, String code) async {
-  final settings = ref.watch(settingsProvider);
-  // Followed: the Learn tab stays alive while Settings moves the pass mark
-  // or turns listening off.
-  final changes = settings.changes
-      .where(
-        (key) =>
-            key == SettingKeys.examPassPercent ||
-            key == SettingKeys.listeningQuestions,
-      )
-      .listen((_) => ref.invalidateSelf());
-  ref.onDispose(changes.cancel);
+  // Listening alone changes the papers; the pass mark moving need not
+  // draw them again.
+  final listening = ref.watch(
+    examRulesProvider.select((rules) => rules.listening),
+  );
   final exams = ref.watch(examRepositoryProvider);
   final seeds = ref.watch(examSeedsProvider(code).future);
   final resume = ref.watch(examResumeProvider(code).future);
-  final listening = settings.read(SettingKeys.listeningQuestions);
   final summaries = await seeds;
   final open = await resume;
 
@@ -87,8 +115,6 @@ Future<ExamHub> examHub(Ref ref, String code) async {
   return (
     seeds: summaries,
     resume: open,
-    passPercent: settings.read(SettingKeys.examPassPercent),
-    listening: listening,
     reused: <int>{
       for (var seed = 1; seed <= 3; seed++)
         if (sat.containsKey(seed)
@@ -126,18 +152,26 @@ class StepExamsTab extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final tokens = context.tokens;
-    final l10n = AppLocalizations.of(context);
+    final rules = ref.watch(examRulesProvider);
+
+    // FR-L10-01: locked until enough of the step is introduced, and a
+    // passed step stays open.
     if (!step.unlocked && !step.passed) {
-      // ponytail: the locked hub is #128; until then the tab names itself.
-      return Center(
-        child: DpText(
-          l10n.stepTabExams,
-          role: DpTextRole.body,
-          color: tokens.color.textSecondary,
-        ),
+      return ListView(
+        key: PageStorageKey<String>('step-exams-${step.code}'),
+        padding: const EdgeInsets.fromLTRB(16, 14, 16, 16),
+        children: <Widget>[
+          LockedExams(step: step, unlockPercent: rules.unlockPercent),
+          const SizedBox(height: 14),
+          ExamContents(
+            listening: rules.listening,
+            passPercent: rules.passPercent,
+            locked: true,
+          ),
+        ],
       );
     }
+
     final hub = ref.watch(examHubProvider(step.code)).value;
     if (hub == null) return const SizedBox.expand();
 
@@ -157,7 +191,10 @@ class StepExamsTab extends ConsumerWidget {
           ),
         ],
         const SizedBox(height: 14),
-        ExamContents(listening: hub.listening, passPercent: hub.passPercent),
+        ExamContents(
+          listening: rules.listening,
+          passPercent: rules.passPercent,
+        ),
       ],
     );
   }
@@ -294,10 +331,14 @@ class ExamContents extends StatelessWidget {
     required this.listening,
     required this.passPercent,
     super.key,
+    this.locked = false,
   });
 
   final bool listening;
   final int passPercent;
+
+  /// The locked hub also says where the threshold is changed.
+  final bool locked;
 
   @override
   Widget build(BuildContext context) {
@@ -333,10 +374,139 @@ class ExamContents extends StatelessWidget {
           DpText(sections, role: DpTextRole.label, weight: 400),
           const SizedBox(height: 6),
           DpText(
-            l10n.examHubDisclaimer(passPercent),
+            <String>[
+              l10n.examHubDisclaimer(passPercent),
+              if (locked) l10n.examHubThreshold,
+            ].join(' '),
             role: DpTextRole.caption,
             color: tokens.color.textSecondary,
           ),
+        ],
+      ),
+    );
+  }
+}
+
+/// FR-L10-01's locked hub: how much of the step is introduced of what
+/// unlocks its mocks, how long that is at the step's pace, and *Study now*.
+class LockedExams extends ConsumerWidget {
+  const LockedExams({
+    required this.step,
+    required this.unlockPercent,
+    super.key,
+  });
+
+  final StepProgress step;
+
+  /// BR-EXAM-01's `exam_unlock_percent`.
+  final int unlockPercent;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final tokens = context.tokens;
+    final l10n = AppLocalizations.of(context);
+    // Sun's own ink on paper and dark; the page's under glass, as L2's
+    // header does.
+    final ink = tokens.isGlass ? tokens.color.ink : tokens.color.onAccent;
+    final goal = StepProgress.unlockTarget(
+      todo: step.todo,
+      introduced: step.introduced,
+      percent: unlockPercent,
+    );
+    final left = math.max(0, goal - step.introduced);
+    // FR-L10-01: the words left at the step's pace, over its study days.
+    final days = courseDays(
+      words: left,
+      dailyNew: step.dailyNew,
+      studyDaysMask: step.studyDaysMask,
+    );
+    final today = ref.watch(todayViewProvider).value;
+    final blocks = today == null ? const <SessionBlock>[] : openBlocks(today);
+
+    return DpSurface(
+      // Solid Sun on paper and dark; a Sun wash under glass, as the glass
+      // artboard draws it.
+      kind: DpSurfaceKind.tint(
+        tokens.color.accent,
+        opacity: tokens.isGlass ? 0.22 : 1,
+      ),
+      // The ink border and hard shadow of a raised card on paper; a plain
+      // panel edge under glass.
+      selected: !tokens.isGlass,
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          Row(
+            children: <Widget>[
+              Icon(Icons.lock_outline, size: 20, color: ink),
+              const SizedBox(width: 10),
+              Expanded(
+                child: DpText(
+                  l10n.examHubUnlocksWhen(unlockPercent, step.code),
+                  role: DpTextRole.bodyLarge,
+                  weight: 600,
+                  color: ink,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          // The line under it says the same; a screen reader hears it once.
+          ExcludeSemantics(
+            child: DpSegmentedBar(
+              done: step.introduced,
+              learning: 0,
+              todo: left,
+              height: 10,
+              // The page's ink, which dark draws light, over Sun's own.
+              colours: (
+                done: tokens.color.ink,
+                learning: tokens.color.ink,
+                todo: ink.withValues(alpha: 0.15),
+              ),
+            ),
+          ),
+          const SizedBox(height: 12),
+          DpText(
+            <String>[
+              l10n.examHubIntroduced(step.introduced, goal),
+              if (days != null && days > 0)
+                l10n.examHubDaysAt(days, step.dailyNew),
+            ].join(' · '),
+            role: DpTextRole.label,
+            color: ink,
+          ),
+          // FR-L10-01's *Study now*: today's session, as L1's *Study* opens
+          // it, or Today itself once the day is done. Only on the step being
+          // studied: today's session is that step's, and L1 offers *Study*
+          // on its tile alone. Its own semantics node: folded into the
+          // card's, the whole card would read as one button.
+          if (step.active) ...<Widget>[
+            const SizedBox(height: 12),
+            Semantics(
+              container: true,
+              child: Builder(
+                builder: (button) => DpButton(
+                  label: l10n.examHubStudyNow,
+                  // A raised white (dark: card) button on Sun, as Day
+                  // complete's; under glass the call to action stays Lagoon.
+                  colour: tokens.isGlass ? null : tokens.surface.cardStrong,
+                  onColour: tokens.isGlass ? null : tokens.color.ink,
+                  onPressed: blocks.isEmpty || today == null
+                      ? () => context.jumpToTab(const TodayRoute())
+                      : () => StudyRoute.open(
+                          context,
+                          SessionArgs(
+                            blocks: blocks,
+                            planDate: today.date,
+                            origin: originOf(button),
+                          ),
+                        ),
+                ),
+              ),
+            ),
+          ],
         ],
       ),
     );

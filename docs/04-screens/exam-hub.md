@@ -29,7 +29,14 @@
   - The line is "40 questions · ≈ 20 min", then the attempts once there are any, then Mock 3's "seed 3 · no repeats within the step". The note appears only where it is true. A mock whose paper shares grammar topics with another's (`Exam.reused`: steps with fewer than twelve topics, A1.1 to B1.2) reads "shares a few grammar topics with your other mocks" instead. A paper not sat yet is asked of the generator; a stored one is compared with the other stored papers. The 40 is BR-EXAM-03's questions with or without listening; the 20 minutes is the artboard's, fixed until the runner's timer (#130) says otherwise.
   - *Resume* opens the unfinished attempt in L12; *Start* opens L11 for that mock.
   - "What's in these exams" lists the sections as the learner's paper has them: with listening off, "Vocabulary 11 · Reverse 9 …" and no Listening (FR-L10-04). The pass mark is `exam_pass_percent`, and both settings are followed as they change.
-  - The hub shows once the step's exams are unlocked (BR-EXAM-01) or it has been passed; the locked variant is #128.
+  - The hub shows once the step's exams are unlocked (BR-EXAM-01) or it has been passed.
+- Details the locked L10 settles (#128):
+  - The target is `exam_unlock_percent` of the step's words, suspended ones left out as BR-EXAM-01 leaves them out, rounded up: 90 % of 540 is 486. The card reads "Unlocks when 90% of A2.1 is introduced", with a bar and "244 of 486 words introduced · about 35 days at 7 a day".
+  - The days are FR-L2-01's reckoning (`courseDays`): the words left ÷ `daily_new` × 7 ÷ the study days, rounded up. A pace with no study days gives no days.
+  - *Study now* opens today's session, as L1's *Study* does, or Today once the day is done. It shows only on the step being studied: today's session is that step's, and L1 offers *Study* on its tile alone (lead decision on #308).
+  - The locked card draws from the three settings alone, never waiting on the papers the unlocked hub works out.
+  - The panel is the unlocked one's, and its footnote adds "Change the unlock threshold in Settings." The artboard's differently worded footnote isn't used: its "no repeated items" is not true of every step.
+  - Solid Sun with an ink border on paper and dark, the bar in the page's ink, and *Study now* a raised white button (the dark card colour in dark); a Sun wash with a Lagoon *Study now* under glass.
 
 **Business rules.** BR-EXAM-01…06.
 

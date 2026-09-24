@@ -2425,6 +2425,52 @@
   "@examHubShares": {
     "description": "L10 mock card, in place of examHubNoRepeats: the step has too few grammar topics to keep the three papers apart (Exam.reused)."
   },
+  "examHubUnlocksWhen": "Unlocks when {percent}% of {step} is introduced",
+  "@examHubUnlocksWhen": {
+    "description": "L10 locked card title; percent is exam_unlock_percent (BR-EXAM-01).",
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      },
+      "step": {
+        "type": "String"
+      }
+    }
+  },
+  "examHubIntroduced": "{introduced} of {target} words introduced",
+  "@examHubIntroduced": {
+    "description": "L10 locked card: the step's introduced words of the number that unlocks the mocks (FR-L10-01).",
+    "placeholders": {
+      "introduced": {
+        "type": "int",
+        "format": "decimalPattern"
+      },
+      "target": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "examHubDaysAt": "{days, plural, =1{about 1 day at {pace} a day} other{about {days} days at {pace} a day}}",
+  "@examHubDaysAt": {
+    "description": "L10 locked card, after examHubIntroduced: the words left at the step's pace and study days.",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      },
+      "pace": {
+        "type": "int"
+      }
+    }
+  },
+  "examHubStudyNow": "Study now",
+  "@examHubStudyNow": {
+    "description": "L10 locked card button: today's session (T2)."
+  },
+  "examHubThreshold": "Change the unlock threshold in Settings.",
+  "@examHubThreshold": {
+    "description": "L10 locked panel, after examHubDisclaimer."
+  },
   "examHubStart": "Start",
   "@examHubStart": {
     "description": "L10 mock card button: opens L11."
