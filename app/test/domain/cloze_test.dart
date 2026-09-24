@@ -108,6 +108,44 @@ void main() {
       );
     });
 
+    test('never an article, a pronoun or a question word alone', () {
+      expect(
+        blank(
+          'Nach diesem Grundsatz handeln wir.',
+          'Der Zweck heiligt die Mittel',
+        ),
+        isNull,
+        reason: 'not "diesem" for "die"',
+      );
+      expect(
+        blank(
+          'Damit wird eine Versorgungslücke geschlossen.',
+          'eine Lücke schließen',
+        ),
+        isNull,
+      );
+      expect(
+        blank(
+          'Können Sie bitte das wiederholen?',
+          'Können Sie das bitte wiederholen?',
+        ),
+        'wiederholen',
+        reason: 'not "Sie"',
+      );
+    });
+
+    test("a phrase's short word only as itself", () {
+      expect(
+        blank('Der Ausgang ist links.', 'eine Bilanz fällt aus'),
+        isNull,
+        reason: 'not "Ausgang" for "aus"',
+      );
+    });
+
+    test('a noun before an infinitive counts as a noun', () {
+      expect(blank('Deutsch lernen macht Spaß.', 'Spaß machen'), 'Spaß');
+    });
+
     test("a verb's participle", () {
       expect(
         blank('Der Aufwand hat sich gelohnt.', 'sich lohnen', pos: 'verb'),
@@ -140,10 +178,18 @@ void main() {
     });
   });
 
-  test('#325 over the real course, most examples have their gap', () {
+  test('#325 over the real course, most examples have their gap, and the right one', () {
     final db = sqlite3.open('assets/db/content.db', mode: OpenMode.readOnly);
     addTearDown(db.close);
     final missed = <String, int>{};
+    final wrong = <String>[];
+    const functionWords = <String>{
+      'der', 'die', 'das', 'den', 'dem', 'des', 'ein', 'eine', 'einen', //
+      'einem', 'einer', 'eines', 'ich', 'du', 'er', 'sie', 'es', 'wir', //
+      'ihr', 'mich', 'dich', 'sich', 'uns', 'euch', 'mir', 'dir', 'ihm', //
+      'ihn', 'ihnen', 'man', 'was', 'wer', 'wie', 'wo', 'wann', 'warum', //
+      'und', 'oder', 'aber', 'dass', 'ob', 'wenn', 'als',
+    };
     final total = <String, int>{};
     for (final row in db.select(
       'SELECT w.german AS word, w.pos, e.german FROM word_examples e '
@@ -154,13 +200,23 @@ void main() {
           ? 'reflexive'
           : row['pos'] as String? ?? '';
       total.update(kind, (n) => n + 1, ifAbsent: () => 1);
-      if (clozeGap(row['german'] as String, word, pos: row['pos'] as String?) ==
-          null) {
+      final sentence = row['german'] as String;
+      final gap = clozeGap(sentence, word, pos: row['pos'] as String?);
+      if (gap == null) {
         missed.update(kind, (n) => n + 1, ifAbsent: () => 1);
+        continue;
+      }
+      // Precision: a phrase's one-word gap is never a function word.
+      final text = sentence.substring(gap.start, gap.end);
+      if (word.trim().contains(' ') &&
+          !text.contains(' ') &&
+          functionWords.contains(text.toLowerCase())) {
+        wrong.add('$word: [$text] $sentence');
       }
     }
     double rate(String kind) => (missed[kind] ?? 0) / total[kind]!;
     // Before #325: reflexives 99 %, phrases 64 %, verbs 44 %, all 25 %.
+    expect(wrong, isEmpty);
     expect(rate('reflexive'), lessThan(0.15));
     expect(rate('phrase'), lessThan(0.15));
     expect(rate('verb'), lessThan(0.2));
