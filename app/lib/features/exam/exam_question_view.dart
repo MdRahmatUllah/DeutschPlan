@@ -20,6 +20,11 @@ import 'package:material_ui/material_ui.dart';
 /// FR-L12-06: a Listening word plays once and replays twice.
 const int examPlays = 3;
 
+/// Whether [item] is a numbered question: Writing and Speaking are tasks,
+/// so a full paper reads "Question 21 of 40" with 42 items.
+bool examNumbered(ExamItem item) =>
+    item is! WritingTask && item is! SpeakingTask;
+
 /// Whether [item] is answered by typing, into the runner's field.
 bool examTyped(ExamItem item) => switch (item) {
   WordQuestion(:final section) => section != ExamSection.articles,

@@ -68,6 +68,25 @@ void main() {
     );
   }
 
+  // #131: the navigator over question 21, as ExamNavigator draws it.
+  goldenTest(
+    'exam_navigator',
+    builder: (context) => runner(
+      StubExamRun(
+        given: <int, String>{
+          for (var ord = 1; ord <= 20; ord++) ord: 'x',
+          23: 'x',
+          24: 'x',
+        },
+        flagged: const <int>{7, 15, 21},
+      ),
+    ),
+    act: (tester) async {
+      await tester.tap(find.byIcon(Icons.grid_view_outlined));
+      await tester.pumpAndSettle();
+    },
+  );
+
   goldenTest(
     'exam_runner_paused',
     modes: const <GoldenMode>[GoldenMode.light],

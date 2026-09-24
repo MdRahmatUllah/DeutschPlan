@@ -3432,5 +3432,79 @@
   "examRunLoadFailed": "This exam could not be opened.",
   "@examRunLoadFailed": {
     "description": "L12 error panel."
+  },
+  "examNavOpen": "Question navigator",
+  "@examNavOpen": {
+    "description": "L12 band button that opens the navigator (#131), for screen readers."
+  },
+  "examNavTitle": "Questions",
+  "@examNavTitle": {
+    "description": "L12 navigator sheet title (artboard)."
+  },
+  "examNavLeft": "{time} left",
+  "@examNavLeft": {
+    "description": "L12 navigator: the time left, as the clock shows it (e.g. 14:32 left).",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "examNavAnswered": "Answered · {count}",
+  "@examNavAnswered": {
+    "description": "L12 navigator legend: answered questions.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "examNavFlagged": "Flagged · {count}",
+  "@examNavFlagged": {
+    "description": "L12 navigator legend: flagged questions.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "examNavEmpty": "Empty · {count}",
+  "@examNavEmpty": {
+    "description": "L12 navigator legend: questions with no answer.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "examNavUnanswered": "{count, plural, =0{Every question is answered} =1{1 unanswered — submitting asks you to confirm} other{{count} unanswered — submitting asks you to confirm}}",
+  "@examNavUnanswered": {
+    "description": "L12 navigator note above Submit exam (FR-L12-05).",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "examNavQuestion": "Question {n}",
+  "@examNavQuestion": {
+    "description": "L12 navigator cell, for screen readers.",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "examNavAnsweredState": "answered",
+  "@examNavAnsweredState": {
+    "description": "L12 navigator cell state, for screen readers."
+  },
+  "examNavFlaggedState": "flagged",
+  "@examNavFlaggedState": {
+    "description": "L12 navigator cell state, for screen readers."
+  },
+  "examNavEmptyState": "empty",
+  "@examNavEmptyState": {
+    "description": "L12 navigator cell state, for screen readers."
   }
 }

@@ -37,5 +37,6 @@
 - **When answers are written.** A tap (article, choice, word) is written at once. A typed answer is written when the learner moves on (*Previous*, *Next*, submit, leaving), so a crash loses at most the answer being typed.
 - **What a grammar item records**, as #84 grades it: pick the form, the form; rule recall, the rule's index; spot the error, the word's index; order the sentence, the words in order joined by a space.
 - **Listening** (FR-L12-06): one play and two replays, then the speaker is off. Gap: the plays are counted in memory, so a resumed attempt gives each word three plays again; persisting them waits for a column.
-- **Submit** is the last question's button. With questions unanswered it asks first (FR-L12-05); the navigator's *Submit exam* is #131's.
-- Until #133 and #134, Writing and Speaking say they arrive in a later update, and a skipped task scores nothing (FR-L12S-01). The navigator icon is #131's, and the leave dialog's abandon is #132's.
+- **Submit** is the last question's button and the navigator's *Submit exam*. With questions unanswered, either one asks first (FR-L12-05).
+- **The navigator** (#131) lists the numbered questions only; Writing and Speaking follow question 40 with *Next*. A flagged question counts as flagged, answered or not, and "unanswered" counts every question with no answer, flagged ones included. The time in its title is the clock when it opened. It doesn't open while paused.
+- Until #133 and #134, Writing and Speaking say they arrive in a later update, and a skipped task scores nothing (FR-L12S-01). The leave dialog's abandon is #132's.

@@ -144,6 +144,7 @@ class StubExamRun implements ExamRunService {
     this.attempt,
     this.timed = true,
     this.missing = false,
+    this.flagged = const <int>{},
   }) : items = items ?? artboardPaper(),
        given = given ?? {for (var ord = 1; ord <= 20; ord++) ord: 'x'};
 
@@ -154,6 +155,9 @@ class StubExamRun implements ExamRunService {
   final Map<int, String> given;
   final ExamAttempt? attempt;
   final bool missing;
+
+  /// The ords already flagged.
+  final Set<int> flagged;
 
   @override
   final bool timed;
@@ -177,7 +181,12 @@ class StubExamRun implements ExamRunService {
     if (missing) return null;
     final questions = <ExamRunQuestion>[
       for (final (i, item) in items.indexed)
-        (ord: i + 1, item: item, given: given[i + 1], flagged: false),
+        (
+          ord: i + 1,
+          item: item,
+          given: given[i + 1],
+          flagged: flagged.contains(i + 1),
+        ),
     ];
     final at = questions.indexWhere((q) => q.given == null);
     return (
