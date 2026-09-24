@@ -10,7 +10,7 @@ Nothing claimed.
 
 ## Next
 
-#307 review fixes → re-gate → merge; retarget #309 to main before deleting feat/137; rebase #141; then lane B
+#141: gate → plants → device check on emulator-5558 → push → merge; then lane B (#142 W2 compare, #164, #166, #280, #316)
 
 ## Memory
 
