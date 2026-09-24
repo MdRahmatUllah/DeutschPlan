@@ -89,6 +89,12 @@ enum Verdict {
 /// What an exam attempt ended up being worth.
 /// A finished quiz as L2's last quiz card shows it. A record rather than
 /// drift's row, so a provider can return it.
+/// L9's result: the attempt, and each answer that wasn't right.
+typedef QuizResult = ({
+  QuizAttempt attempt,
+  List<QuizMistakeRowsResult> mistakes,
+});
+
 typedef LastQuiz = ({
   int score,
   int outOf,
@@ -588,6 +594,13 @@ class ExamRepository extends DatabaseAccessor<AppDatabase>
 
   Stream<List<QuizAnswer>> watchQuizAnswers(int attemptId) =>
       quizAnswersFor(attemptId).watch();
+
+  /// L9 (#126): a quiz attempt and its mistakes; null for an unknown id.
+  Future<QuizResult?> quizResult(int attemptId) async {
+    final attempt = await quizAttemptById(attemptId).getSingleOrNull();
+    if (attempt == null) return null;
+    return (attempt: attempt, mistakes: await quizMistakeRows(attemptId).get());
+  }
 
   /// The uids *Retry mistakes* builds a new quiz from.
   Future<List<String>> mistakeUids(int attemptId) async {

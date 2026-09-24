@@ -198,11 +198,7 @@ class LastQuizCard extends StatelessWidget {
     final tokens = context.tokens;
     final l10n = AppLocalizations.of(context);
     final share = quiz.outOf == 0 ? 0.0 : quiz.score / quiz.outOf;
-    final colour = share >= 0.8
-        ? tokens.color.easy
-        : share >= 0.5
-        ? tokens.color.learning
-        : tokens.color.again;
+    final colour = quizColour(tokens.color, share);
     final kind = quizKindName(l10n, quiz.length);
     final date = DateFormat(
       'EEE d MMM',
@@ -264,6 +260,14 @@ class LastQuizCard extends StatelessWidget {
 }
 
 /// A quiz direction as the app names it: "DE → EN", "Articles".
+/// A quiz result's colour (`quiz.md`): Lime from 80 %, Sun from 50 %, Coral
+/// under.
+Color quizColour(DpPalette palette, double share) => share >= 0.8
+    ? palette.easy
+    : share >= 0.5
+    ? palette.learning
+    : palette.again;
+
 /// A quiz named by its length, as L2's tiles name them.
 String quizKindName(AppLocalizations l10n, int length) => switch (length) {
   10 => l10n.quizQuick,

@@ -412,6 +412,13 @@ class WordRepository extends DatabaseAccessor<AppDatabase>
     );
   }
 
+  /// FR-L9-01 *Add mistakes to revision*: [uids] due on [date], whatever
+  /// FSRS said. A quiz's words are learned, so each has its row.
+  Future<void> dueOn(List<String> uids, String date) =>
+      (update(db.wordState)..where((t) => t.wordUid.isIn(uids))).write(
+        WordStateCompanion(due: Value(date)),
+      );
+
   /// Creates the state row a word gets when it is first introduced.
   ///
   /// `introduced_on` is a local date: "the day I met this word" is a local

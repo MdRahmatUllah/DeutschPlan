@@ -19,6 +19,7 @@ import 'package:deutschplan/features/learn/grammar_practice_screen.dart'
     show PracticeHeader;
 import 'package:deutschplan/features/learn/step_quiz.dart';
 import 'package:deutschplan/features/quiz/quiz_item_view.dart';
+import 'package:deutschplan/features/quiz/quiz_result_screen.dart';
 import 'package:deutschplan/features/words/speak.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
 import 'package:deutschplan/router/routes.dart';
@@ -70,6 +71,9 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
 
   /// Set once the run is being left, so no second tap races the exit.
   bool _leaving = false;
+
+  /// The finished run's attempt: L9 takes the screen's place (#126).
+  int? _resultOf;
 
   @override
   void initState() {
@@ -164,8 +168,7 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
     }
     _leaving = true;
     await _service.finish(run, points: _points);
-    // ponytail: L9 (#126) takes over from here; until then the run closes.
-    if (mounted) Navigator.of(context).pop();
+    if (mounted) setState(() => _resultOf = run.attemptId);
   }
 
   /// FR-L8-04: closing asks first; what was answered is already saved.
@@ -199,6 +202,11 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // L8 → L9 in the one route (`navigation.md`): back from the result just
+    // leaves.
+    if (_resultOf case final attemptId?) {
+      return QuizResultView(attemptId: attemptId, args: widget.args);
+    }
     final tokens = context.tokens;
     final l10n = AppLocalizations.of(context);
     final run = _run;

@@ -8,7 +8,7 @@
 - Selection: seeded shuffle, prefer words with the lowest retrievability so quizzes double as revision.
 - Multiple-choice distractors: same POS, same step where possible, never a synonym of the answer.
 - Flow: immediate feedback per item (`answer_check`), wrong items re-asked once at the end (BR-QUIZ-01), each answer also rated into FSRS (BR-FSRS-03, source `quiz`).
-- Result: score, time, mistakes; actions *Retry mistakes* (new Quiz from the mistake uids), *Add mistakes to revision* (already rated Again — this button re-schedules them for tomorrow explicitly).
+- Result: score, time, mistakes; actions *Retry mistakes* (new Quiz from the mistake uids), *Add mistakes to revision* (BR-FSRS-03 "rate Again": a wrong answer was rated Again as it was given, and an almost, rated Hard then, is rated Again now; then every mistake is due tomorrow, explicitly, as FR-L9-01 says).
 
 ## Details the builder settles (#81)
 

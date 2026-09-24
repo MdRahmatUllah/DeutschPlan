@@ -2681,6 +2681,102 @@
   "@quizOnceMore": {
     "description": "L8 chip on an item asked again at the end because it was answered wrong (FR-L8-03)."
   },
+  "quizResultScore": "{score} / {outOf}",
+  "@quizResultScore": {
+    "description": "L9 score block: points out of the most there were (a quiz scores in halves, so '15.5').",
+    "placeholders": {
+      "score": {
+        "type": "String"
+      },
+      "outOf": {
+        "type": "String"
+      }
+    }
+  },
+  "quizResultLine": "{percent}% · {time} · {title}",
+  "@quizResultLine": {
+    "description": "L9 line under the score: percent, time taken, and the quiz title (e.g. Standard · DE → EN).",
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      },
+      "time": {
+        "type": "String"
+      },
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "quizResultTime": "{minutes} min {seconds} s",
+  "@quizResultTime": {
+    "description": "L9: how long the quiz took.",
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      },
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "quizResultMistakes": "Mistakes · {count} · re-asked once at the end",
+  "@quizResultMistakes": {
+    "description": "L9 section label over the mistakes (FR-L8-03 re-asked them).",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "quizResultNoMistakes": "No mistakes",
+  "@quizResultNoMistakes": {
+    "description": "L9 section label when every answer was right."
+  },
+  "quizResultWrote": "you wrote: {given}",
+  "@quizResultWrote": {
+    "description": "L9 mistake row: what the learner typed.",
+    "placeholders": {
+      "given": {
+        "type": "String"
+      }
+    }
+  },
+  "quizResultWroteArticle": "you wrote: {given} · article",
+  "@quizResultWroteArticle": {
+    "description": "L9 mistake row when only the article was wrong (BR-ANS-02).",
+    "placeholders": {
+      "given": {
+        "type": "String"
+      }
+    }
+  },
+  "quizResultNoAnswer": "no answer: the time ran out",
+  "@quizResultNoAnswer": {
+    "description": "L9 mistake row when the 15 s timer submitted an empty answer (FR-L8-05)."
+  },
+  "quizRetryMistakes": "Retry mistakes · {count}",
+  "@quizRetryMistakes": {
+    "description": "L9 button: a new quiz from the mistakes (FR-L9-01).",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "quizAddToRevision": "Add mistakes to revision",
+  "@quizAddToRevision": {
+    "description": "L9 button: the mistakes due tomorrow (FR-L9-01)."
+  },
+  "quizAddedToRevision": "{count, plural, =1{1 word is due tomorrow} other{{count} words are due tomorrow}}",
+  "@quizAddedToRevision": {
+    "description": "L9 toast after Add mistakes to revision.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "quizAnswerIs": "The answer is {answer}",
   "@quizAnswerIs": {
     "description": "L8 verdict line, wrong. answer is German course text or a meaning.",

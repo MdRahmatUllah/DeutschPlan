@@ -815,6 +815,11 @@ class QuizRoute extends GoRouteData with $QuizRoute {
   static void open(BuildContext context, QuizArgs args) =>
       unawaited(context.push<void>(const QuizRoute().location, extra: args));
 
+  /// L9's *Retry mistakes*: a new quiz in place of the finished one, so back
+  /// still returns to whatever opened the first.
+  static void instead(BuildContext context, QuizArgs args) =>
+      context.pushReplacement(const QuizRoute().location, extra: args);
+
   @override
   Widget build(BuildContext context, GoRouterState state) {
     // The guard turns a /quiz with no args away (it is gone after process

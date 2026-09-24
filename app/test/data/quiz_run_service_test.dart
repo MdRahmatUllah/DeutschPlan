@@ -49,6 +49,7 @@ void main() {
       QuizBuilder(DriftQuizStore(words)),
       exams,
       RatingService(db, settings, PlanRepository(db), words, now),
+      words,
       now,
     );
     for (final uid in <String>[ContentFixture.haus, ContentFixture.strasse]) {
@@ -173,6 +174,61 @@ void main() {
     expect(
       (attempt.finishedAt, attempt.scorePoints, attempt.maxPoints),
       ('2026-09-21T19:00:00.000Z', 1.5, 2.0),
+    );
+  });
+
+  test('FR-L9-01 the result: the attempt and its mistakes, as the course '
+      'writes them', () async {
+    final run = await start();
+    final (first, second) = (run.quiz.items[0], run.quiz.items[1]);
+    await service.answer(run, first, given: 'x', verdict: Verdict.almost);
+    await service.answer(
+      run,
+      second,
+      given: second.expected,
+      verdict: Verdict.correct,
+    );
+    await service.finish(run, points: 1.5);
+
+    final result = (await service.result(run.attemptId!))!;
+    expect((result.attempt.scorePoints, result.attempt.maxPoints), (1.5, 2.0));
+    final words = <String, (String, String)>{
+      ContentFixture.haus: ('Haus', 'das'),
+      ContentFixture.strasse: ('Straße', 'die'),
+    };
+    expect(
+      [
+        for (final m in result.mistakes)
+          (m.uid, m.given, m.verdict, (m.german!, m.article!)),
+      ],
+      [(first.wordUid, 'x', 'almost', words[first.wordUid])],
+      reason: 'only what was not right',
+    );
+  });
+
+  test('an unknown attempt has no result', () async {
+    expect(await service.result(99), isNull);
+  });
+
+  test('FR-L9-01 BR-FSRS-03 Add mistakes to revision: an almost rated '
+      'Again, a wrong not twice, both due tomorrow, those only', () async {
+    Future<String?> due(String uid) async => (await (db.select(
+      db.wordState,
+    )..where((s) => s.wordUid.equals(uid))).getSingle()).due;
+    final before = await due(ContentFixture.strasse);
+
+    await service.addToRevision(<({String uid, String? verdict})>[
+      (uid: ContentFixture.haus, verdict: 'almost'),
+      (uid: 'uid-not-learned', verdict: 'wrong'),
+    ], today: '2026-09-21');
+
+    expect(await due(ContentFixture.haus), '2026-09-22');
+    expect(await due(ContentFixture.strasse), before, reason: 'not a mistake');
+    final log = await db.select(db.reviewLog).get();
+    expect(
+      [for (final r in log) (r.wordUid, r.rating, r.source)],
+      [(ContentFixture.haus, Rating.again.value, 'quiz')],
+      reason: 'the almost is rated Again; the wrong already was',
     );
   });
 
