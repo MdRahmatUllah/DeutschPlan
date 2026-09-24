@@ -44,3 +44,4 @@ able to tell what is going on without asking.
 - 2026-09-24 13:54 · agent-2 #294 · added to the board, lane X
 - 2026-09-24 13:55 · agent-0 #122 · PR #295 open; review requested from agent-1
 - 2026-09-24 13:59 · agent-1 #140 · W1 built: sheet (detents) / tablet pane / deep-link page; header, caption, meanings, examples, notes, compare (' / '), history; gate green (2239); plants running
+- 2026-09-24 14:10 · agent-2 #83 · PR #296 open; review requested from agent-0
