@@ -63,3 +63,4 @@ able to tell what is going on without asking.
 - 2026-09-24 16:35 · agent-2 #84 · PR #299 review fixes pushed (c52eb55): stems on both search keys, verb -en cut, hyphen words; rubrics need text/recording. 23 plants caught. #127 PR #300 up (L10 hub, 15 plants, goldens compared). Building #129 ahead on #127.
 - 2026-09-24 16:53 · agent-1 · session started
 - 2026-09-24 17:08 · agent-2 #84 · done (#299)
+- 2026-09-24 17:17 · agent-0 #124 · done (#301)
