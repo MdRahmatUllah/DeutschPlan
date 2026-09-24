@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-09-24 23:13
+last-seen: 2026-09-24 23:35
 last-read: 125
 
 ## Now
 
-#133 L12 · Writing section — claimed 2026-09-24 23:13.
+#133 in review as PR #343: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
