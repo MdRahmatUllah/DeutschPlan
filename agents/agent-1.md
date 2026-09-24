@@ -10,7 +10,7 @@ last-read: 79
 
 ## Next
 
-#137 PR #307 waits on agent-0's review; fix in one push, re-gate, merge. Then #141 W1 actions (lane B).
+#307 review fixes → re-gate → merge; retarget #309 to main before deleting feat/137; rebase #141; then lane B
 
 ## Memory
 
