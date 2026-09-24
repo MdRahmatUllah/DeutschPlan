@@ -37,6 +37,7 @@ void main() {
     int done = 450,
     int mask = 127,
     int suspended = 0,
+    bool started = true,
   }) => StepProgress(
     code: 'A1.2',
     levelCode: 'A1',
@@ -48,27 +49,34 @@ void main() {
     grammarLearned: 12,
     unlocked: unlocked,
     passedSeed: passed ? 1 : null,
-    startedOn: '2026-07-01',
+    startedOn: started ? '2026-07-01' : null,
     dailyNew: 7,
     studyDaysMask: mask,
   );
 
   /// The ExamHubLocked artboard's step: 184 done and 60 learning of 540.
-  StepProgress locked({int mask = 127, int todo = 296, int suspended = 0}) =>
-      step(
-        unlocked: false,
-        todo: todo,
-        learning: 60,
-        done: 184,
-        mask: mask,
-        suspended: suspended,
-      );
+  StepProgress locked({
+    int mask = 127,
+    int todo = 296,
+    int suspended = 0,
+    bool started = true,
+  }) => step(
+    unlocked: false,
+    todo: todo,
+    learning: 60,
+    done: 184,
+    mask: mask,
+    suspended: suspended,
+    started: started,
+  );
 
   Future<void> pump(
     WidgetTester tester, {
     ExamHub? hub,
+    ExamRules? rules,
     StepProgress? progress,
     TodayView? today,
+    bool hubPending = false,
   }) async {
     went = null;
     Widget away(GoRouterState state) {
@@ -80,7 +88,7 @@ void main() {
       ProviderScope(
         key: UniqueKey(),
         overrides: <Override>[
-          ...examStub(hub: hub),
+          ...examStub(hub: hub, rules: rules, hubPending: hubPending),
           todayViewProvider.overrideWith(
             (ref) async => today ?? artboardToday(),
           ),
@@ -214,8 +222,8 @@ void main() {
         // 33.5 of 48 at a 70 % mark.
         await pump(
           tester,
+          rules: artboardExamRules(passPercent: 70),
           hub: artboardExamHub(
-            passPercent: 70,
             seeds: const <SeedSummary>[
               SeedSummary(
                 seed: 2,
@@ -320,7 +328,7 @@ void main() {
     testWidgets('FR-L10-04 with listening off, its points moved', (
       tester,
     ) async {
-      await pump(tester, hub: artboardExamHub(listening: false));
+      await pump(tester, rules: artboardExamRules(listening: false));
 
       expect(
         find.text(
@@ -334,7 +342,7 @@ void main() {
     });
 
     testWidgets('BR-EXAM-04 the pass mark is the setting\'s', (tester) async {
-      await pump(tester, hub: artboardExamHub(passPercent: 75));
+      await pump(tester, rules: artboardExamRules(passPercent: 75));
 
       expect(find.textContaining('Pass mark 75%.'), findsOneWidget);
     });
@@ -375,7 +383,7 @@ void main() {
       await pump(
         tester,
         progress: locked(),
-        hub: artboardExamHub(unlockPercent: 80),
+        rules: artboardExamRules(unlockPercent: 80),
       );
 
       expect(find.text(l10n.examHubUnlocksWhen(80, 'A1.2')), findsOneWidget);
@@ -388,7 +396,7 @@ void main() {
       await pump(
         tester,
         progress: locked(todo: 299),
-        hub: artboardExamHub(unlockPercent: 80),
+        rules: artboardExamRules(unlockPercent: 80),
       );
       expect(
         find.textContaining(l10n.examHubIntroduced(244, 435)),
@@ -405,6 +413,21 @@ void main() {
         find.textContaining(l10n.examHubIntroduced(244, 486)),
         findsOneWidget,
       );
+    });
+
+    testWidgets('it draws at once, without waiting on the papers', (
+      tester,
+    ) async {
+      await pump(tester, progress: locked(), hubPending: true);
+      expect(find.text(l10n.examHubUnlocksWhen(90, 'A1.2')), findsOneWidget);
+      expect(find.textContaining(l10n.examHubThreshold), findsOneWidget);
+    });
+
+    testWidgets('Study now only on the step being studied', (tester) async {
+      // A step not started: today's session is another step's.
+      await pump(tester, progress: locked(started: false));
+      expect(find.text(l10n.examHubUnlocksWhen(90, 'A1.2')), findsOneWidget);
+      expect(find.text(l10n.examHubStudyNow), findsNothing);
     });
 
     testWidgets('Study now opens today\'s session', (tester) async {

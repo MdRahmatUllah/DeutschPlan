@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:deutschplan/core/components/dp_button.dart';
 import 'package:deutschplan/core/components/dp_pill.dart';
 import 'package:deutschplan/core/components/dp_progress_ring.dart';
@@ -21,14 +23,22 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'step_exams.g.dart';
 
-/// What L10 draws for a step: each sat seed's line, the attempts to resume
-/// by seed, and the two settings the hub shows.
+/// What L10 draws for an unlocked step: each sat seed's line, and the
+/// attempts to resume by seed.
 typedef ExamHub = ({
   List<SeedSummary> seeds,
 
   /// Seed → the unfinished attempt's id (FR-L10-02).
   Map<int, int> resume,
 
+  /// The seeds whose paper shares grammar topics with another mock's
+  /// (`Exam.reused`): a step with fewer than twelve topics can't keep
+  /// three papers apart.
+  Set<int> reused,
+});
+
+/// The three settings L10 shows, locked or not.
+typedef ExamRules = ({
   /// `exam_pass_percent` (BR-EXAM-04).
   int passPercent,
 
@@ -37,12 +47,29 @@ typedef ExamHub = ({
 
   /// `listening_questions` (FR-L10-04).
   bool listening,
-
-  /// The seeds whose paper shares grammar topics with another mock's
-  /// (`Exam.reused`): a step with fewer than twelve topics can't keep
-  /// three papers apart.
-  Set<int> reused,
 });
+
+/// [ExamRules], followed: the Learn tab stays alive while Settings moves
+/// them. Apart from [examHub] so that a locked tab — most steps, most of the
+/// time — draws at once, not after papers nobody will see.
+@riverpod
+ExamRules examRules(Ref ref) {
+  final settings = ref.watch(settingsProvider);
+  final changes = settings.changes
+      .where(
+        (key) =>
+            key == SettingKeys.examPassPercent ||
+            key == SettingKeys.examUnlockPercent ||
+            key == SettingKeys.listeningQuestions,
+      )
+      .listen((_) => ref.invalidateSelf());
+  ref.onDispose(changes.cancel);
+  return (
+    passPercent: settings.read(SettingKeys.examPassPercent),
+    unlockPercent: settings.read(SettingKeys.examUnlockPercent),
+    listening: settings.read(SettingKeys.listeningQuestions),
+  );
+}
 
 @riverpod
 Stream<List<SeedSummary>> examSeeds(Ref ref, String code) =>
@@ -60,22 +87,14 @@ Stream<Map<int, int>> examResume(Ref ref, String code) => ref
 /// moves its card without the hub asking.
 @riverpod
 Future<ExamHub> examHub(Ref ref, String code) async {
-  final settings = ref.watch(settingsProvider);
-  // Followed: the Learn tab stays alive while Settings moves the pass mark
-  // or turns listening off.
-  final changes = settings.changes
-      .where(
-        (key) =>
-            key == SettingKeys.examPassPercent ||
-            key == SettingKeys.examUnlockPercent ||
-            key == SettingKeys.listeningQuestions,
-      )
-      .listen((_) => ref.invalidateSelf());
-  ref.onDispose(changes.cancel);
+  // Listening alone changes the papers; the pass mark moving need not
+  // draw them again.
+  final listening = ref.watch(
+    examRulesProvider.select((rules) => rules.listening),
+  );
   final exams = ref.watch(examRepositoryProvider);
   final seeds = ref.watch(examSeedsProvider(code).future);
   final resume = ref.watch(examResumeProvider(code).future);
-  final listening = settings.read(SettingKeys.listeningQuestions);
   final summaries = await seeds;
   final open = await resume;
 
@@ -96,9 +115,6 @@ Future<ExamHub> examHub(Ref ref, String code) async {
   return (
     seeds: summaries,
     resume: open,
-    passPercent: settings.read(SettingKeys.examPassPercent),
-    unlockPercent: settings.read(SettingKeys.examUnlockPercent),
-    listening: listening,
     reused: <int>{
       for (var seed = 1; seed <= 3; seed++)
         if (sat.containsKey(seed)
@@ -136,8 +152,7 @@ class StepExamsTab extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final hub = ref.watch(examHubProvider(step.code)).value;
-    if (hub == null) return const SizedBox.expand();
+    final rules = ref.watch(examRulesProvider);
 
     // FR-L10-01: locked until enough of the step is introduced, and a
     // passed step stays open.
@@ -146,16 +161,19 @@ class StepExamsTab extends ConsumerWidget {
         key: PageStorageKey<String>('step-exams-${step.code}'),
         padding: const EdgeInsets.fromLTRB(16, 14, 16, 16),
         children: <Widget>[
-          LockedExams(step: step, unlockPercent: hub.unlockPercent),
+          LockedExams(step: step, unlockPercent: rules.unlockPercent),
           const SizedBox(height: 14),
           ExamContents(
-            listening: hub.listening,
-            passPercent: hub.passPercent,
+            listening: rules.listening,
+            passPercent: rules.passPercent,
             locked: true,
           ),
         ],
       );
     }
+
+    final hub = ref.watch(examHubProvider(step.code)).value;
+    if (hub == null) return const SizedBox.expand();
 
     return ListView(
       key: PageStorageKey<String>('step-exams-${step.code}'),
@@ -173,7 +191,10 @@ class StepExamsTab extends ConsumerWidget {
           ),
         ],
         const SizedBox(height: 14),
-        ExamContents(listening: hub.listening, passPercent: hub.passPercent),
+        ExamContents(
+          listening: rules.listening,
+          passPercent: rules.passPercent,
+        ),
       ],
     );
   }
@@ -380,11 +401,6 @@ class LockedExams extends ConsumerWidget {
   /// BR-EXAM-01's `exam_unlock_percent`.
   final int unlockPercent;
 
-  /// The words that unlock the mocks: [percent] of the step's, suspended
-  /// ones left out as the unlock leaves them out (BR-EXAM-01).
-  static int target(StepProgress step, int percent) =>
-      ((step.todo + step.introduced) * percent / 100).ceil();
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tokens = context.tokens;
@@ -392,8 +408,12 @@ class LockedExams extends ConsumerWidget {
     // Sun's own ink on paper and dark; the page's under glass, as L2's
     // header does.
     final ink = tokens.isGlass ? tokens.color.ink : tokens.color.onAccent;
-    final goal = target(step, unlockPercent);
-    final left = goal - step.introduced < 0 ? 0 : goal - step.introduced;
+    final goal = StepProgress.unlockTarget(
+      todo: step.todo,
+      introduced: step.introduced,
+      percent: unlockPercent,
+    );
+    final left = math.max(0, goal - step.introduced);
     // FR-L10-01: the words left at the step's pace, over its study days.
     final days = courseDays(
       words: left,
@@ -439,9 +459,10 @@ class LockedExams extends ConsumerWidget {
               learning: 0,
               todo: left,
               height: 10,
+              // The page's ink, which dark draws light, over Sun's own.
               colours: (
-                done: ink,
-                learning: ink,
+                done: tokens.color.ink,
+                learning: tokens.color.ink,
                 todo: ink.withValues(alpha: 0.15),
               ),
             ),
@@ -456,33 +477,36 @@ class LockedExams extends ConsumerWidget {
             role: DpTextRole.label,
             color: ink,
           ),
-          const SizedBox(height: 12),
           // FR-L10-01's *Study now*: today's session, as L1's *Study* opens
-          // it, or Today itself once the day is done.
-          // Its own node: folded into the card's, the whole card would read
-          // as one button.
-          Semantics(
-            container: true,
-            child: Builder(
-              builder: (button) => DpButton(
-                label: l10n.examHubStudyNow,
-                // White on Sun; under glass the call to action stays Lagoon.
-                kind: tokens.isGlass
-                    ? DpButtonKind.primary
-                    : DpButtonKind.secondary,
-                onPressed: blocks.isEmpty || today == null
-                    ? () => context.jumpToTab(const TodayRoute())
-                    : () => StudyRoute.open(
-                        context,
-                        SessionArgs(
-                          blocks: blocks,
-                          planDate: today.date,
-                          origin: originOf(button),
+          // it, or Today itself once the day is done. Only on the step being
+          // studied: today's session is that step's, and L1 offers *Study*
+          // on its tile alone. Its own semantics node: folded into the
+          // card's, the whole card would read as one button.
+          if (step.active) ...<Widget>[
+            const SizedBox(height: 12),
+            Semantics(
+              container: true,
+              child: Builder(
+                builder: (button) => DpButton(
+                  label: l10n.examHubStudyNow,
+                  // A raised white (dark: card) button on Sun, as Day
+                  // complete's; under glass the call to action stays Lagoon.
+                  colour: tokens.isGlass ? null : tokens.surface.cardStrong,
+                  onColour: tokens.isGlass ? null : tokens.color.ink,
+                  onPressed: blocks.isEmpty || today == null
+                      ? () => context.jumpToTab(const TodayRoute())
+                      : () => StudyRoute.open(
+                          context,
+                          SessionArgs(
+                            blocks: blocks,
+                            planDate: today.date,
+                            origin: originOf(button),
+                          ),
                         ),
-                      ),
+                ),
               ),
             ),
-          ),
+          ],
         ],
       ),
     );

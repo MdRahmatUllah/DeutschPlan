@@ -79,21 +79,38 @@ void main() {
     expect(view.resume, <int, int>{2: two});
   });
 
-  test('BR-EXAM-04 and FR-L10-04: the pass mark and listening, from '
-      'settings, as they change', () async {
-    expect((await hub()).passPercent, 60);
-    expect((await hub()).listening, isTrue);
+  test('BR-EXAM-01, BR-EXAM-04 and FR-L10-04: the unlock threshold, the '
+      'pass mark and listening, from settings, as they change', () async {
+    container.listen(examRulesProvider, (_, _) {});
+    ExamRules rules() => container.read(examRulesProvider);
+    expect(rules(), (passPercent: 60, unlockPercent: 90, listening: true));
 
     await settings.write(SettingKeys.examPassPercent, 70);
     await settings.write(SettingKeys.listeningQuestions, false);
-    await pumpEventQueue();
-    expect((await hub()).unlockPercent, 90);
     await settings.write(SettingKeys.examUnlockPercent, 80);
     await pumpEventQueue();
 
-    expect((await hub()).unlockPercent, 80);
-    expect((await hub()).passPercent, 70);
-    expect((await hub()).listening, isFalse);
+    expect(rules(), (passPercent: 70, unlockPercent: 80, listening: false));
+  });
+
+  test('FR-L10-04 listening off draws the papers again; the pass mark '
+      'does not', () async {
+    var built = 0;
+    container.listen(examHubProvider('A1.2'), (_, next) {
+      if (next.hasValue) built++;
+    });
+    await hub();
+    final before = built;
+
+    await settings.write(SettingKeys.examPassPercent, 70);
+    await pumpEventQueue();
+    await hub();
+    expect(built, before);
+
+    await settings.write(SettingKeys.listeningQuestions, false);
+    await pumpEventQueue();
+    await hub();
+    expect(built, greaterThan(before));
   });
 
   test('BR-EXAM-02 eleven topics for twelve slots: Mock 3 shares', () async {

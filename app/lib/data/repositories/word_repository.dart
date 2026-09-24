@@ -142,16 +142,23 @@ class StepProgress {
   /// Met at least once.
   int get introduced => learning + done;
 
-  /// BR-EXAM-01 for [percent], suspended words left out as the bar leaves
-  /// them out.
+  /// BR-EXAM-01's target: [percent] of the words, suspended ones left out
+  /// as the bar leaves them out, rounded up.
+  static int unlockTarget({
+    required int todo,
+    required int introduced,
+    required int percent,
+  }) => ((todo + introduced) * percent + 99) ~/ 100;
+
+  /// BR-EXAM-01 for [percent]: [unlockTarget] introduced.
   static bool unlocks({
     required int todo,
     required int introduced,
     required int percent,
-  }) {
-    final counted = todo + introduced;
-    return counted > 0 && introduced * 100 >= percent * counted;
-  }
+  }) =>
+      todo + introduced > 0 &&
+      introduced >=
+          unlockTarget(todo: todo, introduced: introduced, percent: percent);
 }
 
 /// Words, their state, and the transitions between statuses.

@@ -33,9 +33,10 @@
 - Details the locked L10 settles (#128):
   - The target is `exam_unlock_percent` of the step's words, suspended ones left out as BR-EXAM-01 leaves them out, rounded up: 90 % of 540 is 486. The card reads "Unlocks when 90% of A2.1 is introduced", with a bar and "244 of 486 words introduced · about 35 days at 7 a day".
   - The days are FR-L2-01's reckoning (`courseDays`): the words left ÷ `daily_new` × 7 ÷ the study days, rounded up. A pace with no study days gives no days.
-  - *Study now* opens today's session, as L1's *Study* does, or Today once the day is done.
+  - *Study now* opens today's session, as L1's *Study* does, or Today once the day is done. It shows only on the step being studied: today's session is that step's, and L1 offers *Study* on its tile alone (lead decision on #308).
+  - The locked card draws from the three settings alone, never waiting on the papers the unlocked hub works out.
   - The panel is the unlocked one's, and its footnote adds "Change the unlock threshold in Settings." The artboard's differently worded footnote isn't used: its "no repeated items" is not true of every step.
-  - Solid Sun with an ink border on paper and dark; a Sun wash with a Lagoon *Study now* under glass.
+  - Solid Sun with an ink border on paper and dark, the bar in the page's ink, and *Study now* a raised white button (the dark card colour in dark); a Sun wash with a Lagoon *Study now* under glass.
 
 **Business rules.** BR-EXAM-01…06.
 
