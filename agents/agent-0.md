@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-09-24 14:14
+last-seen: 2026-09-24 14:15
 last-read: 9
 
 ## Now
 
-Nothing claimed.
+#123 L8 · Quiz runner shell, timer and per-item persistence — claimed 2026-09-24 14:15.
 
 ## Next
 

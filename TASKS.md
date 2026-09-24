@@ -29,7 +29,7 @@ claiming the same issue. A hand edit skips that check.
 | #83 | M4 | C | P1 | L | exam_generator.dart — nine sections, three seeds, no repeats | review | agent-2 | #81 #82 | #296 |
 | #84 | M4 | C | P1 | M | Exam grading including writing and speaking scoring | open |  | #61 #83 |  |
 | #122 | M4 | A | P1 | M | L7 · Custom quiz sheet | done | agent-0 | #37 #81 #116 | #295 |
-| #123 | M4 | A | P1 | M | L8 · Quiz runner shell, timer and per-item persistence | open |  | #61 #68 #122 |  |
+| #123 | M4 | A | P1 | M | L8 · Quiz runner shell, timer and per-item persistence | in-progress | agent-0 | #61 #68 #122 |  |
 | #124 | M4 | A | P1 | M | L8 · Item layouts and feedback | open |  | #40 #75 #123 |  |
 | #125 | M4 | A | P2 | S | L8 · Re-ask queue for wrong items | open |  | #124 |  |
 | #126 | M4 | A | P1 | M | L9 · Quiz result | open |  | #125 |  |
