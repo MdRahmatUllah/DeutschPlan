@@ -320,5 +320,21 @@
   "stepStartCancel": "এখন নয়",
   "stepPractiseDue": "সব বাকি অনুশীলন · {count}",
   "stepTopicDueToday": "আজ অনুশীলন",
-  "stepTopicNextIn": "পরের অনুশীলন {days} দিন পর"
+  "stepTopicNextIn": "পরের অনুশীলন {days} দিন পর",
+  "quizTilesCaption": "এই ধাপের শেখা শব্দ অনুশীলন করুন",
+  "quizQuick": "দ্রুত",
+  "quizStandard": "সাধারণ",
+  "quizLong": "দীর্ঘ",
+  "quizForms": "রূপ",
+  "quizCustom": "নিজের মতো",
+  "quizQuestions": "{count}টি প্রশ্ন",
+  "quizFormsLine": "এই ধাপের Perfekt, তৃতীয় পুরুষ, বহুবচন",
+  "quizCustomLine": "দিক, দৈর্ঘ্য, উৎস, টাইমার",
+  "quizLocked": "এই ধাপের ১০টি শব্দ শেখা হলে কুইজ খুলবে · এখন পর্যন্ত {learned}টি",
+  "quizLast": "শেষ কুইজ · {score} / {outOf}",
+  "quizLastLine": "{kind} · {direction} · {date}",
+  "quizDirectionArticles": "আর্টিকেল",
+  "quizDirectionListening": "শোনা",
+  "quizDirectionMixed": "মিশ্র",
+  "quizLastLineForms": "রূপ · {date}"
 }

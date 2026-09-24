@@ -788,6 +788,10 @@ class GrammarPracticeRoute extends GoRouteData with $GrammarPracticeRoute {
 class QuizRoute extends GoRouteData with $QuizRoute {
   const QuizRoute();
 
+  /// L8 over the shell, as [StudyRoute.open].
+  static void open(BuildContext context, QuizArgs args) =>
+      unawaited(context.push<void>(const QuizRoute().location, extra: args));
+
   @override
   Widget build(BuildContext context, GoRouterState state) {
     final args = state.extra as QuizArgs?;

@@ -70,3 +70,11 @@ recentQuizzes:
   WHERE finished_at IS NOT NULL
   ORDER BY finished_at DESC, id DESC
   LIMIT :limit;
+
+-- L2's last quiz card: the step's latest finished quiz from its words.
+lastStepQuiz:
+  SELECT * FROM quiz_attempts
+  WHERE source = 'stepLearned' AND source_ref = :code
+    AND finished_at IS NOT NULL
+  ORDER BY finished_at DESC, id DESC
+  LIMIT 1;

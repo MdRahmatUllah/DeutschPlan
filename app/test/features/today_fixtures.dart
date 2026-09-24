@@ -4,6 +4,7 @@ import 'package:deutschplan/data/db/app_database.dart';
 import 'package:deutschplan/data/repositories/word_repository.dart';
 import 'package:deutschplan/features/backlog/backlog_screen.dart';
 import 'package:deutschplan/features/learn/step_grammar.dart';
+import 'package:deutschplan/features/learn/step_quiz.dart';
 import 'package:deutschplan/features/learn/step_words.dart';
 import 'package:deutschplan/data/repositories/grammar_repository.dart';
 import 'package:deutschplan/features/today/today_providers.dart';
@@ -290,6 +291,16 @@ List<Override> todayStub([
   // L2's Grammar tab without a database: the StepGrammar artboard's ten.
   stepTopicsProvider.overrideWith(
     (ref, code) => Stream.value(artboardTopics()),
+  ),
+  // L2's Quiz tab without a database: the QuizSetup artboard's last quiz.
+  lastStepQuizProvider.overrideWith(
+    (ref, code) => Stream.value((
+      score: 16,
+      outOf: 20,
+      length: 20,
+      direction: 'deEn',
+      finishedAt: '2026-09-20T19:05:00',
+    )),
   ),
   // L1 without a database: the Learn artboard's course.
   stepProgressProvider.overrideWith(

@@ -1986,5 +1986,103 @@
         "type": "int"
       }
     }
+  },
+  "quizTilesCaption": "Practise this step's learned words",
+  "@quizTilesCaption": {
+    "description": "L2 Quiz tab caption over the tiles."
+  },
+  "quizQuick": "Quick",
+  "@quizQuick": {
+    "description": "L2 Quiz tile: 10 questions."
+  },
+  "quizStandard": "Standard",
+  "@quizStandard": {
+    "description": "L2 Quiz tile: 20 questions."
+  },
+  "quizLong": "Long",
+  "@quizLong": {
+    "description": "L2 Quiz tile: 30 questions."
+  },
+  "quizForms": "Forms",
+  "@quizForms": {
+    "description": "L2 Quiz tile: the forms direction."
+  },
+  "quizCustom": "Custom",
+  "@quizCustom": {
+    "description": "L2 Quiz tile: opens the custom quiz sheet (L7)."
+  },
+  "quizQuestions": "{count, plural, =1{1 question} other{{count} questions}}",
+  "@quizQuestions": {
+    "description": "L2 Quiz tile subtitle.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "quizFormsLine": "Perfekt, 3rd person, plurals from this step",
+  "@quizFormsLine": {
+    "description": "L2 Forms tile subtitle."
+  },
+  "quizCustomLine": "Direction, length, source, timer",
+  "@quizCustomLine": {
+    "description": "L2 Custom tile subtitle."
+  },
+  "quizLocked": "Quizzes open once 10 words of this step are learned · {learned} so far",
+  "@quizLocked": {
+    "description": "L2 Quiz tab while fewer than 10 of the step's words are learned.",
+    "placeholders": {
+      "learned": {
+        "type": "int"
+      }
+    }
+  },
+  "quizLast": "Last quiz · {score} / {outOf}",
+  "@quizLast": {
+    "description": "L2 last quiz card title.",
+    "placeholders": {
+      "score": {
+        "type": "int"
+      },
+      "outOf": {
+        "type": "int"
+      }
+    }
+  },
+  "quizLastLine": "{kind} · {direction} · {date}",
+  "@quizLastLine": {
+    "description": "L2 last quiz card: \"Standard · DE → EN · Sun 20 Sep\".",
+    "placeholders": {
+      "kind": {
+        "type": "String"
+      },
+      "direction": {
+        "type": "String"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "quizDirectionArticles": "Articles",
+  "@quizDirectionArticles": {
+    "description": "Quiz direction name."
+  },
+  "quizDirectionListening": "Listening",
+  "@quizDirectionListening": {
+    "description": "Quiz direction name."
+  },
+  "quizDirectionMixed": "Mixed",
+  "@quizDirectionMixed": {
+    "description": "Quiz direction name."
+  },
+  "quizLastLineForms": "Forms · {date}",
+  "@quizLastLineForms": {
+    "description": "L2 last quiz card for a Forms quiz.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
   }
 }

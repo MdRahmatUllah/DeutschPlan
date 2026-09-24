@@ -558,4 +558,45 @@ void main() {
     await (db.delete(db.examAttempts)..where((t) => t.id.equals(id))).go();
     expect(await exams.watchAnswers(id).first, isEmpty);
   });
+
+  test("L2's last quiz: the step's latest finished quiz from its words", () async {
+    Future<void> quiz(
+      String source,
+      String? ref,
+      String? finished, {
+      double score = 16,
+      int length = 20,
+      String direction = 'deEn',
+    }) => db.customStatement(
+      'INSERT INTO quiz_attempts (started_at, finished_at, direction, source, '
+      'source_ref, seed, length, score_points, max_points) VALUES '
+      "(?, ?, ?, ?, ?, 1, ?, ?, ?)",
+      <Object?>[
+        '2026-09-01',
+        finished,
+        direction,
+        source,
+        ref,
+        length,
+        score,
+        length.toDouble(),
+      ],
+    );
+
+    expect(await exams.watchLastStepQuiz('A2.1').first, isNull);
+    await quiz('stepLearned', 'A2.1', '2026-09-19T10:00', score: 12);
+    await quiz('stepLearned', 'A2.1', '2026-09-20T19:05', length: 30);
+    // Unfinished, another step, and a quiz from every learned word: none
+    // of them is this step's last.
+    await quiz('stepLearned', 'A2.1', null);
+    await quiz('stepLearned', 'A1.2', '2026-09-21T08:00');
+    await quiz('allLearned', null, '2026-09-21T09:00');
+    expect(await exams.watchLastStepQuiz('A2.1').first, (
+      score: 16,
+      outOf: 30,
+      length: 30,
+      direction: 'deEn',
+      finishedAt: '2026-09-20T19:05',
+    ));
+  });
 }
