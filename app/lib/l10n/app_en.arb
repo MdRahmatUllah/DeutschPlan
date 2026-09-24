@@ -2233,6 +2233,140 @@
       }
     }
   },
+  "examHubMock": "Mock {seed}",
+  "@examHubMock": {
+    "description": "L10 mock card title.",
+    "placeholders": {
+      "seed": {
+        "type": "int"
+      }
+    }
+  },
+  "examHubPassed": "Passed {percent}%",
+  "@examHubPassed": {
+    "description": "L10 pill: the mock's best score, passed (FR-L10-02).",
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "examHubNotYet": "{percent}% — not yet",
+  "@examHubNotYet": {
+    "description": "L10 pill: the mock's best score, below the pass mark.",
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "examHubNotAttempted": "Not attempted",
+  "@examHubNotAttempted": {
+    "description": "L10 mock card, beside the title before a first attempt."
+  },
+  "examHubLine": "{questions} questions · ≈ {minutes} min",
+  "@examHubLine": {
+    "description": "L10 mock card: the paper's size and length.",
+    "placeholders": {
+      "questions": {
+        "type": "int"
+      },
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "examHubAttempts": "{count, plural, =1{1 attempt} other{{count} attempts}}",
+  "@examHubAttempts": {
+    "description": "L10 mock card, after examHubLine: attempts so far, unfinished ones included (FR-L12-04).",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "examHubNoRepeats": "seed {seed} · no repeats within the step",
+  "@examHubNoRepeats": {
+    "description": "L10 Mock 3's card, after examHubLine (BR-EXAM-02).",
+    "placeholders": {
+      "seed": {
+        "type": "int"
+      }
+    }
+  },
+  "examHubShares": "shares a few grammar topics with your other mocks",
+  "@examHubShares": {
+    "description": "L10 mock card, in place of examHubNoRepeats: the step has too few grammar topics to keep the three papers apart (Exam.reused)."
+  },
+  "examHubStart": "Start",
+  "@examHubStart": {
+    "description": "L10 mock card button: opens L11."
+  },
+  "examHubResume": "Resume",
+  "@examHubResume": {
+    "description": "L10 mock card button when an attempt is unfinished: back into L12 (FR-L10-02)."
+  },
+  "examHubContents": "What's in these exams",
+  "@examHubContents": {
+    "description": "L10 panel heading, shown upper case."
+  },
+  "examHubSection": "{section} {count}",
+  "@examHubSection": {
+    "description": "L10 panel: a section and its questions, e.g. Vocabulary 10.",
+    "placeholders": {
+      "section": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "examSectionVocabulary": "Vocabulary",
+  "@examSectionVocabulary": {
+    "description": "Exam section name (BR-EXAM-03)."
+  },
+  "examSectionReverse": "Reverse",
+  "@examSectionReverse": {
+    "description": "Exam section name (BR-EXAM-03)."
+  },
+  "examSectionArticles": "Articles",
+  "@examSectionArticles": {
+    "description": "Exam section name (BR-EXAM-03)."
+  },
+  "examSectionWordForms": "Word forms",
+  "@examSectionWordForms": {
+    "description": "Exam section name (BR-EXAM-03)."
+  },
+  "examSectionGapFill": "Gap fill",
+  "@examSectionGapFill": {
+    "description": "Exam section name (BR-EXAM-03)."
+  },
+  "examSectionGrammar": "Grammar",
+  "@examSectionGrammar": {
+    "description": "Exam section name (BR-EXAM-03)."
+  },
+  "examSectionListening": "Listening",
+  "@examSectionListening": {
+    "description": "Exam section name (BR-EXAM-03)."
+  },
+  "examSectionWriting": "Writing",
+  "@examSectionWriting": {
+    "description": "Exam section name (BR-EXAM-03)."
+  },
+  "examSectionSpeaking": "Speaking",
+  "@examSectionSpeaking": {
+    "description": "Exam section name (BR-EXAM-03)."
+  },
+  "examHubDisclaimer": "Generated practice exams from this step's words and grammar — not official Goethe or telc papers. Pass mark {percent}%.",
+  "@examHubDisclaimer": {
+    "description": "L10 panel footnote; percent is exam_pass_percent.",
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
   "quizSetupTitle": "Custom quiz",
   "@quizSetupTitle": {
     "description": "L7 custom quiz sheet title (quiz.md)."

@@ -22,10 +22,10 @@ void main() {
     ),
   );
 
-  // The ExamHub artboard's header: A1.2, completed 18 Aug, Mock 1 passed,
-  // opened on the Exams tab.
+  // L10 · The ExamHub artboard (#127): A1.2, completed 18 Aug, on its Exams
+  // tab — Mock 1 passed at 78 %, Mock 2 at 62 %, Mock 3 not sat.
   goldenTest(
-    'step_detail_completed',
+    'exam_hub',
     builder: (context) => ProviderScope(
       overrides: todayStub(),
       child: const StepDetailScreen(code: 'A1.2', tab: StepTab.exams),

@@ -367,6 +367,12 @@ class CategoryRoute extends GoRouteData with $CategoryRoute {
 class ExamIntroRoute extends GoRouteData with $ExamIntroRoute {
   const ExamIntroRoute({required this.step, required this.seed});
 
+  /// L11 from L10's *Start*, pushed inside the Learn tab so back returns to
+  /// the hub.
+  static void open(BuildContext context, String step, int seed) => unawaited(
+    context.push<void>(ExamIntroRoute(step: step, seed: seed).location),
+  );
+
   final String step;
   final int seed;
 
@@ -830,6 +836,10 @@ class QuizRoute extends GoRouteData with $QuizRoute {
 @TypedGoRoute<ExamRoute>(path: '/exam/:attemptId')
 class ExamRoute extends GoRouteData with $ExamRoute {
   const ExamRoute({required this.attemptId});
+
+  /// L12 over the shell, from L10's *Resume* (FR-L10-02).
+  static void open(BuildContext context, int attemptId) =>
+      unawaited(context.push<void>(ExamRoute(attemptId: attemptId).location));
 
   final int attemptId;
 

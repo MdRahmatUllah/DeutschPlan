@@ -19,6 +19,12 @@
 - FR-L10-02 Best score and attempts per seed from `exam_attempts` (finished only); an in-progress attempt shows *Resume* instead of *Start*.
 - FR-L10-03 *Begin exam* creates the attempt and all answer rows (`03-domain/exam-generator.md`) in one transaction, then pushes `/exam/:attemptId`.
 - FR-L10-04 Listening section is omitted (points redistributed) when `listening_questions = 0`.
+- Details L10 settles (#127):
+  - A card's pill is its best finished score, rounded down so a fail never reads as the mark: *Passed n%* in Lime once any attempt passed, *n% — not yet* in Coral otherwise. With no attempt, *Not attempted*, unless one is under way, when *Resume* says it all. An attempt left unfinished counts in the line ("1 attempt") with no pill (FR-L12-04).
+  - The line is "40 questions · ≈ 20 min", then the attempts once there are any, then Mock 3's "seed 3 · no repeats within the step". The note appears only where it is true. A mock whose paper shares grammar topics with another's (`Exam.reused`: steps with fewer than twelve topics, A1.1 to B1.2) reads "shares a few grammar topics with your other mocks" instead. A paper not sat yet is asked of the generator; a stored one is compared with the other stored papers. The 40 is BR-EXAM-03's questions with or without listening; the 20 minutes is the artboard's, fixed until the runner's timer (#130) says otherwise.
+  - *Resume* opens the unfinished attempt in L12; *Start* opens L11 for that mock.
+  - "What's in these exams" lists the sections as the learner's paper has them: with listening off, "Vocabulary 11 · Reverse 9 …" and no Listening (FR-L10-04). The pass mark is `exam_pass_percent`, and both settings are followed as they change.
+  - The hub shows once the step's exams are unlocked (BR-EXAM-01) or it has been passed; the locked variant is #128.
 
 **Business rules.** BR-EXAM-01…06.
 
