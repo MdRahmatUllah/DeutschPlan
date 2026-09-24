@@ -46,6 +46,61 @@ void main() {
       ..vocabulary = <String>[for (var i = 1; i <= 500; i++) 'w$i'];
   });
 
+  group('FR-L2-03 switchStep', () {
+    test('completes the current step today and enrols the new one at the '
+        'pace given', () async {
+      final engine = engineWith();
+      await engine.openDay(monday);
+      await engine.switchStep('A2.1', monday, dailyNew: 10, studyDaysMask: 31);
+      expect(store.completed, <String>['A1.1@$monday']);
+      expect(store.enrollment?.sublevelCode, 'A2.1');
+      expect(store.enrollment?.startedOn, monday);
+      expect(
+        (store.enrollment?.dailyNew, store.enrollment?.studyDaysMask),
+        (10, 31),
+      );
+    });
+
+    test("BR-PLAN-08 today's plan is left as it is", () async {
+      final engine = engineWith();
+      final before = await engine.openDay(monday);
+      final planned = store.lastPlanned;
+      await engine.switchStep(
+        'A2.1',
+        monday,
+        dailyNew: 7,
+        studyDaysMask: PlanEngine.allDays,
+      );
+      expect(store.lastPlanned, planned, reason: 'today is not planned again');
+      final again = await engine.openDay(monday);
+      expect(again.newToday, before.newToday);
+    });
+
+    test('with no step active, it only enrols', () async {
+      store.enrollment = null;
+      await engineWith().switchStep(
+        'A1.2',
+        monday,
+        dailyNew: 7,
+        studyDaysMask: PlanEngine.allDays,
+      );
+      expect(store.completed, isEmpty);
+      expect(store.enrollment?.sublevelCode, 'A1.2');
+    });
+
+    test('the active step itself is left alone', () async {
+      await engineWith().switchStep(
+        'A1.1',
+        monday,
+        dailyNew: 12,
+        studyDaysMask: PlanEngine.allDays,
+      );
+      expect(store.completed, isEmpty);
+      expect(store.enrolled, isEmpty);
+      expect(store.enrollment?.dailyNew, 7);
+    });
+  });
+
   group('BR-COURSE-05 startNextStep', () {
     setUp(() {
       store.wordsByStep = <String, List<String>>{

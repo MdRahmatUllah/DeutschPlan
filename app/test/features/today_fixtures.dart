@@ -3,6 +3,7 @@ import 'package:deutschplan/core/providers/app_providers.dart';
 import 'package:deutschplan/data/db/app_database.dart';
 import 'package:deutschplan/data/repositories/word_repository.dart';
 import 'package:deutschplan/features/backlog/backlog_screen.dart';
+import 'package:deutschplan/features/learn/step_words.dart';
 import 'package:deutschplan/features/today/today_providers.dart';
 import 'package:deutschplan/features/today/today_view.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
@@ -157,6 +158,48 @@ List<StepProgress> artboardCourse({
   ];
 }
 
+/// The StepDetail artboard's rows: Rechnung and Vermieter done, Mietvertrag
+/// and Nebenkosten learning, Kaution and umziehen to do, all Wohnen &
+/// Haushalt but umziehen.
+List<StepWord> artboardWords() {
+  const rows = <(String?, String, String, WordStatus)>[
+    ('die', 'Rechnung', 'bill, invoice', WordStatus.done),
+    ('der', 'Mietvertrag', 'rental contract, lease', WordStatus.learning),
+    (
+      'die',
+      'Nebenkosten',
+      'utility costs, service charges',
+      WordStatus.learning,
+    ),
+    ('der', 'Vermieter', 'landlord', WordStatus.done),
+    ('die', 'Kaution', 'deposit', WordStatus.todo),
+    (null, 'umziehen', 'to move (house)', WordStatus.todo),
+  ];
+  return <StepWord>[
+    for (final (i, (article, german, english, status)) in rows.indexed)
+      (
+        meaning: english,
+        word: WordWithState(
+          word: Word(
+            uid: 'a21-$i',
+            sublevelCode: 'A2.1',
+            levelCode: 'A2',
+            seq: i,
+            seqInSublevel: i,
+            article: article,
+            german: german,
+            english: english,
+            categoryId: article == null ? null : 1,
+            searchKey: german.toLowerCase(),
+            searchKeyAlt: german.toLowerCase(),
+          ),
+          state: null,
+          status: status,
+        ),
+      ),
+  ];
+}
+
 /// Today without a database: the artboard's plan, and no coach mark.
 ///
 /// For tests about something else — the router, the shell — that only need
@@ -177,6 +220,13 @@ List<Override> todayStub([
   backlogPauseProvider.overrideWith(_StubPause.new),
   // T5 without a database: nothing to practise.
   practiceSentencesProvider.overrideWith(_StubSentences.new),
+  // L2's Words tab without a database: the StepDetail artboard's six.
+  stepWordsProvider.overrideWith((ref, code) => Stream.value(artboardWords())),
+  stepCategoriesProvider.overrideWith(
+    (ref, code) async => const <({int id, String name})>[
+      (id: 1, name: 'Wohnen & Haushalt'),
+    ],
+  ),
   // L1 without a database: the Learn artboard's course.
   stepProgressProvider.overrideWith(
     (ref) => Stream.value(course ?? artboardCourse()),

@@ -1905,5 +1905,38 @@
   "stepBackToCourse": "Back to your course",
   "@stepBackToCourse": {
     "description": "L2 not-found: opens L1."
+  },
+  "stepStartBanner": "You're in {active} — start {code} now?",
+  "@stepStartBanner": {
+    "description": "L2 Words tab banner on a step that is not the active one (FR-L2-03).",
+    "placeholders": {
+      "active": {
+        "type": "String"
+      },
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "stepStartBannerFirst": "Start {code} now?",
+  "@stepStartBannerFirst": {
+    "description": "L2 Words tab banner when no step is active.",
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "stepStart": "Start",
+  "@stepStart": {
+    "description": "L2 Words tab banner: makes this the active step."
+  },
+  "stepFilterAll": "All",
+  "@stepFilterAll": {
+    "description": "L2 Words tab filter chip: every word."
+  },
+  "stepWordsNone": "No words match these filters.",
+  "@stepWordsNone": {
+    "description": "L2 Words tab when the filters leave nothing."
   }
 }

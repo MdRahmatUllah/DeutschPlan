@@ -283,12 +283,19 @@ LIMIT 1
     return rows.isEmpty ? null : rows.first.read<String>('code');
   }
 
+  /// A `customUpdate` naming `enrollments`, not a `customStatement`: L1 and
+  /// L2 watch the table, and a raw statement would leave them showing the
+  /// old step (#114).
   @override
   Future<void> completeStep(String sublevelCode, PlanDate on) =>
-      _db.customStatement(
+      _db.customUpdate(
         'UPDATE enrollments SET completed_on = ?2 '
         'WHERE sublevel_code = ?1 AND completed_on IS NULL',
-        <Object>[sublevelCode, on],
+        variables: <Variable<Object>>[
+          Variable<String>(sublevelCode),
+          Variable<String>(on),
+        ],
+        updates: <TableInfo<Table, Object?>>{_db.enrollments},
       );
 
   /// Opens an enrollment.
@@ -305,7 +312,7 @@ LIMIT 1
   /// refusal is the point: a caller that skipped `completeStep` has a bug, and
   /// the database saying so beats it losing a row.
   @override
-  Future<void> enroll(ActiveStep step) => _db.customStatement(
+  Future<void> enroll(ActiveStep step) => _db.customUpdate(
     '''
 INSERT INTO enrollments
   (sublevel_code, started_on, daily_new, study_days_mask, completed_on)
@@ -316,12 +323,13 @@ ON CONFLICT(sublevel_code) DO UPDATE SET
   study_days_mask = excluded.study_days_mask,
   completed_on    = NULL
 ''',
-    <Object>[
-      step.sublevelCode,
-      step.startedOn,
-      step.dailyNew,
-      step.studyDaysMask,
+    variables: <Variable<Object>>[
+      Variable<String>(step.sublevelCode),
+      Variable<String>(step.startedOn),
+      Variable<int>(step.dailyNew),
+      Variable<int>(step.studyDaysMask),
     ],
+    updates: <TableInfo<Table, Object?>>{_db.enrollments},
   );
 
   @override

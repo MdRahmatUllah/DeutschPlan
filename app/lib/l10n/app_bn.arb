@@ -308,5 +308,10 @@
   "stepTabExams": "পরীক্ষা",
   "stepSearch": "এই ধাপে খুঁজুন",
   "stepNotFound": "এই কোর্সে {code} নামে কোনো ধাপ নেই।",
-  "stepBackToCourse": "আপনার কোর্সে ফিরুন"
+  "stepBackToCourse": "আপনার কোর্সে ফিরুন",
+  "stepStartBanner": "আপনি এখন {active}-এ — {code} এখনই শুরু করবেন?",
+  "stepStartBannerFirst": "{code} এখনই শুরু করবেন?",
+  "stepStart": "শুরু করুন",
+  "stepFilterAll": "সব",
+  "stepWordsNone": "এই ফিল্টারে কোনো শব্দ নেই।"
 }

@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:deutschplan/core/adaptive/adaptive.dart';
 import 'package:deutschplan/core/components/dp_button.dart';
-import 'package:deutschplan/core/components/dp_chip.dart';
 import 'package:deutschplan/core/components/dp_feedback.dart';
 import 'package:deutschplan/core/providers/app_providers.dart';
 import 'package:deutschplan/core/theme/dp_surface.dart';
@@ -13,6 +12,7 @@ import 'package:deutschplan/data/repositories/setting_keys.dart';
 import 'package:deutschplan/data/repositories/word_repository.dart';
 import 'package:deutschplan/domain/plan_engine.dart' show parsePlanDate;
 import 'package:deutschplan/features/study/study_card.dart';
+import 'package:deutschplan/features/words/word_row.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
 import 'package:flutter/semantics.dart' show CustomSemanticsAction;
 import 'package:deutschplan/router/cross_tab.dart';
@@ -543,19 +543,7 @@ class BacklogRow extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final tokens = context.tokens;
     final l10n = AppLocalizations.of(context);
-    final word = row.word.word;
-    final (status, dot) = switch (row.word.status) {
-      WordStatus.todo => (l10n.wordStatusToDo, tokens.surface.muted),
-      WordStatus.learning => (l10n.wordStatusLearning, tokens.color.learning),
-      WordStatus.done => (l10n.wordStatusDone, tokens.color.easy),
-      WordStatus.suspended => (
-        l10n.wordStatusSuspended,
-        tokens.color.textSecondary,
-      ),
-    };
-
     final content = Semantics(
       customSemanticsActions: <CustomSemanticsAction, VoidCallback>{
         CustomSemanticsAction(label: l10n.backlogMarkKnown): () =>
@@ -567,46 +555,9 @@ class BacklogRow extends ConsumerWidget {
       },
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
-        onTap: () => WordRoute.open(context, word.uid),
+        onTap: () => WordRoute.open(context, row.word.uid),
         onLongPress: () => unawaited(_actions(context, ref)),
-        child: Container(
-          height: 64,
-          padding: const EdgeInsets.fromLTRB(16, 0, 4, 0),
-          decoration: BoxDecoration(
-            color: tokens.surface.card,
-            border: last
-                ? null
-                : Border(bottom: BorderSide(color: tokens.surface.outline)),
-          ),
-          child: Row(
-            children: <Widget>[
-              Expanded(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    DpHeadword(
-                      word.german,
-                      article: word.article,
-                      role: DpTextRole.bodyLarge,
-                    ),
-                    const SizedBox(height: 2),
-                    DpText(
-                      row.meaning,
-                      role: DpTextRole.label,
-                      weight: 400,
-                      maxLines: 1,
-                      color: tokens.color.textSecondary,
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(width: 10),
-              DpChip(label: status, kind: DpChipKind.status, statusColour: dot),
-              _Play(word: spokenForm(word)),
-            ],
-          ),
-        ),
+        child: WordRow(word: row.word, meaning: row.meaning, last: last),
       ),
     );
 
@@ -627,34 +578,6 @@ class BacklogRow extends ConsumerWidget {
         ),
       ],
       child: content,
-    );
-  }
-}
-
-/// The row's 40 dp speaker.
-class _Play extends ConsumerWidget {
-  const _Play({required this.word});
-
-  final String word;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final tokens = context.tokens;
-    return Semantics(
-      button: true,
-      label: AppLocalizations.of(context).summaryPlay(word),
-      child: GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTap: () {
-          final speed = ref.read(settingsProvider).read(SettingKeys.ttsSpeed);
-          unawaited(ref.read(systemTtsProvider).speak(word, rate: speed));
-        },
-        child: SizedBox(
-          width: 40,
-          height: 40,
-          child: Icon(Icons.volume_up, size: 22, color: tokens.color.ink),
-        ),
-      ),
     );
   }
 }
