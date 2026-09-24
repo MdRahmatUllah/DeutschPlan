@@ -10,7 +10,7 @@ last-read: 69
 
 ## Next
 
-#137 R1 on feat/137-search-results (rebased on main with W1): write tests (repo tier-4 umlaut fix + FTS highlight runs, watchWords; widget: debounce, tiers, FR-R1-02/03/05/07, step chip), goldens, gate, plants, device, PR, merge. Then #141 W1 actions.
+#137 PR #307 waits on agent-0's review; fix in one push, re-gate, merge. Then #141 W1 actions (lane B).
 
 ## Memory
 
