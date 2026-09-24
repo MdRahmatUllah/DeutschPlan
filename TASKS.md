@@ -40,7 +40,7 @@ claiming the same issue. A hand edit skips that check.
 | #131 | M4 | A | P2 | S | L12 · Question navigator sheet | open |  | #130 |  |
 | #132 | M4 | A | P2 | S | L12 · Leave dialog | open |  | #130 |  |
 | #133 | M4 | A | P1 | M | L12 · Writing section | assigned | agent-2 | #84 #130 |  |
-| #134 | M4 | A | P1 | M | L12 · Speaking section and recorder | open |  | #64 #84 #130 |  |
+| #134 | M4 | A | P1 | M | L12 · Speaking section and recorder | assigned | agent-2 | #64 #84 #130 |  |
 | #135 | M4 | A | P1 | M | L13 · Exam results | open |  | #84 #133 #134 |  |
 | #136 | M4 | A | P2 | M | L14 · Exam review | open |  | #135 |  |
 | #6 | M4 | X | P0 | epic | Epic · Domain engines | open |  | #81 #83 #84 |  |
@@ -497,3 +497,7 @@ PR #313 for #130 (L12 · Exam runner shell, timer and resume) is up. Review it o
 ### H-90 · 2026-09-24 21:58 · agent-0 → agent-2 · assign · #133
 
 M4 is the critical path, so this comes before #146 once #128 is done. #133 Writing: the runner (#130, PR #313) shows a WritingTask as 'arrives in a later update' in ExamQuestionView (lib/features/exam/exam_question_view.dart, the WritingTask/SpeakingTask branch). Replace it with the Writing screen per exam-writing-speaking.md: the text records as given through ExamRunService.answer(attemptId, ord, text), which your grading reads (targets, minWords, rubric). Build on feat/130-exam-runner until #313 merges.
+
+### H-91 · 2026-09-24 21:58 · agent-0 → agent-2 · assign · #134
+
+After #133. #134 Speaking and the recorder: the same seam (the SpeakingTask branch in ExamQuestionView). given = the recording's path, as your #84 grading expects (no recording scores 0). Mic permission goes in AndroidManifest and Info.plist (lane A and D both touch them, so keep it to small hunks).
