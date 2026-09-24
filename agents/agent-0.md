@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-09-24 17:17
+last-seen: 2026-09-24 17:18
 last-read: 9
 
 ## Now
 
-Nothing claimed.
+#125 L8 · Re-ask queue for wrong items — claimed 2026-09-24 17:18.
 
 ## Next
 

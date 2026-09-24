@@ -31,7 +31,7 @@ claiming the same issue. A hand edit skips that check.
 | #122 | M4 | A | P1 | M | L7 · Custom quiz sheet | done | agent-0 | #37 #81 #116 | #295 |
 | #123 | M4 | A | P1 | M | L8 · Quiz runner shell, timer and per-item persistence | done | agent-0 | #61 #68 #122 | #297 |
 | #124 | M4 | A | P1 | M | L8 · Item layouts and feedback | done | agent-0 | #40 #75 #123 | #301 |
-| #125 | M4 | A | P2 | S | L8 · Re-ask queue for wrong items | open |  | #124 |  |
+| #125 | M4 | A | P2 | S | L8 · Re-ask queue for wrong items | in-progress | agent-0 | #124 |  |
 | #126 | M4 | A | P1 | M | L9 · Quiz result | open |  | #125 |  |
 | #127 | M4 | C | P1 | M | L10 · Mock exam hub (unlocked) | review | agent-2 | #83 #113 | #300 |
 | #128 | M4 | C | P1 | S | L10 · Mock exam hub (locked) | open |  | #127 |  |
