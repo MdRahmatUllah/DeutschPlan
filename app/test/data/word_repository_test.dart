@@ -103,11 +103,28 @@ void main() {
       );
     });
 
-    test('a category lists by step, then frequency', () async {
-      final byCategory = await words.watchCategory(1).first;
-      expect(byCategory, isNotEmpty);
-      expect(byCategory.first.word.sublevelCode, 'A1.1');
-    });
+    test(
+      'FR-L6-01 a category lists by step, then frequency, then seq',
+      () async {
+        Future<List<String>> order() async => <String>[
+          for (final w in await words.watchCategory(1).first) w.word.german,
+        ];
+        // Straße is A1.2 however frequent; in A1.1 Tür outranks Haus.
+        // Through customUpdate, so drift drops the stream it just served.
+        await db.customUpdate(
+          "UPDATE c.words SET freq = CASE uid WHEN '${ContentFixture.haus}' "
+          "THEN 1 WHEN '${ContentFixture.tuer}' THEN 5 ELSE 9 END",
+          updates: <TableInfo<Table, Object?>>{db.words},
+        );
+        expect(await order(), <String>['Tür', 'Haus', 'Straße']);
+        // A tie in frequency falls back to reading order.
+        await db.customUpdate(
+          'UPDATE c.words SET freq = 3',
+          updates: <TableInfo<Table, Object?>>{db.words},
+        );
+        expect(await order(), <String>['Haus', 'Tür', 'Straße']);
+      },
+    );
   });
 
   group(

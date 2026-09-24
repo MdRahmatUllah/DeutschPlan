@@ -338,6 +338,7 @@ class DpHeadword extends StatelessWidget {
     this.role = DpTextRole.display,
     this.textAlign,
     this.weight,
+    this.maxLines,
   });
 
   final String word;
@@ -350,6 +351,10 @@ class DpHeadword extends StatelessWidget {
 
   /// The role's own unless given: a list row sets its headword at 600.
   final double? weight;
+
+  /// Unlimited, so the word card wraps; a list row's fixed height takes one
+  /// line ending in "…", as the artboards' `text-overflow: ellipsis`.
+  final int? maxLines;
 
   @override
   Widget build(BuildContext context) {
@@ -378,6 +383,8 @@ class DpHeadword extends StatelessWidget {
         ],
       ),
       textAlign: textAlign,
+      maxLines: maxLines,
+      overflow: maxLines == null ? null : TextOverflow.ellipsis,
       // Announced with its article, as accessibility-performance.md requires,
       // and without the soft hyphen a screen reader would otherwise voice.
       semanticsLabel: article == null ? word : '$article $word',

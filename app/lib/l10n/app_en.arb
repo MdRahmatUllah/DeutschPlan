@@ -2295,6 +2295,22 @@
   "@categoriesLine": {
     "description": "L5 header copy, under the title."
   },
+  "categoriesBack": "Categories",
+  "@categoriesBack": {
+    "description": "L6 iOS back label, returning to L5."
+  },
+  "categoryWordsLine": "{count, plural, =1{1 word} other{{count} words}} · {steps} · sorted by step, then frequency",
+  "@categoryWordsLine": {
+    "description": "L6 subtitle. steps is the first step, or 'A1.1 → C2.2' when the category spans several.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "steps": {
+        "type": "String"
+      }
+    }
+  },
   "categoriesWords": "{count, plural, =1{1 word} other{{count} words}}",
   "@categoriesWords": {
     "description": "L5 card: the category's words across the course.",

@@ -132,7 +132,9 @@ class AdaptiveScaffold extends StatelessWidget {
 
     final titleWidget = title == null
         ? const SizedBox.shrink()
-        : DpText(title!, role: DpTextRole.title);
+        // One line, cut after the last whole word that fits: a category's
+        // name can run to thirty letters, and a bar is one line tall.
+        : DpText(title!, role: DpTextRole.title, maxLines: 1);
 
     if (!cupertinoChrome) {
       return SizedBox(
@@ -150,26 +152,17 @@ class AdaptiveScaffold extends StatelessWidget {
 
     // iOS centres the title and lets the leading and trailing groups sit at the
     // edges, so a long title stays centred rather than shifting with the back
-    // button's width.
+    // button's width — until it would run under one of them, when the toolbar
+    // moves it clear and the one line stops short.
     return SizedBox(
       height: height,
-      child: Stack(
-        alignment: Alignment.center,
-        children: <Widget>[
-          Align(child: titleWidget),
-          Positioned(
-            left: 0,
-            top: 0,
-            bottom: 0,
-            child: back ?? const SizedBox.shrink(),
-          ),
-          Positioned(
-            right: 0,
-            top: 0,
-            bottom: 0,
-            child: Row(mainAxisSize: MainAxisSize.min, children: actions),
-          ),
-        ],
+      child: NavigationToolbar(
+        leading: back,
+        middle: titleWidget,
+        trailing: actions.isEmpty
+            ? null
+            : Row(mainAxisSize: MainAxisSize.min, children: actions),
+        middleSpacing: 8,
       ),
     );
   }

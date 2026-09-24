@@ -4,6 +4,7 @@ import 'package:deutschplan/data/db/app_database.dart';
 import 'package:deutschplan/data/repositories/word_repository.dart';
 import 'package:deutschplan/features/backlog/backlog_screen.dart';
 import 'package:deutschplan/features/learn/categories_screen.dart';
+import 'package:deutschplan/features/learn/category_words_screen.dart';
 import 'package:deutschplan/features/learn/grammar_library_screen.dart';
 import 'package:deutschplan/features/learn/grammar_topic_screen.dart';
 import 'package:deutschplan/features/learn/step_grammar.dart';
@@ -349,6 +350,48 @@ TopicWithState artboardTopic({GrammarStateData? state}) => TopicWithState(
   status: state == null ? WordStatus.todo : WordStatus.learning,
 );
 
+/// The CategoryWords artboard's seven rows of Wohnen & Haushalt, by step.
+List<StepWord> artboardCategoryWords() {
+  const rows = <(String, String, String, String, WordStatus)>[
+    ('A1.1', 'die', 'Wohnung', 'flat, apartment', WordStatus.done),
+    ('A1.1', 'der', 'Schlüssel', 'key', WordStatus.done),
+    ('A1.2', 'die', 'Küche', 'kitchen', WordStatus.done),
+    ('A2.1', 'die', 'Rechnung', 'bill, invoice', WordStatus.done),
+    (
+      'A2.1',
+      'der',
+      'Mietvertrag',
+      'rental contract, lease',
+      WordStatus.learning,
+    ),
+    ('A2.1', 'die', 'Nebenkosten', 'utility costs', WordStatus.learning),
+    ('B1.1', 'die', 'Wohngemeinschaft', 'flat share', WordStatus.todo),
+  ];
+  return <StepWord>[
+    for (final (i, (step, article, german, english, status)) in rows.indexed)
+      (
+        meaning: english,
+        word: WordWithState(
+          word: Word(
+            uid: 'cat-$i',
+            sublevelCode: step,
+            levelCode: step.substring(0, 2),
+            seq: i,
+            seqInSublevel: i,
+            article: article,
+            german: german,
+            english: english,
+            categoryId: 1,
+            searchKey: german.toLowerCase(),
+            searchKeyAlt: german.toLowerCase(),
+          ),
+          state: null,
+          status: status,
+        ),
+      ),
+  ];
+}
+
 /// The Categories artboard's eight, biggest first, with its bars.
 List<CategoryProgress> artboardCategories() => <CategoryProgress>[
   for (final (id, name, done, learning, todo) in <(int, String, int, int, int)>[
@@ -424,6 +467,10 @@ List<Override> todayStub([
   ),
   // L5 without a database: the Categories artboard's eight.
   categoriesProvider.overrideWith((ref) => Stream.value(artboardCategories())),
+  // L6 without a database: the CategoryWords artboard's rows.
+  categoryWordsProvider.overrideWith(
+    (ref, id) => Stream.value(artboardCategoryWords()),
+  ),
   // L1 without a database: the Learn artboard's course.
   stepProgressProvider.overrideWith(
     (ref) => Stream.value(course ?? artboardCourse()),

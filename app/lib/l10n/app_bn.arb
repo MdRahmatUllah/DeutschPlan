@@ -371,5 +371,7 @@
   "practiceSeeRule": "নিয়ম দেখুন",
   "practiceBackToItem": "প্রশ্নে ফিরুন",
   "categoriesLine": "প্রতিটি শব্দ ১২টি ধাপ জুড়ে একটি বিভাগের অন্তর্ভুক্ত।",
-  "categoriesWords": "{count, plural, other{{count}টি শব্দ}}"
+  "categoriesWords": "{count, plural, other{{count}টি শব্দ}}",
+  "categoriesBack": "বিভাগ",
+  "categoryWordsLine": "{count, plural, other{{count}টি শব্দ}} · {steps} · ধাপ, তারপর ব্যবহারের হার অনুযায়ী সাজানো"
 }

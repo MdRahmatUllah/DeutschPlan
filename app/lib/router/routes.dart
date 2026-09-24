@@ -31,6 +31,7 @@ import 'package:deutschplan/features/today/today_screen.dart';
 import 'package:deutschplan/features/backlog/backlog_screen.dart';
 import 'package:deutschplan/features/day_complete/day_complete_screen.dart';
 import 'package:deutschplan/features/learn/categories_screen.dart';
+import 'package:deutschplan/features/learn/category_words_screen.dart';
 import 'package:deutschplan/features/learn/grammar_library_screen.dart';
 import 'package:deutschplan/features/learn/grammar_practice_screen.dart';
 import 'package:deutschplan/features/learn/grammar_topic_screen.dart';
@@ -350,7 +351,7 @@ class CategoryRoute extends GoRouteData with $CategoryRoute {
 
   @override
   Widget build(BuildContext context, GoRouterState state) =>
-      PlaceholderScreen(title: 'Category', screen: 'L6', detail: '$id');
+      CategoryWordsScreen(id: id);
 }
 
 class ExamIntroRoute extends GoRouteData with $ExamIntroRoute {

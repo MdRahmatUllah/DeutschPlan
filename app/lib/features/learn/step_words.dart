@@ -24,25 +24,26 @@ typedef StepWord = ({WordWithState word, String meaning});
 /// L2's Words tab: every word of [code] in teaching order, suspended ones
 /// included, as a stream — a word rated elsewhere changes its chip here.
 @riverpod
-Stream<List<StepWord>> stepWords(Ref ref, String code) {
+Stream<List<StepWord>> stepWords(Ref ref, String code) => ref
+    .watch(wordRepositoryProvider)
+    .watchStep(code)
+    .map((words) => withMeanings(ref, words));
+
+/// [words] with their meanings in the learner's meaning language: English
+/// where the course has no Bangla.
+List<StepWord> withMeanings(Ref ref, List<WordWithState> words) {
   final bangla =
-      ref.watch(settingsProvider).read(SettingKeys.meaningLanguage) ==
+      ref.read(settingsProvider).read(SettingKeys.meaningLanguage) ==
       MeaningLanguage.bangla;
-  return ref
-      .watch(wordRepositoryProvider)
-      .watchStep(code)
-      .map(
-        (words) => <StepWord>[
-          for (final word in words)
-            (
-              word: word,
-              // English where the course has no Bangla.
-              meaning: bangla
-                  ? word.word.bangla ?? word.word.english
-                  : word.word.english,
-            ),
-        ],
-      );
+  return <StepWord>[
+    for (final word in words)
+      (
+        word: word,
+        meaning: bangla
+            ? word.word.bangla ?? word.word.english
+            : word.word.english,
+      ),
+  ];
 }
 
 /// The categories [code]'s words fall in, the biggest first: the chips

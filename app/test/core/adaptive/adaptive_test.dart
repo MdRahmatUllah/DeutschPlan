@@ -212,6 +212,50 @@ void main() {
       );
     });
 
+    testWidgets('a long title keeps to one line, clear of the back button and '
+        'the actions', (tester) async {
+      // L6's bar, on the artboard's phone.
+      tester.view
+        ..physicalSize = const Size(390, 844) * 3
+        ..devicePixelRatio = 3;
+      addTearDown(tester.view.reset);
+      const long = 'Psychology, emotions and relationships at work';
+      for (final chrome in AdaptiveChrome.values) {
+        await tester.pumpWidget(
+          MaterialApp(
+            theme: AppTheme.light(),
+            home: AdaptiveChromeScope(
+              chrome: chrome,
+              child: AdaptiveScaffold(
+                title: long,
+                leading: AdaptiveBackButton(
+                  label: 'Categories',
+                  onPressed: () {},
+                ),
+                actions: const <Widget>[SizedBox(width: 60, child: Text('Q'))],
+                body: const SizedBox.shrink(),
+              ),
+            ),
+          ),
+        );
+        await tester.pumpAndSettle();
+        final title = tester.getRect(find.text(long));
+        expect(
+          title.left,
+          greaterThanOrEqualTo(
+            tester.getRect(find.byType(AdaptiveBackButton)).right,
+          ),
+          reason: '$chrome',
+        );
+        expect(
+          title.right,
+          lessThanOrEqualTo(tester.getRect(find.text('Q')).left),
+          reason: '$chrome',
+        );
+        expect(title.height, lessThanOrEqualTo(26), reason: '$chrome: 20/26');
+      }
+    });
+
     testWidgets('a pushed route gets a back button without asking', (
       tester,
     ) async {

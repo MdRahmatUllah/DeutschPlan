@@ -30,6 +30,7 @@ import 'package:deutschplan/router/app_router.dart';
 import 'package:deutschplan/router/app_shell.dart';
 import 'package:deutschplan/router/routes.dart';
 import 'package:deutschplan/features/learn/categories_screen.dart';
+import 'package:deutschplan/features/learn/category_words_screen.dart';
 import 'package:deutschplan/features/learn/grammar_library_screen.dart';
 import 'package:deutschplan/features/learn/grammar_topic_screen.dart';
 import 'package:deutschplan/features/learn/learn_screen.dart';
@@ -180,6 +181,7 @@ void main() {
       ('/learn/grammar', GrammarLibraryScreen),
       ('/learn/grammar/g1', GrammarTopicScreen),
       ('/learn/categories', CategoriesScreen),
+      ('/learn/categories/1', CategoryWordsScreen),
     ]) {
       testWidgets(path, (tester) async {
         await pumpApp(tester, at: path);
