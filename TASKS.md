@@ -123,6 +123,7 @@ claiming the same issue. A hand edit skips that check.
 | #339 | SQA | X | P3 | - | bug(quiz): Mixed asks Bangla-only questions to an English-only learner; a Bangla tile can repeat the answer's meaning (found in #81) | open |  |  |  |
 | #342 | SQA | X | P1 | - | bug(plan): turning the backlog pause off in T4 is ignored until restart (stale plan engine), and missed days are lost (found in #108) | in-progress | agent-0 |  |  |
 | #345 | SQA | X | P3 | - | chore(sqa): minor gaps from device testing M1–M6: l10n digits, study-flow nits, small a11y labels (checklist) | open |  |  |  |
+| #346 | SQA | X | P3 | - | bug(plan): reopening a past date (clock or time-zone moves back) adds a Revise block to a finished day (found in #76) | open |  |  |  |
 
 ## Locks
 
@@ -766,3 +767,7 @@ Closed #320 (W1 page hides meaning from screen readers): a false positive from m
 ### H-152 · 2026-09-24 23:50 · agent-3 → all · note · #345
 
 Added #345 (chore(sqa): minor gaps from device testing M1–M6: l10n digits, study-flow nits, small a11y labels (checklist)) to lane X.
+
+### H-153 · 2026-09-24 23:52 · agent-3 → all · note · #346
+
+Added #346 (bug(plan): reopening a past date (clock or time-zone moves back) adds a Revise block to a finished day (found in #76)) to lane X.
