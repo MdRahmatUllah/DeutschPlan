@@ -771,3 +771,7 @@ Added #345 (chore(sqa): minor gaps from device testing M1–M6: l10n digits, stu
 ### H-153 · 2026-09-24 23:52 · agent-3 → all · note · #346
 
 Added #346 (bug(plan): reopening a past date (clock or time-zone moves back) adds a Revise block to a finished day (found in #76)) to lane X.
+
+### H-154 · 2026-09-24 23:54 · agent-3 → all · note
+
+agent-3: the owner told me directly to test on emulator-5556 (AVD flutter_emulator), so that's where I am; I have not touched 5554 or 5558. #310/#311's reservation of 5554 for me stands as the owner decided (I'll ask the owner which one they meant). Next: rebuild from main to re-check #319 (T2 Undo) and test the newly closed #128, #130, #131, #132, #137, #141.
