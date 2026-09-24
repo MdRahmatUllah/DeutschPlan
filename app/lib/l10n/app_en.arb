@@ -78,6 +78,72 @@
   "@tabSearch": {
     "description": "Third tab of the shell (branch 2): look up any word."
   },
+  "searchHint": "Search German, English or Bangla",
+  "@searchHint": {
+    "description": "R1 search field placeholder."
+  },
+  "searchClear": "Clear",
+  "@searchClear": {
+    "description": "R1 search field's clear button, for screen readers."
+  },
+  "searchRemoveStep": "Search every step, not just {step}",
+  "@searchRemoveStep": {
+    "description": "R1 header chip when opened from L2's search icon: removes the step filter. For screen readers; the chip itself shows the step.",
+    "placeholders": {
+      "step": {
+        "type": "String"
+      }
+    }
+  },
+  "searchExact": "Exact match · {count}",
+  "@searchExact": {
+    "description": "R1 group heading, shown upper-case (BR-SEARCH-01 tier 1).",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "searchStartsWith": "Starts with · {count}",
+  "@searchStartsWith": {
+    "description": "R1 group heading, shown upper-case (tier 2).",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "searchSimilar": "Similar words · {count}",
+  "@searchSimilar": {
+    "description": "R1 group heading, shown upper-case (tier 3, typos).",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "searchSentences": "In sentences · {count}",
+  "@searchSentences": {
+    "description": "R1 group heading, shown upper-case (tier 4, example sentences).",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "searchFailed": "The search didn't finish.",
+  "@searchFailed": {
+    "description": "R1 error panel when a query fails; with Retry."
+  },
+  "searchOpenWeb": "Look up in {source}",
+  "@searchOpenWeb": {
+    "description": "R1 web chip, for screen readers; {source} is Duden, DWDS, Wiktionary, Linguee or Google (FR-R1-06).",
+    "placeholders": {
+      "source": {
+        "type": "String"
+      }
+    }
+  },
   "tabMe": "Me",
   "@tabMe": {
     "description": "Fourth tab of the shell (branch 3): progress, settings and data."

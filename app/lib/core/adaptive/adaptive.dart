@@ -104,10 +104,14 @@ class AdaptiveScaffold extends StatelessWidget {
             child: bottomBar == null
                 ? SafeArea(top: false, child: body)
                 // The bar below takes the system inset, so the body — and a
-                // tab's own scaffold inside it — must not take it again.
-                : MediaQuery.removePadding(
-                    context: context,
-                    removeBottom: true,
+                // tab's own scaffold inside it — must not take it again. The
+                // same for the keyboard: this scaffold already rises above
+                // it, and a tab's scaffold that rose again left R1's results
+                // a sliver between the field and the keyboard.
+                : MediaQuery(
+                    data: MediaQuery.of(context)
+                        .removePadding(removeBottom: true)
+                        .removeViewInsets(removeBottom: true),
                     child: body,
                   ),
           ),

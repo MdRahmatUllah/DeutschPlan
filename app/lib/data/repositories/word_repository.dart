@@ -216,6 +216,20 @@ class WordRepository extends DatabaseAccessor<AppDatabase>
     (row) => _word(row.w, row.s, row.derivedStatus),
   );
 
+  /// [uids] with their state, in the order given — R1's results, which keep
+  /// the search's ranking while their status chips follow the learner.
+  Stream<List<WordWithState>> watchWords(List<String> uids) {
+    final order = <String, int>{
+      for (final (index, uid) in uids.indexed) uid: index,
+    };
+    return _watchWords(
+      (days) => wordsWithStateByUids(days, uids).watch(),
+      (row) => _word(row.w, row.s, row.derivedStatus),
+    ).map(
+      (words) => words..sort((a, b) => order[a.uid]!.compareTo(order[b.uid]!)),
+    );
+  }
+
   /// The same step, ready to be learned from. BR-STATUS-03.
   Stream<List<WordWithState>> watchLearnableStep(String code) => _watchWords(
     (days) => learnableWordsForStep(days, code).watch(),

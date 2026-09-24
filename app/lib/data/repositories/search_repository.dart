@@ -42,6 +42,8 @@ class SentenceHit {
     required this.english,
     required this.head,
     required this.article,
+    required this.step,
+    this.runs = const <(String, bool)>[],
   });
 
   final String wordUid;
@@ -51,6 +53,35 @@ class SentenceHit {
   /// The headword the sentence belongs to, shown above it.
   final String head;
   final String? article;
+
+  /// Its step, shown after it: "die Straße · A1.1".
+  final String step;
+
+  /// [german] in runs, each marked when it is a word the query matched.
+  final List<(String, bool)> runs;
+}
+
+/// FTS5's `highlight()` output — matches between  and  — as runs of
+/// text, each marked or not.
+List<(String, bool)> markedRuns(String marked) {
+  final runs = <(String, bool)>[];
+  var inside = false;
+  final text = StringBuffer();
+  void flush() {
+    if (text.isNotEmpty) runs.add((text.toString(), inside));
+    text.clear();
+  }
+
+  for (final unit in marked.runes) {
+    if (unit == 1 || unit == 2) {
+      flush();
+      inside = unit == 1;
+    } else {
+      text.writeCharCode(unit);
+    }
+  }
+  flush();
+  return runs;
 }
 
 /// What one query answers with.
@@ -154,7 +185,10 @@ class SearchRepository {
     take(_startsWith(prefixed), startsWithLimit);
     take(await _similar(key, alt), similarLimit);
 
-    return SearchResults(words: words, sentences: await _sentences(key));
+    return SearchResults(
+      words: words,
+      sentences: await _sentences(raw, key, alt),
+    );
   }
 
   /// Tier 1. The three spellings a word answers to, plus its meanings.
@@ -241,10 +275,25 @@ class SearchRepository {
   }
 
   /// Tier 4. The sentence and the headword it belongs to.
-  Future<List<SentenceHit>> _sentences(String key) async {
+  ///
+  /// `examples_fts` folds umlauts but keeps ß: "Tür" is indexed as `tur`,
+  /// "Straße" as `straße`. The key alone (`tuer`, `strasse`) matched neither,
+  /// so the query asks for every form the text can take: the key, the folded
+  /// key, and the text as typed.
+  /// ponytail: "strasse" still misses "Straße"; indexing the sentences' keys
+  /// in the pipeline would close that.
+  Future<List<SentenceHit>> _sentences(
+    String raw,
+    String key,
+    String alt,
+  ) async {
     if (key.isEmpty) return const <SentenceHit>[];
+    final forms = <String>{key, alt, raw.toLowerCase()};
     final rows = await _content
-        .sentenceMatches(_prefixQuery(key, columns: false), sentenceLimit)
+        .sentenceMatches(
+          forms.map((form) => _prefixQuery(form, columns: false)).join(' OR '),
+          sentenceLimit,
+        )
         .get();
     return <SentenceHit>[
       for (final row in rows)
@@ -254,6 +303,8 @@ class SearchRepository {
           english: row.english,
           head: row.head,
           article: row.article,
+          step: row.step,
+          runs: markedRuns(row.marked ?? row.german),
         ),
     ];
   }

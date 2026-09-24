@@ -175,6 +175,42 @@ void main() {
         expect(results.sentences.single.article, 'die');
       });
 
+      test(
+        '#137 a word typed with its umlaut or ß finds its sentences',
+        () async {
+          // examples_fts folds umlauts and keeps ß: the key alone (tuer,
+          // strasse) matched neither.
+          expect(
+            (await search.search('Tür')).sentences.map((s) => s.german),
+            contains('Die Tür ist offen.'),
+          );
+          expect(
+            (await search.search('Straße')).sentences.map((s) => s.german),
+            contains('Die Straße ist lang.'),
+          );
+        },
+      );
+
+      test('R1 marks the matched word, and names the step', () async {
+        final hit = (await search.search('offen')).sentences.single;
+        expect(hit.runs, <(String, bool)>[
+          ('Die Tür ist ', false),
+          ('offen', true),
+          ('.', false),
+        ]);
+        expect(hit.step, 'A1.1');
+      });
+
+      test('markedRuns reads highlight() markers', () {
+        expect(markedRuns('a b c d'), <(String, bool)>[
+          ('a ', false),
+          ('b', true),
+          (' c ', false),
+          ('d', true),
+        ]);
+        expect(markedRuns('plain'), <(String, bool)>[('plain', false)]);
+      });
+
       test('a sentence hit does not need a word hit', () async {
         final results = await search.search('offen');
         expect(results.words, isEmpty);

@@ -40,6 +40,7 @@ import 'package:deutschplan/router/app_shell.dart';
 import 'package:deutschplan/router/route_guards.dart';
 import 'package:deutschplan/router/routes.dart';
 import 'package:deutschplan/features/learn/learn_screen.dart';
+import 'package:deutschplan/features/search/search_screen.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:cupertino_ui/cupertino_ui.dart' show CupertinoPageTransition;
 import 'package:go_router/go_router.dart';
@@ -744,7 +745,7 @@ void main() {
       router.pop();
       await tester.pumpAndSettle();
 
-      expect(find.text('R1'), findsOneWidget);
+      expect(find.byType(SearchScreen), findsOneWidget);
     });
   });
 

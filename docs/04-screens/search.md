@@ -12,6 +12,12 @@
 
 **No results.** "Not in the course — 5,594 words, none spelled like this. Typos are tolerated, so it is probably a compound or a rare word."; enlarged web chips; *Add "…" as my word*; footnote "Opens the web in an in-app browser — the only time DeutschPlan goes online."
 
+**Filled in by #137:**
+- **FR-R1-07.** The status chips (To do · Learning · Done) and one chip per step in the results each narrow the words. A second tap clears a chip. Status and step apply together. A status chip hides the sentences, which have no status.
+- **L2's step.** It shows as a chip under the field that keeps words and sentences to that step. Tapping the chip removes it.
+- **FR-R1-06.** The web chips open through `url_launcher`'s in-app browser view, which is a Custom Tab on Android and `SFSafariViewController` on iOS. That is what `flutter_custom_tabs` would give, with no new dependency.
+- **In sentences.** The words FTS matched are marked in Sun, from `highlight()`.
+
 **Functional requirements**
 - FR-R1-01 Results per `03-domain/search.md`, debounced 120 ms, isolate-run, < 50 ms per query.
 - FR-R1-02 Enter/search key opens the first exact match's detail.

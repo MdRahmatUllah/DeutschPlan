@@ -36,6 +36,7 @@ import 'package:deutschplan/features/learn/grammar_library_screen.dart';
 import 'package:deutschplan/features/learn/grammar_topic_screen.dart';
 import 'package:deutschplan/features/learn/learn_screen.dart';
 import 'package:deutschplan/features/learn/step_detail_screen.dart';
+import 'package:deutschplan/features/search/search_screen.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
@@ -203,7 +204,7 @@ void main() {
 
       for (final pair in <(String, Finder)>[
         (l10n.tabLearn, find.byType(LearnScreen)),
-        (l10n.tabSearch, find.text('R1')),
+        (l10n.tabSearch, find.byType(SearchScreen)),
         (l10n.tabMe, find.byType(MeScreen)),
         (l10n.tabToday, find.byType(TodayScreen)),
       ]) {

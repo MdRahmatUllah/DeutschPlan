@@ -59,10 +59,14 @@ trigramCandidates:
 -- drift reads `e.english` as non-null and a sentence the workbook left
 -- untranslated crashes the cast. Wrapping it makes the column nullable, which
 -- is what `word_examples.english` already is.
+--
+-- `marked` is the sentence with each matched word between  and 
+-- (FTS5's own `highlight()`), so R1 marks exactly what matched.
 sentenceMatches:
   SELECT e.word_uid AS wordUid, e.german AS german,
          NULLIF(e.english, '') AS english,
-         w.german AS head, w.article AS article
+         w.german AS head, w.article AS article, w.sublevel_code AS step,
+         highlight(examples_fts, 1, char(1), char(2)) AS marked
   FROM examples_fts e
   JOIN words w ON w.uid = e.word_uid
   WHERE examples_fts MATCH :query
