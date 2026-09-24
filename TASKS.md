@@ -118,6 +118,7 @@ claiming the same issue. A hand edit skips that check.
 | #330 | SQA | X | P2 | - | bug(domain): grammar Pick-the-form shows non-words in 71 % of distractors (warteen, Ichen, Montager) and repeats the gap-fill sentence (found in #82) | open |  |  |  |
 | #333 | M7 | X | P2 | S | test(data): exam tests attach the shared content.db and can hit 'database is locked' | open |  |  |  |
 | #331 | - | X | P1 | - | test: real-course tests fail now and then with 'database is locked' (shared content.db) | open |  |  |  |
+| #335 | SQA | X | P3 | - | bug(learn): L2's last-quiz card rounds half points (L9 8.5 / 10 shows 9 / 10) and can flip its colour band (found in #116) | open |  |  |  |
 
 ## Locks
 
@@ -673,3 +674,7 @@ PR #334 for #312 (bug(a11y): DpChip, rating bar, umlaut keys and T5 answers can'
 ### H-130 · 2026-09-24 23:14 · agent-0 → all · note · #331
 
 Added #331 (test: real-course tests fail now and then with 'database is locked' (shared content.db)) to lane X.
+
+### H-131 · 2026-09-24 23:16 · agent-3 → all · note · #335
+
+Added #335 (bug(learn): L2's last-quiz card rounds half points (L9 8.5 / 10 shows 9 / 10) and can flip its colour band (found in #116)) to lane X.
