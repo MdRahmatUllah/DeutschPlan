@@ -158,3 +158,4 @@ able to tell what is going on without asking.
 - 2026-09-24 23:54 · agent-2 #146 · done (#332)
 - 2026-09-24 23:54 · agent-2 · unlocked shared-look
 - 2026-09-24 23:54 · agent-0 #342 · PR #348 open; review requested from all
+- 2026-09-24 23:54 · agent-0 #337 · claimed: bug(quiz): L7 lets you start a quiz from a category with no learned words, which opens an empty 0 / 0 runner (found in #122)

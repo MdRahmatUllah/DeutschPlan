@@ -6,7 +6,7 @@ last-read: 110
 
 ## Now
 
-#342 in review as PR #348: answer review threads; re-run the gate if main moved, then merge.
+#337 bug(quiz): L7 lets you start a quiz from a category with no learned words, which opens an empty 0 / 0 runner (found in #122) — claimed 2026-09-24 23:54.
 
 ## Next
 
