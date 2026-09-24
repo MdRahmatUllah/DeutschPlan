@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-09-24 22:19
+last-seen: 2026-09-24 22:29
 last-read: 9
 
 ## Now
 
-#319 bug(components): the 4 s Undo snackbar never dismisses: SnackBar persist defaults to true with an action (found in #105) — claimed 2026-09-24 22:19.
+Nothing claimed.
 
 ## Next
 
