@@ -596,6 +596,7 @@ class _Answer extends StatelessWidget {
       button: true,
       selected: chosen,
       label: label,
+      onTap: onPressed,
       child: ExcludeSemantics(
         child: GestureDetector(
           onTap: onPressed,

@@ -517,6 +517,67 @@ void main() {
           '${offenders.join('\n')}',
     );
   });
+
+  test('#312 a Semantics button that hides its gesture carries the tap', () {
+    // ONBOARDING §6: every tappable thing is a button in semantics. A
+    // `Semantics(button: …)` over `ExcludeSemantics`, or with
+    // `excludeSemantics: true`, drops the tap action the GestureDetector
+    // below would add: the node says "button", and a screen reader cannot
+    // press it. It has to carry `onTap:` itself.
+    final offenders = <String>[];
+    for (final file in _dartFilesIn('lib')) {
+      final source = file.readAsStringSync();
+      for (final call in _semanticsCalls(source)) {
+        final button = RegExp(r'\bbutton:\s*(?!false\b)').hasMatch(call.args);
+        final hides =
+            call.args.contains('excludeSemantics: true') ||
+            call.child.trimLeft().startsWith('ExcludeSemantics(');
+        final gesture = RegExp(r'\b(?:GestureDetector|InkWell)\(')
+            .hasMatch(call.child);
+        if (button && hides && gesture && !call.args.contains('onTap:')) {
+          offenders.add('${_rel(file)}:${call.line}');
+        }
+      }
+    }
+
+    expect(
+      offenders,
+      isEmpty,
+      reason:
+          "give the Semantics the gesture's onTap (and onLongPress):\n"
+          '${offenders.join('\n')}',
+    );
+  });
+}
+
+/// Every `Semantics(…)` call in [source]: its own arguments (up to its
+/// top-level `child:`), the child, and the line it starts on. Bracket-matched,
+/// so a nested call's `child:` is not mistaken for this one's.
+Iterable<({String args, String child, int line})> _semanticsCalls(
+  String source,
+) sync* {
+  for (final match in RegExp(r'(?<![A-Za-z])Semantics\(').allMatches(source)) {
+    var depth = 0;
+    var childAt = -1;
+    for (var i = match.end - 1; i < source.length; i++) {
+      final char = source[i];
+      if (char == '(' || char == '[' || char == '{') depth++;
+      if (char == ')' || char == ']' || char == '}') {
+        depth--;
+        if (depth == 0) {
+          yield (
+            args: source.substring(match.end, childAt == -1 ? i : childAt),
+            child: childAt == -1 ? '' : source.substring(childAt + 6, i),
+            line: '\n'.allMatches(source.substring(0, match.start)).length + 1,
+          );
+          break;
+        }
+      }
+      if (depth == 1 && childAt == -1 && source.startsWith('child:', i)) {
+        childAt = i;
+      }
+    }
+  }
 }
 
 /// The source of every `build(BuildContext …)` body in [source].

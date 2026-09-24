@@ -338,6 +338,7 @@ class _Header extends StatelessWidget {
                         : Semantics(
                             button: true,
                             label: l10n.searchClear,
+                            onTap: onClear,
                             excludeSemantics: true,
                             child: GestureDetector(
                               behavior: HitTestBehavior.opaque,

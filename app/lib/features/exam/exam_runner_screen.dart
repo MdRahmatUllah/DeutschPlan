@@ -372,6 +372,7 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
                   button: true,
                   toggled: _flagged[_at],
                   label: _flagged[_at] ? l10n.examRunFlagged : l10n.examRunFlag,
+                  onTap: _toggleFlag,
                   excludeSemantics: true,
                   child: GestureDetector(
                     behavior: HitTestBehavior.opaque,
@@ -515,6 +516,7 @@ class _Band extends StatelessWidget {
               Semantics(
                 button: true,
                 label: l10n.examRunPause,
+                onTap: onPause,
                 excludeSemantics: true,
                 child: GestureDetector(
                   behavior: HitTestBehavior.opaque,

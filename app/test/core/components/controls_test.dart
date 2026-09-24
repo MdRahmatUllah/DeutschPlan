@@ -1,5 +1,6 @@
 import 'package:deutschplan/core/components/dp_button.dart';
 import 'package:deutschplan/core/components/dp_chip.dart';
+import 'package:deutschplan/core/components/dp_feedback.dart';
 import 'package:deutschplan/core/components/dp_rating_bar.dart';
 import 'package:deutschplan/core/theme/app_theme.dart';
 import 'package:deutschplan/core/theme/dp_tokens.dart';
@@ -579,6 +580,54 @@ void main() {
       );
       expect(tester.takeException(), isNull);
     }
+  });
+
+  // ONBOARDING §6: every tappable thing is a button in semantics, and a
+  // screen reader can press it. These run the semantics action itself, not a
+  // pointer tap, which is what TalkBack's double tap sends.
+  group('#312 a screen reader can press them', () {
+    testWidgets('a DpChip', (tester) async {
+      final semantics = tester.ensureSemantics();
+      var taps = 0;
+      await pump(
+        tester,
+        DpChip(
+          label: 'Relaxed · 5',
+          kind: DpChipKind.filter,
+          onTap: () => taps++,
+        ),
+      );
+      tester.semantics.tap(find.semantics.byLabel('Relaxed · 5'));
+      expect(taps, 1);
+      semantics.dispose();
+    });
+
+    testWidgets("DpRatingBar's buttons", (tester) async {
+      final semantics = tester.ensureSemantics();
+      final rated = <DpRating>[];
+      await pump(
+        tester,
+        DpRatingBar(
+          onRated: rated.add,
+          intervals: const <DpRating, String>{DpRating.good: '8 d'},
+        ),
+      );
+      tester.semantics.tap(find.semantics.byLabel(RegExp('^Good')));
+      expect(rated, <DpRating>[DpRating.good]);
+      semantics.dispose();
+    });
+
+    testWidgets("DpUmlautBar's keys, tap and long press", (tester) async {
+      final semantics = tester.ensureSemantics();
+      final controller = TextEditingController();
+      addTearDown(controller.dispose);
+      await pump(tester, DpUmlautBar(controller: controller));
+      final key = find.semantics.byLabel(RegExp('^ä'));
+      tester.semantics.tap(key);
+      tester.semantics.longPress(key);
+      expect(controller.text, 'äÄ');
+      semantics.dispose();
+    });
   });
 }
 
