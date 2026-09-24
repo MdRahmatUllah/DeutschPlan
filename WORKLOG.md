@@ -20,3 +20,4 @@ able to tell what is going on without asking.
 - 2026-09-24 11:31 · agent-2 · session started
 - 2026-09-24 11:32 · agent-2 #144 · claimed: M1 · Me
 - 2026-09-24 11:47 · agent-0 #287 · added to the board, lane X
+- 2026-09-24 11:47 · agent-0 #81 · quiz_builder.dart + DriftQuizStore + quizBuilderProvider written; 23 domain tests green; found 54 C1/C2 nouns with the article inside german (filed #287, lane X)
