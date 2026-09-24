@@ -26,6 +26,7 @@ import 'package:deutschplan/router/app_router.dart';
 import 'package:deutschplan/router/routes.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
+import 'package:deutschplan/features/learn/grammar_practice_screen.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
@@ -83,11 +84,6 @@ void main() {
   /// What a pushed full-screen route was opened with. A push leaves the
   /// configuration's URI where it was, so it is read off the screen's own
   /// route state; the placeholder for [screen] is what is showing.
-  Object? opened(WidgetTester tester, String screen) {
-    expect(find.text(screen), findsOneWidget, reason: '$screen is not open');
-    return GoRouterState.of(tester.element(find.text(screen))).extra;
-  }
-
   SessionArgs? session(WidgetTester tester) =>
       tester.widget<StudyScreen>(find.byType(StudyScreen)).args;
 
@@ -210,8 +206,12 @@ void main() {
       await pump(tester, view: artboardToday(grammarDue: 2));
       await tapCard(tester, l10n.todayGrammarDue(2));
 
-      final args = opened(tester, 'L15') as GrammarPracticeArgs?;
-      expect(args?.topicUids, <String>['g0', 'g1']);
+      expect(
+        tester
+            .widget<GrammarPracticeScreen>(find.byType(GrammarPracticeScreen))
+            .topicUids,
+        <String>['g0', 'g1'],
+      );
     });
 
     testWidgets('the backlog card is only there with a backlog', (

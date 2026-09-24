@@ -155,7 +155,7 @@ class _StudyClozeCardState extends ConsumerState<StudyClozeCard> {
             ],
             const SizedBox(height: 14),
             if (verdict == null) ...<Widget>[
-              _AnswerField(controller: _answer, onSubmitted: _check),
+              StudyAnswerField(controller: _answer, onSubmitted: _check),
               const SizedBox(height: 8),
               DpUmlautBar(controller: _answer),
               const SizedBox(height: 12),
@@ -238,8 +238,12 @@ class _Gap extends StatelessWidget {
 
 /// The QuizRunner artboard's answer field: 56 dp, 12 px corners, a 2 px ink
 /// edge, 20 px text.
-class _AnswerField extends StatelessWidget {
-  const _AnswerField({required this.controller, required this.onSubmitted});
+class StudyAnswerField extends StatelessWidget {
+  const StudyAnswerField({
+    required this.controller,
+    required this.onSubmitted,
+    super.key,
+  });
 
   final TextEditingController controller;
   final VoidCallback onSubmitted;

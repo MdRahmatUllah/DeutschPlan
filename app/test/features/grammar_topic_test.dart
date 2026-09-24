@@ -213,4 +213,11 @@ class _Rating implements GrammarRatingService {
     release = Completer<void>();
     return release!.future;
   }
+
+  @override
+  Future<void> ratePractice(
+    String uid, {
+    required int items,
+    required int correct,
+  }) async {}
 }
