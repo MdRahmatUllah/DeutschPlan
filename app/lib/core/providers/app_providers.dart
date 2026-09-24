@@ -21,7 +21,9 @@ import 'package:deutschplan/domain/sentence_picker.dart';
 import 'package:deutschplan/data/db/content_update.dart';
 import 'package:deutschplan/core/theme/dp_tokens.dart';
 import 'package:deutschplan/core/theme/theme_mode.dart';
+import 'package:deutschplan/domain/fsrs.dart';
 import 'package:deutschplan/domain/plan_engine.dart';
+import 'package:deutschplan/domain/quiz_builder.dart';
 import 'package:deutschplan/data/db/app_database.dart';
 import 'package:deutschplan/data/db/content_dao.dart';
 import 'package:deutschplan/data/repositories/backup_repository.dart';
@@ -30,6 +32,7 @@ import 'package:deutschplan/data/repositories/grammar_repository.dart';
 import 'package:deutschplan/data/repositories/model_repository.dart';
 import 'package:deutschplan/data/repositories/plan_repository.dart';
 import 'package:deutschplan/data/repositories/plan_store.dart';
+import 'package:deutschplan/data/repositories/quiz_store.dart';
 import 'package:deutschplan/data/repositories/rating_service.dart';
 import 'package:deutschplan/data/repositories/search_repository.dart';
 import 'package:deutschplan/data/repositories/setting_keys.dart';
@@ -309,6 +312,18 @@ SentencePicker sentencePicker(Ref ref) {
     gapDays: settings.read(SettingKeys.sentenceRepeatGapDays),
   );
 }
+
+/// `docs/03-domain/quiz-engine.md` (#81): builds a quiz from `QuizArgs`. The
+/// runner (L8) and the exam generator build through it.
+@riverpod
+QuizBuilder quizBuilder(Ref ref) => QuizBuilder(
+  DriftQuizStore(ref.watch(wordRepositoryProvider)),
+  fsrs: Fsrs(
+    desiredRetention: ref
+        .watch(settingsProvider)
+        .read(SettingKeys.desiredRetention),
+  ),
+);
 
 /// FR-S2-03's coach mark on Today's primary button: whether it still has to
 /// be shown. "One-time" — once shown it is marked, and never again, restart

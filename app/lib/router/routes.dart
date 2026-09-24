@@ -140,13 +140,21 @@ class QuizArgs {
     required this.seed,
     this.sourceRef,
     this.length = 10,
+    this.timer = false,
   });
 
+  /// A `QuizDirection` wire name (`domain/quiz_builder.dart`).
   final String direction;
+
+  /// A `QuizSource` wire name; [sourceRef] is its step code, category id or
+  /// comma-separated uids.
   final String source;
   final String? sourceRef;
   final int seed;
   final int length;
+
+  /// FR-L8-05: 15 s per question when on.
+  final bool timer;
 }
 
 /// The topic a practice run is for.

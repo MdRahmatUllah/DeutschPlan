@@ -9,3 +9,22 @@
 - Multiple-choice distractors: same POS, same step where possible, never a synonym of the answer.
 - Flow: immediate feedback per item (`answer_check`), wrong items re-asked once at the end (BR-QUIZ-01), each answer also rated into FSRS (BR-FSRS-03, source `quiz`).
 - Result: score, time, mistakes; actions *Retry mistakes* (new Quiz from the mistake uids), *Add mistakes to revision* (already rated Again — this button re-schedules them for tomorrow explicitly).
+
+## Details the builder settles (#81)
+
+- **Learned** means `word_state.status` learning or done, which also leaves suspended words out (BR-STATUS-03). `compareSet`'s `sourceRef` is the uids, comma-separated. `category`'s is the category id; `stepLearned`'s is the step code.
+- **Selection.** The words are ranked by retrievability on the day (a never-reviewed word counts as 0). The quiz is drawn, in a seeded shuffle, from the weakest twice-`length`: the words most likely forgotten dominate, but a retry isn't the same quiz. The same seed over the same progress builds the same quiz. A quiz is shorter than `length` when fewer words qualify.
+- **What each item asks.** `prompt` is shown and `expected` is checked by `answer_check`:
+
+  | Direction | Prompt | Expected | Check |
+  |---|---|---|---|
+  | deEn | the headword with its article | the meaning list | `checkMeaning` |
+  | deBn | the headword | the Bangla meaning (needs one) | `checkMeaning` |
+  | enDe | the meaning | the headword | `checkGerman` |
+  | articles | the noun without its article | `der`/`die`/`das` (needs one) | `checkArticle` |
+  | listening | the headword, played | the headword, typed | `checkGerman` |
+  | forms | the word | one form, with its label | `checkForm` |
+
+- **Forms labels.** `plural` for a noun (the cell is the plural, or an ending such as `-en`). For a verb or phrase, `thirdPerson` · `perfekt` (`geht · ist gegangen`). For an adjective or adverb, `comparative` · `superlative` (`besser · am besten`). A cell with three parts is a synonym set, not forms, and isn't asked.
+- **Mixed** gives item *i* the first direction, starting at position *i* of the rotation (deEn, deBn, enDe, articles, listening, forms), that applies to its word.
+- **Multiple choice.** Every meaning item (deEn, deBn, enDe) carries four tiles: the answer and three distractors, in a seeded order. The runner and the exam generator decide when to show tiles instead of a text field. Distractors come from the word's step (every word, whatever its status) and the learned words. They are ranked same part of speech and step first, then other steps, then other parts of speech. They never share a meaning with the answer, never appear in its `synonyms_register` cell (or it in theirs), and never repeat a tile.
