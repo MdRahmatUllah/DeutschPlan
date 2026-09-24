@@ -6,7 +6,7 @@ last-read: 0
 
 ## Now
 
-Lead. Rebalanced the board for three agents; assigning the first issues.
+#81 quiz_builder.dart — claimed 2026-09-24 11:27.
 
 ## Next
 

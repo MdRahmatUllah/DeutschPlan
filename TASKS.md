@@ -25,7 +25,7 @@ claiming the same issue. A hand edit skips that check.
 
 | Issue | Ms | Lane | Pri | Size | Title | Status | Owner | Blocked by | PR |
 |---|---|---|---|---|---|---|---|---|---|
-| #81 | M4 | A | P1 | M | quiz_builder.dart | open |  | #58 #74 #75 |  |
+| #81 | M4 | A | P1 | M | quiz_builder.dart | in-progress | agent-0 | #58 #74 #75 |  |
 | #83 | M4 | C | P1 | L | exam_generator.dart — nine sections, three seeds, no repeats | assigned | agent-2 | #81 #82 |  |
 | #84 | M4 | C | P1 | M | Exam grading including writing and speaking scoring | open |  | #61 #83 |  |
 | #122 | M4 | A | P1 | M | L7 · Custom quiz sheet | open |  | #37 #81 #116 |  |
