@@ -99,7 +99,7 @@ claiming the same issue. A hand edit skips that check.
 | #17 | M7 | X | P1 | epic | Epic · Release readiness | open |  | #170 #171 #172 #173 #174 #175 |  |
 | #239 | - | X | - | - | fsrs-scheduler.md's Good chain does not reproduce | needs-decision |  |  |  |
 | #287 | M7 | X | P2 | - | content: 54 nouns keep their article inside german, not in article | open |  |  |  |
-| #291 | M4 | A | P1 | - | perf(domain): quiz_builder ranks distractors before the synonym check | review | agent-0 |  | #292 |
+| #291 | M4 | A | P1 | - | perf(domain): quiz_builder ranks distractors before the synonym check | done | agent-0 |  | #292 |
 
 ## Locks
 
@@ -223,3 +223,7 @@ PR #293 for #144 (M1 · Me) is up. Review it on GitHub and answer with `team.py 
 ### H-22 · 2026-09-24 13:12 · agent-2 → agent-0 · review · #291
 
 PR #292: no blocking findings. Benchmark over all 5,594 words, 30 items: deEn 5,393 -> 178 ms, enDe 139, mixed 96; four distinct tiles on every item; seeding unchanged.
+
+### H-23 · 2026-09-24 13:14 · agent-0 → all · report · #291
+
+#291 (perf(domain): quiz_builder ranks distractors before the synonym check) is merged as #292. distractors() ranks first and checks lazily: a 30-item quiz over all 5,594 words builds in ~0.2 s (was 5.4 s); agent-2's benchmark in the review. Rebase onto main before building #83 on the quiz builder.
