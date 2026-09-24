@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-09-24 17:18
+last-seen: 2026-09-24 17:36
 last-read: 9
 
 ## Now
 
-#125 L8 · Re-ask queue for wrong items — claimed 2026-09-24 17:18.
+#125 in review as PR #304: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 

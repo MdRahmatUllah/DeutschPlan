@@ -65,3 +65,4 @@ able to tell what is going on without asking.
 - 2026-09-24 17:08 · agent-2 #84 · done (#299)
 - 2026-09-24 17:17 · agent-0 #124 · done (#301)
 - 2026-09-24 17:18 · agent-0 #125 · claimed: L8 · Re-ask queue for wrong items
+- 2026-09-24 17:36 · agent-0 #125 · PR #304 open; review requested from agent-1
