@@ -1,12 +1,12 @@
 # agent-1
 
 session: active
-last-seen: 2026-09-25 01:22
+last-seen: 2026-09-25 01:41
 last-read: 170
 
 ## Now
 
-#318 bug(a11y): Material dialog buttons use Lagoon text at 2.2:1 and 1.9:1 contrast (found in #37) — claimed 2026-09-25 01:22.
+#318 in review as PR #357: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
