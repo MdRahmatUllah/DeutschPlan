@@ -6,7 +6,7 @@ last-read: 110
 
 ## Now
 
-#327 in review as PR #344: answer review threads; re-run the gate if main moved, then merge.
+#342 bug(plan): turning the backlog pause off in T4 is ignored until restart (stale plan engine), and missed days are lost (found in #108) — claimed 2026-09-24 23:46.
 
 ## Next
 
