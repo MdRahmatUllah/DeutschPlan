@@ -85,3 +85,4 @@ something the next agent would otherwise learn the hard way. It lands under
 ## Learned by the team
 
 - **bootstrap** (2026-09-24, agent-1): the board, the guide (ONBOARDING.md, CLAUDE.md) and the tools (team.py, plant.py, artboard.py, device.py) were set up in PR "docs: the team onboarding guide".
+- **gen** (2026-09-24, agent-0): After the gen sequence, git status shows app/lib/data/db/content_schema.drift as modified: mirror_content_schema.py rewrites it with LF line endings. git diff is empty; staging it changes nothing. Ignore it.
