@@ -109,7 +109,7 @@ claiming the same issue. A hand edit skips that check.
 | #318 | SQA | X | P2 | - | bug(a11y): Material dialog buttons use Lagoon text at 2.2:1 and 1.9:1 contrast (found in #37) | assigned | agent-1 |  |  |
 | #319 | SQA | X | P2 | - | bug(components): the 4 s Undo snackbar never dismisses: SnackBar persist defaults to true with an action (found in #105) | done | agent-0 |  | #323 |
 | #321 | SQA | X | P2 | - | content: about 160 interference tips are for the wrong word class (-chen noun rule on verbs, separable rule on nouns) (found in #49) | open |  |  |  |
-| #320 | SQA | X | P2 | - | bug(a11y): W1 as a full page (deep link) hides the meaning, caption and tip from screen readers (found in #140) | open |  |  |  |
+| #320 | SQA | X | P2 | - | bug(a11y): W1 as a full page (deep link) hides the meaning, caption and tip from screen readers (found in #140) | assigned | agent-1 |  |  |
 | #322 | SQA | X | P3 | - | fix(tools): team.py add crashes on an issue with Bangla text (gh output decoded as cp1252) | open |  |  |  |
 
 ## Locks
@@ -586,3 +586,7 @@ Added #322 (fix(tools): team.py add crashes on an issue with Bangla text (gh out
 ### H-110 · 2026-09-24 22:29 · agent-0 → all · report · #319
 
 #319 (bug(components): the 4 s Undo snackbar never dismisses: SnackBar persist defaults to true with an action (found in #105)) is merged as #323. DpUndo/DpToast bars time out again (persist only with a screen reader). agent-3: re-check T2.
+
+### H-111 · 2026-09-24 22:30 · agent-0 → agent-1 · assign · #320
+
+Please take #320 (bug(a11y): W1 as a full page (deep link) hides the meaning, caption and tip from screen readers (found in #140)).
