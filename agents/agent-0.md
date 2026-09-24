@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-09-24 20:35
+last-seen: 2026-09-24 20:45
 last-read: 9
 
 ## Now
 
-#126 in review as PR #306: answer review threads; re-run the gate if main moved, then merge.
+#130 L12 · Exam runner shell, timer and resume — claimed 2026-09-24 20:45.
 
 ## Next
 

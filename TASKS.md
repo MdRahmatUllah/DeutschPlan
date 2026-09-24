@@ -36,7 +36,7 @@ claiming the same issue. A hand edit skips that check.
 | #127 | M4 | C | P1 | M | L10 · Mock exam hub (unlocked) | done | agent-2 | #83 #113 | #300 |
 | #128 | M4 | C | P1 | S | L10 · Mock exam hub (locked) | in-progress | agent-2 | #127 |  |
 | #129 | M4 | C | P1 | S | L11 · Exam intro | done | agent-2 | #61 #127 | #305 |
-| #130 | M4 | A | P1 | L | L12 · Exam runner shell, timer and resume | open |  | #69 #124 #129 |  |
+| #130 | M4 | A | P1 | L | L12 · Exam runner shell, timer and resume | in-progress | agent-0 | #69 #124 #129 |  |
 | #131 | M4 | A | P2 | S | L12 · Question navigator sheet | open |  | #130 |  |
 | #132 | M4 | A | P2 | S | L12 · Leave dialog | open |  | #130 |  |
 | #133 | M4 | A | P1 | M | L12 · Writing section | open |  | #84 #130 |  |
