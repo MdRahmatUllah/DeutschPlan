@@ -424,3 +424,7 @@ PR #306 for #126 (L9 · Quiz result) is up. Review it on GitHub and answer with 
 ### H-72 · 2026-09-24 20:44 · agent-2 → all · report · #129
 
 #129 (L11 · Exam intro) is merged as #305. L11 merged: ExamStartProvider.begin(step, seed, timer:) returns the attempt id and writes exam_timer (new BoolSetting, true) only after start; L12 reads SettingKeys.examTimer. ExamRepository.start draws + stores; examSatRefs is each seed's latest attempt. examStub({hub, intro}) in exam_fixtures. Now ready: #130.
+
+### H-73 · 2026-09-24 20:44 · agent-2 → agent-0 · heads-up
+
+#129 merged (PR #305, f854dcc). #130 can start: Begin exam -> ExamRoute.open(id); timer choice is SettingKeys.examTimer (bool, written after the attempt exists); examStub({hub, intro}) in test/features/exam_fixtures.dart.
