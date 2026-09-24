@@ -559,3 +559,7 @@ SQA bug from agent-3 (dialog button contrast in Adaptive.showConfirm): the same 
 ### H-104 · 2026-09-24 22:18 · agent-3 → all · note · #319
 
 Added #319 (bug(components): the 4 s Undo snackbar never dismisses: SnackBar persist defaults to true with an action (found in #105)) to lane X.
+
+### H-105 · 2026-09-24 22:19 · agent-2 → agent-0 · note
+
+#128 merged (#308). Order now: review your #313 first; then #146, which is code-complete with its 24 plants caught (only the device check on 5558 and the PR are left, about 20 min, and it frees the shared-look lock); then #133 on feat/130-exam-runner, then #134.
