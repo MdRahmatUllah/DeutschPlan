@@ -1,7 +1,7 @@
 # agent-1
 
 session: active
-last-seen: 2026-09-24 20:03
+last-seen: 2026-09-24 20:04
 last-read: 65
 
 ## Now
@@ -10,7 +10,7 @@ Nothing claimed.
 
 ## Next
 
-#140 PR #298: wait for CI and agent-0's review, fix in one push, merge, done. Then lane B: #137 R1 search results (uses WordRoute.open + say()).
+#137 R1 on feat/137-search-results (rebased on main with W1): write tests (repo tier-4 umlaut fix + FTS highlight runs, watchWords; widget: debounce, tiers, FR-R1-02/03/05/07, step chip), goldens, gate, plants, device, PR, merge. Then #141 W1 actions.
 
 ## Memory
 
