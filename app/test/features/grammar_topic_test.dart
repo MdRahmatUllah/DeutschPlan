@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:deutschplan/core/providers/app_providers.dart';
 import 'package:deutschplan/core/theme/app_theme.dart';
 import 'package:deutschplan/data/db/app_database.dart';
@@ -126,11 +128,18 @@ void main() {
     expect((extra! as GrammarPracticeArgs).topicUids, <String>['g3']);
   });
 
-  testWidgets('FR-L4-01 Mark as learned schedules the topic', (tester) async {
+  testWidgets('FR-L4-01 Mark as learned schedules the topic, once however '
+      'fast the taps', (tester) async {
     await pump(tester);
+    await tester.tap(find.text(l10n.topicMarkLearned));
     await tester.tap(find.text(l10n.topicMarkLearned));
     await tester.pump();
     expect(marked, <String>['g3']);
+    // The write done, the button is live again until the topic re-emits.
+    release!.complete();
+    await tester.pumpAndSettle();
+    await tester.tap(find.text(l10n.topicMarkLearned));
+    expect(marked, <String>['g3', 'g3']);
   });
 
   testWidgets('once learned: when it comes round, and no Mark as learned', (
@@ -189,11 +198,19 @@ class _Tts implements TtsEngine {
   Future<void> stop() async {}
 }
 
+/// Holds each markLearned open until [release] completes, as a real write
+/// takes a moment.
+Completer<void>? release;
+
 class _Rating implements GrammarRatingService {
   _Rating(this.marked);
 
   final List<String> marked;
 
   @override
-  Future<void> markLearned(String uid) async => marked.add(uid);
+  Future<void> markLearned(String uid) {
+    marked.add(uid);
+    release = Completer<void>();
+    return release!.future;
+  }
 }

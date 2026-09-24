@@ -150,15 +150,7 @@ class _Topic extends ConsumerWidget {
               ),
               const SizedBox(height: 8),
               if (due == TopicDue.notLearned)
-                DpButton(
-                  label: l10n.topicMarkLearned,
-                  kind: DpButtonKind.secondary,
-                  onPressed: () => unawaited(
-                    ref
-                        .read(grammarRatingServiceProvider)
-                        .markLearned(topic.uid),
-                  ),
-                )
+                _MarkLearned(uid: topic.uid)
               else
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 12),
@@ -197,6 +189,40 @@ class _Topic extends ConsumerWidget {
       ],
     );
   }
+}
+
+/// FR-L4-01's button. Inert while its write is in flight: a second tap
+/// before the topic re-emits would be a second review rated Good.
+class _MarkLearned extends ConsumerStatefulWidget {
+  const _MarkLearned({required this.uid});
+
+  final String uid;
+
+  @override
+  ConsumerState<_MarkLearned> createState() => _MarkLearnedState();
+}
+
+class _MarkLearnedState extends ConsumerState<_MarkLearned> {
+  bool _busy = false;
+
+  Future<void> _mark() async {
+    // Checked here too: two taps inside one frame both reach the callback
+    // the button was built with.
+    if (_busy) return;
+    setState(() => _busy = true);
+    try {
+      await ref.read(grammarRatingServiceProvider).markLearned(widget.uid);
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) => DpButton(
+    label: AppLocalizations.of(context).topicMarkLearned,
+    kind: DpButtonKind.secondary,
+    onPressed: _busy ? null : () => unawaited(_mark()),
+  );
 }
 
 /// L4's Sun header: back, the step chip and "Topic 4 of 10", the title.
