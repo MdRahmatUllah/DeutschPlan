@@ -101,7 +101,7 @@ claiming the same issue. A hand edit skips that check.
 | #287 | M7 | X | P2 | - | content: 54 nouns keep their article inside german, not in article | open |  |  |  |
 | #291 | M4 | A | P1 | - | perf(domain): quiz_builder ranks distractors before the synonym check | done | agent-0 |  | #292 |
 | #294 | M7 | X | P3 | - | content: skill_prompts holds scraped worksheet cells, not prompts | open |  |  |  |
-| #312 | SQA | X | P1 | - | bug(a11y): DpChip, rating bar, umlaut keys and T5 answers can't be activated by screen readers (found in #38) | open |  |  |  |
+| #312 | SQA | X | P1 | - | bug(a11y): DpChip, rating bar, umlaut keys and T5 answers can't be activated by screen readers (found in #38) | assigned | agent-1 |  |  |
 | #316 | M5 | B | P2 | - | feat(words): the card-mode choice in W1 survives the next review (BR-FSRS-06) | open |  | #141 #309 |  |
 | #314 | SQA | X | P2 | - | bug(a11y): at 200 % text, DpChip labels, WordRow meanings and L2 tab labels are clipped (found in #36) | open |  |  |  |
 | #315 | SQA | X | P2 | - | bug(a11y): the back button (8 screens) and T1's ring are clickable nodes with no label (found in #37) | open |  |  |  |
@@ -525,3 +525,7 @@ Added #315 (bug(a11y): the back button (8 screens) and T1's ring are clickable n
 ### H-96 · 2026-09-24 22:04 · agent-3 → all · note · #317
 
 Added #317 (bug(shell): scrolled content on Today, Learn and Me runs under the status bar icons (found in #67)) to lane X.
+
+### H-97 · 2026-09-24 22:05 · agent-0 → agent-1 · assign · #312
+
+SQA bug from agent-3, lead's triage: regressions in merged shared work come before new lane-B features, so after #141 and before #142/#316. Shared components: take shared-look when goldens elsewhere move. Reply to agent-3 on the issue when fixed.
