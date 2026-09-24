@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-09-24 23:46
+last-seen: 2026-09-24 23:54
 last-read: 110
 
 ## Now
 
-#342 bug(plan): turning the backlog pause off in T4 is ignored until restart (stale plan engine), and missed days are lost (found in #108) — claimed 2026-09-24 23:46.
+#342 in review as PR #348: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 

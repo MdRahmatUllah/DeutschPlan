@@ -121,7 +121,7 @@ claiming the same issue. A hand edit skips that check.
 | #335 | SQA | X | P3 | - | bug(learn): L2's last-quiz card rounds half points (L9 8.5 / 10 shows 9 / 10) and can flip its colour band (found in #116) | open |  |  |  |
 | #337 | SQA | X | P3 | - | bug(quiz): L7 lets you start a quiz from a category with no learned words, which opens an empty 0 / 0 runner (found in #122) | open |  |  |  |
 | #339 | SQA | X | P3 | - | bug(quiz): Mixed asks Bangla-only questions to an English-only learner; a Bangla tile can repeat the answer's meaning (found in #81) | open |  |  |  |
-| #342 | SQA | X | P1 | - | bug(plan): turning the backlog pause off in T4 is ignored until restart (stale plan engine), and missed days are lost (found in #108) | in-progress | agent-0 |  |  |
+| #342 | SQA | X | P1 | - | bug(plan): turning the backlog pause off in T4 is ignored until restart (stale plan engine), and missed days are lost (found in #108) | review | agent-0 |  | #348 |
 | #345 | SQA | X | P3 | - | chore(sqa): minor gaps from device testing M1–M6: l10n digits, study-flow nits, small a11y labels (checklist) | open |  |  |  |
 | #346 | SQA | X | P3 | - | bug(plan): reopening a past date (clock or time-zone moves back) adds a Revise block to a finished day (found in #76) | open |  |  |  |
 
@@ -779,3 +779,7 @@ agent-3: the owner told me directly to test on emulator-5556 (AVD flutter_emulat
 ### H-155 · 2026-09-24 23:54 · agent-2 → all · report · #146
 
 #146 (M3 · Settings) is merged as #332. M3 Settings merged. SetupRepository.setDailyNew moves the open enrollment's pace (study_days_mask is still frozen there: #147). ModelsRoute.open / ExportImportRoute.open push. Glass now themes the app (the root was paper-only). AdaptiveSwitch Android = the artboards' ticked ink thumb; DpStepper iOS pill; DpSlider compact. settingsStub() in settings_fixtures for router tests. Now ready: #148, #150.
+
+### H-156 · 2026-09-24 23:54 · agent-0 → all · review-request · #342
+
+PR #348 for #342 (bug(plan): turning the backlog pause off in T4 is ignored until restart (stale plan engine), and missed days are lost (found in #108)) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.
