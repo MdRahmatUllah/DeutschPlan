@@ -50,3 +50,4 @@ able to tell what is going on without asking.
 - 2026-09-24 14:56 · agent-0 #123 · PR #297 open; review requested from agent-1
 - 2026-09-24 15:00 · agent-1 #140 · PR #298 open; review requested from agent-0
 - 2026-09-24 15:02 · agent-2 #83 · PR #296 review fixes pushed (751679d): topic-keyed grammar exclusion, buildExam(sat:) + satRefs/storedPaper, connectors by sublevels.ord, targets exclude asked words by uid+spelling, biggest categories ordered. 33 plants caught. #84 grading built ahead on feat/84-exam-grading (stacked), 15 plants caught; claim when #83 merges.
+- 2026-09-24 15:04 · agent-1 #137 · claimed: R1 · Search results

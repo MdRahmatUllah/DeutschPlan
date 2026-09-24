@@ -6,7 +6,7 @@ last-read: 38
 
 ## Now
 
-#140 in review as PR #298: watch CI, answer review threads, merge.
+#137 R1 · Search results — claimed 2026-09-24 15:04.
 
 ## Next
 
