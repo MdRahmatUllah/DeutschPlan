@@ -243,10 +243,14 @@ class StudyAnswerField extends StatelessWidget {
     required this.controller,
     required this.onSubmitted,
     super.key,
+    this.hint,
   });
 
   final TextEditingController controller;
   final VoidCallback onSubmitted;
+
+  /// The placeholder: "Type the missing word" unless given.
+  final String? hint;
 
   @override
   Widget build(BuildContext context) {
@@ -267,7 +271,7 @@ class StudyAnswerField extends StatelessWidget {
         DpTextRole.title,
       ).copyWith(fontWeight: FontWeight.w400),
       decoration: InputDecoration(
-        hintText: l10n.studyClozeHint,
+        hintText: hint ?? l10n.studyClozeHint,
         filled: true,
         fillColor: tokens.surface.cardStrong,
         contentPadding: const EdgeInsets.symmetric(

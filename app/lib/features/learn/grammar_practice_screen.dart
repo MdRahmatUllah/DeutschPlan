@@ -258,18 +258,23 @@ String itemAnswer(GrammarItem item) => switch (item) {
   RuleRecall(:final options, :final answer) => options[answer],
 };
 
-/// Close · the topic · "3 / 5", on Sun.
+/// Close · the topic · "3 / 5", on Sun. L8's quiz runner wears it too.
 class PracticeHeader extends StatelessWidget {
   const PracticeHeader({
     required this.title,
     required this.place,
     required this.onClose,
     super.key,
+    this.closeLabel,
   });
 
   final String title;
   final (int, int) place;
   final VoidCallback onClose;
+
+  /// What a screen reader calls the close button: "Close practice" unless
+  /// given.
+  final String? closeLabel;
 
   @override
   Widget build(BuildContext context) {
@@ -286,7 +291,7 @@ class PracticeHeader extends StatelessWidget {
               const SizedBox(width: 4),
               Semantics(
                 button: true,
-                label: l10n.practiceClose,
+                label: closeLabel ?? l10n.practiceClose,
                 excludeSemantics: true,
                 child: GestureDetector(
                   behavior: HitTestBehavior.opaque,

@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:deutschplan/domain/answer_check.dart' show Verdict;
 import 'package:deutschplan/domain/fsrs.dart';
 import 'package:deutschplan/domain/quiz_builder.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -553,6 +554,48 @@ void main() {
       expect(QuizSource.parse(s.name), s);
     }
     expect(() => QuizDirection.parse('sideways'), throwsArgumentError);
+  });
+
+  group('FR-L8-02 grade: each direction by its own check', () {
+    QuizItem item(QuizDirection direction, String expected) => QuizItem(
+      ord: 1,
+      wordUid: 'w',
+      direction: direction,
+      prompt: 'p',
+      expected: expected,
+    );
+
+    test('a meaning, any of its synonyms', () {
+      expect(
+        grade(item(QuizDirection.deEn, 'house, home'), 'home'),
+        Verdict.correct,
+      );
+      expect(grade(item(QuizDirection.deBn, 'ঘর'), 'ঘর'), Verdict.correct);
+    });
+
+    test('BR-ANS-02 the German names the article it wanted', () {
+      final vertrag = item(QuizDirection.enDe, 'der Mietvertrag');
+      expect(grade(vertrag, 'der Mietvertrag'), Verdict.correct);
+      expect(grade(vertrag, 'Mietvertrag'), Verdict.correct);
+      expect(grade(vertrag, 'die Mietvertrag'), Verdict.wrongArticle);
+      expect(grade(vertrag, 'der Mietvertag'), Verdict.almost);
+      expect(
+        grade(item(QuizDirection.listening, 'das Haus'), 'die Haus'),
+        Verdict.wrongArticle,
+      );
+    });
+
+    test('BR-ANS-03 articles are exact; a form allows a typo', () {
+      expect(
+        grade(item(QuizDirection.articles, 'die'), 'die'),
+        Verdict.correct,
+      );
+      expect(grade(item(QuizDirection.articles, 'die'), 'der'), Verdict.wrong);
+      expect(
+        grade(item(QuizDirection.forms, 'hat gearbeitet'), 'hat gearbeitet'),
+        Verdict.correct,
+      );
+    });
   });
 }
 

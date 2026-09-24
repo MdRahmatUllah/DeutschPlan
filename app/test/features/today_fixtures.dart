@@ -16,6 +16,7 @@ import 'package:deutschplan/features/today/today_view.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 
 import 'me_fixtures.dart';
+import 'quiz_fixtures.dart';
 
 /// The Today artboard's values: 12 of 20 done, A2.1, day 34, a backlog from
 /// Tuesday to Wednesday and Konjunktiv II this week.
@@ -479,6 +480,8 @@ List<Override> todayStub([
   ),
   // M1 without a database: the Me artboard.
   ...meStub(),
+  // L8 without a database: the QuizRunner artboard's run.
+  ...quizStub(),
 ];
 
 class _StubSentences extends PracticeSentences {

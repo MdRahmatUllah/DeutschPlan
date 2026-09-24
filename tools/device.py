@@ -13,6 +13,7 @@ Steps run in order:
     tap:<label>    tap the first element whose content-desc starts with <label>
     find:<text>    as tap, but matching anywhere in the content-desc
     at:<x>,<y>     tap a point (a switch whose label repeats its row's text)
+    type:<text>    type into the focused field (ASCII only)
     wait:<label>   wait (up to a minute) until an element starts with <label>
     shot:<file>    screenshot into --out (default: the system temp dir)
     back           the Android back key
@@ -162,6 +163,10 @@ def main(argv: list[str]) -> int:
             x, y = step[3:].split(",")
             device.sh("input", "tap", x.strip(), y.strip())
             time.sleep(1.2)
+        elif step.startswith("type:"):
+            # adb's `input text` takes ASCII only, and %s for a space.
+            device.sh("input", "text", step[5:].replace(" ", "%s"))
+            time.sleep(1)
         elif step.startswith("wait:"):
             device.wait(step[5:])
         elif step.startswith("shot:"):

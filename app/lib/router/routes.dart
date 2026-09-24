@@ -38,6 +38,7 @@ import 'package:deutschplan/features/learn/grammar_topic_screen.dart';
 import 'package:deutschplan/features/learn/learn_screen.dart';
 import 'package:deutschplan/features/learn/step_detail_screen.dart';
 import 'package:deutschplan/features/me/me_screen.dart';
+import 'package:deutschplan/features/quiz/quiz_screen.dart';
 import 'package:deutschplan/features/sentences/sentences_screen.dart';
 import 'package:deutschplan/features/study/study_screen.dart';
 import 'package:deutschplan/core/adaptive/adaptive.dart';
@@ -808,11 +809,17 @@ class QuizRoute extends GoRouteData with $QuizRoute {
 
   @override
   Widget build(BuildContext context, GoRouterState state) {
-    final args = state.extra as QuizArgs?;
-    return PlaceholderScreen(
-      title: 'Quiz',
-      screen: 'L8',
-      detail: args?.direction ?? '',
+    // The guard turns a /quiz with no args away (it is gone after process
+    // death); were one to get through, it is an empty quiz that says so.
+    return QuizScreen(
+      args:
+          state.extra as QuizArgs? ??
+          const QuizArgs(
+            direction: 'deEn',
+            source: 'allLearned',
+            seed: 0,
+            length: 0,
+          ),
     );
   }
 }

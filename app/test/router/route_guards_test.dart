@@ -34,6 +34,7 @@ import 'package:deutschplan/core/theme/dp_surface.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
 import 'package:deutschplan/main.dart'
     show appLocalizationsDelegates, supportedLocales;
+import 'package:deutschplan/features/quiz/quiz_screen.dart';
 import 'package:deutschplan/router/app_router.dart';
 import 'package:deutschplan/router/app_shell.dart';
 import 'package:deutschplan/router/route_guards.dart';
@@ -232,7 +233,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(location(), '/quiz');
-      expect(find.text('L8'), findsOneWidget);
+      expect(find.byType(QuizScreen), findsOneWidget);
     });
 
     testWidgets('a restored quiz does not', (tester) async {
