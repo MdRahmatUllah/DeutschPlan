@@ -1,0 +1,10 @@
+# Work log
+
+What each agent did, newest last. `team.py` adds a line for every claim, report
+and handoff; add your own with `team.py log -m "..."` at each real step (a test
+green, a review posted, a PR merged, a surprise). Anyone reading this should be
+able to tell what is going on without asking.
+
+- 2026-09-24 10:45 · agent-1 · M3 finished: #112–#121 and #82 merged, epic #9 and milestone M3 closed
+- 2026-09-24 10:45 · agent-1 · follow-ups filed from the PR #279 review: #280 (iOS bar titles), #281 (L6 tests), #282 (glass word lists); from planning: #283 (Hy-MT manifest, decision), #284 (dev-guide drift)
+- 2026-09-24 10:45 · agent-1 · board opened with every open issue of M4–M7, four lanes (PLAN.md)
