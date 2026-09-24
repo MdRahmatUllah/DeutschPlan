@@ -16,4 +16,5 @@ SQA pass 2: re-list closed issues per milestone, test only those closed after 20
 
 What this agent wants its next session to know: the branch and worktree it
 was using, an open PR and its review threads, a half-done step, a lesson.
+- 2026-09-25 00:31: SQA ledger lives in the owner's Claude memory (sqa-agent3.md). Worktree dp-wt/agent-3 is detached on origin/main; app/test/sqa/ holds UNCOMMITTED probe tests (chip semantics, FSRS elapsed, grammar distractors, cloze gap), never to be committed. The emulator-5556 app is on bcb766f with learner data: B1.2 active, exams unlocked, glass theme, swipe on, revisions 5. device.py/d.py needs --serial emulator-5556; uiautomator single-quotes attributes containing a double quote.
 
