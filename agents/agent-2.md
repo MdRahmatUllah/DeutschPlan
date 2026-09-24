@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-09-24 23:35
+last-seen: 2026-09-24 23:47
 last-read: 125
 
 ## Now
 
-#133 in review as PR #343: answer review threads; re-run the gate if main moved, then merge.
+#134 L12 · Speaking section and recorder — claimed 2026-09-24 23:47.
 
 ## Next
 
