@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-09-24 16:19
+last-seen: 2026-09-24 16:20
 last-read: 9
 
 ## Now
 
-#124 L8 · Item layouts and feedback — claimed 2026-09-24 15:18.
+#124 in review as PR #301: watch CI, answer review threads, merge.
 
 ## Next
 

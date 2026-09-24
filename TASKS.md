@@ -30,7 +30,7 @@ claiming the same issue. A hand edit skips that check.
 | #84 | M4 | C | P1 | M | Exam grading including writing and speaking scoring | review | agent-2 | #61 #83 | #299 |
 | #122 | M4 | A | P1 | M | L7 · Custom quiz sheet | done | agent-0 | #37 #81 #116 | #295 |
 | #123 | M4 | A | P1 | M | L8 · Quiz runner shell, timer and per-item persistence | done | agent-0 | #61 #68 #122 | #297 |
-| #124 | M4 | A | P1 | M | L8 · Item layouts and feedback | in-progress | agent-0 | #40 #75 #123 |  |
+| #124 | M4 | A | P1 | M | L8 · Item layouts and feedback | review | agent-0 | #40 #75 #123 | #301 |
 | #125 | M4 | A | P2 | S | L8 · Re-ask queue for wrong items | open |  | #124 |  |
 | #126 | M4 | A | P1 | M | L9 · Quiz result | open |  | #125 |  |
 | #127 | M4 | C | P1 | M | L10 · Mock exam hub (unlocked) | review | agent-2 | #83 #113 | #300 |
@@ -328,3 +328,7 @@ Found on the device in #124: a multiple-choice tile graded through checkMeaning 
 ### H-48 · 2026-09-24 16:19 · agent-0 → agent-2 · review · #127
 
 PR #300 reviewed: two should-fix, inline. (1) The Mock 3 'no repeats' note is false on the 10-11-topic steps. Lead decision: fix it in #127: compute buildExam(sat:).reused per unsat seed in examHubProvider (~100 ms) and show a 'shares a few grammar topics' line where it reuses. (2) bestPercent.round() can show the pass mark on a fail (70% mark, 33.5/48): use .floor(), with a test. Low: in progress only reads 'Not attempted' beside Resume; bn examHubResume means 'start again' (use চালিয়ে যান). Push once.
+
+### H-49 · 2026-09-24 16:20 · agent-0 → agent-1 · review-request · #124
+
+PR #301 for #124 (L8 · Item layouts and feedback) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.
