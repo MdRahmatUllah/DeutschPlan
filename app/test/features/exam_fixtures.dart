@@ -1,4 +1,5 @@
 import 'package:deutschplan/data/repositories/exam_repository.dart';
+import 'package:deutschplan/features/learn/exam_intro_screen.dart';
 import 'package:deutschplan/features/learn/step_exams.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 
@@ -35,7 +36,48 @@ ExamHub artboardExamHub({
   reused: reused,
 );
 
-/// L10 without a database: the ExamHub artboard, for every step.
-List<Override> examStub([ExamHub? hub]) => <Override>[
+/// The ExamIntro artboard: Mock 2 of A1.2, 62 % in one attempt, pass mark
+/// 60 %, listening and the timer on.
+ExamIntro artboardExamIntro({
+  SeedSummary? best = const SeedSummary(
+    seed: 2,
+    attempts: 1,
+    finished: 1,
+    bestPercent: 62,
+    everPassed: false,
+  ),
+  int passPercent = 60,
+  bool listening = true,
+  bool timer = true,
+}) =>
+    (best: best, passPercent: passPercent, listening: listening, timer: timer);
+
+/// L10 and L11 without a database: the ExamHub and ExamIntro artboards,
+/// and a *Begin exam* that begins attempt 42 and records what it was
+/// asked.
+List<Override> examStub({ExamHub? hub, ExamIntro? intro}) => <Override>[
   examHubProvider.overrideWith((ref, code) async => hub ?? artboardExamHub()),
+  examIntroProvider.overrideWith(
+    (ref, mock) async => intro ?? artboardExamIntro(),
+  ),
+  examStartProvider.overrideWith(StubExamStart.new),
 ];
+
+/// *Begin exam* without a database.
+class StubExamStart extends ExamStart {
+  /// Every begin, as (step, seed, timer).
+  static final List<(String, int, bool)> begun = <(String, int, bool)>[];
+
+  /// Set to make the next begin throw, as a failed write would.
+  static bool fail = false;
+
+  @override
+  bool build() => false;
+
+  @override
+  Future<int?> begin(String step, int seed, {required bool timer}) async {
+    begun.add((step, seed, timer));
+    if (fail) throw Exception('no database');
+    return 42;
+  }
+}

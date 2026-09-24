@@ -2428,6 +2428,84 @@
       }
     }
   },
+  "examIntroTitle": "{step} · Mock {seed}",
+  "@examIntroTitle": {
+    "description": "L11 title and headline.",
+    "placeholders": {
+      "step": {
+        "type": "String"
+      },
+      "seed": {
+        "type": "int"
+      }
+    }
+  },
+  "examIntroPassMark": "pass mark {percent}%",
+  "@examIntroPassMark": {
+    "description": "L11 line, after examHubLine; percent is exam_pass_percent.",
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "examIntroBest": "{count, plural, =1{your best: {percent}% (1 attempt)} other{your best: {percent}% ({count} attempts)}}",
+  "@examIntroBest": {
+    "description": "L11 line, last: the mock's best finished score (FR-L10-02).",
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "examIntroSections": "Sections · in this order",
+  "@examIntroSections": {
+    "description": "L11 card heading, shown upper case."
+  },
+  "examIntroSelfAssessed": "self-assessed",
+  "@examIntroSelfAssessed": {
+    "description": "L11 beside Writing and Speaking (BR-EXAM-06)."
+  },
+  "examIntroRules": "Rules",
+  "@examIntroRules": {
+    "description": "L11 card heading, shown upper case."
+  },
+  "examIntroRuleFeedback": "No feedback until the end",
+  "@examIntroRuleFeedback": {
+    "description": "L11 rule (BR-EXAM-05)."
+  },
+  "examIntroRuleFlag": "You can flag questions and come back",
+  "@examIntroRuleFlag": {
+    "description": "L11 rule."
+  },
+  "examIntroRulePause": "The timer can be paused",
+  "@examIntroRulePause": {
+    "description": "L11 rule (FR-L12-03)."
+  },
+  "examIntroTimer": "Timer on",
+  "@examIntroTimer": {
+    "description": "L11 switch label."
+  },
+  "examIntroTimerLine": "≈ {minutes} min · turns Coral in the last 2 minutes",
+  "@examIntroTimerLine": {
+    "description": "L11 under the timer switch.",
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "examIntroBegin": "Begin exam",
+  "@examIntroBegin": {
+    "description": "L11 primary button (FR-L10-03)."
+  },
+  "examIntroFailed": "The exam could not be started. Try again.",
+  "@examIntroFailed": {
+    "description": "L11 toast when Begin exam fails."
+  },
   "quizSetupTitle": "Custom quiz",
   "@quizSetupTitle": {
     "description": "L7 custom quiz sheet title (quiz.md)."

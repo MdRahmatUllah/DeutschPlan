@@ -284,6 +284,45 @@ class ExamRepository extends DatabaseAccessor<AppDatabase>
     ];
   }
 
+  /// FR-L10-03: L11's *Begin exam*. The paper, then the attempt with every
+  /// answer row (see [begin]); the attempt's id is what L12 opens.
+  ///
+  /// The paper is the seed's stored one, so a retake is the same mock
+  /// ([storedPaper]). Two cases draw a new one instead (`buildExam`, against
+  /// the other seeds' stored papers, so it shares nothing with them): the
+  /// first sitting, and a stored paper whose listening questions no longer
+  /// match [listening], since FR-L10-04 leaves them out when it is off.
+  Future<int> start({
+    required String step,
+    required int seed,
+    required bool listening,
+    required bool bangla,
+    required String startedAt,
+  }) async {
+    var paper = await storedPaper(step, seed);
+    if (paper != null &&
+        paper.any((q) => q.section == ExamSection.listening.name) !=
+            listening) {
+      paper = null;
+    }
+    paper ??= <ExamQuestion>[
+      for (final (i, item) in buildExam(
+        await pool(step),
+        seed: seed,
+        listening: listening,
+        bangla: bangla,
+        sat: await satRefs(step),
+      ).items.indexed)
+        ExamQuestion.of(i + 1, item),
+    ];
+    return begin(
+      sublevelCode: step,
+      seed: seed,
+      startedAt: startedAt,
+      questions: paper,
+    );
+  }
+
   /// Writes one answer in place. Called as the learner moves on, not on submit.
   ///
   /// [points] and [selfRubricJson] are absent rather than null when not given,

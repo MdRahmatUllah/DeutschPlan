@@ -56,7 +56,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         key: UniqueKey(),
-        overrides: examStub(hub),
+        overrides: examStub(hub: hub),
         child: MaterialApp.router(
           theme: AppTheme.light(),
           localizationsDelegates: appLocalizationsDelegates,

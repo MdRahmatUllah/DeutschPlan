@@ -123,13 +123,21 @@ examConnectors:
     AND instr(w.german, '(') = 0
   ORDER BY sl.ord, w.seq;
 
--- The refs of every paper sat for a step, whatever became of it: what a new
--- paper must not repeat (BR-EXAM-02).
+-- The refs of each seed's paper, from its latest attempt whatever became of
+-- it: what a new paper must not repeat (BR-EXAM-02). The latest only, as
+-- latestAttempt picks it: a paper drawn again after listening changed
+-- replaces the old one, which nothing will sit again.
 examSatRefs:
   SELECT a.seed AS seed, x.item_ref AS ref
   FROM exam_attempts a
   JOIN exam_answers x ON x.attempt_id = a.id
   WHERE a.sublevel_code = :code AND x.item_ref IS NOT NULL
+    AND a.id = (
+      SELECT b.id FROM exam_attempts b
+      WHERE b.sublevel_code = a.sublevel_code AND b.seed = a.seed
+      ORDER BY b.started_at DESC, b.id DESC
+      LIMIT 1
+    )
   -- A fixed order: buildExam hands out its least-recently-used clock in it.
   ORDER BY a.seed, a.id, x.ord;
 

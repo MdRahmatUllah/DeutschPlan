@@ -18,6 +18,7 @@
 - FR-L12-01 Each answer is written to `exam_answers` immediately; the runner resumes from the first unanswered question after a restart.
 - FR-L12-02 No verdicts are shown during the exam (BR-EXAM-05).
 - FR-L12-03 Timer counts only while running; pause stores `paused_sec`; at 0:00 the exam auto-submits.
+- Whether the timer runs at all is L11's *Timer on* switch, kept as the `exam_timer` setting: L11 writes it on *Begin exam* (its switch starts from `exam_timer_default`), and L12 reads it whenever it opens, fresh or resumed, so it survives Resume and process death. The time left is the limit minus `duration_sec`. Beginning another mock with the switch the other way and then resuming the first resumes it with the new value, which is fine for practice.
 - FR-L12-04 Leaving sets `status = abandoned`; the hub shows it as an attempt without a score.
 - FR-L12-05 Submit with unanswered questions requires confirmation.
 - FR-L12-06 Listening questions play through TTS; replay allowed twice.

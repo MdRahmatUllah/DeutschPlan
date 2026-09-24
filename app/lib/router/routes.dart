@@ -32,6 +32,7 @@ import 'package:deutschplan/features/backlog/backlog_screen.dart';
 import 'package:deutschplan/features/day_complete/day_complete_screen.dart';
 import 'package:deutschplan/features/learn/categories_screen.dart';
 import 'package:deutschplan/features/learn/category_words_screen.dart';
+import 'package:deutschplan/features/learn/exam_intro_screen.dart';
 import 'package:deutschplan/features/learn/grammar_library_screen.dart';
 import 'package:deutschplan/features/learn/grammar_practice_screen.dart';
 import 'package:deutschplan/features/learn/grammar_topic_screen.dart';
@@ -379,7 +380,7 @@ class ExamIntroRoute extends GoRouteData with $ExamIntroRoute {
 
   @override
   Widget build(BuildContext context, GoRouterState state) =>
-      PlaceholderScreen(title: 'Mock $seed', screen: 'L11', detail: step);
+      ExamIntroScreen(step: step, seed: seed);
 }
 
 class SearchRoute extends GoRouteData with $SearchRoute {
@@ -838,7 +839,8 @@ class QuizRoute extends GoRouteData with $QuizRoute {
 class ExamRoute extends GoRouteData with $ExamRoute {
   const ExamRoute({required this.attemptId});
 
-  /// L12 over the shell, from L10's *Resume* (FR-L10-02).
+  /// L12 over the shell: L10's *Resume* (FR-L10-02) and L11's *Begin exam*
+  /// (FR-L10-03).
   static void open(BuildContext context, int attemptId) =>
       unawaited(context.push<void>(ExamRoute(attemptId: attemptId).location));
 
