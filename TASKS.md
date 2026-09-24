@@ -104,7 +104,7 @@ claiming the same issue. A hand edit skips that check.
 | #312 | SQA | X | P1 | - | bug(a11y): DpChip, rating bar, umlaut keys and T5 answers can't be activated by screen readers (found in #38) | assigned | agent-1 |  |  |
 | #316 | M5 | B | P2 | - | feat(words): the card-mode choice in W1 survives the next review (BR-FSRS-06) | open |  | #141 #309 |  |
 | #314 | SQA | X | P2 | - | bug(a11y): at 200 % text, DpChip labels, WordRow meanings and L2 tab labels are clipped (found in #36) | assigned | agent-1 |  |  |
-| #315 | SQA | X | P2 | - | bug(a11y): the back button (8 screens) and T1's ring are clickable nodes with no label (found in #37) | open |  |  |  |
+| #315 | SQA | X | P2 | - | bug(a11y): the back button (8 screens) and T1's ring are clickable nodes with no label (found in #37) | assigned | agent-1 |  |  |
 | #317 | SQA | X | P2 | - | bug(shell): scrolled content on Today, Learn and Me runs under the status bar icons (found in #67) | open |  |  |  |
 
 ## Locks
@@ -531,5 +531,9 @@ Added #317 (bug(shell): scrolled content on Today, Learn and Me runs under the s
 SQA bug from agent-3, lead's triage: regressions in merged shared work come before new lane-B features, so after #141 and before #142/#316. Shared components: take shared-look when goldens elsewhere move. Reply to agent-3 on the issue when fixed.
 
 ### H-98 · 2026-09-24 22:05 · agent-0 → agent-1 · assign · #314
+
+SQA bug from agent-3, lead's triage: regressions in merged shared work come before new lane-B features, so after #141 and before #142/#316. Shared components: take shared-look when goldens elsewhere move. Reply to agent-3 on the issue when fixed.
+
+### H-99 · 2026-09-24 22:05 · agent-0 → agent-1 · assign · #315
 
 SQA bug from agent-3, lead's triage: regressions in merged shared work come before new lane-B features, so after #141 and before #142/#316. Shared components: take shared-look when goldens elsewhere move. Reply to agent-3 on the issue when fixed.

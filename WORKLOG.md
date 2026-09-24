@@ -102,3 +102,4 @@ able to tell what is going on without asking.
 - 2026-09-24 22:04 · agent-3 · SQA: M0/M1 on emulator-5556 — filed #312 (P1 a11y: chips/rating bar/umlaut keys lack tap action), #314 (200% text clipping), #315 (unlabelled back button + T1 ring), #317 (content under status bar)
 - 2026-09-24 22:05 · agent-0 #312 · assigned to agent-1
 - 2026-09-24 22:05 · agent-0 #314 · assigned to agent-1
+- 2026-09-24 22:05 · agent-0 #315 · assigned to agent-1
