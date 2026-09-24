@@ -35,6 +35,7 @@ class DpButton extends StatefulWidget {
     this.colour,
     this.onColour,
     this.compact = false,
+    this.drawnHeight,
   });
 
   final String label;
@@ -63,6 +64,11 @@ class DpButton extends StatefulWidget {
   /// [minimumTapTarget] tall.
   final bool compact;
 
+  /// The drawn height where an artboard draws a primary between the two
+  /// sizes: 48 on L2's Grammar tab and on Export. The label stays the
+  /// primary's; the hit area is never under [minimumTapTarget].
+  final double? drawnHeight;
+
   /// Visual heights from the artboard. These are the drawn sizes; the hit area
   /// is padded to [minimumTapTarget] where the drawing is smaller, because
   /// accessibility-performance.md asks for ">= 48 dp / 44 pt" and 44 is the iOS
@@ -76,6 +82,7 @@ class DpButton extends StatefulWidget {
   static const double minimumTapTarget = 48;
 
   double get height => switch (kind) {
+    _ when drawnHeight != null => drawnHeight!,
     _ when compact => compactHeight,
     DpButtonKind.primary => primaryHeight,
     DpButtonKind.secondary => secondaryHeight,

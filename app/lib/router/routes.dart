@@ -314,6 +314,11 @@ class GrammarLibraryRoute extends GoRouteData with $GrammarLibraryRoute {
 class GrammarTopicRoute extends GoRouteData with $GrammarTopicRoute {
   const GrammarTopicRoute({required this.uid});
 
+  /// L4 pushed inside the Learn tab, over whatever opened it — L2's Grammar
+  /// tab — so back returns there rather than to the library its path names.
+  static void open(BuildContext context, String uid) =>
+      unawaited(context.push<void>(GrammarTopicRoute(uid: uid).location));
+
   final String uid;
 
   @override
