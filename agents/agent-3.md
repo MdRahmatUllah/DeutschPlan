@@ -10,7 +10,7 @@ Nothing claimed.
 
 ## Next
 
-SQA pass: closed issues oldest first (M0 #1 → M6 #151) on emulator-5556; ledger in the owner's Claude memory sqa-agent3.md; bugs → milestone SQA
+SQA pass 2: re-list closed issues per milestone, test only those closed after 2026-09-25 00:25, verify merged SQA fixes (open P1s #327, #342).
 
 ## Memory
 
