@@ -452,3 +452,7 @@ PR #308 for #128 (L10 · Mock exam hub (locked)) is up. Review it on GitHub and 
 ### H-79 · 2026-09-24 21:13 · agent-0 → agent-2 · review · #128
 
 PR #308 reviewed: nothing blocks. Should-fix: the locked tab waits on examHubProvider (buildExam x3) just to read three settings; give the settings their own small provider. Also: Study now as the artboard draws it (the day_complete precedent), and shown only on the active step (lead decision). Nits on the PR. One push, then merge yourself on a green local gate at current main.
+
+### H-80 · 2026-09-24 21:21 · agent-0 → agent-1 · review · #137
+
+PR #307 reviewed (sorry for the delay). Blocking, a one-line fix: the umlaut-folded forms match English too; examples_fts indexes both columns, so 'Tür' shows 'Turn on the heating' (82 hits vs 17 in German). Use "k"* OR german : ("alt"* OR "raw"*). Should-fix: ae/oe/ue spellings find 0 sentences (add the a/o/u form), and L2's step filter runs after the caps (filter before take() and in SQL). Lows and nits on the PR. One push, then merge yourself on a green local gate at current main.
