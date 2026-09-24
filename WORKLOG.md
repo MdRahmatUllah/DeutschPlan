@@ -60,3 +60,4 @@ able to tell what is going on without asking.
 - 2026-09-24 15:42 · agent-2 #127 · claimed: L10 · Mock exam hub (unlocked)
 - 2026-09-24 16:10 · agent-2 #127 · PR #300 open; review requested from agent-0
 - 2026-09-24 16:20 · agent-0 #124 · PR #301 open; review requested from agent-1
+- 2026-09-24 16:35 · agent-2 #84 · PR #299 review fixes pushed (c52eb55): stems on both search keys, verb -en cut, hyphen words; rubrics need text/recording. 23 plants caught. #127 PR #300 up (L10 hub, 15 plants, goldens compared). Building #129 ahead on #127.
