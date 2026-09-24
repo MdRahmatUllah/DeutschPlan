@@ -201,6 +201,35 @@ void main() {
       recall.options[recall.answer],
       'Turn verbs into nouns in formal writing.',
     );
+    // A label is not an option: the sentence it opens is.
+    final labelled = first<RuleRecall>(
+      generateItems(
+        const GrammarSource(
+          uid: 'c2',
+          topic: 'Gehobener Stil',
+          rule:
+              'Features: nominal style, genitive, participles. Use sparingly.',
+          exampleDe: 'Die Entscheidung des Gerichts ist endgültig.',
+          exampleEn: "The court's decision is final.",
+          watchOut: 'Too formal for a chat.',
+          tags: <String>['gap-fill', 'pick-the-form'],
+          levelCode: 'C2',
+        ),
+        seed: 5,
+        siblings: <String>[
+          'Features: short sentences.',
+          'Features: short sentences.',
+          'Austria: Jänner for Januar.',
+          'Hören: note key words.',
+          'Sprechen: plan the talk.',
+        ],
+      ),
+    );
+    expect(
+      labelled.options[labelled.answer],
+      'Features: nominal style, genitive, participles.',
+    );
+    expect(labelled.options.toSet(), hasLength(4));
     // Below C1 there is no recall, siblings or not.
     expect(
       generateItems(
@@ -309,7 +338,10 @@ void main() {
                 problems.add('$name: chips lost a word');
               }
             case RuleRecall(:final options, :final answer):
-              if (options.length != 4 || answer < 0) {
+              if (options.length != 4 ||
+                  options.toSet().length != 4 ||
+                  answer < 0 ||
+                  options.any((option) => option.endsWith(':'))) {
                 problems.add('$name: recall $options');
               }
           }

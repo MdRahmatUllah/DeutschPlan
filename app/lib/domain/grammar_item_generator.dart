@@ -233,22 +233,24 @@ List<GrammarItem> generateItems(
     }
   }
 
-  if ((source.levelCode == 'C1' || source.levelCode == 'C2') &&
-      siblings.where((rule) => rule != source.rule).length >= 3) {
-    final right = _firstClause(source.rule);
-    final wrong =
-        (siblings.where((rule) => rule != source.rule).toList()
-              ..shuffle(random))
-            .take(3)
-            .map(_firstClause);
-    final options = <String>[right, ...wrong]..shuffle(random);
-    items.add(
-      RuleRecall(
-        question: source.topic,
-        options: options,
-        answer: options.indexOf(right),
-      ),
-    );
+  if (source.levelCode == 'C1' || source.levelCode == 'C2') {
+    final right = _recallOption(source.rule);
+    // Distinct from the right one and from each other: two rules can open
+    // alike, and a question with its answer twice has two right answers.
+    final wrong = <String>{
+      for (final rule in siblings)
+        if (_recallOption(rule) != right) _recallOption(rule),
+    }.toList()..shuffle(random);
+    if (wrong.length >= 3) {
+      final options = <String>[right, ...wrong.take(3)]..shuffle(random);
+      items.add(
+        RuleRecall(
+          question: source.topic,
+          options: options,
+          answer: options.indexOf(right),
+        ),
+      );
+    }
   }
 
   // At least three: a second gap fill from another sentence if the example
@@ -459,9 +461,16 @@ List<String> _distractors(
   return null;
 }
 
-/// A rule's first sentence, as a recall option.
-String _firstClause(String rule) =>
-    rule.split(RegExp(r'(?<=[.;:])\s')).first.trim();
+/// A rule's first sentence as a recall option, cut at a word past 90
+/// characters. Not at a colon: many C1/C2 rules open with a label —
+/// "Features:", "Teil 1:" — that says nothing on its own.
+String _recallOption(String rule) {
+  final sentence = rule.split(RegExp(r'(?<=[.!?;])\s')).first.trim();
+  if (sentence.length <= 90) return sentence;
+  final cut = sentence.substring(0, 90);
+  final space = cut.lastIndexOf(' ');
+  return '${cut.substring(0, space > 0 ? space : 90)}…';
+}
 
 bool _same(List<String> a, List<String> b) {
   if (a.length != b.length) return false;
