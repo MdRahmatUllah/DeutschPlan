@@ -33,7 +33,7 @@
 | `/grammar-practice` (extra) | L15 | full-screen modal |
 | `/quiz` (extra: `QuizArgs`) | L8 → L9 | full-screen modal |
 | `/exam/:attemptId` | L12 → L13 → L14 | full-screen modal; swipe-dismiss disabled |
-| `/word/:uid` | W1 | sheet on phones (shown via `showModalBottomSheet` from lists); route only for deep links |
+| `/word/:uid` | W1 | `WordRoute.open` shows it over the opener without navigating: a sheet on phones, a right-hand pane on tablets. The route is the deep link's full page (`?speak=1` plays the headword) |
 | `/compare/:uid` | W2 | pushed |
 
 Session args are passed as `extra` **only** for ephemeral data (which cards); anything that must survive process death (an exam attempt) is keyed by an id in the path.

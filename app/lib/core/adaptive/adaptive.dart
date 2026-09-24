@@ -423,6 +423,29 @@ class _AdaptiveTabBarState<T extends Object> extends State<AdaptiveTabBar<T>>
   }
 }
 
+/// Somewhere in a sheet or pane for its toasts to show.
+///
+/// A `DpToast` goes to the nearest `ScaffoldMessenger`, which draws it in the
+/// page's `Scaffold`: under a sheet that covers the page, and under a pane's
+/// scrim. This gives [child] a messenger and a transparent scaffold of its
+/// own, so "No German voice…" and #141's Undo show above it. It fills its
+/// space, so it suits a sheet or pane of a set height (W1's), not one that
+/// sizes to its content.
+class AdaptiveToastScope extends StatelessWidget {
+  const AdaptiveToastScope({required this.child, super.key});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) => ScaffoldMessenger(
+    child: Scaffold(
+      backgroundColor: context.tokens.surface.paper.withValues(alpha: 0),
+      resizeToAvoidBottomInset: false,
+      body: child,
+    ),
+  );
+}
+
 /// Platform-appropriate modal presentations.
 ///
 /// These are functions rather than widgets because that is how Flutter presents
@@ -445,12 +468,20 @@ abstract final class Adaptive {
     // The sheet is a route of its own, above wherever the opener's chrome
     // scope sits: it carries the chrome with it, or an iOS sheet would draw
     // Material controls.
+    //
+    // On the root navigator nothing above the sheet shrinks for the keyboard,
+    // so the sheet rises by the inset itself: M1's name field stays in view.
     Widget wrap(BuildContext sheetContext) => AdaptiveChromeScope(
       chrome: chrome,
-      child: DpSurface(
-        kind: DpSurfaceKind.cardStrong,
-        radius: tokens.shape.sheet,
-        child: SafeArea(top: false, child: builder(sheetContext)),
+      child: Padding(
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.viewInsetsOf(sheetContext).bottom,
+        ),
+        child: DpSurface(
+          kind: DpSurfaceKind.cardStrong,
+          radius: tokens.shape.sheet,
+          child: SafeArea(top: false, child: builder(sheetContext)),
+        ),
       ),
     );
 
@@ -469,6 +500,10 @@ abstract final class Adaptive {
 
     return showModalBottomSheet<T>(
       context: context,
+      // Over the tab bar, as the Cupertino popup already is and the
+      // artboards draw it: a sheet on a tab's own navigator left the bar
+      // uncovered and live under the scrim.
+      useRootNavigator: true,
       isScrollControlled: true,
       // The sheet's own surface is the DpSurface inside; Material must not
       // paint one behind it, or the glass panel sits on a solid slab.
@@ -476,6 +511,61 @@ abstract final class Adaptive {
       backgroundColor: const Color(0x00000000), // ponytail: allow-raw-colour
       elevation: 0,
       builder: wrap,
+    );
+  }
+
+  /// A full-height pane along the trailing edge, over a scrim: a tablet's
+  /// sheet (W1's "tablets: right pane", `word-detail.md`). The page under it
+  /// stays as it was; a tap on the scrim or back closes it.
+  ///
+  /// ponytail: an overlay pane, not a true split view that narrows the opener
+  /// — the openers are every list in the app, and none has a two-pane layout
+  /// to give up half of. Revisit if a tablet artboard ever draws one.
+  static Future<T?> showPane<T>({
+    required BuildContext context,
+    required WidgetBuilder builder,
+    double width = 420,
+  }) {
+    final tokens = context.tokens;
+    final chrome = context.chrome;
+    return showGeneralDialog<T>(
+      context: context,
+      barrierDismissible: true,
+      barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
+      barrierColor: tokens.surface.scrim,
+      transitionDuration: tokens.motion.standard,
+      pageBuilder: (paneContext, _, _) => Align(
+        alignment: AlignmentDirectional.centerEnd,
+        child: SizedBox(
+          width: width,
+          height: double.infinity,
+          // A dialog route has no Material under it: text needs this one's
+          // DefaultTextStyle, as a popup sheet does.
+          // Its route sits above the opener's chrome scope, as a sheet's
+          // does, so it carries the chrome with it (#122).
+          child: AdaptiveChromeScope(
+            chrome: chrome,
+            child: Material(
+              type: MaterialType.transparency,
+              child: DpSurface(
+                kind: DpSurfaceKind.cardStrong,
+                radius: 0,
+                child: SafeArea(
+                  left: false,
+                  child: AdaptiveToastScope(child: builder(paneContext)),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+      transitionBuilder: (_, animation, _, child) => SlideTransition(
+        position: Tween<Offset>(
+          begin: const Offset(1, 0),
+          end: Offset.zero,
+        ).animate(CurvedAnimation(parent: animation, curve: Curves.easeOut)),
+        child: child,
+      ),
     );
   }
 

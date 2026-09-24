@@ -33,6 +33,22 @@ Future<StudyBackExtras> studyBack(Ref ref, String uid) async {
   );
 }
 
+/// The meanings to show in [meaning]: English, Bangla or both, null where
+/// the learner's language leaves one out. A Bangla-only learner still gets
+/// English where the course has no Bangla. T2's back and W1.
+({String? english, String? bangla}) meaningsFor(
+  Word word,
+  MeaningLanguage meaning,
+) {
+  final bangla = meaning == MeaningLanguage.english ? null : word.bangla;
+  return (
+    english: meaning == MeaningLanguage.bangla && bangla != null
+        ? null
+        : word.english,
+    bangla: bangla,
+  );
+}
+
 /// The card turned over (`StudyBack`): the meanings per `meaning_language`,
 /// the interference tip, two examples with play and translation, the
 /// collocations (⟶) and the register (≈).
@@ -58,11 +74,7 @@ class StudyBack extends StatelessWidget {
   Widget build(BuildContext context) {
     final tokens = context.tokens;
     final l10n = AppLocalizations.of(context);
-    final bangla = meaning == MeaningLanguage.english ? null : word.bangla;
-    // A Bangla-only learner still gets English where the course has no Bangla.
-    final english = meaning == MeaningLanguage.bangla && bangla != null
-        ? null
-        : word.english;
+    final (:english, :bangla) = meaningsFor(word, meaning);
     final tip = extras?.tip;
     final collocations = word.collocations;
     final register = word.synonymsRegister;
@@ -89,12 +101,15 @@ class StudyBack extends StatelessWidget {
           ),
         if (tip != null) ...<Widget>[
           const SizedBox(height: 14),
-          DpCallout.text(l10n.studyTip(_tipText(tip))),
+          DpCallout.text(l10n.studyTip(tipText(tip, meaning))),
         ],
         for (final example in extras?.examples ?? const <StudyExample>[])
           Padding(
             padding: const EdgeInsets.only(top: 14),
-            child: _Example(example, onPlay: () => onPlay(example.german)),
+            child: StudyExampleRow(
+              example,
+              onPlay: () => onPlay(example.german),
+            ),
           ),
         if (collocations != null && collocations.isNotEmpty) ...<Widget>[
           const SizedBox(height: 14),
@@ -116,14 +131,16 @@ class StudyBack extends StatelessWidget {
       ],
     );
   }
-
-  /// The tip in the meaning language, English where there is no Bangla.
-  String _tipText(StudyTip tip) => switch ((meaning, tip.bn)) {
-    (MeaningLanguage.bangla, final bn?) => bn,
-    (MeaningLanguage.both, final bn?) => '${tip.en}\n$bn',
-    _ => tip.en,
-  };
 }
+
+/// An interference tip in [meaning], English where there is no Bangla. T2's
+/// back and W1.
+String tipText(StudyTip tip, MeaningLanguage meaning) =>
+    switch ((meaning, tip.bn)) {
+      (MeaningLanguage.bangla, final bn?) => bn,
+      (MeaningLanguage.both, final bn?) => '${tip.en}\n$bn',
+      _ => tip.en,
+    };
 
 /// The 32 dp mini play button: Oat with an ink edge on paper, frosted under
 /// glass. With [onPressed] it is its own button; without, it only draws, for
@@ -172,8 +189,9 @@ class StudyPlayButton extends StatelessWidget {
 
 /// One example: the mini play button, the German in italics, its
 /// translation. The whole row plays it, so the target is not just 32 dp.
-class _Example extends StatelessWidget {
-  const _Example(this.example, {required this.onPlay});
+/// T2's back and W1 both draw it.
+class StudyExampleRow extends StatelessWidget {
+  const StudyExampleRow(this.example, {required this.onPlay, super.key});
 
   final StudyExample example;
   final VoidCallback onPlay;

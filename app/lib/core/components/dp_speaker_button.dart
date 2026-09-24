@@ -56,9 +56,17 @@ class DpSpeakerButton extends StatelessWidget {
     final tokens = context.tokens;
 
     return Semantics(
+      // Its own node: without it, a headword and chips beside it merge into
+      // this button, and a screen reader announces the whole header as
+      // "Pronounce" (W1's header, T2's card).
+      container: true,
       button: true,
       enabled: _enabled,
       label: semanticLabel,
+      // The gesture below is excluded with the icon, so the actions are
+      // declared here: a screen reader's double-tap has to play the word.
+      onTap: _enabled ? onPressed : null,
+      onLongPress: _enabled ? onLongPress : null,
       child: ExcludeSemantics(
         child: GestureDetector(
           onTap: _enabled ? onPressed : null,

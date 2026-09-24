@@ -16,7 +16,7 @@
 | `clock` | keepAlive | app | `DateTime Function()`; overridden in tests for date logic. |
 | `todayPlan(date)` | AsyncNotifier family | Today | Calls `PlanEngine.openDay`; watches plan_items stream. |
 | `studySession(args)` | keepAlive Notifier | study modal | Queue of cards, position, undo stack; survives app backgrounding; cleared on close. |
-| `wordDetail(uid)` | autoDispose | sheet | Joins word + state + examples + tips. |
+| `wordDetail(uid)` | autoDispose Stream | sheet | Word + state (watched) + examples + tip, with the meaning language and `show_pron_bn`. `wordHistory(uid)` watches `review_log` for the history caption. |
 | `searchResults(query)` | autoDispose, debounced | Search | Runs in a drift background isolate. |
 | `stepProgress` | Stream | Learn/Me | Aggregates per sub-level. |
 | `examAttempt(id)` | keepAlive Notifier | exam modal | Timer, answers, flags; persisted per answer. |

@@ -1,6 +1,7 @@
 import 'package:deutschplan/data/db/app_database.dart';
 import 'package:deutschplan/data/repositories/setting_keys.dart';
 import 'package:deutschplan/data/repositories/settings_repository.dart';
+import 'package:deutschplan/domain/fsrs.dart' show Rating;
 import 'package:drift/drift.dart';
 import 'package:flutter/foundation.dart' show immutable;
 
@@ -35,6 +36,10 @@ enum WordStatus {
 
   String get wire => name;
 }
+
+/// How often a word was reviewed and how it was last rated; `last` is null
+/// for a word never reviewed.
+typedef ReviewHistory = ({int reviews, Rating? last});
 
 /// A word and what the learner has done with it.
 @immutable
@@ -249,6 +254,16 @@ class WordRepository extends DatabaseAccessor<AppDatabase>
         (rows) => rows.isEmpty
             ? null
             : _word(rows.single.w, rows.single.s, rows.single.derivedStatus),
+      );
+
+  /// How many times [uid] was reviewed, and the last rating it got (W1's
+  /// history caption) — again after every review.
+  Stream<ReviewHistory> watchHistory(String uid) =>
+      reviewHistory(uid).watchSingle().map(
+        (row) => (
+          reviews: row.reviews,
+          last: row.lastRating == null ? null : Rating.parse(row.lastRating!),
+        ),
       );
 
   /// Everything due on or before [today], excluding suspended words.

@@ -1738,6 +1738,67 @@
   "@wordStatusSuspended": {
     "description": "A word's status chip: suspended (BR-STATUS-03)."
   },
+  "wordPronounce": "Pronounce {word}",
+  "@wordPronounce": {
+    "description": "W1 header speaker, for screen readers. {word} is the headword with its article.",
+    "placeholders": {
+      "word": {
+        "type": "String"
+      }
+    }
+  },
+  "wordExamples": "Examples",
+  "@wordExamples": {
+    "description": "W1 section label over the word's example sentences (shown upper-case)."
+  },
+  "wordCompare": "Compare a synonym set ({set})",
+  "@wordCompare": {
+    "description": "W1 link to W2 for a headword that names a set, e.g. 'circa / etwa / rund' (FR-W1-06). {set} is the headword.",
+    "placeholders": {
+      "set": {
+        "type": "String"
+      }
+    }
+  },
+  "wordDueToday": "Due today",
+  "@wordDueToday": {
+    "description": "W1 history caption, first part: the word is due today or overdue."
+  },
+  "wordNextReview": "{days, plural, =1{Next review tomorrow} other{Next review in {days} days}}",
+  "@wordNextReview": {
+    "description": "W1 history caption, first part: when the word is next due, a day or more away.",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "wordReviewed": "{count, plural, =1{reviewed once} other{reviewed {count} times}}",
+  "@wordReviewed": {
+    "description": "W1 history caption: how often the word was reviewed, from any source.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "wordLastRating": "last: {rating}",
+  "@wordLastRating": {
+    "description": "W1 history caption, last part: the last rating given, e.g. 'last: Good'.",
+    "placeholders": {
+      "rating": {
+        "type": "String"
+      }
+    }
+  },
+  "wordLoadFailed": "This word didn't load.",
+  "@wordLoadFailed": {
+    "description": "W1 error panel when the word's query fails; with Retry."
+  },
+  "wordNotFound": "This word isn't in the course.",
+  "@wordNotFound": {
+    "description": "W1 opened by a link to a word the course doesn't have."
+  },
   "backlogEmptyTitle": "Nothing waiting. Nice.",
   "@backlogEmptyTitle": {
     "description": "T4 empty state headline."

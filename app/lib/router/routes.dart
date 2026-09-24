@@ -41,6 +41,7 @@ import 'package:deutschplan/features/me/me_screen.dart';
 import 'package:deutschplan/features/quiz/quiz_screen.dart';
 import 'package:deutschplan/features/sentences/sentences_screen.dart';
 import 'package:deutschplan/features/study/study_screen.dart';
+import 'package:deutschplan/features/words/word_detail_screen.dart';
 import 'package:deutschplan/core/adaptive/adaptive.dart';
 import 'package:deutschplan/router/placeholder_screen.dart';
 import 'package:cupertino_ui/cupertino_ui.dart' show CupertinoPage;
@@ -862,15 +863,16 @@ class ExamRoute extends GoRouteData with $ExamRoute {
   );
 }
 
-/// Word detail. Shown as a sheet from a list; the route exists for deep links,
-/// which is why the uid is in the path.
+/// Word detail. [open] shows it over the opener — a sheet on a phone, a pane
+/// on a tablet — without navigating, so the opener stays as it was; the
+/// route is the deep link's full page, which is why the uid is in the path.
 @TypedGoRoute<WordRoute>(path: '/word/:uid')
 class WordRoute extends GoRouteData with $WordRoute {
   const WordRoute({required this.uid, this.speak});
 
-  /// W1 over whatever is showing — T2's "open word details".
+  /// W1 over whatever is showing — T2's "open word details", every list row.
   static void open(BuildContext context, String uid) =>
-      unawaited(context.push<void>(WordRoute(uid: uid).location));
+      showWordDetail(context, uid);
 
   final String uid;
 
@@ -880,21 +882,21 @@ class WordRoute extends GoRouteData with $WordRoute {
   /// than which word this is.
   final String? speak;
 
+  // The typed field, not `state.uri`: a route that declared a parameter and
+  // then read the raw location would have two answers to the same question,
+  // which is the thing typed routes exist to prevent.
   @override
-  Widget build(BuildContext context, GoRouterState state) => PlaceholderScreen(
-    title: 'Word',
-    screen: 'W1',
-    // The typed field, not `state.uri`: a route that declared a parameter and
-    // then read the raw location would have two answers to the same question,
-    // which is the thing typed routes exist to prevent.
-    // TODO(#136): W1 plays the headword on open when this is set.
-    detail: speak == speakOn ? '$uid speak' : uid,
-  );
+  Widget build(BuildContext context, GoRouterState state) =>
+      WordDetailScreen(uid: uid, speak: speak == speakOn);
 }
 
 @TypedGoRoute<CompareRoute>(path: '/compare/:uid')
 class CompareRoute extends GoRouteData with $CompareRoute {
   const CompareRoute({required this.uid});
+
+  /// W2 for a word's synonym set — W1's *Compare* (FR-W1-06).
+  static void open(BuildContext context, String uid) =>
+      unawaited(context.push<void>(CompareRoute(uid: uid).location));
 
   final String uid;
 

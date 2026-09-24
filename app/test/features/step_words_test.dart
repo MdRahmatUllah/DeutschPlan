@@ -18,9 +18,11 @@ import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:deutschplan/features/words/word_detail_screen.dart';
 
 import '../db/content_fixture.dart';
 import 'today_fixtures.dart';
+import 'word_fixtures.dart';
 
 /// L2 · Words tab — #114.
 void main() {
@@ -80,7 +82,6 @@ void main() {
     });
   });
 
-  late String? went;
   late GoRouter routes;
 
   Future<void> pump(
@@ -88,19 +89,11 @@ void main() {
     String code = 'A2.1',
     List<Override>? overrides,
   }) async {
-    went = null;
     routes = GoRouter(
       routes: <RouteBase>[
         GoRoute(
           path: '/',
           builder: (_, _) => StepDetailScreen(code: code),
-        ),
-        GoRoute(
-          path: '/word/:uid',
-          builder: (_, state) {
-            went = state.uri.path;
-            return const Scaffold(body: Text('W1'));
-          },
         ),
       ],
     );
@@ -127,6 +120,7 @@ void main() {
         (id: 1, name: 'Wohnen & Haushalt'),
       ],
     ),
+    ...wordStub(),
   ];
 
   int rows(WidgetTester tester) => find.byType(WordRow).evaluate().length;
@@ -202,9 +196,14 @@ void main() {
     expect(first, isNot('Wort0'));
     await tester.tap(find.byType(WordRow).at(2));
     await tester.pumpAndSettle();
-    expect(went, startsWith('/word/w'));
-    routes.pop();
+    expect(
+      tester.widget<WordDetailView>(find.byType(WordDetailView)).uid,
+      startsWith('w'),
+    );
+    // Closed by a tap on the scrim above the sheet.
+    await tester.tapAt(const Offset(20, 20));
     await tester.pumpAndSettle();
+    expect(find.byType(WordDetailView), findsNothing);
     expect(
       tester.widgetList<WordRow>(find.byType(WordRow)).first.word.word.german,
       first,

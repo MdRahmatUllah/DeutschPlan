@@ -133,6 +133,15 @@ statusCountsForStep:
 wordStateFor:
   SELECT * FROM word_state WHERE word_uid = :uid;
 
+-- W1's history caption: how often the word was reviewed, from any source,
+-- and the last rating it was given. The id breaks a tie in `reviewed_at`.
+reviewHistory:
+  SELECT COUNT(*) AS reviews,
+    (SELECT rating FROM review_log
+      WHERE word_uid = :uid ORDER BY reviewed_at DESC, id DESC LIMIT 1)
+      AS last_rating
+  FROM review_log WHERE word_uid = :uid;
+
 -- FR-L1-01 / FR-M1-01 / FR-L2-01: the whole course, a row per step in
 -- BR-COURSE-01's order. Its words by status, derived as in
 -- statusCountsForStep; its grammar topics learned; the first mock passed

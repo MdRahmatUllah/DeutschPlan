@@ -24,9 +24,11 @@ import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:deutschplan/features/words/word_detail_screen.dart';
 
 import '../db/content_fixture.dart';
 import 'today_fixtures.dart';
+import 'word_fixtures.dart';
 
 /// L6 · Category words — #121.
 void main() {
@@ -36,7 +38,6 @@ void main() {
     l10n = await AppLocalizations.delegate.load(supportedLocales.first);
   });
 
-  late String? went;
   late QuizArgs? quiz;
 
   Future<void> pump(
@@ -45,7 +46,6 @@ void main() {
     List<CategoryProgress>? categories,
     List<StepWord>? words,
   }) async {
-    went = null;
     quiz = null;
     tester.view
       ..physicalSize = const Size(390, 844) * 3
@@ -56,13 +56,6 @@ void main() {
         GoRoute(
           path: '/',
           builder: (_, _) => CategoryWordsScreen(id: id),
-        ),
-        GoRoute(
-          path: '/word/:uid',
-          builder: (_, state) {
-            went = state.uri.path;
-            return const Scaffold(body: Text('W1'));
-          },
         ),
         GoRoute(
           path: '/quiz',
@@ -84,6 +77,7 @@ void main() {
           categoryWordsProvider.overrideWith(
             (ref, id) => Stream.value(words ?? artboardCategoryWords()),
           ),
+          ...wordStub(),
         ],
         child: MaterialApp.router(
           theme: AppTheme.light(),
@@ -255,7 +249,10 @@ void main() {
     await pump(tester);
     await tester.tap(row('Mietvertrag'));
     await tester.pumpAndSettle();
-    expect(went, '/word/cat-4');
+    expect(
+      tester.widget<WordDetailView>(find.byType(WordDetailView)).uid,
+      'cat-4',
+    );
   });
 
   testWidgets('FR-L6-02 Quiz opens the quiz with source category(id)', (

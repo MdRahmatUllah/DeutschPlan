@@ -916,9 +916,8 @@ class _NameSheetState extends State<_NameSheet> {
       borderRadius: BorderRadius.circular(tokens.shape.button),
       borderSide: BorderSide(color: tokens.color.ink, width: 2),
     );
-    // No keyboard inset of its own: the sheet opens in the Me tab, whose
-    // shell already shrinks above the keyboard, and adding the inset again
-    // floated the field a keyboard's height above it (seen on the device).
+    // No keyboard inset of its own: `Adaptive.showSheet` lifts every sheet
+    // above the keyboard.
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 20, 16, 16),
       child: Column(
