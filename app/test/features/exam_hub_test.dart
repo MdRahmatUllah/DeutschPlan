@@ -1,8 +1,6 @@
 @TestOn('vm')
 library;
 
-import 'dart:io';
-
 import 'package:deutschplan/core/providers/app_providers.dart';
 import 'package:deutschplan/data/db/content_dao.dart';
 import 'package:deutschplan/data/db/app_database.dart';
@@ -14,6 +12,8 @@ import 'package:drift/drift.dart' hide isNotNull, isNull;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
+
+import '../db/content_fixture.dart';
 
 /// L10's data, against a real database — #127.
 void main() {
@@ -28,7 +28,7 @@ void main() {
     db = AppDatabase.memory();
     // The real course: the hub asks the generator whether a paper reuses.
     await db.customStatement(
-      "ATTACH DATABASE '${ContentDao.attachPath(File('assets/db/content.db'))}' AS c",
+      "ATTACH DATABASE '${ContentDao.attachPath(realContent())}' AS c",
     );
     settings = SettingsRepository(db);
     await settings.load();

@@ -1,8 +1,6 @@
 @TestOn('vm')
 library;
 
-import 'dart:io';
-
 import 'package:deutschplan/core/providers/app_providers.dart';
 import 'package:deutschplan/data/db/app_database.dart';
 import 'package:deutschplan/data/db/content_dao.dart';
@@ -15,6 +13,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
 
+import '../db/content_fixture.dart';
+
 /// FR-L10-03's *Begin exam*, over the real course — #129.
 void main() {
   driftRuntimeOptions.dontWarnAboutMultipleDatabases = true;
@@ -25,7 +25,7 @@ void main() {
   setUp(() async {
     db = AppDatabase.memory();
     await db.customStatement(
-      "ATTACH DATABASE '${ContentDao.attachPath(File('assets/db/content.db'))}' AS c",
+      "ATTACH DATABASE '${ContentDao.attachPath(realContent())}' AS c",
     );
     exams = ExamRepository(db);
   });

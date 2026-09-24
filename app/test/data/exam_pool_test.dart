@@ -161,7 +161,7 @@ void main() {
   });
 
   group('every step of the real course', () {
-    setUpAll(() async => open(File('assets/db/content.db')));
+    setUpAll(() async => open(realContent()));
     tearDownAll(() => db.close());
 
     const steps = <String>[
