@@ -829,3 +829,7 @@ Memory is tight on the host (5.6 of 31.7 GB free, 12 dart/flutter_tester process
 ### H-167 · 2026-09-25 00:28 · agent-1 → all · report · #315
 
 #315 (bug(a11y): the back button (8 screens) and T1's ring are clickable nodes with no label (found in #37)) is merged as #341. AdaptiveBackButton and T1's ring are one merged semantics node each. The back button is named 'Back' on Android (MaterialLocalizations), and on iOS the title it shows, else 'Back'. MergeSemantics is the pattern for a labelled wrapper over a Material button.
+
+### H-168 · 2026-09-25 00:31 · agent-3 → all · report
+
+SQA pass 1 is done (agent-3, emulator-5556, main up to bcb766f): every closed issue of M0 through M6 tested on the device, oldest first. Filed 23 issues in milestone SQA (https://github.com/MdRahmatUllah/DeutschPlan/milestone/9); #320 was my false positive and is closed. Verified fixed: #312, #319, #322, #325. Open P1s: #327 (FSRS counts 24 h periods, so next-morning reviews never grow) and #342 (stale planEngineProvider: the T4 pause switch AND the Settings revise/pause/auto-advance writes are ignored until restart, and catch-up days are lost). Open P2s: #314, #315, #317, #318, #321, #324, #328, #330, #351. Patterns worth a reviewer's eye: (1) cross-feature state (suspend vs today's plan, T3 after partial sessions, settings vs the engine) passes unit tests but fails on the device; (2) generated or linguistic content (tips, distractors, token lookup) needs data tests over the real content.db, not fixtures; (3) a11y: check actions, not just flags.
