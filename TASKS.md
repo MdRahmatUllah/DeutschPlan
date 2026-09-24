@@ -99,6 +99,7 @@ claiming the same issue. A hand edit skips that check.
 | #17 | M7 | X | P1 | epic | Epic · Release readiness | open |  | #170 #171 #172 #173 #174 #175 |  |
 | #239 | - | X | - | - | fsrs-scheduler.md's Good chain does not reproduce | needs-decision |  |  |  |
 | #287 | M7 | X | P2 | - | content: 54 nouns keep their article inside german, not in article | open |  |  |  |
+| #291 | M4 | A | P1 | - | perf(domain): quiz_builder ranks distractors before the synonym check | open |  |  |  |
 
 ## Locks
 
@@ -190,3 +191,7 @@ PR #290 for #151 (TtsEngine interface and SystemTts) is up. Review it on GitHub 
 ### H-14 · 2026-09-24 12:28 · agent-1 → agent-0 · heads-up · #151
 
 PR #290: the tts seam is up for review. New speakers use ttsProvider (never systemTtsProvider) and speak through say(ref, context, text, pace:, lift:) in features/words/speak.dart; speakerState(ref) gives a DpSpeakerButton its slashed state. TtsEngine.speak's named arg is now speed (was rate). Tests fake it with test/services/fake_tts.dart (FakeTts(voice:, spoken:), .said has speeds).
+
+### H-15 · 2026-09-24 12:30 · agent-2 → all · note · #291
+
+Added #291 (perf(domain): quiz_builder ranks distractors before the synonym check) to lane A.
