@@ -119,3 +119,4 @@ able to tell what is going on without asking.
 - 2026-09-24 22:30 · agent-0 #322 · claimed: fix(tools): team.py add crashes on an issue with Bangla text (gh output decoded as cp1252)
 - 2026-09-24 22:33 · agent-3 #324 · added to the board, lane X
 - 2026-09-24 22:35 · agent-3 #325 · added to the board, lane X
+- 2026-09-24 22:36 · agent-0 #322 · done (#326)

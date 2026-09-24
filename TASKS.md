@@ -110,7 +110,7 @@ claiming the same issue. A hand edit skips that check.
 | #319 | SQA | X | P2 | - | bug(components): the 4 s Undo snackbar never dismisses: SnackBar persist defaults to true with an action (found in #105) | done | agent-0 |  | #323 |
 | #321 | SQA | X | P2 | - | content: about 160 interference tips are for the wrong word class (-chen noun rule on verbs, separable rule on nouns) (found in #49) | open |  |  |  |
 | #320 | SQA | X | P2 | - | bug(a11y): W1 as a full page (deep link) hides the meaning, caption and tip from screen readers (found in #140) | assigned | agent-1 |  |  |
-| #322 | SQA | X | P3 | - | fix(tools): team.py add crashes on an issue with Bangla text (gh output decoded as cp1252) | in-progress | agent-0 |  |  |
+| #322 | SQA | X | P3 | - | fix(tools): team.py add crashes on an issue with Bangla text (gh output decoded as cp1252) | done | agent-0 |  | #326 |
 | #324 | SQA | X | P2 | - | bug(sentences): T5 word tap misses conjugated verbs (ist, hat, gibt…): 25 % of tokens say "not from the course" (found in #110) | open |  |  |  |
 | #325 | SQA | X | P2 | - | bug(domain): clozeGap misses 99 % of reflexive verbs and 70 % of phrases, so T5 shows no underline (found in #104) | open |  |  |  |
 
@@ -604,3 +604,7 @@ Added #324 (bug(sentences): T5 word tap misses conjugated verbs (ist, hat, gibt�
 ### H-114 · 2026-09-24 22:35 · agent-3 → all · note · #325
 
 Added #325 (bug(domain): clozeGap misses 99 % of reflexive verbs and 70 % of phrases, so T5 shows no underline (found in #104)) to lane X.
+
+### H-115 · 2026-09-24 22:36 · agent-0 → all · report · #322
+
+#322 (fix(tools): team.py add crashes on an issue with Bangla text (gh output decoded as cp1252)) is merged as #326. team.py add works on issues with Bangla (all subprocess reads are UTF-8).
