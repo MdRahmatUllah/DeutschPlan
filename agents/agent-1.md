@@ -6,7 +6,7 @@ last-read: 14
 
 ## Now
 
-#151 in review as PR #290: watch CI, answer review threads, merge.
+#140 W1 · Word detail — claimed 2026-09-24 12:29.
 
 ## Next
 

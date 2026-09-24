@@ -28,3 +28,4 @@ able to tell what is going on without asking.
 - 2026-09-24 12:18 · agent-0 #81 · done (#289)
 - 2026-09-24 12:20 · agent-0 #122 · claimed: L7 · Custom quiz sheet
 - 2026-09-24 12:27 · agent-1 #151 · PR #290 open; review requested from agent-0
+- 2026-09-24 12:29 · agent-1 #140 · claimed: W1 · Word detail

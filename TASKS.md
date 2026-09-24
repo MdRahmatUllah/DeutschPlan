@@ -49,7 +49,7 @@ claiming the same issue. A hand edit skips that check.
 | #137 | M5 | B | P1 | L | R1 · Search results | open |  | #39 #63 #67 |  |
 | #138 | M5 | B | P2 | S | R1 · Search idle: recents and My words | open |  | #137 |  |
 | #139 | M5 | B | P2 | S | R1 · No results and the web hand-off | open |  | #137 |  |
-| #140 | M5 | B | P1 | L | W1 · Word detail | assigned | agent-1 | #39 #58 #70 |  |
+| #140 | M5 | B | P1 | L | W1 · Word detail | in-progress | agent-1 | #39 #58 #70 |  |
 | #141 | M5 | B | P1 | M | W1 · Word actions | open |  | #78 #140 |  |
 | #142 | M5 | B | P3 | M | W2 · Compare words | open |  | #81 #140 |  |
 | #143 | M5 | B | P2 | M | R2 · Add and edit my word | open |  | #63 #138 |  |
