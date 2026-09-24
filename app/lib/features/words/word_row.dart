@@ -11,7 +11,7 @@ import 'package:deutschplan/l10n/generated/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 
-/// A word in a list — T4's backlog, L2's Words tab: the headword in its
+/// A word in a list — T4's backlog, L2's Words tab, L6: the headword in its
 /// article's colour, its meaning, its status chip and a speaker, 64 dp on
 /// the card, with a hairline under all but the [last]. A suspended word is
 /// greyed rather than hidden (BR-STATUS-03).
@@ -23,6 +23,7 @@ class WordRow extends StatelessWidget {
     required this.meaning,
     required this.last,
     super.key,
+    this.step,
   });
 
   final WordWithState word;
@@ -30,6 +31,9 @@ class WordRow extends StatelessWidget {
   /// In the learner's meaning language.
   final String meaning;
   final bool last;
+
+  /// L6's step chip before the status, where a list spans steps.
+  final String? step;
 
   static const double height = 64;
 
@@ -72,6 +76,10 @@ class WordRow extends StatelessWidget {
           ),
         ),
         const SizedBox(width: 10),
+        if (step case final step?) ...<Widget>[
+          DpChip(label: step, kind: DpChipKind.step),
+          const SizedBox(width: 6),
+        ],
         DpChip(label: status, kind: DpChipKind.status, statusColour: dot),
         WordPlayButton(word: spokenForm(word.word)),
       ],
