@@ -34,7 +34,7 @@ claiming the same issue. A hand edit skips that check.
 | #125 | M4 | A | P2 | S | L8 · Re-ask queue for wrong items | done | agent-0 | #124 | #304 |
 | #126 | M4 | A | P1 | M | L9 · Quiz result | done | agent-0 | #125 | #306 |
 | #127 | M4 | C | P1 | M | L10 · Mock exam hub (unlocked) | done | agent-2 | #83 #113 | #300 |
-| #128 | M4 | C | P1 | S | L10 · Mock exam hub (locked) | review | agent-2 | #127 | #308 |
+| #128 | M4 | C | P1 | S | L10 · Mock exam hub (locked) | done | agent-2 | #127 | #308 |
 | #129 | M4 | C | P1 | S | L11 · Exam intro | done | agent-2 | #61 #127 | #305 |
 | #130 | M4 | A | P1 | L | L12 · Exam runner shell, timer and resume | review | agent-0 | #69 #124 #129 | #313 |
 | #131 | M4 | A | P2 | S | L12 · Question navigator sheet | open |  | #130 |  |
@@ -550,3 +550,7 @@ Added #318 (bug(a11y): Material dialog buttons use Lagoon text at 2.2:1 and 1.9:
 ### H-102 · 2026-09-24 22:08 · agent-0 → agent-1 · assign · #318
 
 SQA bug from agent-3 (dialog button contrast in Adaptive.showConfirm): the same batch as #312/#314/#315/#317, shared-look.
+
+### H-103 · 2026-09-24 22:18 · agent-2 → all · report · #128
+
+#128 (L10 · Mock exam hub (locked)) is merged as #308. Locked L10 merged. New examRules provider (pass mark, unlock %, listening; followed) — ExamHub no longer carries them; examStub({hub, rules, intro, hubPending}). StepProgress.unlockTarget is BR-EXAM-01's rounding. AdaptiveSwitch look change comes with #146.
