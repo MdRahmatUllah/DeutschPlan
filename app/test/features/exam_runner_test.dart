@@ -31,7 +31,7 @@ void main() {
   });
 
   late StubExamRun run;
-  late int left;
+  late List<String> left;
 
   Future<void> pump(
     WidgetTester tester, {
@@ -39,7 +39,7 @@ void main() {
     List<Override> more = const <Override>[],
   }) async {
     run = stub ?? StubExamRun();
-    left = 0;
+    left = <String>[];
     final routes = GoRouter(
       initialLocation: '/opener',
       routes: <RouteBase>[
@@ -52,7 +52,7 @@ void main() {
           builder: (_, _) => ExamRunnerScreen(
             attemptId: 7,
             results: (_) => const Scaffold(body: Text('L13')),
-            onLeft: () => left++,
+            onLeft: left.add,
           ),
         ),
       ],
@@ -373,7 +373,30 @@ void main() {
       await tester.pump(const Duration(seconds: 1));
       // The dialog's close takes its own moment, so not an exact second.
       expect(find.text('14:32'), findsNothing, reason: 'running again');
-      expect(left, 0);
+      expect(left, isEmpty);
+      semantics.dispose();
+    });
+
+    testWidgets('Keep going runs one clock, not two', (tester) async {
+      final semantics = tester.ensureSemantics();
+      await pump(tester);
+      await pause(tester);
+      await tap(tester, l10n.examLeaveCancel);
+      run.times.clear();
+      await tester.pump(const Duration(seconds: 20));
+      final running = run.times.fold(0, (sum, t) => sum + t.$1);
+      expect(running, inInclusiveRange(18, 20), reason: '20 s, not 40');
+      semantics.dispose();
+    });
+
+    testWidgets('with the timer off, the seconds it asks are paused ones', (
+      tester,
+    ) async {
+      final semantics = tester.ensureSemantics();
+      await pump(tester, stub: StubExamRun(timed: false));
+      await pause(tester);
+      await tester.pump(const Duration(seconds: 10));
+      expect(run.times, [(0, 10)]);
       semantics.dispose();
     });
 
@@ -389,8 +412,57 @@ void main() {
       expect(run.answers, [(1, 'word 1')], reason: 'what was typed stays');
       expect(run.times.single.$1, 3, reason: 'the seconds run are written');
       expect(run.abandoned, 1);
-      expect(left, 1);
+      expect(left, <String>['A1.2'], reason: "back to the attempt's step");
       semantics.dispose();
+    });
+
+    testWidgets('a Leave whose write fails still leaves', (tester) async {
+      final semantics = tester.ensureSemantics();
+      await pump(tester, stub: StubExamRun()..failAbandon = true);
+      await pause(tester);
+      await tap(tester, l10n.examLeaveConfirm);
+      expect(left, <String>['A1.2']);
+      expect(tester.takeException(), isNull);
+      semantics.dispose();
+    });
+
+    testWidgets('a Leave during the submit leaves the submit alone', (
+      tester,
+    ) async {
+      final semantics = tester.ensureSemantics();
+      final hold = Completer<void>();
+      await pump(
+        tester,
+        stub: StubExamRun(
+          items: artboardPaper().take(1).toList(),
+          given: <int, String>{1: 'x'},
+        )..holdSubmit = hold,
+      );
+      await tester.tap(find.text(l10n.examRunSubmit));
+      await tester.pump();
+      await pause(tester);
+      await tap(tester, l10n.examLeaveConfirm);
+      expect(run.abandoned, 0);
+      expect(left, isEmpty);
+      hold.complete();
+      await tester.pumpAndSettle();
+      expect(find.text('L13'), findsOneWidget);
+      semantics.dispose();
+    });
+
+    testWidgets('after the submit, back does not ask', (tester) async {
+      await pump(
+        tester,
+        stub: StubExamRun(
+          items: artboardPaper().take(1).toList(),
+          given: <int, String>{1: 'x'},
+        ),
+      );
+      await tap(tester, l10n.examRunSubmit);
+      expect(find.text('L13'), findsOneWidget);
+      await tester.binding.handlePopRoute();
+      await tester.pumpAndSettle();
+      expect(find.text(l10n.examLeaveTitle), findsNothing);
     });
 
     testWidgets('back asks as pause does', (tester) async {
@@ -409,7 +481,7 @@ void main() {
       tester,
       stub: StubExamRun(attempt: artboardAttempt(status: 'abandoned')),
     );
-    expect(left, 1);
+    expect(left, <String>['A1.2']);
     expect(run.answers, isEmpty);
   });
 

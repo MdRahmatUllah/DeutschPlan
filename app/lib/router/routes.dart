@@ -25,7 +25,6 @@ import 'package:deutschplan/features/onboarding/onboarding_welcome_page.dart';
 import 'package:deutschplan/features/splash/splash_screen.dart';
 import 'package:deutschplan/router/app_shell.dart';
 import 'package:deutschplan/router/deep_links.dart';
-import 'package:deutschplan/router/route_guards.dart';
 import 'package:deutschplan/features/today/today_screen.dart';
 import 'package:deutschplan/features/backlog/backlog_screen.dart';
 import 'package:deutschplan/features/day_complete/day_complete_screen.dart';
@@ -856,9 +855,10 @@ class ExamRoute extends GoRouteData with $ExamRoute {
   Widget build(BuildContext context, GoRouterState state) => ExamRunnerScreen(
     attemptId: attemptId,
     // FR-L12-04: the runner asks (back and its pause button), abandons the
-    // attempt, then leaves here. `canPop: false` in its guard is also what
+    // attempt, then leaves for its step's exam hub (L10, L2's Exams tab). `canPop: false` in its guard is also what
     // turns off the iOS edge swipe for this route (#69).
-    onLeft: () => context.go(examFallback),
+    onLeft: (step) =>
+        LearnStepRoute(code: step, tab: StepTab.exams).go(context),
     // ponytail: L13 (#135) takes over from here.
     results: (_) => PlaceholderScreen(
       title: 'Exam results',

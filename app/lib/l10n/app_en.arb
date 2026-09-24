@@ -298,7 +298,7 @@
   },
   "examLeaveTitle": "Leave the exam?",
   "@examLeaveTitle": {
-    "description": "Title of the dialog Android back opens inside the exam runner. docs/04-screens/exam-runner.md, FR-L12-04."
+    "description": "Title of the dialog that back and the pause button open inside the exam runner. docs/04-screens/exam-runner.md, FR-L12-04."
   },
   "examLeaveMessage": "Your answers so far are saved as an unfinished attempt. The timer stops. You can start Mock {mock} again from the exam hub.",
   "@examLeaveMessage": {

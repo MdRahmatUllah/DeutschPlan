@@ -36,8 +36,9 @@ class ExamRunnerScreen extends ConsumerStatefulWidget {
 
   final int attemptId;
 
-  /// After *Leave*: back to the hub (FR-L12-04). The route navigates.
-  final VoidCallback onLeft;
+  /// After *Leave* (FR-L12-04), with the attempt's step: back to its exam
+  /// hub. The route navigates.
+  final ValueChanged<String> onLeft;
 
   /// What follows the submit: L13 (#135).
   final WidgetBuilder results;
@@ -115,7 +116,7 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
       }
       // Left once (FR-L12-04), it is closed: a deep link doesn't reopen it.
       if (paper.attempt.status == 'abandoned') {
-        widget.onLeft();
+        widget.onLeft(paper.attempt.sublevelCode);
         return;
       }
       setState(() {
@@ -260,12 +261,20 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
 
   /// FR-L12-04 *Leave*: what was typed and the time are written, and the
   /// attempt is abandoned: the hub shows it as an attempt without a score.
+  /// Not while a submit is under way: that one finishes, and L13 follows.
   Future<void> _leave() async {
+    final paper = _paper;
+    if (paper == null || _submitting || _done) return;
     _tick?.cancel();
     _saveTyped();
-    await _flush();
-    await _service.abandon(widget.attemptId);
-    if (mounted) widget.onLeft();
+    try {
+      await _flush();
+      await _service.abandon(widget.attemptId);
+    } on Object {
+      // Left anyway: the attempt stays in progress and the hub offers
+      // *Resume*, with every answer and all but the last seconds written.
+    }
+    if (mounted) widget.onLeft(paper.attempt.sublevelCode);
   }
 
   /// The submit. By hand with questions unanswered, it asks first

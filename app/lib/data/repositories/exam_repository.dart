@@ -495,10 +495,13 @@ class ExamRepository extends DatabaseAccessor<AppDatabase>
 
   /// Leaving an exam. FR-L12-04: the answers stay, so the result screen can
   /// still show what was done.
+  /// Only an attempt still in progress: a *Leave* racing a submit must not
+  /// turn a graded paper into an abandoned one.
   Future<void> abandon(int attemptId) =>
-      (update(db.examAttempts)..where((t) => t.id.equals(attemptId))).write(
-        const ExamAttemptsCompanion(status: Value('abandoned')),
-      );
+      (update(db.examAttempts)..where(
+            (t) => t.id.equals(attemptId) & t.status.equals('in_progress'),
+          ))
+          .write(const ExamAttemptsCompanion(status: Value('abandoned')));
 
   /// One line per seed that has been sat, for the exam hub.
   Stream<List<SeedSummary>> watchSeeds(String sublevelCode) =>

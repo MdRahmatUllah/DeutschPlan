@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:deutschplan/core/providers/app_providers.dart';
 import 'package:deutschplan/data/db/app_database.dart' show ExamAttempt;
 import 'package:deutschplan/data/repositories/exam_repository.dart'
@@ -176,8 +178,14 @@ class StubExamRun implements ExamRunService {
   /// Makes the next submits throw, as a failed write would.
   bool failSubmit = false;
 
+  /// Holds a submit open until it completes.
+  Completer<void>? holdSubmit;
+
   /// How often *Leave* abandoned the attempt.
   int abandoned = 0;
+
+  /// Makes *Leave*'s abandon throw, as a failed write would.
+  bool failAbandon = false;
 
   @override
   Future<ExamPaperRun?> load(int attemptId) async {
@@ -215,11 +223,15 @@ class StubExamRun implements ExamRunService {
   }) async => times.add((running, paused));
 
   @override
-  Future<void> abandon(int attemptId) async => abandoned++;
+  Future<void> abandon(int attemptId) async {
+    abandoned++;
+    if (failAbandon) throw StateError('disk full');
+  }
 
   @override
   Future<ExamScore> submit(int attemptId) async {
     submitted++;
+    await holdSubmit?.future;
     if (failSubmit) throw StateError('disk full');
     return const ExamScore(scorePoints: 30, maxPoints: 48, passed: true);
   }
