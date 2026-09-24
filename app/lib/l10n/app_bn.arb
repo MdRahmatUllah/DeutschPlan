@@ -629,5 +629,16 @@
   "settingsReset": "রিসেট",
   "settingsResetNote": "একটি ধাপ, বা সবকিছু",
   "settingsRestart": "সেটআপ আবার করুন",
-  "settingsRestartNote": "অগ্রগতি থাকবে, পরিকল্পনার সেটিংস বদলাবে"
+  "settingsRestartNote": "অগ্রগতি থাকবে, পরিকল্পনার সেটিংস বদলাবে",
+  "examRunResume": "আবার শুরু করুন",
+  "examRunPaused": "থামানো হয়েছে। ঘড়ি বন্ধ আছে।",
+  "examWritingTask": "{level, select, A1{{category} নিয়ে এক বন্ধুকে একটি ছোট বার্তা লিখুন।} A2{{category} নিয়ে এক বন্ধুকে একটি ইমেইল লিখুন।} B1{{category} নিয়ে একটি ব্যক্তিগত চিঠি লিখুন: কী হয়েছিল আর আপনি কী ভাবেন।} B2{{category} নিয়ে একটি আনুষ্ঠানিক চিঠি বা মতামত লিখুন।} C1{{category} নিয়ে একটি যুক্তিপূর্ণ লেখা লিখুন: দুই দিক, তারপর আপনার মত।} other{{category} নিয়ে একটি পত্রিকার জন্য মন্তব্য লিখুন।}}",
+  "examWritingTopicFallback": "আপনার সপ্তাহ",
+  "examWritingUse": "এই শব্দগুলোর অন্তত ৬টি ব্যবহার করুন:",
+  "examWritingTargetUsed": "{word}, ব্যবহৃত",
+  "examWritingUsed": "{total}টির মধ্যে {used}টি ব্যবহৃত · {level}-এ অন্তত {min}টি শব্দ",
+  "examWritingYourText": "আপনার লেখা",
+  "examWritingCount": "{count, plural, other{{count}টি শব্দ · ন্যূনতম {min}}}",
+  "examWritingConnectors": "সংযোজক পাওয়া গেছে: {found}",
+  "examWritingSubmit": "লেখা জমা দিন"
 }

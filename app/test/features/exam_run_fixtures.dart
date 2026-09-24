@@ -138,6 +138,34 @@ List<ExamItem> artboardPaper() => <ExamItem>[
   ),
 ];
 
+/// The ExamWriting artboard's task: A1, its ten target words.
+const WritingTask artboardWriting = WritingTask(
+  'writing:1',
+  level: 'A1',
+  category: 'Wohnen',
+  targets: <String>[
+    'Heizung',
+    'Vermieter',
+    'kaputt',
+    'reparieren',
+    'kalt',
+    'seit',
+    'dringend',
+    'Wohnung',
+    'bitte',
+    'Termin',
+  ],
+  minWords: 30,
+  connectors: <String>['und', 'aber', 'seit', 'bitte', 'ohne dass'],
+);
+
+/// The ExamWriting artboard's letter, to the landlord by name: the seven
+/// targets its chips show used.
+const String artboardWritingText =
+    'Sehr geehrter Vermieter, die Heizung in meiner Wohnung ist seit Montag '
+    'kaputt. Es ist sehr kalt. Können Sie bitte einen Handwerker schicken? '
+    'Ich bin am Nachmittag zu Hause. Vielen Dank, Maruf Hossain';
+
 /// L12 without a database: a paper, and a record of what the runner did.
 class StubExamRun implements ExamRunService {
   StubExamRun({

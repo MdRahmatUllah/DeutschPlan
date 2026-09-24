@@ -5,6 +5,8 @@ import 'package:deutschplan/core/theme/dp_surface.dart';
 import 'package:deutschplan/core/theme/dp_tokens.dart';
 import 'package:deutschplan/core/typography/dp_text.dart';
 import 'package:deutschplan/domain/exam_generator.dart';
+import 'package:deutschplan/domain/exam_grading.dart'
+    show connectorsUsed, targetsUsed, textWords;
 import 'package:deutschplan/domain/grammar_item_generator.dart';
 import 'package:deutschplan/domain/quiz_builder.dart' show FormLabel;
 import 'package:deutschplan/features/learn/grammar_practice_screen.dart'
@@ -30,7 +32,8 @@ bool examTyped(ExamItem item) => switch (item) {
   WordQuestion(:final section) => section != ExamSection.articles,
   GapQuestion() => true,
   GrammarQuestion(:final item) => item is GapFill,
-  WritingTask() || SpeakingTask() => false,
+  WritingTask() => true,
+  SpeakingTask() => false,
 };
 
 /// Whether [item]'s typed answer is German, which gets the umlaut row.
@@ -71,6 +74,9 @@ class ExamQuestionView extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
     final tokens = context.tokens;
+    if (item case final WritingTask task) {
+      return ExamWriting(task: task, field: field);
+    }
 
     Widget speaker(String word, {double size = 48}) => DpSpeakerButton(
       size: size,
@@ -223,12 +229,12 @@ class ExamQuestionView extends ConsumerWidget {
           _Order(chips: chips, given: given, onGiven: onGiven),
         ),
       },
-      WritingTask(:final section) || SpeakingTask(:final section) => (
-        section == ExamSection.writing
-            ? l10n.examSectionWriting
-            : l10n.examSectionSpeaking,
-        // ponytail: #133 (Writing) and #134 (Speaking) build these; a
-        // skipped task scores nothing (#84), as FR-L12S-01 says.
+      // Drawn above, whole.
+      WritingTask() => throw StateError('Writing is ExamWriting'),
+      SpeakingTask() => (
+        l10n.examSectionSpeaking,
+        // ponytail: #134 builds Speaking; a skipped task scores nothing
+        // (#84), as FR-L12S-01 says.
         DpText(
           l10n.examRunLater,
           role: DpTextRole.body,
@@ -424,6 +430,194 @@ class _Order extends StatelessWidget {
           },
         ),
       ],
+    );
+  }
+}
+
+/// L12's Writing (`exam-writing-speaking.md`, the ExamWriting artboard): the
+/// task and its ten target words, which turn Lime as the text uses them
+/// (FR-L12W-01); the text; and, live, its length against the level's
+/// minimum (FR-L12W-02) and the connectors in it. The text is the runner's
+/// typed answer, so it is kept in `exam_answers.given` and never leaves the
+/// phone (FR-L12W-04).
+class ExamWriting extends StatelessWidget {
+  const ExamWriting({required this.task, required this.field, super.key});
+
+  final WritingTask task;
+  final TextEditingController field;
+
+  static const EdgeInsets _panelPadding = EdgeInsets.fromLTRB(14, 12, 14, 12);
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final tokens = context.tokens;
+    final edge = OutlineInputBorder(
+      borderRadius: BorderRadius.circular(12),
+      borderSide: BorderSide(color: tokens.color.ink, width: 2),
+    );
+    final topic = task.category ?? l10n.examWritingTopicFallback;
+
+    return ValueListenableBuilder<TextEditingValue>(
+      valueListenable: field,
+      builder: (context, value, _) {
+        final text = value.text;
+        final used = targetsUsed(text, task.targets).toSet();
+        final connectors = connectorsUsed(text, task.connectors);
+        // A flat Oat panel on paper, as the artboard draws it — no edge, no
+        // shadow, which every DpSurface kind has; the frosted card under
+        // glass.
+        Widget panel(Widget child) => tokens.isGlass
+            ? DpSurface(radius: 12, padding: _panelPadding, child: child)
+            : Container(
+                padding: _panelPadding,
+                decoration: BoxDecoration(
+                  color: tokens.surface.muted,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: child,
+              );
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            panel(
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  DpText(
+                    <String>[
+                      l10n.examWritingTask(task.level, topic),
+                      l10n.examWritingUse,
+                    ].join(' '),
+                    role: DpTextRole.body,
+                    weight: 600,
+                  ),
+                  const SizedBox(height: 8),
+                  Wrap(
+                    spacing: 6,
+                    runSpacing: 6,
+                    children: <Widget>[
+                      for (final target in task.targets)
+                        _Target(word: target, used: used.contains(target)),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  DpText(
+                    l10n.examWritingUsed(
+                      used.length,
+                      task.targets.length,
+                      task.minWords,
+                      task.level,
+                    ),
+                    role: DpTextRole.caption,
+                    color: tokens.color.textSecondary,
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 14),
+            DpText(
+              l10n.examWritingYourText.toUpperCase(),
+              role: DpTextRole.caption,
+              weight: 700,
+              letterSpacing: 0.6,
+              color: tokens.color.textSecondary,
+            ),
+            const SizedBox(height: 6),
+            SizedBox(
+              height: 150,
+              child: TextField(
+                controller: field,
+                expands: true,
+                maxLines: null,
+                keyboardType: TextInputType.multiline,
+                textAlignVertical: TextAlignVertical.top,
+                style: DpText.styleFor(
+                  tokens,
+                  DpTextRole.body,
+                ).copyWith(fontSize: 16, height: 22 / 16),
+                decoration: InputDecoration(
+                  filled: true,
+                  fillColor: tokens.surface.cardStrong,
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 14,
+                    vertical: 12,
+                  ),
+                  border: edge,
+                  enabledBorder: edge,
+                  focusedBorder: edge,
+                ),
+              ),
+            ),
+            const SizedBox(height: 6),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                DpText(
+                  l10n.examWritingCount(textWords(text).length, task.minWords),
+                  role: DpTextRole.caption,
+                  color: tokens.color.textSecondary,
+                ),
+                const SizedBox(width: 12),
+                if (connectors.isNotEmpty)
+                  Expanded(
+                    child: DpText(
+                      l10n.examWritingConnectors(connectors.join(', ')),
+                      role: DpTextRole.caption,
+                      color: tokens.color.correctText,
+                      textAlign: TextAlign.end,
+                    ),
+                  ),
+              ],
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
+
+/// A target word: an outline until the text uses it, then Lime with a tick.
+class _Target extends StatelessWidget {
+  const _Target({required this.word, required this.used});
+
+  final String word;
+  final bool used;
+
+  @override
+  Widget build(BuildContext context) {
+    final tokens = context.tokens;
+    // Lime is light in both modes: its ink is Sun's, the dark one.
+    final ink = used ? tokens.color.onAccent : tokens.color.ink;
+    // A node each, so a screen reader steps through the words.
+    return Semantics(
+      container: true,
+      label: used
+          ? AppLocalizations.of(context).examWritingTargetUsed(word)
+          : word,
+      excludeSemantics: true,
+      child: Container(
+        height: 26,
+        padding: const EdgeInsets.symmetric(horizontal: 8),
+        decoration: BoxDecoration(
+          color: used ? tokens.color.easy : null,
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(
+            color: used ? ink : tokens.surface.outline,
+            width: 1.5,
+          ),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            if (used) ...<Widget>[
+              Icon(Icons.check, size: 12, color: ink),
+              const SizedBox(width: 4),
+            ],
+            DpText(word, role: DpTextRole.caption, weight: 600, color: ink),
+          ],
+        ),
+      ),
     );
   }
 }

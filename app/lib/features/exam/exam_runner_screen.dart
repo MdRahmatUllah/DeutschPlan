@@ -164,6 +164,9 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
   }
 
   Future<void> _flush() async {
+    // A text is long to lose: it is written with the clock, not only when
+    // the learner moves on (FR-L12W-04).
+    _saveTyped();
     final (running, paused) = (_runPending, _pausePending);
     if (running == 0 && paused == 0) return;
     _runPending = 0;
@@ -427,7 +430,11 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
                 const SizedBox(width: 10),
                 Expanded(
                   child: DpButton(
-                    label: last ? l10n.examRunSubmit : l10n.examRunNext,
+                    label: last
+                        ? l10n.examRunSubmit
+                        : item is WritingTask
+                        ? l10n.examWritingSubmit
+                        : l10n.examRunNext,
                     onPressed: last
                         ? () => unawaited(_submit())
                         : () => _go(_at + 1),

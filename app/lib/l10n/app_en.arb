@@ -3823,5 +3823,89 @@
   "settingsRestartNote": "Keeps progress, changes plan settings",
   "@settingsRestartNote": {
     "description": "M3 subtitle of the restart row."
+  },
+  "examRunResume": "Resume",
+  "@examRunResume": {
+    "description": "L12 paused: carry on (FR-L12-03)."
+  },
+  "examRunPaused": "Paused. The clock has stopped.",
+  "@examRunPaused": {
+    "description": "L12 while paused (FR-L12-03)."
+  },
+  "examWritingTask": "{level, select, A1{Write a short message to a friend about {category}.} A2{Write an email to a friend about {category}.} B1{Write a personal letter about {category}: what happened and what you think.} B2{Write a formal letter or opinion text on {category}.} C1{Write an argumentative text on {category}: both sides, then your view.} other{Write a commentary on {category} for a newspaper.}}",
+  "@examWritingTask": {
+    "description": "L12 Writing: the task per level (exam-generator.md). level is A1…C2; category is the category's German name from content.db.",
+    "placeholders": {
+      "level": {
+        "type": "String"
+      },
+      "category": {
+        "type": "String"
+      }
+    }
+  },
+  "examWritingTopicFallback": "your week",
+  "@examWritingTopicFallback": {
+    "description": "L12 Writing: the topic when the step has no category, in the task's {category} place."
+  },
+  "examWritingUse": "Use at least 6 of these words:",
+  "@examWritingUse": {
+    "description": "L12 Writing: after the task, before the ten target-word chips."
+  },
+  "examWritingTargetUsed": "{word}, used",
+  "@examWritingTargetUsed": {
+    "description": "L12 Writing: a target chip, for screen readers, once the text uses it (FR-L12W-01). word is German.",
+    "placeholders": {
+      "word": {
+        "type": "String"
+      }
+    }
+  },
+  "examWritingUsed": "{used} of {total} used · minimum {min} words at {level}",
+  "@examWritingUsed": {
+    "description": "L12 Writing: under the chips (FR-L12W-01, -02). level is A1…C2.",
+    "placeholders": {
+      "used": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      },
+      "min": {
+        "type": "int"
+      },
+      "level": {
+        "type": "String"
+      }
+    }
+  },
+  "examWritingYourText": "Your text",
+  "@examWritingYourText": {
+    "description": "L12 Writing: the text area's label, shown upper case."
+  },
+  "examWritingCount": "{count, plural, =1{1 word · min {min}} other{{count} words · min {min}}}",
+  "@examWritingCount": {
+    "description": "L12 Writing: under the text, live: its words and the level's minimum (FR-L12W-02).",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "min": {
+        "type": "int"
+      }
+    }
+  },
+  "examWritingConnectors": "Connectors found: {found}",
+  "@examWritingConnectors": {
+    "description": "L12 Writing: under the text, live: the conjunctions it uses, German, comma-separated.",
+    "placeholders": {
+      "found": {
+        "type": "String"
+      }
+    }
+  },
+  "examWritingSubmit": "Submit text",
+  "@examWritingSubmit": {
+    "description": "L12 Writing: the footer's forward button on the Writing task, in Next's place."
   }
 }

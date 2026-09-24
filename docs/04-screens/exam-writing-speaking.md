@@ -10,6 +10,13 @@ Prompt: "Write to your landlord about a broken heating. Use at least 6 of these 
 - FR-L12W-03 App points (2): ≥ 6 target words → 1; ≥ minimum length → 1. Rubric (2): task covered · structure — 0.5 each, ticked by the learner on the results review.
 - FR-L12W-04 The text is stored in `exam_answers.given`; never leaves the device.
 
+Details Writing settles (#133):
+- The task is exam-generator.md's per level with the paper's category ("Write a short message to a friend about Wohnen."), then "Use at least 6 of these words:". The artboard's landlord letter is a sample of one. A step with no category writes about "your week".
+- A chip is an outline until the text uses the word (FR-L12W-01's matching, as #84 grades it), then Lime with a tick; a screen reader hears "Heizung, used". Under them, "7 of 10 used · minimum 30 words at A1".
+- Under the text, live: "43 words · min 30", and "Connectors found: seit, bitte" once there are any. A connector is found as a whole word, case aside; a two-word one ("ohne dass") only as the two together. Shown, not scored.
+- The text is the runner's typed answer: written when the learner moves on, and with the clock every 10 s, so a crash loses at most 10 s of typing (FR-L12W-04).
+- *Submit text* stands where *Next* is (on the last item, *Submit exam*). The runner's *Previous* and flag stay: the artboard's single button would leave no way back until the navigator (#131).
+
 ## Speaking · 1 of 1
 Prompt "Describe your morning routine — 1 minute." + hint "Say what you do, when, and in what order. Use Perfekt or Präsens."; recorder with "00:52 / 01:00" ring; state line "Recorded · stays on this phone"; *Retake · 1 left* · *Delete recording*; "Listen back and tick what you managed": four rubric checkboxes (Task covered — the whole morning, in order · Fluency — few long pauses · Pronunciation — understandable throughout · Vocabulary — 6+ words from this step); "Self-assessed · counts 4 points"; *Submit exam*.
 
