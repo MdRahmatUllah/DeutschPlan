@@ -11,12 +11,11 @@ something the next agent would otherwise learn the hard way. It lands under
 
 - **Identity.** Every change that reaches GitHub is made as the owner: git author `MdRahmatUllah <rahmat.ullah@infinitibit.com>` (set in the repo's `.git/config` for every worktree), and `gh` is logged in as `rahmat-ullah`. The global git config has a different email: never commit outside this repo's config, and never override it.
 - **Attribution.** Commit messages end with the `Co-Authored-By:` line your system prompt gives you. PR bodies end with `🤖 Generated with [Claude Code](https://claude.com/claude-code)`.
-- **CI minutes.**
-  - One PR per issue, with CI.
-  - Push only when the branch is ready for review, not work in progress.
-  - Batch review fixes into one push.
-  - Cancel superseded runs with `gh run cancel <id>`.
-  - Never run CI "just to see". The `team` branch never triggers CI.
+- **GitHub CI is off** (the owner's call, 2026-09-24, #302 / PR #303: both workflows are disabled).
+  - The local gate is the only check. Run all four commands in full before you push, and again before you merge if `origin/main` moved.
+  - Never wait for, watch, re-run or re-enable a workflow.
+  - One PR per issue. Push only when the branch is ready for review, and batch review fixes into one push.
+  - Check the PR title format yourself: `<type>(<scope>): <what> (#N)`.
 - **Scope.** Build what the issue and its spec ask. A deliberate simplification is marked `// ponytail: <why, and the ceiling>` in the code and named in the PR.
 - **Decisions.** Where the docs don't decide something and it is not a pure spec gap (see PLAN.md), it is the owner's call: `team.py decision`. Never guess #239, #245, #283, #173, signing, store or app-id questions.
 - **Report a problem** in the app opens a pre-filled GitHub issue on MdRahmatUllah/DeutschPlan. Never invent an email address.
@@ -45,7 +44,7 @@ something the next agent would otherwise learn the hard way. It lands under
 
 **Lint and the gate**
 - `dart analyze --fatal-infos` with NO path arguments (ADR 18). With paths, or with `flutter analyze`, riverpod_lint silently turns off.
-- Run pytest as well as flutter test. A green Flutter suite with a red pytest failed CI once (PR 241).
+- Run pytest as well as flutter test. A green Flutter suite with a red pytest once broke the build (PR 241).
 
 **Test fixtures**
 - `todayStub()` (`app/test/features/today_fixtures.dart`) must stub every DB-watching screen provider. The router and golden tests pump the real routes with no database, so a new screen that isn't stubbed throws in tests you didn't touch.
@@ -53,11 +52,10 @@ something the next agent would otherwise learn the hard way. It lands under
 
 **Goldens**
 - Regenerate them per file: `flutter test test/golden/<x>_golden_test.dart --update-goldens`. Never regenerate the whole suite.
-- Goldens are generated on Windows, and CI verifies them on `windows-latest`.
+- Goldens are generated and checked on Windows, by your own full gate run: nothing else checks them now.
 - Compare against the artboard with `tools/artboard.py`, using your eyes.
 
-**GitHub and CI**
-- Watch the run named `CI`, not the `PR title` run.
+**GitHub**
 - Before merging, check that your last push reached the PR: `gh api repos/MdRahmatUllah/DeutschPlan/pulls/N --jq .head.sha`. GitHub once didn't update a PR's head until it was closed and reopened.
 - Merge with `gh pr merge N --squash --subject "<title> (#N)"` and **without** `--delete-branch`, which tries to check out `main` and aborts in a worktree. Then `git push origin --delete <branch>`.
 - Merging and rebasing are separate steps. Check `gh pr view N --json state` = `MERGED` before you rebase anything on it.
