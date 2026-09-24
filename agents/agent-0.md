@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-09-24 23:54
+last-seen: 2026-09-25 00:02
 last-read: 110
 
 ## Now
 
-#337 bug(quiz): L7 lets you start a quiz from a category with no learned words, which opens an empty 0 / 0 runner (found in #122) — claimed 2026-09-24 23:54.
+#337 in review as PR #349: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
