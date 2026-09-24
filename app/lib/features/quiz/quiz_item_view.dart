@@ -100,7 +100,7 @@ class QuizItemView extends ConsumerWidget {
       // German: the word, and a speaker to hear it.
       _ => Row(
         children: <Widget>[
-          Flexible(child: _German(item.prompt)),
+          Flexible(child: GermanWord(item.prompt)),
           const SizedBox(width: 12),
           DpSpeakerButton(
             state: speakerState(ref),
@@ -113,34 +113,12 @@ class QuizItemView extends ConsumerWidget {
 
     final Widget answer;
     if (item.direction == QuizDirection.articles) {
-      answer = Row(
-        children: <Widget>[
-          for (final (index, article) in articles.indexed) ...<Widget>[
-            if (index > 0) const SizedBox(width: 10),
-            Expanded(child: _ArticleButton(article, this)),
-          ],
-        ],
-      );
+      answer = ArticleButtons(picked: picked, onPick: onAnswer);
     } else if (item.tiles) {
-      answer = Column(
-        children: <Widget>[
-          for (final option in item.options)
-            Padding(
-              padding: const EdgeInsets.only(bottom: 10),
-              child: _Choice(
-                selected: picked == option,
-                onTap: () => onAnswer(option),
-                child: Align(
-                  alignment: AlignmentDirectional.centerStart,
-                  child: DpText(
-                    option,
-                    role: DpTextRole.bodyLarge,
-                    weight: 600,
-                  ),
-                ),
-              ),
-            ),
-        ],
+      answer = ChoiceTiles(
+        options: item.options,
+        picked: picked,
+        onPick: onAnswer,
       );
     } else {
       answer = Column(
@@ -172,10 +150,11 @@ class QuizItemView extends ConsumerWidget {
 
 /// A German word with its article in the gender's colour, as the app writes
 /// every noun.
-class _German extends StatelessWidget {
-  const _German(this.word);
+class GermanWord extends StatelessWidget {
+  const GermanWord(this.word, {super.key, this.role = DpTextRole.headline});
 
   final String word;
+  final DpTextRole role;
 
   @override
   Widget build(BuildContext context) {
@@ -201,9 +180,93 @@ class _German extends StatelessWidget {
       ),
       style: DpText.styleFor(
         tokens,
-        DpTextRole.headline,
+        role,
         color: tokens.color.ink,
       ).copyWith(fontWeight: FontWeight.w600),
+    );
+  }
+}
+
+/// Four tiles to pick one of (L8's DE → বাংলা, L12's choices).
+class ChoiceTiles extends StatelessWidget {
+  const ChoiceTiles({
+    required this.options,
+    required this.picked,
+    required this.onPick,
+    super.key,
+  });
+
+  final List<String> options;
+
+  /// The one picked, shown selected; null for none.
+  final String? picked;
+  final ValueChanged<String> onPick;
+
+  @override
+  Widget build(BuildContext context) => Column(
+    children: <Widget>[
+      for (final option in options)
+        Padding(
+          padding: const EdgeInsets.only(bottom: 10),
+          child: _Choice(
+            selected: picked == option,
+            onTap: () => onPick(option),
+            child: Align(
+              alignment: AlignmentDirectional.centerStart,
+              child: DpText(option, role: DpTextRole.bodyLarge, weight: 600),
+            ),
+          ),
+        ),
+    ],
+  );
+}
+
+/// der · die · das: three big buttons in their genders' colours, as the
+/// ExamRunner artboard draws them (L8's articles, L12's Articles).
+class ArticleButtons extends StatelessWidget {
+  const ArticleButtons({required this.picked, required this.onPick, super.key});
+
+  /// The article picked, shown selected; null for none.
+  final String? picked;
+  final ValueChanged<String> onPick;
+
+  @override
+  Widget build(BuildContext context) {
+    final tokens = context.tokens;
+    return Row(
+      children: <Widget>[
+        for (final (index, article) in articles.indexed) ...<Widget>[
+          if (index > 0) const SizedBox(width: 12),
+          Expanded(
+            child: _Choice(
+              // Solid, not tinted: the artboard fills each button.
+              kind: DpSurfaceKind.tint(switch (article) {
+                'der' => tokens.color.der,
+                'die' => tokens.color.die,
+                _ => tokens.color.das,
+              }, opacity: 1),
+              height: 40,
+              // Picked is pressed in, as the artboard draws it; glass has
+              // no offset to collapse, so there it is the outline.
+              pressed: picked == article,
+              selected: tokens.isGlass && picked == article,
+              onTap: () => onPick(article),
+              child: Center(
+                child: DpText(
+                  article,
+                  role: DpTextRole.title,
+                  weight: 700,
+                  // Cobalt takes white in light mode; Raspberry and Emerald
+                  // take ink in both.
+                  color: article == 'der'
+                      ? tokens.color.onDer
+                      : tokens.color.ink,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ],
     );
   }
 }
@@ -216,9 +279,13 @@ class _Choice extends StatelessWidget {
     required this.child,
     this.kind = DpSurfaceKind.bar,
     this.height = 32,
+    this.pressed = false,
   });
 
   final bool selected;
+
+  /// Pushed into the paper: the ExamRunner artboard's picked article.
+  final bool pressed;
   final VoidCallback? onTap;
   final Widget child;
   final DpSurfaceKind kind;
@@ -226,12 +293,13 @@ class _Choice extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Semantics(
-    selected: selected,
+    selected: selected || pressed,
     button: true,
     inMutuallyExclusiveGroup: true,
     child: DpSurface(
       kind: kind,
       selected: selected,
+      pressed: pressed,
       radius: context.tokens.shape.button,
       onTap: onTap,
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -241,36 +309,4 @@ class _Choice extends StatelessWidget {
       ),
     ),
   );
-}
-
-/// der, die or das: big, and in its gender's colour.
-class _ArticleButton extends StatelessWidget {
-  const _ArticleButton(this.article, this.view);
-
-  final String article;
-  final QuizItemView view;
-
-  @override
-  Widget build(BuildContext context) {
-    final tokens = context.tokens;
-    final (fill, ink) = switch (article) {
-      'der' => (tokens.color.der, tokens.color.derText),
-      'die' => (tokens.color.die, tokens.color.dieText),
-      _ => (tokens.color.das, tokens.color.dasText),
-    };
-    return _Choice(
-      kind: DpSurfaceKind.tint(fill),
-      height: 48,
-      selected: view.picked == article,
-      onTap: () => view.onAnswer(article),
-      child: Center(
-        child: DpText(
-          article,
-          role: DpTextRole.headline,
-          weight: 700,
-          color: ink,
-        ),
-      ),
-    );
-  }
 }

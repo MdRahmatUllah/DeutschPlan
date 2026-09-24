@@ -1,0 +1,520 @@
+import 'dart:async';
+import 'dart:math' as math;
+
+import 'package:deutschplan/core/adaptive/adaptive.dart';
+import 'package:deutschplan/core/components/dp_button.dart';
+import 'package:deutschplan/core/components/dp_feedback.dart';
+import 'package:deutschplan/core/providers/app_providers.dart';
+import 'package:deutschplan/core/theme/aurora_backdrop.dart';
+import 'package:deutschplan/core/theme/dp_surface.dart';
+import 'package:deutschplan/core/theme/dp_tokens.dart';
+import 'package:deutschplan/core/typography/dp_text.dart';
+import 'package:deutschplan/data/repositories/exam_run_service.dart';
+import 'package:deutschplan/domain/exam_generator.dart';
+import 'package:deutschplan/features/exam/exam_question_view.dart';
+import 'package:deutschplan/features/learn/step_exams.dart'
+    show examMinutes, examSectionName;
+import 'package:deutschplan/l10n/generated/app_localizations.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_ui/material_ui.dart';
+
+/// L12 · Exam runner (`exam-runner.md`, `ExamRunner-android.html`, #130):
+/// a timed, feedback-free paper that survives being killed. The Cobalt band
+/// holds pause, the section and the clock; one question a screen with its
+/// flag; *Previous* / *Next*, and *Submit exam* on the last.
+///
+/// Every answer and flag is written as it is given (FR-L12-01); the clock
+/// is written every 10 s (FR-L12-03), so a crash loses at most that.
+class ExamRunnerScreen extends ConsumerStatefulWidget {
+  const ExamRunnerScreen({
+    required this.attemptId,
+    required this.results,
+    super.key,
+  });
+
+  final int attemptId;
+
+  /// What follows the submit: L13 (#135).
+  final WidgetBuilder results;
+
+  /// The paper's time, when the timer is on (exam-hub.md's "≈ 20 min").
+  static const int limitSeconds = examMinutes * 60;
+
+  /// How often the clock is written (FR-L12-03's "≤ 10 s").
+  static const int flushEvery = 10;
+
+  @override
+  ConsumerState<ExamRunnerScreen> createState() => _ExamRunnerScreenState();
+}
+
+class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
+  ExamPaperRun? _paper;
+  Object? _error;
+  bool _done = false;
+  bool _submitting = false;
+
+  int _at = 0;
+  final List<String?> _given = <String?>[];
+  final List<bool> _flagged = <bool>[];
+  final Map<int, int> _plays = <int, int>{};
+  final TextEditingController _field = TextEditingController();
+
+  bool _timed = true;
+  bool _paused = false;
+  int _left = ExamRunnerScreen.limitSeconds;
+  Timer? _tick;
+
+  /// Seconds counted but not yet written.
+  int _runPending = 0;
+  int _pausePending = 0;
+
+  /// Held, not read each time: dispose writes through it, when `ref` may
+  /// no longer be used.
+  late final ExamRunService _service;
+
+  @override
+  void initState() {
+    super.initState();
+    _service = ref.read(examRunServiceProvider);
+    unawaited(_load());
+  }
+
+  @override
+  void dispose() {
+    _tick?.cancel();
+    // What the learner typed and the seconds since the last write: the
+    // route is going, not the attempt.
+    _saveTyped();
+    unawaited(_flush());
+    _field.dispose();
+    super.dispose();
+  }
+
+  Future<void> _load() async {
+    try {
+      final paper = await _service.load(widget.attemptId);
+      if (!mounted) return;
+      if (paper == null) {
+        setState(() => _error = StateError('no attempt'));
+        return;
+      }
+      if (paper.attempt.status == 'finished') {
+        setState(() => _done = true);
+        return;
+      }
+      setState(() {
+        _paper = paper;
+        _given
+          ..clear()
+          ..addAll([for (final q in paper.questions) q.given]);
+        _flagged
+          ..clear()
+          ..addAll([for (final q in paper.questions) q.flagged]);
+        _at = paper.resumeAt;
+        _field.text = _typedHere ? _given[_at] ?? '' : '';
+        _timed = _service.timed;
+        _left = math.max(
+          0,
+          ExamRunnerScreen.limitSeconds - paper.attempt.durationSec,
+        );
+      });
+      if (_timed && _left == 0) {
+        await _submit(asked: true);
+        return;
+      }
+      _tick = Timer.periodic(const Duration(seconds: 1), (_) => _second());
+    } on Object catch (error) {
+      if (mounted) setState(() => _error = error);
+    }
+  }
+
+  /// FR-L12-03: the clock counts only while running; paused seconds are
+  /// kept apart; at 0:00 the exam submits itself.
+  void _second() {
+    if (!mounted || _done) return;
+    setState(() {
+      if (_paused) {
+        _pausePending++;
+      } else {
+        _runPending++;
+        if (_timed) _left--;
+      }
+    });
+    if (_runPending + _pausePending >= ExamRunnerScreen.flushEvery) {
+      unawaited(_flush());
+    }
+    if (_timed && _left <= 0) unawaited(_submit(asked: true));
+  }
+
+  Future<void> _flush() async {
+    final (running, paused) = (_runPending, _pausePending);
+    if (running == 0 && paused == 0) return;
+    _runPending = 0;
+    _pausePending = 0;
+    await _service.recordTime(
+      widget.attemptId,
+      running: running,
+      paused: paused,
+    );
+  }
+
+  bool get _typedHere {
+    final paper = _paper;
+    return paper != null && examTyped(paper.questions[_at].item);
+  }
+
+  /// FR-L12-01: the current typed answer, written if it changed.
+  void _saveTyped() {
+    final paper = _paper;
+    if (paper == null || !_typedHere || _done) return;
+    final typed = _field.text.trim();
+    final given = typed.isEmpty ? null : typed;
+    if (given == _given[_at]) return;
+    _given[_at] = given;
+    unawaited(
+      _service.answer(widget.attemptId, paper.questions[_at].ord, given),
+    );
+  }
+
+  /// A choice tapped, or the field submitted: written at once.
+  void _record(String value) {
+    final paper = _paper;
+    if (paper == null) return;
+    if (_typedHere) {
+      _saveTyped();
+      return;
+    }
+    setState(() => _given[_at] = value);
+    unawaited(
+      _service.answer(widget.attemptId, paper.questions[_at].ord, value),
+    );
+  }
+
+  void _go(int to) {
+    _saveTyped();
+    setState(() {
+      _at = to;
+      _field.text = _typedHere ? _given[to] ?? '' : '';
+    });
+  }
+
+  void _toggleFlag() {
+    final paper = _paper;
+    if (paper == null) return;
+    final flagged = !_flagged[_at];
+    setState(() => _flagged[_at] = flagged);
+    unawaited(
+      _service.flag(
+        widget.attemptId,
+        paper.questions[_at].ord,
+        flagged: flagged,
+      ),
+    );
+  }
+
+  /// The submit. By hand with questions unanswered, it asks first
+  /// (FR-L12-05); the clock running out does not ask.
+  Future<void> _submit({bool asked = false}) async {
+    if (_submitting || _done) return;
+    _saveTyped();
+    final open = _given.where((g) => g == null).length;
+    if (!asked && open > 0) {
+      final l10n = AppLocalizations.of(context);
+      final sure = await Adaptive.showConfirm(
+        context: context,
+        title: l10n.examRunSubmitTitle,
+        message: l10n.examRunSubmitUnanswered(open),
+        confirmLabel: l10n.examRunSubmitConfirm,
+        cancelLabel: l10n.examRunKeepAnswering,
+      );
+      if (sure != true || !mounted) return;
+    }
+    _submitting = true;
+    _tick?.cancel();
+    await _flush();
+    await _service.submit(widget.attemptId);
+    if (mounted) setState(() => _done = true);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (_done) return widget.results(context);
+    final tokens = context.tokens;
+    final l10n = AppLocalizations.of(context);
+    final paper = _paper;
+
+    final Widget body;
+    if (_error != null) {
+      body = Center(
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: DpText(
+            l10n.examRunLoadFailed,
+            role: DpTextRole.body,
+            textAlign: TextAlign.center,
+          ),
+        ),
+      );
+    } else if (paper == null) {
+      body = const SizedBox.expand();
+    } else {
+      final questions = paper.questions;
+      final item = questions[_at].item;
+      final inSection = [
+        for (final q in questions)
+          if (q.item.section == item.section) q,
+      ];
+      final last = _at == questions.length - 1;
+      // "Question 21 of 40": Writing and Speaking are tasks, not numbered.
+      bool numbered(ExamItem it) => it is! WritingTask && it is! SpeakingTask;
+      final count = questions.where((q) => numbered(q.item)).length;
+      final number = questions.take(_at + 1).where((q) => numbered(q.item));
+      body = Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          _Band(
+            title: l10n.examRunSection(
+              examSectionName(l10n, item.section),
+              inSection.indexWhere((q) => q.ord == questions[_at].ord) + 1,
+              inSection.length,
+            ),
+            left: _timed ? _left : null,
+            paused: _paused,
+            onPause: () => setState(() => _paused = !_paused),
+          ),
+          Padding(
+            padding: const EdgeInsetsDirectional.fromSTEB(16, 8, 8, 0),
+            child: Row(
+              children: <Widget>[
+                Expanded(
+                  child: DpText(
+                    numbered(item)
+                        ? l10n.examRunQuestion(number.length, count)
+                        : '',
+                    role: DpTextRole.caption,
+                    color: tokens.color.textSecondary,
+                  ),
+                ),
+                Semantics(
+                  button: true,
+                  toggled: _flagged[_at],
+                  label: _flagged[_at] ? l10n.examRunFlagged : l10n.examRunFlag,
+                  excludeSemantics: true,
+                  child: GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onTap: _toggleFlag,
+                    child: SizedBox.square(
+                      dimension: 48,
+                      child: Icon(
+                        _flagged[_at] ? Icons.flag : Icons.outlined_flag,
+                        color: _flagged[_at]
+                            ? tokens.color.learning
+                            : tokens.color.ink,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Expanded(
+            child: _paused
+                ? _Paused(onResume: () => setState(() => _paused = false))
+                : ListView(
+                    padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
+                    children: <Widget>[
+                      ExamQuestionView(
+                        key: ValueKey<int>(questions[_at].ord),
+                        item: item,
+                        given: _given[_at],
+                        field: _field,
+                        onGiven: _record,
+                        plays: _plays[questions[_at].ord] ?? 0,
+                        onPlay: () => setState(
+                          () => _plays.update(
+                            questions[_at].ord,
+                            (n) => n + 1,
+                            ifAbsent: () => 1,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
+            child: Row(
+              children: <Widget>[
+                Expanded(
+                  child: DpButton(
+                    label: l10n.examRunPrevious,
+                    kind: DpButtonKind.secondary,
+                    onPressed: _at == 0 || _paused ? null : () => _go(_at - 1),
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: DpButton(
+                    label: last ? l10n.examRunSubmit : l10n.examRunNext,
+                    onPressed: _paused
+                        ? null
+                        : last
+                        ? () => unawaited(_submit())
+                        : () => _go(_at + 1),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          if (!_paused && examTypesGerman(item))
+            DpSurface(
+              kind: DpSurfaceKind.bar,
+              radius: 0,
+              padding: const EdgeInsets.fromLTRB(16, 10, 16, 16),
+              child: DpUmlautBar(controller: _field),
+            ),
+        ],
+      );
+    }
+
+    final scaffold = AdaptiveScaffold(
+      backgroundColor: tokens.isGlass
+          ? tokens.surface.paper.withValues(alpha: 0)
+          : tokens.surface.paper,
+      body: body,
+    );
+    return tokens.isGlass
+        ? AuroraBackdrop(leading: tokens.color.der, child: scaffold)
+        : scaffold;
+  }
+}
+
+/// The Cobalt band: pause, the section, and the clock — Coral in the last
+/// two minutes.
+class _Band extends StatelessWidget {
+  const _Band({
+    required this.title,
+    required this.left,
+    required this.paused,
+    required this.onPause,
+  });
+
+  final String title;
+
+  /// Seconds left; null when the timer is off.
+  final int? left;
+  final bool paused;
+  final VoidCallback onPause;
+
+  @override
+  Widget build(BuildContext context) {
+    final tokens = context.tokens;
+    final l10n = AppLocalizations.of(context);
+    final ink = tokens.isGlass ? tokens.color.ink : tokens.color.onDer;
+    final seconds = left;
+    // FR-L12-03 / exam-hub.md: Coral in the last 2 minutes.
+    final coral = seconds != null && seconds <= 120;
+    final content = Column(
+      children: <Widget>[
+        SizedBox(height: MediaQuery.paddingOf(context).top),
+        SizedBox(
+          height: 56,
+          child: Row(
+            children: <Widget>[
+              const SizedBox(width: 4),
+              Semantics(
+                button: true,
+                label: paused ? l10n.examRunResume : l10n.examRunPause,
+                excludeSemantics: true,
+                child: GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: onPause,
+                  child: SizedBox.square(
+                    dimension: 48,
+                    child: Icon(
+                      paused ? Icons.play_arrow : Icons.pause,
+                      color: ink,
+                    ),
+                  ),
+                ),
+              ),
+              Expanded(
+                child: DpText(
+                  title,
+                  role: DpTextRole.body,
+                  weight: 600,
+                  color: ink,
+                  maxLines: 1,
+                  textAlign: TextAlign.center,
+                ),
+              ),
+              if (seconds != null)
+                Semantics(
+                  label: l10n.examRunTimeLeft(seconds ~/ 60, seconds % 60),
+                  excludeSemantics: true,
+                  child: Container(
+                    height: 32,
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: coral
+                          ? tokens.color.again
+                          : ink.withValues(alpha: 0.18),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: DpText(
+                      '${seconds ~/ 60}:${'${seconds % 60}'.padLeft(2, '0')}',
+                      role: DpTextRole.body,
+                      weight: 700,
+                      color: coral ? tokens.color.ink : ink,
+                    ),
+                  ),
+                ),
+              const SizedBox(width: 12),
+            ],
+          ),
+        ),
+      ],
+    );
+    return tokens.isGlass
+        ? DpSurface(
+            kind: DpSurfaceKind.tint(tokens.color.der),
+            radius: 0,
+            child: content,
+          )
+        : ColoredBox(color: tokens.color.der, child: content);
+  }
+}
+
+/// Paused: the paper is hidden and the clock stopped until *Resume*.
+class _Paused extends StatelessWidget {
+  const _Paused({required this.onResume});
+
+  final VoidCallback onResume;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            DpText(
+              l10n.examRunPaused,
+              role: DpTextRole.title,
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 16),
+            DpButton(
+              label: l10n.examRunResume,
+              expand: false,
+              onPressed: onResume,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

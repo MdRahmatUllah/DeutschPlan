@@ -1,6 +1,7 @@
 @TestOn('vm')
 library;
 
+import 'package:deutschplan/features/exam/exam_runner_screen.dart';
 import 'package:deutschplan/features/backlog/backlog_screen.dart';
 import 'package:deutschplan/features/me/me_screen.dart';
 import 'package:deutschplan/features/today/today_screen.dart';
@@ -189,12 +190,16 @@ void main() {
   group('the exam runner', () {
     testWidgets('back asks instead of popping', (tester) async {
       await pumpApp(tester, at: '/exam/7');
-      expect(find.text('L12'), findsOneWidget);
+      expect(find.byType(ExamRunnerScreen), findsOneWidget);
 
       await pressBack(tester);
 
       expect(find.text(l10n.examLeaveTitle), findsOneWidget);
-      expect(find.text('L12'), findsOneWidget, reason: 'it popped anyway');
+      expect(
+        find.byType(ExamRunnerScreen),
+        findsOneWidget,
+        reason: 'it popped anyway',
+      );
       expect(location(), '/exam/7');
     });
 

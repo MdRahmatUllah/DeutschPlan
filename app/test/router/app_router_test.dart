@@ -1,6 +1,7 @@
 @TestOn('vm')
 library;
 
+import 'package:deutschplan/features/exam/exam_runner_screen.dart';
 import 'package:deutschplan/features/backlog/backlog_screen.dart';
 import 'package:deutschplan/features/study/study_screen.dart';
 import 'package:deutschplan/features/today/today_view.dart';
@@ -460,7 +461,12 @@ void main() {
       // not survive that — so the attempt has to be reachable from the URL
       // alone. Opening it with nothing but the path is that property.
       await pumpApp(tester, at: '/exam/42');
-      expect(find.text('attempt 42'), findsOneWidget);
+      expect(
+        tester
+            .widget<ExamRunnerScreen>(find.byType(ExamRunnerScreen))
+            .attemptId,
+        42,
+      );
     });
 
     test('only the ephemeral routes read extra', () {

@@ -25,6 +25,9 @@ firstUnanswered:
   SELECT MIN(ord) AS ord FROM exam_answers
   WHERE attempt_id = :id AND given IS NULL;
 
+examAttemptById:
+  SELECT * FROM exam_attempts WHERE id = :id;
+
 answersFor:
   SELECT * FROM exam_answers WHERE attempt_id = :id ORDER BY ord;
 
