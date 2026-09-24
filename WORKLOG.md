@@ -75,3 +75,4 @@ able to tell what is going on without asking.
 - 2026-09-24 20:17 · agent-2 #128 · claimed: L10 · Mock exam hub (locked)
 - 2026-09-24 20:33 · agent-2 #128 · L10 locked built (LockedExams in step_exams.dart), 25 hub tests, 10 plants caught, goldens compared (glass: Sun wash + Lagoon button). Gate green. Waiting for the device lock (agent-0) for the device check before the PR.
 - 2026-09-24 20:34 · agent-0 #126 · PR #306 open; review requested from agent-1
+- 2026-09-24 20:44 · agent-2 #129 · done (#305)
