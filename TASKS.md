@@ -14,9 +14,10 @@ claiming the same issue. A hand edit skips that check.
   · `needs-decision` (waits for the project owner — never guess these).
 - **Ready** = `open` and every issue in *Blocked by* is `done` (an issue not
   on the board was closed before it was made). `team.py status` lists them.
-- **Lane**: A quiz & exam runner · B search, words & polish · C Me, settings,
-  exam engine & accessibility · D voice, platform & release · X anyone
-  (follow-ups, decisions, epics). Lanes are defaults, not fences: see PLAN.md.
+- **Lane**: A agent-0 (lead): quiz & exam runner, release · B agent-1: voice
+  seam, words, search, translation, polish · C agent-2: Me, settings, exam
+  engine, platform, accessibility · X anyone (follow-ups, decisions, epics).
+  Lanes are defaults, not fences: see PLAN.md.
 - **Epics** (size `epic`) are blocked by their children; when they are all
   done, claim the epic, `gh issue close` it with a summary, and `done` it.
 
@@ -55,23 +56,23 @@ claiming the same issue. A hand edit skips that check.
 | #144 | M5 | C | P1 | M | M1 · Me | open |  | #58 #72 #79 |  |
 | #145 | M5 | C | P2 | M | M2 · Progress detail | open |  | #144 |  |
 | #146 | M5 | C | P1 | L | M3 · Settings | open |  | #37 #62 #144 |  |
-| #147 | M5 | D | P2 | M | M5 · Study days and reminder | open |  | #146 #158 |  |
+| #147 | M5 | C | P2 | M | M5 · Study days and reminder | open |  | #146 #158 |  |
 | #148 | M5 | C | P2 | M | M6 · Export and import | open |  | #65 #146 |  |
 | #149 | M5 | C | P2 | M | M7 · Reset | open |  | #148 |  |
 | #150 | M5 | C | P2 | S | M9 · About & privacy and M8 · Licences | open |  | #51 #146 |  |
 | #12 | M5 | X | P1 | epic | Epic · Search and words | open |  | #137 #138 #139 #140 #141 #142 #143 |  |
 | #13 | M5 | X | P1 | epic | Epic · Me, progress, settings and data | open |  | #144 #145 #146 #147 #148 #149 #150 |  |
-| #151 | M6 | D | P1 | S | TtsEngine interface and SystemTts | open |  | #20 |  |
-| #152 | M6 | D | P2 | L | SupertonicTts — Supertonic 3 through ONNX Runtime | open |  | #64 #151 #245 |  |
-| #153 | M6 | D | P1 | M | TtsService — engine selection, fallback and autoplay | open |  | #152 |  |
+| #151 | M6 | B | P1 | S | TtsEngine interface and SystemTts | open |  | #20 |  |
+| #152 | M6 | B | P2 | L | SupertonicTts — Supertonic 3 through ONNX Runtime | open |  | #64 #151 #245 |  |
+| #153 | M6 | B | P1 | M | TtsService — engine selection, fallback and autoplay | open |  | #152 |  |
 | #154 | M6 | B | P3 | L | HyMtTranslator behind the licence build flag | open |  | #64 #151 #283 |  |
-| #155 | M6 | D | P2 | L | M4 · Model manager | open |  | #146 #153 #156 |  |
-| #156 | M6 | D | P2 | M | Download manager: resumable, Wi-Fi-only, checksum-verified | open |  | #64 |  |
-| #157 | M6 | D | P2 | M | Notification service and the permission flow | open |  | #62 #70 |  |
-| #158 | M6 | D | P2 | M | Background tasks: plan pre-generation, reminder composition, widget refresh | open |  | #76 #157 |  |
-| #159 | M6 | D | P2 | S | Widget snapshot writer and word-of-the-day selection | open |  | #158 |  |
-| #160 | M6 | D | P2 | M | X1 · Android home-screen widget (Glance) | open |  | #159 |  |
-| #161 | M6 | D | P2 | M | X1 · iOS home-screen widget (WidgetKit) | open |  | #159 |  |
+| #155 | M6 | B | P2 | L | M4 · Model manager | open |  | #146 #153 #156 |  |
+| #156 | M6 | B | P2 | M | Download manager: resumable, Wi-Fi-only, checksum-verified | open |  | #64 |  |
+| #157 | M6 | C | P2 | M | Notification service and the permission flow | open |  | #62 #70 |  |
+| #158 | M6 | C | P2 | M | Background tasks: plan pre-generation, reminder composition, widget refresh | open |  | #76 #157 |  |
+| #159 | M6 | C | P2 | S | Widget snapshot writer and word-of-the-day selection | open |  | #158 |  |
+| #160 | M6 | C | P2 | M | X1 · Android home-screen widget (Glance) | open |  | #159 |  |
+| #161 | M6 | C | P2 | M | X1 · iOS home-screen widget (WidgetKit) | open |  | #159 |  |
 | #245 | M6 | X | - | - | Model manifest: Supertonic 3's files do not exist, and the real model is ~398 MB, not ~100 MB | needs-decision |  |  |  |
 | #283 | M6 | X | - | - | Model manifest: the Hy-MT files 404, and no q2 build exists | needs-decision |  |  |  |
 | #14 | M6 | X | P1 | epic | Epic · Voice, translation and model manager | open |  | #151 #152 #153 #154 #155 #156 #245 #283 |  |
@@ -84,12 +85,12 @@ claiming the same issue. A hand edit skips that check.
 | #167 | M7 | B | P1 | M | Performance budgets | open |  | #153 #164 |  |
 | #168 | M7 | C | P1 | L | Complete the golden suite: every screen × three themes × two devices | open |  | #25 #165 |  |
 | #169 | M7 | A | P1 | M | Integration smoke tests on emulator and simulator | open |  | #111 #130 |  |
-| #170 | M7 | D | P1 | M | Android release pipeline | open |  | #152 #160 #167 |  |
-| #171 | M7 | D | P1 | M | iOS release pipeline | open |  | #152 #161 #167 |  |
+| #170 | M7 | A | P1 | M | Android release pipeline | open |  | #152 #160 #167 |  |
+| #171 | M7 | A | P1 | M | iOS release pipeline | open |  | #152 #161 #167 |  |
 | #172 | M7 | C | P2 | S | Licence collection and model licence texts | open |  | #150 |  |
 | #173 | M7 | B | P1 | S | Hy-MT region decision and ADR | open |  | #154 |  |
 | #174 | M7 | B | P1 | M | Error and edge-state matrix | open |  | #153 #156 #167 |  |
-| #175 | M7 | D | P2 | S | Store listing, changelog and release tagging | open |  | #168 #169 #170 #171 #172 #173 #174 |  |
+| #175 | M7 | A | P2 | S | Store listing, changelog and release tagging | open |  | #168 #169 #170 #171 #172 #173 #174 |  |
 | #280 | M7 | B | P1 | - | fix(adaptive): iOS bar titles at 17 pt, and a long title ends in an ellipsis | open |  |  |  |
 | #281 | M7 | X | P2 | - | test(learn): L6 review follow-ups: tie-break, loading, suspended, ellipsis | open |  |  |  |
 | #282 | M7 | X | P3 | - | fix(words): the glass word list is one frosted panel (L2, L6) | open |  |  |  |
@@ -140,3 +141,7 @@ Waiting on you — nothing downstream of these can finish without your call:
 - #283 Hy-MT: both manifest URLs 404; which source/quant (a third-party 1.25-bit build exists, 462 MB); what "Better quality" is. Blocks #154.
 - #239 FSRS: is fsrs-scheduler.md's Good chain right, or the code?
 - Later: #173 Hy-MT region decision; #170/#171/#175 the real app id (still com.example.deutschplan), signing keys, store accounts, a macOS host for iOS; branch protection on main (admin).
+
+### H-3 · 2026-09-24 11:27 · agent-0 → all · heads-up
+
+The team is three agents: agent-0 (the lead: lane A, the critical path, plus release, reviews and assignments), agent-1 (lane B: the voice seam, words, search, translation, polish) and agent-2 (lane C: Me, settings, the exam engine, platform, accessibility). Lane D's voice issues moved to B and its platform issues to C; PLAN.md has the new lanes. Your first issues are assigned to you in the next handoffs. Review requests beat new work; `team.py msg agent-0` when your lane runs dry.

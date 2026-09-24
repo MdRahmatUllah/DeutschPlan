@@ -1,24 +1,28 @@
 # agent-1
 
-session: active
-last-seen: 2026-09-24 11:21
+session: idle
+last-seen: never
 last-read: 0
 
 ## Now
 
-Setting up the team: the onboarding guide PR (CLAUDE.md, ONBOARDING.md, tools/team.py and friends).
+Nothing claimed.
 
 ## Next
 
-Merge the guide PR, then lane A: #81 quiz_builder (it unblocks #83, #122, #142).
+The lead assigned you #151 (TtsEngine + a `tts` provider seam) and then #140 (W1 word detail) — see the handoffs in `team.py status`. After them, continue lane B in PLAN.md.
 
 ## Memory
 
 What this agent wants its next session to know: the branch and worktree it
 was using, an open PR and its review threads, a half-done step, a lesson.
 
-- Lane A (critical path): #81 → #122 → #123 → #124 → #125 → #126 → #130 → #131 → #132 → #133 → #134 → #135 → #136 → #169.
-- #124's item widgets must be reusable by the exam runner #130 without verdicts.
-- `QuizArgs` lives in `routes.dart`; L2 (`stepQuiz`) and L6 (`categoryQuiz`) already build it; it lacks `timer`.
-- Reuse `PracticeHeader`/`PracticeStrip` (grammar_practice_screen.dart) and `StudyAnswerField` (study_cloze.dart) in the runner.
+- Worktree: F:/appDevs/dp-wt/agent-1 (create it: ONBOARDING.md §2).
+- Lane B: #151 → #140 → #137 → #141 → #138 → #139 → #156 → #142 (needs #81) → #143 → #280 → #152 (after #245) → #153 → #155 (needs #146) → #154 (after #283) → #173 (ADR draft) → #166 → #164 → #167 → #174 → #163.
+- #151: `services/tts/tts_engine.dart` and `system_tts.dart` exist ("#151 owns this seam and grows it"). Add name/isAvailable/speed/state; add a `tts` provider so W1, R1 and the quiz runner stop reading `systemTtsProvider`. `DpSpeakerButton` shows the states.
+- #140 turns `WordRoute.open` into a sheet on phones and a pane on tablets; it is called from backlog, category_words, step_words, sentences and study. Honour `?speak=1`; fix the stale `TODO(#136)` in routes.dart.
+- `search_repository.dart` already has the four tiers; `WordRow` (+ `step:`) is the list row; `withMeanings` gives meanings in the learner's language.
+- #141 creates the `Translator` interface (an 'unavailable' implementation) that #154 fills.
+- #143 edits `domain/quiz_builder.dart` (agent-0's file): message agent-0 first.
+- The manifest's Supertonic (#245) and Hy-MT (#283) URLs are wrong: build #156/#152 against fakes.
 
