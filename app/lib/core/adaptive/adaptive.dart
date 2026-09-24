@@ -406,6 +406,9 @@ class _AdaptiveTabBarState<T extends Object> extends State<AdaptiveTabBar<T>>
     super.dispose();
   }
 
+  static bool _large(BuildContext context) =>
+      MediaQuery.textScalerOf(context).scale(14) > 14 * 1.3;
+
   @override
   Widget build(BuildContext context) {
     final tokens = context.tokens;
@@ -430,6 +433,12 @@ class _AdaptiveTabBarState<T extends Object> extends State<AdaptiveTabBar<T>>
       child: TabBar(
         controller: _controller,
         onTap: (index) => widget.onChanged(keys[index]),
+        // Past 130 % text, four labels no longer fit a phone's width and the
+        // fixed tabs faded them to "Word", "Gram" (#314): they scroll instead.
+        // ponytail: a threshold, not a measurement; measure the labels if a
+        // bar with other labels or counts needs it.
+        isScrollable: _large(context),
+        tabAlignment: _large(context) ? TabAlignment.start : null,
         labelColor: tokens.color.ink,
         unselectedLabelColor: tokens.color.textSecondary,
         // 14 on the artboard, between the label and body roles.

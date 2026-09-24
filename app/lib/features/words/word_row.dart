@@ -75,9 +75,11 @@ class WordRow extends StatelessWidget {
       ],
     );
 
+    // At least the artboard's 64 dp; taller at large text, so the meaning
+    // line isn't cut mid-glyph (#314).
     return Container(
-      height: height,
-      padding: const EdgeInsets.fromLTRB(16, 0, 4, 0),
+      constraints: const BoxConstraints(minHeight: height),
+      padding: const EdgeInsets.fromLTRB(16, 4, 4, 4),
       decoration: BoxDecoration(
         color: tokens.surface.card,
         border: last

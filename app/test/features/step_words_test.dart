@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:deutschplan/core/components/dp_chip.dart';
 import 'package:deutschplan/core/providers/app_providers.dart';
 import 'package:deutschplan/core/theme/app_theme.dart';
 import 'package:deutschplan/data/db/app_database.dart';
@@ -20,6 +21,7 @@ import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:deutschplan/features/words/word_detail_screen.dart';
 
+import '../core/text_clipping.dart';
 import '../db/content_fixture.dart';
 import 'today_fixtures.dart';
 import 'word_fixtures.dart';
@@ -126,10 +128,10 @@ void main() {
   int rows(WidgetTester tester) => find.byType(WordRow).evaluate().length;
 
   Future<void> chip(WidgetTester tester, String label) async {
+    // A filter chip, not a row's status chip with the same words.
     await tester.tap(
-      find.descendant(
-        of: find.byType(ListView).first,
-        matching: find.text(label),
+      find.byWidgetPredicate(
+        (w) => w is DpChip && w.kind == DpChipKind.filter && w.label == label,
       ),
     );
     await tester.pumpAndSettle();
@@ -164,6 +166,18 @@ void main() {
     await chip(tester, l10n.wordStatusDone);
     expect(rows(tester), 0);
     expect(find.text(l10n.stepWordsNone), findsOneWidget);
+  });
+
+  testWidgets('#314 at 200 % text nothing on L2 is cut: rows, chips and '
+      'the inner tabs grow or scroll', (tester) async {
+    textAt(tester, 2);
+    await pump(tester);
+    expectNothingClipped(tester, within: find.byType(StepDetailScreen));
+    expect(
+      tester.getSize(find.byType(WordRow).first).height,
+      greaterThan(WordRow.height),
+      reason: 'the row grows with its text',
+    );
   });
 
   testWidgets('FR-L2-02 the list is built as it scrolls', (tester) async {

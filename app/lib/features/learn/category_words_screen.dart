@@ -122,11 +122,12 @@ class _CategoryWordsScreenState extends ConsumerState<CategoryWordsScreen> {
                 ],
               ),
             ),
-          SizedBox(
-            height: 40,
-            child: ListView(
-              scrollDirection: Axis.horizontal,
-              padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+          // Sized by its chips, not a fixed height: at 200 % text they grow,
+          // and a fixed box would cut them (#314).
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+            child: Row(
               children: <Widget>[
                 for (final filter in LevelFilter.values) ...<Widget>[
                   DpChip(
@@ -157,12 +158,20 @@ class _CategoryWordsScreenState extends ConsumerState<CategoryWordsScreen> {
                         top: BorderSide(color: tokens.surface.outline),
                       ),
                     ),
-                    // Built as it scrolls, 64 dp a row; the key keeps the
+                    // Built as it scrolls, every row the height of the first:
+                    // 64 dp, or more at large text (#314). The key keeps the
                     // place across a trip to W1 and back.
                     child: ListView.builder(
                       key: PageStorageKey<String>('category-${widget.id}'),
                       padding: EdgeInsets.zero,
-                      itemExtent: WordRow.height,
+                      prototypeItem: shown.isEmpty
+                          ? null
+                          : WordRow(
+                              word: shown.first.word,
+                              meaning: shown.first.meaning,
+                              step: shown.first.word.word.sublevelCode,
+                              last: false,
+                            ),
                       itemCount: shown.length,
                       itemBuilder: (context, index) {
                         final row = shown[index];

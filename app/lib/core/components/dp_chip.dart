@@ -148,9 +148,11 @@ class DpChip extends StatelessWidget {
     final leading = kind == DpChipKind.webLink ? null : glyph;
     final trailing = kind == DpChipKind.webLink ? glyph : null;
 
+    // The artboard's height is the least a chip is: at 200 % text it grows
+    // with its label rather than cutting it in half (#314).
     final chip = Container(
-      height: height,
-      padding: EdgeInsets.symmetric(horizontal: tokens.spacing.sm),
+      constraints: BoxConstraints(minHeight: height),
+      padding: EdgeInsets.symmetric(horizontal: tokens.spacing.sm, vertical: 2),
       decoration: BoxDecoration(
         color: fill,
         borderRadius: BorderRadius.circular(radius),
