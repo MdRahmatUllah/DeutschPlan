@@ -402,6 +402,53 @@ void main() {
       expect(find.text('Undo'), findsOneWidget);
     });
 
+    Future<void> showUndo(
+      WidgetTester tester, {
+      bool screenReader = false,
+    }) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: AppTheme.light(),
+          localizationsDelegates: appLocalizationsDelegates,
+          supportedLocales: supportedLocales,
+          builder: (context, child) => MediaQuery(
+            data: MediaQuery.of(context)
+                .copyWith(accessibleNavigation: screenReader),
+            child: child!,
+          ),
+          home: Scaffold(
+            body: Builder(
+              builder: (context) => GestureDetector(
+                onTap: () =>
+                    DpUndo.show(context, message: 'Rated', onUndo: () {}),
+                child: const Text('rate'),
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.tap(find.text('rate'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 750));
+      expect(find.text('Undo'), findsOneWidget);
+    }
+
+    testWidgets('FR-T2-02 it is gone after its 4 s (#319)', (tester) async {
+      await showUndo(tester);
+      await tester.pump(DpUndo.duration);
+      await tester.pumpAndSettle();
+      expect(find.text('Undo'), findsNothing);
+    });
+
+    testWidgets('with a screen reader on it stays until it is used', (
+      tester,
+    ) async {
+      await showUndo(tester, screenReader: true);
+      await tester.pump(DpUndo.duration * 2);
+      await tester.pumpAndSettle();
+      expect(find.text('Undo'), findsOneWidget);
+    });
+
     test('the duration is the 4 s FR-T2-02 asks for', () {
       expect(DpUndo.duration, const Duration(seconds: 4));
     });
