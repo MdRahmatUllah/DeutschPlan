@@ -6,7 +6,7 @@ last-read: 164
 
 ## Now
 
-#134 in review as PR #353: answer review threads; re-run the gate if main moved, then merge.
+#157 Notification service and the permission flow — claimed 2026-09-25 01:00.
 
 ## Next
 

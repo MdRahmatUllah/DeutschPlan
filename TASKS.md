@@ -68,7 +68,7 @@ claiming the same issue. A hand edit skips that check.
 | #154 | M6 | B | P3 | L | HyMtTranslator behind the licence build flag | open |  | #64 #151 #283 |  |
 | #155 | M6 | B | P2 | L | M4 · Model manager | open |  | #146 #153 #156 |  |
 | #156 | M6 | B | P2 | M | Download manager: resumable, Wi-Fi-only, checksum-verified | open |  | #64 |  |
-| #157 | M6 | C | P2 | M | Notification service and the permission flow | open |  | #62 #70 |  |
+| #157 | M6 | C | P2 | M | Notification service and the permission flow | in-progress | agent-2 | #62 #70 |  |
 | #158 | M6 | C | P2 | M | Background tasks: plan pre-generation, reminder composition, widget refresh | open |  | #76 #157 |  |
 | #159 | M6 | C | P2 | S | Widget snapshot writer and word-of-the-day selection | open |  | #158 |  |
 | #160 | M6 | C | P2 | M | X1 · Android home-screen widget (Glance) | open |  | #159 |  |
