@@ -79,7 +79,12 @@ void main() {
     await answer(id, 2, 'das');
     await answer(id, 3, 'der');
     // 4 left empty.
-    await answer(id, 6, null, rubric: <bool>[true, true, false, false]);
+    await answer(
+      id,
+      6,
+      'recordings/1.m4a',
+      rubric: <bool>[true, true, false, false],
+    );
 
     final score = await exams.grade(
       id,
@@ -109,7 +114,12 @@ void main() {
     for (var ord = 1; ord <= 4; ord++) {
       await answer(id, ord, 'das');
     }
-    await answer(id, 6, null, rubric: <bool>[true, true, true, true]);
+    await answer(
+      id,
+      6,
+      'recordings/1.m4a',
+      rubric: <bool>[true, true, true, true],
+    );
     final score = await exams.grade(
       id,
       passPercent: 60,
@@ -127,7 +137,12 @@ void main() {
     for (var ord = 1; ord <= 4; ord++) {
       await answer(id, ord, 'das');
     }
-    await answer(id, 6, null, rubric: <bool>[true, true, true, true]);
+    await answer(
+      id,
+      6,
+      'recordings/1.m4a',
+      rubric: <bool>[true, true, true, true],
+    );
 
     expect((await exams.grade(id, passPercent: 60)).passed, isTrue);
     expect((await exams.grade(id, passPercent: 70)).passed, isFalse);

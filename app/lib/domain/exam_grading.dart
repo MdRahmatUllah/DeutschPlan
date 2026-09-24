@@ -12,13 +12,6 @@ import 'package:deutschplan/domain/exam_generator.dart';
 import 'package:deutschplan/domain/grammar_item_generator.dart' show GapFill;
 import 'package:deutschplan/domain/text_norm.dart';
 
-/// BR-ANS-04: correct 1, almost 0.5, anything else 0.
-double verdictPoints(Verdict verdict) => switch (verdict) {
-  Verdict.correct => 1,
-  Verdict.almost => 0.5,
-  Verdict.wrongArticle || Verdict.wrong => 0,
-};
-
 /// The verdict [given] earns on a question item; null for Writing and
 /// Speaking, which have no single right answer.
 Verdict? verdictFor(ExamItem item, String given) => switch (item) {
@@ -38,24 +31,66 @@ Verdict? verdictFor(ExamItem item, String given) => switch (item) {
   WritingTask() || SpeakingTask() => null,
 };
 
-final RegExp _token = RegExp(r'\p{L}+', unicode: true);
+/// A word, as the writing checks count them: letters and digits, with a
+/// hyphen or an apostrophe inside — "E-Mail", "geht's" and "2020" are one
+/// word each.
+final RegExp _token = RegExp(
+  r"[\p{L}\p{N}]+(?:['’-][\p{L}\p{N}]+)*",
+  unicode: true,
+);
 
-/// The words of [text], as the writing checks count them.
+/// The words of [text].
 List<String> textWords(String text) => <String>[
   for (final m in _token.allMatches(text)) m[0]!,
 ];
 
-/// FR-L12W-01: the [targets] [text] uses — a word whose search key starts
-/// with the target's, so "Heizungen" uses "Heizung".
+/// What a word and a target are compared on: both of search's keys, with
+/// the spaces gone so "SIM-Karten" meets "SIM-Karte". The expanded key
+/// matches "Tuer" to "Tür", the folded one "Werkstätten" to "Werkstatt".
+(String, String) _keys(String text) => (
+  searchKey(text, stripArticle: false).replaceAll(' ', ''),
+  searchKeyAlt(text, stripArticle: false).replaceAll(' ', ''),
+);
+
+/// A verb's -en, or the -n of -ln and -rn (wandern, sammeln).
+final RegExp _infinitive = RegExp(r'(?:en|(?<=[lr])n)$');
+
+/// [key] without a verb's infinitive ending, never below three letters:
+/// "sein" keeps its n.
+String _cut(String key) {
+  final ending = _infinitive.firstMatch(key);
+  return ending == null || ending.start < 3
+      ? key
+      : key.substring(0, ending.start);
+}
+
+/// The prefixes a target is found by. A lower-case target — a verb, where
+/// the course capitalises its nouns — loses its infinitive ending, so
+/// "bringen" is found in "bringt".
+///
+/// ponytail: a prefix, not a stemmer. Irregular forms ("ist" for sein,
+/// "hat" for haben) are not found; a lemmatiser if learners miss too many.
+(String, String) _stems(String target) {
+  final keys = _keys(target);
+  final first = target.trim().isEmpty ? '' : target.trim()[0];
+  if (first != first.toLowerCase()) return keys;
+  return (_cut(keys.$1), _cut(keys.$2));
+}
+
+/// FR-L12W-01: the [targets] [text] uses — a word of it that starts with
+/// the target's stem: "Heizungen" uses "Heizung", "bringt" uses "bringen",
+/// "Werkstätten" uses "Werkstatt".
 List<String> targetsUsed(String text, List<String> targets) {
-  final keys = <String>[
-    for (final word in textWords(text)) searchKey(word, stripArticle: false),
+  final words = <(String, String)>[
+    for (final word in textWords(text)) _keys(word),
   ];
   return <String>[
     for (final target in targets)
-      if (keys.any(
-        (key) => key.startsWith(searchKey(target, stripArticle: false)),
-      ))
+      if (_stems(target) case (final expanded, final folded)
+          when expanded.isNotEmpty &&
+              words.any(
+                (w) => w.$1.startsWith(expanded) || w.$2.startsWith(folded),
+              ))
         target,
   ];
 }
@@ -73,14 +108,20 @@ List<bool> rubricTicks(String? json) => json == null
 
 /// What an item earns: [given] checked by `answer_check`; Writing its app
 /// points plus 2 × 0.5 for its rubric; Speaking 4 × 1 for its rubric.
+///
+/// A rubric scores only what is there to assess: Writing's needs a text,
+/// and Speaking's a recording — its [given] is the recording, and a section
+/// skipped or a recording deleted is 0 (FR-L12S-01, FR-L12S-04).
 double itemPoints(ExamItem item, {String? given, String? rubric}) {
   final ticks = rubricTicks(rubric);
   int ticked(int of) => ticks.take(of).where((t) => t).length;
   return switch (item) {
-    WritingTask() => writingAppPoints(item, given ?? '') + 0.5 * ticked(2),
-    SpeakingTask() => ticked(4).toDouble(),
+    WritingTask() =>
+      writingAppPoints(item, given ?? '') +
+          (textWords(given ?? '').isEmpty ? 0 : 0.5 * ticked(2)),
+    SpeakingTask() => (given ?? '').trim().isEmpty ? 0 : ticked(4).toDouble(),
     // A blank answer needs no guard of its own: every check marks it wrong.
-    _ => given == null ? 0 : verdictPoints(verdictFor(item, given)!),
+    _ => given == null ? 0 : verdictFor(item, given)!.score,
   };
 }
 

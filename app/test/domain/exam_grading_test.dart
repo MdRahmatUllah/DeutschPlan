@@ -39,7 +39,7 @@ void main() {
   );
   String ticks(List<bool> ticks) => jsonEncode(ticks);
 
-  group('every item through answer_check', () {
+  group('BR-ANS-01…04 every item through answer_check', () {
     test('Vocabulary: any listed meaning; a typo is almost', () {
       final item = word(ExamSection.vocabulary, 'flat, apartment');
       expect(verdictFor(item, 'apartment'), Verdict.correct);
@@ -151,6 +151,57 @@ void main() {
       expect(targetsUsed('Es ist warm.', <String>['kalt']), isEmpty);
     });
 
+    test('FR-L12W-01 a verb in any person, an umlaut plural, a hyphenated '
+        'word', () {
+      expect(
+        targetsUsed(
+          'Er bringt die Anzüge in die Werkstätten. Sie hört nichts. '
+          'Wir wandern mit SIM-Karten.',
+          <String>[
+            'bringen',
+            'Anzug',
+            'Werkstatt',
+            'hören',
+            'wandern',
+            'SIM-Karte',
+          ],
+        ),
+        <String>[
+          'bringen',
+          'Anzug',
+          'Werkstatt',
+          'hören',
+          'wandern',
+          'SIM-Karte',
+        ],
+      );
+    });
+
+    test(
+      'FR-L12W-01 a stem is never under three letters: sein is not seit',
+      () {
+        expect(targetsUsed('Seit Montag.', <String>['sein']), isEmpty);
+        expect(targetsUsed('Ich war nicht da.', <String>['tun']), isEmpty);
+        // "oben" would cut to "ob", and find "Obst".
+        expect(targetsUsed('Ich esse Obst.', <String>['oben']), isEmpty);
+      },
+    );
+
+    test('FR-L12W-01 a noun keeps its ending: Laden is not Ladung', () {
+      expect(targetsUsed('Die Ladung ist schwer.', <String>['Laden']), isEmpty);
+      expect(targetsUsed('Zwei Läden.', <String>['Laden']), <String>['Laden']);
+    });
+
+    test('FR-L12W-02 a word is letters and digits, hyphens and apostrophes '
+        'inside', () {
+      expect(textWords("E-Mail, geht's, seit 2020!"), <String>[
+        'E-Mail',
+        "geht's",
+        'seit',
+        '2020',
+      ]);
+    });
+
     String text({required int targets, required int words}) {
       final used = writing.targets.take(targets).toList();
       return <String>[
@@ -179,14 +230,43 @@ void main() {
         itemPoints(writing, given: full, rubric: ticks([true, true, true])),
         3,
       );
-      expect(itemPoints(writing, rubric: ticks([true, true])), 1);
+    });
+
+    test('FR-L12W-03 no text, no rubric points', () {
+      expect(itemPoints(writing, rubric: ticks([true, true])), 0);
+      expect(itemPoints(writing, given: '  ', rubric: ticks([true, true])), 0);
+      expect(
+        itemPoints(writing, given: 'kurz', rubric: ticks([true, true])),
+        1,
+      );
     });
   });
 
-  test('Speaking: its rubric, 4 × 1', () {
-    expect(itemPoints(speaking), 0);
-    expect(itemPoints(speaking, rubric: ticks([true, true, false, true])), 3);
-    expect(itemPoints(speaking, rubric: ticks([true, true, true, true])), 4);
+  test('FR-L12S-03 Speaking: its rubric, 4 × 1', () {
+    const recording = 'recordings/7.m4a';
+    expect(itemPoints(speaking, given: recording), 0);
+    expect(
+      itemPoints(
+        speaking,
+        given: recording,
+        rubric: ticks([true, true, false, true]),
+      ),
+      3,
+    );
+    expect(
+      itemPoints(
+        speaking,
+        given: recording,
+        rubric: ticks([true, true, true, true]),
+      ),
+      4,
+    );
+  });
+
+  test('FR-L12S-01, FR-L12S-04 no recording, no points', () {
+    final all = ticks([true, true, true, true]);
+    expect(itemPoints(speaking, rubric: all), 0);
+    expect(itemPoints(speaking, given: '', rubric: all), 0);
   });
 
   group('BR-EXAM-04 the paper', () {
@@ -244,7 +324,7 @@ void main() {
     });
   });
 
-  test('every item of a built paper can be graded', () {
+  test('FR-L12-01 every item of a built paper grades after the codec', () {
     // A word question of each word section, round the codec.
     for (final section in <ExamSection>[
       ExamSection.vocabulary,
