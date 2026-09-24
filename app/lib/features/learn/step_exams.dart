@@ -273,6 +273,20 @@ class MockCard extends StatelessWidget {
   }
 }
 
+/// A section's name, as L10, L11 and the runner say it.
+String examSectionName(AppLocalizations l10n, ExamSection section) =>
+    switch (section) {
+      ExamSection.vocabulary => l10n.examSectionVocabulary,
+      ExamSection.reverse => l10n.examSectionReverse,
+      ExamSection.articles => l10n.examSectionArticles,
+      ExamSection.wordForms => l10n.examSectionWordForms,
+      ExamSection.gapFill => l10n.examSectionGapFill,
+      ExamSection.grammar => l10n.examSectionGrammar,
+      ExamSection.listening => l10n.examSectionListening,
+      ExamSection.writing => l10n.examSectionWriting,
+      ExamSection.speaking => l10n.examSectionSpeaking,
+    };
+
 /// "What's in these exams": BR-EXAM-03's sections with their counts, as
 /// the learner's setting makes the paper, and the disclaimer.
 class ExamContents extends StatelessWidget {
@@ -289,17 +303,7 @@ class ExamContents extends StatelessWidget {
   Widget build(BuildContext context) {
     final tokens = context.tokens;
     final l10n = AppLocalizations.of(context);
-    String name(ExamSection section) => switch (section) {
-      ExamSection.vocabulary => l10n.examSectionVocabulary,
-      ExamSection.reverse => l10n.examSectionReverse,
-      ExamSection.articles => l10n.examSectionArticles,
-      ExamSection.wordForms => l10n.examSectionWordForms,
-      ExamSection.gapFill => l10n.examSectionGapFill,
-      ExamSection.grammar => l10n.examSectionGrammar,
-      ExamSection.listening => l10n.examSectionListening,
-      ExamSection.writing => l10n.examSectionWriting,
-      ExamSection.speaking => l10n.examSectionSpeaking,
-    };
+    String name(ExamSection section) => examSectionName(l10n, section);
     final sections = <String>[
       for (final section in ExamSection.values)
         if (sectionCount(section, listening: listening) case final count

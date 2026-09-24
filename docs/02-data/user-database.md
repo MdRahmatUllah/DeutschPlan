@@ -54,6 +54,7 @@ Created on first launch from `lib/data/db/user_schema.drift`, which is the autho
 | `coach_mark_seen` | 0 | Today — FR-S2-03's one-time mark on the primary button |
 | `dismissed_cards` | — | Today — FR-T1-06's dismissed contextual cards, a JSON list of ids (`pause`, `voice`, `exams:A2.1`) |
 | `learner_name` | — | Me |
+| `exam_timer` | 1 | L11 writes it on *Begin exam* (its switch starts from `exam_timer_default`); L12 reads it, fresh or resumed |
 
 ## Migrations
 

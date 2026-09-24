@@ -278,6 +278,11 @@ abstract final class SettingKeys {
   static const examPassPercent = IntSetting('exam_pass_percent', 60);
   static const examTimerDefault = BoolSetting('exam_timer_default', true);
 
+  /// The timer of the mock last begun: L11's switch writes it on *Begin
+  /// exam*, and L12 reads it whenever it opens, fresh or resumed, so the
+  /// choice survives Resume and process death (#129, #130).
+  static const examTimer = BoolSetting('exam_timer', true);
+
   // Translation.
   static const mtEnabled = BoolSetting('mt_enabled', false);
   static const mtVariant = EnumSetting<MtVariant>(
@@ -339,5 +344,6 @@ abstract final class SettingKeys {
     coachMarkSeen,
     dismissedCards,
     learnerName,
+    examTimer,
   ];
 }
