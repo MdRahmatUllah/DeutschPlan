@@ -222,6 +222,19 @@ void main() {
     expect(run.answers, <(int, String?)>[(1, path)]);
   });
 
+  testWidgets('a screen reader hears the task, the recorder and the rubric '
+      'apart', (tester) async {
+    final semantics = tester.ensureSemantics();
+    await pump(tester);
+
+    final recorder = tester
+        .getSemantics(find.text(l10n.examSpeakingReady))
+        .label;
+    expect(recorder, isNot(contains(l10n.examSpeakingHint)));
+    expect(recorder, isNot(contains(l10n.examSpeakingSelfAssessed)));
+    semantics.dispose();
+  });
+
   testWidgets('FR-L12S-03 each tick is written as it is ticked', (
     tester,
   ) async {

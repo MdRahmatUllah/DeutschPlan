@@ -872,167 +872,181 @@ class _ExamSpeakingState extends ConsumerState<ExamSpeaking> {
       ),
     };
 
+    // Each card a node of its own: merged, the task, the recorder and the
+    // rubric would be read as one.
+    Widget node(Widget child) => Semantics(container: true, child: child);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
-        _taskPanel(
-          tokens,
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              DpText(
-                l10n.examSpeakingPrompt(
-                  l10n.examSpeakingTask(task.level, topic),
-                  l10n.examSpeakingLength('$max'),
+        node(
+          _taskPanel(
+            tokens,
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                DpText(
+                  l10n.examSpeakingPrompt(
+                    l10n.examSpeakingTask(task.level, topic),
+                    l10n.examSpeakingLength('$max'),
+                  ),
+                  role: DpTextRole.body,
+                  weight: 600,
                 ),
-                role: DpTextRole.body,
-                weight: 600,
-              ),
-              const SizedBox(height: 4),
-              DpText(
-                l10n.examSpeakingHint,
-                role: DpTextRole.caption,
-                color: tokens.color.textSecondary,
-              ),
-            ],
+                const SizedBox(height: 4),
+                DpText(
+                  l10n.examSpeakingHint,
+                  role: DpTextRole.caption,
+                  color: tokens.color.textSecondary,
+                ),
+              ],
+            ),
           ),
         ),
         const SizedBox(height: 12),
         // Flat with a light edge, as the artboard draws both cards.
-        DpSurface(
-          kind: DpSurfaceKind.bar,
-          radius: 16,
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            children: <Widget>[
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  _RoundButton(
-                    icon: icon,
-                    label: label,
-                    fill: fill,
-                    onTap: onTap,
-                  ),
-                  const SizedBox(width: 14),
-                  Flexible(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        // "00:52 / 01:00": the time large, the length small.
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.baseline,
-                          textBaseline: TextBaseline.alphabetic,
-                          children: <Widget>[
-                            DpText(
-                              _mmss(_seconds),
-                              role: DpTextRole.title,
-                              weight: 700,
-                            ),
-                            const SizedBox(width: 4),
-                            DpText(
-                              l10n.examSpeakingOf(_mmss(max)),
-                              role: DpTextRole.label,
-                              weight: 500,
-                              color: tokens.color.textSecondary,
-                            ),
-                          ],
-                        ),
-                        DpText(
-                          switch (_mic) {
-                            _Mic.idle => l10n.examSpeakingReady,
-                            _Mic.recording => l10n.examSpeakingRecording,
-                            _Mic.recorded => l10n.examSpeakingRecorded,
-                            _Mic.denied => l10n.examSpeakingDenied,
-                          },
-                          role: DpTextRole.caption,
-                          color: tokens.color.textSecondary,
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              if (_mic != _Mic.idle && _mic != _Mic.denied) ...<Widget>[
-                const SizedBox(height: 12),
-                ExcludeSemantics(child: _Bars(levels: _levels)),
-              ],
-              if (_mic == _Mic.recorded) ...<Widget>[
-                const SizedBox(height: 12),
-                // Widths as their labels need them: "Delete recording" is the
-                // longer, and half the card each wraps it.
+        node(
+          DpSurface(
+            kind: DpSurfaceKind.bar,
+            radius: 16,
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              children: <Widget>[
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    Expanded(
-                      flex: 5,
-                      child: DpButton(
-                        label: l10n.examSpeakingRetake(_retakesLeft),
-                        kind: DpButtonKind.secondary,
-                        compact: true,
-                        onPressed: _retakesLeft > 0
-                            ? () => unawaited(_record())
-                            : null,
-                      ),
+                    _RoundButton(
+                      icon: icon,
+                      label: label,
+                      fill: fill,
+                      onTap: onTap,
                     ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      flex: 6,
-                      child: DpButton(
-                        label: l10n.examSpeakingDelete,
-                        kind: DpButtonKind.secondary,
-                        colour: tokens.surface.cardStrong,
-                        onColour: tokens.color.ink,
-                        compact: true,
-                        onPressed: () => unawaited(_delete()),
+                    const SizedBox(width: 14),
+                    Flexible(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          // "00:52 / 01:00": the time large, the length small.
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.baseline,
+                            textBaseline: TextBaseline.alphabetic,
+                            children: <Widget>[
+                              DpText(
+                                _mmss(_seconds),
+                                role: DpTextRole.title,
+                                weight: 700,
+                              ),
+                              const SizedBox(width: 4),
+                              DpText(
+                                l10n.examSpeakingOf(_mmss(max)),
+                                role: DpTextRole.label,
+                                weight: 500,
+                                color: tokens.color.textSecondary,
+                              ),
+                            ],
+                          ),
+                          DpText(
+                            switch (_mic) {
+                              _Mic.idle => l10n.examSpeakingReady,
+                              _Mic.recording => l10n.examSpeakingRecording,
+                              _Mic.recorded => l10n.examSpeakingRecorded,
+                              _Mic.denied => l10n.examSpeakingDenied,
+                            },
+                            role: DpTextRole.caption,
+                            color: tokens.color.textSecondary,
+                          ),
+                        ],
                       ),
                     ),
                   ],
                 ),
+                if (_mic != _Mic.idle && _mic != _Mic.denied) ...<Widget>[
+                  const SizedBox(height: 12),
+                  ExcludeSemantics(child: _Bars(levels: _levels)),
+                ],
+                if (_mic == _Mic.recorded) ...<Widget>[
+                  const SizedBox(height: 12),
+                  // Widths as their labels need them: "Delete recording" is the
+                  // longer, and half the card each wraps it.
+                  Row(
+                    children: <Widget>[
+                      Expanded(
+                        flex: 5,
+                        child: DpButton(
+                          label: l10n.examSpeakingRetake(_retakesLeft),
+                          kind: DpButtonKind.secondary,
+                          compact: true,
+                          onPressed: _retakesLeft > 0
+                              ? () => unawaited(_record())
+                              : null,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        flex: 6,
+                        child: DpButton(
+                          label: l10n.examSpeakingDelete,
+                          kind: DpButtonKind.secondary,
+                          colour: tokens.surface.cardStrong,
+                          onColour: tokens.color.ink,
+                          compact: true,
+                          onPressed: () => unawaited(_delete()),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+                if (_mic == _Mic.denied) ...<Widget>[
+                  const SizedBox(height: 12),
+                  DpButton(
+                    label: l10n.examSpeakingOpenSettings,
+                    kind: DpButtonKind.secondary,
+                    compact: true,
+                    onPressed: () => unawaited(_recorder.openSettings()),
+                  ),
+                ],
               ],
-              if (_mic == _Mic.denied) ...<Widget>[
-                const SizedBox(height: 12),
-                DpButton(
-                  label: l10n.examSpeakingOpenSettings,
-                  kind: DpButtonKind.secondary,
-                  compact: true,
-                  onPressed: () => unawaited(_recorder.openSettings()),
-                ),
-              ],
-            ],
+            ),
           ),
         ),
         const SizedBox(height: 12),
-        DpSurface(
-          kind: DpSurfaceKind.bar,
-          radius: 16,
-          padding: const EdgeInsets.all(14),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.only(bottom: 4),
-                child: DpText(
-                  l10n.examSpeakingRubricTitle.toUpperCase(),
+        node(
+          DpSurface(
+            kind: DpSurfaceKind.bar,
+            radius: 16,
+            padding: const EdgeInsets.all(14),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 4),
+                  child: DpText(
+                    l10n.examSpeakingRubricTitle.toUpperCase(),
+                    role: DpTextRole.caption,
+                    weight: 700,
+                    letterSpacing: 0.6,
+                    color: tokens.color.textSecondary,
+                  ),
+                ),
+                for (final (i, line) in <String>[
+                  l10n.examSpeakingRubricTask,
+                  l10n.examSpeakingRubricFluency,
+                  l10n.examSpeakingRubricPronunciation,
+                  l10n.examSpeakingRubricVocabulary,
+                ].indexed)
+                  _Tick(
+                    label: line,
+                    ticked: _ticks[i],
+                    onTap: () => _toggle(i),
+                  ),
+                const SizedBox(height: 6),
+                DpText(
+                  l10n.examSpeakingSelfAssessed,
                   role: DpTextRole.caption,
-                  weight: 700,
-                  letterSpacing: 0.6,
                   color: tokens.color.textSecondary,
                 ),
-              ),
-              for (final (i, line) in <String>[
-                l10n.examSpeakingRubricTask,
-                l10n.examSpeakingRubricFluency,
-                l10n.examSpeakingRubricPronunciation,
-                l10n.examSpeakingRubricVocabulary,
-              ].indexed)
-                _Tick(label: line, ticked: _ticks[i], onTap: () => _toggle(i)),
-              const SizedBox(height: 6),
-              DpText(
-                l10n.examSpeakingSelfAssessed,
-                role: DpTextRole.caption,
-                color: tokens.color.textSecondary,
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ],
