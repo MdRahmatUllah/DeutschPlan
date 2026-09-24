@@ -32,6 +32,18 @@ wordsWithStateForStep:
   WHERE w.sublevel_code = :code
   ORDER BY w.seq_in_sublevel;
 
+-- R1's results: the words a search found, with their state, in no order —
+-- the search ranks them, and the repository puts them back in its order.
+wordsWithStateByUids:
+  SELECT w.**, s.**, CASE
+    WHEN s.status = 'suspended' THEN 'suspended'
+    WHEN s.introduced_on IS NULL AND COALESCE(s.reps, 0) = 0 THEN 'todo'
+    WHEN COALESCE(s.stability, 0) >= :doneAfter THEN 'done'
+    ELSE 'learning' END AS derived_status
+  FROM words w
+  LEFT JOIN word_state s ON s.word_uid = w.uid
+  WHERE w.uid IN :uids;
+
 -- The same, minus suspended. BR-STATUS-03: suspended words are out of plans,
 -- revision, quizzes, exams and practice sentences until resumed.
 learnableWordsForStep:

@@ -46,6 +46,7 @@ import 'package:deutschplan/services/tts/system_tts.dart';
 import 'package:deutschplan/services/tts/tts_engine.dart';
 import 'package:material_ui/material_ui.dart' show Brightness;
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 part 'app_providers.g.dart';
 
@@ -258,6 +259,15 @@ ModelRepository modelRepository(Ref ref) =>
 //
 // `project-structure.md`: platform plugins behind small interfaces, so a test
 // can put a fake in the scope instead of a method channel that is not there.
+
+/// Opens a web page in an in-app browser tab: R1's Duden · DWDS · Wiktionary
+/// · Linguee · Google chips (FR-R1-06). The app makes no request of its own
+/// (BR-PRIV-01); the browser does, because the learner tapped.
+typedef OpenWeb = Future<bool> Function(Uri page);
+
+@riverpod
+OpenWeb openWeb(Ref ref) =>
+    (page) => launchUrl(page, mode: LaunchMode.inAppBrowserView);
 
 /// The phone's German voice: S2's preview (FR-S2-06) and `tts.md`'s fallback.
 /// Kept alive because the plugin reports playback to one instance only.

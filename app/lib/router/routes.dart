@@ -40,6 +40,7 @@ import 'package:deutschplan/features/learn/learn_screen.dart';
 import 'package:deutschplan/features/learn/step_detail_screen.dart';
 import 'package:deutschplan/features/me/me_screen.dart';
 import 'package:deutschplan/features/quiz/quiz_screen.dart';
+import 'package:deutschplan/features/search/search_screen.dart';
 import 'package:deutschplan/features/sentences/sentences_screen.dart';
 import 'package:deutschplan/features/study/study_screen.dart';
 import 'package:deutschplan/features/words/word_detail_screen.dart';
@@ -392,7 +393,7 @@ class SearchRoute extends GoRouteData with $SearchRoute {
 
   @override
   Widget build(BuildContext context, GoRouterState state) =>
-      PlaceholderScreen(title: 'Search', screen: 'R1', detail: step);
+      SearchScreen(step: step);
 }
 
 class AddWordRoute extends GoRouteData with $AddWordRoute {

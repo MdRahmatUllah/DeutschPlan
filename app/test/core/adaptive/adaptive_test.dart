@@ -654,6 +654,30 @@ void main() {
       });
     }
 
+    testWidgets('a tab under the shell rises above the keyboard once, not '
+        'twice', (tester) async {
+      tester.view
+        ..physicalSize = const Size(390, 844) * 3
+        ..devicePixelRatio = 3
+        ..viewInsets = const FakeViewPadding(bottom: 300 * 3);
+      addTearDown(tester.view.reset);
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: AppTheme.light(),
+          home: AdaptiveScaffold(
+            bottomBar: const SizedBox(height: 80, child: Text('tabs')),
+            // A tab root, with its own scaffold, as R1 has.
+            body: AdaptiveScaffold(body: Container(key: const Key('tab'))),
+          ),
+        ),
+      );
+      // 844, less the keyboard's 300 and the bar's 80, once each.
+      expect(
+        tester.getSize(find.byKey(const Key('tab'))).height,
+        844 - 300 - 80,
+      );
+    });
+
     testWidgets('the confirm dialog uses the platform dialog and returns', (
       tester,
     ) async {

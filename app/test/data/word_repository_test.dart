@@ -584,6 +584,22 @@ void main() {
     });
   });
 
+  test('R1 watchWords keeps the order it was given, with each state', () async {
+    await state(ContentFixture.tuer, stability: 30);
+    final found = await words.watchWords(<String>[
+      ContentFixture.strasse,
+      ContentFixture.tuer,
+      ContentFixture.haus,
+    ]).first;
+    expect(found.map((w) => w.uid), <String>[
+      ContentFixture.strasse,
+      ContentFixture.tuer,
+      ContentFixture.haus,
+    ]);
+    expect(found[1].status, WordStatus.done);
+    expect(found[2].status, WordStatus.todo);
+  });
+
   group("W1's history", () {
     Future<void> review(String uid, int rating, String at) => db
         .into(db.reviewLog)

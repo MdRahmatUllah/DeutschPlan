@@ -129,27 +129,27 @@ void main() {
       // search.md tier 1. The Bangla is matched as typed, because a Bangla
       // query is not normalised.
       expect(
-        (await dao.exactMatches('tuer', 'x', 'y').get()).single.german,
+        (await dao.exactMatches('tuer', 'x', 'y', null).get()).single.german,
         'Tür',
       );
       expect(
-        (await dao.exactMatches('x', 'tur', 'y').get()).single.german,
+        (await dao.exactMatches('x', 'tur', 'y', null).get()).single.german,
         'Tür',
       );
       expect(
-        (await dao.exactMatches('x', 'y', 'বাড়ি').get()).single.german,
+        (await dao.exactMatches('x', 'y', 'বাড়ি', null).get()).single.german,
         'Haus',
       );
     });
 
     test('prefixMatches ranks, and joins back to the word', () async {
-      final hits = await dao.prefixMatches('"Hau"*', 5).get();
+      final hits = await dao.prefixMatches('"Hau"*', null, 5).get();
       expect(hits.single.w.german, 'Haus');
       expect(hits.single.rank, isNotNull);
     });
 
     test('sentenceMatches names the headword above the sentence', () async {
-      final hits = await dao.sentenceMatches('"offen"', 5).get();
+      final hits = await dao.sentenceMatches('"offen"', null, 5).get();
       expect(hits.single.head, 'Tür');
       expect(hits.single.german, 'Die Tür ist offen.');
     });
@@ -158,14 +158,14 @@ void main() {
   group('the MATCH strings search.md specifies', () {
     test('a column filter narrows the search', () async {
       // `english : "door"` must not match a German column containing "door".
-      final hits = await dao.prefixMatches('english : "door"', 5).get();
+      final hits = await dao.prefixMatches('english : "door"', null, 5).get();
       expect(hits.single.w.german, 'Tür');
     });
 
     test('the tokenizer folds diacritics, so Tur finds Tür', () async {
       // remove_diacritics 2, on top of search_key_alt.
       expect(
-        (await dao.prefixMatches('"Tur"', 5).get()).single.w.german,
+        (await dao.prefixMatches('"Tur"', null, 5).get()).single.w.german,
         'Tür',
       );
     });
@@ -173,13 +173,13 @@ void main() {
     test('trigram candidates survive a misspelling', () async {
       // Tier 3 returns candidates; search.md ranks them by edit distance in
       // Dart, because SQLite has no OSA distance.
-      final hits = await dao.trigramCandidates('"stras"', 400).get();
+      final hits = await dao.trigramCandidates('"stras"', null, 400).get();
       expect(<String>[for (final w in hits) w.german], contains('Straße'));
     });
 
     test('a uid is not searchable, so a hex query returns nothing', () async {
       expect(
-        await dao.prefixMatches('"${ContentFixture.haus}"', 5).get(),
+        await dao.prefixMatches('"${ContentFixture.haus}"', null, 5).get(),
         isEmpty,
       );
     });

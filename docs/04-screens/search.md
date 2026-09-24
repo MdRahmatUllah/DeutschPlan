@@ -12,13 +12,20 @@
 
 **No results.** "Not in the course — 5,594 words, none spelled like this. Typos are tolerated, so it is probably a compound or a rare word."; enlarged web chips; *Add "…" as my word*; footnote "Opens the web in an in-app browser — the only time DeutschPlan goes online."
 
+**Filled in by #137:**
+- **FR-R1-07.** The status chips (To do · Learning · Done) and one chip per step in the results each narrow the words. Step chips show only when the results span more than one step. A new search starts unfiltered. A second tap clears a chip. Status and step apply together. A status chip hides the sentences, which have no status.
+- **L2's step.** It shows as a chip under the field that keeps words and sentences to that step, in the search itself, before the caps. Tapping the chip removes it by going to `/search`, so a second trip from the step brings it back.
+- **Between keystrokes** the last results stay up until the next query answers.
+- **FR-R1-06.** The web chips open through `url_launcher`'s in-app browser view, which is a Custom Tab on Android and `SFSafariViewController` on iOS. That is what `flutter_custom_tabs` would give, with no new dependency.
+- **In sentences.** The words FTS matched are marked in Sun, from `highlight()`.
+
 **Functional requirements**
 - FR-R1-01 Results per `03-domain/search.md`, debounced 120 ms, isolate-run, < 50 ms per query.
 - FR-R1-02 Enter/search key opens the first exact match's detail.
 - FR-R1-03 Play icon pronounces without opening.
 - FR-R1-04 Recent searches: last 10, persisted; cleared by *Clear*.
 - FR-R1-05 Autofocus only when the tab is opened fresh; returning keeps query and scroll.
-- FR-R1-06 Web chips open `flutter_custom_tabs`; no request is made by the app.
+- FR-R1-06 Web chips open in the in-app browser (`url_launcher`, above); no request is made by the app.
 - FR-R1-07 Filter chips (step/status) appear when > 10 results.
 
 **Tests.** tier ordering with fixtures ("strase" → Straße in Similar); no-results state; recent list.
