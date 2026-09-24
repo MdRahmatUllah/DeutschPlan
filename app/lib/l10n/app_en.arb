@@ -3911,5 +3911,17 @@
   "examWritingFieldHint": "Write your text here, in German",
   "@examWritingFieldHint": {
     "description": "L12 Writing: the empty text area's hint, and what a screen reader hears on it."
+  },
+  "reminderTitle": "Time for German",
+  "@reminderTitle": {
+    "description": "The daily reminder's title (#157)."
+  },
+  "reminderBody": "Today's plan is ready. A few minutes is enough.",
+  "@reminderBody": {
+    "description": "The daily reminder's text until #158 builds it from the plan."
+  },
+  "reminderChannel": "Daily reminder",
+  "@reminderChannel": {
+    "description": "Android's name for the reminder's notification channel, shown in the phone's settings."
   }
 }

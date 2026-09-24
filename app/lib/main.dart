@@ -14,6 +14,9 @@ import 'package:share_plus/share_plus.dart';
 import 'package:deutschplan/bootstrap.dart';
 import 'package:deutschplan/core/theme/app_theme.dart';
 import 'package:deutschplan/core/providers/app_providers.dart';
+import 'package:deutschplan/services/reminder_notifications.dart';
+import 'package:deutschplan/router/deep_links.dart';
+import 'package:deutschplan/data/repositories/reminder_scheduler.dart';
 import 'package:deutschplan/core/theme/dp_tokens.dart';
 import 'package:deutschplan/core/theme/glass_capability.dart';
 import 'package:deutschplan/core/theme/theme_mode.dart';
@@ -145,6 +148,16 @@ class _BootstrapHostState extends State<BootstrapHost> {
       container.dispose();
       return;
     }
+    if (result is BootstrapReady) {
+      final router = result.bootstrap.router;
+      unawaited(
+        startReminders(
+          container,
+          PlatformReminderNotifications(),
+          open: router.go,
+        ),
+      );
+    }
     setState(() {
       _app = UncontrolledProviderScope(
         container: container,
@@ -168,6 +181,38 @@ class _BootstrapHostState extends State<BootstrapHost> {
         supportedLocales: supportedLocales,
         home: const SplashProgressGate(),
       );
+}
+
+/// The daily reminder (#157): the plugin set up, a tapped reminder opening
+/// what it links to, and the schedule kept to the settings from now on.
+///
+/// Like [followPlatformBrightness], a function a test can call: `main` is
+/// the one no test does. A plugin that fails to start costs the reminder,
+/// never the app.
+Future<StreamSubscription<SettingKey<Object?>>?> startReminders(
+  ProviderContainer container,
+  ReminderNotifications notifications, {
+  required void Function(String location) open,
+}) async {
+  try {
+    await notifications.init((link) => open(resolveDeepLink(Uri.parse(link))));
+  } on Object catch (error) {
+    debugPrint('reminders: $error');
+    return null;
+  }
+  return ReminderScheduler(
+    container.read(settingsProvider),
+    notifications,
+    container.read(clockProvider),
+    (language) {
+      final l10n = lookupAppLocalizations(language.locale);
+      return (
+        title: l10n.reminderTitle,
+        body: l10n.reminderBody,
+        channel: l10n.reminderChannel,
+      );
+    },
+  ).follow();
 }
 
 /// Keeps the theme notifier in step with the system light/dark switch.
