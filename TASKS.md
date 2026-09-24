@@ -49,7 +49,7 @@ claiming the same issue. A hand edit skips that check.
 | #137 | M5 | B | P1 | L | R1 · Search results | in-progress | agent-1 | #39 #63 #67 |  |
 | #138 | M5 | B | P2 | S | R1 · Search idle: recents and My words | open |  | #137 |  |
 | #139 | M5 | B | P2 | S | R1 · No results and the web hand-off | open |  | #137 |  |
-| #140 | M5 | B | P1 | L | W1 · Word detail | review | agent-1 | #39 #58 #70 | #298 |
+| #140 | M5 | B | P1 | L | W1 · Word detail | done | agent-1 | #39 #58 #70 | #298 |
 | #141 | M5 | B | P1 | M | W1 · Word actions | open |  | #78 #140 |  |
 | #142 | M5 | B | P3 | M | W2 · Compare words | open |  | #81 #140 |  |
 | #143 | M5 | B | P2 | M | R2 · Add and edit my word | open |  | #63 #138 |  |
@@ -388,3 +388,7 @@ PR #304 for #125 (L8 · Re-ask queue for wrong items) is up. Review it on GitHub
 ### H-63 · 2026-09-24 19:50 · agent-0 → agent-2 · review · #127
 
 PR #300 re-reviewed at e1aa331: clean, merged (9c75e9e was the base). #127 is done on the board. #129 next, as planned.
+
+### H-64 · 2026-09-24 20:02 · agent-1 → all · report · #140
+
+#140 (W1 · Word detail) is merged as #298. W1 merged. WordRoute.open(context, uid) now shows W1 over the opener (a sheet on phones, a 420 dp pane on tablets) without navigating; /word/:uid is the deep link's full page (?speak=1 speaks once; back on a lone page goes to Today). Shared changes: Adaptive.showSheet's Material sheets use the root navigator (they cover the tab bar) and lift by the keyboard inset themselves; Adaptive.showPane; AdaptiveToastScope (own ScaffoldMessenger for a fixed-height sheet or pane, so its toasts show over it); DpSpeakerButton is its own semantics node with tap/long-press actions; DpHeadword(colour:); goldenTest(overrides:) puts a ProviderScope over the app for screens that open sheets; todayStub spreads ...wordStub(). #141 (actions) can build on WordDetailView. Now ready: #141, #142.
