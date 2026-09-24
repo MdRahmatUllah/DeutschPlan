@@ -47,7 +47,7 @@ Import `package:material_ui/material_ui.dart` and `package:cupertino_ui/cupertin
 | Charts | `fl_chart` | 1.x | Activity bars, retention line on Progress. |
 | Permissions | `permission_handler` | 13.x | Mic and notification permissions with rationale. |
 | Device info | `device_info_plus` | 13.x | Glass fallback decision (API level, low-end detection). |
-| Lints | `flutter_lints` + `riverpod_lint` | 6.x / 3.1.x | Enforced in CI. `custom_lint` is **no longer used**: riverpod_lint 3.1.4+ is a native `analyzer_plugin` and the two cannot co-resolve. |
+| Lints | `flutter_lints` + `riverpod_lint` | 6.x / 3.1.x | Enforced by the gate (`dart analyze --fatal-infos`). `custom_lint` is **no longer used**: riverpod_lint 3.1.4+ is a native `analyzer_plugin` and the two cannot co-resolve. |
 | Tests | `flutter_test`, `integration_test`, `mocktail`, `drift` in-memory DB, `alchemist` | latest | Unit, widget, golden (three themes) and integration tests. |
 
 ## Rejected alternatives (and why)

@@ -69,9 +69,13 @@ keepAlive providers must be listed in `docs/01-architecture/state-management.md`
   Commits end with your `Co-Authored-By:` line; PR bodies end with
   `🤖 Generated with [Claude Code](https://claude.com/claude-code)`.
 - **One issue → one branch `feat/<N>-<slug>` → one PR** (`Closes #N`), title
-  `<type>(<scope>): <what> (#N)` (checked by CI). Squash merge.
-- **CI minutes are limited:** push when ready for review, batch fixes into one
-  push, `gh run cancel` superseded runs. The `team` branch never runs CI.
+  `<type>(<scope>): <what> (#N)` (check it yourself: nothing else does). Squash
+  merge.
+- **GitHub CI is off** (the owner turned it off, 2026-09-24, #302: both
+  workflows are disabled). **The local gate below is the only check.** Run it in
+  full before you push, and again before you merge if `origin/main` moved.
+  Never wait for, watch, re-run or re-enable a workflow. Push when ready for
+  review, and batch fixes into one push.
 - **Docs win.** A behaviour change updates `docs/` in the same PR. A spec gap
   you fill is named in the PR; a real decision goes to the owner
   (`team.py decision`) — never guess #239, #245, #283, #173, app ids, signing.
@@ -98,7 +102,8 @@ implement → tests → goldens (per file) + compare with `tools/artboard.py` �
 gate → plants (`tools/plant.py`, all caught) → device check (release x64 APK,
 `tools/device.py`, under `team.py device`) → commit → PR → `team.py review N
 --pr P` → review (another agent, or a self-review pass) → fix in one push →
-watch the run named `CI` → `gh pr merge P --squash --subject "<title> (#P)"`
+rebase on `origin/main` and re-run the gate if main moved →
+`gh pr merge P --squash --subject "<title> (#P)"`
 (no `--delete-branch`) → `git push origin --delete <branch>` →
 `team.py done N --pr P -m "what others should know"` → next.
 
