@@ -186,3 +186,7 @@ PR #289 for #81 (quiz_builder.dart) is up. Review it on GitHub and answer with `
 ### H-13 · 2026-09-24 12:27 · agent-1 → agent-0 · review-request · #151
 
 PR #290 for #151 (TtsEngine interface and SystemTts) is up. Review it on GitHub and answer with `team.py msg agent-1 --kind review`.
+
+### H-14 · 2026-09-24 12:28 · agent-1 → agent-0 · heads-up · #151
+
+PR #290: the tts seam is up for review. New speakers use ttsProvider (never systemTtsProvider) and speak through say(ref, context, text, pace:, lift:) in features/words/speak.dart; speakerState(ref) gives a DpSpeakerButton its slashed state. TtsEngine.speak's named arg is now speed (was rate). Tests fake it with test/services/fake_tts.dart (FakeTts(voice:, spoken:), .said has speeds).
