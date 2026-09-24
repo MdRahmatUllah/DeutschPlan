@@ -339,6 +339,7 @@ class DpHeadword extends StatelessWidget {
     this.textAlign,
     this.weight,
     this.maxLines,
+    this.colour,
   });
 
   final String word;
@@ -355,6 +356,11 @@ class DpHeadword extends StatelessWidget {
   /// Unlimited, so the word card wraps; a list row's fixed height takes one
   /// line ending in "…", as the artboards' `text-overflow: ellipsis`.
   final int? maxLines;
+
+  /// Article and word in one colour, for a headword set on its gender's own
+  /// fill (W1's header), where the article colour would vanish. The article
+  /// is still printed, so the gender is not carried by colour alone.
+  final Color? colour;
 
   @override
   Widget build(BuildContext context) {
@@ -373,11 +379,11 @@ class DpHeadword extends StatelessWidget {
           if (article != null)
             TextSpan(
               text: '$article ',
-              style: style(articleColour ?? tokens.color.ink),
+              style: style(colour ?? articleColour ?? tokens.color.ink),
             ),
           TextSpan(
             text: DpScript.allowBreaks(word),
-            style: style(tokens.color.ink),
+            style: style(colour ?? tokens.color.ink),
             locale: const Locale('de', 'DE'),
           ),
         ],

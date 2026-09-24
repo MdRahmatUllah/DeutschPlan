@@ -17,6 +17,7 @@ import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:deutschplan/features/words/word_detail_screen.dart';
 
 import '../services/fake_tts.dart';
 
@@ -91,10 +92,6 @@ INSERT INTO sentence_log (word_uid, ord, shown_on, self_rating) VALUES
       GoRoute(
         path: '/day-complete',
         builder: (_, _) => const Text('T6 day complete'),
-      ),
-      GoRoute(
-        path: '/word/:uid',
-        builder: (_, state) => Text('W1 ${state.pathParameters['uid']}'),
       ),
     ],
   );
@@ -303,7 +300,10 @@ INSERT INTO sentence_log (word_uid, ord, shown_on, self_rating) VALUES
 
       await tester.tap(find.text(l10n.sentencesOpenWord));
       await tester.pumpAndSettle();
-      expect(find.text('W1 $strasse'), findsOneWidget);
+      expect(
+        tester.widget<WordDetailView>(find.byType(WordDetailView)).uid,
+        strasse,
+      );
     });
 
     testWidgets('a word the course lacks: Duden', (tester) async {

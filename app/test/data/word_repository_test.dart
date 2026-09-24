@@ -8,6 +8,7 @@ import 'package:deutschplan/data/db/content_dao.dart';
 import 'package:deutschplan/data/repositories/setting_keys.dart';
 import 'package:deutschplan/data/repositories/settings_repository.dart';
 import 'package:deutschplan/data/repositories/word_repository.dart';
+import 'package:deutschplan/domain/fsrs.dart' show Rating;
 import 'package:drift/drift.dart' hide isNotNull, isNull;
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -580,6 +581,62 @@ void main() {
       await state(ContentFixture.strasse, stability: 1);
       await pumpEventQueue();
       expect(seen, <(int, int)>[(0, 1), (1, 0), (2, 0)]);
+    });
+  });
+
+  group("W1's history", () {
+    Future<void> review(String uid, int rating, String at) => db
+        .into(db.reviewLog)
+        .insert(
+          ReviewLogCompanion.insert(
+            wordUid: uid,
+            reviewedAt: at,
+            rating: rating,
+            source: 'daily',
+          ),
+        );
+
+    test('a word never reviewed has no history', () async {
+      expect(await words.watchHistory(ContentFixture.haus).first, (
+        reviews: 0,
+        last: null,
+      ));
+    });
+
+    test('counts every review and names the latest rating', () async {
+      await review(ContentFixture.haus, 1, '2026-09-01T08:00:00Z');
+      await review(ContentFixture.haus, 3, '2026-09-10T08:00:00Z');
+      await review(ContentFixture.haus, 4, '2026-09-05T08:00:00Z');
+      await review(ContentFixture.tuer, 2, '2026-09-20T08:00:00Z');
+
+      expect(await words.watchHistory(ContentFixture.haus).first, (
+        reviews: 3,
+        last: Rating.good,
+      ));
+    });
+
+    test('two at the same moment: the later row is the last', () async {
+      await review(ContentFixture.haus, 3, '2026-09-10T08:00:00Z');
+      await review(ContentFixture.haus, 1, '2026-09-10T08:00:00Z');
+
+      expect(
+        (await words.watchHistory(ContentFixture.haus).first).last,
+        Rating.again,
+      );
+    });
+
+    test('again after each review, as the sheet stays open', () async {
+      final seen = <ReviewHistory>[];
+      final sub = words.watchHistory(ContentFixture.haus).listen(seen.add);
+      addTearDown(sub.cancel);
+      await pumpEventQueue();
+      await review(ContentFixture.haus, 4, '2026-09-21T08:00:00Z');
+      await pumpEventQueue();
+
+      expect(seen, <ReviewHistory>[
+        (reviews: 0, last: null),
+        (reviews: 1, last: Rating.easy),
+      ]);
     });
   });
 

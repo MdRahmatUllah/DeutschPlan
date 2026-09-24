@@ -3,6 +3,8 @@ import 'package:deutschplan/core/theme/app_theme.dart';
 import 'package:deutschplan/core/theme/glass_capability.dart';
 import 'package:deutschplan/main.dart'
     show appLocalizationsDelegates, supportedLocales;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 
@@ -74,8 +76,9 @@ Widget goldenApp({
   required GoldenDevice device,
   AdaptiveChrome? chrome,
   bool still = true,
+  List<Override>? overrides,
 }) {
-  return GlassCapabilityScope(
+  final app = GlassCapabilityScope(
     notifier: GlassCapability.always(),
     child: MaterialApp(
       debugShowCheckedModeBanner: false,
@@ -104,6 +107,12 @@ Widget goldenApp({
       ),
     ),
   );
+  // Over the whole app, as `main.dart` has it, for a screen that shows a
+  // sheet: a route pushed on the app's navigator sits above `home`, so a
+  // scope inside the screen would not reach it.
+  return overrides == null
+      ? app
+      : ProviderScope(overrides: overrides, child: app);
 }
 
 /// Declares the six goldens for one screen.
@@ -113,6 +122,10 @@ Widget goldenApp({
 ///
 /// [act] drives the screen into the state its artboard shows — an answer
 /// typed and checked — before the frame is taken.
+///
+/// [overrides] puts a `ProviderScope` over the whole app, for a screen that
+/// opens a sheet or pane (W1): the route sits above `home`, out of reach of a
+/// scope inside the screen.
 ///
 /// [still] false lets a one-off animation play — T6's confetti, which the
 /// artboard draws at rest. Only for modes without a drifting aurora: it
@@ -125,6 +138,7 @@ void goldenTest(
   AdaptiveChrome? chrome,
   Future<void> Function(WidgetTester tester)? act,
   bool still = true,
+  List<Override>? overrides,
 }) {
   for (final mode in modes) {
     for (final device in devices) {
@@ -138,6 +152,7 @@ void goldenTest(
             device: device,
             chrome: chrome,
             still: still,
+            overrides: overrides,
           );
           if (act != null) {
             await act(tester);
@@ -169,6 +184,7 @@ extension GoldenTester on WidgetTester {
     required GoldenDevice device,
     AdaptiveChrome? chrome,
     bool still = true,
+    List<Override>? overrides,
   }) async {
     view
       ..physicalSize = device.size * device.pixelRatio
@@ -185,6 +201,7 @@ extension GoldenTester on WidgetTester {
         device: device,
         chrome: chrome,
         still: still,
+        overrides: overrides,
         child: Builder(builder: builder),
       ),
     );

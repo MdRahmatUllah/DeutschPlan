@@ -5,6 +5,7 @@ import 'package:deutschplan/features/sentences/sentences_screen.dart';
 import 'package:deutschplan/features/today/today_screen.dart';
 
 import '../features/today_fixtures.dart';
+import '../services/fake_tts.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -23,6 +24,11 @@ import 'package:deutschplan/features/learn/step_detail_screen.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:deutschplan/core/providers/app_providers.dart';
+import 'package:deutschplan/data/db/app_database.dart';
+import 'package:deutschplan/data/repositories/settings_repository.dart';
+import 'package:deutschplan/features/words/word_detail_screen.dart';
+import 'package:flutter_riverpod/misc.dart' show Override;
 
 /// Deep links — #70.
 ///
@@ -137,13 +143,16 @@ void main() {
   group('through the real router', () {
     late GoRouter router;
 
-    Future<void> pumpApp(WidgetTester tester) async {
+    Future<void> pumpApp(
+      WidgetTester tester, {
+      List<Override> extra = const <Override>[],
+    }) async {
       router = buildRouter(guards: RouteGuards.permissive());
       addTearDown(router.dispose);
 
       await tester.pumpWidget(
         ProviderScope(
-          overrides: todayStub(),
+          overrides: <Override>[...todayStub(), ...extra],
           child: MaterialApp.router(
             routerConfig: router,
             theme: AppTheme.light(),
@@ -199,26 +208,56 @@ void main() {
       await openLink(tester, 'deutschplan://word/uid-haus');
 
       expect(location(), '/word/uid-haus');
-      expect(find.text('W1'), findsOneWidget);
-      expect(find.text('uid-haus'), findsOneWidget);
+      // FR-W1 presentation: a deep link is the full page.
+      final page = tester.widget<WordDetailScreen>(
+        find.byType(WordDetailScreen),
+      );
+      expect(page.uid, 'uid-haus');
+      expect(page.speak, isFalse);
+      expect(find.text('die Straße', findRichText: true), findsOneWidget);
     });
 
     testWidgets('the widget"s Pronounce link asks for speech', (tester) async {
       // FR-X1-02: "the app plays on open". The route has to see the query,
       // not just keep it in the URL.
-      await pumpApp(tester);
+      late SettingsRepository settings;
+      await tester.runAsync(() async {
+        final db = AppDatabase.memory();
+        settings = SettingsRepository(db);
+        await settings.load();
+        addTearDown(() async {
+          await settings.dispose();
+          await db.close();
+        });
+      });
+      final tts = FakeTts();
+      await pumpApp(
+        tester,
+        extra: <Override>[
+          settingsProvider.overrideWithValue(settings),
+          ttsProvider.overrideWithValue(tts),
+        ],
+      );
       await openLink(tester, 'deutschplan://word/uid-haus?speak=1');
 
       expect(location(), '/word/uid-haus?speak=1');
-      expect(find.text('uid-haus speak'), findsOneWidget);
+      expect(
+        tester.widget<WordDetailScreen>(find.byType(WordDetailScreen)).speak,
+        isTrue,
+      );
+      // Once, with its article, and not again as the page settles.
+      await tester.pumpAndSettle();
+      expect(tts.spoken, <String>['die Straße']);
     });
 
     testWidgets('the same link without it does not', (tester) async {
       await pumpApp(tester);
       await openLink(tester, 'deutschplan://word/uid-haus');
 
-      expect(find.text('uid-haus'), findsOneWidget);
-      expect(find.text('uid-haus speak'), findsNothing);
+      expect(
+        tester.widget<WordDetailScreen>(find.byType(WordDetailScreen)).speak,
+        isFalse,
+      );
     });
 
     testWidgets('an exam link opens the step"s exams tab', (tester) async {

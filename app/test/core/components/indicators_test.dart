@@ -399,6 +399,34 @@ void main() {
       expect(longPresses, 1);
     });
 
+    testWidgets('a screen reader can play it, and slowly, as its own '
+        'button', (tester) async {
+      final semantics = tester.ensureSemantics();
+      var taps = 0;
+      var longPresses = 0;
+      await pump(
+        tester,
+        Row(
+          children: <Widget>[
+            // A headword beside it, as on W1 and T2: it must not merge in.
+            const Text('die Rechnung'),
+            DpSpeakerButton(
+              onPressed: () => taps++,
+              onLongPress: () => longPresses++,
+              semanticLabel: 'Pronounce Rechnung',
+            ),
+          ],
+        ),
+      );
+      // By its own label: merged into the headword, the label would be
+      // "die Rechnung / Pronounce Rechnung" and this would find nothing.
+      final speaker = find.semantics.byLabel('Pronounce Rechnung');
+      tester.semantics.tap(speaker);
+      tester.semantics.longPress(speaker);
+      expect((taps, longPresses), (1, 1));
+      semantics.dispose();
+    });
+
     testWidgets('it is announced with its label', (tester) async {
       await pump(
         tester,

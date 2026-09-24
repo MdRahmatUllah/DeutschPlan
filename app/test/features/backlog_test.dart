@@ -23,6 +23,7 @@ import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:deutschplan/features/words/word_detail_screen.dart';
 
 import '../services/fake_tts.dart';
 
@@ -104,10 +105,6 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code, skipped,
             '${block.uids.join(',')}',
           );
         },
-      ),
-      GoRoute(
-        path: '/word/:uid',
-        builder: (_, state) => Text('W1 ${state.pathParameters['uid']}'),
       ),
     ],
   );
@@ -279,7 +276,10 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code, skipped,
       await pump(tester);
       await tester.tap(word('das Haus'));
       await tester.pumpAndSettle();
-      expect(find.text('W1 $haus'), findsOneWidget);
+      expect(
+        tester.widget<WordDetailView>(find.byType(WordDetailView)).uid,
+        haus,
+      );
     });
   });
 

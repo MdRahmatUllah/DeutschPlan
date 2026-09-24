@@ -39,16 +39,6 @@ class WordRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final tokens = context.tokens;
-    final l10n = AppLocalizations.of(context);
-    final (status, dot) = switch (word.status) {
-      WordStatus.todo => (l10n.wordStatusToDo, tokens.surface.muted),
-      WordStatus.learning => (l10n.wordStatusLearning, tokens.color.learning),
-      WordStatus.done => (l10n.wordStatusDone, tokens.color.easy),
-      WordStatus.suspended => (
-        l10n.wordStatusSuspended,
-        tokens.color.textSecondary,
-      ),
-    };
 
     final content = Row(
       children: <Widget>[
@@ -80,7 +70,7 @@ class WordRow extends StatelessWidget {
           DpChip(label: step, kind: DpChipKind.step),
           const SizedBox(width: 6),
         ],
-        DpChip(label: status, kind: DpChipKind.status, statusColour: dot),
+        WordStatusChip(word.status),
         WordPlayButton(word: spokenForm(word.word)),
       ],
     );
@@ -99,8 +89,31 @@ class WordRow extends StatelessWidget {
   }
 }
 
-/// A row's 40 dp speaker: the word through the system voice at the
-/// learner's speed.
+/// A word's status as a chip with its dot: To do, Learning, Done or
+/// Suspended (BR-STATUS-01, BR-STATUS-03). A list row and W1's header.
+class WordStatusChip extends StatelessWidget {
+  const WordStatusChip(this.status, {super.key});
+
+  final WordStatus status;
+
+  @override
+  Widget build(BuildContext context) {
+    final tokens = context.tokens;
+    final l10n = AppLocalizations.of(context);
+    final (label, dot) = switch (status) {
+      WordStatus.todo => (l10n.wordStatusToDo, tokens.surface.muted),
+      WordStatus.learning => (l10n.wordStatusLearning, tokens.color.learning),
+      WordStatus.done => (l10n.wordStatusDone, tokens.color.easy),
+      WordStatus.suspended => (
+        l10n.wordStatusSuspended,
+        tokens.color.textSecondary,
+      ),
+    };
+    return DpChip(label: label, kind: DpChipKind.status, statusColour: dot);
+  }
+}
+
+/// A row's 40 dp speaker: the word at the learner's speed, through `say()`.
 class WordPlayButton extends ConsumerWidget {
   const WordPlayButton({required this.word, super.key});
 
