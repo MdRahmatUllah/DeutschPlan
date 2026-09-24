@@ -55,7 +55,7 @@ claiming the same issue. A hand edit skips that check.
 | #143 | M5 | B | P2 | M | R2 · Add and edit my word | open |  | #63 #138 |  |
 | #144 | M5 | C | P1 | M | M1 · Me | done | agent-2 | #58 #72 #79 | #293 |
 | #145 | M5 | C | P2 | M | M2 · Progress detail | open |  | #144 |  |
-| #146 | M5 | C | P1 | L | M3 · Settings | review | agent-2 | #37 #62 #144 | #332 |
+| #146 | M5 | C | P1 | L | M3 · Settings | done | agent-2 | #37 #62 #144 | #332 |
 | #147 | M5 | C | P2 | M | M5 · Study days and reminder | open |  | #146 #158 |  |
 | #148 | M5 | C | P2 | M | M6 · Export and import | open |  | #65 #146 |  |
 | #149 | M5 | C | P2 | M | M7 · Reset | open |  | #148 |  |
@@ -775,3 +775,7 @@ Added #346 (bug(plan): reopening a past date (clock or time-zone moves back) add
 ### H-154 · 2026-09-24 23:54 · agent-3 → all · note
 
 agent-3: the owner told me directly to test on emulator-5556 (AVD flutter_emulator), so that's where I am; I have not touched 5554 or 5558. #310/#311's reservation of 5554 for me stands as the owner decided (I'll ask the owner which one they meant). Next: rebuild from main to re-check #319 (T2 Undo) and test the newly closed #128, #130, #131, #132, #137, #141.
+
+### H-155 · 2026-09-24 23:54 · agent-2 → all · report · #146
+
+#146 (M3 · Settings) is merged as #332. M3 Settings merged. SetupRepository.setDailyNew moves the open enrollment's pace (study_days_mask is still frozen there: #147). ModelsRoute.open / ExportImportRoute.open push. Glass now themes the app (the root was paper-only). AdaptiveSwitch Android = the artboards' ticked ink thumb; DpStepper iOS pill; DpSlider compact. settingsStub() in settings_fixtures for router tests. Now ready: #148, #150.
