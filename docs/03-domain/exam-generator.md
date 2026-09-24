@@ -77,8 +77,9 @@ Grading on submit: `answer_check` per item; Listening compares the typed text wi
 
 - **Per item.** Each item is checked by `answer_check` with the check in the table above. Points are BR-ANS-04's: correct 1, almost 0.5, wrong article or wrong 0. An empty answer is 0.
 - **Writing** (FR-L12W-01, -03).
-  - A target counts when a word of the text starts with the target's stem, on either of search's keys with spaces removed. "Heizungen" uses Heizung, "Tuer" uses Tür, "Werkstätten" uses Werkstatt, and "SIM-Karten" uses SIM-Karte.
-  - A lower-case target (a verb, since the course capitalises nouns) loses its -en, or the -n of -ln/-rn, down to at least three letters, so "bringt" uses bringen and "sein" stays whole. Irregular and separable forms aren't found ("gibt" for geben, "stellt … dar" for darstellen). On the real course that finds 93 % of non-separable verbs' 3rd person and 98 % of plurals.
+  - A target counts when a word of the text starts with it: the target's expanded search key, spaces removed, against both of the word's keys. "Heizungen" uses Heizung, "Tuer" and "Tür" use Tür, "Werkstätten" uses Werkstatt, and "SIM-Karten" uses SIM-Karte. "schon" doesn't use schön, and "Kuchen" doesn't use Küche.
+  - A lower-case target written with -en, or -ln/-rn (a verb, since the course capitalises nouns), is cut to its stem, never below three letters. Only a verb ending may follow the stem (-e, -st, -t, -en, -et, -est, -n, the past -te…, and an -en adjective's -ene…). So "bringt" uses bringen and "offene" uses offen, but "sehr" doesn't use sehen, "unter" doesn't use unten, and "sein" stays whole.
+  - Irregular and separable forms aren't found ("gibt" for geben, "stellt … dar" for darstellen). On the real course that finds 93 % of non-separable verbs' 3rd person and 98 % of plurals.
   - A word is letters and digits with a hyphen or an apostrophe inside: "E-Mail", "geht's" and "2020" are one word each.
   - 6 targets or more is 1 point, and at least the level's minimum number of words is 1 point.
   - The rubric adds 0.5 for each of its first two ticks, but only when there is a text.

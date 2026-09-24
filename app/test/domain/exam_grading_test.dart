@@ -177,6 +177,32 @@ void main() {
       );
     });
 
+    test('FR-L12W-01 an umlaut in the target must be there: schon is not '
+        'schön', () {
+      expect(targetsUsed('Das ist schon gut.', <String>['schön']), isEmpty);
+      expect(targetsUsed('Wir backen Kuchen.', <String>['Küche']), isEmpty);
+      expect(targetsUsed('Der Turm ist hoch.', <String>['Tür']), isEmpty);
+      expect(targetsUsed('Die Tür ist zu.', <String>['Tür']), <String>['Tür']);
+    });
+
+    test('FR-L12W-01 only a verb ending follows a verb\'s stem', () {
+      for (final (text, target) in <(String, String)>[
+        ('Das ist sehr gut.', 'sehen'),
+        ('Das gehört mir.', 'gehen'),
+        ('Gerade eben.', 'gern'),
+        ('Es liegt unter dem Tisch.', 'unten'),
+      ]) {
+        expect(targetsUsed(text, <String>[target]), isEmpty, reason: target);
+      }
+      expect(
+        targetsUsed('Die Tür war offene Sache. Ich sagte es.', <String>[
+          'offen',
+          'sagen',
+        ]),
+        <String>['offen', 'sagen'],
+      );
+    });
+
     test(
       'FR-L12W-01 a stem is never under three letters: sein is not seit',
       () {
@@ -189,6 +215,8 @@ void main() {
 
     test('FR-L12W-01 a noun keeps its ending: Laden is not Ladung', () {
       expect(targetsUsed('Die Ladung ist schwer.', <String>['Laden']), isEmpty);
+      // Cut, "Wagen" would take a verb's ending: "wage" (I dare).
+      expect(targetsUsed('Ich wage es.', <String>['Wagen']), isEmpty);
       expect(targetsUsed('Zwei Läden.', <String>['Laden']), <String>['Laden']);
     });
 

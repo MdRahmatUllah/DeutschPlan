@@ -44,9 +44,8 @@ List<String> textWords(String text) => <String>[
   for (final m in _token.allMatches(text)) m[0]!,
 ];
 
-/// What a word and a target are compared on: both of search's keys, with
-/// the spaces gone so "SIM-Karten" meets "SIM-Karte". The expanded key
-/// matches "Tuer" to "Tür", the folded one "Werkstätten" to "Werkstatt".
+/// A word's two search keys, spaces gone so "SIM-Karten" meets "SIM-Karte":
+/// expanded ("Tür" → tuer) and folded ("Werkstätten" → werkstatten).
 (String, String) _keys(String text) => (
   searchKey(text, stripArticle: false).replaceAll(' ', ''),
   searchKeyAlt(text, stripArticle: false).replaceAll(' ', ''),
@@ -55,42 +54,64 @@ List<String> textWords(String text) => <String>[
 /// A verb's -en, or the -n of -ln and -rn (wandern, sammeln).
 final RegExp _infinitive = RegExp(r'(?:en|(?<=[lr])n)$');
 
-/// [key] without a verb's infinitive ending, never below three letters:
-/// "sein" keeps its n.
-String _cut(String key) {
-  final ending = _infinitive.firstMatch(key);
-  return ending == null || ending.start < 3
-      ? key
-      : key.substring(0, ending.start);
-}
+/// What may follow a verb target's stem: the present and past endings, the
+/// infinitive's own, and an -en adjective's (offen → offene). Anything else
+/// is another word: "sehr" is not sehen, "unter" not unten.
+const Set<String> _verbEndings = <String>{
+  '', 'e', 'st', 't', 'en', 'et', 'est', 'n', //
+  'te', 'ten', 'test', 'tet',
+  'ene', 'ener', 'enes', 'enem', 'enen',
+};
 
-/// The prefixes a target is found by. A lower-case target — a verb, where
-/// the course capitalises its nouns — loses its infinitive ending, so
-/// "bringen" is found in "bringt".
+/// A target as it is found: the prefix a word must start with, and whether
+/// it is a verb's stem, which only verb endings may follow.
 ///
-/// ponytail: a prefix, not a stemmer. Irregular forms ("ist" for sein,
-/// "hat" for haben) are not found; a lemmatiser if learners miss too many.
-(String, String) _stems(String target) {
-  final keys = _keys(target);
-  final first = target.trim().isEmpty ? '' : target.trim()[0];
-  if (first != first.toLowerCase()) return keys;
-  return (_cut(keys.$1), _cut(keys.$2));
+/// The prefix is the target's expanded key: compared with both of a word's
+/// keys, that finds "Werkstätten" for Werkstatt and "Tuer" for Tür, but not
+/// "schon" for schön. A lower-case target — a verb, since the course
+/// capitalises nouns — loses its infinitive ending, never below three
+/// letters, so "bringt" finds bringen and "sein" stays whole.
+///
+/// ponytail: a prefix, not a stemmer. Irregular and separable forms ("gibt"
+/// for geben, "stellt … dar") are not found; a lemmatiser if learners miss
+/// too many.
+({String prefix, bool verb}) _target(String target) {
+  final key = _keys(target).$1;
+  final written = target.trim();
+  final first = written.isEmpty ? '' : written[0];
+  // On the target as written, not its key: "schön" keys to schoen, and its
+  // "en" is an umlaut's.
+  final ending = _infinitive.firstMatch(written.toLowerCase());
+  final cut = ending == null ? 0 : ending.end - ending.start;
+  if (first != first.toLowerCase() || cut == 0 || key.length - cut < 3) {
+    return (prefix: key, verb: false);
+  }
+  return (prefix: key.substring(0, key.length - cut), verb: true);
 }
 
-/// FR-L12W-01: the [targets] [text] uses — a word of it that starts with
-/// the target's stem: "Heizungen" uses "Heizung", "bringt" uses "bringen",
-/// "Werkstätten" uses "Werkstatt".
+/// Whether [word] is a form of [target].
+bool _finds(String word, ({String prefix, bool verb}) target) {
+  final (expanded, folded) = _keys(word);
+  for (final key in <String>[expanded, folded]) {
+    if (!key.startsWith(target.prefix)) continue;
+    if (!target.verb ||
+        _verbEndings.contains(key.substring(target.prefix.length))) {
+      return true;
+    }
+  }
+  return false;
+}
+
+/// FR-L12W-01: the [targets] [text] uses — a word of it that is a form of
+/// the target: "Heizungen" uses Heizung, "bringt" uses bringen,
+/// "Werkstätten" uses Werkstatt.
 List<String> targetsUsed(String text, List<String> targets) {
-  final words = <(String, String)>[
-    for (final word in textWords(text)) _keys(word),
-  ];
+  final words = textWords(text);
   return <String>[
     for (final target in targets)
-      if (_stems(target) case (final expanded, final folded)
-          when expanded.isNotEmpty &&
-              words.any(
-                (w) => w.$1.startsWith(expanded) || w.$2.startsWith(folded),
-              ))
+      if (_target(target) case final found
+          when found.prefix.isNotEmpty &&
+              words.any((word) => _finds(word, found)))
         target,
   ];
 }
