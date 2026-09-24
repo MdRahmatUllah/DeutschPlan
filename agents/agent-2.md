@@ -10,7 +10,7 @@ Nothing claimed.
 
 ## Next
 
-The lead assigned you #144 (M1 Me) and then #83 (exam generator, as soon as agent-0's #81 is merged; if it is not yet, do #146 Settings first) — see the handoffs in `team.py status`. After them, continue lane C in PLAN.md.
+#83 PR after plants+gate; then #84 grading (answer_check per section, writing/speaking points), #127 hub, #129 intro (tell agent-0 when merged, #130 waits).
 
 ## Memory
 
