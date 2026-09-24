@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-09-24 15:31
+last-seen: 2026-09-24 15:42
 last-read: 40
 
 ## Now
 
-#84 Exam grading including writing and speaking scoring — claimed 2026-09-24 15:31.
+#84 in review as PR #299: watch CI, answer review threads, merge.
 
 ## Next
 

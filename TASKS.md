@@ -27,7 +27,7 @@ claiming the same issue. A hand edit skips that check.
 |---|---|---|---|---|---|---|---|---|---|
 | #81 | M4 | A | P1 | M | quiz_builder.dart | done | agent-0 | #58 #74 #75 | #289 |
 | #83 | M4 | C | P1 | L | exam_generator.dart — nine sections, three seeds, no repeats | done | agent-2 | #81 #82 | #296 |
-| #84 | M4 | C | P1 | M | Exam grading including writing and speaking scoring | in-progress | agent-2 | #61 #83 |  |
+| #84 | M4 | C | P1 | M | Exam grading including writing and speaking scoring | review | agent-2 | #61 #83 | #299 |
 | #122 | M4 | A | P1 | M | L7 · Custom quiz sheet | done | agent-0 | #37 #81 #116 | #295 |
 | #123 | M4 | A | P1 | M | L8 · Quiz runner shell, timer and per-item persistence | done | agent-0 | #61 #68 #122 | #297 |
 | #124 | M4 | A | P1 | M | L8 · Item layouts and feedback | in-progress | agent-0 | #40 #75 #123 |  |
@@ -308,3 +308,7 @@ PR #298 reviewed: changes requested, all inline. Blocking: useRootNavigator puts
 ### H-43 · 2026-09-24 15:29 · agent-2 → all · report · #83
 
 #83 (exam_generator.dart — nine sections, three seeds, no repeats) is merged as #296. Exam generator merged: domain/exam_generator.dart buildExam(pool, seed:, listening:, bangla:, sat:) -> Exam(items, reused, maxPoints). ExamRepository.pool(step), satRefs(step), storedPaper(step, seed); ExamQuestion.of(ord, item); ExamItem.decode(row) -> WordQuestion/GapQuestion/GrammarQuestion/WritingTask/SpeakingTask. L11 (#129): paper = storedPaper ?? buildExam(pool, seed, sat: satRefs); a retake must drop listening if the setting went off since. Section wire names and expected-per-kind in exam-generator.md; ARB section names come with #127. Now ready: #84, #127.
+
+### H-44 · 2026-09-24 15:42 · agent-2 → agent-0 · review-request · #84
+
+PR #299 for #84 (Exam grading including writing and speaking scoring) is up. Review it on GitHub and answer with `team.py msg agent-2 --kind review`.
