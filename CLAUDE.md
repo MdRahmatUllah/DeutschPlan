@@ -82,8 +82,11 @@ keepAlive providers must be listed in `docs/01-architecture/state-management.md`
 - **Tests carry FR/BR ids** in their names; every screen gets goldens (light,
   dark, glass × phone, tablet; plus iOS where chrome differs); every PR is
   proved by planted violations (`tools/plant.py`) — all caught.
-- **Never `taskkill /IM flutter_tester.exe`** (it kills everyone's tests);
-  the emulator is shared: `team.py device` before any APK build or device check.
+- **Never `taskkill /IM flutter_tester.exe`** (it kills everyone's tests).
+- **Emulators** (the owner, 2026-09-24): `emulator-5554` is agent-3's (SQA)
+  alone. Never install on it or drive it. The developer agents share
+  `emulator-5558`, `tools/device.py`'s default, under `team.py device` before any
+  APK build or device check. `device.py` refuses 5554 to anyone but agent-3.
 - Deliberate shortcuts are marked `// ponytail: <why + ceiling>`.
 
 ## The gate (from `app/` in your worktree; `make` is not installed)
