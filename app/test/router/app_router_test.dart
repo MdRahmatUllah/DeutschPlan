@@ -29,6 +29,7 @@ import 'package:deutschplan/main.dart'
 import 'package:deutschplan/router/app_router.dart';
 import 'package:deutschplan/router/app_shell.dart';
 import 'package:deutschplan/router/routes.dart';
+import 'package:deutschplan/features/learn/grammar_library_screen.dart';
 import 'package:deutschplan/features/learn/learn_screen.dart';
 import 'package:deutschplan/features/learn/step_detail_screen.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -168,6 +169,19 @@ void main() {
             'them:\n${missing.join('\n')}',
       );
     });
+  });
+
+  group('the Learn screens behind their routes', () {
+    for (final (path, screen) in <(String, Type)>[
+      ('/learn', LearnScreen),
+      ('/learn/step/A2.1', StepDetailScreen),
+      ('/learn/grammar', GrammarLibraryScreen),
+    ]) {
+      testWidgets(path, (tester) async {
+        await pumpApp(tester, at: path);
+        expect(find.byType(screen), findsOneWidget);
+      });
+    }
   });
 
   group('the four branches', () {

@@ -132,12 +132,6 @@ class TopicRow extends StatelessWidget {
       ),
       TopicDue.notLearned => (null, null),
     };
-    final dot = switch (due) {
-      TopicDue.due => tokens.color.learning,
-      TopicDue.scheduled => tokens.color.easy,
-      TopicDue.suspended => tokens.color.textSecondary,
-      TopicDue.notLearned => tokens.surface.muted,
-    };
 
     return Semantics(
       button: true,
@@ -191,15 +185,7 @@ class TopicRow extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 12),
-              Container(
-                width: 10,
-                height: 10,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: dot,
-                  border: Border.all(color: tokens.color.ink),
-                ),
-              ),
+              TopicDot(due: due),
               const SizedBox(width: 12),
               Icon(
                 Icons.chevron_right,
@@ -209,6 +195,33 @@ class TopicRow extends StatelessWidget {
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+/// A topic's 10 dp status dot: Sun when due, Lime when scheduled, hollow
+/// before it is learned.
+class TopicDot extends StatelessWidget {
+  const TopicDot({required this.due, super.key});
+
+  final TopicDue due;
+
+  @override
+  Widget build(BuildContext context) {
+    final tokens = context.tokens;
+    return Container(
+      width: 10,
+      height: 10,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: switch (due) {
+          TopicDue.due => tokens.color.learning,
+          TopicDue.scheduled => tokens.color.easy,
+          TopicDue.suspended => tokens.color.textSecondary,
+          TopicDue.notLearned => tokens.surface.muted,
+        },
+        border: Border.all(color: tokens.color.ink),
       ),
     );
   }

@@ -294,9 +294,12 @@ class LearnHeader extends StatelessWidget {
 
 /// A level's band across the path: "A1 · ANFÄNGER" on its colour.
 class LevelBand extends StatelessWidget {
-  const LevelBand({required this.code, super.key});
+  const LevelBand({required this.code, super.key, this.path = true});
 
   final String code;
+
+  /// L1's dotted path over the band; L3's sticky headers have none.
+  final bool path;
 
   @override
   Widget build(BuildContext context) {
@@ -325,13 +328,14 @@ class LevelBand extends StatelessWidget {
             DpSurface(kind: DpSurfaceKind.tint(fill), radius: 0, child: label)
           else
             ColoredBox(color: fill, child: label),
-          const Positioned(
-            left: 29,
-            top: 0,
-            bottom: 0,
-            width: 2,
-            child: _Path(),
-          ),
+          if (path)
+            const Positioned(
+              left: 29,
+              top: 0,
+              bottom: 0,
+              width: 2,
+              child: _Path(),
+            ),
         ],
       ),
     );

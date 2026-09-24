@@ -110,6 +110,12 @@ class GrammarRepository extends DatabaseAccessor<AppDatabase>
     (row) => _topic(row.g, row.s, row.derivedStatus),
   );
 
+  /// Every topic of the course, level by level, in teaching order: L3.
+  Stream<List<TopicWithState>> watchAll() => _watchTopics(
+    (days) => allTopicsWithState(days).watch(),
+    (row) => _topic(row.g, row.s, row.derivedStatus),
+  );
+
   /// Everything due on or before [today]. The plan engine's `ensureGrammarDue`
   /// reads this, and Step detail shows the same list.
   Stream<List<TopicWithState>> watchDue(String today) => _watchTopics(

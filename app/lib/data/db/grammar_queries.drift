@@ -18,6 +18,19 @@ topicsWithStateForStep:
   WHERE g.sublevel_code = :code
   ORDER BY g.seq;
 
+-- L3's library (FR-L3-01): every topic, grouped by level in course order
+-- and in teaching order within it.
+allTopicsWithState:
+  SELECT g.**, s.**, CASE
+    WHEN s.status = 'suspended' THEN 'suspended'
+    WHEN s.last_review IS NULL THEN 'todo'
+    WHEN COALESCE(s.stability, 0) >= :doneAfter THEN 'done'
+    ELSE 'learning' END AS derived_status
+  FROM grammar_topics g
+  JOIN levels l ON l.code = g.level_code
+  LEFT JOIN grammar_state s ON s.grammar_uid = g.uid
+  ORDER BY l.ord, g.seq;
+
 -- What the plan engine asks for: everything due on or before today,
 -- suspended topics excluded.
 dueTopics:

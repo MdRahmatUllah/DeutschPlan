@@ -2084,5 +2084,40 @@
         "type": "String"
       }
     }
+  },
+  "libraryTitle": "Grammar library",
+  "@libraryTitle": {
+    "description": "L3 title."
+  },
+  "libraryAll": "All · {count}",
+  "@libraryAll": {
+    "description": "L3 filter chip: every topic.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "libraryNotLearned": "Not learned yet · {count}",
+  "@libraryNotLearned": {
+    "description": "L3 filter chip: topics never learned.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "libraryDue": "Due · {count}",
+  "@libraryDue": {
+    "description": "L3 filter chip: learned topics due today or before.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "libraryNone": "No topics here.",
+  "@libraryNone": {
+    "description": "L3 when a filter leaves nothing."
   }
 }
