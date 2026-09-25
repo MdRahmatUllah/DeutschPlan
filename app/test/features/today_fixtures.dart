@@ -1,3 +1,4 @@
+import 'package:deutschplan/domain/grammar_item_generator.dart';
 import 'package:deutschplan/features/search/add_word_screen.dart';
 import 'package:deutschplan/features/search/search_screen.dart';
 import 'package:deutschplan/features/sentences/sentences_screen.dart';
@@ -434,6 +435,7 @@ List<Override> todayStub([
   List<StepProgress>? course,
   Duration? dayAfter,
   TopicWithState? topic,
+  Future<CourseText>? grammarCourse,
 ]) => <Override>[
   // R1's idle view (#138): no recents, no words of one's own.
   recentSearchesProvider.overrideWith(() => StubRecentSearches(const [])),
@@ -487,6 +489,10 @@ List<Override> todayStub([
   // L4 without a database: the GrammarTopic artboard's rule.
   grammarTopicProvider.overrideWith(
     (ref, uid) => Stream.value(topic ?? artboardTopic()),
+  ),
+  // ... and no course to check its forms against (#330).
+  grammarCourseProvider.overrideWith(
+    (ref) => grammarCourse ?? Future<CourseText>.value(CourseText.none),
   ),
   // L5 without a database: the Categories artboard's eight.
   categoriesProvider.overrideWith((ref) => Stream.value(artboardCategories())),

@@ -34,9 +34,10 @@ Future<PracticeSet?> practiceSet(Ref ref, String uid) async {
   final topic = await grammar.find(uid);
   if (topic == null) return null;
   final step = await grammar.step(topic.topic.sublevelCode);
+  final course = await ref.watch(grammarCourseProvider.future);
   return (
     topic: topic,
-    items: practiceItemsFor(topic, step, ref.watch(todayProvider)),
+    items: practiceItemsFor(topic, step, ref.watch(todayProvider), course),
   );
 }
 

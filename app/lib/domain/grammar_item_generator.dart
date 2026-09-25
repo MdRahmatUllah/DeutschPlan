@@ -1,6 +1,6 @@
 /// `docs/03-domain/grammar-practice.md`: one grammar topic into 3–5 practice
-/// items, built only from its rule, example and *watch out* — no hand-written
-/// exercises.
+/// items, built from its rule, example and *watch out* — no hand-written
+/// exercises — and checked against the rest of the course's German (#330).
 ///
 /// Plain Dart: no Flutter, no drift. L15 hands it a [GrammarSource] and a
 /// seed, and checks the answers with `answer_check.dart`.
@@ -33,6 +33,58 @@ class GrammarSource {
   /// types apply.
   final List<String> tags;
   final String levelCode;
+}
+
+/// What the course says beyond one topic (#330): every form its words and
+/// examples use, to tell a real form from a made-up one ("warteen"), and its
+/// example sentences, to practise a form in another sentence than the gap
+/// fill's. [CourseText.none] knows no course: every form passes, and there is
+/// no other sentence.
+class CourseText {
+  CourseText({
+    Iterable<String> texts = const <String>[],
+    this.sentences = const <({String german, String english})>[],
+  }) : _forms = <String>{
+         for (final text in texts)
+           for (final word in _words(text)) word.toLowerCase(),
+         for (final sentence in sentences)
+           for (final word in _words(sentence.german)) word.toLowerCase(),
+       },
+       _byWord = _index(sentences);
+
+  static final CourseText none = CourseText();
+
+  final Set<String> _forms;
+
+  /// The course's example sentences, with their English.
+  final List<({String german, String english})> sentences;
+
+  /// Whether [form] is German the course uses; with no course, any form.
+  bool knows(String form) =>
+      _forms.isEmpty || _forms.contains(form.toLowerCase());
+
+  final Map<String, List<int>> _byWord;
+
+  /// The sentences by the words in them, split as *Pick the form* blanks
+  /// them — a token's letters — so each one listed has the word to blank:
+  /// "konnte/könnte" is one token, and lists under neither (#386).
+  static Map<String, List<int>> _index(
+    List<({String german, String english})> sentences,
+  ) {
+    final index = <String, List<int>>{};
+    for (final (i, sentence) in sentences.indexed) {
+      for (final word in _tokens(sentence.german).map(_bare).toSet()) {
+        (index[word] ??= <int>[]).add(i);
+      }
+    }
+    return index;
+  }
+
+  /// The sentences with [form], as it is written, as a word of their own.
+  List<({String german, String english})> sentencesWith(String form) =>
+      <({String german, String english})>[
+        for (final i in _byWord[form] ?? const <int>[]) sentences[i],
+      ];
 }
 
 /// One practice item.
@@ -145,12 +197,16 @@ const Set<String> errorTags = <String>{
 const int maxItems = 5;
 
 /// [source]'s items, seeded. [siblings] are other topics' rules at the same
-/// level, the wrong options of a *Rule recall*.
+/// level, the wrong options of a *Rule recall*; [course] what tells a real
+/// form from a made-up one, and gives *Pick the form* its sentence when the
+/// example has only the gap fill's (#330).
 List<GrammarItem> generateItems(
   GrammarSource source, {
   required int seed,
   List<String> siblings = const <String>[],
+  CourseText? course,
 }) {
+  final text = course ?? CourseText.none;
   final random = math.Random(seed);
   // The review and exam-strategy topics have no example ("—"): their rule
   // is what there is to practise.
@@ -159,12 +215,17 @@ List<GrammarItem> generateItems(
   final translations = _blank(source.exampleDe)
       ? <String>[]
       : _sentences(source.exampleEn);
-  // The rule's words, not *watch out*'s: its English ("Kann ich …") would
-  // point the gap at "Ich".
-  final ruleWords = _words(source.rule)
-      .map((word) => word.toLowerCase())
-      .where((word) => word.length > 2)
-      .toSet();
+  final cues = _cues(source);
+  final tags = <String>{
+    ...source.tags,
+    // "Sie vs du": a pronoun its title names is its point.
+    for (final word in _words(source.topic)) 'title:${word.toLowerCase()}',
+  };
+  // A word *Pick the form* can ask: one with two real wrong forms.
+  bool askable(String word) =>
+      _wrongForms(word, source, text).real.expand((group) => group).length >= 2;
+  int target(List<String> tokens, {bool real = false}) =>
+      _target(tokens, cues, tags, real ? askable : null);
 
   final items = <GrammarItem>[];
   final sentenceOrder = List<int>.generate(sentences.length, (i) => i)
@@ -175,14 +236,15 @@ List<GrammarItem> generateItems(
   // not asked of the tags.
   final first = sentenceOrder.first;
   final tokens = _tokens(sentences[first]);
-  final target = _target(tokens, ruleWords);
-  final translation = sentences.length == translations.length
-      ? translations[first]
+  final gap = target(tokens);
+  String translationOf(int sentence) => sentences.length == translations.length
+      ? translations[sentence]
       : _blank(source.exampleEn)
       ? ''
       : source.exampleEn;
-  final (before, answer, after) = _blankAt(tokens, target);
-  final distractors = _distractors(answer, source, random);
+  final translation = translationOf(first);
+  final (before, answer, after) = _blankAt(tokens, gap);
+  final distractors = _distractors(answer, source, text, random);
 
   items.add(
     GapFill(
@@ -192,23 +254,97 @@ List<GrammarItem> generateItems(
       translation: translation,
     ),
   );
-  items.add(
-    PickTheForm(
-      before: before,
-      after: after,
-      options: (<String>[answer, ...distractors.take(2)]..shuffle(random)),
-      answer: answer,
-      translation: translation,
-    ),
-  );
 
-  final tags = source.tags.toSet();
+  // #330: *Pick the form* in another sentence than the gap fill's, whose
+  // feedback would answer it: the example's next sentence, else one of the
+  // course's with a form of the gap's sentence. Its word has two real wrong
+  // forms, where one does.
+  final used = <int>{first};
+  final borrowed = <String>{};
+  PickTheForm pick(List<String> words, int at, String english) {
+    final (pickBefore, form, pickAfter) = _blankAt(words, at);
+    return PickTheForm(
+      before: pickBefore,
+      after: pickAfter,
+      options: <String>[
+        form,
+        ..._distractors(form, source, text, random).take(2),
+      ]..shuffle(random),
+      answer: form,
+      translation: english,
+    );
+  }
+
+  PickTheForm? fromExample({required bool real}) {
+    for (final other in sentenceOrder.skip(1)) {
+      if (used.contains(other)) continue;
+      final words = _tokens(sentences[other]);
+      final at = target(words, real: real);
+      if (at < 0) continue;
+      used.add(other);
+      return pick(words, at, translationOf(other));
+    }
+    return null;
+  }
+
+  PickTheForm? fromCourse() {
+    int rank(int at) => _rank(tokens, at, cues, tags);
+    final ranked =
+        <int>[
+          for (var i = 0; i < tokens.length; i++)
+            if (_bare(tokens[i]).length >= 2 && askable(_bare(tokens[i]))) i,
+        ]..sort((a, b) {
+          // The longer of two alike, as the gap is chosen.
+          final byRank = rank(b).compareTo(rank(a));
+          return byRank != 0
+              ? byRank
+              : _bare(tokens[b]).length.compareTo(_bare(tokens[a]).length);
+        });
+    for (final i in ranked) {
+      final form = _bare(tokens[i]);
+      final elsewhere = <({String german, String english})>[
+        for (final sentence in text.sentencesWith(form))
+          if (!sentences.contains(sentence.german.trim()) &&
+              !borrowed.contains(sentence.german))
+            sentence,
+      ];
+      if (elsewhere.isEmpty) continue;
+      final sentence = elsewhere[random.nextInt(elsewhere.length)];
+      borrowed.add(sentence.german);
+      final words = _tokens(sentence.german);
+      // Found: the index splits sentences as this does.
+      final at = words.indexWhere((word) => _bare(word) == form);
+      return pick(words, at, sentence.english);
+    }
+    return null;
+  }
+
+  // With no course, or a rule in English (a topic with no example), there
+  // may be no other sentence: another word of the gap's, the gap's last.
+  PickTheForm? elsewhere() =>
+      fromExample(real: true) ?? fromCourse() ?? fromExample(real: false);
+  PickTheForm besideGap() {
+    final at = target(<String>[
+      for (var i = 0; i < tokens.length; i++) i == gap ? '' : tokens[i],
+    ]);
+    return pick(
+      tokens,
+      at != gap && _bare(tokens[at]).length > 1 ? at : gap,
+      translation,
+    );
+  }
+
+  // A topic with no German example practises its English rule: a form of
+  // "sentence" to pick is no German, so it asks gap fills only (#386).
+  final german = !_blank(source.exampleDe);
+  if (german) items.add(elsewhere() ?? besideGap());
+
   if (tags.intersection(errorTags).isNotEmpty) {
     final error =
         _errorFrom(source.watchOut, tokens) ??
         (
-          target: target,
-          form: tokens[target].replaceFirst(answer, distractors.first),
+          target: gap,
+          form: tokens[gap].replaceFirst(answer, distractors.first),
         );
     items.add(
       SpotTheError(
@@ -256,13 +392,17 @@ List<GrammarItem> generateItems(
     }
   }
 
-  // At least three: a second gap fill from another sentence if the example
-  // has one, else a pick-the-form on another of its words.
-  if (items.length < 3 && sentenceOrder.length > 1) {
-    final second = _tokens(sentences[sentenceOrder[1]]);
+  // At least three where the sentences allow: gap fills from those not
+  // asked yet, then, with a German example, another pick-the-form away from
+  // the gap's.
+  for (final other in sentenceOrder) {
+    if (items.length >= 3) break;
+    if (used.contains(other)) continue;
+    used.add(other);
+    final second = _tokens(sentences[other]);
     final (secondBefore, secondAnswer, secondAfter) = _blankAt(
       second,
-      _target(second, ruleWords),
+      target(second),
     );
     items.add(
       GapFill(
@@ -270,31 +410,12 @@ List<GrammarItem> generateItems(
         after: secondAfter,
         answer: secondAnswer,
         translation: sentences.length == translations.length
-            ? translations[sentenceOrder[1]]
+            ? translations[other]
             : '',
       ),
     );
   }
-  if (items.length < 3) {
-    final at = _target(<String>[
-      for (var i = 0; i < tokens.length; i++) i == target ? '' : tokens[i],
-    ], ruleWords);
-    if (at != target && _bare(tokens[at]).length > 1) {
-      final (otherBefore, other, otherAfter) = _blankAt(tokens, at);
-      items.add(
-        PickTheForm(
-          before: otherBefore,
-          after: otherAfter,
-          options: <String>[
-            other,
-            ..._distractors(other, source, random).take(2),
-          ]..shuffle(random),
-          answer: other,
-          translation: translation,
-        ),
-      );
-    }
-  }
+  if (items.length < 3 && german) items.add(elsewhere() ?? besideGap());
   return items.take(maxItems).toList();
 }
 
@@ -357,33 +478,79 @@ String _bare(String token) =>
 /// Whether a field is empty or the pipeline's "—".
 bool _blank(String text) => !RegExp(r'[A-Za-zÄÖÜäöüß]').hasMatch(text);
 
-/// Whether [word] is a form the rule names: the same word, or one sharing
-/// its first four letters — "Könnten" for the rule's "könnte".
-bool _named(String word, Set<String> ruleWords) {
-  final lower = word.toLowerCase();
-  if (ruleWords.contains(lower)) return true;
-  if (lower.length < 4) return false;
-  final stem = lower.substring(0, 4);
-  return ruleWords.any((rule) => rule.length >= 4 && rule.startsWith(stem));
+/// How often the topic's rule and *watch out* name each word, in lower case
+/// and without the hyphen of "an-": what the gap is chosen by.
+Map<String, int> _cues(GrammarSource source) {
+  final cues = <String, int>{};
+  for (final word in _words('${source.rule} ${source.watchOut}')) {
+    final cue = word.toLowerCase().replaceAll(RegExp(r"^[-']+|[-']+$"), '');
+    if (cue.length >= 2) cues[cue] = (cues[cue] ?? 0) + 1;
+  }
+  return cues;
 }
 
-/// The token to blank: the longest form the rule names, else the longest.
-int _target(List<String> tokens, Set<String> ruleWords) {
-  var best = -1;
-  var bestLength = 0;
-  for (final pass in <bool>[true, false]) {
-    for (var i = 0; i < tokens.length; i++) {
-      final word = _bare(tokens[i]);
-      if (word.length < 2) continue;
-      if (pass && (word.length < 3 || !_named(word, ruleWords))) continue;
-      if (word.length > bestLength) {
-        best = i;
-        bestLength = word.length;
-      }
-    }
-    if (best >= 0) return best;
+/// The pronouns: a rule's examples name them ("Ich stehe um 7 auf"), but
+/// they are seldom its point — a topic tagged `pronoun` is the exception.
+const Set<String> _pronouns = <String>{
+  'ich', 'du', 'er', 'sie', 'es', 'wir', 'ihr', 'man', //
+  'mich', 'dich', 'mir', 'dir', 'ihn', 'ihm', 'uns', 'euch',
+};
+
+/// How well the word at [at] practises the topic (#330): each time the rule
+/// or *watch out* names it, one more for a form they name ("Könnten" for
+/// "könnte"), two for an inflecting class's member when the topic is about
+/// forms (the case-marked "meines"), less three for a pronoun the topic
+/// isn't about (its tags or title name it).
+int _rank(
+  List<String> tokens,
+  int at,
+  Map<String, int> cues,
+  Set<String> tags,
+) {
+  final lower = _bare(tokens[at]).toLowerCase();
+  var rank = cues[lower] ?? 0;
+  if (lower.length >= 4) {
+    final stem = lower.substring(0, 4);
+    if (cues.keys.any((cue) => cue != lower && cue.startsWith(stem))) rank++;
   }
-  return 0;
+  if (tags.intersection(errorTags).isNotEmpty &&
+      _families.any((family) => family.contains(lower))) {
+    rank += 2;
+  }
+  if (_pronouns.contains(lower) &&
+      !tags.contains('pronoun') &&
+      !tags.contains('title:$lower')) {
+    rank -= 3;
+  }
+  return rank;
+}
+
+/// The token to blank: the best practice of the topic ([_rank]), the longer
+/// of two alike. With [eligible], only a word it lets through, and -1 for
+/// none.
+int _target(
+  List<String> tokens,
+  Map<String, int> cues,
+  Set<String> tags, [
+  bool Function(String word)? eligible,
+]) {
+  var best = -1;
+  var bestRank = 0;
+  var bestLength = 0;
+  for (var i = 0; i < tokens.length; i++) {
+    final word = _bare(tokens[i]);
+    if (word.length < 2) continue;
+    if (eligible != null && !eligible(word)) continue;
+    final rank = _rank(tokens, i, cues, tags);
+    if (best < 0 ||
+        rank > bestRank ||
+        (rank == bestRank && word.length > bestLength)) {
+      best = i;
+      bestRank = rank;
+      bestLength = word.length;
+    }
+  }
+  return best < 0 && eligible == null ? 0 : best;
 }
 
 /// Closed word classes, where a wrong form is best another member: the
@@ -406,44 +573,57 @@ const List<List<String>> _families = <List<String>>[
   <String>['wäre', 'wärst', 'wären', 'wärt', 'war', 'sei'],
   <String>['würde', 'würdest', 'würden', 'würdet', 'wurde', 'werde'],
   <String>['könnte', 'könntest', 'könnten', 'konnte', 'kann', 'können'],
+  <String>['ich', 'mich', 'mir'],
+  <String>['du', 'dich', 'dir'],
+  <String>['er', 'ihn', 'ihm'],
+  <String>['wir', 'uns'],
 ];
 
-/// Two or more wrong forms for [answer]: its word class's other members,
-/// other inflections the rule or *watch out* names, then endings and
-/// umlauts changed.
-List<String> _distractors(
-  String answer,
-  GrammarSource source,
-  math.Random random,
-) {
-  final bare = _bare(answer);
-  final lower = bare.toLowerCase();
-  final stem = lower.length > 3 ? lower.substring(0, 3) : lower;
-  final family = <String>[
-    for (final members in _families)
-      if (members.contains(lower))
-        for (final member in members)
-          if (member != lower)
-            bare[0] == bare[0].toUpperCase()
-                ? '${member[0].toUpperCase()}${member.substring(1)}'
-                : member,
-  ]..shuffle(random);
-  final named = <String>{
-    for (final word in _words('${source.rule} ${source.watchOut}'))
-      if (word.toLowerCase() != lower &&
-          word.length > 2 &&
-          word.toLowerCase().startsWith(stem))
-        word,
-  }.toList()..shuffle(random);
+/// Closed sets a word is chosen from rather than inflected (#330): the
+/// prepositions, *am*/*im*/*um*, the da- and wo-compounds. Their other
+/// members are the wrong forms, but a topic about forms isn't about them.
+/// Not the question words: "[Wo] kann man hier parken?" takes *warum* and
+/// *wann* too, and an item has one right answer (#386).
+const List<List<String>> _choices = <List<String>>[
+  <String>['auf', 'an', 'in', 'über', 'unter', 'für', 'mit', 'von', 'zu'],
+  <String>['bei', 'nach', 'aus', 'vor', 'seit', 'gegen', 'ohne', 'durch'],
+  <String>['am', 'im', 'um', 'vom', 'zum', 'beim'],
+  <String>['darauf', 'daran', 'darüber', 'dafür', 'damit', 'davon', 'dazu'],
+  <String>['worauf', 'woran', 'worüber', 'wofür', 'womit', 'wovon', 'wozu'],
+];
 
-  // ponytail: endings changed by rule can make a non-word ("geschlosse")
-  // for a participle; a lemma table from the pipeline would fix that.
-  final made = <String>{};
-  final ending = RegExp(r'(en|er|es|em|st|e|n|t|s)$').firstMatch(bare);
-  final root = ending == null ? bare : bare.substring(0, ending.start);
+/// [word]'s wrong forms, in the order they are best: its classes' other
+/// members, the forms the rule or *watch out* names, then endings and
+/// umlauts changed. [real] are those the course uses (all, with no course),
+/// in those three groups; [made] the rest, which may be no German at all
+/// (#330: "warteen").
+({List<List<String>> real, List<String> made}) _wrongForms(
+  String word,
+  GrammarSource source,
+  CourseText course,
+) {
+  final lower = word.toLowerCase();
+  final capital = word[0] == word[0].toUpperCase();
+  final stem = lower.length > 3 ? lower.substring(0, 3) : lower;
+  final members = <String>{
+    for (final set in <List<String>>[..._families, ..._choices])
+      if (set.contains(lower))
+        for (final member in set)
+          capital ? '${member[0].toUpperCase()}${member.substring(1)}' : member,
+  };
+  final named = <String>{
+    for (final other in _words('${source.rule} ${source.watchOut}'))
+      if (other.length > 2 &&
+          other.toLowerCase().startsWith(stem) &&
+          course.knows(other))
+        other,
+  };
+
+  final changed = <String>{};
+  final ending = RegExp(r'(en|er|es|em|st|e|n|t|s)$').firstMatch(word);
+  final root = ending == null ? word : word.substring(0, ending.start);
   for (final end in <String>['e', 'en', 'er', 'es', 'em', 't', 'st', '']) {
-    final form = '$root$end';
-    if (form.toLowerCase() != lower && form.length > 1) made.add(form);
+    if ('$root$end'.length > 1) changed.add('$root$end');
   }
   const umlauts = <String, String>{
     'a': 'ä',
@@ -454,13 +634,38 @@ List<String> _distractors(
     'ü': 'u',
   };
   for (final MapEntry(key: plain, value: marked) in umlauts.entries) {
-    if (bare.contains(plain)) made.add(bare.replaceFirst(plain, marked));
+    if (word.contains(plain)) changed.add(word.replaceFirst(plain, marked));
   }
-  final extra = made.toList()..shuffle(random);
-  return <String>{...family, ...named, ...extra}
-      .where((form) => form.toLowerCase() != lower)
-      .map((form) => answer.replaceFirst(bare, form))
-      .toList();
+  final seen = <String>{lower};
+  List<String> fresh(Iterable<String> forms) => <String>[
+    for (final form in forms)
+      if (seen.add(form.toLowerCase())) form,
+  ];
+  // A member the course uses first: *würdet* is German, but "würde" is
+  // what a learner has met.
+  final real = <List<String>>[
+    fresh(members.where(course.knows)),
+    fresh(members),
+    fresh(named),
+    fresh(changed.where(course.knows)),
+  ];
+  return (real: real, made: fresh(changed));
+}
+
+/// Two or more wrong forms for [answer], shuffled, the real ones first: the
+/// made ones only fill in for a word with too few.
+List<String> _distractors(
+  String answer,
+  GrammarSource source,
+  CourseText course,
+  math.Random random,
+) {
+  final bare = _bare(answer);
+  final (:real, :made) = _wrongForms(bare, source, course);
+  return <String>[
+    for (final group in <List<String>>[...real, made])
+      ...group..shuffle(random),
+  ].map((form) => answer.replaceFirst(bare, form)).toList();
 }
 
 /// *Watch out*'s error in the sentence: a word it names that is another form

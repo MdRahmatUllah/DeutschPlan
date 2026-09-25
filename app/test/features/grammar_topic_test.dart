@@ -6,6 +6,7 @@ import 'package:deutschplan/data/db/app_database.dart';
 import 'package:deutschplan/data/repositories/grammar_repository.dart';
 import 'package:deutschplan/data/repositories/rating_service.dart';
 import 'package:deutschplan/data/repositories/settings_repository.dart';
+import 'package:deutschplan/domain/grammar_item_generator.dart';
 import 'package:deutschplan/features/learn/grammar_topic_screen.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
 import 'package:deutschplan/main.dart'
@@ -40,6 +41,7 @@ void main() {
     WidgetTester tester, {
     TopicWithState? topic,
     bool voice = true,
+    Future<CourseText>? course,
   }) async {
     spoken = <String>[];
     marked = <String>[];
@@ -75,7 +77,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: <Override>[
-          ...todayStub(null, null, null, topic),
+          ...todayStub(null, null, null, topic, course),
           settingsProvider.overrideWithValue(settings),
           ttsProvider.overrideWithValue(FakeTts(voice: voice, spoken: spoken)),
           grammarRatingServiceProvider.overrideWithValue(_Rating(marked)),
@@ -90,6 +92,18 @@ void main() {
     );
     await tester.pumpAndSettle();
   }
+
+  testWidgets('FR-L4-02 #386 the rule shows while the course loads; only '
+      'Practise waits, for its count', (tester) async {
+    final course = Completer<CourseText>();
+    await pump(tester, course: course.future);
+    expect(find.text('Konjunktiv II – Höflichkeit'), findsOneWidget);
+    expect(find.textContaining('Practise this rule'), findsNothing);
+
+    course.complete(CourseText.none);
+    await tester.pumpAndSettle();
+    expect(find.textContaining('Practise this rule'), findsOneWidget);
+  });
 
   testWidgets('the header: step, place in it, and title', (tester) async {
     await pump(tester);
@@ -137,6 +151,7 @@ void main() {
       artboardTopic(),
       artboardTopics(),
       '2026-09-21',
+      CourseText.none,
     ).length;
     await tester.tap(find.text(l10n.topicPractise(count)));
     await tester.pumpAndSettle();
