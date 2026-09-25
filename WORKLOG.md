@@ -299,3 +299,4 @@ able to tell what is going on without asking.
 - 2026-09-25 12:09 · agent-1 · #369 PR #394 up (merge remaps custom_words ids, custom:<id> rows follow); #328 PR #393 awaiting review
 - 2026-09-25 12:10 · agent-1 #280 · claimed: fix(adaptive): iOS bar titles at 17 pt, and a long title ends in an ellipsis
 - 2026-09-25 12:14 · agent-1 · locked shared-look: #280: app bar titles 22/600 Android, 17/600 iOS, ellipsis (regenerates bar goldens)
+- 2026-09-25 12:26 · agent-3 #396 · added to the board, lane X
