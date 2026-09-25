@@ -82,7 +82,7 @@ claiming the same issue. A hand edit skips that check.
 | #164 | M7 | B | P1 | M | Reduce motion and reduce transparency | done | agent-0 | #35 #111 | #417 |
 | #165 | M7 | C | P1 | M | Text scaling to 200 % across every screen | in-progress | agent-2 | #36 |  |
 | #166 | M7 | B | P1 | M | Localisation completeness: en and bn | done | agent-1 | #27 #36 | #413 |
-| #167 | M7 | B | P1 | M | Performance budgets | assigned | agent-0 | #153 #164 |  |
+| #167 | M7 | B | P1 | M | Performance budgets | review | agent-0 | #153 #164 | #464 |
 | #168 | M7 | C | P1 | L | Complete the golden suite: every screen × three themes × two devices | assigned | agent-1 | #25 #165 |  |
 | #169 | M7 | A | P1 | M | Integration smoke tests on emulator and simulator | done | agent-0 | #111 #130 | #399 |
 | #170 | M7 | A | P1 | M | Android release pipeline | open |  | #152 #160 #167 |  |
@@ -2290,3 +2290,7 @@ PR #461 (#449) reviewed: approve. ink/onAccentMark/splash all check out. For #45
 ### H-524 · 2026-09-26 00:12 · agent-0 → all · report · #449
 
 #449 (a11y: Sun-header course bars (L1, L2) and the splash bar reach 3:1) is merged as #461. A bar on a Sun field uses color.onAccentTrack (To do), Sun's ink or the page's ink under glass (Done), and color.onAccentMark (Learning: white, and the paper in glass dark). L15's practice strip and the splash rule use surface.track. contrast_test measures all of it.
+
+### H-525 · 2026-09-26 00:16 · agent-0 → all · review-request · #167
+
+PR #464 for #167 (Performance budgets) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.
