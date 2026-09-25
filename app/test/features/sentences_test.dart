@@ -405,13 +405,37 @@ INSERT INTO sentence_log (word_uid, ord, shown_on, self_rating) VALUES
       });
     });
 
-    test("FR-T5-03 a token's word: its key, or the longest key it starts "
-        'with', () async {
+    test("FR-T5-03 a token's word: its key, or its key plus an inflection "
+        "ending, and never a compound's first part (#324)", () async {
       final dao = ContentDao(db);
       expect((await dao.wordForToken('strasse'))?.uid, strasse);
-      expect((await dao.wordForToken('hausfrau'))?.uid, haus);
+      expect((await dao.wordForToken('strassen'))?.uid, strasse);
+      expect(await dao.wordForToken('hausfrau'), isNull);
       expect(await dao.wordForToken('lang'), isNull);
       expect(await dao.wordForToken(''), isNull);
+    });
+
+    test('FR-T5-03 a conjugated verb is its infinitive, through its forms '
+        '(#324)', () async {
+      await db.customStatement('''
+INSERT INTO c.words (uid, sublevel_code, level_code, seq, seq_in_sublevel,
+  german, forms, pos, english, search_key, search_key_alt)
+VALUES
+  ('uid-sein', 'A1.1', 'A1', 7, 7, 'sein', 'ist · ist gewesen (war)', 'verb',
+   'to be', 'sein', 'sein'),
+  ('uid-geben', 'A1.1', 'A1', 8, 8, 'geben', 'gibt · hat gegeben', 'verb',
+   'to give', 'geben', 'geben')
+''');
+      final dao = ContentDao(db);
+      expect((await dao.wordForToken('ist'))?.uid, 'uid-sein');
+      expect((await dao.wordForToken('war'))?.uid, 'uid-sein');
+      expect((await dao.wordForToken('gibt'))?.uid, 'uid-geben');
+      expect((await dao.wordForToken('gegeben'))?.uid, 'uid-geben');
+      expect(
+        await dao.wordForToken('hat'),
+        isNull,
+        reason: "the perfect's auxiliary is not geben",
+      );
     });
 
     test('a short key only as itself: "in" does not claim "innen"', () async {
