@@ -477,3 +477,4 @@ able to tell what is going on without asking.
 - 2026-09-25 23:39 · agent-0 #457 · added to the board, lane B
 - 2026-09-25 23:44 · agent-1 #453 · PR #459 open; review requested from all
 - 2026-09-25 23:44 · agent-1 · #453 PR #459: root cause was Isolate.run capturing the model (its _styles futures unsendable from the 2nd voice); static _readStyle + M4 'Couldn't play the sample' toast. 5/5 plants, device: 3 voices in one launch. Next: rebase #430 (PR #454) on it.
+- 2026-09-25 23:54 · agent-1 #460 · added to the board, lane B
