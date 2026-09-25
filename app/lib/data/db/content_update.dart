@@ -11,8 +11,8 @@ import 'package:path_provider/path_provider.dart';
 /// What one content update changed.
 ///
 /// The counts go into `content_updates.added` / `.removed`; the uid lists go
-/// into `changed_json`, because Today's card names words and `word-detail`
-/// shows an *updated* chip for the ones whose meaning moved.
+/// into `changed_json`, because Today's card counts words and W1 and T2's
+/// back show an *Updated* chip for the ones whose meaning moved.
 @immutable
 class ContentChange {
   const ContentChange({
@@ -20,17 +20,26 @@ class ContentChange {
     required this.added,
     required this.removed,
     required this.changed,
+    this.meaning = const <String>[],
   });
 
   const ContentChange.none(this.version)
     : added = const <String>[],
       removed = const <String>[],
-      changed = const <String>[];
+      changed = const <String>[],
+      meaning = const <String>[];
 
   final String version;
   final List<String> added;
   final List<String> removed;
+
+  /// Every word whose manifest digest moved: Today's card counts these.
   final List<String> changed;
+
+  /// The [changed] words whose *meaning* moved (the manifest's `meanings`
+  /// digests): only these wear BR-CONTENT-02's chip. A freq re-rank or a new
+  /// example is a change, not a new meaning.
+  final List<String> meaning;
 
   bool get isEmpty => added.isEmpty && removed.isEmpty && changed.isEmpty;
 
@@ -39,6 +48,7 @@ class ContentChange {
     'added': added,
     'removed': removed,
     'changed': changed,
+    'meaning': meaning,
   });
 
   static ContentChange fromJson(String version, String json) {
@@ -50,6 +60,7 @@ class ContentChange {
       added: list('added'),
       removed: list('removed'),
       changed: list('changed'),
+      meaning: list('meaning'),
     );
   }
 }
@@ -139,7 +150,8 @@ class ContentUpdater {
     <Object?>[version],
   );
 
-  /// The uids whose meaning changed recently enough to wear the chip.
+  /// The uids whose meaning changed recently enough to wear the chip: the
+  /// `meaning` list, not `changed`, which counts every field Today's card does.
   ///
   /// Aged from `recorded_at` — when *this device* saw the update — not from
   /// `version`, which is the pipeline's build time. Someone who installs the
@@ -165,7 +177,7 @@ class ContentUpdater {
         ...ContentChange.fromJson(
           row.read<String>('version'),
           row.read<String?>('changed_json') ?? '{}',
-        ).changed,
+        ).meaning,
     };
   }
 
@@ -181,10 +193,18 @@ class ContentUpdater {
       return ContentChange.none(version);
     }
 
-    final before = (previous['words'] as Map<String, dynamic>? ?? const {})
-        .cast<String, String>();
-    final after = (current['words'] as Map<String, dynamic>? ?? const {})
-        .cast<String, String>();
+    Map<String, String> digests(Map<String, dynamic> manifest, String key) =>
+        (manifest[key] as Map<String, dynamic>? ?? const {})
+            .cast<String, String>();
+    List<String> moved(Map<String, String> before, Map<String, String> after) =>
+        <String>[
+          ...after.keys.where(
+            (uid) => before.containsKey(uid) && before[uid] != after[uid],
+          ),
+        ]..sort();
+
+    final before = digests(previous, 'words');
+    final after = digests(current, 'words');
 
     return ContentChange(
       version: version,
@@ -192,11 +212,13 @@ class ContentUpdater {
         ..sort(),
       removed: <String>[...before.keys.where((uid) => !after.containsKey(uid))]
         ..sort(),
-      changed: <String>[
-        ...after.keys.where(
-          (uid) => before.containsKey(uid) && before[uid] != after[uid],
-        ),
-      ]..sort(),
+      changed: moved(before, after),
+      // A kept manifest from before `meanings` compares nothing: no chip,
+      // rather than a false one.
+      meaning: moved(
+        digests(previous, 'meanings'),
+        digests(current, 'meanings'),
+      ),
     );
   }
 

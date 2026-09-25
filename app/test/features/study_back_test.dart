@@ -131,6 +131,7 @@ void main() {
       bool autoplayExample = false,
       bool broken = false,
       VoidCallback? onReveal,
+      Set<String> updated = const <String>{},
     }) async {
       await tester.runAsync(() async {
         db = AppDatabase.memory();
@@ -159,6 +160,7 @@ void main() {
               if (broken) throw StateError('content.db is being replaced');
               return extras;
             }),
+            recentlyUpdatedProvider.overrideWith((ref) async => updated),
           ],
           child: MaterialApp(
             theme: AppTheme.light(),
@@ -331,6 +333,26 @@ void main() {
       );
       expect(find.textContaining('⟶'), findsNothing);
       expect(find.textContaining('≈'), findsNothing);
+    });
+
+    testWidgets('BR-CONTENT-02 FR-T2-01 a meaning updated this week wears the '
+        'Updated chip, over the meaning', (tester) async {
+      final semantics = tester.ensureSemantics();
+      await pump(tester, updated: <String>{'rechnung'});
+      expect(find.text(l10n.wordUpdated), findsOneWidget);
+      expect(find.bySemanticsLabel(l10n.wordUpdatedSemantic), findsOneWidget);
+      semantics.dispose();
+      expect(
+        tester.getTopLeft(find.text(l10n.wordUpdated)).dy,
+        lessThan(tester.getTopLeft(find.text('bill, invoice')).dy),
+      );
+    });
+
+    testWidgets('BR-CONTENT-02 FR-T2-01 and none for a word the update left '
+        'alone', (tester) async {
+      await pump(tester, updated: <String>{'haus'});
+      expect(find.text('bill, invoice'), findsOneWidget);
+      expect(find.text(l10n.wordUpdated), findsNothing);
     });
 
     testWidgets('V03 FR-T2-01 autoplay_example on: the first example plays on '

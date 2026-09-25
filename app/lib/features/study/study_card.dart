@@ -164,6 +164,8 @@ class _StudyWordCardState extends ConsumerState<StudyWordCard> {
     final pron = settings.read(SettingKeys.showPronBn);
     // Watched from the front, so the back has its examples when it opens.
     final extras = ref.watch(studyBackProvider(word.uid)).value;
+    final updated =
+        ref.watch(recentlyUpdatedProvider).value?.contains(word.uid) ?? false;
     final still = MediaQuery.disableAnimationsOf(context);
     final quick = still ? Duration.zero : tokens.motion.quick;
 
@@ -248,6 +250,7 @@ class _StudyWordCardState extends ConsumerState<StudyWordCard> {
                   word: word,
                   meaning: settings.read(SettingKeys.meaningLanguage),
                   extras: extras,
+                  updated: updated,
                   onPlay: (sentence) => unawaited(_speak(text: sentence)),
                 ),
               ),

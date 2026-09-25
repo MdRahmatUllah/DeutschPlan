@@ -227,6 +227,17 @@ ContentUpdater contentUpdater(Ref ref) => ContentUpdater(
   ref.watch(contentDaoProvider),
 );
 
+/// BR-CONTENT-02: the uids whose meaning a course update changed in the last
+/// seven days, for the *Updated* chip on W1's header and T2's back.
+// ponytail: autoDispose, so read again whenever something starts watching it
+// (W1, each T2 card after the last listener dropped): one small query, not
+// live. Updates land only at launch, so a window that closes while W1 or a
+// session is open shows until the provider is read again.
+@riverpod
+Future<Set<String>> recentlyUpdated(Ref ref) => ref
+    .watch(contentUpdaterProvider)
+    .recentlyUpdated(ref.watch(clockProvider)());
+
 @riverpod
 WordRepository wordRepository(Ref ref) =>
     WordRepository(ref.watch(appDatabaseProvider), ref.watch(settingsProvider));

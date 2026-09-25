@@ -61,6 +61,19 @@ def _word_digest(word) -> str:
     return hashlib.sha1(joined.encode("utf-8")).hexdigest()[:16]
 
 
+def _meaning_digest(word) -> str:
+    """What "the meaning changed" means for one word: BR-CONTENT-02's chip.
+
+    The meanings the learner reads on W1 and T2's back, and nothing else, so
+    a freq re-rank, a category move or a new example never marks a word
+    *Updated*. `english` is part of the uid (PIPE-03), so a new English
+    meaning arrives as a new word and only `bangla` can differ in place; it is
+    in here so the digest is the meanings, whatever the uid is made of.
+    """
+    joined = "\u001e".join(part or "" for part in (word.english, word.bangla))
+    return hashlib.sha1(joined.encode("utf-8")).hexdigest()[:16]
+
+
 def _grammar_digest(row) -> str:
     """What "changed" means for one grammar topic.
 
@@ -109,6 +122,9 @@ def build_manifest(inputs, splits) -> dict:
             split.second: split.boundary_week for split in splits.values()
         },
         "words": {word.uid: _word_digest(word) for word in inputs.words},
+        # Beside `words` rather than instead of it: Today's card counts every
+        # change, the *Updated* chip only these.
+        "meanings": {word.uid: _meaning_digest(word) for word in inputs.words},
         "grammar": {row.uid: _grammar_digest(row) for row in inputs.grammar},
     }
 
@@ -138,6 +154,8 @@ class ContentDiff:
     added: list[str]
     removed: list[str]
     changed: list[str]
+    #: The changed words whose meaning moved: BR-CONTENT-02's chip.
+    meaning: list[str]
     grammar_added: list[str]
     grammar_removed: list[str]
     grammar_changed: list[str]
@@ -194,12 +212,16 @@ def diff(previous: dict, current: dict) -> ContentDiff:
             )
 
     words = _compare(previous.get("words", {}), current.get("words", {}))
+    # A previous manifest from before `meanings` compares nothing: no chip,
+    # rather than a false one.
+    meanings = _compare(previous.get("meanings", {}), current.get("meanings", {}))
     grammar = _compare(previous.get("grammar", {}), current.get("grammar", {}))
 
     return ContentDiff(
         added=words[0],
         removed=words[1],
         changed=words[2],
+        meaning=meanings[2],
         grammar_added=grammar[0],
         grammar_removed=grammar[1],
         grammar_changed=grammar[2],
@@ -258,6 +280,7 @@ def main(argv: list[str] | None = None) -> int:
                     "added": result.added,
                     "removed": result.removed,
                     "changed": result.changed,
+                    "meaning": result.meaning,
                     "grammar_added": result.grammar_added,
                     "grammar_removed": result.grammar_removed,
                     "grammar_changed": result.grammar_changed,

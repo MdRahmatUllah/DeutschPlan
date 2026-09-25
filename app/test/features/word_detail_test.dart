@@ -193,6 +193,44 @@ void main() {
       expect(find.text(l10n.wordStatusDone), findsOneWidget);
     });
 
+    testWidgets('BR-CONTENT-02 a meaning updated this week wears the Updated '
+        'chip beside the status, read as "Meaning updated"', (tester) async {
+      final semantics = tester.ensureSemantics();
+      await pump(
+        tester,
+        extra: <Override>[
+          recentlyUpdatedProvider.overrideWith(
+            (ref) async => <String>{'uid-strasse'},
+          ),
+        ],
+      );
+      expect(find.text(l10n.wordUpdated), findsOneWidget);
+      // Read as "Meaning updated", once: W1's header merges its texts into
+      // one node (checked with a semantics dump), and the chip's label is in it.
+      final label = tester.getSemantics(find.byType(UpdatedChip)).label;
+      expect(l10n.wordUpdatedSemantic.allMatches(label), hasLength(1));
+      semantics.dispose();
+      expect(
+        tester.getTopLeft(find.text(l10n.wordUpdated)).dx,
+        greaterThan(tester.getTopLeft(find.text(l10n.wordStatusDone)).dx),
+      );
+    });
+
+    testWidgets('BR-CONTENT-02 and no chip for a word the update left alone', (
+      tester,
+    ) async {
+      await pump(
+        tester,
+        extra: <Override>[
+          recentlyUpdatedProvider.overrideWith(
+            (ref) async => <String>{'uid-other'},
+          ),
+        ],
+      );
+      expect(find.text(l10n.wordStatusDone), findsOneWidget);
+      expect(find.text(l10n.wordUpdated), findsNothing);
+    });
+
     testWidgets('the caption, and the meanings in both languages', (
       tester,
     ) async {

@@ -302,6 +302,8 @@
   "wordStatusLearning": "শিখছি",
   "wordStatusDone": "শেখা হয়েছে",
   "wordStatusSuspended": "স্থগিত",
+  "wordUpdated": "হালনাগাদ",
+  "wordUpdatedSemantic": "অর্থ হালনাগাদ হয়েছে",
   "wordPronounce": "{word} উচ্চারণ শুনুন",
   "wordExamples": "উদাহরণ",
   "wordCompare": "সমার্থক শব্দগুলো তুলনা করুন ({set})",

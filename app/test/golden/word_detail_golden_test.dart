@@ -37,6 +37,19 @@ void main() {
     builder: (_) => const _Opener(),
   );
 
+  // BR-CONTENT-02: a meaning a course update changed this week.
+  goldenTest(
+    'word_detail_updated',
+    devices: <GoldenDevice>[GoldenDevice.phone],
+    overrides: <Override>[
+      ...overrides(),
+      recentlyUpdatedProvider.overrideWith(
+        (ref) async => <String>{'uid-strasse'},
+      ),
+    ],
+    builder: (_) => const _Opener(),
+  );
+
   goldenTest(
     'word_detail_page',
     devices: <GoldenDevice>[GoldenDevice.phone],

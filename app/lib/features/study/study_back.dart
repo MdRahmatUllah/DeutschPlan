@@ -1,3 +1,4 @@
+import 'package:deutschplan/core/components/dp_chip.dart';
 import 'package:deutschplan/core/components/dp_feedback.dart';
 import 'package:deutschplan/core/providers/app_providers.dart';
 import 'package:deutschplan/core/theme/dp_tokens.dart';
@@ -72,6 +73,7 @@ class StudyBack extends StatelessWidget {
     required this.onPlay,
     super.key,
     this.extras,
+    this.updated = false,
   });
 
   final Word word;
@@ -82,6 +84,10 @@ class StudyBack extends StatelessWidget {
 
   /// Plays an example sentence.
   final ValueChanged<String> onPlay;
+
+  /// BR-CONTENT-02: a course update changed the meaning in the last 7 days,
+  /// so the [UpdatedChip] sits over it.
+  final bool updated;
 
   @override
   Widget build(BuildContext context) {
@@ -103,6 +109,13 @@ class StudyBack extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 14),
+        if (updated) ...<Widget>[
+          const Align(
+            alignment: AlignmentDirectional.centerStart,
+            child: UpdatedChip(),
+          ),
+          const SizedBox(height: 8),
+        ],
         if (english != null)
           DpText(english, role: DpTextRole.bodyLarge, weight: 500),
         if (english != null && bangla != null) const SizedBox(height: 2),
@@ -142,6 +155,23 @@ class StudyBack extends StatelessWidget {
           ),
         ],
       ],
+    );
+  }
+}
+
+/// BR-CONTENT-02's chip on a meaning a course update changed in the last
+/// 7 days: the status chip's look, without a dot. T2's back and W1's header.
+class UpdatedChip extends StatelessWidget {
+  const UpdatedChip({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    return DpChip(
+      label: l10n.wordUpdated,
+      kind: DpChipKind.status,
+      // "Updated" alone, read next to "Done", could be the word's status.
+      semanticLabel: l10n.wordUpdatedSemantic,
     );
   }
 }
