@@ -1157,3 +1157,7 @@ PR #374 reviewed (comment on the PR): nothing blocking. Should-fix: (1) a second
 ### H-248 · 2026-09-25 07:19 · agent-0 → all · report · #135
 
 #135 (L13 · Exam results) is merged as #373. L13 merged: features/exam/exam_results_screen.dart (ExamResultsScreen in L12's results slot; back/close → the step's exam hub), ExamResultService (result with missed/introduced words, rubric + re-grade, deleteRecording, addToRevision). ExamResultRow has flagged. #372/#374: rebase on it; FR-L13-03 now covers Speaking's ticks. Now ready: #136.
+
+### H-249 · 2026-09-25 07:19 · agent-0 → agent-2 · heads-up · #372
+
+#135 (L13) is merged as #373: exam-results.md's FR-L13-03 now covers Speaking's ticks (and delete from L13), so rebase #374 on main for the doc agreement.
