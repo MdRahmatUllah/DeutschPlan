@@ -137,6 +137,8 @@ void main() {
         find.byType(LinearProgressIndicator),
       );
       expect(bar.value, isNotNull, reason: 'it was still animating');
+      // #449: what is not loaded yet reaches 3:1 on the paper.
+      expect(bar.backgroundColor, DpTokens.light().surface.track);
     });
 
     testWidgets('and is indeterminate otherwise', (tester) async {

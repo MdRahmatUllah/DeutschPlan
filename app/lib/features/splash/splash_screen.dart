@@ -309,7 +309,8 @@ class _ProgressRule extends StatelessWidget {
         borderRadius: BorderRadius.circular(2),
         child: LinearProgressIndicator(
           value: still ? restingValue : null,
-          backgroundColor: tokens.color.ink.withValues(alpha: 0.2),
+          // What is not done yet reaches 3:1 on the paper (#437, #449).
+          backgroundColor: tokens.surface.track,
           valueColor: AlwaysStoppedAnimation<Color>(tokens.color.ink),
           minHeight: _SplashMetrics.ruleHeight,
         ),

@@ -213,6 +213,13 @@ class StepHeader extends StatelessWidget {
                 done: step.done,
                 learning: step.learning,
                 todo: step.todo,
+                // L1's course bar on Sun (#449): the artboard's Lime Done and
+                // Sun Learning vanish on a Sun field (Learning is Sun).
+                colours: (
+                  done: ink,
+                  learning: tokens.color.onAccentMark,
+                  todo: tokens.color.onAccentTrack,
+                ),
               ),
               const SizedBox(height: 8),
               DpText(

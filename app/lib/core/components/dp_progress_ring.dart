@@ -208,8 +208,10 @@ class DpSegmentedBar extends StatelessWidget {
   final double height;
   final String? semanticLabel;
 
-  /// Done, Learning and To do on a coloured field, where Lime, Sun and Oat
-  /// would not read: L1's course bar on its Sun header.
+  /// Done, Learning and To do on a coloured field, where Lime, Sun and the
+  /// track would not read: the bars on a Sun field (L1's course bar, L2's step
+  /// bar and exams card) take Sun's ink, `onAccentMark` and `onAccentTrack`
+  /// (#449).
   final ({Color done, Color learning, Color todo})? colours;
 
   /// A segment never disappears entirely — one learned word out of five hundred

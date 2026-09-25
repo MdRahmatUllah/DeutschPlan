@@ -5,8 +5,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 
 /// #163 · WCAG 2.2 AA over the token combinations the app draws: text at
-/// 4.5:1 and, since #437, the progress track at 3:1 (1.4.11, non-text), in
-/// Light, Dark and both Glass variants. Glass is checked on a
+/// 4.5:1 and, since #437, the progress track at 3:1 (1.4.11, non-text; on Sun
+/// since #449), in Light, Dark and both Glass variants. Glass is checked on a
 /// card over each aurora blob at its peak opacity — theming.md: "against the
 /// brightest blob it can overlay" — so a failure is fixed in the tokens, never
 /// per screen.
@@ -156,6 +156,37 @@ void main() {
         ]) {
           final r = ratio(Color.alphaBlend(s.track, g), g);
           if (r < 3) failures.add('track on $ground: ${r.toStringAsFixed(2)}');
+        }
+      }
+      expect(failures, isEmpty);
+    });
+
+    test("#449 $name: WCAG 1.4.11 on a Sun field (L1's course bar, L2's step "
+        "bar and exams card): its track, Sun's ink for Done, and the Learning mark "
+        'apart from the track', () {
+      // Solid Sun on paper and dark; under glass DpSurface's 22 % Sun wash
+      // over the backdrop, with the page's ink on it.
+      final failures = <String>[];
+      final sunInk = t.isGlass ? c.ink : c.onAccent;
+      final wheres = <String, Color>{
+        ...backdrops,
+        if (t.isGlass) 'the backdrop between blobs': s.paper,
+      };
+      for (final MapEntry(key: where, value: backdrop) in wheres.entries) {
+        final sun = t.isGlass
+            ? Color.alphaBlend(c.accent.withValues(alpha: 0.22), backdrop)
+            : c.accent;
+        final track = Color.alphaBlend(c.onAccentTrack, sun);
+        for (final (part, colour, ground) in <(String, Color, Color)>[
+          ('onAccentTrack on Sun', track, sun),
+          ("Sun's ink on Sun", sunInk, sun),
+          // Learning sits between Done and the track: it must not be either.
+          ('onAccentMark on the track', c.onAccentMark, track),
+        ]) {
+          final r = ratio(colour, ground);
+          if (r < 3) {
+            failures.add('$part over $where: ${r.toStringAsFixed(2)}');
+          }
         }
       }
       expect(failures, isEmpty);

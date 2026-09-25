@@ -273,10 +273,8 @@ class LearnHeader extends StatelessWidget {
             todo: sum((step) => step.todo),
             colours: (
               done: ink,
-              learning: tokens.isGlass
-                  ? ink.withValues(alpha: 0.5)
-                  : tokens.color.onAccentMark,
-              todo: ink.withValues(alpha: tokens.isGlass ? 0.16 : 0.18),
+              learning: tokens.color.onAccentMark,
+              todo: tokens.color.onAccentTrack,
             ),
           ),
         ],
