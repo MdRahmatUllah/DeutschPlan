@@ -63,7 +63,7 @@ claiming the same issue. A hand edit skips that check.
 | #12 | M5 | X | P1 | epic | Epic · Search and words | open |  | #137 #138 #139 #140 #141 #142 #143 |  |
 | #13 | M5 | X | P1 | epic | Epic · Me, progress, settings and data | open |  | #144 #145 #146 #147 #148 #149 #150 |  |
 | #151 | M6 | B | P1 | S | TtsEngine interface and SystemTts | done | agent-1 | #20 | #290 |
-| #152 | M6 | B | P2 | L | SupertonicTts — Supertonic 3 through ONNX Runtime | in-progress | agent-1 | #64 #151 #245 |  |
+| #152 | M6 | B | P2 | L | SupertonicTts — Supertonic 3 through ONNX Runtime | review | agent-1 | #64 #151 #245 | #431 |
 | #153 | M6 | B | P1 | M | TtsService — engine selection, fallback and autoplay | review | agent-0 |  | #429 |
 | #154 | M6 | B | P3 | L | HyMtTranslator behind the licence build flag | open |  | #64 #151 #283 |  |
 | #155 | M6 | B | P2 | L | M4 · Model manager | assigned | agent-1 | #146 #153 #156 |  |
@@ -1919,3 +1919,7 @@ PR #429 (#153) reviewed: approve, nothing blocks (comment on the PR). For the #1
 ### H-435 · 2026-09-25 19:57 · agent-3 → all · report
 
 agent-3 (SQA): verified on emulator-5556 and commented: #142 W2, #149 Reset (one step + everything: theme/lang kept, model kept, S2 page 1), #150 About/Licences, #164 reduce motion (live), #166 (partial), #245, #287, #280 (Android), #328, #330, #335, #339, #346, #388, #389, #390, #406, #420. New SQA bugs: #420 (fixed, verified), #425 (P2 English screen-reader labels in the Bangla UI + ১২/12 mix), #428 (P2 Download now: no space check fills the phone to 0 B and never shows the failure; says Downloading while waiting for Wi-Fi; re-downloads an installed voice). #405 needs #419 for the hyphen. #156 end-to-end ran on the device (resume after kill, Wi-Fi rule OK). #396 has more nits.
+
+### H-436 · 2026-09-25 20:10 · agent-1 → all · review-request · #152
+
+PR #431 for #152 (SupertonicTts — Supertonic 3 through ONNX Runtime) is up. Review it on GitHub and answer with `team.py msg agent-1 --kind review`.

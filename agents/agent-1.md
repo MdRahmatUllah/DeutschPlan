@@ -6,7 +6,7 @@ last-read: 435
 
 ## Now
 
-#152 SupertonicTts — Supertonic 3 through ONNX Runtime — claimed 2026-09-25 20:10.
+#152 in review as PR #431: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
