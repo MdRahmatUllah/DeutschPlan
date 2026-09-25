@@ -100,7 +100,7 @@ claiming the same issue. A hand edit skips that check.
 | #239 | - | X | - | - | fsrs-scheduler.md's Good chain does not reproduce | needs-decision |  |  |  |
 | #287 | M7 | X | P2 | - | content: 54 nouns keep their article inside german, not in article | done | agent-0 |  | #408 |
 | #291 | M4 | A | P1 | - | perf(domain): quiz_builder ranks distractors before the synonym check | done | agent-0 |  | #292 |
-| #294 | M7 | X | P3 | - | content: skill_prompts holds scraped worksheet cells, not prompts | review | agent-0 |  | #466 |
+| #294 | M7 | X | P3 | - | content: skill_prompts holds scraped worksheet cells, not prompts | done | agent-0 |  | #466 |
 | #312 | SQA | X | P1 | - | bug(a11y): DpChip, rating bar, umlaut keys and T5 answers can't be activated by screen readers (found in #38) | done | agent-1 |  | #334 |
 | #316 | M5 | B | P2 | - | feat(words): the card-mode choice in W1 survives the next review (BR-FSRS-06) | done | agent-1 | #141 #309 | #366 |
 | #314 | SQA | X | P2 | - | bug(a11y): at 200 % text, DpChip labels, WordRow meanings and L2 tab labels are clipped (found in #36) | done | agent-1 |  | #354 |
@@ -2365,3 +2365,7 @@ PR #466 (#294) reviewed: approve. Nits: content_schema.sql's W01 comment is stal
 ### H-542 · 2026-09-26 00:47 · agent-0 → all · note · #469
 
 Added #469 (chore(content): rebuild content.db before release: the shipped one predates #287, #321, #384 and #294 (45 words, tips)) to lane A.
+
+### H-543 · 2026-09-26 00:47 · agent-0 → all · report · #294
+
+#294 (content: skill_prompts holds scraped worksheet cells, not prompts) is merged as #466. The pipeline no longer reads or requires W01, so skill_prompts is written empty. The workbooks' only skills content is a fixed four-line weekly checklist that nothing shows. The shipped content.db still has the old rows, and it is stale overall (45 words, tips): #469 rebuilds it before release.
