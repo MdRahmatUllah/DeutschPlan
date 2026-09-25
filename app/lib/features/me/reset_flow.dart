@@ -67,16 +67,14 @@ Future<void> _resetStep(BuildContext context, WidgetRef ref) async {
     destructive: true,
   );
   if (sure != true || !context.mounted) return;
+  final List<int> exams;
   try {
-    final exams = await reset.resetStep(
-      step.code,
-      today: ref.read(todayProvider),
-    );
-    await ref.read(modelRepositoryProvider).deleteRecordings(exams);
+    exams = await reset.resetStep(step.code, today: ref.read(todayProvider));
   } on Object {
     if (context.mounted) DpToast.show(context, l10n.resetFailed);
     return;
   }
+  await _dropRecordings(ref, exams);
   // The plan engine and Today's plan were read before: the streams follow
   // drift, these don't.
   ref
@@ -100,11 +98,11 @@ Future<void> _resetEverything(BuildContext context, WidgetRef ref) async {
   if (sure != true || !context.mounted) return;
   try {
     await ref.read(resetRepositoryProvider).resetEverything();
-    await ref.read(modelRepositoryProvider).deleteRecordings();
   } on Object {
     if (context.mounted) DpToast.show(context, l10n.resetFailed);
     return;
   }
+  await _dropRecordings(ref);
   // What is kept alive and read before: a setup draft, a session, the plan.
   ref
     ..invalidate(planEngineProvider)
@@ -250,5 +248,19 @@ class _StepSheet extends StatelessWidget {
           ),
       ],
     );
+  }
+}
+
+/// The recordings go after the data, and best effort: the data is reset
+/// either way, so a file the system holds must not report "nothing was
+/// changed" nor stop the rest (#402's review).
+///
+/// ponytail: a leftover recording is a few hundred KB, cleared by the next
+/// reset or an uninstall; a sweep at start if they ever pile up.
+Future<void> _dropRecordings(WidgetRef ref, [List<int>? exams]) async {
+  try {
+    await ref.read(modelRepositoryProvider).deleteRecordings(exams);
+  } on Object catch (error) {
+    debugPrint('reset: recordings not deleted: $error');
   }
 }

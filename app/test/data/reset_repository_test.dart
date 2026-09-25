@@ -171,10 +171,80 @@ void main() {
     expect(await count("enrollments WHERE sublevel_code = 'A1.1'"), 1);
   });
 
+  test(
+    'FR-M7-01 the only step, finished, starts over rather than goes',
+    () async {
+      // Auto-advance off: A1.1 finished and nothing after it. Its row going
+      // would leave Today no way on, and onboarding at the next start.
+      await db.customStatement(
+        "DELETE FROM enrollments WHERE sublevel_code = 'A1.2'",
+      );
+      await reset.resetStep('A1.1', today: today);
+
+      expect(
+        await count(
+          "enrollments WHERE sublevel_code = 'A1.1' AND started_on = '$today' "
+          'AND completed_on IS NULL',
+        ),
+        1,
+      );
+      expect(
+        planDate(settings.read(SettingKeys.lastPlannedDate)!),
+        '2026-09-24',
+        reason: 'planned anew, as the current step',
+      );
+    },
+  );
+
+  test('FR-M7-01 a step reset empties the undo stack', () async {
+    await db.customStatement(
+      'INSERT INTO undo_stack (created_at, payload_json) '
+      "VALUES ('2026-09-20T08:00:00Z', '{}')",
+    );
+    await reset.resetStep('A1.1', today: today);
+    expect(await count('undo_stack'), 0);
+  });
+
   test('FR-M7-02 everything goes but the theme and the language', () async {
     await settings.write(SettingKeys.themeMode, ThemeModeSetting.dark);
     await settings.write(SettingKeys.uiLanguage, UiLanguage.bangla);
     await settings.write(SettingKeys.dailyNew, 12);
+
+    // A row in every table the fixture leaves empty, so "empty" proves it
+    // went: "my words" above all, which the dialog promises.
+    await db.customStatement(
+      'INSERT INTO quiz_answers (attempt_id, ord, word_uid, prompt, expected) '
+      "VALUES (1, 1, 'x', 'Haus', 'house')",
+    );
+    await db.customStatement(
+      'INSERT INTO custom_words (created_at, german, meaning) '
+      "VALUES ('2026-09-20T08:00:00Z', 'Pfandflasche', 'deposit bottle')",
+    );
+    await db.customStatement(
+      "INSERT INTO daily_stats (day, new_done) VALUES ('2026-09-20', 3)",
+    );
+    await db.customStatement(
+      "INSERT INTO content_updates (version) VALUES ('202609251045')",
+    );
+    await db.customStatement(
+      'INSERT INTO translation_cache '
+      '(src_lang, tgt_lang, src_text, model, result, created_at) '
+      "VALUES ('de', 'en', 'Haus', 'm', 'house', '2026-09-20T08:00:00Z')",
+    );
+    await db.customStatement(
+      'INSERT INTO undo_stack (created_at, payload_json) '
+      "VALUES ('2026-09-20T08:00:00Z', '{}')",
+    );
+    for (final table in <String>[
+      'quiz_answers',
+      'custom_words',
+      'daily_stats',
+      'content_updates',
+      'translation_cache',
+      'undo_stack',
+    ]) {
+      expect(await count(table), 1, reason: 'seeded: $table');
+    }
 
     await reset.resetEverything();
 

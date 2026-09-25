@@ -55,7 +55,7 @@ ORDER BY l.ord, s.ord
     const words = 'SELECT uid FROM words WHERE sublevel_code = ?1';
     const topics = 'SELECT uid FROM grammar_topics WHERE sublevel_code = ?1';
     late final List<int> exams;
-    late final bool current;
+    var current = false;
     await _db.transaction(() async {
       for (final table in <String>[
         'word_state',
@@ -103,27 +103,43 @@ ORDER BY l.ord, s.ord
                   )
                   .get())
               .isNotEmpty;
-      if (current) {
-        await _db.customStatement(
-          'UPDATE enrollments SET started_on = ?2 WHERE sublevel_code = ?1',
-          <Object>[step, today],
-        );
-      } else {
+      // A finished step goes, unless it is the only one: then it starts
+      // over, or the learner would be left with no step at all — Today with
+      // no way on, and onboarding at the next start (#402's review).
+      if (!current &&
+          (await _db
+                  .customSelect(
+                    'SELECT 1 FROM enrollments WHERE sublevel_code <> ?1 '
+                    'LIMIT 1',
+                    variables: <Variable<Object>>[Variable<String>(step)],
+                  )
+                  .get())
+              .isNotEmpty) {
         await _db.customStatement(
           'DELETE FROM enrollments WHERE sublevel_code = ?1',
           <Object>[step],
         );
+      } else {
+        await _db.customStatement(
+          'UPDATE enrollments SET started_on = ?2, completed_on = NULL '
+          'WHERE sublevel_code = ?1',
+          <Object>[step, today],
+        );
+        current = true;
+      }
+      // An undo would bring back a reset word's old state.
+      await _db.customStatement('DELETE FROM undo_stack');
+      // Today was planned with the step's words, which are gone: plan it
+      // again, from the step started over (BR-PLAN-08's record is written
+      // anew). In the transaction, as the rest.
+      final last = _settings.read(SettingKeys.lastPlannedDate);
+      if (current && last != null && planDate(last).compareTo(today) >= 0) {
+        await _settings.write(
+          SettingKeys.lastPlannedDate,
+          parsePlanDate(addDays(today, -1)),
+        );
       }
     });
-    // Today was planned with the step's words, which are gone: plan it again,
-    // from the step started over (BR-PLAN-08's record is written anew).
-    final last = _settings.read(SettingKeys.lastPlannedDate);
-    if (current && last != null && planDate(last).compareTo(today) >= 0) {
-      await _settings.write(
-        SettingKeys.lastPlannedDate,
-        parsePlanDate(addDays(today, -1)),
-      );
-    }
     _db.markTablesUpdated(_db.allTables.toSet());
     return exams;
   }

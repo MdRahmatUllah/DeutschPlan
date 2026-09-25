@@ -25,9 +25,14 @@ import '../db/content_fixture.dart';
 class _Recordings extends Fake implements ModelRepository {
   final List<Iterable<int>?> deleted = <Iterable<int>?>[];
 
+  /// A file the system holds: the delete throws.
+  bool held = false;
+
   @override
-  Future<void> deleteRecordings([Iterable<int>? attempts]) async =>
-      deleted.add(attempts);
+  Future<void> deleteRecordings([Iterable<int>? attempts]) async {
+    if (held) throw const FileSystemException('held');
+    deleted.add(attempts);
+  }
 }
 
 /// M7 · Reset — #149 (`reset.md`, the ResetDialog artboard).
@@ -209,5 +214,19 @@ void main() {
     expect(find.text(l10n.resetStepDone('A1.1')), findsOneWidget);
     expect(find.byType(SettingsScreen), findsOneWidget);
     expect(went, isEmpty);
+  });
+
+  testWidgets('FR-M7-01 a recording that will not go does not undo the reset: '
+      'done, not "nothing was changed"', (tester) async {
+    await pump(tester);
+    recordings.held = true;
+    await tap(tester, l10n.settingsReset);
+    await tap(tester, l10n.resetOneStep);
+    await tap(tester, 'A1.1');
+    await tap(tester, l10n.resetStepConfirm);
+
+    expect(await count('word_state'), 0);
+    expect(find.text(l10n.resetStepDone('A1.1')), findsOneWidget);
+    expect(find.text(l10n.resetFailed), findsNothing);
   });
 }
