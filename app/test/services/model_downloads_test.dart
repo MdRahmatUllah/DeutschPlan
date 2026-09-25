@@ -313,6 +313,110 @@ void main() {
     });
   });
 
+  group('#455 FR-M4-01 losing Wi-Fi mid-download, with Wi-Fi only on', () {
+    late List<DownloadProgress> seen;
+    const grace = Duration(milliseconds: 20);
+
+    /// Past the moment a stop read on Wi-Fi waits for the reading.
+    Future<void> graceOver() async {
+      await Future<void>.delayed(grace * 3);
+      await pumpEventQueue();
+    }
+
+    setUp(() async {
+      downloads = BackgroundModelDownloads(
+        models,
+        settings,
+        downloader,
+        _Storage(free: 1 << 30),
+        grace,
+      );
+      seen = <DownloadProgress>[];
+      final sub = downloads.watch('hymt').listen(seen.add);
+      addTearDown(sub.cancel);
+      await downloads.attach();
+      downloader.isWiFi = true;
+      await downloads.start('hymt');
+      await report((t) => TaskStatusUpdate(t, TaskStatus.running), 'one.gguf');
+      await report((t) => TaskProgressUpdate(t, 0.5), 'one.gguf');
+      await report((t) => TaskStatusUpdate(t, TaskStatus.running), 'two.gguf');
+      downloader.calls.clear();
+    });
+
+    test('the file the system stopped comes back canceled: waiting for '
+        'Wi-Fi, not failed, with nothing cancelled and nothing lost', () async {
+      downloader.isWiFi = false;
+      await report((t) => TaskStatusUpdate(t, TaskStatus.canceled), 'one.gguf');
+      // The other file still runs until its own stop comes.
+      expect(seen.last.phase, DownloadPhase.running);
+      expect(downloader.calls, isEmpty, reason: 'nothing is cancelled');
+      await report((t) => TaskStatusUpdate(t, TaskStatus.canceled), 'two.gguf');
+      // 150 of 400 bytes, as before the drop.
+      expect(seen.last, (
+        phase: DownloadPhase.waitingForWifi,
+        progress: 150 / 400,
+      ));
+      expect(downloader.calls, isEmpty);
+    });
+
+    test('the stop can come before the downloader hears Wi-Fi go: it is '
+        'given a moment to, and waits', () async {
+      await report((t) => TaskStatusUpdate(t, TaskStatus.canceled), 'one.gguf');
+      downloader.isWiFi = false;
+      await graceOver();
+      await report((t) => TaskStatusUpdate(t, TaskStatus.canceled), 'two.gguf');
+      expect(seen.last.phase, DownloadPhase.waitingForWifi);
+      expect(downloader.calls, isEmpty);
+    });
+
+    test("a newer word on the file while its stop waits stands", () async {
+      await report((t) => TaskStatusUpdate(t, TaskStatus.canceled), 'one.gguf');
+      await report((t) => TaskProgressUpdate(t, 0.6), 'one.gguf');
+      await graceOver();
+      expect(seen.last, (phase: DownloadPhase.running, progress: 180 / 400));
+      expect(downloader.calls, isEmpty);
+    });
+
+    test('back on Wi-Fi, the platform runs it again: downloading', () async {
+      downloader.isWiFi = false;
+      await report((t) => TaskStatusUpdate(t, TaskStatus.canceled), 'one.gguf');
+      downloader.isWiFi = true;
+      await report((t) => TaskStatusUpdate(t, TaskStatus.running), 'one.gguf');
+      await report((t) => TaskProgressUpdate(t, 0.6), 'one.gguf');
+      expect(seen.last, (phase: DownloadPhase.running, progress: 180 / 400));
+    });
+
+    test('the failed attempt\'s own cancels, late and off Wi-Fi, change '
+        'nothing: its failed file holds it failed', () async {
+      await report((t) => TaskStatusUpdate(t, TaskStatus.failed), 'two.gguf');
+      expect(downloader.calls, <String>['cancel hymt']);
+      downloader.isWiFi = false;
+      await report((t) => TaskStatusUpdate(t, TaskStatus.canceled), 'one.gguf');
+      expect(seen.last.phase, DownloadPhase.failed);
+      expect(downloader.calls, <String>['cancel hymt']);
+    });
+
+    test('on Wi-Fi, a cancel no one here asked for (the notification\'s '
+        '*Cancel*) is not a stop: failed, *Retry*', () async {
+      await report((t) => TaskStatusUpdate(t, TaskStatus.canceled), 'one.gguf');
+      await graceOver();
+      expect(seen.last.phase, DownloadPhase.failed);
+    });
+
+    test(
+      'with Wi-Fi only off, a cancel no one here asked for fails at once',
+      () async {
+        await settings.write(SettingKeys.modelsWifiOnly, false);
+        downloader.isWiFi = false;
+        await report(
+          (t) => TaskStatusUpdate(t, TaskStatus.canceled),
+          'one.gguf',
+        );
+        expect(seen.last.phase, DownloadPhase.failed);
+      },
+    );
+  });
+
   group('FR-M4-01 the card\'s progress', () {
     setUp(() async {
       await downloads.attach();

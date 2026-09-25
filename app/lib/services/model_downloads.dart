@@ -98,6 +98,7 @@ class BackgroundModelDownloads implements ModelDownloads {
     this._settings, [
     FileDownloader? downloader,
     DeviceStorage? storage,
+    this._wifiGrace = const Duration(seconds: 2),
   ]) : _downloader = downloader ?? FileDownloader(),
        _storage = storage ?? const PlatformDeviceStorage();
 
@@ -105,6 +106,13 @@ class BackgroundModelDownloads implements ModelDownloads {
   final SettingsRepository _settings;
   final FileDownloader _downloader;
   final DeviceStorage _storage;
+
+  /// How long a stop that comes before the downloader hears Wi-Fi go waits
+  /// for it to (#455).
+  // ponytail: 2 s. On the emulator the stop came a few milliseconds ahead of
+  // the downloader's reading; a stop still read on Wi-Fi after this is taken
+  // for the learner's *Cancel*, and fails.
+  final Duration _wifiGrace;
 
   /// Per model, per file: the current attempt's task, and the platform's last
   /// word on it. Forgotten once the model is verified, which is how *Retry*
@@ -357,10 +365,31 @@ class BackgroundModelDownloads implements ModelDownloads {
       ),
       _ => (status: was, done: sofar),
     };
+    // #455: with *Wi-Fi only* on, a file in flight as the phone leaves Wi-Fi
+    // is stopped by the system. It comes back canceled, though no one
+    // cancelled it (the downloader's word for a stop), and the platform runs
+    // it again once the phone is back on Wi-Fi: it is waiting, not failed.
+    // A cancel this code made needs no telling apart: a file of the model
+    // has failed for good by then, and holds it failed.
+    // ponytail: such a stop loses the file's partial bytes, so it starts
+    // again from nothing (background_downloader 9.6.x deletes its temp file
+    // on a stop; one drop in three on the emulator); a stop that comes back
+    // failed keeps them, and resumes. Keeping them always needs the
+    // downloader to keep the temp file on a stop.
+    var stopped = false;
+    if (status == TaskStatus.canceled &&
+        _settings.read(SettingKeys.modelsWifiOnly)) {
+      // The stop comes as the phone leaves Wi-Fi, and often before the
+      // downloader has heard that it has: its reading is given a moment.
+      if (!_offWifi) await Future<void>.delayed(_wifiGrace);
+      // A newer word on the file while it waited stands.
+      if (files[name] != before) return;
+      stopped = _offWifi;
+    }
     files[name] = (
       task: update.task.taskId,
       created: update.task.creationTime,
-      status: status,
+      status: stopped ? TaskStatus.enqueued : status,
       done: done,
     );
     await _settle(modelId);
