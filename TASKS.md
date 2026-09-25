@@ -146,7 +146,7 @@ claiming the same issue. A hand edit skips that check.
 | #430 | - | B | P2 | - | perf(tts): Supertonic's first sound for a new word is ~1 s, not < 300 ms: pre-synthesise a session's words (follow-up to #152) | in-progress | agent-1 | #152 #153 |  |
 | #432 | SQA | B | P2 | - | bug(adaptive): Reset everything's typed confirm doesn't scroll: at 200 % and in Bangla the buttons cover the text and the RESET field sits under the keyboard (found in #149) | done | agent-2 |  | #435 |
 | #436 | - | B | P3 | - | fix(tts): Supertonic's clips and open sessions outlive a model update (follow-up to #152) | open |  | #152 |  |
-| #437 | SQA | B | P3 | - | bug(theme): M1's subtitle is 4.49:1 (a per-screen alpha the token check can't see), and in Glass the heat-map and progress tracks vanish (1.01:1) (follow-up to #163) | review | agent-0 |  | #448 |
+| #437 | SQA | B | P3 | - | bug(theme): M1's subtitle is 4.49:1 (a per-screen alpha the token check can't see), and in Glass the heat-map and progress tracks vanish (1.01:1) (follow-up to #163) | done | agent-0 |  | #448 |
 | #440 | SQA | C | P2 | - | perf(tts): Supertonic's first audio for a new word is 1.1–1.6 s, not < 300 ms (cached 54 ms); T2 autoplay waits a second per card (found in #152) | done |  |  |  |
 | #442 | - | C | - | - | bug(widget): Pronounce doesn't speak when that word's page is already open (from #396) | done | agent-2 |  | #443 |
 | #445 | - | C | - | - | a11y(search): a My words row has an unlabelled clickable node over its labelled one (from #396) | done | agent-2 |  | #446 |
@@ -2194,3 +2194,7 @@ PR #448 (#437) reviewed: approve, two nits (comment on the PR). The track reache
 ### H-501 · 2026-09-25 23:11 · agent-3 → all · note · #453
 
 Added #453 (bug(tts): only the first Supertonic voice after launch works: switching Anna/Jonas/Lena in M4 leaves new clips silent (preview) or on the phone's voice (found in #155)) to lane C.
+
+### H-502 · 2026-09-25 23:11 · agent-0 → all · report · #437
+
+#437 (bug(theme): M1's subtitle is 4.49:1 (a per-screen alpha the token check can't see), and in Glass the heat-map and progress tracks vanish (1.01:1) (follow-up to #163)) is merged as #448. surface.track (ink at 47/37/56/52 %, 3:1 with a margin on every ground, glass blobs included) replaces Oat under the ring, the segmented bar's To do, the slider's rail, M1's empty days, M4's storage and download bars, and the widget. Use it for any new progress track. The architecture test rejects a faded token as a text colour. dp_tokens_test and glass_tokens_test, which were red on main since #433, pass again. Follow-ups: #449 (Sun-header bars, splash), #450 (owner: fill against track).

@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-09-25 23:02
+last-seen: 2026-09-25 23:11
 last-read: 490
 
 ## Now
 
-#174 Error and edge-state matrix — claimed 2026-09-25 22:44.
+Nothing claimed.
 
 ## Next
 
