@@ -451,7 +451,7 @@ class _Header extends ConsumerWidget {
               const SizedBox(width: 12),
               DpSpeakerButton(
                 semanticLabel: l10n.wordPronounce(spokenForm(word.word)),
-                state: speakerState(ref),
+                state: speakerState(ref, spokenForm(word.word)),
                 onPressed: () =>
                     unawaited(say(ref, context, spokenForm(word.word))),
                 onLongPress: () => unawaited(

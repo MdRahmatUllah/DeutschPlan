@@ -487,7 +487,7 @@ class _SentencePageState extends ConsumerState<_SentencePage> {
               DpSpeakerButton(
                 size: 72,
                 semanticLabel: l10n.studyPlaySentence,
-                state: speakerState(ref),
+                state: speakerState(ref, widget.item.sentence.german),
                 onPressed: _play,
                 onLongPress: () => _play(pace: 0.75),
               ),

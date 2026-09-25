@@ -79,7 +79,7 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code) VALUES
         overrides: <Override>[
           appDatabaseProvider.overrideWithValue(db),
           settingsProvider.overrideWithValue(settings),
-          ttsProvider.overrideWithValue(FakeTts()),
+          fakeVoice(FakeTts()),
           clockProvider.overrideWithValue(() => DateTime(2026, 9, 21, 9)),
         ],
         child: MaterialApp(

@@ -358,7 +358,7 @@ class _Question extends ConsumerWidget {
               DpSpeakerButton(
                 size: 48,
                 semanticLabel: l10n.placementPronounce,
-                state: speakerState(ref),
+                state: speakerState(ref, word.german),
                 onPressed: () => unawaited(say(ref, context, word.german)),
               ),
             ],

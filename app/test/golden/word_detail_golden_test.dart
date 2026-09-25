@@ -16,7 +16,7 @@ import 'golden_harness.dart';
 void main() {
   List<Override> overrides() => <Override>[
     ...wordStub(),
-    ttsProvider.overrideWithValue(FakeTts()),
+    fakeVoice(FakeTts()),
     // The artboards' Monday: "Next review in 8 days".
     todayProvider.overrideWithValue('2026-09-21'),
   ];

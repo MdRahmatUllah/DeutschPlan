@@ -219,7 +219,9 @@ class _StudyWordCardState extends ConsumerState<StudyWordCard> {
               const SizedBox(width: 12),
               DpSpeakerButton(
                 semanticLabel: l10n.studyPronounce,
-                state: _mute ? DpSpeakerState.unavailable : speakerState(ref),
+                state: _mute
+                    ? DpSpeakerState.unavailable
+                    : speakerState(ref, spokenForm(word)),
                 onPressed: () => unawaited(_speak()),
                 onLongPress: () => unawaited(_speak(pace: StudyWordCard.slow)),
               ),

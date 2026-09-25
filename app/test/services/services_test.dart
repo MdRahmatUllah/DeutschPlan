@@ -203,6 +203,20 @@ void main() {
       await engine.stop();
     });
 
+    test('V03 a stop that overtakes a speak still setting up the voice '
+        'keeps it silent (#153)', () async {
+      final tts = _FakeFlutterTts(available: true);
+      final engine = SystemTts(tts);
+      final spoke = engine.speak('Hallo');
+      await engine.stop();
+      expect(await spoke, isTrue, reason: 'stopped, not failed');
+      expect(tts.calls, isNot(contains('speak Hallo')));
+
+      expect(await engine.speak('Tschüss'), isTrue);
+      expect(tts.calls.last, 'speak Tschüss', reason: 'the next one speaks');
+      await engine.dispose();
+    });
+
     test('V01 state: playing while sound is out, idle when it ends, is '
         'cancelled, fails or is stopped', () async {
       final tts = _FakeFlutterTts(available: true);

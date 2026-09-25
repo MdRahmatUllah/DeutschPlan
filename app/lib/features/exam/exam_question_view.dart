@@ -116,7 +116,7 @@ class ExamQuestionView extends ConsumerWidget {
 
     Widget speaker(String word, {double size = 48}) => DpSpeakerButton(
       size: size,
-      state: speakerState(ref),
+      state: speakerState(ref, word),
       semanticLabel: l10n.quizPlay,
       onPressed: () => unawaited(say(ref, context, word)),
     );
@@ -145,7 +145,7 @@ class ExamQuestionView extends ConsumerWidget {
               children: <Widget>[
                 DpSpeakerButton(
                   size: 64,
-                  state: speakerState(ref),
+                  state: speakerState(ref, prompt),
                   semanticLabel: l10n.quizAskListening,
                   onPressed: plays >= examPlays
                       ? null

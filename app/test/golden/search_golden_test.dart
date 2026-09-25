@@ -1,4 +1,3 @@
-import 'package:deutschplan/core/providers/app_providers.dart';
 import 'package:deutschplan/data/repositories/search_repository.dart';
 import 'package:deutschplan/data/repositories/word_repository.dart';
 import 'package:deutschplan/features/search/search_screen.dart';
@@ -20,7 +19,7 @@ void main() {
       ),
       recentSearchesProvider.overrideWith(() => StubRecentSearches(const [])),
       myWordsProvider.overrideWith((ref) => Stream.value(const <MyWord>[])),
-      ttsProvider.overrideWithValue(FakeTts()),
+      fakeVoice(FakeTts()),
     ],
     builder: (_) => const SearchScreen(),
     act: (tester) async {
@@ -39,7 +38,7 @@ void main() {
         () => StubRecentSearches(artboardRecent),
       ),
       myWordsProvider.overrideWith((ref) => Stream.value(artboardMyWords())),
-      ttsProvider.overrideWithValue(FakeTts()),
+      fakeVoice(FakeTts()),
     ],
     builder: (_) => const SearchScreen(),
   );
@@ -57,7 +56,7 @@ void main() {
       courseWordsProvider.overrideWith((ref) async => 5594),
       recentSearchesProvider.overrideWith(() => StubRecentSearches(const [])),
       myWordsProvider.overrideWith((ref) => Stream.value(const <MyWord>[])),
-      ttsProvider.overrideWithValue(FakeTts()),
+      fakeVoice(FakeTts()),
     ],
     builder: (_) => const SearchScreen(),
     act: (tester) async {

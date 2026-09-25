@@ -76,7 +76,7 @@ void main() {
     builder: (context) => ProviderScope(
       overrides: [
         settingsProvider.overrideWithValue(settings),
-        ttsProvider.overrideWithValue(FakeTts()),
+        fakeVoice(FakeTts()),
         studySessionProvider(args).overrideWith(_Fourth.new),
         studyIntervalsProvider('r3').overrideWith(
           (ref) async => <Rating, int>{

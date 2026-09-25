@@ -78,7 +78,7 @@ void main() {
                 (code: code, levelCode: code.split('.').first, wordCount: 12),
             ],
           ),
-          ttsProvider.overrideWithValue(FakeTts(voice: voice)),
+          fakeVoice(FakeTts(voice: voice)),
           languagesProvider.overrideWith(() => _FixedLanguages(meaning)),
         ],
         child: MaterialApp(

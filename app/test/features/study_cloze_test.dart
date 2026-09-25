@@ -99,7 +99,7 @@ VALUES ('$strasse', 'learning', '2026-09-10', '2026-09-21', 4.5, 5.2, 2, 0,
         overrides: <Override>[
           appDatabaseProvider.overrideWithValue(db),
           settingsProvider.overrideWithValue(settings),
-          ttsProvider.overrideWithValue(FakeTts(voice: voice, spoken: spoken)),
+          fakeVoice(FakeTts(voice: voice, spoken: spoken)),
           clockProvider.overrideWithValue(() => DateTime(2026, 9, 21, 9)),
         ],
         child: MaterialApp(

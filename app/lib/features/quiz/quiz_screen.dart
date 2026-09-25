@@ -464,7 +464,7 @@ class _Feedback extends ConsumerWidget {
                   child: Center(
                     child: DpSpeakerButton(
                       size: 32,
-                      state: speakerState(ref),
+                      state: speakerState(ref, heard),
                       semanticLabel: l10n.quizPlay,
                       onPressed: () => unawaited(say(ref, context, heard)),
                     ),

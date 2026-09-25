@@ -5,8 +5,8 @@ enum TtsState { idle, loading, playing }
 /// Speech, behind the small interface `project-structure.md` asks for so a
 /// test can fake it: `tts.md`'s name, isAvailable, speak, stop and state.
 ///
-/// Every speaker but S2's preview reaches it through `ttsProvider`, where the
-/// phone's own voice sits until #153's `TtsService` chooses between engines.
+/// Every speaker but S2's preview reaches one through `ttsProvider`'s
+/// `TtsService`, which chooses between engines and falls back (#153).
 abstract interface class TtsEngine {
   /// The engine's `tts_engine` setting value: `system` or `supertonic`.
   String get name;
@@ -23,6 +23,9 @@ abstract interface class TtsEngine {
 
   Future<void> stop();
 
-  /// Each change of [TtsState]. Nothing is emitted until the engine is used.
+  /// Each change of [TtsState]: `playing` as sound starts, `idle` as it ends
+  /// or stops. Nothing is emitted until the engine is used. `TtsService`
+  /// drives the speakers from it; a [speak] that resolves true ends a loading
+  /// the engine never reported the end of.
   Stream<TtsState> get state;
 }

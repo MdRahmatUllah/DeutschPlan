@@ -240,6 +240,8 @@
   "studyCopied": "{word} কপি হয়েছে",
   "studyCopyHint": "শব্দটি কপি করুন",
   "speakerNoVoice": "এই ফোনে কোনো জার্মান ভয়েস নেই। ফোনের টেক্সট-টু-স্পিচ সেটিংসে একটি ইনস্টল করুন।",
+  "speakerFallback": "Supertonic প্রস্তুত নয়, তাই ফোনের কণ্ঠ বলছে।",
+  "speakerFallbackSettings": "সেটিংস",
   "studyTip": "⚠ {tip}",
   "studyCollocations": "⟶ {collocations}",
   "studyRegister": "≈ {register}",

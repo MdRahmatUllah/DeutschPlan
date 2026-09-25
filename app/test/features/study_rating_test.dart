@@ -73,7 +73,7 @@ VALUES ('$strasse', 'learning', '2026-09-10', '2026-09-21', 4.5, 5.2, 2, 0,
   List<Override> overrides() => <Override>[
     appDatabaseProvider.overrideWithValue(db),
     settingsProvider.overrideWithValue(settings),
-    ttsProvider.overrideWithValue(FakeTts()),
+    fakeVoice(FakeTts()),
     clockProvider.overrideWithValue(() => now),
   ];
 

@@ -72,7 +72,7 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code, skipped,
   List<Override> overrides() => <Override>[
     appDatabaseProvider.overrideWithValue(db),
     settingsProvider.overrideWithValue(settings),
-    ttsProvider.overrideWithValue(FakeTts(voice: voice, spoken: spoken)),
+    fakeVoice(FakeTts(voice: voice, spoken: spoken)),
     clockProvider.overrideWithValue(() => DateTime(2026, 9, 21, 9)),
   ];
 
