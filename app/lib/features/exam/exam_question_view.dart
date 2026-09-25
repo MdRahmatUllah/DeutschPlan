@@ -805,6 +805,7 @@ class _ExamSpeakingState extends ConsumerState<ExamSpeaking> {
     _heard = recorder.levels.listen((level) {
       if (mounted) setState(() => _levels.add(level));
     });
+    _finishing = null;
     widget.onRecording(_finish);
     _tick = Timer.periodic(const Duration(seconds: 1), (_) {
       if (!mounted) return;
@@ -814,7 +815,14 @@ class _ExamSpeakingState extends ConsumerState<ExamSpeaking> {
     });
   }
 
-  Future<void> _finish({bool mounted = true}) async {
+  /// The recording's stop, once it is asked for (#372): Stop, the level's
+  /// end, the runner's Submit and the 0:00 tick can meet, and it stops once.
+  Future<void>? _finishing;
+
+  Future<void> _finish({bool mounted = true}) =>
+      _finishing ??= _stop(mounted: mounted);
+
+  Future<void> _stop({required bool mounted}) async {
     final recorder = _recorder;
     _tick?.cancel();
     _tick = null;
@@ -822,8 +830,19 @@ class _ExamSpeakingState extends ConsumerState<ExamSpeaking> {
     // and the recording must stop now.
     unawaited(_heard?.cancel());
     _heard = null;
-    await recorder.stop();
-    widget.onRecording(null);
+    try {
+      await recorder.stop();
+    } on Object {
+      // A recorder that can't stop has kept nothing to hand in (#372): the
+      // take is lost, the task keeps what it had, and a submit goes on.
+      _path = widget.given;
+      if (mounted && this.mounted) {
+        setState(() => _mic = _path == null ? _Mic.idle : _Mic.recorded);
+      }
+      return;
+    } finally {
+      widget.onRecording(null);
+    }
     final path = _path;
     if (path != null) widget.onGiven(path);
     if (mounted && this.mounted) setState(() => _mic = _Mic.recorded);

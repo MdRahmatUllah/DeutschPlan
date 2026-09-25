@@ -210,8 +210,18 @@ class FakeRecorder implements ExamRecorder {
     await starting?.future;
   }
 
+  /// Holds `stop` open, as a recorder finishing its file would (#372).
+  Completer<void>? stopping;
+
+  /// Makes `stop` throw, as a recorder that fails would (#372).
+  bool stopFails = false;
+
   @override
-  Future<void> stop() async => stopped++;
+  Future<void> stop() async {
+    stopped++;
+    await stopping?.future;
+    if (stopFails) throw StateError('the recorder failed');
+  }
 
   @override
   Stream<double> get levels => heard.stream;

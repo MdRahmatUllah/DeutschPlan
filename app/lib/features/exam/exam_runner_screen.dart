@@ -160,7 +160,8 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
         _pausePending++;
       } else {
         _runPending++;
-        if (_timed) _left--;
+        // Held at 0:00 while a submit the learner started is still asking.
+        if (_timed && _left > 0) _left--;
       }
     });
     if (_runPending + _pausePending >= ExamRunnerScreen.flushEvery) {
@@ -322,9 +323,14 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
   Future<void> _submit({bool asked = false}) async {
     final paper = _paper;
     if (paper == null || _submitting || _done) return;
+    // #372: one at a time. A second tap, the 0:00 tick or Speaking's Stop
+    // while this one stops the recorder or asks is turned away; a submit the
+    // learner takes back lets the next one through.
+    _submitting = true;
     _saveTyped();
     // #372: a live recording is stopped and saved first, so the confirm
-    // counts it and the grading has it.
+    // counts it and the grading has it. It never throws: a recorder that
+    // fails loses the take (ExamSpeaking's `_stop`), not the exam.
     if (_stopRecording case final stop?) {
       await stop();
       if (!mounted) return;
@@ -345,9 +351,12 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
         confirmLabel: l10n.examRunSubmitConfirm,
         cancelLabel: l10n.examRunKeepAnswering,
       );
-      if (sure != true || !mounted) return;
+      if (!mounted) return;
+      if (sure != true) {
+        _submitting = false;
+        return;
+      }
     }
-    _submitting = true;
     _tick?.cancel();
     try {
       await _flush();
