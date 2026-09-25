@@ -1,3 +1,4 @@
+import 'package:deutschplan/core/adaptive/adaptive.dart';
 import 'package:deutschplan/core/providers/app_providers.dart';
 import 'package:deutschplan/core/theme/app_theme.dart';
 import 'package:deutschplan/core/theme/dp_tokens.dart';
@@ -102,6 +103,24 @@ void main() {
     dailyNew: 7,
     studyDaysMask: 127,
   );
+
+  testWidgets("#317 Me's Cobalt stays behind the status bar when scrolled", (
+    tester,
+  ) async {
+    await pump(tester);
+    final scaffold = tester.widget<AdaptiveScaffold>(
+      find
+          .descendant(
+            of: find.byType(MeScreen),
+            matching: find.byType(AdaptiveScaffold),
+          )
+          .first,
+    );
+    expect(
+      scaffold.statusBarColour,
+      tester.element(find.byType(MeScreen)).tokens.color.der,
+    );
+  });
 
   group('FR-M1-01 the words card', () {
     testWidgets('sums the whole course', (tester) async {

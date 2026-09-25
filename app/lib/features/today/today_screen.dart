@@ -108,6 +108,7 @@ class _TodayScreenState extends ConsumerState<TodayScreen> {
       backgroundColor: tokens.isGlass
           ? tokens.surface.paper.withValues(alpha: 0)
           : tokens.surface.paper,
+      statusBarColour: tokens.color.primary,
       body: tokens.isGlass
           ? AuroraBackdrop(leading: tokens.color.primary, child: body)
           : body,

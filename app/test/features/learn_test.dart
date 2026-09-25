@@ -1,3 +1,4 @@
+import 'package:deutschplan/core/theme/dp_tokens.dart';
 import 'package:deutschplan/core/components/dp_button.dart';
 import 'package:deutschplan/core/theme/app_theme.dart';
 import 'package:deutschplan/data/repositories/word_repository.dart';
@@ -205,6 +206,25 @@ void main() {
     final screen = tester.getRect(find.byType(LearnScreen));
     expect(tile.top, greaterThanOrEqualTo(screen.top));
     expect(tile.bottom, lessThanOrEqualTo(screen.bottom));
+  });
+
+  testWidgets('#317 scrolled to C2.2 on open, L1 keeps a Sun strip behind '
+      'the status bar', (tester) async {
+    tester.view.padding = const FakeViewPadding(top: 120);
+    addTearDown(tester.view.resetPadding);
+    await pump(
+      tester,
+      course: artboardCourse(active: 'C2.2'),
+      dayAfter: const Duration(milliseconds: 200),
+    );
+    final sun = tester.element(find.byType(LearnScreen)).tokens.color.accent;
+    final strip = find.byWidgetPredicate(
+      (w) => w is ColoredBox && w.color == sun,
+    );
+    expect(
+      tester.getRect(strip.last),
+      Rect.fromLTWH(0, 0, tester.getSize(find.byType(LearnScreen)).width, 40),
+    );
   });
 
   testWidgets('and one already on screen leaves the header in place', (

@@ -131,6 +131,7 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
       backgroundColor: tokens.isGlass
           ? tokens.surface.paper.withValues(alpha: 0)
           : tokens.surface.paper,
+      statusBarColour: tokens.color.accent,
       body: tokens.isGlass
           ? AuroraBackdrop(leading: tokens.color.accent, child: body)
           : body,
