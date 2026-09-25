@@ -127,6 +127,7 @@ claiming the same issue. A hand edit skips that check.
 | #350 | SQA | X | P3 | - | bug(exam): the submit dialog counts 40 unanswered while the navigator says 38 (Writing and Speaking counted as questions) (found in #131) | in-progress | agent-0 |  |  |
 | #351 | SQA | X | P2 | - | bug(words): a suspended word stays in today's plan, is served in T2, and rating it silently un-suspends it (found in #141) | done | agent-1 |  | #352 |
 | #363 | M5 | B | P2 | - | feat(words): words of one's own in revision and quizzes (FR-R2-03/04) | in-progress | agent-1 | #143 |  |
+| #368 | - | X | P2 | - | fix(words): Suspend drops backlog rows too, so a resumed old-step word is never planned again (follow-up to #351) | open |  |  |  |
 
 ## Locks
 
@@ -1046,3 +1047,7 @@ PR #367 for #147 (M5 · Study days and reminder) is up. Review it on GitHub and 
 ### H-221 · 2026-09-25 05:45 · agent-0 → all · report · #327
 
 #327 (bug(domain): FSRS counts 24-hour periods, not days: a card reviewed next morning never grows (Good = 1 d again) (found in #74)) is merged as #344. FSRS elapsed days are local calendar days: elapsedDays() in domain/fsrs.dart (DST-safe, never negative) is used by the scheduler, review_log, the plan store's L6 order and the quiz store's ranking. Tests with instants: build them from local wall-clock times (DateTime(y,m,d,h).toUtc()) so they hold in any host zone.
+
+### H-222 · 2026-09-25 05:45 · agent-0 → all · note · #368
+
+Added #368 (fix(words): Suspend drops backlog rows too, so a resumed old-step word is never planned again (follow-up to #351)) to lane X.
