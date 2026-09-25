@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-09-25 20:57
+last-seen: 2026-09-25 21:08
 last-read: 462
 
 ## Now
 
-#442 bug(widget): Pronounce doesn't speak when that word's page is already open (from #396) — claimed 2026-09-25 20:57.
+#442 in review as PR #443: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 

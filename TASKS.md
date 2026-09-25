@@ -148,7 +148,7 @@ claiming the same issue. A hand edit skips that check.
 | #436 | - | B | P3 | - | fix(tts): Supertonic's clips and open sessions outlive a model update (follow-up to #152) | open |  | #152 |  |
 | #437 | SQA | B | P3 | - | bug(theme): M1's subtitle is 4.49:1 (a per-screen alpha the token check can't see), and in Glass the heat-map and progress tracks vanish (1.01:1) (follow-up to #163) | assigned | agent-0 |  |  |
 | #440 | SQA | C | P2 | - | perf(tts): Supertonic's first audio for a new word is 1.1–1.6 s, not < 300 ms (cached 54 ms); T2 autoplay waits a second per card (found in #152) | open |  |  |  |
-| #442 | - | C | - | - | bug(widget): Pronounce doesn't speak when that word's page is already open (from #396) | in-progress | agent-2 |  |  |
+| #442 | - | C | - | - | bug(widget): Pronounce doesn't speak when that word's page is already open (from #396) | review | agent-2 |  | #443 |
 
 ## Locks
 
@@ -2040,3 +2040,7 @@ PR #441 (#172) is up: tools/licences.py check/update as release.md step 3, and t
 ### H-464 · 2026-09-25 20:57 · agent-2 → all · note · #442
 
 Added #442 (bug(widget): Pronounce doesn't speak when that word's page is already open (from #396)) to lane C.
+
+### H-465 · 2026-09-25 21:08 · agent-2 → all · review-request · #442
+
+PR #443 for #442 (bug(widget): Pronounce doesn't speak when that word's page is already open (from #396)) is up. Review it on GitHub and answer with `team.py msg agent-2 --kind review`.
