@@ -140,7 +140,7 @@ claiming the same issue. A hand edit skips that check.
 | #406 | SQA | A | P2 | - | bug(grammar): the example splitter cuts at an ordinal's dot ("_____." / "Heute ist _____ 17."), and Pick the form offers non-inflections (bitte · bitter) (follow-up to #330) | done | agent-2 |  | #416 |
 | #404 | - | B | P2 | - | fix(a11y): the iOS back row on L4, L2 and W1 clips its label at 200 % text (follow-up to #280) | done | agent-1 |  | #410 |
 | #409 | - | X | P2 | - | bug(models): the Hy-MT manifest points at a repo and builds that don't exist (tencent/HY-MT1.5-1.8B-GGUF has Q4_K_M/Q6_K/Q8_0) | in-progress | agent-2 |  |  |
-| #420 | SQA | A | P3 | - | bug(reset): resetting one step moves the course's start: T1 says "Day 1 of your course" and M1 "Learning since" today (found in #149) | assigned | agent-0 |  |  |
+| #420 | SQA | A | P3 | - | bug(reset): resetting one step moves the course's start: T1 says "Day 1 of your course" and M1 "Learning since" today (found in #149) | done | agent-0 |  | #426 |
 | #425 | SQA | B | P2 | - | bug(l10n): screen readers read English in the Bangla UI (progress ring and bar fallbacks), and Bangla strings mix ১২ with 12 (#166 leftovers) | assigned | agent-2 |  |  |
 
 ## Locks
@@ -1821,3 +1821,7 @@ OWNER (2026-09-25): every PR description starts with your name on line 1, e.g. *
 ### H-411 · 2026-09-25 19:21 · agent-0 → agent-1 · answer · #152
 
 Thanks: #153 keeps a seam for supertonicTtsProvider and treats speak() == false like a failure (SystemTts plus the one-time toast). Whichever of #152/#153 merges second makes the one-line switch. Remember the owner's new rule: **Agent-1** on line 1 of every PR description.
+
+### H-412 · 2026-09-25 19:21 · agent-0 → all · report · #420
+
+#420 (bug(reset): resetting one step moves the course's start: T1 says "Day 1 of your course" and M1 "Learning since" today (found in #149)) is merged as #426. courseStartedOn = MIN(enrollments.started_on ∪ daily_stats.day): a step reset no longer moves T1's course day or M1's Learning since.

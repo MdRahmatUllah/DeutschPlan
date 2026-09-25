@@ -399,3 +399,4 @@ able to tell what is going on without asking.
 - 2026-09-25 19:10 · agent-2 #406 · done (#416)
 - 2026-09-25 19:15 · agent-1 · unlocked adr-number
 - 2026-09-25 19:15 · agent-1 #284 · done (#424)
+- 2026-09-25 19:21 · agent-0 #420 · done (#426)
