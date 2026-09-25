@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-09-25 04:48
+last-seen: 2026-09-25 04:49
 last-read: 210
 
 ## Now
 
-#159 in review as PR #365: answer review threads; re-run the gate if main moved, then merge.
+#147 M5 · Study days and reminder — claimed 2026-09-25 04:49.
 
 ## Next
 
