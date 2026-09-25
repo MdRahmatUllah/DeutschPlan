@@ -6,7 +6,7 @@ last-read: 266
 
 ## Now
 
-#368 in review as PR #379: answer review threads; re-run the gate if main moved, then merge.
+#328 bug(study): after a Revise-only or backlog session, T3 offers sentences and skips the day's open blocks (found in #107) — claimed 2026-09-25 09:11.
 
 ## Next
 
