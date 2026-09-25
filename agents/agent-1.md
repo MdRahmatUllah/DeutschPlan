@@ -6,7 +6,7 @@ last-read: 194
 
 ## Now
 
-#138 in review as PR #359: answer review threads; re-run the gate if main moved, then merge.
+#139 R1 · No results and the web hand-off — claimed 2026-09-25 02:55.
 
 ## Next
 
