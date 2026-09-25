@@ -71,6 +71,15 @@ abstract final class AppTheme {
       // scrim would show through the buttons and digits.
       dialogTheme: DialogThemeData(backgroundColor: dialog),
       timePickerTheme: TimePickerThemeData(backgroundColor: dialog),
+      // #164: under reduce motion a page cross-fades; otherwise it moves as
+      // the platform's own transition does.
+      pageTransitionsTheme: PageTransitionsTheme(
+        builders: <TargetPlatform, PageTransitionsBuilder>{
+          for (final MapEntry(:key, :value)
+              in const PageTransitionsTheme().builders.entries)
+            key: StillPageTransitions(value),
+        },
+      ),
       extensions: <ThemeExtension<dynamic>>[tokens],
     );
   }
@@ -93,4 +102,67 @@ abstract final class AppTheme {
       color: tokens.color.textSecondary,
     ),
   );
+}
+
+/// A page transition that cross-fades under reduce motion (#164,
+/// `accessibility-performance.md`: "cross-fades, no shake…") and is
+/// [moving] otherwise, read per build so the OS setting applies live.
+///
+/// Still, [moving] is built at rest inside the fade: its back gesture (the
+/// iOS edge swipe, predictive back) stays and drives the fade. Its timings
+/// are [moving]'s either way.
+class StillPageTransitions extends PageTransitionsBuilder {
+  const StillPageTransitions(this.moving);
+
+  final PageTransitionsBuilder moving;
+
+  @override
+  Duration get transitionDuration => moving.transitionDuration;
+
+  @override
+  Duration get reverseTransitionDuration => moving.reverseTransitionDuration;
+
+  @override
+  DelegatedTransitionBuilder? get delegatedTransition =>
+      moving.delegatedTransition;
+
+  @override
+  Widget buildTransitions<T>(
+    PageRoute<T> route,
+    BuildContext context,
+    Animation<double> animation,
+    Animation<double> secondaryAnimation,
+    Widget child,
+  ) => MediaQuery.disableAnimationsOf(context)
+      ? FadeTransition(
+          opacity: animation,
+          child: moving.buildTransitions(
+            route,
+            context,
+            kAlwaysCompleteAnimation,
+            kAlwaysDismissedAnimation,
+            child,
+          ),
+        )
+      : moving.buildTransitions(
+          route,
+          context,
+          animation,
+          secondaryAnimation,
+          child,
+        );
+}
+
+/// #164: iOS's Reduce Motion sets `reduceMotion`, not `disableAnimations`
+/// (`MediaQueryData.disableAnimations` says so), and every "still" in the app
+/// reads the latter: the app root folds the one into the other. Live, as
+/// MediaQuery rebuilds on a change of the accessibility features.
+Widget stillOnReduceMotion(BuildContext context, Widget child) {
+  final data = MediaQuery.of(context);
+  final reduce = View.of(context)
+      .platformDispatcher
+      .accessibilityFeatures
+      .reduceMotion;
+  if (!reduce || data.disableAnimations) return child;
+  return MediaQuery(data: data.copyWith(disableAnimations: true), child: child);
 }

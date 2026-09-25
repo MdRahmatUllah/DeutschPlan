@@ -296,6 +296,26 @@ void main() {
       expect(find.text(todayTop), findsOneWidget);
     });
 
+    testWidgets('#164 under reduce motion it jumps rather than scrolls', (
+      tester,
+    ) async {
+      await pumpApp(tester);
+      tester.platformDispatcher.accessibilityFeaturesTestValue =
+          const FakeAccessibilityFeatures(disableAnimations: true);
+      addTearDown(
+        tester.platformDispatcher.clearAccessibilityFeaturesTestValue,
+      );
+      await tester.drag(find.text(todayTop), const Offset(0, -400));
+      await tester.pumpAndSettle();
+      expect(find.text(todayTop), findsNothing);
+
+      await tester.tap(find.text(await tabLabel()).last);
+      await tester.pump();
+
+      expect(find.text(todayTop), findsOneWidget, reason: 'in one frame');
+      await tester.pumpAndSettle();
+    });
+
     testWidgets('does not pop while there is still somewhere to scroll', (
       tester,
     ) async {

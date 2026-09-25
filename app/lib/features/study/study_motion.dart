@@ -109,6 +109,11 @@ class _StudySwipeToRateState extends State<StudySwipeToRate>
       widget.onRated(left ? Rating.again : Rating.good);
       return;
     }
+    // #164: reduce motion puts the card back at once.
+    if (MediaQuery.disableAnimationsOf(context)) {
+      setState(() => _dx = 0);
+      return;
+    }
     _from = _dx;
     _back.forward(from: 0);
   }

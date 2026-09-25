@@ -53,8 +53,11 @@ import 'package:deutschplan/features/study/study_screen.dart';
 import 'package:deutschplan/features/words/compare_screen.dart';
 import 'package:deutschplan/features/words/word_detail_screen.dart';
 import 'package:deutschplan/core/adaptive/adaptive.dart';
+import 'package:deutschplan/core/theme/app_theme.dart'
+    show StillPageTransitions;
 import 'package:deutschplan/router/placeholder_screen.dart';
-import 'package:cupertino_ui/cupertino_ui.dart' show CupertinoPage;
+import 'package:cupertino_ui/cupertino_ui.dart'
+    show CupertinoPageTransitionsBuilder;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
@@ -571,9 +574,31 @@ class OnboardingRoute extends GoRouteData with $OnboardingRoute {
   /// back / edge swipe goes to the previous page". `CupertinoPage` gives both
   /// on both platforms; Android's default zoom transition gives neither the
   /// slide nor the swipe.
+  ///
+  /// One page type whatever the OS's reduce motion (#164): a Cupertino
+  /// transition through `StillPageTransitions`, which cross-fades under it
+  /// and keeps the edge swipe either way. Two types would recreate every S2
+  /// route, and restart S3, when the setting changed mid-setup.
   @override
   Page<void> buildPage(BuildContext context, GoRouterState state) =>
-      CupertinoPage<void>(key: state.pageKey, child: build(context, state));
+      CustomTransitionPage<void>(
+        key: state.pageKey,
+        child: build(context, state),
+        transitionDuration: _cupertino.transitionDuration,
+        reverseTransitionDuration: _cupertino.reverseTransitionDuration,
+        transitionsBuilder: (context, animation, secondary, child) =>
+            _cupertino.buildTransitions(
+              ModalRoute.of(context)! as PageRoute<void>,
+              context,
+              animation,
+              secondary,
+              child,
+            ),
+      );
+
+  static const StillPageTransitions _cupertino = StillPageTransitions(
+    CupertinoPageTransitionsBuilder(),
+  );
 
   /// `:page` is `1`…`5` for S2, or `placement` for S3 — one route because
   /// `navigation.md` gives them one path, and the placement check is reached

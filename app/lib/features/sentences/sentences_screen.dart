@@ -159,6 +159,17 @@ class _SentencesScreenState extends ConsumerState<SentencesScreen> {
     await _finish();
   }
 
+  /// To sentence [page], as a swipe would: the dots' adjustable action.
+  void _go(int page) => unawaited(
+    _pages?.animateToPage(
+      page,
+      duration: MediaQuery.disableAnimationsOf(context)
+          ? const Duration(milliseconds: 1)
+          : context.tokens.motion.standard,
+      curve: Curves.easeOutCubic,
+    ),
+  );
+
   Future<void> _finish() async {
     if (_leaving) return;
     _leaving = true;
@@ -205,12 +216,16 @@ class _SentencesScreenState extends ConsumerState<SentencesScreen> {
               onPressed: () => Navigator.of(context).maybePop(),
             ),
             Expanded(
-              child: DpText(
-                count == 0 ? '' : l10n.sentencesPlace(_page + 1, count),
-                role: DpTextRole.body,
-                weight: 600,
-                textAlign: TextAlign.center,
-                color: ink,
+              // The dots below say it, as a value a screen reader can change
+              // (#164): once is enough.
+              child: ExcludeSemantics(
+                child: DpText(
+                  count == 0 ? '' : l10n.sentencesPlace(_page + 1, count),
+                  role: DpTextRole.body,
+                  weight: 600,
+                  textAlign: TextAlign.center,
+                  color: ink,
+                ),
               ),
             ),
             const SizedBox(width: 56),
@@ -236,7 +251,12 @@ class _SentencesScreenState extends ConsumerState<SentencesScreen> {
           if (list != null && list.isNotEmpty) ...<Widget>[
             Padding(
               padding: const EdgeInsets.only(top: 14),
-              child: _Dots(count: count, current: _page),
+              child: _Dots(
+                count: count,
+                current: _page,
+                place: (index) => l10n.sentencesPlace(index + 1, count),
+                onGo: _go,
+              ),
             ),
             Expanded(
               child: PageView.builder(
@@ -304,23 +324,47 @@ class _SentencesScreenState extends ConsumerState<SentencesScreen> {
 }
 
 /// "Sentence 1 of 3" as dots: the current one long and Raspberry.
+///
+/// #164: every swipe has a button's equivalent. Rating moves on (FR-T5-04's
+/// *Next*); the dots are an adjustable control too, so a screen reader or
+/// switch pages either way without a swipe.
 class _Dots extends StatelessWidget {
-  const _Dots({required this.count, required this.current});
+  const _Dots({
+    required this.count,
+    required this.current,
+    required this.place,
+    required this.onGo,
+  });
 
   final int count;
   final int current;
 
+  /// "Sentence 2 of 3" for a 0-based index.
+  final String Function(int) place;
+  final ValueChanged<int> onGo;
+
   @override
   Widget build(BuildContext context) {
     final tokens = context.tokens;
-    return ExcludeSemantics(
+    final more = current < count - 1;
+    final less = current > 0;
+    return Semantics(
+      value: place(current),
+      increasedValue: more ? place(current + 1) : null,
+      decreasedValue: less ? place(current - 1) : null,
+      onIncrease: more ? () => onGo(current + 1) : null,
+      onDecrease: less ? () => onGo(current - 1) : null,
+      excludeSemantics: true,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           for (var i = 0; i < count; i++) ...<Widget>[
             if (i > 0) const SizedBox(width: 6),
             AnimatedContainer(
-              duration: tokens.motion.quick,
+              // #164: reduce motion keeps the dot still.
+              duration: MediaQuery.disableAnimationsOf(context)
+                  ? Duration.zero
+                  : tokens.motion.quick,
               width: i == current ? 24 : 8,
               height: 8,
               decoration: BoxDecoration(

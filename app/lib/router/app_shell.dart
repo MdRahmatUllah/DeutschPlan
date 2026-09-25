@@ -48,11 +48,16 @@ class AppShell extends StatelessWidget {
       return false;
     }
 
-    position.animateTo(
-      position.minScrollExtent,
-      duration: scrollToTop,
-      curve: Curves.easeOut,
-    );
+    // #164: reduce motion jumps rather than scrolls.
+    if (MediaQuery.disableAnimationsOf(context)) {
+      position.jumpTo(position.minScrollExtent);
+    } else {
+      position.animateTo(
+        position.minScrollExtent,
+        duration: scrollToTop,
+        curve: Curves.easeOut,
+      );
+    }
     return true;
   }
 

@@ -2,6 +2,7 @@ import 'dart:math' as math;
 
 import 'package:cupertino_ui/cupertino_ui.dart' as cupertino;
 import 'package:deutschplan/core/theme/dp_surface.dart';
+import 'package:deutschplan/core/theme/glass_capability.dart';
 import 'package:deutschplan/core/theme/dp_tokens.dart';
 import 'package:deutschplan/core/typography/dp_text.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
@@ -518,10 +519,11 @@ class AdaptiveTabBar<T extends Object> extends StatefulWidget {
 
 class _AdaptiveTabBarState<T extends Object> extends State<AdaptiveTabBar<T>>
     with SingleTickerProviderStateMixin {
-  late final TabController _controller = TabController(
+  late final TabController _controller = _StillTabController(
     length: widget.tabs.length,
     initialIndex: _index,
     vsync: this,
+    still: () => mounted && MediaQuery.disableAnimationsOf(context),
   );
 
   int get _index => widget.tabs.keys.toList().indexOf(widget.value);
@@ -659,6 +661,9 @@ abstract final class Adaptive {
       // A Cupertino popup has no Material under it, and a sheet's buttons,
       // fields and text styles need one: without it every line came out with
       // the yellow "no Material" underline and a DpButton threw (#122).
+      // ponytail: the Cupertino popup slides in even under reduce motion (it
+      // takes no animation style, #164); a PopupRoute of our own if a
+      // learner or the review asks for it.
       return cupertino.showCupertinoModalPopup<T>(
         context: context,
         builder: (sheetContext) => Material(
@@ -670,6 +675,10 @@ abstract final class Adaptive {
 
     return showModalBottomSheet<T>(
       context: context,
+      // #164: reduce motion shows the sheet without sliding it up.
+      sheetAnimationStyle: MediaQuery.disableAnimationsOf(context)
+          ? AnimationStyle.noAnimation
+          : null,
       // Over the tab bar, as the Cupertino popup already is and the
       // artboards draw it: a sheet on a tab's own navigator left the bar
       // uncovered and live under the scrim.
@@ -729,13 +738,20 @@ abstract final class Adaptive {
           ),
         ),
       ),
-      transitionBuilder: (_, animation, _, child) => SlideTransition(
-        position: Tween<Offset>(
-          begin: const Offset(1, 0),
-          end: Offset.zero,
-        ).animate(CurvedAnimation(parent: animation, curve: Curves.easeOut)),
-        child: child,
-      ),
+      // #164: reduce motion fades the pane in rather than sliding it.
+      transitionBuilder: (paneContext, animation, _, child) =>
+          MediaQuery.disableAnimationsOf(paneContext)
+          ? FadeTransition(opacity: animation, child: child)
+          : SlideTransition(
+              position:
+                  Tween<Offset>(
+                    begin: const Offset(1, 0),
+                    end: Offset.zero,
+                  ).animate(
+                    CurvedAnimation(parent: animation, curve: Curves.easeOut),
+                  ),
+              child: child,
+            ),
     );
   }
 
@@ -906,6 +922,28 @@ class AdaptiveNavDestination {
   final Color? onColour;
 }
 
+/// A tab controller that moves without sliding under reduce motion (#164):
+/// `TabBar` animates a tapped tab itself, before telling anyone, so the
+/// controller is where to stop it.
+class _StillTabController extends TabController {
+  _StillTabController({
+    required super.length,
+    required super.vsync,
+    required this.still,
+    super.initialIndex,
+  });
+
+  final bool Function() still;
+
+  @override
+  void animateTo(int value, {Duration? duration, Curve curve = Curves.ease}) =>
+      super.animateTo(
+        value,
+        duration: still() ? Duration.zero : duration,
+        curve: curve,
+      );
+}
+
 /// The four-tab bar at the foot of the shell.
 ///
 /// Android draws a Material `NavigationBar`, iOS the flat bar with a hairline
@@ -935,7 +973,13 @@ class AdaptiveNavBar extends StatelessWidget {
       return cupertino.CupertinoTabBar(
         currentIndex: currentIndex,
         onTap: onSelected,
-        backgroundColor: tokens.surface.card,
+        // #164: the bar blurs a see-through colour itself; where glass
+        // falls back (reduce transparency among the reasons) it gets the
+        // card over the paper, fully opaque, or it would blur again.
+        backgroundColor:
+            tokens.isGlass && !GlassCapabilityScope.blurAllowed(context)
+            ? Color.alphaBlend(tokens.surface.card, tokens.surface.paper)
+            : tokens.surface.card,
         activeColor: tokens.color.ink,
         inactiveColor: tokens.color.textSecondary,
         items: <cupertino.BottomNavigationBarItem>[
