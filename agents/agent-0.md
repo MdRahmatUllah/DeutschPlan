@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-09-25 11:01
+last-seen: 2026-09-25 11:04
 last-read: 282
 
 ## Now
 
-#169 Integration smoke tests on emulator and simulator — claimed 2026-09-25 11:01.
+Nothing claimed.
 
 ## Next
 
