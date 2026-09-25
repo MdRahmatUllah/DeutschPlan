@@ -129,6 +129,29 @@ void main() {
       }
     });
 
+    test('#245 Supertonic 3 is the files that exist, each pinned, with the '
+        "owner's F1 voice", () async {
+      final manifest = ModelManifest.parse(
+        await rootBundle.loadString(ModelRepository.manifestAsset),
+      );
+      final variant = manifest.model('supertonic3')!.variants.single;
+      expect(variant.files.map((f) => f.name), <String>[
+        'duration_predictor.onnx',
+        'text_encoder.onnx',
+        'vector_estimator.onnx',
+        'vocoder.onnx',
+        'tts.json',
+        'unicode_indexer.json',
+        'F1.json',
+      ]);
+      expect(variant.isPinned, isTrue, reason: 'every file has its SHA-256');
+      expect(variant.bytes, 398653248, reason: 'about 400 MB, not ~100');
+      for (final file in variant.files) {
+        expect(file.url.host, 'huggingface.co', reason: file.name);
+        expect(file.url.path, startsWith('/Supertone/supertonic-3/resolve/'));
+      }
+    });
+
     test('carries the variants the docs name', () async {
       final manifest = ModelManifest.parse(
         await rootBundle.loadString(ModelRepository.manifestAsset),

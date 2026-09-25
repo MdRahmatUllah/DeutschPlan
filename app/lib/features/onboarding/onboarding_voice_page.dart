@@ -16,8 +16,9 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'onboarding_voice_page.g.dart';
 
-/// How big Supertonic is, from the model manifest rather than the card's own
-/// "~100 MB" — FR-M4-02's sizes are the ones a download actually moves.
+/// How big Supertonic is, from the model manifest — FR-M4-02's sizes are the
+/// ones a download actually moves (about 400 MB since #245, not the ~100 MB
+/// the first spec guessed).
 ///
 /// Rounded to ten: "about 103 MB" is a precision the learner cannot use.
 @riverpod

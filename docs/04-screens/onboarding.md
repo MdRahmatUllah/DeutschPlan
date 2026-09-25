@@ -14,7 +14,7 @@
 | 2 Meaning language | Cards English / বাংলা / Both with sample `die Wohnung → …`; note "This also sets the app language" | `meaning_language`, `ui_language` |
 | 3 Starting point | 12 step chips in level rows with word counts (A1.1 pre-selected); link *Not sure? Take a 3-minute check* → S3 | chosen step |
 | 4 Daily pace | New words slider 3–30 with live estimate "A1.1 takes about 69 days at 7 words a day"; presets Relaxed 5 · Steady 7 · Intensive 15; revisions stepper (10) with note "Due cards beyond this wait for tomorrow"; weekday chips | `daily_new`, `revise_count`, `study_days_mask` |
-| 5 Reminder & voice | Reminder switch (off) + time 19:30, note about permission; *Hear it: „Guten Tag!"* (system voice); Supertonic card (~100 MB) with *Download now* / *Later*; button *Start learning* | `reminder_*`, starts download |
+| 5 Reminder & voice | Reminder switch (off) + time 19:30, note about permission; *Hear it: „Guten Tag!"* (system voice); Supertonic card (its size from the model manifest, about 400 MB, #245; Wi-Fi only, the default voice style F1) with *Download now* / *Later*; button *Start learning* | `reminder_*`, starts download |
 
 **Functional requirements**
 - FR-S2-01 *Skip* MUST apply defaults for all remaining pages and finish.
