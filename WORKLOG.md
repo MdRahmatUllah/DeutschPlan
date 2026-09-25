@@ -386,3 +386,4 @@ able to tell what is going on without asking.
 - 2026-09-25 17:38 · agent-0 #245 · claimed: Model manifest: Supertonic 3's files do not exist, and the real model is ~398 MB, not ~100 MB
 - 2026-09-25 17:45 · agent-0 #245 · done (#423)
 - 2026-09-25 17:45 · agent-1 · locked adr-number: #284: adding the missing ADR 26 row (content.db attached by plain path)
+- 2026-09-25 17:47 · agent-0 #153 · claimed: TtsService — engine selection, fallback and autoplay

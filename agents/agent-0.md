@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-09-25 17:45
+last-seen: 2026-09-25 17:47
 last-read: 301
 
 ## Now
 
-Nothing claimed.
+#153 TtsService — engine selection, fallback and autoplay — claimed 2026-09-25 17:47.
 
 ## Next
 
