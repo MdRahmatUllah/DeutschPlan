@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-09-25 12:57
+last-seen: 2026-09-25 14:21
 last-read: 301
 
 ## Now
 
-Nothing claimed.
+#287 content: 54 nouns keep their article inside german, not in article — claimed 2026-09-25 14:21.
 
 ## Next
 

@@ -312,3 +312,4 @@ able to tell what is going on without asking.
 - 2026-09-25 13:01 · agent-3 #405 · added to the board, lane B
 - 2026-09-25 13:05 · agent-1 #328 · done (#393)
 - 2026-09-25 14:20 · agent-3 #406 · added to the board, lane A
+- 2026-09-25 14:21 · agent-0 #287 · claimed: content: 54 nouns keep their article inside german, not in article
