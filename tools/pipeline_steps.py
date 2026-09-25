@@ -601,6 +601,19 @@ def assign_examples(words: Sequence) -> None:
 #: - `pattern` — a regex over the German, for families like `^seit\b`.
 MATCH_TYPES = ("uid", "german", "pattern")
 
+#: A tag that makes a tip a rule about one word class (#321): it attaches to
+#: words of that class only. "Every -chen noun is das" is false on
+#: *versuchen*, and a separable-prefix rule is false on *Überraschung*.
+TAG_POS = {"gender": "noun", "separable": "verb"}
+
+
+def tip_pos(tags: str | None) -> str | None:
+    """The word class [tags] limit a tip to, or None for any word."""
+    for tag in (tags or "").split(";"):
+        if tag.strip() in TAG_POS:
+            return TAG_POS[tag.strip()]
+    return None
+
 
 @dataclass(frozen=True)
 class Tip:
@@ -691,6 +704,9 @@ def resolve_tips(tips: Sequence, words: Sequence) -> tuple[list[ResolvedTip], li
 
     for tip in tips:
         matched = _matches(tip, by_uid, by_german, words, re)
+        pos = tip_pos(tip.tags)
+        if pos is not None:
+            matched = [word for word in matched if word.pos == pos]
 
         if not matched:
             warnings.append(

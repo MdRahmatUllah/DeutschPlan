@@ -202,3 +202,21 @@ class TestTheCli:
         main(["--db", str(database)])
         err = capsys.readouterr().err
         assert "examples:" in err and "search:" in err
+
+
+def test_a_noun_rule_on_a_verb_fails_the_tips_gate(database):
+    """#321: the build keeps "gender" tips to nouns; the gate catches a
+    build that doesn't."""
+    from pipeline_steps import read_tips, tip_pos
+    from verify_content import DEFAULT_TIPS
+
+    rule = next(t for t in read_tips(DEFAULT_TIPS) if tip_pos(t.tags) == "noun")
+    break_it(
+        database,
+        "INSERT INTO interference_tips (word_uid, tip_en, tip_bn) "
+        "SELECT uid, '" + rule.tip_en.replace("'", "''") + "', NULL "
+        "FROM words WHERE pos = 'verb' LIMIT 1",
+    )
+    assert "tips" in gates(database)
+    assert f"line {rule.row}" in messages(database)
+

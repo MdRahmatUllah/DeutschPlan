@@ -2,11 +2,12 @@
 
 `content-pipeline.md`: "verify_content.py fails the build if: a required
 sheet/column is missing, a step has 0 words, a word has no example, a uid
-collision remains, or FTS tables are empty."
+collision remains, FTS tables are empty, or a `gender`/`separable` tip is on a
+word of another class (#321)."
 
 The first of those is enforced while reading the workbooks, where the message
 can name the sheet and the row — by the time a database exists, that
-information is gone. The other four are checked here, against the file that
+information is gone. The others are checked here, against the file that
 would actually ship.
 
 Every failure names what to change, because the person reading it is an author
@@ -26,10 +27,11 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from pipeline_steps import SUBLEVELS  # noqa: E402
+from pipeline_steps import SUBLEVELS, read_tips, tip_pos  # noqa: E402
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_DB = REPO_ROOT / "content" / "build" / "content.db"
+DEFAULT_TIPS = REPO_ROOT / "content" / "interference_tips.csv"
 
 #: Every step must have words. BR-COURSE-01 fixes the list, so a missing step
 #: is a screen the learner can open and find blank. Taken from the pipeline's
@@ -208,12 +210,47 @@ def check_the_database_is_readable(db: sqlite3.Connection) -> list[Failure]:
     return []
 
 
+def check_tips_fit_their_word_class(
+    db: sqlite3.Connection, tips: Path = DEFAULT_TIPS
+) -> list[Failure]:
+    """#321: a tip tagged as a rule about one word class ("gender" for
+    nouns, "separable" for verbs) on a word of another. content.db has no
+    tags, so they come from the CSV the build read."""
+    failures = []
+    for tip in read_tips(tips if tips.exists() else None):
+        pos = tip_pos(tip.tags)
+        if pos is None:
+            continue
+        rows = [
+            f"{german} ({word_pos})"
+            for german, word_pos in db.execute(
+                "SELECT w.german, w.pos FROM interference_tips t "
+                "JOIN words w ON w.uid = t.word_uid "
+                "WHERE t.tip_en = ? AND coalesce(w.pos, '') <> ? "
+                "ORDER BY w.seq",
+                (tip.tip_en, pos),
+            )
+        ]
+        if rows:
+            failures.append(
+                Failure(
+                    "tips",
+                    f"interference_tips.csv line {tip.row} is a rule about "
+                    f"the {pos}s, but it is on {len(rows)} other words: "
+                    f"{_sample(rows)}. Rebuild with `make content`; if it "
+                    f"persists, the build's word-class filter is broken.",
+                )
+            )
+    return failures
+
+
 GATES = (
     check_the_database_is_readable,
     check_every_step_has_words,
     check_every_word_has_an_example,
     check_no_uid_collision,
     check_fts_is_populated,
+    check_tips_fit_their_word_class,
 )
 
 
