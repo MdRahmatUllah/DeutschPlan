@@ -224,6 +224,10 @@ class _StatusStripState extends State<_StatusStrip> {
             left: 0,
             right: 0,
             height: top,
+            // ponytail: under glass one more BackdropFilter over the tab bar's
+            // and the cards'; theming.md's three-layer budget holds only while
+            // few blurred panels are on screen. The shared backdrop (#34) is
+            // the fix for all of them.
             child: tokens.isGlass
                 ? DpSurface(
                     kind: DpSurfaceKind.tint(widget.colour),
