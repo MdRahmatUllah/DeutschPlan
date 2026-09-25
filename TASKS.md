@@ -69,7 +69,7 @@ claiming the same issue. A hand edit skips that check.
 | #155 | M6 | B | P2 | L | M4 · Model manager | open |  | #146 #153 #156 |  |
 | #156 | M6 | B | P2 | M | Download manager: resumable, Wi-Fi-only, checksum-verified | open |  | #64 |  |
 | #157 | M6 | C | P2 | M | Notification service and the permission flow | done | agent-2 | #62 #70 | #356 |
-| #158 | M6 | C | P2 | M | Background tasks: plan pre-generation, reminder composition, widget refresh | open |  | #76 #157 |  |
+| #158 | M6 | C | P2 | M | Background tasks: plan pre-generation, reminder composition, widget refresh | in-progress | agent-2 | #76 #157 |  |
 | #159 | M6 | C | P2 | S | Widget snapshot writer and word-of-the-day selection | open |  | #158 |  |
 | #160 | M6 | C | P2 | M | X1 · Android home-screen widget (Glance) | open |  | #159 |  |
 | #161 | M6 | C | P2 | M | X1 · iOS home-screen widget (WidgetKit) | open |  | #159 |  |

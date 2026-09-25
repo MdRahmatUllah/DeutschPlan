@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-09-25 02:01
+last-seen: 2026-09-25 02:02
 last-read: 185
 
 ## Now
 
-Nothing claimed.
+#158 Background tasks: plan pre-generation, reminder composition, widget refresh — claimed 2026-09-25 02:02.
 
 ## Next
 
