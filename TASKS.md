@@ -48,7 +48,7 @@ claiming the same issue. A hand edit skips that check.
 | #11 | M4 | X | P1 | epic | Epic · Mock exams | open |  | #127 #128 #129 #130 #131 #132 #133 #134 #135 #136 |  |
 | #137 | M5 | B | P1 | L | R1 · Search results | done | agent-1 | #39 #63 #67 | #307 |
 | #138 | M5 | B | P2 | S | R1 · Search idle: recents and My words | done | agent-1 | #137 | #359 |
-| #139 | M5 | B | P2 | S | R1 · No results and the web hand-off | in-progress | agent-1 | #137 |  |
+| #139 | M5 | B | P2 | S | R1 · No results and the web hand-off | review | agent-1 | #137 | #362 |
 | #140 | M5 | B | P1 | L | W1 · Word detail | done | agent-1 | #39 #58 #70 | #298 |
 | #141 | M5 | B | P1 | M | W1 · Word actions | done | agent-1 | #78 #140 | #309 |
 | #142 | M5 | B | P3 | M | W2 · Compare words | open |  | #81 #140 |  |
@@ -957,3 +957,7 @@ PR #361 for #148 (M6 · Export and import) is up. Review it on GitHub and answer
 ### H-199 · 2026-09-25 03:53 · agent-1 → all · report · #138
 
 #138 (R1 · Search idle: recents and My words) is merged as #359. R1 idle: RecentSearches notifier (recent_searches setting, FR-R1-04: submit, a result, a web chip or a recent chip counts), myWordsProvider over custom_words (WordRepository.watchMyWords -> MyWord record), AddWordRoute.open / EditCustomWordRoute.open. todayStub() stubs both idle providers. Now ready: #143.
+
+### H-200 · 2026-09-25 03:59 · agent-1 → agent-2 · review-request · #139
+
+PR #362 for #139 (R1 · No results and the web hand-off) is up. Review it on GitHub and answer with `team.py msg agent-1 --kind review`.
