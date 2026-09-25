@@ -132,7 +132,9 @@ VALUES ('$today', 9, 12, 900)
   }) async {
     await tester.runAsync(() async {
       await open();
-      if (seed != null) await db.customStatement(seed);
+      for (final statement in (seed ?? '').split(';')) {
+        if (statement.trim().isNotEmpty) await db.customStatement(statement);
+      }
     });
     addTearDown(
       () => tester.runAsync(() async {
@@ -479,6 +481,39 @@ VALUES ('$today', 9, 12, 900)
         reason: "in the finished session's place, not over it",
       );
       expect(blocks.single.uids, <String>[haus, tuer]);
+    });
+
+    testWidgets("#328 FR-T3-02 the day's grammar after a Revise-only session: "
+        'L15 opens on the topic due, which the session never queued', (
+      tester,
+    ) async {
+      const revise = SessionArgs(
+        planDate: today,
+        blocks: <SessionBlock>[
+          SessionBlock(SessionBlockKind.revise, <String>[strasse]),
+        ],
+      );
+      final container = await pump(
+        tester,
+        args: revise,
+        seed:
+            "UPDATE plan_items SET completed_at = '2026-09-21T08:00:00Z' "
+            "WHERE kind = 'new'; "
+            'INSERT INTO grammar_state (grammar_uid, status, due) '
+            "VALUES ('g1', 'learning', '$today')",
+      );
+      await session(
+        tester,
+        container,
+        (n) => n.rate(Rating.good),
+        args: revise,
+      );
+      final next = find.widgetWithText(DpButton, l10n.summaryGrammar(1));
+      expect(tester.widget<DpButton>(next).kind, DpButtonKind.primary);
+
+      await tester.tap(next);
+      await tester.pumpAndSettle();
+      expect(find.text('L15 g1'), findsOneWidget);
     });
 
     testWidgets("#328 FR-T3-02 after a backlog session, the day's revisions "

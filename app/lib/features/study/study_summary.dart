@@ -58,7 +58,10 @@ Future<StudyNext> studyNext(Ref ref, String date) async {
     for (final uid in await plans.plannedOn(date, kind))
       if (open.contains((kind.wire, uid))) uid,
   ];
-  final grammar = await plans.grammarDueOn(date);
+  // A rest day offers no grammar, as Today shows none (BR-PLAN-02).
+  final grammar = await ref.watch(planEngineProvider).studyDayOn(date)
+      ? await plans.grammarDueOn(date)
+      : const <String>[];
   final picked = await ref.watch(sentencePickerProvider).forDay(date);
   final rated = await ref.watch(sentenceStoreProvider).rated(date);
   return StudyNext(
