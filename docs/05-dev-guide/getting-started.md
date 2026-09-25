@@ -2,9 +2,9 @@
 
 ## Prerequisites
 
-- Flutter 3.47.x stable (`flutter --version`), Dart 3.13.x. The exact version is pinned in `.fvmrc` at the repository root (currently **3.47.5**, which ships Dart 3.13.4). CI reads it from there, so every build uses the same SDK. Install that version however you like: *Using fvm* below is one way.
+- Flutter 3.47.x stable (`flutter --version`), Dart 3.13.x. The exact version is pinned in `.fvmrc` at the repository root (currently **3.47.5**, which ships Dart 3.13.4). It is the SDK every build uses: check that `flutter --version` matches before the check below. Install that version however you like: *Using fvm* below is one way.
 - Android Studio (latest) with SDK 37 (`compileSdk` and `targetSdk`, ADR 19). The NDK is Flutter's own (`flutter.ndkVersion`). Xcode 16+ with an iOS 16 simulator. CocoaPods is no longer required: Swift Package Manager is the default since Flutter 3.44.
-- Python 3.10+ (3.12 in CI) with `openpyxl`, for the content pipeline and the tools' tests.
+- Python 3.10+ with `openpyxl`, for the content pipeline and the tools' tests.
 - `make` is optional. Each target is spelled out below; without `make`, run those commands.
 
 ## First run
@@ -20,13 +20,25 @@ dart run drift_dev schema steps drift_schemas/ lib/data/db/schema_versions.dart
 dart run drift_dev schema generate drift_schemas/ test/db/generated/
 dart run build_runner build --delete-conflicting-outputs
 dart analyze --fatal-infos
-flutter test
+flutter test --timeout 60s        # the whole suite, goldens included: Windows only
 flutter run
 ```
 
 That generation block is `make gen`, which runs it rather than `build_runner` alone. `AppDatabase` imports `lib/data/db/schema_versions.dart`, which the drift_dev CLI writes from the fixtures in `app/drift_schemas/`. Without that step, build_runner has nothing to analyse and the whole package fails to resolve. Run it again after a rebase or branch switch that changes `.drift` files, providers, routes or ARB files.
 
 `app/assets/db/content.db` is committed, so a first run doesn't build content. `make content` needs the Excel workbooks in `data/`, which is git-ignored and exists only where the content is edited. Run it only for a content change (`docs/02-data/content-pipeline.md`).
+
+## The check before a merge
+
+GitHub CI is off (the owner, #302): the local check is the only one. The owner's rule (2026-09-25):
+
+- **Every PR merges on a basic check**, run from `app/` at current `origin/main`:
+  - `dart analyze --fatal-infos` (no path arguments);
+  - `dart format --output=none --set-exit-if-changed .`;
+  - `python -m pytest ../tools/tests -q`, if `tools/` changed;
+  - the test files the change touches, and their goldens (`flutter test --timeout 60s <files>`);
+  - planted violations over the behaviour it claims (`tools/plant.py`), all caught.
+- **The full suite runs once, when a milestone completes**: `flutter test -j 2 --timeout 60s`, in the foreground, in chunks. It includes the goldens, so it runs on Windows (`test/golden/README.md`).
 
 ## Using fvm
 
@@ -56,7 +68,7 @@ Every target runs from the repository root. Without `make`, run the command in t
 | `make test` | the tools' Python tests, then unit, widget and db tests, without goldens | `python -m pytest tools/tests -q`, then `flutter test --exclude-tags golden` |
 | `make goldens-verify` | compare every golden; on one platform only (`test/golden/README.md`) | `flutter test test/golden` |
 | `make goldens` / `make update-goldens` | rewrite **every** golden. Prefer updating the goldens of the files you changed (`testing.md`) | `flutter test test/golden --update-goldens` |
-| `make lint` | analyzer and formatter check, as CI runs them | `dart analyze --fatal-infos` (no path arguments, and not `flutter analyze`: ADR 18), then `dart format --output=none --set-exit-if-changed .` |
+| `make lint` | analyzer and formatter check, the basic check's first two steps | `dart analyze --fatal-infos` (no path arguments, and not `flutter analyze`: ADR 18), then `dart format --output=none --set-exit-if-changed .` |
 | `make format` | apply the formatter | `dart format .` |
 | `make release-android` / `make release-ios` | see `release.md` | `flutter build appbundle` / `flutter build ipa`, both `--release --obfuscate --split-debug-info=build/symbols` |
 | `make clean` | remove build output | `flutter clean`, and delete `content/build/` |

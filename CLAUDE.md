@@ -72,8 +72,9 @@ keepAlive providers must be listed in `docs/01-architecture/state-management.md`
   `<type>(<scope>): <what> (#N)` (check it yourself: nothing else does). Squash
   merge.
 - **GitHub CI is off** (the owner turned it off, 2026-09-24, #302: both
-  workflows are disabled). **The local gate below is the only check.** Run it in
-  full before you push, and again before you merge if `origin/main` moved.
+  workflows are disabled). **The basic check below is the only check** a PR gets.
+  Run it before you push, and again before you merge if `origin/main` moved.
+  Merge only after an approving review.
   Never wait for, watch, re-run or re-enable a workflow. Push when ready for
   review, and batch fixes into one push.
 - **Docs win.** A behaviour change updates `docs/` in the same PR. A spec gap
@@ -89,23 +90,28 @@ keepAlive providers must be listed in `docs/01-architecture/state-management.md`
   APK build or device check. `device.py` refuses 5554 to anyone but agent-3.
 - Deliberate shortcuts are marked `// ponytail: <why + ceiling>`.
 
-## The gate (from `app/` in your worktree; `make` is not installed)
+## The basic check (from `app/` in your worktree; `make` is not installed)
+
+The owner's rule (2026-09-25): every PR merges on this.
 
 ```bash
 dart analyze --fatal-infos                         # NO path args (ADR 18)
 dart format --output=none --set-exit-if-changed .
-python -m pytest ../tools/tests -q
-flutter test --timeout 60s                         # includes goldens (Windows)
+python -m pytest ../tools/tests -q                 # only if tools/ changed
+flutter test --timeout 60s <touched test files and their goldens>
 ```
+
+Plus the plants, all caught. The full suite (`flutter test -j 2 --timeout 60s`,
+foreground, in chunks) runs once, when a milestone completes.
 
 ## One issue, start to finish (details: `ONBOARDING.md` §4)
 
 claim → branch from `origin/main` → read the issue, its spec and artboards →
 implement → tests → goldens (per file) + compare with `tools/artboard.py` →
-gate → plants (`tools/plant.py`, all caught) → device check (release x64 APK,
+basic check → plants (`tools/plant.py`, all caught) → device check (release x64 APK,
 `tools/device.py`, under `team.py device`) → commit → PR → `team.py review N
---pr P` → review (another agent, or a self-review pass) → fix in one push →
-rebase on `origin/main` and re-run the gate if main moved →
+--pr P` → review by another agent → fix in one push →
+approving review → rebase on `origin/main` and re-run the basic check if main moved →
 `gh pr merge P --squash --subject "<title> (#P)"`
 (no `--delete-branch`) → `git push origin --delete <branch>` →
 `team.py done N --pr P -m "what others should know"` → next.
