@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-09-25 15:04
+last-seen: 2026-09-25 15:05
 last-read: 321
 
 ## Now
 
-#150 M9 · About & privacy and M8 · Licences — claimed 2026-09-25 15:04.
+#150 in review as PR #411: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
