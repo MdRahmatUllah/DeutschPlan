@@ -6,7 +6,7 @@ last-read: 498
 
 ## Now
 
-#430 perf(tts): Supertonic's first sound for a new word is ~1 s, not < 300 ms: pre-synthesise a session's words (follow-up to #152) — claimed 2026-09-25 21:49.
+Nothing claimed.
 
 ## Next
 

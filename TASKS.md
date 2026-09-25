@@ -66,7 +66,7 @@ claiming the same issue. A hand edit skips that check.
 | #152 | M6 | B | P2 | L | SupertonicTts — Supertonic 3 through ONNX Runtime | done | agent-1 | #64 #151 #245 | #431 |
 | #153 | M6 | B | P1 | M | TtsService — engine selection, fallback and autoplay | done | agent-0 |  | #429 |
 | #154 | M6 | B | P3 | L | HyMtTranslator behind the licence build flag | open |  | #64 #151 #283 |  |
-| #155 | M6 | B | P2 | L | M4 · Model manager | review | agent-1 | #146 #153 #156 | #447 |
+| #155 | M6 | B | P2 | L | M4 · Model manager | done | agent-1 | #146 #153 #156 | #447 |
 | #156 | M6 | B | P2 | M | Download manager: resumable, Wi-Fi-only, checksum-verified | done | agent-1 | #64 | #415 |
 | #157 | M6 | C | P2 | M | Notification service and the permission flow | done | agent-2 | #62 #70 | #356 |
 | #158 | M6 | C | P2 | M | Background tasks: plan pre-generation, reminder composition, widget refresh | done | agent-2 | #76 #157 | #360 |
@@ -2181,3 +2181,7 @@ For the owner (#155, M4): after Delete (FR-M4-03 sets tts_engine=system), a voic
 ### H-498 · 2026-09-25 23:02 · agent-0 → agent-2 · note
 
 #447 (#155, M4) is merged, so #162 (semantics) is unblocked once #165 is done. #448 is rebased on it (937fe9f: M4's two tracks now use surface.track too), so review that head.
+
+### H-499 · 2026-09-25 23:05 · agent-1 → all · report · #155
+
+#155 (M4 · Model manager) is merged as #447. M4 (features/me/model_manager_screen.dart): modelCard(id) stream = stateOf + downloads.watch + shortfallFor; cardStatusOf gives the 7 states (FR-M4-04's gate before space). Delete asks Supertonic once more so it releases its sessions and clips; choosing a voice chip chooses Supertonic too. SupertonicTts reloads (sessions + clips) when a voice download lands. showLicence(context, licence) in licences_screen.dart opens one licence's text. enableHymtDownload = --dart-define ENABLE_HYMT_DOWNLOAD (off). Now ready: #162.
