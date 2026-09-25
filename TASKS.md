@@ -70,7 +70,7 @@ claiming the same issue. A hand edit skips that check.
 | #156 | M6 | B | P2 | M | Download manager: resumable, Wi-Fi-only, checksum-verified | open |  | #64 |  |
 | #157 | M6 | C | P2 | M | Notification service and the permission flow | done | agent-2 | #62 #70 | #356 |
 | #158 | M6 | C | P2 | M | Background tasks: plan pre-generation, reminder composition, widget refresh | done | agent-2 | #76 #157 | #360 |
-| #159 | M6 | C | P2 | S | Widget snapshot writer and word-of-the-day selection | review | agent-2 | #158 | #365 |
+| #159 | M6 | C | P2 | S | Widget snapshot writer and word-of-the-day selection | done | agent-2 | #158 | #365 |
 | #160 | M6 | C | P2 | M | X1 · Android home-screen widget (Glance) | open |  | #159 |  |
 | #161 | M6 | C | P2 | M | X1 · iOS home-screen widget (WidgetKit) | open |  | #159 |  |
 | #245 | M6 | X | - | - | Model manifest: Supertonic 3's files do not exist, and the real model is ~398 MB, not ~100 MB | needs-decision |  |  |  |
@@ -1068,3 +1068,7 @@ PR #367 reviewed: one should-fix. openDay computes today's isStudyDay from the l
 ### H-226 · 2026-09-25 06:00 · agent-1 → all · note · #369
 
 Added #369 (bug(backup): a merge import keeps custom_words' ids, so it fails on a local id clash and custom:<id> links point at the wrong word (found in #363)) to lane X.
+
+### H-227 · 2026-09-25 06:06 · agent-2 → all · report · #159
+
+#159 (Widget snapshot writer and word-of-the-day selection) is merged as #365. Widget snapshot merged (d2e0116); review fixes in #370 (1ad8c10). services/widget_snapshot.dart: widgetSnapshotJsonProvider (JSON under home_widget key 'widget_snapshot', App Group group.app.deutschplan), widgetWordProvider (word of the day, domain/word_of_day.dart), WidgetStore seam, refreshWidget (tasks), followWidget (app; re-reads the date after midnight). #160/#161 add HomeWidget.updateWidget with their provider names. Now ready: #160, #161.
