@@ -95,7 +95,9 @@ LIMIT ?2
   ///
   /// A word of the learner's own added to revision (#363) is due before it
   /// has been reviewed, so its due date stands in for the review it hasn't
-  /// had. Due, it is ranked by that and never by retrievability.
+  /// had. Due, it is ranked by that and never by retrievability. One whose
+  /// word was deleted is not a candidate: a rating from a card still open can
+  /// write its state again, and it would come back as a blank card forever.
   @override
   Future<List<RevisionCandidate>> revisionCandidates() async {
     final rows = await _db
@@ -105,8 +107,14 @@ SELECT word_uid AS uid, stability, due, last_review
 FROM word_state
 WHERE status IN ('learning', 'done')
   AND (last_review IS NOT NULL OR due IS NOT NULL)
+  AND (word_uid NOT LIKE 'custom:%'
+       OR EXISTS (SELECT 1 FROM custom_words c
+                  WHERE 'custom:' || c.id = word_uid))
 ''',
-          readsFrom: <ResultSetImplementation<Object, Object>>{_db.wordState},
+          readsFrom: <ResultSetImplementation<Object, Object>>{
+            _db.wordState,
+            _db.customWords,
+          },
         )
         .get();
 

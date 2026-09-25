@@ -44,7 +44,11 @@ void main() {
   );
 
   /// [router]: in a GoRouter whose R2 edit page says which word it opened.
-  Future<void> pump(WidgetTester tester, {bool router = false}) async {
+  Future<void> pump(
+    WidgetTester tester, {
+    bool router = false,
+    String cardMode = 'plain',
+  }) async {
     await tester.runAsync(() async {
       db = AppDatabase.memory();
       final directory = Directory.systemTemp.createTempSync('dp_my_word');
@@ -58,8 +62,8 @@ VALUES (1, '2026-09-20T10:00:00Z', 'das', 'Pfand', 'deposit',
   'Ich bekomme das Pfand zurück.')
 ''');
       await db.customStatement('''
-INSERT INTO word_state (word_uid, status, introduced_on, due)
-VALUES ('$uid', 'learning', '$today', '$today')
+INSERT INTO word_state (word_uid, status, introduced_on, due, card_mode)
+VALUES ('$uid', 'learning', '$today', '$today', '$cardMode')
 ''');
       await db.customStatement('''
 INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code)
@@ -115,55 +119,59 @@ VALUES ('$today', '$uid', 'revise', 'A1.1'),
     await tester.pumpAndSettle();
   }
 
-  testWidgets('the card shows the headword, says it is my word, and turns '
-      'over to the meaning and my example', (tester) async {
-    await pump(tester);
-    expect(find.text('das Pfand', findRichText: true), findsWidgets);
-    expect(find.widgetWithText(DpChip, l10n.searchMyWord), findsOneWidget);
+  testWidgets(
+    'FR-R2-03 the card shows the headword, says it is my word, and turns '
+    'over to the meaning and my example',
+    (tester) async {
+      await pump(tester);
+      expect(find.text('das Pfand', findRichText: true), findsWidgets);
+      expect(find.widgetWithText(DpChip, l10n.searchMyWord), findsOneWidget);
 
-    await tester.tap(find.text(l10n.studyShowMeaning));
-    await tester.runAsync(
-      () => Future<void>.delayed(const Duration(milliseconds: 50)),
-    );
-    await tester.pumpAndSettle();
-    expect(find.text('deposit'), findsOneWidget);
-    expect(
-      find.text('Ich bekomme das Pfand zurück.', findRichText: true),
-      findsOneWidget,
-    );
-  });
+      await tester.tap(find.text(l10n.studyShowMeaning));
+      await tester.runAsync(
+        () => Future<void>.delayed(const Duration(milliseconds: 50)),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('deposit'), findsOneWidget);
+      expect(
+        find.text('Ich bekomme das Pfand zurück.', findRichText: true),
+        findsOneWidget,
+      );
+    },
+  );
 
-  testWidgets('rating it schedules it and completes its plan row', (
-    tester,
-  ) async {
-    await pump(tester);
-    await tester.tap(find.text(l10n.studyShowMeaning));
-    await tester.runAsync(
-      () => Future<void>.delayed(const Duration(milliseconds: 50)),
-    );
-    await tester.pumpAndSettle();
-    await tester.runAsync(() async {
-      await tester.tap(find.text(l10n.ratingGood));
-      await Future<void>.delayed(const Duration(milliseconds: 50));
-    });
-    await tester.pumpAndSettle();
+  testWidgets(
+    'FR-R2-03 FR-T2-02 rating it schedules it and completes its plan row',
+    (tester) async {
+      await pump(tester);
+      await tester.tap(find.text(l10n.studyShowMeaning));
+      await tester.runAsync(
+        () => Future<void>.delayed(const Duration(milliseconds: 50)),
+      );
+      await tester.pumpAndSettle();
+      await tester.runAsync(() async {
+        await tester.tap(find.text(l10n.ratingGood));
+        await Future<void>.delayed(const Duration(milliseconds: 50));
+      });
+      await tester.pumpAndSettle();
 
-    final state = await tester.runAsync(
-      () => (db.select(
-        db.wordState,
-      )..where((t) => t.wordUid.equals(uid))).getSingle(),
-    );
-    expect(state!.reps, 1);
-    expect(state.due!.compareTo(today), greaterThan(0));
-    final row = await tester.runAsync(
-      () => (db.select(
-        db.planItems,
-      )..where((t) => t.wordUid.equals(uid))).getSingle(),
-    );
-    expect(row!.completedAt, isNotNull);
-  });
+      final state = await tester.runAsync(
+        () => (db.select(
+          db.wordState,
+        )..where((t) => t.wordUid.equals(uid))).getSingle(),
+      );
+      expect(state!.reps, 1);
+      expect(state.due!.compareTo(today), greaterThan(0));
+      final row = await tester.runAsync(
+        () => (db.select(
+          db.planItems,
+        )..where((t) => t.wordUid.equals(uid))).getSingle(),
+      );
+      expect(row!.completedAt, isNotNull);
+    },
+  );
 
-  testWidgets('its Word details open it in R2, where it was written', (
+  testWidgets('FR-R2-03 its Word details open it in R2, where it was written', (
     tester,
   ) async {
     await pump(tester, router: true);
@@ -172,5 +180,12 @@ VALUES ('$today', '$uid', 'revise', 'A1.1'),
     await tester.tap(find.text(l10n.studyMenuWordDetails));
     await tester.pumpAndSettle();
     expect(find.text('R2 · 1'), findsOneWidget);
+  });
+
+  testWidgets('FR-T2-10 it keeps the plain card when the rule says cloze: R2 '
+      'has no card toggle to switch back with', (tester) async {
+    await pump(tester, cardMode: 'cloze');
+    expect(find.text(l10n.studyShowMeaning), findsOneWidget);
+    expect(find.text(l10n.studyClozeCheck), findsNothing);
   });
 }

@@ -226,16 +226,77 @@ void main() {
       },
     );
 
-    test('never a step, category or compare quiz', () async {
+    test('never a step quiz; a compare set asks it when it names it, as '
+        "L9's Retry mistakes does", () async {
       final id = await revise();
       await rating.rate(
         customUid(id),
         Rating.good,
         source: ReviewSource.search,
       );
-      await settings.write(SettingKeys.quizCustomWords, true);
       expect(await asked(QuizSource.stepLearned, ref: 'A1.1'), isEmpty);
-      expect(await asked(QuizSource.compareSet, ref: customUid(id)), isEmpty);
+      expect(await asked(QuizSource.compareSet, ref: customUid(id)), <String>[
+        customUid(id),
+      ], reason: 'the setting is off: the set names it');
+      expect(
+        await asked(QuizSource.compareSet, ref: ContentFixture.haus),
+        isEmpty,
+      );
+    });
+
+    test('a word matched to a course word takes its step for the '
+        'distractors', () async {
+      final id = await words.saveMyWord(
+        pfand,
+        now: now,
+        matchedUid: ContentFixture.strasse,
+        reviseFrom: monday,
+      );
+      await rating.rate(
+        customUid(id),
+        Rating.good,
+        source: ReviewSource.search,
+      );
+      await settings.write(SettingKeys.quizCustomWords, true);
+      final mine = (await quizzes.learned(QuizSource.allLearned)).single;
+      expect(
+        mine.step,
+        'A1.2',
+        reason: 'Straße is A1.2; the step studied, A1.1',
+      );
+    });
+
+    test("L9's mistake row shows it as saved, not by its meaning", () async {
+      final id = await revise();
+      final attempt = await db
+          .into(db.quizAttempts)
+          .insert(
+            QuizAttemptsCompanion.insert(
+              startedAt: '2026-03-02T09:00:00Z',
+              direction: 'deEn',
+              source: 'allLearned',
+              seed: 1,
+              length: 10,
+            ),
+          );
+      await db
+          .into(db.quizAnswers)
+          .insert(
+            QuizAnswersCompanion.insert(
+              attemptId: attempt,
+              ord: 1,
+              wordUid: customUid(id),
+              prompt: 'das Pfand',
+              expected: 'deposit',
+              given: const Value('bottle'),
+              verdict: const Value('wrong'),
+            ),
+          );
+      final mistake = (await ExamRepository(db).quizResult(attempt))!
+          .mistakes
+          .single;
+      expect(mistake.german, 'Pfand');
+      expect(mistake.article, 'das');
     });
 
     test('and never an exam', () async {
@@ -249,6 +310,25 @@ void main() {
       final pool = await ExamRepository(db).pool('A1.1');
       expect(pool.words.map((w) => w.word.uid), isNot(contains(customUid(id))));
     });
+  });
+
+  test('R2 a word deleted while its card is open is never planned again, '
+      'whatever the card writes', () async {
+    await engine.openDay(monday);
+    final id = await revise();
+    await words.deleteMyWord(id);
+    // T2 still shows it, and rating it writes its state again.
+    await rating.rate(customUid(id), Rating.good, source: ReviewSource.search);
+    final due = (await state(id))!.due!;
+
+    expect(
+      (await DriftPlanStore(
+        db,
+        settings,
+      ).revisionCandidates()).map((c) => c.uid),
+      isNot(contains(customUid(id))),
+    );
+    expect((await engine.openDay(due)).revise, isNot(contains(customUid(id))));
   });
 
   test('R2 Delete takes its schedule with it and keeps its history', () async {

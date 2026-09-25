@@ -46,23 +46,27 @@ class DriftQuizStore implements QuizStore {
               null => null,
             },
           ),
-      // FR-R2-04 (#363): the learner's own words, opted in, and only in
-      // all-learned quizzes. Their meaning is the English one, as on T2.
-      if (source == QuizSource.allLearned &&
-          _settings.read(SettingKeys.quizCustomWords))
+      // FR-R2-04 (#363): the learner's own words, opted in, in all-learned
+      // quizzes, and in a compare set that names them: L9's *Retry
+      // mistakes* of such a quiz. Their meaning is the English one, as on T2.
+      if (source == QuizSource.compareSet ||
+          source == QuizSource.allLearned &&
+              _settings.read(SettingKeys.quizCustomWords))
         for (final row in await _words.myQuizWords().get())
-          QuizWord(
-            uid: customUid(row.id),
-            german: row.german,
-            english: row.meaning,
-            step: row.step ?? '',
-            article: row.article,
-            stability: row.stability,
-            lastReview: switch (row.reviewed) {
-              final instant? => planDate(DateTime.parse(instant).toLocal()),
-              null => null,
-            },
-          ),
+          if (source != QuizSource.compareSet ||
+              uids.contains(customUid(row.id)))
+            QuizWord(
+              uid: customUid(row.id),
+              german: row.german,
+              english: row.meaning,
+              step: row.step ?? '',
+              article: row.article,
+              stability: row.stability,
+              lastReview: switch (row.reviewed) {
+                final instant? => planDate(DateTime.parse(instant).toLocal()),
+                null => null,
+              },
+            ),
     ];
   }
 
