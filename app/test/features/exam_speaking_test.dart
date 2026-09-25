@@ -40,13 +40,20 @@ void main() {
     List<ExamItem> items = const <ExamItem>[artboardSpeaking, after],
     Map<int, String>? given,
     FakeRecorder? recorder,
+    int? durationSec,
   }) async {
     // A tall phone: the rubric's last line is on screen.
     tester.view
       ..physicalSize = const Size(1200, 3000)
       ..devicePixelRatio = 2;
     addTearDown(tester.view.reset);
-    run = StubExamRun(items: items, given: given ?? <int, String>{});
+    run = StubExamRun(
+      items: items,
+      given: given ?? <int, String>{},
+      attempt: durationSec == null
+          ? null
+          : artboardAttempt(durationSec: durationSec),
+    );
     mic = recorder ?? FakeRecorder();
     final routes = GoRouter(
       initialLocation: '/exam',
@@ -241,6 +248,129 @@ void main() {
       expect(find.text(l10n.examSpeakingRecorded), findsOneWidget);
       expect(find.text('00:52'), findsOneWidget);
     });
+  });
+
+  testWidgets('#372 Submit while recording grades the saved recording', (
+    tester,
+  ) async {
+    await pump(tester, items: const <ExamItem>[artboardSpeaking]);
+    await press(tester, Icons.mic);
+    await tester.pump(const Duration(seconds: 12));
+
+    await tester.tap(find.text(l10n.examRunSubmit));
+    await tester.pumpAndSettle();
+
+    expect(mic.stopped, 1);
+    expect(
+      find.text(l10n.examRunSubmitTitle),
+      findsNothing,
+      reason: 'the task was answered, so nothing to confirm',
+    );
+    expect(run.submitted, 1);
+    expect(run.answersAtSubmit, <(int, String?)>[(1, path)]);
+  });
+
+  testWidgets('#372 a recording stopped by hand is not stopped again', (
+    tester,
+  ) async {
+    await pump(tester, items: const <ExamItem>[artboardSpeaking]);
+    await press(tester, Icons.mic);
+    await tester.pump(const Duration(seconds: 12));
+    await press(tester, Icons.stop);
+
+    await tester.tap(find.text(l10n.examRunSubmit));
+    await tester.pumpAndSettle();
+
+    expect(mic.stopped, 1);
+    expect(run.submitted, 1);
+  });
+
+  testWidgets("#372 a recording stopped by moving back is its own task's", (
+    tester,
+  ) async {
+    // Speaking second, where the paper resumes.
+    await pump(
+      tester,
+      items: const <ExamItem>[after, artboardSpeaking],
+      given: <int, String>{1: 'house'},
+    );
+    await press(tester, Icons.mic);
+    await tester.pump(const Duration(seconds: 12));
+
+    await tester.tap(find.text(l10n.examRunPrevious));
+    await tester.pumpAndSettle();
+
+    expect(mic.stopped, 1);
+    expect(run.answers, <(int, String?)>[(2, path)]);
+
+    // And the runner holds it as the task's: nothing is left to ask about.
+    await tester.tap(find.text(l10n.examRunNext));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text(l10n.examRunSubmit));
+    await tester.pumpAndSettle();
+    expect(find.text(l10n.examRunSubmitTitle), findsNothing);
+    expect(run.submitted, 1);
+  });
+
+  testWidgets('#372 a second Submit, or Stop, while it stops grades once', (
+    tester,
+  ) async {
+    await pump(tester, items: const <ExamItem>[artboardSpeaking]);
+    await press(tester, Icons.mic);
+    await tester.pump(const Duration(seconds: 12));
+    final stopping = mic.stopping = Completer<void>();
+
+    await tester.tap(find.text(l10n.examRunSubmit));
+    await tester.pump();
+    await tester.tap(find.text(l10n.examRunSubmit));
+    await tester.pump();
+    await press(tester, Icons.stop);
+    stopping.complete();
+    await tester.pumpAndSettle();
+
+    expect(mic.stopped, 1);
+    expect(find.text(l10n.examRunSubmitTitle), findsNothing);
+    expect(run.submitted, 1);
+    expect(run.answersAtSubmit, <(int, String?)>[(1, path)]);
+  });
+
+  testWidgets('#372 a recorder that fails to stop never holds the exam', (
+    tester,
+  ) async {
+    await pump(tester, items: const <ExamItem>[artboardSpeaking]);
+    await press(tester, Icons.mic);
+    await tester.pump(const Duration(seconds: 12));
+    mic.stopFails = true;
+
+    await tester.tap(find.text(l10n.examRunSubmit));
+    await tester.pumpAndSettle();
+
+    // The take is lost: the recorder is ready again, the task is empty, and
+    // the submit asks.
+    expect(find.text(l10n.examSpeakingReady), findsOneWidget);
+    expect(find.text(l10n.examRunSubmitTitle), findsOneWidget);
+    await tester.tap(find.text(l10n.examRunSubmitConfirm));
+    await tester.pumpAndSettle();
+    expect(run.submitted, 1);
+    expect(find.text('L13'), findsOneWidget);
+  });
+
+  testWidgets('#372 FR-L12-03 at 0:00 a live recording is saved and graded', (
+    tester,
+  ) async {
+    await pump(
+      tester,
+      items: const <ExamItem>[artboardSpeaking],
+      durationSec: 20 * 60 - 3,
+    );
+    await press(tester, Icons.mic);
+
+    await tester.pump(const Duration(seconds: 3));
+    await tester.pumpAndSettle();
+
+    expect(mic.stopped, 1);
+    expect(run.submitted, 1);
+    expect(run.answersAtSubmit, <(int, String?)>[(1, path)]);
   });
 
   testWidgets('leaving mid-recording keeps what was said', (tester) async {

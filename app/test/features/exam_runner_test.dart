@@ -226,6 +226,28 @@ void main() {
       expect(find.text('L13'), findsOneWidget);
     });
 
+    testWidgets('#372 at 0:00 while it asks, the clock holds and the paper '
+        'submits once the learner answers', (tester) async {
+      await pump(
+        tester,
+        stub: StubExamRun(
+          items: two,
+          given: <int, String>{1: 'die'},
+          attempt: artboardAttempt(durationSec: 20 * 60 - 2),
+        ),
+      );
+      await tap(tester, l10n.examRunSubmit);
+      await tester.pump(const Duration(seconds: 4));
+      expect(find.text('0:00'), findsOneWidget);
+      expect(run.submitted, 0, reason: 'the learner is still being asked');
+
+      await tap(tester, l10n.examRunKeepAnswering);
+      await tester.pump(const Duration(seconds: 1));
+      await tester.pumpAndSettle();
+      expect(run.submitted, 1);
+      expect(find.text('L13'), findsOneWidget);
+    });
+
     testWidgets('with every answer given it does not ask', (tester) async {
       await pump(
         tester,

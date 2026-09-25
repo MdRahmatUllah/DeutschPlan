@@ -62,6 +62,7 @@ class ExamQuestionView extends ConsumerWidget {
     this.onRubric,
     this.recordingPath,
     this.onDiscard,
+    this.onRecording,
   });
 
   final ExamItem item;
@@ -88,6 +89,10 @@ class ExamQuestionView extends ConsumerWidget {
   final Future<String> Function()? recordingPath;
   final Future<void> Function(String path)? onDiscard;
 
+  /// Speaking: how to stop the recording and keep it while one runs, and
+  /// null once it doesn't. *Submit exam* stops it first (#372).
+  final ValueChanged<Future<void> Function()?>? onRecording;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
@@ -105,6 +110,7 @@ class ExamQuestionView extends ConsumerWidget {
         recordingPath:
             recordingPath ?? () => throw StateError('no recording path'),
         onDiscard: onDiscard ?? (_) async {},
+        onRecording: onRecording ?? (_) {},
       );
     }
 
@@ -674,6 +680,7 @@ class ExamSpeaking extends ConsumerStatefulWidget {
     required this.onRubric,
     required this.recordingPath,
     required this.onDiscard,
+    required this.onRecording,
     super.key,
   });
 
@@ -688,6 +695,9 @@ class ExamSpeaking extends ConsumerStatefulWidget {
   final ValueChanged<List<bool>> onRubric;
   final Future<String> Function() recordingPath;
   final Future<void> Function(String path) onDiscard;
+
+  /// Told how to stop and keep a recording while one runs, and null after.
+  final ValueChanged<Future<void> Function()?> onRecording;
 
   /// FR-L12S-02: one retake.
   static const int retakes = 1;
@@ -795,6 +805,8 @@ class _ExamSpeakingState extends ConsumerState<ExamSpeaking> {
     _heard = recorder.levels.listen((level) {
       if (mounted) setState(() => _levels.add(level));
     });
+    _finishing = null;
+    widget.onRecording(_finish);
     _tick = Timer.periodic(const Duration(seconds: 1), (_) {
       if (!mounted) return;
       setState(() => _seconds++);
@@ -803,7 +815,14 @@ class _ExamSpeakingState extends ConsumerState<ExamSpeaking> {
     });
   }
 
-  Future<void> _finish({bool mounted = true}) async {
+  /// The recording's stop, once it is asked for (#372): Stop, the level's
+  /// end, the runner's Submit and the 0:00 tick can meet, and it stops once.
+  Future<void>? _finishing;
+
+  Future<void> _finish({bool mounted = true}) =>
+      _finishing ??= _stop(mounted: mounted);
+
+  Future<void> _stop({required bool mounted}) async {
     final recorder = _recorder;
     _tick?.cancel();
     _tick = null;
@@ -811,7 +830,19 @@ class _ExamSpeakingState extends ConsumerState<ExamSpeaking> {
     // and the recording must stop now.
     unawaited(_heard?.cancel());
     _heard = null;
-    await recorder.stop();
+    try {
+      await recorder.stop();
+    } on Object {
+      // A recorder that can't stop has kept nothing to hand in (#372): the
+      // take is lost, the task keeps what it had, and a submit goes on.
+      _path = widget.given;
+      if (mounted && this.mounted) {
+        setState(() => _mic = _path == null ? _Mic.idle : _Mic.recorded);
+      }
+      return;
+    } finally {
+      widget.onRecording(null);
+    }
     final path = _path;
     if (path != null) widget.onGiven(path);
     if (mounted && this.mounted) setState(() => _mic = _Mic.recorded);

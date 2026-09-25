@@ -210,8 +210,18 @@ class FakeRecorder implements ExamRecorder {
     await starting?.future;
   }
 
+  /// Holds `stop` open, as a recorder finishing its file would (#372).
+  Completer<void>? stopping;
+
+  /// Makes `stop` throw, as a recorder that fails would (#372).
+  bool stopFails = false;
+
   @override
-  Future<void> stop() async => stopped++;
+  Future<void> stop() async {
+    stopped++;
+    await stopping?.future;
+    if (stopFails) throw StateError('the recorder failed');
+  }
 
   @override
   Stream<double> get levels => heard.stream;
@@ -269,6 +279,9 @@ class StubExamRun implements ExamRunService {
   final List<(int, int)> times = <(int, int)>[];
 
   int submitted = 0;
+
+  /// The answers as they stood when the paper was submitted, and graded.
+  List<(int, String?)>? answersAtSubmit;
 
   /// Makes the next submits throw, as a failed write would.
   bool failSubmit = false;
@@ -344,6 +357,7 @@ class StubExamRun implements ExamRunService {
   @override
   Future<ExamScore> submit(int attemptId) async {
     submitted++;
+    answersAtSubmit = <(int, String?)>[...answers];
     await holdSubmit?.future;
     if (failSubmit) throw StateError('disk full');
     return const ExamScore(scorePoints: 30, maxPoints: 48, passed: true);
