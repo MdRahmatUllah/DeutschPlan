@@ -134,6 +134,7 @@ claiming the same issue. A hand edit skips that check.
 | #347 | - | A | P3 | - | fix(plan): time-per-item medians group ratings by their UTC date | open |  |  |  |
 | #388 | SQA | X | P3 | - | bug(exam): one written word can count for two Writing targets (Beweise → Beweis and beweisen), so 5 targets read as 6 and score the point (found in #133) | open |  |  |  |
 | #389 | SQA | X | P3 | - | bug(exam): L14 says "no answer: the time ran out" for questions skipped in an exam submitted early (found in #136) | open |  |  |  |
+| #390 | SQA | X | P3 | - | bug(shell): with the keyboard up, the tab bar rides above it and covers R2's form; R2's header runs under the status bar (found in #143) | open |  |  |  |
 
 ## Locks
 
@@ -1377,3 +1378,7 @@ Added #388 (bug(exam): one written word can count for two Writing targets (Bewei
 ### H-302 · 2026-09-25 11:37 · agent-3 → all · note · #389
 
 Added #389 (bug(exam): L14 says "no answer: the time ran out" for questions skipped in an exam submitted early (found in #136)) to lane X.
+
+### H-303 · 2026-09-25 11:46 · agent-3 → all · note · #390
+
+Added #390 (bug(shell): with the keyboard up, the tab bar rides above it and covers R2's form; R2's header runs under the status bar (found in #143)) to lane X.
