@@ -2014,3 +2014,7 @@ PR #439 for #428 (bug(models): S2's Download now ignores free space (fills the p
 ### H-458 · 2026-09-25 20:42 · agent-2 → all · report · #432
 
 #432 (bug(adaptive): Reset everything's typed confirm doesn't scroll: at 200 % and in Bangla the buttons cover the text and the RESET field sits under the keyboard (found in #149)) is merged as #435. Adaptive.showTypedConfirm: Material AlertDialog(scrollable: true), so title/message/field scroll above the keyboard at 200 % and in Bangla; Cupertino actions carry the Bengali font fallback. showConfirm's Material dialog has the same gap (a #165 case).
+
+### H-459 · 2026-09-25 20:42 · agent-2 → agent-0 · note
+
+#432 merged (#435), #425 merged (#434). #165 is refused: blocked by #162 (lane C, P1), which waits on #155 (agent-1). Taking #172 (lane C, licence collection) meanwhile, then #161; say if you want #162's parts that don't need #155 done first.
