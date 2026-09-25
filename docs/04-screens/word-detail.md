@@ -9,7 +9,7 @@
 **Presentation.** Phones: bottom sheet with medium/large detents; tablets: right pane; deep link: full page.
 - The sheet opens at the large detent (740 of 844 px, as the artboard draws it). Medium is half the screen. Dragging below medium closes it.
 - A tablet is a shortest side of 600 dp or more. Its pane is 420 dp wide, along the right edge, over a scrim that closes it when tapped. The opener stays as it is underneath.
-- `?speak=1` on the deep link plays the headword once, when it has loaded (FR-X1-02).
+- `?speak=1` on the deep link plays the headword once, when it has loaded (FR-X1-02). It plays on every *Pronounce*, even onto the word already open, and for the same link twice. The router numbers each speaking link (`&arrival=N`), and W1 plays again for a new number, since a link onto the open word keeps its page (#442).
 
 **Layout.** Gender-tinted header strip: article + headword (display), speaker, step chip "A1.1", status chip "Done". Caption "Nomen · die Straße, -n · /স্ট্রাসে/". Meanings "street, road / রাস্তা". **Examples** (all, with play + translation). "⟶ die Straße überqueren · auf der Straße · die Straße entlang". "≈ Gasse = narrow street · Weg = path, way". Interference tip callout if any. *Compare a synonym set (…)* when applicable. History caption "Next review in 8 days · reviewed 5 times · last: Good". Actions row: *Add to today* (To-do only) · *Mark known* · *Suspend* / *Resume* · *Reset word* · *Plain card / Cloze card* toggle · *Translate* (if `mt_enabled`) · *Copy* · web chips Duden · DWDS · Wiktionary.
 

@@ -17,6 +17,8 @@ GoRouter buildRouter({String initialLocation = '/today', RouteGuards? guards}) {
   // The router refers to itself: the deep-link branch has to know where the
   // learner already is before deciding whether to move them.
   late final GoRouter router;
+  // The speaking links so far: each *Pronounce* is a new arrival (#442).
+  var arrivals = 0;
 
   router = GoRouter(
     navigatorKey: rootNavigatorKey,
@@ -38,7 +40,10 @@ GoRouter buildRouter({String initialLocation = '/today', RouteGuards? guards}) {
         final current = router.routerDelegate.currentConfiguration.uri;
         if (!interruptible(current.path)) return current.toString();
 
-        return resolveDeepLink(state.uri);
+        final resolved = resolveDeepLink(state.uri);
+        return wantsSpeech(Uri.parse(resolved))
+            ? numbered(resolved, ++arrivals)
+            : resolved;
       }
       return guardRedirect(state, checks);
     },

@@ -242,7 +242,7 @@ void main() {
       );
       await openLink(tester, 'deutschplan://word/uid-haus?speak=1');
 
-      expect(location(), '/word/uid-haus?speak=1');
+      expect(location(), '/word/uid-haus?speak=1&arrival=1');
       expect(
         tester.widget<WordDetailScreen>(find.byType(WordDetailScreen)).speak,
         isTrue,
@@ -250,6 +250,39 @@ void main() {
       // Once, with its article, and not again as the page settles.
       await tester.pumpAndSettle();
       expect(tts.spoken, <String>['die Straße']);
+    });
+
+    testWidgets('FR-X1-02 #442 Pronounce speaks on the word already open, '
+        'and again on a second Pronounce', (tester) async {
+      late SettingsRepository settings;
+      await tester.runAsync(() async {
+        final db = AppDatabase.memory();
+        settings = SettingsRepository(db);
+        await settings.load();
+        addTearDown(() async {
+          await settings.dispose();
+          await db.close();
+        });
+      });
+      final tts = FakeTts();
+      await pumpApp(
+        tester,
+        extra: <Override>[
+          settingsProvider.overrideWithValue(settings),
+          fakeVoice(tts),
+        ],
+      );
+      // agent-3's steps: the widget's word opens W1, then *Pronounce*.
+      await openLink(tester, 'deutschplan://word/uid-haus');
+      expect(tts.spoken, isEmpty);
+      await openLink(tester, 'deutschplan://word/uid-haus?speak=1');
+      expect(tts.spoken, <String>['die Straße']);
+
+      // The same link again: a new arrival, so it speaks again.
+      await openLink(tester, 'deutschplan://word/uid-haus?speak=1');
+      expect(location(), '/word/uid-haus?speak=1&arrival=2');
+      expect(tts.spoken, <String>['die Straße', 'die Straße']);
+      expect(find.byType(WordDetailScreen), findsOneWidget);
     });
 
     testWidgets('a word link opened cold: back goes to Today, not out of '

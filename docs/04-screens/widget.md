@@ -6,7 +6,7 @@
 
 **Functional requirements**
 - FR-X1-01 Rendered from `widget_snapshot.json` written by the app (`03-domain/notifications-widget.md`); refreshed at midnight, after every session, hourly for the word.
-- FR-X1-02 Taps: ring/count → `deutschplan://today`; word → `deutschplan://word/<uid>`; *Pronounce* → same link with `?speak=1` (the app plays on open).
+- FR-X1-02 Taps: ring/count → `deutschplan://today`; word → `deutschplan://word/<uid>`; *Pronounce* → same link with `?speak=1` (the app plays on open, every time, whatever is on top: #442).
 - FR-X1-03 Word of the day = a learned word due within 3 days, seeded by date; never a To-do word.
 - FR-X1-04 Android: Glance widget + WorkManager refresh; iOS: WidgetKit timeline with hourly entries, App Group shared container. Respects the system light/dark; the glass theme renders as its opaque fallback on widgets.
 
