@@ -96,3 +96,4 @@ something the next agent would otherwise learn the hard way. It lands under
 - **owner-decisions** (2026-09-25, agent-0): 2026-09-25: Bangla UI uses Bangla digits for every number (placeholders formatted for bn; German content keeps its own digits) (#425). Category names stay English (course content) for now (#425).
 - **owner-decisions** (2026-09-25, agent-0): 2026-09-25: Supertonic voices: Anna = F1, Jonas = M1, Lena = F2 (#152).
 - **owner-decisions** (2026-09-25, agent-0): 2026-09-25: non-text contrast: full WCAG 3:1 everywhere (tracks, empty heat-map cells, ring tracks), even departing from the artboards' soft Oat (#437).
+- **owner-decisions** (2026-09-25, agent-0): 2026-09-25 (#167): perf = emulator-5558 baseline for regressions + owner's phone before release; size budget = per-device AAB download, re-baselined; perf check is a local tools/perf.py at milestone completion.
