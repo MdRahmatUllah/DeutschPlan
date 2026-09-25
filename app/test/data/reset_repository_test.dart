@@ -4,6 +4,7 @@ import 'package:deutschplan/data/db/app_database.dart';
 import 'package:deutschplan/data/db/content_dao.dart';
 import 'package:deutschplan/data/repositories/backup_repository.dart';
 import 'package:deutschplan/data/repositories/model_repository.dart';
+import 'package:deutschplan/data/repositories/plan_repository.dart';
 import 'package:deutschplan/data/repositories/reset_repository.dart';
 import 'package:deutschplan/data/repositories/setting_keys.dart';
 import 'package:deutschplan/data/repositories/settings_repository.dart';
@@ -169,6 +170,24 @@ void main() {
     );
     expect(await count('word_state'), 2, reason: "A1.1's stay");
     expect(await count("enrollments WHERE sublevel_code = 'A1.1'"), 1);
+  });
+
+  test('#420 a step reset leaves the course where it started: T1 day '
+      'and M1 Learning since do not move', () async {
+    await db.customStatement(
+      "INSERT INTO daily_stats (day, new_done) VALUES ('2026-09-01', 7), "
+      "('2026-09-12', 5)",
+    );
+    final plans = PlanRepository(db);
+    expect(await plans.courseStartedOn(), '2026-09-01');
+
+    await reset.resetStep('A1.1', today: today); // the first, finished
+    expect(await plans.courseStartedOn(), '2026-09-01');
+    await reset.resetStep('A1.2', today: today); // the current, restarted
+    expect(await plans.courseStartedOn(), '2026-09-01');
+
+    await reset.resetEverything();
+    expect(await plans.courseStartedOn(), isNull, reason: 'starts over');
   });
 
   test(

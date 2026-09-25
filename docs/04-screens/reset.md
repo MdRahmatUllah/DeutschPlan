@@ -7,7 +7,7 @@
 **Flow.** Sheet with two options: *Reset one step* (step picker → confirm) and *Reset everything*. Full reset dialog: "Reset everything? Deletes all progress, plans, quiz and exam history and my words on this phone. Export first if you might want it back. Type RESET to confirm." with a text field; *Cancel* / *Reset* (Coral, enabled only when the text equals RESET).
 
 **Functional requirements**
-- FR-M7-01 Reset one step: delete `word_state`, `plan_items`, `review_log` for that step's uids, its `grammar_state` rows, its exam and quiz attempts; the step becomes To-do; if it was active, or it is the only step there is (a finished one with auto-advance off), enrollment restarts today, planned anew. The undo stack is emptied.
+- FR-M7-01 Reset one step: delete `word_state`, `plan_items`, `review_log` for that step's uids, its `grammar_state` rows, its exam and quiz attempts; the step becomes To-do; if it was active, or it is the only step there is (a finished one with auto-advance off), enrollment restarts today, planned anew. The undo stack is emptied. The course's first day (T1's "Day N of your course", M1's "Learning since") doesn't move: it is the earliest of the enrollments and the days studied, and a step reset leaves the days studied alone (#420). Only *Reset everything* starts the course over.
 - FR-M7-02 Reset everything: empty every user table in one transaction (keep `theme_mode` and `ui_language`), delete the recordings (best effort, after the data), keep the models; then route to onboarding.
 - FR-M7-03 Offer *Export first* inline before the destructive action.
 
