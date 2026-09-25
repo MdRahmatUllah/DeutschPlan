@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-09-25 20:13
+last-seen: 2026-09-25 20:14
 last-read: 301
 
 ## Now
 
-Nothing claimed.
+#428 bug(models): S2's Download now ignores free space (fills the phone to 0 B, failure never shown), says "Downloading" while waiting for Wi-Fi, and re-downloads an installed voice (found in #156) — claimed 2026-09-25 20:14.
 
 ## Next
 
