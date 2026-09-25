@@ -5,7 +5,7 @@
 ## Writing · 1 of 1
 Prompt: "Write to your landlord about a broken heating. Use at least 6 of these words:" + 10 target-word chips (Heizung, Vermieter, kaputt, reparieren, kalt, seit, dringend, Wohnung, bitte, Termin); progress line "7 of 10 used · minimum 30 words at A1"; text area; live line "43 words · min 30 · Connectors found: seit, bitte"; *Submit text*; umlaut row pinned above the keyboard.
 
-- FR-L12W-01 Target-word detection uses `searchKey` prefix matching on tokens (so "Heizung" matches "Heizungen"); chips turn Lime when used.
+- FR-L12W-01 Target-word detection uses `searchKey` prefix matching on tokens (so "Heizung" matches "Heizungen"); chips turn Lime when used. A word of the text counts for one target at most, the most targets it can use once each (#388): "Beweise" is *Beweis* or *beweisen*, not both, and the same word twice is one word.
 - FR-L12W-02 Minimum words per level: A1 30 · A2 60 · B1 100 · B2 150 · C1 200 · C2 250.
 - FR-L12W-03 App points (2): ≥ 6 target words → 1; ≥ minimum length → 1. Rubric (2): task covered · structure — 0.5 each, ticked by the learner on the results review.
 - FR-L12W-04 The text is stored in `exam_answers.given`; never leaves the device.

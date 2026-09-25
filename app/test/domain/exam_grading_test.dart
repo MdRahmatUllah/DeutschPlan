@@ -185,6 +185,39 @@ void main() {
       expect(targetsUsed('Die Tür ist zu.', <String>['Tür']), <String>['Tür']);
     });
 
+    test('FR-L12W-03 #388 one word counts for one target: Beweise is Beweis '
+        'or beweisen, not both', () {
+      const targets = <String>['beweisen', 'Richter', 'Beweis'];
+      expect(
+        targetsUsed('Der Richter sah die Beweise.', targets),
+        hasLength(2),
+      );
+      expect(
+        targetsUsed('Die Beweise, die Beweise!', targets),
+        hasLength(1),
+        reason: 'the same word twice is one word',
+      );
+      expect(targetsUsed('Die Beweise beweisen es.', targets), <String>[
+        'beweisen',
+        'Beweis',
+      ], reason: 'two words, two targets');
+      // The matching, not first come: Beweis takes "beweist" first, but
+      // beweisen can have nothing else, so Beweis moves to the compound.
+      expect(
+        targetsUsed('Er beweist die Beweisaufnahme.', <String>[
+          'Beweis',
+          'beweisen',
+        ]),
+        <String>['Beweis', 'beweisen'],
+      );
+    });
+
+    test('#388 a word family is one target', () {
+      expect(sameTargetFamily('Beweis', 'beweisen'), isTrue);
+      expect(sameTargetFamily('Klage', 'klagen'), isTrue);
+      expect(sameTargetFamily('Richter', 'Beweis'), isFalse);
+    });
+
     test('the connectors a text uses: whole words, case aside, two words '
         'only together', () {
       const connectors = <String>['und', 'aber', 'dass', 'ohne dass'];

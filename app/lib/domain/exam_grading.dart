@@ -105,15 +105,47 @@ bool _finds(String word, ({String prefix, bool verb}) target) {
 /// FR-L12W-01: the [targets] [text] uses — a word of it that is a form of
 /// the target: "Heizungen" uses Heizung, "bringt" uses bringen,
 /// "Werkstätten" uses Werkstatt.
+///
+/// A word counts for one target at most (#388): "Beweise" is Beweis or
+/// beweisen, not both. The most targets the text uses so, a bipartite
+/// matching of targets to its distinct words (Kuhn's augmenting paths:
+/// ten targets, a few hundred words).
 List<String> targetsUsed(String text, List<String> targets) {
-  final words = textWords(text);
-  return <String>[
+  final words = textWords(text).toSet().toList();
+  final finds = <List<int>>[
     for (final target in targets)
-      if (_target(target) case final found
-          when found.prefix.isNotEmpty &&
-              words.any((word) => _finds(word, found)))
-        target,
+      if (_target(target) case final found when found.prefix.isNotEmpty)
+        <int>[
+          for (var w = 0; w < words.length; w++)
+            if (_finds(words[w], found)) w,
+        ]
+      else
+        const <int>[],
   ];
+  final owner = <int, int>{}; // a word's index → its target's
+  bool claim(int target, Set<int> tried) {
+    for (final word in finds[target]) {
+      if (!tried.add(word)) continue;
+      final other = owner[word];
+      if (other == null || claim(other, tried)) {
+        owner[word] = target;
+        return true;
+      }
+    }
+    return false;
+  }
+
+  return <String>[
+    for (var t = 0; t < targets.length; t++)
+      if (claim(t, <int>{})) targets[t],
+  ];
+}
+
+/// Whether one of [a] and [b] finds the other's forms (#388): Beweis and
+/// beweisen, Klage and klagen. A Writing list keeps one of them.
+bool sameTargetFamily(String a, String b) {
+  final (x, y) = (_target(a).prefix, _target(b).prefix);
+  return x.isNotEmpty && y.isNotEmpty && (x.startsWith(y) || y.startsWith(x));
 }
 
 /// The [connectors] [text] uses, as the Writing screen lists them: whole
