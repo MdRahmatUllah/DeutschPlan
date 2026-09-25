@@ -30,7 +30,7 @@ void main() {
   /// A variant of one file, hashed for real.
   ModelVariant variantOf(
     String content, {
-    String id = 'q1_25',
+    String id = 'q4_k_m',
     String file = 'model.gguf',
     String? sha,
   }) => ModelVariant(
@@ -152,15 +152,23 @@ void main() {
       }
     });
 
-    test('carries the variants the docs name', () async {
+    test("#409 Hy-MT is the owner's Q4_K_M build, the file that exists, "
+        'pinned', () async {
       final manifest = ModelManifest.parse(
         await rootBundle.loadString(ModelRepository.manifestAsset),
       );
-      // `translation.md`: q1_25 (~440 MB, default) and q2 (~575 MB).
-      expect(manifest.model('hymt')!.variants.map((v) => v.id), <String>[
-        'q1_25',
-        'q2',
-      ]);
+      // `translation.md`: one build, from tencent/HY-MT1.5-1.8B-GGUF.
+      final variant = manifest.model('hymt')!.variants.single;
+      expect(variant.id, 'q4_k_m');
+      final file = variant.files.single;
+      expect(file.name, 'HY-MT1.5-1.8B-Q4_K_M.gguf');
+      expect(
+        file.url.toString(),
+        'https://huggingface.co/tencent/HY-MT1.5-1.8B-GGUF/resolve/main/'
+        'HY-MT1.5-1.8B-Q4_K_M.gguf',
+      );
+      expect(variant.isPinned, isTrue, reason: 'its SHA-256 is known');
+      expect(variant.bytes, 1133080512, reason: 'about 1.1 GB');
     });
 
     test('the licence gate the Hy-MT model needs is in the manifest', () async {
@@ -230,10 +238,11 @@ void main() {
     });
 
     test('a variant with no pinned hash never activates', () async {
-      // The bundled manifest ships with `sha256: null` until the artefacts
-      // are pinned. Unverifiable and unverified are the same thing here.
+      // A file with `sha256: null`, as the bundled manifest had before the
+      // artefacts were pinned (#245, #409): unverifiable and unverified are
+      // the same thing here.
       final variant = ModelVariant(
-        id: 'q1_25',
+        id: 'q4_k_m',
         name: 'unpinned',
         files: <ModelFile>[
           ModelFile(
@@ -274,7 +283,7 @@ void main() {
       await stage('hymt', good, 'version one');
       await models.activate('hymt', good);
 
-      final bad = variantOf('version two', id: 'q2');
+      final bad = variantOf('version two', id: 'q6_k');
       await stage('hymt', bad, 'corrupted');
       expect(await models.activate('hymt', bad), ModelStatus.failed);
 
@@ -308,7 +317,7 @@ void main() {
     test('a crash mid-activation leaves the old model, not nothing', () async {
       // `activate` renames the old model aside before putting the new one in
       // place. A process that died in between leaves a `.previous`; the next
-      // read puts it back rather than making the learner download 575 MB
+      // read puts it back rather than making the learner download 1.1 GB
       // again.
       final good = variantOf('version one');
       await stage('hymt', good, 'version one');
@@ -328,7 +337,7 @@ void main() {
     test('the old model survives an activation that cannot finish', () async {
       // The ordering is the claim: the model being replaced is renamed aside,
       // not deleted, so a failure putting the new one in place costs an app
-      // restart rather than a second 575 MB download. A plain file sitting
+      // restart rather than a second 1.1 GB download. A plain file sitting
       // where the rename wants to go is the cheapest way to make it fail.
       final good = variantOf('version one');
       await stage('hymt', good, 'version one');
@@ -466,11 +475,11 @@ void main() {
     });
 
     test('the other variant of the model is not an update', () async {
-      // The Model manager offers "Better quality · 2-bit" beside the
-      // installed build. Calling that an update would replace a working
-      // model rather than add the one the learner picked.
+      // A manifest may list several builds of a model (Hy-MT publishes
+      // Q4_K_M, Q6_K and Q8_0; the app offers Q4_K_M, #409). Calling another
+      // build an update would replace a working model rather than add one.
       final installed = variantOf('small build');
-      final other = variantOf('big build', id: 'q2');
+      final other = variantOf('big build', id: 'q6_k');
       final entry = entryOf(<ModelVariant>[installed, other]);
 
       await stage('hymt', installed, 'small build');

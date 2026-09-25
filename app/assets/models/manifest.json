@@ -69,26 +69,14 @@
       ],
       "variants": [
         {
-          "id": "q1_25",
-          "name": "1.25-bit build",
+          "id": "q4_k_m",
+          "name": "4-bit build",
           "files": [
             {
-              "name": "hymt-1.8b-q1_25.gguf",
-              "url": "https://huggingface.co/tencent/Hy-MT1.5-1.8B-GGUF/resolve/main/hymt-1.8b-q1_25.gguf",
-              "bytes": 461373440,
-              "sha256": null
-            }
-          ]
-        },
-        {
-          "id": "q2",
-          "name": "Better quality · 2-bit",
-          "files": [
-            {
-              "name": "hymt-1.8b-q2.gguf",
-              "url": "https://huggingface.co/tencent/Hy-MT1.5-1.8B-GGUF/resolve/main/hymt-1.8b-q2.gguf",
-              "bytes": 602931200,
-              "sha256": null
+              "name": "HY-MT1.5-1.8B-Q4_K_M.gguf",
+              "url": "https://huggingface.co/tencent/HY-MT1.5-1.8B-GGUF/resolve/main/HY-MT1.5-1.8B-Q4_K_M.gguf",
+              "bytes": 1133080512,
+              "sha256": "4383ac0c3c8e476de98ff979c2a3f069f8c4fb385e7860cf2d28da896cc477c7"
             }
           ]
         }

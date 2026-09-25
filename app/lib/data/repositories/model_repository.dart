@@ -366,7 +366,7 @@ class ModelRepository {
   /// The model being replaced is renamed aside rather than deleted, and only
   /// removed once the new one has landed. Every point in between is
   /// recoverable: a crash leaves either the old model or the new one, never a
-  /// mixture and never nothing — which on a 575 MB download is the difference
+  /// mixture and never nothing — which on a 1.1 GB download is the difference
   /// between an app restart and a second download over mobile data.
   Future<ModelStatus> activate(String modelId, ModelVariant variant) async {
     final status = await verify(modelId, variant);
@@ -503,7 +503,7 @@ class ModelRepository {
     return stamp.isEmpty ? null : stamp;
   }
 
-  /// Streamed rather than read whole: the biggest of these is 575 MB.
+  /// Streamed rather than read whole: the biggest of these is 1.1 GB.
   Future<String> _digestOf(File file) async {
     final output = AccumulatorSink<Digest>();
     final input = sha256.startChunkedConversion(output);

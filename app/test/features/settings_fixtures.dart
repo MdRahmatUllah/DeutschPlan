@@ -57,8 +57,8 @@ final List<double> artboardStabilities = List<double>.filled(110, 10);
 ModelState downloadingModel([ModelStatus status = ModelStatus.downloading]) =>
     ModelState(
       variant: ModelVariant(
-        id: 'q1_25',
-        name: '1.25-bit build',
+        id: 'q4_k_m',
+        name: '4-bit build',
         files: <ModelFile>[
           ModelFile(
             name: 'hymt.gguf',
