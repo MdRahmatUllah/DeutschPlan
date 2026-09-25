@@ -8,6 +8,8 @@ import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 
+import '../core/text_clipping.dart';
+
 /// The golden harness.
 ///
 /// `docs/05-dev-guide/testing.md`: "Goldens — every screen × light/dark/glass ×
@@ -31,6 +33,9 @@ const Duration settleTimeout = Duration(seconds: 10);
 /// differ. These are generated and verified on ONE platform; running them
 /// elsewhere produces diffs that are about the renderer, not the design.
 const String goldenTag = 'golden';
+
+/// The text sizes every golden screen is also checked at (#165).
+const List<double> textAuditScales = <double>[1.5, 2];
 
 /// The two frames `testing.md` names.
 enum GoldenDevice {
@@ -139,7 +144,38 @@ void goldenTest(
   Future<void> Function(WidgetTester tester)? act,
   bool still = true,
   List<Override>? overrides,
+  bool textAudit = true,
 }) {
+  // #165: the same screen at 150 % and 200 % text, on the phone in light:
+  // nothing cut, no word broken mid-word, no layout error. The text size is
+  // the axis here, not the theme; one golden per screen and chrome carries
+  // it, so a variant that only restages a state can opt out.
+  if (textAudit) {
+    for (final scale in textAuditScales) {
+      testWidgets('$name · text ${(scale * 100).round()} %', (tester) async {
+        textAt(tester, scale);
+        await tester.pumpGolden(
+          builder: builder,
+          mode: GoldenMode.light,
+          device: GoldenDevice.phone,
+          chrome: chrome,
+          still: still,
+          overrides: overrides,
+        );
+        if (act != null) {
+          await act(tester);
+          await tester.pumpAndSettle(
+            const Duration(milliseconds: 100),
+            EnginePhase.sendSemanticsUpdate,
+            settleTimeout,
+          );
+        }
+        expect(tester.takeException(), isNull);
+        expectNothingClipped(tester);
+        expectNoWordBroken(tester);
+      });
+    }
+  }
   for (final mode in modes) {
     for (final device in devices) {
       testWidgets(

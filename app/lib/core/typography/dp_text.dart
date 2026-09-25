@@ -131,6 +131,15 @@ abstract final class DpScript {
         .join(' ');
   }
 
+  /// The word length [allowBreaks] starts at, for text in [context]. Above
+  /// 100 % text any word of five letters or more may break at its syllables,
+  /// not only a long compound: at 200 % a display-size "Wohnung" or
+  /// "geschafft!" is wider than its line, and Flutter would cut it at any
+  /// letter (#165). Not at 100 %, where it fits, and a soft hyphen would
+  /// still split its kerning.
+  static int breakThreshold(BuildContext context) =>
+      MediaQuery.textScalerOf(context).scale(1) > 1 ? 4 : 14;
+
   static const String _vowels = 'aeiouyäöüAEIOUYÄÖÜ';
 
   /// The consonants that can open a German syllable together, besides any
@@ -214,7 +223,12 @@ class DpText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final tokens = context.tokens;
-    final text = allowBreaks ? DpScript.allowBreaks(data) : data;
+    final text = allowBreaks
+        ? DpScript.allowBreaks(
+            data,
+            threshold: DpScript.breakThreshold(context),
+          )
+        : data;
 
     // Applied to every style, not just the Latin one: a weight silently
     // dropped on mixed strings would be dropped on most of this app's copy.
@@ -453,7 +467,10 @@ class DpHeadword extends StatelessWidget {
               style: style(colour ?? articleColour ?? tokens.color.ink),
             ),
           TextSpan(
-            text: DpScript.allowBreaks(word),
+            text: DpScript.allowBreaks(
+              word,
+              threshold: DpScript.breakThreshold(context),
+            ),
             style: style(colour ?? tokens.color.ink),
             locale: const Locale('de', 'DE'),
           ),

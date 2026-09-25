@@ -475,9 +475,15 @@ class AdaptiveSegmented<T extends Object> extends StatelessWidget {
         },
         children: <T, Widget>{
           for (final entry in segments.entries)
+            // One line, shrunk to its segment only when it would not fit, as
+            // UIKit's control does: at 150 % "Grammar" wrapped in a quarter
+            // of the width and the control's height cut it (#165).
             entry.key: Padding(
               padding: const EdgeInsets.symmetric(vertical: 6),
-              child: DpText(entry.value, role: DpTextRole.label),
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: DpText(entry.value, role: DpTextRole.label, maxLines: 1),
+              ),
             ),
         },
       );

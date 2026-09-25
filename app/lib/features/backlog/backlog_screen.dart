@@ -287,8 +287,10 @@ class _Backlog extends ConsumerWidget {
           for (final MapEntry(key: date, value: words) in days.entries) ...[
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 0, 4, 0),
+              // The artboard's 40, grown with the text size: a fixed 40 cut
+              // the day's line at 150 % (#165).
               child: SizedBox(
-                height: 40,
+                height: MediaQuery.textScalerOf(context).scale(40),
                 child: Row(
                   children: <Widget>[
                     Expanded(

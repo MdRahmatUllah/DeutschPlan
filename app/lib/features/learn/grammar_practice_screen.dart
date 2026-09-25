@@ -301,8 +301,9 @@ class PracticeHeader extends StatelessWidget {
     final content = Column(
       children: <Widget>[
         SizedBox(height: MediaQuery.paddingOf(context).top),
+        // The artboard's 56, grown with the text size (#165).
         SizedBox(
-          height: 56,
+          height: MediaQuery.textScalerOf(context).scale(56),
           child: Row(
             children: <Widget>[
               const SizedBox(width: 4),
@@ -330,8 +331,10 @@ class PracticeHeader extends StatelessWidget {
                   textAlign: TextAlign.center,
                 ),
               ),
+              // 52, grown with the text size: at 200 % a fixed 52 wrapped
+              // "7 / 20" onto two lines and cut it (#165).
               SizedBox(
-                width: 52,
+                width: MediaQuery.textScalerOf(context).scale(52),
                 child: DpText(
                   l10n.digits('${place.$1} / ${place.$2}'),
                   role: DpTextRole.label,

@@ -656,8 +656,10 @@ class _Answer extends StatelessWidget {
         child: GestureDetector(
           onTap: onPressed,
           behavior: HitTestBehavior.opaque,
+          // 48, grown with the text size: a fixed 48 cut "Understood" at
+          // 150 % (#165).
           child: Container(
-            height: 48,
+            height: MediaQuery.textScalerOf(context).scale(48),
             alignment: Alignment.center,
             decoration: BoxDecoration(
               color: colour,
