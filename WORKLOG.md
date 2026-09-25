@@ -254,3 +254,4 @@ able to tell what is going on without asking.
 - 2026-09-25 07:19 · agent-0 #136 · claimed: L14 · Exam review
 - 2026-09-25 07:19 · agent-1 #363 · PR #375 open; review requested from all
 - 2026-09-25 07:21 · agent-1 #368 · claimed: fix(words): Suspend drops backlog rows too, so a resumed old-step word is never planned again (follow-up to #351)
+- 2026-09-25 07:49 · agent-2 · #160 device check done on emulator-5558: small + medium, light/dark, done state, taps (today, word, word?speak=1 PendingIntents). Found and fixed: maxResizeWidth capped below 4 cells; ring bitmap kept its mode (now drawable track + tinted arc); medium done lacked tomorrow's preview.
