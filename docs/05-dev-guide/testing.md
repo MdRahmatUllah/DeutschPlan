@@ -6,7 +6,27 @@
 | Data | drift in-memory DB with the real content.db attached | 90 % | DAO queries, migrations from every previous schema fixture, export/import round trip |
 | Widgets | `flutter_test`, `mocktail` fakes for TTS/translator/downloader | key flows | reveal → rate → undo; navigator jump; settings rows write keys |
 | Goldens | `alchemist` | every screen × light/dark/glass × phone/tablet | stored under `test/golden/` |
-| Integration | `integration_test` on emulator + simulator | smoke | onboarding → first session → day complete; exam resume after kill |
+| Integration | `integration_test` on the Android emulator (`tools/smoke.py`) | smoke | onboarding → first session → day complete; exam resume after kill |
 | Performance | `flutter drive --profile` timeline | budgets in `accessibility-performance.md` | glass list scroll, card transition |
 
 Rules: test names carry FR/BR IDs; goldens are updated only by `make goldens` and reviewed as images in the PR; content-dependent tests read `content_manifest.json` so counts don't hard-code.
+
+## Integration smoke (#169)
+
+The two flows that must never break, on the real app and the real content.db:
+
+- `app/integration_test/first_day_test.dart` — a fresh install: S1 → S2 (every page, the defaults, A1.1) → T1 → the day's session (each new word turned over and rated Good) → T3 → T5 when the day has sentences → T6, which hands back to T1 reading "All done".
+- `app/integration_test/exam_start_test.dart` — L10 → L11 → L12: Mock 1 begun and three typed answers written, then the test ends mid-exam. It sets `exam_unlock_percent` to 0 first: the smoke is about the runner, not BR-EXAM-01's threshold.
+- `app/integration_test/exam_resume_test.dart` — a new process: L10 offers *Resume*, L12 opens at question 4 with the three answers there, and *Leave* abandons it.
+
+Run it with the device lock held, from the repo root:
+
+```bash
+python tools/team.py device
+python tools/smoke.py                     # --device emulator-5558 is the default
+python tools/team.py device --release
+```
+
+`smoke.py` uninstalls the app, runs the three files in order with `flutter test --no-uninstall -d <device>`, and force-stops the app between the exam's two halves (checking with `pidof` that no process is left). `--no-uninstall` is what keeps user.db from one run to the next: without it `flutter test` uninstalls the app after each run, and its reinstall is `adb install -r`, which keeps data. It prints PASS or FAIL per step and exits non-zero on the first failure. Each file builds its own debug APK, so a run takes several minutes. The helpers the files share are in `integration_test/smoke.dart`; they wait on the real clock in bounded steps rather than `pumpAndSettle`, which the aurora and the exam clock never let settle.
+
+Out of reach, deliberately: the iOS simulator (this is a Windows host) and CI (switched off by the owner, #302). The smoke is run by hand on the emulator, like the device check.

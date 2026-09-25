@@ -635,7 +635,7 @@ Until #284 lands, trust these corrections over the docs:
   - Content DB tests are in `test/db/`, not `test/data/`.
 - **Tooling.**
   - Goldens use `matchesGoldenFile`, not alchemist. Mocks are provider overrides and hand-written stubs, not mocktail.
-  - There is no `integration_test/` yet (#169).
+  - The integration smoke (#169) is `app/integration_test/`, run on the emulator by `python tools/smoke.py` under `team.py device` (`testing.md`, "Integration smoke").
   - Android compileSdk/targetSdk are 37, not 35.
 - **Structure.**
   - There is no `app.dart`, `data/files/`, `tables.dart` or `migrations.dart`.
