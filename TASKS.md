@@ -141,7 +141,7 @@ claiming the same issue. A hand edit skips that check.
 | #404 | - | B | P2 | - | fix(a11y): the iOS back row on L4, L2 and W1 clips its label at 200 % text (follow-up to #280) | done | agent-1 |  | #410 |
 | #409 | - | X | P2 | - | bug(models): the Hy-MT manifest points at a repo and builds that don't exist (tencent/HY-MT1.5-1.8B-GGUF has Q4_K_M/Q6_K/Q8_0) | done | agent-2 |  | #427 |
 | #420 | SQA | A | P3 | - | bug(reset): resetting one step moves the course's start: T1 says "Day 1 of your course" and M1 "Learning since" today (found in #149) | done | agent-0 |  | #426 |
-| #425 | SQA | B | P2 | - | bug(l10n): screen readers read English in the Bangla UI (progress ring and bar fallbacks), and Bangla strings mix ১২ with 12 (#166 leftovers) | open |  |  |  |
+| #425 | SQA | B | P2 | - | bug(l10n): screen readers read English in the Bangla UI (progress ring and bar fallbacks), and Bangla strings mix ১২ with 12 (#166 leftovers) | in-progress | agent-2 |  |  |
 
 ## Locks
 

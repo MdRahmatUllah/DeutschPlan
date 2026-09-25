@@ -6,7 +6,7 @@ last-read: 421
 
 ## Now
 
-Nothing claimed.
+#425 bug(l10n): screen readers read English in the Bangla UI (progress ring and bar fallbacks), and Bangla strings mix ১২ with 12 (#166 leftovers) — claimed 2026-09-25 19:38.
 
 ## Next
 
