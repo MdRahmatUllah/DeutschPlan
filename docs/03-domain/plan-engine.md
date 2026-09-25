@@ -66,7 +66,7 @@ Each past day is judged by the study-days mask in force *on it* (#377). `study_d
 
 ## Time estimate (BR-PLAN-09)
 
-Defaults 25/45/60/40 s; after 7 sessions use the learner's median seconds per item type from `review_log` timestamps.
+Defaults 25/45/60/40 s; after 7 sessions use the learner's median seconds per item type from `review_log` timestamps, the gaps taken within each local day (a stored UTC instant is grouped by its local date, #347).
 
 ## Tests (must exist)
 

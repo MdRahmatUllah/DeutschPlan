@@ -976,6 +976,43 @@ VALUES (?, ?, ?, ?, ?)
       expect((await store.measuredSeconds()).newWord, isNull);
     });
 
+    test('BR-PLAN-09 #347 a rating counts for its local day, not its UTC '
+        'one', () async {
+      // Local 00:30 and 00:31 on Monday: Sunday in UTC east of Greenwich.
+      String at(int minute) =>
+          DateTime(2026, 3, 2, 0, 30 + minute).toUtc().toIso8601String();
+      await store.addToPlan(monday, PlanKind.newWord, <String>['s1', 's2']);
+      await log('s1', at(0));
+      await log('s2', at(1));
+      await db.customStatement(
+        'INSERT INTO grammar_practice_log '
+        '(grammar_uid, practised_at, items, correct) VALUES '
+        "('g1', ?, 5, 5), ('g1', ?, 5, 5)",
+        <Object>[
+          DateTime(2026, 3, 1, 23, 59, 30).toUtc().toIso8601String(),
+          DateTime(2026, 3, 2, 0, 0, 30).toUtc().toIso8601String(),
+        ],
+      );
+
+      final measured = await store.measuredSeconds();
+
+      expect(measured.newWord, 60);
+      expect(
+        measured.grammar,
+        isNull,
+        reason: 'local 23:59:30 and 00:00:30 are two days',
+      );
+    });
+
+    test('a rating on another day than its plan row is left out', () async {
+      // Planned Monday, rated Tuesday (a quiz, say): not Monday's block.
+      await store.addToPlan(monday, PlanKind.newWord, <String>['s1', 's2']);
+      await log('s1', '2026-03-03T09:00:00Z');
+      await log('s2', '2026-03-03T09:00:30Z');
+
+      expect((await store.measuredSeconds()).newWord, isNull);
+    });
+
     test('and the gap across two days is never taken', () async {
       // Grouped by day before the gaps are measured. The last review of
       // Monday and the first of Tuesday are not a gap.

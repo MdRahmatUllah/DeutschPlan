@@ -501,20 +501,29 @@ WHERE new_done > 0 OR reviews_done > 0 OR grammar_done > 0
   /// but relying on the limit to fix a wrong grouping is how a subtler version
   /// of it survives.
   ///
-  /// The ordering is by timestamp alone. Adding `plan_date` to it changed
-  /// nothing — the join derives it from the timestamp — and a clause that
-  /// cannot matter reads as one that does.
+  /// A rating belongs to the plan row of its word on its **local** day, so
+  /// the join is made here: `substr(reviewed_at, 1, 10)` is the UTC date, a
+  /// day off for a rating east of Greenwich before its UTC midnight (#347).
   Future<List<int>> _wordGaps(String kind) async {
+    final planned = <(String, PlanDate)>{
+      for (final row
+          in await _db
+              .customSelect(
+                'SELECT word_uid, plan_date FROM plan_items WHERE kind = ?1',
+                variables: <Variable<Object>>[Variable<String>(kind)],
+                readsFrom: <ResultSetImplementation<Object, Object>>{
+                  _db.planItems,
+                },
+              )
+              .get())
+        (row.read<String>('word_uid'), row.read<String>('plan_date')),
+    };
     final rows = await _db
         .customSelect(
           '''
-SELECT r.reviewed_at AS at, p.plan_date AS day
-FROM review_log r
-JOIN plan_items p
-  ON p.word_uid = r.word_uid
- AND p.kind = ?1
- AND p.plan_date = substr(r.reviewed_at, 1, 10)
-ORDER BY r.reviewed_at
+SELECT word_uid, reviewed_at FROM review_log
+WHERE word_uid IN (SELECT word_uid FROM plan_items WHERE kind = ?1)
+ORDER BY reviewed_at
 ''',
           variables: <Variable<Object>>[Variable<String>(kind)],
           readsFrom: <ResultSetImplementation<Object, Object>>{
@@ -525,7 +534,10 @@ ORDER BY r.reviewed_at
         .get();
 
     return _gapsByDay(<(String, String)>[
-      for (final row in rows) (row.read<String>('day'), row.read<String>('at')),
+      for (final row in rows)
+        if (_localDay(row.read<String>('reviewed_at')) case final day
+            when planned.contains((row.read<String>('word_uid'), day)))
+          (day, row.read<String>('reviewed_at')),
     ]);
   }
 
@@ -533,9 +545,7 @@ ORDER BY r.reviewed_at
     final rows = await _db
         .customSelect(
           '''
-SELECT practised_at AS at, substr(practised_at, 1, 10) AS day
-FROM grammar_practice_log
-ORDER BY practised_at
+SELECT practised_at AS at FROM grammar_practice_log ORDER BY practised_at
 ''',
           readsFrom: <ResultSetImplementation<Object, Object>>{
             _db.grammarPracticeLog,
@@ -544,9 +554,14 @@ ORDER BY practised_at
         .get();
 
     return _gapsByDay(<(String, String)>[
-      for (final row in rows) (row.read<String>('day'), row.read<String>('at')),
+      for (final row in rows)
+        (_localDay(row.read<String>('at')), row.read<String>('at')),
     ]);
   }
+
+  /// The local day of a stored UTC instant (#327, #347).
+  static PlanDate _localDay(String at) =>
+      planDate(DateTime.parse(at).toLocal());
 
   /// Gaps taken within each day and then pooled.
   static List<int> _gapsByDay(List<(String day, String at)> rows) {
