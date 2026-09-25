@@ -9,7 +9,7 @@
 - **Providers:** codegen only; families keyed by primitive ids; `keepAlive` only where `state-management.md` allows.
 - **Database:** every write in a transaction; DAOs return streams for lists the UI watches; never query in `build()`.
 - **Dates:** `DateTime` in local time for plan dates (`isoDate` strings `YYYY-MM-DD`), UTC ISO-8601 for timestamps; the `clock` provider is the only source of "now".
-- **Strings:** ARB with descriptions; German UI copy that is content (e.g. "Tag geschafft!") is still ARB, marked `@` as fixed German.
+- **Strings:** ARB with descriptions; German UI copy that is content (e.g. "Tag geschafft!") is still ARB, marked `@` as fixed German. `test/l10n_test.dart` fails on a key the Bangla ARB lacks, and on a Bangla message that is still the English one, unless it's in that test's `onPurpose` list (German content, a name, a unit). Bangla numerals stay in Bangla UI text: German content, such as Today's date, keeps its own digits (#166).
 - **Accessibility:** every icon button has a `tooltip` and semantics label; every custom painter has a semantics node.
 - **Logging:** `logging` package; no `print`; no analytics of any kind.
 - **Commits:** Conventional Commits; PR titles reference the screen or engine (`feat(study): FR-T2-08 swipe to rate`).
