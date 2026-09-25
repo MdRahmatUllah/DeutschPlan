@@ -36,20 +36,28 @@ class GrammarSource {
 }
 
 /// What the course says beyond one topic (#330): every form its words and
-/// examples use, to tell a real form from a made-up one ("warteen"), and its
-/// example sentences, to practise a form in another sentence than the gap
-/// fill's. [CourseText.none] knows no course: every form passes, and there is
-/// no other sentence.
+/// examples use, to tell a real form from a made-up one ("warteen"); its
+/// words and their forms, to tell another form of the answer's word from a
+/// different word that looks like one ("bitter" is no form of *bitte*,
+/// #406); and its example sentences, to practise a form in another sentence
+/// than the gap fill's. [CourseText.none] knows no course: every form
+/// passes, and there is no other sentence.
 class CourseText {
   CourseText({
+    Iterable<({String german, String? forms})> words =
+        const <({String german, String? forms})>[],
     Iterable<String> texts = const <String>[],
     this.sentences = const <({String german, String english})>[],
   }) : _forms = <String>{
-         for (final text in texts)
-           for (final word in _words(text)) word.toLowerCase(),
-         for (final sentence in sentences)
-           for (final word in _words(sentence.german)) word.toLowerCase(),
+         for (final word in words)
+           for (final form in _words('${word.german} ${word.forms ?? ''}'))
+             form,
+         for (final text in texts) ..._words(text),
+         for (final sentence in sentences) ..._words(sentence.german),
        },
+       _heads = <String>[for (final word in words) word.german],
+       _listed = <String>[for (final word in words) word.forms ?? ''],
+       _lemmas = _lemmaIndex(words),
        _byWord = _index(sentences);
 
   static final CourseText none = CourseText();
@@ -59,9 +67,118 @@ class CourseText {
   /// The course's example sentences, with their English.
   final List<({String german, String english})> sentences;
 
-  /// Whether [form] is German the course uses; with no course, any form.
+  /// Whether [form] is German the course uses, as it writes it — "Sicht",
+  /// not "sicht" (#406) — or capitalised to open a sentence. With no
+  /// course, any form.
   bool knows(String form) =>
-      _forms.isEmpty || _forms.contains(form.toLowerCase());
+      _forms.isEmpty || _forms.contains(form) || _forms.contains(_lower(form));
+
+  /// Each word the course lists, by its own words and forms: *heißen* under
+  /// "heißen", "heißt" and "geheißen". Not the glue of a phrase or a
+  /// perfect ("sich", "hat"), which every verb would share.
+  final Map<String, Set<int>> _lemmas;
+
+  static Map<String, Set<int>> _lemmaIndex(
+    Iterable<({String german, String? forms})> words,
+  ) {
+    final index = <String, Set<int>>{};
+    for (final (i, word) in words.indexed) {
+      for (final form in _words('${word.german} ${word.forms ?? ''}')) {
+        if (!_glue.contains(form)) (index[form] ??= <int>{}).add(i);
+      }
+    }
+    return index;
+  }
+
+  Set<int> _lemmasOf(String form) => <int>{
+    ...?_lemmas[form],
+    ...?_lemmas[_lower(form)],
+  };
+
+  /// Each word's headword and its listed forms, by the index [_lemmas]
+  /// gives.
+  final List<String> _heads;
+  final List<String> _listed;
+
+  /// The words [form] can be a form of: those that list it, else, when the
+  /// course writes it at all, the one its regular ending points to by its
+  /// headword — not every phrase that lists it ("Es tut mir leid" for
+  /// "leide") — a verb's ("spreche" → *sprechen*), a du imperative's, its er
+  /// form less -t ("sprich" → "spricht" → *sprechen*), else an adjective's
+  /// ("heißer" → *heiß*, not *heißen*).
+  Set<int> _wordsOf(String form) {
+    final listed = _lemmasOf(form);
+    if (listed.isNotEmpty || !knows(form)) return listed;
+    final ending = RegExp(r'(en|er|es|em|st|e|n|t|s)$').firstMatch(form);
+    final end = ending?.group(0) ?? '';
+    final root = form.substring(0, form.length - end.length);
+    Set<int> headed(String head) => <int>{
+      for (final i in _lemmasOf(head))
+        if (_heads[i].toLowerCase() == head.toLowerCase()) i,
+    };
+    final verb = <int>{
+      if (const <String>{'e', 'st', 't', 'en', 'n'}.contains(end)) ...<int>{
+        ...headed('${root}en'),
+        ...headed('${root}n'),
+      },
+      if (!form.endsWith('t'))
+        for (final i in _lemmasOf('${form}t'))
+          if (_heads[i].endsWith('n')) i,
+    };
+    if (verb.isNotEmpty) return verb;
+    return <int>{
+      if (const <String>{'', 'e', 'er', 'es', 'em', 'en'}.contains(end))
+        ...headed(root),
+    };
+  }
+
+  /// The words [form] can be, by headword: not a phrase ("Bescheid
+  /// wissen"), and a separable verb under its base when the course lists
+  /// both ("spricht" is *sprechen*'s, not also *ansprechen*'s).
+  Set<String> _readingsOf(String form) {
+    final heads = <String>{
+      for (final i in _wordsOf(form))
+        if (!_heads[i].contains(' ')) _heads[i],
+    };
+    return <String>{
+      for (final head in heads)
+        if (!heads.any((base) => base != head && head.endsWith(base))) head,
+    };
+  }
+
+  /// Whether [form] is another form of [answer]'s word: of the same word
+  /// the course lists (#406). An answer two words write alike ("weiß" of
+  /// *wissen*, and the colour) takes a form of both, so none of the other's.
+  /// With no course, any form is.
+  bool sameWord(String answer, String form) {
+    if (_lemmas.isEmpty) return true;
+    final its = <String>{for (final i in _wordsOf(form)) _heads[i]};
+    final readings = _readingsOf(answer);
+    return readings.length > 1
+        ? its.containsAll(readings)
+        : its.any(
+            <String>{for (final i in _wordsOf(answer)) _heads[i]}.contains,
+          );
+  }
+
+  /// The forms the course lists for [answer]'s word, as it writes them: its
+  /// headword, and each listed form's verb or word, not its glue ("hat",
+  /// "am") nor its separable prefix ("räumt auf"). Those of both words two
+  /// write alike, as [sameWord]. None with no course.
+  Iterable<String> formsOf(String answer) {
+    final readings = _readingsOf(answer);
+    final byHead = <String, Set<String>>{};
+    for (final i in _wordsOf(answer)) {
+      if (!readings.contains(_heads[i])) continue;
+      (byHead[_heads[i]] ??= <String>{_heads[i]}).addAll(<String>[
+        for (final listed in _listed[i].split('·'))
+          ?_words(listed).where((word) => !_glue.contains(word)).firstOrNull,
+      ]);
+    }
+    return byHead.isEmpty
+        ? const <String>[]
+        : byHead.values.reduce((a, b) => a.intersection(b));
+  }
 
   final Map<String, List<int>> _byWord;
 
@@ -211,10 +328,10 @@ List<GrammarItem> generateItems(
   // The review and exam-strategy topics have no example ("—"): their rule
   // is what there is to practise.
   final example = _blank(source.exampleDe) ? source.rule : source.exampleDe;
-  final sentences = _sentences(example);
+  final sentences = _sentences(example, german: !_blank(source.exampleDe));
   final translations = _blank(source.exampleDe)
       ? <String>[]
-      : _sentences(source.exampleEn);
+      : _sentences(source.exampleEn, german: false);
   final cues = _cues(source);
   final tags = <String>{
     ...source.tags,
@@ -287,12 +404,16 @@ List<GrammarItem> generateItems(
     return null;
   }
 
-  PickTheForm? fromCourse() {
+  // A word of [tokens] in another sentence of the course.
+  PickTheForm? borrowFrom(List<String> tokens, {required bool cued}) {
     int rank(int at) => _rank(tokens, at, cues, tags);
     final ranked =
         <int>[
           for (var i = 0; i < tokens.length; i++)
-            if (_bare(tokens[i]).length >= 2 && askable(_bare(tokens[i]))) i,
+            if (_bare(tokens[i]).length >= 2 &&
+                (!cued || rank(i) > 0) &&
+                askable(_bare(tokens[i])))
+              i,
         ]..sort((a, b) {
           // The longer of two alike, as the gap is chosen.
           final byRank = rank(b).compareTo(rank(a));
@@ -319,10 +440,27 @@ List<GrammarItem> generateItems(
     return null;
   }
 
+  // [cued]: a word the rule or *watch out* points at, which practises it in
+  // the borrowed sentence too, before any word ("Die Steuer-ID kommt per
+  // Post." practises no indirect question, #406); either before an example's
+  // word with made-up forms only.
+  PickTheForm? fromCourse({required bool cued}) {
+    // The gap's sentence's words first, then the example's other ones'.
+    for (final order in sentenceOrder) {
+      if (borrowFrom(_tokens(sentences[order]), cued: cued) case final item?) {
+        return item;
+      }
+    }
+    return null;
+  }
+
   // With no course, or a rule in English (a topic with no example), there
   // may be no other sentence: another word of the gap's, the gap's last.
   PickTheForm? elsewhere() =>
-      fromExample(real: true) ?? fromCourse() ?? fromExample(real: false);
+      fromExample(real: true) ??
+      fromCourse(cued: true) ??
+      fromCourse(cued: false) ??
+      fromExample(real: false);
   PickTheForm besideGap() {
     final at = target(<String>[
       for (var i = 0; i < tokens.length; i++) i == gap ? '' : tokens[i],
@@ -409,9 +547,7 @@ List<GrammarItem> generateItems(
         before: secondBefore,
         after: secondAfter,
         answer: secondAnswer,
-        translation: sentences.length == translations.length
-            ? translations[other]
-            : '',
+        translation: translationOf(other),
       ),
     );
   }
@@ -427,8 +563,10 @@ List<({String german, String? english})> examplePairs(
   String exampleEn,
 ) {
   if (_blank(exampleDe)) return const <({String german, String? english})>[];
-  final german = _sentences(exampleDe);
-  final english = _blank(exampleEn) ? <String>[] : _sentences(exampleEn);
+  final german = _sentences(exampleDe, german: true);
+  final english = _blank(exampleEn)
+      ? <String>[]
+      : _sentences(exampleEn, german: false);
   if (german.length == english.length) {
     return <({String german, String? english})>[
       for (var i = 0; i < german.length; i++)
@@ -440,15 +578,45 @@ List<({String german, String? english})> examplePairs(
   ];
 }
 
-/// The example's sentences: split after . ! ? before a capital, and on " / ".
-List<String> _sentences(String text) => <String>[
-  for (final part in text.split(RegExp(r'(?<=[.!?])\s+(?=[A-ZÄÖÜ„])|\s+/\s+')))
-    if (part.trim().isNotEmpty) part.trim(),
+/// The example's sentences (#406): split after . ! ? before a capital, and
+/// on " / " only between whole sentences ("Wie heißen Sie? / Wie heißt
+/// du?"), not between two forms of one ("dass er komme / kommt."). German
+/// not after a number's dot, an ordinal ("der 17. September"), nor before a
+/// number, which follows an abbreviation ("§ 5 Abs. 2 vorliegen"); English
+/// before one too ("… September. 3 October …"), and after one ("built in
+/// 1990. The office …").
+List<String> _sentences(String text, {required bool german}) => <String>[
+  for (final part in text.split(
+    german
+        ? RegExp(r'(?<![0-9]\.)(?<=[.!?])\s+(?=[A-ZÄÖÜ„])')
+        : RegExp(r'(?<=[.!?])\s+(?=[A-Z0-9])'),
+  ))
+    for (final sentence in _alternatives(part.trim()))
+      if (sentence.isNotEmpty) sentence,
 ];
+
+/// [sentence] split at " / " when each side is a sentence of its own: a
+/// capital, and three words at least.
+List<String> _alternatives(String sentence) {
+  final sides = sentence.split(RegExp(r'\s+/\s+'));
+  bool whole(String side) =>
+      _tokens(side).length >= 3 && RegExp('^[A-ZÄÖÜ„]').hasMatch(side);
+  return sides.length > 1 && sides.every(whole) ? sides : <String>[sentence];
+}
 
 /// A sentence's tokens, punctuation left on the word it follows.
 List<String> _tokens(String sentence) =>
     sentence.split(RegExp(r'\s+')).where((token) => token.isNotEmpty).toList();
+
+/// [word] as it would be written inside a sentence: "Könnten" → "könnten".
+String _lower(String word) =>
+    word.isEmpty ? word : '${word[0].toLowerCase()}${word.substring(1)}';
+
+/// A phrase's or a perfect's glue, which is no word of its own there.
+const Set<String> _glue = <String>{
+  'sich', 'hat', 'ist', 'sind', 'haben', 'sein', 'wird', 'der', 'die', //
+  'das', 'ein', 'eine', 'zu', 'etw', 'jdn', 'jdm', 'am',
+};
 
 /// The letters of [text]'s words.
 Iterable<String> _words(String text) =>
@@ -489,6 +657,18 @@ Map<String, int> _cues(GrammarSource source) {
   return cues;
 }
 
+/// A preposition and article in one, and the preposition it is.
+const Map<String, String> _contractions = <String, String>{
+  'vom': 'von', 'zum': 'zu', 'zur': 'zu', 'im': 'in', 'ins': 'in', //
+  'am': 'an', 'ans': 'an', 'beim': 'bei', 'aufs': 'auf',
+};
+
+/// The separable prefixes, which a verb leaves at the end of its clause.
+const Set<String> _prefixes = <String>{
+  'ab', 'an', 'auf', 'aus', 'ein', 'mit', 'nach', 'vor', 'zu', 'zurück', //
+  'weg', 'her', 'hin', 'los', 'fest', 'weiter', 'teil',
+};
+
 /// The pronouns: a rule's examples name them ("Ich stehe um 7 auf"), but
 /// they are seldom its point — a topic tagged `pronoun` is the exception.
 const Set<String> _pronouns = <String>{
@@ -508,13 +688,34 @@ int _rank(
   Set<String> tags,
 ) {
   final lower = _bare(tokens[at]).toLowerCase();
-  var rank = cues[lower] ?? 0;
+  // "vom" is *von* the rule names, in a topic about prepositions: the
+  // English rules' "in" and "an" are no cue (#406).
+  var rank =
+      (cues[lower] ?? 0) +
+      (tags.contains('preposition') ? cues[_contractions[lower]] ?? 0 : 0);
+  // "ab" closing "hängt … ab" is its *abhängen* (#406); not "an" of
+  // "anderen".
+  final closes = at == tokens.length - 1 || _bare(tokens[at]) != tokens[at];
+  if (closes &&
+      _prefixes.contains(lower) &&
+      cues.keys.any(
+        (cue) =>
+            cue.length >= lower.length + 4 &&
+            cue.startsWith(lower) &&
+            cue.endsWith('en'),
+      )) {
+    rank++;
+  }
   if (lower.length >= 4) {
     final stem = lower.substring(0, 4);
     if (cues.keys.any((cue) => cue != lower && cue.startsWith(stem))) rank++;
   }
+  // Not an article in a topic about prepositions, not cases: "Ich bewerbe
+  // mich um [die] Stelle" practises *um* (#406).
+  final articles = _families.take(3).any((family) => family.contains(lower));
   if (tags.intersection(errorTags).isNotEmpty &&
-      _families.any((family) => family.contains(lower))) {
+      _families.any((family) => family.contains(lower)) &&
+      !(articles && tags.contains('preposition') && !tags.contains('case'))) {
     rank += 2;
   }
   if (_pronouns.contains(lower) &&
@@ -594,9 +795,11 @@ const List<List<String>> _choices = <List<String>>[
 
 /// [word]'s wrong forms, in the order they are best: its classes' other
 /// members, the forms the rule or *watch out* names, then endings and
-/// umlauts changed. [real] are those the course uses (all, with no course),
-/// in those three groups; [made] the rest, which may be no German at all
-/// (#330: "warteen").
+/// umlauts changed, and the forms the course lists for its word. [real] are
+/// those the course uses as forms of the same word (all, with no course), in
+/// those groups; [made] the changed ones the course never writes, which may
+/// be no German, but are never another word (#330: "warteen"; #406:
+/// "bitter").
 ({List<List<String>> real, List<String> made}) _wrongForms(
   String word,
   GrammarSource source,
@@ -611,12 +814,16 @@ const List<List<String>> _choices = <List<String>>[
         for (final member in set)
           capital ? '${member[0].toUpperCase()}${member.substring(1)}' : member,
   };
+  // The rule's forms of the same word, and *watch out*'s error as it is.
+  bool alike(String other) =>
+      other.length > 2 &&
+      other.toLowerCase().startsWith(stem) &&
+      course.knows(other);
   final named = <String>{
-    for (final other in _words('${source.rule} ${source.watchOut}'))
-      if (other.length > 2 &&
-          other.toLowerCase().startsWith(stem) &&
-          course.knows(other))
-        other,
+    for (final other in _words(source.rule))
+      if (alike(other) && course.sameWord(word, other)) other,
+    for (final other in _words(source.watchOut))
+      if (alike(other)) other,
   };
 
   final changed = <String>{};
@@ -647,9 +854,26 @@ const List<List<String>> _choices = <List<String>>[
     fresh(members.where(course.knows)),
     fresh(members),
     fresh(named),
-    fresh(changed.where(course.knows)),
+    // The forms the course lists for the answer's word: "wartet" for
+    // *Warten*, "spricht" for *Sprich* (#406).
+    fresh(<String>[
+      for (final form in course.formsOf(word))
+        capital ? '${form[0].toUpperCase()}${form.substring(1)}' : form,
+    ]),
+    // Changed endings the course writes, of the same word: not "bitter"
+    // for *bitte*, nor "sprecher" for *spreche* (#406).
+    fresh(
+      changed.where(
+        (form) => course.knows(form) && course.sameWord(word, form),
+      ),
+    ),
   ];
-  return (real: real, made: fresh(changed));
+  // Made-up forms are no German, never another word's (#406: "weiße" for
+  // *weiß* of *wissen*).
+  return (
+    real: real,
+    made: fresh(changed.where((form) => !course.knows(form))),
+  );
 }
 
 /// Two or more wrong forms for [answer], shuffled, the real ones first: the

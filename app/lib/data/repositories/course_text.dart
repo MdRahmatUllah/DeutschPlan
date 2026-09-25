@@ -35,9 +35,11 @@ Future<CourseText> _load(AppDatabase db) async {
         'SELECT german, english FROM word_examples ORDER BY word_uid, ord',
       )
       .get();
-  final texts = <String>[
+  final entries = <({String german, String? forms})>[
     for (final row in words)
-      '${row.read<String>('german')} ${row.read<String?>('forms') ?? ''}',
+      (german: row.read<String>('german'), forms: row.read<String?>('forms')),
+  ];
+  final texts = <String>[
     for (final row in grammar) row.read<String?>('example_de') ?? '',
   ];
   final sentences = <({String german, String english})>[
@@ -49,5 +51,7 @@ Future<CourseText> _load(AppDatabase db) async {
   ];
   // Its sets and index take 70–160 ms to build: off the UI isolate, so L4
   // doesn't stall a frame (#386). The result moves back without a copy.
-  return Isolate.run(() => CourseText(texts: texts, sentences: sentences));
+  return Isolate.run(
+    () => CourseText(words: entries, texts: texts, sentences: sentences),
+  );
 }
