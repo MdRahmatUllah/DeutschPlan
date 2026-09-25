@@ -1,12 +1,12 @@
 # agent-1
 
 session: active
-last-seen: 2026-09-26 00:04
+last-seen: 2026-09-26 00:38
 last-read: 521
 
 ## Now
 
-#455 bug(models): losing Wi-Fi mid-download shows Failed · Retry/Delete instead of Waiting for Wi-Fi, and can lose progress (34 % → 12 %) (found in #155) — claimed 2026-09-26 00:04.
+#455 in review as PR #467: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 

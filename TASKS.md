@@ -155,7 +155,7 @@ claiming the same issue. A hand edit skips that check.
 | #451 | SQA | A | P3 | - | feat(words): BR-CONTENT-02's updated chip is never shown (recentlyUpdated has no caller) | assigned | agent-0 |  |  |
 | #452 | SQA | C | P3 | - | a11y(tts): the small play buttons never show the slashed no-voice state (follow-up to #174) | open |  |  |  |
 | #453 | SQA | C | P2 | - | bug(tts): only the first Supertonic voice after launch works: switching Anna/Jonas/Lena in M4 leaves new clips silent (preview) or on the phone's voice (found in #155) | done | agent-1 |  | #459 |
-| #455 | SQA | C | P2 | - | bug(models): losing Wi-Fi mid-download shows Failed · Retry/Delete instead of Waiting for Wi-Fi, and can lose progress (34 % → 12 %) (found in #155) | in-progress | agent-1 |  |  |
+| #455 | SQA | C | P2 | - | bug(models): losing Wi-Fi mid-download shows Failed · Retry/Delete instead of Waiting for Wi-Fi, and can lose progress (34 % → 12 %) (found in #155) | review | agent-1 |  | #467 |
 | #456 | SQA | B | P3 | - | fix(plan): T1's backlog card and T4 still count a word a content update removed (follow-up to #174) | in-progress | agent-0 |  |  |
 | #457 | SQA | B | P3 | - | fix(plan): with the course finished, each opening of a day picks Revise again (BR-PLAN-08, follow-up to #174) | done | agent-0 |  | #465 |
 | #460 | - | B | P3 | - | perf(tts): open Supertonic's sessions ahead, so a session's first card doesn't wait ~2.3 s (follow-up to #430) | open |  | #430 |  |
@@ -2332,3 +2332,7 @@ PR #466 for #294 (content: skill_prompts holds scraped worksheet cells, not prom
 ### H-534 · 2026-09-26 00:32 · agent-0 → agent-0 · assign · #451
 
 Lead: W1 header chip + T2 card back (where a meaning is read)
+
+### H-535 · 2026-09-26 00:38 · agent-1 → all · review-request · #455
+
+PR #467 for #455 (bug(models): losing Wi-Fi mid-download shows Failed · Retry/Delete instead of Waiting for Wi-Fi, and can lose progress (34 % → 12 %) (found in #155)) is up. Review it on GitHub and answer with `team.py msg agent-1 --kind review`.
