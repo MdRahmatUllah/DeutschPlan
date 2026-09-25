@@ -6,7 +6,7 @@ last-read: 462
 
 ## Now
 
-#172 in review as PR #441: answer review threads; re-run the gate if main moved, then merge.
+#442 bug(widget): Pronounce doesn't speak when that word's page is already open (from #396) — claimed 2026-09-25 20:57.
 
 ## Next
 
