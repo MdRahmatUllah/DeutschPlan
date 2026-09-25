@@ -6,7 +6,7 @@ last-read: 478
 
 ## Now
 
-#155 in review as PR #447: answer review threads; re-run the gate if main moved, then merge.
+#430 perf(tts): Supertonic's first sound for a new word is ~1 s, not < 300 ms: pre-synthesise a session's words (follow-up to #152) — claimed 2026-09-25 21:49.
 
 ## Next
 
