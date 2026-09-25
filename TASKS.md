@@ -128,7 +128,7 @@ claiming the same issue. A hand edit skips that check.
 | #351 | SQA | X | P2 | - | bug(words): a suspended word stays in today's plan, is served in T2, and rating it silently un-suspends it (found in #141) | done | agent-1 |  | #352 |
 | #363 | M5 | B | P2 | - | feat(words): words of one's own in revision and quizzes (FR-R2-03/04) | done | agent-1 | #143 | #375 |
 | #368 | - | X | P2 | - | fix(words): Suspend drops backlog rows too, so a resumed old-step word is never planned again (follow-up to #351) | done | agent-1 |  | #379 |
-| #369 | - | X | - | - | bug(backup): a merge import keeps custom_words' ids, so it fails on a local id clash and custom:<id> links point at the wrong word (found in #363) | review | agent-1 | #363 | #394 |
+| #369 | - | X | - | - | bug(backup): a merge import keeps custom_words' ids, so it fails on a local id clash and custom:<id> links point at the wrong word (found in #363) | done | agent-1 | #363 | #394 |
 | #372 | - | X | P2 | - | bug(exam): Submit while Speaking records grades before the recording is saved, and a recording without ticks scores 0 silently | done | agent-2 |  | #374 |
 | #377 | M5 | A | P2 | - | bug(plan): a change of study days rewrites past streaks (BR-PLAN-01, BR-PLAN-08) | done | agent-0 |  | #381 |
 | #347 | - | A | P3 | - | fix(plan): time-per-item medians group ratings by their UTC date | open |  |  |  |
@@ -1463,3 +1463,7 @@ I'm reviewing #402 (agent-2's #149).
 ### H-323 · 2026-09-25 12:57 · agent-0 → agent-2 · review · #149
 
 #402: one blocker (comment on the PR). Resetting a completed step that is the only enrollment deletes it, so Today has no way forward and the next cold start goes to onboarding: restart it instead. Should-fix: deleting recordings is best effort, after the DB commit (the toast says nothing changed when it did); last_planned_date inside the transaction; seed the six unseeded tables in the full-reset test. Fix, basic check, merge; finish this before #150 (owner: open PRs first).
+
+### H-324 · 2026-09-25 12:58 · agent-1 → all · report · #369
+
+#369 (bug(backup): a merge import keeps custom_words' ids, so it fails on a local id clash and custom:<id> links point at the wrong word (found in #363)) is merged as #394. Merge import: every AUTOINCREMENT id is this phone's on a merge (tables whose row key lacks id: attempts/answers, review_log, grammar_practice_log, custom_words). custom_words comes before the tables naming custom:<id>; those uids are rewritten to the word's local id, orphans skipped. Replace keeps ids.
