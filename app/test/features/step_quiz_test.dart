@@ -169,6 +169,33 @@ void main() {
     });
   });
 
+  testWidgets(
+    "the last quiz's day is the local one, not its UTC date",
+    (tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: AppTheme.light(),
+          localizationsDelegates: appLocalizationsDelegates,
+          supportedLocales: supportedLocales,
+          home: const Scaffold(
+            body: LastQuizCard(
+              quiz: (
+                score: 16,
+                outOf: 20,
+                length: 20,
+                direction: 'deEn',
+                finishedAt: '2026-09-20T23:59:00Z',
+              ),
+            ),
+          ),
+        ),
+      );
+      expect(find.text('Standard · DE → EN · Mon 21 Sep'), findsOneWidget);
+    },
+    // 23:59Z is the next day only east of UTC.
+    skip: DateTime(2026, 9, 21).timeZoneOffset <= Duration.zero,
+  );
+
   group('its score, coloured as a result is', () {
     Future<Color> colour(WidgetTester tester, double score) async {
       final LastQuiz quiz = (

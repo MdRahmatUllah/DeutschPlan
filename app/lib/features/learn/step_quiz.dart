@@ -7,7 +7,6 @@ import 'package:deutschplan/core/theme/dp_tokens.dart';
 import 'package:deutschplan/core/typography/dp_text.dart';
 import 'package:deutschplan/data/repositories/exam_repository.dart';
 import 'package:deutschplan/data/repositories/word_repository.dart';
-import 'package:deutschplan/domain/plan_engine.dart' show parsePlanDate;
 import 'package:deutschplan/features/quiz/quiz_setup_sheet.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
 import 'package:deutschplan/router/routes.dart';
@@ -204,7 +203,8 @@ class LastQuizCard extends StatelessWidget {
     final date = DateFormat(
       'EEE d MMM',
       Localizations.localeOf(context).toString(),
-    ).format(parsePlanDate(quiz.finishedAt.substring(0, 10)));
+      // Its local day: `finished_at` is a UTC instant (#391's review).
+    ).format(DateTime.parse(quiz.finishedAt).toLocal());
 
     return DpSurface(
       kind: DpSurfaceKind.bar,
