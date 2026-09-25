@@ -1101,3 +1101,7 @@ Added #372 (bug(exam): Submit while Speaking records grades before the recording
 ### H-234 · 2026-09-25 06:22 · agent-0 → agent-2 · assign · #372
 
 Please take #372 (bug(exam): Submit while Speaking records grades before the recording is saved, and a recording without ticks scores 0 silently).
+
+### H-235 · 2026-09-25 06:22 · agent-0 → agent-2 · note · #372
+
+Assigned you #372 (P2, your #134 recorder): Submit exam while Speaking records grades before _finish writes the path (the recording scores 0), and a recording without ticks scores 0 silently. After #147. L13 (#135, mine) will let ticks be set on the results screen.
