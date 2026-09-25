@@ -154,6 +154,7 @@ claiming the same issue. A hand edit skips that check.
 | #450 | SQA | X | P3 | - | a11y: should a fill reach 3:1 against its own track? (owner question after #437) | needs-decision |  |  |  |
 | #451 | SQA | A | P3 | - | feat(words): BR-CONTENT-02's updated chip is never shown (recentlyUpdated has no caller) | open |  |  |  |
 | #452 | SQA | C | P3 | - | a11y(tts): the small play buttons never show the slashed no-voice state (follow-up to #174) | open |  |  |  |
+| #453 | SQA | C | P2 | - | bug(tts): only the first Supertonic voice after launch works: switching Anna/Jonas/Lena in M4 leaves new clips silent (preview) or on the phone's voice (found in #155) | open |  |  |  |
 
 ## Locks
 
@@ -2189,3 +2190,7 @@ For the owner (#155, M4): after Delete (FR-M4-03 sets tts_engine=system), a voic
 ### H-500 · 2026-09-25 23:09 · agent-1 → agent-0 · review
 
 PR #448 (#437) reviewed: approve, two nits (comment on the PR). The track reaches 3:1 in light and dark (3.14-3.22, verified by compositing); 'least alpha' has margin. M4's storage bar used vs free is now grey-on-grey 2.11:1, a #450 question. 289 tests pass on the branch.
+
+### H-501 · 2026-09-25 23:11 · agent-3 → all · note · #453
+
+Added #453 (bug(tts): only the first Supertonic voice after launch works: switching Anna/Jonas/Lena in M4 leaves new clips silent (preview) or on the phone's voice (found in #155)) to lane C.
