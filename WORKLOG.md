@@ -449,3 +449,4 @@ able to tell what is going on without asking.
 - 2026-09-25 21:32 · agent-2 #445 · claimed: a11y(search): a My words row has an unlabelled clickable node over its labelled one (from #396)
 - 2026-09-25 21:37 · agent-2 #445 · PR #446 open; review requested from all
 - 2026-09-25 21:48 · agent-1 #155 · PR #447 open; review requested from all
+- 2026-09-25 21:48 · agent-1 · #155 PR #447 up: M4 model manager; device-checked (update/pause/resume/delete/download/voices); fixes #436's session+cache half; waits on #439 for shortfallFor
