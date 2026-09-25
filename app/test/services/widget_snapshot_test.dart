@@ -8,6 +8,7 @@ import 'package:deutschplan/data/repositories/setting_keys.dart';
 import 'package:deutschplan/data/repositories/settings_repository.dart';
 import 'package:deutschplan/domain/word_of_day.dart';
 import 'package:deutschplan/features/today/today_providers.dart';
+import 'package:deutschplan/features/today/today_view.dart';
 import 'package:deutschplan/services/widget_snapshot.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
@@ -128,6 +129,7 @@ void main() {
           appDatabaseProvider.overrideWithValue(db),
           settingsProvider.overrideWithValue(settings),
           todayProvider.overrideWithValue(today),
+          clockProvider.overrideWithValue(() => DateTime(2026, 9, 21, 8)),
           todayViewProvider.overrideWith((ref) async => artboardToday()),
         ],
       );
@@ -169,20 +171,17 @@ void main() {
 
     test('its meaning in the learner’s language', () async {
       await state(ContentFixture.haus, '2026-09-21');
-      await settings.write(
-        SettingKeys.meaningLanguage,
-        MeaningLanguage.english,
-      );
+      // As M3 changes it.
+      final languages = container.read(languagesProvider.notifier);
+      await languages.setMeaning(MeaningLanguage.english);
       expect((await word())?.meaning, 'house');
       expect((await word())?.german, 'Haus');
       expect((await word())?.article, 'das');
 
-      container.invalidate(widgetWordProvider);
-      await settings.write(SettingKeys.meaningLanguage, MeaningLanguage.bangla);
+      await languages.setMeaning(MeaningLanguage.bangla);
       expect((await word())?.meaning, 'বাড়ি');
 
-      container.invalidate(widgetWordProvider);
-      await settings.write(SettingKeys.meaningLanguage, MeaningLanguage.both);
+      await languages.setMeaning(MeaningLanguage.both);
       expect((await word())?.meaning, 'house · বাড়ি');
     });
 
@@ -219,5 +218,100 @@ void main() {
         );
       },
     );
+
+    test(
+      '#365 a change of meaning language reaches the widget at once',
+      () async {
+        await state(ContentFixture.haus, '2026-09-21');
+        final following = followWidget(container, widgets);
+        addTearDown(following.close);
+        await pumpEventQueue();
+        String meaning() =>
+            (widgets.last['wordOfDay']! as Map<String, Object?>)['meaning']!
+                as String;
+        expect(meaning(), 'house · বাড়ি');
+
+        await container
+            .read(languagesProvider.notifier)
+            .setMeaning(MeaningLanguage.english);
+        await pumpEventQueue();
+        expect(meaning(), 'house');
+      },
+    );
+  });
+
+  group('#365 an app open across midnight', () {
+    late Directory directory;
+    late AppDatabase db;
+    late SettingsRepository settings;
+    late ProviderContainer container;
+    late FakeWidgets widgets;
+    late DateTime now;
+
+    setUp(() async {
+      directory = Directory.systemTemp.createTempSync('deutschplan_midnight');
+      final content = ContentFixture.write('${directory.path}/content.db').file;
+      db = AppDatabase.memory();
+      await db.customStatement(
+        "ATTACH DATABASE '${ContentDao.attachPath(content)}' AS c",
+      );
+      settings = SettingsRepository(db);
+      await settings.load();
+      widgets = FakeWidgets();
+      now = DateTime(2026, 9, 21, 23, 59);
+      container = ProviderContainer(
+        overrides: <Override>[
+          appDatabaseProvider.overrideWithValue(db),
+          settingsProvider.overrideWithValue(settings),
+          clockProvider.overrideWithValue(() => now),
+          // Today's view of whatever day todayProvider says, as T1's is.
+          todayViewProvider.overrideWith(
+            (ref) async => TodayView(
+              date: ref.watch(todayProvider),
+              hour: 0,
+              revise: BlockProgress.none,
+              newToday: BlockProgress.none,
+              openRevise: const <String>[],
+              openNew: const <String>[],
+              grammarDue: const <String>[],
+              backlog: 0,
+              streak: 0,
+              estimate: Duration.zero,
+              courseDay: 1,
+              stepWords: (done: 0, learning: 0, todo: 0, total: 0),
+            ),
+          ),
+        ],
+      );
+    });
+
+    tearDown(() async {
+      container.dispose();
+      await settings.dispose();
+      await db.close();
+      directory.deleteSync(recursive: true);
+    });
+
+    test("never writes yesterday's date over the new day's", () async {
+      final following = followWidget(container, widgets);
+      addTearDown(following.close);
+      await pumpEventQueue();
+      expect(widgets.last['date'], '2026-09-21');
+
+      now = DateTime(2026, 9, 22, 0, 1);
+      // Any change after midnight: a word coming due.
+      await db.customInsert(
+        'INSERT INTO word_state (word_uid, status, stability, due, reps, '
+        "introduced_on) VALUES ('${ContentFixture.haus}', 'learning', 3, "
+        "'2026-09-22', 2, '2026-09-01')",
+        updates: {db.wordState},
+      );
+      await pumpEventQueue();
+
+      expect(widgets.last['date'], '2026-09-22');
+      expect(<Object?>[
+        for (final json in widgets.saved.skip(1)) jsonDecode(json),
+      ], everyElement(containsPair('date', '2026-09-22')));
+    });
   });
 }

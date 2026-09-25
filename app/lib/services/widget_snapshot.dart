@@ -6,7 +6,7 @@ import 'package:deutschplan/core/providers/app_providers.dart';
 import 'package:deutschplan/data/repositories/setting_keys.dart';
 import 'package:deutschplan/data/repositories/word_repository.dart'
     show WordStatus;
-import 'package:deutschplan/domain/plan_engine.dart' show addDays;
+import 'package:deutschplan/domain/plan_engine.dart' show addDays, planDate;
 import 'package:deutschplan/domain/word_of_day.dart';
 import 'package:deutschplan/features/today/today_providers.dart';
 import 'package:deutschplan/features/today/today_view.dart';
@@ -58,10 +58,11 @@ Map<String, Object?> widgetSnapshot(TodayView today, WidgetWord? word) {
 
 /// FR-X1-03: a learned word due within three days, seeded by the date; never
 /// a To-do word, nor a suspended one. Follows the reviews: a word revised
-/// today leaves the candidates.
+/// today leaves the candidates. And the meaning language: M3's change of it
+/// reaches the widget at once.
 @riverpod
 Stream<WidgetWord?> widgetWord(Ref ref) {
-  final settings = ref.watch(settingsProvider);
+  final language = ref.watch(languagesProvider.select((l) => l.meaning));
   final today = ref.watch(todayProvider);
   return ref.watch(wordRepositoryProvider).watchDue(addDays(today, 3)).map((
     due,
@@ -80,7 +81,7 @@ Stream<WidgetWord?> widgetWord(Ref ref) {
       uid: uid,
       article: word.article,
       german: word.german,
-      meaning: switch (settings.read(SettingKeys.meaningLanguage)) {
+      meaning: switch (language) {
         MeaningLanguage.english => word.english,
         MeaningLanguage.bangla => bangla ?? word.english,
         MeaningLanguage.both =>
@@ -155,6 +156,15 @@ ProviderSubscription<AsyncValue<String>> followWidget(
   return container.listen(widgetSnapshotJsonProvider, (_, next) {
     final snapshot = next.value;
     if (snapshot == null || snapshot == saved) return;
+    // An app left open across midnight holds yesterday's date, and would
+    // write it over the 00:05 snapshot: read the date again, and save what
+    // follows from it instead.
+    final today = planDate(container.read(clockProvider)());
+    if ((jsonDecode(snapshot) as Map<String, Object?>)['date'] != today) {
+      // After this rebuild, not inside it.
+      scheduleMicrotask(() => container.invalidate(todayProvider));
+      return;
+    }
     saved = snapshot;
     unawaited(
       store.save(snapshot).catchError((Object error) {
