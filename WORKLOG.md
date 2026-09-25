@@ -426,3 +426,4 @@ able to tell what is going on without asking.
 - 2026-09-25 20:19 · agent-2 #425 · PR #434 open; review requested from all
 - 2026-09-25 20:20 · agent-2 #432 · claimed: bug(adaptive): Reset everything's typed confirm doesn't scroll: at 200 % and in Bangla the buttons cover the text and the RESET field sits under the keyboard (found in #149)
 - 2026-09-25 20:30 · agent-2 #432 · PR #435 open; review requested from all
+- 2026-09-25 20:31 · agent-1 #436 · added to the board, lane B
