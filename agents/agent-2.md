@@ -6,7 +6,7 @@ last-read: 281
 
 ## Now
 
-Nothing claimed.
+#330 bug(domain): grammar Pick-the-form shows non-words in 71 % of distractors (warteen, Ichen, Montager) and repeats the gap-fill sentence (found in #82) — claimed 2026-09-25 10:22.
 
 ## Next
 

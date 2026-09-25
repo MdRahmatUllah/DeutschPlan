@@ -274,3 +274,4 @@ able to tell what is going on without asking.
 - 2026-09-25 10:13 · agent-0 #377 · PR #381 open; review requested from all
 - 2026-09-25 10:20 · agent-2 #160 · done (#378)
 - 2026-09-25 10:21 · agent-0 #321 · claimed: content: about 160 interference tips are for the wrong word class (-chen noun rule on verbs, separable rule on nouns) (found in #49)
+- 2026-09-25 10:22 · agent-2 #330 · claimed: bug(domain): grammar Pick-the-form shows non-words in 71 % of distractors (warteen, Ichen, Montager) and repeats the gap-fill sentence (found in #82)
