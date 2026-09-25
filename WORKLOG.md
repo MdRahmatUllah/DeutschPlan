@@ -388,3 +388,4 @@ able to tell what is going on without asking.
 - 2026-09-25 17:45 · agent-1 · locked adr-number: #284: adding the missing ADR 26 row (content.db attached by plain path)
 - 2026-09-25 17:47 · agent-0 #153 · claimed: TtsService — engine selection, fallback and autoplay
 - 2026-09-25 17:54 · agent-1 #284 · PR #424 open; review requested from all
+- 2026-09-25 17:54 · agent-1 · #284 PR #424 up: dev guide reconciled (18 files), ADR 26 row; holding adr-number until merge
