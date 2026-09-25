@@ -19,10 +19,28 @@ Details #330 settles:
 - The course's words and examples are read once per open database (`data/repositories/course_text.dart`, about 17,000 rows): L4, L15 and the mocks share them.
 
 Details #406 settles:
-- **Sentences.** An example splits after . ! ? before a capital or a number, but not after a number's own dot, which is an ordinal ("Heute ist der 17. September." stays whole). It splits on " / " only between whole sentences, each capitalised and at least three words ("Wie heißen Sie? / Wie heißt du?"), not between two forms of one ("dass er morgen komme / kommt."). L4's German–English pairs split the same way, so "… September. 3 October …" pairs up.
+- **Sentences.** An example splits after . ! ? before a capital. German and English split apart:
+  - German does not split after a number's own dot, which is an ordinal ("Heute ist der 17. September." stays whole), nor before a number, which follows an abbreviation ("§ 5 Abs. 2 vorliegen", "ca. 230").
+  - English splits before a number too ("… September. 3 October …") and after one ("built in 1990. The office …").
+  - Both split on " / " only between whole sentences, each capitalised and at least three words ("Wie heißen Sie? / Wie heißt du?"), not between two forms of one ("dass er morgen komme / kommt.").
+  - L4 pairs German and English sentence by sentence where the two split alike.
 - **Translations.** Every gap fill from the example carries its sentence's English, or the whole example's where the two don't split alike, the fillers included.
-- **Wrong forms of the same word.** A changed ending, or a form the rule names, counts only if the course lists it as a form of the answer's word (`words.german` and `words.forms`). A form the course only writes counts if its regular ending points to that word: a verb ending to the verb ("spreche" → *sprechen*), an adjective ending to the adjective ("heißer" → *heiß*, not *heißen*). Case is kept: the course's "Sprecher" is a noun, so "sprecher" is no form of *spreche*. *Watch out*'s error still counts as it is. So *bitte* no longer offers "bitter", *heißt* not "heiß", *sich* not "sicher" or "sicht".
-- **The blank's cues.** A contraction counts as its preposition ("vom" for the rule's *von*), and a separable prefix as its verb ("ab" of "hängt … ab" for *abhängen*). An article gets no form bonus in a topic tagged `preposition` but not `case`: "Ich bewerbe mich um [die] Stelle" blanks *um*.
-- **Borrowing.** A course sentence is borrowed for a word the rule or *watch out* points at first. The example's own other sentences come next, and any word's borrowed sentence last. The words may come from any of the example's sentences, not only the gap's.
+- **Wrong forms of the same word.** A changed ending, or a form the rule names, counts only if the course lists it as a form of the answer's word (`words.german` and `words.forms`).
+  - A form the course only writes counts if its regular ending points to that word by its headword, not to a phrase that contains it ("leide" is *leiden*'s, not "Es tut mir leid"'s). A verb ending points to the verb ("spreche" → *sprechen*). A du imperative points to the verb whose er form it is less -t ("sprich" → "spricht" → *sprechen*). An adjective ending points to the adjective only when no verb fits ("heißer" → *heiß*, not *heißen*).
+  - A separable verb's forms count as its base's where the course lists both ("spricht" is *sprechen*'s).
+  - An answer that two words write alike ("weiß": *wissen*, and the colour) takes only forms of both, so it offers neither "weiße" nor "gewusst".
+  - Case is kept: the course's "Sprecher" is a noun, so "sprecher" is no form of *spreche*.
+  - *Watch out*'s error still counts as it is.
+  - The answer's own listed forms are wrong forms too: the headword, and each listed form's verb or word, without its glue or separable prefix ("Wartet", "Gewartet" for *Warten*; "Spricht", "Sprechen" for *Sprich*).
+  - A made-up form is one the course never writes, never another word's.
+  - So *bitte* no longer offers "bitter", *heißt* not "heiß", *sich* not "sicher" or "sicht", *weiß* not "weiße", *leide* not "leid".
+- **The blank's cues.** In a topic tagged `preposition`, a contraction counts as its preposition ("vom" for the rule's *von*); elsewhere the English rules' "in" and "an" are no cue. A separable prefix that closes its clause counts as its verb ("ab" of "hängt … ab" for *abhängen*), not "an" of "an der Ecke". An article gets no form bonus in a topic tagged `preposition` but not `case`: "Ich bewerbe mich um [die] Stelle" blanks *um*.
+- **Borrowing.** *Pick the form* takes, in order:
+  1. a word with two real wrong forms in the example's other sentences;
+  2. a course sentence borrowed for a word the rule or *watch out* points at;
+  3. a course sentence borrowed for any word with two real wrong forms;
+  4. last, one of the example's words with made-up forms.
+
+  The borrowed words may come from any of the example's sentences, not only the gap's.
 
 Rating: all correct → Good, one wrong → Hard, more → Again; written to `grammar_state` via FSRS (BR-FSRS-05) and logged in `grammar_practice_log`.

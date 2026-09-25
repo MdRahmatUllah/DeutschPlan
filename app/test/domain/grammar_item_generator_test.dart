@@ -268,6 +268,28 @@ void main() {
       ).map((pair) => pair.german),
       <String>['Wie heißen Sie?', 'Wie heißt du?'],
     );
+    // German does not end a sentence before a number, which follows an
+    // abbreviation; English does, and after a year's dot.
+    for (final german in <String>[
+      'Ansprüche bestehen, wenn die Voraussetzungen des § 5 Abs. 2 vorliegen.',
+      'Die Stadt hat ca. 230 Brücken.',
+      'Siehe S. 12 und Nr. 5.',
+    ]) {
+      expect(pairs(german, 'x').map((pair) => pair.german), <String>[german]);
+    }
+    expect(
+      pairs(
+        'Das Büro wurde 1990 gebaut. Es ist geschlossen.',
+        'The office was built in 1990. The office is closed.',
+      ),
+      <({String german, String? english})>[
+        (
+          german: 'Das Büro wurde 1990 gebaut.',
+          english: 'The office was built in 1990.',
+        ),
+        (german: 'Es ist geschlossen.', english: 'The office is closed.'),
+      ],
+    );
   });
 
   test('FR-L15-01 #406 a wrong form is the answer\'s own word\'s: not '
@@ -307,6 +329,124 @@ void main() {
     );
   });
 
+  test("FR-L15-01 #406 a word's forms are its headword's: not a phrase's, "
+      "a separable verb's under its base's, and none of a word two write "
+      'alike', () {
+    final course = CourseText(
+      words: const <({String german, String? forms})>[
+        (german: 'wissen', forms: 'weiß · hat gewusst'),
+        (german: 'weiß', forms: null),
+        (german: 'leiden', forms: 'leidet · hat gelitten'),
+        (german: 'Es tut mir leid', forms: null),
+        (german: 'sprechen', forms: 'spricht · hat gesprochen'),
+        (german: 'ansprechen', forms: 'spricht an · hat angesprochen'),
+        (german: 'warten', forms: 'wartet · hat gewartet'),
+        (german: 'alt', forms: 'älter · am ältesten'),
+        (german: 'aufräumen', forms: 'räumt auf · hat aufgeräumt'),
+      ],
+      texts: const <String>['Sprich! Ich leide. Warten Sie. weiße weißes'],
+    );
+    expect(course.sameWord('weiß', 'weiße'), isFalse, reason: 'the colour');
+    expect(course.sameWord('weiß', 'gewusst'), isFalse, reason: 'wissen');
+    expect(course.formsOf('weiß'), <String>['weiß']);
+    expect(course.sameWord('leide', 'leid'), isFalse, reason: 'a phrase');
+    expect(
+      course.formsOf('leide'),
+      unorderedEquals(<String>['leiden', 'leidet', 'gelitten']),
+    );
+    expect(
+      course.formsOf('Sprich'),
+      unorderedEquals(<String>['sprechen', 'spricht', 'gesprochen']),
+      reason: 'the er form less -t; not ansprechen, nor its "an"',
+    );
+    expect(course.sameWord('Sprich', 'spricht'), isTrue);
+    expect(
+      course.formsOf('Warten'),
+      unorderedEquals(<String>['warten', 'wartet', 'gewartet']),
+    );
+    expect(
+      course.formsOf('älter'),
+      unorderedEquals(<String>['alt', 'älter', 'ältesten']),
+      reason: 'not "am"',
+    );
+    expect(
+      course.formsOf('räumt'),
+      unorderedEquals(<String>['aufräumen', 'räumt', 'aufgeräumt']),
+      reason: 'not "auf"',
+    );
+    expect(CourseText.none.formsOf('warten'), isEmpty);
+  });
+
+  test("FR-L15-01 #406 Pick the form offers the answer's own forms, never a "
+      'made-up one: "Wartet" for Warten, "Spricht" for Sprich', () {
+    final course = CourseText(
+      words: const <({String german, String? forms})>[
+        (german: 'warten', forms: 'wartet · hat gewartet'),
+        (german: 'sprechen', forms: 'spricht · hat gesprochen'),
+        (german: 'ansprechen', forms: 'spricht an · hat angesprochen'),
+        (german: 'bitte', forms: null),
+        (german: 'hier', forms: null),
+        (german: 'langsam', forms: null),
+      ],
+      texts: const <String>['Warten Sie bitte hier. Sprich langsam!'],
+    );
+    const imperative = GrammarSource(
+      uid: 'imperative',
+      topic: 'Imperative',
+      rule: 'du: stem without -st (Komm! Nimm!); ihr: Kommt!; Sie: Kommen Sie!',
+      exampleDe: 'Warten Sie bitte hier. Sprich langsam!',
+      exampleEn: 'Please wait here. Speak slowly!',
+      watchOut: 'e→i also in the imperative (sprich, nimm, iss).',
+      tags: <String>['gap-fill', 'pick-the-form', 'verb-form'],
+      levelCode: 'A1',
+    );
+    final picks = <PickTheForm>[
+      for (var seed = 1; seed <= 6; seed++)
+        ...generateItems(
+          imperative,
+          seed: seed,
+          course: course,
+        ).whereType<PickTheForm>(),
+    ];
+    expect(picks.map((pick) => pick.answer).toSet(), <String>{
+      'Warten',
+      'Sprich',
+    });
+    for (final pick in picks) {
+      expect(
+        pick.options.where((option) => option != pick.answer),
+        everyElement(
+          isIn(<String>[
+            'Wartet',
+            'Gewartet',
+            'Sprechen',
+            'Spricht',
+            'Gesprochen',
+          ]),
+        ),
+      );
+    }
+  });
+
+  test('FR-L15-01 #406 a separable prefix is its verb\'s where it closes the '
+      'clause: "an" of "rufe … an", not of "an der Ecke"', () {
+    expect(
+      first<GapFill>(
+        generateItems(
+          one('Ich rufe dich morgen an.', rule: 'anrufen'),
+          seed: 1,
+        ),
+      ).answer,
+      'an',
+    );
+    expect(
+      first<GapFill>(
+        generateItems(one('Wir warten an der Ecke.', rule: 'anrufen'), seed: 1),
+      ).answer,
+      isNot('an'),
+    );
+  });
+
   test('FR-L15-01 #406 a gap fill filling in keeps a translation: the '
       "whole example's where the two don't split alike", () {
     const three = GrammarSource(
@@ -326,13 +466,41 @@ void main() {
     }
   });
 
-  test('FR-L15-01 #406 a contraction is its preposition: "vom" for the '
-      "rule's von", () {
+  test('FR-L15-01 #406 a contraction is its preposition in a topic about '
+      'prepositions: "vom" for the rule\'s von, not "ins" for an English '
+      '"in"', () {
+    GrammarSource tagged(String sentence, String rule, String tag) =>
+        GrammarSource(
+          uid: sentence,
+          topic: 'T',
+          rule: rule,
+          exampleDe: sentence,
+          exampleEn: 'x',
+          watchOut: 'y',
+          tags: <String>['gap-fill', 'pick-the-form', tag],
+          levelCode: 'B1',
+        );
     expect(
       first<GapFill>(
-        generateItems(one('Es hängt vom Wetter ab.', rule: 'von'), seed: 1),
+        generateItems(
+          tagged('Es hängt vom Wetter ab.', 'von + dative', 'preposition'),
+          seed: 1,
+        ),
       ).answer,
       'vom',
+    );
+    expect(
+      first<GapFill>(
+        generateItems(
+          tagged(
+            'Gestern ging er ins Kino.',
+            'The verb comes second in a main clause.',
+            'word-order',
+          ),
+          seed: 1,
+        ),
+      ).answer,
+      isNot('ins'),
     );
   });
 
@@ -624,21 +792,22 @@ void main() {
     String sentence(String before, String answer, String after) =>
         '$before $answer $after'.replaceAll(RegExp(r'\s+'), '');
 
+    // Anything the course writes counts, its rules and *watch out* too.
+    final known = <String>{
+      for (final row in db.select('SELECT german, forms FROM words'))
+        for (final word in words('${row['german']} ${row['forms'] ?? ''}'))
+          word.toLowerCase(),
+      for (final row in db.select('SELECT german FROM word_examples'))
+        for (final word in words(row['german'] as String)) word.toLowerCase(),
+      for (final row in rows)
+        for (final word in words(
+          '${row['rule']} ${row['example_de']} ${row['watch_out']}',
+        ))
+          word.toLowerCase(),
+    };
+
     test('FR-L15-01 #330 a wrong form is German the course uses: at most 5 % '
         'are not', () {
-      // Anything the course writes counts, its rules and *watch out* too.
-      final known = <String>{
-        for (final row in db.select('SELECT german, forms FROM words'))
-          for (final word in words('${row['german']} ${row['forms'] ?? ''}'))
-            word.toLowerCase(),
-        for (final row in db.select('SELECT german FROM word_examples'))
-          for (final word in words(row['german'] as String)) word.toLowerCase(),
-        for (final row in rows)
-          for (final word in words(
-            '${row['rule']} ${row['example_de']} ${row['watch_out']}',
-          ))
-            word.toLowerCase(),
-      };
       final unknown = <String>[];
       var all = 0;
       for (final row in rows) {
@@ -698,7 +867,7 @@ void main() {
     ].join(' ');
 
     test('FR-L15-01 #406 no item is a fragment: not cut at an ordinal\'s '
-        'dot, nor at " / "', () {
+        'dot, an abbreviation\'s, nor at " / "', () {
       final fragments = <String>[
         for (final (row, items) in thirtyDays())
           for (final item in items)
@@ -711,8 +880,11 @@ void main() {
                 }
                 case final sentence?
                 // Cut at " / ": "kommt." Cut at an ordinal: "Heute ist der
-                // 17." where the example goes on "September. …".
-                when (RegExp('^[a-zäöüß]').hasMatch(sentence) &&
+                // 17." where the example goes on "September. …". Cut after
+                // an abbreviation: "2 vorliegen." of "§ 5 Abs. 2 vorliegen."
+                when (RegExp('^[0-9]').hasMatch(sentence) &&
+                        (row['example_de'] as String).contains(' $sentence')) ||
+                    (RegExp('^[a-zäöüß]').hasMatch(sentence) &&
                         (row['example_de'] as String).contains(
                           '/ $sentence',
                         )) ||
@@ -744,6 +916,9 @@ void main() {
         ('spreche', 'sprecher'),
         ('sich', 'sicher'),
         ('sich', 'sicht'),
+        ('weiß', 'weiße'),
+        ('weiß', 'weißes'),
+        ('leide', 'leid'),
       };
       final found = <String>[
         for (final (row, items) in thirtyDays())
@@ -753,6 +928,19 @@ void main() {
                 '${row['topic']}: ${pick.answer} → $option',
       ];
       expect(found.toSet(), isEmpty, reason: found.toSet().join('\n'));
+    });
+
+    test('FR-L15-01 #406 made-up wrong forms come last, after any borrowed '
+        'sentence with real ones: none over thirty days', () {
+      final made = <String>[
+        for (final (row, items) in thirtyDays())
+          for (final pick in items.whereType<PickTheForm>())
+            for (final option in pick.options)
+              if (!words(option)
+                  .every((word) => known.contains(word.toLowerCase())))
+                '${row['topic']}: ${pick.answer} → $option',
+      ];
+      expect(made.toSet(), isEmpty, reason: made.toSet().join('\n'));
     });
 
     test('FR-L15-01 #330 the gap practises the rule: the prefix, the time, '
