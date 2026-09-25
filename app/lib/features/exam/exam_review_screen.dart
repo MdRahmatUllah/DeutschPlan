@@ -288,7 +288,7 @@ class _Card extends ConsumerWidget {
           children: <Widget>[
             _Answer(
               label: l10n.quizYourAnswer,
-              value: givenText ?? l10n.quizResultNoAnswer,
+              value: givenText ?? l10n.examReviewNotAnswered,
               colour: wrong ? tokens.color.wrongText : tokens.color.correctText,
               struck: wrong && givenText != null,
             ),

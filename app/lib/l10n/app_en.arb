@@ -4961,6 +4961,10 @@
   "@examReviewNoAnswer": {
     "description": "L14 verdict on a card left unanswered."
   },
+  "examReviewNotAnswered": "not answered",
+  "@examReviewNotAnswered": {
+    "description": "L14 \"Your answer\" on a card left unanswered: skipped, or the exam submitted or timed out before it (#389). Not L9's \"the time ran out\"."
+  },
   "examReviewOpenWord": "Open word",
   "@examReviewOpenWord": {
     "description": "L14 link under a word question: the word detail (W1)."
