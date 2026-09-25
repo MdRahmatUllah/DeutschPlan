@@ -1624,6 +1624,24 @@
   "@summaryWatch": {
     "description": "T3: the heading over the words rated Again. Shown in capitals."
   },
+  "summaryRevise": "Revise · {count}",
+  "@summaryRevise": {
+    "description": "T3 primary when the day's open revisions are next (FR-T3-02, #328): after a session from one section card or T4.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "summaryNew": "Learn new words · {count}",
+  "@summaryNew": {
+    "description": "T3 primary when the day's open new words are next (FR-T3-02, #328).",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "summaryGrammar": "Practice grammar · {topics}",
   "@summaryGrammar": {
     "description": "T3 primary when grammar topics are next (FR-T3-02).",

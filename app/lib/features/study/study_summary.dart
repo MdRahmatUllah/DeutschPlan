@@ -7,6 +7,7 @@ import 'package:deutschplan/core/theme/dp_surface.dart';
 import 'package:deutschplan/core/theme/dp_tokens.dart';
 import 'package:deutschplan/core/typography/dp_text.dart';
 import 'package:deutschplan/data/repositories/plan_store.dart';
+import 'package:deutschplan/domain/plan_engine.dart' show PlanKind;
 import 'package:deutschplan/features/study/study_back.dart';
 import 'package:deutschplan/features/study/study_card.dart';
 import 'package:deutschplan/features/study/study_screen.dart';
@@ -19,29 +20,63 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'study_summary.g.dart';
 
-/// What is left of the day once a session ends (FR-T3-02): today's open
-/// practice sentences, the backlog, and whether every plan row is done or
-/// skipped (BR-PLAN-10) with T6 still to come — a day already celebrated is
-/// not done again (FR-T6-01).
-typedef StudyNext = ({int sentences, int backlog, bool dayDone});
+/// What is left of the day once a session ends (FR-T3-02). First the day's
+/// open blocks in their order (BR-PLAN-02), since a session from one section
+/// card or from T4 leaves the rest of the day to come (#328). Then today's
+/// open practice sentences and the backlog. Last, whether the day is complete
+/// (BR-PLAN-10) with T6 still to come: a day already celebrated is not done
+/// again (FR-T6-01).
+class StudyNext {
+  const StudyNext({
+    required this.sentences,
+    required this.backlog,
+    required this.dayDone,
+    this.revise = const <String>[],
+    this.newWords = const <String>[],
+    this.grammar = const <String>[],
+  });
+
+  /// The day's revise and new words still open, neither done nor skipped,
+  /// in the order they were planned.
+  final List<String> revise;
+  final List<String> newWords;
+
+  /// The topics due today.
+  final List<String> grammar;
+
+  final int sentences;
+  final int backlog;
+  final bool dayDone;
+}
 
 @riverpod
 Future<StudyNext> studyNext(Ref ref, String date) async {
   final db = ref.watch(appDatabaseProvider);
   final plans = DriftPlanStore(db, ref.watch(settingsProvider));
+  final open = await ref.watch(planRepositoryProvider).stillOpen(date);
+  Future<List<String>> left(PlanKind kind) async => <String>[
+    for (final uid in await plans.plannedOn(date, kind))
+      if (open.contains((kind.wire, uid))) uid,
+  ];
+  final grammar = await plans.grammarDueOn(date);
   final picked = await ref.watch(sentencePickerProvider).forDay(date);
   final rated = await ref.watch(sentenceStoreProvider).rated(date);
-  return (
+  return StudyNext(
+    revise: await left(PlanKind.revise),
+    newWords: await left(PlanKind.newWord),
+    grammar: grammar,
     sentences: math.max(0, picked.length - rated),
     backlog: (await plans.backlogBefore(date)).length,
+    // BR-PLAN-10 counts the grammar due, as Today's "Tag geschafft" does.
     dayDone:
-        await plans.openPlanItems(date) == 0 &&
+        open.isEmpty &&
+        grammar.isEmpty &&
         !await ref.watch(planRepositoryProvider).dayCompleteShown(date),
   );
 }
 
 /// Where T3 sends the learner.
-enum StudyNextStep { grammar, sentences, backlog, done }
+enum StudyNextStep { revise, newWords, grammar, sentences, backlog, done }
 
 /// T3 · the session summary (`session-summary.md`): a sheet over the faded
 /// session. "Gut gemacht!", the session's own count and time and rating
@@ -70,13 +105,24 @@ class StudySummarySheet extends ConsumerStatefulWidget {
   static const double dismissAt = 120;
   static const double fling = 700;
 
-  /// FR-T3-02's order: the grammar still in the session, then the day's
-  /// sentences; nothing left, and *Done for now* leads.
+  /// FR-T3-02: the next open block in the day's order (BR-PLAN-02). That's
+  /// its revisions, then its new words, then the grammar (the session's own,
+  /// else the day's), then its sentences. With nothing left, *Done for now*
+  /// leads.
   static StudyNextStep primaryFor(StudySessionState session, StudyNext? next) {
-    if (session.grammarLeft.isNotEmpty) return StudyNextStep.grammar;
+    if (next?.revise.isNotEmpty ?? false) return StudyNextStep.revise;
+    if (next?.newWords.isNotEmpty ?? false) return StudyNextStep.newWords;
+    if (grammarFor(session, next).isNotEmpty) return StudyNextStep.grammar;
     if ((next?.sentences ?? 0) > 0) return StudyNextStep.sentences;
     return StudyNextStep.done;
   }
+
+  /// The topics T3's grammar step practises: those left in the session, else
+  /// the day's due ones, which a session from one section card didn't queue.
+  static List<String> grammarFor(StudySessionState session, StudyNext? next) =>
+      session.grammarLeft.isNotEmpty
+      ? session.grammarLeft
+      : next?.grammar ?? const <String>[];
 
   @override
   ConsumerState<StudySummarySheet> createState() => _StudySummarySheetState();
@@ -203,8 +249,12 @@ class _StudySummarySheetState extends ConsumerState<StudySummarySheet> {
             const SizedBox(height: 10),
             DpButton(
               label: switch (primary) {
+                StudyNextStep.revise => l10n.summaryRevise(next!.revise.length),
+                StudyNextStep.newWords => l10n.summaryNew(
+                  next!.newWords.length,
+                ),
                 StudyNextStep.grammar => l10n.summaryGrammar(
-                  session.grammarLeft.length,
+                  StudySummarySheet.grammarFor(session, next).length,
                 ),
                 StudyNextStep.sentences => l10n.summarySentences(
                   next!.sentences,

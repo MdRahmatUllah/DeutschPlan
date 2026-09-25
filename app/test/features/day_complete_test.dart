@@ -315,4 +315,36 @@ void main() {
     expect(await plans.dayCompleteShown(today), isTrue);
     expect(await dayDone(), isFalse);
   });
+
+  test(
+    '#328 BR-PLAN-10 grammar due keeps the day open, as Today counts it',
+    () async {
+      final db = AppDatabase.memory();
+      addTearDown(db.close);
+      final directory = Directory.systemTemp.createTempSync('dp_t6');
+      final content = ContentFixture.write('${directory.path}/content.db');
+      await db.customStatement(
+        "ATTACH DATABASE '${ContentDao.attachPath(content.file)}' AS c",
+      );
+      await db.customStatement(
+        "INSERT INTO grammar_state (grammar_uid, status, due) "
+        "VALUES ('g1', 'learning', '$today')",
+      );
+      final settings = SettingsRepository(db);
+      await settings.load();
+      addTearDown(settings.dispose);
+      final container = ProviderContainer(
+        overrides: <Override>[
+          appDatabaseProvider.overrideWithValue(db),
+          settingsProvider.overrideWithValue(settings),
+        ],
+      );
+      addTearDown(container.dispose);
+      final hold = container.listen(studyNextProvider(today), (_, _) {});
+      addTearDown(hold.close);
+      final next = await container.read(studyNextProvider(today).future);
+      expect(next.grammar, <String>['g1']);
+      expect(next.dayDone, isFalse);
+    },
+  );
 }

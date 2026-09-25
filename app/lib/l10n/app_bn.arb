@@ -265,6 +265,8 @@
   "summaryStats": "{cards}টি কার্ড · {minutes} মিনিট",
   "summaryPill": "{rating} {count}",
   "summaryWatch": "যে শব্দগুলো খেয়াল রাখবেন",
+  "summaryRevise": "রিভিশন · {count}",
+  "summaryNew": "নতুন শব্দ শিখুন · {count}",
   "summaryGrammar": "ব্যাকরণ অনুশীলন · {topics}",
   "summarySentences": "{count}টি বাক্য অনুশীলন করুন",
   "summaryBacklog": "ব্যাকলগ দেখুন · {count}",
