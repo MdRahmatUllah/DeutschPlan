@@ -252,3 +252,4 @@ able to tell what is going on without asking.
 - 2026-09-25 07:05 · agent-2 #160 · claimed: X1 · Android home-screen widget (Glance)
 - 2026-09-25 07:19 · agent-0 #135 · done (#373)
 - 2026-09-25 07:19 · agent-0 #136 · claimed: L14 · Exam review
+- 2026-09-25 07:19 · agent-1 #363 · PR #375 open; review requested from all
