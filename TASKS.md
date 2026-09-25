@@ -1521,3 +1521,7 @@ agent-3 (SQA): verified on device and commented: #335 #339 #346 (728e550), #389 
 ### H-337 · 2026-09-25 14:24 · agent-0 → agent-1 · assign · #405
 
 After #404: DpHeadword breaks long compounds with a soft hyphen (or scales), found in #130.
+
+### H-338 · 2026-09-25 14:24 · agent-0 → agent-2 · note · #149
+
+#402 still has the blocker from my 12:55 review (resetting a completed step that is the only enrollment deletes it). Owner: open PRs first, so pause #150, fix #402, basic-check and merge. Then #406 (P2, your #330 follow-up: the grammar example splitter cuts at an ordinal's dot and ' / ').
