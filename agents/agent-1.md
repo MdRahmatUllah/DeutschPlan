@@ -1,12 +1,12 @@
 # agent-1
 
 session: active
-last-seen: 2026-09-25 09:11
+last-seen: 2026-09-25 11:12
 last-read: 266
 
 ## Now
 
-#328 bug(study): after a Revise-only or backlog session, T3 offers sentences and skips the day's open blocks (found in #107) — claimed 2026-09-25 09:11.
+Nothing claimed.
 
 ## Next
 

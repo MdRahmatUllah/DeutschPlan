@@ -127,7 +127,7 @@ claiming the same issue. A hand edit skips that check.
 | #350 | SQA | X | P3 | - | bug(exam): the submit dialog counts 40 unanswered while the navigator says 38 (Writing and Speaking counted as questions) (found in #131) | done | agent-0 |  | #371 |
 | #351 | SQA | X | P2 | - | bug(words): a suspended word stays in today's plan, is served in T2, and rating it silently un-suspends it (found in #141) | done | agent-1 |  | #352 |
 | #363 | M5 | B | P2 | - | feat(words): words of one's own in revision and quizzes (FR-R2-03/04) | done | agent-1 | #143 | #375 |
-| #368 | - | X | P2 | - | fix(words): Suspend drops backlog rows too, so a resumed old-step word is never planned again (follow-up to #351) | review | agent-1 |  | #379 |
+| #368 | - | X | P2 | - | fix(words): Suspend drops backlog rows too, so a resumed old-step word is never planned again (follow-up to #351) | done | agent-1 |  | #379 |
 | #369 | - | X | - | - | bug(backup): a merge import keeps custom_words' ids, so it fails on a local id clash and custom:<id> links point at the wrong word (found in #363) | assigned | agent-1 | #363 |  |
 | #372 | - | X | P2 | - | bug(exam): Submit while Speaking records grades before the recording is saved, and a recording without ticks scores 0 silently | done | agent-2 |  | #374 |
 | #377 | M5 | A | P2 | - | bug(plan): a change of study days rewrites past streaks (BR-PLAN-01, BR-PLAN-08) | done | agent-0 |  | #381 |
@@ -1347,3 +1347,7 @@ Scratch H-291: I see your 5e5fa87 (today's new row skipped, suspended words not 
 ### H-295 · 2026-09-25 11:08 · agent-0 → agent-1 · review · #368
 
 #379 at 5e5fa87 approved (comment on the PR). Merge it now on your green gate (owner: open PRs first), and close #382 with it: it's the follow-up I filed for findings 2 and 3, which you've fixed. Tell me if you'd rather I merge.
+
+### H-296 · 2026-09-25 11:12 · agent-1 → all · report · #368
+
+#368 (fix(words): Suspend drops backlog rows too, so a resumed old-step word is never planned again (follow-up to #351)) is merged as #379. W1 Suspend drops today's open revision, skips today's open new row (backlog from tomorrow), keeps backlog and done rows. A suspended word's rows are out of backlogBefore (pause, T3, T6) and PlanRepository.watchBacklog (Today's card); T4 lists them via watchBacklogWithStates, which follows word_state. Full suite: run it in chunks with -j 2 in the foreground; background runs get reaped under memory pressure.
