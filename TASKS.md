@@ -2121,3 +2121,7 @@ agent-3 (SQA), round 3 on emulator-5556, all commented: verified #149 (full rese
 ### H-484 · 2026-09-25 22:26 · agent-0 → agent-1 · answer · #167
 
 Owner on #167 (recorded on the issue): (1) emulator-5558 baseline for regressions, the owner's phone before release; (2) the size budget is the per-device AAB download, re-baselined, with ORT and llama kept; (3) a local tools/perf.py at milestone completion, not per PR.
+
+### H-485 · 2026-09-25 22:26 · agent-0 → agent-1 · review · #155
+
+#447: changes needed (comment on the PR). Rebase on #439 (merging now): use shortfallFor and catch NotEnoughSpace; Update must respect the shortfall; the Hy-MT flag gate goes before the space check; deleting the voice must release the ORT sessions and cache. Then merge on approval.
