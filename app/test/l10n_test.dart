@@ -2,7 +2,9 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
+import 'package:deutschplan/features/today/today_view.dart' show germanDate;
 import 'package:flutter_test/flutter_test.dart';
+import 'package:intl/intl.dart' show Intl;
 
 /// docs/05-dev-guide/coding-standards.md: "Copy lives in ARB files."
 /// German course text comes from content.db, never from ARB; fixed German UI
@@ -53,6 +55,90 @@ void main() {
         reason: '${arb.path} is missing these keys, so they show in English',
       );
     }
+  });
+
+  test('#166 a string Bangla leaves as English is German on purpose, a name '
+      'or a unit; any other one is untranslated', () {
+    // German the learner is looking at stays German in every UI language:
+    // the greeting, the banners, the parts of speech, the exam verdicts
+    // (accessibility-performance.md). Names and units stay as they are.
+    const onPurpose = <String>{
+      'appTitle',
+      'onboardingMeaningEnglish',
+      'settingsEnglish',
+      'settingsVoiceSupertonic',
+      'exportImportSizeKb',
+      'exportImportSizeMb',
+      'onboardingVoiceSample',
+      'todayGreetingMorning',
+      'todayGreetingDay',
+      'todayGreetingEvening',
+      'todayGreetingDone',
+      'todayRestFree',
+      'studyBannerRevise',
+      'studyBannerNew',
+      'studyBannerNewCategory',
+      'studyBannerGrammar',
+      'studyBannerBacklog',
+      'studyPosNoun',
+      'studyPosVerb',
+      'studyPosAdjective',
+      'studyPosAdverb',
+      'studyPosPreposition',
+      'studyPosConjunction',
+      'studyPosPronoun',
+      'studyPosNumber',
+      'studyPosParticle',
+      'studyPosArticle',
+      'studyPosPhrase',
+      'summaryTitle',
+      'dayCompleteTitle',
+      'examResultPassed',
+      'examResultFailed',
+      'widgetWordOfDay',
+    };
+    Map<String, Object?> read(String path) =>
+        jsonDecode(File(path).readAsStringSync()) as Map<String, Object?>;
+    final en = read('lib/l10n/app_en.arb');
+    final bn = read('lib/l10n/app_bn.arb');
+    // What is left of a message once its placeholders and ICU syntax are
+    // gone: a template like "{done} / {total}" is the same in every
+    // language, but a plural's branches are words to translate.
+    String words(String message) => message
+        .replaceAll(RegExp(r'{\w+(,\s*\w+)?}'), '')
+        .replaceAll(RegExp(r'{\w+,\s*\w+,'), '')
+        .replaceAll(RegExp(r'(=\d+|\w+)\s*{'), '')
+        .replaceAll(RegExp('[{}]'), '');
+
+    final untranslated = <String>[
+      for (final key in en.keys)
+        if (!key.startsWith('@') &&
+            !onPurpose.contains(key) &&
+            bn[key] == en[key] &&
+            RegExp('[A-Za-zÄÖÜäöüß]').hasMatch(words(en[key]! as String)))
+          key,
+    ];
+    expect(
+      untranslated,
+      isEmpty,
+      reason:
+          'the same in Bangla as in English: translate them, or add them '
+          'to onPurpose if they are German content, a name or a unit',
+    );
+  });
+
+  test('#166 Bangla numerals never reach German content: Today\'s German date '
+      'keeps its digits under a Bangla UI', () {
+    final before = Intl.defaultLocale;
+    addTearDown(() => Intl.defaultLocale = before);
+    Intl.defaultLocale = 'bn';
+    final date = germanDate('2026-09-25');
+    expect(date, 'Freitag, 25. September');
+    expect(
+      RegExp('[০-৯]').hasMatch(date),
+      isFalse,
+      reason: 'a Bengali digit in German',
+    );
   });
 
   test('every supported locale resolves every key', () async {

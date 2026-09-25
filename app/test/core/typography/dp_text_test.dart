@@ -93,6 +93,28 @@ void main() {
       );
     });
 
+    testWidgets('#166 at every role, the Bangla run is set one role larger '
+        'than the German beside it', (tester) async {
+      final tokens = DpTokens.light();
+      for (final role in DpTextRole.values) {
+        await pump(tester, DpText('die Wohnung · ফ্ল্যাট', role: role));
+        final runs =
+            (tester.widget<Text>(find.byType(Text)).textSpan! as TextSpan)
+                .children!
+                .cast<TextSpan>();
+        expect(
+          runs.first.style!.fontSize,
+          role.token(tokens.typography).size,
+          reason: '$role German',
+        );
+        expect(
+          runs.last.style!.fontSize,
+          role.oneStepLarger.token(tokens.typography).size,
+          reason: '$role Bangla',
+        );
+      }
+    });
+
     testWidgets('an explicit weight reaches both scripts, not just the Latin', (
       tester,
     ) async {

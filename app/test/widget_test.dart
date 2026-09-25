@@ -138,6 +138,47 @@ void main() {
     );
   });
 
+  testWidgets('#166 the meaning language and the app language switch apart, '
+      'as M3 sets each', (tester) async {
+    await pumpApp(tester);
+    Locale? locale() =>
+        tester.widget<MaterialApp>(find.byType(MaterialApp)).locale;
+    final container = ProviderScope.containerOf(
+      tester.element(find.byType(MaterialApp)),
+    );
+    final languages = container.read(languagesProvider.notifier);
+    MeaningLanguage meaning() => container.read(languagesProvider).meaning;
+
+    // বাংলা copy with English meanings.
+    await languages.setUi(UiLanguage.bangla);
+    await languages.setMeaning(MeaningLanguage.english);
+    await tester.pump();
+    expect(locale(), const Locale('bn'));
+    expect(meaning(), MeaningLanguage.english);
+
+    // English copy with Bangla meanings: each moved alone.
+    await languages.setUi(UiLanguage.english);
+    await tester.pump();
+    expect(locale(), const Locale('en'));
+    expect(
+      meaning(),
+      MeaningLanguage.english,
+      reason:
+          'the app language '
+          'left the meanings alone',
+    );
+    await languages.setMeaning(MeaningLanguage.bangla);
+    await tester.pump();
+    expect(
+      locale(),
+      const Locale('en'),
+      reason:
+          'the meanings left the '
+          'app language alone',
+    );
+    expect(meaning(), MeaningLanguage.bangla);
+  });
+
   testWidgets('following the system keeps following it', (tester) async {
     // `theme_mode = system` resolves to a concrete mode for the first frame.
     // Passing that straight to MaterialApp would pin the app to whatever the
