@@ -32,7 +32,7 @@
 - ***Check for update*** reads the manifest the app carries again. A model still current says "Up to date"; one the manifest has moved past becomes *Update available*. The manifest only changes with an app update.
 - ***Delete*** asks first ("Delete Supertonic 3 voice?", *Delete* / *Keep*), then `ModelRepository.delete`, which turns off what used the model (FR-M4-03).
 - **FR-M4-04:** `ENABLE_HYMT_DOWNLOAD` is a `--dart-define`, off by default, so a build is made with it on deliberately. Off, Hy-MT's *Download* is disabled and says "Not offered in this version of the app". The subtitle's *licence →* opens the Tencent HY text in M8's sheet (`showLicence`).
-- **FR-M4-05:** a voice chip chooses the voice (`tts_voice`) and plays its sample through Supertonic. The sample is in the voice's own name: Anna's is "Guten Tag! Ich bin Anna.", and Jonas says he is Jonas. That's a spec gap filled: the FR names Anna's line only.
+- **FR-M4-05:** a voice chip chooses the voice (`tts_voice`), and Supertonic with it (`tts_engine = supertonic`, which M3's row reads as "Supertonic · Anna"), and plays its sample through Supertonic. Choosing the engine there is what brings the voice back after a delete (FR-M4-03 set the phone's voice) and a new download. The sample is in the voice's own name: Anna's is "Guten Tag! Ich bin Anna.", and Jonas says he is Jonas. That's a spec gap filled: the FR names Anna's line only.
 - **Sizes** are whole megabytes below a gigabyte, and gigabytes to one decimal above ("399 MB", "1.1 GB", "64 GB"), in the UI language's digits. The storage bar shows the phone's use in grey, the models' share in Lagoon, and free space in Oat. When the phone won't say its space, only "Models: n" shows.
 
 **Functional requirements**

@@ -768,7 +768,12 @@ class _VoicesState extends ConsumerState<_Voices> {
 
   Future<void> _choose(String voice) async {
     setState(() => _chosen = voice);
-    await ref.read(settingsProvider).write(SettingKeys.ttsVoice, voice);
+    final settings = ref.read(settingsProvider);
+    // A voice here is Supertonic's: choosing one chooses the engine too, as
+    // M3's row reads it ("Supertonic · Anna", `settings.md`). Without this, a
+    // voice downloaded again after a delete would never speak.
+    await settings.write(SettingKeys.ttsEngine, TtsEngineSetting.supertonic);
+    await settings.write(SettingKeys.ttsVoice, voice);
     try {
       await ref.read(supertonicTtsProvider).speak(sample(voice));
     } on Object {

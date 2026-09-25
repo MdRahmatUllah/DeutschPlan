@@ -355,14 +355,21 @@ void main() {
     expect(button(tester, l10n.modelsDownload('1.1 GB')).onPressed, isNull);
   });
 
-  testWidgets('FR-M4-05 a voice chip chooses the voice and plays its sample '
-      'in it', (tester) async {
-    final settings = StubSettings();
+  testWidgets('FR-M4-05 a voice chip chooses the voice, and Supertonic with '
+      'it, and plays its sample in it', (tester) async {
+    final settings = StubSettings()
+      // After a delete (FR-M4-03): the phone's voice.
+      ..put(SettingKeys.ttsEngine, TtsEngineSetting.system);
     final voice = FakeTts();
     await pump(tester, modelManagerStub(settings: settings, supertonic: voice));
     await tester.tap(find.text('Jonas'));
     await tester.pumpAndSettle();
     expect(settings.read(SettingKeys.ttsVoice), 'Jonas');
+    expect(
+      settings.read(SettingKeys.ttsEngine),
+      TtsEngineSetting.supertonic,
+      reason: "M3 reads 'Supertonic · Jonas' again",
+    );
     await tester.tap(find.text('Anna'));
     await tester.pumpAndSettle();
     expect(voice.spoken, <String>[
