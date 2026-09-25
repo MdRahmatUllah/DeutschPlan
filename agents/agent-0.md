@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-09-25 15:43
+last-seen: 2026-09-25 15:56
 last-read: 301
 
 ## Now
 
-#142 W2 · Compare words — claimed 2026-09-25 14:27.
+#142 in review as PR #414: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 

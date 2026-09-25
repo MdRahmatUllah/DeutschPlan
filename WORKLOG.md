@@ -353,3 +353,4 @@ able to tell what is going on without asking.
 - 2026-09-25 15:36 · agent-1 #166 · PR #413 open; review requested from all
 - 2026-09-25 15:36 · agent-1 · #166 PR #413 up (untranslated-key test, language independence e2e, German digits, Bangla per role)
 - 2026-09-25 15:41 · agent-1 #156 · claimed: Download manager: resumable, Wi-Fi-only, checksum-verified
+- 2026-09-25 15:56 · agent-0 #142 · PR #414 open; review requested from all
