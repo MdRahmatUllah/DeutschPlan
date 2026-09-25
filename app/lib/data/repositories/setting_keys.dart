@@ -205,6 +205,10 @@ abstract final class SettingKeys {
   /// A bitmask of weekdays, Monday the lowest bit. 127 is all seven.
   static const studyDaysMask = IntSetting('study_days_mask', 127);
 
+  /// #377: the study-days masks over time, a JSON list of `{from, mask}`,
+  /// so a past day keeps the mask it had. Empty until they first change.
+  static const studyDaysHistory = StringSetting('study_days_history');
+
   static const reminderEnabled = BoolSetting('reminder_enabled', false);
   static const reminderTime = TimeSetting('reminder_time', (
     hour: 19,
@@ -331,6 +335,7 @@ abstract final class SettingKeys {
     sentenceCount,
     sentenceRepeatGapDays,
     studyDaysMask,
+    studyDaysHistory,
     reminderEnabled,
     reminderTime,
     reminderOnlyWhenDue,

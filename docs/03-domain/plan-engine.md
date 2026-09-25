@@ -62,6 +62,8 @@ Today keeps the study days it was planned with (BR-PLAN-08, #147): planning a da
 
 Count consecutive days back from today (or yesterday if today has no activity yet) where `daily_stats` has activity **or** the day was a rest day.
 
+Each past day is judged by the study-days mask in force *on it* (#377). `study_days_history` keeps the masks over time; a change in M5 or restart setup is in force from the next day (BR-PLAN-08), and the first change also keeps the mask before it. So turning a rest day on never breaks a streak already earned, and a day after the change is judged by the new mask. With no history, every day is judged by the current mask.
+
 ## Time estimate (BR-PLAN-09)
 
 Defaults 25/45/60/40 s; after 7 sessions use the learner's median seconds per item type from `review_log` timestamps.

@@ -141,6 +141,9 @@ class DryRunPlanStore implements PlanStore {
       _completed ?? await _inner.lastCompletedStep();
 
   @override
+  Future<List<MaskSpan>> studyDaysHistory() => _inner.studyDaysHistory();
+
+  @override
   Future<Set<PlanDate>> activeDays(
     PlanDate today, {
     required int lookbackDays,

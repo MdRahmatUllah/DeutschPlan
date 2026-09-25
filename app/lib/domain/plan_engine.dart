@@ -15,6 +15,8 @@
 /// practice sentences are #80.
 library;
 
+import 'dart:convert';
+
 import 'package:deutschplan/domain/dry_run_plan_store.dart';
 import 'package:deutschplan/domain/fsrs.dart';
 import 'package:deutschplan/domain/plan_stats.dart';
@@ -121,6 +123,10 @@ class RevisionCandidate {
 abstract interface class PlanStore {
   /// The open enrollment, or null before the learner has started a step.
   Future<ActiveStep?> activeStep();
+
+  /// #377: the study-days masks in force over time, oldest first; empty
+  /// when they have never changed.
+  Future<List<MaskSpan>> studyDaysHistory();
 
   /// The next [limit] To-do words of [sublevelCode] in teaching order that
   /// have never been planned.
@@ -627,14 +633,18 @@ class PlanEngine {
   ///
   /// Reads the mask from the active step, falling back to every day when there
   /// is none — a learner between steps still has a streak.
+  ///
+  /// Each past day by the mask in force on it (#377): turning a rest day on
+  /// never breaks a streak already earned (BR-PLAN-01, -08).
   Future<int> streak(PlanDate today) async {
     final step = await _store.activeStep();
     final mask = step?.studyDaysMask ?? allDays;
+    final history = await _store.studyDaysHistory();
 
     return streakLength(
       today: today,
       activeDays: await _store.activeDays(today, lookbackDays: streakLookback),
-      isStudyDay: (day) => isStudyDay(day, mask),
+      isStudyDay: (day) => isStudyDay(day, maskOn(day, history, mask)),
       maxLookback: streakLookback,
     );
   }
@@ -643,9 +653,10 @@ class PlanEngine {
   Future<int> bestStreak(PlanDate today) async {
     final step = await _store.activeStep();
     final mask = step?.studyDaysMask ?? allDays;
+    final history = await _store.studyDaysHistory();
     return longestStreak(
       activeDays: await _store.activeDays(today, lookbackDays: 36500),
-      isStudyDay: (day) => isStudyDay(day, mask),
+      isStudyDay: (day) => isStudyDay(day, maskOn(day, history, mask)),
       today: today,
     );
   }
@@ -776,3 +787,53 @@ List<String> selectRevisions(
     for (final c in rest.take(limit - due.length)) c.uid,
   ];
 }
+
+/// A study-days mask and the first day it was in force (#377). The first
+/// span's day is empty: it was in force before any change.
+typedef MaskSpan = ({PlanDate from, int mask});
+
+/// The mask in force on [day]: the latest of [history] from on or before
+/// it. [fallback] with no history, which is every install until the study
+/// days first change.
+int maskOn(PlanDate day, List<MaskSpan> history, int fallback) {
+  var mask = history.isEmpty ? fallback : history.first.mask;
+  for (final span in history) {
+    if (span.from.compareTo(day) > 0) break;
+    mask = span.mask;
+  }
+  return mask;
+}
+
+/// `study_days_history` as stored: a JSON list of `{from, mask}`.
+List<MaskSpan> decodeMaskHistory(String? json) {
+  if (json == null || json.isEmpty) return <MaskSpan>[];
+  try {
+    return <MaskSpan>[
+      for (final span in jsonDecode(json) as List<Object?>)
+        if (span case {'from': final String from, 'mask': final int mask})
+          (from: from, mask: mask),
+    ];
+  } on FormatException {
+    return <MaskSpan>[];
+  }
+}
+
+String encodeMaskHistory(List<MaskSpan> history) => jsonEncode(<Object>[
+  for (final span in history)
+    <String, Object>{'from': span.from, 'mask': span.mask},
+]);
+
+/// [history] with [mask] in force from [from] (BR-PLAN-08: the day after
+/// the change). The first change also keeps [previous], the mask before it,
+/// as the one in force until then.
+List<MaskSpan> withMask(
+  List<MaskSpan> history, {
+  required int previous,
+  required int mask,
+  required PlanDate from,
+}) => <MaskSpan>[
+  if (history.isEmpty) (from: '', mask: previous),
+  for (final span in history)
+    if (span.from.compareTo(from) < 0) span,
+  (from: from, mask: mask),
+];

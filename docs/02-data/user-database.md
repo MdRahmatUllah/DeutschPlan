@@ -34,6 +34,7 @@ Created on first launch from `lib/data/db/user_schema.drift`, which is the autho
 | `sentence_count` | 3 | Settings |
 | `sentence_repeat_gap_days` | 14 | — |
 | `study_days_mask` | 127 (Mon–Sun) | Reminder & days |
+| `study_days_history` | — | #377 — the masks over time, a JSON list of `{from, mask}` (a change is in force from the next day), so the streak judges each past day by the mask it had |
 | `reminder_enabled` / `reminder_time` / `reminder_only_when_due` | 0 / 19:30 / 1 | Reminder & days |
 | `auto_advance` | 1 | Settings |
 | `pause_new_when_backlog` | 0 | Today, Backlog |

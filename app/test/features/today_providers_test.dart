@@ -9,7 +9,8 @@ import 'package:deutschplan/data/db/content_dao.dart';
 import 'package:deutschplan/data/repositories/setting_keys.dart';
 import 'package:deutschplan/data/repositories/settings_repository.dart';
 import 'package:deutschplan/features/today/today_providers.dart';
-import 'package:deutschplan/domain/plan_engine.dart' show planDate;
+import 'package:deutschplan/domain/plan_engine.dart'
+    show MaskSpan, addDays, decodeMaskHistory, planDate;
 import 'package:drift/drift.dart' show DatabaseConnection, Table, TableInfo;
 import 'package:drift/native.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -358,7 +359,14 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code, completed_at, 
       expect(before.isStudyDay, isTrue);
 
       // Monday, today, off: M5's writer.
-      await container.read(setupRepositoryProvider).setStudyDays(126);
+      await container
+          .read(setupRepositoryProvider)
+          .setStudyDays(126, today: today);
+      // #377: the change is kept from tomorrow, the old mask before it.
+      expect(
+        decodeMaskHistory(settings.read(SettingKeys.studyDaysHistory)),
+        <MaskSpan>[(from: '', mask: 127), (from: addDays(today, 1), mask: 126)],
+      );
       container
         ..invalidate(todayPlanProvider)
         ..invalidate(todayViewProvider);
