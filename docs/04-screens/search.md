@@ -22,7 +22,7 @@
 **Filled in by #138 (idle):**
 - **FR-R1-04.** A search counts once the learner commits to it: the search key, a result or web chip opened, or a recent chip tapped. A pause in typing doesn't count. The same search again moves to the front, compared without case, and the oldest past ten goes. `recent_searches` is a JSON list, newest first. *Clear* forgets them all, and a screen reader hears it as "Clear recent searches".
 - A recent chip fills the field and searches at once.
-- **My words** lists `custom_words` newest first: the headword with its article's colour, then "meaning · where it was seen · seen N×". The count shows from the second time. A row opens R2 on that word (`/search/add/:id`).
+- **My words** lists `custom_words` newest first: the headword with its article's colour, then "meaning · where it was seen · seen N×". The count shows from the second time. A row opens R2 on that word (`/search/add/:id`). A screen reader hears each row as one button: its headword, its line and *My word* (#445).
 - With no recents or no words of one's own, that heading is left out, and *Add a word I found* (R2, `/search/add`) is always there.
 
 **Filled in by #139 (no results):**

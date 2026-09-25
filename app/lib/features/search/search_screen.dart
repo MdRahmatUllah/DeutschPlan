@@ -931,55 +931,59 @@ class _MyWordRow extends StatelessWidget {
       if (word.timesSeen > 1) l10n.searchSeen(word.timesSeen),
     ].join(' · ');
 
-    return Semantics(
-      button: true,
-      onTap: () => EditCustomWordRoute.open(context, word.id),
-      child: GestureDetector(
-        behavior: HitTestBehavior.opaque,
+    // One node (#445, the #315 pattern): the row's words, a button, and the
+    // tap. Apart, a screen reader found a nameless button over the row.
+    return MergeSemantics(
+      child: Semantics(
+        button: true,
         onTap: () => EditCustomWordRoute.open(context, word.id),
-        child: Container(
-          constraints: const BoxConstraints(minHeight: WordRow.height),
-          padding: const EdgeInsets.fromLTRB(16, 4, 8, 4),
-          decoration: BoxDecoration(
-            color: tokens.surface.card,
-            border: last
-                ? null
-                : Border(bottom: BorderSide(color: tokens.surface.outline)),
-          ),
-          child: Row(
-            children: <Widget>[
-              Expanded(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    DpHeadword(
-                      word.german,
-                      article: word.article,
-                      role: DpTextRole.bodyLarge,
-                      weight: 600,
-                      maxLines: 1,
-                    ),
-                    const SizedBox(height: 2),
-                    DpText(
-                      line,
-                      role: DpTextRole.label,
-                      weight: 400,
-                      maxLines: 1,
-                      color: tokens.color.textSecondary,
-                    ),
-                  ],
+        child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: () => EditCustomWordRoute.open(context, word.id),
+          child: Container(
+            constraints: const BoxConstraints(minHeight: WordRow.height),
+            padding: const EdgeInsets.fromLTRB(16, 4, 8, 4),
+            decoration: BoxDecoration(
+              color: tokens.surface.card,
+              border: last
+                  ? null
+                  : Border(bottom: BorderSide(color: tokens.surface.outline)),
+            ),
+            child: Row(
+              children: <Widget>[
+                Expanded(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      DpHeadword(
+                        word.german,
+                        article: word.article,
+                        role: DpTextRole.bodyLarge,
+                        weight: 600,
+                        maxLines: 1,
+                      ),
+                      const SizedBox(height: 2),
+                      DpText(
+                        line,
+                        role: DpTextRole.label,
+                        weight: 400,
+                        maxLines: 1,
+                        color: tokens.color.textSecondary,
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              const SizedBox(width: 10),
-              DpChip(label: l10n.searchMyWord, kind: DpChipKind.status),
-              const SizedBox(width: 4),
-              Icon(
-                Icons.chevron_right,
-                size: 22,
-                color: tokens.color.textSecondary,
-              ),
-            ],
+                const SizedBox(width: 10),
+                DpChip(label: l10n.searchMyWord, kind: DpChipKind.status),
+                const SizedBox(width: 4),
+                Icon(
+                  Icons.chevron_right,
+                  size: 22,
+                  color: tokens.color.textSecondary,
+                ),
+              ],
+            ),
           ),
         ),
       ),

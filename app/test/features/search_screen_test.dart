@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:ui' show SemanticsAction;
 
 import 'package:deutschplan/core/components/dp_chip.dart';
 import 'package:deutschplan/core/providers/app_providers.dart';
@@ -563,6 +564,28 @@ void main() {
           tester.getTopLeft(find.text('die Quittung', findRichText: true)).dy,
         ),
       );
+    });
+
+    testWidgets('#445 a My words row is one node: its words, a button, and '
+        'the tap that edits it', (tester) async {
+      final semantics = tester.ensureSemantics();
+      await pump(tester);
+      await addWord(
+        tester,
+        german: 'Quittung',
+        article: 'die',
+        meaning: 'receipt',
+        where: 'Bäckerei',
+      );
+      // Apart, the tap was a nameless button over the row's own node.
+      final data = tester
+          .getSemantics(find.text('receipt · Bäckerei'))
+          .getSemanticsData();
+      expect(data.label, contains('die Quittung'));
+      expect(data.label, contains('receipt · Bäckerei'));
+      expect(data.flagsCollection.isButton, isTrue);
+      expect(data.hasAction(SemanticsAction.tap), isTrue);
+      semantics.dispose();
     });
 
     testWidgets('#314 at 200 % text the headings and their notes fit, and '
