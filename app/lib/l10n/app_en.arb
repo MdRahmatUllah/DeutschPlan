@@ -6015,6 +6015,10 @@
   "@modelsStartFailed": {
     "description": "The toast when a download or retry couldn't be queued."
   },
+  "modelsSampleFailed": "Couldn't play the sample",
+  "@modelsSampleFailed": {
+    "description": "The toast when a voice chosen on M4 can't play its sample ('Guten Tag! Ich bin Anna.'); the voice stays chosen."
+  },
   "modelsDeleteKeep": "Keep",
   "@modelsDeleteKeep": {
     "description": "The delete confirmation's cancel: keep the model."

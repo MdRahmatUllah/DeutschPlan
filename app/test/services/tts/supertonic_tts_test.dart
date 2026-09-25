@@ -13,6 +13,7 @@ import 'package:deutschplan/data/repositories/synthesis_cache.dart';
 import 'package:deutschplan/services/model_downloads.dart';
 import 'package:deutschplan/services/tts/supertonic_tts.dart';
 import 'package:deutschplan/services/tts/tts_engine.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 /// `SupertonicTts` (#152): the engine over a fake voice and player, and the
@@ -85,7 +86,26 @@ void main() {
     late _Player player;
     late SupertonicTts tts;
 
-    const style = '{"style_ttl": {}, "style_dp": {}}';
+    /// A voice style, as the download has it: [value] fills both tensors.
+    String styleOf(double value) => jsonEncode(<String, Object?>{
+      'style_ttl': <String, Object?>{
+        'dims': <int>[1, 1, 2],
+        'data': <Object?>[
+          <Object?>[
+            <double>[value, value],
+          ],
+        ],
+      },
+      'style_dp': <String, Object?>{
+        'dims': <int>[1, 1, 2],
+        'data': <Object?>[
+          <Object?>[
+            <double>[value, value],
+          ],
+        ],
+      },
+    });
+    final style = styleOf(1);
 
     setUp(() async {
       support = Directory.systemTemp.createTempSync('dp_supertonic');
@@ -448,7 +468,117 @@ void main() {
         );
       },
     );
+
+    test('#453 Anna, Jonas and Lena all speak in one engine, through the '
+        'ONNX model: each voice after the first, too', () async {
+      final onnx = _Onnx();
+      addTearDown(onnx.uninstall);
+      await install();
+      final model = await models.directoryFor(ModelRepository.voiceModel);
+      File('${model.path}/tts.json').writeAsStringSync(
+        jsonEncode(<String, Object?>{
+          'ae': <String, Object?>{'sample_rate': 44100, 'base_chunk_size': 512},
+          'ttl': <String, Object?>{
+            'chunk_compress_factor': 6,
+            'latent_dim': 24,
+          },
+        }),
+      );
+      File('${model.path}/unicode_indexer.json')
+          .writeAsStringSync(jsonEncode(List<int>.generate(128, (i) => i)));
+      File('${model.path}/M1.json').writeAsStringSync(styleOf(2));
+      File('${model.path}/F2.json').writeAsStringSync(styleOf(3));
+      final tts = SupertonicTts(
+        models: models,
+        settings: settings,
+        cache: cache,
+        load: OrtSupertonicModel.load,
+        player: player,
+      );
+
+      for (final name in <String>['Anna', 'Jonas', 'Lena']) {
+        await settings.write(SettingKeys.ttsVoice, name);
+        expect(await tts.speak('Hallo'), isTrue, reason: name);
+      }
+      expect(player.played, hasLength(3));
+      expect(onnx.sessions, 4, reason: 'one model, opened once');
+      expect(onnx.styles, <List<double>>[
+        <double>[1, 1],
+        <double>[2, 2],
+        <double>[3, 3],
+      ], reason: "F1's, M1's and F2's own style, in turn");
+    });
   });
+}
+
+/// `flutter_onnxruntime`'s channel, stubbed: what `OrtSupertonicModel` asks
+/// of it, with each session's one output. The duration predictor says 0.1 s,
+/// and the others give zeros.
+class _Onnx {
+  _Onnx() {
+    _messenger.setMockMethodCallHandler(_channel, _handle);
+  }
+
+  static const MethodChannel _channel = MethodChannel('flutter_onnxruntime');
+  static final TestDefaultBinaryMessenger _messenger =
+      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger;
+
+  final Map<String, Object?> _values = <String, Object?>{};
+  var _ids = 0;
+
+  /// The sessions opened.
+  int sessions = 0;
+
+  /// The style each clip's duration was predicted in, in order.
+  final List<List<double>> styles = <List<double>>[];
+
+  void uninstall() => _messenger.setMockMethodCallHandler(_channel, null);
+
+  String _value(Object? data) {
+    final id = 'v${_ids++}';
+    _values[id] = data;
+    return id;
+  }
+
+  List<Object?> _output(Float32List data) => <Object?>[
+    _value(data),
+    'float32',
+    <int>[data.length],
+  ];
+
+  Future<Object?> _handle(MethodCall call) async {
+    final args = call.arguments as Map<Object?, Object?>?;
+    switch (call.method) {
+      case 'createSession':
+        sessions++;
+        return <String, Object?>{
+          'sessionId': (args!['modelPath']! as String).split('/').last,
+          'inputNames': <String>[],
+          'outputNames': <String>['out'],
+        };
+      case 'createOrtValue':
+        return <String, Object?>{
+          'valueId': _value(args!['data']),
+          'dataType': args['sourceType'],
+          'shape': args['shape'],
+        };
+      case 'runInference':
+        final inputs = args!['inputs']! as Map<Object?, Object?>;
+        if (args['sessionId'] != 'duration_predictor.onnx') {
+          return <String, Object?>{'out': _output(Float32List(8192))};
+        }
+        final dp = (inputs['style_dp']! as Map<Object?, Object?>)['valueId'];
+        styles.add(List<double>.from(_values[dp]! as List<Object?>));
+        return <String, Object?>{
+          'out': _output(Float32List.fromList(<double>[0.1])),
+        };
+      case 'getOrtValueData':
+        return <String, Object?>{'data': _values[args!['valueId']]};
+      default:
+        // releaseOrtValue, closeSession.
+        return null;
+    }
+  }
 }
 
 class _Model implements SupertonicModel {

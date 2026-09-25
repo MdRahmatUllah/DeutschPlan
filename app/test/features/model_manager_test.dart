@@ -498,7 +498,28 @@ void main() {
       'Guten Tag! Ich bin Anna.',
     ]);
     expect(settings.read(SettingKeys.ttsVoice), 'Anna');
+    expect(find.text(l10n.modelsSampleFailed), findsNothing);
   });
+
+  for (final (how, voice) in <(String, FakeTts Function())>[
+    ('breaks', () => FakeTts()..error = StateError('no style')),
+    ('says no', () => FakeTts(voice: false)),
+  ]) {
+    testWidgets("#453 a voice whose sample $how says it couldn't play it, "
+        'and stays chosen', (tester) async {
+      final settings = StubSettings();
+      await pump(
+        tester,
+        modelManagerStub(settings: settings, supertonic: voice()),
+      );
+      await tester.tap(find.text('Jonas'));
+      await tester.pump();
+      await tester.pump();
+      expect(find.text(l10n.modelsSampleFailed), findsOneWidget);
+      expect(settings.read(SettingKeys.ttsVoice), 'Jonas');
+      await tester.pumpAndSettle(const Duration(seconds: 3));
+    });
+  }
 
   group('the card, from the phone and the download manager', () {
     late FakeDownloads downloads;

@@ -494,13 +494,7 @@ class OrtSupertonicModel implements SupertonicModel {
   Future<({OrtValue dp, OrtValue ttl})> _style(String file) =>
       _styles[file] ??= () async {
         try {
-          final path = '${_directory.path}/$file';
-          final styles = await Isolate.run(
-            () => (
-              dp: _flatten(_decode(path), 'style_dp'),
-              ttl: _flatten(_decode(path), 'style_ttl'),
-            ),
-          );
+          final styles = await _readStyle('${_directory.path}/$file');
           return (
             dp: await OrtValue.fromList(styles.dp.data, styles.dp.dims),
             ttl: await OrtValue.fromList(styles.ttl.data, styles.ttl.dims),
@@ -513,14 +507,24 @@ class OrtSupertonicModel implements SupertonicModel {
 
   static Future<Object?> _json(String path) => Isolate.run(() => _decode(path));
 
+  /// A voice style's two tensors' data, read off the UI isolate. Static, so
+  /// its closure holds [path] alone: one made in [_style] carried this model,
+  /// and from the second voice on its [_styles] holds a future, which no
+  /// isolate can be sent (#453).
+  static Future<({_Tensor dp, _Tensor ttl})> _readStyle(String path) =>
+      Isolate.run(() {
+        final styles = _decode(path);
+        return (
+          dp: _flatten(styles, 'style_dp'),
+          ttl: _flatten(styles, 'style_ttl'),
+        );
+      });
+
   static Object? _decode(String path) =>
       jsonDecode(File(path).readAsStringSync());
 
   /// A voice style's `{dims, data}`, as the SDK's loader reads it.
-  static ({Float32List data, List<int> dims}) _flatten(
-    Object? styles,
-    String key,
-  ) {
+  static _Tensor _flatten(Object? styles, String key) {
     final json =
         (styles! as Map<String, Object?>)[key]! as Map<String, Object?>;
     final values = <double>[];
@@ -555,6 +559,9 @@ class OrtSupertonicModel implements SupertonicModel {
     return out;
   }
 }
+
+/// A tensor's data and its shape, before it's an `OrtValue`.
+typedef _Tensor = ({Float32List data, List<int> dims});
 
 /// What `tts.json` says the pipeline needs.
 class SupertonicConfig {
