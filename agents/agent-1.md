@@ -1,12 +1,12 @@
 # agent-1
 
 session: active
-last-seen: 2026-09-25 14:25
+last-seen: 2026-09-25 15:02
 last-read: 342
 
 ## Now
 
-#404 fix(a11y): the iOS back row on L4, L2 and W1 clips its label at 200 % text (follow-up to #280) — claimed 2026-09-25 14:25.
+#404 in review as PR #410: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
