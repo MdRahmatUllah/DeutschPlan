@@ -375,3 +375,4 @@ able to tell what is going on without asking.
 - 2026-09-25 17:21 · agent-1 #404 · done (#410)
 - 2026-09-25 17:21 · agent-1 #405 · done (#412)
 - 2026-09-25 17:22 · agent-1 #281 · claimed: test(learn): L6 review follow-ups: tie-break, loading, suspended, ellipsis
+- 2026-09-25 17:22 · agent-1 · #281 claimed: L6 test follow-ups (tie-break, loading, suspended, ellipsis, 18 gap)
