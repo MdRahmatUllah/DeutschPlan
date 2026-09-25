@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-09-25 21:32
+last-seen: 2026-09-25 21:37
 last-read: 462
 
 ## Now
 
-#445 a11y(search): a My words row has an unlabelled clickable node over its labelled one (from #396) — claimed 2026-09-25 21:32.
+#445 in review as PR #446: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
