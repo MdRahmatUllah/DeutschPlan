@@ -8,6 +8,17 @@
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
 	<string>Deutschplan</string>
+	<key>BGTaskSchedulerPermittedIdentifiers</key>
+	<array>
+		<string>plan_pregenerate</string>
+		<string>reminder_compose</string>
+		<string>widget_refresh</string>
+	</array>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>fetch</string>
+		<string>processing</string>
+	</array>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>DeutschPlan records your answer to a mock exam's Speaking task so you can listen back. The recording stays on this phone.</string>
 	<key>CFBundleExecutable</key>

@@ -9,7 +9,8 @@ Details the reminder settles (#157):
 - It schedules the next week's study days as one notification each, at the local `reminder_time` of each date (`domain/reminder_times.dart`), so a daylight-saving change can't shift one by an hour. Today's is included only while it is still ahead. A week is what's scheduled; `plan_pregenerate` (#158) keeps it rolling for a learner who doesn't open the app.
 - `ReminderNotifications` (`services/reminder_notifications.dart`) is `flutter_local_notifications`: an inexact alarm on Android (`inexactAllowWhileIdle`, so no exact-alarm permission), a UNUserNotificationCenter request on iOS. The scheduled reminders come back after a reboot (`ScheduledNotificationBootReceiver`, `RECEIVE_BOOT_COMPLETED`).
 - It never asks for the permission. `NotificationPermission` asks when the reminder is switched on (S2 page 5, and M5 in #147), and a phone that said no simply doesn't show the notification.
-- Until #158's `reminder_compose` builds the text from the plan, the reminder reads "Time for German — Today's plan is ready. A few minutes is enough.", in the app language. `reminder_only_when_due` leaves the schedule as it is; cancelling a day with nothing due is that task's job.
+- Scheduled, the reminder reads "Time for German — Today's plan is ready. A few minutes is enough.", in the app language; `reminder_compose` writes the day's plan into it (below). `reminder_only_when_due` leaves the schedule as it is; cancelling a day with nothing due is that task's job.
+- Each reminder's notification id is its date (`20260921`), so the task can replace or cancel today's alone.
 - A tap opens `deutschplan://today`, through `resolveDeepLink`: a tap while the app runs, and the one that starts it (the plugin's launch details).
 - Each reminder is an instant, the local `reminder_time` when it was scheduled. A learner who changes time zone hears the old zone's 19:30 until the app next starts and reschedules.
 
@@ -20,6 +21,15 @@ Details the reminder settles (#157):
 | `plan_pregenerate` | 00:05 local, daily | `openDay(today)` so the widget and reminder are accurate |
 | `reminder_compose` | reminder_time − 10 min | builds/cancels the notification |
 | `widget_refresh` | after every session, hourly for the word of the day | writes the snapshot |
+
+Details the background tasks settle (#158):
+- `services/background_tasks.dart` runs them; `BackgroundWork` (`services/background_work.dart`) queues them. On Android each is WorkManager unique work named after the task. On iOS `plan_pregenerate` and `reminder_compose` are BGProcessingTasks and `widget_refresh` a BGAppRefreshTask, with the three ids in `BGTaskSchedulerPermittedIdentifiers` and registered in `AppDelegate`, and the `fetch` and `processing` background modes.
+- `plan_pregenerate` and `reminder_compose` are one-offs that queue their own next run: the app queues tonight's 00:05 at every start, and `ReminderScheduler` queues the compose on every sync, ten minutes before the next reminder, or at once when the sync falls inside those ten minutes (it has just put the plain text back). A compose queues the one for the next study day's reminder after it. `widget_refresh` is periodic, hourly.
+- `plan_pregenerate` runs `openDay(today)` and a reminder sync, so the week of reminders rolls on for a learner who doesn't open the app.
+- `reminder_compose` reads T1's view of today. Its text is the open blocks and BR-PLAN-09's estimate, "12 revisions · 7 new · about 9 min", a block with nothing open left out, and "Grammar due: <first topic due>" on a second line (expanded on Android). Practice sentences don't count as due. When nothing of revise, new or grammar is open, which includes a finished day, it cancels today's reminder under `reminder_only_when_due` and leaves the plain one otherwise. On a rest day it cancels. When it runs after the reminder time, or with the reminder off, it writes nothing.
+- A task runs in an engine of its own. It opens user.db on its own connection (not drift's shared isolate, which would end with the task's engine under an app that joined it meanwhile), with `busy_timeout` so its writes wait for the app's; the app's streams don't hear them, and only `openDay`'s rows are written. A task finds no course before the app's first start and does nothing.
+- iOS runs its tasks when it chooses, never before the time asked. A compose that runs late leaves the plain reminder.
+- `widget_refresh` does nothing until the widget (#159) has a snapshot to write.
 
 ## Widget (`home_widget`)
 

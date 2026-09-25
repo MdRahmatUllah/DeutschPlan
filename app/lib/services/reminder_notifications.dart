@@ -20,6 +20,13 @@ abstract interface class ReminderNotifications {
   /// Replaces every scheduled reminder with one at each of [at].
   Future<void> schedule(List<DateTime> at, ReminderCopy copy);
 
+  /// Replaces the reminder of [at]'s day with one at [at] (#158's
+  /// `reminder_compose`).
+  Future<void> replace(DateTime at, ReminderCopy copy);
+
+  /// Cancels the reminder of [day]'s date, if one is scheduled.
+  Future<void> cancelDay(DateTime day);
+
   Future<void> cancelAll();
 }
 
@@ -34,6 +41,11 @@ class PlatformReminderNotifications implements ReminderNotifications {
   static const String link = 'deutschplan://today';
 
   static const String channel = 'reminder';
+
+  /// One reminder a day, so the date is its id: `reminder_compose` finds
+  /// today's without keeping a list.
+  static int idFor(DateTime day) =>
+      day.year * 10000 + day.month * 100 + day.day;
 
   @override
   Future<void> init(void Function(String link) onTap) async {
@@ -61,26 +73,38 @@ class PlatformReminderNotifications implements ReminderNotifications {
   }
 
   // ponytail: clears every notification the app has, fine while the
-  // reminder is the only one; cancel by id once #158 adds others.
+  // reminder is the only one; cancel the pending ids once #156's download
+  // notifications share the app.
   @override
   Future<void> schedule(List<DateTime> at, ReminderCopy copy) async {
     await _plugin.cancelAll();
-    for (final (id, instant) in at.indexed) {
-      await _plugin.zonedSchedule(
-        id: id,
-        // The instant, in UTC: it is already the local 19:30 of its day.
-        scheduledDate: tz.TZDateTime.from(instant, tz.UTC),
-        notificationDetails: NotificationDetails(
-          android: AndroidNotificationDetails(channel, copy.channel),
-          iOS: const DarwinNotificationDetails(),
-        ),
-        androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
-        title: copy.title,
-        body: copy.body,
-        payload: link,
-      );
+    for (final instant in at) {
+      await replace(instant, copy);
     }
   }
+
+  @override
+  Future<void> replace(DateTime at, ReminderCopy copy) => _plugin.zonedSchedule(
+    id: idFor(at),
+    // The instant, in UTC: it is already the local 19:30 of its day.
+    scheduledDate: tz.TZDateTime.from(at, tz.UTC),
+    notificationDetails: NotificationDetails(
+      android: AndroidNotificationDetails(
+        channel,
+        copy.channel,
+        // Collapsed, the first line: "12 revisions · 7 new · about 9 min".
+        styleInformation: BigTextStyleInformation(copy.body),
+      ),
+      iOS: const DarwinNotificationDetails(),
+    ),
+    androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
+    title: copy.title,
+    body: copy.body,
+    payload: link,
+  );
+
+  @override
+  Future<void> cancelDay(DateTime day) => _plugin.cancel(id: idFor(day));
 
   @override
   Future<void> cancelAll() => _plugin.cancelAll();

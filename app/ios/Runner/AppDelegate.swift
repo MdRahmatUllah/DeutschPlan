@@ -1,6 +1,7 @@
 import Flutter
 import UIKit
 import UserNotifications
+import workmanager_apple
 
 @main
 @objc class AppDelegate: FlutterAppDelegate, FlutterImplicitEngineDelegate {
@@ -27,6 +28,20 @@ import UserNotifications
     // flutter_local_notifications: the reminder shows while the app is open,
     // and a tap reaches Flutter (#157). Written without a Mac to run it.
     UNUserNotificationCenter.current().delegate = self
+
+    // workmanager (#158): a task's engine gets the app's plugins, and iOS
+    // learns the three tasks before launch ends, as BGTaskScheduler asks.
+    // The identifiers are `BackgroundTask.id`, and Info.plist's
+    // BGTaskSchedulerPermittedIdentifiers. Written without a Mac to run it.
+    WorkmanagerPlugin.setPluginRegistrantCallback { registry in
+      GeneratedPluginRegistrant.register(with: registry)
+    }
+    WorkmanagerPlugin.registerBGProcessingTask(withIdentifier: "plan_pregenerate")
+    WorkmanagerPlugin.registerBGProcessingTask(withIdentifier: "reminder_compose")
+    WorkmanagerPlugin.registerPeriodicTask(
+      withIdentifier: "widget_refresh",
+      earliestBeginInSeconds: NSNumber(value: 60 * 60)
+    )
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
 
