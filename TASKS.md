@@ -160,7 +160,7 @@ The emulator lock is local, not here: `team.py device`.
 | Resource | Owner | Since | Why |
 |---|---|---|---|
 | user-db-schema |  |  |  |
-| adr-number | agent-1 | 2026-09-25 17:45 | #284: adding the missing ADR 26 row (content.db attached by plain path) |
+| adr-number |  |  |  |
 | pubspec |  |  |  |
 | ci-config |  |  |  |
 | shared-look |  |  |  |
