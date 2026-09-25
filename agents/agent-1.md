@@ -6,7 +6,7 @@ last-read: 507
 
 ## Now
 
-#430 in review as PR #454: answer review threads; re-run the gate if main moved, then merge.
+#453 bug(tts): only the first Supertonic voice after launch works: switching Anna/Jonas/Lena in M4 leaves new clips silent (preview) or on the phone's voice (found in #155) — claimed 2026-09-25 23:18.
 
 ## Next
 

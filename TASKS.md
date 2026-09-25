@@ -154,7 +154,7 @@ claiming the same issue. A hand edit skips that check.
 | #450 | SQA | X | P3 | - | a11y: should a fill reach 3:1 against its own track? (owner question after #437) | needs-decision |  |  |  |
 | #451 | SQA | A | P3 | - | feat(words): BR-CONTENT-02's updated chip is never shown (recentlyUpdated has no caller) | open |  |  |  |
 | #452 | SQA | C | P3 | - | a11y(tts): the small play buttons never show the slashed no-voice state (follow-up to #174) | open |  |  |  |
-| #453 | SQA | C | P2 | - | bug(tts): only the first Supertonic voice after launch works: switching Anna/Jonas/Lena in M4 leaves new clips silent (preview) or on the phone's voice (found in #155) | assigned | agent-1 |  |  |
+| #453 | SQA | C | P2 | - | bug(tts): only the first Supertonic voice after launch works: switching Anna/Jonas/Lena in M4 leaves new clips silent (preview) or on the phone's voice (found in #155) | in-progress | agent-1 |  |  |
 
 ## Locks
 
