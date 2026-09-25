@@ -90,8 +90,12 @@ const Set<String> _verbEndings = <String>{
 }
 
 /// Whether [word] is a form of [target].
-bool _finds(String word, ({String prefix, bool verb}) target) {
-  final (expanded, folded) = _keys(word);
+bool _finds(String word, ({String prefix, bool verb}) target) =>
+    _findsKeys(_keys(word), target);
+
+/// [_finds] over a word's keys, worked out once per word.
+bool _findsKeys((String, String) keys, ({String prefix, bool verb}) target) {
+  final (expanded, folded) = keys;
   for (final key in <String>[expanded, folded]) {
     if (!key.startsWith(target.prefix)) continue;
     if (!target.verb ||
@@ -105,15 +109,58 @@ bool _finds(String word, ({String prefix, bool verb}) target) {
 /// FR-L12W-01: the [targets] [text] uses — a word of it that is a form of
 /// the target: "Heizungen" uses Heizung, "bringt" uses bringen,
 /// "Werkstätten" uses Werkstatt.
+///
+/// A word counts for one target at most (#388): "Beweise" is Beweis or
+/// beweisen, not both. The most targets the text uses so, a bipartite
+/// matching of targets to its distinct words (Kuhn's augmenting paths:
+/// ten targets, a few hundred words).
 List<String> targetsUsed(String text, List<String> targets) {
-  final words = textWords(text);
-  return <String>[
-    for (final target in targets)
-      if (_target(target) case final found
-          when found.prefix.isNotEmpty &&
-              words.any((word) => _finds(word, found)))
-        target,
+  final words = <(String, String)>[
+    for (final word in textWords(text).toSet()) _keys(word),
   ];
+  final finds = <List<int>>[
+    for (final target in targets)
+      if (_target(target) case final found when found.prefix.isNotEmpty)
+        <int>[
+          for (var w = 0; w < words.length; w++)
+            if (_findsKeys(words[w], found)) w,
+        ]
+      else
+        const <int>[],
+  ];
+  final owner = <int, int>{}; // a word's index → its target's
+  bool claim(int target, Set<int> tried) {
+    for (final word in finds[target]) {
+      if (!tried.add(word)) continue;
+      final other = owner[word];
+      if (other == null || claim(other, tried)) {
+        owner[word] = target;
+        return true;
+      }
+    }
+    return false;
+  }
+
+  return <String>[
+    for (var t = 0; t < targets.length; t++)
+      if (claim(t, <int>{})) targets[t],
+  ];
+}
+
+/// Whether one of [a] and [b] could claim the other's words (#388): one's
+/// prefix starts the other's (Beweis and beweisen), or one is a form of the
+/// other by its umlaut-free key (Zahl and zählen, Arzt and Ärztin). A
+/// Writing list keeps one of them.
+///
+/// ponytail: prefixes, so it also parts sehen and sehr, which no one word
+/// serves; that costs a list some variety, never its ten.
+bool sameTargetFamily(String a, String b) {
+  final (x, y) = (_target(a), _target(b));
+  if (x.prefix.isEmpty || y.prefix.isEmpty) return false;
+  return x.prefix.startsWith(y.prefix) ||
+      y.prefix.startsWith(x.prefix) ||
+      _finds(a, y) ||
+      _finds(b, x);
 }
 
 /// The [connectors] [text] uses, as the Writing screen lists them: whole

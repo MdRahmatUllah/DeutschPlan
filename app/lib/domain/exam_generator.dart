@@ -10,6 +10,7 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:deutschplan/domain/cloze.dart';
+import 'package:deutschplan/domain/exam_grading.dart' show sameTargetFamily;
 import 'package:deutschplan/domain/grammar_item_generator.dart';
 import 'package:deutschplan/domain/quiz_builder.dart';
 
@@ -759,11 +760,20 @@ WritingTask _writing(
     for (final w in pool.words)
       if (fits(w) && !own.contains(w.word.german)) w.word.german,
   ]..shuffle(random);
+  // One of a word family (#388): Beweis and beweisen would be one target
+  // counted twice, or a word the learner can't use for both.
+  final targets = <String>[];
+  for (final target in <String>{...own, ...rest}) {
+    if (targets.length == 10) break;
+    if (!targets.any((chosen) => sameTargetFamily(chosen, target))) {
+      targets.add(target);
+    }
+  }
   return WritingTask(
     'writing:${id ?? '-'}',
     level: pool.level,
     category: id == null ? null : pool.categories[id],
-    targets: <String>{...own, ...rest}.take(10).toList(),
+    targets: targets,
     minWords: writingMinWords(pool.level),
     connectors: pool.connectors,
   );

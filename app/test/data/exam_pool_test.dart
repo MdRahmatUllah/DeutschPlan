@@ -7,6 +7,7 @@ import 'package:deutschplan/data/db/app_database.dart';
 import 'package:deutschplan/data/db/content_dao.dart';
 import 'package:deutschplan/data/repositories/exam_repository.dart';
 import 'package:deutschplan/domain/exam_generator.dart';
+import 'package:deutschplan/domain/exam_grading.dart' show sameTargetFamily;
 import 'package:drift/drift.dart' hide isNotNull, isNull;
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -197,6 +198,12 @@ void main() {
             final task = paper.items.whereType<WritingTask>().single;
             expect(task.targets.toSet(), hasLength(10), reason: why);
             expect(task.targets.where((t) => t.contains(' ')), isEmpty);
+            // #388: one of a word family, so one word never reads as two.
+            for (final (i, a) in task.targets.indexed) {
+              for (final b in task.targets.skip(i + 1)) {
+                expect(sameTargetFamily(a, b), isFalse, reason: '$why $a $b');
+              }
+            }
             expect(
               task.targets.toSet().intersection(<String>{
                 for (final item in paper.items) ?german[item.ref],
