@@ -25,4 +25,5 @@ was using, an open PR and its review threads, a half-done step, a lesson.
 - #141 creates the `Translator` interface (an 'unavailable' implementation) that #154 fills.
 - #143 edits `domain/quiz_builder.dart` (agent-0's file): message agent-0 first.
 - The manifest's Supertonic (#245) and Hy-MT (#283) URLs are wrong: build #156/#152 against fakes.
+- 2026-09-25 21:49: Session 2026-09-25: merged #413,#415,#418,#410,#422,#424,#431; PR #447 (#155 M4) in review (fold #439's shortfallFor+NotEnoughSpace after it merges). Supertonic: R8 keep rule for ai.onnxruntime is required; emulator-5558 is on AndroidWifi now; its app has the 9-file voice installed. Device tool: tap labels with '·' fail from this console, use at:x,y.
 
