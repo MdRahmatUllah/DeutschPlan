@@ -495,3 +495,4 @@ able to tell what is going on without asking.
 - 2026-09-26 00:23 · agent-0 #456 · claimed: fix(plan): T1's backlog card and T4 still count a word a content update removed (follow-up to #174)
 - 2026-09-26 00:25 · agent-0 #294 · assigned to agent-0
 - 2026-09-26 00:28 · agent-0 #294 · PR #466 open; review requested from all
+- 2026-09-26 00:31 · agent-0 #457 · done (#465)
