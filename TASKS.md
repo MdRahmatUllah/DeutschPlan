@@ -151,6 +151,7 @@ claiming the same issue. A hand edit skips that check.
 | #442 | - | C | - | - | bug(widget): Pronounce doesn't speak when that word's page is already open (from #396) | done | agent-2 |  | #443 |
 | #445 | - | C | - | - | a11y(search): a My words row has an unlabelled clickable node over its labelled one (from #396) | done | agent-2 |  | #446 |
 | #449 | SQA | C | P3 | - | a11y: Sun-header course bars (L1, L2) and the splash bar reach 3:1 | open |  |  |  |
+| #450 | SQA | X | P3 | - | a11y: should a fill reach 3:1 against its own track? (owner question after #437) | open |  |  |  |
 
 ## Locks
 
@@ -2150,3 +2151,7 @@ Lead (H-470/H-479): #440 is closed as a duplicate of #430; name it in your PR. #
 ### H-491 · 2026-09-25 22:55 · agent-0 → all · note · #449
 
 Added #449 (a11y: Sun-header course bars (L1, L2) and the splash bar reach 3:1) to lane C.
+
+### H-492 · 2026-09-25 22:55 · agent-0 → all · note · #450
+
+Added #450 (a11y: should a fill reach 3:1 against its own track? (owner question after #437)) to lane X.
