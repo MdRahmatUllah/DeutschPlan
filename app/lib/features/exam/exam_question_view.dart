@@ -1049,13 +1049,11 @@ class _ExamSpeakingState extends ConsumerState<ExamSpeaking> {
                     color: tokens.color.textSecondary,
                   ),
                 ),
-                for (final (i, line) in <String>[
-                  l10n.examSpeakingRubricTask,
-                  l10n.examSpeakingRubricFluency,
-                  l10n.examSpeakingRubricPronunciation,
-                  l10n.examSpeakingRubricVocabulary,
-                ].indexed)
-                  _Tick(
+                for (final (i, line) in examRubricLines(
+                  l10n,
+                  ExamSection.speaking,
+                ).indexed)
+                  ExamRubricTick(
                     label: line,
                     ticked: _ticks[i],
                     onTap: () => _toggle(i),
@@ -1168,20 +1166,29 @@ class _Bars extends StatelessWidget {
   }
 }
 
-/// A rubric line: a 22 dp box, Lime with a tick once ticked.
-class _Tick extends StatelessWidget {
-  const _Tick({required this.label, required this.ticked, required this.onTap});
+/// A rubric line: a 22 dp box, Lime with a tick once ticked. L12's
+/// Speaking and L13's rubric sheet (#135).
+class ExamRubricTick extends StatelessWidget {
+  const ExamRubricTick({
+    required this.label,
+    required this.ticked,
+    required this.onTap,
+    super.key,
+  });
 
   final String label;
   final bool ticked;
-  final VoidCallback onTap;
+
+  /// Null: shown, but not tickable (L13, a task without an answer).
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
     final tokens = context.tokens;
-    return Semantics(
+    final tick = Semantics(
       container: true,
       checked: ticked,
+      enabled: onTap != null,
       label: label,
       excludeSemantics: true,
       onTap: onTap,
@@ -1212,5 +1219,23 @@ class _Tick extends StatelessWidget {
         ),
       ),
     );
+    return onTap == null ? Opacity(opacity: 0.5, child: tick) : tick;
   }
 }
+
+/// A task's rubric lines, in the order `self_rubric_json` stores its ticks:
+/// Speaking's four (FR-L12S-03), Writing's two, ticked on L13 (FR-L12W-03).
+List<String> examRubricLines(AppLocalizations l10n, ExamSection section) =>
+    switch (section) {
+      ExamSection.speaking => <String>[
+        l10n.examSpeakingRubricTask,
+        l10n.examSpeakingRubricFluency,
+        l10n.examSpeakingRubricPronunciation,
+        l10n.examSpeakingRubricVocabulary,
+      ],
+      ExamSection.writing => <String>[
+        l10n.examWritingRubricTask,
+        l10n.examWritingRubricStructure,
+      ],
+      _ => const <String>[],
+    };
