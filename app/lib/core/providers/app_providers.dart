@@ -45,6 +45,7 @@ import 'package:deutschplan/data/repositories/settings_repository.dart';
 import 'package:deutschplan/data/repositories/setup_repository.dart';
 import 'package:deutschplan/data/repositories/word_repository.dart';
 import 'package:deutschplan/services/exam_recorder.dart';
+import 'package:deutschplan/services/device_storage.dart';
 import 'package:deutschplan/services/model_downloads.dart';
 import 'package:deutschplan/services/notification_permission.dart';
 import 'package:deutschplan/services/tts/system_tts.dart';
@@ -349,10 +350,16 @@ Future<bool> ttsAvailable(Ref ref) => ref.watch(ttsProvider).isAvailable();
 NotificationPermission notificationPermission(Ref ref) =>
     const PlatformNotificationPermission();
 
+/// The phone's free space: M4's storage card and its shortfall (#156).
+@riverpod
+DeviceStorage deviceStorage(Ref ref) => const PlatformDeviceStorage();
+
 /// Kept alive for the same reason: page 5's draft queues the voice (FR-S2-06).
 @Riverpod(keepAlive: true)
-ModelDownloads modelDownloads(Ref ref) =>
-    BackgroundModelDownloads(ref.watch(modelRepositoryProvider));
+ModelDownloads modelDownloads(Ref ref) => BackgroundModelDownloads(
+  ref.watch(modelRepositoryProvider),
+  ref.watch(settingsProvider),
+);
 
 @riverpod
 SetupRepository setupRepository(Ref ref) => SetupRepository(

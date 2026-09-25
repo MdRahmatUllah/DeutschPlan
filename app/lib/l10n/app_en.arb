@@ -5359,5 +5359,45 @@
   "licencesOther": "Licence",
   "@licencesOther": {
     "description": "M8: under a package whose licence isn't one it names (MIT, BSD, Apache…)."
+  },
+  "modelNotifyRunning": "Downloading models · {finished} of {total} files",
+  "@modelNotifyRunning": {
+    "description": "The model downloads' notification title (FR-M4-01, #156). {finished} and {total} are the downloader's own tokens, filled in on the device.",
+    "placeholders": {
+      "finished": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "modelNotifyRunningNote": "Carries on in the background",
+  "@modelNotifyRunningNote": {
+    "description": "Under the running notification (FR-M4-01)."
+  },
+  "modelNotifyPaused": "Model download paused",
+  "@modelNotifyPaused": {
+    "description": "The notification when a model download pauses (FR-M4-01)."
+  },
+  "modelNotifyPausedNote": "Resumes on Wi-Fi, or from Voice & translation",
+  "@modelNotifyPausedNote": {
+    "description": "Under the paused notification."
+  },
+  "modelNotifyComplete": "Models downloaded",
+  "@modelNotifyComplete": {
+    "description": "The notification when every model file is in (FR-M4-01)."
+  },
+  "modelNotifyCompleteNote": "Checked before use",
+  "@modelNotifyCompleteNote": {
+    "description": "Under the complete notification: the checksums come next."
+  },
+  "modelNotifyFailed": "A model download failed",
+  "@modelNotifyFailed": {
+    "description": "The notification when a model file fails (FR-M4-01)."
+  },
+  "modelNotifyFailedNote": "Retry it from Voice & translation",
+  "@modelNotifyFailedNote": {
+    "description": "Under the failed notification."
   }
 }

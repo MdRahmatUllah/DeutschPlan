@@ -1,6 +1,7 @@
 package com.example.deutschplan
 
 import android.os.Build
+import android.os.StatFs
 import android.view.WindowManager
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
@@ -27,6 +28,9 @@ import java.util.function.Consumer
 class MainActivity : FlutterActivity() {
     private companion object {
         const val CHANNEL = "deutschplan/glass"
+
+        /** `lib/services/device_storage.dart`: M4's free space (#156). */
+        const val STORAGE_CHANNEL = "deutschplan/storage"
     }
 
     private var channel: MethodChannel? = null
@@ -51,6 +55,24 @@ class MainActivity : FlutterActivity() {
         }
 
         registerBlurListener(channel)
+
+        // The space M4's card shows and a model download is checked against:
+        // the volume the app's files, and so the models, live on.
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, STORAGE_CHANNEL)
+            .setMethodCallHandler { call, result ->
+                when (call.method) {
+                    "space" -> {
+                        val stat = StatFs(filesDir.path)
+                        result.success(
+                            mapOf(
+                                "free" to stat.availableBytes,
+                                "total" to stat.totalBytes,
+                            )
+                        )
+                    }
+                    else -> result.notImplemented()
+                }
+            }
     }
 
     private fun registerBlurListener(channel: MethodChannel) {

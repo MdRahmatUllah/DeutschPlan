@@ -280,6 +280,9 @@ abstract final class SettingKeys {
   static const autoplayExample = BoolSetting('autoplay_example', false);
   static const listeningQuestions = BoolSetting('listening_questions', true);
 
+  /// M4's *Wi-Fi only* (FR-M4-01, #156): model downloads wait for Wi-Fi.
+  static const modelsWifiOnly = BoolSetting('models_wifi_only', true);
+
   // Exams.
   static const examUnlockPercent = IntSetting('exam_unlock_percent', 90);
   static const examPassPercent = IntSetting('exam_pass_percent', 60);
@@ -361,6 +364,7 @@ abstract final class SettingKeys {
     mtEnabled,
     mtVariant,
     listeningQuestions,
+    modelsWifiOnly,
     lastPlannedDate,
     coachMarkSeen,
     dismissedCards,

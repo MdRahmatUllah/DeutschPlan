@@ -18,6 +18,9 @@ import workmanager_apple
   /// respected. So the value is pushed on change, not only answered on request.
   private static let glassChannelName = "deutschplan/glass"
 
+  /// `lib/services/device_storage.dart`: M4's free space (#156).
+  private static let storageChannelName = "deutschplan/storage"
+
   private var glassChannel: FlutterMethodChannel?
   private var reduceTransparencyObserver: NSObjectProtocol?
 
@@ -47,6 +50,31 @@ import workmanager_apple
 
   func didInitializeImplicitFlutterEngine(_ engineBridge: FlutterImplicitEngineBridge) {
     GeneratedPluginRegistrant.register(with: engineBridge.pluginRegistry)
+
+    // The space M4's card shows and a model download is checked against. The
+    // capacity "for important usage" is what iOS will actually free up for a
+    // download the user asked for. Written without a Mac to run it.
+    FlutterMethodChannel(
+      name: AppDelegate.storageChannelName,
+      binaryMessenger: engineBridge.applicationBinaryMessenger
+    ).setMethodCallHandler { call, result in
+      guard call.method == "space" else {
+        result(FlutterMethodNotImplemented)
+        return
+      }
+      let home = URL(fileURLWithPath: NSHomeDirectory())
+      let values = try? home.resourceValues(forKeys: [
+        .volumeAvailableCapacityForImportantUsageKey,
+        .volumeTotalCapacityKey,
+      ])
+      // One type for both: the free space is an Int64 and the total an Int,
+      // and a literal mixing them won't type-check.
+      let space: [String: Int64] = [
+        "free": values?.volumeAvailableCapacityForImportantUsage ?? 0,
+        "total": Int64(values?.volumeTotalCapacity ?? 0),
+      ]
+      result(space)
+    }
 
     let channel = FlutterMethodChannel(
       name: AppDelegate.glassChannelName,

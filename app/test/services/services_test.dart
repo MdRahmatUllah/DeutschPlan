@@ -19,16 +19,52 @@ void main() {
   group('FR-S2-06 BackgroundModelDownloads', () {
     late Directory support;
     late ModelRepository models;
+    late SettingsRepository settings;
     late _FakeDownloader downloader;
 
     setUp(() async {
       support = Directory.systemTemp.createTempSync('deutschplan_models');
       final db = AppDatabase.memory();
       addTearDown(db.close);
-      final settings = SettingsRepository(db);
+      settings = SettingsRepository(db);
       await settings.load();
       addTearDown(settings.dispose);
       models = ModelRepository(settings, support: support);
+      // The bundled manifest with Supertonic's files pinned: `start` fetches
+      // nothing that could never verify (#156), and the real hashes wait on
+      // #245.
+      final bundled = await models.manifest();
+      final voice = bundled.model('supertonic3')!;
+      models.useManifest(
+        ModelManifest(
+          version: bundled.version,
+          models: <ModelEntry>[
+            ModelEntry(
+              id: voice.id,
+              name: voice.name,
+              licence: voice.licence,
+              disables: voice.disables,
+              regionExcluded: voice.regionExcluded,
+              variants: <ModelVariant>[
+                for (final variant in voice.variants)
+                  ModelVariant(
+                    id: variant.id,
+                    name: variant.name,
+                    files: <ModelFile>[
+                      for (final file in variant.files)
+                        ModelFile(
+                          name: file.name,
+                          url: file.url,
+                          bytes: file.bytes,
+                          sha256: '0' * 64,
+                        ),
+                    ],
+                  ),
+              ],
+            ),
+          ],
+        ),
+      );
       downloader = _FakeDownloader();
     });
 
@@ -41,7 +77,11 @@ void main() {
     });
 
     test("queues every file of the voice, from the manifest", () async {
-      await BackgroundModelDownloads(models, downloader).start('supertonic3');
+      await BackgroundModelDownloads(
+        models,
+        settings,
+        downloader,
+      ).start('supertonic3');
 
       final manifest = await models.manifest();
       final files = manifest.model('supertonic3')!.variants.first.files;
@@ -54,7 +94,11 @@ void main() {
     test('into the staging directory ModelRepository verifies', () async {
       // The bytes have to land where `verify` looks, or a finished download
       // is a download nothing can find.
-      await BackgroundModelDownloads(models, downloader).start('supertonic3');
+      await BackgroundModelDownloads(
+        models,
+        settings,
+        downloader,
+      ).start('supertonic3');
 
       for (final task in downloader.queued) {
         expect(task.baseDirectory, BaseDirectory.applicationSupport);
@@ -70,7 +114,7 @@ void main() {
 
     test('and refuses a model the manifest does not have', () async {
       expect(
-        BackgroundModelDownloads(models, downloader).start('nothing'),
+        BackgroundModelDownloads(models, settings, downloader).start('nothing'),
         throwsArgumentError,
       );
       expect(downloader.queued, isEmpty);

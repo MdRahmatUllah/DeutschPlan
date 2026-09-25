@@ -165,6 +165,9 @@ class _BootstrapHostState extends State<BootstrapHost> {
       );
       // FR-X1-01: the home-screen widget's snapshot, kept to today (#159).
       followWidget(container, const HomeWidgetStore());
+      // FR-M4-01: model downloads carry on from where the app left them, and
+      // report as they go (#156).
+      unawaited(container.read(modelDownloadsProvider).attach());
     }
     setState(() {
       _app = UncontrolledProviderScope(

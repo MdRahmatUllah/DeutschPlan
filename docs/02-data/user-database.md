@@ -52,6 +52,7 @@ Created on first launch from `lib/data/db/user_schema.drift`, which is the autho
 | `exam_unlock_percent` / `exam_pass_percent` / `exam_timer_default` | 90 / 60 / 1 | Settings |
 | `mt_enabled` / `mt_variant` | 0 / `q1_25` | Settings, Model manager |
 | `listening_questions` | 1 | Settings (accessibility) |
+| `models_wifi_only` | 1 | Model manager — FR-M4-01's *Wi-Fi only*: model downloads wait for Wi-Fi |
 | `last_planned_date` | — | engine |
 | `coach_mark_seen` | 0 | Today — FR-S2-03's one-time mark on the primary button |
 | `dismissed_cards` | — | Today — FR-T1-06's dismissed contextual cards, a JSON list of ids (`pause`, `voice`, `exams:A2.1`) |
