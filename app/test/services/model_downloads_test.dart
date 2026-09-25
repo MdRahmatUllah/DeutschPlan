@@ -280,6 +280,20 @@ void main() {
       expect(downloader.running!.body, 'Downloads on Wi-Fi, in the background');
     });
 
+    test(
+      'with Wi-Fi only off, off Wi-Fi is downloading, not waiting',
+      () async {
+        await settings.write(SettingKeys.modelsWifiOnly, false);
+        await downloads.start('hymt');
+        await pumpEventQueue();
+        expect(seen.last, DownloadPhase.running);
+        expect(
+          downloader.running!.title,
+          'Downloading models · {numFinished} of {numTotal} files',
+        );
+      },
+    );
+
     test('queued on Wi-Fi: downloading, not waiting', () async {
       downloader.isWiFi = true;
       await downloads.start('hymt');
@@ -349,6 +363,21 @@ void main() {
       expect(downloader.calls, <String>['cancel hymt']);
       await report((t) => TaskStatusUpdate(t, TaskStatus.canceled), 'one.gguf');
       expect(downloader.calls, <String>['cancel hymt']);
+    });
+
+    test('#428 a file waiting for the downloader\'s own retry is not a '
+        'failure: nothing is cancelled', () async {
+      downloader.isWiFi = true;
+      final seen = <DownloadPhase>[];
+      final sub = downloads.watch('hymt').listen((p) => seen.add(p.phase));
+      addTearDown(sub.cancel);
+      downloader.calls.clear();
+      await report(
+        (t) => TaskStatusUpdate(t, TaskStatus.waitingToRetry),
+        'two.gguf',
+      );
+      expect(seen.last, DownloadPhase.running);
+      expect(downloader.calls, isEmpty);
     });
 
     test('a late listener gets the last word first', () async {
@@ -433,6 +462,81 @@ void main() {
       final staging = await models.stagingFor('hymt');
       expect(File('${staging.path}/one.gguf').readAsStringSync(), one);
     });
+
+    test(
+      '#428 Retry after a failed file checks the space for what did not '
+      'arrive: a disk still full is refused, and nothing is fetched',
+      () async {
+        final storage = _Storage(free: 400 + ModelDownloads.spaceMargin);
+        downloads = BackgroundModelDownloads(
+          models,
+          settings,
+          downloader,
+          storage,
+        );
+        downloader.queued.clear();
+        await downloads.attach();
+        await downloads.start('hymt');
+        await land('one.gguf', one);
+        await report(
+          (t) => TaskStatusUpdate(t, TaskStatus.complete),
+          'one.gguf',
+        );
+        await report((t) => TaskStatusUpdate(t, TaskStatus.failed), 'two.gguf');
+        downloader.queued.clear();
+        // The disk that failed two.gguf (100 bytes): 50 bytes left.
+        storage.free = 50;
+        await expectLater(
+          downloads.retry('hymt'),
+          throwsA(
+            isA<NotEnoughSpace>().having(
+              (e) => e.bytes,
+              'bytes',
+              100 + ModelDownloads.spaceMargin - 50,
+            ),
+          ),
+        );
+        expect(downloader.queued, isEmpty);
+        // Room for the missing file and the margin, not the whole model.
+        storage.free = 100 + ModelDownloads.spaceMargin;
+        await downloads.retry('hymt');
+        expect(downloader.queued.map((t) => t.filename), <String>['two.gguf']);
+      },
+    );
+
+    test(
+      '#428 and after a checksum failure, the whole model must fit',
+      () async {
+        final storage = _Storage(free: 400 + ModelDownloads.spaceMargin);
+        downloads = BackgroundModelDownloads(
+          models,
+          settings,
+          downloader,
+          storage,
+        );
+        downloader.queued.clear();
+        await downloads.attach();
+        await downloads.start('hymt');
+        await land('one.gguf', one);
+        await land('two.gguf', 'corrupt');
+        await report(
+          (t) => TaskStatusUpdate(t, TaskStatus.complete),
+          'one.gguf',
+        );
+        await report(
+          (t) => TaskStatusUpdate(t, TaskStatus.complete),
+          'two.gguf',
+        );
+        await settled();
+        downloader.queued.clear();
+        storage.free = 50;
+        await expectLater(
+          downloads.retry('hymt'),
+          throwsA(isA<NotEnoughSpace>()),
+        );
+        expect(downloader.queued, isEmpty);
+      },
+    );
 
     test('#156 a task Retry replaced has no say', () async {
       await report((t) => TaskStatusUpdate(t, TaskStatus.failed), 'two.gguf');
@@ -568,7 +672,7 @@ class _Records implements Database {
 class _Storage implements DeviceStorage {
   _Storage({required this.free});
 
-  final int free;
+  int free;
 
   @override
   Future<StorageSpace?> space() async => (free: free, total: free * 10);

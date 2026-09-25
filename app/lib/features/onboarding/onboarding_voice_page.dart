@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:deutschplan/core/adaptive/adaptive.dart';
 import 'package:deutschplan/core/components/dp_button.dart';
 import 'package:deutschplan/core/components/dp_speaker_button.dart';
@@ -57,10 +59,20 @@ Stream<SupertonicOnPhone> supertonicOnPhone(Ref ref) async* {
     yield (phase: DownloadPhase.ready, progress: 1, shortfall: 0);
     return;
   }
-  yield (phase: null, progress: 0, shortfall: await downloads.shortfallFor(id));
-  yield* downloads
-      .watch(id)
-      .map((p) => (phase: p.phase, progress: p.progress, shortfall: 0));
+  // Listening before asking the phone: an attempt in flight answers at once,
+  // and a space check made against its own partial bytes must not flash
+  // *Needs N MB more space* first.
+  final heard = StreamController<SupertonicOnPhone>();
+  ref.onDispose(heard.close);
+  var answered = false;
+  final updates = downloads.watch(id).listen((p) {
+    answered = true;
+    heard.add((phase: p.phase, progress: p.progress, shortfall: 0));
+  });
+  ref.onDispose(updates.cancel);
+  final short = await downloads.shortfallFor(id);
+  if (!answered) yield (phase: null, progress: 0, shortfall: short);
+  yield* heard.stream;
 }
 
 /// S2 page 5 · Reminder and voice. `OnboardingVoice-android.html`.
@@ -91,6 +103,9 @@ class _OnboardingVoicePageState extends ConsumerState<OnboardingVoicePage> {
   bool _voiceMissing = false;
   bool _downloadFailed = false;
 
+  /// What the phone lacked when *Retry* last asked (#428); 0 once it didn't.
+  int _retryShortfall = 0;
+
   OnboardingNotifier get _notifier => ref.read(onboardingProvider.notifier);
 
   Future<void> _preview(String phrase) async {
@@ -118,13 +133,18 @@ class _OnboardingVoicePageState extends ConsumerState<OnboardingVoicePage> {
   }
 
   Future<void> _retry() async {
+    var short = 0;
     try {
       await ref
           .read(modelDownloadsProvider)
           .retry(OnboardingNotifier.supertonic);
+    } on NotEnoughSpace catch (refused) {
+      // The disk that failed a file is still full: say by how much.
+      short = refused.bytes;
     } on Object {
       // Still failed, which the card already says; Retry stays.
     }
+    if (mounted) setState(() => _retryShortfall = short);
   }
 
   @override
@@ -134,7 +154,7 @@ class _OnboardingVoicePageState extends ConsumerState<OnboardingVoicePage> {
     final draft = ref.watch(onboardingProvider);
     final setup = ref.watch(setupFlowProvider);
     final megabytes = ref.watch(supertonicMegabytesProvider).value;
-    final onPhone = ref.watch(supertonicOnPhoneProvider).value;
+    final onPhone = ref.watch(supertonicOnPhoneProvider);
 
     // The platform's own format — "19:30" or "7:30 PM" — because the picker
     // this opens uses it too, and the two disagreeing would look like a bug.
@@ -223,7 +243,11 @@ class _OnboardingVoicePageState extends ConsumerState<OnboardingVoicePage> {
           const SizedBox(height: 12),
           _SupertonicCard(
             megabytes: megabytes,
-            onPhone: onPhone,
+            onPhone: onPhone.value,
+            // A phone that couldn't be asked mustn't lock the offer: `start`
+            // still checks the space.
+            asked: onPhone.hasValue || onPhone.hasError,
+            retryShortfall: _retryShortfall,
             offer: draft.voice,
             failed: _downloadFailed,
             onDownload: _download,
@@ -312,6 +336,8 @@ class _SupertonicCard extends StatelessWidget {
   const _SupertonicCard({
     required this.megabytes,
     required this.onPhone,
+    required this.asked,
+    required this.retryShortfall,
     required this.offer,
     required this.failed,
     required this.onDownload,
@@ -322,9 +348,14 @@ class _SupertonicCard extends StatelessWidget {
 
   final int? megabytes;
 
-  /// Null until the phone has been asked: *Download now* waits disabled, so
-  /// an installed voice can't be fetched again in the moment before *Ready*.
   final SupertonicOnPhone? onPhone;
+
+  /// False until the phone has answered: *Download now* waits disabled, so
+  /// an installed voice can't be fetched again in the moment before *Ready*.
+  final bool asked;
+
+  /// The bytes *Retry* found missing, and 0 when it didn't refuse.
+  final int retryShortfall;
   final VoiceOffer offer;
   final bool failed;
   final VoidCallback onDownload;
@@ -343,7 +374,8 @@ class _SupertonicCard extends StatelessWidget {
     final percent = ((onPhone?.progress ?? 0) * 100).floor();
     final short = onPhone?.shortfall ?? 0;
     // Rounded up: "171 MB" freed must be enough.
-    final shortMegabytes = (short / 1e6).ceil();
+    String needs(int bytes) =>
+        l10n.onboardingSupertonicShortfall((bytes / 1e6).ceil());
 
     final status = switch (phase) {
       DownloadPhase.ready => l10n.onboardingSupertonicReady,
@@ -352,11 +384,10 @@ class _SupertonicCard extends StatelessWidget {
       DownloadPhase.verifying => l10n.onboardingSupertonicDownloading(percent),
       DownloadPhase.waitingForWifi => l10n.onboardingSupertonicWaiting,
       DownloadPhase.paused => l10n.onboardingSupertonicPaused(percent),
+      DownloadPhase.failed when retryShortfall > 0 => needs(retryShortfall),
       DownloadPhase.failed => l10n.onboardingSupertonicDownloadFailed,
       null => switch (offer) {
-        VoiceOffer.offered when short > 0 => l10n.onboardingSupertonicShortfall(
-          shortMegabytes,
-        ),
+        VoiceOffer.offered when short > 0 => needs(short),
         VoiceOffer.offered => failed ? l10n.onboardingSupertonicFailed : null,
         VoiceOffer.started => l10n.onboardingSupertonicDownloading(0),
         VoiceOffer.deferred => l10n.onboardingSupertonicDeferred,
@@ -368,7 +399,7 @@ class _SupertonicCard extends StatelessWidget {
     final onActionColour = glass ? tokens.color.onPrimary : tokens.color.ink;
     // FR-M4 *Not enough space*: disabled, and the line below says by how
     // much. Disabled looks it: no colour of ours, so the button greys out.
-    final canDownload = onPhone != null && short == 0;
+    final canDownload = asked && short == 0;
 
     return DpSurface(
       // Solid Sun with the chosen edge — 2 px ink and the hard shadow — on

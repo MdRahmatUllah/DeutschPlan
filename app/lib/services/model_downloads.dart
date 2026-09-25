@@ -81,6 +81,7 @@ abstract interface class ModelDownloads {
   /// *Retry* after a failure. After a network failure, the files that
   /// arrived stay and the rest come again. After a checksum failure,
   /// everything the attempt left is thrown away and every file comes again.
+  /// Throws [NotEnoughSpace] when what comes again wouldn't fit.
   Future<void> retry(String modelId);
 
   /// M4's *Wi-Fi only* switch: `models_wifi_only`, and the downloader's rule
@@ -281,20 +282,30 @@ class BackgroundModelDownloads implements ModelDownloads {
 
   @override
   Future<void> retry(String modelId) async {
-    // The failed attempt's tasks stop, and their late updates have no say.
-    await _downloader.cancelAll(group: modelId);
     final files = _files[modelId];
     if (files == null) {
       // A checksum failed (verifying forgets the files), or nothing is known:
-      // a corrupt file resumed would never verify, so everything comes again.
+      // a corrupt file resumed would never verify, so everything comes again,
+      // into the room staging leaves. `start` checks it.
+      await _downloader.cancelAll(group: modelId);
       await _models.restartDownload(modelId);
-      return _queue(modelId);
+      return start(modelId);
     }
-    // A network failure: what arrived stays, and the rest comes again.
-    await _queue(
-      modelId,
-      only: (name) => files[name]?.status != TaskStatus.complete,
-    );
+    // A network failure: what arrived stays, and the rest comes again, if it
+    // fits. A full disk is what failed a file in the first place (#428).
+    bool missing(String name) => files[name]?.status != TaskStatus.complete;
+    final model = (await _models.manifest()).model(modelId);
+    var needed = ModelDownloads.spaceMargin;
+    for (final variant in model?.variants.take(1) ?? const <ModelVariant>[]) {
+      for (final file in variant.files) {
+        if (missing(file.name)) needed += file.bytes;
+      }
+    }
+    final short = shortfall(needed: needed, space: await _storage.space());
+    if (short > 0) throw NotEnoughSpace(short);
+    // The failed attempt's tasks stop, and their late updates have no say.
+    await _downloader.cancelAll(group: modelId);
+    await _queue(modelId, only: missing);
   }
 
   @override

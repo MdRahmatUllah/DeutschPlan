@@ -2,6 +2,7 @@
 library;
 
 import 'dart:async';
+import 'dart:io' show FileSystemException;
 
 import 'package:cupertino_ui/cupertino_ui.dart' show CupertinoDatePicker;
 import 'package:deutschplan/core/adaptive/adaptive.dart';
@@ -53,7 +54,10 @@ void main() {
     bool downloadFails = false,
     ModelStatus installed = ModelStatus.notDownloaded,
     bool asking = false,
+    bool modelsFail = false,
     int shortfall = 0,
+    DownloadProgress? inFlight,
+    List<SupertonicOnPhone?>? heard,
     DpMode mode = DpMode.light,
     double textScale = 1,
     VoidCallback? onFinish,
@@ -66,18 +70,31 @@ void main() {
 
     permission = _FakePermission(allowed: allowed, throws: permissionThrows);
     tts = FakeTts(voice: germanVoice);
-    downloads = _FakeDownloads(fails: downloadFails, short: shortfall);
+    downloads = _FakeDownloads(
+      fails: downloadFails,
+      short: shortfall,
+      last: inFlight,
+    );
     container = ProviderContainer(
+      // No retrying a provider that failed: a test's timers end with it.
+      retry: (_, _) => null,
       overrides: <Override>[
         notificationPermissionProvider.overrideWithValue(permission),
         systemTtsProvider.overrideWithValue(tts),
         modelDownloadsProvider.overrideWithValue(downloads),
         modelRepositoryProvider.overrideWithValue(
-          _FakeModels(installed, asking: asking),
+          _FakeModels(installed, asking: asking, fails: modelsFail),
         ),
         supertonicMegabytesProvider.overrideWith((ref) async => 100),
       ],
     );
+    if (heard != null) {
+      container.listen(
+        supertonicOnPhoneProvider,
+        (_, next) => heard.add(next.value),
+        fireImmediately: true,
+      );
+    }
     addTearDown(container.dispose);
 
     await tester.pumpWidget(
@@ -393,6 +410,54 @@ void main() {
       expect(find.text(l10n.onboardingSupertonicDownload), findsNothing);
     });
 
+    testWidgets('#428 FR-M4 a Retry refused for space says by how much, '
+        'rounded up, and Retry stays', (tester) async {
+      await pump(tester);
+      await say(tester, DownloadPhase.failed, 0.6);
+      downloads.retryShort = 50500000;
+
+      await tester.tap(find.widgetWithText(DpButton, l10n.retry));
+      await tester.pump();
+      await tester.pump();
+
+      expect(find.text(l10n.onboardingSupertonicShortfall(51)), findsOneWidget);
+      expect(find.text(l10n.onboardingSupertonicDownloadFailed), findsNothing);
+      expect(find.widgetWithText(DpButton, l10n.retry), findsOneWidget);
+    });
+
+    testWidgets('#428 a phone that could not be asked leaves Download now '
+        'on: start still checks the space', (tester) async {
+      await pump(tester, modelsFail: true);
+
+      expect(downloadButton(tester).onPressed, isNotNull);
+    });
+
+    testWidgets('#428 an attempt in flight is heard before the space check: '
+        'no flash of Needs N MB, which its own bytes would cause', (
+      tester,
+    ) async {
+      final heard = <SupertonicOnPhone?>[];
+      await pump(
+        tester,
+        shortfall: 170700000,
+        inFlight: (phase: DownloadPhase.running, progress: 0.427),
+        heard: heard,
+      );
+      // The space check's platform call answers.
+      await tester.pump(Duration.zero);
+      await tester.pump();
+
+      expect(heard.whereType<SupertonicOnPhone>(), isNotEmpty);
+      expect(
+        heard.whereType<SupertonicOnPhone>().map((v) => v.shortfall),
+        everyElement(0),
+      );
+      expect(
+        find.text(l10n.onboardingSupertonicDownloading(42)),
+        findsOneWidget,
+      );
+    });
+
     testWidgets('FR-M4 a failed download says so, and Retry retries rather '
         'than starting over', (tester) async {
       await pump(tester);
@@ -534,9 +599,16 @@ class _FakePermission implements NotificationPermission {
 }
 
 class _FakeDownloads implements ModelDownloads {
-  _FakeDownloads({required this.fails, required this.short});
+  _FakeDownloads({required this.fails, required this.short, this.last});
 
   final bool fails;
+
+  /// An attempt already in flight: `watch` says it first, as the real one's
+  /// last word.
+  final DownloadProgress? last;
+
+  /// What *Retry* finds missing: its refusal.
+  int retryShort = 0;
 
   /// What the phone lacks: the space check, and `start`'s refusal.
   int short;
@@ -552,14 +624,25 @@ class _FakeDownloads implements ModelDownloads {
     started.add(modelId);
   }
 
+  /// A platform call: slower than the download manager's last word, which
+  /// matters only when there is one.
   @override
-  Future<int> shortfallFor(String modelId) async => short;
+  Future<int> shortfallFor(String modelId) async {
+    if (last != null) await Future<void>.delayed(Duration.zero);
+    return short;
+  }
 
   @override
-  Stream<DownloadProgress> watch(String modelId) => progress.stream;
+  Stream<DownloadProgress> watch(String modelId) async* {
+    if (last case final last?) yield last;
+    yield* progress.stream;
+  }
 
   @override
-  Future<void> retry(String modelId) async => retried.add(modelId);
+  Future<void> retry(String modelId) async {
+    if (retryShort > 0) throw NotEnoughSpace(retryShort);
+    retried.add(modelId);
+  }
 
   @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
@@ -568,10 +651,13 @@ class _FakeDownloads implements ModelDownloads {
 /// Supertonic in the manifest, and on the phone as [installed] — or still
 /// being asked, with [asking].
 class _FakeModels implements ModelRepository {
-  _FakeModels(this.installed, {this.asking = false});
+  _FakeModels(this.installed, {this.asking = false, this.fails = false});
 
   final ModelStatus installed;
   final bool asking;
+
+  /// The phone's model folder can't be read.
+  final bool fails;
 
   static final ModelEntry _voice = ModelEntry(
     id: OnboardingNotifier.supertonic,
@@ -602,6 +688,8 @@ class _FakeModels implements ModelRepository {
   @override
   Future<ModelState> stateOf(ModelEntry entry, ModelVariant variant) => asking
       ? Completer<ModelState>().future
+      : fails
+      ? Future<ModelState>.error(const FileSystemException('unreadable'))
       : Future<ModelState>.value(
           ModelState(entry: entry, variant: variant, status: installed),
         );
