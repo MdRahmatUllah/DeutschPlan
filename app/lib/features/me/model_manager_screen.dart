@@ -820,10 +820,15 @@ class _VoicesState extends ConsumerState<_Voices> {
     await settings.write(SettingKeys.ttsEngine, TtsEngineSetting.supertonic);
     await settings.write(SettingKeys.ttsVoice, voice);
     try {
-      await ref.read(supertonicTtsProvider).speak(sample(voice));
+      if (await ref.read(supertonicTtsProvider).speak(sample(voice))) return;
     } on Object {
-      // The chips show only for a model that is ready; a sample that still
-      // fails leaves the choice made, and the next speaker falls back.
+      // Said below.
+    }
+    // The chips show only for a model that is ready; a sample that still
+    // fails leaves the choice made and says so (#453), and the next speaker
+    // falls back.
+    if (mounted) {
+      DpToast.show(context, AppLocalizations.of(context).modelsSampleFailed);
     }
   }
 

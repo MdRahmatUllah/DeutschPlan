@@ -952,5 +952,6 @@
   "modelsDeleteConfirm": "মুছুন",
   "modelsFooter": "দুটি মডেলই পুরোপুরি ফোনে চলে। ভয়েস মুছলে ফোনের জার্মান ভয়েস ব্যবহার হবে; অনুবাদ মডেল মুছলে অনুবাদ বন্ধ হবে।",
   "modelsStartFailed": "ডাউনলোড শুরু করা যায়নি",
+  "modelsSampleFailed": "নমুনাটি বাজানো যায়নি",
   "modelsDeleteKeep": "রেখে দিন"
 }
