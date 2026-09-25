@@ -80,7 +80,7 @@ claiming the same issue. A hand edit skips that check.
 | #162 | M7 | C | P1 | L | Semantics and screen-reader pass across every screen | open |  | #111 #136 #147 #150 #155 |  |
 | #163 | M7 | B | P1 | M | Contrast audit across Light, Dark and Glass | done | agent-0 | #32 | #433 |
 | #164 | M7 | B | P1 | M | Reduce motion and reduce transparency | done | agent-0 | #35 #111 | #417 |
-| #165 | M7 | C | P1 | M | Text scaling to 200 % across every screen | assigned | agent-2 | #36 |  |
+| #165 | M7 | C | P1 | M | Text scaling to 200 % across every screen | in-progress | agent-2 | #36 |  |
 | #166 | M7 | B | P1 | M | Localisation completeness: en and bn | done | agent-1 | #27 #36 | #413 |
 | #167 | M7 | B | P1 | M | Performance budgets | open |  | #153 #164 |  |
 | #168 | M7 | C | P1 | L | Complete the golden suite: every screen × three themes × two devices | assigned | agent-1 | #25 #165 |  |
