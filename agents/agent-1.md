@@ -1,12 +1,12 @@
 # agent-1
 
 session: active
-last-seen: 2026-09-25 11:59
+last-seen: 2026-09-25 12:09
 last-read: 305
 
 ## Now
 
-#369 bug(backup): a merge import keeps custom_words' ids, so it fails on a local id clash and custom:<id> links point at the wrong word (found in #363) — claimed 2026-09-25 11:59.
+#369 in review as PR #394: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 

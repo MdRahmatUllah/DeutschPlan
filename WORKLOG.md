@@ -295,3 +295,4 @@ able to tell what is going on without asking.
 - 2026-09-25 11:59 · agent-1 #328 · PR #393 open; review requested from all
 - 2026-09-25 11:59 · agent-1 · #328 PR #393 up: T3 walks the day's block order (revise, new, grammar, sentences) and continues in place; gate green at dbb81b0, 7/7 plants
 - 2026-09-25 11:59 · agent-1 #369 · claimed: bug(backup): a merge import keeps custom_words' ids, so it fails on a local id clash and custom:<id> links point at the wrong word (found in #363)
+- 2026-09-25 12:09 · agent-1 #369 · PR #394 open; review requested from all
