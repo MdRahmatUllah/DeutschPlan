@@ -55,13 +55,6 @@ def first_book(books: Path):
 def test_reads_every_sheet(first_book):
     assert first_book.words, "All Words produced no rows"
     assert first_book.grammar, "Grammar produced no rows"
-    # The content, not just "non-empty": the sheet's heading sat in this list
-    # until it was asked for by name.
-    assert first_book.skill_prompts == [
-        "Introduce yourself in three sentences.",
-        "Order a coffee and ask for the bill.",
-        "Describe your room.",
-    ]
     assert [c.name for c in first_book.categories] == ["Alltag", "Reisen", "Arbeit"]
 
 

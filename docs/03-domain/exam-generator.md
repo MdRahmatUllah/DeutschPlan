@@ -56,7 +56,7 @@ Grading on submit: `answer_check` per item; Listening compares the typed text wi
   - The targets never include a word the paper asks, by uid or by spelling. The runner goes back and forth, and a target must not be an answer to copy.
   - The minimum length is FR-L12W-02's.
   - Connectors are the course's conjunctions up to and including the step (course order is `sublevels.ord`), each once. Entries a learner doesn't type as written (`denn ↔ weil`, `obgleich / obschon`, `allein (= aber)`) are left out.
-  - content.db has no connector list, and `skill_prompts` holds scraped worksheet cells, not prompts (#294).
+  - content.db has no connector list, and `skill_prompts` is empty: the workbooks hold no prompts (#294).
 - **Speaking.** A category of the step other than the paper's writing, biggest first, one per paper, and FR-L12S-02's length.
 - **The task per level.** L12 words these in ARB (#133, #134), with `{category}` the category's German name:
 

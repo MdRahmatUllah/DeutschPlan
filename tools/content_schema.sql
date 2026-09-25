@@ -110,7 +110,8 @@ CREATE TABLE grammar_topics (
 
 CREATE INDEX idx_grammar_step ON grammar_topics (sublevel_code, seq);
 
--- The weekly skills checklist, from each workbook's W01 sheet.
+-- Speaking and writing prompts per level. Empty: the workbooks hold none
+-- (#294); kept for when a real source exists.
 CREATE TABLE skill_prompts (
   level_code TEXT NOT NULL REFERENCES levels (code),
   ord        INTEGER NOT NULL,
