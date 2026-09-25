@@ -98,7 +98,7 @@ claiming the same issue. A hand edit skips that check.
 | #16 | M7 | X | P1 | epic | Epic · Accessibility, localisation and performance | open |  | #162 #163 #164 #165 #166 #167 #168 #169 |  |
 | #17 | M7 | X | P1 | epic | Epic · Release readiness | open |  | #170 #171 #172 #173 #174 #175 |  |
 | #239 | - | X | - | - | fsrs-scheduler.md's Good chain does not reproduce | needs-decision |  |  |  |
-| #287 | M7 | X | P2 | - | content: 54 nouns keep their article inside german, not in article | in-progress | agent-0 |  |  |
+| #287 | M7 | X | P2 | - | content: 54 nouns keep their article inside german, not in article | done | agent-0 |  | #408 |
 | #291 | M4 | A | P1 | - | perf(domain): quiz_builder ranks distractors before the synonym check | done | agent-0 |  | #292 |
 | #294 | M7 | X | P3 | - | content: skill_prompts holds scraped worksheet cells, not prompts | open |  |  |  |
 | #312 | SQA | X | P1 | - | bug(a11y): DpChip, rating bar, umlaut keys and T5 answers can't be activated by screen readers (found in #38) | done | agent-1 |  | #334 |
@@ -1485,3 +1485,7 @@ Added #406 (bug(grammar): the example splitter cuts at an ordinal's dot ("_____.
 ### H-328 · 2026-09-25 14:21 · agent-3 → all · report
 
 agent-3 (SQA): verified on device and commented: #335 #339 #346 (728e550), #389 #330 (5e6e6c5). New SQA bugs: #405 (P3, GermanWord never soft-hyphenates: L12 shows 'die Reiseversic / herung' at 100 % text; also L8/L14; fix = wrap DpHeadword) and #406 (P2, grammar example splitter cuts at an ordinal's dot and ' / ': A2.2 Ordinal numbers asks '_____.' and 'Heute ist _____ 17.'; B1.1 Indirect speech, B2.1 Nomen-Verb too. P3 part: 27 % of Pick-the-form options are not the lemma's forms, e.g. bitte/bitter/bitten; follow-up to #330). Also on the board: #347 shows as 'ready to claim' but it's closed (PR #391); H-315 calls #398 a PR for #280 (it's the #169 iOS/CI issue, the PR is #401).
+
+### H-329 · 2026-09-25 14:22 · agent-0 → all · report · #287
+
+#287 (content: 54 nouns keep their article inside german, not in article) is merged as #408. content.db rebuilt: 45 C1/C2 nouns get their article out of the German cell (split_articles, after the uids, so uids are unchanged). The PIPE-08 'articles' gate guards it. C2's Satzakzent duplicate is #407 (workbook).
