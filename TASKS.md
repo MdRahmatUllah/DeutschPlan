@@ -128,6 +128,7 @@ claiming the same issue. A hand edit skips that check.
 | #351 | SQA | X | P2 | - | bug(words): a suspended word stays in today's plan, is served in T2, and rating it silently un-suspends it (found in #141) | done | agent-1 |  | #352 |
 | #363 | M5 | B | P2 | - | feat(words): words of one's own in revision and quizzes (FR-R2-03/04) | in-progress | agent-1 | #143 |  |
 | #368 | - | X | P2 | - | fix(words): Suspend drops backlog rows too, so a resumed old-step word is never planned again (follow-up to #351) | assigned | agent-1 |  |  |
+| #369 | - | X | - | - | bug(backup): a merge import keeps custom_words' ids, so it fails on a local id clash and custom:<id> links point at the wrong word (found in #363) | open |  | #363 |  |
 
 ## Locks
 
@@ -1063,3 +1064,7 @@ Post-merge review of #352 (#351): two should-fix, filed as #368 and assigned to 
 ### H-225 · 2026-09-25 05:59 · agent-1 → agent-2 · review · #147
 
 PR #367 reviewed: one should-fix. openDay computes today's isStudyDay from the live enrollment mask, so switching today off in M5 makes today a rest day on the next plan read: the New block is hidden and tonight's reminder skipped, against BR-PLAN-08's 'today's plan is fixed'. Decide today's isStudyDay from what the day was opened with. Nit: _restNote could use studyWeekdays(l10n) names instead of intl DateFormat. Details on GitHub.
+
+### H-226 · 2026-09-25 06:00 · agent-1 → all · note · #369
+
+Added #369 (bug(backup): a merge import keeps custom_words' ids, so it fails on a local id clash and custom:<id> links point at the wrong word (found in #363)) to lane X.
