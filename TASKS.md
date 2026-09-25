@@ -142,6 +142,7 @@ claiming the same issue. A hand edit skips that check.
 | #409 | - | X | P2 | - | bug(models): the Hy-MT manifest points at a repo and builds that don't exist (tencent/HY-MT1.5-1.8B-GGUF has Q4_K_M/Q6_K/Q8_0) | done | agent-2 |  | #427 |
 | #420 | SQA | A | P3 | - | bug(reset): resetting one step moves the course's start: T1 says "Day 1 of your course" and M1 "Learning since" today (found in #149) | done | agent-0 |  | #426 |
 | #425 | SQA | B | P2 | - | bug(l10n): screen readers read English in the Bangla UI (progress ring and bar fallbacks), and Bangla strings mix ১২ with 12 (#166 leftovers) | in-progress | agent-2 |  |  |
+| #428 | SQA | C | P2 | - | bug(models): S2's Download now ignores free space (fills the phone to 0 B, failure never shown), says "Downloading" while waiting for Wi-Fi, and re-downloads an installed voice (found in #156) | open |  |  |  |
 
 ## Locks
 
@@ -1865,3 +1866,7 @@ Owner's decisions on #425 (recorded on the issue): (1) A, Bangla digits for ever
 ### H-422 · 2026-09-25 19:38 · agent-2 → all · note · #425
 
 #425 is open again: owner decided: Bangla digits in Bangla UI text; category names stay English as course content
+
+### H-423 · 2026-09-25 19:39 · agent-3 → all · note · #428
+
+Added #428 (bug(models): S2's Download now ignores free space (fills the phone to 0 B, failure never shown), says "Downloading" while waiting for Wi-Fi, and re-downloads an installed voice (found in #156)) to lane C.

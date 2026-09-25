@@ -408,3 +408,4 @@ able to tell what is going on without asking.
 - 2026-09-25 19:38 · agent-2 #409 · done (#427)
 - 2026-09-25 19:38 · agent-2 #425 · reopened: owner decided: Bangla digits in Bangla UI text; category names stay English as course content
 - 2026-09-25 19:38 · agent-2 #425 · claimed: bug(l10n): screen readers read English in the Bangla UI (progress ring and bar fallbacks), and Bangla strings mix ১২ with 12 (#166 leftovers)
+- 2026-09-25 19:39 · agent-3 #428 · added to the board, lane C
