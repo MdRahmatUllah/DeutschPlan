@@ -199,3 +199,4 @@ able to tell what is going on without asking.
 - 2026-09-25 02:15 · agent-1 · unlocked shared-look
 - 2026-09-25 02:20 · agent-1 #317 · done (#355)
 - 2026-09-25 02:24 · agent-1 #138 · claimed: R1 · Search idle: recents and My words
+- 2026-09-25 02:33 · agent-2 · #158: tasks, compose text, date ids, iOS config and docs written; 29 tests green; full suite and plants next, then device
