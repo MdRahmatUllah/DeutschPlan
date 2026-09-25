@@ -39,7 +39,7 @@
 **Functional requirements**
 - FR-M4-01 Downloads via `background_downloader`: resumable, Wi-Fi-only flag, progress notification, checksum (SHA-256 from the model manifest) verified before activation; partial files never activate.
 - FR-M4-02 Model manifest (`assets/models/manifest.json`) lists URL, size, hash, licence per variant; updates compare hashes. A manifest that adds a file to an installed model is an update too, not a failure: the stamp is compared before the files are counted (#152, when the voice gained `M1.json` and `F2.json`).
-- FR-M4-03 Deleting Supertonic sets `tts_engine = system`; deleting Hy-MT sets `mt_enabled = 0`.
+- FR-M4-03 Deleting Supertonic sets `tts_engine = system`; deleting Hy-MT sets `mt_enabled = 0`. Its mirror (the lead's call, #430): a *Download* or *Update* of the voice that the learner starts on its card, once the manager takes it, sets `tts_engine = supertonic`.
 - FR-M4-04 Hy-MT download button is enabled only when build flag `ENABLE_HYMT_DOWNLOAD` is true (licence gate, see `03-domain/translation.md`); the licence link opens the full text.
 - FR-M4-05 Voice preview plays "Guten Tag! Ich bin Anna." with the chosen voice.
 

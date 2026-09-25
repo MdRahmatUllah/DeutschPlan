@@ -331,6 +331,58 @@ void main() {
     });
   });
 
+  group("FR-M4-03's mirror: a voice download chooses Supertonic", () {
+    for (final installed in <ModelStatus>[
+      ModelStatus.notDownloaded,
+      ModelStatus.updateAvailable,
+    ]) {
+      testWidgets('${installed.name}: its Download or Update, once the '
+          'manager takes it, chooses Supertonic again', (tester) async {
+        final settings = StubSettings()
+          ..put(SettingKeys.ttsEngine, TtsEngineSetting.system);
+        await pump(
+          tester,
+          modelManagerStub(
+            settings: settings,
+            voice: cardOf(voiceEntry, installed: installed),
+          ),
+        );
+        await tester.tap(
+          find.text(
+            installed == ModelStatus.notDownloaded
+                ? l10n.modelsDownload('399 MB')
+                : l10n.modelsUpdate('399 MB'),
+          ),
+        );
+        await tester.pumpAndSettle();
+        expect(
+          settings.read(SettingKeys.ttsEngine),
+          TtsEngineSetting.supertonic,
+        );
+      });
+    }
+
+    testWidgets('a download the manager refuses leaves the engine as it was', (
+      tester,
+    ) async {
+      final settings = StubSettings()
+        ..put(SettingKeys.ttsEngine, TtsEngineSetting.system);
+      final downloads = FakeDownloads()
+        ..startFails = const NotEnoughSpace(120000000);
+      await pump(
+        tester,
+        modelManagerStub(
+          settings: settings,
+          downloads: downloads,
+          voice: cardOf(voiceEntry),
+        ),
+      );
+      await tester.tap(find.text(l10n.modelsDownload('399 MB')));
+      await tester.pumpAndSettle(const Duration(seconds: 3));
+      expect(settings.read(SettingKeys.ttsEngine), TtsEngineSetting.system);
+    });
+  });
+
   group('FR-M4-04 Hy-MT behind its licence', () {
     test("each model's licence is the one M8 bundles for it, by name", () {
       expect(licenceFor(ModelRepository.voiceModel)?.kind, 'OpenRAIL-M');
