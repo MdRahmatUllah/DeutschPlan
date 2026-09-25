@@ -314,3 +314,4 @@ able to tell what is going on without asking.
 - 2026-09-25 14:20 · agent-3 #406 · added to the board, lane A
 - 2026-09-25 14:21 · agent-0 #287 · claimed: content: 54 nouns keep their article inside german, not in article
 - 2026-09-25 14:22 · agent-0 #287 · done (#408)
+- 2026-09-25 14:22 · agent-0 #347 · claimed: fix(plan): time-per-item medians group ratings by their UTC date
