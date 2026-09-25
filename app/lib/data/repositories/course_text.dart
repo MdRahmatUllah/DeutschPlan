@@ -1,3 +1,5 @@
+import 'dart:isolate';
+
 import 'package:deutschplan/data/db/app_database.dart';
 import 'package:deutschplan/domain/grammar_item_generator.dart';
 
@@ -33,18 +35,19 @@ Future<CourseText> _load(AppDatabase db) async {
         'SELECT german, english FROM word_examples ORDER BY word_uid, ord',
       )
       .get();
-  return CourseText(
-    texts: <String>[
-      for (final row in words)
-        '${row.read<String>('german')} ${row.read<String?>('forms') ?? ''}',
-      for (final row in grammar) row.read<String?>('example_de') ?? '',
-    ],
-    sentences: <({String german, String english})>[
-      for (final row in examples)
-        (
-          german: row.read<String>('german'),
-          english: row.read<String?>('english') ?? '',
-        ),
-    ],
-  );
+  final texts = <String>[
+    for (final row in words)
+      '${row.read<String>('german')} ${row.read<String?>('forms') ?? ''}',
+    for (final row in grammar) row.read<String?>('example_de') ?? '',
+  ];
+  final sentences = <({String german, String english})>[
+    for (final row in examples)
+      (
+        german: row.read<String>('german'),
+        english: row.read<String?>('english') ?? '',
+      ),
+  ];
+  // Its sets and index take 70–160 ms to build: off the UI isolate, so L4
+  // doesn't stall a frame (#386). The result moves back without a copy.
+  return Isolate.run(() => CourseText(texts: texts, sentences: sentences));
 }

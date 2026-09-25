@@ -41,6 +41,7 @@ void main() {
     WidgetTester tester, {
     TopicWithState? topic,
     bool voice = true,
+    Future<CourseText>? course,
   }) async {
     spoken = <String>[];
     marked = <String>[];
@@ -76,7 +77,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: <Override>[
-          ...todayStub(null, null, null, topic),
+          ...todayStub(null, null, null, topic, course),
           settingsProvider.overrideWithValue(settings),
           ttsProvider.overrideWithValue(FakeTts(voice: voice, spoken: spoken)),
           grammarRatingServiceProvider.overrideWithValue(_Rating(marked)),
@@ -91,6 +92,18 @@ void main() {
     );
     await tester.pumpAndSettle();
   }
+
+  testWidgets('FR-L4-02 #386 the rule shows while the course loads; only '
+      'Practise waits, for its count', (tester) async {
+    final course = Completer<CourseText>();
+    await pump(tester, course: course.future);
+    expect(find.text('Konjunktiv II – Höflichkeit'), findsOneWidget);
+    expect(find.textContaining('Practise this rule'), findsNothing);
+
+    course.complete(CourseText.none);
+    await tester.pumpAndSettle();
+    expect(find.textContaining('Practise this rule'), findsOneWidget);
+  });
 
   testWidgets('the header: step, place in it, and title', (tester) async {
     await pump(tester);

@@ -1,6 +1,6 @@
 /// `docs/03-domain/grammar-practice.md`: one grammar topic into 3–5 practice
-/// items, built only from its rule, example and *watch out* — no hand-written
-/// exercises.
+/// items, built from its rule, example and *watch out* — no hand-written
+/// exercises — and checked against the rest of the course's German (#330).
 ///
 /// Plain Dart: no Flutter, no drift. L15 hands it a [GrammarSource] and a
 /// seed, and checks the answers with `answer_check.dart`.
@@ -49,7 +49,8 @@ class CourseText {
            for (final word in _words(text)) word.toLowerCase(),
          for (final sentence in sentences)
            for (final word in _words(sentence.german)) word.toLowerCase(),
-       };
+       },
+       _byWord = _index(sentences);
 
   static final CourseText none = CourseText();
 
@@ -62,15 +63,22 @@ class CourseText {
   bool knows(String form) =>
       _forms.isEmpty || _forms.contains(form.toLowerCase());
 
-  late final Map<String, List<int>> _byWord = () {
+  final Map<String, List<int>> _byWord;
+
+  /// The sentences by the words in them, split as *Pick the form* blanks
+  /// them — a token's letters — so each one listed has the word to blank:
+  /// "konnte/könnte" is one token, and lists under neither (#386).
+  static Map<String, List<int>> _index(
+    List<({String german, String english})> sentences,
+  ) {
     final index = <String, List<int>>{};
     for (final (i, sentence) in sentences.indexed) {
-      for (final word in _words(sentence.german).toSet()) {
+      for (final word in _tokens(sentence.german).map(_bare).toSet()) {
         (index[word] ??= <int>[]).add(i);
       }
     }
     return index;
-  }();
+  }
 
   /// The sentences with [form], as it is written, as a word of their own.
   List<({String german, String english})> sentencesWith(String form) =>
@@ -281,10 +289,17 @@ List<GrammarItem> generateItems(
 
   PickTheForm? fromCourse() {
     int rank(int at) => _rank(tokens, at, cues, tags);
-    final ranked = <int>[
-      for (var i = 0; i < tokens.length; i++)
-        if (_bare(tokens[i]).length >= 2 && askable(_bare(tokens[i]))) i,
-    ]..sort((a, b) => rank(b).compareTo(rank(a)));
+    final ranked =
+        <int>[
+          for (var i = 0; i < tokens.length; i++)
+            if (_bare(tokens[i]).length >= 2 && askable(_bare(tokens[i]))) i,
+        ]..sort((a, b) {
+          // The longer of two alike, as the gap is chosen.
+          final byRank = rank(b).compareTo(rank(a));
+          return byRank != 0
+              ? byRank
+              : _bare(tokens[b]).length.compareTo(_bare(tokens[a]).length);
+        });
     for (final i in ranked) {
       final form = _bare(tokens[i]);
       final elsewhere = <({String german, String english})>[
@@ -297,6 +312,7 @@ List<GrammarItem> generateItems(
       final sentence = elsewhere[random.nextInt(elsewhere.length)];
       borrowed.add(sentence.german);
       final words = _tokens(sentence.german);
+      // Found: the index splits sentences as this does.
       final at = words.indexWhere((word) => _bare(word) == form);
       return pick(words, at, sentence.english);
     }
@@ -318,7 +334,10 @@ List<GrammarItem> generateItems(
     );
   }
 
-  items.add(elsewhere() ?? besideGap());
+  // A topic with no German example practises its English rule: a form of
+  // "sentence" to pick is no German, so it asks gap fills only (#386).
+  final german = !_blank(source.exampleDe);
+  if (german) items.add(elsewhere() ?? besideGap());
 
   if (tags.intersection(errorTags).isNotEmpty) {
     final error =
@@ -373,30 +392,30 @@ List<GrammarItem> generateItems(
     }
   }
 
-  // At least three: a second gap fill from a sentence not asked yet if the
-  // example has one, else another pick-the-form away from the gap's.
-  if (items.length < 3) {
-    for (final other in sentenceOrder) {
-      if (used.contains(other)) continue;
-      final second = _tokens(sentences[other]);
-      final (secondBefore, secondAnswer, secondAfter) = _blankAt(
-        second,
-        target(second),
-      );
-      items.add(
-        GapFill(
-          before: secondBefore,
-          after: secondAfter,
-          answer: secondAnswer,
-          translation: sentences.length == translations.length
-              ? translations[other]
-              : '',
-        ),
-      );
-      break;
-    }
+  // At least three where the sentences allow: gap fills from those not
+  // asked yet, then, with a German example, another pick-the-form away from
+  // the gap's.
+  for (final other in sentenceOrder) {
+    if (items.length >= 3) break;
+    if (used.contains(other)) continue;
+    used.add(other);
+    final second = _tokens(sentences[other]);
+    final (secondBefore, secondAnswer, secondAfter) = _blankAt(
+      second,
+      target(second),
+    );
+    items.add(
+      GapFill(
+        before: secondBefore,
+        after: secondAfter,
+        answer: secondAnswer,
+        translation: sentences.length == translations.length
+            ? translations[other]
+            : '',
+      ),
+    );
   }
-  if (items.length < 3) items.add(elsewhere() ?? besideGap());
+  if (items.length < 3 && german) items.add(elsewhere() ?? besideGap());
   return items.take(maxItems).toList();
 }
 
@@ -561,16 +580,16 @@ const List<List<String>> _families = <List<String>>[
 ];
 
 /// Closed sets a word is chosen from rather than inflected (#330): the
-/// prepositions, *am*/*im*/*um*, the da- and wo-compounds, the question
-/// words. Their other members are the wrong forms, but a topic about forms
-/// isn't about them.
+/// prepositions, *am*/*im*/*um*, the da- and wo-compounds. Their other
+/// members are the wrong forms, but a topic about forms isn't about them.
+/// Not the question words: "[Wo] kann man hier parken?" takes *warum* and
+/// *wann* too, and an item has one right answer (#386).
 const List<List<String>> _choices = <List<String>>[
   <String>['auf', 'an', 'in', 'über', 'unter', 'für', 'mit', 'von', 'zu'],
   <String>['bei', 'nach', 'aus', 'vor', 'seit', 'gegen', 'ohne', 'durch'],
   <String>['am', 'im', 'um', 'vom', 'zum', 'beim'],
   <String>['darauf', 'daran', 'darüber', 'dafür', 'damit', 'davon', 'dazu'],
   <String>['worauf', 'woran', 'worüber', 'wofür', 'womit', 'wovon', 'wozu'],
-  <String>['wann', 'wo', 'wer', 'wie', 'warum', 'woher', 'wohin', 'ob'],
 ];
 
 /// [word]'s wrong forms, in the order they are best: its classes' other

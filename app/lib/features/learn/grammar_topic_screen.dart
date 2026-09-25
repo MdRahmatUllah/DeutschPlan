@@ -41,10 +41,16 @@ GrammarSource grammarSource(TopicWithState topic) => GrammarSource(
 );
 
 /// What the generator checks its forms against and takes *Pick the form*'s
-/// sentence from (#330), read once.
+/// sentence from (#330), read once. A read that fails practises without it,
+/// as before #330, rather than not at all.
 @riverpod
-Future<CourseText> grammarCourse(Ref ref) =>
-    loadCourseText(ref.watch(appDatabaseProvider));
+Future<CourseText> grammarCourse(Ref ref) async {
+  try {
+    return await loadCourseText(ref.watch(appDatabaseProvider));
+  } on Object {
+    return CourseText.none;
+  }
+}
 
 /// [topic]'s items for [day], its step's other rules the recall options —
 /// what L15 will ask, so L4 can say how many.
@@ -81,7 +87,7 @@ class GrammarTopicScreen extends ConsumerWidget {
         : ref.watch(stepTopicsProvider(topic.topic.sublevelCode)).value;
     final course = ref.watch(grammarCourseProvider).value;
 
-    final body = topic == null || step == null || course == null
+    final body = topic == null || step == null
         ? const SizedBox.expand()
         : _Topic(topic: topic, step: step, course: course);
 
@@ -102,7 +108,9 @@ class _Topic extends ConsumerWidget {
 
   final TopicWithState topic;
   final List<TopicWithState> step;
-  final CourseText course;
+
+  /// Null while it loads: the page shows, and only *Practise* waits (#386).
+  final CourseText? course;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -112,7 +120,10 @@ class _Topic extends ConsumerWidget {
     final index = step.indexWhere((other) => other.uid == topic.uid);
     final previous = index > 0 ? step[index - 1] : null;
     final next = index >= 0 && index < step.length - 1 ? step[index + 1] : null;
-    final items = practiceItemsFor(topic, step, today, course);
+    final ready = course;
+    final items = ready == null
+        ? null
+        : practiceItemsFor(topic, step, today, ready);
     final rule = topic.topic.rule;
     final watchOut = topic.topic.watchOut;
     final examples = examplePairs(
@@ -152,13 +163,17 @@ class _Topic extends ConsumerWidget {
                 const SizedBox(height: 16),
               ],
               // FR-L4-02: L15 for this topic; finishing it marks it learned.
-              DpButton(
-                label: l10n.topicPractise(items.length),
-                onPressed: () => GrammarPracticeRoute.open(
-                  context,
-                  GrammarPracticeArgs(topicUids: <String>[topic.uid]),
+              // Its count waits for the course; the rest of the page doesn't.
+              if (items == null)
+                const SizedBox(height: DpButton.primaryHeight)
+              else
+                DpButton(
+                  label: l10n.topicPractise(items.length),
+                  onPressed: () => GrammarPracticeRoute.open(
+                    context,
+                    GrammarPracticeArgs(topicUids: <String>[topic.uid]),
+                  ),
                 ),
-              ),
               const SizedBox(height: 8),
               if (due == TopicDue.notLearned)
                 _MarkLearned(uid: topic.uid)
