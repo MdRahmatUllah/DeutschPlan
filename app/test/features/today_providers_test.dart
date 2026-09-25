@@ -8,6 +8,7 @@ import 'package:deutschplan/data/db/app_database.dart';
 import 'package:deutschplan/data/db/content_dao.dart';
 import 'package:deutschplan/data/repositories/setting_keys.dart';
 import 'package:deutschplan/data/repositories/settings_repository.dart';
+import 'package:deutschplan/data/repositories/setup_repository.dart';
 import 'package:deutschplan/features/today/today_providers.dart';
 import 'package:deutschplan/domain/plan_engine.dart'
     show MaskSpan, addDays, decodeMaskHistory, planDate;
@@ -378,6 +379,31 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code, completed_at, 
       expect(after.newToday.total, 1);
     },
   );
+
+  test('#377 restart setup keeps the study days it changes, from today '
+      'when today is not planned yet', () async {
+    await settings.write(
+      SettingKeys.lastPlannedDate,
+      DateTime.utc(2026, 9, 20),
+    );
+    await container
+        .read(setupRepositoryProvider)
+        .commit(
+          const SetupChoice(
+            step: 'A1.1',
+            dailyNew: 5,
+            reviseCount: 20,
+            studyDaysMask: 0x1F,
+            reminderOn: false,
+            reminderTime: (hour: 19, minute: 0),
+          ),
+          today: today,
+        );
+    expect(
+      decodeMaskHistory(settings.read(SettingKeys.studyDaysHistory)),
+      <MaskSpan>[(from: '', mask: 127), (from: today, mask: 0x1F)],
+    );
+  });
 
   group('#97 a rest day', () {
     setUp(() async {

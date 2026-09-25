@@ -1182,6 +1182,33 @@ void main() {
       },
     );
 
+    test(
+      'BR-PLAN-01 #377 turning Sunday off does not mend a missed Sunday',
+      () async {
+        // Every day for two weeks, the second Sunday missed; then, on the
+        // third Monday, Sunday turns off from tomorrow.
+        store.enrollment = const ActiveStep(
+          sublevelCode: 'A1.1',
+          startedOn: monday,
+          dailyNew: 7,
+          studyDaysMask: 0x3F,
+        );
+        store.active = <PlanDate>{
+          for (var day = 0; day < 14; day++)
+            if (day != 13) addDays(monday, day),
+        };
+        final today = addDays(monday, 14);
+        store.masks = withMask(
+          const <MaskSpan>[],
+          previous: PlanEngine.allDays,
+          mask: 0x3F,
+          from: addDays(today, 1),
+        );
+        expect(await engineWith().streak(today), 0, reason: 'Sunday missed');
+        expect(await engineWith().bestStreak(today), 13);
+      },
+    );
+
     test('#377 a day after the change is judged by the new mask', () async {
       store.enrollment = const ActiveStep(
         sublevelCode: 'A1.1',
@@ -1209,11 +1236,25 @@ void main() {
         mask: 0x7F,
         from: '2026-03-10',
       );
-      expect(maskOn('2026-03-09', history, 1), 0x3F);
-      expect(maskOn('2026-03-10', history, 1), 0x7F);
+      expect(maskOn('2026-03-09', history, 0x7F), 0x3F);
+      expect(maskOn('2026-03-10', history, 0x7F), 0x7F);
       expect(maskOn('2026-03-10', const <MaskSpan>[], 1), 1, reason: 'none');
+      expect(
+        maskOn('2026-03-11', history, 0x1F),
+        0x1F,
+        reason:
+            "from the last change on, the enrolment's: a stale history "
+            "doesn't overrule it",
+      );
       expect(decodeMaskHistory(encodeMaskHistory(history)), history);
-      expect(decodeMaskHistory('not json'), isEmpty);
+      expect(
+        decodeMaskHistory(encodeMaskHistory(history.reversed.toList())),
+        history,
+        reason: 'oldest first',
+      );
+      for (final bad in <String>['not json', '{}', '5', 'null', '[1, {}]']) {
+        expect(decodeMaskHistory(bad), isEmpty, reason: bad);
+      }
       // A second change on the same day replaces the first.
       final again = withMask(
         history,

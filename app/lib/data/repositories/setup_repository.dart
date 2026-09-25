@@ -67,7 +67,8 @@ class SetupRepository {
       });
 
   /// #377: a new mask in `study_days_history`, from the day after [today]
-  /// (BR-PLAN-08). Nothing when the mask is the same.
+  /// (BR-PLAN-08), or from today when today isn't planned yet: it will be
+  /// planned with the new one. Nothing when the mask is the same.
   Future<void> _recordStudyDays(int mask, PlanDate today) async {
     final previous = _settings.read(SettingKeys.studyDaysMask);
     if (previous == mask) return;
@@ -78,7 +79,9 @@ class SetupRepository {
           decodeMaskHistory(_settings.read(SettingKeys.studyDaysHistory)),
           previous: previous,
           mask: mask,
-          from: addDays(today, 1),
+          from: await _store.lastPlannedDate() == today
+              ? addDays(today, 1)
+              : today,
         ),
       ),
     );

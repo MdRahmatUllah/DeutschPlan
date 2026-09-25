@@ -46,9 +46,6 @@ int streakLength({
 
 /// FR-M2-02: the longest streak there has been, rest days kept as
 /// `streakLength` keeps them — they carry a run without lengthening it.
-///
-/// ponytail: rest days are today's study days; the mask a past week had is
-/// not recorded.
 int longestStreak({
   required Set<PlanDate> activeDays,
   required bool Function(PlanDate) isStudyDay,

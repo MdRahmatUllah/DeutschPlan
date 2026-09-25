@@ -793,10 +793,14 @@ List<String> selectRevisions(
 typedef MaskSpan = ({PlanDate from, int mask});
 
 /// The mask in force on [day]: the latest of [history] from on or before
-/// it. [fallback] with no history, which is every install until the study
-/// days first change.
+/// it. [fallback], the enrolment's own, with no history (every install until
+/// the study days first change) and from the last change on, so a stale
+/// history (a merged backup's) never overrules it.
 int maskOn(PlanDate day, List<MaskSpan> history, int fallback) {
-  var mask = history.isEmpty ? fallback : history.first.mask;
+  if (history.isEmpty || day.compareTo(history.last.from) >= 0) {
+    return fallback;
+  }
+  var mask = history.first.mask;
   for (final span in history) {
     if (span.from.compareTo(day) > 0) break;
     mask = span.mask;
@@ -804,18 +808,22 @@ int maskOn(PlanDate day, List<MaskSpan> history, int fallback) {
   return mask;
 }
 
-/// `study_days_history` as stored: a JSON list of `{from, mask}`.
+/// `study_days_history` as stored: a JSON list of `{from, mask}`, oldest
+/// first. Anything else (a backup can bring any text) is no history.
 List<MaskSpan> decodeMaskHistory(String? json) {
   if (json == null || json.isEmpty) return <MaskSpan>[];
   try {
-    return <MaskSpan>[
-      for (final span in jsonDecode(json) as List<Object?>)
-        if (span case {'from': final String from, 'mask': final int mask})
-          (from: from, mask: mask),
-    ];
+    if (jsonDecode(json) case final List<Object?> spans) {
+      return <MaskSpan>[
+        for (final span in spans)
+          if (span case {'from': final String from, 'mask': final int mask})
+            (from: from, mask: mask),
+      ]..sort((a, b) => a.from.compareTo(b.from));
+    }
   } on FormatException {
-    return <MaskSpan>[];
+    // Below.
   }
+  return <MaskSpan>[];
 }
 
 String encodeMaskHistory(List<MaskSpan> history) => jsonEncode(<Object>[
