@@ -3402,12 +3402,12 @@
       }
     }
   },
-  "examRunSubmitTasksEmpty": "{count, plural, =1{A writing or speaking task is empty.} other{The writing and speaking tasks are empty.}}",
+  "examRunSubmitTasksEmpty": "{tasks, select, writing{The writing task is empty.} speaking{The speaking task is empty.} other{The writing and speaking tasks are empty.}}",
   "@examRunSubmitTasksEmpty": {
-    "description": "L12 confirm body, after the unanswered count: the Writing and Speaking tasks left empty, which the navigator does not count as questions (FR-L12-05, #350).",
+    "description": "L12 confirm body, after the unanswered count: which of the Writing and Speaking tasks is left empty (writing, speaking or both); the navigator does not count them as questions (FR-L12-05, #350).",
     "placeholders": {
-      "count": {
-        "type": "int"
+      "tasks": {
+        "type": "String"
       }
     }
   },

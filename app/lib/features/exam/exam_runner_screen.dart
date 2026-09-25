@@ -10,7 +10,8 @@ import 'package:deutschplan/core/theme/dp_surface.dart';
 import 'package:deutschplan/core/theme/dp_tokens.dart';
 import 'package:deutschplan/core/typography/dp_text.dart';
 import 'package:deutschplan/data/repositories/exam_run_service.dart';
-import 'package:deutschplan/domain/exam_generator.dart' show WritingTask;
+import 'package:deutschplan/domain/exam_generator.dart'
+    show ExamSection, WritingTask;
 import 'package:deutschplan/features/exam/exam_navigator_sheet.dart';
 import 'package:deutschplan/features/exam/exam_question_view.dart';
 import 'package:deutschplan/features/learn/step_exams.dart'
@@ -295,15 +296,15 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
   /// What the submit asks about (#350): the numbered questions with no
   /// answer, counted as the navigator counts them, and the Writing and
   /// Speaking tasks left empty, named apart.
-  ({int questions, int tasks}) _open(List<ExamRunQuestion> paper) {
+  ({int questions, Set<ExamSection> tasks}) _open(List<ExamRunQuestion> paper) {
     var questions = 0;
-    var tasks = 0;
+    final tasks = <ExamSection>{};
     for (final (i, q) in paper.indexed) {
       if (_given[i] != null) continue;
       if (examNumbered(q.item)) {
         questions++;
       } else {
-        tasks++;
+        tasks.add(q.item.section);
       }
     }
     return (questions: questions, tasks: tasks);
@@ -316,14 +317,17 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
     if (paper == null || _submitting || _done) return;
     _saveTyped();
     final open = _open(paper.questions);
-    if (!asked && (open.questions > 0 || open.tasks > 0)) {
+    if (!asked && (open.questions > 0 || open.tasks.isNotEmpty)) {
       final l10n = AppLocalizations.of(context);
       final sure = await Adaptive.showConfirm(
         context: context,
         title: l10n.examRunSubmitTitle,
         message: <String>[
           if (open.questions > 0) l10n.examRunSubmitUnanswered(open.questions),
-          if (open.tasks > 0) l10n.examRunSubmitTasksEmpty(open.tasks),
+          if (open.tasks.isNotEmpty)
+            l10n.examRunSubmitTasksEmpty(
+              open.tasks.length > 1 ? 'both' : open.tasks.single.name,
+            ),
         ].join(' '),
         confirmLabel: l10n.examRunSubmitConfirm,
         cancelLabel: l10n.examRunKeepAnswering,
