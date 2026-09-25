@@ -15,6 +15,7 @@ import 'package:material_ui/material_ui.dart';
 /// What an item asks, as its chip names it.
 String askName(AppLocalizations l10n, QuizItem item) =>
     switch (item.direction) {
+      QuizDirection.compare => l10n.quizAskCompare,
       _ when item.tiles => l10n.quizAskPick,
       QuizDirection.deEn || QuizDirection.deBn => l10n.quizAskMeaning,
       QuizDirection.enDe => l10n.quizAskGerman,
@@ -73,7 +74,8 @@ class QuizItemView extends ConsumerWidget {
           onPressed: () => unawaited(say(ref, context, item.prompt)),
         ),
       ),
-      QuizDirection.enDe => Column(
+      // A compare item's sentence, with the gap, over its English (FR-W2-03).
+      QuizDirection.enDe || QuizDirection.compare => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           DpText(item.prompt, role: DpTextRole.headline, weight: 600),

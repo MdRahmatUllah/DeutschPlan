@@ -11,6 +11,7 @@ import 'package:deutschplan/core/theme/dp_tokens.dart';
 import 'package:deutschplan/core/typography/dp_text.dart';
 import 'package:deutschplan/data/repositories/exam_repository.dart'
     show QuizMistakeRowsResult, QuizResult;
+import 'package:deutschplan/domain/quiz_builder.dart' show QuizDirection;
 import 'package:deutschplan/features/learn/step_quiz.dart';
 import 'package:deutschplan/features/quiz/quiz_screen.dart' show quizTitle;
 import 'package:deutschplan/features/words/word_row.dart' show WordPlayButton;
@@ -53,12 +54,19 @@ class _QuizResultViewState extends ConsumerState<QuizResultView> {
   bool _added = false;
 
   /// FR-L9-01: a new quiz from the mistakes, in place of this one.
+  ///
+  /// A compare quiz's retry is its set again, as many items as it had
+  /// mistakes: its items are sentences, and a uid names only the member.
+  // ponytail: the same set, not the missed sentences; carry their ords in
+  // the ref if a retry should ask exactly those.
   void _retry(List<String> uids) => QuizRoute.instead(
     context,
     QuizArgs(
       direction: widget.args.direction,
       source: 'compareSet',
-      sourceRef: uids.join(','),
+      sourceRef: widget.args.direction == QuizDirection.compare.name
+          ? widget.args.sourceRef
+          : uids.join(','),
       length: uids.length,
       timer: widget.args.timer,
       seed: math.Random().nextInt(1 << 31),

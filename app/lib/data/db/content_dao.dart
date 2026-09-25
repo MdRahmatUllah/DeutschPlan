@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:deutschplan/data/db/app_database.dart';
+import 'package:deutschplan/domain/compare_set.dart';
 import 'package:deutschplan/domain/placement.dart';
 import 'package:deutschplan/domain/text_norm.dart' show searchKey;
 import 'package:drift/drift.dart';
@@ -108,6 +109,46 @@ class ContentDao extends DatabaseAccessor<AppDatabase> with _$ContentDaoMixin {
   }();
 
   Future<Map<String, String>>? _formIndex;
+
+  /// W2 (#142): the set word [uid], and the course word each of its members
+  /// is (FR-W2-01) — its own search key, the set's step first, then the
+  /// course's order. Not a phrase or another set; not a noun for a member
+  /// written in lower case ("klasse" in *prima / super / klasse* is not
+  /// *die Klasse*); and never for an affix ("-voll", "durch-"). Null for no
+  /// such word.
+  Future<CompareSet?> compareSet(String uid) async {
+    final set = await wordByUid(uid).getSingleOrNull();
+    if (set == null) return null;
+    Future<CompareWord> read(Word word) async => CompareWord(
+      uid: word.uid,
+      german: word.german,
+      english: word.english,
+      step: word.sublevelCode,
+      article: word.article,
+      pos: word.pos,
+      register: word.synonymsRegister,
+      collocations: word.collocations,
+      examples: <CompareExample>[
+        for (final e in await examplesForWord(word.uid).get())
+          (german: e.german, english: e.english),
+      ],
+    );
+    final resolved = <String, CompareWord>{};
+    for (final name in compareMemberNames(set.german)) {
+      final (_, headword) = splitArticle(name);
+      if (headword.startsWith('-') || headword.endsWith('-')) continue;
+      final capital = headword[0] != headword[0].toLowerCase();
+      final candidates = await compareCandidates(
+        searchKey(name),
+        set.sublevelCode,
+      ).get();
+      final word = candidates
+          .where((w) => w.article == null || capital)
+          .firstOrNull;
+      if (word != null) resolved[name] = await read(word);
+    }
+    return CompareSet(await read(set), resolved);
+  }
 
   /// The category most of [uids] belong to: T1's "7 new · Wohnen & Haushalt".
   ///

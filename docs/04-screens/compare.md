@@ -14,4 +14,20 @@
 - FR-W2-03 *Quiz these* builds a 5-item pick-the-right-word quiz from the members' examples (source `compareSet`).
 - FR-W2-04 First column pinned; horizontal scroll; tablet shows all columns.
 
+**Data (#142).** The course has no `compare_group`: a set is one course word whose `german` contains " / " (`Grund / Ursache / Anlass`, `circa / etwa / rund`). `domain/compare_set.dart` builds the columns; `ContentDao.compareSet` reads the set word, its examples, and the course word each member is.
+
+- **Members** (FR-W2-01): the headword split on " / ", trimmed, in order. A leading `der`/`die`/`das` in a member ("die Kohle") is its article.
+- **Resolving a member**: the course word with the member's `search_key`, not a phrase and not another set; the set's step first, then the course's order. A member written in lower case is never a noun ("klasse" in *prima / super / klasse* is not *die Klasse*), and an affix ("-voll", "durch-") resolves to nothing. About a third of the members resolve; the set's own cells carry the rest.
+- **Meaning**: the set's `english` split on " / " when it has one part per member; else the resolved word's `english`; else "—".
+- **Register** (chips): the bracketed labels after the member's name in the set's `synonyms_register` — "etwa (neutral)", and "circa/rund (written)" labels both.
+- **With**: the set's `collocations`, split on ";", that name the member ("aus diesem Grund"); else the resolved word's own; else "—".
+- **Example** (with play): the resolved word's first example; else the first of the set's examples that names the member; else "—".
+- **Use it when**: the note after "member =" in the set's `synonyms_register` ("Ursache = objective cause"); pairs are split at ";" or at a "," that starts the next pair.
+- **Step chip**: the resolved word's step, else the set's. The article is the resolved word's, else the member's own.
+- "Names" is the cloze gap's test (`domain/cloze.dart`): the member's search key, inflected or not — "Folgen haben" names *Folge*; "ca." does not name *circa*.
+- Missing cells read "—" (FR-W2-02). A header opens W1 only for a resolved member.
+- ***Quiz these*** (FR-W2-03): `QuizArgs(direction: compare, source: compareSet, sourceRef: <set uid>, length: 5)`. Every sentence of every member (its word's examples, then the set's that name it) is asked once, the member gapped as `___`; the tiles are the members (four at most), the hint the sentence's English; each answer rates the member's word, or the set word for a member with none. The button counts the items (5 at most) and is closed when no sentence names a member. L9's *Retry mistakes* of a compare quiz asks the same set again, as many items as it had mistakes.
+- ***Add all to today***: the resolved members still To do and not already in today's plan join it as new words (FR-W1-01's action), then a toast; hidden when there are none. The label counts them ("Add all 3 to today": gen-l10n has no `=3` case for "three").
+- **Layout** (FR-W2-04): a 96 dp label column and member columns of 170 dp scroll sideways under the pinned labels on a phone; when every column fits (a tablet), they share the width, the subtitle drops "scroll sideways…" and the "← drag to see …" hint goes.
+
 **Tests.** set resolution; quiz args.

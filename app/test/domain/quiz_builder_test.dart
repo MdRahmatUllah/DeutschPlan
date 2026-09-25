@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:deutschplan/domain/answer_check.dart' show Verdict;
+import 'package:deutschplan/domain/compare_set.dart' show CompareSet;
 import 'package:deutschplan/domain/fsrs.dart';
 import 'package:deutschplan/domain/quiz_builder.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -122,14 +123,15 @@ void main() {
       },
     );
 
-    test('only DE → বাংলা asks with the four tiles', () async {
+    test('only DE → বাংলা and compare ask with tiles', () async {
       for (final direction in QuizDirection.values) {
         if (direction == QuizDirection.mixed) continue;
         final quiz = await build(twelve, direction: direction, length: 3);
         for (final item in quiz.items) {
           expect(
             item.tiles,
-            direction == QuizDirection.deBn,
+            direction == QuizDirection.deBn ||
+                direction == QuizDirection.compare,
             reason: direction.name,
           );
         }
@@ -728,6 +730,10 @@ class _Store implements QuizStore {
   @override
   Future<List<QuizWord>> stepWords(String step) async =>
       _pool.where((w) => w.step == step).toList();
+
+  /// No sets: `compare_set_test.dart` builds compare quizzes.
+  @override
+  Future<CompareSet?> compareSet(String uid) async => null;
 }
 
 extension on QuizWord {

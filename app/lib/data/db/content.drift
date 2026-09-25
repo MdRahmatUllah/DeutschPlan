@@ -90,6 +90,15 @@ examplesForWord:
 tipsForWord:
   SELECT * FROM interference_tips WHERE word_uid = :uid;
 
+-- W2 (#142): the course words a set's member may be — its own search key,
+-- not a phrase, not another set — the set's step first, then the course's
+-- order. `ContentDao.compareSet` takes the first that fits.
+compareCandidates:
+  SELECT * FROM words
+  WHERE search_key = :key AND coalesce(pos, '') <> 'phrase'
+    AND instr(german, ' / ') = 0
+  ORDER BY sublevel_code = :step DESC, seq;
+
 grammarForStep:
   SELECT * FROM grammar_topics WHERE sublevel_code = :code ORDER BY seq;
 

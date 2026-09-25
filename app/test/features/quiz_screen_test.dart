@@ -418,6 +418,29 @@ void main() {
       expect(run.answers, hasLength(1), reason: 'graded once');
     });
 
+    testWidgets('FR-W2-03 compare: the gapped sentence, its English, the '
+        "set's tiles", (tester) async {
+      await one(
+        tester,
+        const QuizItem(
+          ord: 1,
+          wordUid: 'uid-grund',
+          direction: QuizDirection.compare,
+          prompt: 'Aus diesem ___ bleibe ich zu Hause.',
+          expected: 'Grund',
+          options: <String>['Anlass', 'Grund', 'Ursache'],
+          hint: "For this reason I'm staying at home.",
+        ),
+      );
+      expect(find.text(l10n.quizAskCompare), findsOneWidget);
+      expect(find.text('Aus diesem ___ bleibe ich zu Hause.'), findsOneWidget);
+      expect(find.text("For this reason I'm staying at home."), findsOneWidget);
+      expect(find.byType(TextField), findsNothing, reason: 'tiles');
+      await tester.tap(find.text('Grund'));
+      await tester.pumpAndSettle();
+      expect(run.answers, [(1, 'Grund', Verdict.correct)]);
+    });
+
     testWidgets('articles: der, die, das, and a tap answers', (tester) async {
       await one(
         tester,
@@ -526,5 +549,6 @@ void main() {
     expect(quizTitle(l10n, args('enDe', 30)), 'Long · EN → DE');
     expect(quizTitle(l10n, args('mixed', 15)), 'Custom · Mixed');
     expect(quizTitle(l10n, args('forms', 20)), l10n.quizForms);
+    expect(quizTitle(l10n, args('compare', 5)), l10n.quizDirectionCompare);
   });
 }

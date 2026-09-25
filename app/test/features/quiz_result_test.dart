@@ -41,7 +41,11 @@ void main() {
   late StubQuizRun run;
   late QuizArgs? retried;
 
-  Future<void> pump(WidgetTester tester, {StubQuizRun? stub}) async {
+  Future<void> pump(
+    WidgetTester tester, {
+    StubQuizRun? stub,
+    QuizArgs args = standard,
+  }) async {
     run = stub ?? StubQuizRun();
     retried = null;
     final routes = GoRouter(
@@ -53,7 +57,7 @@ void main() {
         ),
         GoRoute(
           path: '/result',
-          builder: (_, _) => const QuizResultView(attemptId: 1, args: standard),
+          builder: (_, _) => QuizResultView(attemptId: 1, args: args),
         ),
         GoRoute(
           path: '/quiz',
@@ -188,6 +192,28 @@ void main() {
     await tester.binding.handlePopRoute();
     await tester.pumpAndSettle();
     expect(find.text('opener'), findsOneWidget);
+  });
+
+  testWidgets('FR-W2-03 a compare quiz retries its set, as many items', (
+    tester,
+  ) async {
+    await pump(
+      tester,
+      args: const QuizArgs(
+        direction: 'compare',
+        source: 'compareSet',
+        sourceRef: 'set-grund',
+        seed: 7,
+        length: 5,
+      ),
+    );
+    await tester.tap(find.text(l10n.quizRetryMistakes(4)));
+    await tester.pumpAndSettle();
+    final args = retried!;
+    expect(
+      (args.direction, args.source, args.sourceRef, args.length),
+      ('compare', 'compareSet', 'set-grund', 4),
+    );
   });
 
   testWidgets('FR-L9-01 Add mistakes to revision: due tomorrow, once', (

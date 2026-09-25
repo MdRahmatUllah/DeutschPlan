@@ -17,6 +17,7 @@
 | `todayPlan(date)` | AsyncNotifier family | Today | Calls `PlanEngine.openDay`; watches plan_items stream. |
 | `studySession(args)` | keepAlive Notifier | study modal | Queue of cards, position, undo stack; survives app backgrounding; cleared on close. |
 | `wordDetail(uid)` | autoDispose Stream | sheet | Word + state (watched) + examples + tip, with the meaning language and `show_pron_bn`. `wordHistory(uid)` watches `review_log` for the history caption. |
+| `compareView(uid)` | autoDispose Stream | W2 | The set word and its members' columns (`ContentDao.compareSet`, read once), with the members' words watched for *Add all to today*. |
 | `searchResults(query)` | autoDispose, debounced | Search | Runs in a drift background isolate. |
 | `stepProgress` | Stream | Learn/Me | Aggregates per sub-level. |
 | `grammarCourse` | autoDispose Future | L4, L15 | The course's German forms and example sentences, which grammar practice checks its wrong forms against and borrows *Pick the form*'s sentence from (#330). The provider disposes, but `loadCourseText` keeps the one it built in an `Expando` keyed by the open `AppDatabase`: about 17,000 rows are read once per app run, and the mocks' pool shares it. Built in `Isolate.run`. A read that fails gives `CourseText.none`. |
