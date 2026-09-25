@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-09-25 10:22
+last-seen: 2026-09-25 11:14
 last-read: 281
 
 ## Now
 
-#330 bug(domain): grammar Pick-the-form shows non-words in 71 % of distractors (warteen, Ichen, Montager) and repeats the gap-fill sentence (found in #82) — claimed 2026-09-25 10:22.
+#330 in review as PR #386: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
