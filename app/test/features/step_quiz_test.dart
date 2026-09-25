@@ -13,6 +13,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 
+import '../core/text_clipping.dart';
 import 'today_fixtures.dart';
 
 /// L2 · Quiz tab — #116.
@@ -126,7 +127,7 @@ void main() {
     tester,
   ) async {
     await pump(tester);
-    expect(find.text(l10n.quizLast(16, 20)), findsOneWidget);
+    expect(find.text(l10n.quizLast('16', '20')), findsOneWidget);
     expect(find.text('Standard · DE → EN · Sun 20 Sep'), findsOneWidget);
   });
 
@@ -141,7 +142,7 @@ void main() {
               body: LastQuizCard(
                 quiz: (
                   score: 8,
-                  outOf: length,
+                  outOf: length.toDouble(),
                   length: length,
                   direction: direction,
                   finishedAt: '2026-09-20T19:05:00',
@@ -169,8 +170,67 @@ void main() {
     });
   });
 
+  // 23:59Z is tomorrow east of UTC, and 00:01Z yesterday west of it.
+  final offset = DateTime(2026, 9, 20, 12).timeZoneOffset;
+  testWidgets("#335 the last quiz's day is the local one, not its UTC date", (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        theme: AppTheme.light(),
+        localizationsDelegates: appLocalizationsDelegates,
+        supportedLocales: supportedLocales,
+        home: Scaffold(
+          body: LastQuizCard(
+            quiz: (
+              score: 16,
+              outOf: 20,
+              length: 20,
+              direction: 'deEn',
+              finishedAt: offset > Duration.zero
+                  ? '2026-09-20T23:59:00Z'
+                  : '2026-09-20T00:01:00Z',
+            ),
+          ),
+        ),
+      ),
+    );
+    expect(
+      find.text(
+        offset > Duration.zero
+            ? 'Standard · DE → EN · Mon 21 Sep'
+            : 'Standard · DE → EN · Sat 19 Sep',
+      ),
+      findsOneWidget,
+    );
+  }, skip: offset == Duration.zero);
+
+  testWidgets('#335 a half score fits its badge at 200 % text', (tester) async {
+    textAt(tester, 2);
+    await tester.pumpWidget(
+      MaterialApp(
+        theme: AppTheme.light(),
+        localizationsDelegates: appLocalizationsDelegates,
+        supportedLocales: supportedLocales,
+        home: const Scaffold(
+          body: LastQuizCard(
+            quiz: (
+              score: 27.5,
+              outOf: 30,
+              length: 30,
+              direction: 'deEn',
+              finishedAt: '2026-09-20T19:05:00',
+            ),
+          ),
+        ),
+      ),
+    );
+    expect(find.text('27.5'), findsOneWidget);
+    expectNothingClipped(tester, within: find.byType(LastQuizCard));
+  });
+
   group('its score, coloured as a result is', () {
-    Future<Color> colour(WidgetTester tester, int score) async {
+    Future<Color> colour(WidgetTester tester, double score) async {
       final LastQuiz quiz = (
         score: score,
         outOf: 20,
@@ -188,7 +248,10 @@ void main() {
       );
       final box = tester.widget<Container>(
         find
-            .ancestor(of: find.text('$score'), matching: find.byType(Container))
+            .ancestor(
+              of: find.text(quizPoints(score)),
+              matching: find.byType(Container),
+            )
             .first,
       );
       return (box.decoration! as BoxDecoration).color!;
@@ -203,6 +266,17 @@ void main() {
     testWidgets('Sun from 50 %', (tester) async {
       expect(await colour(tester, 10), palette.learning);
       expect(await colour(tester, 15), palette.learning);
+      expect(
+        await colour(tester, 15.5),
+        palette.learning,
+        reason: '#335: 77.5 %, not 16 / 20',
+      );
+    });
+
+    testWidgets('#335 BR-ANS-04 half points as L9 shows them', (tester) async {
+      await colour(tester, 15.5);
+      expect(find.text('Last quiz · 15.5 / 20'), findsOneWidget);
+      expect(find.text('15.5'), findsOneWidget);
     });
 
     testWidgets('Coral under', (tester) async {

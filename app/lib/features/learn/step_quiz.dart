@@ -7,7 +7,6 @@ import 'package:deutschplan/core/theme/dp_tokens.dart';
 import 'package:deutschplan/core/typography/dp_text.dart';
 import 'package:deutschplan/data/repositories/exam_repository.dart';
 import 'package:deutschplan/data/repositories/word_repository.dart';
-import 'package:deutschplan/domain/plan_engine.dart' show parsePlanDate;
 import 'package:deutschplan/features/quiz/quiz_setup_sheet.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
 import 'package:deutschplan/router/routes.dart';
@@ -187,7 +186,8 @@ class QuizTile extends StatelessWidget {
 }
 
 /// "Last quiz · 16 / 20" beside its score, coloured as L9 colours a result:
-/// Lime from 80 %, Sun from 50 %, Coral under.
+/// Lime from 80 %, Sun from 50 %, Coral under. Halves are L9's too: 8.5 is
+/// not 9, nor its colour (#335).
 class LastQuizCard extends StatelessWidget {
   const LastQuizCard({required this.quiz, super.key});
 
@@ -203,7 +203,8 @@ class LastQuizCard extends StatelessWidget {
     final date = DateFormat(
       'EEE d MMM',
       Localizations.localeOf(context).toString(),
-    ).format(parsePlanDate(quiz.finishedAt.substring(0, 10)));
+      // Its local day: `finished_at` is a UTC instant (#391's review).
+    ).format(DateTime.parse(quiz.finishedAt).toLocal());
 
     return DpSurface(
       kind: DpSurfaceKind.bar,
@@ -219,11 +220,19 @@ class LastQuizCard extends StatelessWidget {
               borderRadius: BorderRadius.circular(10),
               border: Border.all(color: tokens.color.ink, width: 1.5),
             ),
-            child: DpText(
-              '${quiz.score}',
-              role: DpTextRole.label,
-              weight: 700,
-              color: tokens.color.onAccent,
+            // "27.5" at 200 % text is wider than the badge: it shrinks to
+            // fit rather than wrap out of sight (#335, as #314's ring).
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 3),
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: DpText(
+                  quizPoints(quiz.score),
+                  role: DpTextRole.label,
+                  weight: 700,
+                  color: tokens.color.onAccent,
+                ),
+              ),
             ),
           ),
           const SizedBox(width: 12),
@@ -232,7 +241,7 @@ class LastQuizCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 DpText(
-                  l10n.quizLast(quiz.score, quiz.outOf),
+                  l10n.quizLast(quizPoints(quiz.score), quizPoints(quiz.outOf)),
                   role: DpTextRole.body,
                   weight: 600,
                 ),
@@ -258,6 +267,11 @@ class LastQuizCard extends StatelessWidget {
     );
   }
 }
+
+/// "16", or "15.5": a quiz scores in halves (BR-ANS-04).
+String quizPoints(double points) => points == points.roundToDouble()
+    ? '${points.round()}'
+    : points.toStringAsFixed(1);
 
 /// A quiz direction as the app names it: "DE → EN", "Articles".
 /// A quiz result's colour (`quiz.md`): Lime from 80 %, Sun from 50 %, Coral

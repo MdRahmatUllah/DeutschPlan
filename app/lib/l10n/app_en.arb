@@ -2448,13 +2448,13 @@
   },
   "quizLast": "Last quiz · {score} / {outOf}",
   "@quizLast": {
-    "description": "L2 last quiz card title.",
+    "description": "L2 last quiz card title. The score keeps halves, as L9 shows it: \"15.5 / 20\".",
     "placeholders": {
       "score": {
-        "type": "int"
+        "type": "String"
       },
       "outOf": {
-        "type": "int"
+        "type": "String"
       }
     }
   },

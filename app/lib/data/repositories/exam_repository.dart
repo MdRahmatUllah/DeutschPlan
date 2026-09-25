@@ -95,9 +95,10 @@ typedef QuizResult = ({
   List<QuizMistakeRowsResult> mistakes,
 });
 
+/// The score in points, halves kept (BR-ANS-04, #335).
 typedef LastQuiz = ({
-  int score,
-  int outOf,
+  double score,
+  double outOf,
   int length,
   String direction,
   String finishedAt,
@@ -640,8 +641,8 @@ class ExamRepository extends DatabaseAccessor<AppDatabase>
         (rows) => rows.isEmpty
             ? null
             : (
-                score: rows.single.scorePoints.round(),
-                outOf: rows.single.maxPoints.round(),
+                score: rows.single.scorePoints,
+                outOf: rows.single.maxPoints,
                 length: rows.single.length,
                 direction: rows.single.direction,
                 finishedAt: rows.single.finishedAt!,
