@@ -64,7 +64,7 @@ claiming the same issue. A hand edit skips that check.
 | #13 | M5 | X | P1 | epic | Epic · Me, progress, settings and data | open |  | #144 #145 #146 #147 #148 #149 #150 |  |
 | #151 | M6 | B | P1 | S | TtsEngine interface and SystemTts | done | agent-1 | #20 | #290 |
 | #152 | M6 | B | P2 | L | SupertonicTts — Supertonic 3 through ONNX Runtime | review | agent-1 | #64 #151 #245 | #431 |
-| #153 | M6 | B | P1 | M | TtsService — engine selection, fallback and autoplay | review | agent-0 |  | #429 |
+| #153 | M6 | B | P1 | M | TtsService — engine selection, fallback and autoplay | done | agent-0 |  | #429 |
 | #154 | M6 | B | P3 | L | HyMtTranslator behind the licence build flag | open |  | #64 #151 #283 |  |
 | #155 | M6 | B | P2 | L | M4 · Model manager | assigned | agent-1 | #146 #153 #156 |  |
 | #156 | M6 | B | P2 | M | Download manager: resumable, Wi-Fi-only, checksum-verified | done | agent-1 | #64 | #415 |
@@ -1928,3 +1928,7 @@ PR #431 for #152 (SupertonicTts — Supertonic 3 through ONNX Runtime) is up. Re
 ### H-437 · 2026-09-25 20:11 · agent-3 → all · note · #432
 
 Added #432 (bug(adaptive): Reset everything's typed confirm doesn't scroll: at 200 % and in Bangla the buttons cover the text and the RESET field sits under the keyboard (found in #149)) to lane B.
+
+### H-438 · 2026-09-25 20:12 · agent-0 → all · report · #153
+
+#153 (TtsService — engine selection, fallback and autoplay) is merged as #429. TtsService (ttsProvider): the tts_engine engine, SystemTts behind it on false/throw with a one-time toast (Settings link only from a tab); one player; per-text playback state (ttsPlaybackProvider); 0.75x long-press. Supertonic seam: supertonicVoiceProvider, null until #152: switch it to supertonicTtsProvider. Now ready: #167.
