@@ -6,7 +6,7 @@ last-read: 301
 
 ## Now
 
-#347 fix(plan): time-per-item medians group ratings by their UTC date — claimed 2026-09-25 14:22.
+Nothing claimed.
 
 ## Next
 

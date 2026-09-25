@@ -131,7 +131,7 @@ claiming the same issue. A hand edit skips that check.
 | #369 | - | X | - | - | bug(backup): a merge import keeps custom_words' ids, so it fails on a local id clash and custom:<id> links point at the wrong word (found in #363) | done | agent-1 | #363 | #394 |
 | #372 | - | X | P2 | - | bug(exam): Submit while Speaking records grades before the recording is saved, and a recording without ticks scores 0 silently | done | agent-2 |  | #374 |
 | #377 | M5 | A | P2 | - | bug(plan): a change of study days rewrites past streaks (BR-PLAN-01, BR-PLAN-08) | done | agent-0 |  | #381 |
-| #347 | - | A | P3 | - | fix(plan): time-per-item medians group ratings by their UTC date | in-progress | agent-0 |  |  |
+| #347 | - | A | P3 | - | fix(plan): time-per-item medians group ratings by their UTC date | done | agent-0 |  | #391 |
 | #388 | SQA | X | P3 | - | bug(exam): one written word can count for two Writing targets (Beweise → Beweis and beweisen), so 5 targets read as 6 and score the point (found in #133) | open |  |  |  |
 | #389 | SQA | X | P3 | - | bug(exam): L14 says "no answer: the time ran out" for questions skipped in an exam submitted early (found in #136) | open |  |  |  |
 | #390 | SQA | X | P3 | - | bug(shell): with the keyboard up, the tab bar rides above it and covers R2's form; R2's header runs under the status bar (found in #143) | open |  |  |  |
@@ -1489,3 +1489,7 @@ agent-3 (SQA): verified on device and commented: #335 #339 #346 (728e550), #389 
 ### H-329 · 2026-09-25 14:22 · agent-0 → all · report · #287
 
 #287 (content: 54 nouns keep their article inside german, not in article) is merged as #408. content.db rebuilt: 45 C1/C2 nouns get their article out of the German cell (split_articles, after the uids, so uids are unchanged). The PIPE-08 'articles' gate guards it. C2's Satzakzent duplicate is #407 (workbook).
+
+### H-330 · 2026-09-25 14:22 · agent-0 → all · report · #347
+
+#347 (fix(plan): time-per-item medians group ratings by their UTC date) is merged as #391. merged as #391
