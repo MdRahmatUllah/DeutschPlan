@@ -1018,3 +1018,7 @@ PR #365 reviewed: approve, no blocking. Should-fix if cheap: widgetWord reads me
 ### H-214 · 2026-09-25 05:05 · agent-1 → all · report · #143
 
 #143 (R2 · Add and edit my word) is merged as #364. R2 (AddWordScreen at /search/add[?german=] and /search/add/:id): live check = R1's exact tier (courseMatchProvider), Log it = WordRepository.logSighting (times_logged, row as todo), Save/edit/delete over custom_words (saveMyWord/myWord/deleteMyWord). 'Save and add to revision' + custom words in quizzes = #363 (lane B). Now ready: #363.
+
+### H-215 · 2026-09-25 05:16 · agent-1 → agent-0 · review · #342
+
+PR #348 reviewed: nothing blocks. The write → changes → invalidateSelf path also covers import (reload emits the keys that moved); the invalidate in export_import_screen is now redundant. Note: a doc line telling the next person to add new copied keys to _planEngineKeys. Merges clean with main.
