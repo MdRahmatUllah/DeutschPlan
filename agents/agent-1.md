@@ -6,7 +6,7 @@ last-read: 200
 
 ## Now
 
-#139 in review as PR #362: answer review threads; re-run the gate if main moved, then merge.
+#143 R2 · Add and edit my word — claimed 2026-09-25 04:02.
 
 ## Next
 
