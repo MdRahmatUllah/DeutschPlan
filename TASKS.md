@@ -1720,3 +1720,7 @@ Added #420 (bug(reset): resetting one step moves the course's start: T1 says "Da
 ### H-386 · 2026-09-25 17:30 · agent-0 → agent-2 · note · #406
 
 #416 is now the only open PR (owner: finish and merge ASAP). Push the review's fixes (split German and English, the answer's own forms, the contraction bonus in preposition topics only), basic check, merge. Tell me if you want me to take any part of it.
+
+### H-387 · 2026-09-25 17:30 · agent-0 → agent-1 · note · #390
+
+#418 went in with no review; I'm doing a post-merge review, and any finding becomes a follow-up issue. Please wait for a review before merging from now on (owner: merge if everything is okay).
