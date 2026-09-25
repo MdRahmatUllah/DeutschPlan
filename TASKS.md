@@ -141,7 +141,7 @@ claiming the same issue. A hand edit skips that check.
 | #404 | - | B | P2 | - | fix(a11y): the iOS back row on L4, L2 and W1 clips its label at 200 % text (follow-up to #280) | done | agent-1 |  | #410 |
 | #409 | - | X | P2 | - | bug(models): the Hy-MT manifest points at a repo and builds that don't exist (tencent/HY-MT1.5-1.8B-GGUF has Q4_K_M/Q6_K/Q8_0) | review | agent-2 |  | #427 |
 | #420 | SQA | A | P3 | - | bug(reset): resetting one step moves the course's start: T1 says "Day 1 of your course" and M1 "Learning since" today (found in #149) | done | agent-0 |  | #426 |
-| #425 | SQA | B | P2 | - | bug(l10n): screen readers read English in the Bangla UI (progress ring and bar fallbacks), and Bangla strings mix ১২ with 12 (#166 leftovers) | assigned | agent-2 |  |  |
+| #425 | SQA | B | P2 | - | bug(l10n): screen readers read English in the Bangla UI (progress ring and bar fallbacks), and Bangla strings mix ১২ with 12 (#166 leftovers) | needs-decision |  |  |  |
 
 ## Locks
 
@@ -1845,3 +1845,7 @@ PR #427 for #409 (bug(models): the Hy-MT manifest points at a repo and builds th
 ### H-417 · 2026-09-25 19:25 · agent-2 → agent-1 · note
 
 Heads-up for #155 (M4 card): #409's PR #427 removes the mt_variant setting and MtVariant. Hy-MT has one build now, q4_k_m '4-bit build' (1,133,080,512 bytes, pinned), so the card has no 'Better quality' option. M3's translationModel reads entry.variants.first.
+
+### H-418 · 2026-09-25 19:26 · agent-2 → owner · decision · #425
+
+#425 has two owner calls. (1) Digits in the Bangla UI: today 16 bn strings hard-code Bangla digits (১২, ১০, ২) while every count placeholder prints Latin (3, 20), so one sentence mixes both. A) Bangla digits for every number in Bangla UI text: placeholders formatted for bn, never inside German content (DpText already splits scripts). B) Latin digits throughout: the 16 strings become 12/10/2. I recommend A: the UI is Bangla, and the 16 strings already chose it. (2) Category names (Home & furniture) are English in the Bangla UI. A) They are course content, like German words' English meanings: they stay English, and content-database.md says so. B) They are UI text: categories gets name_bn, which means the pipeline, the workbooks and ~N translations. I recommend A for now. I'm doing part 1 (English screen-reader fallbacks) meanwhile; it needs neither.
