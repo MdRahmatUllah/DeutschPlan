@@ -398,7 +398,7 @@ class SettingsScreen extends ConsumerWidget {
                     max: speed.max,
                     compact: true,
                     label: l10n.settingsSpeed,
-                    describe: (quarters) => '${_times(quarters)}×',
+                    describe: (quarters) => l10n.digits('${_times(quarters)}×'),
                     onChanged: (quarters) =>
                         set(SettingKeys.ttsSpeed, quarters / 4),
                   ),

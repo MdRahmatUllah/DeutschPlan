@@ -177,8 +177,17 @@ void main() {
               in ((value['placeholders'] as Map<String, dynamic>?) ??
                       const <String, dynamic>{})
                   .entries)
-            if ((placeholder as Map<String, dynamic>)['type'] == 'int' &&
-                placeholder['format'] == null)
+            if (placeholder is Map<String, dynamic> &&
+                placeholder['format'] == null &&
+                (const <String>{
+                      'int',
+                      'double',
+                      'num',
+                    }.contains(placeholder['type']) ||
+                    (placeholder['type'] == null &&
+                        (en[key.substring(1)] as String).contains(
+                          '{$name, plural,',
+                        ))))
               '${key.substring(1)}.$name',
     ];
     expect(unformatted, isEmpty, reason: unformatted.join('\n'));
@@ -195,18 +204,27 @@ void main() {
       'l10n.digits', () {
     // DpText('$count'), or a pill's `label: streak.toString()`, prints 0–9 in
     // the Bangla UI; T1's streak pill did.
-    final straight = <RegExp>[
-      RegExp(r"DpText\(\s*'\$\{?[\w.]+\}?'"),
-      RegExp(r'\blabel:\s*[\w.]+\.toString\(\)'),
-    ];
+    // A DpText literal that is only numbers once its interpolations go
+    // ("$n", "${a} / ${b}"), and a label that is a number's toString.
+    final text = RegExp(r"DpText\(\s*'([^'\n]*\$[^'\n]*)'");
+    final label = RegExp(r'\blabel:\s*[\w.]+\.toString\(\)');
+    // A literal that is words, not a number (a headword and a step code),
+    // is marked `// ponytail: allow-literal` on the line above it, which
+    // takes it out of [text]'s match.
+    bool wordless(String literal) =>
+        !RegExp('[A-Za-zঀ-৿]')
+            .hasMatch(literal.replaceAll(RegExp(r'\$\{[^}]*\}|\$\w+'), ''));
     final offenders = <String>[
       for (final file in Directory(
         'lib',
       ).listSync(recursive: true).whereType<File>())
         if (file.path.endsWith('.dart') && !file.path.contains('generated'))
-          for (final pattern in straight)
-            for (final match in pattern.allMatches(file.readAsStringSync()))
+          for (final source in <String>[file.readAsStringSync()]) ...<String>[
+            for (final match in text.allMatches(source))
+              if (wordless(match[1]!)) '${file.path}: ${match[0]}',
+            for (final match in label.allMatches(source))
               '${file.path}: ${match[0]}',
+          ],
     ];
     expect(offenders, isEmpty, reason: offenders.join('\n'));
   });
@@ -283,6 +301,11 @@ void main() {
       for (var i = 0; i < lines.length; i++) {
         final line = lines[i];
         if (line.trimLeft().startsWith('//')) continue;
+        // Not copy: a key, an assert's message, a debug toString, a pattern.
+        if (RegExp(r'\bKey\(|\bassert\(|toString\(\)|RegExp\(')
+            .hasMatch(line)) {
+          continue;
+        }
         for (final literal in literals) {
           for (final match in literal.allMatches(line)) {
             final words = match

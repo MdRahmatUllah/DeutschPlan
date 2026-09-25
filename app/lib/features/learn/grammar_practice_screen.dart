@@ -16,6 +16,7 @@ import 'package:deutschplan/features/learn/grammar_topic_screen.dart';
 import 'package:deutschplan/features/study/study_cloze.dart';
 import 'package:deutschplan/features/study/study_summary.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
+import 'package:deutschplan/l10n/ui_digits.dart';
 import 'package:deutschplan/router/routes.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
@@ -317,7 +318,7 @@ class PracticeHeader extends StatelessWidget {
               SizedBox(
                 width: 52,
                 child: DpText(
-                  '${place.$1} / ${place.$2}',
+                  l10n.digits('${place.$1} / ${place.$2}'),
                   role: DpTextRole.label,
                   weight: 700,
                   color: ink,
