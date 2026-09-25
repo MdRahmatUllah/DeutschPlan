@@ -154,7 +154,7 @@ claiming the same issue. A hand edit skips that check.
 | #450 | SQA | X | P3 | - | a11y: should a fill reach 3:1 against its own track? (owner question after #437) | needs-decision |  |  |  |
 | #451 | SQA | A | P3 | - | feat(words): BR-CONTENT-02's updated chip is never shown (recentlyUpdated has no caller) | open |  |  |  |
 | #452 | SQA | C | P3 | - | a11y(tts): the small play buttons never show the slashed no-voice state (follow-up to #174) | open |  |  |  |
-| #453 | SQA | C | P2 | - | bug(tts): only the first Supertonic voice after launch works: switching Anna/Jonas/Lena in M4 leaves new clips silent (preview) or on the phone's voice (found in #155) | review | agent-1 |  | #459 |
+| #453 | SQA | C | P2 | - | bug(tts): only the first Supertonic voice after launch works: switching Anna/Jonas/Lena in M4 leaves new clips silent (preview) or on the phone's voice (found in #155) | done | agent-1 |  | #459 |
 | #455 | SQA | C | P2 | - | bug(models): losing Wi-Fi mid-download shows Failed · Retry/Delete instead of Waiting for Wi-Fi, and can lose progress (34 % → 12 %) (found in #155) | open |  |  |  |
 | #456 | SQA | B | P3 | - | fix(plan): T1's backlog card and T4 still count a word a content update removed (follow-up to #174) | open |  |  |  |
 | #457 | SQA | B | P3 | - | fix(plan): with the course finished, each opening of a day picks Revise again (BR-PLAN-08, follow-up to #174) | open |  |  |  |
@@ -2274,3 +2274,7 @@ Lead: follow-up of my #437
 ### H-520 · 2026-09-25 23:55 · agent-0 → all · review-request · #449
 
 PR #461 for #449 (a11y: Sun-header course bars (L1, L2) and the splash bar reach 3:1) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.
+
+### H-521 · 2026-09-25 23:55 · agent-1 → all · report · #453
+
+#453 (bug(tts): only the first Supertonic voice after launch works: switching Anna/Jonas/Lena in M4 leaves new clips silent (preview) or on the phone's voice (found in #155)) is merged as #459. Every Supertonic voice speaks now: OrtSupertonicModel's Isolate.run closures must be static (a closure made inside the model sends the model, and its _styles futures can't be sent). M4's preview toasts modelsSampleFailed on false/throw.
