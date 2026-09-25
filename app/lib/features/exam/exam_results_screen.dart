@@ -254,12 +254,15 @@ class _Result extends StatelessWidget {
               ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(16, 14, 16, 8),
-                child: DpText(
-                  l10n.examResultBySection.toUpperCase(),
-                  role: DpTextRole.caption,
-                  weight: 700,
-                  letterSpacing: 0.6,
-                  color: tokens.color.textSecondary,
+                child: Semantics(
+                  header: true,
+                  child: DpText(
+                    l10n.examResultBySection.toUpperCase(),
+                    role: DpTextRole.caption,
+                    weight: 700,
+                    letterSpacing: 0.6,
+                    color: tokens.color.textSecondary,
+                  ),
                 ),
               ),
               for (final section in ExamSection.values)
@@ -314,9 +317,10 @@ class _Result extends StatelessWidget {
   }
 }
 
-/// "77", down and never up: 59.9 % is not the 60 % that passes.
+/// "77", down and never up: 59.9 % is not the 60 % that passes. The
+/// nudge keeps a float's 28.999… for 29 of 100 at 29.
 int _percent(double points, double max) =>
-    max == 0 ? 0 : (points / max * 100).floor();
+    max == 0 ? 0 : (points / max * 100 + 1e-9).floor();
 
 /// "37", or "36.5": Writing's rubric counts in halves.
 String _points(double points) => points == points.roundToDouble()
