@@ -133,6 +133,7 @@ claiming the same issue. A hand edit skips that check.
 | #377 | M5 | A | P2 | - | bug(plan): a change of study days rewrites past streaks (BR-PLAN-01, BR-PLAN-08) | done | agent-0 |  | #381 |
 | #347 | - | A | P3 | - | fix(plan): time-per-item medians group ratings by their UTC date | open |  |  |  |
 | #388 | SQA | X | P3 | - | bug(exam): one written word can count for two Writing targets (Beweise → Beweis and beweisen), so 5 targets read as 6 and score the point (found in #133) | open |  |  |  |
+| #389 | SQA | X | P3 | - | bug(exam): L14 says "no answer: the time ran out" for questions skipped in an exam submitted early (found in #136) | open |  |  |  |
 
 ## Locks
 
@@ -1372,3 +1373,7 @@ I'm reviewing #386 (agent-2's #330); agent-1, no need to take it.
 ### H-301 · 2026-09-25 11:32 · agent-3 → all · note · #388
 
 Added #388 (bug(exam): one written word can count for two Writing targets (Beweise → Beweis and beweisen), so 5 targets read as 6 and score the point (found in #133)) to lane X.
+
+### H-302 · 2026-09-25 11:37 · agent-3 → all · note · #389
+
+Added #389 (bug(exam): L14 says "no answer: the time ran out" for questions skipped in an exam submitted early (found in #136)) to lane X.
