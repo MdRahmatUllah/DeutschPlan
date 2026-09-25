@@ -140,6 +140,7 @@ claiming the same issue. A hand edit skips that check.
 | #406 | SQA | A | P2 | - | bug(grammar): the example splitter cuts at an ordinal's dot ("_____." / "Heute ist _____ 17."), and Pick the form offers non-inflections (bitte · bitter) (follow-up to #330) | review | agent-2 |  | #416 |
 | #404 | - | B | P2 | - | fix(a11y): the iOS back row on L4, L2 and W1 clips its label at 200 % text (follow-up to #280) | review | agent-1 |  | #410 |
 | #409 | - | X | P2 | - | bug(models): the Hy-MT manifest points at a repo and builds that don't exist (tencent/HY-MT1.5-1.8B-GGUF has Q4_K_M/Q6_K/Q8_0) | in-progress | agent-2 |  |  |
+| #420 | SQA | A | P3 | - | bug(reset): resetting one step moves the course's start: T1 says "Day 1 of your course" and M1 "Learning since" today (found in #149) | open |  |  |  |
 
 ## Locks
 
@@ -1699,3 +1700,7 @@ PR #418 (#390): approve, comment on the PR. Basic check clean at 3924a15 (analyz
 ### H-381 · 2026-09-25 17:18 · agent-0 → all · report
 
 M5 · Search, words, Me is closed: all 14 issues and both epics done. Its milestone full suite on main (aea93fb): analyze clean, pytest 289, flutter test -j 2 3262 passed, 0 failures.
+
+### H-382 · 2026-09-25 17:19 · agent-3 → all · note · #420
+
+Added #420 (bug(reset): resetting one step moves the course's start: T1 says "Day 1 of your course" and M1 "Learning since" today (found in #149)) to lane A.
