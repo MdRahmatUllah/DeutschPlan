@@ -777,6 +777,32 @@ abstract final class Adaptive {
     );
   }
 
+  /// A confirmation typed out (M7, #149): the confirm action, Coral, stays off
+  /// until the field holds [word] exactly — "RESET", not "reset".
+  static Future<bool?> showTypedConfirm({
+    required BuildContext context,
+    required String title,
+    required String message,
+    required String word,
+    required String confirmLabel,
+    required String cancelLabel,
+  }) {
+    // The platform is the caller's: a dialog is pushed above the screen's
+    // chrome scope, as showConfirm decides before it pushes too.
+    final ios = context.isCupertino;
+    Widget dialog(BuildContext _) => _TypedConfirm(
+      ios: ios,
+      title: title,
+      message: message,
+      word: word,
+      confirmLabel: confirmLabel,
+      cancelLabel: cancelLabel,
+    );
+    return ios
+        ? cupertino.showCupertinoDialog<bool>(context: context, builder: dialog)
+        : showDialog<bool>(context: context, builder: dialog);
+  }
+
   /// The reminder time. Material shows a dialog; iOS shows the wheel in a sheet,
   /// which is what `onboarding.md` and `reminder-days.md` describe.
   static Future<TimeOfDay?> showTimePickerFor({
@@ -977,3 +1003,165 @@ class AdaptiveRefresh extends StatelessWidget {
 /// The platform the app would pick with no override, for diagnostics.
 AdaptiveChrome get defaultChrome =>
     AdaptiveChrome.forPlatform(defaultTargetPlatform);
+
+/// [Adaptive.showTypedConfirm]'s dialog: the platform's alert with a field.
+class _TypedConfirm extends StatefulWidget {
+  const _TypedConfirm({
+    required this.ios,
+    required this.title,
+    required this.message,
+    required this.word,
+    required this.confirmLabel,
+    required this.cancelLabel,
+  });
+
+  final bool ios;
+  final String title;
+  final String message;
+  final String word;
+  final String confirmLabel;
+  final String cancelLabel;
+
+  @override
+  State<_TypedConfirm> createState() => _TypedConfirmState();
+}
+
+class _TypedConfirmState extends State<_TypedConfirm> {
+  final TextEditingController _typed = TextEditingController();
+
+  @override
+  void dispose() {
+    _typed.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final tokens = context.tokens;
+    // The app's font, not the system's: the artboards draw the alert in it,
+    // as every DpText is. The action keeps its own colour and size.
+    final font = TextStyle(
+      fontFamily: DpText.styleFor(tokens, DpTextRole.body).fontFamily,
+    );
+    final typed = ValueListenableBuilder<TextEditingValue>(
+      valueListenable: _typed,
+      builder: (context, value, _) {
+        final onConfirm = value.text == widget.word
+            ? () => Navigator.of(context).pop(true)
+            : null;
+        return widget.ios
+            ? cupertino.CupertinoDialogAction(
+                isDestructiveAction: true,
+                onPressed: onConfirm,
+                textStyle: font,
+                child: Text(widget.confirmLabel),
+              )
+            : TextButton(
+                onPressed: onConfirm,
+                // Coral text while it waits too, as the artboard draws it,
+                // but faded: an action that does nothing yet shouldn't look
+                // ready.
+                style: TextButton.styleFrom(
+                  foregroundColor: tokens.color.wrongText,
+                  disabledForegroundColor: tokens.color.wrongText.withValues(
+                    alpha: 0.5,
+                  ),
+                ),
+                child: Text(widget.confirmLabel),
+              );
+      },
+    );
+    void cancel() => Navigator.of(context).pop(false);
+
+    if (widget.ios) {
+      return cupertino.CupertinoAlertDialog(
+        title: DpText(
+          widget.title,
+          role: DpTextRole.body,
+          weight: 600,
+          textAlign: TextAlign.center,
+        ),
+        content: Column(
+          children: <Widget>[
+            DpText(
+              widget.message,
+              role: DpTextRole.caption,
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 12),
+            cupertino.CupertinoTextField(
+              controller: _typed,
+              autofocus: true,
+              autocorrect: false,
+              enableSuggestions: false,
+              textCapitalization: TextCapitalization.characters,
+              style: DpText.styleFor(tokens, DpTextRole.body),
+              // Ink-edged, as the artboard draws it on both platforms.
+              decoration: BoxDecoration(
+                color: tokens.surface.cardStrong,
+                border: Border.all(color: tokens.color.ink),
+                borderRadius: BorderRadius.circular(tokens.shape.button),
+              ),
+            ),
+          ],
+        ),
+        actions: <Widget>[
+          cupertino.CupertinoDialogAction(
+            onPressed: cancel,
+            textStyle: font,
+            child: Text(widget.cancelLabel),
+          ),
+          typed,
+        ],
+      );
+    }
+
+    final edge = OutlineInputBorder(
+      borderRadius: BorderRadius.circular(tokens.shape.button),
+      borderSide: BorderSide(color: tokens.color.ink),
+    );
+    return AlertDialog(
+      title: DpText(widget.title, role: DpTextRole.title),
+      // A field has no width of its own: without a bound the dialog would
+      // cross a tablet. Material's dialogs keep to 560 dp.
+      content: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 400),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            // The artboard's size and grey: the title says what, this how.
+            DpText(
+              widget.message,
+              role: DpTextRole.label,
+              weight: 400,
+              color: tokens.color.textSecondary,
+            ),
+            const SizedBox(height: 16),
+            TextField(
+              controller: _typed,
+              autofocus: true,
+              autocorrect: false,
+              enableSuggestions: false,
+              textCapitalization: TextCapitalization.characters,
+              style: DpText.styleFor(tokens, DpTextRole.bodyLarge),
+              decoration: InputDecoration(
+                border: edge,
+                enabledBorder: edge,
+                focusedBorder: edge,
+              ),
+            ),
+          ],
+        ),
+      ),
+      actions: <Widget>[
+        TextButton(
+          onPressed: cancel,
+          style: TextButton.styleFrom(foregroundColor: tokens.color.link),
+          child: Text(widget.cancelLabel),
+        ),
+        typed,
+      ],
+    );
+  }
+}

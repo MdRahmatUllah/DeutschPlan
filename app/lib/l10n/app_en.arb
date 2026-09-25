@@ -5061,5 +5061,95 @@
         "type": "int"
       }
     }
+  },
+  "resetExportFirst": "Export first",
+  "@resetExportFirst": {
+    "description": "M7's sheet (FR-M7-03): opens Export / import before anything is reset."
+  },
+  "resetExportFirstNote": "Keep a file you can import later",
+  "@resetExportFirstNote": {
+    "description": "M7's sheet: under Export first."
+  },
+  "resetOneStep": "Reset one step",
+  "@resetOneStep": {
+    "description": "M7's sheet: FR-M7-01, then a step to pick."
+  },
+  "resetOneStepNote": "Its words start again from To do",
+  "@resetOneStepNote": {
+    "description": "M7's sheet: under Reset one step."
+  },
+  "resetEverything": "Reset everything",
+  "@resetEverything": {
+    "description": "M7's sheet: FR-M7-02, then the RESET dialog."
+  },
+  "resetEverythingNote": "All progress and history on this phone",
+  "@resetEverythingNote": {
+    "description": "M7's sheet: under Reset everything."
+  },
+  "resetPickStep": "Which step?",
+  "@resetPickStep": {
+    "description": "M7's step picker: its title, over the steps with something to reset."
+  },
+  "resetNoStep": "No step has anything to reset yet.",
+  "@resetNoStep": {
+    "description": "M7: a toast when no step is begun or touched."
+  },
+  "resetStepTitle": "Reset {step}?",
+  "@resetStepTitle": {
+    "description": "M7's step confirm: its title.",
+    "placeholders": {
+      "step": {
+        "type": "String",
+        "example": "A1.1"
+      }
+    }
+  },
+  "resetStepMessage": "Its words go back to To do, with their reviews, plans, grammar, quizzes and mock exams.",
+  "@resetStepMessage": {
+    "description": "M7's step confirm (FR-M7-01): what goes."
+  },
+  "resetStepCurrent": "{step} starts again today.",
+  "@resetStepCurrent": {
+    "description": "M7's step confirm, after the message, for the current step: its enrollment restarts today.",
+    "placeholders": {
+      "step": {
+        "type": "String",
+        "example": "A1.1"
+      }
+    }
+  },
+  "resetStepConfirm": "Reset",
+  "@resetStepConfirm": {
+    "description": "M7's step confirm: the Coral action."
+  },
+  "resetCancel": "Cancel",
+  "@resetCancel": {
+    "description": "M7's dialogs: the way out, which resets nothing."
+  },
+  "resetStepDone": "{step} is reset",
+  "@resetStepDone": {
+    "description": "M7: a toast once a step is reset.",
+    "placeholders": {
+      "step": {
+        "type": "String",
+        "example": "A1.1"
+      }
+    }
+  },
+  "resetFailed": "Couldn't reset. Nothing was changed.",
+  "@resetFailed": {
+    "description": "M7: a toast when the reset could not be written; its transaction left everything as it was."
+  },
+  "resetEverythingTitle": "Reset everything?",
+  "@resetEverythingTitle": {
+    "description": "The ResetDialog artboard: the title."
+  },
+  "resetEverythingMessage": "Deletes all progress, plans, quiz and exam history and my words on this phone. Export first if you might want it back. Type RESET to confirm.",
+  "@resetEverythingMessage": {
+    "description": "The ResetDialog artboard's text. RESET is typed as it is, in every language."
+  },
+  "resetEverythingConfirm": "Reset",
+  "@resetEverythingConfirm": {
+    "description": "The ResetDialog artboard: the Coral action, off until the field says RESET."
   }
 }
