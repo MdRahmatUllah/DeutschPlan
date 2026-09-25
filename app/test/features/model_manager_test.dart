@@ -300,6 +300,15 @@ void main() {
   });
 
   group('FR-M4-04 Hy-MT behind its licence', () {
+    test("each model's licence is the one M8 bundles for it, by name", () {
+      expect(licenceFor(ModelRepository.voiceModel)?.kind, 'OpenRAIL-M');
+      expect(
+        licenceFor(ModelRepository.translationModel)?.kind,
+        'Tencent HY Community License',
+      );
+      expect(licenceFor('nothing'), isNull);
+    });
+
     testWidgets('without ENABLE_HYMT_DOWNLOAD its download is off, and says '
         'why; the voice\'s is on', (tester) async {
       final downloads = FakeDownloads();

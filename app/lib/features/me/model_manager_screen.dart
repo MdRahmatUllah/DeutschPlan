@@ -142,12 +142,20 @@ String modelSize(AppLocalizations l10n, int bytes) {
   );
 }
 
-/// The licence M8 bundles for [modelId] (FR-M4-04's link opens its text).
-Licence? licenceFor(String modelId) => switch (modelId) {
-  ModelRepository.voiceModel => modelLicences[0],
-  ModelRepository.translationModel => modelLicences[1],
-  _ => null,
-};
+/// The licence M8 bundles for [modelId] (FR-M4-04's link opens its text),
+/// found by the model's name in M8's list.
+Licence? licenceFor(String modelId) {
+  final name = switch (modelId) {
+    ModelRepository.voiceModel => 'Supertonic 3',
+    ModelRepository.translationModel => 'Hy-MT',
+    _ => null,
+  };
+  if (name == null) return null;
+  for (final licence in modelLicences) {
+    if (licence.name.startsWith(name)) return licence;
+  }
+  return null;
+}
 
 /// M4 · Model manager, *Voice & translation* (`model-manager.md`, the
 /// ModelManager artboards): the phone's storage, then a card per model with
