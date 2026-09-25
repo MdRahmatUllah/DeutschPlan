@@ -10,7 +10,7 @@ Nothing claimed.
 
 ## Next
 
-SQA pass 2: re-list closed issues per milestone, test only those closed after 2026-09-25 00:25, verify merged SQA fixes (open P1s #327, #342).
+Re-list closed issues since 2026-09-25T12:25Z; verify the SQA fixes as they merge (#390 #405 #406); M7 device checks as its issues close.
 
 ## Memory
 
