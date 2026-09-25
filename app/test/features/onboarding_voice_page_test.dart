@@ -398,6 +398,9 @@ class _FakePermission implements NotificationPermission {
     }
     return allowed;
   }
+
+  @override
+  Future<bool> openSettings() async => true;
 }
 
 class _FakeDownloads implements ModelDownloads {

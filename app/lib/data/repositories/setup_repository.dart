@@ -53,6 +53,14 @@ class SetupRepository {
         .write(EnrollmentsCompanion(dailyNew: Value(count)));
   });
 
+  /// M5's study days (#147): the setting, and the open enrollment, which is
+  /// where the plan engine reads them (BR-PLAN-01, -08).
+  Future<void> setStudyDays(int mask) => _db.transaction(() async {
+    await _settings.write(SettingKeys.studyDaysMask, mask);
+    await (_db.update(_db.enrollments)..where((e) => e.completedOn.isNull()))
+        .write(EnrollmentsCompanion(studyDaysMask: Value(mask)));
+  });
+
   /// Writes [choice] as of [today]. Progress — word states, the review log,
   /// days already planned — is not touched: restart setup changes the plan,
   /// not the history (`onboarding.md`).

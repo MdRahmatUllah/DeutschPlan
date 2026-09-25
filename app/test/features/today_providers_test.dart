@@ -282,6 +282,9 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code, completed_at, 
     });
 
     test('Tomorrow is a dry run of openDay(tomorrow) that writes nothing', () async {
+      // Today's recorded study days (#147), which tomorrow's dry run plans
+      // past but must not touch: a Monday, as a mask of its own.
+      await settings.write(SettingKeys.plannedStudyDays, 99);
       await finishTheDay();
       final view = await container.read(todayViewProvider.future);
 
@@ -308,6 +311,7 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code, completed_at, 
         today,
         reason: 'planning did not move on',
       );
+      expect(settings.read(SettingKeys.plannedStudyDays), 99);
     });
 
     test('BR-PLAN-01 it knows when tomorrow is a rest day', () async {
@@ -331,6 +335,41 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code, completed_at, 
       expect(view.minutes, 12);
     });
   });
+
+  test(
+    'BR-PLAN-08 today turned off in M5 is still a study day (#147)',
+    () async {
+      // Today planned from scratch, as every morning, at one new word so the
+      // fixture's three don't run the step out (no step is every day).
+      await db.customStatement(
+        "UPDATE enrollments SET daily_new = 1 WHERE sublevel_code = 'A1.1'",
+      );
+      await db.customStatement(
+        "DELETE FROM plan_items WHERE plan_date = '$today'",
+      );
+      await settings.write(
+        SettingKeys.lastPlannedDate,
+        DateTime.utc(2026, 9, 20),
+      );
+      container
+        ..invalidate(todayPlanProvider)
+        ..invalidate(todayViewProvider);
+      final before = await container.read(todayViewProvider.future);
+      expect(before.isStudyDay, isTrue);
+
+      // Monday, today, off: M5's writer.
+      await container.read(setupRepositoryProvider).setStudyDays(126);
+      container
+        ..invalidate(todayPlanProvider)
+        ..invalidate(todayViewProvider);
+
+      final after = await container.read(todayViewProvider.future);
+      expect(after.step, 'A1.1', reason: 'still the step M5 changed');
+      expect(after.isStudyDay, isTrue);
+      expect(after.newToday.total, before.newToday.total);
+      expect(after.newToday.total, 1);
+    },
+  );
 
   group('#97 a rest day', () {
     setUp(() async {

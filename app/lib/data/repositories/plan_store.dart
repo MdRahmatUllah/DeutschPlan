@@ -275,6 +275,16 @@ ORDER BY plan_date DESC, word_uid
   Future<void> setLastPlannedDate(PlanDate date) =>
       _settings.write(SettingKeys.lastPlannedDate, parsePlanDate(date));
 
+  @override
+  Future<int?> plannedMask() async {
+    final mask = _settings.read(SettingKeys.plannedStudyDays);
+    return mask == 0 ? null : mask;
+  }
+
+  @override
+  Future<void> setPlannedMask(int mask) =>
+      _settings.write(SettingKeys.plannedStudyDays, mask);
+
   /// The step after [sublevelCode] in course order (BR-COURSE-05).
   ///
   /// Ordered by the level first and the sublevel second: `sublevels.ord` runs

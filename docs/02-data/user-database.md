@@ -58,6 +58,7 @@ Created on first launch from `lib/data/db/user_schema.drift`, which is the autho
 | `learner_name` | — | Me |
 | `exam_timer` | 1 | L11 writes it on *Begin exam* (its switch starts from `exam_timer_default`); L12 reads it, fresh or resumed |
 | `last_export` | — | M6 — the day of the last export the share sheet took (`2026-09-20`) |
+| `planned_study_days` | 0 | engine — the study-days mask `last_planned_date`'s day was planned with, so an M5 change is tomorrow's (BR-PLAN-08) |
 
 ## Migrations
 

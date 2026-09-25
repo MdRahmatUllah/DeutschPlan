@@ -170,10 +170,12 @@ class OnboardingPacePage extends ConsumerWidget {
           const SizedBox(height: 8),
           Row(
             children: <Widget>[
-              for (final (index, (short, full)) in _weekdays(l10n).indexed) ...[
+              for (final (index, (short, full)) in studyWeekdays(
+                l10n,
+              ).indexed) ...[
                 if (index > 0) const SizedBox(width: 6),
                 Expanded(
-                  child: _DayToggle(
+                  child: StudyDayToggle(
                     short: short,
                     full: full,
                     on: draft.studyDaysMask & (1 << index) != 0,
@@ -187,27 +189,30 @@ class OnboardingPacePage extends ConsumerWidget {
       ),
     );
   }
-
-  /// Monday first, matching the mask's bit 0 and `DateTime.monday`.
-  static List<(String, String)> _weekdays(AppLocalizations l10n) =>
-      <(String, String)>[
-        (l10n.weekdayShortMon, l10n.weekdayMon),
-        (l10n.weekdayShortTue, l10n.weekdayTue),
-        (l10n.weekdayShortWed, l10n.weekdayWed),
-        (l10n.weekdayShortThu, l10n.weekdayThu),
-        (l10n.weekdayShortFri, l10n.weekdayFri),
-        (l10n.weekdayShortSat, l10n.weekdaySat),
-        (l10n.weekdayShortSun, l10n.weekdaySun),
-      ];
 }
 
+/// The week's (short, full) names, Monday first, matching the mask's bit 0
+/// and `DateTime.monday`. S2 page 4's and M5's day pills (#147).
+List<(String, String)> studyWeekdays(AppLocalizations l10n) =>
+    <(String, String)>[
+      (l10n.weekdayShortMon, l10n.weekdayMon),
+      (l10n.weekdayShortTue, l10n.weekdayTue),
+      (l10n.weekdayShortWed, l10n.weekdayWed),
+      (l10n.weekdayShortThu, l10n.weekdayThu),
+      (l10n.weekdayShortFri, l10n.weekdayFri),
+      (l10n.weekdayShortSat, l10n.weekdaySat),
+      (l10n.weekdayShortSun, l10n.weekdaySun),
+    ];
+
 /// One weekday: Lagoon when it is a study day, an outline when it is not.
-class _DayToggle extends StatelessWidget {
-  const _DayToggle({
+/// S2 page 4's, and M5's (#147).
+class StudyDayToggle extends StatelessWidget {
+  const StudyDayToggle({
     required this.short,
     required this.full,
     required this.on,
     required this.onTap,
+    super.key,
   });
 
   final String short;

@@ -41,6 +41,7 @@ import 'package:deutschplan/features/learn/step_detail_screen.dart';
 import 'package:deutschplan/features/me/me_screen.dart';
 import 'package:deutschplan/features/me/export_import_screen.dart';
 import 'package:deutschplan/features/me/progress_screen.dart';
+import 'package:deutschplan/features/me/reminder_days_screen.dart';
 import 'package:deutschplan/features/me/settings_screen.dart';
 import 'package:deutschplan/features/quiz/quiz_screen.dart';
 import 'package:deutschplan/features/search/add_word_screen.dart';
@@ -457,7 +458,7 @@ class ReminderSettingsRoute extends GoRouteData with $ReminderSettingsRoute {
 
   @override
   Widget build(BuildContext context, GoRouterState state) =>
-      const PlaceholderScreen(title: 'Reminder & days', screen: 'M5');
+      const ReminderDaysScreen();
 }
 
 class ModelsRoute extends GoRouteData with $ModelsRoute {

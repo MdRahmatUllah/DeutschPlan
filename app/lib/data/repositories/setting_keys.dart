@@ -286,6 +286,10 @@ abstract final class SettingKeys {
   /// choice survives Resume and process death (#129, #130).
   static const examTimer = BoolSetting('exam_timer', true);
 
+  /// The study days today was planned with (#147, BR-PLAN-08): M5's change
+  /// is tomorrow's, not today's. 0 until the engine records one.
+  static const plannedStudyDays = IntSetting('planned_study_days', 0);
+
   /// M6's "Last export: 20 Sep" (#148): the day of the last export the
   /// share sheet took. Unset until the first.
   static const lastExport = DateSetting('last_export');
@@ -359,5 +363,6 @@ abstract final class SettingKeys {
     learnerName,
     examTimer,
     lastExport,
+    plannedStudyDays,
   ];
 }

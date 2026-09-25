@@ -465,6 +465,48 @@ void main() {
       }
     });
 
+    test(
+      'BR-PLAN-08: today turned off stays a study day, tomorrow follows',
+      () async {
+        final engine = engineWith();
+        expect((await engine.openDay(monday)).isStudyDay, isTrue);
+
+        // M5 turns Monday off during Monday.
+        store.enrollment = const ActiveStep(
+          sublevelCode: 'A1.1',
+          startedOn: monday,
+          dailyNew: 7,
+          studyDaysMask: 0x1E,
+        );
+
+        final again = await engineWith().openDay(monday);
+        expect(again.isStudyDay, isTrue);
+        expect(again.newToday, hasLength(7));
+        expect(
+          (await engineWith().openDay(addDays(monday, 7))).isStudyDay,
+          isFalse,
+        );
+      },
+    );
+
+    test('BR-PLAN-08: a rest day turned on stays a rest day', () async {
+      final saturday = addDays(monday, 5);
+      expect((await engineWith().openDay(saturday)).isStudyDay, isFalse);
+
+      store.enrollment = const ActiveStep(
+        sublevelCode: 'A1.1',
+        startedOn: monday,
+        dailyNew: 7,
+        studyDaysMask: 0x3F,
+      );
+
+      expect((await engineWith().openDay(saturday)).isStudyDay, isFalse);
+      expect(
+        (await engineWith().openDay(addDays(saturday, 7))).isStudyDay,
+        isTrue,
+      );
+    });
+
     test('revision is still offered on one', () async {
       // BR-PLAN-01: "no new words, no backlog growth, streak preserved;
       // revisions are optional" — offered, not withheld.
@@ -1264,6 +1306,7 @@ class FakeStore implements PlanStore {
   List<RevisionCandidate> candidates = <RevisionCandidate>[];
   List<String> grammarDue = <String>[];
   PlanDate? lastPlanned;
+  int? plannedStudyDays;
 
   /// `date/kind` to the uids planned.
   final Map<String, List<String>> plan = <String, List<String>>{};
@@ -1330,6 +1373,12 @@ class FakeStore implements PlanStore {
 
   @override
   Future<void> setLastPlannedDate(PlanDate date) async => lastPlanned = date;
+
+  @override
+  Future<int?> plannedMask() async => plannedStudyDays;
+
+  @override
+  Future<void> setPlannedMask(int mask) async => plannedStudyDays = mask;
 
   /// The course, in order. `vocabulary` belongs to whichever step is active.
   List<String> course = <String>['A1.1', 'A1.2', 'A2.1'];

@@ -102,6 +102,19 @@ class DryRunPlanStore implements PlanStore {
     _lastPlanned = date;
   }
 
+  int? _plannedMask;
+  bool _plannedMaskSet = false;
+
+  @override
+  Future<int?> plannedMask() async =>
+      _plannedMaskSet ? _plannedMask : _inner.plannedMask();
+
+  @override
+  Future<void> setPlannedMask(int mask) async {
+    _plannedMaskSet = true;
+    _plannedMask = mask;
+  }
+
   @override
   Future<String?> stepAfter(String sublevelCode) =>
       _inner.stepAfter(sublevelCode);

@@ -4,6 +4,7 @@ library;
 import 'package:deutschplan/features/exam/exam_runner_screen.dart';
 import 'package:deutschplan/features/backlog/backlog_screen.dart';
 import 'package:deutschplan/features/me/me_screen.dart';
+import 'package:deutschplan/features/me/reminder_days_screen.dart';
 import 'package:deutschplan/features/me/settings_screen.dart';
 import 'package:deutschplan/features/today/today_screen.dart';
 
@@ -137,7 +138,7 @@ void main() {
 
     testWidgets('a deep stack unwinds one route at a time', (tester) async {
       await pumpApp(tester, at: '/me/settings/reminder');
-      expect(find.text('M5'), findsOneWidget);
+      expect(find.byType(ReminderDaysScreen), findsOneWidget);
 
       await pressBack(tester);
       expect(find.byType(SettingsScreen), findsOneWidget);

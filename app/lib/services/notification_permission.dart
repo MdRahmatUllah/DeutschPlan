@@ -10,6 +10,10 @@ abstract interface class NotificationPermission {
   /// app may post. A learner who has already refused gets the answer without
   /// the dialog — the platform does not ask twice.
   Future<bool> request();
+
+  /// The phone's settings for this app: where a learner who said no can
+  /// allow notifications after all (FR-M5-02). False when they can't open.
+  Future<bool> openSettings();
 }
 
 class PlatformNotificationPermission implements NotificationPermission {
@@ -18,4 +22,7 @@ class PlatformNotificationPermission implements NotificationPermission {
   @override
   Future<bool> request() async =>
       (await Permission.notification.request()).isGranted;
+
+  @override
+  Future<bool> openSettings() => openAppSettings();
 }
