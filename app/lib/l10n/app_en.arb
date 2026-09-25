@@ -4631,5 +4631,167 @@
   "addWordSaveFailed": "Couldn't save the word. Nothing changed.",
   "@addWordSaveFailed": {
     "description": "R2: the toast when Save fails; the form stays as it was."
+  },
+  "examResultPassed": "Bestanden!",
+  "@examResultPassed": {
+    "description": "L13 badge when the paper passed (BR-EXAM-04). German on purpose, as the artboard has it."
+  },
+  "examResultFailed": "Noch nicht",
+  "@examResultFailed": {
+    "description": "L13 badge when the paper did not pass. German on purpose, as the artboard has it."
+  },
+  "examResultPercent": "{percent}%",
+  "@examResultPercent": {
+    "description": "L13 score as a percentage, rounded down.",
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "examResultPoints": "{points} of {max} points",
+  "@examResultPoints": {
+    "description": "L13 points under the percentage (BR-EXAM-03).",
+    "placeholders": {
+      "points": {
+        "type": "String"
+      },
+      "max": {
+        "type": "String"
+      }
+    }
+  },
+  "examResultPassMark": "pass {percent}%",
+  "@examResultPassMark": {
+    "description": "L13 label under the pass-mark tick on the score bar (BR-EXAM-04).",
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "examResultLine": "{step} · Mock {mock} · {time}",
+  "@examResultLine": {
+    "description": "L13 sub-line: the step, the mock and the time the paper ran.",
+    "placeholders": {
+      "step": {
+        "type": "String"
+      },
+      "mock": {
+        "type": "int"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "examResultCompare": "{delta} points vs attempt {number} ({percent}%)",
+  "@examResultCompare": {
+    "description": "L13 comparison with the previous finished attempt of the same step (FR-L13-01); delta is signed, e.g. +15.",
+    "placeholders": {
+      "delta": {
+        "type": "String"
+      },
+      "number": {
+        "type": "int"
+      },
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "examResultBySection": "By section",
+  "@examResultBySection": {
+    "description": "L13 heading over the per-section list."
+  },
+  "examResultSectionPoints": "{points} / {max}",
+  "@examResultSectionPoints": {
+    "description": "L13 a section's points out of its maximum.",
+    "placeholders": {
+      "points": {
+        "type": "String"
+      },
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "examResultSelfAssessed": "self-assessed",
+  "@examResultSelfAssessed": {
+    "description": "L13 note on Writing and Speaking, whose rubric the learner ticks; tapping opens it (FR-L13-03)."
+  },
+  "examResultRubricHint": "Opens the rubric to tick",
+  "@examResultRubricHint": {
+    "description": "L13 screen-reader hint on a Writing or Speaking row."
+  },
+  "examResultRubricIntro": "Tick what you managed. The score updates as you tick.",
+  "@examResultRubricIntro": {
+    "description": "L13 rubric sheet line (FR-L13-03)."
+  },
+  "examResultReview": "Review answers",
+  "@examResultReview": {
+    "description": "L13 primary button: to L14."
+  },
+  "examResultAddMissed": "{count, plural, =0{No missed words} =1{Add missed words to revision · 1} other{Add missed words to revision · {count}}}",
+  "@examResultAddMissed": {
+    "description": "L13 button (FR-L13-02): every missed word rated Again, due tomorrow.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "examResultAdded": "{count, plural, =1{1 word added to revision · due tomorrow} other{{count} words added to revision · due tomorrow}}",
+  "@examResultAdded": {
+    "description": "L13 toast after Add missed words to revision.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "examResultAnotherMock": "Try another mock",
+  "@examResultAnotherMock": {
+    "description": "L13 button: to the step's exam hub (L10)."
+  },
+  "examResultBackToStep": "Back to step",
+  "@examResultBackToStep": {
+    "description": "L13 button: to the step (L2)."
+  },
+  "examResultClose": "Close",
+  "@examResultClose": {
+    "description": "L13 close button: to the step's exam hub."
+  },
+  "examWritingRubricTask": "Task covered — everything the task asked",
+  "@examWritingRubricTask": {
+    "description": "L13 Writing rubric line, 0.5 points (FR-L12W-03)."
+  },
+  "examWritingRubricStructure": "Structure — a clear start, middle and end",
+  "@examWritingRubricStructure": {
+    "description": "L13 Writing rubric line, 0.5 points (FR-L12W-03)."
+  },
+  "examResultSectionLabel": "{section}, {points}",
+  "@examResultSectionLabel": {
+    "description": "L13 screen-reader label of a section row: its name and points.",
+    "placeholders": {
+      "section": {
+        "type": "String"
+      },
+      "points": {
+        "type": "String"
+      }
+    }
+  },
+  "examResultTaskLabel": "{section}, {points}, self-assessed",
+  "@examResultTaskLabel": {
+    "description": "L13 screen-reader label of the Writing or Speaking row, which opens its rubric.",
+    "placeholders": {
+      "section": {
+        "type": "String"
+      },
+      "points": {
+        "type": "String"
+      }
+    }
   }
 }

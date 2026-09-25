@@ -16,4 +16,14 @@ Filter chips All · 40, Wrong only · 9, Flagged · 3. Cards per question: "Q3 �
 - FR-L13-03 Rubric ticks for Writing can be edited here if not done in the runner; editing recomputes the score.
 - FR-L14-01 Explanations: word items → first example; grammar items → topic rule with link; articles → rule-of-thumb from the grammar content when available.
 
+## Details L13 settles (#135)
+
+- **Where it is.** L12 shows L13 in the paper's place after the submit, in the same route (`/exam/:attemptId`), and L14 in L13's. A finished attempt opened again (a deep link, a restore) opens on L13. Close (a back arrow on Android, a cross on iOS) and *Try another mock* go to the step's exam hub (L10, L2's Exams tab); *Back to step* goes to L2.
+- **The score.** The percentage is rounded down, so 59.9 % never reads as the 60 % that passes. Points show a half when Writing's rubric adds one ("36.5"). "Bestanden!" on Lime (`easy`) or "Noch nicht" on Coral (`again`) follows the attempt's `passed`. The pass-mark tick sits at `exam_pass_percent`. No artboard draws the fail state; it is the pass layout on Coral, with a cross in the badge.
+- **The comparison.** It is against the step's previous *finished* attempt, of any mock, by `finished_at`. Its number is its place among the step's finished attempts ("vs attempt 1"). An abandoned or unfinished attempt is never compared. A first attempt has no comparison.
+- **The sections.** They follow BR-EXAM-03's order, each with its points out of its maximum (1 an item, 4 a task). The bar is Lime whatever the result.
+- **The rubric** (FR-L13-03). Writing's and Speaking's rows read "self-assessed ›" and open their rubric in a sheet: Writing's two ticks (task covered · structure, 0.5 each), Speaking's four as the runner left them. Each tick is written and the paper graded again at once, with the submit's finish time kept, so the score, the badge and `passed` follow.
+- **Missed words** (FR-L13-02). A word item (every section but Grammar, Writing and Speaking) that scored under its point is missed, once per word. *Add missed words to revision · 9* rates each Again (source `exam`) and makes it due tomorrow, once; then a toast. With none missed the button is disabled.
+- **Motion.** The badge scales in over the first third of 1.2 s with one pulse of its halo, and stands still with reduce motion.
+
 **Tests.** scoring and pass; missed-words rating; goldens pass/fail.

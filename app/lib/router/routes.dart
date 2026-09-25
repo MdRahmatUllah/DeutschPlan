@@ -28,6 +28,7 @@ import 'package:deutschplan/router/deep_links.dart';
 import 'package:deutschplan/features/today/today_screen.dart';
 import 'package:deutschplan/features/backlog/backlog_screen.dart';
 import 'package:deutschplan/features/day_complete/day_complete_screen.dart';
+import 'package:deutschplan/features/exam/exam_results_screen.dart';
 import 'package:deutschplan/features/exam/exam_runner_screen.dart';
 import 'package:deutschplan/features/learn/categories_screen.dart';
 import 'package:deutschplan/features/learn/category_words_screen.dart';
@@ -879,15 +880,24 @@ class ExamRoute extends GoRouteData with $ExamRoute {
   Widget build(BuildContext context, GoRouterState state) => ExamRunnerScreen(
     attemptId: attemptId,
     // FR-L12-04: the runner asks (back and its pause button), abandons the
-    // attempt, then leaves for its step's exam hub (L10, L2's Exams tab). `canPop: false` in its guard is also what
-    // turns off the iOS edge swipe for this route (#69).
+    // attempt, then leaves for its step's exam hub (L10, L2's Exams tab).
+    // `canPop: false` in its guard is also what turns off the iOS edge swipe
+    // for this route (#69).
     onLeft: (step) =>
         LearnStepRoute(code: step, tab: StepTab.exams).go(context),
-    // ponytail: L13 (#135) takes over from here.
-    results: (_) => PlaceholderScreen(
-      title: 'Exam results',
-      screen: 'L13',
-      detail: 'attempt $attemptId',
+    // L13 in the paper's place, then L14 in L13's: one route, as
+    // navigation.md has `/exam/:attemptId` (L12 → L13 → L14).
+    results: (_) => ExamResultsScreen(
+      attemptId: attemptId,
+      onHub: (step) =>
+          LearnStepRoute(code: step, tab: StepTab.exams).go(context),
+      onStep: (step) => LearnStepRoute(code: step).go(context),
+      // ponytail: L14 (#136) takes over from here.
+      review: (_) => PlaceholderScreen(
+        title: 'Exam review',
+        screen: 'L14',
+        detail: 'attempt $attemptId',
+      ),
     ),
   );
 }
