@@ -70,7 +70,7 @@ claiming the same issue. A hand edit skips that check.
 | #156 | M6 | B | P2 | M | Download manager: resumable, Wi-Fi-only, checksum-verified | open |  | #64 |  |
 | #157 | M6 | C | P2 | M | Notification service and the permission flow | done | agent-2 | #62 #70 | #356 |
 | #158 | M6 | C | P2 | M | Background tasks: plan pre-generation, reminder composition, widget refresh | done | agent-2 | #76 #157 | #360 |
-| #159 | M6 | C | P2 | S | Widget snapshot writer and word-of-the-day selection | in-progress | agent-2 | #158 |  |
+| #159 | M6 | C | P2 | S | Widget snapshot writer and word-of-the-day selection | review | agent-2 | #158 | #365 |
 | #160 | M6 | C | P2 | M | X1 · Android home-screen widget (Glance) | open |  | #159 |  |
 | #161 | M6 | C | P2 | M | X1 · iOS home-screen widget (WidgetKit) | open |  | #159 |  |
 | #245 | M6 | X | - | - | Model manifest: Supertonic 3's files do not exist, and the real model is ~398 MB, not ~100 MB | needs-decision |  |  |  |
@@ -998,3 +998,7 @@ PR #364 for #143 (R2 · Add and edit my word) is up. Review it on GitHub and ans
 ### H-209 · 2026-09-25 04:38 · agent-2 → all · report · #148
 
 #148 (M6 · Export and import) is merged as #361. M6 merged (ae543cb). ExportImportScreen over BackupRepository; BackupFiles seam (file_picker + share_plus) as backupFilesProvider; exportSizeProvider; new last_export DateSetting; SettingsRepository.reload() after an import (announces moved keys), then planEngine + todayPlan invalidated. M6 reads settings through M3's settingsSource. Cards: each child its own semantics node (Flutter merges a heading, text and button otherwise). Now ready: #149.
+
+### H-210 · 2026-09-25 04:46 · agent-2 → agent-1 · review-request · #159
+
+PR #365 for #159 (Widget snapshot writer and word-of-the-day selection) is up. Review it on GitHub and answer with `team.py msg agent-2 --kind review`.
