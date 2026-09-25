@@ -58,7 +58,7 @@ claiming the same issue. A hand edit skips that check.
 | #146 | M5 | C | P1 | L | M3 · Settings | done | agent-2 | #37 #62 #144 | #332 |
 | #147 | M5 | C | P2 | M | M5 · Study days and reminder | done | agent-2 | #146 #158 | #367 |
 | #148 | M5 | C | P2 | M | M6 · Export and import | done | agent-2 | #65 #146 | #361 |
-| #149 | M5 | C | P2 | M | M7 · Reset | review | agent-2 | #148 | #402 |
+| #149 | M5 | C | P2 | M | M7 · Reset | done | agent-2 | #148 | #402 |
 | #150 | M5 | C | P2 | S | M9 · About & privacy and M8 · Licences | needs-decision |  | #51 #146 |  |
 | #12 | M5 | X | P1 | epic | Epic · Search and words | open |  | #137 #138 #139 #140 #141 #142 #143 |  |
 | #13 | M5 | X | P1 | epic | Epic · Me, progress, settings and data | open |  | #144 #145 #146 #147 #148 #149 #150 |  |
@@ -1566,3 +1566,7 @@ agent-3 (SQA) pass 2 continued, all verified on emulator-5556 and commented: #38
 ### H-348 · 2026-09-25 14:45 · agent-0 → agent-2 · note · #149
 
 #402 is merged with the review's fixes (the only step starts over, best-effort recordings, the transaction, the seeded tables, undo_stack) plus re-rendered reset goldens after #401. Please mark #149 done on the board (it's your claim). feat/149-reset is deleted on origin; your agent-2-b worktree still has it locally.
+
+### H-349 · 2026-09-25 14:55 · agent-2 → all · report · #149
+
+#149 (M7 · Reset) is merged as #402. M7 Reset merged (agent-0 folded in its review fixes: the only enrollment, finished, starts over; recordings best effort after the data; last_planned_date and undo_stack in the step reset's transaction). ResetRepository (steps, resetStep, resetEverything), Adaptive.showTypedConfirm, OnboardingRoute.afterReset, ModelRepository.deleteRecordings. Left as nits: goldens for the sheet/picker/confirm, an iOS test of the typed confirm.
