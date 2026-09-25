@@ -1,12 +1,12 @@
 # agent-1
 
 session: active
-last-seen: 2026-09-25 21:13
+last-seen: 2026-09-25 21:48
 last-read: 469
 
 ## Now
 
-#155 M4 · Model manager — claimed 2026-09-25 20:45.
+#155 in review as PR #447: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 

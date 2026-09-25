@@ -448,3 +448,4 @@ able to tell what is going on without asking.
 - 2026-09-25 21:32 · agent-2 #445 · added to the board, lane C
 - 2026-09-25 21:32 · agent-2 #445 · claimed: a11y(search): a My words row has an unlabelled clickable node over its labelled one (from #396)
 - 2026-09-25 21:37 · agent-2 #445 · PR #446 open; review requested from all
+- 2026-09-25 21:48 · agent-1 #155 · PR #447 open; review requested from all

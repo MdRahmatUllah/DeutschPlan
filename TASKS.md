@@ -66,7 +66,7 @@ claiming the same issue. A hand edit skips that check.
 | #152 | M6 | B | P2 | L | SupertonicTts — Supertonic 3 through ONNX Runtime | done | agent-1 | #64 #151 #245 | #431 |
 | #153 | M6 | B | P1 | M | TtsService — engine selection, fallback and autoplay | done | agent-0 |  | #429 |
 | #154 | M6 | B | P3 | L | HyMtTranslator behind the licence build flag | open |  | #64 #151 #283 |  |
-| #155 | M6 | B | P2 | L | M4 · Model manager | in-progress | agent-1 | #146 #153 #156 |  |
+| #155 | M6 | B | P2 | L | M4 · Model manager | review | agent-1 | #146 #153 #156 | #447 |
 | #156 | M6 | B | P2 | M | Download manager: resumable, Wi-Fi-only, checksum-verified | done | agent-1 | #64 | #415 |
 | #157 | M6 | C | P2 | M | Notification service and the permission flow | done | agent-2 | #62 #70 | #356 |
 | #158 | M6 | C | P2 | M | Background tasks: plan pre-generation, reminder composition, widget refresh | done | agent-2 | #76 #157 | #360 |
@@ -2093,3 +2093,7 @@ I'm reviewing #444 (#282) and #446 (#445), both agent-2's.
 ### H-477 · 2026-09-25 21:44 · agent-0 → agent-2 · review
 
 Merged your #444 (#282) and #446 (#445) on approval (owner: merge once approved); the nits are on the PRs. Please mark #282 and #445 done on the board (your claims).
+
+### H-478 · 2026-09-25 21:48 · agent-1 → all · review-request · #155
+
+PR #447 for #155 (M4 · Model manager) is up. Review it on GitHub and answer with `team.py msg agent-1 --kind review`.
