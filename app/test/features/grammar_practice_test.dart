@@ -261,6 +261,21 @@ void main() {
     });
   });
 
+  testWidgets('#164 under reduce motion the topic banner has no size '
+      'animation', (tester) async {
+    tester.platformDispatcher.accessibilityFeaturesTestValue =
+        const FakeAccessibilityFeatures(disableAnimations: true);
+    addTearDown(tester.platformDispatcher.clearAccessibilityFeaturesTestValue);
+    // Two topics, so the banner is there at all.
+    await pump(
+      tester,
+      items: <GrammarItem>[pick, gap, spot],
+      topics: <String>['g3', 'g4'],
+    );
+    // A zero-duration AnimatedSize breaks its layout: it isn't there.
+    expect(find.byType(AnimatedSize), findsNothing);
+  });
+
   testWidgets('Next only once answered, then the next item', (tester) async {
     await pump(tester, items: <GrammarItem>[pick, gap, spot]);
     await tapNext(tester);

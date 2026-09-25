@@ -182,6 +182,35 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code) VALUES
       expect(shift.transform.getTranslation().x, 0);
     });
 
+    testWidgets('#164 under reduce motion a short drag is back at once', (
+      tester,
+    ) async {
+      await pump(tester, swipe: true);
+      tester.platformDispatcher.accessibilityFeaturesTestValue =
+          const FakeAccessibilityFeatures(disableAnimations: true);
+      addTearDown(
+        tester.platformDispatcher.clearAccessibilityFeaturesTestValue,
+      );
+      await tester.pump();
+      final gesture = await tester.startGesture(
+        tester.getCenter(find.byType(StudyWordCard)),
+      );
+      await gesture.moveBy(const Offset(-20, 0));
+      await gesture.moveBy(const Offset(-20, 0));
+      await tester.pump();
+      await gesture.up();
+      await tester.pump();
+      final shift = tester.widget<Transform>(
+        find
+            .descendant(
+              of: find.byType(StudySwipeToRate),
+              matching: find.byType(Transform),
+            )
+            .first,
+      );
+      expect(shift.transform.getTranslation().x, 0, reason: 'no spring');
+    });
+
     testWidgets('a fling counts, however short', (tester) async {
       final container = await pump(tester, swipe: true);
       await tester.runAsync(() async {

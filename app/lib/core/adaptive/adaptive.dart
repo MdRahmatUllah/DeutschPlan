@@ -2,6 +2,7 @@ import 'dart:math' as math;
 
 import 'package:cupertino_ui/cupertino_ui.dart' as cupertino;
 import 'package:deutschplan/core/theme/dp_surface.dart';
+import 'package:deutschplan/core/theme/glass_capability.dart';
 import 'package:deutschplan/core/theme/dp_tokens.dart';
 import 'package:deutschplan/core/typography/dp_text.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
@@ -529,7 +530,13 @@ class _AdaptiveTabBarState<T extends Object> extends State<AdaptiveTabBar<T>>
   @override
   void didUpdateWidget(AdaptiveTabBar<T> old) {
     super.didUpdateWidget(old);
-    if (_controller.index != _index) _controller.animateTo(_index);
+    if (_controller.index == _index) return;
+    // #164: reduce motion moves the indicator without sliding it.
+    if (MediaQuery.disableAnimationsOf(context)) {
+      _controller.index = _index;
+    } else {
+      _controller.animateTo(_index);
+    }
   }
 
   @override
@@ -659,6 +666,9 @@ abstract final class Adaptive {
       // A Cupertino popup has no Material under it, and a sheet's buttons,
       // fields and text styles need one: without it every line came out with
       // the yellow "no Material" underline and a DpButton threw (#122).
+      // ponytail: the Cupertino popup slides in even under reduce motion (it
+      // takes no animation style, #164); a PopupRoute of our own if a
+      // learner or the review asks for it.
       return cupertino.showCupertinoModalPopup<T>(
         context: context,
         builder: (sheetContext) => Material(
@@ -670,6 +680,10 @@ abstract final class Adaptive {
 
     return showModalBottomSheet<T>(
       context: context,
+      // #164: reduce motion shows the sheet without sliding it up.
+      sheetAnimationStyle: MediaQuery.disableAnimationsOf(context)
+          ? AnimationStyle.noAnimation
+          : null,
       // Over the tab bar, as the Cupertino popup already is and the
       // artboards draw it: a sheet on a tab's own navigator left the bar
       // uncovered and live under the scrim.
@@ -729,13 +743,20 @@ abstract final class Adaptive {
           ),
         ),
       ),
-      transitionBuilder: (_, animation, _, child) => SlideTransition(
-        position: Tween<Offset>(
-          begin: const Offset(1, 0),
-          end: Offset.zero,
-        ).animate(CurvedAnimation(parent: animation, curve: Curves.easeOut)),
-        child: child,
-      ),
+      // #164: reduce motion fades the pane in rather than sliding it.
+      transitionBuilder: (paneContext, animation, _, child) =>
+          MediaQuery.disableAnimationsOf(paneContext)
+          ? FadeTransition(opacity: animation, child: child)
+          : SlideTransition(
+              position:
+                  Tween<Offset>(
+                    begin: const Offset(1, 0),
+                    end: Offset.zero,
+                  ).animate(
+                    CurvedAnimation(parent: animation, curve: Curves.easeOut),
+                  ),
+              child: child,
+            ),
     );
   }
 
@@ -935,7 +956,13 @@ class AdaptiveNavBar extends StatelessWidget {
       return cupertino.CupertinoTabBar(
         currentIndex: currentIndex,
         onTap: onSelected,
-        backgroundColor: tokens.surface.card,
+        // #164: the bar blurs a see-through colour itself; where glass
+        // falls back (reduce transparency among the reasons) it gets the
+        // card over the paper, opaque, as every DpSurface does.
+        backgroundColor:
+            tokens.isGlass && !GlassCapabilityScope.blurAllowed(context)
+            ? Color.alphaBlend(tokens.surface.card, tokens.surface.paper)
+            : tokens.surface.card,
         activeColor: tokens.color.ink,
         inactiveColor: tokens.color.textSecondary,
         items: <cupertino.BottomNavigationBarItem>[

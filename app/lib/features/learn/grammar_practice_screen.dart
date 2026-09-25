@@ -387,24 +387,28 @@ class _TopicBanner extends StatelessWidget {
   Widget build(BuildContext context) {
     final tokens = context.tokens;
     final still = MediaQuery.disableAnimationsOf(context);
-    return AnimatedSize(
-      duration: still ? Duration.zero : const Duration(milliseconds: 220),
-      child: visible
-          ? Padding(
-              padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
-              child: Semantics(
-                liveRegion: true,
-                child: DpSurface(
-                  kind: DpSurfaceKind.tint(tokens.color.accent),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 8,
-                  ),
-                  child: DpText(label, role: DpTextRole.label),
+    final Widget shown = visible
+        ? Padding(
+            padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
+            child: Semantics(
+              liveRegion: true,
+              child: DpSurface(
+                kind: DpSurfaceKind.tint(tokens.color.accent),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 8,
                 ),
+                child: DpText(label, role: DpTextRole.label),
               ),
-            )
-          : const SizedBox(width: double.infinity),
+            ),
+          )
+        : const SizedBox(width: double.infinity);
+    // #164: reduce motion shows it without the size animation; a zero
+    // duration breaks AnimatedSize's layout (as study_card.dart says).
+    if (still) return shown;
+    return AnimatedSize(
+      duration: const Duration(milliseconds: 220),
+      child: shown,
     );
   }
 }

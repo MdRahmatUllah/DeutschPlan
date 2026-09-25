@@ -571,9 +571,19 @@ class OnboardingRoute extends GoRouteData with $OnboardingRoute {
   /// back / edge swipe goes to the previous page". `CupertinoPage` gives both
   /// on both platforms; Android's default zoom transition gives neither the
   /// slide nor the swipe.
+  ///
+  /// Under reduce motion a cross-fade instead (#164): back is still the
+  /// button and the system's.
   @override
   Page<void> buildPage(BuildContext context, GoRouterState state) =>
-      CupertinoPage<void>(key: state.pageKey, child: build(context, state));
+      MediaQuery.disableAnimationsOf(context)
+      ? CustomTransitionPage<void>(
+          key: state.pageKey,
+          child: build(context, state),
+          transitionsBuilder: (_, animation, _, child) =>
+              FadeTransition(opacity: animation, child: child),
+        )
+      : CupertinoPage<void>(key: state.pageKey, child: build(context, state));
 
   /// `:page` is `1`…`5` for S2, or `placement` for S3 — one route because
   /// `navigation.md` gives them one path, and the placement check is reached

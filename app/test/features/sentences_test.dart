@@ -14,6 +14,7 @@ import 'package:deutschplan/main.dart'
     show appLocalizationsDelegates, supportedLocales;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
+import 'package:flutter/semantics.dart' show SemanticsAction;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
@@ -278,6 +279,40 @@ INSERT INTO sentence_log (word_uid, ord, shown_on, self_rating) VALUES
       );
       await tester.pumpAndSettle();
       expect(find.text(l10n.sentencesPlace(2, 3)), findsOneWidget);
+    });
+
+    testWidgets('#164 every swipe has a button: the dots page either way '
+        'for a screen reader or a switch', (tester) async {
+      final semantics = tester.ensureSemantics();
+      await pump(tester);
+      tester.semantics.increase(
+        find.semantics.byAction(SemanticsAction.increase),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text(l10n.sentencesPlace(2, 3)), findsOneWidget);
+      tester.semantics.decrease(
+        find.semantics.byAction(SemanticsAction.decrease),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text(l10n.sentencesPlace(1, 3)), findsOneWidget);
+      semantics.dispose();
+    });
+
+    testWidgets('#164 under reduce motion the dots change without moving', (
+      tester,
+    ) async {
+      await pump(tester);
+      tester.platformDispatcher.accessibilityFeaturesTestValue =
+          const FakeAccessibilityFeatures(disableAnimations: true);
+      addTearDown(
+        tester.platformDispatcher.clearAccessibilityFeaturesTestValue,
+      );
+      await tester.pump();
+      for (final dot in tester.widgetList<AnimatedContainer>(
+        find.byType(AnimatedContainer),
+      )) {
+        expect(dot.duration, Duration.zero);
+      }
     });
 
     testWidgets('the last answer, the day not complete: back to Today', (
