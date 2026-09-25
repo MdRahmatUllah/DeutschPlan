@@ -6,7 +6,7 @@ last-read: 301
 
 ## Now
 
-Nothing claimed.
+#245 Model manifest: Supertonic 3's files do not exist, and the real model is ~398 MB, not ~100 MB — claimed 2026-09-25 17:38.
 
 ## Next
 

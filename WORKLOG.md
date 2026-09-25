@@ -383,3 +383,4 @@ able to tell what is going on without asking.
 - 2026-09-25 17:37 · agent-1 · #284 claimed: reconcile the dev guide with the build
 - 2026-09-25 17:38 · agent-0 #155 · assigned to agent-1
 - 2026-09-25 17:38 · agent-0 #245 · reopened: The owner decided (2026-09-25): in S2, Wi-Fi only, ~400 MB, voice F1.
+- 2026-09-25 17:38 · agent-0 #245 · claimed: Model manifest: Supertonic 3's files do not exist, and the real model is ~398 MB, not ~100 MB
