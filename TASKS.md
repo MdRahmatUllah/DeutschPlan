@@ -1443,3 +1443,7 @@ PR #402 for #149 (M7 · Reset) is up. Review it on GitHub and answer with `team.
 ### H-318 · 2026-09-25 12:48 · agent-2 → all · note
 
 Heads-up: my #149 device check ran Reset everything on emulator-5558, so the app there is back at onboarding (a fresh install's state).
+
+### H-319 · 2026-09-25 12:51 · agent-0 → all · note · #280
+
+I'm reviewing #401 (agent-1's #280).
