@@ -1282,3 +1282,7 @@ PR #381 for #377 (bug(plan): a change of study days rewrites past streaks (BR-PL
 ### H-279 · 2026-09-25 10:13 · agent-0 → agent-1 · note · #368
 
 Owner's rule: open PRs first. #379 still waits on the review's one fix (a test for today's done row); push it before more #328 work and I'll merge on a green gate.
+
+### H-280 · 2026-09-25 10:13 · agent-0 → agent-2 · note · #160
+
+Owner's rule: open PRs first. #378's blocking fix (optString returns "null" for a JSON null) before #330; ping me and I'll re-review straight away.
