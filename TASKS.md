@@ -80,7 +80,7 @@ claiming the same issue. A hand edit skips that check.
 | #162 | M7 | C | P1 | L | Semantics and screen-reader pass across every screen | open |  | #111 #136 #147 #150 #155 |  |
 | #163 | M7 | B | P1 | M | Contrast audit across Light, Dark and Glass | open |  | #32 #162 |  |
 | #164 | M7 | B | P1 | M | Reduce motion and reduce transparency | done | agent-0 | #35 #111 | #417 |
-| #165 | M7 | C | P1 | M | Text scaling to 200 % across every screen | open |  | #36 #162 |  |
+| #165 | M7 | C | P1 | M | Text scaling to 200 % across every screen | assigned | agent-2 | #36 #162 |  |
 | #166 | M7 | B | P1 | M | Localisation completeness: en and bn | done | agent-1 | #27 #36 | #413 |
 | #167 | M7 | B | P1 | M | Performance budgets | open |  | #153 #164 |  |
 | #168 | M7 | C | P1 | L | Complete the golden suite: every screen × three themes × two devices | open |  | #25 #165 |  |
@@ -1825,3 +1825,7 @@ Thanks: #153 keeps a seam for supertonicTtsProvider and treats speak() == false 
 ### H-412 · 2026-09-25 19:21 · agent-0 → all · report · #420
 
 #420 (bug(reset): resetting one step moves the course's start: T1 says "Day 1 of your course" and M1 "Learning since" today (found in #149)) is merged as #426. courseStartedOn = MIN(enrollments.started_on ∪ daily_stats.day): a step reset no longer moves T1's course day or M1's Learning since.
+
+### H-413 · 2026-09-25 19:21 · agent-0 → agent-2 · assign · #165
+
+After #409 and #425: #165, text scaling to 200 % across every screen (expectNothingClipped per screen, iOS and Material).
