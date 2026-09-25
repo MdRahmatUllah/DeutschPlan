@@ -26,9 +26,9 @@ REPO = Path(__file__).resolve().parents[2]
 SEED = REPO / "content" / "interference_tips.csv"
 
 
-def word(german: str, uid: str = "u1") -> Word:
+def word(german: str, uid: str = "u1", pos: str | None = None) -> Word:
     w = Word(
-        source_file="f", row=1, german=german, english="x", level="A1"
+        source_file="f", row=1, german=german, english="x", level="A1", pos=pos
     )
     w.uid = uid
     return w
@@ -168,6 +168,29 @@ class TestMatching:
         resolved, _ = resolve_tips(tips, words)
         assert len(resolved) == 1
 
+    def test_a_word_class_tag_keeps_a_rule_to_its_class(self):
+        """#321: "Every -chen noun is das" is false on *versuchen*, and a
+        separable-prefix rule is false on *Überraschung*."""
+        words = [
+            word("Mädchen", "u1", "noun"),
+            word("versuchen", "u2", "verb"),
+            word("übersetzen", "u3", "verb"),
+            word("Überraschung", "u4", "noun"),
+            word("übermorgen", "u5", "adv"),
+        ]
+        chen = _tip("pattern", "chen$", "chen", tags="gender")
+        uber = _tip("pattern", "^über", "über", tags="case;separable")
+        resolved, _ = resolve_tips([chen, uber], words)
+        assert {(r.tip_en, r.word_uid) for r in resolved} == {
+            ("chen", "u1"),
+            ("über", "u3"),
+        }
+
+    def test_an_untagged_tip_lands_on_any_word_class(self):
+        words = [word("seit", "u1", "prep"), word("seitdem", "u2", "conj")]
+        resolved, _ = resolve_tips([_tip("pattern", "^seit", tags="case")], words)
+        assert len(resolved) == 2
+
     def test_two_different_tips_on_one_word_both_land(self):
         words = [word("Haus", "u1")]
         tips = [_tip("german", "Haus", "first"), _tip("german", "Haus", "second")]
@@ -186,6 +209,13 @@ class TestWarnings:
         # a regex with a typo. Either way the author expected to see it.
         _, warnings = resolve_tips([_tip("uid", "gone")], [word("Haus")])
         assert "will not appear" in warnings[0]
+
+    def test_a_tip_its_word_class_leaves_nothing_for_is_reported(self):
+        _, warnings = resolve_tips(
+            [_tip("pattern", "chen$", tags="gender")],
+            [word("versuchen", "u1", "verb")],
+        )
+        assert len(warnings) == 1
 
     def test_a_matching_tip_produces_no_warning(self):
         _, warnings = resolve_tips([_tip("german", "Haus")], [word("Haus")])
@@ -256,7 +286,9 @@ def test_the_seed_tips_reach_words_in_a_real_build(tmp_path):
         connection.close()
 
 
-def _tip(match_type: str, match: str, tip_en: str = "a tip"):
+def _tip(
+    match_type: str, match: str, tip_en: str = "a tip", tags: str | None = None
+):
     from pipeline_steps import Tip
 
     return Tip(
@@ -264,6 +296,44 @@ def _tip(match_type: str, match: str, tip_en: str = "a tip"):
         match=match,
         tip_en=tip_en,
         tip_bn="একটি টিপ",
-        tags=None,
+        tags=tags,
         row=2,
     )
+
+
+class TestTheShippedCourse:
+    """#321, over the content.db that ships."""
+
+    DB = REPO / "app" / "assets" / "db" / "content.db"
+
+    def test_no_word_class_rule_is_on_another_class(self):
+        import sqlite3
+
+        from verify_content import check_tips_fit_their_word_class
+
+        db = sqlite3.connect(self.DB)
+        try:
+            assert check_tips_fit_their_word_class(db, SEED) == []
+        finally:
+            db.close()
+
+    def test_versuchen_has_no_tip_and_das_maedchen_keeps_its_own(self):
+        import sqlite3
+
+        db = sqlite3.connect(self.DB)
+        try:
+
+            def tips(german: str) -> list[str]:
+                return [
+                    tip
+                    for (tip,) in db.execute(
+                        "SELECT t.tip_en FROM interference_tips t "
+                        "JOIN words w ON w.uid = t.word_uid WHERE w.german = ?",
+                        (german,),
+                    )
+                ]
+
+            assert tips("versuchen") == []
+            assert any('"-chen"' in tip for tip in tips("Mädchen"))
+        finally:
+            db.close()

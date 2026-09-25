@@ -61,7 +61,7 @@ Grammar sheet, same contract:
 - **PIPE-05** Cells beginning with `=`, `-`, `+` or `@` are stored as text (Excel would treat them as formulas); the tool warns.
 - **PIPE-06** Example lines pair DE[i] with EN[i]; an unmatched DE line gets a null translation.
 - **PIPE-07** `content_version` = build timestamp `YYYYMMDDHHMM`; also written to `content_manifest.json` with per-step counts and the uid list, which CI diffs against the previous build to produce the update summary shown on Today (BR-CONTENT-03).
-- **PIPE-08** `verify_content.py` fails the build if: a required sheet/column is missing, a step has 0 words, a word has no example, a uid collision remains, or FTS tables are empty.
+- **PIPE-08** `verify_content.py` fails the build if: a required sheet/column is missing, a step has 0 words, a word has no example, a uid collision remains, FTS tables are empty, or a `gender`/`separable` tip is on a word of another class (#321).
 
 ## Outputs
 
@@ -77,4 +77,4 @@ Grammar sheet, same contract:
 
 ## Interference tips
 
-`content/interference_tips.csv` columns: `match_type (uid|german|pattern), match, tip_en, tip_bn, tags`. Patterns are regexes over `german` (e.g. `^bekommen$`, `^seit\b`). The pipeline resolves them at build time into `interference_tips(word_uid, tip_en, tip_bn)` so the app never runs regexes.
+`content/interference_tips.csv` columns: `match_type (uid|german|pattern), match, tip_en, tip_bn, tags`. Patterns are regexes over `german` (e.g. `^bekommen$`, `^seit\b`). The pipeline resolves them at build time into `interference_tips(word_uid, tip_en, tip_bn)` so the app never runs regexes. A tip tagged `gender` attaches to nouns only and one tagged `separable` to verbs only (#321): a pattern matches the spelling, and "Every -chen noun is das" is false on *versuchen*.
