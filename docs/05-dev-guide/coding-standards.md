@@ -3,13 +3,13 @@
 - **Lints:** `flutter_lints` + `riverpod_lint` + project rules in `analysis_options.yaml` (`prefer_final_locals`, `avoid_dynamic_calls`, `require_trailing_commas`, `always_declare_return_types`). The gate (`dart analyze --fatal-infos`) fails on any warning.
 - **Run lints with `dart analyze --fatal-infos`, never `flutter analyze`.** `riverpod_lint` 3.1.4+ is an `analysis_server` plugin declared under the top-level `plugins:` key. `flutter analyze` does not load it and reports "No issues found" while every riverpod rule is silently inactive; `dart analyze` loads it. `custom_lint` is not used (ADR 15).
 - **Generated code is excluded from analysis** (`*.g.dart`, `*.freezed.dart`, `*.drift.dart`) — it is rebuilt by `make gen`, so lints on it are not actionable.
-- **Imports:** `package:material_ui/material_ui.dart` / `package:cupertino_ui/cupertino_ui.dart` — never `package:flutter/material.dart`. Relative imports inside a feature; package imports across layers.
+- **Imports:** `package:material_ui/material_ui.dart` / `package:cupertino_ui/cupertino_ui.dart` — never `package:flutter/material.dart`. `package:deutschplan/...` imports everywhere, inside a feature too; `lib/` has no relative imports.
 - **Domain purity:** `lib/domain/**` must not import Flutter, drift or any plugin. Enforced by a test that greps imports.
-- **Models:** `freezed` for all value types; unions for `CardKind`, `ExamSection`, `SearchTier`, `TtsState`.
+- **Models:** value types are `@immutable` classes (with `==` and `hashCode` where they are compared), records for small results, enums for closed sets (`ExamSection`, `SearchTier`, `TtsState`), and sealed classes for unions whose cases carry data (`ExamItem`, `GrammarItem`, `BootstrapResult`, `SettingKey`). `freezed` is a dependency but unused: no `@freezed` class exists.
 - **Providers:** codegen only; families keyed by primitive ids; `keepAlive` only where `state-management.md` allows.
 - **Database:** every write in a transaction; DAOs return streams for lists the UI watches; never query in `build()`.
 - **Dates:** `DateTime` in local time for plan dates (`isoDate` strings `YYYY-MM-DD`), UTC ISO-8601 for timestamps; the `clock` provider is the only source of "now".
 - **Strings:** ARB with descriptions; German UI copy that is content (e.g. "Tag geschafft!") is still ARB, marked `@` as fixed German. `test/l10n_test.dart` fails on a key the Bangla ARB lacks, and on a Bangla message that is still the English one, unless it's in that test's `onPurpose` list (German content, a name, a unit). Bangla numerals stay in Bangla UI text: German content, such as Today's date, keeps its own digits (#166).
 - **Accessibility:** every icon button has a `tooltip` and semantics label; every custom painter has a semantics node.
-- **Logging:** `logging` package; no `print`; no analytics of any kind.
+- **Logging:** no `print`, and no analytics of any kind. An error that is handled but worth a trace goes to `debugPrint` (M7's export, import and reset do). The `logging` package is a dependency but unused.
 - **Commits:** Conventional Commits; PR titles reference the screen or engine (`feat(study): FR-T2-08 swipe to rate`).

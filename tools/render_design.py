@@ -4,7 +4,7 @@ and rewrite the screen tables in README.md between the <!-- screens:start --> / 
 Run:
     pip install playwright
     playwright install chromium
-    python tool/render_design.py
+    python tools/render_design.py
 """
 import html
 import pathlib

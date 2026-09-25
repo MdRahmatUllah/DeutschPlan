@@ -27,7 +27,7 @@
 | `/me/models` | M4 | pushed |
 | `/me/export` | M6 | pushed |
 | `/me/about` · `/me/about/licences` | M9 · M8 | pushed |
-| `/study` (extra: `SessionArgs`) | T2 → T3 | full-screen modal (`parentNavigatorKey: root`) |
+| `/study` (extra: `SessionArgs`) | T2 → T3 | full-screen modal (declared outside the shell's branches, so on the root navigator) |
 | `/sentences` | T5 | full-screen modal |
 | `/day-complete` | T6 | full-screen overlay |
 | `/grammar-practice` (extra) | L15 | full-screen modal |

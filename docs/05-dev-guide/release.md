@@ -14,8 +14,8 @@
 - Widget extension target shares App Group `group.app.deutschplan`.
 
 ## Checklist
-1. `make lint test goldens` green; integration smoke on both platforms.
-2. Content rebuilt from the workbooks at the repo root; manifest diff reviewed (added/removed/changed words).
-3. Licences screen regenerated (`flutter pub run` licence collector) and model licence texts current.
+1. `make lint test goldens-verify` green (not `make goldens`, which rewrites every golden instead of checking it); integration smoke on both platforms.
+2. Content rebuilt from the workbooks in `data/`; manifest diff reviewed (`make content-diff`: added/removed/changed words).
+3. Licences screen regenerated (`dart run` licence collector) and model licence texts current.
 4. `ENABLE_HYMT_DOWNLOAD` flag decision recorded in `decisions.md` for the target regions.
 5. Tag `vX.Y.Z`, changelog entry, store notes in EN and BN.

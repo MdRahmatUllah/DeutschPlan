@@ -292,15 +292,17 @@ it once cost a bug.
        deutsch-plan-v2-aurora-glass-html/android-light/screens/X-android.html app/test/golden/goldens/x_glass_phone.png
      ```
      Then look at the image.
-7. **Gate** (from `app/`):
+7. **The basic check** (from `app/`, the owner's rule of 2026-09-25):
    ```bash
    dart analyze --fatal-infos                         # NO path args (ADR 18)
    dart format --output=none --set-exit-if-changed .
-   python -m pytest ../tools/tests -q
-   flutter test --timeout 60s                         # the whole suite, goldens included
+   python -m pytest ../tools/tests -q                 # only if tools/ changed
+   flutter test --timeout 60s <the test files you touched, and their goldens>
    ```
-   All green, or you don't go on. **GitHub CI is off (#302): this gate is the
-   only check the code gets**, so run all four, in full, every time. If you
+   All green, and the plants (step 8) all caught, or you don't go on. **GitHub
+   CI is off (#302): this is the only check a PR gets.** The full suite
+   (`flutter test -j 2 --timeout 60s`, in the foreground, in chunks) runs once,
+   when a milestone completes. If you
    changed the content pipeline (`tools/excel_to_sqlite.py`, `content/`), also
    rebuild and verify it: `python tools/excel_to_sqlite.py`, then
    `python tools/verify_content.py` (`docs/02-data/content-pipeline.md`).
@@ -356,12 +358,13 @@ it once cost a bug.
     workflows are disabled, so a push starts nothing and there is nothing to
     wait for. Don't watch, re-run or re-enable a workflow. What it used to check
     is now yours:
-    - analyze, format, tests and goldens: the gate (step 7), in full;
+    - analyze, format, tests and goldens: the basic check (step 7), and the full suite when a milestone completes;
     - the PR title (`<type>(<scope>): <what> (#N)`): check it yourself;
     - the content pipeline: rebuild and verify locally when you touch it (step 7).
 15. **Merge.**
-    - If `gh pr view P --json mergeable` says `CONFLICTING`, rebase on `origin/main`, regenerate, run the gate, and push.
-    - If `main` moved since your last gate run, rebase on `origin/main`, regenerate, and run the gate again before merging, even if nothing conflicts. With no CI on `main`, this is what keeps `main` green.
+    - Merge only after an approving review.
+    - If `gh pr view P --json mergeable` says `CONFLICTING`, rebase on `origin/main`, regenerate, run the basic check, and push.
+    - If `main` moved since your last check, rebase on `origin/main`, regenerate, and run the basic check again before merging, even if nothing conflicts.
     - Then:
       ```bash
       gh pr merge P --squash --subject "<PR title> (#P)"      # never --delete-branch in a worktree
@@ -545,7 +548,7 @@ Layers, per `docs/05-dev-guide/testing.md`:
   - Load l10n with `AppLocalizations.delegate.load(supportedLocales.first)`.
   - The test font draws every glyph 1 em wide, so wrapping tests need short strings.
 - **Shared stubs:** `test/features/today_fixtures.dart`. `todayStub()` overrides every DB-backed screen provider with artboard fixtures (`artboardToday`, `artboardCourse`, `artboardCategories`, …). The router and golden tests pump the real route table with it and no database, so **a new DB-backed screen must add its providers to `todayStub()`**, or unrelated tests fail.
-- **Goldens:** `goldenTest('<artboard_name>', builder: ...)` from `test/golden/golden_harness.dart` gives six files, `test/golden/goldens/<name>_{light,dark,glass}_{phone,tablet}.png`. For an iOS variant, add `goldenTest('<name>_ios', modes: [GoldenMode.light], devices: [GoldenDevice.phone], chrome: AdaptiveChrome.cupertino, …)`. Generate them per file, on Windows. Only your gate run checks them now (CI is off), so run the whole suite, not just your file.
+- **Goldens:** `goldenTest('<artboard_name>', builder: ...)` from `test/golden/golden_harness.dart` gives six files, `test/golden/goldens/<name>_{light,dark,glass}_{phone,tablet}.png`. For an iOS variant, add `goldenTest('<name>_ios', modes: [GoldenMode.light], devices: [GoldenDevice.phone], chrome: AdaptiveChrome.cupertino, …)`. Generate them per file, on Windows. CI is off, so your basic check runs the goldens of every screen you touched; the full suite runs them all when a milestone completes.
 - **Tests that read docs:**
   - `app_router_test` reads `navigation.md`'s route table.
   - `architecture_test` reads `state-management.md`'s provider map.
@@ -623,35 +626,10 @@ When a lane is blocked, in this order:
 
 ## 11. Known stale docs
 
-Until #284 lands, trust these corrections over the docs:
+#284 reconciled the dev guide with how the app is built: the commands spelled out without `make` or `fvm`, the tree in `project-structure.md`, the golden and fake practice in `testing.md`, the coding standards, ADR 26 and the stale issue numbers in code. What is left:
 
-- **Commands.**
-  - There is no `make` or `fvm` on this machine. Run the Makefile recipes by hand (§2, §4).
-  - `make goldens` rewrites the *whole* golden suite. Update per file.
-  - `dart run`, not `flutter pub run`.
-  - It is `tools/render_design.py`, not `tool/`. It renders only Paper & Ink; use `tools/artboard.py` for glass.
-- **Content.**
-  - The workbooks are in the gitignored `data/`, not the repo root. `make content` fails in a fresh worktree, and a normal issue doesn't need it: content.db is committed.
-  - Content DB tests are in `test/db/`, not `test/data/`.
-- **Tooling.**
-  - Goldens use `matchesGoldenFile`, not alchemist. Mocks are provider overrides and hand-written stubs, not mocktail.
-  - The integration smoke (#169) is `app/integration_test/`, run on the emulator by `python tools/smoke.py` under `team.py device` (`testing.md`, "Integration smoke").
-  - Android compileSdk/targetSdk are 37, not 35.
-- **Structure.**
-  - There is no `app.dart`, `data/files/`, `tables.dart` or `migrations.dart`.
-  - The feature folders are the ones in §5.
-  - Grammar screens are in `features/learn/`.
-  - Screen providers sit at the top of the screen file, not in `<screen>_providers.dart`.
-- **Code style.**
-  - "freezed for all value types" and "relative imports inside a feature" are not the practice (§6).
-  - The adaptive API is `Adaptive.showSheet`/`showConfirm`/`showTimePickerFor`, not `AdaptiveSheet`/`AdaptiveDialog`.
-- **ADRs and PRs.**
-  - ADR 26 (content.db attached by plain path, read-only by construction) is cited in code but missing from `decisions.md`.
-  - The PR template's checklist is the minimum. The M3 PR body (§4, step 11) is the practice.
-- **Stale issue numbers in code.**
-  - `routes.dart` `TODO(#119)` should be #132, and `TODO(#136)` should be #140/#141.
-  - `main.dart` "#143 wires it" should be #146 (the glass theme).
-  - `aurora_backdrop.dart` "#157" should be #167.
+- `mocktail`, `alchemist`, `freezed` and `logging` are in `pubspec.yaml` but unused. The docs say so; removing them needs the `pubspec` lock.
+- The PR template's checklist is the minimum. The M3 PR body (§4, step 11) is the practice.
 
 ## 12. Troubleshooting
 
@@ -666,7 +644,7 @@ Until #284 lands, trust these corrections over the docs:
 | `team.py`: `refused: ...` | Read it. It is the board telling you someone else has it, or it is blocked. `team.py status` shows what is ready. |
 | `team.py`: "the board is busy" | Many agents pushed at once; run it again |
 | `gh pr merge` prints `Aborting` | You passed `--delete-branch` in a worktree. The merge may have happened: check `gh pr view P --json state`, then delete the branch with `git push origin --delete`. |
-| GitHub says "Head branch is out of date" / PR `CONFLICTING` | Rebase on `origin/main`, regenerate, run the gate, push |
+| GitHub says "Head branch is out of date" / PR `CONFLICTING` | Rebase on `origin/main`, regenerate, run the basic check, push |
 | The PR doesn't show your last push | Check `gh api repos/MdRahmatUllah/DeutschPlan/pulls/P --jq .head.sha`; close and reopen the PR if GitHub is stuck |
 | `INSTALL_FAILED_INSUFFICIENT_STORAGE` | Release x64 APK only. `tools/device.py install` trims caches and retries. |
 | uiautomator dumps are empty | An ANR dialog: `adb reboot`, then wait for `sys.boot_completed` |

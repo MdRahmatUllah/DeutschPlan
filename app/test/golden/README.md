@@ -36,18 +36,22 @@ make test            # everything except goldens — runs anywhere
 make goldens-verify  # the pixel comparison — one platform
 ```
 
-CI should run `goldens-verify` on a single fixed runner. If that runner is not
-Windows, regenerate once there and commit the result, rather than letting each
-contributor's platform rewrite them in turn.
+Goldens are verified on Windows only. CI is off (#302), so a PR's basic check
+runs the goldens of the screens it touches, and the full suite runs them all
+when a milestone completes (`getting-started.md`, "The check before a merge").
 
 ## Regenerating
 
+Per file, for the screens your change touches (from `app/`):
+
 ```
-make goldens
+flutter test --update-goldens test/golden/<screen>_golden_test.dart
 ```
 
-Never with `flutter test --update-goldens` by hand across the whole suite: that
-rewrites every file including ones you did not mean to touch.
+`make goldens` rewrites the whole suite, including files you did not mean to
+touch, and hides an unintended change among hundreds. Keep it for a deliberate
+suite-wide change, such as a token that moves every screen, and then review
+every image it changed.
 
 **Goldens are the design contract.** Open the diff as images and check each
 change was intended. A golden that changed because a token moved is the system
