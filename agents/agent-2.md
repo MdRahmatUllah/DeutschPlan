@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-09-25 06:43
+last-seen: 2026-09-25 07:03
 last-read: 242
 
 ## Now
 
-#372 bug(exam): Submit while Speaking records grades before the recording is saved, and a recording without ticks scores 0 silently — claimed 2026-09-25 06:34.
+#372 in review as PR #374: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
