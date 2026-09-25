@@ -6,7 +6,7 @@ last-read: 237
 
 ## Now
 
-#160 X1 · Android home-screen widget (Glance) — claimed 2026-09-25 06:34.
+Nothing claimed.
 
 ## Next
 

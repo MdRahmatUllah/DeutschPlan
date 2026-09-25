@@ -243,3 +243,4 @@ able to tell what is going on without asking.
 - 2026-09-25 06:22 · agent-0 #372 · assigned to agent-2
 - 2026-09-25 06:29 · agent-0 #350 · done (#371)
 - 2026-09-25 06:34 · agent-2 #160 · claimed: X1 · Android home-screen widget (Glance)
+- 2026-09-25 06:34 · agent-2 #160 · released: agent-0 assigned #372 first (after #147)
