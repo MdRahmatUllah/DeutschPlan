@@ -195,23 +195,54 @@ void main() {
       expect(DpScript.allowBreaks('Wohnung'), 'Wohnung');
     });
 
-    test('an over-long compound gains exactly one break opportunity', () {
-      const word = 'Wohnungsgeberbestaetigung';
-      final broken = DpScript.allowBreaks(word);
+    test('#405 a long compound breaks where a syllable begins', () {
+      String shown(String word) =>
+          DpScript.allowBreaks(word).replaceAll(DpScript.softHyphen, '|');
+      expect(shown('Haftpflichtversicherung'), 'Haft|pflicht|ver|si|che|rung');
+      expect(shown('Donaudampfschifffahrt'), 'Do|nau|dampf|schiff|fahrt');
+      expect(shown('Reiseversicherung'), 'Rei|se|ver|si|che|rung');
+      expect(
+        shown('Geschwindigkeitsbegrenzung'),
+        'Ge|schwin|dig|keits|be|gren|zung',
+      );
+      expect(shown('Wohnung'), 'Wohnung', reason: 'short: left alone');
+      for (final word in <String>[
+        'Haftpflichtversicherung',
+        'Geschwindigkeitsbegrenzung',
+      ]) {
+        expect(
+          DpScript.allowBreaks(word).replaceAll(DpScript.softHyphen, ''),
+          word,
+          reason: 'the word itself is unchanged',
+        );
+      }
+    });
 
-      expect(broken, isNot(word));
-      expect(
-        DpScript.softHyphen.allMatches(broken).length,
-        1,
-        reason:
-            'one conservative break beats scattering them through a word the '
-            'learner is trying to memorise',
-      );
-      expect(
-        broken.replaceAll(DpScript.softHyphen, ''),
-        word,
-        reason: 'the word itself must be unchanged',
-      );
+    test('#405 never before a vowel, and never splitting ch, ck or sch', () {
+      for (final word in <String>[
+        'Reiseversicherung',
+        'Krankenversicherung',
+        'Arbeitnehmerüberlassung',
+        'Zuckerbäckerei',
+        'Wohnungsgeberbestaetigung',
+      ]) {
+        final broken = DpScript.allowBreaks(word);
+        for (final match in DpScript.softHyphen.allMatches(broken)) {
+          final after = broken[match.end];
+          final before = broken[match.start - 1].toLowerCase();
+          expect(
+            'aeiouyäöü'.contains(after.toLowerCase()),
+            isFalse,
+            reason: '$broken: a syllable starts with its consonant',
+          );
+          expect(
+            <String>['c', 's'].contains(before) &&
+                <String>['h', 'k'].contains(after),
+            isFalse,
+            reason: '$broken splits ch, ck or sch',
+          );
+        }
+      }
     });
 
     test('content that already carries soft hyphens is not second-guessed', () {

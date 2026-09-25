@@ -6,6 +6,8 @@ import 'package:flutter/rendering.dart' show RenderParagraph;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 
+import '../core/text_clipping.dart';
+
 /// L8's, L12's and L14's German word (#405): `accessibility-performance.md`'s
 /// "long compounds soft-hyphenate", as DpHeadword does on W1 and T2.
 void main() {
@@ -25,9 +27,8 @@ void main() {
     );
   }
 
-  testWidgets('#405 a long compound at display size breaks only at a space or '
-      'a soft hyphen, never mid-syllable', (tester) async {
-    await pump(tester, 'die Reiseversicherung');
+  Future<void> breaksOnlyAtSyllables(WidgetTester tester, String word) async {
+    await pump(tester, word);
     final paragraph = tester.renderObject<RenderParagraph>(
       find.byType(RichText),
     );
@@ -58,6 +59,16 @@ void main() {
         reason: 'a line ends in "${text.substring(0, end)}"',
       );
     }
+  }
+
+  testWidgets('#405 a long compound at display size breaks only at a space or '
+      'a soft hyphen, never mid-syllable', (tester) async {
+    await breaksOnlyAtSyllables(tester, 'die Reiseversicherung');
+  });
+
+  testWidgets('#405 and at 200 % text, the longest too', (tester) async {
+    textAt(tester, 2);
+    await breaksOnlyAtSyllables(tester, 'die Geschwindigkeitsbegrenzung');
   });
 
   testWidgets('#405 the article keeps its gender colour, and the word is read '
