@@ -228,6 +228,10 @@ class _Gap extends StatelessWidget {
       child: Text(
         word ?? '',
         textAlign: TextAlign.center,
+        // A WidgetSpan's child is scaled with its sentence already: scaled
+        // again here, "Rechnung" was drawn at 4× into half the line at 200 %
+        // and broke mid-word (#165).
+        textScaler: TextScaler.noScaling,
         style: style.copyWith(
           color: tokens.color.textForArticle(article) ?? tokens.color.ink,
           fontWeight: FontWeight.w700,

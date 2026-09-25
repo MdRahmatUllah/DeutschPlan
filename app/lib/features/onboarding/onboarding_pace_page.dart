@@ -258,11 +258,18 @@ class StudyDayToggle extends StatelessWidget {
               width: on || !tokens.isGlass ? 1.5 : tokens.surface.outlineWidth,
             ),
           ),
-          child: DpText(
-            short,
-            role: DpTextRole.label,
-            weight: 700,
-            color: on ? tokens.color.onPrimary : tokens.color.ink,
+          // A day's two letters on one line: seven to a row leave a toggle
+          // too narrow for "We" at 200 %, which broke into "W / e" (#165).
+          // They shrink to fit rather than wrap.
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
+            child: DpText(
+              short,
+              role: DpTextRole.label,
+              weight: 700,
+              color: on ? tokens.color.onPrimary : tokens.color.ink,
+              maxLines: 1,
+            ),
           ),
         ),
       ),

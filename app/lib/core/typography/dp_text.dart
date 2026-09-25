@@ -137,8 +137,20 @@ abstract final class DpScript {
   /// "geschafft!" is wider than its line, and Flutter would cut it at any
   /// letter (#165). Not at 100 %, where it fits, and a soft hyphen would
   /// still split its kerning.
-  static int breakThreshold(BuildContext context) =>
-      MediaQuery.textScalerOf(context).scale(1) > 1 ? 4 : 14;
+  static int breakThreshold(BuildContext context) => scaled(context) ? 4 : 14;
+
+  /// Whether text in [context] is larger than 100 %: where a label that fits
+  /// at 100 % may need a syllable to break at (#165).
+  static bool scaled(BuildContext context) =>
+      MediaQuery.textScalerOf(context).scale(1) > 1;
+
+  /// Whether text in [context] is past 130 %, where two things side by side
+  /// no longer fit a phone's width and one goes under the other (#165), as
+  /// the tab bar scrolls from there (#314).
+  /// ponytail: a threshold, not a measurement; measure where one row's
+  /// content needs it.
+  static bool large(BuildContext context) =>
+      MediaQuery.textScalerOf(context).scale(14) > 14 * 1.3;
 
   static const String _vowels = 'aeiouyäöüAEIOUYÄÖÜ';
 

@@ -215,6 +215,15 @@ class _ChartCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final tokens = context.tokens;
+    final heading = Semantics(
+      header: true,
+      child: DpText(title, role: DpTextRole.body, weight: 700),
+    );
+    final cornerLine = DpText(
+      corner,
+      role: DpTextRole.caption,
+      color: tokens.color.textSecondary,
+    );
     return DpSurface(
       kind: DpSurfaceKind.bar,
       radius: 16,
@@ -222,23 +231,17 @@ class _ChartCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.baseline,
-            textBaseline: TextBaseline.alphabetic,
-            children: <Widget>[
-              Expanded(
-                child: Semantics(
-                  header: true,
-                  child: DpText(title, role: DpTextRole.body, weight: 700),
-                ),
-              ),
-              DpText(
-                corner,
-                role: DpTextRole.caption,
-                color: tokens.color.textSecondary,
-              ),
-            ],
-          ),
+          // Past 130 % text the corner line goes under the title: beside it,
+          // it ran 84 dp off the card at 200 % (#165).
+          if (DpScript.large(context)) ...<Widget>[heading, cornerLine] else
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.baseline,
+              textBaseline: TextBaseline.alphabetic,
+              children: <Widget>[
+                Expanded(child: heading),
+                cornerLine,
+              ],
+            ),
           const SizedBox(height: 12),
           child,
           if (legend.isNotEmpty) ...<Widget>[
@@ -345,7 +348,9 @@ class _CardsChart extends StatelessWidget {
                   bottomTitles: AxisTitles(
                     sideTitles: SideTitles(
                       showTitles: true,
-                      reservedSize: 22,
+                      // Grown with the text size: a fixed 22 cut "Mo" at
+                      // 150 % (#165).
+                      reservedSize: MediaQuery.textScalerOf(context).scale(22),
                       getTitlesWidget: (value, meta) {
                         final i = value.toInt();
                         if (i < 0 || i >= bars.length || !named(i)) {

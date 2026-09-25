@@ -190,6 +190,82 @@ class _StudySummarySheetState extends ConsumerState<StudySummarySheet> {
         ? 1
         : math.max(1, ref.read(clockProvider)().difference(started).inMinutes);
 
+    final large = DpScript.large(context);
+    final head = <Widget>[
+      Center(
+        child: Container(
+          width: 36,
+          height: 5,
+          margin: const EdgeInsets.only(bottom: 12),
+          decoration: BoxDecoration(
+            color: tokens.surface.muted,
+            borderRadius: BorderRadius.circular(3),
+          ),
+        ),
+      ),
+      DpText(l10n.summaryTitle, role: DpTextRole.headline),
+      const SizedBox(height: 2),
+      DpText(
+        l10n.summaryStats(cards, minutes),
+        role: DpTextRole.caption,
+        color: tokens.color.textSecondary,
+      ),
+      const SizedBox(height: 12),
+      Wrap(
+        spacing: 8,
+        runSpacing: 8,
+        children: <Widget>[
+          for (final (n, rating, colour) in pills)
+            if (n > 0)
+              _Pill(label: l10n.summaryPill(n, rating), colour: colour),
+        ],
+      ),
+    ];
+    final watchRows = <Widget>[
+      if (watch.isNotEmpty) ...<Widget>[
+        const SizedBox(height: 18),
+        DpText(
+          l10n.summaryWatch.toUpperCase(),
+          role: DpTextRole.caption,
+          weight: 700,
+          letterSpacing: 0.6,
+          color: tokens.color.textSecondary,
+        ),
+        const SizedBox(height: 4),
+        for (final uid in watch) _WatchRow(uid: uid, onPlay: _play),
+      ],
+    ];
+    final buttons = <Widget>[
+      const SizedBox(height: 10),
+      DpButton(
+        label: switch (primary) {
+          StudyNextStep.revise => l10n.summaryRevise(next!.revise.length),
+          StudyNextStep.newWords => l10n.summaryNew(next!.newWords.length),
+          StudyNextStep.grammar => l10n.summaryGrammar(
+            StudySummarySheet.grammarFor(session, next).length,
+          ),
+          StudyNextStep.sentences => l10n.summarySentences(next!.sentences),
+          StudyNextStep.backlog || StudyNextStep.done => l10n.summaryDone,
+        },
+        onPressed: () => widget.onStep(primary),
+      ),
+      if (backlog > 0) ...<Widget>[
+        const SizedBox(height: 10),
+        DpButton(
+          label: l10n.summaryBacklog(backlog),
+          kind: DpButtonKind.secondary,
+          onPressed: () => widget.onStep(StudyNextStep.backlog),
+        ),
+      ],
+      if (primary != StudyNextStep.done) ...<Widget>[
+        const SizedBox(height: 10),
+        DpButton(
+          label: l10n.summaryDone,
+          kind: DpButtonKind.text,
+          onPressed: () => widget.onStep(StudyNextStep.done),
+        ),
+      ],
+    ];
     final sheet = DpSurface(
       kind: DpSurfaceKind.cardStrong,
       radius: tokens.shape.sheet,
@@ -204,91 +280,28 @@ class _StudySummarySheetState extends ConsumerState<StudySummarySheet> {
             ) -
             8 -
             24,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            Center(
-              child: Container(
-                width: 36,
-                height: 5,
-                margin: const EdgeInsets.only(bottom: 12),
-                decoration: BoxDecoration(
-                  color: tokens.surface.muted,
-                  borderRadius: BorderRadius.circular(3),
+        // Past 130 % text the sheet's fixed parts alone were taller than
+        // it (#165): it all scrolls, the buttons with it.
+        child: large
+            ? SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: <Widget>[...head, ...watchRows, ...buttons],
                 ),
-              ),
-            ),
-            DpText(l10n.summaryTitle, role: DpTextRole.headline),
-            const SizedBox(height: 2),
-            DpText(
-              l10n.summaryStats(cards, minutes),
-              role: DpTextRole.caption,
-              color: tokens.color.textSecondary,
-            ),
-            const SizedBox(height: 12),
-            Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: <Widget>[
-                for (final (n, rating, colour) in pills)
-                  if (n > 0)
-                    _Pill(label: l10n.summaryPill(n, rating), colour: colour),
-              ],
-            ),
-            Expanded(
-              child: ListView(
-                padding: EdgeInsets.zero,
+              )
+            : Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
-                  if (watch.isNotEmpty) ...<Widget>[
-                    const SizedBox(height: 18),
-                    DpText(
-                      l10n.summaryWatch.toUpperCase(),
-                      role: DpTextRole.caption,
-                      weight: 700,
-                      letterSpacing: 0.6,
-                      color: tokens.color.textSecondary,
+                  ...head,
+                  Expanded(
+                    child: ListView(
+                      padding: EdgeInsets.zero,
+                      children: watchRows,
                     ),
-                    const SizedBox(height: 4),
-                    for (final uid in watch) _WatchRow(uid: uid, onPlay: _play),
-                  ],
+                  ),
+                  ...buttons,
                 ],
               ),
-            ),
-            const SizedBox(height: 10),
-            DpButton(
-              label: switch (primary) {
-                StudyNextStep.revise => l10n.summaryRevise(next!.revise.length),
-                StudyNextStep.newWords => l10n.summaryNew(
-                  next!.newWords.length,
-                ),
-                StudyNextStep.grammar => l10n.summaryGrammar(
-                  StudySummarySheet.grammarFor(session, next).length,
-                ),
-                StudyNextStep.sentences => l10n.summarySentences(
-                  next!.sentences,
-                ),
-                StudyNextStep.backlog || StudyNextStep.done => l10n.summaryDone,
-              },
-              onPressed: () => widget.onStep(primary),
-            ),
-            if (backlog > 0) ...<Widget>[
-              const SizedBox(height: 10),
-              DpButton(
-                label: l10n.summaryBacklog(backlog),
-                kind: DpButtonKind.secondary,
-                onPressed: () => widget.onStep(StudyNextStep.backlog),
-              ),
-            ],
-            if (primary != StudyNextStep.done) ...<Widget>[
-              const SizedBox(height: 10),
-              DpButton(
-                label: l10n.summaryDone,
-                kind: DpButtonKind.text,
-                onPressed: () => widget.onStep(StudyNextStep.done),
-              ),
-            ],
-          ],
-        ),
       ),
     );
 
@@ -353,8 +366,9 @@ class _Pill extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final tokens = context.tokens;
+    // The artboard's 28, grown with the text size (#165).
     return Container(
-      height: 28,
+      height: MediaQuery.textScalerOf(context).scale(28),
       padding: const EdgeInsets.symmetric(horizontal: 10),
       decoration: BoxDecoration(
         color: colour,
@@ -385,10 +399,12 @@ class _WatchRow extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final word = ref.watch(studyWordProvider(uid)).value?.word;
-    if (word == null) return const SizedBox(height: 44);
+    // The artboard's 44, grown with the text size (#165).
+    final height = MediaQuery.textScalerOf(context).scale(44);
+    if (word == null) return SizedBox(height: height);
     final spoken = spokenForm(word);
     return SizedBox(
-      height: 44,
+      height: height,
       child: Row(
         children: <Widget>[
           Expanded(

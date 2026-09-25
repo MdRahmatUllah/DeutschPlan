@@ -395,8 +395,18 @@ class MeWordsCard extends StatelessWidget {
             children: <Widget>[
               _Swatch(colour: colour),
               const SizedBox(width: 6),
+              // A number never breaks: in a third of the card at 200 %,
+              // "4,034" broke into "4,0 / 34" (#165). It shrinks to fit.
               Flexible(
-                child: DpText(number.format(value), role: DpTextRole.title),
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  alignment: AlignmentDirectional.centerStart,
+                  child: DpText(
+                    number.format(value),
+                    role: DpTextRole.title,
+                    maxLines: 1,
+                  ),
+                ),
               ),
             ],
           ),

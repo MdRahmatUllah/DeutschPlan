@@ -61,6 +61,25 @@ class StepQuizTab extends ConsumerWidget {
       stepQuiz(step.code, length: length, direction: direction),
     );
 
+    final lengths = <(String, int)>[
+      (l10n.quizQuick, 10),
+      (l10n.quizStandard, 20),
+      (l10n.quizLong, 30),
+    ];
+    final forms = QuizTile(
+      title: l10n.quizForms,
+      subtitle: l10n.quizFormsLine,
+      onTap: open ? () => start(20, 'forms') : null,
+    );
+    final custom = QuizTile(
+      title: l10n.quizCustom,
+      subtitle: l10n.quizCustomLine,
+      onTap: open ? () => unawaited(_custom(context)) : null,
+    );
+    // Past 130 % text three tiles abreast break "Standard" mid-word (#165,
+    // #396): they stack, full width.
+    final stacked = DpScript.large(context);
+
     return ListView(
       key: PageStorageKey<String>('step-quiz-${step.code}'),
       padding: const EdgeInsets.fromLTRB(16, 14, 16, 16),
@@ -73,48 +92,44 @@ class StepQuizTab extends ConsumerWidget {
           color: tokens.color.textSecondary,
         ),
         const SizedBox(height: 10),
-        Row(
-          children: <Widget>[
-            for (final (i, (label, length)) in <(String, int)>[
-              (l10n.quizQuick, 10),
-              (l10n.quizStandard, 20),
-              (l10n.quizLong, 30),
-            ].indexed) ...<Widget>[
-              if (i > 0) const SizedBox(width: 10),
-              Expanded(
-                child: QuizTile(
-                  title: label,
-                  subtitle: l10n.quizQuestions(length),
-                  centred: true,
-                  onTap: open ? () => start(length) : null,
-                ),
-              ),
-            ],
-          ],
-        ),
-        const SizedBox(height: 10),
-        IntrinsicHeight(
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
+        if (stacked)
+          for (final (label, length) in lengths) ...<Widget>[
+            QuizTile(
+              title: label,
+              subtitle: l10n.quizQuestions(length),
+              onTap: open ? () => start(length) : null,
+            ),
+            const SizedBox(height: 10),
+          ]
+        else ...<Widget>[
+          Row(
             children: <Widget>[
-              Expanded(
-                child: QuizTile(
-                  title: l10n.quizForms,
-                  subtitle: l10n.quizFormsLine,
-                  onTap: open ? () => start(20, 'forms') : null,
+              for (final (i, (label, length)) in lengths.indexed) ...<Widget>[
+                if (i > 0) const SizedBox(width: 10),
+                Expanded(
+                  child: QuizTile(
+                    title: label,
+                    subtitle: l10n.quizQuestions(length),
+                    centred: true,
+                    onTap: open ? () => start(length) : null,
+                  ),
                 ),
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: QuizTile(
-                  title: l10n.quizCustom,
-                  subtitle: l10n.quizCustomLine,
-                  onTap: open ? () => unawaited(_custom(context)) : null,
-                ),
-              ),
+              ],
             ],
           ),
-        ),
+          const SizedBox(height: 10),
+        ],
+        if (stacked) ...<Widget>[forms, const SizedBox(height: 10), custom] else
+          IntrinsicHeight(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                Expanded(child: forms),
+                const SizedBox(width: 10),
+                Expanded(child: custom),
+              ],
+            ),
+          ),
         if (last != null) ...<Widget>[
           const SizedBox(height: 10),
           LastQuizCard(quiz: last),
