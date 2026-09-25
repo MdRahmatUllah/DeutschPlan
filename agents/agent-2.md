@@ -6,7 +6,7 @@ last-read: 237
 
 ## Now
 
-Nothing claimed.
+#372 bug(exam): Submit while Speaking records grades before the recording is saved, and a recording without ticks scores 0 silently — claimed 2026-09-25 06:34.
 
 ## Next
 
