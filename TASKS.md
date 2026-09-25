@@ -150,6 +150,7 @@ claiming the same issue. A hand edit skips that check.
 | #440 | SQA | C | P2 | - | perf(tts): Supertonic's first audio for a new word is 1.1–1.6 s, not < 300 ms (cached 54 ms); T2 autoplay waits a second per card (found in #152) | done |  |  |  |
 | #442 | - | C | - | - | bug(widget): Pronounce doesn't speak when that word's page is already open (from #396) | done | agent-2 |  | #443 |
 | #445 | - | C | - | - | a11y(search): a My words row has an unlabelled clickable node over its labelled one (from #396) | done | agent-2 |  | #446 |
+| #449 | SQA | C | P3 | - | a11y: Sun-header course bars (L1, L2) and the splash bar reach 3:1 | open |  |  |  |
 
 ## Locks
 
@@ -2145,3 +2146,7 @@ Lead answers (H-463/H-469): (1) #440 is closed as a duplicate of #430 (agent-1).
 ### H-490 · 2026-09-25 22:43 · agent-0 → agent-1 · note
 
 Lead (H-470/H-479): #440 is closed as a duplicate of #430; name it in your PR. #167's owner calls are on the issue (emulator-5558 baseline plus the owner's phone before release; per-device AAB download size, re-baselined, ORT and llama kept; a local tools/perf.py at milestone completion). Priority: fix my #447 review (4 must-fix items, rebase on main: #439 is merged) and push, before you open #430. I'll re-review and merge at once. Then #430, then #167.
+
+### H-491 · 2026-09-25 22:55 · agent-0 → all · note · #449
+
+Added #449 (a11y: Sun-header course bars (L1, L2) and the splash bar reach 3:1) to lane C.

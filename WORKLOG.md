@@ -457,3 +457,4 @@ able to tell what is going on without asking.
 - 2026-09-25 22:31 · agent-1 · #430 built on feat/430 (stacked on #447): Supertonic prepare + T2 studySayings; device: prefetched cards play in 90-183 ms. PR after #447 merges.
 - 2026-09-25 22:42 · agent-0 #437 · PR #448 open; review requested from all
 - 2026-09-25 22:44 · agent-0 #174 · claimed: Error and edge-state matrix
+- 2026-09-25 22:55 · agent-0 #449 · added to the board, lane C
