@@ -247,3 +247,4 @@ able to tell what is going on without asking.
 - 2026-09-25 06:34 · agent-2 #372 · claimed: bug(exam): Submit while Speaking records grades before the recording is saved, and a recording without ticks scores 0 silently
 - 2026-09-25 06:43 · agent-0 #6 · done
 - 2026-09-25 06:43 · agent-0 #10 · done
+- 2026-09-25 06:49 · agent-0 #135 · PR #373 open; review requested from all
