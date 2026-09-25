@@ -628,17 +628,18 @@ void main() {
           .writeAsStringSync(jsonEncode(List<int>.generate(128, (i) => i)));
       File('${model.path}/M1.json').writeAsStringSync(styleOf(2));
       File('${model.path}/F2.json').writeAsStringSync(styleOf(3));
-      final tts = SupertonicTts(
+      final engine = SupertonicTts(
         models: models,
         settings: settings,
         cache: cache,
         load: OrtSupertonicModel.load,
         player: player,
       );
+      addTearDown(engine.dispose);
 
       for (final name in <String>['Anna', 'Jonas', 'Lena']) {
         await settings.write(SettingKeys.ttsVoice, name);
-        expect(await tts.speak('Hallo'), isTrue, reason: name);
+        expect(await engine.speak('Hallo'), isTrue, reason: name);
       }
       expect(player.played, hasLength(3));
       expect(onnx.sessions, 4, reason: 'one model, opened once');

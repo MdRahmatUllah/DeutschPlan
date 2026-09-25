@@ -583,8 +583,8 @@ void main() {
     ('breaks', () => FakeTts()..error = StateError('no style')),
     ('says no', () => FakeTts(voice: false)),
   ]) {
-    testWidgets("#453 a voice whose sample $how says it couldn't play it, "
-        'and stays chosen', (tester) async {
+    testWidgets("FR-M4-05 #453 a voice whose sample $how says it couldn't "
+        'play it, and stays chosen', (tester) async {
       final settings = StubSettings();
       await pump(
         tester,
