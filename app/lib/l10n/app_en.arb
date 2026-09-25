@@ -294,7 +294,7 @@
   },
   "meLoadFailed": "Your progress could not be loaded.",
   "@meLoadFailed": {
-    "description": "M1 when the course cannot be read."
+    "description": "M1 and M2 when the learner's progress cannot be read."
   },
   "examLeaveTitle": "Leave the exam?",
   "@examLeaveTitle": {

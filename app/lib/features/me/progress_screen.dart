@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:deutschplan/core/adaptive/adaptive.dart';
+import 'package:deutschplan/core/components/dp_feedback.dart';
 import 'package:deutschplan/core/components/dp_chip.dart';
 import 'package:deutschplan/core/components/dp_progress_ring.dart';
 import 'package:deutschplan/core/providers/app_providers.dart';
@@ -52,6 +53,7 @@ Future<ProgressView> progressView(Ref ref, ProgressRange range) async {
   final repo = ref.watch(progressRepositoryProvider);
   final engine = ref.watch(planEngineProvider);
   final today = ref.watch(todayProvider);
+  final target = ref.watch(settingsProvider).read(SettingKeys.desiredRetention);
   final days = await repo.days();
   final ratings = await repo.revisionRatings();
   final bars = progressBars(range, today, days);
@@ -76,7 +78,7 @@ Future<ProgressView> progressView(Ref ref, ProgressRange range) async {
     retentionOverall: retention(<int>[
       for (final bar in bars) ...ratingsOf(bar),
     ]),
-    target: ref.watch(settingsProvider).read(SettingKeys.desiredRetention),
+    target: target,
     retentionDaysLeft: retentionReady(first, today)
         ? null
         : daysBetween(today, addDays(first ?? today, 30)),
@@ -100,11 +102,17 @@ class _ProgressScreenState extends ConsumerState<ProgressScreen> {
   // ponytail: the chosen view is the screen's, gone when it closes.
   ProgressRange _range = ProgressRange.week;
 
+  /// What is on screen, and the range it is for: kept while the next range
+  /// loads, so the cards don't drop out and the list jump.
+  ({ProgressRange range, ProgressView view})? _last;
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final tokens = context.tokens;
-    final view = ref.watch(progressViewProvider(_range)).value;
+    final progress = ref.watch(progressViewProvider(_range));
+    if (progress.value case final fresh?) _last = (range: _range, view: fresh);
+    final shown = progress.hasError ? null : _last;
     final steps = ref.watch(stepProgressProvider).value;
 
     final scaffold = AdaptiveScaffold(
@@ -129,17 +137,24 @@ class _ProgressScreenState extends ConsumerState<ProgressScreen> {
             value: _range,
             onChanged: (range) => setState(() => _range = range),
           ),
-          if (view != null) ...<Widget>[
+          if (shown case (:final range, :final view)) ...<Widget>[
             const SizedBox(height: 12),
-            _CardsChart(range: _range, view: view),
+            _CardsChart(range: range, view: view),
             const SizedBox(height: 12),
-            _RetentionChart(range: _range, view: view),
+            _RetentionChart(range: range, view: view),
+          ] else if (progress.hasError) ...<Widget>[
+            const SizedBox(height: 24),
+            DpErrorPanel(
+              message: l10n.meLoadFailed,
+              retryLabel: l10n.retry,
+              onRetry: () => ref.invalidate(progressViewProvider(_range)),
+            ),
           ],
           if (steps != null && steps.any(_shown)) ...<Widget>[
             const SizedBox(height: 12),
             _ByStep(steps: steps.where(_shown).toList()),
           ],
-          if (view != null) ...<Widget>[
+          if (shown case (:final view, range: _)) ...<Widget>[
             const SizedBox(height: 12),
             _Totals(view: view),
           ],
@@ -538,7 +553,11 @@ class _ByStep extends StatelessWidget {
                 behavior: HitTestBehavior.opaque,
                 onTap: () => context.jumpToTab(LearnStepRoute(code: step.code)),
                 child: ConstrainedBox(
-                  constraints: const BoxConstraints(minHeight: 44),
+                  // accessibility-performance.md: 48 dp on Android, 44 pt
+                  // on iOS.
+                  constraints: BoxConstraints(
+                    minHeight: context.isCupertino ? 44 : 48,
+                  ),
                   child: Row(
                     children: <Widget>[
                       DpChip(label: step.code),

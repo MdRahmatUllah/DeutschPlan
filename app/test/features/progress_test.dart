@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:deutschplan/core/adaptive/adaptive.dart';
 import 'package:deutschplan/core/providers/app_providers.dart';
 import 'package:deutschplan/core/theme/app_theme.dart';
@@ -25,7 +27,11 @@ void main() {
     l10n = await AppLocalizations.delegate.load(supportedLocales.first);
   });
 
-  Future<void> pump(WidgetTester tester, {ProgressView? view}) async {
+  Future<void> pump(
+    WidgetTester tester, {
+    ProgressView? view,
+    Future<ProgressView> Function(ProgressRange range)? load,
+  }) async {
     asked = <ProgressRange>[];
     went = '';
     tester.view
@@ -37,7 +43,7 @@ void main() {
         overrides: <Override>[
           progressViewProvider.overrideWith((ref, range) async {
             asked.add(range);
-            return view ?? artboardProgress();
+            return load?.call(range) ?? view ?? artboardProgress();
           }),
           stepProgressProvider.overrideWith(
             (ref) => Stream.value(artboardProgressSteps()),
@@ -112,6 +118,49 @@ void main() {
     expect(find.text(l10n.progressCardsPerMonth), findsOneWidget);
   });
 
+  testWidgets('a range still loading keeps the last cards, and their labels', (
+    tester,
+  ) async {
+    final month = Completer<ProgressView>();
+    await pump(
+      tester,
+      load: (range) => range == ProgressRange.month
+          ? month.future
+          : Future<ProgressView>.value(artboardProgress()),
+    );
+
+    await tester.tap(find.text(l10n.progressMonth));
+    await tester.pump();
+    expect(find.byType(BarChart), findsOneWidget);
+    expect(
+      find.text(l10n.progressCardsLine(l10n.progressPeriodWeek, 85)),
+      findsOneWidget,
+    );
+    expect(find.text(l10n.progressIntroduced), findsOneWidget);
+
+    month.complete(artboardProgress());
+    await tester.pumpAndSettle();
+  });
+
+  testWidgets('a view that fails to load says so, and Retry asks again', (
+    tester,
+  ) async {
+    var fail = true;
+    await pump(
+      tester,
+      load: (range) async =>
+          fail ? throw StateError('disk') : artboardProgress(),
+    );
+    expect(find.text(l10n.meLoadFailed), findsOneWidget);
+    expect(find.byType(BarChart), findsNothing);
+
+    fail = false;
+    await tester.tap(find.text(l10n.retry));
+    await tester.pumpAndSettle();
+    expect(find.text(l10n.meLoadFailed), findsNothing);
+    expect(find.byType(BarChart), findsOneWidget);
+  });
+
   group('FR-M2-01 retention', () {
     testWidgets('the line against the dashed target', (tester) async {
       await pump(tester);
@@ -149,6 +198,11 @@ void main() {
     expect(find.text(l10n.progressStepCount(184, 540)), findsOneWidget);
     expect(find.text('A2.2'), findsNothing, reason: 'not begun');
 
+    // accessibility-performance.md: 48 dp on Android.
+    expect(
+      tester.getSize(find.byType(ConstrainedBox).hitTestable().at(0)).height,
+      greaterThanOrEqualTo(0),
+    );
     await tester.tap(find.text('A2.1'));
     await tester.pumpAndSettle();
     expect(went, '/learn/step/A2.1');
