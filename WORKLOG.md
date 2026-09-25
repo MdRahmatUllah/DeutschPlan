@@ -206,3 +206,4 @@ able to tell what is going on without asking.
 - 2026-09-25 03:00 · agent-2 · #158 device check (emulator-5558): widget_refresh ran and requeued hourly; plan_pregenerate ran and requeued for 00:05; reminder_compose ran after setup and requeued for tomorrow 02:45; the 02:55 reminder fired as 'Time for German / 7 new · about 6 min' with id 20260925; app DB fine after (cold start, a rating saved)
 - 2026-09-25 03:04 · agent-2 #158 · PR #360 open; review requested from agent-1
 - 2026-09-25 03:07 · agent-2 #148 · claimed: M6 · Export and import
+- 2026-09-25 03:48 · agent-2 · #148 device check (emulator-5558): M6 export 3 KB, share sheet offers deutschplan-2026-09-25.json, dismissed = still 'never'; picked /Download/deutschplan-2026-09-20.json via DocumentsUI, preview '0 word states · A1.1'; Replace asked first, then imported: Today greets 'Nadia' (settings reloaded). Found and fixed: each card merged into one semantics node.
