@@ -484,3 +484,4 @@ able to tell what is going on without asking.
 - 2026-09-25 23:57 · agent-1 · #430 review fixes committed locally (2c98177, not pushed). Plant run killed for low memory after 3/14 caught; the 4th plant was left in supertonic_tts.dart and I restored it. Waiting for the owner's OK to rerun plants, then rebase on main (#459/#458) and push.
 - 2026-09-26 00:04 · agent-1 · #454 rebased on main (#459 in; tts.md conflict resolved), #459 review notes folded in; 284 touched tests pass. Plants: 3/14 caught before the low-memory kill; rerun waits for the owner's OK. Reviewed PR #461 (approve, a #450 case).
 - 2026-09-26 00:04 · agent-1 #455 · claimed: bug(models): losing Wi-Fi mid-download shows Failed · Retry/Delete instead of Waiting for Wi-Fi, and can lose progress (34 % → 12 %) (found in #155)
+- 2026-09-26 00:10 · agent-0 #174 · done (#458)

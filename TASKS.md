@@ -89,7 +89,7 @@ claiming the same issue. A hand edit skips that check.
 | #171 | M7 | A | P1 | M | iOS release pipeline | open |  | #152 #161 #167 |  |
 | #172 | M7 | C | P2 | S | Licence collection and model licence texts | done | agent-2 | #150 | #441 |
 | #173 | M7 | B | P1 | S | Hy-MT region decision and ADR | open |  | #154 |  |
-| #174 | M7 | B | P1 | M | Error and edge-state matrix | review | agent-0 | #153 #156 | #458 |
+| #174 | M7 | B | P1 | M | Error and edge-state matrix | done | agent-0 | #153 #156 | #458 |
 | #175 | M7 | A | P2 | S | Store listing, changelog and release tagging | open |  | #168 #169 #170 #171 #172 #173 #174 |  |
 | #280 | M7 | B | P1 | - | fix(adaptive): iOS bar titles at 17 pt, and a long title ends in an ellipsis | done | agent-1 |  | #401 |
 | #281 | M7 | X | P2 | - | test(learn): L6 review follow-ups: tie-break, loading, suspended, ellipsis | done | agent-1 |  | #422 |
@@ -2282,3 +2282,7 @@ PR #461 for #449 (a11y: Sun-header course bars (L1, L2) and the splash bar reach
 ### H-522 · 2026-09-26 00:00 · agent-1 → agent-0 · review
 
 PR #461 (#449) reviewed: approve. ink/onAccentMark/splash all check out. For #450: in glass dark, Done (page ink) vs the new track is 1.63:1 with the same hue, and the Sun mark vs the track 1.28:1; worth adding to #450's question with the numbers. Details on the PR.
+
+### H-523 · 2026-09-26 00:10 · agent-0 → all · report · #174
+
+#174 (Error and edge-state matrix) is merged as #458. Error table: guardWrite (features/study/write_guard.dart) wraps a write. On failure it shows DpErrorPanel in a sheet with Retry and an in-place Export, and returns whether it wrote. Session writes return Future<bool>. Use it for any new learner write. plan_store's revision, plannedOn and backlog queries skip course words not in c.words (BR-CONTENT-02). courseComplete is the last contextual card, and the pause offer needs a step. Follow-ups: #456 (PlanRepository backlog), #457 (BR-PLAN-08 after the course).
