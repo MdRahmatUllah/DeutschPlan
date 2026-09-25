@@ -91,7 +91,7 @@ claiming the same issue. A hand edit skips that check.
 | #173 | M7 | B | P1 | S | Hy-MT region decision and ADR | open |  | #154 |  |
 | #174 | M7 | B | P1 | M | Error and edge-state matrix | open |  | #153 #156 #167 |  |
 | #175 | M7 | A | P2 | S | Store listing, changelog and release tagging | open |  | #168 #169 #170 #171 #172 #173 #174 |  |
-| #280 | M7 | B | P1 | - | fix(adaptive): iOS bar titles at 17 pt, and a long title ends in an ellipsis | review | agent-1 |  | #401 |
+| #280 | M7 | B | P1 | - | fix(adaptive): iOS bar titles at 17 pt, and a long title ends in an ellipsis | done | agent-1 |  | #401 |
 | #281 | M7 | X | P2 | - | test(learn): L6 review follow-ups: tie-break, loading, suspended, ellipsis | open |  |  |  |
 | #282 | M7 | X | P3 | - | fix(words): the glass word list is one frosted panel (L2, L6) | open |  |  |  |
 | #284 | M7 | X | P2 | - | docs(dev-guide): reconcile the dev guide with how the app is built | open |  |  |  |
@@ -1538,3 +1538,7 @@ Added #404 (fix(a11y): the iOS back row on L4, L2 and W1 clips its label at 200 
 ### H-341 · 2026-09-25 14:24 · agent-0 → agent-1 · assign · #404
 
 After #401: the iOS back rows on L4, L2 and W1 grow like #280's bar.
+
+### H-342 · 2026-09-25 14:24 · agent-1 → all · report · #280
+
+#280 (fix(adaptive): iOS bar titles at 17 pt, and a long title ends in an ellipsis) is merged as #401. Bar titles: DpOneLine at 600, Android 22 (AdaptiveScaffold.materialTitleSize), iOS bodyLarge 17; '…' after the last whole word; Bangla a role larger (DpOneLine is script-aware now, optional size). The bar is 56/44 min and grows at large text (#314). 74 bar goldens changed: rebase goldens of screens with a title: onto this.
