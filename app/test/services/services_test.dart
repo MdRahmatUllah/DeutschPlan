@@ -251,6 +251,21 @@ class _FakeDownloader implements FileDownloader {
   final List<DownloadTask> queued = <DownloadTask>[];
 
   @override
+  bool isWiFi = true;
+
+  @override
+  FileDownloader configureNotification({
+    TaskNotification? running,
+    TaskNotification? complete,
+    TaskNotification? error,
+    TaskNotification? paused,
+    TaskNotification? canceled,
+    bool progressBar = false,
+    bool tapOpensFile = false,
+    String groupNotificationId = '',
+  }) => this;
+
+  @override
   Future<List<bool>> enqueueAll(Iterable<Task> tasks) async {
     queued.addAll(tasks.cast<DownloadTask>());
     return <bool>[for (final _ in tasks) true];

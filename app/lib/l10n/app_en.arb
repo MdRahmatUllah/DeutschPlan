@@ -635,9 +635,9 @@
   "@onboardingSupertonicTitle": {
     "description": "S2 page 5: the Supertonic card's title."
   },
-  "onboardingSupertonicBody": "Supertonic speaks German more naturally and works offline. About {megabytes} MB, downloaded once.",
+  "onboardingSupertonicBody": "Supertonic speaks German more naturally and works offline. About {megabytes} MB, over Wi-Fi, downloaded once.",
   "@onboardingSupertonicBody": {
-    "description": "S2 page 5: the Supertonic card. megabytes is the manifest's size, rounded.",
+    "description": "S2 page 5: the Supertonic card. megabytes is the manifest's size, rounded. Wi-Fi only is the owner's decision (#245).",
     "placeholders": {
       "megabytes": {
         "type": "int",
@@ -653,10 +653,6 @@
   "@onboardingSupertonicLater": {
     "description": "S2 page 5: declines the download for now."
   },
-  "onboardingSupertonicStarted": "Downloading in the background · keep going",
-  "@onboardingSupertonicStarted": {
-    "description": "S2 page 5: the download is queued; onboarding carries on."
-  },
   "onboardingSupertonicDeferred": "You can download it any time in Settings",
   "@onboardingSupertonicDeferred": {
     "description": "S2 page 5: after Later."
@@ -664,6 +660,48 @@
   "onboardingSupertonicFailed": "Couldn't start the download · try again, or later in Settings",
   "@onboardingSupertonicFailed": {
     "description": "S2 page 5: queueing the download failed."
+  },
+  "onboardingSupertonicDownloading": "Downloading · {percent}% · keep going",
+  "@onboardingSupertonicDownloading": {
+    "description": "S2 page 5: the voice is downloading in the background; onboarding carries on (#428).",
+    "placeholders": {
+      "percent": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "onboardingSupertonicWaiting": "Waiting for Wi-Fi · keep going",
+  "@onboardingSupertonicWaiting": {
+    "description": "S2 page 5: the voice is queued, and waits for Wi-Fi because Wi-Fi only is on (#428)."
+  },
+  "onboardingSupertonicPaused": "Paused at {percent}% · resume it in Settings",
+  "@onboardingSupertonicPaused": {
+    "description": "S2 page 5: the learner paused the voice's download in the model manager (#428).",
+    "placeholders": {
+      "percent": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "onboardingSupertonicReady": "Ready · downloaded and checked",
+  "@onboardingSupertonicReady": {
+    "description": "S2 page 5: the voice is on the phone and verified; nothing to download (#428)."
+  },
+  "onboardingSupertonicDownloadFailed": "Couldn't download · try again",
+  "@onboardingSupertonicDownloadFailed": {
+    "description": "S2 page 5: a file of the voice failed to download or verify; a Retry button follows (#428)."
+  },
+  "onboardingSupertonicShortfall": "Needs {megabytes} MB more space",
+  "@onboardingSupertonicShortfall": {
+    "description": "S2 page 5: Download now is disabled; megabytes is what the phone lacks for the voice and a margin, rounded up (#428).",
+    "placeholders": {
+      "megabytes": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
   },
   "onboardingStartLearning": "Start learning",
   "@onboardingStartLearning": {
@@ -5605,6 +5643,22 @@
   "modelNotifyRunningNote": "Carries on in the background",
   "@modelNotifyRunningNote": {
     "description": "Under the running notification (FR-M4-01)."
+  },
+  "modelNotifyWaiting": "Waiting for Wi-Fi · {finished} of {total} files",
+  "@modelNotifyWaiting": {
+    "description": "The model downloads' notification title when they were queued off Wi-Fi with Wi-Fi only on (#428). {finished} and {total} are the downloader's own tokens, filled in on the device.",
+    "placeholders": {
+      "finished": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "modelNotifyWaitingNote": "Downloads on Wi-Fi, in the background",
+  "@modelNotifyWaitingNote": {
+    "description": "Under the waiting notification (#428)."
   },
   "modelNotifyPaused": "Model download paused",
   "@modelNotifyPaused": {

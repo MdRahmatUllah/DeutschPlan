@@ -84,6 +84,8 @@ void main() {
           ...todayStub(),
           settingsProvider.overrideWithValue(settings),
           meaningSampleProvider.overrideWith((ref) async => null),
+          // Page 5 asks the phone about the voice (#428): no downloader here.
+          supertonicOnPhoneProvider.overrideWith((ref) => const Stream.empty()),
           courseStepsProvider.overrideWith(
             (ref) async => <CourseStep>[
               (code: 'A1.1', levelCode: 'A1', wordCount: 637),
