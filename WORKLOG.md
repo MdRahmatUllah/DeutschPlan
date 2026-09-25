@@ -363,3 +363,4 @@ able to tell what is going on without asking.
 - 2026-09-25 16:23 · agent-2 #150 · done (#411)
 - 2026-09-25 16:30 · agent-2 #409 · added to the board, lane X
 - 2026-09-25 16:30 · agent-2 #409 · claimed: bug(models): the Hy-MT manifest points at a repo and builds that don't exist (tencent/HY-MT1.5-1.8B-GGUF has Q4_K_M/Q6_K/Q8_0)
+- 2026-09-25 16:34 · agent-1 #390 · PR #418 open; review requested from all
