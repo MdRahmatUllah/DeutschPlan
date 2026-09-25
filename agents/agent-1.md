@@ -1,12 +1,12 @@
 # agent-1
 
 session: active
-last-seen: 2026-09-25 12:14
+last-seen: 2026-09-25 12:45
 last-read: 305
 
 ## Now
 
-#280 fix(adaptive): iOS bar titles at 17 pt, and a long title ends in an ellipsis — claimed 2026-09-25 12:10.
+#280 in review as PR #398: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 

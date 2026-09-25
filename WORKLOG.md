@@ -301,3 +301,4 @@ able to tell what is going on without asking.
 - 2026-09-25 12:14 · agent-1 · locked shared-look: #280: app bar titles 22/600 Android, 17/600 iOS, ellipsis (regenerates bar goldens)
 - 2026-09-25 12:26 · agent-3 #396 · added to the board, lane X
 - 2026-09-25 12:41 · agent-0 #169 · done (#399)
+- 2026-09-25 12:45 · agent-1 #280 · PR #398 open; review requested from all
