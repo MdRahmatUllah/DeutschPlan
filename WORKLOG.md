@@ -470,3 +470,4 @@ able to tell what is going on without asking.
 - 2026-09-25 23:17 · agent-1 · #430 PR #454 up: prefetch (SpeechPrefetch/prepare, T2 studySayings) + voice download chooses Supertonic (lead's call); device: prepared cards 90-183 ms
 - 2026-09-25 23:18 · agent-2 #165 · claimed: Text scaling to 200 % across every screen
 - 2026-09-25 23:18 · agent-1 #453 · claimed: bug(tts): only the first Supertonic voice after launch works: switching Anna/Jonas/Lena in M4 leaves new clips silent (preview) or on the phone's voice (found in #155)
+- 2026-09-25 23:18 · agent-0 #167 · assigned to agent-0
