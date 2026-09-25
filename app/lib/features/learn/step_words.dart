@@ -205,24 +205,23 @@ class _StepWordsTabState extends ConsumerState<StepWordsTab> {
                     color: tokens.color.textSecondary,
                   ),
                 )
-              : DecoratedBox(
-                  decoration: BoxDecoration(
-                    border: Border(
-                      top: BorderSide(color: tokens.surface.outline),
-                    ),
-                  ),
+              : WordListPanel(
                   // FR-L2-02: built as it scrolls, every row the height of
                   // the first: 64 dp, or more at large text (#314). The key
                   // keeps the place across a trip to W1 and back.
                   child: ListView.builder(
                     key: PageStorageKey<String>('step-words-$code'),
                     padding: EdgeInsets.zero,
+                    // Its panel ends at the last row (#282): the extent is
+                    // the prototype's times the count, so nothing more is built.
+                    shrinkWrap: true,
                     prototypeItem: shown.isEmpty
                         ? null
                         : WordRow(
                             word: shown.first.word,
                             meaning: shown.first.meaning,
                             last: false,
+                            onPanel: true,
                           ),
                     itemCount: shown.length,
                     itemBuilder: (context, index) {
@@ -234,6 +233,7 @@ class _StepWordsTabState extends ConsumerState<StepWordsTab> {
                           word: row.word,
                           meaning: row.meaning,
                           last: index == shown.length - 1,
+                          onPanel: true,
                         ),
                       );
                     },

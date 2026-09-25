@@ -21,7 +21,7 @@ Tiles *Quick* (10) · *Standard* (20) · *Long* (30) · *Forms* ("Perfekt, 3rd p
 
 **Functional requirements**
 - FR-L2-01 The header's "days left" = remaining To-do words ÷ daily_new × (7 ÷ study days).
-- FR-L2-02 Filters combine (status AND category); list is virtualised.
+- FR-L2-02 Filters combine (status AND category); list is virtualised. Under Aurora Glass the word list is one frosted panel, as the glass artboards draw it: blur, sheen and top highlight, with the rows unfilled on it. That is one `BackdropFilter` for the list, never one per row. The panel ends at the last row, so a short list leaves the aurora clear below (#282).
 - FR-L2-03 *Start* enrols the step (BR-COURSE-04): completes the current enrollment's `completed_on = today`, inserts the new one; today's plan is unchanged (BR-PLAN-08).
 - FR-L2-04 Quiz tiles build `QuizArgs(source: stepLearned, …)` and push L8; *Forms* uses direction `forms`.
 - FR-L2-05 Grammar rows show FSRS due from `grammar_state`.

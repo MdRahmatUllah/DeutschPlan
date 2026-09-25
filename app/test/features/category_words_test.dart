@@ -7,6 +7,8 @@ import 'package:deutschplan/core/components/dp_chip.dart';
 import 'package:deutschplan/core/components/dp_progress_ring.dart';
 import 'package:deutschplan/core/providers/app_providers.dart';
 import 'package:deutschplan/core/theme/app_theme.dart';
+import 'package:deutschplan/core/theme/dp_surface.dart';
+import 'package:deutschplan/core/theme/glass_capability.dart';
 import 'package:deutschplan/data/db/app_database.dart';
 import 'package:deutschplan/data/db/content_dao.dart';
 import 'package:deutschplan/data/repositories/setting_keys.dart';
@@ -49,6 +51,7 @@ void main() {
     List<CategoryProgress>? categories,
     List<StepWord>? words,
     Stream<List<StepWord>>? stream,
+    ThemeData? theme,
   }) async {
     quiz = null;
     tester.view
@@ -84,11 +87,15 @@ void main() {
           ),
           ...wordStub(),
         ],
-        child: MaterialApp.router(
-          theme: AppTheme.light(),
-          localizationsDelegates: appLocalizationsDelegates,
-          supportedLocales: supportedLocales,
-          routerConfig: routes,
+        // A phone that composites blur, as the glass goldens have it.
+        child: GlassCapabilityScope(
+          notifier: GlassCapability.always(),
+          child: MaterialApp.router(
+            theme: theme ?? AppTheme.light(),
+            localizationsDelegates: appLocalizationsDelegates,
+            supportedLocales: supportedLocales,
+            routerConfig: routes,
+          ),
         ),
       ),
     );
@@ -288,6 +295,57 @@ void main() {
       ),
       findsOneWidget,
     );
+  });
+
+  testWidgets('#282 on glass the word list is one frosted panel: one blur '
+      'for the list, the rows unfilled; on paper, rows as before', (
+    tester,
+  ) async {
+    Finder listBlur() => find.descendant(
+      of: find.byType(WordListPanel),
+      matching: find.byType(BackdropFilter),
+    );
+    Color? fillOf(String german) =>
+        (tester
+                    .widget<Container>(
+                      find
+                          .descendant(
+                            of: row(german),
+                            matching: find.byType(Container),
+                          )
+                          .first,
+                    )
+                    .decoration!
+                as BoxDecoration)
+            .color;
+
+    // The aurora drifts for ever: held still, as the glass goldens hold it.
+    tester.platformDispatcher.accessibilityFeaturesTestValue =
+        const FakeAccessibilityFeatures(disableAnimations: true);
+    addTearDown(tester.platformDispatcher.clearAccessibilityFeaturesTestValue);
+    await pump(tester, theme: AppTheme.glass());
+    expect(listBlur(), findsOneWidget, reason: 'one BackdropFilter, not seven');
+    expect(fillOf('Wohnung'), isNull);
+    expect(fillOf('Wohngemeinschaft'), isNull);
+    // The panel ends at the last row, with the aurora clear below it.
+    expect(
+      tester
+          .getBottomLeft(
+            find.descendant(
+              of: find.byType(WordListPanel),
+              matching: find.byType(DpSurface),
+            ),
+          )
+          .dy,
+      moreOrLessEquals(
+        tester.getBottomLeft(row('Wohngemeinschaft')).dy,
+        epsilon: 2,
+      ),
+    );
+
+    await pump(tester);
+    expect(listBlur(), findsNothing);
+    expect(fillOf('Wohnung'), isNotNull);
   });
 
   testWidgets('a row opens its word', (tester) async {
