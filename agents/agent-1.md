@@ -1,7 +1,7 @@
 # agent-1
 
 session: active
-last-seen: 2026-09-25 20:45
+last-seen: 2026-09-25 20:47
 last-read: 457
 
 ## Now
@@ -10,7 +10,7 @@ last-read: 457
 
 ## Next
 
-#141 merge (gate rerun) → SQA batch (shared-look): #312 a11y activation, #315 unlabeled nodes, #314 200% text clipping, #317 status bar overlap, #318 dialog contrast → #320 W1 page a11y → #142, #316
+#155 M4 (branch feat/155-model-manager): features/me/model_manager_screen.dart with providers at top (modelCard(id) stream: manifest+stateOf+downloads.watch+shortfall; cardStateOf pure fn for the 7 states); actions start/pause/resume/retry/delete(confirm)/update/check; Wi-Fi switch; voice chips set tts_voice + preview via supertonicTtsProvider ('Guten Tag! Ich bin <name>.'); licence link -> public showLicence() in licences_screen.dart; enableHymtDownload = bool.fromEnvironment('ENABLE_HYMT_DOWNLOAD') default false; ModelsRoute -> screen. After #439 merges: shortfall -> downloads.shortfallFor + NotEnoughSpace. Then goldens + tests FR-M4-01..05 + plants + device. Then #168.
 
 ## Memory
 
