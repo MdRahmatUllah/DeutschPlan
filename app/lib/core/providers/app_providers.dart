@@ -33,6 +33,7 @@ import 'package:deutschplan/data/repositories/grammar_repository.dart';
 import 'package:deutschplan/data/repositories/model_repository.dart';
 import 'package:deutschplan/data/repositories/plan_repository.dart';
 import 'package:deutschplan/data/repositories/plan_store.dart';
+import 'package:deutschplan/data/repositories/progress_repository.dart';
 import 'package:deutschplan/data/repositories/quiz_run_service.dart';
 import 'package:deutschplan/data/repositories/quiz_store.dart';
 import 'package:deutschplan/data/repositories/rating_service.dart';
@@ -394,6 +395,11 @@ QuizBuilder quizBuilder(Ref ref) => QuizBuilder(
         .read(SettingKeys.desiredRetention),
   ),
 );
+
+/// M2's reads (#145): the days, the revision ratings, the totals.
+@riverpod
+ProgressRepository progressRepository(Ref ref) =>
+    ProgressRepository(ref.watch(appDatabaseProvider));
 
 /// L12's data (#130): the paper, its answers and time, and the submit.
 @riverpod
