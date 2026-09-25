@@ -866,5 +866,13 @@
   "licencesModels": "মডেল",
   "licencesFonts": "ফন্ট",
   "licencesPackages": "প্যাকেজ",
-  "licencesOther": "লাইসেন্স"
+  "licencesOther": "লাইসেন্স",
+  "modelNotifyRunning": "মডেল ডাউনলোড হচ্ছে · {total}টির মধ্যে {finished}টি ফাইল",
+  "modelNotifyRunningNote": "ব্যাকগ্রাউন্ডে চলতে থাকবে",
+  "modelNotifyPaused": "মডেল ডাউনলোড থেমে আছে",
+  "modelNotifyPausedNote": "ওয়াই-ফাইতে আবার চলবে, বা ভয়েস ও অনুবাদ থেকে",
+  "modelNotifyComplete": "মডেল ডাউনলোড হয়েছে",
+  "modelNotifyCompleteNote": "ব্যবহারের আগে যাচাই করা হবে",
+  "modelNotifyFailed": "একটি মডেল ডাউনলোড ব্যর্থ হয়েছে",
+  "modelNotifyFailedNote": "ভয়েস ও অনুবাদ থেকে আবার চেষ্টা করুন"
 }

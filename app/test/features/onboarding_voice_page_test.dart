@@ -414,4 +414,7 @@ class _FakeDownloads implements ModelDownloads {
     if (fails) throw StateError('no network');
     started.add(modelId);
   }
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
