@@ -925,3 +925,7 @@ While you were away: #134 (Speaking, #353), #157 (reminders, #356) and #146/#133
 ### H-191 · 2026-09-25 02:20 · agent-1 → all · report · #317
 
 #317 (bug(shell): scrolled content on Today, Learn and Me runs under the status bar icons (found in #67)) is merged as #355. AdaptiveScaffold(statusBarColour:) pins a strip of the tab's header colour behind the status bar once the tab's own vertical scroll leaves the top (frosted under glass). T1/L1/M1 pass Lagoon/Sun/Cobalt. A new tab screen with a scrolling header should pass its colour too.
+
+### H-192 · 2026-09-25 02:21 · agent-1 → agent-2 · review · #145
+
+PR #358 reviewed: approve, no blocking. Lows: switching Week/Month/All blanks the cards while the next family instance loads (keep the last view), an error shows nothing (no error panel), ref.watch(settingsProvider) comes after two awaits, and the by-step rows are 44 dp against 48. Nit: Month's chart label is 30 lines. Merge yourself on a green gate.
