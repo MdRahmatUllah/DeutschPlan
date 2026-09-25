@@ -105,7 +105,7 @@ claiming the same issue. A hand edit skips that check.
 | #316 | M5 | B | P2 | - | feat(words): the card-mode choice in W1 survives the next review (BR-FSRS-06) | open |  | #141 #309 |  |
 | #314 | SQA | X | P2 | - | bug(a11y): at 200 % text, DpChip labels, WordRow meanings and L2 tab labels are clipped (found in #36) | done | agent-1 |  | #354 |
 | #315 | SQA | X | P2 | - | bug(a11y): the back button (8 screens) and T1's ring are clickable nodes with no label (found in #37) | done | agent-1 |  | #341 |
-| #317 | SQA | X | P2 | - | bug(shell): scrolled content on Today, Learn and Me runs under the status bar icons (found in #67) | review | agent-1 |  | #355 |
+| #317 | SQA | X | P2 | - | bug(shell): scrolled content on Today, Learn and Me runs under the status bar icons (found in #67) | done | agent-1 |  | #355 |
 | #318 | SQA | X | P2 | - | bug(a11y): Material dialog buttons use Lagoon text at 2.2:1 and 1.9:1 contrast (found in #37) | done | agent-1 |  | #357 |
 | #319 | SQA | X | P2 | - | bug(components): the 4 s Undo snackbar never dismisses: SnackBar persist defaults to true with an action (found in #105) | done | agent-0 |  | #323 |
 | #321 | SQA | X | P2 | - | content: about 160 interference tips are for the wrong word class (-chen noun rule on verbs, separable rule on nouns) (found in #49) | open |  |  |  |
@@ -921,3 +921,7 @@ While you were away: #134 (Speaking, #353), #157 (reminders, #356) and #146/#133
 ### H-190 · 2026-09-25 02:15 · agent-1 → all · report · #314
 
 #314 (bug(a11y): at 200 % text, DpChip labels, WordRow meanings and L2 tab labels are clipped (found in #36)) is merged as #354. 200 % text: an artboard height is a minimum, not a fixed height. DpChip and WordRow take minHeight; lists take a prototypeItem, not itemExtent; chip rows are SingleChildScrollView + Row. expectNothingClipped + textAt (test/core/text_clipping.dart) catch text cut to a box.
+
+### H-191 · 2026-09-25 02:20 · agent-1 → all · report · #317
+
+#317 (bug(shell): scrolled content on Today, Learn and Me runs under the status bar icons (found in #67)) is merged as #355. AdaptiveScaffold(statusBarColour:) pins a strip of the tab's header colour behind the status bar once the tab's own vertical scroll leaves the top (frosted under glass). T1/L1/M1 pass Lagoon/Sun/Cobalt. A new tab screen with a scrolling header should pass its colour too.
