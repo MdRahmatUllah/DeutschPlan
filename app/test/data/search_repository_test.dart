@@ -259,6 +259,10 @@ void main() {
       });
     });
 
+    test('#139 the course\'s word count, from meta', () async {
+      expect(await search.courseWords(), 3);
+    });
+
     group("L2's step", () {
       test('goes into every tier, before the caps', () async {
         final other = await search.search('Haus', step: 'A1.2');

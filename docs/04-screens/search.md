@@ -25,6 +25,12 @@
 - **My words** lists `custom_words` newest first: the headword with its article's colour, then "meaning · where it was seen · seen N×". The count shows from the second time. A row opens R2 on that word (`/search/add/:id`).
 - With no recents or no words of one's own, that heading is left out, and *Add a word I found* (R2, `/search/add`) is always there.
 
+**Filled in by #139 (no results):**
+- The page shows when a search of the whole course finds no word and no sentence. Kept to L2's step, an empty result says nothing about the course, so it stays the list with the web row.
+- The count is the course's own, `meta.word_count`, formatted for the language ("5,594"). A course without it says "None of the course words…".
+- The web chips are the five of FR-R1-06 at 44 dp (`DpChip(large: true)`, a pill under glass). A chip, like *Add "…" as my word*, counts as a search (FR-R1-04).
+- *Add "…" as my word* opens R2 with the word filled in: `/search/add?german=…`.
+
 **Functional requirements**
 - FR-R1-01 Results per `03-domain/search.md`, debounced 120 ms, isolate-run, < 50 ms per query.
 - FR-R1-02 Enter/search key opens the first exact match's detail.

@@ -399,11 +399,14 @@ class SearchRoute extends GoRouteData with $SearchRoute {
 }
 
 class AddWordRoute extends GoRouteData with $AddWordRoute {
-  const AddWordRoute();
+  const AddWordRoute({this.german});
+
+  /// R1's no-results *Add "…" as my word* (#139): the word, filled in.
+  final String? german;
 
   /// Pushed from R1 (navigation.md), so back returns to the search.
-  static void open(BuildContext context) =>
-      unawaited(context.push<void>(const AddWordRoute().location));
+  static void open(BuildContext context, {String? german}) =>
+      unawaited(context.push<void>(AddWordRoute(german: german).location));
 
   @override
   Widget build(BuildContext context, GoRouterState state) =>

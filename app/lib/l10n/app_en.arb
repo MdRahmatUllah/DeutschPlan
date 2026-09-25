@@ -4466,5 +4466,36 @@
   "exportImportFooter": "Neither needs an account. The file never passes through a server.",
   "@exportImportFooter": {
     "description": "M6's footer (BR-PRIV-02)."
+  },
+  "searchNoneTitle": "Not in the course",
+  "@searchNoneTitle": {
+    "description": "R1 no results (#139): the title when the course has no such word."
+  },
+  "searchNoneBody": "{count} words, none spelled like this. Typos are tolerated, so it is probably a compound or a rare word.",
+  "@searchNoneBody": {
+    "description": "R1 no results: under the title. count is the course's word count (meta.word_count).",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "searchNoneBodyNoCount": "None of the course words is spelled like this. Typos are tolerated, so it is probably a compound or a rare word.",
+  "@searchNoneBodyNoCount": {
+    "description": "R1 no results: under the title, when the course doesn't give its word count."
+  },
+  "searchNoneAdd": "Add “{word}” as my word",
+  "@searchNoneAdd": {
+    "description": "R1 no results: the button that opens R2 with the searched word filled in.",
+    "placeholders": {
+      "word": {
+        "type": "String"
+      }
+    }
+  },
+  "searchNoneFootnote": "Opens the web in an in-app browser — the only time DeutschPlan goes online.",
+  "@searchNoneFootnote": {
+    "description": "R1 no results: under the button, about the web chips (BR-PRIV-01)."
   }
 }

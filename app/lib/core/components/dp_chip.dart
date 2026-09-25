@@ -40,6 +40,7 @@ class DpChip extends StatelessWidget {
     this.icon,
     this.semanticLabel,
     this.ink,
+    this.large = false,
   });
 
   final String label;
@@ -81,11 +82,17 @@ class DpChip extends StatelessWidget {
   /// reader should expand, such as a step code.
   final String? semanticLabel;
 
-  double get height => switch (kind) {
-    DpChipKind.step || DpChipKind.status => 24,
-    DpChipKind.streak => 28,
-    DpChipKind.filter || DpChipKind.webLink => 32,
-  };
+  /// R1's no-results web chips (#139): 44 dp and 15 px, as SearchNone draws
+  /// them, and a pill under glass.
+  final bool large;
+
+  double get height => large
+      ? 44
+      : switch (kind) {
+          DpChipKind.step || DpChipKind.status => 24,
+          DpChipKind.streak => 28,
+          DpChipKind.filter || DpChipKind.webLink => 32,
+        };
 
   @override
   Widget build(BuildContext context) {
@@ -117,13 +124,17 @@ class DpChip extends StatelessWidget {
     };
     final outlineWidth = glassFilter ? tokens.surface.outlineWidth : 1.5;
 
-    final (role, weight) = switch (kind) {
-      DpChipKind.step || DpChipKind.status => (DpTextRole.caption, 700.0),
-      DpChipKind.streak => (DpTextRole.label, 700.0),
-      DpChipKind.filter || DpChipKind.webLink => (DpTextRole.label, 600.0),
-    };
+    final (role, weight) = large
+        ? (DpTextRole.body, 600.0)
+        : switch (kind) {
+            DpChipKind.step || DpChipKind.status => (DpTextRole.caption, 700.0),
+            DpChipKind.streak => (DpTextRole.label, 700.0),
+            DpChipKind.filter ||
+            DpChipKind.webLink => (DpTextRole.label, 600.0),
+          };
 
-    final radius = kind == DpChipKind.streak || glassFilter
+    final radius =
+        kind == DpChipKind.streak || glassFilter || (large && tokens.isGlass)
         ? height / 2
         : tokens.shape.chip;
 
@@ -152,7 +163,10 @@ class DpChip extends StatelessWidget {
     // with its label rather than cutting it in half (#314).
     final chip = Container(
       constraints: BoxConstraints(minHeight: height),
-      padding: EdgeInsets.symmetric(horizontal: tokens.spacing.sm, vertical: 2),
+      padding: EdgeInsets.symmetric(
+        horizontal: large ? 14 : tokens.spacing.sm,
+        vertical: 2,
+      ),
       decoration: BoxDecoration(
         color: fill,
         borderRadius: BorderRadius.circular(radius),
