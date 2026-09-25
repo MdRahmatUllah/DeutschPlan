@@ -215,6 +215,10 @@ void main() {
     test('#388 a word family is one target', () {
       expect(sameTargetFamily('Beweis', 'beweisen'), isTrue);
       expect(sameTargetFamily('Klage', 'klagen'), isTrue);
+      // By the umlaut-free key, as the chips find them.
+      expect(sameTargetFamily('Zahl', 'zählen'), isTrue);
+      expect(sameTargetFamily('Arzt', 'Ärztin'), isTrue);
+      expect(sameTargetFamily('Brot', 'Brötchen'), isTrue);
       expect(sameTargetFamily('Richter', 'Beweis'), isFalse);
     });
 

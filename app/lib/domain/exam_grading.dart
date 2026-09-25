@@ -90,8 +90,12 @@ const Set<String> _verbEndings = <String>{
 }
 
 /// Whether [word] is a form of [target].
-bool _finds(String word, ({String prefix, bool verb}) target) {
-  final (expanded, folded) = _keys(word);
+bool _finds(String word, ({String prefix, bool verb}) target) =>
+    _findsKeys(_keys(word), target);
+
+/// [_finds] over a word's keys, worked out once per word.
+bool _findsKeys((String, String) keys, ({String prefix, bool verb}) target) {
+  final (expanded, folded) = keys;
   for (final key in <String>[expanded, folded]) {
     if (!key.startsWith(target.prefix)) continue;
     if (!target.verb ||
@@ -111,13 +115,15 @@ bool _finds(String word, ({String prefix, bool verb}) target) {
 /// matching of targets to its distinct words (Kuhn's augmenting paths:
 /// ten targets, a few hundred words).
 List<String> targetsUsed(String text, List<String> targets) {
-  final words = textWords(text).toSet().toList();
+  final words = <(String, String)>[
+    for (final word in textWords(text).toSet()) _keys(word),
+  ];
   final finds = <List<int>>[
     for (final target in targets)
       if (_target(target) case final found when found.prefix.isNotEmpty)
         <int>[
           for (var w = 0; w < words.length; w++)
-            if (_finds(words[w], found)) w,
+            if (_findsKeys(words[w], found)) w,
         ]
       else
         const <int>[],
@@ -141,11 +147,20 @@ List<String> targetsUsed(String text, List<String> targets) {
   ];
 }
 
-/// Whether one of [a] and [b] finds the other's forms (#388): Beweis and
-/// beweisen, Klage and klagen. A Writing list keeps one of them.
+/// Whether one of [a] and [b] could claim the other's words (#388): one's
+/// prefix starts the other's (Beweis and beweisen), or one is a form of the
+/// other by its umlaut-free key (Zahl and zählen, Arzt and Ärztin). A
+/// Writing list keeps one of them.
+///
+/// ponytail: prefixes, so it also parts sehen and sehr, which no one word
+/// serves; that costs a list some variety, never its ten.
 bool sameTargetFamily(String a, String b) {
-  final (x, y) = (_target(a).prefix, _target(b).prefix);
-  return x.isNotEmpty && y.isNotEmpty && (x.startsWith(y) || y.startsWith(x));
+  final (x, y) = (_target(a), _target(b));
+  if (x.prefix.isEmpty || y.prefix.isEmpty) return false;
+  return x.prefix.startsWith(y.prefix) ||
+      y.prefix.startsWith(x.prefix) ||
+      _finds(a, y) ||
+      _finds(b, x);
 }
 
 /// The [connectors] [text] uses, as the Writing screen lists them: whole
