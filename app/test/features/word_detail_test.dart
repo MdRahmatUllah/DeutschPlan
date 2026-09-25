@@ -151,7 +151,7 @@ void main() {
         key: UniqueKey(),
         overrides: <Override>[
           settingsProvider.overrideWithValue(settings),
-          ttsProvider.overrideWithValue(tts),
+          fakeVoice(tts),
           todayProvider.overrideWithValue('2026-09-21'),
           wordDetailProvider.overrideWith(
             (ref, uid) => error != null
@@ -334,7 +334,7 @@ void main() {
       final container = ProviderContainer(
         overrides: <Override>[
           settingsProvider.overrideWithValue(settings),
-          ttsProvider.overrideWithValue(tts),
+          fakeVoice(tts),
           todayProvider.overrideWithValue('2026-09-21'),
           wordDetailProvider.overrideWith((ref, uid) => words.stream),
           wordHistoryProvider.overrideWith(
@@ -380,7 +380,7 @@ void main() {
         ProviderScope(
           overrides: <Override>[
             settingsProvider.overrideWithValue(settings),
-            ttsProvider.overrideWithValue(tts),
+            fakeVoice(tts),
             todayProvider.overrideWithValue('2026-09-21'),
             wordDetailProvider.overrideWith((ref, uid) => words.stream),
             wordHistoryProvider.overrideWith(
@@ -868,7 +868,7 @@ void main() {
           overrides: <Override>[
             appDatabaseProvider.overrideWithValue(db),
             settingsProvider.overrideWithValue(settings),
-            ttsProvider.overrideWithValue(tts),
+            fakeVoice(tts),
             todayProvider.overrideWithValue('2026-09-21'),
           ],
           child: MaterialApp.router(

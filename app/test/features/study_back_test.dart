@@ -154,7 +154,7 @@ void main() {
         ProviderScope(
           overrides: <Override>[
             settingsProvider.overrideWithValue(settings),
-            ttsProvider.overrideWithValue(tts),
+            fakeVoice(tts),
             studyBackProvider(shown.uid).overrideWith((ref) async {
               if (broken) throw StateError('content.db is being replaced');
               return extras;
@@ -333,7 +333,7 @@ void main() {
       expect(find.textContaining('≈'), findsNothing);
     });
 
-    testWidgets('FR-T2-01 autoplay_example on: the first example plays on '
+    testWidgets('V03 FR-T2-01 autoplay_example on: the first example plays on '
         'reveal', (tester) async {
       await pump(tester, revealed: false, autoplayExample: true);
       expect(tts.said, isEmpty);
@@ -369,7 +369,7 @@ void main() {
       expect(find.text('bill, invoice'), findsOneWidget);
     });
 
-    testWidgets('off: nothing plays', (tester) async {
+    testWidgets('V03 autoplay_example off: nothing plays', (tester) async {
       await pump(tester, revealed: false);
       turned.value = true;
       await tester.pumpAndSettle();

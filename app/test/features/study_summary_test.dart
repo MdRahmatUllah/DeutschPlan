@@ -147,7 +147,7 @@ VALUES ('$today', 9, 12, 900)
         overrides: <Override>[
           appDatabaseProvider.overrideWithValue(db),
           settingsProvider.overrideWithValue(settings),
-          ttsProvider.overrideWithValue(tts ?? FakeTts()),
+          fakeVoice(tts ?? FakeTts()),
           clockProvider.overrideWithValue(() => DateTime(2026, 9, 21, 9)),
           if (next != null)
             studyNextProvider(today).overrideWith((ref) async => next),
@@ -652,7 +652,7 @@ VALUES ('$today', 9, 12, 900)
         overrides: <Override>[
           appDatabaseProvider.overrideWithValue(db),
           settingsProvider.overrideWithValue(settings),
-          ttsProvider.overrideWithValue(FakeTts()),
+          fakeVoice(FakeTts()),
           studyNextProvider(today).overrideWith(
             (ref) async => StudyNext(sentences: 3, backlog: 0, dayDone: true),
           ),

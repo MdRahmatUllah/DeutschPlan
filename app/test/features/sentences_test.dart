@@ -116,7 +116,7 @@ INSERT INTO sentence_log (word_uid, ord, shown_on, self_rating) VALUES
         overrides: <Override>[
           appDatabaseProvider.overrideWithValue(db),
           settingsProvider.overrideWithValue(settings),
-          ttsProvider.overrideWithValue(tts),
+          fakeVoice(tts),
           clockProvider.overrideWithValue(() => DateTime(2026, 9, 21, 9)),
         ],
         child: MaterialApp.router(

@@ -74,7 +74,7 @@ void main() {
           ...settingsStub(),
           ...wordStub(),
           settingsProvider.overrideWithValue(StubSettings()),
-          ttsProvider.overrideWithValue(tts),
+          fakeVoice(tts),
           wordActionsProvider.overrideWithValue(actions),
           todayProvider.overrideWithValue('2026-09-21'),
         ],

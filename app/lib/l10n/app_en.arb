@@ -1460,6 +1460,14 @@
   "@speakerNoVoice": {
     "description": "Toast on any speaker (T2, T3, T5, L4, L6, S3…) when the phone has no German system voice: on a tap that could not speak, and on each tap of the slashed speaker. T2's autoplay says it once (accessibility-performance.md)."
   },
+  "speakerFallback": "Supertonic isn't ready, so the phone voice is speaking.",
+  "@speakerFallback": {
+    "description": "One-time toast (once per app session) on any speaker when Supertonic is the chosen voice but is missing or fails, and the phone voice speaks instead (#153, accessibility-performance.md). Its action opens Settings."
+  },
+  "speakerFallbackSettings": "Settings",
+  "@speakerFallbackSettings": {
+    "description": "The action on the speakerFallback toast: opens Settings (M3), where the voice engine is chosen (#153)."
+  },
   "studyTip": "⚠ {tip}",
   "@studyTip": {
     "description": "T2 back: the interference-tip callout. tip is the course's own text.",

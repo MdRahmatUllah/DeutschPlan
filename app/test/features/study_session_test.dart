@@ -65,7 +65,7 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code) VALUES
   List<Override> overrides() => <Override>[
     appDatabaseProvider.overrideWithValue(db),
     settingsProvider.overrideWithValue(settings),
-    ttsProvider.overrideWithValue(FakeTts(spoken: spoken)),
+    fakeVoice(FakeTts(spoken: spoken)),
   ];
 
   const args = SessionArgs(

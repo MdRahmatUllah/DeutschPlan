@@ -82,7 +82,7 @@ void main() {
         overrides: <Override>[
           ...todayStub(null, null, null, topic, course),
           settingsProvider.overrideWithValue(settings),
-          ttsProvider.overrideWithValue(FakeTts(voice: voice, spoken: spoken)),
+          fakeVoice(FakeTts(voice: voice, spoken: spoken)),
           grammarRatingServiceProvider.overrideWithValue(_Rating(marked)),
         ],
         child: MaterialApp.router(

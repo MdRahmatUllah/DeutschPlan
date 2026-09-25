@@ -94,7 +94,7 @@ void main() {
         overrides: <Override>[
           appDatabaseProvider.overrideWithValue(db),
           settingsProvider.overrideWithValue(settings),
-          ttsProvider.overrideWithValue(tts),
+          fakeVoice(tts),
           todayProvider.overrideWithValue('2026-09-21'),
           openWebProvider.overrideWithValue((page) async {
             opened.add(page);

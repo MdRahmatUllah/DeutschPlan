@@ -448,8 +448,31 @@ abstract final class DpToast {
   static const Duration duration = Duration(seconds: 2);
 
   /// [lift] floats it clear of a thumb zone, as [DpUndo.show]'s does.
-  static void show(BuildContext context, String message, {double lift = 0}) =>
-      _showInverse(context, message: message, duration: duration, lift: lift);
+  ///
+  /// An [actionLabel] with [onAction] is a link — the TTS fallback's Settings
+  /// (#153) — and stays [DpUndo.duration], long enough to reach.
+  static void show(
+    BuildContext context,
+    String message, {
+    double lift = 0,
+    String? actionLabel,
+    VoidCallback? onAction,
+  }) {
+    final action = actionLabel == null || onAction == null
+        ? null
+        : SnackBarAction(
+            label: actionLabel,
+            textColor: context.tokens.color.inverseLink,
+            onPressed: onAction,
+          );
+    _showInverse(
+      context,
+      message: message,
+      duration: action == null ? duration : DpUndo.duration,
+      lift: lift,
+      action: action,
+    );
+  }
 }
 
 /// The shared undo affordance.

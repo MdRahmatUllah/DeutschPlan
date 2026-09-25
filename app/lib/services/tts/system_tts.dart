@@ -8,8 +8,8 @@ import 'package:flutter_tts/flutter_tts.dart';
 /// The phone's own German voice.
 ///
 /// What S2 plays before any model exists — FR-S2 page 5's "Hear it" works on
-/// a fresh install with nothing downloaded — and, until #153, every other
-/// speaker's voice too.
+/// a fresh install with nothing downloaded — and `TtsService`'s fallback
+/// whenever Supertonic is missing or fails (#153).
 class SystemTts implements TtsEngine {
   SystemTts([FlutterTts? tts]) : _tts = tts ?? FlutterTts() {
     // The plugin calls back whichever FlutterTts registered last, so there is

@@ -111,7 +111,7 @@ void main() {
         ProviderScope(
           overrides: <Override>[
             settingsProvider.overrideWithValue(settings),
-            ttsProvider.overrideWithValue(tts),
+            fakeVoice(tts),
           ],
           child: MaterialApp(
             theme: theme ?? AppTheme.light(),
@@ -229,15 +229,16 @@ void main() {
       expect(tts.said.single.$2, closeTo(1.25 * 0.75, 1e-9));
     });
 
-    testWidgets('autoplay_headword on: the word plays as the card appears', (
-      tester,
-    ) async {
+    testWidgets('V03 autoplay_headword on: the word plays as the card '
+        'appears', (tester) async {
       await pump(tester, autoplay: true);
       await tester.pump();
       expect(tts.said, <(String, double)>[('die Rechnung', 1)]);
     });
 
-    testWidgets('off: it waits to be asked', (tester) async {
+    testWidgets('V03 autoplay_headword off: it waits to be asked', (
+      tester,
+    ) async {
       await pump(tester);
       await tester.pump();
       expect(tts.said, isEmpty);
@@ -290,7 +291,7 @@ void main() {
         ProviderScope(
           overrides: <Override>[
             settingsProvider.overrideWithValue(settings),
-            ttsProvider.overrideWithValue(tts),
+            fakeVoice(tts),
           ],
           child: MaterialApp(
             theme: AppTheme.light(),

@@ -50,6 +50,7 @@ import 'package:deutschplan/services/model_downloads.dart';
 import 'package:deutschplan/services/notification_permission.dart';
 import 'package:deutschplan/services/tts/system_tts.dart';
 import 'package:deutschplan/services/tts/tts_engine.dart';
+import 'package:deutschplan/services/tts/tts_service.dart';
 import 'package:deutschplan/data/repositories/translation_repository.dart';
 import 'package:deutschplan/data/repositories/word_actions.dart';
 import 'package:deutschplan/services/translation/translator.dart';
@@ -333,14 +334,34 @@ TtsEngine systemTts(Ref ref) {
   return tts;
 }
 
-/// The voice every speaker uses (`tts.md`). #153 puts `TtsService` — engine
-/// choice and the fallback — here, so no speaker changes when it lands.
+/// Supertonic 3 for [tts] (`tts.md`): null until #152's engine lands, and
+/// then `ref.watch(supertonicTtsProvider)`. [tts] falls back to the phone's
+/// voice while it is null, as it does when it fails. Kept alive because
+/// [tts] is.
 @Riverpod(keepAlive: true)
-TtsEngine tts(Ref ref) => ref.watch(systemTtsProvider);
+TtsEngine? supertonicVoice(Ref ref) => null;
+
+/// The voice every speaker uses (`tts.md`, #153): the engine `tts_engine`
+/// chooses, the fallback and the one player. Kept alive because the player
+/// and the once-a-session fallback toast outlive every screen.
+@Riverpod(keepAlive: true)
+TtsService tts(Ref ref) {
+  final service = TtsService(
+    ref.watch(systemTtsProvider),
+    ref.watch(settingsProvider),
+    supertonic: ref.watch(supertonicVoiceProvider),
+  );
+  ref.onDispose(service.dispose);
+  return service;
+}
+
+/// What [tts] is sounding, for the speakers' playing and loading looks.
+@riverpod
+Stream<TtsPlayback> ttsPlayback(Ref ref) => ref.watch(ttsProvider).playback;
 
 /// Whether [tts] can speak German now: a speaker is slashed when it cannot
 /// (accessibility-performance.md). Asked afresh whenever a screen starts
-/// watching it, and after a failed [TtsEngine.speak].
+/// watching it, and after a request that said nothing.
 @riverpod
 Future<bool> ttsAvailable(Ref ref) => ref.watch(ttsProvider).isAvailable();
 

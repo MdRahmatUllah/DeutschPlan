@@ -85,7 +85,7 @@ VALUES ('$today', '$uid', 'revise', 'A1.1'),
         overrides: [
           appDatabaseProvider.overrideWithValue(db),
           settingsProvider.overrideWithValue(settings),
-          ttsProvider.overrideWithValue(FakeTts()),
+          fakeVoice(FakeTts()),
           clockProvider.overrideWithValue(() => DateTime(2026, 9, 21, 9)),
         ],
         child: router

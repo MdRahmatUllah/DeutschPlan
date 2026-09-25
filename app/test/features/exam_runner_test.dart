@@ -702,7 +702,7 @@ void main() {
       ),
       more: <Override>[
         settingsProvider.overrideWithValue(settings),
-        ttsProvider.overrideWithValue(FakeTts(spoken: spoken)),
+        fakeVoice(FakeTts(spoken: spoken)),
       ],
     );
     for (var left = 3; left > 0; left--) {

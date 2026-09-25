@@ -237,7 +237,7 @@ void main() {
         tester,
         extra: <Override>[
           settingsProvider.overrideWithValue(settings),
-          ttsProvider.overrideWithValue(tts),
+          fakeVoice(tts),
         ],
       );
       await openLink(tester, 'deutschplan://word/uid-haus?speak=1');

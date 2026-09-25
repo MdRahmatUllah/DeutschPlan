@@ -69,7 +69,7 @@ class QuizItemView extends ConsumerWidget {
         alignment: AlignmentDirectional.centerStart,
         child: DpSpeakerButton(
           size: 64,
-          state: speakerState(ref),
+          state: speakerState(ref, item.prompt),
           semanticLabel: l10n.quizAskListening,
           onPressed: () => unawaited(say(ref, context, item.prompt)),
         ),
@@ -105,7 +105,7 @@ class QuizItemView extends ConsumerWidget {
           Flexible(child: GermanWord(item.prompt)),
           const SizedBox(width: 12),
           DpSpeakerButton(
-            state: speakerState(ref),
+            state: speakerState(ref, item.prompt),
             semanticLabel: l10n.quizPlay,
             onPressed: () => unawaited(say(ref, context, item.prompt)),
           ),
