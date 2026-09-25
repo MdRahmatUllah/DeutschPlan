@@ -161,6 +161,17 @@ class StepProgress {
           unlockTarget(todo: todo, introduced: introduced, percent: percent);
 }
 
+/// One of the learner's own words (`custom_words`), as R1's *My words* shows
+/// it.
+typedef MyWord = ({
+  int id,
+  String? article,
+  String german,
+  String meaning,
+  String? whereSeen,
+  int timesSeen,
+});
+
 /// Words, their state, and the transitions between statuses.
 ///
 /// `docs/02-data/user-database.md` and `docs/04-screens/word-detail.md`.
@@ -221,6 +232,22 @@ class WordRepository extends DatabaseAccessor<AppDatabase>
   Stream<List<WordWithState>> watchStep(String code) => _watchWords(
     (days) => wordsWithStateForStep(days, code).watch(),
     (row) => _word(row.w, row.s, row.derivedStatus),
+  );
+
+  /// R1's *My words* (#138): the learner's own words, newest first, as they
+  /// change.
+  Stream<List<MyWord>> watchMyWords() => myWords().watch().map(
+    (rows) => <MyWord>[
+      for (final row in rows)
+        (
+          id: row.id,
+          article: row.article,
+          german: row.german,
+          meaning: row.meaning,
+          whereSeen: row.whereSeen,
+          timesSeen: row.timesSeen,
+        ),
+    ],
   );
 
   /// [uids] with their state, in the order given — R1's results, which keep

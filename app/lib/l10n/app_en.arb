@@ -4241,5 +4241,47 @@
   "progressStreakLabel": "streak / best",
   "@progressStreakLabel": {
     "description": "M2 total label."
+  },
+  "searchRecent": "Recent",
+  "@searchRecent": {
+    "description": "R1 idle: the heading over the last searches, shown upper-case (FR-R1-04)."
+  },
+  "searchClearRecent": "Clear",
+  "@searchClearRecent": {
+    "description": "R1 idle: the link beside Recent that forgets the last searches."
+  },
+  "searchClearRecentLabel": "Clear recent searches",
+  "@searchClearRecentLabel": {
+    "description": "R1 idle: the Clear link as a screen reader hears it, since 'Clear' alone is also the field's."
+  },
+  "searchMyWords": "My words · {count}",
+  "@searchMyWords": {
+    "description": "R1 idle: the heading over the learner's own words, shown upper-case.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "searchMyWordsFrom": "From receipts, signs, chats",
+  "@searchMyWordsFrom": {
+    "description": "R1 idle: the note beside My words: where the learner found them."
+  },
+  "searchSeen": "seen {count}×",
+  "@searchSeen": {
+    "description": "R1 idle: how often the learner has come across one of their own words; shown from twice.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "searchMyWord": "My word",
+  "@searchMyWord": {
+    "description": "R1 idle: the chip on each of the learner's own words."
+  },
+  "searchAddWord": "Add a word I found",
+  "@searchAddWord": {
+    "description": "R1 idle: the button that opens R2 to add a word the learner came across."
   }
 }

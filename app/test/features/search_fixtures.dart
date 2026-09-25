@@ -88,3 +88,50 @@ SearchView artboardSearch() => SearchView(
     ),
   ],
 );
+
+/// The SearchIdle artboard's recent searches, newest first.
+const List<String> artboardRecent = <String>[
+  'Rechnung',
+  'umziehen',
+  'Kaution',
+  'strase',
+  'Nebenkosten',
+];
+
+/// The SearchIdle artboard's three own words.
+List<MyWord> artboardMyWords() => <MyWord>[
+  (
+    id: 1,
+    article: 'das',
+    german: 'Pfandflasche',
+    meaning: 'deposit bottle',
+    whereSeen: 'Rewe receipt',
+    timesSeen: 3,
+  ),
+  (
+    id: 2,
+    article: 'die',
+    german: 'Quittung',
+    meaning: 'receipt',
+    whereSeen: 'Bäckerei',
+    timesSeen: 1,
+  ),
+  (
+    id: 3,
+    article: null,
+    german: 'ausschließlich',
+    meaning: 'exclusively',
+    whereSeen: 'Mietvertrag',
+    timesSeen: 1,
+  ),
+];
+
+/// FR-R1-04's recents without a database.
+class StubRecentSearches extends RecentSearches {
+  StubRecentSearches(this.terms);
+
+  final List<String> terms;
+
+  @override
+  List<String> build() => terms;
+}
