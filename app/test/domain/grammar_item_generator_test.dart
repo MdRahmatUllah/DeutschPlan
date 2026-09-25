@@ -329,6 +329,26 @@ void main() {
     );
   });
 
+  test('FR-L15-01 #406 a made-up wrong form is none the course writes, never '
+      'another word: "Bitte!" is offered neither Bitter nor Bitten', () {
+    final course = CourseText(
+      words: const <({String german, String? forms})>[
+        (german: 'bitte', forms: null),
+        (german: 'bitter', forms: null),
+        (german: 'bitten', forms: 'bittet · hat gebeten'),
+      ],
+    );
+    for (var seed = 1; seed <= 20; seed++) {
+      final pick = first<PickTheForm>(
+        generateItems(one('Bitte!'), seed: seed, course: course),
+      );
+      expect(pick.answer, 'Bitte', reason: 'no real wrong form: made-up ones');
+      expect(pick.options, hasLength(3), reason: '$seed');
+      expect(pick.options, isNot(contains('Bitter')), reason: '$seed');
+      expect(pick.options, isNot(contains('Bitten')), reason: '$seed');
+    }
+  });
+
   test("FR-L15-01 #406 a word's forms are its headword's: not a phrase's, "
       "a separable verb's under its base's, and none of a word two write "
       'alike', () {
