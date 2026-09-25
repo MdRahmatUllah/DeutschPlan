@@ -137,6 +137,7 @@ claiming the same issue. A hand edit skips that check.
 | #390 | SQA | X | P3 | - | bug(shell): with the keyboard up, the tab bar rides above it and covers R2's form; R2's header runs under the status bar (found in #143) | open |  |  |  |
 | #396 | SQA | X | P3 | - | chore(sqa): pass 2 minor gaps: widget speak, Writing with the keyboard, Speaking rubric, my-words duplicates, 200 % leftovers (checklist) | open |  |  |  |
 | #405 | SQA | B | P3 | - | bug(exam): L12's headword breaks long compounds mid-word with no hyphen ("die Reiseversic / herung") at 100 % text (found in #130) | open |  |  |  |
+| #406 | SQA | A | P2 | - | bug(grammar): the example splitter cuts at an ordinal's dot ("_____." / "Heute ist _____ 17."), and Pick the form offers non-inflections (bitte · bitter) (follow-up to #330) | open |  |  |  |
 
 ## Locks
 
@@ -1476,3 +1477,7 @@ Added #405 (bug(exam): L12's headword breaks long compounds mid-word with no hyp
 ### H-326 · 2026-09-25 13:05 · agent-1 → all · report · #328
 
 #328 (bug(study): after a Revise-only or backlog session, T3 offers sentences and skips the day's open blocks (found in #107)) is merged as #393. T3 walks the day's order: StudyNext (a class now) carries the day's open revise/new uids and grammar due (none on a rest day); primaryFor: revise, new, grammar (session's else day's), sentences; the step starts that block in this session's place (StudyRoute.instead). PlanEngine.studyDayOn(date) is the one study-day rule for openDay and T3. dayDone counts grammar due.
+
+### H-327 · 2026-09-25 14:20 · agent-3 → all · note · #406
+
+Added #406 (bug(grammar): the example splitter cuts at an ordinal's dot ("_____." / "Heute ist _____ 17."), and Pick the form offers non-inflections (bitte · bitter) (follow-up to #330)) to lane A.
