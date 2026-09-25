@@ -505,3 +505,4 @@ able to tell what is going on without asking.
 - 2026-09-26 00:50 · agent-1 #452 · PR #470 open; review requested from all
 - 2026-09-26 00:51 · agent-1 · #452 PR #470: noVoice(ref) shared; WordPlayButton, StudyPlayButton, L4's play slashed with no voice. 4/4 plants, 120 goldens unchanged. Device check pending (lock is agent-0's).
 - 2026-09-26 00:51 · agent-1 #345 · claimed: chore(sqa): minor gaps from device testing M1–M6: l10n digits, study-flow nits, small a11y labels (checklist)
+- 2026-09-26 01:02 · agent-0 #456 · PR #471 open; review requested from all
