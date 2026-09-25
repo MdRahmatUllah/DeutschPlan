@@ -15,6 +15,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart' show listEquals;
 import 'package:deutschplan/features/me/about_screen.dart';
 import 'package:deutschplan/features/me/licences_screen.dart';
+import 'package:deutschplan/features/me/model_manager_screen.dart';
 import 'package:deutschplan/features/onboarding/onboarding_meaning_page.dart';
 import 'package:deutschplan/features/onboarding/onboarding_pace_page.dart';
 import 'package:deutschplan/features/onboarding/onboarding_shell.dart';
@@ -55,7 +56,6 @@ import 'package:deutschplan/features/words/word_detail_screen.dart';
 import 'package:deutschplan/core/adaptive/adaptive.dart';
 import 'package:deutschplan/core/theme/app_theme.dart'
     show StillPageTransitions;
-import 'package:deutschplan/router/placeholder_screen.dart';
 import 'package:cupertino_ui/cupertino_ui.dart'
     show CupertinoPageTransitionsBuilder;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -477,7 +477,7 @@ class ModelsRoute extends GoRouteData with $ModelsRoute {
 
   @override
   Widget build(BuildContext context, GoRouterState state) =>
-      const PlaceholderScreen(title: 'Voice & translation', screen: 'M4');
+      const ModelManagerScreen();
 }
 
 class ExportImportRoute extends GoRouteData with $ExportImportRoute {

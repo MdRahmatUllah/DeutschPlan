@@ -9,6 +9,7 @@ import 'package:deutschplan/data/repositories/model_repository.dart';
 import 'package:deutschplan/data/repositories/setting_keys.dart';
 import 'package:deutschplan/data/repositories/settings_repository.dart';
 import 'package:deutschplan/data/repositories/synthesis_cache.dart';
+import 'package:deutschplan/services/model_downloads.dart';
 import 'package:deutschplan/services/tts/supertonic_text.dart';
 import 'package:deutschplan/services/tts/tts_engine.dart';
 import 'package:flutter_onnxruntime/flutter_onnxruntime.dart';
@@ -27,8 +28,23 @@ class SupertonicTts implements TtsEngine {
     required this._cache,
     SupertonicLoader? load,
     ClipPlayer? player,
+    Stream<DownloadProgress>? downloads,
   }) : _load = load ?? OrtSupertonicModel.load,
-       _player = player ?? JustAudioClipPlayer();
+       _player = player ?? JustAudioClipPlayer() {
+    // A download of the voice that lands (M4's *Update*, or a new one) is new
+    // files: the open sessions and the cached clips are the old model's.
+    // A rebuilt engine hears the manager's last word first; a `ready` is a
+    // landing only after a download this engine saw under way.
+    var underWay = false;
+    _landed = downloads?.listen((download) {
+      if (download.phase != DownloadPhase.ready) {
+        underWay = true;
+      } else if (underWay) {
+        underWay = false;
+        unawaited(reload());
+      }
+    });
+  }
 
   /// The learner's voices (`tts_voice`), each a voice style of the download:
   /// the owner's choice (#245, #152). Anna, the first, is the default.
@@ -59,6 +75,15 @@ class SupertonicTts implements TtsEngine {
   /// to learn it again before the phone's voice speaks.
   bool _broken = false;
 
+  StreamSubscription<DownloadProgress>? _landed;
+
+  /// What [isAvailable] said last, so a model that goes is let go of once.
+  bool _wasAvailable = false;
+
+  /// The clip being made (its synthesis and its write), which [_release]
+  /// lets finish before it closes the sessions and clears the clips.
+  Future<Object?>? _synthesis;
+
   /// Each speak and stop takes a turn. A clip that was a turn behind by the
   /// time it was ready doesn't play: the learner has moved on.
   int _turn = 0;
@@ -80,7 +105,12 @@ class SupertonicTts implements TtsEngine {
         : (await _models.stateOf(entry, entry.variants.first)).status;
     final available =
         status == ModelStatus.ready || status == ModelStatus.updateAvailable;
-    if (!available) await _release();
+    if (!available && _wasAvailable) {
+      // It was here and has gone (M4's *Delete*): its sessions and its clips.
+      await _release();
+      await _cache.clear();
+    }
+    _wasAvailable = available;
     return available;
   }
 
@@ -95,18 +125,23 @@ class SupertonicTts implements TtsEngine {
       var clip = await _cache.hit(text, voice: voice, speed: speed);
       if (clip == null) {
         _state.add(TtsState.loading);
-        final model = await _open();
-        final samples = await model.synthesize(
-          text,
-          style: voices[voice]!,
-          speed: normalSpeed * speed,
-        );
-        clip = await _cache.write(
-          text,
-          voice: voice,
-          speed: speed,
-          bytes: wavBytes(samples, model.sampleRate),
-        );
+        // Synthesis and its write, as one: [_release] waits for both.
+        final making = () async {
+          final model = await _open();
+          final samples = await model.synthesize(
+            text,
+            style: voices[voice]!,
+            speed: normalSpeed * speed,
+          );
+          return _cache.write(
+            text,
+            voice: voice,
+            speed: speed,
+            bytes: wavBytes(samples, model.sampleRate),
+          );
+        }();
+        _synthesis = making;
+        clip = await making;
       }
       if (turn != _turn) return true;
       final Future<void> ended;
@@ -142,9 +177,19 @@ class SupertonicTts implements TtsEngine {
   /// Everything it holds: about 400 MB of sessions, the player and [state].
   Future<void> dispose() async {
     _turn++;
+    await _landed?.cancel();
     await _release();
     await _player.dispose();
     await _state.close();
+  }
+
+  /// A new download of the voice is in place: the sessions open again from
+  /// its files on the next clip, a failure to open is forgotten, and the old
+  /// model's clips go (#436).
+  Future<void> reload() async {
+    _broken = false;
+    await _release();
+    await _cache.clear();
   }
 
   Future<SupertonicModel> _open() => _model ??= () async {
@@ -163,6 +208,12 @@ class SupertonicTts implements TtsEngine {
     final model = _model;
     _model = null;
     if (model == null) return;
+    // Sessions closed under a running synthesis would fail it.
+    try {
+      await _synthesis;
+    } on Object {
+      // Its speak says so.
+    }
     try {
       await (await model).close();
     } on Object {
