@@ -685,7 +685,12 @@ class _Heading extends StatelessWidget {
               children: <Widget>[
                 Expanded(child: heading),
                 const SizedBox(width: 8),
-                Flexible(child: trailing),
+                Flexible(
+                  child: Align(
+                    alignment: Alignment.centerRight,
+                    child: trailing,
+                  ),
+                ),
               ],
             ),
     );
