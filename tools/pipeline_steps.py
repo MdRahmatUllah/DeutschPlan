@@ -484,6 +484,47 @@ def assign_search_keys(words: Sequence) -> None:
         word.search_key_alt = search_key_alt(word.german)
 
 
+# #287: an article typed into the German cell.
+#
+# 54 C1/C2 nouns read "das Gegenargument" with the Article cell empty, so the
+# headword lost its gender colour and the Articles quiz never asked them.
+# The article moves into `article`. A pair ("die Rente ↔ die Miete", "die
+# Kohle / die Kohlen", "die Zuspitzung — die Pointe") is two nouns and keeps
+# its articles. Run after the uids: they stay those of the cell as authored,
+# so no learner's progress on these words is reset.
+
+#: A leading article, and a rest that is one noun: no second article and no
+#: pair's separator. What `split_articles` moves.
+LEADING_ARTICLE = r"^(der|die|das) (?!.*(?:↔|/|—|–| der | die | das ))(.+)$"
+
+
+def split_articles(words: Sequence) -> tuple[int, list[str]]:
+    """Moves a typed-in article into `article`. Returns how many moved, and
+    a warning for each left alone because moving it would make it the same
+    word as another row: that is a duplicate for the author to delete."""
+    import re
+
+    pattern = re.compile(LEADING_ARTICLE)
+    same = {(w.level, w.german, w.pos, w.english) for w in words}
+    moved, warnings = 0, []
+    for word in words:
+        if getattr(word, "pos", None) != "noun" or getattr(word, "article", None):
+            continue
+        match = pattern.match((word.german or "").strip())
+        if not match:
+            continue
+        if (word.level, match.group(2), word.pos, word.english) in same:
+            warnings.append(
+                f"duplicate: {word.german!r} ({word.level}) is also a row of "
+                f"its own without the article. Its article stays in the "
+                f"German cell; delete one of the two rows."
+            )
+            continue
+        word.article, word.german = match.group(1), match.group(2)
+        moved += 1
+    return moved, warnings
+
+
 # PIPE-05 and PIPE-06: examples, and the cells Excel would have eaten.
 
 #: The four characters Excel reads as the start of a formula. A cell beginning

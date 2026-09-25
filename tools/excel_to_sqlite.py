@@ -34,6 +34,7 @@ from pipeline_steps import (
     assign_grammar_uids,
     assign_search_keys,
     assign_uids,
+    split_articles,
     LevelSplit,
     assign_sublevels,
     check_every_step_has_words,
@@ -510,6 +511,11 @@ def derive(sources: list[SourceBook]) -> dict[str, LevelSplit]:
         + assign_grammar_uids(grammar)
     )
     _report(warnings)
+    # After the uids, which stay those of the German cell as authored (#287).
+    moved, duplicates = split_articles(words)
+    _report(duplicates)
+    if moved:
+        print(f"articles: {moved} moved out of the German cell", file=sys.stderr)
 
     return splits
 
