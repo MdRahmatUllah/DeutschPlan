@@ -1052,6 +1052,30 @@ void main() {
       },
     );
 
+    test('BR-PLAN-04 #346 a past day reopened is as it was, and so are the '
+        'days after it', () async {
+      // Monday opened with nothing to revise; words learned by Tuesday. The
+      // clock goes back to Monday, then forward again.
+      final engine = engineWith();
+      expect((await engine.openDay(monday)).revise, isEmpty);
+      store.candidates = <RevisionCandidate>[
+        const RevisionCandidate(
+          uid: 'a',
+          stability: 5,
+          lastReview: '2026-02-20',
+        ),
+      ];
+      final tuesday = addDays(monday, 1);
+      await engine.openDay(tuesday);
+      final planned = Map<String, List<String>>.from(store.plan);
+
+      expect((await engine.openDay(monday)).revise, isEmpty);
+      expect(store.lastPlanned, tuesday, reason: 'never backwards');
+      await engine.openDay(tuesday);
+
+      expect(store.plan, planned);
+    });
+
     test('reopening does not re-walk days already planned', () async {
       final engine = engineWith();
       await engine.openDay(addDays(monday, 3));

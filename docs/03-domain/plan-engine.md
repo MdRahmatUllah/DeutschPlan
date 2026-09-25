@@ -28,8 +28,10 @@ for each day ≤ today:
       mark enrollment completed_on = day
       if !auto_advance or no next step: break
       enroll(next step, started_on = day, daily_new same)
-last_planned_date = today
+last_planned_date = max(last_planned_date, today)
 ```
+
+`last_planned_date` never moves back (#346): a clock or time zone that goes back reopens a past day as it was planned. Recording it would plan the days after it again, and give a finished day a Revise block.
 
 ### ensureRevise (BR-PLAN-03)
 
