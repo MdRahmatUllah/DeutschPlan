@@ -167,6 +167,13 @@ void main() {
       }
     });
 
+    /// Until the model has been asked for [n] clips: the disk is real.
+    Future<void> untilAsked(int n) async {
+      for (var i = 0; i < 500 && model.asked.length < n; i++) {
+        await Future<void>.delayed(const Duration(milliseconds: 2));
+      }
+    }
+
     Future<void> install() async {
       final staging = await models.beginDownload(ModelRepository.voiceModel);
       File('${staging.path}/F1.json').writeAsStringSync(style);
@@ -440,6 +447,77 @@ void main() {
         (await cache.fileFor('Haus', voice: 'Anna', speed: 1)).existsSync(),
         isFalse,
       );
+    });
+
+    test('#430 prepare makes each clip ahead, in order, into the cache, '
+        'without playing', () async {
+      await install();
+      await tts.prepare(<String>['das Haus', 'die Tür'], speed: 1.25);
+      expect(model.asked, <(String, String, double)>[
+        ('das Haus', 'F1.json', 1.05 * 1.25),
+        ('die Tür', 'F1.json', 1.05 * 1.25),
+      ]);
+      expect(player.played, isEmpty);
+      expect(
+        (await cache.fileFor(
+          'die Tür',
+          voice: 'Anna',
+          speed: 1.25,
+        )).existsSync(),
+        isTrue,
+      );
+      // Its first speak plays from the cache.
+      await tts.speak('das Haus', speed: 1.25);
+      expect(model.asked, hasLength(2));
+      expect(player.played, hasLength(1));
+    });
+
+    test('#430 a speak for a clip being made waits for it, rather than '
+        'making it twice', () async {
+      await install();
+      model.gate = Completer<void>();
+      final preparing = tts.prepare(<String>['das Haus']);
+      await untilAsked(1);
+      final speaking = tts.speak('das Haus');
+      await pumpEventQueue();
+      model.gate!.complete();
+      await preparing;
+      expect(await speaking, isTrue);
+      expect(model.asked, hasLength(1));
+      expect(player.played, hasLength(1));
+    });
+
+    test(
+      '#430 a newer prepare replaces the list, and an empty one stops it',
+      () async {
+        await install();
+        model.gate = Completer<void>();
+        final first = tts.prepare(<String>['eins', 'zwei', 'drei']);
+        await untilAsked(1);
+        final second = tts.prepare(<String>['vier']);
+        model.gate!.complete();
+        await Future.wait(<Future<void>>[first, second]);
+        expect(model.asked.map((a) => a.$1), <String>['eins', 'vier']);
+
+        model.gate = Completer<void>();
+        final third = tts.prepare(<String>['fünf', 'sechs']);
+        await untilAsked(3);
+        final stop = tts.prepare(const <String>[]);
+        model.gate!.complete();
+        await Future.wait(<Future<void>>[third, stop]);
+        expect(model.asked.map((a) => a.$1), <String>['eins', 'vier', 'fünf']);
+      },
+    );
+
+    test('#430 without the model, nothing is made; a failure stops it '
+        'quietly', () async {
+      await tts.prepare(<String>['das Haus']);
+      expect(loads, isEmpty);
+
+      await install();
+      model.fail = true;
+      await tts.prepare(<String>['das Haus', 'die Tür']);
+      expect(model.asked, hasLength(1), reason: 'stopped at the first');
     });
 
     test('#152 disposed: the sessions close, and the player goes', () async {

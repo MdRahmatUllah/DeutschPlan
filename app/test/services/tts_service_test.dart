@@ -71,6 +71,39 @@ void main() {
     });
   });
 
+  group('#430 clips made ahead', () {
+    testWidgets('Supertonic chosen: the service hands it the texts, at '
+        'tts_speed', (tester) async {
+      final prefetch = FakePrefetchTts();
+      await tester.runAsync(() => settings.write(SettingKeys.ttsSpeed, 1.25));
+      final tts = TtsService(phone, settings, supertonic: prefetch);
+      addTearDown(tts.dispose);
+      await tts.prepare(<String>['das Haus', 'die Tür']);
+      expect(prefetch.prepared, <List<String>>[
+        <String>['das Haus', 'die Tür'],
+      ]);
+      expect(prefetch.speeds, <double>[1.25]);
+    });
+
+    testWidgets("the phone's voice chosen: nothing is made, and a stop still "
+        'reaches Supertonic', (tester) async {
+      await choose(tester, TtsEngineSetting.system);
+      final prefetch = FakePrefetchTts();
+      final tts = TtsService(phone, settings, supertonic: prefetch);
+      addTearDown(tts.dispose);
+      await tts.prepare(<String>['das Haus']);
+      expect(prefetch.prepared, isEmpty);
+      await tts.prepare(const <String>[]);
+      expect(prefetch.prepared, <List<String>>[const <String>[]]);
+    });
+
+    testWidgets('an engine that cannot prepare is left alone', (tester) async {
+      final tts = service();
+      await tts.prepare(<String>['das Haus']);
+      expect(supertonic.spoken, isEmpty, reason: 'prepare never speaks');
+    });
+  });
+
   group('V03 the fallback to the phone voice, told once a session', () {
     testWidgets('Supertonic missing: the phone speaks; the first time says '
         'so, the next does not', (tester) async {

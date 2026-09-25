@@ -51,6 +51,35 @@ Future<StudyCloze?> studyCloze(Ref ref, String uid) async {
   return clozeOf(found.word, back.examples);
 }
 
+/// #430: what the session's cards will say, in their order: each word with
+/// its article, then its first example when `autoplay_example` is on. The
+/// voice makes these clips ahead, so a card's first sound doesn't wait for
+/// its synthesis.
+@riverpod
+Future<List<String>> studySayings(Ref ref, SessionArgs args) async {
+  // Read once, not watched: the session moves at every rating, and the
+  // cards' own providers must not be held with what they were at its start
+  // (a card mode changed mid-session is the card's to see).
+  final session = await ref.read(studySessionProvider(args).future);
+  final words = ref.read(wordRepositoryProvider);
+  final dao = ref.read(contentDaoProvider);
+  final examples = ref.read(settingsProvider).read(SettingKeys.autoplayExample);
+  final sayings = <String>[];
+  for (final item in session.items) {
+    if (item.kind == SessionBlockKind.grammar) continue;
+    final found = await words.find(item.uid);
+    if (found == null) continue;
+    sayings.add(spokenForm(found.word));
+    // ponytail: the course's first example, as `studyBack` gives it; a word
+    // of the learner's own plays its example unprepared.
+    if (examples && customId(item.uid) == null) {
+      final first = (await dao.examplesForWord(item.uid).get()).firstOrNull;
+      if (first != null) sayings.add(first.german);
+    }
+  }
+  return sayings;
+}
+
 /// The category most of the session's new words share, for the New block's
 /// banner: "Neue Wörter · Wohnen & Haushalt".
 @riverpod
@@ -88,6 +117,21 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
     listen: false,
   );
 
+  /// What the session's cards will say, as it is known; closed in [dispose]
+  /// before the session goes, which would otherwise ask it to rebuild.
+  ProviderSubscription<AsyncValue<List<String>>>? _sayings;
+
+  @override
+  void initState() {
+    super.initState();
+    // #430: the session's clips, made ahead while its first card shows.
+    _sayings = ref.listenManual(studySayingsProvider(widget.args), (_, next) {
+      if (next.value case final sayings?) {
+        unawaited(ref.read(ttsProvider).prepare(sayings));
+      }
+    }, fireImmediately: true);
+  }
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -97,6 +141,9 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
   @override
   void dispose() {
     _hide?.cancel();
+    _sayings?.close();
+    // What is left to make is for a session no longer open.
+    unawaited(_container.read(ttsProvider).prepare(const <String>[]));
     // A next step from T3 replaces this screen rather than popping it, so
     // the pop handler never runs: the session is cleared here too.
     _container.invalidate(studySessionProvider(widget.args));
