@@ -1,12 +1,12 @@
 # agent-1
 
 session: active
-last-seen: 2026-09-25 04:32
+last-seen: 2026-09-25 04:37
 last-read: 205
 
 ## Now
 
-#143 R2 · Add and edit my word — claimed 2026-09-25 04:02.
+#143 in review as PR #364: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
