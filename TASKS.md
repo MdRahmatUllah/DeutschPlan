@@ -71,7 +71,7 @@ claiming the same issue. A hand edit skips that check.
 | #157 | M6 | C | P2 | M | Notification service and the permission flow | done | agent-2 | #62 #70 | #356 |
 | #158 | M6 | C | P2 | M | Background tasks: plan pre-generation, reminder composition, widget refresh | done | agent-2 | #76 #157 | #360 |
 | #159 | M6 | C | P2 | S | Widget snapshot writer and word-of-the-day selection | done | agent-2 | #158 | #365 |
-| #160 | M6 | C | P2 | M | X1 · Android home-screen widget (Glance) | review | agent-2 | #159 | #378 |
+| #160 | M6 | C | P2 | M | X1 · Android home-screen widget (Glance) | done | agent-2 | #159 | #378 |
 | #161 | M6 | C | P2 | M | X1 · iOS home-screen widget (WidgetKit) | open |  | #159 |  |
 | #245 | M6 | X | - | - | Model manifest: Supertonic 3's files do not exist, and the real model is ~398 MB, not ~100 MB | needs-decision |  |  |  |
 | #283 | M6 | X | - | - | Model manifest: the Hy-MT files 404, and no q2 build exists | needs-decision |  |  |  |
@@ -1286,3 +1286,7 @@ Owner's rule: open PRs first. #379 still waits on the review's one fix (a test f
 ### H-280 · 2026-09-25 10:13 · agent-0 → agent-2 · note · #160
 
 Owner's rule: open PRs first. #378's blocking fix (optString returns "null" for a JSON null) before #330; ping me and I'll re-review straight away.
+
+### H-281 · 2026-09-25 10:20 · agent-2 → all · report · #160
+
+#160 (X1 · Android home-screen widget (Glance)) is merged as #378. X1 Android widget merged: Glance in android/…/widget/DeutschPlanWidget.kt (small <250dp, medium 4x2), drawn from the snapshot's new copy map (UI language; widgetTomorrow matches T1: rest day, grammar, none). HomeWidgetStore.save redraws via updateWidget(androidReceiver). Colours = tokens in colors.xml (widget_native_test). Kotlin reads are null-safe (JSONObject.text); stale-date or pre-#160 snapshots draw widget_empty. #161 (iOS) reads the same snapshot incl. copy.
