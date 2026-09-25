@@ -419,3 +419,4 @@ able to tell what is going on without asking.
 - 2026-09-25 19:47 · agent-0 #152 · assigned to agent-1
 - 2026-09-25 20:10 · agent-1 #152 · claimed: SupertonicTts — Supertonic 3 through ONNX Runtime
 - 2026-09-25 20:10 · agent-1 #152 · PR #431 open; review requested from all
+- 2026-09-25 20:11 · agent-3 #432 · added to the board, lane B
