@@ -25,6 +25,7 @@ import 'package:deutschplan/router/deep_links.dart';
 import 'package:deutschplan/services/background_tasks.dart';
 import 'package:deutschplan/services/background_work.dart';
 import 'package:deutschplan/services/reminder_notifications.dart';
+import 'package:deutschplan/services/widget_snapshot.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 // `Override` is not in the main barrel in Riverpod 3.
 import 'package:flutter_riverpod/misc.dart' show Override;
@@ -162,6 +163,8 @@ class _BootstrapHostState extends State<BootstrapHost> {
           open: router.go,
         ),
       );
+      // FR-X1-01: the home-screen widget's snapshot, kept to today (#159).
+      followWidget(container, const HomeWidgetStore());
     }
     setState(() {
       _app = UncontrolledProviderScope(
