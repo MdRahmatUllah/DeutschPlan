@@ -16,12 +16,7 @@ import 'golden_harness.dart';
 void main() {
   Widget results(StubExamResult stub) => ProviderScope(
     overrides: examResultStub(stub),
-    child: ExamResultsScreen(
-      attemptId: 7,
-      onHub: (_) {},
-      onStep: (_) {},
-      review: (_) => const SizedBox.shrink(),
-    ),
+    child: ExamResultsScreen(attemptId: 7, onHub: (_) {}, onStep: (_) {}),
   );
 
   goldenTest('exam_results', builder: (context) => results(StubExamResult()));

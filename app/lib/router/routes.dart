@@ -893,12 +893,6 @@ class ExamRoute extends GoRouteData with $ExamRoute {
       onHub: (step) =>
           LearnStepRoute(code: step, tab: StepTab.exams).go(context),
       onStep: (step) => LearnStepRoute(code: step).go(context),
-      // ponytail: L14 (#136) takes over from here.
-      review: (_) => PlaceholderScreen(
-        title: 'Exam review',
-        screen: 'L14',
-        detail: 'attempt $attemptId',
-      ),
     ),
   );
 }

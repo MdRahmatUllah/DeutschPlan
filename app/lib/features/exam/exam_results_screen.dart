@@ -13,6 +13,7 @@ import 'package:deutschplan/data/repositories/exam_result_service.dart';
 import 'package:deutschplan/domain/exam_generator.dart';
 import 'package:deutschplan/features/exam/exam_question_view.dart'
     show ExamRubricTick, examRubricLines;
+import 'package:deutschplan/features/exam/exam_review_screen.dart';
 import 'package:deutschplan/features/learn/step_exams.dart'
     show examSectionName;
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
@@ -39,7 +40,6 @@ class ExamResultsScreen extends ConsumerStatefulWidget {
     required this.attemptId,
     required this.onHub,
     required this.onStep,
-    required this.review,
     super.key,
   });
 
@@ -51,9 +51,6 @@ class ExamResultsScreen extends ConsumerStatefulWidget {
 
   /// *Back to step*: the step's detail (L2).
   final ValueChanged<String> onStep;
-
-  /// *Review answers*: L14 (#136), in this screen's place.
-  final WidgetBuilder review;
 
   @override
   ConsumerState<ExamResultsScreen> createState() => _ExamResultsScreenState();
@@ -118,7 +115,13 @@ class _ExamResultsScreenState extends ConsumerState<ExamResultsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if (_reviewing) return widget.review(context);
+    // *Review answers*: L14 in this screen's place, and back (#136).
+    if (_reviewing) {
+      return ExamReviewView(
+        attemptId: widget.attemptId,
+        onBack: () => setState(() => _reviewing = false),
+      );
+    }
     final tokens = context.tokens;
     final l10n = AppLocalizations.of(context);
     final loaded = ref.watch(examResultProvider(widget.attemptId));

@@ -2,6 +2,7 @@ import 'package:deutschplan/core/providers/app_providers.dart';
 import 'package:deutschplan/data/db/app_database.dart';
 import 'package:deutschplan/data/repositories/exam_result_service.dart';
 import 'package:deutschplan/domain/exam_generator.dart';
+import 'package:deutschplan/domain/grammar_item_generator.dart';
 import 'package:deutschplan/domain/plan_engine.dart' show PlanDate;
 import 'package:flutter_riverpod/misc.dart' show Override;
 
@@ -201,6 +202,90 @@ ExamResult failedResult() {
   ];
   return (
     attempt: resultAttempt(score: 25, passed: false),
+    rows: rows,
+    previous: null,
+    passPercent: 60,
+    missed: missedWords(rows),
+  );
+}
+
+/// The ExamReview artboard's paper: Q3 "die Wohnung" answered *house*, Q21
+/// "___ Rechnung" answered *der*, Q32 the grammar gap answered *weil*; and
+/// for the paths no artboard draws, Q17 almost right, Q18 left empty and
+/// Q36 a spot-the-error answered with the wrong word's index.
+ExamResult reviewResult() {
+  ExamResultRow at(ExamResultRow row, ExamItem item, String? given) => (
+    ord: row.ord,
+    item: item,
+    given: given,
+    points: 0.0,
+    rubric: row.rubric,
+    flagged: row.flagged,
+  );
+  final rows = <ExamResultRow>[
+    for (final row in artboardRows())
+      switch (row.ord) {
+        3 => at(
+          row,
+          const WordQuestion(
+            ExamSection.vocabulary,
+            'wohnung',
+            prompt: 'die Wohnung',
+            expected: 'flat, apartment',
+          ),
+          'house',
+        ),
+        17 => at(
+          row,
+          const WordQuestion(
+            ExamSection.reverse,
+            'wohnung',
+            prompt: 'flat, apartment',
+            expected: 'die Wohnung',
+          ),
+          'die Wohnug',
+        ),
+        18 => at(row, row.item, null),
+        21 => at(
+          row,
+          const WordQuestion(
+            ExamSection.articles,
+            'rechnung',
+            prompt: 'Rechnung',
+            expected: 'die',
+          ),
+          'der',
+        ),
+        32 => at(
+          row,
+          const GrammarQuestion(
+            'g5#0',
+            GapFill(
+              before: 'Wir gehen spazieren,',
+              after: 'es regnet.',
+              answer: 'obwohl',
+              translation: "We're going for a walk although it's raining.",
+            ),
+          ),
+          'weil',
+        ),
+        36 => at(
+          row,
+          const GrammarQuestion(
+            'g5#1',
+            SpotTheError(
+              tokens: <String>['Ich', 'habe', 'gegangen.'],
+              wrong: 1,
+              correction: 'bin',
+            ),
+          ),
+          '2',
+        ),
+        _ => row,
+      },
+  ];
+  return (
+    attempt: resultAttempt(),
     rows: rows,
     previous: null,
     passPercent: 60,

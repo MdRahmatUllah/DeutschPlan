@@ -55,7 +55,6 @@ void main() {
             attemptId: 7,
             onHub: hub.add,
             onStep: step.add,
-            review: (_) => const Scaffold(body: Text('L14')),
           ),
         ),
       ),
@@ -221,8 +220,12 @@ void main() {
     await tap(tester, l10n.examResultBackToStep);
     expect(hub, <String>['A1.2', 'A1.2']);
     expect(step, <String>['A1.2']);
+    // #136: L14 in L13's place, and back.
     await tap(tester, l10n.examResultReview);
-    expect(find.text('L14'), findsOneWidget);
+    expect(find.text(l10n.examReviewAll(40)), findsOneWidget);
+    await tester.binding.handlePopRoute();
+    await tester.pumpAndSettle();
+    expect(find.text(l10n.examResultPassed), findsOneWidget);
     semantics.dispose();
   });
 

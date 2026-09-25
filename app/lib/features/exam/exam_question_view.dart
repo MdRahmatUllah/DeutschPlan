@@ -162,14 +162,7 @@ class ExamQuestionView extends ConsumerWidget {
           ExamSection.wordForms => (
             l10n.examRunAskForm,
             DpText(
-              switch (form) {
-                FormLabel.plural => l10n.quizFormPlural(prompt),
-                FormLabel.thirdPerson => l10n.quizFormThirdPerson(prompt),
-                FormLabel.perfekt => l10n.quizFormPerfekt(prompt),
-                FormLabel.comparative => l10n.quizFormComparative(prompt),
-                FormLabel.superlative => l10n.quizFormSuperlative(prompt),
-                null => prompt,
-              },
+              examFormPrompt(l10n, prompt, form),
               role: DpTextRole.headline,
               weight: 600,
               textAlign: TextAlign.center,
@@ -1238,4 +1231,16 @@ List<String> examRubricLines(AppLocalizations l10n, ExamSection section) =>
         l10n.examWritingRubricStructure,
       ],
       _ => const <String>[],
+    };
+
+/// A Word forms question as the paper asks it: "Plural of Haus". L12 and
+/// L14.
+String examFormPrompt(AppLocalizations l10n, String prompt, FormLabel? form) =>
+    switch (form) {
+      FormLabel.plural => l10n.quizFormPlural(prompt),
+      FormLabel.thirdPerson => l10n.quizFormThirdPerson(prompt),
+      FormLabel.perfekt => l10n.quizFormPerfekt(prompt),
+      FormLabel.comparative => l10n.quizFormComparative(prompt),
+      FormLabel.superlative => l10n.quizFormSuperlative(prompt),
+      null => prompt,
     };
