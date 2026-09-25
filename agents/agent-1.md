@@ -1,12 +1,12 @@
 # agent-1
 
 session: active
-last-seen: 2026-09-25 07:21
+last-seen: 2026-09-25 08:03
 last-read: 251
 
 ## Now
 
-#368 fix(words): Suspend drops backlog rows too, so a resumed old-step word is never planned again (follow-up to #351) — claimed 2026-09-25 07:21.
+Nothing claimed.
 
 ## Next
 
