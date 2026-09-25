@@ -335,4 +335,28 @@ void main() {
       }
     }
   });
+
+  testWidgets("#280 a cut drops the joiner before its '…': never "
+      "'Argumentation &…'", (tester) async {
+    for (final (title, shown) in <(String, String)>[
+      ('Argumentation & Diskussion im Alltag', 'Argumentation…'),
+      ('Wohnen · Haushalt und Nachbarschaft', 'Wohnen…'),
+      ('Doctor, pharmacy and emergency care', 'Doctor…'),
+    ]) {
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: AppTheme.light(),
+          home: Scaffold(
+            body: Center(
+              child: SizedBox(
+                width: 180,
+                child: DpOneLine(title, role: DpTextRole.title),
+              ),
+            ),
+          ),
+        ),
+      );
+      expect(tester.widget<Text>(find.byType(Text)).data, shown, reason: title);
+    }
+  });
 }

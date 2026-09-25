@@ -332,7 +332,7 @@ class DpOneLine extends StatelessWidget {
           }
           shown = low == 0
               ? ellipsis
-              : '${words.take(low).join(' ').replaceAll(RegExp(r'[,;:—–-]+$'), '').trimRight()}$ellipsis';
+              : '${words.take(low).join(' ').replaceAll(RegExp(r'[,;:—–&·/+-]+$'), '').trimRight()}$ellipsis';
         }
         return DpScript.hasBengali(shown)
             ? Text.rich(
