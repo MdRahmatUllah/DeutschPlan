@@ -6,6 +6,8 @@
     <!-- The daily reminder. Android 13+ shows the permission dialog only for
          an app that declares this; FR-S2-05 asks when the switch goes on. -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+    <!-- The reminders are rescheduled after a reboot (#157). -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
     <!-- enableOnBackInvokedCallback is predictive back (navigation.md).
          Without it Android 13+ runs the legacy back handler and the swipe
          shows no preview of where it is going, however the Flutter side is
@@ -53,6 +55,18 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
+        <!-- flutter_local_notifications: shows a scheduled reminder, and puts
+         the schedule back after a reboot or an update (#157). Inexact
+         alarms, so no exact-alarm permission. -->
+    <receiver android:exported="false" android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationReceiver"/>
+    <receiver android:exported="false" android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationBootReceiver">
+        <intent-filter>
+            <action android:name="android.intent.action.BOOT_COMPLETED"/>
+            <action android:name="android.intent.action.MY_PACKAGE_REPLACED"/>
+            <action android:name="android.intent.action.QUICKBOOT_POWERON"/>
+            <action android:name="com.htc.intent.action.QUICKBOOT_POWERON"/>
+        </intent-filter>
+    </receiver>
     </application>
     <!-- Required to query activities that can process text, see:
          https://developer.android.com/training/package-visibility and

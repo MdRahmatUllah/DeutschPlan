@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'dart:io';
 
 import 'package:deutschplan/data/repositories/backup_repository.dart';
+import 'package:deutschplan/data/repositories/reminder_scheduler.dart';
 import 'package:deutschplan/core/theme/system_bars.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
@@ -20,6 +21,8 @@ import 'package:deutschplan/core/theme/theme_mode.dart';
 import 'package:deutschplan/data/repositories/setting_keys.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
 import 'package:deutschplan/router/app_router.dart';
+import 'package:deutschplan/router/deep_links.dart';
+import 'package:deutschplan/services/reminder_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 // `Override` is not in the main barrel in Riverpod 3.
 import 'package:flutter_riverpod/misc.dart' show Override;
@@ -145,6 +148,16 @@ class _BootstrapHostState extends State<BootstrapHost> {
       container.dispose();
       return;
     }
+    if (result is BootstrapReady) {
+      final router = result.bootstrap.router;
+      unawaited(
+        startReminders(
+          container,
+          PlatformReminderNotifications(),
+          open: router.go,
+        ),
+      );
+    }
     setState(() {
       _app = UncontrolledProviderScope(
         container: container,
@@ -168,6 +181,42 @@ class _BootstrapHostState extends State<BootstrapHost> {
         supportedLocales: supportedLocales,
         home: const SplashProgressGate(),
       );
+}
+
+/// The daily reminder (#157): the plugin set up, a tapped reminder opening
+/// what it links to, and the schedule kept to the settings from now on.
+///
+/// Like [followPlatformBrightness], a function a test can call: `main` is
+/// the one no test does. A plugin that fails to start costs the reminder,
+/// never the app.
+Future<StreamSubscription<SettingKey<Object?>>?> startReminders(
+  ProviderContainer container,
+  ReminderNotifications notifications, {
+  required void Function(String location) open,
+}) async {
+  void go(String link) => open(resolveDeepLink(Uri.parse(link)));
+  try {
+    await notifications.init(go);
+    // A tap that started the app arrives here, not through [init]'s
+    // callback, which hears only taps while it runs.
+    if (await notifications.launchedWith() case final link?) go(link);
+  } on Object catch (error) {
+    debugPrint('reminders: $error');
+    return null;
+  }
+  return ReminderScheduler(
+    container.read(settingsProvider),
+    notifications,
+    container.read(clockProvider),
+    (language) {
+      final l10n = lookupAppLocalizations(language.locale);
+      return (
+        title: l10n.reminderTitle,
+        body: l10n.reminderBody,
+        channel: l10n.reminderChannel,
+      );
+    },
+  ).follow();
 }
 
 /// Keeps the theme notifier in step with the system light/dark switch.

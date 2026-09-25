@@ -641,5 +641,8 @@
   "examWritingCount": "{count, plural, other{{count}টি শব্দ · ন্যূনতম {min}}}",
   "examWritingConnectors": "সংযোজক পাওয়া গেছে: {found}",
   "examWritingSubmit": "লেখা জমা দিন",
-  "examWritingFieldHint": "আপনার লেখা এখানে লিখুন, জার্মানে"
+  "examWritingFieldHint": "আপনার লেখা এখানে লিখুন, জার্মানে",
+  "reminderTitle": "জার্মানের সময়",
+  "reminderBody": "আজকের পরিকল্পনা তৈরি। কয়েক মিনিটই যথেষ্ট।",
+  "reminderChannel": "দৈনিক রিমাইন্ডার"
 }
