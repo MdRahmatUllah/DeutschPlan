@@ -520,7 +520,13 @@ class PlanEngine {
       if (step == null) break; // the course ran out, or auto-advance is off
     }
 
-    await _store.setLastPlannedDate(today);
+    // Never backwards (#346): a clock or time zone that moves back reopens a
+    // past day as it was; recording it as the last one planned would plan
+    // the days after it again, and give a finished one a Revise block.
+    final last = await _store.lastPlannedDate();
+    if (last == null || last.compareTo(today) < 0) {
+      await _store.setLastPlannedDate(today);
+    }
   }
 
   /// Plans one study day, advancing the step if it runs out (BR-COURSE-05).
