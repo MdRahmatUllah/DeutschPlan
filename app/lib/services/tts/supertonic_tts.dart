@@ -9,6 +9,7 @@ import 'package:deutschplan/data/repositories/model_repository.dart';
 import 'package:deutschplan/data/repositories/setting_keys.dart';
 import 'package:deutschplan/data/repositories/settings_repository.dart';
 import 'package:deutschplan/data/repositories/synthesis_cache.dart';
+import 'package:deutschplan/services/model_downloads.dart';
 import 'package:deutschplan/services/tts/supertonic_text.dart';
 import 'package:deutschplan/services/tts/tts_engine.dart';
 import 'package:flutter_onnxruntime/flutter_onnxruntime.dart';
@@ -27,8 +28,15 @@ class SupertonicTts implements TtsEngine {
     required this._cache,
     SupertonicLoader? load,
     ClipPlayer? player,
+    Stream<DownloadProgress>? downloads,
   }) : _load = load ?? OrtSupertonicModel.load,
-       _player = player ?? JustAudioClipPlayer();
+       _player = player ?? JustAudioClipPlayer() {
+    // A download of the voice that lands (M4's *Update*, or a new one) is new
+    // files: the open sessions and the cached clips are the old model's.
+    _landed = downloads
+        ?.where((download) => download.phase == DownloadPhase.ready)
+        .listen((_) => unawaited(reload()));
+  }
 
   /// The learner's voices (`tts_voice`), each a voice style of the download:
   /// the owner's choice (#245, #152). Anna, the first, is the default.
@@ -58,6 +66,8 @@ class SupertonicTts implements TtsEngine {
   /// hold the model (low memory, say) shouldn't make every tap wait seconds
   /// to learn it again before the phone's voice speaks.
   bool _broken = false;
+
+  StreamSubscription<DownloadProgress>? _landed;
 
   /// Each speak and stop takes a turn. A clip that was a turn behind by the
   /// time it was ready doesn't play: the learner has moved on.
@@ -142,9 +152,19 @@ class SupertonicTts implements TtsEngine {
   /// Everything it holds: about 400 MB of sessions, the player and [state].
   Future<void> dispose() async {
     _turn++;
+    await _landed?.cancel();
     await _release();
     await _player.dispose();
     await _state.close();
+  }
+
+  /// A new download of the voice is in place: the sessions open again from
+  /// its files on the next clip, a failure to open is forgotten, and the old
+  /// model's clips go (#436).
+  Future<void> reload() async {
+    _broken = false;
+    await _release();
+    await _cache.clear();
   }
 
   Future<SupertonicModel> _open() => _model ??= () async {

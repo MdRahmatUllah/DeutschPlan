@@ -10,6 +10,7 @@
     - A model that fails to open is remembered for the app session, so the next tap goes straight to the phone's voice.
     - A cached clip that won't play is deleted.
     - A model that stops being available (deleted, or its files broken) is closed.
+    - A download of the voice that lands (M4's *Update*, or a new download) reloads the engine: the sessions reopen from the new files on the next clip, a failed open is forgotten, and the old model's clips are cleared (#155, #436). Before this, a sample right after an in-process update was silent on the device until a relaunch.
     - `supertonicTts` is kept alive, and its `dispose` (wired to `ref.onDispose`) closes the sessions, the player and the state stream.
   - **Resolution:** `speak` resolves once the clip starts playing, as `SystemTts` does; `idle` follows when it ends or is stopped.
   - **Release build:** R8 must keep `ai.onnxruntime.**`, which ORT's native library finds by name (`android/app/proguard-rules.pro`). Without the rule, the first synthesis crashes the release app.

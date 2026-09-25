@@ -347,6 +347,9 @@ TtsEngine supertonicTts(Ref ref) {
     models: ref.watch(modelRepositoryProvider),
     settings: ref.watch(settingsProvider),
     cache: SynthesisCache(),
+    downloads: ref
+        .watch(modelDownloadsProvider)
+        .watch(ModelRepository.voiceModel),
   );
   // About 400 MB of sessions, a player and a stream: let go of on a rebuild.
   ref.onDispose(() => unawaited(tts.dispose()));
