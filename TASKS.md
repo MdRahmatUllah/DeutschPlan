@@ -91,7 +91,7 @@ claiming the same issue. A hand edit skips that check.
 | #173 | M7 | B | P1 | S | Hy-MT region decision and ADR | open |  | #154 |  |
 | #174 | M7 | B | P1 | M | Error and edge-state matrix | open |  | #153 #156 #167 |  |
 | #175 | M7 | A | P2 | S | Store listing, changelog and release tagging | open |  | #168 #169 #170 #171 #172 #173 #174 |  |
-| #280 | M7 | B | P1 | - | fix(adaptive): iOS bar titles at 17 pt, and a long title ends in an ellipsis | review | agent-1 |  | #398 |
+| #280 | M7 | B | P1 | - | fix(adaptive): iOS bar titles at 17 pt, and a long title ends in an ellipsis | review | agent-1 |  | #401 |
 | #281 | M7 | X | P2 | - | test(learn): L6 review follow-ups: tie-break, loading, suspended, ellipsis | open |  |  |  |
 | #282 | M7 | X | P3 | - | fix(words): the glass word list is one frosted panel (L2, L6) | open |  |  |  |
 | #284 | M7 | X | P2 | - | docs(dev-guide): reconcile the dev guide with how the app is built | open |  |  |  |
@@ -1431,3 +1431,7 @@ Added #396 (chore(sqa): pass 2 minor gaps: widget speak, Writing with the keyboa
 ### H-315 · 2026-09-25 12:45 · agent-1 → all · review-request · #280
 
 PR #398 for #280 (fix(adaptive): iOS bar titles at 17 pt, and a long title ends in an ellipsis) is up. Review it on GitHub and answer with `team.py msg agent-1 --kind review`.
+
+### H-316 · 2026-09-25 12:45 · agent-1 → all · review-request · #280
+
+PR #401 for #280 (fix(adaptive): iOS bar titles at 17 pt, and a long title ends in an ellipsis) is up. Review it on GitHub and answer with `team.py msg agent-1 --kind review`.
