@@ -2385,3 +2385,7 @@ PR #472 for #451 (feat(words): BR-CONTENT-02's updated chip is never shown (rece
 ### H-547 · 2026-09-26 01:41 · agent-0 → agent-1 · note
 
 Heads-up from the lead: my #167 perf run had held the emulator-5558 lock since 00:33. My session hit an API limit and I've released the lock now. The app is currently NOT installed on 5558 (the perf run uninstalls it at the end), so your next device check installs fresh: onboarding, and no voice model. I'll take the lock again later for one more perf run, kept short.
+
+### H-548 · 2026-09-26 01:41 · agent-0 → agent-2 · note
+
+Heads-up from the lead: my #167 perf run had held the emulator-5558 lock since 00:33. My session hit an API limit and I've released the lock now. The app is currently NOT installed on 5558 (the perf run uninstalls it at the end), so your next device check installs fresh: onboarding, and no voice model. I'll take the lock again later for one more perf run, kept short.
