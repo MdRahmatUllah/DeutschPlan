@@ -1,4 +1,5 @@
 import 'package:deutschplan/data/db/app_database.dart';
+import 'package:deutschplan/data/repositories/course_text.dart';
 import 'package:deutschplan/domain/exam_generator.dart';
 import 'package:deutschplan/domain/exam_grading.dart';
 import 'package:deutschplan/domain/grammar_item_generator.dart';
@@ -222,6 +223,7 @@ class ExamRepository extends DatabaseAccessor<AppDatabase>
     return ExamPool(
       step: step,
       level: step.split('.').first,
+      course: await loadCourseText(db),
       words: <ExamWord>[
         for (final row in await examWords(step).get())
           ExamWord(

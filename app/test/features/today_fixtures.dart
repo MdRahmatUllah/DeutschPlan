@@ -1,3 +1,4 @@
+import 'package:deutschplan/domain/grammar_item_generator.dart';
 import 'package:deutschplan/features/search/add_word_screen.dart';
 import 'package:deutschplan/features/search/search_screen.dart';
 import 'package:deutschplan/features/sentences/sentences_screen.dart';
@@ -488,6 +489,8 @@ List<Override> todayStub([
   grammarTopicProvider.overrideWith(
     (ref, uid) => Stream.value(topic ?? artboardTopic()),
   ),
+  // ... and no course to check its forms against (#330).
+  grammarCourseProvider.overrideWith((ref) async => CourseText.none),
   // L5 without a database: the Categories artboard's eight.
   categoriesProvider.overrideWith((ref) => Stream.value(artboardCategories())),
   // L6 without a database: the CategoryWords artboard's rows.

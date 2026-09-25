@@ -8,6 +8,7 @@ import 'package:deutschplan/core/theme/aurora_backdrop.dart';
 import 'package:deutschplan/core/theme/dp_surface.dart';
 import 'package:deutschplan/core/theme/dp_tokens.dart';
 import 'package:deutschplan/core/typography/dp_text.dart';
+import 'package:deutschplan/data/repositories/course_text.dart';
 import 'package:deutschplan/data/repositories/grammar_repository.dart';
 import 'package:deutschplan/domain/grammar_item_generator.dart';
 import 'package:deutschplan/domain/plan_engine.dart' show daysBetween;
@@ -39,12 +40,19 @@ GrammarSource grammarSource(TopicWithState topic) => GrammarSource(
   levelCode: topic.topic.levelCode,
 );
 
+/// What the generator checks its forms against and takes *Pick the form*'s
+/// sentence from (#330), read once.
+@riverpod
+Future<CourseText> grammarCourse(Ref ref) =>
+    loadCourseText(ref.watch(appDatabaseProvider));
+
 /// [topic]'s items for [day], its step's other rules the recall options —
 /// what L15 will ask, so L4 can say how many.
 List<GrammarItem> practiceItemsFor(
   TopicWithState topic,
   List<TopicWithState> step,
   String day,
+  CourseText course,
 ) => generateItems(
   grammarSource(topic),
   seed: practiceSeed(topic.uid, day),
@@ -52,6 +60,7 @@ List<GrammarItem> practiceItemsFor(
     for (final other in step)
       if (other.uid != topic.uid && other.topic.rule != null) other.topic.rule!,
   ],
+  course: course,
 );
 
 /// L4 · Grammar topic (`grammar-topic.md`, `GrammarTopic-android.html`): one
@@ -70,10 +79,11 @@ class GrammarTopicScreen extends ConsumerWidget {
     final step = topic == null
         ? null
         : ref.watch(stepTopicsProvider(topic.topic.sublevelCode)).value;
+    final course = ref.watch(grammarCourseProvider).value;
 
-    final body = topic == null || step == null
+    final body = topic == null || step == null || course == null
         ? const SizedBox.expand()
-        : _Topic(topic: topic, step: step);
+        : _Topic(topic: topic, step: step, course: course);
 
     final scaffold = AdaptiveScaffold(
       backgroundColor: tokens.isGlass
@@ -88,10 +98,11 @@ class GrammarTopicScreen extends ConsumerWidget {
 }
 
 class _Topic extends ConsumerWidget {
-  const _Topic({required this.topic, required this.step});
+  const _Topic({required this.topic, required this.step, required this.course});
 
   final TopicWithState topic;
   final List<TopicWithState> step;
+  final CourseText course;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -101,7 +112,7 @@ class _Topic extends ConsumerWidget {
     final index = step.indexWhere((other) => other.uid == topic.uid);
     final previous = index > 0 ? step[index - 1] : null;
     final next = index >= 0 && index < step.length - 1 ? step[index + 1] : null;
-    final items = practiceItemsFor(topic, step, today);
+    final items = practiceItemsFor(topic, step, today, course);
     final rule = topic.topic.rule;
     final watchOut = topic.topic.watchOut;
     final examples = examplePairs(

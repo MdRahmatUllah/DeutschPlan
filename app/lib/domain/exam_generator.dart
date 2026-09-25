@@ -90,6 +90,7 @@ class ExamPool {
     required this.topics,
     this.categories = const <int, String>{},
     this.connectors = const <String>[],
+    this.course,
   });
 
   /// `A1.1`, and its level `A1`.
@@ -108,6 +109,9 @@ class ExamPool {
   /// The course's conjunctions up to this step: what the writing check
   /// counts as connectors.
   final List<String> connectors;
+
+  /// What the grammar items check their forms against (#330).
+  final CourseText? course;
 }
 
 /// One mock: its items in paper order (`exam_answers.ord` is the position
@@ -559,6 +563,7 @@ Exam buildExam(
               for (final other in pool.topics)
                 if (other.uid != topic.uid) other.rule,
             ],
+            course: pool.course,
           )
           case final items when items.isNotEmpty)
         (topic.uid, items),

@@ -6,6 +6,7 @@ import 'package:deutschplan/data/db/app_database.dart';
 import 'package:deutschplan/data/repositories/grammar_repository.dart';
 import 'package:deutschplan/data/repositories/rating_service.dart';
 import 'package:deutschplan/data/repositories/settings_repository.dart';
+import 'package:deutschplan/domain/grammar_item_generator.dart';
 import 'package:deutschplan/features/learn/grammar_topic_screen.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
 import 'package:deutschplan/main.dart'
@@ -137,6 +138,7 @@ void main() {
       artboardTopic(),
       artboardTopics(),
       '2026-09-21',
+      CourseText.none,
     ).length;
     await tester.tap(find.text(l10n.topicPractise(count)));
     await tester.pumpAndSettle();

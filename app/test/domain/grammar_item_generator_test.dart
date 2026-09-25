@@ -103,12 +103,21 @@ void main() {
     levelCode: 'A1',
   );
 
+  /// #330: *Pick the form* asks in another sentence than the gap fill's,
+  /// here the course's.
+  CourseText saying(String sentence) => CourseText(
+    sentences: <({String german, String english})>[
+      (german: sentence, english: ''),
+    ],
+  );
+
   test("a closed word class's wrong forms are its other members", () {
     for (final seed in <int>[1, 2, 3]) {
       final sein = first<PickTheForm>(
         generateItems(
           one('Wir sind aus Bangladesch.', rule: 'sind'),
           seed: seed,
+          course: saying('Sie sind zu Hause.'),
         ),
       );
       expect(sein.answer, 'sind');
@@ -122,6 +131,7 @@ void main() {
         generateItems(
           one('Ich glaube, dass es regnet.', rule: 'dass'),
           seed: seed,
+          course: saying('Er sagt, dass er kommt.'),
         ),
       );
       expect(dass.options, containsAll(<String>['dass']));
@@ -134,7 +144,11 @@ void main() {
 
   test('a capital stays a capital: Die → Das, not das', () {
     final pick = first<PickTheForm>(
-      generateItems(one('Die Wohnung ist neu.', rule: 'die'), seed: 1),
+      generateItems(
+        one('Die Wohnung ist neu.', rule: 'die'),
+        seed: 1,
+        course: saying('Die Miete ist hoch.'),
+      ),
     );
     expect(pick.answer, 'Die');
     for (final option in pick.options) {
@@ -142,11 +156,28 @@ void main() {
     }
   });
 
+  test('#330 a pronoun is the gap only where the topic is about it', () {
+    GrammarSource about(String title) => GrammarSource(
+      uid: title,
+      topic: title,
+      rule: 'Ich: the prefix an- goes to the end.',
+      exampleDe: 'Ich rufe dich an.',
+      exampleEn: "I'll call you.",
+      watchOut: '',
+      tags: const <String>['gap-fill', 'pick-the-form'],
+      levelCode: 'A1',
+    );
+    GapFill gap(String title) =>
+        first<GapFill>(generateItems(about(title), seed: 1));
+    expect(gap('Separable verbs').answer, 'an');
+    expect(gap('Ich and du').answer, 'Ich');
+  });
+
   test("the gap's word without its punctuation", () {
     final gap = first<GapFill>(
-      generateItems(one('Wie heißen Sie?', rule: 'Sie'), seed: 1),
+      generateItems(one('Wo wohnt Anna?', rule: 'Anna'), seed: 1),
     );
-    expect(gap.answer, 'Sie');
+    expect(gap.answer, 'Anna');
     expect(gap.after, '?');
   });
 
@@ -281,11 +312,35 @@ void main() {
       );
     }
 
+    // #330, the issue's probe: what the course says, as the app loads it
+    // (`course_text.dart`), and every item as L15 would ask it.
+    final course = CourseText(
+      texts: <String>[
+        for (final row in db.select('SELECT german, forms FROM words'))
+          '${row['german']} ${row['forms'] ?? ''}',
+        for (final row in rows) row['example_de'] as String,
+      ],
+      sentences: <({String german, String english})>[
+        for (final row in db.select(
+          'SELECT german, english FROM word_examples ORDER BY word_uid, ord',
+        ))
+          (
+            german: row['german'] as String,
+            english: row['english'] as String? ?? '',
+          ),
+      ],
+    );
     test('there are 182', () => expect(rows, hasLength(182)));
 
-    test('each yields 3–5 items of at least two types, every one sound', () {
+    test('each yields 3–5 items of at least two types, every one sound, '
+        'with the course and without it', () {
       final problems = <String>[];
-      for (final row in rows) {
+      for (final (row, known) in <(Row, CourseText?)>[
+        for (final row in rows) ...<(Row, CourseText?)>[
+          (row, null),
+          (row, course),
+        ],
+      ]) {
         final source = GrammarSource(
           uid: row['uid'] as String,
           topic: row['topic'] as String,
@@ -300,6 +355,7 @@ void main() {
           source,
           seed: practiceSeed(source.uid, '2026-09-21'),
           siblings: siblingsByLevel[source.levelCode]!,
+          course: known,
         );
         final types = items.map((item) => item.runtimeType).toSet();
         final name = source.topic;
@@ -349,5 +405,103 @@ void main() {
       }
       expect(problems, isEmpty, reason: problems.join('\n'));
     });
+
+    GrammarSource source(Row row) => GrammarSource(
+      uid: row['uid'] as String,
+      topic: row['topic'] as String,
+      rule: row['rule'] as String,
+      exampleDe: row['example_de'] as String,
+      exampleEn: row['example_en'] as String,
+      watchOut: row['watch_out'] as String,
+      tags: (row['tags'] as String).split(','),
+      levelCode: row['level_code'] as String,
+    );
+    List<GrammarItem> practised(Row row) => generateItems(
+      source(row),
+      seed: practiceSeed(row['uid'] as String, '2026-09-24'),
+      siblings: siblingsByLevel[row['level_code']]!,
+      course: course,
+    );
+    String sentence(String before, String answer, String after) =>
+        '$before $answer $after'.replaceAll(RegExp(r'\s+'), '');
+
+    test(
+      '#330 a wrong form is German the course uses: at most 5 % are not',
+      () {
+        // Anything the course writes counts, its rules and *watch out* too.
+        final known = <String>{
+          for (final row in db.select('SELECT german, forms FROM words'))
+            for (final word in words('${row['german']} ${row['forms'] ?? ''}'))
+              word.toLowerCase(),
+          for (final row in db.select('SELECT german FROM word_examples'))
+            for (final word in words(row['german'] as String))
+              word.toLowerCase(),
+          for (final row in rows)
+            for (final word in words(
+              '${row['rule']} ${row['example_de']} ${row['watch_out']}',
+            ))
+              word.toLowerCase(),
+        };
+        final unknown = <String>[];
+        var all = 0;
+        for (final row in rows) {
+          for (final pick in practised(row).whereType<PickTheForm>()) {
+            for (final option in pick.options.where((o) => o != pick.answer)) {
+              all++;
+              if (!known.contains(option.toLowerCase())) unknown.add(option);
+            }
+          }
+        }
+        expect(
+          unknown.length / all,
+          lessThanOrEqualTo(0.05),
+          reason: '${unknown.length} of $all: ${unknown.join(', ')}',
+        );
+      },
+    );
+
+    test('#330 pick the form never asks the gap fill\'s sentence again', () {
+      // A topic with no example ("—") practises its rule, in English: when
+      // that is one sentence, there is no other to ask in.
+      final again = <String>[
+        for (final row in rows)
+          if (practised(row) case final items
+              when (row['example_de'] as String).contains(RegExp('[A-Za-z]')))
+            for (final pick in items.whereType<PickTheForm>())
+              for (final gap in items.whereType<GapFill>())
+                if (sentence(pick.before, pick.answer, pick.after) ==
+                    sentence(gap.before, gap.answer, gap.after))
+                  row['topic'] as String,
+      ];
+      expect(again, isEmpty, reason: again.join('\n'));
+    });
+
+    test('#330 the gap practises the rule: the prefix, the time, the case', () {
+      Row topic(String name) => rows.firstWhere((row) => row['topic'] == name);
+      Set<String> gaps(String name) => <String>{
+        for (var day = 1; day <= 9; day++)
+          for (final gap in generateItems(
+            source(topic(name)),
+            seed: practiceSeed(topic(name)['uid'] as String, '2026-09-0$day'),
+            course: course,
+          ).whereType<GapFill>())
+            gap.answer,
+      };
+      expect(
+        gaps('Separable verbs'),
+        everyElement(isIn(<String>['ein', 'an'])),
+      );
+      expect(
+        gaps('Clock time & dates'),
+        everyElement(isIn(<String>['am', 'um', 'halb'])),
+      );
+      expect(gaps('Genitive'), everyElement(isIn(<String>['meines', 'des'])));
+    });
   });
 }
+
+/// A text's words, as the generator splits them.
+Iterable<String> words(String text) =>
+    RegExp(r"[A-Za-zÄÖÜäöüß'-]+")
+        .allMatches(text)
+        .map((match) => match.group(0)!);
