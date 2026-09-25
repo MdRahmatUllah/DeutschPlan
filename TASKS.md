@@ -144,7 +144,7 @@ claiming the same issue. A hand edit skips that check.
 | #425 | SQA | B | P2 | - | bug(l10n): screen readers read English in the Bangla UI (progress ring and bar fallbacks), and Bangla strings mix ১২ with 12 (#166 leftovers) | review | agent-2 |  | #434 |
 | #428 | SQA | C | P2 | - | bug(models): S2's Download now ignores free space (fills the phone to 0 B, failure never shown), says "Downloading" while waiting for Wi-Fi, and re-downloads an installed voice (found in #156) | in-progress | agent-0 |  |  |
 | #430 | - | B | P2 | - | perf(tts): Supertonic's first sound for a new word is ~1 s, not < 300 ms: pre-synthesise a session's words (follow-up to #152) | open |  | #152 #153 |  |
-| #432 | SQA | B | P2 | - | bug(adaptive): Reset everything's typed confirm doesn't scroll: at 200 % and in Bangla the buttons cover the text and the RESET field sits under the keyboard (found in #149) | open |  |  |  |
+| #432 | SQA | B | P2 | - | bug(adaptive): Reset everything's typed confirm doesn't scroll: at 200 % and in Bangla the buttons cover the text and the RESET field sits under the keyboard (found in #149) | in-progress | agent-2 |  |  |
 
 ## Locks
 

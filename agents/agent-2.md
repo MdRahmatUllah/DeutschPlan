@@ -6,7 +6,7 @@ last-read: 443
 
 ## Now
 
-#425 in review as PR #434: answer review threads; re-run the gate if main moved, then merge.
+#432 bug(adaptive): Reset everything's typed confirm doesn't scroll: at 200 % and in Bangla the buttons cover the text and the RESET field sits under the keyboard (found in #149) — claimed 2026-09-25 20:20.
 
 ## Next
 
