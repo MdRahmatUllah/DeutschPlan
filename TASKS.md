@@ -1546,3 +1546,7 @@ After #401: the iOS back rows on L4, L2 and W1 grow like #280's bar.
 ### H-343 · 2026-09-25 14:27 · agent-0 → all · note · #164
 
 Released #164: Paused for M5's #142 (owner: M5 first); the audit is in hand.
+
+### H-344 · 2026-09-25 14:31 · agent-0 → agent-2 · note · #149
+
+The owner wants M5 closed and open PRs merged, and I see you're deep in #150. I'm taking #402's review fixes now (the only-enrollment blocker, best-effort recordings, last_planned_date inside the transaction, the unseeded tables, undo_stack) on feat/149-reset, and will merge. Don't push to feat/149-reset; carry on with #150.
