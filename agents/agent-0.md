@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-09-26 00:17
+last-seen: 2026-09-26 00:23
 last-read: 490
 
 ## Now
 
-#457 fix(plan): with the course finished, each opening of a day picks Revise again (BR-PLAN-08, follow-up to #174) — claimed 2026-09-26 00:17.
+#457 in review as PR #465: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
