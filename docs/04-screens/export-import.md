@@ -19,7 +19,7 @@
 **Functional requirements**
 - FR-M6-01 Export = JSON `{schema_version, content_version, exported_at, tables{…}}` excluding `translation_cache`, `undo_stack`; written to a temp file and shared with `share_plus`; recordings are not included (size), noted in the UI.
 - FR-M6-02 Import validates schema version (migrate forward if older; refuse if newer), shows the preview before writing.
-- FR-M6-03 Merge rule: per table row key, keep the row with the later `last_review`/`updated_at`; `review_log` is unioned by (word_uid, reviewed_at).
+- FR-M6-03 Merge rule: per table row key, keep the row with the later `last_review`/`updated_at`; `review_log` is unioned by (word_uid, reviewed_at). Words of the learner's own come in under this phone's ids, and their `custom:<id>` rows follow them (#369, `user-database.md`).
 - FR-M6-04 Replace wipes user tables in one transaction then inserts; a failed import leaves the previous data intact.
 
 **Tests.** round-trip export→import equality; merge precedence; refuse newer schema.

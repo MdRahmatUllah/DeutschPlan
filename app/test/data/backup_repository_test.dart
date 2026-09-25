@@ -576,6 +576,166 @@ void main() {
       expect(joined.read<String>('word'), 'uid-tuer');
     });
 
+    group('#369 words of my own', () {
+      String fileWith(Map<String, Object?> tables) =>
+          jsonEncode(<String, Object?>{
+            'schema_version': AppDatabase.latestSchemaVersion,
+            'content_version': null,
+            'exported_at': '2026-03-09T00:00:00Z',
+            'tables': tables,
+          });
+
+      Map<String, Object?> word(int id, String createdAt, String german) =>
+          <String, Object?>{
+            'id': id,
+            'created_at': createdAt,
+            'german': german,
+            'meaning': 'x',
+          };
+
+      Map<String, Object?> state(String uid, String lastReview) =>
+          <String, Object?>{
+            'word_uid': uid,
+            'status': 'learning',
+            'stability': 4.0,
+            'due': '2026-03-12',
+            'last_review': lastReview,
+          };
+
+      Future<List<String>> uidsIn(String table) async => <String>[
+        for (final row in await rowsOf(table)) row['word_uid']! as String,
+      ];
+
+      test('FR-M6-03 an id taken here: a fresh id, and its schedule, reviews, '
+          'plan rows and quiz answers follow it', () async {
+        await sql(
+          'INSERT INTO custom_words (id, created_at, german, meaning) '
+          "VALUES (1, '2026-03-01T11:00:00Z', 'Pfandflasche', 'deposit')",
+        );
+        await sql(
+          'INSERT INTO word_state (word_uid, status, last_review) '
+          "VALUES ('custom:1', 'learning', '2026-03-02T09:00:00Z')",
+        );
+        final file = fileWith(<String, Object?>{
+          'custom_words': <Object?>[
+            word(1, '2026-03-05T11:00:00Z', 'Quittung'),
+          ],
+          'word_state': <Object?>[state('custom:1', '2026-03-08T09:00:00Z')],
+          'review_log': <Object?>[
+            <String, Object?>{
+              'word_uid': 'custom:1',
+              'reviewed_at': '2026-03-08T09:00:00Z',
+              'rating': 3,
+              'source': 'daily',
+            },
+          ],
+          'plan_items': <Object?>[
+            <String, Object?>{
+              'plan_date': '2026-03-08',
+              'word_uid': 'custom:1',
+              'kind': 'revise',
+              'sublevel_code': 'A1.1',
+            },
+          ],
+          'quiz_attempts': <Object?>[
+            <String, Object?>{
+              'id': 1,
+              'started_at': '2026-03-08T10:00:00Z',
+              'direction': 'deEn',
+              'source': 'allLearned',
+              'seed': 3,
+              'length': 5,
+            },
+          ],
+          'quiz_answers': <Object?>[
+            <String, Object?>{
+              'attempt_id': 1,
+              'ord': 1,
+              'word_uid': 'custom:1',
+              'prompt': 'die Quittung',
+              'expected': 'receipt',
+            },
+          ],
+        });
+
+        await backup.import(file, mode: ImportMode.merge);
+
+        final words = await rowsOf('custom_words');
+        expect(
+          <Object?>[for (final w in words) (w['id'], w['german'])],
+          <Object?>[(1, 'Pfandflasche'), (2, 'Quittung')],
+        );
+        expect(await uidsIn('word_state'), <String>['custom:1', 'custom:2']);
+        final ours = (await rowsOf('word_state')).first;
+        expect(
+          ours['last_review'],
+          '2026-03-02T09:00:00Z',
+          reason: 'untouched',
+        );
+        expect(await uidsIn('review_log'), <String>['custom:2']);
+        expect(await uidsIn('plan_items'), <String>['custom:2']);
+        expect(await uidsIn('quiz_answers'), <String>['custom:2']);
+      });
+
+      test('FR-M6-03 the same word on both phones keeps this phone\'s id, and '
+          'the later schedule wins under it', () async {
+        await sql(
+          'INSERT INTO custom_words (id, created_at, german, meaning) '
+          "VALUES (1, '2026-03-01T11:00:00Z', 'Pfandflasche', 'deposit')",
+        );
+        await sql(
+          'INSERT INTO word_state (word_uid, status, last_review) '
+          "VALUES ('custom:1', 'learning', '2026-03-02T09:00:00Z')",
+        );
+        final file = fileWith(<String, Object?>{
+          'custom_words': <Object?>[
+            word(5, '2026-03-01T11:00:00Z', 'Pfandflasche'),
+          ],
+          'word_state': <Object?>[state('custom:5', '2026-03-08T09:00:00Z')],
+        });
+
+        await backup.import(file, mode: ImportMode.merge);
+
+        expect(await count('custom_words'), 1);
+        final states = await rowsOf('word_state');
+        expect(states.single['word_uid'], 'custom:1');
+        expect(states.single['last_review'], '2026-03-08T09:00:00Z');
+      });
+
+      test("FR-M6-03 a custom:<id> the file has no word for stays out: here "
+          "it would name another word", () async {
+        await sql(
+          'INSERT INTO custom_words (id, created_at, german, meaning) '
+          "VALUES (9, '2026-03-01T11:00:00Z', 'Pfandflasche', 'deposit')",
+        );
+        final file = fileWith(<String, Object?>{
+          'word_state': <Object?>[
+            state('custom:9', '2026-03-08T09:00:00Z'),
+            state('uid-haus', '2026-03-08T09:00:00Z'),
+          ],
+        });
+
+        await backup.import(file, mode: ImportMode.merge);
+
+        expect(await uidsIn('word_state'), <String>['uid-haus']);
+      });
+
+      test('FR-M6-04 replace keeps the ids and their custom:<id> rows as they '
+          'were', () async {
+        final file = fileWith(<String, Object?>{
+          'custom_words': <Object?>[
+            word(7, '2026-03-05T11:00:00Z', 'Quittung'),
+          ],
+          'word_state': <Object?>[state('custom:7', '2026-03-08T09:00:00Z')],
+        });
+
+        await backup.import(file, mode: ImportMode.replace);
+
+        expect((await rowsOf('custom_words')).single['id'], 7);
+        expect(await uidsIn('word_state'), <String>['custom:7']);
+      });
+    });
+
     test('a backup from a step behind does not break the merge', () async {
       // BR-COURSE-04 allows one open enrollment, and the index enforces it.
       // Restoring an old phone's backup onto the one in use is the case merge

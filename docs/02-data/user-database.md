@@ -79,4 +79,4 @@ Never drop columns with data; add nullable columns or new tables.
 
 ## Backups
 
-`user.db` uses WAL mode. Export (M6) serialises every table except `translation_cache` and `undo_stack` to JSON with the schema version; import validates the version and either replaces or merges (per-word most recent `last_review` wins).
+`user.db` uses WAL mode. Export (M6) serialises every table except `translation_cache` and `undo_stack` to JSON with the schema version; import validates the version and either replaces or merges (per-word most recent `last_review` wins). A replace keeps every id, so the round trip is exact. On a merge, the learner's own words get this phone's ids, like quiz and exam attempts do: a fresh id, or the local one when `(created_at, german)` matches. Every `custom:<id>` in `word_state`, `review_log`, `plan_items` and `quiz_answers` follows the word's new id, and a `custom:<id>` whose word isn't in the file stays out (#369).
