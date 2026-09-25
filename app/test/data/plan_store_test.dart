@@ -1006,9 +1006,10 @@ VALUES (?, ?, ?, ?, ?)
 
     test('a rating on another day than its plan row is left out', () async {
       // Planned Monday, rated Tuesday (a quiz, say): not Monday's block.
+      // 12:00Z is Tuesday in every zone.
       await store.addToPlan(monday, PlanKind.newWord, <String>['s1', 's2']);
-      await log('s1', '2026-03-03T09:00:00Z');
-      await log('s2', '2026-03-03T09:00:30Z');
+      await log('s1', '2026-03-03T12:00:00Z');
+      await log('s2', '2026-03-03T12:00:30Z');
 
       expect((await store.measuredSeconds()).newWord, isNull);
     });
