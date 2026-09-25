@@ -187,7 +187,8 @@ class QuizTile extends StatelessWidget {
 }
 
 /// "Last quiz · 16 / 20" beside its score, coloured as L9 colours a result:
-/// Lime from 80 %, Sun from 50 %, Coral under.
+/// Lime from 80 %, Sun from 50 %, Coral under. Halves are L9's too: 8.5 is
+/// not 9, nor its colour (#335).
 class LastQuizCard extends StatelessWidget {
   const LastQuizCard({required this.quiz, super.key});
 
@@ -220,7 +221,7 @@ class LastQuizCard extends StatelessWidget {
               border: Border.all(color: tokens.color.ink, width: 1.5),
             ),
             child: DpText(
-              '${quiz.score}',
+              quizPoints(quiz.score),
               role: DpTextRole.label,
               weight: 700,
               color: tokens.color.onAccent,
@@ -232,7 +233,7 @@ class LastQuizCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 DpText(
-                  l10n.quizLast(quiz.score, quiz.outOf),
+                  l10n.quizLast(quizPoints(quiz.score), quizPoints(quiz.outOf)),
                   role: DpTextRole.body,
                   weight: 600,
                 ),
@@ -258,6 +259,11 @@ class LastQuizCard extends StatelessWidget {
     );
   }
 }
+
+/// "16", or "15.5": a quiz scores in halves (BR-ANS-04).
+String quizPoints(double points) => points == points.roundToDouble()
+    ? '${points.round()}'
+    : points.toStringAsFixed(1);
 
 /// A quiz direction as the app names it: "DE → EN", "Articles".
 /// A quiz result's colour (`quiz.md`): Lime from 80 %, Sun from 50 %, Coral

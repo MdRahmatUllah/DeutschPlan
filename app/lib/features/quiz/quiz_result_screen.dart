@@ -104,8 +104,8 @@ class _QuizResultViewState extends ConsumerState<QuizResultView> {
           _Score(
             colour: colour,
             score: l10n.quizResultScore(
-              _points(attempt.scorePoints),
-              _points(attempt.maxPoints),
+              quizPoints(attempt.scorePoints),
+              quizPoints(attempt.maxPoints),
             ),
             line: l10n.quizResultLine(
               // Down, never up: 79.5 % is not the 80 % that turns it Lime.
@@ -194,11 +194,6 @@ class _QuizResultViewState extends ConsumerState<QuizResultView> {
         : scaffold;
   }
 }
-
-/// "16", or "15.5": a quiz scores in halves (BR-ANS-04).
-String _points(double points) => points == points.roundToDouble()
-    ? '${points.round()}'
-    : points.toStringAsFixed(1);
 
 /// "4 min 12 s", from the attempt's start to its finish.
 String _time(AppLocalizations l10n, String started, String? finished) {

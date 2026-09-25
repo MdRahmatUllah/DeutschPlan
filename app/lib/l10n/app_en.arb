@@ -2451,10 +2451,10 @@
     "description": "L2 last quiz card title.",
     "placeholders": {
       "score": {
-        "type": "int"
+        "type": "String"
       },
       "outOf": {
-        "type": "int"
+        "type": "String"
       }
     }
   },
