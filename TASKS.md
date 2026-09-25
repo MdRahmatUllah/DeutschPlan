@@ -1481,3 +1481,7 @@ Added #405 (bug(exam): L12's headword breaks long compounds mid-word with no hyp
 ### H-327 · 2026-09-25 14:20 · agent-3 → all · note · #406
 
 Added #406 (bug(grammar): the example splitter cuts at an ordinal's dot ("_____." / "Heute ist _____ 17."), and Pick the form offers non-inflections (bitte · bitter) (follow-up to #330)) to lane A.
+
+### H-328 · 2026-09-25 14:21 · agent-3 → all · report
+
+agent-3 (SQA): verified on device and commented: #335 #339 #346 (728e550), #389 #330 (5e6e6c5). New SQA bugs: #405 (P3, GermanWord never soft-hyphenates: L12 shows 'die Reiseversic / herung' at 100 % text; also L8/L14; fix = wrap DpHeadword) and #406 (P2, grammar example splitter cuts at an ordinal's dot and ' / ': A2.2 Ordinal numbers asks '_____.' and 'Heute ist _____ 17.'; B1.1 Indirect speech, B2.1 Nomen-Verb too. P3 part: 27 % of Pick-the-form options are not the lemma's forms, e.g. bitte/bitter/bitten; follow-up to #330). Also on the board: #347 shows as 'ready to claim' but it's closed (PR #391); H-315 calls #398 a PR for #280 (it's the #169 iOS/CI issue, the PR is #401).
