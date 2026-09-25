@@ -195,4 +195,36 @@ void main() {
           '${offenders.join('\n')}',
     );
   });
+
+  test('#425 a component words nothing itself: an interpolated literal in '
+      'core/components has no letter outside its placeholders', () {
+    // DpProgressRing's "$completed of $total" was a screen-reader label no
+    // ARB check could see, so a Bangla learner heard English.
+    final literals = <RegExp>[
+      RegExp(r"'([^'\n]*\$[^'\n]*)'"),
+      RegExp(r'"([^"\n]*\$[^"\n]*)"'),
+    ];
+    final offenders = <String>[];
+    for (final file in Directory(
+      'lib/core/components',
+    ).listSync(recursive: true).whereType<File>()) {
+      if (!file.path.endsWith('.dart')) continue;
+      final lines = file.readAsLinesSync();
+      for (var i = 0; i < lines.length; i++) {
+        final line = lines[i];
+        if (line.trimLeft().startsWith('//')) continue;
+        for (final literal in literals) {
+          for (final match in literal.allMatches(line)) {
+            final words = match
+                .group(1)!
+                .replaceAll(RegExp(r'\$\{[^}]*\}|\$\w+'), '');
+            if (RegExp('[A-Za-z]').hasMatch(words)) {
+              offenders.add('${file.path}:${i + 1}: ${line.trim()}');
+            }
+          }
+        }
+      }
+    }
+    expect(offenders, isEmpty, reason: offenders.join('\n'));
+  });
 }

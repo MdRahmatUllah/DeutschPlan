@@ -893,5 +893,7 @@
   "modelNotifyComplete": "মডেল ডাউনলোড হয়েছে",
   "modelNotifyCompleteNote": "ব্যবহারের আগে যাচাই করা হবে",
   "modelNotifyFailed": "একটি মডেল ডাউনলোড ব্যর্থ হয়েছে",
-  "modelNotifyFailedNote": "ভয়েস ও অনুবাদ থেকে আবার চেষ্টা করুন"
+  "modelNotifyFailedNote": "ভয়েস ও অনুবাদ থেকে আবার চেষ্টা করুন",
+  "progressRingLabel": "{total}টির মধ্যে {completed}টি",
+  "progressBarLabel": "{done}টি শেখা হয়েছে, {learning}টি শিখছি, {todo}টি বাকি"
 }

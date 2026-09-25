@@ -2,6 +2,7 @@ import 'dart:math' as math;
 
 import 'package:deutschplan/core/theme/dp_tokens.dart';
 import 'package:deutschplan/core/typography/dp_text.dart';
+import 'package:deutschplan/l10n/generated/app_localizations.dart';
 import 'package:material_ui/material_ui.dart';
 
 /// The progress ring on Today, the session summary and the widget.
@@ -64,7 +65,9 @@ class DpProgressRing extends StatelessWidget {
     final tokens = context.tokens;
 
     return Semantics(
-      label: semanticLabel ?? '$completed of $total',
+      label:
+          semanticLabel ??
+          AppLocalizations.of(context).progressRingLabel(completed, total),
       value: '${(progress * 100).round()}%',
       child: ExcludeSemantics(
         child: SizedBox(
@@ -222,7 +225,9 @@ class DpSegmentedBar extends StatelessWidget {
     ].where((s) => s.$1 > 0).toList();
 
     return Semantics(
-      label: semanticLabel ?? '$done done, $learning learning, $todo to do',
+      label:
+          semanticLabel ??
+          AppLocalizations.of(context).progressBarLabel(done, learning, todo),
       child: ExcludeSemantics(
         child: ClipRRect(
           borderRadius: BorderRadius.circular(height / 2),

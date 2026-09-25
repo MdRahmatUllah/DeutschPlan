@@ -924,6 +924,20 @@ void main() {
     expect(find.text(l10n.todayLoadFailed), findsOneWidget);
     expect(find.text(l10n.retry), findsOneWidget);
   });
+
+  testWidgets('#425 in the Bangla UI, no progress label reads English', (
+    tester,
+  ) async {
+    await pump(tester, locale: const Locale('bn'));
+    // The ring card's step bar, in Bangla.
+    expect(find.bySemanticsLabel(RegExp('টি শেখা হয়েছে, ')), findsWidgets);
+    expect(
+      find.bySemanticsLabel(
+        RegExp(r'\d+ done, \d+ learning, \d+ to do|\b\d+ of \d+\b'),
+      ),
+      findsNothing,
+    );
+  });
 }
 
 /// A first launch's coach mark, without the settings behind it.

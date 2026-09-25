@@ -5407,5 +5407,32 @@
   "modelNotifyFailedNote": "Retry it from Voice & translation",
   "@modelNotifyFailedNote": {
     "description": "Under the failed notification."
+  },
+  "progressRingLabel": "{completed} of {total}",
+  "@progressRingLabel": {
+    "description": "A progress ring, for screen readers, where the screen gives it no label of its own (#425).",
+    "placeholders": {
+      "completed": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "progressBarLabel": "{done} done, {learning} learning, {todo} to do",
+  "@progressBarLabel": {
+    "description": "A done / learning / to do bar, for screen readers, where the screen gives it no label of its own (#425).",
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "learning": {
+        "type": "int"
+      },
+      "todo": {
+        "type": "int"
+      }
+    }
   }
 }
