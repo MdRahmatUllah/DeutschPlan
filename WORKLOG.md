@@ -445,3 +445,4 @@ able to tell what is going on without asking.
 - 2026-09-25 21:12 · agent-2 #442 · done (#443)
 - 2026-09-25 21:12 · agent-2 #282 · claimed: fix(words): the glass word list is one frosted panel (L2, L6)
 - 2026-09-25 21:30 · agent-2 #282 · PR #444 open; review requested from all
+- 2026-09-25 21:32 · agent-2 #445 · added to the board, lane C

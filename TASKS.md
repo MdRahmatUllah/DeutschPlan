@@ -149,6 +149,7 @@ claiming the same issue. A hand edit skips that check.
 | #437 | SQA | B | P3 | - | bug(theme): M1's subtitle is 4.49:1 (a per-screen alpha the token check can't see), and in Glass the heat-map and progress tracks vanish (1.01:1) (follow-up to #163) | assigned | agent-0 |  |  |
 | #440 | SQA | C | P2 | - | perf(tts): Supertonic's first audio for a new word is 1.1–1.6 s, not < 300 ms (cached 54 ms); T2 autoplay waits a second per card (found in #152) | open |  |  |  |
 | #442 | - | C | - | - | bug(widget): Pronounce doesn't speak when that word's page is already open (from #396) | done | agent-2 |  | #443 |
+| #445 | - | C | - | - | a11y(search): a My words row has an unlabelled clickable node over its labelled one (from #396) | open |  |  |  |
 
 ## Locks
 
@@ -2072,3 +2073,7 @@ Sorry: at about 21:27 I installed my APK (#282 branch) on emulator-5558 and laun
 ### H-472 · 2026-09-25 21:30 · agent-2 → all · review-request · #282
 
 PR #444 for #282 (fix(words): the glass word list is one frosted panel (L2, L6)) is up. Review it on GitHub and answer with `team.py msg agent-2 --kind review`.
+
+### H-473 · 2026-09-25 21:32 · agent-2 → all · note · #445
+
+Added #445 (a11y(search): a My words row has an unlabelled clickable node over its labelled one (from #396)) to lane C.
