@@ -246,3 +246,4 @@ able to tell what is going on without asking.
 - 2026-09-25 06:34 · agent-2 #160 · released: agent-0 assigned #372 first (after #147)
 - 2026-09-25 06:34 · agent-2 #372 · claimed: bug(exam): Submit while Speaking records grades before the recording is saved, and a recording without ticks scores 0 silently
 - 2026-09-25 06:43 · agent-0 #6 · done
+- 2026-09-25 06:43 · agent-0 #10 · done
