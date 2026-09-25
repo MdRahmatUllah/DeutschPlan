@@ -24,7 +24,8 @@ import 'package:deutschplan/features/learn/step_exams.dart'
     show examSectionName;
 import 'package:deutschplan/features/quiz/quiz_item_view.dart' show GermanWord;
 import 'package:deutschplan/features/study/study_back.dart'
-    show StudyPlayButton, studyBackProvider;
+    show StudyPlayButton, StudyTip, studyBackProvider, tipText;
+import 'package:deutschplan/data/repositories/setting_keys.dart';
 import 'package:deutschplan/features/words/speak.dart' show say;
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
 import 'package:deutschplan/router/routes.dart';
@@ -39,11 +40,12 @@ part 'exam_review_screen.g.dart';
 Future<TopicWithState?> examReviewTopic(Ref ref, String uid) =>
     ref.watch(grammarRepositoryProvider).find(uid);
 
-/// The step's gender topic, where *See rule* sends an Articles question:
-/// the one tagged `gender` (A1.1's "Nouns, gender & articles").
+/// Where *See rule* sends an Articles question: the course's der/die/das
+/// topic, A1.1's "Nouns, gender & articles" (tagged `gender`). Later steps
+/// tag other things `gender` ("Possessive articles"), so it is A1.1's.
 @riverpod
-Future<TopicWithState?> examGenderTopic(Ref ref, String step) async {
-  for (final topic in await ref.watch(grammarRepositoryProvider).step(step)) {
+Future<TopicWithState?> examGenderTopic(Ref ref) async {
+  for (final topic in await ref.watch(grammarRepositoryProvider).step('A1.1')) {
     if (topic.topic.tags.split(',').map((t) => t.trim()).contains('gender')) {
       return topic;
     }
@@ -67,7 +69,8 @@ List<ExamReviewCard> examReviewCards(List<ExamResultRow> rows) {
   ];
 }
 
-/// Wrong: less than the question's point (#84 grades *almost* as wrong).
+/// Wrong: less than the question's point, *almost* included (#84 gives it
+/// half, BR-ANS-04).
 bool examReviewWrong(ExamResultRow row) => row.points < row.item.section.points;
 
 /// L14 · Exam review (`exam-results.md`, `ExamReview-android.html`, #136),
@@ -304,6 +307,9 @@ class _Card extends ConsumerWidget {
     );
     // The artboard's card: flat, a thin outline (every DpSurface kind draws
     // an edge or a shadow); frosted under glass.
+    // ponytail: each glass card blurs its own backdrop, four or five on
+    // screen against dp_surface.dart's budget of three; one frosted panel
+    // behind the list if scrolling stutters on a low-end phone.
     return tokens.isGlass
         ? DpSurface(
             kind: DpSurfaceKind.card,
@@ -343,16 +349,23 @@ class _Card extends ConsumerWidget {
         final topic = ref
             .watch(examReviewTopicProvider(itemRef.split('#').first))
             .value;
-        final rule = topic?.topic.rule?.split(RegExp(r'(?<=[.!?;])\s')).first;
+        final rule = topic?.topic.rule == null
+            ? null
+            : examRuleLead(topic!.topic.rule!);
         return <Widget>[
           if (rule != null && rule.isNotEmpty) note(rule),
-          _Link(label: l10n.practiceSeeRule, onTap: () => onSeeRule(topic)),
+          if (topic != null)
+            _Link(label: l10n.practiceSeeRule, onTap: () => onSeeRule(topic)),
         ];
-      case WordQuestion(section: ExamSection.articles, ref: final uid):
-        final tip = ref.watch(studyBackProvider(uid)).value?.tip;
-        final rules = ref.watch(examGenderTopicProvider(step)).value;
+      case WordQuestion(section: ExamSection.articles, ref: final uid)
+          when _genderTip(ref.watch(studyBackProvider(uid)).value?.tip):
+        final tip = ref.watch(studyBackProvider(uid)).value!.tip!;
+        final meaning = ref
+            .watch(settingsProvider)
+            .read(SettingKeys.meaningLanguage);
+        final rules = ref.watch(examGenderTopicProvider).value;
         return <Widget>[
-          if (tip != null) note(tip.en),
+          note(tipText(tip, meaning)),
           if (rules != null)
             _Link(label: l10n.practiceSeeRule, onTap: () => onSeeRule(rules)),
         ];
@@ -403,33 +416,37 @@ class _Example extends StatelessWidget {
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
         onTap: onPlay,
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            const StudyPlayButton(),
-            const SizedBox(width: 8),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  DpText(
-                    german,
-                    role: DpTextRole.label,
-                    weight: 400,
-                    italic: true,
-                    color: tokens.color.textSecondary,
-                  ),
-                  if (english != null)
+        child: ConstrainedBox(
+          // accessibility-performance.md: 48 dp on Android, 44 pt on iOS.
+          constraints: BoxConstraints(minHeight: context.isCupertino ? 44 : 48),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              const StudyPlayButton(),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
                     DpText(
-                      english,
+                      german,
                       role: DpTextRole.label,
                       weight: 400,
+                      italic: true,
                       color: tokens.color.textSecondary,
                     ),
-                ],
+                    if (english != null)
+                      DpText(
+                        english,
+                        role: DpTextRole.label,
+                        weight: 400,
+                        color: tokens.color.textSecondary,
+                      ),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -532,7 +549,7 @@ String _prompt(AppLocalizations l10n, ExamItem item) => switch (item) {
   GapQuestion(:final before, :final after) => '${before}___$after',
   GrammarQuestion(item: final g) => switch (g) {
     GapFill(:final before, :final after) ||
-    PickTheForm(:final before, :final after) => '${before}___$after',
+    PickTheForm(:final before, :final after) => _gapped(before, after),
     SpotTheError(:final tokens) => tokens.join(' '),
     OrderTheSentence(:final chips) => chips.join(' / '),
     RuleRecall(:final question) => question,
@@ -545,3 +562,24 @@ String? _at(List<String> list, String? given) {
   final i = int.tryParse(given ?? '');
   return i != null && i >= 0 && i < list.length ? list[i] : given;
 }
+
+/// A grammar gap as L15 draws it: a space after the words before, and
+/// before the words after unless they start with punctuation. (A gap
+/// fill's own before and after keep their spaces.)
+String _gapped(String before, String after) {
+  final tail = after.isEmpty || RegExp(r'^[.,!?;:…]').hasMatch(after)
+      ? after
+      : ' $after';
+  return '${before.isEmpty ? '' : '$before '}___$tail';
+}
+
+/// An interference tip that is a gender rule: it names an article
+/// ('Every "-ung" noun is "die".'). A false friend's or a stress tip is
+/// no help under an Articles question.
+bool _genderTip(StudyTip? tip) =>
+    tip != null && RegExp(r'"(der|die|das)"').hasMatch(tip.en);
+
+/// A rule's first sentence: up to a full stop, a question or an exclamation
+/// mark that a capital follows, so "um 8 Uhr; …" and "Inf." stay whole.
+String examRuleLead(String rule) =>
+    rule.split(RegExp(r'(?<=[.!?])\s+(?=[A-ZÄÖÜ])')).first;

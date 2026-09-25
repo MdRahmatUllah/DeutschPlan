@@ -2,7 +2,7 @@
 
 **Prototype.** `ExamResults`, `ExamReview`.
 
-**Reached from.** L12 submit. **Leads to.** L14 (*Review answers*), L10 (*Try another mock*), L2 (*Back to step*), W1 (*Open word*), L4 (*See rule*).
+**Reached from.** L12 submit. **Leads to.** L14 (*Review answers*), L10 (*Try another mock*), L2 (*Back to step*), W1 (*Open word*), L4's rule (*See rule*, as a sheet).
 
 ## L13 layout
 Block: "Bestanden!" (Lime, badge scale-in with one glow pulse) or "Noch nicht" (Coral); "77%" display; "37 of 48 points"; pass-mark tick at 60 % on a bar; sub-line "A1.2 · Mock 2 · 18:41 · +15 points vs attempt 1 (62%)". "By section" list: Vocabulary 8 / 10 … Writing 3 / 4 *self-assessed*, Speaking 3 / 4 *self-assessed*. Buttons *Review answers*, *Add missed words to revision · 9*, *Try another mock*, *Back to step*.
@@ -29,13 +29,13 @@ Filter chips All · 40, Wrong only · 9, Flagged · 3. Cards per question: "Q3 �
 
 ## Details L14 settles (#136)
 
-- **Where it is.** *Review answers* shows L14 in L13's place, in the same route. Its back arrow, system back and the iOS swipe return to L13.
-- **What it lists.** The 40 numbered questions, numbered as L12 numbers them ("Q21"). Writing and Speaking are tasks and live on L13. *All · 40* shows them all, *Wrong only · 9* those under their point (*almost* included, as #84 grades it), and *Flagged · 3* those flagged in the runner. A filter with none says "Nothing here."
+- **Where it is.** *Review answers* shows L14 in L13's place, in the same route. Its back arrow and system back return to L13; the iOS swipe stays off, as it is over the whole exam route.
+- **What it lists.** The 40 numbered questions, numbered as L12 numbers them ("Q21"). Writing and Speaking are tasks and live on L13. *All · 40* shows them all, *Wrong only · 9* those under their point (*almost* included: #84 gives it half, BR-ANS-04), and *Flagged · 3* those flagged in the runner. A filter with none says "Nothing here."
 - **A card.** "Q9 · Vocabulary" with its verdict on the right: *Right* (Lime tick), *Almost* or *Wrong* (a cross, in the almost or wrong colour), *No answer*. Then the item as the paper asked it (a German prompt with its article coloured; "___ Rechnung" for Articles; the sentence with its gap for grammar). Then "Your answer", struck through when wrong, and "Correct" when it was wrong. An index answer (spot the error, rule recall) shows its word or option.
 - **The explanation** (FR-L14-01).
   - A word item: its first example, with its play button, and *Open word* (W1 as a sheet or pane, over the exam).
-  - An Articles item: the word's interference tip as its rule of thumb ("Every "-ung" noun is "die"."), and *See rule* opening the step's gender topic (tagged `gender`).
-  - A grammar item: its topic's rule, first sentence, and *See rule*.
+  - An Articles item: the word's interference tip when it is a gender rule (it names an article: "Every "-ung" noun is "die"."), in the learner's language, and *See rule* opening the course's der/die/das topic (A1.1's, tagged `gender`). Without such a tip (most nouns have none, some tips are false friends) it falls back to the word item's example and *Open word*.
+  - A grammar item: its topic's rule up to the first sentence end a capital follows (so "um 8 Uhr;" and "Inf." don't cut it), and *See rule*.
   - *See rule* shows the rule in a sheet over the exam, as L15 does, rather than navigating to L4: the exam route stays where it is.
 
 **Tests.** scoring and pass; missed-words rating; goldens pass/fail.

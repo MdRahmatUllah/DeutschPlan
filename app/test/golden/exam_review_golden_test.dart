@@ -3,6 +3,7 @@
 // ignore_for_file: riverpod_lint/scoped_providers_should_specify_dependencies
 
 import 'package:deutschplan/core/adaptive/adaptive.dart';
+import 'package:deutschplan/core/providers/app_providers.dart';
 import 'package:deutschplan/features/exam/exam_review_screen.dart';
 import 'package:deutschplan/features/study/study_back.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -10,6 +11,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 
 import '../features/exam_result_fixtures.dart';
+import '../features/settings_fixtures.dart';
 import '../features/today_fixtures.dart' show artboardTopic;
 import 'golden_harness.dart';
 
@@ -18,7 +20,8 @@ import 'golden_harness.dart';
 void main() {
   Widget review() => ProviderScope(
     overrides: [
-      ...examResultStub(),
+      ...examResultStub(StubExamResult(result: reviewResult())),
+      settingsProvider.overrideWithValue(StubSettings()),
       studyBackProvider.overrideWith(
         (ref, uid) async => (
           examples: <StudyExample>[
@@ -31,9 +34,7 @@ void main() {
         ),
       ),
       examReviewTopicProvider.overrideWith((ref, uid) async => artboardTopic()),
-      examGenderTopicProvider.overrideWith(
-        (ref, step) async => artboardTopic(),
-      ),
+      examGenderTopicProvider.overrideWith((ref) async => artboardTopic()),
     ],
     child: ExamReviewView(attemptId: 7, onBack: () {}),
   );
