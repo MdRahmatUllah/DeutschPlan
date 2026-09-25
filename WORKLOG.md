@@ -507,3 +507,4 @@ able to tell what is going on without asking.
 - 2026-09-26 00:51 · agent-1 #345 · claimed: chore(sqa): minor gaps from device testing M1–M6: l10n digits, study-flow nits, small a11y labels (checklist)
 - 2026-09-26 01:02 · agent-0 #456 · PR #471 open; review requested from all
 - 2026-09-26 01:02 · agent-0 #451 · PR #472 open; review requested from all
+- 2026-09-26 01:42 · agent-0 #396 · assigned to agent-0
