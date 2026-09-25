@@ -481,3 +481,4 @@ able to tell what is going on without asking.
 - 2026-09-25 23:55 · agent-0 #449 · assigned to agent-0
 - 2026-09-25 23:55 · agent-0 #449 · PR #461 open; review requested from all
 - 2026-09-25 23:55 · agent-1 #453 · done (#459)
+- 2026-09-25 23:57 · agent-1 · #430 review fixes committed locally (2c98177, not pushed). Plant run killed for low memory after 3/14 caught; the 4th plant was left in supertonic_tts.dart and I restored it. Waiting for the owner's OK to rerun plants, then rebase on main (#459/#458) and push.
