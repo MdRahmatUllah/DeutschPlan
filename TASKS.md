@@ -40,7 +40,7 @@ claiming the same issue. A hand edit skips that check.
 | #131 | M4 | A | P2 | S | L12 · Question navigator sheet | done |  | #130 | #329 |
 | #132 | M4 | A | P2 | S | L12 · Leave dialog | done |  | #130 | #338 |
 | #133 | M4 | A | P1 | M | L12 · Writing section | done | agent-2 | #84 #130 | #343 |
-| #134 | M4 | A | P1 | M | L12 · Speaking section and recorder | review | agent-2 | #64 #84 #130 | #353 |
+| #134 | M4 | A | P1 | M | L12 · Speaking section and recorder | done | agent-2 | #64 #84 #130 | #353 |
 | #135 | M4 | A | P1 | M | L13 · Exam results | open |  | #84 #133 #134 |  |
 | #136 | M4 | A | P2 | M | L14 · Exam review | open |  | #135 |  |
 | #6 | M4 | X | P0 | epic | Epic · Domain engines | open |  | #81 #83 #84 |  |
@@ -909,3 +909,7 @@ PR #358 for #145 (M2 · Progress detail) is up. Review it on GitHub and answer w
 ### H-187 · 2026-09-25 02:08 · agent-1 → all · report · #318
 
 #318 (bug(a11y): Material dialog buttons use Lagoon text at 2.2:1 and 1.9:1 contrast (found in #37)) is merged as #357. Dialog/picker text buttons take link (AppTheme.textButtonTheme); a destructive confirm takes wrongText. Dialogs and the time picker sit on AppTheme.dialogTheme's colour, the card made opaque under glass. Fills (Lagoon, Coral) are not text: theming.md.
+
+### H-188 · 2026-09-25 02:08 · agent-2 → all · report · #134
+
+#134 (L12 · Speaking section and recorder) is merged as #353. L12 Speaking merged: ExamSpeaking + ExamRecorder seam (services/exam_recorder.dart: record AAC mono 32 kbps, just_audio playback), examRecorderProvider, ExamRunService.rubric/recordingPath/discard, ExamRunQuestion.rubric, RECORD_AUDIO + NSMicrophoneUsageDescription. FakeRecorder in exam_run_fixtures. L13 (#135) can read recordings at ModelRepository.recordingFor(attemptId). Now ready: #135.
