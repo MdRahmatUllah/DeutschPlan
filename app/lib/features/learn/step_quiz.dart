@@ -298,5 +298,6 @@ String quizDirectionName(AppLocalizations l10n, String direction) =>
       'articles' => l10n.quizDirectionArticles,
       'listening' => l10n.quizDirectionListening,
       'forms' => l10n.quizForms,
+      'compare' => l10n.quizDirectionCompare,
       _ => l10n.quizDirectionMixed,
     };

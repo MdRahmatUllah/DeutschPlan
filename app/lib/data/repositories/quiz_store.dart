@@ -1,16 +1,22 @@
+import 'package:deutschplan/data/db/content_dao.dart';
 import 'package:deutschplan/data/repositories/setting_keys.dart';
 import 'package:deutschplan/data/repositories/settings_repository.dart';
 import 'package:deutschplan/data/repositories/word_repository.dart';
+import 'package:deutschplan/domain/compare_set.dart';
 import 'package:deutschplan/domain/plan_engine.dart' show planDate;
 import 'package:deutschplan/domain/quiz_builder.dart';
 
 /// The quiz builder's view of the course (`quiz-engine.md`, #81): the
 /// queries in `word_queries.drift`, shaped into [QuizWord]s.
 class DriftQuizStore implements QuizStore {
-  DriftQuizStore(this._words, this._settings);
+  DriftQuizStore(this._words, this._settings, this._content);
 
   final WordRepository _words;
   final SettingsRepository _settings;
+
+  /// The course, for W2's sets: the app's one, so its forms index is built
+  /// once.
+  final ContentDao _content;
 
   @override
   Future<List<QuizWord>> learned(QuizSource source, {String? ref}) async {
@@ -84,4 +90,7 @@ class DriftQuizStore implements QuizStore {
         synonyms: row.synonyms,
       ),
   ];
+
+  @override
+  Future<CompareSet?> compareSet(String uid) => _content.compareSet(uid);
 }

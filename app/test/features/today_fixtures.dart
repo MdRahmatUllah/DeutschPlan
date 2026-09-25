@@ -19,6 +19,7 @@ import 'package:deutschplan/features/today/today_providers.dart';
 import 'package:deutschplan/features/today/today_view.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 
+import 'compare_fixtures.dart';
 import 'exam_fixtures.dart';
 import 'exam_run_fixtures.dart';
 import 'me_fixtures.dart';
@@ -514,6 +515,8 @@ List<Override> todayStub([
   ...examRunStub(),
   // W1 without a database: the WordDetail artboard's word.
   ...wordStub(),
+  // W2 without a database: the Compare artboard's set.
+  ...compareStub(),
   // M3 without a database: the defaults.
   ...settingsStub(),
 ];

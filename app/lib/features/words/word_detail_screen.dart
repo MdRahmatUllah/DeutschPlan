@@ -11,6 +11,7 @@ import 'package:deutschplan/core/theme/dp_tokens.dart';
 import 'package:deutschplan/core/typography/dp_text.dart';
 import 'package:deutschplan/data/repositories/setting_keys.dart';
 import 'package:deutschplan/data/repositories/word_repository.dart';
+import 'package:deutschplan/domain/compare_set.dart' show comparesSet;
 import 'package:deutschplan/domain/fsrs.dart' show Rating;
 import 'package:deutschplan/domain/plan_engine.dart' show daysBetween;
 import 'package:deutschplan/features/study/study_back.dart';
@@ -884,14 +885,6 @@ class _CompareLink extends StatelessWidget {
     );
   }
 }
-
-/// FR-W1-06: a headword that names a set — "circa / etwa / rund" — is one
-/// W2 can compare.
-///
-/// `word-detail.md` also names a `compare_group` "from register notes"; the
-/// course has no such column, so the headword is the only signal.
-/// ponytail: add the group when content.db grows one (#142).
-bool comparesSet(String german) => german.contains(' / ');
 
 /// W1's history caption — "Next review in 8 days · reviewed 5 times · last:
 /// Good" — or null for a word never reviewed, which has no history to tell.

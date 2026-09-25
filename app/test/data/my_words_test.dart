@@ -193,7 +193,7 @@ void main() {
 
   group('FR-R2-04 quizzes', () {
     late DriftQuizStore quizzes;
-    setUp(() => quizzes = DriftQuizStore(words, settings));
+    setUp(() => quizzes = DriftQuizStore(words, settings, ContentDao(db)));
 
     Future<List<String>> asked(QuizSource source, {String? ref}) async => [
       for (final word in await quizzes.learned(source, ref: ref)) word.uid,

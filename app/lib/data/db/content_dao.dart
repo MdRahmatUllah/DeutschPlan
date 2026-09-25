@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:deutschplan/data/db/app_database.dart';
+import 'package:deutschplan/domain/compare_set.dart';
 import 'package:deutschplan/domain/placement.dart';
 import 'package:deutschplan/domain/text_norm.dart' show searchKey;
 import 'package:drift/drift.dart';
@@ -108,6 +109,50 @@ class ContentDao extends DatabaseAccessor<AppDatabase> with _$ContentDaoMixin {
   }();
 
   Future<Map<String, String>>? _formIndex;
+
+  /// W2 (#142): the set word [uid], and the course word each of its members
+  /// is (FR-W2-01) — its own search key, the set's step first, then the
+  /// course's order. Not a phrase or another set, and of the set's part of
+  /// speech unless the set is a phrase: "rund" in *circa / etwa / rund* is
+  /// not the adjective *rund*, "round", nor "klasse" in *prima / super /
+  /// klasse* the noun *die Klasse*. Null for no such word, or a word that is
+  /// no set to compare (`comparesSet`).
+  // ponytail: a homograph of the same part of speech still resolves — *das
+  // Alter* ("age") for "Alter" (dude) in *Digga / Alter*, *die Liebe* for
+  // "Liebe" in the phrase set *Liebe / Lieber …*. A sense column in
+  // content.db, or a curated member list, would tell them apart.
+  Future<CompareSet?> compareSet(String uid) async {
+    final set = await wordByUid(uid).getSingleOrNull();
+    if (set == null || !comparesSet(set.german)) return null;
+    Future<CompareWord> read(Word word) async => CompareWord(
+      uid: word.uid,
+      german: word.german,
+      english: word.english,
+      step: word.sublevelCode,
+      article: word.article,
+      pos: word.pos,
+      register: word.synonymsRegister,
+      collocations: word.collocations,
+      examples: <CompareExample>[
+        for (final e in await examplesForWord(word.uid).get())
+          (german: e.german, english: e.english),
+      ],
+    );
+    final resolved = <String, CompareWord>{};
+    for (final name in compareMemberNames(set.german)) {
+      final candidates = await compareCandidates(
+        searchKey(name),
+        set.sublevelCode,
+      ).get();
+      final word = candidates
+          .where(
+            (w) => set.pos == null || set.pos == 'phrase' || w.pos == set.pos,
+          )
+          .firstOrNull;
+      if (word != null) resolved[name] = await read(word);
+    }
+    return CompareSet(await read(set), resolved);
+  }
 
   /// The category most of [uids] belong to: T1's "7 new · Wohnen & Haushalt".
   ///

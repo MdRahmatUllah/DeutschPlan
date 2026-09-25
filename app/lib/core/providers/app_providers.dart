@@ -428,6 +428,7 @@ QuizBuilder quizBuilder(Ref ref) => QuizBuilder(
   DriftQuizStore(
     ref.watch(wordRepositoryProvider),
     ref.watch(settingsProvider),
+    ref.watch(contentDaoProvider),
   ),
   fsrs: Fsrs(
     desiredRetention: ref

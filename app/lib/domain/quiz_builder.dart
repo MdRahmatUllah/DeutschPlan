@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:deutschplan/domain/answer_check.dart';
+import 'package:deutschplan/domain/compare_set.dart';
 import 'package:deutschplan/domain/fsrs.dart';
 import 'package:deutschplan/domain/plan_engine.dart' show PlanDate, daysBetween;
 
@@ -15,7 +16,12 @@ enum QuizDirection {
   forms,
 
   /// A round-robin of the others, per word, skipping those that don't apply.
-  mixed;
+  mixed,
+
+  /// W2's *Quiz these* (FR-W2-03): which member of a near-synonym set a
+  /// sentence is missing, picked from the members' tiles. Built from the
+  /// set, never a word at a time, so no mix rotates into it.
+  compare;
 
   static QuizDirection parse(String wire) => QuizDirection.values.firstWhere(
     (direction) => direction.name == wire,
@@ -32,7 +38,9 @@ enum QuizSource {
   /// The category whose id is `ref`.
   category,
 
-  /// The words whose uids `ref` lists, comma-separated: W2's *Quiz these*.
+  /// The words whose uids `ref` lists, comma-separated: L9's *Retry
+  /// mistakes*. With [QuizDirection.compare], the set word whose uid `ref`
+  /// is: W2's *Quiz these*.
   compareSet;
 
   static QuizSource parse(String wire) => QuizSource.values.firstWhere(
@@ -93,6 +101,9 @@ abstract interface class QuizStore {
 
   /// Every word of [step], whatever its status: the distractor pool.
   Future<List<QuizWord>> stepWords(String step);
+
+  /// W2's set word [uid] with its members' words; null for none.
+  Future<CompareSet?> compareSet(String uid);
 }
 
 /// One question.
@@ -136,11 +147,14 @@ class QuizItem {
   /// prompt"); null for the other directions and for a word without one.
   final String? hint;
 
-  /// Whether the runner asks with the four tiles rather than a field. Only
-  /// DE → বাংলা: typing Bangla needs a Bangla keyboard, which a learner of
-  /// German can't be assumed to have. The other meaning items are typed, as
-  /// `quiz.md` lays them out.
-  bool get tiles => direction == QuizDirection.deBn && options.length == 4;
+  /// Whether the runner asks with the tiles rather than a field: DE →
+  /// বাংলা, since typing Bangla needs a Bangla keyboard, which a learner of
+  /// German can't be assumed to have; and a compare item, whose tiles are
+  /// its set's members. The other meaning items are typed, as `quiz.md`
+  /// lays them out.
+  bool get tiles =>
+      direction == QuizDirection.compare ||
+      direction == QuizDirection.deBn && options.length == 4;
 }
 
 class Quiz {
@@ -186,6 +200,23 @@ class QuizBuilder {
     required PlanDate today,
     String? sourceRef,
   }) async {
+    if (direction == QuizDirection.compare) {
+      final set = await _store.compareSet(sourceRef ?? '');
+      return Quiz(
+        direction: direction,
+        source: source,
+        sourceRef: sourceRef,
+        seed: seed,
+        items: set == null
+            ? const <QuizItem>[]
+            : compareQuizItems(
+                compareMembers(set),
+                setUid: set.word.uid,
+                seed: seed,
+                length: length,
+              ),
+      );
+    }
     final random = Random(seed);
     final learned = await _store.learned(source, ref: sourceRef);
     final eligible = direction == QuizDirection.mixed
@@ -297,6 +328,8 @@ class QuizBuilder {
         );
       case QuizDirection.mixed:
         throw StateError('a mixed item takes the direction it rotated to');
+      case QuizDirection.compare:
+        throw StateError('a compare item is built from its set');
     }
   }
 }
@@ -315,6 +348,8 @@ Verdict grade(QuizItem item, String given) => switch (item.direction) {
   QuizDirection.listening => checkGerman(given, item.expected),
   QuizDirection.articles => checkArticle(given, item.expected),
   QuizDirection.forms => checkForm(given, item.expected),
+  QuizDirection.compare =>
+    given == item.expected ? Verdict.correct : Verdict.wrong,
   QuizDirection.mixed => throw StateError('an item has its own direction'),
 };
 
@@ -350,6 +385,7 @@ QuizDirection mixedDirection(
 bool applies(QuizDirection direction, QuizWord word) => switch (direction) {
   QuizDirection.deEn || QuizDirection.enDe || QuizDirection.listening => true,
   QuizDirection.mixed => true,
+  QuizDirection.compare => false,
   QuizDirection.deBn => (word.bangla ?? '').trim().isNotEmpty,
   QuizDirection.articles => const <String>{
     'der',

@@ -6,7 +6,7 @@ import 'dart:io';
 import 'package:deutschplan/data/db/app_database.dart';
 import 'package:deutschplan/data/db/content_dao.dart';
 import 'package:deutschplan/data/repositories/exam_repository.dart'
-    show ExamRepository;
+    show ExamRepository, QuizQuestion;
 import 'package:deutschplan/data/repositories/plan_repository.dart';
 import 'package:deutschplan/data/repositories/quiz_run_service.dart';
 import 'package:deutschplan/data/repositories/rating_service.dart';
@@ -46,7 +46,7 @@ void main() {
     DateTime now() => DateTime.utc(2026, 9, 21, 19);
     final words = WordRepository(db, settings);
     service = QuizRunService(
-      QuizBuilder(DriftQuizStore(words, settings)),
+      QuizBuilder(DriftQuizStore(words, settings, ContentDao(db))),
       exams,
       RatingService(db, settings, PlanRepository(db), words, now),
       words,
@@ -244,5 +244,79 @@ void main() {
     expect(run.quiz.items, isEmpty);
     expect(run.attemptId, isNull);
     expect(await db.select(db.quizAttempts).get(), isEmpty);
+  });
+
+  test('FR-W2-03 BR-QUIZ-01 a compare answer rates only a word being '
+      'learned; every answer is recorded', () async {
+    // Straße is suspended; Tür was never started; Haus is learning.
+    await (db.update(db.wordState)
+          ..where((s) => s.wordUid.equals(ContentFixture.strasse)))
+        .write(const WordStateCompanion(status: Value('suspended')));
+    final uids = <String>[
+      ContentFixture.tuer,
+      ContentFixture.strasse,
+      ContentFixture.haus,
+    ];
+    QuizItem item(int ord) => QuizItem(
+      ord: ord,
+      wordUid: uids[ord - 1],
+      direction: QuizDirection.compare,
+      prompt: 'Das ___ ist hier.',
+      expected: 'x',
+      options: const <String>['x', 'y'],
+    );
+    final id = await exams.beginQuiz(
+      startedAt: '2026-09-21T19:00:00Z',
+      direction: 'compare',
+      source: 'compareSet',
+      sourceRef: 'set',
+      seed: 1,
+      questions: <QuizQuestion>[
+        for (var ord = 1; ord <= 3; ord++)
+          QuizQuestion(
+            ord: ord,
+            wordUid: uids[ord - 1],
+            prompt: 'Das ___ ist hier.',
+            expected: 'x',
+          ),
+      ],
+    );
+    final run = QuizRun(
+      quiz: Quiz(
+        direction: QuizDirection.compare,
+        source: QuizSource.compareSet,
+        seed: 1,
+        items: <QuizItem>[item(1), item(2), item(3)],
+      ),
+      attemptId: id,
+    );
+    final before = await (db.select(
+      db.wordState,
+    )..where((s) => s.wordUid.equals(ContentFixture.strasse))).getSingle();
+
+    for (final ord in <int>[1, 2, 3]) {
+      await service.answer(
+        run,
+        item(ord),
+        given: 'x',
+        verdict: Verdict.correct,
+      );
+    }
+
+    final log = await db.select(db.reviewLog).get();
+    expect([for (final r in log) r.wordUid], [ContentFixture.haus]);
+    expect(
+      await (db.select(
+        db.wordState,
+      )..where((s) => s.wordUid.equals(ContentFixture.tuer))).getSingleOrNull(),
+      isNull,
+      reason: 'a To-do word is not started by a quiz',
+    );
+    final after = await (db.select(
+      db.wordState,
+    )..where((s) => s.wordUid.equals(ContentFixture.strasse))).getSingle();
+    expect((after.due, after.reps), (before.due, before.reps));
+    final answers = await exams.watchQuizAnswers(id).first;
+    expect([for (final a in answers) a.verdict], everyElement('correct'));
   });
 }

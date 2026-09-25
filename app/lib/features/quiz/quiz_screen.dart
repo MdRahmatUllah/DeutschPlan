@@ -26,10 +26,11 @@ import 'package:deutschplan/router/routes.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 
-/// L8's title: "Standard · DE → EN", or "Forms".
+/// L8's title: "Standard · DE → EN", or "Forms", or W2's "Compare".
 String quizTitle(AppLocalizations l10n, QuizArgs args) =>
-    args.direction == QuizDirection.forms.name
-    ? l10n.quizForms
+    args.direction == QuizDirection.forms.name ||
+        args.direction == QuizDirection.compare.name
+    ? quizDirectionName(l10n, args.direction)
     : '${quizKindName(l10n, args.length)} · '
           '${quizDirectionName(l10n, args.direction)}';
 
@@ -429,6 +430,7 @@ class _Feedback extends ConsumerWidget {
     };
     final heard = switch (item.direction) {
       QuizDirection.articles => '$answer ${item.prompt}',
+      QuizDirection.compare => answer,
       _ when typesGerman(item) => answer,
       _ => null,
     };

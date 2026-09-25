@@ -2017,6 +2017,96 @@
   "@wordResetCancel": {
     "description": "W1 Reset word dialog: cancel."
   },
+  "compareTitle": "Compare",
+  "@compareTitle": {
+    "description": "W2 bar title: a near-synonym set side by side."
+  },
+  "compareBack": "Word",
+  "@compareBack": {
+    "description": "W2 iOS back-button label: back to W1, the word it was opened from."
+  },
+  "compareSubtitle": "Near-synonym set from {step} · scroll sideways, first column stays",
+  "@compareSubtitle": {
+    "description": "W2 line under the bar when the columns overflow (phone). {step} is the set word's step, e.g. C1.1.",
+    "placeholders": {
+      "step": {
+        "type": "String"
+      }
+    }
+  },
+  "compareSubtitleWide": "Near-synonym set from {step}",
+  "@compareSubtitleWide": {
+    "description": "W2 line under the bar when every column fits (tablet, FR-W2-04). {step} is the set word's step.",
+    "placeholders": {
+      "step": {
+        "type": "String"
+      }
+    }
+  },
+  "compareMeaning": "Meaning",
+  "@compareMeaning": {
+    "description": "W2 row label (shown upper-case): the member's meaning."
+  },
+  "compareRegister": "Register",
+  "@compareRegister": {
+    "description": "W2 row label (shown upper-case): register chips, e.g. neutral, written."
+  },
+  "compareWith": "With",
+  "@compareWith": {
+    "description": "W2 row label (shown upper-case): the collocations, cases and prepositions the member goes with."
+  },
+  "compareExample": "Example",
+  "@compareExample": {
+    "description": "W2 row label (shown upper-case): an example sentence with play."
+  },
+  "compareUseWhen": "Use it when",
+  "@compareUseWhen": {
+    "description": "W2 row label (shown upper-case): when to choose this member over the others."
+  },
+  "compareDrag": "← drag to see {word}",
+  "@compareDrag": {
+    "description": "W2 hint under the table when the columns overflow. {word} is the last member, off screen.",
+    "placeholders": {
+      "word": {
+        "type": "String"
+      }
+    }
+  },
+  "compareQuiz": "{count, plural, =1{Quiz these · 1 item} other{Quiz these · {count} items}}",
+  "@compareQuiz": {
+    "description": "W2 primary button: a pick-the-right-word quiz from the members' sentences (FR-W2-03). {count} is how many items it asks, 5 at most.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "compareAddAll": "{count, plural, =1{Add it to today} =2{Add both to today} other{Add all {count} to today}}",
+  "@compareAddAll": {
+    "description": "W2 secondary button: every member still To do joins today's plan as a new word. {count} is how many.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "compareAdded": "{count, plural, =1{1 word is in today's plan} other{{count} words are in today's plan}}",
+  "@compareAdded": {
+    "description": "W2 toast after Add all to today.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "compareLoadFailed": "This set didn't load.",
+  "@compareLoadFailed": {
+    "description": "W2 error panel message."
+  },
+  "compareNotFound": "This set isn't in the course.",
+  "@compareNotFound": {
+    "description": "W2 message for a uid the course has no word for."
+  },
   "backlogEmptyTitle": "Nothing waiting. Nice.",
   "@backlogEmptyTitle": {
     "description": "T4 empty state headline."
@@ -2503,6 +2593,10 @@
   "@quizDirectionMixed": {
     "description": "Quiz direction name."
   },
+  "quizDirectionCompare": "Compare",
+  "@quizDirectionCompare": {
+    "description": "Quiz direction name: W2's pick-the-word quiz over a near-synonym set; also its L8 title."
+  },
   "quizLastLineForms": "Forms · {date}",
   "@quizLastLineForms": {
     "description": "L2 last quiz card for a Forms quiz.",
@@ -2936,6 +3030,10 @@
   "quizAskPick": "Pick the meaning",
   "@quizAskPick": {
     "description": "L8 item chip: the four tiles (DE → বাংলা)."
+  },
+  "quizAskCompare": "Which word fits?",
+  "@quizAskCompare": {
+    "description": "L8 item chip: a compare item (W2's Quiz these), the set member a sentence is missing."
   },
   "quizArticleWrong": "Article: {article}, not {given}",
   "@quizArticleWrong": {

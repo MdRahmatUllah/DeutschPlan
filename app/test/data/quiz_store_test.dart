@@ -37,7 +37,11 @@ void main() {
     );
     settings = SettingsRepository(db);
     await settings.load();
-    store = DriftQuizStore(WordRepository(db, settings), settings);
+    store = DriftQuizStore(
+      WordRepository(db, settings),
+      settings,
+      ContentDao(db),
+    );
   });
 
   tearDown(() async {

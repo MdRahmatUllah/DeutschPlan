@@ -9,6 +9,7 @@ import 'package:deutschplan/data/repositories/exam_repository.dart'
     show QuizMistakeRowsResult;
 import 'package:deutschplan/features/learn/step_quiz.dart' show quizColour;
 import 'package:deutschplan/features/quiz/quiz_result_screen.dart';
+import 'package:deutschplan/features/words/word_row.dart' show WordPlayButton;
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
 import 'package:deutschplan/main.dart'
     show appLocalizationsDelegates, supportedLocales;
@@ -38,10 +39,22 @@ void main() {
     timer: true,
   );
 
+  const compare = QuizArgs(
+    direction: 'compare',
+    source: 'compareSet',
+    sourceRef: 'set-grund',
+    seed: 7,
+    length: 5,
+  );
+
   late StubQuizRun run;
   late QuizArgs? retried;
 
-  Future<void> pump(WidgetTester tester, {StubQuizRun? stub}) async {
+  Future<void> pump(
+    WidgetTester tester, {
+    StubQuizRun? stub,
+    QuizArgs args = standard,
+  }) async {
     run = stub ?? StubQuizRun();
     retried = null;
     final routes = GoRouter(
@@ -53,7 +66,7 @@ void main() {
         ),
         GoRoute(
           path: '/result',
-          builder: (_, _) => const QuizResultView(attemptId: 1, args: standard),
+          builder: (_, _) => QuizResultView(attemptId: 1, args: args),
         ),
         GoRoute(
           path: '/quiz',
@@ -188,6 +201,63 @@ void main() {
     await tester.binding.handlePopRoute();
     await tester.pumpAndSettle();
     expect(find.text('opener'), findsOneWidget);
+  });
+
+  testWidgets('FR-W2-03 a compare quiz retries its set, as many items', (
+    tester,
+  ) async {
+    await pump(tester, args: compare);
+    await tester.tap(find.text(l10n.quizRetryMistakes(4)));
+    await tester.pumpAndSettle();
+    final args = retried!;
+    expect(
+      (args.direction, args.source, args.sourceRef, args.length),
+      ('compare', 'compareSet', 'set-grund', 4),
+    );
+  });
+
+  testWidgets('FR-W2-03 a compare mistake names the member, not the set', (
+    tester,
+  ) async {
+    await pump(
+      tester,
+      args: compare,
+      stub: StubQuizRun(
+        outcome: (
+          attempt: attempt(),
+          mistakes: <QuizMistakeRowsResult>[
+            // A member with no word of its own rates the set word.
+            QuizMistakeRowsResult(
+              ord: 1,
+              uid: 'set-angst',
+              given: 'Angst',
+              verdict: 'wrong',
+              expected: 'Furcht',
+              german: 'Angst / Furcht / Sorge / Panik',
+              article: null,
+            ),
+            QuizMistakeRowsResult(
+              ord: 2,
+              uid: 'uid-grund',
+              given: 'Anlass',
+              verdict: 'wrong',
+              expected: 'Grund',
+              german: 'Grund',
+              article: 'der',
+            ),
+          ],
+        ),
+      ),
+    );
+    expect(find.text('Furcht', findRichText: true), findsOneWidget);
+    expect(find.textContaining('Sorge', findRichText: true), findsNothing);
+    expect(find.text('der Grund', findRichText: true), findsOneWidget);
+    expect(
+      tester
+          .widgetList<WordPlayButton>(find.byType(WordPlayButton))
+          .map((button) => button.word),
+      <String>['Furcht', 'der Grund'],
+    );
   });
 
   testWidgets('FR-L9-01 Add mistakes to revision: due tomorrow, once', (

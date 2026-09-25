@@ -50,6 +50,7 @@ import 'package:deutschplan/features/search/add_word_screen.dart';
 import 'package:deutschplan/features/search/search_screen.dart';
 import 'package:deutschplan/features/sentences/sentences_screen.dart';
 import 'package:deutschplan/features/study/study_screen.dart';
+import 'package:deutschplan/features/words/compare_screen.dart';
 import 'package:deutschplan/features/words/word_detail_screen.dart';
 import 'package:deutschplan/core/adaptive/adaptive.dart';
 import 'package:deutschplan/router/placeholder_screen.dart';
@@ -952,5 +953,5 @@ class CompareRoute extends GoRouteData with $CompareRoute {
 
   @override
   Widget build(BuildContext context, GoRouterState state) =>
-      PlaceholderScreen(title: 'Compare', screen: 'W2', detail: uid);
+      CompareScreen(uid: uid);
 }
