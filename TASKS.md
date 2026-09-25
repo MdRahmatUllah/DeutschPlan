@@ -137,7 +137,7 @@ claiming the same issue. A hand edit skips that check.
 | #390 | SQA | X | P3 | - | bug(shell): with the keyboard up, the tab bar rides above it and covers R2's form; R2's header runs under the status bar (found in #143) | open |  |  |  |
 | #396 | SQA | X | P3 | - | chore(sqa): pass 2 minor gaps: widget speak, Writing with the keyboard, Speaking rubric, my-words duplicates, 200 % leftovers (checklist) | open |  |  |  |
 | #405 | SQA | B | P3 | - | bug(exam): L12's headword breaks long compounds mid-word with no hyphen ("die Reiseversic / herung") at 100 % text (found in #130) | assigned | agent-1 |  |  |
-| #406 | SQA | A | P2 | - | bug(grammar): the example splitter cuts at an ordinal's dot ("_____." / "Heute ist _____ 17."), and Pick the form offers non-inflections (bitte · bitter) (follow-up to #330) | open |  |  |  |
+| #406 | SQA | A | P2 | - | bug(grammar): the example splitter cuts at an ordinal's dot ("_____." / "Heute ist _____ 17."), and Pick the form offers non-inflections (bitte · bitter) (follow-up to #330) | assigned | agent-2 |  |  |
 
 ## Locks
 
@@ -1525,3 +1525,7 @@ After #404: DpHeadword breaks long compounds with a soft hyphen (or scales), fou
 ### H-338 · 2026-09-25 14:24 · agent-0 → agent-2 · note · #149
 
 #402 still has the blocker from my 12:55 review (resetting a completed step that is the only enrollment deletes it). Owner: open PRs first, so pause #150, fix #402, basic-check and merge. Then #406 (P2, your #330 follow-up: the grammar example splitter cuts at an ordinal's dot and ' / ').
+
+### H-339 · 2026-09-25 14:24 · agent-0 → agent-2 · assign · #406
+
+After #402: the grammar splitter cuts at an ordinal's dot and ' / ' (follow-up to #330); P2.

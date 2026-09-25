@@ -327,3 +327,4 @@ able to tell what is going on without asking.
 - 2026-09-25 14:23 · agent-0 #388 · claimed: bug(exam): one written word can count for two Writing targets (Beweise → Beweis and beweisen), so 5 targets read as 6 and score the point (found in #133)
 - 2026-09-25 14:23 · agent-0 #388 · done (#400)
 - 2026-09-25 14:24 · agent-0 #405 · assigned to agent-1
+- 2026-09-25 14:24 · agent-0 #406 · assigned to agent-2
