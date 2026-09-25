@@ -161,6 +161,15 @@ class StepProgress {
           unlockTarget(todo: todo, introduced: introduced, percent: percent);
 }
 
+/// A word of the learner's own as R2 edits it (#143).
+typedef MyWordDraft = ({
+  String? article,
+  String german,
+  String meaning,
+  String? whereSeen,
+  String? example,
+});
+
 /// One of the learner's own words (`custom_words`), as R1's *My words* shows
 /// it.
 typedef MyWord = ({
@@ -232,6 +241,69 @@ class WordRepository extends DatabaseAccessor<AppDatabase>
   Stream<List<WordWithState>> watchStep(String code) => _watchWords(
     (days) => wordsWithStateForStep(days, code).watch(),
     (row) => _word(row.w, row.s, row.derivedStatus),
+  );
+
+  /// R2's edit mode (#143): one of the learner's own words, or null once it
+  /// has gone.
+  Future<MyWordDraft?> myWord(int id) async {
+    final row = await (select(
+      db.customWords,
+    )..where((t) => t.id.equals(id))).getSingleOrNull();
+    return row == null
+        ? null
+        : (
+            article: row.article,
+            german: row.german,
+            meaning: row.meaning,
+            whereSeen: row.whereSeen,
+            example: row.example,
+          );
+  }
+
+  /// FR-R2-03 *Save*: a new word of the learner's own, or [id]'s changed.
+  /// [matchedUid] is the course word it turned out to be, if any. Returns
+  /// the word's id.
+  Future<int> saveMyWord(
+    MyWordDraft word, {
+    required DateTime now,
+    int? id,
+    String? matchedUid,
+  }) async {
+    String? blank(String? text) =>
+        text == null || text.trim().isEmpty ? null : text.trim();
+    final fields = CustomWordsCompanion(
+      article: Value(word.article),
+      german: Value(word.german.trim()),
+      meaning: Value(word.meaning.trim()),
+      whereSeen: Value(blank(word.whereSeen)),
+      example: Value(blank(word.example)),
+      matchedUid: Value(matchedUid),
+    );
+    if (id != null) {
+      await (update(
+        db.customWords,
+      )..where((t) => t.id.equals(id))).write(fields);
+      return id;
+    }
+    return into(
+      db.customWords,
+    ).insert(fields.copyWith(createdAt: Value(now.toUtc().toIso8601String())));
+  }
+
+  /// R2's *Delete* (edit mode).
+  Future<void> deleteMyWord(int id) =>
+      (delete(db.customWords)..where((t) => t.id.equals(id))).go();
+
+  /// FR-R2-02 *Log it*: one more real-life sighting of a course word, on its
+  /// `word_state` row. A word never met gets one, as To do: logging it isn't
+  /// studying it.
+  Future<void> logSighting(String uid) => into(db.wordState).insert(
+    WordStateCompanion.insert(wordUid: uid, timesLogged: const Value(1)),
+    onConflict: DoUpdate(
+      (old) => WordStateCompanion.custom(
+        timesLogged: old.timesLogged + const Constant(1),
+      ),
+    ),
   );
 
   /// R1's *My words* (#138): the learner's own words, newest first, as they

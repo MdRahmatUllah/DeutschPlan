@@ -1,3 +1,4 @@
+import 'package:deutschplan/features/search/add_word_screen.dart';
 import 'package:deutschplan/features/search/search_screen.dart';
 import 'package:deutschplan/features/sentences/sentences_screen.dart';
 import 'package:deutschplan/core/providers/app_providers.dart';
@@ -436,6 +437,8 @@ List<Override> todayStub([
   // R1's idle view (#138): no recents, no words of one's own.
   recentSearchesProvider.overrideWith(() => StubRecentSearches(const [])),
   myWordsProvider.overrideWith((ref) => Stream.value(const <MyWord>[])),
+  // R2's edit mode (#143): a word that isn't there.
+  myWordProvider.overrideWith((ref, id) async => null),
   todayViewProvider.overrideWith((ref) async {
     // A day that arrives after the rest of the screen, as a slow plan does.
     if (dayAfter != null) await Future<void>.delayed(dayAfter);

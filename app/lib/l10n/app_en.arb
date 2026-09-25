@@ -4497,5 +4497,114 @@
   "searchNoneFootnote": "Opens the web in an in-app browser — the only time DeutschPlan goes online.",
   "@searchNoneFootnote": {
     "description": "R1 no results: under the button, about the web chips (BR-PRIV-01)."
+  },
+  "addWordTitle": "My word",
+  "@addWordTitle": {
+    "description": "R2 (#143): the screen's title, adding or editing a word of the learner's own."
+  },
+  "addWordIntro": "Words you meet in real life. Saved on this phone, quizzed like any other.",
+  "@addWordIntro": {
+    "description": "R2: the line under the title."
+  },
+  "addWordArticle": "Article",
+  "@addWordArticle": {
+    "description": "R2: the heading over der / die / das / none, shown upper-case."
+  },
+  "addWordNoArticle": "none",
+  "@addWordNoArticle": {
+    "description": "R2: the article option for a word with no article (a verb, an adverb)."
+  },
+  "addWordGerman": "German",
+  "@addWordGerman": {
+    "description": "R2: the heading over the German field, shown upper-case."
+  },
+  "addWordMeaning": "Meaning",
+  "@addWordMeaning": {
+    "description": "R2: the heading over the meaning field, shown upper-case."
+  },
+  "addWordWhere": "Where I saw it",
+  "@addWordWhere": {
+    "description": "R2: the heading over where the learner came across the word, shown upper-case."
+  },
+  "addWordExample": "Example sentence · optional",
+  "@addWordExample": {
+    "description": "R2: the heading over the optional example, shown upper-case."
+  },
+  "addWordExampleHint": "The sentence you saw it in",
+  "@addWordExampleHint": {
+    "description": "R2: the empty example field's hint."
+  },
+  "addWordInCourse": "Already in the course · {step} ·",
+  "@addWordInCourse": {
+    "description": "R2's live check (FR-R2-01): the German is a course word; the headword follows, its article in the gender's colour.",
+    "placeholders": {
+      "step": {
+        "type": "String"
+      }
+    }
+  },
+  "addWordLogHint": "Log it counts one more real-life sighting",
+  "@addWordLogHint": {
+    "description": "R2's live check: what Log it does."
+  },
+  "addWordOpen": "Open",
+  "@addWordOpen": {
+    "description": "R2's live check: opens the course word in W1."
+  },
+  "addWordOpenLabel": "Open {word}",
+  "@addWordOpenLabel": {
+    "description": "R2's live check: Open as a screen reader hears it.",
+    "placeholders": {
+      "word": {
+        "type": "String"
+      }
+    }
+  },
+  "addWordLogIt": "Log it",
+  "@addWordLogIt": {
+    "description": "R2's live check (FR-R2-02): counts one more real-life sighting of the course word."
+  },
+  "addWordLogged": "One more sighting of {word}",
+  "@addWordLogged": {
+    "description": "R2: the toast after Log it.",
+    "placeholders": {
+      "word": {
+        "type": "String"
+      }
+    }
+  },
+  "addWordSave": "Save",
+  "@addWordSave": {
+    "description": "R2 (FR-R2-03): saves the word as the learner's own."
+  },
+  "addWordSaved": "Saved {word}",
+  "@addWordSaved": {
+    "description": "R2: the toast after Save.",
+    "placeholders": {
+      "word": {
+        "type": "String"
+      }
+    }
+  },
+  "addWordDelete": "Delete",
+  "@addWordDelete": {
+    "description": "R2 edit mode: deletes the learner's own word."
+  },
+  "addWordDeleteTitle": "Delete {word}?",
+  "@addWordDeleteTitle": {
+    "description": "R2 edit mode: the confirm before Delete.",
+    "placeholders": {
+      "word": {
+        "type": "String"
+      }
+    }
+  },
+  "addWordDeleteBody": "It goes from My words. The course isn't changed.",
+  "@addWordDeleteBody": {
+    "description": "R2 edit mode: the confirm's message."
+  },
+  "addWordDeleteKeep": "Keep it",
+  "@addWordDeleteKeep": {
+    "description": "R2 edit mode: the confirm's cancel."
   }
 }
