@@ -97,45 +97,79 @@ abstract final class DpScript {
     return isBengaliRune(rune);
   }
 
-  /// The soft hyphen. Flutter breaks a line here and renders a hyphen only when
-  /// it does, which is what `accessibility-performance.md` asks for with "long
-  /// compounds soft-hyphenate".
-  static const String softHyphen = '\u00AD';
-
-  /// Lets a long German compound break rather than overflow.
+  /// The soft hyphen: a place a line may break.
   ///
-  /// This is **not** German hyphenation — that needs a dictionary, and breaking
-  /// `Wohnungsgeberbestätigung` in the wrong place is worse than not breaking it
-  /// for someone learning the word. Soft hyphens already present in the content
-  /// are respected; beyond that a word only gets break opportunities once it is
-  /// longer than [threshold], and only at the boundaries the content supplies.
+  /// ponytail: Flutter breaks there but draws no hyphen at the break
+  /// (flutter/flutter#18443 is open), so the break shows as a plain wrap
+  /// between two syllables; drawing "-" is #419.
+  static const String softHyphen = '­';
+
+  /// Lets a long German compound break between syllables rather than
+  /// overflow, or wrap at an arbitrary letter.
+  ///
+  /// Not a dictionary's hyphenation, but German's syllable rule: a break
+  /// falls before the consonants that open the next syllable (#405). A word
+  /// longer than [threshold] gets a break opportunity at every syllable
+  /// (two letters from either end at least), and the layout takes the
+  /// last that fits, so even 200 % text wraps between syllables. Soft
+  /// hyphens already in the content are respected.
   static String allowBreaks(String text, {int threshold = 14}) {
     if (text.contains(softHyphen)) return text;
 
     return text
         .split(' ')
-        .map((word) => word.length <= threshold ? word : _breakLongWord(word))
+        .map(
+          (word) => word.length <= threshold
+              ? word
+              : _syllableBreaks(word).reversed.fold(
+                  word,
+                  (broken, at) =>
+                      '${broken.substring(0, at)}$softHyphen'
+                      '${broken.substring(at)}',
+                ),
+        )
         .join(' ');
   }
 
-  /// Inserts one break opportunity near the middle of an over-long word, at a
-  /// consonant boundary so the break lands between syllables more often than
-  /// not. A single conservative break beats scattering them.
-  static String _breakLongWord(String word) {
-    const vowels = 'aeiouäöüAEIOUÄÖÜ';
-    final middle = word.length ~/ 2;
+  static const String _vowels = 'aeiouyäöüAEIOUYÄÖÜ';
 
-    for (var offset = 0; offset < word.length ~/ 4; offset++) {
-      for (final index in <int>[middle + offset, middle - offset]) {
-        if (index <= 2 || index >= word.length - 2) continue;
-        final before = word[index - 1];
-        final at = word[index];
-        if (!vowels.contains(before) && vowels.contains(at)) {
-          return '${word.substring(0, index)}$softHyphen${word.substring(index)}';
+  /// The consonants that can open a German syllable together, besides any
+  /// one alone: a break goes before the longest of them that ends a run.
+  static const Set<String> _onsets = <String>{
+    'ch', 'ck', 'ph', 'pf', 'th', 'sch', 'schl', 'schm', 'schn', 'schr', //
+    'schw', 'bl', 'br', 'dr', 'fl', 'fr', 'gl', 'gr', 'kl', 'kn', 'kr', //
+    'pl', 'pr', 'tr', 'zw', 'sp', 'st', 'spr', 'str', 'pfl', 'pfr', 'chr',
+  };
+
+  /// Where [word]'s syllables begin, two letters from either end at least
+  /// (German hyphenation's minimum): in a vowel, consonants, vowel run, before the consonants that
+  /// open the next syllable ("Haft|pflicht|ver|si|che|rung").
+  static List<int> _syllableBreaks(String word) {
+    bool vowel(int i) => _vowels.contains(word[i]);
+    final breaks = <int>[];
+    var i = 1;
+    while (i < word.length) {
+      if (!vowel(i - 1) || vowel(i)) {
+        i++;
+        continue;
+      }
+      var end = i;
+      while (end < word.length && !vowel(end)) {
+        end++;
+      }
+      if (end == word.length) break;
+      final run = word.substring(i, end).toLowerCase();
+      var start = end - 1;
+      for (var length = run.length; length > 1; length--) {
+        if (_onsets.contains(run.substring(run.length - length))) {
+          start = end - length;
+          break;
         }
       }
+      if (start >= 2 && word.length - start >= 2) breaks.add(start);
+      i = end;
     }
-    return word;
+    return breaks;
   }
 }
 
@@ -332,7 +366,7 @@ class DpOneLine extends StatelessWidget {
           }
           shown = low == 0
               ? ellipsis
-              : '${words.take(low).join(' ').replaceAll(RegExp(r'[,;:—–-]+$'), '').trimRight()}$ellipsis';
+              : '${words.take(low).join(' ').replaceAll(RegExp(r'[,;:—–&·/+-]+$'), '').trimRight()}$ellipsis';
         }
         return DpScript.hasBengali(shown)
             ? Text.rich(
