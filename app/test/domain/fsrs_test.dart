@@ -565,4 +565,61 @@ void main() {
     expect(() => Fsrs(weights: <double>[1, 2, 3]), throwsArgumentError);
     expect(Fsrs(weights: Fsrs.defaultWeights).weights, Fsrs.defaultWeights);
   });
+
+  group('#327 elapsed days are local calendar days', () {
+    // Local wall-clock times, so these hold in any host's time zone; the
+    // scheduler is handed UTC instants, as RatingService hands them.
+    test(
+      'an evening review and the next morning: one day, however few hours',
+      () {
+        final evening = DateTime(2026, 9, 24, 22, 29).toUtc();
+        final morning = DateTime(2026, 9, 25, 9, 5).toUtc();
+        expect(elapsedDays(evening, morning), 1);
+
+        final fsrs = Fsrs();
+        final lapsed = fsrs.review(const CardState(), Rating.again, evening);
+        expect(
+          fsrs.preview(lapsed, morning),
+          fsrs.preview(lapsed, evening.add(const Duration(hours: 24))),
+        );
+        expect(
+          fsrs.preview(lapsed, morning)[2],
+          greaterThan(1),
+          reason: 'Good',
+        );
+      },
+    );
+
+    test('the same day is none, early morning to late evening', () {
+      expect(
+        elapsedDays(
+          DateTime(2026, 9, 25, 0, 5).toUtc(),
+          DateTime(2026, 9, 25, 23, 55).toUtc(),
+        ),
+        0,
+      );
+    });
+
+    test('a daylight-saving change is still one day, either way', () {
+      // Europe: 25 October 2026 has 25 hours, 29 March 23.
+      expect(
+        elapsedDays(DateTime(2026, 10, 24, 23), DateTime(2026, 10, 25, 23)),
+        1,
+      );
+      expect(
+        elapsedDays(DateTime(2026, 3, 28, 23), DateTime(2026, 3, 29, 23)),
+        1,
+        reason: 'the same time next day, 23 hours later',
+      );
+      expect(
+        elapsedDays(DateTime(2026, 3, 29, 12), DateTime(2026, 3, 30, 8)),
+        1,
+        reason: 'the two local midnights are 23 hours apart',
+      );
+    });
+
+    test('a clock moved backwards is none, not negative', () {
+      expect(elapsedDays(DateTime(2026, 9, 25), DateTime(2026, 9, 20)), 0);
+    });
+  });
 }

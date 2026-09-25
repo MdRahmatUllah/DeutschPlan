@@ -1,4 +1,5 @@
 import 'package:deutschplan/data/repositories/word_repository.dart';
+import 'package:deutschplan/domain/plan_engine.dart' show planDate;
 import 'package:deutschplan/domain/quiz_builder.dart';
 
 /// The quiz builder's view of the course (`quiz-engine.md`, #81): the two
@@ -37,7 +38,10 @@ class DriftQuizStore implements QuizStore {
             forms: row.forms,
             synonyms: row.synonyms,
             stability: row.stability,
-            lastReview: row.reviewed,
+            lastReview: switch (row.reviewed) {
+              final instant? => planDate(DateTime.parse(instant).toLocal()),
+              null => null,
+            },
           ),
     ];
   }

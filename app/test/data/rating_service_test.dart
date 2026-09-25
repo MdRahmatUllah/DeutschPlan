@@ -437,6 +437,21 @@ void main() {
       expect(log.last.elapsedDays, 9);
     });
 
+    test('#327 an evening review and the next morning count one day', () async {
+      now = DateTime(2026, 3, 2, 22, 30);
+      await rating.rate(uid, Rating.again, source: ReviewSource.daily);
+      now = DateTime(2026, 3, 3, 8);
+
+      await rating.rate(uid, Rating.good, source: ReviewSource.daily);
+
+      expect((await logOf(uid)).last.elapsedDays, 1);
+      expect(
+        (await stateOf(uid))!.due,
+        isNot('2026-03-04'),
+        reason: 'Good grows the card past one day',
+      );
+    });
+
     test('and a clock that moved backwards does not go negative', () async {
       await rating.rate(uid, Rating.good, source: ReviewSource.daily);
       now = now.subtract(const Duration(days: 5));

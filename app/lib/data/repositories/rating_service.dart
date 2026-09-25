@@ -209,8 +209,7 @@ LIMIT ?2
     final last = before?.lastReview;
     if (last == null) return 0;
 
-    final days = now.toUtc().difference(DateTime.parse(last)).inDays;
-    return days < 0 ? 0 : days;
+    return elapsedDays(DateTime.parse(last), now);
   }
 
   /// A local date, `YYYY-MM-DD` — a study day is a local day.
