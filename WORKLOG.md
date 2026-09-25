@@ -453,3 +453,4 @@ able to tell what is going on without asking.
 - 2026-09-25 21:49 · agent-1 #430 · claimed: perf(tts): Supertonic's first sound for a new word is ~1 s, not < 300 ms: pre-synthesise a session's words (follow-up to #152)
 - 2026-09-25 21:53 · agent-2 #282 · done (#444)
 - 2026-09-25 21:53 · agent-2 #445 · done (#446)
+- 2026-09-25 22:29 · agent-0 #428 · done (#439)

@@ -142,7 +142,7 @@ claiming the same issue. A hand edit skips that check.
 | #409 | - | X | P2 | - | bug(models): the Hy-MT manifest points at a repo and builds that don't exist (tencent/HY-MT1.5-1.8B-GGUF has Q4_K_M/Q6_K/Q8_0) | done | agent-2 |  | #427 |
 | #420 | SQA | A | P3 | - | bug(reset): resetting one step moves the course's start: T1 says "Day 1 of your course" and M1 "Learning since" today (found in #149) | done | agent-0 |  | #426 |
 | #425 | SQA | B | P2 | - | bug(l10n): screen readers read English in the Bangla UI (progress ring and bar fallbacks), and Bangla strings mix ১২ with 12 (#166 leftovers) | done | agent-2 |  | #434 |
-| #428 | SQA | C | P2 | - | bug(models): S2's Download now ignores free space (fills the phone to 0 B, failure never shown), says "Downloading" while waiting for Wi-Fi, and re-downloads an installed voice (found in #156) | review | agent-0 |  | #439 |
+| #428 | SQA | C | P2 | - | bug(models): S2's Download now ignores free space (fills the phone to 0 B, failure never shown), says "Downloading" while waiting for Wi-Fi, and re-downloads an installed voice (found in #156) | done | agent-0 |  | #439 |
 | #430 | - | B | P2 | - | perf(tts): Supertonic's first sound for a new word is ~1 s, not < 300 ms: pre-synthesise a session's words (follow-up to #152) | in-progress | agent-1 | #152 #153 |  |
 | #432 | SQA | B | P2 | - | bug(adaptive): Reset everything's typed confirm doesn't scroll: at 200 % and in Bangla the buttons cover the text and the RESET field sits under the keyboard (found in #149) | done | agent-2 |  | #435 |
 | #436 | - | B | P3 | - | fix(tts): Supertonic's clips and open sessions outlive a model update (follow-up to #152) | open |  | #152 |  |
@@ -2125,3 +2125,7 @@ Owner on #167 (recorded on the issue): (1) emulator-5558 baseline for regression
 ### H-485 · 2026-09-25 22:26 · agent-0 → agent-1 · review · #155
 
 #447: changes needed (comment on the PR). Rebase on #439 (merging now): use shortfallFor and catch NotEnoughSpace; Update must respect the shortfall; the Hy-MT flag gate goes before the space check; deleting the voice must release the ORT sessions and cache. Then merge on approval.
+
+### H-486 · 2026-09-25 22:29 · agent-0 → all · report · #428
+
+#428 (bug(models): S2's Download now ignores free space (fills the phone to 0 B, failure never shown), says "Downloading" while waiting for Wi-Fi, and re-downloads an installed voice (found in #156)) is merged as #439. S2 page 5 follows ModelDownloads.watch (Ready/Downloading/Waiting for Wi-Fi/Paused/Failed+Retry/Needs N MB); ModelDownloads.shortfallFor(id) (bytes + 100 MB margin) guards start and retry (NotEnoughSpace); the first failed file cancels the rest. The notification-text limits are #438.
