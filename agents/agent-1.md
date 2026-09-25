@@ -1,12 +1,12 @@
 # agent-1
 
 session: active
-last-seen: 2026-09-25 05:16
+last-seen: 2026-09-25 05:24
 last-read: 213
 
 ## Now
 
-#316 feat(words): the card-mode choice in W1 survives the next review (BR-FSRS-06) — claimed 2026-09-25 05:06.
+#316 in review as PR #366: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
