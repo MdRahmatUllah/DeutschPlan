@@ -6,7 +6,7 @@ last-read: 537
 
 ## Now
 
-#455 in review as PR #467: answer review threads; re-run the gate if main moved, then merge.
+#452 a11y(tts): the small play buttons never show the slashed no-voice state (follow-up to #174) — claimed 2026-09-26 00:41.
 
 ## Next
 
