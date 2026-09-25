@@ -6,7 +6,7 @@ last-read: 301
 
 ## Now
 
-#389 bug(exam): L14 says "no answer: the time ran out" for questions skipped in an exam submitted early (found in #136) — claimed 2026-09-25 14:23.
+Nothing claimed.
 
 ## Next
 
