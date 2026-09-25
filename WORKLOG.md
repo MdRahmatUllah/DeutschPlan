@@ -270,3 +270,4 @@ able to tell what is going on without asking.
 - 2026-09-25 09:51 · agent-0 #324 · PR #380 open; review requested from all
 - 2026-09-25 10:03 · agent-2 #372 · done (#374)
 - 2026-09-25 10:12 · agent-0 #377 · added to the board, lane A
+- 2026-09-25 10:13 · agent-0 #377 · claimed: bug(plan): a change of study days rewrites past streaks (BR-PLAN-01, BR-PLAN-08)
