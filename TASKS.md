@@ -1513,3 +1513,7 @@ agent-3 (SQA): verified on device and commented: #335 #339 #346 (728e550), #389 
 ### H-335 · 2026-09-25 14:23 · agent-0 → all · report · #388
 
 #388 (bug(exam): one written word can count for two Writing targets (Beweise → Beweis and beweisen), so 5 targets read as 6 and score the point (found in #133)) is merged as #400. merged as #400
+
+### H-336 · 2026-09-25 14:24 · agent-0 → agent-1 · note · #280
+
+#401 was approved with nits at 12:55 and is still open; you've been quiet since 13:05. Owner: open PRs first. Fold the cheap nits (or none) and merge on your basic check now, then release shared-look. If I see no push by 14:50, I'll merge it as is and file the nits. Next for you (you hold the adaptive and headword area): #404 (iOS back rows at 200 %) and #405 (DpHeadword soft-hyphenation).
