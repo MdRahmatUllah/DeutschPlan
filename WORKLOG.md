@@ -293,3 +293,4 @@ able to tell what is going on without asking.
 - 2026-09-25 11:37 · agent-3 #389 · added to the board, lane X
 - 2026-09-25 11:46 · agent-3 #390 · added to the board, lane X
 - 2026-09-25 11:59 · agent-1 #328 · PR #393 open; review requested from all
+- 2026-09-25 11:59 · agent-1 · #328 PR #393 up: T3 walks the day's block order (revise, new, grammar, sentences) and continues in place; gate green at dbb81b0, 7/7 plants
