@@ -9,10 +9,12 @@ import 'package:deutschplan/data/repositories/settings_repository.dart';
 import 'package:deutschplan/domain/word_of_day.dart';
 import 'package:deutschplan/features/today/today_providers.dart';
 import 'package:deutschplan/features/today/today_view.dart';
+import 'package:deutschplan/l10n/generated/app_localizations.dart';
 import 'package:deutschplan/services/widget_snapshot.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart' show Locale;
 
 import '../db/content_fixture.dart';
 import '../features/today_fixtures.dart';
@@ -36,6 +38,8 @@ class FakeWidgets implements WidgetStore {
 
 /// #159: the home-screen widget's snapshot, and the word of the day.
 void main() {
+  final en = lookupAppLocalizations(const Locale('en'));
+
   group('FR-X1-03 the word of the day', () {
     const words = <String>['uid-a', 'uid-b', 'uid-c', 'uid-d', 'uid-e'];
 
@@ -66,7 +70,9 @@ void main() {
     );
 
     test("today's ring, the step, the minutes and the word", () {
-      expect(widgetSnapshot(artboardToday(), word), <String, Object?>{
+      final snapshot = widgetSnapshot(en, artboardToday(), word)
+        ..remove('copy');
+      expect(snapshot, <String, Object?>{
         'date': '2026-09-21',
         'step': 'A2.1',
         'remaining': 8,
@@ -84,7 +90,7 @@ void main() {
     });
 
     test('a done day: the Lime check, and tomorrow', () {
-      final snapshot = widgetSnapshot(artboardDone(), null);
+      final snapshot = widgetSnapshot(en, artboardDone(), null);
       expect(snapshot['done'], isTrue);
       expect(snapshot['remaining'], 0);
       expect(snapshot['wordOfDay'], isNull);
@@ -93,6 +99,33 @@ void main() {
         'newWords': 7,
         'minutes': 13,
       });
+      expect(
+        (snapshot['copy']! as Map<String, String>)['tomorrow'],
+        'Tomorrow · 12 revisions · 7 new',
+      );
+    });
+
+    test("#160 the widget's words, in the learner's language", () {
+      final copy =
+          widgetSnapshot(en, artboardToday(), word)['copy']!
+              as Map<String, String>;
+      expect(copy, <String, String>{
+        'app': 'DeutschPlan',
+        'left': '8 left',
+        'leftStep': '8 left · A2.1',
+        'progress': '12/20',
+        'minutes': '≈ 6 min',
+        'wordOfDay': 'Wort des Tages',
+        'pronounce': 'Pronounce',
+        'done': 'Done for today',
+      });
+
+      final bn = lookupAppLocalizations(const Locale('bn'));
+      final bangla =
+          widgetSnapshot(bn, artboardToday(), word)['copy']!
+              as Map<String, String>;
+      expect(bangla['left'], bn.widgetLeft(8));
+      expect(bangla['pronounce'], bn.widgetPronounce);
     });
   });
 
@@ -238,6 +271,19 @@ void main() {
         expect(meaning(), 'house');
       },
     );
+
+    test("#160 and its words follow the app's language", () async {
+      final following = followWidget(container, widgets);
+      addTearDown(following.close);
+      await pumpEventQueue();
+      String left() =>
+          (widgets.last['copy']! as Map<String, Object?>)['left']! as String;
+      expect(left(), '8 left');
+
+      await container.read(languagesProvider.notifier).setUi(UiLanguage.bangla);
+      await pumpEventQueue();
+      expect(left(), lookupAppLocalizations(const Locale('bn')).widgetLeft(8));
+    });
   });
 
   group('#365 an app open across midnight', () {

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- X1's ring track (#160): a resource, so it follows the phone's light or dark
+     mode the moment it switches. The arc over it is ringArc's. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="64dp"
+    android:height="64dp"
+    android:viewportWidth="100"
+    android:viewportHeight="100">
+    <path
+        android:strokeColor="@color/widget_track"
+        android:strokeWidth="14"
+        android:pathData="M50,7a43,43 0,1 1,0 86a43,43 0,1 1,0 -86z" />
+</vector>

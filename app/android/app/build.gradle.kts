@@ -1,5 +1,7 @@
 plugins {
     id("com.android.application")
+    // X1's Glance widget (#160); Glance itself comes with home_widget.
+    id("org.jetbrains.kotlin.plugin.compose")
     // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id("dev.flutter.flutter-gradle-plugin")
 }
@@ -31,6 +33,10 @@ android {
         // flag during build.
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+    }
+
+    buildFeatures {
+        compose = true
     }
 
     buildTypes {

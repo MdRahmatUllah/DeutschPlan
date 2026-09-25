@@ -11,3 +11,5 @@
 - FR-X1-04 Android: Glance widget + WorkManager refresh; iOS: WidgetKit timeline with hourly entries, App Group shared container. Respects the system light/dark; the glass theme renders as its opaque fallback on widgets.
 
 **Tests.** snapshot writer; word-of-day selection.
+
+**Built.** Android (#160): Glance, drawn from the snapshot, as `03-domain/notifications-widget.md` details. iOS: #161.

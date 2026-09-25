@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- X1's step chip (#160): Sun, with the ink edge, as the Widget artboard. -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
+    <solid android:color="@color/widget_accent" />
+    <corners android:radius="6dp" />
+    <stroke android:width="1.5dp" android:color="@color/widget_ink" />
+</shape>
