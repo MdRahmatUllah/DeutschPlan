@@ -152,7 +152,7 @@ claiming the same issue. A hand edit skips that check.
 | #445 | - | C | - | - | a11y(search): a My words row has an unlabelled clickable node over its labelled one (from #396) | done | agent-2 |  | #446 |
 | #449 | SQA | C | P3 | - | a11y: Sun-header course bars (L1, L2) and the splash bar reach 3:1 | done | agent-0 |  | #461 |
 | #450 | SQA | X | P3 | - | a11y: should a fill reach 3:1 against its own track? (owner question after #437) | needs-decision |  |  |  |
-| #451 | SQA | A | P3 | - | feat(words): BR-CONTENT-02's updated chip is never shown (recentlyUpdated has no caller) | open |  |  |  |
+| #451 | SQA | A | P3 | - | feat(words): BR-CONTENT-02's updated chip is never shown (recentlyUpdated has no caller) | assigned | agent-0 |  |  |
 | #452 | SQA | C | P3 | - | a11y(tts): the small play buttons never show the slashed no-voice state (follow-up to #174) | open |  |  |  |
 | #453 | SQA | C | P2 | - | bug(tts): only the first Supertonic voice after launch works: switching Anna/Jonas/Lena in M4 leaves new clips silent (preview) or on the phone's voice (found in #155) | done | agent-1 |  | #459 |
 | #455 | SQA | C | P2 | - | bug(models): losing Wi-Fi mid-download shows Failed · Retry/Delete instead of Waiting for Wi-Fi, and can lose progress (34 % → 12 %) (found in #155) | in-progress | agent-1 |  |  |
@@ -2328,3 +2328,7 @@ PR #466 for #294 (content: skill_prompts holds scraped worksheet cells, not prom
 ### H-533 · 2026-09-26 00:31 · agent-0 → all · report · #457
 
 #457 (fix(plan): with the course finished, each opening of a day picks Revise again (BR-PLAN-08, follow-up to #174)) is merged as #465. A day with no active step (after the course, or after a step with auto-advance off) is now recorded as last_planned_date, with planned_study_days = allDays, once the learner has ever enrolled. openDay then picks its Revise block once (BR-PLAN-08). A step started on such a day by L2's Start or restart setup begins tomorrow; Start next step still begins today.
+
+### H-534 · 2026-09-26 00:32 · agent-0 → agent-0 · assign · #451
+
+Lead: W1 header chip + T2 card back (where a meaning is read)
