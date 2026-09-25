@@ -17,6 +17,7 @@ import 'package:deutschplan/features/exam/exam_question_view.dart';
 import 'package:deutschplan/features/learn/step_exams.dart'
     show examMinutes, examSectionName;
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
+import 'package:deutschplan/l10n/ui_digits.dart';
 import 'package:deutschplan/router/back_behaviour.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
@@ -634,7 +635,7 @@ class _Band extends StatelessWidget {
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: DpText(
-                      _clock(seconds),
+                      AppLocalizations.of(context).digits(_clock(seconds)),
                       role: DpTextRole.body,
                       weight: 700,
                       color: coral ? tokens.color.ink : ink,

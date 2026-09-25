@@ -606,6 +606,7 @@ class _Match extends StatelessWidget {
                     crossAxisAlignment: WrapCrossAlignment.center,
                     children: <Widget>[
                       DpText(
+                        // ponytail: allow-literal — ARB text and a space, no number.
                         '${l10n.addWordInCourse(word.sublevelCode)} ',
                         role: DpTextRole.label,
                       ),

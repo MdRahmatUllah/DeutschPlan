@@ -1,4 +1,6 @@
 import 'package:deutschplan/core/theme/dp_tokens.dart';
+import 'package:deutschplan/l10n/generated/app_localizations.dart';
+import 'package:deutschplan/l10n/ui_digits.dart';
 import 'package:material_ui/material_ui.dart';
 
 /// A whole-number slider in the Paper & Ink treatment.
@@ -59,7 +61,8 @@ class DpSlider extends StatelessWidget {
         int valueAt(double dx) =>
             (min + (dx / width).clamp(0.0, 1.0) * (max - min)).round();
 
-        String said(int value) => describe?.call(value) ?? '$value';
+        String said(int value) =>
+            describe?.call(value) ?? AppLocalizations.of(context).digits(value);
 
         void moveTo(double dx) {
           final next = valueAt(dx);

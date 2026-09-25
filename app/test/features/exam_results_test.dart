@@ -33,6 +33,7 @@ void main() {
     StubExamResult? with_,
     bool settle = true,
     int frames = 2,
+    Locale? locale,
   }) async {
     stub = with_ ?? StubExamResult();
     hub = <String>[];
@@ -51,6 +52,7 @@ void main() {
           theme: AppTheme.light(),
           localizationsDelegates: appLocalizationsDelegates,
           supportedLocales: supportedLocales,
+          locale: locale,
           home: ExamResultsScreen(
             attemptId: 7,
             onHub: hub.add,
@@ -338,5 +340,19 @@ void main() {
   testWidgets('an attempt that is not there says so', (tester) async {
     await pump(tester, with_: StubExamResult(missing: true));
     expect(find.text(l10n.examRunLoadFailed), findsOneWidget);
+  });
+
+  testWidgets('#425 in the Bangla UI, the points, the time and the difference '
+      'are in Bangla digits', (tester) async {
+    await pump(tester, locale: const Locale('bn'));
+    final bn = lookupAppLocalizations(const Locale('bn'));
+    expect(find.text(bn.examResultPoints('৩৭', '৪৮')), findsOneWidget);
+    expect(
+      find.text(
+        '${bn.examResultLine('A1.2', 2, '১৮:৪১')} · '
+        '${bn.examResultCompare('+৭', 1, 62)}',
+      ),
+      findsOneWidget,
+    );
   });
 }

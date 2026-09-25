@@ -55,7 +55,7 @@ void main() {
     );
   }
 
-  Future<void> pump(WidgetTester tester, [MeView? view]) async {
+  Future<void> pump(WidgetTester tester, [MeView? view, Locale? locale]) async {
     went = null;
     tester.view
       ..physicalSize = const Size(390, 844) * 3
@@ -69,6 +69,7 @@ void main() {
           theme: AppTheme.light(),
           localizationsDelegates: appLocalizationsDelegates,
           supportedLocales: supportedLocales,
+          locale: locale,
           routerConfig: router(),
         ),
       ),
@@ -530,5 +531,20 @@ void main() {
     await tester.tap(find.text(l10n.retry));
     await tester.pumpAndSettle();
     expect(find.text('1,248'), findsOneWidget);
+  });
+
+  testWidgets("#425 in the Bangla UI, M1's course bar reads Bangla", (
+    tester,
+  ) async {
+    await pump(tester, null, const Locale('bn'));
+    final bar = find.bySemanticsLabel(RegExp('টি শেখা হয়েছে, '));
+    await tester.scrollUntilVisible(bar, 200);
+    expect(bar, findsWidgets);
+    expect(
+      find.bySemanticsLabel(
+        RegExp(r'\d+ done, \d+ learning, \d+ to do|\b\d+ of \d+\b'),
+      ),
+      findsNothing,
+    );
   });
 }

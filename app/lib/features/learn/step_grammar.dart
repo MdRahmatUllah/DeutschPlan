@@ -6,6 +6,7 @@ import 'package:deutschplan/data/repositories/grammar_repository.dart';
 import 'package:deutschplan/data/repositories/word_repository.dart';
 import 'package:deutschplan/domain/plan_engine.dart' show daysBetween;
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
+import 'package:deutschplan/l10n/ui_digits.dart';
 import 'package:deutschplan/router/routes.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
@@ -152,7 +153,7 @@ class TopicRow extends StatelessWidget {
               SizedBox(
                 width: 24,
                 child: DpText(
-                  '$number',
+                  AppLocalizations.of(context).digits(number),
                   role: DpTextRole.label,
                   weight: 700,
                   color: tokens.color.textSecondary,

@@ -13,6 +13,7 @@ import 'package:deutschplan/core/typography/dp_text.dart';
 import 'package:deutschplan/features/today/today_providers.dart';
 import 'package:deutschplan/features/today/today_view.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
+import 'package:deutschplan/l10n/ui_digits.dart';
 import 'package:deutschplan/router/cross_tab.dart';
 import 'package:deutschplan/router/routes.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -237,7 +238,7 @@ class _Reward extends StatelessWidget {
                         child: chip,
                       ),
                       child: DpChip(
-                        label: view.streak.toString(),
+                        label: AppLocalizations.of(context).digits(view.streak),
                         kind: DpChipKind.streak,
                       ),
                     ),

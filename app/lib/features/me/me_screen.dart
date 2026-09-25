@@ -14,6 +14,7 @@ import 'package:deutschplan/domain/plan_engine.dart';
 import 'package:deutschplan/domain/plan_stats.dart';
 import 'package:deutschplan/features/today/today_providers.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
+import 'package:deutschplan/l10n/ui_digits.dart';
 import 'package:deutschplan/router/cross_tab.dart';
 import 'package:deutschplan/router/routes.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -324,7 +325,7 @@ class MeHeader extends StatelessWidget {
               ),
               const SizedBox(width: 12),
               DpChip(
-                label: streak.toString(),
+                label: AppLocalizations.of(context).digits(streak),
                 kind: DpChipKind.streak,
                 semanticLabel: l10n.todayStreak(streak),
               ),

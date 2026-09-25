@@ -1,7 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:ui' show Locale;
 
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
+import 'package:deutschplan/l10n/ui_digits.dart';
 import 'package:deutschplan/features/today/today_view.dart' show germanDate;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:intl/intl.dart' show Intl;
@@ -141,6 +143,92 @@ void main() {
     );
   });
 
+  test('#425 one digit system per Bangla string: Bangla digits, in the '
+      'text and in every number placeholder', () async {
+    final bn = jsonDecode(
+      File('lib/l10n/app_bn.arb').readAsStringSync(),
+    ) as Map<String, dynamic>;
+    // What a Bangla message writes itself: not its placeholders, the case
+    // names of a plural or select ("=1{", "A1{", "60{"), a step's code
+    // ("A1.1", "B2+"), nor a product's name.
+    String written(String message) => message
+        .replaceAll(RegExp(r'\{\w+(,\s*\w+,)?\}?'), '')
+        .replaceAll(RegExp(r'=?\w+\{'), '')
+        .replaceAll(RegExp(r'\b[ABC][12](\.[12])?\+?'), '')
+        .replaceAll('Hy-MT 1.5', '');
+    final latin = <String>[
+      for (final MapEntry(:key, :value) in bn.entries)
+        if (!key.startsWith('@') &&
+            value is String &&
+            RegExp('[0-9]').hasMatch(written(value)))
+          '$key: $value',
+    ];
+    expect(latin, isEmpty, reason: latin.join('\n'));
+
+    // A number placeholder is formatted for the locale, which in Bangla is
+    // its digits; a bare int would print 0–9.
+    final en = jsonDecode(
+      File('lib/l10n/app_en.arb').readAsStringSync(),
+    ) as Map<String, dynamic>;
+    final unformatted = <String>[
+      for (final MapEntry(:key, :value) in en.entries)
+        if (key.startsWith('@') && value is Map<String, dynamic>)
+          for (final MapEntry(key: name, value: placeholder)
+              in ((value['placeholders'] as Map<String, dynamic>?) ??
+                      const <String, dynamic>{})
+                  .entries)
+            if (placeholder is Map<String, dynamic> &&
+                placeholder['format'] == null &&
+                (const <String>{
+                      'int',
+                      'double',
+                      'num',
+                    }.contains(placeholder['type']) ||
+                    (placeholder['type'] == null &&
+                        (en[key.substring(1)] as String).contains(
+                          '{$name, plural,',
+                        ))))
+              '${key.substring(1)}.$name',
+    ];
+    expect(unformatted, isEmpty, reason: unformatted.join('\n'));
+
+    final bangla = await AppLocalizations.delegate.load(const Locale('bn'));
+    expect(bangla.quizLocked(3), contains('৩'));
+    expect(bangla.quizLocked(3), isNot(contains('3')));
+    expect(bangla.digits('12:05'), '১২:০৫');
+    final english = await AppLocalizations.delegate.load(const Locale('en'));
+    expect(english.digits('12:05'), '12:05');
+  });
+
+  test('#425 a number is never written straight into text: it goes through '
+      'l10n.digits', () {
+    // DpText('$count'), or a pill's `label: streak.toString()`, prints 0–9 in
+    // the Bangla UI; T1's streak pill did.
+    // A DpText literal that is only numbers once its interpolations go
+    // ("$n", "${a} / ${b}"), and a label that is a number's toString.
+    final text = RegExp(r"DpText\(\s*'([^'\n]*\$[^'\n]*)'");
+    final label = RegExp(r'\blabel:\s*[\w.]+\.toString\(\)');
+    // A literal that is words, not a number (a headword and a step code),
+    // is marked `// ponytail: allow-literal` on the line above it, which
+    // takes it out of [text]'s match.
+    bool wordless(String literal) =>
+        !RegExp('[A-Za-zঀ-৿]')
+            .hasMatch(literal.replaceAll(RegExp(r'\$\{[^}]*\}|\$\w+'), ''));
+    final offenders = <String>[
+      for (final file in Directory(
+        'lib',
+      ).listSync(recursive: true).whereType<File>())
+        if (file.path.endsWith('.dart') && !file.path.contains('generated'))
+          for (final source in <String>[file.readAsStringSync()]) ...<String>[
+            for (final match in text.allMatches(source))
+              if (wordless(match[1]!)) '${file.path}: ${match[0]}',
+            for (final match in label.allMatches(source))
+              '${file.path}: ${match[0]}',
+          ],
+    ];
+    expect(offenders, isEmpty, reason: offenders.join('\n'));
+  });
+
   test('every supported locale resolves every key', () async {
     for (final locale in AppLocalizations.supportedLocales) {
       final l10n = await AppLocalizations.delegate.load(locale);
@@ -194,5 +282,42 @@ void main() {
           'Move this copy into lib/l10n/app_en.arb and app_bn.arb:\n'
           '${offenders.join('\n')}',
     );
+  });
+
+  test('#425 a component words nothing itself: an interpolated literal in '
+      'core/components has no letter outside its placeholders', () {
+    // DpProgressRing's "$completed of $total" was a screen-reader label no
+    // ARB check could see, so a Bangla learner heard English.
+    final literals = <RegExp>[
+      RegExp(r"'([^'\n]*\$[^'\n]*)'"),
+      RegExp(r'"([^"\n]*\$[^"\n]*)"'),
+    ];
+    final offenders = <String>[];
+    for (final file in Directory(
+      'lib/core/components',
+    ).listSync(recursive: true).whereType<File>()) {
+      if (!file.path.endsWith('.dart')) continue;
+      final lines = file.readAsLinesSync();
+      for (var i = 0; i < lines.length; i++) {
+        final line = lines[i];
+        if (line.trimLeft().startsWith('//')) continue;
+        // Not copy: a key, an assert's message, a debug toString, a pattern.
+        if (RegExp(r'\bKey\(|\bassert\(|toString\(\)|RegExp\(')
+            .hasMatch(line)) {
+          continue;
+        }
+        for (final literal in literals) {
+          for (final match in literal.allMatches(line)) {
+            final words = match
+                .group(1)!
+                .replaceAll(RegExp(r'\$\{[^}]*\}|\$\w+'), '');
+            if (RegExp('[A-Za-z]').hasMatch(words)) {
+              offenders.add('${file.path}:${i + 1}: ${line.trim()}');
+            }
+          }
+        }
+      }
+    }
+    expect(offenders, isEmpty, reason: offenders.join('\n'));
   });
 }

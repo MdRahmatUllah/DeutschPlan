@@ -11,6 +11,7 @@ import 'package:deutschplan/domain/quiz_builder.dart';
 import 'package:deutschplan/features/learn/step_quiz.dart';
 import 'package:deutschplan/features/learn/step_words.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
+import 'package:deutschplan/l10n/ui_digits.dart';
 import 'package:deutschplan/router/routes.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
@@ -213,7 +214,7 @@ class _QuizSetupSheetState extends ConsumerState<QuizSetupSheet> {
                   section(l10n.quizSetupLength, <Widget>[
                     for (final length in quizLengths)
                       chip(
-                        '$length',
+                        l10n.digits(length),
                         selected: _length == length,
                         onTap: () => setState(() => _length = length),
                       ),

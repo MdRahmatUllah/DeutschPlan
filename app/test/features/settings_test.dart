@@ -54,6 +54,7 @@ void main() {
     List<double> stabilities = const <double>[],
     ModelState? model,
     AdaptiveChrome chrome = AdaptiveChrome.material,
+    Locale? locale,
   }) async {
     // Tall enough that every row is built: the table below reaches all of
     // them without scrolling.
@@ -81,6 +82,7 @@ void main() {
           theme: AppTheme.light(),
           localizationsDelegates: appLocalizationsDelegates,
           supportedLocales: supportedLocales,
+          locale: locale,
           routerConfig: GoRouter(
             initialLocation: '/me/settings',
             routes: <RouteBase>[
@@ -239,6 +241,16 @@ void main() {
     await settings.write(SettingKeys.ttsSpeed, 1.25);
     await tester.pumpAndSettle();
     expect(find.text(l10n.settingsSpeedLine('1.25')), findsOneWidget);
+  });
+
+  testWidgets('#425 in the Bangla UI, the speed line and the slider a '
+      'screen reader hears are in Bangla digits', (tester) async {
+    await settings.write(SettingKeys.ttsSpeed, 0.75);
+    await pump(tester, locale: const Locale('bn'));
+    final bn = lookupAppLocalizations(const Locale('bn'));
+    expect(find.text(bn.settingsSpeedLine('০.৭৫')), findsOneWidget);
+    final slider = tester.widget<DpSlider>(sliderFor(bn.settingsSpeed));
+    expect(slider.describe!(3), '০.৭৫×');
   });
 
   testWidgets('each choice writes its key', (tester) async {

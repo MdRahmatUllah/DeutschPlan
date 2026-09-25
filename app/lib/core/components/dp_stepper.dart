@@ -1,6 +1,8 @@
 import 'package:deutschplan/core/adaptive/adaptive.dart';
 import 'package:deutschplan/core/theme/dp_tokens.dart';
 import 'package:deutschplan/core/typography/dp_text.dart';
+import 'package:deutschplan/l10n/generated/app_localizations.dart';
+import 'package:deutschplan/l10n/ui_digits.dart';
 import 'package:material_ui/material_ui.dart';
 
 /// − value +, as `OnboardingPace` and `Settings` both draw it: two 36 dp
@@ -49,7 +51,7 @@ class DpStepper extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           DpText(
-            '$value',
+            AppLocalizations.of(context).digits(value),
             role: DpTextRole.bodyLarge,
             color: tokens.color.textSecondary,
           ),
@@ -104,7 +106,7 @@ class DpStepper extends StatelessWidget {
         ConstrainedBox(
           constraints: const BoxConstraints(minWidth: 24),
           child: DpText(
-            '$value',
+            AppLocalizations.of(context).digits(value),
             role: DpTextRole.bodyLarge,
             weight: 600,
             textAlign: TextAlign.center,

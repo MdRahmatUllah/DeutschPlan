@@ -805,6 +805,7 @@ class _SentenceRow extends StatelessWidget {
             ],
             const SizedBox(height: 2),
             DpText(
+              // ponytail: allow-literal — a headword and a step code, no number.
               '$head · ${sentence.step}',
               role: DpTextRole.caption,
               color: tokens.color.textSecondary,

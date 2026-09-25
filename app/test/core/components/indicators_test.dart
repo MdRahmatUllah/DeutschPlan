@@ -1,7 +1,10 @@
 import 'package:deutschplan/core/components/dp_progress_ring.dart';
 import 'package:deutschplan/core/components/dp_speaker_button.dart';
+import 'package:deutschplan/core/components/dp_stepper.dart';
 import 'package:deutschplan/core/theme/app_theme.dart';
 import 'package:deutschplan/core/theme/dp_tokens.dart';
+import 'package:deutschplan/main.dart'
+    show appLocalizationsDelegates, supportedLocales;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 
@@ -15,10 +18,14 @@ void main() {
     ThemeData? theme,
     // A spinner animates forever, so pumpAndSettle would time out on it.
     bool settle = true,
+    Locale? locale,
   }) async {
     await tester.pumpWidget(
       MaterialApp(
         theme: theme ?? AppTheme.light(),
+        localizationsDelegates: appLocalizationsDelegates,
+        supportedLocales: supportedLocales,
+        locale: locale,
         home: Scaffold(body: Center(child: child)),
       ),
     );
@@ -78,6 +85,8 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           theme: AppTheme.light(),
+          localizationsDelegates: appLocalizationsDelegates,
+          supportedLocales: supportedLocales,
           home: MediaQuery(
             data: const MediaQueryData(textScaler: TextScaler.linear(2)),
             child: const Scaffold(
@@ -434,5 +443,58 @@ void main() {
       );
       expect(find.bySemanticsLabel('Pronounce Rechnung'), findsOneWidget);
     });
+  });
+
+  testWidgets('#425 with no label of its own, a screen reader hears the ring '
+      'and the bar in the UI language', (tester) async {
+    await pump(
+      tester,
+      const Column(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          DpProgressRing(completed: 12, total: 20),
+          SizedBox(
+            width: 200,
+            child: DpSegmentedBar(done: 184, learning: 60, todo: 296),
+          ),
+        ],
+      ),
+      locale: const Locale('bn'),
+    );
+    expect(find.bySemanticsLabel('২০টির মধ্যে ১২টি'), findsOneWidget);
+    expect(
+      find.bySemanticsLabel('১৮৪টি শেখা হয়েছে, ৬০টি শিখছি, ২৯৬টি বাকি'),
+      findsOneWidget,
+    );
+    expect(
+      find.bySemanticsLabel(
+        RegExp(r'\d+ done, \d+ learning, \d+ to do|\b\d+ of \d+\b'),
+      ),
+      findsNothing,
+    );
+  });
+
+  testWidgets("#425 a number a component writes is in the UI language's "
+      'digits: the ring\'s centre, the stepper\'s value', (tester) async {
+    await pump(
+      tester,
+      Column(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          const DpProgressRing(completed: 12, total: 20),
+          DpStepper(
+            value: 15,
+            min: 5,
+            max: 30,
+            onChanged: (_) {},
+            decreaseLabel: 'less',
+            increaseLabel: 'more',
+          ),
+        ],
+      ),
+      locale: const Locale('bn'),
+    );
+    expect(find.text('১২ / ২০'), findsOneWidget);
+    expect(find.text('১৫'), findsOneWidget);
   });
 }

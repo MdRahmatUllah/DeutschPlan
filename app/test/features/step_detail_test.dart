@@ -297,4 +297,15 @@ void main() {
       }
     }
   });
+
+  testWidgets('#425 in the Bangla UI, L2\'s bar reads Bangla', (tester) async {
+    await pump(tester, '/learn/step/A2.1', locale: const Locale('bn'));
+    expect(find.bySemanticsLabel(RegExp('টি শেখা হয়েছে, ')), findsWidgets);
+    expect(
+      find.bySemanticsLabel(
+        RegExp(r'\d+ done, \d+ learning, \d+ to do|\b\d+ of \d+\b'),
+      ),
+      findsNothing,
+    );
+  });
 }

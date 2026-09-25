@@ -73,7 +73,7 @@
   "splashPreparing": "আপনার কোর্স প্রস্তুত হচ্ছে · শুধু প্রথমবার",
   "onboardingStartHeadline": "কোথা থেকে শুরু করবেন?",
   "onboardingStepWords": "{count, plural, other{{count}টি শব্দ}}",
-  "onboardingPlacementLink": "নিশ্চিত নন? 3 মিনিটের একটি যাচাই দিন",
+  "onboardingPlacementLink": "নিশ্চিত নন? ৩ মিনিটের একটি যাচাই দিন",
   "onboardingPaceHeadline": "প্রতিদিন কতটা?",
   "onboardingPaceNewWords": "প্রতিদিন নতুন শব্দ",
   "onboardingPaceEstimate": "{days, plural, other{দিনে {dailyNew}টি শব্দে {step} শেষ হতে প্রায় {days} দিন লাগবে}}",
@@ -634,7 +634,7 @@
   "settingsVoiceSupertonic": "Supertonic · {voice}",
   "settingsVoicePhone": "ফোনের কণ্ঠ",
   "settingsSpeed": "কথার গতি",
-  "settingsSpeedLine": "{speed}× · 0.75×-এর জন্য যেকোনো স্পিকার চেপে ধরুন",
+  "settingsSpeedLine": "{speed}× · ০.৭৫×-এর জন্য যেকোনো স্পিকার চেপে ধরুন",
   "settingsAutoplayHeadword": "শব্দটি নিজে বাজান",
   "settingsAutoplayHeadwordNote": "কার্ড এলে",
   "settingsAutoplayExample": "প্রথম উদাহরণ নিজে বাজান",
@@ -671,7 +671,8 @@
   "reminderBody": "আজকের পরিকল্পনা তৈরি। কয়েক মিনিটই যথেষ্ট।",
   "reminderChannel": "দৈনিক রিমাইন্ডার",
   "examSpeakingTask": "{level, select, A1{{category} নিয়ে আপনি কী করেন আর কী পছন্দ করেন, বলুন।} A2{{category} নিয়ে একটি অভিজ্ঞতার কথা বলুন।} B1{{category} নিয়ে বলুন: আপনার অভিজ্ঞতা আর মতামত।} B2{{category} নিয়ে আপনার মত দিন, কারণ আর একটি উদাহরণসহ।} C1{{category} নিয়ে একটি অবস্থান নিন আর অন্য দিকের জবাব দিন।} other{{category} নিয়ে শ্রোতাদের সামনে যেমন, তেমন একটি ছোট বক্তৃতা দিন।}}",
-  "examSpeakingLength": "{seconds, select, 60{১ মিনিট} 120{২ মিনিট} other{{seconds} সেকেন্ড}}",
+  "examSpeakingLength": "{seconds} সেকেন্ড",
+  "examSpeakingMinutes": "{minutes} মিনিট",
   "examSpeakingPrompt": "{task} — {length}",
   "examSpeakingHint": "পূর্ণ বাক্যে বলুন। তারপর শুনে দেখুন আর যা পেরেছেন তাতে টিক দিন।",
   "examSpeakingReady": "প্রথমবার ফোন মাইক্রোফোনের অনুমতি চাইবে। রেকর্ডিং কখনো এই ফোন থেকে বের হয় না।",
@@ -893,5 +894,7 @@
   "modelNotifyComplete": "মডেল ডাউনলোড হয়েছে",
   "modelNotifyCompleteNote": "ব্যবহারের আগে যাচাই করা হবে",
   "modelNotifyFailed": "একটি মডেল ডাউনলোড ব্যর্থ হয়েছে",
-  "modelNotifyFailedNote": "ভয়েস ও অনুবাদ থেকে আবার চেষ্টা করুন"
+  "modelNotifyFailedNote": "ভয়েস ও অনুবাদ থেকে আবার চেষ্টা করুন",
+  "progressRingLabel": "{total}টির মধ্যে {completed}টি",
+  "progressBarLabel": "{done}টি শেখা হয়েছে, {learning}টি শিখছি, {todo}টি বাকি"
 }
