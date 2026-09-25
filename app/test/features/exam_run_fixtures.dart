@@ -201,8 +201,14 @@ class FakeRecorder implements ExamRecorder {
   @override
   Future<void> openSettings() async => openedSettings = true;
 
+  /// Holds `start` open, as a slow microphone would.
+  Completer<void>? starting;
+
   @override
-  Future<void> start(String path) async => started.add(path);
+  Future<void> start(String path) async {
+    started.add(path);
+    await starting?.future;
+  }
 
   @override
   Future<void> stop() async => stopped++;

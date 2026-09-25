@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:deutschplan/core/providers/app_providers.dart';
 import 'package:deutschplan/core/theme/app_theme.dart';
 import 'package:deutschplan/domain/exam_generator.dart';
@@ -174,6 +176,37 @@ void main() {
       await press(tester, Icons.play_arrow);
       expect(mic.played, <String>[path]);
       semantics.dispose();
+    });
+
+    testWidgets('a double tap on Record starts once', (tester) async {
+      final slow = FakeRecorder()..starting = Completer<void>();
+      await pump(tester, recorder: slow);
+
+      await tester.tap(find.byIcon(Icons.mic));
+      await tester.pump();
+      await tester.tap(find.byIcon(Icons.mic));
+      await tester.pump();
+      slow.starting!.complete();
+      await tester.pump();
+      await tester.pump();
+
+      expect(slow.started, <String>[path]);
+    });
+
+    testWidgets('leaving while the recorder starts still stops it', (
+      tester,
+    ) async {
+      final slow = FakeRecorder()..starting = Completer<void>();
+      await pump(tester, recorder: slow);
+      await tester.tap(find.byIcon(Icons.mic));
+      await tester.pump();
+
+      await tester.pumpWidget(const SizedBox());
+      slow.starting!.complete();
+      await tester.pump();
+
+      expect(slow.stopped, 1, reason: 'no microphone left running');
+      expect(run.answers, <(int, String?)>[(1, path)]);
     });
 
     testWidgets('one retake', (tester) async {

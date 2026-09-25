@@ -1,10 +1,10 @@
 import 'dart:async';
 import 'dart:math' as math;
 
+import 'package:deutschplan/core/adaptive/adaptive.dart';
 import 'package:deutschplan/core/components/dp_button.dart';
-import 'package:deutschplan/core/providers/app_providers.dart';
-import 'package:deutschplan/services/exam_recorder.dart';
 import 'package:deutschplan/core/components/dp_speaker_button.dart';
+import 'package:deutschplan/core/providers/app_providers.dart';
 import 'package:deutschplan/core/theme/dp_surface.dart';
 import 'package:deutschplan/core/theme/dp_tokens.dart';
 import 'package:deutschplan/core/typography/dp_text.dart';
@@ -20,6 +20,7 @@ import 'package:deutschplan/features/study/study_cloze.dart'
     show StudyAnswerField;
 import 'package:deutschplan/features/words/speak.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
+import 'package:deutschplan/services/exam_recorder.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 
@@ -726,6 +727,10 @@ class _ExamSpeakingState extends ConsumerState<ExamSpeaking> {
   final List<double> _levels = <double>[];
   String? _path;
   bool _playing = false;
+
+  /// Between the tap on *Record* and the recorder running: a second tap in
+  /// that time would start it twice and leave the first clock ticking.
+  bool _starting = false;
   Timer? _tick;
   StreamSubscription<double>? _heard;
 
@@ -760,6 +765,16 @@ class _ExamSpeakingState extends ConsumerState<ExamSpeaking> {
   // subscription, and a recording left mid-way still has to be stopped.
 
   Future<void> _record() async {
+    if (_starting || _mic == _Mic.recording) return;
+    _starting = true;
+    try {
+      await _begin();
+    } finally {
+      _starting = false;
+    }
+  }
+
+  Future<void> _begin() async {
     final recorder = _recorder;
     // FR-L12S-01: asked on first use, after the line that says why.
     if (!await recorder.permission()) {
@@ -770,7 +785,13 @@ class _ExamSpeakingState extends ConsumerState<ExamSpeaking> {
     final retake = _mic == _Mic.recorded;
     final path = await widget.recordingPath();
     await recorder.start(path);
-    if (!mounted) return;
+    if (!mounted) {
+      // The task left the screen while the recorder started: stop it, and
+      // keep what little it has, as leaving mid-recording does.
+      await recorder.stop();
+      widget.onGiven(path);
+      return;
+    }
     setState(() {
       if (retake) _retakesLeft--;
       _path = path;
@@ -1168,7 +1189,8 @@ class _Tick extends StatelessWidget {
         behavior: HitTestBehavior.opaque,
         onTap: onTap,
         child: ConstrainedBox(
-          constraints: const BoxConstraints(minHeight: 44),
+          // accessibility-performance.md: 48 dp on Android, 44 pt on iOS.
+          constraints: BoxConstraints(minHeight: context.isCupertino ? 44 : 48),
           child: Row(
             children: <Widget>[
               Container(
