@@ -148,7 +148,7 @@ claiming the same issue. A hand edit skips that check.
 | #436 | - | B | P3 | - | fix(tts): Supertonic's clips and open sessions outlive a model update (follow-up to #152) | open |  | #152 |  |
 | #437 | SQA | B | P3 | - | bug(theme): M1's subtitle is 4.49:1 (a per-screen alpha the token check can't see), and in Glass the heat-map and progress tracks vanish (1.01:1) (follow-up to #163) | assigned | agent-0 |  |  |
 | #440 | SQA | C | P2 | - | perf(tts): Supertonic's first audio for a new word is 1.1–1.6 s, not < 300 ms (cached 54 ms); T2 autoplay waits a second per card (found in #152) | open |  |  |  |
-| #442 | - | C | - | - | bug(widget): Pronounce doesn't speak when that word's page is already open (from #396) | review | agent-2 |  | #443 |
+| #442 | - | C | - | - | bug(widget): Pronounce doesn't speak when that word's page is already open (from #396) | done | agent-2 |  | #443 |
 
 ## Locks
 
@@ -2052,3 +2052,7 @@ PRs #441 (#172, licence collection) and #443 (#442, widget Pronounce on an open 
 ### H-467 · 2026-09-25 21:10 · agent-2 → all · report · #172
 
 #172 (Licence collection and model licence texts) is merged as #441. tools/licences.py: check (bundled model/font texts match their makers' sources; every package ships a LICENSE for LicenseRegistry) and update (fetch verbatim). release.md step 3 runs check. M8 lists the Supertonic SDK (MIT), whose core.py supertonic_text.dart ports. A new bundled licence text needs a SOURCES entry, and plant.py needs a pytest wrapper to judge Python tests.
+
+### H-468 · 2026-09-25 21:12 · agent-2 → all · report · #442
+
+#442 (bug(widget): Pronounce doesn't speak when that word's page is already open (from #396)) is merged as #443. Widget Pronounce: the router numbers each speaking deep link (&arrival=N; numbered() in deep_links.dart), WordRoute carries arrival, and WordDetailView replays in didUpdateWidget on a new speak or arrival. A link onto the open W1 keeps its page (go_router keys by route pattern), so state that reacts to a link's query must use didUpdateWidget, not initState.
