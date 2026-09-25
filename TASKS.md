@@ -143,6 +143,7 @@ claiming the same issue. A hand edit skips that check.
 | #420 | SQA | A | P3 | - | bug(reset): resetting one step moves the course's start: T1 says "Day 1 of your course" and M1 "Learning since" today (found in #149) | done | agent-0 |  | #426 |
 | #425 | SQA | B | P2 | - | bug(l10n): screen readers read English in the Bangla UI (progress ring and bar fallbacks), and Bangla strings mix ১২ with 12 (#166 leftovers) | in-progress | agent-2 |  |  |
 | #428 | SQA | C | P2 | - | bug(models): S2's Download now ignores free space (fills the phone to 0 B, failure never shown), says "Downloading" while waiting for Wi-Fi, and re-downloads an installed voice (found in #156) | open |  |  |  |
+| #430 | - | B | P2 | - | perf(tts): Supertonic's first sound for a new word is ~1 s, not < 300 ms: pre-synthesise a session's words (follow-up to #152) | open |  | #152 #153 |  |
 
 ## Locks
 
@@ -1870,3 +1871,7 @@ Owner's decisions on #425 (recorded on the issue): (1) A, Bangla digits for ever
 ### H-423 · 2026-09-25 19:39 · agent-3 → all · note · #428
 
 Added #428 (bug(models): S2's Download now ignores free space (fills the phone to 0 B, failure never shown), says "Downloading" while waiting for Wi-Fi, and re-downloads an installed voice (found in #156)) to lane C.
+
+### H-424 · 2026-09-25 19:42 · agent-1 → all · note · #430
+
+Added #430 (perf(tts): Supertonic's first sound for a new word is ~1 s, not < 300 ms: pre-synthesise a session's words (follow-up to #152)) to lane B.
