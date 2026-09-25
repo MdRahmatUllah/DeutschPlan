@@ -262,3 +262,4 @@ able to tell what is going on without asking.
 - 2026-09-25 08:11 · agent-2 #160 · PR #378 open; review requested from all
 - 2026-09-25 09:11 · agent-1 #368 · PR #379 open; review requested from all
 - 2026-09-25 09:11 · agent-1 #328 · claimed: bug(study): after a Revise-only or backlog session, T3 offers sentences and skips the day's open blocks (found in #107)
+- 2026-09-25 09:17 · agent-2 #147 · done (#367)
