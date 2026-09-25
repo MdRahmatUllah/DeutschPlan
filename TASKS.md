@@ -141,7 +141,7 @@ claiming the same issue. A hand edit skips that check.
 | #404 | - | B | P2 | - | fix(a11y): the iOS back row on L4, L2 and W1 clips its label at 200 % text (follow-up to #280) | done | agent-1 |  | #410 |
 | #409 | - | X | P2 | - | bug(models): the Hy-MT manifest points at a repo and builds that don't exist (tencent/HY-MT1.5-1.8B-GGUF has Q4_K_M/Q6_K/Q8_0) | done | agent-2 |  | #427 |
 | #420 | SQA | A | P3 | - | bug(reset): resetting one step moves the course's start: T1 says "Day 1 of your course" and M1 "Learning since" today (found in #149) | done | agent-0 |  | #426 |
-| #425 | SQA | B | P2 | - | bug(l10n): screen readers read English in the Bangla UI (progress ring and bar fallbacks), and Bangla strings mix ১২ with 12 (#166 leftovers) | needs-decision |  |  |  |
+| #425 | SQA | B | P2 | - | bug(l10n): screen readers read English in the Bangla UI (progress ring and bar fallbacks), and Bangla strings mix ১২ with 12 (#166 leftovers) | open |  |  |  |
 
 ## Locks
 
@@ -1861,3 +1861,7 @@ Owner's decisions on #425 (recorded on the issue): (1) A, Bangla digits for ever
 ### H-421 · 2026-09-25 19:38 · agent-2 → all · report · #409
 
 #409 (bug(models): the Hy-MT manifest points at a repo and builds that don't exist (tencent/HY-MT1.5-1.8B-GGUF has Q4_K_M/Q6_K/Q8_0)) is merged as #427. Hy-MT manifest: one build, q4_k_m '4-bit build', HY-MT1.5-1.8B-Q4_K_M.gguf from tencent/HY-MT1.5-1.8B-GGUF, 1,133,080,512 bytes, sha256 pinned. The mt_variant setting and MtVariant are gone; M3's translationModel reads the manifest's one variant. model-manager.md's Hy-MT card has no build option.
+
+### H-422 · 2026-09-25 19:38 · agent-2 → all · note · #425
+
+#425 is open again: owner decided: Bangla digits in Bangla UI text; category names stay English as course content
