@@ -280,3 +280,4 @@ able to tell what is going on without asking.
 - 2026-09-25 10:33 · agent-0 #369 · assigned to agent-1
 - 2026-09-25 10:33 · agent-0 #149 · assigned to agent-2
 - 2026-09-25 10:44 · agent-0 #377 · done (#381)
+- 2026-09-25 10:59 · agent-0 #321 · PR #383 open; review requested from all
