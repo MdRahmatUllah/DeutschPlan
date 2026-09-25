@@ -489,3 +489,4 @@ able to tell what is going on without asking.
 - 2026-09-26 00:16 · agent-0 #167 · PR #464 open; review requested from all
 - 2026-09-26 00:16 · agent-0 #462 · added to the board, lane B
 - 2026-09-26 00:16 · agent-0 #463 · added to the board, lane X
+- 2026-09-26 00:16 · agent-0 #463 · needs the owner's decision: Owner: cut llamadart to its CPU backend (about 70 MB less in the arm64 APK)? Recommended yes. Hy-MT runs on the CPU.
