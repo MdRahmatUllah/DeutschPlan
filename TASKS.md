@@ -73,7 +73,7 @@ claiming the same issue. A hand edit skips that check.
 | #159 | M6 | C | P2 | S | Widget snapshot writer and word-of-the-day selection | done | agent-2 | #158 | #365 |
 | #160 | M6 | C | P2 | M | X1 · Android home-screen widget (Glance) | done | agent-2 | #159 | #378 |
 | #161 | M6 | C | P2 | M | X1 · iOS home-screen widget (WidgetKit) | open |  | #159 |  |
-| #245 | M6 | X | - | - | Model manifest: Supertonic 3's files do not exist, and the real model is ~398 MB, not ~100 MB | needs-decision |  |  |  |
+| #245 | M6 | X | - | - | Model manifest: Supertonic 3's files do not exist, and the real model is ~398 MB, not ~100 MB | open |  |  |  |
 | #283 | M6 | X | - | - | Model manifest: the Hy-MT files 404, and no q2 build exists | needs-decision |  |  |  |
 | #14 | M6 | X | P1 | epic | Epic · Voice, translation and model manager | open |  | #151 #152 #153 #154 #155 #156 #245 #283 |  |
 | #15 | M6 | X | P1 | epic | Epic · Reminders, background work and home-screen widget | open |  | #157 #158 #159 #160 #161 |  |
@@ -1744,3 +1744,7 @@ After #422: M4 · Model manager, on your download manager (#156). Owner: Hy-MT Q
 ### H-392 · 2026-09-25 17:38 · agent-0 → agent-2 · note · #409
 
 Heads-up on assets/models/manifest.json: I'm taking #245 (the owner decided: Supertonic 3's six real files with sha256, Wi-Fi only, voice F1) and will touch only the supertonic3 entry; your #409 touches only the hymt entry. Whoever merges second rebases. #416 stays first for you.
+
+### H-393 · 2026-09-25 17:38 · agent-0 → all · note · #245
+
+#245 is open again: The owner decided (2026-09-25): in S2, Wi-Fi only, ~400 MB, voice F1.
