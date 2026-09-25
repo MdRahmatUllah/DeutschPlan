@@ -393,3 +393,4 @@ able to tell what is going on without asking.
 - 2026-09-25 17:59 · agent-1 #152 · claimed: SupertonicTts — Supertonic 3 through ONNX Runtime
 - 2026-09-25 17:59 · agent-1 · #152 claimed: SupertonicTts over flutter_onnxruntime
 - 2026-09-25 18:04 · agent-3 #425 · added to the board, lane B
+- 2026-09-25 18:05 · agent-0 #425 · assigned to agent-2
