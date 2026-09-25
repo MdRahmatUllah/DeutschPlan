@@ -270,6 +270,9 @@ class StubExamRun implements ExamRunService {
 
   int submitted = 0;
 
+  /// The answers as they stood when the paper was submitted, and graded.
+  List<(int, String?)>? answersAtSubmit;
+
   /// Makes the next submits throw, as a failed write would.
   bool failSubmit = false;
 
@@ -344,6 +347,7 @@ class StubExamRun implements ExamRunService {
   @override
   Future<ExamScore> submit(int attemptId) async {
     submitted++;
+    answersAtSubmit = <(int, String?)>[...answers];
     await holdSubmit?.future;
     if (failSubmit) throw StateError('disk full');
     return const ExamScore(scorePoints: 30, maxPoints: 48, passed: true);

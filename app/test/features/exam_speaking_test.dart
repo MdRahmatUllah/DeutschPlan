@@ -243,6 +243,60 @@ void main() {
     });
   });
 
+  testWidgets('#372 Submit while recording grades the saved recording', (
+    tester,
+  ) async {
+    await pump(tester, items: const <ExamItem>[artboardSpeaking]);
+    await press(tester, Icons.mic);
+    await tester.pump(const Duration(seconds: 12));
+
+    await tester.tap(find.text(l10n.examRunSubmit));
+    await tester.pumpAndSettle();
+
+    expect(mic.stopped, 1);
+    expect(
+      find.text(l10n.examRunSubmitTitle),
+      findsNothing,
+      reason: 'the task was answered, so nothing to confirm',
+    );
+    expect(run.submitted, 1);
+    expect(run.answersAtSubmit, <(int, String?)>[(1, path)]);
+  });
+
+  testWidgets('#372 a recording stopped by hand is not stopped again', (
+    tester,
+  ) async {
+    await pump(tester, items: const <ExamItem>[artboardSpeaking]);
+    await press(tester, Icons.mic);
+    await tester.pump(const Duration(seconds: 12));
+    await press(tester, Icons.stop);
+
+    await tester.tap(find.text(l10n.examRunSubmit));
+    await tester.pumpAndSettle();
+
+    expect(mic.stopped, 1);
+    expect(run.submitted, 1);
+  });
+
+  testWidgets("#372 a recording stopped by moving back is its own task's", (
+    tester,
+  ) async {
+    // Speaking second, where the paper resumes.
+    await pump(
+      tester,
+      items: const <ExamItem>[after, artboardSpeaking],
+      given: <int, String>{1: 'house'},
+    );
+    await press(tester, Icons.mic);
+    await tester.pump(const Duration(seconds: 12));
+
+    await tester.tap(find.text(l10n.examRunPrevious));
+    await tester.pumpAndSettle();
+
+    expect(mic.stopped, 1);
+    expect(run.answers, <(int, String?)>[(2, path)]);
+  });
+
   testWidgets('leaving mid-recording keeps what was said', (tester) async {
     await pump(tester);
     await press(tester, Icons.mic);

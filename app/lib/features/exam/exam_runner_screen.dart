@@ -205,10 +205,14 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
 
   /// A choice tapped, or the field submitted: written at once. Nothing
   /// (an ordered sentence taken back to no chips) is unanswered.
-  void _record(String value) {
+  ///
+  /// [at] is the question it belongs to (#372): Speaking stopped by moving
+  /// on lands after [_at] has moved, and belongs to the task it was said in.
+  void _record(String value, {int? at}) {
     final paper = _paper;
     if (paper == null) return;
-    if (_typedHere) {
+    final index = at ?? _at;
+    if (index == _at && _typedHere) {
       _saveTyped();
       return;
     }
@@ -216,14 +220,17 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
     // Speaking stopped by leaving the exam lands after the runner has gone,
     // and is still written: what was said is kept.
     if (mounted) {
-      setState(() => _given[_at] = given);
+      setState(() => _given[index] = given);
     } else {
-      _given[_at] = given;
+      _given[index] = given;
     }
     unawaited(
-      _service.answer(widget.attemptId, paper.questions[_at].ord, given),
+      _service.answer(widget.attemptId, paper.questions[index].ord, given),
     );
   }
+
+  /// While Speaking records: how to stop it and keep what was said (#372).
+  Future<void> Function()? _stopRecording;
 
   void _go(int to) {
     _saveTyped();
@@ -316,6 +323,12 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
     final paper = _paper;
     if (paper == null || _submitting || _done) return;
     _saveTyped();
+    // #372: a live recording is stopped and saved first, so the confirm
+    // counts it and the grading has it.
+    if (_stopRecording case final stop?) {
+      await stop();
+      if (!mounted) return;
+    }
     final open = _open(paper.questions);
     if (!asked && (open.questions > 0 || open.tasks.isNotEmpty)) {
       final l10n = AppLocalizations.of(context);
@@ -374,7 +387,9 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
       body = const SizedBox.expand();
     } else {
       final questions = paper.questions;
-      final item = questions[_at].item;
+      // The question this view is for, kept in its callbacks (#372).
+      final at = _at;
+      final item = questions[at].item;
       final inSection = [
         for (final q in questions)
           if (q.item.section == item.section) q,
@@ -440,7 +455,8 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
                   item: item,
                   given: _given[_at],
                   field: _field,
-                  onGiven: _record,
+                  onGiven: (value) => _record(value, at: at),
+                  onRecording: (stop) => _stopRecording = stop,
                   rubric: _rubrics[_at],
                   onRubric: (ticks) {
                     _rubrics[_at] = ticks;
