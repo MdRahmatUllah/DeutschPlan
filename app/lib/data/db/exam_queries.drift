@@ -172,3 +172,9 @@ finishedAttempts:
   SELECT * FROM exam_attempts
   WHERE sublevel_code = :code AND status = 'finished'
   ORDER BY finished_at, id;
+
+-- L13's missed words (FR-L13-02): only those the plan has introduced; the
+-- others it will teach in their turn.
+introducedAmong:
+  SELECT word_uid FROM word_state
+  WHERE word_uid IN :uids AND introduced_on IS NOT NULL;

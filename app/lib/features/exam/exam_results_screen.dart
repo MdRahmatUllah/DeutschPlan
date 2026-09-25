@@ -65,16 +65,24 @@ class _ExamResultsScreenState extends ConsumerState<ExamResultsScreen> {
   /// *Add missed words to revision* is done once.
   bool _added = false;
 
+  // ponytail: "once" is this visit's; L13 opened again offers it again,
+  // and a second go rates the words Again once more. A column on the
+  // attempt if that matters.
   Future<void> _addToRevision(List<String> uids) async {
     setState(() => _added = true);
-    await ref
-        .read(examResultServiceProvider)
-        .addToRevision(uids, today: ref.read(todayProvider));
+    final l10n = AppLocalizations.of(context);
+    try {
+      await ref
+          .read(examResultServiceProvider)
+          .addToRevision(uids, today: ref.read(todayProvider));
+    } on Object {
+      if (!mounted) return;
+      setState(() => _added = false);
+      DpToast.show(context, l10n.examResultAddFailed);
+      return;
+    }
     if (!mounted) return;
-    DpToast.show(
-      context,
-      AppLocalizations.of(context).examResultAdded(uids.length),
-    );
+    DpToast.show(context, l10n.examResultAdded(uids.length));
   }
 
   /// FR-L13-03: a task's rubric, ticked here; each tick grades again.
@@ -86,10 +94,22 @@ class _ExamResultsScreenState extends ConsumerState<ExamResultsScreen> {
         title: examSectionName(l10n, task.item.section),
         lines: examRubricLines(l10n, task.item.section),
         ticks: task.rubric,
+        // #84 counts the ticks only with a text or a recording.
+        empty: switch (task.given) {
+          final given? => given.trim().isEmpty,
+          null => true,
+        },
+        speaking: task.item is SpeakingTask,
         onChanged: (ticks) async {
           await ref
               .read(examResultServiceProvider)
               .rubric(widget.attemptId, task.ord, ticks);
+          ref.invalidate(examResultProvider(widget.attemptId));
+        },
+        onDelete: () async {
+          await ref
+              .read(examResultServiceProvider)
+              .deleteRecording(widget.attemptId, task.ord, task.given!);
           ref.invalidate(examResultProvider(widget.attemptId));
         },
       ),
@@ -136,9 +156,19 @@ class _ExamResultsScreenState extends ConsumerState<ExamResultsScreen> {
           : tokens.surface.paper,
       body: content,
     );
+    // Back, the system's or the iOS swipe, is the close button: the exam
+    // hub, never L11 under the route (navigation.md: no swipe-dismiss).
+    final step = loaded.value?.attempt.sublevelCode;
+    final guarded = PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, _) {
+        if (!didPop && step != null) widget.onHub(step);
+      },
+      child: scaffold,
+    );
     return tokens.isGlass
-        ? AuroraBackdrop(leading: tokens.color.easy, child: scaffold)
-        : scaffold;
+        ? AuroraBackdrop(leading: tokens.color.easy, child: guarded)
+        : guarded;
   }
 }
 
@@ -171,7 +201,7 @@ class _Result extends StatelessWidget {
     final share = attempt.maxPoints == 0
         ? 0.0
         : attempt.scorePoints / attempt.maxPoints;
-    final missed = missedWords(result.rows);
+    final missed = result.missed;
 
     // The sections in BR-EXAM-03's order, each with its points and maximum.
     final sections = <ExamSection, ({double points, int max})>{};
@@ -466,8 +496,8 @@ class _BadgeState extends State<_Badge> with SingleTickerProviderStateMixin {
         container: true,
         header: true,
         child: Container(
-          height: 32,
-          padding: const EdgeInsets.symmetric(horizontal: 14),
+          // 32 dp at 100 % text (22 + 2 × 5), taller as the text grows.
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 5),
           decoration: BoxDecoration(
             color: tokens.surface.card,
             borderRadius: BorderRadius.circular(tokens.isGlass ? 20 : 16),
@@ -516,8 +546,8 @@ class _PassBar extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, box) {
         final width = box.maxWidth;
-        return SizedBox(
-          height: 40,
+        final bar = SizedBox(
+          height: 26,
           child: Stack(
             clipBehavior: Clip.none,
             children: <Widget>[
@@ -545,20 +575,25 @@ class _PassBar extends StatelessWidget {
                 top: 1,
                 child: Container(width: 2, height: 24, color: ink),
               ),
-              Positioned(
-                left: width * mark - 40,
-                width: 80,
-                top: 26,
-                child: DpText(
-                  l10n.examResultPassMark(passPercent),
-                  role: DpTextRole.caption,
-                  weight: 700,
-                  color: ink,
-                  textAlign: TextAlign.center,
-                ),
-              ),
             ],
           ),
+        );
+        // Under the tick, kept inside the bar's width at either end, and in
+        // the flow so a large text pushes the line down rather than over it.
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            bar,
+            Align(
+              alignment: Alignment(mark * 2 - 1, 0),
+              child: DpText(
+                l10n.examResultPassMark(passPercent),
+                role: DpTextRole.caption,
+                weight: 700,
+                color: ink,
+              ),
+            ),
+          ],
         );
       },
     );
@@ -588,67 +623,88 @@ class _SectionRow extends StatelessWidget {
     final l10n = AppLocalizations.of(context);
     final task = this.task;
     final score = l10n.examResultSectionPoints(_points(points), max);
+    final bar = Container(
+      height: 8,
+      clipBehavior: Clip.antiAlias,
+      decoration: BoxDecoration(
+        color: tokens.surface.muted,
+        borderRadius: BorderRadius.circular(4),
+      ),
+      child: FractionallySizedBox(
+        alignment: Alignment.centerLeft,
+        widthFactor: max == 0 ? 0 : (points / max).clamp(0, 1),
+        child: ColoredBox(color: tokens.color.easy),
+      ),
+    );
+    final scoreText = DpText(score, role: DpTextRole.label, weight: 700);
+    final note = task == null
+        ? null
+        : Row(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Flexible(
+                child: DpText(
+                  l10n.examResultSelfAssessed,
+                  role: DpTextRole.caption,
+                  color: tokens.color.link,
+                ),
+              ),
+              Icon(Icons.chevron_right, size: 16, color: tokens.color.link),
+            ],
+          );
+    // The artboard's columns at ordinary sizes; past 130 % text the name and
+    // score on a line, the bar and the note under them, so nothing clips.
+    final big = MediaQuery.textScalerOf(context).scale(10) > 13;
     final row = ConstrainedBox(
-      constraints: BoxConstraints(minHeight: task == null ? 26 : 44),
+      // accessibility-performance.md: 48 dp on Android, 44 pt on iOS, for
+      // the rows that open a rubric.
+      constraints: BoxConstraints(
+        minHeight: task == null ? 26 : (context.isCupertino ? 44 : 48),
+      ),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: Row(
-          children: <Widget>[
-            SizedBox(
-              width: 96,
-              child: DpText(name, role: DpTextRole.label, weight: 400),
-            ),
-            const SizedBox(width: 10),
-            Expanded(
-              child: Container(
-                height: 8,
-                clipBehavior: Clip.antiAlias,
-                decoration: BoxDecoration(
-                  color: tokens.surface.muted,
-                  borderRadius: BorderRadius.circular(4),
-                ),
-                child: FractionallySizedBox(
-                  alignment: Alignment.centerLeft,
-                  widthFactor: max == 0 ? 0 : (points / max).clamp(0, 1),
-                  child: ColoredBox(color: tokens.color.easy),
-                ),
-              ),
-            ),
-            const SizedBox(width: 10),
-            SizedBox(
-              width: 44,
-              child: DpText(
-                score,
-                role: DpTextRole.label,
-                weight: 700,
-                textAlign: TextAlign.right,
-              ),
-            ),
-            const SizedBox(width: 10),
-            SizedBox(
-              width: 100,
-              child: task == null
-                  ? null
-                  : Row(
-                      children: <Widget>[
-                        Flexible(
-                          child: DpText(
-                            l10n.examResultSelfAssessed,
-                            role: DpTextRole.caption,
-                            color: tokens.color.link,
-                            maxLines: 1,
-                          ),
+        padding: EdgeInsets.symmetric(horizontal: 16, vertical: big ? 6 : 0),
+        child: big
+            ? Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+                  Row(
+                    children: <Widget>[
+                      Expanded(
+                        child: DpText(
+                          name,
+                          role: DpTextRole.label,
+                          weight: 400,
                         ),
-                        Icon(
-                          Icons.chevron_right,
-                          size: 16,
-                          color: tokens.color.link,
-                        ),
-                      ],
+                      ),
+                      const SizedBox(width: 10),
+                      scoreText,
+                    ],
+                  ),
+                  const SizedBox(height: 4),
+                  bar,
+                  ?note,
+                ],
+              )
+            : Row(
+                children: <Widget>[
+                  SizedBox(
+                    width: 96,
+                    child: DpText(name, role: DpTextRole.label, weight: 400),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(child: bar),
+                  const SizedBox(width: 10),
+                  SizedBox(
+                    width: 44,
+                    child: Align(
+                      alignment: Alignment.centerRight,
+                      child: scoreText,
                     ),
-            ),
-          ],
-        ),
+                  ),
+                  const SizedBox(width: 10),
+                  SizedBox(width: 100, child: note),
+                ],
+              ),
       ),
     );
     if (task == null) {
@@ -681,19 +737,45 @@ class _RubricSheet extends StatefulWidget {
     required this.title,
     required this.lines,
     required this.ticks,
+    required this.empty,
+    required this.speaking,
     required this.onChanged,
+    required this.onDelete,
   });
 
   final String title;
   final List<String> lines;
   final List<bool> ticks;
+
+  /// No text, or no recording: the ticks would count nothing (#84).
+  final bool empty;
+  final bool speaking;
   final Future<void> Function(List<bool> ticks) onChanged;
+
+  /// FR-L12S-04 from L13: *Delete recording*.
+  final Future<void> Function() onDelete;
 
   @override
   State<_RubricSheet> createState() => _RubricSheetState();
 }
 
 class _RubricSheetState extends State<_RubricSheet> {
+  /// Asked first: deleting zeros Speaking.
+  Future<void> _delete() async {
+    final l10n = AppLocalizations.of(context);
+    final sure = await Adaptive.showConfirm(
+      context: context,
+      title: l10n.examResultDeleteTitle,
+      message: l10n.examResultDeleteMessage,
+      confirmLabel: l10n.examSpeakingDelete,
+      cancelLabel: l10n.examResultDeleteKeep,
+      destructive: true,
+    );
+    if (sure != true || !mounted) return;
+    await widget.onDelete();
+    if (mounted) Navigator.of(context).pop();
+  }
+
   late final List<bool> _ticks = <bool>[
     for (var i = 0; i < widget.lines.length; i++)
       i < widget.ticks.length && widget.ticks[i],
@@ -711,17 +793,34 @@ class _RubricSheetState extends State<_RubricSheet> {
           children: <Widget>[
             DpText(widget.title, role: DpTextRole.title),
             const SizedBox(height: 4),
-            DpText(l10n.examResultRubricIntro, role: DpTextRole.label),
+            DpText(
+              widget.empty
+                  ? (widget.speaking
+                        ? l10n.examResultRubricNoRecording
+                        : l10n.examResultRubricNoText)
+                  : l10n.examResultRubricIntro,
+              role: DpTextRole.label,
+            ),
             const SizedBox(height: 8),
             for (final (i, line) in widget.lines.indexed)
               ExamRubricTick(
                 label: line,
                 ticked: _ticks[i],
-                onTap: () {
-                  setState(() => _ticks[i] = !_ticks[i]);
-                  unawaited(widget.onChanged(List<bool>.of(_ticks)));
-                },
+                onTap: widget.empty
+                    ? null
+                    : () {
+                        setState(() => _ticks[i] = !_ticks[i]);
+                        unawaited(widget.onChanged(List<bool>.of(_ticks)));
+                      },
               ),
+            if (widget.speaking && !widget.empty) ...<Widget>[
+              const SizedBox(height: 8),
+              DpButton(
+                label: l10n.examSpeakingDelete,
+                kind: DpButtonKind.text,
+                onPressed: () => unawaited(_delete()),
+              ),
+            ],
           ],
         ),
       ),

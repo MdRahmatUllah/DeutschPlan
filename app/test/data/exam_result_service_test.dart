@@ -133,6 +133,55 @@ void main() {
     ], reason: 'the Writing task is not a word');
   });
 
+  test('FR-L13-02 only words the plan has introduced go to revision', () async {
+    await db
+        .into(db.wordState)
+        .insert(
+          WordStateCompanion.insert(
+            wordUid: ContentFixture.haus,
+            introducedOn: const Value('2026-09-10'),
+          ),
+        );
+    final id = await finished('2026-09-20T10:00:00Z', haus: 'der');
+    expect((await service.result(id))!.missed, <String>[ContentFixture.haus]);
+  });
+
+  test(
+    "FR-L13-01 another step's attempt and the finish order, not the id",
+    () async {
+      final later = await finished('2026-09-20T10:00:00Z', haus: 'das');
+      final earlier = await finished('2026-09-18T10:00:00Z', haus: 'der');
+      await exams.begin(
+        sublevelCode: 'A1.2',
+        seed: 1,
+        startedAt: '2026-09-19T10:00:00Z',
+        questions: <ExamQuestion>[
+          ExamQuestion.of(
+            1,
+            const WordQuestion(
+              ExamSection.articles,
+              ContentFixture.strasse,
+              prompt: 'Straße',
+              expected: 'die',
+            ),
+          ),
+        ],
+      );
+      final result = (await service.result(later))!;
+      expect(result.previous?.attempt.id, earlier);
+      expect(result.previous?.number, 1);
+    },
+  );
+
+  test('FR-L12S-04 a recording deleted from L13 zeros Speaking', () async {
+    final id = await sit('2026-09-20T10:00:00Z');
+    final file = File('${directory.path}/rec.m4a')..writeAsStringSync('x');
+    await exams.answer(attemptId: id, ord: 3, given: file.path);
+    await service.deleteRecording(id, 3, file.path);
+    expect(file.existsSync(), isFalse);
+    expect((await service.result(id))!.rows.last.given, isNull);
+  });
+
   test('FR-L13-03 a rubric tick grades the paper again', () async {
     final id = await finished('2026-09-20T10:00:00Z', haus: 'das');
     final before = (await exams.attempt(id))!;
@@ -142,6 +191,7 @@ void main() {
     final after = (await exams.attempt(id))!;
     expect(after.scorePoints, before.scorePoints + 1, reason: '0.5 a tick');
     expect(after.finishedAt, before.finishedAt, reason: "still the submit's");
+    expect(after.status, 'finished');
     final row = (await service.result(id))!.rows.last;
     expect(row.rubric, <bool>[true, true]);
   });

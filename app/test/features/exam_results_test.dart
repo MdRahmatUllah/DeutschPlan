@@ -3,6 +3,8 @@ import 'dart:math' as math;
 import 'package:deutschplan/core/providers/app_providers.dart';
 import 'package:deutschplan/core/theme/app_theme.dart';
 import 'package:deutschplan/core/theme/dp_tokens.dart';
+import 'package:deutschplan/data/repositories/exam_result_service.dart';
+import 'package:deutschplan/domain/exam_generator.dart';
 import 'package:deutschplan/features/exam/exam_results_screen.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
 import 'package:deutschplan/main.dart'
@@ -11,6 +13,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 
+import '../core/text_clipping.dart';
 import 'exam_result_fixtures.dart';
 
 /// L13 · Exam results — #135 (`exam-results.md`).
@@ -107,6 +110,7 @@ void main() {
           rows: artboardRows(),
           previous: null,
           passPercent: 60,
+          missed: const <String>[],
         ),
       ),
     );
@@ -133,6 +137,7 @@ void main() {
           rows: artboardRows(),
           previous: null,
           passPercent: 60,
+          missed: const <String>[],
         ),
       ),
     );
@@ -251,6 +256,80 @@ void main() {
     await pump(tester, settle: false, frames: 1);
     expect(badgeScale(tester), 1, reason: 'at its first frame already');
     expect(tester.hasRunningAnimations, isFalse);
+  });
+
+  testWidgets('back is the close button: the exam hub, never L11', (
+    tester,
+  ) async {
+    await pump(tester);
+    await tester.binding.handlePopRoute();
+    await tester.pumpAndSettle();
+    expect(hub, <String>['A1.2']);
+  });
+
+  testWidgets('FR-L13-03 no text: the Writing ticks are there but count '
+      'nothing', (tester) async {
+    final rows = <ExamResultRow>[
+      for (final row in artboardRows())
+        row.item is WritingTask
+            ? (
+                ord: row.ord,
+                item: row.item,
+                given: null,
+                points: 0.0,
+                rubric: row.rubric,
+                flagged: false,
+              )
+            : row,
+    ];
+    await pump(
+      tester,
+      with_: StubExamResult(
+        result: (
+          attempt: resultAttempt(),
+          rows: rows,
+          previous: null,
+          passPercent: 60,
+          missed: const <String>[],
+        ),
+      ),
+    );
+    await tap(tester, l10n.examSectionWriting);
+    expect(find.text(l10n.examResultRubricNoText), findsOneWidget);
+    await tap(tester, l10n.examWritingRubricTask);
+    expect(stub.rubrics, isEmpty);
+  });
+
+  testWidgets('FR-L12S-04 from L13: Delete recording, asked first', (
+    tester,
+  ) async {
+    await pump(tester);
+    await tap(tester, l10n.examSectionSpeaking);
+    await tap(tester, l10n.examSpeakingDelete);
+    expect(find.text(l10n.examResultDeleteTitle), findsOneWidget);
+    await tap(tester, l10n.examResultDeleteKeep);
+    expect(stub.deleted, isEmpty);
+    await tap(tester, l10n.examSpeakingDelete);
+    await tap(tester, l10n.examSpeakingDelete);
+    expect(stub.deleted, <int>[42]);
+    expect(find.text(l10n.examResultSectionPoints('0', 4)), findsOneWidget);
+  });
+
+  testWidgets('FR-L13-02 a failed add can be tried again', (tester) async {
+    await pump(tester, with_: StubExamResult()..failAdd = true);
+    await tap(tester, l10n.examResultAddMissed(9));
+    expect(find.text(l10n.examResultAddFailed), findsOneWidget);
+    stub.failAdd = false;
+    await tester.pumpAndSettle(const Duration(seconds: 3));
+    await tap(tester, l10n.examResultAddMissed(9));
+    expect(stub.added, hasLength(1));
+  });
+
+  testWidgets('at 200 % text nothing is clipped', (tester) async {
+    tester.platformDispatcher.textScaleFactorTestValue = 2;
+    addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+    await pump(tester);
+    expectNothingClipped(tester);
   });
 
   testWidgets('an attempt that is not there says so', (tester) async {

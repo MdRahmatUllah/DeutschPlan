@@ -787,5 +787,11 @@
   "examWritingRubricTask": "কাজ সম্পূর্ণ — যা যা চাওয়া হয়েছিল",
   "examWritingRubricStructure": "গঠন — স্পষ্ট শুরু, মাঝ আর শেষ",
   "examResultSectionLabel": "{section}, {points}",
-  "examResultTaskLabel": "{section}, {points}, নিজে যাচাই"
+  "examResultTaskLabel": "{section}, {points}, নিজে যাচাই",
+  "examResultAddFailed": "যোগ করা যায়নি। আবার চেষ্টা করুন।",
+  "examResultRubricNoText": "আপনার লেখা খালি, তাই এই টিকগুলো কিছু গোনে না।",
+  "examResultRubricNoRecording": "কোনো রেকর্ডিং নেই, তাই এই টিকগুলো কিছু গোনে না।",
+  "examResultDeleteTitle": "রেকর্ডিং মুছবেন?",
+  "examResultDeleteMessage": "তাহলে বলার অংশে কোনো পয়েন্ট থাকবে না। রেকর্ডিংটি এই ফোন থেকে মুছে যাবে।",
+  "examResultDeleteKeep": "রেখে দিন"
 }

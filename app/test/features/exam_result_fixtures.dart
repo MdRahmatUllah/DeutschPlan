@@ -63,6 +63,8 @@ List<ExamResultRow> artboardRows() {
               : item is WritingTask
               ? const <bool>[false, false]
               : const <bool>[],
+          // The artboard's three flags: Q3, Q12 and Q21.
+          flagged: i == 2 || i == 11 || i == 20,
         );
       }(),
   ];
@@ -85,6 +87,7 @@ class StubExamResult implements ExamResultService {
               number: 1,
             ),
             passPercent: 60,
+            missed: missedWords(artboardRows()),
           );
 
   ExamResult result0;
@@ -95,6 +98,12 @@ class StubExamResult implements ExamResultService {
 
   /// The uids *Add missed words to revision* sent, and for which day.
   final List<(List<String>, PlanDate)> added = <(List<String>, PlanDate)>[];
+
+  /// Each recording deleted: its ord.
+  final List<int> deleted = <int>[];
+
+  /// Makes *Add missed words to revision* throw.
+  bool failAdd = false;
 
   @override
   Future<ExamResult?> result(int attemptId) async => missing ? null : result0;
@@ -116,6 +125,7 @@ class StubExamResult implements ExamResultService {
                         (ticks.where((t) => t).length -
                             row.rubric.where((t) => t).length),
                 rubric: ticks,
+                flagged: row.flagged,
               )
             : row,
     ];
@@ -125,6 +135,32 @@ class StubExamResult implements ExamResultService {
       rows: rows,
       previous: result0.previous,
       passPercent: result0.passPercent,
+      missed: result0.missed,
+    );
+  }
+
+  @override
+  Future<void> deleteRecording(int attemptId, int ord, String path) async {
+    deleted.add(ord);
+    final rows = <ExamResultRow>[
+      for (final row in result0.rows)
+        row.ord == ord
+            ? (
+                ord: row.ord,
+                item: row.item,
+                given: null,
+                points: 0.0,
+                rubric: row.rubric,
+                flagged: row.flagged,
+              )
+            : row,
+    ];
+    result0 = (
+      attempt: result0.attempt,
+      rows: rows,
+      previous: result0.previous,
+      passPercent: result0.passPercent,
+      missed: result0.missed,
     );
   }
 
@@ -132,7 +168,10 @@ class StubExamResult implements ExamResultService {
   Future<void> addToRevision(
     List<String> uids, {
     required PlanDate today,
-  }) async => added.add((uids, today));
+  }) async {
+    if (failAdd) throw StateError('disk full');
+    added.add((uids, today));
+  }
 }
 
 List<Override> examResultStub([StubExamResult? stub]) => <Override>[
@@ -155,6 +194,7 @@ ExamResult failedResult() {
           given: row.given,
           points: 0.0,
           rubric: row.rubric,
+          flagged: row.flagged,
         )
       else
         row,
@@ -164,5 +204,6 @@ ExamResult failedResult() {
     rows: rows,
     previous: null,
     passPercent: 60,
+    missed: missedWords(rows),
   );
 }

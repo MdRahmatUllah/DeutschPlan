@@ -4793,5 +4793,29 @@
         "type": "String"
       }
     }
+  },
+  "examResultAddFailed": "Couldn't add them. Try again.",
+  "@examResultAddFailed": {
+    "description": "L13 toast when Add missed words to revision fails; the button is offered again."
+  },
+  "examResultRubricNoText": "Your text is empty, so these ticks count nothing.",
+  "@examResultRubricNoText": {
+    "description": "L13 rubric sheet for a Writing task left without text (#84 scores its rubric only with a text)."
+  },
+  "examResultRubricNoRecording": "There's no recording, so these ticks count nothing.",
+  "@examResultRubricNoRecording": {
+    "description": "L13 rubric sheet for a Speaking task without a recording (#84)."
+  },
+  "examResultDeleteTitle": "Delete the recording?",
+  "@examResultDeleteTitle": {
+    "description": "L13 confirm before deleting the Speaking recording (FR-L12S-04)."
+  },
+  "examResultDeleteMessage": "Speaking then scores nothing. The recording is gone from this phone.",
+  "@examResultDeleteMessage": {
+    "description": "L13 confirm body before deleting the Speaking recording."
+  },
+  "examResultDeleteKeep": "Keep it",
+  "@examResultDeleteKeep": {
+    "description": "L13 confirm: keep the recording."
   }
 }

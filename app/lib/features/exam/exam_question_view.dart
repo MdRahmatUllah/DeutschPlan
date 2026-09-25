@@ -1178,14 +1178,17 @@ class ExamRubricTick extends StatelessWidget {
 
   final String label;
   final bool ticked;
-  final VoidCallback onTap;
+
+  /// Null: shown, but not tickable (L13, a task without an answer).
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
     final tokens = context.tokens;
-    return Semantics(
+    final tick = Semantics(
       container: true,
       checked: ticked,
+      enabled: onTap != null,
       label: label,
       excludeSemantics: true,
       onTap: onTap,
@@ -1216,6 +1219,7 @@ class ExamRubricTick extends StatelessWidget {
         ),
       ),
     );
+    return onTap == null ? Opacity(opacity: 0.5, child: tick) : tick;
   }
 }
 

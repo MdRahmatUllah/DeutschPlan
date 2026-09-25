@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:deutschplan/data/db/app_database.dart';
 import 'package:deutschplan/data/repositories/exam_repository.dart';
@@ -22,6 +23,9 @@ typedef ExamResultRow = ({
 
   /// A task's rubric ticks (FR-L12S-03); empty for a question.
   List<bool> rubric,
+
+  /// Flagged in the runner: L14's *Flagged* filter.
+  bool flagged,
 });
 
 /// L13's data: the attempt as graded, its rows, the step's previous finished
@@ -31,6 +35,10 @@ typedef ExamResult = ({
   List<ExamResultRow> rows,
   ({ExamAttempt attempt, int number})? previous,
   int passPercent,
+
+  /// FR-L13-02's words: [missedWords] the plan has introduced. A word the
+  /// paper drew before the plan taught it is left for its new-word card.
+  List<String> missed,
 });
 
 /// L13's data (`exam-results.md`, #135): the result, the rubric a learner
@@ -62,15 +70,22 @@ class ExamResultService {
           given: row.given,
           points: row.points,
           rubric: rubricTicks(row.selfRubricJson),
+          flagged: row.flagged != 0,
         ),
     ];
     final finished = await _exams.finishedAttempts(attempt.sublevelCode).get();
     final at = finished.indexWhere((a) => a.id == attemptId);
+    final missed = missedWords(rows);
+    final introduced = (await _exams.introducedAmong(missed).get()).toSet();
     return (
       attempt: attempt,
       rows: rows,
       previous: at > 0 ? (attempt: finished[at - 1], number: at) : null,
       passPercent: _settings.read(SettingKeys.examPassPercent),
+      missed: <String>[
+        for (final uid in missed)
+          if (introduced.contains(uid)) uid,
+      ],
     );
   }
 
@@ -82,6 +97,18 @@ class ExamResultService {
       ord: ord,
       json: jsonEncode(ticks),
     );
+    await _exams.grade(
+      attemptId,
+      passPercent: _settings.read(SettingKeys.examPassPercent),
+    );
+  }
+
+  /// FR-L12S-04 from L13: the recording gone from the phone, the answer
+  /// cleared, which zeros Speaking (#84), and the paper graded again.
+  Future<void> deleteRecording(int attemptId, int ord, String path) async {
+    final file = File(path);
+    if (file.existsSync()) await file.delete();
+    await _exams.answer(attemptId: attemptId, ord: ord, given: null);
     await _exams.grade(
       attemptId,
       passPercent: _settings.read(SettingKeys.examPassPercent),
