@@ -239,8 +239,10 @@ class BackupRepository {
     final backup = _parse(json);
     final data = backup['tables']! as Map<String, Object?>;
 
-    // Fresh ids assigned to imported parents, read by the child table's pass.
-    // Local to the run: two imports must not see each other's mapping.
+    // Fresh ids assigned on a merge, by the table that reads them: an
+    // attempt's under its answers' table, a word of the learner's own under
+    // `custom_words`, for the tables that name it. Local to the run: two
+    // imports must not see each other's mapping.
     final remap = <String, Map<int, int>>{};
 
     await _db.transaction(() async {
@@ -289,9 +291,12 @@ class BackupRepository {
 
       // On a replace the table was just emptied, so the ids in the file
       // cannot collide and keeping them makes the round trip exact. On a
-      // merge they are this phone's to assign, and the answers are remapped
-      // to match.
-      if ((child != null || ownIds) && mode == ImportMode.merge) {
+      // merge an AUTOINCREMENT id is this phone's to assign, in every table
+      // whose row key doesn't hold it: the attempts and their answers, the
+      // learner's own words and the rows that name them, and `review_log`
+      // and `grammar_practice_log`, whose ids two phones that were both
+      // studied share (#369).
+      if (mode == ImportMode.merge && !rowKeys[table]!.contains('id')) {
         incoming.remove('id');
       }
 
@@ -306,7 +311,9 @@ class BackupRepository {
       // `custom:<id>` as the id its word got here, before the key is taken:
       // `word_state`'s key is the uid. A word the file doesn't have would
       // name whichever of this phone's words has that id, so its rows stay
-      // out (#369).
+      // out (#369), a deleted word's reviews with them. A compare quiz's
+      // `source_ref` can list `custom:<id>` too, and isn't rewritten:
+      // nothing reads it back.
       if (mode == ImportMode.merge && _namesCustomWords.contains(table)) {
         if (customId('${mapped['word_uid']}') case final id?) {
           final here = remap[_customWords]?[id];
@@ -330,7 +337,7 @@ class BackupRepository {
       if (mode == ImportMode.merge) {
         final local = existing[_keyOf(table, mapped)];
         if (local != null) {
-          if (child != null || ownIds) {
+          if ((child != null || ownIds) && row['id'] is int) {
             remapped[row['id']! as int] = local['id']! as int;
           }
           if (!_isNewer(table, mapped, local)) continue;
