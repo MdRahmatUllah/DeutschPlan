@@ -817,6 +817,9 @@ class _Idle extends ConsumerWidget {
             // The artboard's Clear ends 28 dp from the edge: the text
             // button's own 12 inside the heading's 16.
             trailing: Semantics(
+              // Its own node: merged, the heading and the button were read
+              // as one, "Recent, Clear recent searches".
+              container: true,
               label: l10n.searchClearRecentLabel,
               excludeSemantics: true,
               button: true,

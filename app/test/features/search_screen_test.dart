@@ -506,6 +506,30 @@ void main() {
       expect(settings.read(SettingKeys.recentSearches), isNull);
     });
 
+    testWidgets('FR-R1-04 Clear is a button of its own to a screen reader, '
+        'not part of the heading', (tester) async {
+      final semantics = tester.ensureSemantics();
+      await pump(tester);
+      final recent = ProviderScope.containerOf(
+        tester.element(find.byType(SearchScreen)),
+      ).read(recentSearchesProvider.notifier);
+      await tester.runAsync(() => recent.remember('Haus'));
+      await tester.pumpAndSettle();
+      final clear = tester
+          .getSemantics(find.text(l10n.searchClearRecent))
+          .getSemanticsData();
+      expect(clear.label, l10n.searchClearRecentLabel);
+      expect(clear.flagsCollection.isButton, isTrue);
+      expect(
+        tester
+            .getSemantics(heading(l10n.searchRecent))
+            .getSemanticsData()
+            .label,
+        isNot(contains(l10n.searchClearRecentLabel)),
+      );
+      semantics.dispose();
+    });
+
     testWidgets('My words: the meaning, where it was seen, the count from '
         'the second time; newest first', (tester) async {
       await pump(tester);
