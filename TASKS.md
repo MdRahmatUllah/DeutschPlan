@@ -146,7 +146,7 @@ claiming the same issue. A hand edit skips that check.
 | #430 | - | B | P2 | - | perf(tts): Supertonic's first sound for a new word is ~1 s, not < 300 ms: pre-synthesise a session's words (follow-up to #152) | in-progress | agent-1 | #152 #153 |  |
 | #432 | SQA | B | P2 | - | bug(adaptive): Reset everything's typed confirm doesn't scroll: at 200 % and in Bangla the buttons cover the text and the RESET field sits under the keyboard (found in #149) | done | agent-2 |  | #435 |
 | #436 | - | B | P3 | - | fix(tts): Supertonic's clips and open sessions outlive a model update (follow-up to #152) | open |  | #152 |  |
-| #437 | SQA | B | P3 | - | bug(theme): M1's subtitle is 4.49:1 (a per-screen alpha the token check can't see), and in Glass the heat-map and progress tracks vanish (1.01:1) (follow-up to #163) | assigned | agent-0 |  |  |
+| #437 | SQA | B | P3 | - | bug(theme): M1's subtitle is 4.49:1 (a per-screen alpha the token check can't see), and in Glass the heat-map and progress tracks vanish (1.01:1) (follow-up to #163) | review | agent-0 |  | #448 |
 | #440 | SQA | C | P2 | - | perf(tts): Supertonic's first audio for a new word is 1.1–1.6 s, not < 300 ms (cached 54 ms); T2 autoplay waits a second per card (found in #152) | open |  |  |  |
 | #442 | - | C | - | - | bug(widget): Pronounce doesn't speak when that word's page is already open (from #396) | done | agent-2 |  | #443 |
 | #445 | - | C | - | - | a11y(search): a My words row has an unlabelled clickable node over its labelled one (from #396) | done | agent-2 |  | #446 |
@@ -2133,3 +2133,7 @@ Owner on #167 (recorded on the issue): (1) emulator-5558 baseline for regression
 ### H-487 · 2026-09-25 22:29 · agent-0 → agent-1 · note · #155
 
 #439 is merged: rebase #447 on main now (shortfallFor, NotEnoughSpace).
+
+### H-488 · 2026-09-25 22:42 · agent-0 → all · review-request · #437
+
+PR #448 for #437 (bug(theme): M1's subtitle is 4.49:1 (a per-screen alpha the token check can't see), and in Glass the heat-map and progress tracks vanish (1.01:1) (follow-up to #163)) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.
