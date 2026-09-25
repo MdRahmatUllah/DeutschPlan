@@ -161,10 +161,19 @@ class Quiz {
 
 /// Builds a quiz (`docs/03-domain/quiz-engine.md`, #81).
 class QuizBuilder {
-  QuizBuilder(this._store, {Fsrs? fsrs}) : _fsrs = fsrs ?? Fsrs();
+  QuizBuilder(
+    this._store, {
+    Fsrs? fsrs,
+    this.notInMixed = const <QuizDirection>{},
+  }) : _fsrs = fsrs ?? Fsrs();
 
   final QuizStore _store;
   final Fsrs _fsrs;
+
+  /// The directions a mixed quiz leaves out (#339): the meaning language the
+  /// learner didn't choose. DE → বাংলা for an English-only learner, DE → EN
+  /// for a Bangla-only one; both are asked for "both".
+  final Set<QuizDirection> notInMixed;
 
   /// [length] questions at most — fewer when fewer words qualify. The same
   /// [seed] over the same progress builds the same quiz, which is what lets
@@ -197,7 +206,7 @@ class QuizBuilder {
     final items = <QuizItem>[];
     for (final (i, word) in picked.indexed) {
       final asked = direction == QuizDirection.mixed
-          ? mixedDirection(i, word)
+          ? mixedDirection(i, word, skip: notInMixed)
           : direction;
       items.add(
         await _item(
@@ -320,13 +329,20 @@ const List<QuizDirection> rotation = <QuizDirection>[
 ];
 
 /// Item [index] of a mixed quiz: the rotation's next direction that applies
-/// to [word]. DE → EN always does, so there is always one.
-QuizDirection mixedDirection(int index, QuizWord word) {
+/// to [word] and isn't in [skip]. EN → DE always does, so there is always
+/// one.
+QuizDirection mixedDirection(
+  int index,
+  QuizWord word, {
+  Set<QuizDirection> skip = const <QuizDirection>{},
+}) {
   for (var k = 0; k < rotation.length; k++) {
     final direction = rotation[(index + k) % rotation.length];
-    if (applies(direction, word)) return direction;
+    if (!skip.contains(direction) && applies(direction, word)) {
+      return direction;
+    }
   }
-  return QuizDirection.deEn;
+  return QuizDirection.enDe;
 }
 
 /// Whether [word] can be asked in [direction] (`quiz-engine.md`: articles
@@ -464,14 +480,27 @@ final RegExp _infinitiveTo = RegExp(r'^to\s+');
 /// meaning they share, or one named in the other's synonyms cell.
 bool _synonyms(QuizWord a, Set<String> meanings, QuizWord b) {
   if (meanings.intersection(_meanings(b)).isNotEmpty) return true;
-  if ((a.bangla ?? '').trim().isNotEmpty &&
-      a.bangla!.trim() == b.bangla?.trim()) {
-    return true;
-  }
+  if (_sameBangla(a.bangla, b.bangla)) return true;
   bool names(QuizWord w, QuizWord other) =>
       _hasWords(w.synonyms ?? '', other.german);
   return names(a, b) || names(b, a);
 }
+
+/// Whether two Bangla meanings would read as one (#339): the same, or the
+/// same once a qualifier in brackets is dropped from one that has it and
+/// the other has none — "সাজানো" beside "সাজানো (ঘর)". Two qualified ones
+/// stay apart: "তোমাকে (accusative)" and "তোমাকে (dative)" are the test.
+bool _sameBangla(String? a, String? b) {
+  final x = (a ?? '').trim();
+  final y = (b ?? '').trim();
+  if (x.isEmpty || y.isEmpty) return false;
+  if (x == y) return true;
+  final bareX = x.replaceAll(_qualifier, '').trim();
+  final bareY = y.replaceAll(_qualifier, '').trim();
+  return bareX == bareY && (bareX == x || bareY == y);
+}
+
+final RegExp _qualifier = RegExp(r'\s*\([^)]*\)');
 
 /// Whether [phrase]'s words appear in [text] as whole words, in order: "an"
 /// is not named by "das Anliegen".

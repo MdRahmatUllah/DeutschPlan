@@ -426,6 +426,13 @@ QuizBuilder quizBuilder(Ref ref) => QuizBuilder(
         .watch(settingsProvider)
         .read(SettingKeys.desiredRetention),
   ),
+  notInMixed: switch (ref
+      .watch(settingsProvider)
+      .read(SettingKeys.meaningLanguage)) {
+    MeaningLanguage.english => const <QuizDirection>{QuizDirection.deBn},
+    MeaningLanguage.bangla => const <QuizDirection>{QuizDirection.deEn},
+    MeaningLanguage.both => const <QuizDirection>{},
+  },
 );
 
 /// M2's reads (#145): the days, the revision ratings, the totals.

@@ -9,6 +9,7 @@ import 'package:deutschplan/data/db/app_database.dart';
 import 'package:deutschplan/data/repositories/exam_repository.dart';
 import 'package:deutschplan/data/repositories/setting_keys.dart';
 import 'package:deutschplan/data/repositories/settings_repository.dart';
+import 'package:deutschplan/domain/quiz_builder.dart' show QuizDirection;
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
 import 'package:deutschplan/main.dart'
     show appLocalizationsDelegates, supportedLocales;
@@ -271,6 +272,28 @@ void main() {
       await pumpEventQueue();
       expect(c.read(sentencePickerProvider).gapDays, 3);
     });
+  });
+
+  group('#339 the quiz builder', () {
+    test(
+      "mixed leaves out the meaning language the learner didn't choose",
+      () async {
+        for (final (meaning, skipped)
+            in <(MeaningLanguage, Set<QuizDirection>)>[
+              (MeaningLanguage.english, <QuizDirection>{QuizDirection.deBn}),
+              (MeaningLanguage.bangla, <QuizDirection>{QuizDirection.deEn}),
+              (MeaningLanguage.both, <QuizDirection>{}),
+            ]) {
+          await settings.write(SettingKeys.meaningLanguage, meaning);
+          final c = container();
+          expect(
+            c.read(quizBuilderProvider).notInMixed,
+            skipped,
+            reason: '$meaning',
+          );
+        }
+      },
+    );
   });
 
   group('the repositories', () {
