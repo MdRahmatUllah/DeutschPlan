@@ -16,12 +16,20 @@ part 'licences_screen.g.dart';
 typedef Licence = ({String name, String kind, String? asset, String? text});
 
 /// FR-M8-01: the on-device models' licences, bundled in full, as their
-/// makers publish them (`Supertone/supertonic-3`, `tencent/HY-MT1.5-1.8B`).
+/// makers publish them (`Supertone/supertonic-3`, `tencent/HY-MT1.5-1.8B`),
+/// and the Supertonic SDK's, whose text front end `supertonic_text.dart`
+/// ports (#172). `tools/licences.py` fetches and checks them.
 const List<Licence> modelLicences = <Licence>[
   (
     name: 'Supertonic 3',
     kind: 'OpenRAIL-M',
     asset: 'assets/licences/Supertonic3-OpenRAIL-M.txt',
+    text: null,
+  ),
+  (
+    name: 'Supertonic SDK',
+    kind: 'MIT',
+    asset: 'assets/licences/Supertonic-SDK-MIT.txt',
     text: null,
   ),
   (

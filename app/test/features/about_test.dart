@@ -146,6 +146,11 @@ void main() {
       File('assets/licences/HY-MT1.5-Tencent-HY.txt').readAsStringSync(),
       startsWith('TENCENT HY COMMUNITY LICENSE AGREEMENT'),
     );
+    // #172: the SDK whose text front end supertonic_text.dart ports.
+    expect(
+      File('assets/licences/Supertonic-SDK-MIT.txt').readAsStringSync(),
+      startsWith('MIT License'),
+    );
   });
 
   testWidgets('FR-M8-01 the models and fonts, each licence shown in full', (
@@ -178,7 +183,8 @@ void main() {
       expect(find.text(package.name), findsOneWidget);
     }
     expect(find.text('BSD-2-Clause'), findsOneWidget);
-    expect(find.text('MIT'), findsNWidgets(3));
+    // The three MIT packages, and the Supertonic SDK above them (#172).
+    expect(find.text('MIT'), findsNWidgets(4));
   });
 
   test('M8 the packages come from Flutter\'s licence registry', () async {
