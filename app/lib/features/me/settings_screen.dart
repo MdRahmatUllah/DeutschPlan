@@ -283,6 +283,15 @@ class SettingsScreen extends ConsumerWidget {
                   l10n.settingsSwipeToRate,
                 ),
               ),
+              _Row(
+                title: l10n.settingsQuizCustomWords,
+                subtitle: l10n.settingsQuizCustomWordsNote,
+                labelledByControl: true,
+                trailing: toggle(
+                  SettingKeys.quizCustomWords,
+                  l10n.settingsQuizCustomWords,
+                ),
+              ),
             ],
           ),
           _Group(

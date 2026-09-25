@@ -241,6 +241,12 @@ VALUES (?, ?, ?, ?, ?)
     });
   });
 
+  Future<void> myWord(int id) => db.customStatement(
+    'INSERT INTO custom_words (id, created_at, german, meaning) '
+    "VALUES (?, '2026-03-01T09:00:00Z', 'Pfand', 'deposit')",
+    <Object>[id],
+  );
+
   group('the revision candidates', () {
     test('are the words the learner has met', () async {
       await wordState('s1');
@@ -266,6 +272,25 @@ VALUES (?, ?, ?, ?, ?)
       // Retrievability needs a last review. Without one there is no curve to
       // put it on, and a null would sort ahead of everything.
       await wordState('s1', lastReview: null);
+
+      expect(await store.revisionCandidates(), isEmpty);
+    });
+
+    test('FR-R2-03 include a word of my own added to revision before its first '
+        'review, its due day standing in for one (#363)', () async {
+      await myWord(1);
+      await wordState('custom:1', stability: 0, due: monday, lastReview: null);
+
+      final candidate = (await store.revisionCandidates()).single;
+
+      expect(candidate.uid, 'custom:1');
+      expect(candidate.due, monday);
+      expect(candidate.lastReview, monday);
+    });
+
+    test('FR-R2-03 exclude a word of my own that was deleted: its state is '
+        'an orphan a rating can leave behind', () async {
+      await wordState('custom:7', due: monday);
 
       expect(await store.revisionCandidates(), isEmpty);
     });
@@ -358,6 +383,56 @@ VALUES (?, ?, ?, ?, ?)
 
       expect(row.read<String>('c'), isNotEmpty);
     });
+
+    Future<String?> stepOf(String uid) async {
+      final rows = await db
+          .customSelect(
+            'SELECT sublevel_code AS c FROM plan_items WHERE word_uid = ?',
+            variables: <Variable<Object>>[Variable<String>(uid)],
+          )
+          .get();
+      return rows.isEmpty ? null : rows.single.read<String>('c');
+    }
+
+    test(
+      'FR-R2-03 a word of my own takes the step being studied (#363)',
+      () async {
+        await enroll(
+          step: 'A1.1',
+          startedOn: '2026-02-01',
+          completedOn: monday,
+        );
+        await enroll(step: 'A1.2');
+        await store.addToPlan(monday, PlanKind.revise, <String>['custom:1']);
+
+        expect(await stepOf('custom:1'), 'A1.2');
+      },
+    );
+
+    test(
+      'FR-R2-03 or, with none being studied, the last one started',
+      () async {
+        await enroll(
+          step: 'A1.1',
+          startedOn: '2026-02-01',
+          completedOn: monday,
+        );
+        await enroll(step: 'A1.2', completedOn: monday);
+        await store.addToPlan(monday, PlanKind.revise, <String>['custom:1']);
+
+        expect(await stepOf('custom:1'), 'A1.2');
+      },
+    );
+
+    test(
+      'BR-PLAN-03 a uid the course does not have is still not planned',
+      () async {
+        await enroll();
+        await store.addToPlan(monday, PlanKind.revise, <String>['gone']);
+
+        expect(await stepOf('gone'), isNull);
+      },
+    );
 
     test('writing twice does not double the rows', () async {
       await store.addToPlan(monday, PlanKind.newWord, <String>['s1', 's2']);

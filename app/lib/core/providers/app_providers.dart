@@ -417,7 +417,10 @@ SentencePicker sentencePicker(Ref ref) {
 /// runner (L8) and the exam generator build through it.
 @riverpod
 QuizBuilder quizBuilder(Ref ref) => QuizBuilder(
-  DriftQuizStore(ref.watch(wordRepositoryProvider)),
+  DriftQuizStore(
+    ref.watch(wordRepositoryProvider),
+    ref.watch(settingsProvider),
+  ),
   fsrs: Fsrs(
     desiredRetention: ref
         .watch(settingsProvider)

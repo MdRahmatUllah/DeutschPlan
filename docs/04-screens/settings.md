@@ -17,6 +17,7 @@ Grouped list (Material headers / Cupertino inset groups). Changes save instantly
 | Revision | Target retention | slider 80–97 %, subtitle "≈ 11 reviews/day at your pace" | `desired_retention` |
 | | Mark Done after N days remembered | stepper 3–60 | `done_stability_days` |
 | | Swipe to rate | switch, "Left = Again, right = Good" | `swipe_to_rate` |
+| | My words in quizzes | switch, "All-learned quizzes also ask the words you saved" (FR-R2-04, #363) | `quiz_custom_words` |
 | Display | Meaning language | EN / বাংলা / Both | `meaning_language` |
 | | App language | EN / বাংলা | `ui_language` |
 | | Theme | System / Light / Dark / Glass | `theme_mode` |

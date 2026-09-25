@@ -4,6 +4,8 @@ import 'package:deutschplan/core/theme/dp_tokens.dart';
 import 'package:deutschplan/core/typography/dp_text.dart';
 import 'package:deutschplan/data/db/app_database.dart';
 import 'package:deutschplan/data/repositories/setting_keys.dart';
+import 'package:deutschplan/data/repositories/word_repository.dart'
+    show customId;
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -20,8 +22,19 @@ typedef StudyTip = ({String en, String? bn});
 typedef StudyBackExtras = ({List<StudyExample> examples, StudyTip? tip});
 
 /// The back's two examples and its interference tip, if the word has one.
+/// A word of the learner's own has its own example, if they gave one, and no
+/// tip (#363).
 @riverpod
 Future<StudyBackExtras> studyBack(Ref ref, String uid) async {
+  if (customId(uid) case final id?) {
+    final mine = await ref.watch(wordRepositoryProvider).myWord(id);
+    return (
+      examples: <StudyExample>[
+        if (mine?.example case final example?) (german: example, english: null),
+      ],
+      tip: null,
+    );
+  }
   final dao = ref.watch(contentDaoProvider);
   final examples = await dao.examplesForWord(uid).get();
   final tips = await dao.tipsForWord(uid).get();

@@ -2,6 +2,7 @@ import 'package:deutschplan/data/db/app_database.dart';
 import 'package:deutschplan/data/repositories/setting_keys.dart';
 import 'package:deutschplan/data/repositories/settings_repository.dart';
 import 'package:deutschplan/domain/fsrs.dart' show Rating;
+import 'package:deutschplan/domain/plan_engine.dart' show planDate;
 import 'package:drift/drift.dart';
 import 'package:flutter/foundation.dart' show immutable;
 
@@ -161,6 +162,14 @@ class StepProgress {
           unlockTarget(todo: todo, introduced: introduced, percent: percent);
 }
 
+/// One of the learner's own words where a course word's uid goes:
+/// `word_state`, `plan_items` and `review_log` (FR-R2-03, #363).
+String customUid(int id) => 'custom:$id';
+
+/// The `custom_words` id in [uid], or null for a course word.
+int? customId(String uid) =>
+    uid.startsWith('custom:') ? int.tryParse(uid.substring(7)) : null;
+
 /// A word of the learner's own as R2 edits it (#143).
 typedef MyWordDraft = ({
   String? article,
@@ -261,14 +270,17 @@ class WordRepository extends DatabaseAccessor<AppDatabase>
   }
 
   /// FR-R2-03 *Save*: a new word of the learner's own, or [id]'s changed.
-  /// [matchedUid] is the course word it turned out to be, if any. Returns
+  /// [matchedUid] is the course word it turned out to be, if any. With
+  /// [reviseFrom], *Save and add to revision*: [addMyWordToRevision] from
+  /// that day, in the same transaction, so a failure saves nothing. Returns
   /// the word's id.
   Future<int> saveMyWord(
     MyWordDraft word, {
     required DateTime now,
     int? id,
     String? matchedUid,
-  }) async {
+    String? reviseFrom,
+  }) => transaction(() async {
     String? blank(String? text) =>
         text == null || text.trim().isEmpty ? null : text.trim();
     final fields = CustomWordsCompanion(
@@ -279,20 +291,85 @@ class WordRepository extends DatabaseAccessor<AppDatabase>
       example: Value(blank(word.example)),
       matchedUid: Value(matchedUid),
     );
+    final saved =
+        id ??
+        await into(db.customWords).insert(
+          fields.copyWith(createdAt: Value(now.toUtc().toIso8601String())),
+        );
     if (id != null) {
       await (update(
         db.customWords,
       )..where((t) => t.id.equals(id))).write(fields);
-      return id;
     }
-    return into(
-      db.customWords,
-    ).insert(fields.copyWith(createdAt: Value(now.toUtc().toIso8601String())));
-  }
+    if (reviseFrom != null) {
+      await addMyWordToRevision(saved, today: reviseFrom);
+    }
+    return saved;
+  });
 
-  /// R2's *Delete* (edit mode).
-  Future<void> deleteMyWord(int id) =>
-      (delete(db.customWords)..where((t) => t.id.equals(id))).go();
+  /// R2's *Delete* (edit mode): the word and its schedule, which is its
+  /// `word_state` and its open plan rows (#363). Its reviews stay in
+  /// `review_log` and the done rows, as the days' history.
+  Future<void> deleteMyWord(int id) => transaction(() async {
+    final uid = customUid(id);
+    await (delete(db.customWords)..where((t) => t.id.equals(id))).go();
+    await (delete(db.wordState)..where((t) => t.wordUid.equals(uid))).go();
+    await (delete(
+      db.planItems,
+    )..where((t) => t.wordUid.equals(uid) & t.completedAt.isNull())).go();
+  });
+
+  /// FR-R2-03 *Save and add to revision* (#363): [id] scheduled as any word
+  /// is, keyed `custom:<id>`, introduced and due [today]. If today's plan is
+  /// already open, the word joins today's Revise block in the step being
+  /// studied, or the last one started, as `DriftPlanStore.addToPlan` files
+  /// it. If not, the plan picks it up, due, when it opens the day. A row
+  /// there first is kept: an already scheduled word is left as it is.
+  Future<void> addMyWordToRevision(int id, {required String today}) =>
+      transaction(() async {
+        final uid = customUid(id);
+        if (await _hasState(uid)) return;
+        await into(db.wordState).insert(
+          WordStateCompanion.insert(
+            wordUid: uid,
+            status: const Value('learning'),
+            introducedOn: Value(today),
+            due: Value(today),
+          ),
+        );
+        // Before the day is opened, a row here would count as its revisions
+        // picked (BR-PLAN-04), and the day would get no others.
+        final planned = _settings.read(SettingKeys.lastPlannedDate);
+        if (planned == null || planDate(planned).compareTo(today) < 0) return;
+        final step =
+            await (select(db.enrollments)
+                  ..orderBy([
+                    (e) => OrderingTerm.desc(e.completedOn.isNull()),
+                    (e) => OrderingTerm.desc(e.startedOn),
+                  ])
+                  ..limit(1))
+                .getSingleOrNull();
+        if (step == null) return;
+        await into(db.planItems).insert(
+          PlanItemsCompanion.insert(
+            planDate: today,
+            wordUid: uid,
+            kind: 'revise',
+            sublevelCode: step.sublevelCode,
+          ),
+          mode: InsertMode.insertOrIgnore,
+        );
+      });
+
+  /// Whether [id] is scheduled: R2 offers *Save and add to revision* until it
+  /// is.
+  Future<bool> isMyWordInRevision(int id) => _hasState(customUid(id));
+
+  Future<bool> _hasState(String uid) async =>
+      await (select(
+        db.wordState,
+      )..where((t) => t.wordUid.equals(uid))).getSingleOrNull() !=
+      null;
 
   /// FR-R2-02 *Log it*: one more real-life sighting of a course word, on its
   /// `word_state` row. A word never met gets one, as To do: logging it isn't
@@ -399,6 +476,7 @@ class WordRepository extends DatabaseAccessor<AppDatabase>
   Future<List<double>> learnedStabilities() => stabilitiesOfLearned().get();
 
   Future<WordWithState?> find(String uid) async {
+    if (customId(uid) case final id?) return _findMine(id);
     final rows = await wordWithState(_doneAfter, uid).get();
     return rows.isEmpty
         ? null
@@ -407,6 +485,33 @@ class WordRepository extends DatabaseAccessor<AppDatabase>
             state: rows.single.s,
             status: WordStatus.parse(rows.single.derivedStatus),
           );
+  }
+
+  /// A word of the learner's own in a course word's shape, so T2 serves it
+  /// with the card it has (#363): the headword and article, and the meaning
+  /// in `english`, which every meaning language shows when there's no Bangla.
+  // ponytail: the meaning is one text in whatever language it was typed, so a
+  // Bangla one sits in the English slot; a language on custom_words if that
+  // matters.
+  Future<WordWithState?> _findMine(int id) async {
+    final row = await myWordWithState(_doneAfter, id).getSingleOrNull();
+    if (row == null) return null;
+    return WordWithState(
+      word: Word(
+        uid: customUid(id),
+        sublevelCode: '',
+        levelCode: '',
+        seq: 0,
+        seqInSublevel: 0,
+        article: row.cw.article,
+        german: row.cw.german,
+        english: row.cw.meaning,
+        searchKey: '',
+        searchKeyAlt: '',
+      ),
+      state: row.s,
+      status: WordStatus.parse(row.derivedStatus),
+    );
   }
 
   /// Every step, in course order ([StepProgress]); again whenever the

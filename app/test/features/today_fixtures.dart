@@ -440,6 +440,7 @@ List<Override> todayStub([
   myWordsProvider.overrideWith((ref) => Stream.value(const <MyWord>[])),
   // R2's edit mode (#143): a word that isn't there.
   myWordProvider.overrideWith((ref, id) async => null),
+  myWordInRevisionProvider.overrideWith((ref, id) async => false),
   todayViewProvider.overrideWith((ref) async {
     // A day that arrives after the rest of the screen, as a slow plan does.
     if (dayAfter != null) await Future<void>.delayed(dayAfter);

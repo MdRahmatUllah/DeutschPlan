@@ -227,6 +227,9 @@ abstract final class SettingKeys {
   static const doneStabilityDays = IntSetting('done_stability_days', 7);
   static const swipeToRate = BoolSetting('swipe_to_rate', false);
 
+  /// FR-R2-04 (#363): all-learned quizzes also ask the learner's own words.
+  static const quizCustomWords = BoolSetting('quiz_custom_words', false);
+
   // Display.
   static const meaningLanguage = EnumSetting<MeaningLanguage>(
     'meaning_language',
@@ -333,6 +336,7 @@ abstract final class SettingKeys {
     desiredRetention,
     doneStabilityDays,
     swipeToRate,
+    quizCustomWords,
     meaningLanguage,
     uiLanguage,
     themeMode,

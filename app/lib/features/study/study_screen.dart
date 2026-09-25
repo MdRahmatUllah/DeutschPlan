@@ -40,6 +40,9 @@ Future<WordWithState?> studyWord(Ref ref, String uid) =>
 /// the plain card — its `card_mode` is plain, or no example holds the word.
 @riverpod
 Future<StudyCloze?> studyCloze(Ref ref, String uid) async {
+  // A word of the learner's own keeps the plain card (#363): the cloze's
+  // footnote sends the learner to W1's card toggle, which R2 doesn't have.
+  if (customId(uid) != null) return null;
   final found = await ref.watch(studyWordProvider(uid).future);
   if (found == null || found.state?.cardMode != CardMode.cloze.name) {
     return null;
@@ -771,7 +774,13 @@ class _StudyMenuState extends ConsumerState<StudyMenu> {
               kind: DpButtonKind.text,
               onPressed: () {
                 Navigator.of(context).pop();
-                WordRoute.open(context, widget.item.uid);
+                // A word of the learner's own opens where it was written:
+                // R2 (#363).
+                if (customId(widget.item.uid) case final id?) {
+                  EditCustomWordRoute.open(context, id);
+                } else {
+                  WordRoute.open(context, widget.item.uid);
+                }
               },
             ),
           DpButton(

@@ -35,7 +35,7 @@ last_planned_date = today
 
 1. Due first: `word_state.status IN (learning, done) AND due <= day 23:59`, excluding today's new words and suspended words, ordered by due, limit n.
 2. Fill: remaining slots from learned words ordered by `(day - last_review) / stability DESC` (lowest retrievability first).
-3. Persist as `plan_items(day, uid, 'revise')`.
+3. Persist as `plan_items(day, uid, 'revise')`. A course word's row carries its own step. A word of the learner's own (`custom:<id>`, #363) carries the step being studied, or the last one started. It is a candidate from the day it is added to revision, due, before its first review, and never once its `custom_words` row is gone.
 
 ### Backlog
 

@@ -92,6 +92,12 @@ LIMIT ?2
   /// days, so it becomes its local date here — the one piece of shaping in
   /// this file. Not `substr(…, 1, 10)`: that is the UTC date, a day off for
   /// a review east of Greenwich before its UTC midnight (#327).
+  ///
+  /// A word of the learner's own added to revision (#363) is due before it
+  /// has been reviewed, so its due date stands in for the review it hasn't
+  /// had. Due, it is ranked by that and never by retrievability. One whose
+  /// word was deleted is not a candidate: a rating from a card still open can
+  /// write its state again, and it would come back as a blank card forever.
   @override
   Future<List<RevisionCandidate>> revisionCandidates() async {
     final rows = await _db
@@ -100,9 +106,15 @@ LIMIT ?2
 SELECT word_uid AS uid, stability, due, last_review
 FROM word_state
 WHERE status IN ('learning', 'done')
-  AND last_review IS NOT NULL
+  AND (last_review IS NOT NULL OR due IS NOT NULL)
+  AND (word_uid NOT LIKE 'custom:%'
+       OR EXISTS (SELECT 1 FROM custom_words c
+                  WHERE 'custom:' || c.id = word_uid))
 ''',
-          readsFrom: <ResultSetImplementation<Object, Object>>{_db.wordState},
+          readsFrom: <ResultSetImplementation<Object, Object>>{
+            _db.wordState,
+            _db.customWords,
+          },
         )
         .get();
 
@@ -111,9 +123,10 @@ WHERE status IN ('learning', 'done')
         RevisionCandidate(
           uid: row.read<String>('uid'),
           stability: row.read<double>('stability'),
-          lastReview: planDate(
-            DateTime.parse(row.read<String>('last_review')).toLocal(),
-          ),
+          lastReview: switch (row.read<String?>('last_review')) {
+            final at? => planDate(DateTime.parse(at).toLocal()),
+            null => row.read<String>('due'),
+          },
           due: row.read<String?>('due'),
         ),
     ];
@@ -189,7 +202,9 @@ ORDER BY due, grammar_uid
   ///
   /// `sublevel_code` comes from the word rather than the enrollment, so a
   /// revise row carries the step the word belongs to and not the step the
-  /// learner happens to be on.
+  /// learner happens to be on. A word of the learner's own (`custom:<id>`,
+  /// #363) belongs to none, and takes the step being studied, or the last one
+  /// started once none is: revision goes on after a step is finished.
   @override
   Future<void> addToPlan(
     PlanDate date,
@@ -203,7 +218,13 @@ ORDER BY due, grammar_uid
         await _db.customInsert(
           '''
 INSERT OR IGNORE INTO plan_items (plan_date, word_uid, kind, sublevel_code)
-SELECT ?1, ?2, ?3, w.sublevel_code FROM words w WHERE w.uid = ?2
+SELECT ?1, ?2, ?3, code FROM (
+  SELECT COALESCE(
+    (SELECT w.sublevel_code FROM words w WHERE w.uid = ?2),
+    (SELECT e.sublevel_code FROM enrollments e WHERE ?2 LIKE 'custom:%'
+      ORDER BY e.completed_on IS NULL DESC, e.started_on DESC LIMIT 1)
+  ) AS code
+) WHERE code IS NOT NULL
 ''',
           variables: <Variable<Object>>[
             Variable<String>(date),
