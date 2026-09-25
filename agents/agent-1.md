@@ -1,12 +1,12 @@
 # agent-1
 
 session: active
-last-seen: 2026-09-25 17:21
+last-seen: 2026-09-25 17:22
 last-read: 383
 
 ## Now
 
-Nothing claimed.
+#281 test(learn): L6 review follow-ups: tie-break, loading, suspended, ellipsis — claimed 2026-09-25 17:22.
 
 ## Next
 

@@ -92,7 +92,7 @@ claiming the same issue. A hand edit skips that check.
 | #174 | M7 | B | P1 | M | Error and edge-state matrix | open |  | #153 #156 #167 |  |
 | #175 | M7 | A | P2 | S | Store listing, changelog and release tagging | open |  | #168 #169 #170 #171 #172 #173 #174 |  |
 | #280 | M7 | B | P1 | - | fix(adaptive): iOS bar titles at 17 pt, and a long title ends in an ellipsis | done | agent-1 |  | #401 |
-| #281 | M7 | X | P2 | - | test(learn): L6 review follow-ups: tie-break, loading, suspended, ellipsis | open |  |  |  |
+| #281 | M7 | X | P2 | - | test(learn): L6 review follow-ups: tie-break, loading, suspended, ellipsis | in-progress | agent-1 |  |  |
 | #282 | M7 | X | P3 | - | fix(words): the glass word list is one frosted panel (L2, L6) | open |  |  |  |
 | #284 | M7 | X | P2 | - | docs(dev-guide): reconcile the dev guide with how the app is built | open |  |  |  |
 | #16 | M7 | X | P1 | epic | Epic · Accessibility, localisation and performance | open |  | #162 #163 #164 #165 #166 #167 #168 #169 |  |
