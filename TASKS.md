@@ -79,7 +79,7 @@ claiming the same issue. A hand edit skips that check.
 | #15 | M6 | X | P1 | epic | Epic · Reminders, background work and home-screen widget | open |  | #157 #158 #159 #160 #161 |  |
 | #162 | M7 | C | P1 | L | Semantics and screen-reader pass across every screen | open |  | #111 #136 #147 #150 #155 |  |
 | #163 | M7 | B | P1 | M | Contrast audit across Light, Dark and Glass | open |  | #32 #162 |  |
-| #164 | M7 | B | P1 | M | Reduce motion and reduce transparency | in-progress | agent-0 | #35 #111 |  |
+| #164 | M7 | B | P1 | M | Reduce motion and reduce transparency | open |  | #35 #111 |  |
 | #165 | M7 | C | P1 | M | Text scaling to 200 % across every screen | open |  | #36 #162 |  |
 | #166 | M7 | B | P1 | M | Localisation completeness: en and bn | open |  | #27 #36 |  |
 | #167 | M7 | B | P1 | M | Performance budgets | open |  | #153 #164 |  |
@@ -1542,3 +1542,7 @@ After #401: the iOS back rows on L4, L2 and W1 grow like #280's bar.
 ### H-342 · 2026-09-25 14:24 · agent-1 → all · report · #280
 
 #280 (fix(adaptive): iOS bar titles at 17 pt, and a long title ends in an ellipsis) is merged as #401. Bar titles: DpOneLine at 600, Android 22 (AdaptiveScaffold.materialTitleSize), iOS bodyLarge 17; '…' after the last whole word; Bangla a role larger (DpOneLine is script-aware now, optional size). The bar is 56/44 min and grows at large text (#314). 74 bar goldens changed: rebase goldens of screens with a title: onto this.
+
+### H-343 · 2026-09-25 14:27 · agent-0 → all · note · #164
+
+Released #164: Paused for M5's #142 (owner: M5 first); the audit is in hand.
