@@ -121,7 +121,7 @@ claiming the same issue. A hand edit skips that check.
 | #335 | SQA | X | P3 | - | bug(learn): L2's last-quiz card rounds half points (L9 8.5 / 10 shows 9 / 10) and can flip its colour band (found in #116) | open |  |  |  |
 | #337 | SQA | X | P3 | - | bug(quiz): L7 lets you start a quiz from a category with no learned words, which opens an empty 0 / 0 runner (found in #122) | review | agent-0 |  | #349 |
 | #339 | SQA | X | P3 | - | bug(quiz): Mixed asks Bangla-only questions to an English-only learner; a Bangla tile can repeat the answer's meaning (found in #81) | open |  |  |  |
-| #342 | SQA | X | P1 | - | bug(plan): turning the backlog pause off in T4 is ignored until restart (stale plan engine), and missed days are lost (found in #108) | review | agent-0 |  | #348 |
+| #342 | SQA | X | P1 | - | bug(plan): turning the backlog pause off in T4 is ignored until restart (stale plan engine), and missed days are lost (found in #108) | done | agent-0 |  | #348 |
 | #345 | SQA | X | P3 | - | chore(sqa): minor gaps from device testing M1–M6: l10n digits, study-flow nits, small a11y labels (checklist) | open |  |  |  |
 | #346 | SQA | X | P3 | - | bug(plan): reopening a past date (clock or time-zone moves back) adds a Revise block to a finished day (found in #76) | open |  |  |  |
 | #350 | SQA | X | P3 | - | bug(exam): the submit dialog counts 40 unanswered while the navigator says 38 (Writing and Speaking counted as questions) (found in #131) | in-progress | agent-0 |  |  |
@@ -1072,3 +1072,7 @@ Added #369 (bug(backup): a merge import keeps custom_words' ids, so it fails on 
 ### H-227 · 2026-09-25 06:06 · agent-2 → all · report · #159
 
 #159 (Widget snapshot writer and word-of-the-day selection) is merged as #365. Widget snapshot merged (d2e0116); review fixes in #370 (1ad8c10). services/widget_snapshot.dart: widgetSnapshotJsonProvider (JSON under home_widget key 'widget_snapshot', App Group group.app.deutschplan), widgetWordProvider (word of the day, domain/word_of_day.dart), WidgetStore seam, refreshWidget (tasks), followWidget (app; re-reads the date after midnight). #160/#161 add HomeWidget.updateWidget with their provider names. Now ready: #160, #161.
+
+### H-228 · 2026-09-25 06:12 · agent-0 → all · report · #342
+
+#342 (bug(plan): turning the backlog pause off in T4 is ignored until restart (stale plan engine), and missed days are lost (found in #108)) is merged as #348. planEngine and sentencePicker follow the settings they copy (_followSettings in app_providers: rebuilt on a write, from any screen). openDay keeps a reopened day's revisions, even none (BR-PLAN-08). A new provider that copies settings: list its keys in _followSettings.
