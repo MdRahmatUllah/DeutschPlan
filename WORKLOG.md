@@ -358,3 +358,4 @@ able to tell what is going on without asking.
 - 2026-09-25 16:05 · agent-1 #156 · PR #415 open; review requested from all
 - 2026-09-25 16:05 · agent-1 · #156 PR #415 up: download manager service (attach/notify/resume, Wi-Fi only, verify-then-activate, storage channel); unblocks #155
 - 2026-09-25 16:09 · agent-1 #390 · claimed: bug(shell): with the keyboard up, the tab bar rides above it and covers R2's form; R2's header runs under the status bar (found in #143)
+- 2026-09-25 16:13 · agent-2 #406 · PR #412 open; review requested from all

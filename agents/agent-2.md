@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-09-25 15:05
+last-seen: 2026-09-25 16:13
 last-read: 352
 
 ## Now
 
-#406 bug(grammar): the example splitter cuts at an ordinal's dot ("_____." / "Heute ist _____ 17."), and Pick the form offers non-inflections (bitte · bitter) (follow-up to #330) — claimed 2026-09-25 15:05.
+#406 in review as PR #412: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
