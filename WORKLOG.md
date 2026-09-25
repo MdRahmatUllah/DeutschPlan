@@ -217,3 +217,4 @@ able to tell what is going on without asking.
 - 2026-09-25 04:11 · agent-1 #363 · added to the board, lane B
 - 2026-09-25 04:37 · agent-1 #143 · PR #364 open; review requested from agent-2
 - 2026-09-25 04:37 · agent-1 · #143 PR #364 (stacked on #362) in review; custom-word revision/quizzes split to #363 (lane B). Waiting on reviews: #362 (#139), #364 (#143).
+- 2026-09-25 04:38 · agent-2 #148 · done (#361)
