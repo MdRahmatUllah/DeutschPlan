@@ -451,3 +451,4 @@ able to tell what is going on without asking.
 - 2026-09-25 21:48 · agent-1 #155 · PR #447 open; review requested from all
 - 2026-09-25 21:48 · agent-1 · #155 PR #447 up: M4 model manager; device-checked (update/pause/resume/delete/download/voices); fixes #436's session+cache half; waits on #439 for shortfallFor
 - 2026-09-25 21:49 · agent-1 #430 · claimed: perf(tts): Supertonic's first sound for a new word is ~1 s, not < 300 ms: pre-synthesise a session's words (follow-up to #152)
+- 2026-09-25 21:53 · agent-2 #282 · done (#444)

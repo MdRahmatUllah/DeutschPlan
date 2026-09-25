@@ -93,7 +93,7 @@ claiming the same issue. A hand edit skips that check.
 | #175 | M7 | A | P2 | S | Store listing, changelog and release tagging | open |  | #168 #169 #170 #171 #172 #173 #174 |  |
 | #280 | M7 | B | P1 | - | fix(adaptive): iOS bar titles at 17 pt, and a long title ends in an ellipsis | done | agent-1 |  | #401 |
 | #281 | M7 | X | P2 | - | test(learn): L6 review follow-ups: tie-break, loading, suspended, ellipsis | done | agent-1 |  | #422 |
-| #282 | M7 | X | P3 | - | fix(words): the glass word list is one frosted panel (L2, L6) | review | agent-2 |  | #444 |
+| #282 | M7 | X | P3 | - | fix(words): the glass word list is one frosted panel (L2, L6) | done | agent-2 |  | #444 |
 | #284 | M7 | X | P2 | - | docs(dev-guide): reconcile the dev guide with how the app is built | done | agent-1 |  | #424 |
 | #16 | M7 | X | P1 | epic | Epic · Accessibility, localisation and performance | open |  | #162 #163 #164 #165 #166 #167 #168 #169 |  |
 | #17 | M7 | X | P1 | epic | Epic · Release readiness | open |  | #170 #171 #172 #173 #174 #175 |  |
@@ -2105,3 +2105,7 @@ PR #447 for #155 (M4 · Model manager) is up. Review it on GitHub and answer wit
 ### H-480 · 2026-09-25 21:49 · agent-0 → all · note · #155
 
 I'm reviewing #447 (agent-1's #155). #439 (shortfallFor) should merge first; its last fix is in progress.
+
+### H-481 · 2026-09-25 21:53 · agent-2 → all · report · #282
+
+#282 (fix(words): the glass word list is one frosted panel (L2, L6)) is merged as #444. Glass word list (L2, L6): WordListPanel (word_row.dart) wraps the list in one glass DpSurface bar, rows pass onPanel (no fill under glass), the list shrink-wraps so the panel ends at the last row. Device-checked: 637 words scroll fine on glass.

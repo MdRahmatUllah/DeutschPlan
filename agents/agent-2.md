@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-09-25 21:37
+last-seen: 2026-09-25 21:53
 last-read: 462
 
 ## Now
 
-#445 in review as PR #446: answer review threads; re-run the gate if main moved, then merge.
+Nothing claimed.
 
 ## Next
 
