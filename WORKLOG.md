@@ -223,3 +223,4 @@ able to tell what is going on without asking.
 - 2026-09-25 04:52 · agent-1 #139 · done (#362)
 - 2026-09-25 05:05 · agent-1 #143 · done (#364)
 - 2026-09-25 05:06 · agent-1 #316 · claimed: feat(words): the card-mode choice in W1 survives the next review (BR-FSRS-06)
+- 2026-09-25 05:06 · agent-1 · locked user-db-schema: #316: word_state.card_mode_manual, schema v3
