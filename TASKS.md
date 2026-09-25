@@ -146,7 +146,7 @@ The emulator lock is local, not here: `team.py device`.
 
 | Resource | Owner | Since | Why |
 |---|---|---|---|
-| user-db-schema | agent-1 | 2026-09-25 05:06 | #316: word_state.card_mode_manual, schema v3 |
+| user-db-schema |  |  |  |
 | adr-number |  |  |  |
 | pubspec |  |  |  |
 | ci-config |  |  |  |
