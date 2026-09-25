@@ -519,10 +519,11 @@ class AdaptiveTabBar<T extends Object> extends StatefulWidget {
 
 class _AdaptiveTabBarState<T extends Object> extends State<AdaptiveTabBar<T>>
     with SingleTickerProviderStateMixin {
-  late final TabController _controller = TabController(
+  late final TabController _controller = _StillTabController(
     length: widget.tabs.length,
     initialIndex: _index,
     vsync: this,
+    still: () => mounted && MediaQuery.disableAnimationsOf(context),
   );
 
   int get _index => widget.tabs.keys.toList().indexOf(widget.value);
@@ -530,13 +531,7 @@ class _AdaptiveTabBarState<T extends Object> extends State<AdaptiveTabBar<T>>
   @override
   void didUpdateWidget(AdaptiveTabBar<T> old) {
     super.didUpdateWidget(old);
-    if (_controller.index == _index) return;
-    // #164: reduce motion moves the indicator without sliding it.
-    if (MediaQuery.disableAnimationsOf(context)) {
-      _controller.index = _index;
-    } else {
-      _controller.animateTo(_index);
-    }
+    if (_controller.index != _index) _controller.animateTo(_index);
   }
 
   @override
@@ -927,6 +922,28 @@ class AdaptiveNavDestination {
   final Color? onColour;
 }
 
+/// A tab controller that moves without sliding under reduce motion (#164):
+/// `TabBar` animates a tapped tab itself, before telling anyone, so the
+/// controller is where to stop it.
+class _StillTabController extends TabController {
+  _StillTabController({
+    required super.length,
+    required super.vsync,
+    required this.still,
+    super.initialIndex,
+  });
+
+  final bool Function() still;
+
+  @override
+  void animateTo(int value, {Duration? duration, Curve curve = Curves.ease}) =>
+      super.animateTo(
+        value,
+        duration: still() ? Duration.zero : duration,
+        curve: curve,
+      );
+}
+
 /// The four-tab bar at the foot of the shell.
 ///
 /// Android draws a Material `NavigationBar`, iOS the flat bar with a hairline
@@ -958,7 +975,7 @@ class AdaptiveNavBar extends StatelessWidget {
         onTap: onSelected,
         // #164: the bar blurs a see-through colour itself; where glass
         // falls back (reduce transparency among the reasons) it gets the
-        // card over the paper, opaque, as every DpSurface does.
+        // card over the paper, fully opaque, or it would blur again.
         backgroundColor:
             tokens.isGlass && !GlassCapabilityScope.blurAllowed(context)
             ? Color.alphaBlend(tokens.surface.card, tokens.surface.paper)

@@ -38,7 +38,6 @@ import 'package:deutschplan/features/learn/grammar_topic_screen.dart';
 import 'package:deutschplan/features/learn/learn_screen.dart';
 import 'package:deutschplan/features/learn/step_detail_screen.dart';
 import 'package:deutschplan/features/search/search_screen.dart';
-import 'package:cupertino_ui/cupertino_ui.dart' show CupertinoPageTransition;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
@@ -279,24 +278,6 @@ void main() {
         reason: 'the branch scrolled back to the top',
       );
     });
-  });
-
-  testWidgets('#164 under reduce motion an onboarding page cross-fades', (
-    tester,
-  ) async {
-    tester.platformDispatcher.accessibilityFeaturesTestValue =
-        const FakeAccessibilityFeatures(disableAnimations: true);
-    addTearDown(tester.platformDispatcher.clearAccessibilityFeaturesTestValue);
-    await pumpApp(tester, at: '/onboarding/1');
-    router.go('/onboarding/2');
-    await tester.pump();
-    await tester.pump(const Duration(milliseconds: 50));
-    expect(
-      find.byWidgetPredicate((w) => w is CupertinoPageTransition),
-      findsNothing,
-      reason: 'no slide between pages',
-    );
-    await tester.pumpAndSettle();
   });
 
   group('re-tapping the current tab', () {

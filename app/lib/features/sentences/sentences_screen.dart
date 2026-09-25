@@ -216,12 +216,16 @@ class _SentencesScreenState extends ConsumerState<SentencesScreen> {
               onPressed: () => Navigator.of(context).maybePop(),
             ),
             Expanded(
-              child: DpText(
-                count == 0 ? '' : l10n.sentencesPlace(_page + 1, count),
-                role: DpTextRole.body,
-                weight: 600,
-                textAlign: TextAlign.center,
-                color: ink,
+              // The dots below say it, as a value a screen reader can change
+              // (#164): once is enough.
+              child: ExcludeSemantics(
+                child: DpText(
+                  count == 0 ? '' : l10n.sentencesPlace(_page + 1, count),
+                  role: DpTextRole.body,
+                  weight: 600,
+                  textAlign: TextAlign.center,
+                  color: ink,
+                ),
               ),
             ),
             const SizedBox(width: 56),
@@ -250,7 +254,7 @@ class _SentencesScreenState extends ConsumerState<SentencesScreen> {
               child: _Dots(
                 count: count,
                 current: _page,
-                label: l10n.sentencesPlace(_page + 1, count),
+                place: (index) => l10n.sentencesPlace(index + 1, count),
                 onGo: _go,
               ),
             ),
@@ -328,22 +332,28 @@ class _Dots extends StatelessWidget {
   const _Dots({
     required this.count,
     required this.current,
-    required this.label,
+    required this.place,
     required this.onGo,
   });
 
   final int count;
   final int current;
-  final String label;
+
+  /// "Sentence 2 of 3" for a 0-based index.
+  final String Function(int) place;
   final ValueChanged<int> onGo;
 
   @override
   Widget build(BuildContext context) {
     final tokens = context.tokens;
+    final more = current < count - 1;
+    final less = current > 0;
     return Semantics(
-      label: label,
-      onIncrease: current < count - 1 ? () => onGo(current + 1) : null,
-      onDecrease: current > 0 ? () => onGo(current - 1) : null,
+      value: place(current),
+      increasedValue: more ? place(current + 1) : null,
+      decreasedValue: less ? place(current - 1) : null,
+      onIncrease: more ? () => onGo(current + 1) : null,
+      onDecrease: less ? () => onGo(current - 1) : null,
       excludeSemantics: true,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,

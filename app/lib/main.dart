@@ -322,6 +322,9 @@ class DeutschPlanApp extends ConsumerWidget {
       // device locale matches none. `ui_language` defaults to `en`
       // (docs/02-data/user-database.md), so English has to lead.
       supportedLocales: supportedLocales,
+      // #164: iOS's Reduce Motion reaches every `still` in the app.
+      builder: (context, child) =>
+          stillOnReduceMotion(context, child ?? const SizedBox.shrink()),
     );
   }
 }

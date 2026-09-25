@@ -41,31 +41,97 @@ void main() {
     return context;
   }
 
-  testWidgets('#164 a pushed page cross-fades, and moves when motion is on', (
-    tester,
-  ) async {
-    Future<bool> fades() async {
-      final context = await host(tester);
+  testWidgets('#164 under iOS Reduce Motion a pushed page cross-fades; it '
+      'moves when motion is on', (tester) async {
+    // Reduce Motion, not disableAnimations: the framework runs a route's
+    // animation instantly under the latter anyway, and it is under the
+    // former (folded into MediaQuery at the root) that the fade matters.
+    Future<bool> atRest() async {
+      late BuildContext context;
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: AppTheme.light(),
+          builder: (context, child) => stillOnReduceMotion(context, child!),
+          home: Builder(
+            builder: (inner) {
+              context = inner;
+              return const SizedBox.expand();
+            },
+          ),
+        ),
+      );
       unawaited(
         Navigator.of(context)
             .push(MaterialPageRoute<void>(builder: (_) => const Text('page'))),
       );
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 50));
-      final page = find.text('page');
-      final moving = find.ancestor(
-        of: page,
-        matching: find.byWidgetPredicate(
-          (w) => w is SlideTransition || w is ScaleTransition,
-        ),
-      );
+      final moving = tester
+          .widgetList<SlideTransition>(find.byType(SlideTransition))
+          .any((slide) => slide.position.value != Offset.zero);
       await tester.pumpAndSettle();
-      return moving.evaluate().isEmpty;
+      return !moving;
     }
 
-    expect(await fades(), isFalse, reason: 'the platform moves it');
+    expect(await atRest(), isFalse, reason: 'the platform moves it');
+    tester.platformDispatcher.accessibilityFeaturesTestValue =
+        const FakeAccessibilityFeatures(reduceMotion: true);
+    addTearDown(tester.platformDispatcher.clearAccessibilityFeaturesTestValue);
+    expect(await atRest(), isTrue);
+  });
+
+  testWidgets("#164 iOS's Reduce Motion is the app's disableAnimations", (
+    tester,
+  ) async {
+    tester.platformDispatcher.accessibilityFeaturesTestValue =
+        const FakeAccessibilityFeatures(reduceMotion: true);
+    addTearDown(tester.platformDispatcher.clearAccessibilityFeaturesTestValue);
+    late bool disabled;
+    await tester.pumpWidget(
+      MaterialApp(
+        builder: (context, child) => stillOnReduceMotion(context, child!),
+        home: Builder(
+          builder: (context) {
+            disabled = MediaQuery.disableAnimationsOf(context);
+            return const SizedBox();
+          },
+        ),
+      ),
+    );
+    expect(disabled, isTrue);
+  });
+
+  testWidgets('#164 under reduce motion the iOS edge swipe still goes back', (
+    tester,
+  ) async {
     still(tester);
-    expect(await fades(), isTrue);
+    late BuildContext context;
+    await tester.pumpWidget(
+      MaterialApp(
+        theme: AppTheme.light().copyWith(platform: TargetPlatform.iOS),
+        home: Builder(
+          builder: (inner) {
+            context = inner;
+            return const Scaffold(body: Text('home'));
+          },
+        ),
+      ),
+    );
+    unawaited(
+      Navigator.of(context).push(
+        MaterialPageRoute<void>(
+          builder: (_) => const Scaffold(body: Center(child: Text('page'))),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    expect(find.text('page'), findsOneWidget);
+    final gesture = await tester.startGesture(const Offset(5, 300));
+    await gesture.moveBy(const Offset(400, 0));
+    await gesture.up();
+    await tester.pumpAndSettle();
+    expect(find.text('page'), findsNothing);
+    expect(find.text('home'), findsOneWidget);
   });
 
   testWidgets('#164 the tablet pane fades in rather than sliding', (
@@ -130,6 +196,12 @@ void main() {
     final controller = tester.widget<TabBar>(find.byType(TabBar)).controller!;
     expect(controller.index, 1);
     expect(controller.indexIsChanging, isFalse, reason: 'no slide under way');
+
+    // A tap, which TabBar animates itself before telling anyone.
+    await tester.tap(find.text('A'));
+    await tester.pump();
+    expect(controller.index, 0);
+    expect(controller.indexIsChanging, isFalse, reason: 'no slide on a tap');
   });
 
   testWidgets('#164 under reduce transparency the iOS tab bar is opaque', (
