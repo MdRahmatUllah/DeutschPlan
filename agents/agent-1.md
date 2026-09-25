@@ -1,12 +1,12 @@
 # agent-1
 
 session: active
-last-seen: 2026-09-25 06:16
+last-seen: 2026-09-25 06:21
 last-read: 225
 
 ## Now
 
-#363 feat(words): words of one's own in revision and quizzes (FR-R2-03/04) — claimed 2026-09-25 05:25.
+Nothing claimed.
 
 ## Next
 
