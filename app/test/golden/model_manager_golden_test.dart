@@ -26,14 +26,27 @@ void main() {
     devices: <GoldenDevice>[GoldenDevice.phone],
     chrome: AdaptiveChrome.cupertino,
   );
-  // The states the artboard doesn't draw: a voice that failed, and a
-  // translation model the phone lacks the space for.
+  // The states the artboard doesn't draw: a voice that failed beside a
+  // translation model this build doesn't offer (FR-M4-04 comes before the
+  // space check, full phone or not)…
   goldenTest(
     'model_manager_states',
     builder: (context) => ProviderScope(
       overrides: modelManagerStub(
         voice: cardOf(voiceEntry, installed: ModelStatus.failed),
         translation: cardOf(translationEntry, shortfall: 1400000000),
+      ),
+      child: const ModelManagerScreen(),
+    ),
+    devices: <GoldenDevice>[GoldenDevice.phone],
+  );
+  // …and a voice the phone has no room for.
+  goldenTest(
+    'model_manager_space',
+    builder: (context) => ProviderScope(
+      overrides: modelManagerStub(
+        voice: cardOf(voiceEntry, shortfall: 250000000),
+        translation: cardOf(translationEntry),
       ),
       child: const ModelManagerScreen(),
     ),

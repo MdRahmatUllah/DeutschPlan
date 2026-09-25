@@ -353,14 +353,73 @@ void main() {
 
       // A failure to open is forgotten once new files land.
       failing = true;
-      downloads.add((phase: DownloadPhase.ready, progress: 1));
+      downloads
+        ..add((phase: DownloadPhase.running, progress: 0.5))
+        ..add((phase: DownloadPhase.ready, progress: 1));
       await pumpEventQueue();
       await expectLater(tts.speak('Tür'), throwsA(isA<FileSystemException>()));
       expect(await tts.isAvailable(), isFalse);
       failing = false;
-      downloads.add((phase: DownloadPhase.ready, progress: 1));
+      downloads
+        ..add((phase: DownloadPhase.running, progress: 0.5))
+        ..add((phase: DownloadPhase.ready, progress: 1));
       await pumpEventQueue();
       expect(await tts.isAvailable(), isTrue);
+    });
+
+    test("#155 a rebuilt engine hearing the manager's last word, ready, "
+        'reloads nothing', () async {
+      await install();
+      final downloads = StreamController<DownloadProgress>();
+      addTearDown(downloads.close);
+      tts = SupertonicTts(
+        models: models,
+        settings: settings,
+        cache: cache,
+        load: (dir) async {
+          loads.add(dir);
+          return model;
+        },
+        player: player,
+        downloads: downloads.stream,
+      );
+      await tts.speak('Haus');
+      downloads.add((phase: DownloadPhase.ready, progress: 1));
+      await pumpEventQueue();
+      expect(model.closed, isFalse);
+      expect(
+        (await cache.fileFor('Haus', voice: 'Anna', speed: 1)).existsSync(),
+        isTrue,
+      );
+    });
+
+    test('#155 a reload lets the clip in synthesis finish before the '
+        'sessions close under it', () async {
+      await install();
+      model.gate = Completer<void>();
+      final speaking = tts.speak('Haus');
+      for (var i = 0; i < 500 && model.asked.isEmpty; i++) {
+        await Future<void>.delayed(const Duration(milliseconds: 2));
+      }
+      final reloading = tts.reload();
+      await pumpEventQueue();
+      expect(model.closed, isFalse, reason: 'still synthesising');
+      model.gate!.complete();
+      expect(await speaking, isTrue);
+      await reloading;
+      expect(model.closed, isTrue);
+    });
+
+    test('#155 a model deleted takes its clips with it', () async {
+      await install();
+      await tts.speak('Haus');
+      (await models.directoryFor(ModelRepository.voiceModel))
+          .deleteSync(recursive: true);
+      expect(await tts.isAvailable(), isFalse);
+      expect(
+        (await cache.fileFor('Haus', voice: 'Anna', speed: 1)).existsSync(),
+        isFalse,
+      );
     });
 
     test('#152 disposed: the sessions close, and the player goes', () async {

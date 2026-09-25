@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:deutschplan/core/providers/app_providers.dart';
 import 'package:deutschplan/data/repositories/model_repository.dart';
+import 'package:deutschplan/data/repositories/setting_keys.dart';
 import 'package:deutschplan/data/repositories/settings_repository.dart';
 import 'package:deutschplan/features/me/model_manager_screen.dart';
 import 'package:deutschplan/services/device_storage.dart';
@@ -96,7 +97,18 @@ final ModelCard artboardTranslation = cardOf(
 
 /// The download manager, recording what M4 asks of it.
 class FakeDownloads extends Fake implements ModelDownloads {
+  FakeDownloads({this.settings});
+
   final List<String> calls = <String>[];
+
+  /// Where *Wi-Fi only* is kept, when a test reads it back.
+  final SettingsRepository? settings;
+
+  /// What [shortfallFor] answers: the manager's space check (#428).
+  int shortfall = 0;
+
+  @override
+  Future<int> shortfallFor(String modelId) async => shortfall;
 
   /// What [start] throws, once.
   Object? startFails;
@@ -119,7 +131,10 @@ class FakeDownloads extends Fake implements ModelDownloads {
   Future<void> retry(String modelId) async => calls.add('retry $modelId');
 
   @override
-  Future<void> setWifiOnly({required bool on}) async => calls.add('wifi $on');
+  Future<void> setWifiOnly({required bool on}) async {
+    calls.add('wifi $on');
+    await settings?.write(SettingKeys.modelsWifiOnly, on);
+  }
 
   /// Each model's download, as a test moves it.
   final Map<String, StreamController<DownloadProgress>> live =
@@ -146,7 +161,7 @@ List<Override> modelManagerStub({
   ModelCard? translation,
   StorageSpace? space = artboardSpace,
   FakeDownloads? downloads,
-  FakeModels? models,
+  ModelRepository? models,
   TtsEngine? supertonic,
   SettingsRepository? settings,
 }) => <Override>[

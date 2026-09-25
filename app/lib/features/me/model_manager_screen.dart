@@ -73,12 +73,18 @@ ModelCardStatus cardStatusOf(ModelCard card) {
     ModelStatus.failed => ModelCardStatus.failed,
     ModelStatus.verifying => ModelCardStatus.verifying,
     ModelStatus.downloading => ModelCardStatus.downloading,
+    // FR-M4-04 before space: a download that isn't offered has no space to
+    // lack.
     ModelStatus.notDownloaded =>
-      card.shortfall > 0
+      card.shortfall > 0 && offered(card.entry.id)
           ? ModelCardStatus.notEnoughSpace
           : ModelCardStatus.notDownloaded,
   };
 }
+
+/// Whether this build offers [modelId]'s download (FR-M4-04).
+bool offered(String modelId) =>
+    modelId != ModelRepository.translationModel || enableHymtDownload;
 
 /// [id]'s card, as its download moves: the files on the phone read again
 /// whenever the download manager says something.
@@ -104,17 +110,21 @@ Stream<ModelCard> modelCard(Ref ref, String id) async* {
       variant: variant,
       installed: installed,
       live: live?.phase == DownloadPhase.ready ? null : live,
-      shortfall: needsSpace
-          ? shortfall(
-              needed: variant.bytes,
-              space: await ref.read(deviceStorageProvider).space(),
-            )
+      // The manager's own check (#428), margin and all, so the card and
+      // `start` never disagree.
+      shortfall: needsSpace && offered(id)
+          ? await downloads.shortfallFor(id)
           : 0,
     );
   }
 
   yield await card(null);
   await for (final live in downloads.watch(id)) {
+    // Bytes landed or went: the storage card reads the phone again.
+    if (live.phase == DownloadPhase.ready ||
+        live.phase == DownloadPhase.failed) {
+      ref.invalidate(phoneSpaceProvider);
+    }
     yield await card(live);
   }
 }
@@ -413,10 +423,21 @@ class _ModelCardView extends ConsumerWidget {
     Future<void> act(Future<void> Function() action) async {
       try {
         await action();
+      } on NotEnoughSpace catch (short) {
+        // The manager refused (#428): the phone filled up since the card
+        // looked. Say by how much.
+        if (context.mounted) {
+          DpToast.show(
+            context,
+            l10n.modelsNoSpaceNote(modelSize(l10n, short.bytes)),
+          );
+        }
       } on Object {
         if (context.mounted) DpToast.show(context, l10n.modelsStartFailed);
       }
-      ref.invalidate(modelCardProvider(id));
+      ref
+        ..invalidate(modelCardProvider(id))
+        ..invalidate(phoneSpaceProvider);
     }
 
     final deleteButton = _Action(
@@ -440,15 +461,21 @@ class _ModelCardView extends ConsumerWidget {
           ),
         ];
       case ModelCardStatus.updateAvailable:
+        final short = card.shortfall > 0;
         return <Widget>[
           if (_isVoice) _Voices(card: card),
+          if (short)
+            note(l10n.modelsNoSpaceNote(modelSize(l10n, card.shortfall))),
           _Actions(
             children: <Widget>[
               deleteButton,
               _Action(
                 label: l10n.modelsUpdate(size),
                 white: true,
-                onPressed: () => unawaited(act(() => downloads.start(id))),
+                // FR-M4 *Not enough space*: an update is a download too.
+                onPressed: short
+                    ? null
+                    : () => unawaited(act(() => downloads.start(id))),
               ),
             ],
           ),
@@ -457,7 +484,13 @@ class _ModelCardView extends ConsumerWidget {
         final live = card.live;
         return <Widget>[
           _Progress(card: card),
-          _WifiOnly(onChanged: (on) => downloads.setWifiOnly(on: on)),
+          _WifiOnly(
+            onChanged: (on) async {
+              await downloads.setWifiOnly(on: on);
+              // The line above says "· Wi-Fi" or not.
+              ref.invalidate(modelCardProvider(id));
+            },
+          ),
           _Actions(
             children: <Widget>[
               _Action(
@@ -484,7 +517,15 @@ class _ModelCardView extends ConsumerWidget {
             children: <Widget>[
               _Action(
                 label: l10n.retry,
-                onPressed: () => unawaited(act(() => downloads.retry(id))),
+                // A download that failed is retried; files on the phone that
+                // broke are fetched again from the start, space checked.
+                onPressed: () => unawaited(
+                  act(
+                    () => card.live == null
+                        ? downloads.start(id)
+                        : downloads.retry(id),
+                  ),
+                ),
               ),
               if (card.installed.bytesOnDisk > 0) deleteButton,
             ],
@@ -537,6 +578,10 @@ class _ModelCardView extends ConsumerWidget {
     );
     if (confirmed != true) return;
     await ref.read(modelRepositoryProvider).delete(card.entry);
+    // With `tts_engine` now the phone's, nothing would ask Supertonic again:
+    // asked once, it finds its model gone and lets go of its ~400 MB of
+    // sessions and its clips.
+    if (_isVoice) await ref.read(supertonicTtsProvider).isAvailable();
     ref
       ..invalidate(modelCardProvider(card.entry.id))
       ..invalidate(phoneSpaceProvider);

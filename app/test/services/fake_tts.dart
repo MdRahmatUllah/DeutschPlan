@@ -56,8 +56,14 @@ class FakeTts implements TtsEngine {
   @override
   String get name => 'fake';
 
+  /// How often it was asked whether it can speak.
+  int availabilityChecks = 0;
+
   @override
-  Future<bool> isAvailable() async => voice;
+  Future<bool> isAvailable() async {
+    availabilityChecks++;
+    return voice;
+  }
 
   @override
   Future<bool> speak(String text, {double speed = 1}) async {

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:deutschplan/core/components/dp_button.dart';
 import 'package:deutschplan/core/providers/app_providers.dart';
 import 'package:deutschplan/core/theme/app_theme.dart';
@@ -111,6 +113,11 @@ void main() {
         ModelCardStatus.notEnoughSpace,
       );
       expect(
+        cardStatusOf(cardOf(translationEntry, shortfall: 1)),
+        ModelCardStatus.notDownloaded,
+        reason: 'FR-M4-04 first: a download not offered lacks no space',
+      );
+      expect(
         cardStatusOf(
           cardOf(
             voiceEntry,
@@ -222,7 +229,11 @@ void main() {
       expect(find.text(l10n.modelsFailedNote), findsOneWidget);
       await tester.tap(find.text(l10n.retry));
       await tester.pumpAndSettle();
-      expect(downloads.calls, <String>['retry supertonic3']);
+      expect(
+        downloads.calls,
+        <String>['start supertonic3'],
+        reason: 'files on the phone that broke: from the start, space checked',
+      );
     });
 
     testWidgets('the Wi-Fi only switch goes through the manager, which keeps '
@@ -286,16 +297,37 @@ void main() {
       expect(models.deleted, isEmpty);
     });
 
-    testWidgets('then deletes the model, which turns off what used it', (
-      tester,
-    ) async {
-      final models = FakeModels();
-      await pump(tester, modelManagerStub(models: models));
+    testWidgets('then deletes the model, which turns off what used it, and '
+        'the voice lets go of its sessions', (tester) async {
+      final settings = StubSettings();
+      final support = Directory.systemTemp.createTempSync('dp_m4');
+      addTearDown(() {
+        try {
+          support.deleteSync(recursive: true);
+        } on FileSystemException {
+          // Windows lets go a moment later.
+        }
+      });
+      final voice = FakeTts();
+      await pump(
+        tester,
+        modelManagerStub(
+          settings: settings,
+          supertonic: voice,
+          models: ModelRepository(settings, support: support),
+        ),
+      );
       await tester.tap(find.text(l10n.modelsDelete('399 MB')));
       await tester.pumpAndSettle();
-      await tester.tap(find.text(l10n.modelsDeleteConfirm));
+      await tester.runAsync(() async {
+        await tester.tap(find.text(l10n.modelsDeleteConfirm));
+        for (var i = 0; i < 100 && voice.availabilityChecks == 0; i++) {
+          await Future<void>.delayed(const Duration(milliseconds: 10));
+        }
+      });
       await tester.pumpAndSettle();
-      expect(models.deleted, <String>['supertonic3']);
+      expect(settings.read(SettingKeys.ttsEngine), TtsEngineSetting.system);
+      expect(voice.availabilityChecks, 1);
     });
   });
 
@@ -342,17 +374,106 @@ void main() {
     });
   });
 
-  testWidgets('FR-M4 not enough space: the download is disabled, and the note '
-      'says by how much', (tester) async {
+  testWidgets('FR-M4-04 without the flag, a full phone still says the '
+      "translation model isn't offered, not that it lacks space", (
+    tester,
+  ) async {
     await pump(
       tester,
       modelManagerStub(
         translation: cardOf(translationEntry, shortfall: 1400000000),
       ),
     );
+    expect(find.text(l10n.modelsStatusNoSpace), findsNothing);
+    expect(find.text(l10n.modelsHymtGated), findsOneWidget);
+    expect(find.text(l10n.modelsNoSpaceNote('1.4 GB')), findsNothing);
+  });
+
+  testWidgets('FR-M4 an update the phone has no room for is disabled, and '
+      'says how much to free', (tester) async {
+    await pump(
+      tester,
+      modelManagerStub(
+        voice: cardOf(
+          voiceEntry,
+          installed: ModelStatus.updateAvailable,
+          shortfall: 250000000,
+        ),
+      ),
+    );
+    expect(find.text(l10n.modelsNoSpaceNote('250 MB')), findsOneWidget);
+    expect(button(tester, l10n.modelsUpdate('399 MB')).onPressed, isNull);
+  });
+
+  testWidgets("#428 a start the manager refuses for space says how much", (
+    tester,
+  ) async {
+    final downloads = FakeDownloads()
+      ..startFails = const NotEnoughSpace(120000000);
+    await pump(
+      tester,
+      modelManagerStub(downloads: downloads, voice: cardOf(voiceEntry)),
+    );
+    await tester.tap(find.text(l10n.modelsDownload('399 MB')));
+    await tester.pump();
+    expect(find.text(l10n.modelsNoSpaceNote('120 MB')), findsOneWidget);
+    await tester.pumpAndSettle(const Duration(seconds: 3));
+  });
+
+  testWidgets('FR-M4-01 files on the phone that broke are fetched again from '
+      'the start, where a download that failed is retried', (tester) async {
+    final downloads = FakeDownloads();
+    await pump(
+      tester,
+      modelManagerStub(
+        downloads: downloads,
+        voice: cardOf(voiceEntry, installed: ModelStatus.failed),
+        translation: cardOf(
+          translationEntry,
+          installed: ModelStatus.downloading,
+          live: (phase: DownloadPhase.failed, progress: 0.4),
+        ),
+      ),
+    );
+    await tester.tap(find.text(l10n.retry).first);
+    await tester.tap(find.text(l10n.retry).last);
+    await tester.pumpAndSettle();
+    expect(downloads.calls, <String>['start supertonic3', 'retry hymt']);
+  });
+
+  testWidgets(
+    "FR-M4-01 the Wi-Fi only switch: the download's line follows it",
+    (tester) async {
+      final settings = StubSettings();
+      await pump(
+        tester,
+        modelManagerStub(
+          settings: settings,
+          downloads: FakeDownloads(settings: settings),
+        ),
+      );
+      expect(
+        find.text(l10n.modelsProgressBytesWifi('476 MB', '1.1 GB')),
+        findsOneWidget,
+      );
+      await tester.tap(find.bySemanticsLabel(l10n.modelsWifiOnly).last);
+      await tester.pumpAndSettle();
+      expect(
+        find.text(l10n.modelsProgressBytes('476 MB', '1.1 GB')),
+        findsOneWidget,
+      );
+    },
+  );
+
+  testWidgets('FR-M4 not enough space: the download is disabled, and the note '
+      'says by how much', (tester) async {
+    await pump(
+      tester,
+      modelManagerStub(voice: cardOf(voiceEntry, shortfall: 1400000000)),
+    );
     expect(find.text(l10n.modelsStatusNoSpace), findsOneWidget);
     expect(find.text(l10n.modelsNoSpaceNote('1.4 GB')), findsOneWidget);
-    expect(button(tester, l10n.modelsDownload('1.1 GB')).onPressed, isNull);
+    expect(button(tester, l10n.modelsDownload('399 MB')).onPressed, isNull);
   });
 
   testWidgets('FR-M4-05 a voice chip chooses the voice, and Supertonic with '
@@ -422,12 +543,55 @@ void main() {
         expect(seen.last.installed.status, ModelStatus.notDownloaded);
         expect(seen.last.shortfall, 0);
 
-        space = (free: 100000000, total: 64000000000);
+        // The manager's own check (#428), margin and all.
+        downloads.shortfall = 399237419 + 100000000 - 100000000;
         container.invalidate(modelCardProvider(ModelRepository.voiceModel));
         seen = await cards(() async {});
-        expect(seen.last.shortfall, 399237419 - 100000000);
+        expect(seen.last.shortfall, downloads.shortfall);
       },
     );
+
+    test('FR-M4-01 a download whose file fails its check: running, '
+        'checking, then failed, and the phone read again', () async {
+      var asked = 0;
+      container = ProviderContainer(
+        overrides: <Override>[
+          modelRepositoryProvider.overrideWithValue(models),
+          modelDownloadsProvider.overrideWithValue(downloads),
+          deviceStorageProvider.overrideWithValue(
+            _Storage(() {
+              asked++;
+              return space;
+            }),
+          ),
+        ],
+      );
+      addTearDown(container.dispose);
+      final spaces = container.listen(phoneSpaceProvider, (_, _) {});
+      addTearDown(spaces.close);
+      await container.read(phoneSpaceProvider.future);
+      final seen = await cards(() async {
+        for (final phase in <DownloadPhase>[
+          DownloadPhase.running,
+          DownloadPhase.verifying,
+          DownloadPhase.failed,
+        ]) {
+          downloads.live[ModelRepository.voiceModel]!.add((
+            phase: phase,
+            progress: 1,
+          ));
+          await pumpEventQueue();
+        }
+      });
+      expect(seen.map(cardStatusOf), <ModelCardStatus>[
+        ModelCardStatus.notDownloaded,
+        ModelCardStatus.downloading,
+        ModelCardStatus.verifying,
+        ModelCardStatus.failed,
+      ]);
+      await container.read(phoneSpaceProvider.future);
+      expect(asked, greaterThan(1), reason: 'bytes came or went');
+    });
 
     test(
       'its download as it moves, and once done, what it installed',
