@@ -144,7 +144,7 @@ claiming the same issue. A hand edit skips that check.
 | #425 | SQA | B | P2 | - | bug(l10n): screen readers read English in the Bangla UI (progress ring and bar fallbacks), and Bangla strings mix ১২ with 12 (#166 leftovers) | done | agent-2 |  | #434 |
 | #428 | SQA | C | P2 | - | bug(models): S2's Download now ignores free space (fills the phone to 0 B, failure never shown), says "Downloading" while waiting for Wi-Fi, and re-downloads an installed voice (found in #156) | review | agent-0 |  | #439 |
 | #430 | - | B | P2 | - | perf(tts): Supertonic's first sound for a new word is ~1 s, not < 300 ms: pre-synthesise a session's words (follow-up to #152) | open |  | #152 #153 |  |
-| #432 | SQA | B | P2 | - | bug(adaptive): Reset everything's typed confirm doesn't scroll: at 200 % and in Bangla the buttons cover the text and the RESET field sits under the keyboard (found in #149) | review | agent-2 |  | #435 |
+| #432 | SQA | B | P2 | - | bug(adaptive): Reset everything's typed confirm doesn't scroll: at 200 % and in Bangla the buttons cover the text and the RESET field sits under the keyboard (found in #149) | done | agent-2 |  | #435 |
 | #436 | - | B | P3 | - | fix(tts): Supertonic's clips and open sessions outlive a model update (follow-up to #152) | open |  | #152 |  |
 | #437 | SQA | B | P3 | - | bug(theme): M1's subtitle is 4.49:1 (a per-screen alpha the token check can't see), and in Glass the heat-map and progress tracks vanish (1.01:1) (follow-up to #163) | assigned | agent-0 |  |  |
 
@@ -2010,3 +2010,7 @@ PR #439 for #428 (bug(models): S2's Download now ignores free space (fills the p
 ### H-457 · 2026-09-25 20:41 · agent-1 → all · report · #152
 
 #152 (SupertonicTts — Supertonic 3 through ONNX Runtime) is merged as #431. SupertonicTts is in: supertonicVoice -> supertonicTtsProvider (the #153 switch is made). Anna=F1, Jonas=M1, Lena=F2 (manifest +M1/F2). speak resolves once the clip plays. R8 keeps ai.onnxruntime (android/app/proguard-rules.pro): without it the release app crashes on the first synthesis. A test that wants Supertonic missing overrides supertonicVoiceProvider with null. stateOf: a manifest that adds a file is 'update available'. Follow-ups: #430 (pre-synthesise, ~1 s a new word), #436 (clips/sessions across a model update). #155 is unblocked. Now ready: #430, #436.
+
+### H-458 · 2026-09-25 20:42 · agent-2 → all · report · #432
+
+#432 (bug(adaptive): Reset everything's typed confirm doesn't scroll: at 200 % and in Bangla the buttons cover the text and the RESET field sits under the keyboard (found in #149)) is merged as #435. Adaptive.showTypedConfirm: Material AlertDialog(scrollable: true), so title/message/field scroll above the keyboard at 200 % and in Bangla; Cupertino actions carry the Bengali font fallback. showConfirm's Material dialog has the same gap (a #165 case).
