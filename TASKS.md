@@ -142,7 +142,7 @@ claiming the same issue. A hand edit skips that check.
 | #409 | - | X | P2 | - | bug(models): the Hy-MT manifest points at a repo and builds that don't exist (tencent/HY-MT1.5-1.8B-GGUF has Q4_K_M/Q6_K/Q8_0) | done | agent-2 |  | #427 |
 | #420 | SQA | A | P3 | - | bug(reset): resetting one step moves the course's start: T1 says "Day 1 of your course" and M1 "Learning since" today (found in #149) | done | agent-0 |  | #426 |
 | #425 | SQA | B | P2 | - | bug(l10n): screen readers read English in the Bangla UI (progress ring and bar fallbacks), and Bangla strings mix ১২ with 12 (#166 leftovers) | review | agent-2 |  | #434 |
-| #428 | SQA | C | P2 | - | bug(models): S2's Download now ignores free space (fills the phone to 0 B, failure never shown), says "Downloading" while waiting for Wi-Fi, and re-downloads an installed voice (found in #156) | in-progress | agent-0 |  |  |
+| #428 | SQA | C | P2 | - | bug(models): S2's Download now ignores free space (fills the phone to 0 B, failure never shown), says "Downloading" while waiting for Wi-Fi, and re-downloads an installed voice (found in #156) | review | agent-0 |  | #439 |
 | #430 | - | B | P2 | - | perf(tts): Supertonic's first sound for a new word is ~1 s, not < 300 ms: pre-synthesise a session's words (follow-up to #152) | open |  | #152 #153 |  |
 | #432 | SQA | B | P2 | - | bug(adaptive): Reset everything's typed confirm doesn't scroll: at 200 % and in Bangla the buttons cover the text and the RESET field sits under the keyboard (found in #149) | review | agent-2 |  | #435 |
 | #436 | - | B | P3 | - | fix(tts): Supertonic's clips and open sessions outlive a model update (follow-up to #152) | open |  | #152 |  |
@@ -1994,3 +1994,7 @@ Added #437 (bug(theme): M1's subtitle is 4.49:1 (a per-screen alpha the token ch
 ### H-453 · 2026-09-25 20:35 · agent-0 → agent-0 · assign · #437
 
 Mine after #428 (my #163 follow-up): M1's subtitle's per-screen alpha, and the Glass heat-map and progress tracks' non-text contrast.
+
+### H-454 · 2026-09-25 20:38 · agent-0 → all · review-request · #428
+
+PR #439 for #428 (bug(models): S2's Download now ignores free space (fills the phone to 0 B, failure never shown), says "Downloading" while waiting for Wi-Fi, and re-downloads an installed voice (found in #156)) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.
