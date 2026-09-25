@@ -1,6 +1,8 @@
 import 'dart:convert';
 
 import 'package:deutschplan/data/db/app_database.dart';
+import 'package:deutschplan/data/repositories/word_repository.dart'
+    show customId, customUid;
 import 'package:drift/drift.dart';
 import 'package:flutter/foundation.dart' show immutable;
 
@@ -90,6 +92,9 @@ class BackupRepository {
   static const List<String> tables = <String>[
     'settings',
     'enrollments',
+    // Before the tables that name its words as `custom:<id>`: a merge gives
+    // them fresh ids, and those tables are rewritten to match (#369).
+    'custom_words',
     'word_state',
     'review_log',
     'plan_items',
@@ -100,7 +105,6 @@ class BackupRepository {
     'quiz_answers',
     'exam_attempts',
     'exam_answers',
-    'custom_words',
     'daily_stats',
     'content_updates',
   ];
@@ -137,8 +141,20 @@ class BackupRepository {
   };
 
   /// Tables whose `id` nothing reads back, so the insert does not pay for a
-  /// `last_insert_rowid()` round trip. Only the two attempt tables do.
-  static final Set<String> _needsId = _childOf.keys.toSet();
+  /// `last_insert_rowid()` round trip. Only the two attempt tables and the
+  /// learner's own words do.
+  static final Set<String> _needsId = <String>{..._childOf.keys, _customWords};
+
+  /// The learner's own words (#363). On a merge their ids are this phone's
+  /// to assign, like an attempt's. The rows that name one as `custom:<id>`
+  /// follow the id it ends up with (#369).
+  static const String _customWords = 'custom_words';
+  static const Set<String> _namesCustomWords = <String>{
+    'word_state',
+    'review_log',
+    'plan_items',
+    'quiz_answers',
+  };
 
   /// The column on the row that says when it was last touched, where there is
   /// one. FR-M6-03's tie-break.
@@ -223,8 +239,10 @@ class BackupRepository {
     final backup = _parse(json);
     final data = backup['tables']! as Map<String, Object?>;
 
-    // Fresh ids assigned to imported parents, read by the child table's pass.
-    // Local to the run: two imports must not see each other's mapping.
+    // Fresh ids assigned on a merge, by the table that reads them: an
+    // attempt's under its answers' table, a word of the learner's own under
+    // `custom_words`, for the tables that name it. Local to the run: two
+    // imports must not see each other's mapping.
     final remap = <String, Map<int, int>>{};
 
     await _db.transaction(() async {
@@ -254,6 +272,8 @@ class BackupRepository {
 
     final columns = await _columnsOf(table);
     final child = _childOf[table];
+    // Merged words of the learner's own get fresh ids, as attempts do.
+    final ownIds = table == _customWords && mode == ImportMode.merge;
 
     // A fresh id for every incoming attempt, and the same mapping applied to
     // its answers. Ids are per-device, so keeping them would collide with
@@ -271,9 +291,14 @@ class BackupRepository {
 
       // On a replace the table was just emptied, so the ids in the file
       // cannot collide and keeping them makes the round trip exact. On a
-      // merge they are this phone's to assign, and the answers are remapped
-      // to match.
-      if (child != null && mode == ImportMode.merge) incoming.remove('id');
+      // merge an AUTOINCREMENT id is this phone's to assign, in every table
+      // whose row key doesn't hold it: the attempts and their answers, the
+      // learner's own words and the rows that name them, and `review_log`
+      // and `grammar_practice_log`, whose ids two phones that were both
+      // studied share (#369).
+      if (mode == ImportMode.merge && !rowKeys[table]!.contains('id')) {
+        incoming.remove('id');
+      }
 
       // The parent's new id goes on before the key is taken: a child row's
       // key is `(attempt_id, ord)`, and the attempt_id in the file is the
@@ -282,6 +307,20 @@ class BackupRepository {
       final mapped = <String, Object?>{
         ..._withRemappedParent(table, incoming, remap),
       };
+
+      // `custom:<id>` as the id its word got here, before the key is taken:
+      // `word_state`'s key is the uid. A word the file doesn't have would
+      // name whichever of this phone's words has that id, so its rows stay
+      // out (#369), a deleted word's reviews with them. A compare quiz's
+      // `source_ref` can list `custom:<id>` too, and isn't rewritten:
+      // nothing reads it back.
+      if (mode == ImportMode.merge && _namesCustomWords.contains(table)) {
+        if (customId('${mapped['word_uid']}') case final id?) {
+          final here = remap[_customWords]?[id];
+          if (here == null) continue;
+          mapped['word_uid'] = customUid(here);
+        }
+      }
 
       // BR-COURSE-04 allows one open enrollment, enforced by a unique index.
       // Merging a backup from a phone the learner was further back on would
@@ -298,7 +337,9 @@ class BackupRepository {
       if (mode == ImportMode.merge) {
         final local = existing[_keyOf(table, mapped)];
         if (local != null) {
-          if (child != null) remapped[row['id']! as int] = local['id']! as int;
+          if ((child != null || ownIds) && row['id'] is int) {
+            remapped[row['id']! as int] = local['id']! as int;
+          }
           if (!_isNewer(table, mapped, local)) continue;
           await _replaceRow(table, mapped);
           continue;
@@ -306,12 +347,13 @@ class BackupRepository {
       }
 
       final id = await _insertRow(table, mapped);
-      if (child != null && row['id'] != null) {
+      if ((child != null || ownIds) && row['id'] != null) {
         remapped[row['id']! as int] = id;
       }
     }
 
     if (child != null) remap[child] = remapped;
+    if (ownIds) remap[_customWords] = remapped;
   }
 
   /// Inserts one row, and returns its id only for the tables whose children
