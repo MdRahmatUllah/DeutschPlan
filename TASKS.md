@@ -57,7 +57,7 @@ claiming the same issue. A hand edit skips that check.
 | #145 | M5 | C | P2 | M | M2 · Progress detail | done | agent-2 | #144 | #358 |
 | #146 | M5 | C | P1 | L | M3 · Settings | done | agent-2 | #37 #62 #144 | #332 |
 | #147 | M5 | C | P2 | M | M5 · Study days and reminder | open |  | #146 #158 |  |
-| #148 | M5 | C | P2 | M | M6 · Export and import | open |  | #65 #146 |  |
+| #148 | M5 | C | P2 | M | M6 · Export and import | in-progress | agent-2 | #65 #146 |  |
 | #149 | M5 | C | P2 | M | M7 · Reset | open |  | #148 |  |
 | #150 | M5 | C | P2 | S | M9 · About & privacy and M8 · Licences | open |  | #51 #146 |  |
 | #12 | M5 | X | P1 | epic | Epic · Search and words | open |  | #137 #138 #139 #140 #141 #142 #143 |  |
