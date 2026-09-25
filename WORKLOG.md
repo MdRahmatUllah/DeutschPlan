@@ -284,3 +284,4 @@ able to tell what is going on without asking.
 - 2026-09-25 11:01 · agent-0 #169 · claimed: Integration smoke tests on emulator and simulator
 - 2026-09-25 11:04 · agent-0 #321 · done (#383)
 - 2026-09-25 11:12 · agent-1 #368 · done (#379)
+- 2026-09-25 11:13 · agent-1 · #368 PR #379 merged (a83a7e3) after the review fixes; #382 closed as covered. Back to #328.
