@@ -14,7 +14,7 @@ Every rule has an ID. Engines in `03-domain/` implement them; screens in `04-scr
 
 - **BR-STATUS-01** Statuses: `todo` (never introduced), `learning` (introduced, still being reviewed), `done` (FSRS stability ≥ `done_stability_days`, default 7), `suspended` (paused by the learner).
 - **BR-STATUS-02** `done` is derived, never set by hand. A lapse (rating Again) can move a word from `done` back to `learning`.
-- **BR-STATUS-03** `suspended` words are excluded from plans, revision, quizzes, exams and practice sentences until resumed. Suspension keeps FSRS state. Suspending a word drops its open plan rows. A rating never changes a suspended word's status (#351): the schedule still moves, and *Resume* derives the status from it.
+- **BR-STATUS-03** `suspended` words are excluded from plans, revision, quizzes, exams and practice sentences until resumed. Suspension keeps FSRS state. Suspending a word drops its open plan rows for today; its backlog rows stay, and T4 lists it without studying it (#368). A rating never changes a suspended word's status (#351): the schedule still moves, and *Resume* derives the status from it.
 - **BR-STATUS-04** "I know it" on a new word = first review rated Easy.
 
 ## Daily plan

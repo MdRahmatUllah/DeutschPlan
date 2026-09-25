@@ -123,28 +123,34 @@ class WordActions {
     });
   }
 
-  /// FR-W1-02, BR-STATUS-03: a suspended word is out of every plan, so its
-  /// open plan rows go with it (#351), today's and the backlog's. Otherwise
-  /// Today would still count it and the session serve it. *Resume* doesn't
-  /// bring them back; the plan picks the word up again as it would any other.
-  /// *Undo* restores the rows and the state as they were, which for a word
-  /// never met is no state row at all.
-  Future<Undo> suspend(String uid) => _db.transaction(() async {
-    Expression<bool> open(PlanItems t) =>
-        t.wordUid.equals(uid) & t.completedAt.isNull();
-    final before = await _stateOf(uid);
-    final rows = await (_db.select(_db.planItems)..where(open)).get();
-    await _rating.suspend(uid);
-    await (_db.delete(_db.planItems)..where(open)).go();
-    return () => _db.transaction(() async {
-      await _restore(uid, before);
-      for (final row in rows) {
-        await _db
-            .into(_db.planItems)
-            .insertOnConflictUpdate(row.toCompanion(false));
-      }
-    });
-  });
+  /// FR-W1-02, BR-STATUS-03: a suspended word is out of today's plan, so its
+  /// open rows for [today] go (#351). Otherwise Today would still count it
+  /// and the session serve it. Its backlog rows stay, as T4's own *Suspend*
+  /// keeps them (#368): T4 lists a suspended word without studying it, and a
+  /// word from an earlier step has no other way back into the plan, since
+  /// only the active step's new words are planned. *Resume* brings back
+  /// nothing more: the plan picks the word up as it would any other. *Undo*
+  /// restores the rows and the state as they were, which for a word never
+  /// met is no state row at all.
+  Future<Undo> suspend(String uid, {required String today}) =>
+      _db.transaction(() async {
+        Expression<bool> open(PlanItems t) =>
+            t.wordUid.equals(uid) &
+            t.completedAt.isNull() &
+            t.planDate.equals(today);
+        final before = await _stateOf(uid);
+        final rows = await (_db.select(_db.planItems)..where(open)).get();
+        await _rating.suspend(uid);
+        await (_db.delete(_db.planItems)..where(open)).go();
+        return () => _db.transaction(() async {
+          await _restore(uid, before);
+          for (final row in rows) {
+            await _db
+                .into(_db.planItems)
+                .insertOnConflictUpdate(row.toCompanion(false));
+          }
+        });
+      });
 
   Future<Undo> resume(String uid) async {
     final before = await _stateOf(uid);

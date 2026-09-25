@@ -19,7 +19,7 @@
 - **The actions row (#141).** In this order:
   - *Add to today*, for a To-do word only. The row goes in the active step's plan, or the word's own step's when no step is under way. A word already planned and not studied keeps its one row: a backlog row moves to today (unskipped), and back on *Undo*.
   - *Mark known*, except for a suspended word, which is out of review until resumed (BR-STATUS-03).
-  - *Suspend*, or *Resume* for a suspended word. *Suspend* drops the word's open plan rows, today's and the backlog's, so Today no longer counts it and the session doesn't serve it (#351). *Undo* restores them. *Resume* doesn't; the plan picks the word up again.
+  - *Suspend*, or *Resume* for a suspended word. *Suspend* drops the word's open plan rows for today, so Today no longer counts it and the session doesn't serve it (#351). Its backlog rows stay, as T4's own *Suspend* keeps them (#368). T4 lists a suspended word without studying it, and a word from an earlier step has no other way back into the plan. *Undo* restores exactly what went. *Resume* brings back nothing more; the plan picks the word up again.
   - *Reset word*, when the word has a state to reset.
   - *Copy*.
   - *Translate*, only with `mt_enabled`, into Bangla. An English learner isn't offered it, since the examples come in English already.

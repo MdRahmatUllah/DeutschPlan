@@ -620,7 +620,7 @@ void main() {
     ) async {
       await pump(tester);
       await tapAction(tester, l10n.wordSuspend);
-      expect(actions.calls, <String>['suspend uid-strasse']);
+      expect(actions.calls, <String>['suspend uid-strasse 2026-09-21']);
 
       await pump(
         tester,
@@ -939,7 +939,8 @@ class _Actions implements WordActions {
       _record('markKnown $uid $today');
 
   @override
-  Future<Undo> suspend(String uid) => _record('suspend $uid');
+  Future<Undo> suspend(String uid, {required String today}) =>
+      _record('suspend $uid $today');
 
   @override
   Future<Undo> resume(String uid) => _record('resume $uid');
