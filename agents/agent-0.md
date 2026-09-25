@@ -6,7 +6,7 @@ last-read: 490
 
 ## Now
 
-#167 in review as PR #464: answer review threads; re-run the gate if main moved, then merge.
+#457 fix(plan): with the course finished, each opening of a day picks Revise again (BR-PLAN-08, follow-up to #174) — claimed 2026-09-26 00:17.
 
 ## Next
 
