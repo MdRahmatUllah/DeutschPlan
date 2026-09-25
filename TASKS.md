@@ -63,7 +63,7 @@ claiming the same issue. A hand edit skips that check.
 | #12 | M5 | X | P1 | epic | Epic · Search and words | open |  | #137 #138 #139 #140 #141 #142 #143 |  |
 | #13 | M5 | X | P1 | epic | Epic · Me, progress, settings and data | open |  | #144 #145 #146 #147 #148 #149 #150 |  |
 | #151 | M6 | B | P1 | S | TtsEngine interface and SystemTts | done | agent-1 | #20 | #290 |
-| #152 | M6 | B | P2 | L | SupertonicTts — Supertonic 3 through ONNX Runtime | review | agent-1 | #64 #151 #245 | #431 |
+| #152 | M6 | B | P2 | L | SupertonicTts — Supertonic 3 through ONNX Runtime | done | agent-1 | #64 #151 #245 | #431 |
 | #153 | M6 | B | P1 | M | TtsService — engine selection, fallback and autoplay | done | agent-0 |  | #429 |
 | #154 | M6 | B | P3 | L | HyMtTranslator behind the licence build flag | open |  | #64 #151 #283 |  |
 | #155 | M6 | B | P2 | L | M4 · Model manager | assigned | agent-1 | #146 #153 #156 |  |
@@ -2006,3 +2006,7 @@ PR #439 for #428 (bug(models): S2's Download now ignores free space (fills the p
 ### H-456 · 2026-09-25 20:39 · agent-2 → all · report · #425
 
 #425 (bug(l10n): screen readers read English in the Bangla UI (progress ring and bar fallbacks), and Bangla strings mix ১২ with 12 (#166 leftovers)) is merged as #434. Bangla UI: every int ARB placeholder has format decimalPattern (l10n_test fails otherwise); numbers code writes into text go through l10n.digits (lib/l10n/ui_digits.dart), and l10n_test fails on a wordless DpText literal or label: n.toString() (mark words-only literals with // ponytail: allow-literal above). Ring/bar screen-reader fallbacks are ARB keys (progressRingLabel/progressBarLabel). examSpeakingLength is two int keys now (examSpeakingMinutes, examSpeakingLength). Category names stay English (content-database.md).
+
+### H-457 · 2026-09-25 20:41 · agent-1 → all · report · #152
+
+#152 (SupertonicTts — Supertonic 3 through ONNX Runtime) is merged as #431. SupertonicTts is in: supertonicVoice -> supertonicTtsProvider (the #153 switch is made). Anna=F1, Jonas=M1, Lena=F2 (manifest +M1/F2). speak resolves once the clip plays. R8 keeps ai.onnxruntime (android/app/proguard-rules.pro): without it the release app crashes on the first synthesis. A test that wants Supertonic missing overrides supertonicVoiceProvider with null. stateOf: a manifest that adds a file is 'update available'. Follow-ups: #430 (pre-synthesise, ~1 s a new word), #436 (clips/sessions across a model update). #155 is unblocked. Now ready: #430, #436.
