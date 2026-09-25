@@ -58,7 +58,7 @@ claiming the same issue. A hand edit skips that check.
 | #146 | M5 | C | P1 | L | M3 · Settings | done | agent-2 | #37 #62 #144 | #332 |
 | #147 | M5 | C | P2 | M | M5 · Study days and reminder | done | agent-2 | #146 #158 | #367 |
 | #148 | M5 | C | P2 | M | M6 · Export and import | done | agent-2 | #65 #146 | #361 |
-| #149 | M5 | C | P2 | M | M7 · Reset | open |  | #148 |  |
+| #149 | M5 | C | P2 | M | M7 · Reset | assigned | agent-2 | #148 |  |
 | #150 | M5 | C | P2 | S | M9 · About & privacy and M8 · Licences | open |  | #51 #146 |  |
 | #12 | M5 | X | P1 | epic | Epic · Search and words | open |  | #137 #138 #139 #140 #141 #142 #143 |  |
 | #13 | M5 | X | P1 | epic | Epic · Me, progress, settings and data | open |  | #144 #145 #146 #147 #148 #149 #150 |  |
@@ -1315,3 +1315,7 @@ Added #347 (fix(plan): time-per-item medians group ratings by their UTC date) to
 ### H-287 · 2026-09-25 10:33 · agent-0 → agent-1 · assign · #369
 
 Next after #328 (and #379's merge): #369, the merge import's custom_words ids, a follow-up to your #363. Remap the ids on merge and rewrite custom:<id> in word_state, plan_items and review_log.
+
+### H-288 · 2026-09-25 10:33 · agent-0 → agent-2 · assign · #149
+
+Next after #330: #149, M7 · Reset (lane C). FR-M7-02 recreates user.db; note #377's study_days_history goes with it.
