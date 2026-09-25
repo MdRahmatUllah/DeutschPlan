@@ -15,7 +15,7 @@ content/manifest.yaml
   tips: content/interference_tips.csv
 ```
 
-Each workbook MUST contain the sheets **All Words**, **Grammar** and the **C-…** category tabs. The week sheets (**W01**…) are the learner's own tracker and are not read: they hold no speaking or writing prompts (the Guide's weekly skills are four tick boxes: listen, read, write, speak), so `skill_prompts` is written empty (#294). Reading W01's cells had filled it with sheet headers and spreadsheet instructions. Columns are read **by header name**, so column order may change; renaming a header requires updating `HEADER_MAP` in the tool.
+Each workbook MUST contain the sheets **All Words**, **Grammar** and the **C-…** category tabs. The week sheets (**W01**…) are the learner's own tracker and are not read: the only skills content is the same fixed four-line "Weekly skills — put an x when done" block at the foot of every week (listen, read, write, speak), which nothing shows, so `skill_prompts` is written empty (#294). Reading W01's cells had filled it with sheet headers and spreadsheet instructions. Columns are read **by header name**, so column order may change; renaming a header requires updating `HEADER_MAP` in the tool.
 
 One header per column, one row each — `HEADER_MAP` is checked against this table by `tools/tests/test_reader.py`, so a column added here and not there fails the build rather than being read as blank.
 

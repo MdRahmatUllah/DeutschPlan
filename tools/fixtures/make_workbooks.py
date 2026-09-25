@@ -194,6 +194,8 @@ def write_workbook(path: Path, levels: list[str]) -> None:
         for row in _grammar_rows(level, WEEKS_PER_LEVEL):
             grammar.append(row)
 
+    # Not a real W01: prompt-like cells the pipeline must ignore (#294). A
+    # reader that scraped them again fails the empty skill_prompts test.
     skills = book.create_sheet("W01")
     skills.append(["Weekly skills checklist"])
     for prompt in (
