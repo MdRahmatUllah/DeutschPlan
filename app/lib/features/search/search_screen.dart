@@ -123,7 +123,9 @@ class RecentSearches extends _$RecentSearches {
   }
 }
 
-/// How many words the course has, for R1's no-results page (#139).
+/// How many words the course has, for R1's no-results page (#139). R1
+/// holds it from the start: read afresh on each such page, the sentence
+/// without a count showed until it came.
 @riverpod
 Future<int?> courseWords(Ref ref) =>
     ref.watch(searchRepositoryProvider).courseWords();
@@ -170,9 +172,13 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   /// not drop to the web row and lose its scroll between keystrokes.
   SearchView? _last;
 
+  /// [courseWordsProvider], held for as long as the tab lives.
+  late final ProviderSubscription<AsyncValue<int?>> _courseWords;
+
   @override
   void initState() {
     super.initState();
+    _courseWords = ref.listenManual(courseWordsProvider, (_, _) {});
     _step = widget.step;
   }
 
@@ -185,6 +191,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
 
   @override
   void dispose() {
+    _courseWords.close();
     _debounce?.cancel();
     _field.dispose();
     super.dispose();
@@ -312,9 +319,11 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
           Expanded(
             child: query.isEmpty
                 ? _Idle(onRecent: _searchFor)
-                // The course lacks it (#139). Kept to L2's step, an empty
+                // The course lacks it (#139): this query's own answer, not
+                // the last one shown while it loads, or "Hausx" to "Haus"
+                // flashes "Not in the course". Kept to L2's step, an empty
                 // result says nothing about the course, so it stays a list.
-                : view != null && view.isEmpty && _step == null
+                : (results?.value?.isEmpty ?? false) && _step == null
                 ? _NoResults(query: query, onUse: _use)
                 : results != null && results.hasError && view == null
                 ? Center(
