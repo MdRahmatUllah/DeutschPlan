@@ -27,7 +27,13 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from pipeline_steps import SUBLEVELS, PipelineError, read_tips, tip_pos  # noqa: E402
+from pipeline_steps import (  # noqa: E402
+    LEADING_ARTICLE,
+    SUBLEVELS,
+    PipelineError,
+    read_tips,
+    tip_pos,
+)
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_DB = REPO_ROOT / "content" / "build" / "content.db"
@@ -260,6 +266,40 @@ def check_tips_fit_their_word_class(
     return failures
 
 
+def check_no_article_in_german(db: sqlite3.Connection) -> list[Failure]:
+    """#287: a noun whose article is still inside `german`, so the headword
+    has no gender colour and the Articles quiz never asks it."""
+    import re
+
+    pattern = re.compile(LEADING_ARTICLE)
+    # A duplicate the build left alone (`split_articles` warns) isn't this
+    # gate's: the author deletes a row.
+    rows = [
+        german
+        for (german, level, english) in db.execute(
+            "SELECT german, level_code, english FROM words "
+            "WHERE pos = 'noun' AND article IS NULL ORDER BY seq"
+        )
+        if (match := pattern.match(german.strip()))
+        and db.execute(
+            "SELECT 1 FROM words WHERE level_code = ? AND german = ? "
+            "AND pos = 'noun' AND english = ?",
+            (level, match.group(2), english),
+        ).fetchone()
+        is None
+    ]
+    if not rows:
+        return []
+    return [
+        Failure(
+            "articles",
+            f"{len(rows)} nouns keep their article in the German cell: "
+            f"{_sample(rows)}. Rebuild with `make content`; the build moves it "
+            f"into the Article column.",
+        )
+    ]
+
+
 GATES = (
     check_the_database_is_readable,
     check_every_step_has_words,
@@ -267,6 +307,7 @@ GATES = (
     check_no_uid_collision,
     check_fts_is_populated,
     check_tips_fit_their_word_class,
+    check_no_article_in_german,
 )
 
 

@@ -240,3 +240,13 @@ def test_a_malformed_tips_file_is_a_failure_not_a_crash(database, tmp_path):
     assert [f.gate for f in failures] == ["tips"]
     assert "line 2" in failures[0].message
 
+
+def test_a_noun_with_its_article_in_german_fails_the_articles_gate(database):
+    """#287: the build moves it; the gate catches a build that doesn't."""
+    break_it(
+        database,
+        "UPDATE words SET german = 'das ' || german, article = NULL "
+        "WHERE uid = (SELECT uid FROM words WHERE pos = 'noun' LIMIT 1)",
+    )
+    assert "articles" in gates(database)
+
