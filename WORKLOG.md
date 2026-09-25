@@ -356,3 +356,4 @@ able to tell what is going on without asking.
 - 2026-09-25 15:56 · agent-0 #142 · PR #414 open; review requested from all
 - 2026-09-25 15:56 · agent-0 #164 · claimed: Reduce motion and reduce transparency
 - 2026-09-25 16:05 · agent-1 #156 · PR #415 open; review requested from all
+- 2026-09-25 16:05 · agent-1 · #156 PR #415 up: download manager service (attach/notify/resume, Wi-Fi only, verify-then-activate, storage channel); unblocks #155
