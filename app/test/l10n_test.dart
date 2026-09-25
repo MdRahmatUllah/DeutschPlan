@@ -101,16 +101,14 @@ void main() {
         jsonDecode(File(path).readAsStringSync()) as Map<String, Object?>;
     final en = read('lib/l10n/app_en.arb');
     final bn = read('lib/l10n/app_bn.arb');
-    // What is left of a message once its placeholders are gone: a template
-    // like "{done} / {total}" is the same in every language.
-    String words(String message) {
-      var left = message;
-      for (var before = ''; before != left;) {
-        before = left;
-        left = left.replaceAll(RegExp('{[^{}]*}'), '');
-      }
-      return left;
-    }
+    // What is left of a message once its placeholders and ICU syntax are
+    // gone: a template like "{done} / {total}" is the same in every
+    // language, but a plural's branches are words to translate.
+    String words(String message) => message
+        .replaceAll(RegExp(r'{\w+(,\s*\w+)?}'), '')
+        .replaceAll(RegExp(r'{\w+,\s*\w+,'), '')
+        .replaceAll(RegExp(r'(=\d+|\w+)\s*{'), '')
+        .replaceAll(RegExp('[{}]'), '');
 
     final untranslated = <String>[
       for (final key in en.keys)
