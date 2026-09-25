@@ -19,6 +19,7 @@ import 'package:material_ui/material_ui.dart' show Locale;
 import 'package:sqlite3/sqlite3.dart' show sqlite3;
 
 import '../data/reminder_scheduler_test.dart' show FakeReminders, FakeWork;
+import 'widget_snapshot_test.dart' show FakeWidgets;
 import '../db/content_fixture.dart';
 import '../features/today_fixtures.dart';
 
@@ -131,6 +132,7 @@ void main() {
     late DateTime now;
     late FakeReminders reminders;
     late FakeWork work;
+    late FakeWidgets widgets;
     TodayView? view;
 
     const today = '2026-09-21';
@@ -156,6 +158,7 @@ void main() {
       containerFor(),
       notifications: reminders,
       work: work,
+      widgets: widgets,
     );
 
     setUp(() async {
@@ -175,6 +178,7 @@ void main() {
       now = DateTime(2026, 9, 21, 19, 20);
       reminders = FakeReminders();
       work = FakeWork();
+      widgets = FakeWidgets();
       view = null;
     });
 
@@ -310,10 +314,19 @@ void main() {
       );
     });
 
-    test('widget_refresh: nothing to write until #159', () async {
+    test('#159 widget_refresh writes the snapshot, and nothing else', () async {
+      view = artboardToday();
       await run(BackgroundTask.widgetRefresh);
+      expect(widgets.last['remaining'], 8);
       expect(reminders.scheduled, isNull);
       expect(work.queued, isEmpty);
+    });
+
+    test('#159 plan_pregenerate rewrites the widget for the new day', () async {
+      now = DateTime(2026, 9, 21, 0, 5);
+      view = artboardToday();
+      await run(BackgroundTask.planPregenerate);
+      expect(widgets.last['date'], today);
     });
   });
 }

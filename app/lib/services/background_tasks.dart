@@ -12,6 +12,7 @@ import 'package:deutschplan/l10n/generated/app_localizations.dart';
 import 'package:deutschplan/l10n/ui_language_locale.dart';
 import 'package:deutschplan/services/background_work.dart';
 import 'package:deutschplan/services/reminder_notifications.dart';
+import 'package:deutschplan/services/widget_snapshot.dart';
 import 'package:flutter/foundation.dart' show debugPrint;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
@@ -75,6 +76,7 @@ Future<void> runBackgroundTask(
   ProviderContainer container, {
   required ReminderNotifications notifications,
   required BackgroundWork work,
+  required WidgetStore widgets,
 }) async {
   final reminders = remindersFor(container, notifications, work);
   switch (task) {
@@ -82,6 +84,8 @@ Future<void> runBackgroundTask(
       await container
           .read(planEngineProvider)
           .openDay(container.read(todayProvider));
+      // FR-X1-01: the widget rewritten at midnight, from the new day.
+      await refreshWidget(container, widgets);
       // The week of reminders rolls on for a learner who doesn't open the
       // app, and today's compose is queued with it.
       await reminders.sync();
@@ -91,8 +95,9 @@ Future<void> runBackgroundTask(
         await composeReminder(container, notifications),
       );
     case BackgroundTask.widgetRefresh:
-    // ponytail: runs and does nothing until #159 has a snapshot to write;
-    // #159 also writes it after every session, in the app.
+      // Hourly, for the word of the day; the app writes it after every
+      // session (`followWidget`).
+      await refreshWidget(container, widgets);
   }
 }
 
@@ -218,6 +223,7 @@ void backgroundDispatcher() {
           container,
           notifications: notifications,
           work: const WorkmanagerWork(),
+          widgets: const HomeWidgetStore(),
         );
       });
       return true;
