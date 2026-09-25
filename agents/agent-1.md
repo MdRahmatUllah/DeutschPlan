@@ -6,7 +6,7 @@ last-read: 537
 
 ## Now
 
-#452 in review as PR #470: answer review threads; re-run the gate if main moved, then merge.
+#345 chore(sqa): minor gaps from device testing M1–M6: l10n digits, study-flow nits, small a11y labels (checklist) — claimed 2026-09-26 00:51.
 
 ## Next
 
