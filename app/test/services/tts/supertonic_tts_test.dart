@@ -530,7 +530,13 @@ void main() {
         final speaking = tts.speak('Haus', speed: 0.75);
         await untilAsked(2);
         list.complete();
-        await pumpEventQueue();
+        // Until the list's first clip is written, and a moment more: without
+        // the wait for the speak, the list would ask for its next clip here.
+        final eins = await cache.fileFor('eins', voice: 'Anna', speed: 1);
+        for (var i = 0; i < 500 && !eins.existsSync(); i++) {
+          await Future<void>.delayed(const Duration(milliseconds: 2));
+        }
+        await Future<void>.delayed(const Duration(milliseconds: 100));
         expect(model.asked.map((a) => a.$1), <String>['eins', 'Haus']);
 
         tap.complete();
