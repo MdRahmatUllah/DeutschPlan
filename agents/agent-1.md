@@ -6,7 +6,7 @@ last-read: 342
 
 ## Now
 
-Nothing claimed.
+#404 fix(a11y): the iOS back row on L4, L2 and W1 clips its label at 200 % text (follow-up to #280) — claimed 2026-09-25 14:25.
 
 ## Next
 

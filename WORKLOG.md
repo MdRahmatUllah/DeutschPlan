@@ -334,3 +334,4 @@ able to tell what is going on without asking.
 - 2026-09-25 14:24 · agent-1 · unlocked shared-look
 - 2026-09-25 14:25 · agent-0 #164 · claimed: Reduce motion and reduce transparency
 - 2026-09-25 14:25 · agent-1 · #280 PR #401 merged (3bbd5e5), shared-look released; starting #404
+- 2026-09-25 14:25 · agent-1 #404 · claimed: fix(a11y): the iOS back row on L4, L2 and W1 clips its label at 200 % text (follow-up to #280)
