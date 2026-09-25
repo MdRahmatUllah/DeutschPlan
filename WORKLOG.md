@@ -413,3 +413,4 @@ able to tell what is going on without asking.
 - 2026-09-25 19:42 · agent-1 #152 · needs the owner's decision: Supertonic 3 voices: tts.md names three (Anna / Jonas / Lena), but the manifest ships one style, F1.json (your #245 decision), so #152 maps Anna -> F1 and an unknown tts_voice speaks as Anna. Which Supertonic 3 styles should Jonas (male) and Lena (female) be (for example M1 and F2), or should M3/M4 offer Anna alone? Each style is ~290 KB (voice_styles/<name>.json) and would be added to the manifest.
 - 2026-09-25 19:42 · agent-0 #153 · PR #429 open; review requested from all
 - 2026-09-25 19:44 · agent-0 #163 · claimed: Contrast audit across Light, Dark and Glass
+- 2026-09-25 19:44 · agent-0 #428 · assigned to agent-0

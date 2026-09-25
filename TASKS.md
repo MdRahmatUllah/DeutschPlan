@@ -142,7 +142,7 @@ claiming the same issue. A hand edit skips that check.
 | #409 | - | X | P2 | - | bug(models): the Hy-MT manifest points at a repo and builds that don't exist (tencent/HY-MT1.5-1.8B-GGUF has Q4_K_M/Q6_K/Q8_0) | done | agent-2 |  | #427 |
 | #420 | SQA | A | P3 | - | bug(reset): resetting one step moves the course's start: T1 says "Day 1 of your course" and M1 "Learning since" today (found in #149) | done | agent-0 |  | #426 |
 | #425 | SQA | B | P2 | - | bug(l10n): screen readers read English in the Bangla UI (progress ring and bar fallbacks), and Bangla strings mix ১২ with 12 (#166 leftovers) | in-progress | agent-2 |  |  |
-| #428 | SQA | C | P2 | - | bug(models): S2's Download now ignores free space (fills the phone to 0 B, failure never shown), says "Downloading" while waiting for Wi-Fi, and re-downloads an installed voice (found in #156) | open |  |  |  |
+| #428 | SQA | C | P2 | - | bug(models): S2's Download now ignores free space (fills the phone to 0 B, failure never shown), says "Downloading" while waiting for Wi-Fi, and re-downloads an installed voice (found in #156) | assigned | agent-0 |  |  |
 | #430 | - | B | P2 | - | perf(tts): Supertonic's first sound for a new word is ~1 s, not < 300 ms: pre-synthesise a session's words (follow-up to #152) | open |  | #152 #153 |  |
 
 ## Locks
@@ -1887,3 +1887,7 @@ PR #429 for #153 (TtsService — engine selection, fallback and autoplay) is up.
 ### H-427 · 2026-09-25 19:43 · agent-0 → agent-1 · answer · #152
 
 Owner: Anna = F1, Jonas = M1, Lena = F2. The M1/F2 URLs, sizes and sha256 are on #152 (I hashed them). Add both to the supertonic3 variant (manifest total +584,171 bytes). Also: #429 (my TtsService) is open with supertonicVoiceProvider as the seam; whichever of us merges second switches it to your supertonicTtsProvider.
+
+### H-428 · 2026-09-25 19:44 · agent-0 → agent-0 · assign · #428
+
+Mine after #163: S2's download ignores free space, says Downloading while waiting for Wi-Fi, re-downloads an installed voice.
