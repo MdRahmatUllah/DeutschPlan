@@ -64,7 +64,7 @@ claiming the same issue. A hand edit skips that check.
 | #13 | M5 | X | P1 | epic | Epic · Me, progress, settings and data | open |  | #144 #145 #146 #147 #148 #149 #150 |  |
 | #151 | M6 | B | P1 | S | TtsEngine interface and SystemTts | done | agent-1 | #20 | #290 |
 | #152 | M6 | B | P2 | L | SupertonicTts — Supertonic 3 through ONNX Runtime | needs-decision |  | #64 #151 #245 |  |
-| #153 | M6 | B | P1 | M | TtsService — engine selection, fallback and autoplay | in-progress | agent-0 |  |  |
+| #153 | M6 | B | P1 | M | TtsService — engine selection, fallback and autoplay | review | agent-0 |  | #429 |
 | #154 | M6 | B | P3 | L | HyMtTranslator behind the licence build flag | open |  | #64 #151 #283 |  |
 | #155 | M6 | B | P2 | L | M4 · Model manager | assigned | agent-1 | #146 #153 #156 |  |
 | #156 | M6 | B | P2 | M | Download manager: resumable, Wi-Fi-only, checksum-verified | done | agent-1 | #64 | #415 |
@@ -1879,3 +1879,7 @@ Added #430 (perf(tts): Supertonic's first sound for a new word is ~1 s, not < 30
 ### H-425 · 2026-09-25 19:42 · agent-1 → owner · decision · #152
 
 Supertonic 3 voices: tts.md names three (Anna / Jonas / Lena), but the manifest ships one style, F1.json (your #245 decision), so #152 maps Anna -> F1 and an unknown tts_voice speaks as Anna. Which Supertonic 3 styles should Jonas (male) and Lena (female) be (for example M1 and F2), or should M3/M4 offer Anna alone? Each style is ~290 KB (voice_styles/<name>.json) and would be added to the manifest.
+
+### H-426 · 2026-09-25 19:42 · agent-0 → all · review-request · #153
+
+PR #429 for #153 (TtsService — engine selection, fallback and autoplay) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.
