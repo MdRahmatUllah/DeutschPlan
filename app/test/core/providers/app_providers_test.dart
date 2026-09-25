@@ -230,6 +230,49 @@ void main() {
     });
   });
 
+  group('#342 the plan engine', () {
+    test('a setting it holds rebuilds it, from any writer', () async {
+      final c = container();
+      c.listen(planEngineProvider, (_, _) {}); // as Today's tab keeps it
+      final writes = <Future<void> Function()>[
+        () => settings.write(SettingKeys.pauseNewWhenBacklog, true),
+        () => settings.write(SettingKeys.reviseCount, 12),
+        () => settings.write(SettingKeys.autoAdvance, false),
+        () => settings.write(SettingKeys.backlogCatchupDays, 10),
+      ];
+      for (final write in writes) {
+        final before = c.read(planEngineProvider);
+        await write();
+        await pumpEventQueue();
+        expect(c.read(planEngineProvider), isNot(same(before)));
+      }
+    });
+
+    test('one it does not hold leaves it be', () async {
+      final c = container();
+      c.listen(planEngineProvider, (_, _) {});
+      final before = c.read(planEngineProvider);
+      // The one the engine writes itself, every day it plans.
+      await settings.write(SettingKeys.lastPlannedDate, DateTime(2026, 9, 21));
+      await pumpEventQueue();
+      expect(c.read(planEngineProvider), same(before));
+    });
+
+    test('the sentence picker follows its settings too', () async {
+      final c = container();
+      c.listen(sentencePickerProvider, (_, _) {});
+      final before = c.read(sentencePickerProvider);
+      await settings.write(SettingKeys.sentenceCount, 5);
+      await pumpEventQueue();
+      final after = c.read(sentencePickerProvider);
+      expect(after, isNot(same(before)));
+      expect(after.count, 5);
+      await settings.write(SettingKeys.sentenceRepeatGapDays, 3);
+      await pumpEventQueue();
+      expect(c.read(sentencePickerProvider).gapDays, 3);
+    });
+  });
+
   group('the repositories', () {
     test('are built over the database bootstrap opened', () {
       final ref = container();

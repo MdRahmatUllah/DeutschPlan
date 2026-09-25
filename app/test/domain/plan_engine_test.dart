@@ -973,6 +973,28 @@ void main() {
     });
 
     test(
+      'BR-PLAN-08 a day opened with none keeps none when the count rises',
+      () async {
+        // #342: M3 or restart setup raises revise_count mid-day and the engine
+        // is rebuilt. Today was opened with nothing to revise; it stays so.
+        store.candidates = <RevisionCandidate>[
+          const RevisionCandidate(
+            uid: 'a',
+            stability: 5,
+            lastReview: '2026-02-20',
+          ),
+        ];
+        await engineWith(revise: 0).openDay(monday);
+        expect((await engineWith().openDay(monday)).revise, isEmpty);
+        expect(
+          (await engineWith().openDay(addDays(monday, 1))).revise,
+          <String>['a'],
+          reason: 'from tomorrow',
+        );
+      },
+    );
+
+    test(
       'a day with rows is left alone even if planning never finished',
       () async {
         // The guard inside the walk, which `last_planned_date` usually makes

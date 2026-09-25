@@ -352,12 +352,22 @@ SetupRepository setupRepository(Ref ref) => SetupRepository(
 );
 
 /// The plan engine over the real store, with the learner's settings as they
-/// stand when it is read. Auto-disposing, so the next read sees a setting
-/// changed in between — BR-PLAN-08's "from the next day" is the engine's to
-/// enforce, not a stale instance's.
+/// stand. BR-PLAN-08's "from the next day" is the engine's to enforce, not a
+/// stale instance's.
+///
+/// Rebuilt whenever a setting it holds is written (#342), by whichever
+/// screen: auto-disposing isn't enough, because Today's tab stays mounted
+/// and keeps it watched. A stale copy planned the catch-up days with T4's
+/// old pause and walked them as paused, so they were lost.
 @riverpod
 PlanEngine planEngine(Ref ref) {
   final settings = ref.watch(settingsProvider);
+  _followSettings(ref, settings, const <SettingKey<Object?>>{
+    SettingKeys.reviseCount,
+    SettingKeys.backlogCatchupDays,
+    SettingKeys.autoAdvance,
+    SettingKeys.pauseNewWhenBacklog,
+  });
   return PlanEngine(
     store: DriftPlanStore(ref.watch(appDatabaseProvider), settings),
     reviseCount: settings.read(SettingKeys.reviseCount),
@@ -365,6 +375,20 @@ PlanEngine planEngine(Ref ref) {
     autoAdvance: settings.read(SettingKeys.autoAdvance),
     pauseNewWhenBacklog: settings.read(SettingKeys.pauseNewWhenBacklog),
   );
+}
+
+/// Rebuilds [ref]'s provider when one of [keys], the settings it copies, is
+/// written (#342). Its callers stay watched by Today's tab, which the shell
+/// keeps mounted, so auto-disposing never gets them a fresh copy.
+void _followSettings(
+  Ref ref,
+  SettingsRepository settings,
+  Set<SettingKey<Object?>> keys,
+) {
+  final changes = settings.changes
+      .where(keys.contains)
+      .listen((_) => ref.invalidateSelf());
+  ref.onDispose(changes.cancel);
 }
 
 /// The drift side of the sentence picker, shared by the picker and Today's
@@ -377,6 +401,10 @@ DriftSentenceStore sentenceStore(Ref ref) =>
 @riverpod
 SentencePicker sentencePicker(Ref ref) {
   final settings = ref.watch(settingsProvider);
+  _followSettings(ref, settings, const <SettingKey<Object?>>{
+    SettingKeys.sentenceCount,
+    SettingKeys.sentenceRepeatGapDays,
+  });
   return SentencePicker(
     ref.watch(sentenceStoreProvider),
     count: settings.read(SettingKeys.sentenceCount),

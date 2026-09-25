@@ -419,9 +419,9 @@ class _Plan extends ConsumerWidget {
             );
         ref.invalidate(todayPlanProvider);
       case ContextualKind.pauseOffer:
-        // BR-PLAN-07 / FR-T4-03: from the next plan generation.
+        // BR-PLAN-07 / FR-T4-03: from the next plan generation. The write
+        // rebuilds the plan engine (#342).
         await settings.write(SettingKeys.pauseNewWhenBacklog, true);
-        ref.invalidate(planEngineProvider);
       case ContextualKind.examsUnlocked:
         if (offer.step case final step?) {
           context.jumpToTab(LearnStepRoute(code: step, tab: StepTab.exams));

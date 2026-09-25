@@ -381,6 +381,29 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code, skipped,
   });
 
   group('FR-T4-03 the pause switch', () {
+    testWidgets('#342 its value reaches the plan engine at once', (
+      tester,
+    ) async {
+      await pump(tester);
+      final container = ProviderScope.containerOf(
+        tester.element(find.byType(BacklogScreen)),
+      );
+      // Kept watched, as Today's tab keeps it.
+      container.listen(planEngineProvider, (_, _) {});
+      Future<bool?> paused() => tester.runAsync(
+        () async =>
+            (await container.read(planEngineProvider).openDay(today)).newPaused,
+      );
+
+      expect(await paused(), isFalse);
+      await tester.tap(find.byType(AdaptiveSwitch));
+      await settle(tester);
+      expect(await paused(), isTrue, reason: 'on, with a backlog');
+      await tester.tap(find.byType(AdaptiveSwitch));
+      await settle(tester);
+      expect(await paused(), isFalse, reason: 'off again, no restart');
+    });
+
     testWidgets('writes pause_new_when_backlog', (tester) async {
       await pump(tester);
       expect(settings.read(SettingKeys.pauseNewWhenBacklog), isFalse);

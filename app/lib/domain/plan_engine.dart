@@ -425,8 +425,12 @@ class PlanEngine {
   /// generating would let a word planned as new today also be picked to
   /// revise, which is what BR-PLAN-03's exclusion is for.
   Future<DailyPlan> openDay(PlanDate date) async {
+    // A day opened before keeps its revisions, even none (BR-PLAN-08): a
+    // revise_count raised mid-day waits for tomorrow (#342).
+    final last = await _store.lastPlannedDate();
+    final reopened = last != null && last.compareTo(date) >= 0;
     await generateNewThrough(date);
-    await ensureRevise(date);
+    if (!reopened) await ensureRevise(date);
 
     final step = await _store.activeStep();
     final backlog = await _store.backlogBefore(date);
