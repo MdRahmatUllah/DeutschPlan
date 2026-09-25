@@ -84,7 +84,7 @@ claiming the same issue. A hand edit skips that check.
 | #166 | M7 | B | P1 | M | Localisation completeness: en and bn | open |  | #27 #36 |  |
 | #167 | M7 | B | P1 | M | Performance budgets | open |  | #153 #164 |  |
 | #168 | M7 | C | P1 | L | Complete the golden suite: every screen × three themes × two devices | open |  | #25 #165 |  |
-| #169 | M7 | A | P1 | M | Integration smoke tests on emulator and simulator | open |  | #111 #130 |  |
+| #169 | M7 | A | P1 | M | Integration smoke tests on emulator and simulator | in-progress | agent-0 | #111 #130 |  |
 | #170 | M7 | A | P1 | M | Android release pipeline | open |  | #152 #160 #167 |  |
 | #171 | M7 | A | P1 | M | iOS release pipeline | open |  | #152 #161 #167 |  |
 | #172 | M7 | C | P2 | S | Licence collection and model licence texts | open |  | #150 |  |
