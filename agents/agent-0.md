@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-09-25 10:13
+last-seen: 2026-09-25 10:21
 last-read: 278
 
 ## Now
 
-#377 in review as PR #381: answer review threads; re-run the gate if main moved, then merge.
+#321 content: about 160 interference tips are for the wrong word class (-chen noun rule on verbs, separable rule on nouns) (found in #49) — claimed 2026-09-25 10:21.
 
 ## Next
 

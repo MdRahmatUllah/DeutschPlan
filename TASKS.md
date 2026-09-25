@@ -108,7 +108,7 @@ claiming the same issue. A hand edit skips that check.
 | #317 | SQA | X | P2 | - | bug(shell): scrolled content on Today, Learn and Me runs under the status bar icons (found in #67) | done | agent-1 |  | #355 |
 | #318 | SQA | X | P2 | - | bug(a11y): Material dialog buttons use Lagoon text at 2.2:1 and 1.9:1 contrast (found in #37) | done | agent-1 |  | #357 |
 | #319 | SQA | X | P2 | - | bug(components): the 4 s Undo snackbar never dismisses: SnackBar persist defaults to true with an action (found in #105) | done | agent-0 |  | #323 |
-| #321 | SQA | X | P2 | - | content: about 160 interference tips are for the wrong word class (-chen noun rule on verbs, separable rule on nouns) (found in #49) | open |  |  |  |
+| #321 | SQA | X | P2 | - | content: about 160 interference tips are for the wrong word class (-chen noun rule on verbs, separable rule on nouns) (found in #49) | in-progress | agent-0 |  |  |
 | #320 | SQA | X | P2 | - | bug(a11y): W1 as a full page (deep link) hides the meaning, caption and tip from screen readers (found in #140) | done | agent-1 |  |  |
 | #322 | SQA | X | P3 | - | fix(tools): team.py add crashes on an issue with Bangla text (gh output decoded as cp1252) | done | agent-0 |  | #326 |
 | #324 | SQA | X | P2 | - | bug(sentences): T5 word tap misses conjugated verbs (ist, hat, gibt…): 25 % of tokens say "not from the course" (found in #110) | review | agent-0 |  | #380 |
