@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:deutschplan/core/components/dp_rating_bar.dart';
@@ -12,6 +13,8 @@ import 'package:deutschplan/data/repositories/setting_keys.dart';
 import 'package:deutschplan/data/repositories/settings_repository.dart';
 import 'package:deutschplan/data/repositories/word_repository.dart';
 import 'package:deutschplan/domain/fsrs.dart';
+import 'package:deutschplan/features/me/export_import_screen.dart'
+    show backupFilesProvider;
 import 'package:deutschplan/features/study/study_rating.dart';
 import 'package:deutschplan/features/study/study_screen.dart';
 import 'package:deutschplan/features/study/study_session.dart';
@@ -19,6 +22,7 @@ import 'package:deutschplan/l10n/generated/app_localizations.dart';
 import 'package:deutschplan/main.dart'
     show appLocalizationsDelegates, supportedLocales;
 import 'package:deutschplan/router/routes.dart';
+import 'package:deutschplan/services/backup_files.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
@@ -241,6 +245,21 @@ VALUES ('$strasse', 'learning', '2026-09-10', '2026-09-21', 4.5, 5.2, 2, 0,
       await notifier.undo();
       expect(await state(haus), isNull);
     });
+
+    test('Z05 a double tap writes once, and the second says it did not: no '
+        'Undo is offered for it', () async {
+      final first = notifier.rate(Rating.good);
+      final second = notifier.rate(Rating.good);
+
+      expect(await second, isFalse);
+      expect(await first, isTrue);
+      expect(await log(), hasLength(1));
+
+      final undo = notifier.undo();
+      expect(await notifier.undo(), isFalse, reason: 'one in flight');
+      expect(await undo, isTrue);
+      expect(await notifier.undo(), isFalse, reason: 'nothing left to undo');
+    });
   });
 
   group('the bar', () {
@@ -396,5 +415,172 @@ VALUES ('$strasse', 'learning', '2026-09-10', '2026-09-21', 4.5, 5.2, 2, 0,
       );
       expect(await tester.runAsync(log), isEmpty);
     });
+
+    group('Z05 FR-T2-02 a write that fails', () {
+      late _SharedFiles files;
+
+      Future<ProviderContainer> start(WidgetTester tester) {
+        files = _SharedFiles();
+        return pump(
+          tester,
+          extra: <Override>[backupFilesProvider.overrideWithValue(files)],
+        );
+      }
+
+      /// Writes of [when] fail from here, as a full disk or a damaged file
+      /// fails them; [mend] lets them through again.
+      Future<void> breakWrites(WidgetTester tester, String when) async =>
+          tester.runAsync(
+            () => db.customStatement(
+              'CREATE TRIGGER broken $when '
+              "BEGIN SELECT RAISE(ABORT, 'disk I/O error'); END",
+            ),
+          );
+      Future<void> mend(WidgetTester tester) async =>
+          tester.runAsync(() => db.customStatement('DROP TRIGGER broken'));
+
+      Future<void> tap(WidgetTester tester, String text) async {
+        await tester.runAsync(() async {
+          await tester.tap(find.text(text));
+          await Future<void>.delayed(const Duration(milliseconds: 50));
+        });
+        await tester.pumpAndSettle();
+      }
+
+      String? current(ProviderContainer container) =>
+          container.read(studySessionProvider(args)).value?.current?.uid;
+
+      Future<bool> isOpen(String uid) async =>
+          (await db
+                  .customSelect(
+                    'SELECT completed_at FROM plan_items '
+                    "WHERE word_uid = '$uid'",
+                  )
+                  .getSingle())
+              .data['completed_at'] ==
+          null;
+
+      testWidgets('keeps the card and every card before it; Retry writes '
+          'it and moves on', (tester) async {
+        final container = await start(tester);
+        await reveal(tester);
+        await tap(tester, l10n.ratingGood);
+        expect(current(container), haus);
+
+        await breakWrites(tester, 'BEFORE INSERT ON review_log');
+        await reveal(tester);
+        await tap(tester, l10n.ratingGood);
+
+        expect(find.text(l10n.saveAnswerFailed), findsOneWidget);
+        expect(find.text(l10n.retry), findsOneWidget);
+        expect(find.text(l10n.exportProgress), findsOneWidget);
+        expect(current(container), haus, reason: 'the card stays');
+        expect(
+          (await tester.runAsync(log))!.map((r) => r['word_uid']),
+          <String>[strasse],
+          reason: 'the card before it is saved',
+        );
+        expect(await tester.runAsync(() => isOpen(strasse)), isFalse);
+        expect(await tester.runAsync(() => isOpen(haus)), isTrue);
+
+        await mend(tester);
+        await tap(tester, l10n.retry);
+
+        expect(find.text(l10n.saveAnswerFailed), findsNothing);
+        expect(current(container), tuer);
+        expect(
+          (await tester.runAsync(log))!.map((r) => r['word_uid']),
+          <String>[strasse, haus],
+        );
+        expect(await tester.runAsync(() => isOpen(haus)), isFalse);
+        expect(
+          find.text(l10n.studyRated('das Haus', l10n.ratingGood)),
+          findsOneWidget,
+          reason: 'and offers its Undo, as any rating does',
+        );
+      });
+
+      testWidgets('Export progress shares the backup without leaving the '
+          'session', (tester) async {
+        final container = await start(tester);
+        await breakWrites(tester, 'BEFORE INSERT ON review_log');
+        await reveal(tester);
+        await tap(tester, l10n.ratingGood);
+
+        await tap(tester, l10n.exportProgress);
+
+        final file = files.shared.single;
+        expect(file.name, 'deutschplan-2026-09-21.json');
+        expect(jsonDecode(file.json), isA<Map<String, dynamic>>());
+        expect(find.byType(StudyScreen), findsOneWidget);
+        expect(find.text(l10n.saveAnswerFailed), findsOneWidget);
+        expect(current(container), strasse);
+      });
+
+      testWidgets('an Undo that fails keeps the card it was on', (
+        tester,
+      ) async {
+        final container = await start(tester);
+        await reveal(tester);
+        await tap(tester, l10n.ratingGood);
+
+        await breakWrites(tester, 'BEFORE DELETE ON review_log');
+        await tap(tester, l10n.undo);
+
+        expect(find.text(l10n.saveAnswerFailed), findsOneWidget);
+        expect(current(container), haus);
+        expect(await tester.runAsync(log), hasLength(1));
+
+        await mend(tester);
+        await tap(tester, l10n.retry);
+
+        expect(current(container), strasse);
+        expect(await tester.runAsync(log), isEmpty);
+      });
+
+      testWidgets('the sheet dismissed: no Undo, and the card is rated '
+          'again as ever', (tester) async {
+        final container = await start(tester);
+        await breakWrites(tester, 'BEFORE INSERT ON review_log');
+        await reveal(tester);
+        await tap(tester, l10n.ratingGood);
+
+        // A tap on the scrim, above the sheet.
+        await tester.tapAt(const Offset(20, 20));
+        await tester.pumpAndSettle();
+
+        expect(find.text(l10n.saveAnswerFailed), findsNothing);
+        expect(find.text(l10n.undo), findsNothing, reason: 'nothing written');
+        expect(current(container), strasse);
+        expect(
+          tester.widget<DpRatingBar>(find.byType(DpRatingBar)).enabled,
+          isTrue,
+        );
+
+        await mend(tester);
+        await tap(tester, l10n.ratingGood);
+
+        expect(current(container), haus);
+        expect(await tester.runAsync(log), hasLength(1));
+        expect(
+          find.text(l10n.studyRated('die Straße', l10n.ratingGood)),
+          findsOneWidget,
+        );
+      });
+    });
   });
+}
+
+/// The share sheet, without a phone.
+class _SharedFiles implements BackupFiles {
+  final List<PickedBackup> shared = <PickedBackup>[];
+
+  @override
+  Future<PickedBackup?> pick() async => null;
+
+  @override
+  Future<bool> share(String name, String json) async {
+    shared.add((name: name, json: json));
+    return true;
+  }
 }

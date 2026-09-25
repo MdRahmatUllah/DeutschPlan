@@ -39,4 +39,4 @@
 - **Actions** are methods on notifiers (`ref.read(studySessionProvider.notifier).rate(4)`); widgets never write to repositories.
 - **Undo**: `rate()` pushes an `UndoToken` (previous `word_state` row + review_log id); `undo()` restores the row and deletes the log entry within one transaction.
 - **Refresh after midnight**: `today` doesn't tick. T1 invalidates it on app resume and on pull-to-refresh, and `todayPlan` watches it, so a new date re-runs `openDay`.
-- **Errors**: `AsyncValue.error` renders the shared `ErrorPanel` with Retry; database write failures never lose the last saved card (writes are per-card transactions).
+- **Errors**: `AsyncValue.error` renders the shared `ErrorPanel` with Retry; database write failures never lose the last saved card (writes are per-card transactions). A failed answer write (T2's rate, *I know it*, skip and *Undo*; T5's rating; L15's result) goes through `guardWrite` (`features/study/write_guard.dart`): the card stays, and the same panel comes up in a sheet with **Retry** (the write again, then on as a success would) and **Export progress** (the backup shared in place, the session left open) (#174).

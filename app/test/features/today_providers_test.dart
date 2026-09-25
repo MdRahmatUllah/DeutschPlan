@@ -18,6 +18,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:drift/drift.dart' as drift show Table, TableInfo;
 import 'package:flutter_test/flutter_test.dart';
+import 'package:sqlite3/sqlite3.dart' as sqlite;
 
 import '../db/content_fixture.dart';
 
@@ -35,6 +36,24 @@ void main() {
   setUp(() async {
     directory = Directory.systemTemp.createTempSync('deutschplan_today');
     final content = ContentFixture.write('${directory.path}/content.db').file;
+    // The plan below revises r1 and r2 and has b1 and b2 waiting: words of
+    // the step finished in August. The course must have them, or they are a
+    // content update's removed words and hidden (BR-CONTENT-02).
+    final raw = sqlite.sqlite3.open(content.path);
+    try {
+      for (final (i, uid) in <String>['r1', 'r2', 'b1', 'b2'].indexed) {
+        raw.execute(
+          '''
+INSERT INTO words (uid, sublevel_code, level_code, seq, seq_in_sublevel,
+                   german, english, search_key, search_key_alt)
+VALUES (?, 'A0.9', 'A1', ?, ?, ?, ?, ?, ?)
+''',
+          <Object>[uid, 90 + i, i + 1, uid, uid, uid, uid],
+        );
+      }
+    } finally {
+      raw.close();
+    }
     db = AppDatabase(DatabaseConnection(NativeDatabase.memory()));
     await db.customStatement(
       "ATTACH DATABASE '${ContentDao.attachPath(content)}' AS c",
@@ -569,6 +588,175 @@ INSERT INTO word_state (word_uid, status, introduced_on, due, stability, reps, l
       await pumpEventQueue();
 
       expect(plans, before);
+    });
+  });
+
+  /// Every plan row, for a before and after.
+  Future<List<Map<String, Object?>>> planRows() async => <Map<String, Object?>>[
+    for (final row
+        in await db
+            .customSelect(
+              'SELECT plan_date, word_uid, kind, completed_at, skipped '
+              'FROM plan_items ORDER BY plan_date, kind, word_uid',
+            )
+            .get())
+      row.data,
+  ];
+
+  /// Today as the clock now says it is.
+  Future<TodayView> at(DateTime then) {
+    now = then;
+    container.invalidate(todayProvider);
+    return container.read(todayViewProvider.future);
+  }
+
+  group('Z05 date and time-zone changes never duplicate or drop a day', () {
+    test('BR-PLAN-04 the clock back a day, as a zone to the west moves it: '
+        'that day reopens as it was, and nothing is planned again', () async {
+      // Yesterday as it was left: one revision, done.
+      await db.customStatement(
+        'INSERT INTO plan_items '
+        '(plan_date, word_uid, kind, sublevel_code, completed_at) VALUES '
+        "('2026-09-20', '${ContentFixture.strasse}', 'revise', 'A1.2', "
+        "'2026-09-20T08:00:00')",
+      );
+      await container.read(todayViewProvider.future);
+      final before = await planRows();
+
+      final yesterday = await at(DateTime(2026, 9, 20, 23, 30));
+
+      expect(yesterday.date, '2026-09-20');
+      expect((yesterday.revise.done, yesterday.revise.total), (1, 1));
+      expect(yesterday.newToday.total, 0);
+      expect(await planRows(), before, reason: 'no row added, none twice');
+      expect(
+        planDate(settings.read(SettingKeys.lastPlannedDate)!),
+        today,
+        reason: 'planning never goes backwards (#346)',
+      );
+    });
+
+    test('BR-PLAN-04 and forward again: the later day, unchanged', () async {
+      final first = await container.read(todayViewProvider.future);
+      final before = await planRows();
+
+      await at(DateTime(2026, 9, 20, 23, 30));
+      final again = await at(DateTime(2026, 9, 21, 0, 30));
+
+      expect(again.date, today);
+      expect(again.openRevise, first.openRevise);
+      expect(again.openNew, first.openNew);
+      expect(
+        (again.revise.total, again.newToday.total, again.completed),
+        (first.revise.total, first.newToday.total, first.completed),
+      );
+      expect(await planRows(), before);
+    });
+
+    test('BR-PLAN-05 a jump past backlog_catchup_days plans only the window, '
+        'each day once', () async {
+      // One a day, from forty more A1.1 words: the step outlasts the window.
+      await db.customStatement(
+        "UPDATE enrollments SET daily_new = 1 WHERE sublevel_code = 'A1.1'",
+      );
+      for (var i = 1; i <= 40; i++) {
+        await db.customStatement(
+          'INSERT INTO c.words (uid, sublevel_code, level_code, seq, '
+          'seq_in_sublevel, german, english, search_key, search_key_alt) '
+          "VALUES (?, 'A1.1', 'A1', ?, ?, ?, ?, ?, ?)",
+          <Object>['x$i', 200 + i, 10 + i, 'Wort$i', 'word$i', 'wort$i', 'x$i'],
+        );
+      }
+      await container.read(todayViewProvider.future);
+
+      const back = '2026-11-05';
+      final later = await at(DateTime(2026, 11, 5, 9));
+      final days = await db
+          .customSelect(
+            'SELECT plan_date, COUNT(*) AS n, COUNT(DISTINCT word_uid) AS w '
+            "FROM plan_items WHERE kind = 'new' AND plan_date > '$today' "
+            'GROUP BY plan_date ORDER BY plan_date',
+          )
+          .get();
+
+      expect(later.date, back);
+      expect(later.newToday.total, 1);
+      expect(
+        <(String, int, int)>[
+          for (final row in days)
+            (
+              row.read<String>('plan_date'),
+              row.read<int>('n'),
+              row.read<int>('w'),
+            ),
+        ],
+        <(String, int, int)>[
+          for (var i = 30; i >= 0; i--) (addDays(back, -i), 1, 1),
+        ],
+        reason: 'the 30 days before it and the day itself, one word each',
+      );
+
+      // Opened again, the same day plans nothing more.
+      final before = await planRows();
+      container.invalidate(todayPlanProvider);
+      await container.read(todayViewProvider.future);
+      expect(await planRows(), before);
+    });
+  });
+
+  group('Z05 BR-COURSE-05 the course finished', () {
+    setUp(() async {
+      // A1.2, the fixture's last step, finished yesterday after A1.1; today
+      // not planned yet, with three words due.
+      await db.customStatement(
+        "UPDATE enrollments SET completed_on = '2026-09-20' "
+        "WHERE sublevel_code = 'A1.1'",
+      );
+      await db.customStatement(
+        "INSERT INTO enrollments VALUES ('A1.2', '2026-09-15', 7, 127, "
+        "'2026-09-20')",
+      );
+      await db.customStatement(
+        "DELETE FROM plan_items WHERE plan_date = '$today'",
+      );
+      await settings.write(
+        SettingKeys.lastPlannedDate,
+        DateTime.utc(2026, 9, 20),
+      );
+      await db.customStatement('''
+INSERT INTO word_state (word_uid, status, introduced_on, due, stability, reps, last_review) VALUES
+  ('${ContentFixture.haus}', 'learning', '2026-09-10', '2026-09-21', 2, 2, '2026-09-19'),
+  ('${ContentFixture.tuer}', 'learning', '2026-09-10', '2026-09-21', 2, 2, '2026-09-19'),
+  ('${ContentFixture.strasse}', 'learning', '2026-09-10', '2026-09-22', 3, 2, '2026-09-19')
+''');
+      // The voice is in: its card is not what this is about.
+      voiceReady = true;
+      container
+        ..invalidate(voiceInstalledProvider)
+        ..invalidate(todayPlanProvider)
+        ..invalidate(todayViewProvider);
+      await container.read(voiceInstalledProvider.future);
+    });
+
+    test('FR-T1-01 Today is revision only, with the completion card', () async {
+      final view = await container.read(todayViewProvider.future);
+
+      expect(view.step, isNull);
+      expect(view.revise.total, 3, reason: 'revision goes on');
+      expect(view.newToday.total, 0);
+      expect(view.backlog, 2, reason: 'what was waiting still is, no more');
+      expect(view.contextual?.kind, ContextualKind.courseComplete);
+    });
+
+    test('BR-CONTENT-03 a content update still shows, ahead of it', () async {
+      await db.customStatement(
+        "INSERT INTO content_updates (version, changed_json, seen) VALUES "
+        "('202609201200', '{\"added\":[],\"removed\":[\"c\"],\"changed\":[]}', 0)",
+      );
+      container.invalidate(todayViewProvider);
+      final view = await container.read(todayViewProvider.future);
+
+      expect(view.contextual?.kind, ContextualKind.contentUpdate);
     });
   });
 }

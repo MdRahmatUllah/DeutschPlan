@@ -540,6 +540,58 @@ VALUES (?, ?, ?, ?, ?)
     });
   });
 
+  group('Z05 BR-CONTENT-02 a word a content update removed', () {
+    // 'gone' was in the course when it was planned and met; the course the
+    // app has now doesn't have it. `addToPlan` would refuse it today, so its
+    // rows go in as they were written then.
+    Future<void> planned(String uid, PlanKind kind) => db.customStatement(
+      'INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code) '
+      "VALUES (?, ?, ?, 'A1.1')",
+      <Object>[monday, uid, kind.wire],
+    );
+
+    Future<int> rows(String table) async =>
+        (await db
+                .customSelect(
+                  "SELECT COUNT(*) AS n FROM $table WHERE word_uid = 'gone'",
+                )
+                .getSingle())
+            .read<int>('n');
+
+    test('is no revision candidate, and its state stays', () async {
+      await wordState('gone');
+      await wordState('s1');
+      await myWord(1);
+      await wordState('custom:1', stability: 0, due: monday, lastReview: null);
+
+      expect(
+        (await store.revisionCandidates()).map((c) => c.uid),
+        unorderedEquals(<String>['s1', 'custom:1']),
+        reason: 'a word of my own is not in the course either, and stays',
+      );
+      expect(await rows('word_state'), 1, reason: 'hidden, never deleted');
+    });
+
+    test('is not read from its day, nor from the backlog', () async {
+      await myWord(1);
+      for (final uid in <String>['s1', 'gone', 'custom:1']) {
+        await planned(uid, PlanKind.newWord);
+      }
+      await planned('gone', PlanKind.revise);
+
+      expect(await store.plannedOn(monday, PlanKind.newWord), <String>[
+        's1',
+        'custom:1',
+      ]);
+      expect(await store.plannedOn(monday, PlanKind.revise), isEmpty);
+      expect(
+        await store.backlogBefore(addDays(monday, 1)),
+        unorderedEquals(<String>['s1', 'custom:1']),
+      );
+      expect(await rows('plan_items'), 2, reason: 'hidden, never deleted');
+    });
+  });
+
   group('grammar due', () {
     Future<void> topic(String uid, {String? due, String status = 'learning'}) =>
         db.customStatement(

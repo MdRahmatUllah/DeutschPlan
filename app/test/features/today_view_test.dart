@@ -271,6 +271,40 @@ void main() {
       expect(contextualFor(everything)?.step, 'A2.2');
     });
 
+    test('Z05 BR-COURSE-05 BR-CONTENT-03 a finished course hides nothing: '
+        'what is waiting shows first, the completion card after', () {
+      const finished = ContextualFacts(
+        stepComplete: true,
+        contentUpdate: (version: 'v', added: 1, removed: 2, changed: 0),
+        backlog: 30,
+        systemVoice: true,
+      );
+      expect(kind(finished), ContextualKind.contentUpdate);
+      expect(
+        kind(
+          const ContextualFacts(
+            stepComplete: true,
+            backlog: 30,
+            systemVoice: true,
+          ),
+        ),
+        ContextualKind.voice,
+        reason: 'BR-PLAN-07: no new words left to pause',
+      );
+      expect(
+        kind(
+          const ContextualFacts(
+            stepComplete: true,
+            backlog: 30,
+            systemVoice: true,
+            dismissed: <String>{'voice'},
+          ),
+        ),
+        ContextualKind.courseComplete,
+        reason: 'what is left once the rest is answered',
+      );
+    });
+
     test('BR-CONTENT-03 the update carries its counts', () {
       final offer = contextualFor(
         const ContextualFacts(
@@ -284,19 +318,28 @@ void main() {
     });
 
     test('BR-PLAN-07 the pause offer needs more than 3 × daily_new', () {
-      expect(kind(const ContextualFacts(backlog: 21)), isNull, reason: '= 3×');
       expect(
-        kind(const ContextualFacts(backlog: 22)),
+        kind(const ContextualFacts(backlog: 21, step: 'A1.1')),
+        isNull,
+        reason: '= 3×',
+      );
+      expect(
+        kind(const ContextualFacts(backlog: 22, step: 'A1.1')),
         ContextualKind.pauseOffer,
       );
       expect(
-        kind(const ContextualFacts(backlog: 22, pauseOn: true)),
+        kind(const ContextualFacts(backlog: 22, step: 'A1.1', pauseOn: true)),
         isNull,
         reason: 'already paused',
       );
       expect(
-        kind(const ContextualFacts(backlog: 16, dailyNew: 5)),
+        kind(const ContextualFacts(backlog: 16, dailyNew: 5, step: 'A1.1')),
         ContextualKind.pauseOffer,
+      );
+      expect(
+        kind(const ContextualFacts(backlog: 22)),
+        isNull,
+        reason: 'Z05: no step, no new words to pause',
       );
     });
 
@@ -333,6 +376,7 @@ void main() {
           const ContextualFacts(
             dismissed: <String>{'pause'},
             backlog: 30,
+            step: 'A2.1',
             systemVoice: true,
           ),
         ),
@@ -343,6 +387,7 @@ void main() {
           const ContextualFacts(
             dismissed: <String>{'pause', 'voice'},
             backlog: 30,
+            step: 'A2.1',
             systemVoice: true,
           ),
         ),

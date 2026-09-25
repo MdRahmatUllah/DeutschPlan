@@ -64,15 +64,20 @@ Future<StudyNext> studyNext(Ref ref, String date) async {
       : const <String>[];
   final picked = await ref.watch(sentencePickerProvider).forDay(date);
   final rated = await ref.watch(sentenceStoreProvider).rated(date);
+  final revise = await left(PlanKind.revise);
+  final newWords = await left(PlanKind.newWord);
   return StudyNext(
-    revise: await left(PlanKind.revise),
-    newWords: await left(PlanKind.newWord),
+    revise: revise,
+    newWords: newWords,
     grammar: grammar,
     sentences: math.max(0, picked.length - rated),
     backlog: (await plans.backlogBefore(date)).length,
     // BR-PLAN-10 counts the grammar due, as Today's "Tag geschafft" does.
+    // The rows read, not every open one: a word a content update removed
+    // keeps its row but can't be studied, and must not hold the day open.
     dayDone:
-        open.isEmpty &&
+        revise.isEmpty &&
+        newWords.isEmpty &&
         grammar.isEmpty &&
         !await ref.watch(planRepositoryProvider).dayCompleteShown(date),
   );

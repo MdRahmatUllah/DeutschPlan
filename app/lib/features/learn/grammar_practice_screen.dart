@@ -15,6 +15,7 @@ import 'package:deutschplan/domain/grammar_item_generator.dart';
 import 'package:deutschplan/features/learn/grammar_topic_screen.dart';
 import 'package:deutschplan/features/study/study_cloze.dart';
 import 'package:deutschplan/features/study/study_summary.dart';
+import 'package:deutschplan/features/study/write_guard.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
 import 'package:deutschplan/l10n/ui_digits.dart';
 import 'package:deutschplan/router/routes.dart';
@@ -101,16 +102,24 @@ class _GrammarPracticeScreenState extends ConsumerState<GrammarPracticeScreen> {
       });
       return;
     }
-    // FR-L15-03: the topic as a whole, on its last item.
+    // FR-L15-03: the topic as a whole, on its last item. A write that fails
+    // keeps the topic, with Retry and Export (#174).
     _leaving = true;
-    await ref
-        .read(grammarRatingServiceProvider)
-        .ratePractice(
-          set.topic.uid,
-          items: set.items.length,
-          correct: _correct,
-        );
+    final written = await guardWrite(context, () async {
+      await ref
+          .read(grammarRatingServiceProvider)
+          .ratePractice(
+            set.topic.uid,
+            items: set.items.length,
+            correct: _correct,
+          );
+      return true;
+    });
     if (!mounted) return;
+    if (!written) {
+      _leaving = false;
+      return;
+    }
     if (_topic < widget.topicUids.length - 1) {
       setState(() {
         _topic++;

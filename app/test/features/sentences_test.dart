@@ -259,6 +259,38 @@ INSERT INTO sentence_log (word_uid, ord, shown_on, self_rating) VALUES
       expect(reviews, hasLength(1));
     });
 
+    testWidgets('Z05 BR-FSRS-04 a Not yet that fails to save leaves neither '
+        'row; Retry writes both and moves on', (tester) async {
+      await pump(tester);
+      // The Hard rating fails, after the sentence's own row was written.
+      await tester.runAsync(
+        () => db.customStatement(
+          'CREATE TRIGGER broken BEFORE INSERT ON review_log '
+          "BEGIN SELECT RAISE(ABORT, 'disk I/O error'); END",
+        ),
+      );
+      Future<int> reviews() async =>
+          (await db.customSelect('SELECT 1 FROM review_log').get()).length;
+
+      await answer(tester, l10n.sentencesNotYet);
+
+      expect(find.text(l10n.saveAnswerFailed), findsOneWidget);
+      expect(
+        (await tester.runAsync(log))!.first['self_rating'],
+        isNull,
+        reason: 'one transaction: the sentence is not rated either',
+      );
+      expect(find.text(l10n.sentencesPlace(1, 3)), findsOneWidget);
+
+      await tester.runAsync(() => db.customStatement('DROP TRIGGER broken'));
+      await answer(tester, l10n.retry);
+
+      expect(find.text(l10n.saveAnswerFailed), findsNothing);
+      expect((await tester.runAsync(log))!.first['self_rating'], 1);
+      expect(await tester.runAsync(reviews), 1);
+      expect(find.text(l10n.sentencesPlace(2, 3)), findsOneWidget);
+    });
+
     testWidgets('only Not yet touches the word', (tester) async {
       await pump(tester);
       await answer(tester, l10n.sentencesUnderstood);

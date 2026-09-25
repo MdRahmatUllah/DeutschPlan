@@ -72,9 +72,6 @@ enum ContextualKind {
   /// BR-COURSE-05 with auto-advance off: the step ran out, *Start next step*.
   stepComplete,
 
-  /// The last step ran out: revision carries on.
-  courseComplete,
-
   /// BR-CONTENT-03: the course was updated, with its counts.
   contentUpdate,
 
@@ -86,6 +83,10 @@ enum ContextualKind {
 
   /// The on-device voice is not in use yet.
   voice,
+
+  /// The last step ran out: revision carries on. Last, because it never
+  /// goes: ahead of the rest it would hide them for good.
+  courseComplete,
 }
 
 /// The one contextual card Today shows, and what it needs to say.
@@ -183,15 +184,15 @@ Set<String> dismissedIds(String? stored) {
 
 /// FR-T1-06: at most one card — the first that applies and was not dismissed,
 /// in [ContextualKind]'s order. What must be answered comes first (a finished
-/// step), then news (a content update), then offers, most useful first.
+/// step), then news (a content update), then offers, most useful first, and
+/// the finished course's card once nothing else is waiting (#174).
 ContextualOffer? contextualFor(ContextualFacts facts) {
   ContextualOffer? unlessDismissed(ContextualOffer offer) =>
       facts.dismissed.contains(offer.dismissId) ? null : offer;
 
-  if (facts.stepComplete) {
-    return facts.nextStep == null
-        ? const ContextualOffer(ContextualKind.courseComplete)
-        : ContextualOffer(ContextualKind.stepComplete, step: facts.nextStep);
+  final next = facts.nextStep;
+  if (facts.stepComplete && next != null) {
+    return ContextualOffer(ContextualKind.stepComplete, step: next);
   }
   final update = facts.contentUpdate;
   if (update != null) {
@@ -204,8 +205,11 @@ ContextualOffer? contextualFor(ContextualFacts facts) {
     );
   }
   final offers = <ContextualOffer>[
-    // BR-PLAN-07: "Today offers this when backlog > 3 × daily_new".
-    if (!facts.pauseOn && facts.backlog > 3 * facts.dailyNew)
+    // BR-PLAN-07: "Today offers this when backlog > 3 × daily_new". With no
+    // step, a finished course among them, there are no new words to pause.
+    if (facts.step != null &&
+        !facts.pauseOn &&
+        facts.backlog > 3 * facts.dailyNew)
       ContextualOffer(ContextualKind.pauseOffer, backlog: facts.backlog),
     // BR-EXAM-01: "≥ exam_unlock_percent of the step's words are introduced".
     if (facts.step != null &&
@@ -222,7 +226,10 @@ ContextualOffer? contextualFor(ContextualFacts facts) {
     final shown = unlessDismissed(offer);
     if (shown != null) return shown;
   }
-  return null;
+  // BR-COURSE-05 at the end of the course: no next step, revision only.
+  return facts.stepComplete
+      ? const ContextualOffer(ContextualKind.courseComplete)
+      : null;
 }
 
 /// Everything T1 draws, read once from the plan and the database.

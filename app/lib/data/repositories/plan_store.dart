@@ -102,6 +102,9 @@ LIMIT ?2
   /// had. Due, it is ranked by that and never by retrievability. One whose
   /// word was deleted is not a candidate: a rating from a card still open can
   /// write its state again, and it would come back as a blank card forever.
+  ///
+  /// Nor is a course word a content update removed (BR-CONTENT-02): its
+  /// state stays, and comes back with the word if it ever does.
   @override
   Future<List<RevisionCandidate>> revisionCandidates() async {
     final rows = await _db
@@ -111,7 +114,7 @@ SELECT word_uid AS uid, stability, due, last_review
 FROM word_state
 WHERE status IN ('learning', 'done')
   AND (last_review IS NOT NULL OR due IS NOT NULL)
-  AND (word_uid NOT LIKE 'custom:%'
+  AND (EXISTS (SELECT 1 FROM words w WHERE w.uid = word_uid)
        OR EXISTS (SELECT 1 FROM custom_words c
                   WHERE 'custom:' || c.id = word_uid))
 ''',
@@ -146,6 +149,10 @@ WHERE status IN ('learning', 'done')
   ///
   /// Not `seq_in_sublevel`: that is right for new words and would destroy the
   /// revise priority.
+  ///
+  /// A row whose word a content update removed is kept and not read
+  /// (BR-CONTENT-02): Today does not count it, and no session gets a blank
+  /// card for it.
   @override
   Future<List<String>> plannedOn(PlanDate date, PlanKind kind) async {
     final rows = await _db
@@ -154,6 +161,8 @@ WHERE status IN ('learning', 'done')
 SELECT word_uid AS uid
 FROM plan_items
 WHERE plan_date = ?1 AND kind = ?2
+  AND (word_uid LIKE 'custom:%'
+       OR EXISTS (SELECT 1 FROM words w WHERE w.uid = word_uid))
 ORDER BY rowid
 ''',
           variables: <Variable<Object>>[
@@ -252,6 +261,9 @@ SELECT ?1, ?2, ?3, code FROM (
   /// (BR-STATUS-03), so it neither holds BR-PLAN-07's pause on nor waits in
   /// T1's or T6's count. T4 still lists it, from its own query, so it can be
   /// resumed.
+  ///
+  /// Nor a word a content update removed (BR-CONTENT-02): it can never be
+  /// studied, so it must not hold BR-PLAN-07's pause on for good.
   @override
   Future<List<String>> backlogBefore(PlanDate today) async {
     final rows = await _db
@@ -264,6 +276,8 @@ WHERE kind = 'new' AND completed_at IS NULL AND plan_date < ?1
     SELECT 1 FROM word_state s
     WHERE s.word_uid = p.word_uid AND s.status = 'suspended'
   )
+  AND (p.word_uid LIKE 'custom:%'
+       OR EXISTS (SELECT 1 FROM words w WHERE w.uid = p.word_uid))
 ORDER BY plan_date DESC, word_uid
 ''',
           variables: <Variable<Object>>[Variable<String>(today)],

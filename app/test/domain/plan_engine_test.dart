@@ -749,6 +749,29 @@ void main() {
       expect(plan.nextStep, isNull);
     });
 
+    test('Z05 FR-T1-01 the days after the course: revision only, no new '
+        'words, and the backlog does not grow', () async {
+      store.course = <String>['A1.1'];
+      await engineWith().openDay(monday);
+      expect(store.plan['$monday/new'], <String>['a1', 'a2', 'a3']);
+      store.candidates = <RevisionCandidate>[
+        const RevisionCandidate(uid: 'a1', stability: 2, lastReview: monday),
+      ];
+
+      final tuesday = await engineWith().openDay(addDays(monday, 1));
+      final wednesday = await engineWith().openDay(addDays(monday, 2));
+
+      for (final plan in <DailyPlan>[tuesday, wednesday]) {
+        expect(plan.revise, <String>['a1'], reason: plan.date);
+        expect(plan.newToday, isEmpty, reason: plan.date);
+        expect(plan.stepComplete, isTrue, reason: plan.date);
+        expect(plan.nextStep, isNull, reason: plan.date);
+        // Monday's three, never studied, and nothing added to them.
+        expect(plan.backlog, hasLength(3), reason: plan.date);
+      }
+      expect(store.enrolled, isEmpty, reason: 'nothing to advance to');
+    });
+
     test('step complete is not the same as never having enrolled', () async {
       // Both leave `activeStep` null, and Today shows a different thing for
       // each: one offers the next step, the other is the onboarding case.
