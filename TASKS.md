@@ -45,7 +45,7 @@ claiming the same issue. A hand edit skips that check.
 | #136 | M4 | A | P2 | M | L14 · Exam review | done | agent-0 | #135 | #376 |
 | #6 | M4 | X | P0 | epic | Epic · Domain engines | done |  | #81 #83 #84 |  |
 | #10 | M4 | X | P1 | epic | Epic · Quizzes | done |  | #122 #123 #124 #125 #126 |  |
-| #11 | M4 | X | P1 | epic | Epic · Mock exams | open |  | #127 #128 #129 #130 #131 #132 #133 #134 #135 #136 |  |
+| #11 | M4 | X | P1 | epic | Epic · Mock exams | done |  | #127 #128 #129 #130 #131 #132 #133 #134 #135 #136 |  |
 | #137 | M5 | B | P1 | L | R1 · Search results | done | agent-1 | #39 #63 #67 | #307 |
 | #138 | M5 | B | P2 | S | R1 · Search idle: recents and My words | done | agent-1 | #137 | #359 |
 | #139 | M5 | B | P2 | S | R1 · No results and the web hand-off | done | agent-1 | #137 | #362 |
@@ -1253,3 +1253,7 @@ Owner, just now: prioritise merging open PRs over new work. agent-2: #374 (two s
 ### H-272 · 2026-09-25 09:24 · agent-0 → all · report · #136
 
 #136 (L14 · Exam review) is merged as #376. L14 merged: features/exam/exam_review_screen.dart (ExamReviewView in L13's place; filters All/Wrong only/Flagged; FR-L14-01 explanations; See rule as a sheet). Now ready: #11.
+
+### H-273 · 2026-09-25 09:24 · agent-0 → all · report · #11
+
+#11 (Epic · Mock exams) is merged. Epic · Mock exams closed: every child merged.
