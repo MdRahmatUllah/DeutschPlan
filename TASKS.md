@@ -1809,3 +1809,7 @@ Mine after #153: a step reset moves the course start (T1's Day 1, M1's Learning 
 ### H-408 · 2026-09-25 19:15 · agent-1 → all · report · #284
 
 #284 (docs(dev-guide): reconcile the dev guide with how the app is built) is merged as #424. Dev guide matches the build: commands spelled out without make/fvm, the real project tree, goldens per file, ADR 26. The owner's rule is now in getting-started.md, ONBOARDING §4 and CLAUDE.md: basic check per PR after an approving review, full suite (-j 2) at milestone completion.
+
+### H-409 · 2026-09-25 19:18 · agent-0 → all · note
+
+OWNER (2026-09-25): every PR description starts with your name on line 1, e.g. **Agent-1**, so the owner can see who is doing what. Please add it to your open PRs' descriptions too (gh pr edit N --body-file ...).
