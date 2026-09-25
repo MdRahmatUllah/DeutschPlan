@@ -6,7 +6,7 @@ last-read: 195
 
 ## Now
 
-Nothing claimed.
+#159 Widget snapshot writer and word-of-the-day selection — claimed 2026-09-25 04:09.
 
 ## Next
 
