@@ -19,6 +19,22 @@
 - ***Pause* / *Resume*** act on the model's own files. ***Retry*** cancels the failed attempt's tasks, whose late updates are then ignored. After a network failure it keeps the files that arrived and queues the rest. After a checksum failure it throws staging away (a corrupt file resumed would never verify) and queues every file.
 - **Space:** `DeviceStorage.space()` asks the platform (Android `StatFs` on the app's files, iOS capacity for important usage) over `deutschplan/storage`. `shortfall(needed:, space:)` gives the bytes a download lacks, which is what the disabled button states. It's 0 when the phone won't say, so a guess never blocks a download. `ModelDownloads.shortfallFor(model)` asks it for the variant's bytes plus a **100 MB margin** (`ModelDownloads.spaceMargin`: a phone filled to 0 bytes fails every app's writes), and `start` refuses with `NotEnoughSpace(bytes)` when it isn't 0, so no caller can fill the phone. *Retry* checks too: after a network failure, the bytes of the files that didn't arrive plus the margin (the full disk that failed a file is still full); after a checksum failure, the whole variant once staging is thrown away. Refused, it throws `NotEnoughSpace`, and page 5 says *Needs N MB more space* under *Retry* (#428).
 
+**What #155 settles** (`features/me/model_manager_screen.dart`):
+- **A card's state** (`cardStatusOf`) is its download's while one is under way: running, paused or waiting for Wi-Fi is *Downloading* (the pill reads *Paused* for the last two), then *Checking*, or *Failed*. Otherwise it is what is on the phone: *Ready*, *Update available*, *Failed*, and *Not downloaded*, which becomes *Not enough space* when the phone lacks the download's bytes.
+- **Per state:**
+  - *Ready* has the voice chips (the voice's card only), *Delete · free n* and *Check for update*.
+  - *Update available* has the chips, *Delete* and *Update · n*, which downloads the new build.
+  - *Downloading* has the progress line ("Downloading · 42%", "476 MB of 1.1 GB · Wi-Fi"), the bar, the note, the *Wi-Fi only* switch, and *Pause* or *Resume*.
+  - *Checking* has its note only.
+  - *Failed* has its note and *Retry*, and *Delete* when files are on the phone.
+  - *Not enough space* has a disabled *Download · n*, and a note with how much to free.
+  - *Not downloaded* has *Download · n*.
+- ***Check for update*** reads the manifest the app carries again. A model still current says "Up to date"; one the manifest has moved past becomes *Update available*. The manifest only changes with an app update.
+- ***Delete*** asks first ("Delete Supertonic 3 voice?", *Delete* / *Keep*), then `ModelRepository.delete`, which turns off what used the model (FR-M4-03).
+- **FR-M4-04:** `ENABLE_HYMT_DOWNLOAD` is a `--dart-define`, off by default, so a build is made with it on deliberately. Off, Hy-MT's *Download* is disabled and says "Not offered in this version of the app". The subtitle's *licence →* opens the Tencent HY text in M8's sheet (`showLicence`).
+- **FR-M4-05:** a voice chip chooses the voice (`tts_voice`) and plays its sample through Supertonic. The sample is in the voice's own name: Anna's is "Guten Tag! Ich bin Anna.", and Jonas says he is Jonas. That's a spec gap filled: the FR names Anna's line only.
+- **Sizes** are whole megabytes below a gigabyte, and gigabytes to one decimal above ("399 MB", "1.1 GB", "64 GB"), in the UI language's digits. The storage bar shows the phone's use in grey, the models' share in Lagoon, and free space in Oat. When the phone won't say its space, only "Models: n" shows.
+
 **Functional requirements**
 - FR-M4-01 Downloads via `background_downloader`: resumable, Wi-Fi-only flag, progress notification, checksum (SHA-256 from the model manifest) verified before activation; partial files never activate.
 - FR-M4-02 Model manifest (`assets/models/manifest.json`) lists URL, size, hash, licence per variant; updates compare hashes. A manifest that adds a file to an installed model is an update too, not a failure: the stamp is compared before the files are counted (#152, when the voice gained `M1.json` and `F2.json`).

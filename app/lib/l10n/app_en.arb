@@ -5715,5 +5715,308 @@
         "format": "decimalPattern"
       }
     }
+  },
+  "modelsTitle": "Voice & translation",
+  "@modelsTitle": {
+    "description": "M4's title (FR-M4, #155)."
+  },
+  "modelsStorage": "Phone storage",
+  "@modelsStorage": {
+    "description": "M4's storage card: its label."
+  },
+  "modelsStorageFree": "{free} free of {total}",
+  "@modelsStorageFree": {
+    "description": "M4's storage card: the phone's free space of its total, sizes already formatted ('12.4 GB').",
+    "placeholders": {
+      "free": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "modelsStorageModels": "Models: {size} of {total}",
+  "@modelsStorageModels": {
+    "description": "M4's storage card: what the models take, of the phone's total.",
+    "placeholders": {
+      "size": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "modelsStorageModelsOnly": "Models: {size}",
+  "@modelsStorageModelsOnly": {
+    "description": "M4's storage card when the phone won't say its space.",
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "modelsSizeMb": "{mb} MB",
+  "@modelsSizeMb": {
+    "description": "A size in megabytes, a whole number: \"399\".",
+    "placeholders": {
+      "mb": {
+        "type": "String"
+      }
+    }
+  },
+  "modelsSizeGb": "{gb} GB",
+  "@modelsSizeGb": {
+    "description": "A size in gigabytes, one decimal: \"1.1\".",
+    "placeholders": {
+      "gb": {
+        "type": "String"
+      }
+    }
+  },
+  "modelsVoiceTitle": "Supertonic 3 voice",
+  "@modelsVoiceTitle": {
+    "description": "M4's voice card: its title. Supertonic 3 is the model's name."
+  },
+  "modelsTranslationTitle": "Hy-MT 1.5 translation",
+  "@modelsTranslationTitle": {
+    "description": "M4's translation card: its title. Hy-MT 1.5 is the model's name."
+  },
+  "modelsVoiceSubtitle": "{size} · {licence} licence",
+  "@modelsVoiceSubtitle": {
+    "description": "Under the voice card's title: the download's size and its licence's name ('OpenRAIL-M').",
+    "placeholders": {
+      "size": {
+        "type": "String"
+      },
+      "licence": {
+        "type": "String"
+      }
+    }
+  },
+  "modelsTranslationSubtitle": "4-bit build · {size} · licence",
+  "@modelsTranslationSubtitle": {
+    "description": "Under the translation card's title: the build, its size, and a link to the licence's full text (FR-M4-04).",
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "modelsLicenceRead": "Read the {licence} licence",
+  "@modelsLicenceRead": {
+    "description": "What a screen reader says for the translation card's licence link.",
+    "placeholders": {
+      "licence": {
+        "type": "String"
+      }
+    }
+  },
+  "modelsStatusReady": "Ready",
+  "@modelsStatusReady": {
+    "description": "A model card's status: verified and in place."
+  },
+  "modelsStatusDownloading": "Downloading",
+  "@modelsStatusDownloading": {
+    "description": "A model card's status: the files are arriving."
+  },
+  "modelsStatusPaused": "Paused",
+  "@modelsStatusPaused": {
+    "description": "A model card's status: the learner paused it, or it waits for Wi-Fi."
+  },
+  "modelsStatusVerifying": "Checking",
+  "@modelsStatusVerifying": {
+    "description": "A model card's status: every file is in and the checksums are being read."
+  },
+  "modelsStatusUpdate": "Update available",
+  "@modelsStatusUpdate": {
+    "description": "A model card's status: a newer build than the one installed."
+  },
+  "modelsStatusFailed": "Failed",
+  "@modelsStatusFailed": {
+    "description": "A model card's status: a file failed to download or to check out."
+  },
+  "modelsStatusNotDownloaded": "Not downloaded",
+  "@modelsStatusNotDownloaded": {
+    "description": "A model card's status: nothing on the phone yet."
+  },
+  "modelsStatusNoSpace": "Not enough space",
+  "@modelsStatusNoSpace": {
+    "description": "A model card's status: the phone lacks the space to download it (FR-M4)."
+  },
+  "modelsProgress": "Downloading · {percent}%",
+  "@modelsProgress": {
+    "description": "A download's line: how much has arrived.",
+    "placeholders": {
+      "percent": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "modelsProgressPaused": "Paused · {percent}%",
+  "@modelsProgressPaused": {
+    "description": "A paused download's line: how much had arrived.",
+    "placeholders": {
+      "percent": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "modelsProgressWaiting": "Paused — resumes on Wi-Fi",
+  "@modelsProgressWaiting": {
+    "description": "A download held by Wi-Fi only while the phone is off Wi-Fi."
+  },
+  "modelsProgressBytes": "{done} of {total}",
+  "@modelsProgressBytes": {
+    "description": "A download's sizes: what has arrived of the whole, already formatted.",
+    "placeholders": {
+      "done": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "modelsProgressBytesWifi": "{done} of {total} · Wi-Fi",
+  "@modelsProgressBytesWifi": {
+    "description": "A download's sizes, with Wi-Fi only on.",
+    "placeholders": {
+      "done": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "modelsProgressNote": "Continues in the background with a system notification · pauses off Wi-Fi",
+  "@modelsProgressNote": {
+    "description": "Under a download, with Wi-Fi only on."
+  },
+  "modelsProgressNoteAny": "Continues in the background with a system notification",
+  "@modelsProgressNoteAny": {
+    "description": "Under a download, with Wi-Fi only off."
+  },
+  "modelsWifiOnly": "Wi-Fi only",
+  "@modelsWifiOnly": {
+    "description": "The download's switch: `models_wifi_only`."
+  },
+  "modelsWifiOnlyNote": "Pauses on mobile data",
+  "@modelsWifiOnlyNote": {
+    "description": "Under the Wi-Fi only switch."
+  },
+  "modelsPause": "Pause",
+  "@modelsPause": {
+    "description": "A download's button: pause it."
+  },
+  "modelsResume": "Resume",
+  "@modelsResume": {
+    "description": "A paused download's button."
+  },
+  "modelsDownload": "Download · {size}",
+  "@modelsDownload": {
+    "description": "A model card's button: download it, and its size.",
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "modelsUpdate": "Update · {size}",
+  "@modelsUpdate": {
+    "description": "A model card's button when a newer build is available: download it.",
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "modelsDelete": "Delete · free {size}",
+  "@modelsDelete": {
+    "description": "A model card's button: delete it, and the space that frees.",
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "modelsCheckUpdate": "Check for update",
+  "@modelsCheckUpdate": {
+    "description": "A ready model card's button."
+  },
+  "modelsUpToDate": "Up to date",
+  "@modelsUpToDate": {
+    "description": "The toast after Check for update finds nothing newer."
+  },
+  "modelsVerifyingNote": "Checking the files before first use",
+  "@modelsVerifyingNote": {
+    "description": "Under a model whose checksums are being read."
+  },
+  "modelsFailedNote": "The download stopped, or a file didn't check out. Retry fetches what's missing.",
+  "@modelsFailedNote": {
+    "description": "Under a failed model."
+  },
+  "modelsNoSpaceNote": "Free {size} on the phone to download it",
+  "@modelsNoSpaceNote": {
+    "description": "Under a model the phone lacks the space for: how much to free (FR-M4).",
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "modelsHymtGated": "Not offered in this version of the app",
+  "@modelsHymtGated": {
+    "description": "Under Hy-MT's download when the build's licence flag is off (FR-M4-04)."
+  },
+  "modelsVoiceLabel": "Voice",
+  "@modelsVoiceLabel": {
+    "description": "Above the voice chips."
+  },
+  "modelsVoicePlay": "Play {voice}",
+  "@modelsVoicePlay": {
+    "description": "What a screen reader says for a voice chip, which chooses the voice and plays its sample (FR-M4-05). {voice} is its name: Anna, Jonas, Lena.",
+    "placeholders": {
+      "voice": {
+        "type": "String"
+      }
+    }
+  },
+  "modelsDeleteTitle": "Delete {model}?",
+  "@modelsDeleteTitle": {
+    "description": "The delete confirmation's title; {model} is the card's title.",
+    "placeholders": {
+      "model": {
+        "type": "String"
+      }
+    }
+  },
+  "modelsDeleteVoiceBody": "Speakers use the phone's German voice until you download it again.",
+  "@modelsDeleteVoiceBody": {
+    "description": "The voice's delete confirmation (FR-M4-03)."
+  },
+  "modelsDeleteTranslationBody": "Translation turns off until you download it again.",
+  "@modelsDeleteTranslationBody": {
+    "description": "The translation model's delete confirmation (FR-M4-03)."
+  },
+  "modelsDeleteConfirm": "Delete",
+  "@modelsDeleteConfirm": {
+    "description": "The delete confirmation's button."
+  },
+  "modelsFooter": "Both models run entirely on the phone. Deleting the voice falls back to the phone's German voice; deleting the translation model turns translation off.",
+  "@modelsFooter": {
+    "description": "M4's footer."
+  },
+  "modelsStartFailed": "The download couldn't start",
+  "@modelsStartFailed": {
+    "description": "The toast when a download or retry couldn't be queued."
+  },
+  "modelsDeleteKeep": "Keep",
+  "@modelsDeleteKeep": {
+    "description": "The delete confirmation's cancel: keep the model."
   }
 }

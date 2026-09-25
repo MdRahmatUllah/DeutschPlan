@@ -176,6 +176,18 @@ class _Section extends StatelessWidget {
   }
 }
 
+/// FR-M8-01: [licence]'s full text, in a sheet. M8's rows open it, and so does
+/// M4's licence link (FR-M4-04).
+Future<void> showLicence(BuildContext context, Licence licence) {
+  final kind = licence.kind.isEmpty
+      ? AppLocalizations.of(context).licencesOther
+      : licence.kind;
+  return Adaptive.showSheet<void>(
+    context: context,
+    builder: (sheet) => _Text(licence: licence, kind: kind),
+  );
+}
+
 /// One licence: its name and kind, opening its text.
 class _Row extends StatelessWidget {
   const _Row(this.licence);
@@ -192,10 +204,7 @@ class _Row extends StatelessWidget {
       button: true,
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
-        onTap: () => Adaptive.showSheet<void>(
-          context: context,
-          builder: (sheet) => _Text(licence: licence, kind: kind),
-        ),
+        onTap: () => showLicence(context, licence),
         child: DecoratedBox(
           decoration: BoxDecoration(
             border: Border(top: BorderSide(color: tokens.surface.outline)),

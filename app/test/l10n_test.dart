@@ -71,6 +71,8 @@ void main() {
       'settingsVoiceSupertonic',
       'exportImportSizeKb',
       'exportImportSizeMb',
+      'modelsSizeMb',
+      'modelsSizeGb',
       'onboardingVoiceSample',
       'todayGreetingMorning',
       'todayGreetingDay',
@@ -155,7 +157,8 @@ void main() {
         .replaceAll(RegExp(r'\{\w+(,\s*\w+,)?\}?'), '')
         .replaceAll(RegExp(r'=?\w+\{'), '')
         .replaceAll(RegExp(r'\b[ABC][12](\.[12])?\+?'), '')
-        .replaceAll('Hy-MT 1.5', '');
+        .replaceAll('Hy-MT 1.5', '')
+        .replaceAll('Supertonic 3', '');
     final latin = <String>[
       for (final MapEntry(:key, :value) in bn.entries)
         if (!key.startsWith('@') &&
