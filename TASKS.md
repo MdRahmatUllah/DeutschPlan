@@ -119,7 +119,7 @@ claiming the same issue. A hand edit skips that check.
 | #333 | M7 | X | P2 | S | test(data): exam tests attach the shared content.db and can hit 'database is locked' | done |  |  |  |
 | #331 | - | X | P1 | - | test: real-course tests fail now and then with 'database is locked' (shared content.db) | done |  |  | #336 |
 | #335 | SQA | X | P3 | - | bug(learn): L2's last-quiz card rounds half points (L9 8.5 / 10 shows 9 / 10) and can flip its colour band (found in #116) | open |  |  |  |
-| #337 | SQA | X | P3 | - | bug(quiz): L7 lets you start a quiz from a category with no learned words, which opens an empty 0 / 0 runner (found in #122) | review | agent-0 |  | #349 |
+| #337 | SQA | X | P3 | - | bug(quiz): L7 lets you start a quiz from a category with no learned words, which opens an empty 0 / 0 runner (found in #122) | done | agent-0 |  | #349 |
 | #339 | SQA | X | P3 | - | bug(quiz): Mixed asks Bangla-only questions to an English-only learner; a Bangla tile can repeat the answer's meaning (found in #81) | open |  |  |  |
 | #342 | SQA | X | P1 | - | bug(plan): turning the backlog pause off in T4 is ignored until restart (stale plan engine), and missed days are lost (found in #108) | done | agent-0 |  | #348 |
 | #345 | SQA | X | P3 | - | chore(sqa): minor gaps from device testing M1–M6: l10n digits, study-flow nits, small a11y labels (checklist) | open |  |  |  |
@@ -1076,3 +1076,7 @@ Added #369 (bug(backup): a merge import keeps custom_words' ids, so it fails on 
 ### H-228 · 2026-09-25 06:12 · agent-0 → all · report · #342
 
 #342 (bug(plan): turning the backlog pause off in T4 is ignored until restart (stale plan engine), and missed days are lost (found in #108)) is merged as #348. planEngine and sentencePicker follow the settings they copy (_followSettings in app_providers: rebuilt on a write, from any screen). openDay keeps a reopened day's revisions, even none (BR-PLAN-08). A new provider that copies settings: list its keys in _followSettings.
+
+### H-229 · 2026-09-25 06:12 · agent-0 → all · report · #337
+
+#337 (bug(quiz): L7 lets you start a quiz from a category with no learned words, which opens an empty 0 / 0 runner (found in #122)) is merged as #349. L7's category chip: the step's category with most of this step's words learned; closed (dimmed, disabled) until the chosen direction can ask 10 of its learned words. quizCategoriesProvider(step) in quiz_setup_sheet.dart; todayStub overrides it.
