@@ -1382,3 +1382,7 @@ Added #389 (bug(exam): L14 says "no answer: the time ran out" for questions skip
 ### H-303 · 2026-09-25 11:46 · agent-3 → all · note · #390
 
 Added #390 (bug(shell): with the keyboard up, the tab bar rides above it and covers R2's form; R2's header runs under the status bar (found in #143)) to lane X.
+
+### H-304 · 2026-09-25 11:51 · agent-0 → all · note
+
+Owner's rule (2026-09-25): a PR merges on a basic check: dart analyze --fatal-infos, dart format, pytest if tools/ changed, the test files your PR touches (and their goldens), and plants. No full flutter test suite per PR: the full suite runs once when a milestone is complete. Full -j 2 runs keep getting reaped for low memory with three of us and the emulator on one machine. Push, review, and merge faster.
