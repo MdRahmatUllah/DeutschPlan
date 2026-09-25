@@ -312,12 +312,15 @@ void main() {
     expect(quiz!.direction, 'deEn');
   });
 
-  testWidgets('#281 Quiz ends 18 from the edge, as the artboard has it: the '
-      'bar\'s 8 and the link\'s own 10', (tester) async {
-    await pump(tester);
-    final end = tester.getTopRight(find.text(l10n.stepTabQuiz)).dx;
-    expect(390 - end, 18);
-  });
+  testWidgets(
+    '#281 FR-L6-02 Quiz ends 18 from the edge, as the artboard has it: the '
+    'bar\'s 8 and the link\'s own 10',
+    (tester) async {
+      await pump(tester);
+      final end = tester.getTopRight(find.text(l10n.stepTabQuiz)).dx;
+      expect(390 - end, 18);
+    },
+  );
 
   testWidgets('Quiz stays closed until ten of the words are learned', (
     tester,
@@ -339,27 +342,36 @@ void main() {
     expect(quiz?.sourceRef, '1');
   });
 
-  testWidgets('#281 words still loading: no header, no rows, and no "no '
-      'words" yet', (tester) async {
-    final never = StreamController<List<StepWord>>();
-    addTearDown(never.close);
-    await pump(tester, stream: never.stream);
-    expect(tester.takeException(), isNull);
-    expect(find.byType(DpSegmentedBar), findsNothing);
-    expect(find.text(l10n.categoryWordsLine(412, 'A1.1 → B1.1')), findsNothing);
-    expect(find.byType(WordRow), findsNothing);
-    expect(find.text(l10n.stepWordsNone), findsNothing);
-  });
+  testWidgets(
+    '#281 FR-L6-01 words still loading: no header, no rows, and no "no '
+    'words" yet',
+    (tester) async {
+      final never = StreamController<List<StepWord>>();
+      addTearDown(never.close);
+      await pump(tester, stream: never.stream);
+      expect(tester.takeException(), isNull);
+      expect(find.byType(DpSegmentedBar), findsNothing);
+      expect(
+        find.text(l10n.categoryWordsLine(412, 'A1.1 → B1.1')),
+        findsNothing,
+      );
+      expect(find.byType(WordRow), findsNothing);
+      expect(find.text(l10n.stepWordsNone), findsNothing);
+    },
+  );
 
-  testWidgets('a listed category whose rows come back empty: no header, and '
-      'says so', (tester) async {
-    // The category is listed but its rows are empty: a moment between the
-    // two streams, which must not take the screen down.
-    await pump(tester, words: const <StepWord>[]);
-    expect(tester.takeException(), isNull);
-    expect(find.byType(DpSegmentedBar), findsNothing);
-    expect(find.text(l10n.stepWordsNone), findsOneWidget);
-  });
+  testWidgets(
+    'FR-L6-01 a listed category whose rows come back empty: no header, and '
+    'says so',
+    (tester) async {
+      // The category is listed but its rows are empty: a moment between the
+      // two streams, which must not take the screen down.
+      await pump(tester, words: const <StepWord>[]);
+      expect(tester.takeException(), isNull);
+      expect(find.byType(DpSegmentedBar), findsNothing);
+      expect(find.text(l10n.stepWordsNone), findsOneWidget);
+    },
+  );
 
   testWidgets('a category with no words: no header, no Quiz, and says so', (
     tester,
