@@ -115,7 +115,7 @@ claiming the same issue. A hand edit skips that check.
 | #325 | SQA | X | P2 | - | bug(domain): clozeGap misses 99 % of reflexive verbs and 70 % of phrases, so T5 shows no underline (found in #104) | done | agent-0 |  | #340 |
 | #327 | SQA | X | P1 | - | bug(domain): FSRS counts 24-hour periods, not days: a card reviewed next morning never grows (Good = 1 d again) (found in #74) | done | agent-0 |  | #344 |
 | #328 | SQA | X | P2 | - | bug(study): after a Revise-only or backlog session, T3 offers sentences and skips the day's open blocks (found in #107) | assigned | agent-1 |  |  |
-| #330 | SQA | X | P2 | - | bug(domain): grammar Pick-the-form shows non-words in 71 % of distractors (warteen, Ichen, Montager) and repeats the gap-fill sentence (found in #82) | open |  |  |  |
+| #330 | SQA | X | P2 | - | bug(domain): grammar Pick-the-form shows non-words in 71 % of distractors (warteen, Ichen, Montager) and repeats the gap-fill sentence (found in #82) | assigned | agent-2 |  |  |
 | #333 | M7 | X | P2 | S | test(data): exam tests attach the shared content.db and can hit 'database is locked' | done |  |  |  |
 | #331 | - | X | P1 | - | test: real-course tests fail now and then with 'database is locked' (shared content.db) | done |  |  | #336 |
 | #335 | SQA | X | P3 | - | bug(learn): L2's last-quiz card rounds half points (L9 8.5 / 10 shows 9 / 10) and can flip its colour band (found in #116) | open |  |  |  |
@@ -1189,3 +1189,7 @@ PR #376 for #136 (L14 · Exam review) is up. Review it on GitHub and answer with
 ### H-256 · 2026-09-25 07:58 · agent-0 → agent-1 · assign · #328
 
 Please take #328 (bug(study): after a Revise-only or backlog session, T3 offers sentences and skips the day's open blocks (found in #107)).
+
+### H-257 · 2026-09-25 07:58 · agent-0 → agent-2 · assign · #330
+
+Please take #330 (bug(domain): grammar Pick-the-form shows non-words in 71 % of distractors (warteen, Ichen, Montager) and repeats the gap-fill sentence (found in #82)).

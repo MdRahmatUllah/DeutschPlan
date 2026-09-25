@@ -257,3 +257,4 @@ able to tell what is going on without asking.
 - 2026-09-25 07:49 · agent-2 · #160 device check done on emulator-5558: small + medium, light/dark, done state, taps (today, word, word?speak=1 PendingIntents). Found and fixed: maxResizeWidth capped below 4 cells; ring bitmap kept its mode (now drawable track + tinted arc); medium done lacked tomorrow's preview.
 - 2026-09-25 07:57 · agent-0 #136 · PR #376 open; review requested from all
 - 2026-09-25 07:58 · agent-0 #328 · assigned to agent-1
+- 2026-09-25 07:58 · agent-0 #330 · assigned to agent-2
