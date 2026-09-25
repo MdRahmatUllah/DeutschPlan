@@ -475,15 +475,24 @@ WHERE due IS NOT NULL AND due <= ?1 AND status != 'suspended'
     return row.read<int>('n');
   }
 
-  /// The day the first step was started: T1's "Day 34 of your course".
+  /// The course's first day: T1's "Day 34 of your course" and M1's
+  /// "Learning since".
   ///
   /// The earliest enrollment rather than the active one, because a new step is
-  /// a new enrollment and the course did not restart with it.
+  /// a new enrollment and the course did not restart with it; and the earliest
+  /// day studied too, because resetting a step rewrites or drops its
+  /// enrollment (#420) and the days studied are history it leaves alone. Only
+  /// *Reset everything*, which empties both, starts the course over.
   Future<String?> courseStartedOn() async {
     final row = await _db
         .customSelect(
-          'SELECT MIN(started_on) AS started FROM enrollments',
-          readsFrom: <ResultSetImplementation<Object, Object>>{_db.enrollments},
+          'SELECT MIN(day) AS started FROM ('
+          'SELECT started_on AS day FROM enrollments '
+          'UNION ALL SELECT day FROM daily_stats)',
+          readsFrom: <ResultSetImplementation<Object, Object>>{
+            _db.enrollments,
+            _db.dailyStats,
+          },
         )
         .getSingle();
     return row.readNullable<String>('started');
