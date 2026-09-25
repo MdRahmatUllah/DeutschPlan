@@ -38,6 +38,7 @@ import 'package:deutschplan/features/learn/grammar_topic_screen.dart';
 import 'package:deutschplan/features/learn/learn_screen.dart';
 import 'package:deutschplan/features/learn/step_detail_screen.dart';
 import 'package:deutschplan/features/me/me_screen.dart';
+import 'package:deutschplan/features/me/export_import_screen.dart';
 import 'package:deutschplan/features/me/progress_screen.dart';
 import 'package:deutschplan/features/me/settings_screen.dart';
 import 'package:deutschplan/features/quiz/quiz_screen.dart';
@@ -476,7 +477,7 @@ class ExportImportRoute extends GoRouteData with $ExportImportRoute {
 
   @override
   Widget build(BuildContext context, GoRouterState state) =>
-      const PlaceholderScreen(title: 'Export / import', screen: 'M6');
+      const ExportImportScreen();
 }
 
 class AboutRoute extends GoRouteData with $AboutRoute {

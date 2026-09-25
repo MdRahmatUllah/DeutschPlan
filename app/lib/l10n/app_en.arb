@@ -4319,5 +4319,152 @@
         "type": "String"
       }
     }
+  },
+  "exportImportTitle": "Export / import",
+  "@exportImportTitle": {
+    "description": "M6 bar title."
+  },
+  "exportImportExportHeading": "Export",
+  "@exportImportExportHeading": {
+    "description": "M6's export card heading, shown in capitals."
+  },
+  "exportImportExportBody": "One JSON file with word states, review log, plans, quiz and exam history, settings and my words. Opens the share sheet — save to Files or Drive, or email it to yourself.",
+  "@exportImportExportBody": {
+    "description": "M6's export card text (FR-M6-01)."
+  },
+  "exportImportExport": "Export progress",
+  "@exportImportExport": {
+    "description": "M6's export button while the size is still being worked out."
+  },
+  "exportImportExportSized": "Export progress · {size}",
+  "@exportImportExportSized": {
+    "description": "M6's export button with the file's size, e.g. '1.8 MB'.",
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "exportImportSizeKb": "{kb} KB",
+  "@exportImportSizeKb": {
+    "description": "The export's size under a megabyte.",
+    "placeholders": {
+      "kb": {
+        "type": "int"
+      }
+    }
+  },
+  "exportImportSizeMb": "{mb} MB",
+  "@exportImportSizeMb": {
+    "description": "The export's size in megabytes, one decimal: '1.8'.",
+    "placeholders": {
+      "mb": {
+        "type": "String"
+      }
+    }
+  },
+  "exportImportLastNever": "Last export: never",
+  "@exportImportLastNever": {
+    "description": "M6 under the export button, before the first export."
+  },
+  "exportImportLast": "Last export: {date}",
+  "@exportImportLast": {
+    "description": "M6 under the export button: the day of the last export, e.g. '20 Sep'.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "exportImportRecordings": "Speaking recordings stay on this phone: they're too big for the file.",
+  "@exportImportRecordings": {
+    "description": "M6: FR-M6-01 says recordings are not exported, and the UI says so."
+  },
+  "exportImportExportFailed": "The export didn't finish. Try again.",
+  "@exportImportExportFailed": {
+    "description": "M6 toast when the export or the share sheet failed."
+  },
+  "exportImportImportHeading": "Import",
+  "@exportImportImportHeading": {
+    "description": "M6's import card heading, shown in capitals."
+  },
+  "exportImportChoose": "Choose a file",
+  "@exportImportChoose": {
+    "description": "M6's import card before a file is chosen: opens the file picker."
+  },
+  "exportImportChooseOther": "Choose a different file",
+  "@exportImportChooseOther": {
+    "description": "M6's import card once a file is chosen."
+  },
+  "exportImportWordStates": "{count, plural, =1{1 word state} other{{count} word states}}",
+  "@exportImportWordStates": {
+    "description": "The chosen file's preview (FR-M6-02): how many words it holds a state for.",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "exportImportLastActive": "last active {date}",
+  "@exportImportLastActive": {
+    "description": "The chosen file's preview: the day of its last review, e.g. '20 Sep'.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "exportImportMerge": "Merge — keep the most recent of each word",
+  "@exportImportMerge": {
+    "description": "M6 radio: FR-M6-03."
+  },
+  "exportImportReplace": "Replace everything on this phone",
+  "@exportImportReplace": {
+    "description": "M6 radio: FR-M6-04."
+  },
+  "exportImportDoMerge": "Import and merge",
+  "@exportImportDoMerge": {
+    "description": "M6's import button with Merge chosen."
+  },
+  "exportImportDoReplace": "Import and replace",
+  "@exportImportDoReplace": {
+    "description": "M6's import button with Replace chosen."
+  },
+  "exportImportReplaceTitle": "Replace everything on this phone?",
+  "@exportImportReplaceTitle": {
+    "description": "Confirmation before a replace import."
+  },
+  "exportImportReplaceMessage": "Your progress here is replaced by the file's. This can't be undone.",
+  "@exportImportReplaceMessage": {
+    "description": "Confirmation before a replace import."
+  },
+  "exportImportReplaceConfirm": "Replace",
+  "@exportImportReplaceConfirm": {
+    "description": "The replace confirmation's destructive action."
+  },
+  "exportImportReplaceCancel": "Keep my data",
+  "@exportImportReplaceCancel": {
+    "description": "The replace confirmation's way out."
+  },
+  "exportImportDone": "Imported",
+  "@exportImportDone": {
+    "description": "M6 toast after an import wrote the file."
+  },
+  "exportImportNotABackup": "That file isn't a DeutschPlan export.",
+  "@exportImportNotABackup": {
+    "description": "M6 import card: the chosen file is not a backup."
+  },
+  "exportImportNewer": "That file is from a newer DeutschPlan. Update the app, then import it.",
+  "@exportImportNewer": {
+    "description": "M6 import card: FR-M6-02 refuses a file from a newer schema."
+  },
+  "exportImportFailed": "The import didn't finish. Nothing on this phone changed.",
+  "@exportImportFailed": {
+    "description": "M6 import card: the import failed and was rolled back (FR-M6-04)."
+  },
+  "exportImportFooter": "Neither needs an account. The file never passes through a server.",
+  "@exportImportFooter": {
+    "description": "M6's footer (BR-PRIV-02)."
   }
 }
