@@ -66,6 +66,10 @@
   "@exportProgress": {
     "description": "Action on the bootstrap error screen and on Export / import. Writes everything the learner has done to a JSON file. FR-S1-03, FR-M6-01."
   },
+  "saveAnswerFailed": "Couldn't save that answer. Every card before it is saved.",
+  "@saveAnswerFailed": {
+    "description": "The error panel when an answer's database write fails, on the study session, practice sentences and grammar practice (#174). Retry writes it again; Export progress keeps a copy. Each answer is its own transaction, so nothing before it is lost. docs/01-architecture/accessibility-performance.md."
+  },
   "tabToday": "Today",
   "@tabToday": {
     "description": "First tab of the shell (branch 0), showing the day's plan. docs/01-architecture/navigation.md."

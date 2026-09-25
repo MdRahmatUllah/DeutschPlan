@@ -17,6 +17,7 @@ import 'package:deutschplan/domain/fsrs.dart' show Rating;
 import 'package:deutschplan/domain/sentence_picker.dart';
 import 'package:deutschplan/domain/text_norm.dart' show searchKey;
 import 'package:deutschplan/features/study/study_summary.dart';
+import 'package:deutschplan/features/study/write_guard.dart';
 import 'package:deutschplan/features/words/speak.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
 import 'package:deutschplan/router/routes.dart';
@@ -84,27 +85,32 @@ class PracticeSentences extends _$PracticeSentences {
   }
 
   /// FR-T5-02: records the answer; *Not yet* also rates the headword Hard,
-  /// logged as from a sentence (BR-FSRS-04).
-  Future<void> rate(int index, SentenceRating rating) async {
+  /// logged as from a sentence (BR-FSRS-04) — one transaction, both or
+  /// neither. False when there was no list to rate in.
+  Future<bool> rate(int index, SentenceRating rating) async {
     final list = state.value;
-    if (list == null) return;
+    if (list == null) return false;
     final item = list[index];
+    final ratings = ref.read(ratingServiceProvider);
     await ref
         .read(sentenceStoreProvider)
-        .rate(ref.read(todayProvider), item.sentence, rating.value);
-    if (rating == SentenceRating.notYet) {
-      await ref
-          .read(ratingServiceProvider)
-          .rate(
-            item.sentence.wordUid,
-            Rating.hard,
-            source: ReviewSource.sentence,
-          );
-    }
+        .rate(
+          ref.read(todayProvider),
+          item.sentence,
+          rating.value,
+          andThen: rating == SentenceRating.notYet
+              ? () => ratings.rate(
+                  item.sentence.wordUid,
+                  Rating.hard,
+                  source: ReviewSource.sentence,
+                )
+              : null,
+        );
     state = AsyncData<List<PracticeSentence>>(<PracticeSentence>[
       for (var i = 0; i < list.length; i++)
         i == index ? item.rated(rating.value) : list[i],
     ]);
+    return true;
   }
 }
 
@@ -137,7 +143,12 @@ class _SentencesScreenState extends ConsumerState<SentencesScreen> {
     if (_busy || _leaving) return;
     _busy = true;
     try {
-      await ref.read(practiceSentencesProvider.notifier).rate(index, rating);
+      // A write that fails keeps the sentence, with Retry and Export (#174).
+      final written = await guardWrite(
+        context,
+        () => ref.read(practiceSentencesProvider.notifier).rate(index, rating),
+      );
+      if (!written) return;
     } finally {
       _busy = false;
     }

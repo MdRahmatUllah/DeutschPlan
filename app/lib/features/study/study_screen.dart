@@ -20,6 +20,7 @@ import 'package:deutschplan/features/study/study_motion.dart';
 import 'package:deutschplan/features/study/study_rating.dart';
 import 'package:deutschplan/features/study/study_session.dart';
 import 'package:deutschplan/features/study/study_summary.dart';
+import 'package:deutschplan/features/study/write_guard.dart';
 import 'package:deutschplan/router/cross_tab.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
 import 'package:deutschplan/router/routes.dart';
@@ -168,7 +169,7 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
     final l10n = AppLocalizations.of(context);
     return _withUndo(
       item,
-      known ? notifier.knewIt() : notifier.skip(),
+      known ? notifier.knewIt : notifier.skip,
       (name) => known ? l10n.studyKnown(name) : l10n.studySkipped(name),
     );
   }
@@ -191,27 +192,28 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
     };
     return _withUndo(
       item,
-      notifier.rate(rating),
+      () => notifier.rate(rating),
       (name) => l10n.studyRated(name, label),
     );
   }
 
-  /// Waits for [write], then offers its *Undo* — the same bar for every
-  /// card action (DpUndo).
+  /// Writes, then offers its *Undo* — the same bar for every card action
+  /// (DpUndo). A write that fails keeps the card, with Retry and Export
+  /// (#174); there is nothing to undo until one goes through, and a double
+  /// tap's second call writes nothing.
   Future<void> _withUndo(
     StudyItem item,
-    Future<void> write,
+    Future<bool> Function() write,
     String Function(String word) message,
   ) async {
     final notifier = ref.read(studySessionProvider(widget.args).notifier);
     final word = ref.read(studyWordProvider(item.uid)).value?.word;
-    await write;
-    if (!mounted) return;
+    if (!await guardWrite(context, write) || !mounted) return;
     DpUndo.show(
       context,
       message: message(word == null ? item.uid : spokenForm(word)),
       lift: StudyFrontActions.clearance,
-      onUndo: () => unawaited(notifier.undo()),
+      onUndo: () => unawaited(guardWrite(context, notifier.undo)),
     );
   }
 

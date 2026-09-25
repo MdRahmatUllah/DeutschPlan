@@ -102,18 +102,28 @@ WHERE s.status IN ('learning', 'done')
 
   /// FR-T5-02: how a sentence went — `self_rating` 3 Understood, 2 Partly,
   /// 1 Not yet (`sentences.md`).
-  Future<void> rate(PlanDate date, SentenceCandidate sentence, int rating) =>
-      _db.customUpdate(
-        'UPDATE sentence_log SET self_rating = ?4 '
-        'WHERE word_uid = ?1 AND ord = ?2 AND shown_on = ?3',
-        variables: <Variable<Object>>[
-          Variable<String>(sentence.wordUid),
-          Variable<int>(sentence.ord),
-          Variable<String>(date),
-          Variable<int>(rating),
-        ],
-        updates: <TableInfo<Table, Object>>{_db.sentenceLog},
-      );
+  ///
+  /// [andThen] — *Not yet*'s Hard rating of the headword (BR-FSRS-04) —
+  /// runs in the same transaction, so a failure leaves neither (#174).
+  Future<void> rate(
+    PlanDate date,
+    SentenceCandidate sentence,
+    int rating, {
+    Future<void> Function()? andThen,
+  }) => _db.transaction(() async {
+    await _db.customUpdate(
+      'UPDATE sentence_log SET self_rating = ?4 '
+      'WHERE word_uid = ?1 AND ord = ?2 AND shown_on = ?3',
+      variables: <Variable<Object>>[
+        Variable<String>(sentence.wordUid),
+        Variable<int>(sentence.ord),
+        Variable<String>(date),
+        Variable<int>(rating),
+      ],
+      updates: <TableInfo<Table, Object>>{_db.sentenceLog},
+    );
+    await andThen?.call();
+  });
 
   /// [date]'s ratings so far, by sentence: where T5 picks up on reopening.
   Future<Map<(String, int), int>> ratings(PlanDate date) async {

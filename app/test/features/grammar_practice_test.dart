@@ -65,6 +65,7 @@ void main() {
   );
 
   late List<(String, int, int)> rated;
+  late _Rating rating;
   late String? went;
   late GoRouter routes;
 
@@ -75,6 +76,7 @@ void main() {
     bool dayDone = false,
   }) async {
     rated = <(String, int, int)>[];
+    rating = _Rating(rated);
     went = null;
     routes = GoRouter(
       initialLocation: '/opener',
@@ -106,7 +108,7 @@ void main() {
               items: uid == 'g3' ? items : <GrammarItem>[pick, gap, spot],
             ),
           ),
-          grammarRatingServiceProvider.overrideWithValue(_Rating(rated)),
+          grammarRatingServiceProvider.overrideWithValue(rating),
           studyNextProvider.overrideWith(
             (ref, date) async =>
                 StudyNext(sentences: 0, backlog: 0, dayDone: dayDone),
@@ -347,6 +349,25 @@ void main() {
     expect(went, '/day-complete');
   });
 
+  testWidgets('Z05 FR-L15-03 a result that fails to save keeps the topic; '
+      'Retry writes it and moves on', (tester) async {
+    await pump(tester, items: <GrammarItem>[pick]);
+    rating.failures = 1;
+    await tester.tap(find.text('Könnten'));
+    await tester.pumpAndSettle();
+    await tapNext(tester);
+
+    expect(find.text(l10n.saveAnswerFailed), findsOneWidget);
+    expect(rated, isEmpty);
+    expect(find.text('opener'), findsNothing, reason: 'the topic stays');
+
+    await tester.tap(find.text(l10n.retry));
+    await tester.pumpAndSettle();
+
+    expect(rated, <(String, int, int)>[('g3', 1, 1)]);
+    expect(find.text('opener'), findsOneWidget);
+  });
+
   test(
     'FR-L15-01 the items are the generator\'s, seeded per topic and day',
     () async {
@@ -391,6 +412,9 @@ class _Rating implements GrammarRatingService {
 
   final List<(String, int, int)> rated;
 
+  /// How many writes fail before one goes through (#174).
+  int failures = 0;
+
   @override
   Future<void> markLearned(String uid) async {}
 
@@ -399,5 +423,11 @@ class _Rating implements GrammarRatingService {
     String uid, {
     required int items,
     required int correct,
-  }) async => rated.add((uid, items, correct));
+  }) async {
+    if (failures > 0) {
+      failures--;
+      throw StateError('disk I/O error');
+    }
+    rated.add((uid, items, correct));
+  }
 }

@@ -385,4 +385,36 @@ void main() {
       expect(next.dayDone, isFalse);
     },
   );
+
+  test('Z05 BR-CONTENT-02 BR-PLAN-10 a word a content update removed does '
+      'not hold the day open: its row stays, T6 still comes', () async {
+    final db = AppDatabase.memory();
+    addTearDown(db.close);
+    final directory = Directory.systemTemp.createTempSync('dp_t6');
+    final content = ContentFixture.write('${directory.path}/content.db');
+    await db.customStatement(
+      "ATTACH DATABASE '${ContentDao.attachPath(content.file)}' AS c",
+    );
+    // Planned before the update took 'gone' out of the course.
+    await db.customStatement(
+      'INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code) '
+      "VALUES ('$today', 'gone', 'revise', 'A1.1')",
+    );
+    final settings = SettingsRepository(db);
+    await settings.load();
+    addTearDown(settings.dispose);
+    final container = ProviderContainer(
+      overrides: <Override>[
+        appDatabaseProvider.overrideWithValue(db),
+        settingsProvider.overrideWithValue(settings),
+      ],
+    );
+    addTearDown(container.dispose);
+    final hold = container.listen(studyNextProvider(today), (_, _) {});
+    addTearDown(hold.close);
+    final next = await container.read(studyNextProvider(today).future);
+
+    expect(next.revise, isEmpty, reason: 'no blank card to study');
+    expect(next.dayDone, isTrue);
+  });
 }

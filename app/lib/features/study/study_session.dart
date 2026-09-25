@@ -245,7 +245,7 @@ class StudySession extends _$StudySession {
 
   /// FR-T2-02: rates the card — one transaction through [RatingService] —
   /// and moves on.
-  Future<void> rate(Rating rating) => _act((item) async {
+  Future<bool> rate(Rating rating) => _act((item) async {
     final row = _row(item);
     await _rating.rate(
       item.uid,
@@ -263,12 +263,16 @@ class StudySession extends _$StudySession {
     });
   });
 
-  Future<void> _act(Future<void> Function(StudyItem item) write) async {
+  /// Runs [write] on the current card. False when it did not run: no card,
+  /// or a write still in flight (a double tap) — nothing to offer an *Undo*
+  /// for.
+  Future<bool> _act(Future<void> Function(StudyItem item) write) async {
     final item = state.value?.current;
-    if (item == null || _busy) return;
+    if (item == null || _busy) return false;
     _busy = true;
     try {
       await write(item);
+      return true;
     } finally {
       _busy = false;
     }
@@ -276,7 +280,7 @@ class StudySession extends _$StudySession {
 
   /// FR-T2-04: *I know it* rates the new word Easy (BR-STATUS-04), completes
   /// its plan row and moves on.
-  Future<void> knewIt() => _act((item) async {
+  Future<bool> knewIt() => _act((item) async {
     final row = _row(item);
     await _rating.markKnown(item.uid, planDate: row.date, kind: row.kind);
     advance(CardOutcome.knewIt);
@@ -284,7 +288,7 @@ class StudySession extends _$StudySession {
 
   /// FR-T2-03: *Skip → backlog* leaves the row open and skipped
   /// (BR-PLAN-06), so it waits in tomorrow's backlog, and moves on.
-  Future<void> skip() => _act((item) async {
+  Future<bool> skip() => _act((item) async {
     final date = _row(item).date;
     if (date != null) {
       await PlanRepository(ref.read(appDatabaseProvider))
@@ -294,13 +298,14 @@ class StudySession extends _$StudySession {
   });
 
   /// The *Undo* of [knewIt] or [skip]: the write taken back and the card
-  /// asked again.
-  Future<void> undo() async {
+  /// asked again. False when there was nothing to take back, or a write was
+  /// still in flight.
+  Future<bool> undo() async {
     final current = state.value;
-    if (current == null || current.position == 0 || _busy) return;
+    if (current == null || current.position == 0 || _busy) return false;
     final last = current.position - 1;
     final outcome = current.results[last];
-    if (outcome == null) return;
+    if (outcome == null) return false;
     _busy = true;
     try {
       final date = _row(current.items[last]).date;
@@ -318,6 +323,7 @@ class StudySession extends _$StudySession {
       }
       state = AsyncData<StudySessionState>(current.back());
       _shownAt = ref.read(clockProvider)();
+      return true;
     } finally {
       _busy = false;
     }

@@ -13,6 +13,7 @@
   "bootstrapErrorContent": "DeutschPlan কোর্সটি ইনস্টল করতে পারেনি।",
   "bootstrapErrorSettings": "DeutschPlan আপনার সেটিংস পড়তে পারেনি।",
   "exportProgress": "অগ্রগতি রপ্তানি করুন",
+  "saveAnswerFailed": "উত্তরটি সেভ হয়নি। এর আগের প্রতিটি কার্ড সেভ করা আছে।",
   "tabToday": "আজ",
   "tabLearn": "শিখুন",
   "tabSearch": "খুঁজুন",

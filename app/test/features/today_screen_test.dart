@@ -790,6 +790,34 @@ void main() {
       expect(find.text(l10n.todayCardStepAction), findsOneWidget);
       expect(find.bySemanticsLabel(l10n.todayCardDismiss), findsNothing);
     });
+
+    testWidgets('Z05 BR-COURSE-05 a finished course is revision only, with '
+        'its completion card', (tester) async {
+      await pump(
+        tester,
+        view: const TodayView(
+          date: '2026-09-21',
+          hour: 8,
+          revise: BlockProgress(done: 0, total: 3),
+          newToday: BlockProgress.none,
+          openRevise: <String>['r0', 'r1', 'r2'],
+          openNew: <String>[],
+          grammarDue: <String>[],
+          backlog: 0,
+          streak: 12,
+          estimate: Duration(minutes: 2),
+          courseDay: 300,
+          stepWords: (done: 0, learning: 0, todo: 0, total: 0),
+          contextual: ContextualOffer(ContextualKind.courseComplete),
+        ),
+      );
+
+      expect(card(l10n.todayRevise(3)), findsOneWidget);
+      expect(find.byType(PlanSectionCard), findsOneWidget, reason: 'no New');
+      await tester.ensureVisible(find.byType(ContextualCard));
+      expect(find.text(l10n.todayCardCourseTitle), findsOneWidget);
+      expect(find.bySemanticsLabel(l10n.todayCardDismiss), findsNothing);
+    });
   });
 
   group('FR-T1-05 midnight, on a real plan', () {
