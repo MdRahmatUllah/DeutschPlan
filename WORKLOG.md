@@ -498,3 +498,4 @@ able to tell what is going on without asking.
 - 2026-09-26 00:31 · agent-0 #457 · done (#465)
 - 2026-09-26 00:32 · agent-0 #451 · assigned to agent-0
 - 2026-09-26 00:38 · agent-1 #455 · PR #467 open; review requested from all
+- 2026-09-26 00:38 · agent-1 · #455 PR #467: a WorkManager stop off Wi-Fi comes back 'canceled' (and often before isWiFi flips); now waits, with a 2 s grace, no cancelAll. Device: 3 drops, never Failed, Ready. Ceiling: the plugin deletes a canceled file's partial.
