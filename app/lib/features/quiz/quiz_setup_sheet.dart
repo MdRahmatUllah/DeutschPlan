@@ -47,6 +47,7 @@ Future<List<QuizCategory>> quizCategories(Ref ref, String step) async {
   final store = DriftQuizStore(
     ref.watch(wordRepositoryProvider),
     ref.watch(settingsProvider),
+    ref.watch(contentDaoProvider),
   );
   return <QuizCategory>[
     for (final c in await ref.watch(stepCategoriesProvider(step).future))

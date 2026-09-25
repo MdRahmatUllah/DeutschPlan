@@ -12,6 +12,7 @@ import 'package:deutschplan/core/theme/dp_tokens.dart';
 import 'package:deutschplan/core/typography/dp_text.dart';
 import 'package:deutschplan/data/repositories/plan_repository.dart'
     show PlanKind;
+import 'package:deutschplan/data/repositories/word_actions.dart' show Undo;
 import 'package:deutschplan/data/repositories/word_repository.dart';
 import 'package:deutschplan/domain/compare_set.dart';
 import 'package:deutschplan/domain/quiz_builder.dart';
@@ -121,29 +122,41 @@ class _CompareScreenState extends ConsumerState<CompareScreen> {
     super.dispose();
   }
 
+  /// Every member To do into today's plan, with one *Undo* for them all
+  /// (FR-W1-01, FR-W1-04: W1's action, and its snackbar).
   Future<void> _addAll(List<WordWithState> words) async {
     if (_busy) return;
     setState(() => _busy = true);
     final actions = ref.read(wordActionsProvider);
     final today = ref.read(todayProvider);
-    // The container, not ref: the screen may be gone before the adds are.
+    // The container, not ref: the screen may be gone before the adds are,
+    // and *Undo* can come after it has.
     final container = ProviderScope.containerOf(context, listen: false);
+    // Today's plan is read once, when the day opens (as W1 replans).
+    void replan() => container.invalidate(todayPlanProvider);
+    final undos = <Undo>[];
     try {
       for (final word in words) {
-        await actions.addToToday(
-          word.uid,
-          today: today,
-          step: word.word.sublevelCode,
+        undos.add(
+          await actions.addToToday(
+            word.uid,
+            today: today,
+            step: word.word.sublevelCode,
+          ),
         );
       }
-      // Today's plan is read once, when the day opens (as W1 replans).
-      container.invalidate(todayPlanProvider);
-      if (mounted) {
-        DpToast.show(
-          context,
-          AppLocalizations.of(context).compareAdded(words.length),
-        );
-      }
+      replan();
+      if (!mounted) return;
+      DpUndo.show(
+        context,
+        message: AppLocalizations.of(context).compareAdded(words.length),
+        onUndo: () => unawaited(() async {
+          for (final undo in undos.reversed) {
+            await undo();
+          }
+          replan();
+        }()),
+      );
     } finally {
       if (mounted) setState(() => _busy = false);
     }
@@ -474,20 +487,28 @@ class CompareTable extends ConsumerWidget {
     final radius = tokens.shape.card;
     final inset = tokens.surface.outlineWidth;
     final scroll = sideways;
-    return DpSurface(
-      kind: DpSurfaceKind.bar,
-      radius: radius,
-      // Inside the outline, so the pinned column does not paint over it.
-      padding: EdgeInsets.all(inset),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(radius - inset),
-        child: scroll == null
-            ? table
-            : SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                controller: scroll,
-                child: table,
-              ),
+    // The table is laid out right to left, and a screen reader must not
+    // read it so: in the page's own direction, by where each cell is — a
+    // row's label, then its members left to right.
+    return Semantics(
+      container: true,
+      explicitChildNodes: true,
+      textDirection: Directionality.of(context),
+      child: DpSurface(
+        kind: DpSurfaceKind.bar,
+        radius: radius,
+        // Inside the outline, so the pinned column does not paint over it.
+        padding: EdgeInsets.all(inset),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(radius - inset),
+          child: scroll == null
+              ? table
+              : SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  controller: scroll,
+                  child: table,
+                ),
+        ),
       ),
     );
   }

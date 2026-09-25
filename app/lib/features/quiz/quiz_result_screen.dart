@@ -152,6 +152,9 @@ class _QuizResultViewState extends ConsumerState<QuizResultView> {
                           _MistakeRow(
                             mistake: mistake,
                             last: index == result.mistakes.length - 1,
+                            compare:
+                                widget.args.direction ==
+                                QuizDirection.compare.name,
                           ),
                       ],
                     ),
@@ -282,10 +285,18 @@ class _Score extends StatelessWidget {
 /// "die Kaution — you wrote: die Kausion", or "… · article" when only the
 /// article was wrong, with the word to hear.
 class _MistakeRow extends StatelessWidget {
-  const _MistakeRow({required this.mistake, required this.last});
+  const _MistakeRow({
+    required this.mistake,
+    required this.last,
+    this.compare = false,
+  });
 
   final QuizMistakeRowsResult mistake;
   final bool last;
+
+  /// A compare quiz's (W2): the member it asked for, which its word — the
+  /// set word, for a member with none of its own — does not always name.
+  final bool compare;
 
   @override
   Widget build(BuildContext context) {
@@ -298,7 +309,13 @@ class _MistakeRow extends StatelessWidget {
         ? l10n.quizResultWroteArticle(given)
         : l10n.quizResultWrote(given);
     // A word a content update removed shows what the quiz expected.
-    final german = mistake.german ?? mistake.expected;
+    final german = compare
+        ? mistake.expected
+        : mistake.german ?? mistake.expected;
+    // The article is the word's: not for a set word standing in.
+    final article = !compare || mistake.german == mistake.expected
+        ? mistake.article
+        : null;
     return Container(
       constraints: const BoxConstraints(minHeight: 64),
       padding: const EdgeInsetsDirectional.fromSTEB(16, 8, 4, 8),
@@ -315,7 +332,7 @@ class _MistakeRow extends StatelessWidget {
               children: <Widget>[
                 DpHeadword(
                   german,
-                  article: mistake.article,
+                  article: article,
                   role: DpTextRole.bodyLarge,
                   weight: 600,
                 ),
@@ -329,11 +346,7 @@ class _MistakeRow extends StatelessWidget {
               ],
             ),
           ),
-          WordPlayButton(
-            word: mistake.article == null
-                ? german
-                : '${mistake.article} $german',
-          ),
+          WordPlayButton(word: article == null ? german : '$article $german'),
         ],
       ),
     );

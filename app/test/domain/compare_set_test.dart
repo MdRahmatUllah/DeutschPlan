@@ -163,6 +163,71 @@ void main() {
     },
   );
 
+  const liebe = CompareSet(
+    CompareWord(
+      uid: 'set-liebe',
+      german: 'Liebe / Lieber …',
+      english: 'Dear … (informal)',
+      step: 'A1.2',
+      pos: 'phrase',
+      examples: <CompareExample>[
+        (
+          german: 'Lieber Tom, danke für deine Nachricht.',
+          english: 'Dear Tom, thanks for your message.',
+        ),
+        (
+          german: 'Liebe Anna, wie geht es dir?',
+          english: 'Dear Anna, how are you?',
+        ),
+      ],
+    ),
+  );
+
+  const erst = CompareSet(
+    CompareWord(
+      uid: 'set-erst',
+      german: 'eben erst / gerade erst',
+      english: 'only just (temporal)',
+      step: 'C2.1',
+      pos: 'phrase',
+      examples: <CompareExample>[
+        (
+          german: 'Ich bin eben erst angekommen.',
+          english: "I've only just arrived.",
+        ),
+        (
+          german: 'Der Bericht ist gerade erst erschienen.',
+          english: 'The report has only just appeared.',
+        ),
+      ],
+    ),
+  );
+
+  group('FR-W1-06 a set to compare', () {
+    test('FR-W1-06 near-synonyms, words or phrases, are a set', () {
+      for (final german in <String>[
+        'circa / etwa / rund',
+        'Grüß Gott / Servus / Pfiat di',
+        'Liebe / Lieber …',
+      ]) {
+        expect(comparesSet(german), isTrue, reason: german);
+      }
+    });
+
+    test('FR-W1-06 word formation is not: its parts are affixes', () {
+      for (final german in <String>[
+        'Adjektive auf -bar / -lich / -sam',
+        'Suffix -tät / -ion',
+        'erfolgreich — Wortbildung -reich / -voll',
+        'Präfix voll- / durch- / über-',
+        'Nomen aus Verben: -e / Nullableitung',
+        'Haus',
+      ]) {
+        expect(comparesSet(german), isFalse, reason: german);
+      }
+    });
+  });
+
   group('FR-W2-01 members', () {
     test('FR-W2-01 the headword split on " / ", in order', () {
       expect(compareMemberNames('Grund / Ursache / Anlass'), <String>[
@@ -175,6 +240,17 @@ void main() {
         'Furcht',
         'Sorge',
         'Panik',
+      ]);
+    });
+
+    test('FR-W2-01 and on ", "; a trailing "…" is not the member', () {
+      expect(
+        compareMemberNames('legen / liegen, setzen / sitzen, stellen / stehen'),
+        <String>['legen', 'liegen', 'setzen', 'sitzen', 'stellen', 'stehen'],
+      );
+      expect(compareMemberNames('Liebe / Lieber …'), <String>[
+        'Liebe',
+        'Lieber',
       ]);
     });
 
@@ -229,6 +305,23 @@ void main() {
       ]);
     });
 
+    test('FR-W2-02 Meaning: the set\'s English split on " vs. " too', () {
+      final members = compareMembers(
+        const CompareSet(
+          CompareWord(
+            uid: 's',
+            german: 'sparsam / geizig',
+            english: 'thrifty (positive) vs. stingy (negative)',
+            step: 'C2.1',
+          ),
+        ),
+      );
+      expect(members.map((m) => m.meaning), <String>[
+        'thrifty (positive)',
+        'stingy (negative)',
+      ]);
+    });
+
     test('FR-W2-02 Meaning: else the member\'s word\'s; else none', () {
       expect(compareMembers(circa).map((m) => m.meaning), <String?>[
         null,
@@ -249,6 +342,30 @@ void main() {
         reason: '"Anlass = occasion" is a note, not a register',
       );
     });
+
+    test(
+      'FR-W2-02 Register: two words at most; a longer bracket is a note',
+      () {
+        final members = compareMembers(
+          const CompareSet(
+            CompareWord(
+              uid: 's',
+              german: 'posten / teilen / stur',
+              english: 'to post / to share / stubborn',
+              step: 'C2.1',
+              register:
+                  'teilen (German verbs exist), stur (colloquial negative), '
+                  'posten (spoken)',
+            ),
+          ),
+        );
+        expect(members.map((m) => m.register), <List<String>?>[
+          <String>['spoken'],
+          null,
+          <String>['colloquial negative'],
+        ]);
+      },
+    );
 
     test('FR-W2-02 Use it when: "member = note" in the register cell', () {
       expect(compareMembers(grund).map((m) => m.useWhen), <String>[
@@ -308,6 +425,18 @@ void main() {
       expect(furcht.example?.german, startsWith('Angst ist diffus, Furcht'));
     });
 
+    test('FR-W2-02 Example: a sentence two members name is the one its own '
+        'key names, else the longest gap', () {
+      expect(compareMembers(liebe).map((m) => m.example?.german), <String>[
+        'Liebe Anna, wie geht es dir?',
+        'Lieber Tom, danke für deine Nachricht.',
+      ], reason: 'Liebe names "Lieber" by prefix only');
+      expect(compareMembers(erst).map((m) => m.example?.german), <String>[
+        'Ich bin eben erst angekommen.',
+        'Der Bericht ist gerade erst erschienen.',
+      ], reason: 'eben erst names "gerade erst" by its "erst" only');
+    });
+
     test('FR-W2-02 a member nothing speaks for has every cell empty', () {
       final panik = compareMembers(angst).last;
       expect(
@@ -328,8 +457,8 @@ void main() {
 
     test('FR-W2-03 each sentence gaps its member; the tiles are the set', () {
       final items = quiz(grund);
-      expect(items, hasLength(5), reason: 'five sentences name a member');
-      expect(items.map((i) => i.ord), <int>[1, 2, 3, 4, 5]);
+      expect(items, hasLength(3), reason: "the members' own three");
+      expect(items.map((i) => i.ord), <int>[1, 2, 3]);
       for (final item in items) {
         expect(item.direction, QuizDirection.compare);
         expect(item.tiles, isTrue);
@@ -344,10 +473,47 @@ void main() {
       expect(home.hint, "For this reason I'm staying at home.");
     });
 
+    test('FR-W2-03 a sentence that names two members is not asked', () {
+      // The set's own two name all three and two: the other names would
+      // give the answer away.
+      expect(
+        quiz(grund, length: 99).map((i) => i.hint),
+        isNot(anyElement(startsWith('The trigger was'))),
+      );
+      expect(
+        quiz(grund, length: 99).map((i) => i.hint),
+        isNot(anyElement(startsWith('Trigger and cause'))),
+      );
+      // "Lieber Tom" names Liebe by prefix too: not asked, rather than
+      // asked with Liebe as the answer.
+      expect(
+        quiz(liebe, length: 99).map((i) => (i.prompt, i.expected)),
+        <(String, String)>[('___ Anna, wie geht es dir?', 'Liebe')],
+      );
+      expect(quiz(erst, length: 99), isEmpty);
+    });
+
     test('FR-W2-03 a sentence is asked once', () {
-      // Five sentences: the set's two name three members and two; gapped
-      // at each member they name, they would be eight items.
-      expect(quiz(grund, length: 99), hasLength(5));
+      // Ursache's word shares Grund's sentence.
+      final shared = CompareSet(grund.word, <String, CompareWord>{
+        ...grund.resolved,
+        'Ursache': CompareWord(
+          uid: 'uid-ursache',
+          german: 'Ursache',
+          english: 'cause',
+          step: 'B2.1',
+          article: 'die',
+          pos: 'noun',
+          examples: grund.resolved['Grund']!.examples,
+        ),
+      });
+      expect(
+        quiz(shared, length: 99).map((i) => i.prompt).toList()..sort(),
+        <String>[
+          'Aus ___ des Jubiläums gab es ein Fest.',
+          'Aus diesem ___ bleibe ich zu Hause.',
+        ],
+      );
     });
 
     test("FR-W2-03 a member with no word rates the set's", () {
@@ -366,7 +532,7 @@ void main() {
         greaterThan(1),
         reason: 'the seed orders it',
       );
-      expect(quiz(grund, length: 3), hasLength(3));
+      expect(quiz(grund, length: 2), hasLength(2));
     });
 
     test('FR-W2-03 four tiles at most, the answer among them', () {

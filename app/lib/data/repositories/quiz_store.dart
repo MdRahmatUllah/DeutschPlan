@@ -9,13 +9,14 @@ import 'package:deutschplan/domain/quiz_builder.dart';
 /// The quiz builder's view of the course (`quiz-engine.md`, #81): the
 /// queries in `word_queries.drift`, shaped into [QuizWord]s.
 class DriftQuizStore implements QuizStore {
-  DriftQuizStore(this._words, this._settings);
+  DriftQuizStore(this._words, this._settings, this._content);
 
   final WordRepository _words;
   final SettingsRepository _settings;
 
-  /// The course over the same database, for W2's sets.
-  late final ContentDao _content = ContentDao(_words.attachedDatabase);
+  /// The course, for W2's sets: the app's one, so its forms index is built
+  /// once.
+  final ContentDao _content;
 
   @override
   Future<List<QuizWord>> learned(QuizSource source, {String? ref}) async {

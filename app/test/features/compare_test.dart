@@ -243,6 +243,20 @@ void main() {
         'uid-anlass C1.1 2026-09-21',
       ]);
       expect(find.text(l10n.compareAdded(3)), findsOneWidget);
+      expect(actions.undone, isEmpty);
+    });
+
+    testWidgets('FR-W1-04 one Undo takes them all back out', (tester) async {
+      await pump(tester);
+      await tester.tap(find.text(l10n.compareAddAll(3)));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text(l10n.undo));
+      await tester.pumpAndSettle();
+      expect(actions.undone, <String>[
+        'uid-anlass',
+        'uid-ursache',
+        'uid-grund',
+      ]);
     });
 
     testWidgets('one already in today\'s plan is not counted', (tester) async {
@@ -305,6 +319,29 @@ void main() {
       );
     });
 
+    testWidgets('FR-W2-04 a screen reader reads a row label first, then the '
+        'members left to right', (tester) async {
+      final semantics = tester.ensureSemantics();
+      await pump(tester);
+      final read = <String>[
+        for (final node in tester.semantics.simulatedAccessibilityTraversal())
+          node.label,
+      ];
+      int at(String label) => read.indexWhere((l) => l.startsWith(label));
+      final order = <int>[
+        at('der Grund'),
+        at('die Ursache'),
+        at('der Anlass'),
+        at(l10n.compareMeaning.toUpperCase()),
+        at('reason, ground'),
+        at('cause'),
+        at('occasion, cause'),
+      ];
+      expect(order, everyElement(greaterThanOrEqualTo(0)), reason: '$read');
+      expect(order, List<int>.of(order)..sort(), reason: '$read');
+      semantics.dispose();
+    });
+
     testWidgets('#314 nothing is cut at 200 % text', (tester) async {
       textAt(tester, 2);
       await pump(tester);
@@ -316,6 +353,9 @@ void main() {
 class _Actions implements WordActions {
   final List<String> added = <String>[];
 
+  /// The uids whose add was undone, in the order it was.
+  final List<String> undone = <String>[];
+
   @override
   Future<Undo> addToToday(
     String uid, {
@@ -323,7 +363,7 @@ class _Actions implements WordActions {
     required String step,
   }) async {
     added.add('$uid $step $today');
-    return () async {};
+    return () async => undone.add(uid);
   }
 
   @override

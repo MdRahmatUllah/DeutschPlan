@@ -75,6 +75,12 @@ class QuizRunService {
 
   /// One answer, persisted as it is given — a quiz left half way keeps what
   /// was answered (FR-L8-04) — and rated into FSRS (FR-L8-02).
+  ///
+  /// A compare item (W2) rates only a word already being learned: its
+  /// members are any words of a set, not the learned words every other quiz
+  /// draws (BR-QUIZ-01), and a rating would start a To-do word — or the set
+  /// word itself — or move a suspended one. Its answer still counts in
+  /// L9's score and mistakes.
   Future<void> answer(
     QuizRun run,
     QuizItem item, {
@@ -88,6 +94,13 @@ class QuizRunService {
       verdict: exam.Verdict.parse(verdict.name)!,
       points: verdict.score,
     );
+    if (item.direction == QuizDirection.compare &&
+        !const <WordStatus>{
+          WordStatus.learning,
+          WordStatus.done,
+        }.contains((await _words.find(item.wordUid))?.status)) {
+      return;
+    }
     await _rating.rate(
       item.wordUid,
       ratingFor(verdict),

@@ -35,7 +35,7 @@
 - FR-W1-03 Card mode toggle writes `word_state.card_mode` and `card_mode_manual = 1`, so BR-FSRS-06's rule keeps the choice from then on. *Undo* and *Reset word* give the card back to the rule.
 - FR-W1-04 Every action shows a snackbar with *Undo*; audio never closes the sheet.
 - FR-W1-05 *Translate* runs the examples through the translator (cached) and shows results inline.
-- FR-W1-06 *Compare* is offered when the headword contains " / " or the word has a `compare_group` (from register notes). content.db has no `compare_group` yet, so today only the " / " rule applies (#142).
+- FR-W1-06 *Compare* is offered when the headword contains " / " or the word has a `compare_group` (from register notes). content.db has no `compare_group` yet, so today only the " / " rule applies — and not to a word-formation entry whose parts are affixes ("Adjektive auf -bar / -lich / -sam"), which W2 has nothing to compare in (#142, `compare.md`).
 
 **Data.** `wordDetailProvider(uid)` (word + state + examples + tips + last review).
 
