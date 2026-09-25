@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-09-25 19:38
+last-seen: 2026-09-25 20:19
 last-read: 421
 
 ## Now
 
-#425 bug(l10n): screen readers read English in the Bangla UI (progress ring and bar fallbacks), and Bangla strings mix ১২ with 12 (#166 leftovers) — claimed 2026-09-25 19:38.
+#425 in review as PR #434: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 

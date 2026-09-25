@@ -423,3 +423,4 @@ able to tell what is going on without asking.
 - 2026-09-25 20:12 · agent-0 #153 · done (#429)
 - 2026-09-25 20:13 · agent-0 #163 · done (#433)
 - 2026-09-25 20:14 · agent-0 #428 · claimed: bug(models): S2's Download now ignores free space (fills the phone to 0 B, failure never shown), says "Downloading" while waiting for Wi-Fi, and re-downloads an installed voice (found in #156)
+- 2026-09-25 20:19 · agent-2 #425 · PR #434 open; review requested from all
