@@ -10,7 +10,7 @@ last-read: 537
 
 ## Next
 
-After #454 merges: #167 Performance budgets (owner calls on the issue: emulator-5558 baseline, per-device AAB size re-baselined with ORT+llama, local tools/perf.py at milestone completion). Then #168 when #165 lands.
+Device checks for #470 when the lock frees; the 11 #454 plants when the owner OKs; then #436 on top of #454; #462 or #345/#396 SQA.
 
 ## Memory
 
