@@ -27,7 +27,8 @@ class SettingsRepository {
   /// this to the providers; until then a listener can watch it directly.
   Stream<SettingKey<Object?>> get changes => _changes.stream;
 
-  /// Reads the table into memory. Call once, before the first [read].
+  /// Reads the table into memory: before the first [read], and again from
+  /// [reload] after an import.
   Future<void> load() async {
     final rows = await _db.select(_db.settings).get();
     _values = <String, String>{for (final row in rows) row.key: row.value};

@@ -99,7 +99,7 @@ class _ExportImportState extends ConsumerState<ExportImportScreen> {
     try {
       file = await files.pick();
     } on FormatException {
-      setState(() => _problem = _Problem.notABackup);
+      if (mounted) setState(() => _problem = _Problem.notABackup);
       return;
     }
     // Backed out of the picker: whatever was chosen before stays.
@@ -141,10 +141,12 @@ class _ExportImportState extends ConsumerState<ExportImportScreen> {
     setState(() => _busy = true);
     try {
       await backups.import(file.json, mode: _mode);
-      // The settings cache and Today's plan were read before the import:
-      // the streams follow drift, these two don't.
+      // The settings cache, the plan engine (built with four of them, and
+      // kept alive under Today) and Today's plan were read before the
+      // import: the streams follow drift, these don't.
       await settings.reload();
       ref
+        ..invalidate(planEngineProvider)
         ..invalidate(todayPlanProvider)
         ..invalidate(exportSizeProvider);
       if (!mounted) return;

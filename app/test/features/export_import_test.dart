@@ -324,6 +324,28 @@ void main() {
       expect(heard, contains(SettingKeys.learnerName));
     });
 
+    testWidgets('the plan engine Today holds is rebuilt with the file’s '
+        'settings', (tester) async {
+      await pump(tester);
+      final container = ProviderScope.containerOf(
+        tester.element(find.byType(ExportImportScreen)),
+      );
+      // Held, as Today's view holds it.
+      final engine = container.listen(planEngineProvider, (_, _) {});
+      addTearDown(engine.close);
+      final before = engine.read();
+
+      await choose(tester, await otherPhone());
+      await tester.tap(find.text(l10n.exportImportReplace));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text(l10n.exportImportDoReplace));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text(l10n.exportImportReplaceConfirm));
+      await tester.pumpAndSettle();
+
+      expect(engine.read(), isNot(same(before)));
+    });
+
     testWidgets('a failed import says nothing changed, and nothing did', (
       tester,
     ) async {
