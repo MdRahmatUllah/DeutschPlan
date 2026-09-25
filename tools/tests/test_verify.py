@@ -220,3 +220,23 @@ def test_a_noun_rule_on_a_verb_fails_the_tips_gate(database):
     assert "tips" in gates(database)
     assert f"line {rule.row}" in messages(database)
 
+
+def test_a_malformed_tips_file_is_a_failure_not_a_crash(database, tmp_path):
+    """#384: the gate reports it, as every other gate does."""
+    import sqlite3
+
+    from verify_content import check_tips_fit_their_word_class
+
+    bad = tmp_path / "tips.csv"
+    bad.write_text(
+        "match_type,match,tip_en,tip_bn,tags\ncolour,red,a tip,,\n",
+        encoding="utf-8",
+    )
+    db = sqlite3.connect(database)
+    try:
+        failures = check_tips_fit_their_word_class(db, bad)
+    finally:
+        db.close()
+    assert [f.gate for f in failures] == ["tips"]
+    assert "line 2" in failures[0].message
+

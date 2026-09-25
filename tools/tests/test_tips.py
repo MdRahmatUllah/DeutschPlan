@@ -86,10 +86,23 @@ class TestTheSeedSet:
                 "Schwung",
                 "Dung",
                 "jung",
+                # #384: a compound of an exception, and a genitive whose
+                # head is the Tag.
+                "Aufschwung",
+                "Tag der Deutschen Einheit",
             ]
         }
         always = {
-            "gender": ["Mädchen", "Brötchen", "Wohnung", "Übung", "Freiheit"]
+            "gender": [
+                "Mädchen",
+                "Brötchen",
+                "Wohnung",
+                "Übung",
+                "Freiheit",
+                "psychische Gesundheit",
+            ],
+            # #384: a reflexive verb is still its prefix's.
+            "separable": ["sich unterhalten", "sich übergeben", "übersetzen"],
         }
 
         for tag, words in never.items():
@@ -335,5 +348,9 @@ class TestTheShippedCourse:
 
             assert tips("versuchen") == []
             assert any('"-chen"' in tip for tip in tips("Mädchen"))
+            # #384
+            assert tips("Aufschwung") == []
+            assert tips("Tag der Deutschen Einheit") == []
+            assert any("separable" in tip for tip in tips("sich unterhalten"))
         finally:
             db.close()

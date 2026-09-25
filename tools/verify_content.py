@@ -27,11 +27,23 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from pipeline_steps import SUBLEVELS, read_tips, tip_pos  # noqa: E402
+from pipeline_steps import SUBLEVELS, PipelineError, read_tips, tip_pos  # noqa: E402
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_DB = REPO_ROOT / "content" / "build" / "content.db"
-DEFAULT_TIPS = REPO_ROOT / "content" / "interference_tips.csv"
+
+
+def _manifest_tips() -> Path | None:
+    """The tips CSV the build reads: `tips:` in content/manifest.yaml."""
+    import yaml
+
+    manifest = REPO_ROOT / "content" / "manifest.yaml"
+    raw = yaml.safe_load(manifest.read_text(encoding="utf-8")) if manifest.exists() else None
+    tips = (raw or {}).get("tips")
+    return REPO_ROOT / tips if tips else None
+
+
+DEFAULT_TIPS = _manifest_tips()
 
 #: Every step must have words. BR-COURSE-01 fixes the list, so a missing step
 #: is a screen the learner can open and find blank. Taken from the pipeline's
@@ -211,13 +223,17 @@ def check_the_database_is_readable(db: sqlite3.Connection) -> list[Failure]:
 
 
 def check_tips_fit_their_word_class(
-    db: sqlite3.Connection, tips: Path = DEFAULT_TIPS
+    db: sqlite3.Connection, tips: Path | None = DEFAULT_TIPS
 ) -> list[Failure]:
     """#321: a tip tagged as a rule about one word class ("gender" for
     nouns, "separable" for verbs) on a word of another. content.db has no
     tags, so they come from the CSV the build read."""
     failures = []
-    for tip in read_tips(tips if tips.exists() else None):
+    try:
+        authored = read_tips(tips if tips is not None and tips.exists() else None)
+    except PipelineError as error:
+        return [Failure("tips", str(error))]
+    for tip in authored:
         pos = tip_pos(tip.tags)
         if pos is None:
             continue

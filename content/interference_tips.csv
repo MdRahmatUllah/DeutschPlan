@@ -13,8 +13,8 @@ pattern,^seit\b,"""seit"" takes the dative and the present tense: ""seit zwei Ja
 pattern,^mit\b,"""mit"" always takes the dative, even when the sense feels like movement.","""mit"" সবসময় dative নেয়।",case
 pattern,^(nach|zu|von|aus|bei)$,These prepositions always take the dative — there is no accusative version to choose between.,এই preposition গুলো সবসময় dative নেয়।,case
 pattern,^(durch|für|ohne|gegen|um)$,These prepositions always take the accusative.,এই preposition গুলো সবসময় accusative নেয়।,case
-pattern,^über,"Stress decides whether this verb separates: ""ÜBERsetzen"" is to ferry across, ""überSETzen"" is to translate.",জোর কোথায় পড়ছে তার উপর নির্ভর করে ক্রিয়াটি separable কি না বদলায়।,separable
-pattern,^(um|durch|unter|wider)(?!l),"Like ""über"", these prefixes are separable or not depending on stress, and the meaning changes with it.","""über"" এর মতো, এই prefix গুলোও জোরের উপর separable কি না নির্ভর করে, আর অর্থও বদলায়।",separable
+pattern,^(sich )?über,"Stress decides whether this verb separates: ""ÜBERsetzen"" is to ferry across, ""überSETzen"" is to translate.",জোর কোথায় পড়ছে তার উপর নির্ভর করে ক্রিয়াটি separable কি না বদলায়।,separable
+pattern,^(sich )?(um|durch|unter|wider)(?!l),"Like ""über"", these prefixes are separable or not depending on stress, and the meaning changes with it.","""über"" এর মতো, এই prefix গুলোও জোরের উপর separable কি না নির্ভর করে, আর অর্থও বদলায়।",separable
 pattern,"^(?!(?:Kuchen|Knochen|Zeichen|Drachen|Rachen)$)\w{3,}chen$","Every ""-chen"" noun is ""das"", whatever the gender of the word it came from — ""das Mädchen"" even though a girl is female.","""-chen"" দিয়ে শেষ হলে noun সবসময় ""das"" — যেমন ""das Mädchen""।",gender
-pattern,"^(?!(?:Sprung|Schwung|Dung)$)\w{2,}ung$","Every ""-ung"" noun is ""die"".","""-ung"" দিয়ে শেষ হলে noun সবসময় ""die""।",gender
-pattern,(heit|keit|schaft)$,"Nouns ending in ""-heit"", ""-keit"" or ""-schaft"" are always ""die"".","""-heit"", ""-keit"", ""-schaft"" দিয়ে শেষ হলে noun সবসময় ""die""।",gender
+pattern,"^(?!\w*(?:sprung|schwung)$|Dung$)\w{2,}ung$","Every ""-ung"" noun is ""die"".","""-ung"" দিয়ে শেষ হলে noun সবসময় ""die""।",gender
+pattern,"^(?!.* (der|des|eines|einer) ).*(heit|keit|schaft)$","Nouns ending in ""-heit"", ""-keit"" or ""-schaft"" are always ""die"".","""-heit"", ""-keit"", ""-schaft"" দিয়ে শেষ হলে noun সবসময় ""die""।",gender

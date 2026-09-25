@@ -623,8 +623,9 @@ class Tip:
     match: str
     tip_en: str
     tip_bn: str | None
-    #: Authoring metadata only. content.db has no tags column: these group
-    #: the tips for whoever maintains the file, and are not shipped.
+    #: Not shipped: content.db has no tags column. They group the tips for
+    #: whoever maintains the file, and `gender`/`separable` limit a tip to a
+    #: word class at build time (`TAG_POS`, #321).
     tags: str | None
     row: int
 
