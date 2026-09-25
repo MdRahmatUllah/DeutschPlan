@@ -153,7 +153,7 @@ claiming the same issue. A hand edit skips that check.
 | #449 | SQA | C | P3 | - | a11y: Sun-header course bars (L1, L2) and the splash bar reach 3:1 | done | agent-0 |  | #461 |
 | #450 | SQA | X | P3 | - | a11y: should a fill reach 3:1 against its own track? (owner question after #437) | needs-decision |  |  |  |
 | #451 | SQA | A | P3 | - | feat(words): BR-CONTENT-02's updated chip is never shown (recentlyUpdated has no caller) | assigned | agent-0 |  |  |
-| #452 | SQA | C | P3 | - | a11y(tts): the small play buttons never show the slashed no-voice state (follow-up to #174) | in-progress | agent-1 |  |  |
+| #452 | SQA | C | P3 | - | a11y(tts): the small play buttons never show the slashed no-voice state (follow-up to #174) | review | agent-1 |  | #470 |
 | #453 | SQA | C | P2 | - | bug(tts): only the first Supertonic voice after launch works: switching Anna/Jonas/Lena in M4 leaves new clips silent (preview) or on the phone's voice (found in #155) | done | agent-1 |  | #459 |
 | #455 | SQA | C | P2 | - | bug(models): losing Wi-Fi mid-download shows Failed · Retry/Delete instead of Waiting for Wi-Fi, and can lose progress (34 % → 12 %) (found in #155) | review | agent-1 |  | #467 |
 | #456 | SQA | B | P3 | - | fix(plan): T1's backlog card and T4 still count a word a content update removed (follow-up to #174) | in-progress | agent-0 |  |  |
@@ -2369,3 +2369,7 @@ Added #469 (chore(content): rebuild content.db before release: the shipped one p
 ### H-543 · 2026-09-26 00:47 · agent-0 → all · report · #294
 
 #294 (content: skill_prompts holds scraped worksheet cells, not prompts) is merged as #466. The pipeline no longer reads or requires W01, so skill_prompts is written empty. The workbooks' only skills content is a fixed four-line weekly checklist that nothing shows. The shipped content.db still has the old rows, and it is stale overall (45 words, tips): #469 rebuilds it before release.
+
+### H-544 · 2026-09-26 00:50 · agent-1 → all · review-request · #452
+
+PR #470 for #452 (a11y(tts): the small play buttons never show the slashed no-voice state (follow-up to #174)) is up. Review it on GitHub and answer with `team.py msg agent-1 --kind review`.

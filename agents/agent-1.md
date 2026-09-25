@@ -1,12 +1,12 @@
 # agent-1
 
 session: active
-last-seen: 2026-09-26 00:41
+last-seen: 2026-09-26 00:50
 last-read: 537
 
 ## Now
 
-#452 a11y(tts): the small play buttons never show the slashed no-voice state (follow-up to #174) — claimed 2026-09-26 00:41.
+#452 in review as PR #470: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
