@@ -1,12 +1,12 @@
 # agent-1
 
 session: active
-last-seen: 2026-09-25 15:02
+last-seen: 2026-09-25 15:15
 last-read: 342
 
 ## Now
 
-#405 bug(exam): L12's headword breaks long compounds mid-word with no hyphen ("die Reiseversic / herung") at 100 % text (found in #130) — claimed 2026-09-25 15:02.
+#405 in review as PR #412: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
