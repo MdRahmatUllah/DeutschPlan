@@ -220,6 +220,40 @@ void main() {
       expect(rows!.single.matchedUid, ContentFixture.haus);
     });
 
+    testWidgets('a match found for an earlier spelling is not kept', (
+      tester,
+    ) async {
+      await pump(tester, german: 'Haus');
+      await enter(tester, l10n.addWordMeaning, 'house slipper');
+      // Changed, and saved before the check has caught up.
+      await tester.enterText(
+        find.descendant(
+          of: field(l10n.addWordGerman),
+          matching: find.byType(TextField),
+        ),
+        'Hausschuh',
+      );
+      await tester.pump();
+      await tester.tap(find.text(l10n.addWordSave));
+      await settle(tester);
+      final rows = await tester.runAsync(() => db.select(db.customWords).get());
+      expect(rows!.single.german, 'Hausschuh');
+      expect(rows.single.matchedUid, isNull);
+    });
+
+    testWidgets('a save that fails says so and stays', (tester) async {
+      await pump(tester, german: 'Pfandflasche');
+      await enter(tester, l10n.addWordMeaning, 'deposit bottle');
+      await tester.runAsync(() => db.close());
+      await tester.runAsync(() async {
+        await tester.tap(find.text(l10n.addWordSave));
+        await Future<void>.delayed(const Duration(milliseconds: 80));
+      });
+      await tester.pumpAndSettle();
+      expect(find.text(l10n.addWordSaveFailed), findsOneWidget);
+      expect(find.byType(AddWordScreen), findsOneWidget);
+    });
+
     testWidgets('a double tap saves once', (tester) async {
       await pump(tester, german: 'Pfandflasche');
       await enter(tester, l10n.addWordMeaning, 'deposit bottle');

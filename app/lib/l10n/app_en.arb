@@ -4606,5 +4606,9 @@
   "addWordDeleteKeep": "Keep it",
   "@addWordDeleteKeep": {
     "description": "R2 edit mode: the confirm's cancel."
+  },
+  "addWordSaveFailed": "Couldn't save the word. Nothing changed.",
+  "@addWordSaveFailed": {
+    "description": "R2: the toast when Save fails; the form stays as it was."
   }
 }

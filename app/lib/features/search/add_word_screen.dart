@@ -146,11 +146,16 @@ class _AddWordState extends ConsumerState<AddWordScreen> {
         ),
         now: now,
         id: widget.id,
-        matchedUid: match?.uid,
+        // The check trails the field by its debounce: a match found for an
+        // earlier spelling isn't this word's.
+        matchedUid: _checked == _german.text.trim() ? match?.uid : null,
       );
       if (!mounted) return;
       DpToast.show(context, l10n.addWordSaved(name));
       Navigator.of(context).pop();
+    } on Object catch (error) {
+      debugPrint('add word: $error');
+      if (mounted) DpToast.show(context, l10n.addWordSaveFailed);
     } finally {
       if (mounted) setState(() => _busy = false);
     }

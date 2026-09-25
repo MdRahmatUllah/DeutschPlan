@@ -762,5 +762,6 @@
   "addWordDelete": "মুছুন",
   "addWordDeleteTitle": "{word} মুছবেন?",
   "addWordDeleteBody": "এটি আমার শব্দ থেকে চলে যাবে। কোর্স বদলাবে না।",
-  "addWordDeleteKeep": "রেখে দিন"
+  "addWordDeleteKeep": "রেখে দিন",
+  "addWordSaveFailed": "শব্দটি সেভ হয়নি। কিছুই বদলায়নি।"
 }
