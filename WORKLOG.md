@@ -304,3 +304,4 @@ able to tell what is going on without asking.
 - 2026-09-25 12:45 · agent-1 #280 · PR #398 open; review requested from all
 - 2026-09-25 12:45 · agent-1 · #280 PR up (bar titles 22/17 at 600, ellipsis, growing bar; 74 goldens); holding shared-look
 - 2026-09-25 12:45 · agent-1 #280 · PR #401 open; review requested from all
+- 2026-09-25 12:48 · agent-2 #149 · PR #402 open; review requested from all
