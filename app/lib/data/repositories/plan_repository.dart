@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:deutschplan/data/db/app_database.dart';
+import 'package:deutschplan/data/repositories/plan_store.dart' show inCourse;
 import 'package:drift/drift.dart';
 import 'package:flutter/foundation.dart' show immutable;
 
@@ -331,7 +332,8 @@ class PlanRepository {
   ///
   /// A suspended word's row isn't counted (#368): the word is out of the plan
   /// (BR-STATUS-03), so Today's backlog card doesn't wait on it, as
-  /// `DriftPlanStore.backlogBefore` doesn't.
+  /// `DriftPlanStore.backlogBefore` doesn't. Nor, in any of the backlog's
+  /// reads, is a word a content update removed ([_inCourse]).
   Stream<List<PlanItem>> watchBacklog(String today) => _watched(
     _withStates(today)..where(
       _db.wordState.status.isNull() |
@@ -369,12 +371,21 @@ class PlanRepository {
           (t) =>
               t.kind.equals(PlanKind.newWord.wire) &
               t.completedAt.isNull() &
-              t.planDate.isSmallerThanValue(today),
+              t.planDate.isSmallerThanValue(today) &
+              _inCourse,
         )
         ..orderBy(<OrderClauseGenerator<PlanItems>>[
           (t) => OrderingTerm.desc(t.planDate),
           (t) => OrderingTerm.asc(t.wordUid),
         ]);
+
+  /// BR-CONTENT-02: a course word a content update removed is not read, so
+  /// no count waits on it and no session gets a blank card for it; its rows
+  /// stay, and come back with the word. A word of the learner's own is in no
+  /// course, and is read. `DriftPlanStore` filters the same way.
+  static final Expression<bool> _inCourse = CustomExpression<bool>(
+    inCourse('plan_items.word_uid'),
+  );
 
   /// FR-T6-01: marks [day]'s T6 as shown, once. True for the call that
   /// marked it; false when the day had already had its T6.
@@ -416,39 +427,17 @@ class PlanRepository {
           ))
           .write(PlanItemsCompanion(completedAt: Value(at)));
 
-  /// Whether the learner has started a step.
-  ///
-  /// The router's onboarding guard reads this (`navigation.md`:
-  /// "/onboarding/* redirects to /today once enrolled"). It counts every
-  /// enrollment, not just the open one — someone who has finished a step and
-  /// not yet started the next is still not a new learner.
-  /// The first and last day the backlog's words were planned for: T1's
-  /// "14 waiting from Tue–Wed". Both null when the backlog is empty.
-  Future<({String? from, String? to})> backlogDays(String today) async {
-    final row = await _db
-        .customSelect(
-          '''
-SELECT MIN(plan_date) AS first, MAX(plan_date) AS last
-FROM plan_items
-WHERE kind = 'new' AND completed_at IS NULL AND plan_date < ?1
-''',
-          variables: <Variable<Object>>[Variable<String>(today)],
-          readsFrom: <ResultSetImplementation<Object, Object>>{_db.planItems},
-        )
-        .getSingle();
-    return (
-      from: row.readNullable<String>('first'),
-      to: row.readNullable<String>('last'),
-    );
-  }
-
   /// [date]'s plan rows that are neither done nor skipped, as `(kind, uid)`:
-  /// what a session reopened after a crash still has to ask.
+  /// what a session reopened after a crash still has to ask. Not a word a
+  /// content update removed (BR-CONTENT-02).
   Future<Set<(String, String)>> stillOpen(String date) async {
     final rows = await _db
         .customSelect(
-          'SELECT kind, word_uid FROM plan_items '
-          'WHERE plan_date = ?1 AND completed_at IS NULL AND skipped = 0',
+          '''
+SELECT kind, word_uid FROM plan_items
+WHERE plan_date = ?1 AND completed_at IS NULL AND skipped = 0
+  AND ${inCourse('word_uid')}
+''',
           variables: <Variable<Object>>[Variable<String>(date)],
           readsFrom: <ResultSetImplementation<Object, Object>>{_db.planItems},
         )
@@ -498,6 +487,12 @@ WHERE due IS NOT NULL AND due <= ?1 AND status != 'suspended'
     return row.readNullable<String>('started');
   }
 
+  /// Whether the learner has started a step.
+  ///
+  /// The router's onboarding guard reads this (`navigation.md`:
+  /// "/onboarding/* redirects to /today once enrolled"). It counts every
+  /// enrollment, not just the open one — someone who has finished a step and
+  /// not yet started the next is still not a new learner.
   Future<bool> hasEnrollment() async {
     final row = await _db
         .customSelect('SELECT COUNT(*) AS n FROM enrollments')

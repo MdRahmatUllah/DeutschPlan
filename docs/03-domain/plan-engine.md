@@ -41,7 +41,7 @@ last_planned_date = max(last_planned_date, today)
 
 ### Backlog
 
-`plan_items WHERE kind='new' AND completed_at IS NULL AND plan_date < today`, grouped by `plan_date` descending. Skip sets `skipped=1` without completing.
+`plan_items WHERE kind='new' AND completed_at IS NULL AND plan_date < today`, grouped by `plan_date` descending; not a suspended word's row (#368), nor a course word a content update removed from `c.words` (BR-CONTENT-02, #456), whose rows stay. Skip sets `skipped=1` without completing.
 
 ### Rest day
 

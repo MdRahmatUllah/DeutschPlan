@@ -12,6 +12,7 @@ import 'package:drift/native.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
+import 'package:sqlite3/sqlite3.dart' as sqlite;
 
 import '../db/content_fixture.dart';
 
@@ -27,6 +28,23 @@ void main() {
   setUp(() async {
     directory = Directory.systemTemp.createTempSync('deutschplan_me');
     final content = ContentFixture.write('${directory.path}/content.db').file;
+    // Last week's b1, b2 and c1 below must be in the course, or they are a
+    // content update's removed words and not counted (BR-CONTENT-02).
+    final raw = sqlite.sqlite3.open(content.path);
+    try {
+      for (final (i, uid) in <String>['b1', 'b2', 'c1'].indexed) {
+        raw.execute(
+          '''
+INSERT INTO words (uid, sublevel_code, level_code, seq, seq_in_sublevel,
+                   german, english, search_key, search_key_alt)
+VALUES (?, 'A0.9', 'A1', ?, ?, ?, ?, ?, ?)
+''',
+          <Object>[uid, 90 + i, i + 1, uid, uid, uid, uid],
+        );
+      }
+    } finally {
+      raw.close();
+    }
     db = AppDatabase(DatabaseConnection(NativeDatabase.memory()));
     await db.customStatement(
       "ATTACH DATABASE '${ContentDao.attachPath(content)}' AS c",

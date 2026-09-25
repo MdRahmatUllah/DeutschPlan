@@ -590,6 +590,32 @@ VALUES (?, ?, ?, ?, ?)
       );
       expect(await rows('plan_items'), 2, reason: 'hidden, never deleted');
     });
+
+    test('#456 BR-CONTENT-02 newItemProgress: is not planned, so it never '
+        'holds the learner behind, and its row stays', () async {
+      await myWord(1);
+      for (final uid in <String>['s1', 'gone', 'custom:1']) {
+        await planned(uid, PlanKind.newWord);
+      }
+      await db.customStatement(
+        "UPDATE plan_items SET completed_at = '2026-03-02T10:00:00Z' "
+        "WHERE word_uid = 's1'",
+      );
+
+      expect(await store.newItemProgress(monday), (2, 1));
+      expect(await rows('plan_items'), 1, reason: 'hidden, never deleted');
+    });
+
+    test('#456 BR-CONTENT-02 openPlanItems: is not open, so it never holds '
+        'the day open (BR-PLAN-10), and its row stays', () async {
+      await myWord(1);
+      for (final uid in <String>['s1', 'gone', 'custom:1']) {
+        await planned(uid, PlanKind.newWord);
+      }
+
+      expect(await store.openPlanItems(monday), 2);
+      expect(await rows('plan_items'), 1, reason: 'hidden, never deleted');
+    });
   });
 
   group('grammar due', () {
