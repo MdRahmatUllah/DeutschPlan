@@ -186,10 +186,18 @@ void showWordDetail(BuildContext context, String uid) {
 /// *Pronounce* with `?speak=1` (FR-X1-02), which plays the headword on
 /// arrival.
 class WordDetailScreen extends StatelessWidget {
-  const WordDetailScreen({required this.uid, super.key, this.speak = false});
+  const WordDetailScreen({
+    required this.uid,
+    super.key,
+    this.speak = false,
+    this.arrival,
+  });
 
   final String uid;
   final bool speak;
+
+  /// Which *Pronounce* opened this ([WordDetailView.arrival]).
+  final String? arrival;
 
   @override
   Widget build(BuildContext context) {
@@ -201,6 +209,7 @@ class WordDetailScreen extends StatelessWidget {
       body: WordDetailView(
         uid: uid,
         speak: speak,
+        arrival: arrival,
         presentation: WordDetailPresentation.page,
       ),
     );
@@ -239,6 +248,7 @@ class WordDetailView extends ConsumerStatefulWidget {
     super.key,
     this.scroll,
     this.speak = false,
+    this.arrival,
   });
 
   final String uid;
@@ -249,6 +259,10 @@ class WordDetailView extends ConsumerStatefulWidget {
 
   /// Play the headword once it has loaded (`?speak=1`).
   final bool speak;
+
+  /// Which *Pronounce* this is. A link onto the word already open keeps this
+  /// view: a new [speak], or a new arrival with it, plays again (#442).
+  final String? arrival;
 
   /// The artboard's sheet: 740 of 844 px.
   static const double large = 740 / 844;
@@ -270,12 +284,26 @@ class _WordDetailViewState extends ConsumerState<WordDetailView> {
   /// rather than closing the subscription: with the data already there, the
   /// listener runs before `listenManual` has returned it.
   bool _spoken = false;
+  ProviderSubscription<AsyncValue<WordDetail?>>? _waiting;
 
   @override
   void initState() {
     super.initState();
-    if (!widget.speak) return;
-    ref.listenManual(wordDetailProvider(widget.uid), (_, next) {
+    if (widget.speak) _speakOnceLoaded();
+  }
+
+  @override
+  void didUpdateWidget(WordDetailView old) {
+    super.didUpdateWidget(old);
+    if (widget.speak && (!old.speak || widget.arrival != old.arrival)) {
+      _speakOnceLoaded();
+    }
+  }
+
+  void _speakOnceLoaded() {
+    _spoken = false;
+    _waiting?.close();
+    _waiting = ref.listenManual(wordDetailProvider(widget.uid), (_, next) {
       final word = next.value?.word.word;
       if (word == null || _spoken) return;
       _spoken = true;

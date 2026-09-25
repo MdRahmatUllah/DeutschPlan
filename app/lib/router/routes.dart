@@ -944,7 +944,7 @@ class ExamRoute extends GoRouteData with $ExamRoute {
 /// route is the deep link's full page, which is why the uid is in the path.
 @TypedGoRoute<WordRoute>(path: '/word/:uid')
 class WordRoute extends GoRouteData with $WordRoute {
-  const WordRoute({required this.uid, this.speak});
+  const WordRoute({required this.uid, this.speak, this.arrival});
 
   /// W1 over whatever is showing — T2's "open word details", every list row.
   static void open(BuildContext context, String uid) =>
@@ -958,12 +958,17 @@ class WordRoute extends GoRouteData with $WordRoute {
   /// than which word this is.
   final String? speak;
 
+  /// Which *Pronounce* this is: the router numbers each speaking link, so
+  /// one onto the word already open still speaks, and so does the same link
+  /// twice (#442).
+  final String? arrival;
+
   // The typed field, not `state.uri`: a route that declared a parameter and
   // then read the raw location would have two answers to the same question,
   // which is the thing typed routes exist to prevent.
   @override
   Widget build(BuildContext context, GoRouterState state) =>
-      WordDetailScreen(uid: uid, speak: speak == speakOn);
+      WordDetailScreen(uid: uid, speak: speak == speakOn, arrival: arrival);
 }
 
 @TypedGoRoute<CompareRoute>(path: '/compare/:uid')

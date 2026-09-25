@@ -87,3 +87,21 @@ const String speakOn = '1';
 /// Whether a link asks for the word to be spoken.
 bool wantsSpeech(Uri location) =>
     location.queryParameters[speakParameter] == speakOn;
+
+/// The *Pronounce* a link is, as the router numbers them (#442).
+const String arrivalParameter = 'arrival';
+
+/// [location] as the [n]th speaking link: a link onto the word already open
+/// keeps W1's page, and the same link twice changes nothing, so without a
+/// number of its own the second *Pronounce* would say nothing.
+String numbered(String location, int n) {
+  final uri = Uri.parse(location);
+  return uri
+      .replace(
+        queryParameters: <String, String>{
+          ...uri.queryParameters,
+          arrivalParameter: '$n',
+        },
+      )
+      .toString();
+}
