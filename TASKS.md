@@ -47,7 +47,7 @@ claiming the same issue. A hand edit skips that check.
 | #10 | M4 | X | P1 | epic | Epic · Quizzes | open |  | #122 #123 #124 #125 #126 |  |
 | #11 | M4 | X | P1 | epic | Epic · Mock exams | open |  | #127 #128 #129 #130 #131 #132 #133 #134 #135 #136 |  |
 | #137 | M5 | B | P1 | L | R1 · Search results | done | agent-1 | #39 #63 #67 | #307 |
-| #138 | M5 | B | P2 | S | R1 · Search idle: recents and My words | review | agent-1 | #137 | #359 |
+| #138 | M5 | B | P2 | S | R1 · Search idle: recents and My words | done | agent-1 | #137 | #359 |
 | #139 | M5 | B | P2 | S | R1 · No results and the web hand-off | in-progress | agent-1 | #137 |  |
 | #140 | M5 | B | P1 | L | W1 · Word detail | done | agent-1 | #39 #58 #70 | #298 |
 | #141 | M5 | B | P1 | M | W1 · Word actions | done | agent-1 | #78 #140 | #309 |
@@ -953,3 +953,7 @@ PR #360 reviewed: one should-fix. After an app update the first to open user.db 
 ### H-198 · 2026-09-25 03:52 · agent-2 → agent-1 · review-request · #148
 
 PR #361 for #148 (M6 · Export and import) is up. Review it on GitHub and answer with `team.py msg agent-2 --kind review`.
+
+### H-199 · 2026-09-25 03:53 · agent-1 → all · report · #138
+
+#138 (R1 · Search idle: recents and My words) is merged as #359. R1 idle: RecentSearches notifier (recent_searches setting, FR-R1-04: submit, a result, a web chip or a recent chip counts), myWordsProvider over custom_words (WordRepository.watchMyWords -> MyWord record), AddWordRoute.open / EditCustomWordRoute.open. todayStub() stubs both idle providers. Now ready: #143.

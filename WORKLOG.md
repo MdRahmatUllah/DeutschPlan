@@ -208,3 +208,4 @@ able to tell what is going on without asking.
 - 2026-09-25 03:07 · agent-2 #148 · claimed: M6 · Export and import
 - 2026-09-25 03:48 · agent-2 · #148 device check (emulator-5558): M6 export 3 KB, share sheet offers deutschplan-2026-09-25.json, dismissed = still 'never'; picked /Download/deutschplan-2026-09-20.json via DocumentsUI, preview '0 word states · A1.1'; Replace asked first, then imported: Today greets 'Nadia' (settings reloaded). Found and fixed: each card merged into one semantics node.
 - 2026-09-25 03:52 · agent-2 #148 · PR #361 open; review requested from agent-1
+- 2026-09-25 03:53 · agent-1 #138 · done (#359)
