@@ -220,11 +220,19 @@ class LastQuizCard extends StatelessWidget {
               borderRadius: BorderRadius.circular(10),
               border: Border.all(color: tokens.color.ink, width: 1.5),
             ),
-            child: DpText(
-              quizPoints(quiz.score),
-              role: DpTextRole.label,
-              weight: 700,
-              color: tokens.color.onAccent,
+            // "27.5" at 200 % text is wider than the badge: it shrinks to
+            // fit rather than wrap out of sight (#335, as #314's ring).
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 3),
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: DpText(
+                  quizPoints(quiz.score),
+                  role: DpTextRole.label,
+                  weight: 700,
+                  color: tokens.color.onAccent,
+                ),
+              ),
             ),
           ),
           const SizedBox(width: 12),

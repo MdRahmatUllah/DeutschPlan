@@ -13,6 +13,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 
+import '../core/text_clipping.dart';
 import 'today_fixtures.dart';
 
 /// L2 · Quiz tab — #116.
@@ -169,32 +170,64 @@ void main() {
     });
   });
 
-  testWidgets(
-    "the last quiz's day is the local one, not its UTC date",
-    (tester) async {
-      await tester.pumpWidget(
-        MaterialApp(
-          theme: AppTheme.light(),
-          localizationsDelegates: appLocalizationsDelegates,
-          supportedLocales: supportedLocales,
-          home: const Scaffold(
-            body: LastQuizCard(
-              quiz: (
-                score: 16,
-                outOf: 20,
-                length: 20,
-                direction: 'deEn',
-                finishedAt: '2026-09-20T23:59:00Z',
-              ),
+  // 23:59Z is tomorrow east of UTC, and 00:01Z yesterday west of it.
+  final offset = DateTime(2026, 9, 20, 12).timeZoneOffset;
+  testWidgets("#335 the last quiz's day is the local one, not its UTC date", (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        theme: AppTheme.light(),
+        localizationsDelegates: appLocalizationsDelegates,
+        supportedLocales: supportedLocales,
+        home: Scaffold(
+          body: LastQuizCard(
+            quiz: (
+              score: 16,
+              outOf: 20,
+              length: 20,
+              direction: 'deEn',
+              finishedAt: offset > Duration.zero
+                  ? '2026-09-20T23:59:00Z'
+                  : '2026-09-20T00:01:00Z',
             ),
           ),
         ),
-      );
-      expect(find.text('Standard · DE → EN · Mon 21 Sep'), findsOneWidget);
-    },
-    // 23:59Z is the next day only east of UTC.
-    skip: DateTime(2026, 9, 21).timeZoneOffset <= Duration.zero,
-  );
+      ),
+    );
+    expect(
+      find.text(
+        offset > Duration.zero
+            ? 'Standard · DE → EN · Mon 21 Sep'
+            : 'Standard · DE → EN · Sat 19 Sep',
+      ),
+      findsOneWidget,
+    );
+  }, skip: offset == Duration.zero);
+
+  testWidgets('#335 a half score fits its badge at 200 % text', (tester) async {
+    textAt(tester, 2);
+    await tester.pumpWidget(
+      MaterialApp(
+        theme: AppTheme.light(),
+        localizationsDelegates: appLocalizationsDelegates,
+        supportedLocales: supportedLocales,
+        home: const Scaffold(
+          body: LastQuizCard(
+            quiz: (
+              score: 27.5,
+              outOf: 30,
+              length: 30,
+              direction: 'deEn',
+              finishedAt: '2026-09-20T19:05:00',
+            ),
+          ),
+        ),
+      ),
+    );
+    expect(find.text('27.5'), findsOneWidget);
+    expectNothingClipped(tester, within: find.byType(LastQuizCard));
+  });
 
   group('its score, coloured as a result is', () {
     Future<Color> colour(WidgetTester tester, double score) async {
