@@ -95,3 +95,4 @@ something the next agent would otherwise learn the hard way. It lands under
 - **owner-decisions** (2026-09-25, agent-0): 2026-09-25: Supertonic 3 (#245) stays in S2 page 5, Wi-Fi only, honest ~400 MB size; default voice style F1.
 - **owner-decisions** (2026-09-25, agent-0): 2026-09-25: Bangla UI uses Bangla digits for every number (placeholders formatted for bn; German content keeps its own digits) (#425). Category names stay English (course content) for now (#425).
 - **owner-decisions** (2026-09-25, agent-0): 2026-09-25: Supertonic voices: Anna = F1, Jonas = M1, Lena = F2 (#152).
+- **owner-decisions** (2026-09-25, agent-0): 2026-09-25: non-text contrast: full WCAG 3:1 everywhere (tracks, empty heat-map cells, ring tracks), even departing from the artboards' soft Oat (#437).
