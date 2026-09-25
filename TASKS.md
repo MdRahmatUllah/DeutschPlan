@@ -60,8 +60,8 @@ claiming the same issue. A hand edit skips that check.
 | #148 | M5 | C | P2 | M | M6 · Export and import | done | agent-2 | #65 #146 | #361 |
 | #149 | M5 | C | P2 | M | M7 · Reset | done | agent-2 | #148 | #402 |
 | #150 | M5 | C | P2 | S | M9 · About & privacy and M8 · Licences | done | agent-2 | #51 #146 | #411 |
-| #12 | M5 | X | P1 | epic | Epic · Search and words | open |  | #137 #138 #139 #140 #141 #142 #143 |  |
-| #13 | M5 | X | P1 | epic | Epic · Me, progress, settings and data | open |  | #144 #145 #146 #147 #148 #149 #150 |  |
+| #12 | M5 | X | P1 | epic | Epic · Search and words | done |  | #137 #138 #139 #140 #141 #142 #143 |  |
+| #13 | M5 | X | P1 | epic | Epic · Me, progress, settings and data | done |  | #144 #145 #146 #147 #148 #149 #150 |  |
 | #151 | M6 | B | P1 | S | TtsEngine interface and SystemTts | done | agent-1 | #20 | #290 |
 | #152 | M6 | B | P2 | L | SupertonicTts — Supertonic 3 through ONNX Runtime | done | agent-1 | #64 #151 #245 | #431 |
 | #153 | M6 | B | P1 | M | TtsService — engine selection, fallback and autoplay | done | agent-0 |  | #429 |
@@ -80,7 +80,7 @@ claiming the same issue. A hand edit skips that check.
 | #162 | M7 | C | P1 | L | Semantics and screen-reader pass across every screen | open |  | #111 #136 #147 #150 #155 |  |
 | #163 | M7 | B | P1 | M | Contrast audit across Light, Dark and Glass | done | agent-0 | #32 | #433 |
 | #164 | M7 | B | P1 | M | Reduce motion and reduce transparency | done | agent-0 | #35 #111 | #417 |
-| #165 | M7 | C | P1 | M | Text scaling to 200 % across every screen | assigned | agent-2 | #36 #162 |  |
+| #165 | M7 | C | P1 | M | Text scaling to 200 % across every screen | assigned | agent-2 | #36 |  |
 | #166 | M7 | B | P1 | M | Localisation completeness: en and bn | done | agent-1 | #27 #36 | #413 |
 | #167 | M7 | B | P1 | M | Performance budgets | open |  | #153 #164 |  |
 | #168 | M7 | C | P1 | L | Complete the golden suite: every screen × three themes × two devices | assigned | agent-1 | #25 #165 |  |
@@ -147,7 +147,7 @@ claiming the same issue. A hand edit skips that check.
 | #432 | SQA | B | P2 | - | bug(adaptive): Reset everything's typed confirm doesn't scroll: at 200 % and in Bangla the buttons cover the text and the RESET field sits under the keyboard (found in #149) | done | agent-2 |  | #435 |
 | #436 | - | B | P3 | - | fix(tts): Supertonic's clips and open sessions outlive a model update (follow-up to #152) | open |  | #152 |  |
 | #437 | SQA | B | P3 | - | bug(theme): M1's subtitle is 4.49:1 (a per-screen alpha the token check can't see), and in Glass the heat-map and progress tracks vanish (1.01:1) (follow-up to #163) | review | agent-0 |  | #448 |
-| #440 | SQA | C | P2 | - | perf(tts): Supertonic's first audio for a new word is 1.1–1.6 s, not < 300 ms (cached 54 ms); T2 autoplay waits a second per card (found in #152) | open |  |  |  |
+| #440 | SQA | C | P2 | - | perf(tts): Supertonic's first audio for a new word is 1.1–1.6 s, not < 300 ms (cached 54 ms); T2 autoplay waits a second per card (found in #152) | done |  |  |  |
 | #442 | - | C | - | - | bug(widget): Pronounce doesn't speak when that word's page is already open (from #396) | done | agent-2 |  | #443 |
 | #445 | - | C | - | - | a11y(search): a My words row has an unlabelled clickable node over its labelled one (from #396) | done | agent-2 |  | #446 |
 
