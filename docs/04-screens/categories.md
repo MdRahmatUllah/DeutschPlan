@@ -8,7 +8,7 @@
 
 **L5 layout.** Header copy "Every word belongs to one category across all 12 steps." Two-column grid of category cards: name, "412 words", mini segmented bar; card tile colour cycles through the palette.
 
-**L6 layout.** Header "Wohnen & Haushalt" + *Quiz* button; subtitle "412 words · A1.1 → C2.2 · sorted by step, then frequency"; level filter chips All · A1 · A2 · B1 · B2+; rows with step chip and status chip.
+**L6 layout.** Header "Wohnen & Haushalt" + *Quiz* button; subtitle "412 words · A1.1 → C2.2 · sorted by step, then frequency"; level filter chips All · A1 · A2 · B1 · B2+; rows with step chip and status chip. Under Aurora Glass the word list is one frosted panel, as the glass artboards draw it: blur, sheen and top highlight, with the rows unfilled on it. That is one `BackdropFilter` for the list, never one per row. The panel ends at the last row, so a short list leaves the aurora clear below (#282).
 
 **Functional requirements**
 - FR-L5-01 Counts and status bars per category from a single grouped query.

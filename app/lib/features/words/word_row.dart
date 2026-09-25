@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:deutschplan/core/components/dp_chip.dart';
+import 'package:deutschplan/core/theme/dp_surface.dart';
 import 'package:deutschplan/core/theme/dp_tokens.dart';
 import 'package:deutschplan/core/typography/dp_text.dart';
 import 'package:deutschplan/data/repositories/word_repository.dart';
@@ -23,6 +24,7 @@ class WordRow extends StatelessWidget {
     required this.last,
     super.key,
     this.step,
+    this.onPanel = false,
   });
 
   final WordWithState word;
@@ -33,6 +35,10 @@ class WordRow extends StatelessWidget {
 
   /// L6's step chip before the status, where a list spans steps.
   final String? step;
+
+  /// Inside a [WordListPanel]: under glass the panel is the fill, so the row
+  /// paints none of its own (#282).
+  final bool onPanel;
 
   static const double height = 64;
 
@@ -81,12 +87,40 @@ class WordRow extends StatelessWidget {
       constraints: const BoxConstraints(minHeight: height),
       padding: const EdgeInsets.fromLTRB(16, 4, 4, 4),
       decoration: BoxDecoration(
-        color: tokens.surface.card,
+        color: onPanel && tokens.isGlass ? null : tokens.surface.card,
         border: last
             ? null
             : Border(bottom: BorderSide(color: tokens.surface.outline)),
       ),
       child: word.isSuspended ? Opacity(opacity: 0.5, child: content) : content,
+    );
+  }
+}
+
+/// A list of [WordRow]s as L2 and L6 draw it (#282): under a hairline, and
+/// under glass one frosted panel for the whole list — the artboards' blur,
+/// sheen and top highlight — so one `BackdropFilter`, never one per row
+/// (`accessibility-performance.md`). Its rows pass `onPanel`, and its list
+/// shrink-wraps, so a short list's panel ends at its last row, as the
+/// artboards draw it, with the aurora clear below.
+class WordListPanel extends StatelessWidget {
+  const WordListPanel({required this.child, super.key});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    final tokens = context.tokens;
+    return Align(
+      alignment: Alignment.topCenter,
+      child: tokens.isGlass
+          ? DpSurface(kind: DpSurfaceKind.bar, radius: 0, child: child)
+          : DecoratedBox(
+              decoration: BoxDecoration(
+                border: Border(top: BorderSide(color: tokens.surface.outline)),
+              ),
+              child: child,
+            ),
     );
   }
 }
