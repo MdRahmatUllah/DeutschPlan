@@ -191,6 +191,26 @@ void main() {
     expect(english.digits('12:05'), '12:05');
   });
 
+  test('#425 a number is never written straight into text: it goes through '
+      'l10n.digits', () {
+    // DpText('$count'), or a pill's `label: streak.toString()`, prints 0–9 in
+    // the Bangla UI; T1's streak pill did.
+    final straight = <RegExp>[
+      RegExp(r"DpText\(\s*'\$\{?[\w.]+\}?'"),
+      RegExp(r'\blabel:\s*[\w.]+\.toString\(\)'),
+    ];
+    final offenders = <String>[
+      for (final file in Directory(
+        'lib',
+      ).listSync(recursive: true).whereType<File>())
+        if (file.path.endsWith('.dart') && !file.path.contains('generated'))
+          for (final pattern in straight)
+            for (final match in pattern.allMatches(file.readAsStringSync()))
+              '${file.path}: ${match[0]}',
+    ];
+    expect(offenders, isEmpty, reason: offenders.join('\n'));
+  });
+
   test('every supported locale resolves every key', () async {
     for (final locale in AppLocalizations.supportedLocales) {
       final l10n = await AppLocalizations.delegate.load(locale);

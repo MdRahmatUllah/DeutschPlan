@@ -8,6 +8,7 @@ import 'package:deutschplan/core/typography/dp_text.dart';
 import 'package:deutschplan/domain/plan_engine.dart' show parsePlanDate;
 import 'package:deutschplan/features/today/today_view.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
+import 'package:deutschplan/l10n/ui_digits.dart';
 import 'package:intl/intl.dart';
 import 'package:material_ui/material_ui.dart';
 
@@ -83,7 +84,7 @@ class TodayHeader extends StatelessWidget {
           ),
           const SizedBox(width: 12),
           DpChip(
-            label: view.streak.toString(),
+            label: AppLocalizations.of(context).digits(view.streak),
             kind: DpChipKind.streak,
             semanticLabel: l10n.todayStreak(view.streak),
             onTap: onStreak,

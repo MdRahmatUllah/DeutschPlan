@@ -931,6 +931,9 @@ void main() {
     await pump(tester, locale: const Locale('bn'));
     // The ring card's step bar, in Bangla.
     expect(find.bySemanticsLabel(RegExp('টি শেখা হয়েছে, ')), findsWidgets);
+    // The streak pill writes its number itself: Bangla digits too.
+    expect(find.text('১২'), findsOneWidget);
+    expect(find.text('12'), findsNothing);
     expect(
       find.bySemanticsLabel(
         RegExp(r'\d+ done, \d+ learning, \d+ to do|\b\d+ of \d+\b'),
