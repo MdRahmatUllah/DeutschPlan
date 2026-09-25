@@ -129,8 +129,8 @@ void main() {
       }
     });
 
-    test('#245 Supertonic 3 is the files that exist, each pinned, with the '
-        "owner's F1 voice", () async {
+    test('#245 #152 Supertonic 3 is the files that exist, each pinned, with '
+        "the owner's three voice styles", () async {
       final manifest = ModelManifest.parse(
         await rootBundle.loadString(ModelRepository.manifestAsset),
       );
@@ -143,9 +143,11 @@ void main() {
         'tts.json',
         'unicode_indexer.json',
         'F1.json',
+        'M1.json',
+        'F2.json',
       ]);
       expect(variant.isPinned, isTrue, reason: 'every file has its SHA-256');
-      expect(variant.bytes, 398653248, reason: 'about 400 MB, not ~100');
+      expect(variant.bytes, 399237419, reason: 'about 400 MB, not ~100');
       for (final file in variant.files) {
         expect(file.url.host, 'huggingface.co', reason: file.name);
         expect(file.url.path, startsWith('/Supertone/supertonic-3/resolve/'));
@@ -502,6 +504,36 @@ void main() {
 
       // FR-M4-02: updates compare hashes.
       final published = variantOf('version two');
+      expect(
+        (await models.stateOf(
+          entryOf(<ModelVariant>[published]),
+          published,
+        )).status,
+        ModelStatus.updateAvailable,
+      );
+    });
+
+    test('#152 a manifest that adds a file to an installed model is an '
+        'update, not a failure', () async {
+      // The voice gained M1 and F2: a phone with the seven-file download has
+      // a verified model without them, and should be offered the update.
+      final installed = variantOf('version one');
+      await stage('hymt', installed, 'version one');
+      await models.activate('hymt', installed);
+
+      final published = ModelVariant(
+        id: installed.id,
+        name: installed.name,
+        files: <ModelFile>[
+          ...installed.files,
+          ModelFile(
+            name: 'more.gguf',
+            url: Uri.parse('https://example.invalid/more.gguf'),
+            bytes: 4,
+            sha256: sha256.convert(utf8.encode('more')).toString(),
+          ),
+        ],
+      );
       expect(
         (await models.stateOf(
           entryOf(<ModelVariant>[published]),

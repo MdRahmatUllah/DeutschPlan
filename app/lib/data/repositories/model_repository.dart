@@ -401,39 +401,37 @@ class ModelRepository {
     if (active.existsSync()) {
       final stamped = await _readStamp(entry.id);
 
-      // A directory nothing activated, or one a file has gone missing from.
-      if (stamped == null || !_hasAll(active, variant)) {
-        return ModelState(
-          entry: entry,
-          variant: variant,
-          status: ModelStatus.failed,
-          bytesOnDisk: _sizeOf(active),
-        );
-      }
+      ModelState state(ModelStatus status) => ModelState(
+        entry: entry,
+        variant: variant,
+        status: status,
+        bytesOnDisk: status == ModelStatus.notDownloaded ? 0 : _sizeOf(active),
+      );
+
+      // A directory nothing activated.
+      if (stamped == null) return state(ModelStatus.failed);
 
       // The *other* variant of the same model is not an update — it is a
       // different download. Offering *Update* for it would replace a working
       // model rather than add the one the learner picked.
       if (!stamped.startsWith('${variant.id}:')) {
-        return ModelState(
-          entry: entry,
-          variant: variant,
-          status: ModelStatus.notDownloaded,
-        );
+        return state(ModelStatus.notDownloaded);
       }
 
       // FR-M4-02: an update is a manifest whose hashes differ from the ones
       // this directory was activated with. Comparing stamps rather than
       // re-hashing, because re-reading half a gigabyte on every launch is not
-      // something to do to find out nothing changed.
-      return ModelState(
-        entry: entry,
-        variant: variant,
-        status: stamped == variant.fingerprint
-            ? ModelStatus.ready
-            : ModelStatus.updateAvailable,
-        bytesOnDisk: _sizeOf(active),
-      );
+      // something to do to find out nothing changed. It comes before the
+      // files are counted: a manifest that adds a file (#152's two voices)
+      // finds the model it verified without that file, and that is an
+      // update, not a failure.
+      if (stamped != variant.fingerprint) {
+        return state(ModelStatus.updateAvailable);
+      }
+
+      // One a file has gone missing from.
+      if (!_hasAll(active, variant)) return state(ModelStatus.failed);
+      return state(ModelStatus.ready);
     }
 
     if (staging.existsSync()) {

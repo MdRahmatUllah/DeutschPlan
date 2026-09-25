@@ -16,6 +16,8 @@
 /// the doc rather than restated here.
 library;
 
+import 'dart:async';
+
 import 'package:deutschplan/data/repositories/sentence_store.dart';
 import 'package:deutschplan/domain/sentence_picker.dart';
 import 'package:deutschplan/data/db/content_update.dart';
@@ -32,6 +34,7 @@ import 'package:deutschplan/data/repositories/exam_result_service.dart';
 import 'package:deutschplan/data/repositories/exam_run_service.dart';
 import 'package:deutschplan/data/repositories/grammar_repository.dart';
 import 'package:deutschplan/data/repositories/model_repository.dart';
+import 'package:deutschplan/data/repositories/synthesis_cache.dart';
 import 'package:deutschplan/data/repositories/plan_repository.dart';
 import 'package:deutschplan/data/repositories/plan_store.dart';
 import 'package:deutschplan/data/repositories/progress_repository.dart';
@@ -48,6 +51,7 @@ import 'package:deutschplan/services/exam_recorder.dart';
 import 'package:deutschplan/services/device_storage.dart';
 import 'package:deutschplan/services/model_downloads.dart';
 import 'package:deutschplan/services/notification_permission.dart';
+import 'package:deutschplan/services/tts/supertonic_tts.dart';
 import 'package:deutschplan/services/tts/system_tts.dart';
 import 'package:deutschplan/services/tts/tts_engine.dart';
 import 'package:deutschplan/services/tts/tts_service.dart';
@@ -334,12 +338,26 @@ TtsEngine systemTts(Ref ref) {
   return tts;
 }
 
-/// Supertonic 3 for [tts] (`tts.md`): null until #152's engine lands, and
-/// then `ref.watch(supertonicTtsProvider)`. [tts] falls back to the phone's
-/// voice while it is null, as it does when it fails. Kept alive because
-/// [tts] is.
+/// Supertonic 3, once its model is downloaded (#152): the `supertonic`
+/// engine #153's service chooses. Kept alive because its four ONNX sessions
+/// take seconds to open, and the cache and player are one of each.
 @Riverpod(keepAlive: true)
-TtsEngine? supertonicVoice(Ref ref) => null;
+TtsEngine supertonicTts(Ref ref) {
+  final tts = SupertonicTts(
+    models: ref.watch(modelRepositoryProvider),
+    settings: ref.watch(settingsProvider),
+    cache: SynthesisCache(),
+  );
+  // About 400 MB of sessions, a player and a stream: let go of on a rebuild.
+  ref.onDispose(() => unawaited(tts.dispose()));
+  return tts;
+}
+
+/// Supertonic 3 for [tts] (`tts.md`): [supertonicTts] (#152). [tts] falls
+/// back to the phone's voice whenever it can't speak, and a test that wants
+/// Supertonic missing overrides this with null. Kept alive because [tts] is.
+@Riverpod(keepAlive: true)
+TtsEngine? supertonicVoice(Ref ref) => ref.watch(supertonicTtsProvider);
 
 /// The voice every speaker uses (`tts.md`, #153): the engine `tts_engine`
 /// chooses, the fallback and the one player. Kept alive because the player

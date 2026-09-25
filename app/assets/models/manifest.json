@@ -52,6 +52,18 @@
               "url": "https://huggingface.co/Supertone/supertonic-3/resolve/main/voice_styles/F1.json",
               "bytes": 292046,
               "sha256": "bbdec6ee00231c2c742ad05483df5334cab3b52fda3ba38e6a07059c4563dbc2"
+            },
+            {
+              "name": "M1.json",
+              "url": "https://huggingface.co/Supertone/supertonic-3/resolve/main/voice_styles/M1.json",
+              "bytes": 291748,
+              "sha256": "e35604687f5d23694b8e91593a93eec0e4eca6c0b02bb8ed69139ab2ea6b0a5b"
+            },
+            {
+              "name": "F2.json",
+              "url": "https://huggingface.co/Supertone/supertonic-3/resolve/main/voice_styles/F2.json",
+              "bytes": 292423,
+              "sha256": "7c722c6a72707b1a77f035d67f0d1351ba187738e06f7683e8c72b1df3477fc6"
             }
           ]
         }

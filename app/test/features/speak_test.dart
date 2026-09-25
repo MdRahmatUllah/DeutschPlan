@@ -1,9 +1,11 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:deutschplan/core/components/dp_speaker_button.dart';
 import 'package:deutschplan/core/providers/app_providers.dart';
 import 'package:deutschplan/core/theme/app_theme.dart';
 import 'package:deutschplan/data/db/app_database.dart';
+import 'package:deutschplan/data/repositories/model_repository.dart';
 import 'package:deutschplan/data/repositories/setting_keys.dart';
 import 'package:deutschplan/data/repositories/settings_repository.dart';
 import 'package:deutschplan/features/words/speak.dart';
@@ -148,8 +150,11 @@ void main() {
 
     setUp(() {
       phone = FakeTts();
-      // No `supertonicVoiceProvider` override: null, as it is until #152.
-      missing = [systemTtsProvider.overrideWithValue(phone)];
+      // Supertonic missing: its slot empty.
+      missing = [
+        systemTtsProvider.overrideWithValue(phone),
+        supertonicVoiceProvider.overrideWithValue(null),
+      ];
     });
 
     testWidgets('and the first time says so, once a session', (tester) async {
@@ -207,14 +212,33 @@ void main() {
     });
   });
 
-  testWidgets('V03 the production default — tts_engine supertonic, no '
-      'Supertonic yet, only the phone voice given — falls back and says so', (
+  testWidgets('V03 #152 the production default — tts_engine supertonic, the '
+      'real SupertonicTts with no model downloaded — falls back and says so', (
     tester,
   ) async {
     final phone = FakeTts();
-    await pump(tester, [systemTtsProvider.overrideWithValue(phone)]);
+    final support = Directory.systemTemp.createTempSync('dp_speak');
+    addTearDown(() {
+      try {
+        support.deleteSync(recursive: true);
+      } on FileSystemException {
+        // Windows lets go a moment later.
+      }
+    });
+    await pump(tester, [
+      systemTtsProvider.overrideWithValue(phone),
+      modelRepositoryProvider.overrideWith(
+        (ref) => ModelRepository(ref.watch(settingsProvider), support: support),
+      ),
+    ]);
     expect(settings.read(SettingKeys.ttsEngine), TtsEngineSetting.supertonic);
     await tester.tap(find.byType(DpSpeakerButton));
+    // SupertonicTts asks the disk whether its model is there: real I/O.
+    await tester.runAsync(() async {
+      for (var i = 0; i < 100 && phone.said.isEmpty; i++) {
+        await Future<void>.delayed(const Duration(milliseconds: 20));
+      }
+    });
     await tester.pump();
     expect(phone.said, <(String, double)>[('Hallo', 1.25)]);
     expect(find.text(l10n.speakerFallback), findsOneWidget);
@@ -263,9 +287,10 @@ void main() {
     await tester.pumpAndSettle();
   });
 
-  test('V03 ttsProvider is the service over the phone voice and the '
-      'Supertonic slot, null until #152', () async {
+  test('V03 #152 ttsProvider is the service over the phone voice, with '
+      'SupertonicTts in its Supertonic slot', () async {
     final phone = FakeTts();
+    final supertonic = FakeTts()..voice = false;
     final db = AppDatabase.memory();
     final settings = SettingsRepository(db);
     await settings.load();
@@ -273,6 +298,7 @@ void main() {
       overrides: [
         settingsProvider.overrideWithValue(settings),
         systemTtsProvider.overrideWithValue(phone),
+        supertonicTtsProvider.overrideWithValue(supertonic),
       ],
     );
     addTearDown(() async {
@@ -281,7 +307,7 @@ void main() {
       await db.close();
     });
 
-    expect(container.read(supertonicVoiceProvider), isNull);
+    expect(container.read(supertonicVoiceProvider), same(supertonic));
     expect(container.read(ttsProvider), isA<TtsService>());
     expect(await container.read(ttsAvailableProvider.future), isTrue);
     phone.voice = false;
