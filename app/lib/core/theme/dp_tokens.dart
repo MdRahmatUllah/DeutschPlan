@@ -382,6 +382,7 @@ class DpSurfaceTokens {
     required this.card,
     required this.cardStrong,
     required this.muted,
+    required this.track,
     required this.outline,
     required this.outlineWidth,
     required this.strongOutlineWidth,
@@ -401,6 +402,7 @@ class DpSurfaceTokens {
     card: Color(0xFFFFFFFF),
     cardStrong: Color(0xFFFFFFFF),
     muted: Color(0xFFF3EADB), // Oat
+    track: Color(0x7815121F), // ink at 47 %
     outline: Color(0x3315121F), // ink at 20 %
     outlineWidth: 1.5,
     // Buttons carry a heavier 2 px ink border in the artboards.
@@ -417,6 +419,7 @@ class DpSurfaceTokens {
     card: Color(0xFF1E1B2C),
     cardStrong: Color(0xFF1E1B2C),
     muted: Color(0xFF29253A),
+    track: Color(0x5EF4F1FF), // ink at 37 %
     outline: Color(0x38F4F1FF), // ink at 22 %
     outlineWidth: 1.5,
     strongOutlineWidth: 2,
@@ -431,6 +434,7 @@ class DpSurfaceTokens {
     card: Color(0x8CFFFFFF), // white at 55 %
     cardStrong: Color(0xB8FFFFFF), // white at 72 %
     muted: Color(0x59FFFFFF), // white at 35 %
+    track: Color(0x8F15121F), // ink at 56 %
     outline: Color(0xA6FFFFFF), // white at 65 %
     outlineWidth: 1,
     // Buttons stay solid under glass so calls to action never blur; the
@@ -453,6 +457,7 @@ class DpSurfaceTokens {
     card: Color(0x8C1E1B2C), // rgba(30,27,44,0.55)
     cardStrong: Color(0xB81E1B2C), // rgba(30,27,44,0.72)
     muted: Color(0x1AFFFFFF),
+    track: Color(0x85F4F1FF), // ink at 52 %
     outline: Color(0x24FFFFFF), // white at 14 %
     outlineWidth: 1,
     strongOutlineWidth: 0, // solid buttons, as in glass light
@@ -470,6 +475,16 @@ class DpSurfaceTokens {
   final Color card;
   final Color cardStrong;
   final Color muted;
+
+  /// What is not done yet in a graphic that shows progress: the ring's track,
+  /// a bar's To do, a slider's rail, a heat-map's empty day. WCAG 1.4.11 asks
+  /// 3:1 for these against what they sit on (#437), which Oat is not (1.2:1,
+  /// and 1.0 under glass). So it is the page's ink at an alpha that reaches
+  /// 3:1, with a few hundredths to spare, on the paper, a card and a strong
+  /// card, and under glass on each aurora blob at its peak with or without a
+  /// card over it — translucent, so one value holds on all of them. Keep the
+  /// margin: `contrast_test.dart` measures it, and a step less is too close.
+  final Color track;
   final Color outline;
 
   /// Behind a sheet laid over a screen: the Summary artboards' ink at 32 %,
@@ -503,6 +518,7 @@ class DpSurfaceTokens {
     card: Color.lerp(card, other.card, t)!,
     cardStrong: Color.lerp(cardStrong, other.cardStrong, t)!,
     muted: Color.lerp(muted, other.muted, t)!,
+    track: Color.lerp(track, other.track, t)!,
     outline: Color.lerp(outline, other.outline, t)!,
     outlineWidth: lerpDouble(outlineWidth, other.outlineWidth, t)!,
     strongOutlineWidth: lerpDouble(

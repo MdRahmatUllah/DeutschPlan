@@ -266,7 +266,7 @@ class _Progress extends StatelessWidget {
           child: Stack(
             fit: StackFit.expand,
             children: <Widget>[
-              ColoredBox(color: tokens.surface.muted),
+              ColoredBox(color: tokens.surface.track),
               FractionallySizedBox(
                 alignment: AlignmentDirectional.centerStart,
                 widthFactor: fraction.clamp(0.0, 1.0),

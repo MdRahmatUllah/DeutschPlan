@@ -14,7 +14,7 @@
          duplicated for the same reason (Glance can't read Dart), and held to
          them by widget_colours_test.dart. -->
     <color name="widget_card">#FFFFFF</color>
-    <color name="widget_track">#F3EADB</color>
+    <color name="widget_track">#7815121F</color>
     <color name="widget_outline">#3315121F</color>
     <color name="widget_ink">#15121F</color>
     <color name="widget_secondary">#5B5670</color>

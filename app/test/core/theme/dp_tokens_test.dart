@@ -33,6 +33,15 @@ void main() {
     DpMode.dark: <String>{},
   };
 
+  /// Artboard colours a token deliberately moved off for WCAG AA (#163):
+  /// the artboard's value, by token. The token must still differ only for
+  /// the reason given, so its artboard value is accounted for here and the
+  /// token's own value is checked by `contrast_test.dart`.
+  final adjustedForContrast = <DpMode, Map<String, String>>{
+    DpMode.light: {'almostText': '#B45F00'}, // 4.35:1 on paper -> #AE5C01
+    DpMode.dark: <String, String>{},
+  };
+
   canvases.forEach((mode, path) {
     final name = mode.name;
     final tokens = mode == DpMode.light ? DpTokens.light() : DpTokens.dark();
@@ -83,9 +92,10 @@ void main() {
       // swapping a pair would still pass. The reverse check below is what
       // catches a colour that was missed altogether.
       named.forEach((label, colour) {
-        test('$label is ${hex(colour)}', () {
+        final drawn = adjustedForContrast[mode]![label] ?? hex(colour);
+        test('$label is $drawn in the artboard', () {
           expect(
-            artboard.contains(hex(colour)),
+            artboard.contains(drawn),
             isTrue,
             reason:
                 '$label = ${hex(colour)} does not appear in the $name artboard',
@@ -100,6 +110,7 @@ void main() {
             ...named.values.map(hex),
             ...outOfScope[mode]!,
             ...specOnly[mode]!,
+            ...adjustedForContrast[mode]!.values,
             hex(palette.onAccent),
             hex(palette.derText),
             hex(surface.cardStrong),

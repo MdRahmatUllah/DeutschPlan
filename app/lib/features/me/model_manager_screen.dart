@@ -278,7 +278,7 @@ class _Storage extends StatelessWidget {
                       colour: tokens.color.textSecondary,
                     ),
                     _Share(flex: models, colour: tokens.color.primary),
-                    _Share(flex: space.free, colour: tokens.surface.muted),
+                    _Share(flex: space.free, colour: tokens.surface.track),
                   ],
                 ),
               ),
@@ -719,7 +719,7 @@ class _Progress extends ConsumerWidget {
                 height: 10,
                 child: LinearProgressIndicator(
                   value: progress,
-                  backgroundColor: tokens.surface.muted,
+                  backgroundColor: tokens.surface.track,
                   color: tokens.color.primary,
                 ),
               ),

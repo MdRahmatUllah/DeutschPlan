@@ -54,6 +54,23 @@ void main() {
       expect(const DpProgressRing(completed: 3, total: 0).progress, 0);
     });
 
+    testWidgets('#437 the track is surface.track, under a Lagoon arc', (
+      tester,
+    ) async {
+      await pump(tester, const DpProgressRing(completed: 12, total: 20));
+      expect(
+        tester.renderObject(
+          find.descendant(
+            of: find.byType(DpProgressRing),
+            matching: find.byType(CustomPaint),
+          ),
+        ),
+        paints
+          ..circle(color: DpSurfaceTokens.light.track)
+          ..arc(color: DpPalette.light.primary),
+      );
+    });
+
     testWidgets('it renders the count and the caption', (tester) async {
       await pump(
         tester,
@@ -192,7 +209,11 @@ void main() {
         DpPalette.light.learning,
         reason: 'Learning is Sun',
       );
-      expect(boxes[2].color, DpSurfaceTokens.light.muted, reason: 'To do Oat');
+      expect(
+        boxes[2].color,
+        DpSurfaceTokens.light.track,
+        reason: 'To do is the track, 3:1 on its card (#437)',
+      );
 
       final done = tester.getSize(find.byWidget(boxes[0])).width;
       final todo = tester.getSize(find.byWidget(boxes[2])).width;
@@ -230,7 +251,7 @@ void main() {
       );
     });
 
-    testWidgets('an untouched step is all Oat, not an empty box', (
+    testWidgets('an untouched step is all track, not an empty box', (
       tester,
     ) async {
       await pump(
@@ -246,7 +267,7 @@ void main() {
           matching: find.byType(ColoredBox),
         ),
       );
-      expect(box.color, DpSurfaceTokens.light.muted);
+      expect(box.color, DpSurfaceTokens.light.track);
     });
 
     testWidgets('a bar too narrow for the floor still does not overflow', (

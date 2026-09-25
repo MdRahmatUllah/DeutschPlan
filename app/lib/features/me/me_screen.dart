@@ -337,7 +337,7 @@ class MeHeader extends StatelessWidget {
                 : '${l10n.meSince(_date(context, started))} · $studied',
             role: DpTextRole.label,
             weight: 500,
-            color: ink.withValues(alpha: 0.9),
+            color: ink,
           ),
         ],
       ),
@@ -432,7 +432,7 @@ class MeWordsCard extends StatelessWidget {
                 const SizedBox(width: 8),
                 count(learning, tokens.color.learning, l10n.wordStatusLearning),
                 const SizedBox(width: 8),
-                count(todo, tokens.surface.muted, l10n.wordStatusToDo),
+                count(todo, tokens.surface.track, l10n.wordStatusToDo),
               ],
             ),
             const SizedBox(height: 10),
@@ -499,7 +499,7 @@ class MeActivityCard extends StatelessWidget {
     Color shade(PlanDate? day) {
       final step = day == null ? 0 : activityShade(activity[day] ?? 0);
       return step == 0
-          ? tokens.surface.muted
+          ? tokens.surface.track
           : tokens.color.primary.withValues(alpha: alphas[step - 1]);
     }
 

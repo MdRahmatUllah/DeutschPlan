@@ -212,7 +212,7 @@ void main() {
                   as BoxDecoration)
               .color;
 
-      expect(colour('2026-09-13'), tokens.surface.muted);
+      expect(colour('2026-09-13'), tokens.surface.track, reason: '#437');
       expect(
         colour('2026-09-14'),
         tokens.color.primary.withValues(alpha: 0.15),

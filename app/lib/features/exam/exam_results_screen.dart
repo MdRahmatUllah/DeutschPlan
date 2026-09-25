@@ -640,7 +640,7 @@ class _SectionRow extends StatelessWidget {
       height: 8,
       clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
-        color: tokens.surface.muted,
+        color: tokens.surface.track,
         borderRadius: BorderRadius.circular(4),
       ),
       child: FractionallySizedBox(

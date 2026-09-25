@@ -381,7 +381,7 @@ class _QuizStrip extends StatelessWidget {
           height: 6,
           child: Stack(
             children: <Widget>[
-              Positioned.fill(child: ColoredBox(color: tokens.surface.muted)),
+              Positioned.fill(child: ColoredBox(color: tokens.surface.track)),
               FractionallySizedBox(
                 alignment: AlignmentDirectional.centerStart,
                 widthFactor: of == 0 ? 0 : done / of,
