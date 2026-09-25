@@ -151,3 +151,16 @@ class StubQuizRun implements QuizRunService {
 List<Override> quizStub([StubQuizRun? run]) => <Override>[
   quizRunServiceProvider.overrideWithValue(run ?? StubQuizRun()),
 ];
+
+/// [count] learned nouns, each with an article, for a quiz category (#337).
+List<QuizWord> learnedNouns(int count, {String step = 'A2.1'}) => <QuizWord>[
+  for (var i = 0; i < count; i++)
+    QuizWord(
+      uid: 'n$i',
+      german: 'Wort$i',
+      english: 'word $i',
+      step: step,
+      article: 'das',
+      pos: 'noun',
+    ),
+];

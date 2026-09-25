@@ -3,6 +3,7 @@ library;
 
 import 'dart:io';
 
+import 'package:deutschplan/core/providers/app_providers.dart';
 import 'package:deutschplan/data/db/app_database.dart';
 import 'package:deutschplan/data/db/content_dao.dart';
 import 'package:deutschplan/data/repositories/quiz_store.dart';
@@ -11,6 +12,9 @@ import 'package:deutschplan/data/repositories/word_repository.dart';
 import 'package:deutschplan/domain/quiz_builder.dart';
 import 'package:drift/drift.dart' hide isNotNull, isNull;
 import 'package:drift/native.dart';
+import 'package:deutschplan/features/quiz/quiz_setup_sheet.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
 
 import '../db/content_fixture.dart';
@@ -91,6 +95,28 @@ void main() {
         ContentFixture.haus,
       });
       expect(await store.learned(QuizSource.stepLearned), isEmpty);
+    });
+
+    test("#337 L7's categories: what a category quiz draws, and the step's "
+        'share of it', () async {
+      final container = ProviderContainer(
+        overrides: <Override>[
+          appDatabaseProvider.overrideWithValue(db),
+          settingsProvider.overrideWithValue(settings),
+        ],
+      );
+      addTearDown(container.dispose);
+      final categories = await container.read(
+        quizCategoriesProvider('A1.1').future,
+      );
+      final wohnen = categories.single;
+      expect(wohnen.name, 'Wohnen');
+      expect(
+        {for (final w in wohnen.learned) w.uid},
+        uids(await store.learned(QuizSource.category, ref: '1')),
+        reason: "the same words the quiz draws: Haus, and A1.2's Straße",
+      );
+      expect(wohnen.inStep, 1, reason: 'only Haus is A1.1');
     });
 
     test("a category's learned words", () async {

@@ -17,7 +17,7 @@ Button *Practise all due · 2* (→ L15 with all due topics). Numbered list: tit
 ## Quiz tab
 Tiles *Quick* (10) · *Standard* (20) · *Long* (30) · *Forms* ("Perfekt, 3rd person, plurals from this step") · *Custom* ("Direction, length, source, timer") → custom sheet. Last quiz card: "16 / 20 · Standard · DE → EN · Sun 20 Sep". Disabled with an explanation until ≥ 10 words of the step are learned.
 
-**Custom quiz sheet** (bottom sheet): Direction DE → EN · DE → বাংলা · EN → DE · Articles · Listening · Mixed; Length 10 · 20 · 30; Source this step's learned words · all learned · {category}; Timer switch ("Off · 15 s per question when on"); *Start quiz · 20 questions*.
+**Custom quiz sheet** (bottom sheet): Direction DE → EN · DE → বাংলা · EN → DE · Articles · Listening · Mixed; Length 10 · 20 · 30; Source this step's learned words · all learned · {category}, the step's category with most of *this step's* words learned (on a tie, the step's biggest). The chip stays closed, dimmed and announced as disabled, until the chosen direction can ask 10 of the category's learned words, counted from any step as the quiz draws them (Articles counts only nouns). A caption says why: "{category} opens once 10 of its words are learned · 3 so far". A direction that closes it takes the source back to the step's words (#337); Timer switch ("Off · 15 s per question when on"); *Start quiz · 20 questions*.
 
 **Functional requirements**
 - FR-L2-01 The header's "days left" = remaining To-do words ÷ daily_new × (7 ÷ study days).
