@@ -467,3 +467,4 @@ able to tell what is going on without asking.
 - 2026-09-25 23:11 · agent-0 #437 · done (#448)
 - 2026-09-25 23:12 · agent-0 #453 · assigned to agent-1
 - 2026-09-25 23:17 · agent-1 #430 · PR #454 open; review requested from all
+- 2026-09-25 23:17 · agent-1 · #430 PR #454 up: prefetch (SpeechPrefetch/prepare, T2 studySayings) + voice download chooses Supertonic (lead's call); device: prepared cards 90-183 ms
