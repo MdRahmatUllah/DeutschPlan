@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-09-25 14:22
+last-seen: 2026-09-25 14:23
 last-read: 301
 
 ## Now
 
-Nothing claimed.
+#346 bug(plan): reopening a past date (clock or time-zone moves back) adds a Revise block to a finished day (found in #76) — claimed 2026-09-25 14:23.
 
 ## Next
 
