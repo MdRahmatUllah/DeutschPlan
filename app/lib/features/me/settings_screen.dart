@@ -77,6 +77,13 @@ class SettingsEditor extends _$SettingsEditor {
   Future<void> dailyNew(int count) =>
       ref.read(setupRepositoryProvider).setDailyNew(count);
 
+  /// M5's study days (#147) reach the open enrollment too, for the same
+  /// reason. FR-M5-01: the last one can't go.
+  Future<void> studyDays(int mask) async {
+    if (mask & 127 == 0) return;
+    await ref.read(setupRepositoryProvider).setStudyDays(mask);
+  }
+
   /// FR-M3-03: on only once the model is ready. False otherwise, with the
   /// switch left off, and M3 opens M4 to get it.
   Future<bool> translation({required bool on}) async {

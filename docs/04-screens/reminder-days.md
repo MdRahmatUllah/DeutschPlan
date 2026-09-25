@@ -6,6 +6,13 @@
 
 **Layout.** Study days toggle pills Mo–Su with note "Sunday is a rest day: no plan, no backlog, streak kept. Applies from tomorrow." Daily reminder switch ("Permission was granted"), Time 19:30, switch *Only when there is something to do* ("Skipped on finished days and rest days"). Preview card "Tonight's text — DeutschPlan · 19:30 — 12 revisions · 7 new · about 9 min — Grammar due: Konjunktiv II" with note "Built from the real plan at send time. Tapping it opens Today."
 
+**Filled in by #147:**
+- The day pills are S2 page 4's. A change writes `study_days_mask` and the open enrollment's, which is where the plan reads it (BR-PLAN-01), so it reaches the plan from tomorrow (BR-PLAN-08). The note names the rest days ("Sunday is a rest day", "Saturday and Sunday are rest days"), or says every day is a study day.
+- The reminder switch asks for the permission as S2 page 5 does. Refused, it stays off: "Notifications are blocked · allow them in your phone's settings", with *Open settings* (the app's page in the phone's settings). Off, it reads "Off · asks for permission only when switched on"; on, "Permission was granted".
+- *Time* opens the platform's picker. The new time is saved, and `ReminderScheduler`, which follows `reminder_time`, reschedules the reminders and `reminder_compose` (FR-M5-04).
+- The preview shows while the reminder is on. Its text is `reminderBody`, the composer `reminder_compose` uses (FR-M5-03), over today's plan: "12 revisions · 7 new · about 9 min", and "Grammar due: …" on the second line. With nothing due it says "Nothing to do today, so no reminder." under *Only when there is something to do*, and the plain text otherwise. On a rest day it says "Today is a rest day: no reminder."
+- The "D" is the app's icon as the phone draws it beside a notification; it doesn't scale with the text size.
+
 **Functional requirements**
 - FR-M5-01 At least one study day must remain enabled.
 - FR-M5-02 Enabling the reminder requests notification permission (Android 13+ / iOS) with rationale; denial keeps the switch off and links to OS settings.

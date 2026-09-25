@@ -4838,5 +4838,77 @@
   "examResultDeleteKeep": "Keep it",
   "@examResultDeleteKeep": {
     "description": "L13 confirm: keep the recording."
+  },
+  "reminderDaysStudyDays": "Study days",
+  "@reminderDaysStudyDays": {
+    "description": "M5's first card heading, shown in capitals."
+  },
+  "reminderDaysEveryDay": "Every day is a study day. Applies from tomorrow.",
+  "@reminderDaysEveryDay": {
+    "description": "M5 under the day pills when no day is a rest day."
+  },
+  "reminderDaysRest": "{count, plural, =1{{days} is a rest day: no plan, no backlog, streak kept. Applies from tomorrow.} other{{days} are rest days: no plan, no backlog, streak kept. Applies from tomorrow.}}",
+  "@reminderDaysRest": {
+    "description": "M5 under the day pills (BR-PLAN-01). days is the rest days' names, e.g. 'Sunday' or 'Saturday and Sunday'.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "days": {
+        "type": "String"
+      }
+    }
+  },
+  "reminderDaysAnd": " and ",
+  "@reminderDaysAnd": {
+    "description": "Joins the last two rest days in M5's note: 'Saturday and Sunday'. Keep the spaces."
+  },
+  "reminderDaysGranted": "Permission was granted",
+  "@reminderDaysGranted": {
+    "description": "M5 under Daily reminder while it's on."
+  },
+  "reminderDaysOpenSettings": "Open settings",
+  "@reminderDaysOpenSettings": {
+    "description": "M5 after notifications were refused: opens the phone's settings for the app (FR-M5-02)."
+  },
+  "reminderDaysTime": "Time",
+  "@reminderDaysTime": {
+    "description": "M5's reminder time row."
+  },
+  "reminderDaysOnlyWhenDue": "Only when there is something to do",
+  "@reminderDaysOnlyWhenDue": {
+    "description": "M5 switch: reminder_only_when_due."
+  },
+  "reminderDaysOnlyWhenDueNote": "Skipped on finished days and rest days",
+  "@reminderDaysOnlyWhenDueNote": {
+    "description": "M5 under the only-when-due switch."
+  },
+  "reminderDaysTonight": "Tonight's text",
+  "@reminderDaysTonight": {
+    "description": "M5's preview heading, shown in capitals."
+  },
+  "reminderDaysFrom": "{app} · {time}",
+  "@reminderDaysFrom": {
+    "description": "M5's preview: the notification's app name and time, 'DeutschPlan · 19:30'.",
+    "placeholders": {
+      "app": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "reminderDaysNothing": "Nothing to do today, so no reminder.",
+  "@reminderDaysNothing": {
+    "description": "M5's preview when nothing is due and the reminder is only for days with something to do."
+  },
+  "reminderDaysRestToday": "Today is a rest day: no reminder.",
+  "@reminderDaysRestToday": {
+    "description": "M5's preview on a rest day."
+  },
+  "reminderDaysPreviewNote": "Built from the real plan at send time. Tapping it opens Today.",
+  "@reminderDaysPreviewNote": {
+    "description": "M5 under the preview (FR-M5-03)."
   }
 }

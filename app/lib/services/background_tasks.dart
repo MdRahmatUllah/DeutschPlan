@@ -14,10 +14,12 @@ import 'package:deutschplan/services/background_work.dart';
 import 'package:deutschplan/services/reminder_notifications.dart';
 import 'package:deutschplan/services/widget_snapshot.dart';
 import 'package:flutter/foundation.dart' show debugPrint;
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:sqlite3/sqlite3.dart' show OpenMode, sqlite3;
 import 'package:workmanager/workmanager.dart';
+
+part 'background_tasks.g.dart';
 
 /// The reminder's plain words, in [language]: what it says until
 /// `reminder_compose` writes the day's plan into it.
@@ -117,6 +119,7 @@ Future<DateTime> composeReminder(
     return at;
   }
   final view = container.listen(todayViewProvider.future, (_, _) {});
+  final text = container.listen(reminderBodyProvider.future, (_, _) {});
   try {
     final today = await view.read();
     if (!today.isStudyDay) {
@@ -128,12 +131,7 @@ Future<DateTime> composeReminder(
     final l10n = lookupAppLocalizations(
       settings.read(SettingKeys.uiLanguage).locale,
     );
-    final grammar = today.grammarDue.isEmpty
-        ? null
-        : await container
-              .read(grammarRepositoryProvider)
-              .find(today.grammarDue.first);
-    final body = reminderText(l10n, today, grammar: grammar?.topic.topic);
+    final body = await text.read();
     if (body != null) {
       await notifications.replace(at, (
         title: l10n.reminderTitle,
@@ -146,7 +144,26 @@ Future<DateTime> composeReminder(
     return at;
   } finally {
     view.close();
+    text.close();
   }
+}
+
+/// Tonight's reminder text from today's plan, in the app's language
+/// ([reminderText]); null when nothing is due. The one composer
+/// `reminder_compose` and M5's preview share (FR-M5-03).
+@riverpod
+Future<String?> reminderBody(Ref ref) async {
+  final settings = ref.watch(settingsProvider);
+  final grammar = ref.watch(grammarRepositoryProvider);
+  final today = await ref.watch(todayViewProvider.future);
+  final topic = today.grammarDue.isEmpty
+      ? null
+      : await grammar.find(today.grammarDue.first);
+  return reminderText(
+    lookupAppLocalizations(settings.read(SettingKeys.uiLanguage).locale),
+    today,
+    grammar: topic?.topic.topic,
+  );
 }
 
 /// "12 revisions · 7 new · about 9 min", and "Grammar due: [grammar]" on the

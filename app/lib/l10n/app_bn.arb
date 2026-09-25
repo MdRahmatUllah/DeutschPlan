@@ -797,5 +797,19 @@
   "examResultRubricNoRecording": "কোনো রেকর্ডিং নেই, তাই এই টিকগুলো কিছু গোনে না।",
   "examResultDeleteTitle": "রেকর্ডিং মুছবেন?",
   "examResultDeleteMessage": "তাহলে বলার অংশে কোনো পয়েন্ট থাকবে না। রেকর্ডিংটি এই ফোন থেকে মুছে যাবে।",
-  "examResultDeleteKeep": "রেখে দিন"
+  "examResultDeleteKeep": "রেখে দিন",
+  "reminderDaysStudyDays": "পড়ার দিন",
+  "reminderDaysEveryDay": "প্রতিদিনই পড়ার দিন। আগামীকাল থেকে প্রযোজ্য।",
+  "reminderDaysRest": "{count, plural, other{{days} বিশ্রামের দিন: কোনো পরিকল্পনা নেই, ব্যাকলগ নেই, ধারাবাহিকতা থাকে। আগামীকাল থেকে প্রযোজ্য।}}",
+  "reminderDaysAnd": " ও ",
+  "reminderDaysGranted": "অনুমতি দেওয়া হয়েছে",
+  "reminderDaysOpenSettings": "সেটিংস খুলুন",
+  "reminderDaysTime": "সময়",
+  "reminderDaysOnlyWhenDue": "শুধু যখন কিছু করার আছে",
+  "reminderDaysOnlyWhenDueNote": "শেষ হওয়া দিন আর বিশ্রামের দিনে বাদ যায়",
+  "reminderDaysTonight": "আজ রাতের লেখা",
+  "reminderDaysFrom": "{app} · {time}",
+  "reminderDaysNothing": "আজ কিছু করার নেই, তাই রিমাইন্ডার নেই।",
+  "reminderDaysRestToday": "আজ বিশ্রামের দিন: রিমাইন্ডার নেই।",
+  "reminderDaysPreviewNote": "পাঠানোর সময় আসল পরিকল্পনা থেকে তৈরি। ট্যাপ করলে Today খোলে।"
 }
