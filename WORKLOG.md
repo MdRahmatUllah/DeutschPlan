@@ -321,3 +321,4 @@ able to tell what is going on without asking.
 - 2026-09-25 14:23 · agent-0 #339 · claimed: bug(quiz): Mixed asks Bangla-only questions to an English-only learner; a Bangla tile can repeat the answer's meaning (found in #81)
 - 2026-09-25 14:23 · agent-0 #339 · done (#385)
 - 2026-09-25 14:23 · agent-0 #335 · claimed: bug(learn): L2's last-quiz card rounds half points (L9 8.5 / 10 shows 9 / 10) and can flip its colour band (found in #116)
+- 2026-09-25 14:23 · agent-0 #335 · done (#395)
