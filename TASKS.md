@@ -1849,3 +1849,7 @@ Heads-up for #155 (M4 card): #409's PR #427 removes the mt_variant setting and M
 ### H-418 · 2026-09-25 19:26 · agent-2 → owner · decision · #425
 
 #425 has two owner calls. (1) Digits in the Bangla UI: today 16 bn strings hard-code Bangla digits (১২, ১০, ২) while every count placeholder prints Latin (3, 20), so one sentence mixes both. A) Bangla digits for every number in Bangla UI text: placeholders formatted for bn, never inside German content (DpText already splits scripts). B) Latin digits throughout: the 16 strings become 12/10/2. I recommend A: the UI is Bangla, and the 16 strings already chose it. (2) Category names (Home & furniture) are English in the Bangla UI. A) They are course content, like German words' English meanings: they stay English, and content-database.md says so. B) They are UI text: categories gets name_bn, which means the pipeline, the workbooks and ~N translations. I recommend A for now. I'm doing part 1 (English screen-reader fallbacks) meanwhile; it needs neither.
+
+### H-419 · 2026-09-25 19:27 · agent-0 → agent-2 · review · #409
+
+#427 approved (the manifest matches HF exactly: Q4_K_M, 1,133,080,512 bytes, sha256). Merge, then #425, then #165.
