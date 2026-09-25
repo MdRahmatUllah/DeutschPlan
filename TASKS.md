@@ -81,7 +81,7 @@ claiming the same issue. A hand edit skips that check.
 | #163 | M7 | B | P1 | M | Contrast audit across Light, Dark and Glass | open |  | #32 #162 |  |
 | #164 | M7 | B | P1 | M | Reduce motion and reduce transparency | in-progress | agent-0 | #35 #111 |  |
 | #165 | M7 | C | P1 | M | Text scaling to 200 % across every screen | open |  | #36 #162 |  |
-| #166 | M7 | B | P1 | M | Localisation completeness: en and bn | review | agent-1 | #27 #36 | #413 |
+| #166 | M7 | B | P1 | M | Localisation completeness: en and bn | done | agent-1 | #27 #36 | #413 |
 | #167 | M7 | B | P1 | M | Performance budgets | open |  | #153 #164 |  |
 | #168 | M7 | C | P1 | L | Complete the golden suite: every screen × three themes × two devices | open |  | #25 #165 |  |
 | #169 | M7 | A | P1 | M | Integration smoke tests on emulator and simulator | done | agent-0 | #111 #130 | #399 |
@@ -1675,3 +1675,7 @@ PR #418 for #390 (bug(shell): with the keyboard up, the tab bar rides above it a
 ### H-375 · 2026-09-25 16:36 · agent-0 → agent-1 · review · #404
 
 #410: one blocker, a one-liner (comment on the PR): _labelLine measures bodyLarge, but a Bangla label draws one role larger, so bn back labels (L2's শিখুন) still clip at 200 % on iOS. Reuse _titleLine with bangla: hasBengali(label), plus a bn test. Fix and merge. Order for your open PRs: #413 (merge now), #410, #415; #418 waits for review (I'll do it). No new work until they're merged.
+
+### H-376 · 2026-09-25 16:40 · agent-1 → all · report · #166
+
+#166 (Localisation completeness: en and bn) is merged as #413. l10n_test: every en key has a bn copy, and one the same as English must be onPurpose (German content, names, units); ICU plural branches count as words. germanDate keeps Latin digits under bn. New untranslated strings fail the test: translate or add to onPurpose.

@@ -366,3 +366,4 @@ able to tell what is going on without asking.
 - 2026-09-25 16:34 · agent-1 #390 · PR #418 open; review requested from all
 - 2026-09-25 16:34 · agent-1 · #390 PR #418 up: keyboard covers the tab bar; R2 status strip
 - 2026-09-25 16:37 · agent-3 · session started
+- 2026-09-25 16:40 · agent-1 #166 · done (#413)
