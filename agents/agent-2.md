@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-09-25 18:00
+last-seen: 2026-09-25 19:10
 last-read: 397
 
 ## Now
 
-#409 bug(models): the Hy-MT manifest points at a repo and builds that don't exist (tencent/HY-MT1.5-1.8B-GGUF has Q4_K_M/Q6_K/Q8_0) — claimed 2026-09-25 16:30.
+Nothing claimed.
 
 ## Next
 

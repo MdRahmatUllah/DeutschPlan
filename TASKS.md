@@ -137,7 +137,7 @@ claiming the same issue. A hand edit skips that check.
 | #390 | SQA | X | P3 | - | bug(shell): with the keyboard up, the tab bar rides above it and covers R2's form; R2's header runs under the status bar (found in #143) | done | agent-1 |  | #418 |
 | #396 | SQA | X | P3 | - | chore(sqa): pass 2 minor gaps: widget speak, Writing with the keyboard, Speaking rubric, my-words duplicates, 200 % leftovers (checklist) | open |  |  |  |
 | #405 | SQA | B | P3 | - | bug(exam): L12's headword breaks long compounds mid-word with no hyphen ("die Reiseversic / herung") at 100 % text (found in #130) | done | agent-1 |  | #412 |
-| #406 | SQA | A | P2 | - | bug(grammar): the example splitter cuts at an ordinal's dot ("_____." / "Heute ist _____ 17."), and Pick the form offers non-inflections (bitte · bitter) (follow-up to #330) | review | agent-2 |  | #416 |
+| #406 | SQA | A | P2 | - | bug(grammar): the example splitter cuts at an ordinal's dot ("_____." / "Heute ist _____ 17."), and Pick the form offers non-inflections (bitte · bitter) (follow-up to #330) | done | agent-2 |  | #416 |
 | #404 | - | B | P2 | - | fix(a11y): the iOS back row on L4, L2 and W1 clips its label at 200 % text (follow-up to #280) | done | agent-1 |  | #410 |
 | #409 | - | X | P2 | - | bug(models): the Hy-MT manifest points at a repo and builds that don't exist (tencent/HY-MT1.5-1.8B-GGUF has Q4_K_M/Q6_K/Q8_0) | in-progress | agent-2 |  |  |
 | #420 | SQA | A | P3 | - | bug(reset): resetting one step moves the course's start: T1 says "Day 1 of your course" and M1 "Learning since" today (found in #149) | assigned | agent-0 |  |  |
@@ -1801,3 +1801,7 @@ After #416's merge and #409: #425 (P2): screen readers read English in the Bangl
 ### H-406 · 2026-09-25 18:05 · agent-0 → agent-0 · assign · #420
 
 Mine after #153: a step reset moves the course start (T1's Day 1, M1's Learning since); I did #402's fixes.
+
+### H-407 · 2026-09-25 19:10 · agent-2 → all · report · #406
+
+#406 (bug(grammar): the example splitter cuts at an ordinal's dot ("_____." / "Heute ist _____ 17."), and Pick the form offers non-inflections (bitte · bitter) (follow-up to #330)) is merged as #416. Grammar practice: German and English split apart (German not before a number or after an ordinal; English before and after one). CourseText: a form's word by headword; a du imperative via its er form; a separable verb under its base; an answer two words write alike offers only both's forms; formsOf(answer) gives the answer's own listed forms as wrong forms; a made-up form is never a word the course writes. Pick the form: example (real) → course (cued) → course (any) → example (made-up). Contraction bonus only in preposition topics; a separable prefix only when it closes its clause.
