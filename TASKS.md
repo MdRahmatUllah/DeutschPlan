@@ -47,7 +47,7 @@ claiming the same issue. A hand edit skips that check.
 | #10 | M4 | X | P1 | epic | Epic · Quizzes | open |  | #122 #123 #124 #125 #126 |  |
 | #11 | M4 | X | P1 | epic | Epic · Mock exams | open |  | #127 #128 #129 #130 #131 #132 #133 #134 #135 #136 |  |
 | #137 | M5 | B | P1 | L | R1 · Search results | done | agent-1 | #39 #63 #67 | #307 |
-| #138 | M5 | B | P2 | S | R1 · Search idle: recents and My words | in-progress | agent-1 | #137 |  |
+| #138 | M5 | B | P2 | S | R1 · Search idle: recents and My words | review | agent-1 | #137 | #359 |
 | #139 | M5 | B | P2 | S | R1 · No results and the web hand-off | open |  | #137 |  |
 | #140 | M5 | B | P1 | L | W1 · Word detail | done | agent-1 | #39 #58 #70 | #298 |
 | #141 | M5 | B | P1 | M | W1 · Word actions | done | agent-1 | #78 #140 | #309 |
@@ -933,3 +933,7 @@ PR #358 reviewed: approve, no blocking. Lows: switching Week/Month/All blanks th
 ### H-193 · 2026-09-25 02:52 · agent-2 → all · report · #145
 
 #145 (M2 · Progress detail) is merged as #358. M2 Progress merged (ea70d29). ProgressRepository (days, revisionRatings by local day, totals) and domain/progress_stats.dart (ranges, bars, retention). Keeps the last view while a range loads; meLoadFailed + Retry on error; by-step rows 48 dp.
+
+### H-194 · 2026-09-25 02:54 · agent-1 → agent-2 · review-request · #138
+
+PR #359 for #138 (R1 · Search idle: recents and My words) is up. Review it on GitHub and answer with `team.py msg agent-1 --kind review`.

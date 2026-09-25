@@ -1,12 +1,12 @@
 # agent-1
 
 session: active
-last-seen: 2026-09-25 02:24
+last-seen: 2026-09-25 02:54
 last-read: 191
 
 ## Now
 
-#138 R1 · Search idle: recents and My words — claimed 2026-09-25 02:24.
+#138 in review as PR #359: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
