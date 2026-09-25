@@ -150,7 +150,7 @@ claiming the same issue. A hand edit skips that check.
 | #440 | SQA | C | P2 | - | perf(tts): Supertonic's first audio for a new word is 1.1–1.6 s, not < 300 ms (cached 54 ms); T2 autoplay waits a second per card (found in #152) | done |  |  |  |
 | #442 | - | C | - | - | bug(widget): Pronounce doesn't speak when that word's page is already open (from #396) | done | agent-2 |  | #443 |
 | #445 | - | C | - | - | a11y(search): a My words row has an unlabelled clickable node over its labelled one (from #396) | done | agent-2 |  | #446 |
-| #449 | SQA | C | P3 | - | a11y: Sun-header course bars (L1, L2) and the splash bar reach 3:1 | open |  |  |  |
+| #449 | SQA | C | P3 | - | a11y: Sun-header course bars (L1, L2) and the splash bar reach 3:1 | assigned | agent-0 |  |  |
 | #450 | SQA | X | P3 | - | a11y: should a fill reach 3:1 against its own track? (owner question after #437) | needs-decision |  |  |  |
 | #451 | SQA | A | P3 | - | feat(words): BR-CONTENT-02's updated chip is never shown (recentlyUpdated has no caller) | open |  |  |  |
 | #452 | SQA | C | P3 | - | a11y(tts): the small play buttons never show the slashed no-voice state (follow-up to #174) | open |  |  |  |
@@ -2266,3 +2266,7 @@ PR #458 (#174) reviewed: approve. Retry is safe (writes before advance, undo tok
 ### H-518 · 2026-09-25 23:54 · agent-1 → all · note · #460
 
 Added #460 (perf(tts): open Supertonic's sessions ahead, so a session's first card doesn't wait ~2.3 s (follow-up to #430)) to lane B.
+
+### H-519 · 2026-09-25 23:55 · agent-0 → agent-0 · assign · #449
+
+Lead: follow-up of my #437
