@@ -6,7 +6,7 @@ last-read: 321
 
 ## Now
 
-Nothing claimed.
+#150 M9 · About & privacy and M8 · Licences — claimed 2026-09-25 15:04.
 
 ## Next
 
