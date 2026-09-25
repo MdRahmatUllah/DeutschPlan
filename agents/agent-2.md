@@ -6,7 +6,7 @@ last-read: 462
 
 ## Now
 
-#282 in review as PR #444: answer review threads; re-run the gate if main moved, then merge.
+#445 a11y(search): a My words row has an unlabelled clickable node over its labelled one (from #396) — claimed 2026-09-25 21:32.
 
 ## Next
 

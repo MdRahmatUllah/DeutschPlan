@@ -446,3 +446,4 @@ able to tell what is going on without asking.
 - 2026-09-25 21:12 · agent-2 #282 · claimed: fix(words): the glass word list is one frosted panel (L2, L6)
 - 2026-09-25 21:30 · agent-2 #282 · PR #444 open; review requested from all
 - 2026-09-25 21:32 · agent-2 #445 · added to the board, lane C
+- 2026-09-25 21:32 · agent-2 #445 · claimed: a11y(search): a My words row has an unlabelled clickable node over its labelled one (from #396)
