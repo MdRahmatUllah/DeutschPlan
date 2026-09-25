@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-09-25 17:44
+last-seen: 2026-09-25 17:45
 last-read: 301
 
 ## Now
 
-#245 Model manifest: Supertonic 3's files do not exist, and the real model is ~398 MB, not ~100 MB — claimed 2026-09-25 17:38.
+Nothing claimed.
 
 ## Next
 
