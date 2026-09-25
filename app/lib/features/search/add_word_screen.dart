@@ -236,6 +236,9 @@ class _AddWordState extends ConsumerState<AddWordScreen> {
       backgroundColor: tokens.isGlass
           ? tokens.surface.paper.withValues(alpha: 0)
           : tokens.surface.paper,
+      // The band's Raspberry behind the status bar once the form scrolls it
+      // away, as a tab's header keeps (#317, #390).
+      statusBarColour: tokens.color.die,
       body: ListView(
         padding: EdgeInsets.zero,
         children: <Widget>[
