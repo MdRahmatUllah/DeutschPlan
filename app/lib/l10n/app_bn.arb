@@ -850,5 +850,20 @@
   "resetFailed": "রিসেট করা যায়নি। কিছুই বদলায়নি।",
   "resetEverythingTitle": "সবকিছু রিসেট করবেন?",
   "resetEverythingMessage": "এই ফোনের সব অগ্রগতি, পরিকল্পনা, কুইজ ও পরীক্ষার ইতিহাস এবং আমার শব্দ মুছে যাবে। পরে ফেরত চাইলে আগে এক্সপোর্ট করুন। নিশ্চিত করতে RESET লিখুন।",
-  "resetEverythingConfirm": "রিসেট"
+  "resetEverythingConfirm": "রিসেট",
+  "aboutTitle": "পরিচিতি ও গোপনীয়তা",
+  "aboutVersion": "সংস্করণ {version} (বিল্ড {build}) · কনটেন্ট {content} · {date}",
+  "aboutPrivacy": "গোপনীয়তা",
+  "aboutPrivacyText": "আপনার অগ্রগতি এই ফোনেই থাকে। DeutschPlan-এর কোনো অ্যাকাউন্ট, সার্ভার বা অ্যানালিটিকস নেই। ইন্টারনেট ব্যবহার হয় শুধু যখন আপনি কোনো ওয়েব সার্চ লিংক খোলেন বা কোনো মডেল ডাউনলোড করেন।",
+  "aboutLicences": "ওপেন-সোর্স ও মডেলের লাইসেন্স",
+  "aboutLicencesNote": "Flutter প্যাকেজ · Supertonic OpenRAIL-M · Hy-MT · ফন্ট (OFL)",
+  "aboutContact": "যোগাযোগ",
+  "aboutContactNote": "GitHub-এ সমস্যা জানান",
+  "aboutContent": "কনটেন্ট",
+  "aboutContentCounts": "{words}টি শব্দ · {grammar}টি ব্যাকরণ বিষয় · {sentences}টি বাক্য",
+  "licencesTitle": "লাইসেন্স",
+  "licencesModels": "মডেল",
+  "licencesFonts": "ফন্ট",
+  "licencesPackages": "প্যাকেজ",
+  "licencesOther": "লাইসেন্স"
 }

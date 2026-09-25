@@ -16,6 +16,15 @@ part 'content_dao.g.dart';
 /// One step of the course, as S2 page 3 lists it.
 typedef CourseStep = ({String code, String levelCode, int wordCount});
 
+/// What M9 says of the course (FR-M9-01).
+typedef ContentFacts = ({
+  String version,
+  DateTime? builtAt,
+  int words,
+  int grammar,
+  int sentences,
+});
+
 /// Where the course is read from.
 ///
 /// `docs/02-data/content-database.md`: content.db is bundled as an asset,
@@ -211,6 +220,20 @@ class ContentDao extends DatabaseAccessor<AppDatabase> with _$ContentDaoMixin {
   }
 
   Future<void> detach() => customStatement('DETACH DATABASE $schema');
+
+  /// M9 · About (FR-M9-01, #150): the course's version, when it was built,
+  /// and how much it holds.
+  Future<ContentFacts> facts() async {
+    final counts = await contentCounts().getSingle();
+    final built = await contentMeta('built_at').getSingleOrNull();
+    return (
+      version: await version(),
+      builtAt: built == null ? null : DateTime.tryParse(built),
+      words: counts.wordTotal,
+      grammar: counts.grammarTotal,
+      sentences: counts.sentenceTotal,
+    );
+  }
 
   /// `meta.content_version` of the attached copy.
   Future<String> version() async {
