@@ -234,6 +234,134 @@ void main() {
     }
   });
 
+  test('FR-L15-01 #406 sentences end at a sentence, not at an ordinal\'s dot '
+      'or between two forms', () {
+    List<({String german, String? english})> pairs(String de, String en) =>
+        examplePairs(de, en);
+    expect(
+      pairs(
+        'Heute ist der 17. September. Am dritten Oktober ist frei.',
+        'Today is 17 September. 3 October is a holiday.',
+      ),
+      <({String german, String? english})>[
+        (
+          german: 'Heute ist der 17. September.',
+          english: 'Today is 17 September.',
+        ),
+        (
+          german: 'Am dritten Oktober ist frei.',
+          english: '3 October is a holiday.',
+        ),
+      ],
+    );
+    expect(
+      pairs(
+        'Der Chef sagte, dass er morgen komme / kommt.',
+        "The boss said he'd come tomorrow.",
+      ).map((pair) => pair.german),
+      <String>['Der Chef sagte, dass er morgen komme / kommt.'],
+    );
+    expect(
+      pairs(
+        'Wie heißen Sie? / Wie heißt du?',
+        "What's your name? / What's your name?",
+      ).map((pair) => pair.german),
+      <String>['Wie heißen Sie?', 'Wie heißt du?'],
+    );
+  });
+
+  test('FR-L15-01 #406 a wrong form is the answer\'s own word\'s: not '
+      '"bitter" for bitte, "heiß" for heißt, "sprecher" for spreche', () {
+    final course = CourseText(
+      words: const <({String german, String? forms})>[
+        (german: 'bitte', forms: null),
+        (german: 'bitter', forms: null),
+        (german: 'heißen', forms: 'heißt · hat geheißen'),
+        (german: 'heiß', forms: null),
+        (german: 'sprechen', forms: 'spricht · hat gesprochen'),
+        (german: 'Sprecher', forms: 'Sprecher'),
+      ],
+      sentences: const <({String german, String english})>[
+        (german: 'Ich heiße Anna.', english: ''),
+        (german: 'Heute ist es heißer.', english: ''),
+        (german: 'Ich spreche Deutsch.', english: ''),
+      ],
+    );
+    expect(course.sameWord('heißt', 'heißen'), isTrue, reason: 'listed');
+    expect(course.sameWord('heißen', 'heiße'), isTrue, reason: 'a verb ending');
+    expect(course.sameWord('heißt', 'heiß'), isFalse, reason: 'the adjective');
+    expect(course.sameWord('heißen', 'heißer'), isFalse, reason: "heiß's -er");
+    expect(course.sameWord('bitte', 'bitter'), isFalse);
+    expect(course.sameWord('spreche', 'sprechen'), isTrue);
+    expect(
+      course.sameWord('spreche', 'sprecher'),
+      isFalse,
+      reason: 'the course writes Sprecher, a noun',
+    );
+    expect(course.knows('Sprecher'), isTrue);
+    expect(course.knows('sprecher'), isFalse);
+    expect(
+      CourseText.none.sameWord('bitte', 'bitter'),
+      isTrue,
+      reason: 'no course: any form',
+    );
+  });
+
+  test('FR-L15-01 #406 a gap fill filling in keeps a translation: the '
+      "whole example's where the two don't split alike", () {
+    const three = GrammarSource(
+      uid: 'three',
+      topic: 'T',
+      rule: 'lernen',
+      exampleDe: 'Ich lerne Deutsch. Du lernst Englisch. Er lernt Spanisch.',
+      exampleEn: 'I learn German, you English and he Spanish.',
+      watchOut: '',
+      tags: <String>['gap-fill', 'pick-the-form'],
+      levelCode: 'A1',
+    );
+    final gaps = generateItems(three, seed: 1).whereType<GapFill>().toList();
+    expect(gaps, hasLength(2), reason: 'the gap fill and the one filling in');
+    for (final gap in gaps) {
+      expect(gap.translation, three.exampleEn);
+    }
+  });
+
+  test('FR-L15-01 #406 a contraction is its preposition: "vom" for the '
+      "rule's von", () {
+    expect(
+      first<GapFill>(
+        generateItems(one('Es hängt vom Wetter ab.', rule: 'von'), seed: 1),
+      ).answer,
+      'vom',
+    );
+  });
+
+  test('FR-L15-01 #406 a form the rule names is a wrong form only of its own '
+      'word: bitte is offered neither bitter nor bitten', () {
+    final course = CourseText(
+      words: const <({String german, String? forms})>[
+        (german: 'bitte', forms: null),
+        (german: 'bitter', forms: null),
+        (german: 'bitten', forms: 'bittet · hat gebeten'),
+        (german: 'warten', forms: 'wartet · hat gewartet'),
+      ],
+      sentences: const <({String german, String english})>[
+        (german: 'Komm bitte mit.', english: ''),
+        (german: 'Ich warte hier.', english: ''),
+      ],
+    );
+    for (final seed in <int>[1, 2, 3]) {
+      for (final pick in generateItems(
+        one('Warten Sie bitte hier.', rule: 'bitte, bitter, bitten'),
+        seed: seed,
+        course: course,
+      ).whereType<PickTheForm>()) {
+        expect(pick.options, isNot(contains('bitter')), reason: '$seed');
+        expect(pick.options, isNot(contains('bitten')), reason: '$seed');
+      }
+    }
+  });
+
   test("the gap's word without its punctuation", () {
     final gap = first<GapFill>(
       generateItems(one('Wo wohnt Anna?', rule: 'Anna'), seed: 1),
@@ -376,11 +504,11 @@ void main() {
     // #330, the issue's probe: what the course says, as the app loads it
     // (`course_text.dart`), and every item as L15 would ask it.
     final course = CourseText(
-      texts: <String>[
+      words: <({String german, String? forms})>[
         for (final row in db.select('SELECT german, forms FROM words'))
-          '${row['german']} ${row['forms'] ?? ''}',
-        for (final row in rows) row['example_de'] as String,
+          (german: row['german'] as String, forms: row['forms'] as String?),
       ],
+      texts: <String>[for (final row in rows) row['example_de'] as String],
       sentences: <({String german, String english})>[
         for (final row in db.select(
           'SELECT german, english FROM word_examples ORDER BY word_uid, ord',
@@ -545,6 +673,88 @@ void main() {
       expect(again, isEmpty, reason: again.join('\n'));
     });
 
+    List<GrammarItem> itemsOn(Row row, String day) => generateItems(
+      source(row),
+      seed: practiceSeed(row['uid'] as String, day),
+      siblings: siblingsByLevel[row['level_code']]!,
+      course: course,
+    );
+    Iterable<(Row, List<GrammarItem>)> thirtyDays() sync* {
+      for (var d = 1; d <= 30; d++) {
+        final day = '2026-10-${d.toString().padLeft(2, '0')}';
+        for (final row in rows) {
+          yield (row, itemsOn(row, day));
+        }
+      }
+    }
+
+    /// An item's sentence as the learner reads it, the gap filled.
+    String sentenceOf(String before, String answer, String after) => <String>[
+      if (before.isNotEmpty) before,
+      if (after.isEmpty || RegExp('^[A-Za-zÄÖÜäöüß0-9„]').hasMatch(after))
+        '$answer $after'.trim()
+      else
+        '$answer$after',
+    ].join(' ');
+
+    test('FR-L15-01 #406 no item is a fragment: not cut at an ordinal\'s '
+        'dot, nor at " / "', () {
+      final fragments = <String>[
+        for (final (row, items) in thirtyDays())
+          for (final item in items)
+            if (switch (item) {
+                  GapFill(:final before, :final answer, :final after) =>
+                    sentenceOf(before, answer, after),
+                  PickTheForm(:final before, :final answer, :final after) =>
+                    sentenceOf(before, answer, after),
+                  _ => null,
+                }
+                case final sentence?
+                // Cut at " / ": "kommt." Cut at an ordinal: "Heute ist der
+                // 17." where the example goes on "September. …".
+                when (RegExp('^[a-zäöüß]').hasMatch(sentence) &&
+                        (row['example_de'] as String).contains(
+                          '/ $sentence',
+                        )) ||
+                    (RegExp(r'[0-9]\.$').hasMatch(sentence) &&
+                        RegExp('${RegExp.escape(sentence)} [A-ZÄÖÜ]')
+                            .hasMatch(row['example_de'] as String)))
+              '${row['topic']}: $sentence',
+      ];
+      expect(fragments.toSet(), isEmpty, reason: fragments.toSet().join('\n'));
+    });
+
+    test('FR-L15-01 #406 every gap fill has its translation where the '
+        'example has one', () {
+      final missing = <String>[
+        for (final (row, items) in thirtyDays())
+          if ((row['example_en'] as String).contains(RegExp('[A-Za-z]')) &&
+              (row['example_de'] as String).contains(RegExp('[A-Za-z]')))
+            for (final gap in items.whereType<GapFill>())
+              if (gap.translation.isEmpty)
+                '${row['topic']}: ${gap.before} ___ ${gap.after}',
+      ];
+      expect(missing.toSet(), isEmpty, reason: missing.toSet().join('\n'));
+    });
+
+    test("FR-L15-01 #406 the probe's wrong forms of another word are gone", () {
+      const others = <(String, String)>{
+        ('bitte', 'bitter'),
+        ('heißt', 'heiß'),
+        ('spreche', 'sprecher'),
+        ('sich', 'sicher'),
+        ('sich', 'sicht'),
+      };
+      final found = <String>[
+        for (final (row, items) in thirtyDays())
+          for (final pick in items.whereType<PickTheForm>())
+            for (final option in pick.options)
+              if (others.contains((pick.answer.toLowerCase(), option)))
+                '${row['topic']}: ${pick.answer} → $option',
+      ];
+      expect(found.toSet(), isEmpty, reason: found.toSet().join('\n'));
+    });
+
     test('FR-L15-01 #330 the gap practises the rule: the prefix, the time, '
         'the case', () {
       Row topic(String name) => rows.firstWhere((row) => row['topic'] == name);
@@ -572,6 +782,12 @@ void main() {
       expect(
         picks('Genitive'),
         everyElement(isIn(<String>['meines', 'meinem'])),
+      );
+      // #406: the contraction of the rule's *von*, the prefix of its
+      // *abhängen*, or *um* of *sich bewerben um* — not "Wetter".
+      expect(
+        gaps('Verbs with fixed prepositions (B1 list)'),
+        everyElement(isIn(<String>['vom', 'ab', 'um'])),
       );
       expect(
         gaps('Separable verbs'),
