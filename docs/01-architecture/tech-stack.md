@@ -48,7 +48,7 @@ Import `package:material_ui/material_ui.dart` and `package:cupertino_ui/cupertin
 | Permissions | `permission_handler` | 13.x | Mic and notification permissions with rationale. |
 | Device info | `device_info_plus` | 13.x | Glass fallback decision (API level, low-end detection). |
 | Lints | `flutter_lints` + `riverpod_lint` | 6.x / 3.1.x | Enforced by the gate (`dart analyze --fatal-infos`). `custom_lint` is **no longer used**: riverpod_lint 3.1.4+ is a native `analyzer_plugin` and the two cannot co-resolve. |
-| Tests | `flutter_test`, `integration_test`, `mocktail`, `drift` in-memory DB, `alchemist` | latest | Unit, widget, golden (three themes) and integration tests. |
+| Tests | `flutter_test` (goldens with `matchesGoldenFile`), `integration_test`, `drift` in-memory DB | latest | Unit, widget, golden (three themes) and integration tests. Fakes are hand-written. `mocktail` and `alchemist` are dev dependencies but unused (`testing.md`). |
 
 ## Rejected alternatives (and why)
 

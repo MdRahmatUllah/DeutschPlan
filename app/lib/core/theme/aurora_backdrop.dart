@@ -299,7 +299,7 @@ class _BlobPainter extends CustomPainter {
     // Only where the blob can actually contribute. Painting the full screen
     // four times is four full-screen blends under every BackdropFilter, and
     // "glass list scroll: 60 fps" is the tightest budget in
-    // accessibility-performance.md. #157 owns measuring it.
+    // accessibility-performance.md. #167 owns measuring it.
     canvas.drawRect(rect.intersect(Offset.zero & size), paint);
   }
 

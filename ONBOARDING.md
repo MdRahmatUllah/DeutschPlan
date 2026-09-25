@@ -623,35 +623,10 @@ When a lane is blocked, in this order:
 
 ## 11. Known stale docs
 
-Until #284 lands, trust these corrections over the docs:
+#284 reconciled the dev guide with how the app is built: the commands spelled out without `make` or `fvm`, the tree in `project-structure.md`, the golden and fake practice in `testing.md`, the coding standards, ADR 26 and the stale issue numbers in code. What is left:
 
-- **Commands.**
-  - There is no `make` or `fvm` on this machine. Run the Makefile recipes by hand (§2, §4).
-  - `make goldens` rewrites the *whole* golden suite. Update per file.
-  - `dart run`, not `flutter pub run`.
-  - It is `tools/render_design.py`, not `tool/`. It renders only Paper & Ink; use `tools/artboard.py` for glass.
-- **Content.**
-  - The workbooks are in the gitignored `data/`, not the repo root. `make content` fails in a fresh worktree, and a normal issue doesn't need it: content.db is committed.
-  - Content DB tests are in `test/db/`, not `test/data/`.
-- **Tooling.**
-  - Goldens use `matchesGoldenFile`, not alchemist. Mocks are provider overrides and hand-written stubs, not mocktail.
-  - The integration smoke (#169) is `app/integration_test/`, run on the emulator by `python tools/smoke.py` under `team.py device` (`testing.md`, "Integration smoke").
-  - Android compileSdk/targetSdk are 37, not 35.
-- **Structure.**
-  - There is no `app.dart`, `data/files/`, `tables.dart` or `migrations.dart`.
-  - The feature folders are the ones in §5.
-  - Grammar screens are in `features/learn/`.
-  - Screen providers sit at the top of the screen file, not in `<screen>_providers.dart`.
-- **Code style.**
-  - "freezed for all value types" and "relative imports inside a feature" are not the practice (§6).
-  - The adaptive API is `Adaptive.showSheet`/`showConfirm`/`showTimePickerFor`, not `AdaptiveSheet`/`AdaptiveDialog`.
-- **ADRs and PRs.**
-  - ADR 26 (content.db attached by plain path, read-only by construction) is cited in code but missing from `decisions.md`.
-  - The PR template's checklist is the minimum. The M3 PR body (§4, step 11) is the practice.
-- **Stale issue numbers in code.**
-  - `routes.dart` `TODO(#119)` should be #132, and `TODO(#136)` should be #140/#141.
-  - `main.dart` "#143 wires it" should be #146 (the glass theme).
-  - `aurora_backdrop.dart` "#157" should be #167.
+- `mocktail`, `alchemist`, `freezed` and `logging` are in `pubspec.yaml` but unused. The docs say so; removing them needs the `pubspec` lock.
+- The PR template's checklist is the minimum. The M3 PR body (§4, step 11) is the practice.
 
 ## 12. Troubleshooting
 

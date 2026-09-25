@@ -119,5 +119,5 @@ settings), shared components, goldens. Recipes: `ONBOARDING.md` §8. Take the
 lock (`team.py lock`) for `user-db-schema`, `adr-number`, `pubspec`,
 `ci-config`, `shared-look`.
 
-Some docs are stale about tooling (fvm, make, alchemist, `tool/`…): the
-corrections are in `ONBOARDING.md` §11 and issue #284.
+The dev guide matches the build since #284 (commands without `make` or
+`fvm` are spelled out in `getting-started.md`); `ONBOARDING.md` §11 lists what is left.

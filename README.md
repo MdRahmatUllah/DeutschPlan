@@ -61,7 +61,7 @@ Each canvas has a Foundations sheet with the tokens and every component state:
 
 ## Complete prototype
 
-All 58 screens in all four canvases. Artboard codes: **S** launch and onboarding, **T** today and study, **L** learn, quiz and exams, **R** search, **W** words, **M** me and settings, **X** widget.
+All 58 screens in all four canvases (each canvas's 59th file is Foundations). Artboard codes: **S** launch and onboarding, **T** today and study, **L** learn, quiz and exams, **R** search, **W** words, **M** me and settings, **X** widget.
 
 <!-- screens:start -->
 ### Core screens
@@ -157,14 +157,15 @@ All 58 screens in all four canvases. Artboard codes: **S** launch and onboarding
 ```sh
 pip install playwright
 playwright install chromium
-python tool/render_design.py
+python tools/render_design.py
 ```
 
 ## Flutter app
 
 ```sh
+cd app
 flutter pub get
 flutter run
 ```
 
-Targets Android and iOS. Desktop and web folders are present from the Flutter template but are not design targets.
+Targets Android and iOS only. Before the first run, generate the code that isn't committed. `ONBOARDING.md` §2 has the sequence.

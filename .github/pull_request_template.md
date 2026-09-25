@@ -13,8 +13,8 @@ Closes #
 
 - [ ] **Docs updated** — behaviour changes land in `docs/` in this PR. When code and the documents disagree, the documents win until they are deliberately changed (`docs/README.md`).
 - [ ] **Tests** — unit for logic, widget for behaviour, with the FR/BR IDs in the test names (`test('FR-T1-03 primary button label shows remaining count', …)`).
-- [ ] **Goldens** — light, dark and glass, on the phone and tablet frames, each diffed against its own artboard set. Updated only via `make goldens` and reviewed as images below.
-- [ ] **Migration** — if a `user.db` table changed: a migration step in `migrations.dart`, a schema fixture, and a test opening every previous version. Columns with data are never dropped.
+- [ ] **Goldens** — light, dark and glass, on the phone and tablet frames, each diffed against its own artboard set. Updated per file (`flutter test --update-goldens test/golden/<screen>_golden_test.dart`) and reviewed as images below.
+- [ ] **Migration** — if a `user.db` table changed: a step in `app_database.dart`'s `stepByStep` migration, a schema fixture (`make schema-dump`), and a test opening every previous version. Columns with data are never dropped.
 - [ ] **Licence check** — if a package was added: its licence is recorded and appears on the Licences screen.
 - [ ] **Privacy** — no new network call without a user action (BR-PRIV-01); no analytics of any kind.
 - [ ] **Accessibility** — labels and semantics on every control, targets ≥ 48 dp / 44 pt, nothing conveyed by colour alone.
@@ -30,7 +30,9 @@ and passes clean while every riverpod rule is inactive (ADR 18).
 ```
 dart analyze --fatal-infos
 dart format --output=none --set-exit-if-changed .
-flutter test
+python -m pytest ../tools/tests -q        # if tools/ changed
+flutter test --exclude-tags golden
+flutter test test/golden                  # goldens, on Windows (test/golden/README.md)
 ```
 
 ## Screenshots / goldens

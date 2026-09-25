@@ -42,12 +42,16 @@ contributor's platform rewrite them in turn.
 
 ## Regenerating
 
+Per file, for the screens your change touches (from `app/`):
+
 ```
-make goldens
+flutter test --update-goldens test/golden/<screen>_golden_test.dart
 ```
 
-Never with `flutter test --update-goldens` by hand across the whole suite: that
-rewrites every file including ones you did not mean to touch.
+`make goldens` rewrites the whole suite, including files you did not mean to
+touch, and hides an unintended change among hundreds. Keep it for a deliberate
+suite-wide change, such as a token that moves every screen, and then review
+every image it changed.
 
 **Goldens are the design contract.** Open the diff as images and check each
 change was intended. A golden that changed because a token moved is the system

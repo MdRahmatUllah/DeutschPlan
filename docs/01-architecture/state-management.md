@@ -12,9 +12,9 @@
 | Provider | Type | Scope | Notes |
 | --- | --- | --- | --- |
 | `appDatabase` | keepAlive | app | Opens user.db, attaches content.db. |
-| `settings` | keepAlive Notifier<Settings> | app | Backed by `settings` table; writes are synchronous then persisted. |
+| `settings` | keepAlive | app | The `SettingsRepository` that `bootstrap()` loaded, and overrides this with. `read(key)` answers from memory, typed by its `SettingKey`, and throws before `load()`. `write(key, value)` persists and fires `changes`, and a provider that follows a setting watches it with `switchOn`. |
 | `clock` | keepAlive | app | `DateTime Function()`; overridden in tests for date logic. |
-| `todayPlan(date)` | AsyncNotifier family | Today | Calls `PlanEngine.openDay`; watches plan_items stream. |
+| `todayPlan` | autoDispose Future | Today | `PlanEngine.openDay(today)`. It watches `today`, so a new date re-plans and the same date plans nothing (FR-T1-05). The open rows, as they change, are `todayOpen`, over plan_items. Both are in `features/today/today_providers.dart`. |
 | `studySession(args)` | keepAlive Notifier | study modal | Queue of cards, position, undo stack; survives app backgrounding; cleared on close. |
 | `wordDetail(uid)` | autoDispose Stream | sheet | Word + state (watched) + examples + tip, with the meaning language and `show_pron_bn`. `wordHistory(uid)` watches `review_log` for the history caption. |
 | `compareView(uid)` | autoDispose Stream | W2 | The set word and its members' columns (`ContentDao.compareSet`, read once), with the members' words watched for *Add all to today*. |
@@ -36,5 +36,5 @@
 
 - **Actions** are methods on notifiers (`ref.read(studySessionProvider.notifier).rate(4)`); widgets never write to repositories.
 - **Undo**: `rate()` pushes an `UndoToken` (previous `word_state` row + review_log id); `undo()` restores the row and deletes the log entry within one transaction.
-- **Refresh after midnight**: `todayPlan` listens to `clock` ticks and app resume; if the date changed, it re-runs `openDay`.
+- **Refresh after midnight**: `today` doesn't tick. T1 invalidates it on app resume and on pull-to-refresh, and `todayPlan` watches it, so a new date re-runs `openDay`.
 - **Errors**: `AsyncValue.error` renders the shared `ErrorPanel` with Retry; database write failures never lose the last saved card (writes are per-card transactions).

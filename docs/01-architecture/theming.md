@@ -69,8 +69,8 @@ Radius: cards 16 (glass 20), buttons 12 (glass 16), chips 8, sheets 24 (glass 28
 
 ## Platform adaptation
 
-Chrome follows the platform through `Adaptive*` wrappers (`AdaptiveScaffold`, `AdaptiveSheet`, `AdaptiveDialog`, `AdaptiveSwitch`, `AdaptiveSegmented`, `AdaptiveTimePicker`): Material 3 on Android, Cupertino on iOS. Content components (word card, rating bar, ring, charts) are identical on both.
+Chrome follows the platform through `core/adaptive/adaptive.dart`: the widgets `AdaptiveScaffold`, `AdaptiveBackButton`, `AdaptiveSwitch`, `AdaptiveSegmented`, `AdaptiveTabBar`, `AdaptiveNavBar` and `AdaptiveRefresh`, and the calls `Adaptive.showSheet`, `showPane`, `showConfirm`, `showTypedConfirm` and `showTimePickerFor`. It is Material 3 on Android and Cupertino on iOS. Content components (word card, rating bar, ring, charts) are identical on both.
 
 ## Golden tests
 
-Every screen has golden tests in all three modes on a 390×844 phone and a 1024×768 tablet frame (`test/golden/<screen>_<mode>_<device>.png`). A theme change that alters a screen must update its goldens in the same PR.
+Every screen has golden tests in all three modes on a 390×844 phone and a 1024×768 tablet frame (`test/golden/goldens/<screen>_<mode>_<device>.png`). A theme change that alters a screen must update its goldens in the same PR.
