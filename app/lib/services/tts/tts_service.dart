@@ -23,9 +23,10 @@ enum TtsOutcome {
   /// told — or replaced by a newer request: nothing to report.
   spoke,
 
-  /// Said by the phone's voice in place of Supertonic, the first time this
-  /// session: the caller shows the one-time toast with its Settings link
-  /// (accessibility-performance.md, "Supertonic missing/fails").
+  /// Said by the phone's voice in place of Supertonic, and the learner not
+  /// told yet this session: the caller shows the one-time toast
+  /// (accessibility-performance.md, "Supertonic missing/fails"), then calls
+  /// [TtsService.toldFallback].
   fellBack,
 
   /// Nothing was said: no voice could speak German.
@@ -65,6 +66,11 @@ class TtsService {
 
   /// The fallback toast is once per app session: this service is kept alive.
   bool _told = false;
+
+  /// The fallback toast has been shown: [TtsOutcome.fellBack] no more. Not
+  /// spent by [speak] itself, so a toast that could not show (its speaker
+  /// gone) is shown by the next fallback instead.
+  void toldFallback() => _told = true;
 
   /// Each change of what is sounding.
   Stream<TtsPlayback> get playback => _playback.stream;
@@ -114,9 +120,7 @@ class TtsService {
     }
 
     if (await _try(_system, text, speed, request)) {
-      if (!fellBack || _told) return TtsOutcome.spoke;
-      _told = true;
-      return TtsOutcome.fellBack;
+      return fellBack && !_told ? TtsOutcome.fellBack : TtsOutcome.spoke;
     }
     if (request != _request) return TtsOutcome.spoke;
     _loading?.cancel();
@@ -133,6 +137,10 @@ class TtsService {
   ) async {
     _unlisten();
     _engine = engine;
+    // ponytail: playing lasts until the engine reports idle; an engine that
+    // never reports its end leaves its speaker playing until the next request
+    // (flutter_tts's handlers and #152's player both report it). A watchdog
+    // off the text's length is the upgrade if a device drops them.
     _events = engine.state.listen((state) {
       if (request != _request) return;
       // An engine's own `loading` is the timer's to show, after 150 ms.
@@ -182,6 +190,8 @@ class TtsService {
   }
 
   void dispose() {
+    // Retires a request still in flight: it resumes to no timer, no listener.
+    _request++;
     _loading?.cancel();
     _unlisten();
     unawaited(_playback.close());

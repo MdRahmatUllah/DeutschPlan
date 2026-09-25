@@ -49,14 +49,21 @@ class SystemTts implements TtsEngine {
     }
   }
 
+  /// Bumped by [stop]: a speak that a stop overtook while it was setting up
+  /// the voice says nothing, or it would queue behind the next (iOS).
+  int _turn = 0;
+
   @override
   Future<bool> speak(String text, {double speed = 1}) async {
+    final turn = _turn;
     if (!await isAvailable()) return false;
     try {
       await _tts.setLanguage(language);
       // flutter_tts reads 0.5 as the normal rate on both platforms — its
       // Android side doubles what it is given — so 1 here is 0.5 there.
       await _tts.setSpeechRate(speed / 2);
+      // Stopped, not failed: true, so nothing falls back or says "no voice".
+      if (turn != _turn) return true;
       await _tts.speak(text);
       return true;
     } on PlatformException {
@@ -68,6 +75,7 @@ class SystemTts implements TtsEngine {
 
   @override
   Future<void> stop() async {
+    _turn++;
     await _tts.stop();
     _emit(TtsState.idle);
   }

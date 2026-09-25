@@ -76,8 +76,17 @@ void main() {
         'so, the next does not', (tester) async {
       final tts = service(installed: false);
       expect(await tts.speak('Hallo'), TtsOutcome.fellBack);
+      tts.toldFallback();
       expect(await tts.speak('Tschüss'), TtsOutcome.spoke);
       expect(phone.spoken, <String>['Hallo', 'Tschüss']);
+    });
+
+    testWidgets('a notice that could not be shown is not spent', (
+      tester,
+    ) async {
+      final tts = service(installed: false);
+      expect(await tts.speak('Hallo'), TtsOutcome.fellBack);
+      expect(await tts.speak('Hallo'), TtsOutcome.fellBack);
     });
 
     testWidgets('Supertonic answering false: the phone speaks that request, '
@@ -95,6 +104,7 @@ void main() {
       supertonic.error = StateError('onnx');
       final tts = service();
       expect(await tts.speak('Hallo'), TtsOutcome.fellBack);
+      tts.toldFallback();
       expect(await tts.speak('Tschüss'), TtsOutcome.spoke);
       expect(phone.spoken, <String>['Hallo', 'Tschüss']);
       expect(supertonic.spoken, <String>['Hallo', 'Tschüss']);
@@ -156,6 +166,17 @@ void main() {
       'stop',
     ]);
     expect(phone.spoken, <String>['Tschüss']);
+  });
+
+  testWidgets('V03 dispose retires a request in flight: no speech, no '
+      'timer, no listener after it', (tester) async {
+    await choose(tester, TtsEngineSetting.system);
+    final tts = service();
+    await tts.speak('Hallo');
+    final late = tts.speak('Tschüss');
+    tts.dispose();
+    expect(await late, TtsOutcome.spoke, reason: 'nothing to report');
+    expect(phone.log, <String>['speak Hallo', 'stop']);
   });
 
   testWidgets('V03 playback: playing for its text while it sounds, then '

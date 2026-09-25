@@ -8,6 +8,7 @@ import 'package:deutschplan/data/repositories/setting_keys.dart';
 import 'package:deutschplan/data/repositories/settings_repository.dart';
 import 'package:deutschplan/features/words/speak.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
+import 'package:deutschplan/router/routes.dart' show rootNavigatorKey;
 import 'package:deutschplan/main.dart'
     show appLocalizationsDelegates, supportedLocales;
 import 'package:deutschplan/services/tts/tts_service.dart';
@@ -32,7 +33,10 @@ void main() {
     l10n = await AppLocalizations.delegate.load(supportedLocales.first);
   });
 
-  /// Speakers for [texts], over [overrides] — [fakeVoice] by default.
+  late GoRouter router;
+
+  /// Speakers for [texts] on Today — a tab — and on `/study`, a full-screen
+  /// route over it, over [overrides].
   Future<void> pump(
     WidgetTester tester,
     List<Override> overrides, {
@@ -50,6 +54,39 @@ void main() {
         }),
       );
     });
+    Widget speakers(BuildContext _, GoRouterState _) => Scaffold(
+      body: Center(
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            for (final text in texts)
+              Consumer(
+                builder: (context, ref, _) => DpSpeakerButton(
+                  key: ValueKey<String>(text),
+                  semanticLabel: text,
+                  state: speakerState(ref, text),
+                  onPressed: () => say(ref, context, text),
+                  onLongPress: () => say(ref, context, text, pace: 0.75),
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
+    router = GoRouter(
+      // The app's: the Settings link navigates from the root's context.
+      navigatorKey: rootNavigatorKey,
+      initialLocation: '/today',
+      routes: <RouteBase>[
+        GoRoute(path: '/today', builder: speakers),
+        GoRoute(path: '/study', builder: speakers),
+        GoRoute(
+          path: '/me/settings',
+          builder: (_, _) => const Scaffold(body: Text('M3')),
+        ),
+      ],
+    );
+    addTearDown(router.dispose);
     await tester.pumpWidget(
       ProviderScope(
         overrides: [settingsProvider.overrideWithValue(settings), ...overrides],
@@ -57,37 +94,7 @@ void main() {
           theme: AppTheme.light(),
           localizationsDelegates: appLocalizationsDelegates,
           supportedLocales: supportedLocales,
-          routerConfig: GoRouter(
-            routes: <RouteBase>[
-              GoRoute(
-                path: '/',
-                builder: (_, _) => Scaffold(
-                  body: Center(
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: <Widget>[
-                        for (final text in texts)
-                          Consumer(
-                            builder: (context, ref, _) => DpSpeakerButton(
-                              key: ValueKey<String>(text),
-                              semanticLabel: text,
-                              state: speakerState(ref, text),
-                              onPressed: () => say(ref, context, text),
-                              onLongPress: () =>
-                                  say(ref, context, text, pace: 0.75),
-                            ),
-                          ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-              GoRoute(
-                path: '/me/settings',
-                builder: (_, _) => const Scaffold(body: Text('M3')),
-              ),
-            ],
-          ),
+          routerConfig: router,
         ),
       ),
     );
@@ -164,7 +171,7 @@ void main() {
       expect(find.text(l10n.speakerFallback), findsNothing);
     });
 
-    testWidgets('with a link that opens Settings', (tester) async {
+    testWidgets('from a tab, with a link that opens Settings', (tester) async {
       await pump(tester, missing);
       await tester.tap(find.byType(DpSpeakerButton));
       await tester.pumpAndSettle();
@@ -172,6 +179,45 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.text('M3'), findsOneWidget);
     });
+
+    testWidgets('the link still works once its speaker has gone', (
+      tester,
+    ) async {
+      await pump(tester, missing);
+      await tester.tap(find.byType(DpSpeakerButton));
+      await tester.pump();
+      // Today's speaker goes; the toast, in the app's messenger, stays.
+      router.go('/study');
+      await tester.pumpAndSettle();
+      expect(find.text(l10n.speakerFallback), findsOneWidget);
+      await tester.tap(find.text(l10n.speakerFallbackSettings));
+      await tester.pumpAndSettle();
+      expect(find.text('M3'), findsOneWidget);
+    });
+
+    testWidgets('from a full-screen route — a session, an exam, placement — '
+        'no link: going to Settings would drop the work', (tester) async {
+      await pump(tester, missing);
+      unawaited(router.push('/study'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byType(DpSpeakerButton));
+      await tester.pump();
+      expect(find.text(l10n.speakerFallback), findsOneWidget);
+      expect(find.text(l10n.speakerFallbackSettings), findsNothing);
+    });
+  });
+
+  testWidgets('V03 the production default — tts_engine supertonic, no '
+      'Supertonic yet, only the phone voice given — falls back and says so', (
+    tester,
+  ) async {
+    final phone = FakeTts();
+    await pump(tester, [systemTtsProvider.overrideWithValue(phone)]);
+    expect(settings.read(SettingKeys.ttsEngine), TtsEngineSetting.supertonic);
+    await tester.tap(find.byType(DpSpeakerButton));
+    await tester.pump();
+    expect(phone.said, <(String, double)>[('Hallo', 1.25)]);
+    expect(find.text(l10n.speakerFallback), findsOneWidget);
   });
 
   testWidgets('V03 the speaker that is playing shows the bars, and no '
