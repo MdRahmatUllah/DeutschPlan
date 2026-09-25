@@ -1,12 +1,12 @@
 # agent-1
 
 session: active
-last-seen: 2026-09-25 20:44
+last-seen: 2026-09-25 20:45
 last-read: 457
 
 ## Now
 
-Nothing claimed.
+#155 M4 · Model manager — claimed 2026-09-25 20:45.
 
 ## Next
 
