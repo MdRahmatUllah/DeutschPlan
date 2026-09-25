@@ -3,6 +3,7 @@ import 'package:deutschplan/core/adaptive/adaptive.dart';
 import 'package:deutschplan/core/theme/dp_surface.dart';
 import 'package:deutschplan/core/theme/app_theme.dart';
 import 'package:deutschplan/core/theme/dp_tokens.dart';
+import 'package:deutschplan/core/typography/dp_text.dart';
 import 'package:flutter/rendering.dart' show RenderParagraph;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
@@ -214,34 +215,56 @@ void main() {
       );
     });
 
-    testWidgets('a long title keeps to one line, clear of the back button and '
-        'the actions', (tester) async {
+    /// The bar's title as drawn: DpOneLine's one line of spans.
+    RichText barTitle(WidgetTester tester) => tester.widget<RichText>(
+      find.descendant(
+        of: find.byType(DpOneLine),
+        matching: find.byType(RichText),
+      ),
+    );
+
+    Future<void> bar(
+      WidgetTester tester,
+      AdaptiveChrome chrome,
+      String title,
+    ) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: AppTheme.light(),
+          home: AdaptiveChromeScope(
+            chrome: chrome,
+            child: AdaptiveScaffold(
+              title: title,
+              leading: AdaptiveBackButton(
+                label: 'Categories',
+                onPressed: () {},
+              ),
+              actions: const <Widget>[SizedBox(width: 60, child: Text('Q'))],
+              body: const SizedBox.shrink(),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+    }
+
+    testWidgets('#280 a long title is one line ending in "…", clear of the '
+        'back button and the actions, in both chromes', (tester) async {
       // L6's bar, on the artboard's phone.
       tester.view
         ..physicalSize = const Size(390, 844) * 3
         ..devicePixelRatio = 3;
       addTearDown(tester.view.reset);
       const long = 'Psychology, emotions and relationships at work';
+      final semantics = tester.ensureSemantics();
       for (final chrome in AdaptiveChrome.values) {
-        await tester.pumpWidget(
-          MaterialApp(
-            theme: AppTheme.light(),
-            home: AdaptiveChromeScope(
-              chrome: chrome,
-              child: AdaptiveScaffold(
-                title: long,
-                leading: AdaptiveBackButton(
-                  label: 'Categories',
-                  onPressed: () {},
-                ),
-                actions: const <Widget>[SizedBox(width: 60, child: Text('Q'))],
-                body: const SizedBox.shrink(),
-              ),
-            ),
-          ),
-        );
-        await tester.pumpAndSettle();
-        final title = tester.getRect(find.text(long));
+        await bar(tester, chrome, long);
+        final text = barTitle(tester);
+        final shown = text.text.toPlainText();
+        expect(shown, endsWith(DpOneLine.ellipsis), reason: '$chrome');
+        expect(long.startsWith(shown.substring(0, shown.length - 1)), isTrue);
+        expect(text.maxLines, 1, reason: '$chrome');
+        final title = tester.getRect(find.byType(DpOneLine));
         expect(
           title.left,
           greaterThanOrEqualTo(
@@ -254,7 +277,48 @@ void main() {
           lessThanOrEqualTo(tester.getRect(find.text('Q')).left),
           reason: '$chrome',
         );
-        expect(title.height, lessThanOrEqualTo(26), reason: '$chrome: 20/26');
+        expect(
+          find.bySemanticsLabel(long),
+          findsOneWidget,
+          reason: '$chrome: read whole',
+        );
+      }
+      semantics.dispose();
+    });
+
+    testWidgets('#280 the title is 22/600 on Android and 17/600 on iOS, as the '
+        'artboards draw it, and Bangla reads one size larger', (tester) async {
+      for (final (chrome, size, bangla) in <(AdaptiveChrome, double, double)>[
+        (AdaptiveChrome.material, 22, 28),
+        (AdaptiveChrome.cupertino, 17, 20),
+      ]) {
+        // The spans that carry text, past Text.rich's default-style root.
+        List<TextStyle?> runs() {
+          final styles = <TextStyle?>[];
+          barTitle(tester).text.visitChildren((span) {
+            if (span is TextSpan && (span.text?.isNotEmpty ?? false)) {
+              styles.add(span.style);
+            }
+            return true;
+          });
+          return styles;
+        }
+
+        await bar(tester, chrome, 'Settings');
+        final style = runs().single!;
+        expect(style.fontSize, size, reason: '$chrome');
+        expect(
+          style.fontVariations,
+          contains(const FontVariation('wght', 600)),
+          reason: '$chrome',
+        );
+
+        await bar(tester, chrome, 'সেটিংস');
+        expect(
+          <double?>[for (final run in runs()) run?.fontSize],
+          <double>[bangla],
+          reason: '$chrome',
+        );
       }
     });
 

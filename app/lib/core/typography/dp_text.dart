@@ -253,6 +253,7 @@ class DpOneLine extends StatelessWidget {
     super.key,
     this.color,
     this.weight,
+    this.size,
   });
 
   final String text;
@@ -260,26 +261,52 @@ class DpOneLine extends StatelessWidget {
   final Color? color;
   final double? weight;
 
+  /// The role's size, overridden: an app bar title the artboards draw
+  /// between two roles (#280). Bangla still takes the next role up.
+  final double? size;
+
   static const String ellipsis = '…';
 
   @override
   Widget build(BuildContext context) {
-    final own = DpText.styleFor(context.tokens, role, color: color);
     // Measured as it will be drawn: `Text` merges the ambient text style —
     // a Material body's letter spacing — and a measure without it cut the
     // line a few pixels too late, clipping a letter in half.
-    final style = DefaultTextStyle.of(context).style.merge(
-      weight == null
-          ? own
-          : own.copyWith(fontVariations: AppFonts.weight(weight!)),
-    );
+    TextStyle styled(DpTextRole at, {double? size}) {
+      final own = DpText.styleFor(context.tokens, at, color: color);
+      return DefaultTextStyle.of(context).style.merge(
+        own.copyWith(
+          fontSize: size,
+          fontVariations: weight == null ? null : AppFonts.weight(weight!),
+        ),
+      );
+    }
+
+    final style = styled(role, size: size);
+    // Bangla one step larger, as DpText sets it (`theming.md`).
+    final larger = styled(role.oneStepLarger);
+    TextSpan span(String line) => !DpScript.hasBengali(line)
+        ? TextSpan(text: line, style: style)
+        : TextSpan(
+            style: style,
+            children: <InlineSpan>[
+              for (final (run, bengali) in DpScript.runs(line))
+                TextSpan(
+                  text: run,
+                  style: bengali ? larger : style,
+                  locale: bengali
+                      ? const Locale('bn', 'BD')
+                      : const Locale('de', 'DE'),
+                ),
+            ],
+          );
     final scaler = MediaQuery.textScalerOf(context);
     final direction = Directionality.of(context);
     return LayoutBuilder(
       builder: (context, constraints) {
         bool fits(String candidate) {
           final painter = TextPainter(
-            text: TextSpan(text: candidate, style: style),
+            text: span(candidate),
             textDirection: direction,
             textScaler: scaler,
             maxLines: 1,
@@ -307,14 +334,22 @@ class DpOneLine extends StatelessWidget {
               ? ellipsis
               : '${words.take(low).join(' ').replaceAll(RegExp(r'[,;:—–-]+$'), '').trimRight()}$ellipsis';
         }
-        return Text(
-          shown,
-          style: style,
-          maxLines: 1,
-          softWrap: false,
-          overflow: TextOverflow.clip,
-          semanticsLabel: text,
-        );
+        return DpScript.hasBengali(shown)
+            ? Text.rich(
+                span(shown),
+                maxLines: 1,
+                softWrap: false,
+                overflow: TextOverflow.clip,
+                semanticsLabel: text,
+              )
+            : Text(
+                shown,
+                style: style,
+                maxLines: 1,
+                softWrap: false,
+                overflow: TextOverflow.clip,
+                semanticsLabel: text,
+              );
       },
     );
   }

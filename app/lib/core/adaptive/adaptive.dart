@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:cupertino_ui/cupertino_ui.dart' as cupertino;
 import 'package:deutschplan/core/theme/dp_surface.dart';
 import 'package:deutschplan/core/theme/dp_tokens.dart';
@@ -85,6 +87,11 @@ class AdaptiveScaffold extends StatelessWidget {
   static const double materialBarHeight = 56;
   static const double cupertinoBarHeight = 44;
 
+  /// The bar title's size, as the artboards draw it (#280): Android 22,
+  /// between the scale's title and headline, and iOS 17, its bodyLarge.
+  /// Both at 600.
+  static const double materialTitleSize = 22;
+
   /// The back affordance, supplied by default so ~20 pushed routes do not each
   /// rebuild it — and so the two platform treatments the artboards draw (an
   /// Android chevron, an iOS chevron with a 17 pt label) stay in one place.
@@ -143,14 +150,31 @@ class AdaptiveScaffold extends StatelessWidget {
 
   Widget _bar(BuildContext context) {
     final cupertinoChrome = context.isCupertino;
-    final height = cupertinoChrome ? cupertinoBarHeight : materialBarHeight;
+    final role = cupertinoChrome ? DpTextRole.bodyLarge : DpTextRole.title;
     final back = leading ?? _defaultBack(context);
+    // The artboard's height is a minimum (#314): at 200 % text the title's
+    // line outgrows 56 dp, and the bar grows with it rather than cut it.
+    final line = _titleLine(
+      context,
+      role,
+      bangla: title != null && DpScript.hasBengali(title!),
+    );
+    final height = math.max(
+      cupertinoChrome ? cupertinoBarHeight : materialBarHeight,
+      line + 8,
+    );
 
     final titleWidget = title == null
         ? const SizedBox.shrink()
-        // One line, cut after the last whole word that fits: a category's
-        // name can run to thirty letters, and a bar is one line tall.
-        : DpText(title!, role: DpTextRole.title, maxLines: 1);
+        // One line, and a title that doesn't fit is cut after its last whole
+        // word with "…" (#280). A category's name can run to thirty letters,
+        // and a bar is one line tall.
+        : DpOneLine(
+            title!,
+            role: role,
+            weight: 600,
+            size: cupertinoChrome ? null : materialTitleSize,
+          );
 
     if (!cupertinoChrome) {
       return SizedBox(
@@ -182,6 +206,28 @@ class AdaptiveScaffold extends StatelessWidget {
       ),
     );
   }
+}
+
+/// The height of one line of a bar title at [role], at the learner's text
+/// size: Android's at [AdaptiveScaffold.materialTitleSize], and a Bangla one
+/// a role up, as DpOneLine sets it.
+double _titleLine(
+  BuildContext context,
+  DpTextRole role, {
+  required bool bangla,
+}) {
+  final tokens = context.tokens;
+  final scaler = MediaQuery.textScalerOf(context);
+  double lineOf(DpTextRole at, {double? size}) {
+    final token = at.token(tokens.typography);
+    return scaler.scale(size ?? token.size) * token.heightFactor;
+  }
+
+  final latin = lineOf(
+    role,
+    size: role == DpTextRole.title ? AdaptiveScaffold.materialTitleSize : null,
+  );
+  return bangla ? math.max(latin, lineOf(role.oneStepLarger)) : latin;
 }
 
 /// [child], with a strip of [colour] over the status bar while its own
