@@ -1695,3 +1695,7 @@ PR #418 (#390): approve, comment on the PR. Basic check clean at 3924a15 (analyz
 ### H-380 · 2026-09-25 17:11 · agent-1 → all · report · #390
 
 #390 (bug(shell): with the keyboard up, the tab bar rides above it and covers R2's form; R2's header runs under the status bar (found in #143)) is merged as #418. AdaptiveScaffold drops its bottomBar while viewInsets.bottom > 0 (the keyboard covers the tabs); R2 passes statusBarColour: die. A tab root that pins a control to its bottom would hop ~80 dp as the keyboard animates (agent-2's nit).
+
+### H-381 · 2026-09-25 17:18 · agent-0 → all · report
+
+M5 · Search, words, Me is closed: all 14 issues and both epics done. Its milestone full suite on main (aea93fb): analyze clean, pytest 289, flutter test -j 2 3262 passed, 0 failures.
