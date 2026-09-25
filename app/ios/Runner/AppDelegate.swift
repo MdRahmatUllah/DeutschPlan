@@ -67,10 +67,13 @@ import workmanager_apple
         .volumeAvailableCapacityForImportantUsageKey,
         .volumeTotalCapacityKey,
       ])
-      result([
+      // One type for both: the free space is an Int64 and the total an Int,
+      // and a literal mixing them won't type-check.
+      let space: [String: Int64] = [
         "free": values?.volumeAvailableCapacityForImportantUsage ?? 0,
-        "total": values?.volumeTotalCapacity ?? 0,
-      ])
+        "total": Int64(values?.volumeTotalCapacity ?? 0),
+      ]
+      result(space)
     }
 
     let channel = FlutterMethodChannel(

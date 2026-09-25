@@ -32,6 +32,15 @@ enum DownloadPhase {
 /// A model's download: its phase, and how much of it has arrived (0–1).
 typedef DownloadProgress = ({DownloadPhase phase, double progress});
 
+/// One file of a model's current attempt: its task, and the platform's last
+/// word on it.
+typedef _File = ({
+  String task,
+  DateTime created,
+  TaskStatus status,
+  double done,
+});
+
 /// The model downloads (FR-M4-01): started, paused, resumed and retried by
 /// the learner; carried on by the platform's downloader with the app in the
 /// background or closed; and checked before anything uses them.
@@ -47,8 +56,9 @@ abstract interface class ModelDownloads {
   Future<void> pause(String modelId);
   Future<void> resume(String modelId);
 
-  /// *Retry* after a failure: what the failed attempt left is thrown away,
-  /// and the files come again.
+  /// *Retry* after a failure. After a network failure, the files that
+  /// arrived stay and the rest come again. After a checksum failure,
+  /// everything the attempt left is thrown away and every file comes again.
   Future<void> retry(String modelId);
 
   /// M4's *Wi-Fi only* switch: `models_wifi_only`, and the downloader's rule
@@ -70,9 +80,10 @@ class BackgroundModelDownloads implements ModelDownloads {
   final SettingsRepository _settings;
   final FileDownloader _downloader;
 
-  /// Per model, per file: the platform's last word on it.
-  final Map<String, Map<String, ({TaskStatus status, double done})>> _files =
-      <String, Map<String, ({TaskStatus status, double done})>>{};
+  /// Per model, per file: the current attempt's task, and the platform's last
+  /// word on it. Forgotten once the model is verified, which is how *Retry*
+  /// tells a checksum failure from a network one.
+  final Map<String, Map<String, _File>> _files = <String, Map<String, _File>>{};
   final Map<String, StreamController<DownloadProgress>> _watchers =
       <String, StreamController<DownloadProgress>>{};
   final Map<String, DownloadProgress> _last = <String, DownloadProgress>{};
@@ -116,33 +127,82 @@ class BackgroundModelDownloads implements ModelDownloads {
     // is scheduled again, and one that finished while the app was away says
     // so now.
     await _downloader.start();
-    await _applyWifi();
+    // A file that finished in an earlier session never reports again, so
+    // its record stands in for the update (#156, AC 1).
+    final manifest = await _models.manifest();
+    for (final record in await _downloader.database.allRecords()) {
+      if (manifest.model(record.group) == null) continue;
+      final files = _files.putIfAbsent(record.group, () => <String, _File>{});
+      final known = files[record.task.filename];
+      // What this launch has heard since, or a later attempt, stands.
+      if (known != null && !record.task.creationTime.isAfter(known.created)) {
+        continue;
+      }
+      files[record.task.filename] = (
+        task: record.taskId,
+        created: record.task.creationTime,
+        status: record.status,
+        done: record.status == TaskStatus.complete
+            ? 1.0
+            : (record.progress < 0 ? 0.0 : record.progress),
+      );
+    }
+    for (final modelId in _files.keys.toList()) {
+      await _settle(modelId);
+    }
+    // Not rescheduling running tasks: every launch would pause and queue
+    // them again.
+    await _applyWifi(reschedule: false);
   }
 
   @override
-  Future<void> start(String modelId) async {
+  Future<void> start(String modelId) => _queue(modelId);
+
+  /// Queues [modelId]'s files, or those [only] names, as the current attempt.
+  Future<void> _queue(
+    String modelId, {
+    bool Function(String name)? only,
+  }) async {
     final model = (await _models.manifest()).model(modelId);
     if (model == null || model.variants.isEmpty) {
       throw ArgumentError.value(modelId, 'modelId', 'is not in the manifest');
     }
+    // ponytail: the first variant, as the manifest has one per model (#409);
+    // tag each task with its variant's id once a model offers two.
+    final variant = model.variants.first;
+    // A file with no checksum can never verify: 100–600 MB fetched to fail.
+    if (!variant.isPinned) {
+      throw StateError('$modelId has a file with no pinned checksum');
+    }
     await _models.beginDownload(modelId);
 
-    await _downloader.enqueueAll(<Task>[
-      for (final file in model.variants.first.files)
-        DownloadTask(
-          url: file.url.toString(),
-          filename: file.name,
-          // Relative to app support, where `ModelRepository` keeps its
-          // staging directories, so the platform resolves the same place.
-          baseDirectory: BaseDirectory.applicationSupport,
-          directory: ModelRepository.stagingPath(modelId),
-          group: modelId,
-          displayName: model.name,
-          updates: Updates.statusAndProgress,
-          allowPause: true,
-          retries: 3,
-        ),
-    ]);
+    final tasks = <DownloadTask>[
+      for (final file in variant.files)
+        if (only == null || only(file.name))
+          DownloadTask(
+            url: file.url.toString(),
+            filename: file.name,
+            // Relative to app support, where `ModelRepository` keeps its
+            // staging directories, so the platform resolves the same place.
+            baseDirectory: BaseDirectory.applicationSupport,
+            directory: ModelRepository.stagingPath(modelId),
+            group: modelId,
+            displayName: model.name,
+            updates: Updates.statusAndProgress,
+            allowPause: true,
+            retries: 3,
+          ),
+    ];
+    final files = _files.putIfAbsent(modelId, () => <String, _File>{});
+    for (final task in tasks) {
+      files[task.filename] = (
+        task: task.taskId,
+        created: task.creationTime,
+        status: TaskStatus.enqueued,
+        done: 0,
+      );
+    }
+    await _downloader.enqueueAll(tasks);
   }
 
   @override
@@ -157,9 +217,20 @@ class BackgroundModelDownloads implements ModelDownloads {
 
   @override
   Future<void> retry(String modelId) async {
-    await _models.restartDownload(modelId);
-    _files.remove(modelId);
-    await start(modelId);
+    // The failed attempt's tasks stop, and their late updates have no say.
+    await _downloader.cancelAll(group: modelId);
+    final files = _files[modelId];
+    if (files == null) {
+      // A checksum failed (verifying forgets the files), or nothing is known:
+      // a corrupt file resumed would never verify, so everything comes again.
+      await _models.restartDownload(modelId);
+      return _queue(modelId);
+    }
+    // A network failure: what arrived stays, and the rest comes again.
+    await _queue(
+      modelId,
+      only: (name) => files[name]?.status != TaskStatus.complete,
+    );
   }
 
   @override
@@ -178,38 +249,55 @@ class BackgroundModelDownloads implements ModelDownloads {
     yield* controller.stream;
   }
 
-  Future<void> _applyWifi() => _downloader.requireWiFi(
+  Future<void> _applyWifi({bool reschedule = true}) => _downloader.requireWiFi(
     _settings.read(SettingKeys.modelsWifiOnly)
         ? RequireWiFi.forAllTasks
         : RequireWiFi.forNoTasks,
+    rescheduleRunningTasks: reschedule,
   );
 
   Future<void> _on(TaskUpdate update) async {
     final modelId = update.task.group;
-    final model = (await _models.manifest()).model(modelId);
-    if (model == null || model.variants.isEmpty) return;
-    final variant = model.variants.first;
-    final files = _files.putIfAbsent(
-      modelId,
-      () => <String, ({TaskStatus status, double done})>{},
-    );
+    final files = _files.putIfAbsent(modelId, () => <String, _File>{});
     final name = update.task.filename;
-    final before = files[name] ?? (status: TaskStatus.enqueued, done: 0.0);
-    files[name] = switch (update) {
-      TaskStatusUpdate(:final status) => (
-        status: status,
-        done: status == TaskStatus.complete ? 1.0 : before.done,
+    final before = files[name];
+    // A task of an earlier attempt, which *Retry* cancelled, has no say.
+    if (before != null &&
+        before.task != update.task.taskId &&
+        !update.task.creationTime.isAfter(before.created)) {
+      return;
+    }
+    final was = before?.status ?? TaskStatus.enqueued;
+    final sofar = before?.done ?? 0.0;
+    final (:status, :done) = switch (update) {
+      TaskStatusUpdate(status: final now) => (
+        status: now,
+        done: now == TaskStatus.complete ? 1.0 : sofar,
       ),
       // Negative progress is the downloader's own signal (failed, paused,
       // waiting), which its status update carries.
       TaskProgressUpdate(:final progress) when progress >= 0 => (
-        status: before.status == TaskStatus.enqueued
-            ? TaskStatus.running
-            : before.status,
+        status: was == TaskStatus.enqueued ? TaskStatus.running : was,
         done: progress,
       ),
-      _ => before,
+      _ => (status: was, done: sofar),
     };
+    files[name] = (
+      task: update.task.taskId,
+      created: update.task.creationTime,
+      status: status,
+      done: done,
+    );
+    await _settle(modelId);
+  }
+
+  /// Verifies [modelId] once every file is in; until then, says how far it
+  /// has come.
+  Future<void> _settle(String modelId) async {
+    final model = (await _models.manifest()).model(modelId);
+    final files = _files[modelId];
+    if (model == null || model.variants.isEmpty || files == null) return;
+    final variant = model.variants.first;
 
     final complete = variant.files.every(
       (file) => files[file.name]?.status == TaskStatus.complete,
@@ -217,8 +305,14 @@ class BackgroundModelDownloads implements ModelDownloads {
     if (complete) {
       if (!_checking.add(modelId)) return;
       _emit(modelId, (phase: DownloadPhase.verifying, progress: 1));
-      // FR-M4-01: only a variant whose every checksum passes is put in place.
-      final status = await _models.activate(modelId, variant);
+      var status = ModelStatus.failed;
+      try {
+        // FR-M4-01: only a variant whose every checksum passes is put in
+        // place.
+        status = await _models.activate(modelId, variant);
+      } on Object {
+        // A rename refused (a full disk, a file held open): failed, *Retry*.
+      }
       _checking.remove(modelId);
       _files.remove(modelId);
       _emit(modelId, (
@@ -227,6 +321,9 @@ class BackgroundModelDownloads implements ModelDownloads {
             : DownloadPhase.failed,
         progress: 1,
       ));
+      // Done with: the next launch mustn't verify a staging folder that was
+      // renamed into place, or that *Retry* throws away.
+      await _downloader.database.deleteAllRecords(group: modelId);
       return;
     }
     var arrived = 0.0;

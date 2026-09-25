@@ -30,6 +30,41 @@ void main() {
       await settings.load();
       addTearDown(settings.dispose);
       models = ModelRepository(settings, support: support);
+      // The bundled manifest with Supertonic's files pinned: `start` fetches
+      // nothing that could never verify (#156), and the real hashes wait on
+      // #245.
+      final bundled = await models.manifest();
+      final voice = bundled.model('supertonic3')!;
+      models.useManifest(
+        ModelManifest(
+          version: bundled.version,
+          models: <ModelEntry>[
+            ModelEntry(
+              id: voice.id,
+              name: voice.name,
+              licence: voice.licence,
+              disables: voice.disables,
+              regionExcluded: voice.regionExcluded,
+              variants: <ModelVariant>[
+                for (final variant in voice.variants)
+                  ModelVariant(
+                    id: variant.id,
+                    name: variant.name,
+                    files: <ModelFile>[
+                      for (final file in variant.files)
+                        ModelFile(
+                          name: file.name,
+                          url: file.url,
+                          bytes: file.bytes,
+                          sha256: '0' * 64,
+                        ),
+                    ],
+                  ),
+              ],
+            ),
+          ],
+        ),
+      );
       downloader = _FakeDownloader();
     });
 

@@ -33,6 +33,26 @@ void main() {
     sha256: sha256.convert(utf8.encode(content)).toString(),
   );
 
+  ModelManifest manifestOf(List<ModelFile> files) => ModelManifest(
+    version: 1,
+    models: <ModelEntry>[
+      ModelEntry(
+        id: 'hymt',
+        name: 'Hy-MT 1.5',
+        licence: 'test',
+        disables: 'mt_enabled',
+        regionExcluded: const <String>[],
+        variants: <ModelVariant>[
+          ModelVariant(id: 'q1_25', name: 'test build', files: files),
+        ],
+      ),
+    ],
+  );
+  final manifest = manifestOf(<ModelFile>[
+    file('one.gguf', one),
+    file('two.gguf', two),
+  ]);
+
   setUp(() async {
     support = Directory.systemTemp.createTempSync('dp_downloads');
     final db = AppDatabase.memory();
@@ -40,31 +60,7 @@ void main() {
     settings = SettingsRepository(db);
     await settings.load();
     addTearDown(settings.dispose);
-    models = ModelRepository(settings, support: support)
-      ..useManifest(
-        ModelManifest(
-          version: 1,
-          models: <ModelEntry>[
-            ModelEntry(
-              id: 'hymt',
-              name: 'Hy-MT 1.5',
-              licence: 'test',
-              disables: 'mt_enabled',
-              regionExcluded: const <String>[],
-              variants: <ModelVariant>[
-                ModelVariant(
-                  id: 'q1_25',
-                  name: 'test build',
-                  files: <ModelFile>[
-                    file('one.gguf', one),
-                    file('two.gguf', two),
-                  ],
-                ),
-              ],
-            ),
-          ],
-        ),
-      );
+    models = ModelRepository(settings, support: support)..useManifest(manifest);
     downloader = _Downloader();
     downloads = BackgroundModelDownloads(models, settings, downloader);
   });
@@ -116,9 +112,11 @@ void main() {
       expect(downloader.calls, contains('start'));
     });
 
-    test('Wi-Fi only is on by default, for every task', () async {
+    test('Wi-Fi only is on by default, for every task, and a launch leaves '
+        'running tasks running', () async {
       await downloads.attach();
       expect(downloader.wifi, RequireWiFi.forAllTasks);
+      expect(downloader.rescheduled, isFalse);
     });
 
     test('attaching twice listens once', () async {
@@ -134,8 +132,85 @@ void main() {
     await downloads.setWifiOnly(on: false);
     expect(settings.read(SettingKeys.modelsWifiOnly), isFalse);
     expect(downloader.wifi, RequireWiFi.forNoTasks);
+    expect(downloader.rescheduled, isTrue);
     await downloads.setWifiOnly(on: true);
     expect(downloader.wifi, RequireWiFi.forAllTasks);
+  });
+
+  group('#156 across a restart', () {
+    DownloadTask earlier(String name) => DownloadTask(
+      url: 'https://example.invalid/$name',
+      filename: name,
+      group: 'hymt',
+    );
+
+    setUp(() async {
+      await models.beginDownload('hymt');
+      await land('one.gguf', one);
+      await land('two.gguf', two);
+    });
+
+    test('a file that finished in an earlier session counts: with the other '
+        'one\'s update, the model verifies', () async {
+      downloader.database.records.add(
+        TaskRecord(earlier('one.gguf'), TaskStatus.complete, 1, 300),
+      );
+      await downloads.attach();
+      downloader.updates$.add(
+        TaskStatusUpdate(earlier('two.gguf'), TaskStatus.complete),
+      );
+      await settled();
+
+      expect((await downloads.watch('hymt').first).phase, DownloadPhase.ready);
+      expect(
+        downloader.database.records,
+        isEmpty,
+        reason: 'the next launch has nothing to verify',
+      );
+    });
+
+    test('every file finished while the app was away: the model verifies '
+        'at launch', () async {
+      downloader.database.records.addAll(<TaskRecord>[
+        TaskRecord(earlier('one.gguf'), TaskStatus.complete, 1, 300),
+        TaskRecord(earlier('two.gguf'), TaskStatus.complete, 1, 100),
+      ]);
+      await downloads.attach();
+      await settled();
+      final active = await models.directoryFor('hymt');
+      expect(File('${active.path}/two.gguf').readAsStringSync(), two);
+    });
+  });
+
+  test('#156 an activation that throws fails the model, rather than leaving '
+      'it verifying', () async {
+    downloads = BackgroundModelDownloads(
+      _RenameRefused(settings, support: support)..useManifest(manifest),
+      settings,
+      downloader,
+    );
+    await downloads.attach();
+    await downloads.start('hymt');
+    await report((t) => TaskStatusUpdate(t, TaskStatus.complete), 'one.gguf');
+    await report((t) => TaskStatusUpdate(t, TaskStatus.complete), 'two.gguf');
+    await settled();
+    expect((await downloads.watch('hymt').first).phase, DownloadPhase.failed);
+  });
+
+  test('#156 a model with a file of no checksum is refused before a byte is '
+      'fetched: it could never verify', () async {
+    models.useManifest(
+      manifestOf(<ModelFile>[
+        ModelFile(
+          name: 'one.gguf',
+          url: Uri.parse('https://example.invalid/one.gguf'),
+          bytes: 300,
+          sha256: null,
+        ),
+      ]),
+    );
+    await expectLater(downloads.start('hymt'), throwsStateError);
+    expect(downloader.queued, isEmpty);
   });
 
   test('FR-M4-01 pause and resume act on the model\'s files, not '
@@ -235,8 +310,13 @@ void main() {
       expect((await models.directoryFor('hymt')).existsSync(), isFalse);
     });
 
-    test('Retry throws the failed files away and queues them again', () async {
+    test('Retry after a checksum failure throws the files away and queues '
+        'them all again', () async {
+      await land('one.gguf', one);
       await land('two.gguf', 'corrupt');
+      await report((t) => TaskStatusUpdate(t, TaskStatus.complete), 'one.gguf');
+      await report((t) => TaskStatusUpdate(t, TaskStatus.complete), 'two.gguf');
+      await settled();
       downloader.queued.clear();
       await downloads.retry('hymt');
       final staging = await models.stagingFor('hymt');
@@ -245,6 +325,33 @@ void main() {
         'one.gguf',
         'two.gguf',
       ]);
+    });
+
+    test('#156 Retry after a network failure keeps what arrived, and '
+        'cancels the failed attempt', () async {
+      await land('one.gguf', one);
+      await report((t) => TaskStatusUpdate(t, TaskStatus.complete), 'one.gguf');
+      await report((t) => TaskStatusUpdate(t, TaskStatus.failed), 'two.gguf');
+      downloader.queued.clear();
+      await downloads.retry('hymt');
+      expect(downloader.calls, contains('cancel hymt'));
+      expect(downloader.queued.map((t) => t.filename), <String>['two.gguf']);
+      final staging = await models.stagingFor('hymt');
+      expect(File('${staging.path}/one.gguf').readAsStringSync(), one);
+    });
+
+    test('#156 a task Retry replaced has no say', () async {
+      await report((t) => TaskStatusUpdate(t, TaskStatus.failed), 'two.gguf');
+      final old = downloader.queued.firstWhere((t) => t.filename == 'two.gguf');
+      downloader.queued.clear();
+      await downloads.retry('hymt');
+      await report((t) => TaskStatusUpdate(t, TaskStatus.running), 'two.gguf');
+      downloader.updates$.add(TaskStatusUpdate(old, TaskStatus.canceled));
+      await pumpEventQueue();
+      expect(
+        (await downloads.watch('hymt').first).phase,
+        DownloadPhase.running,
+      );
     });
   });
 }
@@ -255,12 +362,22 @@ class _Downloader implements FileDownloader {
   final StreamController<TaskUpdate> updates$ =
       StreamController<TaskUpdate>.broadcast();
   RequireWiFi? wifi;
+  bool? rescheduled;
   TaskNotification? running;
   String? notification;
   bool? progressBar;
 
   @override
+  final _Records database = _Records();
+
+  @override
   Stream<TaskUpdate> get updates => updates$.stream;
+
+  @override
+  Future<bool> cancelAll({Iterable<Task>? tasks, String? group}) async {
+    calls.add('cancel $group');
+    return true;
+  }
 
   @override
   Future<List<bool>> enqueueAll(Iterable<Task> tasks) async {
@@ -302,6 +419,7 @@ class _Downloader implements FileDownloader {
     alsoRestartUploads = false,
   }) async {
     wifi = requirement;
+    rescheduled = rescheduleRunningTasks as bool;
     return true;
   }
 
@@ -326,4 +444,31 @@ class _Downloader implements FileDownloader {
 
   @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
+
+/// The downloader's record of its tasks, which outlives the app.
+class _Records implements Database {
+  final List<TaskRecord> records = <TaskRecord>[];
+
+  @override
+  Future<List<TaskRecord>> allRecords({String? group}) async => <TaskRecord>[
+    for (final record in records)
+      if (group == null || record.group == group) record,
+  ];
+
+  @override
+  Future<void> deleteAllRecords({String? group}) async =>
+      records.removeWhere((record) => group == null || record.group == group);
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
+
+/// A repository whose rename into place fails, as on a full disk.
+class _RenameRefused extends ModelRepository {
+  _RenameRefused(super.settings, {super.support});
+
+  @override
+  Future<ModelStatus> activate(String modelId, ModelVariant variant) =>
+      throw const FileSystemException('rename refused');
 }
