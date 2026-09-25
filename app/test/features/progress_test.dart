@@ -161,6 +161,22 @@ void main() {
     expect(find.byType(BarChart), findsOneWidget);
   });
 
+  testWidgets("a range that fails says so, not with the last range's cards", (
+    tester,
+  ) async {
+    await pump(
+      tester,
+      load: (range) async => range == ProgressRange.month
+          ? throw StateError('disk')
+          : artboardProgress(),
+    );
+    await tester.tap(find.text(l10n.progressMonth));
+    await tester.pumpAndSettle();
+
+    expect(find.text(l10n.meLoadFailed), findsOneWidget);
+    expect(find.byType(BarChart), findsNothing);
+  });
+
   group('FR-M2-01 retention', () {
     testWidgets('the line against the dashed target', (tester) async {
       await pump(tester);
@@ -200,8 +216,17 @@ void main() {
 
     // accessibility-performance.md: 48 dp on Android.
     expect(
-      tester.getSize(find.byType(ConstrainedBox).hitTestable().at(0)).height,
-      greaterThanOrEqualTo(0),
+      tester
+          .getSize(
+            find
+                .ancestor(
+                  of: find.text('A2.1'),
+                  matching: find.byType(GestureDetector),
+                )
+                .first,
+          )
+          .height,
+      greaterThanOrEqualTo(48),
     );
     await tester.tap(find.text('A2.1'));
     await tester.pumpAndSettle();
