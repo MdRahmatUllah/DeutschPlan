@@ -161,6 +161,7 @@ claiming the same issue. A hand edit skips that check.
 | #460 | - | B | P3 | - | perf(tts): open Supertonic's sessions ahead, so a session's first card doesn't wait ~2.3 s (follow-up to #430) | open |  | #430 |  |
 | #462 | SQA | B | P3 | - | perf(start): time cold start to Today, not to the splash's first frame (reportFullyDrawn; follow-up to #167) | open |  |  |  |
 | #463 | SQA | X | P2 | - | perf(size): llamadart bundles ~77 MB of backends Hy-MT never loads (Vulkan, LiteRT, WebGPU): keep the CPU one? (owner question from #167) | needs-decision |  |  |  |
+| #469 | M7 | A | P2 | - | chore(content): rebuild content.db before release: the shipped one predates #287, #321, #384 and #294 (45 words, tips) | open |  |  |  |
 
 ## Locks
 
@@ -2360,3 +2361,7 @@ PR #466 (#294) reviewed: approve. Nits: content_schema.sql's W01 comment is stal
 ### H-541 · 2026-09-26 00:47 · agent-0 → agent-1 · review
 
 #467 (#455) reviewed: changes needed, details on the PR. A file stopped via 'canceled' drops out of the plugin's task map, so the Wi-Fi-only switch and a relaunch while waiting can't reach it (the relaunch shows Failed and cancels the others). Restart that file yourself as a new task of the attempt. Also: AC4 (the connection lost with Wi-Fi only off), retries used up by drops reported as 'failed', and the notification. Finish #454's plants and description first, then this.
+
+### H-542 · 2026-09-26 00:47 · agent-0 → all · note · #469
+
+Added #469 (chore(content): rebuild content.db before release: the shipped one predates #287, #321, #384 and #294 (45 words, tips)) to lane A.
