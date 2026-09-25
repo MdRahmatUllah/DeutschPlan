@@ -691,6 +691,11 @@ class StudyRoute extends GoRouteData with $StudyRoute {
   static void open(BuildContext context, SessionArgs args) =>
       unawaited(context.push<void>(const StudyRoute().location, extra: args));
 
+  /// A session in place of a finished one: T3's next block of the day
+  /// (FR-T3-02, #328), so closing it returns to whoever opened the first.
+  static void instead(BuildContext context, SessionArgs args) =>
+      context.pushReplacement(const StudyRoute().location, extra: args);
+
   @override
   Page<void> buildPage(BuildContext context, GoRouterState state) {
     final args =

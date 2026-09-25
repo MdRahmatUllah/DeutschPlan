@@ -63,7 +63,7 @@ void main() {
         settingsProvider.overrideWithValue(settings),
         studySessionProvider(args).overrideWith(_Done.new),
         studyNextProvider('2026-09-21').overrideWith(
-          (ref) async => (sentences: 3, backlog: 14, dayDone: false),
+          (ref) async => StudyNext(sentences: 3, backlog: 14, dayDone: false),
         ),
         for (final (uid, article, german) in <(String, String, String)>[
           ('r0', 'die', 'Rechnung'),

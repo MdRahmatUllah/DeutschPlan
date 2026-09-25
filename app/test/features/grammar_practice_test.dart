@@ -108,7 +108,8 @@ void main() {
           ),
           grammarRatingServiceProvider.overrideWithValue(_Rating(rated)),
           studyNextProvider.overrideWith(
-            (ref, date) async => (sentences: 0, backlog: 0, dayDone: dayDone),
+            (ref, date) async =>
+                StudyNext(sentences: 0, backlog: 0, dayDone: dayDone),
           ),
         ],
         child: MaterialApp.router(

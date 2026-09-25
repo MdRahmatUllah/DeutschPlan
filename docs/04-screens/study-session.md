@@ -4,7 +4,7 @@
 
 **Prototype.** `StudyFront`, `StudyBack`, `StudyNew`, `StudyCloze` (states in `study-session-states.md`).
 
-**Reached from.** T1 (button, ring, section cards), T4 (*Study all*, *Study this day*), L1 current-step *Study*, L2 *Start this step now*. **Leads to.** T3 on the last card; T6 if the day is complete; W1 via overflow; X returns to the opener.
+**Reached from.** T1 (button, ring, section cards), T4 (*Study all*, *Study this day*), L1 current-step *Study*, L2 *Start this step now*, T3 (the day's next block, #328). **Leads to.** T3 on the last card; T6 if the day is complete; W1 via overflow; X returns to the opener.
 
 **Presentation.** Full-screen modal (root navigator), tab bar hidden. Android: container transform from the tapped card; iOS: modal slide-up.
 

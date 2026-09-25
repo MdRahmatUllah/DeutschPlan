@@ -452,12 +452,6 @@ class PlanEngine {
     // means Today shows "Step complete" and offers the next one.
     final finished = step == null && await _store.hasEverEnrolled();
 
-    // BR-PLAN-08: the day planned last is what it was planned as; M5's new
-    // study days are tomorrow's.
-    final planned = date == await _store.lastPlannedDate()
-        ? await _store.plannedMask()
-        : null;
-
     return DailyPlan(
       date: date,
       revise: await _store.plannedOn(date, PlanKind.revise),
@@ -467,7 +461,7 @@ class PlanEngine {
       activeStep: step?.sublevelCode,
       nextStep: await _nextStepAfterFinishing(finished),
       stepComplete: finished,
-      isStudyDay: isStudyDay(date, planned ?? step?.studyDaysMask ?? allDays),
+      isStudyDay: await studyDayOn(date),
       newPaused: _pauseNewWhenBacklog && backlog.isNotEmpty,
     );
   }
@@ -728,6 +722,17 @@ class PlanEngine {
   /// How far back the streak looks. A year and a bit: beyond that the number
   /// is a curiosity, and the scan is not free.
   static const int streakLookback = 400;
+
+  /// BR-PLAN-01: whether [date] is a study day. BR-PLAN-08: the day planned
+  /// last is what it was planned as, and M5's new study days are tomorrow's.
+  /// Today's plan and T3's next step (#328) both ask here.
+  Future<bool> studyDayOn(PlanDate date) async {
+    final planned = date == await _store.lastPlannedDate()
+        ? await _store.plannedMask()
+        : null;
+    final step = await _store.activeStep();
+    return isStudyDay(date, planned ?? step?.studyDaysMask ?? allDays);
+  }
 
   /// BR-PLAN-01: whether [date] is a study day under [mask].
   ///

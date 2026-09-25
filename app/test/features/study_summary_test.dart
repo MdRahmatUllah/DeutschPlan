@@ -101,7 +101,9 @@ VALUES ('$today', 9, 12, 900)
       ),
       GoRoute(
         path: '/study',
-        builder: (_, _) => StudyScreen(args: args),
+        // T3's next block hands its own session (#328).
+        builder: (_, state) =>
+            StudyScreen(args: state.extra as SessionArgs? ?? args),
       ),
       GoRoute(
         path: '/sentences',
@@ -126,8 +128,14 @@ VALUES ('$today', 9, 12, 900)
     SessionArgs args = words,
     StudyNext? next,
     FakeTts? tts,
+    String? seed,
   }) async {
-    await tester.runAsync(open);
+    await tester.runAsync(() async {
+      await open();
+      for (final statement in (seed ?? '').split(';')) {
+        if (statement.trim().isNotEmpty) await db.customStatement(statement);
+      }
+    });
     addTearDown(
       () => tester.runAsync(() async {
         await settings.dispose();
@@ -324,7 +332,7 @@ VALUES ('$today', 9, 12, 900)
     testWidgets('no sentences, no backlog: Done for now alone, and first', (
       tester,
     ) async {
-      await finish(tester, (sentences: 0, backlog: 0, dayDone: false));
+      await finish(tester, StudyNext(sentences: 0, backlog: 0, dayDone: false));
       expect(find.byType(DpButton), findsOneWidget);
       expect(button(tester, l10n.summaryDone).kind, DpButtonKind.primary);
     });
@@ -332,7 +340,7 @@ VALUES ('$today', 9, 12, 900)
     testWidgets('sentences open: they lead, and Done for now follows', (
       tester,
     ) async {
-      await finish(tester, (sentences: 3, backlog: 0, dayDone: true));
+      await finish(tester, StudyNext(sentences: 3, backlog: 0, dayDone: true));
       expect(button(tester, sentences(l10n)).kind, DpButtonKind.primary);
       expect(button(tester, l10n.summaryDone).kind, DpButtonKind.text);
       expect(find.text(l10n.summaryBacklog(0)), findsNothing);
@@ -341,7 +349,10 @@ VALUES ('$today', 9, 12, 900)
     testWidgets('a backlog: second, under Done for now leading', (
       tester,
     ) async {
-      await finish(tester, (sentences: 0, backlog: 14, dayDone: false));
+      await finish(
+        tester,
+        StudyNext(sentences: 0, backlog: 14, dayDone: false),
+      );
       expect(button(tester, l10n.summaryDone).kind, DpButtonKind.primary);
       expect(
         button(tester, l10n.summaryBacklog(14)).kind,
@@ -353,7 +364,10 @@ VALUES ('$today', 9, 12, 900)
     testWidgets('both: sentences, then the backlog, then Done for now', (
       tester,
     ) async {
-      await finish(tester, (sentences: 3, backlog: 14, dayDone: false));
+      await finish(
+        tester,
+        StudyNext(sentences: 3, backlog: 14, dayDone: false),
+      );
       final order = <String>[
         for (final b in tester.widgetList<DpButton>(find.byType(DpButton)))
           b.label,
@@ -371,7 +385,7 @@ VALUES ('$today', 9, 12, 900)
       final container = await pump(
         tester,
         args: withGrammar,
-        next: (sentences: 3, backlog: 0, dayDone: false),
+        next: StudyNext(sentences: 3, backlog: 0, dayDone: false),
       );
       await session(
         tester,
@@ -388,10 +402,163 @@ VALUES ('$today', 9, 12, 900)
       expect(find.byType(StudyScreen), findsNothing);
     });
 
+    test("#328 FR-T3-02 the order is the day's: revisions, new words, "
+        'grammar, sentences', () {
+      const none = StudySessionState(items: <StudyItem>[]);
+      StudyNextStep step(StudyNext next) =>
+          StudySummarySheet.primaryFor(none, next);
+      expect(
+        step(
+          const StudyNext(
+            sentences: 3,
+            backlog: 0,
+            dayDone: false,
+            revise: <String>['r'],
+            newWords: <String>['n'],
+            grammar: <String>['g'],
+          ),
+        ),
+        StudyNextStep.revise,
+      );
+      expect(
+        step(
+          const StudyNext(
+            sentences: 3,
+            backlog: 0,
+            dayDone: false,
+            newWords: <String>['n'],
+            grammar: <String>['g'],
+          ),
+        ),
+        StudyNextStep.newWords,
+      );
+      expect(
+        step(
+          const StudyNext(
+            sentences: 3,
+            backlog: 0,
+            dayDone: false,
+            grammar: <String>['g'],
+          ),
+        ),
+        StudyNextStep.grammar,
+        reason: "the day's grammar, which this session didn't queue",
+      );
+      expect(
+        step(const StudyNext(sentences: 3, backlog: 0, dayDone: false)),
+        StudyNextStep.sentences,
+      );
+    });
+
+    testWidgets("#328 FR-T3-02 after a Revise-only session, the day's new "
+        'words come next, and it continues with them', (tester) async {
+      const revise = SessionArgs(
+        planDate: today,
+        blocks: <SessionBlock>[
+          SessionBlock(SessionBlockKind.revise, <String>[strasse]),
+        ],
+      );
+      final container = await pump(tester, args: revise);
+      await session(
+        tester,
+        container,
+        (n) => n.rate(Rating.good),
+        args: revise,
+      );
+      final next = find.widgetWithText(DpButton, l10n.summaryNew(2));
+      expect(tester.widget<DpButton>(next).kind, DpButtonKind.primary);
+
+      await tester.tap(next);
+      await tester.pumpAndSettle();
+      final blocks = tester
+          .widget<StudyScreen>(find.byType(StudyScreen))
+          .args
+          .blocks;
+      expect(blocks.single.kind, SessionBlockKind.newWords);
+      expect(
+        find.byType(StudyScreen, skipOffstage: false),
+        findsOneWidget,
+        reason: "in the finished session's place, not over it",
+      );
+      expect(blocks.single.uids, <String>[haus, tuer]);
+    });
+
+    testWidgets("#328 FR-T3-02 the day's grammar after a Revise-only session: "
+        'L15 opens on the topic due, which the session never queued', (
+      tester,
+    ) async {
+      const revise = SessionArgs(
+        planDate: today,
+        blocks: <SessionBlock>[
+          SessionBlock(SessionBlockKind.revise, <String>[strasse]),
+        ],
+      );
+      final container = await pump(
+        tester,
+        args: revise,
+        seed:
+            "UPDATE plan_items SET completed_at = '2026-09-21T08:00:00Z' "
+            "WHERE kind = 'new'; "
+            'INSERT INTO grammar_state (grammar_uid, status, due) '
+            "VALUES ('g1', 'learning', '$today')",
+      );
+      await session(
+        tester,
+        container,
+        (n) => n.rate(Rating.good),
+        args: revise,
+      );
+      final next = find.widgetWithText(DpButton, l10n.summaryGrammar(1));
+      expect(tester.widget<DpButton>(next).kind, DpButtonKind.primary);
+
+      await tester.tap(next);
+      await tester.pumpAndSettle();
+      expect(find.text('L15 g1'), findsOneWidget);
+    });
+
+    testWidgets("#328 FR-T3-02 after a backlog session, the day's revisions "
+        'come next, and it continues with them', (tester) async {
+      const backlog = SessionArgs(
+        planDate: today,
+        blocks: <SessionBlock>[
+          SessionBlock(SessionBlockKind.backlog, <String>[haus]),
+        ],
+      );
+      final container = await pump(
+        tester,
+        args: backlog,
+        seed:
+            'INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code) '
+            "VALUES ('2026-09-18', '$haus', 'new', 'A1.1')",
+      );
+      await session(
+        tester,
+        container,
+        (n) => n.rate(Rating.good),
+        args: backlog,
+      );
+      final next = find.widgetWithText(DpButton, l10n.summaryRevise(1));
+      expect(tester.widget<DpButton>(next).kind, DpButtonKind.primary);
+
+      await tester.tap(next);
+      await tester.pumpAndSettle();
+      final blocks = tester
+          .widget<StudyScreen>(find.byType(StudyScreen))
+          .args
+          .blocks;
+      expect(blocks.single.kind, SessionBlockKind.revise);
+      expect(
+        find.byType(StudyScreen, skipOffstage: false),
+        findsOneWidget,
+        reason: "in the finished session's place, not over it",
+      );
+      expect(blocks.single.uids, <String>[strasse]);
+    });
+
     testWidgets('the sentences step opens T5 in the session\'s place', (
       tester,
     ) async {
-      await finish(tester, (sentences: 3, backlog: 0, dayDone: true));
+      await finish(tester, StudyNext(sentences: 3, backlog: 0, dayDone: true));
       await tester.tap(find.text(sentences(l10n)));
       await tester.pumpAndSettle();
       expect(find.text('T5 sentences'), findsOneWidget);
@@ -399,7 +566,10 @@ VALUES ('$today', 9, 12, 900)
     });
 
     testWidgets('the backlog step opens T4', (tester) async {
-      await finish(tester, (sentences: 0, backlog: 14, dayDone: false));
+      await finish(
+        tester,
+        StudyNext(sentences: 0, backlog: 14, dayDone: false),
+      );
       await tester.tap(find.text(l10n.summaryBacklog(14)));
       await tester.pumpAndSettle();
       expect(find.text('T4 backlog'), findsOneWidget);
@@ -407,7 +577,7 @@ VALUES ('$today', 9, 12, 900)
     });
 
     testWidgets('Done for now goes back to Today', (tester) async {
-      await finish(tester, (sentences: 3, backlog: 0, dayDone: true));
+      await finish(tester, StudyNext(sentences: 3, backlog: 0, dayDone: true));
       await tester.tap(find.text(l10n.summaryDone));
       await tester.pumpAndSettle();
       expect(find.text('T1 today'), findsOneWidget);
@@ -416,7 +586,7 @@ VALUES ('$today', 9, 12, 900)
     testWidgets('each way out clears the session', (tester) async {
       final container = await pump(
         tester,
-        next: (sentences: 3, backlog: 0, dayDone: true),
+        next: StudyNext(sentences: 3, backlog: 0, dayDone: true),
       );
       await session(tester, container, (n) async {
         for (var i = 0; i < 3; i++) {
@@ -437,7 +607,7 @@ VALUES ('$today', 9, 12, 900)
     Future<void> finish(WidgetTester tester) async {
       final container = await pump(
         tester,
-        next: (sentences: 3, backlog: 0, dayDone: true),
+        next: StudyNext(sentences: 3, backlog: 0, dayDone: true),
       );
       await session(tester, container, (n) async {
         for (var i = 0; i < 3; i++) {
@@ -484,7 +654,7 @@ VALUES ('$today', 9, 12, 900)
           settingsProvider.overrideWithValue(settings),
           ttsProvider.overrideWithValue(FakeTts()),
           studyNextProvider(today).overrideWith(
-            (ref) async => (sentences: 3, backlog: 0, dayDone: true),
+            (ref) async => StudyNext(sentences: 3, backlog: 0, dayDone: true),
           ),
         ],
         child: MaterialApp.router(
@@ -506,7 +676,7 @@ VALUES ('$today', 9, 12, 900)
   ) async {
     final container = await pump(
       tester,
-      next: (sentences: 0, backlog: 14, dayDone: true),
+      next: StudyNext(sentences: 0, backlog: 14, dayDone: true),
     );
     await session(tester, container, (n) async {
       for (var i = 0; i < 3; i++) {
@@ -522,7 +692,7 @@ VALUES ('$today', 9, 12, 900)
   ) async {
     final container = await pump(
       tester,
-      next: (sentences: 3, backlog: 0, dayDone: false),
+      next: StudyNext(sentences: 3, backlog: 0, dayDone: false),
     );
     await session(tester, container, (n) async {
       await n.rate(Rating.good);

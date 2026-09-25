@@ -7,6 +7,7 @@ import 'package:deutschplan/data/db/app_database.dart';
 import 'package:deutschplan/data/db/content_dao.dart';
 import 'package:deutschplan/data/repositories/plan_repository.dart';
 import 'package:deutschplan/data/repositories/settings_repository.dart';
+import 'package:deutschplan/domain/plan_engine.dart' show parsePlanDate;
 import 'package:deutschplan/features/day_complete/day_complete_screen.dart';
 import 'package:deutschplan/features/study/study_summary.dart';
 import 'package:deutschplan/features/today/today_providers.dart';
@@ -315,4 +316,73 @@ void main() {
     expect(await plans.dayCompleteShown(today), isTrue);
     expect(await dayDone(), isFalse);
   });
+
+  test(
+    '#328 BR-PLAN-02 a rest day offers no grammar, as Today shows none',
+    () async {
+      final db = AppDatabase.memory();
+      addTearDown(db.close);
+      final directory = Directory.systemTemp.createTempSync('dp_t6');
+      final content = ContentFixture.write('${directory.path}/content.db');
+      await db.customStatement(
+        "ATTACH DATABASE '${ContentDao.attachPath(content.file)}' AS c",
+      );
+      await db.customStatement(
+        "INSERT INTO grammar_state (grammar_uid, status, due) "
+        "VALUES ('g1', 'learning', '$today')",
+      );
+      // Every day off but the one before today: today is a rest day.
+      final off = 1 << (parsePlanDate(today).weekday - 1);
+      await db.customStatement(
+        'INSERT INTO enrollments (sublevel_code, started_on, daily_new, '
+        "study_days_mask) VALUES ('A1.1', '2026-09-01', 7, ${127 & ~off})",
+      );
+      final settings = SettingsRepository(db);
+      await settings.load();
+      addTearDown(settings.dispose);
+      final container = ProviderContainer(
+        overrides: <Override>[
+          appDatabaseProvider.overrideWithValue(db),
+          settingsProvider.overrideWithValue(settings),
+        ],
+      );
+      addTearDown(container.dispose);
+      final hold = container.listen(studyNextProvider(today), (_, _) {});
+      addTearDown(hold.close);
+      final next = await container.read(studyNextProvider(today).future);
+      expect(next.grammar, isEmpty);
+    },
+  );
+
+  test(
+    '#328 BR-PLAN-10 grammar due keeps the day open, as Today counts it',
+    () async {
+      final db = AppDatabase.memory();
+      addTearDown(db.close);
+      final directory = Directory.systemTemp.createTempSync('dp_t6');
+      final content = ContentFixture.write('${directory.path}/content.db');
+      await db.customStatement(
+        "ATTACH DATABASE '${ContentDao.attachPath(content.file)}' AS c",
+      );
+      await db.customStatement(
+        "INSERT INTO grammar_state (grammar_uid, status, due) "
+        "VALUES ('g1', 'learning', '$today')",
+      );
+      final settings = SettingsRepository(db);
+      await settings.load();
+      addTearDown(settings.dispose);
+      final container = ProviderContainer(
+        overrides: <Override>[
+          appDatabaseProvider.overrideWithValue(db),
+          settingsProvider.overrideWithValue(settings),
+        ],
+      );
+      addTearDown(container.dispose);
+      final hold = container.listen(studyNextProvider(today), (_, _) {});
+      addTearDown(hold.close);
+      final next = await container.read(studyNextProvider(today).future);
+      expect(next.grammar, <String>['g1']);
+      expect(next.dayDone, isFalse);
+    },
+  );
 }

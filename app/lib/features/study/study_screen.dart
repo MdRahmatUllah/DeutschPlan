@@ -127,13 +127,27 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
     go();
   }
 
-  /// T3's next step (FR-T3-02, FR-T3-03).
-  void _step(StudyNextStep step, StudySessionState session) {
+  /// T3's next step (FR-T3-02, FR-T3-03). The day's next word block is a
+  /// new session in this one's place (#328).
+  void _step(StudyNextStep step, StudySessionState session, [StudyNext? next]) {
+    void block(SessionBlockKind kind, List<String> uids) => _leave(
+      () => StudyRoute.instead(
+        context,
+        SessionArgs(
+          planDate: widget.args.planDate,
+          blocks: <SessionBlock>[SessionBlock(kind, uids)],
+        ),
+      ),
+    );
     switch (step) {
       case StudyNextStep.done:
         _close();
+      case StudyNextStep.revise:
+        block(SessionBlockKind.revise, next!.revise);
+      case StudyNextStep.newWords:
+        block(SessionBlockKind.newWords, next!.newWords);
       case StudyNextStep.grammar:
-        final topics = session.grammarLeft;
+        final topics = StudySummarySheet.grammarFor(session, next);
         _leave(
           () => GrammarPracticeRoute.instead(
             context,
@@ -417,7 +431,7 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
             child: StudySummarySheet(
               session: session,
               next: next,
-              onStep: (step) => _step(step, session),
+              onStep: (step) => _step(step, session, next),
             ),
           )
         : null;
