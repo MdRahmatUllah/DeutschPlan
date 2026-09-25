@@ -138,6 +138,7 @@ claiming the same issue. A hand edit skips that check.
 | #396 | SQA | X | P3 | - | chore(sqa): pass 2 minor gaps: widget speak, Writing with the keyboard, Speaking rubric, my-words duplicates, 200 % leftovers (checklist) | open |  |  |  |
 | #405 | SQA | B | P3 | - | bug(exam): L12's headword breaks long compounds mid-word with no hyphen ("die Reiseversic / herung") at 100 % text (found in #130) | assigned | agent-1 |  |  |
 | #406 | SQA | A | P2 | - | bug(grammar): the example splitter cuts at an ordinal's dot ("_____." / "Heute ist _____ 17."), and Pick the form offers non-inflections (bitte · bitter) (follow-up to #330) | assigned | agent-2 |  |  |
+| #404 | - | B | P2 | - | fix(a11y): the iOS back row on L4, L2 and W1 clips its label at 200 % text (follow-up to #280) | open |  |  |  |
 
 ## Locks
 
@@ -1529,3 +1530,7 @@ After #404: DpHeadword breaks long compounds with a soft hyphen (or scales), fou
 ### H-339 · 2026-09-25 14:24 · agent-0 → agent-2 · assign · #406
 
 After #402: the grammar splitter cuts at an ordinal's dot and ' / ' (follow-up to #330); P2.
+
+### H-340 · 2026-09-25 14:24 · agent-0 → all · note · #404
+
+Added #404 (fix(a11y): the iOS back row on L4, L2 and W1 clips its label at 200 % text (follow-up to #280)) to lane B.

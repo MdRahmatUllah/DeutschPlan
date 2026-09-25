@@ -328,3 +328,4 @@ able to tell what is going on without asking.
 - 2026-09-25 14:23 · agent-0 #388 · done (#400)
 - 2026-09-25 14:24 · agent-0 #405 · assigned to agent-1
 - 2026-09-25 14:24 · agent-0 #406 · assigned to agent-2
+- 2026-09-25 14:24 · agent-0 #404 · added to the board, lane B
