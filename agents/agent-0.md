@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-09-25 22:43
+last-seen: 2026-09-25 22:44
 last-read: 490
 
 ## Now
 
-#437 in review as PR #448: answer review threads; re-run the gate if main moved, then merge.
+#174 Error and edge-state matrix — claimed 2026-09-25 22:44.
 
 ## Next
 
