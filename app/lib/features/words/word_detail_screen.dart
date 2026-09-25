@@ -1,6 +1,5 @@
-import 'dart:math' as math;
-
 import 'dart:async';
+import 'dart:math' as math;
 
 import 'package:deutschplan/core/adaptive/adaptive.dart';
 import 'package:deutschplan/core/components/dp_chip.dart';

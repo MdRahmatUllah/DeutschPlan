@@ -307,7 +307,16 @@ class AdaptiveBackButton extends StatelessWidget {
   /// with it.
   static double heightOf(BuildContext context, {String? label}) =>
       context.isCupertino && label != null
-      ? math.max(44, _labelLine(context))
+      ? math.max(
+          44,
+          // A Bangla label draws one role larger, as a bar title does.
+          _titleLine(
+            context,
+            DpTextRole.bodyLarge,
+            size: null,
+            bangla: DpScript.hasBengali(label),
+          ),
+        )
       : 44;
 
   /// The link colour unless given: L2's arrow is ink on its Sun header.
@@ -367,13 +376,6 @@ class AdaptiveBackButton extends StatelessWidget {
       ),
     );
   }
-}
-
-/// One line of the iOS back label, bodyLarge, at the learner's text size.
-double _labelLine(BuildContext context) {
-  final token = DpTextRole.bodyLarge.token(context.tokens.typography);
-  return MediaQuery.textScalerOf(context).scale(token.size) *
-      token.heightFactor;
 }
 
 /// The on/off control. Lagoon when on in both chromes; the sizes differ.

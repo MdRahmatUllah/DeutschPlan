@@ -26,6 +26,7 @@ void main() {
     l10n = await AppLocalizations.delegate.load(supportedLocales.first);
     // The app loads these with its localizations; a plain test has none.
     await initializeDateFormatting('en');
+    await initializeDateFormatting('bn');
   });
 
   StepProgress step({
@@ -136,6 +137,7 @@ void main() {
     WidgetTester tester,
     String at, {
     AdaptiveChrome chrome = AdaptiveChrome.material,
+    Locale locale = en,
   }) async {
     went = null;
     final routes = router();
@@ -148,6 +150,7 @@ void main() {
             theme: AppTheme.light(),
             localizationsDelegates: appLocalizationsDelegates,
             supportedLocales: supportedLocales,
+            locale: locale,
             routerConfig: routes,
           ),
         ),
@@ -284,11 +287,14 @@ void main() {
   });
 
   testWidgets('#404 at 200 % text the back row keeps its label whole, in '
-      'either chrome', (tester) async {
+      'either chrome and either language', (tester) async {
     textAt(tester, 2);
     for (final chrome in AdaptiveChrome.values) {
-      await pump(tester, '/learn/step/A2.1', chrome: chrome);
-      expectNothingClipped(tester, within: find.byType(AdaptiveBackButton));
+      // A Bangla label ("শিখুন") draws one role larger than an English one.
+      for (final locale in const <Locale>[en, Locale('bn')]) {
+        await pump(tester, '/learn/step/A2.1', chrome: chrome, locale: locale);
+        expectNothingClipped(tester, within: find.byType(AdaptiveBackButton));
+      }
     }
   });
 }
