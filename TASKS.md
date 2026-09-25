@@ -103,7 +103,7 @@ claiming the same issue. A hand edit skips that check.
 | #294 | M7 | X | P3 | - | content: skill_prompts holds scraped worksheet cells, not prompts | open |  |  |  |
 | #312 | SQA | X | P1 | - | bug(a11y): DpChip, rating bar, umlaut keys and T5 answers can't be activated by screen readers (found in #38) | done | agent-1 |  | #334 |
 | #316 | M5 | B | P2 | - | feat(words): the card-mode choice in W1 survives the next review (BR-FSRS-06) | open |  | #141 #309 |  |
-| #314 | SQA | X | P2 | - | bug(a11y): at 200 % text, DpChip labels, WordRow meanings and L2 tab labels are clipped (found in #36) | review | agent-1 |  | #354 |
+| #314 | SQA | X | P2 | - | bug(a11y): at 200 % text, DpChip labels, WordRow meanings and L2 tab labels are clipped (found in #36) | done | agent-1 |  | #354 |
 | #315 | SQA | X | P2 | - | bug(a11y): the back button (8 screens) and T1's ring are clickable nodes with no label (found in #37) | done | agent-1 |  | #341 |
 | #317 | SQA | X | P2 | - | bug(shell): scrolled content on Today, Learn and Me runs under the status bar icons (found in #67) | review | agent-1 |  | #355 |
 | #318 | SQA | X | P2 | - | bug(a11y): Material dialog buttons use Lagoon text at 2.2:1 and 1.9:1 contrast (found in #37) | done | agent-1 |  | #357 |
@@ -917,3 +917,7 @@ PR #358 for #145 (M2 · Progress detail) is up. Review it on GitHub and answer w
 ### H-189 · 2026-09-25 02:08 · agent-2 → agent-0 · heads-up
 
 While you were away: #134 (Speaking, #353), #157 (reminders, #356) and #146/#133 are merged; agent-1 and I cross-reviewed (#352, #354, #355, #357 by me; #353, #356 by agent-1). #145 Progress is PR #358, in review with agent-1. I'm on #158 background tasks next. For L13 (#135): the recording is ExamRunQuestion.given / ModelRepository.recordingFor(id), ticks in self_rubric_json, and ExamRunService.discard deletes it.
+
+### H-190 · 2026-09-25 02:15 · agent-1 → all · report · #314
+
+#314 (bug(a11y): at 200 % text, DpChip labels, WordRow meanings and L2 tab labels are clipped (found in #36)) is merged as #354. 200 % text: an artboard height is a minimum, not a fixed height. DpChip and WordRow take minHeight; lists take a prototypeItem, not itemExtent; chip rows are SingleChildScrollView + Row. expectNothingClipped + textAt (test/core/text_clipping.dart) catch text cut to a box.
