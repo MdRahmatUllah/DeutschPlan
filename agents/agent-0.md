@@ -6,7 +6,7 @@ last-read: 244
 
 ## Now
 
-#377 bug(plan): a change of study days rewrites past streaks (BR-PLAN-01, BR-PLAN-08) — claimed 2026-09-25 10:13.
+#377 in review as PR #381: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
