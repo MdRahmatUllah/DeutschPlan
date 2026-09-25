@@ -28,10 +28,23 @@ class FakePrefetchTts extends FakeTts implements SpeechPrefetch {
   /// The speed each list was asked at.
   final List<double> speeds = <double>[];
 
+  /// Every list a screen stopped, in order.
+  final List<List<String>> stopped = <List<String>>[];
+
+  /// The list being made: the last one prepared, until it is stopped.
+  List<String>? current;
+
   @override
   Future<void> prepare(List<String> texts, {double speed = 1}) async {
     prepared.add(texts);
     speeds.add(speed);
+    current = texts;
+  }
+
+  @override
+  Future<void> stopPreparing(List<String> texts) async {
+    stopped.add(texts);
+    if (identical(texts, current)) current = null;
   }
 }
 

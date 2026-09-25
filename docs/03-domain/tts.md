@@ -13,11 +13,13 @@
     - A download of the voice that lands (M4's *Update*, or a new download) reloads the engine: the sessions reopen from the new files on the next clip, a failed open is forgotten, and the old model's clips are cleared (#155, #436). Before this, a sample right after an in-process update was silent on the device until a relaunch.
     - `supertonicTts` is kept alive, and its `dispose` (wired to `ref.onDispose`) closes the sessions, the player and the state stream.
   - **Clips made ahead (#430):** `SupertonicTts.prepare(texts, speed)`, through `TtsService.prepare` (`SpeechPrefetch`), makes clips into the cache one at a time and in order, without playing them.
-    - T2 asks for its cards' sayings as the session opens: each word with its article, then its first example when `autoplay_example` is on (`studySayings`). It stops the list when the session closes.
-    - A newer list replaces the old one at its next clip.
+    - T2 asks for its cards' sayings as the session opens: each word with its article, then its first example when `autoplay_example` is on (`studySayings`). It stops its own list when the session closes (`stopPreparing(texts)`, which does nothing once a newer list has replaced it).
+      - T3's next block replaces T2, and the new screen asks for its list before the old one goes (FR-T3-02), so the old screen's stop mustn't touch it.
+    - A list makes its first 40 clips (`prepareLimit`), a day's session with its examples. The cache holds 200, and a longer list would evict its own look-ahead (a `ponytail:`: a backlog's *Study all* past 40 makes its later cards on tap).
+    - A newer list replaces the old one at its next clip. So do a reload, a dispose and a change of voice, which stop the list.
     - A speak for a clip being made waits for that synthesis rather than making it twice.
-    - A request for another text waits for the clip in synthesis, about a second at most, because the plugin runs one call at a time (a `ponytail:`).
-    - The first card still waits for the sessions to open.
+    - A speak of another text goes first: the list waits for it before its next clip. The plugin runs its calls interleaved on one queue, so the speak still shares it with the one clip in synthesis, about a second more at most (a `ponytail:`).
+    - The first card still waits for the sessions to open (#460).
   - **Resolution:** `speak` resolves once the clip starts playing, as `SystemTts` does; `idle` follows when it ends or is stopped.
   - **Release build:** R8 must keep `ai.onnxruntime.**`, which ORT's native library finds by name (`android/app/proguard-rules.pro`). Without the rule, the first synthesis crashes the release app.
 - **SystemTts** — `flutter_tts` with `de-DE`; fallback and the onboarding preview.

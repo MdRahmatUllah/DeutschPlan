@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:deutschplan/core/components/dp_rating_bar.dart';
@@ -212,8 +213,10 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code) VALUES
       );
     }
 
-    testWidgets('#430 the session has the voice make its cards\' clips '
-        'ahead, in their order, and stops it when it closes', (tester) async {
+    testWidgets('#430 FR-T2-01 the session has the voice make its cards\' '
+        'clips ahead, in their order, and stops its list when it closes', (
+      tester,
+    ) async {
       final voice = FakePrefetchTts();
       await pump(tester, voice: voice);
       await tester.runAsync(
@@ -226,13 +229,55 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code) VALUES
         'die Tür',
       ], reason: 'BR-PLAN-02: Revise, then New; grammar says nothing');
 
+      final list = voice.prepared.single;
+
       await tester.tap(find.bySemanticsLabel(l10n.studyClose));
       await tester.pumpAndSettle();
-      expect(voice.prepared.last, isEmpty, reason: 'closed: nothing left');
+      expect(voice.stopped.single, same(list), reason: 'closed: its own list');
+      expect(voice.current, isNull);
     });
 
-    testWidgets('#430 with autoplay_example on, each word\'s first example '
-        'follows it', (tester) async {
+    testWidgets('#430 FR-T3-02 a next block replaces the session, and the old '
+        "screen's stop leaves the new block's list going", (tester) async {
+      final voice = FakePrefetchTts();
+      await pump(tester, voice: voice);
+      await tester.runAsync(
+        () => Future<void>.delayed(const Duration(milliseconds: 50)),
+      );
+      await tester.pump();
+      final first = voice.prepared.single;
+
+      // As StudyRoute.instead does: the new screen is up, and has asked for
+      // its list, before the old one goes at the end of the transition.
+      unawaited(
+        Navigator.of(tester.element(find.byType(StudyScreen))).pushReplacement(
+          MaterialPageRoute<void>(
+            builder: (_) => const StudyScreen(
+              args: SessionArgs(
+                planDate: today,
+                blocks: <SessionBlock>[
+                  SessionBlock(SessionBlockKind.revise, <String>[strasse]),
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pump();
+      await tester.runAsync(
+        () => Future<void>.delayed(const Duration(milliseconds: 50)),
+      );
+      await tester.pump();
+      await tester.pumpAndSettle();
+
+      final second = voice.prepared.last;
+      expect(second, <String>['die Straße']);
+      expect(voice.stopped.single, same(first), reason: 'the old list');
+      expect(voice.current, same(second), reason: 'the new one goes on');
+    });
+
+    testWidgets('#430 FR-T2-01 with autoplay_example on, each word\'s first '
+        'example follows it', (tester) async {
       final voice = FakePrefetchTts();
       await pump(tester, voice: voice, examples: true);
       await tester.runAsync(

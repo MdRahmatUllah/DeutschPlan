@@ -487,27 +487,89 @@ void main() {
       expect(player.played, hasLength(1));
     });
 
+    test('#430 a newer prepare replaces the list; a stop stops only its own '
+        'list', () async {
+      await install();
+      model.gate = Completer<void>();
+      final one = <String>['eins', 'zwei', 'drei'];
+      final first = tts.prepare(one);
+      await untilAsked(1);
+      final second = tts.prepare(<String>['vier', 'fünf']);
+      // The replaced screen's stop comes after the new list (FR-T3-02).
+      await tts.stopPreparing(one);
+      model.gate!.complete();
+      await Future.wait(<Future<void>>[first, second]);
+      expect(model.asked.map((a) => a.$1), <String>['eins', 'vier', 'fünf']);
+
+      model.gate = Completer<void>();
+      final two = <String>['sechs', 'sieben'];
+      final third = tts.prepare(two);
+      await untilAsked(4);
+      await tts.stopPreparing(two);
+      model.gate!.complete();
+      await third;
+      expect(model.asked.last.$1, 'sechs');
+    });
+
+    test('#430 a list makes its first ${SupertonicTts.prepareLimit} clips, '
+        'no more: the cache keeps them all', () async {
+      await install();
+      await tts.prepare(<String>[for (var i = 0; i < 45; i++) 'Wort $i']);
+      expect(model.asked, hasLength(SupertonicTts.prepareLimit));
+      expect(model.asked.last.$1, 'Wort ${SupertonicTts.prepareLimit - 1}');
+    });
+
     test(
-      '#430 a newer prepare replaces the list, and an empty one stops it',
+      "#430 a speak's clip goes first: the list's next clip waits for it",
       () async {
         await install();
-        model.gate = Completer<void>();
-        final first = tts.prepare(<String>['eins', 'zwei', 'drei']);
+        final list = model.gate = Completer<void>();
+        final preparing = tts.prepare(<String>['eins', 'zwei']);
         await untilAsked(1);
-        final second = tts.prepare(<String>['vier']);
-        model.gate!.complete();
-        await Future.wait(<Future<void>>[first, second]);
-        expect(model.asked.map((a) => a.$1), <String>['eins', 'vier']);
+        final tap = model.gate = Completer<void>();
+        final speaking = tts.speak('Haus', speed: 0.75);
+        await untilAsked(2);
+        list.complete();
+        await pumpEventQueue();
+        expect(model.asked.map((a) => a.$1), <String>['eins', 'Haus']);
 
-        model.gate = Completer<void>();
-        final third = tts.prepare(<String>['fünf', 'sechs']);
-        await untilAsked(3);
-        final stop = tts.prepare(const <String>[]);
-        model.gate!.complete();
-        await Future.wait(<Future<void>>[third, stop]);
-        expect(model.asked.map((a) => a.$1), <String>['eins', 'vier', 'fünf']);
+        tap.complete();
+        expect(await speaking, isTrue);
+        await preparing;
+        expect(model.asked.map((a) => a.$1), <String>['eins', 'Haus', 'zwei']);
       },
     );
+
+    for (final (what, act) in <(String, Future<void> Function(SupertonicTts))>[
+      ('a reload', (tts) => tts.reload()),
+      ('dispose', (tts) => tts.dispose()),
+    ]) {
+      test(
+        "#430 $what stops the list: it doesn't open the sessions again",
+        () async {
+          await install();
+          model.gate = Completer<void>();
+          final preparing = tts.prepare(<String>['eins', 'zwei']);
+          await untilAsked(1);
+          final acting = act(tts);
+          model.gate!.complete();
+          await Future.wait(<Future<void>>[preparing, acting]);
+          expect(model.asked.map((a) => a.$1), <String>['eins']);
+          expect(loads, hasLength(1));
+        },
+      );
+    }
+
+    test('#430 a voice chosen while a list is made stops it', () async {
+      await install();
+      model.gate = Completer<void>();
+      final preparing = tts.prepare(<String>['eins', 'zwei']);
+      await untilAsked(1);
+      await settings.write(SettingKeys.ttsVoice, 'Jonas');
+      model.gate!.complete();
+      await preparing;
+      expect(model.asked.map((a) => a.$1), <String>['eins']);
+    });
 
     test('#430 without the model, nothing is made; a failure stops it '
         'quietly', () async {

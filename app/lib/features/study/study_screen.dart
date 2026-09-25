@@ -121,12 +121,16 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
   /// before the session goes, which would otherwise ask it to rebuild.
   ProviderSubscription<AsyncValue<List<String>>>? _sayings;
 
+  /// The list this screen handed the voice, for [dispose] to stop: its own.
+  List<String>? _prepared;
+
   @override
   void initState() {
     super.initState();
     // #430: the session's clips, made ahead while its first card shows.
     _sayings = ref.listenManual(studySayingsProvider(widget.args), (_, next) {
       if (next.value case final sayings?) {
+        _prepared = sayings;
         unawaited(ref.read(ttsProvider).prepare(sayings));
       }
     }, fireImmediately: true);
@@ -142,8 +146,12 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
   void dispose() {
     _hide?.cancel();
     _sayings?.close();
-    // What is left to make is for a session no longer open.
-    unawaited(_container.read(ttsProvider).prepare(const <String>[]));
+    // What is left to make is for a session no longer open. Only this
+    // screen's list: T3's next block replaces this screen, and the new one
+    // asks for its own list before this one goes (FR-T3-02).
+    if (_prepared case final mine?) {
+      unawaited(_container.read(ttsProvider).stopPreparing(mine));
+    }
     // A next step from T3 replaces this screen rather than popping it, so
     // the pop handler never runs: the session is cleared here too.
     _container.invalidate(studySessionProvider(widget.args));

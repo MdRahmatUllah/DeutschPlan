@@ -362,6 +362,32 @@ void main() {
       });
     }
 
+    testWidgets("Hy-MT's Update leaves the voice's engine as it was", (
+      tester,
+    ) async {
+      final settings = StubSettings()
+        ..put(SettingKeys.ttsEngine, TtsEngineSetting.system);
+      final downloads = FakeDownloads();
+      await pump(
+        tester,
+        modelManagerStub(
+          settings: settings,
+          downloads: downloads,
+          translation: cardOf(
+            translationEntry,
+            installed: ModelStatus.updateAvailable,
+          ),
+        ),
+      );
+      await tester.tap(find.text(l10n.modelsUpdate('1.1 GB')));
+      await tester.pumpAndSettle();
+      expect(
+        downloads.calls,
+        contains('start ${ModelRepository.translationModel}'),
+      );
+      expect(settings.read(SettingKeys.ttsEngine), TtsEngineSetting.system);
+    });
+
     testWidgets('a download the manager refuses leaves the engine as it was', (
       tester,
     ) async {

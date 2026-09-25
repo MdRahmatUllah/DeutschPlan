@@ -57,6 +57,14 @@ class SupertonicTts implements TtsEngine, SpeechPrefetch {
   /// The model's speed for the app's 1: the SDK's natural pace.
   static const double normalSpeed = 1.05;
 
+  /// The most clips a [prepare] makes ahead.
+  // ponytail: 40, a day's session with its examples (7 new and a dozen
+  // revisions is ~40 clips) and well inside the cache's 200, which a longer
+  // list would evict its own look-ahead from. A backlog's *Study all* past
+  // that makes its later cards on tap; a window re-sent as the session moves
+  // is the upgrade.
+  static const int prepareLimit = 40;
+
   final ModelRepository _models;
   final SettingsRepository _settings;
   final SynthesisCache _cache;
@@ -84,8 +92,16 @@ class SupertonicTts implements TtsEngine, SpeechPrefetch {
   /// [prepare] is making waits for it rather than making it twice.
   final Map<String, Future<File>> _making = <String, Future<File>>{};
 
-  /// Each [prepare] takes a run; an older one stops at its next clip.
+  /// Each [prepare] takes a run; an older one stops at its next clip. So
+  /// does [stopPreparing], a [reload] and [dispose].
   int _run = 0;
+
+  /// The list [prepare] is making, for [stopPreparing] to know it by.
+  List<String>? _list;
+
+  /// The clip a speak is making now, which a [prepare] waits for before it
+  /// starts its next: the plugin shares one queue between them.
+  Future<File>? _tapped;
 
   /// Each speak and stop takes a turn. A clip that was a turn behind by the
   /// time it was ready doesn't play: the learner has moved on.
@@ -127,7 +143,7 @@ class SupertonicTts implements TtsEngine, SpeechPrefetch {
       var clip = await _cache.hit(text, voice: voice, speed: speed);
       if (clip == null) {
         _state.add(TtsState.loading);
-        clip = await _clip(text, voice: voice, speed: speed);
+        clip = await (_tapped = _clip(text, voice: voice, speed: speed));
       }
       if (turn != _turn) return true;
       final Future<void> ended;
@@ -163,23 +179,32 @@ class SupertonicTts implements TtsEngine, SpeechPrefetch {
   /// Everything it holds: about 400 MB of sessions, the player and [state].
   Future<void> dispose() async {
     _turn++;
+    _run++;
     await _landed?.cancel();
     await _release();
     await _player.dispose();
     await _state.close();
   }
 
-  /// #430: [texts]' clips, made ahead into the cache, one at a time.
-  // ponytail: the plugin runs one call at a time, so a learner's request for
-  // another text waits for the clip in synthesis now, about a second at most;
-  // a priority queue in the plugin is the upgrade.
+  /// #430: [texts]' clips, made ahead into the cache, one at a time, the
+  /// first [prepareLimit] of them. A clip a speak is making goes first.
+  // ponytail: the plugin runs one call at a time, interleaved, so a speak of
+  // another text shares the queue with the one clip in synthesis now, about
+  // a second more at most; a priority queue in the plugin is the upgrade.
   @override
   Future<void> prepare(List<String> texts, {double speed = 1}) async {
     final run = ++_run;
+    _list = texts;
     if (texts.isEmpty || !await isAvailable()) return;
     final voice = _voice();
-    for (final text in texts) {
-      if (run != _run) return;
+    for (final text in texts.take(prepareLimit)) {
+      try {
+        await _tapped;
+      } on Object {
+        // Its speak says so.
+      }
+      // A newer list, a stop, or a voice the learner no longer has chosen.
+      if (run != _run || _voice() != voice) return;
       try {
         await _clip(text, voice: voice, speed: speed);
       } on Object {
@@ -187,6 +212,13 @@ class SupertonicTts implements TtsEngine, SpeechPrefetch {
         return;
       }
     }
+  }
+
+  @override
+  Future<void> stopPreparing(List<String> texts) async {
+    if (!identical(texts, _list)) return;
+    _run++;
+    _list = null;
   }
 
   /// The learner's voice, or Anna when this download hasn't theirs.
@@ -230,6 +262,7 @@ class SupertonicTts implements TtsEngine, SpeechPrefetch {
   /// model's clips go (#436).
   Future<void> reload() async {
     _broken = false;
+    _run++;
     await _release();
     await _cache.clear();
   }

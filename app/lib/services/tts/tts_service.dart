@@ -130,15 +130,22 @@ class TtsService {
 
   /// #430: the chosen voice makes [texts]' clips ahead, at `tts_speed`, so
   /// their first speak plays at once. Only Supertonic prepares; the phone's
-  /// voice has nothing to make. An empty list stops what is preparing.
+  /// voice has nothing to make.
   Future<void> prepare(List<String> texts) async {
     final supertonic = _supertonic;
-    if (supertonic is! SpeechPrefetch) return;
-    if (!_wantsSupertonic && texts.isNotEmpty) return;
+    if (supertonic is! SpeechPrefetch || !_wantsSupertonic) return;
     final speed = _settings.read(SettingKeys.ttsSpeed);
     await _quietly(
       () => (supertonic as SpeechPrefetch).prepare(texts, speed: speed),
     );
+  }
+
+  /// Stops [texts]' list, if Supertonic is still making it; whichever voice
+  /// is chosen now, since it was asked while Supertonic was.
+  Future<void> stopPreparing(List<String> texts) async {
+    final supertonic = _supertonic;
+    if (supertonic is! SpeechPrefetch) return;
+    await _quietly(() => (supertonic as SpeechPrefetch).stopPreparing(texts));
   }
 
   /// [engine] says [text]; false when it cannot, whichever way it fails.

@@ -85,16 +85,17 @@ void main() {
       expect(prefetch.speeds, <double>[1.25]);
     });
 
-    testWidgets("the phone's voice chosen: nothing is made, and a stop still "
-        'reaches Supertonic', (tester) async {
+    testWidgets("the phone's voice chosen: nothing is made, and a list's "
+        'stop still reaches Supertonic', (tester) async {
       await choose(tester, TtsEngineSetting.system);
       final prefetch = FakePrefetchTts();
       final tts = TtsService(phone, settings, supertonic: prefetch);
       addTearDown(tts.dispose);
       await tts.prepare(<String>['das Haus']);
       expect(prefetch.prepared, isEmpty);
-      await tts.prepare(const <String>[]);
-      expect(prefetch.prepared, <List<String>>[const <String>[]]);
+      final list = <String>['die Tür'];
+      await tts.stopPreparing(list);
+      expect(prefetch.stopped.single, same(list));
     });
 
     testWidgets('an engine that cannot prepare is left alone', (tester) async {
