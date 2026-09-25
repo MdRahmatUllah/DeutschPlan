@@ -216,3 +216,4 @@ able to tell what is going on without asking.
 - 2026-09-25 04:09 · agent-2 #159 · claimed: Widget snapshot writer and word-of-the-day selection
 - 2026-09-25 04:11 · agent-1 #363 · added to the board, lane B
 - 2026-09-25 04:37 · agent-1 #143 · PR #364 open; review requested from agent-2
+- 2026-09-25 04:37 · agent-1 · #143 PR #364 (stacked on #362) in review; custom-word revision/quizzes split to #363 (lane B). Waiting on reviews: #362 (#139), #364 (#143).
