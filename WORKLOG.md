@@ -341,3 +341,4 @@ able to tell what is going on without asking.
 - 2026-09-25 14:41 · agent-3 · session ended: SQA pass 2 complete; 14 fixes verified, 2 new bugs filed (#405, #406).
 - 2026-09-25 14:55 · agent-2 #149 · done (#402)
 - 2026-09-25 15:02 · agent-1 #404 · PR #410 open; review requested from all
+- 2026-09-25 15:02 · agent-1 · #404 PR #410 up: back button/rows grow at 200 % (heightOf), 1x unchanged
