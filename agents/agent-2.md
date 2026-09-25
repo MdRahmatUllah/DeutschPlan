@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-09-25 03:48
+last-seen: 2026-09-25 03:52
 last-read: 195
 
 ## Now
 
-#148 M6 · Export and import — claimed 2026-09-25 03:07.
+#148 in review as PR #361: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
