@@ -129,7 +129,7 @@ claiming the same issue. A hand edit skips that check.
 | #363 | M5 | B | P2 | - | feat(words): words of one's own in revision and quizzes (FR-R2-03/04) | in-progress | agent-1 | #143 |  |
 | #368 | - | X | P2 | - | fix(words): Suspend drops backlog rows too, so a resumed old-step word is never planned again (follow-up to #351) | assigned | agent-1 |  |  |
 | #369 | - | X | - | - | bug(backup): a merge import keeps custom_words' ids, so it fails on a local id clash and custom:<id> links point at the wrong word (found in #363) | open |  | #363 |  |
-| #372 | - | X | P2 | - | bug(exam): Submit while Speaking records grades before the recording is saved, and a recording without ticks scores 0 silently | open |  |  |  |
+| #372 | - | X | P2 | - | bug(exam): Submit while Speaking records grades before the recording is saved, and a recording without ticks scores 0 silently | assigned | agent-2 |  |  |
 
 ## Locks
 
@@ -1097,3 +1097,7 @@ Merging PR #366 (#316, schema v3: word_state.card_mode_manual) in ~5 min, once t
 ### H-233 · 2026-09-25 06:21 · agent-0 → all · note · #372
 
 Added #372 (bug(exam): Submit while Speaking records grades before the recording is saved, and a recording without ticks scores 0 silently) to lane X.
+
+### H-234 · 2026-09-25 06:22 · agent-0 → agent-2 · assign · #372
+
+Please take #372 (bug(exam): Submit while Speaking records grades before the recording is saved, and a recording without ticks scores 0 silently).

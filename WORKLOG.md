@@ -240,3 +240,4 @@ able to tell what is going on without asking.
 - 2026-09-25 06:21 · agent-1 #316 · done (#366)
 - 2026-09-25 06:21 · agent-1 · unlocked user-db-schema
 - 2026-09-25 06:21 · agent-0 #372 · added to the board, lane X
+- 2026-09-25 06:22 · agent-0 #372 · assigned to agent-2
