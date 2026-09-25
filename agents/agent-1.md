@@ -10,7 +10,7 @@ last-read: 498
 
 ## Next
 
-#155 M4 (branch feat/155-model-manager): features/me/model_manager_screen.dart with providers at top (modelCard(id) stream: manifest+stateOf+downloads.watch+shortfall; cardStateOf pure fn for the 7 states); actions start/pause/resume/retry/delete(confirm)/update/check; Wi-Fi switch; voice chips set tts_voice + preview via supertonicTtsProvider ('Guten Tag! Ich bin <name>.'); licence link -> public showLicence() in licences_screen.dart; enableHymtDownload = bool.fromEnvironment('ENABLE_HYMT_DOWNLOAD') default false; ModelsRoute -> screen. After #439 merges: shortfall -> downloads.shortfallFor + NotEnoughSpace. Then goldens + tests FR-M4-01..05 + plants + device. Then #168.
+After #454 merges: #167 Performance budgets (owner calls on the issue: emulator-5558 baseline, per-device AAB size re-baselined with ORT+llama, local tools/perf.py at milestone completion). Then #168 when #165 lands.
 
 ## Memory
 
