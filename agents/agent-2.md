@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-09-25 08:06
+last-seen: 2026-09-25 08:11
 last-read: 245
 
 ## Now
 
-#160 X1 · Android home-screen widget (Glance) — claimed 2026-09-25 07:05.
+#160 in review as PR #378: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
