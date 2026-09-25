@@ -6,7 +6,7 @@ last-read: 110
 
 ## Now
 
-#350 in review as PR #371: answer review threads; re-run the gate if main moved, then merge.
+#135 L13 · Exam results — claimed 2026-09-25 06:13.
 
 ## Next
 
