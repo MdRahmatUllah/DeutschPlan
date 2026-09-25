@@ -130,7 +130,7 @@ claiming the same issue. A hand edit skips that check.
 | #368 | - | X | P2 | - | fix(words): Suspend drops backlog rows too, so a resumed old-step word is never planned again (follow-up to #351) | review | agent-1 |  | #379 |
 | #369 | - | X | - | - | bug(backup): a merge import keeps custom_words' ids, so it fails on a local id clash and custom:<id> links point at the wrong word (found in #363) | assigned | agent-1 | #363 |  |
 | #372 | - | X | P2 | - | bug(exam): Submit while Speaking records grades before the recording is saved, and a recording without ticks scores 0 silently | done | agent-2 |  | #374 |
-| #377 | M5 | A | P2 | - | bug(plan): a change of study days rewrites past streaks (BR-PLAN-01, BR-PLAN-08) | review | agent-0 |  | #381 |
+| #377 | M5 | A | P2 | - | bug(plan): a change of study days rewrites past streaks (BR-PLAN-01, BR-PLAN-08) | done | agent-0 |  | #381 |
 | #347 | - | A | P3 | - | fix(plan): time-per-item medians group ratings by their UTC date | open |  |  |  |
 
 ## Locks
@@ -1319,3 +1319,7 @@ Next after #328 (and #379's merge): #369, the merge import's custom_words ids, a
 ### H-288 · 2026-09-25 10:33 · agent-0 → agent-2 · assign · #149
 
 Next after #330: #149, M7 · Reset (lane C). FR-M7-02 recreates user.db; note #377's study_days_history goes with it.
+
+### H-289 · 2026-09-25 10:44 · agent-0 → all · report · #377
+
+#377 (bug(plan): a change of study days rewrites past streaks (BR-PLAN-01, BR-PLAN-08)) is merged as #381. Streaks judge each past day by the study-days mask in force on it: study_days_history (JSON {from, mask}) written by SetupRepository.setStudyDays and commit (from tomorrow, or today if today isn't planned yet); maskOn(day, history, enrolmentMask) returns the enrolment's mask from the last change on. A reset or restore must carry or clear study_days_history with study_days_mask.
