@@ -89,7 +89,7 @@ claiming the same issue. A hand edit skips that check.
 | #171 | M7 | A | P1 | M | iOS release pipeline | open |  | #152 #161 #167 |  |
 | #172 | M7 | C | P2 | S | Licence collection and model licence texts | done | agent-2 | #150 | #441 |
 | #173 | M7 | B | P1 | S | Hy-MT region decision and ADR | open |  | #154 |  |
-| #174 | M7 | B | P1 | M | Error and edge-state matrix | open |  | #153 #156 #167 |  |
+| #174 | M7 | B | P1 | M | Error and edge-state matrix | open |  | #153 #156 |  |
 | #175 | M7 | A | P2 | S | Store listing, changelog and release tagging | open |  | #168 #169 #170 #171 #172 #173 #174 |  |
 | #280 | M7 | B | P1 | - | fix(adaptive): iOS bar titles at 17 pt, and a long title ends in an ellipsis | done | agent-1 |  | #401 |
 | #281 | M7 | X | P2 | - | test(learn): L6 review follow-ups: tie-break, loading, suspended, ellipsis | done | agent-1 |  | #422 |
