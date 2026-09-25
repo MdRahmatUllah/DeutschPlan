@@ -6,6 +6,7 @@ import 'package:deutschplan/data/repositories/setting_keys.dart';
 import 'package:deutschplan/data/repositories/settings_repository.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
 import 'package:deutschplan/l10n/ui_language_locale.dart';
+import 'package:deutschplan/services/device_storage.dart';
 
 /// What a model's download is doing (FR-M4-01, #156), for M4's card.
 enum DownloadPhase {
@@ -32,6 +33,17 @@ enum DownloadPhase {
 /// A model's download: its phase, and how much of it has arrived (0–1).
 typedef DownloadProgress = ({DownloadPhase phase, double progress});
 
+/// FR-M4 *Not enough space* (#428): [ModelDownloads.start] refused, because
+/// the phone is [bytes] short of the model and its margin.
+class NotEnoughSpace implements Exception {
+  const NotEnoughSpace(this.bytes);
+
+  final int bytes;
+
+  @override
+  String toString() => 'NotEnoughSpace: $bytes bytes short';
+}
+
 /// One file of a model's current attempt: its task, and the platform's last
 /// word on it.
 typedef _File = ({
@@ -45,13 +57,23 @@ typedef _File = ({
 /// the learner; carried on by the platform's downloader with the app in the
 /// background or closed; and checked before anything uses them.
 abstract interface class ModelDownloads {
+  /// What a download leaves free beyond the model's own bytes (#428): a
+  /// phone filled to 0 bytes fails every app's writes, not just this one.
+  static const int spaceMargin = 100 * 1000 * 1000;
+
   /// Once, at launch: the progress notification, the downloader's updates,
   /// its record of what was in flight, and the *Wi-Fi only* rule.
   Future<void> attach();
 
   /// Queues every file of [modelId]'s first variant into its staging
   /// directory, and returns once they are queued, not once they arrive.
+  /// Throws [NotEnoughSpace] when [shortfallFor] says it wouldn't fit.
   Future<void> start(String modelId);
+
+  /// The bytes the phone lacks for [modelId]'s download and [spaceMargin]:
+  /// what a disabled *Download* states. 0 when it fits, or when the phone
+  /// won't say.
+  Future<int> shortfallFor(String modelId);
 
   Future<void> pause(String modelId);
   Future<void> resume(String modelId);
@@ -74,11 +96,14 @@ class BackgroundModelDownloads implements ModelDownloads {
     this._models,
     this._settings, [
     FileDownloader? downloader,
-  ]) : _downloader = downloader ?? FileDownloader();
+    DeviceStorage? storage,
+  ]) : _downloader = downloader ?? FileDownloader(),
+       _storage = storage ?? const PlatformDeviceStorage();
 
   final ModelRepository _models;
   final SettingsRepository _settings;
   final FileDownloader _downloader;
+  final DeviceStorage _storage;
 
   /// Per model, per file: the current attempt's task, and the platform's last
   /// word on it. Forgotten once the model is verified, which is how *Retry*
@@ -97,31 +122,8 @@ class BackgroundModelDownloads implements ModelDownloads {
   @override
   Future<void> attach() async {
     if (_updates != null) return;
-    final l10n = lookupAppLocalizations(
-      _settings.read(SettingKeys.uiLanguage).locale,
-    );
-    // One notification for every file of every model. The tokens are the
-    // downloader's own, filled in on the device.
-    _downloader.configureNotification(
-      running: TaskNotification(
-        l10n.modelNotifyRunning('{numFinished}', '{numTotal}'),
-        l10n.modelNotifyRunningNote,
-      ),
-      paused: TaskNotification(
-        l10n.modelNotifyPaused,
-        l10n.modelNotifyPausedNote,
-      ),
-      complete: TaskNotification(
-        l10n.modelNotifyComplete,
-        l10n.modelNotifyCompleteNote,
-      ),
-      error: TaskNotification(
-        l10n.modelNotifyFailed,
-        l10n.modelNotifyFailedNote,
-      ),
-      progressBar: true,
-      groupNotificationId: 'models',
-    );
+    // Before `start()`, which queues again the tasks the system killed.
+    _notify(waiting: false);
     _updates = _downloader.updates.listen((update) => unawaited(_on(update)));
     // The downloader's own record: a task the system or the learner killed
     // is scheduled again, and one that finished while the app was away says
@@ -156,7 +158,65 @@ class BackgroundModelDownloads implements ModelDownloads {
   }
 
   @override
-  Future<void> start(String modelId) => _queue(modelId);
+  Future<void> start(String modelId) async {
+    final short = await shortfallFor(modelId);
+    if (short > 0) throw NotEnoughSpace(short);
+    await _queue(modelId);
+  }
+
+  @override
+  Future<int> shortfallFor(String modelId) async {
+    final model = (await _models.manifest()).model(modelId);
+    if (model == null || model.variants.isEmpty) return 0;
+    return shortfall(
+      needed: model.variants.first.bytes + ModelDownloads.spaceMargin,
+      space: await _storage.space(),
+    );
+  }
+
+  /// One notification for every file of every model, in the UI language of
+  /// the moment. The tokens are the downloader's own, filled in on the
+  /// device.
+  // ponytail: the platform keeps the texts each task was queued with, for
+  // the whole of a model's download: files queued off Wi-Fi still say
+  // *Waiting for Wi-Fi* once it arrives (their count moves), and a Wi-Fi
+  // drop mid-download still says *Downloading*. A notification of our own,
+  // updated from [_settle], is the upgrade (#428).
+  void _notify({required bool waiting}) {
+    final l10n = lookupAppLocalizations(
+      _settings.read(SettingKeys.uiLanguage).locale,
+    );
+    _downloader.configureNotification(
+      running: waiting
+          ? TaskNotification(
+              l10n.modelNotifyWaiting('{numFinished}', '{numTotal}'),
+              l10n.modelNotifyWaitingNote,
+            )
+          : TaskNotification(
+              l10n.modelNotifyRunning('{numFinished}', '{numTotal}'),
+              l10n.modelNotifyRunningNote,
+            ),
+      paused: TaskNotification(
+        l10n.modelNotifyPaused,
+        l10n.modelNotifyPausedNote,
+      ),
+      complete: TaskNotification(
+        l10n.modelNotifyComplete,
+        l10n.modelNotifyCompleteNote,
+      ),
+      error: TaskNotification(
+        l10n.modelNotifyFailed,
+        l10n.modelNotifyFailedNote,
+      ),
+      progressBar: true,
+      groupNotificationId: 'models',
+    );
+  }
+
+  /// *Wi-Fi only* is on and the phone is off Wi-Fi: a queued file waits,
+  /// by the downloader's own reading of the network.
+  bool get _offWifi =>
+      _settings.read(SettingKeys.modelsWifiOnly) && !_downloader.isWiFi;
 
   /// Queues [modelId]'s files, or those [only] names, as the current attempt.
   Future<void> _queue(
@@ -202,7 +262,11 @@ class BackgroundModelDownloads implements ModelDownloads {
         done: 0,
       );
     }
+    _notify(waiting: _offWifi);
     await _downloader.enqueueAll(tasks);
+    // Said now, not at the platform's first word: page 5 reads *Waiting for
+    // Wi-Fi* or *Downloading* the moment it is queued (#428).
+    await _settle(modelId);
   }
 
   @override
@@ -330,21 +394,27 @@ class BackgroundModelDownloads implements ModelDownloads {
     for (final file in variant.files) {
       arrived += file.bytes * (files[file.name]?.done ?? 0);
     }
+    final wasFailed = _last[modelId]?.phase == DownloadPhase.failed;
+    final phase = _phaseOf(<TaskStatus>[
+      for (final file in variant.files)
+        files[file.name]?.status ?? TaskStatus.enqueued,
+    ]);
     _emit(modelId, (
-      phase: _phaseOf(<TaskStatus>[
-        for (final file in variant.files)
-          files[file.name]?.status ?? TaskStatus.enqueued,
-      ]),
+      phase: phase,
       progress: variant.bytes == 0 ? 0 : arrived / variant.bytes,
     ));
+    // One file failed (a full disk, a host gone): the attempt stops. The
+    // rest let go of what they held, and the platform's one notification,
+    // which says *failed* only once no file is left running, says so (#428).
+    if (phase == DownloadPhase.failed && !wasFailed) {
+      await _downloader.cancelAll(group: modelId);
+    }
   }
 
   /// The model's phase from its files': one that failed fails it, one paused
-  /// pauses it, one running runs it. Queued with *Wi-Fi only* on is the
-  /// platform waiting for Wi-Fi.
-  // ponytail: the downloader doesn't say why a task is still queued, and a
-  // Wi-Fi-only one off Wi-Fi is the long wait; a network listener would tell
-  // it apart from the platform's own queue, for a second or two at the start.
+  /// pauses it, one running runs it. Still queued is waiting for Wi-Fi when
+  /// *Wi-Fi only* is on off Wi-Fi, and otherwise the platform's own queue,
+  /// a second or two.
   DownloadPhase _phaseOf(List<TaskStatus> statuses) {
     if (statuses.any(
       (s) =>
@@ -356,9 +426,7 @@ class BackgroundModelDownloads implements ModelDownloads {
     }
     if (statuses.contains(TaskStatus.paused)) return DownloadPhase.paused;
     if (statuses.contains(TaskStatus.running)) return DownloadPhase.running;
-    return _settings.read(SettingKeys.modelsWifiOnly)
-        ? DownloadPhase.waitingForWifi
-        : DownloadPhase.running;
+    return _offWifi ? DownloadPhase.waitingForWifi : DownloadPhase.running;
   }
 
   void _emit(String modelId, DownloadProgress progress) {

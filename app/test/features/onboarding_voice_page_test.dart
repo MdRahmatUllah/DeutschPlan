@@ -1,6 +1,8 @@
 @TestOn('vm')
 library;
 
+import 'dart:async';
+
 import 'package:cupertino_ui/cupertino_ui.dart' show CupertinoDatePicker;
 import 'package:deutschplan/core/adaptive/adaptive.dart';
 import 'package:deutschplan/core/components/dp_button.dart';
@@ -49,6 +51,9 @@ void main() {
     bool permissionThrows = false,
     bool germanVoice = true,
     bool downloadFails = false,
+    ModelStatus installed = ModelStatus.notDownloaded,
+    bool asking = false,
+    int shortfall = 0,
     DpMode mode = DpMode.light,
     double textScale = 1,
     VoidCallback? onFinish,
@@ -61,12 +66,15 @@ void main() {
 
     permission = _FakePermission(allowed: allowed, throws: permissionThrows);
     tts = FakeTts(voice: germanVoice);
-    downloads = _FakeDownloads(fails: downloadFails);
+    downloads = _FakeDownloads(fails: downloadFails, short: shortfall);
     container = ProviderContainer(
       overrides: <Override>[
         notificationPermissionProvider.overrideWithValue(permission),
         systemTtsProvider.overrideWithValue(tts),
         modelDownloadsProvider.overrideWithValue(downloads),
+        modelRepositoryProvider.overrideWithValue(
+          _FakeModels(installed, asking: asking),
+        ),
         supertonicMegabytesProvider.overrideWith((ref) async => 100),
       ],
     );
@@ -244,7 +252,10 @@ void main() {
       await tester.pump();
 
       expect(downloads.started, <String>[OnboardingNotifier.supertonic]);
-      expect(find.text(l10n.onboardingSupertonicStarted), findsOneWidget);
+      expect(
+        find.text(l10n.onboardingSupertonicDownloading(0)),
+        findsOneWidget,
+      );
       expect(find.text(l10n.onboardingSupertonicDownload), findsNothing);
 
       // "…and continue onboarding": nothing waits on the bytes.
@@ -290,6 +301,18 @@ void main() {
       expect(find.text(l10n.onboardingSupertonicDeferred), findsOneWidget);
     });
 
+    testWidgets('#428 and waits disabled until the phone has been asked: an '
+        'installed voice is never fetched in the moment before Ready', (
+      tester,
+    ) async {
+      await pump(tester, asking: true);
+
+      final download = tester.widget<DpButton>(
+        find.widgetWithText(DpButton, l10n.onboardingSupertonicDownload),
+      );
+      expect(download.onPressed, isNull);
+    });
+
     test("the size is the manifest's, rounded to ten", () async {
       // #245: the shipped manifest's seven files (four ONNX, two JSON and
       // the F1 voice) come to 398,653,248 bytes — read, not written.
@@ -307,6 +330,113 @@ void main() {
       addTearDown(probe.dispose);
 
       expect(await probe.read(supertonicMegabytesProvider.future), 400);
+    });
+  });
+
+  group('#428 the voice as it stands on the phone', () {
+    /// The download manager says [phase], [progress] of the way.
+    Future<void> say(
+      WidgetTester tester,
+      DownloadPhase phase, [
+      double progress = 0,
+    ]) async {
+      downloads.progress.add((phase: phase, progress: progress));
+      await tester.pump();
+      await tester.pump();
+    }
+
+    DpButton downloadButton(WidgetTester tester) => tester.widget<DpButton>(
+      find.widgetWithText(DpButton, l10n.onboardingSupertonicDownload),
+    );
+
+    testWidgets('FR-S2-06 FR-M4 a phone short of space disables Download now '
+        'and says by how much, rounded up', (tester) async {
+      // 170.7 MB short: 171 MB freed is enough, 170 is not.
+      await pump(tester, shortfall: 170700000);
+
+      expect(
+        find.text(l10n.onboardingSupertonicShortfall(171)),
+        findsOneWidget,
+      );
+      expect(downloadButton(tester).onPressed, isNull);
+      await tester.tap(find.text(l10n.onboardingSupertonicDownload));
+      await tester.pump();
+      expect(downloads.started, isEmpty);
+    });
+
+    testWidgets('FR-M4 space gone since the page looked: start refuses, and '
+        'the card says by how much', (tester) async {
+      await pump(tester);
+      downloads.short = 170700000;
+
+      await tester.tap(find.text(l10n.onboardingSupertonicDownload));
+      await tester.pump();
+      await tester.pump();
+      await tester.pump();
+
+      expect(downloads.started, isEmpty);
+      expect(
+        find.text(l10n.onboardingSupertonicShortfall(171)),
+        findsOneWidget,
+      );
+      expect(downloadButton(tester).onPressed, isNull);
+    });
+
+    testWidgets('FR-S2-06 waiting for Wi-Fi reads as waiting, not '
+        'downloading', (tester) async {
+      await pump(tester);
+
+      await say(tester, DownloadPhase.waitingForWifi);
+
+      expect(find.text(l10n.onboardingSupertonicWaiting), findsOneWidget);
+      expect(find.text(l10n.onboardingSupertonicDownloading(0)), findsNothing);
+      expect(find.text(l10n.onboardingSupertonicDownload), findsNothing);
+    });
+
+    testWidgets('FR-M4 a failed download says so, and Retry retries rather '
+        'than starting over', (tester) async {
+      await pump(tester);
+
+      await say(tester, DownloadPhase.failed, 0.6);
+      expect(
+        find.text(l10n.onboardingSupertonicDownloadFailed),
+        findsOneWidget,
+      );
+      await tester.tap(find.widgetWithText(DpButton, l10n.retry));
+      await tester.pump();
+
+      expect(downloads.retried, <String>[OnboardingNotifier.supertonic]);
+      expect(downloads.started, isEmpty);
+    });
+
+    for (final status in <ModelStatus>[
+      ModelStatus.ready,
+      ModelStatus.updateAvailable,
+    ]) {
+      testWidgets('FR-S2-06 an installed voice (${status.name}) is Ready: no '
+          'Download now, and nothing is fetched again', (tester) async {
+        await pump(tester, installed: status);
+
+        expect(find.text(l10n.onboardingSupertonicReady), findsOneWidget);
+        expect(find.text(l10n.onboardingSupertonicDownload), findsNothing);
+        expect(find.text(l10n.onboardingSupertonicLater), findsNothing);
+        expect(downloads.started, isEmpty);
+      });
+    }
+
+    testWidgets('FR-S2-06 the line follows the download: n %, then Ready when '
+        'it finishes during the visit', (tester) async {
+      await pump(tester);
+
+      await say(tester, DownloadPhase.running, 0.427);
+      expect(
+        find.text(l10n.onboardingSupertonicDownloading(42)),
+        findsOneWidget,
+      );
+      expect(find.text(l10n.onboardingSupertonicDownload), findsNothing);
+
+      await say(tester, DownloadPhase.ready, 1);
+      expect(find.text(l10n.onboardingSupertonicReady), findsOneWidget);
     });
   });
 
@@ -404,16 +534,77 @@ class _FakePermission implements NotificationPermission {
 }
 
 class _FakeDownloads implements ModelDownloads {
-  _FakeDownloads({required this.fails});
+  _FakeDownloads({required this.fails, required this.short});
 
   final bool fails;
+
+  /// What the phone lacks: the space check, and `start`'s refusal.
+  int short;
   final List<String> started = <String>[];
+  final List<String> retried = <String>[];
+  final StreamController<DownloadProgress> progress =
+      StreamController<DownloadProgress>.broadcast();
 
   @override
   Future<void> start(String modelId) async {
     if (fails) throw StateError('no network');
+    if (short > 0) throw NotEnoughSpace(short);
     started.add(modelId);
   }
+
+  @override
+  Future<int> shortfallFor(String modelId) async => short;
+
+  @override
+  Stream<DownloadProgress> watch(String modelId) => progress.stream;
+
+  @override
+  Future<void> retry(String modelId) async => retried.add(modelId);
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
+
+/// Supertonic in the manifest, and on the phone as [installed] — or still
+/// being asked, with [asking].
+class _FakeModels implements ModelRepository {
+  _FakeModels(this.installed, {this.asking = false});
+
+  final ModelStatus installed;
+  final bool asking;
+
+  static final ModelEntry _voice = ModelEntry(
+    id: OnboardingNotifier.supertonic,
+    name: 'Supertonic 3',
+    licence: 'test',
+    disables: 'tts_engine',
+    regionExcluded: const <String>[],
+    variants: <ModelVariant>[
+      ModelVariant(
+        id: 'f1',
+        name: 'F1',
+        files: <ModelFile>[
+          ModelFile(
+            name: 'model.onnx',
+            url: Uri.parse('https://example.invalid/model.onnx'),
+            bytes: 400000000,
+            sha256: '0' * 64,
+          ),
+        ],
+      ),
+    ],
+  );
+
+  @override
+  Future<ModelManifest> manifest() async =>
+      ModelManifest(version: 1, models: <ModelEntry>[_voice]);
+
+  @override
+  Future<ModelState> stateOf(ModelEntry entry, ModelVariant variant) => asking
+      ? Completer<ModelState>().future
+      : Future<ModelState>.value(
+          ModelState(entry: entry, variant: variant, status: installed),
+        );
 
   @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);

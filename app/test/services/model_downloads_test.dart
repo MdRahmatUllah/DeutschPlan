@@ -8,6 +8,7 @@ import 'package:deutschplan/data/db/app_database.dart';
 import 'package:deutschplan/data/repositories/model_repository.dart';
 import 'package:deutschplan/data/repositories/setting_keys.dart';
 import 'package:deutschplan/data/repositories/settings_repository.dart';
+import 'package:deutschplan/services/device_storage.dart';
 import 'package:deutschplan/services/model_downloads.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -220,6 +221,84 @@ void main() {
     expect(downloader.calls, <String>['pause hymt', 'resume hymt']);
   });
 
+  group('#428 FR-M4-01 not enough space', () {
+    test('start refuses a model that would not fit, saying by how much with '
+        'the margin, and queues nothing', () async {
+      downloads = BackgroundModelDownloads(
+        models,
+        settings,
+        downloader,
+        _Storage(free: 300),
+      );
+      // 400 bytes of model and 100 MB to spare, over 300 bytes free.
+      await expectLater(
+        downloads.start('hymt'),
+        throwsA(
+          isA<NotEnoughSpace>().having(
+            (e) => e.bytes,
+            'bytes',
+            100 * 1000 * 1000 + 100,
+          ),
+        ),
+      );
+      expect(downloader.queued, isEmpty);
+      expect((await models.stagingFor('hymt')).existsSync(), isFalse);
+    });
+
+    test('and one that fits, margin and all, is queued', () async {
+      downloads = BackgroundModelDownloads(
+        models,
+        settings,
+        downloader,
+        _Storage(free: 400 + ModelDownloads.spaceMargin),
+      );
+      expect(await downloads.shortfallFor('hymt'), 0);
+      await downloads.start('hymt');
+      expect(downloader.queued, hasLength(2));
+    });
+  });
+
+  group('#428 FR-M4-01 waiting for Wi-Fi', () {
+    late List<DownloadPhase> seen;
+
+    setUp(() async {
+      seen = <DownloadPhase>[];
+      final sub = downloads.watch('hymt').listen((p) => seen.add(p.phase));
+      addTearDown(sub.cancel);
+      await downloads.attach();
+    });
+
+    test('queued off Wi-Fi with Wi-Fi only on: waiting from the moment it is '
+        'queued, and the notification says so', () async {
+      await downloads.start('hymt');
+      await pumpEventQueue();
+      expect(seen.last, DownloadPhase.waitingForWifi);
+      expect(
+        downloader.running!.title,
+        'Waiting for Wi-Fi · {numFinished} of {numTotal} files',
+      );
+      expect(downloader.running!.body, 'Downloads on Wi-Fi, in the background');
+    });
+
+    test('queued on Wi-Fi: downloading, not waiting', () async {
+      downloader.isWiFi = true;
+      await downloads.start('hymt');
+      await pumpEventQueue();
+      expect(seen.last, DownloadPhase.running);
+      expect(
+        downloader.running!.title,
+        'Downloading models · {numFinished} of {numTotal} files',
+      );
+    });
+
+    test('the notification is in the language of the moment it is queued, '
+        'not the launch\'s', () async {
+      await settings.write(SettingKeys.uiLanguage, UiLanguage.bangla);
+      await downloads.start('hymt');
+      expect(downloader.running!.title, startsWith('ওয়াই-ফাইয়ের অপেক্ষায়'));
+    });
+  });
+
   group('FR-M4-01 the card\'s progress', () {
     setUp(() async {
       await downloads.attach();
@@ -256,6 +335,21 @@ void main() {
         expect(seen.last.phase, DownloadPhase.failed);
       },
     );
+
+    test('#428 a file that fails stops the rest of the attempt, once, so the '
+        'one notification ends as failed', () async {
+      final seen = <DownloadProgress>[];
+      final sub = downloads.watch('hymt').listen(seen.add);
+      addTearDown(sub.cancel);
+      downloader.calls.clear();
+      await report((t) => TaskStatusUpdate(t, TaskStatus.running), 'one.gguf');
+      expect(downloader.calls, isEmpty);
+      await report((t) => TaskStatusUpdate(t, TaskStatus.failed), 'two.gguf');
+      expect(seen.last.phase, DownloadPhase.failed);
+      expect(downloader.calls, <String>['cancel hymt']);
+      await report((t) => TaskStatusUpdate(t, TaskStatus.canceled), 'one.gguf');
+      expect(downloader.calls, <String>['cancel hymt']);
+    });
 
     test('a late listener gets the last word first', () async {
       await report((t) => TaskStatusUpdate(t, TaskStatus.paused), 'one.gguf');
@@ -358,6 +452,12 @@ void main() {
 
 class _Downloader implements FileDownloader {
   final List<DownloadTask> queued = <DownloadTask>[];
+
+  /// The downloader's own reading of the network: off Wi-Fi until a test
+  /// says otherwise.
+  @override
+  bool isWiFi = false;
+
   final List<String> calls = <String>[];
   final StreamController<TaskUpdate> updates$ =
       StreamController<TaskUpdate>.broadcast();
@@ -462,6 +562,16 @@ class _Records implements Database {
 
   @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
+
+/// A phone with [free] bytes to spare.
+class _Storage implements DeviceStorage {
+  _Storage({required this.free});
+
+  final int free;
+
+  @override
+  Future<StorageSpace?> space() async => (free: free, total: free * 10);
 }
 
 /// A repository whose rename into place fails, as on a full disk.

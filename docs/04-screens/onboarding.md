@@ -24,9 +24,16 @@
 - FR-S2-05 Reminder permission MUST be requested only when the switch is turned on.
 - FR-S2-06 *Download now* MUST start the Supertonic download in the background and continue onboarding.
 
+**Page 5's Supertonic card (#428)** shows the voice as it stands on the phone, from `ModelRepository` and `ModelDownloads.watch` (`supertonicOnPhoneProvider`), and follows it while the page is open:
+- **Installed and verified** (an update waiting included): *Ready · downloaded and checked*, and no *Download now* or *Later*. The voice is never fetched again from here, and *Download now* waits disabled until the phone has been asked.
+- **In flight:** *Downloading · n% · keep going*; *Waiting for Wi-Fi · keep going* when *Wi-Fi only* is on and the phone is off Wi-Fi; *Paused at n%* when paused in M4. Checking the files reads as *Downloading · 100%*.
+- **Failed** (a file, or a checksum): *Couldn't download · try again* with *Retry*, which is `ModelDownloads.retry` (what arrived stays).
+- **Nothing yet:** *Download now* / *Later*. When the phone lacks the voice's bytes plus the 100 MB margin (`ModelDownloads.shortfallFor`), *Download now* is disabled and greyed, and the card says *Needs N MB more space* (rounded up). A start refused for space after the page looked (`NotEnoughSpace`) checks again and says the same.
+- The card's line says the voice comes over Wi-Fi: "About 400 MB, over Wi-Fi, downloaded once."
+
 **Business rules.** BR-COURSE-04, BR-PLAN-08.
 
-**States.** Restart-setup mode hides page 1 and pre-fills current values.
+**States.** Restart-setup mode hides page 1 and pre-fills current values; page 5's card reads the voice's real state, as above.
 
 **Motion.** Horizontal page slide; system back / edge swipe = previous page.
 

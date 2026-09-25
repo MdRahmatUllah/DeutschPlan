@@ -5,11 +5,13 @@ import 'package:deutschplan/core/providers/app_providers.dart';
 import 'package:deutschplan/core/theme/dp_surface.dart';
 import 'package:deutschplan/core/theme/dp_tokens.dart';
 import 'package:deutschplan/core/typography/dp_text.dart';
+import 'package:deutschplan/data/repositories/model_repository.dart';
 import 'package:deutschplan/data/repositories/setting_keys.dart';
 import 'package:deutschplan/features/onboarding/onboarding_notifier.dart';
 import 'package:deutschplan/features/onboarding/onboarding_shell.dart';
 import 'package:deutschplan/features/onboarding/setup_flow.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
+import 'package:deutschplan/services/model_downloads.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -28,6 +30,37 @@ Future<int?> supertonicMegabytes(Ref ref) async {
   if (variant == null || variant.isEmpty) return null;
   final bytes = variant.first.files.fold<int>(0, (sum, f) => sum + f.bytes);
   return (bytes / 1e7).round() * 10;
+}
+
+/// Supertonic on this phone, for page 5's card (#428): its download's phase
+/// (null while there is none), how far it has come, and how many bytes a new
+/// download would lack.
+typedef SupertonicOnPhone = ({
+  DownloadPhase? phase,
+  double progress,
+  int shortfall,
+});
+
+/// The voice's real state, so *Restart setup* never offers what the phone
+/// has: installed and checked is *Ready*; otherwise the download manager's
+/// word, as it moves; with nothing in flight, the space check.
+@riverpod
+Stream<SupertonicOnPhone> supertonicOnPhone(Ref ref) async* {
+  const id = OnboardingNotifier.supertonic;
+  final models = ref.watch(modelRepositoryProvider);
+  final downloads = ref.watch(modelDownloadsProvider);
+  final model = (await models.manifest()).model(id);
+  if (model == null || model.variants.isEmpty) return;
+  // An update waiting is still a voice that works: page 5 leaves it to M4.
+  final installed = await models.stateOf(model, model.variants.first);
+  if (installed.status case ModelStatus.ready || ModelStatus.updateAvailable) {
+    yield (phase: DownloadPhase.ready, progress: 1, shortfall: 0);
+    return;
+  }
+  yield (phase: null, progress: 0, shortfall: await downloads.shortfallFor(id));
+  yield* downloads
+      .watch(id)
+      .map((p) => (phase: p.phase, progress: p.progress, shortfall: 0));
 }
 
 /// S2 page 5 · Reminder and voice. `OnboardingVoice-android.html`.
@@ -77,7 +110,21 @@ class _OnboardingVoicePageState extends ConsumerState<OnboardingVoicePage> {
 
   Future<void> _download() async {
     final started = await _notifier.downloadVoice();
-    if (mounted) setState(() => _downloadFailed = !started);
+    if (!mounted) return;
+    setState(() => _downloadFailed = !started);
+    // The space may have gone since the page looked (NotEnoughSpace): look
+    // again, so the card says how much.
+    if (!started) ref.invalidate(supertonicOnPhoneProvider);
+  }
+
+  Future<void> _retry() async {
+    try {
+      await ref
+          .read(modelDownloadsProvider)
+          .retry(OnboardingNotifier.supertonic);
+    } on Object {
+      // Still failed, which the card already says; Retry stays.
+    }
   }
 
   @override
@@ -87,6 +134,7 @@ class _OnboardingVoicePageState extends ConsumerState<OnboardingVoicePage> {
     final draft = ref.watch(onboardingProvider);
     final setup = ref.watch(setupFlowProvider);
     final megabytes = ref.watch(supertonicMegabytesProvider).value;
+    final onPhone = ref.watch(supertonicOnPhoneProvider).value;
 
     // The platform's own format — "19:30" or "7:30 PM" — because the picker
     // this opens uses it too, and the two disagreeing would look like a bug.
@@ -175,9 +223,11 @@ class _OnboardingVoicePageState extends ConsumerState<OnboardingVoicePage> {
           const SizedBox(height: 12),
           _SupertonicCard(
             megabytes: megabytes,
+            onPhone: onPhone,
             offer: draft.voice,
             failed: _downloadFailed,
             onDownload: _download,
+            onRetry: _retry,
             onLater: () => _notifier.deferVoice(),
             tokens: tokens,
           ),
@@ -261,17 +311,24 @@ class _TimeButton extends StatelessWidget {
 class _SupertonicCard extends StatelessWidget {
   const _SupertonicCard({
     required this.megabytes,
+    required this.onPhone,
     required this.offer,
     required this.failed,
     required this.onDownload,
+    required this.onRetry,
     required this.onLater,
     required this.tokens,
   });
 
   final int? megabytes;
+
+  /// Null until the phone has been asked: *Download now* waits disabled, so
+  /// an installed voice can't be fetched again in the moment before *Ready*.
+  final SupertonicOnPhone? onPhone;
   final VoiceOffer offer;
   final bool failed;
   final VoidCallback onDownload;
+  final VoidCallback onRetry;
   final VoidCallback onLater;
   final DpTokens tokens;
 
@@ -282,11 +339,36 @@ class _SupertonicCard extends StatelessWidget {
     // Dark ink on Sun in both solid modes; the page ink on a glass pane.
     final ink = glass ? tokens.color.ink : tokens.color.onAccent;
 
-    final status = switch (offer) {
-      VoiceOffer.offered => failed ? l10n.onboardingSupertonicFailed : null,
-      VoiceOffer.started => l10n.onboardingSupertonicStarted,
-      VoiceOffer.deferred => l10n.onboardingSupertonicDeferred,
+    final phase = onPhone?.phase;
+    final percent = ((onPhone?.progress ?? 0) * 100).floor();
+    final short = onPhone?.shortfall ?? 0;
+    // Rounded up: "171 MB" freed must be enough.
+    final shortMegabytes = (short / 1e6).ceil();
+
+    final status = switch (phase) {
+      DownloadPhase.ready => l10n.onboardingSupertonicReady,
+      // ponytail: checking the files takes seconds and reads as 100 %.
+      DownloadPhase.running ||
+      DownloadPhase.verifying => l10n.onboardingSupertonicDownloading(percent),
+      DownloadPhase.waitingForWifi => l10n.onboardingSupertonicWaiting,
+      DownloadPhase.paused => l10n.onboardingSupertonicPaused(percent),
+      DownloadPhase.failed => l10n.onboardingSupertonicDownloadFailed,
+      null => switch (offer) {
+        VoiceOffer.offered when short > 0 => l10n.onboardingSupertonicShortfall(
+          shortMegabytes,
+        ),
+        VoiceOffer.offered => failed ? l10n.onboardingSupertonicFailed : null,
+        VoiceOffer.started => l10n.onboardingSupertonicDownloading(0),
+        VoiceOffer.deferred => l10n.onboardingSupertonicDeferred,
+      },
     };
+
+    // White on paper, as drawn; Lagoon under glass.
+    final actionColour = glass ? tokens.color.primary : tokens.surface.card;
+    final onActionColour = glass ? tokens.color.onPrimary : tokens.color.ink;
+    // FR-M4 *Not enough space*: disabled, and the line below says by how
+    // much. Disabled looks it: no colour of ours, so the button greys out.
+    final canDownload = onPhone != null && short == 0;
 
     return DpSurface(
       // Solid Sun with the chosen edge — 2 px ink and the hard shadow — on
@@ -312,18 +394,27 @@ class _SupertonicCard extends StatelessWidget {
               color: ink,
             ),
           ],
-          if (offer == VoiceOffer.offered) ...<Widget>[
+          if (phase == DownloadPhase.failed) ...<Widget>[
+            const SizedBox(height: 10),
+            DpButton(
+              label: l10n.retry,
+              onPressed: onRetry,
+              kind: DpButtonKind.secondary,
+              colour: actionColour,
+              onColour: onActionColour,
+            ),
+          ],
+          if (phase == null && offer == VoiceOffer.offered) ...<Widget>[
             const SizedBox(height: 10),
             Row(
               children: <Widget>[
                 Expanded(
                   child: DpButton(
                     label: l10n.onboardingSupertonicDownload,
-                    onPressed: onDownload,
+                    onPressed: canDownload ? onDownload : null,
                     kind: DpButtonKind.secondary,
-                    // White on paper, as drawn; Lagoon under glass.
-                    colour: glass ? tokens.color.primary : tokens.surface.card,
-                    onColour: glass ? tokens.color.onPrimary : tokens.color.ink,
+                    colour: canDownload ? actionColour : null,
+                    onColour: canDownload ? onActionColour : null,
                   ),
                 ),
                 const SizedBox(width: 8),
