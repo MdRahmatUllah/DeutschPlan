@@ -114,6 +114,7 @@ void main() {
               lapses: 0,
               fsrsState: 2,
               cardMode: 'cloze',
+              cardModeManual: 0,
               timesLogged: 0,
             ),
             status: WordStatus.learning,

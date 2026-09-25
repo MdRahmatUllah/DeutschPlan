@@ -49,6 +49,7 @@ WordDetail artboardWordDetail({
       fsrsState: 2,
       lastReview: '2026-09-21T08:00:00Z',
       cardMode: 'plain',
+      cardModeManual: 0,
       timesLogged: 0,
     ),
     status: status,

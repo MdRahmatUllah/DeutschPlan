@@ -27,13 +27,12 @@
 - **Mark known** also closes every open plan row for the word, whether today's or the backlog's, so a known word isn't served again. A skipped row stays skipped, since its day is already complete (BR-PLAN-10).
 - **Reset word** clears `word_state`, the word's open plan rows from today on, and every `new` row, done or not. A word with a `new` row is never planned again (`DriftPlanStore.unplannedWords`), and a reset word is To do again, so it goes back into the pool. Done revisions stay, because they are the day's history, and so do `daily_stats` and `review_log`. *Undo* restores exactly what went.
 - **Undo** restores the row as it was. For a word never met, that means no `word_state` row at all.
-- **Gap: the card toggle lasts until the next review.** BR-FSRS-06's rule works `card_mode` out again from the ratings on every review, so a word set back to plain goes cloze on its next Good. Recording the choice so the rule keeps it is #316.
 - **One action at a time.** A second tap while one is running does nothing.
 
 **Functional requirements**
 - FR-W1-01 *Add to today* inserts a `plan_items(today, uid, 'new')` row for the active step (allowed for any step's To-do word).
 - FR-W1-02 *Mark known* = rate Easy; *Suspend* / *Resume* per BR-STATUS-03; *Reset word* deletes `word_state` and future `plan_items` for the uid after a confirm (and its `new` rows, above).
-- FR-W1-03 Card mode toggle writes `word_state.card_mode`.
+- FR-W1-03 Card mode toggle writes `word_state.card_mode` and `card_mode_manual = 1`, so BR-FSRS-06's rule keeps the choice from then on. *Undo* and *Reset word* give the card back to the rule.
 - FR-W1-04 Every action shows a snackbar with *Undo*; audio never closes the sheet.
 - FR-W1-05 *Translate* runs the examples through the translator (cached) and shows results inline.
 - FR-W1-06 *Compare* is offered when the headword contains " / " or the word has a `compare_group` (from register notes). content.db has no `compare_group` yet, so today only the " / " rule applies (#142).

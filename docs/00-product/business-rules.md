@@ -37,7 +37,7 @@ Every rule has an ID. Engines in `03-domain/` implement them; screens in `04-scr
 - **BR-FSRS-03** Quiz/exam results feed FSRS: correct → Good, almost → Hard, wrong → Again. "Add missed to revision" = rate Again.
 - **BR-FSRS-04** Practice sentence "Not yet" rates the headword Hard.
 - **BR-FSRS-05** Grammar topics use the same scheduler in `grammar_state`; a practice set is rated as a whole (all correct → Good, one wrong → Hard, more → Again).
-- **BR-FSRS-06** A word switches to the **cloze card** format after two consecutive Good/Easy ratings. The learner can switch it back from Word detail.
+- **BR-FSRS-06** A word switches to the **cloze card** format after two consecutive Good/Easy ratings, and back to plain on a rating below Good. The learner can choose either card from Word detail, and the rule then keeps their choice (`word_state.card_mode_manual`) whatever they rate, a lapse too, until they choose again or reset the word.
 
 ## Answers
 

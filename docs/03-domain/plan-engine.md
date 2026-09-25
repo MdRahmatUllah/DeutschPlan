@@ -47,7 +47,7 @@ last_planned_date = today
 
 ## Completion and statuses
 
-- `rate(uid, rating, planDate?, kind?, source)` → `Fsrs.review` → upsert `word_state`; status = `done` if `stability >= done_stability_days` else `learning`; `card_mode = cloze` after two consecutive ≥ Good; write `review_log`, mark `plan_items.completed_at`, bump `daily_stats`, push undo.
+- `rate(uid, rating, planDate?, kind?, source)` → `Fsrs.review` → upsert `word_state`; status = `done` if `stability >= done_stability_days` else `learning`; `card_mode = cloze` after two consecutive ≥ Good and back to plain on a rating below Good, unless `card_mode_manual` says the learner chose it; write `review_log`, mark `plan_items.completed_at`, bump `daily_stats`, push undo.
 - `markKnown(uid)` = `rate(uid, 4, source: known)`.
 - `suspend(uid)` / `resume(uid)` toggle status; suspended words are filtered by every query above.
 - Day complete (BR-PLAN-10) is computed, not stored: all today's plan items completed or skipped, grammar due empty, sentences rated or `sentence_count == 0`.
