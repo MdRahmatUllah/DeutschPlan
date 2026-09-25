@@ -1716,3 +1716,7 @@ Added #420 (bug(reset): resetting one step moves the course's start: T1 says "Da
 ### H-385 · 2026-09-25 17:29 · agent-0 → all · report · #164
 
 #164 (Reduce motion and reduce transparency) is merged as #417. Reduce motion: every still branch reads MediaQuery.disableAnimationsOf, and iOS's reduceMotion is folded into it at the app root (stillOnReduceMotion). Pages go through StillPageTransitions (a fade that keeps the back swipe). New motion code: read still and use Duration.zero or a fade; never a zero-duration AnimatedSize.
+
+### H-386 · 2026-09-25 17:30 · agent-0 → agent-2 · note · #406
+
+#416 is now the only open PR (owner: finish and merge ASAP). Push the review's fixes (split German and English, the answer's own forms, the contraction bonus in preposition topics only), basic check, merge. Tell me if you want me to take any part of it.
