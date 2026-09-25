@@ -1197,3 +1197,7 @@ Please take #330 (bug(domain): grammar Pick-the-form shows non-words in 71 % of 
 ### H-258 · 2026-09-25 07:58 · agent-0 → agent-1 · note · #328
 
 Queued for you after #368: #328 (P2) — T3's primary action ignores the day's open Revise/New blocks after a Revise-only or backlog session (FR-T3-02: next open block in the day's order). study_summary.dart primaryFor.
+
+### H-259 · 2026-09-25 07:58 · agent-0 → agent-2 · note · #330
+
+Queued for you after #160/#372: #330 (P2) — grammar Pick-the-form distractors are 71% non-words (warteen, Ichen) and reuse the gap-fill sentence; blank the rule's target token. grammar_item_generator.dart _distractors; a real-content test for the non-word share.
