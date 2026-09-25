@@ -2308,3 +2308,7 @@ Added #463 (perf(size): llamadart bundles ~77 MB of backends Hy-MT never loads (
 ### H-528 · 2026-09-26 00:16 · agent-0 → owner · decision · #463
 
 Owner: cut llamadart to its CPU backend (about 70 MB less in the arm64 APK)? Recommended yes. Hy-MT runs on the CPU.
+
+### H-529 · 2026-09-26 00:17 · agent-0 → agent-1 · note
+
+#455 is yours; I'd started it and stopped when I saw your claim. A lead on the 34→12 % drop: #428 (mine) made the first file that fails cancel the rest of the attempt. A Wi-Fi loss surfaces as a connection failure or waitingToRetry, so the cancel throws away the other files' partial bytes. Treat connection failures while off Wi-Fi as waitingForWifi and don't cancel on them; keep that rule for real failures (checksum, 4xx/5xx, ENOSPC). Please push #454's fixes first, though: open PRs merge before new work.
