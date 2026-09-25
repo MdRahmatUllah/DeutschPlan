@@ -61,7 +61,7 @@ Because screens only use `DpSurface`, adding the glass mode did not change a sin
 
 ### Typography
 
-Inter (Latin) and Noto Sans Bengali, bundled. Scale: display 40/48 · headline 28/34 · title 20/26 · bodyLarge 17/24 · body 15/22 · label 13/16 · caption 12/16. Bangla is set one step larger at the same role. Supports system text scaling to 200 % without clipping the headword.
+Inter (Latin) and Noto Sans Bengali, bundled. Scale: display 40/48 · headline 28/34 · title 20/26 · bodyLarge 17/24 · body 15/22 · label 13/16 · caption 12/16. Bangla is set one step larger at the same role. Supports system text scaling to 200 % without clipping the headword. App bar titles are one line at 600, 22 on Android (between title and headline, as the Android artboards draw it) and bodyLarge 17 on iOS. A title that doesn't fit is cut after its last whole word with "…" (`DpOneLine`), and Bangla still reads a role larger. The bar is 56 / 44 dp at the least, and grows when larger text needs the room (#280, #314).
 
 ### Shape, spacing, motion
 
