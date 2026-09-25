@@ -13,6 +13,7 @@ import 'package:deutschplan/l10n/generated/app_localizations.dart';
 import 'package:deutschplan/services/widget_snapshot.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
+import 'package:flutter/services.dart' show MethodCall, MethodChannel;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart' show Locale;
 
@@ -101,11 +102,44 @@ void main() {
       });
       expect(
         (snapshot['copy']! as Map<String, String>)['tomorrow'],
-        'Tomorrow · 12 revisions · 7 new',
+        'Tomorrow · 12 revisions · 7 new · 1 grammar topic',
       );
     });
 
-    test("#160 the widget's words, in the learner's language", () {
+    group("FR-X1-01 #160 tomorrow's line, as T1's Tomorrow card", () {
+      TomorrowPreview tomorrow({
+        int revise = 0,
+        int newWords = 0,
+        int grammar = 0,
+        bool restDay = false,
+      }) => TomorrowPreview(
+        revise: revise,
+        newWords: newWords,
+        grammar: grammar,
+        estimate: Duration.zero,
+        restDay: restDay,
+      );
+
+      test('counts the grammar too', () {
+        expect(
+          widgetTomorrow(en, tomorrow(newWords: 7, grammar: 1)),
+          'Tomorrow · 7 new · 1 grammar topic',
+        );
+      });
+
+      test('says a rest day is one', () {
+        expect(
+          widgetTomorrow(en, tomorrow(revise: 3, restDay: true)),
+          en.todayTomorrowRest,
+        );
+      });
+
+      test('and has no line for a day with nothing planned', () {
+        expect(widgetTomorrow(en, tomorrow()), isNull);
+      });
+    });
+
+    test("FR-X1-01 #160 the widget's words, in the learner's language", () {
       final copy =
           widgetSnapshot(en, artboardToday(), word)['copy']!
               as Map<String, String>;
@@ -272,7 +306,7 @@ void main() {
       },
     );
 
-    test("#160 and its words follow the app's language", () async {
+    test("FR-X1-01 #160 and its words follow the app's language", () async {
       final following = followWidget(container, widgets);
       addTearDown(following.close);
       await pumpEventQueue();
@@ -360,4 +394,39 @@ void main() {
       ], everyElement(containsPair('date', '2026-09-22')));
     });
   });
+
+  // The redraw is a platform call the device check can't repeat on every
+  // change: without it the widget keeps the last snapshot until the launcher
+  // asks again.
+  test(
+    'FR-X1-01 #160 on Android the store saves, then redraws the widget',
+    () async {
+      TestWidgetsFlutterBinding.ensureInitialized();
+      const channel = MethodChannel('home_widget');
+      final messenger =
+          TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger;
+      final calls = <MethodCall>[];
+      messenger.setMockMethodCallHandler(channel, (call) async {
+        calls.add(call);
+        return true;
+      });
+      addTearDown(() => messenger.setMockMethodCallHandler(channel, null));
+
+      await const HomeWidgetStore().save('{"date":"2026-09-21"}');
+
+      expect(calls.map((call) => call.method), <String>[
+        'saveWidgetData',
+        'updateWidget',
+      ]);
+      expect(calls.first.arguments, <String, Object?>{
+        'id': HomeWidgetStore.key,
+        'data': '{"date":"2026-09-21"}',
+      });
+      expect(
+        (calls.last.arguments as Map<Object?, Object?>)['qualifiedAndroidName'],
+        HomeWidgetStore.androidReceiver,
+      );
+    },
+    testOn: '!ios',
+  );
 }

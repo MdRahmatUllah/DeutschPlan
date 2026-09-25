@@ -828,5 +828,6 @@
   "widgetWordOfDay": "Wort des Tages",
   "widgetPronounce": "উচ্চারণ",
   "widgetDone": "আজকের কাজ শেষ",
-  "widgetTomorrow": "আগামীকাল · {plan}"
+  "widgetTomorrow": "আগামীকাল · {plan}",
+  "widgetGrammar": "{count, plural, other{{count}টি ব্যাকরণ বিষয়}}"
 }

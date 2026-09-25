@@ -5030,5 +5030,14 @@
         "type": "String"
       }
     }
+  },
+  "widgetGrammar": "{count, plural, =1{1 grammar topic} other{{count} grammar topics}}",
+  "@widgetGrammar": {
+    "description": "X1's tomorrow line: the grammar topics due, e.g. 'Tomorrow · 7 new · 1 grammar topic'.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   }
 }

@@ -8,6 +8,7 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.RectF
 import android.net.Uri
+import java.time.LocalDate
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
@@ -71,7 +72,7 @@ class DeutschPlanWidget : GlanceAppWidget() {
         provideContent {
             val raw = currentState<HomeWidgetGlanceState>().preferences
                 .getString(SNAPSHOT, null)
-            Widget(raw?.let { runCatching { JSONObject(it) }.getOrNull() })
+            Widget(raw?.let { runCatching { JSONObject(it) }.getOrNull() }?.takeIf(::current))
         }
     }
 
@@ -83,6 +84,20 @@ class DeutschPlanWidget : GlanceAppWidget() {
     }
 }
 
+/**
+ * The text at [key], or "" for a missing key or a JSON null: `optString` gives
+ * the string "null" for those, and "null bitte" is what a word without an
+ * article would say.
+ */
+private fun JSONObject.text(key: String): String = if (isNull(key)) "" else optString(key)
+
+/**
+ * Today's snapshot, written since #160. One from an earlier day (a redraw before
+ * the midnight task has run) or without the words says to open the app instead.
+ */
+private fun current(snapshot: JSONObject): Boolean =
+    snapshot.has("copy") && snapshot.text("date") == LocalDate.now().toString()
+
 private val ink = ColorProvider(R.color.widget_ink)
 private val secondary = ColorProvider(R.color.widget_secondary)
 
@@ -92,7 +107,9 @@ private fun Widget(snapshot: JSONObject?) {
     Box(
         modifier = GlanceModifier
             .fillMaxSize()
-            .background(ColorProvider(R.color.widget_card))
+            // A drawable, so the corners are round below Android 12 too, where
+            // `cornerRadius` does nothing; it still clips the content above.
+            .background(ImageProvider(R.drawable.widget_card))
             .cornerRadius(18.dp)
             .padding(12.dp)
             // FR-X1-02: the widget itself opens Today.
@@ -115,10 +132,10 @@ private fun Small(snapshot: JSONObject) {
     val copy = snapshot.optJSONObject("copy") ?: JSONObject()
     Column(modifier = GlanceModifier.fillMaxSize()) {
         Row(modifier = GlanceModifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-            Step(snapshot.optString("step", ""))
+            Step(snapshot.text("step"))
             Spacer(GlanceModifier.defaultWeight())
             Text(
-                text = copy.optString("app"),
+                text = copy.text("app"),
                 style = TextStyle(color = ink, fontSize = 11.sp, fontWeight = FontWeight.Bold),
             )
         }
@@ -129,13 +146,13 @@ private fun Small(snapshot: JSONObject) {
             Column {
                 val done = snapshot.optBoolean("done")
                 Text(
-                    text = copy.optString(if (done) "done" else "left"),
+                    text = copy.text(if (done) "done" else "left"),
                     // "Done for today" is three words beside the ring; "8 left" is the number.
                     style = TextStyle(color = ink, fontSize = if (done) 14.sp else 20.sp, fontWeight = FontWeight.Bold),
                     maxLines = 2,
                 )
                 Text(
-                    text = copy.optString(if (done) "tomorrow" else "minutes"),
+                    text = copy.text(if (done) "tomorrow" else "minutes"),
                     style = TextStyle(color = secondary, fontSize = 11.sp),
                     maxLines = 2,
                 )
@@ -160,14 +177,14 @@ private fun Medium(snapshot: JSONObject) {
                 Ring(snapshot, 64)
                 if (!snapshot.optBoolean("done")) {
                     Text(
-                        text = copy.optString("progress"),
+                        text = copy.text("progress"),
                         style = TextStyle(color = ink, fontSize = 14.sp, fontWeight = FontWeight.Bold),
                     )
                 }
             }
             Spacer(GlanceModifier.height(8.dp))
             Text(
-                text = copy.optString(if (snapshot.optBoolean("done")) "done" else "leftStep"),
+                text = copy.text(if (snapshot.optBoolean("done")) "done" else "leftStep"),
                 style = TextStyle(color = ink, fontSize = 11.sp, fontWeight = FontWeight.Bold),
                 maxLines = 1,
             )
@@ -184,20 +201,20 @@ private fun Medium(snapshot: JSONObject) {
             if (word == null) {
                 // No word due within three days: tomorrow's plan instead.
                 Text(
-                    text = copy.optString(if (snapshot.optBoolean("done")) "tomorrow" else "minutes"),
+                    text = copy.text(if (snapshot.optBoolean("done")) "tomorrow" else "minutes"),
                     style = TextStyle(color = secondary, fontSize = 12.sp),
                 )
                 return@Column
             }
-            val uid = word.optString("uid")
+            val uid = word.text("uid")
             Text(
-                text = copy.optString("wordOfDay").uppercase(),
+                text = copy.text("wordOfDay").uppercase(),
                 style = TextStyle(color = secondary, fontSize = 10.sp, fontWeight = FontWeight.Bold),
             )
             Spacer(GlanceModifier.height(4.dp))
             // FR-X1-02: the word opens it.
             Row(modifier = GlanceModifier.clickable(open(context, "deutschplan://word/$uid"))) {
-                val article = word.optString("article", "")
+                val article = word.text("article")
                 if (article.isNotEmpty()) {
                     Text(
                         text = "$article ",
@@ -205,13 +222,13 @@ private fun Medium(snapshot: JSONObject) {
                     )
                 }
                 Text(
-                    text = word.optString("german"),
+                    text = word.text("german"),
                     style = TextStyle(color = ink, fontSize = 20.sp),
                     maxLines = 1,
                 )
             }
             Text(
-                text = word.optString("meaning"),
+                text = word.text("meaning"),
                 style = TextStyle(color = secondary, fontSize = 12.sp),
                 maxLines = 1,
             )
@@ -228,7 +245,7 @@ private fun Medium(snapshot: JSONObject) {
                 )
                 Spacer(GlanceModifier.width(6.dp))
                 Text(
-                    text = copy.optString("pronounce"),
+                    text = copy.text("pronounce"),
                     style = TextStyle(color = ink, fontSize = 12.sp, fontWeight = FontWeight.Bold),
                 )
             }
@@ -236,7 +253,7 @@ private fun Medium(snapshot: JSONObject) {
             if (snapshot.optBoolean("done") && copy.has("tomorrow")) {
                 Spacer(GlanceModifier.height(6.dp))
                 Text(
-                    text = copy.optString("tomorrow"),
+                    text = copy.text("tomorrow"),
                     style = TextStyle(color = secondary, fontSize = 11.sp),
                     maxLines = 1,
                 )

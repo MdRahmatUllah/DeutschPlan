@@ -73,15 +73,21 @@ Map<String, Object?> widgetSnapshot(
       'wordOfDay': l10n.widgetWordOfDay,
       'pronounce': l10n.widgetPronounce,
       'done': l10n.widgetDone,
-      if (tomorrow != null)
-        'tomorrow': l10n.widgetTomorrow(
-          <String>[
-            if (tomorrow.revise > 0) l10n.reminderRevisions(tomorrow.revise),
-            if (tomorrow.newWords > 0) l10n.reminderNew(tomorrow.newWords),
-          ].join(' · '),
-        ),
+      if (tomorrow != null) 'tomorrow': ?widgetTomorrow(l10n, tomorrow),
     },
   };
+}
+
+/// Tomorrow's line once the day is done, as T1's Tomorrow card has it: a rest
+/// day says so, and a day with nothing planned has no line.
+String? widgetTomorrow(AppLocalizations l10n, TomorrowPreview tomorrow) {
+  if (tomorrow.restDay) return l10n.todayTomorrowRest;
+  final plan = <String>[
+    if (tomorrow.revise > 0) l10n.reminderRevisions(tomorrow.revise),
+    if (tomorrow.newWords > 0) l10n.reminderNew(tomorrow.newWords),
+    if (tomorrow.grammar > 0) l10n.widgetGrammar(tomorrow.grammar),
+  ];
+  return plan.isEmpty ? null : l10n.widgetTomorrow(plan.join(' · '));
 }
 
 /// FR-X1-03: a learned word due within three days, seeded by the date; never
