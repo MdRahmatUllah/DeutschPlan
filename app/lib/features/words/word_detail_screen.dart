@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math' as math;
 
 import 'package:deutschplan/core/adaptive/adaptive.dart';
 import 'package:deutschplan/core/components/dp_chip.dart';
@@ -375,10 +376,15 @@ class _BackRow extends StatelessWidget {
     crossAxisAlignment: CrossAxisAlignment.start,
     children: <Widget>[
       SizedBox(height: MediaQuery.paddingOf(context).top),
+      // The bar's height, or the back button's when larger text makes
+      // its label taller (#404).
       SizedBox(
-        height: context.isCupertino
-            ? AdaptiveScaffold.cupertinoBarHeight
-            : AdaptiveScaffold.materialBarHeight,
+        height: math.max(
+          context.isCupertino
+              ? AdaptiveScaffold.cupertinoBarHeight
+              : AdaptiveScaffold.materialBarHeight,
+          AdaptiveBackButton.heightOf(context),
+        ),
         child: Row(
           children: <Widget>[
             const SizedBox(width: 4),

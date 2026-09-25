@@ -39,6 +39,7 @@ import 'package:flutter/services.dart';
 
 import '../db/content_fixture.dart';
 import '../services/fake_tts.dart';
+import '../core/text_clipping.dart';
 import 'word_fixtures.dart';
 
 /// W1 · Word detail (#140, spec key R04): `word-detail.md`.
@@ -85,15 +86,30 @@ void main() {
             builder: (_, _) => Scaffold(
               body: Builder(
                 builder: (context) => Center(
-                  child: GestureDetector(
-                    onTap: () => WordRoute.open(context, uid),
-                    child: const Text('open'),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      GestureDetector(
+                        onTap: () => WordRoute.open(context, uid),
+                        child: const Text('open'),
+                      ),
+                      // W1 as a page, as a link opens it (#404).
+                      GestureDetector(
+                        onTap: () => context.push('/word/$uid'),
+                        child: const Text('page'),
+                      ),
+                    ],
                   ),
                 ),
               ),
             ),
           ),
         ],
+      ),
+      GoRoute(
+        path: '/word/:uid',
+        builder: (_, state) =>
+            WordDetailScreen(uid: state.pathParameters['uid']!),
       ),
       GoRoute(
         path: '/compare/:uid',
@@ -117,6 +133,7 @@ void main() {
     bool voice = true,
     AdaptiveChrome chrome = AdaptiveChrome.material,
     List<Override> extra = const <Override>[],
+    bool page = false,
   }) async {
     actions = _Actions();
     opened = <Uri>[];
@@ -161,7 +178,7 @@ void main() {
         ),
       ),
     );
-    await tester.tap(find.text('open'));
+    await tester.tap(find.text(page ? 'page' : 'open'));
     await tester.pumpAndSettle();
   }
 
@@ -903,6 +920,15 @@ void main() {
       await settle();
       expect(find.text(l10n.wordStatusLearning), findsOneWidget);
     });
+  });
+
+  testWidgets('#404 at 200 % text the back row keeps its label whole, in '
+      'either chrome', (tester) async {
+    textAt(tester, 2);
+    for (final chrome in AdaptiveChrome.values) {
+      await pump(tester, chrome: chrome, page: true);
+      expectNothingClipped(tester, within: find.byType(AdaptiveBackButton));
+    }
   });
 }
 

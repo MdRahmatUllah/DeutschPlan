@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:deutschplan/core/adaptive/adaptive.dart';
 import 'package:deutschplan/core/providers/app_providers.dart';
 import 'package:deutschplan/core/theme/app_theme.dart';
 import 'package:deutschplan/data/db/app_database.dart';
@@ -19,6 +20,7 @@ import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 
 import '../services/fake_tts.dart';
+import '../core/text_clipping.dart';
 
 import 'today_fixtures.dart';
 
@@ -42,6 +44,7 @@ void main() {
     TopicWithState? topic,
     bool voice = true,
     Future<CourseText>? course,
+    AdaptiveChrome chrome = AdaptiveChrome.material,
   }) async {
     spoken = <String>[];
     marked = <String>[];
@@ -87,6 +90,8 @@ void main() {
           localizationsDelegates: appLocalizationsDelegates,
           supportedLocales: supportedLocales,
           routerConfig: routes,
+          builder: (_, child) =>
+              AdaptiveChromeScope(chrome: chrome, child: child!),
         ),
       ),
     );
@@ -211,6 +216,15 @@ void main() {
     expect(went, '/learn/grammar/g4');
     // In place of this topic, not on top of it: back leaves the topics.
     expect(routes.canPop(), isFalse);
+  });
+
+  testWidgets('#404 at 200 % text the back row keeps its label whole, in '
+      'either chrome', (tester) async {
+    textAt(tester, 2);
+    for (final chrome in AdaptiveChrome.values) {
+      await pump(tester, chrome: chrome);
+      expectNothingClipped(tester, within: find.byType(AdaptiveBackButton));
+    }
   });
 }
 

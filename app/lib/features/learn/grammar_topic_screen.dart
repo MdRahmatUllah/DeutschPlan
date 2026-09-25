@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math' as math;
 
 import 'package:deutschplan/core/adaptive/adaptive.dart';
 import 'package:deutschplan/core/components/dp_button.dart';
@@ -270,10 +271,18 @@ class _Header extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
         SizedBox(height: MediaQuery.paddingOf(context).top),
+        // The bar's height, or the back button's when larger text makes
+        // its label taller (#404).
         SizedBox(
-          height: cupertino
-              ? AdaptiveScaffold.cupertinoBarHeight
-              : AdaptiveScaffold.materialBarHeight,
+          height: math.max(
+            cupertino
+                ? AdaptiveScaffold.cupertinoBarHeight
+                : AdaptiveScaffold.materialBarHeight,
+            AdaptiveBackButton.heightOf(
+              context,
+              label: topic.topic.sublevelCode,
+            ),
+          ),
           child: Row(
             children: <Widget>[
               const SizedBox(width: 4),
