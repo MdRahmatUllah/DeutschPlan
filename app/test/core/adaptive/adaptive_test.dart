@@ -833,8 +833,8 @@ void main() {
       });
     }
 
-    testWidgets('a tab under the shell rises above the keyboard once, not '
-        'twice', (tester) async {
+    testWidgets('#390 the keyboard covers the tab bar, and a tab under the '
+        'shell rises above the keyboard once, not twice', (tester) async {
       tester.view
         ..physicalSize = const Size(390, 844) * 3
         ..devicePixelRatio = 3
@@ -850,11 +850,15 @@ void main() {
           ),
         ),
       );
-      // 844, less the keyboard's 300 and the bar's 80, once each.
-      expect(
-        tester.getSize(find.byKey(const Key('tab'))).height,
-        844 - 300 - 80,
-      );
+      // 844, less the keyboard's 300, once: the bar is under the keyboard,
+      // and the room it had is the form's (#390).
+      expect(tester.getSize(find.byKey(const Key('tab'))).height, 844 - 300);
+      expect(find.text('tabs'), findsNothing);
+
+      tester.view.viewInsets = FakeViewPadding.zero;
+      await tester.pump();
+      expect(find.text('tabs'), findsOneWidget, reason: 'back with the keys');
+      expect(tester.getSize(find.byKey(const Key('tab'))).height, 844 - 80);
     });
 
     testWidgets('the confirm dialog uses the platform dialog and returns', (

@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:deutschplan/core/adaptive/adaptive.dart';
+import 'package:deutschplan/core/theme/dp_tokens.dart';
 import 'package:deutschplan/core/components/dp_button.dart';
 import 'package:deutschplan/core/components/dp_feedback.dart';
 import 'package:deutschplan/core/providers/app_providers.dart';
@@ -376,5 +378,22 @@ void main() {
     );
     await tester.pump();
     expect(find.byType(DpUmlautBar), findsOneWidget);
+  });
+
+  testWidgets("#390 R2's Raspberry stays behind the status bar when the form "
+      'scrolls', (tester) async {
+    await pump(tester);
+    final scaffold = tester.widget<AdaptiveScaffold>(
+      find
+          .descendant(
+            of: find.byType(AddWordScreen),
+            matching: find.byType(AdaptiveScaffold),
+          )
+          .first,
+    );
+    expect(
+      scaffold.statusBarColour,
+      tester.element(find.byType(AddWordScreen)).tokens.color.die,
+    );
   });
 }

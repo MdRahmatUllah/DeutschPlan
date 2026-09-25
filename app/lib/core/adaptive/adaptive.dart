@@ -134,7 +134,10 @@ class AdaptiveScaffold extends StatelessWidget {
                     child: body,
                   ),
           ),
-          if (bottomBar != null)
+          // The keyboard covers the tab bar rather than lifting it (#390):
+          // a screen being typed in needs the room, and the tabs are no use
+          // until the keyboard goes.
+          if (bottomBar != null && MediaQuery.viewInsetsOf(context).bottom == 0)
             // Without the top inset: the body runs edge to edge, so the status
             // bar's height reaches down here, and Material's NavigationBar
             // pads its own top by it — a status bar's worth of empty bar.
