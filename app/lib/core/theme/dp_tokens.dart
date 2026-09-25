@@ -138,6 +138,7 @@ class DpPalette {
     required this.accent,
     required this.onAccent,
     required this.onAccentMark,
+    required this.onAccentTrack,
     required this.ink,
     required this.textSecondary,
     required this.link,
@@ -166,6 +167,7 @@ class DpPalette {
     accent: Color(0xFFFFC61A), // Sun
     onAccent: Color(0xFF15121F),
     onAccentMark: Color(0xFFFFFFFF),
+    onAccentTrack: Color(0x8015121F), // Sun's ink at 50 %
     ink: Color(0xFF15121F),
     textSecondary: Color(0xFF5B5670), // Slate Ink
     link: Color(0xFF007A70),
@@ -199,6 +201,7 @@ class DpPalette {
     accent: Color(0xFFFFD54A), // Sun, lifted
     onAccent: Color(0xFF15121F),
     onAccentMark: Color(0xFFFFFFFF),
+    onAccentTrack: Color(0x8015121F), // Sun's ink at 50 %
     ink: Color(0xFFF4F1FF),
     textSecondary: Color(0xFFB7B1CC),
     link: Color(0xFF2EE6D6),
@@ -232,6 +235,7 @@ class DpPalette {
     accent: Color(0xFFFFC61A), // Sun
     onAccent: Color(0xFF15121F),
     onAccentMark: Color(0xFFFFFFFF),
+    onAccentTrack: Color(0x8F15121F), // ink at 56 %, over a Sun wash
     ink: Color(0xFF15121F),
     textSecondary: Color(0xFF3B374C),
     link: Color(0xFF046761),
@@ -262,7 +266,8 @@ class DpPalette {
     onPrimary: Color(0xFF15121F), // dark ink on a bright fill
     accent: Color(0xFFFFD54A), // Sun, lifted
     onAccent: Color(0xFF15121F),
-    onAccentMark: Color(0xFFFFFFFF),
+    onAccentMark: Color(0xFF0E0C16), // the paper: the page's ink is light
+    onAccentTrack: Color(0xBAF4F1FF), // the page's ink at 73 %, over a Sun wash
     ink: Color(0xFFF4F1FF),
     textSecondary: Color(0xFFE6E4ED),
     link: Color(0xFF2EE6D6),
@@ -289,9 +294,19 @@ class DpPalette {
   final Color accent;
   final Color onAccent;
 
-  /// White on a Sun field, in dark mode too: the Learning share of L1's
-  /// course bar, beside the ink Done share.
+  /// The Learning share of a bar on a Sun field (L1's course bar, L2's step
+  /// bar), between the Done share and [onAccentTrack], 3:1 from the track:
+  /// white beside Sun's dark ink, in dark mode and glass too, and the paper in
+  /// glass dark, where Done and the track are the page's light ink (#449).
   final Color onAccentMark;
+
+  /// What is not done yet in a bar on a Sun field: L1's course bar, L2's step
+  /// bar and its exams card. `surface.track` is made for the paper and cards;
+  /// on Sun it is 1.2:1 in dark. So Sun has its own, 3:1 against it with a
+  /// few hundredths to spare (#449): Sun's ink on the solid field, and under
+  /// glass the page's ink over a 22 % Sun wash on each aurora blob at its
+  /// peak. `contrast_test.dart` measures it.
+  final Color onAccentTrack;
   final Color ink;
   final Color textSecondary;
   final Color link;
@@ -349,6 +364,7 @@ class DpPalette {
     accent: Color.lerp(accent, other.accent, t)!,
     onAccent: Color.lerp(onAccent, other.onAccent, t)!,
     onAccentMark: Color.lerp(onAccentMark, other.onAccentMark, t)!,
+    onAccentTrack: Color.lerp(onAccentTrack, other.onAccentTrack, t)!,
     ink: Color.lerp(ink, other.ink, t)!,
     textSecondary: Color.lerp(textSecondary, other.textSecondary, t)!,
     link: Color.lerp(link, other.link, t)!,

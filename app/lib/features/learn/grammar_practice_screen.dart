@@ -372,9 +372,10 @@ class PracticeStrip extends StatelessWidget {
                 child: SizedBox(
                   height: 6,
                   child: ColoredBox(
+                    // To do at 3:1 on the page (#437).
                     color: i < done
                         ? tokens.color.accent
-                        : tokens.surface.muted,
+                        : tokens.surface.track,
                   ),
                 ),
               ),

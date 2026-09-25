@@ -459,11 +459,12 @@ class LockedExams extends ConsumerWidget {
               learning: 0,
               todo: left,
               height: 10,
-              // The page's ink, which dark draws light, over Sun's own.
+              // Sun's own ink over Sun's track, in dark too: the page's ink,
+              // which dark draws light, was 1.3:1 on Sun (#449).
               colours: (
-                done: tokens.color.ink,
-                learning: tokens.color.ink,
-                todo: ink.withValues(alpha: 0.15),
+                done: ink,
+                learning: ink,
+                todo: tokens.color.onAccentTrack,
               ),
             ),
           ),
