@@ -59,7 +59,7 @@ claiming the same issue. A hand edit skips that check.
 | #147 | M5 | C | P2 | M | M5 · Study days and reminder | done | agent-2 | #146 #158 | #367 |
 | #148 | M5 | C | P2 | M | M6 · Export and import | done | agent-2 | #65 #146 | #361 |
 | #149 | M5 | C | P2 | M | M7 · Reset | review | agent-2 | #148 | #402 |
-| #150 | M5 | C | P2 | S | M9 · About & privacy and M8 · Licences | open |  | #51 #146 |  |
+| #150 | M5 | C | P2 | S | M9 · About & privacy and M8 · Licences | in-progress | agent-2 | #51 #146 |  |
 | #12 | M5 | X | P1 | epic | Epic · Search and words | open |  | #137 #138 #139 #140 #141 #142 #143 |  |
 | #13 | M5 | X | P1 | epic | Epic · Me, progress, settings and data | open |  | #144 #145 #146 #147 #148 #149 #150 |  |
 | #151 | M6 | B | P1 | S | TtsEngine interface and SystemTts | done | agent-1 | #20 | #290 |
