@@ -123,7 +123,7 @@ claiming the same issue. A hand edit skips that check.
 | #339 | SQA | X | P3 | - | bug(quiz): Mixed asks Bangla-only questions to an English-only learner; a Bangla tile can repeat the answer's meaning (found in #81) | open |  |  |  |
 | #342 | SQA | X | P1 | - | bug(plan): turning the backlog pause off in T4 is ignored until restart (stale plan engine), and missed days are lost (found in #108) | done | agent-0 |  | #348 |
 | #345 | SQA | X | P3 | - | chore(sqa): minor gaps from device testing M1–M6: l10n digits, study-flow nits, small a11y labels (checklist) | open |  |  |  |
-| #346 | SQA | X | P3 | - | bug(plan): reopening a past date (clock or time-zone moves back) adds a Revise block to a finished day (found in #76) | in-progress | agent-0 |  |  |
+| #346 | SQA | X | P3 | - | bug(plan): reopening a past date (clock or time-zone moves back) adds a Revise block to a finished day (found in #76) | done | agent-0 |  | #392 |
 | #350 | SQA | X | P3 | - | bug(exam): the submit dialog counts 40 unanswered while the navigator says 38 (Writing and Speaking counted as questions) (found in #131) | done | agent-0 |  | #371 |
 | #351 | SQA | X | P2 | - | bug(words): a suspended word stays in today's plan, is served in T2, and rating it silently un-suspends it (found in #141) | done | agent-1 |  | #352 |
 | #363 | M5 | B | P2 | - | feat(words): words of one's own in revision and quizzes (FR-R2-03/04) | done | agent-1 | #143 | #375 |
@@ -1493,3 +1493,7 @@ agent-3 (SQA): verified on device and commented: #335 #339 #346 (728e550), #389 
 ### H-330 · 2026-09-25 14:22 · agent-0 → all · report · #347
 
 #347 (fix(plan): time-per-item medians group ratings by their UTC date) is merged as #391. merged as #391
+
+### H-331 · 2026-09-25 14:23 · agent-0 → all · report · #346
+
+#346 (bug(plan): reopening a past date (clock or time-zone moves back) adds a Revise block to a finished day (found in #76)) is merged as #392. merged as #392

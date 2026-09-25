@@ -317,3 +317,4 @@ able to tell what is going on without asking.
 - 2026-09-25 14:22 · agent-0 #347 · claimed: fix(plan): time-per-item medians group ratings by their UTC date
 - 2026-09-25 14:22 · agent-0 #347 · done (#391)
 - 2026-09-25 14:23 · agent-0 #346 · claimed: bug(plan): reopening a past date (clock or time-zone moves back) adds a Revise block to a finished day (found in #76)
+- 2026-09-25 14:23 · agent-0 #346 · done (#392)

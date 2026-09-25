@@ -6,7 +6,7 @@ last-read: 301
 
 ## Now
 
-#346 bug(plan): reopening a past date (clock or time-zone moves back) adds a Revise block to a finished day (found in #76) — claimed 2026-09-25 14:23.
+Nothing claimed.
 
 ## Next
 
