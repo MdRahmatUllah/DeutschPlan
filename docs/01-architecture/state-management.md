@@ -24,8 +24,9 @@
 | `examRunService` | autoDispose | exam modal | L12's reads and writes. The timer, answers and flags are the runner's widget state, each answer and flag written as given and the clock every 10 s (#130). |
 | `modelManager` | keepAlive AsyncNotifier | Me | Download tasks, statuses, storage. |
 | `tts` | keepAlive | app | `TtsService` (#153): the engine `tts_engine` chooses, the fallback to `systemTts` with its once-a-session toast, and the one player. Every speaker speaks through it; `ttsPlayback` (autoDispose Stream) is what it is sounding, for the speakers' looks. |
-| `supertonicVoice` | keepAlive | app | The Supertonic engine `tts` uses: null until #152, then `supertonicTts`. Kept alive because `tts` is. |
+| `supertonicVoice` | keepAlive | app | The Supertonic engine `tts` uses: `supertonicTts` (#152). A test that wants Supertonic missing overrides it with null. Kept alive because `tts` is. |
 | `systemTts` | keepAlive | app | The phone's German voice (`SystemTts`): S2's preview and the fallback. One instance, because flutter_tts reports playback to the last one made. |
+| `supertonicTts` | keepAlive | app | Supertonic 3 (`SupertonicTts`, #152), the `supertonic` engine. Its four ONNX sessions take seconds to open and stay open once a clip is asked for; clips are cached on disk (`SynthesisCache`). |
 | `theme` | keepAlive Notifier | app | light/dark/glass + system following. |
 | `languages` | keepAlive Notifier | app | `meaning_language` + `ui_language`; the root reads `ui_language` for the locale. S2 page 2 sets both from one choice; M3 sets each on its own. |
 | `onboarding` | keepAlive Notifier | S2 | `OnboardingNotifier`: S2's plan values as a draft — step, pace, reminders — until the finish commits them in one transaction (#92). Kept alive because the pages come and go and FR-S2-02 wants the values on the way back. |

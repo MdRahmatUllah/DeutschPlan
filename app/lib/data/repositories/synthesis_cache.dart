@@ -65,13 +65,21 @@ class SynthesisCache {
     String text, {
     required String voice,
     required double speed,
+  }) async => (await hit(text, voice: voice, speed: speed))?.readAsBytes();
+
+  /// The clip's file, or null: what a player needs, without reading the clip.
+  /// It too marks the clip as recently used.
+  Future<File?> hit(
+    String text, {
+    required String voice,
+    required double speed,
   }) async {
     final file = await fileFor(text, voice: voice, speed: speed);
     if (!file.existsSync()) return null;
-    // The eviction order is the file's modified time, so a read has to touch
+    // The eviction order is the file's modified time, so a use has to touch
     // it — otherwise the clip the learner uses most is the first one dropped.
     file.setLastModifiedSync(DateTime.now());
-    return file.readAsBytes();
+    return file;
   }
 
   /// Stores a clip and evicts down to [capacity].
