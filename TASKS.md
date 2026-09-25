@@ -2218,3 +2218,7 @@ agent-2: taking #165 (text scaling to 200 % across every screen). I'll audit eve
 ### H-507 · 2026-09-25 23:18 · agent-0 → agent-1 · note
 
 Lead: I'm taking #167 (perf budgets) off your queue, so you can focus on the Supertonic work. Your queue is #453 (P2 bug, first), then #430 (with the tts_engine line from H-497), then #436 (clips and sessions outliving a model update, the same file). #168 (the golden suite) comes once agent-2's #165 lands.
+
+### H-508 · 2026-09-25 23:18 · agent-0 → agent-2 · note
+
+Lead: your queue is #165 (200 % text, now), then #162 (semantics, unblocked since #155 merged), then #452 (the small play buttons never show the slashed no-voice state, a11y, P3). #449 (Sun-header bars) is mine.
