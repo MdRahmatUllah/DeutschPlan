@@ -36,6 +36,7 @@ void main() {
     WidgetTester tester, {
     String at = '/me/about',
     List<Override> more = const <Override>[],
+    bool dated = true,
   }) async {
     tester.view
       ..physicalSize = const Size(1200, 4000)
@@ -44,7 +45,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: <Override>[
-          ...aboutStub(),
+          ...aboutStub(dated: dated),
           openWebProvider.overrideWithValue((page) async {
             opened.add(page);
             return true;
@@ -96,6 +97,15 @@ void main() {
       reason: 'the counts are grouped',
     );
     expect(find.text(l10n.aboutPrivacyText), findsOneWidget);
+  });
+
+  testWidgets('FR-M9-01 a course that does not say when it was built: no '
+      'date, and no dot left over', (tester) async {
+    await pump(tester, dated: false);
+    expect(
+      find.text(l10n.aboutVersionUndated('1.0.0', '41', '2026.09')),
+      findsOneWidget,
+    );
   });
 
   test('FR-M9-01 the course version as About shows it', () {

@@ -853,6 +853,7 @@
   "resetEverythingConfirm": "রিসেট",
   "aboutTitle": "পরিচিতি ও গোপনীয়তা",
   "aboutVersion": "সংস্করণ {version} (বিল্ড {build}) · কনটেন্ট {content} · {date}",
+  "aboutVersionUndated": "সংস্করণ {version} (বিল্ড {build}) · কনটেন্ট {content}",
   "aboutPrivacy": "গোপনীয়তা",
   "aboutPrivacyText": "আপনার অগ্রগতি এই ফোনেই থাকে। DeutschPlan-এর কোনো অ্যাকাউন্ট, সার্ভার বা অ্যানালিটিকস নেই। ইন্টারনেট ব্যবহার হয় শুধু যখন আপনি কোনো ওয়েব সার্চ লিংক খোলেন বা কোনো মডেল ডাউনলোড করেন।",
   "aboutLicences": "ওপেন-সোর্স ও মডেলের লাইসেন্স",

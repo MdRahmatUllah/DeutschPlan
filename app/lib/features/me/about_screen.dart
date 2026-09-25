@@ -82,18 +82,22 @@ class AboutScreen extends ConsumerWidget {
                     DpText(l10n.appTitle, role: DpTextRole.title),
                     if (version != null && facts != null)
                       DpText(
-                        l10n.aboutVersion(
-                          version.version,
-                          version.build,
-                          contentRelease(facts.version),
-                          built == null
-                              ? ''
-                              // "21 Sep 2026", as M1 writes a day.
-                              : DateFormat(
+                        built == null
+                            ? l10n.aboutVersionUndated(
+                                version.version,
+                                version.build,
+                                contentRelease(facts.version),
+                              )
+                            : l10n.aboutVersion(
+                                version.version,
+                                version.build,
+                                contentRelease(facts.version),
+                                // "21 Sep 2026", as M1 writes a day.
+                                DateFormat(
                                   'd MMM y',
                                   locale,
                                 ).format(built.toLocal()),
-                        ),
+                              ),
                         role: DpTextRole.caption,
                         color: tokens.color.textSecondary,
                       ),

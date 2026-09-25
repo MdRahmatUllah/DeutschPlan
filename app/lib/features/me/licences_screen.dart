@@ -105,6 +105,15 @@ class LicencesScreen extends ConsumerWidget {
     final tokens = context.tokens;
     final l10n = AppLocalizations.of(context);
     final packages = ref.watch(packageLicencesProvider).value ?? <Licence>[];
+    // A section's title, then its licences.
+    final rows = <Object>[
+      l10n.licencesModels,
+      ...modelLicences,
+      l10n.licencesFonts,
+      ...fontLicences,
+      l10n.licencesPackages,
+      ...packages,
+    ];
 
     final scaffold = AdaptiveScaffold(
       title: l10n.licencesTitle,
@@ -116,16 +125,15 @@ class LicencesScreen extends ConsumerWidget {
       backgroundColor: tokens.isGlass
           ? tokens.surface.paper.withValues(alpha: 0)
           : tokens.surface.paper,
-      body: ListView(
+      // Built as it scrolls: the registry lists some 200 packages.
+      body: ListView.builder(
         padding: const EdgeInsets.only(bottom: 24),
-        children: <Widget>[
-          _Section(l10n.licencesModels),
-          for (final licence in modelLicences) _Row(licence),
-          _Section(l10n.licencesFonts),
-          for (final licence in fontLicences) _Row(licence),
-          _Section(l10n.licencesPackages),
-          for (final licence in packages) _Row(licence),
-        ],
+        itemCount: rows.length,
+        itemBuilder: (context, i) => switch (rows[i]) {
+          final String title => _Section(title),
+          final Licence licence => _Row(licence),
+          _ => const SizedBox.shrink(),
+        },
       ),
     );
     return tokens.isGlass

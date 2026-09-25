@@ -5178,6 +5178,24 @@
       }
     }
   },
+  "aboutVersionUndated": "Version {version} (build {build}) · content {content}",
+  "@aboutVersionUndated": {
+    "description": "M9's version line for a course that doesn't say when it was built (no meta.built_at).",
+    "placeholders": {
+      "version": {
+        "type": "String",
+        "example": "1.0.0"
+      },
+      "build": {
+        "type": "String",
+        "example": "41"
+      },
+      "content": {
+        "type": "String",
+        "example": "2026.09"
+      }
+    }
+  },
   "aboutPrivacy": "Privacy",
   "@aboutPrivacy": {
     "description": "M9's privacy card: its caption, drawn in capitals."
