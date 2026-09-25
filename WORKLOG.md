@@ -391,3 +391,4 @@ able to tell what is going on without asking.
 - 2026-09-25 17:54 · agent-1 · #284 PR #424 up: dev guide reconciled (18 files), ADR 26 row; holding adr-number until merge
 - 2026-09-25 17:58 · agent-1 #281 · done (#422)
 - 2026-09-25 17:59 · agent-1 #152 · claimed: SupertonicTts — Supertonic 3 through ONNX Runtime
+- 2026-09-25 17:59 · agent-1 · #152 claimed: SupertonicTts over flutter_onnxruntime
