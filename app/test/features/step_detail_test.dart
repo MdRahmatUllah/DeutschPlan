@@ -15,6 +15,7 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:material_ui/material_ui.dart';
 
 import 'today_fixtures.dart';
+import '../core/text_clipping.dart';
 
 /// L2 · Step detail, the shell — #113.
 void main() {
@@ -280,5 +281,14 @@ void main() {
     await tester.tap(find.text(l10n.stepTabQuiz));
     await tester.pumpAndSettle();
     expect(showing(tester, 'quiz'), isTrue);
+  });
+
+  testWidgets('#404 at 200 % text the back row keeps its label whole, in '
+      'either chrome', (tester) async {
+    textAt(tester, 2);
+    for (final chrome in AdaptiveChrome.values) {
+      await pump(tester, '/learn/step/A2.1', chrome: chrome);
+      expectNothingClipped(tester, within: find.byType(AdaptiveBackButton));
+    }
   });
 }

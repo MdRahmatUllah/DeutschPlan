@@ -302,6 +302,14 @@ class AdaptiveBackButton extends StatelessWidget {
   /// The iOS label. Android ignores it — Material back buttons carry no text.
   final String? label;
 
+  /// The button's height: 44, the tap target, or the iOS [label]'s line when
+  /// larger text makes that taller (#404). A row that holds the button grows
+  /// with it.
+  static double heightOf(BuildContext context, {String? label}) =>
+      context.isCupertino && label != null
+      ? math.max(44, _labelLine(context))
+      : 44;
+
   /// The link colour unless given: L2's arrow is ink on its Sun header.
   final Color? colour;
 
@@ -320,8 +328,10 @@ class AdaptiveBackButton extends StatelessWidget {
         label: cupertinoChrome && label != null
             ? label
             : MaterialLocalizations.of(context).backButtonTooltip,
+        // 44, the tap target; taller when the iOS label's line is (#404): at
+        // 200 % it is 48 dp, and a fixed 44 cut it.
         child: SizedBox(
-          height: 44,
+          height: heightOf(context, label: label),
           child: TextButton(
             onPressed: onPressed,
             style: TextButton.styleFrom(
@@ -357,6 +367,13 @@ class AdaptiveBackButton extends StatelessWidget {
       ),
     );
   }
+}
+
+/// One line of the iOS back label, bodyLarge, at the learner's text size.
+double _labelLine(BuildContext context) {
+  final token = DpTextRole.bodyLarge.token(context.tokens.typography);
+  return MediaQuery.textScalerOf(context).scale(token.size) *
+      token.heightFactor;
 }
 
 /// The on/off control. Lagoon when on in both chromes; the sizes differ.
