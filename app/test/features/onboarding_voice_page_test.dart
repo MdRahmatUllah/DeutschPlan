@@ -291,8 +291,8 @@ void main() {
     });
 
     test("the size is the manifest's, rounded to ten", () async {
-      // The shipped manifest's two files come to 102,760,448 bytes: "about
-      // 100 MB", as the card says — read, not written.
+      // #245: the shipped manifest's seven files (four ONNX, two JSON and
+      // the F1 voice) come to 398,653,248 bytes — read, not written.
       final db = AppDatabase.memory();
       addTearDown(db.close);
       final settings = SettingsRepository(db);
@@ -306,7 +306,7 @@ void main() {
       );
       addTearDown(probe.dispose);
 
-      expect(await probe.read(supertonicMegabytesProvider.future), 100);
+      expect(await probe.read(supertonicMegabytesProvider.future), 400);
     });
   });
 
