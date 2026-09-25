@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-09-25 21:29
+last-seen: 2026-09-25 21:30
 last-read: 462
 
 ## Now
 
-#282 fix(words): the glass word list is one frosted panel (L2, L6) — claimed 2026-09-25 21:12.
+#282 in review as PR #444: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
