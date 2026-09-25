@@ -58,13 +58,16 @@ Future<bool> say(
   }
 }
 
+/// Whether it is known that the phone has no German voice (V01): every
+/// speaker is slashed then, the small play buttons too (#452), and a tap says
+/// how to install one.
+bool noVoice(WidgetRef ref) => ref.watch(ttsAvailableProvider).value == false;
+
 /// The speaker's look for [text]: slashed once it is known there is no German
 /// voice; playing while [text] sounds, and loading while it is synthesised
 /// past `tts.md`'s 150 ms; idle otherwise.
 DpSpeakerState speakerState(WidgetRef ref, String text) {
-  if (ref.watch(ttsAvailableProvider).value == false) {
-    return DpSpeakerState.unavailable;
-  }
+  if (noVoice(ref)) return DpSpeakerState.unavailable;
   final state = ref.watch(
     ttsPlaybackProvider.select((playback) {
       final now = playback.value;

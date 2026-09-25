@@ -158,6 +158,7 @@ class WordPlayButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tokens = context.tokens;
+    final mute = noVoice(ref);
     return Semantics(
       button: true,
       label: AppLocalizations.of(context).summaryPlay(word),
@@ -167,7 +168,11 @@ class WordPlayButton extends ConsumerWidget {
         child: SizedBox(
           width: 40,
           height: 40,
-          child: Icon(Icons.volume_up, size: 22, color: tokens.color.ink),
+          child: Icon(
+            mute ? Icons.volume_off : Icons.volume_up,
+            size: 22,
+            color: mute ? tokens.color.textSecondary : tokens.color.ink,
+          ),
         ),
       ),
     );

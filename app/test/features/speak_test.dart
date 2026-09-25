@@ -8,7 +8,10 @@ import 'package:deutschplan/data/db/app_database.dart';
 import 'package:deutschplan/data/repositories/model_repository.dart';
 import 'package:deutschplan/data/repositories/setting_keys.dart';
 import 'package:deutschplan/data/repositories/settings_repository.dart';
+import 'package:deutschplan/features/study/study_back.dart'
+    show StudyPlayButton;
 import 'package:deutschplan/features/words/speak.dart';
+import 'package:deutschplan/features/words/word_row.dart' show WordPlayButton;
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
 import 'package:deutschplan/router/routes.dart' show rootNavigatorKey;
 import 'package:deutschplan/main.dart'
@@ -38,11 +41,13 @@ void main() {
   late GoRouter router;
 
   /// Speakers for [texts] on Today — a tab — and on `/study`, a full-screen
-  /// route over it, over [overrides].
+  /// route over it, over [overrides]: `DpSpeakerButton`s, or what [speaker]
+  /// builds.
   Future<void> pump(
     WidgetTester tester,
     List<Override> overrides, {
     List<String> texts = const <String>['Hallo'],
+    Widget Function(BuildContext context, WidgetRef ref, String text)? speaker,
   }) async {
     await tester.runAsync(() async {
       final db = AppDatabase.memory();
@@ -63,13 +68,15 @@ void main() {
           children: <Widget>[
             for (final text in texts)
               Consumer(
-                builder: (context, ref, _) => DpSpeakerButton(
-                  key: ValueKey<String>(text),
-                  semanticLabel: text,
-                  state: speakerState(ref, text),
-                  onPressed: () => say(ref, context, text),
-                  onLongPress: () => say(ref, context, text, pace: 0.75),
-                ),
+                builder: (context, ref, _) =>
+                    speaker?.call(context, ref, text) ??
+                    DpSpeakerButton(
+                      key: ValueKey<String>(text),
+                      semanticLabel: text,
+                      state: speakerState(ref, text),
+                      onPressed: () => say(ref, context, text),
+                      onLongPress: () => say(ref, context, text, pace: 0.75),
+                    ),
               ),
           ],
         ),
@@ -142,6 +149,45 @@ void main() {
 
     expect(find.text(l10n.speakerNoVoice), findsOneWidget);
     expect(state(tester), DpSpeakerState.unavailable);
+  });
+
+  group('V01 #452 the small play buttons are slashed too', () {
+    final buttons =
+        <(String, IconData, Widget Function(BuildContext, WidgetRef, String))>[
+          (
+            "a word row's (L5, L2's words, Q2)",
+            Icons.volume_up,
+            (_, _, text) => WordPlayButton(word: text),
+          ),
+          (
+            'the mini play (T2, W1, T3, the cloze, W4, the exam review)',
+            Icons.play_arrow,
+            (context, ref, text) => StudyPlayButton(
+              label: text,
+              onPressed: () => unawaited(say(ref, context, text)),
+            ),
+          ),
+        ];
+    for (final (name, icon, speaker) in buttons) {
+      testWidgets('$name: no German voice, slashed before any tap, and a tap '
+          'says how to install one', (tester) async {
+        await pump(tester, [
+          fakeVoice(FakeTts(voice: false)),
+        ], speaker: speaker);
+        expect(find.byIcon(Icons.volume_off), findsOneWidget);
+        expect(find.byIcon(icon), findsNothing);
+
+        await tester.tap(find.bySemanticsLabel(RegExp('Hallo')));
+        await tester.pump();
+        expect(find.text(l10n.speakerNoVoice), findsOneWidget);
+      });
+
+      testWidgets('$name: with a voice, its own icon', (tester) async {
+        await pump(tester, [fakeVoice(FakeTts())], speaker: speaker);
+        expect(find.byIcon(icon), findsOneWidget);
+        expect(find.byIcon(Icons.volume_off), findsNothing);
+      });
+    }
   });
 
   group('V03 Supertonic missing: the phone voice speaks', () {
