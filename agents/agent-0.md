@@ -6,7 +6,7 @@ last-read: 244
 
 ## Now
 
-Nothing claimed.
+#136 L14 · Exam review — claimed 2026-09-25 07:19.
 
 ## Next
 

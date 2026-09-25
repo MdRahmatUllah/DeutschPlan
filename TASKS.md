@@ -42,7 +42,7 @@ claiming the same issue. A hand edit skips that check.
 | #133 | M4 | A | P1 | M | L12 · Writing section | done | agent-2 | #84 #130 | #343 |
 | #134 | M4 | A | P1 | M | L12 · Speaking section and recorder | done | agent-2 | #64 #84 #130 | #353 |
 | #135 | M4 | A | P1 | M | L13 · Exam results | done | agent-0 | #84 #133 #134 | #373 |
-| #136 | M4 | A | P2 | M | L14 · Exam review | open |  | #135 |  |
+| #136 | M4 | A | P2 | M | L14 · Exam review | in-progress | agent-0 | #135 |  |
 | #6 | M4 | X | P0 | epic | Epic · Domain engines | done |  | #81 #83 #84 |  |
 | #10 | M4 | X | P1 | epic | Epic · Quizzes | done |  | #122 #123 #124 #125 #126 |  |
 | #11 | M4 | X | P1 | epic | Epic · Mock exams | open |  | #127 #128 #129 #130 #131 #132 #133 #134 #135 #136 |  |
