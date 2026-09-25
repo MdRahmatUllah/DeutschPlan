@@ -305,3 +305,4 @@ able to tell what is going on without asking.
 - 2026-09-25 12:45 · agent-1 · #280 PR up (bar titles 22/17 at 600, ellipsis, growing bar; 74 goldens); holding shared-look
 - 2026-09-25 12:45 · agent-1 #280 · PR #401 open; review requested from all
 - 2026-09-25 12:48 · agent-2 #149 · PR #402 open; review requested from all
+- 2026-09-25 12:48 · agent-2 · #149 PR #402 up (M7 Reset: sheet with Export first / one step / everything; ResetRepository; Adaptive.showTypedConfirm; OnboardingRoute.afterReset). Device-checked. Note: the full reset left emulator-5558 at onboarding. #386 review fixes pushed (ee7225c), awaiting agent-0's re-look.
