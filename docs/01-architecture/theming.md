@@ -44,6 +44,8 @@ Container(color: t.surface.card, …)  // never Color(0xFFFFFFFF)
 
 Glass has a dark variant (aurora at 35 %, smoked glass rgba(30,27,44,0.55)) chosen automatically when the system is in dark mode.
 
+**Fills are not text.** Lagoon is 2.2:1 as text on a card and Coral 3.0:1. So a Material text button (dialogs, the time picker) takes `link`, from `AppTheme`'s `textButtonTheme`, and a destructive one takes `wrongText`, Coral's text colour (#318). Dialogs and the Android time picker sit on `card`, where `link` is 5.2:1; on Oat it would be 4.4. Under glass that card is made opaque over the paper (`AppTheme.dialogTheme`), or the scrim would show through the text.
+
 ### Surface renderer
 
 Every card, sheet, header and tab bar is drawn by one widget, `DpSurface`, with a `kind` (`card`, `cardStrong`, `tint(color)`, `bar`). Its implementation switches on the mode:

@@ -633,8 +633,8 @@ abstract final class Adaptive {
 
     return showDialog<bool>(
       context: context,
+      // On the theme's dialog colour: the card, made opaque under glass.
       builder: (dialogContext) => AlertDialog(
-        backgroundColor: tokens.surface.card,
         title: DpText(title, role: DpTextRole.title),
         content: DpText(message, role: DpTextRole.body),
         actions: <Widget>[
@@ -644,10 +644,12 @@ abstract final class Adaptive {
           ),
           TextButton(
             onPressed: () => Navigator.of(dialogContext).pop(true),
+            // Text colours, not the fills (#318): Coral is 3.0:1 on the card
+            // and Lagoon 2.2; their text variants clear 4.5.
             style: TextButton.styleFrom(
               foregroundColor: destructive
-                  ? tokens.color.again
-                  : tokens.color.primary,
+                  ? tokens.color.wrongText
+                  : tokens.color.link,
             ),
             child: Text(confirmLabel),
           ),

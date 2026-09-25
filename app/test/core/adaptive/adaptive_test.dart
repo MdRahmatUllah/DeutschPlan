@@ -3,6 +3,7 @@ import 'package:deutschplan/core/adaptive/adaptive.dart';
 import 'package:deutschplan/core/theme/dp_surface.dart';
 import 'package:deutschplan/core/theme/app_theme.dart';
 import 'package:deutschplan/core/theme/dp_tokens.dart';
+import 'package:flutter/rendering.dart' show RenderParagraph;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 
@@ -775,6 +776,121 @@ void main() {
         await tester.pumpAndSettle();
         expect(answer, isTrue);
       }
+    });
+
+    // accessibility-performance.md: text 4.5:1 in all three modes. The
+    // colours are read off what is drawn, not off the theme, so a style that
+    // overrides the theme is caught too.
+    group('#318 dialog and picker buttons read at 4.5:1', () {
+      double contrast(Color a, Color b) {
+        final x = a.computeLuminance() + 0.05;
+        final y = b.computeLuminance() + 0.05;
+        return x > y ? x / y : y / x;
+      }
+
+      // What the dialog is drawn on: its own Material, not a token. Opaque,
+      // or the ratio would depend on whatever shows through it.
+      Color behind(WidgetTester tester, Finder dialog) {
+        final colour = tester
+            .widget<Material>(
+              find
+                  .descendant(of: dialog, matching: find.byType(Material))
+                  .first,
+            )
+            .color!;
+        expect(colour.a, 1, reason: 'the dialog is see-through');
+        return colour;
+      }
+
+      Color drawn(WidgetTester tester, String label) => tester
+          .renderObject<RenderParagraph>(find.text(label))
+          .text
+          .style!
+          .color!;
+
+      final themes = <(String, ThemeData)>[
+        ('light', AppTheme.light()),
+        ('dark', AppTheme.dark()),
+        ('glass', AppTheme.glass()),
+        ('glass dark', AppTheme.glass(dark: true)),
+      ];
+
+      testWidgets("the confirm dialog's cancel, confirm and destructive "
+          'confirm', (tester) async {
+        for (final (name, theme) in themes) {
+          for (final destructive in <bool>[false, true]) {
+            await tester.pumpWidget(
+              MaterialApp(
+                key: ValueKey((name, destructive)),
+                theme: theme,
+                home: AdaptiveChromeScope(
+                  chrome: AdaptiveChrome.material,
+                  child: Scaffold(
+                    body: Builder(
+                      builder: (context) => GestureDetector(
+                        onTap: () => Adaptive.showConfirm(
+                          context: context,
+                          title: 'Start B1.1?',
+                          message: 'A1.1 stays where it is.',
+                          confirmLabel: 'Start',
+                          cancelLabel: 'Not now',
+                          destructive: destructive,
+                        ),
+                        child: const Text('Open'),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            );
+            await tester.tap(find.text('Open'));
+            await tester.pumpAndSettle();
+            final card = behind(tester, find.byType(AlertDialog));
+            for (final label in <String>['Not now', 'Start']) {
+              expect(
+                contrast(drawn(tester, label), card),
+                greaterThanOrEqualTo(4.5),
+                reason: '$name, destructive $destructive: "$label"',
+              );
+            }
+          }
+        }
+      });
+
+      testWidgets("the time picker's Cancel and OK", (tester) async {
+        for (final (name, theme) in themes) {
+          await tester.pumpWidget(
+            MaterialApp(
+              key: ValueKey(name),
+              theme: theme,
+              home: AdaptiveChromeScope(
+                chrome: AdaptiveChrome.material,
+                child: Scaffold(
+                  body: Builder(
+                    builder: (context) => GestureDetector(
+                      onTap: () => Adaptive.showTimePickerFor(
+                        context: context,
+                        initial: const TimeOfDay(hour: 19, minute: 0),
+                      ),
+                      child: const Text('Open'),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          );
+          await tester.tap(find.text('Open'));
+          await tester.pumpAndSettle();
+          final card = behind(tester, find.byType(TimePickerDialog));
+          for (final label in <String>['Cancel', 'OK']) {
+            expect(
+              contrast(drawn(tester, label), card),
+              greaterThanOrEqualTo(4.5),
+              reason: '$name: "$label"',
+            );
+          }
+        }
+      });
     });
   });
 }
