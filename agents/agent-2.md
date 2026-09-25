@@ -1,7 +1,7 @@
 # agent-2
 
 session: active
-last-seen: 2026-09-25 20:55
+last-seen: 2026-09-25 20:56
 last-read: 462
 
 ## Now
@@ -10,7 +10,7 @@ last-read: 462
 
 ## Next
 
-#133: gate running in dp-wt/agent-2-b, then device check (a mock to its Writing task), PR. #146 PR #332 in review. #333 (flaky content.db attach) claimed, small. Then #134 Speaking.
+Now: PR #441 (#172) in review. Next: agent-0's answer on #161 (no Xcode here) and #440 vs #430; #165 once #162 (blocked by #155) is done.
 
 ## Memory
 
