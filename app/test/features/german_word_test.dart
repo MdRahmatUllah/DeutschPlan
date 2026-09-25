@@ -1,0 +1,78 @@
+import 'package:deutschplan/core/theme/app_theme.dart';
+import 'package:deutschplan/core/theme/dp_tokens.dart';
+import 'package:deutschplan/core/typography/dp_text.dart';
+import 'package:deutschplan/features/quiz/quiz_item_view.dart';
+import 'package:flutter/rendering.dart' show RenderParagraph;
+import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
+
+/// L8's, L12's and L14's German word (#405): `accessibility-performance.md`'s
+/// "long compounds soft-hyphenate", as DpHeadword does on W1 and T2.
+void main() {
+  Future<void> pump(WidgetTester tester, String word) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        theme: AppTheme.light(),
+        home: Scaffold(
+          body: Center(
+            child: SizedBox(
+              width: 360,
+              child: GermanWord(word, role: DpTextRole.display),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  testWidgets('#405 a long compound at display size breaks only at a space or '
+      'a soft hyphen, never mid-syllable', (tester) async {
+    await pump(tester, 'die Reiseversicherung');
+    final paragraph = tester.renderObject<RenderParagraph>(
+      find.byType(RichText),
+    );
+    final text = paragraph.text.toPlainText();
+    expect(text, contains(DpScript.softHyphen));
+
+    // The same span at the same width, where the line boundaries can be read.
+    final painter = TextPainter(
+      text: paragraph.text,
+      textDirection: TextDirection.ltr,
+      textScaler: paragraph.textScaler,
+    )..layout(maxWidth: paragraph.size.width);
+    addTearDown(painter.dispose);
+    final lines = <int>[];
+    var at = 0;
+    while (at < text.length) {
+      final line = painter.getLineBoundary(TextPosition(offset: at));
+      if (line.end <= at) break;
+      lines.add(line.end);
+      at = line.end;
+    }
+    expect(lines.length, greaterThan(1), reason: 'too long for one line');
+    for (final end in lines.take(lines.length - 1)) {
+      final before = text[end - 1];
+      expect(
+        before == ' ' || before == DpScript.softHyphen,
+        isTrue,
+        reason: 'a line ends in "${text.substring(0, end)}"',
+      );
+    }
+  });
+
+  testWidgets('#405 the article keeps its gender colour, and the word is read '
+      'out without the soft hyphen', (tester) async {
+    final semantics = tester.ensureSemantics();
+    await pump(tester, 'die Reiseversicherung');
+    final tokens = tester.element(find.byType(GermanWord)).tokens;
+    final spans = <TextSpan>[];
+    tester.widget<RichText>(find.byType(RichText)).text.visitChildren((span) {
+      if (span is TextSpan && span.text != null) spans.add(span);
+      return true;
+    });
+    expect(spans.first.text, 'die ');
+    expect(spans.first.style?.color, tokens.color.dieText);
+    expect(find.bySemanticsLabel('die Reiseversicherung'), findsOneWidget);
+    semantics.dispose();
+  });
+}

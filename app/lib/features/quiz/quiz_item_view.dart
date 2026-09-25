@@ -149,7 +149,8 @@ class QuizItemView extends ConsumerWidget {
 }
 
 /// A German word with its article in the gender's colour, as the app writes
-/// every noun.
+/// every noun: a [DpHeadword] at 600, so a long compound breaks at a soft
+/// hyphen rather than mid-syllable, and is read out without it (#405).
 class GermanWord extends StatelessWidget {
   const GermanWord(this.word, {super.key, this.role = DpTextRole.headline});
 
@@ -158,31 +159,16 @@ class GermanWord extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tokens = context.tokens;
     final space = word.indexOf(' ');
-    final article = space < 0 ? '' : word.substring(0, space);
-    final colour = switch (article) {
-      'der' => tokens.color.derText,
-      'die' => tokens.color.dieText,
-      'das' => tokens.color.dasText,
-      _ => null,
-    };
-    return Text.rich(
-      TextSpan(
-        children: <InlineSpan>[
-          if (colour != null)
-            TextSpan(
-              text: '$article ',
-              style: TextStyle(color: colour),
-            ),
-          TextSpan(text: colour == null ? word : word.substring(space + 1)),
-        ],
-      ),
-      style: DpText.styleFor(
-        tokens,
-        role,
-        color: tokens.color.ink,
-      ).copyWith(fontWeight: FontWeight.w600),
+    final first = space < 0 ? '' : word.substring(0, space);
+    final article = const <String>{'der', 'die', 'das'}.contains(first)
+        ? first
+        : null;
+    return DpHeadword(
+      article == null ? word : word.substring(space + 1),
+      article: article,
+      role: role,
+      weight: 600,
     );
   }
 }
