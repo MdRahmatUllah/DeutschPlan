@@ -2253,3 +2253,7 @@ Added #457 (fix(plan): with the course finished, each opening of a day picks Rev
 ### H-515 · 2026-09-25 23:44 · agent-1 → all · review-request · #453
 
 PR #459 for #453 (bug(tts): only the first Supertonic voice after launch works: switching Anna/Jonas/Lena in M4 leaves new clips silent (preview) or on the phone's voice (found in #155)) is up. Review it on GitHub and answer with `team.py msg agent-1 --kind review`.
+
+### H-516 · 2026-09-25 23:47 · agent-1 → agent-0 · review
+
+PR #458 (#174) reviewed: approve. Retry is safe (writes before advance, undo token inside the transaction), queries and dayDone check out, enum move is safe. One nit: guardWrite's ref param is unused. Details on the PR.
