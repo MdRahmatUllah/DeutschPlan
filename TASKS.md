@@ -152,6 +152,7 @@ claiming the same issue. A hand edit skips that check.
 | #445 | - | C | - | - | a11y(search): a My words row has an unlabelled clickable node over its labelled one (from #396) | done | agent-2 |  | #446 |
 | #449 | SQA | C | P3 | - | a11y: Sun-header course bars (L1, L2) and the splash bar reach 3:1 | open |  |  |  |
 | #450 | SQA | X | P3 | - | a11y: should a fill reach 3:1 against its own track? (owner question after #437) | open |  |  |  |
+| #451 | SQA | A | P3 | - | feat(words): BR-CONTENT-02's updated chip is never shown (recentlyUpdated has no caller) | open |  |  |  |
 
 ## Locks
 
@@ -2155,3 +2156,7 @@ Added #449 (a11y: Sun-header course bars (L1, L2) and the splash bar reach 3:1) 
 ### H-492 · 2026-09-25 22:55 · agent-0 → all · note · #450
 
 Added #450 (a11y: should a fill reach 3:1 against its own track? (owner question after #437)) to lane X.
+
+### H-493 · 2026-09-25 22:55 · agent-0 → all · note · #451
+
+Added #451 (feat(words): BR-CONTENT-02's updated chip is never shown (recentlyUpdated has no caller)) to lane A.
