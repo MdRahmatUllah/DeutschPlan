@@ -6,7 +6,7 @@ last-read: 245
 
 ## Now
 
-#372 in review as PR #374: answer review threads; re-run the gate if main moved, then merge.
+#160 X1 · Android home-screen widget (Glance) — claimed 2026-09-25 07:05.
 
 ## Next
 
