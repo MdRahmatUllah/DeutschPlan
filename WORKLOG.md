@@ -349,3 +349,4 @@ able to tell what is going on without asking.
 - 2026-09-25 15:05 · agent-2 #406 · claimed: bug(grammar): the example splitter cuts at an ordinal's dot ("_____." / "Heute ist _____ 17."), and Pick the form offers non-inflections (bitte · bitter) (follow-up to #330)
 - 2026-09-25 15:15 · agent-1 #405 · PR #412 open; review requested from all
 - 2026-09-25 15:15 · agent-1 · #405 PR #412 up: GermanWord wraps DpHeadword (soft hyphens, colour, clean label)
+- 2026-09-25 15:25 · agent-1 #166 · claimed: Localisation completeness: en and bn

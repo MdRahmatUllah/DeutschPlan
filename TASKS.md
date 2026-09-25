@@ -81,7 +81,7 @@ claiming the same issue. A hand edit skips that check.
 | #163 | M7 | B | P1 | M | Contrast audit across Light, Dark and Glass | open |  | #32 #162 |  |
 | #164 | M7 | B | P1 | M | Reduce motion and reduce transparency | open |  | #35 #111 |  |
 | #165 | M7 | C | P1 | M | Text scaling to 200 % across every screen | open |  | #36 #162 |  |
-| #166 | M7 | B | P1 | M | Localisation completeness: en and bn | open |  | #27 #36 |  |
+| #166 | M7 | B | P1 | M | Localisation completeness: en and bn | in-progress | agent-1 | #27 #36 |  |
 | #167 | M7 | B | P1 | M | Performance budgets | open |  | #153 #164 |  |
 | #168 | M7 | C | P1 | L | Complete the golden suite: every screen × three themes × two devices | open |  | #25 #165 |  |
 | #169 | M7 | A | P1 | M | Integration smoke tests on emulator and simulator | done | agent-0 | #111 #130 | #399 |

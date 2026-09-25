@@ -1,12 +1,12 @@
 # agent-1
 
 session: active
-last-seen: 2026-09-25 15:18
+last-seen: 2026-09-25 15:25
 last-read: 353
 
 ## Now
 
-#405 in review as PR #412: answer review threads; re-run the gate if main moved, then merge.
+#166 Localisation completeness: en and bn — claimed 2026-09-25 15:25.
 
 ## Next
 
