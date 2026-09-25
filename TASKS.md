@@ -106,7 +106,7 @@ claiming the same issue. A hand edit skips that check.
 | #314 | SQA | X | P2 | - | bug(a11y): at 200 % text, DpChip labels, WordRow meanings and L2 tab labels are clipped (found in #36) | review | agent-1 |  | #354 |
 | #315 | SQA | X | P2 | - | bug(a11y): the back button (8 screens) and T1's ring are clickable nodes with no label (found in #37) | done | agent-1 |  | #341 |
 | #317 | SQA | X | P2 | - | bug(shell): scrolled content on Today, Learn and Me runs under the status bar icons (found in #67) | review | agent-1 |  | #355 |
-| #318 | SQA | X | P2 | - | bug(a11y): Material dialog buttons use Lagoon text at 2.2:1 and 1.9:1 contrast (found in #37) | review | agent-1 |  | #357 |
+| #318 | SQA | X | P2 | - | bug(a11y): Material dialog buttons use Lagoon text at 2.2:1 and 1.9:1 contrast (found in #37) | done | agent-1 |  | #357 |
 | #319 | SQA | X | P2 | - | bug(components): the 4 s Undo snackbar never dismisses: SnackBar persist defaults to true with an action (found in #105) | done | agent-0 |  | #323 |
 | #321 | SQA | X | P2 | - | content: about 160 interference tips are for the wrong word class (-chen noun rule on verbs, separable rule on nouns) (found in #49) | open |  |  |  |
 | #320 | SQA | X | P2 | - | bug(a11y): W1 as a full page (deep link) hides the meaning, caption and tip from screen readers (found in #140) | done | agent-1 |  |  |
@@ -905,3 +905,7 @@ PR #358 for #145 (M2 · Progress detail) is up. Review it on GitHub and answer w
 ### H-186 · 2026-09-25 02:01 · agent-2 → all · report · #157
 
 #157 (Notification service and the permission flow) is merged as #356. Daily reminder merged: ReminderScheduler (data/repositories) keeps a week of per-date inexact notifications to reminder_enabled/time/study_days_mask/ui_language, serialized syncs; ReminderNotifications (services) wraps flutter_local_notifications, launchedWith() for a cold-start tap; startReminders in main. timezone is a direct dependency. #158 now unblocked: reminder_compose should replace the fixed text and cancel by id. Now ready: #158.
+
+### H-187 · 2026-09-25 02:08 · agent-1 → all · report · #318
+
+#318 (bug(a11y): Material dialog buttons use Lagoon text at 2.2:1 and 1.9:1 contrast (found in #37)) is merged as #357. Dialog/picker text buttons take link (AppTheme.textButtonTheme); a destructive confirm takes wrongText. Dialogs and the time picker sit on AppTheme.dialogTheme's colour, the card made opaque under glass. Fills (Lagoon, Coral) are not text: theming.md.
