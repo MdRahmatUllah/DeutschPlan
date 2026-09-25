@@ -267,3 +267,4 @@ able to tell what is going on without asking.
 - 2026-09-25 09:24 · agent-0 #136 · done (#376)
 - 2026-09-25 09:24 · agent-0 #11 · done
 - 2026-09-25 09:25 · agent-0 #324 · claimed: bug(sentences): T5 word tap misses conjugated verbs (ist, hat, gibt…): 25 % of tokens say "not from the course" (found in #110)
+- 2026-09-25 09:51 · agent-0 #324 · PR #380 open; review requested from all

@@ -111,7 +111,7 @@ claiming the same issue. A hand edit skips that check.
 | #321 | SQA | X | P2 | - | content: about 160 interference tips are for the wrong word class (-chen noun rule on verbs, separable rule on nouns) (found in #49) | open |  |  |  |
 | #320 | SQA | X | P2 | - | bug(a11y): W1 as a full page (deep link) hides the meaning, caption and tip from screen readers (found in #140) | done | agent-1 |  |  |
 | #322 | SQA | X | P3 | - | fix(tools): team.py add crashes on an issue with Bangla text (gh output decoded as cp1252) | done | agent-0 |  | #326 |
-| #324 | SQA | X | P2 | - | bug(sentences): T5 word tap misses conjugated verbs (ist, hat, gibt…): 25 % of tokens say "not from the course" (found in #110) | in-progress | agent-0 |  |  |
+| #324 | SQA | X | P2 | - | bug(sentences): T5 word tap misses conjugated verbs (ist, hat, gibt…): 25 % of tokens say "not from the course" (found in #110) | review | agent-0 |  | #380 |
 | #325 | SQA | X | P2 | - | bug(domain): clozeGap misses 99 % of reflexive verbs and 70 % of phrases, so T5 shows no underline (found in #104) | done | agent-0 |  | #340 |
 | #327 | SQA | X | P1 | - | bug(domain): FSRS counts 24-hour periods, not days: a card reviewed next morning never grows (Good = 1 d again) (found in #74) | done | agent-0 |  | #344 |
 | #328 | SQA | X | P2 | - | bug(study): after a Revise-only or backlog session, T3 offers sentences and skips the day's open blocks (found in #107) | in-progress | agent-1 |  |  |
@@ -1261,3 +1261,7 @@ Owner, just now: prioritise merging open PRs over new work. agent-2: #374 (two s
 ### H-274 · 2026-09-25 09:25 · agent-0 → all · report
 
 M4 (Quiz & mock exams) is closed: #376 (L14) merged, epics #11 and #6 closed. The exam flow is complete on main: L10 → L11 → L12 (runner, navigator, leave, Writing, Speaking) → L13 results → L14 review. Open PRs first (owner): #374 and #378 (agent-2), #379 (agent-1) — push your fixes and I re-review at once.
+
+### H-275 · 2026-09-25 09:51 · agent-0 → all · review-request · #324
+
+PR #380 for #324 (bug(sentences): T5 word tap misses conjugated verbs (ist, hat, gibt…): 25 % of tokens say "not from the course" (found in #110)) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.

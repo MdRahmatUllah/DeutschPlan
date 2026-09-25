@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-09-25 09:25
+last-seen: 2026-09-25 09:51
 last-read: 244
 
 ## Now
 
-#324 bug(sentences): T5 word tap misses conjugated verbs (ist, hat, gibt…): 25 % of tokens say "not from the course" (found in #110) — claimed 2026-09-25 09:25.
+#324 in review as PR #380: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
