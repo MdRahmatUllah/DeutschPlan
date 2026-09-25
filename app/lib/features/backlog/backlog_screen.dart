@@ -33,7 +33,8 @@ enum BacklogAction { known, suspended, removed }
 
 /// T4's rows (FR-T4-01): the uncompleted new plan rows from before today,
 /// newest day first (BR-PLAN-05), with their words. A stream, so a word
-/// studied from here leaves the list as it is rated.
+/// studied from here leaves the list as it is rated, and a word suspended or
+/// resumed from W1 over it shows its new status (#368).
 @riverpod
 class Backlog extends _$Backlog {
   @override
@@ -44,7 +45,7 @@ class Backlog extends _$Backlog {
         MeaningLanguage.bangla;
     return ref
         .watch(planRepositoryProvider)
-        .watchBacklog(ref.watch(todayProvider))
+        .watchBacklogWithStates(ref.watch(todayProvider))
         .asyncMap(
           (rows) async => <BacklogWord>[
             for (final row in rows)
@@ -79,8 +80,6 @@ class Backlog extends _$Backlog {
         await rating.suspend(uid);
         await _complete(row, at: ref.read(clockProvider)().toUtc());
     }
-    // A suspension touches word_state, which the plan stream does not watch.
-    ref.invalidateSelf();
   }
 
   /// The row action's *Undo*.
@@ -96,7 +95,6 @@ class Backlog extends _$Backlog {
         await _complete(row, at: null);
         await rating.resume(uid);
     }
-    ref.invalidateSelf();
   }
 
   Future<void> _complete(BacklogWord row, {required DateTime? at}) => ref

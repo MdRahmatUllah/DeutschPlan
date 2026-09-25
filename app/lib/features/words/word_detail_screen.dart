@@ -743,7 +743,8 @@ class _ActionsState extends ConsumerState<_Actions> {
                 Icons.pause,
                 l10n.wordSuspend,
                 () => act(
-                  (actions) => actions.suspend(uid),
+                  (actions) =>
+                      actions.suspend(uid, today: ref.read(todayProvider)),
                   l10n.wordSuspended(name),
                 ),
               ),

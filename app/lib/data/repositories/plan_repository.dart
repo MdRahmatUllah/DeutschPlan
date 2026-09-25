@@ -328,7 +328,37 @@ class PlanRepository {
   ///
   /// BR-PLAN-05 — there is no backlog table, because an incomplete plan row
   /// *is* the backlog. A second table would be a second truth.
-  Stream<List<PlanItem>> watchBacklog(String today) => _backlog(today).watch();
+  ///
+  /// A suspended word's row isn't counted (#368): the word is out of the plan
+  /// (BR-STATUS-03), so Today's backlog card doesn't wait on it, as
+  /// `DriftPlanStore.backlogBefore` doesn't.
+  Stream<List<PlanItem>> watchBacklog(String today) => _watched(
+    _withStates(today)..where(
+      _db.wordState.status.isNull() |
+          _db.wordState.status.equals('suspended').not(),
+    ),
+  );
+
+  /// Every backlog row, the suspended words' too, and again when one of its
+  /// words' state changes. T4 shows each word's status and studies only the
+  /// unsuspended ones, and a word suspended from W1 over it keeps its row
+  /// (#368).
+  Stream<List<PlanItem>> watchBacklogWithStates(String today) =>
+      _watched(_withStates(today));
+
+  JoinedSelectStatement<HasResultSet, dynamic> _withStates(String today) =>
+      _backlog(today).join(<Join<HasResultSet, dynamic>>[
+        leftOuterJoin(
+          _db.wordState,
+          _db.wordState.wordUid.equalsExp(_db.planItems.wordUid),
+        ),
+      ]);
+
+  Stream<List<PlanItem>> _watched(
+    JoinedSelectStatement<HasResultSet, dynamic> query,
+  ) => query.watch().map(
+    (rows) => <PlanItem>[for (final row in rows) row.readTable(_db.planItems)],
+  );
 
   /// [watchBacklog], once: what a backlog session starts from.
   Future<List<PlanItem>> backlog(String today) => _backlog(today).get();

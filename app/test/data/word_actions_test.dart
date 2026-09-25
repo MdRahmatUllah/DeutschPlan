@@ -13,6 +13,8 @@ import 'package:deutschplan/data/repositories/translation_repository.dart';
 import 'package:deutschplan/data/repositories/word_actions.dart';
 import 'package:deutschplan/data/repositories/word_repository.dart';
 import 'package:deutschplan/domain/fsrs.dart' show Rating;
+import 'package:deutschplan/domain/plan_engine.dart'
+    show ActiveStep, PlanEngine;
 import 'package:deutschplan/services/translation/translator.dart';
 import 'package:drift/drift.dart' hide isNotNull, isNull;
 import 'package:drift/native.dart';
@@ -188,39 +190,133 @@ void main() {
     test('suspend, and Undo resumes', () async {
       await actions.markKnown(uid, today: today);
       final before = await state();
-      final undo = await actions.suspend(uid);
+      final undo = await actions.suspend(uid, today: today);
       expect((await state())!.status, 'suspended');
       await undo();
       expect(await state(), before);
     });
 
     test('FR-W1-04 a word never met: Undo leaves no row, as before', () async {
-      final undo = await actions.suspend(uid);
+      final undo = await actions.suspend(uid, today: today);
       await undo();
       expect(await state(), isNull);
     });
 
-    test("#351 a planned word leaves every open plan row, today's and the "
-        "backlog's; Undo puts them back", () async {
-      await planned(today);
-      await planned('2026-02-27');
-      await planned('2026-02-20', kind: 'revise', done: '2026-02-20T08:00:00Z');
-      final undo = await actions.suspend(uid);
-      expect(await open(), isEmpty);
-      expect(await plan(), hasLength(1), reason: 'a done row is history');
+    test(
+      "#351 #368 a planned word leaves today's revision, skips today's "
+      'new row and keeps its backlog; Undo puts back exactly what went',
+      () async {
+        await planned(today);
+        await planned(today, kind: 'revise', skipped: true);
+        await planned('2026-02-27');
+        await planned('2026-02-26', skipped: true);
+        await planned(
+          '2026-02-20',
+          kind: 'revise',
+          done: '2026-02-20T08:00:00Z',
+        );
+        final before = await plan();
+        final undo = await actions.suspend(uid, today: today);
+        final after = await plan();
+        expect(
+          after.map((row) => (row.planDate, row.kind, row.skipped)),
+          unorderedEquals(<(String, String, int)>[
+            (today, 'new', 1),
+            ('2026-02-27', 'new', 0),
+            ('2026-02-26', 'new', 1),
+            ('2026-02-20', 'revise', 0),
+          ]),
+          reason: "today's new row is tomorrow's backlog; a done row, history",
+        );
 
-      await undo();
+        await undo();
+        expect(await plan(), unorderedEquals(before));
+        expect(await state(), isNull);
+      },
+    );
+
+    test("#368 today's done row stays: it's the day's history", () async {
+      await planned(today, done: '2026-03-02T08:00:00Z');
+      final before = await plan();
+      await actions.suspend(uid, today: today);
+      expect(await plan(), before);
+    });
+
+    test('#368 a word moved to today by Add to today, suspended and resumed, '
+        'is backlog from tomorrow', () async {
+      await planned('2026-02-27');
+      await actions.addToToday(uid, today: today, step: 'A1.1');
+      await actions.suspend(uid, today: today);
+      final store = DriftPlanStore(db, settings);
       expect(
-        (await open()).map((row) => row.planDate),
-        unorderedEquals(<String>[today, '2026-02-27']),
+        await store.backlogBefore('2026-03-03'),
+        isEmpty,
+        reason: 'suspended, it is out of the count',
       );
-      expect(await state(), isNull);
+      await actions.resume(uid);
+      expect(await store.backlogBefore('2026-03-03'), <String>[uid]);
+    });
+
+    test('#368 Suspend and Resume of a backlog word from an earlier step '
+        'leave it in T4', () async {
+      await db
+          .into(db.enrollments)
+          .insert(
+            EnrollmentsCompanion.insert(
+              sublevelCode: 'A1.2',
+              startedOn: '2026-03-01',
+              dailyNew: 10,
+              studyDaysMask: 127,
+            ),
+          );
+      await planned('2026-02-27');
+      await actions.suspend(uid, today: today);
+      await actions.resume(uid);
+      final backlog = await PlanRepository(db).backlog(today);
+      expect(backlog.single.wordUid, uid);
+      expect(backlog.single.planDate, '2026-02-27');
+    });
+
+    test("#368 today's only revision suspended, the reopened day picks no "
+        'others (BR-PLAN-08)', () async {
+      final engine = PlanEngine(
+        store: store,
+        reviseCount: 10,
+        backlogCatchupDays: 30,
+      );
+      await store.enroll(
+        const ActiveStep(
+          sublevelCode: 'A1.1',
+          startedOn: today,
+          dailyNew: 1,
+          studyDaysMask: PlanEngine.allDays,
+        ),
+      );
+      Future<void> due(String word) => db
+          .into(db.wordState)
+          .insert(
+            WordStateCompanion.insert(
+              wordUid: word,
+              status: const Value('learning'),
+              stability: const Value(5),
+              due: const Value(today),
+              lastReview: const Value('2026-02-25T09:00:00Z'),
+            ),
+          );
+      await due(ContentFixture.strasse);
+      expect((await engine.openDay(today)).revise, <String>[
+        ContentFixture.strasse,
+      ]);
+
+      await actions.suspend(ContentFixture.strasse, today: today);
+      await due(ContentFixture.tuer);
+      expect((await engine.openDay(today)).revise, isEmpty);
     });
 
     test('#351 a rating never resumes a suspended word; the schedule still '
         'moves', () async {
       await actions.markKnown(uid, today: today);
-      await actions.suspend(uid);
+      await actions.suspend(uid, today: today);
       final reps = (await state())!.reps;
       await rating.rate(uid, Rating.good, source: ReviewSource.daily);
       expect((await state())!.status, 'suspended');
@@ -228,7 +324,7 @@ void main() {
     });
 
     test('resume, and Undo suspends again', () async {
-      await actions.suspend(uid);
+      await actions.suspend(uid, today: today);
       final undo = await actions.resume(uid);
       expect((await state())!.status, isNot('suspended'));
       await undo();
