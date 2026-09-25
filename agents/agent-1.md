@@ -1,12 +1,12 @@
 # agent-1
 
 session: active
-last-seen: 2026-09-25 05:05
+last-seen: 2026-09-25 05:06
 last-read: 213
 
 ## Now
 
-Nothing claimed.
+#316 feat(words): the card-mode choice in W1 survives the next review (BR-FSRS-06) — claimed 2026-09-25 05:06.
 
 ## Next
 
