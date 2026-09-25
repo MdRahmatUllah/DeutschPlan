@@ -180,6 +180,34 @@ void main() {
     );
   });
 
+  testWidgets('#314 at 200 % a long headword and meaning still fit the '
+      "first row's height: the row is one line of each", (tester) async {
+    textAt(tester, 2);
+    final long = word(1);
+    await pump(
+      tester,
+      overrides: over(<StepWord>[
+        word(0),
+        (
+          meaning: 'to take part in something, to join in, to participate',
+          word: WordWithState(
+            word: long.word.word.copyWith(
+              german: 'die Wohnungsgeberbestätigung',
+            ),
+            state: null,
+            status: WordStatus.todo,
+          ),
+        ),
+      ]),
+    );
+    expectNothingClipped(tester, within: find.byType(WordRow));
+    final rows = find.byType(WordRow);
+    expect(
+      tester.getSize(rows.at(1)).height,
+      tester.getSize(rows.at(0)).height,
+    );
+  });
+
   testWidgets('FR-L2-02 the list is built as it scrolls', (tester) async {
     await pump(
       tester,
