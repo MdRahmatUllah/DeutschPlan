@@ -3918,7 +3918,7 @@
   },
   "reminderBody": "Today's plan is ready. A few minutes is enough.",
   "@reminderBody": {
-    "description": "The daily reminder's text until #158 builds it from the plan."
+    "description": "The daily reminder's text: before reminder_compose writes it from the plan, and when nothing is due but the learner wants the reminder anyway."
   },
   "reminderChannel": "Daily reminder",
   "@reminderChannel": {
@@ -4283,5 +4283,41 @@
   "searchAddWord": "Add a word I found",
   "@searchAddWord": {
     "description": "R1 idle: the button that opens R2 to add a word the learner came across."
+  },
+  "reminderRevisions": "{count, plural, =1{1 revision} other{{count} revisions}}",
+  "@reminderRevisions": {
+    "description": "The reminder's plan line (#158): the words to revise today. Joined with the others by ' · '.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reminderNew": "{count} new",
+  "@reminderNew": {
+    "description": "The reminder's plan line (#158): today's new words.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reminderMinutes": "about {minutes} min",
+  "@reminderMinutes": {
+    "description": "The reminder's plan line (#158): how long what is left takes (BR-PLAN-09).",
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "reminderGrammar": "Grammar due: {topic}",
+  "@reminderGrammar": {
+    "description": "The reminder's second line (#158): the first grammar topic due today. The topic is course content.",
+    "placeholders": {
+      "topic": {
+        "type": "String"
+      }
+    }
   }
 }

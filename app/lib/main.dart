@@ -8,7 +8,6 @@ import 'package:flutter/services.dart';
 import 'dart:io';
 
 import 'package:deutschplan/data/repositories/backup_repository.dart';
-import 'package:deutschplan/data/repositories/reminder_scheduler.dart';
 import 'package:deutschplan/core/theme/system_bars.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
@@ -20,8 +19,11 @@ import 'package:deutschplan/core/theme/glass_capability.dart';
 import 'package:deutschplan/core/theme/theme_mode.dart';
 import 'package:deutschplan/data/repositories/setting_keys.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
+import 'package:deutschplan/l10n/ui_language_locale.dart';
 import 'package:deutschplan/router/app_router.dart';
 import 'package:deutschplan/router/deep_links.dart';
+import 'package:deutschplan/services/background_tasks.dart';
+import 'package:deutschplan/services/background_work.dart';
 import 'package:deutschplan/services/reminder_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 // `Override` is not in the main barrel in Riverpod 3.
@@ -36,6 +38,8 @@ import 'package:flutter_localizations/flutter_localizations.dart'
     show GlobalWidgetsLocalizations;
 
 import 'dart:ui' show PlatformDispatcher;
+
+export 'package:deutschplan/l10n/ui_language_locale.dart';
 
 /// Entry point.
 ///
@@ -154,6 +158,7 @@ class _BootstrapHostState extends State<BootstrapHost> {
         startReminders(
           container,
           PlatformReminderNotifications(),
+          const WorkmanagerWork(),
           open: router.go,
         ),
       );
@@ -183,15 +188,17 @@ class _BootstrapHostState extends State<BootstrapHost> {
       );
 }
 
-/// The daily reminder (#157): the plugin set up, a tapped reminder opening
-/// what it links to, and the schedule kept to the settings from now on.
+/// The daily reminder (#157) and the background tasks (#158): the plugins
+/// set up, a tapped reminder opening what it links to, and the schedule kept
+/// to the settings from now on.
 ///
 /// Like [followPlatformBrightness], a function a test can call: `main` is
 /// the one no test does. A plugin that fails to start costs the reminder,
 /// never the app.
 Future<StreamSubscription<SettingKey<Object?>>?> startReminders(
   ProviderContainer container,
-  ReminderNotifications notifications, {
+  ReminderNotifications notifications,
+  BackgroundWork work, {
   required void Function(String location) open,
 }) async {
   void go(String link) => open(resolveDeepLink(Uri.parse(link)));
@@ -200,23 +207,12 @@ Future<StreamSubscription<SettingKey<Object?>>?> startReminders(
     // A tap that started the app arrives here, not through [init]'s
     // callback, which hears only taps while it runs.
     if (await notifications.launchedWith() case final link?) go(link);
+    await startBackgroundWork(work, container.read(clockProvider)());
   } on Object catch (error) {
     debugPrint('reminders: $error');
     return null;
   }
-  return ReminderScheduler(
-    container.read(settingsProvider),
-    notifications,
-    container.read(clockProvider),
-    (language) {
-      final l10n = lookupAppLocalizations(language.locale);
-      return (
-        title: l10n.reminderTitle,
-        body: l10n.reminderBody,
-        channel: l10n.reminderChannel,
-      );
-    },
-  ).follow();
+  return remindersFor(container, notifications, work).follow();
 }
 
 /// Keeps the theme notifier in step with the system light/dark switch.
@@ -257,15 +253,6 @@ Widget appFor(BootstrapResult result) => switch (result) {
 
 /// Supported UI languages, English first — see `supportedLocales` in [DeutschPlanApp].
 const List<Locale> supportedLocales = <Locale>[Locale('en'), Locale('bn')];
-
-/// The locale for each app language. `UiLanguage` lives in the data layer,
-/// which knows nothing of Flutter, so the mapping lives here.
-extension UiLanguageLocale on UiLanguage {
-  Locale get locale => switch (this) {
-    UiLanguage.english => const Locale('en'),
-    UiLanguage.bangla => const Locale('bn'),
-  };
-}
 
 /// The delegates every `MaterialApp` here takes — not gen_l10n's own list.
 ///

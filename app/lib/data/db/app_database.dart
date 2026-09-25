@@ -36,13 +36,17 @@ class AppDatabase extends _$AppDatabase {
   ///
   /// App-support, not documents, because user.db is ours and not something the
   /// learner browses — the export in M6 is how they get their data out.
-  AppDatabase.open({String name = 'user'})
+  ///
+  /// [shared] off is for a background task (#158): its engine is gone once
+  /// the task ends, and a shared database isolate it had started would go
+  /// with it, from under an app that opened in the meantime and joined it.
+  AppDatabase.open({String name = 'user', bool shared = true})
     : this(
         driftDatabase(
           name: name,
           native: DriftNativeOptions(
             databaseDirectory: getApplicationSupportDirectory,
-            shareAcrossIsolates: true,
+            shareAcrossIsolates: shared,
             setup: configureConnection,
           ),
         ),
@@ -195,7 +199,11 @@ class AppDatabase extends _$AppDatabase {
 /// - **Foreign keys** are off by default in SQLite and are per connection, not
 ///   stored in the file. The DDL is full of them, so without this line every
 ///   `REFERENCES` clause is decoration.
+/// - **Busy timeout**: a background task (#158) writes on a connection of its
+///   own, and a write that meets the app's waits for it rather than failing
+///   with "database is locked".
 void configureConnection(CommonDatabase db) {
   db.execute('PRAGMA journal_mode = WAL');
   db.execute('PRAGMA foreign_keys = ON');
+  db.execute('PRAGMA busy_timeout = 5000');
 }

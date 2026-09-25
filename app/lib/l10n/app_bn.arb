@@ -703,5 +703,9 @@
   "searchMyWordsFrom": "রসিদ, সাইনবোর্ড, চ্যাট থেকে",
   "searchSeen": "{count} বার দেখা",
   "searchMyWord": "আমার শব্দ",
-  "searchAddWord": "যে শব্দ পেয়েছি তা যোগ করুন"
+  "searchAddWord": "যে শব্দ পেয়েছি তা যোগ করুন",
+  "reminderRevisions": "{count, plural, other{{count}টি রিভিশন}}",
+  "reminderNew": "{count}টি নতুন",
+  "reminderMinutes": "প্রায় {minutes} মিনিট",
+  "reminderGrammar": "ব্যাকরণ বাকি: {topic}"
 }

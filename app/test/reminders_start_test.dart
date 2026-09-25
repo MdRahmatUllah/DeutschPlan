@@ -3,12 +3,13 @@ import 'package:deutschplan/data/db/app_database.dart';
 import 'package:deutschplan/data/repositories/setting_keys.dart';
 import 'package:deutschplan/data/repositories/settings_repository.dart';
 import 'package:deutschplan/main.dart';
+import 'package:deutschplan/services/background_work.dart';
 import 'package:deutschplan/services/reminder_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
 
-import 'data/reminder_scheduler_test.dart' show FakeReminders;
+import 'data/reminder_scheduler_test.dart' show FakeReminders, FakeWork;
 
 class _Broken extends FakeReminders {
   @override
@@ -16,7 +17,7 @@ class _Broken extends FakeReminders {
       Future<void>.error(StateError('no plugin'));
 }
 
-/// #157: what main wires up for the reminder.
+/// #157, #158: what main wires up for the reminder and the background tasks.
 void main() {
   late AppDatabase db;
   late SettingsRepository settings;
@@ -46,6 +47,7 @@ void main() {
     final following = await startReminders(
       container,
       reminders,
+      FakeWork(),
       open: opened.add,
     );
     addTearDown(() => following?.cancel());
@@ -61,6 +63,7 @@ void main() {
     final following = await startReminders(
       container,
       reminders,
+      FakeWork(),
       open: opened.add,
     );
     addTearDown(() => following?.cancel());
@@ -72,6 +75,7 @@ void main() {
     final following = await startReminders(
       container,
       FakeReminders(),
+      FakeWork(),
       open: opened.add,
     );
     addTearDown(() => following?.cancel());
@@ -80,7 +84,13 @@ void main() {
 
   test("the schedule follows the settings, in the app's language", () async {
     final reminders = FakeReminders();
-    final following = await startReminders(container, reminders, open: (_) {});
+    final work = FakeWork();
+    final following = await startReminders(
+      container,
+      reminders,
+      work,
+      open: (_) {},
+    );
     addTearDown(() => following?.cancel());
 
     await settings.write(SettingKeys.reminderEnabled, true);
@@ -90,6 +100,26 @@ void main() {
     expect(reminders.scheduled, hasLength(7));
     expect(reminders.copy?.title, isNot(isEmpty));
     expect(reminders.copy?.title, isNot('Time for German'));
+    expect(work.queued, contains(BackgroundTask.reminderCompose));
+  });
+
+  test("#158: tonight's plan_pregenerate and the hourly widget", () async {
+    final work = FakeWork();
+    final following = await startReminders(
+      container,
+      FakeReminders(),
+      work,
+      open: (_) {},
+    );
+    addTearDown(() => following?.cancel());
+
+    expect(work.started, isTrue);
+    // 08:00 to 00:05 tomorrow.
+    expect(
+      work.queued[BackgroundTask.planPregenerate],
+      const Duration(hours: 16, minutes: 5),
+    );
+    expect(work.hourlyTasks, <BackgroundTask>{BackgroundTask.widgetRefresh});
   });
 
   test(
@@ -98,6 +128,7 @@ void main() {
       final following = await startReminders(
         container,
         _Broken(),
+        FakeWork(),
         open: (_) {},
       );
       expect(following, isNull);
