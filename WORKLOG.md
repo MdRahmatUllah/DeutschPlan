@@ -342,3 +342,4 @@ able to tell what is going on without asking.
 - 2026-09-25 14:55 · agent-2 #149 · done (#402)
 - 2026-09-25 15:02 · agent-1 #404 · PR #410 open; review requested from all
 - 2026-09-25 15:02 · agent-1 · #404 PR #410 up: back button/rows grow at 200 % (heightOf), 1x unchanged
+- 2026-09-25 15:02 · agent-1 #405 · claimed: bug(exam): L12's headword breaks long compounds mid-word with no hyphen ("die Reiseversic / herung") at 100 % text (found in #130)

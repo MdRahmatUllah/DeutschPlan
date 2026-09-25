@@ -6,7 +6,7 @@ last-read: 342
 
 ## Now
 
-#404 in review as PR #410: answer review threads; re-run the gate if main moved, then merge.
+#405 bug(exam): L12's headword breaks long compounds mid-word with no hyphen ("die Reiseversic / herung") at 100 % text (found in #130) — claimed 2026-09-25 15:02.
 
 ## Next
 
