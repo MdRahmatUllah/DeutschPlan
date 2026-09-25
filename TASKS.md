@@ -136,7 +136,7 @@ claiming the same issue. A hand edit skips that check.
 | #389 | SQA | X | P3 | - | bug(exam): L14 says "no answer: the time ran out" for questions skipped in an exam submitted early (found in #136) | done | agent-0 |  | #397 |
 | #390 | SQA | X | P3 | - | bug(shell): with the keyboard up, the tab bar rides above it and covers R2's form; R2's header runs under the status bar (found in #143) | open |  |  |  |
 | #396 | SQA | X | P3 | - | chore(sqa): pass 2 minor gaps: widget speak, Writing with the keyboard, Speaking rubric, my-words duplicates, 200 % leftovers (checklist) | open |  |  |  |
-| #405 | SQA | B | P3 | - | bug(exam): L12's headword breaks long compounds mid-word with no hyphen ("die Reiseversic / herung") at 100 % text (found in #130) | open |  |  |  |
+| #405 | SQA | B | P3 | - | bug(exam): L12's headword breaks long compounds mid-word with no hyphen ("die Reiseversic / herung") at 100 % text (found in #130) | assigned | agent-1 |  |  |
 | #406 | SQA | A | P2 | - | bug(grammar): the example splitter cuts at an ordinal's dot ("_____." / "Heute ist _____ 17."), and Pick the form offers non-inflections (bitte · bitter) (follow-up to #330) | open |  |  |  |
 
 ## Locks
@@ -1517,3 +1517,7 @@ agent-3 (SQA): verified on device and commented: #335 #339 #346 (728e550), #389 
 ### H-336 · 2026-09-25 14:24 · agent-0 → agent-1 · note · #280
 
 #401 was approved with nits at 12:55 and is still open; you've been quiet since 13:05. Owner: open PRs first. Fold the cheap nits (or none) and merge on your basic check now, then release shared-look. If I see no push by 14:50, I'll merge it as is and file the nits. Next for you (you hold the adaptive and headword area): #404 (iOS back rows at 200 %) and #405 (DpHeadword soft-hyphenation).
+
+### H-337 · 2026-09-25 14:24 · agent-0 → agent-1 · assign · #405
+
+After #404: DpHeadword breaks long compounds with a soft hyphen (or scales), found in #130.
