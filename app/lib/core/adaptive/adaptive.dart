@@ -151,12 +151,14 @@ class AdaptiveScaffold extends StatelessWidget {
   Widget _bar(BuildContext context) {
     final cupertinoChrome = context.isCupertino;
     final role = cupertinoChrome ? DpTextRole.bodyLarge : DpTextRole.title;
+    final size = cupertinoChrome ? null : materialTitleSize;
     final back = leading ?? _defaultBack(context);
     // The artboard's height is a minimum (#314): at 200 % text the title's
     // line outgrows 56 dp, and the bar grows with it rather than cut it.
     final line = _titleLine(
       context,
       role,
+      size: size,
       bangla: title != null && DpScript.hasBengali(title!),
     );
     final height = math.max(
@@ -169,12 +171,7 @@ class AdaptiveScaffold extends StatelessWidget {
         // One line, and a title that doesn't fit is cut after its last whole
         // word with "…" (#280). A category's name can run to thirty letters,
         // and a bar is one line tall.
-        : DpOneLine(
-            title!,
-            role: role,
-            weight: 600,
-            size: cupertinoChrome ? null : materialTitleSize,
-          );
+        : DpOneLine(title!, role: role, weight: 600, size: size);
 
     if (!cupertinoChrome) {
       return SizedBox(
@@ -208,12 +205,13 @@ class AdaptiveScaffold extends StatelessWidget {
   }
 }
 
-/// The height of one line of a bar title at [role], at the learner's text
-/// size: Android's at [AdaptiveScaffold.materialTitleSize], and a Bangla one
-/// a role up, as DpOneLine sets it.
+/// The height of one line of a bar title at [role] and [size], the ones its
+/// DpOneLine gets, at the learner's text size, with a Bangla run a role up,
+/// as DpOneLine sets it.
 double _titleLine(
   BuildContext context,
   DpTextRole role, {
+  required double? size,
   required bool bangla,
 }) {
   final tokens = context.tokens;
@@ -223,10 +221,7 @@ double _titleLine(
     return scaler.scale(size ?? token.size) * token.heightFactor;
   }
 
-  final latin = lineOf(
-    role,
-    size: role == DpTextRole.title ? AdaptiveScaffold.materialTitleSize : null,
-  );
+  final latin = lineOf(role, size: size);
   return bangla ? math.max(latin, lineOf(role.oneStepLarger)) : latin;
 }
 

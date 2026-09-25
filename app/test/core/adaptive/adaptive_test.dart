@@ -4,6 +4,9 @@ import 'package:deutschplan/core/theme/dp_surface.dart';
 import 'package:deutschplan/core/theme/app_theme.dart';
 import 'package:deutschplan/core/theme/dp_tokens.dart';
 import 'package:deutschplan/core/typography/dp_text.dart';
+
+import '../text_clipping.dart';
+
 import 'package:flutter/rendering.dart' show RenderParagraph;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
@@ -262,7 +265,14 @@ void main() {
         final text = barTitle(tester);
         final shown = text.text.toPlainText();
         expect(shown, endsWith(DpOneLine.ellipsis), reason: '$chrome');
-        expect(long.startsWith(shown.substring(0, shown.length - 1)), isTrue);
+        final kept = shown.substring(0, shown.length - 1);
+        expect(long.startsWith(kept), isTrue, reason: '$chrome');
+        expect(
+          ' ,;:'.contains(long[kept.length]),
+          isTrue,
+          reason:
+              '$chrome: cut between words, not in "${long.substring(0, kept.length + 1)}"',
+        );
         expect(text.maxLines, 1, reason: '$chrome');
         final title = tester.getRect(find.byType(DpOneLine));
         expect(
@@ -319,6 +329,17 @@ void main() {
           <double>[bangla],
           reason: '$chrome',
         );
+      }
+    });
+
+    testWidgets('#280 #314 at 200 % text the bar grows: its title is not cut, '
+        'Latin or Bangla, in either chrome', (tester) async {
+      textAt(tester, 2);
+      for (final chrome in AdaptiveChrome.values) {
+        for (final title in <String>['Settings', 'সেটিংস']) {
+          await bar(tester, chrome, title);
+          expectNothingClipped(tester, within: find.byType(DpOneLine));
+        }
       }
     });
 

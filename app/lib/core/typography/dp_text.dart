@@ -340,7 +340,9 @@ class DpOneLine extends StatelessWidget {
                 maxLines: 1,
                 softWrap: false,
                 overflow: TextOverflow.clip,
-                semanticsLabel: text,
+                // Whole when cut. Uncut, the spans read themselves, each in
+                // its own voice (bn-BD, de-DE).
+                semanticsLabel: shown == text ? null : text,
               )
             : Text(
                 shown,
