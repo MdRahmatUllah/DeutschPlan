@@ -297,6 +297,21 @@ class ModelRepository {
     return File('${root.path}/recordings/$attemptId.m4a');
   }
 
+  /// M7 (#149): the recordings of [attempts], or every one when it is null.
+  /// The models beside them stay.
+  Future<void> deleteRecordings([Iterable<int>? attempts]) async {
+    if (attempts == null) {
+      final root = support ?? await getApplicationSupportDirectory();
+      final folder = Directory('${root.path}/recordings');
+      if (await folder.exists()) await folder.delete(recursive: true);
+      return;
+    }
+    for (final attempt in attempts) {
+      final file = await recordingFor(attempt);
+      if (await file.exists()) await file.delete();
+    }
+  }
+
   /// The staging directory to download into, keeping whatever is already
   /// there.
   ///

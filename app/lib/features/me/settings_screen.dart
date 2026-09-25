@@ -10,6 +10,7 @@ import 'package:deutschplan/data/repositories/model_repository.dart';
 import 'package:deutschplan/data/repositories/setting_keys.dart';
 import 'package:deutschplan/data/repositories/settings_repository.dart';
 import 'package:deutschplan/domain/fsrs.dart';
+import 'package:deutschplan/features/me/reset_flow.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
 import 'package:deutschplan/router/cross_tab.dart';
 import 'package:deutschplan/router/routes.dart';
@@ -520,9 +521,7 @@ class SettingsScreen extends ConsumerWidget {
               _Row(
                 title: l10n.settingsReset,
                 subtitle: l10n.settingsResetNote,
-                // ponytail: M7's sheet is #150; until it lands the row shows
-                // where Reset will be and does nothing.
-                chevron: true,
+                onTap: () => openReset(context, ref),
               ),
               _Row(
                 title: l10n.settingsRestart,
@@ -750,7 +749,6 @@ class _Row extends StatelessWidget {
     this.trailing,
     this.value,
     this.onTap,
-    this.chevron = false,
     this.labelledByControl = false,
   });
 
@@ -759,7 +757,6 @@ class _Row extends StatelessWidget {
   final Widget? trailing;
   final String? value;
   final VoidCallback? onTap;
-  final bool chevron;
 
   /// The control already says the title — a switch's label, a slider's — so
   /// a screen reader hears it once.
@@ -800,7 +797,7 @@ class _Row extends StatelessWidget {
           ),
           const SizedBox(width: 12),
           ?trailing,
-          if (onTap != null || chevron) ...<Widget>[
+          if (onTap != null) ...<Widget>[
             if (value != null)
               DpText(
                 value,

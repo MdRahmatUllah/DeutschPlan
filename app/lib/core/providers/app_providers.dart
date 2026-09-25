@@ -38,6 +38,7 @@ import 'package:deutschplan/data/repositories/progress_repository.dart';
 import 'package:deutschplan/data/repositories/quiz_run_service.dart';
 import 'package:deutschplan/data/repositories/quiz_store.dart';
 import 'package:deutschplan/data/repositories/rating_service.dart';
+import 'package:deutschplan/data/repositories/reset_repository.dart';
 import 'package:deutschplan/data/repositories/search_repository.dart';
 import 'package:deutschplan/data/repositories/setting_keys.dart';
 import 'package:deutschplan/data/repositories/settings_repository.dart';
@@ -251,6 +252,13 @@ SearchRepository searchRepository(Ref ref) =>
 @riverpod
 BackupRepository backupRepository(Ref ref) =>
     BackupRepository(ref.watch(appDatabaseProvider));
+
+/// M7 · Reset (#149).
+@riverpod
+ResetRepository resetRepository(Ref ref) => ResetRepository(
+  ref.watch(appDatabaseProvider),
+  ref.watch(settingsProvider),
+);
 
 /// Rating a word: FSRS joined to the writes (#78).
 ///
