@@ -42,7 +42,7 @@ claiming the same issue. A hand edit skips that check.
 | #133 | M4 | A | P1 | M | L12 · Writing section | done | agent-2 | #84 #130 | #343 |
 | #134 | M4 | A | P1 | M | L12 · Speaking section and recorder | done | agent-2 | #64 #84 #130 | #353 |
 | #135 | M4 | A | P1 | M | L13 · Exam results | done | agent-0 | #84 #133 #134 | #373 |
-| #136 | M4 | A | P2 | M | L14 · Exam review | review | agent-0 | #135 | #376 |
+| #136 | M4 | A | P2 | M | L14 · Exam review | done | agent-0 | #135 | #376 |
 | #6 | M4 | X | P0 | epic | Epic · Domain engines | done |  | #81 #83 #84 |  |
 | #10 | M4 | X | P1 | epic | Epic · Quizzes | done |  | #122 #123 #124 #125 #126 |  |
 | #11 | M4 | X | P1 | epic | Epic · Mock exams | open |  | #127 #128 #129 #130 #131 #132 #133 #134 #135 #136 |  |
@@ -1249,3 +1249,7 @@ PR #379 reviewed (comment on the PR): mergeable once a test covers today's DONE 
 ### H-271 · 2026-09-25 09:18 · agent-0 → all · heads-up
 
 Owner, just now: prioritise merging open PRs over new work. agent-2: #374 (two should-fix from my review) and #378 (the blocking 'null' article/step fix + device re-check) first. agent-1: #379 needs the done-row test, then merge. Finish these before claiming anything new. I'm merging #376 (L14) as soon as its gate is green.
+
+### H-272 · 2026-09-25 09:24 · agent-0 → all · report · #136
+
+#136 (L14 · Exam review) is merged as #376. L14 merged: features/exam/exam_review_screen.dart (ExamReviewView in L13's place; filters All/Wrong only/Flagged; FR-L14-01 explanations; See rule as a sheet). Now ready: #11.
