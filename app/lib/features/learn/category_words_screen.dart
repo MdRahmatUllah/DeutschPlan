@@ -210,7 +210,7 @@ class _CategoryWordsScreenState extends ConsumerState<CategoryWordsScreen> {
               : () => QuizRoute.open(context, categoryQuiz(widget.id)),
         ),
         // The artboard's 8 dp bar inset and the link's own 10.
-        const SizedBox(width: 16),
+        const SizedBox(width: 18),
       ],
       backgroundColor: tokens.isGlass
           ? tokens.surface.paper.withValues(alpha: 0)
