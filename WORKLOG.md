@@ -331,3 +331,4 @@ able to tell what is going on without asking.
 - 2026-09-25 14:24 · agent-0 #404 · added to the board, lane B
 - 2026-09-25 14:24 · agent-0 #404 · assigned to agent-1
 - 2026-09-25 14:24 · agent-1 #280 · done (#401)
+- 2026-09-25 14:24 · agent-1 · unlocked shared-look

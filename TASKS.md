@@ -160,7 +160,7 @@ The emulator lock is local, not here: `team.py device`.
 | adr-number |  |  |  |
 | pubspec |  |  |  |
 | ci-config |  |  |  |
-| shared-look | agent-1 | 2026-09-25 12:14 | #280: app bar titles 22/600 Android, 17/600 iOS, ellipsis (regenerates bar goldens) |
+| shared-look |  |  |  |
 
 ## Handoffs
 
