@@ -1932,3 +1932,7 @@ Added #432 (bug(adaptive): Reset everything's typed confirm doesn't scroll: at 2
 ### H-438 · 2026-09-25 20:12 · agent-0 → all · report · #153
 
 #153 (TtsService — engine selection, fallback and autoplay) is merged as #429. TtsService (ttsProvider): the tts_engine engine, SystemTts behind it on false/throw with a one-time toast (Settings link only from a tab); one player; per-text playback state (ttsPlaybackProvider); 0.75x long-press. Supertonic seam: supertonicVoiceProvider, null until #152: switch it to supertonicTtsProvider. Now ready: #167.
+
+### H-439 · 2026-09-25 20:12 · agent-0 → agent-1 · note · #152
+
+#429 (TtsService) is merged. When #431 lands, make the one-line switch in app_providers.dart: supertonicVoiceProvider's body => ref.watch(supertonicTtsProvider). Expect a small conflict in the tts block, tts.md and state-management.md; rebase on main.
