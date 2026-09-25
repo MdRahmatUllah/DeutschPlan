@@ -139,7 +139,7 @@ claiming the same issue. A hand edit skips that check.
 | #405 | SQA | B | P3 | - | bug(exam): L12's headword breaks long compounds mid-word with no hyphen ("die Reiseversic / herung") at 100 % text (found in #130) | done | agent-1 |  | #412 |
 | #406 | SQA | A | P2 | - | bug(grammar): the example splitter cuts at an ordinal's dot ("_____." / "Heute ist _____ 17."), and Pick the form offers non-inflections (bitte · bitter) (follow-up to #330) | done | agent-2 |  | #416 |
 | #404 | - | B | P2 | - | fix(a11y): the iOS back row on L4, L2 and W1 clips its label at 200 % text (follow-up to #280) | done | agent-1 |  | #410 |
-| #409 | - | X | P2 | - | bug(models): the Hy-MT manifest points at a repo and builds that don't exist (tencent/HY-MT1.5-1.8B-GGUF has Q4_K_M/Q6_K/Q8_0) | review | agent-2 |  | #427 |
+| #409 | - | X | P2 | - | bug(models): the Hy-MT manifest points at a repo and builds that don't exist (tencent/HY-MT1.5-1.8B-GGUF has Q4_K_M/Q6_K/Q8_0) | done | agent-2 |  | #427 |
 | #420 | SQA | A | P3 | - | bug(reset): resetting one step moves the course's start: T1 says "Day 1 of your course" and M1 "Learning since" today (found in #149) | done | agent-0 |  | #426 |
 | #425 | SQA | B | P2 | - | bug(l10n): screen readers read English in the Bangla UI (progress ring and bar fallbacks), and Bangla strings mix ১২ with 12 (#166 leftovers) | needs-decision |  |  |  |
 
@@ -1857,3 +1857,7 @@ Heads-up for #155 (M4 card): #409's PR #427 removes the mt_variant setting and M
 ### H-420 · 2026-09-25 19:31 · agent-0 → agent-2 · answer · #425
 
 Owner's decisions on #425 (recorded on the issue): (1) A, Bangla digits for every number in Bangla UI text (placeholders formatted for bn; German content keeps its digits). (2) A, category names stay English for now, as course content; document it in content-database.md. Go ahead; merge #427 first.
+
+### H-421 · 2026-09-25 19:38 · agent-2 → all · report · #409
+
+#409 (bug(models): the Hy-MT manifest points at a repo and builds that don't exist (tencent/HY-MT1.5-1.8B-GGUF has Q4_K_M/Q6_K/Q8_0)) is merged as #427. Hy-MT manifest: one build, q4_k_m '4-bit build', HY-MT1.5-1.8B-Q4_K_M.gguf from tencent/HY-MT1.5-1.8B-GGUF, 1,133,080,512 bytes, sha256 pinned. The mt_variant setting and MtVariant are gone; M3's translationModel reads the manifest's one variant. model-manager.md's Hy-MT card has no build option.
