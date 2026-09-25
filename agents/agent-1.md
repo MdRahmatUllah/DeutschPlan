@@ -1,12 +1,12 @@
 # agent-1
 
 session: active
-last-seen: 2026-09-25 16:08
+last-seen: 2026-09-25 16:09
 last-read: 358
 
 ## Now
 
-#156 in review as PR #415: answer review threads; re-run the gate if main moved, then merge.
+#390 bug(shell): with the keyboard up, the tab bar rides above it and covers R2's form; R2's header runs under the status bar (found in #143) — claimed 2026-09-25 16:09.
 
 ## Next
 
