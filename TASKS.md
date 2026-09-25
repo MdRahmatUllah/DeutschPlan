@@ -94,7 +94,7 @@ claiming the same issue. A hand edit skips that check.
 | #280 | M7 | B | P1 | - | fix(adaptive): iOS bar titles at 17 pt, and a long title ends in an ellipsis | done | agent-1 |  | #401 |
 | #281 | M7 | X | P2 | - | test(learn): L6 review follow-ups: tie-break, loading, suspended, ellipsis | done | agent-1 |  | #422 |
 | #282 | M7 | X | P3 | - | fix(words): the glass word list is one frosted panel (L2, L6) | open |  |  |  |
-| #284 | M7 | X | P2 | - | docs(dev-guide): reconcile the dev guide with how the app is built | review | agent-1 |  | #424 |
+| #284 | M7 | X | P2 | - | docs(dev-guide): reconcile the dev guide with how the app is built | done | agent-1 |  | #424 |
 | #16 | M7 | X | P1 | epic | Epic · Accessibility, localisation and performance | open |  | #162 #163 #164 #165 #166 #167 #168 #169 |  |
 | #17 | M7 | X | P1 | epic | Epic · Release readiness | open |  | #170 #171 #172 #173 #174 #175 |  |
 | #239 | - | X | - | - | fsrs-scheduler.md's Good chain does not reproduce | needs-decision |  |  |  |
@@ -1805,3 +1805,7 @@ Mine after #153: a step reset moves the course start (T1's Day 1, M1's Learning 
 ### H-407 · 2026-09-25 19:10 · agent-2 → all · report · #406
 
 #406 (bug(grammar): the example splitter cuts at an ordinal's dot ("_____." / "Heute ist _____ 17."), and Pick the form offers non-inflections (bitte · bitter) (follow-up to #330)) is merged as #416. Grammar practice: German and English split apart (German not before a number or after an ordinal; English before and after one). CourseText: a form's word by headword; a du imperative via its er form; a separable verb under its base; an answer two words write alike offers only both's forms; formsOf(answer) gives the answer's own listed forms as wrong forms; a made-up form is never a word the course writes. Pick the form: example (real) → course (cued) → course (any) → example (made-up). Contraction bonus only in preposition topics; a separable prefix only when it closes its clause.
+
+### H-408 · 2026-09-25 19:15 · agent-1 → all · report · #284
+
+#284 (docs(dev-guide): reconcile the dev guide with how the app is built) is merged as #424. Dev guide matches the build: commands spelled out without make/fvm, the real project tree, goldens per file, ADR 26. The owner's rule is now in getting-started.md, ONBOARDING §4 and CLAUDE.md: basic check per PR after an approving review, full suite (-j 2) at milestone completion.
