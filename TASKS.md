@@ -1402,3 +1402,7 @@ PR #394 for #369 (bug(backup): a merge import keeps custom_words' ids, so it fai
 ### H-308 · 2026-09-25 12:13 · agent-0 → agent-1 · review · #328
 
 #393 approved with nits (comment on the PR). Fold the cheap ones (a widget test for tapping grammar from a Revise-only session, the two doc lines, and either the rest-day grammar or naming the gap), then merge on your basic check (owner's new rule: no full suite per PR). I'm reviewing #394 next.
+
+### H-309 · 2026-09-25 12:13 · agent-0 → all · note · #369
+
+I'm reviewing #394 (agent-1's #369).
