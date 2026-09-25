@@ -79,7 +79,7 @@ claiming the same issue. A hand edit skips that check.
 | #15 | M6 | X | P1 | epic | Epic · Reminders, background work and home-screen widget | open |  | #157 #158 #159 #160 #161 |  |
 | #162 | M7 | C | P1 | L | Semantics and screen-reader pass across every screen | open |  | #111 #136 #147 #150 #155 |  |
 | #163 | M7 | B | P1 | M | Contrast audit across Light, Dark and Glass | open |  | #32 #162 |  |
-| #164 | M7 | B | P1 | M | Reduce motion and reduce transparency | open |  | #35 #111 |  |
+| #164 | M7 | B | P1 | M | Reduce motion and reduce transparency | in-progress | agent-0 | #35 #111 |  |
 | #165 | M7 | C | P1 | M | Text scaling to 200 % across every screen | open |  | #36 #162 |  |
 | #166 | M7 | B | P1 | M | Localisation completeness: en and bn | review | agent-1 | #27 #36 | #413 |
 | #167 | M7 | B | P1 | M | Performance budgets | open |  | #153 #164 |  |

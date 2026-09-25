@@ -6,7 +6,7 @@ last-read: 301
 
 ## Now
 
-#142 in review as PR #414: answer review threads; re-run the gate if main moved, then merge.
+#164 Reduce motion and reduce transparency — claimed 2026-09-25 15:56.
 
 ## Next
 
