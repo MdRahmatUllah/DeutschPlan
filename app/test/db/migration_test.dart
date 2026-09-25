@@ -66,6 +66,21 @@ void main() {
     }
   });
 
+  test('v2 -> v3: a word already there keeps the card the rule gave it '
+      '(BR-FSRS-06, #316)', () async {
+    final schema = await verifier.schemaAt(2);
+    schema.rawDatabase.execute(
+      "INSERT INTO word_state (word_uid, card_mode) VALUES ('w1', 'cloze')",
+    );
+    final db = AppDatabase(schema.newConnection());
+    addTearDown(db.close);
+    await verifier.migrateAndValidate(db, 3, options: _strict);
+
+    final row = await db.select(db.wordState).getSingle();
+    expect(row.cardMode, 'cloze');
+    expect(row.cardModeManual, 0);
+  });
+
   test('the live DDL still matches the fixture for its own version', () async {
     // The one that bites day to day: editing user_schema.drift without
     // bumping the version and re-dumping leaves the fixture describing a

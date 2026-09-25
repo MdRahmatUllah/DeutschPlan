@@ -67,7 +67,7 @@ class AppDatabase extends _$AppDatabase {
       );
 
   /// Readable without an instance, which the migration tests need.
-  static const int latestSchemaVersion = 2;
+  static const int latestSchemaVersion = 3;
 
   /// The tables this database actually owns.
   ///
@@ -122,6 +122,10 @@ class AppDatabase extends _$AppDatabase {
             schema.contentUpdates,
             schema.contentUpdates.recordedAt,
           ),
+          // v3: `word_state.card_mode_manual` (#316). Every row already there
+          // was the rule's, so the default 0 says exactly that.
+          from2To3: (m, schema) =>
+              m.addColumn(schema.wordState, schema.wordState.cardModeManual),
         )(m, from, to),
       );
 

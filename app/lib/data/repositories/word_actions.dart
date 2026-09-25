@@ -179,15 +179,18 @@ class WordActions {
         });
       });
 
-  /// FR-W1-03: the card the word's revisions show, plain or cloze.
-  // ponytail: BR-FSRS-06's rule works card_mode out again on every review, so
-  // the choice lasts until the next one; #316 records it so the rule keeps it.
+  /// FR-W1-03: the card the word's revisions show, plain or cloze. Marked as
+  /// the learner's own, so BR-FSRS-06's rule keeps it from then on (#316).
   Future<Undo> setCardMode(String uid, CardMode mode) async {
     final before = await _stateOf(uid);
     await _db
         .into(_db.wordState)
         .insertOnConflictUpdate(
-          WordStateCompanion.insert(wordUid: uid, cardMode: Value(mode.name)),
+          WordStateCompanion.insert(
+            wordUid: uid,
+            cardMode: Value(mode.name),
+            cardModeManual: const Value(1),
+          ),
         );
     return () => _restore(uid, before);
   }

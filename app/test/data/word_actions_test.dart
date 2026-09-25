@@ -293,6 +293,44 @@ void main() {
       await undo();
       expect((await state())!.cardMode, 'cloze');
     });
+
+    Future<void> rate(List<Rating> ratings) async {
+      for (final r in ratings) {
+        await rating.rate(uid, r, source: ReviewSource.daily);
+      }
+    }
+
+    test('BR-FSRS-06 a card put back to plain stays plain through a run of '
+        'Good', () async {
+      await rate(<Rating>[Rating.good, Rating.good]);
+      expect((await state())!.cardMode, 'cloze', reason: 'the rule');
+      await actions.setCardMode(uid, CardMode.plain);
+      await rate(<Rating>[Rating.good, Rating.good]);
+      expect((await state())!.cardMode, 'plain');
+    });
+
+    test('BR-FSRS-06 a card chosen as cloze holds through a lapse', () async {
+      await actions.setCardMode(uid, CardMode.cloze);
+      await rate(<Rating>[Rating.good, Rating.again]);
+      expect((await state())!.cardMode, 'cloze');
+    });
+
+    test('FR-W1-04 Undo gives the card back to the rule', () async {
+      await rate(<Rating>[Rating.good, Rating.good]);
+      final before = await state();
+      final undo = await actions.setCardMode(uid, CardMode.cloze);
+      await undo();
+      expect(await state(), before);
+      await rate(<Rating>[Rating.again]);
+      expect((await state())!.cardMode, 'plain', reason: 'the rule again');
+    });
+
+    test('FR-W1-02 a reset gives the card back to the rule', () async {
+      await actions.setCardMode(uid, CardMode.plain);
+      await actions.reset(uid, today: today);
+      await rate(<Rating>[Rating.good, Rating.good]);
+      expect((await state())!.cardMode, 'cloze');
+    });
   });
 
   group('FR-W1-05 translations', () {

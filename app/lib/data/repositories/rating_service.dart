@@ -69,7 +69,7 @@ class RatingService {
         status: before?.status == WordStatus.suspended.name
             ? WordStatus.suspended.name
             : _statusFor(next).name,
-        cardMode: (await _cardModeFor(uid, rating)).name,
+        cardMode: (await _cardModeFor(uid, rating, before)).name,
         elapsedDays: _elapsedDays(before, now),
         scheduledDays: next.scheduledDays,
       ),
@@ -166,14 +166,17 @@ class RatingService {
   /// rule is about a run, and a word the learner just failed is not one they
   /// are ready to produce from a gap.
   ///
-  /// **It does not yet respect a manual switch.** BR-FSRS-06 also says the
-  /// learner can put a cloze card back to plain from Word detail, and W1's
-  /// card toggle (#141) writes `card_mode` by hand. This reads only the
-  /// ratings and cannot tell that choice from a run-broken `plain`, so the
-  /// choice lasts until the next review: set back to plain, a word goes cloze
-  /// again on its next Good. Respecting it needs somewhere to record the
-  /// choice, a schema change, which is #316.
-  Future<CardMode> _cardModeFor(String uid, Rating rating) async {
+  /// A card the learner chose in W1 (`card_mode_manual`, #316) is not the
+  /// rule's to change: it stays as chosen whatever they rate, a lapse too,
+  /// until they switch it again there or reset the word.
+  Future<CardMode> _cardModeFor(
+    String uid,
+    Rating rating,
+    WordStateData? before,
+  ) async {
+    if (before != null && before.cardModeManual == 1) {
+      return CardMode.values.byName(before.cardMode);
+    }
     if (rating.value < Rating.good.value) return CardMode.plain;
 
     final recent = await _db
