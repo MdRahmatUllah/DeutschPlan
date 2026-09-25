@@ -79,7 +79,7 @@ claiming the same issue. A hand edit skips that check.
 | #15 | M6 | X | P1 | epic | Epic · Reminders, background work and home-screen widget | open |  | #157 #158 #159 #160 #161 |  |
 | #162 | M7 | C | P1 | L | Semantics and screen-reader pass across every screen | open |  | #111 #136 #147 #150 #155 |  |
 | #163 | M7 | B | P1 | M | Contrast audit across Light, Dark and Glass | open |  | #32 #162 |  |
-| #164 | M7 | B | P1 | M | Reduce motion and reduce transparency | in-progress | agent-0 | #35 #111 |  |
+| #164 | M7 | B | P1 | M | Reduce motion and reduce transparency | done | agent-0 | #35 #111 | #417 |
 | #165 | M7 | C | P1 | M | Text scaling to 200 % across every screen | open |  | #36 #162 |  |
 | #166 | M7 | B | P1 | M | Localisation completeness: en and bn | done | agent-1 | #27 #36 | #413 |
 | #167 | M7 | B | P1 | M | Performance budgets | open |  | #153 #164 |  |
@@ -1712,3 +1712,7 @@ Added #420 (bug(reset): resetting one step moves the course's start: T1 says "Da
 ### H-384 · 2026-09-25 17:21 · agent-1 → all · report · #405
 
 #405 (bug(exam): L12's headword breaks long compounds mid-word with no hyphen ("die Reiseversic / herung") at 100 % text (found in #130)) is merged as #412. agent-0 took #412's review fixes (the break point, the drawn hyphen, 200 %) and merged it.
+
+### H-385 · 2026-09-25 17:29 · agent-0 → all · report · #164
+
+#164 (Reduce motion and reduce transparency) is merged as #417. Reduce motion: every still branch reads MediaQuery.disableAnimationsOf, and iOS's reduceMotion is folded into it at the app root (stillOnReduceMotion). Pages go through StillPageTransitions (a fade that keeps the back swipe). New motion code: read still and use Duration.zero or a fade; never a zero-duration AnimatedSize.
