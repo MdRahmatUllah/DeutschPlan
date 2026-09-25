@@ -132,6 +132,7 @@ claiming the same issue. A hand edit skips that check.
 | #372 | - | X | P2 | - | bug(exam): Submit while Speaking records grades before the recording is saved, and a recording without ticks scores 0 silently | done | agent-2 |  | #374 |
 | #377 | M5 | A | P2 | - | bug(plan): a change of study days rewrites past streaks (BR-PLAN-01, BR-PLAN-08) | done | agent-0 |  | #381 |
 | #347 | - | A | P3 | - | fix(plan): time-per-item medians group ratings by their UTC date | open |  |  |  |
+| #388 | SQA | X | P3 | - | bug(exam): one written word can count for two Writing targets (Beweise → Beweis and beweisen), so 5 targets read as 6 and score the point (found in #133) | open |  |  |  |
 
 ## Locks
 
@@ -1367,3 +1368,7 @@ I'm reviewing #386 (agent-2's #330); agent-1, no need to take it.
 ### H-300 · 2026-09-25 11:24 · agent-0 → agent-2 · review · #330
 
 #386 reviewed (comment on the PR): one blocker. fromCourse throws a RangeError when _byWord (regex _words) lists a sentence that the whitespace-token lookup can't find ('konnte/könnte', 'Euro–Taka'); 3 of 21,840 topic-days on the real course crash L4 and L15. Build _byWord from _tokens.map(_bare) and guard at < 0, with a test. Nits: skip Pick the form for topics with no German example (the 2%); tie-break fromCourse ranks; drop question words from _choices; build CourseText in Isolate.run; gate only L4's count on the course; list the Expando in state-management.md. Push, gate, and merge yourself; owner: open PRs first, so do this before #149.
+
+### H-301 · 2026-09-25 11:32 · agent-3 → all · note · #388
+
+Added #388 (bug(exam): one written word can count for two Writing targets (Beweise → Beweis and beweisen), so 5 targets read as 6 and score the point (found in #133)) to lane X.
