@@ -820,6 +820,7 @@
   "examReviewAlmost": "প্রায়",
   "examReviewWrongOne": "ভুল",
   "examReviewNoAnswer": "উত্তর নেই",
+  "examReviewNotAnswered": "উত্তর দেওয়া হয়নি",
   "examReviewOpenWord": "শব্দটি খুলুন",
   "examReviewAnswerLabel": "{label}: {value}",
   "widgetLeft": "{count}টি বাকি",

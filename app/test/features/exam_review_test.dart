@@ -172,6 +172,9 @@ void main() {
     await tester.scrollUntilVisible(find.text('die Wohnug'), 300);
     expect(find.text(l10n.examReviewAlmost), findsOneWidget);
     await tester.scrollUntilVisible(find.text(l10n.examReviewNoAnswer), 300);
+    // #389: skipped or submitted early, not "the time ran out".
+    expect(find.text(l10n.examReviewNotAnswered), findsOneWidget);
+    expect(find.text(l10n.quizResultNoAnswer), findsNothing);
     await tester.scrollUntilVisible(find.text('Ich habe gegangen.'), 300);
     expect(find.text('gegangen.'), findsOneWidget, reason: 'index 2, the word');
     expect(find.text('bin'), findsOneWidget);
