@@ -1,5 +1,6 @@
 import '../core/text_clipping.dart';
 
+import 'dart:async';
 import 'dart:io';
 
 import 'package:deutschplan/core/components/dp_chip.dart';
@@ -47,6 +48,7 @@ void main() {
     int id = 1,
     List<CategoryProgress>? categories,
     List<StepWord>? words,
+    Stream<List<StepWord>>? stream,
   }) async {
     quiz = null;
     tester.view
@@ -77,7 +79,8 @@ void main() {
             (ref) => Stream.value(categories ?? artboardCategories()),
           ),
           categoryWordsProvider.overrideWith(
-            (ref, id) => Stream.value(words ?? artboardCategoryWords()),
+            (ref, id) =>
+                stream ?? Stream.value(words ?? artboardCategoryWords()),
           ),
           ...wordStub(),
         ],
@@ -250,7 +253,41 @@ void main() {
       ),
     );
     expect(tester.getSize(headword).height, 24, reason: 'one 17/24 line');
+    expect(
+      tester.widget<RichText>(headword).overflow,
+      TextOverflow.ellipsis,
+      reason: 'cut with "…", not at a letter',
+    );
     expect(tester.getSize(row(proverb)).height, WordRow.height);
+  });
+
+  testWidgets('#281 BR-STATUS-03 a suspended word stays on L6, with its '
+      'Suspended chip', (tester) async {
+    final rows = artboardCategoryWords();
+    final kitchen = rows[2];
+    await pump(
+      tester,
+      words: <StepWord>[
+        ...rows.take(2),
+        (
+          meaning: kitchen.meaning,
+          word: WordWithState(
+            word: kitchen.word.word,
+            state: kitchen.word.state,
+            status: WordStatus.suspended,
+          ),
+        ),
+        ...rows.skip(3),
+      ],
+    );
+    expect(find.byType(WordRow), findsNWidgets(7));
+    expect(
+      find.descendant(
+        of: row('Küche'),
+        matching: find.text(l10n.wordStatusSuspended),
+      ),
+      findsOneWidget,
+    );
   });
 
   testWidgets('a row opens its word', (tester) async {
@@ -275,6 +312,13 @@ void main() {
     expect(quiz!.direction, 'deEn');
   });
 
+  testWidgets('#281 Quiz ends 18 from the edge, as the artboard has it: the '
+      'bar\'s 8 and the link\'s own 10', (tester) async {
+    await pump(tester);
+    final end = tester.getTopRight(find.text(l10n.stepTabQuiz)).dx;
+    expect(390 - end, 18);
+  });
+
   testWidgets('Quiz stays closed until ten of the words are learned', (
     tester,
   ) async {
@@ -295,7 +339,20 @@ void main() {
     expect(quiz?.sourceRef, '1');
   });
 
-  testWidgets('words that have not arrived yet draw no header', (tester) async {
+  testWidgets('#281 words still loading: no header, no rows, and no "no '
+      'words" yet', (tester) async {
+    final never = StreamController<List<StepWord>>();
+    addTearDown(never.close);
+    await pump(tester, stream: never.stream);
+    expect(tester.takeException(), isNull);
+    expect(find.byType(DpSegmentedBar), findsNothing);
+    expect(find.text(l10n.categoryWordsLine(412, 'A1.1 → B1.1')), findsNothing);
+    expect(find.byType(WordRow), findsNothing);
+    expect(find.text(l10n.stepWordsNone), findsNothing);
+  });
+
+  testWidgets('a listed category whose rows come back empty: no header, and '
+      'says so', (tester) async {
     // The category is listed but its rows are empty: a moment between the
     // two streams, which must not take the screen down.
     await pump(tester, words: const <StepWord>[]);
@@ -357,6 +414,31 @@ void main() {
           row.meaning,
       ];
     }
+
+    test('#281 BR-STATUS-03 a suspended word comes through, marked '
+        'suspended', () async {
+      await db
+          .into(db.wordState)
+          .insert(
+            WordStateCompanion.insert(
+              wordUid: ContentFixture.tuer,
+              status: const Value('suspended'),
+            ),
+          );
+      final sub = container.listen(categoryWordsProvider(1), (_, _) {});
+      addTearDown(sub.close);
+      final rows = await container.read(categoryWordsProvider(1).future);
+      expect(
+        <(String, WordStatus)>[
+          for (final row in rows) (row.word.word.german, row.word.status),
+        ],
+        <(String, WordStatus)>[
+          ('Haus', WordStatus.todo),
+          ('Tür', WordStatus.suspended),
+          ('Straße', WordStatus.todo),
+        ],
+      );
+    });
 
     test('meanings in English by default', () async {
       expect(await meanings(), <String>['house', 'door', 'street']);

@@ -118,12 +118,15 @@ void main() {
           updates: <TableInfo<Table, Object?>>{db.words},
         );
         expect(await order(), <String>['Tür', 'Haus', 'Straße']);
-        // A tie in frequency falls back to reading order.
+        // A tie in frequency falls back to reading order (seq), which here
+        // runs against the order the rows went in (Haus, then Tür).
         await db.customUpdate(
-          'UPDATE c.words SET freq = 3',
+          "UPDATE c.words SET freq = 3, seq = CASE uid "
+          "WHEN '${ContentFixture.tuer}' THEN -2 "
+          "WHEN '${ContentFixture.haus}' THEN -1 ELSE seq END",
           updates: <TableInfo<Table, Object?>>{db.words},
         );
-        expect(await order(), <String>['Haus', 'Tür', 'Straße']);
+        expect(await order(), <String>['Tür', 'Haus', 'Straße']);
       },
     );
   });
