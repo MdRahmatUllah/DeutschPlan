@@ -6,7 +6,7 @@ last-read: 364
 
 ## Now
 
-Nothing claimed.
+#409 bug(models): the Hy-MT manifest points at a repo and builds that don't exist (tencent/HY-MT1.5-1.8B-GGUF has Q4_K_M/Q6_K/Q8_0) — claimed 2026-09-25 16:30.
 
 ## Next
 
