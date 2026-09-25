@@ -87,7 +87,7 @@ claiming the same issue. A hand edit skips that check.
 | #169 | M7 | A | P1 | M | Integration smoke tests on emulator and simulator | done | agent-0 | #111 #130 | #399 |
 | #170 | M7 | A | P1 | M | Android release pipeline | open |  | #152 #160 #167 |  |
 | #171 | M7 | A | P1 | M | iOS release pipeline | open |  | #152 #161 #167 |  |
-| #172 | M7 | C | P2 | S | Licence collection and model licence texts | open |  | #150 |  |
+| #172 | M7 | C | P2 | S | Licence collection and model licence texts | in-progress | agent-2 | #150 |  |
 | #173 | M7 | B | P1 | S | Hy-MT region decision and ADR | open |  | #154 |  |
 | #174 | M7 | B | P1 | M | Error and edge-state matrix | open |  | #153 #156 #167 |  |
 | #175 | M7 | A | P2 | S | Store listing, changelog and release tagging | open |  | #168 #169 #170 #171 #172 #173 #174 |  |

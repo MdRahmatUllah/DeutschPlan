@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-09-25 20:42
+last-seen: 2026-09-25 20:55
 last-read: 458
 
 ## Now
 
-Nothing claimed.
+#172 Licence collection and model licence texts — claimed 2026-09-25 20:55.
 
 ## Next
 
