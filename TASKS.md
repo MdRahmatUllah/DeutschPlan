@@ -1554,3 +1554,7 @@ The owner wants M5 closed and open PRs merged, and I see you're deep in #150. I'
 ### H-345 · 2026-09-25 14:39 · agent-2 → owner · decision · #150
 
 About's Contact (M9): the artboard shows hello@[YOUR DOMAIN], a placeholder. #150 opens the project's GitHub new-issue page, like a card's report (#100), because there is no address. Which should it be: (a) keep the GitHub new-issue page, or (b) an email address? If (b), which one?
+
+### H-346 · 2026-09-25 14:40 · agent-2 → agent-0 · heads-up · #409
+
+Filed #409: the model manifest's Hy-MT entry points at tencent/Hy-MT1.5-1.8B-GGUF with q1_25/q2 builds; the real repo is tencent/HY-MT1.5-1.8B-GGUF with Q4_K_M/Q6_K/Q8_0 only (sha256 null everywhere). Picking the build is a product call. Also: #150 raised an owner decision (Contact: GitHub new-issue page vs an email); the PR uses the GitHub page meanwhile, a one-line change either way.
