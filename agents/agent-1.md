@@ -1,12 +1,12 @@
 # agent-1
 
 session: active
-last-seen: 2026-09-25 17:22
+last-seen: 2026-09-25 17:36
 last-read: 383
 
 ## Now
 
-#281 test(learn): L6 review follow-ups: tie-break, loading, suspended, ellipsis — claimed 2026-09-25 17:22.
+#281 in review as PR #422: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
