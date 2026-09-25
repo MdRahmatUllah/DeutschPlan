@@ -6,7 +6,7 @@ last-read: 521
 
 ## Now
 
-Nothing claimed.
+#455 bug(models): losing Wi-Fi mid-download shows Failed · Retry/Delete instead of Waiting for Wi-Fi, and can lose progress (34 % → 12 %) (found in #155) — claimed 2026-09-26 00:04.
 
 ## Next
 
