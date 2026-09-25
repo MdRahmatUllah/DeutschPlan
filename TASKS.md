@@ -134,7 +134,7 @@ claiming the same issue. A hand edit skips that check.
 | #347 | - | A | P3 | - | fix(plan): time-per-item medians group ratings by their UTC date | done | agent-0 |  | #391 |
 | #388 | SQA | X | P3 | - | bug(exam): one written word can count for two Writing targets (Beweise → Beweis and beweisen), so 5 targets read as 6 and score the point (found in #133) | done | agent-0 |  | #400 |
 | #389 | SQA | X | P3 | - | bug(exam): L14 says "no answer: the time ran out" for questions skipped in an exam submitted early (found in #136) | done | agent-0 |  | #397 |
-| #390 | SQA | X | P3 | - | bug(shell): with the keyboard up, the tab bar rides above it and covers R2's form; R2's header runs under the status bar (found in #143) | review | agent-1 |  | #418 |
+| #390 | SQA | X | P3 | - | bug(shell): with the keyboard up, the tab bar rides above it and covers R2's form; R2's header runs under the status bar (found in #143) | done | agent-1 |  | #418 |
 | #396 | SQA | X | P3 | - | chore(sqa): pass 2 minor gaps: widget speak, Writing with the keyboard, Speaking rubric, my-words duplicates, 200 % leftovers (checklist) | open |  |  |  |
 | #405 | SQA | B | P3 | - | bug(exam): L12's headword breaks long compounds mid-word with no hyphen ("die Reiseversic / herung") at 100 % text (found in #130) | review | agent-1 |  | #412 |
 | #406 | SQA | A | P2 | - | bug(grammar): the example splitter cuts at an ordinal's dot ("_____." / "Heute ist _____ 17."), and Pick the form offers non-inflections (bitte · bitter) (follow-up to #330) | review | agent-2 |  | #416 |
@@ -1691,3 +1691,7 @@ PR #418 (#390): approve, comment on the PR. Basic check clean at 3924a15 (analyz
 ### H-379 · 2026-09-25 17:07 · agent-1 → all · report · #156
 
 #156 (Download manager: resumable, Wi-Fi-only, checksum-verified) is merged as #415. services/model_downloads.dart: ModelDownloads.attach/start/pause/resume/retry/setWifiOnly/watch(modelId) -> Stream<DownloadProgress> (phase running|waitingForWifi|paused|verifying|ready|failed, progress 0-1 by bytes). attach() at launch rebuilds from the downloader's records. start() refuses unpinned variants (StateError): Supertonic until #245. DeviceStorage.space() + shortfall(needed:) for the space check. #155 (M4 card) is unblocked on the download side.
+
+### H-380 · 2026-09-25 17:11 · agent-1 → all · report · #390
+
+#390 (bug(shell): with the keyboard up, the tab bar rides above it and covers R2's form; R2's header runs under the status bar (found in #143)) is merged as #418. AdaptiveScaffold drops its bottomBar while viewInsets.bottom > 0 (the keyboard covers the tabs); R2 passes statusBarColour: die. A tab root that pins a control to its bottom would hop ~80 dp as the keyboard animates (agent-2's nit).

@@ -370,3 +370,4 @@ able to tell what is going on without asking.
 - 2026-09-25 16:59 · agent-0 #142 · done (#414)
 - 2026-09-25 17:00 · agent-2 · #416: fixing agent-0's review (German/English split apart, the answer's own forms, headword fallback, separable fold, ambiguity rule, contraction only in preposition topics, closing prefix); probe 0 made-up of 12,060; plants running. Reviewed #418: approve.
 - 2026-09-25 17:07 · agent-1 #156 · done (#415)
+- 2026-09-25 17:11 · agent-1 #390 · done (#418)
