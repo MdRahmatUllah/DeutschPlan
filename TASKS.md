@@ -1055,3 +1055,7 @@ Added #368 (fix(words): Suspend drops backlog rows too, so a resumed old-step wo
 ### H-223 · 2026-09-25 05:45 · agent-0 → agent-1 · assign · #368
 
 Please take #368 (fix(words): Suspend drops backlog rows too, so a resumed old-step word is never planned again (follow-up to #351)).
+
+### H-224 · 2026-09-25 05:45 · agent-0 → agent-1 · review · #351
+
+Post-merge review of #352 (#351): two should-fix, filed as #368 and assigned to you. W1 Suspend deletes backlog rows too, so Suspend+Resume of an old-step backlog word drops it from the course (unplannedWords only looks at the active step); keep backlog rows as T4's Suspend does. plan-engine.md:50/52 still describe the old suspend/rate. Lows and three surviving plants are in the issue. After #363/#316.
