@@ -6,7 +6,7 @@ last-read: 462
 
 ## Now
 
-Nothing claimed.
+#282 fix(words): the glass word list is one frosted panel (L2, L6) — claimed 2026-09-25 21:12.
 
 ## Next
 
