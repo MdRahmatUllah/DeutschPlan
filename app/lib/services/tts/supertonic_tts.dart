@@ -21,7 +21,7 @@ import 'package:just_audio/just_audio.dart';
 /// #153's `TtsService` chooses between this and the phone's voice. So a
 /// failure throws rather than staying silent: the service falls back and
 /// says so once.
-class SupertonicTts implements TtsEngine {
+class SupertonicTts implements TtsEngine, SpeechPrefetch {
   SupertonicTts({
     required this._models,
     required this._settings,
@@ -57,6 +57,14 @@ class SupertonicTts implements TtsEngine {
   /// The model's speed for the app's 1: the SDK's natural pace.
   static const double normalSpeed = 1.05;
 
+  /// The most clips a [prepare] makes ahead.
+  // ponytail: 40, a day's session with its examples (7 new and a dozen
+  // revisions is ~40 clips) and well inside the cache's 200, which a longer
+  // list would evict its own look-ahead from. A backlog's *Study all* past
+  // that makes its later cards on tap; a window re-sent as the session moves
+  // is the upgrade.
+  static const int prepareLimit = 40;
+
   final ModelRepository _models;
   final SettingsRepository _settings;
   final SynthesisCache _cache;
@@ -80,9 +88,20 @@ class SupertonicTts implements TtsEngine {
   /// What [isAvailable] said last, so a model that goes is let go of once.
   bool _wasAvailable = false;
 
-  /// The clip being made (its synthesis and its write), which [_release]
-  /// lets finish before it closes the sessions and clears the clips.
-  Future<Object?>? _synthesis;
+  /// The clips being made, by their cache key: a speak for one that a
+  /// [prepare] is making waits for it rather than making it twice.
+  final Map<String, Future<File>> _making = <String, Future<File>>{};
+
+  /// Each [prepare] takes a run; an older one stops at its next clip. So
+  /// does [stopPreparing], a [reload] and [dispose].
+  int _run = 0;
+
+  /// The list [prepare] is making, for [stopPreparing] to know it by.
+  List<String>? _list;
+
+  /// The clip a speak is making now, which a [prepare] waits for before it
+  /// starts its next: the plugin shares one queue between them.
+  Future<File>? _tapped;
 
   /// Each speak and stop takes a turn. A clip that was a turn behind by the
   /// time it was ready doesn't play: the learner has moved on.
@@ -119,29 +138,12 @@ class SupertonicTts implements TtsEngine {
     // The turn is taken first, so a stop while the model is asked counts.
     final turn = ++_turn;
     if (!await isAvailable()) return false;
-    final chosen = _settings.read(SettingKeys.ttsVoice);
-    final voice = voices.containsKey(chosen) ? chosen! : voices.keys.first;
+    final voice = _voice();
     try {
       var clip = await _cache.hit(text, voice: voice, speed: speed);
       if (clip == null) {
         _state.add(TtsState.loading);
-        // Synthesis and its write, as one: [_release] waits for both.
-        final making = () async {
-          final model = await _open();
-          final samples = await model.synthesize(
-            text,
-            style: voices[voice]!,
-            speed: normalSpeed * speed,
-          );
-          return _cache.write(
-            text,
-            voice: voice,
-            speed: speed,
-            bytes: wavBytes(samples, model.sampleRate),
-          );
-        }();
-        _synthesis = making;
-        clip = await making;
+        clip = await (_tapped = _clip(text, voice: voice, speed: speed));
       }
       if (turn != _turn) return true;
       final Future<void> ended;
@@ -177,10 +179,82 @@ class SupertonicTts implements TtsEngine {
   /// Everything it holds: about 400 MB of sessions, the player and [state].
   Future<void> dispose() async {
     _turn++;
+    _run++;
     await _landed?.cancel();
     await _release();
     await _player.dispose();
     await _state.close();
+  }
+
+  /// #430: [texts]' clips, made ahead into the cache, one at a time, the
+  /// first [prepareLimit] of them. A clip a speak is making goes first.
+  // ponytail: the plugin runs one call at a time, interleaved, so a speak of
+  // another text shares the queue with the one clip in synthesis now, about
+  // a second more at most; a priority queue in the plugin is the upgrade.
+  @override
+  Future<void> prepare(List<String> texts, {double speed = 1}) async {
+    final run = ++_run;
+    _list = texts;
+    if (texts.isEmpty || !await isAvailable()) return;
+    final voice = _voice();
+    for (final text in texts.take(prepareLimit)) {
+      try {
+        await _tapped;
+      } on Object {
+        // Its speak says so.
+      }
+      // A newer list, a stop, or a voice the learner no longer has chosen.
+      if (run != _run || _voice() != voice) return;
+      try {
+        await _clip(text, voice: voice, speed: speed);
+      } on Object {
+        // The model can't make it now; a speak will say so, and fall back.
+        return;
+      }
+    }
+  }
+
+  @override
+  Future<void> stopPreparing(List<String> texts) async {
+    if (!identical(texts, _list)) return;
+    _run++;
+    _list = null;
+  }
+
+  /// The learner's voice, or Anna when this download hasn't theirs.
+  String _voice() {
+    final chosen = _settings.read(SettingKeys.ttsVoice);
+    return voices.containsKey(chosen) ? chosen! : voices.keys.first;
+  }
+
+  /// [text]'s clip in [voice] at [speed]: the cache's, the one being made, or
+  /// a new one.
+  Future<File> _clip(
+    String text, {
+    required String voice,
+    required double speed,
+  }) async {
+    final hit = await _cache.hit(text, voice: voice, speed: speed);
+    if (hit != null) return hit;
+    final key = SynthesisCache.keyFor(text, voice: voice, speed: speed);
+    return _making[key] ??= () async {
+      try {
+        final model = await _open();
+        final samples = await model.synthesize(
+          text,
+          style: voices[voice]!,
+          speed: normalSpeed * speed,
+        );
+        return await _cache.write(
+          text,
+          voice: voice,
+          speed: speed,
+          bytes: wavBytes(samples, model.sampleRate),
+        );
+      } finally {
+        unawaited(_making.remove(key));
+      }
+    }();
   }
 
   /// A new download of the voice is in place: the sessions open again from
@@ -188,6 +262,7 @@ class SupertonicTts implements TtsEngine {
   /// model's clips go (#436).
   Future<void> reload() async {
     _broken = false;
+    _run++;
     await _release();
     await _cache.clear();
   }
@@ -208,11 +283,14 @@ class SupertonicTts implements TtsEngine {
     final model = _model;
     _model = null;
     if (model == null) return;
-    // Sessions closed under a running synthesis would fail it.
-    try {
-      await _synthesis;
-    } on Object {
-      // Its speak says so.
+    // Sessions closed under a clip being made would fail it; the cache
+    // cleared under its write would lose it.
+    for (final making in _making.values.toList()) {
+      try {
+        await making;
+      } on Object {
+        // Its speak or prepare says so.
+      }
     }
     try {
       await (await model).close();

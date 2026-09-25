@@ -127,10 +127,11 @@ class SynthesisCache {
     final clips = await _clips();
     if (clips.length <= capacity) return;
 
-    clips.sort(
-      (a, b) => a.statSync().modified.compareTo(b.statSync().modified),
-    );
-    for (final clip in clips.take(clips.length - capacity)) {
+    // Each clip's age read once, not twice for each comparison of the sort.
+    final aged = <(File, DateTime)>[
+      for (final clip in clips) (clip, clip.statSync().modified),
+    ]..sort((a, b) => a.$2.compareTo(b.$2));
+    for (final (clip, _) in aged.take(clips.length - capacity)) {
       if (clip.existsSync()) clip.deleteSync();
     }
   }

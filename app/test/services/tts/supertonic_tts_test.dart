@@ -167,6 +167,13 @@ void main() {
       }
     });
 
+    /// Until the model has been asked for [n] clips: the disk is real.
+    Future<void> untilAsked(int n) async {
+      for (var i = 0; i < 500 && model.asked.length < n; i++) {
+        await Future<void>.delayed(const Duration(milliseconds: 2));
+      }
+    }
+
     Future<void> install() async {
       final staging = await models.beginDownload(ModelRepository.voiceModel);
       File('${staging.path}/F1.json').writeAsStringSync(style);
@@ -442,6 +449,145 @@ void main() {
       );
     });
 
+    test('#430 prepare makes each clip ahead, in order, into the cache, '
+        'without playing', () async {
+      await install();
+      await tts.prepare(<String>['das Haus', 'die Tür'], speed: 1.25);
+      expect(model.asked, <(String, String, double)>[
+        ('das Haus', 'F1.json', 1.05 * 1.25),
+        ('die Tür', 'F1.json', 1.05 * 1.25),
+      ]);
+      expect(player.played, isEmpty);
+      expect(
+        (await cache.fileFor(
+          'die Tür',
+          voice: 'Anna',
+          speed: 1.25,
+        )).existsSync(),
+        isTrue,
+      );
+      // Its first speak plays from the cache.
+      await tts.speak('das Haus', speed: 1.25);
+      expect(model.asked, hasLength(2));
+      expect(player.played, hasLength(1));
+    });
+
+    test('#430 a speak for a clip being made waits for it, rather than '
+        'making it twice', () async {
+      await install();
+      model.gate = Completer<void>();
+      final preparing = tts.prepare(<String>['das Haus']);
+      await untilAsked(1);
+      final speaking = tts.speak('das Haus');
+      await pumpEventQueue();
+      model.gate!.complete();
+      await preparing;
+      expect(await speaking, isTrue);
+      expect(model.asked, hasLength(1));
+      expect(player.played, hasLength(1));
+    });
+
+    test('#430 a newer prepare replaces the list; a stop stops only its own '
+        'list', () async {
+      await install();
+      model.gate = Completer<void>();
+      final one = <String>['eins', 'zwei', 'drei'];
+      final first = tts.prepare(one);
+      await untilAsked(1);
+      final second = tts.prepare(<String>['vier', 'fünf']);
+      // The replaced screen's stop comes after the new list (FR-T3-02).
+      await tts.stopPreparing(one);
+      model.gate!.complete();
+      await Future.wait(<Future<void>>[first, second]);
+      expect(model.asked.map((a) => a.$1), <String>['eins', 'vier', 'fünf']);
+
+      model.gate = Completer<void>();
+      final two = <String>['sechs', 'sieben'];
+      final third = tts.prepare(two);
+      await untilAsked(4);
+      await tts.stopPreparing(two);
+      model.gate!.complete();
+      await third;
+      expect(model.asked.last.$1, 'sechs');
+    });
+
+    test('#430 a list makes its first ${SupertonicTts.prepareLimit} clips, '
+        'no more: the cache keeps them all', () async {
+      await install();
+      await tts.prepare(<String>[for (var i = 0; i < 45; i++) 'Wort $i']);
+      expect(model.asked, hasLength(SupertonicTts.prepareLimit));
+      expect(model.asked.last.$1, 'Wort ${SupertonicTts.prepareLimit - 1}');
+    });
+
+    test(
+      "#430 a speak's clip goes first: the list's next clip waits for it",
+      () async {
+        await install();
+        final list = model.gate = Completer<void>();
+        final preparing = tts.prepare(<String>['eins', 'zwei']);
+        await untilAsked(1);
+        final tap = model.gate = Completer<void>();
+        final speaking = tts.speak('Haus', speed: 0.75);
+        await untilAsked(2);
+        list.complete();
+        // Until the list's first clip is written, and a moment more: without
+        // the wait for the speak, the list would ask for its next clip here.
+        final eins = await cache.fileFor('eins', voice: 'Anna', speed: 1);
+        for (var i = 0; i < 500 && !eins.existsSync(); i++) {
+          await Future<void>.delayed(const Duration(milliseconds: 2));
+        }
+        await Future<void>.delayed(const Duration(milliseconds: 100));
+        expect(model.asked.map((a) => a.$1), <String>['eins', 'Haus']);
+
+        tap.complete();
+        expect(await speaking, isTrue);
+        await preparing;
+        expect(model.asked.map((a) => a.$1), <String>['eins', 'Haus', 'zwei']);
+      },
+    );
+
+    for (final (what, act) in <(String, Future<void> Function(SupertonicTts))>[
+      ('a reload', (tts) => tts.reload()),
+      ('dispose', (tts) => tts.dispose()),
+    ]) {
+      test(
+        "#430 $what stops the list: it doesn't open the sessions again",
+        () async {
+          await install();
+          model.gate = Completer<void>();
+          final preparing = tts.prepare(<String>['eins', 'zwei']);
+          await untilAsked(1);
+          final acting = act(tts);
+          model.gate!.complete();
+          await Future.wait(<Future<void>>[preparing, acting]);
+          expect(model.asked.map((a) => a.$1), <String>['eins']);
+          expect(loads, hasLength(1));
+        },
+      );
+    }
+
+    test('#430 a voice chosen while a list is made stops it', () async {
+      await install();
+      model.gate = Completer<void>();
+      final preparing = tts.prepare(<String>['eins', 'zwei']);
+      await untilAsked(1);
+      await settings.write(SettingKeys.ttsVoice, 'Jonas');
+      model.gate!.complete();
+      await preparing;
+      expect(model.asked.map((a) => a.$1), <String>['eins']);
+    });
+
+    test('#430 without the model, nothing is made; a failure stops it '
+        'quietly', () async {
+      await tts.prepare(<String>['das Haus']);
+      expect(loads, isEmpty);
+
+      await install();
+      model.fail = true;
+      await tts.prepare(<String>['das Haus', 'die Tür']);
+      expect(model.asked, hasLength(1), reason: 'stopped at the first');
+    });
+
     test('#152 disposed: the sessions close, and the player goes', () async {
       await install();
       await tts.speak('Haus');
@@ -488,17 +634,18 @@ void main() {
           .writeAsStringSync(jsonEncode(List<int>.generate(128, (i) => i)));
       File('${model.path}/M1.json').writeAsStringSync(styleOf(2));
       File('${model.path}/F2.json').writeAsStringSync(styleOf(3));
-      final tts = SupertonicTts(
+      final engine = SupertonicTts(
         models: models,
         settings: settings,
         cache: cache,
         load: OrtSupertonicModel.load,
         player: player,
       );
+      addTearDown(engine.dispose);
 
       for (final name in <String>['Anna', 'Jonas', 'Lena']) {
         await settings.write(SettingKeys.ttsVoice, name);
-        expect(await tts.speak('Hallo'), isTrue, reason: name);
+        expect(await engine.speak('Hallo'), isTrue, reason: name);
       }
       expect(player.played, hasLength(3));
       expect(onnx.sessions, 4, reason: 'one model, opened once');

@@ -20,6 +20,34 @@ Override fakeVoice(FakeTts tts) => ttsProvider.overrideWith((ref) {
   return service;
 });
 
+/// A [FakeTts] that makes its clips ahead (#430): Supertonic's
+/// [SpeechPrefetch], recording each list it is given.
+class FakePrefetchTts extends FakeTts implements SpeechPrefetch {
+  final List<List<String>> prepared = <List<String>>[];
+
+  /// The speed each list was asked at.
+  final List<double> speeds = <double>[];
+
+  /// Every list a screen stopped, in order.
+  final List<List<String>> stopped = <List<String>>[];
+
+  /// The list being made: the last one prepared, until it is stopped.
+  List<String>? current;
+
+  @override
+  Future<void> prepare(List<String> texts, {double speed = 1}) async {
+    prepared.add(texts);
+    speeds.add(speed);
+    current = texts;
+  }
+
+  @override
+  Future<void> stopPreparing(List<String> texts) async {
+    stopped.add(texts);
+    if (identical(texts, current)) current = null;
+  }
+}
+
 /// A [TtsEngine] for tests: a phone with a German voice, or — [voice] false —
 /// without one, that records what it was asked to say.
 ///

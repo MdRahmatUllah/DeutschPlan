@@ -29,3 +29,16 @@ abstract interface class TtsEngine {
   /// the engine never reported the end of.
   Stream<TtsState> get state;
 }
+
+/// An engine that can make its clips ahead (#430): Supertonic, whose first
+/// sound for a new text takes about a second of synthesis.
+abstract interface class SpeechPrefetch {
+  /// Makes [texts]' clips at [speed], one at a time and in order, so their
+  /// first speak plays at once. A newer call replaces the list. Never throws:
+  /// a clip it can't make is the speak's to find.
+  Future<void> prepare(List<String> texts, {double speed = 1});
+
+  /// Stops [texts]' list, if it is still the one being made: a screen stops
+  /// its own list, never the one the screen that replaced it asked for.
+  Future<void> stopPreparing(List<String> texts);
+}

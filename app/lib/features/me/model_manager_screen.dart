@@ -440,6 +440,18 @@ class _ModelCardView extends ConsumerWidget {
         ..invalidate(phoneSpaceProvider);
     }
 
+    // The mirror of FR-M4-03 (the lead's call, H-497): a download or update
+    // of the voice that the learner starts, once the manager takes it,
+    // chooses Supertonic, as deleting it chose the phone's voice.
+    Future<void> download() async {
+      await downloads.start(id);
+      if (_isVoice) {
+        await ref
+            .read(settingsProvider)
+            .write(SettingKeys.ttsEngine, TtsEngineSetting.supertonic);
+      }
+    }
+
     final deleteButton = _Action(
       label: l10n.modelsDelete(freed),
       onPressed: () => unawaited(_delete(context, ref)),
@@ -473,9 +485,7 @@ class _ModelCardView extends ConsumerWidget {
                 label: l10n.modelsUpdate(size),
                 white: true,
                 // FR-M4 *Not enough space*: an update is a download too.
-                onPressed: short
-                    ? null
-                    : () => unawaited(act(() => downloads.start(id))),
+                onPressed: short ? null : () => unawaited(act(download)),
               ),
             ],
           ),
@@ -551,9 +561,7 @@ class _ModelCardView extends ConsumerWidget {
               _Action(
                 label: l10n.modelsDownload(size),
                 white: true,
-                onPressed: gated
-                    ? null
-                    : () => unawaited(act(() => downloads.start(id))),
+                onPressed: gated ? null : () => unawaited(act(download)),
               ),
             ],
           ),

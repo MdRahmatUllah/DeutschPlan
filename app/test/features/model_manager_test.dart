@@ -331,6 +331,84 @@ void main() {
     });
   });
 
+  group("FR-M4-03's mirror: a voice download chooses Supertonic", () {
+    for (final installed in <ModelStatus>[
+      ModelStatus.notDownloaded,
+      ModelStatus.updateAvailable,
+    ]) {
+      testWidgets('${installed.name}: its Download or Update, once the '
+          'manager takes it, chooses Supertonic again', (tester) async {
+        final settings = StubSettings()
+          ..put(SettingKeys.ttsEngine, TtsEngineSetting.system);
+        await pump(
+          tester,
+          modelManagerStub(
+            settings: settings,
+            voice: cardOf(voiceEntry, installed: installed),
+          ),
+        );
+        await tester.tap(
+          find.text(
+            installed == ModelStatus.notDownloaded
+                ? l10n.modelsDownload('399 MB')
+                : l10n.modelsUpdate('399 MB'),
+          ),
+        );
+        await tester.pumpAndSettle();
+        expect(
+          settings.read(SettingKeys.ttsEngine),
+          TtsEngineSetting.supertonic,
+        );
+      });
+    }
+
+    testWidgets("Hy-MT's Update leaves the voice's engine as it was", (
+      tester,
+    ) async {
+      final settings = StubSettings()
+        ..put(SettingKeys.ttsEngine, TtsEngineSetting.system);
+      final downloads = FakeDownloads();
+      await pump(
+        tester,
+        modelManagerStub(
+          settings: settings,
+          downloads: downloads,
+          translation: cardOf(
+            translationEntry,
+            installed: ModelStatus.updateAvailable,
+          ),
+        ),
+      );
+      await tester.tap(find.text(l10n.modelsUpdate('1.1 GB')));
+      await tester.pumpAndSettle();
+      expect(
+        downloads.calls,
+        contains('start ${ModelRepository.translationModel}'),
+      );
+      expect(settings.read(SettingKeys.ttsEngine), TtsEngineSetting.system);
+    });
+
+    testWidgets('a download the manager refuses leaves the engine as it was', (
+      tester,
+    ) async {
+      final settings = StubSettings()
+        ..put(SettingKeys.ttsEngine, TtsEngineSetting.system);
+      final downloads = FakeDownloads()
+        ..startFails = const NotEnoughSpace(120000000);
+      await pump(
+        tester,
+        modelManagerStub(
+          settings: settings,
+          downloads: downloads,
+          voice: cardOf(voiceEntry),
+        ),
+      );
+      await tester.tap(find.text(l10n.modelsDownload('399 MB')));
+      await tester.pumpAndSettle(const Duration(seconds: 3));
+      expect(settings.read(SettingKeys.ttsEngine), TtsEngineSetting.system);
+    });
+  });
+
   group('FR-M4-04 Hy-MT behind its licence', () {
     test("each model's licence is the one M8 bundles for it, by name", () {
       expect(licenceFor(ModelRepository.voiceModel)?.kind, 'OpenRAIL-M');
@@ -505,8 +583,8 @@ void main() {
     ('breaks', () => FakeTts()..error = StateError('no style')),
     ('says no', () => FakeTts(voice: false)),
   ]) {
-    testWidgets("#453 a voice whose sample $how says it couldn't play it, "
-        'and stays chosen', (tester) async {
+    testWidgets("FR-M4-05 #453 a voice whose sample $how says it couldn't "
+        'play it, and stays chosen', (tester) async {
       final settings = StubSettings();
       await pump(
         tester,
