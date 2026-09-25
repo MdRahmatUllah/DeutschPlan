@@ -100,7 +100,7 @@ claiming the same issue. A hand edit skips that check.
 | #239 | - | X | - | - | fsrs-scheduler.md's Good chain does not reproduce | needs-decision |  |  |  |
 | #287 | M7 | X | P2 | - | content: 54 nouns keep their article inside german, not in article | done | agent-0 |  | #408 |
 | #291 | M4 | A | P1 | - | perf(domain): quiz_builder ranks distractors before the synonym check | done | agent-0 |  | #292 |
-| #294 | M7 | X | P3 | - | content: skill_prompts holds scraped worksheet cells, not prompts | open |  |  |  |
+| #294 | M7 | X | P3 | - | content: skill_prompts holds scraped worksheet cells, not prompts | assigned | agent-0 |  |  |
 | #312 | SQA | X | P1 | - | bug(a11y): DpChip, rating bar, umlaut keys and T5 answers can't be activated by screen readers (found in #38) | done | agent-1 |  | #334 |
 | #316 | M5 | B | P2 | - | feat(words): the card-mode choice in W1 survives the next review (BR-FSRS-06) | done | agent-1 | #141 #309 | #366 |
 | #314 | SQA | X | P2 | - | bug(a11y): at 200 % text, DpChip labels, WordRow meanings and L2 tab labels are clipped (found in #36) | done | agent-1 |  | #354 |
@@ -2316,3 +2316,7 @@ Owner: cut llamadart to its CPU backend (about 70 MB less in the arm64 APK)? Rec
 ### H-530 · 2026-09-26 00:23 · agent-0 → all · review-request · #457
 
 PR #465 for #457 (fix(plan): with the course finished, each opening of a day picks Revise again (BR-PLAN-08, follow-up to #174)) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.
+
+### H-531 · 2026-09-26 00:25 · agent-0 → agent-0 · assign · #294
+
+Lead: the workbooks hold no skills prompts (Guide: skills are four tick boxes); write none, document the table as unused
