@@ -8,8 +8,9 @@ import 'package:material_ui/material_ui.dart';
 
 /// The progress ring on Today, the session summary and the widget.
 ///
-/// From the Foundations artboard: a 120 unit box, radius 54, stroke 12, an Oat
-/// track under a Lagoon arc with a round cap, starting at twelve o'clock.
+/// From the Foundations artboard: a 120 unit box, radius 54, stroke 12, a
+/// track under a Lagoon arc with a round cap, starting at twelve o'clock. The
+/// artboard's track is Oat; it is `surface.track`, which reaches 3:1 (#437).
 /// Today draws it at 132 dp; the geometry scales with [size].
 class DpProgressRing extends StatelessWidget {
   const DpProgressRing({
@@ -78,7 +79,7 @@ class DpProgressRing extends StatelessWidget {
           child: CustomPaint(
             painter: _RingPainter(
               progress: progress,
-              track: tokens.surface.muted,
+              track: tokens.surface.track,
               arc: colour ?? tokens.color.primary,
               stroke: size * _strokeFraction,
               radiusFraction: _radiusFraction,
@@ -221,7 +222,7 @@ class DpSegmentedBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final tokens = context.tokens;
 
-    final track = colours?.todo ?? tokens.surface.muted;
+    final track = colours?.todo ?? tokens.surface.track;
     final segments = <(int, Color)>[
       (done, colours?.done ?? tokens.color.easy),
       (learning, colours?.learning ?? tokens.color.learning),

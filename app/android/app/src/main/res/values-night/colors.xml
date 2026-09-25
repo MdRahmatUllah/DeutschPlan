@@ -7,7 +7,7 @@
 
     <!-- X1's dark tokens (#160). Glass draws as this opaque fallback. -->
     <color name="widget_card">#1E1B2C</color>
-    <color name="widget_track">#29253A</color>
+    <color name="widget_track">#5EF4F1FF</color>
     <color name="widget_outline">#38F4F1FF</color>
     <color name="widget_ink">#F4F1FF</color>
     <color name="widget_secondary">#B7B1CC</color>

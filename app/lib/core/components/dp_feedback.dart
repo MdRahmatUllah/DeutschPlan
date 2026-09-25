@@ -436,7 +436,7 @@ void _showInverse(
         content: DpText(
           message,
           role: DpTextRole.body,
-          color: tokens.surface.paper.withValues(alpha: 1),
+          color: tokens.surface.paper,
         ),
         action: action,
       ),

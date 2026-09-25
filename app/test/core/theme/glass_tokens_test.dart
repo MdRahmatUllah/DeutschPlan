@@ -194,10 +194,34 @@ void main() {
     }
   });
 
-  test('glass keeps the Light and Dark palettes untouched', () {
-    // theming.md: only tokens and the surface renderer differ between modes.
-    expect(DpTokens.glass().color, same(DpPalette.light));
-    expect(DpTokens.glassDark().color, same(DpPalette.dark));
+  test('#163 glass keeps the Light and Dark fills; only its text roles move '
+      'for contrast over the aurora', () {
+    // theming.md: glass has its own text palette (#163), the rest is Light's
+    // and Dark's.
+    for (final (glass, base) in <(DpPalette, DpPalette)>[
+      (DpTokens.glass().color, DpPalette.light),
+      (DpTokens.glassDark().color, DpPalette.dark),
+    ]) {
+      for (final (fill, of) in <(Color, Color)>[
+        (glass.primary, base.primary),
+        (glass.accent, base.accent),
+        (glass.der, base.der),
+        (glass.die, base.die),
+        (glass.das, base.das),
+        (glass.again, base.again),
+        (glass.hard, base.hard),
+        (glass.good, base.good),
+        (glass.easy, base.easy),
+        (glass.learning, base.learning),
+        (glass.ink, base.ink),
+        (glass.onPrimary, base.onPrimary),
+        (glass.onAccent, base.onAccent),
+      ]) {
+        expect(fill, of);
+      }
+    }
+    expect(DpTokens.glass().color, same(DpPalette.glass));
+    expect(DpTokens.glassDark().color, same(DpPalette.glassDark));
   });
 
   testWidgets('AppTheme.glass carries glass tokens and the right brightness', (

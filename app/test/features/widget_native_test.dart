@@ -33,7 +33,7 @@ void main() {
   Map<String, Color> expected(DpPalette palette, DpSurfaceTokens surface) =>
       <String, Color>{
         'widget_card': surface.card,
-        'widget_track': surface.muted,
+        'widget_track': surface.track,
         'widget_outline': surface.outline,
         'widget_ink': palette.ink,
         'widget_secondary': palette.textSecondary,

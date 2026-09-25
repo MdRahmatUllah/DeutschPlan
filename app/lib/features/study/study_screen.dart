@@ -532,8 +532,8 @@ class _TopBar extends StatelessWidget {
   }
 }
 
-/// One segment per block, filling per card: Revise Lagoon, New Sun, Grammar
-/// a darker Oat.
+/// One segment per block, filling per card over the track: Revise Lagoon, New
+/// Sun, Grammar the secondary text's Slate, a step past the track (#437).
 class _ProgressStrip extends StatelessWidget {
   const _ProgressStrip({required this.blocks});
 
@@ -555,7 +555,7 @@ class _ProgressStrip extends StatelessWidget {
                 child: SizedBox(
                   height: 6,
                   child: ColoredBox(
-                    color: tokens.surface.muted,
+                    color: tokens.surface.track,
                     child: Align(
                       alignment: AlignmentDirectional.centerStart,
                       child: FractionallySizedBox(
@@ -567,7 +567,7 @@ class _ProgressStrip extends StatelessWidget {
                             SessionBlockKind.newWords ||
                             SessionBlockKind.backlog => tokens.color.accent,
                             SessionBlockKind.grammar =>
-                              tokens.color.textSecondary.withValues(alpha: 0.5),
+                              tokens.color.textSecondary,
                           },
                         ),
                       ),

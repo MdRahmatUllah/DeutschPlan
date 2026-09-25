@@ -2,7 +2,7 @@
 
 ## Accessibility (WCAG 2.2 AA target)
 
-- Contrast: text 4.5:1, large text and icons 3:1 in all three modes; glass text is checked against the brightest blob it can overlay.
+- Contrast: text 4.5:1, large text and icons 3:1 in all three modes; glass text is checked against the brightest blob it can overlay. Progress graphics 3:1 too (1.4.11): the ring's track, bar tracks and the heat-map's empty days take `surface.track` (#437). `contrast_test.dart` measures both over the tokens.
 - Screen readers: every control labelled; the headword is announced with article and gender ("die Wohnung, feminine"); German text tagged `de-DE`, Bangla `bn-BD` via `Semantics(locale:)` so TalkBack/VoiceOver switch voices.
 - Every control a screen reader hears as a button can be pressed by one. A `Semantics(button: …)` that hides its child's semantics, through `ExcludeSemantics` or `excludeSemantics: true`, also hides the tap its `GestureDetector` would give. So it carries `onTap:` (and `onLongPress:`) itself (#312). `architecture_test.dart` enforces this.
 - Never colour alone: articles printed, statuses labelled, verdicts have icons and words.

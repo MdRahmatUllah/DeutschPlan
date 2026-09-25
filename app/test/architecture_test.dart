@@ -557,6 +557,43 @@ void main() {
           '${offenders.join('\n')}',
     );
   });
+
+  test('#437 no text colour is a token faded on the screen', () {
+    // theming.md, Contrast: text contrast is measured over the tokens by
+    // contrast_test.dart. `ink.withValues(alpha: 0.9)` is a colour that test
+    // never meets — M1's subtitle was 4.49:1 that way. Use a token as it is.
+    final text = RegExp(
+      r'(?<![A-Za-z])(?:DpText|DpOneLine|DpHeadword|TextStyle)\(',
+    );
+    final faded = RegExp(
+      r'\bcolor:\s*[^,]*\.(?:withValues\(\s*alpha|withOpacity\(|withAlpha\()',
+    );
+    final offenders = <String>[];
+    for (final file in _dartFilesIn('lib')) {
+      final source = file.readAsStringSync();
+      for (final match in text.allMatches(source)) {
+        var depth = 0;
+        for (var i = match.end - 1; i < source.length; i++) {
+          if (source[i] == '(') depth++;
+          if (source[i] == ')' && --depth == 0) {
+            if (faded.hasMatch(source.substring(match.end, i))) {
+              final line = '\n'.allMatches(source.substring(0, match.start));
+              offenders.add('${_rel(file)}:${line.length + 1}');
+            }
+            break;
+          }
+        }
+      }
+    }
+
+    expect(
+      offenders,
+      isEmpty,
+      reason:
+          'give the text a token contrast_test measures, not a faded one:\n'
+          '${offenders.join('\n')}',
+    );
+  });
 }
 
 /// Every `Semantics(…)` call in [source]: its own arguments (up to its

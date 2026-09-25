@@ -573,7 +573,7 @@ class _ByStep extends StatelessWidget {
                           colours: (
                             done: tokens.color.easy,
                             learning: tokens.color.accent,
-                            todo: tokens.surface.muted,
+                            todo: tokens.surface.track,
                           ),
                         ),
                       ),

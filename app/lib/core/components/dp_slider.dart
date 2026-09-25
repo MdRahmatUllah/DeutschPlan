@@ -99,7 +99,7 @@ class DpSlider extends StatelessWidget {
               child: CustomPaint(
                 painter: _SliderPainter(
                   fraction: (value - min) / (max - min),
-                  rail: tokens.surface.muted,
+                  rail: tokens.surface.track,
                   fill: tokens.color.primary,
                   thumbFill: tokens.surface.card,
                   // Ink on paper; the glass hairline under glass, as the

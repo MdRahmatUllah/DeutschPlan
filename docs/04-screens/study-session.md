@@ -10,7 +10,7 @@
 
 **Layout.**
 1. Top bar: close X · block label "Revise · 4 / 10" · overflow ⋯ (auto-play toggle, speech speed, open word details, report a problem).
-2. Segmented progress strip: one segment per block (Revise Lagoon, New Sun, Grammar Oat-tinted), filling per card.
+2. Segmented progress strip: one segment per block (Revise Lagoon, New Sun, Grammar Slate), filling per card over `surface.track` (#437).
 3. Word card (`StudyCard`): 6 px gender bar; step chip; front = article + headword (display), caption "Nomen · die Rechnung, -en · /রেশনুং/", 56 dp speaker; hint "Hear it, think of the meaning, then reveal."; back = meanings (per `meaning_language`), examples with mini play, collocations (⟶), register (≈), interference tip callout if any.
 4. Bottom action area (thumb zone): before reveal *Show meaning*; after reveal the rating bar Again 1 d · Hard 3 d · Good 8 d · Easy 21 d (intervals from FSRS preview). New words add *I know it* and *Skip → backlog* above the bar.
 

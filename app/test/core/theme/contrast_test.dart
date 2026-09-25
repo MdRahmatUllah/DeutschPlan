@@ -5,7 +5,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 
 /// #163 · WCAG 2.2 AA over the token combinations the app draws: text at
-/// 4.5:1 in Light, Dark and both Glass variants. Glass text is checked on a
+/// 4.5:1 and, since #437, the progress track at 3:1 (1.4.11, non-text), in
+/// Light, Dark and both Glass variants. Glass is checked on a
 /// card over each aurora blob at its peak opacity — theming.md: "against the
 /// brightest blob it can overlay" — so a failure is fixed in the tokens, never
 /// per screen.
@@ -117,6 +118,44 @@ void main() {
         final r = ratio(fg, bg);
         if (r < 4.5) {
           failures.add('$label: ${r.toStringAsFixed(2)}');
+        }
+      }
+      expect(failures, isEmpty);
+    });
+
+    test('#437 $name: the M1 header, name and subtitle, on its Cobalt', () {
+      // Cobalt solid on paper; under glass a Cobalt tint (DpSurface's 22 %)
+      // over the backdrop, with the page's ink on it. The subtitle is this
+      // colour itself, never a fainter one made on the screen.
+      final failures = <String>[];
+      for (final MapEntry(key: where, value: backdrop) in backdrops.entries) {
+        final fill = t.isGlass
+            ? Color.alphaBlend(c.der.withValues(alpha: 0.22), backdrop)
+            : c.der;
+        final r = ratio(t.isGlass ? c.ink : c.onDer, fill);
+        if (r < 4.5) failures.add('over $where: ${r.toStringAsFixed(2)}');
+      }
+      expect(failures, isEmpty);
+    });
+
+    test('#437 $name: WCAG 1.4.11, the track at 3:1 wherever it is drawn '
+        '(the ring, bars, a slider, the heat-map)', () {
+      final failures = <String>[];
+      final wheres = <String, Color>{
+        ...backdrops,
+        if (t.isGlass) 'the backdrop between blobs': s.paper,
+      };
+      for (final MapEntry(key: where, value: backdrop) in wheres.entries) {
+        for (final (ground, g) in <(String, Color)>[
+          (where, backdrop),
+          ('a card over $where', Color.alphaBlend(s.card, backdrop)),
+          (
+            'a strong card over $where',
+            Color.alphaBlend(s.cardStrong, backdrop),
+          ),
+        ]) {
+          final r = ratio(Color.alphaBlend(s.track, g), g);
+          if (r < 3) failures.add('track on $ground: ${r.toStringAsFixed(2)}');
         }
       }
       expect(failures, isEmpty);
