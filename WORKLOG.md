@@ -263,3 +263,4 @@ able to tell what is going on without asking.
 - 2026-09-25 09:11 · agent-1 #368 · PR #379 open; review requested from all
 - 2026-09-25 09:11 · agent-1 #328 · claimed: bug(study): after a Revise-only or backlog session, T3 offers sentences and skips the day's open blocks (found in #107)
 - 2026-09-25 09:17 · agent-2 #147 · done (#367)
+- 2026-09-25 09:23 · agent-2 · #147 merged (PR #367, be1c834); #377 filed (streak vs mask history). #376 reviewed. #374 review fixes committed (one submit at a time, stop runs once, failing recorder loses the take not the exam; 9/9 plants), gating at be1c834. #378 (#160) up for review.
