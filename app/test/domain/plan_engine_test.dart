@@ -1155,6 +1155,116 @@ void main() {
       expect(await engineWith().streak(addDays(monday, 7)), 6);
     });
 
+    test(
+      'BR-PLAN-01 #377 turning Sunday on keeps the streak and the best one',
+      () async {
+        // Mon–Sat for two weeks, Sundays rested. Then, on the third Monday
+        // before studying, Sunday turns on from tomorrow.
+        store.enrollment = const ActiveStep(
+          sublevelCode: 'A1.1',
+          startedOn: monday,
+          dailyNew: 7,
+          studyDaysMask: PlanEngine.allDays,
+        );
+        store.active = <PlanDate>{
+          for (var day = 0; day < 14; day++)
+            if (day % 7 != 6) addDays(monday, day),
+        };
+        final today = addDays(monday, 14);
+        store.masks = withMask(
+          const <MaskSpan>[],
+          previous: 0x3F,
+          mask: PlanEngine.allDays,
+          from: addDays(today, 1),
+        );
+        expect(await engineWith().streak(today), 12, reason: 'Sundays rested');
+        expect(await engineWith().bestStreak(today), 12);
+      },
+    );
+
+    test(
+      'BR-PLAN-01 #377 turning Sunday off does not mend a missed Sunday',
+      () async {
+        // Every day for two weeks, the second Sunday missed; then, on the
+        // third Monday, Sunday turns off from tomorrow.
+        store.enrollment = const ActiveStep(
+          sublevelCode: 'A1.1',
+          startedOn: monday,
+          dailyNew: 7,
+          studyDaysMask: 0x3F,
+        );
+        store.active = <PlanDate>{
+          for (var day = 0; day < 14; day++)
+            if (day != 13) addDays(monday, day),
+        };
+        final today = addDays(monday, 14);
+        store.masks = withMask(
+          const <MaskSpan>[],
+          previous: PlanEngine.allDays,
+          mask: 0x3F,
+          from: addDays(today, 1),
+        );
+        expect(await engineWith().streak(today), 0, reason: 'Sunday missed');
+        expect(await engineWith().bestStreak(today), 13);
+      },
+    );
+
+    test('#377 a day after the change is judged by the new mask', () async {
+      store.enrollment = const ActiveStep(
+        sublevelCode: 'A1.1',
+        startedOn: monday,
+        dailyNew: 7,
+        studyDaysMask: PlanEngine.allDays,
+      );
+      // Mon–Sat, then every day from the second Monday: the second Sunday
+      // is a study day, and missing it ends the streak.
+      store.masks = <MaskSpan>[
+        (from: '', mask: 0x3F),
+        (from: addDays(monday, 7), mask: PlanEngine.allDays),
+      ];
+      store.active = <PlanDate>{
+        for (var day = 0; day < 14; day++)
+          if (day != 13) addDays(monday, day),
+      };
+      expect(await engineWith().streak(addDays(monday, 14)), 0);
+    });
+
+    test('#377 maskOn, withMask and the stored form', () {
+      final history = withMask(
+        const <MaskSpan>[],
+        previous: 0x3F,
+        mask: 0x7F,
+        from: '2026-03-10',
+      );
+      expect(maskOn('2026-03-09', history, 0x7F), 0x3F);
+      expect(maskOn('2026-03-10', history, 0x7F), 0x7F);
+      expect(maskOn('2026-03-10', const <MaskSpan>[], 1), 1, reason: 'none');
+      expect(
+        maskOn('2026-03-11', history, 0x1F),
+        0x1F,
+        reason:
+            "from the last change on, the enrolment's: a stale history "
+            "doesn't overrule it",
+      );
+      expect(decodeMaskHistory(encodeMaskHistory(history)), history);
+      expect(
+        decodeMaskHistory(encodeMaskHistory(history.reversed.toList())),
+        history,
+        reason: 'oldest first',
+      );
+      for (final bad in <String>['not json', '{}', '5', 'null', '[1, {}]']) {
+        expect(decodeMaskHistory(bad), isEmpty, reason: bad);
+      }
+      // A second change on the same day replaces the first.
+      final again = withMask(
+        history,
+        previous: 0x7F,
+        mask: 0x1F,
+        from: '2026-03-10',
+      );
+      expect(again.map((s) => s.mask), <int>[0x3F, 0x1F]);
+    });
+
     test('and falls back to every day with no enrolment', () async {
       store.enrollment = null;
       store.active = <PlanDate>{monday, addDays(monday, 1)};
@@ -1418,6 +1528,12 @@ class FakeStore implements PlanStore {
 
   /// Days with activity, for the streak.
   Set<PlanDate> active = <PlanDate>{};
+
+  /// #377: the masks over time; empty, as before any change.
+  List<MaskSpan> masks = <MaskSpan>[];
+
+  @override
+  Future<List<MaskSpan>> studyDaysHistory() async => masks;
 
   /// What the logs could measure, for the estimate.
   MeasuredSeconds measured = const MeasuredSeconds(sessions: 0);

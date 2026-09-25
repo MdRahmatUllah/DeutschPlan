@@ -19,6 +19,10 @@ class DriftPlanStore implements PlanStore {
   final SettingsRepository _settings;
 
   @override
+  Future<List<MaskSpan>> studyDaysHistory() async =>
+      decodeMaskHistory(_settings.read(SettingKeys.studyDaysHistory));
+
+  @override
   Future<ActiveStep?> activeStep() async {
     final row =
         await (_db.select(_db.enrollments)

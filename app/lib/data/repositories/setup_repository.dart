@@ -55,11 +55,37 @@ class SetupRepository {
 
   /// M5's study days (#147): the setting, and the open enrollment, which is
   /// where the plan engine reads them (BR-PLAN-01, -08).
-  Future<void> setStudyDays(int mask) => _db.transaction(() async {
-    await _settings.write(SettingKeys.studyDaysMask, mask);
-    await (_db.update(_db.enrollments)..where((e) => e.completedOn.isNull()))
-        .write(EnrollmentsCompanion(studyDaysMask: Value(mask)));
-  });
+  /// The change is kept in `study_days_history` from tomorrow (#377), so
+  /// the streak judges the days before it by the mask they had.
+  Future<void> setStudyDays(int mask, {required PlanDate today}) =>
+      _db.transaction(() async {
+        await _recordStudyDays(mask, today);
+        await _settings.write(SettingKeys.studyDaysMask, mask);
+        await (_db.update(_db.enrollments)
+              ..where((e) => e.completedOn.isNull()))
+            .write(EnrollmentsCompanion(studyDaysMask: Value(mask)));
+      });
+
+  /// #377: a new mask in `study_days_history`, from the day after [today]
+  /// (BR-PLAN-08), or from today when today isn't planned yet: it will be
+  /// planned with the new one. Nothing when the mask is the same.
+  Future<void> _recordStudyDays(int mask, PlanDate today) async {
+    final previous = _settings.read(SettingKeys.studyDaysMask);
+    if (previous == mask) return;
+    await _settings.write(
+      SettingKeys.studyDaysHistory,
+      encodeMaskHistory(
+        withMask(
+          decodeMaskHistory(_settings.read(SettingKeys.studyDaysHistory)),
+          previous: previous,
+          mask: mask,
+          from: await _store.lastPlannedDate() == today
+              ? addDays(today, 1)
+              : today,
+        ),
+      ),
+    );
+  }
 
   /// Writes [choice] as of [today]. Progress — word states, the review log,
   /// days already planned — is not touched: restart setup changes the plan,
@@ -69,6 +95,7 @@ class SetupRepository {
       await _db.transaction(() async {
         await _settings.write(SettingKeys.dailyNew, choice.dailyNew);
         await _settings.write(SettingKeys.reviseCount, choice.reviseCount);
+        await _recordStudyDays(choice.studyDaysMask, today);
         await _settings.write(SettingKeys.studyDaysMask, choice.studyDaysMask);
         await _settings.write(SettingKeys.reminderEnabled, choice.reminderOn);
         await _settings.write(SettingKeys.reminderTime, choice.reminderTime);

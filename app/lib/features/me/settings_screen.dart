@@ -81,7 +81,9 @@ class SettingsEditor extends _$SettingsEditor {
   /// reason. FR-M5-01: the last one can't go.
   Future<void> studyDays(int mask) async {
     if (mask & 127 == 0) return;
-    await ref.read(setupRepositoryProvider).setStudyDays(mask);
+    await ref
+        .read(setupRepositoryProvider)
+        .setStudyDays(mask, today: ref.read(todayProvider));
   }
 
   /// FR-M3-03: on only once the model is ready. False otherwise, with the
