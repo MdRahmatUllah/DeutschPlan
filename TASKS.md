@@ -132,7 +132,7 @@ claiming the same issue. A hand edit skips that check.
 | #372 | - | X | P2 | - | bug(exam): Submit while Speaking records grades before the recording is saved, and a recording without ticks scores 0 silently | done | agent-2 |  | #374 |
 | #377 | M5 | A | P2 | - | bug(plan): a change of study days rewrites past streaks (BR-PLAN-01, BR-PLAN-08) | done | agent-0 |  | #381 |
 | #347 | - | A | P3 | - | fix(plan): time-per-item medians group ratings by their UTC date | done | agent-0 |  | #391 |
-| #388 | SQA | X | P3 | - | bug(exam): one written word can count for two Writing targets (Beweise → Beweis and beweisen), so 5 targets read as 6 and score the point (found in #133) | open |  |  |  |
+| #388 | SQA | X | P3 | - | bug(exam): one written word can count for two Writing targets (Beweise → Beweis and beweisen), so 5 targets read as 6 and score the point (found in #133) | in-progress | agent-0 |  |  |
 | #389 | SQA | X | P3 | - | bug(exam): L14 says "no answer: the time ran out" for questions skipped in an exam submitted early (found in #136) | done | agent-0 |  | #397 |
 | #390 | SQA | X | P3 | - | bug(shell): with the keyboard up, the tab bar rides above it and covers R2's form; R2's header runs under the status bar (found in #143) | open |  |  |  |
 | #396 | SQA | X | P3 | - | chore(sqa): pass 2 minor gaps: widget speak, Writing with the keyboard, Speaking rubric, my-words duplicates, 200 % leftovers (checklist) | open |  |  |  |

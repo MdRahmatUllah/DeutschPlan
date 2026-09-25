@@ -6,7 +6,7 @@ last-read: 301
 
 ## Now
 
-Nothing claimed.
+#388 bug(exam): one written word can count for two Writing targets (Beweise → Beweis and beweisen), so 5 targets read as 6 and score the point (found in #133) — claimed 2026-09-25 14:23.
 
 ## Next
 

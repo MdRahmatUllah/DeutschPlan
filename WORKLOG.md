@@ -324,3 +324,4 @@ able to tell what is going on without asking.
 - 2026-09-25 14:23 · agent-0 #335 · done (#395)
 - 2026-09-25 14:23 · agent-0 #389 · claimed: bug(exam): L14 says "no answer: the time ran out" for questions skipped in an exam submitted early (found in #136)
 - 2026-09-25 14:23 · agent-0 #389 · done (#397)
+- 2026-09-25 14:23 · agent-0 #388 · claimed: bug(exam): one written word can count for two Writing targets (Beweise → Beweis and beweisen), so 5 targets read as 6 and score the point (found in #133)
