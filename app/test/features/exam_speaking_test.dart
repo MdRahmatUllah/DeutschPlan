@@ -103,13 +103,14 @@ void main() {
       find.text(
         l10n.examSpeakingPrompt(
           l10n.examSpeakingTask('A1', 'Wohnen'),
-          l10n.examSpeakingLength('60'),
+          l10n.examSpeakingMinutes(1),
         ),
       ),
       findsOneWidget,
     );
-    expect(l10n.examSpeakingLength('60'), '1 minute');
-    expect(l10n.examSpeakingLength('90'), '90 seconds');
+    expect(l10n.examSpeakingMinutes(1), '1 minute');
+    expect(l10n.examSpeakingMinutes(2), '2 minutes');
+    expect(l10n.examSpeakingLength(90), '90 seconds');
     expect(find.text(l10n.examSpeakingReady), findsOneWidget);
     expect(find.text('00:00'), findsOneWidget);
     expect(find.text(l10n.examSpeakingOf('01:00')), findsOneWidget);

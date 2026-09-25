@@ -9,6 +9,7 @@ import 'package:deutschplan/data/repositories/exam_repository.dart';
 import 'package:deutschplan/data/repositories/word_repository.dart';
 import 'package:deutschplan/features/quiz/quiz_setup_sheet.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
+import 'package:deutschplan/l10n/ui_digits.dart';
 import 'package:deutschplan/router/routes.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -241,7 +242,10 @@ class LastQuizCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 DpText(
-                  l10n.quizLast(quizPoints(quiz.score), quizPoints(quiz.outOf)),
+                  l10n.quizLast(
+                    l10n.digits(quizPoints(quiz.score)),
+                    l10n.digits(quizPoints(quiz.outOf)),
+                  ),
                   role: DpTextRole.body,
                   weight: 600,
                 ),

@@ -17,6 +17,7 @@ import 'package:deutschplan/features/exam/exam_review_screen.dart';
 import 'package:deutschplan/features/learn/step_exams.dart'
     show examSectionName;
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
+import 'package:deutschplan/l10n/ui_digits.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -226,11 +227,13 @@ class _Result extends StatelessWidget {
       l10n.examResultLine(
         attempt.sublevelCode,
         attempt.seed,
-        _clock(attempt.durationSec),
+        l10n.digits(_clock(attempt.durationSec)),
       ),
       if (previous != null)
         l10n.examResultCompare(
-          _signed(attempt.scorePoints - previous.attempt.scorePoints),
+          l10n.digits(
+            _signed(attempt.scorePoints - previous.attempt.scorePoints),
+          ),
           previous.number,
           _percent(previous.attempt.scorePoints, previous.attempt.maxPoints),
         ),
@@ -248,8 +251,8 @@ class _Result extends StatelessWidget {
                 share: share,
                 percent: _percent(attempt.scorePoints, attempt.maxPoints),
                 points: l10n.examResultPoints(
-                  _points(attempt.scorePoints),
-                  _points(attempt.maxPoints),
+                  l10n.digits(_points(attempt.scorePoints)),
+                  l10n.digits(_points(attempt.maxPoints)),
                 ),
                 passPercent: result.passPercent,
                 line: line,
@@ -629,7 +632,10 @@ class _SectionRow extends StatelessWidget {
     final tokens = context.tokens;
     final l10n = AppLocalizations.of(context);
     final task = this.task;
-    final score = l10n.examResultSectionPoints(_points(points), max);
+    final score = l10n.examResultSectionPoints(
+      l10n.digits(_points(points)),
+      max,
+    );
     final bar = Container(
       height: 8,
       clipBehavior: Clip.antiAlias,

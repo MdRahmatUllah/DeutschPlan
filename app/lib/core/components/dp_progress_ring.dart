@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'package:deutschplan/core/theme/dp_tokens.dart';
 import 'package:deutschplan/core/typography/dp_text.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
+import 'package:deutschplan/l10n/ui_digits.dart';
 import 'package:material_ui/material_ui.dart';
 
 /// The progress ring on Today, the session summary and the widget.
@@ -68,7 +69,8 @@ class DpProgressRing extends StatelessWidget {
       label:
           semanticLabel ??
           AppLocalizations.of(context).progressRingLabel(completed, total),
-      value: '${(progress * 100).round()}%',
+      value: AppLocalizations.of(context)
+          .digits('${(progress * 100).round()}%'),
       child: ExcludeSemantics(
         child: SizedBox(
           width: size,
@@ -101,7 +103,9 @@ class DpProgressRing extends StatelessWidget {
                           mainAxisSize: MainAxisSize.min,
                           children: <Widget>[
                             DpText(
-                              countLabel ?? '$completed / $total',
+                              countLabel ??
+                                  AppLocalizations.of(context)
+                                      .digits('$completed / $total'),
                               role: DpTextRole.title,
                               weight: 600,
                             ),

@@ -9,6 +9,7 @@ import 'package:deutschplan/features/onboarding/onboarding_shell.dart';
 import 'package:deutschplan/features/onboarding/setup_flow.dart';
 import 'package:deutschplan/features/onboarding/onboarding_start_page.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
+import 'package:deutschplan/l10n/ui_digits.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 
@@ -84,7 +85,11 @@ class OnboardingPacePage extends ConsumerWidget {
                   weight: 600,
                 ),
               ),
-              DpText('${draft.dailyNew}', role: DpTextRole.title, weight: 700),
+              DpText(
+                AppLocalizations.of(context).digits(draft.dailyNew),
+                role: DpTextRole.title,
+                weight: 700,
+              ),
             ],
           ),
           const SizedBox(height: 6),

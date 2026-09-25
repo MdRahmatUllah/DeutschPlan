@@ -12,6 +12,7 @@ import 'package:deutschplan/data/repositories/settings_repository.dart';
 import 'package:deutschplan/domain/fsrs.dart';
 import 'package:deutschplan/features/me/reset_flow.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
+import 'package:deutschplan/l10n/ui_digits.dart';
 import 'package:deutschplan/router/cross_tab.dart';
 import 'package:deutschplan/router/routes.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -385,7 +386,9 @@ class SettingsScreen extends ConsumerWidget {
               _Row(
                 title: l10n.settingsSpeed,
                 subtitle: l10n.settingsSpeedLine(
-                  _times(speedQuarters.clamp(speed.min, speed.max)),
+                  l10n.digits(
+                    _times(speedQuarters.clamp(speed.min, speed.max)),
+                  ),
                 ),
                 labelledByControl: true,
                 trailing: _slider(

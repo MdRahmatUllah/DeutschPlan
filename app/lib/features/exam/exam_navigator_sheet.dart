@@ -3,6 +3,7 @@ import 'package:deutschplan/core/theme/dp_surface.dart';
 import 'package:deutschplan/core/theme/dp_tokens.dart';
 import 'package:deutschplan/core/typography/dp_text.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
+import 'package:deutschplan/l10n/ui_digits.dart';
 import 'package:material_ui/material_ui.dart';
 
 /// One numbered question in the navigator.
@@ -60,7 +61,7 @@ class ExamNavigatorSheet extends StatelessWidget {
               ),
               if (left case final time?)
                 DpText(
-                  l10n.examNavLeft(time),
+                  l10n.examNavLeft(l10n.digits(time)),
                   role: DpTextRole.caption,
                   color: tokens.color.textSecondary,
                 ),
@@ -195,7 +196,7 @@ class _Cell extends StatelessWidget {
           height: 40,
           child: Center(
             child: DpText(
-              '$n',
+              AppLocalizations.of(context).digits(n),
               role: DpTextRole.label,
               weight: 700,
               color: fill == null ? tokens.color.ink : tokens.color.onAccent,

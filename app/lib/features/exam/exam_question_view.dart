@@ -20,6 +20,7 @@ import 'package:deutschplan/features/study/study_cloze.dart'
     show StudyAnswerField;
 import 'package:deutschplan/features/words/speak.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
+import 'package:deutschplan/l10n/ui_digits.dart';
 import 'package:deutschplan/services/exam_recorder.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
@@ -933,7 +934,9 @@ class _ExamSpeakingState extends ConsumerState<ExamSpeaking> {
                 DpText(
                   l10n.examSpeakingPrompt(
                     l10n.examSpeakingTask(task.level, topic),
-                    l10n.examSpeakingLength('$max'),
+                    max % 60 == 0
+                        ? l10n.examSpeakingMinutes(max ~/ 60)
+                        : l10n.examSpeakingLength(max),
                   ),
                   role: DpTextRole.body,
                   weight: 600,
@@ -977,13 +980,13 @@ class _ExamSpeakingState extends ConsumerState<ExamSpeaking> {
                             textBaseline: TextBaseline.alphabetic,
                             children: <Widget>[
                               DpText(
-                                _mmss(_seconds),
+                                l10n.digits(_mmss(_seconds)),
                                 role: DpTextRole.title,
                                 weight: 700,
                               ),
                               const SizedBox(width: 4),
                               DpText(
-                                l10n.examSpeakingOf(_mmss(max)),
+                                l10n.examSpeakingOf(l10n.digits(_mmss(max))),
                                 role: DpTextRole.label,
                                 weight: 500,
                                 color: tokens.color.textSecondary,

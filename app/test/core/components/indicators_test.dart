@@ -1,5 +1,6 @@
 import 'package:deutschplan/core/components/dp_progress_ring.dart';
 import 'package:deutschplan/core/components/dp_speaker_button.dart';
+import 'package:deutschplan/core/components/dp_stepper.dart';
 import 'package:deutschplan/core/theme/app_theme.dart';
 import 'package:deutschplan/core/theme/dp_tokens.dart';
 import 'package:deutschplan/main.dart'
@@ -460,9 +461,9 @@ void main() {
       ),
       locale: const Locale('bn'),
     );
-    expect(find.bySemanticsLabel('20টির মধ্যে 12টি'), findsOneWidget);
+    expect(find.bySemanticsLabel('২০টির মধ্যে ১২টি'), findsOneWidget);
     expect(
-      find.bySemanticsLabel('184টি শেখা হয়েছে, 60টি শিখছি, 296টি বাকি'),
+      find.bySemanticsLabel('১৮৪টি শেখা হয়েছে, ৬০টি শিখছি, ২৯৬টি বাকি'),
       findsOneWidget,
     );
     expect(
@@ -471,5 +472,29 @@ void main() {
       ),
       findsNothing,
     );
+  });
+
+  testWidgets("#425 a number a component writes is in the UI language's "
+      'digits: the ring\'s centre, the stepper\'s value', (tester) async {
+    await pump(
+      tester,
+      Column(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          const DpProgressRing(completed: 12, total: 20),
+          DpStepper(
+            value: 15,
+            min: 5,
+            max: 30,
+            onChanged: (_) {},
+            decreaseLabel: 'less',
+            increaseLabel: 'more',
+          ),
+        ],
+      ),
+      locale: const Locale('bn'),
+    );
+    expect(find.text('১২ / ২০'), findsOneWidget);
+    expect(find.text('১৫'), findsOneWidget);
   });
 }

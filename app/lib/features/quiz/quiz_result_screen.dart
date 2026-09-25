@@ -16,6 +16,7 @@ import 'package:deutschplan/features/learn/step_quiz.dart';
 import 'package:deutschplan/features/quiz/quiz_screen.dart' show quizTitle;
 import 'package:deutschplan/features/words/word_row.dart' show WordPlayButton;
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
+import 'package:deutschplan/l10n/ui_digits.dart';
 import 'package:deutschplan/router/routes.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
@@ -112,8 +113,8 @@ class _QuizResultViewState extends ConsumerState<QuizResultView> {
           _Score(
             colour: colour,
             score: l10n.quizResultScore(
-              quizPoints(attempt.scorePoints),
-              quizPoints(attempt.maxPoints),
+              l10n.digits(quizPoints(attempt.scorePoints)),
+              l10n.digits(quizPoints(attempt.maxPoints)),
             ),
             line: l10n.quizResultLine(
               // Down, never up: 79.5 % is not the 80 % that turns it Lime.

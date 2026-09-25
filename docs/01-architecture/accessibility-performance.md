@@ -17,7 +17,7 @@
 
 - UI languages: English and Bangla (ARB). German UI is a possible later immersion mode.
 - The meaning language (EN / বাংলা / both) is separate from the UI language.
-- The Today date is always German on purpose. Bangla numerals only in Bangla UI text, never inside German content.
+- The Today date is always German on purpose. Every number in Bangla UI text is in Bangla digits (owner, #425), and Bangla numerals never go inside German content. A step's code (A1.1) and a product's version (Hy-MT 1.5) are names, and keep theirs.
 
 ## Offline
 

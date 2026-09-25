@@ -16,6 +16,7 @@ import 'package:deutschplan/features/me/settings_screen.dart'
     show settingsSourceProvider;
 import 'package:deutschplan/features/today/today_providers.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
+import 'package:deutschplan/l10n/ui_digits.dart';
 import 'package:deutschplan/services/backup_files.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -279,7 +280,9 @@ class _ExportImportState extends ConsumerState<ExportImportScreen> {
     const kb = 1024;
     return bytes < kb * kb
         ? l10n.exportImportSizeKb((bytes / kb).ceil())
-        : l10n.exportImportSizeMb((bytes / (kb * kb)).toStringAsFixed(1));
+        : l10n.exportImportSizeMb(
+            l10n.digits((bytes / (kb * kb)).toStringAsFixed(1)),
+          );
   }
 
   static String _day(BuildContext context, DateTime day) => DateFormat(

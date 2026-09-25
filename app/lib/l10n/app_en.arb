@@ -100,7 +100,8 @@
     "description": "R1 group heading, shown upper-case (BR-SEARCH-01 tier 1).",
     "placeholders": {
       "count": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -109,7 +110,8 @@
     "description": "R1 group heading, shown upper-case (tier 2).",
     "placeholders": {
       "count": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -118,7 +120,8 @@
     "description": "R1 group heading, shown upper-case (tier 3, typos).",
     "placeholders": {
       "count": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -127,7 +130,8 @@
     "description": "R1 group heading, shown upper-case (tier 4, example sentences).",
     "placeholders": {
       "count": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -178,7 +182,8 @@
     "description": "M1 header, after meSince: days with any practice.",
     "placeholders": {
       "count": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -187,7 +192,8 @@
     "description": "M1 words card legend; days is the done_stability_days setting (FR-M1-01).",
     "placeholders": {
       "days": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -204,7 +210,8 @@
     "description": "M1 activity heat-map, for screen readers.",
     "placeholders": {
       "count": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -213,7 +220,8 @@
     "description": "M1 schedule card title when behind the plan (FR-M1-03); opens the backlog.",
     "placeholders": {
       "count": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -226,7 +234,8 @@
     "description": "M1 schedule card, under the title when behind.",
     "placeholders": {
       "count": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -243,7 +252,8 @@
     "description": "M1 mock exams card: steps with a passed mock.",
     "placeholders": {
       "count": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -255,7 +265,8 @@
         "type": "String"
       },
       "percent": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -305,7 +316,8 @@
     "description": "Body of the leave-the-exam dialog (ExamLeave artboard, FR-L12-04). Says what is kept and what is lost, because the answers survive and the time does not. mock is the mock's number, 1 to 3.",
     "placeholders": {
       "mock": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -334,10 +346,12 @@
     "description": "Onboarding progress, shown above the headline and as the screen-reader label for the dot row.",
     "placeholders": {
       "step": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       },
       "total": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -418,7 +432,8 @@
     "description": "S2 page 3: the word count under a step chip. The number comes from content.db.",
     "placeholders": {
       "count": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -439,13 +454,15 @@
     "description": "S2 page 4: FR-S2-04's live estimate. step is a sublevel code such as A1.1.",
     "placeholders": {
       "days": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       },
       "step": {
         "type": "String"
       },
       "dailyNew": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -454,7 +471,8 @@
     "description": "S2 page 4 preset: 5 new words a day.",
     "placeholders": {
       "count": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -463,7 +481,8 @@
     "description": "S2 page 4 preset: 7 new words a day, the default.",
     "placeholders": {
       "count": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -472,7 +491,8 @@
     "description": "S2 page 4 preset: 15 new words a day.",
     "placeholders": {
       "count": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -620,7 +640,8 @@
     "description": "S2 page 5: the Supertonic card. megabytes is the manifest's size, rounded.",
     "placeholders": {
       "megabytes": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -661,10 +682,12 @@
     "description": "S3: the top bar while the check runs.",
     "placeholders": {
       "n": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       },
       "total": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -732,10 +755,12 @@
     "description": "S3 result: the score chip.",
     "placeholders": {
       "correct": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       },
       "total": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -760,10 +785,12 @@
         "type": "String"
       },
       "correct": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       },
       "total": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -772,10 +799,12 @@
     "description": "S3 result: the article items.",
     "placeholders": {
       "correct": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       },
       "total": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -825,7 +854,8 @@
     "description": "T1 and M1 streak pill, for screen readers; T1's opens Progress.",
     "placeholders": {
       "count": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -838,7 +868,8 @@
     "description": "T1 ring caption: time left today (BR-PLAN-09).",
     "placeholders": {
       "minutes": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -847,10 +878,12 @@
     "description": "T1 ring, for screen readers.",
     "placeholders": {
       "done": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       },
       "total": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -859,7 +892,8 @@
     "description": "T1 ring card, beside the ring.",
     "placeholders": {
       "day": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -868,10 +902,12 @@
     "description": "T1 ring card, under the mini bar: words done in the active step.",
     "placeholders": {
       "done": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       },
       "total": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       },
       "step": {
         "type": "String"
@@ -883,7 +919,8 @@
     "description": "T1 section card title.",
     "placeholders": {
       "count": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -892,7 +929,8 @@
     "description": "T1 Revise card subtitle.",
     "placeholders": {
       "count": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -909,7 +947,8 @@
     "description": "T1 section card title.",
     "placeholders": {
       "count": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -918,7 +957,8 @@
     "description": "T1 New card subtitle. The category is course content.",
     "placeholders": {
       "count": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       },
       "category": {
         "type": "String"
@@ -930,7 +970,8 @@
     "description": "T1 New card subtitle when the words have no category.",
     "placeholders": {
       "count": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -939,7 +980,8 @@
     "description": "T1 section card title; opens T4.",
     "placeholders": {
       "count": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -948,7 +990,8 @@
     "description": "T1 Backlog card: the weekdays the waiting words were planned for.",
     "placeholders": {
       "count": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       },
       "from": {
         "type": "String"
@@ -963,7 +1006,8 @@
     "description": "T1 Backlog card when every waiting word is from one day.",
     "placeholders": {
       "count": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       },
       "day": {
         "type": "String"
@@ -975,7 +1019,8 @@
     "description": "T1 section card title; opens grammar practice.",
     "placeholders": {
       "count": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -984,7 +1029,8 @@
     "description": "T1 Grammar due card subtitle.",
     "placeholders": {
       "count": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -993,7 +1039,8 @@
     "description": "T1 section card title; opens T5.",
     "placeholders": {
       "count": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -1002,7 +1049,8 @@
     "description": "T1 Practice sentences card subtitle.",
     "placeholders": {
       "count": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -1015,7 +1063,8 @@
     "description": "T1 primary button before anything is done (FR-T1-03).",
     "placeholders": {
       "count": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -1024,7 +1073,8 @@
     "description": "T1 primary button once a session has started (FR-T1-03).",
     "placeholders": {
       "count": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -1041,7 +1091,8 @@
     "description": "T1 primary button once the study blocks are done (FR-T1-03).",
     "placeholders": {
       "count": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -1050,7 +1101,8 @@
     "description": "T1 primary button once the day is done and a backlog is waiting (FR-T1-03).",
     "placeholders": {
       "count": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -1059,7 +1111,8 @@
     "description": "T1 primary button on a rest day with revisions due (FR-T1-03).",
     "placeholders": {
       "count": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -1072,13 +1125,16 @@
     "description": "TodayDone ring card: the course day, the words studied today and the minutes spent.",
     "placeholders": {
       "day": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       },
       "words": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       },
       "minutes": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -1091,7 +1147,8 @@
     "description": "TodayDone summary part.",
     "placeholders": {
       "count": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -1100,7 +1157,8 @@
     "description": "TodayDone summary part.",
     "placeholders": {
       "count": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -1109,7 +1167,8 @@
     "description": "TodayDone summary part.",
     "placeholders": {
       "count": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -1126,7 +1185,8 @@
     "description": "TodayDone Tomorrow pill.",
     "placeholders": {
       "count": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -1135,7 +1195,8 @@
     "description": "TodayDone Tomorrow pill.",
     "placeholders": {
       "count": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -1144,7 +1205,8 @@
     "description": "TodayDone Tomorrow card: the estimate and the category that carries on. The category is course content.",
     "placeholders": {
       "minutes": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       },
       "category": {
         "type": "String"
@@ -1185,7 +1247,8 @@
     "description": "TodayRest Revise card subtitle.",
     "placeholders": {
       "count": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -1202,10 +1265,12 @@
     "description": "TodayRest note: tomorrow's due words now, and after revising today's.",
     "placeholders": {
       "before": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       },
       "after": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -1243,13 +1308,16 @@
     "description": "T1 content-update card: the counts.",
     "placeholders": {
       "added": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       },
       "removed": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       },
       "changed": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -1262,7 +1330,8 @@
     "description": "T1 pause-offer card body.",
     "placeholders": {
       "count": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -1279,7 +1348,8 @@
     "description": "T1 exams-unlocked card body.",
     "placeholders": {
       "percent": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       },
       "step": {
         "type": "String"
@@ -1311,10 +1381,12 @@
     "description": "T2 top bar: the card's place in the Revise block.",
     "placeholders": {
       "index": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       },
       "total": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -1323,10 +1395,12 @@
     "description": "T2 top bar: the card's place in the New block.",
     "placeholders": {
       "index": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       },
       "total": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -1335,10 +1409,12 @@
     "description": "T2 top bar: the card's place in the Grammar block.",
     "placeholders": {
       "index": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       },
       "total": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -1534,7 +1610,8 @@
     "description": "T2 rating bar: the interval under a rating, in days (FR-T2-05).",
     "placeholders": {
       "days": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -1609,10 +1686,12 @@
     "description": "T3: the session's own count and time (FR-T3-01).",
     "placeholders": {
       "cards": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       },
       "minutes": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -1621,7 +1700,8 @@
     "description": "T3 rating pill: '2 Again'. rating is the rating button's own label.",
     "placeholders": {
       "count": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       },
       "rating": {
         "type": "String"
@@ -1637,7 +1717,8 @@
     "description": "T3 primary when the day's open revisions are next (FR-T3-02, #328): after a session from one section card or T4.",
     "placeholders": {
       "count": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -1646,7 +1727,8 @@
     "description": "T3 primary when the day's open new words are next (FR-T3-02, #328).",
     "placeholders": {
       "count": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -1655,7 +1737,8 @@
     "description": "T3 primary when grammar topics are next (FR-T3-02).",
     "placeholders": {
       "topics": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -1664,7 +1747,8 @@
     "description": "T3 primary when the day's sentences are next (FR-T3-02).",
     "placeholders": {
       "count": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -1673,7 +1757,8 @@
     "description": "T3 secondary when the backlog is not empty (FR-T3-02).",
     "placeholders": {
       "count": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -1695,10 +1780,12 @@
     "description": "T2 top bar in a backlog session (FR-T4-02).",
     "placeholders": {
       "index": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       },
       "total": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -1715,7 +1802,8 @@
     "description": "T4 headline: how many words wait.",
     "placeholders": {
       "count": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -1757,7 +1845,8 @@
     "description": "T4: studies every backlog word as one block (FR-T4-02).",
     "placeholders": {
       "count": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -1781,7 +1870,8 @@
         "type": "String"
       },
       "count": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -1866,7 +1956,8 @@
     "description": "W1 history caption, first part: when the word is next due, a day or more away.",
     "placeholders": {
       "days": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -1875,7 +1966,8 @@
     "description": "W1 history caption: how often the word was reviewed, from any source.",
     "placeholders": {
       "count": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -2085,7 +2177,8 @@
     "description": "W2 primary button: a pick-the-right-word quiz from the members' sentences (FR-W2-03). {count} is how many items it asks, 5 at most.",
     "placeholders": {
       "count": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -2094,7 +2187,8 @@
     "description": "W2 secondary button: every member still To do joins today's plan as a new word. {count} is how many.",
     "placeholders": {
       "count": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -2103,7 +2197,8 @@
     "description": "W2 toast after Add all to today.",
     "placeholders": {
       "count": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -2132,10 +2227,12 @@
     "description": "T5 band title.",
     "placeholders": {
       "index": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       },
       "total": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -2192,10 +2289,12 @@
     "description": "T6: today's words and minutes.",
     "placeholders": {
       "words": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       },
       "minutes": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -2204,7 +2303,8 @@
     "description": "T6: beside the streak chip, which shows the number.",
     "placeholders": {
       "days": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -2213,10 +2313,12 @@
     "description": "T6: tomorrow's plan from a dry run (FR-T6-02).",
     "placeholders": {
       "revise": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       },
       "fresh": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -2259,10 +2361,12 @@
     "description": "L1 step tile: the step's words and grammar topics.",
     "placeholders": {
       "words": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       },
       "topics": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -2287,7 +2391,8 @@
     "description": "L1 current tile: what is left of today's study blocks.",
     "placeholders": {
       "count": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -2334,10 +2439,12 @@
     "description": "L2 header beside the step code, after the level's name.",
     "placeholders": {
       "words": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       },
       "topics": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -2349,10 +2456,12 @@
         "type": "String"
       },
       "days": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       },
       "pace": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -2370,10 +2479,12 @@
     "description": "L2 pace line for a step never enrolled.",
     "placeholders": {
       "days": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       },
       "pace": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -2394,7 +2505,8 @@
         "type": "String"
       },
       "mock": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -2495,7 +2607,8 @@
     "description": "L2 Grammar tab: opens L15 with every due topic.",
     "placeholders": {
       "count": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -2508,7 +2621,8 @@
     "description": "L2 Grammar tab row: days until a learned topic is due.",
     "placeholders": {
       "days": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -2541,7 +2655,8 @@
     "description": "L2 Quiz tile subtitle.",
     "placeholders": {
       "count": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -2558,7 +2673,8 @@
     "description": "L2 Quiz tab while fewer than 10 of the step's words are learned.",
     "placeholders": {
       "learned": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -2619,7 +2735,8 @@
     "description": "L10 mock card title.",
     "placeholders": {
       "seed": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -2628,7 +2745,8 @@
     "description": "L10 pill: the mock's best score, passed (FR-L10-02).",
     "placeholders": {
       "percent": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -2637,7 +2755,8 @@
     "description": "L10 pill: the mock's best score, below the pass mark.",
     "placeholders": {
       "percent": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -2650,10 +2769,12 @@
     "description": "L10 mock card: the paper's size and length.",
     "placeholders": {
       "questions": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       },
       "minutes": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -2662,7 +2783,8 @@
     "description": "L10 mock card, after examHubLine: attempts so far, unfinished ones included (FR-L12-04).",
     "placeholders": {
       "count": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -2671,7 +2793,8 @@
     "description": "L10 Mock 3's card, after examHubLine (BR-EXAM-02).",
     "placeholders": {
       "seed": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -2684,7 +2807,8 @@
     "description": "L10 locked card title; percent is exam_unlock_percent (BR-EXAM-01).",
     "placeholders": {
       "percent": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       },
       "step": {
         "type": "String"
@@ -2710,10 +2834,12 @@
     "description": "L10 locked card, after examHubIntroduced: the words left at the step's pace and study days.",
     "placeholders": {
       "days": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       },
       "pace": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -2745,7 +2871,8 @@
         "type": "String"
       },
       "count": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -2790,7 +2917,8 @@
     "description": "L10 panel footnote; percent is exam_pass_percent.",
     "placeholders": {
       "percent": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -2802,7 +2930,8 @@
         "type": "String"
       },
       "seed": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -2811,7 +2940,8 @@
     "description": "L11 line, after examHubLine; percent is exam_pass_percent.",
     "placeholders": {
       "percent": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -2820,10 +2950,12 @@
     "description": "L11 line, last: the mock's best finished score (FR-L10-02).",
     "placeholders": {
       "percent": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       },
       "count": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -2860,7 +2992,8 @@
     "description": "L11 under the timer switch.",
     "placeholders": {
       "minutes": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -2896,7 +3029,8 @@
         "type": "String"
       },
       "learned": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -3080,7 +3214,8 @@
     "description": "L9 line under the score: percent, time taken, and the quiz title (e.g. Standard · DE → EN).",
     "placeholders": {
       "percent": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       },
       "time": {
         "type": "String"
@@ -3095,10 +3230,12 @@
     "description": "L9: how long the quiz took.",
     "placeholders": {
       "minutes": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       },
       "seconds": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -3107,7 +3244,8 @@
     "description": "L9 section label over the mistakes (FR-L8-03 re-asked them).",
     "placeholders": {
       "count": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -3142,7 +3280,8 @@
     "description": "L9 button: a new quiz from the mistakes (FR-L9-01).",
     "placeholders": {
       "count": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -3155,7 +3294,8 @@
     "description": "L9 toast after Add mistakes to revision.",
     "placeholders": {
       "count": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -3182,7 +3322,8 @@
     "description": "L8 timer: seconds left for this question (FR-L8-05).",
     "placeholders": {
       "seconds": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -3203,7 +3344,8 @@
     "description": "L3 filter chip: every topic.",
     "placeholders": {
       "count": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -3212,7 +3354,8 @@
     "description": "L3 filter chip: topics never learned.",
     "placeholders": {
       "count": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -3221,7 +3364,8 @@
     "description": "L3 filter chip: learned topics due today or before.",
     "placeholders": {
       "count": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -3246,7 +3390,8 @@
     "description": "L4 primary button: opens L15 for this topic.",
     "placeholders": {
       "count": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -3263,7 +3408,8 @@
     "description": "L4 in place of Mark as learned, when the topic is scheduled.",
     "placeholders": {
       "days": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -3272,10 +3418,12 @@
     "description": "L4 header: the topic's place in its step.",
     "placeholders": {
       "at": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       },
       "of": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -3311,10 +3459,12 @@
     "description": "L15 banner as the next due topic starts (FR-L15-04).",
     "placeholders": {
       "at": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       },
       "of": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       },
       "title": {
         "type": "String"
@@ -3413,7 +3563,8 @@
     "description": "L6 subtitle. steps is the first step, or 'A1.1 → C2.2' when the category spans several.",
     "placeholders": {
       "count": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       },
       "steps": {
         "type": "String"
@@ -3425,7 +3576,8 @@
     "description": "L5 card: the category's words across the course.",
     "placeholders": {
       "count": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -3437,10 +3589,12 @@
         "type": "String"
       },
       "n": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       },
       "count": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -3449,10 +3603,12 @@
     "description": "L12 line under the band (BR-EXAM-05).",
     "placeholders": {
       "n": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       },
       "count": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -3493,7 +3649,8 @@
     "description": "L12 Listening: how often the word can still be played (FR-L12-06: replay twice).",
     "placeholders": {
       "count": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -3522,7 +3679,8 @@
     "description": "L12 confirm body (FR-L12-05).",
     "placeholders": {
       "count": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -3552,10 +3710,12 @@
     "description": "L12 timer, for screen readers.",
     "placeholders": {
       "minutes": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       },
       "seconds": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -3597,7 +3757,8 @@
     "description": "L12 navigator legend: answered questions.",
     "placeholders": {
       "count": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -3606,7 +3767,8 @@
     "description": "L12 navigator legend: flagged questions.",
     "placeholders": {
       "count": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -3615,7 +3777,8 @@
     "description": "L12 navigator legend: questions with no answer.",
     "placeholders": {
       "count": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -3624,7 +3787,8 @@
     "description": "L12 navigator note above Submit exam (FR-L12-05).",
     "placeholders": {
       "count": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -3633,7 +3797,8 @@
     "description": "L12 navigator cell, for screen readers.",
     "placeholders": {
       "n": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -3770,10 +3935,12 @@
     "description": "M3 retention subtitle (FR-M3-01): the chosen retention and the reviews a day the learned words would ask for at it.",
     "placeholders": {
       "percent": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       },
       "reviews": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -3782,7 +3949,8 @@
     "description": "M3 row: done_stability_days, a stepper 3–60 (BR-STATUS-02).",
     "placeholders": {
       "days": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -3925,7 +4093,8 @@
     "description": "M3: a percentage, as the value of the exam rows and their choices.",
     "placeholders": {
       "percent": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -3949,7 +4118,8 @@
         "type": "String"
       },
       "percent": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -4019,13 +4189,16 @@
     "description": "L12 Writing: under the chips (FR-L12W-01, -02). level is A1…C2.",
     "placeholders": {
       "used": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       },
       "total": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       },
       "min": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       },
       "level": {
         "type": "String"
@@ -4041,10 +4214,12 @@
     "description": "L12 Writing: under the text, live: its words and the level's minimum (FR-L12W-02).",
     "placeholders": {
       "count": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       },
       "min": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -4089,12 +4264,23 @@
       }
     }
   },
-  "examSpeakingLength": "{seconds, select, 60{1 minute} 120{2 minutes} other{{seconds} seconds}}",
+  "examSpeakingLength": "{seconds} seconds",
   "@examSpeakingLength": {
-    "description": "L12 Speaking: the task's length after its dash (FR-L12S-02: 60, 90 or 120 s). seconds is the number as text.",
+    "description": "L12 Speaking: the task's length after its dash, when it isn't whole minutes (FR-L12S-02: 90 s).",
     "placeholders": {
       "seconds": {
-        "type": "String"
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "examSpeakingMinutes": "{minutes, plural, =1{1 minute} other{{minutes} minutes}}",
+  "@examSpeakingMinutes": {
+    "description": "L12 Speaking: the task's length after its dash, in whole minutes (FR-L12S-02: 60 or 120 s).",
+    "placeholders": {
+      "minutes": {
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -4147,7 +4333,8 @@
     "description": "L12 Speaking: records again (FR-L12S-02: one retake).",
     "placeholders": {
       "left": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -4261,10 +4448,12 @@
         "type": "String"
       },
       "revisions": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       },
       "newWords": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -4277,13 +4466,15 @@
     "description": "M2 retention's corner: the period's share remembered and desired_retention.",
     "placeholders": {
       "percent": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       },
       "period": {
         "type": "String"
       },
       "target": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -4295,7 +4486,8 @@
         "type": "String"
       },
       "target": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -4315,7 +4507,8 @@
         "type": "String"
       },
       "percent": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -4324,7 +4517,8 @@
     "description": "M2: instead of the retention chart before 30 days of data (progress.md).",
     "placeholders": {
       "days": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -4351,10 +4545,12 @@
     "description": "M2 total: study time, e.g. '6 h 48'.",
     "placeholders": {
       "hours": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       },
       "minutes": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -4363,7 +4559,8 @@
     "description": "M2 total: study time under an hour.",
     "placeholders": {
       "minutes": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -4384,10 +4581,12 @@
     "description": "M2 total: the streak and the best there has been (FR-M2-02).",
     "placeholders": {
       "streak": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       },
       "best": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -4412,7 +4611,8 @@
     "description": "R1 idle: the heading over the learner's own words, shown upper-case.",
     "placeholders": {
       "count": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -4425,7 +4625,8 @@
     "description": "R1 idle: how often the learner has come across one of their own words; shown from twice.",
     "placeholders": {
       "count": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -4442,7 +4643,8 @@
     "description": "The reminder's plan line (#158): the words to revise today. Joined with the others by ' · '.",
     "placeholders": {
       "count": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -4451,7 +4653,8 @@
     "description": "The reminder's plan line (#158): today's new words.",
     "placeholders": {
       "count": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -4460,7 +4663,8 @@
     "description": "The reminder's plan line (#158): how long what is left takes (BR-PLAN-09).",
     "placeholders": {
       "minutes": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -4503,7 +4707,8 @@
     "description": "The export's size under a megabyte.",
     "placeholders": {
       "kb": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -4790,7 +4995,8 @@
     "description": "L13 score as a percentage, rounded down.",
     "placeholders": {
       "percent": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -4811,7 +5017,8 @@
     "description": "L13 label under the pass-mark tick on the score bar (BR-EXAM-04).",
     "placeholders": {
       "percent": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -4823,7 +5030,8 @@
         "type": "String"
       },
       "mock": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       },
       "time": {
         "type": "String"
@@ -4838,10 +5046,12 @@
         "type": "String"
       },
       "number": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       },
       "percent": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -4857,7 +5067,8 @@
         "type": "String"
       },
       "max": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -4882,7 +5093,8 @@
     "description": "L13 button (FR-L13-02): every missed word rated Again, due tomorrow.",
     "placeholders": {
       "count": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -4891,7 +5103,8 @@
     "description": "L13 toast after Add missed words to revision.",
     "placeholders": {
       "count": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -4976,7 +5189,8 @@
     "description": "M5 under the day pills (BR-PLAN-01). days is the rest days' names, e.g. 'Sunday' or 'Saturday and Sunday'.",
     "placeholders": {
       "count": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       },
       "days": {
         "type": "String"
@@ -5040,7 +5254,8 @@
     "description": "L14 filter chip: every question.",
     "placeholders": {
       "count": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -5049,7 +5264,8 @@
     "description": "L14 filter chip: the questions under their point.",
     "placeholders": {
       "count": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -5062,7 +5278,8 @@
     "description": "L14 card overline: the question number (as L12 numbers them) and its section.",
     "placeholders": {
       "number": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       },
       "section": {
         "type": "String"
@@ -5110,7 +5327,8 @@
     "description": "X1's small widget (#160): what is left of today, e.g. '8 left'.",
     "placeholders": {
       "count": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -5119,7 +5337,8 @@
     "description": "X1's medium widget under the ring: '8 left · A2.1'.",
     "placeholders": {
       "count": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       },
       "step": {
         "type": "String"
@@ -5131,10 +5350,12 @@
     "description": "X1's medium ring: done of today's total, '12/20'.",
     "placeholders": {
       "done": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       },
       "total": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -5164,7 +5385,8 @@
     "description": "X1's tomorrow line: the grammar topics due, e.g. 'Tomorrow · 7 new · 1 grammar topic'.",
     "placeholders": {
       "count": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -5413,10 +5635,12 @@
     "description": "A progress ring, for screen readers, where the screen gives it no label of its own (#425).",
     "placeholders": {
       "completed": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       },
       "total": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -5425,13 +5649,16 @@
     "description": "A done / learning / to do bar, for screen readers, where the screen gives it no label of its own (#425).",
     "placeholders": {
       "done": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       },
       "learning": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       },
       "todo": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   }

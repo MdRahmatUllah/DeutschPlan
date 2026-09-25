@@ -1,7 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:ui' show Locale;
 
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
+import 'package:deutschplan/l10n/ui_digits.dart';
 import 'package:deutschplan/features/today/today_view.dart' show germanDate;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:intl/intl.dart' show Intl;
@@ -139,6 +141,54 @@ void main() {
       isFalse,
       reason: 'a Bengali digit in German',
     );
+  });
+
+  test('#425 one digit system per Bangla string: Bangla digits, in the '
+      'text and in every number placeholder', () async {
+    final bn = jsonDecode(
+      File('lib/l10n/app_bn.arb').readAsStringSync(),
+    ) as Map<String, dynamic>;
+    // What a Bangla message writes itself: not its placeholders, the case
+    // names of a plural or select ("=1{", "A1{", "60{"), a step's code
+    // ("A1.1", "B2+"), nor a product's name.
+    String written(String message) => message
+        .replaceAll(RegExp(r'\{\w+(,\s*\w+,)?\}?'), '')
+        .replaceAll(RegExp(r'=?\w+\{'), '')
+        .replaceAll(RegExp(r'\b[ABC][12](\.[12])?\+?'), '')
+        .replaceAll('Hy-MT 1.5', '');
+    final latin = <String>[
+      for (final MapEntry(:key, :value) in bn.entries)
+        if (!key.startsWith('@') &&
+            value is String &&
+            RegExp('[0-9]').hasMatch(written(value)))
+          '$key: $value',
+    ];
+    expect(latin, isEmpty, reason: latin.join('\n'));
+
+    // A number placeholder is formatted for the locale, which in Bangla is
+    // its digits; a bare int would print 0–9.
+    final en = jsonDecode(
+      File('lib/l10n/app_en.arb').readAsStringSync(),
+    ) as Map<String, dynamic>;
+    final unformatted = <String>[
+      for (final MapEntry(:key, :value) in en.entries)
+        if (key.startsWith('@') && value is Map<String, dynamic>)
+          for (final MapEntry(key: name, value: placeholder)
+              in ((value['placeholders'] as Map<String, dynamic>?) ??
+                      const <String, dynamic>{})
+                  .entries)
+            if ((placeholder as Map<String, dynamic>)['type'] == 'int' &&
+                placeholder['format'] == null)
+              '${key.substring(1)}.$name',
+    ];
+    expect(unformatted, isEmpty, reason: unformatted.join('\n'));
+
+    final bangla = await AppLocalizations.delegate.load(const Locale('bn'));
+    expect(bangla.quizLocked(3), contains('৩'));
+    expect(bangla.quizLocked(3), isNot(contains('3')));
+    expect(bangla.digits('12:05'), '১২:০৫');
+    final english = await AppLocalizations.delegate.load(const Locale('en'));
+    expect(english.digits('12:05'), '12:05');
   });
 
   test('every supported locale resolves every key', () async {
