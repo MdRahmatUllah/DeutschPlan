@@ -5151,5 +5151,115 @@
   "resetEverythingConfirm": "Reset",
   "@resetEverythingConfirm": {
     "description": "The ResetDialog artboard: the Coral action, off until the field says RESET."
+  },
+  "aboutTitle": "About & privacy",
+  "@aboutTitle": {
+    "description": "M9's title (the About artboard)."
+  },
+  "aboutVersion": "Version {version} (build {build}) · content {content} · {date}",
+  "@aboutVersion": {
+    "description": "M9 under the app's name (FR-M9-01): the app's version and build, the course's version and the day it was built.",
+    "placeholders": {
+      "version": {
+        "type": "String",
+        "example": "1.0.0"
+      },
+      "build": {
+        "type": "String",
+        "example": "41"
+      },
+      "content": {
+        "type": "String",
+        "example": "2026.09"
+      },
+      "date": {
+        "type": "String",
+        "example": "21 Sep 2026"
+      }
+    }
+  },
+  "aboutVersionUndated": "Version {version} (build {build}) · content {content}",
+  "@aboutVersionUndated": {
+    "description": "M9's version line for a course that doesn't say when it was built (no meta.built_at).",
+    "placeholders": {
+      "version": {
+        "type": "String",
+        "example": "1.0.0"
+      },
+      "build": {
+        "type": "String",
+        "example": "41"
+      },
+      "content": {
+        "type": "String",
+        "example": "2026.09"
+      }
+    }
+  },
+  "aboutPrivacy": "Privacy",
+  "@aboutPrivacy": {
+    "description": "M9's privacy card: its caption, drawn in capitals."
+  },
+  "aboutPrivacyText": "Your progress stays on this phone. DeutschPlan has no account, no server and no analytics. The internet is used only when you open a web search link or download a model.",
+  "@aboutPrivacyText": {
+    "description": "M9's privacy statement (BR-PRIV-01)."
+  },
+  "aboutLicences": "Open-source and model licences",
+  "@aboutLicences": {
+    "description": "M9: the row to M8."
+  },
+  "aboutLicencesNote": "Flutter packages · Supertonic OpenRAIL-M · Hy-MT · fonts (OFL)",
+  "@aboutLicencesNote": {
+    "description": "M9: under the licences row, what M8 lists."
+  },
+  "aboutContact": "Contact",
+  "@aboutContact": {
+    "description": "M9: how to reach the project."
+  },
+  "aboutContactNote": "Report a problem on GitHub",
+  "@aboutContactNote": {
+    "description": "M9: under Contact. The app has no server or address of its own: it opens the project's new-issue page, as a card's report does."
+  },
+  "aboutContent": "Content",
+  "@aboutContent": {
+    "description": "M9: the course's size, from content.db."
+  },
+  "aboutContentCounts": "{words} words · {grammar} grammar topics · {sentences} sentences",
+  "@aboutContentCounts": {
+    "description": "M9 under Content (FR-M9-01): the course's words, grammar topics and example sentences.",
+    "placeholders": {
+      "words": {
+        "type": "int",
+        "format": "decimalPattern"
+      },
+      "grammar": {
+        "type": "int",
+        "format": "decimalPattern"
+      },
+      "sentences": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "licencesTitle": "Licences",
+  "@licencesTitle": {
+    "description": "M8's title (the Licences artboard)."
+  },
+  "licencesModels": "Models",
+  "@licencesModels": {
+    "description": "M8's section of the on-device models, drawn in capitals."
+  },
+  "licencesFonts": "Fonts",
+  "@licencesFonts": {
+    "description": "M8's section of the bundled fonts, drawn in capitals."
+  },
+  "licencesPackages": "Packages",
+  "@licencesPackages": {
+    "description": "M8's section of the app's packages, from Flutter's licence registry, drawn in capitals."
+  },
+  "licencesOther": "Licence",
+  "@licencesOther": {
+    "description": "M8: under a package whose licence isn't one it names (MIT, BSD, Apache…)."
   }
 }

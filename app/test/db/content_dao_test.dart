@@ -1,6 +1,7 @@
 @TestOn('vm')
 library;
 
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:deutschplan/data/db/app_database.dart';
@@ -285,6 +286,25 @@ void main() {
       'freut',
       'gefreut',
     ]);
+  });
+
+  test('FR-M9-01 About counts the course as its manifest does', () async {
+    final real = AppDatabase(DatabaseConnection(NativeDatabase.memory()));
+    addTearDown(real.close);
+    await real.customStatement(
+      "ATTACH DATABASE '${ContentDao.attachPath(realContent())}' AS c",
+    );
+    final manifest = jsonDecode(
+      File('assets/db/content_manifest.json').readAsStringSync(),
+    ) as Map<String, Object?>;
+    final counts = manifest['counts']! as Map<String, Object?>;
+
+    final facts = await ContentDao(real).facts();
+    expect(facts.words, counts['words']);
+    expect(facts.grammar, counts['grammar']);
+    expect(facts.sentences, counts['examples']);
+    expect(facts.version, manifest['content_version']);
+    expect(facts.builtAt, DateTime.parse(manifest['built_at']! as String));
   });
 
   group('#324 over the real course', () {

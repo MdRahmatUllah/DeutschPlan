@@ -13,6 +13,8 @@ library;
 import 'dart:async';
 
 import 'package:flutter/foundation.dart' show listEquals;
+import 'package:deutschplan/features/me/about_screen.dart';
+import 'package:deutschplan/features/me/licences_screen.dart';
 import 'package:deutschplan/features/onboarding/onboarding_meaning_page.dart';
 import 'package:deutschplan/features/onboarding/onboarding_pace_page.dart';
 import 'package:deutschplan/features/onboarding/onboarding_shell.dart';
@@ -491,15 +493,19 @@ class AboutRoute extends GoRouteData with $AboutRoute {
 
   @override
   Widget build(BuildContext context, GoRouterState state) =>
-      const PlaceholderScreen(title: 'About', screen: 'M9');
+      const AboutScreen();
 }
 
 class LicencesRoute extends GoRouteData with $LicencesRoute {
   const LicencesRoute();
 
+  /// M9 → M8, pushed: back returns to About.
+  static void open(BuildContext context) =>
+      unawaited(context.push<void>(const LicencesRoute().location));
+
   @override
   Widget build(BuildContext context, GoRouterState state) =>
-      const PlaceholderScreen(title: 'Licences', screen: 'M8');
+      const LicencesScreen();
 }
 
 // --- Full-screen routes over the shell --------------------------------------
