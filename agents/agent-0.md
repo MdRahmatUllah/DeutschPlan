@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-09-25 10:22
+last-seen: 2026-09-25 10:26
 last-read: 282
 
 ## Now
 
-#321 content: about 160 interference tips are for the wrong word class (-chen noun rule on verbs, separable rule on nouns) (found in #49) — claimed 2026-09-25 10:21.
+Nothing claimed.
 
 ## Next
 
