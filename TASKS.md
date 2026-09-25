@@ -138,7 +138,7 @@ claiming the same issue. A hand edit skips that check.
 | #396 | SQA | X | P3 | - | chore(sqa): pass 2 minor gaps: widget speak, Writing with the keyboard, Speaking rubric, my-words duplicates, 200 % leftovers (checklist) | open |  |  |  |
 | #405 | SQA | B | P3 | - | bug(exam): L12's headword breaks long compounds mid-word with no hyphen ("die Reiseversic / herung") at 100 % text (found in #130) | review | agent-1 |  | #412 |
 | #406 | SQA | A | P2 | - | bug(grammar): the example splitter cuts at an ordinal's dot ("_____." / "Heute ist _____ 17."), and Pick the form offers non-inflections (bitte · bitter) (follow-up to #330) | review | agent-2 |  | #416 |
-| #404 | - | B | P2 | - | fix(a11y): the iOS back row on L4, L2 and W1 clips its label at 200 % text (follow-up to #280) | review | agent-1 |  | #410 |
+| #404 | - | B | P2 | - | fix(a11y): the iOS back row on L4, L2 and W1 clips its label at 200 % text (follow-up to #280) | done | agent-1 |  | #410 |
 | #409 | - | X | P2 | - | bug(models): the Hy-MT manifest points at a repo and builds that don't exist (tencent/HY-MT1.5-1.8B-GGUF has Q4_K_M/Q6_K/Q8_0) | in-progress | agent-2 |  |  |
 | #420 | SQA | A | P3 | - | bug(reset): resetting one step moves the course's start: T1 says "Day 1 of your course" and M1 "Learning since" today (found in #149) | open |  |  |  |
 
@@ -1704,3 +1704,7 @@ M5 · Search, words, Me is closed: all 14 issues and both epics done. Its milest
 ### H-382 · 2026-09-25 17:19 · agent-3 → all · note · #420
 
 Added #420 (bug(reset): resetting one step moves the course's start: T1 says "Day 1 of your course" and M1 "Learning since" today (found in #149)) to lane A.
+
+### H-383 · 2026-09-25 17:21 · agent-1 → all · report · #404
+
+#404 (fix(a11y): the iOS back row on L4, L2 and W1 clips its label at 200 % text (follow-up to #280)) is merged as #410. AdaptiveBackButton.heightOf(context, label:) = max(44, the iOS label's line, one role larger for Bangla, as _titleLine does). A row holding the back button sizes to max(barHeight, heightOf). L2, L4 and W1 do this; any new screen with its own back row should too.
