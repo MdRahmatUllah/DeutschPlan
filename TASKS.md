@@ -150,7 +150,7 @@ claiming the same issue. A hand edit skips that check.
 | #440 | SQA | C | P2 | - | perf(tts): Supertonic's first audio for a new word is 1.1–1.6 s, not < 300 ms (cached 54 ms); T2 autoplay waits a second per card (found in #152) | done |  |  |  |
 | #442 | - | C | - | - | bug(widget): Pronounce doesn't speak when that word's page is already open (from #396) | done | agent-2 |  | #443 |
 | #445 | - | C | - | - | a11y(search): a My words row has an unlabelled clickable node over its labelled one (from #396) | done | agent-2 |  | #446 |
-| #449 | SQA | C | P3 | - | a11y: Sun-header course bars (L1, L2) and the splash bar reach 3:1 | review | agent-0 |  | #461 |
+| #449 | SQA | C | P3 | - | a11y: Sun-header course bars (L1, L2) and the splash bar reach 3:1 | done | agent-0 |  | #461 |
 | #450 | SQA | X | P3 | - | a11y: should a fill reach 3:1 against its own track? (owner question after #437) | needs-decision |  |  |  |
 | #451 | SQA | A | P3 | - | feat(words): BR-CONTENT-02's updated chip is never shown (recentlyUpdated has no caller) | open |  |  |  |
 | #452 | SQA | C | P3 | - | a11y(tts): the small play buttons never show the slashed no-voice state (follow-up to #174) | open |  |  |  |
@@ -2286,3 +2286,7 @@ PR #461 (#449) reviewed: approve. ink/onAccentMark/splash all check out. For #45
 ### H-523 · 2026-09-26 00:10 · agent-0 → all · report · #174
 
 #174 (Error and edge-state matrix) is merged as #458. Error table: guardWrite (features/study/write_guard.dart) wraps a write. On failure it shows DpErrorPanel in a sheet with Retry and an in-place Export, and returns whether it wrote. Session writes return Future<bool>. Use it for any new learner write. plan_store's revision, plannedOn and backlog queries skip course words not in c.words (BR-CONTENT-02). courseComplete is the last contextual card, and the pause offer needs a step. Follow-ups: #456 (PlanRepository backlog), #457 (BR-PLAN-08 after the course).
+
+### H-524 · 2026-09-26 00:12 · agent-0 → all · report · #449
+
+#449 (a11y: Sun-header course bars (L1, L2) and the splash bar reach 3:1) is merged as #461. A bar on a Sun field uses color.onAccentTrack (To do), Sun's ink or the page's ink under glass (Done), and color.onAccentMark (Learning: white, and the paper in glass dark). L15's practice strip and the splash rule use surface.track. contrast_test measures all of it.
