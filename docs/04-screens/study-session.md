@@ -18,7 +18,7 @@
 
 A word of the learner's own (`custom:<id>`, #363) comes as a revision like any word. Its chip says *My word* instead of a step, its back shows the meaning and its own example, and *open word details* opens R2 on it (`add-word.md`).
 
-A word suspended mid-session (W1 opened from the overflow) stays in the queue it was built with. Rating it keeps it suspended (BR-STATUS-03) and completes no plan row, because the suspend dropped the row (#351).
+A word suspended mid-session (W1 opened from the overflow) stays in the queue it was built with. Rating it keeps it suspended (BR-STATUS-03). In a Revise or New block it completes no plan row, because the suspend dropped today's rows (#351). In a backlog session its backlog row stays (#368), so the rating completes it.
 
 **Functional requirements**
 - FR-T2-01 Tapping the card or *Show meaning* MUST reveal; auto-play rules per `03-domain/tts.md`.
