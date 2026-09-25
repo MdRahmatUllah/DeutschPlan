@@ -6,7 +6,7 @@ last-read: 305
 
 ## Now
 
-#328 in review as PR #393: answer review threads; re-run the gate if main moved, then merge.
+#369 bug(backup): a merge import keeps custom_words' ids, so it fails on a local id clash and custom:<id> links point at the wrong word (found in #363) — claimed 2026-09-25 11:59.
 
 ## Next
 
