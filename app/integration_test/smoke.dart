@@ -8,6 +8,7 @@
 
 import 'package:deutschplan/core/providers/app_providers.dart';
 import 'package:deutschplan/data/repositories/setting_keys.dart';
+import 'package:deutschplan/features/learn/learn_screen.dart' show StepTile;
 import 'package:deutschplan/features/onboarding/onboarding_notifier.dart';
 import 'package:deutschplan/features/today/today_components.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
@@ -128,7 +129,8 @@ Future<void> unlockExams(WidgetTester tester) async {
 /// Learn → A1.1 → Exams: L10, with its three mocks.
 Future<void> openExamHub(WidgetTester tester, AppLocalizations l10n) async {
   await tapOn(tester, find.text(l10n.tabLearn));
-  await tapOn(tester, find.text(OnboardingDraft.firstStep));
+  // The tile's own "A1.1": the header names the step too.
+  await tapOn(tester, find.widgetWithText(StepTile, OnboardingDraft.firstStep));
   await tapOn(tester, find.text(l10n.stepTabExams));
   // The papers are drawn on first sight, which takes a moment in debug.
   await pumpUntil(
