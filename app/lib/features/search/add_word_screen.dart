@@ -603,6 +603,7 @@ class _Match extends StatelessWidget {
               onPressed: onOpen,
             ),
           ),
+          const SizedBox(width: 4),
           DpChip(
             label: l10n.addWordLogIt,
             kind: DpChipKind.filter,
