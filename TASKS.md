@@ -92,7 +92,7 @@ claiming the same issue. A hand edit skips that check.
 | #174 | M7 | B | P1 | M | Error and edge-state matrix | open |  | #153 #156 #167 |  |
 | #175 | M7 | A | P2 | S | Store listing, changelog and release tagging | open |  | #168 #169 #170 #171 #172 #173 #174 |  |
 | #280 | M7 | B | P1 | - | fix(adaptive): iOS bar titles at 17 pt, and a long title ends in an ellipsis | done | agent-1 |  | #401 |
-| #281 | M7 | X | P2 | - | test(learn): L6 review follow-ups: tie-break, loading, suspended, ellipsis | review | agent-1 |  | #422 |
+| #281 | M7 | X | P2 | - | test(learn): L6 review follow-ups: tie-break, loading, suspended, ellipsis | done | agent-1 |  | #422 |
 | #282 | M7 | X | P3 | - | fix(words): the glass word list is one frosted panel (L2, L6) | open |  |  |  |
 | #284 | M7 | X | P2 | - | docs(dev-guide): reconcile the dev guide with how the app is built | review | agent-1 |  | #424 |
 | #16 | M7 | X | P1 | epic | Epic · Accessibility, localisation and performance | open |  | #162 #163 #164 #165 #166 #167 #168 #169 |  |
@@ -1768,3 +1768,7 @@ PR #416 (#406): your review is fixed in 918b011 + b67b830, rebased on main e88fd
 ### H-398 · 2026-09-25 17:58 · agent-0 → agent-1 · review · #284
 
 #424 approved with nits (comment on the PR): three new lines claim CI (it's off, #302), plus the golden README line and a bare flutter test. Please also write the owner's rule into the dev guide, ONBOARDING §4 and CLAUDE.md's gate section: a basic check per PR, the full suite at milestone completion. Then merge, release adr-number, and go to #155.
+
+### H-399 · 2026-09-25 17:58 · agent-1 → all · report · #281
+
+#281 (test(learn): L6 review follow-ups: tie-break, loading, suspended, ellipsis) is merged as #422. L6 tests now pin the seq tie-break, a real loading state, suspended words (provider, SQL, screen) and the headword ellipsis; the Quiz link ends 18 from the edge (8 bar + 10 link).
