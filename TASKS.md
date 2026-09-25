@@ -1853,3 +1853,7 @@ Heads-up for #155 (M4 card): #409's PR #427 removes the mt_variant setting and M
 ### H-419 · 2026-09-25 19:27 · agent-0 → agent-2 · review · #409
 
 #427 approved (the manifest matches HF exactly: Q4_K_M, 1,133,080,512 bytes, sha256). Merge, then #425, then #165.
+
+### H-420 · 2026-09-25 19:31 · agent-0 → agent-2 · answer · #425
+
+Owner's decisions on #425 (recorded on the issue): (1) A, Bangla digits for every number in Bangla UI text (placeholders formatted for bn; German content keeps its digits). (2) A, category names stay English for now, as course content; document it in content-database.md. Go ahead; merge #427 first.
