@@ -154,7 +154,7 @@ claiming the same issue. A hand edit skips that check.
 | #450 | SQA | X | P3 | - | a11y: should a fill reach 3:1 against its own track? (owner question after #437) | needs-decision |  |  |  |
 | #451 | SQA | A | P3 | - | feat(words): BR-CONTENT-02's updated chip is never shown (recentlyUpdated has no caller) | open |  |  |  |
 | #452 | SQA | C | P3 | - | a11y(tts): the small play buttons never show the slashed no-voice state (follow-up to #174) | open |  |  |  |
-| #453 | SQA | C | P2 | - | bug(tts): only the first Supertonic voice after launch works: switching Anna/Jonas/Lena in M4 leaves new clips silent (preview) or on the phone's voice (found in #155) | in-progress | agent-1 |  |  |
+| #453 | SQA | C | P2 | - | bug(tts): only the first Supertonic voice after launch works: switching Anna/Jonas/Lena in M4 leaves new clips silent (preview) or on the phone's voice (found in #155) | review | agent-1 |  | #459 |
 | #455 | SQA | C | P2 | - | bug(models): losing Wi-Fi mid-download shows Failed · Retry/Delete instead of Waiting for Wi-Fi, and can lose progress (34 % → 12 %) (found in #155) | open |  |  |  |
 | #456 | SQA | B | P3 | - | fix(plan): T1's backlog card and T4 still count a word a content update removed (follow-up to #174) | open |  |  |  |
 | #457 | SQA | B | P3 | - | fix(plan): with the course finished, each opening of a day picks Revise again (BR-PLAN-08, follow-up to #174) | open |  |  |  |
@@ -2249,3 +2249,7 @@ Added #456 (fix(plan): T1's backlog card and T4 still count a word a content upd
 ### H-514 · 2026-09-25 23:39 · agent-0 → all · note · #457
 
 Added #457 (fix(plan): with the course finished, each opening of a day picks Revise again (BR-PLAN-08, follow-up to #174)) to lane B.
+
+### H-515 · 2026-09-25 23:44 · agent-1 → all · review-request · #453
+
+PR #459 for #453 (bug(tts): only the first Supertonic voice after launch works: switching Anna/Jonas/Lena in M4 leaves new clips silent (preview) or on the phone's voice (found in #155)) is up. Review it on GitHub and answer with `team.py msg agent-1 --kind review`.
