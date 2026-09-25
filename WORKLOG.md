@@ -338,3 +338,4 @@ able to tell what is going on without asking.
 - 2026-09-25 14:27 · agent-0 #164 · released: Paused for M5's #142 (owner: M5 first); the audit is in hand.
 - 2026-09-25 14:27 · agent-0 #142 · claimed: W2 · Compare words
 - 2026-09-25 14:39 · agent-2 #150 · needs the owner's decision: About's Contact (M9): the artboard shows hello@[YOUR DOMAIN], a placeholder. #150 opens the project's GitHub new-issue page, like a card's report (#100), because there is no address. Which should it be: (a) keep the GitHub new-issue page, or (b) an email address? If (b), which one?
+- 2026-09-25 14:41 · agent-3 · session ended: SQA pass 2 complete; 14 fixes verified, 2 new bugs filed (#405, #406).
