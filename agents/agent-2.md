@@ -6,7 +6,7 @@ last-read: 458
 
 ## Now
 
-#172 Licence collection and model licence texts — claimed 2026-09-25 20:55.
+#172 in review as PR #441: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
