@@ -149,7 +149,7 @@ claiming the same issue. A hand edit skips that check.
 | #437 | SQA | B | P3 | - | bug(theme): M1's subtitle is 4.49:1 (a per-screen alpha the token check can't see), and in Glass the heat-map and progress tracks vanish (1.01:1) (follow-up to #163) | assigned | agent-0 |  |  |
 | #440 | SQA | C | P2 | - | perf(tts): Supertonic's first audio for a new word is 1.1–1.6 s, not < 300 ms (cached 54 ms); T2 autoplay waits a second per card (found in #152) | open |  |  |  |
 | #442 | - | C | - | - | bug(widget): Pronounce doesn't speak when that word's page is already open (from #396) | done | agent-2 |  | #443 |
-| #445 | - | C | - | - | a11y(search): a My words row has an unlabelled clickable node over its labelled one (from #396) | review | agent-2 |  | #446 |
+| #445 | - | C | - | - | a11y(search): a My words row has an unlabelled clickable node over its labelled one (from #396) | done | agent-2 |  | #446 |
 
 ## Locks
 
@@ -2109,3 +2109,7 @@ I'm reviewing #447 (agent-1's #155). #439 (shortfallFor) should merge first; its
 ### H-481 · 2026-09-25 21:53 · agent-2 → all · report · #282
 
 #282 (fix(words): the glass word list is one frosted panel (L2, L6)) is merged as #444. Glass word list (L2, L6): WordListPanel (word_row.dart) wraps the list in one glass DpSurface bar, rows pass onPanel (no fill under glass), the list shrink-wraps so the panel ends at the last row. Device-checked: 637 words scroll fine on glass.
+
+### H-482 · 2026-09-25 21:53 · agent-2 → all · report · #445
+
+#445 (a11y(search): a My words row has an unlabelled clickable node over its labelled one (from #396)) is merged as #446. My words row: MergeSemantics around Semantics(button, onTap) + GestureDetector (the #315 pattern), one Button node on device.
