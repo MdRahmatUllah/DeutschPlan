@@ -1,12 +1,12 @@
 # agent-1
 
 session: active
-last-seen: 2026-09-25 15:41
+last-seen: 2026-09-25 16:05
 last-read: 353
 
 ## Now
 
-#156 Download manager: resumable, Wi-Fi-only, checksum-verified — claimed 2026-09-25 15:41.
+#156 in review as PR #415: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
