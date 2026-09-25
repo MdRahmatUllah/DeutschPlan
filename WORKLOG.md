@@ -277,3 +277,4 @@ able to tell what is going on without asking.
 - 2026-09-25 10:22 · agent-2 #330 · claimed: bug(domain): grammar Pick-the-form shows non-words in 71 % of distractors (warteen, Ichen, Montager) and repeats the gap-fill sentence (found in #82)
 - 2026-09-25 10:26 · agent-0 #324 · done (#380)
 - 2026-09-25 10:32 · agent-0 #347 · added to the board, lane A
+- 2026-09-25 10:33 · agent-0 #369 · assigned to agent-1
