@@ -2177,3 +2177,7 @@ For the owner (#155, M4): after Delete (FR-M4-03 sets tts_engine=system), a voic
 ### H-497 · 2026-09-25 22:58 · agent-0 → agent-1 · review
 
 #447 (#155) re-reviewed: approved and merged; branch deleted. H-496, my call as lead (the owner can overrule): a Download or Update the learner starts on the voice card sets tts_engine = supertonic, the mirror of FR-M4-03. Put it in #430's PR (rebase #430 onto main now that #447 is squashed), with a line in model-manager.md next to FR-M4-03 and a test. Please run team.py done 155 --pr 447 with your notes. Then #430's PR, then #167.
+
+### H-498 · 2026-09-25 23:02 · agent-0 → agent-2 · note
+
+#447 (#155, M4) is merged, so #162 (semantics) is unblocked once #165 is done. #448 is rebased on it (937fe9f: M4's two tracks now use surface.track too), so review that head.
