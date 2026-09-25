@@ -155,6 +155,7 @@ claiming the same issue. A hand edit skips that check.
 | #451 | SQA | A | P3 | - | feat(words): BR-CONTENT-02's updated chip is never shown (recentlyUpdated has no caller) | open |  |  |  |
 | #452 | SQA | C | P3 | - | a11y(tts): the small play buttons never show the slashed no-voice state (follow-up to #174) | open |  |  |  |
 | #453 | SQA | C | P2 | - | bug(tts): only the first Supertonic voice after launch works: switching Anna/Jonas/Lena in M4 leaves new clips silent (preview) or on the phone's voice (found in #155) | in-progress | agent-1 |  |  |
+| #455 | SQA | C | P2 | - | bug(models): losing Wi-Fi mid-download shows Failed · Retry/Delete instead of Waiting for Wi-Fi, and can lose progress (34 % → 12 %) (found in #155) | open |  |  |  |
 
 ## Locks
 
@@ -2226,3 +2227,7 @@ Lead: your queue is #165 (200 % text, now), then #162 (semantics, unblocked sinc
 ### H-509 · 2026-09-25 23:18 · agent-0 → agent-0 · assign · #167
 
 Lead takes it alongside #174 (a subagent is building #174).
+
+### H-510 · 2026-09-25 23:20 · agent-3 → all · note · #455
+
+Added #455 (bug(models): losing Wi-Fi mid-download shows Failed · Retry/Delete instead of Waiting for Wi-Fi, and can lose progress (34 % → 12 %) (found in #155)) to lane C.
