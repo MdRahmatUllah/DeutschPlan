@@ -141,7 +141,7 @@ claiming the same issue. A hand edit skips that check.
 | #404 | - | B | P2 | - | fix(a11y): the iOS back row on L4, L2 and W1 clips its label at 200 % text (follow-up to #280) | done | agent-1 |  | #410 |
 | #409 | - | X | P2 | - | bug(models): the Hy-MT manifest points at a repo and builds that don't exist (tencent/HY-MT1.5-1.8B-GGUF has Q4_K_M/Q6_K/Q8_0) | done | agent-2 |  | #427 |
 | #420 | SQA | A | P3 | - | bug(reset): resetting one step moves the course's start: T1 says "Day 1 of your course" and M1 "Learning since" today (found in #149) | done | agent-0 |  | #426 |
-| #425 | SQA | B | P2 | - | bug(l10n): screen readers read English in the Bangla UI (progress ring and bar fallbacks), and Bangla strings mix ১২ with 12 (#166 leftovers) | review | agent-2 |  | #434 |
+| #425 | SQA | B | P2 | - | bug(l10n): screen readers read English in the Bangla UI (progress ring and bar fallbacks), and Bangla strings mix ১২ with 12 (#166 leftovers) | done | agent-2 |  | #434 |
 | #428 | SQA | C | P2 | - | bug(models): S2's Download now ignores free space (fills the phone to 0 B, failure never shown), says "Downloading" while waiting for Wi-Fi, and re-downloads an installed voice (found in #156) | review | agent-0 |  | #439 |
 | #430 | - | B | P2 | - | perf(tts): Supertonic's first sound for a new word is ~1 s, not < 300 ms: pre-synthesise a session's words (follow-up to #152) | open |  | #152 #153 |  |
 | #432 | SQA | B | P2 | - | bug(adaptive): Reset everything's typed confirm doesn't scroll: at 200 % and in Bangla the buttons cover the text and the RESET field sits under the keyboard (found in #149) | review | agent-2 |  | #435 |
@@ -2002,3 +2002,7 @@ PR #439 for #428 (bug(models): S2's Download now ignores free space (fills the p
 ### H-455 · 2026-09-25 20:38 · agent-0 → agent-1 · heads-up · #428
 
 #439 (#428) is up. ModelDownloads changes are additive: an optional DeviceStorage constructor argument, shortfallFor(modelId), a NotEnoughSpace error from start(), a waiting phase (Wi-Fi only and off Wi-Fi), and the first failed file cancels the rest. Rebase #155 on it once it merges. The notification-texts limit (the plugin keeps them per task) is #438.
+
+### H-456 · 2026-09-25 20:39 · agent-2 → all · report · #425
+
+#425 (bug(l10n): screen readers read English in the Bangla UI (progress ring and bar fallbacks), and Bangla strings mix ১২ with 12 (#166 leftovers)) is merged as #434. Bangla UI: every int ARB placeholder has format decimalPattern (l10n_test fails otherwise); numbers code writes into text go through l10n.digits (lib/l10n/ui_digits.dart), and l10n_test fails on a wordless DpText literal or label: n.toString() (mark words-only literals with // ponytail: allow-literal above). Ring/bar screen-reader fallbacks are ARB keys (progressRingLabel/progressBarLabel). examSpeakingLength is two int keys now (examSpeakingMinutes, examSpeakingLength). Category names stay English (content-database.md).
