@@ -6,6 +6,7 @@ import 'package:deutschplan/core/components/dp_chip.dart';
 import 'package:deutschplan/core/providers/app_providers.dart';
 import 'package:deutschplan/core/theme/dp_tokens.dart';
 import 'package:deutschplan/core/typography/dp_text.dart';
+import 'package:deutschplan/data/repositories/quiz_store.dart';
 import 'package:deutschplan/domain/quiz_builder.dart';
 import 'package:deutschplan/features/learn/step_quiz.dart';
 import 'package:deutschplan/features/learn/step_words.dart';
@@ -30,17 +31,33 @@ const List<QuizDirection> customDirections = <QuizDirection>[
 /// BR-QUIZ-01's lengths.
 const List<int> quizLengths = <int>[10, 20, 30];
 
-/// Learned words by category, as L7's category source counts them: every
-/// learned word in it, from any step, as `DriftQuizStore` draws them (#337).
+/// A category L7 can offer for a step (#337): the learned words a category
+/// quiz draws from it, from any step, as `DriftQuizStore` draws them, and how
+/// many of those are this step's.
+typedef QuizCategory = ({
+  int id,
+  String name,
+  List<QuizWord> learned,
+  int inStep,
+});
+
+/// [step]'s categories, the step's biggest first, with their learned words.
 @riverpod
-Future<Map<int, int>> learnedByCategory(Ref ref) async {
-  final counts = <int, int>{};
-  for (final row in await ref.watch(wordRepositoryProvider).quizWords().get()) {
-    if (row.categoryId case final id?) {
-      counts.update(id, (n) => n + 1, ifAbsent: () => 1);
-    }
-  }
-  return counts;
+Future<List<QuizCategory>> quizCategories(Ref ref, String step) async {
+  final store = DriftQuizStore(ref.watch(wordRepositoryProvider));
+  return <QuizCategory>[
+    for (final c in await ref.watch(stepCategoriesProvider(step).future))
+      await store
+          .learned(QuizSource.category, ref: '${c.id}')
+          .then(
+            (learned) => (
+              id: c.id,
+              name: c.name,
+              learned: learned,
+              inStep: learned.where((w) => w.step == step).length,
+            ),
+          ),
+  ];
 }
 
 /// The quiz L7's *Start* builds, for any of its combinations.
@@ -108,22 +125,24 @@ class _QuizSetupSheetState extends ConsumerState<QuizSetupSheet> {
   Widget build(BuildContext context) {
     final tokens = context.tokens;
     final l10n = AppLocalizations.of(context);
-    // The third source: of the step's categories, the one with the most
-    // learned words (#337), the step's biggest on a tie. Closed, with the
-    // reason, until it has as many as L2's quizzes need.
-    final learned = ref.watch(learnedByCategoryProvider).value ?? const {};
+    // The third source (#337): of the step's categories, the one with the
+    // most of this step's words learned, the step's biggest on a tie. Closed,
+    // with the reason, until the chosen direction can ask as many of its
+    // words as L2's quizzes need: Articles asks only nouns.
     final category = ref
-        .watch(stepCategoriesProvider(widget.step))
+        .watch(quizCategoriesProvider(widget.step))
         .value
-        ?.fold<({int id, String name})?>(
+        ?.fold<QuizCategory?>(
           null,
-          (best, c) =>
-              best == null || (learned[c.id] ?? 0) > (learned[best.id] ?? 0)
-              ? c
-              : best,
+          (best, c) => best == null || c.inStep > best.inStep ? c : best,
         );
-    final categoryLearned = learned[category?.id] ?? 0;
+    final categoryLearned =
+        category?.learned.where((w) => applies(_direction, w)).length ?? 0;
     final categoryOpen = categoryLearned >= StepQuizTab.minimumLearned;
+    // A direction that closes it takes the quiz back to the step's words.
+    final source = _source == QuizSource.category && !categoryOpen
+        ? QuizSource.stepLearned
+        : _source;
 
     Widget section(String label, List<Widget> chips) => Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -199,24 +218,36 @@ class _QuizSetupSheetState extends ConsumerState<QuizSetupSheet> {
                   section(l10n.quizSetupSource, <Widget>[
                     chip(
                       l10n.quizSourceStep,
-                      selected: _source == QuizSource.stepLearned,
+                      selected: source == QuizSource.stepLearned,
                       onTap: () =>
                           setState(() => _source = QuizSource.stepLearned),
                     ),
                     chip(
                       l10n.quizSourceAll,
-                      selected: _source == QuizSource.allLearned,
+                      selected: source == QuizSource.allLearned,
                       onTap: () =>
                           setState(() => _source = QuizSource.allLearned),
                     ),
-                    if (category != null)
+                    if (category != null && categoryOpen)
                       chip(
                         category.name,
-                        selected: _source == QuizSource.category,
-                        onTap: categoryOpen
-                            ? () =>
-                                  setState(() => _source = QuizSource.category)
-                            : null,
+                        selected: source == QuizSource.category,
+                        onTap: () =>
+                            setState(() => _source = QuizSource.category),
+                      )
+                    else if (category != null)
+                      // Closed: dimmed and announced so, as L2's quiz tiles.
+                      Semantics(
+                        button: true,
+                        enabled: false,
+                        child: Opacity(
+                          opacity: 0.5,
+                          child: chip(
+                            category.name,
+                            selected: false,
+                            onTap: null,
+                          ),
+                        ),
                       ),
                   ]),
                   if (category != null && !categoryOpen) ...<Widget>[
@@ -266,7 +297,7 @@ class _QuizSetupSheetState extends ConsumerState<QuizSetupSheet> {
                       customQuiz(
                         direction: _direction,
                         length: _length,
-                        source: _source,
+                        source: source,
                         step: widget.step,
                         category: category?.id,
                         timer: _timer,

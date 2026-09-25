@@ -458,8 +458,12 @@ List<Override> todayStub([
       (id: 1, name: 'Wohnen & Haushalt'),
     ],
   ),
-  // L7's category source is open: 12 of its words learned (#337).
-  learnedByCategoryProvider.overrideWith((ref) async => const {1: 12}),
+  // L7's category source is open: 12 of its nouns learned (#337).
+  quizCategoriesProvider.overrideWith(
+    (ref, step) async => <QuizCategory>[
+      (id: 1, name: 'Wohnen & Haushalt', learned: learnedNouns(12), inStep: 12),
+    ],
+  ),
   // The artboards' Monday, so a due date reads the same on any day the
   // tests run.
   todayProvider.overrideWithValue('2026-09-21'),

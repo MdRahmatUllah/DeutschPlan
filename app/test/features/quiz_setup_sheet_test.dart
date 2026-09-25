@@ -15,6 +15,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 
+import 'quiz_fixtures.dart';
 import 'today_fixtures.dart';
 
 /// L7 · Custom quiz — #122 (`quiz.md`, FR-L2-04's *Custom* tile).
@@ -150,17 +151,23 @@ void main() {
   });
 
   group('#337 the category source counts learned words', () {
-    Future<void> sheet(WidgetTester tester, Map<int, int> learned) async {
+    QuizCategory category(int id, String name, int nouns, {int? inStep}) => (
+      id: id,
+      name: name,
+      learned: learnedNouns(nouns),
+      inStep: inStep ?? nouns,
+    );
+
+    Future<void> sheet(
+      WidgetTester tester,
+      List<QuizCategory> categories,
+    ) async {
       await tester.pumpWidget(
         ProviderScope(
           overrides: <Override>[
-            stepCategoriesProvider.overrideWith(
-              (ref, code) async => const <({int id, String name})>[
-                (id: 1, name: 'Wohnen & Haushalt'), // the step's biggest
-                (id: 2, name: 'Auto & Verkehr'),
-              ],
+            quizCategoriesProvider.overrideWith(
+              (ref, step) async => categories,
             ),
-            learnedByCategoryProvider.overrideWith((ref) async => learned),
           ],
           child: MaterialApp(
             theme: AppTheme.light(),
@@ -173,10 +180,14 @@ void main() {
       await tester.pumpAndSettle();
     }
 
-    testWidgets('the category with the most learned, not the biggest', (
+    testWidgets("the category with most of this step's learned words", (
       tester,
     ) async {
-      await sheet(tester, const {1: 2, 2: 14});
+      // Wohnen is the step's biggest and has more learned in earlier steps.
+      await sheet(tester, <QuizCategory>[
+        category(1, 'Wohnen & Haushalt', 40, inStep: 2),
+        category(2, 'Auto & Verkehr', 14),
+      ]);
       expect(chip('Auto & Verkehr'), findsOneWidget);
       expect(chip('Wohnen & Haushalt'), findsNothing);
       await tester.tap(chip('Auto & Verkehr'));
@@ -184,20 +195,51 @@ void main() {
       expect(selected(tester, 'Auto & Verkehr'), isTrue);
     });
 
-    testWidgets('under 10 learned it is closed, and says why', (tester) async {
-      await sheet(tester, const {2: 3});
-      expect(find.text(l10n.quizSourceLocked('Auto & Verkehr', 3)), findsOne);
+    testWidgets('under 10 learned it is closed, dimmed, and says why', (
+      tester,
+    ) async {
+      final semantics = tester.ensureSemantics();
+      await sheet(tester, <QuizCategory>[category(2, 'Auto & Verkehr', 9)]);
+      expect(find.text(l10n.quizSourceLocked('Auto & Verkehr', 9)), findsOne);
+      expect(
+        tester.getSemantics(chip('Auto & Verkehr')),
+        isSemantics(isButton: true, isEnabled: false, hasEnabledState: true),
+      );
       await tester.tap(chip('Auto & Verkehr'), warnIfMissed: false);
       await tester.pumpAndSettle();
       expect(selected(tester, 'Auto & Verkehr'), isFalse);
       expect(selected(tester, l10n.quizSourceStep), isTrue);
+      semantics.dispose();
     });
 
-    testWidgets('none learned: the biggest, closed at 0', (tester) async {
-      await sheet(tester, const {});
+    testWidgets('at exactly 10 it opens', (tester) async {
+      await sheet(tester, <QuizCategory>[category(2, 'Auto & Verkehr', 10)]);
+      expect(find.textContaining('opens once'), findsNothing);
+      await tester.tap(chip('Auto & Verkehr'));
+      await tester.pumpAndSettle();
+      expect(selected(tester, 'Auto & Verkehr'), isTrue);
+    });
+
+    testWidgets('Articles counts only the words it can ask', (tester) async {
+      // Twelve learned, but only four with an article: no 0 / 0 quiz.
+      final words = <QuizWord>[
+        ...learnedNouns(4),
+        for (var i = 0; i < 8; i++)
+          QuizWord(uid: 'v$i', german: 'gehen$i', english: 'go', step: 'A2.1'),
+      ];
+      await sheet(tester, <QuizCategory>[
+        (id: 3, name: 'Kernverben', learned: words, inStep: 12),
+      ]);
+      await tester.tap(chip('Kernverben'));
+      await tester.pumpAndSettle();
+      expect(selected(tester, 'Kernverben'), isTrue);
+      await tester.tap(chip(l10n.quizDirectionArticles));
+      await tester.pumpAndSettle();
+      expect(find.text(l10n.quizSourceLocked('Kernverben', 4)), findsOne);
       expect(
-        find.text(l10n.quizSourceLocked('Wohnen & Haushalt', 0)),
-        findsOne,
+        selected(tester, l10n.quizSourceStep),
+        isTrue,
+        reason: 'the source goes back to the step',
       );
     });
   });
