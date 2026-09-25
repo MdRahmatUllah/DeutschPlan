@@ -3402,6 +3402,15 @@
       }
     }
   },
+  "examRunSubmitTasksEmpty": "{tasks, select, writing{The writing task is empty.} speaking{The speaking task is empty.} other{The writing and speaking tasks are empty.}}",
+  "@examRunSubmitTasksEmpty": {
+    "description": "L12 confirm body, after the unanswered count: which of the Writing and Speaking tasks is left empty (writing, speaking or both); the navigator does not count them as questions (FR-L12-05, #350).",
+    "placeholders": {
+      "tasks": {
+        "type": "String"
+      }
+    }
+  },
   "examRunSubmitConfirm": "Submit",
   "@examRunSubmitConfirm": {
     "description": "L12 confirm: submit anyway."

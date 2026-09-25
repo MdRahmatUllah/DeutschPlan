@@ -333,9 +333,18 @@ void main() {
       final semantics = tester.ensureSemantics();
       await pump(tester);
       await open(tester);
+      // #350: the sheet's own count, 20 of its 40, and the two empty tasks
+      // named apart, not "22 questions".
+      expect(find.text(l10n.examNavUnanswered(20)), findsOneWidget);
       await tester.tap(find.text(l10n.examRunSubmit).last);
       await tester.pumpAndSettle();
-      expect(find.text(l10n.examRunSubmitUnanswered(22)), findsOneWidget);
+      expect(
+        find.text(
+          '${l10n.examRunSubmitUnanswered(20)} '
+          '${l10n.examRunSubmitTasksEmpty('both')}',
+        ),
+        findsOneWidget,
+      );
       await tap(tester, l10n.examRunSubmitConfirm);
       expect(run.submitted, 1);
       semantics.dispose();
@@ -483,6 +492,63 @@ void main() {
     );
     expect(left, <String>['A1.2']);
     expect(run.answers, isEmpty);
+  });
+
+  testWidgets('#350 with the tasks done too, it does not ask', (tester) async {
+    final semantics = tester.ensureSemantics();
+    await pump(
+      tester,
+      stub: StubExamRun(
+        given: <int, String>{
+          for (var ord = 1; ord <= 40; ord++) ord: 'x',
+          41: 'Ich wohne in einer kleinen Wohnung.',
+          42: '/recordings/7.m4a',
+        },
+      ),
+    );
+    await tester.tap(find.bySemanticsLabel(l10n.examNavOpen));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text(l10n.examRunSubmit).last);
+    await tester.pumpAndSettle();
+    expect(find.text(l10n.examRunSubmitTitle), findsNothing);
+    expect(run.submitted, 1);
+    semantics.dispose();
+  });
+
+  testWidgets('#350 it names the one task left empty', (tester) async {
+    final semantics = tester.ensureSemantics();
+    await pump(
+      tester,
+      stub: StubExamRun(
+        given: <int, String>{
+          for (var ord = 1; ord <= 40; ord++) ord: 'x',
+          41: 'Ich wohne in einer kleinen Wohnung.',
+        },
+      ),
+    );
+    await tester.tap(find.bySemanticsLabel(l10n.examNavOpen));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text(l10n.examRunSubmit).last);
+    await tester.pumpAndSettle();
+    expect(find.text(l10n.examRunSubmitTasksEmpty('speaking')), findsOne);
+    semantics.dispose();
+  });
+
+  testWidgets('#350 every question answered: it names the empty tasks', (
+    tester,
+  ) async {
+    final semantics = tester.ensureSemantics();
+    await pump(
+      tester,
+      stub: StubExamRun(given: {for (var ord = 1; ord <= 40; ord++) ord: 'x'}),
+    );
+    await tester.tap(find.bySemanticsLabel(l10n.examNavOpen));
+    await tester.pumpAndSettle();
+    expect(find.text(l10n.examNavUnanswered(0)), findsOneWidget);
+    await tester.tap(find.text(l10n.examRunSubmit).last);
+    await tester.pumpAndSettle();
+    expect(find.text(l10n.examRunSubmitTasksEmpty('both')), findsOneWidget);
+    semantics.dispose();
   });
 
   testWidgets('a finished attempt opens on its results', (tester) async {
