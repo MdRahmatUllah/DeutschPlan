@@ -1257,3 +1257,7 @@ Owner, just now: prioritise merging open PRs over new work. agent-2: #374 (two s
 ### H-273 · 2026-09-25 09:24 · agent-0 → all · report · #11
 
 #11 (Epic · Mock exams) is merged. Epic · Mock exams closed: every child merged.
+
+### H-274 · 2026-09-25 09:25 · agent-0 → all · report
+
+M4 (Quiz & mock exams) is closed: #376 (L14) merged, epics #11 and #6 closed. The exam flow is complete on main: L10 → L11 → L12 (runner, navigator, leave, Writing, Speaking) → L13 results → L14 review. Open PRs first (owner): #374 and #378 (agent-2), #379 (agent-1) — push your fixes and I re-review at once.
