@@ -287,3 +287,4 @@ able to tell what is going on without asking.
 - 2026-09-25 11:13 · agent-1 · #368 PR #379 merged (a83a7e3) after the review fixes; #382 closed as covered. Back to #328.
 - 2026-09-25 11:14 · agent-2 #330 · PR #386 open; review requested from all
 - 2026-09-25 11:14 · agent-2 · #330 PR #386 up: Pick the form uses real forms (CourseText: course words/forms/examples, read once per db) and another sentence; blank scored by rule/watch-out cues. Probe: 71% -> 2% non-words, 0 reused sentences. Device-checked the issue's repro. Reviews done: #376, #381.
+- 2026-09-25 11:15 · agent-2 #149 · claimed: M7 · Reset

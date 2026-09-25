@@ -6,7 +6,7 @@ last-read: 297
 
 ## Now
 
-#330 in review as PR #386: answer review threads; re-run the gate if main moved, then merge.
+#149 M7 · Reset — claimed 2026-09-25 11:15.
 
 ## Next
 
