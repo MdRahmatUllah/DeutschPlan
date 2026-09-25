@@ -23,10 +23,12 @@ import 'package:deutschplan/router/routes.dart';
 import 'package:drift/drift.dart' show Value;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
+import 'package:flutter/rendering.dart' show RenderParagraph;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 
+import '../core/text_clipping.dart';
 import '../db/content_fixture.dart';
 import '../services/fake_tts.dart';
 import 'search_fixtures.dart';
@@ -560,6 +562,37 @@ void main() {
         lessThan(
           tester.getTopLeft(find.text('die Quittung', findRichText: true)).dy,
         ),
+      );
+    });
+
+    testWidgets('#314 at 200 % text the headings and their notes fit, and '
+        'nothing is cut', (tester) async {
+      textAt(tester, 2);
+      await pump(tester);
+      final recent = ProviderScope.containerOf(
+        tester.element(find.byType(SearchScreen)),
+      ).read(recentSearchesProvider.notifier);
+      await tester.runAsync(() => recent.remember('Haus'));
+      await addWord(
+        tester,
+        german: 'Pfandflasche',
+        article: 'das',
+        meaning: 'deposit bottle',
+        where: 'Rewe receipt',
+        seen: 3,
+      );
+      expect(tester.takeException(), isNull, reason: 'a row overflowed');
+      expectNothingClipped(tester, within: find.byType(ListView).last);
+      // The note gives way too: the heading keeps a line of its own rather
+      // than being squeezed into a word a line.
+      final line = tester
+          .renderObject<RenderParagraph>(
+            find.text(l10n.searchMyWords(1).toUpperCase()),
+          )
+          .getMaxIntrinsicHeight(double.infinity);
+      expect(
+        tester.getSize(find.text(l10n.searchMyWords(1).toUpperCase())).height,
+        line,
       );
     });
 

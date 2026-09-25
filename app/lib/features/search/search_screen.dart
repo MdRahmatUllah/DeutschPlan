@@ -679,10 +679,13 @@ class _Heading extends StatelessWidget {
       padding: EdgeInsets.fromLTRB(16, 14, trailing == null ? 16 : 4, 6),
       child: trailing == null
           ? heading
+          // Both give way: at 200 % text, or in Bangla, neither pushes the
+          // other off the row.
           : Row(
               children: <Widget>[
                 Expanded(child: heading),
-                trailing,
+                const SizedBox(width: 8),
+                Flexible(child: trailing),
               ],
             ),
     );

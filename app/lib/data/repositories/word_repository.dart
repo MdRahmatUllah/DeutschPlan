@@ -161,6 +161,17 @@ class StepProgress {
           unlockTarget(todo: todo, introduced: introduced, percent: percent);
 }
 
+/// One of the learner's own words (`custom_words`), as R1's *My words* shows
+/// it.
+typedef MyWord = ({
+  int id,
+  String? article,
+  String german,
+  String meaning,
+  String? whereSeen,
+  int timesSeen,
+});
+
 /// Words, their state, and the transitions between statuses.
 ///
 /// `docs/02-data/user-database.md` and `docs/04-screens/word-detail.md`.
@@ -177,17 +188,6 @@ class StepProgress {
 /// happened to invalidate them. That is the acceptance criterion about "no
 /// manual invalidation", and it only holds if nothing writes behind drift's
 /// back.
-/// One of the learner's own words (`custom_words`), as R1's *My words* shows
-/// it.
-typedef MyWord = ({
-  int id,
-  String? article,
-  String german,
-  String meaning,
-  String? whereSeen,
-  int timesSeen,
-});
-
 @DriftAccessor(include: <String>{'../db/word_queries.drift'})
 class WordRepository extends DatabaseAccessor<AppDatabase>
     with _$WordRepositoryMixin {
