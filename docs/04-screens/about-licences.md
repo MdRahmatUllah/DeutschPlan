@@ -23,7 +23,7 @@
 - **The counts.** `meta` keeps only the word count, so `ContentDao.facts()` counts `words`, `grammar_topics` and `word_examples`, as the pipeline's manifest does. A test holds them equal to `content_manifest.json` (FR-M9-01).
 - **Contact** opens the project's new-issue page on GitHub: the report's destination (#100), since the app has no server or address. An address is the owner's to give (the artboard's is `hello@[YOUR DOMAIN]`).
 - **Content** leads nowhere. The artboard draws a chevron, but the spec gives no destination, so the row shows no chevron.
-- **Models** (FR-M8-01): the licences are bundled as their makers publish them, byte for byte, in `assets/licences/`:
+- **Models** (FR-M8-01): the licences are bundled unchanged, as their makers publish them (only git's line endings differ), in `assets/licences/`:
   - Supertonic 3 is under the BigScience OpenRAIL-M licence (`Supertone/supertonic-3`).
   - Hy-MT 1.5 (1.8B) is under the **Tencent HY Community License** (`tencent/HY-MT1.5-1.8B`). It is named that, not "Hy-MT licence" as the artboard has it. Its text excludes the EU, the UK and South Korea, which the model manager's region gate follows.
 - **Fonts:** Inter and Noto Sans Bengali, SIL OFL 1.1, bundled.
