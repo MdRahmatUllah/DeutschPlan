@@ -487,7 +487,18 @@ class PlanEngine {
   /// backlog rather than part of today, and what the backlog list groups by.
   Future<void> generateNewThrough(PlanDate today) async {
     var step = await _store.activeStep();
-    if (step == null) return;
+    if (step == null) {
+      // No new words to plan, but a day after the course (or after a step
+      // with auto-advance off) is still opened once: recorded, so reopening
+      // it keeps the Revise block it picked (BR-PLAN-08, #457). With no step
+      // it is planned as a study day, as `streak` counts it: the finished
+      // step's mask would make Today call it a rest day. Not before
+      // onboarding, where a step enrolled today must still plan today.
+      if (await _store.hasEverEnrolled()) {
+        await _recordPlanned(today, mask: allDays);
+      }
+      return;
+    }
 
     final days = await _daysToPlan(today, step);
     // BR-PLAN-08: [today] is being planned now, with this mask, and keeps it
@@ -514,11 +525,20 @@ class PlanEngine {
       if (step == null) break; // the course ran out, or auto-advance is off
     }
 
-    // Never backwards (#346): a clock or time zone that moves back reopens a
-    // past day as it was; recording it as the last one planned would plan
-    // the days after it again, and give a finished one a Revise block.
+    await _recordPlanned(today);
+  }
+
+  /// Records [today] as planned. Never backwards (#346): a clock or time zone
+  /// that moves back reopens a past day as it was; recording it as the last
+  /// one planned would plan the days after it again, and give a finished one
+  /// a Revise block.
+  ///
+  /// [mask], when given, is what the day is planned with (BR-PLAN-08), written
+  /// only with the date: a day a step ran out on keeps the mask it had.
+  Future<void> _recordPlanned(PlanDate today, {int? mask}) async {
     final last = await _store.lastPlannedDate();
     if (last == null || last.compareTo(today) < 0) {
+      if (mask != null) await _store.setPlannedMask(mask);
       await _store.setLastPlannedDate(today);
     }
   }

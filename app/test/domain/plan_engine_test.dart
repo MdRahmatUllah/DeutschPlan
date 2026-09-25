@@ -304,7 +304,8 @@ void main() {
       expect((await engineWith().openDay(monday)).revise, isEmpty);
     });
 
-    test('and before enrolling, plans nothing at all', () async {
+    test('#457 and before enrolling, plans nothing at all, so a first step '
+        'enrolled today still plans today', () async {
       store.enrollment = null;
 
       final plan = await engineWith().openDay(monday);
@@ -770,6 +771,45 @@ void main() {
         expect(plan.backlog, hasLength(3), reason: plan.date);
       }
       expect(store.enrolled, isEmpty, reason: 'nothing to advance to');
+    });
+
+    test('#457 BR-PLAN-08 BR-COURSE-05 a day after the course opened with '
+        'none to revise keeps none, however often it is opened', () async {
+      store.course = <String>['A1.1'];
+      await engineWith().openDay(monday);
+      final tuesday = addDays(monday, 1);
+
+      expect((await engineWith().openDay(tuesday)).revise, isEmpty);
+      expect(store.lastPlanned, tuesday, reason: 'the day is recorded');
+      // A word turns learned later that day: it waits for tomorrow.
+      store.candidates = <RevisionCandidate>[
+        const RevisionCandidate(uid: 'a1', stability: 2, lastReview: monday),
+      ];
+      expect((await engineWith().openDay(tuesday)).revise, isEmpty);
+      expect((await engineWith().openDay(addDays(monday, 2))).revise, <String>[
+        'a1',
+      ], reason: 'from the next day');
+    });
+
+    test('#457 BR-PLAN-01 a day after the course is a study day, whatever '
+        "the finished step's rest days were", () async {
+      // Weekdays only; the course runs out on Monday, and Saturday is opened.
+      store
+        ..course = <String>['A1.1']
+        ..enrollment = const ActiveStep(
+          sublevelCode: 'A1.1',
+          startedOn: monday,
+          dailyNew: 7,
+          studyDaysMask: 0x1F,
+        );
+      await engineWith().openDay(monday);
+      final saturday = addDays(monday, 5);
+
+      final plan = await engineWith().openDay(saturday);
+
+      expect(plan.stepComplete, isTrue);
+      expect(plan.isStudyDay, isTrue, reason: 'streak counts it as one');
+      expect(store.lastPlanned, saturday);
     });
 
     test('step complete is not the same as never having enrolled', () async {

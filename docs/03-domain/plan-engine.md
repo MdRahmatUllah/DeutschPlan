@@ -31,7 +31,7 @@ for each day ≤ today:
 last_planned_date = max(last_planned_date, today)
 ```
 
-`last_planned_date` never moves back (#346): a clock or time zone that goes back reopens a past day as it was planned. Recording it would plan the days after it again, and give a finished day a Revise block.
+`last_planned_date` never moves back (#346): a clock or time zone that goes back reopens a past day as it was planned. Recording it would plan the days after it again, and give a finished day a Revise block. A day with no active step, after the course or after a step with auto-advance off, is recorded too, with no new words and as a study day (the finished step's rest days no longer apply, as `streak` counts them), so it picks its Revise block once like any other (BR-PLAN-08, #457). A step started on such a day (L2's *Start*, restart setup) begins tomorrow, as it does over an active step; *Start next step* moves the date back and begins today. Before onboarding nothing is recorded: a first step enrolled today still plans today.
 
 ### ensureRevise (BR-PLAN-03)
 
