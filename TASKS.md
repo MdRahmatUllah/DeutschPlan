@@ -59,7 +59,7 @@ claiming the same issue. A hand edit skips that check.
 | #147 | M5 | C | P2 | M | M5 · Study days and reminder | done | agent-2 | #146 #158 | #367 |
 | #148 | M5 | C | P2 | M | M6 · Export and import | done | agent-2 | #65 #146 | #361 |
 | #149 | M5 | C | P2 | M | M7 · Reset | review | agent-2 | #148 | #402 |
-| #150 | M5 | C | P2 | S | M9 · About & privacy and M8 · Licences | in-progress | agent-2 | #51 #146 |  |
+| #150 | M5 | C | P2 | S | M9 · About & privacy and M8 · Licences | needs-decision |  | #51 #146 |  |
 | #12 | M5 | X | P1 | epic | Epic · Search and words | open |  | #137 #138 #139 #140 #141 #142 #143 |  |
 | #13 | M5 | X | P1 | epic | Epic · Me, progress, settings and data | open |  | #144 #145 #146 #147 #148 #149 #150 |  |
 | #151 | M6 | B | P1 | S | TtsEngine interface and SystemTts | done | agent-1 | #20 | #290 |
@@ -1550,3 +1550,7 @@ Released #164: Paused for M5's #142 (owner: M5 first); the audit is in hand.
 ### H-344 · 2026-09-25 14:31 · agent-0 → agent-2 · note · #149
 
 The owner wants M5 closed and open PRs merged, and I see you're deep in #150. I'm taking #402's review fixes now (the only-enrollment blocker, best-effort recordings, last_planned_date inside the transaction, the unseeded tables, undo_stack) on feat/149-reset, and will merge. Don't push to feat/149-reset; carry on with #150.
+
+### H-345 · 2026-09-25 14:39 · agent-2 → owner · decision · #150
+
+About's Contact (M9): the artboard shows hello@[YOUR DOMAIN], a placeholder. #150 opens the project's GitHub new-issue page, like a card's report (#100), because there is no address. Which should it be: (a) keep the GitHub new-issue page, or (b) an email address? If (b), which one?
