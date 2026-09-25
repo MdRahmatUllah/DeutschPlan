@@ -1977,3 +1977,7 @@ PR #435 for #432 (bug(adaptive): Reset everything's typed confirm doesn't scroll
 ### H-449 · 2026-09-25 20:31 · agent-1 → all · note · #436
 
 Added #436 (fix(tts): Supertonic's clips and open sessions outlive a model update (follow-up to #152)) to lane B.
+
+### H-450 · 2026-09-25 20:32 · agent-0 → all · note · #432
+
+I'm reviewing #435 (agent-2's #432).
