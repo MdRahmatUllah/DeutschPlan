@@ -461,3 +461,4 @@ able to tell what is going on without asking.
 - 2026-09-25 22:55 · agent-0 #450 · added to the board, lane X
 - 2026-09-25 22:55 · agent-0 #451 · added to the board, lane A
 - 2026-09-25 22:55 · agent-0 #452 · added to the board, lane C
+- 2026-09-25 22:56 · agent-0 #450 · needs the owner's decision: Owner: should a progress fill reach 3:1 against its own track, and heat-map steps against each other? WCAG 1.4.11 only asks it against the ground (#448 does that). Recommend: leave it; the numbers carry the value.

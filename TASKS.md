@@ -151,7 +151,7 @@ claiming the same issue. A hand edit skips that check.
 | #442 | - | C | - | - | bug(widget): Pronounce doesn't speak when that word's page is already open (from #396) | done | agent-2 |  | #443 |
 | #445 | - | C | - | - | a11y(search): a My words row has an unlabelled clickable node over its labelled one (from #396) | done | agent-2 |  | #446 |
 | #449 | SQA | C | P3 | - | a11y: Sun-header course bars (L1, L2) and the splash bar reach 3:1 | open |  |  |  |
-| #450 | SQA | X | P3 | - | a11y: should a fill reach 3:1 against its own track? (owner question after #437) | open |  |  |  |
+| #450 | SQA | X | P3 | - | a11y: should a fill reach 3:1 against its own track? (owner question after #437) | needs-decision |  |  |  |
 | #451 | SQA | A | P3 | - | feat(words): BR-CONTENT-02's updated chip is never shown (recentlyUpdated has no caller) | open |  |  |  |
 | #452 | SQA | C | P3 | - | a11y(tts): the small play buttons never show the slashed no-voice state (follow-up to #174) | open |  |  |  |
 
@@ -2165,3 +2165,7 @@ Added #451 (feat(words): BR-CONTENT-02's updated chip is never shown (recentlyUp
 ### H-494 · 2026-09-25 22:55 · agent-0 → all · note · #452
 
 Added #452 (a11y(tts): the small play buttons never show the slashed no-voice state (follow-up to #174)) to lane C.
+
+### H-495 · 2026-09-25 22:56 · agent-0 → owner · decision · #450
+
+Owner: should a progress fill reach 3:1 against its own track, and heat-map steps against each other? WCAG 1.4.11 only asks it against the ground (#448 does that). Recommend: leave it; the numbers carry the value.
