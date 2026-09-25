@@ -4910,5 +4910,71 @@
   "reminderDaysPreviewNote": "Built from the real plan at send time. Tapping it opens Today.",
   "@reminderDaysPreviewNote": {
     "description": "M5 under the preview (FR-M5-03)."
+  },
+  "examReviewAll": "All · {count}",
+  "@examReviewAll": {
+    "description": "L14 filter chip: every question.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "examReviewWrong": "Wrong only · {count}",
+  "@examReviewWrong": {
+    "description": "L14 filter chip: the questions under their point.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "examReviewNone": "Nothing here.",
+  "@examReviewNone": {
+    "description": "L14 when a filter has no question."
+  },
+  "examReviewHeader": "Q{number} · {section}",
+  "@examReviewHeader": {
+    "description": "L14 card overline: the question number (as L12 numbers them) and its section.",
+    "placeholders": {
+      "number": {
+        "type": "int"
+      },
+      "section": {
+        "type": "String"
+      }
+    }
+  },
+  "examReviewRight": "Right",
+  "@examReviewRight": {
+    "description": "L14 verdict on a card answered right."
+  },
+  "examReviewAlmost": "Almost",
+  "@examReviewAlmost": {
+    "description": "L14 verdict on a card answered almost right, which scores as wrong (#84)."
+  },
+  "examReviewWrongOne": "Wrong",
+  "@examReviewWrongOne": {
+    "description": "L14 verdict on a card answered wrong."
+  },
+  "examReviewNoAnswer": "No answer",
+  "@examReviewNoAnswer": {
+    "description": "L14 verdict on a card left unanswered."
+  },
+  "examReviewOpenWord": "Open word",
+  "@examReviewOpenWord": {
+    "description": "L14 link under a word question: the word detail (W1)."
+  },
+  "examReviewAnswerLabel": "{label}: {value}",
+  "@examReviewAnswerLabel": {
+    "description": "L14 screen-reader label of an answer line: \"Your answer: house\".",
+    "placeholders": {
+      "label": {
+        "type": "String"
+      },
+      "value": {
+        "type": "String"
+      }
+    }
   }
 }

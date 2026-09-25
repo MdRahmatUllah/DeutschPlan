@@ -27,4 +27,15 @@ Filter chips All · 40, Wrong only · 9, Flagged · 3. Cards per question: "Q3 �
 - **Missed words** (FR-L13-02). A word item (every section but Grammar, Writing and Speaking) that scored under its point is missed, once per word, *almost* included. Only words the plan has already introduced go to revision: a paper can draw a word before the plan teaches it (the exams open at 90 % introduced), and that word keeps its new-word card. *Add missed words to revision · 9* rates each Again (source `exam`) and makes it due tomorrow, once per visit; then a toast, or on a failure a toast and the button again. With none missed the button is disabled.
 - **Motion.** The badge scales in over the first third of 1.2 s with one pulse of its halo, and stands still with reduce motion.
 
+## Details L14 settles (#136)
+
+- **Where it is.** *Review answers* shows L14 in L13's place, in the same route. Its back arrow, system back and the iOS swipe return to L13.
+- **What it lists.** The 40 numbered questions, numbered as L12 numbers them ("Q21"). Writing and Speaking are tasks and live on L13. *All · 40* shows them all, *Wrong only · 9* those under their point (*almost* included, as #84 grades it), and *Flagged · 3* those flagged in the runner. A filter with none says "Nothing here."
+- **A card.** "Q9 · Vocabulary" with its verdict on the right: *Right* (Lime tick), *Almost* or *Wrong* (a cross, in the almost or wrong colour), *No answer*. Then the item as the paper asked it (a German prompt with its article coloured; "___ Rechnung" for Articles; the sentence with its gap for grammar). Then "Your answer", struck through when wrong, and "Correct" when it was wrong. An index answer (spot the error, rule recall) shows its word or option.
+- **The explanation** (FR-L14-01).
+  - A word item: its first example, with its play button, and *Open word* (W1 as a sheet or pane, over the exam).
+  - An Articles item: the word's interference tip as its rule of thumb ("Every "-ung" noun is "die"."), and *See rule* opening the step's gender topic (tagged `gender`).
+  - A grammar item: its topic's rule, first sentence, and *See rule*.
+  - *See rule* shows the rule in a sheet over the exam, as L15 does, rather than navigating to L4: the exam route stays where it is.
+
 **Tests.** scoring and pass; missed-words rating; goldens pass/fail.

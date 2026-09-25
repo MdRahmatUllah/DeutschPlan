@@ -811,5 +811,15 @@
   "reminderDaysFrom": "{app} · {time}",
   "reminderDaysNothing": "আজ কিছু করার নেই, তাই রিমাইন্ডার নেই।",
   "reminderDaysRestToday": "আজ বিশ্রামের দিন: রিমাইন্ডার নেই।",
-  "reminderDaysPreviewNote": "পাঠানোর সময় আসল পরিকল্পনা থেকে তৈরি। ট্যাপ করলে Today খোলে।"
+  "reminderDaysPreviewNote": "পাঠানোর সময় আসল পরিকল্পনা থেকে তৈরি। ট্যাপ করলে Today খোলে।",
+  "examReviewAll": "সব · {count}",
+  "examReviewWrong": "শুধু ভুল · {count}",
+  "examReviewNone": "এখানে কিছু নেই।",
+  "examReviewHeader": "প্রশ্ন {number} · {section}",
+  "examReviewRight": "সঠিক",
+  "examReviewAlmost": "প্রায়",
+  "examReviewWrongOne": "ভুল",
+  "examReviewNoAnswer": "উত্তর নেই",
+  "examReviewOpenWord": "শব্দটি খুলুন",
+  "examReviewAnswerLabel": "{label}: {value}"
 }
