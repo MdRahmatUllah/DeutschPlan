@@ -283,6 +283,10 @@ abstract final class SettingKeys {
   /// choice survives Resume and process death (#129, #130).
   static const examTimer = BoolSetting('exam_timer', true);
 
+  /// M6's "Last export: 20 Sep" (#148): the day of the last export the
+  /// share sheet took. Unset until the first.
+  static const lastExport = DateSetting('last_export');
+
   // Translation.
   static const mtEnabled = BoolSetting('mt_enabled', false);
   static const mtVariant = EnumSetting<MtVariant>(
@@ -350,5 +354,6 @@ abstract final class SettingKeys {
     recentSearches,
     learnerName,
     examTimer,
+    lastExport,
   ];
 }

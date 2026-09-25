@@ -27,7 +27,8 @@ class SettingsRepository {
   /// this to the providers; until then a listener can watch it directly.
   Stream<SettingKey<Object?>> get changes => _changes.stream;
 
-  /// Reads the table into memory. Call once, before the first [read].
+  /// Reads the table into memory: before the first [read], and again from
+  /// [reload] after an import.
   Future<void> load() async {
     final rows = await _db.select(_db.settings).get();
     _values = <String, String>{for (final row in rows) row.key: row.value};
@@ -133,6 +134,18 @@ class SettingsRepository {
       },
     );
     return controller.stream;
+  }
+
+  /// Reads the table again after something wrote it wholesale (M6's import,
+  /// #148), and tells the listeners of every key whose value moved: the
+  /// cache is only current because nothing else writes the table, and an
+  /// import does.
+  Future<void> reload() async {
+    final before = Map<String, String>.of(_loadedValues);
+    await load();
+    for (final key in SettingKeys.all) {
+      if (before[key.name] != _values![key.name]) _changes.add(key);
+    }
   }
 
   /// Puts a key back to its documented default. Used by Reset (M7).

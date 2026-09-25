@@ -56,6 +56,7 @@ Created on first launch from `lib/data/db/user_schema.drift`, which is the autho
 | `recent_searches` | — | Search — FR-R1-04's last 10 searches, newest first, a JSON list |
 | `learner_name` | — | Me |
 | `exam_timer` | 1 | L11 writes it on *Begin exam* (its switch starts from `exam_timer_default`); L12 reads it, fresh or resumed |
+| `last_export` | — | M6 — the day of the last export the share sheet took (`2026-09-20`) |
 
 ## Migrations
 
