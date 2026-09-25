@@ -57,7 +57,7 @@ class DpTokens extends ThemeExtension<DpTokens> {
   /// palette is the Light one, and only the surfaces change.
   factory DpTokens.glass() => const DpTokens(
     mode: DpMode.glass,
-    color: DpPalette.light,
+    color: DpPalette.glass,
     surface: DpSurfaceTokens.glass,
     typography: DpTypeTokens.defaults,
     shape: DpShapeTokens.glass,
@@ -68,7 +68,7 @@ class DpTokens extends ThemeExtension<DpTokens> {
   /// The glass dark variant, chosen automatically when the system is dark.
   factory DpTokens.glassDark() => const DpTokens(
     mode: DpMode.glass,
-    color: DpPalette.dark,
+    color: DpPalette.glassDark,
     surface: DpSurfaceTokens.glassDark,
     typography: DpTypeTokens.defaults,
     shape: DpShapeTokens.glass,
@@ -183,7 +183,7 @@ class DpPalette {
     easy: Color(0xFFA6E22E), // Lime
     learning: Color(0xFFFFC61A), // Sun
     correctText: Color(0xFF00804A),
-    almostText: Color(0xFFB45F00),
+    almostText: Color(0xFFAE5C01), // 4.6:1 on paper (#163)
     wrongText: Color(0xFFC8341F),
   );
 
@@ -201,6 +201,70 @@ class DpPalette {
     onAccentMark: Color(0xFFFFFFFF),
     ink: Color(0xFFF4F1FF),
     textSecondary: Color(0xFFB7B1CC),
+    link: Color(0xFF2EE6D6),
+    inverseLink: Color(0xFF007A70), // deep Lagoon, on the light snackbar
+    der: Color(0xFF8C9DFF),
+    onDer: Color(0xFF15121F), // the lifted Cobalt is light enough for ink
+    derText: Color(0xFF8C9DFF),
+    die: Color(0xFFFF8AB2),
+    dieText: Color(0xFFFF8AB2),
+    das: Color(0xFF4FE3A0),
+    dasText: Color(0xFF4FE3A0),
+    again: Color(0xFFFF8A7D),
+    hard: Color(0xFFFFBE5C),
+    good: Color(0xFF2EE6D6),
+    easy: Color(0xFFC4F266),
+    learning: Color(0xFFFFD54A),
+    correctText: Color(0xFF4FE3A0),
+    almostText: Color(0xFFFFBE5C),
+    wrongText: Color(0xFFFF8A7D),
+  );
+
+  /// Aurora Glass, light (#163): the light palette with its text roles
+  /// darkened toward ink until each reaches 4.6:1 on a card over the darkest
+  /// aurora blob it can overlay (Cobalt at the backdrop's peak opacity), and
+  /// the secondary text on the bare backdrop too. theming.md: "Glass text is
+  /// checked against the brightest blob it can overlay"; the fills and the
+  /// gender colours are the light palette's.
+  static const DpPalette glass = DpPalette(
+    primary: Color(0xFF00C2B2), // Lagoon
+    onPrimary: Color(0xFF15121F),
+    accent: Color(0xFFFFC61A), // Sun
+    onAccent: Color(0xFF15121F),
+    onAccentMark: Color(0xFFFFFFFF),
+    ink: Color(0xFF15121F),
+    textSecondary: Color(0xFF3B374C),
+    link: Color(0xFF046761),
+    inverseLink: Color(0xFF00C2B2), // Lagoon, on the ink snackbar
+    der: Color(0xFF3D5AFE), // Cobalt
+    onDer: Color(0xFFFFFFFF), // Foundations writes its Cobalt swatch in white
+    derText: Color(0xFF2F46E0),
+    die: Color(0xFFFF3D7F), // Raspberry
+    dieText: Color(0xFFB11450),
+    das: Color(0xFF00B86B), // Emerald
+    dasText: Color(0xFF046941),
+    again: Color(0xFFFF5E4D), // Coral
+    hard: Color(0xFFFF9F1C), // Tangerine
+    good: Color(0xFF00C2B2), // Lagoon
+    easy: Color(0xFFA6E22E), // Lime
+    learning: Color(0xFFFFC61A), // Sun
+    correctText: Color(0xFF046941),
+    almostText: Color(0xFF8B4B08),
+    wrongText: Color(0xFFAA2E1F),
+  );
+
+  /// Aurora Glass, dark (#163): the dark palette, with the secondary text
+  /// lifted toward white until it reaches 4.6:1 over the brightest blob (Sun)
+  /// on the smoked backdrop and its muted chips. Hierarchy under it comes
+  /// from size and weight more than colour.
+  static const DpPalette glassDark = DpPalette(
+    primary: Color(0xFF2EE6D6), // Lagoon, lifted
+    onPrimary: Color(0xFF15121F), // dark ink on a bright fill
+    accent: Color(0xFFFFD54A), // Sun, lifted
+    onAccent: Color(0xFF15121F),
+    onAccentMark: Color(0xFFFFFFFF),
+    ink: Color(0xFFF4F1FF),
+    textSecondary: Color(0xFFE6E4ED),
     link: Color(0xFF2EE6D6),
     inverseLink: Color(0xFF007A70), // deep Lagoon, on the light snackbar
     der: Color(0xFF8C9DFF),
