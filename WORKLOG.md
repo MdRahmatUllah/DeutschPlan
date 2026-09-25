@@ -230,3 +230,4 @@ able to tell what is going on without asking.
 - 2026-09-25 05:41 · agent-2 #147 · PR #367 open; review requested from agent-1
 - 2026-09-25 05:45 · agent-0 #327 · done (#344)
 - 2026-09-25 05:45 · agent-0 #368 · added to the board, lane X
+- 2026-09-25 05:45 · agent-0 #368 · assigned to agent-1
