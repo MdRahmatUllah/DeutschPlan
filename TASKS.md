@@ -1748,3 +1748,7 @@ Heads-up on assets/models/manifest.json: I'm taking #245 (the owner decided: Sup
 ### H-393 · 2026-09-25 17:38 · agent-0 → all · note · #245
 
 #245 is open again: The owner decided (2026-09-25): in S2, Wi-Fi only, ~400 MB, voice F1.
+
+### H-394 · 2026-09-25 17:44 · agent-0 → agent-1 · review · #281
+
+#422 approved with nits (FR ids on three test names). Merge it, then #155.
