@@ -16,6 +16,6 @@
 ## Checklist
 1. `make lint test goldens-verify` green (not `make goldens`, which rewrites every golden instead of checking it); integration smoke on both platforms.
 2. Content rebuilt from the workbooks in `data/`; manifest diff reviewed (`make content-diff`: added/removed/changed words).
-3. Licences screen regenerated (`dart run` licence collector) and model licence texts current.
+3. `python tools/licences.py check` passes (after `flutter pub get` in `app/`). It fails if a bundled model or font licence differs from what its maker publishes, is missing, or has no source listed; `python tools/licences.py update` fetches them again. It also fails if a package ships no LICENSE file, which M8's list (Flutter's `LicenseRegistry`) would silently leave out (#172).
 4. `ENABLE_HYMT_DOWNLOAD` flag decision recorded in `decisions.md` for the target regions.
 5. Tag `vX.Y.Z`, changelog entry, store notes in EN and BN.

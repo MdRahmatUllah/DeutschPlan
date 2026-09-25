@@ -18,6 +18,7 @@ deutschplan/                        ← repository root
 │   ├── trim_schema_fixture.py      ← trims a `schema dump` fixture (`make schema-dump`)
 │   ├── render_design.py            ← renders the Paper & Ink artboards to docs/design/*.png
 │   ├── artboard.py                 ← an artboard beside a golden, to compare by eye (glass too)
+│   ├── licences.py                 ← M8's licence texts from their makers, and every package's LICENSE (release.md)
 │   ├── plant.py                    ← planted violations: break the code, check a test notices
 │   ├── device.py · smoke.py        ← drive the emulator; the integration smoke
 │   ├── team.py                     ← the agents' board
