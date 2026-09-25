@@ -50,7 +50,7 @@ Created on first launch from `lib/data/db/user_schema.drift`, which is the autho
 | `tts_engine` / `tts_voice` / `tts_speed` | supertonic / Anna / 1.0 | Settings, Model manager |
 | `autoplay_headword` / `autoplay_example` | 1 / 0 | Settings |
 | `exam_unlock_percent` / `exam_pass_percent` / `exam_timer_default` | 90 / 60 / 1 | Settings |
-| `mt_enabled` / `mt_variant` | 0 / `q1_25` | Settings, Model manager |
+| `mt_enabled` | 0 | Settings, Model manager |
 | `listening_questions` | 1 | Settings (accessibility) |
 | `models_wifi_only` | 1 | Model manager — FR-M4-01's *Wi-Fi only*: model downloads wait for Wi-Fi |
 | `last_planned_date` | — | engine |

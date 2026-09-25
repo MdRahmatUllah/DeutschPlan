@@ -43,7 +43,7 @@ void main() {
         disables: 'mt_enabled',
         regionExcluded: const <String>[],
         variants: <ModelVariant>[
-          ModelVariant(id: 'q1_25', name: 'test build', files: files),
+          ModelVariant(id: 'q4_k_m', name: 'test build', files: files),
         ],
       ),
     ],

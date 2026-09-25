@@ -24,7 +24,7 @@ Click any screenshot to open that screen as HTML. Inside the prototype, buttons 
 - **Quiz and mock exams.** Custom quizzes, plus three seeded mock exams per step: 40 questions, about 20 minutes, pass mark 60 %. Sections cover vocabulary, reverse translation, articles, word forms, gap fill, grammar, listening, writing and speaking. Later steps unlock through the mocks.
 - **Search and my words.** Full-text search across all steps, word detail with forms and sentences, side-by-side compare, and add / edit your own words.
 - **Me.** Streak, activity heatmap, done / learning / to-do counts, progress detail by week, month and step, and settings for pace, study days, reminders, meaning language, theme and voice.
-- **On-device models.** Optional Supertonic German voice (about 100 MB, OpenRAIL-M) and Hy-MT translation model (about 440 MB), downloaded once over Wi-Fi. Deleting them falls back to the system voice and turns translation off.
+- **On-device models.** Optional Supertonic German voice (about 100 MB, OpenRAIL-M) and Hy-MT translation model (about 1.1 GB), downloaded once over Wi-Fi. Deleting them falls back to the system voice and turns translation off.
 - **Export / import.** One JSON file with word states, review log, plans, quiz and exam history and settings. Merge or replace. The file never passes through a server.
 - **Home-screen widget.** Small 2×2 (cards left, minutes) and medium 4×2 (word of the day with meaning and pronounce button).
 

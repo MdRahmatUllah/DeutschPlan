@@ -45,14 +45,8 @@ Future<ModelState?> translationModel(Ref ref) async {
     ModelRepository.translationModel,
   );
   if (entry == null || entry.variants.isEmpty) return null;
-  final chosen = SettingKeys.mtVariant.encode(
-    ref.watch(settingsSourceProvider).read(SettingKeys.mtVariant),
-  );
-  final variant = entry.variants.firstWhere(
-    (variant) => variant.id == chosen,
-    orElse: () => entry.variants.first,
-  );
-  return models.stateOf(entry, variant);
+  // One build is offered, Q4_K_M (#409).
+  return models.stateOf(entry, entry.variants.first);
 }
 
 /// M3's writes, and what redraws it: the state counts the settings changed,

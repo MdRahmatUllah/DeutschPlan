@@ -186,9 +186,6 @@ enum ThemeModeSetting { system, light, dark, glass }
 /// an ambiguous import.
 enum TtsEngineSetting { supertonic, system }
 
-/// The translation model's quantisation. ADR 9 defaults to 1.25-bit.
-enum MtVariant { q1_25, q2_5, fp16 }
-
 /// Every key the app stores.
 abstract final class SettingKeys {
   // Daily plan. BR-PLAN-08: changing the first three is visible at once but
@@ -303,16 +300,6 @@ abstract final class SettingKeys {
 
   // Translation.
   static const mtEnabled = BoolSetting('mt_enabled', false);
-  static const mtVariant = EnumSetting<MtVariant>(
-    'mt_variant',
-    MtVariant.q1_25,
-    MtVariant.values,
-    <MtVariant, String>{
-      MtVariant.q1_25: 'q1_25',
-      MtVariant.q2_5: 'q2_5',
-      MtVariant.fp16: 'fp16',
-    },
-  );
 
   // No default: the doc leaves both blank.
   static const lastPlannedDate = DateSetting('last_planned_date');
@@ -362,7 +349,6 @@ abstract final class SettingKeys {
     examPassPercent,
     examTimerDefault,
     mtEnabled,
-    mtVariant,
     listeningQuestions,
     modelsWifiOnly,
     lastPlannedDate,

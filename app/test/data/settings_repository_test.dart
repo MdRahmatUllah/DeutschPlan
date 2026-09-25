@@ -49,7 +49,7 @@ void main() {
         // `encode` is `wire[value]!`. A value missing from the map throws at
         // write time, on whichever screen offers it, in production — and the
         // round-trip test below only ever writes one non-default value per
-        // enum, so it would not catch it. MtVariant.fp16 is the live example.
+        // enum, so it would not catch it.
         expect(key.wire.keys.toSet(), key.values.toSet());
         expect(key.wire.values.toSet(), hasLength(key.values.length));
       });

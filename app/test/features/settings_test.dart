@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:deutschplan/core/adaptive/adaptive.dart';
 import 'package:deutschplan/core/components/dp_slider.dart';
 import 'package:deutschplan/core/components/dp_stepper.dart';
@@ -548,5 +550,29 @@ INSERT INTO word_state (word_uid, status, stability, reps) VALUES
       2.5,
       30,
     ]);
+  });
+
+  test("#409 M3's translation row reads the one build the manifest offers, "
+      'Q4_K_M', () async {
+    TestWidgetsFlutterBinding.ensureInitialized();
+    final support = Directory.systemTemp.createTempSync('deutschplan_m3');
+    addTearDown(() {
+      try {
+        support.deleteSync(recursive: true);
+      } on FileSystemException {
+        // Windows releases it a moment later.
+      }
+    });
+    final container = ProviderContainer(
+      overrides: <Override>[
+        modelRepositoryProvider.overrideWithValue(
+          ModelRepository(settings, support: support),
+        ),
+      ],
+    );
+    addTearDown(container.dispose);
+    final model = await container.read(translationModelProvider.future);
+    expect(model!.variant.id, 'q4_k_m');
+    expect(model.status, ModelStatus.notDownloaded);
   });
 }
