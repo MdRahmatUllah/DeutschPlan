@@ -695,5 +695,13 @@
   "progressIntroduced": "শব্দ শুরু হয়েছে",
   "progressReviews": "রিভিউ",
   "progressStreakBest": "{streak} / {best}",
-  "progressStreakLabel": "ধারা / সেরা"
+  "progressStreakLabel": "ধারা / সেরা",
+  "searchRecent": "সাম্প্রতিক",
+  "searchClearRecent": "মুছুন",
+  "searchClearRecentLabel": "সাম্প্রতিক খোঁজ মুছুন",
+  "searchMyWords": "আমার শব্দ · {count}",
+  "searchMyWordsFrom": "রসিদ, সাইনবোর্ড, চ্যাট থেকে",
+  "searchSeen": "{count} বার দেখা",
+  "searchMyWord": "আমার শব্দ",
+  "searchAddWord": "যে শব্দ পেয়েছি তা যোগ করুন"
 }

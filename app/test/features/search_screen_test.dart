@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:deutschplan/core/components/dp_chip.dart';
@@ -7,6 +8,7 @@ import 'package:deutschplan/core/theme/dp_tokens.dart';
 import 'package:deutschplan/data/db/app_database.dart';
 import 'package:deutschplan/data/db/content_dao.dart';
 import 'package:deutschplan/data/repositories/search_repository.dart';
+import 'package:deutschplan/data/repositories/setting_keys.dart';
 import 'package:deutschplan/data/repositories/settings_repository.dart';
 import 'package:deutschplan/data/repositories/word_repository.dart';
 import 'package:deutschplan/features/search/search_screen.dart';
@@ -18,6 +20,7 @@ import 'package:deutschplan/main.dart'
 import 'package:deutschplan/router/app_router.dart';
 import 'package:deutschplan/router/route_guards.dart';
 import 'package:deutschplan/router/routes.dart';
+import 'package:drift/drift.dart' show Value;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
@@ -369,6 +372,187 @@ void main() {
     await tester.tap(find.bySemanticsLabel(l10n.searchOpenWeb('Duden')));
     await tester.pump();
     expect(opened, <Uri>[SearchRepository.webLinks('Haus')[WebSource.duden]!]);
+  });
+
+  group('#138 idle', () {
+    Finder recentChip(String term) => find.byWidgetPredicate(
+      (w) => w is DpChip && w.kind == DpChipKind.filter && w.label == term,
+    );
+
+    List<String> stored() {
+      final raw = settings.read(SettingKeys.recentSearches);
+      return raw == null
+          ? const <String>[]
+          : <String>[for (final t in jsonDecode(raw) as List<Object?>) '$t'];
+    }
+
+    Future<void> addWord(
+      WidgetTester tester, {
+      required String german,
+      required String meaning,
+      String? article,
+      String? where,
+      int seen = 1,
+      String at = '2026-09-20T10:00:00Z',
+    }) async {
+      await tester.runAsync(
+        () => db
+            .into(db.customWords)
+            .insert(
+              CustomWordsCompanion.insert(
+                createdAt: at,
+                german: german,
+                meaning: meaning,
+                article: Value(article),
+                whereSeen: Value(where),
+                timesSeen: Value(seen),
+              ),
+            ),
+      );
+      await settle(tester);
+    }
+
+    testWidgets('nothing yet: no headings, only the way to add a word', (
+      tester,
+    ) async {
+      await pump(tester);
+      expect(heading(l10n.searchRecent), findsNothing);
+      expect(heading(l10n.searchMyWords(0)), findsNothing);
+      expect(find.text(l10n.searchAddWord), findsOneWidget);
+    });
+
+    testWidgets('FR-R1-04 a submitted search is remembered, and kept in '
+        'recent_searches', (tester) async {
+      await pump(tester);
+      await tester.enterText(find.byType(TextField), 'Haus');
+      await tester.testTextInput.receiveAction(TextInputAction.search);
+      await settle(tester);
+      await settle(tester);
+      expect(stored(), <String>['Haus']);
+    });
+
+    testWidgets('FR-R1-04 opening a result remembers the search; typing '
+        'alone does not', (tester) async {
+      await pump(tester);
+      await type(tester, 'offen');
+      expect(stored(), isEmpty, reason: 'a pause in typing is not a search');
+      await tester.tap(find.text('Die Tür ist offen.', findRichText: true));
+      await settle(tester);
+      expect(stored(), <String>['offen']);
+    });
+
+    testWidgets('FR-R1-04 a word row and a web chip remember it too', (
+      tester,
+    ) async {
+      await pump(tester);
+      await type(tester, 'Haus');
+      await tester.tap(find.bySemanticsLabel(l10n.searchOpenWeb('Duden')));
+      await tester.pump();
+      expect(stored(), <String>['Haus']);
+
+      await type(tester, 'Tür');
+      await tester.tap(find.text('die Tür', findRichText: true).first);
+      await settle(tester);
+      expect(stored(), <String>['Tür', 'Haus']);
+    });
+
+    testWidgets('FR-R1-04 the last ten, newest first; the same search again '
+        'moves up', (tester) async {
+      await pump(tester);
+      final recent = ProviderScope.containerOf(
+        tester.element(find.byType(SearchScreen)),
+      ).read(recentSearchesProvider.notifier);
+      await tester.runAsync(() async {
+        for (var i = 0; i < 12; i++) {
+          await recent.remember('Wort$i');
+        }
+        await recent.remember('wort5');
+      });
+      await tester.pumpAndSettle();
+      expect(stored(), hasLength(10));
+      expect(stored().first, 'wort5');
+      expect(stored().where((t) => t.toLowerCase() == 'wort5'), hasLength(1));
+      expect(stored(), isNot(contains('Wort0')), reason: 'the oldest go');
+      expect(recentChip('wort5'), findsOneWidget);
+    });
+
+    testWidgets('FR-R1-04 a recent chip searches it again, and Clear '
+        'forgets them all', (tester) async {
+      await pump(tester);
+      final recent = ProviderScope.containerOf(
+        tester.element(find.byType(SearchScreen)),
+      ).read(recentSearchesProvider.notifier);
+      await tester.runAsync(() async {
+        await recent.remember('Haus');
+        await recent.remember('Tür');
+      });
+      await tester.pumpAndSettle();
+      expect(heading(l10n.searchRecent), findsOneWidget);
+
+      await tester.tap(recentChip('Haus'));
+      await settle(tester);
+      expect(
+        tester.widget<TextField>(find.byType(TextField)).controller!.text,
+        'Haus',
+      );
+      expect(heading(l10n.searchExact(1)), findsOneWidget);
+      expect(stored().first, 'Haus', reason: 'searched again, so newest');
+
+      await tester.tap(find.bySemanticsLabel(l10n.searchClear));
+      await settle(tester);
+      await tester.tap(find.text(l10n.searchClearRecent));
+      await settle(tester);
+      expect(heading(l10n.searchRecent), findsNothing);
+      expect(settings.read(SettingKeys.recentSearches), isNull);
+    });
+
+    testWidgets('My words: the meaning, where it was seen, the count from '
+        'the second time; newest first', (tester) async {
+      await pump(tester);
+      await addWord(
+        tester,
+        german: 'Quittung',
+        article: 'die',
+        meaning: 'receipt',
+        where: 'Bäckerei',
+      );
+      await addWord(
+        tester,
+        german: 'Pfandflasche',
+        article: 'das',
+        meaning: 'deposit bottle',
+        where: 'Rewe receipt',
+        seen: 3,
+        at: '2026-09-21T10:00:00Z',
+      );
+      expect(heading(l10n.searchMyWords(2)), findsOneWidget);
+      expect(
+        find.text('deposit bottle · Rewe receipt · ${l10n.searchSeen(3)}'),
+        findsOneWidget,
+      );
+      expect(find.text('receipt · Bäckerei'), findsOneWidget);
+      expect(
+        tester.getTopLeft(find.text('das Pfandflasche', findRichText: true)).dy,
+        lessThan(
+          tester.getTopLeft(find.text('die Quittung', findRichText: true)).dy,
+        ),
+      );
+    });
+
+    testWidgets('a word of my own opens it in R2; Add a word I found opens '
+        'R2 empty', (tester) async {
+      await pump(tester, routed: true);
+      await addWord(tester, german: 'ausschließlich', meaning: 'exclusively');
+      await tester.tap(find.text('ausschließlich', findRichText: true));
+      await settle(tester);
+      expect(router!.state.uri.path, startsWith('/search/add/'));
+
+      router!.go('/search');
+      await settle(tester);
+      await tester.tap(find.text(l10n.searchAddWord));
+      await settle(tester);
+      expect(router!.state.uri.path, '/search/add');
+    });
   });
 
   group('FR-R1-07 filter chips', () {

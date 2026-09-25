@@ -19,6 +19,12 @@
 - **FR-R1-06.** The web chips open through `url_launcher`'s in-app browser view, which is a Custom Tab on Android and `SFSafariViewController` on iOS. That is what `flutter_custom_tabs` would give, with no new dependency.
 - **In sentences.** The words FTS matched are marked in Sun, from `highlight()`.
 
+**Filled in by #138 (idle):**
+- **FR-R1-04.** A search counts once the learner commits to it: the search key, a result or web chip opened, or a recent chip tapped. A pause in typing doesn't count. The same search again moves to the front, compared without case, and the oldest past ten goes. `recent_searches` is a JSON list, newest first. *Clear* forgets them all, and a screen reader hears it as "Clear recent searches".
+- A recent chip fills the field and searches at once.
+- **My words** lists `custom_words` newest first: the headword with its article's colour, then "meaning · where it was seen · seen N×". The count shows from the second time. A row opens R2 on that word (`/search/add/:id`).
+- With no recents or no words of one's own, that heading is left out, and *Add a word I found* (R2, `/search/add`) is always there.
+
 **Functional requirements**
 - FR-R1-01 Results per `03-domain/search.md`, debounced 120 ms, isolate-run, < 50 ms per query.
 - FR-R1-02 Enter/search key opens the first exact match's detail.

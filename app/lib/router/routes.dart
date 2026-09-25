@@ -400,6 +400,10 @@ class SearchRoute extends GoRouteData with $SearchRoute {
 class AddWordRoute extends GoRouteData with $AddWordRoute {
   const AddWordRoute();
 
+  /// Pushed from R1 (navigation.md), so back returns to the search.
+  static void open(BuildContext context) =>
+      unawaited(context.push<void>(const AddWordRoute().location));
+
   @override
   Widget build(BuildContext context, GoRouterState state) =>
       const PlaceholderScreen(title: 'Add a word', screen: 'R2');
@@ -409,6 +413,10 @@ class EditCustomWordRoute extends GoRouteData with $EditCustomWordRoute {
   const EditCustomWordRoute({required this.id});
 
   final int id;
+
+  /// Pushed from R1's *My words* (#138).
+  static void open(BuildContext context, int id) =>
+      unawaited(context.push<void>(EditCustomWordRoute(id: id).location));
 
   @override
   Widget build(BuildContext context, GoRouterState state) =>

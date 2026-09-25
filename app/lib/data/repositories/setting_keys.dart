@@ -307,6 +307,10 @@ abstract final class SettingKeys {
   /// when it has been shown, and never cleared — restart setup is not a
   /// first run.
   static const coachMarkSeen = BoolSetting('coach_mark_seen', false);
+
+  /// FR-R1-04: the last ten searches, newest first, as a JSON list. Empty
+  /// when unset.
+  static const recentSearches = StringSetting('recent_searches');
   static const learnerName = StringSetting('learner_name');
 
   /// Every key, in the order `user-database.md` lists them.
@@ -343,6 +347,7 @@ abstract final class SettingKeys {
     lastPlannedDate,
     coachMarkSeen,
     dismissedCards,
+    recentSearches,
     learnerName,
     examTimer,
   ];

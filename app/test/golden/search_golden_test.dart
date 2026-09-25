@@ -1,4 +1,5 @@
 import 'package:deutschplan/core/providers/app_providers.dart';
+import 'package:deutschplan/data/repositories/word_repository.dart';
 import 'package:deutschplan/features/search/search_screen.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
@@ -16,6 +17,8 @@ void main() {
       searchResultsProvider.overrideWith(
         (ref, query) => Stream.value(artboardSearch()),
       ),
+      recentSearchesProvider.overrideWith(() => StubRecentSearches(const [])),
+      myWordsProvider.overrideWith((ref) => Stream.value(const <MyWord>[])),
       ttsProvider.overrideWithValue(FakeTts()),
     ],
     builder: (_) => const SearchScreen(),
@@ -24,5 +27,19 @@ void main() {
       await tester.pump(SearchScreen.debounce);
       await tester.pumpAndSettle();
     },
+  );
+
+  // #138: nothing typed. The SearchIdle artboard's five recents and three
+  // own words.
+  goldenTest(
+    'search_idle',
+    overrides: [
+      recentSearchesProvider.overrideWith(
+        () => StubRecentSearches(artboardRecent),
+      ),
+      myWordsProvider.overrideWith((ref) => Stream.value(artboardMyWords())),
+      ttsProvider.overrideWithValue(FakeTts()),
+    ],
+    builder: (_) => const SearchScreen(),
   );
 }

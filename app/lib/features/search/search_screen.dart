@@ -1,6 +1,8 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:deutschplan/core/adaptive/adaptive.dart';
+import 'package:deutschplan/core/components/dp_button.dart';
 import 'package:deutschplan/core/components/dp_chip.dart';
 import 'package:deutschplan/core/components/dp_feedback.dart';
 import 'package:deutschplan/core/providers/app_providers.dart';
@@ -9,6 +11,8 @@ import 'package:deutschplan/core/theme/dp_surface.dart';
 import 'package:deutschplan/core/theme/dp_tokens.dart';
 import 'package:deutschplan/core/typography/dp_text.dart';
 import 'package:deutschplan/data/repositories/search_repository.dart';
+import 'package:deutschplan/data/repositories/setting_keys.dart';
+import 'package:deutschplan/data/repositories/settings_repository.dart';
 import 'package:deutschplan/data/repositories/word_repository.dart';
 import 'package:deutschplan/features/learn/step_words.dart';
 import 'package:deutschplan/features/words/word_row.dart';
@@ -65,6 +69,64 @@ Stream<SearchView> searchResults(Ref ref, String query, {String? step}) async* {
         ),
       );
 }
+
+/// FR-R1-04: the last ten searches, newest first, kept in `recent_searches`.
+/// A search counts once the learner commits to it: the search key, a result
+/// opened, a web chip or a recent chip, not every pause in typing.
+@riverpod
+class RecentSearches extends _$RecentSearches {
+  static const int limit = 10;
+
+  @override
+  List<String> build() {
+    final settings = ref.watch(settingsProvider);
+    // Followed: import and reset write the setting too.
+    final changes = settings.changes
+        .where((key) => key == SettingKeys.recentSearches)
+        .listen((_) => state = _read(settings));
+    ref.onDispose(changes.cancel);
+    return _read(settings);
+  }
+
+  /// [query] first; the same search again moves up rather than repeating.
+  Future<void> remember(String query) async {
+    final settings = ref.read(settingsProvider);
+    final term = query.trim();
+    if (term.isEmpty) return;
+    final key = term.toLowerCase();
+    state = <String>[
+      term,
+      for (final old in state)
+        if (old.toLowerCase() != key) old,
+    ].take(limit).toList();
+    await settings.write(SettingKeys.recentSearches, jsonEncode(state));
+  }
+
+  /// FR-R1-04's *Clear*.
+  Future<void> clear() async {
+    final settings = ref.read(settingsProvider);
+    state = const <String>[];
+    await settings.write(SettingKeys.recentSearches, null);
+  }
+
+  static List<String> _read(SettingsRepository settings) {
+    final raw = settings.read(SettingKeys.recentSearches);
+    if (raw == null) return const <String>[];
+    try {
+      return <String>[
+        for (final term in jsonDecode(raw) as List<Object?>)
+          if (term is String) term,
+      ];
+    } on FormatException {
+      return const <String>[];
+    }
+  }
+}
+
+/// R1's idle *My words* (#138): the learner's own words, newest first.
+@riverpod
+Stream<List<MyWord>> myWords(Ref ref) =>
+    ref.watch(wordRepositoryProvider).watchMyWords();
 
 /// R1 · Search (`search.md`, Search artboards): the Raspberry header with
 /// its field, the web row, and the results grouped as BR-SEARCH-01 orders
@@ -146,11 +208,33 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     });
   }
 
+  /// FR-R1-04: the search the learner committed to, remembered.
+  void _use([String? term]) => unawaited(
+    ref.read(recentSearchesProvider.notifier).remember(term ?? _query),
+  );
+
+  /// A recent chip: its search, at once.
+  void _searchFor(String term) {
+    _debounce?.cancel();
+    _field.value = TextEditingValue(
+      text: term,
+      selection: TextSelection.collapsed(offset: term.length),
+    );
+    _last = null;
+    setState(() {
+      _query = term;
+      _status = null;
+      _chipStep = null;
+    });
+    _use(term);
+  }
+
   /// FR-R1-02: the search key opens the first exact match.
   Future<void> _submitted(String text) async {
     final query = text.trim();
     if (query.isEmpty) return;
     _debounce?.cancel();
+    _use(query);
     if (query != _query) {
       setState(() {
         _query = query;
@@ -221,11 +305,10 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
             onRemoveStep: () => context.jumpToTab(const SearchRoute()),
           ),
           Expanded(
-            // ponytail: the idle list (#138) and the no-results page (#139)
-            // are their own issues; until then an empty query shows nothing
-            // and a query with no results shows the web row alone.
+            // ponytail: the no-results page is #139; until then a query with
+            // no results shows the web row alone.
             child: query.isEmpty
-                ? const SizedBox.expand()
+                ? _Idle(onRecent: _searchFor)
                 : results != null && results.hasError && view == null
                 ? Center(
                     child: Padding(
@@ -251,6 +334,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                     onStep: (step) => setState(
                       () => _chipStep = _chipStep == step ? null : step,
                     ),
+                    onUse: _use,
                   ),
           ),
         ],
@@ -392,6 +476,7 @@ class _Results extends StatelessWidget {
     required this.step,
     required this.onStatus,
     required this.onStep,
+    required this.onUse,
   });
 
   final String query;
@@ -403,6 +488,9 @@ class _Results extends StatelessWidget {
   final String? step;
   final ValueChanged<WordStatus> onStatus;
   final ValueChanged<String> onStep;
+
+  /// Called as a result or a web chip is opened (FR-R1-04).
+  final VoidCallback onUse;
 
   @override
   Widget build(BuildContext context) {
@@ -420,7 +508,7 @@ class _Results extends StatelessWidget {
       key: const PageStorageKey<String>('search-results'),
       padding: EdgeInsets.zero,
       children: <Widget>[
-        _WebRow(term: query),
+        _WebRow(term: query, onUse: onUse),
         if (view != null &&
             view.words.length > SearchScreen.filterFrom) ...<Widget>[
           _Chips(
@@ -471,6 +559,7 @@ class _Results extends StatelessWidget {
           for (final (index, sentence) in sentences.indexed)
             _SentenceRow(
               sentence: sentence,
+              onUse: onUse,
               last: index == sentences.length - 1,
             ),
         ],
@@ -493,7 +582,10 @@ class _Results extends StatelessWidget {
           for (final (index, row) in rows.indexed)
             GestureDetector(
               behavior: HitTestBehavior.opaque,
-              onTap: () => WordRoute.open(context, row.word.word.uid),
+              onTap: () {
+                onUse();
+                WordRoute.open(context, row.word.word.uid);
+              },
               child: WordRow(
                 word: row.word.word,
                 meaning: row.word.meaning,
@@ -532,7 +624,9 @@ class _Chips extends StatelessWidget {
 /// The app makes no request: the page opens in an in-app browser tab
 /// (FR-R1-06, BR-PRIV-01).
 class _WebRow extends ConsumerWidget {
-  const _WebRow({required this.term});
+  const _WebRow({required this.term, required this.onUse});
+
+  final VoidCallback onUse;
 
   final String term;
 
@@ -547,7 +641,10 @@ class _WebRow extends ConsumerWidget {
             label: source.label,
             kind: DpChipKind.webLink,
             semanticLabel: l10n.searchOpenWeb(source.label),
-            onTap: () => unawaited(ref.read(openWebProvider)(links[source]!)),
+            onTap: () {
+              onUse();
+              unawaited(ref.read(openWebProvider)(links[source]!));
+            },
           ),
       ],
     );
@@ -556,15 +653,18 @@ class _WebRow extends ConsumerWidget {
 
 /// "EXACT MATCH · 1": 12/16, 700, spaced, 14 above and 6 below.
 class _Heading extends StatelessWidget {
-  const _Heading(this.text);
+  const _Heading(this.text, {this.trailing});
 
   final String text;
 
+  /// On the right: the idle view's *Clear* and "From receipts…".
+  final Widget? trailing;
+
   @override
-  Widget build(BuildContext context) => Padding(
-    padding: const EdgeInsets.fromLTRB(16, 14, 16, 6),
-    // A heading to a screen reader too, so a learner can move group by group.
-    child: Semantics(
+  Widget build(BuildContext context) {
+    final heading = Semantics(
+      // A heading to a screen reader too, so a learner can move group by
+      // group.
       header: true,
       child: DpText(
         text.toUpperCase(),
@@ -573,8 +673,20 @@ class _Heading extends StatelessWidget {
         letterSpacing: 0.6,
         color: context.tokens.color.textSecondary,
       ),
-    ),
-  );
+    );
+    final trailing = this.trailing;
+    return Padding(
+      padding: EdgeInsets.fromLTRB(16, 14, trailing == null ? 16 : 4, 6),
+      child: trailing == null
+          ? heading
+          : Row(
+              children: <Widget>[
+                Expanded(child: heading),
+                trailing,
+              ],
+            ),
+    );
+  }
 }
 
 /// A group's rows between two hairlines; each row draws the one under it
@@ -600,7 +712,13 @@ class _Framed extends StatelessWidget {
 /// translation, and the word it belongs to with its step. A tap opens that
 /// word.
 class _SentenceRow extends StatelessWidget {
-  const _SentenceRow({required this.sentence, required this.last});
+  const _SentenceRow({
+    required this.sentence,
+    required this.last,
+    required this.onUse,
+  });
+
+  final VoidCallback onUse;
 
   final SentenceHit sentence;
   final bool last;
@@ -619,7 +737,10 @@ class _SentenceRow extends StatelessWidget {
         : '${sentence.article} ${sentence.head}';
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
-      onTap: () => WordRoute.open(context, sentence.wordUid),
+      onTap: () {
+        onUse();
+        WordRoute.open(context, sentence.wordUid);
+      },
       child: Container(
         width: double.infinity,
         padding: const EdgeInsets.fromLTRB(16, 10, 16, 12),
@@ -665,6 +786,173 @@ class _SentenceRow extends StatelessWidget {
               color: tokens.color.textSecondary,
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+/// R1 with nothing typed (#138, the SearchIdle artboards): the last
+/// searches, the learner's own words, and the way to add one.
+class _Idle extends ConsumerWidget {
+  const _Idle({required this.onRecent});
+
+  /// A recent chip tapped: search it again.
+  final ValueChanged<String> onRecent;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
+    final tokens = context.tokens;
+    final recent = ref.watch(recentSearchesProvider);
+    final words = ref.watch(myWordsProvider).value ?? const <MyWord>[];
+
+    return ListView(
+      key: const PageStorageKey<String>('search-idle'),
+      padding: const EdgeInsets.only(bottom: 16),
+      children: <Widget>[
+        if (recent.isNotEmpty) ...<Widget>[
+          _Heading(
+            l10n.searchRecent,
+            // The artboard's Clear ends 28 dp from the edge: the text
+            // button's own 12 inside the heading's 16.
+            trailing: Semantics(
+              label: l10n.searchClearRecentLabel,
+              excludeSemantics: true,
+              button: true,
+              onTap: () =>
+                  unawaited(ref.read(recentSearchesProvider.notifier).clear()),
+              child: Padding(
+                padding: const EdgeInsets.only(right: 12),
+                child: DpButton(
+                  label: l10n.searchClearRecent,
+                  kind: DpButtonKind.text,
+                  expand: false,
+                  onPressed: () => unawaited(
+                    ref.read(recentSearchesProvider.notifier).clear(),
+                  ),
+                ),
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 4),
+            child: Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: <Widget>[
+                for (final term in recent)
+                  DpChip(
+                    label: term,
+                    kind: DpChipKind.filter,
+                    onTap: () => onRecent(term),
+                  ),
+              ],
+            ),
+          ),
+        ],
+        if (words.isNotEmpty) ...<Widget>[
+          _Heading(
+            l10n.searchMyWords(words.length),
+            trailing: Padding(
+              padding: const EdgeInsets.only(right: 12),
+              child: DpText(
+                l10n.searchMyWordsFrom,
+                role: DpTextRole.caption,
+                color: tokens.color.textSecondary,
+              ),
+            ),
+          ),
+          _Framed(
+            children: <Widget>[
+              for (final (index, word) in words.indexed)
+                _MyWordRow(word: word, last: index == words.length - 1),
+            ],
+          ),
+        ],
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+          child: DpButton(
+            label: l10n.searchAddWord,
+            kind: DpButtonKind.secondary,
+            onPressed: () => AddWordRoute.open(context),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+/// One of the learner's own words: "das Pfandflasche", "deposit bottle ·
+/// Rewe receipt · seen 3×", the *My word* chip, and the way to it in R2.
+class _MyWordRow extends StatelessWidget {
+  const _MyWordRow({required this.word, required this.last});
+
+  final MyWord word;
+  final bool last;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final tokens = context.tokens;
+    final where = word.whereSeen?.trim();
+    final line = <String>[
+      word.meaning,
+      if (where != null && where.isNotEmpty) where,
+      // Once is every word; the count says something from the second time.
+      if (word.timesSeen > 1) l10n.searchSeen(word.timesSeen),
+    ].join(' · ');
+
+    return Semantics(
+      button: true,
+      onTap: () => EditCustomWordRoute.open(context, word.id),
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: () => EditCustomWordRoute.open(context, word.id),
+        child: Container(
+          constraints: const BoxConstraints(minHeight: WordRow.height),
+          padding: const EdgeInsets.fromLTRB(16, 4, 8, 4),
+          decoration: BoxDecoration(
+            color: tokens.surface.card,
+            border: last
+                ? null
+                : Border(bottom: BorderSide(color: tokens.surface.outline)),
+          ),
+          child: Row(
+            children: <Widget>[
+              Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    DpHeadword(
+                      word.german,
+                      article: word.article,
+                      role: DpTextRole.bodyLarge,
+                      weight: 600,
+                      maxLines: 1,
+                    ),
+                    const SizedBox(height: 2),
+                    DpText(
+                      line,
+                      role: DpTextRole.label,
+                      weight: 400,
+                      maxLines: 1,
+                      color: tokens.color.textSecondary,
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 10),
+              DpChip(label: l10n.searchMyWord, kind: DpChipKind.status),
+              const SizedBox(width: 4),
+              Icon(
+                Icons.chevron_right,
+                size: 22,
+                color: tokens.color.textSecondary,
+              ),
+            ],
+          ),
         ),
       ),
     );

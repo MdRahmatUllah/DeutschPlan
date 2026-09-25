@@ -234,3 +234,7 @@ stabilitiesOfLearned:
   SELECT stability FROM word_state
   WHERE status <> 'suspended' AND stability > 0
   ORDER BY word_uid;
+
+-- R1's idle (#138): the learner's own words, newest first.
+myWords:
+  SELECT * FROM custom_words ORDER BY created_at DESC, id DESC;
