@@ -6,7 +6,7 @@ last-read: 490
 
 ## Now
 
-#457 in review as PR #465: answer review threads; re-run the gate if main moved, then merge.
+#456 fix(plan): T1's backlog card and T4 still count a word a content update removed (follow-up to #174) — claimed 2026-09-26 00:23.
 
 ## Next
 

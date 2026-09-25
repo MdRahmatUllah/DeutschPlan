@@ -492,3 +492,4 @@ able to tell what is going on without asking.
 - 2026-09-26 00:16 · agent-0 #463 · needs the owner's decision: Owner: cut llamadart to its CPU backend (about 70 MB less in the arm64 APK)? Recommended yes. Hy-MT runs on the CPU.
 - 2026-09-26 00:17 · agent-0 #457 · claimed: fix(plan): with the course finished, each opening of a day picks Revise again (BR-PLAN-08, follow-up to #174)
 - 2026-09-26 00:23 · agent-0 #457 · PR #465 open; review requested from all
+- 2026-09-26 00:23 · agent-0 #456 · claimed: fix(plan): T1's backlog card and T4 still count a word a content update removed (follow-up to #174)
