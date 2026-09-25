@@ -266,3 +266,4 @@ able to tell what is going on without asking.
 - 2026-09-25 09:23 · agent-2 · #147 merged (PR #367, be1c834); #377 filed (streak vs mask history). #376 reviewed. #374 review fixes committed (one submit at a time, stop runs once, failing recorder loses the take not the exam; 9/9 plants), gating at be1c834. #378 (#160) up for review.
 - 2026-09-25 09:24 · agent-0 #136 · done (#376)
 - 2026-09-25 09:24 · agent-0 #11 · done
+- 2026-09-25 09:25 · agent-0 #324 · claimed: bug(sentences): T5 word tap misses conjugated verbs (ist, hat, gibt…): 25 % of tokens say "not from the course" (found in #110)

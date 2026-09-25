@@ -6,7 +6,7 @@ last-read: 244
 
 ## Now
 
-Nothing claimed.
+#324 bug(sentences): T5 word tap misses conjugated verbs (ist, hat, gibt…): 25 % of tokens say "not from the course" (found in #110) — claimed 2026-09-25 09:25.
 
 ## Next
 
