@@ -17,7 +17,6 @@ import 'package:deutschplan/l10n/generated/app_localizations.dart';
 import 'package:deutschplan/services/background_tasks.dart'
     show reminderBodyProvider;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
 import 'package:material_ui/material_ui.dart';
 
 /// M5 · Study days & reminder (`reminder-days.md`, the ReminderDays
@@ -218,11 +217,11 @@ class _ReminderDaysState extends ConsumerState<ReminderDaysScreen> {
   /// every day a study day.
   static String _restNote(BuildContext context, int mask) {
     final l10n = AppLocalizations.of(context);
-    // 1 January 2024 was a Monday: the locale's own weekday names.
-    final weekday = DateFormat.EEEE(Localizations.localeOf(context).toString());
+    // The pills' own full names, so both say the same in both languages.
+    final names = studyWeekdays(l10n);
     final rest = <String>[
       for (var day = 0; day < 7; day++)
-        if (mask & (1 << day) == 0) weekday.format(DateTime(2024, 1, 1 + day)),
+        if (mask & (1 << day) == 0) names[day].$2,
     ];
     if (rest.isEmpty) return l10n.reminderDaysEveryDay;
     final days = rest.length == 1

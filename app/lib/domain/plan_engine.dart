@@ -160,6 +160,12 @@ abstract interface class PlanStore {
   Future<PlanDate?> lastPlannedDate();
   Future<void> setLastPlannedDate(PlanDate date);
 
+  /// The study days [lastPlannedDate]'s day was planned with, or null before
+  /// one was recorded. BR-PLAN-08: that day stays what it was opened as,
+  /// study day or rest day, whatever the mask says since (#147).
+  Future<int?> plannedMask();
+  Future<void> setPlannedMask(int mask);
+
   /// The step after [sublevelCode] in course order, or null at the end of the
   /// course (BR-COURSE-05).
   Future<String?> stepAfter(String sublevelCode);
@@ -440,6 +446,12 @@ class PlanEngine {
     // means Today shows "Step complete" and offers the next one.
     final finished = step == null && await _store.hasEverEnrolled();
 
+    // BR-PLAN-08: the day planned last is what it was planned as; M5's new
+    // study days are tomorrow's.
+    final planned = date == await _store.lastPlannedDate()
+        ? await _store.plannedMask()
+        : null;
+
     return DailyPlan(
       date: date,
       revise: await _store.plannedOn(date, PlanKind.revise),
@@ -449,7 +461,7 @@ class PlanEngine {
       activeStep: step?.sublevelCode,
       nextStep: await _nextStepAfterFinishing(finished),
       stepComplete: finished,
-      isStudyDay: isStudyDay(date, step?.studyDaysMask ?? allDays),
+      isStudyDay: isStudyDay(date, planned ?? step?.studyDaysMask ?? allDays),
       newPaused: _pauseNewWhenBacklog && backlog.isNotEmpty,
     );
   }
@@ -477,7 +489,12 @@ class PlanEngine {
     var step = await _store.activeStep();
     if (step == null) return;
 
-    for (final day in await _daysToPlan(today, step)) {
+    final days = await _daysToPlan(today, step);
+    // BR-PLAN-08: [today] is being planned now, with this mask, and keeps it
+    // for the rest of the day. The pace carries over when a step advances,
+    // so the mask is the same after one.
+    if (days.isNotEmpty) await _store.setPlannedMask(step.studyDaysMask);
+    for (final day in days) {
       // Re-read each turn: `_planDay` may have advanced the step, and the new
       // one carries its own mask.
       final current = step;
