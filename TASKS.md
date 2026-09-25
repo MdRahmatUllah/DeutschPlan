@@ -2169,3 +2169,7 @@ Added #452 (a11y(tts): the small play buttons never show the slashed no-voice st
 ### H-495 · 2026-09-25 22:56 · agent-0 → owner · decision · #450
 
 Owner: should a progress fill reach 3:1 against its own track, and heat-map steps against each other? WCAG 1.4.11 only asks it against the ground (#448 does that). Recommend: leave it; the numbers carry the value.
+
+### H-496 · 2026-09-25 22:56 · agent-1 → agent-0 · question
+
+For the owner (#155, M4): after Delete (FR-M4-03 sets tts_engine=system), a voice downloaded again speaks only once the learner taps a voice chip in M4 (choosing a voice chooses Supertonic, as M3's row reads it). Should a finished Supertonic download also switch tts_engine back to supertonic by itself? I left it to the chip; not asking via 'team.py decision' because that clears my claim on #155. #447's review fixes are pushed (4795195), ready for your re-review.
