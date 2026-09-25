@@ -217,6 +217,49 @@ void main() {
     );
   });
 
+  group('#339 mixed and the meaning language', () {
+    test(
+      "an English-only learner's mixed quiz never asks DE → বাংলা",
+      () async {
+        final words = <QuizWord>[
+          for (var i = 0; i < 6; i++)
+            noun('n$i', 'Wort$i', 'word $i', forms: 'Wörter$i'),
+        ];
+        final quiz =
+            await QuizBuilder(
+              _Store(words, words),
+              notInMixed: const <QuizDirection>{QuizDirection.deBn},
+            ).build(
+              direction: QuizDirection.mixed,
+              source: QuizSource.stepLearned,
+              sourceRef: 'A1.1',
+              length: 6,
+              seed: 7,
+              today: today,
+            );
+        expect(
+          quiz.items.map((i) => i.direction),
+          isNot(contains(QuizDirection.deBn)),
+        );
+        expect(quiz.items, hasLength(6));
+      },
+    );
+
+    test('a Bangla-only one never DE → EN', () {
+      final word = noun('n', 'Tür', 'door');
+      for (var i = 0; i < rotation.length; i++) {
+        expect(
+          mixedDirection(
+            i,
+            word,
+            skip: const <QuizDirection>{QuizDirection.deEn},
+          ),
+          isNot(QuizDirection.deEn),
+        );
+      }
+    });
+  });
+
   group('BR-QUIZ-01 selection', () {
     test('the length, or fewer when fewer words qualify', () async {
       expect((await build(twelve, length: 10)).items, hasLength(10));
@@ -317,6 +360,48 @@ void main() {
 
   group('distractors', () {
     String english(QuizWord w) => w.english;
+
+    test('#339 a Bangla tile never reads as the answer: "সাজানো" is not '
+        'offered beside "সাজানো (ঘর)"', () {
+      String bangla(QuizWord w) => w.bangla ?? '';
+      final answer = verb(
+        'einrichten',
+        'einrichten',
+        'to furnish',
+      ).copyBangla('সাজানো (ঘর)');
+      final pool = <QuizWord>[
+        answer,
+        verb('schmuecken', 'schmücken', 'to decorate').copyBangla('সাজানো'),
+        verb('a', 'gehen', 'to go').copyBangla('যাওয়া'),
+        verb('b', 'kommen', 'to come').copyBangla('আসা'),
+        verb('c', 'essen', 'to eat').copyBangla('খাওয়া'),
+      ];
+      for (var seed = 0; seed < 20; seed++) {
+        expect(
+          distractors(answer, pool, bangla, Random(seed)),
+          isNot(contains('সাজানো')),
+        );
+      }
+    });
+
+    test('#339 two qualified meanings stay apart, the test itself', () {
+      String bangla(QuizWord w) => w.bangla ?? '';
+      final answer = noun(
+        'dich',
+        'dich',
+        'you',
+      ).copyBangla('তোমাকে (accusative)');
+      final pool = <QuizWord>[
+        answer,
+        noun('dir', 'dir', 'you (dat.)').copyBangla('তোমাকে (dative)'),
+        noun('x', 'x', 'x').copyBangla('এক'),
+        noun('y', 'y', 'y').copyBangla('দুই'),
+      ];
+      expect(
+        distractors(answer, pool, bangla, Random(1)),
+        contains('তোমাকে (dative)'),
+      );
+    });
 
     test('three, the same part of speech and step first', () {
       final answer = noun('a', 'Tür', 'door');
@@ -643,4 +728,21 @@ class _Store implements QuizStore {
   @override
   Future<List<QuizWord>> stepWords(String step) async =>
       _pool.where((w) => w.step == step).toList();
+}
+
+extension on QuizWord {
+  /// This word with another Bangla meaning.
+  QuizWord copyBangla(String bangla) => QuizWord(
+    uid: uid,
+    german: german,
+    english: english,
+    step: step,
+    article: article,
+    pos: pos,
+    bangla: bangla,
+    forms: forms,
+    synonyms: synonyms,
+    stability: stability,
+    lastReview: lastReview,
+  );
 }
