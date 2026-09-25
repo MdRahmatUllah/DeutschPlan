@@ -123,6 +123,13 @@ class RecentSearches extends _$RecentSearches {
   }
 }
 
+/// How many words the course has, for R1's no-results page (#139). R1
+/// holds it from the start: read afresh on each such page, the sentence
+/// without a count showed until it came.
+@riverpod
+Future<int?> courseWords(Ref ref) =>
+    ref.watch(searchRepositoryProvider).courseWords();
+
 /// R1's idle *My words* (#138): the learner's own words, newest first.
 @riverpod
 Stream<List<MyWord>> myWords(Ref ref) =>
@@ -165,9 +172,13 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   /// not drop to the web row and lose its scroll between keystrokes.
   SearchView? _last;
 
+  /// [courseWordsProvider], held for as long as the tab lives.
+  late final ProviderSubscription<AsyncValue<int?>> _courseWords;
+
   @override
   void initState() {
     super.initState();
+    _courseWords = ref.listenManual(courseWordsProvider, (_, _) {});
     _step = widget.step;
   }
 
@@ -180,6 +191,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
 
   @override
   void dispose() {
+    _courseWords.close();
     _debounce?.cancel();
     _field.dispose();
     super.dispose();
@@ -305,10 +317,14 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
             onRemoveStep: () => context.jumpToTab(const SearchRoute()),
           ),
           Expanded(
-            // ponytail: the no-results page is #139; until then a query with
-            // no results shows the web row alone.
             child: query.isEmpty
                 ? _Idle(onRecent: _searchFor)
+                // The course lacks it (#139): this query's own answer, not
+                // the last one shown while it loads, or "Hausx" to "Haus"
+                // flashes "Not in the course". Kept to L2's step, an empty
+                // result says nothing about the course, so it stays a list.
+                : (results?.value?.isEmpty ?? false) && _step == null
+                ? _NoResults(query: query, onUse: _use)
                 : results != null && results.hasError && view == null
                 ? Center(
                     child: Padding(
@@ -968,4 +984,136 @@ class _MyWordRow extends StatelessWidget {
       ),
     );
   }
+}
+
+/// R1 when the course has nothing like the query (#139, the SearchNone
+/// artboards): what that means, the web a tap away, and the word kept as the
+/// learner's own.
+class _NoResults extends ConsumerWidget {
+  const _NoResults({required this.query, required this.onUse});
+
+  final String query;
+
+  /// A web chip or the button: the search committed to (FR-R1-04).
+  final VoidCallback onUse;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
+    final tokens = context.tokens;
+    final words = ref.watch(courseWordsProvider).value;
+    final links = SearchRepository.webLinks(query);
+
+    return ListView(
+      key: const PageStorageKey<String>('search-none'),
+      padding: const EdgeInsets.fromLTRB(24, 32, 24, 24),
+      children: <Widget>[
+        Center(
+          child: ExcludeSemantics(
+            child: CustomPaint(
+              size: const Size(140, 110),
+              painter: _NotFound(
+                ink: tokens.color.ink,
+                fill: tokens.surface.muted,
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(height: 14),
+        Semantics(
+          header: true,
+          child: DpText(
+            l10n.searchNoneTitle,
+            role: DpTextRole.title,
+            textAlign: TextAlign.center,
+          ),
+        ),
+        const SizedBox(height: 14),
+        DpText(
+          words == null
+              ? l10n.searchNoneBodyNoCount
+              : l10n.searchNoneBody(words),
+          role: DpTextRole.caption,
+          textAlign: TextAlign.center,
+          color: tokens.color.textSecondary,
+        ),
+        const SizedBox(height: 18),
+        // FR-R1-06, bigger than the row above a list: here the web is the
+        // answer.
+        Wrap(
+          alignment: WrapAlignment.center,
+          spacing: 8,
+          runSpacing: 8,
+          children: <Widget>[
+            for (final source in WebSource.values)
+              DpChip(
+                label: source.label,
+                kind: DpChipKind.webLink,
+                large: true,
+                semanticLabel: l10n.searchOpenWeb(source.label),
+                onTap: () {
+                  onUse();
+                  unawaited(ref.read(openWebProvider)(links[source]!));
+                },
+              ),
+          ],
+        ),
+        const SizedBox(height: 28),
+        DpButton(
+          label: l10n.searchNoneAdd(query),
+          onPressed: () {
+            onUse();
+            AddWordRoute.open(context, german: query);
+          },
+        ),
+        const SizedBox(height: 14),
+        DpText(
+          l10n.searchNoneFootnote,
+          role: DpTextRole.caption,
+          textAlign: TextAlign.center,
+          color: tokens.color.textSecondary,
+        ),
+      ],
+    );
+  }
+}
+
+/// SearchNone's magnifier: an Oat lens, its handle, and two dotted lines for
+/// a face that found nothing.
+class _NotFound extends CustomPainter {
+  const _NotFound({required this.ink, required this.fill});
+
+  final Color ink;
+  final Color fill;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    // The artboard's 140 × 110 viewBox, scaled to [size].
+    canvas.scale(size.width / 140, size.height / 110);
+    final stroke = Paint()
+      ..color = ink
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 3
+      ..strokeCap = StrokeCap.round;
+    canvas
+      ..drawCircle(const Offset(60, 48), 30, Paint()..color = fill)
+      ..drawCircle(const Offset(60, 48), 30, stroke)
+      ..drawLine(const Offset(82, 70), const Offset(112, 100), stroke);
+    // Dashes 2 long, 8 apart, as `stroke-dasharray="2 6"` with round caps.
+    for (final (from, to, y) in <(double, double, double)>[
+      (48, 72, 44),
+      (52, 68, 56),
+    ]) {
+      for (var x = from; x < to; x += 8) {
+        canvas.drawLine(
+          Offset(x, y),
+          Offset(x + 2 > to ? to : x + 2, y),
+          stroke,
+        );
+      }
+    }
+  }
+
+  @override
+  bool shouldRepaint(_NotFound old) => old.ink != ink || old.fill != fill;
 }

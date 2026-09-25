@@ -612,6 +612,90 @@ void main() {
     });
   });
 
+  group('#139 not in the course', () {
+    testWidgets('says so, with the course\'s word count from meta', (
+      tester,
+    ) async {
+      await pump(tester);
+      await type(tester, 'Fahrrad');
+      expect(find.text(l10n.searchNoneTitle), findsOneWidget);
+      // The content fixture's meta.word_count.
+      expect(find.text(l10n.searchNoneBody(3)), findsOneWidget);
+      expect(find.text(l10n.searchNoneFootnote), findsOneWidget);
+    });
+
+    testWidgets('FR-R1-06 BR-PRIV-01 each web chip opens its page, and the '
+        'app itself asks nothing of the web', (tester) async {
+      await pump(tester);
+      await type(tester, 'Fahrrad');
+      for (final source in WebSource.values) {
+        await tester.tap(
+          find.bySemanticsLabel(l10n.searchOpenWeb(source.label)),
+        );
+        await tester.pump();
+      }
+      expect(opened, <Uri>[
+        for (final source in WebSource.values)
+          SearchRepository.webLinks('Fahrrad')[source]!,
+      ]);
+    });
+
+    testWidgets('Add "…" as my word opens R2 with the word filled in, and '
+        'remembers the search', (tester) async {
+      await pump(tester, routed: true);
+      await type(tester, 'Fahrrad');
+      await tester.tap(find.text(l10n.searchNoneAdd('Fahrrad')));
+      await settle(tester);
+      expect(router!.state.uri.path, '/search/add');
+      expect(router!.state.uri.queryParameters['german'], 'Fahrrad');
+      expect(settings.read(SettingKeys.recentSearches), contains('Fahrrad'));
+    });
+
+    testWidgets('a query that loads never shows the "Not in the course" '
+        'of the one before', (tester) async {
+      await pump(
+        tester,
+        extra: <Override>[
+          // "Fahrrad" answers with nothing; "Haus" is still loading.
+          searchResultsProvider.overrideWith(
+            (ref, args) => args.$1 == 'Fahrrad'
+                ? Stream.value(
+                    const SearchView(
+                      words: <SearchRow>[],
+                      sentences: <SentenceHit>[],
+                    ),
+                  )
+                : const Stream<SearchView>.empty(),
+          ),
+        ],
+      );
+      await type(tester, 'Fahrrad');
+      expect(find.text(l10n.searchNoneTitle), findsOneWidget);
+      await type(tester, 'Haus');
+      expect(find.text(l10n.searchNoneTitle), findsNothing);
+      expect(find.text(l10n.searchNoneAdd('Haus')), findsNothing);
+    });
+
+    testWidgets('#314 at 200 % text the page and its long button fit', (
+      tester,
+    ) async {
+      textAt(tester, 2);
+      await pump(tester);
+      await type(tester, 'Wohnungsgeberbestaetigung');
+      expect(find.text(l10n.searchNoneTitle), findsOneWidget);
+      expect(tester.takeException(), isNull, reason: 'something overflowed');
+      expectNothingClipped(tester, within: find.byType(ListView).last);
+    });
+
+    testWidgets("with L2's step an empty result isn't the course's: it "
+        'stays a list', (tester) async {
+      await pump(tester, step: 'A1.2', routed: true);
+      await type(tester, 'Haus');
+      expect(find.text(l10n.searchNoneTitle), findsNothing);
+      expect(find.bySemanticsLabel(l10n.searchOpenWeb('Duden')), findsOne);
+    });
+  });
+
   group('FR-R1-07 filter chips', () {
     List<Override> many(int count, {String Function(int)? step}) => <Override>[
       searchResultsProvider.overrideWith(

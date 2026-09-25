@@ -1,4 +1,5 @@
 import 'package:deutschplan/core/providers/app_providers.dart';
+import 'package:deutschplan/data/repositories/search_repository.dart';
 import 'package:deutschplan/data/repositories/word_repository.dart';
 import 'package:deutschplan/features/search/search_screen.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -41,5 +42,31 @@ void main() {
       ttsProvider.overrideWithValue(FakeTts()),
     ],
     builder: (_) => const SearchScreen(),
+  );
+
+  // #139: the SearchNone artboard's "Wohnungsgeberbestätigung", not in the
+  // course's 5,594 words.
+  goldenTest(
+    'search_none',
+    overrides: [
+      searchResultsProvider.overrideWith(
+        (ref, query) => Stream.value(
+          const SearchView(words: <SearchRow>[], sentences: <SentenceHit>[]),
+        ),
+      ),
+      courseWordsProvider.overrideWith((ref) async => 5594),
+      recentSearchesProvider.overrideWith(() => StubRecentSearches(const [])),
+      myWordsProvider.overrideWith((ref) => Stream.value(const <MyWord>[])),
+      ttsProvider.overrideWithValue(FakeTts()),
+    ],
+    builder: (_) => const SearchScreen(),
+    act: (tester) async {
+      await tester.enterText(
+        find.byType(TextField),
+        'Wohnungsgeberbestätigung',
+      );
+      await tester.pump(SearchScreen.debounce);
+      await tester.pumpAndSettle();
+    },
   );
 }
