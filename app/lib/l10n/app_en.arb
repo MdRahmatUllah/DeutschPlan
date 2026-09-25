@@ -3918,7 +3918,7 @@
   },
   "reminderBody": "Today's plan is ready. A few minutes is enough.",
   "@reminderBody": {
-    "description": "The daily reminder's text until #158 builds it from the plan."
+    "description": "The daily reminder's text: before reminder_compose writes it from the plan, and when nothing is due but the learner wants the reminder anyway."
   },
   "reminderChannel": "Daily reminder",
   "@reminderChannel": {

@@ -16,6 +16,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart' show Locale;
+import 'package:sqlite3/sqlite3.dart' show sqlite3;
 
 import '../data/reminder_scheduler_test.dart' show FakeReminders, FakeWork;
 import '../db/content_fixture.dart';
@@ -75,6 +76,40 @@ void main() {
         untilPregenerate(DateTime(2026, 9, 22, 0, 5)),
         const Duration(days: 1),
       );
+    });
+  });
+
+  group('a task never migrates', () {
+    late Directory directory;
+    late File file;
+
+    setUp(() async {
+      directory = Directory.systemTemp.createTempSync('deutschplan_schema');
+      file = File('${directory.path}/user.sqlite');
+      final db = AppDatabase(DatabaseConnection(NativeDatabase(file)));
+      await db.customSelect('SELECT 1').get();
+      await db.close();
+    });
+
+    tearDown(() => directory.deleteSync(recursive: true));
+
+    test("a file at this build's schema is opened", () {
+      expect(atCurrentSchema(file), isTrue);
+    });
+
+    test('an older one is left, untouched, for the app to migrate', () {
+      final raw = sqlite3.open(file.path)
+        ..userVersion = AppDatabase.latestSchemaVersion - 1;
+      raw.close();
+
+      expect(atCurrentSchema(file), isFalse);
+      final after = sqlite3.open(file.path);
+      addTearDown(after.close);
+      expect(after.userVersion, AppDatabase.latestSchemaVersion - 1);
+    });
+
+    test('no file: nothing to open', () {
+      expect(atCurrentSchema(File('${directory.path}/none.sqlite')), isFalse);
     });
   });
 

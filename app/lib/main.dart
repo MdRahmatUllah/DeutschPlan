@@ -19,6 +19,7 @@ import 'package:deutschplan/core/theme/glass_capability.dart';
 import 'package:deutschplan/core/theme/theme_mode.dart';
 import 'package:deutschplan/data/repositories/setting_keys.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
+import 'package:deutschplan/l10n/ui_language_locale.dart';
 import 'package:deutschplan/router/app_router.dart';
 import 'package:deutschplan/router/deep_links.dart';
 import 'package:deutschplan/services/background_tasks.dart';
@@ -37,6 +38,8 @@ import 'package:flutter_localizations/flutter_localizations.dart'
     show GlobalWidgetsLocalizations;
 
 import 'dart:ui' show PlatformDispatcher;
+
+export 'package:deutschplan/l10n/ui_language_locale.dart';
 
 /// Entry point.
 ///
@@ -250,15 +253,6 @@ Widget appFor(BootstrapResult result) => switch (result) {
 
 /// Supported UI languages, English first — see `supportedLocales` in [DeutschPlanApp].
 const List<Locale> supportedLocales = <Locale>[Locale('en'), Locale('bn')];
-
-/// The locale for each app language. `UiLanguage` lives in the data layer,
-/// which knows nothing of Flutter, so the mapping lives here.
-extension UiLanguageLocale on UiLanguage {
-  Locale get locale => switch (this) {
-    UiLanguage.english => const Locale('en'),
-    UiLanguage.bangla => const Locale('bn'),
-  };
-}
 
 /// The delegates every `MaterialApp` here takes — not gen_l10n's own list.
 ///

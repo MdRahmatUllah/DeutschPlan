@@ -1,4 +1,4 @@
-import 'dart:io' show Platform;
+import 'dart:io' show File, Platform;
 
 import 'package:deutschplan/core/providers/app_providers.dart';
 import 'package:deutschplan/data/db/app_database.dart';
@@ -9,11 +9,13 @@ import 'package:deutschplan/data/repositories/settings_repository.dart';
 import 'package:deutschplan/features/today/today_providers.dart';
 import 'package:deutschplan/features/today/today_view.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
-import 'package:deutschplan/main.dart' show UiLanguageLocale;
+import 'package:deutschplan/l10n/ui_language_locale.dart';
 import 'package:deutschplan/services/background_work.dart';
 import 'package:deutschplan/services/reminder_notifications.dart';
 import 'package:flutter/foundation.dart' show debugPrint;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:sqlite3/sqlite3.dart' show OpenMode, sqlite3;
 import 'package:workmanager/workmanager.dart';
 
 /// The reminder's plain words, in [language]: what it says until
@@ -63,6 +65,11 @@ Future<void> startBackgroundWork(BackgroundWork work, DateTime now) async {
 ///
 /// Each one-off queues its next run last: on Android that replaces the run
 /// in progress, which has nothing left to do by then.
+///
+/// ponytail: "nothing" but the database's close, which the stopped engine
+/// may skip; WAL recovers a connection left open, so nothing is lost.
+/// Queue the next run after `withBackgroundDatabase` if the close ever
+/// matters.
 Future<void> runBackgroundTask(
   BackgroundTask task,
   ProviderContainer container, {
@@ -222,6 +229,22 @@ void backgroundDispatcher() {
   });
 }
 
+/// Whether user.db at [file] is at this build's schema, read without drift.
+///
+/// A task never migrates: after an update the app does it at its next
+/// start, and a task that opened the file first would run the migration on
+/// a connection of its own, beside an app that may start and run it too.
+/// Tonight's task skips, and tomorrow's finds the file migrated.
+bool atCurrentSchema(File file) {
+  if (!file.existsSync()) return false;
+  final db = sqlite3.open(file.path, mode: OpenMode.readOnly);
+  try {
+    return db.userVersion == AppDatabase.latestSchemaVersion;
+  } finally {
+    db.close();
+  }
+}
+
 /// user.db with the course attached and the settings loaded: what a task
 /// needs of `bootstrap`, without the router, the theme or a course install.
 ///
@@ -231,6 +254,12 @@ void backgroundDispatcher() {
 Future<void> withBackgroundDatabase(
   Future<void> Function(ProviderContainer container) run,
 ) async {
+  // drift_flutter's file for `AppDatabase.open`'s name, `user`.
+  final support = await getApplicationSupportDirectory();
+  if (!atCurrentSchema(File('${support.path}/user.sqlite'))) {
+    debugPrint('background: user.db is not at this schema; left for the app');
+    return;
+  }
   final db = AppDatabase.open(shared: false);
   try {
     final content = ContentDao(db);
