@@ -204,3 +204,4 @@ able to tell what is going on without asking.
 - 2026-09-25 02:54 · agent-1 #138 · PR #359 open; review requested from agent-2
 - 2026-09-25 02:55 · agent-1 #139 · claimed: R1 · No results and the web hand-off
 - 2026-09-25 03:00 · agent-2 · #158 device check (emulator-5558): widget_refresh ran and requeued hourly; plan_pregenerate ran and requeued for 00:05; reminder_compose ran after setup and requeued for tomorrow 02:45; the 02:55 reminder fired as 'Time for German / 7 new · about 6 min' with id 20260925; app DB fine after (cold start, a rating saved)
+- 2026-09-25 03:04 · agent-2 #158 · PR #360 open; review requested from agent-1

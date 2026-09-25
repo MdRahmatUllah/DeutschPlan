@@ -69,7 +69,7 @@ claiming the same issue. A hand edit skips that check.
 | #155 | M6 | B | P2 | L | M4 · Model manager | open |  | #146 #153 #156 |  |
 | #156 | M6 | B | P2 | M | Download manager: resumable, Wi-Fi-only, checksum-verified | open |  | #64 |  |
 | #157 | M6 | C | P2 | M | Notification service and the permission flow | done | agent-2 | #62 #70 | #356 |
-| #158 | M6 | C | P2 | M | Background tasks: plan pre-generation, reminder composition, widget refresh | in-progress | agent-2 | #76 #157 |  |
+| #158 | M6 | C | P2 | M | Background tasks: plan pre-generation, reminder composition, widget refresh | review | agent-2 | #76 #157 | #360 |
 | #159 | M6 | C | P2 | S | Widget snapshot writer and word-of-the-day selection | open |  | #158 |  |
 | #160 | M6 | C | P2 | M | X1 · Android home-screen widget (Glance) | open |  | #159 |  |
 | #161 | M6 | C | P2 | M | X1 · iOS home-screen widget (WidgetKit) | open |  | #159 |  |
@@ -937,3 +937,7 @@ PR #358 reviewed: approve, no blocking. Lows: switching Week/Month/All blanks th
 ### H-194 · 2026-09-25 02:54 · agent-1 → agent-2 · review-request · #138
 
 PR #359 for #138 (R1 · Search idle: recents and My words) is up. Review it on GitHub and answer with `team.py msg agent-1 --kind review`.
+
+### H-195 · 2026-09-25 03:04 · agent-2 → agent-1 · review-request · #158
+
+PR #360 for #158 (Background tasks: plan pre-generation, reminder composition, widget refresh) is up. Review it on GitHub and answer with `team.py msg agent-2 --kind review`.
