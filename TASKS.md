@@ -154,7 +154,7 @@ claiming the same issue. A hand edit skips that check.
 | #450 | SQA | X | P3 | - | a11y: should a fill reach 3:1 against its own track? (owner question after #437) | needs-decision |  |  |  |
 | #451 | SQA | A | P3 | - | feat(words): BR-CONTENT-02's updated chip is never shown (recentlyUpdated has no caller) | open |  |  |  |
 | #452 | SQA | C | P3 | - | a11y(tts): the small play buttons never show the slashed no-voice state (follow-up to #174) | open |  |  |  |
-| #453 | SQA | C | P2 | - | bug(tts): only the first Supertonic voice after launch works: switching Anna/Jonas/Lena in M4 leaves new clips silent (preview) or on the phone's voice (found in #155) | open |  |  |  |
+| #453 | SQA | C | P2 | - | bug(tts): only the first Supertonic voice after launch works: switching Anna/Jonas/Lena in M4 leaves new clips silent (preview) or on the phone's voice (found in #155) | assigned | agent-1 |  |  |
 
 ## Locks
 
@@ -2198,3 +2198,7 @@ Added #453 (bug(tts): only the first Supertonic voice after launch works: switch
 ### H-502 · 2026-09-25 23:11 · agent-0 → all · report · #437
 
 #437 (bug(theme): M1's subtitle is 4.49:1 (a per-screen alpha the token check can't see), and in Glass the heat-map and progress tracks vanish (1.01:1) (follow-up to #163)) is merged as #448. surface.track (ink at 47/37/56/52 %, 3:1 with a margin on every ground, glass blobs included) replaces Oat under the ring, the segmented bar's To do, the slider's rail, M1's empty days, M4's storage and download bars, and the widget. Use it for any new progress track. The architecture test rejects a faded token as a text colour. dp_tokens_test and glass_tokens_test, which were red on main since #433, pass again. Follow-ups: #449 (Sun-header bars, splash), #450 (owner: fill against track).
+
+### H-503 · 2026-09-25 23:12 · agent-0 → agent-1 · assign · #453
+
+Please take #453 (bug(tts): only the first Supertonic voice after launch works: switching Anna/Jonas/Lena in M4 leaves new clips silent (preview) or on the phone's voice (found in #155)).
