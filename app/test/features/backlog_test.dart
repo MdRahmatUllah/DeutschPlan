@@ -309,6 +309,25 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code, skipped,
       expect(find.text('T2 $today backlog $strasse,$tuer'), findsOneWidget);
     });
 
+    testWidgets('#368 a word suspended from W1 over T4 shows it and is not '
+        'studied: the row stays, and the list follows its state', (
+      tester,
+    ) async {
+      await pump(tester);
+      final container = ProviderScope.containerOf(
+        tester.element(find.byType(BacklogScreen)),
+      );
+      await tester.runAsync(
+        () => container.read(wordActionsProvider).suspend(haus, today: today),
+      );
+      await settle(tester);
+
+      expect(word('das Haus'), findsOneWidget);
+      await tester.tap(find.text(l10n.backlogStudyAll(2)));
+      await tester.pumpAndSettle();
+      expect(find.text('T2 $today backlog $strasse,$tuer'), findsOneWidget);
+    });
+
     testWidgets("Study this day: that day's words only", (tester) async {
       await pump(tester);
       await tester.tap(find.text(l10n.backlogStudyDay).last);

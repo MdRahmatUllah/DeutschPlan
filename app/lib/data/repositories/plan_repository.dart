@@ -330,6 +330,24 @@ class PlanRepository {
   /// *is* the backlog. A second table would be a second truth.
   Stream<List<PlanItem>> watchBacklog(String today) => _backlog(today).watch();
 
+  /// [watchBacklog], again when one of its words' state changes: T4 shows
+  /// each word's status and studies only the unsuspended ones, and a word
+  /// suspended from W1 over it keeps its row (#368). The join is only there
+  /// to be watched. Today's count needs no more than the rows.
+  Stream<List<PlanItem>> watchBacklogWithStates(String today) => _backlog(today)
+      .join(<Join<HasResultSet, dynamic>>[
+        leftOuterJoin(
+          _db.wordState,
+          _db.wordState.wordUid.equalsExp(_db.planItems.wordUid),
+        ),
+      ])
+      .watch()
+      .map(
+        (rows) => <PlanItem>[
+          for (final row in rows) row.readTable(_db.planItems),
+        ],
+      );
+
   /// [watchBacklog], once: what a backlog session starts from.
   Future<List<PlanItem>> backlog(String today) => _backlog(today).get();
 
