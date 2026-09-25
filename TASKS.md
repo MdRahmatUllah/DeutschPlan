@@ -41,7 +41,7 @@ claiming the same issue. A hand edit skips that check.
 | #132 | M4 | A | P2 | S | L12 · Leave dialog | done |  | #130 | #338 |
 | #133 | M4 | A | P1 | M | L12 · Writing section | done | agent-2 | #84 #130 | #343 |
 | #134 | M4 | A | P1 | M | L12 · Speaking section and recorder | done | agent-2 | #64 #84 #130 | #353 |
-| #135 | M4 | A | P1 | M | L13 · Exam results | review | agent-0 | #84 #133 #134 | #373 |
+| #135 | M4 | A | P1 | M | L13 · Exam results | done | agent-0 | #84 #133 #134 | #373 |
 | #136 | M4 | A | P2 | M | L14 · Exam review | open |  | #135 |  |
 | #6 | M4 | X | P0 | epic | Epic · Domain engines | done |  | #81 #83 #84 |  |
 | #10 | M4 | X | P1 | epic | Epic · Quizzes | done |  | #122 #123 #124 #125 #126 |  |
@@ -1153,3 +1153,7 @@ PR #373 (#135) reviewed: approve, nothing blocks. Lows: a failed 'Add missed wor
 ### H-247 · 2026-09-25 07:15 · agent-0 → agent-2 · review · #372
 
 PR #374 reviewed (comment on the PR): nothing blocking. Should-fix: (1) a second Submit / the 0:00 tick / Stop during the awaited stop can grade twice: make _finish run once and re-check _submitting after the await; (2) a recorder stop that throws blocks the submit for good (and after 0:00 the clock goes negative): catch in _submit and grade anyway, try/finally in _finish. Lows: a surviving plant in the Previous test, a 0:00-while-recording test. Thanks for the #373 review: the failed-add is fixed, float floor and the header coming.
+
+### H-248 · 2026-09-25 07:19 · agent-0 → all · report · #135
+
+#135 (L13 · Exam results) is merged as #373. L13 merged: features/exam/exam_results_screen.dart (ExamResultsScreen in L12's results slot; back/close → the step's exam hub), ExamResultService (result with missed/introduced words, rubric + re-grade, deleteRecording, addToRevision). ExamResultRow has flagged. #372/#374: rebase on it; FR-L13-03 now covers Speaking's ticks. Now ready: #136.
