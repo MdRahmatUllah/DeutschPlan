@@ -907,6 +907,74 @@ void main() {
       }
     });
 
+    testWidgets('#432 the typed confirm scrolls above the keyboard at 200 %: '
+        'the field in view, the actions clear of it', (tester) async {
+      // agent-3's phone: 411 × 731 dp, the keyboard up as the field opens.
+      tester.view
+        ..physicalSize = const Size(411, 731) * 3
+        ..devicePixelRatio = 3;
+      addTearDown(tester.view.reset);
+      const keyboard = 300.0;
+      const above = 731 - keyboard;
+      for (final chrome in AdaptiveChrome.values) {
+        await tester.pumpWidget(
+          MaterialApp(
+            theme: AppTheme.light(),
+            // Over the navigator, so the dialog's route has it too.
+            builder: (context, child) => MediaQuery(
+              data: MediaQuery.of(context).copyWith(
+                textScaler: const TextScaler.linear(2),
+                viewInsets: const EdgeInsets.only(bottom: keyboard),
+              ),
+              child: child!,
+            ),
+            home: AdaptiveChromeScope(
+              chrome: chrome,
+              child: Scaffold(
+                body: Builder(
+                  builder: (context) => TextButton(
+                    onPressed: () => Adaptive.showTypedConfirm(
+                      context: context,
+                      title: 'Reset everything?',
+                      message:
+                          'Your progress, your words, your exams and your '
+                          'settings are deleted. The downloaded models stay. '
+                          'Type RESET to confirm.',
+                      word: 'RESET',
+                      confirmLabel: 'Reset',
+                      cancelLabel: 'Cancel',
+                    ),
+                    child: const Text('Open'),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
+        await tester.tap(find.text('Open'));
+        await tester.pumpAndSettle();
+
+        final field = tester.getRect(find.byType(EditableText));
+        expect(field.top, greaterThanOrEqualTo(0), reason: '$chrome');
+        expect(
+          field.bottom,
+          lessThanOrEqualTo(above),
+          reason: '$chrome: the field is under the keyboard',
+        );
+        for (final action in <String>['Cancel', 'Reset']) {
+          final rect = tester.getRect(find.text(action));
+          expect(
+            rect.overlaps(field),
+            isFalse,
+            reason: '$chrome: $action is over the field',
+          );
+          expect(rect.bottom, lessThanOrEqualTo(above), reason: '$chrome');
+        }
+        await tester.tap(find.text('Cancel'));
+        await tester.pumpAndSettle();
+      }
+    });
+
     // accessibility-performance.md: text 4.5:1 in all three modes. The
     // colours are read off what is drawn, not off the theme, so a style that
     // overrides the theme is caught too.

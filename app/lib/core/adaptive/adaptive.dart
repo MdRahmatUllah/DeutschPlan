@@ -1105,9 +1105,12 @@ class _TypedConfirmState extends State<_TypedConfirm> {
   Widget build(BuildContext context) {
     final tokens = context.tokens;
     // The app's font, not the system's: the artboards draw the alert in it,
-    // as every DpText is. The action keeps its own colour and size.
+    // as every DpText is, with its Bangla behind it — "বাতিল" was tofu
+    // (#432). The action keeps its own colour and size.
+    final app = DpText.styleFor(tokens, DpTextRole.body);
     final font = TextStyle(
-      fontFamily: DpText.styleFor(tokens, DpTextRole.body).fontFamily,
+      fontFamily: app.fontFamily,
+      fontFamilyFallback: app.fontFamilyFallback,
     );
     final typed = ValueListenableBuilder<TextEditingValue>(
       valueListenable: _typed,
@@ -1187,6 +1190,10 @@ class _TypedConfirmState extends State<_TypedConfirm> {
       borderSide: BorderSide(color: tokens.color.ink),
     );
     return AlertDialog(
+      // The title, the message and the field scroll above the keyboard, the
+      // actions under them: at 200 % or in Bangla they are taller than the
+      // room the keyboard leaves (#432). Cupertino's alert scrolls already.
+      scrollable: true,
       title: DpText(widget.title, role: DpTextRole.title),
       // A field has no width of its own: without a bound the dialog would
       // cross a tablet. Material's dialogs keep to 560 dp.
