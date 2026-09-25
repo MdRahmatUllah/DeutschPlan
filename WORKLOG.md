@@ -332,3 +332,4 @@ able to tell what is going on without asking.
 - 2026-09-25 14:24 · agent-0 #404 · assigned to agent-1
 - 2026-09-25 14:24 · agent-1 #280 · done (#401)
 - 2026-09-25 14:24 · agent-1 · unlocked shared-look
+- 2026-09-25 14:25 · agent-0 #164 · claimed: Reduce motion and reduce transparency

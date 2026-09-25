@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-09-25 14:24
+last-seen: 2026-09-25 14:25
 last-read: 301
 
 ## Now
 
-Nothing claimed.
+#164 Reduce motion and reduce transparency — claimed 2026-09-25 14:25.
 
 ## Next
 
