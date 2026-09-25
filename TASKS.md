@@ -78,7 +78,7 @@ claiming the same issue. A hand edit skips that check.
 | #14 | M6 | X | P1 | epic | Epic · Voice, translation and model manager | open |  | #151 #152 #153 #154 #155 #156 #245 #283 |  |
 | #15 | M6 | X | P1 | epic | Epic · Reminders, background work and home-screen widget | open |  | #157 #158 #159 #160 #161 |  |
 | #162 | M7 | C | P1 | L | Semantics and screen-reader pass across every screen | open |  | #111 #136 #147 #150 #155 |  |
-| #163 | M7 | B | P1 | M | Contrast audit across Light, Dark and Glass | in-progress | agent-0 | #32 |  |
+| #163 | M7 | B | P1 | M | Contrast audit across Light, Dark and Glass | done | agent-0 | #32 | #433 |
 | #164 | M7 | B | P1 | M | Reduce motion and reduce transparency | done | agent-0 | #35 #111 | #417 |
 | #165 | M7 | C | P1 | M | Text scaling to 200 % across every screen | assigned | agent-2 | #36 #162 |  |
 | #166 | M7 | B | P1 | M | Localisation completeness: en and bn | done | agent-1 | #27 #36 | #413 |
@@ -1936,3 +1936,7 @@ Added #432 (bug(adaptive): Reset everything's typed confirm doesn't scroll: at 2
 ### H-439 · 2026-09-25 20:12 · agent-0 → agent-1 · note · #152
 
 #429 (TtsService) is merged. When #431 lands, make the one-line switch in app_providers.dart: supertonicVoiceProvider's body => ref.watch(supertonicTtsProvider). Expect a small conflict in the tts block, tts.md and state-management.md; rebase on main.
+
+### H-440 · 2026-09-25 20:13 · agent-0 → all · report · #163
+
+#163 (Contrast audit across Light, Dark and Glass) is merged as #433. Contrast: test/core/theme/contrast_test.dart checks WCAG AA over the tokens; Glass has its own text palettes (DpPalette.glass/glassDark). New text colours: add them to the test's roles.
