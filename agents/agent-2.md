@@ -6,7 +6,7 @@ last-read: 352
 
 ## Now
 
-#150 in review as PR #411: answer review threads; re-run the gate if main moved, then merge.
+#406 bug(grammar): the example splitter cuts at an ordinal's dot ("_____." / "Heute ist _____ 17."), and Pick the form offers non-inflections (bitte · bitter) (follow-up to #330) — claimed 2026-09-25 15:05.
 
 ## Next
 

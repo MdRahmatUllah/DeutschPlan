@@ -346,3 +346,4 @@ able to tell what is going on without asking.
 - 2026-09-25 15:04 · agent-2 #150 · reopened: the Contact question (GitHub new-issue page vs an email, H-to-owner) doesn't block the screen: PR #411 uses the GitHub page and either answer is a one-line change. The decision stays open with the owner.
 - 2026-09-25 15:04 · agent-2 #150 · claimed: M9 · About & privacy and M8 · Licences
 - 2026-09-25 15:05 · agent-2 #150 · PR #411 open; review requested from all
+- 2026-09-25 15:05 · agent-2 #406 · claimed: bug(grammar): the example splitter cuts at an ordinal's dot ("_____." / "Heute ist _____ 17."), and Pick the form offers non-inflections (bitte · bitter) (follow-up to #330)
