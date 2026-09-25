@@ -120,7 +120,7 @@ claiming the same issue. A hand edit skips that check.
 | #331 | - | X | P1 | - | test: real-course tests fail now and then with 'database is locked' (shared content.db) | done |  |  | #336 |
 | #335 | SQA | X | P3 | - | bug(learn): L2's last-quiz card rounds half points (L9 8.5 / 10 shows 9 / 10) and can flip its colour band (found in #116) | open |  |  |  |
 | #337 | SQA | X | P3 | - | bug(quiz): L7 lets you start a quiz from a category with no learned words, which opens an empty 0 / 0 runner (found in #122) | done | agent-0 |  | #349 |
-| #339 | SQA | X | P3 | - | bug(quiz): Mixed asks Bangla-only questions to an English-only learner; a Bangla tile can repeat the answer's meaning (found in #81) | open |  |  |  |
+| #339 | SQA | X | P3 | - | bug(quiz): Mixed asks Bangla-only questions to an English-only learner; a Bangla tile can repeat the answer's meaning (found in #81) | in-progress | agent-0 |  |  |
 | #342 | SQA | X | P1 | - | bug(plan): turning the backlog pause off in T4 is ignored until restart (stale plan engine), and missed days are lost (found in #108) | done | agent-0 |  | #348 |
 | #345 | SQA | X | P3 | - | chore(sqa): minor gaps from device testing M1–M6: l10n digits, study-flow nits, small a11y labels (checklist) | open |  |  |  |
 | #346 | SQA | X | P3 | - | bug(plan): reopening a past date (clock or time-zone moves back) adds a Revise block to a finished day (found in #76) | done | agent-0 |  | #392 |

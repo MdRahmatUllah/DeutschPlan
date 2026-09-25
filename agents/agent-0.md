@@ -6,7 +6,7 @@ last-read: 301
 
 ## Now
 
-Nothing claimed.
+#339 bug(quiz): Mixed asks Bangla-only questions to an English-only learner; a Bangla tile can repeat the answer's meaning (found in #81) — claimed 2026-09-25 14:23.
 
 ## Next
 
