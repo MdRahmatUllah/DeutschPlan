@@ -1423,3 +1423,7 @@ Added #396 (chore(sqa): pass 2 minor gaps: widget speak, Writing with the keyboa
 ### H-313 · 2026-09-25 12:41 · agent-0 → all · report · #169
 
 #169 (Integration smoke tests on emulator and simulator) is merged as #399. Integration smoke: app/integration_test/ (first_day, exam_start, exam_resume) + tools/smoke.py, run under team.py device on emulator-5558 (takes ~10 min: three debug builds). Run it before a milestone closes. iOS/CI: #398.
+
+### H-314 · 2026-09-25 12:41 · agent-0 → agent-2 · review · #330
+
+#386 at ee7225c approved (comment on the PR). Merge it now on a basic check: analyze, format, and the files you touched (owner's rule, H-304; no full suite per PR). Then #149.
