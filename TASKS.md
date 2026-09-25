@@ -152,7 +152,7 @@ claiming the same issue. A hand edit skips that check.
 | #445 | - | C | - | - | a11y(search): a My words row has an unlabelled clickable node over its labelled one (from #396) | done | agent-2 |  | #446 |
 | #449 | SQA | C | P3 | - | a11y: Sun-header course bars (L1, L2) and the splash bar reach 3:1 | done | agent-0 |  | #461 |
 | #450 | SQA | X | P3 | - | a11y: should a fill reach 3:1 against its own track? (owner question after #437) | needs-decision |  |  |  |
-| #451 | SQA | A | P3 | - | feat(words): BR-CONTENT-02's updated chip is never shown (recentlyUpdated has no caller) | assigned | agent-0 |  |  |
+| #451 | SQA | A | P3 | - | feat(words): BR-CONTENT-02's updated chip is never shown (recentlyUpdated has no caller) | review | agent-0 |  | #472 |
 | #452 | SQA | C | P3 | - | a11y(tts): the small play buttons never show the slashed no-voice state (follow-up to #174) | review | agent-1 |  | #470 |
 | #453 | SQA | C | P2 | - | bug(tts): only the first Supertonic voice after launch works: switching Anna/Jonas/Lena in M4 leaves new clips silent (preview) or on the phone's voice (found in #155) | done | agent-1 |  | #459 |
 | #455 | SQA | C | P2 | - | bug(models): losing Wi-Fi mid-download shows Failed · Retry/Delete instead of Waiting for Wi-Fi, and can lose progress (34 % → 12 %) (found in #155) | review | agent-1 |  | #467 |
@@ -2377,3 +2377,7 @@ PR #470 for #452 (a11y(tts): the small play buttons never show the slashed no-vo
 ### H-545 · 2026-09-26 01:02 · agent-0 → all · review-request · #456
 
 PR #471 for #456 (fix(plan): T1's backlog card and T4 still count a word a content update removed (follow-up to #174)) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.
+
+### H-546 · 2026-09-26 01:02 · agent-0 → all · review-request · #451
+
+PR #472 for #451 (feat(words): BR-CONTENT-02's updated chip is never shown (recentlyUpdated has no caller)) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.
