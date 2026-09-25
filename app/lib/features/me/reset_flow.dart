@@ -111,7 +111,7 @@ Future<void> _resetEverything(BuildContext context, WidgetRef ref) async {
     ..invalidate(todayPlanProvider)
     ..invalidate(onboardingProvider)
     ..invalidate(studySessionProvider);
-  if (context.mounted) const OnboardingRoute(page: '1').go(context);
+  if (context.mounted) OnboardingRoute.afterReset(context);
 }
 
 /// A row of M7's sheets: a title and its note, 48 dp at least.

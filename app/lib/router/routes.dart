@@ -535,6 +535,11 @@ class OnboardingRoute extends GoRouteData with $OnboardingRoute {
   /// learner is sent to Today from `/onboarding/*` unless this is set.
   final bool restart;
 
+  /// M7 · *Reset everything* (#149): setup from its first page, as a first
+  /// start has it. Nothing is enrolled any more, so the guard lets it by.
+  static void afterReset(BuildContext context) =>
+      const OnboardingRoute(page: '1').go(context);
+
   /// Settings → *Restart setup*: page 1 hidden, every page pre-filled with
   /// what the learner has now, and finishing changes the plan but not the
   /// history. Settings is M3's; this is what it calls.
