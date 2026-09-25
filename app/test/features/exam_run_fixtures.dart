@@ -8,6 +8,7 @@ import 'package:deutschplan/data/repositories/exam_run_service.dart';
 import 'package:deutschplan/domain/exam_generator.dart';
 import 'package:deutschplan/domain/grammar_item_generator.dart';
 import 'package:deutschplan/domain/quiz_builder.dart' show FormLabel;
+import 'package:deutschplan/services/exam_recorder.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 
 /// The ExamRunner artboard's attempt: A1.2 · Mock 2, 14:32 left.
@@ -166,6 +167,68 @@ const String artboardWritingText =
     'kaputt. Es ist sehr kalt. Können Sie bitte einen Handwerker schicken? '
     'Ich bin am Nachmittag zu Hause. Vielen Dank, Maruf Hossain';
 
+/// The ExamSpeaking artboard's task: A1, a minute.
+const SpeakingTask artboardSpeaking = SpeakingTask(
+  'speaking:1',
+  level: 'A1',
+  category: 'Wohnen',
+  seconds: 60,
+);
+
+/// The microphone without a phone: what the Speaking screen asked of it.
+class FakeRecorder implements ExamRecorder {
+  FakeRecorder({this.allowed = true, this.recorded});
+
+  /// Whether the microphone is allowed.
+  bool allowed;
+
+  /// How long an existing recording is.
+  final Duration? recorded;
+
+  final List<String> started = <String>[];
+  final List<String> played = <String>[];
+  int stopped = 0;
+  int asked = 0;
+  bool openedSettings = false;
+  final StreamController<double> heard = StreamController<double>.broadcast();
+
+  @override
+  Future<bool> permission() async {
+    asked++;
+    return allowed;
+  }
+
+  @override
+  Future<void> openSettings() async => openedSettings = true;
+
+  /// Holds `start` open, as a slow microphone would.
+  Completer<void>? starting;
+
+  @override
+  Future<void> start(String path) async {
+    started.add(path);
+    await starting?.future;
+  }
+
+  @override
+  Future<void> stop() async => stopped++;
+
+  @override
+  Stream<double> get levels => heard.stream;
+
+  @override
+  Future<void> play(String path) async => played.add(path);
+
+  @override
+  Future<void> stopPlaying() async {}
+
+  @override
+  Future<Duration?> length(String path) async => recorded;
+
+  @override
+  Future<void> dispose() => heard.close();
+}
+
 /// L12 without a database: a paper, and a record of what the runner did.
 class StubExamRun implements ExamRunService {
   StubExamRun({
@@ -175,6 +238,7 @@ class StubExamRun implements ExamRunService {
     this.timed = true,
     this.missing = false,
     this.flagged = const <int>{},
+    this.ticks = const <int, List<bool>>{},
   }) : items = items ?? artboardPaper(),
        given = given ?? {for (var ord = 1; ord <= 20; ord++) ord: 'x'};
 
@@ -188,6 +252,9 @@ class StubExamRun implements ExamRunService {
 
   /// The ords already flagged.
   final Set<int> flagged;
+
+  /// The rubric ticks already stored, by ord.
+  final Map<int, List<bool>> ticks;
 
   @override
   final bool timed;
@@ -215,6 +282,23 @@ class StubExamRun implements ExamRunService {
   /// Makes *Leave*'s abandon throw, as a failed write would.
   bool failAbandon = false;
 
+  /// Each rubric written: its ord and ticks.
+  final List<(int, List<bool>)> rubrics = <(int, List<bool>)>[];
+
+  /// Each recording deleted.
+  final List<String> discarded = <String>[];
+
+  @override
+  Future<void> rubric(int attemptId, int ord, List<bool> ticks) async =>
+      rubrics.add((ord, ticks));
+
+  @override
+  Future<String> recordingPath(int attemptId) async =>
+      '/recordings/$attemptId.m4a';
+
+  @override
+  Future<void> discard(String path) async => discarded.add(path);
+
   @override
   Future<ExamPaperRun?> load(int attemptId) async {
     if (missing) return null;
@@ -225,6 +309,7 @@ class StubExamRun implements ExamRunService {
           item: item,
           given: given[i + 1],
           flagged: flagged.contains(i + 1),
+          rubric: ticks[i + 1] ?? const <bool>[],
         ),
     ];
     final at = questions.indexWhere((q) => q.given == null);

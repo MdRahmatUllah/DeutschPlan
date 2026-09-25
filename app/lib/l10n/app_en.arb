@@ -3923,5 +3923,124 @@
   "reminderChannel": "Daily reminder",
   "@reminderChannel": {
     "description": "Android's name for the reminder's notification channel, shown in the phone's settings."
+  },
+  "examSpeakingTask": "{level, select, A1{Say what you do and like around {category}.} A2{Describe an experience with {category}.} B1{Talk about {category}: your experience and your opinion.} B2{Give your opinion on {category}, with reasons and an example.} C1{Argue a position on {category} and answer the other side.} other{Give a short talk on {category} as if to an audience.}}",
+  "@examSpeakingTask": {
+    "description": "L12 Speaking: the task per level (exam-generator.md). level is A1…C2; category is the category's name from content.db.",
+    "placeholders": {
+      "level": {
+        "type": "String"
+      },
+      "category": {
+        "type": "String"
+      }
+    }
+  },
+  "examSpeakingLength": "{seconds, select, 60{1 minute} 120{2 minutes} other{{seconds} seconds}}",
+  "@examSpeakingLength": {
+    "description": "L12 Speaking: the task's length after its dash (FR-L12S-02: 60, 90 or 120 s). seconds is the number as text.",
+    "placeholders": {
+      "seconds": {
+        "type": "String"
+      }
+    }
+  },
+  "examSpeakingPrompt": "{task} — {length}",
+  "@examSpeakingPrompt": {
+    "description": "L12 Speaking: the task and how long, e.g. 'Say what you do and like around Wohnen. — 1 minute'.",
+    "placeholders": {
+      "task": {
+        "type": "String"
+      },
+      "length": {
+        "type": "String"
+      }
+    }
+  },
+  "examSpeakingHint": "Speak in whole sentences. Then listen back and tick what you managed.",
+  "@examSpeakingHint": {
+    "description": "L12 Speaking: under the task."
+  },
+  "examSpeakingReady": "The first time, your phone asks for the microphone. The recording never leaves this phone.",
+  "@examSpeakingReady": {
+    "description": "L12 Speaking: before recording — the rationale shown before the permission is asked (FR-L12S-01)."
+  },
+  "examSpeakingRecording": "Recording · tap to stop",
+  "@examSpeakingRecording": {
+    "description": "L12 Speaking: while recording."
+  },
+  "examSpeakingRecorded": "Recorded · stays on this phone",
+  "@examSpeakingRecorded": {
+    "description": "L12 Speaking: once recorded."
+  },
+  "examSpeakingRecord": "Record",
+  "@examSpeakingRecord": {
+    "description": "L12 Speaking: the round button before recording, for screen readers."
+  },
+  "examSpeakingStop": "Stop recording",
+  "@examSpeakingStop": {
+    "description": "L12 Speaking: the round button while recording, for screen readers."
+  },
+  "examSpeakingPlay": "Play recording",
+  "@examSpeakingPlay": {
+    "description": "L12 Speaking: the round button once recorded, for screen readers."
+  },
+  "examSpeakingStopPlaying": "Stop playing",
+  "@examSpeakingStopPlaying": {
+    "description": "L12 Speaking: the round button while the recording plays, for screen readers."
+  },
+  "examSpeakingRetake": "{left, plural, =0{No retakes left} =1{Retake · 1 left} other{Retake · {left} left}}",
+  "@examSpeakingRetake": {
+    "description": "L12 Speaking: records again (FR-L12S-02: one retake).",
+    "placeholders": {
+      "left": {
+        "type": "int"
+      }
+    }
+  },
+  "examSpeakingDelete": "Delete recording",
+  "@examSpeakingDelete": {
+    "description": "L12 Speaking: removes the file and zeros the section (FR-L12S-04)."
+  },
+  "examSpeakingDenied": "The microphone is off for DeutschPlan. Skip Speaking — it scores 0 — or allow the microphone in the phone's settings.",
+  "@examSpeakingDenied": {
+    "description": "L12 Speaking: the microphone was refused (FR-L12S-01)."
+  },
+  "examSpeakingOpenSettings": "Open settings",
+  "@examSpeakingOpenSettings": {
+    "description": "L12 Speaking: opens the phone's settings for the app."
+  },
+  "examSpeakingRubricTitle": "Listen back and tick what you managed",
+  "@examSpeakingRubricTitle": {
+    "description": "L12 Speaking: the rubric card heading, shown upper case (FR-L12S-03)."
+  },
+  "examSpeakingRubricTask": "Task covered — all of it, in order",
+  "@examSpeakingRubricTask": {
+    "description": "L12 Speaking rubric, first of four."
+  },
+  "examSpeakingRubricFluency": "Fluency — few long pauses",
+  "@examSpeakingRubricFluency": {
+    "description": "L12 Speaking rubric, second."
+  },
+  "examSpeakingRubricPronunciation": "Pronunciation — understandable throughout",
+  "@examSpeakingRubricPronunciation": {
+    "description": "L12 Speaking rubric, third."
+  },
+  "examSpeakingRubricVocabulary": "Vocabulary — 6+ words from this step",
+  "@examSpeakingRubricVocabulary": {
+    "description": "L12 Speaking rubric, fourth."
+  },
+  "examSpeakingSelfAssessed": "Self-assessed · counts 4 points",
+  "@examSpeakingSelfAssessed": {
+    "description": "L12 Speaking: under the rubric."
+  },
+  "examSpeakingOf": "/ {max}",
+  "@examSpeakingOf": {
+    "description": "L12 Speaking: after the recorder's time, the task's length, e.g. '/ 01:00'.",
+    "placeholders": {
+      "max": {
+        "type": "String"
+      }
+    }
   }
 }

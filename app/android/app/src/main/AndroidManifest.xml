@@ -8,6 +8,9 @@
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
     <!-- The reminders are rescheduled after a reboot (#157). -->
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <!-- The mock exam's Speaking answer (FR-L12S-01): asked when the learner
+         first taps Record, never before. The recording stays on the phone. -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
     <!-- enableOnBackInvokedCallback is predictive back (navigation.md).
          Without it Android 13+ runs the legacy back handler and the swipe
          shows no preview of where it is going, however the Flutter side is

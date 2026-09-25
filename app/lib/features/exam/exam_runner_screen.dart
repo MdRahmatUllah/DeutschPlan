@@ -63,6 +63,7 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
   int _at = 0;
   final List<String?> _given = <String?>[];
   final List<bool> _flagged = <bool>[];
+  final List<List<bool>> _rubrics = <List<bool>>[];
   // ponytail: FR-L12-06's plays live in memory, so a resumed attempt
   // gives each word three again; a column on exam_answers when it matters.
   final Map<int, int> _plays = <int, int>{};
@@ -128,6 +129,9 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
         _flagged
           ..clear()
           ..addAll([for (final q in paper.questions) q.flagged]);
+        _rubrics
+          ..clear()
+          ..addAll([for (final q in paper.questions) q.rubric]);
         _at = paper.resumeAt;
         _field.text = _typedHere ? _given[_at] ?? '' : '';
         _timed = _service.timed;
@@ -208,7 +212,13 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
       return;
     }
     final given = value.isEmpty ? null : value;
-    setState(() => _given[_at] = given);
+    // Speaking stopped by leaving the exam lands after the runner has gone,
+    // and is still written: what was said is kept.
+    if (mounted) {
+      setState(() => _given[_at] = given);
+    } else {
+      _given[_at] = given;
+    }
     unawaited(
       _service.answer(widget.attemptId, paper.questions[_at].ord, given),
     );
@@ -406,6 +416,19 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
                   given: _given[_at],
                   field: _field,
                   onGiven: _record,
+                  rubric: _rubrics[_at],
+                  onRubric: (ticks) {
+                    _rubrics[_at] = ticks;
+                    unawaited(
+                      _service.rubric(
+                        widget.attemptId,
+                        questions[_at].ord,
+                        ticks,
+                      ),
+                    );
+                  },
+                  recordingPath: () => _service.recordingPath(widget.attemptId),
+                  onDiscard: _service.discard,
                   plays: _plays[questions[_at].ord] ?? 0,
                   onPlay: () => setState(
                     () => _plays.update(

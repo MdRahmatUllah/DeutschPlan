@@ -353,6 +353,17 @@ class ExamRepository extends DatabaseAccessor<AppDatabase>
         ),
       );
 
+  /// FR-L12S-03: a task's rubric ticks, as a JSON list of booleans, and
+  /// nothing else of its row.
+  Future<void> rubric({
+    required int attemptId,
+    required int ord,
+    required String json,
+  }) =>
+      (update(db.examAnswers)
+            ..where((t) => t.attemptId.equals(attemptId) & t.ord.equals(ord)))
+          .write(ExamAnswersCompanion(selfRubricJson: Value(json)));
+
   Future<void> flag({
     required int attemptId,
     required int ord,

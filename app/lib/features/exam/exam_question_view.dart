@@ -1,6 +1,10 @@
 import 'dart:async';
+import 'dart:math' as math;
 
+import 'package:deutschplan/core/adaptive/adaptive.dart';
+import 'package:deutschplan/core/components/dp_button.dart';
 import 'package:deutschplan/core/components/dp_speaker_button.dart';
+import 'package:deutschplan/core/providers/app_providers.dart';
 import 'package:deutschplan/core/theme/dp_surface.dart';
 import 'package:deutschplan/core/theme/dp_tokens.dart';
 import 'package:deutschplan/core/typography/dp_text.dart';
@@ -16,6 +20,7 @@ import 'package:deutschplan/features/study/study_cloze.dart'
     show StudyAnswerField;
 import 'package:deutschplan/features/words/speak.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
+import 'package:deutschplan/services/exam_recorder.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 
@@ -53,6 +58,10 @@ class ExamQuestionView extends ConsumerWidget {
     required this.plays,
     required this.onPlay,
     super.key,
+    this.rubric = const <bool>[],
+    this.onRubric,
+    this.recordingPath,
+    this.onDiscard,
   });
 
   final ExamItem item;
@@ -70,12 +79,33 @@ class ExamQuestionView extends ConsumerWidget {
   final int plays;
   final VoidCallback onPlay;
 
+  /// Speaking's rubric ticks so far, and where a tick goes (FR-L12S-03).
+  final List<bool> rubric;
+  final ValueChanged<List<bool>>? onRubric;
+
+  /// Where Speaking records (FR-L12S-02), and the recording deleted from the
+  /// phone (FR-L12S-04).
+  final Future<String> Function()? recordingPath;
+  final Future<void> Function(String path)? onDiscard;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
     final tokens = context.tokens;
     if (item case final WritingTask task) {
       return ExamWriting(task: task, field: field);
+    }
+    if (item case final SpeakingTask task) {
+      return ExamSpeaking(
+        task: task,
+        given: given,
+        rubric: rubric,
+        onGiven: onGiven,
+        onRubric: onRubric ?? (_) {},
+        recordingPath:
+            recordingPath ?? () => throw StateError('no recording path'),
+        onDiscard: onDiscard ?? (_) async {},
+      );
     }
 
     Widget speaker(String word, {double size = 48}) => DpSpeakerButton(
@@ -230,20 +260,8 @@ class ExamQuestionView extends ConsumerWidget {
         ),
       },
       // Drawn above, whole.
-      WritingTask() => throw StateError('Writing is ExamWriting'),
-      SpeakingTask() => (
-        l10n.examSectionSpeaking,
-        // ponytail: #134 builds Speaking; a skipped task scores nothing
-        // (#84), as FR-L12S-01 says.
-        DpText(
-          l10n.examRunLater,
-          role: DpTextRole.body,
-          textAlign: TextAlign.center,
-          color: tokens.color.textSecondary,
-        ),
-        null,
-        const SizedBox.shrink(),
-      ),
+      WritingTask() ||
+      SpeakingTask() => throw StateError('a task is drawn whole'),
     };
 
     return Column(
@@ -446,8 +464,6 @@ class ExamWriting extends StatelessWidget {
   final WritingTask task;
   final TextEditingController field;
 
-  static const EdgeInsets _panelPadding = EdgeInsets.fromLTRB(14, 12, 14, 12);
-
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
@@ -464,19 +480,7 @@ class ExamWriting extends StatelessWidget {
         final text = value.text;
         final used = targetsUsed(text, task.targets).toSet();
         final connectors = connectorsUsed(text, task.connectors);
-        // A flat Oat panel on paper, as the artboard draws it — no edge, no
-        // shadow, which every DpSurface kind has; the frosted card under
-        // glass.
-        Widget panel(Widget child) => tokens.isGlass
-            ? DpSurface(radius: 12, padding: _panelPadding, child: child)
-            : Container(
-                padding: _panelPadding,
-                decoration: BoxDecoration(
-                  color: tokens.surface.muted,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: child,
-              );
+        Widget panel(Widget child) => _taskPanel(tokens, child);
         return Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
@@ -634,6 +638,577 @@ class _Target extends StatelessWidget {
             ],
             DpText(word, role: DpTextRole.caption, weight: 600, color: ink),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+/// A flat Oat panel on paper, as the task artboards draw their prompt — no
+/// edge, no shadow, which every DpSurface kind has; the frosted card under
+/// glass.
+Widget _taskPanel(DpTokens tokens, Widget child) => tokens.isGlass
+    ? DpSurface(radius: 12, padding: _taskPadding, child: child)
+    : Container(
+        padding: _taskPadding,
+        decoration: BoxDecoration(
+          color: tokens.surface.muted,
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: child,
+      );
+
+const EdgeInsets _taskPadding = EdgeInsets.fromLTRB(14, 12, 14, 12);
+
+/// "00:52".
+String _mmss(int seconds) =>
+    '${'${seconds ~/ 60}'.padLeft(2, '0')}:${'${seconds % 60}'.padLeft(2, '0')}';
+
+enum _Mic { idle, recording, recorded, denied }
+
+/// L12's Speaking (`exam-writing-speaking.md`, the ExamSpeaking artboard):
+/// the task, the recorder — record, stop, play back, one retake, delete —
+/// and the four rubric ticks the learner gives on listening back.
+///
+/// The recording is the row's `given` (#84 scores nothing without one); the
+/// ticks are its `self_rubric_json` (FR-L12S-03).
+class ExamSpeaking extends ConsumerStatefulWidget {
+  const ExamSpeaking({
+    required this.task,
+    required this.given,
+    required this.rubric,
+    required this.onGiven,
+    required this.onRubric,
+    required this.recordingPath,
+    required this.onDiscard,
+    super.key,
+  });
+
+  final SpeakingTask task;
+
+  /// The recording's path, or null before there is one.
+  final String? given;
+  final List<bool> rubric;
+
+  /// The recording's path once made; '' once deleted.
+  final ValueChanged<String> onGiven;
+  final ValueChanged<List<bool>> onRubric;
+  final Future<String> Function() recordingPath;
+  final Future<void> Function(String path) onDiscard;
+
+  /// FR-L12S-02: one retake.
+  static const int retakes = 1;
+
+  /// The rubric's four ticks, in `self_rubric_json`'s order.
+  static const int ticks = 4;
+
+  @override
+  ConsumerState<ExamSpeaking> createState() => _ExamSpeakingState();
+}
+
+class _ExamSpeakingState extends ConsumerState<ExamSpeaking> {
+  /// Held for as long as the task is on screen: the provider auto-disposes,
+  /// and a read alone would let it go at once.
+  late final ProviderSubscription<ExamRecorder> _held;
+  ExamRecorder get _recorder => _held.read();
+  late _Mic _mic = widget.given == null ? _Mic.idle : _Mic.recorded;
+  late List<bool> _ticks = <bool>[
+    for (var i = 0; i < ExamSpeaking.ticks; i++)
+      i < widget.rubric.length && widget.rubric[i],
+  ];
+
+  /// While recording, the seconds so far; once recorded, its length.
+  int _seconds = 0;
+
+  // ponytail: in memory, so a resumed attempt offers the retake again.
+  int _retakesLeft = ExamSpeaking.retakes;
+
+  /// The levels heard while recording, for the bars.
+  final List<double> _levels = <double>[];
+  String? _path;
+  bool _playing = false;
+
+  /// Between the tap on *Record* and the recorder running: a second tap in
+  /// that time would start it twice and leave the first clock ticking.
+  bool _starting = false;
+  Timer? _tick;
+  StreamSubscription<double>? _heard;
+
+  @override
+  void initState() {
+    super.initState();
+    _held = ref.listenManual(examRecorderProvider, (_, _) {});
+    _path = widget.given;
+    if (_path case final path?) {
+      unawaited(
+        _recorder.length(path).then((length) {
+          if (mounted && length != null) {
+            setState(() => _seconds = length.inSeconds);
+          }
+        }),
+      );
+    }
+  }
+
+  @override
+  void dispose() {
+    // Leaving mid-recording keeps what was said.
+    if (_mic == _Mic.recording) unawaited(_finish(mounted: false));
+    _tick?.cancel();
+    unawaited(_heard?.cancel());
+    unawaited(_recorder.stopPlaying());
+    _held.close();
+    super.dispose();
+  }
+
+  // Each takes the recorder before its first await: dispose closes the
+  // subscription, and a recording left mid-way still has to be stopped.
+
+  Future<void> _record() async {
+    if (_starting || _mic == _Mic.recording) return;
+    _starting = true;
+    try {
+      await _begin();
+    } finally {
+      _starting = false;
+    }
+  }
+
+  Future<void> _begin() async {
+    final recorder = _recorder;
+    // FR-L12S-01: asked on first use, after the line that says why.
+    if (!await recorder.permission()) {
+      if (mounted) setState(() => _mic = _Mic.denied);
+      return;
+    }
+    await recorder.stopPlaying();
+    final retake = _mic == _Mic.recorded;
+    final path = await widget.recordingPath();
+    await recorder.start(path);
+    if (!mounted) {
+      // The task left the screen while the recorder started: stop it, and
+      // keep what little it has, as leaving mid-recording does.
+      await recorder.stop();
+      widget.onGiven(path);
+      return;
+    }
+    setState(() {
+      if (retake) _retakesLeft--;
+      _path = path;
+      _mic = _Mic.recording;
+      _seconds = 0;
+      _levels.clear();
+    });
+    _heard = recorder.levels.listen((level) {
+      if (mounted) setState(() => _levels.add(level));
+    });
+    _tick = Timer.periodic(const Duration(seconds: 1), (_) {
+      if (!mounted) return;
+      setState(() => _seconds++);
+      // FR-L12S-02: the level's length, then it stops by itself.
+      if (_seconds >= widget.task.seconds) unawaited(_finish());
+    });
+  }
+
+  Future<void> _finish({bool mounted = true}) async {
+    final recorder = _recorder;
+    _tick?.cancel();
+    _tick = null;
+    // Not awaited: a broadcast stream's cancel can wait for its controller,
+    // and the recording must stop now.
+    unawaited(_heard?.cancel());
+    _heard = null;
+    await recorder.stop();
+    final path = _path;
+    if (path != null) widget.onGiven(path);
+    if (mounted && this.mounted) setState(() => _mic = _Mic.recorded);
+  }
+
+  Future<void> _play() async {
+    final recorder = _recorder;
+    final path = _path;
+    if (path == null) return;
+    if (_playing) {
+      await recorder.stopPlaying();
+      return;
+    }
+    setState(() => _playing = true);
+    await recorder.play(path);
+    if (mounted) setState(() => _playing = false);
+  }
+
+  /// FR-L12S-04: the file gone and the section zero.
+  Future<void> _delete() async {
+    final recorder = _recorder;
+    final path = _path;
+    await recorder.stopPlaying();
+    if (path != null) await widget.onDiscard(path);
+    widget.onGiven('');
+    if (!mounted) return;
+    setState(() {
+      _mic = _Mic.idle;
+      _path = null;
+      _seconds = 0;
+      _levels.clear();
+      _playing = false;
+    });
+  }
+
+  void _toggle(int i) {
+    setState(() => _ticks = <bool>[..._ticks]..[i] = !_ticks[i]);
+    widget.onRubric(_ticks);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final tokens = context.tokens;
+    final task = widget.task;
+    final topic = task.category ?? l10n.examWritingTopicFallback;
+    final max = task.seconds;
+
+    final (
+      IconData icon,
+      String label,
+      Color fill,
+      VoidCallback onTap,
+    ) = switch (_mic) {
+      _Mic.idle || _Mic.denied => (
+        Icons.mic,
+        l10n.examSpeakingRecord,
+        tokens.color.again,
+        () => unawaited(_record()),
+      ),
+      _Mic.recording => (
+        Icons.stop,
+        l10n.examSpeakingStop,
+        tokens.color.again,
+        () => unawaited(_finish()),
+      ),
+      _Mic.recorded => (
+        _playing ? Icons.stop : Icons.play_arrow,
+        _playing ? l10n.examSpeakingStopPlaying : l10n.examSpeakingPlay,
+        tokens.color.primary,
+        () => unawaited(_play()),
+      ),
+    };
+
+    // Each card a node of its own: merged, the task, the recorder and the
+    // rubric would be read as one.
+    Widget node(Widget child) => Semantics(container: true, child: child);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: <Widget>[
+        node(
+          _taskPanel(
+            tokens,
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                DpText(
+                  l10n.examSpeakingPrompt(
+                    l10n.examSpeakingTask(task.level, topic),
+                    l10n.examSpeakingLength('$max'),
+                  ),
+                  role: DpTextRole.body,
+                  weight: 600,
+                ),
+                const SizedBox(height: 4),
+                DpText(
+                  l10n.examSpeakingHint,
+                  role: DpTextRole.caption,
+                  color: tokens.color.textSecondary,
+                ),
+              ],
+            ),
+          ),
+        ),
+        const SizedBox(height: 12),
+        // Flat with a light edge, as the artboard draws both cards.
+        node(
+          DpSurface(
+            kind: DpSurfaceKind.bar,
+            radius: 16,
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              children: <Widget>[
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    _RoundButton(
+                      icon: icon,
+                      label: label,
+                      fill: fill,
+                      onTap: onTap,
+                    ),
+                    const SizedBox(width: 14),
+                    Flexible(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          // "00:52 / 01:00": the time large, the length small.
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.baseline,
+                            textBaseline: TextBaseline.alphabetic,
+                            children: <Widget>[
+                              DpText(
+                                _mmss(_seconds),
+                                role: DpTextRole.title,
+                                weight: 700,
+                              ),
+                              const SizedBox(width: 4),
+                              DpText(
+                                l10n.examSpeakingOf(_mmss(max)),
+                                role: DpTextRole.label,
+                                weight: 500,
+                                color: tokens.color.textSecondary,
+                              ),
+                            ],
+                          ),
+                          DpText(
+                            switch (_mic) {
+                              _Mic.idle => l10n.examSpeakingReady,
+                              _Mic.recording => l10n.examSpeakingRecording,
+                              _Mic.recorded => l10n.examSpeakingRecorded,
+                              _Mic.denied => l10n.examSpeakingDenied,
+                            },
+                            role: DpTextRole.caption,
+                            color: tokens.color.textSecondary,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                if (_mic != _Mic.idle && _mic != _Mic.denied) ...<Widget>[
+                  const SizedBox(height: 12),
+                  ExcludeSemantics(child: _Bars(levels: _levels)),
+                ],
+                if (_mic == _Mic.recorded) ...<Widget>[
+                  const SizedBox(height: 12),
+                  // Widths as their labels need them: "Delete recording" is the
+                  // longer, and half the card each wraps it.
+                  Row(
+                    children: <Widget>[
+                      Expanded(
+                        flex: 5,
+                        child: DpButton(
+                          label: l10n.examSpeakingRetake(_retakesLeft),
+                          kind: DpButtonKind.secondary,
+                          compact: true,
+                          onPressed: _retakesLeft > 0
+                              ? () => unawaited(_record())
+                              : null,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        flex: 6,
+                        child: DpButton(
+                          label: l10n.examSpeakingDelete,
+                          kind: DpButtonKind.secondary,
+                          colour: tokens.surface.cardStrong,
+                          onColour: tokens.color.ink,
+                          compact: true,
+                          onPressed: () => unawaited(_delete()),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+                if (_mic == _Mic.denied) ...<Widget>[
+                  const SizedBox(height: 12),
+                  DpButton(
+                    label: l10n.examSpeakingOpenSettings,
+                    kind: DpButtonKind.secondary,
+                    compact: true,
+                    onPressed: () => unawaited(_recorder.openSettings()),
+                  ),
+                ],
+              ],
+            ),
+          ),
+        ),
+        const SizedBox(height: 12),
+        node(
+          DpSurface(
+            kind: DpSurfaceKind.bar,
+            radius: 16,
+            padding: const EdgeInsets.all(14),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 4),
+                  child: DpText(
+                    l10n.examSpeakingRubricTitle.toUpperCase(),
+                    role: DpTextRole.caption,
+                    weight: 700,
+                    letterSpacing: 0.6,
+                    color: tokens.color.textSecondary,
+                  ),
+                ),
+                for (final (i, line) in <String>[
+                  l10n.examSpeakingRubricTask,
+                  l10n.examSpeakingRubricFluency,
+                  l10n.examSpeakingRubricPronunciation,
+                  l10n.examSpeakingRubricVocabulary,
+                ].indexed)
+                  _Tick(
+                    label: line,
+                    ticked: _ticks[i],
+                    onTap: () => _toggle(i),
+                  ),
+                const SizedBox(height: 6),
+                DpText(
+                  l10n.examSpeakingSelfAssessed,
+                  role: DpTextRole.caption,
+                  color: tokens.color.textSecondary,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+/// The recorder's 56 dp round button, raised as the artboard draws it.
+class _RoundButton extends StatelessWidget {
+  const _RoundButton({
+    required this.icon,
+    required this.label,
+    required this.fill,
+    required this.onTap,
+  });
+
+  final IconData icon;
+  final String label;
+  final Color fill;
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final tokens = context.tokens;
+    // Its own node: folded into the card's, the card would read as the button.
+    return Semantics(
+      container: true,
+      button: true,
+      label: label,
+      excludeSemantics: true,
+      onTap: onTap,
+      child: GestureDetector(
+        onTap: onTap,
+        child: Container(
+          width: 56,
+          height: 56,
+          decoration: BoxDecoration(
+            color: fill,
+            shape: BoxShape.circle,
+            border: tokens.isGlass
+                ? null
+                : Border.all(color: tokens.color.ink, width: 2),
+            boxShadow: tokens.isGlass
+                ? null
+                : <BoxShadow>[
+                    BoxShadow(
+                      color: tokens.surface.shadow,
+                      offset: tokens.surface.shadowOffset,
+                    ),
+                  ],
+          ),
+          child: Icon(icon, color: tokens.color.onAccent, size: 26),
+        ),
+      ),
+    );
+  }
+}
+
+/// The recording as bars: the levels heard, the latest 32; even bars for a
+/// recording made before this visit.
+class _Bars extends StatelessWidget {
+  const _Bars({required this.levels});
+
+  final List<double> levels;
+
+  static const int count = 32;
+
+  @override
+  Widget build(BuildContext context) {
+    final tokens = context.tokens;
+    final heard = levels.length > count
+        ? levels.sublist(levels.length - count)
+        : levels;
+    return SizedBox(
+      height: 32,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          for (var i = 0; i < count; i++)
+            Container(
+              width: 4,
+              margin: const EdgeInsets.symmetric(horizontal: 1),
+              height: i < heard.length
+                  ? 6 + 22 * heard[i]
+                  : heard.isEmpty
+                  ? 6 + 10 * (0.5 + 0.5 * math.sin(i * 0.9)).abs()
+                  : 6,
+              decoration: BoxDecoration(
+                color: i < heard.length || heard.isEmpty
+                    ? tokens.color.ink
+                    : tokens.surface.outline,
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+/// A rubric line: a 22 dp box, Lime with a tick once ticked.
+class _Tick extends StatelessWidget {
+  const _Tick({required this.label, required this.ticked, required this.onTap});
+
+  final String label;
+  final bool ticked;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final tokens = context.tokens;
+    return Semantics(
+      container: true,
+      checked: ticked,
+      label: label,
+      excludeSemantics: true,
+      onTap: onTap,
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: onTap,
+        child: ConstrainedBox(
+          // accessibility-performance.md: 48 dp on Android, 44 pt on iOS.
+          constraints: BoxConstraints(minHeight: context.isCupertino ? 44 : 48),
+          child: Row(
+            children: <Widget>[
+              Container(
+                width: 22,
+                height: 22,
+                decoration: BoxDecoration(
+                  color: ticked ? tokens.color.easy : null,
+                  borderRadius: BorderRadius.circular(6),
+                  border: Border.all(color: tokens.color.ink, width: 2),
+                ),
+                child: ticked
+                    ? Icon(Icons.check, size: 14, color: tokens.color.onAccent)
+                    : null,
+              ),
+              const SizedBox(width: 10),
+              Expanded(child: DpText(label, role: DpTextRole.body)),
+            ],
+          ),
         ),
       ),
     );
