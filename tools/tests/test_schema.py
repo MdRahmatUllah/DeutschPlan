@@ -304,14 +304,14 @@ class TestContent:
         ).fetchone()[0]
         assert orphans == 0
 
-    def test_skill_prompts_belong_to_the_book_level(self, database):
-        # German_B1_Tracker carries A1 and A2 on the way to B1, and its W01
-        # checklist is the B1 one — the same rule an unlabelled grammar row
-        # follows.
-        levels = {
-            row[0] for row in database.execute("SELECT level_code FROM skill_prompts")
-        }
-        assert levels == {"B1", "B2", "C1", "C2"}
+    def test_no_skill_prompts_are_scraped_from_a_worksheet(self, database):
+        # #294: the workbooks hold no speaking or writing prompts (the Guide's
+        # weekly skills are four tick boxes), and reading W01's cells filled
+        # the table with sheet headers ("Dates", "Quiz seed") and instructions
+        # to the spreadsheet user ("type in the yellow cell"). The table stays
+        # in the schema, empty, until a real source exists.
+        rows = database.execute("SELECT COUNT(*) FROM skill_prompts").fetchone()
+        assert rows == (0,)
 
 
 class TestItIsReadOnlyByConstruction:

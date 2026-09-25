@@ -42,7 +42,6 @@ class BuildInputs:
     words: list
     grammar: list
     categories: list
-    skill_prompts: dict[str, list[str]]
     splits: dict[str, LevelSplit]
     tips: list
     sources: list[str]
@@ -107,7 +106,6 @@ def write(connection: sqlite3.Connection, inputs: BuildInputs) -> None:
         _write_sublevels(connection, inputs)
         _write_words(connection, inputs, category_ids)
         _write_grammar(connection, inputs)
-        _write_skill_prompts(connection, inputs)
         _write_tips(connection, inputs)
         _write_meta(connection, inputs)
         fill_fts(connection)
@@ -264,19 +262,6 @@ def _write_grammar(connection: sqlite3.Connection, inputs: BuildInputs) -> None:
                 row.tags,
             )
             for row in inputs.grammar
-        ],
-    )
-
-
-def _write_skill_prompts(
-    connection: sqlite3.Connection, inputs: BuildInputs
-) -> None:
-    connection.executemany(
-        "INSERT INTO skill_prompts (level_code, ord, prompt) VALUES (?, ?, ?)",
-        [
-            (level, index + 1, prompt)
-            for level, prompts in inputs.skill_prompts.items()
-            for index, prompt in enumerate(prompts)
         ],
     )
 

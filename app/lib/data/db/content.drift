@@ -111,6 +111,8 @@ allSublevels:
   FROM sublevels s JOIN levels l ON l.code = s.level_code
   ORDER BY l.ord, s.ord;
 
+-- Empty until the workbooks carry skills prompts (#294); only its DAO test
+-- calls it.
 skillPromptsForLevel:
   SELECT * FROM skill_prompts WHERE level_code = :code ORDER BY ord;
 

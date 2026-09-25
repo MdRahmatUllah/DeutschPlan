@@ -86,7 +86,6 @@ REQUIRED_GRAMMAR_FIELDS = ("topic",)
 
 WORDS_SHEET = "All Words"
 GRAMMAR_SHEET = "Grammar"
-SKILLS_SHEET = "W01"
 CATEGORY_SHEET_PREFIX = "C-"
 
 
@@ -157,7 +156,6 @@ class SourceBook:
     file: str
     words: list[Word] = field(default_factory=list)
     grammar: list[GrammarRow] = field(default_factory=list)
-    skill_prompts: list[str] = field(default_factory=list)
     categories: list[Category] = field(default_factory=list)
 
 
@@ -287,7 +285,7 @@ def read_workbook(path: Path) -> SourceBook:
     book = load_workbook(path, read_only=True, data_only=True)
     try:
         sheets = {name.strip(): name for name in book.sheetnames}
-        for required in (WORDS_SHEET, GRAMMAR_SHEET, SKILLS_SHEET):
+        for required in (WORDS_SHEET, GRAMMAR_SHEET):
             if required not in sheets:
                 raise PipelineError(
                     f"{path.name} has no '{required}' sheet. Found: "
@@ -308,7 +306,6 @@ def read_workbook(path: Path) -> SourceBook:
         source = SourceBook(file=path.name)
         source.words = _read_words(book[sheets[WORDS_SHEET]], path.name)
         source.grammar = _read_grammar(book[sheets[GRAMMAR_SHEET]], path.name)
-        source.skill_prompts = _read_skill_prompts(book[sheets[SKILLS_SHEET]])
         source.categories = _read_categories(book)
 
         if not source.words:
@@ -403,25 +400,6 @@ def _read_grammar(sheet, file_name: str) -> list[GrammarRow]:
             )
         )
     return rows
-
-
-def _read_skill_prompts(sheet) -> list[str]:
-    """The weekly skills checklist.
-
-    W01 is a free-form sheet, so every non-empty text cell in the first two
-    columns counts, in reading order. Nothing downstream needs more structure
-    than "the prompts, in order".
-
-    Row 1 is the sheet's own heading, not something the learner can do. Without
-    skipping it, "Weekly skills checklist" becomes the first thing they are
-    asked to tick off.
-    """
-    prompts: list[str] = []
-    for row in sheet.iter_rows(min_row=2, max_col=2):
-        for cell in row:
-            if isinstance(cell.value, str) and cell.value.strip():
-                prompts.append(cell.value.strip())
-    return prompts
 
 
 def _read_categories(book) -> list[Category]:
@@ -571,21 +549,10 @@ def collect(
     tips: list | None = None,
 ) -> BuildInputs:
     """Flattens the per-workbook records into what the writer takes."""
-    prompts: dict[str, list[str]] = {}
-    for source in sources:
-        levels_here = [
-            lvl for lvl in LEVELS if any(w.level == lvl for w in source.words)
-        ]
-        if levels_here and source.skill_prompts:
-            # The checklist belongs to the book's own level, the same one an
-            # unlabelled grammar row falls back to.
-            prompts.setdefault(levels_here[-1], []).extend(source.skill_prompts)
-
     return BuildInputs(
         words=[word for source in sources for word in source.words],
         grammar=[row for source in sources for row in source.grammar],
         categories=[c for source in sources for c in source.categories],
-        skill_prompts=prompts,
         splits=splits,
         tips=tips or [],
         sources=[source.file for source in sources],
@@ -635,8 +602,7 @@ def main(argv: list[str] | None = None) -> int:
         print(
             f"{source.file}: {len(source.words)} words, "
             f"{len(source.grammar)} grammar rows, "
-            f"{len(source.categories)} categories, "
-            f"{len(source.skill_prompts)} skill prompts"
+            f"{len(source.categories)} categories"
         )
     for level, split in splits.items():
         print(
