@@ -42,6 +42,7 @@ import 'package:deutschplan/features/me/export_import_screen.dart';
 import 'package:deutschplan/features/me/progress_screen.dart';
 import 'package:deutschplan/features/me/settings_screen.dart';
 import 'package:deutschplan/features/quiz/quiz_screen.dart';
+import 'package:deutschplan/features/search/add_word_screen.dart';
 import 'package:deutschplan/features/search/search_screen.dart';
 import 'package:deutschplan/features/sentences/sentences_screen.dart';
 import 'package:deutschplan/features/study/study_screen.dart';
@@ -410,7 +411,7 @@ class AddWordRoute extends GoRouteData with $AddWordRoute {
 
   @override
   Widget build(BuildContext context, GoRouterState state) =>
-      const PlaceholderScreen(title: 'Add a word', screen: 'R2');
+      AddWordScreen(german: german);
 }
 
 class EditCustomWordRoute extends GoRouteData with $EditCustomWordRoute {
@@ -424,7 +425,7 @@ class EditCustomWordRoute extends GoRouteData with $EditCustomWordRoute {
 
   @override
   Widget build(BuildContext context, GoRouterState state) =>
-      PlaceholderScreen(title: 'My word', screen: 'R2', detail: '$id');
+      AddWordScreen(id: id);
 }
 
 class MeRoute extends GoRouteData with $MeRoute {
