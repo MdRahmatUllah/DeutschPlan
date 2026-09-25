@@ -262,4 +262,48 @@ void main() {
       expect(await dao.skillPromptsForLevel('A1').get(), hasLength(1));
     });
   });
+
+  test('#324 formKeys: the forms, without auxiliaries, "am" or endings', () {
+    expect(formKeys('ist · ist gewesen (war)'), <String>[
+      'ist',
+      'gewesen',
+      'war',
+    ]);
+    expect(formKeys('fährt · ist gefahren'), <String>['faehrt', 'gefahren']);
+    expect(formKeys('älter · am ältesten'), <String>['aelter', 'aeltesten']);
+    expect(formKeys('Häuser'), <String>['haeuser']);
+    expect(formKeys('-en'), isEmpty);
+    expect(formKeys('hat vor · hat vorgehabt'), <String>['vorgehabt']);
+    expect(formKeys('sind gewesen'), <String>[
+      'gewesen',
+    ], reason: 'a long auxiliary');
+  });
+
+  group('#324 over the real course', () {
+    late AppDatabase real;
+    setUpAll(() async {
+      real = AppDatabase(DatabaseConnection(NativeDatabase.memory()));
+      await real.customStatement(
+        "ATTACH DATABASE '${ContentDao.attachPath(realContent())}' AS c",
+      );
+    });
+    tearDownAll(() => real.close());
+
+    test(
+      'FR-T5-03 ist, hat, gibt, kann are sein, haben, geben, können',
+      () async {
+        final dao = ContentDao(real);
+        for (final (token, german) in <(String, String)>[
+          ('ist', 'sein'),
+          ('hat', 'haben'),
+          ('gibt', 'geben'),
+          ('kann', 'koennen'),
+        ]) {
+          final word = await dao.wordForToken(token);
+          expect(word?.searchKey, german, reason: token);
+          expect(word?.pos, 'verb', reason: token);
+        }
+      },
+    );
+  });
 }

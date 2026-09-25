@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:deutschplan/data/db/app_database.dart';
 import 'package:deutschplan/domain/placement.dart';
+import 'package:deutschplan/domain/text_norm.dart' show searchKey;
 import 'package:drift/drift.dart';
 
 import 'dart:convert';
@@ -29,20 +30,65 @@ typedef CourseStep = ({String code, String levelCode, int wordCount});
 class ContentDao extends DatabaseAccessor<AppDatabase> with _$ContentDaoMixin {
   ContentDao(super.db);
 
-  /// FR-T5-03: the course word a sentence's token belongs to — its search
-  /// key itself, or the longest key the token starts with ("Wohnungen" for
-  /// "Wohnung"), three letters at least. Null for a word the course lacks.
+  /// FR-T5-03: the course word a sentence's token belongs to (#324): its
+  /// search key itself; else a form the course gives in `words.forms`
+  /// ("ist" for *sein*, "gibt" for *geben*, "Häuser" for *Haus*); else the
+  /// longest key, three letters at least, that the token is plus an
+  /// inflection ending ("Wohnungen" for *Wohnung*, "leichter" for
+  /// *leicht*). A compound is not its first part: "Hausfrau" is not *Haus*.
+  /// Null for a word the course lacks.
   Future<Word?> wordForToken(String key) async {
     if (key.isEmpty) return null;
-    final row = await customSelect(
-      'SELECT * FROM words WHERE search_key = ?1 '
-      "OR (length(search_key) >= 3 AND ?1 LIKE search_key || '%') "
-      'ORDER BY length(search_key) DESC, seq LIMIT 1',
-      variables: <Variable<Object>>[Variable<String>(key)],
-      readsFrom: <ResultSetImplementation<Object, Object>>{words},
-    ).getSingleOrNull();
-    return row == null ? null : words.map(row.data);
+    Future<Word?> where(String sql, List<Variable<Object>> variables) async {
+      final row = await customSelect(
+        'SELECT * FROM words WHERE $sql ORDER BY length(search_key) DESC, seq '
+        'LIMIT 1',
+        variables: variables,
+        readsFrom: <ResultSetImplementation<Object, Object>>{words},
+      ).getSingleOrNull();
+      return row == null ? null : words.map(row.data);
+    }
+
+    final exact = await where('search_key = ?1', <Variable<Object>>[
+      Variable<String>(key),
+    ]);
+    if (exact != null) return exact;
+    final form = (await _forms())[key];
+    if (form != null) {
+      return where('uid = ?1', <Variable<Object>>[Variable<String>(form)]);
+    }
+    return where(
+      "length(search_key) >= 3 AND ?1 LIKE search_key || '%' "
+      'AND substr(?1, length(search_key) + 1) IN '
+      "('e', 'en', 'er', 'es', 'em', 'ern', 'ens', 'n', 's', 'st', 't')",
+      <Variable<Object>>[Variable<String>(key)],
+    );
   }
+
+  /// Every form in `words.forms`, by search key, to its word: the first by
+  /// the course's order where two share one. Built once per DAO.
+  ///
+  /// ponytail: in memory, a few thousand keys; a `word_forms` table built by
+  /// the pipeline if the content ever gets big enough for this to show.
+  Future<Map<String, String>> _forms() => _formIndex ??= () async {
+    final index = <String, String>{};
+    final rows = await customSelect(
+      // Not a phrase's: "Zeit haben" carries haben's forms, and "hat" is
+      // haben, not the phrase.
+      "SELECT uid, forms FROM words WHERE forms IS NOT NULL AND german NOT LIKE '% %' "
+      'ORDER BY seq',
+      readsFrom: <ResultSetImplementation<Object, Object>>{words},
+    ).get();
+    for (final row in rows) {
+      final uid = row.read<String>('uid');
+      for (final key in formKeys(row.read<String>('forms'))) {
+        index.putIfAbsent(key, () => uid);
+      }
+    }
+    return index;
+  }();
+
+  Future<Map<String, String>>? _formIndex;
 
   /// The category most of [uids] belong to: T1's "7 new · Wohnen & Haushalt".
   ///
@@ -278,4 +324,27 @@ class ContentDao extends DatabaseAccessor<AppDatabase> with _$ContentDaoMixin {
   /// URI that would not open.
   static String attachPath(File file) =>
       file.absolute.path.replaceAll("'", "''");
+}
+
+/// The search keys of the forms in a `words.forms` cell: "ist · ist gewesen
+/// (war)" gives `ist`, `gewesen`, `war`. A perfect's auxiliary and a
+/// superlative's "am" go (they belong to other words); so does a short word
+/// beside another, a separable verb's particle ("hat vor" is not *vor*); an
+/// ending ("-en") is not a form.
+List<String> formKeys(String forms) {
+  const helpers = <String>{'hat', 'ist', 'sind', 'haben', 'sein', 'am'};
+  final keys = <String>[];
+  for (final part in forms.split(RegExp(r'[·,;/()]'))) {
+    final words = part.trim().split(RegExp(r'\s+'))
+      ..removeWhere((w) => w.isEmpty || w.startsWith('-'));
+    if (words.length > 1) {
+      if (helpers.contains(words.first.toLowerCase())) words.removeAt(0);
+      words.removeWhere((w) => w.length < 4);
+    }
+    for (final word in words) {
+      final key = searchKey(word, stripArticle: false);
+      if (key.isNotEmpty) keys.add(key);
+    }
+  }
+  return keys;
 }
