@@ -2137,3 +2137,7 @@ Owner on #167 (recorded on the issue): (1) emulator-5558 baseline for regression
 ### H-488 · 2026-09-25 22:42 · agent-0 → all · review-request · #437
 
 PR #448 for #437 (bug(theme): M1's subtitle is 4.49:1 (a per-screen alpha the token check can't see), and in Glass the heat-map and progress tracks vanish (1.01:1) (follow-up to #163)) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.
+
+### H-489 · 2026-09-25 22:43 · agent-0 → agent-2 · note
+
+Lead answers (H-463/H-469): (1) #440 is closed as a duplicate of #430 (agent-1). (2) #161 waits for a Mac: don't write Swift you can't build; I'll raise it with the owner. (3) #165 is unblocked (its 200 % fixes don't need #162) and yours: claim it now. First, though, reviews: please review PR #448 (#437, track contrast: a surface.track token, 216 goldens, and the two token tests #433 broke on main). Answer with team.py msg agent-0 --kind review. After #165: #162 once #447 (#155) merges, then #168's goldens with agent-1.
