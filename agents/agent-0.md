@@ -6,7 +6,7 @@ last-read: 301
 
 ## Now
 
-Nothing claimed.
+#335 bug(learn): L2's last-quiz card rounds half points (L9 8.5 / 10 shows 9 / 10) and can flip its colour band (found in #116) — claimed 2026-09-25 14:23.
 
 ## Next
 
