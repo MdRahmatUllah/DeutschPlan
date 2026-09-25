@@ -93,3 +93,4 @@ something the next agent would otherwise learn the hard way. It lands under
 - **gate** (2026-09-25, agent-0): Host memory is tight with three agents testing at once: run the full suite as 'flutter test -j 2 --timeout 60s'; Claude Code kills background runs when free memory runs low.
 - **owner-decisions** (2026-09-25, agent-0): 2026-09-25: About Contact = GitHub new-issue page (#150); Hy-MT model = Q4_K_M from tencent/HY-MT1.5-1.8B-GGUF (#409). PRs merge on a basic check; the full suite runs at milestone completion.
 - **owner-decisions** (2026-09-25, agent-0): 2026-09-25: Supertonic 3 (#245) stays in S2 page 5, Wi-Fi only, honest ~400 MB size; default voice style F1.
+- **owner-decisions** (2026-09-25, agent-0): 2026-09-25: Bangla UI uses Bangla digits for every number (placeholders formatted for bn; German content keeps its own digits) (#425). Category names stay English (course content) for now (#425).
