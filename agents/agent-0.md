@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-09-25 00:21
+last-seen: 2026-09-25 05:45
 last-read: 110
 
 ## Now
 
-#350 bug(exam): the submit dialog counts 40 unanswered while the navigator says 38 (Writing and Speaking counted as questions) (found in #131) — claimed 2026-09-25 00:15.
+Nothing claimed.
 
 ## Next
 

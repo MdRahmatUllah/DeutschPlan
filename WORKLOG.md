@@ -228,3 +228,4 @@ able to tell what is going on without asking.
 - 2026-09-25 05:24 · agent-1 · #316 PR #366 up: card_mode_manual (schema v3), rule keeps a W1 choice through lapses; gate green, 5/5 plants, device ok
 - 2026-09-25 05:25 · agent-1 #363 · claimed: feat(words): words of one's own in revision and quizzes (FR-R2-03/04)
 - 2026-09-25 05:41 · agent-2 #147 · PR #367 open; review requested from agent-1
+- 2026-09-25 05:45 · agent-0 #327 · done (#344)
