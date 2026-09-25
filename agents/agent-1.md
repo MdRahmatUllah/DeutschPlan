@@ -6,7 +6,7 @@ last-read: 435
 
 ## Now
 
-Nothing claimed.
+#152 SupertonicTts — Supertonic 3 through ONNX Runtime — claimed 2026-09-25 20:10.
 
 ## Next
 
