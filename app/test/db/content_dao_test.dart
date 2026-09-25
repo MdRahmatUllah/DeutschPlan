@@ -277,6 +277,14 @@ void main() {
     expect(formKeys('sind gewesen'), <String>[
       'gewesen',
     ], reason: 'a long auxiliary');
+    expect(formKeys('steht auf · ist aufgestanden'), <String>['aufgestanden']);
+    expect(formKeys('kommt zurück · ist zurückgekommen'), <String>[
+      'zurueckgekommen',
+    ]);
+    expect(formKeys('freut sich · hat sich gefreut'), <String>[
+      'freut',
+      'gefreut',
+    ]);
   });
 
   group('#324 over the real course', () {
@@ -288,6 +296,21 @@ void main() {
       );
     });
     tearDownAll(() => real.close());
+
+    test('FR-T5-03 a split verb, a particle and -t are not other words, and '
+        'a word beats a phrase', () async {
+      final dao = ContentDao(real);
+      Future<String?> key(String token) async =>
+          (await dao.wordForToken(token))?.searchKey;
+      expect(await key('steht'), 'stehen', reason: 'not aufstehen');
+      expect(await key('zurueck'), isNot('zurueckrufen'), reason: 'a particle');
+      expect(await key('nach'), 'nach', reason: 'exact before forms');
+      expect((await dao.wordForToken('geht'))?.pos, isNot('phrase'));
+      expect(await key('erfolgt'), isNot('erfolg'), reason: 'no -t ending');
+      expect(await key('wohnungen'), 'wohnung');
+      expect(await key('leichter'), 'leicht');
+      expect(await key('freut'), 'sich freuen');
+    });
 
     test(
       'FR-T5-03 ist, hat, gibt, kann are sein, haben, geben, können',

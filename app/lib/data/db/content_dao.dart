@@ -49,18 +49,28 @@ class ContentDao extends DatabaseAccessor<AppDatabase> with _$ContentDaoMixin {
       return row == null ? null : words.map(row.data);
     }
 
-    final exact = await where('search_key = ?1', <Variable<Object>>[
-      Variable<String>(key),
-    ]);
+    final exact = await where(
+      "search_key = ?1 AND coalesce(pos, '') <> 'phrase'",
+      <Variable<Object>>[Variable<String>(key)],
+    );
     if (exact != null) return exact;
     final form = (await _forms())[key];
     if (form != null) {
       return where('uid = ?1', <Variable<Object>>[Variable<String>(form)]);
     }
+    // A phrase keyed the same only after the words and their forms: "geht"
+    // is gehen's, not "geht"'s ("it works").
+    final phrase = await where('search_key = ?1', <Variable<Object>>[
+      Variable<String>(key),
+    ]);
+    if (phrase != null) return phrase;
     return where(
       "length(search_key) >= 3 AND ?1 LIKE search_key || '%' "
       'AND substr(?1, length(search_key) + 1) IN '
-      "('e', 'en', 'er', 'es', 'em', 'ern', 'ens', 'n', 's', 'st', 't')",
+      // Not -t or -st: the headwords are infinitives, nouns and
+      // adjectives, and "bist", "erfolgt", "gehört" are not bis, Erfolg,
+      // Gehör.
+      "('e', 'en', 'er', 'es', 'em', 'ern', 'ens', 'n', 's')",
       <Variable<Object>>[Variable<String>(key)],
     );
   }
@@ -74,9 +84,9 @@ class ContentDao extends DatabaseAccessor<AppDatabase> with _$ContentDaoMixin {
     final index = <String, String>{};
     final rows = await customSelect(
       // Not a phrase's: "Zeit haben" carries haben's forms, and "hat" is
-      // haben, not the phrase.
-      "SELECT uid, forms FROM words WHERE forms IS NOT NULL AND german NOT LIKE '% %' "
-      'ORDER BY seq',
+      // haben, not the phrase. A verb of more words (sich freuen) is fine.
+      "SELECT uid, forms FROM words WHERE forms IS NOT NULL "
+      "AND coalesce(pos, '') <> 'phrase' ORDER BY seq",
       readsFrom: <ResultSetImplementation<Object, Object>>{words},
     ).get();
     for (final row in rows) {
@@ -327,24 +337,26 @@ class ContentDao extends DatabaseAccessor<AppDatabase> with _$ContentDaoMixin {
 }
 
 /// The search keys of the forms in a `words.forms` cell: "ist · ist gewesen
-/// (war)" gives `ist`, `gewesen`, `war`. A perfect's auxiliary and a
-/// superlative's "am" go (they belong to other words); so does a short word
-/// beside another, a separable verb's particle ("hat vor" is not *vor*); an
+/// (war)" gives `ist`, `gewesen`, `war`. A perfect's auxiliary, a
+/// superlative's "am" and a reflexive's "sich" go (they belong to other
+/// words). A separable verb split in two gives nothing: "steht auf" is not
+/// *stehen*'s, nor its particle ("hat vor", "kommt zurück") a word's. An
 /// ending ("-en") is not a form.
 List<String> formKeys(String forms) {
-  const helpers = <String>{'hat', 'ist', 'sind', 'haben', 'sein', 'am'};
+  const helpers = <String>{'hat', 'ist', 'sind', 'haben', 'sein', 'am', 'sich'};
   final keys = <String>[];
   for (final part in forms.split(RegExp(r'[·,;/()]'))) {
     final words = part.trim().split(RegExp(r'\s+'))
       ..removeWhere((w) => w.isEmpty || w.startsWith('-'));
-    if (words.length > 1) {
-      if (helpers.contains(words.first.toLowerCase())) words.removeAt(0);
-      words.removeWhere((w) => w.length < 4);
-    }
-    for (final word in words) {
-      final key = searchKey(word, stripArticle: false);
-      if (key.isNotEmpty) keys.add(key);
-    }
+    final more = words.length > 1;
+    words.removeWhere((w) => helpers.contains(w.toLowerCase()) && more);
+    // Still two words: a separable verb split ("steht auf" is aufstehen,
+    // but "steht" is stehen), so neither is this word's. One left beside a
+    // helper must be a participle or a superlative, not a particle ("hat
+    // vor").
+    if (words.length != 1 || (more && words.single.length < 4)) continue;
+    final key = searchKey(words.single, stripArticle: false);
+    if (key.isNotEmpty) keys.add(key);
   }
   return keys;
 }
