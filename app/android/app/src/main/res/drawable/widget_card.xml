@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- X1's card (#160): the card colour, light or night, rounded on every Android the app runs on. -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
+    <solid android:color="@color/widget_card" />
+    <corners android:radius="18dp" />
+</shape>

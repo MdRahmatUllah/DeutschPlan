@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- X1's *Pronounce* (#160): a Lagoon disc with the ink edge and play mark. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="26dp"
+    android:height="26dp"
+    android:viewportWidth="26"
+    android:viewportHeight="26">
+    <path
+        android:fillColor="@color/widget_primary"
+        android:strokeColor="@color/widget_ink"
+        android:strokeWidth="1.5"
+        android:pathData="M13,1.75a11.25,11.25 0,1 1,0 22.5a11.25,11.25 0,1 1,0 -22.5z" />
+    <path
+        android:fillColor="@color/widget_on_accent"
+        android:pathData="M10.5,8.5L18,13L10.5,17.5z" />
+</vector>

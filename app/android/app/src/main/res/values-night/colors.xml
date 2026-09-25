@@ -4,4 +4,18 @@
     <color name="splash_field">#2EE6D6</color>
     <color name="splash_mark">#FFD54A</color>
     <color name="splash_ink">#F4F1FF</color>
+
+    <!-- X1's dark tokens (#160). Glass draws as this opaque fallback. -->
+    <color name="widget_card">#1E1B2C</color>
+    <color name="widget_track">#29253A</color>
+    <color name="widget_outline">#38F4F1FF</color>
+    <color name="widget_ink">#F4F1FF</color>
+    <color name="widget_secondary">#B7B1CC</color>
+    <color name="widget_primary">#2EE6D6</color>
+    <color name="widget_accent">#FFD54A</color>
+    <color name="widget_on_accent">#15121F</color>
+    <color name="widget_easy">#C4F266</color>
+    <color name="widget_der">#8C9DFF</color>
+    <color name="widget_die">#FF8AB2</color>
+    <color name="widget_das">#4FE3A0</color>
 </resources>

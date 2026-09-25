@@ -821,5 +821,13 @@
   "examReviewWrongOne": "ভুল",
   "examReviewNoAnswer": "উত্তর নেই",
   "examReviewOpenWord": "শব্দটি খুলুন",
-  "examReviewAnswerLabel": "{label}: {value}"
+  "examReviewAnswerLabel": "{label}: {value}",
+  "widgetLeft": "{count}টি বাকি",
+  "widgetLeftStep": "{count}টি বাকি · {step}",
+  "widgetProgress": "{done}/{total}",
+  "widgetWordOfDay": "Wort des Tages",
+  "widgetPronounce": "উচ্চারণ",
+  "widgetDone": "আজকের কাজ শেষ",
+  "widgetTomorrow": "আগামীকাল · {plan}",
+  "widgetGrammar": "{count, plural, other{{count}টি ব্যাকরণ বিষয়}}"
 }

@@ -9,4 +9,20 @@
     <color name="splash_field">#00C2B2</color>
     <color name="splash_mark">#FFC61A</color>
     <color name="splash_ink">#15121F</color>
+
+    <!-- X1, the home-screen widget (#160): the light tokens it draws with,
+         duplicated for the same reason (Glance can't read Dart), and held to
+         them by widget_colours_test.dart. -->
+    <color name="widget_card">#FFFFFF</color>
+    <color name="widget_track">#F3EADB</color>
+    <color name="widget_outline">#3315121F</color>
+    <color name="widget_ink">#15121F</color>
+    <color name="widget_secondary">#5B5670</color>
+    <color name="widget_primary">#00C2B2</color>
+    <color name="widget_accent">#FFC61A</color>
+    <color name="widget_on_accent">#15121F</color>
+    <color name="widget_easy">#A6E22E</color>
+    <color name="widget_der">#3D5AFE</color>
+    <color name="widget_die">#FF3D7F</color>
+    <color name="widget_das">#00B86B</color>
 </resources>

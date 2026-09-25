@@ -4976,5 +4976,68 @@
         "type": "String"
       }
     }
+  },
+  "widgetLeft": "{count} left",
+  "@widgetLeft": {
+    "description": "X1's small widget (#160): what is left of today, e.g. '8 left'.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "widgetLeftStep": "{count} left · {step}",
+  "@widgetLeftStep": {
+    "description": "X1's medium widget under the ring: '8 left · A2.1'.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "step": {
+        "type": "String"
+      }
+    }
+  },
+  "widgetProgress": "{done}/{total}",
+  "@widgetProgress": {
+    "description": "X1's medium ring: done of today's total, '12/20'.",
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "widgetWordOfDay": "Wort des Tages",
+  "@widgetWordOfDay": {
+    "description": "X1's medium widget: the word of the day's heading, German in every language, as the artboard has it."
+  },
+  "widgetPronounce": "Pronounce",
+  "@widgetPronounce": {
+    "description": "X1's medium widget: opens the word and plays it (FR-X1-02)."
+  },
+  "widgetDone": "Done for today",
+  "@widgetDone": {
+    "description": "X1 once the day is done, beside the Lime check."
+  },
+  "widgetTomorrow": "Tomorrow · {plan}",
+  "@widgetTomorrow": {
+    "description": "X1 once the day is done: tomorrow's plan, e.g. 'Tomorrow · 12 revisions · 7 new'.",
+    "placeholders": {
+      "plan": {
+        "type": "String"
+      }
+    }
+  },
+  "widgetGrammar": "{count, plural, =1{1 grammar topic} other{{count} grammar topics}}",
+  "@widgetGrammar": {
+    "description": "X1's tomorrow line: the grammar topics due, e.g. 'Tomorrow · 7 new · 1 grammar topic'.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   }
 }
