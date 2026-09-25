@@ -247,18 +247,30 @@ SELECT ?1, ?2, ?3, code FROM (
   /// top. Skipped rows stay in it — BR-PLAN-06 says a skip leaves the word
   /// uncompleted, and `skipped` is there to stop it being offered again in the
   /// same session, not to remove it.
+  ///
+  /// A suspended word's row isn't counted (#368): the word is out of the plan
+  /// (BR-STATUS-03), so it neither holds BR-PLAN-07's pause on nor waits in
+  /// T1's or T6's count. T4 still lists it, from its own query, so it can be
+  /// resumed.
   @override
   Future<List<String>> backlogBefore(PlanDate today) async {
     final rows = await _db
         .customSelect(
           '''
 SELECT word_uid AS uid
-FROM plan_items
+FROM plan_items p
 WHERE kind = 'new' AND completed_at IS NULL AND plan_date < ?1
+  AND NOT EXISTS (
+    SELECT 1 FROM word_state s
+    WHERE s.word_uid = p.word_uid AND s.status = 'suspended'
+  )
 ORDER BY plan_date DESC, word_uid
 ''',
           variables: <Variable<Object>>[Variable<String>(today)],
-          readsFrom: <ResultSetImplementation<Object, Object>>{_db.planItems},
+          readsFrom: <ResultSetImplementation<Object, Object>>{
+            _db.planItems,
+            _db.wordState,
+          },
         )
         .get();
 

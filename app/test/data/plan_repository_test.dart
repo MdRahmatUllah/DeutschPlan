@@ -433,6 +433,40 @@ void main() {
       ]);
       expect(await plan.watchBacklog(today).first, isEmpty);
     });
+
+    test("#368 a suspended word's row: out of Today's count, still in T4's "
+        'list, which follows its state', () async {
+      await plan.writePlan(<PlanEntry>[
+        for (final uid in <String>['w1', 'w2'])
+          PlanEntry(
+            planDate: '2026-03-01',
+            wordUid: uid,
+            kind: PlanKind.newWord,
+            sublevelCode: 'A1.1',
+          ),
+      ]);
+      final t4 = plan.watchBacklogWithStates(today);
+      final lists = <List<String>>[];
+      final listening = t4.listen(
+        (rows) => lists.add(<String>[for (final row in rows) row.wordUid]),
+      );
+      addTearDown(listening.cancel);
+      await pumpEventQueue();
+      await db.customStatement(
+        "INSERT INTO word_state (word_uid, status) VALUES ('w1', 'suspended')",
+      );
+      db.markTablesUpdated(<TableInfo<Table, Object?>>{db.wordState});
+      await pumpEventQueue();
+
+      expect(
+        <String>[
+          for (final row in await plan.watchBacklog(today).first) row.wordUid,
+        ],
+        <String>['w2'],
+      );
+      expect(lists.length, greaterThanOrEqualTo(2), reason: 'T4 re-read it');
+      expect(lists.last, <String>['w1', 'w2']);
+    });
   });
 
   test('the plan stream re-emits when a rating completes a row', () async {

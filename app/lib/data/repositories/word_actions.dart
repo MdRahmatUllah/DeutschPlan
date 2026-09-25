@@ -123,15 +123,17 @@ class WordActions {
     });
   }
 
-  /// FR-W1-02, BR-STATUS-03: a suspended word is out of today's plan, so its
-  /// open rows for [today] go (#351). Otherwise Today would still count it
-  /// and the session serve it. Its backlog rows stay, as T4's own *Suspend*
-  /// keeps them (#368): T4 lists a suspended word without studying it, and a
-  /// word from an earlier step has no other way back into the plan, since
-  /// only the active step's new words are planned. *Resume* brings back
-  /// nothing more: the plan picks the word up as it would any other. *Undo*
-  /// restores the rows and the state as they were, which for a word never
-  /// met is no state row at all.
+  /// FR-W1-02, BR-STATUS-03: a suspended word is out of today's plan
+  /// (#351), so Today no longer counts it and the session doesn't serve it.
+  /// Today's open revision goes, since the scheduler brings a revision back.
+  /// Today's open `new` row is skipped instead (BR-PLAN-10 then counts it
+  /// done), and from tomorrow it's backlog, like the word's older rows, which
+  /// stay as T4's own *Suspend* keeps them (#368). T4 lists a suspended word
+  /// without studying it. A new word needs its row: only the active step's
+  /// new words are planned, so a word from an earlier step, or one moved to
+  /// today by *Add to today*, would have no other way back. A done row is the
+  /// day's history and is left alone. *Undo* restores the rows and the state
+  /// as they were, which for a word never met is no state row at all.
   Future<Undo> suspend(String uid, {required String today}) =>
       _db.transaction(() async {
         Expression<bool> open(PlanItems t) =>
@@ -141,7 +143,12 @@ class WordActions {
         final before = await _stateOf(uid);
         final rows = await (_db.select(_db.planItems)..where(open)).get();
         await _rating.suspend(uid);
-        await (_db.delete(_db.planItems)..where(open)).go();
+        await (_db.delete(
+          _db.planItems,
+        )..where((t) => open(t) & t.kind.equals('revise'))).go();
+        await (_db.update(_db.planItems)
+              ..where((t) => open(t) & t.kind.equals('new')))
+            .write(const PlanItemsCompanion(skipped: Value(1)));
         return () => _db.transaction(() async {
           await _restore(uid, before);
           for (final row in rows) {

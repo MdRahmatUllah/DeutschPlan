@@ -51,7 +51,7 @@ Today keeps the study days it was planned with (BR-PLAN-08, #147): planning a da
 
 - `rate(uid, rating, planDate?, kind?, source)` → `Fsrs.review` → upsert `word_state`; status = `done` if `stability >= done_stability_days` else `learning`, except that a suspended word stays suspended (BR-STATUS-03, #351); `card_mode = cloze` after two consecutive ≥ Good and back to plain on a rating below Good, unless `card_mode_manual` says the learner chose it; write `review_log`, mark `plan_items.completed_at`, bump `daily_stats`, push undo.
 - `markKnown(uid)` = `rate(uid, 4, source: known)`.
-- `suspend(uid)` sets `suspended` and keeps the FSRS state. W1's also drops the word's open plan rows for today (#351). Its backlog rows stay (#368): the backlog query doesn't filter suspended words, T4 lists them without studying them, and the backlog pause still counts them. `resume(uid)` derives the status from the schedule. The new-word pick and the revision candidates leave suspended words out.
+- `suspend(uid)` sets `suspended` and keeps the FSRS state. W1's also drops the word's open revision for today and skips its open `new` row for today (#351). Its backlog rows stay (#368): T4 lists them without studying them, while `backlogBefore`, Today's backlog and the backlog pause (BR-PLAN-07) leave a suspended word's rows out. `resume(uid)` derives the status from the schedule. The new-word pick and the revision candidates leave suspended words out.
 - Day complete (BR-PLAN-10) is computed, not stored: all today's plan items completed or skipped, grammar due empty, sentences rated or `sentence_count == 0`.
 
 ## Schedule check ("Am I on schedule?")

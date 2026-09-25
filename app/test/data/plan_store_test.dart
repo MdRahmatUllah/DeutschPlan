@@ -524,6 +524,14 @@ VALUES (?, ?, ?, ?, ?)
       expect(await store.backlogBefore(addDays(monday, 1)), <String>['s1']);
     });
 
+    test("#368 BR-STATUS-03 and not a suspended word's: it's out of the "
+        'plan, so it holds no pause on and waits in no count', () async {
+      await store.addToPlan(monday, PlanKind.newWord, <String>['s1', 's2']);
+      await wordState('s1', status: 'suspended');
+
+      expect(await store.backlogBefore(addDays(monday, 1)), <String>['s2']);
+    });
+
     test('and never a revise row', () async {
       // A missed revision is not backlog: FSRS reschedules it by itself.
       await store.addToPlan(monday, PlanKind.revise, <String>['s1']);

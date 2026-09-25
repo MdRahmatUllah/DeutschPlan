@@ -80,8 +80,6 @@ class Backlog extends _$Backlog {
         await rating.suspend(uid);
         await _complete(row, at: ref.read(clockProvider)().toUtc());
     }
-    // A suspension touches word_state, which the plan stream does not watch.
-    ref.invalidateSelf();
   }
 
   /// The row action's *Undo*.
@@ -97,7 +95,6 @@ class Backlog extends _$Backlog {
         await _complete(row, at: null);
         await rating.resume(uid);
     }
-    ref.invalidateSelf();
   }
 
   Future<void> _complete(BacklogWord row, {required DateTime? at}) => ref

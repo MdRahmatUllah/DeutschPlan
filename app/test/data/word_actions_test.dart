@@ -202,24 +202,59 @@ void main() {
       expect(await state(), isNull);
     });
 
-    test("#351 #368 a planned word leaves today's open rows and keeps its "
-        'backlog; Undo puts back exactly what went', () async {
-      await planned(today);
-      await planned(today, kind: 'revise', skipped: true);
-      await planned('2026-02-27');
-      await planned('2026-02-26', skipped: true);
-      await planned('2026-02-20', kind: 'revise', done: '2026-02-20T08:00:00Z');
-      final before = await plan();
-      final undo = await actions.suspend(uid, today: today);
-      expect(
-        (await plan()).map((row) => row.planDate),
-        unorderedEquals(<String>['2026-02-27', '2026-02-26', '2026-02-20']),
-        reason: "the backlog as T4 keeps it, and a done row, history",
-      );
+    test(
+      "#351 #368 a planned word leaves today's revision, skips today's "
+      'new row and keeps its backlog; Undo puts back exactly what went',
+      () async {
+        await planned(today);
+        await planned(today, kind: 'revise', skipped: true);
+        await planned('2026-02-27');
+        await planned('2026-02-26', skipped: true);
+        await planned(
+          '2026-02-20',
+          kind: 'revise',
+          done: '2026-02-20T08:00:00Z',
+        );
+        final before = await plan();
+        final undo = await actions.suspend(uid, today: today);
+        final after = await plan();
+        expect(
+          after.map((row) => (row.planDate, row.kind, row.skipped)),
+          unorderedEquals(<(String, String, int)>[
+            (today, 'new', 1),
+            ('2026-02-27', 'new', 0),
+            ('2026-02-26', 'new', 1),
+            ('2026-02-20', 'revise', 0),
+          ]),
+          reason: "today's new row is tomorrow's backlog; a done row, history",
+        );
 
-      await undo();
-      expect(await plan(), unorderedEquals(before));
-      expect(await state(), isNull);
+        await undo();
+        expect(await plan(), unorderedEquals(before));
+        expect(await state(), isNull);
+      },
+    );
+
+    test("#368 today's done row stays: it's the day's history", () async {
+      await planned(today, done: '2026-03-02T08:00:00Z');
+      final before = await plan();
+      await actions.suspend(uid, today: today);
+      expect(await plan(), before);
+    });
+
+    test('#368 a word moved to today by Add to today, suspended and resumed, '
+        'is backlog from tomorrow', () async {
+      await planned('2026-02-27');
+      await actions.addToToday(uid, today: today, step: 'A1.1');
+      await actions.suspend(uid, today: today);
+      final store = DriftPlanStore(db, settings);
+      expect(
+        await store.backlogBefore('2026-03-03'),
+        isEmpty,
+        reason: 'suspended, it is out of the count',
+      );
+      await actions.resume(uid);
+      expect(await store.backlogBefore('2026-03-03'), <String>[uid]);
     });
 
     test('#368 Suspend and Resume of a backlog word from an earlier step '
