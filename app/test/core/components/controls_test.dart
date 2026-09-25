@@ -9,6 +9,8 @@ import 'package:deutschplan/main.dart'
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 
+import '../text_clipping.dart';
+
 /// Every size, radius and fill here is read off `Foundations.html`; these tests
 /// hold the widgets to it. Where the artboard and a Material default disagree,
 /// the artboard wins — that disagreement is why these are not Material widgets.
@@ -585,6 +587,42 @@ void main() {
   // ONBOARDING §6: every tappable thing is a button in semantics, and a
   // screen reader can press it. These run the semantics action itself, not a
   // pointer tap, which is what TalkBack's double tap sends.
+  testWidgets('#314 at 200 % text every chip kind grows with its label, and '
+      'is the artboard height at 100 %', (tester) async {
+    Widget chips() => Wrap(
+      spacing: 8,
+      runSpacing: 8,
+      children: <Widget>[
+        const DpChip(label: 'A2.2'),
+        DpChip(
+          label: 'To do',
+          kind: DpChipKind.status,
+          statusColour: DpPalette.light.easy,
+        ),
+        DpChip(label: 'Relaxed · 5', kind: DpChipKind.filter, onTap: () {}),
+        DpChip(label: '12', kind: DpChipKind.streak, onTap: () {}),
+        DpChip(label: 'Duden', kind: DpChipKind.webLink, onTap: () {}),
+      ],
+    );
+    await pump(tester, chips());
+    final atOne = <double>[
+      for (final chip in tester.widgetList(find.byType(DpChip)))
+        tester.getSize(find.byWidget(chip)).height,
+    ];
+    expect(atOne, <double>[24, 24, 32, 28, 32]);
+
+    textAt(tester, 2);
+    await pump(tester, chips());
+    expectNothingClipped(tester);
+    final atTwo = <double>[
+      for (final chip in tester.widgetList(find.byType(DpChip)))
+        tester.getSize(find.byWidget(chip)).height,
+    ];
+    for (final (i, height) in atTwo.indexed) {
+      expect(height, greaterThan(atOne[i]), reason: 'chip $i');
+    }
+  });
+
   group('#312 a screen reader can press them', () {
     testWidgets('a DpChip', (tester) async {
       final semantics = tester.ensureSemantics();

@@ -1,3 +1,5 @@
+import '../core/text_clipping.dart';
+
 import 'dart:io';
 
 import 'package:deutschplan/core/components/dp_chip.dart';
@@ -155,6 +157,12 @@ void main() {
       find.descendant(of: kitchen, matching: find.text(l10n.wordStatusDone)),
       findsOneWidget,
     );
+  });
+
+  testWidgets('#314 at 200 % text nothing on L6 is cut', (tester) async {
+    textAt(tester, 2);
+    await pump(tester);
+    expectNothingClipped(tester, within: find.byType(CategoryWordsScreen));
   });
 
   testWidgets('the level chips: All · A1 · A2 · B1 · B2+', (tester) async {

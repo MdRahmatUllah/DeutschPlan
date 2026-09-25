@@ -7,6 +7,7 @@
 - Every control a screen reader hears as a button can be pressed by one. A `Semantics(button: …)` that hides its child's semantics, through `ExcludeSemantics` or `excludeSemantics: true`, also hides the tap its `GestureDetector` would give. So it carries `onTap:` (and `onLongPress:`) itself (#312). `architecture_test.dart` enforces this.
 - Never colour alone: articles printed, statuses labelled, verdicts have icons and words.
 - Text scaling to 200 %; long compounds soft-hyphenate.
+- An artboard height is a minimum, never a fixed height, wherever text sits inside it. Chips, word rows and chip rows grow at large text; lists use a `prototypeItem`, not a fixed `itemExtent`. Android's tab bar scrolls past 130 %. The ring's count and caption scale down inside its inner circle (#314). `expectNothingClipped` (`test/core/text_clipping.dart`) catches text cut to a fixed box, which raises no exception.
 - Targets ≥ 48 dp / 44 pt; every swipe has a button equivalent; the only timer (exams) can be paused or disabled.
 - Every audio item has its text on screen; listening questions can be disabled in Settings.
 - Focus order follows visual order; after rating, focus moves to the next card.

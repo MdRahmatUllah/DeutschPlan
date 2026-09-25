@@ -52,6 +52,10 @@ class DpProgressRing extends StatelessWidget {
   static const double _radiusFraction = 54 / 120;
   static const double _strokeFraction = 12 / 120;
 
+  /// The inner circle's radius, as a fraction of [size]: the stroke's
+  /// centre line less half its width.
+  static const double _inner = _radiusFraction - _strokeFraction / 2;
+
   /// 0 when nothing is planned — an empty ring, never a divide by zero.
   double get progress => total <= 0 ? 0 : (completed / total).clamp(0.0, 1.0);
 
@@ -79,32 +83,39 @@ class DpProgressRing extends StatelessWidget {
             // DpHeadword in #190, and deliberately: a headword is the content
             // and must stay legible, whereas these numbers are repeated in the
             // section cards beside the ring.
+            // Inside the stroke: a box whose corners stay within the inner
+            // circle, so text scaled down at 200 % never runs over the ring
+            // (#314). At 100 % the count and caption fit it as they are.
             child: !showCount
                 ? null
                 : Center(
-                    child: FittedBox(
-                      fit: BoxFit.scaleDown,
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: <Widget>[
-                          DpText(
-                            countLabel ?? '$completed / $total',
-                            role: DpTextRole.title,
-                            weight: 600,
-                          ),
-                          if (caption != null)
+                    child: SizedBox(
+                      width: _inner * size * 1.7,
+                      height: _inner * size,
+                      child: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
                             DpText(
-                              caption!,
-                              role: DpTextRole.caption,
-                              color: tokens.color.textSecondary,
-                            )
-                          else if (captionIcon != null)
-                            Icon(
-                              captionIcon,
-                              size: size / 6,
-                              color: tokens.color.ink,
+                              countLabel ?? '$completed / $total',
+                              role: DpTextRole.title,
+                              weight: 600,
                             ),
-                        ],
+                            if (caption != null)
+                              DpText(
+                                caption!,
+                                role: DpTextRole.caption,
+                                color: tokens.color.textSecondary,
+                              )
+                            else if (captionIcon != null)
+                              Icon(
+                                captionIcon,
+                                size: size / 6,
+                                color: tokens.color.ink,
+                              ),
+                          ],
+                        ),
                       ),
                     ),
                   ),

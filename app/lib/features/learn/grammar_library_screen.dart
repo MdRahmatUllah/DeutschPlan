@@ -71,11 +71,12 @@ class _GrammarLibraryScreenState extends ConsumerState<GrammarLibraryScreen> {
       body = Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          SizedBox(
-            height: 48,
-            child: ListView(
-              scrollDirection: Axis.horizontal,
-              padding: const EdgeInsets.fromLTRB(16, 6, 16, 10),
+          // Sized by its chips, not a fixed height: at 200 % text they grow,
+          // and a fixed box would cut them (#314).
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            padding: const EdgeInsets.fromLTRB(16, 6, 16, 10),
+            child: Row(
               children: <Widget>[
                 for (final (filter, label) in <(LibraryFilter, String)>[
                   (

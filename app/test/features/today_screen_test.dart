@@ -3,6 +3,8 @@ import 'package:deutschplan/core/components/dp_coach_mark.dart';
 
 import 'package:deutschplan/features/study/study_screen.dart';
 
+import '../core/text_clipping.dart';
+
 import 'dart:io';
 
 import 'package:deutschplan/data/db/content_dao.dart';
@@ -136,6 +138,37 @@ void main() {
   });
 
   group('the ring card', () {
+    testWidgets('#314 at 200 % text the card cuts nothing, and the ring\'s '
+        'count and caption stay inside its stroke', (tester) async {
+      textAt(tester, 2);
+      await pump(tester);
+      expectNothingClipped(tester, within: find.byType(ProgressRingCard));
+
+      final ring = tester.getRect(
+        find.descendant(
+          of: find.byType(ProgressRingCard),
+          matching: find.byType(DpProgressRing),
+        ),
+      );
+      // The inner circle: the stroke's centre line less half its width.
+      final inner = ring.width * (54 - 6) / 120;
+      for (final text in <String>['12 / 20', l10n.todayEstimate(6)]) {
+        final box = tester.getRect(find.text(text));
+        for (final corner in <Offset>[
+          box.topLeft,
+          box.topRight,
+          box.bottomLeft,
+          box.bottomRight,
+        ]) {
+          expect(
+            (corner - ring.center).distance,
+            lessThanOrEqualTo(inner),
+            reason: '"$text" runs over the stroke',
+          );
+        }
+      }
+    });
+
     testWidgets('FR-T1-02 shows done over total and the time left', (
       tester,
     ) async {
