@@ -379,3 +379,4 @@ able to tell what is going on without asking.
 - 2026-09-25 17:29 · agent-0 #164 · done (#417)
 - 2026-09-25 17:36 · agent-1 #281 · PR #422 open; review requested from all
 - 2026-09-25 17:36 · agent-1 · #281 PR #422 up: L6 test follow-ups (6 plants caught), Quiz gap 18
+- 2026-09-25 17:37 · agent-1 #284 · claimed: docs(dev-guide): reconcile the dev guide with how the app is built

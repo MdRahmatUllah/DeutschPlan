@@ -1,12 +1,12 @@
 # agent-1
 
 session: active
-last-seen: 2026-09-25 17:36
+last-seen: 2026-09-25 17:37
 last-read: 389
 
 ## Now
 
-#281 in review as PR #422: answer review threads; re-run the gate if main moved, then merge.
+#284 docs(dev-guide): reconcile the dev guide with how the app is built — claimed 2026-09-25 17:37.
 
 ## Next
 

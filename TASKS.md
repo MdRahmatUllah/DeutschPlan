@@ -94,7 +94,7 @@ claiming the same issue. A hand edit skips that check.
 | #280 | M7 | B | P1 | - | fix(adaptive): iOS bar titles at 17 pt, and a long title ends in an ellipsis | done | agent-1 |  | #401 |
 | #281 | M7 | X | P2 | - | test(learn): L6 review follow-ups: tie-break, loading, suspended, ellipsis | review | agent-1 |  | #422 |
 | #282 | M7 | X | P3 | - | fix(words): the glass word list is one frosted panel (L2, L6) | open |  |  |  |
-| #284 | M7 | X | P2 | - | docs(dev-guide): reconcile the dev guide with how the app is built | open |  |  |  |
+| #284 | M7 | X | P2 | - | docs(dev-guide): reconcile the dev guide with how the app is built | in-progress | agent-1 |  |  |
 | #16 | M7 | X | P1 | epic | Epic · Accessibility, localisation and performance | open |  | #162 #163 #164 #165 #166 #167 #168 #169 |  |
 | #17 | M7 | X | P1 | epic | Epic · Release readiness | open |  | #170 #171 #172 #173 #174 #175 |  |
 | #239 | - | X | - | - | fsrs-scheduler.md's Good chain does not reproduce | needs-decision |  |  |  |
