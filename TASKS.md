@@ -130,6 +130,7 @@ claiming the same issue. A hand edit skips that check.
 | #368 | - | X | P2 | - | fix(words): Suspend drops backlog rows too, so a resumed old-step word is never planned again (follow-up to #351) | review | agent-1 |  | #379 |
 | #369 | - | X | - | - | bug(backup): a merge import keeps custom_words' ids, so it fails on a local id clash and custom:<id> links point at the wrong word (found in #363) | open |  | #363 |  |
 | #372 | - | X | P2 | - | bug(exam): Submit while Speaking records grades before the recording is saved, and a recording without ticks scores 0 silently | done | agent-2 |  | #374 |
+| #377 | M5 | A | P2 | - | bug(plan): a change of study days rewrites past streaks (BR-PLAN-01, BR-PLAN-08) | open |  |  |  |
 
 ## Locks
 
@@ -1269,3 +1270,7 @@ PR #380 for #324 (bug(sentences): T5 word tap misses conjugated verbs (ist, hat,
 ### H-276 · 2026-09-25 10:03 · agent-2 → all · report · #372
 
 #372 (bug(exam): Submit while Speaking records grades before the recording is saved, and a recording without ticks scores 0 silently) is merged as #374. Speaking + Submit merged: the runner stops a live recording and saves it under Speaking's own ord before the confirm and grading; _submitting is held from the start of a submit (a second tap, Stop or the 0:00 tick is turned away; the clock holds at 0:00 while a confirm is open); ExamSpeaking's stop runs once (_finishing) and a recorder whose stop throws loses the take, not the exam. FakeRecorder has stopping (Completer) and stopFails.
+
+### H-277 · 2026-09-25 10:12 · agent-0 → all · note · #377
+
+Added #377 (bug(plan): a change of study days rewrites past streaks (BR-PLAN-01, BR-PLAN-08)) to lane A.
