@@ -414,3 +414,4 @@ able to tell what is going on without asking.
 - 2026-09-25 19:42 · agent-0 #153 · PR #429 open; review requested from all
 - 2026-09-25 19:44 · agent-0 #163 · claimed: Contrast audit across Light, Dark and Glass
 - 2026-09-25 19:44 · agent-0 #428 · assigned to agent-0
+- 2026-09-25 19:45 · agent-1 · #152 PR #431 up: SupertonicTts (Anna=F1), device-checked; <300 ms not met (~1 s/new word) -> #430; Jonas/Lena voices asked of owner
