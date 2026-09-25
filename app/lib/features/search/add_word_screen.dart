@@ -11,6 +11,7 @@ import 'package:deutschplan/core/theme/dp_tokens.dart';
 import 'package:deutschplan/core/typography/dp_text.dart';
 import 'package:deutschplan/data/repositories/search_repository.dart';
 import 'package:deutschplan/data/repositories/word_repository.dart';
+import 'package:deutschplan/features/today/today_providers.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
 import 'package:deutschplan/router/routes.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -34,6 +35,11 @@ Future<WordHit?> courseMatch(Ref ref, String german) async {
 @riverpod
 Future<MyWordDraft?> myWord(Ref ref, int id) =>
     ref.watch(wordRepositoryProvider).myWord(id);
+
+/// R2's edit mode: whether the word is already in revision (#363).
+@riverpod
+Future<bool> myWordInRevision(Ref ref, int id) =>
+    ref.watch(wordRepositoryProvider).isMyWordInRevision(id);
 
 /// R2 · Add / edit my word (`add-word.md`, the AddWord artboards). [german]
 /// comes filled in from R1's no-results page; [id] is edit mode, from R1's
@@ -127,12 +133,14 @@ class _AddWordState extends ConsumerState<AddWordScreen> {
       _german.text.trim().isNotEmpty && _meaning.text.trim().isNotEmpty;
 
   /// FR-R2-03 *Save*: into `custom_words`, and back to R1, where *My words*
-  /// shows it first.
-  Future<void> _save(WordHit? match) async {
+  /// shows it first. With [revise], *Save and add to revision*: scheduled
+  /// too, due today (#363).
+  Future<void> _save(WordHit? match, {bool revise = false}) async {
     if (_busy || !_complete) return;
     final l10n = AppLocalizations.of(context);
     final words = ref.read(wordRepositoryProvider);
     final now = ref.read(clockProvider)();
+    final today = ref.read(todayProvider);
     final name = _name;
     setState(() => _busy = true);
     try {
@@ -149,15 +157,24 @@ class _AddWordState extends ConsumerState<AddWordScreen> {
         // The check trails the field by its debounce: a match found for an
         // earlier spelling isn't this word's.
         matchedUid: _checked == _german.text.trim() ? match?.uid : null,
+        reviseFrom: revise ? today : null,
       );
+      // Today's plan is read once, when the day opens: the row is on Today's
+      // Revise block once it is read again.
+      if (revise) ref.invalidate(todayPlanProvider);
       if (!mounted) return;
-      DpToast.show(context, l10n.addWordSaved(name));
+      DpToast.show(
+        context,
+        revise ? l10n.addWordSavedRevise(name) : l10n.addWordSaved(name),
+      );
+      // Still busy: the page is going, and a tap on its way out must not save
+      // the word again.
       Navigator.of(context).pop();
     } on Object catch (error) {
       debugPrint('add word: $error');
-      if (mounted) DpToast.show(context, l10n.addWordSaveFailed);
-    } finally {
-      if (mounted) setState(() => _busy = false);
+      if (!mounted) return;
+      DpToast.show(context, l10n.addWordSaveFailed);
+      setState(() => _busy = false);
     }
   }
 
@@ -210,6 +227,10 @@ class _AddWordState extends ConsumerState<AddWordScreen> {
         ? null
         : ref.watch(courseMatchProvider(_checked)).value;
     final id = widget.id;
+    // Until it is known, as if it were: the button appears rather than
+    // flashing up and going.
+    final inRevision =
+        id != null && (ref.watch(myWordInRevisionProvider(id)).value ?? true);
 
     final scaffold = AdaptiveScaffold(
       backgroundColor: tokens.isGlass
@@ -272,9 +293,16 @@ class _AddWordState extends ConsumerState<AddWordScreen> {
                       ? () => unawaited(_save(match))
                       : null,
                 ),
-                // ponytail: *Save and add to revision* (FR-R2-03's second
-                // half) waits for custom words to be revisable: the plan, T2
-                // and the quizzes serve course words only (#363).
+                if (!inRevision) ...<Widget>[
+                  const SizedBox(height: 8),
+                  DpButton(
+                    label: l10n.addWordSaveRevise,
+                    kind: DpButtonKind.secondary,
+                    onPressed: _complete && !_busy
+                        ? () => unawaited(_save(match, revise: true))
+                        : null,
+                  ),
+                ],
                 if (id != null) ...<Widget>[
                   const SizedBox(height: 8),
                   DpButton(

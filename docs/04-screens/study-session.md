@@ -16,6 +16,8 @@
 
 **Session queue.** Built once from the plan (`SessionArgs.blocks`): Revise items → New items → Grammar due (each grammar topic inserted as an `L15` practice set inline) . Position and per-card results are persisted in `studySession` notifier state and mirrored to the DB after each card, so backgrounding or a crash resumes at the same card.
 
+A word of the learner's own (`custom:<id>`, #363) comes as a revision like any word. Its chip says *My word* instead of a step, its back shows the meaning and its own example, and *open word details* opens R2 on it (`add-word.md`).
+
 A word suspended mid-session (W1 opened from the overflow) stays in the queue it was built with. Rating it keeps it suspended (BR-STATUS-03) and completes no plan row, because the suspend dropped the row (#351).
 
 **Functional requirements**

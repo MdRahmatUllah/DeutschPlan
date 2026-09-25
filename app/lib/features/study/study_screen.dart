@@ -771,7 +771,13 @@ class _StudyMenuState extends ConsumerState<StudyMenu> {
               kind: DpButtonKind.text,
               onPressed: () {
                 Navigator.of(context).pop();
-                WordRoute.open(context, widget.item.uid);
+                // A word of the learner's own opens where it was written:
+                // R2 (#363).
+                if (customId(widget.item.uid) case final id?) {
+                  EditCustomWordRoute.open(context, id);
+                } else {
+                  WordRoute.open(context, widget.item.uid);
+                }
               },
             ),
           DpButton(

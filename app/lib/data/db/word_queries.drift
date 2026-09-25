@@ -239,3 +239,34 @@ stabilitiesOfLearned:
 -- R1's idle (#138): the learner's own words, newest first.
 myWords:
   SELECT * FROM custom_words ORDER BY created_at DESC, id DESC;
+
+-- #363: one of the learner's own words with its state, keyed `custom:<id>`,
+-- its status derived as wordWithState derives a course word's.
+myWordWithState:
+  SELECT cw.**, s.**, CASE
+    WHEN s.status = 'suspended' THEN 'suspended'
+    WHEN s.introduced_on IS NULL AND COALESCE(s.reps, 0) = 0 THEN 'todo'
+    WHEN COALESCE(s.stability, 0) >= :doneAfter THEN 'done'
+    ELSE 'learning' END AS derived_status
+  FROM custom_words cw
+  LEFT JOIN word_state s ON s.word_uid = 'custom:' || cw.id
+  WHERE cw.id = :id;
+
+-- FR-R2-04 (#363): the learner's own words a quiz may ask, once reviewed,
+-- `last_review` as the instant quizWords gives.
+-- The step is the course word it matched, else the one being studied, else
+-- the last one started: the distractors come from it.
+myQuizWords:
+  SELECT cw.id AS id, cw.german AS german, cw.article AS article,
+    cw.meaning AS meaning, s.stability AS stability,
+    s.last_review AS reviewed,
+    COALESCE(
+      (SELECT w.sublevel_code FROM words w WHERE w.uid = cw.matched_uid),
+      (SELECT e.sublevel_code FROM enrollments e WHERE e.completed_on IS NULL),
+      (SELECT e.sublevel_code FROM enrollments e
+        ORDER BY e.started_on DESC LIMIT 1)
+    ) AS step
+  FROM custom_words cw
+  JOIN word_state s ON s.word_uid = 'custom:' || cw.id
+  WHERE s.status IN ('learning', 'done') AND s.last_review IS NOT NULL
+  ORDER BY cw.id;

@@ -17,7 +17,7 @@ Created on first launch from `lib/data/db/user_schema.drift`, which is the autho
 | `quiz_attempts` / `quiz_answers` | quizzes | direction, source, seed, per-answer verdict |
 | `exam_attempts` (id, sublevel_code, seed, started_at, finished_at, paused_sec, duration_sec, score_points, max_points, passed, status) | mock exams | status: `in_progress`, `finished`, `abandoned` |
 | `exam_answers` (attempt_id, ord, section, item_ref, prompt, options_json, expected, given, flagged, points, self_rubric_json) | per question | recordings referenced by path in `given` for Speaking |
-| `custom_words` (id, created_at, article, german, meaning, where_seen, example, matched_uid, times_seen) | "My words" | `matched_uid` set when the word exists in content |
+| `custom_words` (id, created_at, article, german, meaning, where_seen, example, matched_uid, times_seen) | "My words" | `matched_uid` set when the word exists in content. Scheduled, a word is `custom:<id>` wherever a course uid goes: `word_state`, `plan_items`, `review_log` (#363) |
 | `daily_stats` (day PK, new_done, reviews_done, grammar_done, sentences_done, seconds) | per-day totals | streak and charts |
 | `content_updates` (version PK, added, removed, changed_json, seen, recorded_at) | update cards | `recorded_at` is when this device saw the update; `version` is the build time |
 | `translation_cache` | Hy-MT outputs | keyed by (src_lang, tgt_lang, src_text, model) |
@@ -41,6 +41,7 @@ Created on first launch from `lib/data/db/user_schema.drift`, which is the autho
 | `desired_retention` | 0.90 | Settings |
 | `done_stability_days` | 7 | Settings |
 | `swipe_to_rate` | 0 | Settings |
+| `quiz_custom_words` | 0 | Settings — FR-R2-04's all-learned quizzes ask my words too |
 | `meaning_language` | `both` | Onboarding, Settings |
 | `ui_language` | `en` | Onboarding, Settings |
 | `theme_mode` | `system` (light / dark / glass) | Settings |

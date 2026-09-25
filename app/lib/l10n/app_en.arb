@@ -3678,6 +3678,14 @@
   "@settingsSwipeToRateNote": {
     "description": "M3 subtitle of the swipe switch."
   },
+  "settingsQuizCustomWords": "My words in quizzes",
+  "@settingsQuizCustomWords": {
+    "description": "M3 switch: quiz_custom_words (FR-R2-04, #363)."
+  },
+  "settingsQuizCustomWordsNote": "All-learned quizzes also ask the words you saved",
+  "@settingsQuizCustomWordsNote": {
+    "description": "M3 subtitle of the my-words-in-quizzes switch. Never in exams."
+  },
   "settingsMeaning": "Meaning language",
   "@settingsMeaning": {
     "description": "M3 row: meaning_language; opens a choice."
@@ -4607,6 +4615,19 @@
       }
     }
   },
+  "addWordSaveRevise": "Save and add to revision",
+  "@addWordSaveRevise": {
+    "description": "R2 (FR-R2-03): saves the word and schedules it like a course word, due today (#363). In edit mode, shown until the word is in revision."
+  },
+  "addWordSavedRevise": "Saved {word}, in revision from today",
+  "@addWordSavedRevise": {
+    "description": "R2: the toast after Save and add to revision.",
+    "placeholders": {
+      "word": {
+        "type": "String"
+      }
+    }
+  },
   "addWordDelete": "Delete",
   "@addWordDelete": {
     "description": "R2 edit mode: deletes the learner's own word."
@@ -4620,7 +4641,7 @@
       }
     }
   },
-  "addWordDeleteBody": "It goes from My words. The course isn't changed.",
+  "addWordDeleteBody": "It goes from My words and from revision. The course isn't changed.",
   "@addWordDeleteBody": {
     "description": "R2 edit mode: the confirm's message."
   },

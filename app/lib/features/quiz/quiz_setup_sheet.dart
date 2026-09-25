@@ -44,7 +44,10 @@ typedef QuizCategory = ({
 /// [step]'s categories, the step's biggest first, with their learned words.
 @riverpod
 Future<List<QuizCategory>> quizCategories(Ref ref, String step) async {
-  final store = DriftQuizStore(ref.watch(wordRepositoryProvider));
+  final store = DriftQuizStore(
+    ref.watch(wordRepositoryProvider),
+    ref.watch(settingsProvider),
+  );
   return <QuizCategory>[
     for (final c in await ref.watch(stepCategoriesProvider(step).future))
       await store

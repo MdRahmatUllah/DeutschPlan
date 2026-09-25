@@ -10,6 +10,8 @@ import 'package:deutschplan/core/theme/dp_tokens.dart';
 import 'package:deutschplan/core/typography/dp_text.dart';
 import 'package:deutschplan/data/db/app_database.dart';
 import 'package:deutschplan/data/repositories/setting_keys.dart';
+import 'package:deutschplan/data/repositories/word_repository.dart'
+    show customId;
 import 'package:deutschplan/features/study/study_back.dart';
 import 'package:deutschplan/features/words/speak.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
@@ -173,7 +175,12 @@ class _StudyWordCardState extends ConsumerState<StudyWordCard> {
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: <Widget>[
-              DpChip(label: word.sublevelCode),
+              // A word of the learner's own is in no step (#363).
+              DpChip(
+                label: customId(word.uid) == null
+                    ? word.sublevelCode
+                    : l10n.searchMyWord,
+              ),
               if (widget.isNew) ...<Widget>[
                 const SizedBox(width: 6),
                 DpChip(label: l10n.studyNewChip, selected: true),

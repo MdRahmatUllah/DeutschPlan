@@ -270,6 +270,17 @@ VALUES (?, ?, ?, ?, ?)
       expect(await store.revisionCandidates(), isEmpty);
     });
 
+    test('include a word of my own added to revision before its first '
+        'review, its due day standing in for one (#363)', () async {
+      await wordState('custom:1', stability: 0, due: monday, lastReview: null);
+
+      final candidate = (await store.revisionCandidates()).single;
+
+      expect(candidate.uid, 'custom:1');
+      expect(candidate.due, monday);
+      expect(candidate.lastReview, monday);
+    });
+
     test('carry the fields the ranking needs', () async {
       await wordState('s1', stability: 12.5, due: '2026-03-05');
 
@@ -357,6 +368,39 @@ VALUES (?, ?, ?, ?, ?)
           .getSingle();
 
       expect(row.read<String>('c'), isNotEmpty);
+    });
+
+    Future<String?> stepOf(String uid) async {
+      final rows = await db
+          .customSelect(
+            'SELECT sublevel_code AS c FROM plan_items WHERE word_uid = ?',
+            variables: <Variable<Object>>[Variable<String>(uid)],
+          )
+          .get();
+      return rows.isEmpty ? null : rows.single.read<String>('c');
+    }
+
+    test('a word of my own takes the step being studied (#363)', () async {
+      await enroll(step: 'A1.1', startedOn: '2026-02-01', completedOn: monday);
+      await enroll(step: 'A1.2');
+      await store.addToPlan(monday, PlanKind.revise, <String>['custom:1']);
+
+      expect(await stepOf('custom:1'), 'A1.2');
+    });
+
+    test('or, with none being studied, the last one started', () async {
+      await enroll(step: 'A1.1', startedOn: '2026-02-01', completedOn: monday);
+      await enroll(step: 'A1.2', completedOn: monday);
+      await store.addToPlan(monday, PlanKind.revise, <String>['custom:1']);
+
+      expect(await stepOf('custom:1'), 'A1.2');
+    });
+
+    test('and a uid the course does not have is still not planned', () async {
+      await enroll();
+      await store.addToPlan(monday, PlanKind.revise, <String>['gone']);
+
+      expect(await stepOf('gone'), isNull);
     });
 
     test('writing twice does not double the rows', () async {

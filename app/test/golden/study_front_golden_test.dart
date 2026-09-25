@@ -76,6 +76,45 @@ void main() {
       child: StudyScreen(args: args),
     ),
   );
+
+  // #363: a word of the learner's own, fourth in the same Revise block. Its
+  // chip says so where a course word's names its step.
+  final mine = SessionArgs(
+    planDate: '2026-09-21',
+    blocks: <SessionBlock>[
+      SessionBlock(SessionBlockKind.revise, <String>[
+        for (var i = 0; i < 10; i++) i == 3 ? 'custom:1' : 'r$i',
+      ]),
+    ],
+  );
+  goldenTest(
+    'study_front_my_word',
+    builder: (context) => ProviderScope(
+      overrides: [
+        settingsProvider.overrideWithValue(settings),
+        studySessionProvider(mine).overrideWith(_Fourth.new),
+        studyWordProvider('custom:1').overrideWith(
+          (ref) async => const WordWithState(
+            word: Word(
+              uid: 'custom:1',
+              sublevelCode: '',
+              levelCode: '',
+              seq: 0,
+              seqInSublevel: 0,
+              article: 'das',
+              german: 'Pfand',
+              english: 'deposit (on bottles)',
+              searchKey: '',
+              searchKeyAlt: '',
+            ),
+            state: null,
+            status: WordStatus.learning,
+          ),
+        ),
+      ],
+      child: StudyScreen(args: mine),
+    ),
+  );
 }
 
 /// The session at its fourth revision.

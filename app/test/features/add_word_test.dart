@@ -254,6 +254,31 @@ void main() {
       expect(find.byType(AddWordScreen), findsOneWidget);
     });
 
+    testWidgets('Save and add to revision schedules it too, due today, and '
+        'goes back (#363)', (tester) async {
+      await pump(tester, german: 'Pfandflasche');
+      await enter(tester, l10n.addWordMeaning, 'deposit bottle');
+      await tester.ensureVisible(find.text(l10n.addWordSaveRevise));
+      await tester.tap(find.text(l10n.addWordSaveRevise));
+      await settle(tester);
+
+      final id = (await tester.runAsync(
+        () => db.select(db.customWords).getSingle(),
+      ))!.id;
+      final state = await tester.runAsync(
+        () => (db.select(
+          db.wordState,
+        )..where((t) => t.wordUid.equals('custom:$id'))).getSingleOrNull(),
+      );
+      expect(state!.status, 'learning');
+      expect(state.due, isNotNull);
+      expect(
+        find.text(l10n.addWordSavedRevise('Pfandflasche')),
+        findsOneWidget,
+      );
+      expect(find.text('R1'), findsOneWidget, reason: 'back to R1');
+    });
+
     testWidgets('a double tap saves once', (tester) async {
       await pump(tester, german: 'Pfandflasche');
       await enter(tester, l10n.addWordMeaning, 'deposit bottle');
@@ -293,6 +318,21 @@ void main() {
       final rows = await tester.runAsync(() => db.select(db.customWords).get());
       expect(rows, hasLength(1), reason: 'changed, not added');
       expect(rows!.single.meaning, 'receipt, till slip');
+    });
+
+    testWidgets('offers Save and add to revision until the word is in it '
+        '(#363)', (tester) async {
+      await pump(tester, seed: saved);
+      expect(find.text(l10n.addWordSaveRevise), findsOneWidget);
+
+      await tester.ensureVisible(find.text(l10n.addWordSaveRevise));
+      await tester.tap(find.text(l10n.addWordSaveRevise));
+      await settle(tester);
+      await tester.tap(find.text('R1'));
+      await tester.pumpAndSettle();
+      await settle(tester);
+      expect(find.byType(AddWordScreen), findsOneWidget);
+      expect(find.text(l10n.addWordSaveRevise), findsNothing);
     });
 
     testWidgets('Delete asks first, then the word goes', (tester) async {

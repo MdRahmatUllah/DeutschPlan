@@ -46,7 +46,7 @@ void main() {
     DateTime now() => DateTime.utc(2026, 9, 21, 19);
     final words = WordRepository(db, settings);
     service = QuizRunService(
-      QuizBuilder(DriftQuizStore(words)),
+      QuizBuilder(DriftQuizStore(words, settings)),
       exams,
       RatingService(db, settings, PlanRepository(db), words, now),
       words,
