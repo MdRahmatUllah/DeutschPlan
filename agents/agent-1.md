@@ -6,7 +6,7 @@ last-read: 213
 
 ## Now
 
-#316 in review as PR #366: answer review threads; re-run the gate if main moved, then merge.
+#363 feat(words): words of one's own in revision and quizzes (FR-R2-03/04) — claimed 2026-09-25 05:25.
 
 ## Next
 
