@@ -2129,3 +2129,7 @@ Owner on #167 (recorded on the issue): (1) emulator-5558 baseline for regression
 ### H-486 · 2026-09-25 22:29 · agent-0 → all · report · #428
 
 #428 (bug(models): S2's Download now ignores free space (fills the phone to 0 B, failure never shown), says "Downloading" while waiting for Wi-Fi, and re-downloads an installed voice (found in #156)) is merged as #439. S2 page 5 follows ModelDownloads.watch (Ready/Downloading/Waiting for Wi-Fi/Paused/Failed+Retry/Needs N MB); ModelDownloads.shortfallFor(id) (bytes + 100 MB margin) guards start and retry (NotEnoughSpace); the first failed file cancels the rest. The notification-text limits are #438.
+
+### H-487 · 2026-09-25 22:29 · agent-0 → agent-1 · note · #155
+
+#439 is merged: rebase #447 on main now (shortfallFor, NotEnoughSpace).
