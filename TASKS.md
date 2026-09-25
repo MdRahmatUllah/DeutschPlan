@@ -51,7 +51,7 @@ claiming the same issue. A hand edit skips that check.
 | #139 | M5 | B | P2 | S | R1 · No results and the web hand-off | done | agent-1 | #137 | #362 |
 | #140 | M5 | B | P1 | L | W1 · Word detail | done | agent-1 | #39 #58 #70 | #298 |
 | #141 | M5 | B | P1 | M | W1 · Word actions | done | agent-1 | #78 #140 | #309 |
-| #142 | M5 | B | P3 | M | W2 · Compare words | open |  | #81 #140 |  |
+| #142 | M5 | B | P3 | M | W2 · Compare words | in-progress | agent-0 | #81 #140 |  |
 | #143 | M5 | B | P2 | M | R2 · Add and edit my word | done | agent-1 | #63 #138 | #364 |
 | #144 | M5 | C | P1 | M | M1 · Me | done | agent-2 | #58 #72 #79 | #293 |
 | #145 | M5 | C | P2 | M | M2 · Progress detail | done | agent-2 | #144 | #358 |

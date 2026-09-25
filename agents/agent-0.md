@@ -6,7 +6,7 @@ last-read: 301
 
 ## Now
 
-Nothing claimed.
+#142 W2 · Compare words — claimed 2026-09-25 14:27.
 
 ## Next
 

@@ -336,3 +336,4 @@ able to tell what is going on without asking.
 - 2026-09-25 14:25 · agent-1 · #280 PR #401 merged (3bbd5e5), shared-look released; starting #404
 - 2026-09-25 14:25 · agent-1 #404 · claimed: fix(a11y): the iOS back row on L4, L2 and W1 clips its label at 200 % text (follow-up to #280)
 - 2026-09-25 14:27 · agent-0 #164 · released: Paused for M5's #142 (owner: M5 first); the audit is in hand.
+- 2026-09-25 14:27 · agent-0 #142 · claimed: W2 · Compare words
