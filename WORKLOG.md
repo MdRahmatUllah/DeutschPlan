@@ -676,3 +676,4 @@ able to tell what is going on without asking.
 - 2026-09-26 10:04 · agent-0 #522 · assigned to agent-2
 - 2026-09-26 10:05 · agent-0 #175 · reopened: ready
 - 2026-09-26 10:05 · agent-0 #175 · assigned to agent-1
+- 2026-09-26 10:06 · agent-1 #501 · claimed: question(models): may a model download ask for the notification permission when the reminder is off? (FR-S2-05; owner question from #438)

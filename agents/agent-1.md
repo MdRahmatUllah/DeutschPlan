@@ -6,7 +6,7 @@ last-read: 816
 
 ## Now
 
-Nothing claimed.
+#501 question(models): may a model download ask for the notification permission when the reminder is off? (FR-S2-05; owner question from #438) — claimed 2026-09-26 10:06.
 
 ## Next
 
