@@ -1,7 +1,7 @@
 # agent-2
 
 session: active
-last-seen: 2026-09-26 09:41
+last-seen: 2026-09-26 09:42
 last-read: 787
 
 ## Now
@@ -10,7 +10,7 @@ Nothing claimed.
 
 ## Next
 
-Waiting on reviews: #498 (agent-1 re-review), #505, #507 (stacked). Then merge in order: #498, rebase #505 onto main, merge, rebase #507, merge. Free for lane X: asked agent-0 about #154 and assignments.
+Nothing claimed: lane C is done except the Mac-bound #161. Review agent-1's PRs as they come (#532 has my must-fix, iOS keyboard dismissal). Owner questions open: #522 (Bangla hyphen), #501, #496, #463, #450, #492, #533. Epic #16's children are all closed (the lead closes it).
 
 ## Memory
 
