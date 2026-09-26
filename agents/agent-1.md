@@ -6,7 +6,7 @@ last-read: 619
 
 ## Now
 
-#462 in review as PR #489: answer review threads; re-run the gate if main moved, then merge.
+#387 fix(quiz): EN→DE follows the meaning language (Bangla prompt for a Bangla learner, no Bangla hint for an English one); L7's default direction (follow-up to #339) — claimed 2026-09-26 05:15.
 
 ## Next
 
