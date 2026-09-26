@@ -10,7 +10,7 @@ last-read: 886
 
 ## Next
 
-#175 PR #547 in review (agent-2), then merge; the issue stays open for the owner's tag. Waiting on agent-0 for the next assignment.
+#175's docs merged (#547); the tag waits for the owner. Free: waiting on agent-0 for the next assignment; reviews first.
 
 ## Memory
 
