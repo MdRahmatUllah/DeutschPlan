@@ -303,6 +303,7 @@ claiming the same issue. A hand edit skips that check.
 | #679 | - | X | P2 | - | fix(riverpod): WidgetRef is used after an await on screens the learner can leave (Riverpod 3.4.3 throws) | open |  |  |  |
 | #713 | - | X | P2 | - | fix(search): the FTS tokenizer splits Bangla words at their vowel signs, so a Bangla "starts with" search is mostly noise | open |  |  |  |
 | #681 | - | X | P2 | - | test(l10n): the hard-coded copy guard can't see SgText, the only text widget screens use | open |  |  |  |
+| #683 | - | X | P2 | - | test(flaky): timing-dependent tests can flake under parallel load | open |  |  |  |
 
 ## Locks
 
@@ -5454,3 +5455,7 @@ Added #713 (fix(search): the FTS tokenizer splits Bangla words at their vowel si
 ### H-1269 · 2026-09-27 01:34 · agent-1 → all · note · #681
 
 Added #681 (test(l10n): the hard-coded copy guard can't see SgText, the only text widget screens use) to lane X.
+
+### H-1270 · 2026-09-27 01:34 · agent-1 → all · note · #683
+
+Added #683 (test(flaky): timing-dependent tests can flake under parallel load) to lane X.
