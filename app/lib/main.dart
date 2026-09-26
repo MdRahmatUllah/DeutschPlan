@@ -4,7 +4,6 @@ import 'package:deutschplan/features/bootstrap/bootstrap_error_screen.dart';
 import 'package:deutschplan/features/splash/splash_screen.dart';
 import 'package:deutschplan/features/today/today_providers.dart'
     show warmTodaysVoice;
-import 'package:deutschplan/services/start_report.dart';
 import 'package:flutter/foundation.dart' show kReleaseMode, debugPrint;
 import 'package:flutter/services.dart';
 
@@ -159,13 +158,6 @@ class _BootstrapHostState extends State<BootstrapHost> {
     }
     if (result is BootstrapReady) {
       final router = result.bootstrap.router;
-      // #462: a first run opens on setup, which is drawn with its first
-      // frame; Today reports itself once its plan is on screen.
-      if (router.routeInformationProvider.value.uri.path.startsWith(
-        '/onboarding',
-      )) {
-        StartReport.fullyDrawn();
-      }
       unawaited(
         startReminders(
           container,

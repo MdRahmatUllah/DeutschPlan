@@ -29,10 +29,11 @@ absolute budget is reported, not enforced (the owner checks start on a real
 phone before a release) — except search's, which fails only when it is over
 its 50 ms *and* over its baseline.
 
-Cold start is `TotalTime`: the process started to Flutter's first frame,
-which is S1 — `main` runs `runApp` before bootstrap, so the wait for Today
-after it is not in the number. Debug and profile builds log that wait as
-`bootstrap: N ms`.
+Cold start ends at Android's `Fully drawn`, which the app reports once
+Today shows its plan (#462), read from logcat. `am start -W`'s `TotalTime`
+ends at Flutter's first frame, which is only S1: `main` runs `runApp` before
+bootstrap. A warm start resumes on Today, so its `TotalTime` is Today's, and
+Android reports fully drawn only once per Activity, so warm stays on it.
 """
 
 from __future__ import annotations
@@ -119,6 +120,30 @@ def total_time(am_output: str, launch: str) -> int:
     return int(fields["TotalTime"])
 
 
+def fully_drawn(logcat: str) -> int | None:
+    """The app's `Fully drawn` time in ms (#462), or None while logcat has
+    none. Android prints `+1s234ms` or `+856ms`; another app's line is not
+    this one's."""
+    found = re.search(
+        rf"Fully drawn {re.escape(ACTIVITY)}(?: for user \d+)?: \+(?:(\d+)s)?(\d+)ms", logcat
+    )
+    if found is None:
+        return None
+    return int(found.group(1) or 0) * 1000 + int(found.group(2))
+
+
+def await_fully_drawn(read, seconds: float = 60, step: float = 0.5) -> int:
+    """[fully_drawn] of what [read] gives, polled until it's there: a
+    loaded host has taken 13 s to Today. A start that never gets there (a
+    deep link, a crash) stops the run after [seconds], saying why."""
+    deadline = time.time() + seconds
+    while (ms := fully_drawn(read())) is None:
+        if time.time() > deadline:
+            raise SystemExit("no `Fully drawn` in logcat: the start never reached Today (#462)")
+        time.sleep(step)
+    return ms
+
+
 def activity_state(dump: str, package: str) -> str:
     """The state `dumpsys activity activities` gives [package]'s activity
     (RESUMED, PAUSED, STOPPED...); empty when it lists none."""
@@ -154,11 +179,14 @@ def measure_start(dev: device.Device, build: bool = True) -> dict[str, float]:
     walk_setup(dev)
     launcher = ["-a", "android.intent.action.MAIN", "-c", "android.intent.category.LAUNCHER"]
 
+    firsts: list[int] = []
+
     def cold() -> int:
-        # -S: force-stopped first.
-        ms = total_time(dev.sh("am", "start", "-S", "-W", *launcher, "-n", ACTIVITY), "COLD")
-        time.sleep(4)  # bootstrap and Today, before the next kill
-        return ms
+        dev.sh("logcat", "-c")
+        # -S: force-stopped first. TotalTime is S1's first frame, kept to
+        # show against Today's.
+        firsts.append(total_time(dev.sh("am", "start", "-S", "-W", *launcher, "-n", ACTIVITY), "COLD"))
+        return await_fully_drawn(lambda: dev.sh("logcat", "-d"))
 
     def warm() -> int:
         dev.sh("input", "keyevent", "3")  # HOME
@@ -176,9 +204,10 @@ def measure_start(dev: device.Device, build: bool = True) -> dict[str, float]:
         return ms
 
     cold()  # the first run of a new APK: ART's work, not the app's
+    firsts.clear()
     colds = [cold() for _ in range(RUNS)]
     warms = [warm() for _ in range(RUNS)]
-    print(f"cold {colds} ms, warm {warms} ms")
+    print(f"cold {colds} ms (first frame {firsts} ms), warm {warms} ms")
     return {"start.cold_ms": statistics.median(colds), "start.warm_ms": statistics.median(warms)}
 
 

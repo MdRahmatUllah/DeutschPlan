@@ -10,6 +10,8 @@ import 'package:deutschplan/core/typography/dp_text.dart';
 import 'package:deutschplan/features/onboarding/onboarding_shell.dart';
 import 'package:deutschplan/features/onboarding/onboarding_welcome_page.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
+import 'package:deutschplan/services/start_report.dart';
+import 'package:flutter/services.dart' show MethodChannel;
 import 'package:deutschplan/main.dart'
     show appLocalizationsDelegates, supportedLocales;
 import 'package:flutter_test/flutter_test.dart';
@@ -471,6 +473,24 @@ void main() {
               ),
             )
             .then((_) => tester.pump());
+
+    testWidgets('#462 a first run\'s cold start ends when it is drawn', (
+      tester,
+    ) async {
+      const channel = MethodChannel('deutschplan/start');
+      final messenger =
+          TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger;
+      final calls = <String>[];
+      StartReport.reset();
+      messenger.setMockMethodCallHandler(channel, (call) async {
+        calls.add(call.method);
+        return null;
+      });
+      addTearDown(() => messenger.setMockMethodCallHandler(channel, null));
+
+      await pumpWelcome(tester);
+      expect(calls, <String>['fullyDrawn']);
+    });
 
     testWidgets('states the three promises', (tester) async {
       await pumpWelcome(tester);
