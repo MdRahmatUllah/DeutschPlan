@@ -35,6 +35,24 @@ void expectNothingClipped(WidgetTester tester, {Finder? within}) {
   expect(checked, greaterThan(0), reason: 'no text found to check');
 }
 
+/// Fails when text under [within] has more lines than its `maxLines` lets
+/// it show: ended in "…", or cut at a word with none, so "birth" reads as
+/// the whole of "birth certificate" (#550). [expectNothingClipped] lets
+/// both pass; this is for text that must be read whole.
+void expectAllLinesShown(WidgetTester tester, {required Finder within}) {
+  final paragraphs = tester.renderObjectList<RenderParagraph>(
+    find.descendant(of: within, matching: find.byType(RichText)),
+  );
+  expect(paragraphs, isNotEmpty, reason: 'no text found to check');
+  for (final paragraph in paragraphs) {
+    expect(
+      paragraph.didExceedMaxLines,
+      isFalse,
+      reason: '"${paragraph.text.toPlainText()}" is cut to its maxLines',
+    );
+  }
+}
+
 /// Fails when a word in text under [within] breaks across two lines other
 /// than at a soft hyphen: L2's "Stand / ard" at 200 % (#165). A cut word
 /// reads as two; a long compound may break at its syllables

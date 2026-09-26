@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:deutschplan/core/components/dp_chip.dart';
 import 'package:deutschplan/core/providers/app_providers.dart';
 import 'package:deutschplan/core/theme/app_theme.dart';
+import 'package:deutschplan/core/typography/dp_text.dart';
 import 'package:deutschplan/data/db/app_database.dart';
 import 'package:deutschplan/data/db/content_dao.dart';
 import 'package:deutschplan/data/repositories/settings_repository.dart';
@@ -180,8 +181,13 @@ void main() {
     );
   });
 
-  testWidgets('#314 at 200 % a long headword and meaning still fit the '
-      "first row's height: the row is one line of each", (tester) async {
+  testWidgets('FR-L2-02 #550 at 200 % a long word stacks: its whole headword '
+      'and meaning over its chips and speaker, its row taller than a short '
+      "one's", (tester) async {
+    tester.view
+      ..physicalSize = const Size(390, 844) * 3
+      ..devicePixelRatio = 3;
+    addTearDown(tester.view.reset);
     textAt(tester, 2);
     final long = word(1);
     await pump(
@@ -189,22 +195,40 @@ void main() {
       overrides: over(<StepWord>[
         word(0),
         (
-          meaning: 'to take part in something, to join in, to participate',
+          meaning: 'preventive check-up, to take part in a screening',
           word: WordWithState(
-            word: long.word.word.copyWith(
-              german: 'die Wohnungsgeberbestätigung',
-            ),
+            word: long.word.word.copyWith(german: 'Vorsorgeuntersuchung'),
             state: null,
             status: WordStatus.todo,
           ),
         ),
       ]),
     );
-    expectNothingClipped(tester, within: find.byType(WordRow));
+    expect(tester.takeException(), isNull);
     final rows = find.byType(WordRow);
+    expectAllLinesShown(tester, within: rows.at(1));
+    expectNothingClipped(tester, within: rows);
+    expectNoWordBroken(tester, within: rows);
+    final headword = find.descendant(
+      of: rows.at(1),
+      matching: find.byType(DpHeadword),
+    );
+    expect(
+      tester
+          .getTopLeft(
+            find.descendant(
+              of: rows.at(1),
+              matching: find.byType(WordPlayButton),
+            ),
+          )
+          .dy,
+      greaterThanOrEqualTo(tester.getBottomLeft(headword).dy),
+      reason: 'the chips and the speaker go under the words',
+    );
     expect(
       tester.getSize(rows.at(1)).height,
-      tester.getSize(rows.at(0)).height,
+      greaterThan(tester.getSize(rows.at(0)).height),
+      reason: "no prototype holds a row to the first one's height",
     );
   });
 
