@@ -301,6 +301,13 @@ class StudyAnswerField extends StatelessWidget {
   Widget build(BuildContext context) {
     final tokens = context.tokens;
     final l10n = AppLocalizations.of(context);
+    // DpScript.largeTyping, read from the view: this field sits in a
+    // scaffold's body, which the keyboard's inset is taken out of (#529).
+    // ponytail: the view is no dependency; the screens above rebuild on the
+    // keyboard (their collapsed headers read it), and so this. Pass
+    // `typing` down if one of them ever stops rebuilding it.
+    final typing =
+        DpScript.large(context) && View.of(context).viewInsets.bottom > 0;
     final edge = OutlineInputBorder(
       borderRadius: BorderRadius.circular(tokens.shape.button),
       borderSide: BorderSide(color: tokens.color.ink, width: 2),
@@ -331,8 +338,11 @@ class StudyAnswerField extends StatelessWidget {
       ).copyWith(fontWeight: FontWeight.w400),
       decoration: InputDecoration(
         hintText: hint ?? l10n.studyClozeHint,
-        // Whole, not cut to one line, as R1's is (#565).
-        hintMaxLines: 3,
+        // Whole, not cut to one line, as R1's is (#565). But typing past
+        // 130 % the room above the keyboard is the sentence's (#564), and
+        // the gap says what the hint does, as #554 let L8's caption go: one
+        // line there. A screen reader still reads it whole.
+        hintMaxLines: typing ? 1 : 3,
         maintainHintSize: false,
         filled: true,
         fillColor: tokens.surface.cardStrong,
