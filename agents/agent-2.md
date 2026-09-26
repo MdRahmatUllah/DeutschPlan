@@ -1,7 +1,7 @@
 # agent-2
 
 session: active
-last-seen: 2026-09-26 18:54
+last-seen: 2026-09-26 19:26
 last-read: 1139
 
 ## Now
@@ -10,7 +10,7 @@ Nothing claimed.
 
 ## Next
 
-Nothing claimed: lane C is done except the Mac-bound #161. Review agent-1's PRs as they come (#532 has my must-fix, iOS keyboard dismissal). Owner questions open: #522 (Bangla hyphen), #501, #496, #463, #450, #492, #533. Epic #16's children are all closed (the lead closes it).
+Queue empty. 1.0.1 is ready: gate green on 4dfd9d52 (#17), release PR #594 approved; it waits for the owner's go and the v1.0.1 tag (agent-0). Take whatever agent-0 sends next.
 
 ## Memory
 
