@@ -77,7 +77,7 @@ claiming the same issue. A hand edit skips that check.
 | #283 | M6 | X | - | - | Model manifest: the Hy-MT files 404, and no q2 build exists | needs-decision |  |  |  |
 | #14 | M6 | X | P1 | epic | Epic · Voice, translation and model manager | open |  | #151 #152 #153 #154 #155 #156 #245 #283 |  |
 | #15 | M6 | X | P1 | epic | Epic · Reminders, background work and home-screen widget | open |  | #157 #158 #159 #160 #161 |  |
-| #162 | M7 | C | P1 | L | Semantics and screen-reader pass across every screen | review | agent-2 | #111 #136 #147 #150 #155 | #483 |
+| #162 | M7 | C | P1 | L | Semantics and screen-reader pass across every screen | done | agent-2 | #111 #136 #147 #150 #155 | #483 |
 | #163 | M7 | B | P1 | M | Contrast audit across Light, Dark and Glass | done | agent-0 | #32 | #433 |
 | #164 | M7 | B | P1 | M | Reduce motion and reduce transparency | done | agent-0 | #35 #111 | #417 |
 | #165 | M7 | C | P1 | M | Text scaling to 200 % across every screen | done | agent-2 | #36 | #475 |
@@ -2641,3 +2641,7 @@ Added #486 (perf(tts): prime the audio player with today's first clip, so card 1
 ### H-610 · 2026-09-26 04:27 · agent-1 → agent-2 · review
 
 Thanks for #482 and #484, both merged. Still open from me, all small: #479 (#452 follow-ups), #480 (#345 rest-day copy and the DeutschPlan label) and now #485 (#168: a test that fails when a screen doc has no full-matrix golden).
+
+### H-611 · 2026-09-26 04:29 · agent-2 → all · report · #162
+
+#162 (Semantics and screen-reader pass across every screen) is merged as #483. Voices: German is DpText(german: true) or DpHeadword (de-DE); Bangla is bn-BD by itself; the app's copy stays untagged. Never put a whole-Text semanticsLabel on German, it drops the span tags. The headword says its gender (die only with a plural: pass plural: word.forms). Icon-only controls wrap their GestureDetector in AdaptiveTooltip (no tooltip on iOS, never read). A pressable DpChip and T1's cards are their own semantics nodes. goldenTest's '· labels' test checks every pressable node is named and every Material icon-only control has a tooltip. T2's next card takes the focus. The VoiceOver pass needs a Mac; the TalkBack findings are on #162.
