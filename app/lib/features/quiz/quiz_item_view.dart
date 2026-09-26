@@ -157,11 +157,12 @@ class QuizItemView extends ConsumerWidget {
         prompt,
         // Typing past 130 %, 12 dp of the gap go to a two-line prompt, which
         // otherwise lost the top of its first line under the strip (#561).
-        // A long meaning over its Bangla (three or four lines) fits too:
-        // Check is a key on the umlaut row, the strip goes and the field's
-        // padding closes (#568).
-        // ponytail: past four lines at 200 % it still loses its top; the list
-        // sits at its end then, so the next lever is the prompt's own size.
+        // A long meaning over its Bangla (three or four lines) fits too on a
+        // 731 dp phone: Check is a key on the umlaut row, the strip goes and
+        // the field's padding closes (#568).
+        // ponytail: on a 640 dp phone, or past four lines, it still loses its
+        // top; the list sits at its end then, so the next lever is the
+        // prompt's own size, one role smaller while typing (#574).
         SizedBox(height: typing ? 8 : 20),
         answer,
       ],

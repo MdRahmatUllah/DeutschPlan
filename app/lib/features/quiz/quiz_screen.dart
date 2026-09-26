@@ -572,6 +572,16 @@ class _CheckKey extends StatelessWidget {
               decoration: BoxDecoration(
                 color: enabled ? tokens.color.primary : tokens.surface.muted,
                 borderRadius: BorderRadius.circular(tokens.shape.button),
+                // The primary's 2 px ink edge, as the outlined keys beside
+                // it have; none under glass, as the glass primary has none.
+                border: tokens.isGlass
+                    ? null
+                    : Border.all(
+                        color: enabled
+                            ? tokens.color.ink
+                            : tokens.surface.outline,
+                        width: 2,
+                      ),
               ),
               child: SizedBox.square(
                 dimension: DpButton.minimumTapTarget,

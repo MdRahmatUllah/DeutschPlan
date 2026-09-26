@@ -624,7 +624,17 @@ void main() {
     // its first line under the progress strip. While typing past 130 % the
     // prompt's gap to the field and the list's foot give 12 and 8 dp back;
     // at 335 dp both are needed.
-    for (final item in <QuizItem>[wraps, withHint, threeLines]) {
+    // agent-0's #569 review: Forms on SQA's phone too, where the Bangla
+    // "sich benehmen-/এর Perfekt" breaks the same as on 390 dp.
+    const benehmen = QuizItem(
+      ord: 1,
+      wordUid: 'benehmen',
+      direction: QuizDirection.forms,
+      prompt: 'sich benehmen',
+      expected: 'hat sich benommen',
+      form: FormLabel.perfekt,
+    );
+    for (final item in <QuizItem>[wraps, withHint, threeLines, benehmen]) {
       for (final lang in <String>['en', 'bn']) {
         testWidgets('#561 #568 ${item.wordUid} in $lang: at 200 % on a 411 dp '
             'phone with a taller keyboard, both lines of the prompt show whole '
@@ -637,9 +647,12 @@ void main() {
             keyboard: 335,
             locale: Locale(lang),
           );
+          final t = lang == 'bn' ? bn : l10n;
           final room = tester.getRect(find.byType(ListView));
           final lines = <Finder>[
-            find.text(item.prompt),
+            find.text(
+              item.form == null ? item.prompt : t.quizFormPerfekt(item.prompt),
+            ),
             if (item.hint case final hint?) find.text(hint),
           ];
           for (final line in lines) {
@@ -786,7 +799,13 @@ void main() {
       await tester.tap(key);
       await tester.pumpAndSettle();
       expect(find.byType(DpVerdictRow), findsOneWidget);
-      expect(find.widgetWithText(DpButton, l10n.practiceNext), findsOneWidget);
+      final next = find.widgetWithText(DpButton, l10n.practiceNext);
+      expect(next, findsOneWidget);
+      expect(
+        tester.getRect(next).bottom,
+        lessThanOrEqualTo(keyboardTop),
+        reason: 'Next above the keyboard',
+      );
     });
 
     testWidgets('at 100 % the keyboard leaves the header and caption be', (
