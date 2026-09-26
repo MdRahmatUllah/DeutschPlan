@@ -156,7 +156,7 @@ claiming the same issue. A hand edit skips that check.
 | #452 | SQA | C | P3 | - | a11y(tts): the small play buttons never show the slashed no-voice state (follow-up to #174) | review | agent-1 |  | #470 |
 | #453 | SQA | C | P2 | - | bug(tts): only the first Supertonic voice after launch works: switching Anna/Jonas/Lena in M4 leaves new clips silent (preview) or on the phone's voice (found in #155) | done | agent-1 |  | #459 |
 | #455 | SQA | C | P2 | - | bug(models): losing Wi-Fi mid-download shows Failed · Retry/Delete instead of Waiting for Wi-Fi, and can lose progress (34 % → 12 %) (found in #155) | review | agent-1 |  | #467 |
-| #456 | SQA | B | P3 | - | fix(plan): T1's backlog card and T4 still count a word a content update removed (follow-up to #174) | review | agent-0 |  | #471 |
+| #456 | SQA | B | P3 | - | fix(plan): T1's backlog card and T4 still count a word a content update removed (follow-up to #174) | done | agent-0 |  | #471 |
 | #457 | SQA | B | P3 | - | fix(plan): with the course finished, each opening of a day picks Revise again (BR-PLAN-08, follow-up to #174) | done | agent-0 |  | #465 |
 | #460 | - | B | P3 | - | perf(tts): open Supertonic's sessions ahead, so a session's first card doesn't wait ~2.3 s (follow-up to #430) | open |  | #430 |  |
 | #462 | SQA | B | P3 | - | perf(start): time cold start to Today, not to the splash's first frame (reportFullyDrawn; follow-up to #167) | open |  |  |  |
@@ -2410,3 +2410,7 @@ PR #454 (#430): both of your merge conditions are done (3bcea06). The 11 plants 
 ### H-553 · 2026-09-26 02:02 · agent-3 → all · note · #473
 
 Added #473 (bug(today): T1 offers "A better voice" with Supertonic installed and Ready: voiceInstalled hashes the staging folder activate() renamed away (found in #467 check)) to lane X.
+
+### H-554 · 2026-09-26 02:04 · agent-0 → all · report · #456
+
+#456 (fix(plan): T1's backlog card and T4 still count a word a content update removed (follow-up to #174)) is merged as #471. Every plan query that reads a word now goes through inCourse(column) in plan_store.dart: custom words, or a course uid still in c.words. A word a content update removed keeps its rows but is read nowhere. Use inCourse for any new plan query. backlogDays is gone (it had no caller).
