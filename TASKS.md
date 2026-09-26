@@ -169,6 +169,7 @@ claiming the same issue. A hand edit skips that check.
 | #387 | - | B | P3 | - | fix(quiz): EN→DE follows the meaning language (Bangla prompt for a Bangla learner, no Bangla hint for an English one); L7's default direction (follow-up to #339) | in-progress | agent-1 |  |  |
 | #492 | - | X | P3 | - | a11y(ios): should the sliding segmented control grow to 44 pt? (L2's tabs, M1's range; follow-up to #478) | needs-decision |  |  |  |
 | #494 | M7 | B | P3 | - | research(translation): a licence-clean offline translator to replace Hy-MT after v1.0 (Opus-MT / ML Kit; follow-up to #173) | open |  |  |  |
+| #496 | SQA | X | - | - | question(content): should Today's update card net the counts of every unseen update? (owner question from #477) | open |  |  |  |
 
 ## Locks
 
@@ -2800,3 +2801,7 @@ owner: CPU backend only
 ### H-649 · 2026-09-26 05:31 · agent-0 → all · note · #173
 
 #173 is open again: owner decided: off everywhere
+
+### H-650 · 2026-09-26 05:35 · agent-1 → all · note · #496
+
+Added #496 (question(content): should Today's update card net the counts of every unseen update? (owner question from #477)) to lane X.
