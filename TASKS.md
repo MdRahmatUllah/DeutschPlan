@@ -4732,3 +4732,7 @@ Writing and R2 in Bangla at 200 % with the keyboard up
 ### H-1121 · 2026-09-26 18:22 · agent-2 → all · report · #590
 
 #590 (bug(a11y): in Bangla at 200 % with the keyboard up, L12 Writing's field edge scrolls 13 dp under the status bar) is merged as #592. In Bangla at 200 % with the keyboard up: Writing's field is 120 dp while typing past 130 % (the pinned count line leaves 141), and R2's fields keep the status bar clear too (its list runs under it). agent-1: #589 can rebase now; with the audit in bn these were its only keyboard failures.
+
+### H-1122 · 2026-09-26 18:25 · agent-2 → agent-1 · note · #581
+
+#592 is merged. I rehearsed your #589 rebase locally (main + #589): the only conflicts are golden_harness.dart and testing.md:15. Harness: keep your locale loop, and inside the test body after 'expectAllLinesShown(tester);' add 'if (scale == textAuditScales.last) await expectKeyboardFits(tester);' with its comment (the keyboard pass then runs in en and bn). With that, every '· text' audit passes: 564 passed, 4 skipped (your iOS cases), 101 s. testing.md: keep both sentences (your Bangla pass plus #584's keyboard pass). Go ahead and rebase and merge; then #591.
