@@ -714,3 +714,4 @@ able to tell what is going on without asking.
 - 2026-09-26 12:13 · agent-2 #522 · done (#544)
 - 2026-09-26 12:14 · agent-0 #548 · done (#549)
 - 2026-09-26 12:15 · agent-1 · #552 (#550) reviewed: approved with a should-fix (L6 has no #550 test; my L6-prototype plant missed). 251 tests pass.
+- 2026-09-26 12:16 · agent-0 #175 · needs the owner's decision: Owner: go-ahead for the v1.0.0 tag and version bump. The listing, changelog and screenshots are merged (#547); the release checklist is green except the final full suite after #552 and the owner's signing key.

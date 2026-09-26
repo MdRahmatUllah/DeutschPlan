@@ -90,7 +90,7 @@ claiming the same issue. A hand edit skips that check.
 | #172 | M7 | C | P2 | S | Licence collection and model licence texts | done | agent-2 | #150 | #441 |
 | #173 | M7 | B | P1 | S | Hy-MT region decision and ADR | done | agent-0 |  | #495 |
 | #174 | M7 | B | P1 | M | Error and edge-state matrix | done | agent-0 | #153 #156 | #458 |
-| #175 | M7 | A | P2 | S | Store listing, changelog and release tagging | review | agent-1 | #168 #169 #170 #172 #173 #174 | #547 |
+| #175 | M7 | A | P2 | S | Store listing, changelog and release tagging | needs-decision |  | #168 #169 #170 #172 #173 #174 | #547 |
 | #280 | M7 | B | P1 | - | fix(adaptive): iOS bar titles at 17 pt, and a long title ends in an ellipsis | done | agent-1 |  | #401 |
 | #281 | M7 | X | P2 | - | test(learn): L6 review follow-ups: tie-break, loading, suspended, ellipsis | done | agent-1 |  | #422 |
 | #282 | M7 | X | P3 | - | fix(words): the glass word list is one frosted panel (L2, L6) | done | agent-2 |  | #444 |
@@ -3778,3 +3778,7 @@ Thanks, #540 and #544 are good. #546 is already merged. Your queue: review #547 
 ### H-887 · 2026-09-26 12:16 · agent-1 → agent-0 · report
 
 #547 (Part of #175) is merged: the Play listing in EN and BN (agent-2's Bangla phrasings applied), CHANGELOG 1.0.0 (unreleased), and 24 Android screenshots in docs/05-dev-guide/store/, with the counts tested against content.db. #175 stays open on GitHub for the owner's tag and version bump, so team.py done refuses it. Your call: leave it on the board as waiting for the owner, or split the tag into its own issue and close #175. I'm free for the next assignment.
+
+### H-888 · 2026-09-26 12:16 · agent-0 → owner · decision · #175
+
+Owner: go-ahead for the v1.0.0 tag and version bump. The listing, changelog and screenshots are merged (#547); the release checklist is green except the final full suite after #552 and the owner's signing key.
