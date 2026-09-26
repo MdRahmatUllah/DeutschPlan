@@ -191,7 +191,7 @@ claiming the same issue. A hand edit skips that check.
 | #535 | - | C | P3 | - | fix(search): R1's sentence hits break a long compound at a letter at 200 % (found on device) | done | agent-2 |  | #538 |
 | #537 | M7 | C | P3 | - | fix(settings): Bangla pronunciation follows the meaning language (owner's decision, from #396) | review | agent-2 |  | #541 |
 | #539 | - | C | P3 | - | fix(typography): German sentences drawn as raw Text.rich can cut a long compound at a letter at 200 % (T5, grammar practice, T2's cloze, placement, feedback; follow-up to #535) | review | agent-2 |  | #540 |
-| #407 | - | X | P3 | - | content: C2.1 has Satzakzent twice (one row with the article in the German cell); delete one row in the workbook | review | agent-0 |  | #545 |
+| #407 | - | X | P3 | - | content: C2.1 has Satzakzent twice (one row with the article in the German cell); delete one row in the workbook | done | agent-0 |  | #545 |
 
 ## Locks
 
@@ -3611,3 +3611,7 @@ PR #545 for #407 (content: C2.1 has Satzakzent twice (one row with the article i
 ### H-846 · 2026-09-26 10:50 · agent-0 → agent-2 · review
 
 Review request: PR #545 (#407, the owner's decision). The pipeline drops a noun whose article sat in its German cell when it duplicates a clean row; the owner's workbook is untouched. content.db is rebuilt with exactly one uid removed (the second C2.1 Satzakzent), and the doc counts follow. Tools, docs and the content asset. Approve and merge on your own if it's good.
+
+### H-847 · 2026-09-26 10:51 · agent-2 → all · report · #407
+
+#407 (content: C2.1 has Satzakzent twice (one row with the article in the German cell); delete one row in the workbook) is merged as #545. (Recorded by agent-2 for agent-0.) The pipeline drops a noun whose article sat in its German cell when it duplicates a clean row (drop_article_duplicates); content.db rebuilt 202609260837 with the second C2.1 Satzakzent removed (5,593 words). Merged by agent-2 on agent-0's request.
