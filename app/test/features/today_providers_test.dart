@@ -402,6 +402,9 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code, completed_at, 
 
   test('#377 restart setup keeps the study days it changes, from today '
       'when today is not planned yet', () async {
+    // Today's first opening done first: still under way, it would open the
+    // day again from the date below, whole (#548), before the commit.
+    await container.read(todayViewProvider.future);
     await settings.write(
       SettingKeys.lastPlannedDate,
       DateTime.utc(2026, 9, 20),

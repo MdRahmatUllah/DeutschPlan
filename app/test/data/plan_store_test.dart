@@ -1183,5 +1183,38 @@ VALUES (?, ?, ?, ?, ?)
       expect(plan.revise, contains('s20'));
       expect(plan.revise.toSet().intersection(plan.newToday.toSet()), isEmpty);
     });
+
+    test('BR-PLAN-04 FR-S2-03 #548: two openings of a fresh first day that '
+        'overlap, from two engines, plan it once', () async {
+      await enroll();
+      // Two engines, as setup's finish and a Today rebuilt mid-finish hold.
+      PlanEngine engine() => PlanEngine(
+        store: _SlowStore(db, settings),
+        reviseCount: 10,
+        backlogCatchupDays: 30,
+      );
+
+      final plans = await Future.wait(<Future<DailyPlan>>[
+        engine().openDay(monday),
+        engine().openDay(monday),
+      ]);
+
+      expect(await store.plannedOn(monday, PlanKind.newWord), hasLength(7));
+      expect(plans.last.newToday, plans.first.newToday);
+    });
   });
+}
+
+/// [DriftPlanStore] whose `plannedOn` takes a moment, as a query does on the
+/// app's database isolate. In memory it answers within the same turn, and
+/// two openings rarely land inside each other's check and insert (#548).
+class _SlowStore extends DriftPlanStore {
+  _SlowStore(super.db, super.settings);
+
+  @override
+  Future<List<String>> plannedOn(PlanDate date, PlanKind kind) async {
+    final planned = await super.plannedOn(date, kind);
+    await Future<void>.delayed(Duration.zero);
+    return planned;
+  }
 }

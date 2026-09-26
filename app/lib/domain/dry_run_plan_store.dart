@@ -30,6 +30,10 @@ class DryRunPlanStore implements PlanStore {
       if (entry.key.$2 == PlanKind.newWord) ...entry.value,
   ];
 
+  /// Nothing to guard: the writes are this run's own, in memory.
+  @override
+  Future<T> atomically<T>(Future<T> Function() body) => body();
+
   @override
   Future<ActiveStep?> activeStep() async =>
       _stepChanged ? _active : _inner.activeStep();

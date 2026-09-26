@@ -12,6 +12,8 @@
 5. return DailyPlan(revise, newToday, grammarDue, backlog, sentences, activeStep, estimateMinutes)
 ```
 
+A day is opened atomically: steps 1 and 2 run in one transaction (`PlanStore.atomically`), so callers that overlap (setup's finish and a live Today) plan it once (#548). *Start next step* and L2's *Start* are atomic the same way.
+
 ### generateNewThrough
 
 ```
