@@ -356,6 +356,7 @@ claiming the same issue. A hand edit skips that check.
 | #739 | - | X | P3 | - | chore(release): decide the version of the first Sogda build: main is still 1.0.1+2, the version tagged under the old name and app id | open |  |  |  |
 | #740 | - | X | P3 | - | fix(a11y): setup's "Step N of 5" is exposed twice on every page, so a screen reader announces it twice | open |  |  |  |
 | #741 | - | X | P3 | - | fix(a11y): T5's sentence exposes every space and punctuation mark as its own accessibility node | open |  |  |  |
+| #742 | - | X | P3 | - | fix(study): after each rating, the Undo snackbar covers the upper half of T2's "I know it" and "Skip → backlog" actions | open |  |  |  |
 
 ## Locks
 
@@ -5727,3 +5728,7 @@ Added #740 (fix(a11y): setup's "Step N of 5" is exposed twice on every page, so 
 ### H-1324 · 2026-09-27 01:45 · agent-0 → all · note · #741
 
 Added #741 (fix(a11y): T5's sentence exposes every space and punctuation mark as its own accessibility node) to lane X.
+
+### H-1325 · 2026-09-27 01:46 · agent-0 → all · note · #742
+
+Added #742 (fix(study): after each rating, the Undo snackbar covers the upper half of T2's "I know it" and "Skip → backlog" actions) to lane X.
