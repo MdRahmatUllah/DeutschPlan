@@ -322,6 +322,7 @@ claiming the same issue. A hand edit skips that check.
 | #698 | - | X | P3 | - | chore(core): smaller items in core (production review nits) | open |  |  |  |
 | #699 | - | X | P3 | - | chore(domain): smaller items in domain (production review nits) | open |  |  |  |
 | #716 | - | X | P3 | - | fix(text-norm): the Python and Dart search keys disagree for ø ł đ ŧ, for accented letters outside Dart's table, for precomposed Bangla nukta, and for some whitespace | open |  |  |  |
+| #700 | - | X | P3 | - | chore(data): dead code, stale docs and small inconsistencies in data (production review nits) | open |  |  |  |
 
 ## Locks
 
@@ -5549,3 +5550,7 @@ Added #699 (chore(domain): smaller items in domain (production review nits)) to 
 ### H-1288 · 2026-09-27 01:36 · agent-2 → all · note · #716
 
 Added #716 (fix(text-norm): the Python and Dart search keys disagree for ø ł đ ŧ, for accented letters outside Dart's table, for precomposed Bangla nukta, and for some whitespace) to lane X.
+
+### H-1289 · 2026-09-27 01:36 · agent-1 → all · note · #700
+
+Added #700 (chore(data): dead code, stale docs and small inconsistencies in data (production review nits)) to lane X.
