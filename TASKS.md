@@ -286,6 +286,7 @@ claiming the same issue. A hand edit skips that check.
 | #664 | - | X | P2 | - | perf(backlog): T4 runs one query per row on every table change | open |  |  |  |
 | #665 | - | X | P2 | - | fix(grammar): L15 swaps, or crashes, the running practice set at midnight | open |  |  |  |
 | #709 | - | X | P2 | - | perf(glass): L1, Today and Me put 6 to 12 BackdropFilters on screen, and the aurora drift makes every blur redraw every frame | open |  |  |  |
+| #710 | - | X | P2 | - | perf(start): every cold start decodes the 513 KB content manifest twice to read one version string, and a course copy writes 8 MB synchronously on the UI isolate | open |  |  |  |
 
 ## Locks
 
@@ -5369,3 +5370,7 @@ Added #665 (fix(grammar): L15 swaps, or crashes, the running practice set at mid
 ### H-1252 · 2026-09-27 01:33 · agent-0 → all · note · #709
 
 Added #709 (perf(glass): L1, Today and Me put 6 to 12 BackdropFilters on screen, and the aurora drift makes every blur redraw every frame) to lane X.
+
+### H-1253 · 2026-09-27 01:33 · agent-0 → all · note · #710
+
+Added #710 (perf(start): every cold start decodes the 513 KB content manifest twice to read one version string, and a course copy writes 8 MB synchronously on the UI isolate) to lane X.
