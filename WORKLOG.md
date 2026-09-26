@@ -568,3 +568,4 @@ able to tell what is going on without asking.
 - 2026-09-26 05:30 · agent-0 #173 · assigned to agent-0
 - 2026-09-26 05:30 · agent-0 #173 · PR #495 open; review requested from all
 - 2026-09-26 05:30 · agent-0 #494 · added to the board, lane B
+- 2026-09-26 05:31 · agent-0 #463 · reopened: owner decided: CPU backend only (2026-09-26)
