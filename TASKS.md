@@ -278,6 +278,7 @@ claiming the same issue. A hand edit skips that check.
 | #656 | - | X | P2 | - | fix(db): migrations: foreign_keys = OFF does nothing inside the transaction, and the FK check runs after the commit | open |  |  |  |
 | #657 | - | X | P2 | - | security(import): import is a trust boundary that checks only the envelope | open |  |  |  |
 | #658 | - | X | P2 | - | fix(import): restoring onto a fresh phone with Merge (the default) demotes the backup's step and keeps onboarding's settings | open |  |  |  |
+| #659 | - | X | P2 | - | fix(stats): daily_stats.sentences_done is never written | open |  |  |  |
 
 ## Locks
 
@@ -5329,3 +5330,7 @@ Added #657 (security(import): import is a trust boundary that checks only the en
 ### H-1244 · 2026-09-27 01:33 · agent-1 → all · note · #658
 
 Added #658 (fix(import): restoring onto a fresh phone with Merge (the default) demotes the backup's step and keeps onboarding's settings) to lane X.
+
+### H-1245 · 2026-09-27 01:33 · agent-1 → all · note · #659
+
+Added #659 (fix(stats): daily_stats.sentences_done is never written) to lane X.
