@@ -498,12 +498,15 @@ QuizBuilder quizBuilder(Ref ref) => QuizBuilder(
         .watch(settingsProvider)
         .read(SettingKeys.desiredRetention),
   ),
-  notInMixed: switch (ref
+  meanings: switch (ref
       .watch(settingsProvider)
       .read(SettingKeys.meaningLanguage)) {
-    MeaningLanguage.english => const <QuizDirection>{QuizDirection.deBn},
-    MeaningLanguage.bangla => const <QuizDirection>{QuizDirection.deEn},
-    MeaningLanguage.both => const <QuizDirection>{},
+    MeaningLanguage.english => const <QuizDirection>{QuizDirection.deEn},
+    MeaningLanguage.bangla => const <QuizDirection>{QuizDirection.deBn},
+    MeaningLanguage.both => const <QuizDirection>{
+      QuizDirection.deEn,
+      QuizDirection.deBn,
+    },
   },
 );
 

@@ -60,7 +60,11 @@ void main() {
     int length = 10,
     int seed = 7,
     List<QuizWord>? pool,
-  }) => QuizBuilder(_Store(learned, pool ?? learned)).build(
+    Set<QuizDirection> meanings = const <QuizDirection>{
+      QuizDirection.deEn,
+      QuizDirection.deBn,
+    },
+  }) => QuizBuilder(_Store(learned, pool ?? learned), meanings: meanings).build(
     direction: direction,
     source: QuizSource.stepLearned,
     sourceRef: 'A1.1',
@@ -122,6 +126,32 @@ void main() {
         expect(item.tiles, isFalse, reason: 'typed, with the umlaut row');
       },
     );
+
+    test('#387 EN → DE asks in the learner\'s meaning language', () async {
+      final word = noun('n', 'Tür', 'door', bangla: 'দরজা');
+      final bare = noun('x', 'Ohne', 'without', bangla: null);
+      Future<QuizItem> ask(QuizWord w, Set<QuizDirection> meanings) async =>
+          (await build(
+            <QuizWord>[w],
+            direction: QuizDirection.enDe,
+            length: 1,
+            meanings: meanings,
+          )).items.single;
+      const english = <QuizDirection>{QuizDirection.deEn};
+      const bangla = <QuizDirection>{QuizDirection.deBn};
+
+      final en = await ask(word, english);
+      expect((en.prompt, en.hint), ('door', null), reason: 'no Bangla hint');
+      final bn = await ask(word, bangla);
+      expect((bn.prompt, bn.hint), ('দরজা', null), reason: 'no English hint');
+      final none = await ask(bare, bangla);
+      expect(
+        (none.prompt, none.hint),
+        ('without', null),
+        reason: 'a word without Bangla falls back, as the exam does',
+      );
+      expect(bn.expected, 'die Tür');
+    });
 
     test('only DE → বাংলা and compare ask with tiles', () async {
       for (final direction in QuizDirection.values) {
@@ -230,7 +260,7 @@ void main() {
         final quiz =
             await QuizBuilder(
               _Store(words, words),
-              notInMixed: const <QuizDirection>{QuizDirection.deBn},
+              meanings: const <QuizDirection>{QuizDirection.deEn},
             ).build(
               direction: QuizDirection.mixed,
               source: QuizSource.stepLearned,
@@ -382,6 +412,42 @@ void main() {
         expect(
           distractors(answer, pool, bangla, Random(seed)),
           isNot(contains('সাজানো')),
+        );
+      }
+    });
+
+    test('#387 a Bangla tile sharing an alternative is a synonym: "না" is '
+        'not offered beside "না / নয়"', () {
+      String bangla(QuizWord w) => w.bangla ?? '';
+      final answer = noun('nicht', 'nicht', 'not').copyBangla('না / নয়');
+      final pool = <QuizWord>[
+        answer,
+        noun('nein', 'nein', 'no').copyBangla('না'),
+        noun('etwas', 'etwas', 'something').copyBangla('কিছু / একটু'),
+        noun('x', 'x', 'x').copyBangla('এক'),
+        noun('y', 'y', 'y').copyBangla('দুই'),
+        noun('z', 'z', 'z').copyBangla('তিন'),
+      ];
+      for (var seed = 0; seed < 20; seed++) {
+        expect(
+          distractors(answer, pool, bangla, Random(seed)),
+          isNot(contains('না')),
+        );
+      }
+      final bisschen = noun(
+        'bisschen',
+        'ein bisschen',
+        'a little',
+      ).copyBangla('একটু');
+      for (var seed = 0; seed < 20; seed++) {
+        expect(
+          distractors(
+            bisschen,
+            <QuizWord>[bisschen, ...pool],
+            bangla,
+            Random(seed),
+          ),
+          isNot(contains('কিছু / একটু')),
         );
       }
     });
