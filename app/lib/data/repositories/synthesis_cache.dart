@@ -19,7 +19,7 @@ import 'package:path_provider/path_provider.dart';
 /// Eviction is by last read, not last write: a word the learner keeps tapping
 /// stays, however long ago it was first synthesised.
 class SynthesisCache {
-  SynthesisCache({this.support, this.capacity = 200});
+  SynthesisCache({this.support, this.capacity = 200, this.version = ''});
 
   /// `tts.md`: the last 200 synthesised strings.
   final int capacity;
@@ -27,10 +27,28 @@ class SynthesisCache {
   /// The app-support directory, as in `ModelRepository`.
   final Directory? support;
 
-  Future<Directory> directory() async {
+  /// What made the clips: Supertonic and its denoising steps. Clips kept
+  /// under another version are stale, and go on the first use (#436).
+  final String version;
+
+  Future<Directory>? _directory;
+
+  /// The clips' folder, emptied first if it holds another [version]'s.
+  Future<Directory> directory() => _directory ??= () async {
     final root = support ?? await getApplicationSupportDirectory();
-    return Directory('${root.path}/tts-cache');
-  }
+    final directory = Directory('${root.path}/tts-cache');
+    final stamp = File('${directory.path}/$_stamp');
+    // Awaited, not synchronous: up to 200 clips on the first word after an
+    // update stay off the UI isolate.
+    if (await directory.exists() &&
+        (!await stamp.exists() || await stamp.readAsString() != version)) {
+      await directory.delete(recursive: true);
+    }
+    return directory;
+  }();
+
+  /// The file that says which [version] made the clips beside it.
+  static const String _stamp = 'version';
 
   /// The file a clip would live in, whether or not it is there.
   ///
@@ -91,6 +109,7 @@ class SynthesisCache {
   }) async {
     final file = await fileFor(text, voice: voice, speed: speed);
     file.parent.createSync(recursive: true);
+    File('${file.parent.path}/$_stamp').writeAsStringSync(version);
     await file.writeAsBytes(bytes, flush: true);
     await _evict();
     return file;
