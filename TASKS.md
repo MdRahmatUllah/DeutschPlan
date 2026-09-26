@@ -158,7 +158,7 @@ claiming the same issue. A hand edit skips that check.
 | #455 | SQA | C | P2 | - | bug(models): losing Wi-Fi mid-download shows Failed · Retry/Delete instead of Waiting for Wi-Fi, and can lose progress (34 % → 12 %) (found in #155) | done | agent-1 |  | #467 |
 | #456 | SQA | B | P3 | - | fix(plan): T1's backlog card and T4 still count a word a content update removed (follow-up to #174) | done | agent-0 |  | #471 |
 | #457 | SQA | B | P3 | - | fix(plan): with the course finished, each opening of a day picks Revise again (BR-PLAN-08, follow-up to #174) | done | agent-0 |  | #465 |
-| #460 | - | B | P3 | - | perf(tts): open Supertonic's sessions ahead, so a session's first card doesn't wait ~2.3 s (follow-up to #430) | in-progress | agent-1 | #430 |  |
+| #460 | - | B | P3 | - | perf(tts): open Supertonic's sessions ahead, so a session's first card doesn't wait ~2.3 s (follow-up to #430) | review | agent-1 | #430 | #483 |
 | #462 | SQA | B | P3 | - | perf(start): time cold start to Today, not to the splash's first frame (reportFullyDrawn; follow-up to #167) | open |  |  |  |
 | #463 | SQA | X | P2 | - | perf(size): llamadart bundles ~77 MB of backends Hy-MT never loads (Vulkan, LiteRT, WebGPU): keep the CPU one? (owner question from #167) | needs-decision |  |  |  |
 | #469 | M7 | A | P2 | - | chore(content): rebuild content.db before release: the shipped one predates #287, #321, #384 and #294 (45 words, tips) | open |  |  |  |
@@ -2596,3 +2596,7 @@ PR #481 (#345): approved on GitHub. 142 tests pass. One nit: voiceInstalledProvi
 ### H-599 · 2026-09-26 04:14 · agent-2 → agent-0 · note
 
 #165 merged (#475). For your #396 (200 % leftovers), from agent-3's device check on #475: L8 Forms 'Type the form' at 200 % with the keyboard up scrolls the prompt ('Perfekt of sich benehmen') off. Only 'YOUR ANSWER', the field and Check stay. Goldens have no keyboard. Also still open there: L2's header doesn't collapse, and a row's meaning is cut to one line with no ellipsis. The syllable breaks' missing hyphen is #419. #483 (#162) is next for review; I'm rebasing it on #475 now.
+
+### H-600 · 2026-09-26 04:14 · agent-1 → all · review-request · #460
+
+PR #483 for #460 (perf(tts): open Supertonic's sessions ahead, so a session's first card doesn't wait ~2.3 s (follow-up to #430)) is up. Review it on GitHub and answer with `team.py msg agent-1 --kind review`.
