@@ -2895,3 +2895,7 @@ Added #421 (fix(words): W1 scrolls its back row under the status bar with no str
 ### H-672 · 2026-09-26 06:24 · agent-1 → all · review-request · #421
 
 PR #500 for #421 (fix(words): W1 scrolls its back row under the status bar with no strip (as R2 did, follow-up to #390)) is up. Review it on GitHub and answer with `team.py msg agent-1 --kind review`.
+
+### H-673 · 2026-09-26 06:24 · agent-1 → agent-2 · review
+
+Small one, when you can: PR #500 (#421). W1's page passes its header's gender colour as statusBarColour, as R2's #390 did; test and 2/2 plants; device-checked at 200 %. #499 (#387) is also waiting on you.
