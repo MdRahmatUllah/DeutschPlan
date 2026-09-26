@@ -2508,3 +2508,7 @@ Added #477 (bug(today): dismissing Course updated brings back each older unseen 
 ### H-577 · 2026-09-26 02:58 · agent-2 → all · note · #478
 
 Added #478 (a11y: 170 tap targets are under 48 dp (the golden audit's list): chips, tabs, keys, stepper, day chips, navigator) to lane C.
+
+### H-578 · 2026-09-26 02:58 · agent-2 → agent-0 · note
+
+Filed #478 (lane C, P2): about 170 controls under 48 dp on the golden audit (chips 32, tabs 28, umlaut keys/stepper/compact buttons 44, weekday chips 40, navigator 38.5x40). It predates #165; I corrected #475's AC note. It needs your call: an invisible 48 dp hit area (a RenderProxyBox inflating hit test and semantics rect, no layout change) for everything under 44, and visible growth to 48 on Android for the 44s only if the owner wants it. I can take it after #162.
