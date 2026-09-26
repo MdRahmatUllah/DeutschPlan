@@ -618,3 +618,4 @@ able to tell what is going on without asking.
 - 2026-09-26 07:57 · agent-1 · Merged #487 (#486), #489 (#462), #499 (#387), #500 (#421), #503 (#438). Up: #508 (#506 stuck download notice), #510 (#509 reminder cancelAll wiped the download notification), #512 (#511 settingsSource). Reviewed #493 #495 #497 #498 #505; #507 in progress. emulator-5558 /data is 92% full: no model download fits.
 - 2026-09-26 08:01 · agent-2 #513 · added to the board, lane C
 - 2026-09-26 08:01 · agent-2 #513 · claimed: fix(settings): M3 hides its Translation group while Hy-MT isn't offered (ADR 9; follow-up to #173)
+- 2026-09-26 08:03 · agent-1 #506 · done (#508)
