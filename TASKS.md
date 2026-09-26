@@ -90,7 +90,7 @@ claiming the same issue. A hand edit skips that check.
 | #172 | M7 | C | P2 | S | Licence collection and model licence texts | done | agent-2 | #150 | #441 |
 | #173 | M7 | B | P1 | S | Hy-MT region decision and ADR | done | agent-0 |  | #495 |
 | #174 | M7 | B | P1 | M | Error and edge-state matrix | done | agent-0 | #153 #156 | #458 |
-| #175 | M7 | A | P2 | S | Store listing, changelog and release tagging | in-progress | agent-0 | #168 #169 #170 #172 #173 #174 | #547 |
+| #175 | M7 | A | P2 | S | Store listing, changelog and release tagging | review | agent-0 | #168 #169 #170 #172 #173 #174 | #558 |
 | #280 | M7 | B | P1 | - | fix(adaptive): iOS bar titles at 17 pt, and a long title ends in an ellipsis | done | agent-1 |  | #401 |
 | #281 | M7 | X | P2 | - | test(learn): L6 review follow-ups: tie-break, loading, suspended, ellipsis | done | agent-1 |  | #422 |
 | #282 | M7 | X | P3 | - | fix(words): the glass word list is one frosted panel (L2, L6) | done | agent-2 |  | #444 |
@@ -3916,3 +3916,7 @@ PR #556 (#551) is rebased onto #555 and green again (568 tests, 280 audits, plan
 ### H-921 · 2026-09-26 13:22 · agent-0 → all · note · #175
 
 #175 is open again: owner: go ahead after #556, #557 and SQA's re-check
+
+### H-922 · 2026-09-26 13:24 · agent-0 → all · review-request · #175
+
+PR #558 for #175 (Store listing, changelog and release tagging) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.

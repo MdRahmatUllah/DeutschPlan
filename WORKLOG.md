@@ -730,3 +730,4 @@ able to tell what is going on without asking.
 - 2026-09-26 13:11 · agent-2 #557 · claimed: bug(a11y): at 150/200 % text, L15's gap fill hides its sentence behind the keyboard (sibling of #554)
 - 2026-09-26 13:22 · agent-0 #175 · reopened: owner: go ahead after #556, #557 and SQA's re-check
 - 2026-09-26 13:22 · agent-0 #175 · claimed: Store listing, changelog and release tagging
+- 2026-09-26 13:24 · agent-0 #175 · PR #558 open; review requested from all
