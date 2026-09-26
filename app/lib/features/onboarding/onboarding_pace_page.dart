@@ -1,3 +1,4 @@
+import 'package:deutschplan/core/adaptive/adaptive.dart';
 import 'package:deutschplan/core/components/dp_chip.dart';
 import 'package:deutschplan/core/components/dp_slider.dart';
 import 'package:deutschplan/core/components/dp_stepper.dart';
@@ -233,42 +234,46 @@ class StudyDayToggle extends StatelessWidget {
   Widget build(BuildContext context) {
     final tokens = context.tokens;
 
-    return Semantics(
-      toggled: on,
-      button: true,
-      label: full,
-      excludeSemantics: true,
-      onTap: onTap,
-      child: GestureDetector(
+    return AdaptiveTapTarget(
+      child: Semantics(
+        toggled: on,
+        button: true,
+        label: full,
+        excludeSemantics: true,
         onTap: onTap,
-        behavior: HitTestBehavior.opaque,
-        child: Container(
-          // A floor, not a fixed height. Two letters fit at 200 %, but a
-          // longer weekday name or a larger scale grows the chip rather than
-          // clipping it.
-          constraints: const BoxConstraints(minHeight: height),
-          alignment: Alignment.center,
-          decoration: BoxDecoration(
-            color: on ? tokens.color.primary : null,
-            borderRadius: BorderRadius.circular(tokens.shape.chip),
-            border: Border.all(
-              // The ink edge marks a day that is on; an off day has the same
-              // hairline every unselected control has.
-              color: on ? tokens.color.ink : tokens.surface.outline,
-              width: on || !tokens.isGlass ? 1.5 : tokens.surface.outlineWidth,
+        child: GestureDetector(
+          onTap: onTap,
+          behavior: HitTestBehavior.opaque,
+          child: Container(
+            // A floor, not a fixed height. Two letters fit at 200 %, but a
+            // longer weekday name or a larger scale grows the chip rather than
+            // clipping it.
+            constraints: const BoxConstraints(minHeight: height),
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: on ? tokens.color.primary : null,
+              borderRadius: BorderRadius.circular(tokens.shape.chip),
+              border: Border.all(
+                // The ink edge marks a day that is on; an off day has the same
+                // hairline every unselected control has.
+                color: on ? tokens.color.ink : tokens.surface.outline,
+                width: on || !tokens.isGlass
+                    ? 1.5
+                    : tokens.surface.outlineWidth,
+              ),
             ),
-          ),
-          // A day's two letters on one line: seven to a row leave a toggle
-          // too narrow for "We" at 200 %, which broke into "W / e" (#165).
-          // They shrink to fit rather than wrap.
-          child: FittedBox(
-            fit: BoxFit.scaleDown,
-            child: DpText(
-              short,
-              role: DpTextRole.label,
-              weight: 700,
-              color: on ? tokens.color.onPrimary : tokens.color.ink,
-              maxLines: 1,
+            // A day's two letters on one line: seven to a row leave a toggle
+            // too narrow for "We" at 200 %, which broke into "W / e" (#165).
+            // They shrink to fit rather than wrap.
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              child: DpText(
+                short,
+                role: DpTextRole.label,
+                weight: 700,
+                color: on ? tokens.color.onPrimary : tokens.color.ink,
+                maxLines: 1,
+              ),
             ),
           ),
         ),

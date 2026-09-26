@@ -360,24 +360,26 @@ class _ModelCardView extends ConsumerWidget {
           subtitle
         else
           // FR-M4-04: the licence link opens the full text.
-          Semantics(
-            button: true,
-            label: l10n.modelsLicenceRead(licence.kind),
-            excludeSemantics: true,
-            onTap: () => unawaited(showLicence(context, licence)),
-            child: GestureDetector(
-              behavior: HitTestBehavior.opaque,
+          AdaptiveTapTarget(
+            child: Semantics(
+              button: true,
+              label: l10n.modelsLicenceRead(licence.kind),
+              excludeSemantics: true,
               onTap: () => unawaited(showLicence(context, licence)),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  Flexible(child: subtitle),
-                  Icon(
-                    Icons.arrow_forward,
-                    size: 14,
-                    color: tokens.color.textSecondary,
-                  ),
-                ],
+              child: GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: () => unawaited(showLicence(context, licence)),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Flexible(child: subtitle),
+                    Icon(
+                      Icons.arrow_forward,
+                      size: 14,
+                      color: tokens.color.textSecondary,
+                    ),
+                  ],
+                ),
               ),
             ),
           ),

@@ -628,17 +628,18 @@ class _Match extends StatelessWidget {
               ),
             ),
           ),
-          Semantics(
-            container: true,
-            label: l10n.addWordOpenLabel(name),
-            button: true,
-            onTap: onOpen,
-            excludeSemantics: true,
-            child: DpButton(
-              label: l10n.addWordOpen,
-              kind: DpButtonKind.text,
-              expand: false,
-              onPressed: onOpen,
+          AdaptiveTapTarget(
+            child: Semantics(
+              label: l10n.addWordOpenLabel(name),
+              button: true,
+              onTap: onOpen,
+              excludeSemantics: true,
+              child: DpButton(
+                label: l10n.addWordOpen,
+                kind: DpButtonKind.text,
+                expand: false,
+                onPressed: onOpen,
+              ),
             ),
           ),
           const SizedBox(width: 4),

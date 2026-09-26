@@ -378,16 +378,18 @@ class _Words extends StatelessWidget {
     runSpacing: 8,
     children: <Widget>[
       for (final (i, word) in words.indexed)
-        Semantics(
-          button: true,
-          selected: picked.contains(i),
-          child: DpSurface(
-            kind: DpSurfaceKind.bar,
+        AdaptiveTapTarget(
+          child: Semantics(
+            button: true,
             selected: picked.contains(i),
-            radius: context.tokens.shape.button,
-            onTap: () => onTap(i),
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-            child: DpText(word, role: DpTextRole.bodyLarge, weight: 600),
+            child: DpSurface(
+              kind: DpSurfaceKind.bar,
+              selected: picked.contains(i),
+              radius: context.tokens.shape.button,
+              onTap: () => onTap(i),
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+              child: DpText(word, role: DpTextRole.bodyLarge, weight: 600),
+            ),
           ),
         ),
     ],

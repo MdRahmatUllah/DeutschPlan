@@ -1,3 +1,4 @@
+import 'package:deutschplan/core/adaptive/adaptive.dart';
 import 'package:deutschplan/core/components/dp_button.dart';
 import 'package:deutschplan/core/theme/dp_surface.dart';
 import 'package:deutschplan/core/theme/dp_tokens.dart';
@@ -172,34 +173,36 @@ class _Cell extends StatelessWidget {
         : cell.answered
         ? tokens.color.primary
         : null;
-    return Semantics(
-      button: true,
-      selected: current,
-      label: l10n.examNavQuestion(n),
-      value: cell.flagged
-          ? l10n.examNavFlaggedState
-          : cell.answered
-          ? l10n.examNavAnsweredState
-          : l10n.examNavEmptyState,
-      onTap: onTap,
-      excludeSemantics: true,
-      // ponytail: 40 dp tall, as the artboard draws it; eight to a row
-      // leaves no room for 48 on a phone.
-      child: DpSurface(
-        kind: fill == null
-            ? DpSurfaceKind.bar
-            : DpSurfaceKind.tint(fill, opacity: 1),
+    return AdaptiveTapTarget(
+      child: Semantics(
+        button: true,
         selected: current,
-        radius: 8,
+        label: l10n.examNavQuestion(n),
+        value: cell.flagged
+            ? l10n.examNavFlaggedState
+            : cell.answered
+            ? l10n.examNavAnsweredState
+            : l10n.examNavEmptyState,
         onTap: onTap,
-        child: SizedBox(
-          height: 40,
-          child: Center(
-            child: DpText(
-              AppLocalizations.of(context).digits(n),
-              role: DpTextRole.label,
-              weight: 700,
-              color: fill == null ? tokens.color.ink : tokens.color.onAccent,
+        excludeSemantics: true,
+        // ponytail: 40 dp tall, as the artboard draws it; eight to a row
+        // leaves no room for 48 on a phone.
+        child: DpSurface(
+          kind: fill == null
+              ? DpSurfaceKind.bar
+              : DpSurfaceKind.tint(fill, opacity: 1),
+          selected: current,
+          radius: 8,
+          onTap: onTap,
+          child: SizedBox(
+            height: 40,
+            child: Center(
+              child: DpText(
+                AppLocalizations.of(context).digits(n),
+                role: DpTextRole.label,
+                weight: 700,
+                color: fill == null ? tokens.color.ink : tokens.color.onAccent,
+              ),
             ),
           ),
         ),

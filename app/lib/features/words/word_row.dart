@@ -161,21 +161,23 @@ class WordPlayButton extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final tokens = context.tokens;
     final mute = noVoice(ref);
-    return Semantics(
-      button: true,
-      label: AppLocalizations.of(context).summaryPlay(word),
-      child: AdaptiveTooltip(
-        message: AppLocalizations.of(context).summaryPlay(word),
-        child: GestureDetector(
-          behavior: HitTestBehavior.opaque,
-          onTap: () => unawaited(say(ref, context, word)),
-          child: SizedBox(
-            width: 40,
-            height: 40,
-            child: Icon(
-              mute ? Icons.volume_off : Icons.volume_up,
-              size: 22,
-              color: mute ? tokens.color.textSecondary : tokens.color.ink,
+    return AdaptiveTapTarget(
+      child: Semantics(
+        button: true,
+        label: AppLocalizations.of(context).summaryPlay(word),
+        child: AdaptiveTooltip(
+          message: AppLocalizations.of(context).summaryPlay(word),
+          child: GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: () => unawaited(say(ref, context, word)),
+            child: SizedBox(
+              width: 40,
+              height: 40,
+              child: Icon(
+                mute ? Icons.volume_off : Icons.volume_up,
+                size: 22,
+                color: mute ? tokens.color.textSecondary : tokens.color.ink,
+              ),
             ),
           ),
         ),

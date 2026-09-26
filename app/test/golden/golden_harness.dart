@@ -3,6 +3,7 @@ import 'package:deutschplan/core/theme/app_theme.dart';
 import 'package:deutschplan/core/theme/glass_capability.dart';
 import 'package:deutschplan/main.dart'
     show appLocalizationsDelegates, supportedLocales;
+import 'package:flutter/semantics.dart' show SemanticsNode;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
@@ -241,9 +242,35 @@ void goldenTest(
       );
     }
     await expectLater(tester, meetsGuideline(labeledTapTargetGuideline));
+    // #478: and each is big enough to press, as its platform asks.
+    await expectLater(
+      tester,
+      meetsGuideline(
+        chrome == AdaptiveChrome.cupertino
+            ? const _IosTapTargets()
+            : androidTapTargetGuideline,
+      ),
+    );
     if (chrome != AdaptiveChrome.cupertino) expectIconButtonsTipped(tester);
     handle.dispose();
   });
+}
+
+/// iOS's 44 pt, less a sliding segmented control's segments. Flutter's
+/// control draws them 28 pt, and UIKit's own (32 pt) isn't held to 44 either
+/// (#478).
+/// ponytail: growing the control to 44 is the owner's call; drop this then.
+class _IosTapTargets extends MinimumTapTargetGuideline {
+  const _IosTapTargets()
+    : super(
+        size: const Size(44, 44),
+        link: 'https://developer.apple.com/design/human-interface-guidelines/accessibility',
+      );
+
+  @override
+  bool shouldSkipNode(SemanticsNode node) =>
+      super.shouldSkipNode(node) ||
+      node.getSemanticsData().flagsCollection.isInMutuallyExclusiveGroup;
 }
 
 /// [linear] as Android 14+ gives it, when text is scaled at all.

@@ -222,23 +222,25 @@ class StudyPlayButton extends ConsumerWidget {
     );
     final tap = onPressed;
     if (tap == null) return dot;
-    return Semantics(
-      button: true,
-      label: label,
-      child: AdaptiveTooltip(
-        message: label,
-        child: GestureDetector(
-          onTap: tap,
-          behavior: HitTestBehavior.opaque,
-          // 32 dp drawn, 48 dp tall to hit, and the gap after it part of the
-          // target, so the dot keeps the text's left edge.
-          child: Padding(
-            padding: const EdgeInsetsDirectional.only(
-              top: 8,
-              bottom: 8,
-              end: 10,
+    return AdaptiveTapTarget(
+      child: Semantics(
+        button: true,
+        label: label,
+        child: AdaptiveTooltip(
+          message: label,
+          child: GestureDetector(
+            onTap: tap,
+            behavior: HitTestBehavior.opaque,
+            // 32 dp drawn, 48 dp tall to hit, and the gap after it part of the
+            // target, so the dot keeps the text's left edge.
+            child: Padding(
+              padding: const EdgeInsetsDirectional.only(
+                top: 8,
+                bottom: 8,
+                end: 10,
+              ),
+              child: dot,
             ),
-            child: dot,
           ),
         ),
       ),
