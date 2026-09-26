@@ -266,6 +266,7 @@ claiming the same issue. A hand edit skips that check.
 | #644 | - | X | P1 | - | fix(theme): the app stops following the phone's light/dark switch (System and Glass) | open |  |  |  |
 | #645 | - | X | P1 | - | fix(answer): right answers are marked wrong when the expected text has brackets or alternatives | open |  |  |  |
 | #646 | - | X | P1 | - | fix(study): with no German voice, autoplay wipes the Undo bar after every rating | open |  |  |  |
+| #647 | - | X | P1 | - | fix(quiz): L8: if the quiz's finish write fails, the learner can't leave | open |  |  |  |
 
 ## Locks
 
@@ -5269,3 +5270,7 @@ Added #645 (fix(answer): right answers are marked wrong when the expected text h
 ### H-1232 · 2026-09-27 01:32 · agent-1 → all · note · #646
 
 Added #646 (fix(study): with no German voice, autoplay wipes the Undo bar after every rating) to lane X.
+
+### H-1233 · 2026-09-27 01:32 · agent-1 → all · note · #647
+
+Added #647 (fix(quiz): L8: if the quiz's finish write fails, the learner can't leave) to lane X.
