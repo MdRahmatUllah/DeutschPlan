@@ -283,6 +283,7 @@ claiming the same issue. A hand edit skips that check.
 | #661 | - | X | P2 | - | fix(study): swipe-to-rate gives Good after a wrong cloze answer | open |  |  |  |
 | #662 | - | X | P2 | - | fix(sentences): re-rating a T5 sentence stacks Hard reviews on its word | open |  |  |  |
 | #663 | - | X | P2 | - | fix(today): today's voice card never leaves after the voice is installed | open |  |  |  |
+| #664 | - | X | P2 | - | perf(backlog): T4 runs one query per row on every table change | open |  |  |  |
 
 ## Locks
 
@@ -5354,3 +5355,7 @@ Added #662 (fix(sentences): re-rating a T5 sentence stacks Hard reviews on its w
 ### H-1249 · 2026-09-27 01:33 · agent-1 → all · note · #663
 
 Added #663 (fix(today): today's voice card never leaves after the voice is installed) to lane X.
+
+### H-1250 · 2026-09-27 01:33 · agent-1 → all · note · #664
+
+Added #664 (perf(backlog): T4 runs one query per row on every table change) to lane X.
