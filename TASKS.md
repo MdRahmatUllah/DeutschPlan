@@ -243,6 +243,7 @@ claiming the same issue. A hand edit skips that check.
 | #625 | - | X | P3 | - | fix(background): after an update that moves user.db's schema, plan_pregenerate stops queueing itself, so the widget and reminders end within 7 days for learners who don't open the app | open |  |  |  |
 | #626 | - | X | P3 | - | fix(reminders): a day finished after reminder_compose ran still gets "12 revisions · 7 new" at reminder time | open |  |  |  |
 | #627 | - | X | P3 | - | fix(tts): if one Supertonic ONNX session fails to open, the sessions already opened are never closed | open |  |  |  |
+| #628 | - | X | P1 | - | fix(content): 44 example sentences contain the course author's own personal details (family names, employer, home town, postcode) | open |  |  |  |
 
 ## Locks
 
@@ -5134,3 +5135,7 @@ Added #626 (fix(reminders): a day finished after reminder_compose ran still gets
 ### H-1204 · 2026-09-27 01:23 · agent-0 → all · note · #627
 
 Added #627 (fix(tts): if one Supertonic ONNX session fails to open, the sessions already opened are never closed) to lane X.
+
+### H-1205 · 2026-09-27 01:23 · agent-0 → all · note · #628
+
+Added #628 (fix(content): 44 example sentences contain the course author's own personal details (family names, employer, home town, postcode)) to lane X.
