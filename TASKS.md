@@ -74,7 +74,7 @@ claiming the same issue. A hand edit skips that check.
 | #160 | M6 | C | P2 | M | X1 · Android home-screen widget (Glance) | done | agent-2 | #159 | #378 |
 | #161 | M6 | C | P2 | M | X1 · iOS home-screen widget (WidgetKit) | open |  | #159 |  |
 | #245 | M6 | X | - | - | Model manifest: Supertonic 3's files do not exist, and the real model is ~398 MB, not ~100 MB | done | agent-0 |  | #423 |
-| #283 | M6 | X | - | - | Model manifest: the Hy-MT files 404, and no q2 build exists | needs-decision |  |  |  |
+| #283 | M6 | X | - | - | Model manifest: the Hy-MT files 404, and no q2 build exists | done |  |  |  |
 | #14 | M6 | X | P1 | epic | Epic · Voice, translation and model manager | open |  | #151 #152 #153 #154 #155 #156 #245 #283 |  |
 | #15 | M6 | X | P1 | epic | Epic · Reminders, background work and home-screen widget | open |  | #157 #158 #159 #160 #161 |  |
 | #162 | M7 | C | P1 | L | Semantics and screen-reader pass across every screen | done | agent-2 | #111 #136 #147 #150 #155 | #483 |
