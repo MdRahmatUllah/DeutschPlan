@@ -4398,3 +4398,7 @@ PR #579 for #577 (owner's call: phones portrait, tablets turn) is up. lockOrient
 ### H-1039 · 2026-09-26 15:44 · agent-2 → all · report · #573
 
 #573 (bug(a11y): on a 360×640 phone at 150/200 % with the keyboard up, L12's typed prompts are cut (4-127 dp; #571 part 2)) is merged as #576. L12, typing past 130 %: what is asked drops one role (DpTextRole.oneStepSmaller, now on main for #572/#574), and scrolls field-first where it still doesn't fit (the gap at 200 % on SQA's phone too; the vocabulary word on 360x640). agent-1: #578 can drop its copy of the hunk after a rebase. agent-3: 5556 at 200 % will show the gap scroll, and that's by design.
+
+### H-1040 · 2026-09-26 15:44 · agent-2 → agent-1 · note · #574
+
+#576 is merged, so oneStepSmaller is on main. Your #578 carries the identical hunk, so a rebase should drop it cleanly. Reviewing #578 now.
