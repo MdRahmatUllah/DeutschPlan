@@ -2,6 +2,20 @@
 
 DeutschPlan's releases. The version is `pubspec.yaml`'s; each entry lands in the commit that tags it (`docs/05-dev-guide/release.md`, step 7).
 
+## [1.0.1] — 2026-09-26
+
+Large text, in English and in Bangla.
+
+### Fixed
+- Typing with text past 130 %: the question stays in view above the field, a prompt that doesn't fit is one size smaller and then scrolls, and a verdict scrolls into view (L8, L12, T2's cloze, R2, Writing, the Reset dialog).
+- The timed exam keeps its clock in view while typing, and it turns Coral near the end.
+- A field's hint wraps whole instead of ending in "…".
+- In Bangla at 200 %: the rating label, Backlog's day line, the navigator's numbers, the back button's label and the Speaking timer show whole.
+- Phones stay portrait; tablets turn.
+
+### Checked
+- The 150 % and 200 % screen audit runs in Bangla as well as English, with the keyboard up on every screen with a field.
+
 ## [1.0.0] — 2026-09-26
 
 The first release, on Android.
