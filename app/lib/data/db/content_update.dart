@@ -145,8 +145,11 @@ class ContentUpdater {
     return null;
   }
 
+  /// BR-CONTENT-03's card is one-time: dismissing the newest update clears
+  /// every one before it too, whose counts it has overtaken (#477). Versions
+  /// order as strings, as [unseen]'s does.
   Future<void> markSeen(String version) => _db.customStatement(
-    'UPDATE content_updates SET seen = 1 WHERE version = ?',
+    'UPDATE content_updates SET seen = 1 WHERE version <= ?',
     <Object?>[version],
   );
 
