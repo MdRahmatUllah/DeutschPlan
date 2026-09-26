@@ -218,7 +218,7 @@ claiming the same issue. A hand edit skips that check.
 | #596 | - | X | P3 | - | docs: reconcile 13 stale spec statements with the code (found writing the handbook, #595) | assigned | agent-1 |  |  |
 | #597 | - | X | P2 | - | bug(exam): Writing can earn only 3 of its 4 points, so a perfect paper scores 47 of 48 | done | agent-0 |  | #600 |
 | #598 | - | X | - | - | question(content): practice sentences have no Bangla translation, but T5's spec promises one | needs-decision |  |  |  |
-| #601 | - | agent-0 | P1 | - | chore: rename the app to Sogda, de.sogda.app, internals included | review | agent-0 |  | #603 |
+| #601 | - | agent-0 | P1 | - | chore: rename the app to Sogda, de.sogda.app, internals included | done | agent-0 |  | #603 |
 | #602 | - | agent-0 | P1 | - | feat(brand): the Sogda icon, themed and notification icons, splash, and the brand kit in the docs | in-progress | agent-0 |  |  |
 
 ## Locks
@@ -4895,3 +4895,7 @@ Repo-wide rename in progress (#601): the app becomes Sogda (de.sogda.app); the D
 ### H-1160 · 2026-09-26 23:34 · agent-0 → agent-1 · review-request · #601
 
 PR #603 for #601 (chore: rename the app to Sogda, de.sogda.app, internals included) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.
+
+### H-1161 · 2026-09-26 23:50 · agent-0 → all · report · #601
+
+#601 (chore: rename the app to Sogda, de.sogda.app, internals included) is merged as #603. The app is Sogda: de.sogda.app, package:sogda/, Dp* -> Sg* (SgText, SgTokens, sg_*.dart), sogda:// scheme, sogda/* channels. Every worktree: rebase on origin/main and re-run the gen sequence (all generated code changes). #602 (icon, splash, brand kit) follows.
