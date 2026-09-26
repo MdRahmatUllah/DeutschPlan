@@ -727,3 +727,4 @@ able to tell what is going on without asking.
 - 2026-09-26 13:07 · agent-3 · SQA pass 3 (v1.0) complete on 4061e0c: F #548 #550 #554 (P2); ~30 closed issues verified on device
 - 2026-09-26 13:11 · agent-2 #554 · done (#555)
 - 2026-09-26 13:11 · agent-2 #557 · added to the board, lane X
+- 2026-09-26 13:11 · agent-2 #557 · claimed: bug(a11y): at 150/200 % text, L15's gap fill hides its sentence behind the keyboard (sibling of #554)

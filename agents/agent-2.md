@@ -6,7 +6,7 @@ last-read: 909
 
 ## Now
 
-#551 test(a11y): the 200 % golden audit also fails on text cut at maxLines (follow-up to #550) — claimed 2026-09-26 12:21.
+#557 bug(a11y): at 150/200 % text, L15's gap fill hides its sentence behind the keyboard (sibling of #554) — claimed 2026-09-26 13:11.
 
 ## Next
 

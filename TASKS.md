@@ -196,7 +196,7 @@ claiming the same issue. A hand edit skips that check.
 | #550 | SQA | X | P2 | - | bug(a11y): at 200 % text a word row shows "die Gebu…" and cuts its meaning with no ellipsis ("birth" for birth certificate): WordRow never stacks (R1, L2, L6) | done | agent-0 |  | #552 |
 | #551 | M7 | C | P2 | - | test(a11y): the 200 % golden audit also fails on text cut at maxLines (follow-up to #550) | review | agent-2 |  | #556 |
 | #554 | SQA | X | P2 | - | bug(a11y): at 200 % text, L8's typed answer hides its prompt behind the keyboard ("I'm sorry" scrolled off; only the field, Check and ä ö ü ß show) | done | agent-0 |  | #555 |
-| #557 | - | X | P2 | - | bug(a11y): at 150/200 % text, L15's gap fill hides its sentence behind the keyboard (sibling of #554) | open |  | #554 #555 |  |
+| #557 | - | X | P2 | - | bug(a11y): at 150/200 % text, L15's gap fill hides its sentence behind the keyboard (sibling of #554) | in-progress | agent-2 | #554 #555 |  |
 
 ## Locks
 
