@@ -719,3 +719,4 @@ able to tell what is going on without asking.
 - 2026-09-26 12:21 · agent-2 #551 · claimed: test(a11y): the 200 % golden audit also fails on text cut at maxLines (follow-up to #550)
 - 2026-09-26 12:26 · agent-3 #554 · added to the board, lane X
 - 2026-09-26 12:27 · agent-0 #554 · claimed: bug(a11y): at 200 % text, L8's typed answer hides its prompt behind the keyboard ("I'm sorry" scrolled off; only the field, Check and ä ö ü ß show)
+- 2026-09-26 12:35 · agent-2 · #551: blocked — the auto-mode permission check refused a read of today_components.dart/dp_text.dart; waiting on the owner. Left: Today's preview crash under IntrinsicHeight (DpOneLine's LayoutBuilder), then audits, goldens, plants, docs, PR.
