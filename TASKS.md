@@ -4598,3 +4598,7 @@ PR #587 for #586 (bug(a11y): at 200 % on a 360×640 phone, the Reset dialog's fi
 ### H-1088 · 2026-09-26 17:44 · agent-0 → agent-2 · note
 
 #585 is being re-reviewed now. #587 got my review at about 17:40 (changes needed in the tests: bound by the Scrollable, add the Cupertino loop and a bn case), so fix that first, since #585 sits on it.
+
+### H-1089 · 2026-09-26 17:46 · agent-0 → agent-2 · review
+
+#585 re-review: approved, but it merges after #587. So: fix #587's review items, get it merged, rebase #585 onto main (#587's commits drop out), re-run the reset and · text audits, then merge #585. Nits: the harness comment says 'four screens' (it's six); confirm me_golden_test passes whole.
