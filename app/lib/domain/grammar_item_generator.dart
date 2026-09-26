@@ -378,8 +378,13 @@ List<GrammarItem> generateItems(
   // forms, where one does.
   final used = <int>{first};
   final borrowed = <String>{};
+  // #515: the forms a *Pick the form* has asked. A set never drills one
+  // twice ("spreche" in two sentences): a short set rather than a repeat.
+  final asked = <String>{};
+  bool askedAlready(String word) => asked.contains(_bare(word).toLowerCase());
   PickTheForm pick(List<String> words, int at, String english) {
     final (pickBefore, form, pickAfter) = _blankAt(words, at);
+    asked.add(_bare(form).toLowerCase());
     return PickTheForm(
       before: pickBefore,
       after: pickAfter,
@@ -397,7 +402,7 @@ List<GrammarItem> generateItems(
       if (used.contains(other)) continue;
       final words = _tokens(sentences[other]);
       final at = target(words, real: real);
-      if (at < 0) continue;
+      if (at < 0 || askedAlready(words[at])) continue;
       used.add(other);
       return pick(words, at, translationOf(other));
     }
@@ -423,6 +428,7 @@ List<GrammarItem> generateItems(
         });
     for (final i in ranked) {
       final form = _bare(tokens[i]);
+      if (askedAlready(form)) continue;
       final elsewhere = <({String german, String english})>[
         for (final sentence in text.sentencesWith(form))
           if (!sentences.contains(sentence.german.trim()) &&
@@ -461,21 +467,22 @@ List<GrammarItem> generateItems(
       fromCourse(cued: true) ??
       fromCourse(cued: false) ??
       fromExample(real: false);
-  PickTheForm besideGap() {
+  PickTheForm? besideGap() {
     final at = target(<String>[
       for (var i = 0; i < tokens.length; i++) i == gap ? '' : tokens[i],
     ]);
-    return pick(
-      tokens,
-      at != gap && _bare(tokens[at]).length > 1 ? at : gap,
-      translation,
-    );
+    final chosen = at != gap && _bare(tokens[at]).length > 1 ? at : gap;
+    return askedAlready(tokens[chosen])
+        ? null
+        : pick(tokens, chosen, translation);
   }
 
   // A topic with no German example practises its English rule: a form of
   // "sentence" to pick is no German, so it asks gap fills only (#386).
   final german = !_blank(source.exampleDe);
-  if (german) items.add(elsewhere() ?? besideGap());
+  if (german) {
+    if ((elsewhere() ?? besideGap()) case final item?) items.add(item);
+  }
 
   if (tags.intersection(errorTags).isNotEmpty) {
     final error =
@@ -551,7 +558,17 @@ List<GrammarItem> generateItems(
       ),
     );
   }
-  if (items.length < 3 && german) items.add(elsewhere() ?? besideGap());
+  if (items.length < 3 && german) {
+    if ((elsewhere() ?? besideGap()) case final item?) {
+      items.add(item);
+    } else {
+      // ponytail: no other form to ask, which happens only without the
+      // course (a failed read, CourseText.none): the old repeat, so the set
+      // keeps FR-L15-01's three. The real course always has another (#515).
+      asked.clear();
+      if ((elsewhere() ?? besideGap()) case final item?) items.add(item);
+    }
+  }
   return items.take(maxItems).toList();
 }
 
