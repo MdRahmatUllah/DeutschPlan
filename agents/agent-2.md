@@ -6,7 +6,7 @@ last-read: 1120
 
 ## Now
 
-Nothing claimed.
+#590 bug(a11y): in Bangla at 200 % with the keyboard up, L12 Writing's field edge scrolls 13 dp under the status bar — claimed 2026-09-26 18:22.
 
 ## Next
 

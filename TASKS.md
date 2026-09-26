@@ -212,7 +212,7 @@ claiming the same issue. A hand edit skips that check.
 | #584 | - | X | P2 | - | test(a11y): the 200 % golden audit also puts the keyboard up on a screen with a field | done | agent-2 |  | #585 |
 | #586 | - | X | P2 | - | bug(a11y): at 200 % on a 360×640 phone, the Reset dialog's field stays under the keyboard after it's tapped (found by #584's keyboard pass) | done | agent-2 |  | #587 |
 | #588 | Later | C | P3 | - | bug(a11y): on iOS in Bangla at 200 %, the back button's label and the speaking timer overflow their rows (16 / 5.9 dp; from #581) | review | agent-1 |  | #591 |
-| #590 | - | X | P3 | - | bug(a11y): in Bangla at 200 % with the keyboard up, L12 Writing's field edge scrolls 13 dp under the status bar | assigned | agent-2 |  |  |
+| #590 | - | X | P3 | - | bug(a11y): in Bangla at 200 % with the keyboard up, L12 Writing's field edge scrolls 13 dp under the status bar | in-progress | agent-2 |  |  |
 
 ## Locks
 
