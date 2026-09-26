@@ -281,6 +281,7 @@ claiming the same issue. A hand edit skips that check.
 | #659 | - | X | P2 | - | fix(stats): daily_stats.sentences_done is never written | open |  |  |  |
 | #660 | - | X | P2 | - | fix(day-complete): a session that crosses midnight claims today's day-complete for yesterday's plan | open |  |  |  |
 | #661 | - | X | P2 | - | fix(study): swipe-to-rate gives Good after a wrong cloze answer | open |  |  |  |
+| #662 | - | X | P2 | - | fix(sentences): re-rating a T5 sentence stacks Hard reviews on its word | open |  |  |  |
 
 ## Locks
 
@@ -5344,3 +5345,7 @@ Added #660 (fix(day-complete): a session that crosses midnight claims today's da
 ### H-1247 · 2026-09-27 01:33 · agent-1 → all · note · #661
 
 Added #661 (fix(study): swipe-to-rate gives Good after a wrong cloze answer) to lane X.
+
+### H-1248 · 2026-09-27 01:33 · agent-1 → all · note · #662
+
+Added #662 (fix(sentences): re-rating a T5 sentence stacks Hard reviews on its word) to lane X.
