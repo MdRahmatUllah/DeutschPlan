@@ -1,14 +1,14 @@
 import 'dart:async';
 
 import 'package:background_downloader/background_downloader.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:deutschplan/data/repositories/model_repository.dart';
 import 'package:deutschplan/data/repositories/setting_keys.dart';
 import 'package:deutschplan/data/repositories/settings_repository.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
 import 'package:deutschplan/l10n/ui_language_locale.dart';
 import 'package:deutschplan/services/device_storage.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 /// What a model's download is doing (FR-M4-01, #156), for M4's card.
 enum DownloadPhase {
@@ -532,6 +532,10 @@ abstract interface class DownloadNotice {
 /// finished (`GroupNotification.update` keeps no order), so the group never
 /// finishes: "Model download" stayed at 78 % and 89 % after the voice was
 /// Ready on the emulator.
+// ponytail: a registration job that runs later still (a slow phone, a big
+// file finishing last) would post "Model download" over this again; the
+// logcat had them within ~10 s of queueing, and this comes after the
+// checksums. A second post a few seconds later is the upgrade.
 class PlatformDownloadNotice implements DownloadNotice {
   const PlatformDownloadNotice();
 
