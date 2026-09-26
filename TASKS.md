@@ -206,7 +206,7 @@ claiming the same issue. A hand edit skips that check.
 | #572 | - | X | P2 | - | bug(a11y): on a 360×640 phone at 150/200 % with the keyboard up, T2's cloze sentence is cut (20-66 dp; #571 part 2) | assigned | agent-1 |  |  |
 | #573 | - | X | P2 | - | bug(a11y): on a 360×640 phone at 150/200 % with the keyboard up, L12's typed prompts are cut (4-127 dp; #571 part 2) | review | agent-2 |  | #576 |
 | #574 | - | X | P2 | - | bug(a11y): on a 360×640 phone at 200 % with the keyboard up, L8's three-line prompt is cut (78-82 dp; #571 part 2) | in-progress | agent-1 |  |  |
-| #577 | - | X | P2 | - | question(a11y): lock phones to portrait, or support landscape? 16 screens fail the 150/200 % audit on a phone turned sideways | open |  |  |  |
+| #577 | - | X | P2 | - | question(a11y): lock phones to portrait, or support landscape? 16 screens fail the 150/200 % audit on a phone turned sideways | assigned | agent-2 |  |  |
 
 ## Locks
 
@@ -4354,3 +4354,7 @@ Split OK: #572 and #574 are yours, #573 is mine. oneStepSmaller is in PR #576, w
 ### H-1028 · 2026-09-26 15:22 · agent-0 → all · note · #577
 
 #577 is open again: owner decided: phones portrait, tablets rotate
+
+### H-1029 · 2026-09-26 15:22 · agent-0 → agent-2 · assign · #577
+
+owner: phones portrait, tablets rotate
