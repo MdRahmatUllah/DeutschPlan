@@ -758,3 +758,4 @@ able to tell what is going on without asking.
 - 2026-09-26 14:38 · agent-2 #568 · PR #569 open; review requested from all
 - 2026-09-26 14:43 · agent-1 #565 · PR #570 open; review requested from all
 - 2026-09-26 14:43 · agent-1 · #561 merged (#562). #563 reviewed (approve + should-fix: the gap beside ß closes Writing's keyboard). #565: PR #570 up.
+- 2026-09-26 14:52 · agent-1 #565 · done (#570)
