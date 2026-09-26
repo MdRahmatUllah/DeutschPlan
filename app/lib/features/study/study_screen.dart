@@ -197,7 +197,9 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
     );
     switch (step) {
       case StudyNextStep.done:
-        _close();
+        // T1, whichever screen opened the session (session-summary.md,
+        // *Leads to*; the lead's call, #345).
+        _leave(() => context.jumpToTab(const TodayRoute()));
       case StudyNextStep.revise:
         block(SessionBlockKind.revise, next!.revise);
       case StudyNextStep.newWords:
@@ -273,8 +275,9 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
   }
 
   /// FR-T2-01: *Show meaning*, or a tap on the card.
-  void _reveal() =>
-      ref.read(studySessionProvider(widget.args).notifier).reveal();
+  void _reveal({bool missed = false}) => ref
+      .read(studySessionProvider(widget.args).notifier)
+      .reveal(missed: missed);
 
   void _playBanner(StudySessionState session) {
     if (!session.startsBlock || _bannered == session.position) return;
@@ -476,6 +479,7 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
                 prompt: cloze == null
                     ? l10n.studyRatePrompt
                     : l10n.studyClozeRatePrompt,
+                missed: session?.missed ?? false,
                 onRated: (rating) => _rate(item, rating),
               ),
             ),
@@ -508,7 +512,13 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
         // The undo bar belongs to the app's messenger, not this route: left
         // up, its *Undo* would reach a session that no longer exists.
         ScaffoldMessenger.maybeOf(context)?.hideCurrentSnackBar();
-        ref.invalidate(studySessionProvider(widget.args));
+        // After the frame: *Done for now*'s jump to T1 drops this page, which
+        // pops it while the navigator builds, and no provider may be
+        // invalidated then (#345).
+        final args = widget.args;
+        WidgetsBinding.instance.addPostFrameCallback(
+          (_) => _container.invalidate(studySessionProvider(args)),
+        );
       },
       child: AdaptiveScaffold(
         backgroundColor: tokens.isGlass
@@ -728,7 +738,9 @@ class StudyCardSlot extends ConsumerWidget {
 
   final StudyItem item;
   final bool revealed;
-  final VoidCallback? onReveal;
+
+  /// Turns the card over: [missed] after a wrong cloze answer (#345).
+  final void Function({bool missed})? onReveal;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -745,7 +757,8 @@ class StudyCardSlot extends ConsumerWidget {
           key: ValueKey<String>(word.uid),
           word: word,
           cloze: gap,
-          onChecked: () => onReveal?.call(),
+          // A verdict that scores nothing (BR-ANS-04): Again and Hard only.
+          onChecked: (verdict) => onReveal?.call(missed: verdict.score == 0),
         );
       }
       return StudyWordCard(

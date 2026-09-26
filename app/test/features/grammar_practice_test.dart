@@ -44,6 +44,13 @@ void main() {
     answer: 'hätte',
     translation: "I'd like a coffee.",
   );
+  // Seven letters: one typo is *almost* (BR-ANS-01's typoMinLength).
+  const longGap = GapFill(
+    before: 'Du',
+    after: 'auf den Bus.',
+    answer: 'wartest',
+    translation: "You're waiting for the bus.",
+  );
   const spot = SpotTheError(
     tokens: <String>['Können', 'Sie', 'mir', 'helfen?'],
     wrong: 0,
@@ -189,6 +196,18 @@ void main() {
       expect(find.text(l10n.practiceNotQuite('hätte')), findsOneWidget);
     });
 
+    testWidgets('#345 gap fill, one letter off: almost, as T2 says it, with '
+        'no rule line', (tester) async {
+      await pump(tester, items: <GrammarItem>[longGap, pick, spot]);
+      await tester.enterText(find.byType(TextField), 'wartets');
+      await tester.pump();
+      await tester.tap(find.text(l10n.practiceCheck));
+      await tester.pumpAndSettle();
+      expect(find.text(l10n.practiceAlmost('wartest')), findsOneWidget);
+      expect(find.text(l10n.practiceNotQuite('wartest')), findsNothing);
+      expect(find.text(l10n.practiceSeeRule), findsNothing);
+    });
+
     testWidgets('gap fill, an umlaut typed plainly is still right', (
       tester,
     ) async {
@@ -304,6 +323,23 @@ void main() {
     await tester.pumpAndSettle();
     await tapNext(tester);
     expect(rated, <(String, int, int)>[('g3', 3, 2)]);
+  });
+
+  testWidgets('#345 FR-L15-03 an almost counts as right in the topic\'s '
+      'rating', (tester) async {
+    await pump(tester, items: <GrammarItem>[longGap, pick, recall]);
+    await tester.enterText(find.byType(TextField), 'wartets');
+    await tester.pump();
+    await tester.tap(find.text(l10n.practiceCheck));
+    await tester.pumpAndSettle();
+    await tapNext(tester);
+    await tester.tap(find.text('Könnten'));
+    await tester.pumpAndSettle();
+    await tapNext(tester);
+    await tester.tap(find.text('könnte for polite requests'));
+    await tester.pumpAndSettle();
+    await tapNext(tester);
+    expect(rated, <(String, int, int)>[('g3', 3, 3)]);
   });
 
   testWidgets('FR-L15-04 due topics back to back, a banner between', (

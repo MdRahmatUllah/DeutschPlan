@@ -28,6 +28,7 @@ A word suspended mid-session (W1 opened from the overflow) stays in the queue it
 - FR-T2-05 Interval previews MUST be computed with the card's current FSRS state on reveal.
 - FR-T2-06 Between blocks a 1 s banner ("Neue Wörter · {category}") MUST play; block order is fixed.
 - FR-T2-07 Closing MUST NOT prompt; progress is per card. Reopening from Today shows "Continue · n left".
+  - A session reopened (or continued) counts what the day already has behind each block: 4 of 15 new words done, it opens at "New today · 5 / 15", with the strip filled to there. The day's planned words of the block no longer open are its done ones, however the session was opened (#345).
 - FR-T2-08 Optional swipe-to-rate (left Again, right Good) only when `swipe_to_rate = 1`.
 - FR-T2-09 Long-press the headword copies it; long-press the speaker plays at 0.75×.
 - FR-T2-10 Cloze cards replace the front for words with `card_mode = cloze` (see states doc).

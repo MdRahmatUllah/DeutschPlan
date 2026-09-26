@@ -67,6 +67,10 @@ class _GrammarPracticeScreenState extends ConsumerState<GrammarPracticeScreen> {
   /// Right or wrong once the current item is answered; null before.
   bool? _right;
 
+  /// The right answer was a near miss (BR-ANS-01): it counts as right, and
+  /// says so as T2's cloze does (#345).
+  bool _almost = false;
+
   /// What the learner gave, for the options to show their pick.
   String? _given;
   int _answers = 0;
@@ -81,10 +85,11 @@ class _GrammarPracticeScreenState extends ConsumerState<GrammarPracticeScreen> {
     super.dispose();
   }
 
-  void _answer({required bool right, String? given}) {
+  void _answer({required bool right, String? given, bool almost = false}) {
     if (_right != null) return;
     setState(() {
       _right = right;
+      _almost = almost;
       _given = given;
       if (right) _correct++;
     });
@@ -221,6 +226,7 @@ class _GrammarPracticeScreenState extends ConsumerState<GrammarPracticeScreen> {
                   const SizedBox(height: 16),
                   PracticeFeedback(
                     right: right,
+                    almost: _almost,
                     answer: itemAnswer(item),
                     rule: set.topic.topic.rule,
                     onSeeRule: () => _seeRule(set.topic),
@@ -437,7 +443,8 @@ class PracticeItemView extends StatelessWidget {
   final GrammarItem item;
   final bool answered;
   final String? given;
-  final void Function({required bool right, String? given}) onAnswer;
+  final void Function({required bool right, String? given, bool almost})
+  onAnswer;
 
   @override
   Widget build(BuildContext context) => switch (item) {
@@ -671,7 +678,8 @@ class _GapFillView extends StatefulWidget {
   final String answer;
   final String translation;
   final bool answered;
-  final void Function({required bool right, String? given}) onAnswer;
+  final void Function({required bool right, String? given, bool almost})
+  onAnswer;
 
   @override
   State<_GapFillView> createState() => _GapFillViewState();
@@ -689,7 +697,14 @@ class _GapFillViewState extends State<_GapFillView> {
   void _check() {
     if (widget.answered || _typed.text.trim().isEmpty) return;
     final verdict = checkGerman(_typed.text, widget.answer);
-    widget.onAnswer(right: verdict.isRight, given: _typed.text.trim());
+    // An *almost* counts as right for the topic's rating (BR-FSRS-05): it is
+    // a typo, not a miss (the lead's call, #345).
+    final almost = verdict == Verdict.almost;
+    widget.onAnswer(
+      right: verdict.isRight || almost,
+      almost: almost,
+      given: _typed.text.trim(),
+    );
   }
 
   @override
@@ -738,7 +753,8 @@ class _SpotView extends StatelessWidget {
   final int wrong;
   final String? given;
   final bool answered;
-  final void Function({required bool right, String? given}) onAnswer;
+  final void Function({required bool right, String? given, bool almost})
+  onAnswer;
 
   @override
   Widget build(BuildContext context) {
@@ -792,7 +808,8 @@ class _OrderView extends StatefulWidget {
   final List<String> chips;
   final List<String> answer;
   final bool answered;
-  final void Function({required bool right, String? given}) onAnswer;
+  final void Function({required bool right, String? given, bool almost})
+  onAnswer;
 
   @override
   State<_OrderView> createState() => _OrderViewState();
@@ -903,18 +920,22 @@ class _WordChip extends StatelessWidget {
   }
 }
 
-/// FR-L15-02: right, or "Not quite — the answer is Könnten" with the rule's
-/// first line and *See rule*.
+/// FR-L15-02: right; *almost*, with the answer's spelling; or "Not quite —
+/// the answer is Könnten" with the rule's first line and *See rule*.
 class PracticeFeedback extends StatelessWidget {
   const PracticeFeedback({
     required this.right,
     required this.answer,
     required this.rule,
     required this.onSeeRule,
+    this.almost = false,
     super.key,
   });
 
   final bool right;
+
+  /// A right answer that was a near miss (BR-ANS-01, #345).
+  final bool almost;
   final String answer;
   final String? rule;
   final VoidCallback onSeeRule;
@@ -935,8 +956,16 @@ class PracticeFeedback extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           DpVerdictRow(
-            verdict: right ? DpVerdict.correct : DpVerdict.wrong,
-            message: right ? l10n.practiceRight : l10n.practiceNotQuite(answer),
+            verdict: almost
+                ? DpVerdict.almost
+                : right
+                ? DpVerdict.correct
+                : DpVerdict.wrong,
+            message: almost
+                ? l10n.practiceAlmost(answer)
+                : right
+                ? l10n.practiceRight
+                : l10n.practiceNotQuite(answer),
           ),
           if (!right && line != null && line.isNotEmpty) ...<Widget>[
             const SizedBox(height: 6),
