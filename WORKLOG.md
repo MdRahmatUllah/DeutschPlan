@@ -849,3 +849,4 @@ able to tell what is going on without asking.
 - 2026-09-26 23:38 · agent-0 #602 · claimed: feat(brand): the Sogda icon, themed and notification icons, splash, and the brand kit in the docs
 - 2026-09-26 23:38 · agent-0 · #601 PR #603 up (rename to Sogda: de.sogda.app, package sogda, Dp->Sg, sogda://); full suite green, 7/7 plants, release APK verified by aapt2. #602 (icon, splash, brand kit) in progress, stacked on it.
 - 2026-09-26 23:50 · agent-0 #601 · done (#603)
+- 2026-09-26 23:50 · agent-0 · unlocked pubspec
