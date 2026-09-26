@@ -152,7 +152,13 @@ class QuizItemView extends ConsumerWidget {
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: <Widget>[prompt, const SizedBox(height: 20), answer],
+      children: <Widget>[
+        prompt,
+        // Typing past 130 %, 12 dp of the gap go to a two-line prompt, which
+        // otherwise lost the top of its first line under the strip (#561).
+        SizedBox(height: typing ? 8 : 20),
+        answer,
+      ],
     );
   }
 }
