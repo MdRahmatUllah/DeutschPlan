@@ -6,7 +6,7 @@ last-read: 941
 
 ## Now
 
-Nothing claimed.
+#560 fix(exam): the timed exam keeps its clock in view while typing past 130 % (follow-up to #554) — claimed 2026-09-26 13:46.
 
 ## Next
 
