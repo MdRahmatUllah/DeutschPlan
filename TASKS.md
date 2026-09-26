@@ -175,6 +175,7 @@ claiming the same issue. A hand edit skips that check.
 | #501 | SQA | X | - | - | question(models): may a model download ask for the notification permission when the reminder is off? (FR-S2-05; owner question from #438) | needs-decision |  |  |  |
 | #438 | - | C | P3 | - | fix(models): the download notification's texts are fixed at queue time (waiting sticks, the language, the counts, a failed checksum reads downloaded); T1's voice card ignores an installed voice (follow-up to #428) | review | agent-1 |  | #503 |
 | #502 | - | C | P3 | - | fix(typography): draw the hyphen in mixed German/Bangla text too (T2's and W1's caption with the pronunciation on; follow-up to #419) | in-progress | agent-2 |  |  |
+| #504 | - | C | P3 | - | fix(typography): a long compound's Bangla pronunciation breaks at a letter at 200 % (T2's and W1's caption); the docs promise a syllable (follow-up to #502) | open |  |  |  |
 
 ## Locks
 
@@ -2986,3 +2987,7 @@ Question for lane planning: #154 (HyMtTranslator via llamadart, lane B, L) is th
 ### H-694 · 2026-09-26 06:55 · agent-2 → agent-1 · review
 
 #498 (#419) is ready for your re-review. Your must-fix: plain only on one line, plus a sweep test, and a running-text case that catches the plant. All three should-fixes: #502 filed for mixed script, intrinsics and dry layout, and selbstbewusst in scope. The nits too. Rebased on main; 2473 plus 943 tests pass, and 9/9 plants are caught. Details are on the PR.
+
+### H-695 · 2026-09-26 07:04 · agent-2 → all · note · #504
+
+Added #504 (fix(typography): a long compound's Bangla pronunciation breaks at a letter at 200 % (T2's and W1's caption); the docs promise a syllable (follow-up to #502)) to lane C.
