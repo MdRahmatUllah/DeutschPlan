@@ -12,8 +12,6 @@ import 'package:deutschplan/core/typography/dp_text.dart';
 import 'package:deutschplan/data/repositories/backup_repository.dart';
 import 'package:deutschplan/data/repositories/setting_keys.dart';
 import 'package:deutschplan/domain/plan_engine.dart' show planDate;
-import 'package:deutschplan/features/me/settings_screen.dart'
-    show settingsSourceProvider;
 import 'package:deutschplan/features/today/today_providers.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
 import 'package:deutschplan/l10n/ui_digits.dart';

@@ -86,6 +86,12 @@ SettingsRepository settings(Ref ref) => throw UnimplementedError(
   'the learner like their settings reset.',
 );
 
+/// The settings the screens read and write: the app's own. A provider of its
+/// own so a test that only needs a screen drawn can give it settings without
+/// a database (#511).
+@riverpod
+SettingsRepository settingsSource(Ref ref) => ref.watch(settingsProvider);
+
 /// The one source of "now".
 ///
 /// `state-management.md`: "`DateTime Function()`; overridden in tests for date

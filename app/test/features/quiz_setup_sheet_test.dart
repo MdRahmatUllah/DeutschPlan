@@ -1,12 +1,12 @@
 import 'package:deutschplan/core/adaptive/adaptive.dart';
 import 'package:deutschplan/core/components/dp_chip.dart';
+import 'package:deutschplan/core/providers/app_providers.dart'
+    show settingsSourceProvider;
 import 'package:deutschplan/core/theme/app_theme.dart';
 import 'package:deutschplan/data/repositories/setting_keys.dart';
 import 'package:deutschplan/domain/quiz_builder.dart';
 import 'package:deutschplan/features/learn/step_detail_screen.dart';
 import 'package:deutschplan/features/learn/step_words.dart';
-import 'package:deutschplan/features/me/settings_screen.dart'
-    show settingsSourceProvider;
 import 'package:deutschplan/features/quiz/quiz_setup_sheet.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
 import 'package:deutschplan/main.dart'
