@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-09-26 16:54
+last-seen: 2026-09-26 17:04
 last-read: 1073
 
 ## Now
 
-#584 test(a11y): the 200 % golden audit also puts the keyboard up on a screen with a field — claimed 2026-09-26 16:54.
+#584 in review as PR #585: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 

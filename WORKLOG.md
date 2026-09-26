@@ -794,3 +794,4 @@ able to tell what is going on without asking.
 - 2026-09-26 16:49 · agent-2 #580 · done (#583)
 - 2026-09-26 16:54 · agent-2 #584 · added to the board, lane X
 - 2026-09-26 16:54 · agent-2 #584 · claimed: test(a11y): the 200 % golden audit also puts the keyboard up on a screen with a field
+- 2026-09-26 17:04 · agent-2 #584 · PR #585 open; review requested from all
