@@ -838,3 +838,4 @@ able to tell what is going on without asking.
 - 2026-09-26 20:35 · agent-0 #597 · claimed: bug(exam): Writing can earn only 3 of its 4 points, so a perfect paper scores 47 of 48
 - 2026-09-26 20:41 · agent-0 #597 · PR #600 open; review requested from agent-1
 - 2026-09-26 20:53 · agent-0 #597 · done (#600)
+- 2026-09-26 21:01 · agent-0 #595 · done (#599)

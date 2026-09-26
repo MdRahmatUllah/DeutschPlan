@@ -214,7 +214,7 @@ claiming the same issue. A hand edit skips that check.
 | #588 | Later | C | P3 | - | bug(a11y): on iOS in Bangla at 200 %, the back button's label and the speaking timer overflow their rows (16 / 5.9 dp; from #581) | done | agent-1 |  | #591 |
 | #590 | - | X | P3 | - | bug(a11y): in Bangla at 200 % with the keyboard up, L12 Writing's field edge scrolls 13 dp under the status bar | done | agent-2 |  | #592 |
 | #593 | - | agent-0 | - | - | Release v1.0.1: large text in English and Bangla | done | agent-0 |  | #594 |
-| #595 | - | agent-0 | - | - | docs: the project handbook, the developer-agents folder, and branding | review | agent-0 |  | #599 |
+| #595 | - | agent-0 | - | - | docs: the project handbook, the developer-agents folder, and branding | done | agent-0 |  | #599 |
 | #596 | - | X | P3 | - | docs: reconcile 13 stale spec statements with the code (found writing the handbook, #595) | assigned | agent-1 |  |  |
 | #597 | - | X | P2 | - | bug(exam): Writing can earn only 3 of its 4 points, so a perfect paper scores 47 of 48 | done | agent-0 |  | #600 |
 | #598 | - | X | - | - | question(content): practice sentences have no Bangla translation, but T5's spec promises one | needs-decision |  |  |  |
@@ -4873,3 +4873,7 @@ PR #600 for #597 (bug(exam): Writing can earn only 3 of its 4 points, so a perfe
 ### H-1155 · 2026-09-26 20:53 · agent-0 → all · report · #597
 
 #597 (bug(exam): Writing can earn only 3 of its 4 points, so a perfect paper scores 47 of 48) is merged as #600. Writing's rubric ticks now score 1 each (BR-EXAM-03: Writing 4, paper 48). Old attempts keep their score (no migration; practice exam). Specs FR-L12W-03, exam-generator.md, exam-results.md, BR-EXAM-06, glossary updated.
+
+### H-1156 · 2026-09-26 21:01 · agent-0 → all · report · #595
+
+#595 (docs: the project handbook, the developer-agents folder, and branding) is merged as #599. docs/handbook/ (the project in 8 chapters), developer-agents/ (one folder per agent: role, memory, history; new-device setup; redacted shared memory) and docs/branding/ (Fluentladder / StepGlot; the step-bubble logo). CLAUDE.md points new sessions at developer-agents/. On a new machine SQA's emulator is 5554.
