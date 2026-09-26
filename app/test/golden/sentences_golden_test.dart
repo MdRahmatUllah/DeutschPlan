@@ -44,6 +44,33 @@ void main() {
       await tester.tap(find.text('Show translation'));
     },
   );
+
+  // #539: a long compound in the sentence breaks at a syllable at 200 %,
+  // with its "-", which the text audit checks.
+  goldenTest(
+    'sentences_long',
+    builder: (context) => ProviderScope(
+      overrides: [
+        settingsProvider.overrideWithValue(settings),
+        practiceSentencesProvider.overrideWith(_Long.new),
+      ],
+      child: const SentencesScreen(),
+    ),
+  );
+}
+
+class _Long extends PracticeSentences {
+  @override
+  Future<List<PracticeSentence>> build() async => const <PracticeSentence>[
+    PracticeSentence(
+      sentence: SentenceCandidate(
+        wordUid: 'geschwindigkeitsbegrenzung',
+        ord: 1,
+        german: 'Auf dieser Strecke gilt eine Geschwindigkeitsbegrenzung.',
+        english: 'A speed limit applies on this stretch.',
+      ),
+    ),
+  ];
 }
 
 class _Artboard extends PracticeSentences {

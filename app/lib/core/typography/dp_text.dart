@@ -658,20 +658,33 @@ class DpHeadword extends StatelessWidget {
 /// syllable and shows its "-", in its run's style, and a screen reader
 /// hears it whole in a German voice (#535, as [DpText] does, #419, #162).
 class DpGermanRuns extends StatelessWidget {
-  const DpGermanRuns(this.runs, {super.key});
+  const DpGermanRuns(this.runs, {super.key, this.style, this.textAlign});
 
-  /// Each run's text and style.
+  /// Each run's text, style over [style], and tap (T5's word look-up).
   final List<TextSpan> runs;
+
+  /// What every run's style is over.
+  final TextStyle? style;
+  final TextAlign? textAlign;
 
   @override
   Widget build(BuildContext context) {
     final tagged = <TextSpan>[
       for (final run in runs)
-        TextSpan(text: run.text, style: run.style, locale: DpScript.deDE),
+        TextSpan(
+          text: run.text,
+          style: style?.merge(run.style) ?? run.style,
+          recognizer: run.recognizer,
+          locale: DpScript.deDE,
+        ),
     ];
     return _Hyphenated(
       runs: tagged,
-      child: Text.rich(TextSpan(children: tagged), locale: DpScript.deDE),
+      child: Text.rich(
+        TextSpan(children: tagged),
+        locale: DpScript.deDE,
+        textAlign: textAlign,
+      ),
     );
   }
 }
@@ -732,6 +745,7 @@ class _RenderHyphenated extends RenderProxyBox {
         TextSpan(
           text: texts[i],
           style: run.style,
+          recognizer: run.recognizer,
           locale: run.locale,
           semanticsLabel: run.text!.replaceAll(DpScript.softHyphen, ''),
         ),

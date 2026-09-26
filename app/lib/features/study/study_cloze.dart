@@ -108,6 +108,10 @@ class _StudyClozeCardState extends ConsumerState<StudyClozeCard> {
       DpTextRole.title,
     ).copyWith(fontWeight: FontWeight.w500);
     final english = example.english;
+    // A compound of 15 letters or more offers its syllables to break at,
+    // as T2's caption does (#419), and is read whole.
+    TextSpan broken(String text) =>
+        TextSpan(text: DpScript.allowBreaks(text), semanticsLabel: text);
 
     return StudyCardFrame(
       article: word.article,
@@ -139,7 +143,11 @@ class _StudyClozeCardState extends ConsumerState<StudyClozeCard> {
                 // Read in a German voice (#162).
                 locale: DpScript.deDE,
                 children: <InlineSpan>[
-                  TextSpan(text: example.german.substring(0, gap.start)),
+                  // ponytail: the gap is a widget, which `_Hyphenated`'s text
+                  // planner can't lay out, so a long compound around it
+                  // breaks at a syllable with no "-" drawn (#539). A
+                  // placeholder in the planner is the upgrade.
+                  broken(example.german.substring(0, gap.start)),
                   WidgetSpan(
                     alignment: PlaceholderAlignment.baseline,
                     baseline: TextBaseline.alphabetic,
@@ -150,7 +158,7 @@ class _StudyClozeCardState extends ConsumerState<StudyClozeCard> {
                       style: line,
                     ),
                   ),
-                  TextSpan(text: example.german.substring(gap.end)),
+                  broken(example.german.substring(gap.end)),
                 ],
               ),
             ),

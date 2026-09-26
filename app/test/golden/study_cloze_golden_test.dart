@@ -72,7 +72,19 @@ void main() {
     searchKeyAlt: 'rechnung',
   );
 
-  Widget screen(BuildContext context) => ProviderScope(
+  Widget screen(
+    BuildContext context, {
+    List<StudyExample> examples = const <StudyExample>[
+      (
+        german: 'Ich habe die Rechnung noch nicht bezahlt.',
+        english: "I haven't paid the bill yet.",
+      ),
+      (
+        german: 'Können wir bitte die Rechnung haben?',
+        english: 'Could we have the bill, please?',
+      ),
+    ],
+  }) => ProviderScope(
     overrides: [
       settingsProvider.overrideWithValue(settings),
       fakeVoice(FakeTts()),
@@ -85,21 +97,8 @@ void main() {
           Rating.easy: 21,
         },
       ),
-      studyBackProvider('r3').overrideWith(
-        (ref) async => (
-          examples: <StudyExample>[
-            (
-              german: 'Ich habe die Rechnung noch nicht bezahlt.',
-              english: "I haven't paid the bill yet.",
-            ),
-            (
-              german: 'Können wir bitte die Rechnung haben?',
-              english: 'Could we have the bill, please?',
-            ),
-          ],
-          tip: null,
-        ),
-      ),
+      studyBackProvider('r3')
+          .overrideWith((ref) async => (examples: examples, tip: null)),
       studyWordProvider('r3').overrideWith(
         (ref) async => const WordWithState(
           word: rechnung,
@@ -133,6 +132,23 @@ void main() {
     'study_cloze',
     builder: screen,
     act: (tester) => answer(tester, 'Rechnung'),
+  );
+
+  // #539: a long compound around the gap breaks at a syllable at 200 %, not
+  // at a letter, which the text audit checks.
+  goldenTest(
+    'study_cloze_long',
+    modes: const <GoldenMode>[GoldenMode.light],
+    devices: const <GoldenDevice>[GoldenDevice.phone],
+    builder: (context) => screen(
+      context,
+      examples: const <StudyExample>[
+        (
+          german: 'Die Rechnung für die Haftpflichtversicherung ist da.',
+          english: 'The bill for the liability insurance has come.',
+        ),
+      ],
+    ),
   );
 
   // #345: a wrong answer: the bar offers Again and Hard, Good and Easy faded.
