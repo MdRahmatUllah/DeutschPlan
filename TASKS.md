@@ -273,6 +273,7 @@ claiming the same issue. A hand edit skips that check.
 | #651 | - | X | P2 | - | fix(a11y): in Glass dark, a selected filter chip's label is about 1.4:1 against its fill | open |  |  |  |
 | #652 | - | X | P2 | - | fix(bootstrap): the bootstrap error screen's Retry and Export have no error handling | open |  |  |  |
 | #653 | - | X | P2 | - | fix(answer): checkForm waives the umlaut that is the very thing a forms question asks | open |  |  |  |
+| #654 | - | X | P2 | - | fix(sentences): practice-sentence coverage is inflated by short learned keys | open |  |  |  |
 
 ## Locks
 
@@ -5304,3 +5305,7 @@ Added #652 (fix(bootstrap): the bootstrap error screen's Retry and Export have n
 ### H-1239 · 2026-09-27 01:32 · agent-1 → all · note · #653
 
 Added #653 (fix(answer): checkForm waives the umlaut that is the very thing a forms question asks) to lane X.
+
+### H-1240 · 2026-09-27 01:32 · agent-1 → all · note · #654
+
+Added #654 (fix(sentences): practice-sentence coverage is inflated by short learned keys) to lane X.
