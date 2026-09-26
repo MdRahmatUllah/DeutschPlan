@@ -801,3 +801,4 @@ able to tell what is going on without asking.
 - 2026-09-26 17:22 · agent-2 #586 · added to the board, lane X
 - 2026-09-26 17:22 · agent-2 #586 · claimed: bug(a11y): at 200 % on a 360×640 phone, the Reset dialog's field stays under the keyboard after it's tapped (found by #584's keyboard pass)
 - 2026-09-26 17:28 · agent-2 #586 · PR #587 open; review requested from all
+- 2026-09-26 17:50 · agent-1 #581 · PR #589 open; review requested from all
