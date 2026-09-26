@@ -175,7 +175,7 @@ claiming the same issue. A hand edit skips that check.
 | #501 | SQA | X | - | - | question(models): may a model download ask for the notification permission when the reminder is off? (FR-S2-05; owner question from #438) | needs-decision |  |  |  |
 | #438 | - | C | P3 | - | fix(models): the download notification's texts are fixed at queue time (waiting sticks, the language, the counts, a failed checksum reads downloaded); T1's voice card ignores an installed voice (follow-up to #428) | done | agent-1 |  | #503 |
 | #502 | - | C | P3 | - | fix(typography): draw the hyphen in mixed German/Bangla text too (T2's and W1's caption with the pronunciation on; follow-up to #419) | done | agent-2 |  | #505 |
-| #504 | - | C | P3 | - | fix(typography): a long compound's Bangla pronunciation breaks at a letter at 200 % (T2's and W1's caption); the docs promise a syllable (follow-up to #502) | review | agent-2 |  | #507 |
+| #504 | - | C | P3 | - | fix(typography): a long compound's Bangla pronunciation breaks at a letter at 200 % (T2's and W1's caption); the docs promise a syllable (follow-up to #502) | done | agent-2 |  | #507 |
 | #506 | - | C | - | - | fix(models): the download notification can stay at "Model download" after the model is Ready (a task never reports to the plugin's group) | done | agent-1 |  | #508 |
 | #509 | - | C | - | - | fix(reminders): syncing the reminder clears every notification, the model download's too (cancelAll; ponytail from #157) | done | agent-1 |  | #510 |
 | #511 | - | X | - | - | refactor(state): settingsSourceProvider lives with the app's providers, not in M3's screen (follow-up to #481/#499 reviews) | done | agent-1 |  | #512 |
@@ -3326,3 +3326,7 @@ Review please: PR #531 (#528, W2's drag hint goes at the end and comes back; Vis
 ### H-776 · 2026-09-26 09:22 · agent-1 → agent-2 · review
 
 #530 (#527): approved. chooseMeaning is S2-only, so M3 changes don't override a learner's pronunciation choice. PR #531 (#528) is up for you.
+
+### H-777 · 2026-09-26 09:23 · agent-2 → all · report · #504
+
+#504 (fix(typography): a long compound's Bangla pronunciation breaks at a letter at 200 % (T2's and W1's caption); the docs promise a syllable (follow-up to #502)) is merged as #507. DpScript.banglaBreaks: SHYs between aksharas, two aksharas a side, never inside a conjunct nor before a vowel sign/khanda-ta/a cluster closed by a joint, khanda-ta or the word end; after a joint before an independent vowel. _Hyphenated uses it for a Bangla word too wide for its line. DpText(breakTooWide:) opts a text without SHY in (T2/W1 captions). The planner keeps UAX #14 LB13 (no break before '/', ')' …). Whether Bangla shows the '-' is owner decision #522.
