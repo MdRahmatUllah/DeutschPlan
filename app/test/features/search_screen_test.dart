@@ -24,7 +24,7 @@ import 'package:deutschplan/router/routes.dart';
 import 'package:drift/drift.dart' show Value;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
-import 'package:flutter/rendering.dart' show RenderParagraph;
+import 'package:flutter/rendering.dart' show RenderEditable, RenderParagraph;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
@@ -251,6 +251,27 @@ void main() {
         isEmpty,
       );
       expect(heading(l10n.searchExact(1)), findsNothing);
+    });
+
+    testWidgets('FR-R1-01 #565 at 200 % the empty field shows its whole hint, '
+        "and typing, it is the query's one line again", (tester) async {
+      textAt(tester, 2);
+      await pump(tester);
+      final field = find.byType(TextField);
+      final empty = tester.getSize(field).height;
+      expectAllLinesShown(tester, within: field);
+      expectNothingClipped(tester);
+
+      await type(tester, 'Haus');
+      final typed = tester.getSize(field).height;
+      final line = tester.allRenderObjects
+          .whereType<RenderEditable>()
+          .single
+          .preferredLineHeight;
+      // The hint's lines while empty; the query's one line as you type,
+      // not the hint's height with the query at its top.
+      expect(empty, greaterThan(line * 1.5));
+      expect(typed, lessThan(line * 1.5));
     });
 
     testWidgets('FR-R1-01 #550 at 200 % a long word shows its whole headword '

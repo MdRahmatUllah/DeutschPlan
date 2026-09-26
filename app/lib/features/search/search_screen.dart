@@ -401,8 +401,10 @@ class _Header extends StatelessWidget {
           DpSurface(
             radius: tokens.shape.button,
             selected: !tokens.isGlass,
-            child: SizedBox(
-              height: 52,
+            // The artboard's 52 as a minimum: at large text the hint wraps,
+            // and the field grows to show it (#565).
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(minHeight: 52),
               child: Row(
                 children: <Widget>[
                   const SizedBox(width: 14),
@@ -427,6 +429,13 @@ class _Header extends StatelessWidget {
                         ),
                         decoration: InputDecoration.collapsed(
                           hintText: l10n.searchHint,
+                          // A one-line field caps its hint at one line, so
+                          // at large text "…English or Bangla" was cut: it
+                          // wraps, and the empty field grows (#565). Typing,
+                          // the field is the query's line again, not the
+                          // hint's three with the query at their top.
+                          hintMaxLines: 3,
+                          maintainHintSize: false,
                           hintStyle: DpText.styleFor(
                             tokens,
                             DpTextRole.bodyLarge,
