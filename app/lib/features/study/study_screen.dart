@@ -10,7 +10,6 @@ import 'package:deutschplan/core/theme/dp_tokens.dart';
 import 'package:deutschplan/core/typography/dp_text.dart';
 import 'package:deutschplan/data/repositories/setting_keys.dart';
 import 'package:deutschplan/data/repositories/word_repository.dart';
-import 'package:deutschplan/domain/answer_check.dart' show Verdict;
 import 'package:deutschplan/domain/fsrs.dart' show Rating;
 import 'package:deutschplan/data/repositories/rating_service.dart'
     show CardMode;
@@ -758,9 +757,8 @@ class StudyCardSlot extends ConsumerWidget {
           key: ValueKey<String>(word.uid),
           word: word,
           cloze: gap,
-          onChecked: (verdict) => onReveal?.call(
-            missed: verdict == Verdict.wrong || verdict == Verdict.wrongArticle,
-          ),
+          // A verdict that scores nothing (BR-ANS-04): Again and Hard only.
+          onChecked: (verdict) => onReveal?.call(missed: verdict.score == 0),
         );
       }
       return StudyWordCard(
