@@ -103,8 +103,28 @@ void main() {
       await downloads.attach();
       expect(downloader.notification, 'models');
       expect(downloader.progressBar, isTrue);
-      expect(downloader.running!.title, contains('{numFinished}'));
-      expect(downloader.running!.title, contains('{numTotal}'));
+    });
+
+    test('#438 its texts stay true whatever happens next: no state, no '
+        'per-process count, and finished is not ready', () async {
+      await downloads.attach();
+      expect(
+        (downloader.running!.title, downloader.running!.body),
+        (
+          'Model download',
+          'Carries on in the background. With Wi-Fi only on, it waits for '
+              'Wi-Fi',
+        ),
+      );
+      expect(downloader.running!.title, isNot(contains('{num')));
+      expect(
+        (downloader.complete!.title, downloader.complete!.body),
+        (
+          'Model download finished',
+          'Voice & translation says when it is ready',
+        ),
+        reason: 'the checksums come after',
+      );
     });
 
     test('the downloader picks up what was in flight: killed tasks are '
@@ -269,15 +289,12 @@ void main() {
     });
 
     test('queued off Wi-Fi with Wi-Fi only on: waiting from the moment it is '
-        'queued, and the notification says so', () async {
+        'queued; #438 the notification says the same as on Wi-Fi, since it '
+        'would keep a waiting text after Wi-Fi arrives', () async {
       await downloads.start('hymt');
       await pumpEventQueue();
       expect(seen.last, DownloadPhase.waitingForWifi);
-      expect(
-        downloader.running!.title,
-        'Waiting for Wi-Fi · {numFinished} of {numTotal} files',
-      );
-      expect(downloader.running!.body, 'Downloads on Wi-Fi, in the background');
+      expect(downloader.running!.title, 'Model download');
     });
 
     test(
@@ -287,10 +304,7 @@ void main() {
         await downloads.start('hymt');
         await pumpEventQueue();
         expect(seen.last, DownloadPhase.running);
-        expect(
-          downloader.running!.title,
-          'Downloading models · {numFinished} of {numTotal} files',
-        );
+        expect(downloader.running!.title, 'Model download');
       },
     );
 
@@ -299,17 +313,14 @@ void main() {
       await downloads.start('hymt');
       await pumpEventQueue();
       expect(seen.last, DownloadPhase.running);
-      expect(
-        downloader.running!.title,
-        'Downloading models · {numFinished} of {numTotal} files',
-      );
+      expect(downloader.running!.title, 'Model download');
     });
 
     test('the notification is in the language of the moment it is queued, '
         'not the launch\'s', () async {
       await settings.write(SettingKeys.uiLanguage, UiLanguage.bangla);
       await downloads.start('hymt');
-      expect(downloader.running!.title, startsWith('ওয়াই-ফাইয়ের অপেক্ষায়'));
+      expect(downloader.running!.title, 'মডেল ডাউনলোড');
     });
   });
 
@@ -845,6 +856,7 @@ class _Downloader implements FileDownloader {
   RequireWiFi? wifi;
   bool? rescheduled;
   TaskNotification? running;
+  TaskNotification? complete;
   String? notification;
   bool? progressBar;
 
@@ -884,6 +896,7 @@ class _Downloader implements FileDownloader {
     String groupNotificationId = '',
   }) {
     this.running = running;
+    this.complete = complete;
     this.progressBar = progressBar;
     notification = groupNotificationId;
     return this;

@@ -132,7 +132,7 @@ class BackgroundModelDownloads implements ModelDownloads {
   Future<void> attach() async {
     if (_updates != null) return;
     // Before `start()`, which queues again the tasks the system killed.
-    _notify(waiting: false);
+    _notify();
     _updates = _downloader.updates.listen((update) => unawaited(_on(update)));
     // The downloader's own record: a task the system or the learner killed
     // is scheduled again, and one that finished while the app was away says
@@ -184,27 +184,24 @@ class BackgroundModelDownloads implements ModelDownloads {
   }
 
   /// One notification for every file of every model, in the UI language of
-  /// the moment. The tokens are the downloader's own, filled in on the
-  /// device.
-  // ponytail: the platform keeps the texts each task was queued with, for
-  // the whole of a model's download: files queued off Wi-Fi still say
-  // *Waiting for Wi-Fi* once it arrives (their count moves), and a Wi-Fi
-  // drop mid-download still says *Downloading*. A notification of our own,
-  // updated from [_settle], is the upgrade (#428).
-  void _notify({required bool waiting}) {
+  /// the moment, saying only what stays true (#438). The platform keeps the
+  /// texts a task was queued with for the whole download and counts files
+  /// per app process, so a state ("Waiting for Wi-Fi", "Downloading") or a
+  /// count ("2 of 7") would go stale: Wi-Fi arriving or dropping, a relaunch.
+  /// The platform's own notification is kept rather than one of the app's,
+  /// which would stop updating once the app is swiped away while the
+  /// download carries on.
+  // ponytail: a task the system reschedules keeps the language it was
+  // queued in, and the progress bar still counts per process.
+  void _notify() {
     final l10n = lookupAppLocalizations(
       _settings.read(SettingKeys.uiLanguage).locale,
     );
     _downloader.configureNotification(
-      running: waiting
-          ? TaskNotification(
-              l10n.modelNotifyWaiting('{numFinished}', '{numTotal}'),
-              l10n.modelNotifyWaitingNote,
-            )
-          : TaskNotification(
-              l10n.modelNotifyRunning('{numFinished}', '{numTotal}'),
-              l10n.modelNotifyRunningNote,
-            ),
+      running: TaskNotification(
+        l10n.modelNotifyRunning,
+        l10n.modelNotifyRunningNote,
+      ),
       paused: TaskNotification(
         l10n.modelNotifyPaused,
         l10n.modelNotifyPausedNote,
@@ -275,7 +272,7 @@ class BackgroundModelDownloads implements ModelDownloads {
         done: 0,
       );
     }
-    _notify(waiting: _offWifi);
+    _notify();
     await _downloader.enqueueAll(tasks);
     // Said now, not at the platform's first word: page 5 reads *Waiting for
     // Wi-Fi* or *Downloading* the moment it is queued (#428).
