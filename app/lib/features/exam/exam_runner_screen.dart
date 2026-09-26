@@ -552,12 +552,26 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
               padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
               child: nav,
             ),
-          if (examTypesGerman(item))
+          // #560: a timed paper always shows its time left (FR-L12-03). With
+          // the band collapsed, its clock sits here above the keyboard, beside
+          // the umlaut keys, which give it width rather than the prompt height.
+          if (examTypesGerman(item) || (cramped && _timed))
             DpSurface(
               kind: DpSurfaceKind.bar,
               radius: 0,
               padding: const EdgeInsets.fromLTRB(16, 10, 16, 16),
-              child: DpUmlautBar(controller: _field),
+              child: !(cramped && _timed)
+                  ? DpUmlautBar(controller: _field)
+                  : Row(
+                      children: <Widget>[
+                        if (examTypesGerman(item)) ...<Widget>[
+                          Expanded(child: DpUmlautBar(controller: _field)),
+                          const SizedBox(width: 8),
+                        ] else
+                          const Spacer(),
+                        _Clock(seconds: _left, ink: tokens.color.ink),
+                      ],
+                    ),
             ),
         ],
       );
@@ -593,6 +607,48 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
 String _clock(int seconds) =>
     '${seconds ~/ 60}:${'${seconds % 60}'.padLeft(2, '0')}';
 
+/// The time left, in [ink] on whatever it sits on: the band, or the bar
+/// above the keyboard while the band is collapsed (#560).
+class _Clock extends StatelessWidget {
+  const _Clock({required this.seconds, required this.ink});
+
+  final int seconds;
+  final Color ink;
+
+  @override
+  Widget build(BuildContext context) {
+    final tokens = context.tokens;
+    final l10n = AppLocalizations.of(context);
+    // FR-L12-03 / exam-hub.md: Coral in the last 2 minutes.
+    final coral = seconds <= 120;
+    return Semantics(
+      label: l10n.examRunTimeLeft(seconds ~/ 60, seconds % 60),
+      excludeSemantics: true,
+      // At least the artboard's 32, and taller at large text: a fixed 32 cut
+      // "14:32" at 150 % (#165).
+      child: Container(
+        constraints: const BoxConstraints(minHeight: 32),
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
+        decoration: BoxDecoration(
+          color: coral ? tokens.color.again : ink.withValues(alpha: 0.18),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        // Its own height, centred: an Align would fill the bar.
+        child: Center(
+          widthFactor: 1,
+          heightFactor: 1,
+          child: DpText(
+            l10n.digits(_clock(seconds)),
+            role: DpTextRole.body,
+            weight: 700,
+            color: coral ? tokens.color.ink : ink,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 /// The Cobalt band: pause (which asks to leave, as the artboard wires it),
 /// the section, the clock — Coral in the last two minutes — and the
 /// navigator.
@@ -624,8 +680,6 @@ class _Band extends StatelessWidget {
     final l10n = AppLocalizations.of(context);
     final ink = tokens.isGlass ? tokens.color.ink : tokens.color.onDer;
     final seconds = left;
-    // FR-L12-03 / exam-hub.md: Coral in the last 2 minutes.
-    final coral = seconds != null && seconds <= 120;
     final content = Column(
       children: <Widget>[
         SizedBox(height: MediaQuery.paddingOf(context).top),
@@ -663,37 +717,7 @@ class _Band extends StatelessWidget {
                     textAlign: TextAlign.center,
                   ),
                 ),
-                if (seconds != null)
-                  Semantics(
-                    label: l10n.examRunTimeLeft(seconds ~/ 60, seconds % 60),
-                    excludeSemantics: true,
-                    // At least the artboard's 32, and taller at large text:
-                    // a fixed 32 cut "14:32" at 150 % (#165).
-                    child: Container(
-                      constraints: const BoxConstraints(minHeight: 32),
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 10,
-                        vertical: 2,
-                      ),
-                      decoration: BoxDecoration(
-                        color: coral
-                            ? tokens.color.again
-                            : ink.withValues(alpha: 0.18),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      // Its own height, centred: an Align would fill the bar.
-                      child: Center(
-                        widthFactor: 1,
-                        heightFactor: 1,
-                        child: DpText(
-                          AppLocalizations.of(context).digits(_clock(seconds)),
-                          role: DpTextRole.body,
-                          weight: 700,
-                          color: coral ? tokens.color.ink : ink,
-                        ),
-                      ),
-                    ),
-                  ),
+                if (seconds != null) _Clock(seconds: seconds, ink: ink),
                 Semantics(
                   button: true,
                   label: l10n.examNavOpen,
