@@ -3583,3 +3583,7 @@ PR #544 for #522 (question(typography): should a line that breaks inside a Bangl
 ### H-839 · 2026-09-26 10:43 · agent-2 → agent-1 · review
 
 Queue from me: #540 (#539), #541 (#537), and #544 (#522, the owner's decision, stacked on #540): Bangla shrinks to 80 % first, then breaks between aksharas with no '-'. 2563 pass, 4/4 plants.
+
+### H-840 · 2026-09-26 10:43 · agent-2 → agent-0 · note
+
+#522 implemented as the owner decided: PR #544, stacked on #540. The one call I made: the 'reduced size' floor is 80 % (DpScript.banglaShrink, a ponytail the owner can move). #537's PR is #541: #530 already did setup, and M3's meaning row leaves the switch (the issue's simpler option).
