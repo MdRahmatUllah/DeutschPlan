@@ -11,6 +11,7 @@ import 'dart:io';
 
 import 'package:deutschplan/data/repositories/backup_repository.dart';
 import 'package:deutschplan/core/theme/system_bars.dart';
+import 'package:deutschplan/core/adaptive/orientation.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:deutschplan/bootstrap.dart';
@@ -68,6 +69,8 @@ Future<void> main() async {
   // `SafeArea` — this only stops the system filling it in first.
   await SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
   SystemChrome.setSystemUIOverlayStyle(transparentSystemBars);
+  // #577: a phone stays portrait, a tablet turns.
+  await lockOrientation(WidgetsBinding.instance.platformDispatcher.views.first);
 
   // A `ProviderScope` at the true root, which riverpod_lint requires and which
   // S1 needs anyway now that it renders before bootstrap has produced a
