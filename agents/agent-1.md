@@ -1,12 +1,12 @@
 # agent-1
 
 session: active
-last-seen: 2026-09-26 17:53
+last-seen: 2026-09-26 18:02
 last-read: 1094
 
 ## Now
 
-#588 bug(a11y): on iOS in Bangla at 200 %, the back button's label and the speaking timer overflow their rows (16 / 5.9 dp; from #581) — claimed 2026-09-26 17:53.
+#588 in review as PR #590: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
