@@ -341,6 +341,7 @@ class StudyAnswerField extends StatelessWidget {
               // Typing past 130 %, 8 dp of the margin under the keys go to
               // what is asked: T2's cloze (a three-line one fits a 360 × 640
               // phone) and L15's gap, which this field also serves (#572).
+              // 12 dp is the keys' floor above the keyboard.
               margin: typing ? 12 : 20,
             )
           : const EdgeInsets.all(20),
