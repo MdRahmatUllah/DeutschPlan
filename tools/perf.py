@@ -304,6 +304,12 @@ def main(argv: list[str] | None = None) -> int:
     doc = json.loads(BASELINE.read_text(encoding="utf-8"))
     passed = report(measured, doc)
     if args.update_baseline:
+        if not passed:
+            # Deliberate re-baselining (a feature that grows the app) is the
+            # point of the flag; doing it over a regression by accident is not.
+            print("
+WARNING: this run FAILED against the old baseline, and "
+                  "becomes the new one. Check the table above first.")
         doc["metrics"].update(measured)
         BASELINE.write_text(json.dumps(doc, indent=2) + "\n", encoding="utf-8")
         print(f"\nbaseline written: {BASELINE}")
