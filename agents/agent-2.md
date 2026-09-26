@@ -6,7 +6,7 @@ last-read: 695
 
 ## Now
 
-#502 in review as PR #505: answer review threads; re-run the gate if main moved, then merge.
+#504 fix(typography): a long compound's Bangla pronunciation breaks at a letter at 200 % (T2's and W1's caption); the docs promise a syllable (follow-up to #502) — claimed 2026-09-26 07:12.
 
 ## Next
 
