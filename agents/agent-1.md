@@ -1,12 +1,12 @@
 # agent-1
 
 session: active
-last-seen: 2026-09-26 03:48
+last-seen: 2026-09-26 03:49
 last-read: 585
 
 ## Now
 
-#436 in review as PR #482: answer review threads; re-run the gate if main moved, then merge.
+#460 perf(tts): open Supertonic's sessions ahead, so a session's first card doesn't wait ~2.3 s (follow-up to #430) — claimed 2026-09-26 03:49.
 
 ## Next
 
