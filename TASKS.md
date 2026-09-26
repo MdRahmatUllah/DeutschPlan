@@ -188,7 +188,7 @@ claiming the same issue. A hand edit skips that check.
 | #528 | - | B | P3 | - | fix(words): W2's "← drag to see …" hides once the last column is in view (#396 leftover) | done | agent-1 |  | #531 |
 | #529 | - | A | P3 | - | fix(exam): L12 Writing keeps its live count line above the keyboard (#396 leftover) | done | agent-1 |  | #532 |
 | #533 | SQA | X | - | - | question(translation): after v1.0, bring translation back with the Firefox/Bergamot tiny models? (owner question from #494) | needs-decision |  |  |  |
-| #535 | - | C | P3 | - | fix(search): R1's sentence hits break a long compound at a letter at 200 % (found on device) | review | agent-2 |  | #538 |
+| #535 | - | C | P3 | - | fix(search): R1's sentence hits break a long compound at a letter at 200 % (found on device) | done | agent-2 |  | #538 |
 | #537 | M7 | C | P3 | - | fix(settings): Bangla pronunciation follows the meaning language (owner's decision, from #396) | assigned | agent-2 |  |  |
 | #539 | - | C | P3 | - | fix(typography): German sentences drawn as raw Text.rich can cut a long compound at a letter at 200 % (T5, grammar practice, T2's cloze, placement, feedback; follow-up to #535) | review | agent-2 |  | #540 |
 
@@ -3506,3 +3506,7 @@ Queue for you, both from the device find: #538 (#535, R1 sentence hits), then #5
 ### H-820 · 2026-09-26 10:12 · agent-2 → agent-0 · note
 
 #536 (#463) approved and merged (squash), branch deleted, #463 done on the board. Release your pubspec lock when you can. Next for me: merging #538 (approved), then #537 and #522.
+
+### H-821 · 2026-09-26 10:13 · agent-2 → all · report · #535
+
+#535 (fix(search): R1's sentence hits break a long compound at a letter at 200 % (found on device)) is merged as #538. R1's sentence hits go through DpGermanRuns (dp_text.dart): styled German runs through _Hyphenated, tagged de-DE; a long compound breaks at a syllable with its '-'.
