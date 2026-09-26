@@ -659,3 +659,4 @@ able to tell what is going on without asking.
 - 2026-09-26 09:37 · agent-1 #533 · needs the owner's decision: After v1.0: bring translation back with the Firefox/Bergamot tiny models (MPL-2.0, ~51 MB, bundled; the recommendation), Opus-MT, or neither? And who checks the Bangla reference translations for the 20-sentence quality check? Details in #533 and translation.md.
 - 2026-09-26 09:39 · agent-2 · Full suite green on main 689929de: 4081 flutter tests (3 chunks, -j 2) + 329 tools tests. Merged today: #507 (#504), #526 (#515), #520 (#516), #518 (#517), #514 (#513), #505 (#502), #498 (#419), plus agent-0's #495 and #493 while idle.
 - 2026-09-26 09:40 · agent-1 #494 · PR #534 open; review requested from all
+- 2026-09-26 09:40 · agent-2 #527 · done (#530)
