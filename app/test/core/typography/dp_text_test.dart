@@ -479,6 +479,63 @@ void main() {
       }
     });
 
+    testWidgets('#502 German among Bangla hyphenates too: each line ends '
+        'where the text ended it, each run keeps its style, and a screen '
+        'reader hears each whole, in its own voice', (tester) async {
+      final semantics = tester.ensureSemantics();
+      const caption =
+          'die Geschwindigkeitsbegrenzung · /গেশভিন্ডিশকাইটসবেগ্রেনৎসুং/';
+      Future<void> at(double width) => pump(
+        tester,
+        SizedBox(
+          width: width,
+          child: DpText(
+            DpScript.allowBreaks(caption, threshold: 4),
+            role: DpTextRole.body,
+            german: true,
+          ),
+        ),
+      );
+      // From the width the Bangla fits: it has no syllables to break at,
+      // and narrower only a letter break is left.
+      for (var width = 210.0; width <= 390; width += 1) {
+        await at(width);
+        for (final line in lineEnds(tester)) {
+          expect(line, endsWith('\n'), reason: 'at $width: "$line"');
+        }
+      }
+      await at(210);
+      final paragraph = tester.renderObject<RenderParagraph>(
+        find.byType(RichText),
+      );
+      expect(
+        paragraph.text.toPlainText(includeSemanticsLabels: false),
+        contains('-\n'),
+      );
+      final sizes = <String, double?>{};
+      paragraph.text.visitChildren((span) {
+        if (span is TextSpan && span.text != null) {
+          sizes[DpScript.hasBengali(span.text!) ? 'bn' : 'de'] =
+              span.style?.fontSize;
+        }
+        return true;
+      });
+      expect(sizes['bn']!, greaterThan(sizes['de']!), reason: 'one role up');
+
+      final label = tester.getSemantics(find.byType(RichText)).attributedLabel;
+      expect(label.string, caption);
+      expect(
+        label.attributes.whereType<LocaleStringAttribute>().map(
+          (a) => (label.string.substring(a.range.start, a.range.end), a.locale),
+        ),
+        containsAll(<(String, Locale)>[
+          ('die Geschwindigkeitsbegrenzung · /', DpScript.deDE),
+          ('গেশভিন্ডিশকাইটসবেগ্রেনৎসুং/', DpScript.bnBD),
+        ]),
+      );
+      semantics.dispose();
+    });
+
     testWidgets('#419 lines that all end at spaces are given too: where '
         '"Wohnungsamt Ab" fits but not its "-", the paragraph left to itself '
         'would end the line at a bare syllable', (tester) async {
