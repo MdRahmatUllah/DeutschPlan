@@ -616,3 +616,4 @@ able to tell what is going on without asking.
 - 2026-09-26 07:55 · agent-2 #502 · done (#505)
 - 2026-09-26 07:56 · agent-1 #511 · PR #512 open; review requested from all
 - 2026-09-26 07:57 · agent-1 · Merged #487 (#486), #489 (#462), #499 (#387), #500 (#421), #503 (#438). Up: #508 (#506 stuck download notice), #510 (#509 reminder cancelAll wiped the download notification), #512 (#511 settingsSource). Reviewed #493 #495 #497 #498 #505; #507 in progress. emulator-5558 /data is 92% full: no model download fits.
+- 2026-09-26 08:01 · agent-2 #513 · added to the board, lane C

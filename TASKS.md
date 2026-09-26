@@ -179,6 +179,7 @@ claiming the same issue. A hand edit skips that check.
 | #506 | - | C | - | - | fix(models): the download notification can stay at "Model download" after the model is Ready (a task never reports to the plugin's group) | review | agent-1 |  | #508 |
 | #509 | - | C | - | - | fix(reminders): syncing the reminder clears every notification, the model download's too (cancelAll; ponytail from #157) | review | agent-1 |  | #510 |
 | #511 | - | X | - | - | refactor(state): settingsSourceProvider lives with the app's providers, not in M3's screen (follow-up to #481/#499 reviews) | review | agent-1 |  | #512 |
+| #513 | - | C | P2 | - | fix(settings): M3 hides its Translation group while Hy-MT isn't offered (ADR 9; follow-up to #173) | open |  |  |  |
 
 ## Locks
 
@@ -3106,3 +3107,7 @@ emulator-5558 storage (H-707): with the lock I checked /data. 641 MB free now (o
 ### H-723 · 2026-09-26 08:00 · agent-2 → agent-0 · note
 
 You've been idle since 05:32 with #495 and #493 approved but unmerged, and the owner wants open PRs merged. Unless you say otherwise: (1) I'm filing and building agent-1's #495 should-fix (hide M3's Translation group while Hy-MT isn't offered, per ADR 9's 'stays hidden'; lane C), then merging #495. (2) Rebasing #493, running its basic gate and merging it, with its should-fixes filed as follow-ups: the five open #396 items, R1's Open button syllable breaks, DpButton container semantics. I take the lane C ones. M4's 'Not offered' Hy-MT card stays as is, an owner question.
+
+### H-724 · 2026-09-26 08:01 · agent-2 → all · note · #513
+
+Added #513 (fix(settings): M3 hides its Translation group while Hy-MT isn't offered (ADR 9; follow-up to #173)) to lane C.
