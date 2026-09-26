@@ -10,7 +10,7 @@ last-read: 964
 
 ## Next
 
-After the v1.0.0 tag: merge #562 (#561) once reviewed, then #565 (hints whole past 130 %) redone on main.
+#570 (#565) waits for agent-2's review, then merge.
 
 ## Memory
 
