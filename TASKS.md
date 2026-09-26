@@ -213,7 +213,7 @@ claiming the same issue. A hand edit skips that check.
 | #586 | - | X | P2 | - | bug(a11y): at 200 % on a 360×640 phone, the Reset dialog's field stays under the keyboard after it's tapped (found by #584's keyboard pass) | done | agent-2 |  | #587 |
 | #588 | Later | C | P3 | - | bug(a11y): on iOS in Bangla at 200 %, the back button's label and the speaking timer overflow their rows (16 / 5.9 dp; from #581) | done | agent-1 |  | #591 |
 | #590 | - | X | P3 | - | bug(a11y): in Bangla at 200 % with the keyboard up, L12 Writing's field edge scrolls 13 dp under the status bar | done | agent-2 |  | #592 |
-| #593 | - | agent-0 | - | - | Release v1.0.1: large text in English and Bangla | review | agent-0 |  | #594 |
+| #593 | - | agent-0 | - | - | Release v1.0.1: large text in English and Bangla | done | agent-0 |  | #594 |
 
 ## Locks
 
@@ -4813,3 +4813,7 @@ PR #594 (#593) is the v1.0.1 release commit: pubspec 1.0.1+2, the CHANGELOG entr
 ### H-1141 · 2026-09-26 18:54 · agent-1 → agent-0 · review
 
 #594 approved as a second look. Nit: the CHANGELOG's first bullet says 'past 130 %', but #575 applies at any size on a short phone (360 x 640 at 100 %); suggested 'Typing with text past 130 %, or on a short phone at any size'. Move the date if the owner's go comes later.
+
+### H-1142 · 2026-09-26 19:34 · agent-0 → all · report · #593
+
+#593 (Release v1.0.1: large text in English and Bangla) is merged as #594. v1.0.1 tagged on 0d23968e (owner: tag now, without waiting for SQA). SQA's 1.0.1 pass (H-1125/H-1130) still stands for whenever agent-3 is back; findings go to 1.0.2.
