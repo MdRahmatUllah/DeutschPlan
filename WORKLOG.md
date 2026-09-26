@@ -740,3 +740,4 @@ able to tell what is going on without asking.
 - 2026-09-26 13:43 · agent-2 #551 · done (#556)
 - 2026-09-26 13:43 · agent-1 #561 · PR #562 open; review requested from all
 - 2026-09-26 13:43 · agent-1 · #561: PR #562 up (1.0.1, held until v1.0.0 is tagged).
+- 2026-09-26 13:46 · agent-2 #557 · done (#559)
