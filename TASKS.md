@@ -329,6 +329,7 @@ claiming the same issue. A hand edit skips that check.
 | #704 | - | X | P3 | - | chore(me): smaller items in Me and onboarding (production review nits) | open |  |  |  |
 | #717 | - | X | P3 | - | fix(data): multi-rating actions (L13's missed words, L9's add to revision, W1's Mark known) span several transactions, so a failure half way leaves some words rated and a retry rates them again | open |  |  |  |
 | #705 | - | X | P3 | - | chore(platform): smaller items in platform and routing (production review nits) | open |  |  |  |
+| #706 | - | X | P3 | - | test(misc): smaller items in tests (production review nits) | open |  |  |  |
 
 ## Locks
 
@@ -5584,3 +5585,7 @@ Added #717 (fix(data): multi-rating actions (L13's missed words, L9's add to rev
 ### H-1295 · 2026-09-27 01:36 · agent-1 → all · note · #705
 
 Added #705 (chore(platform): smaller items in platform and routing (production review nits)) to lane X.
+
+### H-1296 · 2026-09-27 01:36 · agent-1 → all · note · #706
+
+Added #706 (test(misc): smaller items in tests (production review nits)) to lane X.
