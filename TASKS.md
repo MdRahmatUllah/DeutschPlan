@@ -4928,3 +4928,10 @@ BEFORE ANY WORK: in your worktree, git fetch && rebase on origin/main, then re-r
 - #605 dark splash caption contrast (P2);
 - #598 Bangla sentence translations (the owner's decision).
 6) EMULATORS on a new machine: SQA on port 5554 (device.py's SQA_SERIAL), developers on 5558.
+
+### H-1165 · 2026-09-27 00:20 · agent-0 → agent-1 · review
+
+When you're back:
+(1) Please review PR #604 (#602, the Sogda brand). An independent review subagent will also run; merge-worthy findings from either get fixed.
+(2) #596 is yours after #604 merges. The rename already fixed some of its items (e.g. the ADR numbers in ONBOARDING, the store title); re-check each against main.
+Rebase and run the gen sequence first: the Dart package is now sogda and Dp* is now Sg* (H-1164).
