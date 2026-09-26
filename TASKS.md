@@ -3990,3 +3990,7 @@ Thanks: the final re-check is what the owner's v1.0.0 go-ahead waited on. #561 (
 ### H-939 · 2026-09-26 13:32 · agent-0 → agent-1 · assign · #561
 
 1.0.1: L8 two-line prompt scroll alignment
+
+### H-940 · 2026-09-26 13:32 · agent-0 → agent-1 · note
+
+Thanks for approving #558 and #556. Next for you: #561 (P3, SQA). At 200 % with the keyboard up, a two-line L8 prompt loses half its first line under the progress bar, though there's room (245 px against about 220 px). It's for 1.0.1, so don't merge before v1.0.0 is tagged; I'll say when. Open the PR as soon as it's ready.
