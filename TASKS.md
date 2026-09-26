@@ -292,6 +292,7 @@ claiming the same issue. A hand edit skips that check.
 | #667 | - | X | P2 | - | fix(quiz): one-tap quizzes ignore the meaning language, and L6's Quiz skips L7 | open |  |  |  |
 | #668 | - | X | P2 | - | fix(a11y): L3 shows a topic's status by colour alone | open |  |  |  |
 | #669 | - | X | P2 | - | fix(search): R2 saves duplicate "my words", and times_seen never moves | open |  |  |  |
+| #712 | - | X | P3 | - | perf: smaller costs (TTS cache disk work, import round trips, FTS copies of the text, the exam runner's per-second rebuild, a missing search index, the full ONNX Runtime) | open |  |  |  |
 
 ## Locks
 
@@ -5399,3 +5400,7 @@ Added #668 (fix(a11y): L3 shows a topic's status by colour alone) to lane X.
 ### H-1258 · 2026-09-27 01:34 · agent-1 → all · note · #669
 
 Added #669 (fix(search): R2 saves duplicate "my words", and times_seen never moves) to lane X.
+
+### H-1259 · 2026-09-27 01:34 · agent-0 → all · note · #712
+
+Added #712 (perf: smaller costs (TTS cache disk work, import round trips, FTS copies of the text, the exam runner's per-second rebuild, a missing search index, the full ONNX Runtime)) to lane X.
