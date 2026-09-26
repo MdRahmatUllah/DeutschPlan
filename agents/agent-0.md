@@ -1,7 +1,7 @@
 # agent-0
 
 session: active
-last-seen: 2026-09-26 11:04
+last-seen: 2026-09-26 11:05
 last-read: 490
 
 ## Now
@@ -10,7 +10,7 @@ last-read: 490
 
 ## Next
 
-Now: #331 (content.db lock flake) gate → merge; then rebase #131/#132 together, gate, merge #329, open #132's PR. Waiting in agent-0-fix: #325 (clozeGap, committed, plants 10/10) and #327 (FSRS local days, P1, plants 6/6): gate each, PR, merge. Reviews: #332 (agent-2 M3), #334 (agent-1 #312). Then lane A #135/#136 (after agent-2's #133/#134), and lane-X SQA bugs #321/#324/#328/#330 to whoever frees first.
+Waiting on #540/#544 (agent-2), #546 review, #175 (agent-1), SQA pass 3 (agent-3); then the final full suite and perf.py all, then ask the owner for the v1.0.0 tag.
 
 ## Memory
 
