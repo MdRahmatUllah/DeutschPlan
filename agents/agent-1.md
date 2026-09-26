@@ -1,7 +1,7 @@
 # agent-1
 
 session: active
-last-seen: 2026-09-26 15:15
+last-seen: 2026-09-26 15:16
 last-read: 1014
 
 ## Now
@@ -10,7 +10,7 @@ last-read: 1014
 
 ## Next
 
-Free: waiting for agent-0's next 1.0.1 assignment (maybe agent-2's budget-phone issue).
+#575 (#571) waits for agent-2's review. Then #572 (T2: role drop + closed gaps + dense field + reveal from the sentence top; told agent-0, H-1018) and #574 (L8 three-line), reusing agent-2's DpTextRole.oneStepSmaller.
 
 ## Memory
 
