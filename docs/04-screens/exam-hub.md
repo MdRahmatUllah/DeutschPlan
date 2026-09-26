@@ -15,7 +15,7 @@
 "A1.2 · Mock 2 · 40 questions · ≈ 20 min · pass mark 60% · your best: 62% (1 attempt)"; sections list in order with counts (Writing and Speaking marked *self-assessed*); Rules: no feedback until the end · you can flag questions and come back · the timer can be paused; *Timer on* switch ("≈ 20 min · turns Coral in the last 2 minutes"); *Begin exam*.
 
 **Functional requirements**
-- FR-L10-01 Unlock = introduced ÷ total ≥ `exam_unlock_percent` (BR-EXAM-01); "about n days" uses daily_new.
+- FR-L10-01 Unlock = introduced ÷ total ≥ `exam_unlock_percent` (BR-EXAM-01); "about n days" uses daily_new, and shows only on the step being studied, as *Study now* does: no new words come to a step that waits (#345).
 - FR-L10-02 Best score and attempts per seed from `exam_attempts` (finished only); an in-progress attempt shows *Resume* instead of *Start*.
 - FR-L10-03 *Begin exam* creates the attempt and all answer rows (`03-domain/exam-generator.md`) in one transaction, then pushes `/exam/:attemptId`.
 - FR-L10-04 Listening section is omitted (points redistributed) when `listening_questions = 0`.

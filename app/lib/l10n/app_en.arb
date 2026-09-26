@@ -4094,6 +4094,10 @@
       }
     }
   },
+  "settingsVoicePhoneForSupertonic": "Phone voice · Supertonic not downloaded",
+  "@settingsVoicePhoneForSupertonic": {
+    "description": "M3 voice engine row when Supertonic is chosen but its model isn't on the phone: the phone's voice speaks meanwhile (#345)."
+  },
   "settingsVoicePhone": "Phone voice",
   "@settingsVoicePhone": {
     "description": "M3 voice engine subtitle: the phone's own German voice."

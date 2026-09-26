@@ -642,6 +642,7 @@
   "settingsVoiceEngine": "কণ্ঠের ইঞ্জিন",
   "settingsVoiceSupertonic": "Supertonic · {voice}",
   "settingsVoicePhone": "ফোনের কণ্ঠ",
+  "settingsVoicePhoneForSupertonic": "ফোনের কণ্ঠ · Supertonic ডাউনলোড হয়নি",
   "settingsSpeed": "কথার গতি",
   "settingsSpeedLine": "{speed}× · ০.৭৫×-এর জন্য যেকোনো স্পিকার চেপে ধরুন",
   "settingsAutoplayHeadword": "শব্দটি নিজে বাজান",

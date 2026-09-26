@@ -40,7 +40,8 @@ Details M3 settles (#146):
 - *Unlock mock exams at* and *Pass mark* show the value and a chevron, as the artboards draw them, and open a choice in steps of five across the ranges above. *Meaning language*, *App language* and *Theme* open the same kind of choice. The two languages are set apart here; S2's one choice sets both.
 - *Speech speed* runs 0.5–1.5× in quarters, with the artboard's 1.0× at the middle: the grid the study menu's 0.75 / 1 / 1.25 are on, so both read a stored speed the same.
 - *Study days & reminder* reads "Mon–Sat · 19:30 · only when something is due": a run of three or more days as a range (across the week's end too, "Fri–Mon"), otherwise the days listed ("Mon, Wed, Fri"), "Every day" for all seven; then the time in the phone's format, or "no reminder".
-- *Voice engine* reads "Supertonic · Anna" or "Phone voice". *On-device translation* reads the model's state: "Hy-MT 1.5 · downloading 42%", "· ready", "· not downloaded", and so on.
+- *Voice engine* reads "Supertonic · Anna" or "Phone voice", or, with Supertonic chosen but its model not on the phone, "Phone voice · Supertonic not downloaded": what speaks meanwhile (#345).
+- A switch row flips from anywhere on it, as Material rows do; a screen reader hears the row as its switch, once (#345). A change of theme keeps the list where it was. *On-device translation* reads the model's state: "Hy-MT 1.5 · downloading 42%", "· ready", "· not downloaded", and so on.
 - FR-M3-01's sample is every n-th of at most 1,000 learned words (rated, not suspended), scaled back up. The stabilities are read once per visit; the slider re-sums them.
 - FR-M3-03: the model is there when it is `ready`, or `updateAvailable` (the old one is whole). A download in progress is not, so the switch stays off and M4 opens.
 - M4 and M6 are pushed over M3 (navigation.md), so back returns to Settings. A choice's list scrolls when it outgrows the sheet (a phone held sideways, 200 % text).

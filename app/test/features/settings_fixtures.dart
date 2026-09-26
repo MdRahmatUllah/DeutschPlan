@@ -4,6 +4,8 @@ import 'package:deutschplan/data/repositories/model_repository.dart';
 import 'package:deutschplan/data/repositories/setting_keys.dart';
 import 'package:deutschplan/data/repositories/settings_repository.dart';
 import 'package:deutschplan/features/me/settings_screen.dart';
+import 'package:deutschplan/features/today/today_providers.dart'
+    show voiceInstalledProvider;
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
 
@@ -40,6 +42,8 @@ List<Override> settingsStub({
   settingsSourceProvider.overrideWithValue(settings ?? StubSettings()),
   learnedStabilitiesProvider.overrideWith((ref) async => stabilities),
   translationModelProvider.overrideWith((ref) async => model),
+  // The artboards' voice is on the phone (#345).
+  voiceInstalledProvider.overrideWith((ref) async => true),
 ];
 
 /// The Settings artboards' learner: Mon–Sat with the 19:30 reminder, only
