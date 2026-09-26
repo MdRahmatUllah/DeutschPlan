@@ -597,3 +597,4 @@ able to tell what is going on without asking.
 - 2026-09-26 06:45 · agent-1 #421 · done (#500)
 - 2026-09-26 06:50 · agent-1 #486 · done (#487)
 - 2026-09-26 06:53 · agent-2 #502 · claimed: fix(typography): draw the hyphen in mixed German/Bangla text too (T2's and W1's caption with the pronunciation on; follow-up to #419)
+- 2026-09-26 06:53 · agent-1 #462 · done (#489)
