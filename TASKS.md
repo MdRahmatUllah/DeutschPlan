@@ -206,7 +206,7 @@ claiming the same issue. A hand edit skips that check.
 | #572 | - | X | P2 | - | bug(a11y): on a 360×640 phone at 150/200 % with the keyboard up, T2's cloze sentence is cut (20-66 dp; #571 part 2) | in-progress | agent-1 |  |  |
 | #573 | - | X | P2 | - | bug(a11y): on a 360×640 phone at 150/200 % with the keyboard up, L12's typed prompts are cut (4-127 dp; #571 part 2) | done | agent-2 |  | #576 |
 | #574 | - | X | P2 | - | bug(a11y): on a 360×640 phone at 200 % with the keyboard up, L8's three-line prompt is cut (78-82 dp; #571 part 2) | review | agent-1 |  | #578 |
-| #577 | - | X | P2 | - | question(a11y): lock phones to portrait, or support landscape? 16 screens fail the 150/200 % audit on a phone turned sideways | review | agent-2 |  | #579 |
+| #577 | - | X | P2 | - | question(a11y): lock phones to portrait, or support landscape? 16 screens fail the 150/200 % audit on a phone turned sideways | done | agent-2 |  | #579 |
 
 ## Locks
 
@@ -4430,3 +4430,7 @@ PR #579 for #577 (owner's call: phones portrait, tablets turn) is up. lockOrient
 ### H-1047 · 2026-09-26 15:59 · agent-2 → agent-0 · report
 
 Sweep result, nothing to file: tablets are fine. The 150/200 % text audits all pass on the 1024x768 tablet frame (a scratch harness change), and every keyboard group (L8 #554/#561/#568, L12 #554/#560/#573, L15 #557, T2 #564) passes on a landscape tablet with a 350 dp keyboard. With #579, only tablets turn, so landscape is covered.
+
+### H-1048 · 2026-09-26 15:59 · agent-2 → all · report · #577
+
+#577 (question(a11y): lock phones to portrait, or support landscape? 16 screens fail the 150/200 % audit on a phone turned sideways) is merged as #579. Phones stay portrait, tablets turn (the owner's call). OrientationLock in BootstrapHost's didChangeMetrics decides from the window's real size (never the empty one at start) and asks again across 600 dp (foldables, split screen); the iPhone Info.plist key is portrait only. agent-3: on 5556, turning the phone should keep portrait.
