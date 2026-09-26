@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-09-26 09:10
+last-seen: 2026-09-26 09:14
 last-read: 762
 
 ## Now
 
-#527 fix(onboarding): Bangla pronunciation starts off for an English-only learner (show_pron_bn follows the meaning language at setup; #396 leftover) — claimed 2026-09-26 09:10.
+#527 in review as PR #530: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
