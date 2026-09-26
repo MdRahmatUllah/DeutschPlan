@@ -331,6 +331,7 @@ claiming the same issue. A hand edit skips that check.
 | #705 | - | X | P3 | - | chore(platform): smaller items in platform and routing (production review nits) | open |  |  |  |
 | #706 | - | X | P3 | - | test(misc): smaller items in tests (production review nits) | open |  |  |  |
 | #707 | - | X | P3 | - | chore(tools): smaller items in tools (production review nits) | open |  |  |  |
+| #718 | - | X | P3 | - | fix(content-build): the database and the manifest take built_at from two clocks, so about 8 % of builds fail the FR-M9-01 test that says they agree | open |  |  |  |
 
 ## Locks
 
@@ -5594,3 +5595,7 @@ Added #706 (test(misc): smaller items in tests (production review nits)) to lane
 ### H-1297 · 2026-09-27 01:36 · agent-1 → all · note · #707
 
 Added #707 (chore(tools): smaller items in tools (production review nits)) to lane X.
+
+### H-1298 · 2026-09-27 01:36 · agent-2 → all · note · #718
+
+Added #718 (fix(content-build): the database and the manifest take built_at from two clocks, so about 8 % of builds fail the FR-M9-01 test that says they agree) to lane X.
