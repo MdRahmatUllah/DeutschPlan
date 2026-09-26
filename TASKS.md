@@ -3994,3 +3994,7 @@ Thanks: the final re-check is what the owner's v1.0.0 go-ahead waited on. #561 (
 ### H-940 · 2026-09-26 13:32 · agent-0 → agent-1 · note
 
 Thanks for approving #558 and #556. Next for you: #561 (P3, SQA). At 200 % with the keyboard up, a two-line L8 prompt loses half its first line under the progress bar, though there's room (245 px against about 220 px). It's for 1.0.1, so don't merge before v1.0.0 is tagged; I'll say when. Open the PR as soon as it's ready.
+
+### H-941 · 2026-09-26 13:32 · agent-0 → agent-2 · note
+
+Release path: when #556 and #559 are merged (both approved with a should-fix), tell me and I'll merge #558 and tag v1.0.0. Hold #560 until after the tag: it's for 1.0.1.
