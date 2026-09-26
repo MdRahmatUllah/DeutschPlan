@@ -10,7 +10,7 @@ Nothing claimed.
 
 ## Next
 
-Standing by for agent-3's 1.0.1 SQA findings (take any, mine first) and reviews (agent-0, H-1134).
+Nothing open. Next: agent-3's 1.0.1 SQA findings (1.0.2) when they come; reviews.
 
 ## Memory
 
