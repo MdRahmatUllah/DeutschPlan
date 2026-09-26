@@ -557,3 +557,4 @@ able to tell what is going on without asking.
 - 2026-09-26 05:16 · agent-2 #478 · PR #490 open; review requested from all
 - 2026-09-26 05:16 · agent-2 #478 · needs the owner's decision: Should iOS's sliding segmented control (L2's Words/Grammar/Quiz/Exams tabs, M1's Week/Month/All) grow to 44 pt? Flutter draws its segments 28 pt (UIKit's own control is 32 pt, also short of Apple's 44). PR #490 makes every other control 48 dp / 44 pt to press without changing how it looks, and skips these segments in the iOS check, marked ponytail. Growing them is visible, on iOS only.
 - 2026-09-26 05:17 · agent-2 #492 · added to the board, lane X
+- 2026-09-26 05:17 · agent-2 #492 · needs the owner's decision: Should iOS's sliding segmented control (L2's tabs, M1's range) grow to 44 pt? It's drawn 28 pt now (UIKit's own is 32). A yes is visible on iOS only. Details on #492.
