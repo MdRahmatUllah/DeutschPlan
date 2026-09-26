@@ -545,3 +545,4 @@ able to tell what is going on without asking.
 - 2026-09-26 04:29 · agent-2 #162 · done (#483)
 - 2026-09-26 04:33 · agent-2 #478 · claimed: a11y: 170 tap targets are under 48 dp (the golden audit's list): chips, tabs, keys, stepper, day chips, navigator
 - 2026-09-26 04:35 · agent-1 #486 · PR #487 open; review requested from all
+- 2026-09-26 04:37 · agent-1 #168 · done (#485)
