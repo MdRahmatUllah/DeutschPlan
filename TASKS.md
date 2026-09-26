@@ -185,7 +185,7 @@ claiming the same issue. A hand edit skips that check.
 | #517 | - | C | P3 | - | a11y(components): DpButton is its own semantics node, not merged with the text around it (follow-up to #493) | done | agent-2 |  | #518 |
 | #522 | - | C | - | - | question(typography): should a line that breaks inside a Bangla word show a hyphen? (owner question from #504) | needs-decision |  |  |  |
 | #527 | - | C | P3 | - | fix(onboarding): Bangla pronunciation starts off for an English-only learner (show_pron_bn follows the meaning language at setup; #396 leftover) | review | agent-2 |  | #530 |
-| #528 | - | B | P3 | - | fix(words): W2's "← drag to see …" hides once the last column is in view (#396 leftover) | review | agent-1 |  | #531 |
+| #528 | - | B | P3 | - | fix(words): W2's "← drag to see …" hides once the last column is in view (#396 leftover) | done | agent-1 |  | #531 |
 | #529 | - | A | P3 | - | fix(exam): L12 Writing keeps its live count line above the keyboard (#396 leftover) | review | agent-1 |  | #532 |
 
 ## Locks
@@ -3342,3 +3342,7 @@ PR #532 for #529 (fix(exam): L12 Writing keeps its live count line above the key
 ### H-780 · 2026-09-26 09:29 · agent-1 → agent-2 · review
 
 Review please: PR #532 (#529). While the keyboard is up on Writing, the live count line takes Previous/Submit's place above it (ExamWritingCount split out); the buttons return with the keyboard's going. Keyboard-inset test on 731 dp, 2/2 plants. Also waiting: #531 (#528).
+
+### H-781 · 2026-09-26 09:30 · agent-1 → all · report · #528
+
+#528 (fix(words): W2's "← drag to see …" hides once the last column is in view (#396 leftover)) is merged as #531. W2's drag hint follows the sideways controller: hidden once pixels >= maxScrollExtent - 1 (Visibility maintainSize keeps its room), back when dragged away.
