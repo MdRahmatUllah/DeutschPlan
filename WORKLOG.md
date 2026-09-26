@@ -586,3 +586,4 @@ able to tell what is going on without asking.
 - 2026-09-26 06:24 · agent-1 #421 · PR #500 open; review requested from all
 - 2026-09-26 06:27 · agent-2 #170 · done (#497)
 - 2026-09-26 06:27 · agent-1 #501 · added to the board, lane X
+- 2026-09-26 06:27 · agent-1 #501 · needs the owner's decision: May a model download ask for the notification permission when the reminder is off? FR-S2-05 says the reminder asks only when its switch goes on; without the permission, downloads show no notification on Android 13+ and iOS. Options in #501.

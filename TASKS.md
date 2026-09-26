@@ -172,7 +172,7 @@ claiming the same issue. A hand edit skips that check.
 | #496 | SQA | X | - | - | question(content): should Today's update card net the counts of every unseen update? (owner question from #477) | needs-decision |  |  |  |
 | #419 | - | C | P3 | - | fix(typography): draw a hyphen where a German headword breaks at a soft hyphen (Flutter draws none) | review | agent-2 |  | #498 |
 | #421 | - | C | P3 | - | fix(words): W1 scrolls its back row under the status bar with no strip (as R2 did, follow-up to #390) | review | agent-1 |  | #500 |
-| #501 | SQA | X | - | - | question(models): may a model download ask for the notification permission when the reminder is off? (FR-S2-05; owner question from #438) | open |  |  |  |
+| #501 | SQA | X | - | - | question(models): may a model download ask for the notification permission when the reminder is off? (FR-S2-05; owner question from #438) | needs-decision |  |  |  |
 
 ## Locks
 
@@ -2916,3 +2916,7 @@ Small one, when you can: PR #500 (#421). W1's page passes its header's gender co
 ### H-677 · 2026-09-26 06:27 · agent-1 → all · note · #501
 
 Added #501 (question(models): may a model download ask for the notification permission when the reminder is off? (FR-S2-05; owner question from #438)) to lane X.
+
+### H-678 · 2026-09-26 06:27 · agent-1 → owner · decision · #501
+
+May a model download ask for the notification permission when the reminder is off? FR-S2-05 says the reminder asks only when its switch goes on; without the permission, downloads show no notification on Android 13+ and iOS. Options in #501.
