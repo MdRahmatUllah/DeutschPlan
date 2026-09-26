@@ -32,6 +32,8 @@
     - `VIBRATE`: the reminder notification.
 
 ## iOS
+**Not in v1.0** (owner, 2026-09-26): v1.0 ships on Android only. iOS waits for a Mac with Xcode: its pipeline (#171) and widget (#161) are in the milestone "Later · after v1.0". The iOS code paths stay tested on Windows (adaptive chrome, the iOS goldens). When a Mac is available:
+
 - Deployment target 16.0; SPM; `flutter build ipa --release`.
 - Privacy manifest: no tracking; mic usage string; notifications; background modes `fetch` + `processing` for downloads/widget refresh.
 - Widget extension target shares App Group `group.app.deutschplan`.

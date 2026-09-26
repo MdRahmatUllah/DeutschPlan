@@ -1,8 +1,8 @@
 # DeutschPlan
 
-Offline-first German vocabulary and grammar trainer for Android and iOS, built with Flutter.
+Offline-first German vocabulary and grammar trainer for Android and iOS, built with Flutter. v1.0 ships on Android; iOS follows once a Mac is available to build it (#171).
 
-One clear day at a time: a daily plan of new words and spaced-repetition reviews, structured as an exam course of 12 steps from A1.1 to C2.2. Meanings in English, Bengali (বাংলা) or both. No account, no server, no analytics. Everything, including the optional voice and translation models, runs on the phone.
+One clear day at a time: a daily plan of new words and spaced-repetition reviews, structured as an exam course of 12 steps from A1.1 to C2.2. Meanings in English, Bengali (বাংলা) or both. No account, no server, no analytics. Everything, including the optional voice model, runs on the phone.
 
 The app is designed as four canvases: **iOS** and **Android**, each in **light** (Paper & Ink) and **dark** (Night ink). Every screenshot below is rendered from the clickable HTML prototype in [`deutsch-plan-design-html/`](deutsch-plan-design-html/index.html).
 
@@ -24,7 +24,7 @@ Click any screenshot to open that screen as HTML. Inside the prototype, buttons 
 - **Quiz and mock exams.** Custom quizzes, plus three seeded mock exams per step: 40 questions, about 20 minutes, pass mark 60 %. Sections cover vocabulary, reverse translation, articles, word forms, gap fill, grammar, listening, writing and speaking. Later steps unlock through the mocks.
 - **Search and my words.** Full-text search across all steps, word detail with forms and sentences, side-by-side compare, and add / edit your own words.
 - **Me.** Streak, activity heatmap, done / learning / to-do counts, progress detail by week, month and step, and settings for pace, study days, reminders, meaning language, theme and voice.
-- **On-device models.** Optional Supertonic German voice (about 100 MB, OpenRAIL-M) and Hy-MT translation model (about 1.1 GB), downloaded once over Wi-Fi. Deleting them falls back to the system voice and turns translation off.
+- **On-device voice.** An optional Supertonic German voice (about 400 MB, OpenRAIL-M), downloaded once over Wi-Fi. Deleting it falls back to the phone's own German voice. The Hy-MT translation model is off in v1.0 (ADR 9: its licence excludes the EU, UK and South Korea).
 - **Export / import.** One JSON file with word states, review log, plans, quiz and exam history and settings. Merge or replace. The file never passes through a server.
 - **Home-screen widget.** Small 2×2 (cards left, minutes) and medium 4×2 (word of the day with meaning and pronounce button).
 
