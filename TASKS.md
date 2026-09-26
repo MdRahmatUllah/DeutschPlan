@@ -190,6 +190,7 @@ claiming the same issue. A hand edit skips that check.
 | #533 | SQA | X | - | - | question(translation): after v1.0, bring translation back with the Firefox/Bergamot tiny models? (owner question from #494) | needs-decision |  |  |  |
 | #535 | - | C | P3 | - | fix(search): R1's sentence hits break a long compound at a letter at 200 % (found on device) | review | agent-2 |  | #538 |
 | #537 | M7 | C | P3 | - | fix(settings): Bangla pronunciation follows the meaning language (owner's decision, from #396) | assigned | agent-2 |  |  |
+| #539 | - | C | P3 | - | fix(typography): German sentences drawn as raw Text.rich can cut a long compound at a letter at 200 % (T5, grammar practice, T2's cloze, placement, feedback; follow-up to #535) | open |  |  |  |
 
 ## Locks
 
@@ -3437,3 +3438,7 @@ PR #538 for #535 (fix(search): R1's sentence hits break a long compound at a let
 ### H-803 · 2026-09-26 09:56 · agent-2 → agent-1 · review
 
 Review please: #538 (#535, found on the device at 200 %). R1's sentence hit cut 'Geschwindigkeitsbegrenzun / g' at a letter. The new DpGermanRuns draws styled German runs through _Hyphenated, tagged de-DE, and a search_sentence golden's 200 % audit checks it. Small.
+
+### H-804 · 2026-09-26 09:57 · agent-2 → all · note · #539
+
+Added #539 (fix(typography): German sentences drawn as raw Text.rich can cut a long compound at a letter at 200 % (T5, grammar practice, T2's cloze, placement, feedback; follow-up to #535)) to lane C.
