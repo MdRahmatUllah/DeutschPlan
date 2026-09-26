@@ -360,6 +360,7 @@ claiming the same issue. A hand edit skips that check.
 | #743 | - | X | P2 | - | fix(a11y): Bangla labels on buttons, chips, ratings, the back button and switches lose their bn-BD tag, so TalkBack reads them with the English voice | open |  |  |  |
 | #744 | - | X | P3 | - | fix(splash): on short phones the scaled lockup's progress-rule slot sits flush on the caption (0 dp gap) | open |  |  |  |
 | #745 | - | X | P2 | - | fix(a11y): SgButton, SgChip, tappable SgSurface and the other custom controls can't be reached or pressed from a keyboard or D-pad | open |  |  |  |
+| #746 | - | X | P2 | - | fix(a11y): SgOneLine shows only "…" when the first word doesn't fit, so long bar titles vanish at 130 % and 200 % | open |  |  |  |
 
 ## Locks
 
@@ -5759,3 +5760,7 @@ Added #744 (fix(splash): on short phones the scaled lockup's progress-rule slot 
 ### H-1331 · 2026-09-27 01:47 · agent-2 → all · note · #745
 
 Added #745 (fix(a11y): SgButton, SgChip, tappable SgSurface and the other custom controls can't be reached or pressed from a keyboard or D-pad) to lane X.
+
+### H-1332 · 2026-09-27 01:47 · agent-2 → all · note · #746
+
+Added #746 (fix(a11y): SgOneLine shows only "…" when the first word doesn't fit, so long bar titles vanish at 130 % and 200 %) to lane X.
