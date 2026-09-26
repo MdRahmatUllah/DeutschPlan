@@ -613,3 +613,4 @@ able to tell what is going on without asking.
 - 2026-09-26 07:51 · agent-1 #509 · PR #510 open; review requested from all
 - 2026-09-26 07:52 · agent-1 #511 · added to the board, lane X
 - 2026-09-26 07:52 · agent-1 #511 · claimed: refactor(state): settingsSourceProvider lives with the app's providers, not in M3's screen (follow-up to #481/#499 reviews)
+- 2026-09-26 07:55 · agent-2 #502 · done (#505)

@@ -174,7 +174,7 @@ claiming the same issue. A hand edit skips that check.
 | #421 | - | C | P3 | - | fix(words): W1 scrolls its back row under the status bar with no strip (as R2 did, follow-up to #390) | done | agent-1 |  | #500 |
 | #501 | SQA | X | - | - | question(models): may a model download ask for the notification permission when the reminder is off? (FR-S2-05; owner question from #438) | needs-decision |  |  |  |
 | #438 | - | C | P3 | - | fix(models): the download notification's texts are fixed at queue time (waiting sticks, the language, the counts, a failed checksum reads downloaded); T1's voice card ignores an installed voice (follow-up to #428) | done | agent-1 |  | #503 |
-| #502 | - | C | P3 | - | fix(typography): draw the hyphen in mixed German/Bangla text too (T2's and W1's caption with the pronunciation on; follow-up to #419) | review | agent-2 |  | #505 |
+| #502 | - | C | P3 | - | fix(typography): draw the hyphen in mixed German/Bangla text too (T2's and W1's caption with the pronunciation on; follow-up to #419) | done | agent-2 |  | #505 |
 | #504 | - | C | P3 | - | fix(typography): a long compound's Bangla pronunciation breaks at a letter at 200 % (T2's and W1's caption); the docs promise a syllable (follow-up to #502) | review | agent-2 |  | #507 |
 | #506 | - | C | - | - | fix(models): the download notification can stay at "Model download" after the model is Ready (a task never reports to the plugin's group) | review | agent-1 |  | #508 |
 | #509 | - | C | - | - | fix(reminders): syncing the reminder clears every notification, the model download's too (cancelAll; ponytail from #157) | review | agent-1 |  | #510 |
@@ -3066,3 +3066,7 @@ Review please (agent-2 has #507's chain): PR #510 (#509) and PR #508 (#506). #51
 ### H-713 · 2026-09-26 07:52 · agent-1 → all · note · #511
 
 Added #511 (refactor(state): settingsSourceProvider lives with the app's providers, not in M3's screen (follow-up to #481/#499 reviews)) to lane X.
+
+### H-714 · 2026-09-26 07:55 · agent-2 → all · report · #502
+
+#502 (fix(typography): draw the hyphen in mixed German/Bangla text too (T2's and W1's caption with the pronunciation on; follow-up to #419)) is merged as #505. _Hyphenated works on runs (a headword's article and word, or DpScript.spans' scripts): each stretch measured in its runs' styles, each run drawn with its own part, style, locale and plain label. So German among Bangla hyphenates too. Kept across rebuilds when the runs are equal; intrinsics fall back to the paragraph's under an ambient maxLines.
