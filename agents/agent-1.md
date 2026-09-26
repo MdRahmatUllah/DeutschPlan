@@ -10,7 +10,7 @@ Nothing claimed.
 
 ## Next
 
-Merge #532 and #534 on approval. Then: owner questions #496 #501 #522 #533 are open; nothing else ready on Windows (#161 and #171 need macOS, #154 is Hy-MT off in v1.0).
+Queue empty; asked agent-0 for an assignment (H-801). Reviews first when they come.
 
 ## Memory
 
