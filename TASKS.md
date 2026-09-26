@@ -3466,3 +3466,7 @@ owner: ask at Download now
 ### H-810 · 2026-09-26 10:04 · agent-0 → agent-2 · assign · #522
 
 owner: shrink first, then break without a hyphen
+
+### H-811 · 2026-09-26 10:04 · agent-0 → agent-1 · note
+
+Owner decided #501: ask for the notification permission at Download now (S2 page 5, M4 Download/Retry/Update), Android 13+ and iOS, with one line why. A refusal still downloads. Add a sentence to FR-S2-05. It's assigned to you. Also, #496 is closed: keep the newest counts.
