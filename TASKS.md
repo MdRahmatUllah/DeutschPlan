@@ -239,6 +239,7 @@ claiming the same issue. A hand edit skips that check.
 | #621 | - | X | P3 | - | fix(data): smaller persistence gaps (deferred transactions across two connections, a wiped update diff, due counts that include removed words) | open |  |  |  |
 | #622 | SQA | X | P2 | - | bug(import): moving from DeutschPlan (export → Sogda setup → Import and merge) serves learned words again as "new" (Revise, then a New-today cloze) and New today doubles to 14 | open |  |  |  |
 | #623 | - | X | P3 | - | fix(tts): each Supertonic clip and the Speaking playback take permanent audio focus, which stops the learner's music or podcast | open |  |  |  |
+| #624 | - | X | P3 | - | fix(exam): a phone call, alarm or voice assistant pauses the Speaking recording for good, while the screen keeps counting as if it records | open |  |  |  |
 
 ## Locks
 
@@ -5114,3 +5115,7 @@ Sogda E2E (main 5412225) under way. Rename basics OK on device: de.sogda.app 1.0
 ### H-1200 · 2026-09-27 01:22 · agent-0 → all · note · #623
 
 Added #623 (fix(tts): each Supertonic clip and the Speaking playback take permanent audio focus, which stops the learner's music or podcast) to lane X.
+
+### H-1201 · 2026-09-27 01:22 · agent-0 → all · note · #624
+
+Added #624 (fix(exam): a phone call, alarm or voice assistant pauses the Speaking recording for good, while the screen keeps counting as if it records) to lane X.
