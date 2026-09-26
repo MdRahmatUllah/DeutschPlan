@@ -20,9 +20,10 @@ WaitTime: 830
 Complete
 """
 
-LOGCAT = """09-26 05:03:15.234   718   749 I ActivityTaskManager: Displayed io.github.rahmatullah.deutschplan/.MainActivity for user 0: +1s12ms
+# The app's own lines name perf.ACTIVITY, whatever the app id is (#170).
+LOGCAT = f"""09-26 05:03:15.234   718   749 I ActivityTaskManager: Displayed {perf.ACTIVITY} for user 0: +1s12ms
 09-26 05:03:15.901   718   749 I ActivityTaskManager: Fully drawn com.example.other/.MainActivity: +3s1ms
-09-26 05:03:16.234   718   749 I ActivityTaskManager: Fully drawn io.github.rahmatullah.deutschplan/.MainActivity: +1s634ms
+09-26 05:03:16.234   718   749 I ActivityTaskManager: Fully drawn {perf.ACTIVITY}: +1s634ms
 """
 
 
@@ -35,7 +36,7 @@ def test_the_cold_start_is_read_from_fully_drawn_462():
 
 
 def test_another_apps_line_and_none_are_not_a_start_462():
-    only_other = "\n".join(line for line in LOGCAT.splitlines() if "deutschplan/.MainActivity: +1s634" not in line)
+    only_other = "\n".join(line for line in LOGCAT.splitlines() if f"{perf.ACTIVITY}: +1s634" not in line)
     assert perf.fully_drawn(only_other) is None
     assert perf.fully_drawn("") is None
 
