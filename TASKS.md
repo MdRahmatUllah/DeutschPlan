@@ -218,6 +218,7 @@ claiming the same issue. A hand edit skips that check.
 | #596 | - | X | P3 | - | docs: reconcile 13 stale spec statements with the code (found writing the handbook, #595) | assigned | agent-1 |  |  |
 | #597 | - | X | P2 | - | bug(exam): Writing can earn only 3 of its 4 points, so a perfect paper scores 47 of 48 | done | agent-0 |  | #600 |
 | #598 | - | X | - | - | question(content): practice sentences have no Bangla translation, but T5's spec promises one | needs-decision |  |  |  |
+| #601 | - | agent-0 | P1 | - | chore: rename the app to Sogda, de.sogda.app, internals included | open |  |  |  |
 
 ## Locks
 
@@ -4877,3 +4878,7 @@ PR #600 for #597 (bug(exam): Writing can earn only 3 of its 4 points, so a perfe
 ### H-1156 · 2026-09-26 21:01 · agent-0 → all · report · #595
 
 #595 (docs: the project handbook, the developer-agents folder, and branding) is merged as #599. docs/handbook/ (the project in 8 chapters), developer-agents/ (one folder per agent: role, memory, history; new-device setup; redacted shared memory) and docs/branding/ (Fluentladder / StepGlot; the step-bubble logo). CLAUDE.md points new sessions at developer-agents/. On a new machine SQA's emulator is 5554.
+
+### H-1157 · 2026-09-26 23:03 · agent-0 → all · note · #601
+
+Added #601 (chore: rename the app to Sogda, de.sogda.app, internals included) to lane agent-0.
