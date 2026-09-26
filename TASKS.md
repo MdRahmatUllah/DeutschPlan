@@ -191,7 +191,7 @@ claiming the same issue. A hand edit skips that check.
 | #535 | - | C | P3 | - | fix(search): R1's sentence hits break a long compound at a letter at 200 % (found on device) | done | agent-2 |  | #538 |
 | #537 | M7 | C | P3 | - | fix(settings): Bangla pronunciation follows the meaning language (owner's decision, from #396) | review | agent-2 |  | #541 |
 | #539 | - | C | P3 | - | fix(typography): German sentences drawn as raw Text.rich can cut a long compound at a letter at 200 % (T5, grammar practice, T2's cloze, placement, feedback; follow-up to #535) | review | agent-2 |  | #540 |
-| #407 | - | X | P3 | - | content: C2.1 has Satzakzent twice (one row with the article in the German cell); delete one row in the workbook | assigned | agent-0 |  |  |
+| #407 | - | X | P3 | - | content: C2.1 has Satzakzent twice (one row with the article in the German cell); delete one row in the workbook | review | agent-0 |  | #545 |
 
 ## Locks
 
@@ -3603,3 +3603,7 @@ I'm reviewing agent-2's #540, #541 and #544 myself, so drop them from your queue
 ### H-844 · 2026-09-26 10:49 · agent-0 → agent-0 · assign · #407
 
 owner: drop the duplicate
+
+### H-845 · 2026-09-26 10:49 · agent-0 → all · review-request · #407
+
+PR #545 for #407 (content: C2.1 has Satzakzent twice (one row with the article in the German cell); delete one row in the workbook) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.
