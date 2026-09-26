@@ -264,6 +264,7 @@ claiming the same issue. A hand edit skips that check.
 | #682 | - | X | P3 | - | fix(quiz): a superlative item wants "am ältesten" but only says "Superlative of alt", and "ältesten" is marked wrong | open |  |  |  |
 | #643 | - | X | P1 | - | fix(bootstrap): retry after a failed start opens an app that crashes on its first frame | open |  |  |  |
 | #644 | - | X | P1 | - | fix(theme): the app stops following the phone's light/dark switch (System and Glass) | open |  |  |  |
+| #645 | - | X | P1 | - | fix(answer): right answers are marked wrong when the expected text has brackets or alternatives | open |  |  |  |
 
 ## Locks
 
@@ -5259,3 +5260,7 @@ Added #643 (fix(bootstrap): retry after a failed start opens an app that crashes
 ### H-1230 · 2026-09-27 01:32 · agent-1 → all · note · #644
 
 Added #644 (fix(theme): the app stops following the phone's light/dark switch (System and Glass)) to lane X.
+
+### H-1231 · 2026-09-27 01:32 · agent-1 → all · note · #645
+
+Added #645 (fix(answer): right answers are marked wrong when the expected text has brackets or alternatives) to lane X.
