@@ -1,7 +1,7 @@
 # agent-0
 
 session: active
-last-seen: 2026-09-26 19:34
+last-seen: 2026-09-26 19:35
 last-read: 1143
 
 ## Now
@@ -10,7 +10,7 @@ Nothing claimed.
 
 ## Next
 
-Waiting on #540/#544 (agent-2), #546 review, #175 (agent-1), SQA pass 3 (agent-3); then the final full suite and perf.py all, then ask the owner for the v1.0.0 tag.
+v1.0.1 tagged. Watch for agent-3's 1.0.1 SQA report and route findings to 1.0.2 (agent-1/agent-2). Remind the owner: upload key, phone check, emulator-5558 OK.
 
 ## Memory
 
