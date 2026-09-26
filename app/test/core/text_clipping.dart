@@ -39,18 +39,33 @@ void expectNothingClipped(WidgetTester tester, {Finder? within}) {
 /// it show: ended in "…", or cut at a word with none, so "birth" reads as
 /// the whole of "birth certificate" (#550). [expectNothingClipped] lets
 /// both pass; this is for text that must be read whole.
-void expectAllLinesShown(WidgetTester tester, {required Finder within}) {
-  final paragraphs = tester.renderObjectList<RenderParagraph>(
-    find.descendant(of: within, matching: find.byType(RichText)),
-  );
-  expect(paragraphs, isNotEmpty, reason: 'no text found to check');
-  for (final paragraph in paragraphs) {
-    expect(
-      paragraph.didExceedMaxLines,
-      isFalse,
-      reason: '"${paragraph.text.toPlainText()}" is cut to its maxLines',
-    );
+///
+/// [within] null checks the whole screen, as the golden audit does (#551).
+/// [hintsCut] lets a field's hint be cut, as every platform cuts a one-line
+/// field's; the field's label, helper, error and counter still must show
+/// whole.
+void expectAllLinesShown(
+  WidgetTester tester, {
+  Finder? within,
+  bool hintsCut = false,
+}) {
+  final texts = within == null
+      ? find.byType(RichText)
+      : find.descendant(of: within, matching: find.byType(RichText));
+  final elements = texts.evaluate().toList();
+  expect(elements, isNotEmpty, reason: 'no text found to check');
+  final cut = <String>[];
+  for (final element in elements) {
+    final paragraph = element.renderObject! as RenderParagraph;
+    if (!paragraph.didExceedMaxLines) continue;
+    final text = paragraph.text.toPlainText();
+    final field = hintsCut
+        ? element.findAncestorWidgetOfExactType<InputDecorator>()
+        : null;
+    if (field != null && field.decoration.hintText == text) continue;
+    cut.add('"$text"');
   }
+  expect(cut, isEmpty, reason: 'cut to its maxLines: ${cut.join('; ')}');
 }
 
 /// Fails when a word in text under [within] breaks across two lines other

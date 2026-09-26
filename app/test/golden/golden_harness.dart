@@ -183,6 +183,10 @@ void goldenTest(
         expect(tester.takeException(), isNull);
         expectNothingClipped(tester);
         expectNoWordBroken(tester);
+        // #551: and nothing cut to its maxLines, "…" or not (#550).
+        // A field's hint may be cut, as every platform cuts one; a
+        // DpOneLine draws only the words that fit, then "…".
+        expectAllLinesShown(tester, hintsCut: true);
       });
     }
   }

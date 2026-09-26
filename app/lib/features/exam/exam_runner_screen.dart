@@ -630,8 +630,10 @@ class _Band extends StatelessWidget {
       children: <Widget>[
         SizedBox(height: MediaQuery.paddingOf(context).top),
         if (!collapsed)
-          SizedBox(
-            height: 56,
+          // The artboard's 56 is a minimum: at 200 % "Articles · 3 of 6"
+          // wraps rather than lose its place to a cut (#551).
+          ConstrainedBox(
+            constraints: const BoxConstraints(minHeight: 56),
             child: Row(
               children: <Widget>[
                 const SizedBox(width: 4),
@@ -658,7 +660,6 @@ class _Band extends StatelessWidget {
                     role: DpTextRole.body,
                     weight: 600,
                     color: ink,
-                    maxLines: 1,
                     textAlign: TextAlign.center,
                   ),
                 ),

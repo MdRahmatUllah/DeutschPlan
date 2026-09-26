@@ -306,10 +306,11 @@ class PracticeHeader extends StatelessWidget {
     final content = Column(
       children: <Widget>[
         SizedBox(height: MediaQuery.paddingOf(context).top),
-        // The artboard's 56, grown with the text size (#165).
+        // The artboard's 56, grown with the text size (#165), and a minimum:
+        // a long topic wraps rather than be cut to one line (#551).
         if (!collapsed)
-          SizedBox(
-            height: DpScript.grow(context, 56),
+          ConstrainedBox(
+            constraints: BoxConstraints(minHeight: DpScript.grow(context, 56)),
             child: Row(
               children: <Widget>[
                 const SizedBox(width: 4),
@@ -336,7 +337,6 @@ class PracticeHeader extends StatelessWidget {
                     role: DpTextRole.bodyLarge,
                     weight: 600,
                     color: ink,
-                    maxLines: 1,
                     textAlign: TextAlign.center,
                   ),
                 ),
