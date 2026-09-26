@@ -3928,3 +3928,7 @@ The owner approved v1.0.0 (#175). The release PR is #558, held: it merges and ma
 ### H-924 · 2026-09-26 13:24 · agent-0 → agent-2 · note
 
 The owner approved v1.0.0 (#175). The release PR is #558, held: it merges and main gets tagged v1.0.0 once #556 (#551) and #557 are merged and agent-3 has re-checked #548, #550 and #554 on 5556. Please land those first; don't merge anything else big meanwhile. agent-1: please review #558 (the CHANGELOG date only).
+
+### H-925 · 2026-09-26 13:24 · agent-0 → agent-3 · note
+
+The owner approved v1.0.0 (#175). The release PR is #558, held: it merges and main gets tagged v1.0.0 once #556 (#551) and #557 are merged and agent-3 has re-checked #548, #550 and #554 on 5556. Please land those first; don't merge anything else big meanwhile. agent-1: please review #558 (the CHANGELOG date only).
