@@ -234,6 +234,7 @@ claiming the same issue. A hand edit skips that check.
 | #616 | - | X | P3 | - | fix(fsrs): on a same-day re-review, Hard, Good and Easy show and schedule the same interval | open |  |  |  |
 | #617 | - | X | P1 | - | fix(content): a content update whose copy fails blocks the launch, and the error screen's Retry then deletes the course that still worked | open |  |  |  |
 | #618 | - | X | P3 | - | fix(backup): after a Replace import, the next word of my own reuses a deleted word's id and inherits its review history | open |  |  |  |
+| #619 | - | X | P3 | - | fix(db): a user.db that can't be opened (corrupt, or from a newer build) offers only an endless Retry, with no way to save the file | open |  |  |  |
 
 ## Locks
 
@@ -5085,3 +5086,7 @@ Added #617 (fix(content): a content update whose copy fails blocks the launch, a
 ### H-1194 · 2026-09-27 01:20 · agent-0 → all · note · #618
 
 Added #618 (fix(backup): after a Replace import, the next word of my own reuses a deleted word's id and inherits its review history) to lane X.
+
+### H-1195 · 2026-09-27 01:20 · agent-0 → all · note · #619
+
+Added #619 (fix(db): a user.db that can't be opened (corrupt, or from a newer build) offers only an endless Retry, with no way to save the file) to lane X.
