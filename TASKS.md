@@ -65,18 +65,18 @@ claiming the same issue. A hand edit skips that check.
 | #151 | M6 | B | P1 | S | TtsEngine interface and SystemTts | done | agent-1 | #20 | #290 |
 | #152 | M6 | B | P2 | L | SupertonicTts — Supertonic 3 through ONNX Runtime | done | agent-1 | #64 #151 #245 | #431 |
 | #153 | M6 | B | P1 | M | TtsService — engine selection, fallback and autoplay | done | agent-0 |  | #429 |
-| #154 | M6 | B | P3 | L | HyMtTranslator behind the licence build flag | open |  | #64 #151 #283 |  |
+| #154 | Later | B | P3 | L | HyMtTranslator behind the licence build flag | open |  | #64 #151 #283 |  |
 | #155 | M6 | B | P2 | L | M4 · Model manager | done | agent-1 | #146 #153 #156 | #447 |
 | #156 | M6 | B | P2 | M | Download manager: resumable, Wi-Fi-only, checksum-verified | done | agent-1 | #64 | #415 |
 | #157 | M6 | C | P2 | M | Notification service and the permission flow | done | agent-2 | #62 #70 | #356 |
 | #158 | M6 | C | P2 | M | Background tasks: plan pre-generation, reminder composition, widget refresh | done | agent-2 | #76 #157 | #360 |
 | #159 | M6 | C | P2 | S | Widget snapshot writer and word-of-the-day selection | done | agent-2 | #158 | #365 |
 | #160 | M6 | C | P2 | M | X1 · Android home-screen widget (Glance) | done | agent-2 | #159 | #378 |
-| #161 | M6 | C | P2 | M | X1 · iOS home-screen widget (WidgetKit) | open |  | #159 |  |
+| #161 | Later | C | P2 | M | X1 · iOS home-screen widget (WidgetKit) | open |  | #159 |  |
 | #245 | M6 | X | - | - | Model manifest: Supertonic 3's files do not exist, and the real model is ~398 MB, not ~100 MB | done | agent-0 |  | #423 |
 | #283 | M6 | X | - | - | Model manifest: the Hy-MT files 404, and no q2 build exists | done |  |  |  |
-| #14 | M6 | X | P1 | epic | Epic · Voice, translation and model manager | open |  | #151 #152 #153 #154 #155 #156 #245 #283 |  |
-| #15 | M6 | X | P1 | epic | Epic · Reminders, background work and home-screen widget | open |  | #157 #158 #159 #160 #161 |  |
+| #14 | M6 | X | P1 | epic | Epic · Voice, translation and model manager | done |  | #151 #152 #153 #154 #155 #156 #245 #283 |  |
+| #15 | M6 | X | P1 | epic | Epic · Reminders, background work and home-screen widget | done |  | #157 #158 #159 #160 #161 |  |
 | #162 | M7 | C | P1 | L | Semantics and screen-reader pass across every screen | done | agent-2 | #111 #136 #147 #150 #155 | #483 |
 | #163 | M7 | B | P1 | M | Contrast audit across Light, Dark and Glass | done | agent-0 | #32 | #433 |
 | #164 | M7 | B | P1 | M | Reduce motion and reduce transparency | done | agent-0 | #35 #111 | #417 |
@@ -86,16 +86,16 @@ claiming the same issue. A hand edit skips that check.
 | #168 | M7 | C | P1 | L | Complete the golden suite: every screen × three themes × two devices | done | agent-1 | #25 #165 | #485 |
 | #169 | M7 | A | P1 | M | Integration smoke tests on emulator and simulator | done | agent-0 | #111 #130 | #399 |
 | #170 | M7 | A | P1 | M | Android release pipeline | done | agent-2 | #152 #160 #167 | #497 |
-| #171 | M7 | A | P1 | M | iOS release pipeline | open |  | #152 #161 #167 |  |
+| #171 | Later | A | P1 | M | iOS release pipeline | open |  | #152 #161 #167 |  |
 | #172 | M7 | C | P2 | S | Licence collection and model licence texts | done | agent-2 | #150 | #441 |
 | #173 | M7 | B | P1 | S | Hy-MT region decision and ADR | done | agent-0 |  | #495 |
 | #174 | M7 | B | P1 | M | Error and edge-state matrix | done | agent-0 | #153 #156 | #458 |
-| #175 | M7 | A | P2 | S | Store listing, changelog and release tagging | assigned | agent-1 | #168 #169 #170 #171 #172 #173 #174 |  |
+| #175 | M7 | A | P2 | S | Store listing, changelog and release tagging | assigned | agent-1 | #168 #169 #170 #172 #173 #174 |  |
 | #280 | M7 | B | P1 | - | fix(adaptive): iOS bar titles at 17 pt, and a long title ends in an ellipsis | done | agent-1 |  | #401 |
 | #281 | M7 | X | P2 | - | test(learn): L6 review follow-ups: tie-break, loading, suspended, ellipsis | done | agent-1 |  | #422 |
 | #282 | M7 | X | P3 | - | fix(words): the glass word list is one frosted panel (L2, L6) | done | agent-2 |  | #444 |
 | #284 | M7 | X | P2 | - | docs(dev-guide): reconcile the dev guide with how the app is built | done | agent-1 |  | #424 |
-| #16 | M7 | X | P1 | epic | Epic · Accessibility, localisation and performance | open |  | #162 #163 #164 #165 #166 #167 #168 #169 |  |
+| #16 | M7 | X | P1 | epic | Epic · Accessibility, localisation and performance | done |  | #162 #163 #164 #165 #166 #167 #168 #169 |  |
 | #17 | M7 | X | P1 | epic | Epic · Release readiness | open |  | #170 #171 #172 #173 #174 #175 |  |
 | #239 | - | X | - | - | fsrs-scheduler.md's Good chain does not reproduce | needs-decision |  |  |  |
 | #287 | M7 | X | P2 | - | content: 54 nouns keep their article inside german, not in article | done | agent-0 |  | #408 |
@@ -135,7 +135,7 @@ claiming the same issue. A hand edit skips that check.
 | #388 | SQA | X | P3 | - | bug(exam): one written word can count for two Writing targets (Beweise → Beweis and beweisen), so 5 targets read as 6 and score the point (found in #133) | done | agent-0 |  | #400 |
 | #389 | SQA | X | P3 | - | bug(exam): L14 says "no answer: the time ran out" for questions skipped in an exam submitted early (found in #136) | done | agent-0 |  | #397 |
 | #390 | SQA | X | P3 | - | bug(shell): with the keyboard up, the tab bar rides above it and covers R2's form; R2's header runs under the status bar (found in #143) | done | agent-1 |  | #418 |
-| #396 | SQA | X | P3 | - | chore(sqa): pass 2 minor gaps: widget speak, Writing with the keyboard, Speaking rubric, my-words duplicates, 200 % leftovers (checklist) | review | agent-0 |  | #493 |
+| #396 | SQA | X | P3 | - | chore(sqa): pass 2 minor gaps: widget speak, Writing with the keyboard, Speaking rubric, my-words duplicates, 200 % leftovers (checklist) | done | agent-0 |  | #493 |
 | #405 | SQA | B | P3 | - | bug(exam): L12's headword breaks long compounds mid-word with no hyphen ("die Reiseversic / herung") at 100 % text (found in #130) | done | agent-1 |  | #412 |
 | #406 | SQA | A | P2 | - | bug(grammar): the example splitter cuts at an ordinal's dot ("_____." / "Heute ist _____ 17."), and Pick the form offers non-inflections (bitte · bitter) (follow-up to #330) | done | agent-2 |  | #416 |
 | #404 | - | B | P2 | - | fix(a11y): the iOS back row on L4, L2 and W1 clips its label at 200 % text (follow-up to #280) | done | agent-1 |  | #410 |
@@ -151,7 +151,7 @@ claiming the same issue. A hand edit skips that check.
 | #442 | - | C | - | - | bug(widget): Pronounce doesn't speak when that word's page is already open (from #396) | done | agent-2 |  | #443 |
 | #445 | - | C | - | - | a11y(search): a My words row has an unlabelled clickable node over its labelled one (from #396) | done | agent-2 |  | #446 |
 | #449 | SQA | C | P3 | - | a11y: Sun-header course bars (L1, L2) and the splash bar reach 3:1 | done | agent-0 |  | #461 |
-| #450 | SQA | X | P3 | - | a11y: should a fill reach 3:1 against its own track? (owner question after #437) | needs-decision |  |  |  |
+| #450 | SQA | X | P3 | - | a11y: should a fill reach 3:1 against its own track? (owner question after #437) | done |  |  |  |
 | #451 | SQA | A | P3 | - | feat(words): BR-CONTENT-02's updated chip is never shown (recentlyUpdated has no caller) | done | agent-0 |  | #472 |
 | #452 | SQA | C | P3 | - | a11y(tts): the small play buttons never show the slashed no-voice state (follow-up to #174) | done | agent-1 |  | #470 |
 | #453 | SQA | C | P2 | - | bug(tts): only the first Supertonic voice after launch works: switching Anna/Jonas/Lena in M4 leaves new clips silent (preview) or on the phone's voice (found in #155) | done | agent-1 |  | #459 |
@@ -167,9 +167,9 @@ claiming the same issue. A hand edit skips that check.
 | #478 | - | C | P2 | - | a11y: 170 tap targets are under 48 dp (the golden audit's list): chips, tabs, keys, stepper, day chips, navigator | done | agent-2 |  | #490 |
 | #486 | - | B | P3 | - | perf(tts): prime the audio player with today's first clip, so card 1 plays within 300 ms (follow-up to #460) | done | agent-1 | #460 | #487 |
 | #387 | - | B | P3 | - | fix(quiz): EN→DE follows the meaning language (Bangla prompt for a Bangla learner, no Bangla hint for an English one); L7's default direction (follow-up to #339) | done | agent-1 |  | #499 |
-| #492 | - | X | P3 | - | a11y(ios): should the sliding segmented control grow to 44 pt? (L2's tabs, M1's range; follow-up to #478) | needs-decision |  |  |  |
+| #492 | - | X | P3 | - | a11y(ios): should the sliding segmented control grow to 44 pt? (L2's tabs, M1's range; follow-up to #478) | done |  |  |  |
 | #494 | M7 | B | P3 | - | research(translation): a licence-clean offline translator to replace Hy-MT after v1.0 (Opus-MT / ML Kit; follow-up to #173) | done | agent-1 |  | #534 |
-| #496 | SQA | X | - | - | question(content): should Today's update card net the counts of every unseen update? (owner question from #477) | needs-decision |  |  |  |
+| #496 | SQA | X | - | - | question(content): should Today's update card net the counts of every unseen update? (owner question from #477) | done |  |  |  |
 | #419 | - | C | P3 | - | fix(typography): draw a hyphen where a German headword breaks at a soft hyphen (Flutter draws none) | done | agent-2 |  | #498 |
 | #421 | - | C | P3 | - | fix(words): W1 scrolls its back row under the status bar with no strip (as R2 did, follow-up to #390) | done | agent-1 |  | #500 |
 | #501 | SQA | X | - | - | question(models): may a model download ask for the notification permission when the reminder is off? (FR-S2-05; owner question from #438) | review | agent-1 |  | #542 |
