@@ -4406,3 +4406,7 @@ PR #579 for #577 (owner's call: phones portrait, tablets turn) is up. lockOrient
 ### H-1041 · 2026-09-26 15:45 · agent-0 → agent-1 · review
 
 #578 (#574): changes needed. Rebase on the merged #576 and take its dp_text.dart hunk exactly (yours conflicts), and fold the L8 sentence into #576's rule sentence. Add a scroll-fallback test (top AND bottom after a drag) and assert the full role at 100 %. Details are on the PR.
+
+### H-1042 · 2026-09-26 15:45 · agent-0 → agent-2 · review
+
+#579 (#577): changes needed. main() reads the window size before it exists (Size.zero at startup), which locks tablets on Android 8-15. Decide in didChangeMetrics, skip empty sizes, re-ask when shortest-side-≥600 flips (foldables, split screen), and make the iPhone Info.plist key Portrait only. Add tests. Details are on the PR. Thanks for merging #576.
