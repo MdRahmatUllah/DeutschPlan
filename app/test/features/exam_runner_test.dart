@@ -13,6 +13,7 @@ import 'package:deutschplan/domain/exam_generator.dart';
 import 'package:deutschplan/domain/grammar_item_generator.dart';
 import 'package:deutschplan/domain/quiz_builder.dart' show FormLabel;
 import 'package:deutschplan/features/exam/exam_runner_screen.dart';
+import 'package:deutschplan/features/quiz/quiz_item_view.dart' show GermanWord;
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
 import 'package:deutschplan/main.dart'
     show appLocalizationsDelegates, supportedLocales;
@@ -749,6 +750,8 @@ void main() {
 
     // What is asked, as the question shows it.
     List<String> asked(ExamItem item) => switch (item) {
+      // A vocabulary word is a GermanWord, found by its type.
+      WordQuestion(section: ExamSection.vocabulary) => const <String>[],
       WordQuestion(:final prompt, :final form) => <String>[
         if (form == null) prompt else l10n.quizFormPerfekt(prompt),
       ],
@@ -763,6 +766,9 @@ void main() {
         .widget<EditableText>(find.byType(EditableText))
         .focusNode
         .hasFocus;
+
+    // The time left, however far the clock has run.
+    Finder clock() => find.textContaining(RegExp(r'^\d{1,2}:\d\d$'));
 
     Finder inTheList(String label) => find.descendant(
       of: find.byType(ListView),
@@ -790,6 +796,14 @@ void main() {
         after: 'gern einen Kaffee mit Milch.',
         answer: 'trinke',
         translation: 'I like drinking a coffee with milk.',
+      ),
+      // #560: typed in English, so no umlaut row; the clock alone above
+      // the keyboard.
+      const WordQuestion(
+        ExamSection.vocabulary,
+        'haus',
+        prompt: 'das Mehrfamilienhaus',
+        expected: 'apartment building',
       ),
     ]) {
       for (final (percent, scaler) in <(int, TextScaler)>[
@@ -822,6 +836,8 @@ void main() {
           await tester.pumpAndSettle();
 
           expect(typing(tester), isTrue, reason: 'the field kept the keyboard');
+          final german =
+              item is! WordQuestion || item.section != ExamSection.vocabulary;
           final window = tester.getRect(find.byType(ListView));
           expect(window.bottom, lessThanOrEqualTo(keyboardTop));
           for (final (name, shown) in <(String, Finder)>[
@@ -830,6 +846,7 @@ void main() {
             // above the window, as it did before #554.
             if (large)
               for (final text in asked(item)) (text, find.text(text)),
+            if (large && !german) ('the word', find.byType(GermanWord)),
             ('the field', find.byType(TextField)),
           ]) {
             final rect = tester.getRect(shown);
@@ -837,8 +854,23 @@ void main() {
             expect(rect.bottom, lessThanOrEqualTo(window.bottom), reason: name);
           }
           expect(
-            tester.getRect(find.byType(DpUmlautBar)).bottom,
-            lessThanOrEqualTo(keyboardTop),
+            find.byType(DpUmlautBar),
+            german ? findsOneWidget : findsNothing,
+          );
+          if (german) {
+            expect(
+              tester.getRect(find.byType(DpUmlautBar)).bottom,
+              lessThanOrEqualTo(keyboardTop),
+            );
+          }
+          // #560: the time left always shows: in the band, or, the band
+          // collapsed, under the question above the keyboard.
+          final left = tester.getRect(clock());
+          expect(left.bottom, lessThanOrEqualTo(keyboardTop));
+          expect(
+            large ? left.top : window.top,
+            greaterThanOrEqualTo(large ? window.bottom : left.bottom),
+            reason: large ? 'above the keyboard' : 'in the band',
           );
           expect(
             inTheList(l10n.examRunNext),
@@ -862,8 +894,85 @@ void main() {
             findsOneWidget,
           );
           expect(find.byIcon(Icons.pause), findsOneWidget);
+          expect(
+            tester.getRect(clock()).bottom,
+            lessThanOrEqualTo(tester.getRect(find.byType(ListView)).top),
+            reason: 'back in the band',
+          );
         });
       }
     }
+
+    for (final item in <ExamItem>[
+      const WordQuestion(
+        ExamSection.vocabulary,
+        'haus',
+        prompt: 'das Haus',
+        expected: 'house',
+      ),
+      const WordQuestion(
+        ExamSection.reverse,
+        'haus',
+        prompt: 'the house',
+        expected: 'das Haus',
+      ),
+    ]) {
+      testWidgets('#560 ${(item as WordQuestion).section.name}: an untimed '
+          'paper shows no clock, collapsed or not', (tester) async {
+        tester.view
+          ..physicalSize = const Size(390, 731) * 3
+          ..devicePixelRatio = 3
+          ..padding = const FakeViewPadding(top: 24 * 3);
+        addTearDown(tester.view.reset);
+        await pump(
+          tester,
+          stub: StubExamRun(
+            timed: false,
+            items: <ExamItem>[item, ...artboardPaper()],
+            given: <int, String>{},
+          ),
+          textScaler: const AndroidTextScaler(2),
+        );
+        await tester.showKeyboard(find.byType(TextField));
+        tester.view.viewInsets = const FakeViewPadding(bottom: 300 * 3);
+        addTearDown(tester.view.resetViewInsets);
+        await tester.pumpAndSettle();
+        expect(clock(), findsNothing);
+      });
+    }
+
+    testWidgets('#560 Writing at 200 %: a tap beside ß or on the clock keeps '
+        'the keyboard, as a key does (#529, #532)', (tester) async {
+      tester.view
+        ..physicalSize = const Size(390, 731) * 3
+        ..devicePixelRatio = 3
+        ..padding = const FakeViewPadding(top: 24 * 3);
+      addTearDown(tester.view.reset);
+      await pump(
+        tester,
+        stub: StubExamRun(
+          items: <ExamItem>[artboardWriting, ...artboardPaper()],
+          given: <int, String>{},
+        ),
+        textScaler: const AndroidTextScaler(2),
+      );
+      await tester.showKeyboard(find.byType(TextField));
+      tester.view.viewInsets = const FakeViewPadding(bottom: 300 * 3);
+      addTearDown(tester.view.resetViewInsets);
+      await tester.pumpAndSettle();
+      expect(typing(tester), isTrue);
+
+      final keys = tester.getRect(find.byType(DpUmlautBar));
+      final left = tester.getRect(clock());
+      for (final (name, at) in <(String, Offset)>[
+        // The 8 dp between the keys and the clock's chip.
+        ('between ß and the clock', Offset(keys.right + 4, left.center.dy)),
+        ('the clock', left.center),
+      ]) {
+        await tester.tapAt(at);
+        await tester.pumpAndSettle();
+        expect(typing(tester), isTrue, reason: name);
+      }
+    });
   });
 }
