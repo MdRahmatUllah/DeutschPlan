@@ -5,6 +5,13 @@ import 'package:deutschplan/domain/plan_engine.dart';
 import 'package:deutschplan/domain/plan_stats.dart';
 import 'package:drift/drift.dart';
 
+/// BR-CONTENT-02 (#174, #456): [column] names a word of the learner's own, or
+/// a course word still in content.db. A word a content update removed keeps
+/// its rows in user.db, with its history, and is read nowhere.
+String inCourse(String column) =>
+    "($column LIKE 'custom:%' "
+    'OR EXISTS (SELECT 1 FROM words w WHERE w.uid = $column))';
+
 /// [PlanStore] over drift — the engine's half of `plan_items` and friends.
 ///
 /// The engine decides; this fetches and writes. Nothing here chooses anything:
@@ -161,8 +168,7 @@ WHERE status IN ('learning', 'done')
 SELECT word_uid AS uid
 FROM plan_items
 WHERE plan_date = ?1 AND kind = ?2
-  AND (word_uid LIKE 'custom:%'
-       OR EXISTS (SELECT 1 FROM words w WHERE w.uid = word_uid))
+  AND ${inCourse('word_uid')}
 ORDER BY rowid
 ''',
           variables: <Variable<Object>>[
@@ -276,8 +282,7 @@ WHERE kind = 'new' AND completed_at IS NULL AND plan_date < ?1
     SELECT 1 FROM word_state s
     WHERE s.word_uid = p.word_uid AND s.status = 'suspended'
   )
-  AND (p.word_uid LIKE 'custom:%'
-       OR EXISTS (SELECT 1 FROM words w WHERE w.uid = p.word_uid))
+  AND ${inCourse('p.word_uid')}
 ORDER BY plan_date DESC, word_uid
 ''',
           variables: <Variable<Object>>[Variable<String>(today)],
@@ -441,6 +446,9 @@ WHERE day <= ?1 AND day >= ?2
   /// Only `new` rows: a missed revision is not "behind", FSRS simply
   /// reschedules it. And only up to today — there is no plan beyond it to be
   /// measured against.
+  ///
+  /// Nor a word a content update removed (BR-CONTENT-02): it can never be
+  /// introduced, and would hold the learner behind for good.
   @override
   Future<(int, int)> newItemProgress(PlanDate today) async {
     final row = await _db
@@ -450,6 +458,7 @@ SELECT COUNT(*) AS planned,
        COUNT(completed_at) AS introduced
 FROM plan_items
 WHERE kind = 'new' AND plan_date <= ?1
+  AND ${inCourse('word_uid')}
 ''',
           variables: <Variable<Object>>[Variable<String>(today)],
           readsFrom: <ResultSetImplementation<Object, Object>>{_db.planItems},
@@ -459,7 +468,9 @@ WHERE kind = 'new' AND plan_date <= ?1
     return (row.read<int>('planned'), row.read<int>('introduced'));
   }
 
-  /// BR-PLAN-10: a row is open until it is completed *or* skipped.
+  /// BR-PLAN-10: a row is open until it is completed *or* skipped. One whose
+  /// word a content update removed is not open (BR-CONTENT-02): it can never
+  /// be, and would keep the day from being done.
   @override
   Future<int> openPlanItems(PlanDate date) async {
     final row = await _db
@@ -468,6 +479,7 @@ WHERE kind = 'new' AND plan_date <= ?1
 SELECT COUNT(*) AS n
 FROM plan_items
 WHERE plan_date = ?1 AND completed_at IS NULL AND skipped = 0
+  AND ${inCourse('word_uid')}
 ''',
           variables: <Variable<Object>>[Variable<String>(date)],
           readsFrom: <ResultSetImplementation<Object, Object>>{_db.planItems},

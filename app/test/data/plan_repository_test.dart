@@ -1,11 +1,16 @@
 @TestOn('vm')
 library;
 
+import 'dart:io';
+
 import 'package:deutschplan/data/db/app_database.dart';
+import 'package:deutschplan/data/db/content_dao.dart';
 import 'package:deutschplan/data/repositories/plan_repository.dart';
 import 'package:drift/drift.dart' hide isNotNull, isNull;
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
+
+import '../db/content_fixture.dart';
 
 /// `PlanRepository`: the writes that have to be all-or-nothing.
 ///
@@ -15,15 +20,30 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   driftRuntimeOptions.dontWarnAboutMultipleDatabases = true;
 
+  late Directory directory;
   late AppDatabase db;
   late PlanRepository plan;
 
-  setUp(() {
+  setUp(() async {
+    directory = Directory.systemTemp.createTempSync('deutschplan_plan_repo');
+    final content = ContentFixture.write('${directory.path}/content.db').file;
     db = AppDatabase(DatabaseConnection(NativeDatabase.memory()));
+    // The course, as the app has it: the backlog's reads skip a course word
+    // it doesn't have (BR-CONTENT-02), so their words are the fixture's.
+    await db.customStatement(
+      "ATTACH DATABASE '${ContentDao.attachPath(content)}' AS c",
+    );
     plan = PlanRepository(db);
   });
 
-  tearDown(() => db.close());
+  tearDown(() async {
+    await db.close();
+    try {
+      directory.deleteSync(recursive: true);
+    } on FileSystemException {
+      // Windows releases it a moment later.
+    }
+  });
 
   const today = '2026-03-04';
   const now = '2026-03-04T09:00:00Z';
@@ -364,10 +384,14 @@ void main() {
       // BR-PLAN-05: there is no backlog table, because an incomplete plan row
       // *is* the backlog.
       await plan.writePlan(<PlanEntry>[
-        for (final date in <String>['2026-03-01', '2026-03-02', today])
+        for (final (date, uid) in <(String, String)>[
+          ('2026-03-01', ContentFixture.haus),
+          ('2026-03-02', ContentFixture.tuer),
+          (today, ContentFixture.strasse),
+        ])
           PlanEntry(
             planDate: date,
-            wordUid: 'w-$date',
+            wordUid: uid,
             kind: PlanKind.newWord,
             sublevelCode: 'A1.1',
           ),
@@ -384,13 +408,13 @@ void main() {
       await plan.writePlan(<PlanEntry>[
         const PlanEntry(
           planDate: '2026-03-01',
-          wordUid: 'w1',
+          wordUid: ContentFixture.haus,
           kind: PlanKind.newWord,
           sublevelCode: 'A1.1',
         ),
       ]);
       await plan.rate(
-        uid: 'w1',
+        uid: ContentFixture.haus,
         rating: 3,
         next: scheduled(),
         source: ReviewSource.daily,
@@ -408,14 +432,14 @@ void main() {
       await plan.writePlan(<PlanEntry>[
         const PlanEntry(
           planDate: '2026-03-01',
-          wordUid: 'w1',
+          wordUid: ContentFixture.haus,
           kind: PlanKind.newWord,
           sublevelCode: 'A1.1',
         ),
       ]);
       await plan.skip(
         planDate: '2026-03-01',
-        uid: 'w1',
+        uid: ContentFixture.haus,
         kind: PlanKind.newWord,
       );
 
@@ -426,7 +450,7 @@ void main() {
       await plan.writePlan(<PlanEntry>[
         const PlanEntry(
           planDate: '2026-03-01',
-          wordUid: 'w1',
+          wordUid: ContentFixture.haus,
           kind: PlanKind.revise,
           sublevelCode: 'A1.1',
         ),
@@ -437,7 +461,7 @@ void main() {
     test("#368 a suspended word's row: out of Today's count, still in T4's "
         'list, which follows its state', () async {
       await plan.writePlan(<PlanEntry>[
-        for (final uid in <String>['w1', 'w2'])
+        for (final uid in <String>[ContentFixture.haus, ContentFixture.tuer])
           PlanEntry(
             planDate: '2026-03-01',
             wordUid: uid,
@@ -453,7 +477,8 @@ void main() {
       addTearDown(listening.cancel);
       await pumpEventQueue();
       await db.customStatement(
-        "INSERT INTO word_state (word_uid, status) VALUES ('w1', 'suspended')",
+        'INSERT INTO word_state (word_uid, status) '
+        "VALUES ('${ContentFixture.haus}', 'suspended')",
       );
       db.markTablesUpdated(<TableInfo<Table, Object?>>{db.wordState});
       await pumpEventQueue();
@@ -462,10 +487,74 @@ void main() {
         <String>[
           for (final row in await plan.watchBacklog(today).first) row.wordUid,
         ],
-        <String>['w2'],
+        <String>[ContentFixture.tuer],
       );
       expect(lists.length, greaterThanOrEqualTo(2), reason: 'T4 re-read it');
-      expect(lists.last, <String>['w1', 'w2']);
+      expect(lists.last, <String>[ContentFixture.haus, ContentFixture.tuer]);
+    });
+  });
+
+  group('#456 BR-CONTENT-02 a word a content update removed', () {
+    // 'gone' was in the course when it was planned; the course the app has
+    // now doesn't have it. A word of my own is in no course, and is read.
+    const gone = 'gone';
+    const mine = 'custom:1';
+    const yesterday = '2026-03-03';
+
+    Future<void> planOn(String date, List<String> uids) =>
+        plan.writePlan(<PlanEntry>[
+          for (final uid in uids)
+            PlanEntry(
+              planDate: date,
+              wordUid: uid,
+              kind: PlanKind.newWord,
+              sublevelCode: 'A1.1',
+            ),
+        ]);
+
+    // Hidden, never deleted.
+    Future<int> goneRows() => count("plan_items WHERE word_uid = '$gone'");
+
+    List<String> uids(List<PlanItem> rows) => <String>[
+      for (final row in rows) row.wordUid,
+    ];
+
+    // Newest day first, then by uid: 'custom:1' sorts before 'uid-haus'.
+    const kept = <String>[mine, ContentFixture.haus];
+
+    test("#456 BR-CONTENT-02 watchBacklog: not in Today's backlog card, "
+        'and its row stays', () async {
+      await planOn(yesterday, <String>[ContentFixture.haus, gone, mine]);
+
+      expect(uids(await plan.watchBacklog(today).first), kept);
+      expect(await goneRows(), 1);
+    });
+
+    test("#456 BR-CONTENT-02 watchBacklogWithStates: not in T4's list, "
+        'and its row stays', () async {
+      await planOn(yesterday, <String>[ContentFixture.haus, gone, mine]);
+
+      expect(uids(await plan.watchBacklogWithStates(today).first), kept);
+      expect(await goneRows(), 1);
+    });
+
+    test("#456 BR-CONTENT-02 backlog: not in a backlog session's queue, "
+        'and its row stays', () async {
+      await planOn(yesterday, <String>[ContentFixture.haus, gone, mine]);
+
+      expect(uids(await plan.backlog(today)), kept);
+      expect(await goneRows(), 1);
+    });
+
+    test('#456 BR-CONTENT-02 stillOpen: a reopened session does not ask it, '
+        'and its row stays', () async {
+      await planOn(today, <String>[ContentFixture.haus, gone, mine]);
+
+      expect(await plan.stillOpen(today), <(String, String)>{
+        ('new', ContentFixture.haus),
+        ('new', mine),
+      });
+      expect(await goneRows(), 1);
     });
   });
 
