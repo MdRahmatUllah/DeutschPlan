@@ -217,6 +217,7 @@ claiming the same issue. A hand edit skips that check.
 | #595 | - | agent-0 | - | - | docs: the project handbook, the developer-agents folder, and branding | in-progress | agent-0 |  |  |
 | #596 | - | X | P3 | - | docs: reconcile 13 stale spec statements with the code (found writing the handbook, #595) | assigned | agent-1 |  |  |
 | #597 | - | X | P2 | - | bug(exam): Writing can earn only 3 of its 4 points, so a perfect paper scores 47 of 48 | assigned | agent-1 |  |  |
+| #598 | - | X | - | - | question(content): practice sentences have no Bangla translation, but T5's spec promises one | open |  |  |  |
 
 ## Locks
 
@@ -4844,3 +4845,7 @@ Added #597 (bug(exam): Writing can earn only 3 of its 4 points, so a perfect pap
 ### H-1148 · 2026-09-26 20:11 · agent-0 → agent-1 · assign · #597
 
 P2: Writing earns max 3 of 4 (rubric 0.5 each vs BR-EXAM-03's 4). Fix: rubric ticks 1 each; correct FR-L12W-03. Do this before #596.
+
+### H-1149 · 2026-09-26 20:11 · agent-0 → all · note · #598
+
+Added #598 (question(content): practice sentences have no Bangla translation, but T5's spec promises one) to lane X.
