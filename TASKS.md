@@ -250,6 +250,7 @@ claiming the same issue. A hand edit skips that check.
 | #632 | - | X | P2 | - | fix(content): the Forms quiz and exam Word forms mark the right Perfekt wrong for 8 core A1 verbs (a bracketed Präteritum in the forms cell) | open |  |  |  |
 | #633 | - | X | P2 | - | fix(content): core nouns with no article (Ende, Anfang, Mitte, Nominalisierung, Wirtschaftsflüchtling), and phrases whose article makes an ungrammatical Articles item ("der Fehler machen") | open |  |  |  |
 | #634 | - | X | P2 | - | chore(content): nothing gates the committed content.db, and the source workbooks are neither in git nor fingerprinted | needs-decision |  |  |  |
+| #635 | - | X | P3 | - | fix(content): the same word is taught 2–3 times, across levels (145 exact duplicates) and within a level (44 near-duplicates) | open |  |  |  |
 
 ## Locks
 
@@ -5181,3 +5182,7 @@ Added #634 (chore(content): nothing gates the committed content.db, and the sour
 ### H-1214 · 2026-09-27 01:23 · agent-0 → owner · decision · #634
 
 Where should the source workbooks (data/*.xlsx) be kept versioned: a private repo, Git LFS, or an archive you hold?
+
+### H-1215 · 2026-09-27 01:24 · agent-0 → all · note · #635
+
+Added #635 (fix(content): the same word is taught 2–3 times, across levels (145 exact duplicates) and within a level (44 near-duplicates)) to lane X.
