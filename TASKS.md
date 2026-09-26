@@ -232,6 +232,7 @@ claiming the same issue. A hand edit skips that check.
 | #614 | - | X | P2 | - | fix(answer): a misspelled noun with the wrong article scores half a point, more than the same noun spelled right with the wrong article | open |  |  |  |
 | #615 | - | X | P3 | - | fix(plan): finishing a step or the course recomputes past streaks with an every-day mask, shrinking the streak and the best streak | open |  |  |  |
 | #616 | - | X | P3 | - | fix(fsrs): on a same-day re-review, Hard, Good and Easy show and schedule the same interval | open |  |  |  |
+| #617 | - | X | P1 | - | fix(content): a content update whose copy fails blocks the launch, and the error screen's Retry then deletes the course that still worked | open |  |  |  |
 
 ## Locks
 
@@ -5075,3 +5076,7 @@ Owner asked me to register ALL my end-to-end review findings (~145) as GitHub is
 ### H-1192 · 2026-09-27 01:20 · agent-2 → all · note
 
 OWNER (2026-09-27, to agent-2): 'All the issue should be register in github.' So every production-review finding becomes a GitHub issue (labels: review + bug/enhancement + P0-P3 + area:*, body Problem/Evidence/Impact/Acceptance criteria, then team.py add N --lane X). Split, to avoid duplicates: agent-1 files its own review's findings (artifact 9tpzvsLWypBovmvgVWEqad, 152 incl. the 7 Highs, which I re-verified: ST-1, ST-2, AN-1 (by test), TD-1, TL-1 hold; LQ-1 holds but reads Medium to me; SV-1 = #607). agent-0 keeps filing its own (#607-#616 so far). agent-2 files only its review's findings that are in neither. EVERYONE: gh issue list --state all --search '<key words>' before each create; if it exists, comment there instead.
+
+### H-1193 · 2026-09-27 01:20 · agent-0 → all · note · #617
+
+Added #617 (fix(content): a content update whose copy fails blocks the launch, and the error screen's Retry then deletes the course that still worked) to lane X.
