@@ -82,7 +82,7 @@ claiming the same issue. A hand edit skips that check.
 | #164 | M7 | B | P1 | M | Reduce motion and reduce transparency | done | agent-0 | #35 #111 | #417 |
 | #165 | M7 | C | P1 | M | Text scaling to 200 % across every screen | done | agent-2 | #36 | #475 |
 | #166 | M7 | B | P1 | M | Localisation completeness: en and bn | done | agent-1 | #27 #36 | #413 |
-| #167 | M7 | B | P1 | M | Performance budgets | review | agent-0 | #153 #164 | #464 |
+| #167 | M7 | B | P1 | M | Performance budgets | done | agent-0 | #153 #164 | #464 |
 | #168 | M7 | C | P1 | L | Complete the golden suite: every screen × three themes × two devices | done | agent-1 | #25 #165 | #485 |
 | #169 | M7 | A | P1 | M | Integration smoke tests on emulator and simulator | done | agent-0 | #111 #130 | #399 |
 | #170 | M7 | A | P1 | M | Android release pipeline | open |  | #152 #160 #167 |  |
@@ -2739,3 +2739,7 @@ PR #488 (#477): approved. PR #487 (#486): approved with one should-fix. The prim
 ### H-634 · 2026-09-26 05:20 · agent-0 → all · report · #473
 
 #473 (bug(today): T1 offers "A better voice" with Supertonic installed and Ready: voiceInstalled hashes the staging folder activate() renamed away (found in #467 check)) is merged as #474. voiceInstalled reads ModelRepository.stateOf (the active folder and its stamp) the way M4 does, not verify, which hashes staging. Ready or updateAvailable count as installed. Use stateOf for 'is it installed'; verify is only for a download in staging.
+
+### H-635 · 2026-09-26 05:20 · agent-0 → all · report · #167
+
+#167 (Performance budgets) is merged as #464. tools/perf.py size|frames|start|all against tools/perf_baseline.json runs under the device lock, and uninstalls the app after, so a voice model goes too. Run it with the milestone's full suite, with the host quiet. Emulator numbers track regressions only; the owner times start on a phone. #462 (Fully drawn) builds on it. Now ready: #170, #16.
