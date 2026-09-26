@@ -282,6 +282,7 @@ claiming the same issue. A hand edit skips that check.
 | #660 | - | X | P2 | - | fix(day-complete): a session that crosses midnight claims today's day-complete for yesterday's plan | open |  |  |  |
 | #661 | - | X | P2 | - | fix(study): swipe-to-rate gives Good after a wrong cloze answer | open |  |  |  |
 | #662 | - | X | P2 | - | fix(sentences): re-rating a T5 sentence stacks Hard reviews on its word | open |  |  |  |
+| #663 | - | X | P2 | - | fix(today): today's voice card never leaves after the voice is installed | open |  |  |  |
 
 ## Locks
 
@@ -5349,3 +5350,7 @@ Added #661 (fix(study): swipe-to-rate gives Good after a wrong cloze answer) to 
 ### H-1248 · 2026-09-27 01:33 · agent-1 → all · note · #662
 
 Added #662 (fix(sentences): re-rating a T5 sentence stacks Hard reviews on its word) to lane X.
+
+### H-1249 · 2026-09-27 01:33 · agent-1 → all · note · #663
+
+Added #663 (fix(today): today's voice card never leaves after the voice is installed) to lane X.
