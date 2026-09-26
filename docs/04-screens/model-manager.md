@@ -17,7 +17,7 @@
       - Left to the platform's own rerun, the downloader would stop tracking it, and pause, the switch, the notification and a relaunch would all miss it.
       - background_downloader 9.6.x has deleted a *canceled* file's partial, so that file starts again from nothing, and the card's percentage drops by it. On the emulator, one drop in three came back this way.
   - The stop often arrives a few milliseconds before the downloader's `isWiFi` or `isConnected` reads the change, so a stop read on the network is given 2 s to catch up.
-  - A *canceled* still read on the network after that is the notification's *Cancel*, and fails (*Retry*).
+  - Only a file that was downloading is stopped this way. A *canceled* on a queued file (the notification's *Cancel* while waiting for Wi-Fi) is a cancel, and fails (*Retry*); so is a *canceled* still read on the network after the 2 s. A model that failed meanwhile isn't restarted.
   - A failure with a cause (the server, the disk) fails as ever.
   - The cancels this code makes when a file fails come back late, and change nothing: that file holds the model failed.
   - `isWiFi` reads off Wi-Fi until the downloader's first check. So a notification *Cancel* delivered at launch, before that check, would be taken for a stop (a `ponytail:` edge).

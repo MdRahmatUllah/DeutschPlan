@@ -401,6 +401,20 @@ void main() {
       expect(seen.last.phase, isNot(DownloadPhase.failed));
     });
 
+    test('a model that fails for real while a stop waits stays failed: no '
+        'download starts behind it', () async {
+      await report((t) => TaskStatusUpdate(t, TaskStatus.canceled), 'one.gguf');
+      await report(
+        (t) => TaskStatusUpdate(t, TaskStatus.failed, _serverError),
+        'two.gguf',
+      );
+      downloader.isWiFi = false;
+      final queued = downloader.queued.length;
+      await graceOver();
+      expect(seen.last.phase, DownloadPhase.failed);
+      expect(downloader.queued, hasLength(queued));
+    });
+
     test('a newer word on the file while its stop waits stands', () async {
       await report((t) => TaskStatusUpdate(t, TaskStatus.canceled), 'one.gguf');
       await report((t) => TaskProgressUpdate(t, 0.6), 'one.gguf');
@@ -421,14 +435,45 @@ void main() {
       expect(seen.last, (phase: DownloadPhase.running, progress: 30 / 400));
     });
 
-    test('its retries spent on earlier drops, a failure off Wi-Fi with no '
-        'cause but the connection is a stop too', () async {
-      final stopped = latest('two.gguf');
+    for (final (cause, exception) in <(String, TaskException)>[
+      (
+        'a connection error',
+        TaskConnectionException('Software caused connection abort'),
+      ),
+      ("a stopped job's general error", TaskException('Job was cancelled')),
+    ]) {
+      test('its retries spent on earlier drops, a failure off Wi-Fi with '
+          '$cause is a stop too', () async {
+        final stopped = latest('two.gguf');
+        downloader.isWiFi = false;
+        await report(
+          (t) => TaskStatusUpdate(t, TaskStatus.failed, exception),
+          'two.gguf',
+        );
+        expect(latest('two.gguf').taskId, isNot(stopped.taskId));
+        expect(downloader.calls, <String>['cancel task ${stopped.taskId}']);
+        expect(seen.last.phase, isNot(DownloadPhase.failed));
+      });
+    }
+
+    test("the notification's *Cancel* while waiting for Wi-Fi cancels: a "
+        'queued file is not a stop, and nothing is queued again', () async {
       downloader.isWiFi = false;
-      await report((t) => TaskStatusUpdate(t, TaskStatus.failed), 'two.gguf');
-      expect(latest('two.gguf').taskId, isNot(stopped.taskId));
-      expect(downloader.calls, <String>['cancel task ${stopped.taskId}']);
-      expect(seen.last.phase, isNot(DownloadPhase.failed));
+      await report((t) => TaskStatusUpdate(t, TaskStatus.canceled), 'one.gguf');
+      await report((t) => TaskStatusUpdate(t, TaskStatus.canceled), 'two.gguf');
+      expect(seen.last.phase, DownloadPhase.waitingForWifi);
+      final queued = downloader.queued.length;
+      // The learner's *Cancel*: the waiting files come back canceled.
+      await reportLatest(
+        (t) => TaskStatusUpdate(t, TaskStatus.canceled),
+        'one.gguf',
+      );
+      await reportLatest(
+        (t) => TaskStatusUpdate(t, TaskStatus.canceled),
+        'two.gguf',
+      );
+      expect(seen.last.phase, DownloadPhase.failed);
+      expect(downloader.queued, hasLength(queued), reason: 'not undone');
     });
 
     test(
