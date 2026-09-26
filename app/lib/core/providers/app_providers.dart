@@ -357,7 +357,10 @@ TtsEngine supertonicTts(Ref ref) {
   final tts = SupertonicTts(
     models: ref.watch(modelRepositoryProvider),
     settings: ref.watch(settingsProvider),
-    cache: SynthesisCache(),
+    // A change of the denoising steps is a change of every clip (#436).
+    cache: SynthesisCache(
+      version: 'supertonic3 · ${OrtSupertonicModel.steps} steps',
+    ),
     downloads: ref
         .watch(modelDownloadsProvider)
         .watch(ModelRepository.voiceModel),

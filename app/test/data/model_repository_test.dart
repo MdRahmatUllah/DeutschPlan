@@ -682,6 +682,26 @@ void main() {
       expect(await cache.read('Haus', voice: 'Anna', speed: 1), <int>[7, 7, 7]);
     });
 
+    test('#436 clips another version made are stale: they go on first use, '
+        'and the same version keeps them', () async {
+      final five = SynthesisCache(support: support, version: '5 steps');
+      await five.write('Haus', voice: 'Anna', speed: 1, bytes: clip(5));
+      final same = SynthesisCache(support: support, version: '5 steps');
+      expect(await same.read('Haus', voice: 'Anna', speed: 1), <int>[5, 5, 5]);
+
+      final eight = SynthesisCache(support: support, version: '8 steps');
+      expect(await eight.read('Haus', voice: 'Anna', speed: 1), isNull);
+      expect(await eight.count(), 0);
+      await eight.write('Haus', voice: 'Anna', speed: 1, bytes: clip(8));
+      expect(
+        await SynthesisCache(
+          support: support,
+          version: '8 steps',
+        ).read('Haus', voice: 'Anna', speed: 1),
+        <int>[8, 8, 8],
+      );
+    });
+
     test('the voice is part of the key', () async {
       await cache.write('Haus', voice: 'Anna', speed: 1, bytes: clip(1));
       expect(await cache.read('Haus', voice: 'Jonas', speed: 1), isNull);
