@@ -27,6 +27,8 @@ abstract interface class ReminderNotifications {
   /// Cancels the reminder of [day]'s date, if one is scheduled.
   Future<void> cancelDay(DateTime day);
 
+  /// Cancels every reminder, scheduled or shown, and nothing else the app
+  /// shows: the model downloads' notification shares it (#509).
   Future<void> cancelAll();
 }
 
@@ -72,12 +74,9 @@ class PlatformReminderNotifications implements ReminderNotifications {
         : null;
   }
 
-  // ponytail: clears every notification the app has, fine while the
-  // reminder is the only one; cancel the pending ids once #156's download
-  // notifications share the app.
   @override
   Future<void> schedule(List<DateTime> at, ReminderCopy copy) async {
-    await _plugin.cancelAll();
+    await cancelAll();
     for (final instant in at) {
       await replace(instant, copy);
     }
@@ -106,6 +105,19 @@ class PlatformReminderNotifications implements ReminderNotifications {
   @override
   Future<void> cancelDay(DateTime day) => _plugin.cancel(id: idFor(day));
 
+  /// #509: not the plugin's `cancelAll`, which is the platform's, every
+  /// notification the app has: a model download's too (#156).
   @override
-  Future<void> cancelAll() => _plugin.cancelAll();
+  Future<void> cancelAll() async {
+    // Only the reminder schedules any.
+    for (final pending in await _plugin.pendingNotificationRequests()) {
+      await _plugin.cancel(id: pending.id);
+    }
+    for (final shown in await _plugin.getActiveNotifications()) {
+      final id = shown.id;
+      if (id != null && (shown.channelId == channel || shown.payload == link)) {
+        await _plugin.cancel(id: id, tag: shown.tag);
+      }
+    }
+  }
 }
