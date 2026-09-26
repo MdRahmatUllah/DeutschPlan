@@ -3,11 +3,13 @@ import 'dart:async';
 import 'package:deutschplan/core/components/dp_button.dart';
 import 'package:deutschplan/core/components/dp_feedback.dart';
 import 'package:deutschplan/core/components/dp_speaker_button.dart';
+import 'package:deutschplan/core/typography/dp_text.dart';
 import 'package:deutschplan/core/providers/app_providers.dart';
 import 'package:deutschplan/core/theme/app_theme.dart';
 import 'package:deutschplan/core/theme/dp_surface.dart';
 import 'package:deutschplan/domain/answer_check.dart';
 import 'package:deutschplan/domain/quiz_builder.dart';
+import 'package:deutschplan/features/quiz/quiz_item_view.dart' show GermanWord;
 import 'package:deutschplan/features/quiz/quiz_result_screen.dart';
 import 'package:deutschplan/features/quiz/quiz_screen.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
@@ -598,11 +600,12 @@ void main() {
       QuizItem item, {
       required TextScaler textScaler,
       double width = 390,
+      double height = 731,
       double keyboard = 300,
       Locale? locale,
     }) async {
       tester.view
-        ..physicalSize = Size(width, 731) * 3
+        ..physicalSize = Size(width, height) * 3
         ..devicePixelRatio = 3
         ..padding = const FakeViewPadding(top: 24 * 3);
       addTearDown(tester.view.reset);
@@ -634,6 +637,86 @@ void main() {
       expected: 'hat sich benommen',
       form: FormLabel.perfekt,
     );
+    // #574: a 360 × 640 budget phone and its 280 dp keyboard. Typing past
+    // 130 % what is asked is one role smaller (#571's rule) and the gaps
+    // around the field close to 4 dp; then a long meaning over its Bangla
+    // (78-82 dp under the strip before) shows whole too.
+    for (final item in <QuizItem>[wraps, withHint, threeLines, benehmen]) {
+      for (final percent in <int>[200, 150]) {
+        for (final lang in <String>['en', 'bn']) {
+          testWidgets('#574 ${item.wordUid} in $lang at $percent % on a 360 × '
+              '640 phone with the keyboard up: what is asked is one role '
+              "smaller and shows whole above the field; its role is back at "
+              "the keyboard's going", (tester) async {
+            await typing(
+              tester,
+              item,
+              textScaler: AndroidTextScaler(percent / 100),
+              width: 360,
+              height: 640,
+              keyboard: 280,
+              locale: Locale(lang),
+            );
+            final t = lang == 'bn' ? bn : l10n;
+            final asked = item.form == null
+                ? item.prompt
+                : t.quizFormPerfekt(item.prompt);
+            DpTextRole role() => tester
+                .widget<DpText>(
+                  find.ancestor(
+                    of: find.text(asked),
+                    matching: find.byType(DpText),
+                  ),
+                )
+                .role;
+            expect(role(), DpTextRole.title, reason: 'a role smaller');
+            final room = tester.getRect(find.byType(ListView));
+            final lines = <Finder>[
+              find.text(asked),
+              if (item.hint case final hint?) find.text(hint),
+            ];
+            for (final line in lines) {
+              expect(
+                tester.getRect(line).top,
+                greaterThanOrEqualTo(room.top),
+                reason: 'line ${lines.indexOf(line) + 1} is under the strip',
+              );
+            }
+            expect(
+              tester.getRect(find.byType(TextField)).bottom,
+              lessThanOrEqualTo(room.bottom),
+              reason: 'the field shows whole',
+            );
+
+            tester.view.resetViewInsets();
+            await tester.pumpAndSettle();
+            expect(role(), DpTextRole.headline, reason: 'its own role');
+          });
+        }
+      }
+    }
+
+    testWidgets("#574 Check on the keys at 200 % on a 360 × 640 phone: the "
+        "verdict shows in the window, not under it", (tester) async {
+      await typing(
+        tester,
+        threeLines,
+        textScaler: AndroidTextScaler(2),
+        width: 360,
+        height: 640,
+        keyboard: 280,
+      );
+      await tester.enterText(find.byType(TextField), 'verantwortlich');
+      await tester.pumpAndSettle();
+      await tester.tap(find.bySemanticsLabel(l10n.quizCheck));
+      await tester.pumpAndSettle();
+      final room = tester.getRect(find.byType(ListView));
+      final verdict = tester.getRect(find.byType(DpVerdictRow));
+      expect(verdict.top, greaterThanOrEqualTo(room.top));
+      expect(verdict.bottom, lessThanOrEqualTo(room.bottom));
+      expect(find.widgetWithText(DpButton, l10n.practiceNext), findsOneWidget);
+    });
+
     for (final item in <QuizItem>[wraps, withHint, threeLines, benehmen]) {
       for (final lang in <String>['en', 'bn']) {
         testWidgets('#561 #568 ${item.wordUid} in $lang: at 200 % on a 411 dp '
@@ -808,6 +891,70 @@ void main() {
       );
     });
 
+    // #574, agent-0's review: what still doesn't fit scrolls, field
+    // first (#573). On a 600 dp phone the long meaning over its Bangla is
+    // 33-37 dp under the strip even a role smaller: the field shows, and a
+    // drag shows the whole prompt while the field keeps the keyboard.
+    for (final lang in <String>['en', 'bn']) {
+      testWidgets('#574 in $lang at 200 % on a 360 × 600 phone the prompt '
+          'that still does not fit scrolls: the field first, then the whole '
+          'prompt after a drag, the field keeping the keyboard', (
+        tester,
+      ) async {
+        await typing(
+          tester,
+          threeLines,
+          textScaler: AndroidTextScaler(2),
+          width: 360,
+          height: 600,
+          keyboard: 280,
+          locale: Locale(lang),
+        );
+        Rect room() => tester.getRect(find.byType(ListView));
+        bool focused() => tester
+            .widget<EditableText>(find.byType(EditableText))
+            .focusNode
+            .hasFocus;
+        final field = tester.getRect(find.byType(TextField));
+        expect(field.top, greaterThanOrEqualTo(room().top), reason: 'field');
+        expect(field.bottom, lessThanOrEqualTo(room().bottom), reason: 'field');
+        expect(
+          tester.getRect(find.text(threeLines.prompt)).top,
+          lessThan(room().top),
+          reason: 'it does not fit, so this case tests the scroll',
+        );
+
+        // Drawn down until the prompt's top reaches the list's, as a learner
+        // reading it would; further, the chips above it come back.
+        final under =
+            room().top - tester.getRect(find.text(threeLines.prompt)).top;
+        await tester.drag(find.byType(ListView), Offset(0, under));
+        await tester.pumpAndSettle();
+        expect(
+          tester.getRect(find.text(threeLines.prompt)).top,
+          greaterThanOrEqualTo(room().top - 0.5),
+          reason: 'the prompt from its top',
+        );
+        expect(
+          tester.getRect(find.text(threeLines.hint!)).bottom,
+          lessThanOrEqualTo(room().bottom),
+          reason: 'to its last line',
+        );
+        expect(focused(), isTrue, reason: 'the field kept the keyboard');
+      });
+    }
+
+    testWidgets('#574 a German word to give the meaning of (DE → meaning) is '
+        "a role smaller while typing past 130 %, its own at the keyboard's "
+        'going', (tester) async {
+      await typing(tester, haus, textScaler: AndroidTextScaler(2));
+      GermanWord word() => tester.widget<GermanWord>(find.byType(GermanWord));
+      expect(word().role, DpTextRole.title);
+      tester.view.resetViewInsets();
+      await tester.pumpAndSettle();
+      expect(word().role, DpTextRole.headline);
+    });
+
     testWidgets('at 100 % the keyboard leaves the header and caption be', (
       tester,
     ) async {
@@ -819,6 +966,19 @@ void main() {
         reason: 'Check keeps its row (#568)',
       );
       expect(find.text(l10n.quizYourAnswer.toUpperCase()), findsOneWidget);
+      // #574: at 130 % and below what is asked keeps its role.
+      expect(
+        tester
+            .widget<DpText>(
+              find.ancestor(
+                of: find.text(vertrag.prompt),
+                matching: find.byType(DpText),
+              ),
+            )
+            .role,
+        DpTextRole.headline,
+        reason: 'its full role at 100 %',
+      );
     });
   });
 
