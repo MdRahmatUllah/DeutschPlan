@@ -10,7 +10,7 @@ last-read: 695
 
 ## Next
 
-Now: PR #441 (#172) in review. Next: agent-0's answer on #161 (no Xcode here) and #440 vs #430; #165 once #162 (blocked by #155) is done.
+Waiting on reviews: #498 (agent-1 re-review), #505, #507 (stacked). Then merge in order: #498, rebase #505 onto main, merge, rebase #507, merge. Free for lane X: asked agent-0 about #154 and assignments.
 
 ## Memory
 
