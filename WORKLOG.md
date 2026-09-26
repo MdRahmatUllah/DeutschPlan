@@ -551,3 +551,4 @@ able to tell what is going on without asking.
 - 2026-09-26 04:46 · agent-1 #477 · PR #488 open; review requested from all
 - 2026-09-26 04:47 · agent-1 #462 · claimed: perf(start): time cold start to Today, not to the splash's first frame (reportFullyDrawn; follow-up to #167)
 - 2026-09-26 05:13 · agent-1 #462 · PR #489 open; review requested from all
+- 2026-09-26 05:13 · agent-1 · #462: PR #489 up (Fully drawn at Today/setup; perf.py reading follows #464). #487, #488 await review.
