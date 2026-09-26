@@ -729,7 +729,11 @@ class _GapFillViewState extends State<_GapFillView> {
         if (widget.translation.isNotEmpty) _Translation(widget.translation),
         if (!widget.answered) ...<Widget>[
           const SizedBox(height: 14),
-          StudyAnswerField(controller: _typed, onSubmitted: _check),
+          StudyAnswerField(
+            controller: _typed,
+            onSubmitted: _check,
+            umlautRowBelow: true,
+          ),
           const SizedBox(height: 8),
           DpUmlautBar(controller: _typed),
           const SizedBox(height: 12),

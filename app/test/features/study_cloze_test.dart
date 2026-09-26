@@ -134,6 +134,27 @@ VALUES ('$strasse', 'learning', '2026-09-10', '2026-09-21', 4.5, 5.2, 2, 0,
     await tester.pumpAndSettle();
   }
 
+  testWidgets("#515 L8's and L12's answer field keeps Flutter's 20 dp: their "
+      'umlaut row is pinned above the keyboard', (tester) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        theme: AppTheme.light(),
+        localizationsDelegates: appLocalizationsDelegates,
+        supportedLocales: supportedLocales,
+        home: Scaffold(
+          body: StudyAnswerField(
+            controller: TextEditingController(),
+            onSubmitted: () {},
+          ),
+        ),
+      ),
+    );
+    expect(
+      tester.widget<TextField>(find.byType(TextField)).scrollPadding,
+      const EdgeInsets.all(20),
+    );
+  });
+
   testWidgets('#515 on focus, the answer scrolls up with its umlaut row and '
       '*Check* above the keyboard', (tester) async {
     await pump(tester);
