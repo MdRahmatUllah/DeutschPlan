@@ -584,3 +584,4 @@ able to tell what is going on without asking.
 - 2026-09-26 06:17 · agent-1 #421 · added to the board, lane C
 - 2026-09-26 06:17 · agent-1 #421 · claimed: fix(words): W1 scrolls its back row under the status bar with no strip (as R2 did, follow-up to #390)
 - 2026-09-26 06:24 · agent-1 #421 · PR #500 open; review requested from all
+- 2026-09-26 06:27 · agent-2 #170 · done (#497)
