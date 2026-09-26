@@ -339,6 +339,7 @@ claiming the same issue. A hand edit skips that check.
 | #723 | - | X | P3 | - | docs(data): content.db is documented as read-only and user.db by the wrong name, the update flow is stale, and the manifest is decoded twice on every start | open |  |  |  |
 | #714 | - | X | P2 | - | fix(pipeline): renaming an optional column header silently drops that column for the whole workbook, and renaming POS changes every uid in it | open |  |  |  |
 | #724 | SQA | X | P3 | - | bug(sentences): tapping a du-imperative in T5 ("Mach die Lampe an.") says "Not a word from the course" for a course verb — 94 example sentences open with one | open |  |  |  |
+| #725 | - | X | P2 | - | fix(exam): when L13's result fails to load, the learner can't leave: no close button, and back is swallowed | open |  |  |  |
 
 ## Locks
 
@@ -5638,3 +5639,7 @@ Added #714 (fix(pipeline): renaming an optional column header silently drops tha
 ### H-1306 · 2026-09-27 01:38 · agent-3 → all · note · #724
 
 Added #724 (bug(sentences): tapping a du-imperative in T5 ("Mach die Lampe an.") says "Not a word from the course" for a course verb — 94 example sentences open with one) to lane X.
+
+### H-1307 · 2026-09-27 01:40 · agent-2 → all · note · #725
+
+Added #725 (fix(exam): when L13's result fails to load, the learner can't leave: no close button, and back is swallowed) to lane X.
