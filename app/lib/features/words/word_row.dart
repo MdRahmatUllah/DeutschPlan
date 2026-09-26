@@ -17,7 +17,8 @@ import 'package:material_ui/material_ui.dart';
 /// A word in a list — T4's backlog, L2's Words tab, L6: the headword in its
 /// article's colour, its meaning, its status chip and a speaker, 64 dp on
 /// the card, with a hairline under all but the [last]. A suspended word is
-/// greyed rather than hidden (BR-STATUS-03).
+/// greyed rather than hidden (BR-STATUS-03). Past 130 % text it stacks, so
+/// its rows differ in height: a list takes no `prototypeItem` there (#550).
 ///
 /// Only the drawing: what a tap or a long press does is the list's.
 class WordRow extends StatelessWidget {
@@ -48,42 +49,60 @@ class WordRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final tokens = context.tokens;
+    // Past 130 % text the chips and the speaker took half the row, and cut
+    // the headword to "die Gebu…" and the meaning at a word, with no "…"
+    // (#550): the two take the row's width, wrapping (the headword at its
+    // syllables), and the chips and the speaker go on a line under them.
+    final large = DpScript.large(context);
+    final text = <Widget>[
+      DpHeadword(
+        word.word.german,
+        article: word.word.article,
+        plural: word.word.forms,
+        role: DpTextRole.bodyLarge,
+        weight: 600,
+        maxLines: large ? null : 1,
+      ),
+      const SizedBox(height: 2),
+      DpText(
+        meaning,
+        role: DpTextRole.label,
+        weight: 400,
+        maxLines: large ? null : 1,
+        color: tokens.color.textSecondary,
+      ),
+    ];
+    final chips = <Widget>[
+      if (step case final step?) ...<Widget>[
+        DpChip(label: step, kind: DpChipKind.step),
+        const SizedBox(width: 6),
+      ],
+      WordStatusChip(word.status),
+    ];
+    final play = WordPlayButton(word: spokenForm(word.word));
 
-    final content = Row(
-      children: <Widget>[
-        Expanded(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+    final content = large
+        ? Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              DpHeadword(
-                word.word.german,
-                article: word.word.article,
-                plural: word.word.forms,
-                role: DpTextRole.bodyLarge,
-                weight: 600,
-                maxLines: 1,
-              ),
-              const SizedBox(height: 2),
-              DpText(
-                meaning,
-                role: DpTextRole.label,
-                weight: 400,
-                maxLines: 1,
-                color: tokens.color.textSecondary,
-              ),
+              ...text,
+              Row(children: <Widget>[...chips, const Spacer(), play]),
             ],
-          ),
-        ),
-        const SizedBox(width: 10),
-        if (step case final step?) ...<Widget>[
-          DpChip(label: step, kind: DpChipKind.step),
-          const SizedBox(width: 6),
-        ],
-        WordStatusChip(word.status),
-        WordPlayButton(word: spokenForm(word.word)),
-      ],
-    );
+          )
+        : Row(
+            children: <Widget>[
+              Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: text,
+                ),
+              ),
+              const SizedBox(width: 10),
+              ...chips,
+              play,
+            ],
+          );
 
     // At least the artboard's 64 dp; taller at large text, so the meaning
     // line isn't cut mid-glyph (#314).

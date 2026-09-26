@@ -149,4 +149,51 @@ void main() {
       await tester.pumpAndSettle();
     },
   );
+
+  // #550: long words at 200 %. A row stacks: its whole headword, broken at
+  // a syllable, and its whole meaning over its chips and speaker, never
+  // "die Gebu…" and "birth". The text audit checks it at 150 and 200 %.
+  goldenTest(
+    'search_long_200',
+    overrides: [
+      searchResultsProvider.overrideWith(
+        (ref, query) => Stream.value(
+          SearchView(
+            words: <SearchRow>[
+              searchRow(
+                'geburtsurkunde',
+                article: 'die',
+                german: 'Geburtsurkunde',
+                meaning: 'birth certificate',
+                tier: SearchTier.exact,
+                step: 'A2.2',
+              ),
+              searchRow(
+                'vorsorgeuntersuchung',
+                article: 'die',
+                german: 'Vorsorgeuntersuchung',
+                meaning: 'preventive check-up',
+                tier: SearchTier.similar,
+                step: 'B1.2',
+                status: WordStatus.learning,
+              ),
+            ],
+            sentences: const <SentenceHit>[],
+          ),
+        ),
+      ),
+      recentSearchesProvider.overrideWith(() => StubRecentSearches(const [])),
+      myWordsProvider.overrideWith((ref) => Stream.value(const <MyWord>[])),
+      fakeVoice(FakeTts()),
+    ],
+    builder: (_) => const SearchScreen(),
+    act: (tester) async {
+      await tester.enterText(find.byType(TextField), 'Geburtsurkunde');
+      await tester.pump(SearchScreen.debounce);
+      await tester.pumpAndSettle();
+    },
+    modes: const <GoldenMode>[GoldenMode.light],
+    devices: const <GoldenDevice>[GoldenDevice.phone],
+    textScale: 2,
+  );
 }

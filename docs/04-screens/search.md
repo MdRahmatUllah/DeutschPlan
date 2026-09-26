@@ -6,7 +6,7 @@
 
 **Reached from.** Search tab; search icon on L2/L6 (pre-filtered). **Leads to.** W1 (row), W2 (compare rows), R2 (*Add a word I found* / *Add "…" as my word*), in-app browser (web chips).
 
-**Layout.** Raspberry header with the search field "Search German, English or Bangla" (clear button; removable filter chip when pre-filtered). Web row (when a query exists): Duden · DWDS · Wiktionary · Linguee · Google chips. Results grouped: **Exact match · 1**, **Starts with · 2**, **Similar words · 1**, **In sentences · 5** (sentence with the query highlighted, translation, "die Straße · A1.1"). Rows: article-coloured headword, meaning, step chip, status chip, play icon.
+**Layout.** Raspberry header with the search field "Search German, English or Bangla" (clear button; removable filter chip when pre-filtered). Web row (when a query exists): Duden · DWDS · Wiktionary · Linguee · Google chips. Results grouped: **Exact match · 1**, **Starts with · 2**, **Similar words · 1**, **In sentences · 5** (sentence with the query highlighted, translation, "die Straße · A1.1"). Rows: article-coloured headword, meaning, step chip, status chip, play icon. Past 130 % text a row stacks: the headword and meaning whole, the chips and play icon on a line under them (#550).
 
 **Idle.** "Recent" chips (Clear), "My words · 3" list ("das Pfandflasche — deposit bottle · Rewe receipt · seen 3× · My word"), *Add a word I found*.
 
@@ -22,7 +22,7 @@
 **Filled in by #138 (idle):**
 - **FR-R1-04.** A search counts once the learner commits to it: the search key, a result or web chip opened, or a recent chip tapped. A pause in typing doesn't count. The same search again moves to the front, compared without case, and the oldest past ten goes. `recent_searches` is a JSON list, newest first. *Clear* forgets them all, and a screen reader hears it as "Clear recent searches".
 - A recent chip fills the field and searches at once.
-- **My words** lists `custom_words` newest first: the headword with its article's colour, then "meaning · where it was seen · seen N×". The count shows from the second time. A row opens R2 on that word (`/search/add/:id`). A screen reader hears each row as one button: its headword, its line and *My word* (#445).
+- **My words** lists `custom_words` newest first: the headword with its article's colour, then "meaning · where it was seen · seen N×". The count shows from the second time. A row opens R2 on that word (`/search/add/:id`). A screen reader hears each row as one button: its headword, its line and *My word* (#445). Past 130 % text it stacks as a result row does (#550).
 - With no recents or no words of one's own, that heading is left out, and *Add a word I found* (R2, `/search/add`) is always there.
 
 **Filled in by #139 (no results):**

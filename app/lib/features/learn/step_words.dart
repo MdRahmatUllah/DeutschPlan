@@ -207,15 +207,16 @@ class _StepWordsTabState extends ConsumerState<StepWordsTab> {
                 )
               : WordListPanel(
                   // FR-L2-02: built as it scrolls, every row the height of
-                  // the first: 64 dp, or more at large text (#314). The key
-                  // keeps the place across a trip to W1 and back.
+                  // the first: 64 dp, or more at large text (#314). Past
+                  // 130 % a row stacks and wraps to its own height (#550).
+                  // The key keeps the place across a trip to W1 and back.
                   child: ListView.builder(
                     key: PageStorageKey<String>('step-words-$code'),
                     padding: EdgeInsets.zero,
                     // Its panel ends at the last row (#282): the extent is
                     // the prototype's times the count, so nothing more is built.
                     shrinkWrap: true,
-                    prototypeItem: shown.isEmpty
+                    prototypeItem: shown.isEmpty || DpScript.large(context)
                         ? null
                         : WordRow(
                             word: shown.first.word,

@@ -252,6 +252,52 @@ void main() {
       );
       expect(heading(l10n.searchExact(1)), findsNothing);
     });
+
+    testWidgets('FR-R1-01 #550 at 200 % a long word shows its whole headword '
+        'and meaning, not "die Gebu…" and "birth": its chips and speaker go '
+        'under them', (tester) async {
+      textAt(tester, 2);
+      await pump(
+        tester,
+        extra: <Override>[
+          searchResultsProvider.overrideWith(
+            (ref, args) => Stream.value(
+              SearchView(
+                words: <SearchRow>[
+                  searchRow(
+                    'geburtsurkunde',
+                    article: 'die',
+                    german: 'Geburtsurkunde',
+                    meaning: 'birth certificate',
+                    tier: SearchTier.exact,
+                    step: 'A2.2',
+                  ),
+                ],
+                sentences: const <SentenceHit>[],
+              ),
+            ),
+          ),
+        ],
+      );
+      await type(tester, 'Geburtsurkunde');
+      expect(tester.takeException(), isNull);
+      final row = find.byType(WordRow);
+      expectAllLinesShown(tester, within: row);
+      expectNothingClipped(tester, within: row);
+      expectNoWordBroken(tester, within: row);
+      final meaning = find.descendant(
+        of: row,
+        matching: find.text('birth certificate'),
+      );
+      expect(
+        tester
+            .getTopLeft(
+              find.descendant(of: row, matching: find.byType(WordStatusChip)),
+            )
+            .dy,
+        greaterThanOrEqualTo(tester.getBottomLeft(meaning).dy),
+      );
+    });
   });
 
   testWidgets('FR-R1-01 a failed search says so, and Retry asks again', (
@@ -586,6 +632,38 @@ void main() {
       expect(data.flagsCollection.isButton, isTrue);
       expect(data.hasAction(SemanticsAction.tap), isTrue);
       semantics.dispose();
+    });
+
+    testWidgets('FR-R1-04 #550 at 200 % a My words row shows its whole '
+        'headword and line, its chip and chevron under them', (tester) async {
+      textAt(tester, 2);
+      await pump(tester);
+      await addWord(
+        tester,
+        german: 'Wohnungsgeberbestätigung',
+        article: 'die',
+        meaning: "landlord's confirmation",
+        where: 'Bürgeramt',
+        seen: 3,
+      );
+      expect(tester.takeException(), isNull);
+      const line = "landlord's confirmation · Bürgeramt · seen 3×";
+      final row = find.ancestor(
+        of: find.text(line),
+        matching: find.byType(MergeSemantics),
+      );
+      expectAllLinesShown(tester, within: row);
+      expectNothingClipped(tester, within: row);
+      expectNoWordBroken(tester, within: row);
+      expect(
+        tester
+            .getTopLeft(
+              find.descendant(of: row, matching: find.text(l10n.searchMyWord)),
+            )
+            .dy,
+        greaterThanOrEqualTo(tester.getBottomLeft(find.text(line)).dy),
+        reason: 'the chip goes under the words',
+      );
     });
 
     testWidgets('#314 at 200 % text the headings and their notes fit, and '

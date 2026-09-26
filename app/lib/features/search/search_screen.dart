@@ -935,6 +935,32 @@ class _MyWordRow extends StatelessWidget {
       // Once is every word; the count says something from the second time.
       if (word.timesSeen > 1) l10n.searchSeen(word.timesSeen),
     ].join(' · ');
+    // Past 130 % text, as WordRow does (#550): the words whole over a line
+    // with the chip and the chevron, not "das Pfand…" and a line cut short.
+    final large = DpScript.large(context);
+    final text = <Widget>[
+      DpHeadword(
+        word.german,
+        article: word.article,
+        role: DpTextRole.bodyLarge,
+        weight: 600,
+        maxLines: large ? null : 1,
+      ),
+      const SizedBox(height: 2),
+      DpText(
+        line,
+        role: DpTextRole.label,
+        weight: 400,
+        maxLines: large ? null : 1,
+        color: tokens.color.textSecondary,
+      ),
+    ];
+    final chip = DpChip(label: l10n.searchMyWord, kind: DpChipKind.status);
+    final chevron = Icon(
+      Icons.chevron_right,
+      size: 22,
+      color: tokens.color.textSecondary,
+    );
 
     // One node (#445, the #315 pattern): the row's words, a button, and the
     // tap. Apart, a screen reader found a nameless button over the row.
@@ -954,41 +980,29 @@ class _MyWordRow extends StatelessWidget {
                   ? null
                   : Border(bottom: BorderSide(color: tokens.surface.outline)),
             ),
-            child: Row(
-              children: <Widget>[
-                Expanded(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
+            child: large
+                ? Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      DpHeadword(
-                        word.german,
-                        article: word.article,
-                        role: DpTextRole.bodyLarge,
-                        weight: 600,
-                        maxLines: 1,
+                      ...text,
+                      Row(children: <Widget>[chip, const Spacer(), chevron]),
+                    ],
+                  )
+                : Row(
+                    children: <Widget>[
+                      Expanded(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: text,
+                        ),
                       ),
-                      const SizedBox(height: 2),
-                      DpText(
-                        line,
-                        role: DpTextRole.label,
-                        weight: 400,
-                        maxLines: 1,
-                        color: tokens.color.textSecondary,
-                      ),
+                      const SizedBox(width: 10),
+                      chip,
+                      const SizedBox(width: 4),
+                      chevron,
                     ],
                   ),
-                ),
-                const SizedBox(width: 10),
-                DpChip(label: l10n.searchMyWord, kind: DpChipKind.status),
-                const SizedBox(width: 4),
-                Icon(
-                  Icons.chevron_right,
-                  size: 22,
-                  color: tokens.color.textSecondary,
-                ),
-              ],
-            ),
           ),
         ),
       ),
