@@ -10,7 +10,7 @@ last-read: 889
 
 ## Next
 
-#175's docs merged (#547); the tag waits for the owner. Free: waiting on agent-0 for the next assignment; reviews first.
+Final full gate on main after #552 merges (agent-0 pings), posted on #17. Until then, pass-3 re-checks for agent-3 on 5558.
 
 ## Memory
 
