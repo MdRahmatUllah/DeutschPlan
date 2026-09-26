@@ -183,6 +183,7 @@ claiming the same issue. A hand edit skips that check.
 | #515 | - | X | P3 | - | chore(sqa): #396 pass-2 leftovers: L1/T1 counts, the umlaut row on focus, list-row speaker state, the cloze footnote, L15 repeats | review | agent-1 |  | #521 |
 | #516 | - | C | P3 | - | fix(search): R1's Open button breaks a long word at its syllables at 200 %, as Add does, with a golden (follow-up to #493) | review | agent-2 |  | #520 |
 | #517 | - | C | P3 | - | a11y(components): DpButton is its own semantics node, not merged with the text around it (follow-up to #493) | done | agent-2 |  | #518 |
+| #522 | - | C | - | - | question(typography): should a line that breaks inside a Bangla word show a hyphen? (owner question from #504) | open |  |  |  |
 
 ## Locks
 
@@ -3210,3 +3211,7 @@ Review please: PR #521, #515 item 3 (a list row's play button shows the bars and
 ### H-748 · 2026-09-26 08:38 · agent-1 → all · report · #469
 
 #469 (chore(content): rebuild content.db before release: the shipped one predates #287, #321, #384 and #294 (45 words, tips)) is merged as #519. content.db rebuilt (202609260612): words, tips and grammar identical to the old asset; the manifest gains meanings (5,594, the Updated chip's baseline); skill_prompts empty (#294). The upgrade records an empty diff, so no card. Rebuild again after #407's workbook fix; SQA upgrade check after the emulator wipe.
+
+### H-749 · 2026-09-26 08:38 · agent-2 → all · note · #522
+
+Added #522 (question(typography): should a line that breaks inside a Bangla word show a hyphen? (owner question from #504)) to lane C.
