@@ -430,6 +430,86 @@ void main() {
     });
   });
 
+  group("#419 the lines are the headword's own", () {
+    // Where each drawn line ends: after the headword's own newline, or the
+    // paragraph broke it by itself, at a syllable with no "-" or anywhere.
+    List<String> lineEnds(WidgetTester tester) {
+      final paragraph = tester.renderObject<RenderParagraph>(
+        find.byType(RichText),
+      );
+      final text = paragraph.text.toPlainText(includeSemanticsLabels: false);
+      final painter = TextPainter(
+        text: paragraph.text,
+        textDirection: TextDirection.ltr,
+        textScaler: paragraph.textScaler,
+      )..layout(maxWidth: paragraph.size.width);
+      addTearDown(painter.dispose);
+      final ends = <String>[];
+      var at = 0;
+      while (at < text.length) {
+        final line = painter.getLineBoundary(TextPosition(offset: at));
+        if (line.end <= at) break;
+        final end = line.end < text.length && text[line.end] == '\n'
+            ? line.end + 1
+            : line.end;
+        if (end < text.length) ends.add(text.substring(at, end));
+        at = end;
+      }
+      return ends;
+    }
+
+    testWidgets('#419 at every width, each line ends where the headword '
+        'ended it, never at a bare soft hyphen', (tester) async {
+      // From the width the widest syllable, "nungs-", fits: narrower, one
+      // syllable is wider than the box, and only a letter break is left.
+      for (var width = 170.0; width <= 420; width += 7) {
+        await pump(
+          tester,
+          SizedBox(
+            width: width,
+            child: const DpHeadword(
+              'Wohnungsgeberbestaetigung',
+              article: 'die',
+            ),
+          ),
+        );
+        for (final line in lineEnds(tester)) {
+          expect(line, endsWith('\n'), reason: 'at $width: "$line"');
+        }
+      }
+    });
+
+    testWidgets('#419 a word too wide for its line breaks at a syllable, '
+        'whatever its length: "selbstbewusst" (13) at display size', (
+      tester,
+    ) async {
+      await pump(
+        tester,
+        const SizedBox(width: 220, child: DpHeadword('selbstbewusst')),
+      );
+      final lines = lineEnds(tester);
+      expect(lines, isNotEmpty, reason: 'too wide for one line');
+      for (final line in lines) {
+        expect(line, endsWith('-\n'));
+      }
+    });
+
+    testWidgets("#419 its intrinsic width is the word's on one line, not the "
+        "last layout's lines", (tester) async {
+      await pump(
+        tester,
+        const SizedBox(
+          width: 150,
+          child: DpHeadword('Geschwindigkeitsbegrenzung', article: 'die'),
+        ),
+      );
+      final box =
+          tester.renderObject<RenderParagraph>(find.byType(RichText)).parent!
+              as RenderBox;
+      expect(box.getMaxIntrinsicWidth(double.infinity), greaterThan(300));
+    });
+  });
+
   group('#419 a hyphen in running text too', () {
     testWidgets('#419 DpText: a line that ends at a syllable shows "-", and '
         'a screen reader hears the words as they are, in their voice', (

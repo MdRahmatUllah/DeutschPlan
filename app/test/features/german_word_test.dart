@@ -58,10 +58,11 @@ void main() {
     expect(lines.length, greaterThan(1), reason: 'too long for one line');
     for (final end in lines.take(lines.length - 1)) {
       final before = text[end - 1];
-      // A space, a soft hyphen, or the line the headword drew itself: at a
-      // space, or after its "-" (#419).
+      // Only where the headword ended the line itself (#419): at a space,
+      // or after its "-". Never a bare soft hyphen, the paragraph's own
+      // break, which draws no "-".
       expect(
-        before == ' ' || before == DpScript.softHyphen || before == '\n',
+        before == '\n',
         isTrue,
         reason: 'a line ends in "${text.substring(0, end)}"',
       );
