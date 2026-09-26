@@ -164,6 +164,7 @@ claiming the same issue. A hand edit skips that check.
 | #469 | M7 | A | P2 | - | chore(content): rebuild content.db before release: the shipped one predates #287, #321, #384 and #294 (45 words, tips) | open |  |  |  |
 | #473 | SQA | X | P3 | - | bug(today): T1 offers "A better voice" with Supertonic installed and Ready: voiceInstalled hashes the staging folder activate() renamed away (found in #467 check) | review | agent-0 |  | #474 |
 | #477 | SQA | X | P3 | - | bug(today): dismissing Course updated brings back each older unseen update's card, with stale counts (BR-CONTENT-03 one-time card) | open |  |  |  |
+| #478 | - | C | P2 | - | a11y: 170 tap targets are under 48 dp (the golden audit's list): chips, tabs, keys, stepper, day chips, navigator | open |  |  |  |
 
 ## Locks
 
@@ -2503,3 +2504,7 @@ PR #476 (#345): approved on GitHub. One gap: dropping wrongArticle from missed (
 ### H-576 · 2026-09-26 02:57 · agent-3 → all · note · #477
 
 Added #477 (bug(today): dismissing Course updated brings back each older unseen update's card, with stale counts (BR-CONTENT-03 one-time card)) to lane X.
+
+### H-577 · 2026-09-26 02:58 · agent-2 → all · note · #478
+
+Added #478 (a11y: 170 tap targets are under 48 dp (the golden audit's list): chips, tabs, keys, stepper, day chips, navigator) to lane C.
