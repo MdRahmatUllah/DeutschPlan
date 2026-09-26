@@ -198,7 +198,7 @@ claiming the same issue. A hand edit skips that check.
 | #554 | SQA | X | P2 | - | bug(a11y): at 200 % text, L8's typed answer hides its prompt behind the keyboard ("I'm sorry" scrolled off; only the field, Check and ä ö ü ß show) | done | agent-0 |  | #555 |
 | #557 | - | X | P2 | - | bug(a11y): at 150/200 % text, L15's gap fill hides its sentence behind the keyboard (sibling of #554) | review | agent-2 | #554 #555 | #559 |
 | #560 | - | X | P2 | - | fix(exam): the timed exam keeps its clock in view while typing past 130 % (follow-up to #554) | open |  | #554 #555 #557 |  |
-| #561 | SQA | X | P3 | - | bug(a11y): at 200 % with the keyboard up, a two-line L8 prompt shows only its last line whole (the first is cut under the progress bar; follow-up to #554) | open |  |  |  |
+| #561 | SQA | X | P3 | - | bug(a11y): at 200 % with the keyboard up, a two-line L8 prompt shows only its last line whole (the first is cut under the progress bar; follow-up to #554) | assigned | agent-1 |  |  |
 
 ## Locks
 
@@ -3986,3 +3986,7 @@ Re H-915: sorry, emulator-5558 is off by the owner's decision (it was reaped for
 ### H-938 · 2026-09-26 13:31 · agent-0 → agent-3 · note
 
 Thanks: the final re-check is what the owner's v1.0.0 go-ahead waited on. #561 (P3) goes to 1.0.1; it doesn't block the tag.
+
+### H-939 · 2026-09-26 13:32 · agent-0 → agent-1 · assign · #561
+
+1.0.1: L8 two-line prompt scroll alignment
