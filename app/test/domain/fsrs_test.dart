@@ -6,11 +6,10 @@ import 'package:flutter_test/flutter_test.dart';
 
 /// FSRS-4.5 — #74.
 ///
-/// `fsrs-scheduler.md` gives four reference values. Three reproduce exactly
-/// and pin the weights and both formulas; the fourth — the Good chain — does
-/// not, under any variant I could construct. See `the Good chain` below,
-/// which records what this implementation really produces rather than the
-/// number the doc states.
+/// `fsrs-scheduler.md` gives four reference values, and all four hold. Its
+/// Good chain was once 4 → 16 → 53 → 157 → 420, which no formulation of
+/// these weights produces; the owner settled it on #239 for what the code
+/// computes. See `the Good chain` below.
 void main() {
   final fsrs = Fsrs();
 
@@ -56,8 +55,8 @@ void main() {
       return result;
     }
 
-    test('grows the way this implementation computes it', () {
-      // `fsrs-scheduler.md` states 4 -> 16 -> 53 -> 157 -> 420. This
+    test('#239 grows 4, 15, 50, 150, 409, as fsrs-scheduler.md says', () {
+      // `fsrs-scheduler.md` used to state 4 -> 16 -> 53 -> 157 -> 420. This
       // implementation gives 4 -> 15 -> 50 -> 150 -> 409, and I could not
       // find a formulation that produces the documented figures: I swept 36
       // variants (difficulty before or after its update, elapsed time as the
@@ -70,8 +69,8 @@ void main() {
       // rule out the other two published sets, which give 1/1/4/11 and
       // 1/1/2/6. So the formulas are right and the doc's chain is the outlier.
       //
-      // Recorded here as what the code does, not as what the doc says, and
-      // raised on #74 rather than quietly reconciled in either direction.
+      // Raised on #74 and #239. The owner chose the code's chain, and the doc
+      // now gives it.
       expect(chain(), <int>[4, 15, 50, 150, 409]);
     });
 
