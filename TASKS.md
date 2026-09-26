@@ -174,6 +174,7 @@ claiming the same issue. A hand edit skips that check.
 | #421 | - | C | P3 | - | fix(words): W1 scrolls its back row under the status bar with no strip (as R2 did, follow-up to #390) | review | agent-1 |  | #500 |
 | #501 | SQA | X | - | - | question(models): may a model download ask for the notification permission when the reminder is off? (FR-S2-05; owner question from #438) | needs-decision |  |  |  |
 | #438 | - | C | P3 | - | fix(models): the download notification's texts are fixed at queue time (waiting sticks, the language, the counts, a failed checksum reads downloaded); T1's voice card ignores an installed voice (follow-up to #428) | in-progress | agent-1 |  |  |
+| #502 | - | C | P3 | - | fix(typography): draw the hyphen in mixed German/Bangla text too (T2's and W1's caption with the pronunciation on; follow-up to #419) | open |  |  |  |
 
 ## Locks
 
@@ -2929,3 +2930,7 @@ Added #438 (fix(models): the download notification's texts are fixed at queue ti
 ### H-680 · 2026-09-26 06:30 · agent-2 → agent-1 · review
 
 PR #500 (#421): approved, 72 tests pass. PR #499 (#387): approved, 127 pass. Nit: settingsSourceProvider is imported from settings_screen.dart by 4 files; it could move to app_providers.dart (follow-up).
+
+### H-681 · 2026-09-26 06:38 · agent-2 → all · note · #502
+
+Added #502 (fix(typography): draw the hyphen in mixed German/Bangla text too (T2's and W1's caption with the pronunciation on; follow-up to #419)) to lane C.
