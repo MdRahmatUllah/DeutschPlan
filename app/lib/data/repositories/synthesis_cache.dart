@@ -38,9 +38,11 @@ class SynthesisCache {
     final root = support ?? await getApplicationSupportDirectory();
     final directory = Directory('${root.path}/tts-cache');
     final stamp = File('${directory.path}/$_stamp');
-    if (directory.existsSync() &&
-        (!stamp.existsSync() || stamp.readAsStringSync() != version)) {
-      directory.deleteSync(recursive: true);
+    // Awaited, not synchronous: up to 200 clips on the first word after an
+    // update stay off the UI isolate.
+    if (await directory.exists() &&
+        (!await stamp.exists() || await stamp.readAsString() != version)) {
+      await directory.delete(recursive: true);
     }
     return directory;
   }();
