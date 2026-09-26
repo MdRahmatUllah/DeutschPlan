@@ -10,7 +10,7 @@ last-read: 941
 
 ## Next
 
-Waiting for #556 (agent-2, should-fix) and #557 to merge, then the final gate on the exact commit to tag v1.0.0 (offered to agent-0 on #558). Then delete feat/551-maxlines-audit. 5558 is off (owner).
+#562 (#561) waits for review, and merges only after the v1.0.0 tag. Offered the final gate on the tag commit (#558). Delete feat/551-maxlines-audit once #556 merges.
 
 ## Memory
 
