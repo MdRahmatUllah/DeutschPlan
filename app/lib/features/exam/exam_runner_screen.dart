@@ -562,15 +562,23 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
               padding: const EdgeInsets.fromLTRB(16, 10, 16, 16),
               child: !(cramped && _timed)
                   ? DpUmlautBar(controller: _field)
-                  : Row(
-                      children: <Widget>[
-                        if (examTypesGerman(item)) ...<Widget>[
-                          Expanded(child: DpUmlautBar(controller: _field)),
-                          const SizedBox(width: 8),
-                        ] else
-                          const Spacer(),
-                        _Clock(seconds: _left, ink: tokens.color.ink),
-                      ],
+                  // The whole bar is the field's, as the keys' row is
+                  // (#532): a tap beside ß, or on the clock, keeps a
+                  // Writing task's keyboard (#529).
+                  : TextFieldTapRegion(
+                      child: Listener(
+                        behavior: HitTestBehavior.opaque,
+                        child: Row(
+                          children: <Widget>[
+                            if (examTypesGerman(item)) ...<Widget>[
+                              Expanded(child: DpUmlautBar(controller: _field)),
+                              const SizedBox(width: 8),
+                            ] else
+                              const Spacer(),
+                            _Clock(seconds: _left, ink: tokens.color.ink),
+                          ],
+                        ),
+                      ),
                     ),
             ),
         ],

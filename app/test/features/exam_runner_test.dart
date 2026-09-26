@@ -940,5 +940,39 @@ void main() {
         expect(clock(), findsNothing);
       });
     }
+
+    testWidgets('#560 Writing at 200 %: a tap beside ß or on the clock keeps '
+        'the keyboard, as a key does (#529, #532)', (tester) async {
+      tester.view
+        ..physicalSize = const Size(390, 731) * 3
+        ..devicePixelRatio = 3
+        ..padding = const FakeViewPadding(top: 24 * 3);
+      addTearDown(tester.view.reset);
+      await pump(
+        tester,
+        stub: StubExamRun(
+          items: <ExamItem>[artboardWriting, ...artboardPaper()],
+          given: <int, String>{},
+        ),
+        textScaler: const AndroidTextScaler(2),
+      );
+      await tester.showKeyboard(find.byType(TextField));
+      tester.view.viewInsets = const FakeViewPadding(bottom: 300 * 3);
+      addTearDown(tester.view.resetViewInsets);
+      await tester.pumpAndSettle();
+      expect(typing(tester), isTrue);
+
+      final keys = tester.getRect(find.byType(DpUmlautBar));
+      final left = tester.getRect(clock());
+      for (final (name, at) in <(String, Offset)>[
+        // The 8 dp between the keys and the clock's chip.
+        ('between ß and the clock', Offset(keys.right + 4, left.center.dy)),
+        ('the clock', left.center),
+      ]) {
+        await tester.tapAt(at);
+        await tester.pumpAndSettle();
+        expect(typing(tester), isTrue, reason: name);
+      }
+    });
   });
 }
