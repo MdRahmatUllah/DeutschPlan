@@ -60,20 +60,18 @@ void main() {
     searchKeyAlt: 'rechnung',
   );
 
-  Widget front(BuildContext context) => ProviderScope(
+  Widget card(Word word) => ProviderScope(
     overrides: [
       settingsProvider.overrideWithValue(settings),
       studySessionProvider(args).overrideWith(_Fourth.new),
       studyWordProvider('r3').overrideWith(
-        (ref) async => const WordWithState(
-          word: rechnung,
-          state: null,
-          status: WordStatus.learning,
-        ),
+        (ref) async =>
+            WordWithState(word: word, state: null, status: WordStatus.learning),
       ),
     ],
     child: StudyScreen(args: args),
   );
+  Widget front(BuildContext context) => card(rechnung);
 
   goldenTest('study_front', builder: front);
   // #165: at 200 % text.
@@ -84,6 +82,30 @@ void main() {
     devices: const <GoldenDevice>[GoldenDevice.phone],
     textScale: 2,
     textAudit: false,
+  );
+  // #419: a headword broken at a syllable shows its "-": at 200 %, as a
+  // learner with large text sees it.
+  goldenTest(
+    'study_front_hyphen_200',
+    builder: (context) => card(
+      const Word(
+        uid: 'r3',
+        sublevelCode: 'B1.2',
+        levelCode: 'B1',
+        seq: 1,
+        seqInSublevel: 1,
+        article: 'die',
+        german: 'Geschwindigkeitsbegrenzung',
+        forms: 'Geschwindigkeitsbegrenzungen',
+        pos: 'noun',
+        english: 'speed limit',
+        searchKey: 'geschwindigkeitsbegrenzung',
+        searchKeyAlt: 'geschwindigkeitsbegrenzung',
+      ),
+    ),
+    modes: const <GoldenMode>[GoldenMode.light],
+    devices: const <GoldenDevice>[GoldenDevice.phone],
+    textScale: 2,
   );
 
   // #363: a word of the learner's own, fourth in the same Revise block. Its

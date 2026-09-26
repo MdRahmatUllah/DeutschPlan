@@ -573,7 +573,9 @@ class _Body extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           DpText(
-            frontCaption(word, l10n, pron: detail.pron),
+            // A long compound's forms break at a syllable, not at any
+            // letter; a shorter word wraps whole (#419).
+            DpScript.allowBreaks(frontCaption(word, l10n, pron: detail.pron)),
             role: DpTextRole.caption,
             color: tokens.color.textSecondary,
           ),

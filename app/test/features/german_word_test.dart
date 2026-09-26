@@ -32,7 +32,8 @@ void main() {
     final paragraph = tester.renderObject<RenderParagraph>(
       find.byType(RichText),
     );
-    final text = paragraph.text.toPlainText();
+    // As drawn: the span's label is the word whole (#419).
+    final text = paragraph.text.toPlainText(includeSemanticsLabels: false);
     expect(text, contains(DpScript.softHyphen));
 
     // The same span at the same width, where the line boundaries can be read.
@@ -47,14 +48,21 @@ void main() {
     while (at < text.length) {
       final line = painter.getLineBoundary(TextPosition(offset: at));
       if (line.end <= at) break;
-      lines.add(line.end);
-      at = line.end;
+      // A line the headword ended itself stops before its newline (#419).
+      final end = line.end < text.length && text[line.end] == '\n'
+          ? line.end + 1
+          : line.end;
+      lines.add(end);
+      at = end;
     }
     expect(lines.length, greaterThan(1), reason: 'too long for one line');
     for (final end in lines.take(lines.length - 1)) {
       final before = text[end - 1];
+      // Only where the headword ended the line itself (#419): at a space,
+      // or after its "-". Never a bare soft hyphen, the paragraph's own
+      // break, which draws no "-".
       expect(
-        before == ' ' || before == DpScript.softHyphen,
+        before == '\n',
         isTrue,
         reason: 'a line ends in "${text.substring(0, end)}"',
       );
