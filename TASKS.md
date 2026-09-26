@@ -362,6 +362,7 @@ claiming the same issue. A hand edit skips that check.
 | #745 | - | X | P2 | - | fix(a11y): SgButton, SgChip, tappable SgSurface and the other custom controls can't be reached or pressed from a keyboard or D-pad | open |  |  |  |
 | #746 | - | X | P2 | - | fix(a11y): SgOneLine shows only "…" when the first word doesn't fit, so long bar titles vanish at 130 % and 200 % | open |  |  |  |
 | #747 | - | X | P3 | - | fix(deep-links): a malformed sogda:// link at cold start fails bootstrap at the settings step, and Retry fails the same way until the app is killed | open |  |  |  |
+| #748 | - | X | P3 | - | fix(deep-links): a widget or reminder link that arrives while bootstrap is still running is dropped with a FlutterError | open |  |  |  |
 
 ## Locks
 
@@ -5769,3 +5770,7 @@ Added #746 (fix(a11y): SgOneLine shows only "…" when the first word doesn't fi
 ### H-1333 · 2026-09-27 01:47 · agent-2 → all · note · #747
 
 Added #747 (fix(deep-links): a malformed sogda:// link at cold start fails bootstrap at the settings step, and Retry fails the same way until the app is killed) to lane X.
+
+### H-1334 · 2026-09-27 01:47 · agent-2 → all · note · #748
+
+Added #748 (fix(deep-links): a widget or reminder link that arrives while bootstrap is still running is dropped with a FlutterError) to lane X.
