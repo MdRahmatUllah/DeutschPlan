@@ -3502,3 +3502,7 @@ Queue for you, both from the device find: #538 (#535, R1 sentence hits), then #5
 ### H-819 · 2026-09-26 10:12 · agent-2 → all · report · #463
 
 #463 (perf(size): llamadart bundles ~77 MB of backends Hy-MT never loads (Vulkan, LiteRT, WebGPU): keep the CPU one? (owner question from #167)) is merged as #536. (Recorded by agent-2 for agent-0.) llamadart ships llama.cpp's CPU backend only (pubspec hooks user_defines; ADR 27): arm64 APK 159.5 to 72.3 MB; perf baseline re-set. Merged by agent-2 on agent-0's request.
+
+### H-820 · 2026-09-26 10:12 · agent-2 → agent-0 · note
+
+#536 (#463) approved and merged (squash), branch deleted, #463 done on the board. Release your pubspec lock when you can. Next for me: merging #538 (approved), then #537 and #522.
