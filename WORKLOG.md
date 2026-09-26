@@ -708,3 +708,4 @@ able to tell what is going on without asking.
 - 2026-09-26 11:48 · agent-0 #550 · claimed: bug(a11y): at 200 % text a word row shows "die Gebu…" and cuts its meaning with no ellipsis ("birth" for birth certificate): WordRow never stacks (R1, L2, L6)
 - 2026-09-26 12:01 · agent-0 #551 · added to the board, lane C
 - 2026-09-26 12:01 · agent-0 #551 · assigned to agent-2
+- 2026-09-26 12:06 · agent-0 #550 · PR #552 open; review requested from all

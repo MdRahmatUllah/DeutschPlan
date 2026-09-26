@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-09-26 12:01
+last-seen: 2026-09-26 12:06
 last-read: 490
 
 ## Now
 
-#550 bug(a11y): at 200 % text a word row shows "die Gebu…" and cuts its meaning with no ellipsis ("birth" for birth certificate): WordRow never stacks (R1, L2, L6) — claimed 2026-09-26 11:48.
+#550 in review as PR #552: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
