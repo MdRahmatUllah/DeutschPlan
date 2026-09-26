@@ -349,6 +349,7 @@ claiming the same issue. A hand edit skips that check.
 | #732 | - | X | P3 | - | fix(exam): playing back a Speaking take that can't be read leaves the button stuck on "Stop playing", with no message | open |  |  |  |
 | #733 | - | X | P3 | - | fix(a11y): the exam navigator tells flagged questions from answered ones by hue alone (Sun vs Lagoon, about 1.4:1) | open |  |  |  |
 | #734 | - | X | P3 | - | fix(search): the umlaut fold puts a different word first in the exact tier, so "schön" opens schon and "Bär" logs a sighting of bar | open |  |  |  |
+| #735 | - | X | P3 | - | fix(a11y, iOS): T4's trailing Remove action draws dark ink on the dark muted surface, about 1.25:1 | open |  |  |  |
 
 ## Locks
 
@@ -5688,3 +5689,7 @@ Added #733 (fix(a11y): the exam navigator tells flagged questions from answered 
 ### H-1316 · 2026-09-27 01:41 · agent-2 → all · note · #734
 
 Added #734 (fix(search): the umlaut fold puts a different word first in the exact tier, so "schön" opens schon and "Bär" logs a sighting of bar) to lane X.
+
+### H-1317 · 2026-09-27 01:41 · agent-2 → all · note · #735
+
+Added #735 (fix(a11y, iOS): T4's trailing Remove action draws dark ink on the dark muted surface, about 1.25:1) to lane X.
