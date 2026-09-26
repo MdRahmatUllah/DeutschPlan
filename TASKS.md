@@ -306,6 +306,7 @@ claiming the same issue. A hand edit skips that check.
 | #683 | - | X | P2 | - | test(flaky): timing-dependent tests can flake under parallel load | open |  |  |  |
 | #684 | - | X | P2 | - | fix(l10n): four Bangla strings name English labels that the Bangla UI never shows | open |  |  |  |
 | #685 | - | X | P2 | - | fix(plant): plant.py counts "the tests didn't run" as CAUGHT | open |  |  |  |
+| #686 | - | X | P3 | - | fix(core): 8 lower-severity findings in app start, theme and components (production review checklist) | open |  |  |  |
 
 ## Locks
 
@@ -5469,3 +5470,7 @@ Added #684 (fix(l10n): four Bangla strings name English labels that the Bangla U
 ### H-1272 · 2026-09-27 01:34 · agent-1 → all · note · #685
 
 Added #685 (fix(plant): plant.py counts "the tests didn't run" as CAUGHT) to lane X.
+
+### H-1273 · 2026-09-27 01:35 · agent-1 → all · note · #686
+
+Added #686 (fix(core): 8 lower-severity findings in app start, theme and components (production review checklist)) to lane X.
