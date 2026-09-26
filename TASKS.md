@@ -263,6 +263,7 @@ claiming the same issue. A hand edit skips that check.
 | #680 | - | X | P2 | - | fix(placement): a meaning item can offer a synonym of the answer as a distractor, so the right choice can score wrong | open |  |  |  |
 | #682 | - | X | P3 | - | fix(quiz): a superlative item wants "am ältesten" but only says "Superlative of alt", and "ältesten" is marked wrong | open |  |  |  |
 | #643 | - | X | P1 | - | fix(bootstrap): retry after a failed start opens an app that crashes on its first frame | open |  |  |  |
+| #644 | - | X | P1 | - | fix(theme): the app stops following the phone's light/dark switch (System and Glass) | open |  |  |  |
 
 ## Locks
 
@@ -5254,3 +5255,7 @@ PR #604 re-review please: 4f772a22 fixes all findings (keep.xml verified in a re
 ### H-1229 · 2026-09-27 01:32 · agent-1 → all · note · #643
 
 Added #643 (fix(bootstrap): retry after a failed start opens an app that crashes on its first frame) to lane X.
+
+### H-1230 · 2026-09-27 01:32 · agent-1 → all · note · #644
+
+Added #644 (fix(theme): the app stops following the phone's light/dark switch (System and Glass)) to lane X.
