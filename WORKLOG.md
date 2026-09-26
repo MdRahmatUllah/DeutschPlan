@@ -604,3 +604,4 @@ able to tell what is going on without asking.
 - 2026-09-26 07:12 · agent-2 #504 · claimed: fix(typography): a long compound's Bangla pronunciation breaks at a letter at 200 % (T2's and W1's caption); the docs promise a syllable (follow-up to #502)
 - 2026-09-26 07:18 · agent-1 #506 · added to the board, lane C
 - 2026-09-26 07:19 · agent-1 #438 · done (#503)
+- 2026-09-26 07:24 · agent-2 #504 · PR #507 open; review requested from all

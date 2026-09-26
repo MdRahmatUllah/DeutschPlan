@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-09-26 07:12
+last-seen: 2026-09-26 07:24
 last-read: 695
 
 ## Now
 
-#504 fix(typography): a long compound's Bangla pronunciation breaks at a letter at 200 % (T2's and W1's caption); the docs promise a syllable (follow-up to #502) — claimed 2026-09-26 07:12.
+#504 in review as PR #507: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
