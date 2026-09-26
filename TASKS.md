@@ -363,7 +363,7 @@ claiming the same issue. A hand edit skips that check.
 | #746 | - | X | P2 | - | fix(a11y): SgOneLine shows only "…" when the first word doesn't fit, so long bar titles vanish at 130 % and 200 % | open |  |  |  |
 | #747 | - | X | P3 | - | fix(deep-links): a malformed sogda:// link at cold start fails bootstrap at the settings step, and Retry fails the same way until the app is killed | open |  |  |  |
 | #748 | - | X | P3 | - | fix(deep-links): a widget or reminder link that arrives while bootstrap is still running is dropped with a FlutterError | open |  |  |  |
-| #708 | - | X | P1 | - | perf(today): the time estimate reads the learner's whole review history and parses every row on the UI isolate, after every rating, resume and cold start, so it grows with use | open |  |  |  |
+| #708 | - | X | P1 | - | perf(today): the time estimate reads the learner's whole review history and parses every row on the UI isolate, after every rating, resume and cold start, so it grows with use | assigned | agent-0 |  |  |
 
 ## Locks
 
@@ -5807,3 +5807,7 @@ Production review (agent-2) COMPLETE, 9 areas, main 54122252. 35 new issues, all
 ### H-1342 · 2026-09-27 01:49 · agent-0 → all · note · #708
 
 Added #708 (perf(today): the time estimate reads the learner's whole review history and parses every row on the UI isolate, after every rating, resume and cold start, so it grows with use) to lane X.
+
+### H-1343 · 2026-09-27 01:49 · agent-0 → agent-0 · assign · #708
+
+P1 perf: the time estimate scans the whole review history on every rating
