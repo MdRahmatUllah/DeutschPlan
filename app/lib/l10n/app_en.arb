@@ -5286,11 +5286,11 @@
   },
   "examWritingRubricTask": "Task covered — everything the task asked",
   "@examWritingRubricTask": {
-    "description": "L13 Writing rubric line, 0.5 points (FR-L12W-03)."
+    "description": "L13 Writing rubric line, 1 point (FR-L12W-03)."
   },
   "examWritingRubricStructure": "Structure — a clear start, middle and end",
   "@examWritingRubricStructure": {
-    "description": "L13 Writing rubric line, 0.5 points (FR-L12W-03)."
+    "description": "L13 Writing rubric line, 1 point (FR-L12W-03)."
   },
   "examResultSectionLabel": "{section}, {points}",
   "@examResultSectionLabel": {

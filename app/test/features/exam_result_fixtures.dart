@@ -18,7 +18,7 @@ const Map<ExamSection, double> artboardSectionPoints = <ExamSection, double>{
   ExamSection.gapFill: 4,
   ExamSection.grammar: 4,
   ExamSection.listening: 1,
-  ExamSection.writing: 3,
+  ExamSection.writing: 3, // 2 app points and the structure tick
   ExamSection.speaking: 3,
 };
 
@@ -62,7 +62,7 @@ List<ExamResultRow> artboardRows() {
           rubric: item is SpeakingTask
               ? const <bool>[true, true, true, false]
               : item is WritingTask
-              ? const <bool>[false, false]
+              ? const <bool>[false, true]
               : const <bool>[],
           // The artboard's three flags: Q3, Q12 and Q21.
           flagged: i == 2 || i == 11 || i == 20,
@@ -112,7 +112,7 @@ class StubExamResult implements ExamResultService {
   @override
   Future<void> rubric(int attemptId, int ord, List<bool> ticks) async {
     rubrics.add((ord, ticks));
-    // Graded again as the repository would: a point a Writing tick.
+    // Graded again as the repository would: a point a tick.
     final rows = <ExamResultRow>[
       for (final row in result0.rows)
         row.ord == ord

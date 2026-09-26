@@ -61,7 +61,7 @@ Every rule has an ID. Engines in `03-domain/` implement them; screens in `04-scr
 - **BR-EXAM-03** Sections and counts: Vocabulary 10 · Reverse 8 · Articles 6 · Word forms 4 · Gap fill 6 · Grammar 4 · Listening 2 · Writing 1 · Speaking 1. Points: 1 per item, Writing 4, Speaking 4 → 48 points.
 - **BR-EXAM-04** Pass mark `exam_pass_percent` (default 60). Passing any mock marks the step *Passed*.
 - **BR-EXAM-05** No feedback during the exam. Leaving saves an unfinished attempt; the timer stops.
-- **BR-EXAM-06** Writing and Speaking are self-assessed with app-side checks (words used, length, connectors) plus a four-item rubric; recordings stay on device.
+- **BR-EXAM-06** Writing and Speaking are self-assessed with app-side checks (words used, length, connectors) plus a rubric (two items for Writing, four for Speaking, a point each); recordings stay on device.
 
 ## Content updates
 
