@@ -64,9 +64,10 @@ class _GrammarLibraryScreenState extends ConsumerState<GrammarLibraryScreen> {
           (shown[topic.topic.levelCode] ??= <TopicWithState>[]).add(topic);
         }
       }
-      // The band's height at the learner's text size: a caption line and
-      // 6 dp above and below.
-      final band = MediaQuery.textScalerOf(context).scale(16) + 12;
+      // The band's height at the learner's text size: a caption line (16)
+      // and 6 dp above and below. The line grows as caption text does, not
+      // as 16 sp would (#165).
+      final band = DpScript.grow(context, 16, role: DpTextRole.caption) + 12;
 
       body = Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,

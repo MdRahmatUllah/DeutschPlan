@@ -122,7 +122,7 @@ class _LevelRow extends StatelessWidget {
         // Grown with the text size: at 200 % a fixed width broke "A1" into
         // "A / 1" (#165).
         SizedBox(
-          width: MediaQuery.textScalerOf(context).scale(labelWidth),
+          width: DpScript.grow(context, labelWidth, role: DpTextRole.label),
           child: DpText(
             level,
             role: DpTextRole.label,

@@ -30,6 +30,7 @@ import 'package:material_ui/material_ui.dart';
 
 import '../services/fake_tts.dart';
 
+import '../core/text_clipping.dart';
 import '../db/content_fixture.dart';
 
 /// T2 · the rating bar, its interval previews and undo — #105.
@@ -414,6 +415,33 @@ VALUES ('$strasse', 'learning', '2026-09-10', '2026-09-21', 4.5, 5.2, 2, 0,
         strasse,
       );
       expect(await tester.runAsync(log), isEmpty);
+    });
+
+    testWidgets('#165 FR-T2-02 at 200 % text the Undo bar still clears the '
+        "front's actions", (tester) async {
+      textAt(tester, 2);
+      await pump(tester);
+      await reveal(tester);
+      await tester.runAsync(() async {
+        await tester.tap(find.text(l10n.ratingGood));
+        await Future<void>.delayed(const Duration(milliseconds: 50));
+      });
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 750));
+
+      // The bar itself: the SnackBar's own rect takes in its margin.
+      final bar = tester.getRect(
+        find
+            .descendant(
+              of: find.byType(SnackBar),
+              matching: find.byType(Material),
+            )
+            .first,
+      );
+      // The next card is a new word: I know it and Skip over Show meaning,
+      // all of it clear of the bar.
+      final top = tester.getRect(find.text(l10n.studyKnowIt)).top;
+      expect(bar.bottom, lessThanOrEqualTo(top));
     });
 
     group('Z05 FR-T2-02 a write that fails', () {

@@ -670,7 +670,7 @@ class _Answer extends StatelessWidget {
           // 48, grown with the text size: a fixed 48 cut "Understood" at
           // 150 % (#165).
           child: Container(
-            height: MediaQuery.textScalerOf(context).scale(48),
+            height: DpScript.grow(context, 48),
             alignment: Alignment.center,
             decoration: BoxDecoration(
               color: colour,

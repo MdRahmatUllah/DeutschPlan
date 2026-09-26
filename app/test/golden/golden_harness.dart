@@ -103,7 +103,15 @@ Widget goldenApp({
           // `Scaffold` reading insets, a layout builder — then lays out
           // against nothing. It renders, so it looks like a screen with a
           // layout bug rather than a harness with one.
-          data: MediaQuery.of(context).copyWith(disableAnimations: still),
+          data: MediaQuery.of(context).copyWith(
+            disableAnimations: still,
+            // Large text as an Android phone scales it, not as Flutter's
+            // test scaler does (linear): a box sized from a font size then
+            // shows it doesn't grow (#165). iOS keeps the linear one.
+            textScaler: chrome == AdaptiveChrome.cupertino
+                ? null
+                : _phone(MediaQuery.textScalerOf(context)),
+          ),
           child: AdaptiveChromeScope(
             chrome: chrome ?? AdaptiveChrome.material,
             child: child,
@@ -212,6 +220,12 @@ void goldenTest(
       );
     }
   }
+}
+
+/// [linear] as Android 14+ gives it, when text is scaled at all.
+TextScaler _phone(TextScaler linear) {
+  final factor = linear.scale(1);
+  return factor == 1 ? linear : AndroidTextScaler(factor);
 }
 
 extension GoldenTester on WidgetTester {

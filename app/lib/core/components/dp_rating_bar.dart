@@ -122,7 +122,7 @@ class _RatingButton extends StatelessWidget {
           // The artboard's 60, grown with the text size: its two lines
           // overflowed a fixed 60 at 200 % (#165).
           child: Container(
-            height: MediaQuery.textScalerOf(context).scale(DpRatingBar.height),
+            height: DpScript.grow(context, DpRatingBar.height),
             decoration: BoxDecoration(
               color: colour.withValues(alpha: rating.fillOpacity),
               borderRadius: BorderRadius.circular(tokens.shape.button),

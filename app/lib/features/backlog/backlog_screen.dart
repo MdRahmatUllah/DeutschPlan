@@ -290,7 +290,7 @@ class _Backlog extends ConsumerWidget {
               // The artboard's 40, grown with the text size: a fixed 40 cut
               // the day's line at 150 % (#165).
               child: SizedBox(
-                height: MediaQuery.textScalerOf(context).scale(40),
+                height: DpScript.grow(context, 40),
                 child: Row(
                   children: <Widget>[
                     Expanded(

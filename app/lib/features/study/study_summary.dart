@@ -368,7 +368,7 @@ class _Pill extends StatelessWidget {
     final tokens = context.tokens;
     // The artboard's 28, grown with the text size (#165).
     return Container(
-      height: MediaQuery.textScalerOf(context).scale(28),
+      height: DpScript.grow(context, 28, role: DpTextRole.label),
       padding: const EdgeInsets.symmetric(horizontal: 10),
       decoration: BoxDecoration(
         color: colour,
@@ -400,7 +400,7 @@ class _WatchRow extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final word = ref.watch(studyWordProvider(uid)).value?.word;
     // The artboard's 44, grown with the text size (#165).
-    final height = MediaQuery.textScalerOf(context).scale(44);
+    final height = DpScript.grow(context, 44);
     if (word == null) return SizedBox(height: height);
     final spoken = spokenForm(word);
     return SizedBox(

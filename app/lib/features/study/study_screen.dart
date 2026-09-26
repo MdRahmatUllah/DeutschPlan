@@ -269,7 +269,7 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
     DpUndo.show(
       context,
       message: message(word == null ? item.uid : spokenForm(word)),
-      lift: StudyFrontActions.clearance,
+      lift: StudyFrontActions.clearanceOf(context),
       onUndo: () => unawaited(guardWrite(context, notifier.undo)),
     );
   }

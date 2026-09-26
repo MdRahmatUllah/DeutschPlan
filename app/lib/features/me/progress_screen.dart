@@ -352,7 +352,11 @@ class _CardsChart extends StatelessWidget {
                       showTitles: true,
                       // Grown with the text size: a fixed 22 cut "Mo" at
                       // 150 % (#165).
-                      reservedSize: MediaQuery.textScalerOf(context).scale(22),
+                      reservedSize: DpScript.grow(
+                        context,
+                        22,
+                        role: DpTextRole.caption,
+                      ),
                       getTitlesWidget: (value, meta) {
                         final i = value.toInt();
                         if (i < 0 || i >= bars.length || !named(i)) {

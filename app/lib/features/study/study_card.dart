@@ -134,7 +134,7 @@ class _StudyWordCardState extends ConsumerState<StudyWordCard> {
       context,
       text ?? spokenForm(widget.word),
       pace: pace,
-      lift: StudyFrontActions.clearance,
+      lift: StudyFrontActions.clearanceOf(context),
     );
     if (!spoke && mounted) setState(() => _mute = true);
   }
@@ -142,7 +142,7 @@ class _StudyWordCardState extends ConsumerState<StudyWordCard> {
   void _explain() => DpToast.show(
     context,
     AppLocalizations.of(context).speakerNoVoice,
-    lift: StudyFrontActions.clearance,
+    lift: StudyFrontActions.clearanceOf(context),
   );
 
   void _copy() {
@@ -151,7 +151,7 @@ class _StudyWordCardState extends ConsumerState<StudyWordCard> {
     DpToast.show(
       context,
       l10n.studyCopied(spokenForm(widget.word)),
-      lift: StudyFrontActions.clearance,
+      lift: StudyFrontActions.clearanceOf(context),
     );
   }
 
@@ -377,6 +377,11 @@ class StudyFrontActions extends StatelessWidget {
   /// How far a snackbar floats up to clear these actions: the StudyNew
   /// artboard's `bottom: 128px`, less the bar's own 10 px margin.
   static const double clearance = 118;
+
+  /// [clearance], grown with the text: at 200 % *Show meaning* and the hint
+  /// are taller, and a fixed 118 left the Undo bar over them (#165).
+  static double clearanceOf(BuildContext context) =>
+      DpScript.grow(context, clearance);
 
   /// The hint line. A new word's two buttons take its place (StudyNew).
   final bool hint;

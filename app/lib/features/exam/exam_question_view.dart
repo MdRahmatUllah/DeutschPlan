@@ -621,7 +621,7 @@ class _Target extends StatelessWidget {
       // The artboard's 26, grown with the text size: a fixed 26 cut
       // "Wohnung" at 150 % (#165).
       child: Container(
-        height: MediaQuery.textScalerOf(context).scale(26),
+        height: DpScript.grow(context, 26),
         padding: const EdgeInsets.symmetric(horizontal: 8),
         decoration: BoxDecoration(
           color: used ? tokens.color.easy : null,

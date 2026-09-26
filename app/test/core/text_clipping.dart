@@ -67,6 +67,56 @@ void expectNoWordBroken(WidgetTester tester, {Finder? within}) {
   expect(broken, isEmpty, reason: 'broken mid-word: ${broken.join('; ')}');
 }
 
+/// Android 14+'s text scaling, which is nonlinear: small text grows by the
+/// whole factor, large text by less, and 100 sp not at all (#165). At 200 %,
+/// measured on the emulator (API 36): 14 → 28, 24 → 40, 30 → 48, 100 → 100,
+/// so a box sized `scale(96)` stays about 97. Flutter's test scaler is
+/// linear, which hid that; the golden audit takes this one.
+/// ponytail: four measured points, interpolated, and other factors take the
+/// same curve in proportion; Android's own tables if it ever matters.
+class AndroidTextScaler extends TextScaler {
+  const AndroidTextScaler(this.factor);
+
+  final double factor;
+
+  static const List<(double, double)> _at200 = <(double, double)>[
+    (0, 0),
+    (14, 28),
+    (24, 40),
+    (30, 48),
+    (100, 100),
+  ];
+
+  @override
+  double scale(double fontSize) {
+    for (var i = 1; i < _at200.length; i++) {
+      final (x0, y0) = _at200[i - 1];
+      final (x1, y1) = _at200[i];
+      if (fontSize <= x1) {
+        final doubled = y0 + (y1 - y0) * (fontSize - x0) / (x1 - x0);
+        return fontSize + (doubled - fontSize) * (factor - 1);
+      }
+    }
+    return fontSize;
+  }
+
+  @override
+  double get textScaleFactor => scale(14) / 14;
+
+  @override
+  TextScaler clamp({
+    double minScaleFactor = 0,
+    double maxScaleFactor = double.infinity,
+  }) => AndroidTextScaler(factor.clamp(minScaleFactor, maxScaleFactor));
+
+  @override
+  bool operator ==(Object other) =>
+      other is AndroidTextScaler && other.factor == factor;
+
+  @override
+  int get hashCode => factor.hashCode;
+}
+
 /// Runs the rest of the test at [scale] times the system text size, as the
 /// learner's font-size setting does.
 void textAt(WidgetTester tester, double scale) {

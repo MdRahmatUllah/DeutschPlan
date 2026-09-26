@@ -144,6 +144,19 @@ abstract final class DpScript {
   static bool scaled(BuildContext context) =>
       MediaQuery.textScalerOf(context).scale(1) > 1;
 
+  /// [size], a box around text at [role], grown as that text grows: by the
+  /// factor the text takes, not by `scale(size)`. Android 14+ scales text
+  /// nonlinearly — at 200 % 14 sp is 28, but 96 is about 97 — so a box's
+  /// own size scaled as if it were a font barely grows (#165).
+  static double grow(
+    BuildContext context,
+    double size, {
+    DpTextRole role = DpTextRole.body,
+  }) {
+    final text = role.token(context.tokens.typography).size;
+    return size * MediaQuery.textScalerOf(context).scale(text) / text;
+  }
+
   /// Whether text in [context] is past 130 %, where two things side by side
   /// no longer fit a phone's width and one goes under the other (#165), as
   /// the tab bar scrolls from there (#314).
