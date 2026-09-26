@@ -22,6 +22,7 @@ void main() {
   late SettingsRepository settings;
   late ModelRepository models;
   late _Downloader downloader;
+  late _Notice notice;
   late BackgroundModelDownloads downloads;
 
   /// Two files, 300 and 100 bytes, hashed for real.
@@ -63,7 +64,15 @@ void main() {
     addTearDown(settings.dispose);
     models = ModelRepository(settings, support: support)..useManifest(manifest);
     downloader = _Downloader();
-    downloads = BackgroundModelDownloads(models, settings, downloader);
+    notice = _Notice();
+    downloads = BackgroundModelDownloads(
+      models,
+      settings,
+      downloader,
+      null,
+      const Duration(seconds: 2),
+      notice,
+    );
   });
 
   tearDown(() {
@@ -688,6 +697,13 @@ void main() {
       );
       final active = await models.directoryFor('hymt');
       expect(File('${active.path}/one.gguf').readAsStringSync(), one);
+      // #506: the platform's notification can stick short of its end.
+      expect(notice.said, <(String, String)>[
+        (
+          'Model download finished',
+          'Voice & translation says when it is ready',
+        ),
+      ]);
     });
 
     test('a file that does not verify: failed, and nothing in place', () async {
@@ -702,6 +718,62 @@ void main() {
 
       expect(seen.last, DownloadPhase.failed);
       expect((await models.directoryFor('hymt')).existsSync(), isFalse);
+      expect(notice.said, <(String, String)>[
+        ('A model download failed', 'Retry it from Voice & translation'),
+      ], reason: '#506: not "finished" when a checksum failed');
+    });
+
+    test("#506 the notice replaces the platform's own: the downloader's group "
+        'notification id, as Kotlin hashes it', () {
+      // `dumpsys notification` on the emulator: id=1009911796.
+      expect(PlatformDownloadNotice.groupId('models'), 1009911796);
+      expect(BackgroundModelDownloads.notificationGroup, 'models');
+    });
+
+    test('#506 no notice while another model is still downloading, then one '
+        'when the last ends', () async {
+      final voice = file('voice.onnx', 'v' * 50);
+      models.useManifest(
+        ModelManifest(
+          version: 1,
+          models: <ModelEntry>[
+            ...manifest.models,
+            ModelEntry(
+              id: 'voice',
+              name: 'Voice',
+              licence: 'test',
+              disables: 'tts_voice',
+              regionExcluded: const <String>[],
+              variants: <ModelVariant>[
+                ModelVariant(
+                  id: 'v1',
+                  name: 'test voice',
+                  files: <ModelFile>[voice],
+                ),
+              ],
+            ),
+          ],
+        ),
+      );
+      await downloads.start('voice');
+      await land('one.gguf', one);
+      await land('two.gguf', two);
+      await report((t) => TaskStatusUpdate(t, TaskStatus.complete), 'one.gguf');
+      await report((t) => TaskStatusUpdate(t, TaskStatus.complete), 'two.gguf');
+      await settled();
+      expect(notice.said, isEmpty, reason: 'the voice is still coming');
+
+      final staging = await models.stagingFor('voice');
+      File('${staging.path}/voice.onnx').writeAsStringSync('v' * 50);
+      await report(
+        (t) => TaskStatusUpdate(t, TaskStatus.complete),
+        'voice.onnx',
+      );
+      await downloads
+          .watch('voice')
+          .firstWhere((p) => p.phase == DownloadPhase.ready)
+          .timeout(const Duration(seconds: 10));
+      expect(notice.said, hasLength(1));
     });
 
     test('Retry after a checksum failure throws the files away and queues '
@@ -832,6 +904,13 @@ void main() {
       );
     });
   });
+}
+
+class _Notice implements DownloadNotice {
+  final List<(String, String)> said = <(String, String)>[];
+
+  @override
+  Future<void> ended((String, String) text) async => said.add(text);
 }
 
 class _Downloader implements FileDownloader {

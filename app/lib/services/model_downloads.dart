@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:background_downloader/background_downloader.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:deutschplan/data/repositories/model_repository.dart';
 import 'package:deutschplan/data/repositories/setting_keys.dart';
 import 'package:deutschplan/data/repositories/settings_repository.dart';
@@ -99,13 +101,19 @@ class BackgroundModelDownloads implements ModelDownloads {
     FileDownloader? downloader,
     DeviceStorage? storage,
     this._wifiGrace = const Duration(seconds: 2),
+    DownloadNotice? notice,
   ]) : _downloader = downloader ?? FileDownloader(),
-       _storage = storage ?? const PlatformDeviceStorage();
+       _storage = storage ?? const PlatformDeviceStorage(),
+       _notice = notice ?? const PlatformDownloadNotice();
 
   final ModelRepository _models;
   final SettingsRepository _settings;
   final FileDownloader _downloader;
   final DeviceStorage _storage;
+  final DownloadNotice _notice;
+
+  /// The one notification every model file shares.
+  static const String notificationGroup = 'models';
 
   /// How long a stop that comes before the downloader hears the network go
   /// waits for it to (#455).
@@ -215,7 +223,7 @@ class BackgroundModelDownloads implements ModelDownloads {
         l10n.modelNotifyFailedNote,
       ),
       progressBar: true,
-      groupNotificationId: 'models',
+      groupNotificationId: notificationGroup,
     );
   }
 
@@ -445,6 +453,20 @@ class BackgroundModelDownloads implements ModelDownloads {
             : DownloadPhase.failed,
         progress: 1,
       ));
+      // #506: the platform's one notification says how it ended, once no
+      // model is left downloading. Its own can stick at "Model download"
+      // (a file that finished before the platform counted it queued), and
+      // says *finished* though a checksum failed.
+      if (_files.isEmpty) {
+        final l10n = lookupAppLocalizations(
+          _settings.read(SettingKeys.uiLanguage).locale,
+        );
+        await _notice.ended(
+          status == ModelStatus.ready
+              ? (l10n.modelNotifyComplete, l10n.modelNotifyCompleteNote)
+              : (l10n.modelNotifyFailed, l10n.modelNotifyFailedNote),
+        );
+      }
       // Done with: the next launch mustn't verify a staging folder that was
       // renamed into place, or that *Retry* throws away.
       await _downloader.database.deleteAllRecords(group: modelId);
@@ -492,5 +514,59 @@ class BackgroundModelDownloads implements ModelDownloads {
   void _emit(String modelId, DownloadProgress progress) {
     _last[modelId] = progress;
     _watchers[modelId]?.add(progress);
+  }
+}
+
+/// #506: says how the model downloads ended, over the platform's own
+/// notification for them.
+abstract interface class DownloadNotice {
+  /// [text] is the title and the line under it.
+  Future<void> ended((String, String) text);
+}
+
+/// [DownloadNotice] on Android: the same notification id and channel as
+/// `background_downloader`'s group notification, so this replaces it.
+///
+/// The platform registers a queued file with its group through a job of its
+/// own, and counts it again as running when that job runs after the file has
+/// finished (`GroupNotification.update` keeps no order), so the group never
+/// finishes: "Model download" stayed at 78 % and 89 % after the voice was
+/// Ready on the emulator.
+class PlatformDownloadNotice implements DownloadNotice {
+  const PlatformDownloadNotice();
+
+  /// The downloader's group notification id: Kotlin's
+  /// `"groupNotification$name".hashCode()` (`Notifications.kt`).
+  static int groupId(String name) {
+    var hash = 0;
+    for (final unit in 'groupNotification$name'.codeUnits) {
+      hash = (31 * hash + unit) & 0xFFFFFFFF;
+    }
+    return hash >= 0x80000000 ? hash - 0x100000000 : hash;
+  }
+
+  @override
+  Future<void> ended((String, String) text) async {
+    // iOS keeps its own count, which the emulator showed no fault in.
+    if (defaultTargetPlatform != TargetPlatform.android) return;
+    final (title, body) = text;
+    try {
+      await FlutterLocalNotificationsPlugin().show(
+        id: groupId(BackgroundModelDownloads.notificationGroup),
+        title: title,
+        body: body,
+        notificationDetails: const NotificationDetails(
+          android: AndroidNotificationDetails(
+            'background_downloader',
+            // The platform's own name for its channel.
+            'Downloads',
+            importance: Importance.low,
+            priority: Priority.low,
+          ),
+        ),
+      );
+    } on Object {
+      // No notifications allowed, or none at all: the app says it anyway.
+    }
   }
 }
