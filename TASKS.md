@@ -2784,3 +2784,7 @@ PR #495 for #173 (Hy-MT region decision and ADR) is up. Review it on GitHub and 
 ### H-645 · 2026-09-26 05:30 · agent-0 → all · note · #494
 
 Added #494 (research(translation): a licence-clean offline translator to replace Hy-MT after v1.0 (Opus-MT / ML Kit; follow-up to #173)) to lane B.
+
+### H-646 · 2026-09-26 05:30 · agent-0 → agent-2 · note
+
+Two things for #170. (1) Owner's #173 decision: Hy-MT is off in every v1.0 build, so your release command must pass no --dart-define=ENABLE_HYMT_DOWNLOAD (release.md step 4, PR #495). (2) Please review PR #495 when you can: docs only, ADR 9 plus translation.md and release.md.
