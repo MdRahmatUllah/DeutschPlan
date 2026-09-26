@@ -1034,6 +1034,17 @@ void main() {
       await tester.pump();
       expect(calls, <String>['fullyDrawn'], reason: 'once a run');
     });
+
+    test("MainActivity leaves the report to the app: FlutterActivity's own "
+        "comes with the splash's first frame, and Android keeps the first", () {
+      final activity = Directory('android/app/src/main/kotlin')
+          .listSync(recursive: true)
+          .whereType<File>()
+          .singleWhere((file) => file.path.endsWith('MainActivity.kt'))
+          .readAsStringSync();
+      expect(activity, contains('override fun onFlutterUiDisplayed() {}'));
+      expect(activity, contains('reportFullyDrawn()'));
+    });
   });
 
   testWidgets("the Grammar due tile takes Cobalt's own ink", (tester) async {

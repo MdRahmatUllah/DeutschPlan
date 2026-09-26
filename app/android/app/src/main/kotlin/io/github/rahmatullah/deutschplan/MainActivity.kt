@@ -108,6 +108,15 @@ class MainActivity : FlutterActivity() {
         windowManager.addCrossWindowBlurEnabledListener(mainExecutor, listener)
     }
 
+    /**
+     * #462: FlutterActivity reports fully drawn here, at Flutter's first
+     * frame, which is only the splash, and Android keeps the first report
+     * alone. The app reports it itself once Today shows its plan (or setup
+     * its first page), through [START_CHANNEL]. Not calling super is the
+     * point: that is all super does.
+     */
+    override fun onFlutterUiDisplayed() {}
+
     override fun onDestroy() {
         val listener = blurListener
         if (listener != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
