@@ -830,3 +830,4 @@ able to tell what is going on without asking.
 - 2026-09-26 20:06 · agent-0 #596 · added to the board, lane X
 - 2026-09-26 20:06 · agent-0 #596 · assigned to agent-1
 - 2026-09-26 20:10 · agent-0 #597 · added to the board, lane X
+- 2026-09-26 20:11 · agent-0 #597 · assigned to agent-1
