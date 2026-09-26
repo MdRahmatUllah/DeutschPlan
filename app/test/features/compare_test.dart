@@ -364,7 +364,13 @@ void main() {
           ],
         ),
       );
-      expectNoWordBroken(tester, within: find.byType(CompareScreen));
+      // Not even at a syllable: without a drawn hyphen (#419) that reads as
+      // a word broken, as it did on a phone.
+      expectNoWordBroken(
+        tester,
+        within: find.byType(CompareScreen),
+        syllables: false,
+      );
     });
   });
 }

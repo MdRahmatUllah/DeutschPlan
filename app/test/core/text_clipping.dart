@@ -40,16 +40,24 @@ void expectNothingClipped(WidgetTester tester, {Finder? within}) {
 /// reads as two; a long compound may break at its syllables
 /// (`DpText.allowBreaks`), and text may wrap at a space, a dash, a slash or
 /// a dot (a file name's).
-void expectNoWordBroken(WidgetTester tester, {Finder? within}) {
+void expectNoWordBroken(
+  WidgetTester tester, {
+  Finder? within,
+  bool syllables = true,
+}) {
   final paragraphs = tester.renderObjectList<RenderParagraph>(
     within == null
         ? find.byType(RichText)
         : find.descendant(of: within, matching: find.byType(RichText)),
   );
+  final offered = RegExp('[^\\s\u00AD​/.·–—-]{2,}');
+  final whole = RegExp('[^\\s​/.·–—-]{2,}');
   final broken = <String>[];
   for (final paragraph in paragraphs) {
     final text = paragraph.text.toPlainText();
-    for (final word in RegExp('[^\\s\u00AD​/.·–—-]{2,}').allMatches(text)) {
+    // A soft hyphen is a break the text offers, unless [syllables] is off:
+    // then a word must not break even there (#419 draws no hyphen yet).
+    for (final word in (syllables ? offered : whole).allMatches(text)) {
       final boxes = paragraph.getBoxesForSelection(
         TextSelection(baseOffset: word.start, extentOffset: word.end),
       );
