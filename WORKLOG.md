@@ -633,3 +633,4 @@ able to tell what is going on without asking.
 - 2026-09-26 08:23 · agent-1 #515 · claimed: chore(sqa): #396 pass-2 leftovers: L1/T1 counts, the umlaut row on focus, list-row speaker state, the cloze footnote, L15 repeats
 - 2026-09-26 08:24 · agent-2 #516 · PR #520 open; review requested from all
 - 2026-09-26 08:25 · agent-2 #517 · done (#518)
+- 2026-09-26 08:28 · agent-2 #513 · done (#514)
