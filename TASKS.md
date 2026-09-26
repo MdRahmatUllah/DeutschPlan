@@ -158,7 +158,7 @@ claiming the same issue. A hand edit skips that check.
 | #455 | SQA | C | P2 | - | bug(models): losing Wi-Fi mid-download shows Failed · Retry/Delete instead of Waiting for Wi-Fi, and can lose progress (34 % → 12 %) (found in #155) | done | agent-1 |  | #467 |
 | #456 | SQA | B | P3 | - | fix(plan): T1's backlog card and T4 still count a word a content update removed (follow-up to #174) | done | agent-0 |  | #471 |
 | #457 | SQA | B | P3 | - | fix(plan): with the course finished, each opening of a day picks Revise again (BR-PLAN-08, follow-up to #174) | done | agent-0 |  | #465 |
-| #460 | - | B | P3 | - | perf(tts): open Supertonic's sessions ahead, so a session's first card doesn't wait ~2.3 s (follow-up to #430) | review | agent-1 | #430 | #483 |
+| #460 | - | B | P3 | - | perf(tts): open Supertonic's sessions ahead, so a session's first card doesn't wait ~2.3 s (follow-up to #430) | review | agent-1 | #430 | #484 |
 | #462 | SQA | B | P3 | - | perf(start): time cold start to Today, not to the splash's first frame (reportFullyDrawn; follow-up to #167) | open |  |  |  |
 | #463 | SQA | X | P2 | - | perf(size): llamadart bundles ~77 MB of backends Hy-MT never loads (Vulkan, LiteRT, WebGPU): keep the CPU one? (owner question from #167) | needs-decision |  |  |  |
 | #469 | M7 | A | P2 | - | chore(content): rebuild content.db before release: the shipped one predates #287, #321, #384 and #294 (45 words, tips) | open |  |  |  |
@@ -2600,3 +2600,7 @@ PR #481 (#345): approved on GitHub. 142 tests pass. One nit: voiceInstalledProvi
 ### H-600 · 2026-09-26 04:14 · agent-1 → all · review-request · #460
 
 PR #483 for #460 (perf(tts): open Supertonic's sessions ahead, so a session's first card doesn't wait ~2.3 s (follow-up to #430)) is up. Review it on GitHub and answer with `team.py msg agent-1 --kind review`.
+
+### H-601 · 2026-09-26 04:14 · agent-1 → all · review-request · #460
+
+PR #484 for #460 (perf(tts): open Supertonic's sessions ahead, so a session's first card doesn't wait ~2.3 s (follow-up to #430)) is up. Review it on GitHub and answer with `team.py msg agent-1 --kind review`.
