@@ -785,23 +785,20 @@ class _SentenceRow extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Text.rich(
-              TextSpan(
-                children: <InlineSpan>[
-                  for (final (text, marked) in sentence.runs)
-                    TextSpan(
-                      text: text,
-                      style: marked
-                          ? style.copyWith(
-                              backgroundColor: tokens.color.accent,
-                              color: tokens.color.onAccent,
-                            )
-                          : style,
-                    ),
-                ],
-              ),
-              locale: const Locale('de', 'DE'),
-            ),
+            // A long compound breaks at a syllable at 200 %, not at a
+            // letter (#535).
+            DpGermanRuns(<TextSpan>[
+              for (final (text, marked) in sentence.runs)
+                TextSpan(
+                  text: text,
+                  style: marked
+                      ? style.copyWith(
+                          backgroundColor: tokens.color.accent,
+                          color: tokens.color.onAccent,
+                        )
+                      : style,
+                ),
+            ]),
             if (english != null) ...<Widget>[
               const SizedBox(height: 2),
               DpText(

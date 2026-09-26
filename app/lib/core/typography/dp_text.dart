@@ -653,6 +653,29 @@ class DpHeadword extends StatelessWidget {
         };
 }
 
+/// The course's German in runs of their own style, as R1 draws a sentence
+/// with the searched word marked: a word too wide for its line breaks at a
+/// syllable and shows its "-", in its run's style, and a screen reader
+/// hears it whole in a German voice (#535, as [DpText] does, #419, #162).
+class DpGermanRuns extends StatelessWidget {
+  const DpGermanRuns(this.runs, {super.key});
+
+  /// Each run's text and style.
+  final List<TextSpan> runs;
+
+  @override
+  Widget build(BuildContext context) {
+    final tagged = <TextSpan>[
+      for (final run in runs)
+        TextSpan(text: run.text, style: run.style, locale: DpScript.deDE),
+    ];
+    return _Hyphenated(
+      runs: tagged,
+      child: Text.rich(TextSpan(children: tagged), locale: DpScript.deDE),
+    );
+  }
+}
+
 /// A headword, or a text, that wraps at a syllable shows the hyphen there,
 /// as print does: "Reiseversi-" over "cherung" (#419). Flutter breaks at a
 /// soft hyphen but draws nothing (flutter/flutter#18443), so this breaks

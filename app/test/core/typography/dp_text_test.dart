@@ -870,6 +870,44 @@ void main() {
     });
   });
 
+  group('#535 DpGermanRuns', () {
+    testWidgets('a marked long compound breaks at a syllable with its "-", '
+        'and the sentence is read whole, in a German voice', (tester) async {
+      final semantics = tester.ensureSemantics();
+      const marked = TextStyle(backgroundColor: Color(0xFFFFC61A));
+      await pump(
+        tester,
+        const SizedBox(
+          width: 150,
+          child: DpGermanRuns(<TextSpan>[
+            TextSpan(text: 'Es gilt eine '),
+            TextSpan(text: 'Geschwindigkeitsbegrenzung', style: marked),
+            TextSpan(text: '.'),
+          ]),
+        ),
+      );
+      final spans = <TextSpan>[];
+      tester
+          .renderObject<RenderParagraph>(find.byType(RichText))
+          .text
+          .visitChildren((span) {
+            if (span is TextSpan && span.text != null) spans.add(span);
+            return true;
+          });
+      final word = spans.singleWhere((s) => s.style == marked);
+      expect(word.text, contains('-\n'), reason: 'the "-" in the mark');
+      final label = tester.getSemantics(find.byType(RichText)).attributedLabel;
+      expect(label.string, 'Es gilt eine Geschwindigkeitsbegrenzung.');
+      expect(
+        label.attributes.whereType<LocaleStringAttribute>().map(
+          (a) => a.locale,
+        ),
+        everyElement(DpScript.deDE),
+      );
+      semantics.dispose();
+    });
+  });
+
   group('long German compounds', () {
     test('a short word is left alone', () {
       expect(DpScript.allowBreaks('Wohnung'), 'Wohnung');
