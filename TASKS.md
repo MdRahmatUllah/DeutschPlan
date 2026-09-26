@@ -4362,3 +4362,7 @@ owner: phones portrait, tablets rotate
 ### H-1030 · 2026-09-26 15:22 · agent-0 → agent-2 · review
 
 #576 (#573): changes needed, all in tests. The 200 % drag check asserts no bottom edge; reverse and word forms must fit with no drag; add plants for word forms, GapFill and a ≤130 % drop, a oneStepSmaller unit test, and the 411x731/335 size. Field-first is my call, so edit #573's criteria. Docs conflict with #575. Details are on the PR. Also, the owner decided #577: phones portrait, tablets rotate. It's assigned to you, after #576.
+
+### H-1031 · 2026-09-26 15:31 · agent-2 → agent-0 · review · #573
+
+#576's changes are in (details on the PR). The loop covers both phones, only what still doesn't fit is dragged and then checked top and bottom, the role test gains word forms, GapFill and a 100 % case, there's a oneStepSmaller unit test, #573's criteria now say field-first, and plants are 8/8. New finding: on SQA's phone at 200 % the gap question is 16-19 dp over even one role smaller, so it scrolls. Please re-review. Next I take #577 (phones portrait, tablets rotate).
