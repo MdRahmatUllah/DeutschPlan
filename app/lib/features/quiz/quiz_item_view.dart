@@ -43,9 +43,14 @@ class QuizItemView extends ConsumerWidget {
     required this.onAnswer,
     super.key,
     this.picked,
+    this.typing = false,
   });
 
   final QuizItem item;
+
+  /// The keyboard is up at large text: the "YOUR ANSWER" caption gives its
+  /// room to the prompt, as the field's hint says as much (#554).
+  final bool typing;
 
   /// The typed answer; unused by tiles and article buttons.
   final TextEditingController field;
@@ -126,14 +131,16 @@ class QuizItemView extends ConsumerWidget {
       answer = Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          DpText(
-            l10n.quizYourAnswer.toUpperCase(),
-            role: DpTextRole.caption,
-            weight: 700,
-            letterSpacing: 0.6,
-            color: tokens.color.textSecondary,
-          ),
-          const SizedBox(height: 8),
+          if (!typing) ...<Widget>[
+            DpText(
+              l10n.quizYourAnswer.toUpperCase(),
+              role: DpTextRole.caption,
+              weight: 700,
+              letterSpacing: 0.6,
+              color: tokens.color.textSecondary,
+            ),
+            const SizedBox(height: 8),
+          ],
           StudyAnswerField(
             controller: field,
             hint: l10n.quizYourAnswer,

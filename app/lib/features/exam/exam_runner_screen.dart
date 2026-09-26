@@ -408,8 +408,34 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
       // The keyboard is up: read here, above the scaffold that takes it out
       // of its body's inset (#529).
       final typing = MediaQuery.viewInsetsOf(context).bottom > 0;
+      // #554: past 130 % the band's row, the question's number and the
+      // buttons give theirs too, or the field alone filled the room and the
+      // prompt scrolled away; they come back with the keyboard's going.
+      final cramped = DpScript.largeTyping(context);
       final count = questions.where((q) => examNumbered(q.item)).length;
       final number = questions.take(_at + 1).where((q) => examNumbered(q.item));
+      final nav = Row(
+        children: <Widget>[
+          Expanded(
+            child: DpButton(
+              label: l10n.examRunPrevious,
+              kind: DpButtonKind.secondary,
+              onPressed: _at == 0 ? null : () => _go(_at - 1),
+            ),
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: DpButton(
+              label: last
+                  ? l10n.examRunSubmit
+                  : item is WritingTask
+                  ? l10n.examWritingSubmit
+                  : l10n.examRunNext,
+              onPressed: last ? () => unawaited(_submit()) : () => _go(_at + 1),
+            ),
+          ),
+        ],
+      );
       body = Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
@@ -422,49 +448,56 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
             left: _timed ? _left : null,
             onPause: () => unawaited(_guard.currentState?.ask()),
             onNavigator: () => unawaited(_openNavigator(questions)),
+            collapsed: cramped,
           ),
-          Padding(
-            padding: const EdgeInsetsDirectional.fromSTEB(16, 8, 8, 0),
-            child: Row(
-              children: <Widget>[
-                Expanded(
-                  child: DpText(
-                    examNumbered(item)
-                        ? l10n.examRunQuestion(number.length, count)
-                        : '',
-                    role: DpTextRole.caption,
-                    color: tokens.color.textSecondary,
+          if (!cramped)
+            Padding(
+              padding: const EdgeInsetsDirectional.fromSTEB(16, 8, 8, 0),
+              child: Row(
+                children: <Widget>[
+                  Expanded(
+                    child: DpText(
+                      examNumbered(item)
+                          ? l10n.examRunQuestion(number.length, count)
+                          : '',
+                      role: DpTextRole.caption,
+                      color: tokens.color.textSecondary,
+                    ),
                   ),
-                ),
-                Semantics(
-                  button: true,
-                  toggled: _flagged[_at],
-                  label: _flagged[_at] ? l10n.examRunFlagged : l10n.examRunFlag,
-                  onTap: _toggleFlag,
-                  excludeSemantics: true,
-                  child: AdaptiveTooltip(
-                    message: _flagged[_at]
+                  Semantics(
+                    button: true,
+                    toggled: _flagged[_at],
+                    label: _flagged[_at]
                         ? l10n.examRunFlagged
                         : l10n.examRunFlag,
-                    child: GestureDetector(
-                      behavior: HitTestBehavior.opaque,
-                      onTap: _toggleFlag,
-                      child: SizedBox.square(
-                        dimension: 48,
-                        child: Icon(
-                          _flagged[_at] ? Icons.flag : Icons.outlined_flag,
-                          color: _flagged[_at]
-                              ? tokens.color.learning
-                              : tokens.color.ink,
+                    onTap: _toggleFlag,
+                    excludeSemantics: true,
+                    child: AdaptiveTooltip(
+                      message: _flagged[_at]
+                          ? l10n.examRunFlagged
+                          : l10n.examRunFlag,
+                      child: GestureDetector(
+                        behavior: HitTestBehavior.opaque,
+                        onTap: _toggleFlag,
+                        child: SizedBox.square(
+                          dimension: 48,
+                          child: Icon(
+                            _flagged[_at] ? Icons.flag : Icons.outlined_flag,
+                            color: _flagged[_at]
+                                ? tokens.color.learning
+                                : tokens.color.ink,
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
           Expanded(
+            // Kept by its key as the rows around it come and go, or the
+            // field in it would lose the keyboard.
+            key: const ValueKey<String>('question'),
             child: ListView(
               padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
               children: <Widget>[
@@ -498,6 +531,10 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
                     ),
                   ),
                 ),
+                // #554: typing at large text, the room above the keyboard is
+                // the question's, and the buttons scroll under the field.
+                if (cramped && item is! WritingTask)
+                  Padding(padding: const EdgeInsets.only(top: 16), child: nav),
               ],
             ),
           ),
@@ -510,33 +547,10 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
               padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
               child: ExamWritingCount(task: item, field: _field),
             )
-          else
+          else if (!cramped)
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
-              child: Row(
-                children: <Widget>[
-                  Expanded(
-                    child: DpButton(
-                      label: l10n.examRunPrevious,
-                      kind: DpButtonKind.secondary,
-                      onPressed: _at == 0 ? null : () => _go(_at - 1),
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: DpButton(
-                      label: last
-                          ? l10n.examRunSubmit
-                          : item is WritingTask
-                          ? l10n.examWritingSubmit
-                          : l10n.examRunNext,
-                      onPressed: last
-                          ? () => unawaited(_submit())
-                          : () => _go(_at + 1),
-                    ),
-                  ),
-                ],
-              ),
+              child: nav,
             ),
           if (examTypesGerman(item))
             DpSurface(
@@ -588,9 +602,14 @@ class _Band extends StatelessWidget {
     required this.left,
     required this.onPause,
     required this.onNavigator,
+    this.collapsed = false,
   });
 
   final String title;
+
+  /// Only its colour behind the status bar, while the keyboard is up at
+  /// large text (#554).
+  final bool collapsed;
 
   /// Seconds left; null when the timer is off.
   final int? left;
@@ -610,90 +629,91 @@ class _Band extends StatelessWidget {
     final content = Column(
       children: <Widget>[
         SizedBox(height: MediaQuery.paddingOf(context).top),
-        SizedBox(
-          height: 56,
-          child: Row(
-            children: <Widget>[
-              const SizedBox(width: 4),
-              Semantics(
-                button: true,
-                label: l10n.examRunPause,
-                onTap: onPause,
-                excludeSemantics: true,
-                child: AdaptiveTooltip(
-                  message: l10n.examRunPause,
-                  child: GestureDetector(
-                    behavior: HitTestBehavior.opaque,
-                    onTap: onPause,
-                    child: SizedBox.square(
-                      dimension: 48,
-                      child: Icon(Icons.pause, color: ink),
-                    ),
-                  ),
-                ),
-              ),
-              Expanded(
-                child: DpText(
-                  title,
-                  role: DpTextRole.body,
-                  weight: 600,
-                  color: ink,
-                  maxLines: 1,
-                  textAlign: TextAlign.center,
-                ),
-              ),
-              if (seconds != null)
+        if (!collapsed)
+          SizedBox(
+            height: 56,
+            child: Row(
+              children: <Widget>[
+                const SizedBox(width: 4),
                 Semantics(
-                  label: l10n.examRunTimeLeft(seconds ~/ 60, seconds % 60),
+                  button: true,
+                  label: l10n.examRunPause,
+                  onTap: onPause,
                   excludeSemantics: true,
-                  // At least the artboard's 32, and taller at large text:
-                  // a fixed 32 cut "14:32" at 150 % (#165).
-                  child: Container(
-                    constraints: const BoxConstraints(minHeight: 32),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 10,
-                      vertical: 2,
-                    ),
-                    decoration: BoxDecoration(
-                      color: coral
-                          ? tokens.color.again
-                          : ink.withValues(alpha: 0.18),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    // Its own height, centred: an Align would fill the bar.
-                    child: Center(
-                      widthFactor: 1,
-                      heightFactor: 1,
-                      child: DpText(
-                        AppLocalizations.of(context).digits(_clock(seconds)),
-                        role: DpTextRole.body,
-                        weight: 700,
-                        color: coral ? tokens.color.ink : ink,
+                  child: AdaptiveTooltip(
+                    message: l10n.examRunPause,
+                    child: GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      onTap: onPause,
+                      child: SizedBox.square(
+                        dimension: 48,
+                        child: Icon(Icons.pause, color: ink),
                       ),
                     ),
                   ),
                 ),
-              Semantics(
-                button: true,
-                label: l10n.examNavOpen,
-                onTap: onNavigator,
-                excludeSemantics: true,
-                child: AdaptiveTooltip(
-                  message: l10n.examNavOpen,
-                  child: GestureDetector(
-                    behavior: HitTestBehavior.opaque,
-                    onTap: onNavigator,
-                    child: SizedBox.square(
-                      dimension: 48,
-                      child: Icon(Icons.grid_view_outlined, color: ink),
+                Expanded(
+                  child: DpText(
+                    title,
+                    role: DpTextRole.body,
+                    weight: 600,
+                    color: ink,
+                    maxLines: 1,
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                if (seconds != null)
+                  Semantics(
+                    label: l10n.examRunTimeLeft(seconds ~/ 60, seconds % 60),
+                    excludeSemantics: true,
+                    // At least the artboard's 32, and taller at large text:
+                    // a fixed 32 cut "14:32" at 150 % (#165).
+                    child: Container(
+                      constraints: const BoxConstraints(minHeight: 32),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 2,
+                      ),
+                      decoration: BoxDecoration(
+                        color: coral
+                            ? tokens.color.again
+                            : ink.withValues(alpha: 0.18),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      // Its own height, centred: an Align would fill the bar.
+                      child: Center(
+                        widthFactor: 1,
+                        heightFactor: 1,
+                        child: DpText(
+                          AppLocalizations.of(context).digits(_clock(seconds)),
+                          role: DpTextRole.body,
+                          weight: 700,
+                          color: coral ? tokens.color.ink : ink,
+                        ),
+                      ),
+                    ),
+                  ),
+                Semantics(
+                  button: true,
+                  label: l10n.examNavOpen,
+                  onTap: onNavigator,
+                  excludeSemantics: true,
+                  child: AdaptiveTooltip(
+                    message: l10n.examNavOpen,
+                    child: GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      onTap: onNavigator,
+                      child: SizedBox.square(
+                        dimension: 48,
+                        child: Icon(Icons.grid_view_outlined, color: ink),
+                      ),
                     ),
                   ),
                 ),
-              ),
-              const SizedBox(width: 4),
-            ],
+                const SizedBox(width: 4),
+              ],
+            ),
           ),
-        ),
       ],
     );
     return tokens.isGlass

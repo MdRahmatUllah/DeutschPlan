@@ -13,6 +13,8 @@ The direction starts on the learner's meaning language: DE → বাংলা f
 ## L8 Runner
 Full-screen modal; top bar close · "Standard · DE → EN" · "7 / 20" · progress strip · optional 15 s timer. Item layouts: type the meaning (German word + play, text field); type the German (EN/BN prompt, text field + umlaut row); articles (three big coloured buttons der/die/das); multiple choice (4 tiles); listening (play button, text field); forms (prompt "Perfekt of …"). Feedback: ✓ Correct · ≈ Almost — watch the spelling: *der Mietvertrag* · Article: *die*, not *der* · ✗ with the correct answer; *Next*.
 
+**Typing at large text** (#554): past 130 % with the keyboard up, the room above it is a few lines, and the field alone filled it. The header gives up its row (close, the title and "7 / 20"; its colour stays behind the status bar) and the "YOUR ANSWER" caption goes, the field's hint saying as much. The prompt then shows above the field, with *Check* and the umlaut row. Both come back when the keyboard goes; back still asks (FR-L8-04). At 100 % nothing changes.
+
 ## L9 Result
 Score "16 / 20", "80% · 4 min 12 s · Standard · DE → EN"; "Mistakes · 4 · re-asked once at the end" list ("die Kaution — you wrote: die Kausion", "der Vermieter — you wrote: die Vermieter · article"); buttons *Retry mistakes · 4*, *Add mistakes to revision*, *Done*. Result block colour: Lime ≥ 80 %, Sun 50–79 %, Coral < 50 %.
 
