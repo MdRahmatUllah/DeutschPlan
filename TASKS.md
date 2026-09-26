@@ -297,6 +297,7 @@ claiming the same issue. A hand edit skips that check.
 | #671 | - | X | P2 | - | fix(exam): recordings of abandoned attempts are kept for ever | open |  |  |  |
 | #672 | - | X | P2 | - | fix(settings): after Reset everything or a Replace import, the meaning language, UI language and theme are stale | open |  |  |  |
 | #673 | - | X | P2 | - | fix(models): a voice download can be queued twice | open |  |  |  |
+| #674 | - | X | P2 | - | fix(deep-links): a cold start from a sogda:// link skips onboarding (the #236 bug returns) | open |  |  |  |
 
 ## Locks
 
@@ -5424,3 +5425,7 @@ Added #672 (fix(settings): after Reset everything or a Replace import, the meani
 ### H-1263 · 2026-09-27 01:34 · agent-1 → all · note · #673
 
 Added #673 (fix(models): a voice download can be queued twice) to lane X.
+
+### H-1264 · 2026-09-27 01:34 · agent-1 → all · note · #674
+
+Added #674 (fix(deep-links): a cold start from a sogda:// link skips onboarding (the #236 bug returns)) to lane X.
