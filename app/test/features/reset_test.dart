@@ -19,6 +19,7 @@ import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 
 import '../db/content_fixture.dart';
+import '../core/text_clipping.dart' show AndroidTextScaler;
 
 /// The recordings, deleted without a disk: `reset_repository_test.dart`
 /// deletes real ones, and file I/O never finishes in a widget test's clock.
@@ -80,9 +81,13 @@ void main() {
       (await db.customSelect('SELECT COUNT(*) AS n FROM $table').getSingle())
           .read<int>('n');
 
-  Future<void> pump(WidgetTester tester) async {
+  Future<void> pump(
+    WidgetTester tester, {
+    Size screen = const Size(600, 4500),
+    TextScaler? textScaler,
+  }) async {
     tester.view
-      ..physicalSize = const Size(1200, 9000)
+      ..physicalSize = screen * 2
       ..devicePixelRatio = 2;
     addTearDown(tester.view.reset);
 
@@ -105,6 +110,12 @@ void main() {
           theme: AppTheme.light(),
           localizationsDelegates: appLocalizationsDelegates,
           supportedLocales: supportedLocales,
+          builder: textScaler == null
+              ? null
+              : (context, child) => MediaQuery(
+                  data: MediaQuery.of(context).copyWith(textScaler: textScaler),
+                  child: child!,
+                ),
           routerConfig: GoRouter(
             initialLocation: '/me/settings',
             routes: <RouteBase>[
@@ -146,6 +157,35 @@ void main() {
     await tap(tester, l10n.resetExportFirst);
     expect(went, '/me/export');
     expect(await count('word_state'), 1);
+  });
+
+  testWidgets('#586 at 200 % on a 360 × 640 phone, the field tapped comes '
+      'above the keyboard with nothing typed', (tester) async {
+    await pump(
+      tester,
+      screen: const Size(360, 640),
+      textScaler: const AndroidTextScaler(2),
+    );
+    tester.view.padding = const FakeViewPadding(top: 24 * 2);
+    await tester.scrollUntilVisible(
+      find.text(l10n.settingsReset),
+      300,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.pumpAndSettle();
+    await tap(tester, l10n.settingsReset);
+    await tap(tester, l10n.resetEverything);
+
+    await tester.showKeyboard(find.byType(TextField));
+    tester.view.viewInsets = const FakeViewPadding(bottom: 280 * 2);
+    addTearDown(tester.view.resetViewInsets);
+    await tester.pumpAndSettle();
+
+    final field = tester.getRect(find.byType(TextField));
+    expect(field.top, greaterThanOrEqualTo(24));
+    expect(field.bottom, lessThanOrEqualTo(640 - 280));
+    expect(find.byType(TextField).hitTestable(), findsOneWidget);
+    expect(tester.takeException(), isNull);
   });
 
   testWidgets('FR-M7-02 Reset stays off until the field says RESET exactly', (

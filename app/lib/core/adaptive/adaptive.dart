@@ -1336,7 +1336,7 @@ class _TypedConfirmState extends State<_TypedConfirm> {
       borderRadius: BorderRadius.circular(tokens.shape.button),
       borderSide: BorderSide(color: tokens.color.ink),
     );
-    return AlertDialog(
+    final dialog = AlertDialog(
       // The title, the message and the field scroll above the keyboard, the
       // actions under them: at 200 % or in Bangla they are taller than the
       // room the keyboard leaves (#432). Cupertino's alert scrolls already.
@@ -1382,6 +1382,19 @@ class _TypedConfirmState extends State<_TypedConfirm> {
         ),
         typed,
       ],
+    );
+    // The keyboard's room as plain padding, in the same frame, and none for
+    // the dialog's own: Material animates its inset over 100 ms, and the
+    // field's reveal, run on the keyboard's first frame, saw the dialog where
+    // it was, so at 200 % on a 360 × 640 phone the field stayed under the
+    // keyboard until typing (#586).
+    return Padding(
+      padding: EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(context).bottom),
+      child: MediaQuery.removeViewInsets(
+        context: context,
+        removeBottom: true,
+        child: dialog,
+      ),
     );
   }
 }
