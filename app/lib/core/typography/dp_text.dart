@@ -244,7 +244,8 @@ abstract final class DpScript {
   /// with a hasanta, so no conjunct is split and a vowel sign stays on its
   /// letter. That takes in the content's own joints, a hasanta with a
   /// zero-width non-joiner ("…কাইট্‌|স…", "…কার্টেন্‌|আউ…"). Never before a
-  /// consonant, or a conjunct, that such a joint or the word's end closes
+  /// consonant, or a conjunct, that such a joint, khanda-ta or the word's end
+  /// closes
   /// ("…লা|ন্ট্‌" would take it from its syllable), before khanda-ta (ৎ),
   /// which ends one too, nor before an independent vowel but after a joint
   /// ("কা|ইট" would split a diphthong). Two aksharas from either end at
@@ -252,7 +253,7 @@ abstract final class DpScript {
   // ponytail: a legacy khanda-ta (ত্‍, a hasanta and a zero-width joiner)
   // isn't read as closed; the content writes ৎ.
   static String banglaBreaks(String word) {
-    const hasanta = 0x9CD, joint = 0x200C;
+    const hasanta = 0x9CD, joint = 0x200C, khandaTa = 0x9CE;
     int at(int i) => i >= 0 && i < word.length ? word.codeUnitAt(i) : 0;
     bool consonant(int c) =>
         (c >= 0x995 && c <= 0x9B9) || (c >= 0x9DC && c <= 0x9DF);
@@ -262,8 +263,12 @@ abstract final class DpScript {
       while (at(last + 1) == hasanta && consonant(at(last + 2))) {
         last += 2;
       }
+      // Closed by a joint, the word's end, or khanda-ta ("…শ্মে|র্ৎ" would
+      // start a line with র্ৎ).
       return at(last + 1) == hasanta &&
-          (at(last + 2) == joint || at(last + 2) == 0);
+          (at(last + 2) == joint ||
+              at(last + 2) == 0 ||
+              at(last + 2) == khandaTa);
     }
 
     // Where each akshara begins, whether a line may start there or not: a

@@ -796,6 +796,8 @@ void main() {
       'Fahrkartenautomat': <String>[
         'ফার', 'কা', 'র্টেন্‌', 'আউ', 'টো', 'মাট', //
       ],
+      // A cluster khanda-ta closes starts no line: never "শ্মে|র্ৎ".
+      'Kopfschmerzen': <String>['কপ্ফ', 'শ্মের্ৎ', 'সেন'],
     };
     const prons = <String, String>{
       'Geschwindigkeitsbegrenzung': 'গেশ্ভিন্ডিশকাইট্‌সবেগ্রেন্‌ৎসুং',
@@ -806,6 +808,7 @@ void main() {
       'Handelsbilanzüberschuss': 'হান্ডেল্সবিলান্‌ৎসয়্যুবারশুস',
       'einundzwanzig': 'আইন্‌উন্ট্‌ৎসভান্‌ৎসিশ',
       'Fahrkartenautomat': 'ফারকার্টেন্‌আউটোমাট',
+      'Kopfschmerzen': 'কপ্ফশ্মের্ৎসেন',
     };
 
     test("#504 each breaks between its aksharas, and at the content's own "
@@ -846,7 +849,9 @@ void main() {
           }
           expect(
             at(last + 1) == hasanta &&
-                (at(last + 2) == joint || at(last + 2) == 0),
+                (at(last + 2) == joint ||
+                    at(last + 2) == 0 ||
+                    at(last + 2) == 0x9CE),
             isFalse,
             reason: 'a closed consonant starts a line: $pron',
           );
