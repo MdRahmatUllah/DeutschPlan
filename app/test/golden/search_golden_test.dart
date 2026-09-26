@@ -43,6 +43,49 @@ void main() {
     builder: (_) => const SearchScreen(),
   );
 
+  // #535: a long compound in a sentence hit, marked: at 200 % it breaks at
+  // a syllable with its "-", which the text audit checks.
+  goldenTest(
+    'search_sentence',
+    overrides: [
+      searchResultsProvider.overrideWith(
+        (ref, query) => Stream.value(
+          const SearchView(
+            words: <SearchRow>[],
+            sentences: <SentenceHit>[
+              SentenceHit(
+                wordUid: 'geschwindigkeitsbegrenzung',
+                german:
+                    'Auf dieser Strecke gilt eine Geschwindigkeitsbegrenzung.',
+                english: 'A speed limit applies on this stretch.',
+                head: 'Geschwindigkeitsbegrenzung',
+                article: 'die',
+                step: 'B2.2',
+                runs: <(String, bool)>[
+                  ('Auf dieser Strecke gilt eine ', false),
+                  ('Geschwindigkeitsbegrenzung', true),
+                  ('.', false),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+      recentSearchesProvider.overrideWith(() => StubRecentSearches(const [])),
+      myWordsProvider.overrideWith((ref) => Stream.value(const <MyWord>[])),
+      fakeVoice(FakeTts()),
+    ],
+    builder: (_) => const SearchScreen(),
+    act: (tester) async {
+      await tester.enterText(
+        find.byType(TextField),
+        'Geschwindigkeitsbegrenzung',
+      );
+      await tester.pump(SearchScreen.debounce);
+      await tester.pumpAndSettle();
+    },
+  );
+
   // #139: the SearchNone artboard's "Wohnungsgeberbestätigung", not in the
   // course's 5,594 words.
   goldenTest(
