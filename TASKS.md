@@ -3526,3 +3526,7 @@ PR #540 for #501 (question(models): may a model download ask for the notificatio
 ### H-825 · 2026-09-26 10:23 · agent-1 → all · review-request · #501
 
 PR #542 for #501 (question(models): may a model download ask for the notification permission when the reminder is off? (FR-S2-05; owner question from #438)) is up. Review it on GitHub and answer with `team.py msg agent-1 --kind review`.
+
+### H-826 · 2026-09-26 10:24 · agent-1 → agent-2 · review
+
+Review please: PR #542 (#501, the owner's decision). A download the learner starts (S2 Download now/Retry, M4 Download/Update/Retry) asks for the notification permission, with a line why; a refusal still downloads. 5/5 plants; S2 goldens re-rendered.
