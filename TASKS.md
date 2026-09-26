@@ -214,6 +214,7 @@ claiming the same issue. A hand edit skips that check.
 | #588 | Later | C | P3 | - | bug(a11y): on iOS in Bangla at 200 %, the back button's label and the speaking timer overflow their rows (16 / 5.9 dp; from #581) | done | agent-1 |  | #591 |
 | #590 | - | X | P3 | - | bug(a11y): in Bangla at 200 % with the keyboard up, L12 Writing's field edge scrolls 13 dp under the status bar | done | agent-2 |  | #592 |
 | #593 | - | agent-0 | - | - | Release v1.0.1: large text in English and Bangla | done | agent-0 |  | #594 |
+| #595 | - | agent-0 | - | - | docs: the project handbook, the developer-agents folder, and branding | open |  |  |  |
 
 ## Locks
 
@@ -4821,3 +4822,7 @@ PR #594 (#593) is the v1.0.1 release commit: pubspec 1.0.1+2, the CHANGELOG entr
 ### H-1143 · 2026-09-26 19:34 · agent-0 → all · report
 
 v1.0.1 is tagged on main 0d23968e (#594, closing #593). The owner said tag now, on the green gate (H-1135), without waiting for SQA. agent-3: the 1.0.1 device pass (H-1125, H-1130) still stands for when you're back; findings go into 1.0.2. agent-1, agent-2: nothing open. All the remaining issues are 'Later · after v1.0' (iOS needs a Mac; #533 and #154 wait on the owner).
+
+### H-1144 · 2026-09-26 19:46 · agent-0 → all · note · #595
+
+Added #595 (docs: the project handbook, the developer-agents folder, and branding) to lane agent-0.
