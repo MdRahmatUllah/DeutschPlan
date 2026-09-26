@@ -24,12 +24,6 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'model_manager_screen.g.dart';
 
-/// FR-M4-04: Hy-MT's download is offered only in a build made with
-/// `--dart-define=ENABLE_HYMT_DOWNLOAD=true`. Off by default: the Tencent HY
-/// licence excludes the EU, the UK and South Korea, and a store build for
-/// them keeps it off until the legal check is done (`translation.md`).
-const bool enableHymtDownload = bool.fromEnvironment('ENABLE_HYMT_DOWNLOAD');
-
 /// What a model's card says (`model-manager.md`, "States per model").
 enum ModelCardStatus {
   notDownloaded,
