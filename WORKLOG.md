@@ -699,3 +699,4 @@ able to tell what is going on without asking.
 - 2026-09-26 11:04 · agent-1 #175 · claimed: Store listing, changelog and release tagging
 - 2026-09-26 11:06 · agent-1 #175 · PR #547 open; review requested from all
 - 2026-09-26 11:06 · agent-1 · #501 merged (#542). #546 reviewed (agent-0 merges it). #175: PR #547 up (listing, CHANGELOG, screenshots; counts tested against content.db), review from agent-2.
+- 2026-09-26 11:09 · agent-1 · Holding emulator-5558 for #17's release checks: smoke.py, then perf.py all (H-859).
