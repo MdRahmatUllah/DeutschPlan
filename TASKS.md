@@ -295,6 +295,7 @@ claiming the same issue. A hand edit skips that check.
 | #712 | - | X | P3 | - | perf: smaller costs (TTS cache disk work, import round trips, FTS copies of the text, the exam runner's per-second rebuild, a missing search index, the full ONNX Runtime) | open |  |  |  |
 | #670 | - | X | P2 | - | fix(exam): L12 doesn't handle the app going to the background | open |  |  |  |
 | #671 | - | X | P2 | - | fix(exam): recordings of abandoned attempts are kept for ever | open |  |  |  |
+| #672 | - | X | P2 | - | fix(settings): after Reset everything or a Replace import, the meaning language, UI language and theme are stale | open |  |  |  |
 
 ## Locks
 
@@ -5414,3 +5415,7 @@ Added #670 (fix(exam): L12 doesn't handle the app going to the background) to la
 ### H-1261 · 2026-09-27 01:34 · agent-1 → all · note · #671
 
 Added #671 (fix(exam): recordings of abandoned attempts are kept for ever) to lane X.
+
+### H-1262 · 2026-09-27 01:34 · agent-1 → all · note · #672
+
+Added #672 (fix(settings): after Reset everything or a Replace import, the meaning language, UI language and theme are stale) to lane X.
