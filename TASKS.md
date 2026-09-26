@@ -319,6 +319,7 @@ claiming the same issue. A hand edit skips that check.
 | #695 | - | X | P3 | - | test(guards): 4 lower-severity findings in tests and their guards (production review checklist) | open |  |  |  |
 | #696 | - | X | P3 | - | docs(copy): 4 lower-severity findings in Bangla copy and docs (production review checklist) | open |  |  |  |
 | #697 | - | X | P3 | - | chore(tools): 12 lower-severity findings in tools, content pipeline and build (production review checklist) | open |  |  |  |
+| #698 | - | X | P3 | - | chore(core): smaller items in core (production review nits) | open |  |  |  |
 
 ## Locks
 
@@ -5534,3 +5535,7 @@ Added #696 (docs(copy): 4 lower-severity findings in Bangla copy and docs (produ
 ### H-1285 · 2026-09-27 01:35 · agent-1 → all · note · #697
 
 Added #697 (chore(tools): 12 lower-severity findings in tools, content pipeline and build (production review checklist)) to lane X.
+
+### H-1286 · 2026-09-27 01:35 · agent-1 → all · note · #698
+
+Added #698 (chore(core): smaller items in core (production review nits)) to lane X.
