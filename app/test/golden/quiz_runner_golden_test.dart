@@ -37,13 +37,13 @@ void main() {
     Future<void> check(String text) async {
       await tester.enterText(find.byType(TextField), text);
       await tester.pump();
-      await tester.tap(find.text('Check'));
+      await tester.tap(find.text(tester.l10n.quizCheck));
       await tester.pumpAndSettle();
     }
 
     for (var i = 1; i < 7; i++) {
       await check('x');
-      await tester.tap(find.text('Next'));
+      await tester.tap(find.text(tester.l10n.practiceNext));
       await tester.pumpAndSettle();
     }
     await check('der Mietvertag');
@@ -80,7 +80,7 @@ void main() {
   Future<void> type(WidgetTester tester, String text) async {
     await tester.enterText(find.byType(TextField), text);
     await tester.pump();
-    await tester.tap(find.text('Check'));
+    await tester.tap(find.text(tester.l10n.quizCheck));
     await tester.pumpAndSettle();
   }
 
@@ -193,10 +193,10 @@ void main() {
     ),
     act: (tester) async {
       await type(tester, 'rent');
-      await tester.tap(find.text('Next'));
+      await tester.tap(find.text(tester.l10n.practiceNext));
       await tester.pumpAndSettle();
       await type(tester, 'rent');
-      await tester.tap(find.text('Next'));
+      await tester.tap(find.text(tester.l10n.practiceNext));
       await tester.pumpAndSettle();
     },
   );

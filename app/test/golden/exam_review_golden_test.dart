@@ -40,7 +40,9 @@ void main() {
   );
 
   Future<void> wrongOnly(WidgetTester tester) async {
-    await tester.tap(find.textContaining('Wrong only'));
+    await tester.tap(
+      find.textContaining(tester.l10n.examReviewWrong(0).split(' · ').first),
+    );
     await tester.pumpAndSettle();
   }
 

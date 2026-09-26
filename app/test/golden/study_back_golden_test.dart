@@ -67,45 +67,45 @@ void main() {
     searchKeyAlt: 'rechnung',
   );
 
-  ProviderScope screen({Set<String> updated = const <String>{}}) =>
-      ProviderScope(
-        overrides: [
-          settingsProvider.overrideWithValue(settings),
-          recentlyUpdatedProvider.overrideWith((ref) async => updated),
-          studySessionProvider(args).overrideWith(_Fourth.new),
-          studyIntervalsProvider('r3').overrideWith(
-            (ref) async => <Rating, int>{
-              Rating.again: 1,
-              Rating.hard: 3,
-              Rating.good: 8,
-              Rating.easy: 21,
-            },
-          ),
-          studyBackProvider('r3').overrideWith(
-            (ref) async => (
-              examples: <StudyExample>[
-                (
-                  german: 'Ich habe die Rechnung noch nicht bezahlt.',
-                  english: "I haven't paid the bill yet.",
-                ),
-                (
-                  german: 'Können wir bitte die Rechnung haben?',
-                  english: 'Could we have the bill, please?',
-                ),
-              ],
-              tip: null,
+  ProviderScope screen({
+    Set<String> updated = const <String>{},
+    Map<Rating, int> intervals = const <Rating, int>{
+      Rating.again: 1,
+      Rating.hard: 3,
+      Rating.good: 8,
+      Rating.easy: 21,
+    },
+  }) => ProviderScope(
+    overrides: [
+      settingsProvider.overrideWithValue(settings),
+      recentlyUpdatedProvider.overrideWith((ref) async => updated),
+      studySessionProvider(args).overrideWith(_Fourth.new),
+      studyIntervalsProvider('r3').overrideWith((ref) async => intervals),
+      studyBackProvider('r3').overrideWith(
+        (ref) async => (
+          examples: <StudyExample>[
+            (
+              german: 'Ich habe die Rechnung noch nicht bezahlt.',
+              english: "I haven't paid the bill yet.",
             ),
-          ),
-          studyWordProvider('r3').overrideWith(
-            (ref) async => const WordWithState(
-              word: rechnung,
-              state: null,
-              status: WordStatus.learning,
+            (
+              german: 'Können wir bitte die Rechnung haben?',
+              english: 'Could we have the bill, please?',
             ),
-          ),
-        ],
-        child: StudyScreen(args: args),
-      );
+          ],
+          tip: null,
+        ),
+      ),
+      studyWordProvider('r3').overrideWith(
+        (ref) async => const WordWithState(
+          word: rechnung,
+          state: null,
+          status: WordStatus.learning,
+        ),
+      ),
+    ],
+    child: StudyScreen(args: args),
+  );
 
   goldenTest('study_back', builder: (_) => screen());
 
@@ -114,6 +114,24 @@ void main() {
     'study_back_updated',
     devices: <GoldenDevice>[GoldenDevice.phone],
     builder: (_) => screen(updated: <String>{'r3'}),
+  );
+
+  // #581: a mature word's intervals, past a thousand days. In Bangla at
+  // 200 % "১,১১১ দিন" wraps and the four buttons grow together (#580);
+  // "1,111 d" fits, so only the audit's Bangla pass holds the rating bar's
+  // minimum height.
+  goldenTest(
+    'study_back_mature',
+    modes: const <GoldenMode>[GoldenMode.light],
+    devices: const <GoldenDevice>[GoldenDevice.phone],
+    builder: (_) => screen(
+      intervals: <Rating, int>{
+        Rating.again: 1,
+        Rating.hard: 45,
+        Rating.good: 390,
+        Rating.easy: 1111,
+      },
+    ),
   );
 }
 

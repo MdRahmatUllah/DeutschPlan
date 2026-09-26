@@ -23,9 +23,9 @@ void main() {
   Future<void> typing(WidgetTester tester) async {
     await tester.drag(find.byType(ListView), const Offset(0, -4000));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Reset'));
+    await tester.tap(find.text(tester.l10n.settingsReset));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Reset everything'));
+    await tester.tap(find.text(tester.l10n.resetEverything));
     await tester.pumpAndSettle();
     await tester.enterText(find.byType(EditableText), 'RES');
     await tester.pumpAndSettle();
