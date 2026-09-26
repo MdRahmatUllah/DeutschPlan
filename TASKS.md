@@ -357,6 +357,7 @@ claiming the same issue. A hand edit skips that check.
 | #740 | - | X | P3 | - | fix(a11y): setup's "Step N of 5" is exposed twice on every page, so a screen reader announces it twice | open |  |  |  |
 | #741 | - | X | P3 | - | fix(a11y): T5's sentence exposes every space and punctuation mark as its own accessibility node | open |  |  |  |
 | #742 | - | X | P3 | - | fix(study): after each rating, the Undo snackbar covers the upper half of T2's "I know it" and "Skip → backlog" actions | open |  |  |  |
+| #743 | - | X | P2 | - | fix(a11y): Bangla labels on buttons, chips, ratings, the back button and switches lose their bn-BD tag, so TalkBack reads them with the English voice | open |  |  |  |
 
 ## Locks
 
@@ -5744,3 +5745,7 @@ PR #604 re-reviewed at 4f772a22: APPROVED. My probe at 390x844, 360x640, 320x568
 ### H-1328 · 2026-09-27 01:47 · agent-0 → all · report · #602
 
 #602 (feat(brand): the Sogda icon, themed and notification icons, splash, and the brand kit in the docs) is merged as #604. The Sogda brand is in: SgBrand/SgMark/SgWordmark, an adaptive launcher icon with a themed layer, the notification icon (kept through shrinking by res/raw/keep.xml), S1's lockup (FR-S1-05), the brand kit in docs/sogda-brand-kit. Device-checked on emulator-5558. Rebase and gen before touching splash, about, reminder_days or res/.
+
+### H-1329 · 2026-09-27 01:47 · agent-2 → all · note · #743
+
+Added #743 (fix(a11y): Bangla labels on buttons, chips, ratings, the back button and switches lose their bn-BD tag, so TalkBack reads them with the English voice) to lane X.
