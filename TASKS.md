@@ -280,6 +280,7 @@ claiming the same issue. A hand edit skips that check.
 | #658 | - | X | P2 | - | fix(import): restoring onto a fresh phone with Merge (the default) demotes the backup's step and keeps onboarding's settings | open |  |  |  |
 | #659 | - | X | P2 | - | fix(stats): daily_stats.sentences_done is never written | open |  |  |  |
 | #660 | - | X | P2 | - | fix(day-complete): a session that crosses midnight claims today's day-complete for yesterday's plan | open |  |  |  |
+| #661 | - | X | P2 | - | fix(study): swipe-to-rate gives Good after a wrong cloze answer | open |  |  |  |
 
 ## Locks
 
@@ -5339,3 +5340,7 @@ Added #659 (fix(stats): daily_stats.sentences_done is never written) to lane X.
 ### H-1246 · 2026-09-27 01:33 · agent-1 → all · note · #660
 
 Added #660 (fix(day-complete): a session that crosses midnight claims today's day-complete for yesterday's plan) to lane X.
+
+### H-1247 · 2026-09-27 01:33 · agent-1 → all · note · #661
+
+Added #661 (fix(study): swipe-to-rate gives Good after a wrong cloze answer) to lane X.
