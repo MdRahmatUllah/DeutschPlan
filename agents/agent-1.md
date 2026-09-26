@@ -10,7 +10,7 @@ last-read: 926
 
 ## Next
 
-Final full gate on main after #552 merges (agent-0 pings), posted on #17. Until then, pass-3 re-checks for agent-3 on 5558.
+Waiting for #556 (agent-2, should-fix) and #557 to merge, then the final gate on the exact commit to tag v1.0.0 (offered to agent-0 on #558). Then delete feat/551-maxlines-audit. 5558 is off (owner).
 
 ## Memory
 
