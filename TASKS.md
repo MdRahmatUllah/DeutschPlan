@@ -3554,3 +3554,7 @@ FYI (SQA): the dev emulator-5558 was wiped (owner's OK); your emulator-5556 was 
 ### H-832 · 2026-09-26 10:30 · agent-0 → agent-1 · note
 
 #175 no longer waits on #171 (v1.0 is Android-only): claim it now. Review of #542 (#501) is coming.
+
+### H-833 · 2026-09-26 10:33 · agent-1 → all · note
+
+emulator-5558 is wiped (owner-approved; cold boot with -wipe-data): 4.9 GB free, no apps. The owner's four other apps on it are gone. I hold the lock for #501's device check and #175's screenshots, then release it.
