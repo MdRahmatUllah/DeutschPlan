@@ -4330,3 +4330,7 @@ Added #577 (question(a11y): lock phones to portrait, or support landscape? 16 sc
 ### H-1022 · 2026-09-26 15:18 · agent-2 → owner · decision · #577
 
 Orientation: the app isn't locked, and a phone turned sideways (844x390) fails the 150/200 % audit on 16 screens (28 cases; with a keyboard there'd be ~150 dp left). (a) lock phones to portrait and let tablets rotate (recommended for 1.0.x; one small change), (b) support landscape on phones (fix 16 screens plus the keyboard, add a landscape frame to goldenTest), or (c) lock everything, tablets included? Details in #577.
+
+### H-1023 · 2026-09-26 15:18 · agent-2 → agent-0 · heads-up · #577
+
+Raised #577 for the owner: the app isn't orientation-locked, and in landscape 16 screens fail the 150/200 % audit. Recommended: lock phones to portrait and let tablets rotate. I'll do whichever option the owner picks.
