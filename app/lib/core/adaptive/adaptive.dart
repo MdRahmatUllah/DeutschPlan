@@ -369,10 +369,15 @@ class AdaptiveBackButton extends StatelessWidget {
                     ),
                     if (cupertinoChrome && label != null) ...<Widget>[
                       const SizedBox(width: 2),
-                      DpText(
-                        label!,
-                        role: DpTextRole.bodyLarge,
-                        color: colour ?? tokens.color.link,
+                      // One line, cut after a whole word as iOS cuts a long
+                      // back title: in Bangla at 200 % it ran 16 dp past the
+                      // bar's leading slot (#588).
+                      Flexible(
+                        child: DpOneLine(
+                          label!,
+                          role: DpTextRole.bodyLarge,
+                          color: colour ?? tokens.color.link,
+                        ),
                       ),
                     ],
                   ],

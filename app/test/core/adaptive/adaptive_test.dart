@@ -220,11 +220,16 @@ void main() {
     });
 
     /// The bar's title as drawn: DpOneLine's one line of spans.
+    // The bar's title: its DpOneLine outside the back button, whose iOS
+    // label is one too (#588).
+    Finder titleLine() => find.byElementPredicate(
+      (element) =>
+          element.widget is DpOneLine &&
+          element.findAncestorWidgetOfExactType<AdaptiveBackButton>() == null,
+    );
+
     RichText barTitle(WidgetTester tester) => tester.widget<RichText>(
-      find.descendant(
-        of: find.byType(DpOneLine),
-        matching: find.byType(RichText),
-      ),
+      find.descendant(of: titleLine(), matching: find.byType(RichText)),
     );
 
     Future<void> bar(
@@ -275,7 +280,7 @@ void main() {
               '$chrome: cut between words, not in "${long.substring(0, kept.length + 1)}"',
         );
         expect(text.maxLines, 1, reason: '$chrome');
-        final title = tester.getRect(find.byType(DpOneLine));
+        final title = tester.getRect(titleLine());
         expect(
           title.left,
           greaterThanOrEqualTo(
@@ -339,7 +344,7 @@ void main() {
       for (final chrome in AdaptiveChrome.values) {
         for (final title in <String>['Settings', 'সেটিংস']) {
           await bar(tester, chrome, title);
-          expectNothingClipped(tester, within: find.byType(DpOneLine));
+          expectNothingClipped(tester, within: titleLine());
         }
       }
     });
