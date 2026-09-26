@@ -46,7 +46,7 @@ Created on first launch from `lib/data/db/user_schema.drift`, which is the autho
 | `meaning_language` | `both` | Onboarding, Settings |
 | `ui_language` | `en` | Onboarding, Settings |
 | `theme_mode` | `system` (light / dark / glass) | Settings |
-| `show_pron_bn` | 1 | Settings |
+| `show_pron_bn` | 1 | Settings; S2's meaning language sets it (off for English only, #527) |
 | `tts_engine` / `tts_voice` / `tts_speed` | supertonic / Anna / 1.0 | Settings, Model manager |
 | `autoplay_headword` / `autoplay_example` | 1 / 0 | Settings |
 | `exam_unlock_percent` / `exam_pass_percent` / `exam_timer_default` | 90 / 60 / 1 | Settings |

@@ -263,6 +263,21 @@ void main() {
       );
     });
 
+    testWidgets('#527 FR-S2-02 an English-only learner starts with the Bangla '
+        'pronunciation off; Bangla or both, on', (tester) async {
+      await pump(tester);
+      for (final (option, pron) in <(String, bool)>[
+        (l10n.onboardingMeaningEnglish, false),
+        (l10n.onboardingMeaningBangla, true),
+        (l10n.onboardingMeaningEnglish, false),
+        (l10n.onboardingMeaningBoth, true),
+      ]) {
+        await tester.tap(find.text(option));
+        await tester.pump();
+        expect(settings.read(SettingKeys.showPronBn), pron, reason: option);
+      }
+    });
+
     testWidgets('and if content.db fails, the page does not', (tester) async {
       // Held by Riverpod 3's `AsyncValue.value`, which is null on error. A
       // move to `requireValue` would throw here instead, on the one screen
