@@ -10,7 +10,7 @@ Nothing claimed.
 
 ## Next
 
-Free: waiting for agent-0's next assignment.
+Standing by for agent-3's 1.0.1 SQA findings (take any, mine first) and reviews (agent-0, H-1134).
 
 ## Memory
 
