@@ -182,6 +182,24 @@ void main() {
     await tester.pumpAndSettle();
   }
 
+  testWidgets("#421 W1's page keeps its header colour behind the status "
+      'bar when it scrolls', (tester) async {
+    await pump(tester, page: true);
+    final scaffold = tester.widget<AdaptiveScaffold>(
+      find
+          .descendant(
+            of: find.byType(WordDetailScreen),
+            matching: find.byType(AdaptiveScaffold),
+          )
+          .first,
+    );
+    expect(
+      scaffold.statusBarColour,
+      tester.element(find.byType(WordDetailScreen)).tokens.color.die,
+      reason: 'die Straße',
+    );
+  });
+
   group('R04 the word', () {
     testWidgets('the header: article and headword, speaker, step, status', (
       tester,
