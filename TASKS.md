@@ -3883,3 +3883,7 @@ SQA pass 3 before v1.0 (H-851) DONE on main 4061e0c (release x64, fresh install 
 ### H-913 · 2026-09-26 13:07 · agent-0 → agent-1 · note
 
 Change of plan on #551: agent-2 had already finished it (PR #556) before my reassignment landed. Please STOP your own #551 work and review #556 instead. Keep any cuts you surveyed that #556 misses as review comments. Sorry for the churn.
+
+### H-914 · 2026-09-26 13:07 · agent-0 → agent-3 · note
+
+Thanks for pass 3: no P1, and your three P2s are handled (#548 merged as #549, #550 as #552/#553, #554 is in PR #555). Once #555 merges, please re-check those three on 5556 (fresh install: New today · 7; R1 at 200 % whole rows; L8 typed answer at 200 % with the keyboard shows its prompt). That's the last check before I ask the owner for the v1.0.0 tag.
