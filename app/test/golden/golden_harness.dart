@@ -220,6 +220,29 @@ void goldenTest(
       );
     }
   }
+  // #162: every control a screen reader can press has a name, checked on
+  // every case once (phone, light), after its act.
+  testWidgets('$name · labels', tags: <String>[goldenTag], (tester) async {
+    final handle = tester.ensureSemantics();
+    await tester.pumpGolden(
+      builder: builder,
+      mode: GoldenMode.light,
+      device: GoldenDevice.phone,
+      chrome: chrome,
+      still: still,
+      overrides: overrides,
+    );
+    if (act != null) {
+      await act(tester);
+      await tester.pumpAndSettle(
+        const Duration(milliseconds: 100),
+        EnginePhase.sendSemanticsUpdate,
+        settleTimeout,
+      );
+    }
+    await expectLater(tester, meetsGuideline(labeledTapTargetGuideline));
+    handle.dispose();
+  });
 }
 
 /// [linear] as Android 14+ gives it, when text is scaled at all.

@@ -543,14 +543,28 @@ class _Header extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
+    final uid = member.uid;
+    void open() => WordRoute.open(context, uid!);
+    final headword = DpHeadword(
+      member.headword,
+      article: member.article,
+      role: DpTextRole.title,
+    );
     final content = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        DpHeadword(
-          member.headword,
-          article: member.article,
-          role: DpTextRole.title,
-        ),
+        // To a screen reader the headword is the button that opens the word:
+        // the header around it holds its own play button, so a label can't
+        // gather onto the header, which was read as a nameless button (#162).
+        if (uid == null)
+          headword
+        else
+          Semantics(
+            container: true,
+            button: true,
+            onTap: open,
+            child: headword,
+          ),
         const SizedBox(height: 6),
         Row(
           children: <Widget>[
@@ -563,17 +577,12 @@ class _Header extends ConsumerWidget {
         ),
       ],
     );
-    final uid = member.uid;
     if (uid == null) return content;
-    void open() => WordRoute.open(context, uid);
-    return Semantics(
-      button: true,
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
       onTap: open,
-      child: GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTap: open,
-        child: content,
-      ),
+      excludeFromSemantics: true,
+      child: content,
     );
   }
 }
