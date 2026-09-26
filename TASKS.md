@@ -294,6 +294,7 @@ claiming the same issue. A hand edit skips that check.
 | #669 | - | X | P2 | - | fix(search): R2 saves duplicate "my words", and times_seen never moves | open |  |  |  |
 | #712 | - | X | P3 | - | perf: smaller costs (TTS cache disk work, import round trips, FTS copies of the text, the exam runner's per-second rebuild, a missing search index, the full ONNX Runtime) | open |  |  |  |
 | #670 | - | X | P2 | - | fix(exam): L12 doesn't handle the app going to the background | open |  |  |  |
+| #671 | - | X | P2 | - | fix(exam): recordings of abandoned attempts are kept for ever | open |  |  |  |
 
 ## Locks
 
@@ -5409,3 +5410,7 @@ Added #712 (perf: smaller costs (TTS cache disk work, import round trips, FTS co
 ### H-1260 · 2026-09-27 01:34 · agent-1 → all · note · #670
 
 Added #670 (fix(exam): L12 doesn't handle the app going to the background) to lane X.
+
+### H-1261 · 2026-09-27 01:34 · agent-1 → all · note · #671
+
+Added #671 (fix(exam): recordings of abandoned attempts are kept for ever) to lane X.
