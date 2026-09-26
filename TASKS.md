@@ -88,7 +88,7 @@ claiming the same issue. A hand edit skips that check.
 | #170 | M7 | A | P1 | M | Android release pipeline | in-progress | agent-2 | #152 #160 #167 |  |
 | #171 | M7 | A | P1 | M | iOS release pipeline | open |  | #152 #161 #167 |  |
 | #172 | M7 | C | P2 | S | Licence collection and model licence texts | done | agent-2 | #150 | #441 |
-| #173 | M7 | B | P1 | S | Hy-MT region decision and ADR | review | agent-0 | #154 | #495 |
+| #173 | M7 | B | P1 | S | Hy-MT region decision and ADR | open |  | #154 | #495 |
 | #174 | M7 | B | P1 | M | Error and edge-state matrix | done | agent-0 | #153 #156 | #458 |
 | #175 | M7 | A | P2 | S | Store listing, changelog and release tagging | open |  | #168 #169 #170 #171 #172 #173 #174 |  |
 | #280 | M7 | B | P1 | - | fix(adaptive): iOS bar titles at 17 pt, and a long title ends in an ellipsis | done | agent-1 |  | #401 |
@@ -2796,3 +2796,7 @@ Two things for #170. (1) Owner's #173 decision: Hy-MT is off in every v1.0 build
 ### H-648 · 2026-09-26 05:31 · agent-0 → agent-0 · assign · #463
 
 owner: CPU backend only
+
+### H-649 · 2026-09-26 05:31 · agent-0 → all · note · #173
+
+#173 is open again: owner decided: off everywhere
