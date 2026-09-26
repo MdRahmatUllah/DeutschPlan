@@ -267,6 +267,23 @@ void main() {
       await updater.markSeen('202602020000');
       expect(await updater.unseen(), isNull);
     });
+
+    test('#477 BR-CONTENT-03 two updates before a dismiss: one card, the '
+        'newest, and dismissing it clears both', () async {
+      publish(course(version: '202602020000', addWord: true));
+      await updater.runIfNeeded();
+      publish(course(version: '202603030000', removeWord: true));
+      await updater.runIfNeeded();
+
+      final shown = await updater.unseen();
+      expect(shown!.version, '202603030000');
+      await updater.markSeen(shown.version);
+      expect(
+        await updater.unseen(),
+        isNull,
+        reason: "the older update's card doesn't come back",
+      );
+    });
   });
 
   group('BR-CONTENT-02 the updated chip', () {

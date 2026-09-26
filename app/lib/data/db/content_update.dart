@@ -145,8 +145,15 @@ class ContentUpdater {
     return null;
   }
 
+  /// BR-CONTENT-03's card is one-time: dismissing the newest update clears
+  /// every one before it too (#477). Versions order as strings, as
+  /// [unseen]'s does, because PIPE-07's `content_version` is the fixed-width
+  /// `YYYYMMDDHHMM` build stamp.
+  // ponytail: the card counts the newest update alone, so an older unseen
+  // one's changes go uncounted; net counts from the unseen rows'
+  // changed_json if the owner wants them.
   Future<void> markSeen(String version) => _db.customStatement(
-    'UPDATE content_updates SET seen = 1 WHERE version = ?',
+    'UPDATE content_updates SET seen = 1 WHERE version <= ?',
     <Object?>[version],
   );
 
