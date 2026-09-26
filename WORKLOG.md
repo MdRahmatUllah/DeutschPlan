@@ -581,3 +581,4 @@ able to tell what is going on without asking.
 - 2026-09-26 06:13 · agent-2 #419 · PR #498 open; review requested from all
 - 2026-09-26 06:17 · agent-1 #387 · PR #499 open; review requested from all
 - 2026-09-26 06:17 · agent-1 · #387: PR #499 up. #489 (#462): FlutterActivity's own reportFullyDrawn at S1 overrode ours; MainActivity overrides onFlutterUiDisplayed now, and the perf.py half is in; baseline left for a quiet host. #487 fix pushed. Reviewed #490, #493, #495, #497.
+- 2026-09-26 06:17 · agent-1 #421 · added to the board, lane C

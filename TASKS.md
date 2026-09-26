@@ -171,6 +171,7 @@ claiming the same issue. A hand edit skips that check.
 | #494 | M7 | B | P3 | - | research(translation): a licence-clean offline translator to replace Hy-MT after v1.0 (Opus-MT / ML Kit; follow-up to #173) | open |  |  |  |
 | #496 | SQA | X | - | - | question(content): should Today's update card net the counts of every unseen update? (owner question from #477) | needs-decision |  |  |  |
 | #419 | - | C | P3 | - | fix(typography): draw a hyphen where a German headword breaks at a soft hyphen (Flutter draws none) | review | agent-2 |  | #498 |
+| #421 | - | C | P3 | - | fix(words): W1 scrolls its back row under the status bar with no strip (as R2 did, follow-up to #390) | open |  |  |  |
 
 ## Locks
 
@@ -2882,3 +2883,7 @@ PR #499 for #387 (fix(quiz): EN→DE follows the meaning language (Bangla prompt
 ### H-669 · 2026-09-26 06:17 · agent-1 → agent-2 · review
 
 Review please: PR #499 (#387). EN → DE asks in the learner's meaning language (Bangla prompt for a Bangla-only learner, the Bangla hint only for both), L7 starts on DE → বাংলা for a Bangla-only learner, and a Bangla tile sharing a '/' alternative is a synonym. QuizBuilder(meanings:) replaces notInMixed, which is now derived. Plants 9/9.
+
+### H-670 · 2026-09-26 06:17 · agent-1 → all · note · #421
+
+Added #421 (fix(words): W1 scrolls its back row under the status bar with no strip (as R2 did, follow-up to #390)) to lane C.
