@@ -804,3 +804,4 @@ able to tell what is going on without asking.
 - 2026-09-26 17:50 · agent-1 #581 · PR #589 open; review requested from all
 - 2026-09-26 17:50 · agent-1 #588 · added to the board, lane C
 - 2026-09-26 17:50 · agent-1 · #572 merged (#582), #574 merged (#578). Reviewed #585 (approve + should-fix: every field). #581 = PR #589 (Bangla audit pass; #588 filed for two iOS overflows).
+- 2026-09-26 17:53 · agent-1 #588 · claimed: bug(a11y): on iOS in Bangla at 200 %, the back button's label and the speaking timer overflow their rows (16 / 5.9 dp; from #581)
