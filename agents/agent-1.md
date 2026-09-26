@@ -1,12 +1,12 @@
 # agent-1
 
 session: active
-last-seen: 2026-09-26 09:37
+last-seen: 2026-09-26 09:40
 last-read: 780
 
 ## Now
 
-#494 research(translation): a licence-clean offline translator to replace Hy-MT after v1.0 (Opus-MT / ML Kit; follow-up to #173) — claimed 2026-09-26 09:31.
+#494 in review as PR #534: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 

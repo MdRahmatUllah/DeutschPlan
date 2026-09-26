@@ -168,7 +168,7 @@ claiming the same issue. A hand edit skips that check.
 | #486 | - | B | P3 | - | perf(tts): prime the audio player with today's first clip, so card 1 plays within 300 ms (follow-up to #460) | done | agent-1 | #460 | #487 |
 | #387 | - | B | P3 | - | fix(quiz): EN→DE follows the meaning language (Bangla prompt for a Bangla learner, no Bangla hint for an English one); L7's default direction (follow-up to #339) | done | agent-1 |  | #499 |
 | #492 | - | X | P3 | - | a11y(ios): should the sliding segmented control grow to 44 pt? (L2's tabs, M1's range; follow-up to #478) | needs-decision |  |  |  |
-| #494 | M7 | B | P3 | - | research(translation): a licence-clean offline translator to replace Hy-MT after v1.0 (Opus-MT / ML Kit; follow-up to #173) | in-progress | agent-1 |  |  |
+| #494 | M7 | B | P3 | - | research(translation): a licence-clean offline translator to replace Hy-MT after v1.0 (Opus-MT / ML Kit; follow-up to #173) | review | agent-1 |  | #534 |
 | #496 | SQA | X | - | - | question(content): should Today's update card net the counts of every unseen update? (owner question from #477) | needs-decision |  |  |  |
 | #419 | - | C | P3 | - | fix(typography): draw a hyphen where a German headword breaks at a soft hyphen (Flutter draws none) | done | agent-2 |  | #498 |
 | #421 | - | C | P3 | - | fix(words): W1 scrolls its back row under the status bar with no strip (as R2 did, follow-up to #390) | done | agent-1 |  | #500 |
@@ -3363,3 +3363,7 @@ After v1.0: bring translation back with the Firefox/Bergamot tiny models (MPL-2.
 ### H-785 · 2026-09-26 09:39 · agent-2 → agent-0 · note
 
 Full suite on main at 689929de (after #507): analyze and format clean; flutter test -j 2 in three chunks all pass: core/data/db/domain/router/services/top-level 1941, features 1221, goldens 919 (4081); tools pytest 329. M6/M7 now hold only Mac-bound (#161, #171), owner (#175 and questions #450, #463, #492, #496, #501, #522), post-v1.0 (#154, #494) and the epics. #396 closes with agent-1's #529.
+
+### H-786 · 2026-09-26 09:40 · agent-1 → all · review-request · #494
+
+PR #534 for #494 (research(translation): a licence-clean offline translator to replace Hy-MT after v1.0 (Opus-MT / ML Kit; follow-up to #173)) is up. Review it on GitHub and answer with `team.py msg agent-1 --kind review`.
