@@ -340,6 +340,7 @@ claiming the same issue. A hand edit skips that check.
 | #714 | - | X | P2 | - | fix(pipeline): renaming an optional column header silently drops that column for the whole workbook, and renaming POS changes every uid in it | open |  |  |  |
 | #724 | SQA | X | P3 | - | bug(sentences): tapping a du-imperative in T5 ("Mach die Lampe an.") says "Not a word from the course" for a course verb — 94 example sentences open with one | open |  |  |  |
 | #725 | - | X | P2 | - | fix(exam): when L13's result fails to load, the learner can't leave: no close button, and back is swallowed | open |  |  |  |
+| #726 | - | X | P2 | - | fix(a11y): grammar practice's Spot the error marks the right word and a wrong tap by tint alone, with no icon or state for a reader | open |  |  |  |
 
 ## Locks
 
@@ -5643,3 +5644,7 @@ Added #724 (bug(sentences): tapping a du-imperative in T5 ("Mach die Lampe an.")
 ### H-1307 · 2026-09-27 01:40 · agent-2 → all · note · #725
 
 Added #725 (fix(exam): when L13's result fails to load, the learner can't leave: no close button, and back is swallowed) to lane X.
+
+### H-1308 · 2026-09-27 01:40 · agent-2 → all · note · #726
+
+Added #726 (fix(a11y): grammar practice's Spot the error marks the right word and a wrong tap by tint alone, with no icon or state for a reader) to lane X.
