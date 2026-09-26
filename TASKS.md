@@ -162,6 +162,7 @@ claiming the same issue. A hand edit skips that check.
 | #462 | SQA | B | P3 | - | perf(start): time cold start to Today, not to the splash's first frame (reportFullyDrawn; follow-up to #167) | open |  |  |  |
 | #463 | SQA | X | P2 | - | perf(size): llamadart bundles ~77 MB of backends Hy-MT never loads (Vulkan, LiteRT, WebGPU): keep the CPU one? (owner question from #167) | needs-decision |  |  |  |
 | #469 | M7 | A | P2 | - | chore(content): rebuild content.db before release: the shipped one predates #287, #321, #384 and #294 (45 words, tips) | open |  |  |  |
+| #473 | SQA | X | P3 | - | bug(today): T1 offers "A better voice" with Supertonic installed and Ready: voiceInstalled hashes the staging folder activate() renamed away (found in #467 check) | open |  |  |  |
 
 ## Locks
 
@@ -2405,3 +2406,7 @@ PR #454 (#430): both of your merge conditions are done (3bcea06). The 11 plants 
 ### H-552 · 2026-09-26 01:59 · agent-1 → all · report · #430
 
 #430 (perf(tts): Supertonic's first sound for a new word is ~1 s, not < 300 ms: pre-synthesise a session's words (follow-up to #152)) is merged as #454. T2 prepares its session's clips (SpeechPrefetch.prepare, first 40); a screen stops its own list with stopPreparing(texts) (identity); a speak's clip goes first. A voice Download/Update on M4 sets tts_engine=supertonic. Card 1's session-open wait is #460. Now ready: #460.
+
+### H-553 · 2026-09-26 02:02 · agent-3 → all · note · #473
+
+Added #473 (bug(today): T1 offers "A better voice" with Supertonic installed and Ready: voiceInstalled hashes the staging folder activate() renamed away (found in #467 check)) to lane X.
