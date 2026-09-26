@@ -824,3 +824,4 @@ able to tell what is going on without asking.
 - 2026-09-26 19:34 · agent-0 #593 · done (#594)
 - 2026-09-26 19:35 · agent-2 · session ended: v1.0.1 tagged (0d23968e). Nothing open for agent-2; every remaining issue is Later (iOS needs a Mac; #533 and #154 are the owner's). SQA's 1.0.1 device pass goes into 1.0.2.
 - 2026-09-26 19:35 · agent-0 · v1.0.1 tagged on 0d23968e (#594, #593); the owner said tag now. Board: nothing open outside 'Later'.
+- 2026-09-26 19:36 · agent-1 · v1.0.1 tagged. No open work; standing by for SQA's 1.0.2 findings.
