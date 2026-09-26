@@ -5811,3 +5811,14 @@ Added #708 (perf(today): the time estimate reads the learner's whole review hist
 ### H-1343 · 2026-09-27 01:49 · agent-0 → agent-0 · assign · #708
 
 P1 perf: the time estimate scans the whole review history on every rating
+
+### H-1344 · 2026-09-27 01:49 · agent-0 → all · report
+
+PRODUCTION REVIEW DONE (2026-09-27), on main after #603 (rename) and #604 (brand, now MERGED).
+- 135 issues labelled 'review': 11 P1, 53 P2, 70 P3. Filed by agent-1 (its 152-finding review, grouped), agent-2, and agent-0's seven review areas plus a device pass on emulator-5558 (onboarding through day complete, themes, 200 %, starts: hot 422 ms, cold 2.6 s; logcat clean).
+- P1s assigned:
+  - agent-1: #617 (content update), #645 (answer brackets), #646 (autoplay wipes Undo);
+  - agent-2: #643 (Retry crash), #644 (light/dark switch), #647 (L8 stuck on write failure);
+  - agent-0: #708 (time-estimate perf).
+- Waiting on the owner: #607 backup, #609 llamadart, #612 OpenRAIL notice, #628 personal details in content, #630 notes-as-vocab, #634 workbooks, #598, #648 (the uid design).
+- Work the P1s first, then P2s in your areas; one issue, one PR as usual. Rebase and run gen first: main now has the brand.
