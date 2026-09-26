@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-09-26 23:34
+last-seen: 2026-09-26 23:38
 last-read: 1143
 
 ## Now
 
-#601 in review as PR #603: answer review threads; re-run the gate if main moved, then merge.
+#602 feat(brand): the Sogda icon, themed and notification icons, splash, and the brand kit in the docs — claimed 2026-09-26 23:38.
 
 ## Next
 

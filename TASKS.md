@@ -219,7 +219,7 @@ claiming the same issue. A hand edit skips that check.
 | #597 | - | X | P2 | - | bug(exam): Writing can earn only 3 of its 4 points, so a perfect paper scores 47 of 48 | done | agent-0 |  | #600 |
 | #598 | - | X | - | - | question(content): practice sentences have no Bangla translation, but T5's spec promises one | needs-decision |  |  |  |
 | #601 | - | agent-0 | P1 | - | chore: rename the app to Sogda, de.sogda.app, internals included | review | agent-0 |  | #603 |
-| #602 | - | agent-0 | P1 | - | feat(brand): the Sogda icon, themed and notification icons, splash, and the brand kit in the docs | open |  |  |  |
+| #602 | - | agent-0 | P1 | - | feat(brand): the Sogda icon, themed and notification icons, splash, and the brand kit in the docs | in-progress | agent-0 |  |  |
 
 ## Locks
 
