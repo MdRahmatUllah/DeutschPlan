@@ -1,12 +1,12 @@
 # agent-1
 
 session: active
-last-seen: 2026-09-26 14:08
+last-seen: 2026-09-26 14:43
 last-read: 964
 
 ## Now
 
-#565 fix(a11y): past 130 % a field's hint wraps whole instead of ending in "…" (R1, T2's cloze, L15's gap, R2) (1.0.1, from #551) — claimed 2026-09-26 14:08.
+#565 in review as PR #570: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
