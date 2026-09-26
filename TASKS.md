@@ -254,6 +254,7 @@ claiming the same issue. A hand edit skips that check.
 | #636 | - | X | P3 | - | fix(content): category tab names cut at Excel's 31 characters leave 25 empty truncated categories, and 25 real ones with no description | open |  |  |  |
 | #637 | - | X | P3 | - | fix(content): separable-prefix tips sit on ~45 verbs where they're false, and 8 grammar topics refer to the author's tracker ("weeks 17–35", "In progress", a Munich exam centre) | open |  |  |  |
 | #638 | - | X | P3 | - | perf(tts): the Supertonic model (about 400 MB) is loaded at every launch and never released, even under memory pressure | open |  |  |  |
+| #639 | - | X | P3 | - | refactor(status): the "done" rule (stability ≥ done_stability_days) is written in five places, in Dart and SQL | open |  |  |  |
 
 ## Locks
 
@@ -5201,3 +5202,7 @@ Added #637 (fix(content): separable-prefix tips sit on ~45 verbs where they're f
 ### H-1218 · 2026-09-27 01:25 · agent-0 → all · note · #638
 
 Added #638 (perf(tts): the Supertonic model (about 400 MB) is loaded at every launch and never released, even under memory pressure) to lane X.
+
+### H-1219 · 2026-09-27 01:25 · agent-0 → all · note · #639
+
+Added #639 (refactor(status): the "done" rule (stability ≥ done_stability_days) is written in five places, in Dart and SQL) to lane X.
