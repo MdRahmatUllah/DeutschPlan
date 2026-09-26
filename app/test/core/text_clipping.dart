@@ -40,12 +40,14 @@ void expectNothingClipped(WidgetTester tester, {Finder? within}) {
 /// the whole of "birth certificate" (#550). [expectNothingClipped] lets
 /// both pass; this is for text that must be read whole.
 ///
-/// [within] null checks the whole screen, as the golden audit does (#551),
-/// less text under a widget of a type in [capped]: one that cuts on purpose.
+/// [within] null checks the whole screen, as the golden audit does (#551).
+/// [hintsCut] lets a field's hint be cut, as every platform cuts a one-line
+/// field's; the field's label, helper, error and counter still must show
+/// whole.
 void expectAllLinesShown(
   WidgetTester tester, {
   Finder? within,
-  Set<Type> capped = const <Type>{},
+  bool hintsCut = false,
 }) {
   final texts = within == null
       ? find.byType(RichText)
@@ -56,12 +58,12 @@ void expectAllLinesShown(
   for (final element in elements) {
     final paragraph = element.renderObject! as RenderParagraph;
     if (!paragraph.didExceedMaxLines) continue;
-    var deliberate = false;
-    element.visitAncestorElements((ancestor) {
-      deliberate = capped.contains(ancestor.widget.runtimeType);
-      return !deliberate;
-    });
-    if (!deliberate) cut.add('"${paragraph.text.toPlainText()}"');
+    final text = paragraph.text.toPlainText();
+    final field = hintsCut
+        ? element.findAncestorWidgetOfExactType<InputDecorator>()
+        : null;
+    if (field != null && field.decoration.hintText == text) continue;
+    cut.add('"$text"');
   }
   expect(cut, isEmpty, reason: 'cut to its maxLines: ${cut.join('; ')}');
 }
