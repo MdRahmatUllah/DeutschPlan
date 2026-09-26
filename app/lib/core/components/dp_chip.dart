@@ -1,3 +1,4 @@
+import 'package:deutschplan/core/adaptive/adaptive.dart';
 import 'package:deutschplan/core/theme/dp_tokens.dart';
 import 'package:deutschplan/core/typography/dp_text.dart';
 import 'package:material_ui/material_ui.dart';
@@ -206,12 +207,7 @@ class DpChip extends StatelessWidget {
       ),
     );
 
-    return Semantics(
-      // A chip that can be pressed is its own node: otherwise it merges
-      // into whatever text is beside it once nothing else there can be
-      // pressed, and reads as that text (T1's streak, #162). One that can't
-      // stays part of its card (W1's "A1.1, To do").
-      container: onTap != null,
+    final named = Semantics(
       label: semanticLabel ?? label,
       selected: kind == DpChipKind.filter || kind == DpChipKind.step
           ? selected
@@ -230,6 +226,12 @@ class DpChip extends StatelessWidget {
               ),
       ),
     );
+    // A chip that can be pressed is its own node, and its target the
+    // platform's 48 dp (iOS 44) though it's drawn 32 (#478). Its own node:
+    // otherwise it merges into whatever text is beside it once nothing else
+    // there can be pressed, and reads as that text (T1's streak, #162). One
+    // that can't stays part of its card (W1's "A1.1, To do").
+    return onTap == null ? named : AdaptiveTapTarget(child: named);
   }
 }
 

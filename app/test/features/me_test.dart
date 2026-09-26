@@ -411,6 +411,18 @@ void main() {
       );
     });
 
+    testWidgets("#478 a tap at a badge's right edge opens that badge, not "
+        'the next: twelve in a row keep their own boxes', (tester) async {
+      await pump(tester);
+      final badge = tester.getRect(
+        find.bySemanticsLabel(l10n.meBadge('A1.1', l10n.learnPassed)),
+      );
+      await tester.tapAt(badge.centerRight - const Offset(1, 0));
+      await tester.pumpAndSettle();
+
+      expect(went, '/learn/step/A1.1?tab=exams');
+    });
+
     testWidgets('each badge is a 48 dp target', (tester) async {
       await pump(tester);
 

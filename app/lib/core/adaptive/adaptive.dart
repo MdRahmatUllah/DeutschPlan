@@ -7,6 +7,9 @@ import 'package:deutschplan/core/theme/dp_tokens.dart';
 import 'package:deutschplan/core/typography/dp_text.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
 import 'package:flutter/foundation.dart' show defaultTargetPlatform, immutable;
+import 'package:flutter/rendering.dart'
+    show BoxHitTestResult, MatrixUtils, RenderProxyBox;
+import 'package:flutter/semantics.dart' show SemanticsConfiguration;
 import 'package:material_ui/material_ui.dart';
 
 /// Which platform's chrome to draw.
@@ -332,7 +335,8 @@ class AdaptiveBackButton extends StatelessWidget {
     // name; apart, a screen reader found a nameless button beside a name it
     // could not press. Android says "Back", as a Material back button does;
     // iOS reads the title its chevron shows.
-    return MergeSemantics(
+    return AdaptiveTapTarget(
+      merge: true,
       child: Semantics(
         button: true,
         label: cupertinoChrome && label != null
@@ -378,6 +382,95 @@ class AdaptiveBackButton extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+/// A small control's target, grown to the platform's minimum — 48 dp under
+/// Material chrome, 44 pt under iOS chrome (`accessibility-performance.md`)
+/// — without growing its layout, so the artboard stays as drawn (#478). A
+/// tap around the control lands on it, and a screen reader's node is the
+/// grown area. It is the control's own semantics node, as
+/// `Semantics(container: true)` would be: the control's label and actions
+/// gather on it, so the control's own `Semantics` mustn't be a container.
+/// ponytail: a tap outside its parent's box never reaches it (a chip in a
+/// one-row `Wrap` takes none from above the row); the node is grown anyway.
+class AdaptiveTapTarget extends SingleChildRenderObjectWidget {
+  const AdaptiveTapTarget({
+    required Widget super.child,
+    super.key,
+    this.merge = false,
+  });
+
+  /// Everything under it read as one node, as `MergeSemantics` does: for a
+  /// control built of pieces that would each be a node (the back button's
+  /// `TextButton` and its label).
+  final bool merge;
+
+  static Size minimumOf(BuildContext context) =>
+      context.isCupertino ? const Size.square(44) : const Size.square(48);
+
+  @override
+  RenderObject createRenderObject(BuildContext context) =>
+      RenderAdaptiveTapTarget(minimumOf(context), merge);
+
+  @override
+  void updateRenderObject(
+    BuildContext context,
+    RenderAdaptiveTapTarget renderObject,
+  ) => renderObject
+    ..minimum = minimumOf(context)
+    ..merge = merge;
+}
+
+/// [AdaptiveTapTarget]'s box: its layout the child's, its hit test and
+/// semantic bounds grown to the minimum.
+class RenderAdaptiveTapTarget extends RenderProxyBox {
+  RenderAdaptiveTapTarget(this._minimum, [this._merge = false]);
+
+  bool _merge;
+  set merge(bool value) {
+    if (value == _merge) return;
+    _merge = value;
+    markNeedsSemanticsUpdate();
+  }
+
+  Size _minimum;
+  set minimum(Size value) {
+    if (value == _minimum) return;
+    _minimum = value;
+    markNeedsSemanticsUpdate();
+  }
+
+  /// The box grown, about its centre, to the minimum on each side short of it.
+  Rect get _area {
+    final dx = math.max(0, _minimum.width - size.width) / 2;
+    final dy = math.max(0, _minimum.height - size.height) / 2;
+    return Rect.fromLTRB(-dx, -dy, size.width + dx, size.height + dy);
+  }
+
+  @override
+  Rect get semanticBounds => _area;
+
+  @override
+  void describeSemanticsConfiguration(SemanticsConfiguration config) {
+    super.describeSemanticsConfiguration(config);
+    config
+      ..isSemanticBoundary = true
+      ..isMergingSemanticsOfDescendants = _merge;
+  }
+
+  @override
+  bool hitTest(BoxHitTestResult result, {required Offset position}) {
+    if (super.hitTest(result, position: position)) return true;
+    if (child == null || !_area.contains(position)) return false;
+    // Around the control: a tap on its centre, as Material's padded target
+    // gives it.
+    final centre = child!.size.center(Offset.zero);
+    return result.addWithRawTransform(
+      transform: MatrixUtils.forceToPoint(centre),
+      position: centre,
+      hitTest: (result, position) => child!.hitTest(result, position: centre),
     );
   }
 }
@@ -500,26 +593,37 @@ class AdaptiveSegmented<T extends Object> extends StatelessWidget {
     final tokens = context.tokens;
 
     if (context.isCupertino) {
-      return cupertino.CupertinoSlidingSegmentedControl<T>(
-        groupValue: value,
-        backgroundColor: tokens.surface.muted,
-        thumbColor: tokens.surface.card,
-        onValueChanged: (next) {
-          if (next != null) onChanged(next);
-        },
-        children: <T, Widget>{
-          for (final entry in segments.entries)
-            // One line, shrunk to its segment only when it would not fit, as
-            // UIKit's control does: at 150 % "Grammar" wrapped in a quarter
-            // of the width and the control's height cut it (#165).
-            entry.key: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 6),
-              child: FittedBox(
-                fit: BoxFit.scaleDown,
-                child: DpText(entry.value, role: DpTextRole.label, maxLines: 1),
+      // Its segments are drawn 28 pt, short of iOS's 44, and the control
+      // owns their nodes, so no target can grow them: marked dense for the
+      // golden check (#478); whether to grow the control is #492.
+      return Semantics(
+        container: true,
+        identifier: 'dense:segmented',
+        child: cupertino.CupertinoSlidingSegmentedControl<T>(
+          groupValue: value,
+          backgroundColor: tokens.surface.muted,
+          thumbColor: tokens.surface.card,
+          onValueChanged: (next) {
+            if (next != null) onChanged(next);
+          },
+          children: <T, Widget>{
+            for (final entry in segments.entries)
+              // One line, shrunk to its segment only when it would not fit, as
+              // UIKit's control does: at 150 % "Grammar" wrapped in a quarter
+              // of the width and the control's height cut it (#165).
+              entry.key: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 6),
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: DpText(
+                    entry.value,
+                    role: DpTextRole.label,
+                    maxLines: 1,
+                  ),
+                ),
               ),
-            ),
-        },
+          },
+        ),
       );
     }
 
@@ -1206,6 +1310,9 @@ class _TypedConfirmState extends State<_TypedConfirm> {
               textCapitalization: TextCapitalization.characters,
               style: DpText.styleFor(tokens, DpTextRole.body),
               // Ink-edged, as the artboard draws it on both platforms.
+              // 44 pt tall, Apple's minimum target: the default padding made
+              // it 38 (#478).
+              padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 10),
               decoration: BoxDecoration(
                 color: tokens.surface.cardStrong,
                 border: Border.all(color: tokens.color.ink),

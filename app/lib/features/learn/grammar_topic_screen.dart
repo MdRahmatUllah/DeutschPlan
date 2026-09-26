@@ -360,36 +360,38 @@ class _Example extends ConsumerWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        Semantics(
-          button: true,
-          label: l10n.topicPlay(german),
-          child: AdaptiveTooltip(
-            message: l10n.topicPlay(german),
-            child: GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onTap: () => unawaited(say(ref, context, german)),
-              child: SizedBox(
-                width: 44,
-                height: 44,
-                child: Align(
-                  alignment: Alignment.topLeft,
-                  child: Container(
-                    width: 32,
-                    height: 32,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: tokens.surface.muted,
-                      border: Border.all(color: tokens.color.ink, width: 1.5),
-                    ),
-                    // Slashed with no German voice (V01, #452).
-                    child: Icon(
-                      noVoice(ref)
-                          ? Icons.volume_off
-                          : Icons.play_arrow_rounded,
-                      size: 18,
-                      color: noVoice(ref)
-                          ? tokens.color.textSecondary
-                          : tokens.color.ink,
+        AdaptiveTapTarget(
+          child: Semantics(
+            button: true,
+            label: l10n.topicPlay(german),
+            child: AdaptiveTooltip(
+              message: l10n.topicPlay(german),
+              child: GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: () => unawaited(say(ref, context, german)),
+                child: SizedBox(
+                  width: 44,
+                  height: 44,
+                  child: Align(
+                    alignment: Alignment.topLeft,
+                    child: Container(
+                      width: 32,
+                      height: 32,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: tokens.surface.muted,
+                        border: Border.all(color: tokens.color.ink, width: 1.5),
+                      ),
+                      // Slashed with no German voice (V01, #452).
+                      child: Icon(
+                        noVoice(ref)
+                            ? Icons.volume_off
+                            : Icons.play_arrow_rounded,
+                        size: 18,
+                        color: noVoice(ref)
+                            ? tokens.color.textSecondary
+                            : tokens.color.ink,
+                      ),
                     ),
                   ),
                 ),

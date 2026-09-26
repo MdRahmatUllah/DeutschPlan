@@ -570,53 +570,58 @@ class ContextualCard extends StatelessWidget {
       child: DpSurface(
         kind: DpSurfaceKind.bar,
         padding: EdgeInsets.all(edge),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(tokens.shape.card - edge),
-          child: IntrinsicHeight(
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: <Widget>[
-                ColoredBox(color: strip, child: const SizedBox(width: 6)),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        DpText(title, role: DpTextRole.body, weight: 600),
-                        const SizedBox(height: 2),
-                        DpText(
-                          body,
-                          role: DpTextRole.label,
-                          weight: 400,
-                          color: tokens.color.textSecondary,
+        child: IntrinsicHeight(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              // Only the strip is clipped to the card's corners: clipping
+              // the whole row cut the dismiss's grown target (#478).
+              ClipRRect(
+                clipper: _CardCorners(tokens.shape.card - edge),
+                child: ColoredBox(
+                  color: strip,
+                  child: const SizedBox(width: 6),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      DpText(title, role: DpTextRole.body, weight: 600),
+                      const SizedBox(height: 2),
+                      DpText(
+                        body,
+                        role: DpTextRole.label,
+                        weight: 400,
+                        color: tokens.color.textSecondary,
+                      ),
+                      if (action != null)
+                        DpButton(
+                          label: action,
+                          onPressed: onAction,
+                          kind: DpButtonKind.text,
+                          expand: false,
                         ),
-                        if (action != null)
-                          DpButton(
-                            label: action,
-                            onPressed: onAction,
-                            kind: DpButtonKind.text,
-                            expand: false,
-                          ),
-                      ],
-                    ),
+                    ],
                   ),
                 ),
-                if (offer.dismissible)
-                  Align(
-                    alignment: Alignment.topCenter,
-                    child: _IconAction(
-                      icon: Icons.close,
-                      label: l10n.todayCardDismiss,
-                      colour: tokens.color.textSecondary,
-                      onTap: onDismiss,
-                    ),
-                  )
-                else
-                  const SizedBox(width: 12),
-              ],
-            ),
+              ),
+              if (offer.dismissible)
+                Align(
+                  alignment: Alignment.topCenter,
+                  child: _IconAction(
+                    icon: Icons.close,
+                    label: l10n.todayCardDismiss,
+                    colour: tokens.color.textSecondary,
+                    onTap: onDismiss,
+                  ),
+                )
+              else
+                const SizedBox(width: 12),
+            ],
           ),
         ),
       ),
@@ -874,24 +879,46 @@ class _IconAction extends StatelessWidget {
   final VoidCallback onTap;
 
   @override
-  Widget build(BuildContext context) => Semantics(
-    // Its own node: inside a card that is one, it would merge into the
-    // card and read as its text (#162).
-    container: true,
-    button: true,
-    label: label,
-    excludeSemantics: true,
-    onTap: onTap,
-    child: AdaptiveTooltip(
-      message: label,
-      child: GestureDetector(
-        onTap: onTap,
-        behavior: HitTestBehavior.opaque,
-        child: SizedBox.square(
-          dimension: 44,
-          child: Icon(icon, size: 24, color: colour),
+  // Its own node: inside a card that is one, it would merge into the card
+  // and read as its text (#162). And 48 dp to press, drawn 44 (#478).
+  Widget build(BuildContext context) => AdaptiveTapTarget(
+    child: Semantics(
+      button: true,
+      label: label,
+      excludeSemantics: true,
+      onTap: onTap,
+      child: AdaptiveTooltip(
+        message: label,
+        child: GestureDetector(
+          onTap: onTap,
+          behavior: HitTestBehavior.opaque,
+          child: SizedBox.square(
+            dimension: 44,
+            child: Icon(icon, size: 24, color: colour),
+          ),
         ),
       ),
     ),
   );
+}
+
+/// A card's rounded corners, for its strip alone: the card's own rounded
+/// rect, wider than the strip, so the strip's corners curve as the card's
+/// did when the whole card was clipped (#478).
+class _CardCorners extends CustomClipper<RRect> {
+  const _CardCorners(this.radius);
+
+  final double radius;
+
+  @override
+  RRect getClip(Size size) => RRect.fromLTRBR(
+    0,
+    0,
+    size.width + 2 * radius,
+    size.height,
+    Radius.circular(radius),
+  );
+
+  @override
+  bool shouldReclip(_CardCorners oldClipper) => oldClipper.radius != radius;
 }

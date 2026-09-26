@@ -407,26 +407,30 @@ class _Header extends StatelessWidget {
                   const SizedBox(width: 14),
                   Icon(Icons.search, size: 24, color: tokens.color.ink),
                   const SizedBox(width: 10),
+                  // A screen reader's node the bar's height, not the text's 24 dp
+                  // line (#478).
                   Expanded(
-                    child: TextField(
-                      controller: field,
-                      // FR-R1-05: the tab is kept alive, so this fires on a
-                      // fresh open only; coming back keeps query and scroll.
-                      autofocus: true,
-                      textInputAction: TextInputAction.search,
-                      onChanged: onChanged,
-                      onSubmitted: onSubmitted,
-                      style: DpText.styleFor(
-                        tokens,
-                        DpTextRole.bodyLarge,
-                        color: tokens.color.ink,
-                      ),
-                      decoration: InputDecoration.collapsed(
-                        hintText: l10n.searchHint,
-                        hintStyle: DpText.styleFor(
+                    child: AdaptiveTapTarget(
+                      child: TextField(
+                        controller: field,
+                        // FR-R1-05: the tab is kept alive, so this fires on a
+                        // fresh open only; coming back keeps query and scroll.
+                        autofocus: true,
+                        textInputAction: TextInputAction.search,
+                        onChanged: onChanged,
+                        onSubmitted: onSubmitted,
+                        style: DpText.styleFor(
                           tokens,
                           DpTextRole.bodyLarge,
-                          color: tokens.color.textSecondary,
+                          color: tokens.color.ink,
+                        ),
+                        decoration: InputDecoration.collapsed(
+                          hintText: l10n.searchHint,
+                          hintStyle: DpText.styleFor(
+                            tokens,
+                            DpTextRole.bodyLarge,
+                            color: tokens.color.textSecondary,
+                          ),
                         ),
                       ),
                     ),

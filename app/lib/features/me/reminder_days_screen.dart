@@ -403,19 +403,20 @@ class _Row extends StatelessWidget {
       ),
     );
     final onTap = this.onTap;
-    return Semantics(
-      container: true,
-      button: onTap != null,
-      label: semanticLabel,
-      onTap: onTap,
-      excludeSemantics: semanticLabel != null,
-      child: onTap == null
-          ? row
-          : GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onTap: onTap,
-              child: row,
-            ),
+    return AdaptiveTapTarget(
+      child: Semantics(
+        button: onTap != null,
+        label: semanticLabel,
+        onTap: onTap,
+        excludeSemantics: semanticLabel != null,
+        child: onTap == null
+            ? row
+            : GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: onTap,
+                child: row,
+              ),
+      ),
     );
   }
 }

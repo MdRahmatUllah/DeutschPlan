@@ -220,23 +220,25 @@ class _DpButtonState extends State<DpButton> {
       );
     }
 
-    return Semantics(
-      button: true,
-      enabled: _enabled,
-      label: widget.label,
-      child: GestureDetector(
-        onTap: widget.onPressed,
-        onTapDown: _enabled ? (_) => setState(() => _down = true) : null,
-        onTapUp: _enabled ? (_) => setState(() => _down = false) : null,
-        onTapCancel: _enabled ? () => setState(() => _down = false) : null,
-        behavior: HitTestBehavior.opaque,
-        // Always present so the tree shape does not change on press, which
-        // would drop the gesture — the same trap DpSurface hit in #188.
-        child: Transform.translate(
-          offset: _down && _enabled && !context.tokens.isGlass
-              ? tokens.surface.shadowOffset
-              : Offset.zero,
-          child: ExcludeSemantics(child: button),
+    return AdaptiveTapTarget(
+      child: Semantics(
+        button: true,
+        enabled: _enabled,
+        label: widget.label,
+        child: GestureDetector(
+          onTap: widget.onPressed,
+          onTapDown: _enabled ? (_) => setState(() => _down = true) : null,
+          onTapUp: _enabled ? (_) => setState(() => _down = false) : null,
+          onTapCancel: _enabled ? () => setState(() => _down = false) : null,
+          behavior: HitTestBehavior.opaque,
+          // Always present so the tree shape does not change on press, which
+          // would drop the gesture — the same trap DpSurface hit in #188.
+          child: Transform.translate(
+            offset: _down && _enabled && !context.tokens.isGlass
+                ? tokens.surface.shadowOffset
+                : Offset.zero,
+            child: ExcludeSemantics(child: button),
+          ),
         ),
       ),
     );

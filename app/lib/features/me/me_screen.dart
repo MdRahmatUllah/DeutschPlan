@@ -792,7 +792,12 @@ class _Badge extends StatelessWidget {
         : Border.all(color: tokens.color.ink, width: 1.5);
 
     return Semantics(
+      // Twelve in a row can't each be 48 dp wide: grown, a badge took its
+      // neighbour's taps (#478). Each is its own node, as drawn: 23.5 dp
+      // with 4 dp gaps meets WCAG 2.2's 24 with spacing (2.5.8), and the
+      // golden check skips a `dense:` node.
       container: true,
+      identifier: 'dense:step-badge',
       button: true,
       label: l10n.meBadge(step.code, state),
       onTap: onTap,
