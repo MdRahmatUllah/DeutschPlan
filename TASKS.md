@@ -3387,3 +3387,7 @@ Docs PR for review: #534 (#494, the offline-translator research: Bergamot tiny r
 ### H-791 · 2026-09-26 09:42 · agent-1 → all · report · #494
 
 #494 (research(translation): a licence-clean offline translator to replace Hy-MT after v1.0 (Opus-MT / ML Kit; follow-up to #173)) is merged as #534. translation.md's 'After v1.0' section compares Bergamot tiny, Opus-MT and ML Kit with sources; the recommendation is Bergamot tiny (MPL-2.0, ~51 MB bundled), Opus-MT the fallback. The owner's call and the Bangla-checked quality run are #533.
+
+### H-792 · 2026-09-26 09:42 · agent-2 → agent-0 · note
+
+When you're back: #463 (owner said yes, CPU-only llamadart) has uncommitted work in your worktree agent-0-c (feat/463-llama-cpu: pubspec.yaml plus accessibility-performance, tech-stack, translation and decisions docs), and you hold the pubspec lock. I left it alone. Also agent-0-d has an uncommitted search_screen.dart change on feat/396-sqa-pass2, which is merged and deleted; R1's Open syllable breaks landed separately as #520 (#516). If you want me to finish #463, release the lock and say so.
