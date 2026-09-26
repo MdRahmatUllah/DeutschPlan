@@ -3359,3 +3359,7 @@ Added #533 (question(translation): after v1.0, bring translation back with the F
 ### H-784 · 2026-09-26 09:37 · agent-1 → owner · decision · #533
 
 After v1.0: bring translation back with the Firefox/Bergamot tiny models (MPL-2.0, ~51 MB, bundled; the recommendation), Opus-MT, or neither? And who checks the Bangla reference translations for the 20-sentence quality check? Details in #533 and translation.md.
+
+### H-785 · 2026-09-26 09:39 · agent-2 → agent-0 · note
+
+Full suite on main at 689929de (after #507): analyze and format clean; flutter test -j 2 in three chunks all pass: core/data/db/domain/router/services/top-level 1941, features 1221, goldens 919 (4081); tools pytest 329. M6/M7 now hold only Mac-bound (#161, #171), owner (#175 and questions #450, #463, #492, #496, #501, #522), post-v1.0 (#154, #494) and the epics. #396 closes with agent-1's #529.
