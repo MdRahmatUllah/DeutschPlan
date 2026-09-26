@@ -6,7 +6,7 @@ last-read: 1073
 
 ## Now
 
-Nothing claimed.
+#584 test(a11y): the 200 % golden audit also puts the keyboard up on a screen with a field — claimed 2026-09-26 16:54.
 
 ## Next
 
