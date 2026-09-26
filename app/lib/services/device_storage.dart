@@ -17,7 +17,7 @@ abstract interface class DeviceStorage {
 class PlatformDeviceStorage implements DeviceStorage {
   const PlatformDeviceStorage();
 
-  static const MethodChannel _channel = MethodChannel('deutschplan/storage');
+  static const MethodChannel _channel = MethodChannel('sogda/storage');
 
   @override
   Future<StorageSpace?> space() async {

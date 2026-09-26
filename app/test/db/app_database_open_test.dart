@@ -3,7 +3,7 @@ library;
 
 import 'dart:io';
 
-import 'package:deutschplan/data/db/app_database.dart';
+import 'package:sogda/data/db/app_database.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:path_provider_platform_interface/path_provider_platform_interface.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
@@ -25,10 +25,10 @@ void main() {
 
   setUp(() {
     TestWidgetsFlutterBinding.ensureInitialized();
-    storage = Directory.systemTemp.createTempSync('deutschplan_support');
+    storage = Directory.systemTemp.createTempSync('sogda_support');
     // A different directory, or the assertion below that the file landed in
     // app-support rather than documents would pass either way.
-    documents = Directory.systemTemp.createTempSync('deutschplan_documents');
+    documents = Directory.systemTemp.createTempSync('sogda_documents');
     PathProviderPlatform.instance = _TempPathProvider(
       support: storage.path,
       documents: documents.path,

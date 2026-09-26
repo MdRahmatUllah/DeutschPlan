@@ -20,7 +20,7 @@ val keyProperties = Properties().apply {
 
 android {
     // The owner's (#170): it can never change once the app is on Play.
-    namespace = "io.github.rahmatullah.deutschplan"
+    namespace = "de.sogda.app"
     // permission_handler_android requires API 37 or later to compile against.
     compileSdk = 37
     ndkVersion = flutter.ndkVersion
@@ -33,7 +33,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "io.github.rahmatullah.deutschplan"
+        applicationId = "de.sogda.app"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         // docs/01-architecture/tech-stack.md: Android 8.0+ (API 26), targetSdk latest.

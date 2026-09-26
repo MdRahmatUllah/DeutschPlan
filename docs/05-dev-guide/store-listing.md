@@ -7,7 +7,7 @@ Translation (Hy-MT) is off in every v1.0 build (ADR 9), so the listing doesn't m
 ## English (en-US)
 
 ### Title
-DeutschPlan – German A1 to C2
+Sogda – German A1 to C2
 
 ### Short description
 Learn German offline, A1 to C2, with English or Bangla meanings
@@ -15,7 +15,7 @@ Learn German offline, A1 to C2, with English or Bangla meanings
 ### Full description
 Learn German, one clear day at a time.
 
-DeutschPlan is a complete German course that works fully offline: no account, no signal needed, and your progress stays on this phone.
+Sogda is a complete German course that works fully offline: no account, no signal needed, and your progress stays on this phone.
 
 WHAT YOU LEARN
 • 12 steps from A1.1 to C2.2, built around the exams
@@ -49,7 +49,7 @@ Large text works better, in English and in Bangla: up to 200 %, typing no longer
 ## Bangla (bn-BD)
 
 ### Title
-DeutschPlan – জার্মান A1–C2
+Sogda – জার্মান A1–C2
 
 ### Short description
 অফলাইনে জার্মান শিখুন, A1 থেকে C2, ইংরেজি বা বাংলা অর্থসহ
@@ -57,7 +57,7 @@ DeutschPlan – জার্মান A1–C2
 ### Full description
 প্রতিদিন একটু একটু করে জার্মান শিখুন।
 
-DeutschPlan একটি পূর্ণাঙ্গ জার্মান কোর্স, যা পুরোপুরি অফলাইনে চলে: অ্যাকাউন্ট বা ইন্টারনেট লাগে না, আর আপনার অগ্রগতি এই ফোনেই থাকে।
+Sogda একটি পূর্ণাঙ্গ জার্মান কোর্স, যা পুরোপুরি অফলাইনে চলে: অ্যাকাউন্ট বা ইন্টারনেট লাগে না, আর আপনার অগ্রগতি এই ফোনেই থাকে।
 
 যা শিখবেন
 • A1.1 থেকে C2.2 পর্যন্ত ১২টি ধাপ, পরীক্ষার কাঠামো মেনে সাজানো

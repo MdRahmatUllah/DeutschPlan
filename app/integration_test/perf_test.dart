@@ -8,15 +8,15 @@
 // Each measurement goes into the binding's `reportData`, which the driver
 // writes to build/integration_response_data.json for perf.py to read.
 
-import 'package:deutschplan/core/providers/app_providers.dart';
-import 'package:deutschplan/core/theme/glass_capability.dart';
-import 'package:deutschplan/data/repositories/setting_keys.dart';
-import 'package:deutschplan/features/study/study_screen.dart';
-import 'package:deutschplan/features/today/today_components.dart';
-import 'package:deutschplan/features/today/today_view.dart';
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
-import 'package:deutschplan/main.dart' as app;
-import 'package:deutschplan/router/routes.dart';
+import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/core/theme/glass_capability.dart';
+import 'package:sogda/data/repositories/setting_keys.dart';
+import 'package:sogda/features/study/study_screen.dart';
+import 'package:sogda/features/today/today_components.dart';
+import 'package:sogda/features/today/today_view.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
+import 'package:sogda/main.dart' as app;
+import 'package:sogda/router/routes.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
@@ -76,7 +76,7 @@ void main() {
       );
       await onboard(tester, l10n);
       final container = ProviderScope.containerOf(
-        tester.element(find.byType(app.DeutschPlanApp)),
+        tester.element(find.byType(app.SogdaApp)),
         listen: false,
       );
       final data = binding.reportData ??= <String, dynamic>{};

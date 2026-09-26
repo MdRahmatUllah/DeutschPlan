@@ -1,11 +1,11 @@
 import 'dart:math' as math;
 
-import 'package:deutschplan/core/adaptive/adaptive.dart';
-import 'package:deutschplan/core/components/dp_button.dart';
-import 'package:deutschplan/core/theme/dp_surface.dart';
-import 'package:deutschplan/core/theme/dp_tokens.dart';
-import 'package:deutschplan/core/typography/dp_text.dart';
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
+import 'package:sogda/core/adaptive/adaptive.dart';
+import 'package:sogda/core/components/sg_button.dart';
+import 'package:sogda/core/theme/sg_surface.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/core/typography/sg_text.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:material_ui/material_ui.dart';
 
 /// The umlaut helper row, attached to every German text field.
@@ -15,8 +15,8 @@ import 'package:material_ui/material_ui.dart';
 ///
 /// It inserts at the cursor and preserves the selection, so a learner correcting
 /// the middle of `Strasse` gets `Straße` rather than `Strasseß`.
-class DpUmlautBar extends StatelessWidget {
-  const DpUmlautBar({required this.controller, super.key, this.enabled = true});
+class SgUmlautBar extends StatelessWidget {
+  const SgUmlautBar({required this.controller, super.key, this.enabled = true});
 
   final TextEditingController controller;
   final bool enabled;
@@ -63,7 +63,7 @@ class DpUmlautBar extends StatelessWidget {
   /// went under T2's top for the 30 dp between (#572).
   static double rowHeight(BuildContext context) {
     final tokens = context.tokens;
-    final title = DpTextRole.title.token(tokens.typography);
+    final title = SgTextRole.title.token(tokens.typography);
     final line =
         MediaQuery.textScalerOf(context).scale(title.size) * title.heightFactor;
     return math.max(keyHeight, line + 2 * tokens.surface.outlineWidth);
@@ -163,7 +163,7 @@ class _UmlautKey extends StatelessWidget {
             // cut "ä" at 150 % (#165).
             child: Container(
               constraints: const BoxConstraints(
-                minHeight: DpUmlautBar.keyHeight,
+                minHeight: SgUmlautBar.keyHeight,
               ),
               decoration: BoxDecoration(
                 color: tokens.surface.card,
@@ -176,7 +176,7 @@ class _UmlautKey extends StatelessWidget {
               // Its own height, centred: an Align would fill a tall parent.
               child: Center(
                 heightFactor: 1,
-                child: DpText(label, role: DpTextRole.title, weight: 500),
+                child: SgText(label, role: SgTextRole.title, weight: 500),
               ),
             ),
           ),
@@ -191,13 +191,13 @@ class _UmlautKey extends StatelessWidget {
 /// The artboards use it for grammar "Watch out" and for interference tips —
 /// "⚠ bekommen = to get, not 'to become'" — both with the Tangerine bar.
 ///
-/// It draws its own container rather than a [DpSurface]: the GrammarTopic
+/// It draws its own container rather than a [SgSurface]: the GrammarTopic
 /// artboard gives it an Oat fill at radius 12 with no border and no shadow,
 /// because it sits *inside* a card rather than being one.
-class DpCallout extends StatelessWidget {
-  const DpCallout({required this.child, super.key, this.colour, this.title});
+class SgCallout extends StatelessWidget {
+  const SgCallout({required this.child, super.key, this.colour, this.title});
 
-  DpCallout.text(String text, {Key? key, Color? colour, String? title})
+  SgCallout.text(String text, {Key? key, Color? colour, String? title})
     : this(key: key, colour: colour, title: title, child: _CalloutText(text));
 
   final Widget child;
@@ -237,7 +237,7 @@ class DpCallout extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       if (title != null) ...<Widget>[
-                        DpText(title!, role: DpTextRole.label, weight: 700),
+                        SgText(title!, role: SgTextRole.label, weight: 700),
                         SizedBox(height: tokens.spacing.xs),
                       ],
                       child,
@@ -260,7 +260,7 @@ class _CalloutText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) =>
-      DpText(text, role: DpTextRole.body, allowBreaks: true);
+      SgText(text, role: SgTextRole.body, allowBreaks: true);
 }
 
 /// The single rendering for a failed load.
@@ -268,8 +268,8 @@ class _CalloutText extends StatelessWidget {
 /// `docs/01-architecture/state-management.md`: "Errors: `AsyncValue.error`
 /// renders the shared `ErrorPanel` with Retry." Every screen uses this one, so
 /// a failure looks the same everywhere and Retry always exists.
-class DpErrorPanel extends StatelessWidget {
-  const DpErrorPanel({
+class SgErrorPanel extends StatelessWidget {
+  const SgErrorPanel({
     required this.message,
     required this.retryLabel,
     super.key,
@@ -296,18 +296,18 @@ class DpErrorPanel extends StatelessWidget {
 
     return Semantics(
       liveRegion: true,
-      child: DpSurface(
+      child: SgSurface(
         padding: EdgeInsets.all(tokens.spacing.lg),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            DpText(message, role: DpTextRole.title),
+            SgText(message, role: SgTextRole.title),
             if (detail != null) ...<Widget>[
               SizedBox(height: tokens.spacing.sm),
-              DpText(
+              SgText(
                 detail!,
-                role: DpTextRole.body,
+                role: SgTextRole.body,
                 color: tokens.color.textSecondary,
               ),
             ],
@@ -315,9 +315,9 @@ class DpErrorPanel extends StatelessWidget {
             Row(
               children: <Widget>[
                 Expanded(
-                  child: DpButton(
+                  child: SgButton(
                     label: retryLabel,
-                    kind: DpButtonKind.secondary,
+                    kind: SgButtonKind.secondary,
                     onPressed: onRetry,
                   ),
                 ),
@@ -335,15 +335,15 @@ class DpErrorPanel extends StatelessWidget {
 }
 
 /// How an answer was judged. `business-rules.md` BR-ANS-01…04.
-enum DpVerdict { correct, almost, wrongArticle, wrong }
+enum SgVerdict { correct, almost, wrongArticle, wrong }
 
 /// The verdict line under a quiz, cloze or exam answer.
 ///
 /// `accessibility-performance.md`: "Never colour alone: articles printed,
 /// statuses labelled, verdicts have icons and words." So every verdict renders
 /// an icon *and* text, and the colour is the third signal, not the only one.
-class DpVerdictRow extends StatelessWidget {
-  const DpVerdictRow({
+class SgVerdictRow extends StatelessWidget {
+  const SgVerdictRow({
     required this.verdict,
     required this.message,
     super.key,
@@ -351,7 +351,7 @@ class DpVerdictRow extends StatelessWidget {
     this.germanEmphasis = false,
   });
 
-  final DpVerdict verdict;
+  final SgVerdict verdict;
 
   /// "Correct", "Almost — watch the spelling: der Mietvertrag", "die, not der".
   final String message;
@@ -372,12 +372,12 @@ class DpVerdictRow extends StatelessWidget {
   /// Material has no glyph for it — it renders as text instead of a near-miss
   /// icon that means something else.
   IconData? get icon => switch (verdict) {
-    DpVerdict.correct => Icons.check,
-    DpVerdict.almost => null,
-    DpVerdict.wrongArticle || DpVerdict.wrong => Icons.close,
+    SgVerdict.correct => Icons.check,
+    SgVerdict.almost => null,
+    SgVerdict.wrongArticle || SgVerdict.wrong => Icons.close,
   };
 
-  /// The artboard's own mark for [DpVerdict.almost].
+  /// The artboard's own mark for [SgVerdict.almost].
   static const String almostGlyph = '≈';
 
   /// All three marks are 18 in the artboard while the words beside them are 15.
@@ -385,10 +385,10 @@ class DpVerdictRow extends StatelessWidget {
   /// taking whatever the type scale happens to offer.
   static const double markSize = 18;
 
-  Color colourFrom(DpPalette palette) => switch (verdict) {
-    DpVerdict.correct => palette.correctText,
-    DpVerdict.almost => palette.almostText,
-    DpVerdict.wrongArticle || DpVerdict.wrong => palette.wrongText,
+  Color colourFrom(SgPalette palette) => switch (verdict) {
+    SgVerdict.correct => palette.correctText,
+    SgVerdict.almost => palette.almostText,
+    SgVerdict.wrongArticle || SgVerdict.wrong => palette.wrongText,
   };
 
   @override
@@ -417,14 +417,14 @@ class DpVerdictRow extends StatelessWidget {
             // A long answer too wide for the line breaks at a syllable with
             // its "-", not at a letter (#539).
             child: emphasis.isEmpty
-                ? DpText(
+                ? SgText(
                     message,
-                    role: DpTextRole.body,
+                    role: SgTextRole.body,
                     weight: 600,
                     color: colour,
                     breakTooWide: true,
                   )
-                : DpRuns(_runs(tokens, colour)),
+                : SgRuns(_runs(tokens, colour)),
           ),
         ],
       ),
@@ -432,21 +432,21 @@ class DpVerdictRow extends StatelessWidget {
   }
 }
 
-extension on DpVerdictRow {
+extension on SgVerdictRow {
   /// [message] in runs: the app's copy in its colour, and each [emphasis],
-  /// the answer, in ink. Bangla one role up and in its voice, as [DpText]
+  /// the answer, in ink. Bangla one role up and in its voice, as [SgText]
   /// sets it; the answer in a German voice only when it is German (#539).
-  List<TextSpan> _runs(DpTokens tokens, Color colour) {
-    TextStyle at(DpTextRole role) => DpText.styleFor(
+  List<TextSpan> _runs(SgTokens tokens, Color colour) {
+    TextStyle at(SgTextRole role) => SgText.styleFor(
       tokens,
       role,
       color: colour,
     ).copyWith(fontWeight: FontWeight.w600);
-    final latin = at(DpTextRole.body);
-    List<TextSpan> copy(String text) => DpScript.spans(
+    final latin = at(SgTextRole.body);
+    List<TextSpan> copy(String text) => SgScript.spans(
       text,
       latin: latin,
-      bengali: at(DpTextRole.body.oneStepLarger),
+      bengali: at(SgTextRole.body.oneStepLarger),
     );
     final runs = <TextSpan>[];
     var from = 0;
@@ -455,10 +455,10 @@ extension on DpVerdictRow {
       if (found < 0) continue;
       if (found > from) runs.addAll(copy(message.substring(from, found)));
       runs.addAll(
-        DpScript.spans(
+        SgScript.spans(
           part,
           latin: latin.copyWith(color: tokens.color.ink),
-          bengali: at(DpTextRole.body.oneStepLarger)
+          bengali: at(SgTextRole.body.oneStepLarger)
               .copyWith(color: tokens.color.ink),
           german: germanEmphasis,
         ),
@@ -472,7 +472,7 @@ extension on DpVerdictRow {
 
 /// The one snackbar the artboards draw (StudyNew): inverse — ink with paper
 /// text in light mode, the other way round in dark — 8 px corners, a soft
-/// shadow, and the action in [DpPalette.inverseLink].
+/// shadow, and the action in [SgPalette.inverseLink].
 ///
 /// One at a time: a queue of bars is a queue the learner cannot use, because
 /// the older ones expire while they read.
@@ -500,9 +500,9 @@ void _showInverse(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(tokens.shape.chip),
         ),
-        content: DpText(
+        content: SgText(
           message,
-          role: DpTextRole.body,
+          role: SgTextRole.body,
           color: tokens.surface.paper,
         ),
         action: action,
@@ -511,13 +511,13 @@ void _showInverse(
 }
 
 /// A short note that something happened: "Copied".
-abstract final class DpToast {
+abstract final class SgToast {
   static const Duration duration = Duration(seconds: 2);
 
-  /// [lift] floats it clear of a thumb zone, as [DpUndo.show]'s does.
+  /// [lift] floats it clear of a thumb zone, as [SgUndo.show]'s does.
   ///
   /// An [actionLabel] with [onAction] is a link — the TTS fallback's Settings
-  /// (#153) — and stays [DpUndo.duration], long enough to reach.
+  /// (#153) — and stays [SgUndo.duration], long enough to reach.
   static void show(
     BuildContext context,
     String message, {
@@ -535,7 +535,7 @@ abstract final class DpToast {
     _showInverse(
       context,
       message: message,
-      duration: action == null ? duration : DpUndo.duration,
+      duration: action == null ? duration : SgUndo.duration,
       lift: lift,
       action: action,
     );
@@ -546,7 +546,7 @@ abstract final class DpToast {
 ///
 /// Rating, skipping and every word action show one. Four seconds, one action,
 /// and the same shape everywhere so a learner learns it once.
-abstract final class DpUndo {
+abstract final class SgUndo {
   /// FR-T2-02: "a 4 s snackbar *Undo* MUST revert it fully".
   static const Duration duration = Duration(seconds: 4);
 

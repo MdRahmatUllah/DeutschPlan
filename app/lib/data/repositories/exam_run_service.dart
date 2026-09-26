@@ -1,13 +1,13 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:deutschplan/data/db/app_database.dart' show ExamAttempt;
-import 'package:deutschplan/data/repositories/exam_repository.dart';
-import 'package:deutschplan/data/repositories/model_repository.dart';
-import 'package:deutschplan/data/repositories/setting_keys.dart';
-import 'package:deutschplan/data/repositories/settings_repository.dart';
-import 'package:deutschplan/domain/exam_generator.dart';
-import 'package:deutschplan/domain/exam_grading.dart' show rubricTicks;
+import 'package:sogda/data/db/app_database.dart' show ExamAttempt;
+import 'package:sogda/data/repositories/exam_repository.dart';
+import 'package:sogda/data/repositories/model_repository.dart';
+import 'package:sogda/data/repositories/setting_keys.dart';
+import 'package:sogda/data/repositories/settings_repository.dart';
+import 'package:sogda/domain/exam_generator.dart';
+import 'package:sogda/domain/exam_grading.dart' show rubricTicks;
 
 /// One question of a paper, as the runner holds it.
 typedef ExamRunQuestion = ({

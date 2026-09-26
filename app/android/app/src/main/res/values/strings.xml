@@ -4,5 +4,5 @@
      from the ARB files, in the learner's language (#160). -->
 <resources>
     <string name="widget_description">Today\'s plan and the word of the day</string>
-    <string name="widget_empty">Open DeutschPlan to plan your day</string>
+    <string name="widget_empty">Open Sogda to plan your day</string>
 </resources>

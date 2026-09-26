@@ -1,6 +1,6 @@
 # 1 · Business
 
-DeutschPlan is a complete German course, A1.1 to C2.2, that runs entirely on
+Sogda is a complete German course, A1.1 to C2.2, that runs entirely on
 an Android phone, for adults who learn German for work, study or residence.
 Its first audience is Bangla speakers, who get every meaning in Bangla and
 every word's pronunciation written in Bangla letters; English speakers are
@@ -100,7 +100,7 @@ check each row before quoting it outside the team.
 
 | | Model | Account | Works offline | Bangla | Structure | Revision |
 |---|---|---|---|---|---|---|
-| **DeutschPlan** | Undecided (see below); no ads | None | Fully | Meanings, pronunciation, UI, tips | 12 steps A1.1–C2.2, a plan per day, generated mock exams | FSRS-4.5 |
+| **Sogda** | Undecided (see below); no ads | None | Fully | Meanings, pronunciation, UI, tips | 12 steps A1.1–C2.2, a plan per day, generated mock exams | FSRS-4.5 |
 | **Duolingo** | Free with ads, or a subscription | Yes | Partly | No Bangla-to-German course that we know of | Gamified path of short lessons | Its own review system |
 | **Babbel** | Subscription | Yes | Partly (downloads) | No | Courses by CEFR level, dialogues | Review sessions |
 | **Busuu** | Free tier and subscription | Yes | Partly (premium) | No | CEFR courses; native speakers correct your writing | Vocabulary review |
@@ -108,21 +108,21 @@ check each row before quoting it outside the team.
 | **Anki** (AnkiDroid) | Free, open source | Optional (sync) | Fully | Only if a deck has it | None: decks are user-made | SM-2 or FSRS |
 | **Goethe / telc prep books** | One-off purchase | — | Paper | Rarely | One exam level per book, official formats | None |
 
-What DeutschPlan offers that none of them combine: the whole A1.1–C2.2 path,
+What Sogda offers that none of them combine: the whole A1.1–C2.2 path,
 Bangla throughout, a daily plan decided for the learner, and no account or
 connection at all.
 
-What they offer that DeutschPlan does not (and a learner may still want):
+What they offer that Sogda does not (and a learner may still want):
 
 - **Human feedback.** Writing and speaking are self-assessed here, with app
   checks (length, target words, connectors). Busuu's community and a
   teacher correct them.
-- **Recorded native audio.** DeutschPlan speaks through a synthetic voice.
-- **Motivation by game and social pressure.** DeutschPlan is deliberately
+- **Recorded native audio.** Sogda speaks through a synthetic voice.
+- **Motivation by game and social pressure.** Sogda is deliberately
   not a game: no hearts, lives or leaderboards, and a quiet streak.
 - **Official exam papers.** The mock exams are generated from the course and
   say so. Prep books follow the official formats.
-- **Sync across devices, and iOS.** DeutschPlan moves progress by export
+- **Sync across devices, and iOS.** Sogda moves progress by export
   file, and ships on Android only for now.
 - **Depth at B1.** B1 has 379 words against A1's 1,316 (see *Risks*).
 
@@ -191,7 +191,7 @@ every country where the app is offered. That has already cost a feature.
 ## The business model
 
 > **Undecided.** Nothing in `docs/`, the ADRs or the team board decides how
-> DeutschPlan earns money, or whether it should. The options below are
+> Sogda earns money, or whether it should. The options below are
 > questions for the owner, not recommendations.
 
 What is already fixed narrows the choice: no ads, no account, no analytics
@@ -257,7 +257,7 @@ the product to?
 | **No telemetry** | Crashes and confusion are invisible unless reported | 4,598 Flutter tests (goldens included), a dedicated SQA agent, *Report a problem* | Decide on Play vitals (above) |
 | **Low-end phones** | With Supertonic's sessions open the app uses about 520 MB of memory (PSS, on the emulator); the voice is 399 MB to download | The voice is optional; a 100 MB free-space margin is enforced; the phone voice is the fallback | Owner: a memory budget (none yet) |
 | **Release depends on the owner** | Release builds are debug-signed until the upload key is added; start time on a real phone is unchecked | `tools/release_android.py` reports the signing key | Owner: upload key, real-phone check |
-| **The app id is permanent** | `io.github.rahmatullah.deutschplan` can never change once on Play | Chosen by the owner (#170) | — |
+| **The app id is permanent** | `de.sogda.app` can never change once on Play | Chosen by the owner (#170) | — |
 | **Exam claims and trademarks** | Implying official exams would mislead | Mock exams are labelled generated; Goethe and telc named only for the level | Branding review (`docs/branding/`) |
 | **Store policy** | Foreground-service and notification rules change | Declarations listed in `release.md` | Recheck each Play upload |
 
@@ -305,7 +305,7 @@ to change. It is an analysis, not a plan.
 | **Answer checking and search** | Umlaut folding (ä/ae/a, ß/ss) shared by Python and Dart (`text_norm`); article stripping | Checking typed meanings in a new language | A normaliser per language |
 | **Learning logic** | Articles der/die/das with their colours and spoken gender; the cloze's separable verbs and reflexive *sich*; grammar practice's German inflection classes; Writing's verb-stem matching; the umlaut row; placement's article questions | None | Rewritten or made pluggable per language |
 | **Voice and text** | `SystemTts` speaks `de-DE`; Supertonic's input is tagged `<de>`; course text is tagged `de-DE` for screen readers; Today's date is always German | None | A voice per language (whether Supertonic speaks it is unchecked) |
-| **Links and names** | Web links to Duden and DWDS; the name "DeutschPlan" | None | New dictionaries; a new name (`docs/branding/`) |
+| **Links and names** | Web links to Duden and DWDS; the name "Sogda" | None | New dictionaries; a new name (`docs/branding/`) |
 | **One course per install** | `content.db` is one course, and progress assumes it | None | A course picker, and progress kept per course |
 
 Adding a meaning language is mostly data (translations through the

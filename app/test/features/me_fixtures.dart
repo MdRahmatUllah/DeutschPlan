@@ -1,8 +1,8 @@
-import 'package:deutschplan/core/providers/app_providers.dart';
-import 'package:deutschplan/data/repositories/word_repository.dart';
-import 'package:deutschplan/domain/plan_engine.dart';
-import 'package:deutschplan/domain/plan_stats.dart';
-import 'package:deutschplan/features/me/me_screen.dart';
+import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/data/repositories/word_repository.dart';
+import 'package:sogda/domain/plan_engine.dart';
+import 'package:sogda/domain/plan_stats.dart';
+import 'package:sogda/features/me/me_screen.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 
 import 'today_fixtures.dart';

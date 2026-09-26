@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- The launch screen's field. Lagoon, the same value as `DpPalette.light.primary`
+<!-- The launch screen's field. Lagoon, the same value as `SgPalette.light.primary`
      and the `#00C2B2` the Splash artboard fills the screen with.
 
      Duplicated from Dart on purpose: the Android window is painted before any

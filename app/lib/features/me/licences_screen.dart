@@ -1,8 +1,8 @@
-import 'package:deutschplan/core/adaptive/adaptive.dart';
-import 'package:deutschplan/core/theme/aurora_backdrop.dart';
-import 'package:deutschplan/core/theme/dp_tokens.dart';
-import 'package:deutschplan/core/typography/dp_text.dart';
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
+import 'package:sogda/core/adaptive/adaptive.dart';
+import 'package:sogda/core/theme/aurora_backdrop.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/core/typography/sg_text.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:flutter/foundation.dart' show LicenseRegistry;
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -163,10 +163,10 @@ class _Section extends StatelessWidget {
       header: true,
       child: Padding(
         padding: const EdgeInsets.fromLTRB(16, 16, 16, 6),
-        child: DpText(
+        child: SgText(
           title.toUpperCase(),
           semanticsLabel: title,
-          role: DpTextRole.caption,
+          role: SgTextRole.caption,
           weight: 700,
           letterSpacing: 0.6,
           color: tokens.color.textSecondary,
@@ -220,10 +220,10 @@ class _Row extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        DpText(licence.name, role: DpTextRole.body),
-                        DpText(
+                        SgText(licence.name, role: SgTextRole.body),
+                        SgText(
                           kind,
-                          role: DpTextRole.caption,
+                          role: SgTextRole.caption,
                           color: tokens.color.textSecondary,
                         ),
                       ],
@@ -270,17 +270,17 @@ class _Text extends ConsumerWidget {
           children: <Widget>[
             Semantics(
               header: true,
-              child: DpText(licence.name, role: DpTextRole.title),
+              child: SgText(licence.name, role: SgTextRole.title),
             ),
-            DpText(
+            SgText(
               kind,
-              role: DpTextRole.caption,
+              role: SgTextRole.caption,
               color: tokens.color.textSecondary,
             ),
             const SizedBox(height: 12),
             Flexible(
               child: SingleChildScrollView(
-                child: DpText(text ?? '', role: DpTextRole.caption),
+                child: SgText(text ?? '', role: SgTextRole.caption),
               ),
             ),
           ],

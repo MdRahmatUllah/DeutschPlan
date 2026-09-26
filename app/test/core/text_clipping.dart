@@ -68,7 +68,7 @@ void expectAllLinesShown(
 /// Fails when a word in text under [within] breaks across two lines other
 /// than at a soft hyphen: L2's "Stand / ard" at 200 % (#165). A cut word
 /// reads as two; a long compound may break at its syllables
-/// (`DpText.allowBreaks`), and text may wrap at a space, a dash, a slash or
+/// (`SgText.allowBreaks`), and text may wrap at a space, a dash, a slash or
 /// a dot (a file name's).
 void expectNoWordBroken(
   WidgetTester tester, {

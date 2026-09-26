@@ -4,7 +4,7 @@ library;
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:deutschplan/domain/text_norm.dart';
+import 'package:sogda/domain/text_norm.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 /// PIPE-04, from the Dart side.

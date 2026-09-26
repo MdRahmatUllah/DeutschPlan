@@ -1,7 +1,7 @@
 @TestOn('vm')
 library;
 
-import 'package:deutschplan/data/db/app_database.dart';
+import 'package:sogda/data/db/app_database.dart';
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
 import 'package:drift_dev/api/migrations_native.dart';

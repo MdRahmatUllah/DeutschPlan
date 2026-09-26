@@ -2,11 +2,11 @@
 // so there is no parent scope for the lint's dependency list to describe.
 // ignore_for_file: riverpod_lint/scoped_providers_should_specify_dependencies
 
-import 'package:deutschplan/core/adaptive/adaptive.dart';
-import 'package:deutschplan/core/components/dp_button.dart';
-import 'package:deutschplan/core/providers/app_providers.dart';
-import 'package:deutschplan/data/repositories/backup_repository.dart';
-import 'package:deutschplan/features/me/export_import_screen.dart';
+import 'package:sogda/core/adaptive/adaptive.dart';
+import 'package:sogda/core/components/sg_button.dart';
+import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/data/repositories/backup_repository.dart';
+import 'package:sogda/features/me/export_import_screen.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
@@ -37,7 +37,7 @@ class _ArtboardBackups extends Fake implements BackupRepository {
 }
 
 /// M6 · Export / import — #148. The artboard: a 1.8 MB export never taken,
-/// and deutschplan-2026-09-20.json chosen, with Merge.
+/// and sogda-2026-09-20.json chosen, with Merge.
 void main() {
   Widget screen(BuildContext context) => ProviderScope(
     overrides: <Override>[
@@ -45,8 +45,7 @@ void main() {
       exportSizeProvider.overrideWith((ref) async => 1887437),
       backupRepositoryProvider.overrideWithValue(_ArtboardBackups()),
       backupFilesProvider.overrideWithValue(
-        FakeBackupFiles()
-          ..picked = (name: 'deutschplan-2026-09-20.json', json: '{}'),
+        FakeBackupFiles()..picked = (name: 'sogda-2026-09-20.json', json: '{}'),
       ),
     ],
     child: const ExportImportScreen(),
@@ -58,7 +57,7 @@ void main() {
   Future<void> chosen(WidgetTester tester) async {
     final choose = find.byWidgetPredicate(
       (widget) =>
-          widget is DpButton && widget.label == tester.l10n.exportImportChoose,
+          widget is SgButton && widget.label == tester.l10n.exportImportChoose,
     );
     await tester.scrollUntilVisible(
       choose,

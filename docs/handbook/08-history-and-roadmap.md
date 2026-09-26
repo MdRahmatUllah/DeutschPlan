@@ -1,6 +1,6 @@
 # 8 · History and roadmap
 
-DeutschPlan went from its first commit to v1.0.1 in six days, 21 to 26
+Sogda went from its first commit to v1.0.1 in six days, 21 to 26
 September 2026: 294 commits on main, 304 issues and 290 merged pull requests.
 It was built in eight milestones (M0–M7) from issues generated out of the
 specs in `docs/`, by one agent for M0–M3 and then by a team of three
@@ -19,12 +19,13 @@ local time (CEST, UTC+2).
 
 | Date | What happened |
 |---|---|
-| **2026-09-21** | First commit (17:25). The HTML design prototype and the specs in `docs/` were committed the same day, and issues #1–#175 were generated from them and the artboards, each with its goal, design, specification, acceptance criteria and dependencies, in milestones M0–M7 under epics. M0 began: the Flutter project, dependencies, lint, l10n, the architecture test, fonts, the three token sets and `DpSurface` |
+| **2026-09-21** | First commit (17:25). The HTML design prototype and the specs in `docs/` were committed the same day, and issues #1–#175 were generated from them and the artboards, each with its goal, design, specification, acceptance criteria and dependencies, in milestones M0–M7 under epics. M0 began: the Flutter project, dependencies, lint, l10n, the architecture test, fonts, the three token sets and `SgSurface` |
 | **2026-09-22** | M0's content pipeline (Excel to SQLite, uids, search keys, FTS5, interference tips, integrity gates) and data layer (the drift schema, migrations, settings). M1 began |
 | **2026-09-23** | M0 and M1 closed: the engines (FSRS, answer checking, the plan engine), splash, onboarding and placement. M2 began |
 | **2026-09-24** | M2 closed at 09:44 and M3 at 10:44: the daily loop and Learn. The team board opened at 10:45, and at 11:27 the work became three agents with agent-0 as the lead (#285, #286). GitHub CI was switched off by the owner at 17:00 (#302): the local gate became the only check. The SQA milestone was created, and the SQA agent joined at 21:25 |
 | **2026-09-25** | M4 closed (quizzes and mock exams) and M5 (search, words, Me). SQA pass 1 (M0–M6, about two dozen issues) ended at 00:31 and pass 2 at 14:41; pass 3 followed M5–M7 as they closed, into the night |
 | **2026-09-26** | The owner's release decisions: Android only, Hy-MT off in every build (ADR 9). M6 closed (voice, widget). "Later · after v1.0" was created. SQA pass 4 found no P1 and three P2s, all fixed and rechecked. **v1.0.0 tagged at 14:00** on `2b424e33` (#558, closing #175), and M7 closed at 14:01. Seventeen PRs of large-text and Bangla work followed, and **v1.0.1 was tagged at 19:34** on `0d23968e` (#594, closing #593) |
+| **2026-09-26, evening** | The owner renamed the app **Sogda** (sogda.de), with the application id `de.sogda.app`, internals included (ADR 28, #601), and adopted the brand kit in `docs/sogda-brand-kit/` (#602) |
 
 Commits on main per day: 22, 46, 22, 44, 74 and 86.
 
@@ -101,7 +102,7 @@ The SQA milestone holds 52 issues, all closed.
 
 | Milestone | Issues | Work ran | Closed | What it delivered |
 |---|---|---|---|---|
-| **M0 · Foundations** | 60 | 21–22 Sep | 23 Sep | The project, dependencies and codegen, lint and the architecture test, l10n, fonts, the light, dark and glass tokens, `DpSurface`, `DpText`, the adaptive wrappers, shared components, the golden harness, the user database and migrations, settings, and the whole content pipeline |
+| **M0 · Foundations** | 60 | 21–22 Sep | 23 Sep | The project, dependencies and codegen, lint and the architecture test, l10n, fonts, the light, dark and glass tokens, `SgSurface`, `SgText`, the adaptive wrappers, shared components, the golden harness, the user database and migrations, settings, and the whole content pipeline |
 | **M1 · First run** | 19 | 22–23 Sep | 23 Sep | `text_norm`, FSRS-4.5, answer checking, the plan engine (backlog, rest days, auto-advance, streak); S1 splash and its error state; S2's five pages; S3 placement |
 | **M2 · Daily loop** | 19 | 23–24 Sep | 24 Sep | The sentence picker; T1 Today in all its states; T2's card states, rating bar, undo and swipe; T3, T4, T5, T6 |
 | **M3 · Learn & grammar** | 12 | 24 Sep | 24 Sep | The grammar practice generator; L1, L2 and its tabs, L3, L4, L15, L5, L6 |
@@ -164,7 +165,7 @@ the team board's "Decisions already made"):
 | The duplicate C2 row is dropped in the pipeline | #407 |
 | v1.0 ships on Android only; iOS waits for a Mac | #171, #161 |
 | Hy-MT off in every build | #173 |
-| The app id `io.github.rahmatullah.deutschplan`; the upload key added later | #170 |
+| The app id `de.sogda.app`; the upload key added later | #170 |
 | llama.cpp's CPU backend only | #463 |
 | Controls keep their look; invisible 48 dp hit areas are the fix | #478, #492 |
 | The Bangla pronunciation follows the meaning language in setup | #527, #537 |

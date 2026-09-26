@@ -1,34 +1,33 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:deutschplan/core/adaptive/adaptive.dart';
-import 'package:deutschplan/core/components/dp_feedback.dart';
-import 'package:deutschplan/core/components/dp_speaker_button.dart';
-import 'package:deutschplan/core/providers/app_providers.dart';
-import 'package:deutschplan/core/theme/app_theme.dart';
-import 'package:deutschplan/core/theme/dp_tokens.dart';
-import 'package:deutschplan/core/typography/dp_text.dart';
-import 'package:deutschplan/data/db/app_database.dart';
-import 'package:deutschplan/data/db/content_dao.dart';
-import 'package:deutschplan/data/repositories/setting_keys.dart';
-import 'package:deutschplan/data/repositories/settings_repository.dart';
-import 'package:deutschplan/data/repositories/word_repository.dart';
-import 'package:deutschplan/domain/fsrs.dart' show Rating;
-import 'package:deutschplan/features/study/study_back.dart';
-import 'package:deutschplan/features/words/word_detail_screen.dart';
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
-import 'package:deutschplan/main.dart'
+import 'package:sogda/core/adaptive/adaptive.dart';
+import 'package:sogda/core/components/sg_feedback.dart';
+import 'package:sogda/core/components/sg_speaker_button.dart';
+import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/core/theme/app_theme.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/core/typography/sg_text.dart';
+import 'package:sogda/data/db/app_database.dart';
+import 'package:sogda/data/db/content_dao.dart';
+import 'package:sogda/data/repositories/setting_keys.dart';
+import 'package:sogda/data/repositories/settings_repository.dart';
+import 'package:sogda/data/repositories/word_repository.dart';
+import 'package:sogda/domain/fsrs.dart' show Rating;
+import 'package:sogda/features/study/study_back.dart';
+import 'package:sogda/features/words/word_detail_screen.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
+import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
-import 'package:deutschplan/router/routes.dart';
-import 'package:deutschplan/core/components/dp_button.dart';
-import 'package:deutschplan/core/components/dp_chip.dart';
-import 'package:deutschplan/data/repositories/rating_service.dart'
-    show CardMode;
-import 'package:deutschplan/data/repositories/search_repository.dart';
-import 'package:deutschplan/data/repositories/translation_repository.dart';
-import 'package:deutschplan/data/repositories/word_actions.dart';
-import 'package:deutschplan/domain/plan_engine.dart';
-import 'package:deutschplan/features/today/today_providers.dart';
+import 'package:sogda/router/routes.dart';
+import 'package:sogda/core/components/sg_button.dart';
+import 'package:sogda/core/components/sg_chip.dart';
+import 'package:sogda/data/repositories/rating_service.dart' show CardMode;
+import 'package:sogda/data/repositories/search_repository.dart';
+import 'package:sogda/data/repositories/translation_repository.dart';
+import 'package:sogda/data/repositories/word_actions.dart';
+import 'package:sogda/domain/plan_engine.dart';
+import 'package:sogda/features/today/today_providers.dart';
 import 'package:drift/drift.dart' hide isNotNull, isNull;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
@@ -206,7 +205,7 @@ void main() {
     ) async {
       await pump(tester);
       expect(find.text('die Straße', findRichText: true), findsOneWidget);
-      expect(find.byType(DpSpeakerButton), findsOneWidget);
+      expect(find.byType(SgSpeakerButton), findsOneWidget);
       expect(find.text('A1.1'), findsOneWidget);
       expect(find.text(l10n.wordStatusDone), findsOneWidget);
     });
@@ -318,8 +317,8 @@ void main() {
     testWidgets('the speaker says the word with its article; a long-press '
         'at 0.75× (FR-T2-09)', (tester) async {
       await pump(tester);
-      await tester.tap(find.byType(DpSpeakerButton));
-      await tester.longPress(find.byType(DpSpeakerButton));
+      await tester.tap(find.byType(SgSpeakerButton));
+      await tester.longPress(find.byType(SgSpeakerButton));
       await tester.pump();
       expect(tts.said, <(String, double)>[
         ('die Straße', 1),
@@ -342,7 +341,7 @@ void main() {
       final semantics = tester.ensureSemantics();
       await pump(tester);
       expect(
-        tester.getSemantics(find.byType(DpSpeakerButton)),
+        tester.getSemantics(find.byType(SgSpeakerButton)),
         matchesSemantics(
           label: l10n.wordPronounce('die Straße'),
           isButton: true,
@@ -358,8 +357,8 @@ void main() {
     testWidgets('no German voice: the speaker is slashed', (tester) async {
       await pump(tester, voice: false);
       expect(
-        tester.widget<DpSpeakerButton>(find.byType(DpSpeakerButton)).state,
-        DpSpeakerState.unavailable,
+        tester.widget<SgSpeakerButton>(find.byType(SgSpeakerButton)).state,
+        SgSpeakerState.unavailable,
       );
     });
 
@@ -370,7 +369,7 @@ void main() {
       testWidgets('on $device, the no-voice toast shows over W1, not under '
           'it', (tester) async {
         await pump(tester, voice: false, size: size, ratio: ratio);
-        await tester.tap(find.byType(DpSpeakerButton));
+        await tester.tap(find.byType(SgSpeakerButton));
         await tester.pump();
         await tester.pump(const Duration(milliseconds: 300));
         expect(find.text(l10n.speakerNoVoice).hitTestable(), findsOneWidget);
@@ -489,7 +488,7 @@ void main() {
   });
 
   group('R04 the header colours', () {
-    DpTokens tokensOf(WidgetTester tester) =>
+    SgTokens tokensOf(WidgetTester tester) =>
         tester.element(find.byType(WordDetailView)).tokens;
 
     testWidgets('on paper, the word takes its gender fill\'s ink', (
@@ -498,13 +497,13 @@ void main() {
       await pump(tester);
       final tokens = tokensOf(tester);
       expect(
-        tester.widget<DpHeadword>(find.byType(DpHeadword)).colour,
+        tester.widget<SgHeadword>(find.byType(SgHeadword)).colour,
         tokens.color.onPrimary,
       );
       final header = tester.widget<DecoratedBox>(
         find
             .ancestor(
-              of: find.byType(DpHeadword),
+              of: find.byType(SgHeadword),
               matching: find.byType(DecoratedBox),
             )
             .first,
@@ -518,7 +517,7 @@ void main() {
         detail: artboardWordDetail(article: 'der', german: 'Weg'),
       );
       expect(
-        tester.widget<DpHeadword>(find.byType(DpHeadword)).colour,
+        tester.widget<SgHeadword>(find.byType(SgHeadword)).colour,
         tokensOf(tester).color.onDer,
       );
     });
@@ -528,7 +527,7 @@ void main() {
       final header = tester.widget<DecoratedBox>(
         find
             .ancestor(
-              of: find.byType(DpHeadword),
+              of: find.byType(SgHeadword),
               matching: find.byType(DecoratedBox),
             )
             .first,
@@ -543,7 +542,7 @@ void main() {
       tester,
     ) async {
       await pump(tester, theme: AppTheme.glass());
-      expect(tester.widget<DpHeadword>(find.byType(DpHeadword)).colour, null);
+      expect(tester.widget<SgHeadword>(find.byType(SgHeadword)).colour, null);
     });
   });
 
@@ -602,7 +601,7 @@ void main() {
   });
 
   group('#141 W1 actions', () {
-    Finder action(String label) => find.widgetWithText(DpButton, label);
+    Finder action(String label) => find.widgetWithText(SgButton, label);
 
     Future<void> tapAction(WidgetTester tester, String label) async {
       await tester.ensureVisible(action(label));
@@ -732,7 +731,7 @@ void main() {
         'is inert', (tester) async {
       await pump(tester);
       Finder chip(String label) =>
-          find.byWidgetPredicate((w) => w is DpChip && w.label == label);
+          find.byWidgetPredicate((w) => w is SgChip && w.label == label);
       await tester.ensureVisible(chip(l10n.wordPlainCard));
       await tester.tap(chip(l10n.wordPlainCard));
       await tester.pumpAndSettle();
@@ -845,7 +844,7 @@ void main() {
     testWidgets('a failed query: the error panel and Retry', (tester) async {
       await pump(tester, error: StateError('disk'));
       expect(find.text(l10n.wordLoadFailed), findsOneWidget);
-      expect(find.byType(DpErrorPanel), findsOneWidget);
+      expect(find.byType(SgErrorPanel), findsOneWidget);
     });
   });
 
@@ -908,7 +907,7 @@ void main() {
   group('R04 over the database', () {
     testWidgets('the course\'s examples and tip; the status follows a '
         'rating while the sheet is open', (tester) async {
-      final directory = Directory.systemTemp.createTempSync('deutschplan_w1');
+      final directory = Directory.systemTemp.createTempSync('sogda_w1');
       final content = ContentFixture.write('${directory.path}/content.db').file;
       final db = AppDatabase.memory();
       await tester.runAsync(

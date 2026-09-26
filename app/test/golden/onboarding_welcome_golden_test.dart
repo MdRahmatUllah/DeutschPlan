@@ -1,4 +1,4 @@
-import 'package:deutschplan/features/onboarding/onboarding_welcome_page.dart';
+import 'package:sogda/features/onboarding/onboarding_welcome_page.dart';
 
 import 'golden_harness.dart';
 

@@ -1,6 +1,6 @@
 import 'dart:math' as math;
 
-import 'package:deutschplan/core/theme/dp_tokens.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 
@@ -20,11 +20,11 @@ void main() {
     return (math.max(x, y) + 0.05) / (math.min(x, y) + 0.05);
   }
 
-  final themes = <String, DpTokens>{
-    'light': DpTokens.light(),
-    'dark': DpTokens.dark(),
-    'glass': DpTokens.glass(),
-    'glass dark': DpTokens.glassDark(),
+  final themes = <String, SgTokens>{
+    'light': SgTokens.light(),
+    'dark': SgTokens.dark(),
+    'glass': SgTokens.glass(),
+    'glass dark': SgTokens.glassDark(),
   };
 
   for (final MapEntry(key: name, value: t) in themes.entries) {
@@ -124,7 +124,7 @@ void main() {
     });
 
     test('#437 $name: the M1 header, name and subtitle, on its Cobalt', () {
-      // Cobalt solid on paper; under glass a Cobalt tint (DpSurface's 22 %)
+      // Cobalt solid on paper; under glass a Cobalt tint (SgSurface's 22 %)
       // over the backdrop, with the page's ink on it. The subtitle is this
       // colour itself, never a fainter one made on the screen.
       final failures = <String>[];
@@ -164,7 +164,7 @@ void main() {
     test("#449 $name: WCAG 1.4.11 on a Sun field (L1's course bar, L2's step "
         "bar and exams card): its track, Sun's ink for Done, and the Learning mark "
         'apart from the track', () {
-      // Solid Sun on paper and dark; under glass DpSurface's 22 % Sun wash
+      // Solid Sun on paper and dark; under glass SgSurface's 22 % Sun wash
       // over the backdrop, with the page's ink on it.
       final failures = <String>[];
       final sunInk = t.isGlass ? c.ink : c.onAccent;

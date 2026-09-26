@@ -1,6 +1,6 @@
 # 2 · Features
 
-Everything a learner can do in DeutschPlan v1.0.1, grouped the way the app
+Everything a learner can do in Sogda v1.0.1, grouped the way the app
 groups it: first run, Today and its study sessions, the word cards, word
 detail and compare, Learn (the course, grammar, quizzes), the mock exams,
 search and the learner's own words, Me (progress, settings, voice, data), and

@@ -1,32 +1,32 @@
-import 'package:deutschplan/core/theme/dp_tokens.dart';
-import 'package:deutschplan/core/typography/app_fonts.dart';
-import 'package:deutschplan/core/typography/dp_text.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/core/typography/app_fonts.dart';
+import 'package:sogda/core/typography/sg_text.dart';
 import 'package:material_ui/material_ui.dart';
 
-/// Builds the `ThemeData` for each mode and attaches its [DpTokens].
+/// Builds the `ThemeData` for each mode and attaches its [SgTokens].
 ///
-/// `docs/01-architecture/theming.md`: "`AppTheme` exposes one `DpTokens` object
+/// `docs/01-architecture/theming.md`: "`AppTheme` exposes one `SgTokens` object
 /// (a `ThemeExtension`) per mode." Screens read `context.tokens`; they never
 /// reach for a hex value and never construct chrome themselves.
 ///
 /// Material 3 is *not* given a dynamic colour scheme:
 /// ADR 12 rules it out so the gender colours stay stable.
 abstract final class AppTheme {
-  static ThemeData light() => _build(DpTokens.light());
+  static ThemeData light() => _build(SgTokens.light());
 
-  static ThemeData dark() => _build(DpTokens.dark());
+  static ThemeData dark() => _build(SgTokens.dark());
 
   /// [dark] picks the smoked variant; theming.md resolves it from the system
   /// light/dark setting rather than from a separate learner choice.
   static ThemeData glass({bool dark = false}) =>
-      _build(dark ? DpTokens.glassDark() : DpTokens.glass());
+      _build(dark ? SgTokens.glassDark() : SgTokens.glass());
 
-  static ThemeData _build(DpTokens tokens) {
+  static ThemeData _build(SgTokens tokens) {
     final dialog = Color.alphaBlend(tokens.surface.card, tokens.surface.paper);
     final scheme = ColorScheme.fromSeed(
       seedColor: tokens.color.primary,
       // Derived from the surface, not the mode name: glass has a dark variant
-      // that is still DpMode.glass, and Material needs the real brightness for
+      // that is still SgMode.glass, and Material needs the real brightness for
       // scrims, system icons and default ripples.
       brightness: tokens.surface.paper.computeLuminance() < 0.5
           ? Brightness.dark
@@ -86,19 +86,19 @@ abstract final class AppTheme {
 
   /// Maps the seven roles of the scale onto the Material text theme.
   ///
-  /// The styles come from [DpText.styleFor] so a role has exactly one
-  /// definition. Screens should prefer [DpText], which also applies the Bangla
+  /// The styles come from [SgText.styleFor] so a role has exactly one
+  /// definition. Screens should prefer [SgText], which also applies the Bangla
   /// step-up; this exists for the Material widgets that read the theme.
-  static TextTheme textTheme(DpTokens tokens) => TextTheme(
-    displayLarge: DpText.styleFor(tokens, DpTextRole.display),
-    headlineLarge: DpText.styleFor(tokens, DpTextRole.headline),
-    titleLarge: DpText.styleFor(tokens, DpTextRole.title),
-    bodyLarge: DpText.styleFor(tokens, DpTextRole.bodyLarge),
-    bodyMedium: DpText.styleFor(tokens, DpTextRole.body),
-    labelLarge: DpText.styleFor(tokens, DpTextRole.label),
-    bodySmall: DpText.styleFor(
+  static TextTheme textTheme(SgTokens tokens) => TextTheme(
+    displayLarge: SgText.styleFor(tokens, SgTextRole.display),
+    headlineLarge: SgText.styleFor(tokens, SgTextRole.headline),
+    titleLarge: SgText.styleFor(tokens, SgTextRole.title),
+    bodyLarge: SgText.styleFor(tokens, SgTextRole.bodyLarge),
+    bodyMedium: SgText.styleFor(tokens, SgTextRole.body),
+    labelLarge: SgText.styleFor(tokens, SgTextRole.label),
+    bodySmall: SgText.styleFor(
       tokens,
-      DpTextRole.caption,
+      SgTextRole.caption,
       color: tokens.color.textSecondary,
     ),
   );

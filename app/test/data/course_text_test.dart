@@ -1,11 +1,11 @@
 import 'dart:io';
 
-import 'package:deutschplan/data/db/app_database.dart';
-import 'package:deutschplan/data/db/content_dao.dart';
-import 'package:deutschplan/core/providers/app_providers.dart';
-import 'package:deutschplan/data/repositories/course_text.dart';
-import 'package:deutschplan/domain/grammar_item_generator.dart';
-import 'package:deutschplan/features/learn/grammar_topic_screen.dart';
+import 'package:sogda/data/db/app_database.dart';
+import 'package:sogda/data/db/content_dao.dart';
+import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/data/repositories/course_text.dart';
+import 'package:sogda/domain/grammar_item_generator.dart';
+import 'package:sogda/features/learn/grammar_topic_screen.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
@@ -19,7 +19,7 @@ void main() {
   late AppDatabase db;
 
   setUp(() async {
-    directory = Directory.systemTemp.createTempSync('deutschplan_course');
+    directory = Directory.systemTemp.createTempSync('sogda_course');
     final content = ContentFixture.write('${directory.path}/content.db').file;
     db = AppDatabase.memory();
     await db.customStatement(

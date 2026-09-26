@@ -1,6 +1,6 @@
 import 'dart:math' as math;
 
-import 'package:deutschplan/domain/plan_engine.dart' show PlanDate;
+import 'package:sogda/domain/plan_engine.dart' show PlanDate;
 
 /// FR-X1-03's pick: one of [candidates] (the learned words due within three
 /// days), the same one all day, and another tomorrow. Null when there are

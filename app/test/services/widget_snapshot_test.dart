@@ -1,16 +1,16 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:deutschplan/core/providers/app_providers.dart';
-import 'package:deutschplan/data/db/app_database.dart';
-import 'package:deutschplan/data/db/content_dao.dart';
-import 'package:deutschplan/data/repositories/setting_keys.dart';
-import 'package:deutschplan/data/repositories/settings_repository.dart';
-import 'package:deutschplan/domain/word_of_day.dart';
-import 'package:deutschplan/features/today/today_providers.dart';
-import 'package:deutschplan/features/today/today_view.dart';
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
-import 'package:deutschplan/services/widget_snapshot.dart';
+import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/data/db/app_database.dart';
+import 'package:sogda/data/db/content_dao.dart';
+import 'package:sogda/data/repositories/setting_keys.dart';
+import 'package:sogda/data/repositories/settings_repository.dart';
+import 'package:sogda/domain/word_of_day.dart';
+import 'package:sogda/features/today/today_providers.dart';
+import 'package:sogda/features/today/today_view.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
+import 'package:sogda/services/widget_snapshot.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter/services.dart' show MethodCall, MethodChannel;
@@ -144,7 +144,7 @@ void main() {
           widgetSnapshot(en, artboardToday(), word)['copy']!
               as Map<String, String>;
       expect(copy, <String, String>{
-        'app': 'DeutschPlan',
+        'app': 'Sogda',
         'left': '8 left',
         'leftStep': '8 left · A2.1',
         'progress': '12/20',
@@ -182,7 +182,7 @@ void main() {
         );
 
     setUp(() async {
-      directory = Directory.systemTemp.createTempSync('deutschplan_widget');
+      directory = Directory.systemTemp.createTempSync('sogda_widget');
       final content = ContentFixture.write('${directory.path}/content.db').file;
       db = AppDatabase.memory();
       await db.customStatement(
@@ -329,7 +329,7 @@ void main() {
     late DateTime now;
 
     setUp(() async {
-      directory = Directory.systemTemp.createTempSync('deutschplan_midnight');
+      directory = Directory.systemTemp.createTempSync('sogda_midnight');
       final content = ContentFixture.write('${directory.path}/content.db').file;
       db = AppDatabase.memory();
       await db.customStatement(
@@ -429,4 +429,29 @@ void main() {
     },
     testOn: '!ios',
   );
+
+  group('#601 the names the native side must share', () {
+    test(
+      "the redraw goes to the manifest's receiver, in the app's namespace",
+      () {
+        final gradle = File('android/app/build.gradle.kts').readAsStringSync();
+        final manifest = File('android/app/src/main/AndroidManifest.xml')
+            .readAsStringSync();
+        final namespace = RegExp(r'namespace = "([^"]+)"')
+            .firstMatch(gradle)![1];
+        final receiver = RegExp(r'android:name="(\.widget\.[A-Za-z]+Receiver)"')
+            .firstMatch(manifest)![1];
+        expect(HomeWidgetStore.androidReceiver, '$namespace$receiver');
+      },
+    );
+
+    test(
+      "the App Group is release.md's, which the widget extension shares",
+      () {
+        final release = File('../docs/05-dev-guide/release.md')
+            .readAsStringSync();
+        expect(release, contains('App Group `${HomeWidgetStore.appGroup}`'));
+      },
+    );
+  });
 }

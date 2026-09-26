@@ -1,24 +1,24 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:deutschplan/core/components/dp_rating_bar.dart';
-import 'package:deutschplan/core/adaptive/adaptive.dart';
-import 'package:deutschplan/core/providers/app_providers.dart';
-import 'package:deutschplan/core/theme/app_theme.dart';
-import 'package:deutschplan/core/theme/aurora_backdrop.dart';
-import 'package:deutschplan/core/theme/dp_tokens.dart';
-import 'package:deutschplan/data/db/app_database.dart';
-import 'package:deutschplan/data/db/content_dao.dart';
-import 'package:deutschplan/data/repositories/setting_keys.dart';
-import 'package:deutschplan/data/repositories/settings_repository.dart';
-import 'package:deutschplan/features/study/study_back.dart';
-import 'package:deutschplan/features/study/study_screen.dart';
-import 'package:deutschplan/features/study/study_session.dart';
-import 'package:deutschplan/features/study/study_summary.dart';
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
-import 'package:deutschplan/main.dart'
+import 'package:sogda/core/components/sg_rating_bar.dart';
+import 'package:sogda/core/adaptive/adaptive.dart';
+import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/core/theme/app_theme.dart';
+import 'package:sogda/core/theme/aurora_backdrop.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/data/db/app_database.dart';
+import 'package:sogda/data/db/content_dao.dart';
+import 'package:sogda/data/repositories/setting_keys.dart';
+import 'package:sogda/data/repositories/settings_repository.dart';
+import 'package:sogda/features/study/study_back.dart';
+import 'package:sogda/features/study/study_screen.dart';
+import 'package:sogda/features/study/study_session.dart';
+import 'package:sogda/features/study/study_summary.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
+import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
-import 'package:deutschplan/router/routes.dart';
+import 'package:sogda/router/routes.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
@@ -47,7 +47,7 @@ void main() {
   /// Haus and Tür new.
   Future<void> open() async {
     db = AppDatabase.memory();
-    final directory = Directory.systemTemp.createTempSync('dp_study');
+    final directory = Directory.systemTemp.createTempSync('sg_study');
     final content = ContentFixture.write('${directory.path}/content.db');
     await db.customStatement(
       "ATTACH DATABASE '${ContentDao.attachPath(content.file)}' AS c",
@@ -352,7 +352,7 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code) VALUES
 
     testWidgets('no rating bar before the card is turned over', (tester) async {
       final container = await pump(tester);
-      expect(find.byType(DpRatingBar), findsNothing);
+      expect(find.byType(SgRatingBar), findsNothing);
       expect(find.text(l10n.studyShowMeaning), findsOneWidget);
 
       await tester.tap(find.text(l10n.studyShowMeaning));

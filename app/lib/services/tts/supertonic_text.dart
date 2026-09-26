@@ -1,4 +1,4 @@
-import 'package:deutschplan/services/tts/nfkd_latin.dart';
+import 'package:sogda/services/tts/nfkd_latin.dart';
 
 /// Supertonic 3's text front end: German as the model reads it (`tts.md`).
 ///

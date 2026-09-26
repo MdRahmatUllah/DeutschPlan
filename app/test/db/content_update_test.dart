@@ -4,10 +4,10 @@ library;
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:deutschplan/core/providers/app_providers.dart';
-import 'package:deutschplan/data/db/app_database.dart';
-import 'package:deutschplan/data/db/content_dao.dart';
-import 'package:deutschplan/data/db/content_update.dart';
+import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/data/db/app_database.dart';
+import 'package:sogda/data/db/content_dao.dart';
+import 'package:sogda/data/db/content_update.dart';
 import 'package:drift/drift.dart' hide isNotNull, isNull;
 import 'package:drift/native.dart';
 import 'package:flutter/services.dart';
@@ -142,7 +142,7 @@ void main() {
 
   setUp(() async {
     TestWidgetsFlutterBinding.ensureInitialized();
-    support = Directory.systemTemp.createTempSync('deutschplan_update');
+    support = Directory.systemTemp.createTempSync('sogda_update');
     PathProviderPlatform.instance = _TempPaths(support.path);
 
     publish(course(version: '202601010000'));

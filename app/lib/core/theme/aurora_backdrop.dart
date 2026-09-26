@@ -1,7 +1,7 @@
 import 'dart:math' as math;
 
-import 'package:deutschplan/core/theme/dp_tokens.dart';
-import 'package:deutschplan/core/theme/glass_capability.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/core/theme/glass_capability.dart';
 import 'package:material_ui/material_ui.dart';
 
 /// One drifting colour blob.
@@ -61,7 +61,7 @@ class AuroraBlob {
 enum AuroraRole { lagoon, sun, raspberry, cobalt }
 
 extension AuroraRoleColour on AuroraRole {
-  Color from(DpPalette palette) => switch (this) {
+  Color from(SgPalette palette) => switch (this) {
     AuroraRole.lagoon => palette.primary,
     AuroraRole.sun => palette.accent,
     AuroraRole.raspberry => palette.die,

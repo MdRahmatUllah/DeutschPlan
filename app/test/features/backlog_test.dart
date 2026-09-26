@@ -1,29 +1,29 @@
 import 'dart:io';
 
-import 'package:deutschplan/core/adaptive/adaptive.dart';
-import 'package:deutschplan/core/components/dp_button.dart';
-import 'package:deutschplan/core/providers/app_providers.dart';
-import 'package:deutschplan/core/theme/app_theme.dart';
-import 'package:deutschplan/core/theme/dp_tokens.dart';
-import 'package:deutschplan/data/db/app_database.dart';
+import 'package:sogda/core/adaptive/adaptive.dart';
+import 'package:sogda/core/components/sg_button.dart';
+import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/core/theme/app_theme.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/data/db/app_database.dart';
 import 'package:drift/drift.dart' as drift show Table, TableInfo;
-import 'package:deutschplan/data/db/content_dao.dart';
-import 'package:deutschplan/data/repositories/setting_keys.dart';
-import 'package:deutschplan/data/repositories/settings_repository.dart';
-import 'package:deutschplan/domain/fsrs.dart';
-import 'package:deutschplan/features/backlog/backlog_screen.dart';
-import 'package:deutschplan/features/study/study_screen.dart';
-import 'package:deutschplan/features/study/study_session.dart';
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
-import 'package:deutschplan/main.dart'
+import 'package:sogda/data/db/content_dao.dart';
+import 'package:sogda/data/repositories/setting_keys.dart';
+import 'package:sogda/data/repositories/settings_repository.dart';
+import 'package:sogda/domain/fsrs.dart';
+import 'package:sogda/features/backlog/backlog_screen.dart';
+import 'package:sogda/features/study/study_screen.dart';
+import 'package:sogda/features/study/study_session.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
+import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
-import 'package:deutschplan/router/routes.dart';
+import 'package:sogda/router/routes.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
-import 'package:deutschplan/features/words/word_detail_screen.dart';
+import 'package:sogda/features/words/word_detail_screen.dart';
 
 import '../services/fake_tts.dart';
 
@@ -51,7 +51,7 @@ void main() {
   /// not backlog: an old one done, an old revision, and today's.
   Future<void> open() async {
     db = AppDatabase.memory();
-    final directory = Directory.systemTemp.createTempSync('dp_backlog');
+    final directory = Directory.systemTemp.createTempSync('sg_backlog');
     final content = ContentFixture.write('${directory.path}/content.db');
     await db.customStatement(
       "ATTACH DATABASE '${ContentDao.attachPath(content.file)}' AS c",
@@ -194,7 +194,7 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code, skipped,
         ),
       );
       expect(tray.painter, isA<EmptyTrayPainter>());
-      expect((tray.painter! as EmptyTrayPainter).tick, DpPalette.light.easy);
+      expect((tray.painter! as EmptyTrayPainter).tick, SgPalette.light.easy);
       // The headline is the screen's name alone: no count, no study.
       expect(find.text(l10n.backlogTitle), findsNWidgets(2));
       expect(find.textContaining(l10n.backlogStudyAll(0)), findsNothing);
@@ -325,7 +325,7 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code, skipped,
       await pump(tester);
       await tester.longPress(word('das Haus'));
       await tester.pumpAndSettle();
-      await tester.tap(find.widgetWithText(DpButton, l10n.backlogSuspend));
+      await tester.tap(find.widgetWithText(SgButton, l10n.backlogSuspend));
       await settle(tester);
       await tester.pump(const Duration(seconds: 5));
       await tester.pumpAndSettle();
@@ -467,7 +467,7 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code, skipped,
     Future<void> longPress(WidgetTester tester, String label) async {
       await tester.longPress(word('das Haus'));
       await tester.pumpAndSettle();
-      await tester.tap(find.widgetWithText(DpButton, label));
+      await tester.tap(find.widgetWithText(SgButton, label));
       await settle(tester);
     }
 
@@ -559,7 +559,7 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code, skipped,
       tester,
     ) async {
       await pump(tester, chrome: chrome);
-      final red = <Color>{DpPalette.light.again, DpPalette.light.wrongText};
+      final red = <Color>{SgPalette.light.again, SgPalette.light.wrongText};
       final seen = <Color>{
         for (final box in tester.widgetList<DecoratedBox>(
           find.byType(DecoratedBox),

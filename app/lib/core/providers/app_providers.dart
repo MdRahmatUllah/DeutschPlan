@@ -18,46 +18,46 @@ library;
 
 import 'dart:async';
 
-import 'package:deutschplan/data/repositories/sentence_store.dart';
-import 'package:deutschplan/domain/sentence_picker.dart';
-import 'package:deutschplan/data/db/content_update.dart';
-import 'package:deutschplan/core/theme/dp_tokens.dart';
-import 'package:deutschplan/core/theme/theme_mode.dart';
-import 'package:deutschplan/domain/fsrs.dart';
-import 'package:deutschplan/domain/plan_engine.dart';
-import 'package:deutschplan/domain/quiz_builder.dart';
-import 'package:deutschplan/data/db/app_database.dart';
-import 'package:deutschplan/data/db/content_dao.dart';
-import 'package:deutschplan/data/repositories/backup_repository.dart';
-import 'package:deutschplan/data/repositories/exam_repository.dart';
-import 'package:deutschplan/data/repositories/exam_result_service.dart';
-import 'package:deutschplan/data/repositories/exam_run_service.dart';
-import 'package:deutschplan/data/repositories/grammar_repository.dart';
-import 'package:deutschplan/data/repositories/model_repository.dart';
-import 'package:deutschplan/data/repositories/synthesis_cache.dart';
-import 'package:deutschplan/data/repositories/plan_repository.dart';
-import 'package:deutschplan/data/repositories/plan_store.dart';
-import 'package:deutschplan/data/repositories/progress_repository.dart';
-import 'package:deutschplan/data/repositories/quiz_run_service.dart';
-import 'package:deutschplan/data/repositories/quiz_store.dart';
-import 'package:deutschplan/data/repositories/rating_service.dart';
-import 'package:deutschplan/data/repositories/reset_repository.dart';
-import 'package:deutschplan/data/repositories/search_repository.dart';
-import 'package:deutschplan/data/repositories/setting_keys.dart';
-import 'package:deutschplan/data/repositories/settings_repository.dart';
-import 'package:deutschplan/data/repositories/setup_repository.dart';
-import 'package:deutschplan/data/repositories/word_repository.dart';
-import 'package:deutschplan/services/exam_recorder.dart';
-import 'package:deutschplan/services/device_storage.dart';
-import 'package:deutschplan/services/model_downloads.dart';
-import 'package:deutschplan/services/notification_permission.dart';
-import 'package:deutschplan/services/tts/supertonic_tts.dart';
-import 'package:deutschplan/services/tts/system_tts.dart';
-import 'package:deutschplan/services/tts/tts_engine.dart';
-import 'package:deutschplan/services/tts/tts_service.dart';
-import 'package:deutschplan/data/repositories/translation_repository.dart';
-import 'package:deutschplan/data/repositories/word_actions.dart';
-import 'package:deutschplan/services/translation/translator.dart';
+import 'package:sogda/data/repositories/sentence_store.dart';
+import 'package:sogda/domain/sentence_picker.dart';
+import 'package:sogda/data/db/content_update.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/core/theme/theme_mode.dart';
+import 'package:sogda/domain/fsrs.dart';
+import 'package:sogda/domain/plan_engine.dart';
+import 'package:sogda/domain/quiz_builder.dart';
+import 'package:sogda/data/db/app_database.dart';
+import 'package:sogda/data/db/content_dao.dart';
+import 'package:sogda/data/repositories/backup_repository.dart';
+import 'package:sogda/data/repositories/exam_repository.dart';
+import 'package:sogda/data/repositories/exam_result_service.dart';
+import 'package:sogda/data/repositories/exam_run_service.dart';
+import 'package:sogda/data/repositories/grammar_repository.dart';
+import 'package:sogda/data/repositories/model_repository.dart';
+import 'package:sogda/data/repositories/synthesis_cache.dart';
+import 'package:sogda/data/repositories/plan_repository.dart';
+import 'package:sogda/data/repositories/plan_store.dart';
+import 'package:sogda/data/repositories/progress_repository.dart';
+import 'package:sogda/data/repositories/quiz_run_service.dart';
+import 'package:sogda/data/repositories/quiz_store.dart';
+import 'package:sogda/data/repositories/rating_service.dart';
+import 'package:sogda/data/repositories/reset_repository.dart';
+import 'package:sogda/data/repositories/search_repository.dart';
+import 'package:sogda/data/repositories/setting_keys.dart';
+import 'package:sogda/data/repositories/settings_repository.dart';
+import 'package:sogda/data/repositories/setup_repository.dart';
+import 'package:sogda/data/repositories/word_repository.dart';
+import 'package:sogda/services/exam_recorder.dart';
+import 'package:sogda/services/device_storage.dart';
+import 'package:sogda/services/model_downloads.dart';
+import 'package:sogda/services/notification_permission.dart';
+import 'package:sogda/services/tts/supertonic_tts.dart';
+import 'package:sogda/services/tts/system_tts.dart';
+import 'package:sogda/services/tts/tts_engine.dart';
+import 'package:sogda/services/tts/tts_service.dart';
+import 'package:sogda/data/repositories/translation_repository.dart';
+import 'package:sogda/data/repositories/word_actions.dart';
+import 'package:sogda/services/translation/translator.dart';
 import 'package:material_ui/material_ui.dart' show Brightness;
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -129,7 +129,7 @@ String today(Ref ref) {
 @Riverpod(keepAlive: true)
 class Theme extends _$Theme {
   @override
-  DpMode build() {
+  SgMode build() {
     final setting = ref.watch(settingsProvider).read(SettingKeys.themeMode);
     return setting.resolve(_platformBrightness);
   }

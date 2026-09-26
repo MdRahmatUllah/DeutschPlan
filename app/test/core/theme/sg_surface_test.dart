@@ -1,11 +1,11 @@
-import 'package:deutschplan/core/theme/app_theme.dart';
-import 'package:deutschplan/core/theme/dp_surface.dart';
-import 'package:deutschplan/core/theme/dp_tokens.dart';
+import 'package:sogda/core/theme/app_theme.dart';
+import 'package:sogda/core/theme/sg_surface.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 
 /// theming.md: "Every card, sheet, header and tab bar is drawn by one widget,
-/// `DpSurface`... Because screens only use `DpSurface`, adding the glass mode
+/// `SgSurface`... Because screens only use `SgSurface`, adding the glass mode
 /// did not change a single screen file. Keep it that way."
 ///
 /// These tests hold that promise: the same widget, unchanged, must produce the
@@ -14,7 +14,7 @@ void main() {
   Future<void> pump(
     WidgetTester tester,
     ThemeData theme, {
-    DpSurfaceKind kind = DpSurfaceKind.card,
+    SgSurfaceKind kind = SgSurfaceKind.card,
     bool pressed = false,
     bool selected = false,
     VoidCallback? onTap,
@@ -24,7 +24,7 @@ void main() {
         theme: theme,
         home: Scaffold(
           body: Center(
-            child: DpSurface(
+            child: SgSurface(
               kind: kind,
               pressed: pressed,
               selected: selected,
@@ -43,7 +43,7 @@ void main() {
     final boxes = tester
         .widgetList<DecoratedBox>(
           find.descendant(
-            of: find.byType(DpSurface),
+            of: find.byType(SgSurface),
             matching: find.byType(DecoratedBox),
           ),
         )
@@ -52,9 +52,9 @@ void main() {
   }
 
   group('solid modes (Paper & Ink, Night Ink)', () {
-    for (final (name, theme, tokens) in <(String, ThemeData, DpTokens)>[
-      ('light', AppTheme.light(), DpTokens.light()),
-      ('dark', AppTheme.dark(), DpTokens.dark()),
+    for (final (name, theme, tokens) in <(String, ThemeData, SgTokens)>[
+      ('light', AppTheme.light(), SgTokens.light()),
+      ('dark', AppTheme.dark(), SgTokens.dark()),
     ]) {
       testWidgets('$name draws fill, outline and the hard offset shadow', (
         tester,
@@ -84,7 +84,7 @@ void main() {
         await pump(tester, theme);
         expect(
           find.descendant(
-            of: find.byType(DpSurface),
+            of: find.byType(SgSurface),
             matching: find.byType(BackdropFilter),
           ),
           findsNothing,
@@ -105,7 +105,7 @@ void main() {
           tester
               .widgetList<Transform>(
                 find.descendant(
-                  of: find.byType(DpSurface),
+                  of: find.byType(SgSurface),
                   matching: find.byType(Transform),
                 ),
               )
@@ -122,7 +122,7 @@ void main() {
       await pump(tester, AppTheme.glass());
       final filter = tester.widget<BackdropFilter>(
         find.descendant(
-          of: find.byType(DpSurface),
+          of: find.byType(SgSurface),
           matching: find.byType(BackdropFilter),
         ),
       );
@@ -131,10 +131,10 @@ void main() {
     });
 
     testWidgets('cardStrong blurs harder than card', (tester) async {
-      await pump(tester, AppTheme.glass(), kind: DpSurfaceKind.cardStrong);
+      await pump(tester, AppTheme.glass(), kind: SgSurfaceKind.cardStrong);
       final filter = tester.widget<BackdropFilter>(
         find.descendant(
-          of: find.byType(DpSurface),
+          of: find.byType(SgSurface),
           matching: find.byType(BackdropFilter),
         ),
       );
@@ -147,13 +147,13 @@ void main() {
       await pump(tester, AppTheme.glass());
       final clip = tester.widget<ClipRRect>(
         find.descendant(
-          of: find.byType(DpSurface),
+          of: find.byType(SgSurface),
           matching: find.byType(ClipRRect),
         ),
       );
       expect(
         clip.borderRadius,
-        BorderRadius.circular(DpShapeTokens.glass.card),
+        BorderRadius.circular(SgShapeTokens.glass.card),
       );
     });
 
@@ -183,7 +183,7 @@ void main() {
       final boxes = tester
           .widgetList<DecoratedBox>(
             find.descendant(
-              of: find.byType(DpSurface),
+              of: find.byType(SgSurface),
               matching: find.byType(DecoratedBox),
             ),
           )
@@ -191,7 +191,7 @@ void main() {
           .toList();
 
       final fill = boxes.firstWhere((d) => d.color != null);
-      expect(fill.color, DpSurfaceTokens.glass.card);
+      expect(fill.color, SgSurfaceTokens.glass.card);
       expect(
         fill.gradient,
         isNull,
@@ -202,7 +202,7 @@ void main() {
       expect(sheen.color, isNull);
       expect(
         (sheen.gradient! as LinearGradient).colors.first,
-        DpSurfaceTokens.glass.sheen,
+        SgSurfaceTokens.glass.sheen,
       );
     });
 
@@ -230,7 +230,7 @@ void main() {
             child: SizedBox(
               width: 200,
               height: 52,
-              child: DpSurface(
+              child: SgSurface(
                 // Small, so that where it sits shows: a label that nearly
                 // fills the panel is centred whatever the layout does.
                 child: Column(
@@ -249,10 +249,10 @@ void main() {
       await tester.pumpAndSettle();
       expect(
         find.byType(BackdropFilter),
-        theme.extension<DpTokens>()!.isGlass ? findsOneWidget : findsNothing,
+        theme.extension<SgTokens>()!.isGlass ? findsOneWidget : findsNothing,
       );
       return tester.getCenter(find.text('A1.1')) -
-          tester.getCenter(find.byType(DpSurface));
+          tester.getCenter(find.byType(SgSurface));
     }
 
     final paper = await textCentre(AppTheme.light());
@@ -269,7 +269,7 @@ void main() {
     Border borderOf(WidgetTester tester) => tester
         .widgetList<DecoratedBox>(
           find.descendant(
-            of: find.byType(DpSurface),
+            of: find.byType(SgSurface),
             matching: find.byType(DecoratedBox),
           ),
         )
@@ -277,14 +277,14 @@ void main() {
         .whereType<Border>()
         .first;
 
-    for (final (name, theme, tokens) in <(String, ThemeData, DpTokens)>[
-      ('light', AppTheme.light(), DpTokens.light()),
-      ('dark', AppTheme.dark(), DpTokens.dark()),
+    for (final (name, theme, tokens) in <(String, ThemeData, SgTokens)>[
+      ('light', AppTheme.light(), SgTokens.light()),
+      ('dark', AppTheme.dark(), SgTokens.dark()),
     ]) {
       testWidgets('$name: a 2 px ink edge, and the shadow even on a bar', (
         tester,
       ) async {
-        await pump(tester, theme, kind: DpSurfaceKind.bar, selected: true);
+        await pump(tester, theme, kind: SgSurfaceKind.bar, selected: true);
 
         expect(borderOf(tester).top.width, 2);
         expect(borderOf(tester).top.color, tokens.color.ink);
@@ -295,11 +295,11 @@ void main() {
     testWidgets('glass: a 2 px Lagoon edge, and the soft shadow', (
       tester,
     ) async {
-      final tokens = DpTokens.glass();
+      final tokens = SgTokens.glass();
       await pump(
         tester,
         AppTheme.glass(),
-        kind: DpSurfaceKind.bar,
+        kind: SgSurfaceKind.bar,
         selected: true,
       );
 
@@ -309,8 +309,8 @@ void main() {
     });
 
     testWidgets('unselected, a bar is still only the hairline', (tester) async {
-      final tokens = DpTokens.light();
-      await pump(tester, AppTheme.light(), kind: DpSurfaceKind.bar);
+      final tokens = SgTokens.light();
+      await pump(tester, AppTheme.light(), kind: SgSurfaceKind.bar);
 
       expect(borderOf(tester).top.width, tokens.surface.outlineWidth);
       expect(borderOf(tester).top.color, tokens.surface.outline);
@@ -322,7 +322,7 @@ void main() {
     testWidgets('bar carries no drop shadow — it sits flush to the edge', (
       tester,
     ) async {
-      await pump(tester, AppTheme.light(), kind: DpSurfaceKind.bar);
+      await pump(tester, AppTheme.light(), kind: SgSurfaceKind.bar);
       expect(decorationOf(tester).boxShadow, isEmpty);
     });
 
@@ -333,13 +333,13 @@ void main() {
       await pump(
         tester,
         AppTheme.light(),
-        kind: DpSurfaceKind.tint(DpPalette.light.die),
+        kind: SgSurfaceKind.tint(SgPalette.light.die),
       );
       expect(
         decorationOf(tester).color,
         Color.alphaBlend(
-          DpPalette.light.die.withValues(alpha: 0.22),
-          DpTokens.light().surface.paper,
+          SgPalette.light.die.withValues(alpha: 0.22),
+          SgTokens.light().surface.paper,
         ),
       );
       expect(decorationOf(tester).color!.a, 1);
@@ -348,11 +348,11 @@ void main() {
     testWidgets('cardStrong uses the denser fill in every mode', (
       tester,
     ) async {
-      for (final (theme, tokens) in <(ThemeData, DpTokens)>[
-        (AppTheme.light(), DpTokens.light()),
-        (AppTheme.dark(), DpTokens.dark()),
+      for (final (theme, tokens) in <(ThemeData, SgTokens)>[
+        (AppTheme.light(), SgTokens.light()),
+        (AppTheme.dark(), SgTokens.dark()),
       ]) {
-        await pump(tester, theme, kind: DpSurfaceKind.cardStrong);
+        await pump(tester, theme, kind: SgSurfaceKind.cardStrong);
         expect(decorationOf(tester).color, tokens.surface.cardStrong);
       }
     });
@@ -361,7 +361,7 @@ void main() {
   testWidgets('one widget renders all three modes without changing', (
     tester,
   ) async {
-    // The point of DpSurface: the caller below is byte-identical across modes.
+    // The point of SgSurface: the caller below is byte-identical across modes.
     for (final theme in [
       AppTheme.light(),
       AppTheme.dark(),
@@ -377,7 +377,7 @@ void main() {
   testWidgets('onTap fires', (tester) async {
     var taps = 0;
     await pump(tester, AppTheme.light(), onTap: () => taps++);
-    await tester.tap(find.byType(DpSurface));
+    await tester.tap(find.byType(SgSurface));
     expect(taps, 1);
   });
 
@@ -395,7 +395,7 @@ void main() {
     expect(decorationOf(tester).boxShadow, hasLength(1), reason: 'idle');
 
     final gesture = await tester.startGesture(
-      tester.getCenter(find.byType(DpSurface)),
+      tester.getCenter(find.byType(SgSurface)),
     );
     await tester.pump();
     expect(decorationOf(tester).boxShadow, isEmpty, reason: 'pressed');
@@ -409,7 +409,7 @@ void main() {
   testWidgets('a cancelled press restores the shadow', (tester) async {
     await pump(tester, AppTheme.light(), onTap: () {});
     final gesture = await tester.startGesture(
-      tester.getCenter(find.byType(DpSurface)),
+      tester.getCenter(find.byType(SgSurface)),
     );
     await tester.pump();
     await gesture.cancel();

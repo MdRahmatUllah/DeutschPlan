@@ -1,19 +1,19 @@
 import 'dart:async';
 
-import 'package:deutschplan/core/components/dp_button.dart';
-import 'package:deutschplan/core/providers/app_providers.dart';
-import 'package:deutschplan/core/theme/app_theme.dart';
-import 'package:deutschplan/core/theme/dp_tokens.dart';
-import 'package:deutschplan/data/db/app_database.dart' show QuizAttempt;
-import 'package:deutschplan/data/repositories/exam_repository.dart'
+import 'package:sogda/core/components/sg_button.dart';
+import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/core/theme/app_theme.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/data/db/app_database.dart' show QuizAttempt;
+import 'package:sogda/data/repositories/exam_repository.dart'
     show QuizMistakeRowsResult;
-import 'package:deutschplan/features/learn/step_quiz.dart' show quizColour;
-import 'package:deutschplan/features/quiz/quiz_result_screen.dart';
-import 'package:deutschplan/features/words/word_row.dart' show WordPlayButton;
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
-import 'package:deutschplan/main.dart'
+import 'package:sogda/features/learn/step_quiz.dart' show quizColour;
+import 'package:sogda/features/quiz/quiz_result_screen.dart';
+import 'package:sogda/features/words/word_row.dart' show WordPlayButton;
+import 'package:sogda/l10n/generated/app_localizations.dart';
+import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
-import 'package:deutschplan/router/routes.dart';
+import 'package:sogda/router/routes.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
@@ -126,7 +126,7 @@ void main() {
   });
 
   test('the result colour: Lime from 80 %, Sun from 50 %, Coral under', () {
-    const palette = DpPalette.light;
+    const palette = SgPalette.light;
     expect(quizColour(palette, 0.8), palette.easy);
     expect(quizColour(palette, 0.795), palette.learning);
     expect(quizColour(palette, 0.5), palette.learning);
@@ -140,7 +140,7 @@ void main() {
     );
     expect(
       find.byWidgetPredicate(
-        (w) => w is ColoredBox && w.color == DpPalette.light.again,
+        (w) => w is ColoredBox && w.color == SgPalette.light.again,
       ),
       findsOneWidget,
     );
@@ -284,8 +284,8 @@ void main() {
     expect(run.added, hasLength(1));
     expect(
       tester
-          .widget<DpButton>(
-            find.widgetWithText(DpButton, l10n.quizAddToRevision),
+          .widget<SgButton>(
+            find.widgetWithText(SgButton, l10n.quizAddToRevision),
           )
           .onPressed,
       isNull,

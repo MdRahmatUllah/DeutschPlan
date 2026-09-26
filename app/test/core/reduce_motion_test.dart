@@ -1,9 +1,9 @@
 import 'dart:async';
 
 import 'package:cupertino_ui/cupertino_ui.dart' as cupertino;
-import 'package:deutschplan/core/adaptive/adaptive.dart';
-import 'package:deutschplan/core/theme/app_theme.dart';
-import 'package:deutschplan/core/theme/glass_capability.dart';
+import 'package:sogda/core/adaptive/adaptive.dart';
+import 'package:sogda/core/theme/app_theme.dart';
+import 'package:sogda/core/theme/glass_capability.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 

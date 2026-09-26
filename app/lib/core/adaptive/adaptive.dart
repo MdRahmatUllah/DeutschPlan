@@ -1,11 +1,11 @@
 import 'dart:math' as math;
 
 import 'package:cupertino_ui/cupertino_ui.dart' as cupertino;
-import 'package:deutschplan/core/theme/dp_surface.dart';
-import 'package:deutschplan/core/theme/glass_capability.dart';
-import 'package:deutschplan/core/theme/dp_tokens.dart';
-import 'package:deutschplan/core/typography/dp_text.dart';
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
+import 'package:sogda/core/theme/sg_surface.dart';
+import 'package:sogda/core/theme/glass_capability.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/core/typography/sg_text.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:flutter/foundation.dart' show defaultTargetPlatform, immutable;
 import 'package:flutter/rendering.dart'
     show BoxHitTestResult, MatrixUtils, RenderProxyBox;
@@ -157,7 +157,7 @@ class AdaptiveScaffold extends StatelessWidget {
 
   Widget _bar(BuildContext context) {
     final cupertinoChrome = context.isCupertino;
-    final role = cupertinoChrome ? DpTextRole.bodyLarge : DpTextRole.title;
+    final role = cupertinoChrome ? SgTextRole.bodyLarge : SgTextRole.title;
     final size = cupertinoChrome ? null : materialTitleSize;
     final back = leading ?? _defaultBack(context);
     // The artboard's height is a minimum (#314): at 200 % text the title's
@@ -166,7 +166,7 @@ class AdaptiveScaffold extends StatelessWidget {
       context,
       role,
       size: size,
-      bangla: title != null && DpScript.hasBengali(title!),
+      bangla: title != null && SgScript.hasBengali(title!),
     );
     final height = math.max(
       cupertinoChrome ? cupertinoBarHeight : materialBarHeight,
@@ -178,7 +178,7 @@ class AdaptiveScaffold extends StatelessWidget {
         // One line, and a title that doesn't fit is cut after its last whole
         // word with "…" (#280). A category's name can run to thirty letters,
         // and a bar is one line tall.
-        : DpOneLine(title!, role: role, weight: 600, size: size);
+        : SgOneLine(title!, role: role, weight: 600, size: size);
 
     if (!cupertinoChrome) {
       return SizedBox(
@@ -213,17 +213,17 @@ class AdaptiveScaffold extends StatelessWidget {
 }
 
 /// The height of one line of a bar title at [role] and [size], the ones its
-/// DpOneLine gets, at the learner's text size, with a Bangla run a role up,
-/// as DpOneLine sets it.
+/// SgOneLine gets, at the learner's text size, with a Bangla run a role up,
+/// as SgOneLine sets it.
 double _titleLine(
   BuildContext context,
-  DpTextRole role, {
+  SgTextRole role, {
   required double? size,
   required bool bangla,
 }) {
   final tokens = context.tokens;
   final scaler = MediaQuery.textScalerOf(context);
-  double lineOf(DpTextRole at, {double? size}) {
+  double lineOf(SgTextRole at, {double? size}) {
     final token = at.token(tokens.typography);
     return scaler.scale(size ?? token.size) * token.heightFactor;
   }
@@ -277,8 +277,8 @@ class _StatusStripState extends State<_StatusStrip> {
             // few blurred panels are on screen. The shared backdrop (#34) is
             // the fix for all of them.
             child: tokens.isGlass
-                ? DpSurface(
-                    kind: DpSurfaceKind.tint(widget.colour),
+                ? SgSurface(
+                    kind: SgSurfaceKind.tint(widget.colour),
                     radius: 0,
                     child: const SizedBox.expand(),
                   )
@@ -316,9 +316,9 @@ class AdaptiveBackButton extends StatelessWidget {
           // A Bangla label draws one role larger, as a bar title does.
           _titleLine(
             context,
-            DpTextRole.bodyLarge,
+            SgTextRole.bodyLarge,
             size: null,
-            bangla: DpScript.hasBengali(label),
+            bangla: SgScript.hasBengali(label),
           ),
         )
       : 44;
@@ -373,9 +373,9 @@ class AdaptiveBackButton extends StatelessWidget {
                       // back title: in Bangla at 200 % it ran 16 dp past the
                       // bar's leading slot (#588).
                       Flexible(
-                        child: DpOneLine(
+                        child: SgOneLine(
                           label!,
-                          role: DpTextRole.bodyLarge,
+                          role: SgTextRole.bodyLarge,
                           color: colour ?? tokens.color.link,
                         ),
                       ),
@@ -620,9 +620,9 @@ class AdaptiveSegmented<T extends Object> extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(vertical: 6),
                 child: FittedBox(
                   fit: BoxFit.scaleDown,
-                  child: DpText(
+                  child: SgText(
                     entry.value,
-                    role: DpTextRole.label,
+                    role: SgTextRole.label,
                     maxLines: 1,
                   ),
                 ),
@@ -725,9 +725,9 @@ class _AdaptiveTabBarState<T extends Object> extends State<AdaptiveTabBar<T>>
         labelColor: tokens.color.ink,
         unselectedLabelColor: tokens.color.textSecondary,
         // 14 on the artboard, between the label and body roles.
-        labelStyle: DpText.styleFor(
+        labelStyle: SgText.styleFor(
           tokens,
-          DpTextRole.label,
+          SgTextRole.label,
         ).copyWith(fontSize: 14),
         indicator: UnderlineTabIndicator(
           borderSide: BorderSide(color: tokens.color.ink, width: 3),
@@ -746,7 +746,7 @@ class _AdaptiveTabBarState<T extends Object> extends State<AdaptiveTabBar<T>>
 
 /// Somewhere in a sheet or pane for its toasts to show.
 ///
-/// A `DpToast` goes to the nearest `ScaffoldMessenger`, which draws it in the
+/// A `SgToast` goes to the nearest `ScaffoldMessenger`, which draws it in the
 /// page's `Scaffold`: under a sheet that covers the page, and under a pane's
 /// scrim. This gives [child] a messenger and a transparent scaffold of its
 /// own, so "No German voice…" and #141's Undo show above it. It fills its
@@ -798,8 +798,8 @@ abstract final class Adaptive {
         padding: EdgeInsets.only(
           bottom: MediaQuery.viewInsetsOf(sheetContext).bottom,
         ),
-        child: DpSurface(
-          kind: DpSurfaceKind.cardStrong,
+        child: SgSurface(
+          kind: SgSurfaceKind.cardStrong,
           radius: tokens.shape.sheet,
           child: SafeArea(top: false, child: builder(sheetContext)),
         ),
@@ -809,7 +809,7 @@ abstract final class Adaptive {
     if (chrome == AdaptiveChrome.cupertino) {
       // A Cupertino popup has no Material under it, and a sheet's buttons,
       // fields and text styles need one: without it every line came out with
-      // the yellow "no Material" underline and a DpButton threw (#122).
+      // the yellow "no Material" underline and a SgButton threw (#122).
       // ponytail: the Cupertino popup slides in even under reduce motion (it
       // takes no animation style, #164); a PopupRoute of our own if a
       // learner or the review asks for it.
@@ -833,7 +833,7 @@ abstract final class Adaptive {
       // uncovered and live under the scrim.
       useRootNavigator: true,
       isScrollControlled: true,
-      // The sheet's own surface is the DpSurface inside; Material must not
+      // The sheet's own surface is the SgSurface inside; Material must not
       // paint one behind it, or the glass panel sits on a solid slab.
       // Fully transparent is the absence of a colour, not a token.
       backgroundColor: const Color(0x00000000), // ponytail: allow-raw-colour
@@ -875,8 +875,8 @@ abstract final class Adaptive {
             chrome: chrome,
             child: Material(
               type: MaterialType.transparency,
-              child: DpSurface(
-                kind: DpSurfaceKind.cardStrong,
+              child: SgSurface(
+                kind: SgSurfaceKind.cardStrong,
                 radius: 0,
                 child: SafeArea(
                   left: false,
@@ -941,8 +941,8 @@ abstract final class Adaptive {
       context: context,
       // On the theme's dialog colour: the card, made opaque under glass.
       builder: (dialogContext) => AlertDialog(
-        title: DpText(title, role: DpTextRole.title),
-        content: DpText(message, role: DpTextRole.body),
+        title: SgText(title, role: SgTextRole.title),
+        content: SgText(message, role: SgTextRole.body),
         actions: <Widget>[
           TextButton(
             onPressed: () => Navigator.of(dialogContext).pop(false),
@@ -1013,8 +1013,8 @@ abstract final class Adaptive {
       context: context,
       builder: (sheetContext) => SizedBox(
         height: 280,
-        child: DpSurface(
-          kind: DpSurfaceKind.cardStrong,
+        child: SgSurface(
+          kind: SgSurfaceKind.cardStrong,
           radius: sheetContext.tokens.shape.sheet,
           child: SafeArea(
             top: false,
@@ -1254,9 +1254,9 @@ class _TypedConfirmState extends State<_TypedConfirm> {
   Widget build(BuildContext context) {
     final tokens = context.tokens;
     // The app's font, not the system's: the artboards draw the alert in it,
-    // as every DpText is, with its Bangla behind it — "বাতিল" was tofu
+    // as every SgText is, with its Bangla behind it — "বাতিল" was tofu
     // (#432). The action keeps its own colour and size.
-    final app = DpText.styleFor(tokens, DpTextRole.body);
+    final app = SgText.styleFor(tokens, SgTextRole.body);
     final font = TextStyle(
       fontFamily: app.fontFamily,
       fontFamilyFallback: app.fontFamilyFallback,
@@ -1308,17 +1308,17 @@ class _TypedConfirmState extends State<_TypedConfirm> {
     if (widget.ios) {
       return keyboardAware(
         cupertino.CupertinoAlertDialog(
-          title: DpText(
+          title: SgText(
             widget.title,
-            role: DpTextRole.body,
+            role: SgTextRole.body,
             weight: 600,
             textAlign: TextAlign.center,
           ),
           content: Column(
             children: <Widget>[
-              DpText(
+              SgText(
                 widget.message,
-                role: DpTextRole.caption,
+                role: SgTextRole.caption,
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 12),
@@ -1328,7 +1328,7 @@ class _TypedConfirmState extends State<_TypedConfirm> {
                 autocorrect: false,
                 enableSuggestions: false,
                 textCapitalization: TextCapitalization.characters,
-                style: DpText.styleFor(tokens, DpTextRole.body),
+                style: SgText.styleFor(tokens, SgTextRole.body),
                 // Ink-edged, as the artboard draws it on both platforms.
                 // 44 pt tall, Apple's minimum target: the default padding made
                 // it 38 (#478).
@@ -1365,7 +1365,7 @@ class _TypedConfirmState extends State<_TypedConfirm> {
       // actions under them: at 200 % or in Bangla they are taller than the
       // room the keyboard leaves (#432). Cupertino's alert scrolls already.
       scrollable: true,
-      title: DpText(widget.title, role: DpTextRole.title),
+      title: SgText(widget.title, role: SgTextRole.title),
       // A field has no width of its own: without a bound the dialog would
       // cross a tablet. Material's dialogs keep to 560 dp.
       content: ConstrainedBox(
@@ -1375,9 +1375,9 @@ class _TypedConfirmState extends State<_TypedConfirm> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             // The artboard's size and grey: the title says what, this how.
-            DpText(
+            SgText(
               widget.message,
-              role: DpTextRole.label,
+              role: SgTextRole.label,
               weight: 400,
               color: tokens.color.textSecondary,
             ),
@@ -1388,7 +1388,7 @@ class _TypedConfirmState extends State<_TypedConfirm> {
               autocorrect: false,
               enableSuggestions: false,
               textCapitalization: TextCapitalization.characters,
-              style: DpText.styleFor(tokens, DpTextRole.bodyLarge),
+              style: SgText.styleFor(tokens, SgTextRole.bodyLarge),
               decoration: InputDecoration(
                 border: edge,
                 enabledBorder: edge,

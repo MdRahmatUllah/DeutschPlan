@@ -59,7 +59,7 @@ def test_a_package_without_a_licence_file_is_named(tmp_path):
             *({"name": p, "rootUri": (hosted / p).as_uri()} for p in ("licensed", "copying", "bare")),
             # Covered by the SDK's licence, and ours.
             {"name": "flutter_test", "rootUri": (flutter / "packages" / "flutter_test").as_uri()},
-            {"name": "deutschplan", "rootUri": "../"},
+            {"name": "sogda", "rootUri": "../"},
         ],
     }), encoding="utf-8")
     assert [p.split(":")[0] for p in licences.unlicensed(config)] == ["bare"]

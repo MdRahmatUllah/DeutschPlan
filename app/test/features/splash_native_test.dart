@@ -6,7 +6,7 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'dart:ui' show Color, Size;
 
-import 'package:deutschplan/core/theme/dp_tokens.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 /// The native launch screens — #85, and iOS's in #238.
@@ -35,7 +35,7 @@ void main() {
   group('the Android launch colours match the palette', () {
     test('light is the light palette', () {
       final colours = coloursIn('android/app/src/main/res/values/colors.xml');
-      const palette = DpPalette.light;
+      const palette = SgPalette.light;
 
       expect(colours['splash_field'], palette.primary);
       expect(colours['splash_mark'], palette.accent);
@@ -46,7 +46,7 @@ void main() {
       final colours = coloursIn(
         'android/app/src/main/res/values-night/colors.xml',
       );
-      const palette = DpPalette.dark;
+      const palette = SgPalette.dark;
 
       expect(colours['splash_field'], palette.primary);
       expect(colours['splash_mark'], palette.accent);
@@ -242,8 +242,8 @@ void main() {
           }(),
       };
 
-      expect(colours[false], DpPalette.light.primary);
-      expect(colours[true], DpPalette.dark.primary);
+      expect(colours[false], SgPalette.light.primary);
+      expect(colours[true], SgPalette.dark.primary);
     });
 
     test('the storyboard paints it, not the template white', () {

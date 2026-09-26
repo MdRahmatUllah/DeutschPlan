@@ -1,9 +1,9 @@
 import 'dart:math';
 
-import 'package:deutschplan/domain/answer_check.dart' show Verdict;
-import 'package:deutschplan/domain/compare_set.dart' show CompareSet;
-import 'package:deutschplan/domain/fsrs.dart';
-import 'package:deutschplan/domain/quiz_builder.dart';
+import 'package:sogda/domain/answer_check.dart' show Verdict;
+import 'package:sogda/domain/compare_set.dart' show CompareSet;
+import 'package:sogda/domain/fsrs.dart';
+import 'package:sogda/domain/quiz_builder.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sqlite3/sqlite3.dart';
 

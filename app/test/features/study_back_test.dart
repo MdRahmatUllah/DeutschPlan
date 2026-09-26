@@ -1,18 +1,18 @@
 import 'dart:io';
 
-import 'package:deutschplan/core/components/dp_feedback.dart';
-import 'package:deutschplan/core/providers/app_providers.dart';
-import 'package:deutschplan/core/theme/app_theme.dart';
-import 'package:deutschplan/core/theme/dp_tokens.dart';
-import 'package:deutschplan/core/typography/dp_text.dart';
-import 'package:deutschplan/data/db/app_database.dart';
-import 'package:deutschplan/data/db/content_dao.dart';
-import 'package:deutschplan/data/repositories/setting_keys.dart';
-import 'package:deutschplan/data/repositories/settings_repository.dart';
-import 'package:deutschplan/features/study/study_back.dart';
-import 'package:deutschplan/features/study/study_card.dart';
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
-import 'package:deutschplan/main.dart'
+import 'package:sogda/core/components/sg_feedback.dart';
+import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/core/theme/app_theme.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/core/typography/sg_text.dart';
+import 'package:sogda/data/db/app_database.dart';
+import 'package:sogda/data/db/content_dao.dart';
+import 'package:sogda/data/repositories/setting_keys.dart';
+import 'package:sogda/data/repositories/settings_repository.dart';
+import 'package:sogda/features/study/study_back.dart';
+import 'package:sogda/features/study/study_card.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
+import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
 import 'package:drift/drift.dart' show Value;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -37,7 +37,7 @@ void main() {
 
     setUp(() async {
       db = AppDatabase.memory();
-      final directory = Directory.systemTemp.createTempSync('dp_back');
+      final directory = Directory.systemTemp.createTempSync('sg_back');
       final content = ContentFixture.write('${directory.path}/content.db');
       await db.customStatement(
         "ATTACH DATABASE '${ContentDao.attachPath(content.file)}' AS c",
@@ -235,7 +235,7 @@ void main() {
       tester,
     ) async {
       await pump(tester, meaning: MeaningLanguage.english);
-      final callout = find.byType(DpCallout);
+      final callout = find.byType(SgCallout);
       expect(callout, findsOneWidget);
       expect(
         find.descendant(
@@ -249,7 +249,7 @@ void main() {
       final bar = tester.widget<ColoredBox>(
         find.descendant(of: callout, matching: find.byType(ColoredBox)).first,
       );
-      expect(bar.color, DpPalette.light.hard);
+      expect(bar.color, SgPalette.light.hard);
       expect(
         tester.getTopLeft(callout).dy,
         greaterThan(tester.getTopLeft(find.text('bill, invoice')).dy),
@@ -270,10 +270,10 @@ void main() {
       await pump(tester);
       // The callout lets long words break, so match the two lines' ends.
       final tip = find.descendant(
-        of: find.byType(DpCallout),
-        matching: find.byType(DpText),
+        of: find.byType(SgCallout),
+        matching: find.byType(SgText),
       );
-      final text = tester.widget<DpText>(tip).data;
+      final text = tester.widget<SgText>(tip).data;
       expect(text, startsWith('⚠ Rechnung is a bill, not a calculation.\n'));
       expect(text, endsWith('রেশনুং মানে বিল।'));
     });
@@ -446,7 +446,7 @@ void main() {
       await pump(tester, revealed: false);
       expect(
         tester.widget<AnimatedSize>(find.byType(AnimatedSize)).duration,
-        DpMotionTokens.defaults.quick,
+        SgMotionTokens.defaults.quick,
       );
 
       tester.platformDispatcher.accessibilityFeaturesTestValue =

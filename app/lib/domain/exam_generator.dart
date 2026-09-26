@@ -9,10 +9,10 @@ library;
 import 'dart:convert';
 import 'dart:math';
 
-import 'package:deutschplan/domain/cloze.dart';
-import 'package:deutschplan/domain/exam_grading.dart' show sameTargetFamily;
-import 'package:deutschplan/domain/grammar_item_generator.dart';
-import 'package:deutschplan/domain/quiz_builder.dart';
+import 'package:sogda/domain/cloze.dart';
+import 'package:sogda/domain/exam_grading.dart' show sameTargetFamily;
+import 'package:sogda/domain/grammar_item_generator.dart';
+import 'package:sogda/domain/quiz_builder.dart';
 
 /// BR-EXAM-03's sections, in paper order, with their items and the points
 /// each is worth. The wire name is `exam_answers.section`.

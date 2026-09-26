@@ -1,5 +1,5 @@
-import 'package:deutschplan/core/theme/dp_tokens.dart';
-import 'package:deutschplan/core/typography/dp_text.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/core/typography/sg_text.dart';
 import 'package:material_ui/material_ui.dart';
 
 import 'golden_harness.dart';
@@ -20,7 +20,7 @@ void main() {
       final painter = TextPainter(
         text: TextSpan(
           text: pron,
-          style: DpText.styleFor(tokens, DpTextRole.body.oneStepLarger),
+          style: SgText.styleFor(tokens, SgTextRole.body.oneStepLarger),
         ),
         textDirection: TextDirection.ltr,
         textScaler: MediaQuery.textScalerOf(context),
@@ -33,9 +33,9 @@ void main() {
         child: Center(
           child: SizedBox(
             width: width,
-            child: const DpText(
+            child: const SgText(
               'Nomen · $pron',
-              role: DpTextRole.body,
+              role: SgTextRole.body,
               breakTooWide: true,
             ),
           ),

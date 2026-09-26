@@ -1,12 +1,12 @@
-import 'package:deutschplan/core/providers/app_providers.dart';
-import 'package:deutschplan/core/theme/dp_surface.dart';
-import 'package:deutschplan/core/theme/dp_tokens.dart';
-import 'package:deutschplan/core/typography/dp_text.dart';
-import 'package:deutschplan/data/db/content_dao.dart';
-import 'package:deutschplan/features/onboarding/onboarding_notifier.dart';
-import 'package:deutschplan/features/onboarding/onboarding_shell.dart';
-import 'package:deutschplan/features/onboarding/setup_flow.dart';
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
+import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/core/theme/sg_surface.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/core/typography/sg_text.dart';
+import 'package:sogda/data/db/content_dao.dart';
+import 'package:sogda/features/onboarding/onboarding_notifier.dart';
+import 'package:sogda/features/onboarding/onboarding_shell.dart';
+import 'package:sogda/features/onboarding/setup_flow.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -122,10 +122,10 @@ class _LevelRow extends StatelessWidget {
         // Grown with the text size: at 200 % a fixed width broke "A1" into
         // "A / 1" (#165).
         SizedBox(
-          width: DpScript.grow(context, labelWidth, role: DpTextRole.label),
-          child: DpText(
+          width: SgScript.grow(context, labelWidth, role: SgTextRole.label),
+          child: SgText(
             level,
-            role: DpTextRole.label,
+            role: SgTextRole.label,
             weight: 700,
             color: tokens.color.textSecondary,
           ),
@@ -170,8 +170,8 @@ class _StepChip extends StatelessWidget {
       selected: selected,
       button: true,
       inMutuallyExclusiveGroup: true,
-      child: DpSurface(
-        kind: DpSurfaceKind.bar,
+      child: SgSurface(
+        kind: SgSurfaceKind.bar,
         selected: selected,
         radius: tokens.shape.button,
         onTap: onTap,
@@ -186,11 +186,11 @@ class _StepChip extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                DpText(step.code, role: DpTextRole.body, weight: 700),
+                SgText(step.code, role: SgTextRole.body, weight: 700),
                 const SizedBox(height: 1),
-                DpText(
+                SgText(
                   l10n.onboardingStepWords(step.wordCount),
-                  role: DpTextRole.caption,
+                  role: SgTextRole.caption,
                   weight: 500,
                   color: tokens.color.textSecondary,
                 ),
@@ -232,9 +232,9 @@ class _PlacementLink extends StatelessWidget {
           child: Row(
             children: <Widget>[
               Flexible(
-                child: DpText(
+                child: SgText(
                   l10n.onboardingPlacementLink,
-                  role: DpTextRole.body,
+                  role: SgTextRole.body,
                   weight: 600,
                   color: colour,
                 ),

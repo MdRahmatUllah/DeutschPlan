@@ -1,5 +1,5 @@
-import 'package:deutschplan/core/adaptive/adaptive.dart';
-import 'package:deutschplan/core/theme/dp_tokens.dart';
+import 'package:sogda/core/adaptive/adaptive.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:material_ui/material_ui.dart';
 
 /// What the speaker is doing.
@@ -7,7 +7,7 @@ import 'package:material_ui/material_ui.dart';
 /// `docs/03-domain/tts.md`: "`TtsService`… exposes `state` (idle / loading /
 /// playing) for the speaker button's three-bar animation. Loading indicator
 /// only if synthesis > 150 ms."
-enum DpSpeakerState { idle, loading, playing, unavailable }
+enum SgSpeakerState { idle, loading, playing, unavailable }
 
 /// The pronounce button.
 ///
@@ -20,12 +20,12 @@ enum DpSpeakerState { idle, loading, playing, unavailable }
 /// goldens in #25 pin it. Playing swaps the horn for three bars; unavailable
 /// shows a slashed icon, which `accessibility-performance.md` asks for when no
 /// German system voice is installed.
-class DpSpeakerButton extends StatelessWidget {
-  const DpSpeakerButton({
+class SgSpeakerButton extends StatelessWidget {
+  const SgSpeakerButton({
     required this.onPressed,
     required this.semanticLabel,
     super.key,
-    this.state = DpSpeakerState.idle,
+    this.state = SgSpeakerState.idle,
     this.onLongPress,
     this.size = 56,
   });
@@ -36,7 +36,7 @@ class DpSpeakerButton extends StatelessWidget {
   /// appears on every card, every example and every search row.
   final String semanticLabel;
 
-  final DpSpeakerState state;
+  final SgSpeakerState state;
 
   /// Long-press plays at 0.75× — `tts.md`.
   final VoidCallback? onLongPress;
@@ -50,7 +50,7 @@ class DpSpeakerButton extends StatelessWidget {
   bool get _enabled => onPressed != null;
 
   /// Whether the button is showing that it cannot speak.
-  bool get _mute => state == DpSpeakerState.unavailable;
+  bool get _mute => state == SgSpeakerState.unavailable;
 
   @override
   Widget build(BuildContext context) {
@@ -100,24 +100,24 @@ class DpSpeakerButton extends StatelessWidget {
     );
   }
 
-  Widget _content(DpTokens tokens) => switch (state) {
-    DpSpeakerState.playing => DpPlayingBars(
+  Widget _content(SgTokens tokens) => switch (state) {
+    SgSpeakerState.playing => SgPlayingBars(
       colour: tokens.color.ink,
       size: size,
     ),
     // A spinner, not the bars: tts.md only shows this past 150 ms, so it means
     // "the model is thinking", which is a different thing from "sound is out".
-    DpSpeakerState.loading => SizedBox(
+    SgSpeakerState.loading => SizedBox(
       width: size * 0.35,
       height: size * 0.35,
       child: CircularProgressIndicator(strokeWidth: 2, color: tokens.color.ink),
     ),
-    DpSpeakerState.unavailable => Icon(
+    SgSpeakerState.unavailable => Icon(
       Icons.volume_off,
       size: size * 0.46,
       color: tokens.color.textSecondary,
     ),
-    DpSpeakerState.idle => Icon(
+    SgSpeakerState.idle => Icon(
       Icons.volume_up,
       size: size * 0.46,
       color: tokens.color.ink,
@@ -128,8 +128,8 @@ class DpSpeakerButton extends StatelessWidget {
 /// The three bars the artboard draws while audio plays: 4 dp wide, heights
 /// 10 / 22 / 14, radius 2, for a 56 dp speaker; scaled to [size]. A list
 /// row's small play button draws them too (#515).
-class DpPlayingBars extends StatelessWidget {
-  const DpPlayingBars({required this.colour, required this.size, super.key});
+class SgPlayingBars extends StatelessWidget {
+  const SgPlayingBars({required this.colour, required this.size, super.key});
 
   final Color colour;
   final double size;

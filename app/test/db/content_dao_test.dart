@@ -4,8 +4,8 @@ library;
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:deutschplan/data/db/app_database.dart';
-import 'package:deutschplan/data/db/content_dao.dart';
+import 'package:sogda/data/db/app_database.dart';
+import 'package:sogda/data/db/content_dao.dart';
 import 'package:drift/drift.dart' hide isNotNull, isNull;
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -28,7 +28,7 @@ void main() {
   late File content;
 
   setUp(() async {
-    directory = Directory.systemTemp.createTempSync('deutschplan_content');
+    directory = Directory.systemTemp.createTempSync('sogda_content');
     content = ContentFixture.write('${directory.path}/content.db').file;
 
     db = AppDatabase(DatabaseConnection(NativeDatabase.memory()));

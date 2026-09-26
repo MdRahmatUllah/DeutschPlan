@@ -1,20 +1,20 @@
 @TestOn('vm')
 library;
 
-import 'package:deutschplan/core/theme/aurora_backdrop.dart';
+import 'package:sogda/core/theme/aurora_backdrop.dart';
 
 import 'dart:async';
 
-import 'package:deutschplan/bootstrap.dart';
-import 'package:deutschplan/core/adaptive/adaptive.dart';
-import 'package:deutschplan/core/theme/app_theme.dart';
-import 'package:deutschplan/core/theme/dp_surface.dart';
-import 'package:deutschplan/core/theme/dp_tokens.dart';
-import 'package:deutschplan/features/splash/splash_screen.dart';
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
-import 'package:deutschplan/main.dart'
+import 'package:sogda/bootstrap.dart';
+import 'package:sogda/core/adaptive/adaptive.dart';
+import 'package:sogda/core/theme/app_theme.dart';
+import 'package:sogda/core/theme/sg_surface.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/features/splash/splash_screen.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
+import 'package:sogda/main.dart'
     show BootstrapHost, appLocalizationsDelegates, supportedLocales;
-import 'package:deutschplan/data/repositories/setting_keys.dart';
+import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 
@@ -34,11 +34,11 @@ void main() {
   Future<void> pump(
     WidgetTester tester, {
     Widget child = const SplashScreen(),
-    DpMode mode = DpMode.light,
+    SgMode mode = SgMode.light,
   }) async {
     await tester.pumpWidget(
       MaterialApp(
-        theme: mode == DpMode.dark ? AppTheme.dark() : AppTheme.light(),
+        theme: mode == SgMode.dark ? AppTheme.dark() : AppTheme.light(),
         localizationsDelegates: appLocalizationsDelegates,
         supportedLocales: supportedLocales,
         home: child,
@@ -48,15 +48,15 @@ void main() {
   }
 
   /// The tokens the screen resolved, read back out of its own tree.
-  DpTokens tokensOf(WidgetTester tester) =>
+  SgTokens tokensOf(WidgetTester tester) =>
       Theme.of(tester.element(find.byType(SplashScreen)))
-          .extension<DpTokens>()!;
+          .extension<SgTokens>()!;
 
   group('the composition', () {
     testWidgets('shows the wordmark, the mark and the caption', (tester) async {
       await pump(tester);
 
-      expect(find.text('DeutschPlan'), findsOneWidget);
+      expect(find.text('Sogda'), findsOneWidget);
       expect(find.text('D'), findsOneWidget);
       expect(find.text(l10n.splashPreparing), findsOneWidget);
     });
@@ -79,7 +79,7 @@ void main() {
     });
 
     testWidgets('and dark resolves to the lifted palette', (tester) async {
-      await pump(tester, mode: DpMode.dark);
+      await pump(tester, mode: SgMode.dark);
       final tokens = tokensOf(tester);
 
       expect(tokens.color.primary, const Color(0xFF2EE6D6));
@@ -110,11 +110,11 @@ void main() {
       // whole composition jumps 3 px at 600 ms, which is exactly the moment
       // the learner is looking at it.
       await pump(tester);
-      final before = tester.getCenter(find.text('DeutschPlan'));
+      final before = tester.getCenter(find.text('Sogda'));
 
       await pump(tester, child: const SplashScreen(showProgress: true));
 
-      expect(tester.getCenter(find.text('DeutschPlan')), before);
+      expect(tester.getCenter(find.text('Sogda')), before);
     });
 
     testWidgets('holds still under reduce-motion (#Y03)', (tester) async {
@@ -138,7 +138,7 @@ void main() {
       );
       expect(bar.value, isNotNull, reason: 'it was still animating');
       // #449: what is not loaded yet reaches 3:1 on the paper.
-      expect(bar.backgroundColor, DpTokens.light().surface.track);
+      expect(bar.backgroundColor, SgTokens.light().surface.track);
     });
 
     testWidgets('and is indeterminate otherwise', (tester) async {
@@ -205,15 +205,15 @@ void main() {
       await pumpGlass(tester);
 
       expect(find.byType(AuroraBackdrop), findsOneWidget);
-      expect(find.byType(DpSurface), findsOneWidget);
+      expect(find.byType(SgSurface), findsOneWidget);
     });
 
     testWidgets('and the solid modes use neither', (tester) async {
-      for (final mode in <DpMode>[DpMode.light, DpMode.dark]) {
+      for (final mode in <SgMode>[SgMode.light, SgMode.dark]) {
         await pump(tester, mode: mode);
 
         expect(find.byType(AuroraBackdrop), findsNothing, reason: mode.name);
-        expect(find.byType(DpSurface), findsNothing, reason: mode.name);
+        expect(find.byType(SgSurface), findsNothing, reason: mode.name);
       }
     });
   });
@@ -342,12 +342,12 @@ void main() {
     });
 
     testWidgets('and the mark is decorative, not read out', (tester) async {
-      // "D, DeutschPlan" says nothing about the wait. The caption does.
+      // "D, Sogda" says nothing about the wait. The caption does.
       final handle = tester.ensureSemantics();
       await pump(tester);
 
       expect(find.bySemanticsLabel('D'), findsNothing);
-      expect(find.bySemanticsLabel('DeutschPlan'), findsNothing);
+      expect(find.bySemanticsLabel('Sogda'), findsNothing);
 
       handle.dispose();
     });

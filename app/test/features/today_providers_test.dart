@@ -1,16 +1,16 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:deutschplan/data/repositories/model_repository.dart';
-import 'package:deutschplan/features/today/today_view.dart';
-import 'package:deutschplan/core/providers/app_providers.dart';
-import 'package:deutschplan/data/db/app_database.dart';
-import 'package:deutschplan/data/db/content_dao.dart';
-import 'package:deutschplan/data/repositories/setting_keys.dart';
-import 'package:deutschplan/data/repositories/settings_repository.dart';
-import 'package:deutschplan/data/repositories/setup_repository.dart';
-import 'package:deutschplan/features/today/today_providers.dart';
-import 'package:deutschplan/domain/plan_engine.dart'
+import 'package:sogda/data/repositories/model_repository.dart';
+import 'package:sogda/features/today/today_view.dart';
+import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/data/db/app_database.dart';
+import 'package:sogda/data/db/content_dao.dart';
+import 'package:sogda/data/repositories/setting_keys.dart';
+import 'package:sogda/data/repositories/settings_repository.dart';
+import 'package:sogda/data/repositories/setup_repository.dart';
+import 'package:sogda/features/today/today_providers.dart';
+import 'package:sogda/domain/plan_engine.dart'
     show MaskSpan, addDays, decodeMaskHistory, planDate;
 import 'package:drift/drift.dart' show DatabaseConnection, Table, TableInfo;
 import 'package:drift/native.dart';
@@ -35,7 +35,7 @@ void main() {
   const today = '2026-09-21';
 
   setUp(() async {
-    directory = Directory.systemTemp.createTempSync('deutschplan_today');
+    directory = Directory.systemTemp.createTempSync('sogda_today');
     final content = ContentFixture.write('${directory.path}/content.db').file;
     // The plan below revises r1 and r2 and has b1 and b2 waiting: words of
     // the step finished in August. The course must have them, or they are a
@@ -550,7 +550,7 @@ INSERT INTO word_state (word_uid, status, introduced_on, due, stability, reps, l
     });
 
     test('the voice is not installed until its files are there', () async {
-      final support = Directory.systemTemp.createTempSync('deutschplan_voice');
+      final support = Directory.systemTemp.createTempSync('sogda_voice');
       addTearDown(() => support.deleteSync(recursive: true));
       final models = ProviderContainer(
         overrides: <Override>[

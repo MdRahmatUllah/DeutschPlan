@@ -1,13 +1,13 @@
-import 'package:deutschplan/core/theme/app_theme.dart';
-import 'package:deutschplan/core/theme/dp_tokens.dart';
-import 'package:deutschplan/data/repositories/exam_repository.dart';
-import 'package:deutschplan/features/learn/step_detail_screen.dart';
-import 'package:deutschplan/features/learn/step_quiz.dart';
-import 'package:deutschplan/features/quiz/quiz_setup_sheet.dart';
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
-import 'package:deutschplan/main.dart'
+import 'package:sogda/core/theme/app_theme.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/data/repositories/exam_repository.dart';
+import 'package:sogda/features/learn/step_detail_screen.dart';
+import 'package:sogda/features/learn/step_quiz.dart';
+import 'package:sogda/features/quiz/quiz_setup_sheet.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
+import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
-import 'package:deutschplan/router/routes.dart';
+import 'package:sogda/router/routes.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
@@ -257,7 +257,7 @@ void main() {
       return (box.decoration! as BoxDecoration).color!;
     }
 
-    final palette = DpPalette.light;
+    final palette = SgPalette.light;
 
     testWidgets('Lime from 80 %', (tester) async {
       expect(await colour(tester, 16), palette.easy);

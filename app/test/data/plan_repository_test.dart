@@ -3,9 +3,9 @@ library;
 
 import 'dart:io';
 
-import 'package:deutschplan/data/db/app_database.dart';
-import 'package:deutschplan/data/db/content_dao.dart';
-import 'package:deutschplan/data/repositories/plan_repository.dart';
+import 'package:sogda/data/db/app_database.dart';
+import 'package:sogda/data/db/content_dao.dart';
+import 'package:sogda/data/repositories/plan_repository.dart';
 import 'package:drift/drift.dart' hide isNotNull, isNull;
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -25,7 +25,7 @@ void main() {
   late PlanRepository plan;
 
   setUp(() async {
-    directory = Directory.systemTemp.createTempSync('deutschplan_plan_repo');
+    directory = Directory.systemTemp.createTempSync('sogda_plan_repo');
     final content = ContentFixture.write('${directory.path}/content.db').file;
     db = AppDatabase(DatabaseConnection(NativeDatabase.memory()));
     // The course, as the app has it: the backlog's reads skip a course word

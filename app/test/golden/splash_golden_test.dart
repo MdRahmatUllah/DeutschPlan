@@ -1,4 +1,4 @@
-import 'package:deutschplan/features/splash/splash_screen.dart';
+import 'package:sogda/features/splash/splash_screen.dart';
 
 import 'golden_harness.dart';
 

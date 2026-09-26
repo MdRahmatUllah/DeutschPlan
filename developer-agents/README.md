@@ -1,6 +1,6 @@
 # Developer agents
 
-DeutschPlan is built by a team of four Claude Code agents working for one
+Sogda is built by a team of four Claude Code agents working for one
 owner. This folder is how a new machine, or a new session, learns who the
 team is, how each agent works, and what each one remembers. **On a new
 device, read this page first**, then the folder of the identity you take.
@@ -12,6 +12,8 @@ device, read this page first**, then the folder of the identity you take.
 | **agent-1** | Developer | B: voice, words, search, translation, polish | [`agent-1/`](agent-1/) |
 | **agent-2** | Developer | C: Me, settings, exam engine, platform, accessibility | [`agent-2/`](agent-2/) |
 | **agent-3** | The one and only SQA: tests closed issues on its own emulator, files bugs | SQA milestone | [`agent-3/`](agent-3/) |
+
+*The app was named DeutschPlan up to v1.0.1, and the design-system prefix was Dp. The histories, the memory snapshots and `shared-memory/` keep those names as history: DeutschPlan is now Sogda, DpText is now SgText, and `package:deutschplan/` is now `package:sogda/` (ADR 28).*
 
 **In numbers, up to v1.0.1** (2026-09-21 to 2026-09-26; details in each `work-history.md`):
 

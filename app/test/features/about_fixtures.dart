@@ -1,5 +1,5 @@
-import 'package:deutschplan/features/me/about_screen.dart';
-import 'package:deutschplan/features/me/licences_screen.dart';
+import 'package:sogda/features/me/about_screen.dart';
+import 'package:sogda/features/me/licences_screen.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 
 /// The MIT licence's opening, enough for [licenceKind] to name it.

@@ -1,22 +1,22 @@
 import 'dart:io';
 
-import 'package:deutschplan/core/components/dp_button.dart';
-import 'package:deutschplan/core/providers/app_providers.dart';
-import 'package:deutschplan/core/theme/app_theme.dart';
-import 'package:deutschplan/data/db/app_database.dart';
-import 'package:deutschplan/data/db/content_dao.dart';
-import 'package:deutschplan/data/repositories/setting_keys.dart';
-import 'package:deutschplan/data/repositories/settings_repository.dart';
-import 'package:deutschplan/data/repositories/word_repository.dart';
-import 'package:deutschplan/domain/fsrs.dart';
-import 'package:deutschplan/features/study/study_back.dart';
-import 'package:deutschplan/features/study/study_screen.dart';
-import 'package:deutschplan/features/study/study_session.dart';
-import 'package:deutschplan/features/study/study_summary.dart';
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
-import 'package:deutschplan/main.dart'
+import 'package:sogda/core/components/sg_button.dart';
+import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/core/theme/app_theme.dart';
+import 'package:sogda/data/db/app_database.dart';
+import 'package:sogda/data/db/content_dao.dart';
+import 'package:sogda/data/repositories/setting_keys.dart';
+import 'package:sogda/data/repositories/settings_repository.dart';
+import 'package:sogda/data/repositories/word_repository.dart';
+import 'package:sogda/domain/fsrs.dart';
+import 'package:sogda/features/study/study_back.dart';
+import 'package:sogda/features/study/study_screen.dart';
+import 'package:sogda/features/study/study_session.dart';
+import 'package:sogda/features/study/study_summary.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
+import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
-import 'package:deutschplan/router/routes.dart';
+import 'package:sogda/router/routes.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
@@ -61,7 +61,7 @@ void main() {
   /// reviews: FR-T3-01 counts the session, not the day.
   Future<void> open() async {
     db = AppDatabase.memory();
-    final directory = Directory.systemTemp.createTempSync('dp_summary');
+    final directory = Directory.systemTemp.createTempSync('sg_summary');
     final content = ContentFixture.write('${directory.path}/content.db');
     await db.customStatement(
       "ATTACH DATABASE '${ContentDao.attachPath(content.file)}' AS c",
@@ -337,8 +337,8 @@ VALUES ('$today', 9, 12, 900)
       });
     }
 
-    DpButton button(WidgetTester tester, String label) =>
-        tester.widget<DpButton>(find.widgetWithText(DpButton, label));
+    SgButton button(WidgetTester tester, String label) =>
+        tester.widget<SgButton>(find.widgetWithText(SgButton, label));
 
     final sentences = l10n0((l) => l.summarySentences(3));
 
@@ -346,8 +346,8 @@ VALUES ('$today', 9, 12, 900)
       tester,
     ) async {
       await finish(tester, StudyNext(sentences: 0, backlog: 0, dayDone: false));
-      expect(find.byType(DpButton), findsOneWidget);
-      expect(button(tester, l10n.summaryDone).kind, DpButtonKind.primary);
+      expect(find.byType(SgButton), findsOneWidget);
+      expect(button(tester, l10n.summaryDone).kind, SgButtonKind.primary);
     });
 
     testWidgets('FR-T3-02 #396 Done for now alone is a node apart from the '
@@ -356,7 +356,7 @@ VALUES ('$today', 9, 12, 900)
       await finish(tester, StudyNext(sentences: 0, backlog: 0, dayDone: false));
       // Merged, a screen reader read the summary as the button.
       expect(
-        tester.getSemantics(find.byType(DpButton)).label,
+        tester.getSemantics(find.byType(SgButton)).label,
         l10n.summaryDone,
       );
       semantics.dispose();
@@ -366,8 +366,8 @@ VALUES ('$today', 9, 12, 900)
       tester,
     ) async {
       await finish(tester, StudyNext(sentences: 3, backlog: 0, dayDone: true));
-      expect(button(tester, sentences(l10n)).kind, DpButtonKind.primary);
-      expect(button(tester, l10n.summaryDone).kind, DpButtonKind.text);
+      expect(button(tester, sentences(l10n)).kind, SgButtonKind.primary);
+      expect(button(tester, l10n.summaryDone).kind, SgButtonKind.text);
       expect(find.text(l10n.summaryBacklog(0)), findsNothing);
     });
 
@@ -378,12 +378,12 @@ VALUES ('$today', 9, 12, 900)
         tester,
         StudyNext(sentences: 0, backlog: 14, dayDone: false),
       );
-      expect(button(tester, l10n.summaryDone).kind, DpButtonKind.primary);
+      expect(button(tester, l10n.summaryDone).kind, SgButtonKind.primary);
       expect(
         button(tester, l10n.summaryBacklog(14)).kind,
-        DpButtonKind.secondary,
+        SgButtonKind.secondary,
       );
-      expect(find.byType(DpButton), findsNWidgets(2));
+      expect(find.byType(SgButton), findsNWidgets(2));
     });
 
     testWidgets('both: sentences, then the backlog, then Done for now', (
@@ -394,7 +394,7 @@ VALUES ('$today', 9, 12, 900)
         StudyNext(sentences: 3, backlog: 14, dayDone: false),
       );
       final order = <String>[
-        for (final b in tester.widgetList<DpButton>(find.byType(DpButton)))
+        for (final b in tester.widgetList<SgButton>(find.byType(SgButton)))
           b.label,
       ];
       expect(order, <String>[
@@ -418,8 +418,8 @@ VALUES ('$today', 9, 12, 900)
         (n) => n.rate(Rating.good),
         args: withGrammar,
       );
-      final grammar = find.widgetWithText(DpButton, l10n.summaryGrammar(1));
-      expect(tester.widget<DpButton>(grammar).kind, DpButtonKind.primary);
+      final grammar = find.widgetWithText(SgButton, l10n.summaryGrammar(1));
+      expect(tester.widget<SgButton>(grammar).kind, SgButtonKind.primary);
 
       await tester.tap(grammar);
       await tester.pumpAndSettle();
@@ -490,8 +490,8 @@ VALUES ('$today', 9, 12, 900)
         (n) => n.rate(Rating.good),
         args: revise,
       );
-      final next = find.widgetWithText(DpButton, l10n.summaryNew(2));
-      expect(tester.widget<DpButton>(next).kind, DpButtonKind.primary);
+      final next = find.widgetWithText(SgButton, l10n.summaryNew(2));
+      expect(tester.widget<SgButton>(next).kind, SgButtonKind.primary);
 
       await tester.tap(next);
       await tester.pumpAndSettle();
@@ -533,8 +533,8 @@ VALUES ('$today', 9, 12, 900)
         (n) => n.rate(Rating.good),
         args: revise,
       );
-      final next = find.widgetWithText(DpButton, l10n.summaryGrammar(1));
-      expect(tester.widget<DpButton>(next).kind, DpButtonKind.primary);
+      final next = find.widgetWithText(SgButton, l10n.summaryGrammar(1));
+      expect(tester.widget<SgButton>(next).kind, SgButtonKind.primary);
 
       await tester.tap(next);
       await tester.pumpAndSettle();
@@ -562,8 +562,8 @@ VALUES ('$today', 9, 12, 900)
         (n) => n.rate(Rating.good),
         args: backlog,
       );
-      final next = find.widgetWithText(DpButton, l10n.summaryRevise(1));
-      expect(tester.widget<DpButton>(next).kind, DpButtonKind.primary);
+      final next = find.widgetWithText(SgButton, l10n.summaryRevise(1));
+      expect(tester.widget<SgButton>(next).kind, SgButtonKind.primary);
 
       await tester.tap(next);
       await tester.pumpAndSettle();

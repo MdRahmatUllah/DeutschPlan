@@ -1,4 +1,4 @@
-package io.github.rahmatullah.deutschplan.widget
+package de.sogda.app.widget
 
 import android.content.Context
 import android.content.Intent
@@ -45,16 +45,16 @@ import androidx.glance.text.FontWeight
 import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
 import androidx.glance.unit.ColorProvider
-import io.github.rahmatullah.deutschplan.MainActivity
-import io.github.rahmatullah.deutschplan.R
+import de.sogda.app.MainActivity
+import de.sogda.app.R
 import es.antonborri.home_widget.HomeWidgetGlanceState
 import es.antonborri.home_widget.HomeWidgetGlanceStateDefinition
 import es.antonborri.home_widget.HomeWidgetGlanceWidgetReceiver
 import org.json.JSONObject
 
 /** X1's receiver (#160): what the app's `HomeWidget.updateWidget` names. */
-class DeutschPlanWidgetReceiver : HomeWidgetGlanceWidgetReceiver<DeutschPlanWidget>() {
-    override val glanceAppWidget = DeutschPlanWidget()
+class SogdaWidgetReceiver : HomeWidgetGlanceWidgetReceiver<SogdaWidget>() {
+    override val glanceAppWidget = SogdaWidget()
 }
 
 /**
@@ -63,7 +63,7 @@ class DeutschPlanWidgetReceiver : HomeWidgetGlanceWidgetReceiver<DeutschPlanWidg
  * Drawn from the snapshot the app writes (`widget_snapshot`, #159); its words are in it too,
  * in the learner's language.
  */
-class DeutschPlanWidget : GlanceAppWidget() {
+class SogdaWidget : GlanceAppWidget() {
     override val stateDefinition = HomeWidgetGlanceStateDefinition()
 
     override val sizeMode = SizeMode.Responsive(setOf(SMALL, MEDIUM))
@@ -113,14 +113,14 @@ private fun Widget(snapshot: JSONObject?) {
             .cornerRadius(18.dp)
             .padding(12.dp)
             // FR-X1-02: the widget itself opens Today.
-            .clickable(open(context, "deutschplan://today")),
+            .clickable(open(context, "sogda://today")),
     ) {
         when {
             snapshot == null -> Text(
                 text = context.getString(R.string.widget_empty),
                 style = TextStyle(color = ink, fontSize = 13.sp),
             )
-            LocalSize.current.width >= DeutschPlanWidget.MEDIUM.width -> Medium(snapshot)
+            LocalSize.current.width >= SogdaWidget.MEDIUM.width -> Medium(snapshot)
             else -> Small(snapshot)
         }
     }
@@ -213,7 +213,7 @@ private fun Medium(snapshot: JSONObject) {
             )
             Spacer(GlanceModifier.height(4.dp))
             // FR-X1-02: the word opens it.
-            Row(modifier = GlanceModifier.clickable(open(context, "deutschplan://word/$uid"))) {
+            Row(modifier = GlanceModifier.clickable(open(context, "sogda://word/$uid"))) {
                 val article = word.text("article")
                 if (article.isNotEmpty()) {
                     Text(
@@ -235,7 +235,7 @@ private fun Medium(snapshot: JSONObject) {
             Spacer(GlanceModifier.height(6.dp))
             // FR-X1-02: *Pronounce* opens the word and plays it.
             Row(
-                modifier = GlanceModifier.clickable(open(context, "deutschplan://word/$uid?speak=1")),
+                modifier = GlanceModifier.clickable(open(context, "sogda://word/$uid?speak=1")),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Image(
@@ -328,7 +328,7 @@ private fun articleColour(article: String): ColorProvider = when (article) {
     else -> ink
 }
 
-/** A `deutschplan://` link into the app, which its router resolves (`deep_links.dart`). */
+/** A `sogda://` link into the app, which its router resolves (`deep_links.dart`). */
 private fun open(context: Context, link: String): Action =
     actionStartActivity(
         Intent(context, MainActivity::class.java)

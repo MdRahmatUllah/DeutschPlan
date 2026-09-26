@@ -1,7 +1,7 @@
 # 7. Operations
 
 How to set up a machine, run the everyday commands, build a release, ship a
-content update and get out of trouble. DeutschPlan is built on Windows 11 by
+content update and get out of trouble. Sogda is built on Windows 11 by
 a team of agents working in separate git worktrees, with no `make`, no `fvm`
 and no GitHub CI, so every command here is the one that actually runs. v1.0
 ships on Android only; the iOS pipeline waits for a Mac.
@@ -30,8 +30,8 @@ ships on Android only; the iOS pipeline waits for a Mac.
 owner, and the repository's `.git/config` sets it; never override it:
 
 ```bash
-git clone https://github.com/MdRahmatUllah/DeutschPlan.git deutschplan
-cd deutschplan
+git clone https://github.com/MdRahmatUllah/DeutschPlan.git sogda
+cd sogda
 git config user.name  "MdRahmatUllah"
 git config user.email "rahmat.ullah@infinitibit.com"
 ```
@@ -167,7 +167,7 @@ From [`release.md`](../05-dev-guide/release.md), with the real commands:
 
 ### Signing
 
-The app id is `io.github.rahmatullah.deutschplan`, the owner's; it can never
+The app id is `de.sogda.app`, the owner's; it can never
 change once the app is on Play (#170). Release builds use the owner's upload
 key when `app/android/key.properties` exists:
 
@@ -224,7 +224,7 @@ iOS widget (#161) are in the milestone "Later · after v1.0". When a Mac is
 available: deployment target 16.0, SPM, `flutter build ipa --release` with the
 same obfuscation flags, a privacy manifest (no tracking, the mic string,
 notifications, the `fetch` and `processing` background modes) and the App
-Group `group.app.deutschplan` shared with the widget extension.
+Group `group.de.sogda.app` shared with the widget extension.
 
 ## Content updates in production
 

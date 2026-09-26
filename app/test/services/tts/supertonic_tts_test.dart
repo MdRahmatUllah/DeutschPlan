@@ -5,14 +5,14 @@ import 'dart:math' as math;
 import 'dart:typed_data';
 
 import 'package:crypto/crypto.dart';
-import 'package:deutschplan/data/db/app_database.dart';
-import 'package:deutschplan/data/repositories/model_repository.dart';
-import 'package:deutschplan/data/repositories/setting_keys.dart';
-import 'package:deutschplan/data/repositories/settings_repository.dart';
-import 'package:deutschplan/data/repositories/synthesis_cache.dart';
-import 'package:deutschplan/services/model_downloads.dart';
-import 'package:deutschplan/services/tts/supertonic_tts.dart';
-import 'package:deutschplan/services/tts/tts_engine.dart';
+import 'package:sogda/data/db/app_database.dart';
+import 'package:sogda/data/repositories/model_repository.dart';
+import 'package:sogda/data/repositories/setting_keys.dart';
+import 'package:sogda/data/repositories/settings_repository.dart';
+import 'package:sogda/data/repositories/synthesis_cache.dart';
+import 'package:sogda/services/model_downloads.dart';
+import 'package:sogda/services/tts/supertonic_tts.dart';
+import 'package:sogda/services/tts/tts_engine.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -108,7 +108,7 @@ void main() {
     final style = styleOf(1);
 
     setUp(() async {
-      support = Directory.systemTemp.createTempSync('dp_supertonic');
+      support = Directory.systemTemp.createTempSync('sg_supertonic');
       final db = AppDatabase.memory();
       addTearDown(db.close);
       settings = SettingsRepository(db);

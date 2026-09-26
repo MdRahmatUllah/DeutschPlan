@@ -1,43 +1,43 @@
 @TestOn('vm')
 library;
 
-import 'package:deutschplan/features/exam/exam_runner_screen.dart';
-import 'package:deutschplan/features/backlog/backlog_screen.dart';
-import 'package:deutschplan/features/study/study_screen.dart';
-import 'package:deutschplan/features/today/today_view.dart';
-import 'package:deutschplan/features/me/me_screen.dart';
-import 'package:deutschplan/features/today/today_screen.dart';
+import 'package:sogda/features/exam/exam_runner_screen.dart';
+import 'package:sogda/features/backlog/backlog_screen.dart';
+import 'package:sogda/features/study/study_screen.dart';
+import 'package:sogda/features/today/today_view.dart';
+import 'package:sogda/features/me/me_screen.dart';
+import 'package:sogda/features/today/today_screen.dart';
 
 import '../features/today_fixtures.dart';
 
 import 'dart:io';
 
-import 'package:deutschplan/core/providers/app_providers.dart';
-import 'package:deutschplan/data/db/app_database.dart';
-import 'package:deutschplan/data/db/content_dao.dart';
-import 'package:deutschplan/data/repositories/setting_keys.dart';
-import 'package:deutschplan/domain/placement.dart';
-import 'package:deutschplan/features/onboarding/onboarding_start_page.dart';
+import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/data/db/app_database.dart';
+import 'package:sogda/data/db/content_dao.dart';
+import 'package:sogda/data/repositories/setting_keys.dart';
+import 'package:sogda/domain/placement.dart';
+import 'package:sogda/features/onboarding/onboarding_start_page.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 
 import '../domain/placement_test.dart' show wordFor;
 
-import 'package:deutschplan/core/theme/app_theme.dart';
-import 'package:deutschplan/core/theme/dp_tokens.dart';
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
-import 'package:deutschplan/main.dart'
+import 'package:sogda/core/theme/app_theme.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
+import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
-import 'package:deutschplan/router/app_router.dart';
-import 'package:deutschplan/router/app_shell.dart';
-import 'package:deutschplan/router/routes.dart';
-import 'package:deutschplan/features/learn/categories_screen.dart';
-import 'package:deutschplan/features/learn/category_words_screen.dart';
-import 'package:deutschplan/features/learn/grammar_library_screen.dart';
-import 'package:deutschplan/features/learn/grammar_topic_screen.dart';
-import 'package:deutschplan/features/learn/learn_screen.dart';
-import 'package:deutschplan/features/learn/step_detail_screen.dart';
-import 'package:deutschplan/features/search/search_screen.dart';
+import 'package:sogda/router/app_router.dart';
+import 'package:sogda/router/app_shell.dart';
+import 'package:sogda/router/routes.dart';
+import 'package:sogda/features/learn/categories_screen.dart';
+import 'package:sogda/features/learn/category_words_screen.dart';
+import 'package:sogda/features/learn/grammar_library_screen.dart';
+import 'package:sogda/features/learn/grammar_topic_screen.dart';
+import 'package:sogda/features/learn/learn_screen.dart';
+import 'package:sogda/features/learn/step_detail_screen.dart';
+import 'package:sogda/features/search/search_screen.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';

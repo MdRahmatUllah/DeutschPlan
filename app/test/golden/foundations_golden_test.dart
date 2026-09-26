@@ -1,12 +1,12 @@
-import 'package:deutschplan/core/components/dp_button.dart';
-import 'package:deutschplan/core/components/dp_chip.dart';
-import 'package:deutschplan/core/components/dp_feedback.dart';
-import 'package:deutschplan/core/components/dp_progress_ring.dart';
-import 'package:deutschplan/core/components/dp_rating_bar.dart';
-import 'package:deutschplan/core/components/dp_speaker_button.dart';
-import 'package:deutschplan/core/theme/dp_surface.dart';
-import 'package:deutschplan/core/theme/dp_tokens.dart';
-import 'package:deutschplan/core/typography/dp_text.dart';
+import 'package:sogda/core/components/sg_button.dart';
+import 'package:sogda/core/components/sg_chip.dart';
+import 'package:sogda/core/components/sg_feedback.dart';
+import 'package:sogda/core/components/sg_progress_ring.dart';
+import 'package:sogda/core/components/sg_rating_bar.dart';
+import 'package:sogda/core/components/sg_speaker_button.dart';
+import 'package:sogda/core/theme/sg_surface.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/core/typography/sg_text.dart';
 import 'package:material_ui/material_ui.dart';
 
 import 'golden_harness.dart';
@@ -42,66 +42,66 @@ class _FoundationsGallery extends StatelessWidget {
                   spacing: tokens.spacing.sm,
                   runSpacing: tokens.spacing.sm,
                   children: <Widget>[
-                    const DpChip(label: 'A2.1'),
-                    const DpChip(label: 'A2.1', selected: true),
-                    DpChip(
+                    const SgChip(label: 'A2.1'),
+                    const SgChip(label: 'A2.1', selected: true),
+                    SgChip(
                       label: 'To do',
-                      kind: DpChipKind.status,
+                      kind: SgChipKind.status,
                       statusColour: tokens.surface.muted,
                     ),
-                    DpChip(
+                    SgChip(
                       label: 'Learning',
-                      kind: DpChipKind.status,
+                      kind: SgChipKind.status,
                       statusColour: tokens.color.learning,
                     ),
-                    DpChip(
+                    SgChip(
                       label: 'Done',
-                      kind: DpChipKind.status,
+                      kind: SgChipKind.status,
                       statusColour: tokens.color.easy,
                     ),
-                    const DpChip(label: '12', kind: DpChipKind.streak),
-                    const DpChip(
+                    const SgChip(label: '12', kind: SgChipKind.streak),
+                    const SgChip(
                       label: 'All',
-                      kind: DpChipKind.filter,
+                      kind: SgChipKind.filter,
                       selected: true,
                     ),
-                    const DpChip(label: 'Learning', kind: DpChipKind.filter),
-                    const DpChip(label: 'Duden', kind: DpChipKind.webLink),
+                    const SgChip(label: 'Learning', kind: SgChipKind.filter),
+                    const SgChip(label: 'Duden', kind: SgChipKind.webLink),
                   ],
                 ),
               ),
               _Section(
                 label: 'Word card',
-                child: DpSurface(
+                child: SgSurface(
                   padding: EdgeInsets.all(tokens.spacing.lg),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      const DpHeadword('Rechnung', article: 'die'),
+                      const SgHeadword('Rechnung', article: 'die'),
                       SizedBox(height: tokens.spacing.sm),
-                      const DpText(
+                      const SgText(
                         'Nomen · die Rechnung, -en · '
                         '/রেশনুং/',
-                        role: DpTextRole.caption,
+                        role: SgTextRole.caption,
                       ),
                       SizedBox(height: tokens.spacing.md),
-                      const DpText(
+                      const SgText(
                         'bill, invoice / বিল, চালান',
-                        role: DpTextRole.bodyLarge,
+                        role: SgTextRole.bodyLarge,
                       ),
                       SizedBox(height: tokens.spacing.md),
                       Row(
                         children: <Widget>[
-                          DpSpeakerButton(
+                          SgSpeakerButton(
                             onPressed: () {},
                             semanticLabel: 'Pronounce die Rechnung',
                           ),
                           SizedBox(width: tokens.spacing.md),
                           // The artboard shows idle beside playing.
-                          DpSpeakerButton(
+                          SgSpeakerButton(
                             onPressed: () {},
                             semanticLabel: 'Playing',
-                            state: DpSpeakerState.playing,
+                            state: SgSpeakerState.playing,
                           ),
                         ],
                       ),
@@ -111,13 +111,13 @@ class _FoundationsGallery extends StatelessWidget {
               ),
               _Section(
                 label: 'Rating bar',
-                child: DpRatingBar(
+                child: SgRatingBar(
                   onRated: (_) {},
-                  intervals: const <DpRating, String>{
-                    DpRating.again: '1 d',
-                    DpRating.hard: '3 d',
-                    DpRating.good: '8 d',
-                    DpRating.easy: '21 d',
+                  intervals: const <SgRating, String>{
+                    SgRating.again: '1 d',
+                    SgRating.hard: '3 d',
+                    SgRating.good: '8 d',
+                    SgRating.easy: '21 d',
                   },
                 ),
               ),
@@ -125,14 +125,14 @@ class _FoundationsGallery extends StatelessWidget {
                 label: 'Progress',
                 child: Row(
                   children: <Widget>[
-                    const DpProgressRing(
+                    const SgProgressRing(
                       completed: 12,
                       total: 20,
                       caption: '6 min left',
                     ),
                     SizedBox(width: tokens.spacing.lg),
                     const Expanded(
-                      child: DpSegmentedBar(done: 184, learning: 60, todo: 296),
+                      child: SgSegmentedBar(done: 184, learning: 60, todo: 296),
                     ),
                   ],
                 ),
@@ -142,17 +142,17 @@ class _FoundationsGallery extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: <Widget>[
-                    DpButton(label: 'Start today · 20 cards', onPressed: () {}),
+                    SgButton(label: 'Start today · 20 cards', onPressed: () {}),
                     SizedBox(height: tokens.spacing.md),
-                    DpButton(
+                    SgButton(
                       label: 'Review backlog · 14',
-                      kind: DpButtonKind.secondary,
+                      kind: SgButtonKind.secondary,
                       onPressed: () {},
                     ),
                     SizedBox(height: tokens.spacing.xs),
-                    DpButton(
+                    SgButton(
                       label: 'Done for now',
-                      kind: DpButtonKind.text,
+                      kind: SgButtonKind.text,
                       onPressed: () {},
                     ),
                   ],
@@ -163,16 +163,16 @@ class _FoundationsGallery extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: const <Widget>[
-                    DpVerdictRow(
-                      verdict: DpVerdict.correct,
+                    SgVerdictRow(
+                      verdict: SgVerdict.correct,
                       message: 'Correct',
                     ),
-                    DpVerdictRow(
-                      verdict: DpVerdict.almost,
+                    SgVerdictRow(
+                      verdict: SgVerdict.almost,
                       message: 'Almost — watch the spelling',
                     ),
-                    DpVerdictRow(
-                      verdict: DpVerdict.wrongArticle,
+                    SgVerdictRow(
+                      verdict: SgVerdict.wrongArticle,
                       message: 'die, not der',
                     ),
                   ],
@@ -180,7 +180,7 @@ class _FoundationsGallery extends StatelessWidget {
               ),
               _Section(
                 label: 'Callout',
-                child: DpCallout.text('bekommen = to get, not "to become"'),
+                child: SgCallout.text('bekommen = to get, not "to become"'),
               ),
             ],
           ),
@@ -205,9 +205,9 @@ class _Section extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          DpText(
+          SgText(
             label.toUpperCase(),
-            role: DpTextRole.caption,
+            role: SgTextRole.caption,
             weight: 700,
             color: tokens.color.textSecondary,
           ),

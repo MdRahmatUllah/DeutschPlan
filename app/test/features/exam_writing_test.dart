@@ -1,9 +1,9 @@
-import 'package:deutschplan/core/components/dp_feedback.dart';
-import 'package:deutschplan/core/theme/app_theme.dart';
-import 'package:deutschplan/domain/exam_generator.dart';
-import 'package:deutschplan/features/exam/exam_runner_screen.dart';
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
-import 'package:deutschplan/main.dart'
+import 'package:sogda/core/components/sg_feedback.dart';
+import 'package:sogda/core/theme/app_theme.dart';
+import 'package:sogda/domain/exam_generator.dart';
+import 'package:sogda/features/exam/exam_runner_screen.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
+import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -107,7 +107,7 @@ void main() {
         .hasFocus;
     expect(typing(), isTrue);
 
-    await tester.tap(find.byType(DpUmlautBar).first);
+    await tester.tap(find.byType(SgUmlautBar).first);
     await tester.pump();
     expect(typing(), isTrue, reason: 'the umlaut row is part of the field');
 
@@ -131,7 +131,7 @@ void main() {
       expect(find.text(target), findsOneWidget, reason: target);
     }
     expect(find.text(l10n.examWritingUsed(0, 10, 30, 'A1')), findsOneWidget);
-    expect(find.byType(DpUmlautBar), findsOneWidget);
+    expect(find.byType(SgUmlautBar), findsOneWidget);
     expect(find.text(l10n.examWritingSubmit), findsOneWidget);
   });
 

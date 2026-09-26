@@ -2,9 +2,9 @@
 // so there is no parent scope for the lint's dependency list to describe.
 // ignore_for_file: riverpod_lint/scoped_providers_should_specify_dependencies
 
-import 'package:deutschplan/core/adaptive/adaptive.dart';
-import 'package:deutschplan/features/learn/step_detail_screen.dart';
-import 'package:deutschplan/router/routes.dart';
+import 'package:sogda/core/adaptive/adaptive.dart';
+import 'package:sogda/features/learn/step_detail_screen.dart';
+import 'package:sogda/router/routes.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../features/today_fixtures.dart';

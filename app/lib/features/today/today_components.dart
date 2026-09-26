@@ -1,16 +1,15 @@
-import 'package:deutschplan/core/adaptive/adaptive.dart';
-import 'package:deutschplan/core/components/dp_button.dart';
-import 'package:deutschplan/core/components/dp_chip.dart';
-import 'package:deutschplan/core/components/dp_pill.dart';
-import 'package:deutschplan/core/components/dp_progress_ring.dart';
-import 'package:deutschplan/core/theme/dp_surface.dart';
-import 'package:deutschplan/core/theme/dp_tokens.dart';
-import 'package:deutschplan/core/typography/dp_text.dart';
-import 'package:deutschplan/domain/plan_engine.dart'
-    show addDays, parsePlanDate;
-import 'package:deutschplan/features/today/today_view.dart';
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
-import 'package:deutschplan/l10n/ui_digits.dart';
+import 'package:sogda/core/adaptive/adaptive.dart';
+import 'package:sogda/core/components/sg_button.dart';
+import 'package:sogda/core/components/sg_chip.dart';
+import 'package:sogda/core/components/sg_pill.dart';
+import 'package:sogda/core/components/sg_progress_ring.dart';
+import 'package:sogda/core/theme/sg_surface.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/core/typography/sg_text.dart';
+import 'package:sogda/domain/plan_engine.dart' show addDays, parsePlanDate;
+import 'package:sogda/features/today/today_view.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
+import 'package:sogda/l10n/ui_digits.dart';
 import 'package:intl/intl.dart';
 import 'package:material_ui/material_ui.dart';
 
@@ -66,19 +65,19 @@ class TodayHeader extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  DpText(
+                  SgText(
                     germanDate(view.date),
-                    role: DpTextRole.label,
+                    role: SgTextRole.label,
                     color: ink,
                     german: true,
                   ),
                   const SizedBox(height: 4),
-                  DpText(
+                  SgText(
                     // "Rest day" is a heading, not a greeting: no name on it.
                     view.learnerName == null || view.isRestDay
                         ? greeting
                         : l10n.todayGreetingNamed(greeting, view.learnerName!),
-                    role: DpTextRole.headline,
+                    role: SgTextRole.headline,
                     color: ink,
                     // German: at 200 % "geschafft" breaks at a syllable (#165).
                     allowBreaks: true,
@@ -91,9 +90,9 @@ class TodayHeader extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 12),
-          DpChip(
+          SgChip(
             label: AppLocalizations.of(context).digits(view.streak),
-            kind: DpChipKind.streak,
+            kind: SgChipKind.streak,
             semanticLabel: l10n.todayStreak(view.streak),
             onTap: onStreak,
           ),
@@ -109,8 +108,8 @@ class TodayHeader extends StatelessWidget {
     );
 
     return tokens.isGlass
-        ? DpSurface(
-            kind: DpSurfaceKind.tint(tokens.color.primary),
+        ? SgSurface(
+            kind: SgSurfaceKind.tint(tokens.color.primary),
             radius: 0,
             child: content,
           )
@@ -152,7 +151,7 @@ class ProgressRingCard extends StatelessWidget {
     // into the next card's (#162).
     return Semantics(
       container: true,
-      child: DpSurface(
+      child: SgSurface(
         // The paper card has the artboard's 2 px ink edge and offset shadow;
         // the glass one is a plain panel.
         selected: !tokens.isGlass,
@@ -179,7 +178,7 @@ class ProgressRingCard extends StatelessWidget {
                         ? Duration.zero
                         : const Duration(milliseconds: 700),
                     curve: Curves.easeOutCubic,
-                    builder: (context, value, _) => DpProgressRing(
+                    builder: (context, value, _) => SgProgressRing(
                       completed: value.round(),
                       total: view.total,
                       size: ringSize,
@@ -205,22 +204,22 @@ class ProgressRingCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   if (step != null) ...<Widget>[
-                    DpChip(
+                    SgChip(
                       label: step,
-                      kind: DpChipKind.step,
+                      kind: SgChipKind.step,
                       selected: true,
                       onTap: onStep,
                     ),
                     const SizedBox(height: 8),
                   ],
                   if (view.isRestDay) ...<Widget>[
-                    DpText(
+                    SgText(
                       l10n.todayRestOff(
                         DateFormat.EEEE(
                           Localizations.localeOf(context).toString(),
                         ).format(parsePlanDate(view.date)),
                       ),
-                      role: DpTextRole.body,
+                      role: SgTextRole.body,
                     ),
                     const SizedBox(height: 8),
                     Semantics(
@@ -228,15 +227,15 @@ class ProgressRingCard extends StatelessWidget {
                       child: GestureDetector(
                         onTap: onStudyDays,
                         behavior: HitTestBehavior.opaque,
-                        child: DpText(
+                        child: SgText(
                           l10n.todayRestStudyDays,
-                          role: DpTextRole.caption,
+                          role: SgTextRole.caption,
                           color: tokens.color.textSecondary,
                         ),
                       ),
                     ),
                   ] else
-                    DpText(
+                    SgText(
                       view.isDone
                           ? l10n.todayDoneLine(
                               view.courseDay,
@@ -244,20 +243,20 @@ class ProgressRingCard extends StatelessWidget {
                               view.minutes,
                             )
                           : l10n.todayCourseDay(view.courseDay),
-                      role: DpTextRole.body,
+                      role: SgTextRole.body,
                     ),
                   if (step != null && !view.isRestDay) ...<Widget>[
                     const SizedBox(height: 8),
-                    DpSegmentedBar(
+                    SgSegmentedBar(
                       done: words.done,
                       learning: words.learning,
                       todo: words.todo,
                       height: 6,
                     ),
                     const SizedBox(height: 8),
-                    DpText(
+                    SgText(
                       l10n.todayStepWords(words.done, words.total, step),
-                      role: DpTextRole.caption,
+                      role: SgTextRole.caption,
                       color: tokens.color.textSecondary,
                     ),
                   ],
@@ -327,8 +326,8 @@ class PlanSectionCard extends StatelessWidget {
       // was read run into the next card's (#162).
       container: true,
       button: onTap != null,
-      child: DpSurface(
-        kind: DpSurfaceKind.bar,
+      child: SgSurface(
+        kind: SgSurfaceKind.bar,
         onTap: onTap,
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
         child: ConstrainedBox(
@@ -351,11 +350,11 @@ class PlanSectionCard extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    DpText(title, role: DpTextRole.body, weight: 600),
+                    SgText(title, role: SgTextRole.body, weight: 600),
                     const SizedBox(height: 2),
-                    DpText(
+                    SgText(
                       subtitle,
-                      role: DpTextRole.label,
+                      role: SgTextRole.label,
                       weight: 400,
                       color: tokens.color.textSecondary,
                     ),
@@ -365,7 +364,7 @@ class PlanSectionCard extends StatelessWidget {
               const SizedBox(width: 12),
               switch (trailing) {
                 SectionTrailing.none => const SizedBox.shrink(),
-                SectionTrailing.progress => DpProgressRing(
+                SectionTrailing.progress => SgProgressRing(
                   completed: progress.done,
                   total: progress.total,
                   size: 28,
@@ -426,8 +425,8 @@ class GrammarPreviewCard extends StatelessWidget {
 
     return Semantics(
       button: true,
-      child: DpSurface(
-        kind: DpSurfaceKind.bar,
+      child: SgSurface(
+        kind: SgSurfaceKind.bar,
         onTap: onTap,
         // Inset by the outline, so the Sun strip sits inside the border the
         // way the artboard's `overflow: hidden` keeps it.
@@ -435,7 +434,7 @@ class GrammarPreviewCard extends StatelessWidget {
         child: ClipRRect(
           borderRadius: BorderRadius.circular(tokens.shape.card - edge),
           // The strip is the box's left border, so it runs the card's height
-          // with no IntrinsicHeight, which the rule's DpOneLine can't answer
+          // with no IntrinsicHeight, which the rule's SgOneLine can't answer
           // (it measures with a LayoutBuilder; #551).
           child: DecoratedBox(
             decoration: BoxDecoration(
@@ -453,27 +452,27 @@ class GrammarPreviewCard extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
-                          DpText(
+                          SgText(
                             l10n.todayGrammarWeek.toUpperCase(),
                             semanticsLabel: l10n.todayGrammarWeek,
-                            role: DpTextRole.caption,
+                            role: SgTextRole.caption,
                             weight: 700,
                             letterSpacing: 0.6,
                             color: tokens.color.textSecondary,
                           ),
                           const SizedBox(height: 2),
-                          DpText(
+                          SgText(
                             preview.topic,
-                            role: DpTextRole.body,
+                            role: SgTextRole.body,
                             weight: 600,
                           ),
                           if (showRule && preview.rule.isNotEmpty) ...<Widget>[
                             const SizedBox(height: 2),
                             // A preview: one line, cut after a whole word
                             // with "…" (#280), the rest on the topic's page.
-                            DpOneLine(
+                            SgOneLine(
                               preview.rule,
-                              role: DpTextRole.label,
+                              role: SgTextRole.label,
                               weight: 400,
                               color: tokens.color.textSecondary,
                             ),
@@ -573,8 +572,8 @@ class ContextualCard extends StatelessWidget {
     // into the next card's (#162).
     return Semantics(
       container: true,
-      child: DpSurface(
-        kind: DpSurfaceKind.bar,
+      child: SgSurface(
+        kind: SgSurfaceKind.bar,
         padding: EdgeInsets.all(edge),
         child: IntrinsicHeight(
           child: Row(
@@ -596,19 +595,19 @@ class ContextualCard extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      DpText(title, role: DpTextRole.body, weight: 600),
+                      SgText(title, role: SgTextRole.body, weight: 600),
                       const SizedBox(height: 2),
-                      DpText(
+                      SgText(
                         body,
-                        role: DpTextRole.label,
+                        role: SgTextRole.label,
                         weight: 400,
                         color: tokens.color.textSecondary,
                       ),
                       if (action != null)
-                        DpButton(
+                        SgButton(
                           label: action,
                           onPressed: onAction,
-                          kind: DpButtonKind.text,
+                          kind: SgButtonKind.text,
                           expand: false,
                         ),
                     ],
@@ -649,17 +648,17 @@ class RestDayNote extends StatelessWidget {
     // into the next card's (#162).
     return Semantics(
       container: true,
-      child: DpSurface(
-        kind: DpSurfaceKind.bar,
+      child: SgSurface(
+        kind: SgSurfaceKind.bar,
         padding: const EdgeInsets.all(14),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            DpText(l10n.todayRestNote, role: DpTextRole.body),
+            SgText(l10n.todayRestNote, role: SgTextRole.body),
             // Only with something to revise: a lead with no numbers after it
             // would promise and stop.
             if (view.revise.open > 0 && before > 0) ...<Widget>[
-              DpText(
+              SgText(
                 // The next study day by name when tomorrow is off too (#345).
                 switch (view.nextStudyDay) {
                   final day? when day != addDays(view.date, 1) =>
@@ -670,14 +669,14 @@ class RestDayNote extends StatelessWidget {
                     ),
                   _ => l10n.todayRestLighterLead,
                 },
-                role: DpTextRole.body,
+                role: SgTextRole.body,
               ),
-              // ponytail: the artboard bolds this inline; DpText has no spans,
-              // so it takes its own line. Add emphasis to DpText if another
+              // ponytail: the artboard bolds this inline; SgText has no spans,
+              // so it takes its own line. Add emphasis to SgText if another
               // screen needs the same.
-              DpText(
+              SgText(
                 l10n.todayRestLighter(before, view.dueTomorrowIfRevised),
-                role: DpTextRole.body,
+                role: SgTextRole.body,
                 weight: 700,
               ),
             ],
@@ -712,8 +711,8 @@ class TodayDoneCard extends StatelessWidget {
     // into the next card's (#162).
     return Semantics(
       container: true,
-      child: DpSurface(
-        kind: DpSurfaceKind.bar,
+      child: SgSurface(
+        kind: SgSurfaceKind.bar,
         padding: const EdgeInsets.all(16),
         child: Row(
           children: <Widget>[
@@ -732,15 +731,15 @@ class TodayDoneCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  DpText(
+                  SgText(
                     l10n.todayDoneTitle,
-                    role: DpTextRole.body,
+                    role: SgTextRole.body,
                     weight: 600,
                   ),
                   const SizedBox(height: 2),
-                  DpText(
+                  SgText(
                     parts.join(' · '),
-                    role: DpTextRole.caption,
+                    role: SgTextRole.caption,
                     color: tokens.color.textSecondary,
                   ),
                 ],
@@ -769,41 +768,41 @@ class TomorrowCard extends StatelessWidget {
     // into the next card's (#162).
     return Semantics(
       container: true,
-      child: DpSurface(
-        kind: DpSurfaceKind.bar,
+      child: SgSurface(
+        kind: SgSurfaceKind.bar,
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            DpText(
+            SgText(
               l10n.todayTomorrow.toUpperCase(),
               semanticsLabel: l10n.todayTomorrow,
-              role: DpTextRole.caption,
+              role: SgTextRole.caption,
               weight: 700,
               letterSpacing: 0.6,
               color: tokens.color.textSecondary,
             ),
             const SizedBox(height: 8),
             if (tomorrow.restDay)
-              DpText(l10n.todayTomorrowRest, role: DpTextRole.body)
+              SgText(l10n.todayTomorrowRest, role: SgTextRole.body)
             else ...<Widget>[
               Wrap(
                 spacing: 8,
                 runSpacing: 8,
                 children: <Widget>[
                   if (tomorrow.revise > 0)
-                    DpPill(
+                    SgPill(
                       label: l10n.todayTomorrowRevisions(tomorrow.revise),
                       fill: tokens.color.primary,
                       ink: tokens.color.onPrimary,
                     ),
                   if (tomorrow.newWords > 0)
-                    DpPill(
+                    SgPill(
                       label: l10n.todayTomorrowNew(tomorrow.newWords),
                       fill: tokens.color.accent,
                     ),
                   if (tomorrow.grammar > 0)
-                    DpPill(
+                    SgPill(
                       label: l10n.todayGrammarDue(tomorrow.grammar),
                       fill: tokens.surface.muted,
                       // Oat is the muted surface, so it takes the page's ink.
@@ -812,11 +811,11 @@ class TomorrowCard extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 8),
-              DpText(
+              SgText(
                 category == null
                     ? l10n.todayEstimate(tomorrow.minutes)
                     : l10n.todayTomorrowContinues(tomorrow.minutes, category),
-                role: DpTextRole.caption,
+                role: SgTextRole.caption,
                 color: tokens.color.textSecondary,
               ),
             ],
@@ -849,7 +848,7 @@ class PrimaryActionBar extends StatelessWidget {
       // TodayDone: Lime with a tick, ink on it, a little faded, no shadow.
       TodayAction.done => Opacity(
         opacity: 0.85,
-        child: DpButton(
+        child: SgButton(
           label: label,
           onPressed: null,
           colour: tokens.color.easy,
@@ -858,13 +857,13 @@ class PrimaryActionBar extends StatelessWidget {
         ),
       ),
       // TodayRest: optional, so Oat rather than Lagoon.
-      TodayAction.reviseAnyway => DpButton(
+      TodayAction.reviseAnyway => SgButton(
         label: label,
         onPressed: onPressed,
         colour: tokens.surface.muted,
         onColour: tokens.color.ink,
       ),
-      _ => DpButton(label: label, onPressed: onPressed),
+      _ => SgButton(label: label, onPressed: onPressed),
     };
     return Padding(padding: const EdgeInsets.all(16), child: button);
   }

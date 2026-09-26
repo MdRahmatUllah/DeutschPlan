@@ -1,12 +1,12 @@
-import 'package:deutschplan/core/adaptive/adaptive.dart';
-import 'package:deutschplan/core/theme/dp_tokens.dart';
-import 'package:deutschplan/core/typography/dp_text.dart';
+import 'package:sogda/core/adaptive/adaptive.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/core/typography/sg_text.dart';
 import 'package:material_ui/material_ui.dart';
 
 /// The chip families on the Foundations artboard. Each has its own height,
 /// weight and treatment, so they are separate kinds rather than one chip with
 /// a pile of flags.
-enum DpChipKind {
+enum SgChipKind {
   /// A step code — "A2.1". 24 dp, ink outline, Sun fill when it marks the
   /// active step.
   step,
@@ -29,11 +29,11 @@ enum DpChipKind {
 /// Heights, radii and weights are read off `Foundations.html`; they are not
 /// Material defaults, and a Material `Chip` cannot be coaxed into them without
 /// more overrides than writing this outright.
-class DpChip extends StatelessWidget {
-  const DpChip({
+class SgChip extends StatelessWidget {
+  const SgChip({
     required this.label,
     super.key,
-    this.kind = DpChipKind.step,
+    this.kind = SgChipKind.step,
     this.selected = false,
     this.onTap,
     this.statusColour,
@@ -45,7 +45,7 @@ class DpChip extends StatelessWidget {
   });
 
   final String label;
-  final DpChipKind kind;
+  final SgChipKind kind;
 
   /// Marks the active step, the chosen filter, and nothing on the other kinds.
   final bool selected;
@@ -73,10 +73,10 @@ class DpChip extends StatelessWidget {
   /// role — the two are unrelated, and deriving one from the other gave the
   /// filter and web-link marks 16 instead of 14.
   ({IconData icon, double size})? get defaultIcon => switch (kind) {
-    DpChipKind.streak => (icon: Icons.local_fire_department, size: 16),
-    DpChipKind.filter => selected ? (icon: Icons.check, size: 14) : null,
-    DpChipKind.webLink => (icon: Icons.open_in_new, size: 14),
-    DpChipKind.step || DpChipKind.status => null,
+    SgChipKind.streak => (icon: Icons.local_fire_department, size: 16),
+    SgChipKind.filter => selected ? (icon: Icons.check, size: 14) : null,
+    SgChipKind.webLink => (icon: Icons.open_in_new, size: 14),
+    SgChipKind.step || SgChipKind.status => null,
   };
 
   /// Defaults to [label]. Set it where the label is an abbreviation a screen
@@ -90,9 +90,9 @@ class DpChip extends StatelessWidget {
   double get height => large
       ? 44
       : switch (kind) {
-          DpChipKind.step || DpChipKind.status => 24,
-          DpChipKind.streak => 28,
-          DpChipKind.filter || DpChipKind.webLink => 32,
+          SgChipKind.step || SgChipKind.status => 24,
+          SgChipKind.streak => 28,
+          SgChipKind.filter || SgChipKind.webLink => 32,
         };
 
   @override
@@ -103,39 +103,39 @@ class DpChip extends StatelessWidget {
     // merely frosted: a pill, solid Lagoon when on and frosted paper when
     // off, both behind the glass hairline. A Lagoon wash on glass is a wash
     // on a wash, and reads as nothing chosen.
-    final glassFilter = tokens.isGlass && kind == DpChipKind.filter;
+    final glassFilter = tokens.isGlass && kind == SgChipKind.filter;
 
     final fill =
         this.fill ??
         switch (kind) {
-          DpChipKind.step => selected ? tokens.color.accent : null,
-          DpChipKind.status || DpChipKind.webLink => tokens.surface.muted,
-          DpChipKind.streak => tokens.color.accent,
-          DpChipKind.filter when glassFilter =>
+          SgChipKind.step => selected ? tokens.color.accent : null,
+          SgChipKind.status || SgChipKind.webLink => tokens.surface.muted,
+          SgChipKind.streak => tokens.color.accent,
+          SgChipKind.filter when glassFilter =>
             selected ? tokens.color.primary : tokens.surface.muted,
-          DpChipKind.filter =>
+          SgChipKind.filter =>
             selected ? tokens.color.primary.withValues(alpha: 0.22) : null,
         };
 
     final outline = switch (kind) {
-      DpChipKind.step || DpChipKind.streak => this.ink ?? tokens.color.ink,
-      DpChipKind.filter when glassFilter => tokens.surface.outline,
-      DpChipKind.filter => selected ? tokens.color.ink : tokens.surface.outline,
-      DpChipKind.status || DpChipKind.webLink => null,
+      SgChipKind.step || SgChipKind.streak => this.ink ?? tokens.color.ink,
+      SgChipKind.filter when glassFilter => tokens.surface.outline,
+      SgChipKind.filter => selected ? tokens.color.ink : tokens.surface.outline,
+      SgChipKind.status || SgChipKind.webLink => null,
     };
     final outlineWidth = glassFilter ? tokens.surface.outlineWidth : 1.5;
 
     final (role, weight) = large
-        ? (DpTextRole.body, 600.0)
+        ? (SgTextRole.body, 600.0)
         : switch (kind) {
-            DpChipKind.step || DpChipKind.status => (DpTextRole.caption, 700.0),
-            DpChipKind.streak => (DpTextRole.label, 700.0),
-            DpChipKind.filter ||
-            DpChipKind.webLink => (DpTextRole.label, 600.0),
+            SgChipKind.step || SgChipKind.status => (SgTextRole.caption, 700.0),
+            SgChipKind.streak => (SgTextRole.label, 700.0),
+            SgChipKind.filter ||
+            SgChipKind.webLink => (SgTextRole.label, 600.0),
           };
 
     final radius =
-        kind == DpChipKind.streak || glassFilter || (large && tokens.isGlass)
+        kind == SgChipKind.streak || glassFilter || (large && tokens.isGlass)
         ? height / 2
         : tokens.shape.chip;
 
@@ -157,8 +157,8 @@ class DpChip extends StatelessWidget {
         (fallback == null
             ? null
             : Icon(fallback.icon, size: fallback.size, color: ink));
-    final leading = kind == DpChipKind.webLink ? null : glyph;
-    final trailing = kind == DpChipKind.webLink ? glyph : null;
+    final leading = kind == SgChipKind.webLink ? null : glyph;
+    final trailing = kind == SgChipKind.webLink ? glyph : null;
 
     // The artboard's height is the least a chip is: at 200 % text it grows
     // with its label rather than cutting it in half (#314).
@@ -196,7 +196,7 @@ class DpChip extends StatelessWidget {
             constraints: BoxConstraints(
               maxWidth: MediaQuery.sizeOf(context).width * 0.8,
             ),
-            child: DpText(label, role: role, weight: weight, color: ink),
+            child: SgText(label, role: role, weight: weight, color: ink),
           ),
           // The web-link mark trails its label, as the artboard draws it.
           if (trailing != null) ...<Widget>[
@@ -209,7 +209,7 @@ class DpChip extends StatelessWidget {
 
     final named = Semantics(
       label: semanticLabel ?? label,
-      selected: kind == DpChipKind.filter || kind == DpChipKind.step
+      selected: kind == SgChipKind.filter || kind == SgChipKind.step
           ? selected
           : null,
       button: onTap != null,

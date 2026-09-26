@@ -1,16 +1,16 @@
 import 'dart:async';
 
-import 'package:deutschplan/core/adaptive/adaptive.dart';
-import 'package:deutschplan/core/components/dp_chip.dart';
-import 'package:deutschplan/core/components/dp_speaker_button.dart'
-    show DpPlayingBars, DpSpeakerState;
-import 'package:deutschplan/core/theme/dp_surface.dart';
-import 'package:deutschplan/core/theme/dp_tokens.dart';
-import 'package:deutschplan/core/typography/dp_text.dart';
-import 'package:deutschplan/data/repositories/word_repository.dart';
-import 'package:deutschplan/features/study/study_card.dart';
-import 'package:deutschplan/features/words/speak.dart';
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
+import 'package:sogda/core/adaptive/adaptive.dart';
+import 'package:sogda/core/components/sg_chip.dart';
+import 'package:sogda/core/components/sg_speaker_button.dart'
+    show SgPlayingBars, SgSpeakerState;
+import 'package:sogda/core/theme/sg_surface.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/core/typography/sg_text.dart';
+import 'package:sogda/data/repositories/word_repository.dart';
+import 'package:sogda/features/study/study_card.dart';
+import 'package:sogda/features/words/speak.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 
@@ -53,20 +53,20 @@ class WordRow extends StatelessWidget {
     // the headword to "die Gebu…" and the meaning at a word, with no "…"
     // (#550): the two take the row's width, wrapping (the headword at its
     // syllables), and the chips and the speaker go on a line under them.
-    final large = DpScript.large(context);
+    final large = SgScript.large(context);
     final text = <Widget>[
-      DpHeadword(
+      SgHeadword(
         word.word.german,
         article: word.word.article,
         plural: word.word.forms,
-        role: DpTextRole.bodyLarge,
+        role: SgTextRole.bodyLarge,
         weight: 600,
         maxLines: large ? null : 1,
       ),
       const SizedBox(height: 2),
-      DpText(
+      SgText(
         meaning,
-        role: DpTextRole.label,
+        role: SgTextRole.label,
         weight: 400,
         maxLines: large ? null : 1,
         color: tokens.color.textSecondary,
@@ -74,7 +74,7 @@ class WordRow extends StatelessWidget {
     ];
     final chips = <Widget>[
       if (step case final step?) ...<Widget>[
-        DpChip(label: step, kind: DpChipKind.step),
+        SgChip(label: step, kind: SgChipKind.step),
         const SizedBox(width: 6),
       ],
       WordStatusChip(word.status),
@@ -137,7 +137,7 @@ class WordListPanel extends StatelessWidget {
     return Align(
       alignment: Alignment.topCenter,
       child: tokens.isGlass
-          ? DpSurface(kind: DpSurfaceKind.bar, radius: 0, child: child)
+          ? SgSurface(kind: SgSurfaceKind.bar, radius: 0, child: child)
           : DecoratedBox(
               decoration: BoxDecoration(
                 border: Border(top: BorderSide(color: tokens.surface.outline)),
@@ -168,7 +168,7 @@ class WordStatusChip extends StatelessWidget {
         tokens.color.textSecondary,
       ),
     };
-    return DpChip(label: label, kind: DpChipKind.status, statusColour: dot);
+    return SgChip(label: label, kind: SgChipKind.status, statusColour: dot);
   }
 }
 
@@ -183,7 +183,7 @@ class WordPlayButton extends ConsumerWidget {
     final tokens = context.tokens;
     // #515: the row's speaker says it's playing, as the big one does (V03).
     final state = speakerState(ref, word);
-    final mute = state == DpSpeakerState.unavailable;
+    final mute = state == SgSpeakerState.unavailable;
     return AdaptiveTapTarget(
       child: Semantics(
         button: true,
@@ -197,10 +197,10 @@ class WordPlayButton extends ConsumerWidget {
               width: 40,
               height: 40,
               child: switch (state) {
-                DpSpeakerState.playing => Center(
-                  child: DpPlayingBars(colour: tokens.color.ink, size: 40),
+                SgSpeakerState.playing => Center(
+                  child: SgPlayingBars(colour: tokens.color.ink, size: 40),
                 ),
-                DpSpeakerState.loading => Center(
+                SgSpeakerState.loading => Center(
                   child: SizedBox.square(
                     dimension: 16,
                     child: CircularProgressIndicator(

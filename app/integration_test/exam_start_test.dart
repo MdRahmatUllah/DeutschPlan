@@ -2,7 +2,7 @@
 // mid-exam — no submit, no *Leave*. `tools/smoke.py` then force-stops the
 // process, and exam_resume_test.dart starts a new one.
 
-import 'package:deutschplan/features/learn/step_exams.dart' show examQuestions;
+import 'package:sogda/features/learn/step_exams.dart' show examQuestions;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:material_ui/material_ui.dart';

@@ -1,27 +1,26 @@
 import 'dart:async';
 import 'dart:math' as math;
 
-import 'package:deutschplan/core/adaptive/adaptive.dart';
-import 'package:deutschplan/core/components/dp_button.dart';
-import 'package:deutschplan/core/components/dp_speaker_button.dart';
-import 'package:deutschplan/core/providers/app_providers.dart';
-import 'package:deutschplan/core/theme/dp_surface.dart';
-import 'package:deutschplan/core/theme/dp_tokens.dart';
-import 'package:deutschplan/core/typography/dp_text.dart';
-import 'package:deutschplan/domain/exam_generator.dart';
-import 'package:deutschplan/domain/exam_grading.dart'
+import 'package:sogda/core/adaptive/adaptive.dart';
+import 'package:sogda/core/components/sg_button.dart';
+import 'package:sogda/core/components/sg_speaker_button.dart';
+import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/core/theme/sg_surface.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/core/typography/sg_text.dart';
+import 'package:sogda/domain/exam_generator.dart';
+import 'package:sogda/domain/exam_grading.dart'
     show connectorsUsed, targetsUsed, textWords;
-import 'package:deutschplan/domain/grammar_item_generator.dart';
-import 'package:deutschplan/domain/quiz_builder.dart' show FormLabel;
-import 'package:deutschplan/features/learn/grammar_practice_screen.dart'
+import 'package:sogda/domain/grammar_item_generator.dart';
+import 'package:sogda/domain/quiz_builder.dart' show FormLabel;
+import 'package:sogda/features/learn/grammar_practice_screen.dart'
     show itemKind;
-import 'package:deutschplan/features/quiz/quiz_item_view.dart';
-import 'package:deutschplan/features/study/study_cloze.dart'
-    show StudyAnswerField;
-import 'package:deutschplan/features/words/speak.dart';
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
-import 'package:deutschplan/l10n/ui_digits.dart';
-import 'package:deutschplan/services/exam_recorder.dart';
+import 'package:sogda/features/quiz/quiz_item_view.dart';
+import 'package:sogda/features/study/study_cloze.dart' show StudyAnswerField;
+import 'package:sogda/features/words/speak.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
+import 'package:sogda/l10n/ui_digits.dart';
+import 'package:sogda/services/exam_recorder.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 
@@ -131,10 +130,10 @@ class ExamQuestionView extends ConsumerWidget {
       );
     }
 
-    DpTextRole asked(DpTextRole role) =>
+    SgTextRole asked(SgTextRole role) =>
         typingLarge ? role.oneStepSmaller : role;
 
-    Widget speaker(String word, {double size = 48}) => DpSpeakerButton(
+    Widget speaker(String word, {double size = 48}) => SgSpeakerButton(
       size: size,
       state: speakerState(ref, word),
       semanticLabel: l10n.quizPlay,
@@ -152,7 +151,7 @@ class ExamQuestionView extends ConsumerWidget {
           ExamSection.articles => (
             l10n.examRunAskArticle,
             _Centred(<Widget>[
-              Flexible(child: GermanWord(prompt, role: DpTextRole.display)),
+              Flexible(child: GermanWord(prompt, role: SgTextRole.display)),
               const SizedBox(width: 14),
               speaker(prompt),
             ]),
@@ -163,7 +162,7 @@ class ExamQuestionView extends ConsumerWidget {
             l10n.examRunAskListening,
             Column(
               children: <Widget>[
-                DpSpeakerButton(
+                SgSpeakerButton(
                   size: 64,
                   state: speakerState(ref, prompt),
                   semanticLabel: l10n.quizAskListening,
@@ -175,9 +174,9 @@ class ExamQuestionView extends ConsumerWidget {
                         },
                 ),
                 const SizedBox(height: 8),
-                DpText(
+                SgText(
                   l10n.examRunPlaysLeft(examPlays - plays),
-                  role: DpTextRole.caption,
+                  role: SgTextRole.caption,
                   color: tokens.color.textSecondary,
                 ),
               ],
@@ -187,9 +186,9 @@ class ExamQuestionView extends ConsumerWidget {
           ),
           ExamSection.wordForms => (
             l10n.examRunAskForm,
-            DpText(
+            SgText(
               examFormPrompt(l10n, prompt, form),
-              role: asked(DpTextRole.headline),
+              role: asked(SgTextRole.headline),
               weight: 600,
               textAlign: TextAlign.center,
             ),
@@ -198,9 +197,9 @@ class ExamQuestionView extends ConsumerWidget {
           ),
           ExamSection.reverse => (
             l10n.examRunAskGerman,
-            DpText(
+            SgText(
               prompt,
-              role: asked(DpTextRole.headline),
+              role: asked(SgTextRole.headline),
               weight: 600,
               textAlign: TextAlign.center,
             ),
@@ -211,7 +210,7 @@ class ExamQuestionView extends ConsumerWidget {
             l10n.examRunAskMeaning,
             _Centred(<Widget>[
               Flexible(
-                child: GermanWord(prompt, role: asked(DpTextRole.display)),
+                child: GermanWord(prompt, role: asked(SgTextRole.display)),
               ),
               const SizedBox(width: 14),
               speaker(prompt),
@@ -226,7 +225,7 @@ class ExamQuestionView extends ConsumerWidget {
           before: before,
           after: after,
           translation: translation,
-          role: asked(DpTextRole.title),
+          role: asked(SgTextRole.title),
         ),
         null,
         _Field(field: field, onGiven: onGiven),
@@ -238,7 +237,7 @@ class ExamQuestionView extends ConsumerWidget {
             before: before,
             after: after,
             translation: translation,
-            role: asked(DpTextRole.title),
+            role: asked(SgTextRole.title),
           ),
           null,
           _Field(field: field, onGiven: onGiven),
@@ -258,9 +257,9 @@ class ExamQuestionView extends ConsumerWidget {
         // Graded by the rule's index (#84), so the index is recorded.
         RuleRecall(:final question, :final options) => (
           itemKind(l10n, item),
-          DpText(
+          SgText(
             l10n.practiceRecallQuestion(question),
-            role: DpTextRole.title,
+            role: SgTextRole.title,
             textAlign: TextAlign.center,
           ),
           l10n.examRunTapOne,
@@ -298,9 +297,9 @@ class ExamQuestionView extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
-        DpText(
+        SgText(
           caption.toUpperCase(),
-          role: DpTextRole.caption,
+          role: SgTextRole.caption,
           weight: 700,
           letterSpacing: 0.6,
           textAlign: TextAlign.center,
@@ -310,9 +309,9 @@ class ExamQuestionView extends ConsumerWidget {
         prompt,
         if (hint != null) ...<Widget>[
           const SizedBox(height: 12),
-          DpText(
+          SgText(
             hint,
-            role: DpTextRole.caption,
+            role: SgTextRole.caption,
             textAlign: TextAlign.center,
             color: tokens.color.textSecondary,
           ),
@@ -354,7 +353,7 @@ class _Gap extends StatelessWidget {
     required this.before,
     required this.after,
     required this.translation,
-    this.role = DpTextRole.title,
+    this.role = SgTextRole.title,
   });
 
   final String before;
@@ -362,14 +361,14 @@ class _Gap extends StatelessWidget {
   final String translation;
 
   /// The sentence's role: a step smaller while typing past 130 % (#573).
-  final DpTextRole role;
+  final SgTextRole role;
 
   @override
   Widget build(BuildContext context) {
     final tokens = context.tokens;
     return Column(
       children: <Widget>[
-        DpText(
+        SgText(
           <String>[
             if (before.isNotEmpty) before,
             '_____',
@@ -381,9 +380,9 @@ class _Gap extends StatelessWidget {
         ),
         if (translation.isNotEmpty) ...<Widget>[
           const SizedBox(height: 6),
-          DpText(
+          SgText(
             translation,
-            role: DpTextRole.body,
+            role: SgTextRole.body,
             textAlign: TextAlign.center,
             color: tokens.color.textSecondary,
           ),
@@ -417,13 +416,13 @@ class _Words extends StatelessWidget {
           child: Semantics(
             button: true,
             selected: picked.contains(i),
-            child: DpSurface(
-              kind: DpSurfaceKind.bar,
+            child: SgSurface(
+              kind: SgSurfaceKind.bar,
               selected: picked.contains(i),
               radius: context.tokens.shape.button,
               onTap: () => onTap(i),
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-              child: DpText(word, role: DpTextRole.bodyLarge, weight: 600),
+              child: SgText(word, role: SgTextRole.bodyLarge, weight: 600),
             ),
           ),
         ),
@@ -543,12 +542,12 @@ class ExamWriting extends StatelessWidget {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    DpText(
+                    SgText(
                       <String>[
                         l10n.examWritingTask(task.level, topic),
                         l10n.examWritingUse,
                       ].join(' '),
-                      role: DpTextRole.body,
+                      role: SgTextRole.body,
                       weight: 600,
                     ),
                     const SizedBox(height: 8),
@@ -561,14 +560,14 @@ class ExamWriting extends StatelessWidget {
                       ],
                     ),
                     const SizedBox(height: 8),
-                    DpText(
+                    SgText(
                       l10n.examWritingUsed(
                         used.length,
                         task.targets.length,
                         task.minWords,
                         task.level,
                       ),
-                      role: DpTextRole.caption,
+                      role: SgTextRole.caption,
                       color: tokens.color.textSecondary,
                     ),
                   ],
@@ -576,9 +575,9 @@ class ExamWriting extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 14),
-            DpText(
+            SgText(
               l10n.examWritingYourText.toUpperCase(),
-              role: DpTextRole.caption,
+              role: SgTextRole.caption,
               weight: 700,
               letterSpacing: 0.6,
               color: tokens.color.textSecondary,
@@ -606,9 +605,9 @@ class ExamWriting extends StatelessWidget {
                 autocorrect: false,
                 enableSuggestions: false,
                 textAlignVertical: TextAlignVertical.top,
-                style: DpText.styleFor(
+                style: SgText.styleFor(
                   tokens,
-                  DpTextRole.body,
+                  SgTextRole.body,
                 ).copyWith(fontSize: 16, height: 22 / 16),
                 decoration: InputDecoration(
                   filled: true,
@@ -658,20 +657,20 @@ class ExamWritingCount extends StatelessWidget {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              DpText(
+              SgText(
                 l10n.examWritingCount(
                   textWords(value.text).length,
                   task.minWords,
                 ),
-                role: DpTextRole.caption,
+                role: SgTextRole.caption,
                 color: tokens.color.textSecondary,
               ),
               const SizedBox(width: 12),
               if (connectors.isNotEmpty)
                 Expanded(
-                  child: DpText(
+                  child: SgText(
                     l10n.examWritingConnectors(connectors.join(', ')),
-                    role: DpTextRole.caption,
+                    role: SgTextRole.caption,
                     color: tokens.color.correctText,
                     textAlign: TextAlign.end,
                   ),
@@ -706,7 +705,7 @@ class _Target extends StatelessWidget {
       // The artboard's 26, grown with the text size: a fixed 26 cut
       // "Wohnung" at 150 % (#165).
       child: Container(
-        height: DpScript.grow(context, 26),
+        height: SgScript.grow(context, 26),
         padding: const EdgeInsets.symmetric(horizontal: 8),
         decoration: BoxDecoration(
           color: used ? tokens.color.easy : null,
@@ -723,7 +722,7 @@ class _Target extends StatelessWidget {
               Icon(Icons.check, size: 12, color: ink),
               const SizedBox(width: 4),
             ],
-            DpText(word, role: DpTextRole.caption, weight: 600, color: ink),
+            SgText(word, role: SgTextRole.caption, weight: 600, color: ink),
           ],
         ),
       ),
@@ -732,10 +731,10 @@ class _Target extends StatelessWidget {
 }
 
 /// A flat Oat panel on paper, as the task artboards draw their prompt — no
-/// edge, no shadow, which every DpSurface kind has; the frosted card under
+/// edge, no shadow, which every SgSurface kind has; the frosted card under
 /// glass.
-Widget _taskPanel(DpTokens tokens, Widget child) => tokens.isGlass
-    ? DpSurface(radius: 12, padding: _taskPadding, child: child)
+Widget _taskPanel(SgTokens tokens, Widget child) => tokens.isGlass
+    ? SgSurface(radius: 12, padding: _taskPadding, child: child)
     : Container(
         padding: _taskPadding,
         decoration: BoxDecoration(
@@ -978,15 +977,15 @@ class _ExamSpeakingState extends ConsumerState<ExamSpeaking> {
     final task = widget.task;
     final topic = task.category ?? l10n.examWritingTopicFallback;
     final max = task.seconds;
-    final retake = DpButton(
+    final retake = SgButton(
       label: l10n.examSpeakingRetake(_retakesLeft),
-      kind: DpButtonKind.secondary,
+      kind: SgButtonKind.secondary,
       compact: true,
       onPressed: _retakesLeft > 0 ? () => unawaited(_record()) : null,
     );
-    final delete = DpButton(
+    final delete = SgButton(
       label: l10n.examSpeakingDelete,
-      kind: DpButtonKind.secondary,
+      kind: SgButtonKind.secondary,
       colour: tokens.surface.cardStrong,
       onColour: tokens.color.ink,
       compact: true,
@@ -1032,20 +1031,20 @@ class _ExamSpeakingState extends ConsumerState<ExamSpeaking> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                DpText(
+                SgText(
                   l10n.examSpeakingPrompt(
                     l10n.examSpeakingTask(task.level, topic),
                     max % 60 == 0
                         ? l10n.examSpeakingMinutes(max ~/ 60)
                         : l10n.examSpeakingLength(max),
                   ),
-                  role: DpTextRole.body,
+                  role: SgTextRole.body,
                   weight: 600,
                 ),
                 const SizedBox(height: 4),
-                DpText(
+                SgText(
                   l10n.examSpeakingHint,
-                  role: DpTextRole.caption,
+                  role: SgTextRole.caption,
                   color: tokens.color.textSecondary,
                 ),
               ],
@@ -1055,8 +1054,8 @@ class _ExamSpeakingState extends ConsumerState<ExamSpeaking> {
         const SizedBox(height: 12),
         // Flat with a light edge, as the artboard draws both cards.
         node(
-          DpSurface(
-            kind: DpSurfaceKind.bar,
+          SgSurface(
+            kind: SgSurfaceKind.bar,
             radius: 16,
             padding: const EdgeInsets.all(16),
             child: Column(
@@ -1080,9 +1079,9 @@ class _ExamSpeakingState extends ConsumerState<ExamSpeaking> {
                             crossAxisAlignment: CrossAxisAlignment.baseline,
                             textBaseline: TextBaseline.alphabetic,
                             children: <Widget>[
-                              DpText(
+                              SgText(
                                 l10n.digits(_mmss(_seconds)),
-                                role: DpTextRole.title,
+                                role: SgTextRole.title,
                                 weight: 700,
                               ),
                               const SizedBox(width: 4),
@@ -1090,23 +1089,23 @@ class _ExamSpeakingState extends ConsumerState<ExamSpeaking> {
                               // in Bangla at 200 % the two ran 5.9 dp past the
                               // card on iOS (#588).
                               Flexible(
-                                child: DpText(
+                                child: SgText(
                                   l10n.examSpeakingOf(l10n.digits(_mmss(max))),
-                                  role: DpTextRole.label,
+                                  role: SgTextRole.label,
                                   weight: 500,
                                   color: tokens.color.textSecondary,
                                 ),
                               ),
                             ],
                           ),
-                          DpText(
+                          SgText(
                             switch (_mic) {
                               _Mic.idle => l10n.examSpeakingReady,
                               _Mic.recording => l10n.examSpeakingRecording,
                               _Mic.recorded => l10n.examSpeakingRecorded,
                               _Mic.denied => l10n.examSpeakingDenied,
                             },
-                            role: DpTextRole.caption,
+                            role: SgTextRole.caption,
                             color: tokens.color.textSecondary,
                           ),
                         ],
@@ -1123,7 +1122,7 @@ class _ExamSpeakingState extends ConsumerState<ExamSpeaking> {
                   // Widths as their labels need them: "Delete recording" is the
                   // longer, and half the card each wraps it. Past 130 % text
                   // they stack: side by side, "recording" broke (#165).
-                  if (DpScript.large(context)) ...<Widget>[
+                  if (SgScript.large(context)) ...<Widget>[
                     retake,
                     const SizedBox(height: 8),
                     delete,
@@ -1138,9 +1137,9 @@ class _ExamSpeakingState extends ConsumerState<ExamSpeaking> {
                 ],
                 if (_mic == _Mic.denied) ...<Widget>[
                   const SizedBox(height: 12),
-                  DpButton(
+                  SgButton(
                     label: l10n.examSpeakingOpenSettings,
-                    kind: DpButtonKind.secondary,
+                    kind: SgButtonKind.secondary,
                     compact: true,
                     onPressed: () => unawaited(_recorder.openSettings()),
                   ),
@@ -1151,8 +1150,8 @@ class _ExamSpeakingState extends ConsumerState<ExamSpeaking> {
         ),
         const SizedBox(height: 12),
         node(
-          DpSurface(
-            kind: DpSurfaceKind.bar,
+          SgSurface(
+            kind: SgSurfaceKind.bar,
             radius: 16,
             padding: const EdgeInsets.all(14),
             child: Column(
@@ -1160,9 +1159,9 @@ class _ExamSpeakingState extends ConsumerState<ExamSpeaking> {
               children: <Widget>[
                 Padding(
                   padding: const EdgeInsets.only(bottom: 4),
-                  child: DpText(
+                  child: SgText(
                     l10n.examSpeakingRubricTitle.toUpperCase(),
-                    role: DpTextRole.caption,
+                    role: SgTextRole.caption,
                     weight: 700,
                     letterSpacing: 0.6,
                     color: tokens.color.textSecondary,
@@ -1180,9 +1179,9 @@ class _ExamSpeakingState extends ConsumerState<ExamSpeaking> {
                     onTap: _mic == _Mic.recorded ? () => _toggle(i) : null,
                   ),
                 const SizedBox(height: 6),
-                DpText(
+                SgText(
                   l10n.examSpeakingSelfAssessed,
-                  role: DpTextRole.caption,
+                  role: SgTextRole.caption,
                   color: tokens.color.textSecondary,
                 ),
               ],
@@ -1337,7 +1336,7 @@ class ExamRubricTick extends StatelessWidget {
                     : null,
               ),
               const SizedBox(width: 10),
-              Expanded(child: DpText(label, role: DpTextRole.body)),
+              Expanded(child: SgText(label, role: SgTextRole.body)),
             ],
           ),
         ),

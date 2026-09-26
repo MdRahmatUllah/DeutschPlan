@@ -17,9 +17,9 @@ library;
 
 import 'dart:convert';
 
-import 'package:deutschplan/domain/dry_run_plan_store.dart';
-import 'package:deutschplan/domain/fsrs.dart';
-import 'package:deutschplan/domain/plan_stats.dart';
+import 'package:sogda/domain/dry_run_plan_store.dart';
+import 'package:sogda/domain/fsrs.dart';
+import 'package:sogda/domain/plan_stats.dart';
 
 /// A local date, `YYYY-MM-DD` — the same shape every date column uses.
 ///

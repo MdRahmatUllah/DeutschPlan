@@ -16,10 +16,10 @@ import workmanager_apple
   /// The setting can be turned on while the app is running, and toggling it to
   /// see whether an app responds is exactly how someone checks that it is
   /// respected. So the value is pushed on change, not only answered on request.
-  private static let glassChannelName = "deutschplan/glass"
+  private static let glassChannelName = "sogda/glass"
 
   /// `lib/services/device_storage.dart`: M4's free space (#156).
-  private static let storageChannelName = "deutschplan/storage"
+  private static let storageChannelName = "sogda/storage"
 
   private var glassChannel: FlutterMethodChannel?
   private var reduceTransparencyObserver: NSObjectProtocol?

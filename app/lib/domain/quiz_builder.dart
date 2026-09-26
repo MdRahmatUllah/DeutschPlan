@@ -1,9 +1,9 @@
 import 'dart:math';
 
-import 'package:deutschplan/domain/answer_check.dart';
-import 'package:deutschplan/domain/compare_set.dart';
-import 'package:deutschplan/domain/fsrs.dart';
-import 'package:deutschplan/domain/plan_engine.dart' show PlanDate, daysBetween;
+import 'package:sogda/domain/answer_check.dart';
+import 'package:sogda/domain/compare_set.dart';
+import 'package:sogda/domain/fsrs.dart';
+import 'package:sogda/domain/plan_engine.dart' show PlanDate, daysBetween;
 
 /// What a quiz asks (`quiz-engine.md`). The wire names are what `QuizArgs`
 /// and `quiz_attempts.direction` carry.

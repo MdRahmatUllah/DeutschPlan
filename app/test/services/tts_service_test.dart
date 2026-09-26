@@ -1,10 +1,10 @@
 import 'dart:async';
 
-import 'package:deutschplan/data/db/app_database.dart';
-import 'package:deutschplan/data/repositories/setting_keys.dart';
-import 'package:deutschplan/data/repositories/settings_repository.dart';
-import 'package:deutschplan/services/tts/tts_engine.dart';
-import 'package:deutschplan/services/tts/tts_service.dart';
+import 'package:sogda/data/db/app_database.dart';
+import 'package:sogda/data/repositories/setting_keys.dart';
+import 'package:sogda/data/repositories/settings_repository.dart';
+import 'package:sogda/services/tts/tts_engine.dart';
+import 'package:sogda/services/tts/tts_service.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'fake_tts.dart';

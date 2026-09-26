@@ -1,6 +1,6 @@
 # Changelog
 
-DeutschPlan's releases. The version is `pubspec.yaml`'s; each entry lands in the commit that tags it (`docs/05-dev-guide/release.md`, step 7).
+Sogda's releases (named DeutschPlan up to 1.0.1; see ADR 28). The version is `pubspec.yaml`'s; each entry lands in the commit that tags it (`docs/05-dev-guide/release.md`, step 7).
 
 ## [1.0.1] — 2026-09-26
 

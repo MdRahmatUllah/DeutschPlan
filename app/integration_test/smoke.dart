@@ -6,13 +6,13 @@
 // the aurora, the exam clock and the card motion keep scheduling frames, so it
 // would never settle.
 
-import 'package:deutschplan/core/providers/app_providers.dart';
-import 'package:deutschplan/data/repositories/setting_keys.dart';
-import 'package:deutschplan/features/learn/learn_screen.dart' show StepTile;
-import 'package:deutschplan/features/onboarding/onboarding_notifier.dart';
-import 'package:deutschplan/features/today/today_components.dart';
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
-import 'package:deutschplan/main.dart' as app;
+import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/data/repositories/setting_keys.dart';
+import 'package:sogda/features/learn/learn_screen.dart' show StepTile;
+import 'package:sogda/features/onboarding/onboarding_notifier.dart';
+import 'package:sogda/features/today/today_components.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
+import 'package:sogda/main.dart' as app;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
@@ -118,7 +118,7 @@ Future<void> onboard(WidgetTester tester, AppLocalizations l10n) async {
 /// 50–100, which only a test sets.
 Future<void> unlockExams(WidgetTester tester) async {
   final container = ProviderScope.containerOf(
-    tester.element(find.byType(app.DeutschPlanApp)),
+    tester.element(find.byType(app.SogdaApp)),
     listen: false,
   );
   await container

@@ -1,9 +1,9 @@
 import 'dart:ui' show FrameTiming;
 
-import 'package:deutschplan/core/theme/app_theme.dart';
-import 'package:deutschplan/core/theme/dp_surface.dart';
-import 'package:deutschplan/core/theme/dp_tokens.dart';
-import 'package:deutschplan/core/theme/glass_capability.dart';
+import 'package:sogda/core/theme/app_theme.dart';
+import 'package:sogda/core/theme/sg_surface.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/core/theme/glass_capability.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
@@ -112,7 +112,7 @@ void main() {
   });
 
   group('the platform channel', () {
-    const channel = MethodChannel('deutschplan/glass');
+    const channel = MethodChannel('sogda/glass');
     final messenger =
         TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger;
 
@@ -211,7 +211,7 @@ void main() {
       expect(
         notified,
         0,
-        reason: 'a redundant push would rebuild every DpSurface in the tree',
+        reason: 'a redundant push would rebuild every SgSurface in the tree',
       );
     });
 
@@ -226,11 +226,11 @@ void main() {
     });
   });
 
-  group('DpSurface honours the capability', () {
+  group('SgSurface honours the capability', () {
     Future<BoxDecoration> pump(
       WidgetTester tester,
       GlassCapability capability, {
-      DpSurfaceKind kind = DpSurfaceKind.card,
+      SgSurfaceKind kind = SgSurfaceKind.card,
     }) async {
       await tester.pumpWidget(
         GlassCapabilityScope(
@@ -239,7 +239,7 @@ void main() {
             theme: AppTheme.glass(),
             home: Scaffold(
               body: Center(
-                child: DpSurface(kind: kind, child: const Text('Revise')),
+                child: SgSurface(kind: kind, child: const Text('Revise')),
               ),
             ),
           ),
@@ -249,7 +249,7 @@ void main() {
       return tester
               .widgetList<DecoratedBox>(
                 find.descendant(
-                  of: find.byType(DpSurface),
+                  of: find.byType(SgSurface),
                   matching: find.byType(DecoratedBox),
                 ),
               )
@@ -262,7 +262,7 @@ void main() {
       await pump(tester, GlassCapability.always());
       expect(
         find.descendant(
-          of: find.byType(DpSurface),
+          of: find.byType(SgSurface),
           matching: find.byType(BackdropFilter),
         ),
         findsOneWidget,
@@ -277,7 +277,7 @@ void main() {
         await pump(tester, capability());
         expect(
           find.descendant(
-            of: find.byType(DpSurface),
+            of: find.byType(SgSurface),
             matching: find.byType(BackdropFilter),
           ),
           findsNothing,
@@ -293,7 +293,7 @@ void main() {
         // Same hue as the glass fill — it is the same surface, just solid.
         expect(
           (decoration.color!.r * 255).round(),
-          (DpSurfaceTokens.glass.card.r * 255).round(),
+          (SgSurfaceTokens.glass.card.r * 255).round(),
         );
       });
     }
@@ -305,7 +305,7 @@ void main() {
       await pump(tester, capability);
       expect(
         find.descendant(
-          of: find.byType(DpSurface),
+          of: find.byType(SgSurface),
           matching: find.byType(BackdropFilter),
         ),
         findsOneWidget,
@@ -318,7 +318,7 @@ void main() {
 
       expect(
         find.descendant(
-          of: find.byType(DpSurface),
+          of: find.byType(SgSurface),
           matching: find.byType(BackdropFilter),
         ),
         findsNothing,
@@ -334,7 +334,7 @@ void main() {
       final decoration = await pump(
         tester,
         GlassCapability.never(),
-        kind: DpSurfaceKind.tint(DpPalette.light.die),
+        kind: SgSurfaceKind.tint(SgPalette.light.die),
       );
       expect(decoration.color!.a, closeTo(0.22, 0.01));
     });
@@ -348,7 +348,7 @@ void main() {
           child: MaterialApp(
             theme: AppTheme.light(),
             home: const Scaffold(
-              body: Center(child: DpSurface(child: Text('Revise'))),
+              body: Center(child: SgSurface(child: Text('Revise'))),
             ),
           ),
         ),
@@ -359,14 +359,14 @@ void main() {
           tester
                   .widgetList<DecoratedBox>(
                     find.descendant(
-                      of: find.byType(DpSurface),
+                      of: find.byType(SgSurface),
                       matching: find.byType(DecoratedBox),
                     ),
                   )
                   .first
                   .decoration
               as BoxDecoration;
-      expect(decoration.color, DpSurfaceTokens.light.card);
+      expect(decoration.color, SgSurfaceTokens.light.card);
     });
   });
 }

@@ -1,20 +1,20 @@
 import 'dart:convert';
 
-import 'package:deutschplan/core/adaptive/adaptive.dart';
-import 'package:deutschplan/core/components/dp_coach_mark.dart';
-import 'package:deutschplan/core/components/dp_feedback.dart';
-import 'package:deutschplan/core/providers/app_providers.dart';
-import 'package:deutschplan/core/theme/aurora_backdrop.dart';
-import 'package:deutschplan/data/repositories/setting_keys.dart';
-import 'package:deutschplan/core/theme/dp_tokens.dart';
-import 'package:deutschplan/domain/plan_engine.dart' show parsePlanDate;
-import 'package:deutschplan/features/today/today_components.dart';
-import 'package:deutschplan/features/today/today_providers.dart';
-import 'package:deutschplan/features/today/today_view.dart';
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
-import 'package:deutschplan/router/cross_tab.dart';
-import 'package:deutschplan/router/routes.dart';
-import 'package:deutschplan/services/start_report.dart';
+import 'package:sogda/core/adaptive/adaptive.dart';
+import 'package:sogda/core/components/sg_coach_mark.dart';
+import 'package:sogda/core/components/sg_feedback.dart';
+import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/core/theme/aurora_backdrop.dart';
+import 'package:sogda/data/repositories/setting_keys.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/domain/plan_engine.dart' show parsePlanDate;
+import 'package:sogda/features/today/today_components.dart';
+import 'package:sogda/features/today/today_providers.dart';
+import 'package:sogda/features/today/today_view.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
+import 'package:sogda/router/cross_tab.dart';
+import 'package:sogda/router/routes.dart';
+import 'package:sogda/services/start_report.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:material_ui/material_ui.dart';
@@ -95,7 +95,7 @@ class _TodayScreenState extends ConsumerState<TodayScreen> {
       body = Center(
         child: Padding(
           padding: const EdgeInsets.all(16),
-          child: DpErrorPanel(
+          child: SgErrorPanel(
             message: l10n.todayLoadFailed,
             retryLabel: l10n.retry,
             onRetry: () {
@@ -401,7 +401,7 @@ class _Plan extends ConsumerWidget {
         ),
         // FR-S2-03's one-time mark, on the button a new learner starts with:
         // gone once the button is used, and never over a finished day (#396).
-        DpCoachMark(
+        SgCoachMark(
           message: l10n.todayCoachMark,
           visible: ref.watch(coachMarkProvider) && !view.isDone,
           onShown: () => ref.read(coachMarkProvider.notifier).markShown(),

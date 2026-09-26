@@ -1,28 +1,28 @@
 import 'dart:async';
 
-import 'package:deutschplan/core/adaptive/adaptive.dart';
-import 'package:deutschplan/core/components/dp_button.dart';
-import 'package:deutschplan/core/components/dp_chip.dart';
-import 'package:deutschplan/core/components/dp_feedback.dart';
-import 'package:deutschplan/core/components/dp_pill.dart';
-import 'package:deutschplan/core/components/dp_speaker_button.dart';
-import 'package:deutschplan/core/providers/app_providers.dart';
-import 'package:deutschplan/core/theme/aurora_backdrop.dart';
-import 'package:deutschplan/core/theme/dp_surface.dart';
-import 'package:deutschplan/core/theme/dp_tokens.dart';
-import 'package:deutschplan/core/typography/dp_text.dart';
-import 'package:deutschplan/data/repositories/quiz_run_service.dart';
-import 'package:deutschplan/domain/answer_check.dart';
-import 'package:deutschplan/domain/quiz_builder.dart';
-import 'package:deutschplan/domain/quiz_queue.dart';
-import 'package:deutschplan/features/learn/grammar_practice_screen.dart'
+import 'package:sogda/core/adaptive/adaptive.dart';
+import 'package:sogda/core/components/sg_button.dart';
+import 'package:sogda/core/components/sg_chip.dart';
+import 'package:sogda/core/components/sg_feedback.dart';
+import 'package:sogda/core/components/sg_pill.dart';
+import 'package:sogda/core/components/sg_speaker_button.dart';
+import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/core/theme/aurora_backdrop.dart';
+import 'package:sogda/core/theme/sg_surface.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/core/typography/sg_text.dart';
+import 'package:sogda/data/repositories/quiz_run_service.dart';
+import 'package:sogda/domain/answer_check.dart';
+import 'package:sogda/domain/quiz_builder.dart';
+import 'package:sogda/domain/quiz_queue.dart';
+import 'package:sogda/features/learn/grammar_practice_screen.dart'
     show PracticeHeader;
-import 'package:deutschplan/features/learn/step_quiz.dart';
-import 'package:deutschplan/features/quiz/quiz_item_view.dart';
-import 'package:deutschplan/features/quiz/quiz_result_screen.dart';
-import 'package:deutschplan/features/words/speak.dart';
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
-import 'package:deutschplan/router/routes.dart';
+import 'package:sogda/features/learn/step_quiz.dart';
+import 'package:sogda/features/quiz/quiz_item_view.dart';
+import 'package:sogda/features/quiz/quiz_result_screen.dart';
+import 'package:sogda/features/words/speak.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
+import 'package:sogda/router/routes.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 
@@ -232,14 +232,14 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
     // keyboard and the prompt scrolled away. The header's row and the
     // answer's caption give theirs to the prompt, and come back with the
     // keyboard's going.
-    final typing = DpScript.largeTyping(context);
+    final typing = SgScript.largeTyping(context);
 
     final Widget body;
     if (_error != null) {
       body = Center(
         child: Padding(
           padding: const EdgeInsets.all(16),
-          child: DpErrorPanel(
+          child: SgErrorPanel(
             message: l10n.quizLoadFailed,
             retryLabel: l10n.retry,
             onRetry: () {
@@ -255,9 +255,9 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
       body = Center(
         child: Padding(
           padding: const EdgeInsets.all(24),
-          child: DpText(
+          child: SgText(
             l10n.quizEmpty,
-            role: DpTextRole.body,
+            role: SgTextRole.body,
             textAlign: TextAlign.center,
             color: tokens.color.textSecondary,
           ),
@@ -274,11 +274,11 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
       final checkOnKeys =
           typing && typed && typesGerman(item) && verdict == null;
       final onceMore = _queue.reasking
-          ? DpChip(label: l10n.quizOnceMore, kind: DpChipKind.status)
+          ? SgChip(label: l10n.quizOnceMore, kind: SgChipKind.status)
           : null;
-      final ask = DpChip(label: askName(l10n, item), kind: DpChipKind.status);
+      final ask = SgChip(label: askName(l10n, item), kind: SgChipKind.status);
       final timer = widget.args.timer && verdict == null
-          ? DpPill(
+          ? SgPill(
               label: l10n.quizSecondsLeft(_left),
               fill: _left <= 5 ? tokens.color.again : tokens.surface.muted,
             )
@@ -305,7 +305,7 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
               children: <Widget>[
                 // Past 130 % text they wrap: in one row the chips and the
                 // timer ran 26 dp off the screen at 200 % (#165).
-                if (DpScript.large(context))
+                if (SgScript.large(context))
                   Wrap(
                     spacing: 8,
                     runSpacing: 8,
@@ -356,7 +356,7 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
               padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
               child: ListenableBuilder(
                 listenable: _field,
-                builder: (context, _) => DpButton(
+                builder: (context, _) => SgButton(
                   label: verdict == null ? l10n.quizCheck : l10n.practiceNext,
                   onPressed: verdict != null
                       ? () => unawaited(_next())
@@ -368,15 +368,15 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
             ),
           // The umlaut row stays above the keyboard on a German field.
           if (typesGerman(item))
-            DpSurface(
-              kind: DpSurfaceKind.bar,
+            SgSurface(
+              kind: SgSurfaceKind.bar,
               radius: 0,
               padding: const EdgeInsets.fromLTRB(16, 10, 16, 16),
               child: !checkOnKeys
-                  ? DpUmlautBar(controller: _field, enabled: verdict == null)
+                  ? SgUmlautBar(controller: _field, enabled: verdict == null)
                   : Row(
                       children: <Widget>[
-                        Expanded(child: DpUmlautBar(controller: _field)),
+                        Expanded(child: SgUmlautBar(controller: _field)),
                         const SizedBox(width: 8),
                         ListenableBuilder(
                           listenable: _field,
@@ -509,8 +509,8 @@ class _Feedback extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Expanded(
-          child: DpVerdictRow(
-            verdict: DpVerdict.values.byName(verdict.name),
+          child: SgVerdictRow(
+            verdict: SgVerdict.values.byName(verdict.name),
             message: message,
             emphasis: emphasis,
             // German only when it is: an English or Bangla answer in its
@@ -538,7 +538,7 @@ class _Feedback extends ConsumerWidget {
                   child: SizedBox.square(
                     dimension: 48,
                     child: Center(
-                      child: DpSpeakerButton(
+                      child: SgSpeakerButton(
                         size: 32,
                         state: speakerState(ref, heard),
                         semanticLabel: l10n.quizPlay,
@@ -603,7 +603,7 @@ class _CheckKey extends StatelessWidget {
                       ),
               ),
               child: SizedBox.square(
-                dimension: DpButton.minimumTapTarget,
+                dimension: SgButton.minimumTapTarget,
                 child: Icon(
                   Icons.check,
                   color: enabled

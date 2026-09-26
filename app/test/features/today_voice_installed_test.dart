@@ -2,11 +2,11 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:crypto/crypto.dart';
-import 'package:deutschplan/core/providers/app_providers.dart';
-import 'package:deutschplan/data/db/app_database.dart';
-import 'package:deutschplan/data/repositories/model_repository.dart';
-import 'package:deutschplan/data/repositories/settings_repository.dart';
-import 'package:deutschplan/features/today/today_providers.dart';
+import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/data/db/app_database.dart';
+import 'package:sogda/data/repositories/model_repository.dart';
+import 'package:sogda/data/repositories/settings_repository.dart';
+import 'package:sogda/features/today/today_providers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
@@ -38,7 +38,7 @@ void main() {
   );
 
   setUp(() async {
-    support = Directory.systemTemp.createTempSync('deutschplan_voice');
+    support = Directory.systemTemp.createTempSync('sogda_voice');
     db = AppDatabase.memory();
     settings = SettingsRepository(db);
     await settings.load();

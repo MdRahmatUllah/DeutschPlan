@@ -1,17 +1,17 @@
 import 'dart:async';
 
-import 'package:deutschplan/core/adaptive/adaptive.dart';
-import 'package:deutschplan/core/components/dp_button.dart';
-import 'package:deutschplan/core/components/dp_chip.dart';
-import 'package:deutschplan/core/providers/app_providers.dart';
-import 'package:deutschplan/core/theme/dp_surface.dart';
-import 'package:deutschplan/core/theme/dp_tokens.dart';
-import 'package:deutschplan/core/typography/dp_text.dart';
-import 'package:deutschplan/data/repositories/setting_keys.dart';
-import 'package:deutschplan/data/repositories/word_repository.dart';
-import 'package:deutschplan/features/words/word_row.dart';
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
-import 'package:deutschplan/router/routes.dart';
+import 'package:sogda/core/adaptive/adaptive.dart';
+import 'package:sogda/core/components/sg_button.dart';
+import 'package:sogda/core/components/sg_chip.dart';
+import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/core/theme/sg_surface.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/core/typography/sg_text.dart';
+import 'package:sogda/data/repositories/setting_keys.dart';
+import 'package:sogda/data/repositories/word_repository.dart';
+import 'package:sogda/features/words/word_row.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
+import 'package:sogda/router/routes.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -169,18 +169,18 @@ class _StepWordsTabState extends ConsumerState<StepWordsTab> {
                 (WordFilter.learning, l10n.wordStatusLearning),
                 (WordFilter.done, l10n.wordStatusDone),
               ]) ...<Widget>[
-                DpChip(
+                SgChip(
                   label: label,
-                  kind: DpChipKind.filter,
+                  kind: SgChipKind.filter,
                   selected: _status == filter,
                   onTap: () => setState(() => _status = filter),
                 ),
                 const SizedBox(width: 8),
               ],
               for (final category in categories) ...<Widget>[
-                DpChip(
+                SgChip(
                   label: category.name,
-                  kind: DpChipKind.filter,
+                  kind: SgChipKind.filter,
                   selected: _category == category.id,
                   // A second tap lets the category go again.
                   onTap: () => setState(
@@ -199,9 +199,9 @@ class _StepWordsTabState extends ConsumerState<StepWordsTab> {
               ? const SizedBox.expand()
               : shown.isEmpty
               ? Center(
-                  child: DpText(
+                  child: SgText(
                     l10n.stepWordsNone,
-                    role: DpTextRole.body,
+                    role: SgTextRole.body,
                     color: tokens.color.textSecondary,
                   ),
                 )
@@ -216,7 +216,7 @@ class _StepWordsTabState extends ConsumerState<StepWordsTab> {
                     // Its panel ends at the last row (#282): the extent is
                     // the prototype's times the count, so nothing more is built.
                     shrinkWrap: true,
-                    prototypeItem: shown.isEmpty || DpScript.large(context)
+                    prototypeItem: shown.isEmpty || SgScript.large(context)
                         ? null
                         : WordRow(
                             word: shown.first.word,
@@ -259,14 +259,14 @@ class StartBanner extends StatelessWidget {
   Widget build(BuildContext context) {
     final tokens = context.tokens;
     final l10n = AppLocalizations.of(context);
-    return DpSurface(
-      kind: DpSurfaceKind.tint(tokens.color.accent),
+    return SgSurface(
+      kind: SgSurfaceKind.tint(tokens.color.accent),
       padding: const EdgeInsets.fromLTRB(14, 8, 8, 8),
       child: Row(
         children: <Widget>[
-          Expanded(child: DpText(message, role: DpTextRole.body, weight: 600)),
+          Expanded(child: SgText(message, role: SgTextRole.body, weight: 600)),
           const SizedBox(width: 12),
-          DpButton(
+          SgButton(
             label: l10n.stepStart,
             compact: true,
             expand: false,

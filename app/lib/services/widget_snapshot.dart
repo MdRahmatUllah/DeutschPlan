@@ -2,16 +2,15 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io' show Platform;
 
-import 'package:deutschplan/core/providers/app_providers.dart';
-import 'package:deutschplan/data/repositories/setting_keys.dart';
-import 'package:deutschplan/data/repositories/word_repository.dart'
-    show WordStatus;
-import 'package:deutschplan/domain/plan_engine.dart' show addDays, planDate;
-import 'package:deutschplan/domain/word_of_day.dart';
-import 'package:deutschplan/features/today/today_providers.dart';
-import 'package:deutschplan/features/today/today_view.dart';
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
-import 'package:deutschplan/l10n/ui_language_locale.dart';
+import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/data/repositories/setting_keys.dart';
+import 'package:sogda/data/repositories/word_repository.dart' show WordStatus;
+import 'package:sogda/domain/plan_engine.dart' show addDays, planDate;
+import 'package:sogda/domain/word_of_day.dart';
+import 'package:sogda/features/today/today_providers.dart';
+import 'package:sogda/features/today/today_view.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
+import 'package:sogda/l10n/ui_language_locale.dart';
 import 'package:flutter/foundation.dart' show debugPrint;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:home_widget/home_widget.dart';
@@ -152,11 +151,11 @@ class HomeWidgetStore implements WidgetStore {
   static const String key = 'widget_snapshot';
 
   /// release.md's App Group, shared with the widget extension.
-  static const String appGroup = 'group.app.deutschplan';
+  static const String appGroup = 'group.de.sogda.app';
 
   /// X1's Glance receiver (#160), which the redraw is sent to.
   static const String androidReceiver =
-      'io.github.rahmatullah.deutschplan.widget.DeutschPlanWidgetReceiver';
+      'de.sogda.app.widget.SogdaWidgetReceiver';
 
   // ponytail: the redraw is Android's; #161 adds WidgetKit's `iOSName`.
   @override

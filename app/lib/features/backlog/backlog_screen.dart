@@ -1,22 +1,22 @@
 import 'dart:async';
 
-import 'package:deutschplan/core/adaptive/adaptive.dart';
-import 'package:deutschplan/core/components/dp_button.dart';
-import 'package:deutschplan/core/components/dp_feedback.dart';
-import 'package:deutschplan/core/providers/app_providers.dart';
-import 'package:deutschplan/core/theme/dp_surface.dart';
-import 'package:deutschplan/core/theme/dp_tokens.dart';
-import 'package:deutschplan/core/typography/dp_text.dart';
-import 'package:deutschplan/data/repositories/plan_repository.dart';
-import 'package:deutschplan/data/repositories/setting_keys.dart';
-import 'package:deutschplan/data/repositories/word_repository.dart';
-import 'package:deutschplan/domain/plan_engine.dart' show parsePlanDate;
-import 'package:deutschplan/features/study/study_card.dart';
-import 'package:deutschplan/features/words/word_row.dart';
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
+import 'package:sogda/core/adaptive/adaptive.dart';
+import 'package:sogda/core/components/sg_button.dart';
+import 'package:sogda/core/components/sg_feedback.dart';
+import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/core/theme/sg_surface.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/core/typography/sg_text.dart';
+import 'package:sogda/data/repositories/plan_repository.dart';
+import 'package:sogda/data/repositories/setting_keys.dart';
+import 'package:sogda/data/repositories/word_repository.dart';
+import 'package:sogda/domain/plan_engine.dart' show parsePlanDate;
+import 'package:sogda/features/study/study_card.dart';
+import 'package:sogda/features/words/word_row.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:flutter/semantics.dart' show CustomSemanticsAction;
-import 'package:deutschplan/router/cross_tab.dart';
-import 'package:deutschplan/router/routes.dart';
+import 'package:sogda/router/cross_tab.dart';
+import 'package:sogda/router/routes.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:material_ui/material_ui.dart';
@@ -215,7 +215,7 @@ class _Backlog extends ConsumerWidget {
                       onPressed: () => Navigator.of(context).maybePop(),
                     ),
                     const SizedBox(width: 4),
-                    DpText(l10n.backlogTitle, role: DpTextRole.title),
+                    SgText(l10n.backlogTitle, role: SgTextRole.title),
                   ],
                 ),
               ),
@@ -224,18 +224,18 @@ class _Backlog extends ConsumerWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    DpText(
+                    SgText(
                       // Empty, the headline is the screen's name alone.
                       rows.isEmpty
                           ? l10n.backlogTitle
                           : l10n.backlogCount(rows.length),
-                      role: DpTextRole.headline,
+                      role: SgTextRole.headline,
                     ),
                     if (intro != null) ...<Widget>[
                       const SizedBox(height: 4),
-                      DpText(
+                      SgText(
                         intro,
-                        role: DpTextRole.label,
+                        role: SgTextRole.label,
                         weight: 400,
                         color: tokens.color.textSecondary,
                       ),
@@ -268,13 +268,13 @@ class _Backlog extends ConsumerWidget {
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
             // The artboard's outlined panel: no hard shadow on this screen.
-            child: DpSurface(
-              kind: DpSurfaceKind.bar,
+            child: SgSurface(
+              kind: SgSurfaceKind.bar,
               padding: const EdgeInsets.all(16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
-                  DpButton(
+                  SgButton(
                     label: l10n.backlogStudyAll(_open(rows).length),
                     onPressed: _study(context, rows),
                   ),
@@ -292,12 +292,12 @@ class _Backlog extends ConsumerWidget {
               // 200 % the line wraps, and a grown 40 cut it (#580).
               child: ConstrainedBox(
                 constraints: BoxConstraints(
-                  minHeight: DpScript.grow(context, 40),
+                  minHeight: SgScript.grow(context, 40),
                 ),
                 child: Row(
                   children: <Widget>[
                     Expanded(
-                      child: DpText(
+                      child: SgText(
                         l10n
                             .backlogDay(
                               DateFormat(
@@ -307,7 +307,7 @@ class _Backlog extends ConsumerWidget {
                               words.length,
                             )
                             .toUpperCase(),
-                        role: DpTextRole.caption,
+                        role: SgTextRole.caption,
                         weight: 700,
                         letterSpacing: 0.6,
                         color: tokens.color.textSecondary,
@@ -316,10 +316,10 @@ class _Backlog extends ConsumerWidget {
                     // Held to the row's 40, as before: only the day's line,
                     // wrapping in Bangla at 200 %, makes the row taller.
                     SizedBox(
-                      height: DpScript.grow(context, 40),
-                      child: DpButton(
+                      height: SgScript.grow(context, 40),
+                      child: SgButton(
                         label: l10n.backlogStudyDay,
-                        kind: DpButtonKind.text,
+                        kind: SgButtonKind.text,
                         expand: false,
                         onPressed: _study(context, words),
                       ),
@@ -376,20 +376,20 @@ class BacklogEmpty extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 16),
-          DpText(
+          SgText(
             l10n.backlogEmptyTitle,
-            role: DpTextRole.title,
+            role: SgTextRole.title,
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 16),
-          DpText(
+          SgText(
             l10n.backlogEmptyBody,
-            role: DpTextRole.caption,
+            role: SgTextRole.caption,
             color: tokens.color.textSecondary,
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 24),
-          DpButton(
+          SgButton(
             label: l10n.backlogBackToToday,
             // The tab's root, not whatever opened T4.
             onPressed: () => context.jumpToTab(const TodayRoute()),
@@ -469,11 +469,11 @@ class _PauseRow extends ConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              DpText(l10n.backlogPause, role: DpTextRole.body, weight: 500),
+              SgText(l10n.backlogPause, role: SgTextRole.body, weight: 500),
               const SizedBox(height: 1),
-              DpText(
+              SgText(
                 l10n.backlogPauseNote,
-                role: DpTextRole.caption,
+                role: SgTextRole.caption,
                 color: tokens.color.textSecondary,
               ),
             ],
@@ -515,9 +515,9 @@ class BacklogRow extends ConsumerWidget {
               (BacklogAction.suspended, l10n.backlogSuspend),
               (BacklogAction.removed, l10n.backlogRemove),
             ])
-              DpButton(
+              SgButton(
                 label: label,
-                kind: DpButtonKind.text,
+                kind: SgButtonKind.text,
                 onPressed: () => Navigator.of(sheet).pop(action),
               ),
           ],
@@ -538,7 +538,7 @@ class BacklogRow extends ConsumerWidget {
     final name = spokenForm(row.word.word);
     await notifier.act(action, row);
     if (!context.mounted) return;
-    DpUndo.show(
+    SgUndo.show(
       context,
       message: switch (action) {
         BacklogAction.known => l10n.studyKnown(name),
@@ -639,9 +639,9 @@ class _TrailingActionsState extends State<_TrailingActions> {
                         1 => tokens.color.accent,
                         _ => tokens.surface.muted,
                       },
-                      child: DpText(
+                      child: SgText(
                         label,
-                        role: DpTextRole.label,
+                        role: SgTextRole.label,
                         textAlign: TextAlign.center,
                         color: tokens.color.onAccent,
                       ),

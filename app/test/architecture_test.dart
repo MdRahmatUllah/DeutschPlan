@@ -134,13 +134,13 @@ void main() {
       'showTimePicker(': 'Adaptive.showTimePickerFor',
       // Buttons and chips carry the Paper & Ink treatment — the 2 px ink
       // border and the hard offset shadow — which no Material default has.
-      'FilledButton': 'DpButton',
-      'ElevatedButton': 'DpButton',
-      'OutlinedButton': 'DpButton(kind: secondary)',
-      'TextButton(': 'DpButton(kind: text)',
-      'Chip(': 'DpChip',
-      'FilterChip(': 'DpChip(kind: filter)',
-      'ActionChip(': 'DpChip',
+      'FilledButton': 'SgButton',
+      'ElevatedButton': 'SgButton',
+      'OutlinedButton': 'SgButton(kind: secondary)',
+      'TextButton(': 'SgButton(kind: text)',
+      'Chip(': 'SgChip',
+      'FilterChip(': 'SgChip(kind: filter)',
+      'ActionChip(': 'SgChip',
       'CupertinoDatePicker(': 'Adaptive.showTimePickerFor',
     };
 
@@ -157,7 +157,7 @@ void main() {
         if (line.trimLeft().startsWith('//')) continue;
         if (line.contains('ponytail: allow-chrome')) continue;
         for (final entry in chrome.entries) {
-          // , or `DpChip(` matches `Chip(` and `AdaptiveSwitch(` matches
+          // , or `SgChip(` matches `Chip(` and `AdaptiveSwitch(` matches
           // and `AdaptiveSwitch(` matches `Switch(`. Built from a RAW string —
           // '\b' in an ordinary Dart string is the backspace character, and
           // the pattern then silently matches nothing at all.
@@ -532,7 +532,7 @@ void main() {
         final hides =
             call.args.contains('excludeSemantics: true') ||
             call.child.trimLeft().startsWith('ExcludeSemantics(');
-        // A gesture by name, or any handler: `DpSurface(onTap: …)` is as
+        // A gesture by name, or any handler: `SgSurface(onTap: …)` is as
         // dead behind an excluded subtree as a GestureDetector is.
         final gesture = RegExp(
           r'\b(?:GestureDetector|InkWell)\(|onTap:|onPressed:|onLongPress:',
@@ -563,7 +563,7 @@ void main() {
     // contrast_test.dart. `ink.withValues(alpha: 0.9)` is a colour that test
     // never meets — M1's subtitle was 4.49:1 that way. Use a token as it is.
     final text = RegExp(
-      r'(?<![A-Za-z])(?:DpText|DpOneLine|DpHeadword|TextStyle)\(',
+      r'(?<![A-Za-z])(?:SgText|SgOneLine|SgHeadword|TextStyle)\(',
     );
     final faded = RegExp(
       r'\bcolor:\s*[^,]*\.(?:withValues\(\s*alpha|withOpacity\(|withAlpha\()',

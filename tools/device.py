@@ -37,7 +37,7 @@ import tempfile
 import time
 from pathlib import Path
 
-PACKAGE = "io.github.rahmatullah.deutschplan"
+PACKAGE = "de.sogda.app"
 
 # The owner, 2026-09-24: one emulator for SQA, one for the developers.
 # ANDROID_SERIAL or --serial picks another, but never SQA_SERIAL for a

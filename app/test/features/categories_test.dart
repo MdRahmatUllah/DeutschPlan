@@ -1,10 +1,10 @@
-import 'package:deutschplan/core/components/dp_progress_ring.dart';
-import 'package:deutschplan/core/theme/app_theme.dart';
-import 'package:deutschplan/core/theme/dp_tokens.dart';
-import 'package:deutschplan/data/repositories/word_repository.dart';
-import 'package:deutschplan/features/learn/categories_screen.dart';
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
-import 'package:deutschplan/main.dart'
+import 'package:sogda/core/components/sg_progress_ring.dart';
+import 'package:sogda/core/theme/app_theme.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/data/repositories/word_repository.dart';
+import 'package:sogda/features/learn/categories_screen.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
+import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
@@ -71,10 +71,10 @@ void main() {
     expect(find.text(l10n.categoriesLine), findsOneWidget);
     expect(find.text('Wohnen & Haushalt'), findsOneWidget);
     expect(find.text(l10n.categoriesWords(412)), findsOneWidget);
-    final bar = tester.widget<DpSegmentedBar>(
+    final bar = tester.widget<SgSegmentedBar>(
       find.descendant(
         of: find.widgetWithText(CategoryCard, 'Wohnen & Haushalt'),
-        matching: find.byType(DpSegmentedBar),
+        matching: find.byType(SgSegmentedBar),
       ),
     );
     expect((bar.done, bar.learning, bar.todo), (150, 40, 222));
@@ -146,7 +146,7 @@ void main() {
   });
 
   test('the palette is deterministic and wraps after eight', () {
-    final tokens = DpTokens.light();
+    final tokens = SgTokens.light();
     expect(categoryColours(tokens, 0), (
       tokens.color.primary,
       tokens.color.onPrimary,

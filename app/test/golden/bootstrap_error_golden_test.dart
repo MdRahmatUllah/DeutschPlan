@@ -1,6 +1,6 @@
-import 'package:deutschplan/bootstrap.dart';
-import 'package:deutschplan/data/db/app_database.dart';
-import 'package:deutschplan/features/bootstrap/bootstrap_error_screen.dart';
+import 'package:sogda/bootstrap.dart';
+import 'package:sogda/data/db/app_database.dart';
+import 'package:sogda/features/bootstrap/bootstrap_error_screen.dart';
 
 import 'golden_harness.dart';
 

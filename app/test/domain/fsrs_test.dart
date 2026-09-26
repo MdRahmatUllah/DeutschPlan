@@ -1,7 +1,7 @@
 @TestOn('vm')
 library;
 
-import 'package:deutschplan/domain/fsrs.dart';
+import 'package:sogda/domain/fsrs.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 /// FSRS-4.5 — #74.

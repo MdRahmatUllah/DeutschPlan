@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:math' as math;
 
-import 'package:deutschplan/domain/plan_engine.dart';
+import 'package:sogda/domain/plan_engine.dart';
 import 'package:flutter/foundation.dart' show immutable;
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';

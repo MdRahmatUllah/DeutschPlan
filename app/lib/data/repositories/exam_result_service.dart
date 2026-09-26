@@ -1,18 +1,17 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:deutschplan/data/db/app_database.dart';
-import 'package:deutschplan/data/repositories/exam_repository.dart';
-import 'package:deutschplan/data/repositories/plan_repository.dart'
-    show ReviewSource;
-import 'package:deutschplan/data/repositories/rating_service.dart';
-import 'package:deutschplan/data/repositories/setting_keys.dart';
-import 'package:deutschplan/data/repositories/settings_repository.dart';
-import 'package:deutschplan/data/repositories/word_repository.dart';
-import 'package:deutschplan/domain/exam_generator.dart';
-import 'package:deutschplan/domain/exam_grading.dart';
-import 'package:deutschplan/domain/fsrs.dart' show Rating;
-import 'package:deutschplan/domain/plan_engine.dart';
+import 'package:sogda/data/db/app_database.dart';
+import 'package:sogda/data/repositories/exam_repository.dart';
+import 'package:sogda/data/repositories/plan_repository.dart' show ReviewSource;
+import 'package:sogda/data/repositories/rating_service.dart';
+import 'package:sogda/data/repositories/setting_keys.dart';
+import 'package:sogda/data/repositories/settings_repository.dart';
+import 'package:sogda/data/repositories/word_repository.dart';
+import 'package:sogda/domain/exam_generator.dart';
+import 'package:sogda/domain/exam_grading.dart';
+import 'package:sogda/domain/fsrs.dart' show Rating;
+import 'package:sogda/domain/plan_engine.dart';
 
 /// One item of a finished paper, as L13 shows it.
 typedef ExamResultRow = ({

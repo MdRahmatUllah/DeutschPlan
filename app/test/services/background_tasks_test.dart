@@ -1,15 +1,15 @@
 import 'dart:io';
 
-import 'package:deutschplan/core/providers/app_providers.dart';
-import 'package:deutschplan/data/db/app_database.dart';
-import 'package:deutschplan/data/db/content_dao.dart';
-import 'package:deutschplan/data/repositories/setting_keys.dart';
-import 'package:deutschplan/data/repositories/settings_repository.dart';
-import 'package:deutschplan/features/today/today_providers.dart';
-import 'package:deutschplan/features/today/today_view.dart';
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
-import 'package:deutschplan/services/background_tasks.dart';
-import 'package:deutschplan/services/background_work.dart';
+import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/data/db/app_database.dart';
+import 'package:sogda/data/db/content_dao.dart';
+import 'package:sogda/data/repositories/setting_keys.dart';
+import 'package:sogda/data/repositories/settings_repository.dart';
+import 'package:sogda/features/today/today_providers.dart';
+import 'package:sogda/features/today/today_view.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
+import 'package:sogda/services/background_tasks.dart';
+import 'package:sogda/services/background_work.dart';
 import 'package:drift/drift.dart' show DatabaseConnection;
 import 'package:drift/native.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -85,7 +85,7 @@ void main() {
     late File file;
 
     setUp(() async {
-      directory = Directory.systemTemp.createTempSync('deutschplan_schema');
+      directory = Directory.systemTemp.createTempSync('sogda_schema');
       file = File('${directory.path}/user.sqlite');
       final db = AppDatabase(DatabaseConnection(NativeDatabase(file)));
       await db.customSelect('SELECT 1').get();
@@ -162,7 +162,7 @@ void main() {
     );
 
     setUp(() async {
-      directory = Directory.systemTemp.createTempSync('deutschplan_tasks');
+      directory = Directory.systemTemp.createTempSync('sogda_tasks');
       final content = ContentFixture.write('${directory.path}/content.db').file;
       db = AppDatabase(DatabaseConnection(NativeDatabase.memory()));
       await db.customStatement(

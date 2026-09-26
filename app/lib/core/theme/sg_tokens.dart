@@ -15,11 +15,11 @@ import 'package:material_ui/material_ui.dart';
 ///
 /// Light (Paper & Ink) is the reference mode the artboards were drawn in; every
 /// value here matches `Foundations.html` in the android-light canvas.
-enum DpMode { light, dark, glass }
+enum SgMode { light, dark, glass }
 
 @immutable
-class DpTokens extends ThemeExtension<DpTokens> {
-  const DpTokens({
+class SgTokens extends ThemeExtension<SgTokens> {
+  const SgTokens({
     required this.mode,
     required this.color,
     required this.surface,
@@ -31,72 +31,72 @@ class DpTokens extends ThemeExtension<DpTokens> {
 
   /// Paper & Ink. Warm cream paper, near-black ink, saturated solid fills with
   /// ink text, hard 3 px offset shadows, no gradients.
-  factory DpTokens.light() => const DpTokens(
-    mode: DpMode.light,
-    color: DpPalette.light,
-    surface: DpSurfaceTokens.light,
-    typography: DpTypeTokens.defaults,
-    shape: DpShapeTokens.defaults,
-    spacing: DpSpacingTokens.defaults,
-    motion: DpMotionTokens.defaults,
+  factory SgTokens.light() => const SgTokens(
+    mode: SgMode.light,
+    color: SgPalette.light,
+    surface: SgSurfaceTokens.light,
+    typography: SgTypeTokens.defaults,
+    shape: SgShapeTokens.defaults,
+    spacing: SgSpacingTokens.defaults,
+    motion: SgMotionTokens.defaults,
   );
 
   /// Night Ink. Deep violet-black paper, light ink, the same fills lifted one
   /// step; the hard offset shadow becomes white at 30 %.
-  factory DpTokens.dark() => const DpTokens(
-    mode: DpMode.dark,
-    color: DpPalette.dark,
-    surface: DpSurfaceTokens.dark,
-    typography: DpTypeTokens.defaults,
-    shape: DpShapeTokens.defaults,
-    spacing: DpSpacingTokens.defaults,
-    motion: DpMotionTokens.defaults,
+  factory SgTokens.dark() => const SgTokens(
+    mode: SgMode.dark,
+    color: SgPalette.dark,
+    surface: SgSurfaceTokens.dark,
+    typography: SgTypeTokens.defaults,
+    shape: SgShapeTokens.defaults,
+    spacing: SgSpacingTokens.defaults,
+    motion: SgMotionTokens.defaults,
   );
 
   /// Aurora Glass. Buttons stay solid so calls to action never blur; the
   /// palette is the Light one, and only the surfaces change.
-  factory DpTokens.glass() => const DpTokens(
-    mode: DpMode.glass,
-    color: DpPalette.glass,
-    surface: DpSurfaceTokens.glass,
-    typography: DpTypeTokens.defaults,
-    shape: DpShapeTokens.glass,
-    spacing: DpSpacingTokens.defaults,
-    motion: DpMotionTokens.defaults,
+  factory SgTokens.glass() => const SgTokens(
+    mode: SgMode.glass,
+    color: SgPalette.glass,
+    surface: SgSurfaceTokens.glass,
+    typography: SgTypeTokens.defaults,
+    shape: SgShapeTokens.glass,
+    spacing: SgSpacingTokens.defaults,
+    motion: SgMotionTokens.defaults,
   );
 
   /// The glass dark variant, chosen automatically when the system is dark.
-  factory DpTokens.glassDark() => const DpTokens(
-    mode: DpMode.glass,
-    color: DpPalette.glassDark,
-    surface: DpSurfaceTokens.glassDark,
-    typography: DpTypeTokens.defaults,
-    shape: DpShapeTokens.glass,
-    spacing: DpSpacingTokens.defaults,
-    motion: DpMotionTokens.defaults,
+  factory SgTokens.glassDark() => const SgTokens(
+    mode: SgMode.glass,
+    color: SgPalette.glassDark,
+    surface: SgSurfaceTokens.glassDark,
+    typography: SgTypeTokens.defaults,
+    shape: SgShapeTokens.glass,
+    spacing: SgSpacingTokens.defaults,
+    motion: SgMotionTokens.defaults,
   );
 
   /// True when this mode renders frosted translucent surfaces.
-  bool get isGlass => mode == DpMode.glass;
+  bool get isGlass => mode == SgMode.glass;
 
-  final DpMode mode;
-  final DpPalette color;
-  final DpSurfaceTokens surface;
-  final DpTypeTokens typography;
-  final DpShapeTokens shape;
-  final DpSpacingTokens spacing;
-  final DpMotionTokens motion;
+  final SgMode mode;
+  final SgPalette color;
+  final SgSurfaceTokens surface;
+  final SgTypeTokens typography;
+  final SgShapeTokens shape;
+  final SgSpacingTokens spacing;
+  final SgMotionTokens motion;
 
   @override
-  DpTokens copyWith({
-    DpMode? mode,
-    DpPalette? color,
-    DpSurfaceTokens? surface,
-    DpTypeTokens? typography,
-    DpShapeTokens? shape,
-    DpSpacingTokens? spacing,
-    DpMotionTokens? motion,
-  }) => DpTokens(
+  SgTokens copyWith({
+    SgMode? mode,
+    SgPalette? color,
+    SgSurfaceTokens? surface,
+    SgTypeTokens? typography,
+    SgShapeTokens? shape,
+    SgSpacingTokens? spacing,
+    SgMotionTokens? motion,
+  }) => SgTokens(
     mode: mode ?? this.mode,
     color: color ?? this.color,
     surface: surface ?? this.surface,
@@ -110,14 +110,14 @@ class DpTokens extends ThemeExtension<DpTokens> {
   /// identical across modes, so a theme change animates colour and nothing else.
   ///
   /// `mode` flips at the midpoint rather than interpolating, and that is
-  /// deliberate: it is an enum, and a widget that branches on it — `DpSurface`
+  /// deliberate: it is an enum, and a widget that branches on it — `SgSurface`
   /// (#33), `GlassPanel` (#34) — must pick one treatment or the other. Expect a
   /// single switch halfway through a theme animation, not a gradual blend; it
   /// is not a bug in those widgets.
   @override
-  DpTokens lerp(covariant DpTokens? other, double t) {
+  SgTokens lerp(covariant SgTokens? other, double t) {
     if (other == null) return this;
-    return DpTokens(
+    return SgTokens(
       mode: t < 0.5 ? mode : other.mode,
       color: color.lerp(other.color, t),
       surface: surface.lerp(other.surface, t),
@@ -131,8 +131,8 @@ class DpTokens extends ThemeExtension<DpTokens> {
 
 /// Brand, gender, rating and verdict colours.
 @immutable
-class DpPalette {
-  const DpPalette({
+class SgPalette {
+  const SgPalette({
     required this.primary,
     required this.onPrimary,
     required this.accent,
@@ -161,7 +161,7 @@ class DpPalette {
   });
 
   /// Every value is read off the android-light `Foundations.html`.
-  static const DpPalette light = DpPalette(
+  static const SgPalette light = SgPalette(
     primary: Color(0xFF00C2B2), // Lagoon
     onPrimary: Color(0xFF15121F),
     accent: Color(0xFFFFC61A), // Sun
@@ -195,7 +195,7 @@ class DpPalette {
   /// gender colours so they stay legible on cream paper, whereas on Night Ink
   /// the lifted colour is already the readable one, and the artboard uses a
   /// single value for each gender.
-  static const DpPalette dark = DpPalette(
+  static const SgPalette dark = SgPalette(
     primary: Color(0xFF2EE6D6), // Lagoon, lifted
     onPrimary: Color(0xFF15121F), // dark ink on a bright fill
     accent: Color(0xFFFFD54A), // Sun, lifted
@@ -229,7 +229,7 @@ class DpPalette {
   /// the secondary text on the bare backdrop too. theming.md: "Glass text is
   /// checked against the brightest blob it can overlay"; the fills and the
   /// gender colours are the light palette's.
-  static const DpPalette glass = DpPalette(
+  static const SgPalette glass = SgPalette(
     primary: Color(0xFF00C2B2), // Lagoon
     onPrimary: Color(0xFF15121F),
     accent: Color(0xFFFFC61A), // Sun
@@ -261,7 +261,7 @@ class DpPalette {
   /// lifted toward white until it reaches 4.6:1 over the brightest blob (Sun)
   /// on the smoked backdrop and its muted chips. Hierarchy under it comes
   /// from size and weight more than colour.
-  static const DpPalette glassDark = DpPalette(
+  static const SgPalette glassDark = SgPalette(
     primary: Color(0xFF2EE6D6), // Lagoon, lifted
     onPrimary: Color(0xFF15121F), // dark ink on a bright fill
     accent: Color(0xFFFFD54A), // Sun, lifted
@@ -358,7 +358,7 @@ class DpPalette {
         _ => null,
       };
 
-  DpPalette lerp(DpPalette other, double t) => DpPalette(
+  SgPalette lerp(SgPalette other, double t) => SgPalette(
     primary: Color.lerp(primary, other.primary, t)!,
     onPrimary: Color.lerp(onPrimary, other.onPrimary, t)!,
     accent: Color.lerp(accent, other.accent, t)!,
@@ -387,13 +387,13 @@ class DpPalette {
   );
 }
 
-/// Surface fills and the treatment `DpSurface` draws them with.
+/// Surface fills and the treatment `SgSurface` draws them with.
 ///
 /// In light and dark that treatment is a 1.5 px outline plus a hard 3 px
 /// down-right offset shadow. Glass replaces it with blur (#34).
 @immutable
-class DpSurfaceTokens {
-  const DpSurfaceTokens({
+class SgSurfaceTokens {
+  const SgSurfaceTokens({
     required this.paper,
     required this.card,
     required this.cardStrong,
@@ -413,7 +413,7 @@ class DpSurfaceTokens {
     this.scrim = const Color(0x5215121F),
   });
 
-  static const DpSurfaceTokens light = DpSurfaceTokens(
+  static const SgSurfaceTokens light = SgSurfaceTokens(
     paper: Color(0xFFFFF8EE),
     card: Color(0xFFFFFFFF),
     cardStrong: Color(0xFFFFFFFF),
@@ -430,7 +430,7 @@ class DpSurfaceTokens {
   /// theming.md describes the dark treatment as "3 px lines at 30 % white"; the
   /// artboard keeps the same 3 px offset shadow and simply recolours it, which
   /// is what is implemented here.
-  static const DpSurfaceTokens dark = DpSurfaceTokens(
+  static const SgSurfaceTokens dark = SgSurfaceTokens(
     paper: Color(0xFF13111D),
     card: Color(0xFF1E1B2C),
     cardStrong: Color(0xFF1E1B2C),
@@ -445,7 +445,7 @@ class DpSurfaceTokens {
 
   /// Aurora Glass, light. Frosted translucent panels over a drifting backdrop;
   /// values from the `deutsch-plan-v2-aurora-glass-html` android-light canvas.
-  static const DpSurfaceTokens glass = DpSurfaceTokens(
+  static const SgSurfaceTokens glass = SgSurfaceTokens(
     paper: Color(0xFFF6F3FF), // backdrop under the aurora
     card: Color(0x8CFFFFFF), // white at 55 %
     cardStrong: Color(0xB8FFFFFF), // white at 72 %
@@ -468,7 +468,7 @@ class DpSurfaceTokens {
 
   /// Aurora Glass, dark — chosen automatically when the system is in dark mode.
   /// Smoked glass over a near-black backdrop, aurora dimmed to 35 %.
-  static const DpSurfaceTokens glassDark = DpSurfaceTokens(
+  static const SgSurfaceTokens glassDark = SgSurfaceTokens(
     paper: Color(0xFF0E0C16),
     card: Color(0x8C1E1B2C), // rgba(30,27,44,0.55)
     cardStrong: Color(0xB81E1B2C), // rgba(30,27,44,0.72)
@@ -528,7 +528,7 @@ class DpSurfaceTokens {
   /// Peak opacity of an `AuroraBackdrop` blob (#35). Zero outside glass.
   final double auroraOpacity;
 
-  DpSurfaceTokens lerp(DpSurfaceTokens other, double t) => DpSurfaceTokens(
+  SgSurfaceTokens lerp(SgSurfaceTokens other, double t) => SgSurfaceTokens(
     paper: Color.lerp(paper, other.paper, t)!,
     scrim: Color.lerp(scrim, other.scrim, t)!,
     card: Color.lerp(card, other.card, t)!,
@@ -558,8 +558,8 @@ class DpSurfaceTokens {
 /// Bangla is set one step larger at the same role — that rule lands with the
 /// text theme in #36; these are the Latin values.
 @immutable
-class DpTypeTokens {
-  const DpTypeTokens({
+class SgTypeTokens {
+  const SgTypeTokens({
     required this.display,
     required this.headline,
     required this.title,
@@ -569,29 +569,29 @@ class DpTypeTokens {
     required this.caption,
   });
 
-  static const DpTypeTokens defaults = DpTypeTokens(
-    display: DpTextToken(size: 40, height: 48, weight: 600),
-    headline: DpTextToken(size: 28, height: 34, weight: 600),
-    title: DpTextToken(size: 20, height: 26, weight: 600),
-    bodyLarge: DpTextToken(size: 17, height: 24, weight: 400),
-    body: DpTextToken(size: 15, height: 22, weight: 400),
-    label: DpTextToken(size: 13, height: 16, weight: 600),
-    caption: DpTextToken(size: 12, height: 16, weight: 400),
+  static const SgTypeTokens defaults = SgTypeTokens(
+    display: SgTextToken(size: 40, height: 48, weight: 600),
+    headline: SgTextToken(size: 28, height: 34, weight: 600),
+    title: SgTextToken(size: 20, height: 26, weight: 600),
+    bodyLarge: SgTextToken(size: 17, height: 24, weight: 400),
+    body: SgTextToken(size: 15, height: 22, weight: 400),
+    label: SgTextToken(size: 13, height: 16, weight: 600),
+    caption: SgTextToken(size: 12, height: 16, weight: 400),
   );
 
-  final DpTextToken display;
-  final DpTextToken headline;
-  final DpTextToken title;
-  final DpTextToken bodyLarge;
-  final DpTextToken body;
-  final DpTextToken label;
-  final DpTextToken caption;
+  final SgTextToken display;
+  final SgTextToken headline;
+  final SgTextToken title;
+  final SgTextToken bodyLarge;
+  final SgTextToken body;
+  final SgTextToken label;
+  final SgTextToken caption;
 }
 
 /// One role of the type scale, in the artboards' own units.
 @immutable
-class DpTextToken {
-  const DpTextToken({
+class SgTextToken {
+  const SgTextToken({
     required this.size,
     required this.height,
     required this.weight,
@@ -612,15 +612,15 @@ class DpTextToken {
 
 /// Corner radii. Glass uses larger radii throughout (#32).
 @immutable
-class DpShapeTokens {
-  const DpShapeTokens({
+class SgShapeTokens {
+  const SgShapeTokens({
     required this.card,
     required this.button,
     required this.chip,
     required this.sheet,
   });
 
-  static const DpShapeTokens defaults = DpShapeTokens(
+  static const SgShapeTokens defaults = SgShapeTokens(
     card: 16,
     button: 12,
     chip: 8,
@@ -629,7 +629,7 @@ class DpShapeTokens {
 
   /// Glass rounds everything more, per theming.md and the Aurora Glass
   /// artboards: the primary CTA is drawn at 16 and sheet tops at 28.
-  static const DpShapeTokens glass = DpShapeTokens(
+  static const SgShapeTokens glass = SgShapeTokens(
     card: 20,
     button: 16,
     chip: 8,
@@ -652,8 +652,8 @@ class DpShapeTokens {
 
 /// The 4/8/12/16/24/32/48 spacing scale.
 @immutable
-class DpSpacingTokens {
-  const DpSpacingTokens({
+class SgSpacingTokens {
+  const SgSpacingTokens({
     required this.xs,
     required this.sm,
     required this.md,
@@ -663,7 +663,7 @@ class DpSpacingTokens {
     required this.xxxl,
   });
 
-  static const DpSpacingTokens defaults = DpSpacingTokens(
+  static const SgSpacingTokens defaults = SgSpacingTokens(
     xs: 4,
     sm: 8,
     md: 12,
@@ -687,8 +687,8 @@ class DpSpacingTokens {
 
 /// Motion durations. All motion respects the OS reduce-motion setting (#Y03).
 @immutable
-class DpMotionTokens {
-  const DpMotionTokens({
+class SgMotionTokens {
+  const SgMotionTokens({
     required this.instant,
     required this.quick,
     required this.standard,
@@ -696,7 +696,7 @@ class DpMotionTokens {
     required this.celebrate,
   });
 
-  static const DpMotionTokens defaults = DpMotionTokens(
+  static const SgMotionTokens defaults = SgMotionTokens(
     instant: Duration(milliseconds: 100),
     quick: Duration(milliseconds: 200),
     standard: Duration(milliseconds: 300),
@@ -714,15 +714,15 @@ class DpMotionTokens {
 }
 
 /// `context.tokens` — the only way a widget reaches a design value.
-extension DpTokensContext on BuildContext {
-  DpTokens get tokens {
-    final tokens = Theme.of(this).extension<DpTokens>();
+extension SgTokensContext on BuildContext {
+  SgTokens get tokens {
+    final tokens = Theme.of(this).extension<SgTokens>();
     if (tokens == null) {
       // Falling back to Light here would be worse than throwing: the screen
       // would render *almost* right, and under the glass theme that reads as a
       // rendering glitch rather than as a missing theme.
       throw FlutterError(
-        'No DpTokens in the theme. Build this subtree with AppTheme.light() '
+        'No SgTokens in the theme. Build this subtree with AppTheme.light() '
         '(or its dark/glass counterpart) so the extension is attached — a '
         'route pushed on the root navigator does not inherit a nested Theme.',
       );

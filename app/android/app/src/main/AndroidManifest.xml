@@ -16,7 +16,7 @@
          shows no preview of where it is going, however the Flutter side is
          written. -->
     <application
-        android:label="DeutschPlan"
+        android:label="Sogda"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
         android:enableOnBackInvokedCallback="true">
@@ -41,7 +41,7 @@
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
-            <!-- deutschplan:// — the reminder notification and the home
+            <!-- sogda:// — the reminder notification and the home
                  screen widget (navigation.md, notifications-widget.md).
                  A private scheme with no host filter: nothing on the web
                  serves it, and BROWSABLE is what lets the widget's intent
@@ -50,20 +50,20 @@
                 <action android:name="android.intent.action.VIEW"/>
                 <category android:name="android.intent.category.DEFAULT"/>
                 <category android:name="android.intent.category.BROWSABLE"/>
-                <data android:scheme="deutschplan"/>
+                <data android:scheme="sogda"/>
             </intent-filter>
         </activity>
         <!-- X1, the home-screen widget (#160): Glance, drawn from the snapshot
              the app writes, redrawn when the app asks (widget.md). -->
         <receiver
-            android:name=".widget.DeutschPlanWidgetReceiver"
+            android:name=".widget.SogdaWidgetReceiver"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
             <meta-data
                 android:name="android.appwidget.provider"
-                android:resource="@xml/deutschplan_widget_info" />
+                android:resource="@xml/sogda_widget_info" />
         </receiver>
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->

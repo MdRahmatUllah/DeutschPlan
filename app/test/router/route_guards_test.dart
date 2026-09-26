@@ -1,48 +1,48 @@
 @TestOn('vm')
 library;
 
-import 'package:deutschplan/features/exam/exam_runner_screen.dart';
-import 'package:deutschplan/features/study/study_screen.dart';
-import 'package:deutschplan/features/me/settings_screen.dart';
-import 'package:deutschplan/features/today/today_screen.dart';
+import 'package:sogda/features/exam/exam_runner_screen.dart';
+import 'package:sogda/features/study/study_screen.dart';
+import 'package:sogda/features/me/settings_screen.dart';
+import 'package:sogda/features/today/today_screen.dart';
 
 import '../features/today_fixtures.dart';
 
 import 'dart:io';
 
-import 'package:deutschplan/core/theme/app_theme.dart';
-import 'package:deutschplan/data/db/app_database.dart';
-import 'package:deutschplan/data/repositories/exam_repository.dart';
-import 'package:deutschplan/data/repositories/plan_repository.dart';
-import 'package:deutschplan/core/providers/app_providers.dart';
-import 'package:deutschplan/data/repositories/settings_repository.dart';
-import 'package:deutschplan/features/onboarding/onboarding_meaning_page.dart';
+import 'package:sogda/core/theme/app_theme.dart';
+import 'package:sogda/data/db/app_database.dart';
+import 'package:sogda/data/repositories/exam_repository.dart';
+import 'package:sogda/data/repositories/plan_repository.dart';
+import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/data/repositories/settings_repository.dart';
+import 'package:sogda/features/onboarding/onboarding_meaning_page.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
-import 'package:deutschplan/features/onboarding/onboarding_welcome_page.dart';
-import 'package:deutschplan/features/onboarding/onboarding_voice_page.dart';
-import 'package:deutschplan/features/onboarding/onboarding_shell.dart';
-import 'package:deutschplan/features/onboarding/onboarding_notifier.dart';
-import 'package:deutschplan/features/onboarding/setup_flow.dart';
-import 'package:deutschplan/features/onboarding/placement_screen.dart';
-import 'package:deutschplan/domain/placement.dart';
+import 'package:sogda/features/onboarding/onboarding_welcome_page.dart';
+import 'package:sogda/features/onboarding/onboarding_voice_page.dart';
+import 'package:sogda/features/onboarding/onboarding_shell.dart';
+import 'package:sogda/features/onboarding/onboarding_notifier.dart';
+import 'package:sogda/features/onboarding/setup_flow.dart';
+import 'package:sogda/features/onboarding/placement_screen.dart';
+import 'package:sogda/domain/placement.dart';
 
 import '../domain/placement_test.dart' show wordFor;
 
-import 'package:deutschplan/features/onboarding/onboarding_start_page.dart';
-import 'package:deutschplan/features/onboarding/onboarding_pace_page.dart';
-import 'package:deutschplan/data/db/content_dao.dart';
-import 'package:deutschplan/core/theme/dp_surface.dart';
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
-import 'package:deutschplan/main.dart'
+import 'package:sogda/features/onboarding/onboarding_start_page.dart';
+import 'package:sogda/features/onboarding/onboarding_pace_page.dart';
+import 'package:sogda/data/db/content_dao.dart';
+import 'package:sogda/core/theme/sg_surface.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
+import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
-import 'package:deutschplan/features/quiz/quiz_screen.dart';
-import 'package:deutschplan/router/app_router.dart';
-import 'package:deutschplan/router/app_shell.dart';
-import 'package:deutschplan/router/route_guards.dart';
-import 'package:deutschplan/router/routes.dart';
-import 'package:deutschplan/features/learn/learn_screen.dart';
-import 'package:deutschplan/features/search/search_screen.dart';
+import 'package:sogda/features/quiz/quiz_screen.dart';
+import 'package:sogda/router/app_router.dart';
+import 'package:sogda/router/app_shell.dart';
+import 'package:sogda/router/route_guards.dart';
+import 'package:sogda/router/routes.dart';
+import 'package:sogda/features/learn/learn_screen.dart';
+import 'package:sogda/features/search/search_screen.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:cupertino_ui/cupertino_ui.dart' show CupertinoPageTransition;
 import 'package:go_router/go_router.dart';
@@ -461,9 +461,9 @@ void main() {
 
       final chosen = find.ancestor(
         of: find.text('A2.1'),
-        matching: find.byType(DpSurface),
+        matching: find.byType(SgSurface),
       );
-      expect(tester.widget<DpSurface>(chosen).selected, isTrue);
+      expect(tester.widget<SgSurface>(chosen).selected, isTrue);
     });
 
     testWidgets('FR-S3-03 its result pre-selects the step on page 3', (
@@ -503,9 +503,9 @@ void main() {
       expect(find.byType(OnboardingStartPage), findsOneWidget);
       final chosen = find.ancestor(
         of: find.text(step),
-        matching: find.byType(DpSurface),
+        matching: find.byType(SgSurface),
       );
-      expect(tester.widget<DpSurface>(chosen).selected, isTrue);
+      expect(tester.widget<SgSurface>(chosen).selected, isTrue);
     });
 
     testWidgets('S3 opened directly closes to page 3, not to nothing', (

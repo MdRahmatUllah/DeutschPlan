@@ -1,17 +1,17 @@
-import 'package:deutschplan/core/adaptive/adaptive.dart';
-import 'package:deutschplan/core/components/dp_chip.dart';
-import 'package:deutschplan/core/providers/app_providers.dart'
+import 'package:sogda/core/adaptive/adaptive.dart';
+import 'package:sogda/core/components/sg_chip.dart';
+import 'package:sogda/core/providers/app_providers.dart'
     show settingsSourceProvider;
-import 'package:deutschplan/core/theme/app_theme.dart';
-import 'package:deutschplan/data/repositories/setting_keys.dart';
-import 'package:deutschplan/domain/quiz_builder.dart';
-import 'package:deutschplan/features/learn/step_detail_screen.dart';
-import 'package:deutschplan/features/learn/step_words.dart';
-import 'package:deutschplan/features/quiz/quiz_setup_sheet.dart';
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
-import 'package:deutschplan/main.dart'
+import 'package:sogda/core/theme/app_theme.dart';
+import 'package:sogda/data/repositories/setting_keys.dart';
+import 'package:sogda/domain/quiz_builder.dart';
+import 'package:sogda/features/learn/step_detail_screen.dart';
+import 'package:sogda/features/learn/step_words.dart';
+import 'package:sogda/features/quiz/quiz_setup_sheet.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
+import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
-import 'package:deutschplan/router/routes.dart';
+import 'package:sogda/router/routes.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
@@ -79,10 +79,10 @@ void main() {
     await tester.pumpAndSettle();
   }
 
-  Finder chip(String label) => find.widgetWithText(DpChip, label);
+  Finder chip(String label) => find.widgetWithText(SgChip, label);
 
   bool selected(WidgetTester tester, String label) =>
-      tester.widget<DpChip>(chip(label)).selected;
+      tester.widget<SgChip>(chip(label)).selected;
 
   testWidgets('FR-L2-04 Custom opens L7 with its title and sections', (
     tester,
@@ -169,7 +169,7 @@ void main() {
       ),
     );
     await tester.pumpAndSettle();
-    expect(find.byType(DpChip), findsNWidgets(6 + 3 + 2));
+    expect(find.byType(SgChip), findsNWidgets(6 + 3 + 2));
     expect(chip(l10n.quizSourceAll), findsOneWidget);
     expect(chip('Wohnen & Haushalt'), findsNothing);
   });

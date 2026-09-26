@@ -3,14 +3,14 @@ library;
 
 import 'dart:io';
 
-import 'package:deutschplan/data/db/app_database.dart';
-import 'package:deutschplan/data/db/content_dao.dart';
-import 'package:deutschplan/data/repositories/plan_repository.dart'
+import 'package:sogda/data/db/app_database.dart';
+import 'package:sogda/data/db/content_dao.dart';
+import 'package:sogda/data/repositories/plan_repository.dart'
     show PlanRepository;
-import 'package:deutschplan/data/repositories/plan_repository.dart' as repo;
-import 'package:deutschplan/data/repositories/plan_store.dart';
-import 'package:deutschplan/data/repositories/settings_repository.dart';
-import 'package:deutschplan/domain/plan_engine.dart';
+import 'package:sogda/data/repositories/plan_repository.dart' as repo;
+import 'package:sogda/data/repositories/plan_store.dart';
+import 'package:sogda/data/repositories/settings_repository.dart';
+import 'package:sogda/domain/plan_engine.dart';
 import 'package:drift/drift.dart' hide isNotNull, isNull;
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -34,7 +34,7 @@ void main() {
   late DriftPlanStore store;
 
   setUp(() async {
-    directory = Directory.systemTemp.createTempSync('deutschplan_plan');
+    directory = Directory.systemTemp.createTempSync('sogda_plan');
     final content = ContentFixture.write('${directory.path}/content.db').file;
 
     final raw = sqlite.sqlite3.open(content.path);

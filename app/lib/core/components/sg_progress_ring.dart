@@ -1,9 +1,9 @@
 import 'dart:math' as math;
 
-import 'package:deutschplan/core/theme/dp_tokens.dart';
-import 'package:deutschplan/core/typography/dp_text.dart';
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
-import 'package:deutschplan/l10n/ui_digits.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/core/typography/sg_text.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
+import 'package:sogda/l10n/ui_digits.dart';
 import 'package:material_ui/material_ui.dart';
 
 /// The progress ring on Today, the session summary and the widget.
@@ -12,8 +12,8 @@ import 'package:material_ui/material_ui.dart';
 /// track under a Lagoon arc with a round cap, starting at twelve o'clock. The
 /// artboard's track is Oat; it is `surface.track`, which reaches 3:1 (#437).
 /// Today draws it at 132 dp; the geometry scales with [size].
-class DpProgressRing extends StatelessWidget {
-  const DpProgressRing({
+class SgProgressRing extends StatelessWidget {
+  const SgProgressRing({
     required this.completed,
     required this.total,
     super.key,
@@ -86,7 +86,7 @@ class DpProgressRing extends StatelessWidget {
             ),
             // The circle's diameter is a layout commitment on Today, so the
             // centre gives way instead. This is the OPPOSITE call from
-            // DpHeadword in #190, and deliberately: a headword is the content
+            // SgHeadword in #190, and deliberately: a headword is the content
             // and must stay legible, whereas these numbers are repeated in the
             // section cards beside the ring.
             // Inside the stroke: a box whose corners stay within the inner
@@ -103,17 +103,17 @@ class DpProgressRing extends StatelessWidget {
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: <Widget>[
-                            DpText(
+                            SgText(
                               countLabel ??
                                   AppLocalizations.of(context)
                                       .digits('$completed / $total'),
-                              role: DpTextRole.title,
+                              role: SgTextRole.title,
                               weight: 600,
                             ),
                             if (caption != null)
-                              DpText(
+                              SgText(
                                 caption!,
-                                role: DpTextRole.caption,
+                                role: SgTextRole.caption,
                                 color: tokens.color.textSecondary,
                               )
                             else if (captionIcon != null)
@@ -191,8 +191,8 @@ class _RingPainter extends CustomPainter {
 ///
 /// From the artboard: 8 dp tall, radius 4, 2 dp gaps, segments weighted by
 /// count with a 2 dp minimum so a tiny count still shows.
-class DpSegmentedBar extends StatelessWidget {
-  const DpSegmentedBar({
+class SgSegmentedBar extends StatelessWidget {
+  const SgSegmentedBar({
     required this.done,
     required this.learning,
     required this.todo,

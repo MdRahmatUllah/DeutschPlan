@@ -5,21 +5,21 @@ import 'dart:io';
 
 import 'dart:convert';
 
-import 'package:deutschplan/data/repositories/backup_repository.dart';
-import 'package:deutschplan/bootstrap.dart';
+import 'package:sogda/data/repositories/backup_repository.dart';
+import 'package:sogda/bootstrap.dart';
 import 'package:share_plus/share_plus.dart' show XFile;
-import 'package:deutschplan/core/components/dp_button.dart';
-import 'package:deutschplan/features/bootstrap/bootstrap_error_screen.dart';
-import 'package:deutschplan/core/theme/dp_tokens.dart';
-import 'package:deutschplan/core/theme/glass_capability.dart';
-import 'package:deutschplan/core/theme/theme_mode.dart';
-import 'package:deutschplan/data/db/app_database.dart';
-import 'package:deutschplan/data/db/content_dao.dart';
-import 'package:deutschplan/data/db/content_update.dart';
-import 'package:deutschplan/data/repositories/setting_keys.dart';
-import 'package:deutschplan/data/repositories/settings_repository.dart';
-import 'package:deutschplan/main.dart';
-import 'package:deutschplan/router/app_router.dart';
+import 'package:sogda/core/components/sg_button.dart';
+import 'package:sogda/features/bootstrap/bootstrap_error_screen.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/core/theme/glass_capability.dart';
+import 'package:sogda/core/theme/theme_mode.dart';
+import 'package:sogda/data/db/app_database.dart';
+import 'package:sogda/data/db/content_dao.dart';
+import 'package:sogda/data/db/content_update.dart';
+import 'package:sogda/data/repositories/setting_keys.dart';
+import 'package:sogda/data/repositories/settings_repository.dart';
+import 'package:sogda/main.dart';
+import 'package:sogda/router/app_router.dart';
 import 'package:drift/drift.dart' hide isNotNull, isNull;
 import 'package:drift/native.dart';
 import 'package:flutter/services.dart';
@@ -49,7 +49,7 @@ void main() {
   late String manifestAsset;
 
   setUpAll(() {
-    final staging = Directory.systemTemp.createTempSync('deutschplan_asset');
+    final staging = Directory.systemTemp.createTempSync('sogda_asset');
     final file = ContentFixture.write('${staging.path}/content.db').file;
     contentAsset = file.readAsBytesSync();
     manifestAsset =
@@ -58,8 +58,8 @@ void main() {
   });
 
   setUp(() {
-    support = Directory.systemTemp.createTempSync('deutschplan_support');
-    temp = Directory.systemTemp.createTempSync('deutschplan_temp');
+    support = Directory.systemTemp.createTempSync('sogda_support');
+    temp = Directory.systemTemp.createTempSync('sogda_temp');
     PathProviderPlatform.instance = _FakePathProvider(support, temp);
     _serveAssets(<String, Uint8List>{
       ContentDao.asset: contentAsset,
@@ -148,23 +148,23 @@ void main() {
 
     test('resolves the theme against the platform', () async {
       final light = await run();
-      expect(light.themeMode, DpMode.light);
+      expect(light.themeMode, SgMode.light);
       await light.dispose();
 
       final dark = await run(brightness: Brightness.dark);
       addTearDown(dark.dispose);
-      expect(dark.themeMode, DpMode.dark);
+      expect(dark.themeMode, SgMode.dark);
     });
 
     test('following the system is not the same as pinning it', () async {
       // `theme_mode` defaults to system, which resolves to a fixed light or
       // dark for the first frame — but the app has to keep following the
       // platform afterwards, or turning the phone to dark would leave
-      // DeutschPlan light until it was killed.
+      // Sogda light until it was killed.
       final ready = await run(brightness: Brightness.dark);
       addTearDown(ready.dispose);
 
-      expect(ready.themeMode, DpMode.dark);
+      expect(ready.themeMode, SgMode.dark);
       expect(ready.themeSetting, ThemeModeSetting.system);
       expect(ready.themeSetting.followsPlatform, isTrue);
     });
@@ -176,7 +176,7 @@ void main() {
 
       final second = await run(brightness: Brightness.dark);
       addTearDown(second.dispose);
-      expect(second.themeMode, DpMode.light);
+      expect(second.themeMode, SgMode.light);
     });
 
     test('a learner who has not enrolled opens on onboarding', () async {
@@ -224,7 +224,7 @@ void main() {
       final first = await run();
       await first.dispose();
 
-      final staging = Directory.systemTemp.createTempSync('deutschplan_same');
+      final staging = Directory.systemTemp.createTempSync('sogda_same');
       final next = ContentFixture.write('${staging.path}/content.db').file;
       final db = sqlite3.open(next.path);
       db.execute(
@@ -274,7 +274,7 @@ void main() {
       await first.dispose();
 
       // The pipeline's next build: same rows, later version.
-      final staging = Directory.systemTemp.createTempSync('deutschplan_next');
+      final staging = Directory.systemTemp.createTempSync('sogda_next');
       final next = ContentFixture.write('${staging.path}/content.db').file;
       final db = sqlite3.open(next.path);
       db.execute(
@@ -458,10 +458,7 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      expect(
-        find.text('DeutschPlan could not install the course.'),
-        findsOneWidget,
-      );
+      expect(find.text('Sogda could not install the course.'), findsOneWidget);
     });
 
     testWidgets('offers Retry', (tester) async {
@@ -515,7 +512,7 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      final retry = tester.widget<DpButton>(_retryButton);
+      final retry = tester.widget<SgButton>(_retryButton);
       expect(retry.onPressed, isNotNull, reason: 'Retry is disabled');
 
       await tester.tap(_retryButton);
@@ -539,7 +536,7 @@ void main() {
         router: buildRouter(),
         contentVersion: ContentFixture.version,
         contentChange: null,
-        themeMode: DpMode.light,
+        themeMode: SgMode.light,
         themeSetting: ThemeModeSetting.light,
         isFirstRun: false,
         elapsed: Duration.zero,
@@ -558,16 +555,13 @@ void main() {
         ),
       );
       await tester.pumpAndSettle();
-      expect(
-        find.text('DeutschPlan could not open your data.'),
-        findsOneWidget,
-      );
+      expect(find.text('Sogda could not open your data.'), findsOneWidget);
 
       await tester.tap(_retryButton);
       await tester.pumpAndSettle();
 
       expect(find.byType(BootstrapErrorApp), findsNothing);
-      expect(find.byType(DeutschPlanApp), findsOneWidget);
+      expect(find.byType(SogdaApp), findsOneWidget);
     });
 
     testWidgets('a retry that fails again says so', (tester) async {
@@ -583,10 +577,7 @@ void main() {
       await tester.tap(_retryButton);
       await tester.pumpAndSettle();
 
-      expect(
-        find.text('DeutschPlan could not install the course.'),
-        findsOneWidget,
-      );
+      expect(find.text('Sogda could not install the course.'), findsOneWidget);
     });
 
     testWidgets('is never a blank screen', (tester) async {
@@ -673,17 +664,17 @@ void main() {
 
     test('and the name is the one import will look for', () {
       expect(exportFileName, endsWith('.json'));
-      expect(exportFileName, 'deutschplan-backup.json');
+      expect(exportFileName, 'sogda-backup.json');
     });
   });
 }
 
 /// Serves [assets] to `rootBundle`, replacing whatever was there.
 /// The error screen's two actions, found by what they are rather than by the
-/// Material type they used to be: #86 rebuilt them as `DpButton`, and a finder
+/// Material type they used to be: #86 rebuilt them as `SgButton`, and a finder
 /// on `FilledButton` was really asserting which framework widget was inside.
-final Finder _retryButton = find.widgetWithText(DpButton, 'Retry');
-final Finder _exportButton = find.widgetWithText(DpButton, 'Export progress');
+final Finder _retryButton = find.widgetWithText(SgButton, 'Retry');
+final Finder _exportButton = find.widgetWithText(SgButton, 'Export progress');
 
 void _serveAssets(Map<String, Uint8List> assets) {
   TestWidgetsFlutterBinding.instance.defaultBinaryMessenger

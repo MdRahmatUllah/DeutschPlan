@@ -1,22 +1,22 @@
-import 'package:deutschplan/core/adaptive/adaptive.dart';
-import 'package:deutschplan/core/components/dp_button.dart';
-import 'package:deutschplan/core/components/dp_chip.dart';
-import 'package:deutschplan/core/components/dp_feedback.dart';
-import 'package:deutschplan/core/components/dp_progress_ring.dart';
-import 'package:deutschplan/core/providers/app_providers.dart';
-import 'package:deutschplan/core/theme/aurora_backdrop.dart';
-import 'package:deutschplan/core/theme/dp_surface.dart';
-import 'package:deutschplan/core/theme/dp_tokens.dart';
-import 'package:deutschplan/core/typography/dp_text.dart';
-import 'package:deutschplan/data/repositories/setting_keys.dart';
-import 'package:deutschplan/data/repositories/word_repository.dart';
-import 'package:deutschplan/domain/plan_engine.dart';
-import 'package:deutschplan/domain/plan_stats.dart';
-import 'package:deutschplan/features/today/today_providers.dart';
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
-import 'package:deutschplan/l10n/ui_digits.dart';
-import 'package:deutschplan/router/cross_tab.dart';
-import 'package:deutschplan/router/routes.dart';
+import 'package:sogda/core/adaptive/adaptive.dart';
+import 'package:sogda/core/components/sg_button.dart';
+import 'package:sogda/core/components/sg_chip.dart';
+import 'package:sogda/core/components/sg_feedback.dart';
+import 'package:sogda/core/components/sg_progress_ring.dart';
+import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/core/theme/aurora_backdrop.dart';
+import 'package:sogda/core/theme/sg_surface.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/core/typography/sg_text.dart';
+import 'package:sogda/data/repositories/setting_keys.dart';
+import 'package:sogda/data/repositories/word_repository.dart';
+import 'package:sogda/domain/plan_engine.dart';
+import 'package:sogda/domain/plan_stats.dart';
+import 'package:sogda/features/today/today_providers.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
+import 'package:sogda/l10n/ui_digits.dart';
+import 'package:sogda/router/cross_tab.dart';
+import 'package:sogda/router/routes.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart' show GoRouteData;
 import 'package:intl/intl.dart';
@@ -134,7 +134,7 @@ class MeScreen extends ConsumerWidget {
       body = Center(
         child: Padding(
           padding: const EdgeInsets.all(16),
-          child: DpErrorPanel(
+          child: SgErrorPanel(
             message: l10n.meLoadFailed,
             retryLabel: l10n.retry,
             onRetry: () => ref
@@ -308,9 +308,9 @@ class MeHeader extends StatelessWidget {
                           mainAxisSize: MainAxisSize.min,
                           children: <Widget>[
                             Flexible(
-                              child: DpOneLine(
+                              child: SgOneLine(
                                 shown,
-                                role: DpTextRole.headline,
+                                role: SgTextRole.headline,
                                 color: ink,
                               ),
                             ),
@@ -324,18 +324,18 @@ class MeHeader extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 12),
-              DpChip(
+              SgChip(
                 label: AppLocalizations.of(context).digits(streak),
-                kind: DpChipKind.streak,
+                kind: SgChipKind.streak,
                 semanticLabel: l10n.todayStreak(streak),
               ),
             ],
           ),
-          DpText(
+          SgText(
             started == null
                 ? studied
                 : '${l10n.meSince(_date(context, started))} · $studied',
-            role: DpTextRole.label,
+            role: SgTextRole.label,
             weight: 500,
             color: ink,
           ),
@@ -344,8 +344,8 @@ class MeHeader extends StatelessWidget {
     );
 
     return tokens.isGlass
-        ? DpSurface(
-            kind: DpSurfaceKind.tint(tokens.color.der),
+        ? SgSurface(
+            kind: SgSurfaceKind.tint(tokens.color.der),
             radius: 0,
             child: content,
           )
@@ -401,9 +401,9 @@ class MeWordsCard extends StatelessWidget {
                 child: FittedBox(
                   fit: BoxFit.scaleDown,
                   alignment: AlignmentDirectional.centerStart,
-                  child: DpText(
+                  child: SgText(
                     number.format(value),
-                    role: DpTextRole.title,
+                    role: SgTextRole.title,
                     maxLines: 1,
                   ),
                 ),
@@ -411,9 +411,9 @@ class MeWordsCard extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 2),
-          DpText(
+          SgText(
             label,
-            role: DpTextRole.caption,
+            role: SgTextRole.caption,
             color: tokens.color.textSecondary,
           ),
         ],
@@ -422,14 +422,14 @@ class MeWordsCard extends StatelessWidget {
 
     return Semantics(
       button: true,
-      child: DpSurface(
-        kind: DpSurfaceKind.bar,
+      child: SgSurface(
+        kind: SgSurfaceKind.bar,
         onTap: onTap,
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            DpSegmentedBar(
+            SgSegmentedBar(
               done: done,
               learning: learning,
               todo: todo,
@@ -446,9 +446,9 @@ class MeWordsCard extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 10),
-            DpText(
+            SgText(
               l10n.meWordsLegend(doneDays),
-              role: DpTextRole.caption,
+              role: SgTextRole.caption,
               color: tokens.color.textSecondary,
             ),
           ],
@@ -515,8 +515,8 @@ class MeActivityCard extends StatelessWidget {
 
     return Semantics(
       button: true,
-      child: DpSurface(
-        kind: DpSurfaceKind.bar,
+      child: SgSurface(
+        kind: SgSurfaceKind.bar,
         onTap: onTap,
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -527,15 +527,15 @@ class MeActivityCard extends StatelessWidget {
               textBaseline: TextBaseline.alphabetic,
               children: <Widget>[
                 Expanded(
-                  child: DpText(
+                  child: SgText(
                     l10n.meActivity,
-                    role: DpTextRole.body,
+                    role: SgTextRole.body,
                     weight: 600,
                   ),
                 ),
-                DpText(
+                SgText(
                   l10n.meActivityRange,
-                  role: DpTextRole.caption,
+                  role: SgTextRole.caption,
                   color: tokens.color.textSecondary,
                 ),
               ],
@@ -603,8 +603,8 @@ class MeScheduleCard extends StatelessWidget {
       // otherwise ran on into the exams card below.
       container: true,
       button: behind,
-      child: DpSurface(
-        kind: DpSurfaceKind.bar,
+      child: SgSurface(
+        kind: SgSurfaceKind.bar,
         onTap: behind ? onTap : null,
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
         child: Row(
@@ -629,20 +629,20 @@ class MeScheduleCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  DpText(
+                  SgText(
                     !behind
                         ? l10n.meOnSchedule
                         : days == 0
                         ? l10n.meBehindUnderADay
                         : l10n.meBehind(days),
-                    role: DpTextRole.body,
+                    role: SgTextRole.body,
                     weight: 600,
                   ),
                   if (behind) ...<Widget>[
                     const SizedBox(height: 1),
-                    DpText(
+                    SgText(
                       l10n.meBehindLine(schedule.behind),
-                      role: DpTextRole.caption,
+                      role: SgTextRole.caption,
                       color: tokens.color.textSecondary,
                     ),
                   ],
@@ -708,8 +708,8 @@ class MeExamsCard extends StatelessWidget {
             : l10n.meExamsUnlocksAt(current.code, unlockPercent),
     ].join(' · ');
 
-    return DpSurface(
-      kind: DpSurfaceKind.bar,
+    return SgSurface(
+      kind: SgSurfaceKind.bar,
       // The badges' 48 dp targets reach into the padding below them and the
       // gap above; the badges themselves are drawn at the artboard's 26.
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 5),
@@ -721,10 +721,10 @@ class MeExamsCard extends StatelessWidget {
             crossAxisAlignment: WrapCrossAlignment.center,
             spacing: 8,
             children: <Widget>[
-              DpText(l10n.meExams, role: DpTextRole.body, weight: 600),
-              DpText(
+              SgText(l10n.meExams, role: SgTextRole.body, weight: 600),
+              SgText(
                 line,
-                role: DpTextRole.caption,
+                role: SgTextRole.caption,
                 color: tokens.color.textSecondary,
               ),
             ],
@@ -785,7 +785,7 @@ class _Badge extends StatelessWidget {
       ),
     };
     Widget label(String code) =>
-        DpText(code, role: DpTextRole.caption, weight: 700, color: text);
+        SgText(code, role: SgTextRole.caption, weight: 700, color: text);
     final border = badge == ExamBadge.locked
         ? Border.all(
             color: tokens.surface.outline,
@@ -859,8 +859,8 @@ class _Links extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final tokens = context.tokens;
-    return DpSurface(
-      kind: DpSurfaceKind.bar,
+    return SgSurface(
+      kind: SgSurfaceKind.bar,
       padding: const EdgeInsets.symmetric(horizontal: 12),
       child: Column(
         children: <Widget>[
@@ -881,9 +881,9 @@ class _Links extends StatelessWidget {
                         Icon(icon, size: 22, color: tokens.color.ink),
                         const SizedBox(width: 12),
                         Expanded(
-                          child: DpText(
+                          child: SgText(
                             label,
-                            role: DpTextRole.body,
+                            role: SgTextRole.body,
                             weight: 500,
                           ),
                         ),
@@ -945,7 +945,7 @@ class _NameSheetState extends State<_NameSheet> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          DpText(l10n.meNameTitle, role: DpTextRole.title),
+          SgText(l10n.meNameTitle, role: SgTextRole.title),
           const SizedBox(height: 12),
           TextField(
             controller: _name,
@@ -955,7 +955,7 @@ class _NameSheetState extends State<_NameSheet> {
             textCapitalization: TextCapitalization.words,
             textInputAction: TextInputAction.done,
             onSubmitted: (_) => _save(),
-            style: DpText.styleFor(tokens, DpTextRole.bodyLarge),
+            style: SgText.styleFor(tokens, SgTextRole.bodyLarge),
             decoration: InputDecoration(
               labelText: l10n.meNameTitle,
               counterText: '',
@@ -967,7 +967,7 @@ class _NameSheetState extends State<_NameSheet> {
             ),
           ),
           const SizedBox(height: 12),
-          DpButton(label: l10n.meNameSave, onPressed: _save),
+          SgButton(label: l10n.meNameSave, onPressed: _save),
         ],
       ),
     );

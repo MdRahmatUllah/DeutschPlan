@@ -7,10 +7,10 @@ library;
 
 import 'dart:convert';
 
-import 'package:deutschplan/domain/answer_check.dart';
-import 'package:deutschplan/domain/exam_generator.dart';
-import 'package:deutschplan/domain/grammar_item_generator.dart' show GapFill;
-import 'package:deutschplan/domain/text_norm.dart';
+import 'package:sogda/domain/answer_check.dart';
+import 'package:sogda/domain/exam_generator.dart';
+import 'package:sogda/domain/grammar_item_generator.dart' show GapFill;
+import 'package:sogda/domain/text_norm.dart';
 
 /// The verdict [given] earns on a question item; null for Writing and
 /// Speaking, which have no single right answer.

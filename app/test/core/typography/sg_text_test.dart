@@ -1,11 +1,11 @@
-import 'package:deutschplan/core/theme/app_theme.dart';
-import 'package:deutschplan/core/theme/dp_tokens.dart';
+import 'package:sogda/core/theme/app_theme.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
 
 import 'dart:ui' show LocaleStringAttribute;
 
-import 'package:deutschplan/core/typography/dp_text.dart';
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
-import 'package:deutschplan/main.dart' show appLocalizationsDelegates;
+import 'package:sogda/core/typography/sg_text.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
+import 'package:sogda/main.dart' show appLocalizationsDelegates;
 import 'package:flutter/rendering.dart' show RenderParagraph;
 import 'package:flutter/semantics.dart' show AttributedString;
 import 'package:flutter_test/flutter_test.dart';
@@ -41,17 +41,17 @@ void main() {
 
   group('script runs', () {
     test('a German-only string is one Latin run', () {
-      expect(DpScript.runs('die Wohnung'), [('die Wohnung', false)]);
-      expect(DpScript.hasBengali('die Wohnung'), isFalse);
+      expect(SgScript.runs('die Wohnung'), [('die Wohnung', false)]);
+      expect(SgScript.hasBengali('die Wohnung'), isFalse);
     });
 
     test('a Bangla-only string is one Bengali run', () {
-      expect(DpScript.runs('ফ্ল্যাট'), [('ফ্ল্যাট', true)]);
+      expect(SgScript.runs('ফ্ল্যাট'), [('ফ্ল্যাট', true)]);
     });
 
     test('a mixed string splits, and the separator adds no third run', () {
       const mixed = 'die Wohnung · ফ্ল্যাট';
-      final runs = DpScript.runs(mixed);
+      final runs = SgScript.runs(mixed);
 
       expect(runs, hasLength(2));
       expect(runs.first.$2, isFalse);
@@ -70,7 +70,7 @@ void main() {
         const caption =
             'Nomen · die Rechnung, -en · '
             '/রেশনুং/';
-        final runs = DpScript.runs(caption);
+        final runs = SgScript.runs(caption);
 
         expect(runs.map((r) => r.$1).join(), caption);
         expect(runs.where((r) => r.$2), hasLength(1));
@@ -79,33 +79,33 @@ void main() {
 
     test('a leading separator waits for the first letter', () {
       // Otherwise '  Bangla' opens a Latin run for the spaces.
-      final runs = DpScript.runs('  ফ্ল');
+      final runs = SgScript.runs('  ফ্ল');
       expect(runs, hasLength(1));
       expect(runs.single.$2, isTrue);
       expect(runs.single.$1, '  ফ্ল');
     });
 
     test('an empty string has no runs', () {
-      expect(DpScript.runs(''), isEmpty);
+      expect(SgScript.runs(''), isEmpty);
     });
   });
 
   test('#573 typing past 130 %, what is asked is one role smaller: every '
       'role maps to the next one down, caption is the floor, and a step down '
       'then up is the role again', () {
-    expect(DpTextRole.display.oneStepSmaller, DpTextRole.headline);
-    expect(DpTextRole.headline.oneStepSmaller, DpTextRole.title);
-    expect(DpTextRole.title.oneStepSmaller, DpTextRole.bodyLarge);
-    expect(DpTextRole.bodyLarge.oneStepSmaller, DpTextRole.body);
-    expect(DpTextRole.body.oneStepSmaller, DpTextRole.label);
-    expect(DpTextRole.label.oneStepSmaller, DpTextRole.caption);
+    expect(SgTextRole.display.oneStepSmaller, SgTextRole.headline);
+    expect(SgTextRole.headline.oneStepSmaller, SgTextRole.title);
+    expect(SgTextRole.title.oneStepSmaller, SgTextRole.bodyLarge);
+    expect(SgTextRole.bodyLarge.oneStepSmaller, SgTextRole.body);
+    expect(SgTextRole.body.oneStepSmaller, SgTextRole.label);
+    expect(SgTextRole.label.oneStepSmaller, SgTextRole.caption);
     expect(
-      DpTextRole.caption.oneStepSmaller,
-      DpTextRole.caption,
+      SgTextRole.caption.oneStepSmaller,
+      SgTextRole.caption,
       reason: 'caption is already the smallest role',
     );
-    for (final role in DpTextRole.values.where(
-      (role) => role != DpTextRole.caption,
+    for (final role in SgTextRole.values.where(
+      (role) => role != SgTextRole.caption,
     )) {
       expect(role.oneStepSmaller.oneStepLarger, role, reason: '$role');
     }
@@ -113,24 +113,24 @@ void main() {
 
   group('Bangla is one step larger at the same role', () {
     test('every role maps to the next one up, and display is the ceiling', () {
-      expect(DpTextRole.caption.oneStepLarger, DpTextRole.label);
-      expect(DpTextRole.label.oneStepLarger, DpTextRole.body);
-      expect(DpTextRole.body.oneStepLarger, DpTextRole.bodyLarge);
-      expect(DpTextRole.bodyLarge.oneStepLarger, DpTextRole.title);
-      expect(DpTextRole.title.oneStepLarger, DpTextRole.headline);
-      expect(DpTextRole.headline.oneStepLarger, DpTextRole.display);
+      expect(SgTextRole.caption.oneStepLarger, SgTextRole.label);
+      expect(SgTextRole.label.oneStepLarger, SgTextRole.body);
+      expect(SgTextRole.body.oneStepLarger, SgTextRole.bodyLarge);
+      expect(SgTextRole.bodyLarge.oneStepLarger, SgTextRole.title);
+      expect(SgTextRole.title.oneStepLarger, SgTextRole.headline);
+      expect(SgTextRole.headline.oneStepLarger, SgTextRole.display);
       expect(
-        DpTextRole.display.oneStepLarger,
-        DpTextRole.display,
+        SgTextRole.display.oneStepLarger,
+        SgTextRole.display,
         reason: 'display is already the largest role — it cannot step up',
       );
     });
 
     testWidgets('#166 at every role, the Bangla run is set one role larger '
         'than the German beside it', (tester) async {
-      final tokens = DpTokens.light();
-      for (final role in DpTextRole.values) {
-        await pump(tester, DpText('die Wohnung · ফ্ল্যাট', role: role));
+      final tokens = SgTokens.light();
+      for (final role in SgTextRole.values) {
+        await pump(tester, SgText('die Wohnung · ফ্ল্যাট', role: role));
         final runs =
             (tester.widget<Text>(find.byType(Text)).textSpan! as TextSpan)
                 .children!
@@ -153,9 +153,9 @@ void main() {
     ) async {
       await pump(
         tester,
-        const DpText(
+        const SgText(
           'die Wohnung · ফ্ল্যাট',
-          role: DpTextRole.body,
+          role: SgTextRole.body,
           weight: 700,
         ),
       );
@@ -180,14 +180,14 @@ void main() {
     ) async {
       await pump(
         tester,
-        const DpText('die Wohnung · ফ্ল্যাট', role: DpTextRole.body),
+        const SgText('die Wohnung · ফ্ল্যাট', role: SgTextRole.body),
       );
 
       final span = tester.widget<Text>(find.byType(Text)).textSpan! as TextSpan;
       final children = span.children!.cast<TextSpan>();
       expect(children, hasLength(2));
 
-      const type = DpTypeTokens.defaults;
+      const type = SgTypeTokens.defaults;
       expect(children.first.style!.fontSize, type.body.size, reason: 'German');
       expect(
         children.last.style!.fontSize,
@@ -199,11 +199,11 @@ void main() {
     testWidgets('a German-only string stays a plain Text at its role', (
       tester,
     ) async {
-      await pump(tester, const DpText('die Wohnung', role: DpTextRole.body));
+      await pump(tester, const SgText('die Wohnung', role: SgTextRole.body));
       final text = tester.widget<Text>(find.byType(Text));
 
       expect(text.textSpan, isNull, reason: 'no need to split a single script');
-      expect(text.style!.fontSize, DpTypeTokens.defaults.body.size);
+      expect(text.style!.fontSize, SgTypeTokens.defaults.body.size);
     });
 
     testWidgets('each run carries its own locale for the screen reader', (
@@ -211,9 +211,9 @@ void main() {
     ) async {
       await pump(
         tester,
-        const DpText(
+        const SgText(
           'die Wohnung · ফ্ল্যাট',
-          role: DpTextRole.body,
+          role: SgTextRole.body,
           german: true,
         ),
       );
@@ -263,15 +263,15 @@ void main() {
       final semantics = tester.ensureSemantics();
       final label = await said(
         tester,
-        const DpText(
+        const SgText(
           'Ich wohne in Berlin.',
-          role: DpTextRole.body,
+          role: SgTextRole.body,
           german: true,
         ),
       );
       expect(label.string, 'Ich wohne in Berlin.');
       expect(voices(label), <(String, Locale)>[
-        ('Ich wohne in Berlin.', DpScript.deDE),
+        ('Ich wohne in Berlin.', SgScript.deDE),
       ]);
       semantics.dispose();
     });
@@ -281,16 +281,16 @@ void main() {
       final semantics = tester.ensureSemantics();
       final copy = await said(
         tester,
-        const DpText('Continue', role: DpTextRole.body),
+        const SgText('Continue', role: SgTextRole.body),
       );
       expect(copy.string, 'Continue');
       expect(voices(copy), isEmpty);
 
       final mixed = await said(
         tester,
-        const DpText('Meaning · অর্থ', role: DpTextRole.body),
+        const SgText('Meaning · অর্থ', role: SgTextRole.body),
       );
-      expect(voices(mixed), <(String, Locale)>[('অর্থ', DpScript.bnBD)]);
+      expect(voices(mixed), <(String, Locale)>[('অর্থ', SgScript.bnBD)]);
       semantics.dispose();
     });
 
@@ -300,15 +300,15 @@ void main() {
       final semantics = tester.ensureSemantics();
       final label = await said(
         tester,
-        const DpText(
+        const SgText(
           'die Wohnung · ফ্ল্যাট',
-          role: DpTextRole.body,
+          role: SgTextRole.body,
           german: true,
         ),
       );
       expect(voices(label), <(String, Locale)>[
-        ('die Wohnung · ', DpScript.deDE),
-        ('ফ্ল্যাট', DpScript.bnBD),
+        ('die Wohnung · ', SgScript.deDE),
+        ('ফ্ল্যাট', SgScript.bnBD),
       ]);
       semantics.dispose();
     });
@@ -319,15 +319,15 @@ void main() {
       final semantics = tester.ensureSemantics();
       final label = await said(
         tester,
-        const DpText(
+        const SgText(
           'Haftpflichtversicherung',
-          role: DpTextRole.body,
+          role: SgTextRole.body,
           allowBreaks: true,
           german: true,
         ),
       );
       expect(label.string, 'Haftpflichtversicherung');
-      expect(voices(label).single.$2, DpScript.deDE);
+      expect(voices(label).single.$2, SgScript.deDE);
       semantics.dispose();
     });
 
@@ -336,15 +336,15 @@ void main() {
       final semantics = tester.ensureSemantics();
       final die = await said(
         tester,
-        const DpHeadword('Wohnung', article: 'die', plural: 'Wohnungen'),
+        const SgHeadword('Wohnung', article: 'die', plural: 'Wohnungen'),
       );
       expect(die.string, 'die Wohnung, feminine');
-      expect(voices(die), <(String, Locale)>[('die Wohnung', DpScript.deDE)]);
+      expect(voices(die), <(String, Locale)>[('die Wohnung', SgScript.deDE)]);
 
-      final der = await said(tester, const DpHeadword('Tisch', article: 'der'));
+      final der = await said(tester, const SgHeadword('Tisch', article: 'der'));
       expect(der.string, 'der Tisch, masculine');
 
-      final das = await said(tester, const DpHeadword('Haus', article: 'das'));
+      final das = await said(tester, const SgHeadword('Haus', article: 'das'));
       expect(das.string, 'das Haus, neuter');
       semantics.dispose();
     });
@@ -354,7 +354,7 @@ void main() {
       final semantics = tester.ensureSemantics();
       final label = await said(
         tester,
-        const DpHeadword('Leute', article: 'die'),
+        const SgHeadword('Leute', article: 'die'),
       );
       expect(label.string, 'die Leute');
       semantics.dispose();
@@ -366,11 +366,11 @@ void main() {
       final semantics = tester.ensureSemantics();
       final label = await said(
         tester,
-        const DpHeadword('Tisch', article: 'der'),
+        const SgHeadword('Tisch', article: 'der'),
         locale: const Locale('bn'),
       );
       expect(label.string, 'der Tisch, পুংলিঙ্গ');
-      expect(voices(label), <(String, Locale)>[('der Tisch', DpScript.deDE)]);
+      expect(voices(label), <(String, Locale)>[('der Tisch', SgScript.deDE)]);
       semantics.dispose();
     });
 
@@ -378,9 +378,9 @@ void main() {
       tester,
     ) async {
       final semantics = tester.ensureSemantics();
-      final label = await said(tester, const DpHeadword('schnell'));
+      final label = await said(tester, const SgHeadword('schnell'));
       expect(label.string, 'schnell');
-      expect(voices(label), <(String, Locale)>[('schnell', DpScript.deDE)]);
+      expect(voices(label), <(String, Locale)>[('schnell', SgScript.deDE)]);
       semantics.dispose();
     });
   });
@@ -391,7 +391,7 @@ void main() {
         .renderObject<RenderParagraph>(find.byType(RichText))
         .text
         .toPlainText(includeSemanticsLabels: false)
-        .replaceAll(DpScript.softHyphen, '');
+        .replaceAll(SgScript.softHyphen, '');
 
     testWidgets('#419 a line that ends at a syllable ends in "-", and the '
         'word is read whole', (tester) async {
@@ -400,7 +400,7 @@ void main() {
         tester,
         const SizedBox(
           width: 220,
-          child: DpHeadword(
+          child: SgHeadword(
             'Geschwindigkeitsbegrenzung',
             article: 'die',
             plural: 'Geschwindigkeitsbegrenzungen',
@@ -419,7 +419,7 @@ void main() {
         'die Geschwindigkeitsbegrenzung',
       );
       expect(
-        tester.getSemantics(find.byType(DpHeadword)).label,
+        tester.getSemantics(find.byType(SgHeadword)).label,
         'die Geschwindigkeitsbegrenzung, feminine',
       );
       semantics.dispose();
@@ -431,7 +431,7 @@ void main() {
         tester,
         const SizedBox(
           width: 400,
-          child: DpHeadword('Wohnung', article: 'die'),
+          child: SgHeadword('Wohnung', article: 'die'),
         ),
       );
       expect(drawn(tester), 'die Wohnung');
@@ -440,14 +440,14 @@ void main() {
         tester,
         const SizedBox(
           width: 160,
-          child: DpHeadword('Haftpflichtversicherung', role: DpTextRole.title),
+          child: SgHeadword('Haftpflichtversicherung', role: SgTextRole.title),
         ),
       );
       expect(drawn(tester), contains('-'));
       // Each line it drew is one line: none ran past the box and wrapped
       // again, at a syllable or anywhere else.
       expectNoWordBroken(tester, syllables: false);
-      expect(tester.getSize(find.byType(DpHeadword)).width, 160);
+      expect(tester.getSize(find.byType(SgHeadword)).width, 160);
     });
   });
 
@@ -492,7 +492,7 @@ void main() {
           tester,
           SizedBox(
             width: width,
-            child: const DpHeadword(
+            child: const SgHeadword(
               'Wohnungsgeberbestaetigung',
               article: 'die',
             ),
@@ -514,9 +514,9 @@ void main() {
         tester,
         SizedBox(
           width: width,
-          child: DpText(
-            DpScript.allowBreaks(caption, threshold: 4),
-            role: DpTextRole.body,
+          child: SgText(
+            SgScript.allowBreaks(caption, threshold: 4),
+            role: SgTextRole.body,
             german: true,
           ),
         ),
@@ -540,7 +540,7 @@ void main() {
       final sizes = <String, double?>{};
       paragraph.text.visitChildren((span) {
         if (span is TextSpan && span.text != null) {
-          sizes[DpScript.hasBengali(span.text!) ? 'bn' : 'de'] =
+          sizes[SgScript.hasBengali(span.text!) ? 'bn' : 'de'] =
               span.style?.fontSize;
         }
         return true;
@@ -554,8 +554,8 @@ void main() {
           (a) => (label.string.substring(a.range.start, a.range.end), a.locale),
         ),
         containsAll(<(String, Locale)>[
-          ('die Geschwindigkeitsbegrenzung · /', DpScript.deDE),
-          ('গেশভিন্ডিশকাইটসবেগ্রেনৎসুং/', DpScript.bnBD),
+          ('die Geschwindigkeitsbegrenzung · /', SgScript.deDE),
+          ('গেশভিন্ডিশকাইটসবেগ্রেনৎসুং/', SgScript.bnBD),
         ]),
       );
       semantics.dispose();
@@ -569,9 +569,9 @@ void main() {
         tester,
         SizedBox(
           width: width,
-          child: DpText(
-            DpScript.allowBreaks(text, threshold: 4),
-            role: DpTextRole.body,
+          child: SgText(
+            SgScript.allowBreaks(text, threshold: 4),
+            role: SgTextRole.body,
             german: true,
           ),
         ),
@@ -591,14 +591,14 @@ void main() {
             if (span is TextSpan && span.text != null) spans.add(span);
             return true;
           });
-      final bangla = spans.singleWhere((s) => DpScript.hasBengali(s.text!));
+      final bangla = spans.singleWhere((s) => SgScript.hasBengali(s.text!));
       // Found by what it says: its drawn text has the lines' "-\n".
       final german = spans.singleWhere(
         (s) => s.semanticsLabel!.contains('Geschwindigkeitsbegrenzung'),
       );
       expect(spans.indexOf(german), greaterThan(spans.indexOf(bangla)));
       expect(german.text, contains('-\n'));
-      expect(german.locale, DpScript.deDE);
+      expect(german.locale, SgScript.deDE);
       expect(german.style!.fontSize, lessThan(bangla.style!.fontSize!));
       expect(tester.getSemantics(find.byType(RichText)).label, text);
       semantics.dispose();
@@ -614,9 +614,9 @@ void main() {
           tester,
           SizedBox(
             width: width,
-            child: DpText(
-              DpScript.allowBreaks(caption),
-              role: DpTextRole.body,
+            child: SgText(
+              SgScript.allowBreaks(caption),
+              role: SgTextRole.body,
               breakTooWide: asked,
             ),
           ),
@@ -627,7 +627,7 @@ void main() {
             .toPlainText(includeSemanticsLabels: false);
       }
 
-      expect(DpScript.allowBreaks(caption), caption, reason: 'no hyphen');
+      expect(SgScript.allowBreaks(caption), caption, reason: 'no hyphen');
       for (var width = 110.0; width <= 300; width += 1) {
         await drawnAt(width, asked: true);
         for (final line in lineEnds(tester)) {
@@ -649,15 +649,15 @@ void main() {
     testWidgets('#522 a Bangla word a little too wide for its line shrinks '
         'to fit it, whole; German beside it keeps its "-"', (tester) async {
       const caption = 'Nomen · /ফেয়াগাঙেনহাইট্‌সবেভেল্টিগুং/';
-      final style = DpText.styleFor(DpTokens.light(), DpTextRole.body);
+      final style = SgText.styleFor(SgTokens.light(), SgTextRole.body);
       // Its width at its own (Bangla, one role up) size, then a line 90 %
       // of it: too narrow for the word, wide enough for it at 90 %.
       final painter = TextPainter(
         text: TextSpan(
           text: 'ফেয়াগাঙেনহাইট্‌সবেভেল্টিগুং/',
-          style: DpText.styleFor(
-            DpTokens.light(),
-            DpTextRole.body.oneStepLarger,
+          style: SgText.styleFor(
+            SgTokens.light(),
+            SgTextRole.body.oneStepLarger,
           ),
         ),
         textDirection: TextDirection.ltr,
@@ -670,9 +670,9 @@ void main() {
         tester,
         SizedBox(
           width: width,
-          child: const DpText(
+          child: const SgText(
             caption,
-            role: DpTextRole.body,
+            role: SgTextRole.body,
             breakTooWide: true,
           ),
         ),
@@ -685,14 +685,14 @@ void main() {
             if (span is TextSpan && span.text != null) spans.add(span);
             return true;
           });
-      final bangla = spans.singleWhere((s) => DpScript.hasBengali(s.text!));
+      final bangla = spans.singleWhere((s) => SgScript.hasBengali(s.text!));
       expect(bangla.text, isNot(contains('\n')), reason: 'whole');
       expect(
         bangla.style!.fontSize,
         lessThan(
-          DpText.styleFor(
-            DpTokens.light(),
-            DpTextRole.body.oneStepLarger,
+          SgText.styleFor(
+            SgTokens.light(),
+            SgTextRole.body.oneStepLarger,
           ).fontSize!,
         ),
         reason: 'shrunk',
@@ -700,11 +700,11 @@ void main() {
       expect(
         bangla.style!.fontSize,
         greaterThanOrEqualTo(
-          DpText.styleFor(
-                DpTokens.light(),
-                DpTextRole.body.oneStepLarger,
+          SgText.styleFor(
+                SgTokens.light(),
+                SgTextRole.body.oneStepLarger,
               ).fontSize! *
-              DpScript.banglaShrink,
+              SgScript.banglaShrink,
         ),
       );
     });
@@ -721,9 +721,9 @@ void main() {
         tester,
         SizedBox(
           width: width,
-          child: DpText(
-            DpScript.allowBreaks(caption, threshold: 4),
-            role: DpTextRole.body,
+          child: SgText(
+            SgScript.allowBreaks(caption, threshold: 4),
+            role: SgTextRole.body,
             german: true,
           ),
         ),
@@ -752,13 +752,13 @@ void main() {
             if (span is TextSpan && span.text != null) spans.add(span);
             return true;
           });
-      final own = DpText.styleFor(
-        DpTokens.light(),
-        DpTextRole.body.oneStepLarger,
+      final own = SgText.styleFor(
+        SgTokens.light(),
+        SgTextRole.body.oneStepLarger,
       ).fontSize!;
       expect(
-        spans.singleWhere((s) => DpScript.hasBengali(s.text!)).style!.fontSize,
-        moreOrLessEquals(own * DpScript.banglaShrink),
+        spans.singleWhere((s) => SgScript.hasBengali(s.text!)).style!.fontSize,
+        moreOrLessEquals(own * SgScript.banglaShrink),
       );
       expectNoWordBroken(tester);
       expect(
@@ -777,9 +777,9 @@ void main() {
           tester,
           SizedBox(
             width: width,
-            child: DpText(
-              'Wohnungsamt Ab${DpScript.softHyphen}fahrt',
-              role: DpTextRole.body,
+            child: SgText(
+              'Wohnungsamt Ab${SgScript.softHyphen}fahrt',
+              role: SgTextRole.body,
               german: true,
             ),
           ),
@@ -796,7 +796,7 @@ void main() {
     ) async {
       await pump(
         tester,
-        const SizedBox(width: 220, child: DpHeadword('selbstbewusst')),
+        const SizedBox(width: 220, child: SgHeadword('selbstbewusst')),
       );
       final lines = lineEnds(tester);
       expect(lines, isNotEmpty, reason: 'too wide for one line');
@@ -811,7 +811,7 @@ void main() {
         tester,
         const SizedBox(
           width: 150,
-          child: DpHeadword('Geschwindigkeitsbegrenzung', article: 'die'),
+          child: SgHeadword('Geschwindigkeitsbegrenzung', article: 'die'),
         ),
       );
       final box =
@@ -830,9 +830,9 @@ void main() {
           width: 150,
           child: DefaultTextStyle.merge(
             maxLines: 1,
-            child: DpText(
-              DpScript.allowBreaks('die Haftpflichtversicherung zahlt'),
-              role: DpTextRole.body,
+            child: SgText(
+              SgScript.allowBreaks('die Haftpflichtversicherung zahlt'),
+              role: SgTextRole.body,
               german: true,
             ),
           ),
@@ -847,7 +847,7 @@ void main() {
   });
 
   group('#419 a hyphen in running text too', () {
-    testWidgets('#419 DpText: a line that ends at a syllable shows "-", and '
+    testWidgets('#419 SgText: a line that ends at a syllable shows "-", and '
         'a screen reader hears the words as they are, in their voice', (
       tester,
     ) async {
@@ -856,9 +856,9 @@ void main() {
         tester,
         const SizedBox(
           width: 150,
-          child: DpText(
+          child: SgText(
             'die Haftpflichtversicherung zahlt',
-            role: DpTextRole.body,
+            role: SgTextRole.body,
             allowBreaks: true,
             german: true,
           ),
@@ -875,7 +875,7 @@ void main() {
       expect(label.string, 'die Haftpflichtversicherung zahlt');
       expect(
         label.attributes.whereType<LocaleStringAttribute>().single.locale,
-        DpScript.deDE,
+        SgScript.deDE,
       );
       semantics.dispose();
     });
@@ -927,10 +927,10 @@ void main() {
     test("#504 each breaks between its aksharas, and at the content's own "
         'joints, as the table says', () {
       for (final MapEntry(key: german, value: pron) in prons.entries) {
-        final broken = DpScript.banglaBreaks(pron);
-        expect(broken.replaceAll(DpScript.softHyphen, ''), pron);
+        final broken = SgScript.banglaBreaks(pron);
+        expect(broken.replaceAll(SgScript.softHyphen, ''), pron);
         expect(
-          broken.split(DpScript.softHyphen),
+          broken.split(SgScript.softHyphen),
           table[german],
           reason: german,
         );
@@ -941,7 +941,7 @@ void main() {
         'consonant a joint closes, and none follows a hasanta', () {
       const shy = 0xAD, hasanta = 0x9CD, joint = 0x200C;
       for (final pron in prons.values) {
-        final units = DpScript.banglaBreaks(pron).codeUnits;
+        final units = SgScript.banglaBreaks(pron).codeUnits;
         int at(int i) => i < units.length ? units[i] : 0;
         for (var i = 0; i < units.length; i++) {
           if (units[i] != shy) continue;
@@ -974,26 +974,26 @@ void main() {
 
     test('#504 nothing breaks before the first Bangla letter: an opening "/" '
         'stays with it', () {
-      final broken = DpScript.banglaBreaks('/${prons['Morgen']}/');
-      expect(broken, isNot(contains(DpScript.softHyphen)));
-      final long = DpScript.banglaBreaks(
+      final broken = SgScript.banglaBreaks('/${prons['Morgen']}/');
+      expect(broken, isNot(contains(SgScript.softHyphen)));
+      final long = SgScript.banglaBreaks(
         '/${prons['Geschwindigkeitsbegrenzung']}/',
       );
-      expect(long.indexOf(DpScript.softHyphen), greaterThan(3));
+      expect(long.indexOf(SgScript.softHyphen), greaterThan(3));
     });
   });
 
   group('#539 the course German', () {
-    testWidgets('DpText(german: true) breaks a long compound too wide for '
+    testWidgets('SgText(german: true) breaks a long compound too wide for '
         'its line at a syllable, with its "-", though the text offers no '
         'soft hyphen', (tester) async {
       await pump(
         tester,
         const SizedBox(
           width: 150,
-          child: DpText(
+          child: SgText(
             'Die Haftpflichtversicherung zahlt.',
-            role: DpTextRole.body,
+            role: SgTextRole.body,
             german: true,
           ),
         ),
@@ -1007,7 +1007,7 @@ void main() {
     });
   });
 
-  group('#535 DpGermanRuns', () {
+  group('#535 SgGermanRuns', () {
     testWidgets('a marked long compound breaks at a syllable with its "-", '
         'and the sentence is read whole, in a German voice', (tester) async {
       final semantics = tester.ensureSemantics();
@@ -1016,7 +1016,7 @@ void main() {
         tester,
         const SizedBox(
           width: 150,
-          child: DpGermanRuns(<TextSpan>[
+          child: SgGermanRuns(<TextSpan>[
             TextSpan(text: 'Es gilt eine '),
             TextSpan(text: 'Geschwindigkeitsbegrenzung', style: marked),
             TextSpan(text: '.'),
@@ -1039,7 +1039,7 @@ void main() {
         label.attributes.whereType<LocaleStringAttribute>().map(
           (a) => a.locale,
         ),
-        everyElement(DpScript.deDE),
+        everyElement(SgScript.deDE),
       );
       semantics.dispose();
     });
@@ -1047,12 +1047,12 @@ void main() {
 
   group('long German compounds', () {
     test('a short word is left alone', () {
-      expect(DpScript.allowBreaks('Wohnung'), 'Wohnung');
+      expect(SgScript.allowBreaks('Wohnung'), 'Wohnung');
     });
 
     test('#405 a long compound breaks where a syllable begins', () {
       String shown(String word) =>
-          DpScript.allowBreaks(word).replaceAll(DpScript.softHyphen, '|');
+          SgScript.allowBreaks(word).replaceAll(SgScript.softHyphen, '|');
       expect(shown('Haftpflichtversicherung'), 'Haft|pflicht|ver|si|che|rung');
       expect(shown('Donaudampfschifffahrt'), 'Do|nau|dampf|schiff|fahrt');
       expect(shown('Reiseversicherung'), 'Rei|se|ver|si|che|rung');
@@ -1066,7 +1066,7 @@ void main() {
         'Geschwindigkeitsbegrenzung',
       ]) {
         expect(
-          DpScript.allowBreaks(word).replaceAll(DpScript.softHyphen, ''),
+          SgScript.allowBreaks(word).replaceAll(SgScript.softHyphen, ''),
           word,
           reason: 'the word itself is unchanged',
         );
@@ -1081,8 +1081,8 @@ void main() {
         'Zuckerbäckerei',
         'Wohnungsgeberbestaetigung',
       ]) {
-        final broken = DpScript.allowBreaks(word);
-        for (final match in DpScript.softHyphen.allMatches(broken)) {
+        final broken = SgScript.allowBreaks(word);
+        for (final match in SgScript.softHyphen.allMatches(broken)) {
           final after = broken[match.end];
           final before = broken[match.start - 1].toLowerCase();
           expect(
@@ -1102,7 +1102,7 @@ void main() {
 
     test('content that already carries soft hyphens is not second-guessed', () {
       const authored = 'Woh­nungs­geber';
-      expect(DpScript.allowBreaks(authored), authored);
+      expect(SgScript.allowBreaks(authored), authored);
     });
 
     testWidgets('breaks are off by default, so a headword is never broken up', (
@@ -1110,11 +1110,11 @@ void main() {
     ) async {
       await pump(
         tester,
-        const DpText('Wohnungsgeberbestaetigung', role: DpTextRole.body),
+        const SgText('Wohnungsgeberbestaetigung', role: SgTextRole.body),
       );
       expect(
         tester.widget<Text>(find.byType(Text)).data,
-        isNot(contains(DpScript.softHyphen)),
+        isNot(contains(SgScript.softHyphen)),
       );
     });
   });
@@ -1130,7 +1130,7 @@ void main() {
           tester,
           const SizedBox(
             width: 200,
-            child: DpHeadword('Wohnungsgeberbestaetigung', article: 'die'),
+            child: SgHeadword('Wohnungsgeberbestaetigung', article: 'die'),
           ),
           textScale: 2,
         );
@@ -1148,7 +1148,7 @@ void main() {
         for (final child in span.children!.cast<TextSpan>()) {
           expect(
             child.style!.fontSize,
-            DpTypeTokens.defaults.display.size,
+            SgTypeTokens.defaults.display.size,
             reason:
                 'the headword stays at its role; the scaler makes it bigger',
           );
@@ -1162,7 +1162,7 @@ void main() {
         tester,
         const SizedBox(
           width: 200,
-          child: DpHeadword('Wohnungsgeberbestaetigung', article: 'die'),
+          child: SgHeadword('Wohnungsgeberbestaetigung', article: 'die'),
         ),
         textScale: 2,
       );
@@ -1171,19 +1171,19 @@ void main() {
       );
       expect(
         paragraph.size.height,
-        greaterThan(DpTypeTokens.defaults.display.height),
+        greaterThan(SgTypeTokens.defaults.display.height),
         reason: 'a compound too wide for the card must run onto more lines',
       );
     });
 
     testWidgets('the article is printed, not only coloured', (tester) async {
-      await pump(tester, const DpHeadword('Wohnung', article: 'die'));
+      await pump(tester, const SgHeadword('Wohnung', article: 'die'));
       final span = tester.widget<Text>(find.byType(Text)).textSpan! as TextSpan;
 
       expect(span.toPlainText(), 'die Wohnung');
       expect(
         (span.children!.first as TextSpan).style!.color,
-        DpPalette.light.dieText,
+        SgPalette.light.dieText,
         reason:
             'gender is carried by colour AND by the printed article — '
             'accessibility-performance.md forbids colour alone',
@@ -1191,7 +1191,7 @@ void main() {
     });
 
     testWidgets('a word with no article renders without one', (tester) async {
-      await pump(tester, const DpHeadword('schnell'));
+      await pump(tester, const SgHeadword('schnell'));
       final span = tester.widget<Text>(find.byType(Text)).textSpan! as TextSpan;
       expect(span.toPlainText(), 'schnell');
     });
@@ -1200,16 +1200,16 @@ void main() {
   testWidgets('every role reads its size from the tokens, in every mode', (
     tester,
   ) async {
-    for (final (theme, tokens) in <(ThemeData, DpTokens)>[
-      (AppTheme.light(), DpTokens.light()),
-      (AppTheme.dark(), DpTokens.dark()),
-      (AppTheme.glass(), DpTokens.glass()),
+    for (final (theme, tokens) in <(ThemeData, SgTokens)>[
+      (AppTheme.light(), SgTokens.light()),
+      (AppTheme.dark(), SgTokens.dark()),
+      (AppTheme.glass(), SgTokens.glass()),
     ]) {
-      for (final role in DpTextRole.values) {
+      for (final role in SgTextRole.values) {
         await tester.pumpWidget(
           MaterialApp(
             theme: theme,
-            home: Scaffold(body: DpText('Revise', role: role)),
+            home: Scaffold(body: SgText('Revise', role: role)),
           ),
         );
         await tester.pumpAndSettle();
@@ -1236,7 +1236,7 @@ void main() {
             body: Center(
               child: SizedBox(
                 width: 180,
-                child: DpOneLine(title, role: DpTextRole.title),
+                child: SgOneLine(title, role: SgTextRole.title),
               ),
             ),
           ),

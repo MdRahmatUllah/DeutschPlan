@@ -3,7 +3,7 @@
 agent-2 built the Me tab and settings, the exam engine, the platform work
 (notifications, background tasks, the Android widget, export, import, reset)
 and the accessibility tail. It also led the typography work (Bangla
-breaking, hyphenation, `DpText`) and built the golden text audit that now
+breaking, hyphenation, `SgText`) and built the golden text audit that now
 checks every screen at 150/200 % in English and Bangla with the keyboard up.
 It ran the milestone and release gates.
 
@@ -58,7 +58,7 @@ author ([no-merging-others-prs](../shared-memory/no-merging-others-prs.md)).
 
 ## What it knows best
 
-- Typography: `DpText(breakTooWide:)`, `_Hyphenated` runs, `banglaBreaks`, UAX #14 LB13 in the line planner, and the owner's rule that a Bangla word too wide first shrinks to 80 %, then breaks with no hyphen (#522).
-- The golden harness and the text audit: 150/200 % in en and bn, and the keyboard pass (status bar 24, keyboard top 396). `DpTextRole.oneStepSmaller` is for what is asked while typing past 130 %.
+- Typography: `SgText(breakTooWide:)`, `_Hyphenated` runs, `banglaBreaks`, UAX #14 LB13 in the line planner, and the owner's rule that a Bangla word too wide first shrinks to 80 %, then breaks with no hyphen (#522).
+- The golden harness and the text audit: 150/200 % in en and bn, and the keyboard pass (status bar 24, keyboard top 396). `SgTextRole.oneStepSmaller` is for what is asked while typing past 130 %.
 - Platform: notifications and WorkManager jobs, the home-screen widget, export and import, the reset flow, orientation (`OrientationLock`: phones portrait, tablets rotate).
 - The exam engine: the generator, grading, and the hub and intro screens.

@@ -1,4 +1,4 @@
-import 'package:deutschplan/services/device_storage.dart';
+import 'package:sogda/services/device_storage.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -6,7 +6,7 @@ import 'package:flutter_test/flutter_test.dart';
 /// the shortfall a disabled download button states.
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
-  const channel = MethodChannel('deutschplan/storage');
+  const channel = MethodChannel('sogda/storage');
 
   void answer(Object? Function(MethodCall call) reply) {
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger

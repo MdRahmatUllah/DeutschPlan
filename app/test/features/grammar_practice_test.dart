@@ -1,20 +1,20 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:deutschplan/core/components/dp_button.dart';
-import 'package:deutschplan/core/components/dp_feedback.dart';
-import 'package:deutschplan/core/providers/app_providers.dart';
-import 'package:deutschplan/core/theme/app_theme.dart';
-import 'package:deutschplan/data/db/app_database.dart';
-import 'package:deutschplan/data/db/content_dao.dart';
-import 'package:deutschplan/data/repositories/rating_service.dart';
-import 'package:deutschplan/data/repositories/settings_repository.dart';
-import 'package:deutschplan/domain/grammar_item_generator.dart';
-import 'package:deutschplan/features/learn/grammar_practice_screen.dart';
-import 'package:deutschplan/features/learn/grammar_topic_screen.dart';
-import 'package:deutschplan/features/study/study_summary.dart';
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
-import 'package:deutschplan/main.dart'
+import 'package:sogda/core/components/sg_button.dart';
+import 'package:sogda/core/components/sg_feedback.dart';
+import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/core/theme/app_theme.dart';
+import 'package:sogda/data/db/app_database.dart';
+import 'package:sogda/data/db/content_dao.dart';
+import 'package:sogda/data/repositories/rating_service.dart';
+import 'package:sogda/data/repositories/settings_repository.dart';
+import 'package:sogda/domain/grammar_item_generator.dart';
+import 'package:sogda/features/learn/grammar_practice_screen.dart';
+import 'package:sogda/features/learn/grammar_topic_screen.dart';
+import 'package:sogda/features/study/study_summary.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
+import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
@@ -451,7 +451,7 @@ void main() {
     () async {
       final db = AppDatabase.memory();
       addTearDown(db.close);
-      final directory = Directory.systemTemp.createTempSync('dp_practice');
+      final directory = Directory.systemTemp.createTempSync('sg_practice');
       final content = ContentFixture.write('${directory.path}/content.db');
       await db.customStatement(
         "ATTACH DATABASE '${ContentDao.attachPath(content.file)}' AS c",
@@ -505,7 +505,7 @@ void main() {
       await tester.pumpAndSettle();
     }
 
-    Finder next() => find.widgetWithText(DpButton, l10n.practiceNext);
+    Finder next() => find.widgetWithText(SgButton, l10n.practiceNext);
 
     for (final percent in <int>[200, 150]) {
       testWidgets('at $percent % the sentence and its translation show whole '
@@ -529,7 +529,7 @@ void main() {
           ('the translation', find.text(gap.translation)),
           ('the field', find.byType(TextField)),
           // The inline umlaut row stays under the field.
-          ('the umlaut row', find.byType(DpUmlautBar)),
+          ('the umlaut row', find.byType(SgUmlautBar)),
         ]) {
           final rect = tester.getRect(shown);
           expect(rect.top, greaterThanOrEqualTo(room.top), reason: name);

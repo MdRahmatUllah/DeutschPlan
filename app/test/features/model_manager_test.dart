@@ -1,16 +1,16 @@
 import 'dart:io';
 
-import 'package:deutschplan/core/components/dp_button.dart';
-import 'package:deutschplan/core/providers/app_providers.dart';
-import 'package:deutschplan/core/theme/app_theme.dart';
-import 'package:deutschplan/data/repositories/model_repository.dart';
-import 'package:deutschplan/data/repositories/setting_keys.dart';
-import 'package:deutschplan/features/me/model_manager_screen.dart';
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
-import 'package:deutschplan/main.dart'
+import 'package:sogda/core/components/sg_button.dart';
+import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/core/theme/app_theme.dart';
+import 'package:sogda/data/repositories/model_repository.dart';
+import 'package:sogda/data/repositories/setting_keys.dart';
+import 'package:sogda/features/me/model_manager_screen.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
+import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
-import 'package:deutschplan/services/device_storage.dart';
-import 'package:deutschplan/services/model_downloads.dart';
+import 'package:sogda/services/device_storage.dart';
+import 'package:sogda/services/model_downloads.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
@@ -49,9 +49,9 @@ void main() {
   }
 
   /// The button whose label is [label].
-  DpButton button(WidgetTester tester, String label) => tester.widget<DpButton>(
+  SgButton button(WidgetTester tester, String label) => tester.widget<SgButton>(
     find.byWidgetPredicate(
-      (widget) => widget is DpButton && widget.label == label,
+      (widget) => widget is SgButton && widget.label == label,
     ),
   );
 
@@ -320,7 +320,7 @@ void main() {
     testWidgets('then deletes the model, which turns off what used it, and '
         'the voice lets go of its sessions', (tester) async {
       final settings = StubSettings();
-      final support = Directory.systemTemp.createTempSync('dp_m4');
+      final support = Directory.systemTemp.createTempSync('sg_m4');
       addTearDown(() {
         try {
           support.deleteSync(recursive: true);

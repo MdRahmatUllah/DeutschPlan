@@ -1,6 +1,6 @@
-# Onboarding: building DeutschPlan as a team of agents
+# Onboarding: building Sogda as a team of agents
 
-This is for every coding agent that works on DeutschPlan. Three of you
+This is for every coding agent that works on Sogda. Three of you
 (`agent-0`, the lead, and `agent-1`, `agent-2`) work at the same time, each on its own issue in its own worktree,
 coordinating through a shared task board. `CLAUDE.md` is the one-page
 summary; this is the whole of it. Read it once when you take an identity,
@@ -23,7 +23,7 @@ then again whenever something surprises you.
 
 ## 1. The project
 
-DeutschPlan is an offline German course for Bangla and English speakers, built
+Sogda is an offline German course for Bangla and English speakers, built
 in Flutter for Android and iOS. It covers 12 steps, A1.1 → C2.2: 5,593 words
 and 182 grammar topics. It has:
 
@@ -72,7 +72,7 @@ first machine, as it was set up.
 | Flutter | 3.47.5 / Dart 3.13.4 on PATH (`F:/appDevs/flutterSDK/flutter`). It matches `.fvmrc`. **No `fvm`, no `make`.** |
 | Python | 3.10 on PATH (docs say 3.11+). Has pytest, openpyxl, PyYAML and Pillow. |
 | gh | Logged in as `rahmat-ullah`. |
-| Android | SDK at `%LOCALAPPDATA%/Android/Sdk`. App id `io.github.rahmatullah.deutschplan` (#170; `com.example.deutschplan` before it: uninstall that one). Emulators: **`emulator-5554` (Pixel_8) is agent-3's (SQA) alone**; the developer agents share **`emulator-5558`** (Medium_Phone, API 36), `tools/device.py`'s default. Leave any other running emulator alone. |
+| Android | SDK at `%LOCALAPPDATA%/Android/Sdk`. App id `de.sogda.app` (ADR 28; `io.github.rahmatullah.deutschplan` (#170) and `com.example.deutschplan` before it: uninstall those). Emulators: **`emulator-5554` (Pixel_8) is agent-3's (SQA) alone**; the developer agents share **`emulator-5558`** (Medium_Phone, API 36), `tools/device.py`'s default. Leave any other running emulator alone. |
 | iOS | Impossible here (no Mac). iOS-only work is written blind and marked *unverified*. |
 | RAM | ~32 GB, often only ~4 GB free. Release builds start an 8 GB Gradle daemon: build APKs one at a time (the device lock, §3). |
 
@@ -385,7 +385,7 @@ it once cost a bug.
 
 ```
 F:/appDevs/deutschplan/
-  app/                        the Flutter app (package `deutschplan`)
+  app/                        the Flutter app (package `sogda`)
     lib/                      see below
     test/                     mirrors lib: core/ data/ db/ domain/ features/ golden/ router/ services/
     assets/db/content.db      the course (committed, read-only)
@@ -398,20 +398,20 @@ F:/appDevs/deutschplan/
 
 ```
 app/lib/
-  main.dart                  runApp(ProviderScope) → S1 while bootstrap runs → DeutschPlanApp (MaterialApp.router)
+  main.dart                  runApp(ProviderScope) → S1 while bootstrap runs → SogdaApp (MaterialApp.router)
   bootstrap.dart             all startup I/O: open user.db, attach content.db as schema `c`, load settings
   core/
     adaptive/adaptive.dart   the ONLY platform chrome: AdaptiveScaffold, AdaptiveBackButton, AdaptiveSwitch,
                              AdaptiveSegmented, AdaptiveTabBar, AdaptiveNavBar, AdaptiveRefresh,
                              Adaptive.showSheet / showConfirm / showTimePickerFor
-    components/              DpButton (primary/secondary/text; compact; drawnHeight), DpChip (step/status/filter/
-                             streak/webLink), DpPill, DpProgressRing + DpSegmentedBar, DpRatingBar, DpErrorPanel,
-                             DpUmlautBar, DpCallout, DpVerdictRow, DpToast/DpUndo, DpSlider, DpStepper,
-                             DpSpeakerButton, DpCoachMark
+    components/              SgButton (primary/secondary/text; compact; drawnHeight), SgChip (step/status/filter/
+                             streak/webLink), SgPill, SgProgressRing + SgSegmentedBar, SgRatingBar, SgErrorPanel,
+                             SgUmlautBar, SgCallout, SgVerdictRow, SgToast/SgUndo, SgSlider, SgStepper,
+                             SgSpeakerButton, SgCoachMark
     providers/app_providers.dart   core providers + every repository and service provider
-    theme/                   DpTokens (`context.tokens`: color, surface, typography, shape, spacing, motion),
-                             DpSurface (kinds card, cardStrong, bar, tint), AppTheme, AuroraBackdrop, GlassCapability
-    typography/dp_text.dart  DpText (Bangla one size larger, automatically), DpHeadword (article colour), DpOneLine
+    theme/                   SgTokens (`context.tokens`: color, surface, typography, shape, spacing, motion),
+                             SgSurface (kinds card, cardStrong, bar, tint), AppTheme, AuroraBackdrop, GlassCapability
+    typography/sg_text.dart  SgText (Bangla one size larger, automatically), SgHeadword (article colour), SgOneLine
   data/
     db/user_schema.drift     user.db DDL (17 tables) — the only schema source (ADR 22)
     db/app_database.dart     AppDatabase, latestSchemaVersion, stepByStep migrations
@@ -449,8 +449,8 @@ app/lib/
    | `showModalBottomSheet(` | `Adaptive.showSheet` |
    | `AlertDialog(` | `Adaptive.showConfirm` |
    | `showTimePicker(` | `Adaptive.showTimePickerFor` |
-   | `FilledButton`, `ElevatedButton`, `OutlinedButton`, `TextButton(` | `DpButton` (and its kinds) |
-   | `Chip(`, `ActionChip(`, `FilterChip(` | `DpChip` |
+   | `FilledButton`, `ElevatedButton`, `OutlinedButton`, `TextButton(` | `SgButton` (and its kinds) |
+   | `Chip(`, `ActionChip(`, `FilterChip(` | `SgChip` |
 
    The Cupertino equivalents are banned too. Escape hatch: `// ponytail: allow-chrome`.
 5. drift only in `lib/data/`.
@@ -466,7 +466,7 @@ app/lib/
 - Declare providers with `@riverpod` / `@Riverpod(keepAlive: true)` and `part 'x.g.dart'`. They are generated as `xProvider`.
 - A screen's providers sit at the top of its own file.
 - Anything the UI watches is a `Stream` provider over a drift `.watch()`, so a write anywhere refreshes it. One-shot and derived values are `Future` providers.
-- Loading: `.value` is null, so render nothing or a skeleton. Errors: `DpErrorPanel`.
+- Loading: `.value` is null, so render nothing or a skeleton. Errors: `SgErrorPanel`.
 - Drift row classes can't be provider return types. Wrap them in a class or a record (`WordWithState`, `StepWord`, `CategoryProgress`).
 - `appDatabaseProvider` and `settingsProvider` are supplied by bootstrap. Tests override them, or override every screen provider they touch.
 
@@ -498,7 +498,7 @@ app/lib/
 
 **Theming**
 - Widgets read `context.tokens`, never hex.
-- Every card, sheet, header and bar is a `DpSurface(kind:)`. In scrolling lists use `DpSurfaceKind.bar`: glass allows three blur layers on screen.
+- Every card, sheet, header and bar is a `SgSurface(kind:)`. In scrolling lists use `SgSurfaceKind.bar`: glass allows three blur layers on screen.
 - Glass screens wrap the scaffold in `AuroraBackdrop` with a transparent background (see `categories_screen.dart`). The tab colours are Today = primary, Learn = accent, Search = die, Me = der.
 
 **Reuse before you write**
@@ -522,9 +522,9 @@ app/lib/
 practice adds:
 
 - **Lints:** flutter_lints + riverpod_lint + `prefer_final_locals`, `avoid_dynamic_calls`, `require_trailing_commas`, `always_declare_return_types`. Zero warnings. `dart format` is the style.
-- **Imports:** package imports (`package:deutschplan/...`) everywhere. That is the practice, whatever the doc says about relative ones.
+- **Imports:** package imports (`package:sogda/...`) everywhere. That is the practice, whatever the doc says about relative ones.
 - **Value types:** `@immutable` classes, records and `sealed` class hierarchies. Not freezed: it is a dependency but unused.
-- **Text:** `DpText(role:)`, never `Text`. Headwords use `DpHeadword`. Every string is in ARB:
+- **Text:** `SgText(role:)`, never `Text`. Headwords use `SgHeadword`. Every string is in ARB:
   - `app_en.arb` needs an `@key` with a description that names the screen id.
   - `app_bn.arb` has the same key, no metadata, and plurals with `other` only.
   - German course text comes from content.db. Fixed German UI copy is ARB, and says so in its description.

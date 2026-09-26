@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:deutschplan/services/tts/nfkd_latin.dart';
-import 'package:deutschplan/services/tts/supertonic_text.dart';
+import 'package:sogda/services/tts/nfkd_latin.dart';
+import 'package:sogda/services/tts/supertonic_text.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 /// Supertonic 3's text front end (#152), against vectors from the reference

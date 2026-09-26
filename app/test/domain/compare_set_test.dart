@@ -1,6 +1,6 @@
-import 'package:deutschplan/domain/answer_check.dart' show Verdict;
-import 'package:deutschplan/domain/compare_set.dart';
-import 'package:deutschplan/domain/quiz_builder.dart';
+import 'package:sogda/domain/answer_check.dart' show Verdict;
+import 'package:sogda/domain/compare_set.dart';
+import 'package:sogda/domain/quiz_builder.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 /// W2's sets and their quiz — #142, `docs/04-screens/compare.md`. The sets

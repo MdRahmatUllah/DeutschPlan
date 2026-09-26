@@ -1,29 +1,28 @@
 import 'dart:async';
 
-import 'package:deutschplan/core/components/dp_feedback.dart';
-import 'package:deutschplan/core/adaptive/adaptive.dart';
-import 'package:deutschplan/core/components/dp_button.dart';
-import 'package:deutschplan/core/providers/app_providers.dart';
-import 'package:deutschplan/core/theme/aurora_backdrop.dart';
-import 'package:deutschplan/core/theme/dp_surface.dart';
-import 'package:deutschplan/core/theme/dp_tokens.dart';
-import 'package:deutschplan/core/typography/dp_text.dart';
-import 'package:deutschplan/data/repositories/setting_keys.dart';
-import 'package:deutschplan/data/repositories/word_repository.dart';
-import 'package:deutschplan/domain/fsrs.dart' show Rating;
-import 'package:deutschplan/data/repositories/rating_service.dart'
-    show CardMode;
-import 'package:deutschplan/features/study/study_back.dart';
-import 'package:deutschplan/features/study/study_card.dart';
-import 'package:deutschplan/features/study/study_cloze.dart';
-import 'package:deutschplan/features/study/study_motion.dart';
-import 'package:deutschplan/features/study/study_rating.dart';
-import 'package:deutschplan/features/study/study_session.dart';
-import 'package:deutschplan/features/study/study_summary.dart';
-import 'package:deutschplan/features/study/write_guard.dart';
-import 'package:deutschplan/router/cross_tab.dart';
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
-import 'package:deutschplan/router/routes.dart';
+import 'package:sogda/core/components/sg_feedback.dart';
+import 'package:sogda/core/adaptive/adaptive.dart';
+import 'package:sogda/core/components/sg_button.dart';
+import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/core/theme/aurora_backdrop.dart';
+import 'package:sogda/core/theme/sg_surface.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/core/typography/sg_text.dart';
+import 'package:sogda/data/repositories/setting_keys.dart';
+import 'package:sogda/data/repositories/word_repository.dart';
+import 'package:sogda/domain/fsrs.dart' show Rating;
+import 'package:sogda/data/repositories/rating_service.dart' show CardMode;
+import 'package:sogda/features/study/study_back.dart';
+import 'package:sogda/features/study/study_card.dart';
+import 'package:sogda/features/study/study_cloze.dart';
+import 'package:sogda/features/study/study_motion.dart';
+import 'package:sogda/features/study/study_rating.dart';
+import 'package:sogda/features/study/study_session.dart';
+import 'package:sogda/features/study/study_summary.dart';
+import 'package:sogda/features/study/write_guard.dart';
+import 'package:sogda/router/cross_tab.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
+import 'package:sogda/router/routes.dart';
 import 'package:flutter/services.dart' show HapticFeedback;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
@@ -255,7 +254,7 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
   }
 
   /// Writes, then offers its *Undo* — the same bar for every card action
-  /// (DpUndo). A write that fails keeps the card, with Retry and Export
+  /// (SgUndo). A write that fails keeps the card, with Retry and Export
   /// (#174); there is nothing to undo until one goes through, and a double
   /// tap's second call writes nothing.
   Future<void> _withUndo(
@@ -266,7 +265,7 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
     final notifier = ref.read(studySessionProvider(widget.args).notifier);
     final word = ref.read(studyWordProvider(item.uid)).value?.word;
     if (!await guardWrite(context, write) || !mounted) return;
-    DpUndo.show(
+    SgUndo.show(
       context,
       message: message(word == null ? item.uid : spokenForm(word)),
       lift: StudyFrontActions.clearanceOf(context),
@@ -376,7 +375,7 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
     // keyboard and the sentence went under the top bar. The bar gives its
     // row to the card until the keyboard goes (and the field stops keeping
     // *Check* in view, `StudyAnswerField`).
-    final typing = DpScript.largeTyping(context);
+    final typing = SgScript.largeTyping(context);
     final body = SafeArea(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -604,9 +603,9 @@ class _TopBar extends StatelessWidget {
           action(Icons.close, l10n.studyClose, onClose),
           const SizedBox(width: 4),
           Expanded(
-            child: DpText(
+            child: SgText(
               label,
-              role: DpTextRole.bodyLarge,
+              role: SgTextRole.bodyLarge,
               weight: 600,
               textAlign: TextAlign.center,
             ),
@@ -725,9 +724,9 @@ class _BlockBanner extends StatelessWidget {
                         horizontal: 12,
                         vertical: 8,
                       ),
-                      child: DpText(
+                      child: SgText(
                         label,
-                        role: DpTextRole.label,
+                        role: SgTextRole.label,
                         weight: 700,
                         textAlign: TextAlign.center,
                         color: kind == SessionBlockKind.grammar
@@ -793,7 +792,7 @@ class StudyCardSlot extends ConsumerWidget {
             item.kind == SessionBlockKind.backlog,
       );
     }
-    return DpSurface(
+    return SgSurface(
       selected: !tokens.isGlass,
       padding: const EdgeInsets.fromLTRB(26, 20, 20, 20),
       child: SizedBox(
@@ -851,7 +850,7 @@ class _StudyMenuState extends ConsumerState<StudyMenu> {
           Row(
             children: <Widget>[
               Expanded(
-                child: DpText(l10n.studyMenuAutoplay, role: DpTextRole.body),
+                child: SgText(l10n.studyMenuAutoplay, role: SgTextRole.body),
               ),
               AdaptiveSwitch(
                 value: autoplay,
@@ -864,7 +863,7 @@ class _StudyMenuState extends ConsumerState<StudyMenu> {
             ],
           ),
           const SizedBox(height: 16),
-          DpText(l10n.studyMenuSpeed, role: DpTextRole.body),
+          SgText(l10n.studyMenuSpeed, role: SgTextRole.body),
           const SizedBox(height: 8),
           AdaptiveSegmented<double>(
             segments: _speeds,
@@ -876,9 +875,9 @@ class _StudyMenuState extends ConsumerState<StudyMenu> {
           ),
           const SizedBox(height: 8),
           if (word)
-            DpButton(
+            SgButton(
               label: l10n.studyMenuWordDetails,
-              kind: DpButtonKind.text,
+              kind: SgButtonKind.text,
               onPressed: () {
                 Navigator.of(context).pop();
                 // A word of the learner's own opens where it was written:
@@ -890,9 +889,9 @@ class _StudyMenuState extends ConsumerState<StudyMenu> {
                 }
               },
             ),
-          DpButton(
+          SgButton(
             label: l10n.studyMenuReport,
-            kind: DpButtonKind.text,
+            kind: SgButtonKind.text,
             onPressed: () {
               Navigator.of(context).pop();
               unawaited(

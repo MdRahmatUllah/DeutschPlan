@@ -1,6 +1,6 @@
-import 'package:deutschplan/data/db/app_database.dart';
-import 'package:deutschplan/domain/plan_engine.dart';
-import 'package:deutschplan/domain/sentence_picker.dart';
+import 'package:sogda/data/db/app_database.dart';
+import 'package:sogda/domain/plan_engine.dart';
+import 'package:sogda/domain/sentence_picker.dart';
 import 'package:drift/drift.dart';
 
 /// [SentenceStore] over drift: `word_examples` from the attached course,

@@ -4,7 +4,7 @@
 /// Plain Dart: no Flutter, no drift.
 library;
 
-import 'package:deutschplan/domain/text_norm.dart';
+import 'package:sogda/domain/text_norm.dart';
 
 /// A gap in a sentence, as offsets into it.
 typedef ClozeGap = ({int start, int end});

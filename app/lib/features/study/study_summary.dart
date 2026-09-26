@@ -1,19 +1,19 @@
 import 'dart:async';
 import 'dart:math' as math;
 
-import 'package:deutschplan/core/components/dp_button.dart';
-import 'package:deutschplan/core/providers/app_providers.dart';
-import 'package:deutschplan/core/theme/dp_surface.dart';
-import 'package:deutschplan/core/theme/dp_tokens.dart';
-import 'package:deutschplan/core/typography/dp_text.dart';
-import 'package:deutschplan/data/repositories/plan_store.dart';
-import 'package:deutschplan/domain/plan_engine.dart' show PlanKind;
-import 'package:deutschplan/features/study/study_back.dart';
-import 'package:deutschplan/features/study/study_card.dart';
-import 'package:deutschplan/features/study/study_screen.dart';
-import 'package:deutschplan/features/study/study_session.dart';
-import 'package:deutschplan/features/words/speak.dart';
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
+import 'package:sogda/core/components/sg_button.dart';
+import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/core/theme/sg_surface.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/core/typography/sg_text.dart';
+import 'package:sogda/data/repositories/plan_store.dart';
+import 'package:sogda/domain/plan_engine.dart' show PlanKind;
+import 'package:sogda/features/study/study_back.dart';
+import 'package:sogda/features/study/study_card.dart';
+import 'package:sogda/features/study/study_screen.dart';
+import 'package:sogda/features/study/study_session.dart';
+import 'package:sogda/features/words/speak.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -190,7 +190,7 @@ class _StudySummarySheetState extends ConsumerState<StudySummarySheet> {
         ? 1
         : math.max(1, ref.read(clockProvider)().difference(started).inMinutes);
 
-    final large = DpScript.large(context);
+    final large = SgScript.large(context);
     final head = <Widget>[
       Center(
         child: Container(
@@ -203,11 +203,11 @@ class _StudySummarySheetState extends ConsumerState<StudySummarySheet> {
           ),
         ),
       ),
-      DpText(l10n.summaryTitle, role: DpTextRole.headline),
+      SgText(l10n.summaryTitle, role: SgTextRole.headline),
       const SizedBox(height: 2),
-      DpText(
+      SgText(
         l10n.summaryStats(cards, minutes),
-        role: DpTextRole.caption,
+        role: SgTextRole.caption,
         color: tokens.color.textSecondary,
       ),
       const SizedBox(height: 12),
@@ -224,9 +224,9 @@ class _StudySummarySheetState extends ConsumerState<StudySummarySheet> {
     final watchRows = <Widget>[
       if (watch.isNotEmpty) ...<Widget>[
         const SizedBox(height: 18),
-        DpText(
+        SgText(
           l10n.summaryWatch.toUpperCase(),
-          role: DpTextRole.caption,
+          role: SgTextRole.caption,
           weight: 700,
           letterSpacing: 0.6,
           color: tokens.color.textSecondary,
@@ -237,9 +237,9 @@ class _StudySummarySheetState extends ConsumerState<StudySummarySheet> {
     ];
     final buttons = <Widget>[
       const SizedBox(height: 10),
-      // A node of its own, as every DpButton is (#396, #517): the summary's
+      // A node of its own, as every SgButton is (#396, #517): the summary's
       // text isn't read as *Done for now*.
-      DpButton(
+      SgButton(
         label: switch (primary) {
           StudyNextStep.revise => l10n.summaryRevise(next!.revise.length),
           StudyNextStep.newWords => l10n.summaryNew(next!.newWords.length),
@@ -253,23 +253,23 @@ class _StudySummarySheetState extends ConsumerState<StudySummarySheet> {
       ),
       if (backlog > 0) ...<Widget>[
         const SizedBox(height: 10),
-        DpButton(
+        SgButton(
           label: l10n.summaryBacklog(backlog),
-          kind: DpButtonKind.secondary,
+          kind: SgButtonKind.secondary,
           onPressed: () => widget.onStep(StudyNextStep.backlog),
         ),
       ],
       if (primary != StudyNextStep.done) ...<Widget>[
         const SizedBox(height: 10),
-        DpButton(
+        SgButton(
           label: l10n.summaryDone,
-          kind: DpButtonKind.text,
+          kind: SgButtonKind.text,
           onPressed: () => widget.onStep(StudyNextStep.done),
         ),
       ],
     ];
-    final sheet = DpSurface(
-      kind: DpSurfaceKind.cardStrong,
+    final sheet = SgSurface(
+      kind: SgSurfaceKind.cardStrong,
       radius: tokens.shape.sheet,
       // The sheet runs its own radius past the screen's foot, so only its
       // top corners show rounded.
@@ -370,7 +370,7 @@ class _Pill extends StatelessWidget {
     final tokens = context.tokens;
     // The artboard's 28, grown with the text size (#165).
     return Container(
-      height: DpScript.grow(context, 28, role: DpTextRole.label),
+      height: SgScript.grow(context, 28, role: SgTextRole.label),
       padding: const EdgeInsets.symmetric(horizontal: 10),
       decoration: BoxDecoration(
         color: colour,
@@ -380,9 +380,9 @@ class _Pill extends StatelessWidget {
       // Hugs its label: a pill, not a bar.
       child: Center(
         widthFactor: 1,
-        child: DpText(
+        child: SgText(
           label,
-          role: DpTextRole.label,
+          role: SgTextRole.label,
           weight: 700,
           color: tokens.color.onAccent,
         ),
@@ -402,7 +402,7 @@ class _WatchRow extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final word = ref.watch(studyWordProvider(uid)).value?.word;
     // The artboard's 44, grown with the text size (#165).
-    final height = DpScript.grow(context, 44);
+    final height = SgScript.grow(context, 44);
     if (word == null) return SizedBox(height: height);
     final spoken = spokenForm(word);
     return SizedBox(
@@ -410,11 +410,11 @@ class _WatchRow extends ConsumerWidget {
       child: Row(
         children: <Widget>[
           Expanded(
-            child: DpHeadword(
+            child: SgHeadword(
               word.german,
               article: word.article,
               plural: word.forms,
-              role: DpTextRole.bodyLarge,
+              role: SgTextRole.bodyLarge,
             ),
           ),
           StudyPlayButton(

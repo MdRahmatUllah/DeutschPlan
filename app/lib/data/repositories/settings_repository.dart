@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:deutschplan/data/db/app_database.dart';
-import 'package:deutschplan/data/repositories/setting_keys.dart';
+import 'package:sogda/data/db/app_database.dart';
+import 'package:sogda/data/repositories/setting_keys.dart';
 
 /// Every preference, read synchronously and written through to `settings`.
 ///

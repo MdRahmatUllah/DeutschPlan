@@ -1,12 +1,12 @@
-import 'package:deutschplan/core/adaptive/adaptive.dart';
-import 'package:deutschplan/core/providers/app_providers.dart';
-import 'package:deutschplan/core/theme/aurora_backdrop.dart';
-import 'package:deutschplan/core/theme/dp_surface.dart';
-import 'package:deutschplan/core/theme/dp_tokens.dart';
-import 'package:deutschplan/core/typography/dp_text.dart';
-import 'package:deutschplan/data/db/content_dao.dart';
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
-import 'package:deutschplan/router/routes.dart';
+import 'package:sogda/core/adaptive/adaptive.dart';
+import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/core/theme/aurora_backdrop.dart';
+import 'package:sogda/core/theme/sg_surface.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/core/typography/sg_text.dart';
+import 'package:sogda/data/db/content_dao.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
+import 'package:sogda/router/routes.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:material_ui/material_ui.dart';
@@ -79,9 +79,9 @@ class AboutScreen extends ConsumerWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    DpText(l10n.appTitle, role: DpTextRole.title),
+                    SgText(l10n.appTitle, role: SgTextRole.title),
                     if (version != null && facts != null)
-                      DpText(
+                      SgText(
                         built == null
                             ? l10n.aboutVersionUndated(
                                 version.version,
@@ -98,7 +98,7 @@ class AboutScreen extends ConsumerWidget {
                                   locale,
                                 ).format(built.toLocal()),
                               ),
-                        role: DpTextRole.caption,
+                        role: SgTextRole.caption,
                         color: tokens.color.textSecondary,
                       ),
                   ],
@@ -107,26 +107,26 @@ class AboutScreen extends ConsumerWidget {
             ],
           ),
           const SizedBox(height: 16),
-          DpSurface(
+          SgSurface(
             padding: const EdgeInsets.all(16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                DpText(
+                SgText(
                   l10n.aboutPrivacy.toUpperCase(),
                   semanticsLabel: l10n.aboutPrivacy,
-                  role: DpTextRole.caption,
+                  role: SgTextRole.caption,
                   weight: 700,
                   letterSpacing: 0.6,
                   color: tokens.color.textSecondary,
                 ),
                 const SizedBox(height: 8),
-                DpText(l10n.aboutPrivacyText, role: DpTextRole.body),
+                SgText(l10n.aboutPrivacyText, role: SgTextRole.body),
               ],
             ),
           ),
           const SizedBox(height: 16),
-          DpSurface(
+          SgSurface(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
             child: Column(
               children: <Widget>[
@@ -183,9 +183,9 @@ class _Mark extends StatelessWidget {
           child: Center(
             // The mark, not text: it keeps its size at 200 %.
             child: MediaQuery.withNoTextScaling(
-              child: DpText(
+              child: SgText(
                 'D',
-                role: DpTextRole.title,
+                role: SgTextRole.title,
                 weight: 800,
                 color: tokens.color.onAccent,
               ),
@@ -238,11 +238,11 @@ class _Link extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        DpText(title, role: DpTextRole.body, weight: 600),
+                        SgText(title, role: SgTextRole.body, weight: 600),
                         if (note.isNotEmpty)
-                          DpText(
+                          SgText(
                             note,
-                            role: DpTextRole.caption,
+                            role: SgTextRole.caption,
                             color: tokens.color.textSecondary,
                           ),
                       ],

@@ -1,8 +1,8 @@
-import 'package:deutschplan/core/components/dp_feedback.dart';
-import 'package:deutschplan/core/theme/app_theme.dart';
-import 'package:deutschplan/core/theme/dp_tokens.dart';
-import 'package:deutschplan/core/typography/dp_text.dart';
-import 'package:deutschplan/main.dart'
+import 'package:sogda/core/components/sg_feedback.dart';
+import 'package:sogda/core/theme/app_theme.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/core/typography/sg_text.dart';
+import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
 import 'package:flutter/rendering.dart' show RenderParagraph;
 import 'package:flutter_test/flutter_test.dart';
@@ -26,10 +26,10 @@ void main() {
     await tester.pumpAndSettle();
   }
 
-  group('DpUmlautBar insertion', () {
+  group('SgUmlautBar insertion', () {
     test('appends when the field has never been focused', () {
       final controller = TextEditingController(text: 'Stra');
-      DpUmlautBar.insert(controller, 'ß');
+      SgUmlautBar.insert(controller, 'ß');
       expect(controller.text, 'Straß');
       expect(controller.selection.baseOffset, 5);
     });
@@ -40,7 +40,7 @@ void main() {
       final controller = TextEditingController(text: 'Strasse')
         ..selection = const TextSelection.collapsed(offset: 4);
 
-      DpUmlautBar.insert(controller, 'ß');
+      SgUmlautBar.insert(controller, 'ß');
       expect(controller.text, 'Straßsse');
       expect(controller.selection.baseOffset, 5);
     });
@@ -49,33 +49,33 @@ void main() {
       final controller = TextEditingController(text: 'Strasse')
         ..selection = const TextSelection(baseOffset: 4, extentOffset: 6);
 
-      DpUmlautBar.insert(controller, 'ß');
+      SgUmlautBar.insert(controller, 'ß');
       expect(controller.text, 'Straße');
       expect(controller.selection.baseOffset, 5);
     });
 
     test('the caret ends after the inserted character every time', () {
       final controller = TextEditingController();
-      for (final key in DpUmlautBar.keys.keys) {
-        DpUmlautBar.insert(controller, key);
+      for (final key in SgUmlautBar.keys.keys) {
+        SgUmlautBar.insert(controller, key);
       }
       expect(controller.text, 'äöüß');
       expect(controller.selection.baseOffset, 4);
     });
   });
 
-  group('DpUmlautBar widget', () {
+  group('SgUmlautBar widget', () {
     testWidgets('it offers exactly the four keys, 44 dp tall', (tester) async {
       final controller = TextEditingController();
-      await pump(tester, DpUmlautBar(controller: controller));
+      await pump(tester, SgUmlautBar(controller: controller));
 
-      for (final key in DpUmlautBar.keys.keys) {
+      for (final key in SgUmlautBar.keys.keys) {
         expect(find.text(key), findsOneWidget);
       }
-      expect(DpUmlautBar.keys.keys, <String>['ä', 'ö', 'ü', 'ß']);
+      expect(SgUmlautBar.keys.keys, <String>['ä', 'ö', 'ü', 'ß']);
       expect(
-        tester.getSize(find.byType(DpUmlautBar)).height,
-        DpUmlautBar.keyHeight,
+        tester.getSize(find.byType(SgUmlautBar)).height,
+        SgUmlautBar.keyHeight,
       );
     });
 
@@ -89,13 +89,13 @@ void main() {
             builder: (context) => MediaQuery(
               data: MediaQuery.of(context)
                   .copyWith(textScaler: AndroidTextScaler(percent / 100)),
-              child: DpUmlautBar(controller: controller),
+              child: SgUmlautBar(controller: controller),
             ),
           ),
         );
-        final bar = find.byType(DpUmlautBar);
+        final bar = find.byType(SgUmlautBar);
         expect(
-          DpUmlautBar.rowHeight(tester.element(bar)),
+          SgUmlautBar.rowHeight(tester.element(bar)),
           moreOrLessEquals(tester.getSize(bar).height, epsilon: 0.5),
           reason: '$percent %',
         );
@@ -104,7 +104,7 @@ void main() {
 
     testWidgets('tapping a key types it', (tester) async {
       final controller = TextEditingController();
-      await pump(tester, DpUmlautBar(controller: controller));
+      await pump(tester, SgUmlautBar(controller: controller));
 
       await tester.tap(find.text('ö'));
       await tester.pumpAndSettle();
@@ -114,19 +114,19 @@ void main() {
     testWidgets('long-pressing ß types the capital', (tester) async {
       // ẞ exists but is on no keyboard, which is why it earns the long-press.
       final controller = TextEditingController();
-      await pump(tester, DpUmlautBar(controller: controller));
+      await pump(tester, SgUmlautBar(controller: controller));
 
       await tester.longPress(find.text('ß'));
       await tester.pumpAndSettle();
-      expect(controller.text, DpUmlautBar.capitalSharpS);
+      expect(controller.text, SgUmlautBar.capitalSharpS);
     });
 
     testWidgets('long-pressing any key gives its capital', (tester) async {
       // German capitalises every noun — Übung, Äpfel, Österreich are all A1
       // words whose first letter has no key on an English keyboard.
-      for (final entry in DpUmlautBar.keys.entries) {
+      for (final entry in SgUmlautBar.keys.entries) {
         final controller = TextEditingController();
-        await pump(tester, DpUmlautBar(controller: controller));
+        await pump(tester, SgUmlautBar(controller: controller));
 
         await tester.longPress(find.text(entry.key));
         await tester.pumpAndSettle();
@@ -143,12 +143,12 @@ void main() {
     ) async {
       // The GrammarTopic artboard draws it inside a card, so it has no border
       // and no shadow of its own.
-      await pump(tester, DpCallout.text('bekommen = to get'));
+      await pump(tester, SgCallout.text('bekommen = to get'));
       final decoration =
           tester
                   .widgetList<DecoratedBox>(
                     find.descendant(
-                      of: find.byType(DpCallout),
+                      of: find.byType(SgCallout),
                       matching: find.byType(DecoratedBox),
                     ),
                   )
@@ -156,14 +156,14 @@ void main() {
                   .decoration
               as BoxDecoration;
 
-      expect(decoration.color, DpSurfaceTokens.light.muted);
+      expect(decoration.color, SgSurfaceTokens.light.muted);
       expect(decoration.border, isNull);
       expect(decoration.boxShadow ?? const <BoxShadow>[], isEmpty);
     });
 
     testWidgets('the ß key announces its long-press', (tester) async {
       final controller = TextEditingController();
-      await pump(tester, DpUmlautBar(controller: controller));
+      await pump(tester, SgUmlautBar(controller: controller));
       expect(
         find.bySemanticsLabel('ß, long press for ẞ'),
         findsOneWidget,
@@ -172,18 +172,18 @@ void main() {
     });
   });
 
-  group('DpCallout', () {
+  group('SgCallout', () {
     testWidgets('it draws a 6 dp Tangerine bar by default', (tester) async {
-      await pump(tester, DpCallout.text('bekommen = to get, not "to become"'));
+      await pump(tester, SgCallout.text('bekommen = to get, not "to become"'));
 
       final bar = tester.widget<ColoredBox>(
         find.descendant(
-          of: find.byType(DpCallout),
+          of: find.byType(SgCallout),
           matching: find.byType(ColoredBox),
         ),
       );
-      expect(bar.color, DpPalette.light.hard);
-      expect(tester.getSize(find.byWidget(bar)).width, DpCallout.barWidth);
+      expect(bar.color, SgPalette.light.hard);
+      expect(tester.getSize(find.byWidget(bar)).width, SgCallout.barWidth);
     });
 
     testWidgets('the bar runs the full height of the content', (tester) async {
@@ -191,7 +191,7 @@ void main() {
         tester,
         const SizedBox(
           width: 300,
-          child: DpCallout(
+          child: SgCallout(
             title: 'Watch out',
             child: Text(
               'konnte, musste, wollte — no umlaut, no ge-. This runs onto '
@@ -204,21 +204,21 @@ void main() {
       final barHeight = tester
           .getSize(
             find.descendant(
-              of: find.byType(DpCallout),
+              of: find.byType(SgCallout),
               matching: find.byType(ColoredBox),
             ),
           )
           .height;
-      expect(barHeight, tester.getSize(find.byType(DpCallout)).height);
+      expect(barHeight, tester.getSize(find.byType(SgCallout)).height);
     });
   });
 
-  group('DpErrorPanel', () {
+  group('SgErrorPanel', () {
     testWidgets('it shows the message and a working Retry', (tester) async {
       var retries = 0;
       await pump(
         tester,
-        DpErrorPanel(
+        SgErrorPanel(
           message: 'Could not open your course',
           retryLabel: 'Retry',
           onRetry: () => retries++,
@@ -236,7 +236,7 @@ void main() {
       // their data when the app will not start.
       await pump(
         tester,
-        DpErrorPanel(
+        SgErrorPanel(
           message: 'Could not open your course',
           retryLabel: 'Retry',
           onRetry: () {},
@@ -251,13 +251,13 @@ void main() {
     ) async {
       await pump(
         tester,
-        const DpErrorPanel(message: 'Could not open', retryLabel: 'Retry'),
+        const SgErrorPanel(message: 'Could not open', retryLabel: 'Retry'),
       );
       expect(tester.takeException(), isNull);
     });
   });
 
-  group('DpVerdictRow', () {
+  group('SgVerdictRow', () {
     testWidgets("#539 a marked German answer too wide for its line breaks at "
         "a syllable with its \"-\", in a German voice; the copy in the app's", (
       tester,
@@ -266,8 +266,8 @@ void main() {
         tester,
         const SizedBox(
           width: 160,
-          child: DpVerdictRow(
-            verdict: DpVerdict.wrong,
+          child: SgVerdictRow(
+            verdict: SgVerdict.wrong,
             message: "Not quite · it's Haftpflichtversicherung",
             emphasis: <String>['Haftpflichtversicherung'],
             germanEmphasis: true,
@@ -309,8 +309,8 @@ void main() {
 
       await pump(
         tester,
-        const DpVerdictRow(
-          verdict: DpVerdict.wrong,
+        const SgVerdictRow(
+          verdict: SgVerdict.wrong,
           message: 'The answer is ফ্ল্যাট',
           emphasis: <String>['ফ্ল্যাট'],
         ),
@@ -319,16 +319,16 @@ void main() {
       expect(bangla.locale, const Locale('bn', 'BD'));
       expect(
         bangla.style!.fontSize,
-        DpText.styleFor(
-          DpTokens.light(),
-          DpTextRole.body.oneStepLarger,
+        SgText.styleFor(
+          SgTokens.light(),
+          SgTextRole.body.oneStepLarger,
         ).fontSize,
       );
 
       await pump(
         tester,
-        const DpVerdictRow(
-          verdict: DpVerdict.wrong,
+        const SgVerdictRow(
+          verdict: SgVerdict.wrong,
           message: 'The answer is flat, apartment',
           emphasis: <String>['flat, apartment'],
         ),
@@ -340,21 +340,21 @@ void main() {
     testWidgets('every verdict has an icon AND a word, never colour alone', (
       tester,
     ) async {
-      for (final (verdict, message) in <(DpVerdict, String)>[
-        (DpVerdict.correct, 'Correct'),
-        (DpVerdict.almost, 'Almost — watch the spelling'),
-        (DpVerdict.wrongArticle, 'die, not der'),
-        (DpVerdict.wrong, 'Wrong'),
+      for (final (verdict, message) in <(SgVerdict, String)>[
+        (SgVerdict.correct, 'Correct'),
+        (SgVerdict.almost, 'Almost — watch the spelling'),
+        (SgVerdict.wrongArticle, 'die, not der'),
+        (SgVerdict.wrong, 'Wrong'),
       ]) {
-        await pump(tester, DpVerdictRow(verdict: verdict, message: message));
+        await pump(tester, SgVerdictRow(verdict: verdict, message: message));
 
         expect(find.text(message), findsOneWidget, reason: 'the word');
 
-        if (verdict == DpVerdict.almost) {
+        if (verdict == SgVerdict.almost) {
           // Material has no "approximately equal" glyph, and the artboard draws
           // the real character. A near-miss icon would mean something else.
           expect(
-            find.text(DpVerdictRow.almostGlyph),
+            find.text(SgVerdictRow.almostGlyph),
             findsOneWidget,
             reason: 'the almost mark',
           );
@@ -369,8 +369,8 @@ void main() {
     ) async {
       await pump(
         tester,
-        const DpVerdictRow(
-          verdict: DpVerdict.wrongArticle,
+        const SgVerdictRow(
+          verdict: SgVerdict.wrongArticle,
           message: 'Artikel: der, nicht die!',
           emphasis: <String>['der', 'die'],
         ),
@@ -381,25 +381,25 @@ void main() {
         [for (final s in spans) (s.text, s.style?.color)],
         // The copy in the verdict's colour, each run its own now (#539).
         [
-          ('Artikel: ', DpPalette.light.wrongText),
-          ('der', DpPalette.light.ink),
-          (', nicht ', DpPalette.light.wrongText),
-          ('die', DpPalette.light.ink),
-          ('!', DpPalette.light.wrongText),
+          ('Artikel: ', SgPalette.light.wrongText),
+          ('der', SgPalette.light.ink),
+          (', nicht ', SgPalette.light.wrongText),
+          ('die', SgPalette.light.ink),
+          ('!', SgPalette.light.wrongText),
         ],
       );
     });
 
     testWidgets('the colours are the artboard verdict colours', (tester) async {
-      const palette = DpPalette.light;
-      for (final (verdict, colour) in <(DpVerdict, Color)>[
-        (DpVerdict.correct, palette.correctText),
-        (DpVerdict.almost, palette.almostText),
-        (DpVerdict.wrong, palette.wrongText),
+      const palette = SgPalette.light;
+      for (final (verdict, colour) in <(SgVerdict, Color)>[
+        (SgVerdict.correct, palette.correctText),
+        (SgVerdict.almost, palette.almostText),
+        (SgVerdict.wrong, palette.wrongText),
       ]) {
-        await pump(tester, DpVerdictRow(verdict: verdict, message: 'x'));
-        if (verdict == DpVerdict.almost) {
-          expect(find.text(DpVerdictRow.almostGlyph), findsOneWidget);
+        await pump(tester, SgVerdictRow(verdict: verdict, message: 'x'));
+        if (verdict == SgVerdict.almost) {
+          expect(find.text(SgVerdictRow.almostGlyph), findsOneWidget);
         } else {
           expect(tester.widget<Icon>(find.byType(Icon)).color, colour);
         }
@@ -410,39 +410,39 @@ void main() {
       tester,
     ) async {
       // The artboard draws every mark at 18 while the words beside them are 15.
-      for (final verdict in DpVerdict.values) {
-        await pump(tester, DpVerdictRow(verdict: verdict, message: 'x'));
-        if (verdict == DpVerdict.almost) {
+      for (final verdict in SgVerdict.values) {
+        await pump(tester, SgVerdictRow(verdict: verdict, message: 'x'));
+        if (verdict == SgVerdict.almost) {
           expect(
             tester
-                .widget<Text>(find.text(DpVerdictRow.almostGlyph))
+                .widget<Text>(find.text(SgVerdictRow.almostGlyph))
                 .style!
                 .fontSize,
-            DpVerdictRow.markSize,
+            SgVerdictRow.markSize,
           );
         } else {
           expect(
             tester.widget<Icon>(find.byType(Icon)).size,
-            DpVerdictRow.markSize,
+            SgVerdictRow.markSize,
           );
         }
       }
       expect(
-        DpVerdictRow.markSize,
-        greaterThan(DpTypeTokens.defaults.body.size),
+        SgVerdictRow.markSize,
+        greaterThan(SgTypeTokens.defaults.body.size),
       );
     });
 
     test('a wrong article is styled as wrong, and says which', () {
       // BR-ANS-02: it counts as wrong for scoring, but the feedback names the
       // article — so it shares the colour and differs in the message.
-      const row = DpVerdictRow(verdict: DpVerdict.wrongArticle, message: 'x');
-      expect(row.colourFrom(DpPalette.light), DpPalette.light.wrongText);
+      const row = SgVerdictRow(verdict: SgVerdict.wrongArticle, message: 'x');
+      expect(row.colourFrom(SgPalette.light), SgPalette.light.wrongText);
       expect(row.icon, Icons.close);
     });
   });
 
-  group('DpUndo', () {
+  group('SgUndo', () {
     testWidgets('it shows for 4 seconds and the action fires', (tester) async {
       var undos = 0;
       await tester.pumpWidget(
@@ -453,7 +453,7 @@ void main() {
           home: Scaffold(
             body: Builder(
               builder: (context) => GestureDetector(
-                onTap: () => DpUndo.show(
+                onTap: () => SgUndo.show(
                   context,
                   message: 'Moved die Kaution to the backlog',
                   onUndo: () => undos++,
@@ -489,7 +489,7 @@ void main() {
           home: Scaffold(
             body: Builder(
               builder: (context) => GestureDetector(
-                onTap: () => DpUndo.show(
+                onTap: () => SgUndo.show(
                   context,
                   message: 'Rated ${DateTime.now().microsecondsSinceEpoch}',
                   onUndo: () {},
@@ -527,7 +527,7 @@ void main() {
             body: Builder(
               builder: (context) => GestureDetector(
                 onTap: () =>
-                    DpUndo.show(context, message: 'Rated', onUndo: () {}),
+                    SgUndo.show(context, message: 'Rated', onUndo: () {}),
                 child: const Text('rate'),
               ),
             ),
@@ -542,7 +542,7 @@ void main() {
 
     testWidgets('FR-T2-02 it is gone after its 4 s (#319)', (tester) async {
       await showUndo(tester);
-      await tester.pump(DpUndo.duration);
+      await tester.pump(SgUndo.duration);
       await tester.pumpAndSettle();
       expect(find.text('Undo'), findsNothing);
     });
@@ -551,18 +551,18 @@ void main() {
       tester,
     ) async {
       await showUndo(tester, screenReader: true);
-      await tester.pump(DpUndo.duration * 2);
+      await tester.pump(SgUndo.duration * 2);
       await tester.pumpAndSettle();
       expect(find.text('Undo'), findsOneWidget);
     });
 
     test('the duration is the 4 s FR-T2-02 asks for', () {
-      expect(DpUndo.duration, const Duration(seconds: 4));
+      expect(SgUndo.duration, const Duration(seconds: 4));
     });
 
-    for (final (name, theme, palette) in <(String, ThemeData, DpPalette)>[
-      ('light', AppTheme.light(), DpPalette.light),
-      ('dark', AppTheme.dark(), DpPalette.dark),
+    for (final (name, theme, palette) in <(String, ThemeData, SgPalette)>[
+      ('light', AppTheme.light(), SgPalette.light),
+      ('dark', AppTheme.dark(), SgPalette.dark),
     ]) {
       testWidgets('it is the StudyNew artboard\'s inverse bar ($name)', (
         tester,
@@ -575,7 +575,7 @@ void main() {
             home: Scaffold(
               body: Builder(
                 builder: (context) => GestureDetector(
-                  onTap: () => DpUndo.show(
+                  onTap: () => SgUndo.show(
                     context,
                     message: 'Moved die Kaution to the backlog',
                     onUndo: () {},

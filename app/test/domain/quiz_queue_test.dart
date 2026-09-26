@@ -1,6 +1,6 @@
-import 'package:deutschplan/domain/answer_check.dart';
-import 'package:deutschplan/domain/quiz_builder.dart';
-import 'package:deutschplan/domain/quiz_queue.dart';
+import 'package:sogda/domain/answer_check.dart';
+import 'package:sogda/domain/quiz_builder.dart';
+import 'package:sogda/domain/quiz_queue.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 /// FR-L8-03 / BR-QUIZ-01: the re-ask queue (#125).

@@ -1,11 +1,11 @@
-import 'package:deutschplan/core/components/dp_button.dart';
-import 'package:deutschplan/core/components/dp_chip.dart';
-import 'package:deutschplan/core/components/dp_feedback.dart';
-import 'package:deutschplan/core/components/dp_rating_bar.dart';
-import 'package:deutschplan/core/theme/app_theme.dart';
-import 'package:deutschplan/core/theme/dp_tokens.dart';
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
-import 'package:deutschplan/main.dart'
+import 'package:sogda/core/components/sg_button.dart';
+import 'package:sogda/core/components/sg_chip.dart';
+import 'package:sogda/core/components/sg_feedback.dart';
+import 'package:sogda/core/components/sg_rating_bar.dart';
+import 'package:sogda/core/theme/app_theme.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
+import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
@@ -46,8 +46,8 @@ void main() {
               .decoration
           as BoxDecoration;
 
-  group('DpButton', () {
-    testWidgets('#517 a lone DpButton in a container with text is its own '
+  group('SgButton', () {
+    testWidgets('#517 a lone SgButton in a container with text is its own '
         'button node, not merged with the text around it', (tester) async {
       final semantics = tester.ensureSemantics();
       await pump(
@@ -58,12 +58,12 @@ void main() {
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               const Text('12 words learned today'),
-              DpButton(label: 'Done', onPressed: () {}),
+              SgButton(label: 'Done', onPressed: () {}),
             ],
           ),
         ),
       );
-      final button = tester.getSemantics(find.byType(DpButton));
+      final button = tester.getSemantics(find.byType(SgButton));
       expect(button.label, 'Done');
       expect(button.flagsCollection.isButton, isTrue);
       final around = tester.getSemantics(find.text('12 words learned today'));
@@ -76,17 +76,17 @@ void main() {
     ) async {
       // The artboard draws the text button at 44; on Android the hit area is
       // padded to 48, which is the platform minimum. On iOS 44 is already it.
-      for (final (kind, height) in <(DpButtonKind, double)>[
-        (DpButtonKind.primary, 56),
-        (DpButtonKind.secondary, 48),
-        (DpButtonKind.text, DpButton.minimumTapTarget),
+      for (final (kind, height) in <(SgButtonKind, double)>[
+        (SgButtonKind.primary, 56),
+        (SgButtonKind.secondary, 48),
+        (SgButtonKind.text, SgButton.minimumTapTarget),
       ]) {
         await pump(
           tester,
-          DpButton(label: 'Start today', kind: kind, onPressed: () {}),
+          SgButton(label: 'Start today', kind: kind, onPressed: () {}),
         );
         expect(
-          tester.getSize(find.byType(DpButton)).height,
+          tester.getSize(find.byType(SgButton)).height,
           height,
           reason: '$kind',
         );
@@ -99,7 +99,7 @@ void main() {
       var taps = 0;
       await pump(
         tester,
-        DpButton(
+        SgButton(
           label: 'Study',
           compact: true,
           expand: false,
@@ -107,13 +107,13 @@ void main() {
         ),
       );
       final drawn = find.descendant(
-        of: find.byType(DpButton),
+        of: find.byType(SgButton),
         matching: find.byType(DecoratedBox),
       );
-      expect(tester.getSize(drawn.first).height, DpButton.compactHeight);
+      expect(tester.getSize(drawn.first).height, SgButton.compactHeight);
       expect(
-        tester.getSize(find.byType(DpButton)).height,
-        DpButton.minimumTapTarget,
+        tester.getSize(find.byType(SgButton)).height,
+        SgButton.minimumTapTarget,
       );
       // Just outside the drawing, still inside the hit area.
       final box = tester.getRect(drawn.first);
@@ -126,45 +126,45 @@ void main() {
     ) async {
       await pump(
         tester,
-        DpButton(
+        SgButton(
           label: 'Practise all due · 2',
           drawnHeight: 48,
           onPressed: () {},
         ),
       );
-      expect(tester.getSize(find.byType(DpButton)).height, 48);
+      expect(tester.getSize(find.byType(SgButton)).height, 48);
     });
 
     testWidgets('only the primary carries the hard offset shadow', (
       tester,
     ) async {
-      await pump(tester, DpButton(label: 'Start today', onPressed: () {}));
-      final primary = decorationIn(tester, DpButton);
+      await pump(tester, SgButton(label: 'Start today', onPressed: () {}));
+      final primary = decorationIn(tester, SgButton);
       expect(primary.boxShadow, hasLength(1));
       expect(primary.boxShadow!.single.offset, const Offset(3, 3));
       expect(primary.boxShadow!.single.blurRadius, 0);
-      expect(primary.color, DpPalette.light.primary);
+      expect(primary.color, SgPalette.light.primary);
 
       await pump(
         tester,
-        DpButton(
+        SgButton(
           label: 'Review backlog',
-          kind: DpButtonKind.secondary,
+          kind: SgButtonKind.secondary,
           onPressed: () {},
         ),
       );
-      final secondary = decorationIn(tester, DpButton);
+      final secondary = decorationIn(tester, SgButton);
       expect(secondary.boxShadow, isEmpty);
-      expect(secondary.color, DpSurfaceTokens.light.muted);
+      expect(secondary.color, SgSurfaceTokens.light.muted);
     });
 
     testWidgets('the border is 2 px ink, not the 1.5 px of a card', (
       tester,
     ) async {
-      await pump(tester, DpButton(label: 'Start today', onPressed: () {}));
-      final border = decorationIn(tester, DpButton).border! as Border;
+      await pump(tester, SgButton(label: 'Start today', onPressed: () {}));
+      final border = decorationIn(tester, SgButton).border! as Border;
       expect(border.top.width, 2);
-      expect(border.top.color, DpPalette.light.ink);
+      expect(border.top.color, SgPalette.light.ink);
     });
 
     testWidgets('a press collapses the shadow and restores it, and taps fire', (
@@ -173,20 +173,20 @@ void main() {
       var taps = 0;
       await pump(
         tester,
-        DpButton(label: 'Start today', onPressed: () => taps++),
+        SgButton(label: 'Start today', onPressed: () => taps++),
       );
 
-      expect(decorationIn(tester, DpButton).boxShadow, hasLength(1));
+      expect(decorationIn(tester, SgButton).boxShadow, hasLength(1));
 
       final gesture = await tester.startGesture(
-        tester.getCenter(find.byType(DpButton)),
+        tester.getCenter(find.byType(SgButton)),
       );
       await tester.pump();
-      expect(decorationIn(tester, DpButton).boxShadow, isEmpty);
+      expect(decorationIn(tester, SgButton).boxShadow, isEmpty);
 
       await gesture.up();
       await tester.pumpAndSettle();
-      expect(decorationIn(tester, DpButton).boxShadow, hasLength(1));
+      expect(decorationIn(tester, SgButton).boxShadow, hasLength(1));
       expect(taps, 1);
     });
 
@@ -197,11 +197,11 @@ void main() {
       // not remove the button.
       await pump(
         tester,
-        const DpButton(label: 'All done — see you tomorrow', onPressed: null),
+        const SgButton(label: 'All done — see you tomorrow', onPressed: null),
       );
-      expect(find.byType(DpButton), findsOneWidget);
+      expect(find.byType(SgButton), findsOneWidget);
 
-      await tester.tap(find.byType(DpButton));
+      await tester.tap(find.byType(SgButton));
       await tester.pumpAndSettle();
       expect(tester.takeException(), isNull);
     });
@@ -212,11 +212,11 @@ void main() {
       // theming.md: "Buttons stay solid so calls to action never blur."
       await pump(
         tester,
-        DpButton(label: 'Start today', onPressed: () {}),
+        SgButton(label: 'Start today', onPressed: () {}),
         theme: AppTheme.glass(),
       );
-      final decoration = decorationIn(tester, DpButton);
-      expect(decoration.color, DpPalette.light.primary);
+      final decoration = decorationIn(tester, SgButton);
+      expect(decoration.color, SgPalette.light.primary);
       expect(decoration.color!.a, 1.0, reason: 'a solid fill, not translucent');
       expect(decoration.border, isNull);
     });
@@ -227,7 +227,7 @@ void main() {
       // maxLines: 1 inside a fixed-height box clipped the label with no
       // exception — the same silent failure as the headword in #190.
       double heightAt(double scale) =>
-          tester.getSize(find.byType(DpButton)).height;
+          tester.getSize(find.byType(SgButton)).height;
 
       await tester.pumpWidget(
         MaterialApp(
@@ -240,7 +240,7 @@ void main() {
               body: Center(
                 child: SizedBox(
                   width: 360,
-                  child: DpButton(
+                  child: SgButton(
                     label: 'All done — see you tomorrow',
                     onPressed: null,
                   ),
@@ -264,7 +264,7 @@ void main() {
               body: Center(
                 child: SizedBox(
                   width: 360,
-                  child: DpButton(
+                  child: SgButton(
                     label: 'All done — see you tomorrow',
                     onPressed: null,
                   ),
@@ -289,34 +289,34 @@ void main() {
       // Android, and the artboard's 44 is a visual measurement.
       await pump(
         tester,
-        DpButton(
+        SgButton(
           label: 'Done for now',
-          kind: DpButtonKind.text,
+          kind: SgButtonKind.text,
           onPressed: () {},
         ),
       );
       expect(
-        tester.getSize(find.byType(DpButton)).height,
-        greaterThanOrEqualTo(DpButton.minimumTapTarget),
+        tester.getSize(find.byType(SgButton)).height,
+        greaterThanOrEqualTo(SgButton.minimumTapTarget),
       );
     });
 
     testWidgets('it is announced as a button with its label', (tester) async {
-      await pump(tester, DpButton(label: 'Start today', onPressed: () {}));
+      await pump(tester, SgButton(label: 'Start today', onPressed: () {}));
       expect(find.bySemanticsLabel('Start today'), findsOneWidget);
     });
   });
 
-  group('DpRatingBar', () {
-    Map<DpRating, String> previews() => <DpRating, String>{
-      DpRating.again: '1 d',
-      DpRating.hard: '3 d',
-      DpRating.good: '8 d',
-      DpRating.easy: '21 d',
+  group('SgRatingBar', () {
+    Map<SgRating, String> previews() => <SgRating, String>{
+      SgRating.again: '1 d',
+      SgRating.hard: '3 d',
+      SgRating.good: '8 d',
+      SgRating.easy: '21 d',
     };
 
     testWidgets('the four ratings render in BR-FSRS-02 order', (tester) async {
-      await pump(tester, DpRatingBar(onRated: (_) {}, intervals: previews()));
+      await pump(tester, SgRatingBar(onRated: (_) {}, intervals: previews()));
       final labels = <String>['Again', 'Hard', 'Good', 'Easy'];
       var previousX = -1.0;
       for (final label in labels) {
@@ -327,23 +327,23 @@ void main() {
     });
 
     test('the rating values are the ones written to review_log', () {
-      expect(DpRating.again.value, 1);
-      expect(DpRating.hard.value, 2);
-      expect(DpRating.good.value, 3);
-      expect(DpRating.easy.value, 4);
+      expect(SgRating.again.value, 1);
+      expect(SgRating.hard.value, 2);
+      expect(SgRating.good.value, 3);
+      expect(SgRating.easy.value, 4);
     });
 
     testWidgets('each button is 60 dp with a 2 px border in its own colour', (
       tester,
     ) async {
-      await pump(tester, DpRatingBar(onRated: (_) {}, intervals: previews()));
+      await pump(tester, SgRatingBar(onRated: (_) {}, intervals: previews()));
 
-      const palette = DpPalette.light;
-      for (final (rating, colour) in <(DpRating, Color)>[
-        (DpRating.again, palette.again),
-        (DpRating.hard, palette.hard),
-        (DpRating.good, palette.good),
-        (DpRating.easy, palette.easy),
+      const palette = SgPalette.light;
+      for (final (rating, colour) in <(SgRating, Color)>[
+        (SgRating.again, palette.again),
+        (SgRating.hard, palette.hard),
+        (SgRating.good, palette.good),
+        (SgRating.easy, palette.easy),
       ]) {
         final container = tester.widget<Container>(
           find
@@ -361,8 +361,8 @@ void main() {
       }
 
       expect(
-        tester.getSize(find.byType(DpRatingBar)).height,
-        DpRatingBar.height,
+        tester.getSize(find.byType(SgRatingBar)).height,
+        SgRatingBar.height,
       );
     });
 
@@ -382,14 +382,14 @@ void main() {
                 .copyWith(textScaler: const AndroidTextScaler(2)),
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: DpRatingBar(
+              child: SgRatingBar(
                 onRated: (_) {},
-                intervals: <DpRating, String>{
-                  DpRating.again: bn.studyIntervalDays(1),
-                  DpRating.hard: bn.studyIntervalDays(3),
-                  DpRating.good: bn.studyIntervalDays(8),
+                intervals: <SgRating, String>{
+                  SgRating.again: bn.studyIntervalDays(1),
+                  SgRating.hard: bn.studyIntervalDays(3),
+                  SgRating.good: bn.studyIntervalDays(8),
                   // FSRS allows up to 36,500; a 1,000+ day interval wraps.
-                  DpRating.easy: bn.studyIntervalDays(1234),
+                  SgRating.easy: bn.studyIntervalDays(1234),
                 },
               ),
             ),
@@ -398,43 +398,43 @@ void main() {
         locale: const Locale('bn'),
       );
       expect(tester.takeException(), isNull, reason: 'no overflow');
-      expectNothingClipped(tester, within: find.byType(DpRatingBar));
-      expectAllLinesShown(tester, within: find.byType(DpRatingBar));
-      expectNoWordBroken(tester, within: find.byType(DpRatingBar));
+      expectNothingClipped(tester, within: find.byType(SgRatingBar));
+      expectAllLinesShown(tester, within: find.byType(SgRatingBar));
+      expectNoWordBroken(tester, within: find.byType(SgRatingBar));
       final heights = tester
           .widgetList<Container>(
             find.descendant(
-              of: find.byType(DpRatingBar),
+              of: find.byType(SgRatingBar),
               matching: find.byType(Container),
             ),
           )
           .map((container) => tester.getSize(find.byWidget(container)).height)
           .toSet();
       expect(heights, hasLength(1), reason: 'one height for the four');
-      expect(heights.single, greaterThan(DpRatingBar.height));
+      expect(heights.single, greaterThan(SgRatingBar.height));
       expect(
-        tester.getSize(find.byType(DpRatingBar)).height,
-        lessThan(DpRatingBar.height * 3),
+        tester.getSize(find.byType(SgRatingBar)).height,
+        lessThan(SgRatingBar.height * 3),
         reason: "the tallest button's height, not the screen's",
       );
     });
 
     testWidgets('the interval preview shows under each label', (tester) async {
-      await pump(tester, DpRatingBar(onRated: (_) {}, intervals: previews()));
+      await pump(tester, SgRatingBar(onRated: (_) {}, intervals: previews()));
       for (final interval in <String>['1 d', '3 d', '8 d', '21 d']) {
         expect(find.text(interval), findsOneWidget);
       }
     });
 
     testWidgets('tapping reports the rating', (tester) async {
-      DpRating? rated;
+      SgRating? rated;
       await pump(
         tester,
-        DpRatingBar(onRated: (r) => rated = r, intervals: previews()),
+        SgRatingBar(onRated: (r) => rated = r, intervals: previews()),
       );
       await tester.tap(find.text('Good'));
       await tester.pumpAndSettle();
-      expect(rated, DpRating.good);
+      expect(rated, SgRating.good);
     });
 
     testWidgets('a screen reader hears the interval with the rating', (
@@ -442,7 +442,7 @@ void main() {
     ) async {
       // The interval is part of the decision, so it must not be a separate node
       // that could be read out of order.
-      await pump(tester, DpRatingBar(onRated: (_) {}, intervals: previews()));
+      await pump(tester, SgRatingBar(onRated: (_) {}, intervals: previews()));
       expect(find.bySemanticsLabel('Good, 8 d'), findsOneWidget);
     });
 
@@ -450,7 +450,7 @@ void main() {
       var rated = false;
       await pump(
         tester,
-        DpRatingBar(
+        SgRatingBar(
           onRated: (_) => rated = true,
           intervals: previews(),
           enabled: false,
@@ -462,18 +462,18 @@ void main() {
     });
   });
 
-  group('DpChip', () {
+  group('SgChip', () {
     testWidgets('each kind is the height the artboard draws', (tester) async {
-      for (final (kind, height) in <(DpChipKind, double)>[
-        (DpChipKind.step, 24),
-        (DpChipKind.status, 24),
-        (DpChipKind.streak, 28),
-        (DpChipKind.filter, 32),
-        (DpChipKind.webLink, 32),
+      for (final (kind, height) in <(SgChipKind, double)>[
+        (SgChipKind.step, 24),
+        (SgChipKind.status, 24),
+        (SgChipKind.streak, 28),
+        (SgChipKind.filter, 32),
+        (SgChipKind.webLink, 32),
       ]) {
-        await pump(tester, DpChip(label: 'A2.1', kind: kind));
+        await pump(tester, SgChip(label: 'A2.1', kind: kind));
         expect(
-          tester.getSize(find.byType(DpChip)).height,
+          tester.getSize(find.byType(SgChip)).height,
           height,
           reason: '$kind',
         );
@@ -483,15 +483,15 @@ void main() {
     testWidgets('a selected step chip fills Sun; an unselected one does not', (
       tester,
     ) async {
-      await pump(tester, const DpChip(label: 'A2.1', selected: true));
+      await pump(tester, const SgChip(label: 'A2.1', selected: true));
       expect(
         (tester.widget<Container>(find.byType(Container).first).decoration!
                 as BoxDecoration)
             .color,
-        DpPalette.light.accent,
+        SgPalette.light.accent,
       );
 
-      await pump(tester, const DpChip(label: 'A2.1'));
+      await pump(tester, const SgChip(label: 'A2.1'));
       expect(
         (tester.widget<Container>(find.byType(Container).first).decoration!
                 as BoxDecoration)
@@ -505,10 +505,10 @@ void main() {
       (tester) async {
         await pump(
           tester,
-          DpChip(
+          SgChip(
             label: 'Learning',
-            kind: DpChipKind.status,
-            statusColour: DpPalette.light.learning,
+            kind: SgChipKind.status,
+            statusColour: SgPalette.light.learning,
           ),
         );
         // The label is present as well as the dot.
@@ -524,9 +524,9 @@ void main() {
       },
     );
 
-    for (final chip in const <DpChip>[
-      DpChip(label: '12', kind: DpChipKind.streak),
-      DpChip(label: 'A2.1', selected: true),
+    for (final chip in const <SgChip>[
+      SgChip(label: '12', kind: SgChipKind.streak),
+      SgChip(label: 'A2.1', selected: true),
     ]) {
       testWidgets('a ${chip.kind.name} chip on Sun keeps dark ink at night', (
         tester,
@@ -535,21 +535,21 @@ void main() {
         // The page ink is light at night and would vanish into the fill.
         await pump(tester, chip, theme: AppTheme.dark());
         final label = tester.widget<Text>(
-          find.descendant(of: find.byType(DpChip), matching: find.byType(Text)),
+          find.descendant(of: find.byType(SgChip), matching: find.byType(Text)),
         );
-        expect(label.style?.color, DpPalette.dark.onAccent);
+        expect(label.style?.color, SgPalette.dark.onAccent);
         final icon = find.descendant(
-          of: find.byType(DpChip),
+          of: find.byType(SgChip),
           matching: find.byType(Icon),
         );
-        if (chip.kind == DpChipKind.streak) {
-          expect(tester.widget<Icon>(icon).color, DpPalette.dark.onAccent);
+        if (chip.kind == SgChipKind.streak) {
+          expect(tester.widget<Icon>(icon).color, SgPalette.dark.onAccent);
         }
       });
     }
 
     testWidgets('the streak pill is fully rounded', (tester) async {
-      await pump(tester, const DpChip(label: '12', kind: DpChipKind.streak));
+      await pump(tester, const SgChip(label: '12', kind: SgChipKind.streak));
       final decoration =
           tester.widget<Container>(find.byType(Container).first).decoration!
               as BoxDecoration;
@@ -565,27 +565,27 @@ void main() {
     ) async {
       // From the side-by-side with Foundations.html: the streak pill carries a
       // flame, a selected filter a tick, and a web link an external-link mark.
-      for (final (chip, icon) in <(DpChip, IconData?)>[
+      for (final (chip, icon) in <(SgChip, IconData?)>[
         (
-          const DpChip(label: '12', kind: DpChipKind.streak),
+          const SgChip(label: '12', kind: SgChipKind.streak),
           Icons.local_fire_department,
         ),
         (
-          const DpChip(label: 'All', kind: DpChipKind.filter, selected: true),
+          const SgChip(label: 'All', kind: SgChipKind.filter, selected: true),
           Icons.check,
         ),
-        (const DpChip(label: 'All', kind: DpChipKind.filter), null),
+        (const SgChip(label: 'All', kind: SgChipKind.filter), null),
         (
-          const DpChip(label: 'Duden', kind: DpChipKind.webLink),
+          const SgChip(label: 'Duden', kind: SgChipKind.webLink),
           Icons.open_in_new,
         ),
-        (const DpChip(label: 'A2.1'), null),
+        (const SgChip(label: 'A2.1'), null),
       ]) {
         await pump(tester, chip);
         if (icon == null) {
           expect(
             find.descendant(
-              of: find.byType(DpChip),
+              of: find.byType(SgChip),
               matching: find.byType(Icon),
             ),
             findsNothing,
@@ -602,7 +602,7 @@ void main() {
       (tester) async {
         await pump(
           tester,
-          const DpChip(label: 'Duden', kind: DpChipKind.webLink),
+          const SgChip(label: 'Duden', kind: SgChipKind.webLink),
         );
         expect(
           tester.getCenter(find.byIcon(Icons.open_in_new)).dx,
@@ -617,15 +617,15 @@ void main() {
       var taps = 0;
       await pump(
         tester,
-        DpChip(label: 'Learning', kind: DpChipKind.filter, onTap: () => taps++),
+        SgChip(label: 'Learning', kind: SgChipKind.filter, onTap: () => taps++),
       );
-      await tester.tap(find.byType(DpChip));
+      await tester.tap(find.byType(SgChip));
       expect(taps, 1);
 
-      await pump(tester, const DpChip(label: 'A2.1'));
+      await pump(tester, const SgChip(label: 'A2.1'));
       expect(
         find.descendant(
-          of: find.byType(DpChip),
+          of: find.byType(SgChip),
           matching: find.byType(GestureDetector),
         ),
         findsNothing,
@@ -645,17 +645,17 @@ void main() {
         Column(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
-            DpButton(label: 'Start today', onPressed: () {}),
-            DpRatingBar(
+            SgButton(label: 'Start today', onPressed: () {}),
+            SgRatingBar(
               onRated: (_) {},
-              intervals: const <DpRating, String>{
-                DpRating.again: '1 d',
-                DpRating.hard: '3 d',
-                DpRating.good: '8 d',
-                DpRating.easy: '21 d',
+              intervals: const <SgRating, String>{
+                SgRating.again: '1 d',
+                SgRating.hard: '3 d',
+                SgRating.good: '8 d',
+                SgRating.easy: '21 d',
               },
             ),
-            const DpChip(label: 'A2.1'),
+            const SgChip(label: 'A2.1'),
           ],
         ),
         theme: theme,
@@ -673,20 +673,20 @@ void main() {
       spacing: 8,
       runSpacing: 8,
       children: <Widget>[
-        const DpChip(label: 'A2.2'),
-        DpChip(
+        const SgChip(label: 'A2.2'),
+        SgChip(
           label: 'To do',
-          kind: DpChipKind.status,
-          statusColour: DpPalette.light.easy,
+          kind: SgChipKind.status,
+          statusColour: SgPalette.light.easy,
         ),
-        DpChip(label: 'Relaxed · 5', kind: DpChipKind.filter, onTap: () {}),
-        DpChip(label: '12', kind: DpChipKind.streak, onTap: () {}),
-        DpChip(label: 'Duden', kind: DpChipKind.webLink, onTap: () {}),
+        SgChip(label: 'Relaxed · 5', kind: SgChipKind.filter, onTap: () {}),
+        SgChip(label: '12', kind: SgChipKind.streak, onTap: () {}),
+        SgChip(label: 'Duden', kind: SgChipKind.webLink, onTap: () {}),
       ],
     );
     await pump(tester, chips());
     final atOne = <double>[
-      for (final chip in tester.widgetList(find.byType(DpChip)))
+      for (final chip in tester.widgetList(find.byType(SgChip)))
         tester.getSize(find.byWidget(chip)).height,
     ];
     expect(atOne, <double>[24, 24, 32, 28, 32]);
@@ -695,7 +695,7 @@ void main() {
     await pump(tester, chips());
     expectNothingClipped(tester);
     final atTwo = <double>[
-      for (final chip in tester.widgetList(find.byType(DpChip)))
+      for (final chip in tester.widgetList(find.byType(SgChip)))
         tester.getSize(find.byWidget(chip)).height,
     ];
     for (final (i, height) in atTwo.indexed) {
@@ -704,14 +704,14 @@ void main() {
   });
 
   group('#312 a screen reader can press them', () {
-    testWidgets('a DpChip', (tester) async {
+    testWidgets('a SgChip', (tester) async {
       final semantics = tester.ensureSemantics();
       var taps = 0;
       await pump(
         tester,
-        DpChip(
+        SgChip(
           label: 'Relaxed · 5',
-          kind: DpChipKind.filter,
+          kind: SgChipKind.filter,
           onTap: () => taps++,
         ),
       );
@@ -720,28 +720,28 @@ void main() {
       semantics.dispose();
     });
 
-    testWidgets("DpRatingBar's buttons", (tester) async {
+    testWidgets("SgRatingBar's buttons", (tester) async {
       final semantics = tester.ensureSemantics();
-      final rated = <DpRating>[];
+      final rated = <SgRating>[];
       await pump(
         tester,
-        DpRatingBar(
+        SgRatingBar(
           onRated: rated.add,
-          intervals: const <DpRating, String>{DpRating.good: '8 d'},
+          intervals: const <SgRating, String>{SgRating.good: '8 d'},
         ),
       );
       tester.semantics.tap(find.semantics.byLabel(RegExp('^Good')));
-      expect(rated, <DpRating>[DpRating.good]);
+      expect(rated, <SgRating>[SgRating.good]);
       semantics.dispose();
     });
 
-    testWidgets('a held DpRatingBar offers nothing to press', (tester) async {
+    testWidgets('a held SgRatingBar offers nothing to press', (tester) async {
       final semantics = tester.ensureSemantics();
       await pump(
         tester,
-        DpRatingBar(
+        SgRatingBar(
           onRated: (_) {},
-          intervals: const <DpRating, String>{DpRating.good: '8 d'},
+          intervals: const <SgRating, String>{SgRating.good: '8 d'},
           enabled: false,
         ),
       );
@@ -752,13 +752,13 @@ void main() {
       semantics.dispose();
     });
 
-    testWidgets('a disabled DpUmlautBar offers no tap or long press', (
+    testWidgets('a disabled SgUmlautBar offers no tap or long press', (
       tester,
     ) async {
       final semantics = tester.ensureSemantics();
       final controller = TextEditingController();
       addTearDown(controller.dispose);
-      await pump(tester, DpUmlautBar(controller: controller, enabled: false));
+      await pump(tester, SgUmlautBar(controller: controller, enabled: false));
       expect(
         tester.getSemantics(find.text('ä')),
         isSemantics(
@@ -771,11 +771,11 @@ void main() {
       semantics.dispose();
     });
 
-    testWidgets("DpUmlautBar's keys, tap and long press", (tester) async {
+    testWidgets("SgUmlautBar's keys, tap and long press", (tester) async {
       final semantics = tester.ensureSemantics();
       final controller = TextEditingController();
       addTearDown(controller.dispose);
-      await pump(tester, DpUmlautBar(controller: controller));
+      await pump(tester, SgUmlautBar(controller: controller));
       final key = find.semantics.byLabel(RegExp('^ä'));
       tester.semantics.tap(key);
       tester.semantics.longPress(key);
@@ -785,9 +785,9 @@ void main() {
   });
 }
 
-String _name(DpRating rating) => switch (rating) {
-  DpRating.again => 'Again',
-  DpRating.hard => 'Hard',
-  DpRating.good => 'Good',
-  DpRating.easy => 'Easy',
+String _name(SgRating rating) => switch (rating) {
+  SgRating.again => 'Again',
+  SgRating.hard => 'Hard',
+  SgRating.good => 'Good',
+  SgRating.easy => 'Easy',
 };

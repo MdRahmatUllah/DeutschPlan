@@ -3,8 +3,8 @@ library;
 
 import 'dart:io';
 
-import 'package:deutschplan/data/db/app_database.dart';
-import 'package:deutschplan/data/db/content_dao.dart';
+import 'package:sogda/data/db/app_database.dart';
+import 'package:sogda/data/db/content_dao.dart';
 import 'package:drift/drift.dart' hide isNotNull, isNull;
 import 'package:drift/native.dart';
 
@@ -45,7 +45,7 @@ void main() {
   setUp(() {
     TestWidgetsFlutterBinding.ensureInitialized();
 
-    support = Directory.systemTemp.createTempSync('deutschplan_install');
+    support = Directory.systemTemp.createTempSync('sogda_install');
     PathProviderPlatform.instance = _TempPaths(support.path);
 
     // A real content.db, read back as bytes — the same thing the bundle would

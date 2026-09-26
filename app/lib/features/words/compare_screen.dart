@@ -1,27 +1,25 @@
 import 'dart:async';
 import 'dart:math' as math;
 
-import 'package:deutschplan/core/adaptive/adaptive.dart';
-import 'package:deutschplan/core/components/dp_button.dart';
-import 'package:deutschplan/core/components/dp_chip.dart';
-import 'package:deutschplan/core/components/dp_feedback.dart';
-import 'package:deutschplan/core/providers/app_providers.dart';
-import 'package:deutschplan/core/theme/aurora_backdrop.dart';
-import 'package:deutschplan/core/theme/dp_surface.dart';
-import 'package:deutschplan/core/theme/dp_tokens.dart';
-import 'package:deutschplan/core/typography/dp_text.dart';
-import 'package:deutschplan/data/repositories/plan_repository.dart'
-    show PlanKind;
-import 'package:deutschplan/data/repositories/word_actions.dart' show Undo;
-import 'package:deutschplan/data/repositories/word_repository.dart';
-import 'package:deutschplan/domain/compare_set.dart';
-import 'package:deutschplan/domain/quiz_builder.dart';
-import 'package:deutschplan/features/study/study_back.dart'
-    show StudyPlayButton;
-import 'package:deutschplan/features/today/today_providers.dart';
-import 'package:deutschplan/features/words/speak.dart';
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
-import 'package:deutschplan/router/routes.dart';
+import 'package:sogda/core/adaptive/adaptive.dart';
+import 'package:sogda/core/components/sg_button.dart';
+import 'package:sogda/core/components/sg_chip.dart';
+import 'package:sogda/core/components/sg_feedback.dart';
+import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/core/theme/aurora_backdrop.dart';
+import 'package:sogda/core/theme/sg_surface.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/core/typography/sg_text.dart';
+import 'package:sogda/data/repositories/plan_repository.dart' show PlanKind;
+import 'package:sogda/data/repositories/word_actions.dart' show Undo;
+import 'package:sogda/data/repositories/word_repository.dart';
+import 'package:sogda/domain/compare_set.dart';
+import 'package:sogda/domain/quiz_builder.dart';
+import 'package:sogda/features/study/study_back.dart' show StudyPlayButton;
+import 'package:sogda/features/today/today_providers.dart';
+import 'package:sogda/features/words/speak.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
+import 'package:sogda/router/routes.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -147,7 +145,7 @@ class _CompareScreenState extends ConsumerState<CompareScreen> {
       }
       replan();
       if (!mounted) return;
-      DpUndo.show(
+      SgUndo.show(
         context,
         message: AppLocalizations.of(context).compareAdded(words.length),
         onUndo: () => unawaited(() async {
@@ -175,7 +173,7 @@ class _CompareScreenState extends ConsumerState<CompareScreen> {
     if (view.hasError) {
       body = Padding(
         padding: const EdgeInsets.all(16),
-        child: DpErrorPanel(
+        child: SgErrorPanel(
           message: l10n.compareLoadFailed,
           retryLabel: l10n.retry,
           onRetry: () => ref.invalidate(compareViewProvider(widget.uid)),
@@ -198,9 +196,9 @@ class _CompareScreenState extends ConsumerState<CompareScreen> {
     } else if (view.hasValue) {
       body = Padding(
         padding: const EdgeInsets.all(16),
-        child: DpText(
+        child: SgText(
           l10n.compareNotFound,
-          role: DpTextRole.body,
+          role: SgTextRole.body,
           textAlign: TextAlign.center,
         ),
       );
@@ -251,9 +249,9 @@ class _Body extends StatelessWidget {
     final members = view.members;
     final addLabel = this.addLabel;
 
-    Widget caption(String text) => DpText(
+    Widget caption(String text) => SgText(
       text,
-      role: DpTextRole.caption,
+      role: SgTextRole.caption,
       color: tokens.color.textSecondary,
     );
 
@@ -308,15 +306,15 @@ class _Body extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
-                  DpButton(
+                  SgButton(
                     label: l10n.compareQuiz(view.quizItems),
                     onPressed: quiz,
                   ),
                   if (addLabel != null) ...<Widget>[
                     const SizedBox(height: 8),
-                    DpButton(
+                    SgButton(
                       label: addLabel,
-                      kind: DpButtonKind.secondary,
+                      kind: SgButtonKind.secondary,
                       onPressed: onAdd,
                     ),
                   ],
@@ -351,13 +349,13 @@ class CompareTable extends ConsumerWidget {
   /// [labelWidth], grown with the text size: at 150 % a fixed 96 broke
   /// "MEANING" mid-word (#165).
   static double labelWidthOf(BuildContext context) =>
-      DpScript.grow(context, labelWidth, role: DpTextRole.caption);
+      SgScript.grow(context, labelWidth, role: SgTextRole.caption);
   static const double columnWidth = 170;
 
   /// [columnWidth], grown with the text size: at 200 % on a phone a fixed
   /// 170 broke "self-assured" mid-word (#165).
   static double columnWidthOf(BuildContext context) =>
-      DpScript.grow(context, columnWidth);
+      SgScript.grow(context, columnWidth);
 
   /// A cell the course leaves empty (FR-W2-02).
   static const String missing = '—';
@@ -388,9 +386,9 @@ class CompareTable extends ConsumerWidget {
           padding: padding,
           child: text == null
               ? const SizedBox.shrink()
-              : DpText(
+              : SgText(
                   text.toUpperCase(),
-                  role: DpTextRole.caption,
+                  role: SgTextRole.caption,
                   weight: 700,
                   letterSpacing: 0.5,
                   color: tokens.color.textSecondary,
@@ -419,10 +417,10 @@ class CompareTable extends ConsumerWidget {
 
     // A member's German in a 170 dp column: above 100 % it breaks at a
     // syllable, not a letter ("Jubiläums", #165).
-    Widget text(String? value) => DpText(
+    Widget text(String? value) => SgText(
       value ?? missing,
-      role: DpTextRole.body,
-      allowBreaks: DpScript.scaled(context),
+      role: SgTextRole.body,
+      allowBreaks: SgScript.scaled(context),
     );
 
     // Right to left, the labels last: see the class comment.
@@ -459,7 +457,7 @@ class CompareTable extends ConsumerWidget {
               spacing: 6,
               runSpacing: 6,
               children: <Widget>[
-                // A status chip's look, but its label wraps: DpChip's one
+                // A status chip's look, but its label wraps: SgChip's one
                 // line would run out of a 170 dp column at 200 % text.
                 for (final register in labels)
                   DecoratedBox(
@@ -472,9 +470,9 @@ class CompareTable extends ConsumerWidget {
                         horizontal: 8,
                         vertical: 4,
                       ),
-                      child: DpText(
+                      child: SgText(
                         register,
-                        role: DpTextRole.caption,
+                        role: SgTextRole.caption,
                         weight: 600,
                       ),
                     ),
@@ -496,13 +494,13 @@ class CompareTable extends ConsumerWidget {
                   onPressed: () => unawaited(say(ref, context, example.german)),
                 ),
                 Expanded(
-                  child: DpText(
+                  child: SgText(
                     example.german,
-                    role: DpTextRole.body,
+                    role: SgTextRole.body,
                     italic: true,
                     // German in a 170 dp column: "Jubiläums" breaks at a
                     // syllable above 100 % (#165).
-                    allowBreaks: DpScript.scaled(context),
+                    allowBreaks: SgScript.scaled(context),
                     german: true,
                   ),
                 ),
@@ -528,8 +526,8 @@ class CompareTable extends ConsumerWidget {
       container: true,
       explicitChildNodes: true,
       textDirection: Directionality.of(context),
-      child: DpSurface(
-        kind: DpSurfaceKind.bar,
+      child: SgSurface(
+        kind: SgSurfaceKind.bar,
         radius: radius,
         // Inside the outline, so the pinned column does not paint over it.
         padding: EdgeInsets.all(inset),
@@ -561,10 +559,10 @@ class _Header extends ConsumerWidget {
     final content = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        DpHeadword(
+        SgHeadword(
           member.headword,
           article: member.article,
-          role: DpTextRole.title,
+          role: SgTextRole.title,
         ),
         const SizedBox(height: 6),
         Row(
@@ -573,7 +571,7 @@ class _Header extends ConsumerWidget {
               label: l10n.wordPronounce(member.spoken),
               onPressed: () => unawaited(say(ref, context, member.spoken)),
             ),
-            DpChip(label: member.step),
+            SgChip(label: member.step),
           ],
         ),
       ],

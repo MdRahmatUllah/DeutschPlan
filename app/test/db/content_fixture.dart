@@ -7,7 +7,7 @@ import 'package:sqlite3/sqlite3.dart';
 /// two of them committing with the same file attached fail now and then
 /// with "database is locked". The copy is 8 MB and left in the temp folder.
 File realContent() => _realContent ??= () {
-  final dir = Directory.systemTemp.createTempSync('deutschplan_course');
+  final dir = Directory.systemTemp.createTempSync('sogda_course');
   return File('assets/db/content.db').copySync('${dir.path}/content.db');
 }();
 File? _realContent;

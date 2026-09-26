@@ -4,8 +4,8 @@ library;
 import 'dart:io';
 import 'dart:ui' show Color;
 
-import 'package:deutschplan/core/theme/dp_tokens.dart';
-import 'package:deutschplan/services/widget_snapshot.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/services/widget_snapshot.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 /// X1's native side (#160), which Dart can't reach at run time: this stops it
@@ -30,7 +30,7 @@ void main() {
     };
   }
 
-  Map<String, Color> expected(DpPalette palette, DpSurfaceTokens surface) =>
+  Map<String, Color> expected(SgPalette palette, SgSurfaceTokens surface) =>
       <String, Color>{
         'widget_card': surface.card,
         'widget_track': surface.track,
@@ -52,14 +52,14 @@ void main() {
   test('FR-X1-04 light is the light tokens', () {
     expect(
       widgetColoursIn('android/app/src/main/res/values/colors.xml'),
-      expected(DpPalette.light, DpSurfaceTokens.light),
+      expected(SgPalette.light, SgSurfaceTokens.light),
     );
   });
 
   test('FR-X1-04 and night is the dark tokens', () {
     expect(
       widgetColoursIn('android/app/src/main/res/values-night/colors.xml'),
-      expected(DpPalette.dark, DpSurfaceTokens.dark),
+      expected(SgPalette.dark, SgSurfaceTokens.dark),
     );
   });
 
@@ -71,7 +71,7 @@ void main() {
     final package = name.substring(0, dot);
     final kotlin = File(
       'android/app/src/main/kotlin/${package.replaceAll('.', '/')}/'
-      'DeutschPlanWidget.kt',
+      'SogdaWidget.kt',
     ).readAsStringSync();
     // Line by line: git may check it out with CRLF endings.
     expect(kotlin.split(RegExp(r'\r?\n')), contains('package $package'));

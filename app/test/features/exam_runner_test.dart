@@ -1,22 +1,22 @@
 import 'dart:async';
 
-import 'package:deutschplan/core/adaptive/adaptive.dart';
-import 'package:deutschplan/core/components/dp_button.dart';
-import 'package:deutschplan/core/components/dp_feedback.dart';
-import 'package:deutschplan/core/components/dp_speaker_button.dart';
-import 'package:deutschplan/core/providers/app_providers.dart';
-import 'package:deutschplan/core/theme/app_theme.dart';
-import 'package:deutschplan/core/theme/dp_tokens.dart';
-import 'package:deutschplan/core/typography/dp_text.dart';
-import 'package:deutschplan/data/db/app_database.dart';
-import 'package:deutschplan/data/repositories/settings_repository.dart';
-import 'package:deutschplan/domain/exam_generator.dart';
-import 'package:deutschplan/domain/grammar_item_generator.dart';
-import 'package:deutschplan/domain/quiz_builder.dart' show FormLabel;
-import 'package:deutschplan/features/exam/exam_runner_screen.dart';
-import 'package:deutschplan/features/quiz/quiz_item_view.dart' show GermanWord;
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
-import 'package:deutschplan/main.dart'
+import 'package:sogda/core/adaptive/adaptive.dart';
+import 'package:sogda/core/components/sg_button.dart';
+import 'package:sogda/core/components/sg_feedback.dart';
+import 'package:sogda/core/components/sg_speaker_button.dart';
+import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/core/theme/app_theme.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/core/typography/sg_text.dart';
+import 'package:sogda/data/db/app_database.dart';
+import 'package:sogda/data/repositories/settings_repository.dart';
+import 'package:sogda/domain/exam_generator.dart';
+import 'package:sogda/domain/grammar_item_generator.dart';
+import 'package:sogda/domain/quiz_builder.dart' show FormLabel;
+import 'package:sogda/features/exam/exam_runner_screen.dart';
+import 'package:sogda/features/quiz/quiz_item_view.dart' show GermanWord;
+import 'package:sogda/l10n/generated/app_localizations.dart';
+import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
@@ -115,7 +115,7 @@ void main() {
     await pump(tester);
     await tap(tester, 'der');
     expect(run.answers, [(21, 'der')]);
-    expect(find.byType(DpVerdictRow), findsNothing, reason: 'BR-EXAM-05');
+    expect(find.byType(SgVerdictRow), findsNothing, reason: 'BR-EXAM-05');
     await tap(tester, 'die');
     expect(run.answers.last, (21, 'die'), reason: 'an answer can change');
   });
@@ -190,9 +190,9 @@ void main() {
         tester,
         stub: StubExamRun(attempt: artboardAttempt(durationSec: 20 * 60 - 121)),
       );
-      expect(fill('2:01'), isNot(DpPalette.light.again));
+      expect(fill('2:01'), isNot(SgPalette.light.again));
       await tester.pump(const Duration(seconds: 1));
-      expect(fill('2:00'), DpPalette.light.again);
+      expect(fill('2:00'), SgPalette.light.again);
     });
 
     testWidgets('off: no clock, no submit, the time still counted', (
@@ -763,11 +763,11 @@ void main() {
     );
     for (var left = 3; left > 0; left--) {
       expect(find.text(l10n.examRunPlaysLeft(left)), findsOneWidget);
-      await tester.tap(find.byType(DpSpeakerButton));
+      await tester.tap(find.byType(SgSpeakerButton));
       await tester.pumpAndSettle();
     }
     expect(find.text(l10n.examRunPlaysLeft(0)), findsOneWidget);
-    await tester.tap(find.byType(DpSpeakerButton));
+    await tester.tap(find.byType(SgSpeakerButton));
     await tester.pumpAndSettle();
     expect(spoken, <String>['das Haus', 'das Haus', 'das Haus']);
   });
@@ -799,7 +799,7 @@ void main() {
 
     Finder inTheList(String label) => find.descendant(
       of: find.byType(ListView),
-      matching: find.widgetWithText(DpButton, label),
+      matching: find.widgetWithText(SgButton, label),
       skipOffstage: false,
     );
 
@@ -898,12 +898,12 @@ void main() {
               );
             }
             expect(
-              find.byType(DpUmlautBar),
+              find.byType(SgUmlautBar),
               german ? findsOneWidget : findsNothing,
             );
             if (german) {
               expect(
-                tester.getRect(find.byType(DpUmlautBar)).bottom,
+                tester.getRect(find.byType(SgUmlautBar)).bottom,
                 lessThanOrEqualTo(keyboardTop),
               );
             }
@@ -921,7 +921,7 @@ void main() {
               collapsed ? findsOneWidget : findsNothing,
             );
             expect(
-              find.widgetWithText(DpButton, t.examRunNext),
+              find.widgetWithText(SgButton, t.examRunNext),
               findsOneWidget,
             );
             // Past 130 % the band keeps only its colour.
@@ -934,7 +934,7 @@ void main() {
             await tester.pumpAndSettle();
             expect(inTheList(t.examRunNext), findsNothing);
             expect(
-              find.widgetWithText(DpButton, t.examRunNext),
+              find.widgetWithText(SgButton, t.examRunNext),
               findsOneWidget,
             );
             expect(find.byIcon(Icons.pause), findsOneWidget);
@@ -1055,7 +1055,7 @@ void main() {
       final chip = tester.widget<Container>(
         find.ancestor(of: clock(), matching: find.byType(Container)).first,
       );
-      expect((chip.decoration! as BoxDecoration).color, DpPalette.light.again);
+      expect((chip.decoration! as BoxDecoration).color, SgPalette.light.again);
       semantics.dispose();
     });
 
@@ -1165,7 +1165,7 @@ void main() {
     }
 
     for (final (name, item, big, small)
-        in <(String, ExamItem, DpTextRole, DpTextRole)>[
+        in <(String, ExamItem, SgTextRole, SgTextRole)>[
           (
             'reverse',
             const WordQuestion(
@@ -1174,8 +1174,8 @@ void main() {
               prompt: "I'm sorry",
               expected: 'Es tut mir leid',
             ),
-            DpTextRole.headline,
-            DpTextRole.title,
+            SgTextRole.headline,
+            SgTextRole.title,
           ),
           (
             'word forms',
@@ -1186,8 +1186,8 @@ void main() {
               expected: 'hat sich benommen',
               form: FormLabel.perfekt,
             ),
-            DpTextRole.headline,
-            DpTextRole.title,
+            SgTextRole.headline,
+            SgTextRole.title,
           ),
           (
             'gap',
@@ -1198,8 +1198,8 @@ void main() {
               answer: 'lese',
               translation: 'I like reading.',
             ),
-            DpTextRole.title,
-            DpTextRole.bodyLarge,
+            SgTextRole.title,
+            SgTextRole.bodyLarge,
           ),
           (
             'grammar gap fill',
@@ -1212,8 +1212,8 @@ void main() {
                 translation: "I'd like a coffee.",
               ),
             ),
-            DpTextRole.title,
-            DpTextRole.bodyLarge,
+            SgTextRole.title,
+            SgTextRole.bodyLarge,
           ),
           (
             'vocabulary',
@@ -1223,8 +1223,8 @@ void main() {
               prompt: 'das Haus',
               expected: 'house',
             ),
-            DpTextRole.display,
-            DpTextRole.headline,
+            SgTextRole.display,
+            SgTextRole.headline,
           ),
         ]) {
       // At 200 % on SQA's phone the role drops while typing; at 100 % on the
@@ -1251,24 +1251,24 @@ void main() {
             ),
             textScaler: scaler,
           );
-          DpTextRole role() => switch (item) {
+          SgTextRole role() => switch (item) {
             WordQuestion(section: ExamSection.vocabulary) =>
               tester.widget<GermanWord>(find.byType(GermanWord)).role,
             GapQuestion() || GrammarQuestion() =>
               tester
-                  .widget<DpText>(
+                  .widget<SgText>(
                     find.ancestor(
                       of: find.textContaining('_____'),
-                      matching: find.byType(DpText),
+                      matching: find.byType(SgText),
                     ),
                   )
                   .role,
             _ =>
               tester
-                  .widget<DpText>(
+                  .widget<SgText>(
                     find.ancestor(
                       of: find.text(asked(item, l10n).single),
-                      matching: find.byType(DpText),
+                      matching: find.byType(SgText),
                     ),
                   )
                   .role,
@@ -1348,7 +1348,7 @@ void main() {
       await tester.pumpAndSettle();
       expect(typing(tester), isTrue);
 
-      final keys = tester.getRect(find.byType(DpUmlautBar));
+      final keys = tester.getRect(find.byType(SgUmlautBar));
       final left = tester.getRect(clock());
       for (final (name, at) in <(String, Offset)>[
         // The 8 dp between the keys and the clock's chip.

@@ -1,20 +1,20 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:deutschplan/core/providers/app_providers.dart';
-import 'package:deutschplan/core/theme/dp_tokens.dart';
-import 'package:deutschplan/core/theme/glass_capability.dart';
-import 'package:deutschplan/core/theme/theme_mode.dart';
-import 'package:deutschplan/data/db/app_database.dart';
-import 'package:deutschplan/data/db/content_dao.dart';
-import 'package:deutschplan/data/db/content_update.dart';
-import 'package:deutschplan/data/repositories/exam_repository.dart';
-import 'package:deutschplan/data/repositories/plan_repository.dart';
-import 'package:deutschplan/data/repositories/setting_keys.dart';
-import 'package:deutschplan/data/repositories/settings_repository.dart';
-import 'package:deutschplan/router/app_router.dart';
-import 'package:deutschplan/router/route_guards.dart';
-import 'package:deutschplan/router/routes.dart';
+import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/core/theme/glass_capability.dart';
+import 'package:sogda/core/theme/theme_mode.dart';
+import 'package:sogda/data/db/app_database.dart';
+import 'package:sogda/data/db/content_dao.dart';
+import 'package:sogda/data/db/content_update.dart';
+import 'package:sogda/data/repositories/exam_repository.dart';
+import 'package:sogda/data/repositories/plan_repository.dart';
+import 'package:sogda/data/repositories/setting_keys.dart';
+import 'package:sogda/data/repositories/settings_repository.dart';
+import 'package:sogda/router/app_router.dart';
+import 'package:sogda/router/route_guards.dart';
+import 'package:sogda/router/routes.dart';
 import 'package:flutter/foundation.dart' show immutable;
 // `Override` is not in the main barrel in Riverpod 3.
 import 'package:flutter_riverpod/misc.dart' show Override;
@@ -79,7 +79,7 @@ class Bootstrap {
   /// The mode `AppTheme` should build. Resolved here so the first frame is
   /// already the right one — a frame of the wrong theme is the thing
   /// FR-S1-01 exists to prevent.
-  final DpMode themeMode;
+  final SgMode themeMode;
 
   /// What the learner actually chose, which [themeMode] cannot say: `system`
   /// resolves to light or dark, and the app has to keep following the

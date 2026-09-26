@@ -1,6 +1,6 @@
 # 6. Quality
 
-Quality in DeutschPlan rests on layers that each catch a different kind of
+Quality in Sogda rests on layers that each catch a different kind of
 mistake: a static gate (analyser and formatter), tests that enforce the
 architecture and the copy, unit, data and widget tests named after the
 requirements they prove, golden images of every screen in three themes and

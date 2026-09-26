@@ -1,9 +1,9 @@
-import 'package:deutschplan/data/db/app_database.dart';
-import 'package:deutschplan/data/repositories/course_text.dart';
-import 'package:deutschplan/domain/exam_generator.dart';
-import 'package:deutschplan/domain/exam_grading.dart';
-import 'package:deutschplan/domain/grammar_item_generator.dart';
-import 'package:deutschplan/domain/quiz_builder.dart';
+import 'package:sogda/data/db/app_database.dart';
+import 'package:sogda/data/repositories/course_text.dart';
+import 'package:sogda/domain/exam_generator.dart';
+import 'package:sogda/domain/exam_grading.dart';
+import 'package:sogda/domain/grammar_item_generator.dart';
+import 'package:sogda/domain/quiz_builder.dart';
 import 'package:drift/drift.dart';
 import 'package:flutter/foundation.dart' show immutable;
 

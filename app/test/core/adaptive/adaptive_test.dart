@@ -1,9 +1,9 @@
 import 'package:cupertino_ui/cupertino_ui.dart' as cupertino;
-import 'package:deutschplan/core/adaptive/adaptive.dart';
-import 'package:deutschplan/core/theme/dp_surface.dart';
-import 'package:deutschplan/core/theme/app_theme.dart';
-import 'package:deutschplan/core/theme/dp_tokens.dart';
-import 'package:deutschplan/core/typography/dp_text.dart';
+import 'package:sogda/core/adaptive/adaptive.dart';
+import 'package:sogda/core/theme/sg_surface.dart';
+import 'package:sogda/core/theme/app_theme.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/core/typography/sg_text.dart';
 
 import '../text_clipping.dart';
 
@@ -219,12 +219,12 @@ void main() {
       );
     });
 
-    /// The bar's title as drawn: DpOneLine's one line of spans.
-    // The bar's title: its DpOneLine outside the back button, whose iOS
+    /// The bar's title as drawn: SgOneLine's one line of spans.
+    // The bar's title: its SgOneLine outside the back button, whose iOS
     // label is one too (#588).
     Finder titleLine() => find.byElementPredicate(
       (element) =>
-          element.widget is DpOneLine &&
+          element.widget is SgOneLine &&
           element.findAncestorWidgetOfExactType<AdaptiveBackButton>() == null,
     );
 
@@ -270,7 +270,7 @@ void main() {
         await bar(tester, chrome, long);
         final text = barTitle(tester);
         final shown = text.text.toPlainText();
-        expect(shown, endsWith(DpOneLine.ellipsis), reason: '$chrome');
+        expect(shown, endsWith(SgOneLine.ellipsis), reason: '$chrome');
         final kept = shown.substring(0, shown.length - 1);
         expect(long.startsWith(kept), isTrue, reason: '$chrome');
         expect(
@@ -505,7 +505,7 @@ void main() {
       );
       await tester.pumpAndSettle();
       final scaffold = tester.widget<Scaffold>(find.byType(Scaffold));
-      expect(scaffold.backgroundColor, DpSurfaceTokens.dark.paper);
+      expect(scaffold.backgroundColor, SgSurfaceTokens.dark.paper);
     });
   });
 
@@ -656,7 +656,7 @@ void main() {
       );
       expect(
         tester.widget<Switch>(find.byType(Switch)).activeTrackColor,
-        DpPalette.light.primary,
+        SgPalette.light.primary,
       );
 
       await pump(
@@ -674,7 +674,7 @@ void main() {
               find.byType(cupertino.CupertinoSwitch),
             )
             .activeTrackColor,
-        DpPalette.light.primary,
+        SgPalette.light.primary,
       );
     });
 
@@ -695,13 +695,13 @@ void main() {
       final control = tester.widget<Switch>(find.byType(Switch));
       const on = <WidgetState>{WidgetState.selected};
       expect(control.trackOutlineWidth!.resolve(on), 2);
-      expect(control.trackOutlineColor!.resolve(on), DpPalette.light.ink);
+      expect(control.trackOutlineColor!.resolve(on), SgPalette.light.ink);
       expect(
         control.trackOutlineColor!.resolve(<WidgetState>{}),
-        DpPalette.light.textSecondary,
+        SgPalette.light.textSecondary,
       );
-      expect(control.activeThumbColor, DpPalette.light.ink);
-      expect(control.inactiveThumbColor, DpPalette.light.textSecondary);
+      expect(control.activeThumbColor, SgPalette.light.ink);
+      expect(control.inactiveThumbColor, SgPalette.light.textSecondary);
       expect(control.thumbIcon!.resolve(on)!.icon, Icons.check);
       expect(control.thumbIcon!.resolve(<WidgetState>{}), isNull);
     });
@@ -934,7 +934,7 @@ void main() {
         await tester.pumpAndSettle();
         final sheet = find.ancestor(
           of: find.byKey(const Key('name')),
-          matching: find.byType(DpSurface),
+          matching: find.byType(SgSurface),
         );
         expect(tester.getRect(sheet).bottom, 844, reason: 'over the tab bar');
 

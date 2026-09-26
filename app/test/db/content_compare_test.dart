@@ -1,7 +1,7 @@
-import 'package:deutschplan/data/db/app_database.dart';
-import 'package:deutschplan/data/db/content_dao.dart';
-import 'package:deutschplan/domain/compare_set.dart';
-import 'package:deutschplan/domain/quiz_builder.dart' show QuizItem;
+import 'package:sogda/data/db/app_database.dart';
+import 'package:sogda/data/db/content_dao.dart';
+import 'package:sogda/domain/compare_set.dart';
+import 'package:sogda/domain/quiz_builder.dart' show QuizItem;
 import 'package:drift/drift.dart' show DatabaseConnection, Variable;
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';

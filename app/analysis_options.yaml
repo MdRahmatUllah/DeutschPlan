@@ -1,4 +1,4 @@
-# Static analysis for DeutschPlan.
+# Static analysis for Sogda.
 # Rules here are the ones docs/05-dev-guide/coding-standards.md requires.
 # CI runs `make lint`, which fails on any analyzer issue and on a format diff.
 

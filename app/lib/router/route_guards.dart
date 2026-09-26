@@ -1,6 +1,6 @@
-import 'package:deutschplan/data/repositories/exam_repository.dart';
-import 'package:deutschplan/data/repositories/plan_repository.dart';
-import 'package:deutschplan/router/routes.dart';
+import 'package:sogda/data/repositories/exam_repository.dart';
+import 'package:sogda/data/repositories/plan_repository.dart';
+import 'package:sogda/router/routes.dart';
 import 'package:flutter/foundation.dart' show immutable;
 import 'package:go_router/go_router.dart';
 

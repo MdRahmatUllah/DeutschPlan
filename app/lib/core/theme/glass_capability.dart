@@ -48,7 +48,7 @@ class GlassCapability extends ChangeNotifier {
   factory GlassCapability.never() =>
       GlassCapability(platformSupportsBlur: false);
 
-  static const MethodChannel _channel = MethodChannel('deutschplan/glass');
+  static const MethodChannel _channel = MethodChannel('sogda/glass');
 
   /// The frame budget: one frame at 60 Hz. A frame slower than this is a
   /// dropped frame as far as the glass budget is concerned.
@@ -79,7 +79,7 @@ class GlassCapability extends ChangeNotifier {
   /// Both flags change while the app runs — battery saver flips Android's
   /// cross-window blur, and the learner can turn Reduce Transparency on from
   /// Settings without leaving the app — so a one-shot read at launch would make
-  /// DeutschPlan look like it ignores an accessibility setting.
+  /// Sogda look like it ignores an accessibility setting.
   Future<void> queryPlatform() async {
     _channel.setMethodCallHandler(_onPlatformPush);
     try {
@@ -184,7 +184,7 @@ class GlassCapability extends ChangeNotifier {
   }
 }
 
-/// Makes a [GlassCapability] available to every [DpSurface] below it.
+/// Makes a [GlassCapability] available to every [SgSurface] below it.
 ///
 /// Absent, glass blurs — so a screen rendered in a test or a golden is frosted
 /// unless it deliberately says otherwise.

@@ -1,21 +1,20 @@
 import 'dart:async';
 
-import 'package:deutschplan/core/adaptive/adaptive.dart';
-import 'package:deutschplan/core/components/dp_button.dart';
-import 'package:deutschplan/core/providers/app_providers.dart';
-import 'package:deutschplan/core/theme/aurora_backdrop.dart';
-import 'package:deutschplan/core/theme/dp_surface.dart';
-import 'package:deutschplan/core/theme/dp_tokens.dart';
-import 'package:deutschplan/core/typography/dp_text.dart';
-import 'package:deutschplan/data/repositories/setting_keys.dart';
-import 'package:deutschplan/features/me/settings_screen.dart'
+import 'package:sogda/core/adaptive/adaptive.dart';
+import 'package:sogda/core/components/sg_button.dart';
+import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/core/theme/aurora_backdrop.dart';
+import 'package:sogda/core/theme/sg_surface.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/core/typography/sg_text.dart';
+import 'package:sogda/data/repositories/setting_keys.dart';
+import 'package:sogda/features/me/settings_screen.dart'
     show settingsEditorProvider;
-import 'package:deutschplan/features/onboarding/onboarding_pace_page.dart'
+import 'package:sogda/features/onboarding/onboarding_pace_page.dart'
     show StudyDayToggle, studyWeekdays;
-import 'package:deutschplan/features/today/today_providers.dart';
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
-import 'package:deutschplan/services/background_tasks.dart'
-    show reminderBodyProvider;
+import 'package:sogda/features/today/today_providers.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
+import 'package:sogda/services/background_tasks.dart' show reminderBodyProvider;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 
@@ -97,8 +96,8 @@ class _ReminderDaysState extends ConsumerState<ReminderDaysScreen> {
       body: ListView(
         padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
         children: <Widget>[
-          DpSurface(
-            kind: DpSurfaceKind.bar,
+          SgSurface(
+            kind: SgSurfaceKind.bar,
             radius: 16,
             padding: const EdgeInsets.all(14),
             child: Column(
@@ -134,8 +133,8 @@ class _ReminderDaysState extends ConsumerState<ReminderDaysScreen> {
             ),
           ),
           const SizedBox(height: 12),
-          DpSurface(
-            kind: DpSurfaceKind.bar,
+          SgSurface(
+            kind: SgSurfaceKind.bar,
             radius: 16,
             padding: const EdgeInsets.symmetric(horizontal: 14),
             child: Column(
@@ -162,9 +161,9 @@ class _ReminderDaysState extends ConsumerState<ReminderDaysScreen> {
                     container: true,
                     child: Align(
                       alignment: Alignment.centerLeft,
-                      child: DpButton(
+                      child: SgButton(
                         label: l10n.reminderDaysOpenSettings,
-                        kind: DpButtonKind.text,
+                        kind: SgButtonKind.text,
                         expand: false,
                         onPressed: () => unawaited(
                           ref
@@ -258,8 +257,8 @@ class _Preview extends ConsumerWidget {
 
     return Semantics(
       container: true,
-      child: DpSurface(
-        kind: DpSurfaceKind.bar,
+      child: SgSurface(
+        kind: SgSurfaceKind.bar,
         radius: 16,
         padding: const EdgeInsets.all(12),
         child: Row(
@@ -278,9 +277,9 @@ class _Preview extends ConsumerWidget {
                   // An icon, not text: it keeps its size at 200 %.
                   child: Center(
                     child: MediaQuery.withNoTextScaling(
-                      child: DpText(
+                      child: SgText(
                         'D',
-                        role: DpTextRole.title,
+                        role: SgTextRole.title,
                         color: tokens.color.onAccent,
                       ),
                     ),
@@ -293,16 +292,16 @@ class _Preview extends ConsumerWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  DpText(
+                  SgText(
                     l10n.reminderDaysFrom(l10n.appTitle, time),
-                    role: DpTextRole.label,
+                    role: SgTextRole.label,
                     weight: 700,
                   ),
                   const SizedBox(height: 2),
                   for (final (index, line) in lines.indexed)
-                    DpText(
+                    SgText(
                       line,
-                      role: index == 0 ? DpTextRole.body : DpTextRole.caption,
+                      role: index == 0 ? SgTextRole.body : SgTextRole.caption,
                       color: index == 0 ? null : tokens.color.textSecondary,
                     ),
                 ],
@@ -325,9 +324,9 @@ class _Heading extends StatelessWidget {
   Widget build(BuildContext context) => Semantics(
     container: true,
     header: true,
-    child: DpText(
+    child: SgText(
       text.toUpperCase(),
-      role: DpTextRole.caption,
+      role: SgTextRole.caption,
       weight: 700,
       letterSpacing: 0.6,
       color: context.tokens.color.textSecondary,
@@ -341,9 +340,9 @@ class _Note extends StatelessWidget {
   final String text;
 
   @override
-  Widget build(BuildContext context) => DpText(
+  Widget build(BuildContext context) => SgText(
     text,
-    role: DpTextRole.caption,
+    role: SgTextRole.caption,
     color: context.tokens.color.textSecondary,
   );
 }
@@ -388,10 +387,10 @@ class _Row extends StatelessWidget {
                 children: <Widget>[
                   if (labelledByControl)
                     ExcludeSemantics(
-                      child: DpText(title, role: DpTextRole.body),
+                      child: SgText(title, role: SgTextRole.body),
                     )
                   else
-                    DpText(title, role: DpTextRole.body),
+                    SgText(title, role: SgTextRole.body),
                   if (subtitle case final subtitle?) _Note(subtitle),
                 ],
               ),
@@ -430,7 +429,7 @@ class _Time extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final tokens = context.tokens;
-    final text = DpText(time, role: DpTextRole.bodyLarge, weight: 600);
+    final text = SgText(time, role: SgTextRole.bodyLarge, weight: 600);
     return context.isCupertino
         ? Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),

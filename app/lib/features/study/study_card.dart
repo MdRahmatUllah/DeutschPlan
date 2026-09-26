@@ -1,20 +1,19 @@
 import 'dart:async';
 
-import 'package:deutschplan/core/components/dp_button.dart';
-import 'package:deutschplan/core/components/dp_chip.dart';
-import 'package:deutschplan/core/components/dp_feedback.dart';
-import 'package:deutschplan/core/components/dp_speaker_button.dart';
-import 'package:deutschplan/core/providers/app_providers.dart';
-import 'package:deutschplan/core/theme/dp_surface.dart';
-import 'package:deutschplan/core/theme/dp_tokens.dart';
-import 'package:deutschplan/core/typography/dp_text.dart';
-import 'package:deutschplan/data/db/app_database.dart';
-import 'package:deutschplan/data/repositories/setting_keys.dart';
-import 'package:deutschplan/data/repositories/word_repository.dart'
-    show customId;
-import 'package:deutschplan/features/study/study_back.dart';
-import 'package:deutschplan/features/words/speak.dart';
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
+import 'package:sogda/core/components/sg_button.dart';
+import 'package:sogda/core/components/sg_chip.dart';
+import 'package:sogda/core/components/sg_feedback.dart';
+import 'package:sogda/core/components/sg_speaker_button.dart';
+import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/core/theme/sg_surface.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/core/typography/sg_text.dart';
+import 'package:sogda/data/db/app_database.dart';
+import 'package:sogda/data/repositories/setting_keys.dart';
+import 'package:sogda/data/repositories/word_repository.dart' show customId;
+import 'package:sogda/features/study/study_back.dart';
+import 'package:sogda/features/words/speak.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:flutter/services.dart' show Clipboard, ClipboardData;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
@@ -139,7 +138,7 @@ class _StudyWordCardState extends ConsumerState<StudyWordCard> {
     if (!spoke && mounted) setState(() => _mute = true);
   }
 
-  void _explain() => DpToast.show(
+  void _explain() => SgToast.show(
     context,
     AppLocalizations.of(context).speakerNoVoice,
     lift: StudyFrontActions.clearanceOf(context),
@@ -148,7 +147,7 @@ class _StudyWordCardState extends ConsumerState<StudyWordCard> {
   void _copy() {
     final l10n = AppLocalizations.of(context);
     unawaited(Clipboard.setData(ClipboardData(text: spokenForm(widget.word))));
-    DpToast.show(
+    SgToast.show(
       context,
       l10n.studyCopied(spokenForm(widget.word)),
       lift: StudyFrontActions.clearanceOf(context),
@@ -178,14 +177,14 @@ class _StudyWordCardState extends ConsumerState<StudyWordCard> {
             mainAxisAlignment: MainAxisAlignment.end,
             children: <Widget>[
               // A word of the learner's own is in no step (#363).
-              DpChip(
+              SgChip(
                 label: customId(word.uid) == null
                     ? word.sublevelCode
                     : l10n.searchMyWord,
               ),
               if (widget.isNew) ...<Widget>[
                 const SizedBox(width: 6),
-                DpChip(label: l10n.studyNewChip, selected: true),
+                SgChip(label: l10n.studyNewChip, selected: true),
               ],
             ],
           ),
@@ -207,23 +206,23 @@ class _StudyWordCardState extends ConsumerState<StudyWordCard> {
                         onLongPressHint: l10n.studyCopyHint,
                         child: GestureDetector(
                           onLongPress: _copy,
-                          child: DpHeadword(
+                          child: SgHeadword(
                             word.german,
                             article: word.article,
                             plural: word.forms,
-                            role: DpTextRole.display,
+                            role: SgTextRole.display,
                           ),
                         ),
                       ),
                     ),
                     const SizedBox(height: 8),
-                    DpText(
+                    SgText(
                       // A long compound's forms break at a syllable, not at any
                       // letter; a shorter word wraps whole (#419).
-                      DpScript.allowBreaks(
+                      SgScript.allowBreaks(
                         frontCaption(word, l10n, pron: pron),
                       ),
-                      role: DpTextRole.caption,
+                      role: SgTextRole.caption,
                       color: tokens.color.textSecondary,
                       // Its Bangla pronunciation too, though no German in
                       // it is long (#504).
@@ -233,10 +232,10 @@ class _StudyWordCardState extends ConsumerState<StudyWordCard> {
                 ),
               ),
               const SizedBox(width: 12),
-              DpSpeakerButton(
+              SgSpeakerButton(
                 semanticLabel: l10n.studyPronounce,
                 state: _mute
-                    ? DpSpeakerState.unavailable
+                    ? SgSpeakerState.unavailable
                     : speakerState(ref, spokenForm(word)),
                 onPressed: () => unawaited(_speak()),
                 onLongPress: () => unawaited(_speak(pace: StudyWordCard.slow)),
@@ -310,10 +309,10 @@ class StudyCardFrame extends StatelessWidget {
     final tokens = context.tokens;
     final gender = tokens.color.forArticle(article) ?? tokens.surface.muted;
     final edge = tokens.isGlass ? 0.0 : 2.0;
-    return DpSurface(
+    return SgSurface(
       kind: tokens.isGlass
-          ? DpSurfaceKind.tint(gender, opacity: 0.22)
-          : DpSurfaceKind.card,
+          ? SgSurfaceKind.tint(gender, opacity: 0.22)
+          : SgSurfaceKind.card,
       selected: !tokens.isGlass,
       padding: EdgeInsets.all(edge),
       child: ClipRRect(
@@ -357,18 +356,18 @@ class StudyNewActions extends StatelessWidget {
       child: Row(
         children: <Widget>[
           Expanded(
-            child: DpButton(
+            child: SgButton(
               label: l10n.studyKnowIt,
               onPressed: onKnown,
-              kind: DpButtonKind.text,
+              kind: SgButtonKind.text,
             ),
           ),
           if (onSkip != null)
             Expanded(
-              child: DpButton(
+              child: SgButton(
                 label: l10n.studySkip,
                 onPressed: onSkip,
-                kind: DpButtonKind.text,
+                kind: SgButtonKind.text,
               ),
             ),
         ],
@@ -395,7 +394,7 @@ class StudyFrontActions extends StatelessWidget {
   /// [clearance], grown with the text: at 200 % *Show meaning* and the hint
   /// are taller, and a fixed 118 left the Undo bar over them (#165).
   static double clearanceOf(BuildContext context) =>
-      DpScript.grow(context, clearance);
+      SgScript.grow(context, clearance);
 
   /// The hint line. A new word's two buttons take its place (StudyNew).
   final bool hint;
@@ -409,15 +408,15 @@ class StudyFrontActions extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
         if (hint) ...<Widget>[
-          DpText(
+          SgText(
             l10n.studyHint,
-            role: DpTextRole.caption,
+            role: SgTextRole.caption,
             color: tokens.color.textSecondary,
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 8),
         ],
-        DpButton(
+        SgButton(
           label: l10n.studyShowMeaning,
           onPressed: onReveal,
           colour: tokens.surface.muted,

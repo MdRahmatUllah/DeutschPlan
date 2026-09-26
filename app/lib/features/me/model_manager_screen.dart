@@ -1,24 +1,24 @@
 import 'dart:async';
 
-import 'package:deutschplan/core/adaptive/adaptive.dart';
-import 'package:deutschplan/core/components/dp_button.dart';
-import 'package:deutschplan/core/components/dp_chip.dart';
-import 'package:deutschplan/core/components/dp_feedback.dart';
-import 'package:deutschplan/core/components/dp_pill.dart';
-import 'package:deutschplan/core/providers/app_providers.dart';
-import 'package:deutschplan/core/theme/aurora_backdrop.dart';
-import 'package:deutschplan/core/theme/dp_surface.dart';
-import 'package:deutschplan/core/theme/dp_tokens.dart';
-import 'package:deutschplan/core/typography/dp_text.dart';
-import 'package:deutschplan/data/repositories/model_repository.dart';
-import 'package:deutschplan/data/repositories/setting_keys.dart';
-import 'package:deutschplan/features/me/licences_screen.dart';
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
-import 'package:deutschplan/l10n/ui_digits.dart';
-import 'package:deutschplan/services/device_storage.dart';
-import 'package:deutschplan/services/model_downloads.dart';
-import 'package:deutschplan/services/notification_permission.dart';
-import 'package:deutschplan/services/tts/supertonic_tts.dart';
+import 'package:sogda/core/adaptive/adaptive.dart';
+import 'package:sogda/core/components/sg_button.dart';
+import 'package:sogda/core/components/sg_chip.dart';
+import 'package:sogda/core/components/sg_feedback.dart';
+import 'package:sogda/core/components/sg_pill.dart';
+import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/core/theme/aurora_backdrop.dart';
+import 'package:sogda/core/theme/sg_surface.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/core/typography/sg_text.dart';
+import 'package:sogda/data/repositories/model_repository.dart';
+import 'package:sogda/data/repositories/setting_keys.dart';
+import 'package:sogda/features/me/licences_screen.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
+import 'package:sogda/l10n/ui_digits.dart';
+import 'package:sogda/services/device_storage.dart';
+import 'package:sogda/services/model_downloads.dart';
+import 'package:sogda/services/notification_permission.dart';
+import 'package:sogda/services/tts/supertonic_tts.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -206,9 +206,9 @@ class ModelManagerScreen extends ConsumerWidget {
             _ModelCardView(translation),
             const SizedBox(height: 10),
           ],
-          DpText(
+          SgText(
             l10n.modelsFooter,
-            role: DpTextRole.caption,
+            role: SgTextRole.caption,
             color: tokens.color.textSecondary,
           ),
         ],
@@ -234,19 +234,19 @@ class _Storage extends StatelessWidget {
     final l10n = AppLocalizations.of(context);
     final space = this.space;
     final total = space?.total ?? 0;
-    final label = DpText(
+    final label = SgText(
       l10n.modelsStorage,
-      role: DpTextRole.label,
+      role: SgTextRole.label,
       weight: 600,
     );
     final free = space == null
         ? null
-        : DpText(
+        : SgText(
             l10n.modelsStorageFree(
               modelSize(l10n, space.free),
               modelSize(l10n, total),
             ),
-            role: DpTextRole.label,
+            role: SgTextRole.label,
             weight: 400,
             color: tokens.color.textSecondary,
           );
@@ -255,7 +255,7 @@ class _Storage extends StatelessWidget {
       children: <Widget>[
         // Past 130 % text the free space goes under its label, which it
         // squeezed until "storage" broke mid-word (#165).
-        if (DpScript.large(context)) ...<Widget>[label, ?free] else
+        if (SgScript.large(context)) ...<Widget>[label, ?free] else
           Row(
             children: <Widget>[
               Expanded(child: label),
@@ -285,14 +285,14 @@ class _Storage extends StatelessWidget {
           ),
         ],
         const SizedBox(height: 6),
-        DpText(
+        SgText(
           space == null || total == 0
               ? l10n.modelsStorageModelsOnly(modelSize(l10n, models))
               : l10n.modelsStorageModels(
                   modelSize(l10n, models),
                   modelSize(l10n, total),
                 ),
-          role: DpTextRole.caption,
+          role: SgTextRole.caption,
           color: tokens.color.textSecondary,
         ),
       ],
@@ -338,18 +338,18 @@ class _ModelCardView extends ConsumerWidget {
         : l10n.modelsTranslationTitle;
     final licence = licenceFor(card.entry.id);
 
-    final subtitle = DpText(
+    final subtitle = SgText(
       _isVoice
           ? l10n.modelsVoiceSubtitle(size, card.entry.licence)
           : l10n.modelsTranslationSubtitle(size),
-      role: DpTextRole.caption,
+      role: SgTextRole.caption,
       color: tokens.color.textSecondary,
     );
 
     final heading = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        DpText(title, role: DpTextRole.bodyLarge, weight: 600),
+        SgText(title, role: SgTextRole.bodyLarge, weight: 600),
         const SizedBox(height: 2),
         if (_isVoice || licence == null)
           subtitle
@@ -382,14 +382,14 @@ class _ModelCardView extends ConsumerWidget {
     );
     final pill = _StatusPill(status: status, live: card.live);
 
-    return DpSurface(
+    return SgSurface(
       padding: const EdgeInsets.all(14),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           // Past 130 % text the status goes under the name, which it
           // squeezed until "translation" broke mid-word (#165).
-          if (DpScript.large(context)) ...<Widget>[
+          if (SgScript.large(context)) ...<Widget>[
             heading,
             const SizedBox(height: 8),
             Align(alignment: AlignmentDirectional.centerStart, child: pill),
@@ -422,9 +422,9 @@ class _ModelCardView extends ConsumerWidget {
 
     Widget note(String text) => Padding(
       padding: const EdgeInsets.only(top: 10),
-      child: DpText(
+      child: SgText(
         text,
-        role: DpTextRole.caption,
+        role: SgTextRole.caption,
         color: tokens.color.textSecondary,
       ),
     );
@@ -436,13 +436,13 @@ class _ModelCardView extends ConsumerWidget {
         // The manager refused (#428): the phone filled up since the card
         // looked. Say by how much.
         if (context.mounted) {
-          DpToast.show(
+          SgToast.show(
             context,
             l10n.modelsNoSpaceNote(modelSize(l10n, short.bytes)),
           );
         }
       } on Object {
-        if (context.mounted) DpToast.show(context, l10n.modelsStartFailed);
+        if (context.mounted) SgToast.show(context, l10n.modelsStartFailed);
       }
       ref
         ..invalidate(modelCardProvider(id))
@@ -619,7 +619,7 @@ class _ModelCardView extends ConsumerWidget {
     final again = await ref.read(modelCardProvider(card.entry.id).future);
     if (!context.mounted) return;
     if (cardStatusOf(again) == ModelCardStatus.ready) {
-      DpToast.show(context, l10n.modelsUpToDate);
+      SgToast.show(context, l10n.modelsUpToDate);
     }
   }
 }
@@ -676,7 +676,7 @@ class _StatusPill extends StatelessWidget {
         null,
       ),
     };
-    return DpPill(
+    return SgPill(
       label: label,
       fill: fill,
       icon: icon,
@@ -706,20 +706,20 @@ class _Progress extends ConsumerWidget {
         .read(SettingKeys.modelsWifiOnly);
     final done = modelSize(l10n, (card.variant.bytes * progress).round());
     final total = modelSize(l10n, card.variant.bytes);
-    final phase = DpText(
+    final phase = SgText(
       switch (live?.phase) {
         DownloadPhase.waitingForWifi => l10n.modelsProgressWaiting,
         DownloadPhase.paused => l10n.modelsProgressPaused(percent),
         _ => l10n.modelsProgress(percent),
       },
-      role: DpTextRole.label,
+      role: SgTextRole.label,
       weight: 600,
     );
-    final bytes = DpText(
+    final bytes = SgText(
       wifiOnly
           ? l10n.modelsProgressBytesWifi(done, total)
           : l10n.modelsProgressBytes(done, total),
-      role: DpTextRole.label,
+      role: SgTextRole.label,
       weight: 400,
       color: tokens.color.textSecondary,
     );
@@ -730,7 +730,7 @@ class _Progress extends ConsumerWidget {
         children: <Widget>[
           // Past 130 % text the bytes go under the phase, which they
           // squeezed until "Downloading" broke mid-word (#165).
-          if (DpScript.large(context)) ...<Widget>[phase, bytes] else
+          if (SgScript.large(context)) ...<Widget>[phase, bytes] else
             Row(
               children: <Widget>[
                 Expanded(child: phase),
@@ -753,9 +753,9 @@ class _Progress extends ConsumerWidget {
             ),
           ),
           const SizedBox(height: 6),
-          DpText(
+          SgText(
             wifiOnly ? l10n.modelsProgressNote : l10n.modelsProgressNoteAny,
-            role: DpTextRole.caption,
+            role: SgTextRole.caption,
             color: tokens.color.textSecondary,
           ),
         ],
@@ -789,10 +789,10 @@ class _WifiOnlyState extends ConsumerState<_WifiOnly> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                DpText(l10n.modelsWifiOnly, role: DpTextRole.body, weight: 500),
-                DpText(
+                SgText(l10n.modelsWifiOnly, role: SgTextRole.body, weight: 500),
+                SgText(
                   l10n.modelsWifiOnlyNote,
-                  role: DpTextRole.caption,
+                  role: SgTextRole.caption,
                   color: tokens.color.textSecondary,
                 ),
               ],
@@ -857,7 +857,7 @@ class _VoicesState extends ConsumerState<_Voices> {
     // fails leaves the choice made and says so (#453), and the next speaker
     // falls back.
     if (mounted) {
-      DpToast.show(context, AppLocalizations.of(context).modelsSampleFailed);
+      SgToast.show(context, AppLocalizations.of(context).modelsSampleFailed);
     }
   }
 
@@ -870,9 +870,9 @@ class _VoicesState extends ConsumerState<_Voices> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          DpText(
+          SgText(
             l10n.modelsVoiceLabel,
-            role: DpTextRole.caption,
+            role: SgTextRole.caption,
             color: tokens.color.textSecondary,
           ),
           const SizedBox(height: 6),
@@ -881,9 +881,9 @@ class _VoicesState extends ConsumerState<_Voices> {
             runSpacing: 8,
             children: <Widget>[
               for (final voice in SupertonicTts.voices.keys)
-                DpChip(
+                SgChip(
                   label: voice,
-                  kind: DpChipKind.filter,
+                  kind: SgChipKind.filter,
                   selected: voice == _chosen,
                   icon: Icon(
                     Icons.play_arrow,
@@ -939,10 +939,10 @@ class _Action extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final tokens = context.tokens;
-    return DpButton(
+    return SgButton(
       label: label,
       onPressed: onPressed,
-      kind: DpButtonKind.secondary,
+      kind: SgButtonKind.secondary,
       drawnHeight: 40,
       colour: onPressed != null && white ? tokens.surface.card : null,
     );

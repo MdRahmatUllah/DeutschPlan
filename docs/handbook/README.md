@@ -1,4 +1,4 @@
-# The DeutschPlan handbook
+# The Sogda handbook
 
 The whole project in one readable place: what the app is and why it exists,
 what it does, how it is built, how its quality is assured, how it is released,
@@ -13,7 +13,7 @@ State described: **v1.0.1**, tagged 2026-09-26 on main `0d23968e` (Android).
 
 ## The product in one page
 
-DeutschPlan is a complete German course on the phone, from the first word
+Sogda is a complete German course on the phone, from the first word
 (A1.1) to mastery (C2.2), for people who think in **Bangla** or **English**.
 
 - **The course.** 12 steps, 5,593 words and 182 grammar topics. Every meaning is in the learner's language, and so is the pronunciation, written in Bangla letters.

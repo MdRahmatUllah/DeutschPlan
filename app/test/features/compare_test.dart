@@ -1,19 +1,17 @@
-import 'package:deutschplan/core/components/dp_button.dart';
-import 'package:deutschplan/core/components/dp_chip.dart';
-import 'package:deutschplan/core/providers/app_providers.dart';
-import 'package:deutschplan/core/theme/app_theme.dart';
-import 'package:deutschplan/data/repositories/rating_service.dart'
-    show CardMode;
-import 'package:deutschplan/data/repositories/word_actions.dart';
-import 'package:deutschplan/domain/compare_set.dart';
-import 'package:deutschplan/features/study/study_back.dart'
-    show StudyPlayButton;
-import 'package:deutschplan/features/words/compare_screen.dart';
-import 'package:deutschplan/features/words/word_detail_screen.dart';
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
-import 'package:deutschplan/main.dart'
+import 'package:sogda/core/components/sg_button.dart';
+import 'package:sogda/core/components/sg_chip.dart';
+import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/core/theme/app_theme.dart';
+import 'package:sogda/data/repositories/rating_service.dart' show CardMode;
+import 'package:sogda/data/repositories/word_actions.dart';
+import 'package:sogda/domain/compare_set.dart';
+import 'package:sogda/features/study/study_back.dart' show StudyPlayButton;
+import 'package:sogda/features/words/compare_screen.dart';
+import 'package:sogda/features/words/word_detail_screen.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
+import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
-import 'package:deutschplan/router/routes.dart';
+import 'package:sogda/router/routes.dart';
 import 'package:flutter/semantics.dart' show SemanticsAction;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
@@ -103,7 +101,7 @@ void main() {
         expect(find.text(name, findRichText: true), findsOneWidget);
       }
       expect(
-        find.widgetWithText(DpChip, 'C1.1'),
+        find.widgetWithText(SgChip, 'C1.1'),
         findsNWidgets(3),
         reason: 'a step chip under each',
       );
@@ -241,8 +239,8 @@ void main() {
       tester,
     ) async {
       await pump(tester, view: artboardCompare(quizItems: 0));
-      final button = tester.widget<DpButton>(
-        find.widgetWithText(DpButton, l10n.compareQuiz(0)),
+      final button = tester.widget<SgButton>(
+        find.widgetWithText(SgButton, l10n.compareQuiz(0)),
       );
       expect(button.onPressed, isNull);
     });
@@ -290,10 +288,10 @@ void main() {
     testWidgets('nothing To do: no button', (tester) async {
       await pump(tester, view: artboardCompare(todo: const []));
       expect(
-        find.widgetWithText(DpButton, l10n.compareAddAll(3)),
+        find.widgetWithText(SgButton, l10n.compareAddAll(3)),
         findsNothing,
       );
-      expect(find.byType(DpButton), findsOneWidget, reason: 'Quiz these only');
+      expect(find.byType(SgButton), findsOneWidget, reason: 'Quiz these only');
     });
   });
 

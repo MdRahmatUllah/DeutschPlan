@@ -1,5 +1,5 @@
-import 'package:deutschplan/domain/plan_stats.dart';
-import 'package:deutschplan/domain/progress_stats.dart';
+import 'package:sogda/domain/plan_stats.dart';
+import 'package:sogda/domain/progress_stats.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 /// M2's maths — #145.

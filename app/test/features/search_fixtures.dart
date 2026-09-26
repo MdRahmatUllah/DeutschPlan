@@ -1,7 +1,7 @@
-import 'package:deutschplan/data/db/app_database.dart';
-import 'package:deutschplan/data/repositories/search_repository.dart';
-import 'package:deutschplan/data/repositories/word_repository.dart';
-import 'package:deutschplan/features/search/search_screen.dart';
+import 'package:sogda/data/db/app_database.dart';
+import 'package:sogda/data/repositories/search_repository.dart';
+import 'package:sogda/data/repositories/word_repository.dart';
+import 'package:sogda/features/search/search_screen.dart';
 
 /// One row of R1: a word with its state, meaning and tier.
 SearchRow searchRow(

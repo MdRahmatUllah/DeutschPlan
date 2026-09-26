@@ -1,12 +1,11 @@
-import 'package:deutschplan/data/repositories/exam_repository.dart' as exam;
-import 'package:deutschplan/data/repositories/plan_repository.dart'
-    show ReviewSource;
-import 'package:deutschplan/data/repositories/rating_service.dart';
-import 'package:deutschplan/data/repositories/word_repository.dart';
-import 'package:deutschplan/domain/answer_check.dart';
-import 'package:deutschplan/domain/fsrs.dart' show Rating;
-import 'package:deutschplan/domain/plan_engine.dart' show PlanDate, addDays;
-import 'package:deutschplan/domain/quiz_builder.dart';
+import 'package:sogda/data/repositories/exam_repository.dart' as exam;
+import 'package:sogda/data/repositories/plan_repository.dart' show ReviewSource;
+import 'package:sogda/data/repositories/rating_service.dart';
+import 'package:sogda/data/repositories/word_repository.dart';
+import 'package:sogda/domain/answer_check.dart';
+import 'package:sogda/domain/fsrs.dart' show Rating;
+import 'package:sogda/domain/plan_engine.dart' show PlanDate, addDays;
+import 'package:sogda/domain/quiz_builder.dart';
 
 /// A started quiz: its items and the `quiz_attempts` row recording them —
 /// null for a quiz with nothing in it, which records nothing.

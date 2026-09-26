@@ -1,26 +1,26 @@
 import 'dart:io';
 
-import 'package:deutschplan/core/adaptive/adaptive.dart';
-import 'package:deutschplan/core/components/dp_slider.dart';
-import 'package:deutschplan/core/components/dp_stepper.dart';
-import 'package:deutschplan/core/providers/app_providers.dart';
-import 'package:deutschplan/core/theme/app_theme.dart';
-import 'package:deutschplan/core/theme/dp_surface.dart';
-import 'package:deutschplan/core/theme/dp_tokens.dart';
-import 'package:deutschplan/data/db/app_database.dart';
-import 'package:deutschplan/data/db/content_dao.dart';
-import 'package:deutschplan/data/repositories/plan_store.dart';
-import 'package:deutschplan/data/repositories/model_repository.dart';
-import 'package:deutschplan/data/repositories/setting_keys.dart';
-import 'package:deutschplan/data/repositories/settings_repository.dart';
-import 'package:deutschplan/data/repositories/word_repository.dart';
-import 'package:deutschplan/domain/fsrs.dart';
-import 'package:deutschplan/domain/plan_engine.dart';
-import 'package:deutschplan/features/me/settings_screen.dart';
-import 'package:deutschplan/features/today/today_providers.dart'
+import 'package:sogda/core/adaptive/adaptive.dart';
+import 'package:sogda/core/components/sg_slider.dart';
+import 'package:sogda/core/components/sg_stepper.dart';
+import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/core/theme/app_theme.dart';
+import 'package:sogda/core/theme/sg_surface.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/data/db/app_database.dart';
+import 'package:sogda/data/db/content_dao.dart';
+import 'package:sogda/data/repositories/plan_store.dart';
+import 'package:sogda/data/repositories/model_repository.dart';
+import 'package:sogda/data/repositories/setting_keys.dart';
+import 'package:sogda/data/repositories/settings_repository.dart';
+import 'package:sogda/data/repositories/word_repository.dart';
+import 'package:sogda/domain/fsrs.dart';
+import 'package:sogda/domain/plan_engine.dart';
+import 'package:sogda/features/me/settings_screen.dart';
+import 'package:sogda/features/today/today_providers.dart'
     show voiceInstalledProvider;
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
-import 'package:deutschplan/main.dart'
+import 'package:sogda/l10n/generated/app_localizations.dart';
+import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
@@ -122,7 +122,7 @@ void main() {
     (widget) => widget is AdaptiveSwitch && widget.semanticLabel == label,
   );
   Finder sliderFor(String label) => find.byWidgetPredicate(
-    (widget) => widget is DpSlider && widget.label == label,
+    (widget) => widget is SgSlider && widget.label == label,
   );
 
   testWidgets('every row in settings.md is there', (tester) async {
@@ -181,8 +181,8 @@ void main() {
     await pump(tester);
 
     final ranges = <String, (int, int)>{
-      for (final stepper in tester.widgetList<DpStepper>(
-        find.byType(DpStepper),
+      for (final stepper in tester.widgetList<SgStepper>(
+        find.byType(SgStepper),
       ))
         stepper.increaseLabel: (stepper.min, stepper.max),
     };
@@ -192,7 +192,7 @@ void main() {
       l10n.settingsSentenceCountIncrease: (0, 20),
       l10n.settingsDoneDaysIncrease: (3, 60),
     });
-    final retention = tester.widget<DpSlider>(
+    final retention = tester.widget<SgSlider>(
       sliderFor(l10n.settingsRetention),
     );
     expect((retention.min, retention.max), (80, 97));
@@ -254,7 +254,7 @@ void main() {
     await settings.write(SettingKeys.ttsSpeed, 0.75);
     await pump(tester);
     expect(find.text(l10n.settingsSpeedLine('0.75')), findsOneWidget);
-    final slider = tester.widget<DpSlider>(sliderFor(l10n.settingsSpeed));
+    final slider = tester.widget<SgSlider>(sliderFor(l10n.settingsSpeed));
     expect((slider.min, slider.value, slider.max), (2, 3, 6));
 
     await settings.write(SettingKeys.ttsSpeed, 1.25);
@@ -268,7 +268,7 @@ void main() {
     await pump(tester, locale: const Locale('bn'));
     final bn = lookupAppLocalizations(const Locale('bn'));
     expect(find.text(bn.settingsSpeedLine('০.৭৫')), findsOneWidget);
-    final slider = tester.widget<DpSlider>(sliderFor(bn.settingsSpeed));
+    final slider = tester.widget<SgSlider>(sliderFor(bn.settingsSpeed));
     expect(slider.describe!(3), '০.৭৫×');
   });
 
@@ -405,14 +405,14 @@ void main() {
     );
     // Built first, as the app's root has it built: the choice has to reach a
     // theme already on screen.
-    expect(container.read(themeProvider), DpMode.light);
+    expect(container.read(themeProvider), SgMode.light);
 
     await tester.tap(find.text(l10n.settingsTheme));
     await tester.pumpAndSettle();
     await tester.tap(find.text(l10n.settingsThemeGlass).last);
     await tester.pumpAndSettle();
 
-    expect(container.read(themeProvider), DpMode.glass);
+    expect(container.read(themeProvider), SgMode.glass);
     expect(settings.read(SettingKeys.themeMode), ThemeModeSetting.glass);
     expect(find.text(l10n.settingsThemeGlass), findsOneWidget);
   });
@@ -638,7 +638,7 @@ void main() {
   ) async {
     await pump(tester, model: downloadingModel());
     expect(find.text(l10n.settingsGroupDailyPlan), findsOneWidget);
-    expect(find.byType(DpSurface), findsNothing);
+    expect(find.byType(SgSurface), findsNothing);
 
     await pump(
       tester,
@@ -649,7 +649,7 @@ void main() {
       find.text(l10n.settingsGroupDailyPlan.toUpperCase()),
       findsOneWidget,
     );
-    expect(find.byType(DpSurface), findsNWidgets(7));
+    expect(find.byType(SgSurface), findsNWidgets(7));
   });
 
   testWidgets('a screen reader hears a switch row once, and its note', (
@@ -694,7 +694,7 @@ INSERT INTO word_state (word_uid, status, stability, reps) VALUES
   test("#409 M3's translation row reads the one build the manifest offers, "
       'Q4_K_M', () async {
     TestWidgetsFlutterBinding.ensureInitialized();
-    final support = Directory.systemTemp.createTempSync('deutschplan_m3');
+    final support = Directory.systemTemp.createTempSync('sogda_m3');
     addTearDown(() {
       try {
         support.deleteSync(recursive: true);

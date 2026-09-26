@@ -1,6 +1,6 @@
-import 'package:deutschplan/core/theme/dp_tokens.dart';
-import 'package:deutschplan/domain/fsrs.dart' show Rating;
-import 'package:deutschplan/features/study/study_session.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/domain/fsrs.dart' show Rating;
+import 'package:sogda/features/study/study_session.dart';
 import 'package:material_ui/material_ui.dart';
 
 /// T2's card motion (`study-session.md`, Motion): a rated card leaves —

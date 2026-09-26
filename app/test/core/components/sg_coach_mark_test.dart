@@ -1,10 +1,10 @@
-import 'package:deutschplan/core/components/dp_button.dart';
-import 'package:deutschplan/core/components/dp_coach_mark.dart';
-import 'package:deutschplan/core/providers/app_providers.dart';
-import 'package:deutschplan/core/theme/app_theme.dart';
-import 'package:deutschplan/data/db/app_database.dart';
-import 'package:deutschplan/data/repositories/setting_keys.dart';
-import 'package:deutschplan/data/repositories/settings_repository.dart';
+import 'package:sogda/core/components/sg_button.dart';
+import 'package:sogda/core/components/sg_coach_mark.dart';
+import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/core/theme/app_theme.dart';
+import 'package:sogda/data/db/app_database.dart';
+import 'package:sogda/data/repositories/setting_keys.dart';
+import 'package:sogda/data/repositories/settings_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
@@ -28,19 +28,19 @@ void main() {
         alignment: Alignment.bottomCenter,
         child: Padding(
           padding: const EdgeInsets.all(24),
-          child: DpCoachMark(
+          child: SgCoachMark(
             message: message,
             visible: visible,
             onDismissed: onDismissed ?? () {},
             onShown: onShown,
-            child: DpButton(label: 'Start today', onPressed: () {}),
+            child: SgButton(label: 'Start today', onPressed: () {}),
           ),
         ),
       ),
     ),
   );
 
-  group('DpCoachMark', () {
+  group('SgCoachMark', () {
     testWidgets('shows above its target, and says so once', (tester) async {
       var shown = 0;
       await tester.pumpWidget(harness(visible: true, onShown: () => shown++));
@@ -49,7 +49,7 @@ void main() {
       expect(find.text(message), findsOneWidget);
       expect(
         tester.getBottomLeft(find.text(message)).dy,
-        lessThan(tester.getTopLeft(find.byType(DpButton)).dy),
+        lessThan(tester.getTopLeft(find.byType(SgButton)).dy),
         reason: 'above the button, not over it',
       );
 
@@ -92,11 +92,11 @@ void main() {
           theme: AppTheme.light(),
           home: Scaffold(
             body: Center(
-              child: DpCoachMark(
+              child: SgCoachMark(
                 message: message,
                 visible: true,
                 onDismissed: () {},
-                child: DpButton(
+                child: SgButton(
                   label: 'Start today',
                   onPressed: () => pressed++,
                 ),

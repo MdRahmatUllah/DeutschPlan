@@ -1,21 +1,21 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:deutschplan/core/adaptive/adaptive.dart';
-import 'package:deutschplan/core/components/dp_button.dart';
-import 'package:deutschplan/core/components/dp_feedback.dart';
-import 'package:deutschplan/core/providers/app_providers.dart';
-import 'package:deutschplan/core/theme/aurora_backdrop.dart';
-import 'package:deutschplan/core/theme/dp_surface.dart';
-import 'package:deutschplan/core/theme/dp_tokens.dart';
-import 'package:deutschplan/core/typography/dp_text.dart';
-import 'package:deutschplan/data/repositories/backup_repository.dart';
-import 'package:deutschplan/data/repositories/setting_keys.dart';
-import 'package:deutschplan/domain/plan_engine.dart' show planDate;
-import 'package:deutschplan/features/today/today_providers.dart';
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
-import 'package:deutschplan/l10n/ui_digits.dart';
-import 'package:deutschplan/services/backup_files.dart';
+import 'package:sogda/core/adaptive/adaptive.dart';
+import 'package:sogda/core/components/sg_button.dart';
+import 'package:sogda/core/components/sg_feedback.dart';
+import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/core/theme/aurora_backdrop.dart';
+import 'package:sogda/core/theme/sg_surface.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/core/typography/sg_text.dart';
+import 'package:sogda/data/repositories/backup_repository.dart';
+import 'package:sogda/data/repositories/setting_keys.dart';
+import 'package:sogda/domain/plan_engine.dart' show planDate;
+import 'package:sogda/features/today/today_providers.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
+import 'package:sogda/l10n/ui_digits.dart';
+import 'package:sogda/services/backup_files.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:material_ui/material_ui.dart';
@@ -50,8 +50,8 @@ enum _Problem { notABackup, newer, failed }
 class ExportImportScreen extends ConsumerStatefulWidget {
   const ExportImportScreen({super.key});
 
-  /// `deutschplan-2026-09-20.json`: the file an export shares.
-  static String fileName(DateTime now) => 'deutschplan-${planDate(now)}.json';
+  /// `sogda-2026-09-20.json`: the file an export shares.
+  static String fileName(DateTime now) => 'sogda-${planDate(now)}.json';
 
   @override
   ConsumerState<ExportImportScreen> createState() => _ExportImportState();
@@ -84,7 +84,7 @@ class _ExportImportState extends ConsumerState<ExportImportScreen> {
       }
     } on Object catch (error) {
       debugPrint('export: $error');
-      if (mounted) DpToast.show(context, l10n.exportImportExportFailed);
+      if (mounted) SgToast.show(context, l10n.exportImportExportFailed);
     } finally {
       if (mounted) setState(() => _busy = false);
     }
@@ -154,7 +154,7 @@ class _ExportImportState extends ConsumerState<ExportImportScreen> {
         _preview = null;
         _problem = null;
       });
-      DpToast.show(context, l10n.exportImportDone);
+      SgToast.show(context, l10n.exportImportDone);
     } on Object catch (error) {
       debugPrint('import: $error');
       if (mounted) setState(() => _problem = _Problem.failed);
@@ -189,8 +189,8 @@ class _ExportImportState extends ConsumerState<ExportImportScreen> {
           _Card(
             heading: l10n.exportImportExportHeading,
             children: <Widget>[
-              DpText(l10n.exportImportExportBody, role: DpTextRole.body),
-              DpButton(
+              SgText(l10n.exportImportExportBody, role: SgTextRole.body),
+              SgButton(
                 label: size == null
                     ? l10n.exportImportExport
                     : l10n.exportImportExportSized(_size(l10n, size)),
@@ -217,13 +217,13 @@ class _ExportImportState extends ConsumerState<ExportImportScreen> {
                       : _lines(context, preview),
                 ),
               if (problem != null)
-                DpText(
+                SgText(
                   switch (problem) {
                     _Problem.notABackup => l10n.exportImportNotABackup,
                     _Problem.newer => l10n.exportImportNewer,
                     _Problem.failed => l10n.exportImportFailed,
                   },
-                  role: DpTextRole.label,
+                  role: SgTextRole.label,
                   color: tokens.color.wrongText,
                 ),
               if (file != null && preview != null) ...<Widget>[
@@ -236,18 +236,18 @@ class _ExportImportState extends ConsumerState<ExportImportScreen> {
                     selected: _mode == mode,
                     onTap: () => setState(() => _mode = mode),
                   ),
-                DpButton(
+                SgButton(
                   label: _mode == ImportMode.merge
                       ? l10n.exportImportDoMerge
                       : l10n.exportImportDoReplace,
-                  kind: DpButtonKind.secondary,
+                  kind: SgButtonKind.secondary,
                   onPressed: _busy ? null : () => unawaited(_import()),
                 ),
               ],
               if (file == null)
-                DpButton(
+                SgButton(
                   label: l10n.exportImportChoose,
-                  kind: DpButtonKind.secondary,
+                  kind: SgButtonKind.secondary,
                   onPressed: _busy ? null : () => unawaited(_choose()),
                 )
               else
@@ -260,9 +260,9 @@ class _ExportImportState extends ConsumerState<ExportImportScreen> {
           const SizedBox(height: 12),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12),
-            child: DpText(
+            child: SgText(
               l10n.exportImportFooter,
-              role: DpTextRole.caption,
+              role: SgTextRole.caption,
               textAlign: TextAlign.center,
               color: tokens.color.textSecondary,
             ),
@@ -332,8 +332,8 @@ class _Card extends StatelessWidget {
   final List<Widget> children;
 
   @override
-  Widget build(BuildContext context) => DpSurface(
-    kind: DpSurfaceKind.bar,
+  Widget build(BuildContext context) => SgSurface(
+    kind: SgSurfaceKind.bar,
     radius: 16,
     padding: const EdgeInsets.all(14),
     child: Column(
@@ -341,9 +341,9 @@ class _Card extends StatelessWidget {
       children: <Widget>[
         Semantics(
           header: true,
-          child: DpText(
+          child: SgText(
             heading.toUpperCase(),
-            role: DpTextRole.caption,
+            role: SgTextRole.caption,
             weight: 700,
             letterSpacing: 0.6,
             color: context.tokens.color.textSecondary,
@@ -367,9 +367,9 @@ class _Caption extends StatelessWidget {
   final String text;
 
   @override
-  Widget build(BuildContext context) => DpText(
+  Widget build(BuildContext context) => SgText(
     text,
-    role: DpTextRole.caption,
+    role: SgTextRole.caption,
     color: context.tokens.color.textSecondary,
   );
 }
@@ -404,9 +404,9 @@ class _FileTile extends StatelessWidget {
                 // the whole name is one word, and at 150 % Flutter cut it
                 // between "2" and "0" (#165). Above 100 % it may break after
                 // each hyphen; a screen reader hears the name as it is.
-                DpText(
-                  DpScript.scaled(context) ? name.replaceAll('-', '-​') : name,
-                  role: DpTextRole.body,
+                SgText(
+                  SgScript.scaled(context) ? name.replaceAll('-', '-​') : name,
+                  role: SgTextRole.body,
                   weight: 600,
                   semanticsLabel: name,
                 ),
@@ -478,7 +478,7 @@ class _Choice extends StatelessWidget {
                     : null,
               ),
               const SizedBox(width: 10),
-              Expanded(child: DpText(label, role: DpTextRole.body)),
+              Expanded(child: SgText(label, role: SgTextRole.body)),
             ],
           ),
         ),

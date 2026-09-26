@@ -82,8 +82,8 @@ def test_the_key_is_read_from_the_bundles_certificate(tmp_path, monkeypatch):
     assert "DEBUG" in release.signed_by(release.signer(tmp_path / "app.aab"))
 
     monkeypatch.setattr(release.subprocess, "run", printcert(
-        "Certificate #1:\nOwner: CN=Rahmat Ullah, O=DeutschPlan\nIssuer: CN=Rahmat Ullah\n"))
-    assert release.signed_by(release.signer(tmp_path / "app.aab")) == "CN=Rahmat Ullah, O=DeutschPlan"
+        "Certificate #1:\nOwner: CN=Rahmat Ullah, O=Sogda\nIssuer: CN=Rahmat Ullah\n"))
+    assert release.signed_by(release.signer(tmp_path / "app.aab")) == "CN=Rahmat Ullah, O=Sogda"
 
     monkeypatch.setattr(release.subprocess, "run", printcert("Not a signed jar file\n"))
     assert "UNKNOWN" in release.signed_by(release.signer(tmp_path / "app.aab"))

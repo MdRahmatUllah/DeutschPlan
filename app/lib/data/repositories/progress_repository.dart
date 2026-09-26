@@ -1,6 +1,6 @@
-import 'package:deutschplan/data/db/app_database.dart';
-import 'package:deutschplan/domain/plan_engine.dart' show PlanDate, planDate;
-import 'package:deutschplan/domain/progress_stats.dart';
+import 'package:sogda/data/db/app_database.dart';
+import 'package:sogda/domain/plan_engine.dart' show PlanDate, planDate;
+import 'package:sogda/domain/progress_stats.dart';
 import 'package:drift/drift.dart';
 
 /// M2's totals (`progress.md`).

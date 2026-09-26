@@ -4,10 +4,10 @@ library;
 import 'dart:io';
 import 'dart:math';
 
-import 'package:deutschplan/data/db/app_database.dart';
-import 'package:deutschplan/data/db/content_dao.dart';
-import 'package:deutschplan/data/repositories/search_repository.dart';
-import 'package:deutschplan/domain/text_norm.dart';
+import 'package:sogda/data/db/app_database.dart';
+import 'package:sogda/data/db/content_dao.dart';
+import 'package:sogda/data/repositories/search_repository.dart';
+import 'package:sogda/domain/text_norm.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sqlite3/sqlite3.dart';
 
@@ -26,7 +26,7 @@ void main() {
     late SearchRepository search;
 
     setUp(() async {
-      directory = Directory.systemTemp.createTempSync('deutschplan_search');
+      directory = Directory.systemTemp.createTempSync('sogda_search');
       final content = ContentFixture.write('${directory.path}/content.db').file;
 
       db = AppDatabase.memory();
@@ -378,7 +378,7 @@ void main() {
     late SearchRepository search;
 
     setUpAll(() async {
-      directory = Directory.systemTemp.createTempSync('deutschplan_scale');
+      directory = Directory.systemTemp.createTempSync('sogda_scale');
       _writeCourseSizedContent('${directory.path}/content.db');
 
       db = AppDatabase.memory();

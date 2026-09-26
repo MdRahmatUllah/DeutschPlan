@@ -1,26 +1,25 @@
 import 'dart:async';
 
-import 'package:deutschplan/core/adaptive/adaptive.dart';
-import 'package:deutschplan/core/components/dp_button.dart';
-import 'package:deutschplan/core/components/dp_speaker_button.dart';
-import 'package:deutschplan/core/providers/app_providers.dart';
-import 'package:deutschplan/core/theme/dp_surface.dart';
-import 'package:deutschplan/core/theme/dp_tokens.dart';
-import 'package:deutschplan/core/typography/dp_text.dart';
-import 'package:deutschplan/data/db/app_database.dart';
-import 'package:deutschplan/data/repositories/plan_repository.dart'
-    show ReviewSource;
-import 'package:deutschplan/data/repositories/search_repository.dart';
-import 'package:deutschplan/data/repositories/setting_keys.dart';
-import 'package:deutschplan/domain/cloze.dart';
-import 'package:deutschplan/domain/fsrs.dart' show Rating;
-import 'package:deutschplan/domain/sentence_picker.dart';
-import 'package:deutschplan/domain/text_norm.dart' show searchKey;
-import 'package:deutschplan/features/study/study_summary.dart';
-import 'package:deutschplan/features/study/write_guard.dart';
-import 'package:deutschplan/features/words/speak.dart';
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
-import 'package:deutschplan/router/routes.dart';
+import 'package:sogda/core/adaptive/adaptive.dart';
+import 'package:sogda/core/components/sg_button.dart';
+import 'package:sogda/core/components/sg_speaker_button.dart';
+import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/core/theme/sg_surface.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/core/typography/sg_text.dart';
+import 'package:sogda/data/db/app_database.dart';
+import 'package:sogda/data/repositories/plan_repository.dart' show ReviewSource;
+import 'package:sogda/data/repositories/search_repository.dart';
+import 'package:sogda/data/repositories/setting_keys.dart';
+import 'package:sogda/domain/cloze.dart';
+import 'package:sogda/domain/fsrs.dart' show Rating;
+import 'package:sogda/domain/sentence_picker.dart';
+import 'package:sogda/domain/text_norm.dart' show searchKey;
+import 'package:sogda/features/study/study_summary.dart';
+import 'package:sogda/features/study/write_guard.dart';
+import 'package:sogda/features/words/speak.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
+import 'package:sogda/router/routes.dart';
 import 'package:flutter/gestures.dart' show TapGestureRecognizer;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
@@ -258,9 +257,9 @@ class _SentencesScreenState extends ConsumerState<SentencesScreen> {
               // The dots below say it, as a value a screen reader can change
               // (#164): once is enough.
               child: ExcludeSemantics(
-                child: DpText(
+                child: SgText(
                   count == 0 ? '' : l10n.sentencesPlace(_page + 1, count),
-                  role: DpTextRole.body,
+                  role: SgTextRole.body,
                   weight: 600,
                   textAlign: TextAlign.center,
                   color: ink,
@@ -274,8 +273,8 @@ class _SentencesScreenState extends ConsumerState<SentencesScreen> {
     );
     // The Raspberry band: solid on paper, a tint under glass.
     final band = tokens.isGlass
-        ? DpSurface(
-            kind: DpSurfaceKind.tint(tokens.color.die),
+        ? SgSurface(
+            kind: SgSurfaceKind.tint(tokens.color.die),
             radius: 0,
             child: bar,
           )
@@ -311,9 +310,9 @@ class _SentencesScreenState extends ConsumerState<SentencesScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
-                  DpText(
+                  SgText(
                     l10n.sentencesAsk.toUpperCase(),
-                    role: DpTextRole.caption,
+                    role: SgTextRole.caption,
                     weight: 700,
                     letterSpacing: 0.6,
                     color: tokens.color.textSecondary,
@@ -321,7 +320,7 @@ class _SentencesScreenState extends ConsumerState<SentencesScreen> {
                   const SizedBox(height: 10),
                   // Past 130 % text three abreast broke "Understood"
                   // mid-word (#165): they stack, full width.
-                  if (DpScript.large(context))
+                  if (SgScript.large(context))
                     for (final (i, answer) in answers.indexed) ...<Widget>[
                       if (i > 0) const SizedBox(height: 10),
                       answer,
@@ -482,9 +481,9 @@ class _SentencePageState extends ConsumerState<_SentencePage> {
   Widget build(BuildContext context) {
     final tokens = context.tokens;
     final l10n = AppLocalizations.of(context);
-    final style = DpText.styleFor(
+    final style = SgText.styleFor(
       tokens,
-      DpTextRole.title,
+      SgTextRole.title,
     ).copyWith(fontWeight: FontWeight.w500);
     final english = widget.item.sentence.english;
     final underline =
@@ -503,13 +502,13 @@ class _SentencePageState extends ConsumerState<_SentencePage> {
             children: <Widget>[
               // Read in a German voice (#162); a long compound breaks at a
               // syllable at 200 % (#539).
-              DpGermanRuns(
+              SgGermanRuns(
                 _spans(style, underline),
                 style: style,
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 22),
-              DpSpeakerButton(
+              SgSpeakerButton(
                 size: 72,
                 semanticLabel: l10n.studyPlaySentence,
                 state: speakerState(ref, widget.item.sentence.german),
@@ -517,9 +516,9 @@ class _SentencePageState extends ConsumerState<_SentencePage> {
                 onLongPress: () => _play(pace: 0.75),
               ),
               const SizedBox(height: 6),
-              DpText(
+              SgText(
                 l10n.sentencesSlow,
-                role: DpTextRole.caption,
+                role: SgTextRole.caption,
                 color: tokens.color.textSecondary,
               ),
               const SizedBox(height: 16),
@@ -541,23 +540,23 @@ class _SentencePageState extends ConsumerState<_SentencePage> {
                               tokens.shape.button,
                             ),
                           ),
-                          child: DpText(
+                          child: SgText(
                             english,
-                            role: DpTextRole.body,
+                            role: SgTextRole.body,
                             textAlign: TextAlign.center,
                           ),
                         )
-                      : DpButton(
+                      : SgButton(
                           label: l10n.sentencesShowTranslation,
-                          kind: DpButtonKind.text,
+                          kind: SgButtonKind.text,
                           expand: false,
                           onPressed: () => setState(() => _translated = true),
                         ),
                 ),
               const SizedBox(height: 16),
-              DpText(
+              SgText(
                 l10n.sentencesHint,
-                role: DpTextRole.caption,
+                role: SgTextRole.caption,
                 color: tokens.color.textSecondary,
                 textAlign: TextAlign.center,
               ),
@@ -594,39 +593,39 @@ class _TokenSheet extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           if (word != null) ...<Widget>[
-            DpHeadword(
+            SgHeadword(
               word.german,
               article: word.article,
               plural: word.forms,
-              role: DpTextRole.title,
+              role: SgTextRole.title,
             ),
             const SizedBox(height: 6),
-            DpText(
+            SgText(
               bangla ? word.bangla ?? word.english : word.english,
-              role: DpTextRole.bodyLarge,
+              role: SgTextRole.bodyLarge,
               color: tokens.color.textSecondary,
             ),
             const SizedBox(height: 12),
-            DpButton(
+            SgButton(
               label: l10n.sentencesOpenWord,
-              kind: DpButtonKind.secondary,
+              kind: SgButtonKind.secondary,
               onPressed: () {
                 Navigator.of(context).pop();
                 WordRoute.open(context, word.uid);
               },
             ),
           ] else ...<Widget>[
-            DpText(token, role: DpTextRole.title, german: true),
+            SgText(token, role: SgTextRole.title, german: true),
             const SizedBox(height: 6),
-            DpText(
+            SgText(
               l10n.sentencesNotInCourse,
-              role: DpTextRole.body,
+              role: SgTextRole.body,
               color: tokens.color.textSecondary,
             ),
             const SizedBox(height: 12),
-            DpButton(
+            SgButton(
               label: l10n.sentencesDuden,
-              kind: DpButtonKind.secondary,
+              kind: SgButtonKind.secondary,
               onPressed: () {
                 Navigator.of(context).pop();
                 unawaited(
@@ -674,7 +673,7 @@ class _Answer extends StatelessWidget {
           // 48, grown with the text size: a fixed 48 cut "Understood" at
           // 150 % (#165).
           child: Container(
-            height: DpScript.grow(context, 48),
+            height: SgScript.grow(context, 48),
             alignment: Alignment.center,
             decoration: BoxDecoration(
               color: colour,
@@ -693,9 +692,9 @@ class _Answer extends StatelessWidget {
                 ),
               ],
             ),
-            child: DpText(
+            child: SgText(
               label,
-              role: DpTextRole.body,
+              role: SgTextRole.body,
               weight: 600,
               color: tokens.color.onAccent,
             ),

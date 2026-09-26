@@ -5,7 +5,7 @@
 /// live in `data/`; everything here can be tested by calling it.
 library;
 
-import 'package:deutschplan/domain/plan_engine.dart';
+import 'package:sogda/domain/plan_engine.dart';
 
 /// How many days in a row the learner has kept going.
 ///

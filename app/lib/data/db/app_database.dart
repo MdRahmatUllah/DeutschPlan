@@ -1,7 +1,7 @@
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
-import 'package:deutschplan/data/db/content_dao.dart';
-import 'package:deutschplan/data/db/schema_versions.dart';
+import 'package:sogda/data/db/content_dao.dart';
+import 'package:sogda/data/db/schema_versions.dart';
 import 'package:drift_flutter/drift_flutter.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqlite3/common.dart';

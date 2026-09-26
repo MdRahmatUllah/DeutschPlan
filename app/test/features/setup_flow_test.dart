@@ -1,16 +1,16 @@
 import 'dart:io';
 
-import 'package:deutschplan/core/providers/app_providers.dart';
-import 'package:deutschplan/data/db/app_database.dart';
-import 'package:deutschplan/data/db/content_dao.dart';
-import 'package:deutschplan/data/repositories/setting_keys.dart';
-import 'package:deutschplan/data/repositories/settings_repository.dart';
-import 'package:deutschplan/data/repositories/setup_repository.dart';
-import 'package:deutschplan/domain/plan_engine.dart' show DailyPlan;
-import 'package:deutschplan/features/onboarding/onboarding_notifier.dart';
-import 'package:deutschplan/features/onboarding/onboarding_shell.dart';
-import 'package:deutschplan/features/onboarding/setup_flow.dart';
-import 'package:deutschplan/features/today/today_providers.dart';
+import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/data/db/app_database.dart';
+import 'package:sogda/data/db/content_dao.dart';
+import 'package:sogda/data/repositories/setting_keys.dart';
+import 'package:sogda/data/repositories/settings_repository.dart';
+import 'package:sogda/data/repositories/setup_repository.dart';
+import 'package:sogda/domain/plan_engine.dart' show DailyPlan;
+import 'package:sogda/features/onboarding/onboarding_notifier.dart';
+import 'package:sogda/features/onboarding/onboarding_shell.dart';
+import 'package:sogda/features/onboarding/setup_flow.dart';
+import 'package:sogda/features/today/today_providers.dart';
 import 'package:drift/drift.dart' hide isNotNull, isNull;
 import 'package:drift/native.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -34,7 +34,7 @@ void main() {
   late ProviderContainer container;
 
   setUp(() async {
-    directory = Directory.systemTemp.createTempSync('deutschplan_setup');
+    directory = Directory.systemTemp.createTempSync('sogda_setup');
     final content = ContentFixture.write('${directory.path}/content.db').file;
 
     // The fixture has three words; a seven-a-day first day needs more.

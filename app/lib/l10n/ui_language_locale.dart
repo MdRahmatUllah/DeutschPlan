@@ -1,6 +1,6 @@
 import 'dart:ui' show Locale;
 
-import 'package:deutschplan/data/repositories/setting_keys.dart';
+import 'package:sogda/data/repositories/setting_keys.dart';
 
 /// The locale for each app language. `UiLanguage` lives in the data layer,
 /// which knows nothing of Flutter, so the mapping lives here: the app's and

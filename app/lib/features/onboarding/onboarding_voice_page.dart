@@ -1,20 +1,20 @@
 import 'dart:async';
 
-import 'package:deutschplan/core/adaptive/adaptive.dart';
-import 'package:deutschplan/core/components/dp_button.dart';
-import 'package:deutschplan/core/components/dp_speaker_button.dart';
-import 'package:deutschplan/core/providers/app_providers.dart';
-import 'package:deutschplan/core/theme/dp_surface.dart';
-import 'package:deutschplan/core/theme/dp_tokens.dart';
-import 'package:deutschplan/core/typography/dp_text.dart';
-import 'package:deutschplan/data/repositories/model_repository.dart';
-import 'package:deutschplan/data/repositories/setting_keys.dart';
-import 'package:deutschplan/features/onboarding/onboarding_notifier.dart';
-import 'package:deutschplan/features/onboarding/onboarding_shell.dart';
-import 'package:deutschplan/features/onboarding/setup_flow.dart';
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
-import 'package:deutschplan/services/model_downloads.dart';
-import 'package:deutschplan/services/notification_permission.dart';
+import 'package:sogda/core/adaptive/adaptive.dart';
+import 'package:sogda/core/components/sg_button.dart';
+import 'package:sogda/core/components/sg_speaker_button.dart';
+import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/core/theme/sg_surface.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/core/typography/sg_text.dart';
+import 'package:sogda/data/repositories/model_repository.dart';
+import 'package:sogda/data/repositories/setting_keys.dart';
+import 'package:sogda/features/onboarding/onboarding_notifier.dart';
+import 'package:sogda/features/onboarding/onboarding_shell.dart';
+import 'package:sogda/features/onboarding/setup_flow.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
+import 'package:sogda/services/model_downloads.dart';
+import 'package:sogda/services/notification_permission.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -200,12 +200,12 @@ class _OnboardingVoicePageState extends ConsumerState<OnboardingVoicePage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          DpSurface(
-            kind: DpSurfaceKind.bar,
+          SgSurface(
+            kind: SgSurfaceKind.bar,
             padding: const EdgeInsets.all(16),
             // Past 130 % text the time and the switch go under the title,
             // which they squeezed until "reminder" broke mid-word (#165).
-            child: DpScript.large(context)
+            child: SgScript.large(context)
                 ? Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: <Widget>[
@@ -231,16 +231,16 @@ class _OnboardingVoicePageState extends ConsumerState<OnboardingVoicePage> {
                   ),
           ),
           const SizedBox(height: 12),
-          DpSurface(
-            kind: DpSurfaceKind.bar,
+          SgSurface(
+            kind: SgSurfaceKind.bar,
             padding: const EdgeInsets.all(16),
             child: Row(
               children: <Widget>[
-                DpSpeakerButton(
+                SgSpeakerButton(
                   size: 48,
                   state: _voiceMissing
-                      ? DpSpeakerState.unavailable
-                      : DpSpeakerState.idle,
+                      ? SgSpeakerState.unavailable
+                      : SgSpeakerState.idle,
                   semanticLabel: l10n.onboardingVoicePlay,
                   // The system voice, so it works before any model exists.
                   onPressed: () => _preview(sample),
@@ -289,11 +289,11 @@ class _Titled extends StatelessWidget {
   Widget build(BuildContext context) => Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: <Widget>[
-      DpText(title, role: DpTextRole.body, weight: 600),
+      SgText(title, role: SgTextRole.body, weight: 600),
       const SizedBox(height: 1),
-      DpText(
+      SgText(
         note,
-        role: DpTextRole.caption,
+        role: SgTextRole.caption,
         color: context.tokens.color.textSecondary,
       ),
     ],
@@ -333,9 +333,9 @@ class _TimeButton extends StatelessWidget {
           constraints: const BoxConstraints(minHeight: minTapTarget),
           child: Center(
             widthFactor: 1,
-            child: DpText(
+            child: SgText(
               time,
-              role: DpTextRole.bodyLarge,
+              role: SgTextRole.bodyLarge,
               weight: 600,
               // Grey while the reminder is off, as drawn: a time that will not
               // fire should not look set.
@@ -378,7 +378,7 @@ class _SupertonicCard extends StatelessWidget {
   final VoidCallback onDownload;
   final VoidCallback onRetry;
   final VoidCallback onLater;
-  final DpTokens tokens;
+  final SgTokens tokens;
 
   @override
   Widget build(BuildContext context) {
@@ -418,50 +418,50 @@ class _SupertonicCard extends StatelessWidget {
     // much. Disabled looks it: no colour of ours, so the button greys out.
     final canDownload = asked && short == 0;
 
-    final download = DpButton(
+    final download = SgButton(
       label: l10n.onboardingSupertonicDownload,
       onPressed: canDownload ? onDownload : null,
-      kind: DpButtonKind.secondary,
+      kind: SgButtonKind.secondary,
       colour: canDownload ? actionColour : null,
       onColour: canDownload ? onActionColour : null,
     );
-    final later = DpButton(
+    final later = SgButton(
       label: l10n.onboardingSupertonicLater,
       onPressed: onLater,
-      kind: DpButtonKind.secondary,
+      kind: SgButtonKind.secondary,
       colour: glass ? null : tokens.color.accent,
       onColour: glass ? null : tokens.color.onAccent,
     );
-    return DpSurface(
+    return SgSurface(
       // Solid Sun with the chosen edge — 2 px ink and the hard shadow — on
       // paper; the glass artboards tint a pane instead, with no edge.
-      kind: DpSurfaceKind.tint(tokens.color.accent, opacity: glass ? 0.22 : 1),
+      kind: SgSurfaceKind.tint(tokens.color.accent, opacity: glass ? 0.22 : 1),
       selected: !glass,
       padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          DpText(
+          SgText(
             l10n.onboardingSupertonicTitle,
-            role: DpTextRole.body,
+            role: SgTextRole.body,
             weight: 600,
             color: ink,
           ),
           if (megabytes != null) ...<Widget>[
             const SizedBox(height: 10),
-            DpText(
+            SgText(
               l10n.onboardingSupertonicBody(megabytes!),
-              role: DpTextRole.label,
+              role: SgTextRole.label,
               weight: 400,
               color: ink,
             ),
           ],
           if (phase == DownloadPhase.failed) ...<Widget>[
             const SizedBox(height: 10),
-            DpButton(
+            SgButton(
               label: l10n.retry,
               onPressed: onRetry,
-              kind: DpButtonKind.secondary,
+              kind: SgButtonKind.secondary,
               colour: actionColour,
               onColour: onActionColour,
             ),
@@ -470,7 +470,7 @@ class _SupertonicCard extends StatelessWidget {
             const SizedBox(height: 10),
             // Past 130 % text they stack: side by side, "Download" broke
             // mid-word at 200 % (#165).
-            if (DpScript.large(context)) ...<Widget>[
+            if (SgScript.large(context)) ...<Widget>[
               download,
               const SizedBox(height: 8),
               later,
@@ -485,9 +485,9 @@ class _SupertonicCard extends StatelessWidget {
             // #501: why Download now asks for notifications, while it can.
             if (canDownload) ...<Widget>[
               const SizedBox(height: 8),
-              DpText(
+              SgText(
                 l10n.modelsNotifyWhy,
-                role: DpTextRole.caption,
+                role: SgTextRole.caption,
                 color: ink,
               ),
             ],
@@ -496,9 +496,9 @@ class _SupertonicCard extends StatelessWidget {
             const SizedBox(height: 10),
             Semantics(
               liveRegion: true,
-              child: DpText(
+              child: SgText(
                 status,
-                role: DpTextRole.caption,
+                role: SgTextRole.caption,
                 weight: 600,
                 color: ink,
               ),

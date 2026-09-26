@@ -1,11 +1,11 @@
 import 'dart:async';
 
-import 'package:deutschplan/data/db/app_database.dart';
-import 'package:deutschplan/data/repositories/reminder_scheduler.dart';
-import 'package:deutschplan/data/repositories/setting_keys.dart';
-import 'package:deutschplan/data/repositories/settings_repository.dart';
-import 'package:deutschplan/services/background_work.dart';
-import 'package:deutschplan/services/reminder_notifications.dart';
+import 'package:sogda/data/db/app_database.dart';
+import 'package:sogda/data/repositories/reminder_scheduler.dart';
+import 'package:sogda/data/repositories/setting_keys.dart';
+import 'package:sogda/data/repositories/settings_repository.dart';
+import 'package:sogda/services/background_work.dart';
+import 'package:sogda/services/reminder_notifications.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 /// The notifications without a phone: what was scheduled.

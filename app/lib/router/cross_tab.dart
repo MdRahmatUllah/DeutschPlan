@@ -1,4 +1,4 @@
-import 'package:deutschplan/router/app_shell.dart';
+import 'package:sogda/router/app_shell.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 

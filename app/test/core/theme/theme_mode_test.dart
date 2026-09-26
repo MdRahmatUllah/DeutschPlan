@@ -1,6 +1,6 @@
-import 'package:deutschplan/core/theme/dp_tokens.dart';
-import 'package:deutschplan/core/theme/theme_mode.dart';
-import 'package:deutschplan/data/repositories/setting_keys.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/core/theme/theme_mode.dart';
+import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart' show Brightness;
 
@@ -8,16 +8,16 @@ import 'package:material_ui/material_ui.dart' show Brightness;
 /// Written once so a silently wrong theme cannot come from two versions of it.
 void main() {
   test('system follows the platform', () {
-    expect(ThemeModeSetting.system.resolve(Brightness.light), DpMode.light);
-    expect(ThemeModeSetting.system.resolve(Brightness.dark), DpMode.dark);
+    expect(ThemeModeSetting.system.resolve(Brightness.light), SgMode.light);
+    expect(ThemeModeSetting.system.resolve(Brightness.dark), SgMode.dark);
     expect(ThemeModeSetting.system.followsPlatform, isTrue);
   });
 
   test('an explicit choice ignores the platform', () {
-    const explicit = <ThemeModeSetting, DpMode>{
-      ThemeModeSetting.light: DpMode.light,
-      ThemeModeSetting.dark: DpMode.dark,
-      ThemeModeSetting.glass: DpMode.glass,
+    const explicit = <ThemeModeSetting, SgMode>{
+      ThemeModeSetting.light: SgMode.light,
+      ThemeModeSetting.dark: SgMode.dark,
+      ThemeModeSetting.glass: SgMode.glass,
     };
 
     for (final MapEntry(key: setting, value: mode) in explicit.entries) {
@@ -37,7 +37,7 @@ void main() {
     // rather than a runtime one — this asserts the pairing stays total if that
     // switch ever gains a default.
     for (final setting in ThemeModeSetting.values) {
-      expect(DpMode.values, contains(setting.resolve(Brightness.light)));
+      expect(SgMode.values, contains(setting.resolve(Brightness.light)));
     }
   });
 
@@ -45,7 +45,7 @@ void main() {
     // theming.md gives glass its own light and dark variants; which one shows
     // is AppTheme.glass's call, and nothing here should guess it.
     for (final platform in Brightness.values) {
-      expect(ThemeModeSetting.system.resolve(platform), isNot(DpMode.glass));
+      expect(ThemeModeSetting.system.resolve(platform), isNot(SgMode.glass));
     }
   });
 }

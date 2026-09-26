@@ -9,6 +9,6 @@ make update-goldens
 ```
 
 The field behind it is `SplashField.colorset`, whose values
-`test/features/splash_native_test.dart` checks against `DpPalette`.
+`test/features/splash_native_test.dart` checks against `SgPalette`.
 
 Written without a Mac (#238): not yet seen on an iPhone or a simulator.

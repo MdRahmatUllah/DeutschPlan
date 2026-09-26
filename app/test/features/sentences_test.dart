@@ -1,16 +1,16 @@
 import 'dart:io';
 
-import 'package:deutschplan/core/components/dp_speaker_button.dart';
-import 'package:deutschplan/core/providers/app_providers.dart';
-import 'package:deutschplan/core/theme/app_theme.dart';
-import 'package:deutschplan/core/theme/dp_tokens.dart';
-import 'package:deutschplan/data/db/app_database.dart';
-import 'package:deutschplan/data/db/content_dao.dart';
-import 'package:deutschplan/data/repositories/sentence_store.dart';
-import 'package:deutschplan/data/repositories/settings_repository.dart';
-import 'package:deutschplan/features/sentences/sentences_screen.dart';
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
-import 'package:deutschplan/main.dart'
+import 'package:sogda/core/components/sg_speaker_button.dart';
+import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/core/theme/app_theme.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/data/db/app_database.dart';
+import 'package:sogda/data/db/content_dao.dart';
+import 'package:sogda/data/repositories/sentence_store.dart';
+import 'package:sogda/data/repositories/settings_repository.dart';
+import 'package:sogda/features/sentences/sentences_screen.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
+import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
@@ -18,7 +18,7 @@ import 'package:flutter/semantics.dart' show SemanticsAction;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
-import 'package:deutschplan/features/words/word_detail_screen.dart';
+import 'package:sogda/features/words/word_detail_screen.dart';
 
 import '../services/fake_tts.dart';
 
@@ -45,7 +45,7 @@ void main() {
   /// so the day is not complete.
   Future<void> open({bool planOpen = true, String? rated}) async {
     db = AppDatabase.memory();
-    final directory = Directory.systemTemp.createTempSync('dp_sentences');
+    final directory = Directory.systemTemp.createTempSync('sg_sentences');
     final content = ContentFixture.write('${directory.path}/content.db');
     await db.customStatement(
       "ATTACH DATABASE '${ContentDao.attachPath(content.file)}' AS c",
@@ -191,7 +191,7 @@ INSERT INTO sentence_log (word_uid, ord, shown_on, self_rating) VALUES
         return true;
       });
       expect(target?.style?.decoration, TextDecoration.underline);
-      expect(target?.style?.decorationColor, DpPalette.light.die);
+      expect(target?.style?.decorationColor, SgPalette.light.die);
     });
   });
 
@@ -404,8 +404,8 @@ INSERT INTO sentence_log (word_uid, ord, shown_on, self_rating) VALUES
       tester,
     ) async {
       await pump(tester);
-      await tester.tap(find.byType(DpSpeakerButton));
-      await tester.longPress(find.byType(DpSpeakerButton));
+      await tester.tap(find.byType(SgSpeakerButton));
+      await tester.longPress(find.byType(SgSpeakerButton));
       await tester.pump();
       expect(tts.said, <(String, double)>[
         ('Die Straße ist lang.', 1),
@@ -419,12 +419,12 @@ INSERT INTO sentence_log (word_uid, ord, shown_on, self_rating) VALUES
       (tester) async {
         await pump(tester, voice: false);
         expect(
-          tester.widget<DpSpeakerButton>(find.byType(DpSpeakerButton)).state,
-          DpSpeakerState.unavailable,
+          tester.widget<SgSpeakerButton>(find.byType(SgSpeakerButton)).state,
+          SgSpeakerState.unavailable,
         );
         expect(find.text(l10n.speakerNoVoice), findsNothing);
 
-        await tester.tap(find.byType(DpSpeakerButton));
+        await tester.tap(find.byType(SgSpeakerButton));
         await tester.pump();
         expect(find.text(l10n.speakerNoVoice), findsOneWidget);
       },
@@ -453,9 +453,9 @@ INSERT INTO sentence_log (word_uid, ord, shown_on, self_rating) VALUES
                       .decoration!
                   as BoxDecoration)
               .color!;
-      expect(fill(l10n.sentencesUnderstood), DpPalette.light.easy);
-      expect(fill(l10n.sentencesPartly), DpPalette.light.hard);
-      expect(fill(l10n.sentencesNotYet), DpPalette.light.again);
+      expect(fill(l10n.sentencesUnderstood), SgPalette.light.easy);
+      expect(fill(l10n.sentencesPartly), SgPalette.light.hard);
+      expect(fill(l10n.sentencesNotYet), SgPalette.light.again);
     });
   });
 

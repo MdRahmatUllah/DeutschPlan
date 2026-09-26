@@ -1,14 +1,14 @@
-import 'package:deutschplan/core/providers/app_providers.dart';
-import 'package:deutschplan/core/theme/app_theme.dart';
-import 'package:deutschplan/core/typography/dp_text.dart';
-import 'package:deutschplan/data/repositories/grammar_repository.dart';
-import 'package:deutschplan/data/repositories/word_repository.dart';
-import 'package:deutschplan/features/learn/step_detail_screen.dart';
-import 'package:deutschplan/features/learn/step_grammar.dart';
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
-import 'package:deutschplan/main.dart'
+import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/core/theme/app_theme.dart';
+import 'package:sogda/core/typography/sg_text.dart';
+import 'package:sogda/data/repositories/grammar_repository.dart';
+import 'package:sogda/data/repositories/word_repository.dart';
+import 'package:sogda/features/learn/step_detail_screen.dart';
+import 'package:sogda/features/learn/step_grammar.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
+import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
-import 'package:deutschplan/router/routes.dart';
+import 'package:sogda/router/routes.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
@@ -164,7 +164,7 @@ void main() {
           home: Center(
             child: SizedBox(
               width: width,
-              child: const DpOneLine(rule, role: DpTextRole.label),
+              child: const SgOneLine(rule, role: SgTextRole.label),
             ),
           ),
         ),
@@ -181,7 +181,7 @@ void main() {
     ) async {
       for (final width in <double>[60, 90, 120, 160, 200, 240]) {
         final text = await shown(tester, width);
-        expect(text, endsWith(DpOneLine.ellipsis), reason: '$width');
+        expect(text, endsWith(SgOneLine.ellipsis), reason: '$width');
         final kept = text.substring(0, text.length - 1);
         expect(rule.startsWith(kept), isTrue, reason: '$width: $text');
         // What follows the kept part is a space or punctuation, so no word
@@ -203,7 +203,7 @@ void main() {
                 style: const TextStyle(letterSpacing: 2),
                 child: SizedBox(
                   width: width,
-                  child: const DpOneLine(rule, role: DpTextRole.label),
+                  child: const SgOneLine(rule, role: SgTextRole.label),
                 ),
               ),
             ),
