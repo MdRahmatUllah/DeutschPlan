@@ -156,7 +156,7 @@ class HomeWidgetStore implements WidgetStore {
 
   /// X1's Glance receiver (#160), which the redraw is sent to.
   static const String androidReceiver =
-      'com.example.deutschplan.widget.DeutschPlanWidgetReceiver';
+      'io.github.rahmatullah.deutschplan.widget.DeutschPlanWidgetReceiver';
 
   // ponytail: the redraw is Android's; #161 adds WidgetKit's `iOSName`.
   @override

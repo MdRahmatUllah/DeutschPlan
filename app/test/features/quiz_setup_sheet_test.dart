@@ -1,6 +1,9 @@
 import 'package:deutschplan/core/adaptive/adaptive.dart';
 import 'package:deutschplan/core/components/dp_chip.dart';
+import 'package:deutschplan/core/providers/app_providers.dart'
+    show settingsSourceProvider;
 import 'package:deutschplan/core/theme/app_theme.dart';
+import 'package:deutschplan/data/repositories/setting_keys.dart';
 import 'package:deutschplan/domain/quiz_builder.dart';
 import 'package:deutschplan/features/learn/step_detail_screen.dart';
 import 'package:deutschplan/features/learn/step_words.dart';
@@ -16,6 +19,7 @@ import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 
 import 'quiz_fixtures.dart';
+import 'settings_fixtures.dart';
 import 'today_fixtures.dart';
 
 /// L7 · Custom quiz — #122 (`quiz.md`, FR-L2-04's *Custom* tile).
@@ -28,7 +32,10 @@ void main() {
 
   late QuizArgs? started;
 
-  Future<void> pump(WidgetTester tester) async {
+  Future<void> pump(
+    WidgetTester tester, {
+    MeaningLanguage meaning = MeaningLanguage.english,
+  }) async {
     started = null;
     tester.view
       ..physicalSize = const Size(390, 844) * 3
@@ -63,6 +70,11 @@ void main() {
       ),
     );
     await tester.pumpAndSettle();
+    // The learner's setting, before L7 opens and reads it.
+    (ProviderScope.containerOf(tester.element(find.byType(StepDetailScreen)))
+                .read(settingsSourceProvider)
+            as StubSettings)
+        .put(SettingKeys.meaningLanguage, meaning);
     await tester.tap(find.text(l10n.quizCustom));
     await tester.pumpAndSettle();
   }
@@ -114,6 +126,17 @@ void main() {
     );
   });
 
+  testWidgets("#387 the direction starts on the learner's meaning language", (
+    tester,
+  ) async {
+    await pump(tester, meaning: MeaningLanguage.bangla);
+    expect(selected(tester, 'DE → বাংলা'), isTrue);
+    expect(selected(tester, 'DE → EN'), isFalse);
+
+    await pump(tester, meaning: MeaningLanguage.both);
+    expect(selected(tester, 'DE → EN'), isTrue);
+  });
+
   testWidgets('BR-QUIZ-01 lengths 10 / 20 / 30, 20 chosen; sources this step, '
       'all learned and the step\'s main category', (tester) async {
     await pump(tester);
@@ -132,6 +155,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: <Override>[
+          ...settingsStub(),
           stepCategoriesProvider.overrideWith(
             (ref, code) async => const <({int id, String name})>[],
           ),
@@ -165,6 +189,7 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           overrides: <Override>[
+            ...settingsStub(),
             quizCategoriesProvider.overrideWith(
               (ref, step) async => categories,
             ),

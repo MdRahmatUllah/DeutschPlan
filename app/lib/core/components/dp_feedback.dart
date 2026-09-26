@@ -1,3 +1,4 @@
+import 'package:deutschplan/core/adaptive/adaptive.dart';
 import 'package:deutschplan/core/components/dp_button.dart';
 import 'package:deutschplan/core/theme/dp_surface.dart';
 import 'package:deutschplan/core/theme/dp_tokens.dart';
@@ -108,33 +109,37 @@ class _UmlautKey extends StatelessWidget {
   Widget build(BuildContext context) {
     final tokens = context.tokens;
 
-    return Semantics(
-      button: true,
-      enabled: onTap != null,
-      label: AppLocalizations.of(context).umlautLongPressHint(label, shifted),
-      onTap: onTap,
-      onLongPress: onLongPress,
-      child: ExcludeSemantics(
-        child: GestureDetector(
-          onTap: onTap,
-          onLongPress: onLongPress,
-          behavior: HitTestBehavior.opaque,
-          // The artboard's height at least, taller at large text: a fixed one
-          // cut "ä" at 150 % (#165).
-          child: Container(
-            constraints: const BoxConstraints(minHeight: DpUmlautBar.keyHeight),
-            decoration: BoxDecoration(
-              color: tokens.surface.card,
-              borderRadius: BorderRadius.circular(tokens.shape.chip),
-              border: Border.all(
-                color: tokens.color.ink,
-                width: tokens.surface.outlineWidth,
+    return AdaptiveTapTarget(
+      child: Semantics(
+        button: true,
+        enabled: onTap != null,
+        label: AppLocalizations.of(context).umlautLongPressHint(label, shifted),
+        onTap: onTap,
+        onLongPress: onLongPress,
+        child: ExcludeSemantics(
+          child: GestureDetector(
+            onTap: onTap,
+            onLongPress: onLongPress,
+            behavior: HitTestBehavior.opaque,
+            // The artboard's height at least, taller at large text: a fixed one
+            // cut "ä" at 150 % (#165).
+            child: Container(
+              constraints: const BoxConstraints(
+                minHeight: DpUmlautBar.keyHeight,
               ),
-            ),
-            // Its own height, centred: an Align would fill a tall parent.
-            child: Center(
-              heightFactor: 1,
-              child: DpText(label, role: DpTextRole.title, weight: 500),
+              decoration: BoxDecoration(
+                color: tokens.surface.card,
+                borderRadius: BorderRadius.circular(tokens.shape.chip),
+                border: Border.all(
+                  color: tokens.color.ink,
+                  width: tokens.surface.outlineWidth,
+                ),
+              ),
+              // Its own height, centred: an Align would fill a tall parent.
+              child: Center(
+                heightFactor: 1,
+                child: DpText(label, role: DpTextRole.title, weight: 500),
+              ),
             ),
           ),
         ),

@@ -378,16 +378,18 @@ class _Words extends StatelessWidget {
     runSpacing: 8,
     children: <Widget>[
       for (final (i, word) in words.indexed)
-        Semantics(
-          button: true,
-          selected: picked.contains(i),
-          child: DpSurface(
-            kind: DpSurfaceKind.bar,
+        AdaptiveTapTarget(
+          child: Semantics(
+            button: true,
             selected: picked.contains(i),
-            radius: context.tokens.shape.button,
-            onTap: () => onTap(i),
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-            child: DpText(word, role: DpTextRole.bodyLarge, weight: 600),
+            child: DpSurface(
+              kind: DpSurfaceKind.bar,
+              selected: picked.contains(i),
+              radius: context.tokens.shape.button,
+              onTap: () => onTap(i),
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+              child: DpText(word, role: DpTextRole.bodyLarge, weight: 600),
+            ),
           ),
         ),
     ],
@@ -1085,7 +1087,9 @@ class _ExamSpeakingState extends ConsumerState<ExamSpeaking> {
                   ExamRubricTick(
                     label: line,
                     ticked: _ticks[i],
-                    onTap: () => _toggle(i),
+                    // #84 counts ticks only with a recording: dimmed until
+                    // there is one, as L13 does (#396).
+                    onTap: _mic == _Mic.recorded ? () => _toggle(i) : null,
                   ),
                 const SizedBox(height: 6),
                 DpText(

@@ -1,4 +1,4 @@
-package com.example.deutschplan.widget
+package io.github.rahmatullah.deutschplan.widget
 
 import android.content.Context
 import android.content.Intent
@@ -45,8 +45,8 @@ import androidx.glance.text.FontWeight
 import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
 import androidx.glance.unit.ColorProvider
-import com.example.deutschplan.MainActivity
-import com.example.deutschplan.R
+import io.github.rahmatullah.deutschplan.MainActivity
+import io.github.rahmatullah.deutschplan.R
 import es.antonborri.home_widget.HomeWidgetGlanceState
 import es.antonborri.home_widget.HomeWidgetGlanceStateDefinition
 import es.antonborri.home_widget.HomeWidgetGlanceWidgetReceiver

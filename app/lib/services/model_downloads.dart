@@ -7,6 +7,8 @@ import 'package:deutschplan/data/repositories/settings_repository.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
 import 'package:deutschplan/l10n/ui_language_locale.dart';
 import 'package:deutschplan/services/device_storage.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 /// What a model's download is doing (FR-M4-01, #156), for M4's card.
 enum DownloadPhase {
@@ -99,13 +101,19 @@ class BackgroundModelDownloads implements ModelDownloads {
     FileDownloader? downloader,
     DeviceStorage? storage,
     this._wifiGrace = const Duration(seconds: 2),
+    DownloadNotice? notice,
   ]) : _downloader = downloader ?? FileDownloader(),
-       _storage = storage ?? const PlatformDeviceStorage();
+       _storage = storage ?? const PlatformDeviceStorage(),
+       _notice = notice ?? const PlatformDownloadNotice();
 
   final ModelRepository _models;
   final SettingsRepository _settings;
   final FileDownloader _downloader;
   final DeviceStorage _storage;
+  final DownloadNotice _notice;
+
+  /// The one notification every model file shares.
+  static const String notificationGroup = 'models';
 
   /// How long a stop that comes before the downloader hears the network go
   /// waits for it to (#455).
@@ -132,7 +140,7 @@ class BackgroundModelDownloads implements ModelDownloads {
   Future<void> attach() async {
     if (_updates != null) return;
     // Before `start()`, which queues again the tasks the system killed.
-    _notify(waiting: false);
+    _notify();
     _updates = _downloader.updates.listen((update) => unawaited(_on(update)));
     // The downloader's own record: a task the system or the learner killed
     // is scheduled again, and one that finished while the app was away says
@@ -184,27 +192,24 @@ class BackgroundModelDownloads implements ModelDownloads {
   }
 
   /// One notification for every file of every model, in the UI language of
-  /// the moment. The tokens are the downloader's own, filled in on the
-  /// device.
-  // ponytail: the platform keeps the texts each task was queued with, for
-  // the whole of a model's download: files queued off Wi-Fi still say
-  // *Waiting for Wi-Fi* once it arrives (their count moves), and a Wi-Fi
-  // drop mid-download still says *Downloading*. A notification of our own,
-  // updated from [_settle], is the upgrade (#428).
-  void _notify({required bool waiting}) {
+  /// the moment, saying only what stays true (#438). The platform keeps the
+  /// texts a task was queued with for the whole download and counts files
+  /// per app process, so a state ("Waiting for Wi-Fi", "Downloading") or a
+  /// count ("2 of 7") would go stale: Wi-Fi arriving or dropping, a relaunch.
+  /// The platform's own notification is kept rather than one of the app's,
+  /// which would stop updating once the app is swiped away while the
+  /// download carries on.
+  // ponytail: a task the system reschedules keeps the language it was
+  // queued in, and the progress bar still counts per process.
+  void _notify() {
     final l10n = lookupAppLocalizations(
       _settings.read(SettingKeys.uiLanguage).locale,
     );
     _downloader.configureNotification(
-      running: waiting
-          ? TaskNotification(
-              l10n.modelNotifyWaiting('{numFinished}', '{numTotal}'),
-              l10n.modelNotifyWaitingNote,
-            )
-          : TaskNotification(
-              l10n.modelNotifyRunning('{numFinished}', '{numTotal}'),
-              l10n.modelNotifyRunningNote,
-            ),
+      running: TaskNotification(
+        l10n.modelNotifyRunning,
+        l10n.modelNotifyRunningNote,
+      ),
       paused: TaskNotification(
         l10n.modelNotifyPaused,
         l10n.modelNotifyPausedNote,
@@ -218,7 +223,7 @@ class BackgroundModelDownloads implements ModelDownloads {
         l10n.modelNotifyFailedNote,
       ),
       progressBar: true,
-      groupNotificationId: 'models',
+      groupNotificationId: notificationGroup,
     );
   }
 
@@ -275,7 +280,7 @@ class BackgroundModelDownloads implements ModelDownloads {
         done: 0,
       );
     }
-    _notify(waiting: _offWifi);
+    _notify();
     await _downloader.enqueueAll(tasks);
     // Said now, not at the platform's first word: page 5 reads *Waiting for
     // Wi-Fi* or *Downloading* the moment it is queued (#428).
@@ -448,6 +453,20 @@ class BackgroundModelDownloads implements ModelDownloads {
             : DownloadPhase.failed,
         progress: 1,
       ));
+      // #506: the platform's one notification says how it ended, once no
+      // model is left downloading. Its own can stick at "Model download"
+      // (a file that finished before the platform counted it queued), and
+      // says *finished* though a checksum failed.
+      if (_files.isEmpty) {
+        final l10n = lookupAppLocalizations(
+          _settings.read(SettingKeys.uiLanguage).locale,
+        );
+        await _notice.ended(
+          status == ModelStatus.ready
+              ? (l10n.modelNotifyComplete, l10n.modelNotifyCompleteNote)
+              : (l10n.modelNotifyFailed, l10n.modelNotifyFailedNote),
+        );
+      }
       // Done with: the next launch mustn't verify a staging folder that was
       // renamed into place, or that *Retry* throws away.
       await _downloader.database.deleteAllRecords(group: modelId);
@@ -495,5 +514,63 @@ class BackgroundModelDownloads implements ModelDownloads {
   void _emit(String modelId, DownloadProgress progress) {
     _last[modelId] = progress;
     _watchers[modelId]?.add(progress);
+  }
+}
+
+/// #506: says how the model downloads ended, over the platform's own
+/// notification for them.
+abstract interface class DownloadNotice {
+  /// [text] is the title and the line under it.
+  Future<void> ended((String, String) text);
+}
+
+/// [DownloadNotice] on Android: the same notification id and channel as
+/// `background_downloader`'s group notification, so this replaces it.
+///
+/// The platform registers a queued file with its group through a job of its
+/// own, and counts it again as running when that job runs after the file has
+/// finished (`GroupNotification.update` keeps no order), so the group never
+/// finishes: "Model download" stayed at 78 % and 89 % after the voice was
+/// Ready on the emulator.
+// ponytail: a registration job that runs later still (a slow phone, a big
+// file finishing last) would post "Model download" over this again; the
+// logcat had them within ~10 s of queueing, and this comes after the
+// checksums. A second post a few seconds later is the upgrade.
+class PlatformDownloadNotice implements DownloadNotice {
+  const PlatformDownloadNotice();
+
+  /// The downloader's group notification id: Kotlin's
+  /// `"groupNotification$name".hashCode()` (`Notifications.kt`).
+  static int groupId(String name) {
+    var hash = 0;
+    for (final unit in 'groupNotification$name'.codeUnits) {
+      hash = (31 * hash + unit) & 0xFFFFFFFF;
+    }
+    return hash >= 0x80000000 ? hash - 0x100000000 : hash;
+  }
+
+  @override
+  Future<void> ended((String, String) text) async {
+    // iOS keeps its own count, which the emulator showed no fault in.
+    if (defaultTargetPlatform != TargetPlatform.android) return;
+    final (title, body) = text;
+    try {
+      await FlutterLocalNotificationsPlugin().show(
+        id: groupId(BackgroundModelDownloads.notificationGroup),
+        title: title,
+        body: body,
+        notificationDetails: const NotificationDetails(
+          android: AndroidNotificationDetails(
+            'background_downloader',
+            // The platform's own name for its channel.
+            'Downloads',
+            importance: Importance.low,
+            priority: Priority.low,
+          ),
+        ),
+      );
+    } on Object {
+      // No notifications allowed, or none at all: the app says it anyway.
+    }
   }
 }

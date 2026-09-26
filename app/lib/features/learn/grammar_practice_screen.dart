@@ -654,10 +654,12 @@ class _Options extends StatelessWidget {
                       ),
                       child: label,
                     );
-              return Semantics(
-                button: !answered,
-                selected: option == given,
-                child: tile,
+              return AdaptiveTapTarget(
+                child: Semantics(
+                  button: !answered,
+                  selected: option == given,
+                  child: tile,
+                ),
               );
             },
           ),
@@ -911,16 +913,18 @@ class _WordChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Semantics(
-      button: onTap != null,
-      child: DpSurface(
-        kind: tone == null
-            ? DpSurfaceKind.bar
-            : DpSurfaceKind.tint(tone!, opacity: 0.3),
-        radius: 10,
-        onTap: onTap,
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-        child: DpText(word, role: DpTextRole.bodyLarge),
+    return AdaptiveTapTarget(
+      child: Semantics(
+        button: onTap != null,
+        child: DpSurface(
+          kind: tone == null
+              ? DpSurfaceKind.bar
+              : DpSurfaceKind.tint(tone!, opacity: 0.3),
+          radius: 10,
+          onTap: onTap,
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+          child: DpText(word, role: DpTextRole.bodyLarge),
+        ),
       ),
     );
   }

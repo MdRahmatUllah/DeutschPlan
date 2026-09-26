@@ -11,6 +11,8 @@ import 'package:flutter/semantics.dart' show AttributedString;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 
+import '../text_clipping.dart';
+
 /// theming.md: the seven-role scale, and "Bangla is set one step larger at the
 /// same role". accessibility-performance.md: "Text scaling to 200 %; long
 /// compounds soft-hyphenate" and the de-DE / bn-BD locale tagging so TalkBack
@@ -213,7 +215,16 @@ void main() {
       Locale locale = const Locale('en'),
     }) async {
       await pump(tester, child, locale: locale);
-      return tester.getSemantics(find.byWidget(child)).attributedLabel;
+      // From its paragraph: a hyphenated text's first box is the one that
+      // breaks its lines (#419), which has no node of its own.
+      return tester
+          .getSemantics(
+            find.descendant(
+              of: find.byWidget(child),
+              matching: find.byType(RichText),
+            ),
+          )
+          .attributedLabel;
     }
 
     List<(String, Locale)> voices(AttributedString label) => <(String, Locale)>[
@@ -349,6 +360,333 @@ void main() {
       final label = await said(tester, const DpHeadword('schnell'));
       expect(label.string, 'schnell');
       expect(voices(label), <(String, Locale)>[('schnell', DpScript.deDE)]);
+      semantics.dispose();
+    });
+  });
+
+  group('#419 a hyphen where a headword breaks at a syllable', () {
+    // The text the headword's paragraph draws.
+    String drawn(WidgetTester tester) => tester
+        .renderObject<RenderParagraph>(find.byType(RichText))
+        .text
+        .toPlainText(includeSemanticsLabels: false)
+        .replaceAll(DpScript.softHyphen, '');
+
+    testWidgets('#419 a line that ends at a syllable ends in "-", and the '
+        'word is read whole', (tester) async {
+      final semantics = tester.ensureSemantics();
+      await pump(
+        tester,
+        const SizedBox(
+          width: 220,
+          child: DpHeadword(
+            'Geschwindigkeitsbegrenzung',
+            article: 'die',
+            plural: 'Geschwindigkeitsbegrenzungen',
+          ),
+        ),
+      );
+      final lines = drawn(tester).split('\n');
+      expect(lines.length, greaterThan(1));
+      // Every line but the last ends at a syllable, with its "-", or is the
+      // article alone, which ends at a space.
+      for (final line in lines.take(lines.length - 1)) {
+        expect(line == 'die' || line.endsWith('-'), isTrue, reason: line);
+      }
+      expect(
+        lines.join(' ').replaceAll('- ', ''),
+        'die Geschwindigkeitsbegrenzung',
+      );
+      expect(
+        tester.getSemantics(find.byType(DpHeadword)).label,
+        'die Geschwindigkeitsbegrenzung, feminine',
+      );
+      semantics.dispose();
+    });
+
+    testWidgets('#419 a word that fits has no hyphen, and no line runs past '
+        'its box', (tester) async {
+      await pump(
+        tester,
+        const SizedBox(
+          width: 400,
+          child: DpHeadword('Wohnung', article: 'die'),
+        ),
+      );
+      expect(drawn(tester), 'die Wohnung');
+
+      await pump(
+        tester,
+        const SizedBox(
+          width: 160,
+          child: DpHeadword('Haftpflichtversicherung', role: DpTextRole.title),
+        ),
+      );
+      expect(drawn(tester), contains('-'));
+      // Each line it drew is one line: none ran past the box and wrapped
+      // again, at a syllable or anywhere else.
+      expectNoWordBroken(tester, syllables: false);
+      expect(tester.getSize(find.byType(DpHeadword)).width, 160);
+    });
+  });
+
+  group("#419 the lines are the headword's own", () {
+    // Where each drawn line ends: after the headword's own newline, or the
+    // paragraph broke it by itself, at a syllable with no "-" or anywhere.
+    List<String> lineEnds(WidgetTester tester) {
+      final paragraph = tester.renderObject<RenderParagraph>(
+        find.byType(RichText),
+      );
+      final text = paragraph.text.toPlainText(includeSemanticsLabels: false);
+      final painter = TextPainter(
+        text: paragraph.text,
+        textDirection: TextDirection.ltr,
+        textScaler: paragraph.textScaler,
+      )..layout(maxWidth: paragraph.size.width);
+      addTearDown(painter.dispose);
+      final ends = <String>[];
+      var at = 0;
+      while (at < text.length) {
+        final line = painter.getLineBoundary(TextPosition(offset: at));
+        if (line.end <= at) break;
+        final end = line.end < text.length && text[line.end] == '\n'
+            ? line.end + 1
+            : line.end;
+        if (end < text.length) ends.add(text.substring(at, end));
+        at = end;
+      }
+      return ends;
+    }
+
+    testWidgets('#419 at every width, each line ends where the headword '
+        'ended it, never at a bare soft hyphen', (tester) async {
+      // From the width the widest syllable, "nungs-", fits: narrower, one
+      // syllable is wider than the box, and only a letter break is left.
+      for (var width = 170.0; width <= 420; width += 7) {
+        await pump(
+          tester,
+          SizedBox(
+            width: width,
+            child: const DpHeadword(
+              'Wohnungsgeberbestaetigung',
+              article: 'die',
+            ),
+          ),
+        );
+        for (final line in lineEnds(tester)) {
+          expect(line, endsWith('\n'), reason: 'at $width: "$line"');
+        }
+      }
+    });
+
+    testWidgets('#502 German among Bangla hyphenates too: each line ends '
+        'where the text ended it, each run keeps its style, and a screen '
+        'reader hears each whole, in its own voice', (tester) async {
+      final semantics = tester.ensureSemantics();
+      const caption =
+          'die Geschwindigkeitsbegrenzung · /গেশভিন্ডিশকাইটসবেগ্রেনৎসুং/';
+      Future<void> at(double width) => pump(
+        tester,
+        SizedBox(
+          width: width,
+          child: DpText(
+            DpScript.allowBreaks(caption, threshold: 4),
+            role: DpTextRole.body,
+            german: true,
+          ),
+        ),
+      );
+      // From the width the Bangla fits: it has no syllables to break at,
+      // and narrower only a letter break is left.
+      for (var width = 210.0; width <= 390; width += 1) {
+        await at(width);
+        for (final line in lineEnds(tester)) {
+          expect(line, endsWith('\n'), reason: 'at $width: "$line"');
+        }
+      }
+      await at(210);
+      final paragraph = tester.renderObject<RenderParagraph>(
+        find.byType(RichText),
+      );
+      expect(
+        paragraph.text.toPlainText(includeSemanticsLabels: false),
+        contains('-\n'),
+      );
+      final sizes = <String, double?>{};
+      paragraph.text.visitChildren((span) {
+        if (span is TextSpan && span.text != null) {
+          sizes[DpScript.hasBengali(span.text!) ? 'bn' : 'de'] =
+              span.style?.fontSize;
+        }
+        return true;
+      });
+      expect(sizes['bn']!, greaterThan(sizes['de']!), reason: 'one role up');
+
+      final label = tester.getSemantics(find.byType(RichText)).attributedLabel;
+      expect(label.string, caption);
+      expect(
+        label.attributes.whereType<LocaleStringAttribute>().map(
+          (a) => (label.string.substring(a.range.start, a.range.end), a.locale),
+        ),
+        containsAll(<(String, Locale)>[
+          ('die Geschwindigkeitsbegrenzung · /', DpScript.deDE),
+          ('গেশভিন্ডিশকাইটসবেগ্রেনৎসুং/', DpScript.bnBD),
+        ]),
+      );
+      semantics.dispose();
+    });
+
+    testWidgets('#502 German after Bangla: a break in a later run is drawn '
+        'there, in that run, which keeps its style and voice', (tester) async {
+      final semantics = tester.ensureSemantics();
+      const text = 'গেশভিন্ডিশকাইট · die Geschwindigkeitsbegrenzung';
+      Future<void> at(double width) => pump(
+        tester,
+        SizedBox(
+          width: width,
+          child: DpText(
+            DpScript.allowBreaks(text, threshold: 4),
+            role: DpTextRole.body,
+            german: true,
+          ),
+        ),
+      );
+      for (var width = 150.0; width <= 330; width += 1) {
+        await at(width);
+        for (final line in lineEnds(tester)) {
+          expect(line, endsWith('\n'), reason: 'at $width: "$line"');
+        }
+      }
+      await at(150);
+      final spans = <TextSpan>[];
+      tester
+          .renderObject<RenderParagraph>(find.byType(RichText))
+          .text
+          .visitChildren((span) {
+            if (span is TextSpan && span.text != null) spans.add(span);
+            return true;
+          });
+      final bangla = spans.singleWhere((s) => DpScript.hasBengali(s.text!));
+      // Found by what it says: its drawn text has the lines' "-\n".
+      final german = spans.singleWhere(
+        (s) => s.semanticsLabel!.contains('Geschwindigkeitsbegrenzung'),
+      );
+      expect(spans.indexOf(german), greaterThan(spans.indexOf(bangla)));
+      expect(german.text, contains('-\n'));
+      expect(german.locale, DpScript.deDE);
+      expect(german.style!.fontSize, lessThan(bangla.style!.fontSize!));
+      expect(tester.getSemantics(find.byType(RichText)).label, text);
+      semantics.dispose();
+    });
+
+    testWidgets('#419 lines that all end at spaces are given too: where '
+        '"Wohnungsamt Ab" fits but not its "-", the paragraph left to itself '
+        'would end the line at a bare syllable', (tester) async {
+      for (var width = 80.0; width <= 200; width += 1) {
+        await pump(
+          tester,
+          SizedBox(
+            width: width,
+            child: DpText(
+              'Wohnungsamt Ab${DpScript.softHyphen}fahrt',
+              role: DpTextRole.body,
+              german: true,
+            ),
+          ),
+        );
+        for (final line in lineEnds(tester)) {
+          expect(line, endsWith('\n'), reason: 'at $width: "$line"');
+        }
+      }
+    });
+
+    testWidgets('#419 a word too wide for its line breaks at a syllable, '
+        'whatever its length: "selbstbewusst" (13) at display size', (
+      tester,
+    ) async {
+      await pump(
+        tester,
+        const SizedBox(width: 220, child: DpHeadword('selbstbewusst')),
+      );
+      final lines = lineEnds(tester);
+      expect(lines, isNotEmpty, reason: 'too wide for one line');
+      for (final line in lines) {
+        expect(line, endsWith('-\n'));
+      }
+    });
+
+    testWidgets("#419 its intrinsic width is the word's on one line, not the "
+        "last layout's lines", (tester) async {
+      await pump(
+        tester,
+        const SizedBox(
+          width: 150,
+          child: DpHeadword('Geschwindigkeitsbegrenzung', article: 'die'),
+        ),
+      );
+      final box =
+          tester.renderObject<RenderParagraph>(find.byType(RichText)).parent!
+              as RenderBox;
+      expect(box.getMaxIntrinsicWidth(double.infinity), greaterThan(300));
+    });
+
+    testWidgets('#419 under an ambient maxLines its height is the '
+        "paragraph's own: one line, not the lines it would break", (
+      tester,
+    ) async {
+      await pump(
+        tester,
+        SizedBox(
+          width: 150,
+          child: DefaultTextStyle.merge(
+            maxLines: 1,
+            child: DpText(
+              DpScript.allowBreaks('die Haftpflichtversicherung zahlt'),
+              role: DpTextRole.body,
+              german: true,
+            ),
+          ),
+        ),
+      );
+      final paragraph = tester.renderObject<RenderParagraph>(
+        find.byType(RichText),
+      );
+      final box = paragraph.parent! as RenderBox;
+      expect(box.getMinIntrinsicHeight(150), paragraph.size.height);
+    });
+  });
+
+  group('#419 a hyphen in running text too', () {
+    testWidgets('#419 DpText: a line that ends at a syllable shows "-", and '
+        'a screen reader hears the words as they are, in their voice', (
+      tester,
+    ) async {
+      final semantics = tester.ensureSemantics();
+      await pump(
+        tester,
+        const SizedBox(
+          width: 150,
+          child: DpText(
+            'die Haftpflichtversicherung zahlt',
+            role: DpTextRole.body,
+            allowBreaks: true,
+            german: true,
+          ),
+        ),
+      );
+      final drawn = tester
+          .renderObject<RenderParagraph>(find.byType(RichText))
+          .text
+          .toPlainText(includeSemanticsLabels: false);
+      expect(drawn, contains('-\n'));
+      expectNoWordBroken(tester, syllables: false);
+
+      final label = tester.getSemantics(find.byType(RichText)).attributedLabel;
+      expect(label.string, 'die Haftpflichtversicherung zahlt');
+      expect(
+        label.attributes.whereType<LocaleStringAttribute>().single.locale,
+        DpScript.deDE,
+      );
       semantics.dispose();
     });
   });

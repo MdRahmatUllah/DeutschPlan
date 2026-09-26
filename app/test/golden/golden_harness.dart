@@ -3,6 +3,7 @@ import 'package:deutschplan/core/theme/app_theme.dart';
 import 'package:deutschplan/core/theme/glass_capability.dart';
 import 'package:deutschplan/main.dart'
     show appLocalizationsDelegates, supportedLocales;
+import 'package:flutter/semantics.dart' show SemanticsNode;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
@@ -241,9 +242,101 @@ void goldenTest(
       );
     }
     await expectLater(tester, meetsGuideline(labeledTapTargetGuideline));
+    // #478: and each is big enough to press, as its platform asks.
+    await expectLater(
+      tester,
+      meetsGuideline(
+        chrome == AdaptiveChrome.cupertino
+            ? const _IosTapTargets()
+            : const _AndroidTapTargets(),
+      ),
+    );
     if (chrome != AdaptiveChrome.cupertino) expectIconButtonsTipped(tester);
+    expectTargetsApart(tester);
     handle.dispose();
   });
+}
+
+/// iOS's 44 pt, less a sliding segmented control's segments. Flutter's
+/// control draws them 28 pt, and UIKit's own (32 pt) isn't held to 44 either
+/// (#478).
+/// ponytail: growing the control to 44 is the owner's call; drop this then.
+class _IosTapTargets extends MinimumTapTargetGuideline {
+  const _IosTapTargets()
+    : super(
+        size: const Size(44, 44),
+        link: 'https://developer.apple.com/design/human-interface-guidelines/accessibility',
+      );
+
+  @override
+  bool shouldSkipNode(SemanticsNode node) =>
+      _AndroidTapTargets.dense(node) || super.shouldSkipNode(node);
+}
+
+/// Android's 48 dp, less a node in a control too dense to grow, which says
+/// so with a `dense:` semantics identifier on itself or an ancestor (Me's
+/// step badges, iOS's segmented control, #478).
+class _AndroidTapTargets extends MinimumTapTargetGuideline {
+  const _AndroidTapTargets()
+    : super(
+        size: const Size(48, 48),
+        link: 'https://support.google.com/accessibility/android/answer/7101858',
+      );
+
+  static bool dense(SemanticsNode node) {
+    for (SemanticsNode? at = node; at != null; at = at.parent) {
+      if (at.getSemanticsData().identifier.startsWith('dense:')) return true;
+    }
+    return false;
+  }
+
+  @override
+  bool shouldSkipNode(SemanticsNode node) =>
+      dense(node) || super.shouldSkipNode(node);
+}
+
+/// #478: a grown target claims the space around its control, so it must
+/// never reach another target's drawn box, or it takes that one's taps.
+/// Only the targets a tap can reach: a screen under a sheet's scrim isn't.
+void expectTargetsApart(WidgetTester tester) {
+  final targets = <(RenderBox, Rect, Rect)>[
+    for (final element
+        in find.byType(AdaptiveTapTarget).hitTestable().evaluate())
+      if (element.renderObject case final RenderBox box)
+        (
+          box,
+          MatrixUtils.transformRect(
+            box.getTransformTo(null),
+            box.semanticBounds,
+          ),
+          box.localToGlobal(Offset.zero) & box.size,
+        ),
+  ];
+  final overlaps = <String>[];
+  bool within(RenderObject inner, RenderObject outer) {
+    for (RenderObject? at = inner.parent; at != null; at = at.parent) {
+      if (at == outer) return true;
+    }
+    return false;
+  }
+
+  for (final (i, (a, grown, _)) in targets.indexed) {
+    for (final (j, (b, _, drawn)) in targets.indexed) {
+      // Itself, or a target inside another (a chip in a bar): no neighbour.
+      if (i == j || within(a, b) || within(b, a)) continue;
+      // Up to 2 dp is let be: a 44 dp row (T3's list) or a chip run can't
+      // hold a 48 dp target otherwise. Me's badges reached 8 dp in.
+      final both = grown.intersect(drawn);
+      if (both.width > 2 && both.height > 2) {
+        overlaps.add('target $i at $grown over target $j at $drawn');
+      }
+    }
+  }
+  expect(
+    overlaps,
+    isEmpty,
+    reason: "a grown target takes its neighbour's taps",
+  );
 }
 
 /// [linear] as Android 14+ gives it, when text is scaled at all.

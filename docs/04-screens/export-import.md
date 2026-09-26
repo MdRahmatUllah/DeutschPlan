@@ -11,6 +11,7 @@
 - "Last export: 20 Sep" is `last_export`, the day of the last export the share sheet took. Dismissing the sheet isn't an export.
 - A caption under it says the Speaking recordings stay on the phone (FR-M6-01's note).
 - Before a file is chosen, the import card is one *Choose a file* button. The picker takes any file, because an export saved from a mail or a chat often loses its JSON type; the preview refuses what isn't a backup. Backing out of the picker keeps the file already chosen.
+- Under the artboard's preview line, a second says when the file was exported and what else it holds, so a learner can judge a *Replace* (#396): "Exported 20 Sep · 5,321 reviews · 30 days planned · 4 quizzes · 1 exam · 3 words of my own". The reviews are `review_log`'s rows, the days planned `plan_items`' distinct `plan_date`s, the quizzes and exams their attempts, and the words `custom_words`; a count of none is left out.
 - A file that can't be previewed shows its name and why in the Coral text colour: not a DeutschPlan export, or from a newer build. The radios and the button stay hidden.
 - The button follows the radio: *Import and merge*, or *Import and replace*. Replace asks first ("Replace everything on this phone?", *Replace* / *Keep my data*), because nothing brings the data back.
 - After an import, the settings are read again (`SettingsRepository.reload`) and Today's plan is re-read. A toast says *Imported*, and the card is back to *Choose a file*. A failed import says "Nothing on this phone changed", which FR-M6-04's single transaction makes true.

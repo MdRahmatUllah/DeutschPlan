@@ -70,7 +70,7 @@ Every target runs from the repository root. Without `make`, run the command in t
 | `make goldens` / `make update-goldens` | rewrite **every** golden. Prefer updating the goldens of the files you changed (`testing.md`) | `flutter test test/golden --update-goldens` |
 | `make lint` | analyzer and formatter check, the basic check's first two steps | `dart analyze --fatal-infos` (no path arguments, and not `flutter analyze`: ADR 18), then `dart format --output=none --set-exit-if-changed .` |
 | `make format` | apply the formatter | `dart format .` |
-| `make release-android` / `make release-ios` | see `release.md` | `flutter build appbundle` / `flutter build ipa`, both `--release --obfuscate --split-debug-info=build/symbols` |
+| `make release-android` / `make release-ios` | see `release.md` | `python tools/release_android.py` (the bundle, `--release --obfuscate --split-debug-info=build/symbols`, then its 16 KB and key checks) / `flutter build ipa` with the same flags |
 | `make clean` | remove build output | `flutter clean`, and delete `content/build/` |
 
 ## Project conventions checklist for a new screen

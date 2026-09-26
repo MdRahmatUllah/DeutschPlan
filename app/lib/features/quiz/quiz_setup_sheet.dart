@@ -7,6 +7,7 @@ import 'package:deutschplan/core/providers/app_providers.dart';
 import 'package:deutschplan/core/theme/dp_tokens.dart';
 import 'package:deutschplan/core/typography/dp_text.dart';
 import 'package:deutschplan/data/repositories/quiz_store.dart';
+import 'package:deutschplan/data/repositories/setting_keys.dart';
 import 'package:deutschplan/domain/quiz_builder.dart';
 import 'package:deutschplan/features/learn/step_quiz.dart';
 import 'package:deutschplan/features/learn/step_words.dart';
@@ -121,7 +122,12 @@ class QuizSetupSheet extends ConsumerStatefulWidget {
 }
 
 class _QuizSetupSheetState extends ConsumerState<QuizSetupSheet> {
-  QuizDirection _direction = QuizDirection.deEn;
+  // #387: the learner's meaning language, DE → বাংলা for a Bangla-only one.
+  late QuizDirection _direction =
+      ref.read(settingsSourceProvider).read(SettingKeys.meaningLanguage) ==
+          MeaningLanguage.bangla
+      ? QuizDirection.deBn
+      : QuizDirection.deEn;
   int _length = 20;
   QuizSource _source = QuizSource.stepLearned;
   bool _timer = false;
@@ -287,10 +293,12 @@ class _QuizSetupSheetState extends ConsumerState<QuizSetupSheet> {
                         ),
                       ),
                       const SizedBox(width: 12),
-                      AdaptiveSwitch(
-                        value: _timer,
-                        semanticLabel: l10n.quizSetupTimer,
-                        onChanged: (on) => setState(() => _timer = on),
+                      AdaptiveTapTarget(
+                        child: AdaptiveSwitch(
+                          value: _timer,
+                          semanticLabel: l10n.quizSetupTimer,
+                          onChanged: (on) => setState(() => _timer = on),
+                        ),
                       ),
                     ],
                   ),

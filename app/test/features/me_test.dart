@@ -362,11 +362,16 @@ void main() {
       expect(went, '/learn/step/A1.2?tab=exams');
     });
 
-    testWidgets('a locked step opens its hub too', (tester) async {
+    testWidgets('#396 a locked step reads "Exams locked", not "Not started", '
+        'and opens its hub too', (tester) async {
       await pump(tester);
+      expect(
+        find.bySemanticsLabel(l10n.meBadge('C2.2', l10n.learnNotStarted)),
+        findsNothing,
+      );
       await tapAndSettle(
         tester,
-        find.bySemanticsLabel(l10n.meBadge('C2.2', l10n.learnNotStarted)),
+        find.bySemanticsLabel(l10n.meBadge('C2.2', l10n.meExamsLocked)),
       );
 
       expect(went, '/learn/step/C2.2?tab=exams');
@@ -409,6 +414,18 @@ void main() {
         find.bySemanticsLabel(l10n.meBadge('A1.2', l10n.learnExamsUnlocked)),
         findsOneWidget,
       );
+    });
+
+    testWidgets("#478 a tap at a badge's right edge opens that badge, not "
+        'the next: twelve in a row keep their own boxes', (tester) async {
+      await pump(tester);
+      final badge = tester.getRect(
+        find.bySemanticsLabel(l10n.meBadge('A1.1', l10n.learnPassed)),
+      );
+      await tester.tapAt(badge.centerRight - const Offset(1, 0));
+      await tester.pumpAndSettle();
+
+      expect(went, '/learn/step/A1.1?tab=exams');
     });
 
     testWidgets('each badge is a 48 dp target', (tester) async {

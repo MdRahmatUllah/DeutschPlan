@@ -417,6 +417,23 @@ void main() {
     expect(run.rubrics.last.$2, <bool>[true, false, false, true]);
   });
 
+  testWidgets('FR-L12S-03 #396 the rubric waits for a recording', (
+    tester,
+  ) async {
+    await pump(tester, items: const <ExamItem>[artboardSpeaking]);
+
+    await tester.tap(find.text(l10n.examSpeakingRubricTask));
+    await tester.pump();
+    expect(run.rubrics, isEmpty, reason: 'nothing recorded to tick');
+
+    await press(tester, Icons.mic);
+    await press(tester, Icons.stop);
+    await tester.pumpAndSettle();
+    await tester.tap(find.text(l10n.examSpeakingRubricTask));
+    await tester.pump();
+    expect(run.rubrics.last.$2, <bool>[true, false, false, false]);
+  });
+
   testWidgets('FR-L12S-04 delete removes the file and zeros the section', (
     tester,
   ) async {

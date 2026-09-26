@@ -143,8 +143,8 @@ class QuizItem {
   /// Which form a forms item asks for.
   final FormLabel? form;
 
-  /// The Bangla meaning under an EN → DE prompt (`quiz.md`: "EN/BN
-  /// prompt"); null for the other directions and for a word without one.
+  /// The Bangla meaning under an English EN → DE prompt, for a learner
+  /// who reads both (`quiz.md`: "EN/BN prompt"); null otherwise.
   final String? hint;
 
   /// Whether the runner asks with the tiles rather than a field: DE →
@@ -178,16 +178,26 @@ class QuizBuilder {
   QuizBuilder(
     this._store, {
     Fsrs? fsrs,
-    this.notInMixed = const <QuizDirection>{},
+    this.meanings = const <QuizDirection>{
+      QuizDirection.deEn,
+      QuizDirection.deBn,
+    },
   }) : _fsrs = fsrs ?? Fsrs();
 
   final QuizStore _store;
   final Fsrs _fsrs;
 
-  /// The directions a mixed quiz leaves out (#339): the meaning language the
-  /// learner didn't choose. DE → বাংলা for an English-only learner, DE → EN
-  /// for a Bangla-only one; both are asked for "both".
-  final Set<QuizDirection> notInMixed;
+  /// The learner's meaning language, as the directions that ask for it:
+  /// DE → EN for English, DE → বাংলা for Bangla, both for "both". EN → DE
+  /// asks in it (#387), and a mixed quiz leaves the other out (#339).
+  final Set<QuizDirection> meanings;
+
+  /// The meaning direction a mixed quiz leaves out: DE → বাংলা for an
+  /// English-only learner, DE → EN for a Bangla-only one; none for "both".
+  Set<QuizDirection> get notInMixed => const <QuizDirection>{
+    QuizDirection.deEn,
+    QuizDirection.deBn,
+  }.difference(meanings);
 
   /// [length] questions at most — fewer when fewer words qualify. The same
   /// [seed] over the same progress builds the same quiz, which is what lets
@@ -290,14 +300,20 @@ class QuizBuilder {
           options: await tiles((w) => w.bangla ?? ''),
         );
       case QuizDirection.enDe:
+        // #387: in the learner's meaning language, as the exam's Reverse:
+        // Bangla for a Bangla-only learner where the word has it, and the
+        // Bangla under the English only for "both".
+        final bangla =
+            !meanings.contains(QuizDirection.deEn) &&
+            (word.bangla ?? '').trim().isNotEmpty;
         return QuizItem(
           ord: ord,
           wordUid: word.uid,
           direction: direction,
-          prompt: word.english,
+          prompt: bangla ? word.bangla! : word.english,
           expected: word.headword,
           options: await tiles((w) => w.headword),
-          hint: word.bangla,
+          hint: meanings.length == 2 ? word.bangla : null,
         );
       case QuizDirection.articles:
         return QuizItem(
@@ -522,18 +538,24 @@ bool _synonyms(QuizWord a, Set<String> meanings, QuizWord b) {
   return names(a, b) || names(b, a);
 }
 
-/// Whether two Bangla meanings would read as one (#339): the same, or the
-/// same once a qualifier in brackets is dropped from one that has it and
-/// the other has none — "সাজানো" beside "সাজানো (ঘর)". Two qualified ones
-/// stay apart: "তোমাকে (accusative)" and "তোমাকে (dative)" are the test.
+/// Whether two Bangla meanings would read as one (#339): an alternative
+/// they share (#387: "না" beside "না / নয়"), the same once a qualifier in
+/// brackets is dropped from one that has it and the other has none —
+/// "সাজানো" beside "সাজানো (ঘর)". Two qualified ones stay apart:
+/// "তোমাকে (accusative)" and "তোমাকে (dative)" are the test.
 bool _sameBangla(String? a, String? b) {
-  final x = (a ?? '').trim();
-  final y = (b ?? '').trim();
-  if (x.isEmpty || y.isEmpty) return false;
-  if (x == y) return true;
-  final bareX = x.replaceAll(_qualifier, '').trim();
-  final bareY = y.replaceAll(_qualifier, '').trim();
-  return bareX == bareY && (bareX == x || bareY == y);
+  // Only "/": a comma can sit inside a qualifier's brackets.
+  Iterable<String> alternatives(String? s) =>
+      (s ?? '').split('/').map((p) => p.trim()).where((p) => p.isNotEmpty);
+  for (final x in alternatives(a)) {
+    for (final y in alternatives(b)) {
+      if (x == y) return true;
+      final bareX = x.replaceAll(_qualifier, '').trim();
+      final bareY = y.replaceAll(_qualifier, '').trim();
+      if (bareX == bareY && (bareX == x || bareY == y)) return true;
+    }
+  }
+  return false;
 }
 
 final RegExp _qualifier = RegExp(r'\s*\([^)]*\)');

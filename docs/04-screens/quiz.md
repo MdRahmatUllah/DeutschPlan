@@ -6,6 +6,10 @@
 
 **Reached from.** L2 Quiz tab, L6 *Quiz*, W2 *Quiz these*, M1 quick-quiz tile. **Leads to.** L9 → L8 (*Retry mistakes*) or back to the opener.
 
+## L7 Setup
+
+The direction starts on the learner's meaning language: DE → বাংলা for `meaning_language = bn`, DE → EN otherwise (#387).
+
 ## L8 Runner
 Full-screen modal; top bar close · "Standard · DE → EN" · "7 / 20" · progress strip · optional 15 s timer. Item layouts: type the meaning (German word + play, text field); type the German (EN/BN prompt, text field + umlaut row); articles (three big coloured buttons der/die/das); multiple choice (4 tiles); listening (play button, text field); forms (prompt "Perfekt of …"). Feedback: ✓ Correct · ≈ Almost — watch the spelling: *der Mietvertrag* · Article: *die*, not *der* · ✗ with the correct answer; *Next*.
 

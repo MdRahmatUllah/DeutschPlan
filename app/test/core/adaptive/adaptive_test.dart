@@ -8,6 +8,7 @@ import 'package:deutschplan/core/typography/dp_text.dart';
 import '../text_clipping.dart';
 
 import 'package:flutter/rendering.dart' show RenderParagraph;
+import 'package:flutter/semantics.dart' show SemanticsAction;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 
@@ -500,6 +501,55 @@ void main() {
       await tester.pumpAndSettle();
       final scaffold = tester.widget<Scaffold>(find.byType(Scaffold));
       expect(scaffold.backgroundColor, DpSurfaceTokens.dark.paper);
+    });
+  });
+
+  group('#478 AdaptiveTapTarget', () {
+    // A 32 dp control, as a chip is: its label and tap on a plain Semantics.
+    var taps = 0;
+    Widget chip() => AdaptiveTapTarget(
+      child: Semantics(
+        button: true,
+        label: 'A1.1',
+        onTap: () => taps++,
+        excludeSemantics: true,
+        child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: () => taps++,
+          child: const SizedBox.square(dimension: 32),
+        ),
+      ),
+    );
+
+    for (final (chrome, side) in <(AdaptiveChrome, double)>[
+      (AdaptiveChrome.material, 48),
+      (AdaptiveChrome.cupertino, 44),
+    ]) {
+      testWidgets('#478 ${chrome.name}: the node is $side, the layout still '
+          '32, and the label and tap are on it', (tester) async {
+        final semantics = tester.ensureSemantics();
+        await pump(tester, chrome, chip());
+        expect(
+          tester.getSize(find.byType(AdaptiveTapTarget)),
+          const Size(32, 32),
+        );
+        final node = tester.getSemantics(find.byType(AdaptiveTapTarget));
+        expect(node.rect.size, Size(side, side));
+        expect(node.label, 'A1.1');
+        expect(node.getSemanticsData().hasAction(SemanticsAction.tap), isTrue);
+        semantics.dispose();
+      });
+    }
+
+    testWidgets('#478 a tap just outside the drawn control lands on it; one '
+        'past the target does not', (tester) async {
+      taps = 0;
+      await pump(tester, AdaptiveChrome.material, chip());
+      final box = tester.getRect(find.byType(AdaptiveTapTarget));
+      await tester.tapAt(box.topLeft - const Offset(6, 6));
+      expect(taps, 1);
+      await tester.tapAt(box.topLeft - const Offset(12, 12));
+      expect(taps, 1);
     });
   });
 

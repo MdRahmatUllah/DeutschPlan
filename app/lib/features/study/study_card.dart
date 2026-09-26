@@ -218,7 +218,11 @@ class _StudyWordCardState extends ConsumerState<StudyWordCard> {
                     ),
                     const SizedBox(height: 8),
                     DpText(
-                      frontCaption(word, l10n, pron: pron),
+                      // A long compound's forms break at a syllable, not at any
+                      // letter; a shorter word wraps whole (#419).
+                      DpScript.allowBreaks(
+                        frontCaption(word, l10n, pron: pron),
+                      ),
                       role: DpTextRole.caption,
                       color: tokens.color.textSecondary,
                     ),

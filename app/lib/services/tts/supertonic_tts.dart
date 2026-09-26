@@ -99,6 +99,9 @@ class SupertonicTts implements TtsEngine, SpeechPrefetch {
   /// The list [prepare] is making, for [stopPreparing] to know it by.
   List<String>? _list;
 
+  /// The player has had a clip loaded ahead of its first play (#486).
+  bool _primed = false;
+
   /// The clip a speak is making now, which a [prepare] waits for before it
   /// starts its next: the plugin shares one queue between them.
   Future<File>? _tapped;
@@ -206,7 +209,24 @@ class SupertonicTts implements TtsEngine, SpeechPrefetch {
       // A newer list, a stop, or a voice the learner no longer has chosen.
       if (run != _run || _voice() != voice) return;
       try {
-        await _clip(text, voice: voice, speed: speed);
+        final clip = await _clip(text, voice: voice, speed: speed);
+        // #486: the player's first start (just_audio creating its platform
+        // player, ~450 ms on the emulator) paid here, with the first clip,
+        // not by card 1's speak. Only while nothing has been said: a load
+        // would stop a sound under way.
+        if (!_primed && _turn == 0) {
+          _primed = true;
+          // Not awaited, so the next clip isn't held back, and its own catch:
+          // a speak during it interrupts it (just_audio), which mustn't end
+          // the list.
+          unawaited(() async {
+            try {
+              await _player.load(clip);
+            } on Object {
+              // Best effort: card 1 then pays the player's start, as before.
+            }
+          }());
+        }
       } on Object {
         // The model can't make it now; a speak will say so, and fall back.
         return;
@@ -374,6 +394,10 @@ abstract interface class ClipPlayer {
   /// be played. [ended] completes when the clip ends, or is stopped.
   Future<({Future<void> ended})> play(File clip);
 
+  /// Makes [clip] ready to play without playing it: the player's own start
+  /// is paid here (#486).
+  Future<void> load(File clip);
+
   Future<void> stop();
 
   Future<void> dispose();
@@ -392,6 +416,9 @@ class JustAudioClipPlayer implements ClipPlayer {
     // start ends it too.
     return (ended: _player.play().catchError((Object _) {}));
   }
+
+  @override
+  Future<void> load(File clip) => _player.setFilePath(clip.path);
 
   @override
   Future<void> stop() => _player.stop();

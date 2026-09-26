@@ -204,10 +204,12 @@ class _ExamIntroScreenState extends ConsumerState<ExamIntroScreen> {
                   ),
                 ),
                 const SizedBox(width: 12),
-                AdaptiveSwitch(
-                  value: timer,
-                  semanticLabel: l10n.examIntroTimer,
-                  onChanged: (on) => setState(() => _timer = on),
+                AdaptiveTapTarget(
+                  child: AdaptiveSwitch(
+                    value: timer,
+                    semanticLabel: l10n.examIntroTimer,
+                    onChanged: (on) => setState(() => _timer = on),
+                  ),
                 ),
               ],
             ),

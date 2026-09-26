@@ -237,6 +237,8 @@ class _StudySummarySheetState extends ConsumerState<StudySummarySheet> {
     ];
     final buttons = <Widget>[
       const SizedBox(height: 10),
+      // A node of its own, as every DpButton is (#396, #517): the summary's
+      // text isn't read as *Done for now*.
       DpButton(
         label: switch (primary) {
           StudyNextStep.revise => l10n.summaryRevise(next!.revise.length),

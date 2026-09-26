@@ -185,7 +185,7 @@ void showWordDetail(BuildContext context, String uid) {
 /// W1 as a page of its own: `deutschplan://word/<uid>`, and the widget's
 /// *Pronounce* with `?speak=1` (FR-X1-02), which plays the headword on
 /// arrival.
-class WordDetailScreen extends StatelessWidget {
+class WordDetailScreen extends ConsumerWidget {
   const WordDetailScreen({
     required this.uid,
     super.key,
@@ -200,12 +200,16 @@ class WordDetailScreen extends StatelessWidget {
   final String? arrival;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final tokens = context.tokens;
+    final article = ref.watch(wordDetailProvider(uid)).value?.word.word.article;
     final scaffold = AdaptiveScaffold(
       backgroundColor: tokens.isGlass
           ? tokens.surface.paper.withValues(alpha: 0)
           : tokens.surface.paper,
+      // #421: the header's colour behind the status bar once W1 scrolls, as
+      // R2's (#390): without it the back row runs under the clock.
+      statusBarColour: tokens.color.forArticle(article) ?? tokens.surface.muted,
       body: WordDetailView(
         uid: uid,
         speak: speak,
@@ -569,7 +573,9 @@ class _Body extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           DpText(
-            frontCaption(word, l10n, pron: detail.pron),
+            // A long compound's forms break at a syllable, not at any
+            // letter; a shorter word wraps whole (#419).
+            DpScript.allowBreaks(frontCaption(word, l10n, pron: detail.pron)),
             role: DpTextRole.caption,
             color: tokens.color.textSecondary,
           ),

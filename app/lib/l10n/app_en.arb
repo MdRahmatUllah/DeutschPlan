@@ -2453,6 +2453,10 @@
   "@learnExamsUnlocked": {
     "description": "L1 step badge: enough words introduced for the mock exams."
   },
+  "meExamsLocked": "Exams locked",
+  "@meExamsLocked": {
+    "description": "M1's exam badge, read by a screen reader: this step's mock exams are not open yet, whether or not it has begun (#396). Not L1's 'Not started', which would be wrong for a step in progress."
+  },
   "learnNotStarted": "Not started",
   "@learnNotStarted": {
     "description": "L1: read out for the lock on a step not yet started."
@@ -4857,6 +4861,65 @@
       }
     }
   },
+  "exportImportExported": "Exported {date}",
+  "@exportImportExported": {
+    "description": "The chosen file's preview (#396): the day the file was exported, e.g. '20 Sep'.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "exportImportReviews": "{count, plural, =1{1 review} other{{count} reviews}}",
+  "@exportImportReviews": {
+    "description": "The chosen file's preview (#396): how many reviews its review log holds.",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "exportImportPlanDays": "{count, plural, =1{1 day planned} other{{count} days planned}}",
+  "@exportImportPlanDays": {
+    "description": "The chosen file's preview (#396): how many days of study plan it holds.",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "exportImportQuizzes": "{count, plural, =1{1 quiz} other{{count} quizzes}}",
+  "@exportImportQuizzes": {
+    "description": "The chosen file's preview (#396): how many quizzes it holds.",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "exportImportExams": "{count, plural, =1{1 exam} other{{count} exams}}",
+  "@exportImportExams": {
+    "description": "The chosen file's preview (#396): how many mock exams it holds.",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "exportImportMyWords": "{count, plural, =1{1 word of my own} other{{count} words of my own}}",
+  "@exportImportMyWords": {
+    "description": "The chosen file's preview (#396): how many of the learner's own words (My words) it holds.",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
   "exportImportMerge": "Merge — keep the most recent of each word",
   "@exportImportMerge": {
     "description": "M6 radio: FR-M6-03."
@@ -4930,6 +4993,19 @@
   "searchNoneAdd": "Add “{word}” as my word",
   "@searchNoneAdd": {
     "description": "R1 no results: the button that opens R2 with the searched word filled in.",
+    "placeholders": {
+      "word": {
+        "type": "String"
+      }
+    }
+  },
+  "searchNoneMine": "Already one of my words",
+  "@searchNoneMine": {
+    "description": "R1 no results: said instead of the add button when the searched word is already one the learner saved (#396)."
+  },
+  "searchNoneOpenMine": "Open “{word}”",
+  "@searchNoneOpenMine": {
+    "description": "R1 no results: the button that opens the learner's own word the search matched, in R2, e.g. Open “das Quarkbrötchen”.",
     "placeholders": {
       "word": {
         "type": "String"
@@ -5674,37 +5750,13 @@
   "@licencesOther": {
     "description": "M8: under a package whose licence isn't one it names (MIT, BSD, Apache…)."
   },
-  "modelNotifyRunning": "Downloading models · {finished} of {total} files",
+  "modelNotifyRunning": "Model download",
   "@modelNotifyRunning": {
-    "description": "The model downloads' notification title (FR-M4-01, #156). {finished} and {total} are the downloader's own tokens, filled in on the device.",
-    "placeholders": {
-      "finished": {
-        "type": "String"
-      },
-      "total": {
-        "type": "String"
-      }
-    }
+    "description": "The model downloads' notification title, while files are queued or downloading (FR-M4-01, #438). No state and no count: the platform keeps each task's texts for the whole download, and counts files per app process, so either would go stale."
   },
-  "modelNotifyRunningNote": "Carries on in the background",
+  "modelNotifyRunningNote": "Waits for Wi-Fi when “Wi-Fi only” is on",
   "@modelNotifyRunningNote": {
-    "description": "Under the running notification (FR-M4-01)."
-  },
-  "modelNotifyWaiting": "Waiting for Wi-Fi · {finished} of {total} files",
-  "@modelNotifyWaiting": {
-    "description": "The model downloads' notification title when they were queued off Wi-Fi with Wi-Fi only on (#428). {finished} and {total} are the downloader's own tokens, filled in on the device.",
-    "placeholders": {
-      "finished": {
-        "type": "String"
-      },
-      "total": {
-        "type": "String"
-      }
-    }
-  },
-  "modelNotifyWaitingNote": "Downloads on Wi-Fi, in the background",
-  "@modelNotifyWaitingNote": {
-    "description": "Under the waiting notification (#428)."
+    "description": "Under the model downloads' notification: the Wi-Fi rule, not the network's state, which the platform can't update (#438). One line: the platform draws the body unexpanded, so it is cut at about 40 characters. “Wi-Fi only” is M4's switch, quoted as modelsWifiOnly names it."
   },
   "modelNotifyPaused": "Model download paused",
   "@modelNotifyPaused": {
@@ -5714,13 +5766,13 @@
   "@modelNotifyPausedNote": {
     "description": "Under the paused notification."
   },
-  "modelNotifyComplete": "Models downloaded",
+  "modelNotifyComplete": "Model download finished",
   "@modelNotifyComplete": {
-    "description": "The notification when every model file is in (FR-M4-01)."
+    "description": "The notification when every model file is in (FR-M4-01). Not yet ready: the checksums come next, in the app (#438)."
   },
-  "modelNotifyCompleteNote": "Checked before use",
+  "modelNotifyCompleteNote": "Voice & translation says when it is ready",
   "@modelNotifyCompleteNote": {
-    "description": "Under the complete notification: the checksums come next."
+    "description": "Under the finished notification: M4 shows Ready, or Failed if a checksum fails (#438)."
   },
   "modelNotifyFailed": "A model download failed",
   "@modelNotifyFailed": {

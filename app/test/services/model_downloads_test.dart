@@ -22,6 +22,7 @@ void main() {
   late SettingsRepository settings;
   late ModelRepository models;
   late _Downloader downloader;
+  late _Notice notice;
   late BackgroundModelDownloads downloads;
 
   /// Two files, 300 and 100 bytes, hashed for real.
@@ -63,7 +64,15 @@ void main() {
     addTearDown(settings.dispose);
     models = ModelRepository(settings, support: support)..useManifest(manifest);
     downloader = _Downloader();
-    downloads = BackgroundModelDownloads(models, settings, downloader);
+    notice = _Notice();
+    downloads = BackgroundModelDownloads(
+      models,
+      settings,
+      downloader,
+      null,
+      const Duration(seconds: 2),
+      notice,
+    );
   });
 
   tearDown(() {
@@ -103,8 +112,24 @@ void main() {
       await downloads.attach();
       expect(downloader.notification, 'models');
       expect(downloader.progressBar, isTrue);
-      expect(downloader.running!.title, contains('{numFinished}'));
-      expect(downloader.running!.title, contains('{numTotal}'));
+    });
+
+    test('#438 its texts stay true whatever happens next: no state, no '
+        'per-process count, and finished is not ready', () async {
+      await downloads.attach();
+      expect(
+        (downloader.running!.title, downloader.running!.body),
+        ('Model download', 'Waits for Wi-Fi when “Wi-Fi only” is on'),
+      );
+      expect(downloader.running!.title, isNot(contains('{num')));
+      expect(
+        (downloader.complete!.title, downloader.complete!.body),
+        (
+          'Model download finished',
+          'Voice & translation says when it is ready',
+        ),
+        reason: 'the checksums come after',
+      );
     });
 
     test('the downloader picks up what was in flight: killed tasks are '
@@ -269,15 +294,12 @@ void main() {
     });
 
     test('queued off Wi-Fi with Wi-Fi only on: waiting from the moment it is '
-        'queued, and the notification says so', () async {
+        'queued; #438 the notification says the same as on Wi-Fi, since it '
+        'would keep a waiting text after Wi-Fi arrives', () async {
       await downloads.start('hymt');
       await pumpEventQueue();
       expect(seen.last, DownloadPhase.waitingForWifi);
-      expect(
-        downloader.running!.title,
-        'Waiting for Wi-Fi · {numFinished} of {numTotal} files',
-      );
-      expect(downloader.running!.body, 'Downloads on Wi-Fi, in the background');
+      expect(downloader.running!.title, 'Model download');
     });
 
     test(
@@ -287,10 +309,7 @@ void main() {
         await downloads.start('hymt');
         await pumpEventQueue();
         expect(seen.last, DownloadPhase.running);
-        expect(
-          downloader.running!.title,
-          'Downloading models · {numFinished} of {numTotal} files',
-        );
+        expect(downloader.running!.title, 'Model download');
       },
     );
 
@@ -299,17 +318,14 @@ void main() {
       await downloads.start('hymt');
       await pumpEventQueue();
       expect(seen.last, DownloadPhase.running);
-      expect(
-        downloader.running!.title,
-        'Downloading models · {numFinished} of {numTotal} files',
-      );
+      expect(downloader.running!.title, 'Model download');
     });
 
     test('the notification is in the language of the moment it is queued, '
         'not the launch\'s', () async {
       await settings.write(SettingKeys.uiLanguage, UiLanguage.bangla);
       await downloads.start('hymt');
-      expect(downloader.running!.title, startsWith('ওয়াই-ফাইয়ের অপেক্ষায়'));
+      expect(downloader.running!.title, 'মডেল ডাউনলোড');
     });
   });
 
@@ -681,6 +697,13 @@ void main() {
       );
       final active = await models.directoryFor('hymt');
       expect(File('${active.path}/one.gguf').readAsStringSync(), one);
+      // #506: the platform's notification can stick short of its end.
+      expect(notice.said, <(String, String)>[
+        (
+          'Model download finished',
+          'Voice & translation says when it is ready',
+        ),
+      ]);
     });
 
     test('a file that does not verify: failed, and nothing in place', () async {
@@ -695,6 +718,62 @@ void main() {
 
       expect(seen.last, DownloadPhase.failed);
       expect((await models.directoryFor('hymt')).existsSync(), isFalse);
+      expect(notice.said, <(String, String)>[
+        ('A model download failed', 'Retry it from Voice & translation'),
+      ], reason: '#506: not "finished" when a checksum failed');
+    });
+
+    test("#506 the notice replaces the platform's own: the downloader's group "
+        'notification id, as Kotlin hashes it', () {
+      // `dumpsys notification` on the emulator: id=1009911796.
+      expect(PlatformDownloadNotice.groupId('models'), 1009911796);
+      expect(BackgroundModelDownloads.notificationGroup, 'models');
+    });
+
+    test('#506 no notice while another model is still downloading, then one '
+        'when the last ends', () async {
+      final voice = file('voice.onnx', 'v' * 50);
+      models.useManifest(
+        ModelManifest(
+          version: 1,
+          models: <ModelEntry>[
+            ...manifest.models,
+            ModelEntry(
+              id: 'voice',
+              name: 'Voice',
+              licence: 'test',
+              disables: 'tts_voice',
+              regionExcluded: const <String>[],
+              variants: <ModelVariant>[
+                ModelVariant(
+                  id: 'v1',
+                  name: 'test voice',
+                  files: <ModelFile>[voice],
+                ),
+              ],
+            ),
+          ],
+        ),
+      );
+      await downloads.start('voice');
+      await land('one.gguf', one);
+      await land('two.gguf', two);
+      await report((t) => TaskStatusUpdate(t, TaskStatus.complete), 'one.gguf');
+      await report((t) => TaskStatusUpdate(t, TaskStatus.complete), 'two.gguf');
+      await settled();
+      expect(notice.said, isEmpty, reason: 'the voice is still coming');
+
+      final staging = await models.stagingFor('voice');
+      File('${staging.path}/voice.onnx').writeAsStringSync('v' * 50);
+      await report(
+        (t) => TaskStatusUpdate(t, TaskStatus.complete),
+        'voice.onnx',
+      );
+      await downloads
+          .watch('voice')
+          .firstWhere((p) => p.phase == DownloadPhase.ready)
+          .timeout(const Duration(seconds: 10));
+      expect(notice.said, hasLength(1));
     });
 
     test('Retry after a checksum failure throws the files away and queues '
@@ -827,6 +906,13 @@ void main() {
   });
 }
 
+class _Notice implements DownloadNotice {
+  final List<(String, String)> said = <(String, String)>[];
+
+  @override
+  Future<void> ended((String, String) text) async => said.add(text);
+}
+
 class _Downloader implements FileDownloader {
   final List<DownloadTask> queued = <DownloadTask>[];
 
@@ -845,6 +931,7 @@ class _Downloader implements FileDownloader {
   RequireWiFi? wifi;
   bool? rescheduled;
   TaskNotification? running;
+  TaskNotification? complete;
   String? notification;
   bool? progressBar;
 
@@ -884,6 +971,7 @@ class _Downloader implements FileDownloader {
     String groupNotificationId = '',
   }) {
     this.running = running;
+    this.complete = complete;
     this.progressBar = progressBar;
     notification = groupNotificationId;
     return this;

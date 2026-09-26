@@ -3,6 +3,8 @@ import 'dart:ui' show LocaleStringAttribute, StringAttribute;
 import 'package:deutschplan/core/theme/dp_tokens.dart';
 import 'package:deutschplan/core/typography/app_fonts.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
+import 'package:flutter/foundation.dart' show listEquals;
+import 'package:flutter/rendering.dart' show RenderParagraph, RenderProxyBox;
 import 'package:flutter/semantics.dart' show AttributedString;
 import 'package:material_ui/material_ui.dart';
 
@@ -131,8 +133,8 @@ abstract final class DpScript {
   /// The soft hyphen: a place a line may break.
   ///
   /// ponytail: Flutter breaks there but draws no hyphen at the break
-  /// (flutter/flutter#18443 is open), so the break shows as a plain wrap
-  /// between two syllables; drawing "-" is #419.
+  /// (flutter/flutter#18443 is open); a headword and `DpText` draw it
+  /// themselves (`_Hyphenated`, #419, #502).
   static const String softHyphen = '­';
 
   /// Lets a long German compound break between syllables rather than
@@ -305,14 +307,26 @@ class DpText extends StatelessWidget {
     }
 
     final base = dressed(role);
+    // A line that ends at a syllable shows its "-" (#419), in German, the
+    // app's copy or Bangla among them (#502), and not when a caller labels
+    // the whole.
+    Widget hyphenated(Widget child, List<TextSpan> runs) =>
+        maxLines != null ||
+            semanticsLabel != null ||
+            !text.contains(DpScript.softHyphen)
+        ? child
+        : _Hyphenated(runs: runs, child: child);
 
     if (!german && !DpScript.hasBengali(text)) {
-      return Text(
-        text,
-        style: base,
-        textAlign: textAlign,
-        maxLines: maxLines,
-        semanticsLabel: semanticsLabel,
+      return hyphenated(
+        Text(
+          text,
+          style: base,
+          textAlign: textAlign,
+          maxLines: maxLines,
+          semanticsLabel: semanticsLabel,
+        ),
+        [TextSpan(text: text, style: base)],
       );
     }
 
@@ -320,18 +334,20 @@ class DpText extends StatelessWidget {
     // so TalkBack and VoiceOver switch voices mid-string. The spans carry
     // the tags: a label on the whole would drop them (#162), so only a
     // caller's own replaces them.
-    return Text.rich(
-      TextSpan(
-        children: DpScript.spans(
-          text,
-          latin: base,
-          bengali: dressed(role.oneStepLarger),
-          german: german,
-        ),
+    final spans = DpScript.spans(
+      text,
+      latin: base,
+      bengali: dressed(role.oneStepLarger),
+      german: german,
+    );
+    return hyphenated(
+      Text.rich(
+        TextSpan(children: spans),
+        textAlign: textAlign,
+        maxLines: maxLines,
+        semanticsLabel: semanticsLabel,
       ),
-      textAlign: textAlign,
-      maxLines: maxLines,
-      semanticsLabel: semanticsLabel,
+      spans,
     );
   }
 
@@ -511,6 +527,24 @@ class DpHeadword extends StatelessWidget {
           : base.copyWith(fontVariations: AppFonts.weight(weight!));
     }
 
+    final articleStyle = style(colour ?? articleColour ?? tokens.color.ink);
+    final wordStyle = style(colour ?? tokens.color.ink);
+    final broken = DpScript.allowBreaks(
+      word,
+      threshold: DpScript.breakThreshold(context),
+    );
+    final text = Text.rich(
+      TextSpan(
+        children: <InlineSpan>[
+          if (article != null) TextSpan(text: '$article ', style: articleStyle),
+          TextSpan(text: broken, style: wordStyle),
+        ],
+      ),
+      textAlign: textAlign,
+      maxLines: maxLines,
+      overflow: maxLines == null ? null : TextOverflow.ellipsis,
+    );
+
     // Announced with its article and gender, the German in a German voice
     // and the gender in the app's ("die Wohnung, feminine"), as
     // accessibility-performance.md requires, and without the soft hyphen.
@@ -529,27 +563,18 @@ class DpHeadword extends StatelessWidget {
         ],
       ),
       excludeSemantics: true,
-      child: Text.rich(
-        TextSpan(
-          children: <InlineSpan>[
-            if (article != null)
-              TextSpan(
-                text: '$article ',
-                style: style(colour ?? articleColour ?? tokens.color.ink),
-              ),
-            TextSpan(
-              text: DpScript.allowBreaks(
-                word,
-                threshold: DpScript.breakThreshold(context),
-              ),
-              style: style(colour ?? tokens.color.ink),
+      // Every headword that may wrap: one too wide for its line breaks at a
+      // syllable, whatever its length, and shows the "-" (#419).
+      child: maxLines != null
+          ? text
+          : _Hyphenated(
+              runs: <TextSpan>[
+                if (article != null)
+                  TextSpan(text: '$article ', style: articleStyle),
+                TextSpan(text: broken, style: wordStyle),
+              ],
+              child: text,
             ),
-          ],
-        ),
-        textAlign: textAlign,
-        maxLines: maxLines,
-        overflow: maxLines == null ? null : TextOverflow.ellipsis,
-      ),
     );
   }
 
@@ -564,4 +589,281 @@ class DpHeadword extends StatelessWidget {
           'die' when plural != null => l10n.genderFeminine,
           _ => null,
         };
+}
+
+/// A headword, or a text, that wraps at a syllable shows the hyphen there,
+/// as print does: "Reiseversi-" over "cherung" (#419). Flutter breaks at a
+/// soft hyphen but draws nothing (flutter/flutter#18443), so this breaks
+/// the lines itself, as greedily as the paragraph would, keeping room for
+/// the "-" on a line that ends at a syllable, and gives its [RichText] that
+/// text. Only the picture changes: the headword's label is its own, each
+/// run of a text is read as it was, and the widget's text, what a test
+/// finds, is the text as it was.
+class _Hyphenated extends SingleChildRenderObjectWidget {
+  const _Hyphenated({required this.runs, required Widget super.child});
+
+  /// The text in runs of one style and voice, with their soft hyphens: a
+  /// headword's article and word, or a text's scripts, German or the app's
+  /// copy and Bangla one role larger (`DpScript.spans`, #502).
+  final List<TextSpan> runs;
+
+  @override
+  RenderObject createRenderObject(BuildContext context) =>
+      _RenderHyphenated(this);
+
+  @override
+  void updateRenderObject(
+    BuildContext context,
+    _RenderHyphenated renderObject,
+  ) => renderObject.widget = this;
+}
+
+class _RenderHyphenated extends RenderProxyBox {
+  _RenderHyphenated(this._widget);
+
+  _Hyphenated _widget;
+  set widget(_Hyphenated value) {
+    // A rebuild with the same text keeps the lines worked out.
+    if (listEquals(value.runs, _widget.runs)) return;
+    _widget = value;
+    _cache = null;
+    markNeedsLayout();
+  }
+
+  /// The text's own paragraph: `Text` and `Text.rich` build one [RichText].
+  RenderParagraph? get _paragraph =>
+      child is RenderParagraph ? child! as RenderParagraph : null;
+
+  /// The last lines worked out, for the width, style and scale they were for.
+  (double, TextStyle?, TextScaler, TextSpan)? _cache;
+
+  /// The runs, drawn as [texts] say.
+  TextSpan _span(TextStyle? root, List<String> texts) => TextSpan(
+    style: root,
+    children: <InlineSpan>[
+      for (final (i, run) in _widget.runs.indexed)
+        // Read as it is, whatever lines it is drawn on, in its own voice: a
+        // screen reader hears this paragraph when the text isn't a headword.
+        TextSpan(
+          text: texts[i],
+          style: run.style,
+          locale: run.locale,
+          semanticsLabel: run.text!.replaceAll(DpScript.softHyphen, ''),
+        ),
+    ],
+  );
+
+  TextSpan _plain(TextStyle? root) =>
+      _span(root, [for (final run in _widget.runs) run.text!]);
+
+  TextPainter _painter(RenderParagraph paragraph, InlineSpan text) =>
+      TextPainter(
+        text: text,
+        textDirection: paragraph.textDirection,
+        textScaler: paragraph.textScaler,
+        textAlign: paragraph.textAlign,
+        strutStyle: paragraph.strutStyle,
+        textHeightBehavior: paragraph.textHeightBehavior,
+        textWidthBasis: paragraph.textWidthBasis,
+        locale: paragraph.locale,
+      );
+
+  /// The text as the lines to [width] show it: a line that ends at a
+  /// syllable ends in "-". The text as it was when it fits on one line.
+  TextSpan _shown(RenderParagraph paragraph, double width) {
+    final root = (paragraph.text as TextSpan).style;
+    final plain = _plain(root);
+    // Nothing to break: no width to break to, or a paragraph that doesn't
+    // wrap (an ambient `maxLines` or `softWrap: false`).
+    if (!width.isFinite || paragraph.maxLines != null || !paragraph.softWrap) {
+      return plain;
+    }
+    final cached = _cache;
+    if (cached != null &&
+        cached.$1 == width &&
+        cached.$2 == root &&
+        cached.$3 == paragraph.textScaler) {
+      return cached.$4;
+    }
+
+    // As drawn, soft hyphens and all: they split the font's kerning, and a
+    // line measured without them came out a hair too narrow.
+    double widthOf(List<InlineSpan> spans) {
+      final painter = _painter(
+        paragraph,
+        TextSpan(style: root, children: spans),
+      )..layout();
+      final measured = painter.width;
+      painter.dispose();
+      return measured;
+    }
+
+    // A word too wide for a line of its own breaks at its syllables,
+    // whatever its length: "selbstbewusst" (13) at T2's display size (#419).
+    // One that fits keeps its letters together, and its kerning. Bangla has
+    // none to break at: `allowBreaks` knows German's.
+    final texts = [
+      for (final run in _widget.runs)
+        [
+          for (final word in run.text!.split(' '))
+            word.isNotEmpty &&
+                    !word.contains(DpScript.softHyphen) &&
+                    widthOf([TextSpan(text: word, style: run.style)]) > width
+                ? DpScript.allowBreaks(word, threshold: 4)
+                : word,
+        ].join(' '),
+    ];
+    final full = texts.join();
+    final starts = [0];
+    for (final text in texts) {
+      starts.add(starts.last + text.length);
+    }
+
+    // [full] from [from] to [to], each part in its run's style, and [end]
+    // in the last's.
+    List<InlineSpan> stretch(int from, int to, String end) {
+      final spans = <TextSpan>[];
+      for (final (i, run) in _widget.runs.indexed) {
+        final a = from > starts[i] ? from : starts[i];
+        final b = to < starts[i + 1] ? to : starts[i + 1];
+        if (a < b) {
+          spans.add(TextSpan(text: full.substring(a, b), style: run.style));
+        }
+      }
+      if (end.isNotEmpty && spans.isNotEmpty) {
+        spans.add(TextSpan(text: end, style: spans.last.style));
+      }
+      return spans;
+    }
+
+    // The pieces a line may end after, [from, to), each with what follows
+    // it: a space (the break takes its place), a soft hyphen (the break
+    // draws "-"), or nothing, after a "-", "/" or dash, which the paragraph
+    // breaks after too.
+    // ponytail: an opening "/" can end a line, apart from its
+    // pronunciation, as the paragraph's own breaking has it. Keeping them
+    // together needs a look-ahead for when the two no longer fit a line.
+    final pieces = <(int, int, String)>[];
+    var from = 0;
+    for (var i = 0; i < full.length; i++) {
+      final c = full[i];
+      if (c == ' ' || c == DpScript.softHyphen) {
+        pieces.add((from, i, c));
+        from = i + 1;
+      } else if ('-/–—'.contains(c) && i + 1 < full.length) {
+        pieces.add((from, i + 1, ''));
+        from = i + 1;
+      }
+    }
+    pieces.add((from, full.length, ''));
+
+    // Where each line but the last ends, and what it ends at.
+    final ends = <int, String>{};
+    var (line, end, after) = pieces.first;
+    for (final (start, to, next) in pieces.skip(1)) {
+      // Room for the "-" should the line end at this piece's syllable.
+      final hyphen = next == DpScript.softHyphen ? '-' : '';
+      if (widthOf(stretch(line, to, hyphen)) <= width) {
+        (end, after) = (to, next);
+        continue;
+      }
+      ends[end] = after;
+      (line, end, after) = (start, to, next);
+    }
+
+    // On one line the paragraph draws it as it was. Otherwise the lines are
+    // given, even when all break at spaces: left to itself, the paragraph
+    // could break at a syllable the plan kept whole, with no "-" (#419).
+    // Each run takes its own part, so it keeps its style and voice (#502).
+    String drawn(int run) {
+      final text = StringBuffer();
+      for (var i = starts[run]; i < starts[run + 1]; i++) {
+        text.write(switch (ends[i]) {
+          ' ' => '\n',
+          DpScript.softHyphen => '-\n',
+          _ => full[i],
+        });
+        // After a dash, the line ends after it.
+        if (ends[i + 1] == '') text.write('\n');
+      }
+      return text.toString();
+    }
+
+    final shown = ends.isEmpty
+        ? plain
+        : _span(root, [for (var i = 0; i < texts.length; i++) drawn(i)]);
+    _cache = (width, root, paragraph.textScaler, shown);
+    return shown;
+  }
+
+  @override
+  void performLayout() {
+    final paragraph = _paragraph;
+    if (paragraph != null) {
+      invokeLayoutCallback<BoxConstraints>((constraints) {
+        paragraph.text = _shown(paragraph, constraints.maxWidth);
+      });
+    }
+    super.performLayout();
+  }
+
+  /// [measure] of the text laid out to [width] as it would be drawn.
+  double _laidOut(
+    double width,
+    double Function(TextPainter painter) measure, {
+    bool plain = false,
+  }) {
+    final paragraph = _paragraph!;
+    final painter = _painter(
+      paragraph,
+      plain
+          ? _plain((paragraph.text as TextSpan).style)
+          : _shown(paragraph, width),
+    )..layout(maxWidth: width);
+    final measured = measure(painter);
+    painter.dispose();
+    return measured;
+  }
+
+  /// Whether the paragraph measures itself: when this breaks no lines, as
+  /// under an ambient `maxLines` or `softWrap: false`.
+  bool get _asIs {
+    final paragraph = _paragraph;
+    return paragraph == null ||
+        paragraph.maxLines != null ||
+        !paragraph.softWrap;
+  }
+
+  // The intrinsics and the dry layout are the text's as it will be drawn,
+  // not the last layout's lines, which were for another width.
+  @override
+  double computeMinIntrinsicWidth(double height) => _asIs
+      ? super.computeMinIntrinsicWidth(height)
+      : _laidOut(double.infinity, (p) => p.minIntrinsicWidth, plain: true);
+
+  @override
+  double computeMaxIntrinsicWidth(double height) => _asIs
+      ? super.computeMaxIntrinsicWidth(height)
+      : _laidOut(double.infinity, (p) => p.maxIntrinsicWidth, plain: true);
+
+  @override
+  double computeMinIntrinsicHeight(double width) => _asIs
+      ? super.computeMinIntrinsicHeight(width)
+      : _laidOut(width, (p) => p.height);
+
+  @override
+  double computeMaxIntrinsicHeight(double width) => _asIs
+      ? super.computeMaxIntrinsicHeight(width)
+      : _laidOut(width, (p) => p.height);
+
+  @override
+  Size computeDryLayout(covariant BoxConstraints constraints) {
+    if (_asIs) return super.computeDryLayout(constraints);
+    final paragraph = _paragraph!;
+    final painter = _painter(paragraph, _shown(paragraph, constraints.maxWidth))
+      ..layout(minWidth: constraints.minWidth, maxWidth: constraints.maxWidth);
+    final size = constraints.constrain(painter.size);
+    painter.dispose();
+    return size;
+  }
 }

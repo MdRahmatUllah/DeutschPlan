@@ -1,3 +1,4 @@
+import 'package:deutschplan/core/adaptive/adaptive.dart';
 import 'package:deutschplan/core/components/dp_button.dart';
 import 'package:deutschplan/core/theme/dp_surface.dart';
 import 'package:deutschplan/core/theme/dp_tokens.dart';
@@ -87,14 +88,12 @@ class ExamNavigatorSheet extends StatelessWidget {
                 runSpacing: gap,
                 children: <Widget>[
                   for (final (i, cell) in cells.indexed)
-                    SizedBox(
+                    _Cell(
+                      n: i + 1,
+                      cell: cell,
+                      current: i == current,
                       width: width,
-                      child: _Cell(
-                        n: i + 1,
-                        cell: cell,
-                        current: i == current,
-                        onTap: () => Navigator.of(context).pop((jump: i)),
-                      ),
+                      onTap: () => Navigator.of(context).pop((jump: i)),
                     ),
                 ],
               );
@@ -154,12 +153,18 @@ class _Cell extends StatelessWidget {
     required this.n,
     required this.cell,
     required this.current,
+    required this.width,
     required this.onTap,
   });
 
   final int n;
   final NavCell cell;
   final bool current;
+
+  /// An eighth of the grid, less its gaps. Under the target, which grows
+  /// the cell's ring past it: a box around the target would stop taps at
+  /// its own edge (#478).
+  final double width;
   final VoidCallback onTap;
 
   @override
@@ -172,34 +177,41 @@ class _Cell extends StatelessWidget {
         : cell.answered
         ? tokens.color.primary
         : null;
-    return Semantics(
-      button: true,
-      selected: current,
-      label: l10n.examNavQuestion(n),
-      value: cell.flagged
-          ? l10n.examNavFlaggedState
-          : cell.answered
-          ? l10n.examNavAnsweredState
-          : l10n.examNavEmptyState,
-      onTap: onTap,
-      excludeSemantics: true,
-      // ponytail: 40 dp tall, as the artboard draws it; eight to a row
-      // leaves no room for 48 on a phone.
-      child: DpSurface(
-        kind: fill == null
-            ? DpSurfaceKind.bar
-            : DpSurfaceKind.tint(fill, opacity: 1),
-        selected: current,
-        radius: 8,
-        onTap: onTap,
-        child: SizedBox(
-          height: 40,
-          child: Center(
-            child: DpText(
-              AppLocalizations.of(context).digits(n),
-              role: DpTextRole.label,
-              weight: 700,
-              color: fill == null ? tokens.color.ink : tokens.color.onAccent,
+    return AdaptiveTapTarget(
+      child: SizedBox(
+        width: width,
+        child: Semantics(
+          button: true,
+          selected: current,
+          label: l10n.examNavQuestion(n),
+          value: cell.flagged
+              ? l10n.examNavFlaggedState
+              : cell.answered
+              ? l10n.examNavAnsweredState
+              : l10n.examNavEmptyState,
+          onTap: onTap,
+          excludeSemantics: true,
+          // ponytail: 40 dp tall, as the artboard draws it; eight to a row
+          // leaves no room for 48 on a phone.
+          child: DpSurface(
+            kind: fill == null
+                ? DpSurfaceKind.bar
+                : DpSurfaceKind.tint(fill, opacity: 1),
+            selected: current,
+            radius: 8,
+            onTap: onTap,
+            child: SizedBox(
+              height: 40,
+              child: Center(
+                child: DpText(
+                  AppLocalizations.of(context).digits(n),
+                  role: DpTextRole.label,
+                  weight: 700,
+                  color: fill == null
+                      ? tokens.color.ink
+                      : tokens.color.onAccent,
+                ),
+              ),
             ),
           ),
         ),

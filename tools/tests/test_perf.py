@@ -11,14 +11,43 @@ import pytest
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import perf  # noqa: E402
 
-AM_START = """Starting: Intent { cmp=com.example.deutschplan/.MainActivity }
+AM_START = """Starting: Intent { cmp=io.github.rahmatullah.deutschplan/.MainActivity }
 Status: ok
 LaunchState: COLD
-Activity: com.example.deutschplan/.MainActivity
+Activity: io.github.rahmatullah.deutschplan/.MainActivity
 TotalTime: 812
 WaitTime: 830
 Complete
 """
+
+# The app's own lines name perf.ACTIVITY, whatever the app id is (#170).
+LOGCAT = f"""09-26 05:03:15.234   718   749 I ActivityTaskManager: Displayed {perf.ACTIVITY} for user 0: +1s12ms
+09-26 05:03:15.901   718   749 I ActivityTaskManager: Fully drawn com.example.other/.MainActivity: +3s1ms
+09-26 05:03:16.234   718   749 I ActivityTaskManager: Fully drawn {perf.ACTIVITY}: +1s634ms
+"""
+
+
+def test_the_cold_start_is_read_from_fully_drawn_462():
+    assert perf.fully_drawn(LOGCAT) == 1634
+    # Under a second Android prints no seconds; Windows' adb ends in \r\n.
+    assert perf.fully_drawn(LOGCAT.replace("+1s634ms", "+856ms").replace("\n", "\r\n")) == 856
+    # A version that names the user, as Displayed does.
+    assert perf.fully_drawn(LOGCAT.replace("MainActivity: +1s634", "MainActivity for user 0: +1s634")) == 1634
+
+
+def test_another_apps_line_and_none_are_not_a_start_462():
+    only_other = "\n".join(line for line in LOGCAT.splitlines() if f"{perf.ACTIVITY}: +1s634" not in line)
+    assert perf.fully_drawn(only_other) is None
+    assert perf.fully_drawn("") is None
+
+
+def test_a_start_with_no_fully_drawn_stops_the_run_462():
+    with pytest.raises(SystemExit, match="Fully drawn"):
+        perf.await_fully_drawn(lambda: "", seconds=0, step=0)
+    # One that arrives on a later read is waited for.
+    reads = iter(["", LOGCAT])
+    assert perf.await_fully_drawn(lambda: next(reads), seconds=5, step=0) == 1634
+
 
 # What FrameTimingSummarizer.summary reports, trimmed to the keys perf reads
 # and two it does not.
@@ -72,15 +101,15 @@ ACTIVITIES = """ACTIVITY MANAGER ACTIVITIES (dumpsys activity activities)
       * Hist  #1: ActivityRecord{141786944 u0 com.google.android.apps.nexuslauncher/.NexusLauncherActivity t5}
         packageName=com.google.android.apps.nexuslauncher processName=com.google.android.apps.nexuslauncher
         state=RESUMED delayedResume=false finishing=false
-      * Hist  #0: ActivityRecord{77 u0 com.example.deutschplan/.MainActivity t9}
-        packageName=com.example.deutschplan processName=com.example.deutschplan
+      * Hist  #0: ActivityRecord{77 u0 io.github.rahmatullah.deutschplan/.MainActivity t9}
+        packageName=io.github.rahmatullah.deutschplan processName=io.github.rahmatullah.deutschplan
         state=STOPPED delayedResume=false finishing=false
     Resumed: ActivityRecord{141786944 u0 com.google.android.apps.nexuslauncher/.NexusLauncherActivity t5}
 """
 
 
 def test_an_activity_state_is_read_from_its_own_record():
-    assert perf.activity_state(ACTIVITIES, "com.example.deutschplan") == "STOPPED"
+    assert perf.activity_state(ACTIVITIES, "io.github.rahmatullah.deutschplan") == "STOPPED"
     assert perf.activity_state(ACTIVITIES, "com.google.android.apps.nexuslauncher") == "RESUMED"
     # Not running at all.
     assert perf.activity_state(ACTIVITIES, "com.example.other") == ""

@@ -2,6 +2,7 @@ import 'package:deutschplan/core/theme/dp_tokens.dart';
 import 'package:deutschplan/core/typography/dp_text.dart';
 import 'package:deutschplan/features/onboarding/onboarding_shell.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
+import 'package:deutschplan/services/start_report.dart';
 import 'package:material_ui/material_ui.dart';
 
 /// S2 page 1 · Welcome. `OnboardingWelcome-android.html`.
@@ -9,10 +10,22 @@ import 'package:material_ui/material_ui.dart';
 /// Three promises and one button. The page writes no setting — it is the only
 /// one of the five that does not, which is why it has no *Skip*: there is
 /// nothing to default.
-class OnboardingWelcomePage extends StatelessWidget {
+class OnboardingWelcomePage extends StatefulWidget {
   const OnboardingWelcomePage({super.key, this.onStart});
 
   final VoidCallback? onStart;
+
+  @override
+  State<OnboardingWelcomePage> createState() => _OnboardingWelcomePageState();
+}
+
+class _OnboardingWelcomePageState extends State<OnboardingWelcomePage> {
+  @override
+  void initState() {
+    super.initState();
+    // #462: a first run's cold start ends here, drawn with its first frame.
+    StartReport.fullyDrawn();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +36,7 @@ class OnboardingWelcomePage extends StatelessWidget {
       headline: l10n.onboardingWelcomeHeadline,
       headerArt: const _RisingChart(),
       primaryLabel: l10n.onboardingWelcomeStart,
-      onPrimary: onStart,
+      onPrimary: widget.onStart,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
