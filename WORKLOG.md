@@ -760,3 +760,4 @@ able to tell what is going on without asking.
 - 2026-09-26 14:43 · agent-1 · #561 merged (#562). #563 reviewed (approve + should-fix: the gap beside ß closes Writing's keyboard). #565: PR #570 up.
 - 2026-09-26 14:52 · agent-1 #565 · done (#570)
 - 2026-09-26 14:53 · agent-2 #571 · added to the board, lane X
+- 2026-09-26 14:58 · agent-2 #572 · added to the board, lane X
