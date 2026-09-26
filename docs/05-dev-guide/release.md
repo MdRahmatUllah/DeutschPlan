@@ -43,4 +43,4 @@
 4. `ENABLE_HYMT_DOWNLOAD` stays **off** (ADR 9, #173): the release build passes no `--dart-define=ENABLE_HYMT_DOWNLOAD`, so M4 says Hy-MT is "Not offered in this version of the app" and M3 hides its Translation group (#513). Changing that needs a new ADR 9 entry first.
 5. `python tools/release_android.py` passes (16 KB), signed with the upload key; `build/symbols` stored.
 6. `python tools/perf.py all` passes, with the emulator held (`team.py device`): size, frames, search and start against their baselines (`accessibility-performance.md`, #167). Then cold and warm start timed by hand on a real mid-range phone against the absolute budgets.
-7. Tag `vX.Y.Z`, changelog entry, store notes in EN and BN.
+7. Tag `vX.Y.Z`, changelog entry (`CHANGELOG.md`), store notes in EN and BN (`store-listing.md`, which `tools/tests/test_store_listing.py` holds to Play's limits), and the screenshots beside it.
