@@ -64,6 +64,7 @@ class ExamQuestionView extends ConsumerWidget {
     this.recordingPath,
     this.onDiscard,
     this.onRecording,
+    this.countPinned = false,
   });
 
   final ExamItem item;
@@ -94,12 +95,16 @@ class ExamQuestionView extends ConsumerWidget {
   /// null once it doesn't. *Submit exam* stops it first (#372).
   final ValueChanged<Future<void> Function()?>? onRecording;
 
+  /// Writing's count line is pinned above the keyboard by the runner, so
+  /// the question leaves it out ([ExamWriting.countPinned], #529).
+  final bool countPinned;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
     final tokens = context.tokens;
     if (item case final WritingTask task) {
-      return ExamWriting(task: task, field: field);
+      return ExamWriting(task: task, field: field, countPinned: countPinned);
     }
     if (item case final SpeakingTask task) {
       return ExamSpeaking(
@@ -461,10 +466,20 @@ class _Order extends StatelessWidget {
 /// typed answer, so it is kept in `exam_answers.given` and never leaves the
 /// phone (FR-L12W-04).
 class ExamWriting extends StatelessWidget {
-  const ExamWriting({required this.task, required this.field, super.key});
+  const ExamWriting({
+    required this.task,
+    required this.field,
+    super.key,
+    this.countPinned = false,
+  });
 
   final WritingTask task;
   final TextEditingController field;
+
+  /// The keyboard is up and the runner shows [ExamWritingCount] above it,
+  /// where the button row was: under the field, it would scroll away with
+  /// the task (#529).
+  final bool countPinned;
 
   @override
   Widget build(BuildContext context) {
@@ -481,7 +496,6 @@ class ExamWriting extends StatelessWidget {
       builder: (context, value, _) {
         final text = value.text;
         final used = targetsUsed(text, task.targets).toSet();
-        final connectors = connectorsUsed(text, task.connectors);
         Widget panel(Widget child) => _taskPanel(tokens, child);
         return Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -542,6 +556,12 @@ class ExamWriting extends StatelessWidget {
                 expands: true,
                 maxLines: null,
                 keyboardType: TextInputType.multiline,
+                // A tap on the task, the band or the chips closes the keyboard,
+                // and *Previous* / *Submit text* come back: a multiline field
+                // has no Done key, and iOS no back gesture that closes it
+                // (#529). The umlaut keys are part of the field.
+                onTapOutside: (_) =>
+                    FocusManager.instance.primaryFocus?.unfocus(),
                 // An exam: the keyboard must not spell or complete the German,
                 // as the runner's other typed answers don't let it.
                 autocorrect: false,
@@ -567,34 +587,58 @@ class ExamWriting extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(height: 6),
-            Semantics(
-              container: true,
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  DpText(
-                    l10n.examWritingCount(
-                      textWords(text).length,
-                      task.minWords,
-                    ),
-                    role: DpTextRole.caption,
-                    color: tokens.color.textSecondary,
-                  ),
-                  const SizedBox(width: 12),
-                  if (connectors.isNotEmpty)
-                    Expanded(
-                      child: DpText(
-                        l10n.examWritingConnectors(connectors.join(', ')),
-                        role: DpTextRole.caption,
-                        color: tokens.color.correctText,
-                        textAlign: TextAlign.end,
-                      ),
-                    ),
-                ],
-              ),
-            ),
+            if (!countPinned) ...<Widget>[
+              const SizedBox(height: 6),
+              ExamWritingCount(task: task, field: field),
+            ],
           ],
+        );
+      },
+    );
+  }
+}
+
+/// Writing's live line: "N words · min 100", and the connectors found.
+/// Under the field, or pinned above the keyboard while it is up (#529).
+class ExamWritingCount extends StatelessWidget {
+  const ExamWritingCount({required this.task, required this.field, super.key});
+
+  final WritingTask task;
+  final TextEditingController field;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final tokens = context.tokens;
+    return ValueListenableBuilder<TextEditingValue>(
+      valueListenable: field,
+      builder: (context, value, _) {
+        final connectors = connectorsUsed(value.text, task.connectors);
+        return Semantics(
+          container: true,
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              DpText(
+                l10n.examWritingCount(
+                  textWords(value.text).length,
+                  task.minWords,
+                ),
+                role: DpTextRole.caption,
+                color: tokens.color.textSecondary,
+              ),
+              const SizedBox(width: 12),
+              if (connectors.isNotEmpty)
+                Expanded(
+                  child: DpText(
+                    l10n.examWritingConnectors(connectors.join(', ')),
+                    role: DpTextRole.caption,
+                    color: tokens.color.correctText,
+                    textAlign: TextAlign.end,
+                  ),
+                ),
+            ],
+          ),
         );
       },
     );

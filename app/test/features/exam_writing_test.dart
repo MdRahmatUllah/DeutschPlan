@@ -71,6 +71,51 @@ void main() {
   Finder used(String word) =>
       find.bySemanticsLabel(l10n.examWritingTargetUsed(word));
 
+  testWidgets("#529 with the keyboard up, the count line takes the buttons' "
+      'place above it; they come back when it goes', (tester) async {
+    // SQA's 731 dp phone, and a 300 dp keyboard.
+    tester.view
+      ..physicalSize = const Size(390, 731) * 3
+      ..devicePixelRatio = 3;
+    addTearDown(tester.view.reset);
+    await pump(tester);
+    await write(tester, 'Ich wohne in Berlin.');
+    tester.view.viewInsets = const FakeViewPadding(bottom: 300 * 3);
+    addTearDown(tester.view.resetViewInsets);
+    await tester.pumpAndSettle();
+
+    const keyboardTop = 731.0 - 300;
+    final count = find.text(l10n.examWritingCount(4, artboardWriting.minWords));
+    expect(count, findsOneWidget, reason: 'once: pinned, not also under it');
+    expect(tester.getRect(count).bottom, lessThanOrEqualTo(keyboardTop));
+    expect(find.text(l10n.examWritingSubmit), findsNothing);
+
+    tester.view.resetViewInsets();
+    await tester.pumpAndSettle();
+    expect(find.text(l10n.examWritingSubmit), findsOneWidget);
+    expect(count, findsOneWidget, reason: 'back under the field');
+  });
+
+  testWidgets('#529 a tap outside the text closes the keyboard, as iOS has '
+      'no other way; a tap on an umlaut key does not', (tester) async {
+    await pump(tester);
+    await tester.tap(find.byType(TextField));
+    await tester.pump();
+    bool typing() => tester
+        .widget<EditableText>(find.byType(EditableText))
+        .focusNode
+        .hasFocus;
+    expect(typing(), isTrue);
+
+    await tester.tap(find.byType(DpUmlautBar).first);
+    await tester.pump();
+    expect(typing(), isTrue, reason: 'the umlaut row is part of the field');
+
+    await tester.tap(find.text(l10n.examWritingYourText.toUpperCase()));
+    await tester.pump();
+    expect(typing(), isFalse);
+  });
+
   testWidgets('the task for the level and category, and its ten words', (
     tester,
   ) async {
