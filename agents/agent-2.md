@@ -6,7 +6,7 @@ last-read: 762
 
 ## Now
 
-Nothing claimed.
+#527 fix(onboarding): Bangla pronunciation starts off for an English-only learner (show_pron_bn follows the meaning language at setup; #396 leftover) — claimed 2026-09-26 09:10.
 
 ## Next
 

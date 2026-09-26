@@ -645,3 +645,4 @@ able to tell what is going on without asking.
 - 2026-09-26 09:09 · agent-2 #527 · added to the board, lane C
 - 2026-09-26 09:10 · agent-2 #528 · added to the board, lane B
 - 2026-09-26 09:10 · agent-2 #529 · added to the board, lane A
+- 2026-09-26 09:10 · agent-2 #527 · claimed: fix(onboarding): Bangla pronunciation starts off for an English-only learner (show_pron_bn follows the meaning language at setup; #396 leftover)
