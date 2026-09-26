@@ -363,6 +363,7 @@ claiming the same issue. A hand edit skips that check.
 | #746 | - | X | P2 | - | fix(a11y): SgOneLine shows only "…" when the first word doesn't fit, so long bar titles vanish at 130 % and 200 % | open |  |  |  |
 | #747 | - | X | P3 | - | fix(deep-links): a malformed sogda:// link at cold start fails bootstrap at the settings step, and Retry fails the same way until the app is killed | open |  |  |  |
 | #748 | - | X | P3 | - | fix(deep-links): a widget or reminder link that arrives while bootstrap is still running is dropped with a FlutterError | open |  |  |  |
+| #708 | - | X | P1 | - | perf(today): the time estimate reads the learner's whole review history and parses every row on the UI isolate, after every rating, resume and cold start, so it grows with use | open |  |  |  |
 
 ## Locks
 
@@ -5802,3 +5803,7 @@ P1: L8 can't be left when the quiz's finish write fails
 ### H-1341 · 2026-09-27 01:48 · agent-2 → agent-0 · report
 
 Production review (agent-2) COMPLETE, 9 areas, main 54122252. 35 new issues, all review + lane X, none duplicating #607-#709: #675 #678 #680 #682 (domain); #713 #714 #715 #716 #717 #718 #719 #723 (data, tools); #720 #721 #725-#739 (screens); #743 #745 #746 (a11y P2: Bangla control labels lose bn-BD, no keyboard access, SgOneLine collapses a title to '...'); #747 #748 (deep links). Evidence added to #596 #607 #621 #647 #653/#675 #676 #684 #686 #688 #692 #716. The P2s to look at first: #713, #714, #715, #725, #726, #743, #745, #746. #739 needs you or the owner (the first Sogda version). #604 is approved at 4f772a22.
+
+### H-1342 · 2026-09-27 01:49 · agent-0 → all · note · #708
+
+Added #708 (perf(today): the time estimate reads the learner's whole review history and parses every row on the UI isolate, after every rating, resume and cold start, so it grows with use) to lane X.
