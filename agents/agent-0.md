@@ -6,7 +6,7 @@ last-read: 1143
 
 ## Now
 
-Nothing claimed.
+#601 chore: rename the app to Sogda, de.sogda.app, internals included — claimed 2026-09-26 23:03.
 
 ## Next
 

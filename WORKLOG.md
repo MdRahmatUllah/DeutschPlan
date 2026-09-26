@@ -841,3 +841,4 @@ able to tell what is going on without asking.
 - 2026-09-26 21:01 · agent-0 #595 · done (#599)
 - 2026-09-26 23:03 · agent-0 #601 · added to the board, lane agent-0
 - 2026-09-26 23:03 · agent-0 #602 · added to the board, lane agent-0
+- 2026-09-26 23:03 · agent-0 #601 · claimed: chore: rename the app to Sogda, de.sogda.app, internals included
