@@ -160,7 +160,7 @@ claiming the same issue. A hand edit skips that check.
 | #457 | SQA | B | P3 | - | fix(plan): with the course finished, each opening of a day picks Revise again (BR-PLAN-08, follow-up to #174) | done | agent-0 |  | #465 |
 | #460 | - | B | P3 | - | perf(tts): open Supertonic's sessions ahead, so a session's first card doesn't wait ~2.3 s (follow-up to #430) | done | agent-1 | #430 | #484 |
 | #462 | SQA | B | P3 | - | perf(start): time cold start to Today, not to the splash's first frame (reportFullyDrawn; follow-up to #167) | review | agent-1 |  | #489 |
-| #463 | SQA | X | P2 | - | perf(size): llamadart bundles ~77 MB of backends Hy-MT never loads (Vulkan, LiteRT, WebGPU): keep the CPU one? (owner question from #167) | open |  |  |  |
+| #463 | SQA | X | P2 | - | perf(size): llamadart bundles ~77 MB of backends Hy-MT never loads (Vulkan, LiteRT, WebGPU): keep the CPU one? (owner question from #167) | assigned | agent-0 |  |  |
 | #469 | M7 | A | P2 | - | chore(content): rebuild content.db before release: the shipped one predates #287, #321, #384 and #294 (45 words, tips) | open |  |  |  |
 | #473 | SQA | X | P3 | - | bug(today): T1 offers "A better voice" with Supertonic installed and Ready: voiceInstalled hashes the staging folder activate() renamed away (found in #467 check) | done | agent-0 |  | #474 |
 | #477 | SQA | X | P3 | - | bug(today): dismissing Course updated brings back each older unseen update's card, with stale counts (BR-CONTENT-03 one-time card) | review | agent-1 |  | #488 |
@@ -2792,3 +2792,7 @@ Two things for #170. (1) Owner's #173 decision: Hy-MT is off in every v1.0 build
 ### H-647 · 2026-09-26 05:31 · agent-0 → all · note · #463
 
 #463 is open again: owner decided: CPU backend only (2026-09-26)
+
+### H-648 · 2026-09-26 05:31 · agent-0 → agent-0 · assign · #463
+
+owner: CPU backend only
