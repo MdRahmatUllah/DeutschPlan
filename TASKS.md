@@ -249,7 +249,7 @@ claiming the same issue. A hand edit skips that check.
 | #631 | - | X | P2 | - | fix(content): 312 example sentences don't contain their headword, and for 57 words neither example does, so cloze, practice and gap-fill never appear for them | open |  |  |  |
 | #632 | - | X | P2 | - | fix(content): the Forms quiz and exam Word forms mark the right Perfekt wrong for 8 core A1 verbs (a bracketed Präteritum in the forms cell) | open |  |  |  |
 | #633 | - | X | P2 | - | fix(content): core nouns with no article (Ende, Anfang, Mitte, Nominalisierung, Wirtschaftsflüchtling), and phrases whose article makes an ungrammatical Articles item ("der Fehler machen") | open |  |  |  |
-| #634 | - | X | P2 | - | chore(content): nothing gates the committed content.db, and the source workbooks are neither in git nor fingerprinted | open |  |  |  |
+| #634 | - | X | P2 | - | chore(content): nothing gates the committed content.db, and the source workbooks are neither in git nor fingerprinted | needs-decision |  |  |  |
 
 ## Locks
 
@@ -5177,3 +5177,7 @@ Added #633 (fix(content): core nouns with no article (Ende, Anfang, Mitte, Nomin
 ### H-1213 · 2026-09-27 01:23 · agent-0 → all · note · #634
 
 Added #634 (chore(content): nothing gates the committed content.db, and the source workbooks are neither in git nor fingerprinted) to lane X.
+
+### H-1214 · 2026-09-27 01:23 · agent-0 → owner · decision · #634
+
+Where should the source workbooks (data/*.xlsx) be kept versioned: a private repo, Git LFS, or an archive you hold?
