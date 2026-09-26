@@ -107,6 +107,30 @@ void main() {
     devices: const <GoldenDevice>[GoldenDevice.phone],
     textScale: 2,
   );
+  // #502: its caption too, with the Bangla pronunciation among the German.
+  goldenTest(
+    'study_front_hyphen_bn_200',
+    builder: (context) => card(
+      const Word(
+        uid: 'r3',
+        sublevelCode: 'B1.1',
+        levelCode: 'B1',
+        seq: 1,
+        seqInSublevel: 1,
+        article: 'die',
+        german: 'Geschwindigkeit',
+        forms: 'Geschwindigkeiten',
+        pos: 'noun',
+        pronBn: 'গেশ্ভিন্ডিশকাইট',
+        english: 'speed',
+        searchKey: 'geschwindigkeit',
+        searchKeyAlt: 'geschwindigkeit',
+      ),
+    ),
+    modes: const <GoldenMode>[GoldenMode.light],
+    devices: const <GoldenDevice>[GoldenDevice.phone],
+    textScale: 2,
+  );
 
   // #363: a word of the learner's own, fourth in the same Revise block. Its
   // chip says so where a course word's names its step.
