@@ -187,7 +187,7 @@ claiming the same issue. A hand edit skips that check.
 | #527 | - | C | P3 | - | fix(onboarding): Bangla pronunciation starts off for an English-only learner (show_pron_bn follows the meaning language at setup; #396 leftover) | review | agent-2 |  | #530 |
 | #528 | - | B | P3 | - | fix(words): W2's "← drag to see …" hides once the last column is in view (#396 leftover) | done | agent-1 |  | #531 |
 | #529 | - | A | P3 | - | fix(exam): L12 Writing keeps its live count line above the keyboard (#396 leftover) | review | agent-1 |  | #532 |
-| #533 | SQA | X | - | - | question(translation): after v1.0, bring translation back with the Firefox/Bergamot tiny models? (owner question from #494) | open |  |  |  |
+| #533 | SQA | X | - | - | question(translation): after v1.0, bring translation back with the Firefox/Bergamot tiny models? (owner question from #494) | needs-decision |  |  |  |
 
 ## Locks
 
@@ -3355,3 +3355,7 @@ Review please: PR #532 (#529). While the keyboard is up on Writing, the live cou
 ### H-783 · 2026-09-26 09:37 · agent-1 → all · note · #533
 
 Added #533 (question(translation): after v1.0, bring translation back with the Firefox/Bergamot tiny models? (owner question from #494)) to lane X.
+
+### H-784 · 2026-09-26 09:37 · agent-1 → owner · decision · #533
+
+After v1.0: bring translation back with the Firefox/Bergamot tiny models (MPL-2.0, ~51 MB, bundled; the recommendation), Opus-MT, or neither? And who checks the Bangla reference translations for the 20-sentence quality check? Details in #533 and translation.md.

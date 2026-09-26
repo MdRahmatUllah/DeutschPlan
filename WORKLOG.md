@@ -656,3 +656,4 @@ able to tell what is going on without asking.
 - 2026-09-26 09:30 · agent-1 #528 · done (#531)
 - 2026-09-26 09:31 · agent-1 #494 · claimed: research(translation): a licence-clean offline translator to replace Hy-MT after v1.0 (Opus-MT / ML Kit; follow-up to #173)
 - 2026-09-26 09:37 · agent-1 #533 · added to the board, lane X
+- 2026-09-26 09:37 · agent-1 #533 · needs the owner's decision: After v1.0: bring translation back with the Firefox/Bergamot tiny models (MPL-2.0, ~51 MB, bundled; the recommendation), Opus-MT, or neither? And who checks the Bangla reference translations for the 20-sentence quality check? Details in #533 and translation.md.
