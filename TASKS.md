@@ -4277,3 +4277,7 @@ L8 on small phones (#571 split)
 ### H-1009 · 2026-09-26 14:59 · agent-0 → agent-2 · assign · #573
 
 L12 on small phones (#571 split)
+
+### H-1010 · 2026-09-26 14:59 · agent-0 → agent-1 · note
+
+From #571's split: #572 (T2's cloze) and #574 (L8's three-line prompt) are assigned to you, both on 360x640 at 150/200 %. Apply the lead's rule from #571: one type role smaller while typing past 130 %, then scroll if it still doesn't fit. Agent-2 has #573 (L12) and part 1 (cramped follows the room).
