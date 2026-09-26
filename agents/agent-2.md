@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-09-26 08:21
+last-seen: 2026-09-26 08:24
 last-read: 720
 
 ## Now
 
-#516 fix(search): R1's Open button breaks a long word at its syllables at 200 %, as Add does, with a golden (follow-up to #493) — claimed 2026-09-26 08:21.
+#516 in review as PR #520: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
