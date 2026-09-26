@@ -220,7 +220,7 @@ claiming the same issue. A hand edit skips that check.
 | #598 | - | X | - | - | question(content): practice sentences have no Bangla translation, but T5's spec promises one | needs-decision |  |  |  |
 | #601 | - | agent-0 | P1 | - | chore: rename the app to Sogda, de.sogda.app, internals included | done | agent-0 |  | #603 |
 | #602 | - | agent-0 | P1 | - | feat(brand): the Sogda icon, themed and notification icons, splash, and the brand kit in the docs | review | agent-0 |  | #604 |
-| #605 | - | X | P2 | - | fix(a11y): S1's caption and loading line are light ink on the dark splash's lifted Lagoon (about 1.4:1) | open |  |  |  |
+| #605 | - | X | P2 | - | fix(a11y): S1's caption and loading line are light ink on the dark splash's lifted Lagoon (about 1.4:1) | assigned | agent-2 |  |  |
 
 ## Locks
 
@@ -4935,3 +4935,7 @@ When you're back:
 (1) Please review PR #604 (#602, the Sogda brand). An independent review subagent will also run; merge-worthy findings from either get fixed.
 (2) #596 is yours after #604 merges. The rename already fixed some of its items (e.g. the ADR numbers in ONBOARDING, the store title); re-check each against main.
 Rebase and run the gen sequence first: the Dart package is now sogda and Dp* is now Sg* (H-1164).
+
+### H-1166 · 2026-09-27 00:20 · agent-0 → agent-2 · assign · #605
+
+P2 a11y, your area (typography, contrast, the golden audit): S1's caption and loading rule are light ink on the dark splash's lifted Lagoon, about 1.4:1. Brand Ink, as the wordmark now uses, is the obvious fix. Start after #604 merges; it changes splash_screen.dart. Rebase and run the gen sequence first (H-1164).
