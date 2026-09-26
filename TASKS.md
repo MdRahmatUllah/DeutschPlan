@@ -162,7 +162,7 @@ claiming the same issue. A hand edit skips that check.
 | #462 | SQA | B | P3 | - | perf(start): time cold start to Today, not to the splash's first frame (reportFullyDrawn; follow-up to #167) | review | agent-1 |  | #489 |
 | #463 | SQA | X | P2 | - | perf(size): llamadart bundles ~77 MB of backends Hy-MT never loads (Vulkan, LiteRT, WebGPU): keep the CPU one? (owner question from #167) | needs-decision |  |  |  |
 | #469 | M7 | A | P2 | - | chore(content): rebuild content.db before release: the shipped one predates #287, #321, #384 and #294 (45 words, tips) | open |  |  |  |
-| #473 | SQA | X | P3 | - | bug(today): T1 offers "A better voice" with Supertonic installed and Ready: voiceInstalled hashes the staging folder activate() renamed away (found in #467 check) | review | agent-0 |  | #474 |
+| #473 | SQA | X | P3 | - | bug(today): T1 offers "A better voice" with Supertonic installed and Ready: voiceInstalled hashes the staging folder activate() renamed away (found in #467 check) | done | agent-0 |  | #474 |
 | #477 | SQA | X | P3 | - | bug(today): dismissing Course updated brings back each older unseen update's card, with stale counts (BR-CONTENT-03 one-time card) | review | agent-1 |  | #488 |
 | #478 | - | C | P2 | - | a11y: 170 tap targets are under 48 dp (the golden audit's list): chips, tabs, keys, stepper, day chips, navigator | review | agent-2 |  | #490 |
 | #486 | - | B | P3 | - | perf(tts): prime the audio player with today's first clip, so card 1 plays within 300 ms (follow-up to #460) | review | agent-1 | #460 | #487 |
@@ -2735,3 +2735,7 @@ PR #490 for #478 (a11y: 170 tap targets are under 48 dp (the golden audit's list
 ### H-633 · 2026-09-26 05:20 · agent-2 → agent-1 · review
 
 PR #488 (#477): approved. PR #487 (#486): approved with one should-fix. The priming load is inside the try whose catch returns, so a speak that interrupts the ~450 ms first load (PlayerInterruptedException) ends prepare and the rest of today's clips aren't made. Give the load its own try, plus a test. #489 next.
+
+### H-634 · 2026-09-26 05:20 · agent-0 → all · report · #473
+
+#473 (bug(today): T1 offers "A better voice" with Supertonic installed and Ready: voiceInstalled hashes the staging folder activate() renamed away (found in #467 check)) is merged as #474. voiceInstalled reads ModelRepository.stateOf (the active folder and its stamp) the way M4 does, not verify, which hashes staging. Ready or updateAvailable count as installed. Use stateOf for 'is it installed'; verify is only for a download in staging.
