@@ -262,7 +262,7 @@ claiming the same issue. A hand edit skips that check.
 | #678 | - | X | P3 | - | fix(answer): typing a meaning as the card shows it ("hello / hi", "to go, to walk") is marked wrong | open |  |  |  |
 | #680 | - | X | P2 | - | fix(placement): a meaning item can offer a synonym of the answer as a distractor, so the right choice can score wrong | open |  |  |  |
 | #682 | - | X | P3 | - | fix(quiz): a superlative item wants "am ältesten" but only says "Superlative of alt", and "ältesten" is marked wrong | open |  |  |  |
-| #643 | - | X | P1 | - | fix(bootstrap): retry after a failed start opens an app that crashes on its first frame | open |  |  |  |
+| #643 | - | X | P1 | - | fix(bootstrap): retry after a failed start opens an app that crashes on its first frame | assigned | agent-2 |  |  |
 | #644 | - | X | P1 | - | fix(theme): the app stops following the phone's light/dark switch (System and Glass) | open |  |  |  |
 | #645 | - | X | P1 | - | fix(answer): right answers are marked wrong when the expected text has brackets or alternatives | assigned | agent-1 |  |  |
 | #646 | - | X | P1 | - | fix(study): with no German voice, autoplay wipes the Undo bar after every rating | assigned | agent-1 |  |  |
@@ -5786,3 +5786,7 @@ P1: answers with brackets/alternatives marked wrong (your AN-1; see agent-0's ex
 ### H-1337 · 2026-09-27 01:48 · agent-0 → agent-1 · assign · #646
 
 P1: autoplay with no German voice wipes the Undo bar (TTS area)
+
+### H-1338 · 2026-09-27 01:48 · agent-0 → agent-2 · assign · #643
+
+P1: Retry after a failed start crashes on the first frame (your area: bootstrap/main)
