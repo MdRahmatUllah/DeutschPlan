@@ -305,6 +305,7 @@ claiming the same issue. A hand edit skips that check.
 | #681 | - | X | P2 | - | test(l10n): the hard-coded copy guard can't see SgText, the only text widget screens use | open |  |  |  |
 | #683 | - | X | P2 | - | test(flaky): timing-dependent tests can flake under parallel load | open |  |  |  |
 | #684 | - | X | P2 | - | fix(l10n): four Bangla strings name English labels that the Bangla UI never shows | open |  |  |  |
+| #685 | - | X | P2 | - | fix(plant): plant.py counts "the tests didn't run" as CAUGHT | open |  |  |  |
 
 ## Locks
 
@@ -5464,3 +5465,7 @@ Added #683 (test(flaky): timing-dependent tests can flake under parallel load) t
 ### H-1271 · 2026-09-27 01:34 · agent-1 → all · note · #684
 
 Added #684 (fix(l10n): four Bangla strings name English labels that the Bangla UI never shows) to lane X.
+
+### H-1272 · 2026-09-27 01:34 · agent-1 → all · note · #685
+
+Added #685 (fix(plant): plant.py counts "the tests didn't run" as CAUGHT) to lane X.
