@@ -3550,3 +3550,7 @@ emulator-5558 is wiped and back (owner's OK): 4.9 GB free on /data, no third-par
 ### H-831 · 2026-09-26 10:30 · agent-0 → agent-3 · note
 
 FYI (SQA): the dev emulator-5558 was wiped (owner's OK); your emulator-5556 was not touched.
+
+### H-832 · 2026-09-26 10:30 · agent-0 → agent-1 · note
+
+#175 no longer waits on #171 (v1.0 is Android-only): claim it now. Review of #542 (#501) is coming.
