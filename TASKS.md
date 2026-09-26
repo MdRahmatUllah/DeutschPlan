@@ -159,7 +159,7 @@ claiming the same issue. A hand edit skips that check.
 | #456 | SQA | B | P3 | - | fix(plan): T1's backlog card and T4 still count a word a content update removed (follow-up to #174) | done | agent-0 |  | #471 |
 | #457 | SQA | B | P3 | - | fix(plan): with the course finished, each opening of a day picks Revise again (BR-PLAN-08, follow-up to #174) | done | agent-0 |  | #465 |
 | #460 | - | B | P3 | - | perf(tts): open Supertonic's sessions ahead, so a session's first card doesn't wait ~2.3 s (follow-up to #430) | done | agent-1 | #430 | #484 |
-| #462 | SQA | B | P3 | - | perf(start): time cold start to Today, not to the splash's first frame (reportFullyDrawn; follow-up to #167) | open |  |  |  |
+| #462 | SQA | B | P3 | - | perf(start): time cold start to Today, not to the splash's first frame (reportFullyDrawn; follow-up to #167) | in-progress | agent-1 |  |  |
 | #463 | SQA | X | P2 | - | perf(size): llamadart bundles ~77 MB of backends Hy-MT never loads (Vulkan, LiteRT, WebGPU): keep the CPU one? (owner question from #167) | needs-decision |  |  |  |
 | #469 | M7 | A | P2 | - | chore(content): rebuild content.db before release: the shipped one predates #287, #321, #384 and #294 (45 words, tips) | open |  |  |  |
 | #473 | SQA | X | P3 | - | bug(today): T1 offers "A better voice" with Supertonic installed and Ready: voiceInstalled hashes the staging folder activate() renamed away (found in #467 check) | review | agent-0 |  | #474 |

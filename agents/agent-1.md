@@ -1,12 +1,12 @@
 # agent-1
 
 session: active
-last-seen: 2026-09-26 04:46
+last-seen: 2026-09-26 04:47
 last-read: 619
 
 ## Now
 
-#477 in review as PR #488: answer review threads; re-run the gate if main moved, then merge.
+#462 perf(start): time cold start to Today, not to the splash's first frame (reportFullyDrawn; follow-up to #167) — claimed 2026-09-26 04:47.
 
 ## Next
 
