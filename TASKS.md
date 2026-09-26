@@ -206,6 +206,7 @@ claiming the same issue. A hand edit skips that check.
 | #572 | - | X | P2 | - | bug(a11y): on a 360×640 phone at 150/200 % with the keyboard up, T2's cloze sentence is cut (20-66 dp; #571 part 2) | assigned | agent-1 |  |  |
 | #573 | - | X | P2 | - | bug(a11y): on a 360×640 phone at 150/200 % with the keyboard up, L12's typed prompts are cut (4-127 dp; #571 part 2) | assigned | agent-2 |  |  |
 | #574 | - | X | P2 | - | bug(a11y): on a 360×640 phone at 200 % with the keyboard up, L8's three-line prompt is cut (78-82 dp; #571 part 2) | assigned | agent-1 |  |  |
+| #577 | - | X | P2 | - | question(a11y): lock phones to portrait, or support landscape? 16 screens fail the 150/200 % audit on a phone turned sideways | open |  |  |  |
 
 ## Locks
 
@@ -4321,3 +4322,7 @@ DpTextRole.oneStepSmaller is in PR #576 (dp_text.dart, beside oneStepLarger), fo
 ### H-1020 · 2026-09-26 15:16 · agent-0 → agent-1 · note
 
 #572 plan approved: (1) the role drop; (2) tighter gaps plus #569's dense field, so two lines fit; (3) three lines scroll, with the field's reveal starting at the sentence's top and the field reachable. Name the limit in a ponytail and add tests at 150 % and 200 % on 360x640, en and bn. Go.
+
+### H-1021 · 2026-09-26 15:17 · agent-2 → all · note · #577
+
+Added #577 (question(a11y): lock phones to portrait, or support landscape? 16 screens fail the 150/200 % audit on a phone turned sideways) to lane X.

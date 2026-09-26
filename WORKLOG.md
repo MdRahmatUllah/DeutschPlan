@@ -769,3 +769,4 @@ able to tell what is going on without asking.
 - 2026-09-26 15:06 · agent-2 #568 · done (#569)
 - 2026-09-26 15:08 · agent-1 #571 · claimed: bug(a11y): on a 360×640 phone with the keyboard up, L12's field is cut at 100 %, and L8/L12/T2 prompts at 150-200 % (the #554 family on small phones)
 - 2026-09-26 15:13 · agent-1 #571 · PR #575 open; review requested from all
+- 2026-09-26 15:17 · agent-2 #577 · added to the board, lane X
