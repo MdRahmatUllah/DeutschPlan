@@ -1285,6 +1285,48 @@ void main() {
       }
     }
 
+    // #590: in Bangla at 200 %, the pinned count line leaves less room than
+    // the field and a 20 dp margin under its caret; the field's top edge went
+    // 13 dp under the status bar. Typing past 130 % it keeps no such margin.
+    testWidgets('#590 Writing in bn at 200 % with the keyboard up in SQA room: '
+        'the field is whole under the status bar', (tester) async {
+      tester.view
+        ..physicalSize = const Size(390, 844) * 3
+        ..devicePixelRatio = 3
+        ..padding = const FakeViewPadding(top: 24 * 3);
+      addTearDown(tester.view.reset);
+      await pump(
+        tester,
+        stub: StubExamRun(
+          items: <ExamItem>[artboardWriting, ...artboardPaper()],
+          given: <int, String>{},
+        ),
+        textScaler: const AndroidTextScaler(2),
+        locale: const Locale('bn'),
+      );
+      // Typed, so the caret is at the text's end, the field's bottom.
+      await tester.enterText(find.byType(TextField), artboardWritingText);
+      await tester.pumpAndSettle();
+      // Gboard's top on SQA's 411 × 731 phone (731 − 335), already up as the
+      // field is focused: as after a tap back into it, or #584's pass.
+      tester.view.viewInsets = const FakeViewPadding(bottom: (844 - 396) * 3);
+      addTearDown(tester.view.resetViewInsets);
+      await tester.showKeyboard(find.byType(TextField));
+      await tester.pumpAndSettle();
+      expect(typing(tester), isTrue);
+      final field = tester.getRect(find.byType(EditableText));
+      expect(
+        field.top,
+        greaterThanOrEqualTo(24),
+        reason: 'under the status bar',
+      );
+      expect(
+        field.bottom,
+        lessThanOrEqualTo(396),
+        reason: 'above the keyboard',
+      );
+    });
+
     testWidgets('#560 Writing at 200 %: a tap beside ß or on the clock keeps '
         'the keyboard, as a key does (#529, #532)', (tester) async {
       tester.view

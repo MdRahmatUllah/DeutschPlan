@@ -110,7 +110,12 @@ class ExamQuestionView extends ConsumerWidget {
     final l10n = AppLocalizations.of(context);
     final tokens = context.tokens;
     if (item case final WritingTask task) {
-      return ExamWriting(task: task, field: field, countPinned: countPinned);
+      return ExamWriting(
+        task: task,
+        field: field,
+        countPinned: countPinned,
+        typingLarge: typingLarge,
+      );
     }
     if (item case final SpeakingTask task) {
       return ExamSpeaking(
@@ -496,6 +501,7 @@ class ExamWriting extends StatelessWidget {
     required this.field,
     super.key,
     this.countPinned = false,
+    this.typingLarge = false,
   });
 
   final WritingTask task;
@@ -505,6 +511,10 @@ class ExamWriting extends StatelessWidget {
   /// where the button row was: under the field, it would scroll away with
   /// the task (#529).
   final bool countPinned;
+
+  /// Typing past 130 % with the keyboard up: the field is 120 dp, not 150,
+  /// to fit the room the pinned count line leaves in Bangla at 200 % (#590).
+  final bool typingLarge;
 
   @override
   Widget build(BuildContext context) {
@@ -574,8 +584,12 @@ class ExamWriting extends StatelessWidget {
               color: tokens.color.textSecondary,
             ),
             const SizedBox(height: 6),
+            // Typing past 130 %, 120 dp: in Bangla at 200 % the room between
+            // the collapsed band and the pinned count line is 141, and a
+            // fixed 150 put the field's top edge under the status bar. Its
+            // text scrolls inside it either way (#590).
             SizedBox(
-              height: 150,
+              height: typingLarge ? 120 : 150,
               child: TextField(
                 controller: field,
                 expands: true,
