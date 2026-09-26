@@ -131,6 +131,7 @@ void main() {
 
   testWidgets('FR-L4-03 play speaks the German example', (tester) async {
     await pump(tester);
+    expect(find.byIcon(Icons.volume_off), findsNothing);
     await tester.tap(
       find.bySemanticsLabel(l10n.topicPlay('Könnten Sie mir bitte helfen?')),
     );
@@ -138,10 +139,11 @@ void main() {
     expect(spoken, <String>['Könnten Sie mir bitte helfen?']);
   });
 
-  testWidgets('V01 no German voice: play says how to install one', (
-    tester,
-  ) async {
+  testWidgets('V01 #452 no German voice: play is slashed, and says how to '
+      'install one', (tester) async {
     await pump(tester, voice: false);
+    expect(find.byIcon(Icons.volume_off), findsWidgets);
+    expect(find.byIcon(Icons.play_arrow_rounded), findsNothing);
     await tester.tap(
       find.bySemanticsLabel(l10n.topicPlay('Könnten Sie mir bitte helfen?')),
     );

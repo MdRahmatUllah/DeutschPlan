@@ -7,7 +7,9 @@ import 'package:deutschplan/data/db/app_database.dart';
 import 'package:deutschplan/data/repositories/setting_keys.dart';
 import 'package:deutschplan/data/repositories/word_repository.dart'
     show customId;
+import 'package:deutschplan/features/words/speak.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -187,8 +189,9 @@ String tipText(StudyTip tip, MeaningLanguage meaning) =>
 
 /// The 32 dp mini play button: Oat with an ink edge on paper, frosted under
 /// glass. With [onPressed] it is its own button; without, it only draws, for
-/// a row that is the target as a whole.
-class StudyPlayButton extends StatelessWidget {
+/// a row that is the target as a whole. Slashed with no German voice (V01,
+/// #452).
+class StudyPlayButton extends ConsumerWidget {
   const StudyPlayButton({super.key, this.label, this.onPressed});
 
   /// For screen readers, when it is its own button.
@@ -196,8 +199,9 @@ class StudyPlayButton extends StatelessWidget {
   final VoidCallback? onPressed;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final tokens = context.tokens;
+    final mute = noVoice(ref);
     final dot = Container(
       width: 32,
       height: 32,
@@ -209,7 +213,11 @@ class StudyPlayButton extends StatelessWidget {
           width: tokens.surface.outlineWidth,
         ),
       ),
-      child: Icon(Icons.play_arrow, size: 16, color: tokens.color.ink),
+      child: Icon(
+        mute ? Icons.volume_off : Icons.play_arrow,
+        size: 16,
+        color: mute ? tokens.color.textSecondary : tokens.color.ink,
+      ),
     );
     final tap = onPressed;
     if (tap == null) return dot;

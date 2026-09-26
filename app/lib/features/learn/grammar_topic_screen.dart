@@ -379,11 +379,18 @@ class _Example extends ConsumerWidget {
                     color: tokens.surface.muted,
                     border: Border.all(color: tokens.color.ink, width: 1.5),
                   ),
-                  child: Icon(
-                    Icons.play_arrow_rounded,
-                    size: 18,
-                    color: tokens.color.ink,
-                  ),
+                  // Slashed with no German voice (V01, #452).
+                  child: noVoice(ref)
+                      ? Icon(
+                          Icons.volume_off,
+                          size: 18,
+                          color: tokens.color.textSecondary,
+                        )
+                      : Icon(
+                          Icons.play_arrow_rounded,
+                          size: 18,
+                          color: tokens.color.ink,
+                        ),
                 ),
               ),
             ),

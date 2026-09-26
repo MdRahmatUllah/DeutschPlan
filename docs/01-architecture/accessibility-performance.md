@@ -42,7 +42,7 @@ Glass budget: max three blur layers on screen (header, one panel, tab bar); shee
 | Situation | Behaviour |
 | --- | --- |
 | Supertonic missing/fails | Phone voice plays; one-time toast with a Settings link |
-| No German system voice | Speaker shows a slashed icon; tap explains how to install one |
+| No German system voice | Every speaker shows a slashed icon, the small play buttons too (a word row's, the mini play of T2, W1, T3, the cloze, W4 and the exam review, and L4's) (#452); tap explains how to install one |
 | Model download interrupted | "Paused — resumes on Wi-Fi" with Retry |
 | Low storage | Download disabled with the exact shortfall |
 | Content update | Silent; progress keyed by uid; removed words hidden, never deleted |
