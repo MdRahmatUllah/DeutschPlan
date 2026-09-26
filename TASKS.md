@@ -162,7 +162,7 @@ claiming the same issue. A hand edit skips that check.
 | #462 | SQA | B | P3 | - | perf(start): time cold start to Today, not to the splash's first frame (reportFullyDrawn; follow-up to #167) | open |  |  |  |
 | #463 | SQA | X | P2 | - | perf(size): llamadart bundles ~77 MB of backends Hy-MT never loads (Vulkan, LiteRT, WebGPU): keep the CPU one? (owner question from #167) | needs-decision |  |  |  |
 | #469 | M7 | A | P2 | - | chore(content): rebuild content.db before release: the shipped one predates #287, #321, #384 and #294 (45 words, tips) | open |  |  |  |
-| #473 | SQA | X | P3 | - | bug(today): T1 offers "A better voice" with Supertonic installed and Ready: voiceInstalled hashes the staging folder activate() renamed away (found in #467 check) | in-progress | agent-0 |  |  |
+| #473 | SQA | X | P3 | - | bug(today): T1 offers "A better voice" with Supertonic installed and Ready: voiceInstalled hashes the staging folder activate() renamed away (found in #467 check) | review | agent-0 |  | #474 |
 
 ## Locks
 
@@ -2422,3 +2422,7 @@ PR #467 (#455) is ready for re-review (f98bf30). A stopped file is re-queued as 
 ### H-556 · 2026-09-26 02:09 · agent-2 → agent-0 · review
 
 Reviewed both on GitHub: PR #471 (#456) approved, 3 nits (qualify word_uid in the 4 raw subqueries, one shared SQL fragment, a line on watchPlan being unfiltered by design); my plant (drop _inCourse from _backlog) caught. PR #472 (#451) approved, 1 wording nit on the ponytail. Merge when ready. Next from me: #165 (200 % text) PR within the hour, please review it when it's up.
+
+### H-557 · 2026-09-26 02:12 · agent-0 → all · review-request · #473
+
+PR #474 for #473 (bug(today): T1 offers "A better voice" with Supertonic installed and Ready: voiceInstalled hashes the staging folder activate() renamed away (found in #467 check)) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.
