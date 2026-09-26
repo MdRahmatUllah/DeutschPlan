@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256" role="img" aria-label="Concept A: the step bubble">
+<title>Concept A: the step bubble</title>
+
+<path d="M72 40H184A44 44 0 0 1 228 84V146A44 44 0 0 1 184 190H108L64 228L72 190A44 44 0 0 1 28 146V84A44 44 0 0 1 72 40Z" fill="#15121F" transform="translate(7 7)"/><path d="M72 40H184A44 44 0 0 1 228 84V146A44 44 0 0 1 184 190H108L64 228L72 190A44 44 0 0 1 28 146V84A44 44 0 0 1 72 40Z" fill="#FFC61A" stroke="#15121F" stroke-width="7" stroke-linejoin="round"/><path d="M62 164V132H104V106H146V164Z" fill="#15121F" stroke="#15121F" stroke-width="6" stroke-linejoin="round"/><path d="M146 164V78H194V164Z" fill="#00C2B2" stroke="#15121F" stroke-width="6" stroke-linejoin="round"/>
+</svg>

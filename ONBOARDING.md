@@ -59,6 +59,11 @@ action (BR-PRIV-01).
 
 ## 2. Setting up
 
+On a **new machine**, start with [`developer-agents/README.md`](developer-agents/README.md):
+the install list, the clone and identity, restoring the agents' memory, the
+emulator ports and how to start each agent's session. What follows is the
+first machine, as it was set up.
+
 ### This machine
 
 | | |
@@ -67,7 +72,7 @@ action (BR-PRIV-01).
 | Flutter | 3.47.5 / Dart 3.13.4 on PATH (`F:/appDevs/flutterSDK/flutter`). It matches `.fvmrc`. **No `fvm`, no `make`.** |
 | Python | 3.10 on PATH (docs say 3.11+). Has pytest, openpyxl, PyYAML and Pillow. |
 | gh | Logged in as `rahmat-ullah`. |
-| Android | SDK at `C:/Users/User/AppData/Local/Android/Sdk`. App id `io.github.rahmatullah.deutschplan` (#170; `com.example.deutschplan` before it: uninstall that one). Emulators: **`emulator-5554` (Pixel_8) is agent-3's (SQA) alone**; the developer agents share **`emulator-5558`** (Medium_Phone, API 36), `tools/device.py`'s default. Leave any other running emulator alone. |
+| Android | SDK at `%LOCALAPPDATA%/Android/Sdk`. App id `io.github.rahmatullah.deutschplan` (#170; `com.example.deutschplan` before it: uninstall that one). Emulators: **`emulator-5554` (Pixel_8) is agent-3's (SQA) alone**; the developer agents share **`emulator-5558`** (Medium_Phone, API 36), `tools/device.py`'s default. Leave any other running emulator alone. |
 | iOS | Impossible here (no Mac). iOS-only work is written blind and marked *unverified*. |
 | RAM | ~32 GB, often only ~4 GB free. Release builds start an 8 GB Gradle daemon: build APKs one at a time (the device lock, §3). |
 
