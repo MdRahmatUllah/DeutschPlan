@@ -19,6 +19,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 
 import '../db/content_fixture.dart';
+import '../core/text_clipping.dart' show AndroidTextScaler;
 
 /// R2 · Add / edit my word (#143, spec key R07): `add-word.md`, over the
 /// content fixture (das Haus, die Tür in A1.1; die Straße in A1.2).
@@ -44,6 +45,8 @@ void main() {
     WidgetTester tester, {
     String? german,
     Future<int> Function()? seed,
+    Locale? locale,
+    TextScaler? textScaler,
   }) async {
     int? id;
     tester.view
@@ -75,8 +78,15 @@ void main() {
         ],
         child: MaterialApp(
           theme: AppTheme.light(),
+          locale: locale,
           localizationsDelegates: appLocalizationsDelegates,
           supportedLocales: supportedLocales,
+          builder: textScaler == null
+              ? null
+              : (context, child) => MediaQuery(
+                  data: MediaQuery.of(context).copyWith(textScaler: textScaler),
+                  child: child!,
+                ),
           home: Builder(
             builder: (context) => Scaffold(
               body: Center(
@@ -114,6 +124,38 @@ void main() {
 
   DpButton button(WidgetTester tester, String label) =>
       tester.widget<DpButton>(find.widgetWithText(DpButton, label));
+
+  testWidgets('#590 in bn at 200 %, the keyboard up in SQA room, the German '
+      "field focused sits under the status bar, not behind it: R2's list runs "
+      'under it', (tester) async {
+    // A word already in the course, so its match shows under the field, as
+    // on the AddWord artboard: the reveal then scrolls the most.
+    await pump(
+      tester,
+      german: 'Haus',
+      locale: const Locale('bn'),
+      textScaler: const AndroidTextScaler(2),
+    );
+    await tester.pump(AddWordScreen.debounce);
+    await tester.pumpAndSettle();
+    // Its meaning and where it was seen typed first, as the artboard has
+    // them: the list scrolls down to them, and back up to the German.
+    await tester.enterText(find.byType(TextField).at(1), 'house');
+    await tester.enterText(find.byType(TextField).at(2), 'a sign');
+    await tester.pumpAndSettle();
+    tester.view
+      ..padding = const FakeViewPadding(top: 24 * 3)
+      // Gboard's top on SQA's 411 × 731 phone: 731 − 335.
+      ..viewInsets = const FakeViewPadding(bottom: (844 - 396) * 3);
+    addTearDown(tester.view.resetViewInsets);
+    await tester.pumpAndSettle();
+    final german = find.byType(TextField).first;
+    await tester.showKeyboard(german);
+    await tester.pumpAndSettle();
+    final rect = tester.getRect(german);
+    expect(rect.top, greaterThanOrEqualTo(24), reason: 'under the status bar');
+    expect(rect.bottom, lessThanOrEqualTo(396), reason: 'above the keyboard');
+  });
 
   testWidgets('#515 on focus, the German field scrolls up with its umlaut '
       'row and the next field above the keyboard', (tester) async {

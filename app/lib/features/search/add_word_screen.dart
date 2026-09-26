@@ -450,7 +450,12 @@ class _Field extends StatelessWidget {
         autocorrect: !german,
         enableSuggestions: !german,
         textInputAction: TextInputAction.next,
-        scrollPadding: scrollPadding,
+        // R2's list runs under the status bar (its header bleeds to the
+        // top, #421), so a field revealed 20 dp from the list's top sat
+        // under it: in Bangla at 200 % with the keyboard up, 3 dp (#590).
+        scrollPadding: scrollPadding.copyWith(
+          top: scrollPadding.top + MediaQuery.paddingOf(context).top,
+        ),
         style: DpText.styleFor(
           tokens,
           DpTextRole.body,
