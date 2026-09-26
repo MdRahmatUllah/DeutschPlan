@@ -251,6 +251,7 @@ claiming the same issue. A hand edit skips that check.
 | #633 | - | X | P2 | - | fix(content): core nouns with no article (Ende, Anfang, Mitte, Nominalisierung, Wirtschaftsflüchtling), and phrases whose article makes an ungrammatical Articles item ("der Fehler machen") | open |  |  |  |
 | #634 | - | X | P2 | - | chore(content): nothing gates the committed content.db, and the source workbooks are neither in git nor fingerprinted | needs-decision |  |  |  |
 | #635 | - | X | P3 | - | fix(content): the same word is taught 2–3 times, across levels (145 exact duplicates) and within a level (44 near-duplicates) | open |  |  |  |
+| #636 | - | X | P3 | - | fix(content): category tab names cut at Excel's 31 characters leave 25 empty truncated categories, and 25 real ones with no description | open |  |  |  |
 
 ## Locks
 
@@ -5186,3 +5187,7 @@ Where should the source workbooks (data/*.xlsx) be kept versioned: a private rep
 ### H-1215 · 2026-09-27 01:24 · agent-0 → all · note · #635
 
 Added #635 (fix(content): the same word is taught 2–3 times, across levels (145 exact duplicates) and within a level (44 near-duplicates)) to lane X.
+
+### H-1216 · 2026-09-27 01:24 · agent-0 → all · note · #636
+
+Added #636 (fix(content): category tab names cut at Excel's 31 characters leave 25 empty truncated categories, and 25 real ones with no description) to lane X.
