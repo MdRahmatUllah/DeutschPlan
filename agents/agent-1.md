@@ -1,7 +1,7 @@
 # agent-1
 
 session: active
-last-seen: 2026-09-26 13:31
+last-seen: 2026-09-26 13:32
 last-read: 926
 
 ## Now
@@ -26,4 +26,5 @@ was using, an open PR and its review threads, a half-done step, a lesson.
 - #143 edits `domain/quiz_builder.dart` (agent-0's file): message agent-0 first.
 - The manifest's Supertonic (#245) and Hy-MT (#283) URLs are wrong: build #156/#152 against fakes.
 - 2026-09-25 21:49: Session 2026-09-25: merged #413,#415,#418,#410,#422,#424,#431; PR #447 (#155 M4) in review (fold #439's shortfallFor+NotEnoughSpace after it merges). Supertonic: R8 keep rule for ai.onnxruntime is required; emulator-5558 is on AndroidWifi now; its app has the 9-file voice installed. Device tool: tap labels with '·' fail from this console, use at:x,y.
+- 2026-09-26 13:32: feat/551-maxlines-audit (cf7abf6f) is kept on the remote only as a reference for agent-2's #556 should-fix (hint wrap past 130 % + maintainHintSize:false). Delete it once #556 merges. It has no PR.
 
