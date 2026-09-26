@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-09-26 17:22
+last-seen: 2026-09-26 17:28
 last-read: 1081
 
 ## Now
 
-#586 bug(a11y): at 200 % on a 360×640 phone, the Reset dialog's field stays under the keyboard after it's tapped (found by #584's keyboard pass) — claimed 2026-09-26 17:22.
+#586 in review as PR #587: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
