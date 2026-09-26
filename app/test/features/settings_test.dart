@@ -126,7 +126,8 @@ void main() {
   );
 
   testWidgets('every row in settings.md is there', (tester) async {
-    await pump(tester);
+    // Translation's with a model on the phone (#513).
+    await pump(tester, model: downloadingModel());
 
     for (final title in <String>[
       l10n.settingsDailyNew,
@@ -394,12 +395,14 @@ void main() {
   });
 
   group('FR-M3-03 translation', () {
-    testWidgets('on without the model: M4, and the switch stays off', (
+    // Without a usable model: a failed download's, as a test build (Hy-MT
+    // not offered) shows the switch only for a model on the phone (#513).
+    testWidgets('on without a usable model: M4, and the switch stays off', (
       tester,
     ) async {
-      await pump(tester, model: downloadingModel(ModelStatus.notDownloaded));
+      await pump(tester, model: downloadingModel(ModelStatus.failed));
       expect(
-        find.text(l10n.settingsTranslationStatus('none', 42)),
+        find.text(l10n.settingsTranslationStatus('failed', 42)),
         findsOneWidget,
       );
 
@@ -429,6 +432,21 @@ void main() {
       await tester.pumpAndSettle();
       expect(settings.read(SettingKeys.mtEnabled), isTrue);
       expect(went, isEmpty);
+    });
+
+    testWidgets('#513 ADR 9: while this build offers no Hy-MT and none is '
+        'on the phone, there is no Translation group', (tester) async {
+      for (final model in <ModelState?>[
+        null,
+        downloadingModel(ModelStatus.notDownloaded),
+      ]) {
+        // A new scope for each: one keeps its first overrides.
+        await tester.pumpWidget(const SizedBox());
+        await pump(tester, model: model);
+        expect(find.text(l10n.settingsGroupTranslation), findsNothing);
+        expect(find.text(l10n.settingsTranslation), findsNothing);
+        expect(find.text(l10n.settingsGroupData), findsOneWidget);
+      }
     });
 
     testWidgets('on with the model ready, and off again', (tester) async {
@@ -595,11 +613,15 @@ void main() {
   testWidgets('Material headers on Android, inset groups on iOS', (
     tester,
   ) async {
-    await pump(tester);
+    await pump(tester, model: downloadingModel());
     expect(find.text(l10n.settingsGroupDailyPlan), findsOneWidget);
     expect(find.byType(DpSurface), findsNothing);
 
-    await pump(tester, chrome: AdaptiveChrome.cupertino);
+    await pump(
+      tester,
+      model: downloadingModel(),
+      chrome: AdaptiveChrome.cupertino,
+    );
     expect(
       find.text(l10n.settingsGroupDailyPlan.toUpperCase()),
       findsOneWidget,
