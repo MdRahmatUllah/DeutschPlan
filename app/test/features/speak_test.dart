@@ -331,6 +331,32 @@ void main() {
     expect(state(tester, 'Tschüss'), DpSpeakerState.idle);
   });
 
+  testWidgets("#515 a list row's small play button shows the bars while its "
+      'word plays, and the spinner past 150 ms', (tester) async {
+    final tts = FakeTts(holds: true)..synthesis = Completer<void>();
+    await pump(
+      tester,
+      [fakeVoice(tts)],
+      texts: <String>['Hallo', 'Tschüss'],
+      speaker: (context, ref, text) => WordPlayButton(word: text),
+    );
+    expect(find.byType(DpPlayingBars), findsNothing);
+
+    await tester.tap(find.bySemanticsLabel(l10n.summaryPlay('Hallo')));
+    await tester.pump(const Duration(milliseconds: 160));
+    expect(find.byType(CircularProgressIndicator), findsOneWidget);
+
+    tts.synthesis!.complete();
+    await tester.pump();
+    expect(find.byType(DpPlayingBars), findsOneWidget);
+    expect(find.byIcon(Icons.volume_up), findsOneWidget, reason: 'Tschüss');
+
+    tts.finish();
+    await tester.pump();
+    expect(find.byType(DpPlayingBars), findsNothing);
+    expect(find.byIcon(Icons.volume_up), findsNWidgets(2));
+  });
+
   testWidgets('V03 the spinner only once synthesis passes 150 ms', (
     tester,
   ) async {

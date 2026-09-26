@@ -101,7 +101,7 @@ class DpSpeakerButton extends StatelessWidget {
   }
 
   Widget _content(DpTokens tokens) => switch (state) {
-    DpSpeakerState.playing => _PlayingBars(
+    DpSpeakerState.playing => DpPlayingBars(
       colour: tokens.color.ink,
       size: size,
     ),
@@ -126,9 +126,10 @@ class DpSpeakerButton extends StatelessWidget {
 }
 
 /// The three bars the artboard draws while audio plays: 4 dp wide, heights
-/// 10 / 22 / 14, radius 2.
-class _PlayingBars extends StatelessWidget {
-  const _PlayingBars({required this.colour, required this.size});
+/// 10 / 22 / 14, radius 2, for a 56 dp speaker; scaled to [size]. A list
+/// row's small play button draws them too (#515).
+class DpPlayingBars extends StatelessWidget {
+  const DpPlayingBars({required this.colour, required this.size, super.key});
 
   final Color colour;
   final double size;
