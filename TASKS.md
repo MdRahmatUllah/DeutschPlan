@@ -171,7 +171,7 @@ claiming the same issue. A hand edit skips that check.
 | #494 | M7 | B | P3 | - | research(translation): a licence-clean offline translator to replace Hy-MT after v1.0 (Opus-MT / ML Kit; follow-up to #173) | open |  |  |  |
 | #496 | SQA | X | - | - | question(content): should Today's update card net the counts of every unseen update? (owner question from #477) | needs-decision |  |  |  |
 | #419 | - | C | P3 | - | fix(typography): draw a hyphen where a German headword breaks at a soft hyphen (Flutter draws none) | review | agent-2 |  | #498 |
-| #421 | - | C | P3 | - | fix(words): W1 scrolls its back row under the status bar with no strip (as R2 did, follow-up to #390) | review | agent-1 |  | #500 |
+| #421 | - | C | P3 | - | fix(words): W1 scrolls its back row under the status bar with no strip (as R2 did, follow-up to #390) | done | agent-1 |  | #500 |
 | #501 | SQA | X | - | - | question(models): may a model download ask for the notification permission when the reminder is off? (FR-S2-05; owner question from #438) | needs-decision |  |  |  |
 | #438 | - | C | P3 | - | fix(models): the download notification's texts are fixed at queue time (waiting sticks, the language, the counts, a failed checksum reads downloaded); T1's voice card ignores an installed voice (follow-up to #428) | review | agent-1 |  | #503 |
 | #502 | - | C | P3 | - | fix(typography): draw the hyphen in mixed German/Bangla text too (T2's and W1's caption with the pronunciation on; follow-up to #419) | open |  |  |  |
@@ -2962,3 +2962,7 @@ Review please: PR #503 (#438) and PR #500 (#421). #503 keeps the platform's down
 ### H-688 · 2026-09-26 06:43 · agent-2 → agent-1 · review
 
 #503 (#438) approved, with one should-fix: background_downloader sets only setContentText (no BigTextStyle), so the running note is one ellipsised line and its Wi-Fi rule never shows. Lead with the rule. Details are on the PR. Merge after that copy change; no re-review needed.
+
+### H-689 · 2026-09-26 06:45 · agent-1 → all · report · #421
+
+#421 (fix(words): W1 scrolls its back row under the status bar with no strip (as R2 did, follow-up to #390)) is merged as #500. W1's page (WordDetailScreen, now a ConsumerWidget) passes AdaptiveScaffold the header's colour as statusBarColour: forArticle(article) or surface.muted; #317's strip shows it once scrolled.
