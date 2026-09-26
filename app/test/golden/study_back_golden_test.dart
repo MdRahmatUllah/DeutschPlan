@@ -117,7 +117,7 @@ void main() {
   );
 
   // #581: a mature word's intervals, past a thousand days. In Bangla at
-  // 200 % "১,১১১ দিন" wraps and the four buttons grow together (#580);
+  // 200 % "১,১১১ দি" wraps and the four buttons grow together (#580);
   // "1,111 d" fits, so only the audit's Bangla pass holds the rating bar's
   // minimum height.
   goldenTest(

@@ -74,6 +74,10 @@ void main() {
       devices: const <GoldenDevice>[GoldenDevice.phone],
       chrome: chrome,
       act: (tester) => typingWithKeyboard(tester, scale: 2),
+      // Its act sets its own text size and locale, overriding the
+      // audit's, so it is a fixed-size golden and carries no audit;
+      // `reset` and `reset_ios` do, in both languages (#581).
+      textAudit: false,
     );
     goldenTest(
       'reset_keyboard_bn$ios',
@@ -82,6 +86,10 @@ void main() {
       devices: const <GoldenDevice>[GoldenDevice.phone],
       chrome: chrome,
       act: (tester) => typingWithKeyboard(tester, locale: const Locale('bn')),
+      // Its act sets its own text size and locale, overriding the
+      // audit's, so it is a fixed-size golden and carries no audit;
+      // `reset` and `reset_ios` do, in both languages (#581).
+      textAudit: false,
     );
   }
   goldenTest(
