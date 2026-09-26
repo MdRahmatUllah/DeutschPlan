@@ -241,7 +241,7 @@ The emulator lock is local, not here: `team.py device`.
 | adr-number | agent-0 | 2026-09-26 23:03 | #601: ADR 28, the Sogda rename |
 | pubspec | agent-0 | 2026-09-26 23:03 | #601: the Dart package is renamed deutschplan -> sogda |
 | ci-config |  |  |  |
-| shared-look |  |  |  |
+| shared-look | agent-0 | 2026-09-26 23:03 | #601/#602: Dp -> Sg rename across core/, then the Sogda icon and splash |
 
 ## Handoffs
 
