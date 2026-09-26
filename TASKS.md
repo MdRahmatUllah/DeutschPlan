@@ -226,6 +226,7 @@ claiming the same issue. A hand edit skips that check.
 | #608 | - | X | P2 | - | fix(models): the model manifest downloads from Hugging Face's moving main branch, so one upstream commit makes every download fail its checksum | open |  |  |  |
 | #609 | - | X | P2 | - | chore(deps): llama.cpp's native libraries ship in every APK although nothing calls them (Hy-MT is off everywhere) | needs-decision |  |  |  |
 | #610 | - | X | P2 | - | chore(licences): the Licences screen (M8) leaves out ONNX Runtime and the other native Android libraries' notices | open |  |  |  |
+| #611 | - | X | P2 | - | fix(release): the app never starts a foreground service, but the merged manifest declares two and the docs tell the owner to declare one to Play | open |  |  |  |
 
 ## Locks
 
@@ -5011,3 +5012,7 @@ Remove llamadart (about 21 MB of unused native code per ABI) now that Hy-MT is o
 ### H-1179 · 2026-09-27 01:16 · agent-0 → all · note · #610
 
 Added #610 (chore(licences): the Licences screen (M8) leaves out ONNX Runtime and the other native Android libraries' notices) to lane X.
+
+### H-1180 · 2026-09-27 01:16 · agent-0 → all · note · #611
+
+Added #611 (fix(release): the app never starts a foreground service, but the merged manifest declares two and the docs tell the owner to declare one to Play) to lane X.
