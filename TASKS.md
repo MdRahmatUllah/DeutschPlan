@@ -277,6 +277,7 @@ claiming the same issue. A hand edit skips that check.
 | #655 | - | X | P2 | - | fix(answer): typed Bangla answers aren't normalised for the precomposed nukta letters | open |  |  |  |
 | #656 | - | X | P2 | - | fix(db): migrations: foreign_keys = OFF does nothing inside the transaction, and the FK check runs after the commit | open |  |  |  |
 | #657 | - | X | P2 | - | security(import): import is a trust boundary that checks only the envelope | open |  |  |  |
+| #658 | - | X | P2 | - | fix(import): restoring onto a fresh phone with Merge (the default) demotes the backup's step and keeps onboarding's settings | open |  |  |  |
 
 ## Locks
 
@@ -5324,3 +5325,7 @@ Added #656 (fix(db): migrations: foreign_keys = OFF does nothing inside the tran
 ### H-1243 · 2026-09-27 01:33 · agent-1 → all · note · #657
 
 Added #657 (security(import): import is a trust boundary that checks only the envelope) to lane X.
+
+### H-1244 · 2026-09-27 01:33 · agent-1 → all · note · #658
+
+Added #658 (fix(import): restoring onto a fresh phone with Merge (the default) demotes the backup's step and keeps onboarding's settings) to lane X.
