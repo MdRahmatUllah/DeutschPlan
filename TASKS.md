@@ -256,6 +256,7 @@ claiming the same issue. A hand edit skips that check.
 | #638 | - | X | P3 | - | perf(tts): the Supertonic model (about 400 MB) is loaded at every launch and never released, even under memory pressure | open |  |  |  |
 | #639 | - | X | P3 | - | refactor(status): the "done" rule (stability ≥ done_stability_days) is written in five places, in Dart and SQL | open |  |  |  |
 | #640 | - | X | P3 | - | chore(l10n): 4 ARB keys nothing in the app uses, and no test catches an unused key | open |  |  |  |
+| #641 | - | X | P3 | - | test: critical-path gaps: the background tasks' database path copies drift_flutter's internal name, and no integration test covers an upgrade with existing progress | open |  |  |  |
 
 ## Locks
 
@@ -5211,3 +5212,7 @@ Added #639 (refactor(status): the "done" rule (stability ≥ done_stability_days
 ### H-1220 · 2026-09-27 01:25 · agent-0 → all · note · #640
 
 Added #640 (chore(l10n): 4 ARB keys nothing in the app uses, and no test catches an unused key) to lane X.
+
+### H-1221 · 2026-09-27 01:25 · agent-0 → all · note · #641
+
+Added #641 (test: critical-path gaps: the background tasks' database path copies drift_flutter's internal name, and no integration test covers an upgrade with existing progress) to lane X.
