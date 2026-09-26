@@ -14,6 +14,7 @@ import 'package:deutschplan/features/today/today_view.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
 import 'package:deutschplan/router/cross_tab.dart';
 import 'package:deutschplan/router/routes.dart';
+import 'package:deutschplan/services/start_report.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:material_ui/material_ui.dart';
@@ -38,6 +39,11 @@ class _TodayScreenState extends ConsumerState<TodayScreen> {
     super.initState();
     // FR-T1-05: coming back after midnight is a new day.
     _lifecycle = AppLifecycleListener(onResume: _reread);
+    // #462: the cold start ends once the plan is drawn, not the blank page
+    // before it.
+    ref.listenManual(todayViewProvider, (_, next) {
+      if (next.hasValue) StartReport.fullyDrawn();
+    }, fireImmediately: true);
   }
 
   @override

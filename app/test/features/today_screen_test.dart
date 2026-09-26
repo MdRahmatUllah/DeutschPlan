@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:deutschplan/core/adaptive/adaptive.dart';
 import 'package:deutschplan/core/typography/dp_text.dart';
 import 'package:deutschplan/features/sentences/sentences_screen.dart';
+import 'package:deutschplan/services/start_report.dart';
 import 'package:deutschplan/core/components/dp_coach_mark.dart';
 
 import 'package:deutschplan/features/study/study_screen.dart';
@@ -29,6 +32,7 @@ import 'package:deutschplan/main.dart'
     show appLocalizationsDelegates, supportedLocales;
 import 'package:deutschplan/router/app_router.dart';
 import 'package:deutschplan/router/routes.dart';
+import 'package:flutter/services.dart' show MethodChannel;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:deutschplan/features/learn/grammar_practice_screen.dart';
@@ -993,6 +997,43 @@ void main() {
 
     expect(tester.takeException(), isNull);
     expect(reads, 2, reason: 'the pull read the plan again');
+  });
+
+  group('#462 the cold start ends when the plan is drawn', () {
+    const channel = MethodChannel('deutschplan/start');
+    final messenger =
+        TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger;
+    late List<String> calls;
+
+    setUp(() {
+      StartReport.reset();
+      calls = <String>[];
+      messenger.setMockMethodCallHandler(channel, (call) async {
+        calls.add(call.method);
+        return null;
+      });
+    });
+    tearDown(() => messenger.setMockMethodCallHandler(channel, null));
+
+    testWidgets('not while the page is blank; once the plan shows, and once '
+        'only', (tester) async {
+      final plan = Completer<TodayView>();
+      await pump(
+        tester,
+        load: todayViewProvider.overrideWith((ref) => plan.future),
+      );
+      expect(calls, isEmpty, reason: 'the blank page before the plan');
+
+      plan.complete(artboardToday());
+      await tester.pumpAndSettle();
+      expect(calls, <String>['fullyDrawn']);
+
+      StartReport.fullyDrawn();
+      // A frame, so a second report would go out.
+      tester.binding.scheduleFrame();
+      await tester.pump();
+      expect(calls, <String>['fullyDrawn'], reason: 'once a run');
+    });
   });
 
   testWidgets("the Grammar due tile takes Cobalt's own ink", (tester) async {

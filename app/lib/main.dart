@@ -4,6 +4,7 @@ import 'package:deutschplan/features/bootstrap/bootstrap_error_screen.dart';
 import 'package:deutschplan/features/splash/splash_screen.dart';
 import 'package:deutschplan/features/today/today_providers.dart'
     show warmTodaysVoice;
+import 'package:deutschplan/services/start_report.dart';
 import 'package:flutter/foundation.dart' show kReleaseMode, debugPrint;
 import 'package:flutter/services.dart';
 
@@ -142,7 +143,8 @@ class _BootstrapHostState extends State<BootstrapHost> {
     // FR-S1-02 is a budget, and a budget nobody can read is a budget nobody
     // keeps. One line in logcat, so the number is measurable on a device
     // rather than inferred from `am start -W` — which now reports the splash
-    // frame rather than the time to Today.
+    // frame rather than the time to Today. Release builds report Today as
+    // Android's "Fully drawn" instead (#462).
     //
     // Debug *and* profile, never release: a debug build is JIT and its
     // numbers mean nothing against a 500 ms budget, so the only build worth
@@ -157,6 +159,13 @@ class _BootstrapHostState extends State<BootstrapHost> {
     }
     if (result is BootstrapReady) {
       final router = result.bootstrap.router;
+      // #462: a first run opens on setup, which is drawn with its first
+      // frame; Today reports itself once its plan is on screen.
+      if (router.routeInformationProvider.value.uri.path.startsWith(
+        '/onboarding',
+      )) {
+        StartReport.fullyDrawn();
+      }
       unawaited(
         startReminders(
           container,

@@ -49,7 +49,7 @@ Everything except web-search links and model downloads works in airplane mode. T
 
 | Target | Budget |
 | --- | --- |
-| Cold start to Today | < 1.5 s on a mid-range 2022 Android phone |
+| Cold start to Today | < 1.5 s on a mid-range 2022 Android phone. It ends at Android's "Fully drawn", which the app reports once Today shows its plan, or setup its first page on a first run (#462); the first frame is only the splash |
 | Warm start | < 500 ms |
 | Card transition after rating | < 16 ms/frame; DB write off the UI isolate |
 | Glass list scroll | 60 fps with one `BackdropFilter` per list panel |

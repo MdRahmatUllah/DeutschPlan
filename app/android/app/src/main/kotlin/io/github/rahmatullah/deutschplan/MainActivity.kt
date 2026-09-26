@@ -31,6 +31,9 @@ class MainActivity : FlutterActivity() {
 
         /** `lib/services/device_storage.dart`: M4's free space (#156). */
         const val STORAGE_CHANNEL = "deutschplan/storage"
+
+        /** `lib/services/start_report.dart`: the start drawn in full (#462). */
+        const val START_CHANNEL = "deutschplan/start"
     }
 
     private var channel: MethodChannel? = null
@@ -69,6 +72,20 @@ class MainActivity : FlutterActivity() {
                                 "total" to stat.totalBytes,
                             )
                         )
+                    }
+                    else -> result.notImplemented()
+                }
+            }
+
+        // The cold start's end: Today with its plan, or setup's first page.
+        // The system logs it as "Fully drawn", after the first frame's
+        // "Displayed", which is only the splash (#462).
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, START_CHANNEL)
+            .setMethodCallHandler { call, result ->
+                when (call.method) {
+                    "fullyDrawn" -> {
+                        reportFullyDrawn()
+                        result.success(null)
                     }
                     else -> result.notImplemented()
                 }
