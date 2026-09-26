@@ -411,7 +411,15 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
       // #554: past 130 % the band's row, the question's number and the
       // buttons give theirs too, or the field alone filled the room and the
       // prompt scrolled away; they come back with the keyboard's going.
-      final cramped = DpScript.largeTyping(context);
+      // #571: and at any size on a phone the keyboard leaves short: on a
+      // 360 × 640 phone Gboard leaves 336 dp, and at 100 % the field ended
+      // under the pinned Previous / Next.
+      final room =
+          MediaQuery.sizeOf(context).height -
+          MediaQuery.viewInsetsOf(context).bottom -
+          MediaQuery.paddingOf(context).top;
+      final cramped =
+          DpScript.largeTyping(context) || (typing && room < shortRoom);
       // #560: the band collapsed on a timed paper, its clock goes to the bar
       // above the keyboard.
       final clockBelow = cramped && _timed;
@@ -618,6 +626,17 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
           );
   }
 }
+
+/// The room above the keyboard, under the status bar, below which a typed
+/// question's band and buttons give theirs at any text size (#571).
+///
+/// ponytail: measured, not derived. Up to 125 % the band and the pinned
+/// rows take 278 dp and the field 54 to 59, so the field shows from about
+/// 345 dp (bn 2 dp more); 360 leaves a margin. SQA's 731 dp phone with a
+/// 300 dp keyboard leaves 407 and stays pinned, as #529 wants. Between the
+/// two only the field is sure to show, not the prompt; measure the question
+/// if that is too often.
+const double shortRoom = 360;
 
 /// "14:32".
 String _clock(int seconds) =>
