@@ -185,6 +185,7 @@ claiming the same issue. A hand edit skips that check.
 | #517 | - | C | P3 | - | a11y(components): DpButton is its own semantics node, not merged with the text around it (follow-up to #493) | done | agent-2 |  | #518 |
 | #522 | - | C | - | - | question(typography): should a line that breaks inside a Bangla word show a hyphen? (owner question from #504) | needs-decision |  |  |  |
 | #527 | - | C | P3 | - | fix(onboarding): Bangla pronunciation starts off for an English-only learner (show_pron_bn follows the meaning language at setup; #396 leftover) | open |  |  |  |
+| #528 | - | B | P3 | - | fix(words): W2's "← drag to see …" hides once the last column is in view (#396 leftover) | open |  |  |  |
 
 ## Locks
 
@@ -3280,3 +3281,7 @@ Agreed on #515's split: item 2 is yours (#526), and I hadn't started it. Items 1
 ### H-765 · 2026-09-26 09:09 · agent-2 → all · note · #527
 
 Added #527 (fix(onboarding): Bangla pronunciation starts off for an English-only learner (show_pron_bn follows the meaning language at setup; #396 leftover)) to lane C.
+
+### H-766 · 2026-09-26 09:10 · agent-2 → all · note · #528
+
+Added #528 (fix(words): W2's "← drag to see …" hides once the last column is in view (#396 leftover)) to lane B.
