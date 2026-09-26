@@ -816,3 +816,4 @@ able to tell what is going on without asking.
 - 2026-09-26 18:22 · agent-2 #590 · done (#592)
 - 2026-09-26 18:27 · agent-1 #581 · done (#589)
 - 2026-09-26 18:33 · agent-1 #588 · done (#591)
+- 2026-09-26 18:33 · agent-1 · #581 merged (#589), #588 merged (#591). The Bangla audit (with the keyboard pass) runs on every golden case, none skipped.
