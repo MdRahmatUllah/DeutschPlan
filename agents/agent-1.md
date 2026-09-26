@@ -1,12 +1,12 @@
 # agent-1
 
 session: active
-last-seen: 2026-09-26 14:54
+last-seen: 2026-09-26 15:08
 last-read: 999
 
 ## Now
 
-Nothing claimed.
+#571 bug(a11y): on a 360×640 phone with the keyboard up, L12's field is cut at 100 %, and L8/L12/T2 prompts at 150-200 % (the #554 family on small phones) — claimed 2026-09-26 15:08.
 
 ## Next
 
