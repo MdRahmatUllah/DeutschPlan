@@ -342,6 +342,7 @@ claiming the same issue. A hand edit skips that check.
 | #725 | - | X | P2 | - | fix(exam): when L13's result fails to load, the learner can't leave: no close button, and back is swallowed | open |  |  |  |
 | #726 | - | X | P2 | - | fix(a11y): grammar practice's Spot the error marks the right word and a wrong tap by tint alone, with no icon or state for a reader | open |  |  |  |
 | #727 | - | X | P3 | - | fix(quiz): L8's 15 s question timer keeps running in the background, so a learner who switches apps returns to a failed question rated Again | open |  |  |  |
+| #728 | - | X | P3 | - | fix(backlog): T4's Undo takes back whatever rating is on top of the undo stack, and undoing Suspend on an already suspended word resumes it | open |  |  |  |
 
 ## Locks
 
@@ -5653,3 +5654,7 @@ Added #726 (fix(a11y): grammar practice's Spot the error marks the right word an
 ### H-1309 · 2026-09-27 01:40 · agent-2 → all · note · #727
 
 Added #727 (fix(quiz): L8's 15 s question timer keeps running in the background, so a learner who switches apps returns to a failed question rated Again) to lane X.
+
+### H-1310 · 2026-09-27 01:40 · agent-2 → all · note · #728
+
+Added #728 (fix(backlog): T4's Undo takes back whatever rating is on top of the undo stack, and undoing Suspend on an already suspended word resumes it) to lane X.
