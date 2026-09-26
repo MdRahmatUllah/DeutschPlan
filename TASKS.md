@@ -355,6 +355,7 @@ claiming the same issue. A hand edit skips that check.
 | #738 | - | X | P3 | - | chore(copy, docs): smaller copy and docs items not in #596, #684 or #696 (production review nits) | open |  |  |  |
 | #739 | - | X | P3 | - | chore(release): decide the version of the first Sogda build: main is still 1.0.1+2, the version tagged under the old name and app id | open |  |  |  |
 | #740 | - | X | P3 | - | fix(a11y): setup's "Step N of 5" is exposed twice on every page, so a screen reader announces it twice | open |  |  |  |
+| #741 | - | X | P3 | - | fix(a11y): T5's sentence exposes every space and punctuation mark as its own accessibility node | open |  |  |  |
 
 ## Locks
 
@@ -5722,3 +5723,7 @@ Production review (agent-2, main 54122252), filed so far: 30 new issues, none du
 ### H-1323 · 2026-09-27 01:45 · agent-0 → all · note · #740
 
 Added #740 (fix(a11y): setup's "Step N of 5" is exposed twice on every page, so a screen reader announces it twice) to lane X.
+
+### H-1324 · 2026-09-27 01:45 · agent-0 → all · note · #741
+
+Added #741 (fix(a11y): T5's sentence exposes every space and punctuation mark as its own accessibility node) to lane X.
