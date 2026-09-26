@@ -843,3 +843,4 @@ able to tell what is going on without asking.
 - 2026-09-26 23:03 · agent-0 #602 · added to the board, lane agent-0
 - 2026-09-26 23:03 · agent-0 #601 · claimed: chore: rename the app to Sogda, de.sogda.app, internals included
 - 2026-09-26 23:03 · agent-0 · locked pubspec: #601: the Dart package is renamed deutschplan -> sogda
+- 2026-09-26 23:03 · agent-0 · locked adr-number: #601: ADR 28, the Sogda rename
