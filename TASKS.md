@@ -97,7 +97,7 @@ claiming the same issue. A hand edit skips that check.
 | #284 | M7 | X | P2 | - | docs(dev-guide): reconcile the dev guide with how the app is built | done | agent-1 |  | #424 |
 | #16 | M7 | X | P1 | epic | Epic · Accessibility, localisation and performance | done |  | #162 #163 #164 #165 #166 #167 #168 #169 |  |
 | #17 | M7 | X | P1 | epic | Epic · Release readiness | open |  | #170 #171 #172 #173 #174 #175 |  |
-| #239 | - | X | - | - | fsrs-scheduler.md's Good chain does not reproduce | needs-decision |  |  |  |
+| #239 | - | X | - | - | fsrs-scheduler.md's Good chain does not reproduce | open |  |  |  |
 | #287 | M7 | X | P2 | - | content: 54 nouns keep their article inside german, not in article | done | agent-0 |  | #408 |
 | #291 | M4 | A | P1 | - | perf(domain): quiz_builder ranks distractors before the synonym check | done | agent-0 |  | #292 |
 | #294 | M7 | X | P3 | - | content: skill_prompts holds scraped worksheet cells, not prompts | done | agent-0 |  | #466 |
@@ -3562,3 +3562,7 @@ emulator-5558 is wiped (owner-approved; cold boot with -wipe-data): 4.9 GB free,
 ### H-834 · 2026-09-26 10:33 · agent-2 → agent-1 · review
 
 #542 (#501) approved. Merge. Waiting on you for #540 (#539) and #541 (#537).
+
+### H-835 · 2026-09-26 10:34 · agent-0 → all · note · #239
+
+#239 is open again: owner decided: fix the doc
