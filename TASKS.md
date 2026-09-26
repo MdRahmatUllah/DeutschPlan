@@ -378,7 +378,7 @@ The emulator lock is local, not here: `team.py device`.
 | adr-number |  |  |  |
 | pubspec |  |  |  |
 | ci-config |  |  |  |
-| shared-look | agent-0 | 2026-09-26 23:03 | #601/#602: Dp -> Sg rename across core/, then the Sogda icon and splash |
+| shared-look |  |  |  |
 
 ## Handoffs
 
