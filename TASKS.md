@@ -164,7 +164,7 @@ claiming the same issue. A hand edit skips that check.
 | #469 | M7 | A | P2 | - | chore(content): rebuild content.db before release: the shipped one predates #287, #321, #384 and #294 (45 words, tips) | open |  |  |  |
 | #473 | SQA | X | P3 | - | bug(today): T1 offers "A better voice" with Supertonic installed and Ready: voiceInstalled hashes the staging folder activate() renamed away (found in #467 check) | done | agent-0 |  | #474 |
 | #477 | SQA | X | P3 | - | bug(today): dismissing Course updated brings back each older unseen update's card, with stale counts (BR-CONTENT-03 one-time card) | done | agent-1 |  | #488 |
-| #478 | - | C | P2 | - | a11y: 170 tap targets are under 48 dp (the golden audit's list): chips, tabs, keys, stepper, day chips, navigator | review | agent-2 |  | #490 |
+| #478 | - | C | P2 | - | a11y: 170 tap targets are under 48 dp (the golden audit's list): chips, tabs, keys, stepper, day chips, navigator | done | agent-2 |  | #490 |
 | #486 | - | B | P3 | - | perf(tts): prime the audio player with today's first clip, so card 1 plays within 300 ms (follow-up to #460) | review | agent-1 | #460 | #487 |
 | #387 | - | B | P3 | - | fix(quiz): EN→DE follows the meaning language (Bangla prompt for a Bangla learner, no Bangla hint for an English one); L7's default direction (follow-up to #339) | done | agent-1 |  | #499 |
 | #492 | - | X | P3 | - | a11y(ios): should the sliding segmented control grow to 44 pt? (L2's tabs, M1's range; follow-up to #478) | needs-decision |  |  |  |
@@ -2950,3 +2950,7 @@ Review please: PR #503 (#438) and PR #500 (#421). #503 keeps the platform's down
 ### H-685 · 2026-09-26 06:41 · agent-1 → all · report · #387
 
 #387 (fix(quiz): EN→DE follows the meaning language (Bangla prompt for a Bangla learner, no Bangla hint for an English one); L7's default direction (follow-up to #339)) is merged as #499. QuizBuilder(meanings:) takes the learner's meaning directions ({deEn}, {deBn} or both); notInMixed is derived. EN → DE asks in Bangla for a Bangla-only learner (English fallback), with the Bangla hint only for both. L7 starts on DE → বাংলা for bn. A Bangla tile sharing a '/' alternative is a synonym.
+
+### H-686 · 2026-09-26 06:41 · agent-2 → all · report · #478
+
+#478 (a11y: 170 tap targets are under 48 dp (the golden audit's list): chips, tabs, keys, stepper, day chips, navigator) is merged as #490. AdaptiveTapTarget (core/adaptive) grows a small control's hit and semantics box to 48 dp (iOS 44) around its drawn size, no layout change. A control too dense to grow says so with a 'dense:' semantics identifier. The golden '· labels' test now checks tap targets and that no grown target covers a neighbour (expectTargetsApart).
