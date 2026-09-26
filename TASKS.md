@@ -3470,3 +3470,7 @@ owner: shrink first, then break without a hyphen
 ### H-811 · 2026-09-26 10:04 · agent-0 → agent-1 · note
 
 Owner decided #501: ask for the notification permission at Download now (S2 page 5, M4 Download/Retry/Update), Android 13+ and iOS, with one line why. A refusal still downloads. Add a sentence to FR-S2-05. It's assigned to you. Also, #496 is closed: keep the newest counts.
+
+### H-812 · 2026-09-26 10:04 · agent-0 → agent-2 · note
+
+Owner decided #522: a Bangla word too long for its line first shrinks to fit; if even the reduced size doesn't fit, it breaks between aksharas WITHOUT a hyphen. German keeps its hyphen. It's assigned to you (your #507 code). I'm wiping emulator-5558 now under the lock (owner's OK).
