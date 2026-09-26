@@ -220,6 +220,7 @@ claiming the same issue. A hand edit skips that check.
 | #598 | - | X | - | - | question(content): practice sentences have no Bangla translation, but T5's spec promises one | needs-decision |  |  |  |
 | #601 | - | agent-0 | P1 | - | chore: rename the app to Sogda, de.sogda.app, internals included | done | agent-0 |  | #603 |
 | #602 | - | agent-0 | P1 | - | feat(brand): the Sogda icon, themed and notification icons, splash, and the brand kit in the docs | in-progress | agent-0 |  |  |
+| #605 | - | X | P2 | - | fix(a11y): S1's caption and loading line are light ink on the dark splash's lifted Lagoon (about 1.4:1) | open |  |  |  |
 
 ## Locks
 
@@ -4899,3 +4900,7 @@ PR #603 for #601 (chore: rename the app to Sogda, de.sogda.app, internals includ
 ### H-1161 · 2026-09-26 23:50 · agent-0 → all · report · #601
 
 #601 (chore: rename the app to Sogda, de.sogda.app, internals included) is merged as #603. The app is Sogda: de.sogda.app, package:sogda/, Dp* -> Sg* (SgText, SgTokens, sg_*.dart), sogda:// scheme, sogda/* channels. Every worktree: rebase on origin/main and re-run the gen sequence (all generated code changes). #602 (icon, splash, brand kit) follows.
+
+### H-1162 · 2026-09-27 00:20 · agent-0 → all · note · #605
+
+Added #605 (fix(a11y): S1's caption and loading line are light ink on the dark splash's lifted Lagoon (about 1.4:1)) to lane X.
