@@ -54,7 +54,7 @@ Everything except web-search links and model downloads works in airplane mode. T
 | Card transition after rating | < 16 ms/frame; DB write off the UI isolate |
 | Glass list scroll | 60 fps with one `BackdropFilter` per list panel |
 | Search | < 50 ms per keystroke after 120 ms debounce |
-| App size | Play's one-CPU-type download, ONNX Runtime and llama.cpp included, at most 3 % over its baseline, measured by its stand-in, the arm64-v8a split APK (159.5 MB on 2026-09-26), until `bundletool get-size`; models downloaded separately |
+| App size | Play's one-CPU-type download, ONNX Runtime and llama.cpp included, at most 3 % over its baseline, measured by its stand-in, the arm64-v8a split APK (72.3 MB on 2026-09-26, llama.cpp's CPU backend only: ADR 27), until `bundletool get-size`; models downloaded separately |
 | Supertonic first audio | < 300 ms for one word |
 | Memory with Supertonic | No budget yet (the owner's call). Measured: ~520 MB PSS, 435 MB of it native heap, with its sessions open from the app's start (#460), on the emulator; with the phone's voice they never open |
 

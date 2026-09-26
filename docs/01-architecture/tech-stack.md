@@ -34,7 +34,7 @@ Import `package:material_ui/material_ui.dart` and `package:cupertino_ui/cupertin
 | Localisation | `flutter_localizations` + `intl` | SDK / 0.20.x | ARB files for en/bn; German date on Today. |
 | TTS (system) | `flutter_tts` | 4.x | Zero-download fallback voice. |
 | TTS (on-device model) | `flutter_onnxruntime` | 1.8.x | Native ONNX Runtime wrapper (ORT 1.22+), 16 KB-page compliant on Android, SPM on iOS. Runs Supertonic 3. |
-| Translation model | `llamadart` | latest 0.x | llama.cpp GGUF inference on **both** Android and iOS via native assets; `llama_cpp_flutter` is Apple-only, so it is not used. Loads Hy-MT1.5-1.8B GGUF. |
+| Translation model | `llamadart` | latest 0.x | llama.cpp GGUF inference on **both** Android and iOS via native assets; `llama_cpp_flutter` is Apple-only, so it is not used. Loads Hy-MT1.5-1.8B GGUF. Bundles llama.cpp's CPU backend only, no LiteRT-LM (ADR 27, `hooks: user_defines:` in `pubspec.yaml`). |
 | Audio playback | `just_audio` | 0.10.x | Plays synthesised WAV/PCM and recorded speaking answers; one shared player. |
 | Audio recording | `record` | 7.x | Speaking section recorder (AAC/M4A), mic permission handling. |
 | Downloads | `background_downloader` | 9.x | Resumable, background, Wi-Fi-only model downloads with progress notifications on both platforms. |

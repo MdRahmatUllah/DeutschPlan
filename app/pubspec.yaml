@@ -109,6 +109,22 @@ dev_dependencies:
   mocktail: ^1.0.5
   alchemist: ^0.14.0
 
+# llamadart's native-assets hook bundles only llama.cpp's CPU backend (#463,
+# ADR 27). Hy-MT runs on the CPU; by default the hook also ships the Vulkan
+# backend and the whole LiteRT-LM runtime (LiteRT, WebGPU, the Gemma
+# constraint libraries), about 77 MB of the arm64 APK that nothing loads.
+# `runtimes` drops LiteRT-LM on every platform, iOS included (no Apple
+# companion package here); `backends` is Android's (Apple's are fixed). The
+# keys are read by llamadart's hook/build.dart and
+# lib/src/hook/native_bundle_config.dart.
+hooks:
+  user_defines:
+    llamadart:
+      llamadart_native_runtimes: llama_cpp
+      llamadart_native_backends:
+        platforms:
+          android: [cpu]
+
 flutter:
   uses-material-design: true
   generate: true
