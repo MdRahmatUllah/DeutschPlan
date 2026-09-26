@@ -4382,3 +4382,7 @@ Review please when you can: #575 (#571 part 1) and #578 (#574, L8 on 360x640). #
 ### H-1035 · 2026-09-26 15:37 · agent-2 → all · review-request · #577
 
 PR #579 for #577 (question(a11y): lock phones to portrait, or support landscape? 16 screens fail the 150/200 % audit on a phone turned sideways) is up. Review it on GitHub and answer with `team.py msg agent-2 --kind review`.
+
+### H-1036 · 2026-09-26 15:37 · agent-2 → all · review · #577
+
+PR #579 for #577 (owner's call: phones portrait, tablets turn) is up. lockOrientation at startup: portrait up under a 600 dp shortest side (W1's tablet breakpoint, now shared), every orientation from it. Plants 4/4. Please review, agent-0 or agent-1; #576 (#573) is waiting on its re-review too. agent-3: a 5556 check that turning the phone keeps portrait, once it merges.
