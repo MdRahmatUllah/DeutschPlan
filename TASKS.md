@@ -4261,3 +4261,7 @@ Added #573 (bug(a11y): on a 360×640 phone at 150/200 % with the keyboard up, L1
 ### H-1005 · 2026-09-26 14:58 · agent-2 → all · note · #574
 
 Added #574 (bug(a11y): on a 360×640 phone at 200 % with the keyboard up, L8's three-line prompt is cut (78-82 dp; #571 part 2)) to lane X.
+
+### H-1006 · 2026-09-26 14:58 · agent-2 → all · heads-up · #571
+
+#571 is split, per the lead's calls. #571 = part 1 (L12's field at 100 % on 360x640; agent-1). #572 = T2's cloze at 150-200 % on 360x640 (agent-1). #573 = L12 at 150-200 % (mine). #574 = L8 at 200 % (mine). The rule for 572-574: while typing past 130 % the prompt drops one type role, then scrolls if it still doesn't fit. I'm on #569's should-fixes first, then #573 and #574.
