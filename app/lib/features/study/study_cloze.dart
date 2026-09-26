@@ -164,7 +164,11 @@ class _StudyClozeCardState extends ConsumerState<StudyClozeCard> {
             ],
             const SizedBox(height: 14),
             if (verdict == null) ...<Widget>[
-              StudyAnswerField(controller: _answer, onSubmitted: _check),
+              StudyAnswerField(
+                controller: _answer,
+                onSubmitted: _check,
+                umlautRowBelow: true,
+              ),
               const SizedBox(height: 8),
               DpUmlautBar(controller: _answer),
               const SizedBox(height: 12),
@@ -259,6 +263,7 @@ class StudyAnswerField extends StatelessWidget {
     required this.onSubmitted,
     super.key,
     this.hint,
+    this.umlautRowBelow = false,
   });
 
   final TextEditingController controller;
@@ -266,6 +271,12 @@ class StudyAnswerField extends StatelessWidget {
 
   /// The placeholder: "Type the missing word" unless given.
   final String? hint;
+
+  /// The umlaut row sits under it, then 12 dp and *Check* (T2's cloze,
+  /// grammar practice): on focus all of it scrolls above the keyboard
+  /// (#515). Not where the row is pinned above the keyboard (L8, L12), whose
+  /// prompt it would scroll away for nothing.
+  final bool umlautRowBelow;
 
   @override
   Widget build(BuildContext context) {
@@ -280,6 +291,12 @@ class StudyAnswerField extends StatelessWidget {
       autocorrect: false,
       enableSuggestions: false,
       textInputAction: TextInputAction.done,
+      scrollPadding: umlautRowBelow
+          ? DpUmlautBar.scrollPadding(
+              context,
+              below: 12 + DpButton.minimumTapTarget,
+            )
+          : const EdgeInsets.all(20),
       onSubmitted: (_) => onSubmitted(),
       style: DpText.styleFor(
         tokens,

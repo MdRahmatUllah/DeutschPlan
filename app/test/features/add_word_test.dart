@@ -115,6 +115,40 @@ void main() {
   DpButton button(WidgetTester tester, String label) =>
       tester.widget<DpButton>(find.widgetWithText(DpButton, label));
 
+  testWidgets('#515 on focus, the German field scrolls up with its umlaut '
+      'row and the next field above the keyboard', (tester) async {
+    await pump(tester);
+    // A short phone, and a keyboard with its suggestion bar: 290 dp left.
+    tester.view.physicalSize = const Size(390, 640) * 3;
+    await tester.pumpAndSettle();
+    final german = find.descendant(
+      of: field(l10n.addWordGerman),
+      matching: find.byType(TextField),
+    );
+    await tester.tap(german);
+    await tester.pump();
+    tester.view.viewInsets = const FakeViewPadding(bottom: 350 * 3);
+    addTearDown(tester.view.resetViewInsets);
+    await tester.pumpAndSettle();
+
+    const keyboardTop = 640.0 - 350;
+    expect(tester.getRect(german).bottom, lessThanOrEqualTo(keyboardTop));
+    expect(
+      tester.getRect(find.byType(DpUmlautBar)).bottom,
+      lessThanOrEqualTo(keyboardTop),
+      reason: 'the umlaut row, whole',
+    );
+    final meaning = find.descendant(
+      of: field(l10n.addWordMeaning),
+      matching: find.byType(TextField),
+    );
+    expect(
+      tester.getRect(meaning).bottom,
+      lessThanOrEqualTo(keyboardTop),
+      reason: 'and the next field',
+    );
+  });
+
   group('FR-R2-01 the live check', () {
     testWidgets('a course word says so, with its step and headword', (
       tester,

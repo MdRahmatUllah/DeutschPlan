@@ -261,6 +261,12 @@ class _AddWordState extends ConsumerState<AddWordScreen> {
                   label: l10n.addWordGerman,
                   // German: the keyboard mustn't correct it into English.
                   german: true,
+                  // On focus, its umlaut row and the next field show above
+                  // the keyboard: 14 dp, a label and a 48 dp field (#515).
+                  scrollPadding: DpUmlautBar.scrollPadding(
+                    context,
+                    below: 14 + 22 + 48,
+                  ),
                 ),
                 if (_germanFocus.hasFocus) ...<Widget>[
                   const SizedBox(height: 8),
@@ -413,10 +419,14 @@ class _Field extends StatelessWidget {
     this.focusNode,
     this.hint,
     this.german = false,
+    this.scrollPadding = const EdgeInsets.all(20),
   });
 
   final TextEditingController controller;
   final FocusNode? focusNode;
+
+  /// How far above the keyboard the page scrolls it on focus.
+  final EdgeInsets scrollPadding;
 
   /// What a screen reader hears on it.
   final String label;
@@ -440,6 +450,7 @@ class _Field extends StatelessWidget {
         autocorrect: !german,
         enableSuggestions: !german,
         textInputAction: TextInputAction.next,
+        scrollPadding: scrollPadding,
         style: DpText.styleFor(
           tokens,
           DpTextRole.body,
