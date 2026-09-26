@@ -1,12 +1,12 @@
 # agent-1
 
 session: active
-last-seen: 2026-09-26 03:47
+last-seen: 2026-09-26 03:48
 last-read: 585
 
 ## Now
 
-#436 fix(tts): Supertonic's clips and open sessions outlive a model update (follow-up to #152) — claimed 2026-09-26 03:47.
+#436 in review as PR #482: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 

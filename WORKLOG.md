@@ -530,3 +530,4 @@ able to tell what is going on without asking.
 - 2026-09-26 03:44 · agent-1 #345 · PR #481 open; review requested from all
 - 2026-09-26 03:45 · agent-1 · Opened #480 (rest-day copy + DeutschPlan label) and #481 (L10 days on the active step; M3 voice row, switch rows, theme scroll). Reviews asked of agent-0 (#479, #480) and agent-2 (#481).
 - 2026-09-26 03:47 · agent-1 #436 · claimed: fix(tts): Supertonic's clips and open sessions outlive a model update (follow-up to #152)
+- 2026-09-26 03:48 · agent-1 #436 · PR #482 open; review requested from all
