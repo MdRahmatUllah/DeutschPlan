@@ -26,9 +26,12 @@ import 'quiz_fixtures.dart';
 /// L8 · Quiz runner — #123.
 void main() {
   late AppLocalizations l10n;
+  // #568: the keyboard cases in Bangla too, whose copy is a role larger.
+  late AppLocalizations bn;
 
   setUpAll(() async {
     l10n = await AppLocalizations.delegate.load(supportedLocales.first);
+    bn = await AppLocalizations.delegate.load(const Locale('bn'));
   });
 
   const standard = QuizArgs(
@@ -68,6 +71,7 @@ void main() {
     QuizArgs args = standard,
     StubQuizRun? stub,
     TextScaler? textScaler,
+    Locale? locale,
   }) async {
     run = stub ?? StubQuizRun();
     final routes = GoRouter(
@@ -93,6 +97,7 @@ void main() {
           theme: AppTheme.light(),
           localizationsDelegates: appLocalizationsDelegates,
           supportedLocales: supportedLocales,
+          locale: locale,
           routerConfig: routes,
           builder: textScaler == null
               ? null
@@ -585,6 +590,7 @@ void main() {
       required TextScaler textScaler,
       double width = 390,
       double keyboard = 300,
+      Locale? locale,
     }) async {
       tester.view
         ..physicalSize = Size(width, 731) * 3
@@ -596,6 +602,7 @@ void main() {
         args: const QuizArgs(direction: 'mixed', source: 'allLearned', seed: 1),
         stub: StubQuizRun(quiz: quizOf(<QuizItem>[item, haus])),
         textScaler: textScaler,
+        locale: locale,
       );
       await tester.showKeyboard(find.byType(TextField));
       tester.view.viewInsets = FakeViewPadding(bottom: keyboard * 3);
@@ -609,34 +616,37 @@ void main() {
     // prompt's gap to the field and the list's foot give 12 and 8 dp back;
     // at 335 dp both are needed.
     for (final item in <QuizItem>[wraps, withHint]) {
-      testWidgets('#561 ${item.wordUid}: at 200 % on a 411 dp phone with a '
-          'taller keyboard, both lines of the prompt show whole above the '
-          'field', (tester) async {
-        await typing(
-          tester,
-          item,
-          textScaler: AndroidTextScaler(2),
-          width: 411,
-          keyboard: 335,
-        );
-        final room = tester.getRect(find.byType(ListView));
-        final lines = <Finder>[
-          find.text(item.prompt),
-          if (item.hint case final hint?) find.text(hint),
-        ];
-        for (final line in lines) {
-          expect(
-            tester.getRect(line).top,
-            greaterThanOrEqualTo(room.top),
-            reason: 'line ${lines.indexOf(line) + 1} is under the strip',
+      for (final lang in <String>['en', 'bn']) {
+        testWidgets('#561 #568 ${item.wordUid} in $lang: at 200 % on a 411 dp '
+            'phone with a taller keyboard, both lines of the prompt show whole '
+            'above the field', (tester) async {
+          await typing(
+            tester,
+            item,
+            textScaler: AndroidTextScaler(2),
+            width: 411,
+            keyboard: 335,
+            locale: Locale(lang),
           );
-        }
-        expect(
-          tester.getRect(find.byType(TextField)).bottom,
-          lessThanOrEqualTo(room.bottom),
-          reason: 'the field shows whole',
-        );
-      });
+          final room = tester.getRect(find.byType(ListView));
+          final lines = <Finder>[
+            find.text(item.prompt),
+            if (item.hint case final hint?) find.text(hint),
+          ];
+          for (final line in lines) {
+            expect(
+              tester.getRect(line).top,
+              greaterThanOrEqualTo(room.top),
+              reason: 'line ${lines.indexOf(line) + 1} is under the strip',
+            );
+          }
+          expect(
+            tester.getRect(find.byType(TextField)).bottom,
+            lessThanOrEqualTo(room.bottom),
+            reason: 'the field shows whole',
+          );
+        });
+      }
     }
 
     for (final item in <QuizItem>[
@@ -660,62 +670,126 @@ void main() {
       ),
     ]) {
       for (final percent in <int>[200, 150]) {
-        testWidgets('${item.direction.name}: at $percent % with the keyboard '
-            'up, the prompt shows whole above the field, with Check and the '
-            "umlaut row; the header and caption come back with the keyboard's "
-            'going', (tester) async {
-          await typing(
-            tester,
-            item,
-            textScaler: AndroidTextScaler(percent / 100),
-          );
-          expect(
-            tester
-                .widget<EditableText>(find.byType(EditableText))
-                .focusNode
-                .hasFocus,
-            isTrue,
-            reason: 'the field kept the keyboard',
-          );
-          expect(close(), findsNothing, reason: 'the header gave its row');
-          final prompt = find.text(
-            item.form == null ? item.prompt : l10n.quizFormPerfekt(item.prompt),
-          );
-          // What the list shows: under the status bar, above Check.
-          final room = tester.getRect(find.byType(ListView));
-          expect(room.bottom, lessThanOrEqualTo(keyboardTop));
-          for (final (name, shown) in <(String, Finder)>[
-            ('the prompt', prompt),
-            ('the field', find.byType(TextField)),
-          ]) {
-            final rect = tester.getRect(shown);
-            expect(rect.top, greaterThanOrEqualTo(room.top), reason: name);
-            expect(rect.bottom, lessThanOrEqualTo(room.bottom), reason: name);
-          }
-          expect(
-            tester
-                .getRect(find.widgetWithText(DpButton, l10n.quizCheck))
-                .bottom,
-            lessThanOrEqualTo(keyboardTop),
-          );
-          expect(
-            tester.getRect(find.byType(DpUmlautBar)).bottom,
-            lessThanOrEqualTo(keyboardTop),
-          );
+        for (final lang in <String>['en', 'bn']) {
+          testWidgets('${item.direction.name} in $lang: at $percent % with the '
+              'keyboard up, the prompt shows whole above the field, with Check '
+              "on the umlaut row; the header and caption come back with the "
+              "keyboard's going", (tester) async {
+            final t = lang == 'bn' ? bn : l10n;
+            await typing(
+              tester,
+              item,
+              textScaler: AndroidTextScaler(percent / 100),
+              locale: Locale(lang),
+            );
+            expect(
+              tester
+                  .widget<EditableText>(find.byType(EditableText))
+                  .focusNode
+                  .hasFocus,
+              isTrue,
+              reason: 'the field kept the keyboard',
+            );
+            expect(
+              find.bySemanticsLabel(t.quizClose),
+              findsNothing,
+              reason: 'the header gave its row',
+            );
+            final prompt = find.text(
+              item.form == null ? item.prompt : t.quizFormPerfekt(item.prompt),
+            );
+            // What the list shows: under the status bar, above Check.
+            final room = tester.getRect(find.byType(ListView));
+            expect(room.bottom, lessThanOrEqualTo(keyboardTop));
+            for (final (name, shown) in <(String, Finder)>[
+              ('the prompt', prompt),
+              ('the field', find.byType(TextField)),
+            ]) {
+              final rect = tester.getRect(shown);
+              expect(rect.top, greaterThanOrEqualTo(room.top), reason: name);
+              expect(rect.bottom, lessThanOrEqualTo(room.bottom), reason: name);
+            }
+            // #568: Check is a key on the umlaut row, and its row is the
+            // prompt's.
+            expect(find.widgetWithText(DpButton, t.quizCheck), findsNothing);
+            final bar = tester.getRect(find.byType(DpUmlautBar));
+            final check = tester.getRect(find.byIcon(Icons.check));
+            expect(bar.bottom, lessThanOrEqualTo(keyboardTop));
+            expect(check.bottom, lessThanOrEqualTo(keyboardTop));
+            expect(
+              check.center.dy,
+              closeTo(bar.center.dy, 1),
+              reason: 'one row',
+            );
 
-          tester.view.resetViewInsets();
-          await tester.pumpAndSettle();
-          expect(close(), findsOneWidget, reason: 'the header row');
-          expect(find.text(l10n.quizYourAnswer.toUpperCase()), findsOneWidget);
-        });
+            tester.view.resetViewInsets();
+            await tester.pumpAndSettle();
+            expect(
+              find.bySemanticsLabel(t.quizClose),
+              findsOneWidget,
+              reason: 'the header row',
+            );
+            expect(find.widgetWithText(DpButton, t.quizCheck), findsOneWidget);
+            // In Bangla the caption and the field's hint are one string.
+            expect(
+              find.text(t.quizYourAnswer.toUpperCase()),
+              lang == 'bn' ? findsWidgets : findsOneWidget,
+            );
+          });
+        }
       }
     }
+
+    testWidgets('#568 at 200 % the key checks the answer, and Next takes '
+        'its row again', (tester) async {
+      await typing(
+        tester,
+        const QuizItem(
+          ord: 1,
+          wordUid: 'sorry',
+          direction: QuizDirection.enDe,
+          prompt: "I'm sorry",
+          expected: 'Es tut mir leid',
+        ),
+        textScaler: const AndroidTextScaler(2),
+      );
+      final key = find.byIcon(Icons.check);
+      final semantics = tester.ensureSemantics();
+      // Named, and off until there is an answer, as Check's button is.
+      expect(
+        tester.getSemantics(find.bySemanticsLabel(l10n.quizCheck)),
+        isSemantics(isButton: true, hasEnabledState: true, isEnabled: false),
+      );
+      await tester.enterText(find.byType(TextField), 'x');
+      await tester.pump();
+      expect(
+        tester.getSemantics(find.bySemanticsLabel(l10n.quizCheck)),
+        isSemantics(isEnabled: true),
+      );
+      await tester.enterText(find.byType(TextField), '');
+      await tester.pump();
+      semantics.dispose();
+      await tester.tap(key, warnIfMissed: false);
+      await tester.pumpAndSettle();
+      expect(find.byType(DpVerdictRow), findsNothing, reason: 'off: empty');
+      await tester.enterText(find.byType(TextField), 'Es tut mir leid');
+      await tester.pump();
+      await tester.tap(key);
+      await tester.pumpAndSettle();
+      expect(find.byType(DpVerdictRow), findsOneWidget);
+      expect(find.widgetWithText(DpButton, l10n.practiceNext), findsOneWidget);
+    });
 
     testWidgets('at 100 % the keyboard leaves the header and caption be', (
       tester,
     ) async {
       await typing(tester, vertrag, textScaler: TextScaler.noScaling);
       expect(close(), findsOneWidget, reason: 'the header row');
+      expect(
+        find.widgetWithText(DpButton, l10n.quizCheck),
+        findsOneWidget,
+        reason: 'Check keeps its row (#568)',
+      );
       expect(find.text(l10n.quizYourAnswer.toUpperCase()), findsOneWidget);
     });
   });

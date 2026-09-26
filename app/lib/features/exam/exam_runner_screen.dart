@@ -562,7 +562,12 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
             DpSurface(
               kind: DpSurfaceKind.bar,
               radius: 0,
-              padding: const EdgeInsets.fromLTRB(16, 10, 16, 16),
+              // The clock alone, for an answer typed in English, takes less
+              // than the keys' row: in Bangla its row left 3 dp of the word
+              // under the status bar (#568).
+              padding: examTypesGerman(item)
+                  ? const EdgeInsets.fromLTRB(16, 10, 16, 16)
+                  : const EdgeInsets.fromLTRB(16, 4, 16, 8),
               child: clockBelow
                   // The whole bar is the field's, as the keys' row is
                   // (#532): a tap beside ß, or on the clock, keeps a
