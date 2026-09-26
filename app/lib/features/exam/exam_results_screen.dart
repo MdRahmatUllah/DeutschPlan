@@ -328,7 +328,7 @@ class _Result extends StatelessWidget {
 int _percent(double points, double max) =>
     max == 0 ? 0 : (points / max * 100 + 1e-9).floor();
 
-/// "37", or "36.5": Writing's rubric counts in halves.
+/// "37", or "36.5": an *almost* answer counts a half (BR-ANS-04).
 String _points(double points) => points == points.roundToDouble()
     ? '${points.round()}'
     : points.toStringAsFixed(1);

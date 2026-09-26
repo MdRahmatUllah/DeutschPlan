@@ -189,7 +189,7 @@ void main() {
     await service.rubric(id, 3, <bool>[true, true]);
 
     final after = (await exams.attempt(id))!;
-    expect(after.scorePoints, before.scorePoints + 1, reason: '0.5 a tick');
+    expect(after.scorePoints, before.scorePoints + 2, reason: '1 a tick');
     expect(after.finishedAt, before.finishedAt, reason: "still the submit's");
     expect(after.status, 'finished');
     final row = (await service.result(id))!.rows.last;

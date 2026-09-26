@@ -197,8 +197,10 @@ void main() {
     await tap(tester, l10n.examWritingRubricTask);
     expect(stub.rubrics.single.$1, 41);
     expect(stub.rubrics.single.$2, <bool>[true, false]);
-    expect(find.text(l10n.examResultSectionPoints('3.5', 4)), findsOneWidget);
-    expect(find.text(l10n.examResultPercent(78)), findsOneWidget);
+    // A whole point a tick (#597): Writing leaves the 3s for the 4s.
+    expect(find.text(l10n.examResultSectionPoints('3', 4)), findsNWidgets(2));
+    expect(find.text(l10n.examResultSectionPoints('4', 4)), findsNWidgets(2));
+    expect(find.text(l10n.examResultPercent(79)), findsOneWidget);
   });
 
   testWidgets('Speaking opens its four ticks as the runner left them', (

@@ -204,7 +204,8 @@ List<bool> rubricTicks(String? json) => json == null
     : (jsonDecode(json) as List<Object?>).map((t) => t == true).toList();
 
 /// What an item earns: [given] checked by `answer_check`; Writing its app
-/// points plus 2 × 0.5 for its rubric; Speaking 4 × 1 for its rubric.
+/// points plus 2 × 1 for its rubric; Speaking 4 × 1 for its rubric
+/// (BR-EXAM-03: each is worth 4).
 ///
 /// A rubric scores only what is there to assess: Writing's needs a text,
 /// and Speaking's a recording — its [given] is the recording, and a section
@@ -215,7 +216,7 @@ double itemPoints(ExamItem item, {String? given, String? rubric}) {
   return switch (item) {
     WritingTask() =>
       writingAppPoints(item, given ?? '') +
-          (textWords(given ?? '').isEmpty ? 0 : 0.5 * ticked(2)),
+          (textWords(given ?? '').isEmpty ? 0 : ticked(2)),
     SpeakingTask() => (given ?? '').trim().isEmpty ? 0 : ticked(4).toDouble(),
     // A blank answer needs no guard of its own: every check marks it wrong.
     _ => given == null ? 0 : verdictFor(item, given)!.score,

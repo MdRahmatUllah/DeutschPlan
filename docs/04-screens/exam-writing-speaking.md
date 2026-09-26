@@ -7,7 +7,7 @@ Prompt: "Write to your landlord about a broken heating. Use at least 6 of these 
 
 - FR-L12W-01 Target-word detection uses `searchKey` prefix matching on tokens (so "Heizung" matches "Heizungen"); chips turn Lime when used. A word of the text counts for one target at most, the most targets it can use once each (#388): "Beweise" is *Beweis* or *beweisen*, not both, and the same word twice is one word. Among matchings as large, a word goes to a target of its own case (#396): a capitalised word to a noun, so "die Beweise" lights *Beweis* and "wir beweisen" *beweisen*.
 - FR-L12W-02 Minimum words per level: A1 30 · A2 60 · B1 100 · B2 150 · C1 200 · C2 250.
-- FR-L12W-03 App points (2): ≥ 6 target words → 1; ≥ minimum length → 1. Rubric (2): task covered · structure — 0.5 each, ticked by the learner on the results review.
+- FR-L12W-03 App points (2): ≥ 6 target words → 1; ≥ minimum length → 1. Rubric (2): task covered · structure — 1 each, ticked by the learner on the results review.
 - FR-L12W-04 The text is stored in `exam_answers.given`; never leaves the device.
 
 Details Writing settles (#133):

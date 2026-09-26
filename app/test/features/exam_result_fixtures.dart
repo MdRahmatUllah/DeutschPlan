@@ -112,7 +112,7 @@ class StubExamResult implements ExamResultService {
   @override
   Future<void> rubric(int attemptId, int ord, List<bool> ticks) async {
     rubrics.add((ord, ticks));
-    // Graded again as the repository would: half a point a Writing tick.
+    // Graded again as the repository would: a point a Writing tick.
     final rows = <ExamResultRow>[
       for (final row in result0.rows)
         row.ord == ord
@@ -122,9 +122,8 @@ class StubExamResult implements ExamResultService {
                 given: row.given,
                 points:
                     row.points +
-                    0.5 *
-                        (ticks.where((t) => t).length -
-                            row.rubric.where((t) => t).length),
+                    ticks.where((t) => t).length -
+                    row.rubric.where((t) => t).length,
                 rubric: ticks,
                 flagged: row.flagged,
               )

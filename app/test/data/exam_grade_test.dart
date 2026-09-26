@@ -162,9 +162,9 @@ void main() {
       await answer(id, 5, 'kurz', rubric: <bool>[true, true]);
       final regraded = await exams.grade(id, passPercent: 60);
 
-      expect(regraded.scorePoints, 2);
+      expect(regraded.scorePoints, 3);
       final row = await attempt(id);
-      expect(row.scorePoints, 2);
+      expect(row.scorePoints, 3);
       expect(row.finishedAt, '2026-09-21T08:30:00Z');
     },
   );
