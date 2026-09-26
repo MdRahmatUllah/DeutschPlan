@@ -6,7 +6,7 @@ last-read: 673
 
 ## Now
 
-#421 in review as PR #500: answer review threads; re-run the gate if main moved, then merge.
+#438 fix(models): the download notification's texts are fixed at queue time (waiting sticks, the language, the counts, a failed checksum reads downloaded); T1's voice card ignores an installed voice (follow-up to #428) — claimed 2026-09-26 06:27.
 
 ## Next
 

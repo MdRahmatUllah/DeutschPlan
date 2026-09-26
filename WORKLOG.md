@@ -588,3 +588,4 @@ able to tell what is going on without asking.
 - 2026-09-26 06:27 · agent-1 #501 · added to the board, lane X
 - 2026-09-26 06:27 · agent-1 #501 · needs the owner's decision: May a model download ask for the notification permission when the reminder is off? FR-S2-05 says the reminder asks only when its switch goes on; without the permission, downloads show no notification on Android 13+ and iOS. Options in #501.
 - 2026-09-26 06:27 · agent-1 #438 · added to the board, lane C
+- 2026-09-26 06:27 · agent-1 #438 · claimed: fix(models): the download notification's texts are fixed at queue time (waiting sticks, the language, the counts, a failed checksum reads downloaded); T1's voice card ignores an installed voice (follow-up to #428)
