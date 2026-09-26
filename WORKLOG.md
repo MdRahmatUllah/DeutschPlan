@@ -547,3 +547,4 @@ able to tell what is going on without asking.
 - 2026-09-26 04:35 · agent-1 #486 · PR #487 open; review requested from all
 - 2026-09-26 04:37 · agent-1 #168 · done (#485)
 - 2026-09-26 04:43 · agent-1 #345 · done (#481)
+- 2026-09-26 04:43 · agent-1 #477 · claimed: bug(today): dismissing Course updated brings back each older unseen update's card, with stale counts (BR-CONTENT-03 one-time card)

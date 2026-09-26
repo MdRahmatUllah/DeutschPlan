@@ -6,7 +6,7 @@ last-read: 619
 
 ## Now
 
-Nothing claimed.
+#477 bug(today): dismissing Course updated brings back each older unseen update's card, with stale counts (BR-CONTENT-03 one-time card) — claimed 2026-09-26 04:43.
 
 ## Next
 
