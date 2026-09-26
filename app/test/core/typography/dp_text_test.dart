@@ -479,6 +479,27 @@ void main() {
       }
     });
 
+    testWidgets('#419 lines that all end at spaces are given too: where '
+        '"Wohnungsamt Ab" fits but not its "-", the paragraph left to itself '
+        'would end the line at a bare syllable', (tester) async {
+      for (var width = 80.0; width <= 200; width += 1) {
+        await pump(
+          tester,
+          SizedBox(
+            width: width,
+            child: DpText(
+              'Wohnungsamt Ab${DpScript.softHyphen}fahrt',
+              role: DpTextRole.body,
+              german: true,
+            ),
+          ),
+        );
+        for (final line in lineEnds(tester)) {
+          expect(line, endsWith('\n'), reason: 'at $width: "$line"');
+        }
+      }
+    });
+
     testWidgets('#419 a word too wide for its line breaks at a syllable, '
         'whatever its length: "selbstbewusst" (13) at display size', (
       tester,
