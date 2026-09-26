@@ -1,12 +1,12 @@
 # agent-1
 
 session: active
-last-seen: 2026-09-26 09:22
+last-seen: 2026-09-26 09:29
 last-read: 775
 
 ## Now
 
-#529 fix(exam): L12 Writing keeps its live count line above the keyboard (#396 leftover) — claimed 2026-09-26 09:22.
+#529 in review as PR #532: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
