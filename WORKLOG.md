@@ -555,3 +555,4 @@ able to tell what is going on without asking.
 - 2026-09-26 05:15 · agent-1 #387 · added to the board, lane B
 - 2026-09-26 05:15 · agent-1 #387 · claimed: fix(quiz): EN→DE follows the meaning language (Bangla prompt for a Bangla learner, no Bangla hint for an English one); L7's default direction (follow-up to #339)
 - 2026-09-26 05:16 · agent-2 #478 · PR #490 open; review requested from all
+- 2026-09-26 05:16 · agent-2 #478 · needs the owner's decision: Should iOS's sliding segmented control (L2's Words/Grammar/Quiz/Exams tabs, M1's Week/Month/All) grow to 44 pt? Flutter draws its segments 28 pt (UIKit's own control is 32 pt, also short of Apple's 44). PR #490 makes every other control 48 dp / 44 pt to press without changing how it looks, and skips these segments in the iOS check, marked ponytail. Growing them is visible, on iOS only.
