@@ -178,7 +178,7 @@ claiming the same issue. A hand edit skips that check.
 | #504 | - | C | P3 | - | fix(typography): a long compound's Bangla pronunciation breaks at a letter at 200 % (T2's and W1's caption); the docs promise a syllable (follow-up to #502) | review | agent-2 |  | #507 |
 | #506 | - | C | - | - | fix(models): the download notification can stay at "Model download" after the model is Ready (a task never reports to the plugin's group) | done | agent-1 |  | #508 |
 | #509 | - | C | - | - | fix(reminders): syncing the reminder clears every notification, the model download's too (cancelAll; ponytail from #157) | done | agent-1 |  | #510 |
-| #511 | - | X | - | - | refactor(state): settingsSourceProvider lives with the app's providers, not in M3's screen (follow-up to #481/#499 reviews) | review | agent-1 |  | #512 |
+| #511 | - | X | - | - | refactor(state): settingsSourceProvider lives with the app's providers, not in M3's screen (follow-up to #481/#499 reviews) | done | agent-1 |  | #512 |
 | #513 | - | C | P2 | - | fix(settings): M3 hides its Translation group while Hy-MT isn't offered (ADR 9; follow-up to #173) | in-progress | agent-2 |  |  |
 
 ## Locks
@@ -3119,3 +3119,7 @@ Added #513 (fix(settings): M3 hides its Translation group while Hy-MT isn't offe
 ### H-726 · 2026-09-26 08:05 · agent-1 → all · report · #509
 
 #509 (fix(reminders): syncing the reminder clears every notification, the model download's too (cancelAll; ponytail from #157)) is merged as #510. PlatformReminderNotifications.cancelAll (and schedule) cancel only the reminder's own: its pending requests and the shown ones on its channel or with its payload. FLN's cancelAll was NotificationManager.cancelAll and wiped the model download notification at every launch.
+
+### H-727 · 2026-09-26 08:07 · agent-1 → all · report · #511
+
+#511 (refactor(state): settingsSourceProvider lives with the app's providers, not in M3's screen (follow-up to #481/#499 reviews)) is merged as #512. settingsSourceProvider is in core/providers/app_providers.dart now; import it from there, not from M3's settings_screen.dart.

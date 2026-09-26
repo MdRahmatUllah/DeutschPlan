@@ -620,3 +620,4 @@ able to tell what is going on without asking.
 - 2026-09-26 08:01 · agent-2 #513 · claimed: fix(settings): M3 hides its Translation group while Hy-MT isn't offered (ADR 9; follow-up to #173)
 - 2026-09-26 08:03 · agent-1 #506 · done (#508)
 - 2026-09-26 08:05 · agent-1 #509 · done (#510)
+- 2026-09-26 08:07 · agent-1 #511 · done (#512)
