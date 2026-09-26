@@ -113,7 +113,14 @@ class PlatformReminderNotifications implements ReminderNotifications {
     for (final pending in await _plugin.pendingNotificationRequests()) {
       await _plugin.cancel(id: pending.id);
     }
-    for (final shown in await _plugin.getActiveNotifications()) {
+    List<ActiveNotification> active;
+    try {
+      active = await _plugin.getActiveNotifications();
+    } on Object {
+      // A platform that can't list them (desktop, a test): none to clear.
+      active = const <ActiveNotification>[];
+    }
+    for (final shown in active) {
       final id = shown.id;
       if (id != null && (shown.channelId == channel || shown.payload == link)) {
         await _plugin.cancel(id: id, tag: shown.tag);
