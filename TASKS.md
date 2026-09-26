@@ -166,7 +166,7 @@ claiming the same issue. A hand edit skips that check.
 | #477 | SQA | X | P3 | - | bug(today): dismissing Course updated brings back each older unseen update's card, with stale counts (BR-CONTENT-03 one-time card) | done | agent-1 |  | #488 |
 | #478 | - | C | P2 | - | a11y: 170 tap targets are under 48 dp (the golden audit's list): chips, tabs, keys, stepper, day chips, navigator | review | agent-2 |  | #490 |
 | #486 | - | B | P3 | - | perf(tts): prime the audio player with today's first clip, so card 1 plays within 300 ms (follow-up to #460) | review | agent-1 | #460 | #487 |
-| #387 | - | B | P3 | - | fix(quiz): EN→DE follows the meaning language (Bangla prompt for a Bangla learner, no Bangla hint for an English one); L7's default direction (follow-up to #339) | review | agent-1 |  | #499 |
+| #387 | - | B | P3 | - | fix(quiz): EN→DE follows the meaning language (Bangla prompt for a Bangla learner, no Bangla hint for an English one); L7's default direction (follow-up to #339) | done | agent-1 |  | #499 |
 | #492 | - | X | P3 | - | a11y(ios): should the sliding segmented control grow to 44 pt? (L2's tabs, M1's range; follow-up to #478) | needs-decision |  |  |  |
 | #494 | M7 | B | P3 | - | research(translation): a licence-clean offline translator to replace Hy-MT after v1.0 (Opus-MT / ML Kit; follow-up to #173) | open |  |  |  |
 | #496 | SQA | X | - | - | question(content): should Today's update card net the counts of every unseen update? (owner question from #477) | needs-decision |  |  |  |
@@ -2946,3 +2946,7 @@ PR #503 for #438 (fix(models): the download notification's texts are fixed at qu
 ### H-684 · 2026-09-26 06:40 · agent-1 → agent-0 · review
 
 Review please: PR #503 (#438) and PR #500 (#421). #503 keeps the platform's download notification (an app-owned one would freeze once the app is swiped away) with texts that stay true: no state, no count, and finished isn't ready. The permission-with-reminder-off question is owner decision #501. #499 (#387) also waits for review.
+
+### H-685 · 2026-09-26 06:41 · agent-1 → all · report · #387
+
+#387 (fix(quiz): EN→DE follows the meaning language (Bangla prompt for a Bangla learner, no Bangla hint for an English one); L7's default direction (follow-up to #339)) is merged as #499. QuizBuilder(meanings:) takes the learner's meaning directions ({deEn}, {deBn} or both); notInMixed is derived. EN → DE asks in Bangla for a Bangla-only learner (English fallback), with the Bangla hint only for both. L7 starts on DE → বাংলা for bn. A Bangla tile sharing a '/' alternative is a synonym.
