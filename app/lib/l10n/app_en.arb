@@ -1284,9 +1284,9 @@
   "@todayRestStudyDays": {
     "description": "TodayRest link into the study-days setting."
   },
-  "todayReviseOptional": "{count} due · optional today",
+  "todayReviseOptional": "{count} words · optional today",
   "@todayReviseOptional": {
-    "description": "TodayRest Revise card subtitle.",
+    "description": "TodayRest Revise card subtitle: the words a rest day offers to revise, due or not yet (BR-PLAN-03 fills the block), so 'words', not 'due' (#345).",
     "placeholders": {
       "count": {
         "type": "int",
@@ -1301,6 +1301,15 @@
   "todayRestLighterLead": "Revising anyway keeps tomorrow lighter:",
   "@todayRestLighterLead": {
     "description": "TodayRest note, second sentence; shown only with the numbers after it."
+  },
+  "todayRestLighterLeadDay": "Revising anyway keeps {weekday} lighter:",
+  "@todayRestLighterLeadDay": {
+    "description": "TodayRest note, second sentence, when tomorrow is a rest day too: weekday is the next study day's name in the UI language (Monday). Shown only with the numbers after it (#345).",
+    "placeholders": {
+      "weekday": {
+        "type": "String"
+      }
+    }
   },
   "todayRestLighter": "{before} → {after} revisions.",
   "@todayRestLighter": {
