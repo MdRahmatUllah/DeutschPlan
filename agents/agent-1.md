@@ -6,7 +6,7 @@ last-read: 669
 
 ## Now
 
-#387 in review as PR #499: answer review threads; re-run the gate if main moved, then merge.
+#421 fix(words): W1 scrolls its back row under the status bar with no strip (as R2 did, follow-up to #390) — claimed 2026-09-26 06:17.
 
 ## Next
 
