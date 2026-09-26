@@ -371,11 +371,18 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
     final settled = clozeState == null || !clozeState.isLoading;
     final cloze = clozeState?.value;
 
+    // #564, as L8 (#554) and L15 (#557): typing a cloze's answer at large
+    // text, the field, its umlaut row and *Check* filled the room above the
+    // keyboard and the sentence went under the top bar. The bar gives its
+    // row to the card until the keyboard goes (and the field stops keeping
+    // *Check* in view, `StudyAnswerField`).
+    final typing = DpScript.largeTyping(context);
     final body = SafeArea(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           _TopBar(
+            collapsed: typing,
             label: label,
             onClose: _close,
             onMenu: item == null
@@ -549,14 +556,23 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
 
 /// Close · "Revise · 4 / 10" · the overflow menu.
 class _TopBar extends StatelessWidget {
-  const _TopBar({required this.label, required this.onClose, this.onMenu});
+  const _TopBar({
+    required this.label,
+    required this.onClose,
+    this.onMenu,
+    this.collapsed = false,
+  });
 
   final String label;
+
+  /// Typing at large text, nothing: its row is the card's (#564).
+  final bool collapsed;
   final VoidCallback onClose;
   final VoidCallback? onMenu;
 
   @override
   Widget build(BuildContext context) {
+    if (collapsed) return const SizedBox.shrink();
     final tokens = context.tokens;
     final l10n = AppLocalizations.of(context);
     Widget action(IconData icon, String semantic, VoidCallback? onTap) =>

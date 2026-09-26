@@ -23,6 +23,7 @@ import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 
+import '../core/text_clipping.dart' show AndroidTextScaler;
 import '../services/fake_tts.dart';
 
 import '../db/content_fixture.dart';
@@ -91,6 +92,7 @@ VALUES ('$strasse', 'learning', '2026-09-10', '2026-09-21', 4.5, 5.2, 2, 0,
     String? example,
     bool voice = true,
     bool chosen = false,
+    TextScaler? textScaler,
   }) async {
     spoken = <String>[];
     await tester.runAsync(
@@ -114,6 +116,12 @@ VALUES ('$strasse', 'learning', '2026-09-10', '2026-09-21', 4.5, 5.2, 2, 0,
           theme: AppTheme.light(),
           localizationsDelegates: appLocalizationsDelegates,
           supportedLocales: supportedLocales,
+          builder: textScaler == null
+              ? null
+              : (context, child) => MediaQuery(
+                  data: MediaQuery.of(context).copyWith(textScaler: textScaler),
+                  child: child!,
+                ),
           home: const StudyScreen(args: args),
         ),
       ),
@@ -435,5 +443,90 @@ VALUES ('$haus', 'learning', 8, 5, 2, 0, 2, 'cloze')
     ]);
     expect(cloze?.example.german, 'Das Haus ist groß.');
     expect(cloze?.gap, (start: 4, end: 8));
+  });
+
+  group('T2 #564 a cloze typed with the keyboard up', () {
+    const keyboardTop = 731.0 - 300;
+
+    // SQA's 731 dp phone, its status bar, and a 300 dp keyboard.
+    Future<void> typing(
+      WidgetTester tester,
+      TextScaler textScaler, {
+      String? example,
+    }) async {
+      tester.view
+        ..physicalSize = const Size(390, 731) * 3
+        ..devicePixelRatio = 3
+        ..padding = const FakeViewPadding(top: 24 * 3);
+      addTearDown(tester.view.reset);
+      await pump(tester, textScaler: textScaler, example: example);
+      await tester.showKeyboard(find.byType(TextField));
+      tester.view.viewInsets = const FakeViewPadding(bottom: 300 * 3);
+      addTearDown(tester.view.resetViewInsets);
+      await tester.pumpAndSettle();
+    }
+
+    Finder close() => find.byIcon(Icons.close);
+
+    for (final (percent, example) in <(int, String?)>[
+      (200, null),
+      (150, null),
+      // Three lines at 200 %.
+      (200, 'Die Straße vor unserem Haus ist lang.'),
+    ]) {
+      testWidgets(
+        'at $percent %${example == null ? '' : ', three lines,'} the sentence and its translation show whole '
+        "above the field; the top bar comes back with the keyboard's going",
+        (tester) async {
+          await typing(
+            tester,
+            AndroidTextScaler(percent / 100),
+            example: example,
+          );
+          expect(
+            tester
+                .widget<EditableText>(find.byType(EditableText))
+                .focusNode
+                .hasFocus,
+            isTrue,
+            reason: 'the field kept the keyboard',
+          );
+          expect(close(), findsNothing, reason: 'the top bar gave its row');
+          final window = tester.getRect(
+            find
+                .ancestor(
+                  of: find.byType(TextField),
+                  matching: find.byType(Scrollable),
+                )
+                .first,
+          );
+          for (final (name, shown) in <(String, Finder)>[
+            (
+              'the sentence',
+              find.textContaining('ist lang', findRichText: true).first,
+            ),
+            ('the translation', find.text('The street is long.')),
+            ('the field', find.byType(TextField)),
+          ]) {
+            final rect = tester.getRect(shown);
+            expect(rect.top, greaterThanOrEqualTo(window.top), reason: name);
+            expect(rect.bottom, lessThanOrEqualTo(window.bottom), reason: name);
+          }
+          expect(
+            tester.getRect(find.byType(DpUmlautBar)).bottom,
+            lessThanOrEqualTo(keyboardTop),
+          );
+
+          tester.view.resetViewInsets();
+          await tester.pumpAndSettle();
+          expect(close(), findsOneWidget, reason: 'the top bar is back');
+        },
+      );
+    }
+
+    testWidgets('at 100 % the keyboard keeps the top bar', (tester) async {
+      await typing(tester, TextScaler.noScaling);
+      expect(close(), findsOneWidget);
+    });
   });
 }
