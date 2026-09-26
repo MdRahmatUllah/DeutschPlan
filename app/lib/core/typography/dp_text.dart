@@ -258,9 +258,11 @@ abstract final class DpScript {
   /// [largeTyping] for a widget inside a scaffold's body, where the inset is
   /// gone: read from the view (T2's cloze and its field, #565, #572).
   ///
-  /// ponytail: the view is no dependency; the screens above rebuild on the
-  /// keyboard (their collapsed headers read [largeTyping]), and so what they
-  /// hold. Pass `typing` down if one of them ever stops rebuilding it.
+  /// ponytail: the view is no dependency. Past 130 % the screens above
+  /// rebuild on the keyboard (their collapsed headers read [largeTyping],
+  /// which reads the inset once [large]), and so what they hold; at 130 %
+  /// and below nothing rebuilds on it, and none is needed, [large] being
+  /// false. Pass `typing` down if a screen ever stops rebuilding it.
   static bool largeTypingInView(BuildContext context) =>
       large(context) && View.of(context).viewInsets.bottom > 0;
 

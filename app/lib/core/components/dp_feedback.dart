@@ -48,7 +48,8 @@ class DpUmlautBar extends StatelessWidget {
   /// row's 8 dp gap and its keys, as tall as they draw, then [below]: what
   /// else must show under it.
   /// [margin] under the keys: 20 dp as Flutter's own padding, less where
-  /// the room above the keyboard is short (T2 typing past 130 %, #572).
+  /// the room above the keyboard is short: `StudyAnswerField` typing past
+  /// 130 %, so T2's cloze and L15's gap (#572).
   static EdgeInsets scrollPadding(
     BuildContext context, {
     double below = 0,

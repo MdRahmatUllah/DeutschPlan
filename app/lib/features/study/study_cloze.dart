@@ -106,6 +106,10 @@ class _StudyClozeCardState extends ConsumerState<StudyClozeCard> {
     // #572, the lead's rule from #571 (reduce first, then scroll): typing
     // past 130 % on a 360 × 640 phone the sentence went under the top.
     // What is asked is a role smaller, and the gaps and the field close.
+    // ponytail: on that phone with a 280 dp keyboard, three lines (about
+    // 37 letters) fit at 200 %; a longer sentence scrolls, field first, as
+    // L8's and L12's do (#573): the field and its umlaut row stay in view,
+    // and a drag shows the sentence. The next lever: a second role down.
     final typing = DpScript.largeTypingInView(context);
     DpTextRole asked(DpTextRole role) => typing ? role.oneStepSmaller : role;
     final line = DpText.styleFor(
@@ -334,8 +338,9 @@ class StudyAnswerField extends StatelessWidget {
               below: DpScript.large(context)
                   ? 0
                   : 12 + DpButton.minimumTapTarget,
-              // Typing past 130 %, 8 dp of the margin under the keys go to a
-              // three-line cloze on a 360 × 640 phone (#572).
+              // Typing past 130 %, 8 dp of the margin under the keys go to
+              // what is asked: T2's cloze (a three-line one fits a 360 × 640
+              // phone) and L15's gap, which this field also serves (#572).
               margin: typing ? 12 : 20,
             )
           : const EdgeInsets.all(20),
