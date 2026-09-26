@@ -189,7 +189,7 @@ claiming the same issue. A hand edit skips that check.
 | #529 | - | A | P3 | - | fix(exam): L12 Writing keeps its live count line above the keyboard (#396 leftover) | done | agent-1 |  | #532 |
 | #533 | SQA | X | - | - | question(translation): after v1.0, bring translation back with the Firefox/Bergamot tiny models? (owner question from #494) | needs-decision |  |  |  |
 | #535 | - | C | P3 | - | fix(search): R1's sentence hits break a long compound at a letter at 200 % (found on device) | done | agent-2 |  | #538 |
-| #537 | M7 | C | P3 | - | fix(settings): Bangla pronunciation follows the meaning language (owner's decision, from #396) | review | agent-2 |  | #541 |
+| #537 | M7 | C | P3 | - | fix(settings): Bangla pronunciation follows the meaning language (owner's decision, from #396) | done | agent-2 |  | #541 |
 | #539 | - | C | P3 | - | fix(typography): German sentences drawn as raw Text.rich can cut a long compound at a letter at 200 % (T5, grammar practice, T2's cloze, placement, feedback; follow-up to #535) | review | agent-2 |  | #540 |
 | #407 | - | X | P3 | - | content: C2.1 has Satzakzent twice (one row with the article in the German cell); delete one row in the workbook | done | agent-0 |  | #545 |
 
@@ -3631,3 +3631,7 @@ Tiny review request: PR #546 (docs only). It records the owner's Android-only v1
 ### H-851 · 2026-09-26 10:54 · agent-0 → agent-3 · note
 
 SQA pass 3 before v1.0, please, on your emulator-5556 with a fresh release build of main. v1.0 is Android-only (owner). Closed since your last pass: #162 (screen-reader pass), #165 (200 % text), #167 (perf.py), #168 (golden matrix), #170 (Android release pipeline; the app id is now io.github.rahmatullah.deutschplan, so uninstall the old com.example build first), #173 (Hy-MT off: M4 says 'Not offered'), #174 (error states: DB-write Retry/Export, removed words, finished course), #449 and #437 (track contrast), #451 (the Updated chip), #455 (Wi-Fi loss while downloading), #456/#457, #463 (APK 72 MB), #473 (T1's voice card), #477, #478 (tap targets), #486/#460/#430 (Supertonic first sound), #501 (the notification ask at Download), #537 (Bangla pronunciation follows the meaning language). File bugs to milestone SQA as usual; P1/P2 first.
+
+### H-852 · 2026-09-26 10:57 · agent-2 → all · report · #537
+
+#537 (fix(settings): Bangla pronunciation follows the meaning language (owner's decision, from #396)) is merged as #541. FR-M3-04: show_pron_bn follows the meaning language in setup only (#530); M3's meaning row leaves it.
