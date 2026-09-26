@@ -134,6 +134,32 @@ VALUES ('$strasse', 'learning', '2026-09-10', '2026-09-21', 4.5, 5.2, 2, 0,
     await tester.pumpAndSettle();
   }
 
+  testWidgets('#515 on focus, the answer scrolls up with its umlaut row and '
+      '*Check* above the keyboard', (tester) async {
+    await pump(tester);
+    await tester.tap(find.byType(StudyAnswerField));
+    await tester.pump();
+    // A keyboard with its suggestion bar: 350 dp of the 600 left.
+    // Physical pixels: the test view is 800 × 600 at 3.0.
+    tester.view.viewInsets = const FakeViewPadding(bottom: 250 * 3);
+    addTearDown(tester.view.resetViewInsets);
+    await tester.pumpAndSettle();
+
+    const keyboardTop = 600.0 - 250;
+    expect(
+      tester.getRect(find.byType(DpUmlautBar)).bottom,
+      lessThanOrEqualTo(keyboardTop),
+      reason: 'the umlaut row, whole',
+    );
+    expect(
+      tester
+          .getRect(find.widgetWithText(DpButton, l10n.studyClozeCheck))
+          .bottom,
+      lessThanOrEqualTo(keyboardTop),
+      reason: 'and Check',
+    );
+  });
+
   testWidgets('FR-T2-10 a cloze word: the gap, not the front', (tester) async {
     await pump(tester);
 

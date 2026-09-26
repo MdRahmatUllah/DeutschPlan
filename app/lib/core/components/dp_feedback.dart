@@ -40,6 +40,22 @@ class DpUmlautBar extends StatelessWidget {
   /// The capital sharp s exists in Unicode and on no keyboard at all.
   static const String capitalSharpS = 'ẞ';
 
+  /// A German field's `scrollPadding` when this row sits under it: how far
+  /// the page scrolls the field up from the keyboard on focus. Flutter's
+  /// 20 dp alone left the keys cut at the keyboard's edge (#396, #515). The
+  /// row's 8 dp gap and its keys, grown as their text grows, then [below]:
+  /// what else must show under it.
+  static EdgeInsets scrollPadding(BuildContext context, {double below = 0}) =>
+      EdgeInsets.fromLTRB(
+        20,
+        20,
+        20,
+        20 +
+            8 +
+            DpScript.grow(context, keyHeight, role: DpTextRole.title) +
+            below,
+      );
+
   /// Inserts [text] at the cursor, replacing any selection, and leaves the
   /// caret after it.
   static void insert(TextEditingController controller, String text) {

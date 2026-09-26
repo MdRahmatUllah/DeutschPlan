@@ -280,6 +280,12 @@ class StudyAnswerField extends StatelessWidget {
       autocorrect: false,
       enableSuggestions: false,
       textInputAction: TextInputAction.done,
+      // T2's cloze and grammar practice: the umlaut row under it, then 12 dp
+      // and *Check*, all above the keyboard on focus (#515).
+      scrollPadding: DpUmlautBar.scrollPadding(
+        context,
+        below: 12 + DpButton.minimumTapTarget,
+      ),
       onSubmitted: (_) => onSubmitted(),
       style: DpText.styleFor(
         tokens,
