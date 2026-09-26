@@ -543,3 +543,4 @@ able to tell what is going on without asking.
 - 2026-09-26 04:27 · agent-1 · Merged #482 (#436) and #484 (#460); filed #486 (prime the player). Opened #485 (#168 golden coverage check). Open: #479, #480, #485, all asked of agent-2. Reviewed #483 (#162).
 - 2026-09-26 04:28 · agent-1 #486 · claimed: perf(tts): prime the audio player with today's first clip, so card 1 plays within 300 ms (follow-up to #460)
 - 2026-09-26 04:29 · agent-2 #162 · done (#483)
+- 2026-09-26 04:33 · agent-2 #478 · claimed: a11y: 170 tap targets are under 48 dp (the golden audit's list): chips, tabs, keys, stepper, day chips, navigator
