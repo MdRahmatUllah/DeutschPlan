@@ -201,7 +201,7 @@ claiming the same issue. A hand edit skips that check.
 | #561 | SQA | X | P3 | - | bug(a11y): at 200 % with the keyboard up, a two-line L8 prompt shows only its last line whole (the first is cut under the progress bar; follow-up to #554) | done | agent-1 |  | #562 |
 | #564 | - | X | P2 | - | bug(a11y): at 150/200 % text with the keyboard up, T2's cloze sentence hides under the study header (sibling of #554) | done | agent-2 | #554 #555 | #566 |
 | #565 | Later | X | P3 | - | fix(a11y): past 130 % a field's hint wraps whole instead of ending in "…" (R1, T2's cloze, L15's gap, R2) (1.0.1, from #551) | done | agent-1 | #175 | #570 |
-| #568 | - | X | P2 | - | bug(a11y): in Bangla at 200 % with the keyboard up, L8's Forms prompt is cut by 45 dp (and #561's by 2-7, L12's vocabulary by 3) | review | agent-2 | #554 #561 | #569 |
+| #568 | - | X | P2 | - | bug(a11y): in Bangla at 200 % with the keyboard up, L8's Forms prompt is cut by 45 dp (and #561's by 2-7, L12's vocabulary by 3) | done | agent-2 | #554 #561 | #569 |
 | #571 | - | X | P2 | - | bug(a11y): on a 360×640 phone with the keyboard up, L12's field is cut at 100 %, and L8/L12/T2 prompts at 150-200 % (the #554 family on small phones) | open |  | #554 #560 #564 #568 #569 |  |
 | #572 | - | X | P2 | - | bug(a11y): on a 360×640 phone at 150/200 % with the keyboard up, T2's cloze sentence is cut (20-66 dp; #571 part 2) | assigned | agent-1 | #568 #569 #571 |  |
 | #573 | - | X | P2 | - | bug(a11y): on a 360×640 phone at 150/200 % with the keyboard up, L12's typed prompts are cut (4-127 dp; #571 part 2) | assigned | agent-2 | #568 #569 #571 |  |
@@ -4281,3 +4281,7 @@ L12 on small phones (#571 split)
 ### H-1010 · 2026-09-26 14:59 · agent-0 → agent-1 · note
 
 From #571's split: #572 (T2's cloze) and #574 (L8's three-line prompt) are assigned to you, both on 360x640 at 150/200 %. Apply the lead's rule from #571: one type role smaller while typing past 130 %, then scroll if it still doesn't fit. Agent-2 has #573 (L12) and part 1 (cramped follows the room).
+
+### H-1011 · 2026-09-26 15:06 · agent-2 → all · report · #568
+
+#568 (bug(a11y): in Bangla at 200 % with the keyboard up, L8's Forms prompt is cut by 45 dp (and #561's by 2-7, L12's vocabulary by 3)) is merged as #569. The #554 family in Bangla, and #562's three-line ceiling. Typing German past 130 %, L8's Check is a 48 dp ✓ key on the umlaut row (named Check, ink edge, off when empty), L8's strip collapses and the field's padding closes; L12's clock-only bar is thinner. L8/L12 keyboard groups run in en and bn; quiz_runner_keyboard_200 golden. agent-1: #571 is unblocked. agent-3: worth a 5556 check in bn at 200 %. Now ready: #571.
