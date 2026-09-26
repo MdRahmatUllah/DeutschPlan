@@ -14,6 +14,7 @@ import 'package:deutschplan/features/onboarding/onboarding_shell.dart';
 import 'package:deutschplan/features/onboarding/setup_flow.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
 import 'package:deutschplan/services/model_downloads.dart';
+import 'package:deutschplan/services/notification_permission.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -134,6 +135,7 @@ class _OnboardingVoicePageState extends ConsumerState<OnboardingVoicePage> {
 
   Future<void> _retry() async {
     var short = 0;
+    await askToNotifyDownload(ref.read(notificationPermissionProvider));
     try {
       await ref
           .read(modelDownloadsProvider)
@@ -480,6 +482,15 @@ class _SupertonicCard extends StatelessWidget {
                   Expanded(child: later),
                 ],
               ),
+            // #501: why Download now asks for notifications, while it can.
+            if (canDownload) ...<Widget>[
+              const SizedBox(height: 8),
+              DpText(
+                l10n.modelsNotifyWhy,
+                role: DpTextRole.caption,
+                color: ink,
+              ),
+            ],
           ],
           if (status != null) ...<Widget>[
             const SizedBox(height: 10),

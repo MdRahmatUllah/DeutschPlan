@@ -26,3 +26,16 @@ class PlatformNotificationPermission implements NotificationPermission {
   @override
   Future<bool> openSettings() => openAppSettings();
 }
+
+/// #501 (the owner's decision): a model download the learner starts asks
+/// to post its progress (Android 13+, iOS), a line on screen saying why
+/// (`modelsNotifyWhy`). The reminder asks only when switched on (FR-S2-05);
+/// this is the only other asker. A refusal, or no plugin, still downloads:
+/// it just goes without a notification.
+Future<void> askToNotifyDownload(NotificationPermission permission) async {
+  try {
+    await permission.request();
+  } on Object {
+    // No notification, not no download.
+  }
+}

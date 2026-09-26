@@ -961,6 +961,7 @@
   "modelsFailedNote": "ডাউনলোড থেমে গেছে, বা একটি ফাইল যাচাইয়ে মেলেনি। আবার চেষ্টা করলে যা বাকি তা আনবে।",
   "modelsNoSpaceNote": "ডাউনলোড করতে ফোনে {size} খালি করুন",
   "modelsHymtGated": "অ্যাপের এই সংস্করণে এটি নেই",
+  "modelsNotifyWhy": "ডাউনলোডের অগ্রগতি নোটিফিকেশনে দেখাতে অনুমতি চাইবে",
   "modelsVoiceLabel": "ভয়েস",
   "modelsVoicePlay": "{voice} শুনুন",
   "modelsDeleteTitle": "{model} মুছবেন?",

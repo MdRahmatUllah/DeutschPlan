@@ -17,6 +17,7 @@ import 'package:deutschplan/l10n/generated/app_localizations.dart';
 import 'package:deutschplan/l10n/ui_digits.dart';
 import 'package:deutschplan/services/device_storage.dart';
 import 'package:deutschplan/services/model_downloads.dart';
+import 'package:deutschplan/services/notification_permission.dart';
 import 'package:deutschplan/services/tts/supertonic_tts.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
@@ -452,6 +453,8 @@ class _ModelCardView extends ConsumerWidget {
     // of the voice that the learner starts, once the manager takes it,
     // chooses Supertonic, as deleting it chose the phone's voice.
     Future<void> download() async {
+      // #501: the progress in a notification, asked for first.
+      await askToNotifyDownload(ref.read(notificationPermissionProvider));
       await downloads.start(id);
       if (_isVoice) {
         await ref
@@ -538,11 +541,14 @@ class _ModelCardView extends ConsumerWidget {
                 // A download that failed is retried; files on the phone that
                 // broke are fetched again from the start, space checked.
                 onPressed: () => unawaited(
-                  act(
-                    () => card.live == null
+                  act(() async {
+                    await askToNotifyDownload(
+                      ref.read(notificationPermissionProvider),
+                    );
+                    return card.live == null
                         ? downloads.start(id)
-                        : downloads.retry(id),
-                  ),
+                        : downloads.retry(id);
+                  }),
                 ),
               ),
               if (card.installed.bytesOnDisk > 0) deleteButton,
@@ -573,6 +579,8 @@ class _ModelCardView extends ConsumerWidget {
               ),
             ],
           ),
+          // #501: why Download asks for notifications.
+          if (!gated) note(l10n.modelsNotifyWhy),
         ];
     }
   }

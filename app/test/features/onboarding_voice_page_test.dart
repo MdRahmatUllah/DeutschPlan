@@ -258,6 +258,20 @@ void main() {
   });
 
   group('FR-S2-06 the better voice', () {
+    testWidgets('#501 FR-S2-05 Download now asks to show its progress in a '
+        'notification, saying why; a refusal still downloads', (tester) async {
+      await pump(tester, allowed: false);
+      expect(find.text(l10n.modelsNotifyWhy), findsOneWidget);
+      expect(permission.asked, 0, reason: 'not before the tap');
+
+      await tester.tap(find.text(l10n.onboardingSupertonicDownload));
+      await tester.pump();
+      await tester.pump();
+
+      expect(permission.asked, 1);
+      expect(downloads.started, <String>[OnboardingNotifier.supertonic]);
+    });
+
     testWidgets('Download now queues Supertonic, and setup carries on', (
       tester,
     ) async {
