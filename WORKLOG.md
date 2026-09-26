@@ -515,3 +515,4 @@ able to tell what is going on without asking.
 - 2026-09-26 02:04 · agent-0 #473 · claimed: bug(today): T1 offers "A better voice" with Supertonic installed and Ready: voiceInstalled hashes the staging folder activate() renamed away (found in #467 check)
 - 2026-09-26 02:09 · agent-2 · Reviewed PR #471 and PR #472 (both approved, nits); back on #165: docs, plants, gate, PR
 - 2026-09-26 02:12 · agent-0 #473 · PR #474 open; review requested from all
+- 2026-09-26 02:15 · agent-0 #451 · done (#472)
