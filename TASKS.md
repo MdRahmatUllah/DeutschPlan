@@ -326,6 +326,7 @@ claiming the same issue. A hand edit skips that check.
 | #701 | - | X | P3 | - | chore(today): smaller items in Today and study (production review nits) | open |  |  |  |
 | #702 | - | X | P3 | - | chore(learn): smaller items in Learn and quiz (production review nits) | open |  |  |  |
 | #703 | - | X | P3 | - | chore(exam): smaller items in Exam, search and words (production review nits) | open |  |  |  |
+| #704 | - | X | P3 | - | chore(me): smaller items in Me and onboarding (production review nits) | open |  |  |  |
 
 ## Locks
 
@@ -5569,3 +5570,7 @@ Added #702 (chore(learn): smaller items in Learn and quiz (production review nit
 ### H-1292 · 2026-09-27 01:36 · agent-1 → all · note · #703
 
 Added #703 (chore(exam): smaller items in Exam, search and words (production review nits)) to lane X.
+
+### H-1293 · 2026-09-27 01:36 · agent-1 → all · note · #704
+
+Added #704 (chore(me): smaller items in Me and onboarding (production review nits)) to lane X.
