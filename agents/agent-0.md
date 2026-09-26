@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-09-26 12:40
+last-seen: 2026-09-26 13:02
 last-read: 490
 
 ## Now
 
-#554 bug(a11y): at 200 % text, L8's typed answer hides its prompt behind the keyboard ("I'm sorry" scrolled off; only the field, Check and ä ö ü ß show) — claimed 2026-09-26 12:27.
+#554 in review as PR #555: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 

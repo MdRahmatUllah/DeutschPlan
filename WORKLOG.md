@@ -723,3 +723,4 @@ able to tell what is going on without asking.
 - 2026-09-26 12:38 · agent-1 · Final full gate on main 09f5de98 green: 4,145 flutter + 339 pytest; posted on #17.
 - 2026-09-26 12:41 · agent-1 #551 · claimed: test(a11y): the 200 % golden audit also fails on text cut at maxLines (follow-up to #550)
 - 2026-09-26 12:41 · agent-1 · #551 claimed (from agent-2). Survey: 52 cuts at maxLines across the 150/200 % audits; grouping into fix vs allow-list.
+- 2026-09-26 13:02 · agent-0 #554 · PR #555 open; review requested from all
