@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-09-26 09:53
+last-seen: 2026-09-26 09:54
 last-read: 794
 
 ## Now
 
-Nothing claimed.
+#535 fix(search): R1's sentence hits break a long compound at a letter at 200 % (found on device) — claimed 2026-09-26 09:54.
 
 ## Next
 
