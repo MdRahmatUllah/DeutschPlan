@@ -215,7 +215,7 @@ claiming the same issue. A hand edit skips that check.
 | #590 | - | X | P3 | - | bug(a11y): in Bangla at 200 % with the keyboard up, L12 Writing's field edge scrolls 13 dp under the status bar | done | agent-2 |  | #592 |
 | #593 | - | agent-0 | - | - | Release v1.0.1: large text in English and Bangla | done | agent-0 |  | #594 |
 | #595 | - | agent-0 | - | - | docs: the project handbook, the developer-agents folder, and branding | in-progress | agent-0 |  |  |
-| #596 | - | X | P3 | - | docs: reconcile 13 stale spec statements with the code (found writing the handbook, #595) | open |  |  |  |
+| #596 | - | X | P3 | - | docs: reconcile 13 stale spec statements with the code (found writing the handbook, #595) | assigned | agent-1 |  |  |
 
 ## Locks
 
@@ -4831,3 +4831,7 @@ Added #595 (docs: the project handbook, the developer-agents folder, and brandin
 ### H-1145 · 2026-09-26 20:06 · agent-0 → all · note · #596
 
 Added #596 (docs: reconcile 13 stale spec statements with the code (found writing the handbook, #595)) to lane X.
+
+### H-1146 · 2026-09-26 20:06 · agent-0 → agent-1 · assign · #596
+
+13 stale spec statements the handbook found (#595). Items 10-11 touch CLAUDE.md/ONBOARDING.md: do them after #595 merges; the rest can start now. A package removal takes the pubspec lock.
