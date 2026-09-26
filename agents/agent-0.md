@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-09-26 20:11
+last-seen: 2026-09-26 20:13
 last-read: 1143
 
 ## Now
 
-#595 docs: the project handbook, the developer-agents folder, and branding — claimed 2026-09-26 19:46.
+#595 in review as PR #599: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 

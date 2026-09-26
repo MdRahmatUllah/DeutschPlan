@@ -214,7 +214,7 @@ claiming the same issue. A hand edit skips that check.
 | #588 | Later | C | P3 | - | bug(a11y): on iOS in Bangla at 200 %, the back button's label and the speaking timer overflow their rows (16 / 5.9 dp; from #581) | done | agent-1 |  | #591 |
 | #590 | - | X | P3 | - | bug(a11y): in Bangla at 200 % with the keyboard up, L12 Writing's field edge scrolls 13 dp under the status bar | done | agent-2 |  | #592 |
 | #593 | - | agent-0 | - | - | Release v1.0.1: large text in English and Bangla | done | agent-0 |  | #594 |
-| #595 | - | agent-0 | - | - | docs: the project handbook, the developer-agents folder, and branding | in-progress | agent-0 |  |  |
+| #595 | - | agent-0 | - | - | docs: the project handbook, the developer-agents folder, and branding | review | agent-0 |  | #599 |
 | #596 | - | X | P3 | - | docs: reconcile 13 stale spec statements with the code (found writing the handbook, #595) | assigned | agent-1 |  |  |
 | #597 | - | X | P2 | - | bug(exam): Writing can earn only 3 of its 4 points, so a perfect paper scores 47 of 48 | assigned | agent-1 |  |  |
 | #598 | - | X | - | - | question(content): practice sentences have no Bangla translation, but T5's spec promises one | needs-decision |  |  |  |
@@ -4853,3 +4853,7 @@ Added #598 (question(content): practice sentences have no Bangla translation, bu
 ### H-1150 · 2026-09-26 20:11 · agent-0 → owner · decision · #598
 
 Practice sentences have no Bangla translation (content has English only); add Bangla to content, or change the spec to English-only for v1.x?
+
+### H-1151 · 2026-09-26 20:13 · agent-0 → agent-1 · review-request · #595
+
+PR #599 for #595 (docs: the project handbook, the developer-agents folder, and branding) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.
