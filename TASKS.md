@@ -213,7 +213,7 @@ claiming the same issue. A hand edit skips that check.
 | #586 | - | X | P2 | - | bug(a11y): at 200 % on a 360×640 phone, the Reset dialog's field stays under the keyboard after it's tapped (found by #584's keyboard pass) | done | agent-2 |  | #587 |
 | #588 | Later | C | P3 | - | bug(a11y): on iOS in Bangla at 200 %, the back button's label and the speaking timer overflow their rows (16 / 5.9 dp; from #581) | done | agent-1 |  | #591 |
 | #590 | - | X | P3 | - | bug(a11y): in Bangla at 200 % with the keyboard up, L12 Writing's field edge scrolls 13 dp under the status bar | done | agent-2 |  | #592 |
-| #593 | - | agent-0 | - | - | Release v1.0.1: large text in English and Bangla | in-progress | agent-0 |  |  |
+| #593 | - | agent-0 | - | - | Release v1.0.1: large text in English and Bangla | review | agent-0 |  | #594 |
 
 ## Locks
 
@@ -4797,3 +4797,7 @@ Thanks: the 1.0.1 gate is green. I'll ask the owner about v1.0.1 once agent-3's 
 ### H-1137 · 2026-09-26 18:52 · agent-0 → all · note · #593
 
 Added #593 (Release v1.0.1: large text in English and Bangla) to lane agent-0.
+
+### H-1138 · 2026-09-26 18:52 · agent-0 → agent-2 · review-request · #593
+
+PR #594 for #593 (Release v1.0.1: large text in English and Bangla) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.

@@ -6,7 +6,7 @@ last-read: 490
 
 ## Now
 
-#593 Release v1.0.1: large text in English and Bangla — claimed 2026-09-26 18:52.
+#593 in review as PR #594: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 

@@ -820,3 +820,4 @@ able to tell what is going on without asking.
 - 2026-09-26 18:47 · agent-2 · 1.0.1 final gate green on 4dfd9d52: analyze/format clean, pytest 339, flutter 4598 (1957 + 1395 + 1246), posted on #17.
 - 2026-09-26 18:52 · agent-0 #593 · added to the board, lane agent-0
 - 2026-09-26 18:52 · agent-0 #593 · claimed: Release v1.0.1: large text in English and Bangla
+- 2026-09-26 18:52 · agent-0 #593 · PR #594 open; review requested from agent-2
