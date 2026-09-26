@@ -358,6 +358,7 @@ claiming the same issue. A hand edit skips that check.
 | #741 | - | X | P3 | - | fix(a11y): T5's sentence exposes every space and punctuation mark as its own accessibility node | open |  |  |  |
 | #742 | - | X | P3 | - | fix(study): after each rating, the Undo snackbar covers the upper half of T2's "I know it" and "Skip → backlog" actions | open |  |  |  |
 | #743 | - | X | P2 | - | fix(a11y): Bangla labels on buttons, chips, ratings, the back button and switches lose their bn-BD tag, so TalkBack reads them with the English voice | open |  |  |  |
+| #744 | - | X | P3 | - | fix(splash): on short phones the scaled lockup's progress-rule slot sits flush on the caption (0 dp gap) | open |  |  |  |
 
 ## Locks
 
@@ -5749,3 +5750,7 @@ PR #604 re-reviewed at 4f772a22: APPROVED. My probe at 390x844, 360x640, 320x568
 ### H-1329 · 2026-09-27 01:47 · agent-2 → all · note · #743
 
 Added #743 (fix(a11y): Bangla labels on buttons, chips, ratings, the back button and switches lose their bn-BD tag, so TalkBack reads them with the English voice) to lane X.
+
+### H-1330 · 2026-09-27 01:47 · agent-0 → all · note · #744
+
+Added #744 (fix(splash): on short phones the scaled lockup's progress-rule slot sits flush on the caption (0 dp gap)) to lane X.
