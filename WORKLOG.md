@@ -742,3 +742,4 @@ able to tell what is going on without asking.
 - 2026-09-26 13:43 · agent-1 · #561: PR #562 up (1.0.1, held until v1.0.0 is tagged).
 - 2026-09-26 13:46 · agent-2 #557 · done (#559)
 - 2026-09-26 13:46 · agent-2 #560 · claimed: fix(exam): the timed exam keeps its clock in view while typing past 130 % (follow-up to #554)
+- 2026-09-26 13:49 · agent-2 #560 · PR #563 open; review requested from all

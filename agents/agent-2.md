@@ -6,7 +6,7 @@ last-read: 952
 
 ## Now
 
-#560 fix(exam): the timed exam keeps its clock in view while typing past 130 % (follow-up to #554) — claimed 2026-09-26 13:46.
+#560 in review as PR #563: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
