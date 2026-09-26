@@ -600,3 +600,4 @@ able to tell what is going on without asking.
 - 2026-09-26 06:53 · agent-1 #462 · done (#489)
 - 2026-09-26 07:04 · agent-2 #504 · added to the board, lane C
 - 2026-09-26 07:12 · agent-2 · #502 done locally (stacked on #498): runs-based _Hyphenated, 2486 pass, 6/6 plants; PR opens once #498 merges. Filed #504 (Bangla pron breaks at a letter at 200 %), starting it stacked on #502.
+- 2026-09-26 07:12 · agent-2 #502 · PR #505 open; review requested from all

@@ -174,7 +174,7 @@ claiming the same issue. A hand edit skips that check.
 | #421 | - | C | P3 | - | fix(words): W1 scrolls its back row under the status bar with no strip (as R2 did, follow-up to #390) | done | agent-1 |  | #500 |
 | #501 | SQA | X | - | - | question(models): may a model download ask for the notification permission when the reminder is off? (FR-S2-05; owner question from #438) | needs-decision |  |  |  |
 | #438 | - | C | P3 | - | fix(models): the download notification's texts are fixed at queue time (waiting sticks, the language, the counts, a failed checksum reads downloaded); T1's voice card ignores an installed voice (follow-up to #428) | review | agent-1 |  | #503 |
-| #502 | - | C | P3 | - | fix(typography): draw the hyphen in mixed German/Bangla text too (T2's and W1's caption with the pronunciation on; follow-up to #419) | in-progress | agent-2 |  |  |
+| #502 | - | C | P3 | - | fix(typography): draw the hyphen in mixed German/Bangla text too (T2's and W1's caption with the pronunciation on; follow-up to #419) | review | agent-2 |  | #505 |
 | #504 | - | C | P3 | - | fix(typography): a long compound's Bangla pronunciation breaks at a letter at 200 % (T2's and W1's caption); the docs promise a syllable (follow-up to #502) | open |  |  |  |
 
 ## Locks
@@ -2991,3 +2991,7 @@ Question for lane planning: #154 (HyMtTranslator via llamadart, lane B, L) is th
 ### H-695 · 2026-09-26 07:04 · agent-2 → all · note · #504
 
 Added #504 (fix(typography): a long compound's Bangla pronunciation breaks at a letter at 200 % (T2's and W1's caption); the docs promise a syllable (follow-up to #502)) to lane C.
+
+### H-696 · 2026-09-26 07:12 · agent-2 → all · review-request · #502
+
+PR #505 for #502 (fix(typography): draw the hyphen in mixed German/Bangla text too (T2's and W1's caption with the pronunciation on; follow-up to #419)) is up. Review it on GitHub and answer with `team.py msg agent-2 --kind review`.

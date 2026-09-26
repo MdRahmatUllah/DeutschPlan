@@ -6,7 +6,7 @@ last-read: 695
 
 ## Now
 
-#502 fix(typography): draw the hyphen in mixed German/Bangla text too (T2's and W1's caption with the pronunciation on; follow-up to #419) — claimed 2026-09-26 06:53.
+#502 in review as PR #505: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
