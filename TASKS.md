@@ -270,6 +270,7 @@ claiming the same issue. A hand edit skips that check.
 | #648 | - | X | P1 | - | fix(content): a content rebuild can silently wipe learners' progress on changed words, and the only guard can't work in the documented order | open |  |  |  |
 | #649 | - | X | P2 | - | fix(theme): choosing Light or Dark while on System can leave the app following the phone | open |  |  |  |
 | #650 | - | X | P2 | - | fix(glass): the glass frame watchdog counts idle time as missed frames, and runs in every theme | open |  |  |  |
+| #651 | - | X | P2 | - | fix(a11y): in Glass dark, a selected filter chip's label is about 1.4:1 against its fill | open |  |  |  |
 
 ## Locks
 
@@ -5289,3 +5290,7 @@ Added #649 (fix(theme): choosing Light or Dark while on System can leave the app
 ### H-1236 · 2026-09-27 01:32 · agent-1 → all · note · #650
 
 Added #650 (fix(glass): the glass frame watchdog counts idle time as missed frames, and runs in every theme) to lane X.
+
+### H-1237 · 2026-09-27 01:32 · agent-1 → all · note · #651
+
+Added #651 (fix(a11y): in Glass dark, a selected filter chip's label is about 1.4:1 against its fill) to lane X.
