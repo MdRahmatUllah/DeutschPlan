@@ -1016,6 +1016,11 @@ class _NoResults extends ConsumerWidget {
     final tokens = context.tokens;
     final words = ref.watch(courseWordsProvider).value;
     final links = SearchRepository.webLinks(query);
+    // Above 100 % the German in a button may break at its syllables:
+    // "Wohnungsgeberbestätigung" is wider than the button (#165, #516).
+    String breakable(String german) => DpScript.scaled(context)
+        ? DpScript.allowBreaks(german, threshold: 4)
+        : german;
     // #396: a word the learner has saved already is offered to open, not to
     // add twice. Keyed as the exact tier keys a word (R2's FR-R2-01 check),
     // so "Quarkbrotchen" finds the "Quarkbrötchen" saved from it.
@@ -1087,13 +1092,7 @@ class _NoResults extends ConsumerWidget {
         const SizedBox(height: 28),
         if (mine == null)
           DpButton(
-            // Above 100 % the German typed in may break at its syllables:
-            // "Wohnungsgeberbestätigung" is wider than the button (#165).
-            label: l10n.searchNoneAdd(
-              DpScript.scaled(context)
-                  ? DpScript.allowBreaks(query, threshold: 4)
-                  : query,
-            ),
+            label: l10n.searchNoneAdd(breakable(query)),
             onPressed: () {
               onUse();
               AddWordRoute.open(context, german: query);
@@ -1109,9 +1108,11 @@ class _NoResults extends ConsumerWidget {
           const SizedBox(height: 10),
           DpButton(
             label: l10n.searchNoneOpenMine(
-              mine.article == null
-                  ? mine.german
-                  : '${mine.article} ${mine.german}',
+              breakable(
+                mine.article == null
+                    ? mine.german
+                    : '${mine.article} ${mine.german}',
+              ),
             ),
             kind: DpButtonKind.secondary,
             onPressed: () {
