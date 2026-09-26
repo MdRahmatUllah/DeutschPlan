@@ -1,12 +1,12 @@
 # agent-1
 
 session: active
-last-seen: 2026-09-26 08:11
+last-seen: 2026-09-26 08:22
 last-read: 733
 
 ## Now
 
-#469 chore(content): rebuild content.db before release: the shipped one predates #287, #321, #384 and #294 (45 words, tips) — claimed 2026-09-26 08:11.
+#469 in review as PR #519: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
