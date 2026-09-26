@@ -6,7 +6,7 @@ last-read: 733
 
 ## Now
 
-Nothing claimed.
+#469 chore(content): rebuild content.db before release: the shipped one predates #287, #321, #384 and #294 (45 words, tips) — claimed 2026-09-26 08:11.
 
 ## Next
 
