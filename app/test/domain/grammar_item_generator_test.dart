@@ -220,6 +220,34 @@ void main() {
     expect(course.sentencesWith('Euro'), isEmpty);
   });
 
+  test('FR-L15-01 #515 a set never drills the same form twice: B1.2 '
+      '*Two-part connectors* asked "spreche" in two sentences', () {
+    final course = CourseText(
+      texts: const <String>[
+        'sprechen spricht · hat gesprochen',
+        'üben übt · hat geübt',
+      ],
+      sentences: const <({String german, String english})>[
+        (german: 'Im Alltag spreche ich viel Englisch.', english: ''),
+        (
+          german: 'Ich spreche sowohl Bengalisch als auch Englisch.',
+          english: '',
+        ),
+        (german: 'Ich spreche etwas Deutsch.', english: ''),
+        (german: 'Ich übe jeden Tag.', english: ''),
+      ],
+    );
+    for (final seed in <int>[1, 2, 3, 4, 5]) {
+      final picks = generateItems(
+        one('Je mehr ich übe, desto besser spreche ich.', rule: 'je … desto'),
+        seed: seed,
+        course: course,
+      ).whereType<PickTheForm>().map((pick) => pick.answer.toLowerCase());
+      expect(picks.toSet(), hasLength(picks.length), reason: 'seed $seed');
+      expect(picks, isNotEmpty);
+    }
+  });
+
   test('FR-L15-01 #386 a question word is no choice: "[Wo] kann man hier '
       'parken?" takes wann and warum too', () {
     for (final seed in <int>[1, 2, 3]) {
@@ -750,6 +778,14 @@ void main() {
           problems.add('$name: ${items.length} items');
         }
         if (types.length < 2) problems.add('$name: ${types.length} type');
+        // #515: with the course, as the app always has it, no form twice.
+        final picks = <String>[
+          for (final pick in items.whereType<PickTheForm>())
+            pick.answer.toLowerCase(),
+        ];
+        if (known != null && picks.toSet().length != picks.length) {
+          problems.add('$name: a form asked twice, $picks');
+        }
         if (!types.contains(GapFill) || !types.contains(PickTheForm)) {
           problems.add('$name: no gap fill or pick-the-form');
         }
