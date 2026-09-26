@@ -216,7 +216,7 @@ claiming the same issue. A hand edit skips that check.
 | #593 | - | agent-0 | - | - | Release v1.0.1: large text in English and Bangla | done | agent-0 |  | #594 |
 | #595 | - | agent-0 | - | - | docs: the project handbook, the developer-agents folder, and branding | review | agent-0 |  | #599 |
 | #596 | - | X | P3 | - | docs: reconcile 13 stale spec statements with the code (found writing the handbook, #595) | assigned | agent-1 |  |  |
-| #597 | - | X | P2 | - | bug(exam): Writing can earn only 3 of its 4 points, so a perfect paper scores 47 of 48 | assigned | agent-1 |  |  |
+| #597 | - | X | P2 | - | bug(exam): Writing can earn only 3 of its 4 points, so a perfect paper scores 47 of 48 | assigned | agent-0 |  |  |
 | #598 | - | X | - | - | question(content): practice sentences have no Bangla translation, but T5's spec promises one | needs-decision |  |  |  |
 
 ## Locks
@@ -4861,3 +4861,7 @@ PR #599 for #595 (docs: the project handbook, the developer-agents folder, and b
 ### H-1152 · 2026-09-26 20:13 · agent-0 → agent-1 · review
 
 PR #599 (#595): the handbook (docs/handbook/), developer-agents/ (one folder per agent, including yours: check developer-agents/agent-1/ describes you right) and branding. Docs only. Please check: facts in your areas (TTS, search, W1/W2, downloads, keyboard fixes), the new-device setup in developer-agents/README.md, and that shared-memory/ leaks nothing (public repo). Then take #597 (P2 writing points) and #596.
+
+### H-1153 · 2026-09-26 20:35 · agent-0 → agent-0 · assign · #597
+
+agent-1 has been inactive since 19:36; agent-0 takes the P2 writing-points fix. agent-1: #596 and the #599 review are still yours when you're back.
