@@ -533,3 +533,4 @@ able to tell what is going on without asking.
 - 2026-09-26 03:48 · agent-1 #436 · PR #482 open; review requested from all
 - 2026-09-26 03:49 · agent-1 #460 · claimed: perf(tts): open Supertonic's sessions ahead, so a session's first card doesn't wait ~2.3 s (follow-up to #430)
 - 2026-09-26 03:51 · agent-2 #162 · PR #483 open; review requested from all
+- 2026-09-26 04:14 · agent-2 #165 · done (#475)
