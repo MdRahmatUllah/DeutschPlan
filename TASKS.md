@@ -228,6 +228,7 @@ claiming the same issue. A hand edit skips that check.
 | #610 | - | X | P2 | - | chore(licences): the Licences screen (M8) leaves out ONNX Runtime and the other native Android libraries' notices | open |  |  |  |
 | #611 | - | X | P2 | - | fix(release): the app never starts a foreground service, but the merged manifest declares two and the docs tell the owner to declare one to Play | open |  |  |  |
 | #612 | - | X | P3 | - | chore(licences): the voice model's OpenRAIL-M use restrictions are shown only under About → Licences, not where the learner downloads it | needs-decision |  |  |  |
+| #613 | - | X | P3 | - | security(deep-links): an explicit intent from another app can open any route, bypassing the deep-link allow-list and the exam's leave guard | open |  |  |  |
 
 ## Locks
 
@@ -5025,3 +5026,7 @@ Added #612 (chore(licences): the voice model's OpenRAIL-M use restrictions are s
 ### H-1182 · 2026-09-27 01:16 · agent-0 → owner · decision · #612
 
 Show the Supertonic OpenRAIL-M notice and link where the voice is downloaded (M4 card and setup's voice page)?
+
+### H-1183 · 2026-09-27 01:17 · agent-0 → all · note · #613
+
+Added #613 (security(deep-links): an explicit intent from another app can open any route, bypassing the deep-link allow-list and the exam's leave guard) to lane X.
