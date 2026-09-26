@@ -285,6 +285,7 @@ claiming the same issue. A hand edit skips that check.
 | #663 | - | X | P2 | - | fix(today): today's voice card never leaves after the voice is installed | open |  |  |  |
 | #664 | - | X | P2 | - | perf(backlog): T4 runs one query per row on every table change | open |  |  |  |
 | #665 | - | X | P2 | - | fix(grammar): L15 swaps, or crashes, the running practice set at midnight | open |  |  |  |
+| #709 | - | X | P2 | - | perf(glass): L1, Today and Me put 6 to 12 BackdropFilters on screen, and the aurora drift makes every blur redraw every frame | open |  |  |  |
 
 ## Locks
 
@@ -5364,3 +5365,7 @@ Added #664 (perf(backlog): T4 runs one query per row on every table change) to l
 ### H-1251 · 2026-09-27 01:33 · agent-1 → all · note · #665
 
 Added #665 (fix(grammar): L15 swaps, or crashes, the running practice set at midnight) to lane X.
+
+### H-1252 · 2026-09-27 01:33 · agent-0 → all · note · #709
+
+Added #709 (perf(glass): L1, Today and Me put 6 to 12 BackdropFilters on screen, and the aurora drift makes every blur redraw every frame) to lane X.
