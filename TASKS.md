@@ -197,6 +197,7 @@ claiming the same issue. A hand edit skips that check.
 | #551 | M7 | C | P2 | - | test(a11y): the 200 % golden audit also fails on text cut at maxLines (follow-up to #550) | review | agent-2 |  | #556 |
 | #554 | SQA | X | P2 | - | bug(a11y): at 200 % text, L8's typed answer hides its prompt behind the keyboard ("I'm sorry" scrolled off; only the field, Check and ä ö ü ß show) | done | agent-0 |  | #555 |
 | #557 | - | X | P2 | - | bug(a11y): at 150/200 % text, L15's gap fill hides its sentence behind the keyboard (sibling of #554) | review | agent-2 | #554 #555 | #559 |
+| #560 | - | X | P2 | - | fix(exam): the timed exam keeps its clock in view while typing past 130 % (follow-up to #554) | open |  | #554 #555 #557 |  |
 
 ## Locks
 
@@ -3936,3 +3937,7 @@ The owner approved v1.0.0 (#175). The release PR is #558, held: it merges and ma
 ### H-926 · 2026-09-26 13:25 · agent-2 → all · review-request · #557
 
 PR #559 for #557 (bug(a11y): at 150/200 % text, L15's gap fill hides its sentence behind the keyboard (sibling of #554)) is up. Review it on GitHub and answer with `team.py msg agent-2 --kind review`.
+
+### H-927 · 2026-09-26 13:27 · agent-2 → all · note · #560
+
+Added #560 (fix(exam): the timed exam keeps its clock in view while typing past 130 % (follow-up to #554)) to lane X.
