@@ -313,6 +313,264 @@ void main() {
     });
   });
 
+  group('#455 FR-M4-01 losing the network mid-download', () {
+    late List<DownloadProgress> seen;
+    const grace = Duration(milliseconds: 20);
+
+    /// Past the moment a stop read on the network waits for the reading.
+    Future<void> graceOver() async {
+      await Future<void>.delayed(grace * 3);
+      await pumpEventQueue();
+    }
+
+    /// [name]'s current task: the last one queued for it.
+    DownloadTask latest(String name) =>
+        downloader.queued.lastWhere((t) => t.filename == name);
+
+    Future<void> reportLatest(
+      TaskUpdate Function(DownloadTask task) update,
+      String name,
+    ) async {
+      downloader.updates$.add(update(latest(name)));
+      await pumpEventQueue();
+    }
+
+    setUp(() async {
+      downloads = BackgroundModelDownloads(
+        models,
+        settings,
+        downloader,
+        _Storage(free: 1 << 30),
+        grace,
+      );
+      seen = <DownloadProgress>[];
+      final sub = downloads.watch('hymt').listen(seen.add);
+      addTearDown(sub.cancel);
+      await downloads.attach();
+      downloader.isWiFi = true;
+      await downloads.start('hymt');
+      await report((t) => TaskStatusUpdate(t, TaskStatus.running), 'one.gguf');
+      await report((t) => TaskProgressUpdate(t, 0.5), 'one.gguf');
+      await report((t) => TaskStatusUpdate(t, TaskStatus.running), 'two.gguf');
+      downloader.calls.clear();
+    });
+
+    test('off Wi-Fi with Wi-Fi only on, a file the system stopped comes back '
+        'canceled: queued again as a new task, the stopped one cancelled by '
+        'its id, and waiting for Wi-Fi, not failed', () async {
+      final stopped = latest('one.gguf');
+      downloader.isWiFi = false;
+      await report((t) => TaskStatusUpdate(t, TaskStatus.canceled), 'one.gguf');
+      expect(latest('one.gguf').taskId, isNot(stopped.taskId));
+      expect(downloader.calls, <String>['cancel task ${stopped.taskId}']);
+      // The other file still runs until its own stop comes.
+      expect(seen.last.phase, DownloadPhase.running);
+
+      await report((t) => TaskStatusUpdate(t, TaskStatus.canceled), 'two.gguf');
+      // The stopped files' partial bytes are gone: each starts again.
+      expect(seen.last, (phase: DownloadPhase.waitingForWifi, progress: 0.0));
+      expect(downloader.calls, isNot(contains('cancel hymt')));
+    });
+
+    test(
+      "the stopped task's own late cancel is an earlier attempt's",
+      () async {
+        downloader.isWiFi = false;
+        await report(
+          (t) => TaskStatusUpdate(t, TaskStatus.canceled),
+          'one.gguf',
+        );
+        final queued = downloader.queued.length;
+        await report(
+          (t) => TaskStatusUpdate(t, TaskStatus.canceled),
+          'one.gguf',
+        );
+        expect(downloader.queued, hasLength(queued), reason: 'queued once');
+      },
+    );
+
+    test('the stop can come before the downloader hears Wi-Fi go: it is '
+        'given a moment to', () async {
+      await report((t) => TaskStatusUpdate(t, TaskStatus.canceled), 'one.gguf');
+      downloader.isWiFi = false;
+      await graceOver();
+      expect(
+        downloader.queued.where((t) => t.filename == 'one.gguf'),
+        hasLength(2),
+      );
+      expect(seen.last.phase, isNot(DownloadPhase.failed));
+    });
+
+    test('a model that fails for real while a stop waits stays failed: no '
+        'download starts behind it', () async {
+      await report((t) => TaskStatusUpdate(t, TaskStatus.canceled), 'one.gguf');
+      await report(
+        (t) => TaskStatusUpdate(t, TaskStatus.failed, _serverError),
+        'two.gguf',
+      );
+      downloader.isWiFi = false;
+      final queued = downloader.queued.length;
+      await graceOver();
+      expect(seen.last.phase, DownloadPhase.failed);
+      expect(downloader.queued, hasLength(queued));
+    });
+
+    test('a newer word on the file while its stop waits stands', () async {
+      await report((t) => TaskStatusUpdate(t, TaskStatus.canceled), 'one.gguf');
+      await report((t) => TaskProgressUpdate(t, 0.6), 'one.gguf');
+      await graceOver();
+      expect(seen.last, (phase: DownloadPhase.running, progress: 180 / 400));
+      expect(downloader.calls, isEmpty);
+    });
+
+    test('back on Wi-Fi, the new task runs, from nothing', () async {
+      downloader.isWiFi = false;
+      await report((t) => TaskStatusUpdate(t, TaskStatus.canceled), 'one.gguf');
+      downloader.isWiFi = true;
+      await reportLatest(
+        (t) => TaskStatusUpdate(t, TaskStatus.running),
+        'one.gguf',
+      );
+      await reportLatest((t) => TaskProgressUpdate(t, 0.1), 'one.gguf');
+      expect(seen.last, (phase: DownloadPhase.running, progress: 30 / 400));
+    });
+
+    for (final (cause, exception) in <(String, TaskException)>[
+      (
+        'a connection error',
+        TaskConnectionException('Software caused connection abort'),
+      ),
+      ("a stopped job's general error", TaskException('Job was cancelled')),
+    ]) {
+      test('its retries spent on earlier drops, a failure off Wi-Fi with '
+          '$cause is a stop too', () async {
+        final stopped = latest('two.gguf');
+        downloader.isWiFi = false;
+        await report(
+          (t) => TaskStatusUpdate(t, TaskStatus.failed, exception),
+          'two.gguf',
+        );
+        expect(latest('two.gguf').taskId, isNot(stopped.taskId));
+        expect(downloader.calls, <String>['cancel task ${stopped.taskId}']);
+        expect(seen.last.phase, isNot(DownloadPhase.failed));
+      });
+    }
+
+    test("the notification's *Cancel* while waiting for Wi-Fi cancels: a "
+        'queued file is not a stop, and nothing is queued again', () async {
+      downloader.isWiFi = false;
+      await report((t) => TaskStatusUpdate(t, TaskStatus.canceled), 'one.gguf');
+      await report((t) => TaskStatusUpdate(t, TaskStatus.canceled), 'two.gguf');
+      expect(seen.last.phase, DownloadPhase.waitingForWifi);
+      final queued = downloader.queued.length;
+      // The learner's *Cancel*: the waiting files come back canceled.
+      await reportLatest(
+        (t) => TaskStatusUpdate(t, TaskStatus.canceled),
+        'one.gguf',
+      );
+      await reportLatest(
+        (t) => TaskStatusUpdate(t, TaskStatus.canceled),
+        'two.gguf',
+      );
+      expect(seen.last.phase, DownloadPhase.failed);
+      expect(downloader.queued, hasLength(queued), reason: 'not undone');
+    });
+
+    test(
+      'a real failure off Wi-Fi (the server) still fails the attempt',
+      () async {
+        downloader.isWiFi = false;
+        await report(
+          (t) => TaskStatusUpdate(
+            t,
+            TaskStatus.failed,
+            TaskHttpException('Not Found', 404),
+          ),
+          'two.gguf',
+        );
+        expect(seen.last.phase, DownloadPhase.failed);
+        expect(downloader.calls, <String>['cancel hymt']);
+      },
+    );
+
+    test('the failed attempt\'s own cancels, late and off Wi-Fi, change '
+        'nothing: its failed file holds it failed', () async {
+      await report((t) => TaskStatusUpdate(t, TaskStatus.failed), 'two.gguf');
+      await graceOver();
+      expect(downloader.calls, <String>['cancel hymt']);
+      downloader.isWiFi = false;
+      final queued = downloader.queued.length;
+      await report((t) => TaskStatusUpdate(t, TaskStatus.canceled), 'one.gguf');
+      expect(seen.last.phase, DownloadPhase.failed);
+      expect(downloader.queued, hasLength(queued), reason: 'nothing queued');
+    });
+
+    test('on Wi-Fi, a cancel no one here asked for (the notification\'s '
+        '*Cancel*) is not a stop: failed, *Retry*', () async {
+      await report((t) => TaskStatusUpdate(t, TaskStatus.canceled), 'one.gguf');
+      await graceOver();
+      expect(seen.last.phase, DownloadPhase.failed);
+    });
+
+    test('AC4 with Wi-Fi only off, the connection lost is a stop too: '
+        'queued again, and downloading, not waiting for Wi-Fi', () async {
+      await settings.write(SettingKeys.modelsWifiOnly, false);
+      downloader
+        ..isWiFi = false
+        ..isConnected = false;
+      await report((t) => TaskStatusUpdate(t, TaskStatus.canceled), 'one.gguf');
+      await report((t) => TaskStatusUpdate(t, TaskStatus.canceled), 'two.gguf');
+      expect(
+        downloader.queued.where((t) => t.filename == 'one.gguf'),
+        hasLength(2),
+      );
+      expect(seen.last.phase, DownloadPhase.running);
+    });
+
+    test('with Wi-Fi only off and connected, a cancel no one here asked for '
+        'fails', () async {
+      await settings.write(SettingKeys.modelsWifiOnly, false);
+      downloader.isWiFi = false;
+      await report((t) => TaskStatusUpdate(t, TaskStatus.canceled), 'one.gguf');
+      await graceOver();
+      expect(seen.last.phase, DownloadPhase.failed);
+    });
+
+    test('relaunched while waiting: the downloader\'s record of the new task '
+        'stands over the stopped one\'s, so it still waits', () async {
+      downloader.isWiFi = false;
+      await report((t) => TaskStatusUpdate(t, TaskStatus.canceled), 'one.gguf');
+      await report((t) => TaskStatusUpdate(t, TaskStatus.canceled), 'two.gguf');
+      // The app killed: its record, the stopped tasks first.
+      downloader.database.records.addAll(<TaskRecord>[
+        for (final task in downloader.queued)
+          TaskRecord(
+            task,
+            task == latest(task.filename)
+                ? TaskStatus.enqueued
+                : TaskStatus.canceled,
+            0,
+            100,
+          ),
+      ]);
+      downloader.calls.clear();
+      final again = BackgroundModelDownloads(
+        models,
+        settings,
+        downloader,
+        _Storage(free: 1 << 30),
+        grace,
+      );
+      final phases = <DownloadPhase>[];
+      final sub = again.watch('hymt').listen((p) => phases.add(p.phase));
+      addTearDown(sub.cancel);
+      await again.attach();
+      await pumpEventQueue();
+      expect(phases.last, DownloadPhase.waitingForWifi);
+      expect(downloader.calls, isNot(contains('cancel hymt')));
+    });
+  });
+
   group('FR-M4-01 the card\'s progress', () {
     setUp(() async {
       await downloads.attach();
@@ -345,7 +603,10 @@ void main() {
         addTearDown(sub.cancel);
         await report((t) => TaskStatusUpdate(t, TaskStatus.paused), 'one.gguf');
         expect(seen.last.phase, DownloadPhase.paused);
-        await report((t) => TaskStatusUpdate(t, TaskStatus.failed), 'two.gguf');
+        await report(
+          (t) => TaskStatusUpdate(t, TaskStatus.failed, _serverError),
+          'two.gguf',
+        );
         expect(seen.last.phase, DownloadPhase.failed);
       },
     );
@@ -358,7 +619,10 @@ void main() {
       downloader.calls.clear();
       await report((t) => TaskStatusUpdate(t, TaskStatus.running), 'one.gguf');
       expect(downloader.calls, isEmpty);
-      await report((t) => TaskStatusUpdate(t, TaskStatus.failed), 'two.gguf');
+      await report(
+        (t) => TaskStatusUpdate(t, TaskStatus.failed, _serverError),
+        'two.gguf',
+      );
       expect(seen.last.phase, DownloadPhase.failed);
       expect(downloader.calls, <String>['cancel hymt']);
       await report((t) => TaskStatusUpdate(t, TaskStatus.canceled), 'one.gguf');
@@ -454,7 +718,10 @@ void main() {
         'cancels the failed attempt', () async {
       await land('one.gguf', one);
       await report((t) => TaskStatusUpdate(t, TaskStatus.complete), 'one.gguf');
-      await report((t) => TaskStatusUpdate(t, TaskStatus.failed), 'two.gguf');
+      await report(
+        (t) => TaskStatusUpdate(t, TaskStatus.failed, _serverError),
+        'two.gguf',
+      );
       downloader.queued.clear();
       await downloads.retry('hymt');
       expect(downloader.calls, contains('cancel hymt'));
@@ -482,7 +749,10 @@ void main() {
           (t) => TaskStatusUpdate(t, TaskStatus.complete),
           'one.gguf',
         );
-        await report((t) => TaskStatusUpdate(t, TaskStatus.failed), 'two.gguf');
+        await report(
+          (t) => TaskStatusUpdate(t, TaskStatus.failed, _serverError),
+          'two.gguf',
+        );
         downloader.queued.clear();
         // The disk that failed two.gguf (100 bytes): 50 bytes left.
         storage.free = 50;
@@ -539,7 +809,10 @@ void main() {
     );
 
     test('#156 a task Retry replaced has no say', () async {
-      await report((t) => TaskStatusUpdate(t, TaskStatus.failed), 'two.gguf');
+      await report(
+        (t) => TaskStatusUpdate(t, TaskStatus.failed, _serverError),
+        'two.gguf',
+      );
       final old = downloader.queued.firstWhere((t) => t.filename == 'two.gguf');
       downloader.queued.clear();
       await downloads.retry('hymt');
@@ -562,6 +835,10 @@ class _Downloader implements FileDownloader {
   @override
   bool isWiFi = false;
 
+  /// Connected at all, until a test says otherwise.
+  @override
+  bool isConnected = true;
+
   final List<String> calls = <String>[];
   final StreamController<TaskUpdate> updates$ =
       StreamController<TaskUpdate>.broadcast();
@@ -580,6 +857,12 @@ class _Downloader implements FileDownloader {
   @override
   Future<bool> cancelAll({Iterable<Task>? tasks, String? group}) async {
     calls.add('cancel $group');
+    return true;
+  }
+
+  @override
+  Future<bool> cancelTaskWithId(String taskId) async {
+    calls.add('cancel task $taskId');
     return true;
   }
 
@@ -667,6 +950,9 @@ class _Records implements Database {
   @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
+
+/// A real failure: the server's, not the connection's.
+final TaskHttpException _serverError = TaskHttpException('Server Error', 500);
 
 /// A phone with [free] bytes to spare.
 class _Storage implements DeviceStorage {

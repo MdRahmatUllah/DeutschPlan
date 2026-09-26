@@ -98,6 +98,7 @@ class BackgroundModelDownloads implements ModelDownloads {
     this._settings, [
     FileDownloader? downloader,
     DeviceStorage? storage,
+    this._wifiGrace = const Duration(seconds: 2),
   ]) : _downloader = downloader ?? FileDownloader(),
        _storage = storage ?? const PlatformDeviceStorage();
 
@@ -105,6 +106,13 @@ class BackgroundModelDownloads implements ModelDownloads {
   final SettingsRepository _settings;
   final FileDownloader _downloader;
   final DeviceStorage _storage;
+
+  /// How long a stop that comes before the downloader hears the network go
+  /// waits for it to (#455).
+  // ponytail: 2 s. On the emulator the stop came a few milliseconds ahead of
+  // the downloader's reading; a stop still read on Wi-Fi after this is taken
+  // for the learner's *Cancel*, and fails.
+  final Duration _wifiGrace;
 
   /// Per model, per file: the current attempt's task, and the platform's last
   /// word on it. Forgotten once the model is verified, which is how *Retry*
@@ -218,6 +226,10 @@ class BackgroundModelDownloads implements ModelDownloads {
   /// by the downloader's own reading of the network.
   bool get _offWifi =>
       _settings.read(SettingKeys.modelsWifiOnly) && !_downloader.isWiFi;
+
+  /// No network a download may use: off Wi-Fi under *Wi-Fi only*, or none at
+  /// all (#455).
+  bool get _offline => _offWifi || !_downloader.isConnected;
 
   /// Queues [modelId]'s files, or those [only] names, as the current attempt.
   Future<void> _queue(
@@ -357,6 +369,46 @@ class BackgroundModelDownloads implements ModelDownloads {
       ),
       _ => (status: was, done: sofar),
     };
+    // #455: a file in flight as the phone leaves Wi-Fi (under *Wi-Fi only*)
+    // or loses its connection is stopped by the system. The downloader says
+    // so as a canceled, or, its retries spent on earlier drops, as a failure
+    // with no cause but the connection (a connection error, or the general
+    // one a stopped job carries). Either way the file is waiting for the
+    // network, not failed, and it is queued again as a new task of the
+    // attempt, the stopped one cancelled by its id: left to the platform's
+    // own rerun, the downloader stops tracking it, and pause, the switch,
+    // the notification and a relaunch all lose it.
+    // Only a file that was downloading can be stopped: a canceled queued
+    // file is the learner's *Cancel* from the notification, or this code's.
+    // A model already failed is left failed.
+    // ponytail: the file starts again from nothing, as a canceled one's
+    // partial file is gone (background_downloader 9.6.x deletes it); a stop
+    // the downloader retries itself keeps its bytes where the server takes
+    // ranges. Keeping them always needs the downloader to keep the temp file
+    // on a stop.
+    if (update case TaskStatusUpdate(:final exception)
+        when (status == TaskStatus.canceled ||
+                (status == TaskStatus.failed &&
+                    (exception is TaskConnectionException ||
+                        exception?.exceptionType == 'TaskException'))) &&
+            (before == null || before.status == TaskStatus.running) &&
+            _last[modelId]?.phase != DownloadPhase.failed) {
+      // The stop comes as the network goes, and often before the downloader
+      // has heard that it has: its reading is given a moment.
+      if (!_offline) await Future<void>.delayed(_wifiGrace);
+      // A newer word on the file while it waited stands, and a model that
+      // failed meanwhile stays failed.
+      if (files[name] != before ||
+          _last[modelId]?.phase == DownloadPhase.failed) {
+        return;
+      }
+      if (_offline) {
+        // Queued first, so the stopped task's echo is an earlier attempt's.
+        await _queue(modelId, only: (file) => file == name);
+        await _downloader.cancelTaskWithId(update.task.taskId);
+        return;
+      }
+    }
     files[name] = (
       task: update.task.taskId,
       created: update.task.creationTime,
