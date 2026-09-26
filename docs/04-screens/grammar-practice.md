@@ -8,7 +8,7 @@
 
 **Layout.** Top: close, topic title, "3 / 5", progress strip. Item types: Gap fill (text + umlaut row) · Pick the form (3 option tiles with labels like "Konjunktiv II · polite", "your pick · Präsens", "Präteritum") · Spot the error (tappable tokens) · Order the sentence (chips) · Rule recall (4 options). Feedback line: "Not quite — the polite form is *Könnten*. Rule: könnte / würde + infinitive at the end of the sentence." with *See rule*; *Next*.
 
-**Typing at large text** (#557, as L8's #554): past 130 % with the keyboard up, the gap's field and umlaut row alone filled the room above it and the sentence scrolled away. The header gives up its row (close, the topic and "3 / 5"; its colour stays behind the status bar), and so does *Next*, which is off until the answer is checked. The sentence and its translation then show above the field. Both come back when the keyboard goes, and *Next* stays once the answer is checked. At 130 % and below nothing changes.
+**Typing at large text** (#557, as L8's #554): past 130 % with the keyboard up, the gap's field and umlaut row alone filled the room above it and the sentence scrolled away. The header gives up its row (close, the topic and "3 / 5"; its colour stays behind the status bar), and so does *Next*, which is off until the answer is checked. The sentence and its translation then show above the field. As on T2, the field stops keeping *Check* in view, since the keyboard's Done checks too (#564). Both come back when the keyboard goes, and *Next* stays once the answer is checked. At 130 % and below nothing changes.
 
 **Functional requirements**
 - FR-L15-01 Items from `GrammarItemGenerator` (`03-domain/grammar-practice.md`); 3–5 per topic; seeded per (topic, day).

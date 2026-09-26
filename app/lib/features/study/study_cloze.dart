@@ -313,7 +313,12 @@ class StudyAnswerField extends StatelessWidget {
       scrollPadding: umlautRowBelow
           ? DpUmlautBar.scrollPadding(
               context,
-              below: 12 + DpButton.minimumTapTarget,
+              // Past 130 % the few lines above the keyboard are the
+              // question's, and *Check* may scroll under it: the keyboard's
+              // Done checks too (#564).
+              below: DpScript.large(context)
+                  ? 0
+                  : 12 + DpButton.minimumTapTarget,
             )
           : const EdgeInsets.all(20),
       onSubmitted: (_) => onSubmitted(),
