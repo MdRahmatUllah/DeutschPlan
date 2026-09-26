@@ -88,7 +88,7 @@ SettingsRepository settings(Ref ref) => throw UnimplementedError(
 
 /// The settings the screens read and write: the app's own. A provider of its
 /// own so a test that only needs a screen drawn can give it settings without
-/// a database (#511; M3's until then).
+/// a database (#511).
 @riverpod
 SettingsRepository settingsSource(Ref ref) => ref.watch(settingsProvider);
 
