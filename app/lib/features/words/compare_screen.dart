@@ -283,7 +283,22 @@ class _Body extends StatelessWidget {
                   ),
                   if (!fits) ...<Widget>[
                     const SizedBox(height: 12),
-                    caption(l10n.compareDrag(members.last.headword)),
+                    // #528: once the last column is in view there's nothing
+                    // left to drag to; its room stays, so nothing jumps.
+                    ListenableBuilder(
+                      listenable: sideways,
+                      builder: (context, hint) => Visibility(
+                        visible:
+                            !sideways.hasClients ||
+                            sideways.position.pixels <
+                                sideways.position.maxScrollExtent - 1,
+                        maintainSize: true,
+                        maintainAnimation: true,
+                        maintainState: true,
+                        child: hint!,
+                      ),
+                      child: caption(l10n.compareDrag(members.last.headword)),
+                    ),
                   ],
                 ],
               ),

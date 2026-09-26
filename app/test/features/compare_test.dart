@@ -319,6 +319,36 @@ void main() {
       expect(label.hitTestable(), findsOneWidget);
     });
 
+    testWidgets('#528 the hint goes once the last column is in view, and '
+        'comes back when it is dragged away again', (tester) async {
+      await pump(tester);
+      bool shown() => tester
+          .widget<Visibility>(
+            find.ancestor(
+              of: find.text(l10n.compareDrag('Anlass')),
+              matching: find.byType(Visibility),
+            ),
+          )
+          .visible;
+      expect(shown(), isTrue);
+      final cell = find.text('reason, ground');
+
+      await tester.drag(cell, const Offset(-60, 0));
+      await tester.pumpAndSettle();
+      expect(shown(), isTrue, reason: 'part of the way: der Anlass still off');
+
+      await tester.drag(cell, const Offset(-2000, 0));
+      await tester.pumpAndSettle();
+      expect(shown(), isFalse, reason: 'der Anlass is in view');
+
+      await tester.drag(
+        find.text('der Anlass', findRichText: true),
+        const Offset(2000, 0),
+      );
+      await tester.pumpAndSettle();
+      expect(shown(), isTrue);
+    });
+
     testWidgets('FR-W2-04 a tablet shows every column, and no hint', (
       tester,
     ) async {
