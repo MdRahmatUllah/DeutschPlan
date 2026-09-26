@@ -331,6 +331,9 @@ class StudyAnswerField extends StatelessWidget {
       ).copyWith(fontWeight: FontWeight.w400),
       decoration: InputDecoration(
         hintText: hint ?? l10n.studyClozeHint,
+        // Whole, not cut to one line, as R1's is (#565).
+        hintMaxLines: 3,
+        maintainHintSize: false,
         filled: true,
         fillColor: tokens.surface.cardStrong,
         contentPadding: const EdgeInsets.symmetric(

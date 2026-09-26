@@ -470,6 +470,9 @@ class _Field extends StatelessWidget {
             borderSide: BorderSide(color: tokens.color.ink, width: 2),
           ),
           hintText: hint,
+          // Whole, not cut to one line, as R1's is (#565).
+          hintMaxLines: 3,
+          maintainHintSize: false,
           hintStyle: DpText.styleFor(
             tokens,
             DpTextRole.body,
