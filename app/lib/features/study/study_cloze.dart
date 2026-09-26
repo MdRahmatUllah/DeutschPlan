@@ -283,6 +283,7 @@ class StudyAnswerField extends StatelessWidget {
     super.key,
     this.hint,
     this.umlautRowBelow = false,
+    this.dense = false,
   });
 
   final TextEditingController controller;
@@ -290,6 +291,10 @@ class StudyAnswerField extends StatelessWidget {
 
   /// The placeholder: "Type the missing word" unless given.
   final String? hint;
+
+  /// Less padding above and below the text: L8 typing past 130 %, where
+  /// the room above the keyboard is its prompt's (#568).
+  final bool dense;
 
   /// The umlaut row sits under it, then 12 dp and *Check* (T2's cloze,
   /// grammar practice): on focus all of it scrolls above the keyboard
@@ -346,9 +351,9 @@ class StudyAnswerField extends StatelessWidget {
         maintainHintSize: false,
         filled: true,
         fillColor: tokens.surface.cardStrong,
-        contentPadding: const EdgeInsets.symmetric(
+        contentPadding: EdgeInsets.symmetric(
           horizontal: 16,
-          vertical: 14,
+          vertical: dense ? 6 : 14,
         ),
         border: edge,
         enabledBorder: edge,

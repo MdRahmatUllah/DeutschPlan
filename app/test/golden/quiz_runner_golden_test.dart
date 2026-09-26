@@ -209,4 +209,32 @@ void main() {
     builder: screen,
     act: toTheSeventh,
   );
+
+  // #568: typing German at 200 % with the keyboard up, the header and strip
+  // give way and Check is a key on the umlaut row, in every theme.
+  goldenTest(
+    'quiz_runner_keyboard_200',
+    devices: const <GoldenDevice>[GoldenDevice.phone],
+    textScale: 2,
+    textAudit: false,
+    builder: (context) => only(
+      const QuizItem(
+        ord: 1,
+        wordUid: 'umziehen',
+        direction: QuizDirection.forms,
+        prompt: 'umziehen',
+        expected: 'ist umgezogen',
+        form: FormLabel.perfekt,
+      ),
+    ),
+    act: (tester) async {
+      await tester.showKeyboard(find.byType(TextField));
+      await tester.enterText(find.byType(TextField), 'ist um');
+      tester.view.viewInsets = FakeViewPadding(
+        bottom: 300 * tester.view.devicePixelRatio,
+      );
+      addTearDown(tester.view.resetViewInsets);
+      await tester.pumpAndSettle();
+    },
+  );
 }

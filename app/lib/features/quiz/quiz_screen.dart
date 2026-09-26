@@ -251,6 +251,11 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
       final item = _queue.current;
       final verdict = _verdict;
       final typed = item.direction != QuizDirection.articles && !item.tiles;
+      // #568: typing German past 130 %, *Check* joins the umlaut row: in
+      // Bangla, whose copy is a role larger, its own row left a Forms prompt
+      // 45 dp under the strip.
+      final checkOnKeys =
+          typing && typed && typesGerman(item) && verdict == null;
       final onceMore = _queue.reasking
           ? DpChip(label: l10n.quizOnceMore, kind: DpChipKind.status)
           : null;
@@ -264,11 +269,18 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
       body = Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          _QuizStrip(
-            done: _queue.reasking ? items.length : item.ord,
-            of: items.length,
-          ),
+          // #568: typing past 130 %, the strip's row is the prompt's too.
+          if (typing)
+            const SizedBox.shrink()
+          else
+            _QuizStrip(
+              done: _queue.reasking ? items.length : item.ord,
+              of: items.length,
+            ),
           Expanded(
+            // Kept by its key as the strip and Check's row come and go
+            // around it, or the field in it would lose the keyboard (#568).
+            key: const ValueKey<String>('question'),
             child: ListView(
               // Typing past 130 %, the foot's 8 dp more go to the prompt too
               // (#561).
@@ -318,7 +330,10 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
           // A tile or an article button answers by itself; only a typed
           // answer needs *Check*, and it waits for one: only the timer sends
           // an empty answer.
-          if (typed || verdict != null)
+          //
+          // #568: typing German past 130 %, *Check* is a key on the umlaut
+          // row instead, and its row goes to the prompt.
+          if ((typed || verdict != null) && !checkOnKeys)
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
               child: ListenableBuilder(
@@ -339,7 +354,22 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
               kind: DpSurfaceKind.bar,
               radius: 0,
               padding: const EdgeInsets.fromLTRB(16, 10, 16, 16),
-              child: DpUmlautBar(controller: _field, enabled: verdict == null),
+              child: !checkOnKeys
+                  ? DpUmlautBar(controller: _field, enabled: verdict == null)
+                  : Row(
+                      children: <Widget>[
+                        Expanded(child: DpUmlautBar(controller: _field)),
+                        const SizedBox(width: 8),
+                        ListenableBuilder(
+                          listenable: _field,
+                          builder: (context, _) => _CheckKey(
+                            onTap: _field.text.trim().isEmpty
+                                ? null
+                                : () => unawaited(_submit(_field.text)),
+                          ),
+                        ),
+                      ],
+                    ),
             )
           else
             const SizedBox(height: 12),
@@ -510,5 +540,62 @@ class _Feedback extends ConsumerWidget {
     final wanted = item.expected.split(' ').first;
     final wrote = given.split(RegExp(r'\s+')).first.toLowerCase();
     return (l10n.quizArticleWrong(wanted, wrote), <String>[wanted, wrote]);
+  }
+}
+
+/// *Check* as a key beside the umlaut keys while typing past 130 % (#568):
+/// the primary's fill, a tick, and its name for a screen reader and a
+/// tooltip. 48 dp, so the four keys keep theirs.
+class _CheckKey extends StatelessWidget {
+  const _CheckKey({required this.onTap});
+
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final tokens = context.tokens;
+    final l10n = AppLocalizations.of(context);
+    final enabled = onTap != null;
+    return Semantics(
+      container: true,
+      button: true,
+      enabled: enabled,
+      label: l10n.quizCheck,
+      onTap: onTap,
+      child: ExcludeSemantics(
+        child: AdaptiveTooltip(
+          message: l10n.quizCheck,
+          child: GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: onTap,
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                color: enabled ? tokens.color.primary : tokens.surface.muted,
+                borderRadius: BorderRadius.circular(tokens.shape.button),
+                // The primary's 2 px ink edge, as the outlined keys beside
+                // it have; none under glass, as the glass primary has none.
+                border: tokens.isGlass
+                    ? null
+                    : Border.all(
+                        color: enabled
+                            ? tokens.color.ink
+                            : tokens.surface.outline,
+                        width: 2,
+                      ),
+              ),
+              child: SizedBox.square(
+                dimension: DpButton.minimumTapTarget,
+                child: Icon(
+                  Icons.check,
+                  color: enabled
+                      ? tokens.color.onPrimary
+                      : tokens.color.textSecondary,
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }

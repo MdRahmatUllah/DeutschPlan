@@ -30,9 +30,12 @@ import 'exam_run_fixtures.dart';
 /// L12 · Exam runner — #130.
 void main() {
   late AppLocalizations l10n;
+  // #568: the keyboard cases in Bangla too, whose copy is a role larger.
+  late AppLocalizations bn;
 
   setUpAll(() async {
     l10n = await AppLocalizations.delegate.load(supportedLocales.first);
+    bn = await AppLocalizations.delegate.load(const Locale('bn'));
   });
 
   late StubExamRun run;
@@ -43,6 +46,7 @@ void main() {
     StubExamRun? stub,
     List<Override> more = const <Override>[],
     TextScaler? textScaler,
+    Locale? locale,
   }) async {
     run = stub ?? StubExamRun();
     left = <String>[];
@@ -70,6 +74,7 @@ void main() {
           theme: AppTheme.light(),
           localizationsDelegates: appLocalizationsDelegates,
           supportedLocales: supportedLocales,
+          locale: locale,
           routerConfig: routes,
           builder: textScaler == null
               ? null
@@ -749,11 +754,11 @@ void main() {
     const keyboardTop = 731.0 - 300;
 
     // What is asked, as the question shows it.
-    List<String> asked(ExamItem item) => switch (item) {
+    List<String> asked(ExamItem item, AppLocalizations t) => switch (item) {
       // A vocabulary word is a GermanWord, found by its type.
       WordQuestion(section: ExamSection.vocabulary) => const <String>[],
       WordQuestion(:final prompt, :final form) => <String>[
-        if (form == null) prompt else l10n.quizFormPerfekt(prompt),
+        if (form == null) prompt else t.quizFormPerfekt(prompt),
       ],
       GapQuestion(:final before, :final after, :final translation) => <String>[
         '$before _____ $after',
@@ -768,7 +773,9 @@ void main() {
         .hasFocus;
 
     // The time left, however far the clock has run.
-    Finder clock() => find.textContaining(RegExp(r'^\d{1,2}:\d\d$'));
+    // In Bangla its digits are Bangla (০–৯).
+    Finder clock() =>
+        find.textContaining(RegExp(r'^[0-9০-৯]{1,2}:[0-9০-৯]{2}$'));
 
     Finder inTheList(String label) => find.descendant(
       of: find.byType(ListView),
@@ -811,95 +818,107 @@ void main() {
         (150, const AndroidTextScaler(1.5)),
         (100, TextScaler.noScaling),
       ]) {
-        testWidgets('${item is WordQuestion ? item.section.name : 'gap'} '
-            'at $percent %: past 130 % the question shows whole above the '
-            'field and the umlaut row, the buttons scrolling under it; at '
-            "100 % they stay pinned (#529); all is back at the keyboard's "
-            'going', (tester) async {
-          final large = percent > 130;
-          // SQA's 731 dp phone, its status bar, and a 300 dp keyboard.
-          tester.view
-            ..physicalSize = const Size(390, 731) * 3
-            ..devicePixelRatio = 3
-            ..padding = const FakeViewPadding(top: 24 * 3);
-          addTearDown(tester.view.reset);
-          await pump(
-            tester,
-            stub: StubExamRun(
-              items: <ExamItem>[item, ...artboardPaper()],
-              given: <int, String>{},
-            ),
-            textScaler: scaler,
-          );
-          await tester.showKeyboard(find.byType(TextField));
-          tester.view.viewInsets = const FakeViewPadding(bottom: 300 * 3);
-          await tester.pumpAndSettle();
-
-          expect(typing(tester), isTrue, reason: 'the field kept the keyboard');
-          final german =
-              item is! WordQuestion || item.section != ExamSection.vocabulary;
-          final window = tester.getRect(find.byType(ListView));
-          expect(window.bottom, lessThanOrEqualTo(keyboardTop));
-          for (final (name, shown) in <(String, Finder)>[
-            // ponytail: at 100 % the buttons stay pinned (#529), and only
-            // the field is sure to show: a two-line gap's sentence sits
-            // above the window, as it did before #554.
-            if (large)
-              for (final text in asked(item)) (text, find.text(text)),
-            if (large && !german) ('the word', find.byType(GermanWord)),
-            ('the field', find.byType(TextField)),
-          ]) {
-            final rect = tester.getRect(shown);
-            expect(rect.top, greaterThanOrEqualTo(window.top), reason: name);
-            expect(rect.bottom, lessThanOrEqualTo(window.bottom), reason: name);
-          }
-          expect(
-            find.byType(DpUmlautBar),
-            german ? findsOneWidget : findsNothing,
-          );
-          if (german) {
-            expect(
-              tester.getRect(find.byType(DpUmlautBar)).bottom,
-              lessThanOrEqualTo(keyboardTop),
+        for (final lang in <String>['en', 'bn']) {
+          testWidgets('${item is WordQuestion ? item.section.name : 'gap'} '
+              'in $lang at $percent %: past 130 % the question shows whole above the '
+              'field and the umlaut row, the buttons scrolling under it; at '
+              "100 % they stay pinned (#529); all is back at the keyboard's "
+              'going', (tester) async {
+            final large = percent > 130;
+            final t = lang == 'bn' ? bn : l10n;
+            // SQA's 731 dp phone, its status bar, and a 300 dp keyboard.
+            tester.view
+              ..physicalSize = const Size(390, 731) * 3
+              ..devicePixelRatio = 3
+              ..padding = const FakeViewPadding(top: 24 * 3);
+            addTearDown(tester.view.reset);
+            await pump(
+              tester,
+              stub: StubExamRun(
+                items: <ExamItem>[item, ...artboardPaper()],
+                given: <int, String>{},
+              ),
+              textScaler: scaler,
+              locale: Locale(lang),
             );
-          }
-          // #560: the time left always shows: in the band, or, the band
-          // collapsed, under the question above the keyboard.
-          final left = tester.getRect(clock());
-          expect(left.bottom, lessThanOrEqualTo(keyboardTop));
-          expect(
-            large ? left.top : window.top,
-            greaterThanOrEqualTo(large ? window.bottom : left.bottom),
-            reason: large ? 'above the keyboard' : 'in the band',
-          );
-          expect(
-            inTheList(l10n.examRunNext),
-            large ? findsOneWidget : findsNothing,
-          );
-          expect(
-            find.widgetWithText(DpButton, l10n.examRunNext),
-            findsOneWidget,
-          );
-          // Past 130 % the band keeps only its colour.
-          expect(
-            find.byIcon(Icons.pause),
-            large ? findsNothing : findsOneWidget,
-          );
+            await tester.showKeyboard(find.byType(TextField));
+            tester.view.viewInsets = const FakeViewPadding(bottom: 300 * 3);
+            await tester.pumpAndSettle();
 
-          tester.view.resetViewInsets();
-          await tester.pumpAndSettle();
-          expect(inTheList(l10n.examRunNext), findsNothing);
-          expect(
-            find.widgetWithText(DpButton, l10n.examRunNext),
-            findsOneWidget,
-          );
-          expect(find.byIcon(Icons.pause), findsOneWidget);
-          expect(
-            tester.getRect(clock()).bottom,
-            lessThanOrEqualTo(tester.getRect(find.byType(ListView)).top),
-            reason: 'back in the band',
-          );
-        });
+            expect(
+              typing(tester),
+              isTrue,
+              reason: 'the field kept the keyboard',
+            );
+            final german =
+                item is! WordQuestion || item.section != ExamSection.vocabulary;
+            final window = tester.getRect(find.byType(ListView));
+            expect(window.bottom, lessThanOrEqualTo(keyboardTop));
+            for (final (name, shown) in <(String, Finder)>[
+              // ponytail: at 100 % the buttons stay pinned (#529), and only
+              // the field is sure to show: a two-line gap's sentence sits
+              // above the window, as it did before #554.
+              if (large)
+                for (final text in asked(item, t)) (text, find.text(text)),
+              if (large && !german) ('the word', find.byType(GermanWord)),
+              ('the field', find.byType(TextField)),
+            ]) {
+              final rect = tester.getRect(shown);
+              expect(rect.top, greaterThanOrEqualTo(window.top), reason: name);
+              expect(
+                rect.bottom,
+                lessThanOrEqualTo(window.bottom),
+                reason: name,
+              );
+            }
+            expect(
+              find.byType(DpUmlautBar),
+              german ? findsOneWidget : findsNothing,
+            );
+            if (german) {
+              expect(
+                tester.getRect(find.byType(DpUmlautBar)).bottom,
+                lessThanOrEqualTo(keyboardTop),
+              );
+            }
+            // #560: the time left always shows: in the band, or, the band
+            // collapsed, under the question above the keyboard.
+            final left = tester.getRect(clock());
+            expect(left.bottom, lessThanOrEqualTo(keyboardTop));
+            expect(
+              large ? left.top : window.top,
+              greaterThanOrEqualTo(large ? window.bottom : left.bottom),
+              reason: large ? 'above the keyboard' : 'in the band',
+            );
+            expect(
+              inTheList(t.examRunNext),
+              large ? findsOneWidget : findsNothing,
+            );
+            expect(
+              find.widgetWithText(DpButton, t.examRunNext),
+              findsOneWidget,
+            );
+            // Past 130 % the band keeps only its colour.
+            expect(
+              find.byIcon(Icons.pause),
+              large ? findsNothing : findsOneWidget,
+            );
+
+            tester.view.resetViewInsets();
+            await tester.pumpAndSettle();
+            expect(inTheList(t.examRunNext), findsNothing);
+            expect(
+              find.widgetWithText(DpButton, t.examRunNext),
+              findsOneWidget,
+            );
+            expect(find.byIcon(Icons.pause), findsOneWidget);
+            expect(
+              tester.getRect(clock()).bottom,
+              lessThanOrEqualTo(tester.getRect(find.byType(ListView)).top),
+              reason: 'back in the band',
+            );
+          });
+        }
       }
     }
 
