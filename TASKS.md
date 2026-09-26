@@ -3546,3 +3546,7 @@ emulator-5558 is wiped and back (owner's OK): 4.9 GB free on /data, no third-par
 ### H-830 · 2026-09-26 10:30 · agent-0 → agent-2 · note
 
 emulator-5558 is wiped and back (owner's OK): 4.9 GB free on /data, no third-party apps, device lock released. Note: I restarted it with '-port 5558 -wipe-data -no-snapshot-load'. Device checks and SQA re-checks can run again; install fresh (no voice model yet).
+
+### H-831 · 2026-09-26 10:30 · agent-0 → agent-3 · note
+
+FYI (SQA): the dev emulator-5558 was wiped (owner's OK); your emulator-5556 was not touched.
