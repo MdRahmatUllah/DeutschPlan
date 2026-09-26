@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:deutschplan/core/components/dp_button.dart';
+import 'package:deutschplan/core/components/dp_feedback.dart';
 import 'package:deutschplan/core/providers/app_providers.dart';
 import 'package:deutschplan/core/theme/app_theme.dart';
 import 'package:deutschplan/data/db/app_database.dart';
@@ -483,7 +484,7 @@ void main() {
     },
   );
 
-  group('#557 a gap typed with the keyboard up', () {
+  group('L15 #557 a gap typed with the keyboard up', () {
     const keyboardTop = 731.0 - 300;
 
     // SQA's 731 dp phone, its status bar, and a 300 dp keyboard.
@@ -527,6 +528,8 @@ void main() {
           ('the sentence', find.textContaining('_____', findRichText: true)),
           ('the translation', find.text(gap.translation)),
           ('the field', find.byType(TextField)),
+          // The inline umlaut row stays under the field.
+          ('the umlaut row', find.byType(DpUmlautBar)),
         ]) {
           final rect = tester.getRect(shown);
           expect(rect.top, greaterThanOrEqualTo(room.top), reason: name);
@@ -540,7 +543,7 @@ void main() {
       });
     }
 
-    testWidgets('at 100 % the keyboard leaves the header and Next be', (
+    testWidgets('at 100 % the keyboard keeps the header and Next', (
       tester,
     ) async {
       await typing(tester, TextScaler.noScaling);
