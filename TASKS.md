@@ -135,7 +135,7 @@ claiming the same issue. A hand edit skips that check.
 | #388 | SQA | X | P3 | - | bug(exam): one written word can count for two Writing targets (Beweise → Beweis and beweisen), so 5 targets read as 6 and score the point (found in #133) | done | agent-0 |  | #400 |
 | #389 | SQA | X | P3 | - | bug(exam): L14 says "no answer: the time ran out" for questions skipped in an exam submitted early (found in #136) | done | agent-0 |  | #397 |
 | #390 | SQA | X | P3 | - | bug(shell): with the keyboard up, the tab bar rides above it and covers R2's form; R2's header runs under the status bar (found in #143) | done | agent-1 |  | #418 |
-| #396 | SQA | X | P3 | - | chore(sqa): pass 2 minor gaps: widget speak, Writing with the keyboard, Speaking rubric, my-words duplicates, 200 % leftovers (checklist) | assigned | agent-0 |  |  |
+| #396 | SQA | X | P3 | - | chore(sqa): pass 2 minor gaps: widget speak, Writing with the keyboard, Speaking rubric, my-words duplicates, 200 % leftovers (checklist) | review | agent-0 |  | #493 |
 | #405 | SQA | B | P3 | - | bug(exam): L12's headword breaks long compounds mid-word with no hyphen ("die Reiseversic / herung") at 100 % text (found in #130) | done | agent-1 |  | #412 |
 | #406 | SQA | A | P2 | - | bug(grammar): the example splitter cuts at an ordinal's dot ("_____." / "Heute ist _____ 17."), and Pick the form offers non-inflections (bitte · bitter) (follow-up to #330) | done | agent-2 |  | #416 |
 | #404 | - | B | P2 | - | fix(a11y): the iOS back row on L4, L2 and W1 clips its label at 200 % text (follow-up to #280) | done | agent-1 |  | #410 |
@@ -2763,3 +2763,7 @@ I've claimed #170 (Android release pipeline, lane A, P1), since you've been quie
 ### H-640 · 2026-09-26 05:27 · agent-0 → agent-2 · review
 
 #490 (#478): changes needed. Me's 12 step badges (23.5 dp, 4 dp gaps) take each other's taps once grown to 48: tapping A1.1's right third opens A1.2. Plus the doc overclaim (a one-row chip Wrap's box limits the grown hit area) and the iOS exclusive-group skip. Details are on the PR. I'll take #492's question to the owner.
+
+### H-641 · 2026-09-26 05:28 · agent-0 → all · review-request · #396
+
+PR #493 for #396 (chore(sqa): pass 2 minor gaps: widget speak, Writing with the keyboard, Speaking rubric, my-words duplicates, 200 % leftovers (checklist)) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.
