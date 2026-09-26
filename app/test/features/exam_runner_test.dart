@@ -1038,97 +1038,67 @@ void main() {
       semantics.dispose();
     });
 
-    // agent-0's #569 review: the vocabulary word on SQA's own phone
-    // (emulator-5556: 411 × 731 dp, a 335 dp keyboard), in both languages;
-    // it fits once one role smaller while typing (#573).
-    for (final lang in <String>['en', 'bn']) {
-      testWidgets("#573 vocabulary in $lang at 200 % on SQA's 411 dp phone "
-          'with a 335 dp keyboard: the word and the field show whole', (
-        tester,
-      ) async {
-        tester.view
-          ..physicalSize = const Size(411, 731) * 3
-          ..devicePixelRatio = 3
-          ..padding = const FakeViewPadding(top: 24 * 3);
-        addTearDown(tester.view.reset);
-        await pump(
-          tester,
-          stub: StubExamRun(
-            items: <ExamItem>[
-              const WordQuestion(
-                ExamSection.vocabulary,
-                'haus',
-                prompt: 'das Mehrfamilienhaus',
-                expected: 'apartment building',
-              ),
-              ...artboardPaper(),
-            ],
-            given: <int, String>{},
-          ),
-          textScaler: const AndroidTextScaler(2),
-          locale: Locale(lang),
-        );
-        await tester.showKeyboard(find.byType(TextField));
-        tester.view.viewInsets = const FakeViewPadding(bottom: 335 * 3);
-        addTearDown(tester.view.resetViewInsets);
-        await tester.pumpAndSettle();
-        final window = tester.getRect(find.byType(ListView));
-        for (final (name, shown) in <(String, Finder)>[
-          ('the word', find.byType(GermanWord)),
-          ('the field', find.byType(TextField)),
-        ]) {
-          final rect = tester.getRect(shown);
-          expect(rect.top, greaterThanOrEqualTo(window.top), reason: name);
-          expect(rect.bottom, lessThanOrEqualTo(window.bottom), reason: name);
-        }
-      });
-    }
-
     // #573, the lead's call on #571: typing past 130 %, what is asked is
-    // one role smaller; where it still doesn't fit (a 360 × 640 phone at
-    // 200 %), it scrolls rather than being cut.
-    for (final item in <ExamItem>[
-      const WordQuestion(
-        ExamSection.reverse,
-        'sorry',
-        prompt: "I'm sorry",
-        expected: 'Es tut mir leid',
-      ),
-      const WordQuestion(
-        ExamSection.wordForms,
-        'benehmen',
-        prompt: 'sich benehmen',
-        expected: 'hat sich benommen',
-        form: FormLabel.perfekt,
-      ),
-      const GapQuestion(
-        'g1',
-        before: 'Ich',
-        after: 'gern einen Kaffee mit Milch.',
-        answer: 'trinke',
-        translation: 'I like drinking a coffee with milk.',
-      ),
-      const WordQuestion(
-        ExamSection.vocabulary,
-        'haus',
-        prompt: 'das Mehrfamilienhaus',
-        expected: 'apartment building',
-      ),
+    // one role smaller; where it still doesn't fit, it scrolls rather than
+    // being cut, the field first (the learner read the question whole
+    // before tapping the field; the lead's call).
+    for (final (width, height, keyboard) in <(double, double, double)>[
+      // A budget phone and its keyboard.
+      (360, 640, 280),
+      // SQA's emulator-5556 with Gboard (agent-0's #569 review).
+      (411, 731, 335),
     ]) {
-      for (final (percent, scaler) in <(int, TextScaler)>[
-        (200, const AndroidTextScaler(2)),
-        (150, const AndroidTextScaler(1.5)),
+      for (final item in <ExamItem>[
+        const WordQuestion(
+          ExamSection.reverse,
+          'sorry',
+          prompt: "I'm sorry",
+          expected: 'Es tut mir leid',
+        ),
+        const WordQuestion(
+          ExamSection.wordForms,
+          'benehmen',
+          prompt: 'sich benehmen',
+          expected: 'hat sich benommen',
+          form: FormLabel.perfekt,
+        ),
+        const GapQuestion(
+          'g1',
+          before: 'Ich',
+          after: 'gern einen Kaffee mit Milch.',
+          answer: 'trinke',
+          translation: 'I like drinking a coffee with milk.',
+        ),
+        const WordQuestion(
+          ExamSection.vocabulary,
+          'haus',
+          prompt: 'das Mehrfamilienhaus',
+          expected: 'apartment building',
+        ),
       ]) {
-        for (final lang in <String>['en', 'bn']) {
-          testWidgets(
-            '#573 ${item is WordQuestion ? item.section.name : 'gap'} '
-            'in $lang at $percent % on a 360 × 640 phone: at 150 % what is '
-            'asked shows whole above the field; at 200 % scrolling up shows '
-            'it whole, the field keeping the keyboard',
-            (tester) async {
+        final vocabulary =
+            item is WordQuestion && item.section == ExamSection.vocabulary;
+        final kind = item is WordQuestion ? item.section.name : 'gap';
+        for (final (percent, scaler) in <(int, TextScaler)>[
+          (200, const AndroidTextScaler(2)),
+          (150, const AndroidTextScaler(1.5)),
+        ]) {
+          // Still taller than the room, one role smaller: at 200 % the
+          // gap's sentence and translation on either phone, and the
+          // vocabulary word on the budget one.
+          final scrolls =
+              percent == 200 &&
+              (item is GapQuestion || (vocabulary && width == 360));
+          for (final lang in <String>['en', 'bn']) {
+            testWidgets('#573 $kind in $lang at $percent % on '
+                '${width.round()} × ${height.round()} with a '
+                '${keyboard.round()} dp keyboard: '
+                '${scrolls ? 'the field shows, and scrolling up shows what is '
+                          'asked whole' : 'what is asked shows whole above the field'}'
+                ', the field keeping the keyboard', (tester) async {
               final t = lang == 'bn' ? bn : l10n;
               tester.view
-                ..physicalSize = const Size(360, 640) * 3
+                ..physicalSize = Size(width, height) * 3
                 ..devicePixelRatio = 3
                 ..padding = const FakeViewPadding(top: 24 * 3);
               addTearDown(tester.view.reset);
@@ -1142,121 +1112,156 @@ void main() {
                 locale: Locale(lang),
               );
               await tester.showKeyboard(find.byType(TextField));
-              tester.view.viewInsets = const FakeViewPadding(bottom: 280 * 3);
+              tester.view.viewInsets = FakeViewPadding(bottom: keyboard * 3);
               addTearDown(tester.view.resetViewInsets);
               await tester.pumpAndSettle();
 
               final window = tester.getRect(find.byType(ListView));
               final field = tester.getRect(find.byType(TextField));
+              expect(field.top, greaterThanOrEqualTo(window.top));
               expect(field.bottom, lessThanOrEqualTo(window.bottom));
-              final shown = <Finder>[
-                for (final text in asked(item, t)) find.text(text),
-                if (item is WordQuestion &&
-                    item.section == ExamSection.vocabulary)
-                  find.byType(GermanWord),
-              ];
-              if (percent == 200) {
+              if (scrolls) {
                 await tester.drag(find.byType(ListView), const Offset(0, 1000));
                 await tester.pumpAndSettle();
               }
-              for (final text in shown) {
-                expect(
-                  tester.getRect(text).top,
-                  greaterThanOrEqualTo(window.top),
-                  reason: 'what is asked, whole',
-                );
+              for (final shown in <Finder>[
+                for (final text in asked(item, t)) find.text(text),
+                if (vocabulary) find.byType(GermanWord),
+              ]) {
+                final rect = tester.getRect(shown);
+                expect(rect.top, greaterThanOrEqualTo(window.top));
+                expect(rect.bottom, lessThanOrEqualTo(window.bottom));
               }
               expect(
                 typing(tester),
                 isTrue,
                 reason: 'the field kept the keyboard',
               );
-            },
-          );
+            });
+          }
         }
       }
     }
 
-    for (final (item, big, small) in <(ExamItem, DpTextRole, DpTextRole)>[
-      (
-        const WordQuestion(
-          ExamSection.reverse,
-          'sorry',
-          prompt: "I'm sorry",
-          expected: 'Es tut mir leid',
-        ),
-        DpTextRole.headline,
-        DpTextRole.title,
-      ),
-      (
-        const GapQuestion(
-          'g1',
-          before: 'Ich',
-          after: 'gern.',
-          answer: 'lese',
-          translation: 'I like reading.',
-        ),
-        DpTextRole.title,
-        DpTextRole.bodyLarge,
-      ),
-      (
-        const WordQuestion(
-          ExamSection.vocabulary,
-          'haus',
-          prompt: 'das Haus',
-          expected: 'house',
-        ),
-        DpTextRole.display,
-        DpTextRole.headline,
-      ),
-    ]) {
-      testWidgets('#573 ${item is WordQuestion ? item.section.name : 'gap'}: '
-          'typing past 130 %, what is asked is one role smaller, and its own '
-          "size again at the keyboard's going", (tester) async {
-        tester.view
-          ..physicalSize = const Size(390, 731) * 3
-          ..devicePixelRatio = 3
-          ..padding = const FakeViewPadding(top: 24 * 3);
-        addTearDown(tester.view.reset);
-        await pump(
-          tester,
-          stub: StubExamRun(
-            items: <ExamItem>[item, ...artboardPaper()],
-            given: <int, String>{},
+    for (final (name, item, big, small)
+        in <(String, ExamItem, DpTextRole, DpTextRole)>[
+          (
+            'reverse',
+            const WordQuestion(
+              ExamSection.reverse,
+              'sorry',
+              prompt: "I'm sorry",
+              expected: 'Es tut mir leid',
+            ),
+            DpTextRole.headline,
+            DpTextRole.title,
           ),
-          textScaler: const AndroidTextScaler(2),
-        );
-        DpTextRole role() => switch (item) {
-          WordQuestion(section: ExamSection.vocabulary) =>
-            tester.widget<GermanWord>(find.byType(GermanWord)).role,
-          GapQuestion() =>
-            tester
-                .widget<DpText>(
-                  find.ancestor(
-                    of: find.textContaining('_____'),
-                    matching: find.byType(DpText),
-                  ),
-                )
-                .role,
-          _ =>
-            tester
-                .widget<DpText>(
-                  find.ancestor(
-                    of: find.text("I'm sorry"),
-                    matching: find.byType(DpText),
-                  ),
-                )
-                .role,
-        };
-        expect(role(), big);
-        await tester.showKeyboard(find.byType(TextField));
-        tester.view.viewInsets = const FakeViewPadding(bottom: 300 * 3);
-        await tester.pumpAndSettle();
-        expect(role(), small, reason: 'typing past 130 %');
-        tester.view.resetViewInsets();
-        await tester.pumpAndSettle();
-        expect(role(), big, reason: 'the keyboard gone');
-      });
+          (
+            'word forms',
+            const WordQuestion(
+              ExamSection.wordForms,
+              'benehmen',
+              prompt: 'sich benehmen',
+              expected: 'hat sich benommen',
+              form: FormLabel.perfekt,
+            ),
+            DpTextRole.headline,
+            DpTextRole.title,
+          ),
+          (
+            'gap',
+            const GapQuestion(
+              'g1',
+              before: 'Ich',
+              after: 'gern.',
+              answer: 'lese',
+              translation: 'I like reading.',
+            ),
+            DpTextRole.title,
+            DpTextRole.bodyLarge,
+          ),
+          (
+            'grammar gap fill',
+            const GrammarQuestion(
+              't1#0',
+              GapFill(
+                before: 'Ich',
+                after: 'gern einen Kaffee.',
+                answer: 'hätte',
+                translation: "I'd like a coffee.",
+              ),
+            ),
+            DpTextRole.title,
+            DpTextRole.bodyLarge,
+          ),
+          (
+            'vocabulary',
+            const WordQuestion(
+              ExamSection.vocabulary,
+              'haus',
+              prompt: 'das Haus',
+              expected: 'house',
+            ),
+            DpTextRole.display,
+            DpTextRole.headline,
+          ),
+        ]) {
+      // At 200 % on SQA's phone the role drops while typing; at 100 % on the
+      // budget phone, where the band collapses (#571), it doesn't.
+      for (final (percent, scaler, width, height, keyboard)
+          in <(int, TextScaler, double, double, double)>[
+            (200, const AndroidTextScaler(2), 390, 731, 300),
+            (100, TextScaler.noScaling, 360, 640, 280),
+          ]) {
+        testWidgets('#573 $name at $percent %: typing '
+            '${percent > 130 ? 'past' : 'at or under'} 130 %, what is asked '
+            '${percent > 130 ? 'is one role smaller' : 'keeps its role'}; '
+            "its own size again at the keyboard's going", (tester) async {
+          tester.view
+            ..physicalSize = Size(width, height) * 3
+            ..devicePixelRatio = 3
+            ..padding = const FakeViewPadding(top: 24 * 3);
+          addTearDown(tester.view.reset);
+          await pump(
+            tester,
+            stub: StubExamRun(
+              items: <ExamItem>[item, ...artboardPaper()],
+              given: <int, String>{},
+            ),
+            textScaler: scaler,
+          );
+          DpTextRole role() => switch (item) {
+            WordQuestion(section: ExamSection.vocabulary) =>
+              tester.widget<GermanWord>(find.byType(GermanWord)).role,
+            GapQuestion() || GrammarQuestion() =>
+              tester
+                  .widget<DpText>(
+                    find.ancestor(
+                      of: find.textContaining('_____'),
+                      matching: find.byType(DpText),
+                    ),
+                  )
+                  .role,
+            _ =>
+              tester
+                  .widget<DpText>(
+                    find.ancestor(
+                      of: find.text(asked(item, l10n).single),
+                      matching: find.byType(DpText),
+                    ),
+                  )
+                  .role,
+          };
+          expect(role(), big);
+          await tester.showKeyboard(find.byType(TextField));
+          tester.view.viewInsets = FakeViewPadding(bottom: keyboard * 3);
+          await tester.pumpAndSettle();
+          expect(role(), percent > 130 ? small : big, reason: 'typing');
+          tester.view.resetViewInsets();
+          await tester.pumpAndSettle();
+          expect(role(), big, reason: 'the keyboard gone');
+        });
+      }
     }
 
     testWidgets('#560 Writing at 200 %: a tap beside ß or on the clock keeps '

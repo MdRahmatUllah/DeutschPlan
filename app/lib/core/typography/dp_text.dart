@@ -36,7 +36,10 @@ extension DpTextRoleTokens on DpTextRole {
 
   /// The next role down: what is asked while typing past 130 % (the lead's
   /// call on #571: reduce first, then scroll). `caption` is already the
-  /// bottom.
+  /// bottom. A step down then up is the role again, so Bangla keeps its one
+  /// step over the Latin; but a Bangla run of a `display` role doesn't
+  /// shrink (`headline.oneStepLarger` is `display`), moot while no prompt
+  /// sets Bangla at display.
   DpTextRole get oneStepSmaller => switch (this) {
     DpTextRole.display => DpTextRole.headline,
     DpTextRole.headline => DpTextRole.title,

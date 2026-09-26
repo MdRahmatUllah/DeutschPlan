@@ -90,6 +90,27 @@ void main() {
     });
   });
 
+  test('#573 typing past 130 %, what is asked is one role smaller: every '
+      'role maps to the next one down, caption is the floor, and a step down '
+      'then up is the role again', () {
+    expect(DpTextRole.display.oneStepSmaller, DpTextRole.headline);
+    expect(DpTextRole.headline.oneStepSmaller, DpTextRole.title);
+    expect(DpTextRole.title.oneStepSmaller, DpTextRole.bodyLarge);
+    expect(DpTextRole.bodyLarge.oneStepSmaller, DpTextRole.body);
+    expect(DpTextRole.body.oneStepSmaller, DpTextRole.label);
+    expect(DpTextRole.label.oneStepSmaller, DpTextRole.caption);
+    expect(
+      DpTextRole.caption.oneStepSmaller,
+      DpTextRole.caption,
+      reason: 'caption is already the smallest role',
+    );
+    for (final role in DpTextRole.values.where(
+      (role) => role != DpTextRole.caption,
+    )) {
+      expect(role.oneStepSmaller.oneStepLarger, role, reason: '$role');
+    }
+  });
+
   group('Bangla is one step larger at the same role', () {
     test('every role maps to the next one up, and display is the ceiling', () {
       expect(DpTextRole.caption.oneStepLarger, DpTextRole.label);

@@ -515,6 +515,9 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
                 ExamQuestionView(
                   key: ValueKey<int>(questions[_at].ord),
                   item: item,
+                  // Past 130 % only, not `cramped`: a short phone at 100 %
+                  // collapses the band (#571) but keeps what is asked at
+                  // its size, which fits there (#573).
                   typingLarge: DpScript.largeTyping(context),
                   given: _given[_at],
                   field: _field,
