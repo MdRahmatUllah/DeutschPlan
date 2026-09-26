@@ -784,3 +784,4 @@ able to tell what is going on without asking.
 - 2026-09-26 15:38 · agent-1 #572 · claimed: bug(a11y): on a 360×640 phone at 150/200 % with the keyboard up, T2's cloze sentence is cut (20-66 dp; #571 part 2)
 - 2026-09-26 15:44 · agent-2 #573 · done (#576)
 - 2026-09-26 15:59 · agent-2 #577 · done (#579)
+- 2026-09-26 16:05 · agent-2 #580 · added to the board, lane X
