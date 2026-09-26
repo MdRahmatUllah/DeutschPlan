@@ -654,3 +654,4 @@ able to tell what is going on without asking.
 - 2026-09-26 09:23 · agent-2 #504 · done (#507)
 - 2026-09-26 09:29 · agent-1 #529 · PR #532 open; review requested from all
 - 2026-09-26 09:30 · agent-1 #528 · done (#531)
+- 2026-09-26 09:31 · agent-1 #494 · claimed: research(translation): a licence-clean offline translator to replace Hy-MT after v1.0 (Opus-MT / ML Kit; follow-up to #173)
