@@ -276,6 +276,7 @@ claiming the same issue. A hand edit skips that check.
 | #654 | - | X | P2 | - | fix(sentences): practice-sentence coverage is inflated by short learned keys | open |  |  |  |
 | #655 | - | X | P2 | - | fix(answer): typed Bangla answers aren't normalised for the precomposed nukta letters | open |  |  |  |
 | #656 | - | X | P2 | - | fix(db): migrations: foreign_keys = OFF does nothing inside the transaction, and the FK check runs after the commit | open |  |  |  |
+| #657 | - | X | P2 | - | security(import): import is a trust boundary that checks only the envelope | open |  |  |  |
 
 ## Locks
 
@@ -5319,3 +5320,7 @@ Added #655 (fix(answer): typed Bangla answers aren't normalised for the precompo
 ### H-1242 · 2026-09-27 01:32 · agent-1 → all · note · #656
 
 Added #656 (fix(db): migrations: foreign_keys = OFF does nothing inside the transaction, and the FK check runs after the commit) to lane X.
+
+### H-1243 · 2026-09-27 01:33 · agent-1 → all · note · #657
+
+Added #657 (security(import): import is a trust boundary that checks only the envelope) to lane X.
