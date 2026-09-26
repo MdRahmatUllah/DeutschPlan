@@ -65,6 +65,7 @@ class ExamQuestionView extends ConsumerWidget {
     this.onDiscard,
     this.onRecording,
     this.countPinned = false,
+    this.typingLarge = false,
   });
 
   final ExamItem item;
@@ -99,6 +100,11 @@ class ExamQuestionView extends ConsumerWidget {
   /// the question leaves it out ([ExamWriting.countPinned], #529).
   final bool countPinned;
 
+  /// Typing past 130 % with the keyboard up: what is asked is one role
+  /// smaller, so a display-size word or a two-line gap still fits above the
+  /// field on a short phone; what still doesn't scrolls (#573).
+  final bool typingLarge;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
@@ -119,6 +125,9 @@ class ExamQuestionView extends ConsumerWidget {
         onRecording: onRecording ?? (_) {},
       );
     }
+
+    DpTextRole asked(DpTextRole role) =>
+        typingLarge ? role.oneStepSmaller : role;
 
     Widget speaker(String word, {double size = 48}) => DpSpeakerButton(
       size: size,
@@ -175,7 +184,7 @@ class ExamQuestionView extends ConsumerWidget {
             l10n.examRunAskForm,
             DpText(
               examFormPrompt(l10n, prompt, form),
-              role: DpTextRole.headline,
+              role: asked(DpTextRole.headline),
               weight: 600,
               textAlign: TextAlign.center,
             ),
@@ -186,7 +195,7 @@ class ExamQuestionView extends ConsumerWidget {
             l10n.examRunAskGerman,
             DpText(
               prompt,
-              role: DpTextRole.headline,
+              role: asked(DpTextRole.headline),
               weight: 600,
               textAlign: TextAlign.center,
             ),
@@ -196,7 +205,9 @@ class ExamQuestionView extends ConsumerWidget {
           _ => (
             l10n.examRunAskMeaning,
             _Centred(<Widget>[
-              Flexible(child: GermanWord(prompt, role: DpTextRole.display)),
+              Flexible(
+                child: GermanWord(prompt, role: asked(DpTextRole.display)),
+              ),
               const SizedBox(width: 14),
               speaker(prompt),
             ]),
@@ -206,14 +217,24 @@ class ExamQuestionView extends ConsumerWidget {
         },
       GapQuestion(:final before, :final after, :final translation) => (
         l10n.examRunAskGap,
-        _Gap(before: before, after: after, translation: translation),
+        _Gap(
+          before: before,
+          after: after,
+          translation: translation,
+          role: asked(DpTextRole.title),
+        ),
         null,
         _Field(field: field, onGiven: onGiven),
       ),
       GrammarQuestion(:final item) => switch (item) {
         GapFill(:final before, :final after, :final translation) => (
           itemKind(l10n, item),
-          _Gap(before: before, after: after, translation: translation),
+          _Gap(
+            before: before,
+            after: after,
+            translation: translation,
+            role: asked(DpTextRole.title),
+          ),
           null,
           _Field(field: field, onGiven: onGiven),
         ),
@@ -328,11 +349,15 @@ class _Gap extends StatelessWidget {
     required this.before,
     required this.after,
     required this.translation,
+    this.role = DpTextRole.title,
   });
 
   final String before;
   final String after;
   final String translation;
+
+  /// The sentence's role: a step smaller while typing past 130 % (#573).
+  final DpTextRole role;
 
   @override
   Widget build(BuildContext context) {
@@ -345,7 +370,7 @@ class _Gap extends StatelessWidget {
             '_____',
             if (after.isNotEmpty) after,
           ].join(' '),
-          role: DpTextRole.title,
+          role: role,
           weight: 600,
           textAlign: TextAlign.center,
         ),
