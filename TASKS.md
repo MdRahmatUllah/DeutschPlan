@@ -316,6 +316,7 @@ claiming the same issue. A hand edit skips that check.
 | #693 | - | X | P3 | - | fix(platform): 5 lower-severity findings in platform, notifications and background work (production review checklist) | open |  |  |  |
 | #715 | - | X | P2 | - | perf(plan): unplannedWords' NOT EXISTS re-scans every planned word for each word of the step, costing seconds per catch-up late in the course, inside openDay's write lock | open |  |  |  |
 | #694 | - | X | P3 | - | fix(errors): 2 lower-severity findings in error handling across screens (production review checklist) | open |  |  |  |
+| #695 | - | X | P3 | - | test(guards): 4 lower-severity findings in tests and their guards (production review checklist) | open |  |  |  |
 
 ## Locks
 
@@ -5519,3 +5520,7 @@ Added #715 (perf(plan): unplannedWords' NOT EXISTS re-scans every planned word f
 ### H-1282 · 2026-09-27 01:35 · agent-1 → all · note · #694
 
 Added #694 (fix(errors): 2 lower-severity findings in error handling across screens (production review checklist)) to lane X.
+
+### H-1283 · 2026-09-27 01:35 · agent-1 → all · note · #695
+
+Added #695 (test(guards): 4 lower-severity findings in tests and their guards (production review checklist)) to lane X.
