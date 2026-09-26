@@ -918,7 +918,7 @@ void main() {
       ),
     ]) {
       testWidgets('#560 ${(item as WordQuestion).section.name}: an untimed '
-          'paper shows no clock, collapsed or not', (tester) async {
+          'paper shows no clock with the band collapsed', (tester) async {
         tester.view
           ..physicalSize = const Size(390, 731) * 3
           ..devicePixelRatio = 3
@@ -940,6 +940,51 @@ void main() {
         expect(clock(), findsNothing);
       });
     }
+
+    testWidgets("#560 collapsed, the bar's clock reads its time left to a "
+        'screen reader and is Coral in the last two minutes', (tester) async {
+      final semantics = tester.ensureSemantics();
+      tester.view
+        ..physicalSize = const Size(390, 731) * 3
+        ..devicePixelRatio = 3
+        ..padding = const FakeViewPadding(top: 24 * 3);
+      addTearDown(tester.view.reset);
+      await pump(
+        tester,
+        stub: StubExamRun(
+          attempt: artboardAttempt(durationSec: 20 * 60 - 120),
+          items: <ExamItem>[
+            const WordQuestion(
+              ExamSection.reverse,
+              'haus',
+              prompt: 'the house',
+              expected: 'das Haus',
+            ),
+            ...artboardPaper(),
+          ],
+          given: <int, String>{},
+        ),
+        textScaler: const AndroidTextScaler(2),
+      );
+      await tester.showKeyboard(find.byType(TextField));
+      tester.view.viewInsets = const FakeViewPadding(bottom: 300 * 3);
+      addTearDown(tester.view.resetViewInsets);
+      await tester.pumpAndSettle();
+
+      expect(find.byIcon(Icons.pause), findsNothing, reason: 'collapsed');
+      final shown = tester.widget<Text>(clock()).data!;
+      final [minutes, seconds] = shown.split(':').map(int.parse).toList();
+      expect(minutes * 60 + seconds, lessThanOrEqualTo(120));
+      expect(
+        find.bySemanticsLabel(l10n.examRunTimeLeft(minutes, seconds)),
+        findsOneWidget,
+      );
+      final chip = tester.widget<Container>(
+        find.ancestor(of: clock(), matching: find.byType(Container)).first,
+      );
+      expect((chip.decoration! as BoxDecoration).color, DpPalette.light.again);
+      semantics.dispose();
+    });
 
     testWidgets('#560 Writing at 200 %: a tap beside ß or on the clock keeps '
         'the keyboard, as a key does (#529, #532)', (tester) async {
