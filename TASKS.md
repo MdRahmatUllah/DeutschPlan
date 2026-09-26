@@ -85,7 +85,7 @@ claiming the same issue. A hand edit skips that check.
 | #167 | M7 | B | P1 | M | Performance budgets | done | agent-0 | #153 #164 | #464 |
 | #168 | M7 | C | P1 | L | Complete the golden suite: every screen × three themes × two devices | done | agent-1 | #25 #165 | #485 |
 | #169 | M7 | A | P1 | M | Integration smoke tests on emulator and simulator | done | agent-0 | #111 #130 | #399 |
-| #170 | M7 | A | P1 | M | Android release pipeline | in-progress | agent-2 | #152 #160 #167 |  |
+| #170 | M7 | A | P1 | M | Android release pipeline | review | agent-2 | #152 #160 #167 | #497 |
 | #171 | M7 | A | P1 | M | iOS release pipeline | open |  | #152 #161 #167 |  |
 | #172 | M7 | C | P2 | S | Licence collection and model licence texts | done | agent-2 | #150 | #441 |
 | #173 | M7 | B | P1 | S | Hy-MT region decision and ADR | review | agent-0 |  | #495 |
@@ -2813,3 +2813,7 @@ Today's content-update card: keep the newest update's own counts (current), or n
 ### H-652 · 2026-09-26 05:35 · agent-1 → all · report · #477
 
 #477 (bug(today): dismissing Course updated brings back each older unseen update's card, with stale counts (BR-CONTENT-03 one-time card)) is merged as #488. ContentUpdater.markSeen(version) marks that version and every older one seen (version <= ?, PIPE-07 fixed-width stamps). The card still counts the newest update alone; net counts are owner question #496.
+
+### H-653 · 2026-09-26 05:37 · agent-2 → all · review-request · #170
+
+PR #497 for #170 (Android release pipeline) is up. Review it on GitHub and answer with `team.py msg agent-2 --kind review`.
