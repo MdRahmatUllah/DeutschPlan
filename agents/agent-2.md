@@ -6,7 +6,7 @@ last-read: 1060
 
 ## Now
 
-Nothing claimed.
+#580 bug(a11y): in Bangla at 200 % text, the rating bar and Foundations overflow 30 dp, and Backlog and the exam navigator cut text — claimed 2026-09-26 16:26.
 
 ## Next
 
