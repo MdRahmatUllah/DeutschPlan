@@ -498,7 +498,7 @@ app/lib/
 
 **Theming**
 - Widgets read `context.tokens`, never hex.
-- Every card, sheet, header and bar is a `SgSurface(kind:)`. In scrolling lists use `SgSurfaceKind.bar`: glass allows three blur layers on screen.
+- Every card, sheet, header and bar is an `SgSurface(kind:)`. In scrolling lists use `SgSurfaceKind.bar`: glass allows three blur layers on screen.
 - Glass screens wrap the scaffold in `AuroraBackdrop` with a transparent background (see `categories_screen.dart`). The tab colours are Today = primary, Learn = accent, Search = die, Me = der.
 
 **Reuse before you write**

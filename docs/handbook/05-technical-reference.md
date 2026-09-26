@@ -61,7 +61,7 @@ choice, and the rejected alternatives, are in
 ## The repository
 
 ```
-sogda/
+deutschplan/
 ├── app/                              the Flutter app (package sogda)
 │   ├── pubspec.yaml · l10n.yaml · analysis_options.yaml
 │   ├── lib/

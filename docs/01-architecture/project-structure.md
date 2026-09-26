@@ -1,7 +1,7 @@
 # Project structure
 
 ```
-sogda/                        ← repository root
+deutschplan/                  ← repository root
 ├── data/                           ← content sources, the German_*_Tracker.xlsx workbooks (git-ignored;
 │                                     only where content is edited). The pipeline compiles the ones
 │                                     content/manifest.yaml lists

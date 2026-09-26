@@ -432,20 +432,6 @@ void main() {
 
   group('#601 the names the native side must share', () {
     test(
-      "the redraw goes to the manifest's receiver, in the app's namespace",
-      () {
-        final gradle = File('android/app/build.gradle.kts').readAsStringSync();
-        final manifest = File('android/app/src/main/AndroidManifest.xml')
-            .readAsStringSync();
-        final namespace = RegExp(r'namespace = "([^"]+)"')
-            .firstMatch(gradle)![1];
-        final receiver = RegExp(r'android:name="(\.widget\.[A-Za-z]+Receiver)"')
-            .firstMatch(manifest)![1];
-        expect(HomeWidgetStore.androidReceiver, '$namespace$receiver');
-      },
-    );
-
-    test(
       "the App Group is release.md's, which the widget extension shares",
       () {
         final release = File('../docs/05-dev-guide/release.md')

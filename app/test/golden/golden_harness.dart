@@ -205,7 +205,7 @@ void goldenTest(
             expectNothingClipped(tester);
             expectNoWordBroken(tester);
             // #551: and nothing cut to its maxLines, "…" or not (#550), a
-            // field's hint included (#565). A SgOneLine draws only the words
+            // field's hint included (#565). An SgOneLine draws only the words
             // that fit, then "…".
             expectAllLinesShown(tester);
             // The keyboard up at 200 % on a screen with a field: the #554

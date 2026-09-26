@@ -101,10 +101,10 @@ class SgSurface extends StatefulWidget {
   final VoidCallback? onTap;
 
   @override
-  State<SgSurface> createState() => _DpSurfaceState();
+  State<SgSurface> createState() => _SgSurfaceState();
 }
 
-class _DpSurfaceState extends State<SgSurface> {
+class _SgSurfaceState extends State<SgSurface> {
   bool _down = false;
 
   @override

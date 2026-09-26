@@ -12,7 +12,7 @@
 Generated code isn't committed (ADR 17), so a fresh clone generates it before anything resolves. From the repository root:
 
 ```bash
-git clone … sogda && cd sogda
+git clone … deutschplan && cd deutschplan
 python tools/mirror_content_schema.py
 cd app
 flutter pub get                 # also runs gen_l10n -> lib/l10n/generated/

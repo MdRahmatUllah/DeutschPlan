@@ -90,10 +90,10 @@ class SgButton extends StatefulWidget {
   };
 
   @override
-  State<SgButton> createState() => _DpButtonState();
+  State<SgButton> createState() => _SgButtonState();
 }
 
-class _DpButtonState extends State<SgButton> {
+class _SgButtonState extends State<SgButton> {
   bool _down = false;
 
   bool get _enabled => widget.onPressed != null;

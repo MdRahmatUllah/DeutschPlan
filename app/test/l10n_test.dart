@@ -207,7 +207,7 @@ void main() {
       'l10n.digits', () {
     // SgText('$count'), or a pill's `label: streak.toString()`, prints 0–9 in
     // the Bangla UI; T1's streak pill did.
-    // A SgText literal that is only numbers once its interpolations go
+    // An SgText literal that is only numbers once its interpolations go
     // ("$n", "${a} / ${b}"), and a label that is a number's toString.
     final text = RegExp(r"SgText\(\s*'([^'\n]*\$[^'\n]*)'");
     final label = RegExp(r'\blabel:\s*[\w.]+\.toString\(\)');

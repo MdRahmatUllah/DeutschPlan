@@ -19,7 +19,7 @@ val keyProperties = Properties().apply {
 }
 
 android {
-    // The owner's (#170): it can never change once the app is on Play.
+    // The owner's (ADR 28, #601): it can never change once the app is on Play.
     namespace = "de.sogda.app"
     // permission_handler_android requires API 37 or later to compile against.
     compileSdk = 37

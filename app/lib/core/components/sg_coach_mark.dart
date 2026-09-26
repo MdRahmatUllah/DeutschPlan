@@ -30,10 +30,10 @@ class SgCoachMark extends StatefulWidget {
   final VoidCallback? onShown;
 
   @override
-  State<SgCoachMark> createState() => _DpCoachMarkState();
+  State<SgCoachMark> createState() => _SgCoachMarkState();
 }
 
-class _DpCoachMarkState extends State<SgCoachMark> {
+class _SgCoachMarkState extends State<SgCoachMark> {
   final OverlayPortalController _portal = OverlayPortalController();
   final LayerLink _link = LayerLink();
   bool _reported = false;

@@ -704,7 +704,7 @@ void main() {
   });
 
   group('#312 a screen reader can press them', () {
-    testWidgets('a SgChip', (tester) async {
+    testWidgets('an SgChip', (tester) async {
       final semantics = tester.ensureSemantics();
       var taps = 0;
       await pump(

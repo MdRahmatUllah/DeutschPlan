@@ -165,7 +165,8 @@ the team board's "Decisions already made"):
 | The duplicate C2 row is dropped in the pipeline | #407 |
 | v1.0 ships on Android only; iOS waits for a Mac | #171, #161 |
 | Hy-MT off in every build | #173 |
-| The app id `de.sogda.app`; the upload key added later | #170 |
+| The app id `io.github.rahmatullah.deutschplan`; the upload key added later | #170 |
+| The app is Sogda, with the app id `de.sogda.app`, internals included | #601 (ADR 28) |
 | llama.cpp's CPU backend only | #463 |
 | Controls keep their look; invisible 48 dp hit areas are the fix | #478, #492 |
 | The Bangla pronunciation follows the meaning language in setup | #527, #537 |

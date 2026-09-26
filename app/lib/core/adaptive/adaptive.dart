@@ -746,7 +746,7 @@ class _AdaptiveTabBarState<T extends Object> extends State<AdaptiveTabBar<T>>
 
 /// Somewhere in a sheet or pane for its toasts to show.
 ///
-/// A `SgToast` goes to the nearest `ScaffoldMessenger`, which draws it in the
+/// An `SgToast` goes to the nearest `ScaffoldMessenger`, which draws it in the
 /// page's `Scaffold`: under a sheet that covers the page, and under a pane's
 /// scrim. This gives [child] a messenger and a transparent scaffold of its
 /// own, so "No German voice…" and #141's Undo show above it. It fills its
@@ -809,7 +809,7 @@ abstract final class Adaptive {
     if (chrome == AdaptiveChrome.cupertino) {
       // A Cupertino popup has no Material under it, and a sheet's buttons,
       // fields and text styles need one: without it every line came out with
-      // the yellow "no Material" underline and a SgButton threw (#122).
+      // the yellow "no Material" underline and an SgButton threw (#122).
       // ponytail: the Cupertino popup slides in even under reduce motion (it
       // takes no animation style, #164); a PopupRoute of our own if a
       // learner or the review asks for it.

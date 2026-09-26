@@ -30,8 +30,8 @@ ships on Android only; the iOS pipeline waits for a Mac.
 owner, and the repository's `.git/config` sets it; never override it:
 
 ```bash
-git clone https://github.com/MdRahmatUllah/DeutschPlan.git sogda
-cd sogda
+git clone https://github.com/MdRahmatUllah/DeutschPlan.git deutschplan
+cd deutschplan
 git config user.name  "MdRahmatUllah"
 git config user.email "rahmat.ullah@infinitibit.com"
 ```
@@ -168,7 +168,7 @@ From [`release.md`](../05-dev-guide/release.md), with the real commands:
 ### Signing
 
 The app id is `de.sogda.app`, the owner's; it can never
-change once the app is on Play (#170). Release builds use the owner's upload
+change once the app is on Play (ADR 28). Release builds use the owner's upload
 key when `app/android/key.properties` exists:
 
 ```
