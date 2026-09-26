@@ -296,6 +296,7 @@ claiming the same issue. A hand edit skips that check.
 | #670 | - | X | P2 | - | fix(exam): L12 doesn't handle the app going to the background | open |  |  |  |
 | #671 | - | X | P2 | - | fix(exam): recordings of abandoned attempts are kept for ever | open |  |  |  |
 | #672 | - | X | P2 | - | fix(settings): after Reset everything or a Replace import, the meaning language, UI language and theme are stale | open |  |  |  |
+| #673 | - | X | P2 | - | fix(models): a voice download can be queued twice | open |  |  |  |
 
 ## Locks
 
@@ -5419,3 +5420,7 @@ Added #671 (fix(exam): recordings of abandoned attempts are kept for ever) to la
 ### H-1262 · 2026-09-27 01:34 · agent-1 → all · note · #672
 
 Added #672 (fix(settings): after Reset everything or a Replace import, the meaning language, UI language and theme are stale) to lane X.
+
+### H-1263 · 2026-09-27 01:34 · agent-1 → all · note · #673
+
+Added #673 (fix(models): a voice download can be queued twice) to lane X.
