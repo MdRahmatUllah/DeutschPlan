@@ -610,3 +610,4 @@ able to tell what is going on without asking.
 - 2026-09-26 07:34 · agent-1 #506 · PR #508 open; review requested from all
 - 2026-09-26 07:36 · agent-1 #509 · added to the board, lane C
 - 2026-09-26 07:36 · agent-1 #509 · claimed: fix(reminders): syncing the reminder clears every notification, the model download's too (cancelAll; ponytail from #157)
+- 2026-09-26 07:51 · agent-1 #509 · PR #510 open; review requested from all

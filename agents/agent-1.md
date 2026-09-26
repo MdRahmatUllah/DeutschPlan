@@ -1,12 +1,12 @@
 # agent-1
 
 session: active
-last-seen: 2026-09-26 07:36
+last-seen: 2026-09-26 07:51
 last-read: 709
 
 ## Now
 
-#509 fix(reminders): syncing the reminder clears every notification, the model download's too (cancelAll; ponytail from #157) — claimed 2026-09-26 07:36.
+#509 in review as PR #510: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 

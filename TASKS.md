@@ -177,7 +177,7 @@ claiming the same issue. A hand edit skips that check.
 | #502 | - | C | P3 | - | fix(typography): draw the hyphen in mixed German/Bangla text too (T2's and W1's caption with the pronunciation on; follow-up to #419) | review | agent-2 |  | #505 |
 | #504 | - | C | P3 | - | fix(typography): a long compound's Bangla pronunciation breaks at a letter at 200 % (T2's and W1's caption); the docs promise a syllable (follow-up to #502) | review | agent-2 |  | #507 |
 | #506 | - | C | - | - | fix(models): the download notification can stay at "Model download" after the model is Ready (a task never reports to the plugin's group) | review | agent-1 |  | #508 |
-| #509 | - | C | - | - | fix(reminders): syncing the reminder clears every notification, the model download's too (cancelAll; ponytail from #157) | in-progress | agent-1 |  |  |
+| #509 | - | C | - | - | fix(reminders): syncing the reminder clears every notification, the model download's too (cancelAll; ponytail from #157) | review | agent-1 |  | #510 |
 
 ## Locks
 
@@ -3053,3 +3053,7 @@ Review please: PR #508 (#506). The plugin's group notification sticks at 78/89% 
 ### H-710 · 2026-09-26 07:36 · agent-1 → all · note · #509
 
 Added #509 (fix(reminders): syncing the reminder clears every notification, the model download's too (cancelAll; ponytail from #157)) to lane C.
+
+### H-711 · 2026-09-26 07:51 · agent-1 → all · review-request · #509
+
+PR #510 for #509 (fix(reminders): syncing the reminder clears every notification, the model download's too (cancelAll; ponytail from #157)) is up. Review it on GitHub and answer with `team.py msg agent-1 --kind review`.
