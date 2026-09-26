@@ -16,7 +16,8 @@ import 'package:deutschplan/features/study/study_session.dart';
 import 'package:deutschplan/router/routes.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:material_ui/material_ui.dart' show TextField;
+import 'package:material_ui/material_ui.dart'
+    show BuildContext, TextField, Widget;
 
 import '../services/fake_tts.dart';
 
@@ -71,63 +72,74 @@ void main() {
     searchKeyAlt: 'rechnung',
   );
 
+  Widget screen(BuildContext context) => ProviderScope(
+    overrides: [
+      settingsProvider.overrideWithValue(settings),
+      fakeVoice(FakeTts()),
+      studySessionProvider(args).overrideWith(_Fourth.new),
+      studyIntervalsProvider('r3').overrideWith(
+        (ref) async => <Rating, int>{
+          Rating.again: 1,
+          Rating.hard: 3,
+          Rating.good: 8,
+          Rating.easy: 21,
+        },
+      ),
+      studyBackProvider('r3').overrideWith(
+        (ref) async => (
+          examples: <StudyExample>[
+            (
+              german: 'Ich habe die Rechnung noch nicht bezahlt.',
+              english: "I haven't paid the bill yet.",
+            ),
+            (
+              german: 'Können wir bitte die Rechnung haben?',
+              english: 'Could we have the bill, please?',
+            ),
+          ],
+          tip: null,
+        ),
+      ),
+      studyWordProvider('r3').overrideWith(
+        (ref) async => const WordWithState(
+          word: rechnung,
+          // Two Good ratings in a row: BR-FSRS-06 made it a cloze card.
+          state: WordStateData(
+            wordUid: 'r3',
+            status: 'learning',
+            stability: 8,
+            difficulty: 5,
+            reps: 2,
+            lapses: 0,
+            fsrsState: 2,
+            cardMode: 'cloze',
+            cardModeManual: 0,
+            timesLogged: 0,
+          ),
+          status: WordStatus.learning,
+        ),
+      ),
+    ],
+    child: StudyScreen(args: args),
+  );
+
+  Future<void> answer(WidgetTester tester, String typed) async {
+    await tester.enterText(find.byType(TextField), typed);
+    await tester.pump();
+    await tester.tap(find.byType(DpButton).last);
+  }
+
   goldenTest(
     'study_cloze',
-    builder: (context) => ProviderScope(
-      overrides: [
-        settingsProvider.overrideWithValue(settings),
-        fakeVoice(FakeTts()),
-        studySessionProvider(args).overrideWith(_Fourth.new),
-        studyIntervalsProvider('r3').overrideWith(
-          (ref) async => <Rating, int>{
-            Rating.again: 1,
-            Rating.hard: 3,
-            Rating.good: 8,
-            Rating.easy: 21,
-          },
-        ),
-        studyBackProvider('r3').overrideWith(
-          (ref) async => (
-            examples: <StudyExample>[
-              (
-                german: 'Ich habe die Rechnung noch nicht bezahlt.',
-                english: "I haven't paid the bill yet.",
-              ),
-              (
-                german: 'Können wir bitte die Rechnung haben?',
-                english: 'Could we have the bill, please?',
-              ),
-            ],
-            tip: null,
-          ),
-        ),
-        studyWordProvider('r3').overrideWith(
-          (ref) async => const WordWithState(
-            word: rechnung,
-            // Two Good ratings in a row: BR-FSRS-06 made it a cloze card.
-            state: WordStateData(
-              wordUid: 'r3',
-              status: 'learning',
-              stability: 8,
-              difficulty: 5,
-              reps: 2,
-              lapses: 0,
-              fsrsState: 2,
-              cardMode: 'cloze',
-              cardModeManual: 0,
-              timesLogged: 0,
-            ),
-            status: WordStatus.learning,
-          ),
-        ),
-      ],
-      child: StudyScreen(args: args),
-    ),
-    act: (tester) async {
-      await tester.enterText(find.byType(TextField), 'Rechnung');
-      await tester.pump();
-      await tester.tap(find.byType(DpButton).last);
-    },
+    builder: screen,
+    act: (tester) => answer(tester, 'Rechnung'),
+  );
+
+  // #345: a wrong answer: the bar offers Again and Hard, Good and Easy faded.
+  goldenTest(
+    'study_cloze_wrong',
+    builder: screen,
+    act: (tester) => answer(tester, 'Quittung'),
   );
 }
 

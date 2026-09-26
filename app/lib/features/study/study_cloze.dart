@@ -49,8 +49,9 @@ class StudyClozeCard extends ConsumerStatefulWidget {
   final Word word;
   final StudyCloze cloze;
 
-  /// The answer is checked: the session turns the card over.
-  final VoidCallback onChecked;
+  /// The answer is checked, with its verdict: the session turns the card
+  /// over.
+  final ValueChanged<Verdict> onChecked;
 
   @override
   ConsumerState<StudyClozeCard> createState() => _StudyClozeCardState();
@@ -81,7 +82,7 @@ class _StudyClozeCardState extends ConsumerState<StudyClozeCard> {
     if (verdict.isRight && ref.read(ttsAvailableProvider).value != false) {
       _play();
     }
-    widget.onChecked();
+    widget.onChecked(verdict);
   }
 
   void _play() => unawaited(say(ref, context, widget.cloze.example.german));

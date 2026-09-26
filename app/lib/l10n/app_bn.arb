@@ -548,6 +548,7 @@
   "practiceOrderPrompt": "শব্দগুলো সঠিক ক্রমে ট্যাপ করুন।",
   "practiceRight": "সঠিক",
   "practiceNotQuite": "ঠিক হয়নি — উত্তর হলো {answer}",
+  "practiceAlmost": "প্রায় · সঠিকটি {answer}",
   "practiceRuleLine": "নিয়ম: {rule}",
   "practiceSeeRule": "নিয়ম দেখুন",
   "practiceBackToItem": "প্রশ্নে ফিরুন",

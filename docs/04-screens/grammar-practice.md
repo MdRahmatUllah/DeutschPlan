@@ -10,7 +10,7 @@
 
 **Functional requirements**
 - FR-L15-01 Items from `GrammarItemGenerator` (`03-domain/grammar-practice.md`); 3–5 per topic; seeded per (topic, day).
-- FR-L15-02 Immediate feedback; the rule line shows on a wrong answer.
+- FR-L15-02 Immediate feedback; the rule line shows on a wrong answer. A typed gap fill that is *almost* (BR-ANS-01) says "Almost · it's hätte", as T2's cloze does, with no rule line, and counts as right for the topic's rating (BR-FSRS-05): a set whose only misses are *almost* is Good (the lead's call, #345).
 - FR-L15-03 On the last item the topic is rated as a whole (BR-FSRS-05), written to `grammar_state` and `grammar_practice_log`.
 - FR-L15-04 Multiple due topics run back to back with a short banner between them.
 

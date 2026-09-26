@@ -1,10 +1,12 @@
 import 'package:deutschplan/core/providers/app_providers.dart';
 import 'package:deutschplan/data/repositories/plan_repository.dart'
     show PlanKind, PlanRepository, ReviewSource;
+import 'package:deutschplan/data/repositories/plan_store.dart';
 import 'package:deutschplan/data/repositories/rating_service.dart';
 import 'package:deutschplan/data/repositories/word_repository.dart';
 import 'package:deutschplan/domain/fsrs.dart' show Rating;
 import 'package:deutschplan/domain/plan_engine.dart' show planDate;
+import 'package:deutschplan/domain/plan_engine.dart' as engine show PlanKind;
 import 'package:deutschplan/router/routes.dart';
 import 'package:flutter/foundation.dart' show immutable;
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -52,11 +54,18 @@ class StudySessionState {
     this.position = 0,
     this.results = const <int, CardOutcome>{},
     this.revealed = false,
+    this.missed = false,
     this.startedAt,
+    this.earlier = const <SessionBlockKind, int>{},
   });
 
   /// When the session opened, for T3's "20 cards · 12 min".
   final DateTime? startedAt;
+
+  /// Each block's cards the day had behind it when the session opened, so a
+  /// resumed session reads "New today · 5 / 15", and its strip starts where
+  /// the day is (#345).
+  final Map<SessionBlockKind, int> earlier;
 
   /// BR-PLAN-02's order: Revise, then New, then Grammar.
   final List<StudyItem> items;
@@ -70,6 +79,11 @@ class StudySessionState {
   /// The current card has been turned over (FR-T2-01). Each card starts face
   /// down, so the rating bar is hidden until then.
   final bool revealed;
+
+  /// It was turned by a wrong cloze answer: the rating bar offers Again and
+  /// Hard only, and Good and Easy are for a right or *almost* one (the lead's
+  /// call, #345). The next card starts without it.
+  final bool missed;
 
   StudyItem? get current => finished ? null : items[position];
   bool get finished => position >= items.length;
@@ -93,7 +107,8 @@ class StudySessionState {
       final kind = items[i].kind;
       final done = i < position ? 1 : 0;
       if (blocks.isEmpty || blocks.last.kind != kind) {
-        blocks.add((kind: kind, size: 1, done: done));
+        final before = earlier[kind] ?? 0;
+        blocks.add((kind: kind, size: 1 + before, done: done + before));
       } else {
         final last = blocks.removeLast();
         blocks.add((kind: kind, size: last.size + 1, done: last.done + done));
@@ -114,10 +129,11 @@ class StudySessionState {
     while (end + 1 < items.length && items[end + 1].kind == item.kind) {
       end++;
     }
+    final before = earlier[item.kind] ?? 0;
     return (
       kind: item.kind,
-      index: position - start + 1,
-      size: end - start + 1,
+      index: before + position - start + 1,
+      size: before + end - start + 1,
     );
   }
 
@@ -128,6 +144,7 @@ class StudySessionState {
   StudySessionState advance(CardOutcome outcome) => StudySessionState(
     items: items,
     startedAt: startedAt,
+    earlier: earlier,
     position: position + 1,
     results: <int, CardOutcome>{...results, position: outcome},
   );
@@ -136,16 +153,19 @@ class StudySessionState {
   StudySessionState back() => StudySessionState(
     items: items,
     startedAt: startedAt,
+    earlier: earlier,
     position: position - 1,
     results: <int, CardOutcome>{...results}..remove(position - 1),
   );
 
-  StudySessionState reveal() => StudySessionState(
+  StudySessionState reveal({bool missed = false}) => StudySessionState(
     items: items,
     startedAt: startedAt,
+    earlier: earlier,
     position: position,
     results: results,
     revealed: true,
+    missed: missed,
   );
 }
 
@@ -188,11 +208,32 @@ class StudySession extends _$StudySession {
       SessionBlockKind.backlog => backlog.containsKey(uid),
     };
 
+    // What the day already has behind each block: its planned words no
+    // longer open. T1 hands on only the open ones (#345).
+    final earlier = <SessionBlockKind, int>{};
+    if (date != null && open != null) {
+      final plans = DriftPlanStore(
+        ref.read(appDatabaseProvider),
+        ref.read(settingsProvider),
+      );
+      for (final (kind, plan) in <(SessionBlockKind, engine.PlanKind)>[
+        (SessionBlockKind.revise, engine.PlanKind.revise),
+        (SessionBlockKind.newWords, engine.PlanKind.newWord),
+      ]) {
+        if (!args.blocks.any((block) => block.kind == kind)) continue;
+        earlier[kind] = <String>[
+          for (final uid in await plans.plannedOn(date, plan))
+            if (!open.contains((plan.wire, uid))) uid,
+        ].length;
+      }
+    }
+
     // BR-PLAN-02: the blocks in their fixed order, whatever order they came.
     final ordered = <SessionBlock>[...args.blocks]
       ..sort((a, b) => a.kind.index.compareTo(b.kind.index));
     return StudySessionState(
       startedAt: now,
+      earlier: earlier,
       items: <StudyItem>[
         for (final block in ordered)
           for (final uid in block.uids)
@@ -329,11 +370,12 @@ class StudySession extends _$StudySession {
     }
   }
 
-  /// FR-T2-01: turns the current card over.
-  void reveal() {
+  /// FR-T2-01: turns the current card over; [missed] after a wrong cloze
+  /// answer (#345).
+  void reveal({bool missed = false}) {
     final current = state.value;
     if (current == null || current.finished || current.revealed) return;
-    state = AsyncData<StudySessionState>(current.reveal());
+    state = AsyncData<StudySessionState>(current.reveal(missed: missed));
   }
 
   /// Moves past the current card, recording how it went.

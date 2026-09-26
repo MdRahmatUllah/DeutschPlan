@@ -96,7 +96,13 @@ VALUES ('$today', 9, 12, 900)
           ),
         ),
         routes: <RouteBase>[
-          GoRoute(path: 'backlog', builder: (_, _) => const Text('T4 backlog')),
+          GoRoute(
+            path: 'backlog',
+            builder: (context, _) => TextButton(
+              onPressed: () => context.push('/study'),
+              child: const Text('T4 backlog'),
+            ),
+          ),
         ],
       ),
       GoRoute(
@@ -104,6 +110,13 @@ VALUES ('$today', 9, 12, 900)
         // T3's next block hands its own session (#328).
         builder: (_, state) =>
             StudyScreen(args: state.extra as SessionArgs? ?? args),
+      ),
+      GoRoute(
+        path: '/learn',
+        builder: (context, _) => TextButton(
+          onPressed: () => context.push('/study'),
+          child: const Text('L2 learn'),
+        ),
       ),
       GoRoute(
         path: '/sentences',
@@ -581,6 +594,32 @@ VALUES ('$today', 9, 12, 900)
       await tester.tap(find.text(l10n.summaryDone));
       await tester.pumpAndSettle();
       expect(find.text('T1 today'), findsOneWidget);
+    });
+
+    testWidgets('#345 Done for now goes to T1 from a session another screen '
+        'opened: L2\'s *Study*', (tester) async {
+      final container = await pump(
+        tester,
+        next: StudyNext(sentences: 3, backlog: 0, dayDone: true),
+      );
+      // Out of the session T1 opened, and into L2's.
+      await tester.tap(find.bySemanticsLabel(l10n.studyClose));
+      await tester.pumpAndSettle();
+      GoRouter.of(tester.element(find.text('T1 today'))).go('/learn');
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('L2 learn'));
+      await tester.pumpAndSettle();
+      await tester.pump(StudyScreen.bannerTime);
+      await tester.pumpAndSettle();
+      await session(tester, container, (n) async {
+        for (var i = 0; i < 3; i++) {
+          await n.rate(Rating.good);
+        }
+      });
+      await tester.tap(find.text(l10n.summaryDone));
+      await tester.pumpAndSettle();
+      expect(find.text('T1 today'), findsOneWidget);
+      expect(find.text('L2 learn', skipOffstage: false), findsNothing);
     });
 
     testWidgets('each way out clears the session', (tester) async {

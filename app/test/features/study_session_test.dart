@@ -149,6 +149,44 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code) VALUES
       expect(container.read(studySessionProvider(args)).value?.position, 1);
     });
 
+    test('#345 resumed after cards done today: the counter and the strip '
+        'count them, whether the args hold them or not', () async {
+      await db.customStatement(
+        "UPDATE plan_items SET completed_at = '2026-09-21T09:00:00' "
+        "WHERE word_uid = '$haus'",
+      );
+      for (final resumed in <SessionArgs>[
+        args,
+        // T1's Continue hands on only what is still open.
+        const SessionArgs(
+          planDate: today,
+          blocks: <SessionBlock>[
+            SessionBlock(SessionBlockKind.revise, <String>[strasse]),
+            SessionBlock(SessionBlockKind.newWords, <String>[tuer]),
+          ],
+        ),
+      ]) {
+        final session = await container.read(
+          studySessionProvider(resumed).future,
+        );
+        container
+            .read(studySessionProvider(resumed).notifier)
+            .advance(CardOutcome.good);
+        final now = container.read(studySessionProvider(resumed)).value!;
+        expect(session.items[1].uid, tuer);
+        expect(now.place, (
+          kind: SessionBlockKind.newWords,
+          index: 2,
+          size: 2,
+        ), reason: 'Haus was done before: "New today · 2 / 2"');
+        expect(now.blocks[1], (
+          kind: SessionBlockKind.newWords,
+          size: 2,
+          done: 1,
+        ));
+      }
+    });
+
     test('the blocks, for the progress strip', () async {
       await container.read(studySessionProvider(args).future);
       container.read(studySessionProvider(args).notifier)

@@ -228,6 +228,44 @@ VALUES ('$strasse', 'learning', '2026-09-10', '2026-09-21', 4.5, 5.2, 2, 0,
     expect(find.byType(DpRatingBar), findsOneWidget);
   });
 
+  /// Whether [rating]'s button takes a tap.
+  bool offered(WidgetTester tester, String rating) {
+    final node = tester.getSemantics(find.bySemanticsLabel(RegExp('^$rating')));
+    return isSemantics(isEnabled: true).matches(node, <dynamic, dynamic>{});
+  }
+
+  testWidgets('#345 wrong: Again and Hard only; Good and Easy are for a right '
+      'or almost answer', (tester) async {
+    await pump(tester);
+    await answer(tester, 'Haus');
+    // The intervals load before the bar takes a rating.
+    await tester.runAsync(
+      () => Future<void>.delayed(const Duration(milliseconds: 50)),
+    );
+    await tester.pumpAndSettle();
+    expect(offered(tester, l10n.ratingAgain), isTrue);
+    expect(offered(tester, l10n.ratingHard), isTrue);
+    expect(offered(tester, l10n.ratingGood), isFalse);
+    expect(offered(tester, l10n.ratingEasy), isFalse);
+  });
+
+  testWidgets('#345 almost: all four offered', (tester) async {
+    await pump(tester);
+    await answer(tester, 'Strase');
+    await tester.runAsync(
+      () => Future<void>.delayed(const Duration(milliseconds: 50)),
+    );
+    await tester.pumpAndSettle();
+    for (final rating in <String>[
+      l10n.ratingAgain,
+      l10n.ratingHard,
+      l10n.ratingGood,
+      l10n.ratingEasy,
+    ]) {
+      expect(offered(tester, rating), isTrue, reason: rating);
+    }
+  });
+
   testWidgets('the footnote play button plays the sentence again', (
     tester,
   ) async {

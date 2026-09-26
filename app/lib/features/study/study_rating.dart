@@ -26,10 +26,14 @@ class StudyRatingActions extends ConsumerWidget {
     required this.uid,
     required this.prompt,
     required this.onRated,
+    this.missed = false,
     super.key,
   });
 
   final String uid;
+
+  /// After a wrong cloze answer: Again and Hard only (#345).
+  final bool missed;
 
   /// "How well did you remember it?…" on the back, "How well did you know
   /// it?" after a cloze.
@@ -57,6 +61,7 @@ class StudyRatingActions extends ConsumerWidget {
           // Held until the previews exist: a rating tapped before its
           // interval shows is a rating made blind.
           enabled: days != null,
+          only: missed ? const <DpRating>{DpRating.again, DpRating.hard} : null,
           intervals: <DpRating, String>{
             for (final rating in DpRating.values)
               rating: switch (days?[Rating.parse(rating.value)]) {

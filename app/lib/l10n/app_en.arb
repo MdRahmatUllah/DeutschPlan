@@ -3583,6 +3583,15 @@
       }
     }
   },
+  "practiceAlmost": "Almost · it's {answer}",
+  "@practiceAlmost": {
+    "description": "L15 feedback on a typed gap fill that was a near miss (BR-ANS-01), as T2's cloze says it. It counts as right for the topic's rating (BR-FSRS-05, #345). answer is the German as expected.",
+    "placeholders": {
+      "answer": {
+        "type": "String"
+      }
+    }
+  },
   "practiceRuleLine": "Rule: {rule}",
   "@practiceRuleLine": {
     "description": "L15 feedback: the rule's first line, on a wrong answer.",

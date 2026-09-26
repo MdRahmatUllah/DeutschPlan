@@ -45,6 +45,7 @@ class DpRatingBar extends StatelessWidget {
     required this.intervals,
     super.key,
     this.enabled = true,
+    this.only,
   });
 
   final ValueChanged<DpRating> onRated;
@@ -55,6 +56,10 @@ class DpRatingBar extends StatelessWidget {
   final Map<DpRating, String> intervals;
 
   final bool enabled;
+
+  /// The ratings offered, when not all four are: the rest are drawn faded
+  /// and can't be pressed. After a wrong cloze answer, Again and Hard (#345).
+  final Set<DpRating>? only;
 
   /// From the artboard: 60 dp tall, radius 12, 2 px border in the rating colour.
   static const double height = 60;
@@ -68,10 +73,15 @@ class DpRatingBar extends StatelessWidget {
         for (final rating in DpRating.values) ...<Widget>[
           if (rating != DpRating.again) SizedBox(width: tokens.spacing.sm),
           Expanded(
-            child: _RatingButton(
-              rating: rating,
-              interval: intervals[rating],
-              onRated: enabled ? onRated : null,
+            child: Opacity(
+              opacity: only == null || only!.contains(rating) ? 1 : 0.35,
+              child: _RatingButton(
+                rating: rating,
+                interval: intervals[rating],
+                onRated: enabled && (only?.contains(rating) ?? true)
+                    ? onRated
+                    : null,
+              ),
             ),
           ),
         ],
