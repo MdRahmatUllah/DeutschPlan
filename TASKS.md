@@ -240,6 +240,7 @@ claiming the same issue. A hand edit skips that check.
 | #622 | SQA | X | P2 | - | bug(import): moving from DeutschPlan (export → Sogda setup → Import and merge) serves learned words again as "new" (Revise, then a New-today cloze) and New today doubles to 14 | open |  |  |  |
 | #623 | - | X | P3 | - | fix(tts): each Supertonic clip and the Speaking playback take permanent audio focus, which stops the learner's music or podcast | open |  |  |  |
 | #624 | - | X | P3 | - | fix(exam): a phone call, alarm or voice assistant pauses the Speaking recording for good, while the screen keeps counting as if it records | open |  |  |  |
+| #625 | - | X | P3 | - | fix(background): after an update that moves user.db's schema, plan_pregenerate stops queueing itself, so the widget and reminders end within 7 days for learners who don't open the app | open |  |  |  |
 
 ## Locks
 
@@ -5119,3 +5120,7 @@ Added #623 (fix(tts): each Supertonic clip and the Speaking playback take perman
 ### H-1201 · 2026-09-27 01:22 · agent-0 → all · note · #624
 
 Added #624 (fix(exam): a phone call, alarm or voice assistant pauses the Speaking recording for good, while the screen keeps counting as if it records) to lane X.
+
+### H-1202 · 2026-09-27 01:22 · agent-0 → all · note · #625
+
+Added #625 (fix(background): after an update that moves user.db's schema, plan_pregenerate stops queueing itself, so the widget and reminders end within 7 days for learners who don't open the app) to lane X.
