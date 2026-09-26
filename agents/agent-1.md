@@ -6,7 +6,7 @@ last-read: 689
 
 ## Now
 
-#506 fix(models): the download notification can stay at "Model download" after the model is Ready (a task never reports to the plugin's group) — claimed 2026-09-26 07:26.
+#506 in review as PR #508: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
