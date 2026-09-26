@@ -68,4 +68,42 @@ void main() {
       await tester.pumpAndSettle();
     },
   );
+
+  // #396, #516: the same search, a word the learner saved already. Offered
+  // to open, its *Open* button breaking at syllables above 100 %, as *Add*
+  // does: the text audit checks it at 150 and 200 %.
+  goldenTest(
+    'search_none_mine',
+    overrides: [
+      searchResultsProvider.overrideWith(
+        (ref, query) => Stream.value(
+          const SearchView(words: <SearchRow>[], sentences: <SentenceHit>[]),
+        ),
+      ),
+      courseWordsProvider.overrideWith((ref) async => 5594),
+      recentSearchesProvider.overrideWith(() => StubRecentSearches(const [])),
+      myWordsProvider.overrideWith(
+        (ref) => Stream.value(const <MyWord>[
+          (
+            id: 7,
+            article: 'die',
+            german: 'Wohnungsgeberbestätigung',
+            meaning: "landlord's confirmation",
+            whereSeen: 'Bürgeramt',
+            timesSeen: 1,
+          ),
+        ]),
+      ),
+      fakeVoice(FakeTts()),
+    ],
+    builder: (_) => const SearchScreen(),
+    act: (tester) async {
+      await tester.enterText(
+        find.byType(TextField),
+        'Wohnungsgeberbestätigung',
+      );
+      await tester.pump(SearchScreen.debounce);
+      await tester.pumpAndSettle();
+    },
+  );
 }
