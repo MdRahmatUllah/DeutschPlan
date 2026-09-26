@@ -1,3 +1,6 @@
+import java.io.FileInputStream
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     // X1's Glance widget (#160); Glance itself comes with home_widget.
@@ -6,8 +9,18 @@ plugins {
     id("dev.flutter.flutter-gradle-plugin")
 }
 
+// #170: the owner's upload key, from android/key.properties when it is there
+// (docs/05-dev-guide/release.md). Without it a release build is signed with
+// the debug key, so `flutter build` and the device checks still work; Play
+// refuses a debug-signed upload, so nothing reaches it signed wrongly.
+val keyProperties = Properties().apply {
+    val file = rootProject.file("key.properties")
+    if (file.exists()) FileInputStream(file).use { load(it) }
+}
+
 android {
-    namespace = "com.example.deutschplan"
+    // The owner's (#170): it can never change once the app is on Play.
+    namespace = "io.github.rahmatullah.deutschplan"
     // permission_handler_android requires API 37 or later to compile against.
     compileSdk = 37
     ndkVersion = flutter.ndkVersion
@@ -20,8 +33,7 @@ android {
     }
 
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "com.example.deutschplan"
+        applicationId = "io.github.rahmatullah.deutschplan"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         // docs/01-architecture/tech-stack.md: Android 8.0+ (API 26), targetSdk latest.
@@ -39,11 +51,28 @@ android {
         compose = true
     }
 
+    signingConfigs {
+        if (!keyProperties.isEmpty) {
+            create("upload") {
+                keyAlias = keyProperties.getProperty("keyAlias")
+                keyPassword = keyProperties.getProperty("keyPassword")
+                storeFile = file(keyProperties.getProperty("storeFile"))
+                storePassword = keyProperties.getProperty("storePassword")
+            }
+        }
+    }
+
     buildTypes {
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig = signingConfigs.getByName("debug")
+            signingConfig = signingConfigs.getByName(
+                if (keyProperties.isEmpty) "debug" else "upload",
+            )
+            // The plugins' native libraries' symbol tables ride in the bundle,
+            // so Play symbolicates their crashes (#170). Dart's own come from
+            // `--split-debug-info`, kept with each release.
+            ndk {
+                debugSymbolLevel = "SYMBOL_TABLE"
+            }
         }
     }
 }

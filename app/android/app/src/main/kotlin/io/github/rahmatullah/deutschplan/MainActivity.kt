@@ -1,4 +1,4 @@
-package com.example.deutschplan
+package io.github.rahmatullah.deutschplan
 
 import android.os.Build
 import android.os.StatFs

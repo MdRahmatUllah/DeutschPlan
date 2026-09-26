@@ -11,10 +11,10 @@ import pytest
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import perf  # noqa: E402
 
-AM_START = """Starting: Intent { cmp=com.example.deutschplan/.MainActivity }
+AM_START = """Starting: Intent { cmp=io.github.rahmatullah.deutschplan/.MainActivity }
 Status: ok
 LaunchState: COLD
-Activity: com.example.deutschplan/.MainActivity
+Activity: io.github.rahmatullah.deutschplan/.MainActivity
 TotalTime: 812
 WaitTime: 830
 Complete
@@ -72,15 +72,15 @@ ACTIVITIES = """ACTIVITY MANAGER ACTIVITIES (dumpsys activity activities)
       * Hist  #1: ActivityRecord{141786944 u0 com.google.android.apps.nexuslauncher/.NexusLauncherActivity t5}
         packageName=com.google.android.apps.nexuslauncher processName=com.google.android.apps.nexuslauncher
         state=RESUMED delayedResume=false finishing=false
-      * Hist  #0: ActivityRecord{77 u0 com.example.deutschplan/.MainActivity t9}
-        packageName=com.example.deutschplan processName=com.example.deutschplan
+      * Hist  #0: ActivityRecord{77 u0 io.github.rahmatullah.deutschplan/.MainActivity t9}
+        packageName=io.github.rahmatullah.deutschplan processName=io.github.rahmatullah.deutschplan
         state=STOPPED delayedResume=false finishing=false
     Resumed: ActivityRecord{141786944 u0 com.google.android.apps.nexuslauncher/.NexusLauncherActivity t5}
 """
 
 
 def test_an_activity_state_is_read_from_its_own_record():
-    assert perf.activity_state(ACTIVITIES, "com.example.deutschplan") == "STOPPED"
+    assert perf.activity_state(ACTIVITIES, "io.github.rahmatullah.deutschplan") == "STOPPED"
     assert perf.activity_state(ACTIVITIES, "com.google.android.apps.nexuslauncher") == "RESUMED"
     # Not running at all.
     assert perf.activity_state(ACTIVITIES, "com.example.other") == ""

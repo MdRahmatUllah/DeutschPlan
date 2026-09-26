@@ -84,9 +84,8 @@ lint: ## Analyzer and formatter, as CI runs them
 format: ## Apply the formatter
 	$(DART) dart format .
 
-release-android: ## Signed app bundle (see docs/05-dev-guide/release.md)
-	$(DART) flutter build appbundle --release \
-		--obfuscate --split-debug-info=build/symbols
+release-android: ## Signed app bundle, checked for 16 KB pages (see docs/05-dev-guide/release.md)
+	python tools/release_android.py
 
 release-ios: ## Uploadable ipa (see docs/05-dev-guide/release.md)
 	$(DART) flutter build ipa --release \
