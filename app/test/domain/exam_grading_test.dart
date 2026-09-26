@@ -315,27 +315,33 @@ void main() {
       expect(writingAppPoints(writing, text(targets: 5, words: 29)), 0);
     });
 
-    test('FR-L12W-03 and a rubric of 2 × 0.5', () {
-      final full = text(targets: 6, words: 30);
-      expect(itemPoints(writing, given: full), 2);
-      expect(
-        itemPoints(writing, given: full, rubric: ticks([true, false])),
-        2.5,
-      );
-      expect(itemPoints(writing, given: full, rubric: ticks([true, true])), 3);
-      // Only the two ticks Writing has count, whatever the list holds.
-      expect(
-        itemPoints(writing, given: full, rubric: ticks([true, true, true])),
-        3,
-      );
-    });
+    test(
+      'FR-L12W-03 BR-EXAM-03 and a rubric of 2 × 1, so Writing reaches 4',
+      () {
+        final full = text(targets: 6, words: 30);
+        expect(itemPoints(writing, given: full), 2);
+        expect(
+          itemPoints(writing, given: full, rubric: ticks([true, false])),
+          3,
+        );
+        expect(
+          itemPoints(writing, given: full, rubric: ticks([true, true])),
+          4,
+        );
+        // Only the two ticks Writing has count, whatever the list holds.
+        expect(
+          itemPoints(writing, given: full, rubric: ticks([true, true, true])),
+          4,
+        );
+      },
+    );
 
     test('FR-L12W-03 no text, no rubric points', () {
       expect(itemPoints(writing, rubric: ticks([true, true])), 0);
       expect(itemPoints(writing, given: '  ', rubric: ticks([true, true])), 0);
       expect(
         itemPoints(writing, given: 'kurz', rubric: ticks([true, true])),
-        1,
+        2,
       );
     });
   });
@@ -387,6 +393,34 @@ void main() {
       expect(score.total, 30);
       expect(score.max, 48);
       expect(score.points.take(40).where((p) => p == 1), hasLength(30));
+    });
+
+    test('BR-EXAM-03 a perfect paper scores all 48 points', () {
+      // Every target and the length (2), both ticks (2): Writing's 4 (#597).
+      final essay = <String>[
+        ...writing.targets,
+        for (var i = 0; i < 20; i++) 'Wort',
+      ].join(' ');
+      final score = scorePaper(
+        <({ExamItem item, String? given, String? rubric})>[
+          for (var i = 0; i < 40; i++)
+            (
+              item: word(ExamSection.vocabulary, 'house'),
+              given: 'house',
+              rubric: null,
+            ),
+          (item: writing, given: essay, rubric: ticks([true, true])),
+          (
+            item: speaking,
+            given: 'recordings/7.m4a',
+            rubric: ticks([true, true, true, true]),
+          ),
+        ],
+        passPercent: 60,
+      );
+      expect(score.points.sublist(40), <double>[4, 4]);
+      expect(score.total, score.max);
+      expect(score.max, 48);
     });
 
     test('passed at 60 %, not a point below', () {

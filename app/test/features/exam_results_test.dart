@@ -196,9 +196,12 @@ void main() {
     expect(find.text(l10n.examWritingRubricTask), findsOneWidget);
     await tap(tester, l10n.examWritingRubricTask);
     expect(stub.rubrics.single.$1, 41);
-    expect(stub.rubrics.single.$2, <bool>[true, false]);
-    expect(find.text(l10n.examResultSectionPoints('3.5', 4)), findsOneWidget);
-    expect(find.text(l10n.examResultPercent(78)), findsOneWidget);
+    expect(stub.rubrics.single.$2, <bool>[true, true]);
+    // A point a tick (#597): Word forms and Speaking stay 3 / 4; Writing
+    // joins Grammar at 4 / 4.
+    expect(find.text(l10n.examResultSectionPoints('3', 4)), findsNWidgets(2));
+    expect(find.text(l10n.examResultSectionPoints('4', 4)), findsNWidgets(2));
+    expect(find.text(l10n.examResultPercent(79)), findsOneWidget);
   });
 
   testWidgets('Speaking opens its four ticks as the runner left them', (

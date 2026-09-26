@@ -13,7 +13,7 @@
 | Cloze card | Revision card with the word blanked in an example sentence. |
 | Interference tip | A note about a trap for Bangla/English speakers (false friend, seit + present …). |
 | Mock | A generated practice exam for one step; three per step, seeds 1–3. |
-| Rubric | The four self-assessment checks for Writing and Speaking. |
+| Rubric | The self-assessment checks: two for Writing, four for Speaking, a point each. |
 | content.db | Read-only course database bundled with the app. |
 | user.db | Learner database created on the device. |
 | GlassPanel | The widget that renders the glass theme's frosted surfaces. |

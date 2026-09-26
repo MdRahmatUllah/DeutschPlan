@@ -9,7 +9,7 @@ buildExam(ExamPool pool, seed:, listening:, bangla:, sat:) → Exam(items, reuse
 1. Pool = all words of the step (any status, suspended excluded) and all grammar topics of the step.
 2. RNG = `Random(hash(step, seed))`. A step-level exclusion set is built from the *other* seeds' item ids so the three mocks never share an item; when the pool is smaller than 3 × demand, the least-recently-used items are reused and the hub says so.
 3. Sections (BR-EXAM-03): Vocabulary 10 (DE→meaning, typed) · Reverse 8 (meaning→DE, typed, article optional) · Articles 6 (nouns only) · Word forms 4 (from `forms`) · Gap fill 6 (example sentence with the headword blanked; cloze check) · Grammar 4 (items from `GrammarItemGenerator` for the step's topics) · Listening 2 (TTS plays the word/sentence; type it; skipped if listening disabled — points redistributed) · Writing 1 · Speaking 1.
-4. Points: 1 per item; Writing 4 (app checks 2: ≥ 6 target words used, ≥ minimum length; rubric 2 × 0.5 each) ; Speaking 4 (rubric 4 × 1). Max 48. Score % = points / max.
+4. Points: 1 per item; Writing 4 (app checks 2: ≥ 6 target words used, ≥ minimum length; rubric 2 × 1) ; Speaking 4 (rubric 4 × 1). Max 48. Score % = points / max.
 5. Writing prompt: template per level × topic category with 10 target words from the step, one of a word family (never *Beweis* and *beweisen*, #388); minimum words A1 30 · A2 60 · B1 100 · B2 150 · C1 200 · C2 250. Connector check uses the step's grammar connector list.
 6. Speaking prompt: template per level (60 s A1–A2, 90 s B1–B2, 120 s C1–C2); one retake.
 
@@ -82,7 +82,7 @@ Grading on submit: `answer_check` per item; Listening compares the typed text wi
   - Irregular and separable forms aren't found ("gibt" for geben, "stellt … dar" for darstellen). On the real course that finds 93 % of non-separable verbs' 3rd person and 98 % of plurals.
   - A word is letters and digits with a hyphen or an apostrophe inside: "E-Mail", "geht's" and "2020" are one word each.
   - 6 targets or more is 1 point, and at least the level's minimum number of words is 1 point.
-  - The rubric adds 0.5 for each of its first two ticks, but only when there is a text.
+  - The rubric adds 1 for each of its first two ticks, but only when there is a text.
 - **Speaking.** 1 point for each of its four rubric ticks, but only with a recording: the row's `given` is the recording (#134 writes its path). A section skipped (FR-L12S-01) or a recording deleted (FR-L12S-04) is 0, whatever the ticks.
 - **The rubric.** `self_rubric_json` is a JSON list of booleans in the rubric's order. Ticks beyond a section's count are ignored.
 - **The score.** The points add up out of the paper's (48). `passed` means points × 100 ≥ `exam_pass_percent` × max, so exactly the mark passes. `grade` writes every row's points and the attempt's score in one transaction.
