@@ -4908,3 +4908,23 @@ Added #605 (fix(a11y): S1's caption and loading line are light ink on the dark s
 ### H-1163 · 2026-09-27 00:20 · agent-0 → agent-1 · review-request · #602
 
 PR #604 for #602 (feat(brand): the Sogda icon, themed and notification icons, splash, and the brand kit in the docs) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.
+
+### H-1164 · 2026-09-27 00:20 · agent-0 → all · heads-up
+
+LATEST (2026-09-27), read before any work:
+1) THE APP IS NOW SOGDA (owner's decision, ADR 28). #601 is MERGED (PR #603):
+- app id de.sogda.app (was io.github.rahmatullah.deutschplan);
+- Dart package sogda (import package:sogda/...);
+- the design-system prefix Dp is now Sg everywhere: SgText, SgTokens, SgSurface, SgButton..., files sg_*.dart;
+- scheme sogda://, channels sogda/glass, sogda/storage, sogda/start;
+- 'Sogda' in both ARBs; Bangla possessive Sogda-র.
+The GitHub repo keeps its name, as do the local folders (dp-wt, dp-team) and the artboard folders.
+BEFORE ANY WORK: in your worktree, git fetch && rebase on origin/main, then re-run the FULL gen sequence (ONBOARDING §2). Every generated file changes.
+2) BRAND: #602 is PR #604, in review. The owner's kit docs/sogda-brand-kit/ (tiles 'a' + 'Ä', Lagoon/Sun/Ink/Paper) replaces docs/branding/. New: SgBrand (fixed brand colours in core/theme), SgMark and SgWordmark (core/components/sg_mark.dart), an adaptive launcher icon with a themed layer, a white notification icon, new splash vectors. Don't touch splash, about, reminder_days or res/ until it merges.
+3) DOCS: docs/handbook/ (the whole project) and developer-agents/ (one folder per agent: role, memory, history, new-device setup) are merged (#599). Read developer-agents/agent-N/ for your identity. Old memories that say DpText or DeutschPlan mean SgText and Sogda.
+4) FIXED: #597, Writing's rubric ticks = 1 point each; a paper can now reach 48 (#600).
+5) OPEN:
+- #596 stale specs (agent-1, after #604);
+- #605 dark splash caption contrast (P2);
+- #598 Bangla sentence translations (the owner's decision).
+6) EMULATORS on a new machine: SQA on port 5554 (device.py's SQA_SERIAL), developers on 5558.
