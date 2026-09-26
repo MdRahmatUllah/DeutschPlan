@@ -4,12 +4,15 @@ library;
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:deutschplan/core/providers/app_providers.dart';
 import 'package:deutschplan/data/db/app_database.dart';
 import 'package:deutschplan/data/db/content_dao.dart';
 import 'package:deutschplan/data/db/content_update.dart';
 import 'package:drift/drift.dart' hide isNotNull, isNull;
 import 'package:drift/native.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:path_provider_platform_interface/path_provider_platform_interface.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
@@ -46,19 +49,26 @@ void main() {
         });
   }
 
-  /// Builds a content.db with [version] and, optionally, an extra word and a
-  /// changed meaning — the two things a real update does.
+  /// Builds a content.db with [version] and, optionally, an extra word, a
+  /// changed Bangla meaning, a removed word, or any other [edit] (SQL) — the
+  /// things a real update does. The manifest digests as the pipeline's does
+  /// (`tools/content_manifest.py`): `words` over what the learner sees,
+  /// `meanings` over the meanings only; [meanings] false writes a manifest
+  /// from before it had them.
   ({Uint8List bytes, String manifest}) course({
     required String version,
     bool addWord = false,
     bool changeMeaning = false,
     bool removeWord = false,
+    String? edit,
+    bool meanings = true,
   }) {
     final path = '${support.path}/build-$version.db';
     ContentFixture.write(path);
 
     final database = sqlite3.open(path);
     final digests = <String, String>{};
+    final meaningDigests = <String, String>{};
     try {
       database.execute(
         "UPDATE meta SET value = '$version' WHERE \"key\" = 'content_version'",
@@ -71,11 +81,14 @@ void main() {
         );
       }
       if (changeMeaning) {
+        // Bangla: `english` is in the uid (PIPE-03), so it cannot change in
+        // place — a new English meaning is a new word.
         database.execute(
-          "UPDATE words SET english = 'dwelling' "
+          "UPDATE words SET bangla = 'বাসা' "
           "WHERE uid = '${ContentFixture.haus}'",
         );
       }
+      if (edit != null) database.execute(edit);
       if (removeWord) {
         database.execute(
           "DELETE FROM words WHERE uid = '${ContentFixture.tuer}'",
@@ -85,9 +98,15 @@ void main() {
       // The manifest the pipeline would have written beside it: uid -> a
       // digest of what the learner sees.
       for (final row in database.select(
-        'SELECT uid, german, english FROM words',
+        'SELECT uid, german, english, bangla, freq, category_id, '
+        "(SELECT group_concat(german, '|') FROM word_examples "
+        'WHERE word_uid = uid) AS examples FROM words',
       )) {
-        digests[row['uid'] as String] = '${row['german']}|${row['english']}';
+        final uid = row['uid'] as String;
+        digests[uid] =
+            '${row['german']}|${row['english']}|${row['bangla']}|'
+            '${row['freq']}|${row['category_id']}|${row['examples']}';
+        meaningDigests[uid] = '${row['english']}|${row['bangla']}';
       }
     } finally {
       database.close();
@@ -101,6 +120,7 @@ void main() {
         'format': 1,
         'content_version': version,
         'words': digests,
+        if (meanings) 'meanings': meaningDigests,
       }),
     );
   }
@@ -189,6 +209,7 @@ void main() {
       expect(change.added, <String>['uid-neu']);
       expect(change.removed, <String>[ContentFixture.tuer]);
       expect(change.changed, <String>[ContentFixture.haus]);
+      expect(change.meaning, <String>[ContentFixture.haus]);
     });
 
     test('the installed course is the new one', () async {
@@ -213,7 +234,10 @@ void main() {
 
       final json =
           jsonDecode(row.read<String>('changed_json')) as Map<String, dynamic>;
-      expect(json.keys, containsAll(<String>['added', 'removed', 'changed']));
+      expect(
+        json.keys,
+        containsAll(<String>['added', 'removed', 'changed', 'meaning']),
+      );
     });
 
     test('the manifest is kept as the next baseline', () async {
@@ -245,7 +269,7 @@ void main() {
     });
   });
 
-  group('the updated chip', () {
+  group('BR-CONTENT-02 the updated chip', () {
     test('names the words whose meaning moved', () async {
       publish(course(version: '202602020000', changeMeaning: true));
       await updater.runIfNeeded();
@@ -255,19 +279,73 @@ void main() {
       });
     });
 
-    test('stops after seven days', () async {
+    test('a freq re-rank, a category move or a new example is a change the '
+        'card counts, not a new meaning', () async {
+      var version = 202602020000;
+      for (final edit in <String>[
+        "UPDATE words SET freq = 9 WHERE uid = '${ContentFixture.haus}'",
+        'UPDATE words SET category_id = NULL '
+            "WHERE uid = '${ContentFixture.haus}'",
+        'INSERT INTO word_examples (word_uid, ord, german, english) '
+            "VALUES ('${ContentFixture.haus}', 3, 'Das Haus ist neu.', "
+            "'The house is new.')",
+      ]) {
+        publish(course(version: '${version++}', edit: edit));
+        final change = (await updater.runIfNeeded())!;
+        expect(change.changed, <String>[ContentFixture.haus], reason: edit);
+        expect(change.meaning, isEmpty, reason: edit);
+      }
+      expect(await updater.recentlyUpdated(DateTime.now()), isEmpty);
+    });
+
+    test(
+      'a new English meaning is a new word (PIPE-03), with no chip',
+      () async {
+        publish(
+          course(
+            version: '202602020000',
+            edit:
+                "UPDATE words SET english = 'home', uid = 'uid-haus-home' "
+                "WHERE uid = '${ContentFixture.haus}'",
+          ),
+        );
+        final change = (await updater.runIfNeeded())!;
+        expect(change.added, <String>['uid-haus-home']);
+        expect(change.removed, <String>[ContentFixture.haus]);
+        expect(change.meaning, isEmpty);
+        expect(await updater.recentlyUpdated(DateTime.now()), isEmpty);
+      },
+    );
+
+    test('a kept manifest from before `meanings` gives no chip, never a '
+        'false one', () async {
+      File('${support.path}/${ContentUpdater.manifestFile}').writeAsStringSync(
+        course(version: '202601010000', meanings: false).manifest,
+      );
+      publish(course(version: '202602020000', changeMeaning: true));
+      final change = (await updater.runIfNeeded())!;
+      expect(change.changed, <String>[ContentFixture.haus]);
+      expect(change.meaning, isEmpty);
+    });
+
+    test('the window is 168 h from when this device recorded it, the end '
+        'included, in UTC', () async {
       publish(course(version: '202602020000', changeMeaning: true));
       await updater.runIfNeeded();
-
-      // Relative to now, because the chip ages from when this device recorded
-      // the update — which is now, whatever the build timestamp said.
-      final now = DateTime.now().toUtc();
-      expect(
-        await updater.recentlyUpdated(now.add(const Duration(days: 6))),
-        isNotEmpty,
+      final recorded = DateTime.utc(2026, 2, 10, 12);
+      await db.customStatement(
+        'UPDATE content_updates SET recorded_at = ?',
+        <Object?>[recorded.toIso8601String()],
       );
+
+      final end = recorded.add(const Duration(hours: 168));
+      expect(await updater.recentlyUpdated(end), <String>{ContentFixture.haus});
+      // The same instant on a local clock.
+      expect(await updater.recentlyUpdated(end.toLocal()), <String>{
+        ContentFixture.haus,
+      });
       expect(
-        await updater.recentlyUpdated(now.add(const Duration(days: 8))),
+        await updater.recentlyUpdated(end.add(const Duration(milliseconds: 1))),
         isEmpty,
       );
     });
@@ -288,6 +366,29 @@ void main() {
 
     test('the window is the seven days the issue asks for', () {
       expect(ContentUpdater.updatedChipWindow, const Duration(days: 7));
+    });
+
+    test('recentlyUpdatedProvider asks at the clock time: in the window, '
+        'then out of it', () async {
+      publish(course(version: '202602020000', changeMeaning: true));
+      await updater.runIfNeeded();
+
+      final now = DateTime.now();
+      Future<Set<String>> daysLater(int days) {
+        final container = ProviderContainer(
+          overrides: <Override>[
+            appDatabaseProvider.overrideWithValue(db),
+            clockProvider.overrideWithValue(
+              () => now.add(Duration(days: days)),
+            ),
+          ],
+        );
+        addTearDown(container.dispose);
+        return container.read(recentlyUpdatedProvider.future);
+      }
+
+      expect(await daysLater(6), <String>{ContentFixture.haus});
+      expect(await daysLater(8), isEmpty);
     });
   });
 

@@ -428,7 +428,7 @@ class _BackRow extends StatelessWidget {
 }
 
 /// The gender-tinted strip: article and headword, the speaker, the step and
-/// status chips.
+/// status chips, and *Updated* for a meaning changed in the last 7 days.
 ///
 /// On paper the strip is the gender's own colour and everything on it takes
 /// that colour's ink — the article too, which is still printed, so the gender
@@ -445,6 +445,9 @@ class _Header extends ConsumerWidget {
     final tokens = context.tokens;
     final l10n = AppLocalizations.of(context);
     final article = word.word.article;
+    // BR-CONTENT-02: a meaning a course update changed in the last 7 days.
+    final updated =
+        ref.watch(recentlyUpdatedProvider).value?.contains(word.uid) ?? false;
     final gender = tokens.color.forArticle(article);
     final onFill = gender == null || tokens.isGlass
         ? null
@@ -495,6 +498,7 @@ class _Header extends ConsumerWidget {
             children: <Widget>[
               DpChip(label: word.word.sublevelCode, ink: onFill),
               WordStatusChip(word.status),
+              if (updated) const UpdatedChip(),
             ],
           ),
         ],

@@ -67,45 +67,53 @@ void main() {
     searchKeyAlt: 'rechnung',
   );
 
+  ProviderScope screen({Set<String> updated = const <String>{}}) =>
+      ProviderScope(
+        overrides: [
+          settingsProvider.overrideWithValue(settings),
+          recentlyUpdatedProvider.overrideWith((ref) async => updated),
+          studySessionProvider(args).overrideWith(_Fourth.new),
+          studyIntervalsProvider('r3').overrideWith(
+            (ref) async => <Rating, int>{
+              Rating.again: 1,
+              Rating.hard: 3,
+              Rating.good: 8,
+              Rating.easy: 21,
+            },
+          ),
+          studyBackProvider('r3').overrideWith(
+            (ref) async => (
+              examples: <StudyExample>[
+                (
+                  german: 'Ich habe die Rechnung noch nicht bezahlt.',
+                  english: "I haven't paid the bill yet.",
+                ),
+                (
+                  german: 'Können wir bitte die Rechnung haben?',
+                  english: 'Could we have the bill, please?',
+                ),
+              ],
+              tip: null,
+            ),
+          ),
+          studyWordProvider('r3').overrideWith(
+            (ref) async => const WordWithState(
+              word: rechnung,
+              state: null,
+              status: WordStatus.learning,
+            ),
+          ),
+        ],
+        child: StudyScreen(args: args),
+      );
+
+  goldenTest('study_back', builder: (_) => screen());
+
+  // BR-CONTENT-02: a meaning a course update changed this week.
   goldenTest(
-    'study_back',
-    builder: (context) => ProviderScope(
-      overrides: [
-        settingsProvider.overrideWithValue(settings),
-        studySessionProvider(args).overrideWith(_Fourth.new),
-        studyIntervalsProvider('r3').overrideWith(
-          (ref) async => <Rating, int>{
-            Rating.again: 1,
-            Rating.hard: 3,
-            Rating.good: 8,
-            Rating.easy: 21,
-          },
-        ),
-        studyBackProvider('r3').overrideWith(
-          (ref) async => (
-            examples: <StudyExample>[
-              (
-                german: 'Ich habe die Rechnung noch nicht bezahlt.',
-                english: "I haven't paid the bill yet.",
-              ),
-              (
-                german: 'Können wir bitte die Rechnung haben?',
-                english: 'Could we have the bill, please?',
-              ),
-            ],
-            tip: null,
-          ),
-        ),
-        studyWordProvider('r3').overrideWith(
-          (ref) async => const WordWithState(
-            word: rechnung,
-            state: null,
-            status: WordStatus.learning,
-          ),
-        ),
-      ],
-      child: StudyScreen(args: args),
-    ),
+    'study_back_updated',
+    devices: <GoldenDevice>[GoldenDevice.phone],
+    builder: (_) => screen(updated: <String>{'r3'}),
   );
 }
 

@@ -17,6 +17,7 @@
 | `todayPlan` | autoDispose Future | Today | `PlanEngine.openDay(today)`. It watches `today`, so a new date re-plans and the same date plans nothing (FR-T1-05). The open rows, as they change, are `todayOpen`, over plan_items. Both are in `features/today/today_providers.dart`. |
 | `studySession(args)` | keepAlive Notifier | study modal | Queue of cards, position, undo stack; survives app backgrounding; cleared on close. |
 | `wordDetail(uid)` | autoDispose Stream | sheet | Word + state (watched) + examples + tip, with the meaning language and `show_pron_bn`. `wordHistory(uid)` watches `review_log` for the history caption. |
+| `recentlyUpdated` | autoDispose Future | W1, T2 | BR-CONTENT-02's uids for the *Updated* chip: `ContentUpdater.recentlyUpdated` at `clock`'s now, read when a screen starts watching it. Updates land only at launch, so it is not re-read while W1 or a session is open. |
 | `compareView(uid)` | autoDispose Stream | W2 | The set word and its members' columns (`ContentDao.compareSet`, read once), with the members' words watched for *Add all to today*. |
 | `searchResults(query)` | autoDispose, debounced | Search | Runs in a drift background isolate. |
 | `stepProgress` | Stream | Learn/Me | Aggregates per sub-level. |

@@ -56,6 +56,7 @@ class TestContents:
             "steps",
             "boundaries",
             "words",
+            "meanings",
             "grammar",
         }
 
@@ -191,9 +192,69 @@ class TestWhatCountsAsChanged:
     def test_a_changed_meaning_is_a_change(self, tmp_path):
         before = self.build(tmp_path)
         after = self.build(
-            tmp_path, lambda i: setattr(i.words[0], "english", "something else")
+            tmp_path, lambda i: setattr(i.words[0], "bangla", "অন্য কিছু")
         )
         assert len(diff(before, after).changed) == 1
+
+
+class TestWhatCountsAsAMeaningChange:
+    """BR-CONTENT-02: only a changed meaning wears the *Updated* chip, not
+    every change the update card counts."""
+
+    def build(self, tmp_path, mutate=None):
+        return TestWhatCountsAsChanged().build(tmp_path, mutate)
+
+    def test_a_new_bangla_meaning_is_one(self, tmp_path):
+        before = self.build(tmp_path)
+        after = self.build(
+            tmp_path, lambda i: setattr(i.words[0], "bangla", "অন্য কিছু")
+        )
+        result = diff(before, after)
+        assert len(result.meaning) == 1
+        assert result.changed == result.meaning
+
+    def test_the_other_fields_the_card_counts_are_not(self, tmp_path):
+        from pipeline_steps import Example
+
+        def example(inputs):
+            inputs.words[0].examples = [Example(ord=1, german="Neu.", english="New.")]
+
+        for mutate in (
+            lambda i: setattr(i.words[0], "freq", 5),
+            lambda i: setattr(i.words[0], "category", "Reisen"),
+            lambda i: setattr(i.words[0], "collocations", "auf der Straße"),
+            example,
+        ):
+            before = self.build(tmp_path)
+            result = diff(before, self.build(tmp_path, mutate))
+            assert len(result.changed) == 1
+            assert result.meaning == []
+
+    def test_an_english_meaning_is_a_new_word_not_a_meaning_change(
+        self, tmp_path
+    ):
+        # `english` is in the uid (PIPE-03): the word is removed and added.
+        from pipeline_steps import assign_uids
+
+        before = self.build(tmp_path)
+
+        def rename(inputs):
+            inputs.words[0].english = "something else"
+            assign_uids(inputs.words)
+
+        result = diff(before, self.build(tmp_path, rename))
+        assert len(result.added) == 1 and len(result.removed) == 1
+        assert result.meaning == []
+
+    def test_a_manifest_from_before_meanings_reports_none(self, tmp_path):
+        before = self.build(tmp_path)
+        del before["meanings"]
+        after = self.build(
+            tmp_path, lambda i: setattr(i.words[0], "bangla", "অন্য কিছু")
+        )
+        result = diff(before, after)
+        assert len(result.changed) == 1
+        assert result.meaning == []
 
     def test_a_changed_example_is_a_change(self, tmp_path):
         from pipeline_steps import Example
@@ -248,6 +309,7 @@ class TestTheCli:
             "added": ["y"],
             "removed": ["x"],
             "changed": [],
+            "meaning": [],
             "grammar_added": [],
             "grammar_removed": [],
             "grammar_changed": [],

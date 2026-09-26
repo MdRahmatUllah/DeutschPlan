@@ -1967,6 +1967,14 @@
   "@wordStatusSuspended": {
     "description": "A word's status chip: suspended (BR-STATUS-03)."
   },
+  "wordUpdated": "Updated",
+  "@wordUpdated": {
+    "description": "W1 header and T2 card back: the chip on a word whose meaning a content update changed in the last 7 days (BR-CONTENT-02)."
+  },
+  "wordUpdatedSemantic": "Meaning updated",
+  "@wordUpdatedSemantic": {
+    "description": "Screen-reader label of the Updated chip: this word's meaning was changed by a content update in the last 7 days (BR-CONTENT-02)."
+  },
   "wordPronounce": "Pronounce {word}",
   "@wordPronounce": {
     "description": "W1 header speaker, for screen readers. {word} is the headword with its article.",

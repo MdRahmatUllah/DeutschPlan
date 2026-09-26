@@ -61,13 +61,13 @@ Grammar sheet, same contract:
   - Diacritics are stripped from Latin letters only, for the same reason: Bangla vowel signs are combining marks too.
 - **PIPE-05** Cells beginning with `=`, `-`, `+` or `@` are stored as text (Excel would treat them as formulas); the tool warns.
 - **PIPE-06** Example lines pair DE[i] with EN[i]; an unmatched DE line gets a null translation.
-- **PIPE-07** `content_version` = build timestamp `YYYYMMDDHHMM`; also written to `content_manifest.json` with per-step counts and the uid list, which CI diffs against the previous build to produce the update summary shown on Today (BR-CONTENT-03).
+- **PIPE-07** `content_version` = build timestamp `YYYYMMDDHHMM`; also written to `content_manifest.json` with per-step counts and the uid list — each uid with a digest of what the learner sees (`words`) and one of its meanings (`meanings`, for BR-CONTENT-02's *Updated* chip) — which CI diffs against the previous build to produce the update summary shown on Today (BR-CONTENT-03).
 - **PIPE-08** `verify_content.py` fails the build if: a required sheet/column is missing, a step has 0 words, a word has no example, a uid collision remains, FTS tables are empty, a `gender`/`separable` tip is on a word of another class (#321), or a single noun still has its article in the German cell (#287).
 
 ## Outputs
 
 - `content/build/content.db` — copied to `app/assets/db/content.db` by `make content`.
-- `content/build/content_manifest.json` — counts, boundaries, uid list, build time.
+- `content/build/content_manifest.json` — counts, boundaries, uid list with its `words` and `meanings` digests, build time.
 
 ## Adding a fifth workbook
 
