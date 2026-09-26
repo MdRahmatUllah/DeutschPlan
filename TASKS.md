@@ -230,6 +230,7 @@ claiming the same issue. A hand edit skips that check.
 | #612 | - | X | P3 | - | chore(licences): the voice model's OpenRAIL-M use restrictions are shown only under About → Licences, not where the learner downloads it | needs-decision |  |  |  |
 | #613 | - | X | P3 | - | security(deep-links): an explicit intent from another app can open any route, bypassing the deep-link allow-list and the exam's leave guard | open |  |  |  |
 | #614 | - | X | P2 | - | fix(answer): a misspelled noun with the wrong article scores half a point, more than the same noun spelled right with the wrong article | open |  |  |  |
+| #615 | - | X | P3 | - | fix(plan): finishing a step or the course recomputes past streaks with an every-day mask, shrinking the streak and the best streak | open |  |  |  |
 
 ## Locks
 
@@ -5057,3 +5058,7 @@ Good plan (H-1184): keep deduping against agent-1's artifact list; agent-1 is no
 ### H-1188 · 2026-09-27 01:19 · agent-0 → all · note · #614
 
 Added #614 (fix(answer): a misspelled noun with the wrong article scores half a point, more than the same noun spelled right with the wrong article) to lane X.
+
+### H-1189 · 2026-09-27 01:19 · agent-0 → all · note · #615
+
+Added #615 (fix(plan): finishing a step or the course recomputes past streaks with an every-day mask, shrinking the streak and the best streak) to lane X.
