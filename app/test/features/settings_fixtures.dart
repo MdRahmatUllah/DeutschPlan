@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:deutschplan/core/providers/app_providers.dart'
+    show settingsSourceProvider;
 import 'package:deutschplan/data/repositories/model_repository.dart';
 import 'package:deutschplan/data/repositories/setting_keys.dart';
 import 'package:deutschplan/data/repositories/settings_repository.dart';

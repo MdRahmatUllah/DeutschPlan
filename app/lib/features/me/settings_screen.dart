@@ -24,12 +24,6 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'settings_screen.g.dart';
 
-/// The settings M3 reads and writes: the app's own. A provider of M3's so a
-/// test that only needs it drawn — the router's — can give it settings
-/// without a database, as M1's `meView` does.
-@riverpod
-SettingsRepository settingsSource(Ref ref) => ref.watch(settingsProvider);
-
 /// FR-M3-01's input, read once while M3 is open: the slider re-sums these as
 /// it moves rather than asking the database again.
 @riverpod

@@ -9,7 +9,7 @@ import 'package:deutschplan/core/theme/dp_tokens.dart';
 import 'package:deutschplan/core/typography/dp_text.dart';
 import 'package:deutschplan/data/repositories/setting_keys.dart';
 import 'package:deutschplan/features/me/settings_screen.dart'
-    show settingsEditorProvider, settingsSourceProvider;
+    show settingsEditorProvider;
 import 'package:deutschplan/features/onboarding/onboarding_pace_page.dart'
     show StudyDayToggle, studyWeekdays;
 import 'package:deutschplan/features/today/today_providers.dart';

@@ -11,8 +11,6 @@ import 'package:deutschplan/data/repositories/setting_keys.dart';
 import 'package:deutschplan/domain/quiz_builder.dart';
 import 'package:deutschplan/features/learn/step_quiz.dart';
 import 'package:deutschplan/features/learn/step_words.dart';
-import 'package:deutschplan/features/me/settings_screen.dart'
-    show settingsSourceProvider;
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
 import 'package:deutschplan/l10n/ui_digits.dart';
 import 'package:deutschplan/router/routes.dart';
