@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-09-26 02:21
+last-seen: 2026-09-26 02:25
 last-read: 560
 
 ## Now
 
-#165 Text scaling to 200 % across every screen — claimed 2026-09-25 23:18.
+#165 in review as PR #475: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
