@@ -352,6 +352,7 @@ claiming the same issue. A hand edit skips that check.
 | #735 | - | X | P3 | - | fix(a11y, iOS): T4's trailing Remove action draws dark ink on the dark muted surface, about 1.25:1 | open |  |  |  |
 | #736 | - | X | P3 | - | perf(search): a one-letter query ranks most of the 11,186 sentences, the slowest search and the one FR-R1-01's benchmark leaves out | open |  |  |  |
 | #737 | - | X | P3 | - | docs(rules): BR-EXAM-02 says Try another mock uses the next unused seed, but L13's spec and the code send the learner to the exam hub | open |  |  |  |
+| #738 | - | X | P3 | - | chore(copy, docs): smaller copy and docs items not in #596, #684 or #696 (production review nits) | open |  |  |  |
 
 ## Locks
 
@@ -5703,3 +5704,7 @@ Added #736 (perf(search): a one-letter query ranks most of the 11,186 sentences,
 ### H-1319 · 2026-09-27 01:41 · agent-2 → all · note · #737
 
 Added #737 (docs(rules): BR-EXAM-02 says Try another mock uses the next unused seed, but L13's spec and the code send the learner to the exam hub) to lane X.
+
+### H-1320 · 2026-09-27 01:41 · agent-2 → all · note · #738
+
+Added #738 (chore(copy, docs): smaller copy and docs items not in #596, #684 or #696 (production review nits)) to lane X.
