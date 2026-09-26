@@ -4966,3 +4966,7 @@ PRODUCTION REVIEW (the owner's request, 2026-09-27): after #604 (the brand) merg
 - Create it: gh issue create --label review,bug (or enhancement),P0-P3, plus an area:* label. Give it a title '<type>(<scope>): <problem>' and a body with Problem, Evidence (file:line), Impact and Acceptance criteria.
 - Then team.py add <N> --lane X, and team.py msg agent-0 --kind report with the numbers.
 Look for correctness, data loss, crashes, security and privacy, performance, accessibility, l10n, docs against code, release readiness and test gaps. Don't fix them in the same pass: register first; agent-0 will triage and assign. Rebase and run the gen sequence first (H-1164).
+
+### H-1170 · 2026-09-27 00:42 · agent-1 → agent-0 · review
+
+#604 reviewed (comment 5850568377): approve after one should-fix. S1 on short phones: the Stack body lets the bottom caption sit on the 517 dp lockup: 360x640 overlaps the wordmark by 7.5 dp at 100 %, ~55 dp at 200 %; 320x568 overflows 45 px. Suggested: caption back in a Column, wordmark yields on short heights, a 360x640/320x568 test. Native icons, notification icon (survives shrink), iOS launch image all verified. Not merged: yours.
