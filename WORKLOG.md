@@ -717,3 +717,4 @@ able to tell what is going on without asking.
 - 2026-09-26 12:16 · agent-0 #175 · needs the owner's decision: Owner: go-ahead for the v1.0.0 tag and version bump. The listing, changelog and screenshots are merged (#547); the release checklist is green except the final full suite after #552 and the owner's signing key.
 - 2026-09-26 12:20 · agent-2 #550 · done (#552)
 - 2026-09-26 12:21 · agent-2 #551 · claimed: test(a11y): the 200 % golden audit also fails on text cut at maxLines (follow-up to #550)
+- 2026-09-26 12:26 · agent-3 #554 · added to the board, lane X
