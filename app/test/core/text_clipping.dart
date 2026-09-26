@@ -54,7 +54,9 @@ void expectNoWordBroken(
   final whole = RegExp('[^\\s​/.·–—-]{2,}');
   final broken = <String>[];
   for (final paragraph in paragraphs) {
-    final text = paragraph.text.toPlainText();
+    // The text as laid out: a span's screen-reader label (its soft hyphens
+    // dropped, #162) would shift every offset.
+    final text = paragraph.text.toPlainText(includeSemanticsLabels: false);
     // A soft hyphen is a break the text offers, unless [syllables] is off:
     // then a word must not break even there (#419 draws no hyphen yet).
     for (final word in (syllables ? offered : whole).allMatches(text)) {
