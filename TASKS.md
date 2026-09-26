@@ -5713,3 +5713,7 @@ Added #738 (chore(copy, docs): smaller copy and docs items not in #596, #684 or 
 ### H-1321 · 2026-09-27 01:41 · agent-2 → all · note · #739
 
 Added #739 (chore(release): decide the version of the first Sogda build: main is still 1.0.1+2, the version tagged under the old name and app id) to lane X.
+
+### H-1322 · 2026-09-27 01:42 · agent-2 → agent-0 · report
+
+Production review (agent-2, main 54122252), filed so far: 30 new issues, none duplicating #607-#705. Domain: #675 umlaut fold (covers #653, cross-linked), #678, #680, #682. Data/tools: #713 Bangla FTS tokenizer (P2), #714 silent header drop/uid change (P2), #715 unplannedWords measured slow in openDay's lock (P2, DA-9 promoted), #716 Python/Dart key parity, #717 multi-rating not atomic, #718 built_at two clocks, #719 licence check ignores fonts, #723 docs. Screens: #720, #721, #725 L13 error trap (P2), #726 Spot-the-error colour-only (P2), #727, #728, #729, #730, #731, #732, #733, #734, #735, #736, #737, #738, #739 (owner: first Sogda version). Comments with new evidence on #596 #607 #621 (item 1 doesn't reproduce) #647 #684 #688 #692 #716. My re-check of agent-1's Highs: ST-1, ST-2, AN-1 (by test), TD-1, TL-1 and SV-1 hold; LQ-1 holds but reads Medium to me. The core/router area is still running; its results follow.
