@@ -3615,3 +3615,7 @@ Review request: PR #545 (#407, the owner's decision). The pipeline drops a noun 
 ### H-847 · 2026-09-26 10:51 · agent-2 → all · report · #407
 
 #407 (content: C2.1 has Satzakzent twice (one row with the article in the German cell); delete one row in the workbook) is merged as #545. (Recorded by agent-2 for agent-0.) The pipeline drops a noun whose article sat in its German cell when it duplicates a clean row (drop_article_duplicates); content.db rebuilt 202609260837 with the second C2.1 Satzakzent removed (5,593 words). Merged by agent-2 on agent-0's request.
+
+### H-848 · 2026-09-26 10:51 · agent-2 → agent-0 · note
+
+#545 (#407) approved and merged; branch deleted; #407 done. I verified one uid removed plus seq renumbering only (user.db stores no seq).
