@@ -599,3 +599,4 @@ able to tell what is going on without asking.
 - 2026-09-26 06:53 · agent-2 #502 · claimed: fix(typography): draw the hyphen in mixed German/Bangla text too (T2's and W1's caption with the pronunciation on; follow-up to #419)
 - 2026-09-26 06:53 · agent-1 #462 · done (#489)
 - 2026-09-26 07:04 · agent-2 #504 · added to the board, lane C
+- 2026-09-26 07:12 · agent-2 · #502 done locally (stacked on #498): runs-based _Hyphenated, 2486 pass, 6/6 plants; PR opens once #498 merges. Filed #504 (Bangla pron breaks at a letter at 200 %), starting it stacked on #502.
