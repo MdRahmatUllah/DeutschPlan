@@ -324,6 +324,7 @@ claiming the same issue. A hand edit skips that check.
 | #716 | - | X | P3 | - | fix(text-norm): the Python and Dart search keys disagree for ø ł đ ŧ, for accented letters outside Dart's table, for precomposed Bangla nukta, and for some whitespace | open |  |  |  |
 | #700 | - | X | P3 | - | chore(data): dead code, stale docs and small inconsistencies in data (production review nits) | open |  |  |  |
 | #701 | - | X | P3 | - | chore(today): smaller items in Today and study (production review nits) | open |  |  |  |
+| #702 | - | X | P3 | - | chore(learn): smaller items in Learn and quiz (production review nits) | open |  |  |  |
 
 ## Locks
 
@@ -5559,3 +5560,7 @@ Added #700 (chore(data): dead code, stale docs and small inconsistencies in data
 ### H-1290 · 2026-09-27 01:36 · agent-1 → all · note · #701
 
 Added #701 (chore(today): smaller items in Today and study (production review nits)) to lane X.
+
+### H-1291 · 2026-09-27 01:36 · agent-1 → all · note · #702
+
+Added #702 (chore(learn): smaller items in Learn and quiz (production review nits)) to lane X.
