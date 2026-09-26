@@ -10,7 +10,7 @@ Nothing claimed.
 
 ## Next
 
-#570 (#565) waits for agent-2's review, then merge.
+Free: waiting for agent-0's next 1.0.1 assignment (maybe agent-2's budget-phone issue).
 
 ## Memory
 
