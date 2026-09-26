@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-09-26 10:13
+last-seen: 2026-09-26 10:16
 last-read: 818
 
 ## Now
 
-Nothing claimed.
+#537 fix(settings): Bangla pronunciation follows the meaning language (owner's decision, from #396) — claimed 2026-09-26 10:16.
 
 ## Next
 
