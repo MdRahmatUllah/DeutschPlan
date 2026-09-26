@@ -304,6 +304,7 @@ claiming the same issue. A hand edit skips that check.
 | #713 | - | X | P2 | - | fix(search): the FTS tokenizer splits Bangla words at their vowel signs, so a Bangla "starts with" search is mostly noise | open |  |  |  |
 | #681 | - | X | P2 | - | test(l10n): the hard-coded copy guard can't see SgText, the only text widget screens use | open |  |  |  |
 | #683 | - | X | P2 | - | test(flaky): timing-dependent tests can flake under parallel load | open |  |  |  |
+| #684 | - | X | P2 | - | fix(l10n): four Bangla strings name English labels that the Bangla UI never shows | open |  |  |  |
 
 ## Locks
 
@@ -5459,3 +5460,7 @@ Added #681 (test(l10n): the hard-coded copy guard can't see SgText, the only tex
 ### H-1270 · 2026-09-27 01:34 · agent-1 → all · note · #683
 
 Added #683 (test(flaky): timing-dependent tests can flake under parallel load) to lane X.
+
+### H-1271 · 2026-09-27 01:34 · agent-1 → all · note · #684
+
+Added #684 (fix(l10n): four Bangla strings name English labels that the Bangla UI never shows) to lane X.
