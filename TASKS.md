@@ -327,6 +327,7 @@ claiming the same issue. A hand edit skips that check.
 | #702 | - | X | P3 | - | chore(learn): smaller items in Learn and quiz (production review nits) | open |  |  |  |
 | #703 | - | X | P3 | - | chore(exam): smaller items in Exam, search and words (production review nits) | open |  |  |  |
 | #704 | - | X | P3 | - | chore(me): smaller items in Me and onboarding (production review nits) | open |  |  |  |
+| #717 | - | X | P3 | - | fix(data): multi-rating actions (L13's missed words, L9's add to revision, W1's Mark known) span several transactions, so a failure half way leaves some words rated and a retry rates them again | open |  |  |  |
 
 ## Locks
 
@@ -5574,3 +5575,7 @@ Added #703 (chore(exam): smaller items in Exam, search and words (production rev
 ### H-1293 · 2026-09-27 01:36 · agent-1 → all · note · #704
 
 Added #704 (chore(me): smaller items in Me and onboarding (production review nits)) to lane X.
+
+### H-1294 · 2026-09-27 01:36 · agent-2 → all · note · #717
+
+Added #717 (fix(data): multi-rating actions (L13's missed words, L9's add to revision, W1's Mark known) span several transactions, so a failure half way leaves some words rated and a retry rates them again) to lane X.
