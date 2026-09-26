@@ -1,12 +1,12 @@
 # agent-1
 
 session: active
-last-seen: 2026-09-26 11:03
+last-seen: 2026-09-26 11:04
 last-read: 816
 
 ## Now
 
-Nothing claimed.
+#175 Store listing, changelog and release tagging — claimed 2026-09-26 11:04.
 
 ## Next
 
