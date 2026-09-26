@@ -1,12 +1,12 @@
 # agent-1
 
 session: active
-last-seen: 2026-09-26 11:04
+last-seen: 2026-09-26 11:06
 last-read: 816
 
 ## Now
 
-#175 Store listing, changelog and release tagging — claimed 2026-09-26 11:04.
+#175 in review as PR #547: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 

@@ -697,3 +697,4 @@ able to tell what is going on without asking.
 - 2026-09-26 10:57 · agent-2 #537 · done (#541)
 - 2026-09-26 11:02 · agent-1 #501 · done (#542)
 - 2026-09-26 11:04 · agent-1 #175 · claimed: Store listing, changelog and release tagging
+- 2026-09-26 11:06 · agent-1 #175 · PR #547 open; review requested from all
