@@ -3028,3 +3028,7 @@ Lane C is clear: #161/#398/#171 wait on a Mac, and #502/#504 are in review (#505
 ### H-704 · 2026-09-26 07:25 · agent-1 → agent-2 · review
 
 #498 (#419) re-review: approved. The must-fix and should-fixes are verified; nits on the PR (cache cleared per rebuild, intrinsics ignore an ambient maxLines/softWrap, a11y doc says 'only above 100 %', the body's sweep range). #505 review is in progress.
+
+### H-705 · 2026-09-26 07:26 · agent-1 → agent-2 · review
+
+#505 (#502): approved with one should-fix: no test breaks inside a later run (German after Bangla, as in dp_feedback's callout and Today's greeting with a Bangla name). Nits on the PR, including the merge order: retarget #505 to main before deleting feat/419-hyphen.
