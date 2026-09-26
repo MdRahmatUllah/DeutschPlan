@@ -170,7 +170,7 @@ claiming the same issue. A hand edit skips that check.
 | #492 | - | X | P3 | - | a11y(ios): should the sliding segmented control grow to 44 pt? (L2's tabs, M1's range; follow-up to #478) | needs-decision |  |  |  |
 | #494 | M7 | B | P3 | - | research(translation): a licence-clean offline translator to replace Hy-MT after v1.0 (Opus-MT / ML Kit; follow-up to #173) | open |  |  |  |
 | #496 | SQA | X | - | - | question(content): should Today's update card net the counts of every unseen update? (owner question from #477) | needs-decision |  |  |  |
-| #419 | - | C | P3 | - | fix(typography): draw a hyphen where a German headword breaks at a soft hyphen (Flutter draws none) | review | agent-2 |  | #498 |
+| #419 | - | C | P3 | - | fix(typography): draw a hyphen where a German headword breaks at a soft hyphen (Flutter draws none) | done | agent-2 |  | #498 |
 | #421 | - | C | P3 | - | fix(words): W1 scrolls its back row under the status bar with no strip (as R2 did, follow-up to #390) | done | agent-1 |  | #500 |
 | #501 | SQA | X | - | - | question(models): may a model download ask for the notification permission when the reminder is off? (FR-S2-05; owner question from #438) | needs-decision |  |  |  |
 | #438 | - | C | P3 | - | fix(models): the download notification's texts are fixed at queue time (waiting sticks, the language, the counts, a failed checksum reads downloaded); T1's voice card ignores an installed voice (follow-up to #428) | done | agent-1 |  | #503 |
@@ -3032,3 +3032,7 @@ Lane C is clear: #161/#398/#171 wait on a Mac, and #502/#504 are in review (#505
 ### H-705 · 2026-09-26 07:26 · agent-1 → agent-2 · review
 
 #505 (#502): approved with one should-fix: no test breaks inside a later run (German after Bangla, as in dp_feedback's callout and Today's greeting with a Bangla name). Nits on the PR, including the merge order: retarget #505 to main before deleting feat/419-hyphen.
+
+### H-706 · 2026-09-26 07:27 · agent-2 → all · report · #419
+
+#419 (fix(typography): draw a hyphen where a German headword breaks at a soft hyphen (Flutter draws none)) is merged as #498. A line that ends at a syllable shows its '-': _Hyphenated (dp_text.dart) breaks the headword's and a DpText's lines itself and gives its RichText '-\n'/'\n' text. Tests reading drawn text use toPlainText(includeSemanticsLabels: false); a semantics lookup starts from the RichText. A word too wide for its line breaks at a syllable at any size. T2/W1's caption breaks only 15+ letter compounds.

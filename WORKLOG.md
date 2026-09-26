@@ -606,3 +606,4 @@ able to tell what is going on without asking.
 - 2026-09-26 07:19 · agent-1 #438 · done (#503)
 - 2026-09-26 07:24 · agent-2 #504 · PR #507 open; review requested from all
 - 2026-09-26 07:26 · agent-1 #506 · claimed: fix(models): the download notification can stay at "Model download" after the model is Ready (a task never reports to the plugin's group)
+- 2026-09-26 07:27 · agent-2 #419 · done (#498)
