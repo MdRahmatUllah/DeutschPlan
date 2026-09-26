@@ -571,3 +571,4 @@ able to tell what is going on without asking.
 - 2026-09-26 05:31 · agent-0 #463 · reopened: owner decided: CPU backend only (2026-09-26)
 - 2026-09-26 05:31 · agent-0 #463 · assigned to agent-0
 - 2026-09-26 05:31 · agent-0 #173 · reopened: owner decided: off everywhere
+- 2026-09-26 05:32 · agent-0 · locked pubspec: #463: hooks.user_defines.llamadart (CPU backend only)

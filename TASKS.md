@@ -188,7 +188,7 @@ The emulator lock is local, not here: `team.py device`.
 |---|---|---|---|
 | user-db-schema |  |  |  |
 | adr-number |  |  |  |
-| pubspec |  |  |  |
+| pubspec | agent-0 | 2026-09-26 05:32 | #463: hooks.user_defines.llamadart (CPU backend only) |
 | ci-config |  |  |  |
 | shared-look |  |  |  |
 
