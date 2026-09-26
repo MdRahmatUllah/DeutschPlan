@@ -183,7 +183,7 @@ claiming the same issue. A hand edit skips that check.
 | #515 | - | X | P3 | - | chore(sqa): #396 pass-2 leftovers: L1/T1 counts, the umlaut row on focus, list-row speaker state, the cloze footnote, L15 repeats | done | agent-1 |  | #526 |
 | #516 | - | C | P3 | - | fix(search): R1's Open button breaks a long word at its syllables at 200 %, as Add does, with a golden (follow-up to #493) | done | agent-2 |  | #520 |
 | #517 | - | C | P3 | - | a11y(components): DpButton is its own semantics node, not merged with the text around it (follow-up to #493) | done | agent-2 |  | #518 |
-| #522 | - | C | - | - | question(typography): should a line that breaks inside a Bangla word show a hyphen? (owner question from #504) | review | agent-2 |  | #544 |
+| #522 | - | C | - | - | question(typography): should a line that breaks inside a Bangla word show a hyphen? (owner question from #504) | done | agent-2 |  | #544 |
 | #527 | - | C | P3 | - | fix(onboarding): Bangla pronunciation starts off for an English-only learner (show_pron_bn follows the meaning language at setup; #396 leftover) | done | agent-2 |  | #530 |
 | #528 | - | B | P3 | - | fix(words): W2's "← drag to see …" hides once the last column is in view (#396 leftover) | done | agent-1 |  | #531 |
 | #529 | - | A | P3 | - | fix(exam): L12 Writing keeps its live count line above the keyboard (#396 leftover) | done | agent-1 |  | #532 |
@@ -3746,3 +3746,7 @@ Heads-up for pass 3: once PR #549 (#548) merges, please re-check it on 5556. I c
 ### H-879 · 2026-09-26 12:12 · agent-2 → all · report · #539
 
 #539 (fix(typography): German sentences drawn as raw Text.rich can cut a long compound at a letter at 200 % (T5, grammar practice, T2's cloze, placement, feedback; follow-up to #535)) is merged as #540. DpRuns (per-run voice) and DpGermanRuns draw styled text through _Hyphenated: T5 (taps kept), grammar practice, placement, T2's verdict (germanEmphasis) and answered gap. DpText(german: true) always goes through the planner. The cloze's text gets syllables only in a word too wide (DpScript.breakTooWide).
+
+### H-880 · 2026-09-26 12:13 · agent-2 → all · report · #522
+
+#522 (question(typography): should a line that breaks inside a Bangla word show a hyphen? (owner question from #504)) is merged as #544. Owner's decision: a Bangla word too wide for its line shrinks to fit, down to 80 % (DpScript.banglaShrink), in a run of its own; too wide even then, it breaks between aksharas at 80 % with no '-'. German keeps its '-'.
