@@ -182,6 +182,12 @@ class _GrammarPracticeScreenState extends ConsumerState<GrammarPracticeScreen> {
     } else {
       final item = set.items[_item];
       final right = _right;
+      // #557, as L8 (#554): typing a gap at large text, the field and its
+      // umlaut row alone filled the room above the keyboard and the
+      // sentence scrolled away. The header's row and *Next* (off until the
+      // answer is checked, which closes the field) give theirs to it, and
+      // come back with the keyboard's going.
+      final typing = DpScript.largeTyping(context);
       body = Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
@@ -189,6 +195,7 @@ class _GrammarPracticeScreenState extends ConsumerState<GrammarPracticeScreen> {
             title: set.topic.topic.topic,
             place: (_item + 1, set.items.length),
             onClose: () => Navigator.of(context).maybePop(),
+            collapsed: typing,
           ),
           PracticeStrip(done: _item + 1, of: set.items.length),
           if (widget.topicUids.length > 1)
@@ -235,13 +242,14 @@ class _GrammarPracticeScreenState extends ConsumerState<GrammarPracticeScreen> {
               ],
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
-            child: DpButton(
-              label: l10n.practiceNext,
-              onPressed: right == null ? null : () => unawaited(_next(set)),
+          if (!typing || right != null)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+              child: DpButton(
+                label: l10n.practiceNext,
+                onPressed: right == null ? null : () => unawaited(_next(set)),
+              ),
             ),
-          ),
         ],
       );
     }

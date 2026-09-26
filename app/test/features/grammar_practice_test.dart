@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:deutschplan/core/components/dp_button.dart';
 import 'package:deutschplan/core/providers/app_providers.dart';
 import 'package:deutschplan/core/theme/app_theme.dart';
 import 'package:deutschplan/data/db/app_database.dart';
@@ -82,6 +83,7 @@ void main() {
     required List<GrammarItem> items,
     List<String> topics = const <String>['g3'],
     bool dayDone = false,
+    TextScaler? textScaler,
   }) async {
     rated = <(String, int, int)>[];
     rating = _Rating(rated);
@@ -127,6 +129,12 @@ void main() {
           localizationsDelegates: appLocalizationsDelegates,
           supportedLocales: supportedLocales,
           routerConfig: routes,
+          builder: textScaler == null
+              ? null
+              : (context, child) => MediaQuery(
+                  data: MediaQuery.of(context).copyWith(textScaler: textScaler),
+                  child: child!,
+                ),
         ),
       ),
     );
@@ -474,6 +482,83 @@ void main() {
       expect(set.items.length, inInclusiveRange(3, 5));
     },
   );
+
+  group('#557 a gap typed with the keyboard up', () {
+    const keyboardTop = 731.0 - 300;
+
+    // SQA's 731 dp phone, its status bar, and a 300 dp keyboard.
+    Future<void> typing(WidgetTester tester, TextScaler textScaler) async {
+      tester.view
+        ..physicalSize = const Size(390, 731) * 3
+        ..devicePixelRatio = 3
+        ..padding = const FakeViewPadding(top: 24 * 3);
+      addTearDown(tester.view.reset);
+      await pump(
+        tester,
+        items: <GrammarItem>[gap, pick],
+        textScaler: textScaler,
+      );
+      await tester.showKeyboard(find.byType(TextField));
+      tester.view.viewInsets = const FakeViewPadding(bottom: 300 * 3);
+      addTearDown(tester.view.resetViewInsets);
+      await tester.pumpAndSettle();
+    }
+
+    Finder next() => find.widgetWithText(DpButton, l10n.practiceNext);
+
+    for (final percent in <int>[200, 150]) {
+      testWidgets('at $percent % the sentence and its translation show whole '
+          'above the field; the header and Next come back with the '
+          "keyboard's going", (tester) async {
+        await typing(tester, AndroidTextScaler(percent / 100));
+        expect(
+          tester
+              .widget<EditableText>(find.byType(EditableText))
+              .focusNode
+              .hasFocus,
+          isTrue,
+          reason: 'the field kept the keyboard',
+        );
+        expect(find.byIcon(Icons.close), findsNothing, reason: 'the header');
+        expect(next(), findsNothing, reason: 'off until checked');
+        final room = tester.getRect(find.byType(ListView));
+        expect(room.bottom, lessThanOrEqualTo(keyboardTop));
+        for (final (name, shown) in <(String, Finder)>[
+          ('the sentence', find.textContaining('_____', findRichText: true)),
+          ('the translation', find.text(gap.translation)),
+          ('the field', find.byType(TextField)),
+        ]) {
+          final rect = tester.getRect(shown);
+          expect(rect.top, greaterThanOrEqualTo(room.top), reason: name);
+          expect(rect.bottom, lessThanOrEqualTo(room.bottom), reason: name);
+        }
+
+        tester.view.resetViewInsets();
+        await tester.pumpAndSettle();
+        expect(find.byIcon(Icons.close), findsOneWidget);
+        expect(next(), findsOneWidget);
+      });
+    }
+
+    testWidgets('at 100 % the keyboard leaves the header and Next be', (
+      tester,
+    ) async {
+      await typing(tester, TextScaler.noScaling);
+      expect(find.byIcon(Icons.close), findsOneWidget);
+      expect(next(), findsOneWidget);
+    });
+
+    testWidgets('checked with the keyboard still up, Next is there', (
+      tester,
+    ) async {
+      await typing(tester, const AndroidTextScaler(2));
+      await tester.enterText(find.byType(TextField), 'hätte');
+      await tester.testTextInput.receiveAction(TextInputAction.done);
+      await tester.pumpAndSettle();
+      expect(find.byType(TextField), findsNothing, reason: 'checked');
+      expect(next(), findsOneWidget);
+    });
+  });
 }
 
 class _Rating implements GrammarRatingService {
