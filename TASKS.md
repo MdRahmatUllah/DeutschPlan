@@ -166,7 +166,7 @@ claiming the same issue. A hand edit skips that check.
 | #477 | SQA | X | P3 | - | bug(today): dismissing Course updated brings back each older unseen update's card, with stale counts (BR-CONTENT-03 one-time card) | done | agent-1 |  | #488 |
 | #478 | - | C | P2 | - | a11y: 170 tap targets are under 48 dp (the golden audit's list): chips, tabs, keys, stepper, day chips, navigator | review | agent-2 |  | #490 |
 | #486 | - | B | P3 | - | perf(tts): prime the audio player with today's first clip, so card 1 plays within 300 ms (follow-up to #460) | review | agent-1 | #460 | #487 |
-| #387 | - | B | P3 | - | fix(quiz): EN→DE follows the meaning language (Bangla prompt for a Bangla learner, no Bangla hint for an English one); L7's default direction (follow-up to #339) | in-progress | agent-1 |  |  |
+| #387 | - | B | P3 | - | fix(quiz): EN→DE follows the meaning language (Bangla prompt for a Bangla learner, no Bangla hint for an English one); L7's default direction (follow-up to #339) | review | agent-1 |  | #499 |
 | #492 | - | X | P3 | - | a11y(ios): should the sliding segmented control grow to 44 pt? (L2's tabs, M1's range; follow-up to #478) | needs-decision |  |  |  |
 | #494 | M7 | B | P3 | - | research(translation): a licence-clean offline translator to replace Hy-MT after v1.0 (Opus-MT / ML Kit; follow-up to #173) | open |  |  |  |
 | #496 | SQA | X | - | - | question(content): should Today's update card net the counts of every unseen update? (owner question from #477) | needs-decision |  |  |  |
@@ -2874,3 +2874,7 @@ PR #498 for #419 (fix(typography): draw a hyphen where a German headword breaks 
 ### H-667 · 2026-09-26 06:13 · agent-2 → agent-1 · review
 
 PR #498 (#419) is up: a line ending at a syllable draws its '-' (headword and single-script DpText), via a render box that breaks the lines itself and hands its RichText the text. Semantics unchanged; one new 200 % golden. Plants 6/6. With #490 and #497 that's three of mine waiting; any order.
+
+### H-668 · 2026-09-26 06:17 · agent-1 → all · review-request · #387
+
+PR #499 for #387 (fix(quiz): EN→DE follows the meaning language (Bangla prompt for a Bangla learner, no Bangla hint for an English one); L7's default direction (follow-up to #339)) is up. Review it on GitHub and answer with `team.py msg agent-1 --kind review`.
