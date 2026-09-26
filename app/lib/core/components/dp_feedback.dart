@@ -88,22 +88,31 @@ class DpUmlautBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final tokens = context.tokens;
 
-    return Row(
-      children: <Widget>[
-        for (final (index, entry) in keys.entries.indexed) ...<Widget>[
-          if (index > 0) SizedBox(width: tokens.spacing.sm),
-          Expanded(
-            child: _UmlautKey(
-              label: entry.key,
-              shifted: entry.value,
-              onTap: enabled ? () => insert(controller, entry.key) : null,
-              onLongPress: enabled
-                  ? () => insert(controller, entry.value)
-                  : null,
-            ),
-          ),
-        ],
-      ],
+    // Part of the field it types into: a tap on a key is no tap outside it,
+    // which would close the keyboard of a field that closes on one (#529).
+    return TextFieldTapRegion(
+      // The gaps between the keys too: an opaque hit with no gesture of its
+      // own, so the keys keep theirs.
+      child: Listener(
+        behavior: HitTestBehavior.opaque,
+        child: Row(
+          children: <Widget>[
+            for (final (index, entry) in keys.entries.indexed) ...<Widget>[
+              if (index > 0) SizedBox(width: tokens.spacing.sm),
+              Expanded(
+                child: _UmlautKey(
+                  label: entry.key,
+                  shifted: entry.value,
+                  onTap: enabled ? () => insert(controller, entry.key) : null,
+                  onLongPress: enabled
+                      ? () => insert(controller, entry.value)
+                      : null,
+                ),
+              ),
+            ],
+          ],
+        ),
+      ),
     );
   }
 }

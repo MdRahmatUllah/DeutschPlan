@@ -96,6 +96,26 @@ void main() {
     expect(count, findsOneWidget, reason: 'back under the field');
   });
 
+  testWidgets('#529 a tap outside the text closes the keyboard, as iOS has '
+      'no other way; a tap on an umlaut key does not', (tester) async {
+    await pump(tester);
+    await tester.tap(find.byType(TextField));
+    await tester.pump();
+    bool typing() => tester
+        .widget<EditableText>(find.byType(EditableText))
+        .focusNode
+        .hasFocus;
+    expect(typing(), isTrue);
+
+    await tester.tap(find.byType(DpUmlautBar).first);
+    await tester.pump();
+    expect(typing(), isTrue, reason: 'the umlaut row is part of the field');
+
+    await tester.tap(find.text(l10n.examWritingYourText.toUpperCase()));
+    await tester.pump();
+    expect(typing(), isFalse);
+  });
+
   testWidgets('the task for the level and category, and its ten words', (
     tester,
   ) async {

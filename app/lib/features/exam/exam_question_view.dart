@@ -556,6 +556,12 @@ class ExamWriting extends StatelessWidget {
                 expands: true,
                 maxLines: null,
                 keyboardType: TextInputType.multiline,
+                // A tap on the task, the band or the chips closes the keyboard,
+                // and *Previous* / *Submit text* come back: a multiline field
+                // has no Done key, and iOS no back gesture that closes it
+                // (#529). The umlaut keys are part of the field.
+                onTapOutside: (_) =>
+                    FocusManager.instance.primaryFocus?.unfocus(),
                 // An exam: the keyboard must not spell or complete the German,
                 // as the runner's other typed answers don't let it.
                 autocorrect: false,
