@@ -412,6 +412,9 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
       // buttons give theirs too, or the field alone filled the room and the
       // prompt scrolled away; they come back with the keyboard's going.
       final cramped = DpScript.largeTyping(context);
+      // #560: the band collapsed on a timed paper, its clock goes to the bar
+      // above the keyboard.
+      final clockBelow = cramped && _timed;
       final count = questions.where((q) => examNumbered(q.item)).length;
       final number = questions.take(_at + 1).where((q) => examNumbered(q.item));
       final nav = Row(
@@ -555,17 +558,16 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
           // #560: a timed paper always shows its time left (FR-L12-03). With
           // the band collapsed, its clock sits here above the keyboard, beside
           // the umlaut keys, which give it width rather than the prompt height.
-          if (examTypesGerman(item) || (cramped && _timed))
+          if (examTypesGerman(item) || clockBelow)
             DpSurface(
               kind: DpSurfaceKind.bar,
               radius: 0,
               padding: const EdgeInsets.fromLTRB(16, 10, 16, 16),
-              child: !(cramped && _timed)
-                  ? DpUmlautBar(controller: _field)
+              child: clockBelow
                   // The whole bar is the field's, as the keys' row is
                   // (#532): a tap beside ß, or on the clock, keeps a
                   // Writing task's keyboard (#529).
-                  : TextFieldTapRegion(
+                  ? TextFieldTapRegion(
                       child: Listener(
                         behavior: HitTestBehavior.opaque,
                         child: Row(
@@ -579,7 +581,8 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
                           ],
                         ),
                       ),
-                    ),
+                    )
+                  : DpUmlautBar(controller: _field),
             ),
         ],
       );
