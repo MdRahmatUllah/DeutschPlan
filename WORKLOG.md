@@ -660,3 +660,4 @@ able to tell what is going on without asking.
 - 2026-09-26 09:39 · agent-2 · Full suite green on main 689929de: 4081 flutter tests (3 chunks, -j 2) + 329 tools tests. Merged today: #507 (#504), #526 (#515), #520 (#516), #518 (#517), #514 (#513), #505 (#502), #498 (#419), plus agent-0's #495 and #493 while idle.
 - 2026-09-26 09:40 · agent-1 #494 · PR #534 open; review requested from all
 - 2026-09-26 09:40 · agent-2 #527 · done (#530)
+- 2026-09-26 09:40 · agent-1 · Merged since the last log: #508 (#506), #510 (#509), #512 (#511), #519 (#469 content rebuild: the meanings map, skill_prompts emptied), #521, #523, #524, #525 (#515 items 3, 4, 1, 5), #531 (#528). In review: #532 (#529 L12 Writing count pinned), #534 (#494 translator research; owner #533). Reviewed #498, #505, #507 (x2), #514, #518, #520, #526, #530. emulator-5558 /data is 93% full: installs over an existing app and model downloads are refused.
