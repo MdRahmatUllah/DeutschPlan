@@ -1,12 +1,12 @@
 # agent-1
 
 session: active
-last-seen: 2026-09-26 08:23
+last-seen: 2026-09-26 08:37
 last-read: 738
 
 ## Now
 
-#515 chore(sqa): #396 pass-2 leftovers: L1/T1 counts, the umlaut row on focus, list-row speaker state, the cloze footnote, L15 repeats — claimed 2026-09-26 08:23.
+#515 in review as PR #521: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
