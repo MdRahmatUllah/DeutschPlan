@@ -216,6 +216,42 @@ void main() {
       expect(await count('review_log'), 0);
     });
 
+    testWidgets('#396 the preview says when the file was exported and what '
+        'else it holds', (tester) async {
+      final other = await open();
+      addTearDown(other.close);
+      await other.customStatement(
+        'INSERT INTO review_log (word_uid, reviewed_at, rating, source) '
+        "VALUES ('${ContentFixture.haus}', '2026-09-19T09:00:00Z', 3, "
+        "'daily'), ('${ContentFixture.haus}', '2026-09-20T09:00:00Z', 3, "
+        "'daily')",
+      );
+      await other.customStatement(
+        'INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code) '
+        "VALUES ('2026-09-19', '${ContentFixture.haus}', 'new', 'A1.1'), "
+        "('2026-09-20', '${ContentFixture.haus}', 'revise', 'A1.1'), "
+        "('2026-09-20', '${ContentFixture.tuer}', 'new', 'A1.1')",
+      );
+      await other.customStatement(
+        'INSERT INTO custom_words (created_at, german, meaning) '
+        "VALUES ('2026-09-20T10:00:00Z', 'Quarkbrötchen', 'quark roll')",
+      );
+      final backup = jsonDecode(
+        await BackupRepository(other).exportJson(),
+      ) as Map<String, Object?>;
+      backup['exported_at'] = '2026-09-20T12:00:00Z';
+
+      await pump(tester);
+      await choose(tester, jsonEncode(backup));
+
+      expect(
+        find.text(
+          'Exported 20 Sep · 2 reviews · 2 days planned · 1 word of my own',
+        ),
+        findsOneWidget,
+      );
+    });
+
     testWidgets('a file from a newer build is refused', (tester) async {
       await pump(tester);
       final newer = jsonDecode(await otherPhone()) as Map<String, Object?>;

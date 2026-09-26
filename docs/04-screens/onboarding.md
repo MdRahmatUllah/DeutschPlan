@@ -19,7 +19,7 @@
 **Functional requirements**
 - FR-S2-01 *Skip* MUST apply defaults for all remaining pages and finish.
 - FR-S2-02 Values MUST persist when navigating back.
-- FR-S2-03 Finishing MUST call `PlanEngine.enroll(step, dailyNew)` and open Today with the first day planned and a one-time coach mark on the primary button.
+- FR-S2-03 Finishing MUST call `PlanEngine.enroll(step, dailyNew)` and open Today with the first day planned and a one-time coach mark on the primary button (gone once the button or a session is used, and never over a finished day: `today.md`, #396).
 - FR-S2-04 The estimate on page 4 MUST use the selected step's word count ÷ daily_new × (7 ÷ study days per week).
 - FR-S2-05 Reminder permission MUST be requested only when the switch is turned on.
 - FR-S2-06 *Download now* MUST start the Supertonic download in the background and continue onboarding.

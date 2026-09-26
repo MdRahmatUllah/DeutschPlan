@@ -114,10 +114,14 @@ bool _findsKeys((String, String) keys, ({String prefix, bool verb}) target) {
 /// beweisen, not both. The most targets the text uses so, a bipartite
 /// matching of targets to its distinct words (Kuhn's augmenting paths:
 /// ten targets, a few hundred words).
+///
+/// Among matchings as large, a word goes to a target of its own case
+/// (#396): "die Beweise" lights the noun Beweis, "wir beweisen" the verb.
+/// So each target first tries the words of its case, then any: an augmenting
+/// path never leaves a target it has matched, so the count is still the most.
 List<String> targetsUsed(String text, List<String> targets) {
-  final words = <(String, String)>[
-    for (final word in textWords(text).toSet()) _keys(word),
-  ];
+  final written = textWords(text).toSet().toList();
+  final words = <(String, String)>[for (final word in written) _keys(word)];
   final finds = <List<int>>[
     for (final target in targets)
       if (_target(target) case final found when found.prefix.isNotEmpty)
@@ -129,11 +133,14 @@ List<String> targetsUsed(String text, List<String> targets) {
         const <int>[],
   ];
   final owner = <int, int>{}; // a word's index → its target's
-  bool claim(int target, Set<int> tried) {
+  bool claim(int target, Set<int> tried, {required bool alike}) {
     for (final word in finds[target]) {
+      if (alike && _capital(written[word]) != _capital(targets[target])) {
+        continue;
+      }
       if (!tried.add(word)) continue;
       final other = owner[word];
-      if (other == null || claim(other, tried)) {
+      if (other == null || claim(other, tried, alike: alike)) {
         owner[word] = target;
         return true;
       }
@@ -141,11 +148,22 @@ List<String> targetsUsed(String text, List<String> targets) {
     return false;
   }
 
+  final used = <int>{
+    for (var t = 0; t < targets.length; t++)
+      if (claim(t, <int>{}, alike: true)) t,
+  };
+  for (var t = 0; t < targets.length; t++) {
+    if (!used.contains(t) && claim(t, <int>{}, alike: false)) used.add(t);
+  }
   return <String>[
     for (var t = 0; t < targets.length; t++)
-      if (claim(t, <int>{})) targets[t],
+      if (used.contains(t)) targets[t],
   ];
 }
+
+/// Whether [word] starts with a capital: a noun, as the course writes them.
+bool _capital(String word) =>
+    word.isNotEmpty && word[0] != word[0].toLowerCase();
 
 /// Whether one of [a] and [b] could claim the other's words (#388): one's
 /// prefix starts the other's (Beweis and beweisen), or one is a form of the

@@ -30,6 +30,7 @@
 - The count is the course's own, `meta.word_count`, formatted for the language ("5,594"). A course without it says "None of the course words…".
 - The web chips are the five of FR-R1-06 at 44 dp (`DpChip(large: true)`, a pill under glass). A chip, like *Add "…" as my word*, counts as a search (FR-R1-04).
 - *Add "…" as my word* opens R2 with the word filled in: `/search/add?german=…`.
+- A word the learner has saved already is not offered again (#396): when one of `custom_words` keys as the query does (the exact tier's `search_key` or `search_key_alt`, so "Quarkbrotchen" finds the saved "Quarkbrötchen"), the page says "Already one of my words" and *Open "das Quarkbrötchen"* opens it in R2 (`/search/add/:id`) instead of *Add "…" as my word*.
 
 **Functional requirements**
 - FR-R1-01 Results per `03-domain/search.md`, debounced 120 ms, isolate-run, < 50 ms per query.

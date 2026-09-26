@@ -14,6 +14,7 @@ import 'package:deutschplan/data/repositories/search_repository.dart';
 import 'package:deutschplan/data/repositories/setting_keys.dart';
 import 'package:deutschplan/data/repositories/settings_repository.dart';
 import 'package:deutschplan/data/repositories/word_repository.dart';
+import 'package:deutschplan/domain/text_norm.dart';
 import 'package:deutschplan/features/learn/step_words.dart';
 import 'package:deutschplan/features/words/word_row.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
@@ -1015,6 +1016,19 @@ class _NoResults extends ConsumerWidget {
     final tokens = context.tokens;
     final words = ref.watch(courseWordsProvider).value;
     final links = SearchRepository.webLinks(query);
+    // #396: a word the learner has saved already is offered to open, not to
+    // add twice. Keyed as the exact tier keys a word (R2's FR-R2-01 check),
+    // so "Quarkbrotchen" finds the "Quarkbrötchen" saved from it.
+    final key = searchKey(query);
+    final alt = searchKeyAlt(query);
+    final mine = ref
+        .watch(myWordsProvider)
+        .value
+        ?.where(
+          (word) =>
+              searchKey(word.german) == key || searchKeyAlt(word.german) == alt,
+        )
+        .firstOrNull;
 
     return ListView(
       key: const PageStorageKey<String>('search-none'),
@@ -1071,19 +1085,41 @@ class _NoResults extends ConsumerWidget {
           ],
         ),
         const SizedBox(height: 28),
-        DpButton(
-          // Above 100 % the German typed in may break at its syllables:
-          // "Wohnungsgeberbestätigung" is wider than the button (#165).
-          label: l10n.searchNoneAdd(
-            DpScript.scaled(context)
-                ? DpScript.allowBreaks(query, threshold: 4)
-                : query,
+        if (mine == null)
+          DpButton(
+            // Above 100 % the German typed in may break at its syllables:
+            // "Wohnungsgeberbestätigung" is wider than the button (#165).
+            label: l10n.searchNoneAdd(
+              DpScript.scaled(context)
+                  ? DpScript.allowBreaks(query, threshold: 4)
+                  : query,
+            ),
+            onPressed: () {
+              onUse();
+              AddWordRoute.open(context, german: query);
+            },
+          )
+        else ...<Widget>[
+          DpText(
+            l10n.searchNoneMine,
+            role: DpTextRole.body,
+            weight: 600,
+            textAlign: TextAlign.center,
           ),
-          onPressed: () {
-            onUse();
-            AddWordRoute.open(context, german: query);
-          },
-        ),
+          const SizedBox(height: 10),
+          DpButton(
+            label: l10n.searchNoneOpenMine(
+              mine.article == null
+                  ? mine.german
+                  : '${mine.article} ${mine.german}',
+            ),
+            kind: DpButtonKind.secondary,
+            onPressed: () {
+              onUse();
+              EditCustomWordRoute.open(context, mine.id);
+            },
+          ),
+        ],
         const SizedBox(height: 14),
         DpText(
           l10n.searchNoneFootnote,

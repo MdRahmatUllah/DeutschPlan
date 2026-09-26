@@ -350,6 +350,18 @@ VALUES ('$today', 9, 12, 900)
       expect(button(tester, l10n.summaryDone).kind, DpButtonKind.primary);
     });
 
+    testWidgets('FR-T3-02 #396 Done for now alone is a node apart from the '
+        'summary', (tester) async {
+      final semantics = tester.ensureSemantics();
+      await finish(tester, StudyNext(sentences: 0, backlog: 0, dayDone: false));
+      // Merged, a screen reader read the summary as the button.
+      expect(
+        tester.getSemantics(find.byType(DpButton)).label,
+        l10n.summaryDone,
+      );
+      semantics.dispose();
+    });
+
     testWidgets('sentences open: they lead, and Done for now follows', (
       tester,
     ) async {

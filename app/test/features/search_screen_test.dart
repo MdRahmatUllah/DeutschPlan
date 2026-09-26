@@ -674,6 +674,31 @@ void main() {
       expect(settings.read(SettingKeys.recentSearches), contains('Fahrrad'));
     });
 
+    testWidgets('FR-R1-01 #396 a word already mine is offered to open, not to '
+        'add again', (tester) async {
+      await pump(tester, routed: true);
+      await tester.runAsync(
+        () => db
+            .into(db.customWords)
+            .insert(
+              CustomWordsCompanion.insert(
+                createdAt: '2026-09-20T10:00:00Z',
+                article: const Value('das'),
+                german: 'Quarkbrötchen',
+                meaning: 'quark roll',
+              ),
+            ),
+      );
+      await type(tester, 'Quarkbrotchen');
+      expect(find.text(l10n.searchNoneTitle), findsOneWidget);
+      expect(find.text(l10n.searchNoneAdd('Quarkbrotchen')), findsNothing);
+      expect(find.text(l10n.searchNoneMine), findsOneWidget);
+
+      await tester.tap(find.text(l10n.searchNoneOpenMine('das Quarkbrötchen')));
+      await settle(tester);
+      expect(router!.state.uri.path, startsWith('/search/add/'));
+    });
+
     testWidgets('a query that loads never shows the "Not in the course" '
         'of the one before', (tester) async {
       await pump(

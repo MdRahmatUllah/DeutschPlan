@@ -73,11 +73,13 @@ class _TodayScreenState extends ConsumerState<TodayScreen> {
 
   /// A session with [blocks], from today's plan: one block for a section
   /// card (FR-T1-04), every open one for the button (FR-T1-03).
-  void _study(List<SessionBlock> blocks, String date, [Rect? origin]) =>
-      StudyRoute.open(
-        context,
-        SessionArgs(blocks: blocks, planDate: date, origin: origin),
-      );
+  void _study(List<SessionBlock> blocks, String date, [Rect? origin]) {
+    _coachMarkDone(ref);
+    StudyRoute.open(
+      context,
+      SessionArgs(blocks: blocks, planDate: date, origin: origin),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -119,6 +121,14 @@ class _TodayScreenState extends ConsumerState<TodayScreen> {
           ? AuroraBackdrop(leading: tokens.color.primary, child: body)
           : body,
     );
+  }
+}
+
+/// FR-S2-03's mark has done its job once the button is used or a session
+/// opens (#396). Read first: there is nothing to dismiss once it has gone.
+void _coachMarkDone(WidgetRef ref) {
+  if (ref.read(coachMarkProvider)) {
+    ref.read(coachMarkProvider.notifier).dismiss();
   }
 }
 
@@ -389,17 +399,23 @@ class _Plan extends ConsumerWidget {
             ),
           ),
         ),
-        // FR-S2-03's one-time mark, on the button a new learner starts with.
+        // FR-S2-03's one-time mark, on the button a new learner starts with:
+        // gone once the button is used, and never over a finished day (#396).
         DpCoachMark(
           message: l10n.todayCoachMark,
-          visible: ref.watch(coachMarkProvider),
+          visible: ref.watch(coachMarkProvider) && !view.isDone,
           onShown: () => ref.read(coachMarkProvider.notifier).markShown(),
           onDismissed: () => ref.read(coachMarkProvider.notifier).dismiss(),
           child: Builder(
             builder: (bar) => PrimaryActionBar(
               action: button.action,
               label: label,
-              onPressed: press == null ? null : () => press(originOf(bar)),
+              onPressed: press == null
+                  ? null
+                  : () {
+                      _coachMarkDone(ref);
+                      press(originOf(bar));
+                    },
             ),
           ),
         ),

@@ -212,7 +212,9 @@ class _ExportImportState extends ConsumerState<ExportImportScreen> {
               if (file != null)
                 _FileTile(
                   name: file.name,
-                  line: preview == null ? null : _line(context, preview),
+                  lines: preview == null
+                      ? const <String>[]
+                      : _lines(context, preview),
                 ),
               if (problem != null)
                 DpText(
@@ -288,17 +290,37 @@ class _ExportImportState extends ConsumerState<ExportImportScreen> {
     Localizations.localeOf(context).toString(),
   ).format(day);
 
-  /// "2,104 word states · last active 20 Sep · A2.1".
-  static String _line(BuildContext context, BackupPreview preview) {
+  /// "2,104 word states · last active 20 Sep · A2.1", then when the file
+  /// was written and what else it holds, so a *Replace* can be judged
+  /// (#396): "Exported 20 Sep · 5,321 reviews · 30 days planned · …".
+  static List<String> _lines(BuildContext context, BackupPreview preview) {
     final l10n = AppLocalizations.of(context);
     final active = preview.lastActive == null
         ? null
         : DateTime.tryParse(preview.lastActive!)?.toLocal();
+    final exported = DateTime.tryParse(preview.exportedAt)?.toLocal();
+    int rows(String table) => preview.rowCounts[table] ?? 0;
     return <String>[
-      l10n.exportImportWordStates(preview.wordStates),
-      if (active != null) l10n.exportImportLastActive(_day(context, active)),
-      ?preview.activeStep,
-    ].join(' · ');
+      <String>[
+        l10n.exportImportWordStates(preview.wordStates),
+        if (active != null) l10n.exportImportLastActive(_day(context, active)),
+        ?preview.activeStep,
+      ].join(' · '),
+      <String>[
+        if (exported != null)
+          l10n.exportImportExported(_day(context, exported)),
+        // What there is, and nothing of what there isn't.
+        if (rows('review_log') > 0)
+          l10n.exportImportReviews(rows('review_log')),
+        if (preview.planDays > 0) l10n.exportImportPlanDays(preview.planDays),
+        if (rows('quiz_attempts') > 0)
+          l10n.exportImportQuizzes(rows('quiz_attempts')),
+        if (rows('exam_attempts') > 0)
+          l10n.exportImportExams(rows('exam_attempts')),
+        if (rows('custom_words') > 0)
+          l10n.exportImportMyWords(rows('custom_words')),
+      ].join(' · '),
+    ]..removeWhere((line) => line.isEmpty);
   }
 }
 
@@ -352,14 +374,14 @@ class _Caption extends StatelessWidget {
   );
 }
 
-/// The chosen file on Oat: its name, and the preview line under it.
+/// The chosen file on Oat: its name, and the preview lines under it.
 class _FileTile extends StatelessWidget {
-  const _FileTile({required this.name, required this.line});
+  const _FileTile({required this.name, required this.lines});
 
   final String name;
 
-  /// Null when the file can't be previewed; the card says why below.
-  final String? line;
+  /// Empty when the file can't be previewed; the card says why below.
+  final List<String> lines;
 
   @override
   Widget build(BuildContext context) {
@@ -388,7 +410,7 @@ class _FileTile extends StatelessWidget {
                   weight: 600,
                   semanticsLabel: name,
                 ),
-                if (line case final line?) ...<Widget>[
+                for (final line in lines) ...<Widget>[
                   const SizedBox(height: 1),
                   _Caption(line),
                 ],
