@@ -3,6 +3,7 @@
 // ignore_for_file: riverpod_lint/scoped_providers_should_specify_dependencies
 
 import 'package:deutschplan/core/adaptive/adaptive.dart';
+import 'package:deutschplan/core/components/dp_button.dart';
 import 'package:deutschplan/core/providers/app_providers.dart';
 import 'package:deutschplan/data/repositories/backup_repository.dart';
 import 'package:deutschplan/features/me/export_import_screen.dart';
@@ -51,8 +52,21 @@ void main() {
     child: const ExportImportScreen(),
   );
 
-  Future<void> chosen(WidgetTester tester) =>
-      tester.tap(find.text('Choose a file'));
+  // By the button's label, not its drawn text: at 200 % a Bangla word too
+  // wide for its line is drawn in parts (#544). There, too, the button is
+  // below the fold of a list that builds as it scrolls.
+  Future<void> chosen(WidgetTester tester) async {
+    final choose = find.byWidgetPredicate(
+      (widget) =>
+          widget is DpButton && widget.label == tester.l10n.exportImportChoose,
+    );
+    await tester.scrollUntilVisible(
+      choose,
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.tap(choose);
+  }
 
   goldenTest('export_import', builder: screen, act: chosen);
   goldenTest(

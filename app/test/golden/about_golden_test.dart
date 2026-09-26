@@ -32,5 +32,7 @@ void main() {
     builder: licences,
     devices: <GoldenDevice>[GoldenDevice.phone],
     chrome: AdaptiveChrome.cupertino,
+    noBanglaAudit:
+        "iOS's back label overflows 16 dp at 200 %; iOS is Later, #588",
   );
 }

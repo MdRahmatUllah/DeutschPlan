@@ -1,6 +1,7 @@
 import 'package:deutschplan/core/adaptive/adaptive.dart';
 import 'package:deutschplan/core/theme/app_theme.dart';
 import 'package:deutschplan/core/theme/glass_capability.dart';
+import 'package:deutschplan/l10n/generated/app_localizations.dart';
 import 'package:deutschplan/main.dart'
     show appLocalizationsDelegates, supportedLocales;
 import 'package:flutter/semantics.dart' show SemanticsNode;
@@ -155,43 +156,65 @@ void goldenTest(
   List<Override>? overrides,
   bool textAudit = true,
   double? textScale,
+  // Why a case sits out the audit's Bangla pass (#581): only an iOS case,
+  // iOS being Later (the owner, 2026-09-26), with its issue.
+  String? noBanglaAudit,
 }) {
   // #165: the same screen at 150 % and 200 % text, on the phone in light:
   // nothing cut, no word broken mid-word, no layout error. The text size is
   // the axis here, not the theme; one golden per screen and chrome carries
   // it, so a variant that only restages a state can opt out.
+  // The Bangla pass's one escape is an iOS case, iOS being Later (#581).
+  assert(noBanglaAudit == null || chrome == AdaptiveChrome.cupertino);
   if (textAudit) {
-    for (final scale in textAuditScales) {
-      testWidgets('$name · text ${(scale * 100).round()} %', (tester) async {
-        textAt(tester, scale);
-        await tester.pumpGolden(
-          builder: builder,
-          mode: GoldenMode.light,
-          device: GoldenDevice.phone,
-          chrome: chrome,
-          still: still,
-          overrides: overrides,
+    // #581: in Bangla too, whose copy is a role larger (`theming.md`) and
+    // which half the learners read; English never showed #580's failures.
+    for (final locale in <Locale?>[null, const Locale('bn')]) {
+      for (final scale in textAuditScales) {
+        final unaudited = locale == null || scale != textAuditScales.last
+            ? null
+            : noBanglaAudit;
+        testWidgets(
+          '$name · text ${(scale * 100).round()} %'
+          '${locale == null ? '' : ' · ${locale.languageCode}'}'
+          '${unaudited == null ? '' : ' (not audited: $unaudited)'}',
+          skip: unaudited != null,
+          (tester) async {
+            if (locale != null) {
+              tester.platformDispatcher.localesTestValue = <Locale>[locale];
+              addTearDown(tester.platformDispatcher.clearLocalesTestValue);
+            }
+            textAt(tester, scale);
+            await tester.pumpGolden(
+              builder: builder,
+              mode: GoldenMode.light,
+              device: GoldenDevice.phone,
+              chrome: chrome,
+              still: still,
+              overrides: overrides,
+            );
+            if (act != null) {
+              await act(tester);
+              await tester.pumpAndSettle(
+                const Duration(milliseconds: 100),
+                EnginePhase.sendSemanticsUpdate,
+                settleTimeout,
+              );
+            }
+            expect(tester.takeException(), isNull);
+            expectNothingClipped(tester);
+            expectNoWordBroken(tester);
+            // #551: and nothing cut to its maxLines, "…" or not (#550), a
+            // field's hint included (#565). A DpOneLine draws only the words
+            // that fit, then "…".
+            expectAllLinesShown(tester);
+            // The keyboard up at 200 % on a screen with a field: the #554
+            // family's layouts, where only six screens (L8, L12, L15, T2, R2,
+            // Reset) had tests of their own.
+            if (scale == textAuditScales.last) await expectKeyboardFits(tester);
+          },
         );
-        if (act != null) {
-          await act(tester);
-          await tester.pumpAndSettle(
-            const Duration(milliseconds: 100),
-            EnginePhase.sendSemanticsUpdate,
-            settleTimeout,
-          );
-        }
-        expect(tester.takeException(), isNull);
-        expectNothingClipped(tester);
-        expectNoWordBroken(tester);
-        // #551: and nothing cut to its maxLines, "…" or not (#550), a
-        // field's hint included (#565). A DpOneLine draws only the words
-        // that fit, then "…".
-        expectAllLinesShown(tester);
-        // The keyboard up at 200 % on a screen with a field: the #554
-        // family's layouts, where only six screens (L8, L12, L15, T2, R2,
-        // Reset) had tests of their own.
-        if (scale == textAuditScales.last) await expectKeyboardFits(tester);
-      });
+      }
     }
   }
   for (final mode in modes) {
@@ -384,6 +407,11 @@ void expectIconButtonsTipped(WidgetTester tester) {
 }
 
 extension GoldenTester on WidgetTester {
+  /// The app's copy in the case's locale: an `act` finds text by it, not
+  /// by English, so it runs in the Bangla audit too (#581).
+  AppLocalizations get l10n =>
+      AppLocalizations.of(element(find.byType(Navigator).first));
+
   /// Sizes the surface to [device] and pumps the widget under the full app
   /// scaffolding, settling animations before the frame is captured.
   Future<void> pumpGolden({
