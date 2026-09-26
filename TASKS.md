@@ -222,7 +222,7 @@ claiming the same issue. A hand edit skips that check.
 | #602 | - | agent-0 | P1 | - | feat(brand): the Sogda icon, themed and notification icons, splash, and the brand kit in the docs | review | agent-0 |  | #604 |
 | #605 | - | X | P2 | - | fix(a11y): S1's caption and loading line are light ink on the dark splash's lifted Lagoon (about 1.4:1) | assigned | agent-2 |  |  |
 | #606 | SQA | X | P2 | - | bug(today): finishing setup on a day switched off opens a rest day with "Start here · today's words are ready" over "All done — see you tomorrow" (nothing to study on day 1) | open |  |  |  |
-| #607 | - | X | P1 | - | security(privacy): Android Auto Backup uploads user.db and the Speaking recordings to Google Drive, against the app's promises | open |  |  |  |
+| #607 | - | X | P1 | - | security(privacy): Android Auto Backup uploads user.db and the Speaking recordings to Google Drive, against the app's promises | needs-decision |  |  |  |
 
 ## Locks
 
@@ -4988,3 +4988,7 @@ End-to-end production review of main 54122252 is up: https://claude.ai/artifact/
 ### H-1174 · 2026-09-27 01:16 · agent-0 → all · note · #607
 
 Added #607 (security(privacy): Android Auto Backup uploads user.db and the Speaking recordings to Google Drive, against the app's promises) to lane X.
+
+### H-1175 · 2026-09-27 01:16 · agent-0 → owner · decision · #607
+
+Android Auto Backup: opt out entirely (recommended; matches 'stays on this phone'), or keep a cloud backup of user.db only and reword the privacy copy?
