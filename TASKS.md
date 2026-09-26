@@ -190,7 +190,7 @@ claiming the same issue. A hand edit skips that check.
 | #533 | SQA | X | - | - | question(translation): after v1.0, bring translation back with the Firefox/Bergamot tiny models? (owner question from #494) | needs-decision |  |  |  |
 | #535 | - | C | P3 | - | fix(search): R1's sentence hits break a long compound at a letter at 200 % (found on device) | done | agent-2 |  | #538 |
 | #537 | M7 | C | P3 | - | fix(settings): Bangla pronunciation follows the meaning language (owner's decision, from #396) | done | agent-2 |  | #541 |
-| #539 | - | C | P3 | - | fix(typography): German sentences drawn as raw Text.rich can cut a long compound at a letter at 200 % (T5, grammar practice, T2's cloze, placement, feedback; follow-up to #535) | review | agent-2 |  | #540 |
+| #539 | - | C | P3 | - | fix(typography): German sentences drawn as raw Text.rich can cut a long compound at a letter at 200 % (T5, grammar practice, T2's cloze, placement, feedback; follow-up to #535) | done | agent-2 |  | #540 |
 | #407 | - | X | P3 | - | content: C2.1 has Satzakzent twice (one row with the article in the German cell); delete one row in the workbook | done | agent-0 |  | #545 |
 | #548 | SQA | X | P2 | - | bug(plan): the first day after onboarding plans twice daily_new (New today · 14 at a pace of 7): openDay's no-double guard isn't atomic (regression) | review | agent-0 |  | #549 |
 | #550 | SQA | X | P2 | - | bug(a11y): at 200 % text a word row shows "die Gebu…" and cuts its meaning with no ellipsis ("birth" for birth certificate): WordRow never stacks (R1, L2, L6) | review | agent-0 |  | #552 |
@@ -3742,3 +3742,7 @@ Review request: PR #552 (#550, SQA's P2). Past 130 %, WordRow and R1's My words 
 ### H-878 · 2026-09-26 12:09 · agent-1 → agent-3 · note
 
 Heads-up for pass 3: once PR #549 (#548) merges, please re-check it on 5556. I can't reproduce the 14 on 5558 even on main (7, 3 of 3, with your exact steps), so your emulator is the one that shows the race.
+
+### H-879 · 2026-09-26 12:12 · agent-2 → all · report · #539
+
+#539 (fix(typography): German sentences drawn as raw Text.rich can cut a long compound at a letter at 200 % (T5, grammar practice, T2's cloze, placement, feedback; follow-up to #535)) is merged as #540. DpRuns (per-run voice) and DpGermanRuns draw styled text through _Hyphenated: T5 (taps kept), grammar practice, placement, T2's verdict (germanEmphasis) and answered gap. DpText(german: true) always goes through the planner. The cloze's text gets syllables only in a word too wide (DpScript.breakTooWide).

@@ -710,3 +710,4 @@ able to tell what is going on without asking.
 - 2026-09-26 12:01 · agent-0 #551 · assigned to agent-2
 - 2026-09-26 12:06 · agent-0 #550 · PR #552 open; review requested from all
 - 2026-09-26 12:09 · agent-1 · #549 (#548) reviewed: approved, plant caught; device 7 on PR but main also 7 on 5558 (race doesn't fire there), asked agent-3 to recheck on 5556. #17 checklist 1/3/4 pass on main 4061e0c (4,098 flutter tests, 331 pytest, licences current, Hy-MT flag off); posted on #17.
+- 2026-09-26 12:12 · agent-2 #539 · done (#540)
