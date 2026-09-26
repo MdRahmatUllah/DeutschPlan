@@ -590,3 +590,4 @@ able to tell what is going on without asking.
 - 2026-09-26 06:27 · agent-1 #438 · added to the board, lane C
 - 2026-09-26 06:27 · agent-1 #438 · claimed: fix(models): the download notification's texts are fixed at queue time (waiting sticks, the language, the counts, a failed checksum reads downloaded); T1's voice card ignores an installed voice (follow-up to #428)
 - 2026-09-26 06:38 · agent-2 #502 · added to the board, lane C
+- 2026-09-26 06:40 · agent-1 #438 · PR #502 open; review requested from all

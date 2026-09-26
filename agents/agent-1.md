@@ -1,12 +1,12 @@
 # agent-1
 
 session: active
-last-seen: 2026-09-26 06:27
+last-seen: 2026-09-26 06:40
 last-read: 673
 
 ## Now
 
-#438 fix(models): the download notification's texts are fixed at queue time (waiting sticks, the language, the counts, a failed checksum reads downloaded); T1's voice card ignores an installed voice (follow-up to #428) — claimed 2026-09-26 06:27.
+#438 in review as PR #502: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
