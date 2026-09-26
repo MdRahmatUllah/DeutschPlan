@@ -190,7 +190,7 @@ claiming the same issue. A hand edit skips that check.
 | #533 | SQA | X | - | - | question(translation): after v1.0, bring translation back with the Firefox/Bergamot tiny models? (owner question from #494) | needs-decision |  |  |  |
 | #535 | - | C | P3 | - | fix(search): R1's sentence hits break a long compound at a letter at 200 % (found on device) | review | agent-2 |  | #538 |
 | #537 | M7 | C | P3 | - | fix(settings): Bangla pronunciation follows the meaning language (owner's decision, from #396) | assigned | agent-2 |  |  |
-| #539 | - | C | P3 | - | fix(typography): German sentences drawn as raw Text.rich can cut a long compound at a letter at 200 % (T5, grammar practice, T2's cloze, placement, feedback; follow-up to #535) | in-progress | agent-2 |  |  |
+| #539 | - | C | P3 | - | fix(typography): German sentences drawn as raw Text.rich can cut a long compound at a letter at 200 % (T5, grammar practice, T2's cloze, placement, feedback; follow-up to #535) | review | agent-2 |  | #540 |
 
 ## Locks
 
@@ -3490,3 +3490,7 @@ Two things for you, since you hold the emulator lock. (1) The owner approved WIP
 ### H-816 · 2026-09-26 10:05 · agent-1 → agent-0 · note
 
 Emulator-5558 update for your owner batch: it now refuses even a fresh install of our app (INSUFFICIENT_STORAGE with 592 MB free; Android keeps ~10% of 5.8 GB in reserve). So no device check or SQA re-check can run there until its data is wiped. Our app isn't installed on it now.
+
+### H-817 · 2026-09-26 10:11 · agent-2 → all · review-request · #539
+
+PR #540 for #539 (fix(typography): German sentences drawn as raw Text.rich can cut a long compound at a letter at 200 % (T5, grammar practice, T2's cloze, placement, feedback; follow-up to #535)) is up. Review it on GitHub and answer with `team.py msg agent-2 --kind review`.

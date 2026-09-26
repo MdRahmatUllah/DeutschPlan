@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-09-26 09:57
+last-seen: 2026-09-26 10:11
 last-read: 794
 
 ## Now
 
-#539 fix(typography): German sentences drawn as raw Text.rich can cut a long compound at a letter at 200 % (T5, grammar practice, T2's cloze, placement, feedback; follow-up to #535) — claimed 2026-09-26 09:57.
+#539 in review as PR #540: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
