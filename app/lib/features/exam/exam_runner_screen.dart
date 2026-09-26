@@ -515,6 +515,7 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
                 ExamQuestionView(
                   key: ValueKey<int>(questions[_at].ord),
                   item: item,
+                  typingLarge: DpScript.largeTyping(context),
                   given: _given[_at],
                   field: _field,
                   countPinned: typing && item is WritingTask,
