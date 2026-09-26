@@ -796,3 +796,4 @@ able to tell what is going on without asking.
 - 2026-09-26 16:54 · agent-2 #584 · claimed: test(a11y): the 200 % golden audit also puts the keyboard up on a screen with a field
 - 2026-09-26 17:04 · agent-2 #584 · PR #585 open; review requested from all
 - 2026-09-26 17:09 · agent-1 #574 · done (#578)
+- 2026-09-26 17:16 · agent-1 #581 · claimed: test(a11y): the 150/200 % golden audit also runs in Bangla

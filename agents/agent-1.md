@@ -6,7 +6,7 @@ last-read: 1077
 
 ## Now
 
-Nothing claimed.
+#581 test(a11y): the 150/200 % golden audit also runs in Bangla — claimed 2026-09-26 17:16.
 
 ## Next
 

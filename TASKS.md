@@ -208,7 +208,7 @@ claiming the same issue. A hand edit skips that check.
 | #574 | - | X | P2 | - | bug(a11y): on a 360×640 phone at 200 % with the keyboard up, L8's three-line prompt is cut (78-82 dp; #571 part 2) | done | agent-1 |  | #578 |
 | #577 | - | X | P2 | - | question(a11y): lock phones to portrait, or support landscape? 16 screens fail the 150/200 % audit on a phone turned sideways | done | agent-2 |  | #579 |
 | #580 | - | X | P2 | - | bug(a11y): in Bangla at 200 % text, the rating bar and Foundations overflow 30 dp, and Backlog and the exam navigator cut text | done | agent-2 |  | #583 |
-| #581 | - | X | P2 | - | test(a11y): the 150/200 % golden audit also runs in Bangla | assigned | agent-1 | #580 |  |
+| #581 | - | X | P2 | - | test(a11y): the 150/200 % golden audit also runs in Bangla | in-progress | agent-1 | #580 |  |
 | #584 | - | X | P2 | - | test(a11y): the 200 % golden audit also puts the keyboard up on a screen with a field | review | agent-2 |  | #585 |
 
 ## Locks
