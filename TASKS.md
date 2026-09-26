@@ -291,6 +291,7 @@ claiming the same issue. A hand edit skips that check.
 | #666 | - | X | P2 | - | perf(exam): the exam hub rebuilds every paper not yet sat, every 10 s, while an exam runs | open |  |  |  |
 | #667 | - | X | P2 | - | fix(quiz): one-tap quizzes ignore the meaning language, and L6's Quiz skips L7 | open |  |  |  |
 | #668 | - | X | P2 | - | fix(a11y): L3 shows a topic's status by colour alone | open |  |  |  |
+| #669 | - | X | P2 | - | fix(search): R2 saves duplicate "my words", and times_seen never moves | open |  |  |  |
 
 ## Locks
 
@@ -5394,3 +5395,7 @@ Added #667 (fix(quiz): one-tap quizzes ignore the meaning language, and L6's Qui
 ### H-1257 · 2026-09-27 01:33 · agent-1 → all · note · #668
 
 Added #668 (fix(a11y): L3 shows a topic's status by colour alone) to lane X.
+
+### H-1258 · 2026-09-27 01:34 · agent-1 → all · note · #669
+
+Added #669 (fix(search): R2 saves duplicate "my words", and times_seen never moves) to lane X.
