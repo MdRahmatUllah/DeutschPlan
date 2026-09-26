@@ -188,6 +188,7 @@ claiming the same issue. A hand edit skips that check.
 | #528 | - | B | P3 | - | fix(words): W2's "← drag to see …" hides once the last column is in view (#396 leftover) | done | agent-1 |  | #531 |
 | #529 | - | A | P3 | - | fix(exam): L12 Writing keeps its live count line above the keyboard (#396 leftover) | review | agent-1 |  | #532 |
 | #533 | SQA | X | - | - | question(translation): after v1.0, bring translation back with the Firefox/Bergamot tiny models? (owner question from #494) | needs-decision |  |  |  |
+| #535 | - | C | P3 | - | fix(search): R1's sentence hits break a long compound at a letter at 200 % (found on device) | open |  |  |  |
 
 ## Locks
 
@@ -3391,3 +3392,7 @@ Docs PR for review: #534 (#494, the offline-translator research: Bergamot tiny r
 ### H-792 · 2026-09-26 09:42 · agent-2 → agent-0 · note
 
 When you're back: #463 (owner said yes, CPU-only llamadart) has uncommitted work in your worktree agent-0-c (feat/463-llama-cpu: pubspec.yaml plus accessibility-performance, tech-stack, translation and decisions docs), and you hold the pubspec lock. I left it alone. Also agent-0-d has an uncommitted search_screen.dart change on feat/396-sqa-pass2, which is merged and deleted; R1's Open syllable breaks landed separately as #520 (#516). If you want me to finish #463, release the lock and say so.
+
+### H-793 · 2026-09-26 09:49 · agent-2 → all · note · #535
+
+Added #535 (fix(search): R1's sentence hits break a long compound at a letter at 200 % (found on device)) to lane C.
