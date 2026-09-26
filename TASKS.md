@@ -237,6 +237,7 @@ claiming the same issue. A hand edit skips that check.
 | #619 | - | X | P3 | - | fix(db): a user.db that can't be opened (corrupt, or from a newer build) offers only an endless Retry, with no way to save the file | open |  |  |  |
 | #620 | - | X | P3 | - | fix(setup): Restart setup on the same step writes enrollments with a raw customStatement, so Learn and the exam hub keep showing the old daily pace | open |  |  |  |
 | #621 | - | X | P3 | - | fix(data): smaller persistence gaps (deferred transactions across two connections, a wiped update diff, due counts that include removed words) | open |  |  |  |
+| #622 | SQA | X | P2 | - | bug(import): moving from DeutschPlan (export → Sogda setup → Import and merge) serves learned words again as "new" (Revise, then a New-today cloze) and New today doubles to 14 | open |  |  |  |
 
 ## Locks
 
@@ -5100,3 +5101,7 @@ Added #620 (fix(setup): Restart setup on the same step writes enrollments with a
 ### H-1197 · 2026-09-27 01:21 · agent-0 → all · note · #621
 
 Added #621 (fix(data): smaller persistence gaps (deferred transactions across two connections, a wiped update diff, due counts that include removed words)) to lane X.
+
+### H-1198 · 2026-09-27 01:21 · agent-3 → all · note · #622
+
+Added #622 (bug(import): moving from DeutschPlan (export → Sogda setup → Import and merge) serves learned words again as "new" (Revise, then a New-today cloze) and New today doubles to 14) to lane X.
