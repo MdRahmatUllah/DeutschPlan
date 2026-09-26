@@ -3,6 +3,7 @@ import 'dart:ui' show LocaleStringAttribute, StringAttribute;
 import 'package:deutschplan/core/theme/dp_tokens.dart';
 import 'package:deutschplan/core/typography/app_fonts.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
+import 'package:flutter/rendering.dart' show RenderParagraph, RenderProxyBox;
 import 'package:flutter/semantics.dart' show AttributedString;
 import 'package:material_ui/material_ui.dart';
 
@@ -305,14 +306,32 @@ class DpText extends StatelessWidget {
     }
 
     final base = dressed(role);
+    // A line that ends at a syllable shows its "-" (#419): for German or
+    // the app's copy, not Bangla, and not when a caller labels the whole.
+    Widget hyphenated(Widget child) =>
+        maxLines != null ||
+            semanticsLabel != null ||
+            !text.contains(DpScript.softHyphen) ||
+            DpScript.hasBengali(text)
+        ? child
+        : _Hyphenated(
+            article: null,
+            word: text,
+            articleStyle: base,
+            wordStyle: base,
+            locale: german ? DpScript.deDE : null,
+            child: child,
+          );
 
     if (!german && !DpScript.hasBengali(text)) {
-      return Text(
-        text,
-        style: base,
-        textAlign: textAlign,
-        maxLines: maxLines,
-        semanticsLabel: semanticsLabel,
+      return hyphenated(
+        Text(
+          text,
+          style: base,
+          textAlign: textAlign,
+          maxLines: maxLines,
+          semanticsLabel: semanticsLabel,
+        ),
       );
     }
 
@@ -320,18 +339,20 @@ class DpText extends StatelessWidget {
     // so TalkBack and VoiceOver switch voices mid-string. The spans carry
     // the tags: a label on the whole would drop them (#162), so only a
     // caller's own replaces them.
-    return Text.rich(
-      TextSpan(
-        children: DpScript.spans(
-          text,
-          latin: base,
-          bengali: dressed(role.oneStepLarger),
-          german: german,
+    return hyphenated(
+      Text.rich(
+        TextSpan(
+          children: DpScript.spans(
+            text,
+            latin: base,
+            bengali: dressed(role.oneStepLarger),
+            german: german,
+          ),
         ),
+        textAlign: textAlign,
+        maxLines: maxLines,
+        semanticsLabel: semanticsLabel,
       ),
-      textAlign: textAlign,
-      maxLines: maxLines,
-      semanticsLabel: semanticsLabel,
     );
   }
 
@@ -511,6 +532,24 @@ class DpHeadword extends StatelessWidget {
           : base.copyWith(fontVariations: AppFonts.weight(weight!));
     }
 
+    final articleStyle = style(colour ?? articleColour ?? tokens.color.ink);
+    final wordStyle = style(colour ?? tokens.color.ink);
+    final broken = DpScript.allowBreaks(
+      word,
+      threshold: DpScript.breakThreshold(context),
+    );
+    final text = Text.rich(
+      TextSpan(
+        children: <InlineSpan>[
+          if (article != null) TextSpan(text: '$article ', style: articleStyle),
+          TextSpan(text: broken, style: wordStyle),
+        ],
+      ),
+      textAlign: textAlign,
+      maxLines: maxLines,
+      overflow: maxLines == null ? null : TextOverflow.ellipsis,
+    );
+
     // Announced with its article and gender, the German in a German voice
     // and the gender in the app's ("die Wohnung, feminine"), as
     // accessibility-performance.md requires, and without the soft hyphen.
@@ -529,27 +568,15 @@ class DpHeadword extends StatelessWidget {
         ],
       ),
       excludeSemantics: true,
-      child: Text.rich(
-        TextSpan(
-          children: <InlineSpan>[
-            if (article != null)
-              TextSpan(
-                text: '$article ',
-                style: style(colour ?? articleColour ?? tokens.color.ink),
-              ),
-            TextSpan(
-              text: DpScript.allowBreaks(
-                word,
-                threshold: DpScript.breakThreshold(context),
-              ),
-              style: style(colour ?? tokens.color.ink),
+      child: maxLines != null || !broken.contains(DpScript.softHyphen)
+          ? text
+          : _Hyphenated(
+              article: article,
+              word: broken,
+              articleStyle: articleStyle,
+              wordStyle: wordStyle,
+              child: text,
             ),
-          ],
-        ),
-        textAlign: textAlign,
-        maxLines: maxLines,
-        overflow: maxLines == null ? null : TextOverflow.ellipsis,
-      ),
     );
   }
 
@@ -564,4 +591,176 @@ class DpHeadword extends StatelessWidget {
           'die' when plural != null => l10n.genderFeminine,
           _ => null,
         };
+}
+
+/// A headword that wraps at a syllable shows the hyphen there, as print
+/// does: "Reiseversi-" over "cherung" (#419). Flutter breaks at a soft hyphen
+/// but draws nothing (flutter/flutter#18443), so this breaks the lines
+/// itself, as greedily as the paragraph would, keeping room for the "-" on
+/// a line that ends at a syllable, and gives its [RichText] that text. Only
+/// the picture changes: the headword's label is its own, and the
+/// widget's text, what a test finds, is the word as it was.
+class _Hyphenated extends SingleChildRenderObjectWidget {
+  const _Hyphenated({
+    required this.article,
+    required this.word,
+    required this.articleStyle,
+    required this.wordStyle,
+    required Widget super.child,
+    this.locale,
+  });
+
+  final String? article;
+
+  /// With its soft hyphens.
+  final String word;
+  final TextStyle articleStyle;
+  final TextStyle wordStyle;
+
+  /// The word's voice, for a screen reader: German's, or the app's (null).
+  final Locale? locale;
+
+  @override
+  RenderObject createRenderObject(BuildContext context) =>
+      _RenderHyphenated(this);
+
+  @override
+  void updateRenderObject(
+    BuildContext context,
+    _RenderHyphenated renderObject,
+  ) => renderObject.widget = this;
+}
+
+class _RenderHyphenated extends RenderProxyBox {
+  _RenderHyphenated(this._widget);
+
+  _Hyphenated _widget;
+  set widget(_Hyphenated value) {
+    _widget = value;
+    markNeedsLayout();
+  }
+
+  /// The headword's own paragraph: `Text.rich` builds one [RichText].
+  RenderParagraph? get _paragraph =>
+      child is RenderParagraph ? child! as RenderParagraph : null;
+
+  /// The text as it was, and as the lines to [width] show it; the same when
+  /// no line ends at a syllable.
+  TextSpan _shown(RenderParagraph paragraph, double width) {
+    final root = (paragraph.text as TextSpan).style;
+    TextSpan span(String? article, String word) => TextSpan(
+      style: root,
+      children: <InlineSpan>[
+        if (article != null)
+          TextSpan(text: article, style: _widget.articleStyle),
+        // Read as it is, whatever lines it is drawn on: a screen reader
+        // hears this paragraph when the text isn't a headword.
+        TextSpan(
+          text: word,
+          style: _widget.wordStyle,
+          locale: _widget.locale,
+          semanticsLabel: _widget.word.replaceAll(DpScript.softHyphen, ''),
+        ),
+      ],
+    );
+    final article = _widget.article;
+    final plain = span(article == null ? null : '$article ', _widget.word);
+    if (!width.isFinite) return plain;
+
+    double widthOf(String line) {
+      final painter = TextPainter(
+        text: TextSpan(
+          style: root,
+          children: <InlineSpan>[
+            TextSpan(
+              text: line.replaceAll(DpScript.softHyphen, ''),
+              style: _widget.wordStyle,
+            ),
+          ],
+        ),
+        textDirection: paragraph.textDirection,
+        textScaler: paragraph.textScaler,
+      )..layout();
+      final measured = painter.width;
+      painter.dispose();
+      return measured;
+    }
+
+    // The pieces between spaces and soft hyphens, each with what follows it.
+    final full = article == null ? _widget.word : '$article ${_widget.word}';
+    final pieces = <(String, String)>[];
+    var from = 0;
+    for (var i = 0; i < full.length; i++) {
+      if (full[i] == ' ' || full[i] == DpScript.softHyphen) {
+        pieces.add((full.substring(from, i), full[i]));
+        from = i + 1;
+      }
+    }
+    pieces.add((full.substring(from), ''));
+
+    final lines = <String>[];
+    var line = '';
+    var after = '';
+    var hyphenated = false;
+    for (final (piece, next) in pieces) {
+      if (line.isEmpty) {
+        (line, after) = (piece, next);
+        continue;
+      }
+      final longer = '$line$after$piece';
+      // Room for the "-" should the line end at this piece's syllable.
+      final end = next == DpScript.softHyphen ? '$longer-' : longer;
+      if (widthOf(end) <= width) {
+        (line, after) = (longer, next);
+        continue;
+      }
+      if (after == DpScript.softHyphen) hyphenated = true;
+      lines.add(after == DpScript.softHyphen ? '$line-' : line);
+      (line, after) = (piece, next);
+    }
+    lines.add(line);
+    if (!hyphenated) return plain;
+
+    final shown = lines.join('\n');
+    return article == null
+        ? span(null, shown)
+        : span(
+            shown.substring(0, article.length + 1),
+            shown.substring(article.length + 1),
+          );
+  }
+
+  @override
+  void performLayout() {
+    final paragraph = _paragraph;
+    if (paragraph != null) {
+      invokeLayoutCallback<BoxConstraints>((constraints) {
+        paragraph.text = _shown(paragraph, constraints.maxWidth);
+      });
+    }
+    super.performLayout();
+  }
+
+  double _heightAt(double width) {
+    final paragraph = _paragraph!;
+    final painter = TextPainter(
+      text: _shown(paragraph, width),
+      textDirection: paragraph.textDirection,
+      textScaler: paragraph.textScaler,
+      textAlign: paragraph.textAlign,
+    )..layout(maxWidth: width);
+    final height = painter.height;
+    painter.dispose();
+    return height;
+  }
+
+  @override
+  double computeMinIntrinsicHeight(double width) => _paragraph == null
+      ? super.computeMinIntrinsicHeight(width)
+      : _heightAt(width);
+
+  @override
+  double computeMaxIntrinsicHeight(double width) => _paragraph == null
+      ? super.computeMaxIntrinsicHeight(width)
+      : _heightAt(width);
 }

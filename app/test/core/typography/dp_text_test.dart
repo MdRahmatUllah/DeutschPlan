@@ -11,6 +11,8 @@ import 'package:flutter/semantics.dart' show AttributedString;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 
+import '../text_clipping.dart';
+
 /// theming.md: the seven-role scale, and "Bangla is set one step larger at the
 /// same role". accessibility-performance.md: "Text scaling to 200 %; long
 /// compounds soft-hyphenate" and the de-DE / bn-BD locale tagging so TalkBack
@@ -213,7 +215,16 @@ void main() {
       Locale locale = const Locale('en'),
     }) async {
       await pump(tester, child, locale: locale);
-      return tester.getSemantics(find.byWidget(child)).attributedLabel;
+      // From its paragraph: a hyphenated text's first box is the one that
+      // breaks its lines (#419), which has no node of its own.
+      return tester
+          .getSemantics(
+            find.descendant(
+              of: find.byWidget(child),
+              matching: find.byType(RichText),
+            ),
+          )
+          .attributedLabel;
     }
 
     List<(String, Locale)> voices(AttributedString label) => <(String, Locale)>[
@@ -349,6 +360,107 @@ void main() {
       final label = await said(tester, const DpHeadword('schnell'));
       expect(label.string, 'schnell');
       expect(voices(label), <(String, Locale)>[('schnell', DpScript.deDE)]);
+      semantics.dispose();
+    });
+  });
+
+  group('#419 a hyphen where a headword breaks at a syllable', () {
+    // The text the headword's paragraph draws.
+    String drawn(WidgetTester tester) => tester
+        .renderObject<RenderParagraph>(find.byType(RichText))
+        .text
+        .toPlainText(includeSemanticsLabels: false)
+        .replaceAll(DpScript.softHyphen, '');
+
+    testWidgets('#419 a line that ends at a syllable ends in "-", and the '
+        'word is read whole', (tester) async {
+      final semantics = tester.ensureSemantics();
+      await pump(
+        tester,
+        const SizedBox(
+          width: 220,
+          child: DpHeadword(
+            'Geschwindigkeitsbegrenzung',
+            article: 'die',
+            plural: 'Geschwindigkeitsbegrenzungen',
+          ),
+        ),
+      );
+      final lines = drawn(tester).split('\n');
+      expect(lines.length, greaterThan(1));
+      // Every line but the last ends at a syllable, with its "-", or is the
+      // article alone, which ends at a space.
+      for (final line in lines.take(lines.length - 1)) {
+        expect(line == 'die' || line.endsWith('-'), isTrue, reason: line);
+      }
+      expect(
+        lines.join(' ').replaceAll('- ', ''),
+        'die Geschwindigkeitsbegrenzung',
+      );
+      expect(
+        tester.getSemantics(find.byType(DpHeadword)).label,
+        'die Geschwindigkeitsbegrenzung, feminine',
+      );
+      semantics.dispose();
+    });
+
+    testWidgets('#419 a word that fits has no hyphen, and no line runs past '
+        'its box', (tester) async {
+      await pump(
+        tester,
+        const SizedBox(
+          width: 400,
+          child: DpHeadword('Wohnung', article: 'die'),
+        ),
+      );
+      expect(drawn(tester), 'die Wohnung');
+
+      await pump(
+        tester,
+        const SizedBox(
+          width: 160,
+          child: DpHeadword('Haftpflichtversicherung', role: DpTextRole.title),
+        ),
+      );
+      expect(drawn(tester), contains('-'));
+      // Each line it drew is one line: none ran past the box and wrapped
+      // again, at a syllable or anywhere else.
+      expectNoWordBroken(tester, syllables: false);
+      expect(tester.getSize(find.byType(DpHeadword)).width, 160);
+    });
+  });
+
+  group('#419 a hyphen in running text too', () {
+    testWidgets('#419 DpText: a line that ends at a syllable shows "-", and '
+        'a screen reader hears the words as they are, in their voice', (
+      tester,
+    ) async {
+      final semantics = tester.ensureSemantics();
+      await pump(
+        tester,
+        const SizedBox(
+          width: 150,
+          child: DpText(
+            'die Haftpflichtversicherung zahlt',
+            role: DpTextRole.body,
+            allowBreaks: true,
+            german: true,
+          ),
+        ),
+      );
+      final drawn = tester
+          .renderObject<RenderParagraph>(find.byType(RichText))
+          .text
+          .toPlainText(includeSemanticsLabels: false);
+      expect(drawn, contains('-\n'));
+      expectNoWordBroken(tester, syllables: false);
+
+      final label = tester.getSemantics(find.byType(RichText)).attributedLabel;
+      expect(label.string, 'die Haftpflichtversicherung zahlt');
+      expect(
+        label.attributes.whereType<LocaleStringAttribute>().single.locale,
+        DpScript.deDE,
+      );
       semantics.dispose();
     });
   });
