@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:deutschplan/core/adaptive/adaptive.dart';
 import 'package:deutschplan/core/components/dp_feedback.dart';
 import 'package:deutschplan/core/components/dp_speaker_button.dart';
 import 'package:deutschplan/core/providers/app_providers.dart';
@@ -347,6 +348,23 @@ void main() {
       expect(find.text(l10n.examNavTitle), findsNothing, reason: 'closed');
       expect(find.text(l10n.examRunQuestion(5, 40)), findsOneWidget);
       semantics.dispose();
+    });
+
+    testWidgets('#478 a tap just under a number, in the gap, goes to its '
+        'question: the cell is 48 dp to press, drawn 38', (tester) async {
+      await pump(tester);
+      await open(tester);
+      final cell = tester.getRect(
+        find
+            .ancestor(
+              of: find.text('5'),
+              matching: find.byType(AdaptiveTapTarget),
+            )
+            .first,
+      );
+      await tester.tapAt(cell.bottomCenter + const Offset(0, 1));
+      await tester.pumpAndSettle();
+      expect(find.text(l10n.examRunQuestion(5, 40)), findsOneWidget);
     });
 
     testWidgets('FR-L12-05 Submit exam asks about the open questions', (

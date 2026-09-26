@@ -593,26 +593,37 @@ class AdaptiveSegmented<T extends Object> extends StatelessWidget {
     final tokens = context.tokens;
 
     if (context.isCupertino) {
-      return cupertino.CupertinoSlidingSegmentedControl<T>(
-        groupValue: value,
-        backgroundColor: tokens.surface.muted,
-        thumbColor: tokens.surface.card,
-        onValueChanged: (next) {
-          if (next != null) onChanged(next);
-        },
-        children: <T, Widget>{
-          for (final entry in segments.entries)
-            // One line, shrunk to its segment only when it would not fit, as
-            // UIKit's control does: at 150 % "Grammar" wrapped in a quarter
-            // of the width and the control's height cut it (#165).
-            entry.key: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 6),
-              child: FittedBox(
-                fit: BoxFit.scaleDown,
-                child: DpText(entry.value, role: DpTextRole.label, maxLines: 1),
+      // Its segments are drawn 28 pt, short of iOS's 44, and the control
+      // owns their nodes, so no target can grow them: marked dense for the
+      // golden check (#478); whether to grow the control is #492.
+      return Semantics(
+        container: true,
+        identifier: 'dense:segmented',
+        child: cupertino.CupertinoSlidingSegmentedControl<T>(
+          groupValue: value,
+          backgroundColor: tokens.surface.muted,
+          thumbColor: tokens.surface.card,
+          onValueChanged: (next) {
+            if (next != null) onChanged(next);
+          },
+          children: <T, Widget>{
+            for (final entry in segments.entries)
+              // One line, shrunk to its segment only when it would not fit, as
+              // UIKit's control does: at 150 % "Grammar" wrapped in a quarter
+              // of the width and the control's height cut it (#165).
+              entry.key: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 6),
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: DpText(
+                    entry.value,
+                    role: DpTextRole.label,
+                    maxLines: 1,
+                  ),
+                ),
               ),
-            ),
-        },
+          },
+        ),
       );
     }
 
