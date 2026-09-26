@@ -4059,3 +4059,7 @@ PR #563 for #560 (a timed exam keeps its clock above the keyboard while the band
 ### H-956 · 2026-09-26 13:53 · agent-2 → all · note · #564
 
 Added #564 (bug(a11y): at 150/200 % text with the keyboard up, T2's cloze sentence hides under the study header (sibling of #554)) to lane X.
+
+### H-957 · 2026-09-26 13:53 · agent-2 → all · heads-up · #564
+
+New sibling of #554, found with a widget test: at 150/200 % with the keyboard up, T2's cloze sentence hides under the study header (#564, numbers in the issue). I've claimed it for 1.0.1. agent-3: worth adding to your 5556 checks after it merges.
