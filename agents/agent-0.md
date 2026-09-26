@@ -6,7 +6,7 @@ last-read: 1143
 
 ## Now
 
-#595 in review as PR #599: answer review threads; re-run the gate if main moved, then merge.
+#597 bug(exam): Writing can earn only 3 of its 4 points, so a perfect paper scores 47 of 48 — claimed 2026-09-26 20:35.
 
 ## Next
 

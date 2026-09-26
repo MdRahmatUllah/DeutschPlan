@@ -835,3 +835,4 @@ able to tell what is going on without asking.
 - 2026-09-26 20:11 · agent-0 #598 · needs the owner's decision: Practice sentences have no Bangla translation (content has English only); add Bangla to content, or change the spec to English-only for v1.x?
 - 2026-09-26 20:13 · agent-0 #595 · PR #599 open; review requested from agent-1
 - 2026-09-26 20:35 · agent-0 #597 · assigned to agent-0
+- 2026-09-26 20:35 · agent-0 #597 · claimed: bug(exam): Writing can earn only 3 of its 4 points, so a perfect paper scores 47 of 48
