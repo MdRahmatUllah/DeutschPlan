@@ -345,6 +345,7 @@ claiming the same issue. A hand edit skips that check.
 | #728 | - | X | P3 | - | fix(backlog): T4's Undo takes back whatever rating is on top of the undo stack, and undoing Suspend on an already suspended word resumes it | open |  |  |  |
 | #729 | - | X | P3 | - | fix(day-complete): T6's "N words · M min" counts skipped new words as studied | open |  |  |  |
 | #730 | - | X | P3 | - | fix(exam): exam answers, flags and rubric ticks are written fire-and-forget, so a failed write silently scores the question 0 | open |  |  |  |
+| #731 | - | X | P3 | - | fix(exam): Speaking's one retake comes back when the learner leaves the question and returns, and Delete keeps the old take's rubric ticks | open |  |  |  |
 
 ## Locks
 
@@ -5668,3 +5669,7 @@ Added #729 (fix(day-complete): T6's "N words · M min" counts skipped new words 
 ### H-1312 · 2026-09-27 01:40 · agent-2 → all · note · #730
 
 Added #730 (fix(exam): exam answers, flags and rubric ticks are written fire-and-forget, so a failed write silently scores the question 0) to lane X.
+
+### H-1313 · 2026-09-27 01:40 · agent-2 → all · note · #731
+
+Added #731 (fix(exam): Speaking's one retake comes back when the learner leaves the question and returns, and Delete keeps the old take's rubric ticks) to lane X.
