@@ -84,7 +84,8 @@ void main() {
     textAudit: false,
   );
   // #419: a headword broken at a syllable shows its "-": at 200 %, as a
-  // learner with large text sees it.
+  // learner with large text sees it. Its pronunciation, too wide for its
+  // line, breaks between aksharas (#504).
   goldenTest(
     'study_front_hyphen_200',
     builder: (context) => card(
@@ -98,6 +99,7 @@ void main() {
         german: 'Geschwindigkeitsbegrenzung',
         forms: 'Geschwindigkeitsbegrenzungen',
         pos: 'noun',
+        pronBn: 'গেশ্ভিন্ডিশকাইট্‌সবেগ্রেন্‌ৎসুং',
         english: 'speed limit',
         searchKey: 'geschwindigkeitsbegrenzung',
         searchKeyAlt: 'geschwindigkeitsbegrenzung',

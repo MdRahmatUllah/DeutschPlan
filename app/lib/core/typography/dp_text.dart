@@ -238,6 +238,33 @@ abstract final class DpScript {
     }
     return breaks;
   }
+
+  /// [word], Bangla too wide for its line, with a soft hyphen between its
+  /// aksharas (#504): before a consonant the letter before doesn't join
+  /// with a hasanta, so no conjunct is split and a vowel sign stays on its
+  /// letter. That takes in the content's own joints, a hasanta with a
+  /// zero-width non-joiner ("…কাইট্‌|স…"). Never before a consonant such a
+  /// joint closes ("…কাই|ট্‌" would take it from its syllable), khanda-ta
+  /// (ৎ), which ends one too, nor an independent vowel ("কা|ইট" would split
+  /// a diphthong). An akshara is a syllable, so each line keeps one at least.
+  static String banglaBreaks(String word) {
+    const hasanta = 0x9CD, joint = 0x200C;
+    int at(int i) => i < word.length ? word.codeUnitAt(i) : 0;
+    bool consonant(int c) =>
+        (c >= 0x995 && c <= 0x9B9) || (c >= 0x9DC && c <= 0x9DF);
+    final starts = <int>[
+      for (var i = 1; i < word.length; i++)
+        if (consonant(at(i)) &&
+            at(i - 1) != hasanta &&
+            !(at(i + 1) == hasanta && (at(i + 2) == joint || at(i + 2) == 0)))
+          i,
+    ];
+    return starts.reversed.fold(
+      word,
+      (broken, at) =>
+          '${broken.substring(0, at)}$softHyphen${broken.substring(at)}',
+    );
+  }
 }
 
 /// Text at a role from the scale, with Bangla automatically one step larger.
@@ -700,17 +727,19 @@ class _RenderHyphenated extends RenderProxyBox {
 
     // A word too wide for a line of its own breaks at its syllables,
     // whatever its length: "selbstbewusst" (13) at T2's display size (#419).
-    // One that fits keeps its letters together, and its kerning. Bangla has
-    // none to break at: `allowBreaks` knows German's.
+    // One that fits keeps its letters together, and its kerning. A Bangla
+    // one, a long compound's pronunciation, breaks between aksharas (#504).
     final texts = [
       for (final run in _widget.runs)
         [
           for (final word in run.text!.split(' '))
-            word.isNotEmpty &&
-                    !word.contains(DpScript.softHyphen) &&
-                    widthOf([TextSpan(text: word, style: run.style)]) > width
-                ? DpScript.allowBreaks(word, threshold: 4)
-                : word,
+            word.isEmpty ||
+                    word.contains(DpScript.softHyphen) ||
+                    widthOf([TextSpan(text: word, style: run.style)]) <= width
+                ? word
+                : DpScript.hasBengali(word)
+                ? DpScript.banglaBreaks(word)
+                : DpScript.allowBreaks(word, threshold: 4),
         ].join(' '),
     ];
     final full = texts.join();

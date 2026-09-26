@@ -579,6 +579,45 @@ void main() {
       semantics.dispose();
     });
 
+    testWidgets('#504 a Bangla pronunciation too wide for its line breaks '
+        'between aksharas, with its "-", and is read whole', (tester) async {
+      final semantics = tester.ensureSemantics();
+      const caption =
+          'die Geschwindigkeitsbegrenzung · '
+          '/গেশ্ভিন্ডিশকাইট্‌সবেগ্রেন্‌ৎসুং/';
+      Future<void> at(double width) => pump(
+        tester,
+        SizedBox(
+          width: width,
+          child: DpText(
+            DpScript.allowBreaks(caption, threshold: 4),
+            role: DpTextRole.body,
+            german: true,
+          ),
+        ),
+      );
+      // From the width the widest akshara line fits, "গ্রেন্‌ৎ-".
+      for (var width = 90.0; width <= 390; width += 1) {
+        await at(width);
+        for (final line in lineEnds(tester)) {
+          expect(line, endsWith('\n'), reason: 'at $width: "$line"');
+        }
+      }
+      await at(150);
+      final drawn = tester
+          .renderObject<RenderParagraph>(find.byType(RichText))
+          .text
+          .toPlainText(includeSemanticsLabels: false);
+      expect(drawn.split('/')[1], contains('-\n'), reason: drawn);
+      expectNoWordBroken(tester);
+      expect(
+        tester.getSemantics(find.byType(RichText)).label,
+        caption,
+        reason: 'read whole',
+      );
+      semantics.dispose();
+    });
+
     testWidgets('#419 lines that all end at spaces are given too: where '
         '"Wohnungsamt Ab" fits but not its "-", the paragraph left to itself '
         'would end the line at a bare syllable', (tester) async {
@@ -688,6 +727,46 @@ void main() {
         DpScript.deDE,
       );
       semantics.dispose();
+    });
+  });
+
+  group('#504 a Bangla word too wide for its line', () {
+    // Geschwindigkeitsbegrenzung's, from content.db, with its joints.
+    const pron = 'গেশ্ভিন্ডিশকাইট্‌সবেগ্রেন্‌ৎসুং';
+    final broken = DpScript.banglaBreaks(pron);
+
+    test("#504 breaks between aksharas, and at the content's own joints", () {
+      expect(broken.replaceAll(DpScript.softHyphen, ''), pron);
+      expect(broken.split(DpScript.softHyphen), <String>[
+        'গে', 'শ্ভি', 'ন্ডি', 'শ', 'কাইট্‌', 'স', 'বে', 'গ্রেন্‌ৎ', 'সুং', //
+      ]);
+    });
+
+    test('#504 never inside a conjunct, nor before a vowel sign, a mark, '
+        'khanda-ta, an independent vowel or a consonant a joint closes', () {
+      const shy = 0xAD, hasanta = 0x9CD, joint = 0x200C;
+      final units = broken.codeUnits;
+      for (var i = 0; i < units.length; i++) {
+        if (units[i] != shy) continue;
+        final after = units[i + 1];
+        expect(units[i - 1], isNot(hasanta), reason: 'a conjunct split');
+        expect(
+          (after >= 0x995 && after <= 0x9B9) ||
+              (after >= 0x9DC && after <= 0x9DF),
+          isTrue,
+          reason: 'a line starts with a consonant: $broken',
+        );
+        expect(
+          units[i + 2] == hasanta && units[i + 3] == joint,
+          isFalse,
+          reason: 'a closed consonant starts no line: $broken',
+        );
+      }
+    });
+
+    test('#504 a word too wide for its line: a short one breaks too, since '
+        "it's only asked when it doesn't fit", () {
+      expect(DpScript.banglaBreaks('ভোনুং'), 'ভো${DpScript.softHyphen}নুং');
     });
   });
 
