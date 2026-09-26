@@ -54,7 +54,7 @@ def test_fresh_install_first_day_exam_start_kill_then_resume(run):
     root, calls, _ = run
     hold(root, "agent-0")
     assert smoke.main([]) == 0
-    assert calls[0] == ["adb", "-s", "emulator-5558", "uninstall", "com.example.deutschplan"]
+    assert calls[0] == ["adb", "-s", "emulator-5558", "uninstall", "io.github.rahmatullah.deutschplan"]
     tests = [c[-1] for c in calls if c[:2] == ["flutter", "test"]]
     assert tests == [
         "integration_test/first_day_test.dart",
@@ -65,7 +65,7 @@ def test_fresh_install_first_day_exam_start_kill_then_resume(run):
     assert all("--no-uninstall" in c and "emulator-5558" in c for c in calls if c[0] == "flutter")
     joined = [" ".join(c) for c in calls]
     start = joined.index(next(j for j in joined if "exam_start" in j))
-    assert "am force-stop com.example.deutschplan" in joined[start + 1]
+    assert "am force-stop io.github.rahmatullah.deutschplan" in joined[start + 1]
     assert "pidof" in joined[start + 2]
     assert "exam_resume" in joined[start + 3]
 
