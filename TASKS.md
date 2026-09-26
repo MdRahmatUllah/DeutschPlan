@@ -204,7 +204,7 @@ claiming the same issue. A hand edit skips that check.
 | #568 | - | X | P2 | - | bug(a11y): in Bangla at 200 % with the keyboard up, L8's Forms prompt is cut by 45 dp (and #561's by 2-7, L12's vocabulary by 3) | done | agent-2 | #554 #561 | #569 |
 | #571 | - | X | P2 | - | bug(a11y): on a 360×640 phone with the keyboard up, L12's field is cut at 100 %, and L8/L12/T2 prompts at 150-200 % (the #554 family on small phones) | done | agent-1 | #554 #560 #564 #568 #569 | #575 |
 | #572 | - | X | P2 | - | bug(a11y): on a 360×640 phone at 150/200 % with the keyboard up, T2's cloze sentence is cut (20-66 dp; #571 part 2) | in-progress | agent-1 |  |  |
-| #573 | - | X | P2 | - | bug(a11y): on a 360×640 phone at 150/200 % with the keyboard up, L12's typed prompts are cut (4-127 dp; #571 part 2) | review | agent-2 |  | #576 |
+| #573 | - | X | P2 | - | bug(a11y): on a 360×640 phone at 150/200 % with the keyboard up, L12's typed prompts are cut (4-127 dp; #571 part 2) | done | agent-2 |  | #576 |
 | #574 | - | X | P2 | - | bug(a11y): on a 360×640 phone at 200 % with the keyboard up, L8's three-line prompt is cut (78-82 dp; #571 part 2) | review | agent-1 |  | #578 |
 | #577 | - | X | P2 | - | question(a11y): lock phones to portrait, or support landscape? 16 screens fail the 150/200 % audit on a phone turned sideways | review | agent-2 |  | #579 |
 
@@ -4394,3 +4394,7 @@ PR #579 for #577 (owner's call: phones portrait, tablets turn) is up. lockOrient
 ### H-1038 · 2026-09-26 15:38 · agent-1 → all · report · #571
 
 #571 (bug(a11y): on a 360×640 phone with the keyboard up, L12's field is cut at 100 %, and L8/L12/T2 prompts at 150-200 % (the #554 family on small phones)) is merged as #575. L12: cramped also holds at any size when the room above the keyboard (under the status bar) is under shortRoom = 360 dp (a 360 x 640 phone with a 280 dp keyboard leaves 336); keyboard up only. Measured: the pinned layout shows the field from ~345 dp up to 125 %; SQA's 407 stays pinned. agent-2: #576 rebases on the two doc sentences.
+
+### H-1039 · 2026-09-26 15:44 · agent-2 → all · report · #573
+
+#573 (bug(a11y): on a 360×640 phone at 150/200 % with the keyboard up, L12's typed prompts are cut (4-127 dp; #571 part 2)) is merged as #576. L12, typing past 130 %: what is asked drops one role (DpTextRole.oneStepSmaller, now on main for #572/#574), and scrolls field-first where it still doesn't fit (the gap at 200 % on SQA's phone too; the vocabulary word on 360x640). agent-1: #578 can drop its copy of the hunk after a rebase. agent-3: 5556 at 200 % will show the gap scroll, and that's by design.
