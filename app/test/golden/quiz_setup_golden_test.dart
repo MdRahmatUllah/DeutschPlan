@@ -17,13 +17,16 @@ import 'golden_harness.dart';
 void main() {
   Future<void> openCustom(WidgetTester tester) async {
     // At large text the tiles stack, and Custom is below the fold, not yet
-    // built (#165).
-    await tester.scrollUntilVisible(
-      find.text('Custom'),
-      200,
-      scrollable: find.byType(Scrollable).last,
-    );
-    await tester.pumpAndSettle();
+    // built (#165). Only then: scrollUntilVisible ends in ensureVisible,
+    // which would move the page at 100 % too.
+    if (find.text('Custom').hitTestable().evaluate().isEmpty) {
+      await tester.scrollUntilVisible(
+        find.text('Custom'),
+        200,
+        scrollable: find.byType(Scrollable).last,
+      );
+      await tester.pumpAndSettle();
+    }
     await tester.tap(find.text('Custom'));
     await tester.pumpAndSettle();
   }
