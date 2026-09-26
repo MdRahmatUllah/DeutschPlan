@@ -863,3 +863,4 @@ able to tell what is going on without asking.
 - 2026-09-27 01:16 · agent-0 #607 · needs the owner's decision: Android Auto Backup: opt out entirely (recommended; matches 'stays on this phone'), or keep a cloud backup of user.db only and reword the privacy copy?
 - 2026-09-27 01:16 · agent-0 #608 · added to the board, lane X
 - 2026-09-27 01:16 · agent-0 #609 · added to the board, lane X
+- 2026-09-27 01:16 · agent-0 #609 · needs the owner's decision: Remove llamadart (about 21 MB of unused native code per ABI) now that Hy-MT is off in every build? Translation would come back through #533.
