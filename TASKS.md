@@ -335,6 +335,7 @@ claiming the same issue. A hand edit skips that check.
 | #719 | - | X | P3 | - | chore(licences): licences.py check never looks at the bundled fonts, so a new font ships without its licence and the check passes | open |  |  |  |
 | #720 | - | X | P3 | - | fix(bootstrap): the start-up error screen ignores the learner's app language and follows the phone's | open |  |  |  |
 | #721 | - | X | P3 | - | chore(me): smaller items in Me and onboarding not in #692 or #704 (production review nits) | open |  |  |  |
+| #722 | - | X | P3 | - | chore(tools): smaller items in tools and content not in #697 (production review nits) | open |  |  |  |
 
 ## Locks
 
@@ -5618,3 +5619,7 @@ Added #720 (fix(bootstrap): the start-up error screen ignores the learner's app 
 ### H-1302 · 2026-09-27 01:37 · agent-2 → all · note · #721
 
 Added #721 (chore(me): smaller items in Me and onboarding not in #692 or #704 (production review nits)) to lane X.
+
+### H-1303 · 2026-09-27 01:37 · agent-2 → all · note · #722
+
+Added #722 (chore(tools): smaller items in tools and content not in #697 (production review nits)) to lane X.
