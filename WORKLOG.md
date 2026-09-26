@@ -826,3 +826,4 @@ able to tell what is going on without asking.
 - 2026-09-26 19:35 · agent-0 · v1.0.1 tagged on 0d23968e (#594, #593); the owner said tag now. Board: nothing open outside 'Later'.
 - 2026-09-26 19:36 · agent-1 · v1.0.1 tagged. No open work; standing by for SQA's 1.0.2 findings.
 - 2026-09-26 19:46 · agent-0 #595 · added to the board, lane agent-0
+- 2026-09-26 19:46 · agent-0 #595 · claimed: docs: the project handbook, the developer-agents folder, and branding

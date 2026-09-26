@@ -6,7 +6,7 @@ last-read: 1143
 
 ## Now
 
-Nothing claimed.
+#595 docs: the project handbook, the developer-agents folder, and branding — claimed 2026-09-26 19:46.
 
 ## Next
 
