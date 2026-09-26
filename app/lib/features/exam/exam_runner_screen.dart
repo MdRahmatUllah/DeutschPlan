@@ -405,6 +405,9 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
           if (q.item.section == item.section) q,
       ];
       final last = _at == questions.length - 1;
+      // The keyboard is up: read here, above the scaffold that takes it out
+      // of its body's inset (#529).
+      final typing = MediaQuery.viewInsetsOf(context).bottom > 0;
       final count = questions.where((q) => examNumbered(q.item)).length;
       final number = questions.take(_at + 1).where((q) => examNumbered(q.item));
       body = Column(
@@ -470,6 +473,7 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
                   item: item,
                   given: _given[_at],
                   field: _field,
+                  countPinned: typing && item is WritingTask,
                   onGiven: (value) => _record(value, at: at),
                   onRecording: (stop) => _stopRecording = stop,
                   rubric: _rubrics[_at],
@@ -497,33 +501,43 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
               ],
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
-            child: Row(
-              children: <Widget>[
-                Expanded(
-                  child: DpButton(
-                    label: l10n.examRunPrevious,
-                    kind: DpButtonKind.secondary,
-                    onPressed: _at == 0 ? null : () => _go(_at - 1),
+          // #529: typing a text, the window is a few lines on a phone.
+          // The count line takes the buttons' place above the keyboard, so
+          // it stays in view and the text gets their room; they come back
+          // with the keyboard's going.
+          if (typing && item is WritingTask)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+              child: ExamWritingCount(task: item, field: _field),
+            )
+          else
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
+              child: Row(
+                children: <Widget>[
+                  Expanded(
+                    child: DpButton(
+                      label: l10n.examRunPrevious,
+                      kind: DpButtonKind.secondary,
+                      onPressed: _at == 0 ? null : () => _go(_at - 1),
+                    ),
                   ),
-                ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: DpButton(
-                    label: last
-                        ? l10n.examRunSubmit
-                        : item is WritingTask
-                        ? l10n.examWritingSubmit
-                        : l10n.examRunNext,
-                    onPressed: last
-                        ? () => unawaited(_submit())
-                        : () => _go(_at + 1),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: DpButton(
+                      label: last
+                          ? l10n.examRunSubmit
+                          : item is WritingTask
+                          ? l10n.examWritingSubmit
+                          : l10n.examRunNext,
+                      onPressed: last
+                          ? () => unawaited(_submit())
+                          : () => _go(_at + 1),
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
           if (examTypesGerman(item))
             DpSurface(
               kind: DpSurfaceKind.bar,
