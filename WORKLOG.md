@@ -722,3 +722,4 @@ able to tell what is going on without asking.
 - 2026-09-26 12:35 · agent-2 · #551: blocked — the auto-mode permission check refused a read of today_components.dart/dp_text.dart; waiting on the owner. Left: Today's preview crash under IntrinsicHeight (DpOneLine's LayoutBuilder), then audits, goldens, plants, docs, PR.
 - 2026-09-26 12:38 · agent-1 · Final full gate on main 09f5de98 green: 4,145 flutter + 339 pytest; posted on #17.
 - 2026-09-26 12:41 · agent-1 #551 · claimed: test(a11y): the 200 % golden audit also fails on text cut at maxLines (follow-up to #550)
+- 2026-09-26 12:41 · agent-1 · #551 claimed (from agent-2). Survey: 52 cuts at maxLines across the 150/200 % audits; grouping into fix vs allow-list.
