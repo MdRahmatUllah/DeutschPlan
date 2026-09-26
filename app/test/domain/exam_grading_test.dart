@@ -212,6 +212,23 @@ void main() {
       );
     });
 
+    test('FR-L12W-01 #396 among matchings as large, a word lights the target '
+        'of its case', () {
+      expect(
+        targetsUsed('Die Beweise waren klar.', <String>['beweisen', 'Beweis']),
+        <String>['Beweis'],
+      );
+      expect(
+        targetsUsed('Wir beweisen es.', <String>['Beweis', 'beweisen']),
+        <String>['beweisen'],
+      );
+      // Never at the count's cost: the capital word goes where it must.
+      expect(
+        targetsUsed('Beweise sind Beweise.', <String>['beweisen']),
+        <String>['beweisen'],
+      );
+    });
+
     test('#388 a word family is one target', () {
       expect(sameTargetFamily('Beweis', 'beweisen'), isTrue);
       expect(sameTargetFamily('Klage', 'klagen'), isTrue);

@@ -16,17 +16,22 @@ import '../features/settings_fixtures.dart';
 import 'golden_harness.dart';
 
 /// The ExportImport artboard's file: 2,104 word states, last active on
-/// 20 September, in A2.1.
+/// 20 September, in A2.1; and what else it holds (#396).
 class _ArtboardBackups extends Fake implements BackupRepository {
   @override
   BackupPreview preview(String json) => const BackupPreview(
     schemaVersion: 2,
     contentVersion: null,
-    exportedAt: '2026-09-20T18:00:00Z',
-    rowCounts: <String, int>{'word_state': 2104},
+    exportedAt: '2026-09-20T12:00:00Z',
+    rowCounts: <String, int>{
+      'word_state': 2104,
+      'review_log': 5321,
+      'custom_words': 3,
+    },
     wordStates: 2104,
     lastActive: '2026-09-20T09:00:00Z',
     activeStep: 'A2.1',
+    planDays: 30,
   );
 }
 

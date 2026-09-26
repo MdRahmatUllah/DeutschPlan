@@ -4861,6 +4861,65 @@
       }
     }
   },
+  "exportImportExported": "Exported {date}",
+  "@exportImportExported": {
+    "description": "The chosen file's preview (#396): the day the file was exported, e.g. '20 Sep'.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "exportImportReviews": "{count, plural, =1{1 review} other{{count} reviews}}",
+  "@exportImportReviews": {
+    "description": "The chosen file's preview (#396): how many reviews its review log holds.",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "exportImportPlanDays": "{count, plural, =1{1 day planned} other{{count} days planned}}",
+  "@exportImportPlanDays": {
+    "description": "The chosen file's preview (#396): how many days of study plan it holds.",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "exportImportQuizzes": "{count, plural, =1{1 quiz} other{{count} quizzes}}",
+  "@exportImportQuizzes": {
+    "description": "The chosen file's preview (#396): how many quizzes it holds.",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "exportImportExams": "{count, plural, =1{1 exam} other{{count} exams}}",
+  "@exportImportExams": {
+    "description": "The chosen file's preview (#396): how many mock exams it holds.",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "exportImportMyWords": "{count, plural, =1{1 word of my own} other{{count} words of my own}}",
+  "@exportImportMyWords": {
+    "description": "The chosen file's preview (#396): how many of the learner's own words (My words) it holds.",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
   "exportImportMerge": "Merge — keep the most recent of each word",
   "@exportImportMerge": {
     "description": "M6 radio: FR-M6-03."
@@ -4934,6 +4993,19 @@
   "searchNoneAdd": "Add “{word}” as my word",
   "@searchNoneAdd": {
     "description": "R1 no results: the button that opens R2 with the searched word filled in.",
+    "placeholders": {
+      "word": {
+        "type": "String"
+      }
+    }
+  },
+  "searchNoneMine": "Already one of my words",
+  "@searchNoneMine": {
+    "description": "R1 no results: said instead of the add button when the searched word is already one the learner saved (#396)."
+  },
+  "searchNoneOpenMine": "Open “{word}”",
+  "@searchNoneOpenMine": {
+    "description": "R1 no results: the button that opens the learner's own word the search matched, in R2, e.g. Open “das Quarkbrötchen”.",
     "placeholders": {
       "word": {
         "type": "String"

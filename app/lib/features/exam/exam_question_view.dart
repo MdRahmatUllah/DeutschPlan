@@ -1085,7 +1085,9 @@ class _ExamSpeakingState extends ConsumerState<ExamSpeaking> {
                   ExamRubricTick(
                     label: line,
                     ticked: _ticks[i],
-                    onTap: () => _toggle(i),
+                    // #84 counts ticks only with a recording: dimmed until
+                    // there is one, as L13 does (#396).
+                    onTap: _mic == _Mic.recorded ? () => _toggle(i) : null,
                   ),
                 const SizedBox(height: 6),
                 DpText(

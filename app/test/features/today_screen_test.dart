@@ -525,6 +525,29 @@ void main() {
         findsOneWidget,
       );
     });
+
+    testWidgets('FR-S2-03 #396 the coach mark goes once the button is used', (
+      tester,
+    ) async {
+      await pump(tester, coachMark: true);
+      await tester.tap(find.byType(PrimaryActionBar));
+      await tester.pumpAndSettle();
+
+      expect(session(tester), isNotNull);
+      final mark = tester.widget<DpCoachMark>(
+        find.byType(DpCoachMark, skipOffstage: false),
+      );
+      expect(mark.visible, isFalse);
+    });
+
+    testWidgets('FR-S2-03 #396 no coach mark over a finished day', (
+      tester,
+    ) async {
+      await pump(tester, view: artboardDone(), coachMark: true);
+      final mark = tester.widget<DpCoachMark>(find.byType(DpCoachMark));
+      expect(mark.visible, isFalse);
+      expect(find.text(l10n.todayCoachMark), findsNothing);
+    });
   });
 
   group('#96 all done', () {

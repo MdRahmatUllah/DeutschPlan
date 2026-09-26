@@ -47,6 +47,7 @@ class BackupPreview {
     required this.wordStates,
     required this.lastActive,
     required this.activeStep,
+    this.planDays = 0,
   });
 
   final int schemaVersion;
@@ -64,6 +65,9 @@ class BackupPreview {
 
   /// "A2.1" — the step that was open when the file was written.
   final String? activeStep;
+
+  /// "30 days planned": the days `plan_items` holds a plan for (#396).
+  final int planDays;
 }
 
 /// Export and import of everything the learner owns. M6.
@@ -226,6 +230,10 @@ class BackupRepository {
       wordStates: rowCounts['word_state'] ?? 0,
       lastActive: lastActive,
       activeStep: activeStep,
+      planDays: <String>{
+        for (final row in _rowsIn(data, 'plan_items'))
+          if (row['plan_date'] case final String day) day,
+      }.length,
     );
   }
 
