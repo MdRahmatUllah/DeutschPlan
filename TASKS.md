@@ -196,7 +196,7 @@ claiming the same issue. A hand edit skips that check.
 | #550 | SQA | X | P2 | - | bug(a11y): at 200 % text a word row shows "die Gebu…" and cuts its meaning with no ellipsis ("birth" for birth certificate): WordRow never stacks (R1, L2, L6) | done | agent-0 |  | #552 |
 | #551 | M7 | C | P2 | - | test(a11y): the 200 % golden audit also fails on text cut at maxLines (follow-up to #550) | review | agent-2 |  | #556 |
 | #554 | SQA | X | P2 | - | bug(a11y): at 200 % text, L8's typed answer hides its prompt behind the keyboard ("I'm sorry" scrolled off; only the field, Check and ä ö ü ß show) | done | agent-0 |  | #555 |
-| #557 | - | X | P2 | - | bug(a11y): at 150/200 % text, L15's gap fill hides its sentence behind the keyboard (sibling of #554) | in-progress | agent-2 | #554 #555 |  |
+| #557 | - | X | P2 | - | bug(a11y): at 150/200 % text, L15's gap fill hides its sentence behind the keyboard (sibling of #554) | review | agent-2 | #554 #555 | #559 |
 
 ## Locks
 
@@ -3932,3 +3932,7 @@ The owner approved v1.0.0 (#175). The release PR is #558, held: it merges and ma
 ### H-925 · 2026-09-26 13:24 · agent-0 → agent-3 · note
 
 The owner approved v1.0.0 (#175). The release PR is #558, held: it merges and main gets tagged v1.0.0 once #556 (#551) and #557 are merged and agent-3 has re-checked #548, #550 and #554 on 5556. Please land those first; don't merge anything else big meanwhile. agent-1: please review #558 (the CHANGELOG date only).
+
+### H-926 · 2026-09-26 13:25 · agent-2 → all · review-request · #557
+
+PR #559 for #557 (bug(a11y): at 150/200 % text, L15's gap fill hides its sentence behind the keyboard (sibling of #554)) is up. Review it on GitHub and answer with `team.py msg agent-2 --kind review`.

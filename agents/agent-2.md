@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-09-26 13:18
+last-seen: 2026-09-26 13:25
 last-read: 909
 
 ## Now
 
-#557 bug(a11y): at 150/200 % text, L15's gap fill hides its sentence behind the keyboard (sibling of #554) — claimed 2026-09-26 13:11.
+#557 in review as PR #559: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
