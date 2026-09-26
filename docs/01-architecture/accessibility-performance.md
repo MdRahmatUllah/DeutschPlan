@@ -9,7 +9,7 @@
 - Text scaling to 200 % on every screen, and no word broken mid-syllable to fit it (#165):
   - Above 100 % a long German compound, or a Bangla word, in a narrow place may break at a syllable (`DpScript.allowBreaks`, soft hyphens). Only above 100 %: a soft hyphen splits the font's kerning, so 100 % stays as drawn.
   - Past 130 % (`DpScript.large`), things side by side stack full width: the sentence ratings, the step quiz's tiles, the step header's code and line, the exam intro's columns, the model manager's storage and download lines, and a speaking answer's two buttons.
-  - A fixed size around text scales with it (`MediaQuery.textScalerOf(context).scale(n)`), so 100 % is unchanged: the exam timer, the umlaut keys, the rating bar.
+  - A fixed size around text grows with it, by the factor its text takes: `DpScript.grow(context, n, role:)`. Never by `textScaler.scale(n)`: Android 14+ scales text nonlinearly (at 200 % 14 sp is 28, but 96 is about 97), so a box's own size scaled as if it were a font barely grows. Only the text's part grows (the rating bar: 28 of room, two lines grown), and 100 % is unchanged. The examples are W2's columns, the rating bar, the grammar library's band and T2's snackbar lift. The exam timer and the umlaut keys take their content's height, with a minimum.
   - A number or a segment's label in a fixed cell shrinks to fit (`FittedBox`): Me's counts, the iOS segmented control's labels.
   - A chip's label wraps inside the chip, at most 80 % of the screen wide.
   - A `WidgetSpan`'s child is already scaled with its sentence; scaling it again (the cloze gap) doubles it.

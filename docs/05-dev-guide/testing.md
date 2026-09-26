@@ -12,7 +12,7 @@
 Rules:
 - Test names carry FR/BR IDs.
 - Goldens are updated per file, for the screens a change touches (`flutter test --update-goldens test/golden/<screen>_golden_test.dart`), and reviewed as images in the PR. `make goldens` rewrites the whole suite, which hides an unintended change among hundreds of files.
-- `goldenTest` also runs each case at 150 and 200 % text (phone, light), with no image: no layout exception, `expectNothingClipped` (text cut to a fixed box) and `expectNoWordBroken` (a word split across lines other than at a soft hyphen). `textAudit: false` skips it for a case that is itself a large-text golden (`textScale: 2`), and a case whose `act` can't run at 200 % scrolls to its target first (#165).
+- `goldenTest` also runs each case at 150 and 200 % text (phone, light), with no image, under Android 14+'s nonlinear scaling (`AndroidTextScaler`: Flutter's test scaler is linear, which a phone's isn't; iOS cases keep the linear one): no layout exception, `expectNothingClipped` (text cut to a fixed box) and `expectNoWordBroken` (a word split across lines other than at a soft hyphen). `textAudit: false` skips it for a case that is itself a large-text golden (`textScale: 2`), and a case whose `act` can't run at 200 % scrolls to its target first (#165).
 - Most tests run over `ContentFixture`, a small content.db built for the test. A test about the real course's counts reads them from `app/assets/db/content_manifest.json` instead of hard-coding them, as `content_dao_test`'s FR-M9-01 does.
 
 ## Integration smoke (#169)
