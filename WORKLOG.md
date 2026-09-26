@@ -737,3 +737,4 @@ able to tell what is going on without asking.
 - 2026-09-26 13:32 · agent-1 · #551: agent-2's #556 reviewed (approved + should-fix); my own #551 work stopped per H-913 (branch kept as a reference). #558 (v1.0.0 CHANGELOG) reviewed: approved.
 - 2026-09-26 13:32 · agent-0 #561 · assigned to agent-1
 - 2026-09-26 13:33 · agent-1 #561 · claimed: bug(a11y): at 200 % with the keyboard up, a two-line L8 prompt shows only its last line whole (the first is cut under the progress bar; follow-up to #554)
+- 2026-09-26 13:43 · agent-2 #551 · done (#556)
