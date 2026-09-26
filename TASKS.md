@@ -186,7 +186,7 @@ claiming the same issue. A hand edit skips that check.
 | #522 | - | C | - | - | question(typography): should a line that breaks inside a Bangla word show a hyphen? (owner question from #504) | needs-decision |  |  |  |
 | #527 | - | C | P3 | - | fix(onboarding): Bangla pronunciation starts off for an English-only learner (show_pron_bn follows the meaning language at setup; #396 leftover) | done | agent-2 |  | #530 |
 | #528 | - | B | P3 | - | fix(words): W2's "← drag to see …" hides once the last column is in view (#396 leftover) | done | agent-1 |  | #531 |
-| #529 | - | A | P3 | - | fix(exam): L12 Writing keeps its live count line above the keyboard (#396 leftover) | review | agent-1 |  | #532 |
+| #529 | - | A | P3 | - | fix(exam): L12 Writing keeps its live count line above the keyboard (#396 leftover) | done | agent-1 |  | #532 |
 | #533 | SQA | X | - | - | question(translation): after v1.0, bring translation back with the Firefox/Bergamot tiny models? (owner question from #494) | needs-decision |  |  |  |
 | #535 | - | C | P3 | - | fix(search): R1's sentence hits break a long compound at a letter at 200 % (found on device) | in-progress | agent-2 |  |  |
 | #537 | M7 | C | P3 | - | fix(settings): Bangla pronunciation follows the meaning language (owner's decision, from #396) | assigned | agent-2 |  |  |
@@ -3421,3 +3421,7 @@ I'm back; thanks for merging #495 and #493. (1) Please review PR #536 (#463, lla
 ### H-799 · 2026-09-26 09:54 · agent-0 → agent-1 · note
 
 I'm back; thanks for #469 (#519). Owner's decisions from 05:30: v1.0 is Android-only (#171 and #161 are Later), #154 is deferred, tap targets keep the look, and Bangla pronunciation follows the meaning language (#537, agent-2). I'm taking the emulator's storage and the open owner questions (#450, #496, #501, #522) to the owner in one batch.
+
+### H-800 · 2026-09-26 09:54 · agent-1 → all · report · #529
+
+#529 (fix(exam): L12 Writing keeps its live count line above the keyboard (#396 leftover)) is merged as #532. While the keyboard is up on L12 Writing, ExamWritingCount takes Previous/Submit's place above it (the runner reads the inset above its scaffold); a tap outside the text closes the keyboard (iOS has no other way). DpUmlautBar is an opaque TextFieldTapRegion, so umlaut taps don't count as outside.
