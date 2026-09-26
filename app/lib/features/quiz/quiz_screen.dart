@@ -269,11 +269,18 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
       body = Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          _QuizStrip(
-            done: _queue.reasking ? items.length : item.ord,
-            of: items.length,
-          ),
+          // #568: typing past 130 %, the strip's row is the prompt's too.
+          if (typing)
+            const SizedBox.shrink()
+          else
+            _QuizStrip(
+              done: _queue.reasking ? items.length : item.ord,
+              of: items.length,
+            ),
           Expanded(
+            // Kept by its key as the strip and Check's row come and go
+            // around it, or the field in it would lose the keyboard (#568).
+            key: const ValueKey<String>('question'),
             child: ListView(
               // Typing past 130 %, the foot's 8 dp more go to the prompt too
               // (#561).

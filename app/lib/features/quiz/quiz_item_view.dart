@@ -145,6 +145,7 @@ class QuizItemView extends ConsumerWidget {
             controller: field,
             hint: l10n.quizYourAnswer,
             onSubmitted: () => onAnswer(field.text),
+            dense: typing,
           ),
         ],
       );
@@ -156,11 +157,11 @@ class QuizItemView extends ConsumerWidget {
         prompt,
         // Typing past 130 %, 12 dp of the gap go to a two-line prompt, which
         // otherwise lost the top of its first line under the strip (#561).
-        // ponytail: with the list's foot, 20 dp won back against ~7 dp short
-        // on SQA's 731 dp phone; a three-line prompt (a long meaning over
-        // its Bangla) still loses its top. The list sits at its end then, so
-        // what's above the prompt is off screen and no lever; the next ones
-        // are the field's 14 dp vertical padding, then Check beside ä ö ü ß.
+        // A long meaning over its Bangla (three or four lines) fits too:
+        // Check is a key on the umlaut row, the strip goes and the field's
+        // padding closes (#568).
+        // ponytail: past four lines at 200 % it still loses its top; the list
+        // sits at its end then, so the next lever is the prompt's own size.
         SizedBox(height: typing ? 8 : 20),
         answer,
       ],

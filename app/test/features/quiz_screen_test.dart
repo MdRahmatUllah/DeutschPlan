@@ -582,6 +582,15 @@ void main() {
       expected: 'Auf Wiedersehen',
       hint: 'বিদায় (আনুষ্ঠানিক)',
     );
+    // #562's ceiling: a long meaning over its Bangla, three lines at 200 %.
+    const threeLines = QuizItem(
+      ord: 1,
+      wordUid: 'zustaendig',
+      direction: QuizDirection.enDe,
+      prompt: 'responsible for, in charge of',
+      expected: 'zuständig',
+      hint: 'দায়িত্বপ্রাপ্ত (কোনো কিছুর জন্য)',
+    );
 
     // SQA's 731 dp phone, its status bar, and a 300 dp keyboard.
     Future<void> typing(
@@ -615,7 +624,7 @@ void main() {
     // its first line under the progress strip. While typing past 130 % the
     // prompt's gap to the field and the list's foot give 12 and 8 dp back;
     // at 335 dp both are needed.
-    for (final item in <QuizItem>[wraps, withHint]) {
+    for (final item in <QuizItem>[wraps, withHint, threeLines]) {
       for (final lang in <String>['en', 'bn']) {
         testWidgets('#561 #568 ${item.wordUid} in $lang: at 200 % on a 411 dp '
             'phone with a taller keyboard, both lines of the prompt show whole '
