@@ -382,7 +382,7 @@
   "learnExamsUnlocked": "পরীক্ষা খোলা",
   "meExamsLocked": "পরীক্ষা বন্ধ",
   "learnNotStarted": "শুরু হয়নি",
-  "learnTodayLeft": "আজ · আর {count}টি কার্ড",
+  "learnTodayLeft": "আজ · আর {count}টি",
   "learnTodayDone": "আজ · সব কার্ড শেষ",
   "learnStudy": "পড়ুন",
   "learnGrammarLibrary": "ব্যাকরণ লাইব্রেরি",
