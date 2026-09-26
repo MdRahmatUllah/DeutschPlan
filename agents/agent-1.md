@@ -6,7 +6,7 @@ last-read: 738
 
 ## Now
 
-#469 in review as PR #519: answer review threads; re-run the gate if main moved, then merge.
+#515 chore(sqa): #396 pass-2 leftovers: L1/T1 counts, the umlaut row on focus, list-row speaker state, the cloze footnote, L15 repeats — claimed 2026-09-26 08:23.
 
 ## Next
 
