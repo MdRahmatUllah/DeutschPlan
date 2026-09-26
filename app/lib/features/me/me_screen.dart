@@ -779,7 +779,9 @@ class _Badge extends StatelessWidget {
       ExamBadge.locked => (
         tokens.surface.muted,
         tokens.color.textSecondary,
-        l10n.learnNotStarted,
+        // Exams locked, not L1's Not started: a step in progress has them
+        // locked too (#396).
+        l10n.meExamsLocked,
       ),
     };
     Widget label(String code) =>

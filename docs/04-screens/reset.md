@@ -15,7 +15,7 @@
 
 ## Details #149 settles
 
-- **The sheet** (`features/me/reset_flow.dart`; the artboards draw only the dialog). It lists *Export first* ("Keep a file you can import later", in link colour), *Reset one step* and *Reset everything* (in Coral). *Export first* comes first and opens M8 over M3, before either reset (FR-M7-03).
+- **The sheet** (`features/me/reset_flow.dart`; the artboards draw only the dialog). It lists *Export first* ("Keep a file you can import later", in link colour), *Reset one step* and *Reset everything* (in Coral). *Export first* comes first and opens M6 (Export / import) over M3, before either reset (FR-M7-03).
 - **One step** (FR-M7-01):
   - A second sheet, *Which step?*, lists the steps with something to reset, in course order: begun, or with a word, topic, quiz or mock of theirs touched. The current step is marked *Current*; with none, a toast says so.
   - A Coral confirm follows: "Reset A1.1? Its words go back to To do, with their reviews, plans, grammar, quizzes and mock exams." For the current step it adds "A1.1 starts again today."

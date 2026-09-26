@@ -362,11 +362,16 @@ void main() {
       expect(went, '/learn/step/A1.2?tab=exams');
     });
 
-    testWidgets('a locked step opens its hub too', (tester) async {
+    testWidgets('#396 a locked step reads "Exams locked", not "Not started", '
+        'and opens its hub too', (tester) async {
       await pump(tester);
+      expect(
+        find.bySemanticsLabel(l10n.meBadge('C2.2', l10n.learnNotStarted)),
+        findsNothing,
+      );
       await tapAndSettle(
         tester,
-        find.bySemanticsLabel(l10n.meBadge('C2.2', l10n.learnNotStarted)),
+        find.bySemanticsLabel(l10n.meBadge('C2.2', l10n.meExamsLocked)),
       );
 
       expect(went, '/learn/step/C2.2?tab=exams');

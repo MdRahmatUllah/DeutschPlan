@@ -2453,6 +2453,10 @@
   "@learnExamsUnlocked": {
     "description": "L1 step badge: enough words introduced for the mock exams."
   },
+  "meExamsLocked": "Exams locked",
+  "@meExamsLocked": {
+    "description": "M1's exam badge, read by a screen reader: this step's mock exams are not open yet, whether or not it has begun (#396). Not L1's 'Not started', which would be wrong for a step in progress."
+  },
   "learnNotStarted": "Not started",
   "@learnNotStarted": {
     "description": "L1: read out for the lock on a step not yet started."

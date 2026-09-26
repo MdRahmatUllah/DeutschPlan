@@ -380,6 +380,7 @@
   "learnPassed": "পাস",
   "learnCurrent": "চলতি",
   "learnExamsUnlocked": "পরীক্ষা খোলা",
+  "meExamsLocked": "পরীক্ষা বন্ধ",
   "learnNotStarted": "শুরু হয়নি",
   "learnTodayLeft": "আজ · আর {count}টি কার্ড",
   "learnTodayDone": "আজ · সব কার্ড শেষ",
