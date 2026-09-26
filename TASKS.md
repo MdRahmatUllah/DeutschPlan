@@ -176,7 +176,7 @@ claiming the same issue. A hand edit skips that check.
 | #438 | - | C | P3 | - | fix(models): the download notification's texts are fixed at queue time (waiting sticks, the language, the counts, a failed checksum reads downloaded); T1's voice card ignores an installed voice (follow-up to #428) | done | agent-1 |  | #503 |
 | #502 | - | C | P3 | - | fix(typography): draw the hyphen in mixed German/Bangla text too (T2's and W1's caption with the pronunciation on; follow-up to #419) | review | agent-2 |  | #505 |
 | #504 | - | C | P3 | - | fix(typography): a long compound's Bangla pronunciation breaks at a letter at 200 % (T2's and W1's caption); the docs promise a syllable (follow-up to #502) | review | agent-2 |  | #507 |
-| #506 | - | C | - | - | fix(models): the download notification can stay at "Model download" after the model is Ready (a task never reports to the plugin's group) | open |  |  |  |
+| #506 | - | C | - | - | fix(models): the download notification can stay at "Model download" after the model is Ready (a task never reports to the plugin's group) | in-progress | agent-1 |  |  |
 
 ## Locks
 

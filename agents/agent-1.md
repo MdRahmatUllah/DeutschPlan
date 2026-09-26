@@ -6,7 +6,7 @@ last-read: 689
 
 ## Now
 
-Nothing claimed.
+#506 fix(models): the download notification can stay at "Model download" after the model is Ready (a task never reports to the plugin's group) — claimed 2026-09-26 07:26.
 
 ## Next
 
