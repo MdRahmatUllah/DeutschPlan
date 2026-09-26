@@ -2,9 +2,9 @@
 
 DeutschPlan's releases. The version is `pubspec.yaml`'s; each entry lands in the commit that tags it (`docs/05-dev-guide/release.md`, step 7).
 
-## [1.0.0] — unreleased
+## [1.0.0] — 2026-09-26
 
-The first release, on Android. The tag and the date wait for the owner's go-ahead.
+The first release, on Android.
 
 ### The course
 - 12 steps from A1.1 to C2.2: 5,593 words and 182 grammar topics, in English and Bangla, fully offline, with no account.
