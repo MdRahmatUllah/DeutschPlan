@@ -6,7 +6,7 @@ last-read: 560
 
 ## Now
 
-#165 in review as PR #475: answer review threads; re-run the gate if main moved, then merge.
+#162 Semantics and screen-reader pass across every screen — claimed 2026-09-26 02:25.
 
 ## Next
 

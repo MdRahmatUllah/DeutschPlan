@@ -77,7 +77,7 @@ claiming the same issue. A hand edit skips that check.
 | #283 | M6 | X | - | - | Model manifest: the Hy-MT files 404, and no q2 build exists | needs-decision |  |  |  |
 | #14 | M6 | X | P1 | epic | Epic · Voice, translation and model manager | open |  | #151 #152 #153 #154 #155 #156 #245 #283 |  |
 | #15 | M6 | X | P1 | epic | Epic · Reminders, background work and home-screen widget | open |  | #157 #158 #159 #160 #161 |  |
-| #162 | M7 | C | P1 | L | Semantics and screen-reader pass across every screen | open |  | #111 #136 #147 #150 #155 |  |
+| #162 | M7 | C | P1 | L | Semantics and screen-reader pass across every screen | in-progress | agent-2 | #111 #136 #147 #150 #155 |  |
 | #163 | M7 | B | P1 | M | Contrast audit across Light, Dark and Glass | done | agent-0 | #32 | #433 |
 | #164 | M7 | B | P1 | M | Reduce motion and reduce transparency | done | agent-0 | #35 #111 | #417 |
 | #165 | M7 | C | P1 | M | Text scaling to 200 % across every screen | review | agent-2 | #36 | #475 |
