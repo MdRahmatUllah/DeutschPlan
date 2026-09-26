@@ -44,6 +44,30 @@ void main() {
           as BoxDecoration;
 
   group('DpButton', () {
+    testWidgets('#517 a lone DpButton in a container with text is its own '
+        'button node, not merged with the text around it', (tester) async {
+      final semantics = tester.ensureSemantics();
+      await pump(
+        tester,
+        Semantics(
+          container: true,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              const Text('12 words learned today'),
+              DpButton(label: 'Done', onPressed: () {}),
+            ],
+          ),
+        ),
+      );
+      final button = tester.getSemantics(find.byType(DpButton));
+      expect(button.label, 'Done');
+      expect(button.flagsCollection.isButton, isTrue);
+      final around = tester.getSemantics(find.text('12 words learned today'));
+      expect(around.label, isNot(contains('Done')));
+      semantics.dispose();
+    });
+
     testWidgets('the three kinds are 56, 48 and 48 dp tall on Android', (
       tester,
     ) async {

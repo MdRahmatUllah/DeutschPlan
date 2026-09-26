@@ -237,23 +237,19 @@ class _StudySummarySheetState extends ConsumerState<StudySummarySheet> {
     ];
     final buttons = <Widget>[
       const SizedBox(height: 10),
-      // A node of its own (#396): alone on the sheet, the button took the
-      // summary's text in, and a screen reader read the summary as *Done for
-      // now*.
-      Semantics(
-        container: true,
-        child: DpButton(
-          label: switch (primary) {
-            StudyNextStep.revise => l10n.summaryRevise(next!.revise.length),
-            StudyNextStep.newWords => l10n.summaryNew(next!.newWords.length),
-            StudyNextStep.grammar => l10n.summaryGrammar(
-              StudySummarySheet.grammarFor(session, next).length,
-            ),
-            StudyNextStep.sentences => l10n.summarySentences(next!.sentences),
-            StudyNextStep.backlog || StudyNextStep.done => l10n.summaryDone,
-          },
-          onPressed: () => widget.onStep(primary),
-        ),
+      // A node of its own, as every DpButton is (#396, #517): the summary's
+      // text isn't read as *Done for now*.
+      DpButton(
+        label: switch (primary) {
+          StudyNextStep.revise => l10n.summaryRevise(next!.revise.length),
+          StudyNextStep.newWords => l10n.summaryNew(next!.newWords.length),
+          StudyNextStep.grammar => l10n.summaryGrammar(
+            StudySummarySheet.grammarFor(session, next).length,
+          ),
+          StudyNextStep.sentences => l10n.summarySentences(next!.sentences),
+          StudyNextStep.backlog || StudyNextStep.done => l10n.summaryDone,
+        },
+        onPressed: () => widget.onStep(primary),
       ),
       if (backlog > 0) ...<Widget>[
         const SizedBox(height: 10),
