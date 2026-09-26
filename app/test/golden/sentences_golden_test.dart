@@ -60,6 +60,21 @@ void main() {
 }
 
 class _Long extends PracticeSentences {
+  // The headword itself, underlined, is the long compound (#539).
+  static const Word _limit = Word(
+    uid: 'geschwindigkeitsbegrenzung',
+    sublevelCode: 'B2.2',
+    levelCode: 'B2',
+    seq: 1,
+    seqInSublevel: 1,
+    article: 'die',
+    german: 'Geschwindigkeitsbegrenzung',
+    pos: 'noun',
+    english: 'speed limit',
+    searchKey: 'geschwindigkeitsbegrenzung',
+    searchKeyAlt: 'geschwindigkeitsbegrenzung',
+  );
+
   @override
   Future<List<PracticeSentence>> build() async => const <PracticeSentence>[
     PracticeSentence(
@@ -69,6 +84,7 @@ class _Long extends PracticeSentences {
         german: 'Auf dieser Strecke gilt eine Geschwindigkeitsbegrenzung.',
         english: 'A speed limit applies on this stretch.',
       ),
+      word: _limit,
     ),
   ];
 }

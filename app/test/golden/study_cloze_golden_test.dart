@@ -74,6 +74,7 @@ void main() {
 
   Widget screen(
     BuildContext context, {
+    Word target = rechnung,
     List<StudyExample> examples = const <StudyExample>[
       (
         german: 'Ich habe die Rechnung noch nicht bezahlt.',
@@ -100,10 +101,10 @@ void main() {
       studyBackProvider('r3')
           .overrideWith((ref) async => (examples: examples, tip: null)),
       studyWordProvider('r3').overrideWith(
-        (ref) async => const WordWithState(
-          word: rechnung,
+        (ref) async => WordWithState(
+          word: target,
           // Two Good ratings in a row: BR-FSRS-06 made it a cloze card.
-          state: WordStateData(
+          state: const WordStateData(
             wordUid: 'r3',
             status: 'learning',
             stability: 8,
@@ -149,6 +150,38 @@ void main() {
         ),
       ],
     ),
+  );
+
+  // #539: a long target, answered: the gap's word and the verdict's
+  // answer break at a syllable at 200 % with their "-", not at a letter.
+  goldenTest(
+    'study_cloze_long_answered',
+    modes: const <GoldenMode>[GoldenMode.light],
+    devices: const <GoldenDevice>[GoldenDevice.phone],
+    builder: (context) => screen(
+      context,
+      target: const Word(
+        uid: 'r3',
+        sublevelCode: 'B2.1',
+        levelCode: 'B2',
+        seq: 1,
+        seqInSublevel: 1,
+        article: 'die',
+        german: 'Haftpflichtversicherung',
+        pos: 'noun',
+        english: 'liability insurance',
+        searchKey: 'haftpflichtversicherung',
+        searchKeyAlt: 'haftpflichtversicherung',
+      ),
+      examples: const <StudyExample>[
+        (
+          german: 'Die Haftpflichtversicherung zahlt den Schaden.',
+          english: 'The liability insurance pays for the damage.',
+        ),
+      ],
+    ),
+    // Wrong, so the verdict names the answer.
+    act: (tester) => answer(tester, 'Hausratversicherung'),
   );
 
   // #345: a wrong answer: the bar offers Again and Hard, Good and Easy faded.

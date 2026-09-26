@@ -395,21 +395,17 @@ class DpVerdictRow extends StatelessWidget {
             ),
           SizedBox(width: tokens.spacing.sm),
           Expanded(
+            // A long answer too wide for the line breaks at a syllable with
+            // its "-", not at a letter (#539).
             child: emphasis.isEmpty
                 ? DpText(
                     message,
                     role: DpTextRole.body,
                     weight: 600,
                     color: colour,
+                    breakTooWide: true,
                   )
-                : Text.rich(
-                    TextSpan(children: _spans(tokens.color.ink)),
-                    style: DpText.styleFor(
-                      tokens,
-                      DpTextRole.body,
-                      color: colour,
-                    ).copyWith(fontWeight: FontWeight.w600),
-                  ),
+                : DpRuns(_runs(tokens, colour)),
           ),
         ],
       ),
@@ -418,23 +414,38 @@ class DpVerdictRow extends StatelessWidget {
 }
 
 extension on DpVerdictRow {
-  List<InlineSpan> _spans(Color ink) {
-    final spans = <InlineSpan>[];
-    var at = 0;
+  /// [message] in runs: the app's copy in its colour (Bangla one role up,
+  /// as [DpText] sets it), and each [emphasis], the German answer, in ink
+  /// and a German voice (#539).
+  List<TextSpan> _runs(DpTokens tokens, Color colour) {
+    TextStyle at(DpTextRole role) => DpText.styleFor(
+      tokens,
+      role,
+      color: colour,
+    ).copyWith(fontWeight: FontWeight.w600);
+    final latin = at(DpTextRole.body);
+    List<TextSpan> copy(String text) => DpScript.spans(
+      text,
+      latin: latin,
+      bengali: at(DpTextRole.body.oneStepLarger),
+    );
+    final runs = <TextSpan>[];
+    var from = 0;
     for (final part in emphasis) {
-      final found = part.isEmpty ? -1 : message.indexOf(part, at);
+      final found = part.isEmpty ? -1 : message.indexOf(part, from);
       if (found < 0) continue;
-      if (found > at) spans.add(TextSpan(text: message.substring(at, found)));
-      spans.add(
+      if (found > from) runs.addAll(copy(message.substring(from, found)));
+      runs.add(
         TextSpan(
           text: part,
-          style: TextStyle(color: ink),
+          style: latin.copyWith(color: tokens.color.ink),
+          locale: DpScript.deDE,
         ),
       );
-      at = found + part.length;
+      from = found + part.length;
     }
-    if (at < message.length) spans.add(TextSpan(text: message.substring(at)));
-    return spans;
+    if (from < message.length) runs.addAll(copy(message.substring(from)));
+    return runs;
   }
 }
 

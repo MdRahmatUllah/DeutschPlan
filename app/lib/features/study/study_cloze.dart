@@ -108,10 +108,6 @@ class _StudyClozeCardState extends ConsumerState<StudyClozeCard> {
       DpTextRole.title,
     ).copyWith(fontWeight: FontWeight.w500);
     final english = example.english;
-    // A compound of 15 letters or more offers its syllables to break at,
-    // as T2's caption does (#419), and is read whole.
-    TextSpan broken(String text) =>
-        TextSpan(text: DpScript.allowBreaks(text), semanticsLabel: text);
 
     return StudyCardFrame(
       article: word.article,
@@ -137,30 +133,43 @@ class _StudyClozeCardState extends ConsumerState<StudyClozeCard> {
               color: tokens.color.textSecondary,
             ),
             const SizedBox(height: 6),
-            Text.rich(
-              TextSpan(
-                style: line,
-                // Read in a German voice (#162).
-                locale: DpScript.deDE,
-                children: <InlineSpan>[
-                  // ponytail: the gap is a widget, which `_Hyphenated`'s text
-                  // planner can't lay out, so a long compound around it
-                  // breaks at a syllable with no "-" drawn (#539). A
-                  // placeholder in the planner is the upgrade.
-                  broken(example.german.substring(0, gap.start)),
-                  WidgetSpan(
-                    alignment: PlaceholderAlignment.baseline,
-                    baseline: TextBaseline.alphabetic,
-                    child: _Gap(
-                      article: word.article,
-                      // The word shows once the answer is in.
-                      word: verdict == null ? null : _expected,
-                      style: line,
-                    ),
+            // The gap is a widget, which `_Hyphenated`'s planner can't lay
+            // out: a word too wide for the line gets its syllables here, and
+            // one that fits keeps its letters, so 100 % stays as drawn
+            // (#539). It is read whole.
+            LayoutBuilder(
+              builder: (context, box) {
+                TextSpan broken(String text) => TextSpan(
+                  text: DpScript.breakTooWide(
+                    text,
+                    style: line,
+                    width: box.maxWidth,
+                    scaler: MediaQuery.textScalerOf(context),
                   ),
-                  broken(example.german.substring(gap.end)),
-                ],
-              ),
+                  semanticsLabel: text,
+                );
+                return Text.rich(
+                  TextSpan(
+                    style: line,
+                    // Read in a German voice (#162).
+                    locale: DpScript.deDE,
+                    children: <InlineSpan>[
+                      broken(example.german.substring(0, gap.start)),
+                      WidgetSpan(
+                        alignment: PlaceholderAlignment.baseline,
+                        baseline: TextBaseline.alphabetic,
+                        child: _Gap(
+                          article: word.article,
+                          // The word shows once the answer is in.
+                          word: verdict == null ? null : _expected,
+                          style: line,
+                        ),
+                      ),
+                      broken(example.german.substring(gap.end)),
+                    ],
+                  ),
+                );
+              },
             ),
             if (english != null) ...<Widget>[
               const SizedBox(height: 6),
@@ -247,8 +256,10 @@ class _Gap extends StatelessWidget {
       decoration: BoxDecoration(
         border: Border(bottom: BorderSide(color: gender, width: 3)),
       ),
-      child: Text(
-        word ?? '',
+      // A long target too wide for the line breaks at a syllable with its
+      // "-", in a German voice (#539).
+      child: DpGermanRuns(
+        <TextSpan>[TextSpan(text: word ?? '')],
         textAlign: TextAlign.center,
         // A WidgetSpan's child is scaled with its sentence already: scaled
         // again here, "Rechnung" was drawn at 4× into half the line at 200 %

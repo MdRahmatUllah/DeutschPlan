@@ -870,6 +870,30 @@ void main() {
     });
   });
 
+  group('#539 the course German', () {
+    testWidgets('DpText(german: true) breaks a long compound too wide for '
+        'its line at a syllable, with its "-", though the text offers no '
+        'soft hyphen', (tester) async {
+      await pump(
+        tester,
+        const SizedBox(
+          width: 150,
+          child: DpText(
+            'Die Haftpflichtversicherung zahlt.',
+            role: DpTextRole.body,
+            german: true,
+          ),
+        ),
+      );
+      final drawn = tester
+          .renderObject<RenderParagraph>(find.byType(RichText))
+          .text
+          .toPlainText(includeSemanticsLabels: false);
+      expect(drawn, contains('-\n'));
+      expectNoWordBroken(tester);
+    });
+  });
+
   group('#535 DpGermanRuns', () {
     testWidgets('a marked long compound breaks at a syllable with its "-", '
         'and the sentence is read whole, in a German voice', (tester) async {
