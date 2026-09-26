@@ -426,58 +426,58 @@ extension GoldenTester on WidgetTester {
   }
 }
 
-/// The keyboard up over the screen's last field (the one it fights; a
-/// dialog's, over a screen), focused, with SQA's room: its 24 dp status bar
-/// and the keyboard's top at [keyboardTop], as Gboard leaves it on SQA's
-/// 411 × 731 phone, which covers a 300 dp keyboard too. Then no layout error,
-/// the field in the room (under the status bar, above the keyboard, and
-/// hit-testable, so neither scrolled out of its list nor covered), nothing
-/// clipped, no word broken, and nothing cut to its lines but that field's
-/// own one-line hint while typing past 130 % (#570). A screen with no field
-/// passes as it is (#584).
+/// The keyboard up over each of the screen's fields in turn (agent-1's
+/// review: R2 has three), focused, with SQA's room: its 24 dp status bar and
+/// the keyboard's top at [keyboardTop], as Gboard leaves it on SQA's
+/// 411 × 731 phone, which covers a 300 dp keyboard too. Then no layout
+/// error, the field in the room (under the status bar, above the keyboard,
+/// and hit-testable, so neither scrolled out of its list nor covered),
+/// nothing clipped, no word broken, and nothing cut to its lines but that
+/// field's own one-line hint while typing past 130 % (#570). A screen with
+/// no field passes as it is (#584).
 Future<void> expectKeyboardFits(WidgetTester tester) async {
-  final fields = find.byType(EditableText);
-  if (fields.evaluate().isEmpty) return;
+  final count = find.byType(EditableText).evaluate().length;
+  if (count == 0) return;
   final ratio = tester.view.devicePixelRatio;
   final height = tester.view.physicalSize.height / ratio;
-  await tester.showKeyboard(fields.last);
   tester.view
     ..padding = FakeViewPadding(top: statusBar * ratio)
     ..viewInsets = FakeViewPadding(bottom: (height - keyboardTop) * ratio);
   addTearDown(tester.view.resetPadding);
   addTearDown(tester.view.resetViewInsets);
-  await tester.pumpAndSettle(
-    const Duration(milliseconds: 100),
-    EnginePhase.sendSemanticsUpdate,
-    settleTimeout,
-  );
-  expect(tester.takeException(), isNull, reason: 'with the keyboard up');
-  final field = tester.getRect(fields.last);
-  expect(
-    field.top,
-    greaterThanOrEqualTo(statusBar - 0.5),
-    reason: 'under the status bar',
-  );
-  expect(
-    field.bottom,
-    lessThanOrEqualTo(keyboardTop + 0.5),
-    reason: 'above the keyboard',
-  );
-  expect(
-    fields.last.hitTestable(),
-    findsOneWidget,
-    reason: 'in view, not covered',
-  );
-  expectNothingClipped(tester);
-  expectNoWordBroken(tester);
-  final oneLineHint = find
-      .ancestor(of: fields.last, matching: find.byType(InputDecorator))
-      .evaluate()
-      .map((e) => (e.widget as InputDecorator).decoration)
-      .where((decoration) => decoration.hintMaxLines == 1)
-      .map((decoration) => decoration.hintText)
-      .nonNulls;
-  expectAllLinesShown(tester, except: oneLineHint.toSet());
+  for (var i = 0; i < count; i++) {
+    final field = find.byType(EditableText).at(i);
+    await tester.showKeyboard(field);
+    await tester.pumpAndSettle(
+      const Duration(milliseconds: 100),
+      EnginePhase.sendSemanticsUpdate,
+      settleTimeout,
+    );
+    final which = 'field ${i + 1} of $count';
+    expect(tester.takeException(), isNull, reason: 'keyboard up, $which');
+    final rect = tester.getRect(field);
+    expect(
+      rect.top,
+      greaterThanOrEqualTo(statusBar - 0.5),
+      reason: '$which under the status bar',
+    );
+    expect(
+      rect.bottom,
+      lessThanOrEqualTo(keyboardTop + 0.5),
+      reason: '$which above the keyboard',
+    );
+    expect(field.hitTestable(), findsOneWidget, reason: '$which in view');
+    expectNothingClipped(tester);
+    expectNoWordBroken(tester);
+    final oneLineHint = find
+        .ancestor(of: field, matching: find.byType(InputDecorator))
+        .evaluate()
+        .map((e) => (e.widget as InputDecorator).decoration)
+        .where((decoration) => decoration.hintMaxLines == 1)
+        .map((decoration) => decoration.hintText)
+        .nonNulls;
+    expectAllLinesShown(tester, except: oneLineHint.toSet());
+  }
 }
 
 /// SQA's status bar, dp.

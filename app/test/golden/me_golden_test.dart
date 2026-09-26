@@ -29,7 +29,10 @@ void main() {
     builder: (context) =>
         ProviderScope(overrides: meStub(), child: const MeScreen()),
     act: (tester) async {
-      final l10n = lookupAppLocalizations(const Locale('en'));
+      // The audit's language, whichever it runs in.
+      final l10n = lookupAppLocalizations(
+        Localizations.localeOf(tester.element(find.byType(MeScreen))),
+      );
       await tester.tap(
         find.byWidgetPredicate(
           (widget) =>
