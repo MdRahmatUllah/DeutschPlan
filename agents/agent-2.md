@@ -6,7 +6,7 @@ last-read: 720
 
 ## Now
 
-Nothing claimed.
+#513 fix(settings): M3 hides its Translation group while Hy-MT isn't offered (ADR 9; follow-up to #173) — claimed 2026-09-26 08:01.
 
 ## Next
 

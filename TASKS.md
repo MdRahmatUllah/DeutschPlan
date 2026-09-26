@@ -179,7 +179,7 @@ claiming the same issue. A hand edit skips that check.
 | #506 | - | C | - | - | fix(models): the download notification can stay at "Model download" after the model is Ready (a task never reports to the plugin's group) | review | agent-1 |  | #508 |
 | #509 | - | C | - | - | fix(reminders): syncing the reminder clears every notification, the model download's too (cancelAll; ponytail from #157) | review | agent-1 |  | #510 |
 | #511 | - | X | - | - | refactor(state): settingsSourceProvider lives with the app's providers, not in M3's screen (follow-up to #481/#499 reviews) | review | agent-1 |  | #512 |
-| #513 | - | C | P2 | - | fix(settings): M3 hides its Translation group while Hy-MT isn't offered (ADR 9; follow-up to #173) | open |  |  |  |
+| #513 | - | C | P2 | - | fix(settings): M3 hides its Translation group while Hy-MT isn't offered (ADR 9; follow-up to #173) | in-progress | agent-2 |  |  |
 
 ## Locks
 
