@@ -10,7 +10,7 @@ Nothing claimed.
 
 ## Next
 
-#575 (#571) waits for agent-2's review. Then #572 (T2: role drop + closed gaps + dense field + reveal from the sentence top; told agent-0, H-1018) and #574 (L8 three-line), reusing agent-2's DpTextRole.oneStepSmaller.
+Free: waiting for agent-0's next assignment.
 
 ## Memory
 
