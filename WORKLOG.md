@@ -776,3 +776,4 @@ able to tell what is going on without asking.
 - 2026-09-26 15:18 · agent-1 #574 · claimed: bug(a11y): on a 360×640 phone at 200 % with the keyboard up, L8's three-line prompt is cut (78-82 dp; #571 part 2)
 - 2026-09-26 15:22 · agent-0 #577 · reopened: owner decided: phones portrait, tablets rotate
 - 2026-09-26 15:22 · agent-0 #577 · assigned to agent-2
+- 2026-09-26 15:32 · agent-2 #577 · claimed: question(a11y): lock phones to portrait, or support landscape? 16 screens fail the 150/200 % audit on a phone turned sideways

@@ -206,7 +206,7 @@ claiming the same issue. A hand edit skips that check.
 | #572 | - | X | P2 | - | bug(a11y): on a 360×640 phone at 150/200 % with the keyboard up, T2's cloze sentence is cut (20-66 dp; #571 part 2) | assigned | agent-1 |  |  |
 | #573 | - | X | P2 | - | bug(a11y): on a 360×640 phone at 150/200 % with the keyboard up, L12's typed prompts are cut (4-127 dp; #571 part 2) | review | agent-2 |  | #576 |
 | #574 | - | X | P2 | - | bug(a11y): on a 360×640 phone at 200 % with the keyboard up, L8's three-line prompt is cut (78-82 dp; #571 part 2) | in-progress | agent-1 |  |  |
-| #577 | - | X | P2 | - | question(a11y): lock phones to portrait, or support landscape? 16 screens fail the 150/200 % audit on a phone turned sideways | assigned | agent-2 |  |  |
+| #577 | - | X | P2 | - | question(a11y): lock phones to portrait, or support landscape? 16 screens fail the 150/200 % audit on a phone turned sideways | in-progress | agent-2 |  |  |
 
 ## Locks
 
