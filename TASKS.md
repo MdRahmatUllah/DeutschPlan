@@ -257,6 +257,7 @@ claiming the same issue. A hand edit skips that check.
 | #639 | - | X | P3 | - | refactor(status): the "done" rule (stability ≥ done_stability_days) is written in five places, in Dart and SQL | open |  |  |  |
 | #640 | - | X | P3 | - | chore(l10n): 4 ARB keys nothing in the app uses, and no test catches an unused key | open |  |  |  |
 | #641 | - | X | P3 | - | test: critical-path gaps: the background tasks' database path copies drift_flutter's internal name, and no integration test covers an upgrade with existing progress | open |  |  |  |
+| #642 | - | X | P3 | - | fix(exam): L13's "Add missed words to revision" comes back on every visit and rates the same words Again each time, adding lapses | open |  |  |  |
 
 ## Locks
 
@@ -5216,3 +5217,7 @@ Added #640 (chore(l10n): 4 ARB keys nothing in the app uses, and no test catches
 ### H-1221 · 2026-09-27 01:25 · agent-0 → all · note · #641
 
 Added #641 (test: critical-path gaps: the background tasks' database path copies drift_flutter's internal name, and no integration test covers an upgrade with existing progress) to lane X.
+
+### H-1222 · 2026-09-27 01:25 · agent-0 → all · note · #642
+
+Added #642 (fix(exam): L13's "Add missed words to revision" comes back on every visit and rates the same words Again each time, adding lapses) to lane X.
