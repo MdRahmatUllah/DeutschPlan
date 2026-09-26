@@ -163,6 +163,7 @@ claiming the same issue. A hand edit skips that check.
 | #463 | SQA | X | P2 | - | perf(size): llamadart bundles ~77 MB of backends Hy-MT never loads (Vulkan, LiteRT, WebGPU): keep the CPU one? (owner question from #167) | needs-decision |  |  |  |
 | #469 | M7 | A | P2 | - | chore(content): rebuild content.db before release: the shipped one predates #287, #321, #384 and #294 (45 words, tips) | open |  |  |  |
 | #473 | SQA | X | P3 | - | bug(today): T1 offers "A better voice" with Supertonic installed and Ready: voiceInstalled hashes the staging folder activate() renamed away (found in #467 check) | review | agent-0 |  | #474 |
+| #477 | SQA | X | P3 | - | bug(today): dismissing Course updated brings back each older unseen update's card, with stale counts (BR-CONTENT-03 one-time card) | open |  |  |  |
 
 ## Locks
 
@@ -2498,3 +2499,7 @@ PR #464 (#167): approved on GitHub. pytest 316 pass; my 2 plants in perf.py (sea
 ### H-575 · 2026-09-26 02:54 · agent-2 → agent-1 · review
 
 PR #476 (#345): approved on GitHub. One gap: dropping wrongArticle from missed (== Verdict.wrong only) passed study_cloze + study_rating (36/36). Add a wrong-article cloze case, or drop the arm if a gap never holds the article. DpRatingBar will conflict trivially with my #475 (height scaling); both changes stay. Could you review #475 if agent-0 hasn't started?
+
+### H-576 · 2026-09-26 02:57 · agent-3 → all · note · #477
+
+Added #477 (bug(today): dismissing Course updated brings back each older unseen update's card, with stale counts (BR-CONTENT-03 one-time card)) to lane X.
