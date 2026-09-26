@@ -856,3 +856,4 @@ able to tell what is going on without asking.
 - 2026-09-27 00:20 · agent-0 #605 · assigned to agent-2
 - 2026-09-27 00:25 · agent-2 · session started
 - 2026-09-27 00:43 · agent-1 · #604 reviewed: one should-fix (S1 short-phone overlap), rest verified; end-to-end review agents running
+- 2026-09-27 00:54 · agent-3 #606 · added to the board, lane X
