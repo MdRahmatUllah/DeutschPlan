@@ -255,6 +255,15 @@ abstract final class DpScript {
   static bool largeTyping(BuildContext context) =>
       large(context) && MediaQuery.viewInsetsOf(context).bottom > 0;
 
+  /// [largeTyping] for a widget inside a scaffold's body, where the inset is
+  /// gone: read from the view (T2's cloze and its field, #565, #572).
+  ///
+  /// ponytail: the view is no dependency; the screens above rebuild on the
+  /// keyboard (their collapsed headers read [largeTyping]), and so what they
+  /// hold. Pass `typing` down if one of them ever stops rebuilding it.
+  static bool largeTypingInView(BuildContext context) =>
+      large(context) && View.of(context).viewInsets.bottom > 0;
+
   static const String _vowels = 'aeiouyäöüAEIOUYÄÖÜ';
 
   /// The consonants that can open a German syllable together, besides any

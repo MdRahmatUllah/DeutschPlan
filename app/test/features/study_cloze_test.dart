@@ -93,6 +93,7 @@ VALUES ('$strasse', 'learning', '2026-09-10', '2026-09-21', 4.5, 5.2, 2, 0,
     bool voice = true,
     bool chosen = false,
     TextScaler? textScaler,
+    Locale? locale,
   }) async {
     spoken = <String>[];
     await tester.runAsync(
@@ -114,6 +115,7 @@ VALUES ('$strasse', 'learning', '2026-09-10', '2026-09-21', 4.5, 5.2, 2, 0,
         ],
         child: MaterialApp(
           theme: AppTheme.light(),
+          locale: locale,
           localizationsDelegates: appLocalizationsDelegates,
           supportedLocales: supportedLocales,
           builder: textScaler == null
@@ -453,15 +455,23 @@ VALUES ('$haus', 'learning', 8, 5, 2, 0, 2, 'cloze')
       WidgetTester tester,
       TextScaler textScaler, {
       String? example,
+      Size size = const Size(390, 731),
+      double keyboard = 300,
+      Locale? locale,
     }) async {
       tester.view
-        ..physicalSize = const Size(390, 731) * 3
+        ..physicalSize = size * 3
         ..devicePixelRatio = 3
         ..padding = const FakeViewPadding(top: 24 * 3);
       addTearDown(tester.view.reset);
-      await pump(tester, textScaler: textScaler, example: example);
+      await pump(
+        tester,
+        textScaler: textScaler,
+        example: example,
+        locale: locale,
+      );
       await tester.showKeyboard(find.byType(TextField));
-      tester.view.viewInsets = const FakeViewPadding(bottom: 300 * 3);
+      tester.view.viewInsets = FakeViewPadding(bottom: keyboard * 3);
       addTearDown(tester.view.resetViewInsets);
       await tester.pumpAndSettle();
     }
@@ -528,5 +538,62 @@ VALUES ('$haus', 'learning', 8, 5, 2, 0, 2, 'cloze')
       await typing(tester, TextScaler.noScaling);
       expect(close(), findsOneWidget);
     });
+    // #572: a 360 × 640 budget phone and its 280 dp keyboard, where a
+    // three-line sentence was 66 dp under the top. Typing past 130 % the
+    // sentence and its translation are a role smaller, the gaps and the
+    // field close, and the umlaut row's reserve is its real height.
+    for (final (percent, example) in <(int, String?)>[
+      (200, null),
+      (150, null),
+      (200, 'Die Straße vor unserem Haus ist lang.'),
+      (150, 'Die Straße vor unserem Haus ist lang.'),
+    ]) {
+      for (final lang in <String>['en', 'bn']) {
+        testWidgets('#572 in $lang at $percent % on a 360 × 640 phone'
+            '${example == null ? '' : ', three lines at 200 %,'} the sentence '
+            'and its translation show whole above the field, a role smaller; '
+            "their size is back at the keyboard's going", (tester) async {
+          await typing(
+            tester,
+            AndroidTextScaler(percent / 100),
+            example: example,
+            size: const Size(360, 640),
+            keyboard: 280,
+            locale: Locale(lang),
+          );
+          final sentence = find
+              .textContaining('ist lang', findRichText: true)
+              .first;
+          // A role smaller draws shorter lines.
+          double size() => tester.getSize(sentence).height;
+          final typed = size();
+          final window = tester.getRect(
+            find
+                .ancestor(
+                  of: find.byType(TextField),
+                  matching: find.byType(Scrollable),
+                )
+                .first,
+          );
+          for (final (name, shown) in <(String, Finder)>[
+            ('the sentence', sentence),
+            ('the translation', find.text('The street is long.')),
+            ('the field', find.byType(TextField)),
+          ]) {
+            final rect = tester.getRect(shown);
+            expect(rect.top, greaterThanOrEqualTo(window.top), reason: name);
+            expect(rect.bottom, lessThanOrEqualTo(window.bottom), reason: name);
+          }
+          expect(
+            tester.getRect(find.byType(DpUmlautBar)).bottom,
+            lessThanOrEqualTo(640 - 280),
+          );
+
+          tester.view.resetViewInsets();
+          await tester.pumpAndSettle();
+          expect(size(), greaterThan(typed), reason: 'its own role again');
+        });
+      }
+    }
   });
 }
