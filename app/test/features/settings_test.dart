@@ -294,7 +294,7 @@ void main() {
     expect(settings.read(SettingKeys.meaningLanguage), MeaningLanguage.english);
   });
 
-  testWidgets('#537 FR-M3 the Bangla pronunciation follows the meaning '
+  testWidgets('#537 FR-M3-04 the Bangla pronunciation follows the meaning '
       "language in setup only: M3's meaning row leaves the learner's switch", (
     tester,
   ) async {
@@ -308,10 +308,12 @@ void main() {
 
     expect(settings.read(SettingKeys.showPronBn), isTrue);
     await choose(l10n.settingsMeaning, l10n.settingsEnglish);
+    expect(settings.read(SettingKeys.meaningLanguage), MeaningLanguage.english);
     expect(settings.read(SettingKeys.showPronBn), isTrue, reason: 'as set');
     await tester.tap(switchFor(l10n.settingsShowPronBn));
     await tester.pumpAndSettle();
     await choose(l10n.settingsMeaning, l10n.settingsBangla);
+    expect(settings.read(SettingKeys.meaningLanguage), MeaningLanguage.bangla);
     expect(settings.read(SettingKeys.showPronBn), isFalse, reason: 'as set');
   });
 
