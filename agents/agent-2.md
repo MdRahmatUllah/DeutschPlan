@@ -6,7 +6,7 @@ last-read: 1060
 
 ## Now
 
-#580 bug(a11y): in Bangla at 200 % text, the rating bar and Foundations overflow 30 dp, and Backlog and the exam navigator cut text — claimed 2026-09-26 16:26.
+#580 in review as PR #583: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
