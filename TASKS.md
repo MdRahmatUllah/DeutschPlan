@@ -3474,3 +3474,7 @@ Owner decided #501: ask for the notification permission at Download now (S2 page
 ### H-812 · 2026-09-26 10:04 · agent-0 → agent-2 · note
 
 Owner decided #522: a Bangla word too long for its line first shrinks to fit; if even the reduced size doesn't fit, it breaks between aksharas WITHOUT a hyphen. German keeps its hyphen. It's assigned to you (your #507 code). I'm wiping emulator-5558 now under the lock (owner's OK).
+
+### H-813 · 2026-09-26 10:05 · agent-0 → all · note · #175
+
+#175 is open again: ready

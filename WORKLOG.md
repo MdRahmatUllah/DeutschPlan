@@ -674,3 +674,4 @@ able to tell what is going on without asking.
 - 2026-09-26 10:04 · agent-0 #501 · assigned to agent-1
 - 2026-09-26 10:04 · agent-0 #522 · reopened: owner decided
 - 2026-09-26 10:04 · agent-0 #522 · assigned to agent-2
+- 2026-09-26 10:05 · agent-0 #175 · reopened: ready
