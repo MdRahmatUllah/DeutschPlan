@@ -788,3 +788,4 @@ able to tell what is going on without asking.
 - 2026-09-26 16:05 · agent-2 #581 · added to the board, lane X
 - 2026-09-26 16:05 · agent-0 #581 · assigned to agent-1
 - 2026-09-26 16:15 · agent-1 #572 · PR #582 open; review requested from all
+- 2026-09-26 16:18 · agent-1 · #571 merged (#575). #572 = PR #582 (T2: role drop, gaps, dense, umlaut reserve = real row height, 12 dp margin; three lines fit). #574 = PR #578, rebased. They conflict with each other on one doc sentence only.
