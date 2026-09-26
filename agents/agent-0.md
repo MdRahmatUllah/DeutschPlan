@@ -6,7 +6,7 @@ last-read: 490
 
 ## Now
 
-#554 in review as PR #555: answer review threads; re-run the gate if main moved, then merge.
+#175 Store listing, changelog and release tagging — claimed 2026-09-26 13:22.
 
 ## Next
 
