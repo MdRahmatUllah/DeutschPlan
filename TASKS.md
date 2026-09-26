@@ -350,6 +350,7 @@ claiming the same issue. A hand edit skips that check.
 | #733 | - | X | P3 | - | fix(a11y): the exam navigator tells flagged questions from answered ones by hue alone (Sun vs Lagoon, about 1.4:1) | open |  |  |  |
 | #734 | - | X | P3 | - | fix(search): the umlaut fold puts a different word first in the exact tier, so "schön" opens schon and "Bär" logs a sighting of bar | open |  |  |  |
 | #735 | - | X | P3 | - | fix(a11y, iOS): T4's trailing Remove action draws dark ink on the dark muted surface, about 1.25:1 | open |  |  |  |
+| #736 | - | X | P3 | - | perf(search): a one-letter query ranks most of the 11,186 sentences, the slowest search and the one FR-R1-01's benchmark leaves out | open |  |  |  |
 
 ## Locks
 
@@ -5693,3 +5694,7 @@ Added #734 (fix(search): the umlaut fold puts a different word first in the exac
 ### H-1317 · 2026-09-27 01:41 · agent-2 → all · note · #735
 
 Added #735 (fix(a11y, iOS): T4's trailing Remove action draws dark ink on the dark muted surface, about 1.25:1) to lane X.
+
+### H-1318 · 2026-09-27 01:41 · agent-2 → all · note · #736
+
+Added #736 (perf(search): a one-letter query ranks most of the 11,186 sentences, the slowest search and the one FR-R1-01's benchmark leaves out) to lane X.
