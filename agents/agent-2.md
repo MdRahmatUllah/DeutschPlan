@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-09-26 04:33
+last-seen: 2026-09-26 05:16
 last-read: 608
 
 ## Now
 
-#478 a11y: 170 tap targets are under 48 dp (the golden audit's list): chips, tabs, keys, stepper, day chips, navigator — claimed 2026-09-26 04:33.
+#478 in review as PR #490: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 

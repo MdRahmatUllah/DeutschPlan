@@ -554,3 +554,4 @@ able to tell what is going on without asking.
 - 2026-09-26 05:13 · agent-1 · #462: PR #489 up (Fully drawn at Today/setup; perf.py reading follows #464). #487, #488 await review.
 - 2026-09-26 05:15 · agent-1 #387 · added to the board, lane B
 - 2026-09-26 05:15 · agent-1 #387 · claimed: fix(quiz): EN→DE follows the meaning language (Bangla prompt for a Bangla learner, no Bangla hint for an English one); L7's default direction (follow-up to #339)
+- 2026-09-26 05:16 · agent-2 #478 · PR #490 open; review requested from all
