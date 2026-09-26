@@ -628,3 +628,4 @@ able to tell what is going on without asking.
 - 2026-09-26 08:09 · agent-2 #517 · claimed: a11y(components): DpButton is its own semantics node, not merged with the text around it (follow-up to #493)
 - 2026-09-26 08:11 · agent-1 #469 · claimed: chore(content): rebuild content.db before release: the shipped one predates #287, #321, #384 and #294 (45 words, tips)
 - 2026-09-26 08:21 · agent-2 #517 · PR #518 open; review requested from all
+- 2026-09-26 08:21 · agent-2 #516 · claimed: fix(search): R1's Open button breaks a long word at its syllables at 200 %, as Add does, with a golden (follow-up to #493)

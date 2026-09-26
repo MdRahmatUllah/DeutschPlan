@@ -6,7 +6,7 @@ last-read: 720
 
 ## Now
 
-#517 in review as PR #518: answer review threads; re-run the gate if main moved, then merge.
+#516 fix(search): R1's Open button breaks a long word at its syllables at 200 %, as Add does, with a golden (follow-up to #493) — claimed 2026-09-26 08:21.
 
 ## Next
 

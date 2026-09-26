@@ -181,7 +181,7 @@ claiming the same issue. A hand edit skips that check.
 | #511 | - | X | - | - | refactor(state): settingsSourceProvider lives with the app's providers, not in M3's screen (follow-up to #481/#499 reviews) | done | agent-1 |  | #512 |
 | #513 | - | C | P2 | - | fix(settings): M3 hides its Translation group while Hy-MT isn't offered (ADR 9; follow-up to #173) | review | agent-2 |  | #514 |
 | #515 | - | X | P3 | - | chore(sqa): #396 pass-2 leftovers: L1/T1 counts, the umlaut row on focus, list-row speaker state, the cloze footnote, L15 repeats | open |  |  |  |
-| #516 | - | C | P3 | - | fix(search): R1's Open button breaks a long word at its syllables at 200 %, as Add does, with a golden (follow-up to #493) | open |  |  |  |
+| #516 | - | C | P3 | - | fix(search): R1's Open button breaks a long word at its syllables at 200 %, as Add does, with a golden (follow-up to #493) | in-progress | agent-2 |  |  |
 | #517 | - | C | P3 | - | a11y(components): DpButton is its own semantics node, not merged with the text around it (follow-up to #493) | review | agent-2 |  | #518 |
 
 ## Locks
