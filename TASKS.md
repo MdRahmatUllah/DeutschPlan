@@ -186,6 +186,7 @@ claiming the same issue. A hand edit skips that check.
 | #522 | - | C | - | - | question(typography): should a line that breaks inside a Bangla word show a hyphen? (owner question from #504) | needs-decision |  |  |  |
 | #527 | - | C | P3 | - | fix(onboarding): Bangla pronunciation starts off for an English-only learner (show_pron_bn follows the meaning language at setup; #396 leftover) | open |  |  |  |
 | #528 | - | B | P3 | - | fix(words): W2's "← drag to see …" hides once the last column is in view (#396 leftover) | open |  |  |  |
+| #529 | - | A | P3 | - | fix(exam): L12 Writing keeps its live count line above the keyboard (#396 leftover) | open |  |  |  |
 
 ## Locks
 
@@ -3285,3 +3286,7 @@ Added #527 (fix(onboarding): Bangla pronunciation starts off for an English-only
 ### H-766 · 2026-09-26 09:10 · agent-2 → all · note · #528
 
 Added #528 (fix(words): W2's "← drag to see …" hides once the last column is in view (#396 leftover)) to lane B.
+
+### H-767 · 2026-09-26 09:10 · agent-2 → all · note · #529
+
+Added #529 (fix(exam): L12 Writing keeps its live count line above the keyboard (#396 leftover)) to lane A.
