@@ -6,9 +6,11 @@ import 'package:deutschplan/data/db/content_dao.dart';
 import 'package:deutschplan/data/repositories/setting_keys.dart';
 import 'package:deutschplan/data/repositories/settings_repository.dart';
 import 'package:deutschplan/data/repositories/setup_repository.dart';
+import 'package:deutschplan/domain/plan_engine.dart' show DailyPlan;
 import 'package:deutschplan/features/onboarding/onboarding_notifier.dart';
 import 'package:deutschplan/features/onboarding/onboarding_shell.dart';
 import 'package:deutschplan/features/onboarding/setup_flow.dart';
+import 'package:deutschplan/features/today/today_providers.dart';
 import 'package:drift/drift.dart' hide isNotNull, isNull;
 import 'package:drift/native.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -166,6 +168,30 @@ VALUES (?, ?, 'A1', ?, ?, ?, ?, ?, ?)
       await flow().finish();
 
       expect(await plannedToday('new'), 7);
+    });
+
+    test('BR-PLAN-04 #548: once, with Today live and rebuilt by the commit, '
+        'opening the same day alongside', () async {
+      // As warmTodaysVoice holds it from the first frame (#460), and as a
+      // frame rebuilds it: as soon as the commit's revise_count write has
+      // invalidated the engine, while finish is still to open the day.
+      // In memory both openings pick the same seven before either writes,
+      // so the doubling itself is plan_store_test's; this is the setup path
+      // with commit's transaction in the middle, not deadlocking.
+      container.listen(todayPlanProvider, (_, _) {});
+      await container.read(todayPlanProvider.future);
+      Future<DailyPlan>? rebuilt;
+      final frame = settings.changes
+          .where((key) => key == SettingKeys.reviseCount)
+          .listen((_) => rebuilt = container.read(todayPlanProvider.future));
+      addTearDown(frame.cancel);
+      draft().setDailyNew(7);
+
+      await flow().finish();
+      final plan = await rebuilt!;
+
+      expect(await plannedToday('new'), 7);
+      expect(plan.newToday, hasLength(7));
     });
 
     test('and leaves the draft for the route to clear', () async {

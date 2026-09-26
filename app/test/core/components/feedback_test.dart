@@ -1,8 +1,10 @@
 import 'package:deutschplan/core/components/dp_feedback.dart';
 import 'package:deutschplan/core/theme/app_theme.dart';
 import 'package:deutschplan/core/theme/dp_tokens.dart';
+import 'package:deutschplan/core/typography/dp_text.dart';
 import 'package:deutschplan/main.dart'
     show appLocalizationsDelegates, supportedLocales;
+import 'package:flutter/rendering.dart' show RenderParagraph;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 
@@ -231,6 +233,85 @@ void main() {
   });
 
   group('DpVerdictRow', () {
+    testWidgets("#539 a marked German answer too wide for its line breaks at "
+        "a syllable with its \"-\", in a German voice; the copy in the app's", (
+      tester,
+    ) async {
+      await pump(
+        tester,
+        const SizedBox(
+          width: 160,
+          child: DpVerdictRow(
+            verdict: DpVerdict.wrong,
+            message: "Not quite · it's Haftpflichtversicherung",
+            emphasis: <String>['Haftpflichtversicherung'],
+            germanEmphasis: true,
+          ),
+        ),
+      );
+      final spans = <TextSpan>[];
+      tester
+          // The text's, not the icon's.
+          .renderObject<RenderParagraph>(find.byType(RichText).last)
+          .text
+          .visitChildren((span) {
+            if (span is TextSpan && span.text != null) spans.add(span);
+            return true;
+          });
+      final answer = spans.singleWhere(
+        (s) => s.semanticsLabel == 'Haftpflichtversicherung',
+      );
+      expect(answer.text, contains('-\n'));
+      expect(answer.locale, const Locale('de', 'DE'));
+      final copy = spans.singleWhere((s) => s.text!.startsWith('Not quite'));
+      expect(copy.locale, isNull, reason: "the app's voice");
+    });
+
+    testWidgets("#539 L8's answer in English or Bangla is read in its own "
+        'voice, the Bangla one role up; never in German', (tester) async {
+      List<TextSpan> spansOf() {
+        final spans = <TextSpan>[];
+        tester
+            // The text's, not the icon's.
+            .renderObject<RenderParagraph>(find.byType(RichText).last)
+            .text
+            .visitChildren((span) {
+              if (span is TextSpan && span.text != null) spans.add(span);
+              return true;
+            });
+        return spans;
+      }
+
+      await pump(
+        tester,
+        const DpVerdictRow(
+          verdict: DpVerdict.wrong,
+          message: 'The answer is ফ্ল্যাট',
+          emphasis: <String>['ফ্ল্যাট'],
+        ),
+      );
+      final bangla = spansOf().singleWhere((s) => s.text == 'ফ্ল্যাট');
+      expect(bangla.locale, const Locale('bn', 'BD'));
+      expect(
+        bangla.style!.fontSize,
+        DpText.styleFor(
+          DpTokens.light(),
+          DpTextRole.body.oneStepLarger,
+        ).fontSize,
+      );
+
+      await pump(
+        tester,
+        const DpVerdictRow(
+          verdict: DpVerdict.wrong,
+          message: 'The answer is flat, apartment',
+          emphasis: <String>['flat, apartment'],
+        ),
+      );
+      final english = spansOf().singleWhere((s) => s.text == 'flat, apartment');
+      expect(english.locale, isNull, reason: "the app's voice");
+    });
+
     testWidgets('every verdict has an icon AND a word, never colour alone', (
       tester,
     ) async {
@@ -273,12 +354,13 @@ void main() {
       final spans = (text.textSpan! as TextSpan).children!.cast<TextSpan>();
       expect(
         [for (final s in spans) (s.text, s.style?.color)],
+        // The copy in the verdict's colour, each run its own now (#539).
         [
-          ('Artikel: ', null),
+          ('Artikel: ', DpPalette.light.wrongText),
           ('der', DpPalette.light.ink),
-          (', nicht ', null),
+          (', nicht ', DpPalette.light.wrongText),
           ('die', DpPalette.light.ink),
-          ('!', null),
+          ('!', DpPalette.light.wrongText),
         ],
       );
     });

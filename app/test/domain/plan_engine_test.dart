@@ -1510,6 +1510,11 @@ class FakeStore implements PlanStore {
 
   final Set<String> _everPlannedNew = <String>{};
 
+  /// A plain call: these tests open one day at a time. Overlapping openings
+  /// (#548) are `plan_store_test.dart`'s, over the real transaction.
+  @override
+  Future<T> atomically<T>(Future<T> Function() body) => body();
+
   @override
   Future<ActiveStep?> activeStep() async => enrollment;
 

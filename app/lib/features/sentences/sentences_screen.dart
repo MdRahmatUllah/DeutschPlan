@@ -440,14 +440,14 @@ class _SentencePageState extends ConsumerState<_SentencePage> {
     );
   }
 
-  List<InlineSpan> _spans(TextStyle style, Color underline) {
+  List<TextSpan> _spans(TextStyle style, Color underline) {
     for (final tap in _taps) {
       tap.dispose();
     }
     _taps.clear();
     final text = widget.item.sentence.german;
     final gap = widget.item.gap;
-    final spans = <InlineSpan>[];
+    final spans = <TextSpan>[];
     var at = 0;
     for (final match in RegExp(r'\p{L}+', unicode: true).allMatches(text)) {
       if (match.start > at) {
@@ -501,13 +501,11 @@ class _SentencePageState extends ConsumerState<_SentencePage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              Text.rich(
-                TextSpan(
-                  style: style,
-                  // Read in a German voice (#162).
-                  locale: DpScript.deDE,
-                  children: _spans(style, underline),
-                ),
+              // Read in a German voice (#162); a long compound breaks at a
+              // syllable at 200 % (#539).
+              DpGermanRuns(
+                _spans(style, underline),
+                style: style,
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 22),

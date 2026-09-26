@@ -25,6 +25,24 @@ class DriftPlanStore implements PlanStore {
   final AppDatabase _db;
   final SettingsRepository _settings;
 
+  /// One transaction (#548). Drift takes the database's lock before [body]
+  /// runs and holds it to the commit; every other statement or transaction
+  /// on the database, from any engine or isolate sharing it, waits. Inside,
+  /// statements through [_db] join it, and a nested transaction (addToPlan's)
+  /// is a savepoint.
+  ///
+  /// The settings [body] writes are in memory before the commit, as in
+  /// `SetupRepository.commit`: read back from the disk if it rolls back.
+  @override
+  Future<T> atomically<T>(Future<T> Function() body) async {
+    try {
+      return await _db.transaction(body);
+    } on Object {
+      await _settings.load();
+      rethrow;
+    }
+  }
+
   @override
   Future<List<MaskSpan>> studyDaysHistory() async =>
       decodeMaskHistory(_settings.read(SettingKeys.studyDaysHistory));

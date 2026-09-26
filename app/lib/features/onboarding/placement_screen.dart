@@ -343,20 +343,18 @@ class _Question extends ConsumerWidget {
           Row(
             children: <Widget>[
               Flexible(
-                child: Text.rich(
-                  TextSpan(
-                    // Read in a German voice (#162).
-                    locale: DpScript.deDE,
-                    children: <InlineSpan>[
-                      if (word.article != null &&
-                          item.kind != PlacementKind.article)
-                        TextSpan(
-                          text: '${word.article} ',
-                          style: TextStyle(color: articleColour),
-                        ),
-                      TextSpan(text: word.german),
-                    ],
-                  ),
+                // Read in a German voice (#162); a word too wide for the
+                // line breaks at a syllable, as a headword does (#539).
+                child: DpGermanRuns(
+                  <TextSpan>[
+                    if (word.article != null &&
+                        item.kind != PlacementKind.article)
+                      TextSpan(
+                        text: '${word.article} ',
+                        style: TextStyle(color: articleColour),
+                      ),
+                    TextSpan(text: word.german),
+                  ],
                   style: DpText.styleFor(
                     tokens,
                     DpTextRole.display,

@@ -431,6 +431,10 @@ void main() {
   });
 
   group("#419 the lines are the headword's own", () {
+    // A line break between two Bangla letters: the word broken, not shrunk
+    // whole (#522). A break after the opening "/" doesn't count.
+    final insideBangla = RegExp('[ঀ-৿‌]\n[ঀ-৿]');
+
     // Where each drawn line ends: after the headword's own newline, or the
     // paragraph broke it by itself, at a syllable with no "-" or anywhere.
     List<String> lineEnds(WidgetTester tester) {
@@ -609,16 +613,85 @@ void main() {
           expect(line, endsWith('\n'), reason: 'at $width: "$line"');
         }
       }
-      expect(await drawnAt(120, asked: true), contains('-\n'));
+      // Too wide even at 80 %: it breaks between aksharas, with no "-"
+      // (#522).
+      final pron = (await drawnAt(120, asked: true)).split('/')[1];
+      expect(pron, contains(insideBangla), reason: 'broken, not shrunk');
+      expect(pron, isNot(contains('-')));
       expect(
         await drawnAt(120, asked: false),
-        isNot(contains('-\n')),
+        isNot(contains('\n')),
         reason: 'not asked, the paragraph breaks it at a letter, as before',
       );
     });
 
-    testWidgets('#504 a Bangla pronunciation too wide for its line breaks '
-        'between aksharas, with its "-", and is read whole', (tester) async {
+    testWidgets('#522 a Bangla word a little too wide for its line shrinks '
+        'to fit it, whole; German beside it keeps its "-"', (tester) async {
+      const caption = 'Nomen · /ফেয়াগাঙেনহাইট্‌সবেভেল্টিগুং/';
+      final style = DpText.styleFor(DpTokens.light(), DpTextRole.body);
+      // Its width at its own (Bangla, one role up) size, then a line 90 %
+      // of it: too narrow for the word, wide enough for it at 90 %.
+      final painter = TextPainter(
+        text: TextSpan(
+          text: 'ফেয়াগাঙেনহাইট্‌সবেভেল্টিগুং/',
+          style: DpText.styleFor(
+            DpTokens.light(),
+            DpTextRole.body.oneStepLarger,
+          ),
+        ),
+        textDirection: TextDirection.ltr,
+      )..layout();
+      final width = painter.width * 0.9;
+      painter.dispose();
+      expect(style.fontSize, isNotNull);
+
+      await pump(
+        tester,
+        SizedBox(
+          width: width,
+          child: const DpText(
+            caption,
+            role: DpTextRole.body,
+            breakTooWide: true,
+          ),
+        ),
+      );
+      final spans = <TextSpan>[];
+      tester
+          .renderObject<RenderParagraph>(find.byType(RichText))
+          .text
+          .visitChildren((span) {
+            if (span is TextSpan && span.text != null) spans.add(span);
+            return true;
+          });
+      final bangla = spans.singleWhere((s) => DpScript.hasBengali(s.text!));
+      expect(bangla.text, isNot(contains('\n')), reason: 'whole');
+      expect(
+        bangla.style!.fontSize,
+        lessThan(
+          DpText.styleFor(
+            DpTokens.light(),
+            DpTextRole.body.oneStepLarger,
+          ).fontSize!,
+        ),
+        reason: 'shrunk',
+      );
+      expect(
+        bangla.style!.fontSize,
+        greaterThanOrEqualTo(
+          DpText.styleFor(
+                DpTokens.light(),
+                DpTextRole.body.oneStepLarger,
+              ).fontSize! *
+              DpScript.banglaShrink,
+        ),
+      );
+    });
+
+    testWidgets('#504 #522 a Bangla pronunciation too wide for its line, even '
+        'shrunk, breaks between aksharas with no "-", and is read whole', (
+      tester,
+    ) async {
       final semantics = tester.ensureSemantics();
       const caption =
           'die Geschwindigkeitsbegrenzung · '
@@ -646,7 +719,26 @@ void main() {
           .renderObject<RenderParagraph>(find.byType(RichText))
           .text
           .toPlainText(includeSemanticsLabels: false);
-      expect(drawn.split('/')[1], contains('-\n'), reason: drawn);
+      final pron = drawn.split('/')[1];
+      expect(pron, contains(insideBangla), reason: 'broken, not shrunk');
+      expect(pron, isNot(contains('-')), reason: 'no "-" in Bangla (#522)');
+      // Broken at the reduced size, the owner's order: shrink, then break.
+      final spans = <TextSpan>[];
+      tester
+          .renderObject<RenderParagraph>(find.byType(RichText))
+          .text
+          .visitChildren((span) {
+            if (span is TextSpan && span.text != null) spans.add(span);
+            return true;
+          });
+      final own = DpText.styleFor(
+        DpTokens.light(),
+        DpTextRole.body.oneStepLarger,
+      ).fontSize!;
+      expect(
+        spans.singleWhere((s) => DpScript.hasBengali(s.text!)).style!.fontSize,
+        moreOrLessEquals(own * DpScript.banglaShrink),
+      );
       expectNoWordBroken(tester);
       expect(
         tester.getSemantics(find.byType(RichText)).label,
@@ -867,6 +959,30 @@ void main() {
         '/${prons['Geschwindigkeitsbegrenzung']}/',
       );
       expect(long.indexOf(DpScript.softHyphen), greaterThan(3));
+    });
+  });
+
+  group('#539 the course German', () {
+    testWidgets('DpText(german: true) breaks a long compound too wide for '
+        'its line at a syllable, with its "-", though the text offers no '
+        'soft hyphen', (tester) async {
+      await pump(
+        tester,
+        const SizedBox(
+          width: 150,
+          child: DpText(
+            'Die Haftpflichtversicherung zahlt.',
+            role: DpTextRole.body,
+            german: true,
+          ),
+        ),
+      );
+      final drawn = tester
+          .renderObject<RenderParagraph>(find.byType(RichText))
+          .text
+          .toPlainText(includeSemanticsLabels: false);
+      expect(drawn, contains('-\n'));
+      expectNoWordBroken(tester);
     });
   });
 

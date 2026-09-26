@@ -335,6 +335,7 @@ class DpVerdictRow extends StatelessWidget {
     required this.message,
     super.key,
     this.emphasis = const <String>[],
+    this.germanEmphasis = false,
   });
 
   final DpVerdict verdict;
@@ -347,6 +348,11 @@ class DpVerdictRow extends StatelessWidget {
   /// order: a translation may put text around them, but must keep them in
   /// this order.
   final List<String> emphasis;
+
+  /// Whether [emphasis] is the course's German, read in a German voice. L8's
+  /// answer can be English or Bangla too (DE → EN, DE → বাংলা): then the
+  /// app's voice, or Bangla's, and Bangla one role up (#539).
+  final bool germanEmphasis;
 
   /// `correct` and `wrong` are a tick and a cross in the artboard, which
   /// Material has. `almost` is the mathematical "approximately equal" sign, and
@@ -395,21 +401,17 @@ class DpVerdictRow extends StatelessWidget {
             ),
           SizedBox(width: tokens.spacing.sm),
           Expanded(
+            // A long answer too wide for the line breaks at a syllable with
+            // its "-", not at a letter (#539).
             child: emphasis.isEmpty
                 ? DpText(
                     message,
                     role: DpTextRole.body,
                     weight: 600,
                     color: colour,
+                    breakTooWide: true,
                   )
-                : Text.rich(
-                    TextSpan(children: _spans(tokens.color.ink)),
-                    style: DpText.styleFor(
-                      tokens,
-                      DpTextRole.body,
-                      color: colour,
-                    ).copyWith(fontWeight: FontWeight.w600),
-                  ),
+                : DpRuns(_runs(tokens, colour)),
           ),
         ],
       ),
@@ -418,23 +420,40 @@ class DpVerdictRow extends StatelessWidget {
 }
 
 extension on DpVerdictRow {
-  List<InlineSpan> _spans(Color ink) {
-    final spans = <InlineSpan>[];
-    var at = 0;
+  /// [message] in runs: the app's copy in its colour, and each [emphasis],
+  /// the answer, in ink. Bangla one role up and in its voice, as [DpText]
+  /// sets it; the answer in a German voice only when it is German (#539).
+  List<TextSpan> _runs(DpTokens tokens, Color colour) {
+    TextStyle at(DpTextRole role) => DpText.styleFor(
+      tokens,
+      role,
+      color: colour,
+    ).copyWith(fontWeight: FontWeight.w600);
+    final latin = at(DpTextRole.body);
+    List<TextSpan> copy(String text) => DpScript.spans(
+      text,
+      latin: latin,
+      bengali: at(DpTextRole.body.oneStepLarger),
+    );
+    final runs = <TextSpan>[];
+    var from = 0;
     for (final part in emphasis) {
-      final found = part.isEmpty ? -1 : message.indexOf(part, at);
+      final found = part.isEmpty ? -1 : message.indexOf(part, from);
       if (found < 0) continue;
-      if (found > at) spans.add(TextSpan(text: message.substring(at, found)));
-      spans.add(
-        TextSpan(
-          text: part,
-          style: TextStyle(color: ink),
+      if (found > from) runs.addAll(copy(message.substring(from, found)));
+      runs.addAll(
+        DpScript.spans(
+          part,
+          latin: latin.copyWith(color: tokens.color.ink),
+          bengali: at(DpTextRole.body.oneStepLarger)
+              .copyWith(color: tokens.color.ink),
+          german: germanEmphasis,
         ),
       );
-      at = found + part.length;
+      from = found + part.length;
     }
-    if (at < message.length) spans.add(TextSpan(text: message.substring(at)));
-    return spans;
+    if (from < message.length) runs.addAll(copy(message.substring(from)));
+    return runs;
   }
 }
 

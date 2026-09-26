@@ -404,6 +404,11 @@ void main() {
       await tester.pumpAndSettle();
       expect(run.answers, [(1, 'দরজা', Verdict.wrong)]);
       expect(find.text(l10n.quizAnswerIs('বাড়ি')), findsOneWidget);
+      // #539: a Bangla answer in its own voice, not German's.
+      expect(
+        tester.widget<DpVerdictRow>(find.byType(DpVerdictRow)).germanEmphasis,
+        isFalse,
+      );
       bool selected(String tile) => tester
           .widget<DpSurface>(
             find
@@ -530,6 +535,8 @@ void main() {
       await answer(tester, 'der Mietvertag');
       final row = tester.widget<DpVerdictRow>(find.byType(DpVerdictRow));
       expect(row.emphasis, <String>['der Mietvertrag']);
+      // #539: a German answer, read in a German voice.
+      expect(row.germanEmphasis, isTrue);
 
       // Its speaker is drawn small and tapped at 48 dp.
       final semantics = tester.ensureSemantics();

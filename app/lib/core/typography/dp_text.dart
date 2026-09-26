@@ -164,6 +164,40 @@ abstract final class DpScript {
         .join(' ');
   }
 
+  /// [text] with syllables to break at only in a word wider than [width] at
+  /// [style] and [scaler], for text the planner can't lay out: T2's cloze,
+  /// whose gap is a widget (#539). A word that fits keeps its letters
+  /// together, so 100 % stays as drawn.
+  // ponytail: Flutter draws no "-" at the break (flutter/flutter#18443);
+  // a placeholder in `_Hyphenated`'s planner is the upgrade.
+  static String breakTooWide(
+    String text, {
+    required TextStyle style,
+    required double width,
+    required TextScaler scaler,
+  }) {
+    if (!width.isFinite) return text;
+    bool wider(String word) {
+      final painter = TextPainter(
+        text: TextSpan(text: word, style: style),
+        textDirection: TextDirection.ltr,
+        textScaler: scaler,
+      )..layout();
+      final over = painter.width > width;
+      painter.dispose();
+      return over;
+    }
+
+    return [
+      for (final word in text.split(' '))
+        word.isEmpty || word.contains(softHyphen) || !wider(word)
+            ? word
+            : hasBengali(word)
+            ? banglaBreaks(word)
+            : allowBreaks(word, threshold: 4),
+    ].join(' ');
+  }
+
   /// The word length [allowBreaks] starts at, for text in [context]. Above
   /// 100 % text any word of five letters or more may break at its syllables,
   /// not only a long compound: at 200 % a display-size "Wohnung" or
@@ -239,17 +273,24 @@ abstract final class DpScript {
     return breaks;
   }
 
+  /// How small a Bangla word too wide for its line may shrink before it
+  /// breaks instead (#522): the owner's "reduced size". Shrink first, and
+  /// break between aksharas, with no "-", only when even this doesn't fit.
+  // ponytail: 80 %, a floor that keeps a pronunciation legible beside its
+  // German; the owner can move it.
+  static const double banglaShrink = 0.8;
+
   /// [word], Bangla too wide for its line, with a soft hyphen between its
   /// aksharas (#504): before a consonant the letter before doesn't join
   /// with a hasanta, so no conjunct is split and a vowel sign stays on its
   /// letter. That takes in the content's own joints, a hasanta with a
   /// zero-width non-joiner ("…কাইট্‌|স…", "…কার্টেন্‌|আউ…"). Never before a
   /// consonant, or a conjunct, that such a joint, khanda-ta or the word's end
-  /// closes
-  /// ("…লা|ন্ট্‌" would take it from its syllable), before khanda-ta (ৎ),
+  /// closes ("…লা|ন্ট্‌" would take it from its syllable), before khanda-ta (ৎ),
   /// which ends one too, nor before an independent vowel but after a joint
   /// ("কা|ইট" would split a diphthong). Two aksharas from either end at
   /// least, so nothing breaks right after an opening "/" or "(".
+
   // ponytail: a legacy khanda-ta (ত্‍, a hasanta and a zero-width joiner)
   // isn't read as closed; the content writes ৎ.
   static String banglaBreaks(String word) {
@@ -375,7 +416,7 @@ class DpText extends StatelessWidget {
     Widget hyphenated(Widget child, List<TextSpan> runs) =>
         maxLines != null ||
             semanticsLabel != null ||
-            !(breakTooWide || text.contains(DpScript.softHyphen))
+            !(breakTooWide || german || text.contains(DpScript.softHyphen))
         ? child
         : _Hyphenated(runs: runs, child: child);
 
@@ -653,27 +694,93 @@ class DpHeadword extends StatelessWidget {
         };
 }
 
-/// The course's German in runs of their own style, as R1 draws a sentence
-/// with the searched word marked: a word too wide for its line breaks at a
-/// syllable and shows its "-", in its run's style, and a screen reader
-/// hears it whole in a German voice (#535, as [DpText] does, #419, #162).
-class DpGermanRuns extends StatelessWidget {
-  const DpGermanRuns(this.runs, {super.key});
+/// Text in runs of their own style and voice, laid out as [DpText] is: a
+/// word too wide for its line breaks at a syllable and shows its "-", in
+/// its run's style (#419), and a screen reader hears each run whole in its
+/// own voice (#162). For a text whose parts differ: T2's verdict, the
+/// German marked in the app's copy (#539).
+class DpRuns extends StatelessWidget {
+  const DpRuns(
+    this.runs, {
+    super.key,
+    this.style,
+    this.textAlign,
+    this.textScaler,
+    this.locale,
+  });
 
-  /// Each run's text and style.
+  /// Each run's text, style over [style], voice (`locale`) and tap.
   final List<TextSpan> runs;
+
+  /// What every run's style is over.
+  final TextStyle? style;
+  final TextAlign? textAlign;
+
+  /// None for a [WidgetSpan]'s text, scaled with its sentence already.
+  final TextScaler? textScaler;
+
+  /// The paragraph's, for shaping.
+  final Locale? locale;
 
   @override
   Widget build(BuildContext context) {
-    final tagged = <TextSpan>[
+    final merged = <TextSpan>[
       for (final run in runs)
-        TextSpan(text: run.text, style: run.style, locale: DpScript.deDE),
+        TextSpan(
+          text: run.text,
+          style: style?.merge(run.style) ?? run.style,
+          recognizer: run.recognizer,
+          locale: run.locale,
+        ),
     ];
     return _Hyphenated(
-      runs: tagged,
-      child: Text.rich(TextSpan(children: tagged), locale: DpScript.deDE),
+      runs: merged,
+      child: Text.rich(
+        TextSpan(children: merged),
+        locale: locale,
+        textAlign: textAlign,
+        textScaler: textScaler,
+      ),
     );
   }
+}
+
+/// The course's German in runs of their own style, as R1 draws a sentence
+/// with the searched word marked: [DpRuns], every run in a German voice
+/// (#535, #539).
+class DpGermanRuns extends StatelessWidget {
+  const DpGermanRuns(
+    this.runs, {
+    super.key,
+    this.style,
+    this.textAlign,
+    this.textScaler,
+  });
+
+  /// Each run's text, style over [style], and tap (T5's word look-up).
+  final List<TextSpan> runs;
+
+  /// What every run's style is over.
+  final TextStyle? style;
+  final TextAlign? textAlign;
+  final TextScaler? textScaler;
+
+  @override
+  Widget build(BuildContext context) => DpRuns(
+    <TextSpan>[
+      for (final run in runs)
+        TextSpan(
+          text: run.text,
+          style: run.style,
+          recognizer: run.recognizer,
+          locale: DpScript.deDE,
+        ),
+    ],
+    style: style,
+    textAlign: textAlign,
+    textScaler: textScaler,
+    locale: DpScript.deDE,
+  );
 }
 
 /// A headword, or a text, that wraps at a syllable shows the hyphen there,
@@ -722,16 +829,21 @@ class _RenderHyphenated extends RenderProxyBox {
   /// The last lines worked out, for the width, style and scale they were for.
   (double, TextStyle?, TextScaler, TextSpan)? _cache;
 
-  /// The runs, drawn as [texts] say.
-  TextSpan _span(TextStyle? root, List<String> texts) => TextSpan(
+  /// [runs], drawn as [texts] say.
+  TextSpan _span(
+    TextStyle? root,
+    List<TextSpan> runs,
+    List<String> texts,
+  ) => TextSpan(
     style: root,
     children: <InlineSpan>[
-      for (final (i, run) in _widget.runs.indexed)
+      for (final (i, run) in runs.indexed)
         // Read as it is, whatever lines it is drawn on, in its own voice: a
         // screen reader hears this paragraph when the text isn't a headword.
         TextSpan(
           text: texts[i],
           style: run.style,
+          recognizer: run.recognizer,
           locale: run.locale,
           semanticsLabel: run.text!.replaceAll(DpScript.softHyphen, ''),
         ),
@@ -739,7 +851,7 @@ class _RenderHyphenated extends RenderProxyBox {
   );
 
   TextSpan _plain(TextStyle? root) =>
-      _span(root, [for (final run in _widget.runs) run.text!]);
+      _span(root, _widget.runs, [for (final run in _widget.runs) run.text!]);
 
   TextPainter _painter(RenderParagraph paragraph, InlineSpan text) =>
       TextPainter(
@@ -783,24 +895,90 @@ class _RenderHyphenated extends RenderProxyBox {
       return measured;
     }
 
+    // [word] in [style], as small as it must be to fit a line of its own,
+    // down to [DpScript.banglaShrink] of its size; null if even that is
+    // too wide.
+    TextStyle? fitted(String word, TextStyle? style) {
+      final size = style?.fontSize ?? root?.fontSize;
+      if (size == null) return null;
+      for (var scale = 0.95; scale >= DpScript.banglaShrink - 0.001;) {
+        final smaller = (style ?? const TextStyle()).copyWith(
+          fontSize: size * scale,
+        );
+        if (widthOf([TextSpan(text: word, style: smaller)]) <= width) {
+          return smaller;
+        }
+        scale -= 0.05;
+      }
+      return null;
+    }
+
     // A word too wide for a line of its own breaks at its syllables,
     // whatever its length: "selbstbewusst" (13) at T2's display size (#419).
     // One that fits keeps its letters together, and its kerning. A Bangla
-    // one, a long compound's pronunciation, breaks between aksharas (#504).
-    final texts = [
-      for (final run in _widget.runs)
-        [
-          for (final word in run.text!.split(' '))
+    // one, a long compound's pronunciation, first shrinks to fit, in a run
+    // of its own; only one still too wide breaks, between aksharas (#504),
+    // and with no "-" (the owner's call, #522). German keeps its "-".
+    final runs = <TextSpan>[];
+    final texts = <String>[];
+    var shrunk = false;
+    for (final run in _widget.runs) {
+      var said = '';
+      var shown = '';
+      void part(String text, String drawn, TextStyle? style) {
+        if (text.isEmpty) return;
+        runs.add(
+          TextSpan(
+            text: text,
+            style: style,
+            recognizer: run.recognizer,
+            locale: run.locale,
+          ),
+        );
+        texts.add(drawn);
+      }
+
+      for (final (i, word) in run.text!.split(' ').indexed) {
+        final space = i == 0 ? '' : ' ';
+        final fits =
             word.isEmpty ||
-                    word.contains(DpScript.softHyphen) ||
-                    widthOf([TextSpan(text: word, style: run.style)]) <= width
+            word.contains(DpScript.softHyphen) ||
+            widthOf([TextSpan(text: word, style: run.style)]) <= width;
+        if (!fits && DpScript.hasBengali(word)) {
+          // Shrunk to fit; or, too wide even at the floor, broken between
+          // aksharas at that reduced size, the owner's order (#522).
+          final smaller = fitted(word, run.style);
+          final size = run.style?.fontSize ?? root?.fontSize;
+          final reduced =
+              smaller ??
+              (size == null
+                  ? run.style
+                  : (run.style ?? const TextStyle()).copyWith(
+                      fontSize: size * DpScript.banglaShrink,
+                    ));
+          part('$said$space', '$shown$space', run.style);
+          part(
+            word,
+            smaller == null ? DpScript.banglaBreaks(word) : word,
+            reduced,
+          );
+          (said, shown, shrunk) = ('', '', true);
+          continue;
+        }
+        said += '$space$word';
+        shown +=
+            '$space${fits
                 ? word
                 : DpScript.hasBengali(word)
                 ? DpScript.banglaBreaks(word)
-                : DpScript.allowBreaks(word, threshold: 4),
-        ].join(' '),
-    ];
+                : DpScript.allowBreaks(word, threshold: 4)}';
+      }
+      part(said, shown, run.style);
+    }
     final full = texts.join();
+    // A soft hyphen in Bangla breaks with no "-" (#522).
+    bool bare(int at) =>
+        at + 1 < full.length && DpScript.isBengaliRune(full.codeUnitAt(at + 1));
     final starts = [0];
     for (final text in texts) {
       starts.add(starts.last + text.length);
@@ -810,7 +988,7 @@ class _RenderHyphenated extends RenderProxyBox {
     // in the last's.
     List<InlineSpan> stretch(int from, int to, String end) {
       final spans = <TextSpan>[];
-      for (final (i, run) in _widget.runs.indexed) {
+      for (final (i, run) in runs.indexed) {
         final a = from > starts[i] ? from : starts[i];
         final b = to < starts[i + 1] ? to : starts[i + 1];
         if (a < b) {
@@ -852,7 +1030,7 @@ class _RenderHyphenated extends RenderProxyBox {
     var (line, end, after) = pieces.first;
     for (final (start, to, next) in pieces.skip(1)) {
       // Room for the "-" should the line end at this piece's syllable.
-      final hyphen = next == DpScript.softHyphen ? '-' : '';
+      final hyphen = next == DpScript.softHyphen && !bare(to) ? '-' : '';
       if (widthOf(stretch(line, to, hyphen)) <= width) {
         (end, after) = (to, next);
         continue;
@@ -870,7 +1048,7 @@ class _RenderHyphenated extends RenderProxyBox {
       for (var i = starts[run]; i < starts[run + 1]; i++) {
         text.write(switch (ends[i]) {
           ' ' => '\n',
-          DpScript.softHyphen => '-\n',
+          DpScript.softHyphen => bare(i) ? '\n' : '-\n',
           _ => full[i],
         });
         // After a dash, the line ends after it.
@@ -879,9 +1057,9 @@ class _RenderHyphenated extends RenderProxyBox {
       return text.toString();
     }
 
-    final shown = ends.isEmpty
+    final shown = ends.isEmpty && !shrunk
         ? plain
-        : _span(root, [for (var i = 0; i < texts.length; i++) drawn(i)]);
+        : _span(root, runs, [for (var i = 0; i < texts.length; i++) drawn(i)]);
     _cache = (width, root, paragraph.textScaler, shown);
     return shown;
   }
