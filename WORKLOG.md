@@ -665,3 +665,4 @@ able to tell what is going on without asking.
 - 2026-09-26 09:49 · agent-2 #535 · added to the board, lane C
 - 2026-09-26 09:54 · agent-2 #535 · claimed: fix(search): R1's sentence hits break a long compound at a letter at 200 % (found on device)
 - 2026-09-26 09:54 · agent-0 #537 · added to the board, lane C
+- 2026-09-26 09:54 · agent-0 #537 · assigned to agent-2

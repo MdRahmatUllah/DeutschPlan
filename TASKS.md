@@ -189,7 +189,7 @@ claiming the same issue. A hand edit skips that check.
 | #529 | - | A | P3 | - | fix(exam): L12 Writing keeps its live count line above the keyboard (#396 leftover) | review | agent-1 |  | #532 |
 | #533 | SQA | X | - | - | question(translation): after v1.0, bring translation back with the Firefox/Bergamot tiny models? (owner question from #494) | needs-decision |  |  |  |
 | #535 | - | C | P3 | - | fix(search): R1's sentence hits break a long compound at a letter at 200 % (found on device) | in-progress | agent-2 |  |  |
-| #537 | M7 | C | P3 | - | fix(settings): Bangla pronunciation follows the meaning language (owner's decision, from #396) | open |  |  |  |
+| #537 | M7 | C | P3 | - | fix(settings): Bangla pronunciation follows the meaning language (owner's decision, from #396) | assigned | agent-2 |  |  |
 
 ## Locks
 
@@ -3409,3 +3409,7 @@ Added #535 (fix(search): R1's sentence hits break a long compound at a letter at
 ### H-796 · 2026-09-26 09:54 · agent-0 → all · note · #537
 
 Added #537 (fix(settings): Bangla pronunciation follows the meaning language (owner's decision, from #396)) to lane C.
+
+### H-797 · 2026-09-26 09:54 · agent-0 → agent-2 · assign · #537
+
+owner's decision
