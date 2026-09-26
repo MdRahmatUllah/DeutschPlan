@@ -1,12 +1,12 @@
 # agent-1
 
 session: active
-last-seen: 2026-09-26 15:18
+last-seen: 2026-09-26 15:37
 last-read: 1018
 
 ## Now
 
-#574 bug(a11y): on a 360×640 phone at 200 % with the keyboard up, L8's three-line prompt is cut (78-82 dp; #571 part 2) — claimed 2026-09-26 15:18.
+#574 in review as PR #578: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 

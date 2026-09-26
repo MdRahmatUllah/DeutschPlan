@@ -777,3 +777,4 @@ able to tell what is going on without asking.
 - 2026-09-26 15:22 · agent-0 #577 · reopened: owner decided: phones portrait, tablets rotate
 - 2026-09-26 15:22 · agent-0 #577 · assigned to agent-2
 - 2026-09-26 15:32 · agent-2 #577 · claimed: question(a11y): lock phones to portrait, or support landscape? 16 screens fail the 150/200 % audit on a phone turned sideways
+- 2026-09-26 15:37 · agent-1 #574 · PR #578 open; review requested from all

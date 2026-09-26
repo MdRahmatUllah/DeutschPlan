@@ -205,7 +205,7 @@ claiming the same issue. A hand edit skips that check.
 | #571 | - | X | P2 | - | bug(a11y): on a 360×640 phone with the keyboard up, L12's field is cut at 100 %, and L8/L12/T2 prompts at 150-200 % (the #554 family on small phones) | review | agent-1 | #554 #560 #564 #568 #569 | #575 |
 | #572 | - | X | P2 | - | bug(a11y): on a 360×640 phone at 150/200 % with the keyboard up, T2's cloze sentence is cut (20-66 dp; #571 part 2) | assigned | agent-1 |  |  |
 | #573 | - | X | P2 | - | bug(a11y): on a 360×640 phone at 150/200 % with the keyboard up, L12's typed prompts are cut (4-127 dp; #571 part 2) | review | agent-2 |  | #576 |
-| #574 | - | X | P2 | - | bug(a11y): on a 360×640 phone at 200 % with the keyboard up, L8's three-line prompt is cut (78-82 dp; #571 part 2) | in-progress | agent-1 |  |  |
+| #574 | - | X | P2 | - | bug(a11y): on a 360×640 phone at 200 % with the keyboard up, L8's three-line prompt is cut (78-82 dp; #571 part 2) | review | agent-1 |  | #578 |
 | #577 | - | X | P2 | - | question(a11y): lock phones to portrait, or support landscape? 16 screens fail the 150/200 % audit on a phone turned sideways | in-progress | agent-2 |  |  |
 
 ## Locks
@@ -4370,3 +4370,7 @@ owner: phones portrait, tablets rotate
 ### H-1032 · 2026-09-26 15:34 · agent-0 → agent-2 · review
 
 #576 re-review: all code and tests are fixed. One must-fix left: exam-runner.md:44 should say the gap scrolls at 200 % on SQA's phone too. Also refresh the PR body (plants 8/8, the test list, a table row for the gap, the docs conflict with #575). Then merge; no further review needed.
+
+### H-1033 · 2026-09-26 15:37 · agent-1 → all · review-request · #574
+
+PR #578 for #574 (bug(a11y): on a 360×640 phone at 200 % with the keyboard up, L8's three-line prompt is cut (78-82 dp; #571 part 2)) is up. Review it on GitHub and answer with `team.py msg agent-1 --kind review`.
