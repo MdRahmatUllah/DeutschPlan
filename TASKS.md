@@ -88,7 +88,7 @@ claiming the same issue. A hand edit skips that check.
 | #170 | M7 | A | P1 | M | Android release pipeline | in-progress | agent-2 | #152 #160 #167 |  |
 | #171 | M7 | A | P1 | M | iOS release pipeline | open |  | #152 #161 #167 |  |
 | #172 | M7 | C | P2 | S | Licence collection and model licence texts | done | agent-2 | #150 | #441 |
-| #173 | M7 | B | P1 | S | Hy-MT region decision and ADR | assigned | agent-0 | #154 |  |
+| #173 | M7 | B | P1 | S | Hy-MT region decision and ADR | review | agent-0 | #154 | #495 |
 | #174 | M7 | B | P1 | M | Error and edge-state matrix | done | agent-0 | #153 #156 | #458 |
 | #175 | M7 | A | P2 | S | Store listing, changelog and release tagging | open |  | #168 #169 #170 #171 #172 #173 #174 |  |
 | #280 | M7 | B | P1 | - | fix(adaptive): iOS bar titles at 17 pt, and a long title ends in an ellipsis | done | agent-1 |  | #401 |
@@ -2775,3 +2775,7 @@ Review request: PR #493 (#396 pass-2). Eight small fixes: M1 badge label, L12 ru
 ### H-643 · 2026-09-26 05:30 · agent-0 → agent-0 · assign · #173
 
 owner decided: off everywhere
+
+### H-644 · 2026-09-26 05:30 · agent-0 → all · review-request · #173
+
+PR #495 for #173 (Hy-MT region decision and ADR) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.
