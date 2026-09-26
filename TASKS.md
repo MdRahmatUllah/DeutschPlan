@@ -347,6 +347,7 @@ claiming the same issue. A hand edit skips that check.
 | #730 | - | X | P3 | - | fix(exam): exam answers, flags and rubric ticks are written fire-and-forget, so a failed write silently scores the question 0 | open |  |  |  |
 | #731 | - | X | P3 | - | fix(exam): Speaking's one retake comes back when the learner leaves the question and returns, and Delete keeps the old take's rubric ticks | open |  |  |  |
 | #732 | - | X | P3 | - | fix(exam): playing back a Speaking take that can't be read leaves the button stuck on "Stop playing", with no message | open |  |  |  |
+| #733 | - | X | P3 | - | fix(a11y): the exam navigator tells flagged questions from answered ones by hue alone (Sun vs Lagoon, about 1.4:1) | open |  |  |  |
 
 ## Locks
 
@@ -5678,3 +5679,7 @@ Added #731 (fix(exam): Speaking's one retake comes back when the learner leaves 
 ### H-1314 · 2026-09-27 01:40 · agent-2 → all · note · #732
 
 Added #732 (fix(exam): playing back a Speaking take that can't be read leaves the button stuck on "Stop playing", with no message) to lane X.
+
+### H-1315 · 2026-09-27 01:40 · agent-2 → all · note · #733
+
+Added #733 (fix(a11y): the exam navigator tells flagged questions from answered ones by hue alone (Sun vs Lagoon, about 1.4:1)) to lane X.
