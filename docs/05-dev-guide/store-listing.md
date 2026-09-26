@@ -43,8 +43,8 @@ MADE FOR YOU
 • Light, dark and glass themes, text up to 200 %, and screen-reader support
 • The app in English or Bangla
 
-### What's new (1.0.0)
-The first release: a complete German course from A1.1 to C2.2 that works offline, with spaced revision, quizzes, three mock exams per step and an optional on-device voice.
+### What's new (1.0.1)
+Large text works better, in English and in Bangla: up to 200 %, typing no longer hides the question, the field or the exam clock, and long words and labels show whole. On phones the app stays upright; on tablets it turns.
 
 ## Bangla (bn-BD)
 
@@ -85,8 +85,8 @@ DeutschPlan একটি পূর্ণাঙ্গ জার্মান ক�
 • লাইট, ডার্ক আর গ্লাস থিম, ২০০ % পর্যন্ত বড় লেখা, আর স্ক্রিন রিডার সাপোর্ট
 • অ্যাপ ইংরেজি বা বাংলায়
 
-### What's new (1.0.0)
-প্রথম রিলিজ: A1.1 থেকে C2.2 পর্যন্ত একটি পূর্ণাঙ্গ অফলাইন জার্মান কোর্স, স্পেসড রিভিশন, কুইজ, প্রতিটি ধাপে তিনটি মক পরীক্ষা আর ঐচ্ছিক অন-ডিভাইস কণ্ঠসহ।
+### What's new (1.0.1)
+বড় লেখায় অ্যাপ এখন আরও ভালো চলে, ইংরেজি ও বাংলা দুটোতেই: ২০০ % পর্যন্ত লেখায় টাইপ করার সময় প্রশ্ন, লেখার ঘর বা পরীক্ষার ঘড়ি আর ঢাকা পড়ে না, আর লম্বা শব্দ ও লেবেল পুরো দেখা যায়। ফোনে অ্যাপ খাড়াই থাকে; ট্যাবলেটে ঘোরানো যায়।
 
 ## Screenshots
 

@@ -2,19 +2,23 @@
 
 from __future__ import annotations
 
+import re
 import sqlite3
 from pathlib import Path
 
 import pytest
 
 LISTING = Path(__file__).resolve().parents[2] / "docs" / "05-dev-guide" / "store-listing.md"
+PUBSPEC = LISTING.parents[2] / "app" / "pubspec.yaml"
+# The release's version: What's new is always the one being released.
+VERSION = re.search(r"^version: (\d+\.\d+\.\d+)", PUBSPEC.read_text(encoding="utf-8"), re.M)[1]
 
 # Play Console's limits, in characters.
 LIMITS = {
     "Title": 30,
     "Short description": 80,
     "Full description": 4000,
-    "What's new (1.0.0)": 500,
+    f"What's new ({VERSION})": 500,
 }
 
 

@@ -2,7 +2,7 @@ name: deutschplan
 description: "An exam-structured, fully offline German study plan from A1.1 to C2.2."
 publish_to: 'none'
 
-version: 1.0.0+1
+version: 1.0.1+2
 
 environment:
   sdk: ^3.13.0
