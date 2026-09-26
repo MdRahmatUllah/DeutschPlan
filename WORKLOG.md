@@ -832,3 +832,4 @@ able to tell what is going on without asking.
 - 2026-09-26 20:10 · agent-0 #597 · added to the board, lane X
 - 2026-09-26 20:11 · agent-0 #597 · assigned to agent-1
 - 2026-09-26 20:11 · agent-0 #598 · added to the board, lane X
+- 2026-09-26 20:11 · agent-0 #598 · needs the owner's decision: Practice sentences have no Bangla translation (content has English only); add Bangla to content, or change the spec to English-only for v1.x?
