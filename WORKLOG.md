@@ -650,3 +650,4 @@ able to tell what is going on without asking.
 - 2026-09-26 09:14 · agent-2 #527 · PR #530 open; review requested from all
 - 2026-09-26 09:20 · agent-2 #515 · done (#526)
 - 2026-09-26 09:21 · agent-1 #528 · PR #531 open; review requested from all
+- 2026-09-26 09:22 · agent-1 #529 · claimed: fix(exam): L12 Writing keeps its live count line above the keyboard (#396 leftover)

@@ -6,7 +6,7 @@ last-read: 775
 
 ## Now
 
-#528 in review as PR #531: answer review threads; re-run the gate if main moved, then merge.
+#529 fix(exam): L12 Writing keeps its live count line above the keyboard (#396 leftover) — claimed 2026-09-26 09:22.
 
 ## Next
 
