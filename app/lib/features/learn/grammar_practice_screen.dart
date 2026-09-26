@@ -544,22 +544,20 @@ class _Sentence extends StatelessWidget {
     final tail = after.isEmpty || RegExp(r'^[.,!?;:…]').hasMatch(after)
         ? after
         : ' $after';
-    return Text.rich(
+    // A long compound breaks at a syllable at 200 % (#539).
+    // The German in a German voice; the blank, "_____", in the app's (#539).
+    return DpRuns(<TextSpan>[
+      if (before.isNotEmpty) TextSpan(text: '$before ', locale: DpScript.deDE),
       TextSpan(
-        style: style,
-        children: <InlineSpan>[
-          if (before.isNotEmpty) TextSpan(text: '$before '),
-          TextSpan(
-            text: filled ?? '_____',
-            style: style.copyWith(
-              color: filled == null ? tokens.color.textSecondary : null,
-              fontWeight: filled == null ? null : FontWeight.w700,
-            ),
-          ),
-          TextSpan(text: tail),
-        ],
+        text: filled ?? '_____',
+        style: TextStyle(
+          color: filled == null ? tokens.color.textSecondary : null,
+          fontWeight: filled == null ? null : FontWeight.w700,
+        ),
+        locale: filled == null ? null : DpScript.deDE,
       ),
-    );
+      TextSpan(text: tail, locale: DpScript.deDE),
+    ], style: style);
   }
 }
 

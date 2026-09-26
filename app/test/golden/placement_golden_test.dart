@@ -39,10 +39,40 @@ void main() {
       child: PlacementScreen(seed: 2, onDone: (_) {}),
     ),
   );
+
+  // #539: a long compound, whichever the seed picks, breaks at a syllable
+  // at 200 % with its "-", as a headword does; the text audit checks it.
+  goldenTest(
+    'placement_long',
+    builder: (context) => ProviderScope(
+      overrides: <Override>[
+        languagesProvider.overrideWith(
+          () => _FixedLanguages(MeaningLanguage.english),
+        ),
+        contentDaoProvider.overrideWithValue(_A1Dao(db, _A1Dao.long)),
+        courseStepsProvider.overrideWith(
+          (ref) async => const <CourseStep>[
+            (code: 'A1.1', levelCode: 'A1', wordCount: 637),
+            (code: 'A1.2', levelCode: 'A1', wordCount: 679),
+          ],
+        ),
+      ],
+      child: PlacementScreen(seed: 2, onDone: (_) {}),
+    ),
+  );
 }
 
 class _A1Dao extends ContentDao {
-  _A1Dao(super.db);
+  _A1Dao(super.db, [this.nouns = _nouns]);
+
+  final List<(String, String, String)> nouns;
+
+  static const List<(String, String, String)> long = <(String, String, String)>[
+    ('die', 'Geschwindigkeitsbegrenzung', 'speed limit'),
+    ('die', 'Haftpflichtversicherung', 'liability insurance'),
+    ('die', 'Wohnungsgeberbestätigung', "landlord's confirmation"),
+    ('der', 'Einwohnermeldeamt', "residents' registration office"),
+  ];
 
   static const List<(String, String, String)> _nouns =
       <(String, String, String)>[
@@ -55,7 +85,7 @@ class _A1Dao extends ContentDao {
   @override
   Future<List<PlacementWord>> placementPool(String step) async =>
       <PlacementWord>[
-        for (final (i, (article, german, english)) in _nouns.indexed)
+        for (final (i, (article, german, english)) in nouns.indexed)
           PlacementWord(
             uid: '$step-$i',
             article: article,

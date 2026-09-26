@@ -70,8 +70,18 @@ void main() {
     },
   );
 
+  // #539: a long compound in the sentence breaks at a syllable at 200 %,
+  // with its "-", which the text audit checks.
+  const long = GapFill(
+    before: 'Auf dieser Strecke',
+    after: 'eine Geschwindigkeitsbegrenzung.',
+    answer: 'gilt',
+    translation: 'A speed limit applies on this stretch.',
+  );
+
   for (final (name, item) in <(String, GrammarItem)>[
     ('gap_fill', gap),
+    ('gap_fill_long', long),
     ('spot_the_error', spot),
     ('order_the_sentence', order),
     ('rule_recall', recall),

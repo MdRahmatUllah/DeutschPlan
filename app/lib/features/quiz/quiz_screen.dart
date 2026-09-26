@@ -455,6 +455,9 @@ class _Feedback extends ConsumerWidget {
             verdict: DpVerdict.values.byName(verdict.name),
             message: message,
             emphasis: emphasis,
+            // German only when it is: an English or Bangla answer in its
+            // own voice (#539).
+            germanEmphasis: heard != null,
           ),
         ),
         if (heard != null) ...<Widget>[

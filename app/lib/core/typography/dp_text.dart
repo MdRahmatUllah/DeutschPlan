@@ -164,6 +164,40 @@ abstract final class DpScript {
         .join(' ');
   }
 
+  /// [text] with syllables to break at only in a word wider than [width] at
+  /// [style] and [scaler], for text the planner can't lay out: T2's cloze,
+  /// whose gap is a widget (#539). A word that fits keeps its letters
+  /// together, so 100 % stays as drawn.
+  // ponytail: Flutter draws no "-" at the break (flutter/flutter#18443);
+  // a placeholder in `_Hyphenated`'s planner is the upgrade.
+  static String breakTooWide(
+    String text, {
+    required TextStyle style,
+    required double width,
+    required TextScaler scaler,
+  }) {
+    if (!width.isFinite) return text;
+    bool wider(String word) {
+      final painter = TextPainter(
+        text: TextSpan(text: word, style: style),
+        textDirection: TextDirection.ltr,
+        textScaler: scaler,
+      )..layout();
+      final over = painter.width > width;
+      painter.dispose();
+      return over;
+    }
+
+    return [
+      for (final word in text.split(' '))
+        word.isEmpty || word.contains(softHyphen) || !wider(word)
+            ? word
+            : hasBengali(word)
+            ? banglaBreaks(word)
+            : allowBreaks(word, threshold: 4),
+    ].join(' ');
+  }
+
   /// The word length [allowBreaks] starts at, for text in [context]. Above
   /// 100 % text any word of five letters or more may break at its syllables,
   /// not only a long compound: at 200 % a display-size "Wohnung" or
@@ -375,7 +409,7 @@ class DpText extends StatelessWidget {
     Widget hyphenated(Widget child, List<TextSpan> runs) =>
         maxLines != null ||
             semanticsLabel != null ||
-            !(breakTooWide || text.contains(DpScript.softHyphen))
+            !(breakTooWide || german || text.contains(DpScript.softHyphen))
         ? child
         : _Hyphenated(runs: runs, child: child);
 
@@ -653,27 +687,93 @@ class DpHeadword extends StatelessWidget {
         };
 }
 
-/// The course's German in runs of their own style, as R1 draws a sentence
-/// with the searched word marked: a word too wide for its line breaks at a
-/// syllable and shows its "-", in its run's style, and a screen reader
-/// hears it whole in a German voice (#535, as [DpText] does, #419, #162).
-class DpGermanRuns extends StatelessWidget {
-  const DpGermanRuns(this.runs, {super.key});
+/// Text in runs of their own style and voice, laid out as [DpText] is: a
+/// word too wide for its line breaks at a syllable and shows its "-", in
+/// its run's style (#419), and a screen reader hears each run whole in its
+/// own voice (#162). For a text whose parts differ: T2's verdict, the
+/// German marked in the app's copy (#539).
+class DpRuns extends StatelessWidget {
+  const DpRuns(
+    this.runs, {
+    super.key,
+    this.style,
+    this.textAlign,
+    this.textScaler,
+    this.locale,
+  });
 
-  /// Each run's text and style.
+  /// Each run's text, style over [style], voice (`locale`) and tap.
   final List<TextSpan> runs;
+
+  /// What every run's style is over.
+  final TextStyle? style;
+  final TextAlign? textAlign;
+
+  /// None for a [WidgetSpan]'s text, scaled with its sentence already.
+  final TextScaler? textScaler;
+
+  /// The paragraph's, for shaping.
+  final Locale? locale;
 
   @override
   Widget build(BuildContext context) {
-    final tagged = <TextSpan>[
+    final merged = <TextSpan>[
       for (final run in runs)
-        TextSpan(text: run.text, style: run.style, locale: DpScript.deDE),
+        TextSpan(
+          text: run.text,
+          style: style?.merge(run.style) ?? run.style,
+          recognizer: run.recognizer,
+          locale: run.locale,
+        ),
     ];
     return _Hyphenated(
-      runs: tagged,
-      child: Text.rich(TextSpan(children: tagged), locale: DpScript.deDE),
+      runs: merged,
+      child: Text.rich(
+        TextSpan(children: merged),
+        locale: locale,
+        textAlign: textAlign,
+        textScaler: textScaler,
+      ),
     );
   }
+}
+
+/// The course's German in runs of their own style, as R1 draws a sentence
+/// with the searched word marked: [DpRuns], every run in a German voice
+/// (#535, #539).
+class DpGermanRuns extends StatelessWidget {
+  const DpGermanRuns(
+    this.runs, {
+    super.key,
+    this.style,
+    this.textAlign,
+    this.textScaler,
+  });
+
+  /// Each run's text, style over [style], and tap (T5's word look-up).
+  final List<TextSpan> runs;
+
+  /// What every run's style is over.
+  final TextStyle? style;
+  final TextAlign? textAlign;
+  final TextScaler? textScaler;
+
+  @override
+  Widget build(BuildContext context) => DpRuns(
+    <TextSpan>[
+      for (final run in runs)
+        TextSpan(
+          text: run.text,
+          style: run.style,
+          recognizer: run.recognizer,
+          locale: DpScript.deDE,
+        ),
+    ],
+    style: style,
+    textAlign: textAlign,
+    textScaler: textScaler,
+    locale: DpScript.deDE,
+  );
 }
 
 /// A headword, or a text, that wraps at a syllable shows the hyphen there,
@@ -732,6 +832,7 @@ class _RenderHyphenated extends RenderProxyBox {
         TextSpan(
           text: texts[i],
           style: run.style,
+          recognizer: run.recognizer,
           locale: run.locale,
           semanticsLabel: run.text!.replaceAll(DpScript.softHyphen, ''),
         ),
