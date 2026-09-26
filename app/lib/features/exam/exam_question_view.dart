@@ -1086,11 +1086,16 @@ class _ExamSpeakingState extends ConsumerState<ExamSpeaking> {
                                 weight: 700,
                               ),
                               const SizedBox(width: 4),
-                              DpText(
-                                l10n.examSpeakingOf(l10n.digits(_mmss(max))),
-                                role: DpTextRole.label,
-                                weight: 500,
-                                color: tokens.color.textSecondary,
+                              // The length gives way, wrapping under itself:
+                              // in Bangla at 200 % the two ran 5.9 dp past the
+                              // card on iOS (#588).
+                              Flexible(
+                                child: DpText(
+                                  l10n.examSpeakingOf(l10n.digits(_mmss(max))),
+                                  role: DpTextRole.label,
+                                  weight: 500,
+                                  color: tokens.color.textSecondary,
+                                ),
                               ),
                             ],
                           ),

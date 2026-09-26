@@ -45,7 +45,5 @@ void main() {
     devices: const <GoldenDevice>[GoldenDevice.phone],
     chrome: AdaptiveChrome.cupertino,
     builder: runner,
-    noBanglaAudit:
-        'the timer row overflows 5.9 dp at 200 %; iOS is Later, #588',
   );
 }
