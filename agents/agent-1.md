@@ -1,12 +1,12 @@
 # agent-1
 
 session: active
-last-seen: 2026-09-26 13:32
+last-seen: 2026-09-26 13:33
 last-read: 941
 
 ## Now
 
-#551 test(a11y): the 200 % golden audit also fails on text cut at maxLines (follow-up to #550) — claimed 2026-09-26 12:41.
+#561 bug(a11y): at 200 % with the keyboard up, a two-line L8 prompt shows only its last line whole (the first is cut under the progress bar; follow-up to #554) — claimed 2026-09-26 13:33.
 
 ## Next
 
