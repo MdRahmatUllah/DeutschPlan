@@ -67,14 +67,14 @@ void main() {
       expect(colours['splash_paper'], SgBrand.paper);
     }
 
-    test('FR-S1-01 #602 light is the light field and the kit’s tiles', () {
+    test('FR-S1-05 #602 light is the light field and the kit’s tiles', () {
       final colours = coloursIn('$res/values/colors.xml');
 
       expect(colours['splash_field'], SgPalette.light.primary);
       expectTheKitsTiles(colours);
     });
 
-    test('FR-S1-01 #602 and night is the dark field and the same tiles', () {
+    test('FR-S1-05 #602 and night is the dark field and the same tiles', () {
       final colours = coloursIn('$res/values-night/colors.xml');
 
       expect(colours['splash_field'], SgPalette.dark.primary);
@@ -129,7 +129,7 @@ void main() {
       expect(xml, contains('@drawable/splash_mark'));
     });
 
-    test('FR-S1-01 #602 and it is the one pre-12 phones read', () {
+    test('FR-S1-05 #602 and it is the one pre-12 phones read', () {
       // A `drawable-v21` copy wins over this file on every API the app runs
       // on (26+): the template's was there, and drew a plain window.
       expect(
@@ -198,17 +198,20 @@ void main() {
       }
     });
 
-    test('FR-S1-01 #602 carries the two tiles, their shadows and letters', () {
+    test('FR-S1-05 #602 carries the two tiles, their shadows and letters', () {
       for (final name in const <String>['splash_mark', 'splash_icon']) {
         final xml = mark(name);
 
         expect(RegExp('<path').allMatches(xml).length, 6, reason: name);
+        // The kit's own letters, as SgMark draws them: one letterform.
+        expect(xml, contains('android:pathData="M326 559'), reason: name);
+        expect(xml, contains('android:pathData="M521 0'), reason: name);
         expect(xml, contains('@color/splash_paper'), reason: name);
         expect(xml, contains('@color/splash_mark'), reason: name);
       }
     });
 
-    test('FR-S1-01 #602 the Android 12 icon keeps the kit’s 108 grid on the '
+    test('FR-S1-05 #602 the Android 12 icon keeps the kit’s 108 grid on the '
         '288 dp canvas', () {
       // Android draws the icon's canvas at 288 dp and masks it to the inner
       // two thirds, the adaptive icon's safe zone: the kit's art is inside.
@@ -217,9 +220,17 @@ void main() {
       expect(icon, contains('android:width="288dp"'));
       expect(icon, contains('android:viewportWidth="108"'));
       expect(icon, contains('android:viewportHeight="108"'));
+      // Raised so the point S1's square centres on, (54, 56 - 2/1.32), is
+      // the canvas's centre, where the platform centres the icon.
+      expect(
+        RegExp(r'<vector[^>]*>\s*<group android:translateY="([-0-9.]+)"')
+            .firstMatch(icon)
+            ?.group(1),
+        (54 - (56 - 2 / 1.32)).toStringAsFixed(4),
+      );
     });
 
-    test('FR-S1-01 #602 and pre-12 draws the tiles at that scale too', () {
+    test('FR-S1-05 #602 and pre-12 draws the tiles at that scale too', () {
       // S1's Flutter frame draws them at 288 / 108 dp per unit as well.
       final (across, down) = scale('splash_mark');
 
@@ -248,7 +259,7 @@ void main() {
       'xxxhdpi': 432,
     };
 
-    test('FR-S1-01 #602 is adaptive, with a monochrome layer for the '
+    test('#602 is adaptive, with a monochrome layer for the '
         'Android 13+ themed icon', () {
       final xml = read('$res/mipmap-anydpi-v26/ic_launcher.xml');
 
@@ -277,7 +288,7 @@ void main() {
       );
     });
 
-    test('FR-S1-01 #602 its ground is Lagoon, day and night', () {
+    test('#602 its ground is Lagoon, day and night', () {
       for (final values in const <String>['values', 'values-night']) {
         expect(
           coloursIn('$res/$values/colors.xml')['ic_launcher_background'],
@@ -287,24 +298,21 @@ void main() {
       }
     });
 
-    test(
-      'FR-S1-01 #602 every density has both layers, and the legacy icon',
-      () {
-        for (final MapEntry(key: density, value: px) in densities.entries) {
-          for (final layer in const <String>[
-            'ic_launcher_foreground',
-            'ic_launcher_monochrome',
-          ]) {
-            final path = '$res/mipmap-$density/$layer.png';
-            expect(File(path).existsSync(), isTrue, reason: path);
-            expect(pngSize(path), Size.square(px.toDouble()), reason: path);
-          }
-          // 48 dp, where a layer is 108 dp.
-          final legacy = '$res/mipmap-$density/ic_launcher.png';
-          expect(pngSize(legacy), Size.square(px * 48 / 108), reason: legacy);
+    test('#602 every density has both layers, and the legacy icon', () {
+      for (final MapEntry(key: density, value: px) in densities.entries) {
+        for (final layer in const <String>[
+          'ic_launcher_foreground',
+          'ic_launcher_monochrome',
+        ]) {
+          final path = '$res/mipmap-$density/$layer.png';
+          expect(File(path).existsSync(), isTrue, reason: path);
+          expect(pngSize(path), Size.square(px.toDouble()), reason: path);
         }
-      },
-    );
+        // 48 dp, where a layer is 108 dp.
+        final legacy = '$res/mipmap-$density/ic_launcher.png';
+        expect(pngSize(legacy), Size.square(px * 48 / 108), reason: legacy);
+      }
+    });
   });
 
   group('the iOS launch screen', () {

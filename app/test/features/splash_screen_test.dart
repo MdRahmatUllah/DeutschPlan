@@ -54,6 +54,20 @@ void main() {
       Theme.of(tester.element(find.byType(SplashScreen)))
           .extension<SgTokens>()!;
 
+  /// Whether two rects share more than an edge: a lockup scaled to fit its
+  /// slot ends where the caption starts, give or take a rounding.
+  bool overlap(Rect a, Rect b) => a.deflate(0.01).overlaps(b.deflate(0.01));
+
+  /// A phone of [size] dp at 3×, with a navigation bar of [bottom] dp.
+  void phone(WidgetTester tester, Size size, {double bottom = 0}) {
+    tester.view
+      ..devicePixelRatio = 3
+      ..physicalSize = size * 3
+      // Physical pixels, like the size.
+      ..padding = FakeViewPadding(bottom: bottom * 3);
+    addTearDown(tester.view.reset);
+  }
+
   group('the composition', () {
     testWidgets('#602 shows the tiles, the wordmark and the caption', (
       tester,
@@ -62,23 +76,79 @@ void main() {
 
       expect(find.byType(SgMark), findsOneWidget);
       expect(find.byType(SgWordmark), findsOneWidget);
-      expect(find.text(l10n.splashPreparing), findsOneWidget);
+      // Twice: the caption, and its twin over the lockup, which only holds
+      // the space that centres it, unseen and unread.
+      expect(find.text(l10n.splashPreparing), findsNWidgets(2));
+      final twin = find.ancestor(
+        of: find.text(l10n.splashPreparing).first,
+        matching: find.byType(Opacity),
+      );
+      expect(tester.widget<Opacity>(twin.first).opacity, 0);
     });
 
-    testWidgets('FR-S1-01 #602 the tiles are the size and place Android 12 '
+    testWidgets('FR-S1-05 #602 the tiles are the size and place Android 12 '
         'draws its splash icon: its 108 grid on 288 dp, at the centre', (
       tester,
     ) async {
       // `splash_icon.xml` is the kit's grid on a 288 dp canvas, which the
       // platform centres on the screen. The kit's lockup frames the grid at
       // 1.32× in its square, so the square is 288 / 1.32.
+      phone(tester, const Size(390, 844));
       await pump(tester);
-      final mark = find.byType(SgMark);
+      final mark = tester.getRect(find.byType(SgMark));
 
-      expect(tester.getSize(mark).width * 1.32, moreOrLessEquals(288));
+      expect(mark.width * 1.32, moreOrLessEquals(288));
+      expect(mark.center, const Offset(195, 422));
+    });
+
+    testWidgets('FR-S1-05 #602 and a navigation bar leaves them at the '
+        'screen’s centre, not the body’s', (tester) async {
+      // The scaffold keeps the body above the bar; the platform's splash
+      // centres its icon on the whole screen.
+      phone(tester, const Size(390, 844), bottom: 48);
+      await pump(tester);
+
       expect(
-        tester.getCenter(mark),
-        tester.getCenter(find.byType(SplashScreen)),
+        tester.getRect(find.byType(SgMark)).center,
+        const Offset(195, 422),
+      );
+    });
+
+    testWidgets('FR-S1-05 #602 on a short phone at 200 % text the lockup '
+        'shrinks clear of the caption', (tester) async {
+      phone(tester, const Size(360, 640), bottom: 48);
+      tester.platformDispatcher.textScaleFactorTestValue = 2;
+      addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+      await pump(tester, child: const SplashScreen(showProgress: true));
+
+      final caption = tester.getRect(find.text(l10n.splashPreparing).last);
+      expect(
+        overlap(caption, tester.getRect(find.byType(SgWordmark))),
+        isFalse,
+      );
+      expect(
+        overlap(caption, tester.getRect(find.byType(LinearProgressIndicator))),
+        isFalse,
+      );
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets('FR-S1-05 #602 and a 1024 × 600 tablet on its side, with a '
+        'navigation bar, does not overflow', (tester) async {
+      tester.view
+        ..devicePixelRatio = 2
+        ..physicalSize = const Size(2048, 1200)
+        ..padding = const FakeViewPadding(bottom: 96);
+      addTearDown(tester.view.reset);
+      await pump(tester, child: const SplashScreen(showProgress: true));
+
+      expect(tester.takeException(), isNull);
+      expect(
+        overlap(
+          tester.getRect(find.text(l10n.splashPreparing).last),
+          tester.getRect(find.byType(LinearProgressIndicator)),
+        ),
+        isFalse,
       );
     });
 
@@ -299,7 +369,7 @@ void main() {
       await tester.pump();
 
       expect(find.byType(SplashScreen), findsOneWidget);
-      expect(find.text(l10n.splashPreparing), findsOneWidget);
+      expect(find.text(l10n.splashPreparing), findsNWidgets(2));
 
       finished.complete(
         BootstrapFailed(
@@ -342,13 +412,13 @@ void main() {
         ),
       );
       await tester.pump();
-      expect(find.text(l10n.splashPreparing), findsOneWidget);
+      expect(find.text(l10n.splashPreparing), findsNWidgets(2));
 
       tell!(UiLanguage.bangla);
       await tester.pump();
 
       final bn = await AppLocalizations.delegate.load(const Locale('bn'));
-      expect(find.text(bn.splashPreparing), findsOneWidget);
+      expect(find.text(bn.splashPreparing), findsNWidgets(2));
       expect(tester.takeException(), isNull);
 
       finished.complete(

@@ -34,30 +34,41 @@ class SplashScreen extends StatelessWidget {
     final tokens = context.tokens;
     final l10n = AppLocalizations.of(context);
 
-    final body = Stack(
-      children: <Widget>[
-        // The mark at the screen's centre, where the platform's splash drew
-        // it. The scaffold keeps the body above the navigation bar, so the
-        // top gives back as much: the centre is the screen's, not the body's.
-        Padding(
-          padding: EdgeInsets.only(top: MediaQuery.paddingOf(context).bottom),
-          child: Center(child: SplashLockup(showProgress: showProgress)),
-        ),
-        Align(
-          alignment: Alignment.bottomCenter,
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(24, 0, 24, 48),
-            child: SgText(
-              l10n.splashPreparing,
-              role: SgTextRole.caption,
-              textAlign: TextAlign.center,
-              // Ink on the solid field, secondary on glass — the artboards
-              // differ here because the glass paper is much lighter.
-              color: tokens.isGlass ? tokens.color.textSecondary : null,
+    final caption = Padding(
+      padding: const EdgeInsets.fromLTRB(24, 0, 24, 48),
+      child: SgText(
+        l10n.splashPreparing,
+        role: SgTextRole.caption,
+        textAlign: TextAlign.center,
+        // Ink on the solid field, secondary on glass — the artboards
+        // differ here because the glass paper is much lighter.
+        color: tokens.isGlass ? tokens.color.textSecondary : null,
+      ),
+    );
+
+    // The mark at the screen's centre, where the platform's splash drew it.
+    // The scaffold keeps the body above the navigation bar, so the top gives
+    // back as much; and the caption's invisible twin over the lockup balances
+    // the caption under it (Opacity 0 also keeps it from a screen reader).
+    // So the centre is the screen's, and the lockup, scaled down on a screen
+    // too short for it, never reaches the caption.
+    final body = Padding(
+      padding: EdgeInsets.only(top: MediaQuery.paddingOf(context).bottom),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          Opacity(opacity: 0, child: caption),
+          Expanded(
+            child: Center(
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: SplashLockup(showProgress: showProgress),
+              ),
             ),
           ),
-        ),
-      ],
+          caption,
+        ],
+      ),
     );
 
     // Glass replaces the Lagoon field with the aurora paper, and the mark
@@ -106,7 +117,11 @@ class SplashLockup extends StatelessWidget {
       // not jump 3 px when bootstrap crosses the threshold.
       SizedBox(
         height: _SplashMetrics.ruleHeight,
-        child: showProgress ? const _ProgressRule() : null,
+        // Its own layer: the indeterminate bar animates every frame, and
+        // would otherwise repaint the mark and the wordmark with it.
+        child: showProgress
+            ? const RepaintBoundary(child: _ProgressRule())
+            : null,
       ),
     ],
   );
@@ -150,21 +165,23 @@ abstract final class _SplashMetrics {
 /// looking at the splash when bootstrap fails, and keeping the mark is what
 /// stops the failure reading as a crash into a different app.
 class SplashMark extends StatelessWidget {
-  const SplashMark({super.key});
+  const SplashMark({super.key, this.scale = 1});
+
+  /// S1's size times this. The error state draws it smaller, so the message
+  /// and its actions reach above the fold on a small phone.
+  final double scale;
 
   @override
   Widget build(BuildContext context) {
     final tokens = context.tokens;
+    final size = _SplashMetrics.markSize * scale;
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
-        if (tokens.isGlass)
-          const SgMark.appIcon(size: _SplashMetrics.markSize)
-        else
-          const SgMark(size: _SplashMetrics.markSize),
-        const SizedBox(height: _SplashMetrics.wordmarkGap),
+        if (tokens.isGlass) SgMark.appIcon(size: size) else SgMark(size: size),
+        SizedBox(height: _SplashMetrics.wordmarkGap * scale),
         SgWordmark(
-          fontSize: _SplashMetrics.wordmarkSize,
+          fontSize: _SplashMetrics.wordmarkSize * scale,
           colour: tokens.isGlass ? tokens.color.ink : SgBrand.ink,
         ),
       ],

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Resources the release build must keep though no XML or Kotlin names them.
+
+     Release builds shrink resources, and a resource named only from Dart looks
+     unused: `drawable/ic_notification` is the notification's small icon
+     (`PlatformReminderNotifications.smallIcon`), which the plugin looks up by
+     name at run time. Stripped, the lookup finds nothing and the reminder
+     fails to initialise (invalid_icon). `reminder_notifications_test.dart`
+     holds this list to the icon the code names. -->
+<resources xmlns:tools="http://schemas.android.com/tools"
+    tools:keep="@drawable/ic_notification" />

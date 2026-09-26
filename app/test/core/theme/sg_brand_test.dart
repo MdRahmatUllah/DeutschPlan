@@ -8,7 +8,7 @@ import 'package:material_ui/material_ui.dart';
 /// The brand kit's colours (#602): the kit's own table, and the palette the
 /// app's screens were drawn in, so the mark and the screens around it agree.
 void main() {
-  test('FR-S1-01 #602 the brand colours are the kit README table', () {
+  test('#602 the brand colours are the kit README table', () {
     // "| Lagoon (ground) | #00C2B2 |", one row per colour.
     final table = <String, Color>{
       for (final match
@@ -30,7 +30,7 @@ void main() {
     });
   });
 
-  test('FR-S1-01 #602 and they are the light palette and the two papers', () {
+  test('#602 and they are the light palette and the two papers', () {
     expect(SgBrand.lagoon, SgPalette.light.primary);
     expect(SgBrand.sun, SgPalette.light.accent);
     expect(SgBrand.ink, SgPalette.light.ink);

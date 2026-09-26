@@ -110,5 +110,5 @@ Sogda একটি পূর্ণাঙ্গ জার্মান কোর�
 ## Website and icon
 
 - **Website:** https://sogda.de, the brand kit's domain (#602): the Play Console's *Website* under the store listing's contact details.
-- **App icon:** [`docs/sogda-brand-kit/png/play-store-icon-512.png`](../sogda-brand-kit/png/play-store-icon-512.png), 512 × 512, the kit's tiles on full-bleed Lagoon. Play rounds the corners; add no shadow (the kit's rule). It is an RGB PNG: if the Console asks for 32-bit, add an opaque alpha channel and change nothing else. `test_store_listing.py` checks the file and its size.
+- **App icon:** [`docs/sogda-brand-kit/png/play-store-icon-512.png`](../sogda-brand-kit/png/play-store-icon-512.png), 512 × 512, the kit's tiles on full-bleed Lagoon. Play rounds the corners; add no shadow (the kit's rule). Play wants a 32-bit PNG with alpha, and the kit's file is RGB: upload an RGBA copy with an opaque alpha channel, and leave the kit's file as it is. `test_store_listing.py` checks the file and its size.
 - **Feature graphic** (1024 × 500, required before the first upload): not made yet. The kit names `svg/lockup-horizontal-tiles-light.svg` for it; variant B (the Silk Road dots) is allowed there too, never on the icon.

@@ -76,8 +76,8 @@ void main() {
     },
   );
 
-  test('FR-M5-02 #602 its small icon is the tiles drawable the app ships, '
-      'white on transparent', () async {
+  test('#602 its small icon is the tiles drawable the app ships, white on '
+      'transparent, and kept in a shrunk release build', () async {
     await PlatformReminderNotifications().init((_) {});
 
     final init = calls.singleWhere((call) => call.method == 'initialize');
@@ -92,6 +92,13 @@ void main() {
     expect(file.existsSync(), isTrue, reason: file.path);
     final xml = file.readAsStringSync();
     expect(xml, contains('<vector'));
+    // Named only from Dart, so the release build's resource shrinking would
+    // strip it without this.
+    final keep = File('android/app/src/main/res/raw/keep.xml')
+        .readAsStringSync()
+        .replaceAll(RegExp(r'<!--.*?-->', dotAll: true), '');
+    final kept = RegExp(r'tools:keep="([^"]*)"').firstMatch(keep)?.group(1);
+    expect(kept?.split(','), contains('@drawable/$name'));
     expect(
       RegExp(r'(?:fill|stroke)Color="([^"]+)"')
           .allMatches(xml)
