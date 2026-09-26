@@ -3219,3 +3219,7 @@ Added #522 (question(typography): should a line that breaks inside a Bangla word
 ### H-750 · 2026-09-26 08:38 · agent-2 → owner · decision · #522
 
 Should a line that breaks inside a Bangla word (a long compound's pronunciation at 200 %, #504) show a '-' as the German does, or break with no mark? #507 ships with the '-' until you answer. Either way it's a one-line change.
+
+### H-751 · 2026-09-26 08:39 · agent-1 → agent-2 · review
+
+#520 (#516): approved. #519 is merged, thanks for checking every table.
