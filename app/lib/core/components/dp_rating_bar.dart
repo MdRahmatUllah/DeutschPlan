@@ -68,24 +68,29 @@ class DpRatingBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final tokens = context.tokens;
 
-    return Row(
-      children: <Widget>[
-        for (final rating in DpRating.values) ...<Widget>[
-          if (rating != DpRating.again) SizedBox(width: tokens.spacing.sm),
-          Expanded(
-            child: Opacity(
-              opacity: only == null || only!.contains(rating) ? 1 : 0.35,
-              child: _RatingButton(
-                rating: rating,
-                interval: intervals[rating],
-                onRated: enabled && (only?.contains(rating) ?? true)
-                    ? onRated
-                    : null,
+    // One height for the four, the tallest's: an interval of a thousand
+    // days wraps in Bangla at 200 %, and its button grows with the others
+    // (#580). Each button's Column fills the row's height, which this bounds.
+    return IntrinsicHeight(
+      child: Row(
+        children: <Widget>[
+          for (final rating in DpRating.values) ...<Widget>[
+            if (rating != DpRating.again) SizedBox(width: tokens.spacing.sm),
+            Expanded(
+              child: Opacity(
+                opacity: only == null || only!.contains(rating) ? 1 : 0.35,
+                child: _RatingButton(
+                  rating: rating,
+                  interval: intervals[rating],
+                  onRated: enabled && (only?.contains(rating) ?? true)
+                      ? onRated
+                      : null,
+                ),
               ),
             ),
-          ),
+          ],
         ],
-      ],
+      ),
     );
   }
 }
@@ -121,12 +126,15 @@ class _RatingButton extends StatelessWidget {
           behavior: HitTestBehavior.opaque,
           // The artboard's 60: two lines of text (32) and the room around
           // them. The lines grow with the text size and the room doesn't: a
-          // fixed 60 overflowed at 200 % (#165).
+          // fixed 60 overflowed at 200 % (#165). A minimum: in Bangla at 200 %
+          // an interval of 1,000 days or more wraps (#580).
           child: Container(
-            height:
-                DpRatingBar.height -
-                32 +
-                DpScript.grow(context, 32, role: DpTextRole.label),
+            constraints: BoxConstraints(
+              minHeight:
+                  DpRatingBar.height -
+                  32 +
+                  DpScript.grow(context, 32, role: DpTextRole.label),
+            ),
             decoration: BoxDecoration(
               color: colour.withValues(alpha: rating.fillOpacity),
               borderRadius: BorderRadius.circular(tokens.shape.button),

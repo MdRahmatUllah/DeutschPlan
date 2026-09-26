@@ -4,6 +4,7 @@ import 'package:deutschplan/core/components/dp_feedback.dart';
 import 'package:deutschplan/core/components/dp_rating_bar.dart';
 import 'package:deutschplan/core/theme/app_theme.dart';
 import 'package:deutschplan/core/theme/dp_tokens.dart';
+import 'package:deutschplan/l10n/generated/app_localizations.dart';
 import 'package:deutschplan/main.dart'
     show appLocalizationsDelegates, supportedLocales;
 import 'package:flutter_test/flutter_test.dart';
@@ -365,10 +366,10 @@ void main() {
       );
     });
 
-    testWidgets('#580 in Bangla at 200 % the labels and intervals show whole, '
-        'a word too wide shrinking rather than breaking onto a third line', (
-      tester,
-    ) async {
+    testWidgets('#580 in Bangla at 200 % the labels and intervals show whole: '
+        'a word too wide shrinks rather than break, an interval of 1,234 days '
+        'wraps, and the four buttons grow to one height', (tester) async {
+      final bn = lookupAppLocalizations(const Locale('bn'));
       tester.view
         ..physicalSize = const Size(390, 844) * 3
         ..devicePixelRatio = 3;
@@ -383,11 +384,12 @@ void main() {
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: DpRatingBar(
                 onRated: (_) {},
-                intervals: const <DpRating, String>{
-                  DpRating.again: '১ দিন',
-                  DpRating.hard: '৩ দিন',
-                  DpRating.good: '৮ দিন',
-                  DpRating.easy: '২১ দিন',
+                intervals: <DpRating, String>{
+                  DpRating.again: bn.studyIntervalDays(1),
+                  DpRating.hard: bn.studyIntervalDays(3),
+                  DpRating.good: bn.studyIntervalDays(8),
+                  // FSRS allows up to 36,500; a 1,000+ day interval wraps.
+                  DpRating.easy: bn.studyIntervalDays(1234),
                 },
               ),
             ),
@@ -399,6 +401,22 @@ void main() {
       expectNothingClipped(tester, within: find.byType(DpRatingBar));
       expectAllLinesShown(tester, within: find.byType(DpRatingBar));
       expectNoWordBroken(tester, within: find.byType(DpRatingBar));
+      final heights = tester
+          .widgetList<Container>(
+            find.descendant(
+              of: find.byType(DpRatingBar),
+              matching: find.byType(Container),
+            ),
+          )
+          .map((container) => tester.getSize(find.byWidget(container)).height)
+          .toSet();
+      expect(heights, hasLength(1), reason: 'one height for the four');
+      expect(heights.single, greaterThan(DpRatingBar.height));
+      expect(
+        tester.getSize(find.byType(DpRatingBar)).height,
+        lessThan(DpRatingBar.height * 3),
+        reason: "the tallest button's height, not the screen's",
+      );
     });
 
     testWidgets('the interval preview shows under each label', (tester) async {
