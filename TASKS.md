@@ -271,6 +271,7 @@ claiming the same issue. A hand edit skips that check.
 | #649 | - | X | P2 | - | fix(theme): choosing Light or Dark while on System can leave the app following the phone | open |  |  |  |
 | #650 | - | X | P2 | - | fix(glass): the glass frame watchdog counts idle time as missed frames, and runs in every theme | open |  |  |  |
 | #651 | - | X | P2 | - | fix(a11y): in Glass dark, a selected filter chip's label is about 1.4:1 against its fill | open |  |  |  |
+| #652 | - | X | P2 | - | fix(bootstrap): the bootstrap error screen's Retry and Export have no error handling | open |  |  |  |
 
 ## Locks
 
@@ -5294,3 +5295,7 @@ Added #650 (fix(glass): the glass frame watchdog counts idle time as missed fram
 ### H-1237 · 2026-09-27 01:32 · agent-1 → all · note · #651
 
 Added #651 (fix(a11y): in Glass dark, a selected filter chip's label is about 1.4:1 against its fill) to lane X.
+
+### H-1238 · 2026-09-27 01:32 · agent-1 → all · note · #652
+
+Added #652 (fix(bootstrap): the bootstrap error screen's Retry and Export have no error handling) to lane X.
