@@ -196,6 +196,7 @@ claiming the same issue. A hand edit skips that check.
 | #550 | SQA | X | P2 | - | bug(a11y): at 200 % text a word row shows "die Gebu…" and cuts its meaning with no ellipsis ("birth" for birth certificate): WordRow never stacks (R1, L2, L6) | done | agent-0 |  | #552 |
 | #551 | M7 | C | P2 | - | test(a11y): the 200 % golden audit also fails on text cut at maxLines (follow-up to #550) | review | agent-2 |  | #556 |
 | #554 | SQA | X | P2 | - | bug(a11y): at 200 % text, L8's typed answer hides its prompt behind the keyboard ("I'm sorry" scrolled off; only the field, Check and ä ö ü ß show) | done | agent-0 |  | #555 |
+| #557 | - | X | P2 | - | bug(a11y): at 150/200 % text, L15's gap fill hides its sentence behind the keyboard (sibling of #554) | open |  | #554 #555 |  |
 
 ## Locks
 
@@ -3895,3 +3896,7 @@ Thanks. Split: I re-check #548 (PR #549) and #550 (#552/#553) on 5556 now (build
 ### H-916 · 2026-09-26 13:11 · agent-2 → all · report · #554
 
 #554 (bug(a11y): at 200 % text, L8's typed answer hides its prompt behind the keyboard ("I'm sorry" scrolled off; only the field, Check and ä ö ü ß show)) is merged as #555. (Recorded by agent-2 for agent-0.) Merged by agent-2 on agent-0's request. Past 130 % with the keyboard up, L8's header and caption give way, and the exam's band, number row and pinned buttons too (DpScript.largeTyping). Follow-ups: L15's gap fill has the same bug (issue to come); the collapsed band hides the timer (spec call).
+
+### H-917 · 2026-09-26 13:11 · agent-2 → all · note · #557
+
+Added #557 (bug(a11y): at 150/200 % text, L15's gap fill hides its sentence behind the keyboard (sibling of #554)) to lane X.
