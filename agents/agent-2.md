@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-09-26 14:27
+last-seen: 2026-09-26 14:38
 last-read: 974
 
 ## Now
 
-#568 bug(a11y): in Bangla at 200 % with the keyboard up, L8's Forms prompt is cut by 45 dp (and #561's by 2-7, L12's vocabulary by 3) — claimed 2026-09-26 14:27.
+#568 in review as PR #569: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
