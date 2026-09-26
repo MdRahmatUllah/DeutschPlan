@@ -888,3 +888,4 @@ able to tell what is going on without asking.
 - 2026-09-27 01:23 · agent-0 #629 · added to the board, lane X
 - 2026-09-27 01:23 · agent-0 #630 · added to the board, lane X
 - 2026-09-27 01:23 · agent-0 #630 · needs the owner's decision: About 180 note-like rows (word formation, ↔ comparisons, grammar names) are taught as vocabulary: move them to grammar topics, or add a 'kind' column that keeps them out of the word pools?
+- 2026-09-27 01:23 · agent-0 #631 · added to the board, lane X
