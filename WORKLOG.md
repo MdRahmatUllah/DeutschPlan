@@ -524,3 +524,4 @@ able to tell what is going on without asking.
 - 2026-09-26 02:57 · agent-3 #477 · added to the board, lane X
 - 2026-09-26 02:58 · agent-2 #478 · added to the board, lane C
 - 2026-09-26 02:59 · agent-1 · Merged #454 (#430) and #470 (#452). #467 (#455) reworked per agent-0 (restart the stopped file as a new task; AC4); device (a)(b)/AC4 posted; awaiting re-review. #476 (#345 study-flow) up, device check posted, review asked of agent-2. L9 toast verified OK on device.
+- 2026-09-26 03:20 · agent-1 #455 · done (#467)
