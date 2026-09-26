@@ -217,6 +217,13 @@ class ModelState {
       variant.bytes == 0 ? 0 : (bytesOnDisk / variant.bytes).clamp(0, 1);
 }
 
+/// FR-M4-04: Hy-MT's download is offered only in a build made with
+/// `--dart-define=ENABLE_HYMT_DOWNLOAD=true`. Off by default: the Tencent HY
+/// licence excludes the EU, the UK and South Korea, and every v1.0 build
+/// keeps it off (ADR 9, `translation.md`). M4 offers the download, and M3
+/// shows its Translation group, by it (#513).
+const bool enableHymtDownload = bool.fromEnvironment('ENABLE_HYMT_DOWNLOAD');
+
 /// Where models live on disk, and what makes one usable.
 ///
 /// The download itself is `background_downloader`'s job (FR-M4-01) and the

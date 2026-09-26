@@ -10,8 +10,6 @@ import 'package:deutschplan/data/repositories/model_repository.dart';
 import 'package:deutschplan/data/repositories/setting_keys.dart';
 import 'package:deutschplan/data/repositories/settings_repository.dart';
 import 'package:deutschplan/domain/fsrs.dart';
-import 'package:deutschplan/features/me/model_manager_screen.dart'
-    show enableHymtDownload;
 import 'package:deutschplan/features/me/reset_flow.dart';
 import 'package:deutschplan/features/today/today_providers.dart'
     show voiceInstalledProvider;
