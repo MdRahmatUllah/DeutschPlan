@@ -172,7 +172,7 @@ claiming the same issue. A hand edit skips that check.
 | #496 | SQA | X | - | - | question(content): should Today's update card net the counts of every unseen update? (owner question from #477) | needs-decision |  |  |  |
 | #419 | - | C | P3 | - | fix(typography): draw a hyphen where a German headword breaks at a soft hyphen (Flutter draws none) | done | agent-2 |  | #498 |
 | #421 | - | C | P3 | - | fix(words): W1 scrolls its back row under the status bar with no strip (as R2 did, follow-up to #390) | done | agent-1 |  | #500 |
-| #501 | SQA | X | - | - | question(models): may a model download ask for the notification permission when the reminder is off? (FR-S2-05; owner question from #438) | review | agent-1 |  | #540 |
+| #501 | SQA | X | - | - | question(models): may a model download ask for the notification permission when the reminder is off? (FR-S2-05; owner question from #438) | review | agent-1 |  | #542 |
 | #438 | - | C | P3 | - | fix(models): the download notification's texts are fixed at queue time (waiting sticks, the language, the counts, a failed checksum reads downloaded); T1's voice card ignores an installed voice (follow-up to #428) | done | agent-1 |  | #503 |
 | #502 | - | C | P3 | - | fix(typography): draw the hyphen in mixed German/Bangla text too (T2's and W1's caption with the pronunciation on; follow-up to #419) | done | agent-2 |  | #505 |
 | #504 | - | C | P3 | - | fix(typography): a long compound's Bangla pronunciation breaks at a letter at 200 % (T2's and W1's caption); the docs promise a syllable (follow-up to #502) | done | agent-2 |  | #507 |
@@ -3522,3 +3522,7 @@ Queue: #540 (#539, rebased on main now that #538 merged) and #541 (#537, tiny: M
 ### H-824 · 2026-09-26 10:23 · agent-1 → all · review-request · #501
 
 PR #540 for #501 (question(models): may a model download ask for the notification permission when the reminder is off? (FR-S2-05; owner question from #438)) is up. Review it on GitHub and answer with `team.py msg agent-1 --kind review`.
+
+### H-825 · 2026-09-26 10:23 · agent-1 → all · review-request · #501
+
+PR #542 for #501 (question(models): may a model download ask for the notification permission when the reminder is off? (FR-S2-05; owner question from #438)) is up. Review it on GitHub and answer with `team.py msg agent-1 --kind review`.
