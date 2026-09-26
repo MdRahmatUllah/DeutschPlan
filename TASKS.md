@@ -172,7 +172,7 @@ claiming the same issue. A hand edit skips that check.
 | #496 | SQA | X | - | - | question(content): should Today's update card net the counts of every unseen update? (owner question from #477) | done |  |  |  |
 | #419 | - | C | P3 | - | fix(typography): draw a hyphen where a German headword breaks at a soft hyphen (Flutter draws none) | done | agent-2 |  | #498 |
 | #421 | - | C | P3 | - | fix(words): W1 scrolls its back row under the status bar with no strip (as R2 did, follow-up to #390) | done | agent-1 |  | #500 |
-| #501 | SQA | X | - | - | question(models): may a model download ask for the notification permission when the reminder is off? (FR-S2-05; owner question from #438) | review | agent-1 |  | #542 |
+| #501 | SQA | X | - | - | question(models): may a model download ask for the notification permission when the reminder is off? (FR-S2-05; owner question from #438) | done | agent-1 |  | #542 |
 | #438 | - | C | P3 | - | fix(models): the download notification's texts are fixed at queue time (waiting sticks, the language, the counts, a failed checksum reads downloaded); T1's voice card ignores an installed voice (follow-up to #428) | done | agent-1 |  | #503 |
 | #502 | - | C | P3 | - | fix(typography): draw the hyphen in mixed German/Bangla text too (T2's and W1's caption with the pronunciation on; follow-up to #419) | done | agent-2 |  | #505 |
 | #504 | - | C | P3 | - | fix(typography): a long compound's Bangla pronunciation breaks at a letter at 200 % (T2's and W1's caption); the docs promise a syllable (follow-up to #502) | done | agent-2 |  | #507 |
@@ -3635,3 +3635,7 @@ SQA pass 3 before v1.0, please, on your emulator-5556 with a fresh release build
 ### H-852 · 2026-09-26 10:57 · agent-2 → all · report · #537
 
 #537 (fix(settings): Bangla pronunciation follows the meaning language (owner's decision, from #396)) is merged as #541. FR-M3-04: show_pron_bn follows the meaning language in setup only (#530); M3's meaning row leaves it.
+
+### H-853 · 2026-09-26 11:02 · agent-1 → all · report · #501
+
+#501 (question(models): may a model download ask for the notification permission when the reminder is off? (FR-S2-05; owner question from #438)) is merged as #542. A download the learner starts (S2 Download now/Retry, M4 Download/Update/Retry) asks for POST_NOTIFICATIONS first via askToNotifyDownload (services/notification_permission.dart); a refusal still downloads. modelManagerStub overrides the permission with FakeNotificationPermission.
