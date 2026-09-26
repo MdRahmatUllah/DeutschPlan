@@ -203,13 +203,18 @@ class _Cell extends StatelessWidget {
             child: SizedBox(
               height: 40,
               child: Center(
-                child: DpText(
-                  AppLocalizations.of(context).digits(n),
-                  role: DpTextRole.label,
-                  weight: 700,
-                  color: fill == null
-                      ? tokens.color.ink
-                      : tokens.color.onAccent,
+                // A number in a fixed cell shrinks to fit: a Bangla digit is
+                // a role larger, and at 200 % the 40 cut it (#580).
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: DpText(
+                    AppLocalizations.of(context).digits(n),
+                    role: DpTextRole.label,
+                    weight: 700,
+                    color: fill == null
+                        ? tokens.color.ink
+                        : tokens.color.onAccent,
+                  ),
                 ),
               ),
             ),

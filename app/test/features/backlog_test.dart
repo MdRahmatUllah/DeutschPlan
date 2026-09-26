@@ -28,6 +28,7 @@ import 'package:deutschplan/features/words/word_detail_screen.dart';
 import '../services/fake_tts.dart';
 
 import '../db/content_fixture.dart';
+import '../core/text_clipping.dart';
 
 /// T4 · Backlog — #108.
 void main() {
@@ -114,6 +115,8 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code, skipped,
     AdaptiveChrome chrome = AdaptiveChrome.material,
     bool empty = false,
     String at = '/today/backlog',
+    Locale? locale,
+    TextScaler? textScaler,
   }) async {
     spoken = <String>[];
     await tester.runAsync(open);
@@ -139,7 +142,15 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code, skipped,
             theme: AppTheme.light(),
             localizationsDelegates: appLocalizationsDelegates,
             supportedLocales: supportedLocales,
+            locale: locale,
             routerConfig: router(at: at),
+            builder: textScaler == null
+                ? null
+                : (context, child) => MediaQuery(
+                    data: MediaQuery.of(context)
+                        .copyWith(textScaler: textScaler),
+                    child: child!,
+                  ),
           ),
         ),
       ),
@@ -239,6 +250,22 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code, skipped,
       // Done, a revision and today's are not backlog.
       expect(word('die Straße'), findsOneWidget);
       expect(word('das Haus'), findsOneWidget);
+    });
+
+    testWidgets("#580 in Bangla at 200 % each day's line shows whole: it "
+        'wraps, and its row grows', (tester) async {
+      tester.view
+        ..physicalSize = const Size(390, 844) * 3
+        ..devicePixelRatio = 3;
+      addTearDown(tester.view.reset);
+      await pump(
+        tester,
+        locale: const Locale('bn'),
+        textScaler: const AndroidTextScaler(2),
+      );
+      expect(tester.takeException(), isNull);
+      expectNothingClipped(tester);
+      expectAllLinesShown(tester);
     });
 
     testWidgets('the header says where they come from, without pressure', (

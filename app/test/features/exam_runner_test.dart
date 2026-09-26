@@ -24,7 +24,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 
-import '../core/text_clipping.dart' show AndroidTextScaler;
+import '../core/text_clipping.dart'
+    show AndroidTextScaler, expectNothingClipped;
 import '../services/fake_tts.dart';
 import 'exam_run_fixtures.dart';
 
@@ -305,6 +306,26 @@ void main() {
       await tester.tap(find.bySemanticsLabel(l10n.examNavOpen));
       await tester.pumpAndSettle();
     }
+
+    testWidgets("#580 in Bangla at 200 % a question's number shows whole in "
+        'its cell', (tester) async {
+      final semantics = tester.ensureSemantics();
+      tester.view
+        ..physicalSize = const Size(390, 844) * 3
+        ..devicePixelRatio = 3;
+      addTearDown(tester.view.reset);
+      await pump(
+        tester,
+        textScaler: const AndroidTextScaler(2),
+        locale: const Locale('bn'),
+      );
+      await tester.tap(find.bySemanticsLabel(bn.examNavOpen));
+      await tester.pumpAndSettle();
+      expect(find.text(bn.examNavTitle), findsOneWidget);
+      expect(tester.takeException(), isNull);
+      expectNothingClipped(tester);
+      semantics.dispose();
+    });
 
     testWidgets('lists the numbered questions with their counts', (
       tester,
