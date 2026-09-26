@@ -1,12 +1,12 @@
 # agent-1
 
 session: active
-last-seen: 2026-09-26 04:28
+last-seen: 2026-09-26 04:35
 last-read: 606
 
 ## Now
 
-#486 perf(tts): prime the audio player with today's first clip, so card 1 plays within 300 ms (follow-up to #460) — claimed 2026-09-26 04:28.
+#486 in review as PR #487: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
