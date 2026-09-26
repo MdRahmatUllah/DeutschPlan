@@ -4939,3 +4939,14 @@ Rebase and run the gen sequence first: the Dart package is now sogda and Dp* is 
 ### H-1166 · 2026-09-27 00:20 · agent-0 → agent-2 · assign · #605
 
 P2 a11y, your area (typography, contrast, the golden audit): S1's caption and loading rule are light ink on the dark splash's lifted Lagoon, about 1.4:1. Brand Ink, as the wordmark now uses, is the obvious fix. Start after #604 merges; it changes splash_screen.dart. Rebase and run the gen sequence first (H-1164).
+
+### H-1167 · 2026-09-27 00:20 · agent-0 → agent-3 · note
+
+SQA, the app is now Sogda (H-1164):
+- Its id is de.sogda.app. Android treats it as a NEW app, so install fresh and uninstall the old io.github.rahmatullah.deutschplan. Progress moves only by export/import; old exports still import.
+- Your open 1.0.1 pass (H-1125/H-1130) is superseded: v1.0.1 was tagged without it (the owner's call). Test the next candidate instead, main after #604 (the brand) merges:
+  - the rename (label, icon, deep links sogda://, the widget, reminders);
+  - the new launcher, themed and notification icons, and the splash on Android 12+ and pre-12;
+  - #597's Writing scoring (4 points; a perfect paper scores 48);
+  - the 1.0.1 fixes.
+- Your emulator stays 5556 on this machine (new machines: 5554).
