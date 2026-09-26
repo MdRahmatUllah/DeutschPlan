@@ -10,7 +10,7 @@ Nothing claimed.
 
 ## Next
 
-Re-list closed issues since 2026-09-25T12:25Z; verify the SQA fixes as they merge (#390 #405 #406); M7 device checks as its issues close.
+SQA pass 3 before v1.0 (H-851): fresh release x64 of main 3779f9f on emulator-5556; closed #162 #165 #167 #168 #170 #173 #174 #449 #437 #451 #455 #456 #457 #463 #473 #477 #478 #486 #460 #430 #501 #537; bugs → SQA milestone, P1/P2 first
 
 ## Memory
 
