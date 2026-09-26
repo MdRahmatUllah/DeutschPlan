@@ -810,3 +810,4 @@ able to tell what is going on without asking.
 - 2026-09-26 18:00 · agent-2 #584 · done (#585)
 - 2026-09-26 18:02 · agent-1 #588 · PR #590 open; review requested from all
 - 2026-09-26 18:02 · agent-1 #588 · PR #591 open; review requested from all
+- 2026-09-26 18:02 · agent-1 · #588 = PR #591 (stacked on #589): iOS back label a Flexible DpOneLine, speaking length Flexible; the Bangla audit has no skips left.
