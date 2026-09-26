@@ -6,7 +6,7 @@ last-read: 818
 
 ## Now
 
-#537 fix(settings): Bangla pronunciation follows the meaning language (owner's decision, from #396) — claimed 2026-09-26 10:16.
+#537 in review as PR #541: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 

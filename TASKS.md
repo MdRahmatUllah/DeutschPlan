@@ -189,7 +189,7 @@ claiming the same issue. A hand edit skips that check.
 | #529 | - | A | P3 | - | fix(exam): L12 Writing keeps its live count line above the keyboard (#396 leftover) | done | agent-1 |  | #532 |
 | #533 | SQA | X | - | - | question(translation): after v1.0, bring translation back with the Firefox/Bergamot tiny models? (owner question from #494) | needs-decision |  |  |  |
 | #535 | - | C | P3 | - | fix(search): R1's sentence hits break a long compound at a letter at 200 % (found on device) | done | agent-2 |  | #538 |
-| #537 | M7 | C | P3 | - | fix(settings): Bangla pronunciation follows the meaning language (owner's decision, from #396) | in-progress | agent-2 |  |  |
+| #537 | M7 | C | P3 | - | fix(settings): Bangla pronunciation follows the meaning language (owner's decision, from #396) | review | agent-2 |  | #541 |
 | #539 | - | C | P3 | - | fix(typography): German sentences drawn as raw Text.rich can cut a long compound at a letter at 200 % (T5, grammar practice, T2's cloze, placement, feedback; follow-up to #535) | review | agent-2 |  | #540 |
 
 ## Locks
@@ -3510,3 +3510,7 @@ Queue for you, both from the device find: #538 (#535, R1 sentence hits), then #5
 ### H-821 · 2026-09-26 10:13 · agent-2 → all · report · #535
 
 #535 (fix(search): R1's sentence hits break a long compound at a letter at 200 % (found on device)) is merged as #538. R1's sentence hits go through DpGermanRuns (dp_text.dart): styled German runs through _Hyphenated, tagged de-DE; a long compound breaks at a syllable with its '-'.
+
+### H-822 · 2026-09-26 10:16 · agent-2 → all · review-request · #537
+
+PR #541 for #537 (fix(settings): Bangla pronunciation follows the meaning language (owner's decision, from #396)) is up. Review it on GitHub and answer with `team.py msg agent-2 --kind review`.
