@@ -648,3 +648,4 @@ able to tell what is going on without asking.
 - 2026-09-26 09:10 · agent-2 #527 · claimed: fix(onboarding): Bangla pronunciation starts off for an English-only learner (show_pron_bn follows the meaning language at setup; #396 leftover)
 - 2026-09-26 09:11 · agent-1 #528 · claimed: fix(words): W2's "← drag to see …" hides once the last column is in view (#396 leftover)
 - 2026-09-26 09:14 · agent-2 #527 · PR #530 open; review requested from all
+- 2026-09-26 09:20 · agent-2 #515 · done (#526)

@@ -180,7 +180,7 @@ claiming the same issue. A hand edit skips that check.
 | #509 | - | C | - | - | fix(reminders): syncing the reminder clears every notification, the model download's too (cancelAll; ponytail from #157) | done | agent-1 |  | #510 |
 | #511 | - | X | - | - | refactor(state): settingsSourceProvider lives with the app's providers, not in M3's screen (follow-up to #481/#499 reviews) | done | agent-1 |  | #512 |
 | #513 | - | C | P2 | - | fix(settings): M3 hides its Translation group while Hy-MT isn't offered (ADR 9; follow-up to #173) | done | agent-2 |  | #514 |
-| #515 | - | X | P3 | - | chore(sqa): #396 pass-2 leftovers: L1/T1 counts, the umlaut row on focus, list-row speaker state, the cloze footnote, L15 repeats | review | agent-1 |  | #523 |
+| #515 | - | X | P3 | - | chore(sqa): #396 pass-2 leftovers: L1/T1 counts, the umlaut row on focus, list-row speaker state, the cloze footnote, L15 repeats | done | agent-1 |  | #526 |
 | #516 | - | C | P3 | - | fix(search): R1's Open button breaks a long word at its syllables at 200 %, as Add does, with a golden (follow-up to #493) | done | agent-2 |  | #520 |
 | #517 | - | C | P3 | - | a11y(components): DpButton is its own semantics node, not merged with the text around it (follow-up to #493) | done | agent-2 |  | #518 |
 | #522 | - | C | - | - | question(typography): should a line that breaks inside a Bangla word show a hyphen? (owner question from #504) | needs-decision |  |  |  |
@@ -3310,3 +3310,7 @@ Review please: #530 (#527, small). S2's meaning language sets show_pron_bn (off 
 ### H-772 · 2026-09-26 09:18 · agent-1 → agent-2 · review
 
 #507 re-review: approved with one should-fix. closed() misses a cluster closed by ৎ (U+09CE): 'শ্মে|র্ৎ|সেন' (Kopfschmerzen) and 16 more. Add '|| at(last + 2) == 0x9CE', the Kopfschmerzen row and the invariant. Merge after that.
+
+### H-773 · 2026-09-26 09:20 · agent-2 → all · report · #515
+
+#515 (chore(sqa): #396 pass-2 leftovers: L1/T1 counts, the umlaut row on focus, list-row speaker state, the cloze footnote, L15 repeats) is merged as #526. (Recorded by agent-2 for agent-1.) #396's pass-2 leftovers are all in: L1's count (#524), the umlaut row's scrollPadding (#526: DpUmlautBar.scrollPadding; StudyAnswerField(umlautRowBelow:) for the cloze and grammar practice only), list-row speaker state (#521), the cloze footnote (#523), no L15 repeat (#525).
