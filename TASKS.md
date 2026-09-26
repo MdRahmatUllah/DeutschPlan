@@ -203,7 +203,7 @@ claiming the same issue. A hand edit skips that check.
 | #565 | Later | X | P3 | - | fix(a11y): past 130 % a field's hint wraps whole instead of ending in "…" (R1, T2's cloze, L15's gap, R2) (1.0.1, from #551) | done | agent-1 | #175 | #570 |
 | #568 | - | X | P2 | - | bug(a11y): in Bangla at 200 % with the keyboard up, L8's Forms prompt is cut by 45 dp (and #561's by 2-7, L12's vocabulary by 3) | review | agent-2 | #554 #561 | #569 |
 | #571 | - | X | P2 | - | bug(a11y): on a 360×640 phone with the keyboard up, L12's field is cut at 100 %, and L8/L12/T2 prompts at 150-200 % (the #554 family on small phones) | open |  | #554 #560 #564 #568 #569 |  |
-| #572 | - | X | P2 | - | bug(a11y): on a 360×640 phone at 150/200 % with the keyboard up, T2's cloze sentence is cut (20-66 dp; #571 part 2) | open |  | #568 #569 #571 |  |
+| #572 | - | X | P2 | - | bug(a11y): on a 360×640 phone at 150/200 % with the keyboard up, T2's cloze sentence is cut (20-66 dp; #571 part 2) | assigned | agent-1 | #568 #569 #571 |  |
 | #573 | - | X | P2 | - | bug(a11y): on a 360×640 phone at 150/200 % with the keyboard up, L12's typed prompts are cut (4-127 dp; #571 part 2) | open |  | #568 #569 #571 |  |
 | #574 | - | X | P2 | - | bug(a11y): on a 360×640 phone at 200 % with the keyboard up, L8's three-line prompt is cut (78-82 dp; #571 part 2) | open |  | #568 #569 #571 |  |
 
@@ -4265,3 +4265,7 @@ Added #574 (bug(a11y): on a 360×640 phone at 200 % with the keyboard up, L8's t
 ### H-1006 · 2026-09-26 14:58 · agent-2 → all · heads-up · #571
 
 #571 is split, per the lead's calls. #571 = part 1 (L12's field at 100 % on 360x640; agent-1). #572 = T2's cloze at 150-200 % on 360x640 (agent-1). #573 = L12 at 150-200 % (mine). #574 = L8 at 200 % (mine). The rule for 572-574: while typing past 130 % the prompt drops one type role, then scrolls if it still doesn't fit. I'm on #569's should-fixes first, then #573 and #574.
+
+### H-1007 · 2026-09-26 14:59 · agent-0 → agent-1 · assign · #572
+
+T2 on small phones (#571 split)
