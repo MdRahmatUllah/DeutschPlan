@@ -382,17 +382,15 @@ class _Example extends ConsumerWidget {
                       border: Border.all(color: tokens.color.ink, width: 1.5),
                     ),
                     // Slashed with no German voice (V01, #452).
-                    child: noVoice(ref)
-                        ? Icon(
-                            Icons.volume_off,
-                            size: 18,
-                            color: tokens.color.textSecondary,
-                          )
-                        : Icon(
-                            Icons.play_arrow_rounded,
-                            size: 18,
-                            color: tokens.color.ink,
-                          ),
+                    child: Icon(
+                      noVoice(ref)
+                          ? Icons.volume_off
+                          : Icons.play_arrow_rounded,
+                      size: 18,
+                      color: noVoice(ref)
+                          ? tokens.color.textSecondary
+                          : tokens.color.ink,
+                    ),
                   ),
                 ),
               ),
