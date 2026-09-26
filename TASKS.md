@@ -336,6 +336,7 @@ claiming the same issue. A hand edit skips that check.
 | #720 | - | X | P3 | - | fix(bootstrap): the start-up error screen ignores the learner's app language and follows the phone's | open |  |  |  |
 | #721 | - | X | P3 | - | chore(me): smaller items in Me and onboarding not in #692 or #704 (production review nits) | open |  |  |  |
 | #722 | - | X | P3 | - | chore(tools): smaller items in tools and content not in #697 (production review nits) | open |  |  |  |
+| #723 | - | X | P3 | - | docs(data): content.db is documented as read-only and user.db by the wrong name, the update flow is stale, and the manifest is decoded twice on every start | open |  |  |  |
 
 ## Locks
 
@@ -5623,3 +5624,7 @@ Added #721 (chore(me): smaller items in Me and onboarding not in #692 or #704 (p
 ### H-1303 · 2026-09-27 01:37 · agent-2 → all · note · #722
 
 Added #722 (chore(tools): smaller items in tools and content not in #697 (production review nits)) to lane X.
+
+### H-1304 · 2026-09-27 01:37 · agent-2 → all · note · #723
+
+Added #723 (docs(data): content.db is documented as read-only and user.db by the wrong name, the update flow is stale, and the manifest is decoded twice on every start) to lane X.
