@@ -19,12 +19,14 @@ void main() {
     WidgetTester tester,
     Widget child, {
     ThemeData? theme,
+    Locale? locale,
   }) async {
     await tester.pumpWidget(
       MaterialApp(
         theme: theme ?? AppTheme.light(),
         localizationsDelegates: appLocalizationsDelegates,
         supportedLocales: supportedLocales,
+        locale: locale,
         home: Scaffold(body: Center(child: child)),
       ),
     );
@@ -361,6 +363,42 @@ void main() {
         tester.getSize(find.byType(DpRatingBar)).height,
         DpRatingBar.height,
       );
+    });
+
+    testWidgets('#580 in Bangla at 200 % the labels and intervals show whole, '
+        'a word too wide shrinking rather than breaking onto a third line', (
+      tester,
+    ) async {
+      tester.view
+        ..physicalSize = const Size(390, 844) * 3
+        ..devicePixelRatio = 3;
+      addTearDown(tester.view.reset);
+      await pump(
+        tester,
+        Builder(
+          builder: (context) => MediaQuery(
+            data: MediaQuery.of(context)
+                .copyWith(textScaler: const AndroidTextScaler(2)),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: DpRatingBar(
+                onRated: (_) {},
+                intervals: const <DpRating, String>{
+                  DpRating.again: '১ দিন',
+                  DpRating.hard: '৩ দিন',
+                  DpRating.good: '৮ দিন',
+                  DpRating.easy: '২১ দিন',
+                },
+              ),
+            ),
+          ),
+        ),
+        locale: const Locale('bn'),
+      );
+      expect(tester.takeException(), isNull, reason: 'no overflow');
+      expectNothingClipped(tester, within: find.byType(DpRatingBar));
+      expectAllLinesShown(tester, within: find.byType(DpRatingBar));
+      expectNoWordBroken(tester, within: find.byType(DpRatingBar));
     });
 
     testWidgets('the interval preview shows under each label', (tester) async {

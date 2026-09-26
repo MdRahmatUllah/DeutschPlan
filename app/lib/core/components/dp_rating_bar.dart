@@ -135,7 +135,15 @@ class _RatingButton extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                DpText(name, role: DpTextRole.label, weight: 700),
+                // A word too wide for a quarter of the row shrinks before it
+                // would break: in Bangla at 200 % আবার broke onto a third
+                // line and overflowed the button by 30 dp (#522, #580).
+                DpText(
+                  name,
+                  role: DpTextRole.label,
+                  weight: 700,
+                  breakTooWide: true,
+                ),
                 if (interval != null)
                   DpText(
                     interval!,

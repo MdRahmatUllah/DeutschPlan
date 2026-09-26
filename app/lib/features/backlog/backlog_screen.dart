@@ -288,9 +288,12 @@ class _Backlog extends ConsumerWidget {
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 0, 4, 0),
               // The artboard's 40, grown with the text size: a fixed 40 cut
-              // the day's line at 150 % (#165).
-              child: SizedBox(
-                height: DpScript.grow(context, 40),
+              // the day's line at 150 % (#165). And a minimum: in Bangla at
+              // 200 % the line wraps, and a grown 40 cut it (#580).
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  minHeight: DpScript.grow(context, 40),
+                ),
                 child: Row(
                   children: <Widget>[
                     Expanded(
@@ -310,11 +313,16 @@ class _Backlog extends ConsumerWidget {
                         color: tokens.color.textSecondary,
                       ),
                     ),
-                    DpButton(
-                      label: l10n.backlogStudyDay,
-                      kind: DpButtonKind.text,
-                      expand: false,
-                      onPressed: _study(context, words),
+                    // Held to the row's 40, as before: only the day's line,
+                    // wrapping in Bangla at 200 %, makes the row taller.
+                    SizedBox(
+                      height: DpScript.grow(context, 40),
+                      child: DpButton(
+                        label: l10n.backlogStudyDay,
+                        kind: DpButtonKind.text,
+                        expand: false,
+                        onPressed: _study(context, words),
+                      ),
                     ),
                   ],
                 ),
