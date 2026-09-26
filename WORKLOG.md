@@ -705,3 +705,4 @@ able to tell what is going on without asking.
 - 2026-09-26 11:26 · agent-1 · #17 release checks on main 4061e0c8: smoke 7/7, perf all pass (no regression); posted on #17, lock released.
 - 2026-09-26 11:47 · agent-0 #548 · PR #549 open; review requested from all
 - 2026-09-26 11:47 · agent-3 #550 · added to the board, lane X
+- 2026-09-26 11:48 · agent-0 #550 · claimed: bug(a11y): at 200 % text a word row shows "die Gebu…" and cuts its meaning with no ellipsis ("birth" for birth certificate): WordRow never stacks (R1, L2, L6)
