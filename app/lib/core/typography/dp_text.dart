@@ -232,6 +232,13 @@ abstract final class DpScript {
   static bool large(BuildContext context) =>
       MediaQuery.textScalerOf(context).scale(14) > 14 * 1.3;
 
+  /// Whether the keyboard is up at [large] text, where the room above it is
+  /// a few lines and a typed question's screen gives its top bar's row to
+  /// what is asked (L8, L12, #554). Read it above the scaffold, which takes
+  /// the keyboard out of its body's inset (#529).
+  static bool largeTyping(BuildContext context) =>
+      large(context) && MediaQuery.viewInsetsOf(context).bottom > 0;
+
   static const String _vowels = 'aeiouyäöüAEIOUYÄÖÜ';
 
   /// The consonants that can open a German syllable together, besides any

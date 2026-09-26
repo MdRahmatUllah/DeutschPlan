@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:deutschplan/core/adaptive/adaptive.dart';
+import 'package:deutschplan/core/components/dp_button.dart';
 import 'package:deutschplan/core/components/dp_feedback.dart';
 import 'package:deutschplan/core/components/dp_speaker_button.dart';
 import 'package:deutschplan/core/providers/app_providers.dart';
@@ -10,6 +11,7 @@ import 'package:deutschplan/data/db/app_database.dart';
 import 'package:deutschplan/data/repositories/settings_repository.dart';
 import 'package:deutschplan/domain/exam_generator.dart';
 import 'package:deutschplan/domain/grammar_item_generator.dart';
+import 'package:deutschplan/domain/quiz_builder.dart' show FormLabel;
 import 'package:deutschplan/features/exam/exam_runner_screen.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
 import 'package:deutschplan/main.dart'
@@ -20,6 +22,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 
+import '../core/text_clipping.dart' show AndroidTextScaler;
 import '../services/fake_tts.dart';
 import 'exam_run_fixtures.dart';
 
@@ -38,6 +41,7 @@ void main() {
     WidgetTester tester, {
     StubExamRun? stub,
     List<Override> more = const <Override>[],
+    TextScaler? textScaler,
   }) async {
     run = stub ?? StubExamRun();
     left = <String>[];
@@ -66,6 +70,12 @@ void main() {
           localizationsDelegates: appLocalizationsDelegates,
           supportedLocales: supportedLocales,
           routerConfig: routes,
+          builder: textScaler == null
+              ? null
+              : (context, child) => MediaQuery(
+                  data: MediaQuery.of(context).copyWith(textScaler: textScaler),
+                  child: child!,
+                ),
         ),
       ),
     );
@@ -732,5 +742,128 @@ void main() {
     await tester.tap(find.byType(DpSpeakerButton));
     await tester.pumpAndSettle();
     expect(spoken, <String>['das Haus', 'das Haus', 'das Haus']);
+  });
+
+  group('L12 #554 a typed question with the keyboard up', () {
+    const keyboardTop = 731.0 - 300;
+
+    // What is asked, as the question shows it.
+    List<String> asked(ExamItem item) => switch (item) {
+      WordQuestion(:final prompt, :final form) => <String>[
+        if (form == null) prompt else l10n.quizFormPerfekt(prompt),
+      ],
+      GapQuestion(:final before, :final after, :final translation) => <String>[
+        '$before _____ $after',
+        translation,
+      ],
+      _ => const <String>[],
+    };
+
+    bool typing(WidgetTester tester) => tester
+        .widget<EditableText>(find.byType(EditableText))
+        .focusNode
+        .hasFocus;
+
+    Finder inTheList(String label) => find.descendant(
+      of: find.byType(ListView),
+      matching: find.widgetWithText(DpButton, label),
+      skipOffstage: false,
+    );
+
+    for (final item in <ExamItem>[
+      const WordQuestion(
+        ExamSection.reverse,
+        'sorry',
+        prompt: "I'm sorry",
+        expected: 'Es tut mir leid',
+      ),
+      const WordQuestion(
+        ExamSection.wordForms,
+        'benehmen',
+        prompt: 'sich benehmen',
+        expected: 'hat sich benommen',
+        form: FormLabel.perfekt,
+      ),
+      const GapQuestion(
+        'g1',
+        before: 'Ich',
+        after: 'gern einen Kaffee mit Milch.',
+        answer: 'trinke',
+        translation: 'I like drinking a coffee with milk.',
+      ),
+    ]) {
+      for (final (percent, scaler) in <(int, TextScaler)>[
+        (200, const AndroidTextScaler(2)),
+        (150, const AndroidTextScaler(1.5)),
+        (100, TextScaler.noScaling),
+      ]) {
+        testWidgets('${item is WordQuestion ? item.section.name : 'gap'} '
+            'at $percent %: past 130 % the question shows whole above the '
+            'field and the umlaut row, the buttons scrolling under it; at '
+            "100 % they stay pinned (#529); all is back at the keyboard's "
+            'going', (tester) async {
+          final large = percent > 130;
+          // SQA's 731 dp phone, its status bar, and a 300 dp keyboard.
+          tester.view
+            ..physicalSize = const Size(390, 731) * 3
+            ..devicePixelRatio = 3
+            ..padding = const FakeViewPadding(top: 24 * 3);
+          addTearDown(tester.view.reset);
+          await pump(
+            tester,
+            stub: StubExamRun(
+              items: <ExamItem>[item, ...artboardPaper()],
+              given: <int, String>{},
+            ),
+            textScaler: scaler,
+          );
+          await tester.showKeyboard(find.byType(TextField));
+          tester.view.viewInsets = const FakeViewPadding(bottom: 300 * 3);
+          await tester.pumpAndSettle();
+
+          expect(typing(tester), isTrue, reason: 'the field kept the keyboard');
+          final window = tester.getRect(find.byType(ListView));
+          expect(window.bottom, lessThanOrEqualTo(keyboardTop));
+          for (final (name, shown) in <(String, Finder)>[
+            // ponytail: at 100 % the buttons stay pinned (#529), and only
+            // the field is sure to show: a two-line gap's sentence sits
+            // above the window, as it did before #554.
+            if (large)
+              for (final text in asked(item)) (text, find.text(text)),
+            ('the field', find.byType(TextField)),
+          ]) {
+            final rect = tester.getRect(shown);
+            expect(rect.top, greaterThanOrEqualTo(window.top), reason: name);
+            expect(rect.bottom, lessThanOrEqualTo(window.bottom), reason: name);
+          }
+          expect(
+            tester.getRect(find.byType(DpUmlautBar)).bottom,
+            lessThanOrEqualTo(keyboardTop),
+          );
+          expect(
+            inTheList(l10n.examRunNext),
+            large ? findsOneWidget : findsNothing,
+          );
+          expect(
+            find.widgetWithText(DpButton, l10n.examRunNext),
+            findsOneWidget,
+          );
+          // Past 130 % the band keeps only its colour.
+          expect(
+            find.byIcon(Icons.pause),
+            large ? findsNothing : findsOneWidget,
+          );
+
+          tester.view.resetViewInsets();
+          await tester.pumpAndSettle();
+          expect(inTheList(l10n.examRunNext), findsNothing);
+          expect(
+            find.widgetWithText(DpButton, l10n.examRunNext),
+            findsOneWidget,
+          );
+          expect(find.byIcon(Icons.pause), findsOneWidget);
+        });
+      }
+    }
   });
 }

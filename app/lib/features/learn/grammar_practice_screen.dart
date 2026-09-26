@@ -283,11 +283,16 @@ class PracticeHeader extends StatelessWidget {
     required this.onClose,
     super.key,
     this.closeLabel,
+    this.collapsed = false,
   });
 
   final String title;
   final (int, int) place;
   final VoidCallback onClose;
+
+  /// Only its colour behind the status bar: L8 typing at large text gives
+  /// the row's room to its prompt until the keyboard goes (#554).
+  final bool collapsed;
 
   /// What a screen reader calls the close button: "Close practice" unless
   /// given.
@@ -302,54 +307,55 @@ class PracticeHeader extends StatelessWidget {
       children: <Widget>[
         SizedBox(height: MediaQuery.paddingOf(context).top),
         // The artboard's 56, grown with the text size (#165).
-        SizedBox(
-          height: DpScript.grow(context, 56),
-          child: Row(
-            children: <Widget>[
-              const SizedBox(width: 4),
-              Semantics(
-                button: true,
-                label: closeLabel ?? l10n.practiceClose,
-                onTap: onClose,
-                excludeSemantics: true,
-                child: AdaptiveTooltip(
-                  message: closeLabel ?? l10n.practiceClose,
-                  child: GestureDetector(
-                    behavior: HitTestBehavior.opaque,
-                    onTap: onClose,
-                    child: SizedBox.square(
-                      dimension: 48,
-                      child: Icon(Icons.close, color: ink),
+        if (!collapsed)
+          SizedBox(
+            height: DpScript.grow(context, 56),
+            child: Row(
+              children: <Widget>[
+                const SizedBox(width: 4),
+                Semantics(
+                  button: true,
+                  label: closeLabel ?? l10n.practiceClose,
+                  onTap: onClose,
+                  excludeSemantics: true,
+                  child: AdaptiveTooltip(
+                    message: closeLabel ?? l10n.practiceClose,
+                    child: GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      onTap: onClose,
+                      child: SizedBox.square(
+                        dimension: 48,
+                        child: Icon(Icons.close, color: ink),
+                      ),
                     ),
                   ),
                 ),
-              ),
-              Expanded(
-                child: DpText(
-                  title,
-                  role: DpTextRole.bodyLarge,
-                  weight: 600,
-                  color: ink,
-                  maxLines: 1,
-                  textAlign: TextAlign.center,
+                Expanded(
+                  child: DpText(
+                    title,
+                    role: DpTextRole.bodyLarge,
+                    weight: 600,
+                    color: ink,
+                    maxLines: 1,
+                    textAlign: TextAlign.center,
+                  ),
                 ),
-              ),
-              // 52, grown with the text size: at 200 % a fixed 52 wrapped
-              // "7 / 20" onto two lines and cut it (#165).
-              SizedBox(
-                width: DpScript.grow(context, 52, role: DpTextRole.label),
-                child: DpText(
-                  l10n.digits('${place.$1} / ${place.$2}'),
-                  role: DpTextRole.label,
-                  weight: 700,
-                  color: ink,
-                  textAlign: TextAlign.center,
+                // 52, grown with the text size: at 200 % a fixed 52 wrapped
+                // "7 / 20" onto two lines and cut it (#165).
+                SizedBox(
+                  width: DpScript.grow(context, 52, role: DpTextRole.label),
+                  child: DpText(
+                    l10n.digits('${place.$1} / ${place.$2}'),
+                    role: DpTextRole.label,
+                    weight: 700,
+                    color: ink,
+                    textAlign: TextAlign.center,
+                  ),
                 ),
-              ),
-              const SizedBox(width: 4),
-            ],
+                const SizedBox(width: 4),
+              ],
+            ),
           ),
-        ),
       ],
     );
     return tokens.isGlass

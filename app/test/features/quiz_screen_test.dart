@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:deutschplan/core/components/dp_button.dart';
 import 'package:deutschplan/core/components/dp_feedback.dart';
 import 'package:deutschplan/core/components/dp_speaker_button.dart';
 import 'package:deutschplan/core/providers/app_providers.dart';
@@ -19,6 +20,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 
+import '../core/text_clipping.dart' show AndroidTextScaler;
 import 'quiz_fixtures.dart';
 
 /// L8 · Quiz runner — #123.
@@ -65,6 +67,7 @@ void main() {
     WidgetTester tester, {
     QuizArgs args = standard,
     StubQuizRun? stub,
+    TextScaler? textScaler,
   }) async {
     run = stub ?? StubQuizRun();
     final routes = GoRouter(
@@ -91,6 +94,12 @@ void main() {
           localizationsDelegates: appLocalizationsDelegates,
           supportedLocales: supportedLocales,
           routerConfig: routes,
+          builder: textScaler == null
+              ? null
+              : (context, child) => MediaQuery(
+                  data: MediaQuery.of(context).copyWith(textScaler: textScaler),
+                  child: child!,
+                ),
         ),
       ),
     );
@@ -545,6 +554,110 @@ void main() {
       expect(node.rect.width, greaterThanOrEqualTo(48));
       expect(node.rect.height, greaterThanOrEqualTo(48));
       semantics.dispose();
+    });
+  });
+
+  group('L8 #554 typing at large text', () {
+    const keyboardTop = 731.0 - 300;
+
+    // SQA's 731 dp phone, its status bar, and a 300 dp keyboard.
+    Future<void> typing(
+      WidgetTester tester,
+      QuizItem item, {
+      required TextScaler textScaler,
+    }) async {
+      tester.view
+        ..physicalSize = const Size(390, 731) * 3
+        ..devicePixelRatio = 3
+        ..padding = const FakeViewPadding(top: 24 * 3);
+      addTearDown(tester.view.reset);
+      await pump(
+        tester,
+        args: const QuizArgs(direction: 'mixed', source: 'allLearned', seed: 1),
+        stub: StubQuizRun(quiz: quizOf(<QuizItem>[item, haus])),
+        textScaler: textScaler,
+      );
+      await tester.showKeyboard(find.byType(TextField));
+      tester.view.viewInsets = const FakeViewPadding(bottom: 300 * 3);
+      await tester.pumpAndSettle();
+    }
+
+    for (final item in <QuizItem>[
+      const QuizItem(
+        ord: 1,
+        wordUid: 'sorry',
+        direction: QuizDirection.enDe,
+        prompt: "I'm sorry",
+        expected: 'Es tut mir leid',
+        hint: 'আমি দুঃখিত',
+      ),
+      const QuizItem(
+        ord: 1,
+        wordUid: 'benehmen',
+        direction: QuizDirection.forms,
+        prompt: 'sich benehmen',
+        expected: 'hat sich benommen',
+        form: FormLabel.perfekt,
+      ),
+    ]) {
+      for (final percent in <int>[200, 150]) {
+        testWidgets('${item.direction.name}: at $percent % with the keyboard '
+            'up, the prompt shows whole above the field, with Check and the '
+            "umlaut row; the header and caption come back with the keyboard's "
+            'going', (tester) async {
+          await typing(
+            tester,
+            item,
+            textScaler: AndroidTextScaler(percent / 100),
+          );
+          expect(
+            tester
+                .widget<EditableText>(find.byType(EditableText))
+                .focusNode
+                .hasFocus,
+            isTrue,
+            reason: 'the field kept the keyboard',
+          );
+          expect(close(), findsNothing, reason: 'the header gave its row');
+          final prompt = find.text(
+            item.form == null ? item.prompt : l10n.quizFormPerfekt(item.prompt),
+          );
+          // What the list shows: under the status bar, above Check.
+          final room = tester.getRect(find.byType(ListView));
+          expect(room.bottom, lessThanOrEqualTo(keyboardTop));
+          for (final (name, shown) in <(String, Finder)>[
+            ('the prompt', prompt),
+            ('the field', find.byType(TextField)),
+          ]) {
+            final rect = tester.getRect(shown);
+            expect(rect.top, greaterThanOrEqualTo(room.top), reason: name);
+            expect(rect.bottom, lessThanOrEqualTo(room.bottom), reason: name);
+          }
+          expect(
+            tester
+                .getRect(find.widgetWithText(DpButton, l10n.quizCheck))
+                .bottom,
+            lessThanOrEqualTo(keyboardTop),
+          );
+          expect(
+            tester.getRect(find.byType(DpUmlautBar)).bottom,
+            lessThanOrEqualTo(keyboardTop),
+          );
+
+          tester.view.resetViewInsets();
+          await tester.pumpAndSettle();
+          expect(close(), findsOneWidget, reason: 'the header row');
+          expect(find.text(l10n.quizYourAnswer.toUpperCase()), findsOneWidget);
+        });
+      }
+    }
+
+    testWidgets('at 100 % the keyboard leaves the header and caption be', (
+      tester,
+    ) async {
+      await typing(tester, vertrag, textScaler: TextScaler.noScaling);
+      expect(close(), findsOneWidget, reason: 'the header row');
+      expect(find.text(l10n.quizYourAnswer.toUpperCase()), findsOneWidget);
     });
   });
 

@@ -211,6 +211,11 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
     final tokens = context.tokens;
     final l10n = AppLocalizations.of(context);
     final run = _run;
+    // #554: typing at large text, the field alone filled the room above the
+    // keyboard and the prompt scrolled away. The header's row and the
+    // answer's caption give theirs to the prompt, and come back with the
+    // keyboard's going.
+    final typing = DpScript.largeTyping(context);
 
     final Widget body;
     if (_error != null) {
@@ -292,6 +297,7 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
                   key: ValueKey<int>(_answers),
                   item: item,
                   field: _field,
+                  typing: typing,
                   picked: verdict == null ? null : _given,
                   onAnswer: (given) => unawaited(_submit(given)),
                 ),
@@ -357,6 +363,7 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
                 : (_queue.current.ord, items.length),
             closeLabel: l10n.quizClose,
             onClose: () => unawaited(_close()),
+            collapsed: typing,
           ),
           Expanded(child: body),
         ],
