@@ -298,6 +298,7 @@ claiming the same issue. A hand edit skips that check.
 | #672 | - | X | P2 | - | fix(settings): after Reset everything or a Replace import, the meaning language, UI language and theme are stale | open |  |  |  |
 | #673 | - | X | P2 | - | fix(models): a voice download can be queued twice | open |  |  |  |
 | #674 | - | X | P2 | - | fix(deep-links): a cold start from a sogda:// link skips onboarding (the #236 bug returns) | open |  |  |  |
+| #676 | - | X | P2 | - | fix(deep-links): a reminder or widget link takes over a running exam | open |  |  |  |
 
 ## Locks
 
@@ -5429,3 +5430,7 @@ Added #673 (fix(models): a voice download can be queued twice) to lane X.
 ### H-1264 · 2026-09-27 01:34 · agent-1 → all · note · #674
 
 Added #674 (fix(deep-links): a cold start from a sogda:// link skips onboarding (the #236 bug returns)) to lane X.
+
+### H-1265 · 2026-09-27 01:34 · agent-1 → all · note · #676
+
+Added #676 (fix(deep-links): a reminder or widget link takes over a running exam) to lane X.
