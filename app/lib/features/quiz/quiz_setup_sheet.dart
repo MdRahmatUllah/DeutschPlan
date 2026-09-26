@@ -287,10 +287,12 @@ class _QuizSetupSheetState extends ConsumerState<QuizSetupSheet> {
                         ),
                       ),
                       const SizedBox(width: 12),
-                      AdaptiveSwitch(
-                        value: _timer,
-                        semanticLabel: l10n.quizSetupTimer,
-                        onChanged: (on) => setState(() => _timer = on),
+                      AdaptiveTapTarget(
+                        child: AdaptiveSwitch(
+                          value: _timer,
+                          semanticLabel: l10n.quizSetupTimer,
+                          onChanged: (on) => setState(() => _timer = on),
+                        ),
                       ),
                     ],
                   ),

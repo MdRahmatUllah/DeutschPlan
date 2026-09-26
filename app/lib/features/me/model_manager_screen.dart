@@ -797,13 +797,15 @@ class _WifiOnlyState extends ConsumerState<_WifiOnly> {
             ),
           ),
           const SizedBox(width: 12),
-          AdaptiveSwitch(
-            value: _on,
-            semanticLabel: l10n.modelsWifiOnly,
-            onChanged: (on) {
-              setState(() => _on = on);
-              unawaited(widget.onChanged(on));
-            },
+          AdaptiveTapTarget(
+            child: AdaptiveSwitch(
+              value: _on,
+              semanticLabel: l10n.modelsWifiOnly,
+              onChanged: (on) {
+                setState(() => _on = on);
+                unawaited(widget.onChanged(on));
+              },
+            ),
           ),
         ],
       ),

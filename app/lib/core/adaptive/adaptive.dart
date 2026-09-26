@@ -569,9 +569,7 @@ class AdaptiveSwitch extends StatelessWidget {
             ),
           );
 
-    return AdaptiveTapTarget(
-      child: Semantics(label: semanticLabel, child: control),
-    );
+    return Semantics(label: semanticLabel, child: control);
   }
 }
 
