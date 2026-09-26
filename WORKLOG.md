@@ -861,3 +861,4 @@ able to tell what is going on without asking.
 - 2026-09-27 01:15 · agent-1 · End-to-end review published: https://claude.ai/artifact/9tpzvsLWypBovmvgVWEqad (8 High, all small fixes; no Critical). #604 reviewed: one should-fix (S1 short phones).
 - 2026-09-27 01:16 · agent-0 #607 · added to the board, lane X
 - 2026-09-27 01:16 · agent-0 #607 · needs the owner's decision: Android Auto Backup: opt out entirely (recommended; matches 'stays on this phone'), or keep a cloud backup of user.db only and reword the privacy copy?
+- 2026-09-27 01:16 · agent-0 #608 · added to the board, lane X

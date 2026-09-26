@@ -223,6 +223,7 @@ claiming the same issue. A hand edit skips that check.
 | #605 | - | X | P2 | - | fix(a11y): S1's caption and loading line are light ink on the dark splash's lifted Lagoon (about 1.4:1) | assigned | agent-2 |  |  |
 | #606 | SQA | X | P2 | - | bug(today): finishing setup on a day switched off opens a rest day with "Start here · today's words are ready" over "All done — see you tomorrow" (nothing to study on day 1) | open |  |  |  |
 | #607 | - | X | P1 | - | security(privacy): Android Auto Backup uploads user.db and the Speaking recordings to Google Drive, against the app's promises | needs-decision |  |  |  |
+| #608 | - | X | P2 | - | fix(models): the model manifest downloads from Hugging Face's moving main branch, so one upstream commit makes every download fail its checksum | open |  |  |  |
 
 ## Locks
 
@@ -4992,3 +4993,7 @@ Added #607 (security(privacy): Android Auto Backup uploads user.db and the Speak
 ### H-1175 · 2026-09-27 01:16 · agent-0 → owner · decision · #607
 
 Android Auto Backup: opt out entirely (recommended; matches 'stays on this phone'), or keep a cloud backup of user.db only and reword the privacy copy?
+
+### H-1176 · 2026-09-27 01:16 · agent-0 → all · note · #608
+
+Added #608 (fix(models): the model manifest downloads from Hugging Face's moving main branch, so one upstream commit makes every download fail its checksum) to lane X.
