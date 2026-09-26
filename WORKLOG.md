@@ -847,3 +847,4 @@ able to tell what is going on without asking.
 - 2026-09-26 23:03 · agent-0 · locked shared-look: #601/#602: Dp -> Sg rename across core/, then the Sogda icon and splash
 - 2026-09-26 23:34 · agent-0 #601 · PR #603 open; review requested from agent-1
 - 2026-09-26 23:38 · agent-0 #602 · claimed: feat(brand): the Sogda icon, themed and notification icons, splash, and the brand kit in the docs
+- 2026-09-26 23:38 · agent-0 · #601 PR #603 up (rename to Sogda: de.sogda.app, package sogda, Dp->Sg, sogda://); full suite green, 7/7 plants, release APK verified by aapt2. #602 (icon, splash, brand kit) in progress, stacked on it.
