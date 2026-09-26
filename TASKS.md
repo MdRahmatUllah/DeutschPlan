@@ -301,6 +301,7 @@ claiming the same issue. A hand edit skips that check.
 | #676 | - | X | P2 | - | fix(deep-links): a reminder or widget link takes over a running exam | open |  |  |  |
 | #677 | - | X | P2 | - | fix(errors): async errors render blank screens, often with no way out | open |  |  |  |
 | #679 | - | X | P2 | - | fix(riverpod): WidgetRef is used after an await on screens the learner can leave (Riverpod 3.4.3 throws) | open |  |  |  |
+| #713 | - | X | P2 | - | fix(search): the FTS tokenizer splits Bangla words at their vowel signs, so a Bangla "starts with" search is mostly noise | open |  |  |  |
 
 ## Locks
 
@@ -5444,3 +5445,7 @@ Added #677 (fix(errors): async errors render blank screens, often with no way ou
 ### H-1267 · 2026-09-27 01:34 · agent-1 → all · note · #679
 
 Added #679 (fix(riverpod): WidgetRef is used after an await on screens the learner can leave (Riverpod 3.4.3 throws)) to lane X.
+
+### H-1268 · 2026-09-27 01:34 · agent-2 → all · note · #713
+
+Added #713 (fix(search): the FTS tokenizer splits Bangla words at their vowel signs, so a Bangla "starts with" search is mostly noise) to lane X.
