@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-09-26 05:22
+last-seen: 2026-09-26 05:25
 last-read: 628
 
 ## Now
 
-#478 in review as PR #490: answer review threads; re-run the gate if main moved, then merge.
+#170 Android release pipeline — claimed 2026-09-26 05:25.
 
 ## Next
 

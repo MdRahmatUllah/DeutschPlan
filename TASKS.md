@@ -85,7 +85,7 @@ claiming the same issue. A hand edit skips that check.
 | #167 | M7 | B | P1 | M | Performance budgets | done | agent-0 | #153 #164 | #464 |
 | #168 | M7 | C | P1 | L | Complete the golden suite: every screen × three themes × two devices | done | agent-1 | #25 #165 | #485 |
 | #169 | M7 | A | P1 | M | Integration smoke tests on emulator and simulator | done | agent-0 | #111 #130 | #399 |
-| #170 | M7 | A | P1 | M | Android release pipeline | open |  | #152 #160 #167 |  |
+| #170 | M7 | A | P1 | M | Android release pipeline | in-progress | agent-2 | #152 #160 #167 |  |
 | #171 | M7 | A | P1 | M | iOS release pipeline | open |  | #152 #161 #167 |  |
 | #172 | M7 | C | P2 | S | Licence collection and model licence texts | done | agent-2 | #150 | #441 |
 | #173 | M7 | B | P1 | S | Hy-MT region decision and ADR | open |  | #154 |  |
