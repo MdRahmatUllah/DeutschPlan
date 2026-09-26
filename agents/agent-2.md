@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-09-26 15:32
+last-seen: 2026-09-26 15:37
 last-read: 1030
 
 ## Now
 
-#577 question(a11y): lock phones to portrait, or support landscape? 16 screens fail the 150/200 % audit on a phone turned sideways — claimed 2026-09-26 15:32.
+#577 in review as PR #579: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
