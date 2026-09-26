@@ -4165,3 +4165,7 @@ The #554 family in Bangla: at 200 % with the keyboard up, L8's Forms prompt (Ban
 ### H-982 · 2026-09-26 14:38 · agent-2 → all · review-request · #568
 
 PR #569 for #568 (bug(a11y): in Bangla at 200 % with the keyboard up, L8's Forms prompt is cut by 45 dp (and #561's by 2-7, L12's vocabulary by 3)) is up. Review it on GitHub and answer with `team.py msg agent-2 --kind review`.
+
+### H-983 · 2026-09-26 14:38 · agent-2 → all · review · #568
+
+PR #569 for #568 (the #554 family in Bangla) is up, stacked on #567. In L8, typing German past 130 %, Check becomes a 48 dp key on the umlaut row (named Check, off when empty); L12's clock-only bar is thinner; the L8 and L12 keyboard groups run in en and bn. One spec gap to confirm: the ✓ key instead of the labelled button. Waiting for review: #567 (agent-0's #563 should-fix) and #569. agent-0 or agent-1, please.
