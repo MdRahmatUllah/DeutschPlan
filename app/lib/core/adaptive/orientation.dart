@@ -1,9 +1,8 @@
-import 'dart:ui' show FlutterView, Size;
-
 import 'package:flutter/services.dart';
 
 /// A tablet, by its shortest side: where W1 opens as a pane, and turning the
-/// tablet keeps it one.
+/// tablet keeps it one. Android 16 ignores an app's orientation lock from
+/// 600 dp up, so the line is the platform's too.
 const double tabletShortestSide = 600;
 
 /// The owner's call on #577: a phone stays portrait, a tablet turns. Turned
@@ -14,9 +13,19 @@ List<DeviceOrientation> orientationsFor(Size screen) =>
     ? const <DeviceOrientation>[DeviceOrientation.portraitUp]
     : const <DeviceOrientation>[];
 
-/// [orientationsFor] the [view]'s screen, set once at start: a phone doesn't
-/// become a tablet.
-Future<void> lockOrientation(FlutterView view) =>
-    SystemChrome.setPreferredOrientations(
-      orientationsFor(view.physicalSize / view.devicePixelRatio),
-    );
+/// Asks for [orientationsFor] the screen once it has a size, and again each
+/// time it crosses [tabletShortestSide]: a foldable opened or closed, a
+/// tablet into or out of split screen.
+class OrientationLock {
+  bool? _tablet;
+
+  /// [screen] in logical pixels. An empty one (the window before its first
+  /// size, at start) is skipped: read as a phone, it locked tablets too.
+  Future<void> update(Size screen) async {
+    if (screen.isEmpty) return;
+    final tablet = screen.shortestSide >= tabletShortestSide;
+    if (tablet == _tablet) return;
+    _tablet = tablet;
+    await SystemChrome.setPreferredOrientations(orientationsFor(screen));
+  }
+}

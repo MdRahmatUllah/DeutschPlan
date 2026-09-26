@@ -69,8 +69,6 @@ Future<void> main() async {
   // `SafeArea` — this only stops the system filling it in first.
   await SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
   SystemChrome.setSystemUIOverlayStyle(transparentSystemBars);
-  // #577: a phone stays portrait, a tablet turns.
-  await lockOrientation(WidgetsBinding.instance.platformDispatcher.views.first);
 
   // A `ProviderScope` at the true root, which riverpod_lint requires and which
   // S1 needs anyway now that it renders before bootstrap has produced a
@@ -95,8 +93,14 @@ class BootstrapHost extends StatefulWidget {
   State<BootstrapHost> createState() => _BootstrapHostState();
 }
 
-class _BootstrapHostState extends State<BootstrapHost> {
+class _BootstrapHostState extends State<BootstrapHost>
+    with WidgetsBindingObserver {
   Widget? _app;
+
+  /// #577: a phone stays portrait, a tablet turns. Decided from the window's
+  /// size as it comes, not before `runApp`, when it can still be empty, and
+  /// again when it crosses the tablet line (a foldable, split screen).
+  final OrientationLock _orientation = OrientationLock();
 
   /// The learner's language, once bootstrap has read it. Until then the
   /// splash follows the phone — there is nothing else to follow.
@@ -105,7 +109,21 @@ class _BootstrapHostState extends State<BootstrapHost> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    didChangeMetrics();
     unawaited(_start());
+  }
+
+  @override
+  void didChangeMetrics() {
+    final view = WidgetsBinding.instance.platformDispatcher.views.first;
+    unawaited(_orientation.update(view.physicalSize / view.devicePixelRatio));
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
   }
 
   Future<void> _start() async {
