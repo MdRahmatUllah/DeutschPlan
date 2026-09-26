@@ -299,6 +299,7 @@ claiming the same issue. A hand edit skips that check.
 | #673 | - | X | P2 | - | fix(models): a voice download can be queued twice | open |  |  |  |
 | #674 | - | X | P2 | - | fix(deep-links): a cold start from a sogda:// link skips onboarding (the #236 bug returns) | open |  |  |  |
 | #676 | - | X | P2 | - | fix(deep-links): a reminder or widget link takes over a running exam | open |  |  |  |
+| #677 | - | X | P2 | - | fix(errors): async errors render blank screens, often with no way out | open |  |  |  |
 
 ## Locks
 
@@ -5434,3 +5435,7 @@ Added #674 (fix(deep-links): a cold start from a sogda:// link skips onboarding 
 ### H-1265 · 2026-09-27 01:34 · agent-1 → all · note · #676
 
 Added #676 (fix(deep-links): a reminder or widget link takes over a running exam) to lane X.
+
+### H-1266 · 2026-09-27 01:34 · agent-1 → all · note · #677
+
+Added #677 (fix(errors): async errors render blank screens, often with no way out) to lane X.
