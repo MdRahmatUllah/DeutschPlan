@@ -31,6 +31,9 @@ class MainActivity : FlutterActivity() {
 
         /** `lib/services/device_storage.dart`: M4's free space (#156). */
         const val STORAGE_CHANNEL = "deutschplan/storage"
+
+        /** `lib/services/start_report.dart`: the start drawn in full (#462). */
+        const val START_CHANNEL = "deutschplan/start"
     }
 
     private var channel: MethodChannel? = null
@@ -73,6 +76,20 @@ class MainActivity : FlutterActivity() {
                     else -> result.notImplemented()
                 }
             }
+
+        // The cold start's end: Today with its plan, or setup's first page.
+        // The system logs it as "Fully drawn", after the first frame's
+        // "Displayed", which is only the splash (#462).
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, START_CHANNEL)
+            .setMethodCallHandler { call, result ->
+                when (call.method) {
+                    "fullyDrawn" -> {
+                        reportFullyDrawn()
+                        result.success(null)
+                    }
+                    else -> result.notImplemented()
+                }
+            }
     }
 
     private fun registerBlurListener(channel: MethodChannel) {
@@ -90,6 +107,15 @@ class MainActivity : FlutterActivity() {
         blurListener = listener
         windowManager.addCrossWindowBlurEnabledListener(mainExecutor, listener)
     }
+
+    /**
+     * #462: FlutterActivity reports fully drawn here, at Flutter's first
+     * frame, which is only the splash, and Android keeps the first report
+     * alone. The app reports it itself once Today shows its plan (or setup
+     * its first page), through [START_CHANNEL]. Not calling super is the
+     * point: that is all super does.
+     */
+    override fun onFlutterUiDisplayed() {}
 
     override fun onDestroy() {
         val listener = blurListener

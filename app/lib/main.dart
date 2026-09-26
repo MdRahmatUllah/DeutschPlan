@@ -142,7 +142,8 @@ class _BootstrapHostState extends State<BootstrapHost> {
     // FR-S1-02 is a budget, and a budget nobody can read is a budget nobody
     // keeps. One line in logcat, so the number is measurable on a device
     // rather than inferred from `am start -W` — which now reports the splash
-    // frame rather than the time to Today.
+    // frame rather than the time to Today. Release builds report Today as
+    // Android's "Fully drawn" instead (#462).
     //
     // Debug *and* profile, never release: a debug build is JIT and its
     // numbers mean nothing against a 500 ms budget, so the only build worth
