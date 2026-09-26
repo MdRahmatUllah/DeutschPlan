@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-09-26 03:20
+last-seen: 2026-09-26 03:51
 last-read: 582
 
 ## Now
 
-#162 Semantics and screen-reader pass across every screen — claimed 2026-09-26 02:25.
+#162 in review as PR #483: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
