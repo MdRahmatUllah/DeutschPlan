@@ -1,10 +1,12 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:ui' show Tristate;
 
 import 'package:deutschplan/core/components/dp_rating_bar.dart';
 import 'package:deutschplan/core/providers/app_providers.dart';
 import 'package:deutschplan/core/theme/app_theme.dart';
+import 'package:deutschplan/core/typography/dp_text.dart';
 import 'package:deutschplan/data/db/app_database.dart';
 import 'package:deutschplan/data/db/content_dao.dart';
 import 'package:deutschplan/data/repositories/plan_repository.dart';
@@ -442,6 +444,46 @@ VALUES ('$strasse', 'learning', '2026-09-10', '2026-09-21', 4.5, 5.2, 2, 0,
       // all of it clear of the bar.
       final top = tester.getRect(find.text(l10n.studyKnowIt)).top;
       expect(bar.bottom, lessThanOrEqualTo(top));
+    });
+
+    testWidgets('#162 FR-T2-02 after a rating the focus moves to the next '
+        "card's headword, for a screen reader to follow", (tester) async {
+      final semantics = tester.ensureSemantics();
+      // The headword the focus is on, and whether a screen reader is told.
+      (String, bool) focused() {
+        final at = FocusManager.instance.primaryFocus!.context!;
+        final headword = find.descendant(
+          of: find.byElementPredicate((element) => element == at),
+          matching: find.byType(DpHeadword),
+        );
+        return (
+          tester.widget<DpHeadword>(headword).word,
+          tester.getSemantics(headword).flagsCollection.isFocused ==
+              Tristate.isTrue,
+        );
+      }
+
+      await pump(tester);
+      await tester.pump();
+      expect(focused(), ('Straße', true));
+      final first = FocusManager.instance.primaryFocus;
+
+      await reveal(tester);
+      await tester.runAsync(() async {
+        await tester.tap(find.text(l10n.ratingGood));
+        await Future<void>.delayed(const Duration(milliseconds: 50));
+      });
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 750));
+      // The new card asks for the focus as it builds; a frame tells.
+      await tester.pump();
+      expect(focused(), ('Haus', true));
+      expect(
+        FocusManager.instance.primaryFocus,
+        isNot(same(first)),
+        reason: 'a new focus, or a screen reader has nothing to follow',
+      );
+      semantics.dispose();
     });
 
     group('Z05 FR-T2-02 a write that fails', () {
