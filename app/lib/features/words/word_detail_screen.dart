@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math' as math;
 
+import 'package:deutschplan/core/adaptive/orientation.dart';
 import 'package:deutschplan/core/adaptive/adaptive.dart';
 import 'package:deutschplan/core/components/dp_chip.dart';
 import 'package:deutschplan/core/components/dp_feedback.dart';
@@ -276,8 +277,8 @@ class WordDetailView extends ConsumerStatefulWidget {
   static const double closed = 0.25;
 
   /// A tablet by its shortest side, so turning it does not swap the pane for
-  /// a sheet.
-  static const double tabletFrom = 600;
+  /// a sheet; the same side as the one that turns at all (#577).
+  static const double tabletFrom = tabletShortestSide;
 
   @override
   ConsumerState<WordDetailView> createState() => _WordDetailViewState();
