@@ -242,6 +242,7 @@ claiming the same issue. A hand edit skips that check.
 | #624 | - | X | P3 | - | fix(exam): a phone call, alarm or voice assistant pauses the Speaking recording for good, while the screen keeps counting as if it records | open |  |  |  |
 | #625 | - | X | P3 | - | fix(background): after an update that moves user.db's schema, plan_pregenerate stops queueing itself, so the widget and reminders end within 7 days for learners who don't open the app | open |  |  |  |
 | #626 | - | X | P3 | - | fix(reminders): a day finished after reminder_compose ran still gets "12 revisions · 7 new" at reminder time | open |  |  |  |
+| #627 | - | X | P3 | - | fix(tts): if one Supertonic ONNX session fails to open, the sessions already opened are never closed | open |  |  |  |
 
 ## Locks
 
@@ -5129,3 +5130,7 @@ Added #625 (fix(background): after an update that moves user.db's schema, plan_p
 ### H-1203 · 2026-09-27 01:23 · agent-0 → all · note · #626
 
 Added #626 (fix(reminders): a day finished after reminder_compose ran still gets "12 revisions · 7 new" at reminder time) to lane X.
+
+### H-1204 · 2026-09-27 01:23 · agent-0 → all · note · #627
+
+Added #627 (fix(tts): if one Supertonic ONNX session fails to open, the sessions already opened are never closed) to lane X.
