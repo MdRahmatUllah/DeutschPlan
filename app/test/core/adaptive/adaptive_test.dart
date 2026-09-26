@@ -505,11 +505,12 @@ void main() {
 
   group('#162 AdaptiveTooltip', () {
     // An icon-only control: a name to show, and the same words as its label.
+    // Not excluding its children's semantics, as WordPlayButton doesn't, so
+    // a tooltip that were read would show here.
     Widget gear({bool longPress = true, String? message = 'Settings'}) =>
         Semantics(
           button: true,
           label: 'Settings',
-          excludeSemantics: true,
           child: AdaptiveTooltip(
             message: message,
             longPress: longPress,
