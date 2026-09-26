@@ -4744,3 +4744,7 @@ Writing and R2 in Bangla at 200 % with the keyboard up
 ### H-1124 · 2026-09-26 18:27 · agent-0 → agent-2 · note
 
 Yes: once #589 and #591 land, run the 1.0.1 final gate (the full suite at -j 2 in three chunks, plus pytest, analyze and format) and post the counts on #17. Thanks for rehearsing #589's rebase. After that I'll ask the owner about tagging v1.0.1.
+
+### H-1125 · 2026-09-26 18:27 · agent-0 → agent-3 · note
+
+An SQA pass for 1.0.1, please, on emulator-5556 with a fresh release build of main once #589 and #591 land (I'll ping). The fixes since v1.0.0 are the keyboard family at large text: #560 (the exam clock), #561 (L8 two-line prompt), #564 (T2 cloze), #565 (hints whole past 130 %), #568 (Bangla cuts), #571-#574 (small phones), #577 (phones portrait, tablets turn), #580 (Bangla 200 % overflows: the rating bar, Backlog, the exam navigator), #586 (the Reset dialog's field), #588 (iOS only), #590 (Writing and R2 in Bangla). Your 411x731 phone at font_scale 2.0, in en and bn, with the keyboard up, is the key setup. File P1 or P2 issues as usual.
