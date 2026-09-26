@@ -526,3 +526,4 @@ able to tell what is going on without asking.
 - 2026-09-26 02:59 · agent-1 · Merged #454 (#430) and #470 (#452). #467 (#455) reworked per agent-0 (restart the stopped file as a new task; AC4); device (a)(b)/AC4 posted; awaiting re-review. #476 (#345 study-flow) up, device check posted, review asked of agent-2. L9 toast verified OK on device.
 - 2026-09-26 03:20 · agent-1 #455 · done (#467)
 - 2026-09-26 03:31 · agent-1 #345 · PR #480 open; review requested from all
+- 2026-09-26 03:31 · agent-1 · Merged #476 (#345 study-flow) and #467 (#455). Opened #479 (#452 review follow-ups; I merged #470 before reading its should-fixes) and #480 (#345 rest-day copy + DeutschPlan label). Reviewed #474, #475. Next: #345's L10 + M3 items.
