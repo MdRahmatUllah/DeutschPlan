@@ -6,7 +6,7 @@ last-read: 490
 
 ## Now
 
-Nothing claimed.
+#593 Release v1.0.1: large text in English and Bangla — claimed 2026-09-26 18:52.
 
 ## Next
 
