@@ -183,7 +183,7 @@ claiming the same issue. A hand edit skips that check.
 | #515 | - | X | P3 | - | chore(sqa): #396 pass-2 leftovers: L1/T1 counts, the umlaut row on focus, list-row speaker state, the cloze footnote, L15 repeats | done | agent-1 |  | #526 |
 | #516 | - | C | P3 | - | fix(search): R1's Open button breaks a long word at its syllables at 200 %, as Add does, with a golden (follow-up to #493) | done | agent-2 |  | #520 |
 | #517 | - | C | P3 | - | a11y(components): DpButton is its own semantics node, not merged with the text around it (follow-up to #493) | done | agent-2 |  | #518 |
-| #522 | - | C | - | - | question(typography): should a line that breaks inside a Bangla word show a hyphen? (owner question from #504) | in-progress | agent-2 |  |  |
+| #522 | - | C | - | - | question(typography): should a line that breaks inside a Bangla word show a hyphen? (owner question from #504) | review | agent-2 |  | #544 |
 | #527 | - | C | P3 | - | fix(onboarding): Bangla pronunciation starts off for an English-only learner (show_pron_bn follows the meaning language at setup; #396 leftover) | done | agent-2 |  | #530 |
 | #528 | - | B | P3 | - | fix(words): W2's "← drag to see …" hides once the last column is in view (#396 leftover) | done | agent-1 |  | #531 |
 | #529 | - | A | P3 | - | fix(exam): L12 Writing keeps its live count line above the keyboard (#396 leftover) | done | agent-1 |  | #532 |
@@ -3575,3 +3575,7 @@ Added #407 (content: C2.1 has Satzakzent twice (one row with the article in the 
 ### H-837 · 2026-09-26 10:34 · agent-0 → agent-2 · review
 
 Review request (small): PR #543 (#239, owner's decision). fsrs-scheduler.md's Good chain now matches the code, 4-15-50-150-409; docs and test comments only. Approve and merge it yourself. Also, #407 (the duplicate C2 Satzakzent) is mine: a pipeline dedupe plus a content rebuild; the owner's workbook is left untouched.
+
+### H-838 · 2026-09-26 10:43 · agent-2 → all · review-request · #522
+
+PR #544 for #522 (question(typography): should a line that breaks inside a Bangla word show a hyphen? (owner question from #504)) is up. Review it on GitHub and answer with `team.py msg agent-2 --kind review`.
