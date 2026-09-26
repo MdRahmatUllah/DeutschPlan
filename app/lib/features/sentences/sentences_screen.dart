@@ -502,7 +502,12 @@ class _SentencePageState extends ConsumerState<_SentencePage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Text.rich(
-                TextSpan(style: style, children: _spans(style, underline)),
+                TextSpan(
+                  style: style,
+                  // Read in a German voice (#162).
+                  locale: DpScript.deDE,
+                  children: _spans(style, underline),
+                ),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 22),
@@ -594,6 +599,7 @@ class _TokenSheet extends ConsumerWidget {
             DpHeadword(
               word.german,
               article: word.article,
+              plural: word.forms,
               role: DpTextRole.title,
             ),
             const SizedBox(height: 6),
@@ -612,7 +618,7 @@ class _TokenSheet extends ConsumerWidget {
               },
             ),
           ] else ...<Widget>[
-            DpText(token, role: DpTextRole.title),
+            DpText(token, role: DpTextRole.title, german: true),
             const SizedBox(height: 6),
             DpText(
               l10n.sentencesNotInCourse,
@@ -720,10 +726,17 @@ class _IconButton extends StatelessWidget {
   Widget build(BuildContext context) => Semantics(
     button: true,
     label: label,
-    child: GestureDetector(
-      onTap: onPressed,
-      behavior: HitTestBehavior.opaque,
-      child: SizedBox(width: 48, height: 48, child: Icon(icon, color: colour)),
+    child: AdaptiveTooltip(
+      message: label,
+      child: GestureDetector(
+        onTap: onPressed,
+        behavior: HitTestBehavior.opaque,
+        child: SizedBox(
+          width: 48,
+          height: 48,
+          child: Icon(icon, color: colour),
+        ),
+      ),
     ),
   );
 }

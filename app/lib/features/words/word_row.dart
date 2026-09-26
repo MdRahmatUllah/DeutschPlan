@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:deutschplan/core/adaptive/adaptive.dart';
 import 'package:deutschplan/core/components/dp_chip.dart';
 import 'package:deutschplan/core/theme/dp_surface.dart';
 import 'package:deutschplan/core/theme/dp_tokens.dart';
@@ -56,6 +57,7 @@ class WordRow extends StatelessWidget {
               DpHeadword(
                 word.word.german,
                 article: word.word.article,
+                plural: word.word.forms,
                 role: DpTextRole.bodyLarge,
                 weight: 600,
                 maxLines: 1,
@@ -162,16 +164,19 @@ class WordPlayButton extends ConsumerWidget {
     return Semantics(
       button: true,
       label: AppLocalizations.of(context).summaryPlay(word),
-      child: GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTap: () => unawaited(say(ref, context, word)),
-        child: SizedBox(
-          width: 40,
-          height: 40,
-          child: Icon(
-            mute ? Icons.volume_off : Icons.volume_up,
-            size: 22,
-            color: mute ? tokens.color.textSecondary : tokens.color.ink,
+      child: AdaptiveTooltip(
+        message: AppLocalizations.of(context).summaryPlay(word),
+        child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: () => unawaited(say(ref, context, word)),
+          child: SizedBox(
+            width: 40,
+            height: 40,
+            child: Icon(
+              mute ? Icons.volume_off : Icons.volume_up,
+              size: 22,
+              color: mute ? tokens.color.textSecondary : tokens.color.ink,
+            ),
           ),
         ),
       ),

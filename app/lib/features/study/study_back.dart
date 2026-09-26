@@ -1,3 +1,4 @@
+import 'package:deutschplan/core/adaptive/adaptive.dart';
 import 'package:deutschplan/core/components/dp_chip.dart';
 import 'package:deutschplan/core/components/dp_feedback.dart';
 import 'package:deutschplan/core/providers/app_providers.dart';
@@ -224,14 +225,21 @@ class StudyPlayButton extends ConsumerWidget {
     return Semantics(
       button: true,
       label: label,
-      child: GestureDetector(
-        onTap: tap,
-        behavior: HitTestBehavior.opaque,
-        // 32 dp drawn, 48 dp tall to hit, and the gap after it part of the
-        // target, so the dot keeps the text's left edge.
-        child: Padding(
-          padding: const EdgeInsetsDirectional.only(top: 8, bottom: 8, end: 10),
-          child: dot,
+      child: AdaptiveTooltip(
+        message: label,
+        child: GestureDetector(
+          onTap: tap,
+          behavior: HitTestBehavior.opaque,
+          // 32 dp drawn, 48 dp tall to hit, and the gap after it part of the
+          // target, so the dot keeps the text's left edge.
+          child: Padding(
+            padding: const EdgeInsetsDirectional.only(
+              top: 8,
+              bottom: 8,
+              end: 10,
+            ),
+            child: dot,
+          ),
         ),
       ),
     );
@@ -271,6 +279,7 @@ class StudyExampleRow extends StatelessWidget {
                     example.german,
                     role: DpTextRole.bodyLarge,
                     italic: true,
+                    german: true,
                   ),
                   if (english != null) ...<Widget>[
                     const SizedBox(height: 2),

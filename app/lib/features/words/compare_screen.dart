@@ -488,6 +488,7 @@ class CompareTable extends ConsumerWidget {
                     // German in a 170 dp column: "Jubiläums" breaks at a
                     // syllable above 100 % (#165).
                     allowBreaks: DpScript.scaled(context),
+                    german: true,
                   ),
                 ),
               ],
@@ -565,12 +566,17 @@ class _Header extends ConsumerWidget {
     final uid = member.uid;
     if (uid == null) return content;
     void open() => WordRoute.open(context, uid);
+    // Its own node: the play button inside is one too, and without a
+    // container the headword's label never reached this button, which was
+    // read as nameless (#162).
     return Semantics(
+      container: true,
       button: true,
       onTap: open,
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
         onTap: open,
+        excludeFromSemantics: true,
         child: content,
       ),
     );

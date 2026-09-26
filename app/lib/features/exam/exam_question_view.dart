@@ -1126,27 +1126,30 @@ class _RoundButton extends StatelessWidget {
       label: label,
       excludeSemantics: true,
       onTap: onTap,
-      child: GestureDetector(
-        onTap: onTap,
-        child: Container(
-          width: 56,
-          height: 56,
-          decoration: BoxDecoration(
-            color: fill,
-            shape: BoxShape.circle,
-            border: tokens.isGlass
-                ? null
-                : Border.all(color: tokens.color.ink, width: 2),
-            boxShadow: tokens.isGlass
-                ? null
-                : <BoxShadow>[
-                    BoxShadow(
-                      color: tokens.surface.shadow,
-                      offset: tokens.surface.shadowOffset,
-                    ),
-                  ],
+      child: AdaptiveTooltip(
+        message: label,
+        child: GestureDetector(
+          onTap: onTap,
+          child: Container(
+            width: 56,
+            height: 56,
+            decoration: BoxDecoration(
+              color: fill,
+              shape: BoxShape.circle,
+              border: tokens.isGlass
+                  ? null
+                  : Border.all(color: tokens.color.ink, width: 2),
+              boxShadow: tokens.isGlass
+                  ? null
+                  : <BoxShadow>[
+                      BoxShadow(
+                        color: tokens.surface.shadow,
+                        offset: tokens.surface.shadowOffset,
+                      ),
+                    ],
+            ),
+            child: Icon(icon, color: tokens.color.onAccent, size: 26),
           ),
-          child: Icon(icon, color: tokens.color.onAccent, size: 26),
         ),
       ),
     );

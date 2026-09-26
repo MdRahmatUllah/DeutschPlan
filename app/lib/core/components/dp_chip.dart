@@ -207,6 +207,11 @@ class DpChip extends StatelessWidget {
     );
 
     return Semantics(
+      // A chip that can be pressed is its own node: otherwise it merges
+      // into whatever text is beside it once nothing else there can be
+      // pressed, and reads as that text (T1's streak, #162). One that can't
+      // stays part of its card (W1's "A1.1, To do").
+      container: onTap != null,
       label: semanticLabel ?? label,
       selected: kind == DpChipKind.filter || kind == DpChipKind.step
           ? selected

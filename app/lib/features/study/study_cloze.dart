@@ -130,6 +130,8 @@ class _StudyClozeCardState extends ConsumerState<StudyClozeCard> {
             Text.rich(
               TextSpan(
                 style: line,
+                // Read in a German voice (#162).
+                locale: DpScript.deDE,
                 children: <InlineSpan>[
                   TextSpan(text: example.german.substring(0, gap.start)),
                   WidgetSpan(

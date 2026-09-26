@@ -1,3 +1,4 @@
+import 'package:deutschplan/core/adaptive/adaptive.dart';
 import 'package:deutschplan/core/components/dp_button.dart';
 import 'package:deutschplan/core/components/dp_chip.dart';
 import 'package:deutschplan/core/components/dp_pill.dart';
@@ -68,6 +69,7 @@ class TodayHeader extends StatelessWidget {
                     germanDate(view.date),
                     role: DpTextRole.label,
                     color: ink,
+                    german: true,
                   ),
                   const SizedBox(height: 4),
                   DpText(
@@ -79,6 +81,9 @@ class TodayHeader extends StatelessWidget {
                     color: ink,
                     // German: at 200 % "geschafft" breaks at a syllable (#165).
                     allowBreaks: true,
+                    // German in every UI language, as the date is; "Rest
+                    // day" is the app's own copy (#162).
+                    german: !view.isRestDay,
                   ),
                 ],
               ),
@@ -142,119 +147,124 @@ class ProgressRingCard extends StatelessWidget {
     final step = view.step;
     final words = view.stepWords;
 
-    return DpSurface(
-      // The paper card has the artboard's 2 px ink edge and offset shadow;
-      // the glass one is a plain panel.
-      selected: !tokens.isGlass,
-      padding: const EdgeInsets.all(16),
-      child: Row(
-        children: <Widget>[
-          // One node (#315): the ring's name and value, with the tap. Apart, a
-          // screen reader found a nameless button over the ring's label.
-          MergeSemantics(
-            child: Semantics(
-              button: onStart != null,
-              onTap: onStart,
-              child: GestureDetector(
+    // One stop for a screen reader: its text read as the card, not run
+    // into the next card's (#162).
+    return Semantics(
+      container: true,
+      child: DpSurface(
+        // The paper card has the artboard's 2 px ink edge and offset shadow;
+        // the glass one is a plain panel.
+        selected: !tokens.isGlass,
+        padding: const EdgeInsets.all(16),
+        child: Row(
+          children: <Widget>[
+            // One node (#315): the ring's name and value, with the tap. Apart, a
+            // screen reader found a nameless button over the ring's label.
+            MergeSemantics(
+              child: Semantics(
+                button: onStart != null,
                 onTap: onStart,
-                behavior: HitTestBehavior.opaque,
-                // Tweens from 0 on open, and on to the new count after a
-                // session. Still under reduce motion.
-                child: TweenAnimationBuilder<double>(
-                  tween: Tween<double>(
-                    begin: 0,
-                    end: view.completed.toDouble(),
-                  ),
-                  duration: MediaQuery.disableAnimationsOf(context)
-                      ? Duration.zero
-                      : const Duration(milliseconds: 700),
-                  curve: Curves.easeOutCubic,
-                  builder: (context, value, _) => DpProgressRing(
-                    completed: value.round(),
-                    total: view.total,
-                    size: ringSize,
-                    // TodayDone: the ring turns Lime, with a tick for the time.
-                    colour: view.isDone ? tokens.color.easy : null,
-                    caption: view.isRestDay
-                        ? l10n.todayRestNoPlan
-                        : view.left == 0
-                        ? null
-                        : l10n.todayEstimate(view.estimateMinutes),
-                    captionIcon: view.isDone ? Icons.check : null,
-                    // TodayRest: nothing planned, and the ring says so.
-                    countLabel: view.isRestDay ? l10n.todayRestFree : null,
-                    semanticLabel: l10n.todayRing(view.completed, view.total),
+                child: GestureDetector(
+                  onTap: onStart,
+                  behavior: HitTestBehavior.opaque,
+                  // Tweens from 0 on open, and on to the new count after a
+                  // session. Still under reduce motion.
+                  child: TweenAnimationBuilder<double>(
+                    tween: Tween<double>(
+                      begin: 0,
+                      end: view.completed.toDouble(),
+                    ),
+                    duration: MediaQuery.disableAnimationsOf(context)
+                        ? Duration.zero
+                        : const Duration(milliseconds: 700),
+                    curve: Curves.easeOutCubic,
+                    builder: (context, value, _) => DpProgressRing(
+                      completed: value.round(),
+                      total: view.total,
+                      size: ringSize,
+                      // TodayDone: the ring turns Lime, with a tick for the time.
+                      colour: view.isDone ? tokens.color.easy : null,
+                      caption: view.isRestDay
+                          ? l10n.todayRestNoPlan
+                          : view.left == 0
+                          ? null
+                          : l10n.todayEstimate(view.estimateMinutes),
+                      captionIcon: view.isDone ? Icons.check : null,
+                      // TodayRest: nothing planned, and the ring says so.
+                      countLabel: view.isRestDay ? l10n.todayRestFree : null,
+                      semanticLabel: l10n.todayRing(view.completed, view.total),
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                if (step != null) ...<Widget>[
-                  DpChip(
-                    label: step,
-                    kind: DpChipKind.step,
-                    selected: true,
-                    onTap: onStep,
-                  ),
-                  const SizedBox(height: 8),
-                ],
-                if (view.isRestDay) ...<Widget>[
-                  DpText(
-                    l10n.todayRestOff(
-                      DateFormat.EEEE(
-                        Localizations.localeOf(context).toString(),
-                      ).format(parsePlanDate(view.date)),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  if (step != null) ...<Widget>[
+                    DpChip(
+                      label: step,
+                      kind: DpChipKind.step,
+                      selected: true,
+                      onTap: onStep,
                     ),
-                    role: DpTextRole.body,
-                  ),
-                  const SizedBox(height: 8),
-                  Semantics(
-                    link: true,
-                    child: GestureDetector(
-                      onTap: onStudyDays,
-                      behavior: HitTestBehavior.opaque,
-                      child: DpText(
-                        l10n.todayRestStudyDays,
-                        role: DpTextRole.caption,
-                        color: tokens.color.textSecondary,
+                    const SizedBox(height: 8),
+                  ],
+                  if (view.isRestDay) ...<Widget>[
+                    DpText(
+                      l10n.todayRestOff(
+                        DateFormat.EEEE(
+                          Localizations.localeOf(context).toString(),
+                        ).format(parsePlanDate(view.date)),
+                      ),
+                      role: DpTextRole.body,
+                    ),
+                    const SizedBox(height: 8),
+                    Semantics(
+                      link: true,
+                      child: GestureDetector(
+                        onTap: onStudyDays,
+                        behavior: HitTestBehavior.opaque,
+                        child: DpText(
+                          l10n.todayRestStudyDays,
+                          role: DpTextRole.caption,
+                          color: tokens.color.textSecondary,
+                        ),
                       ),
                     ),
-                  ),
-                ] else
-                  DpText(
-                    view.isDone
-                        ? l10n.todayDoneLine(
-                            view.courseDay,
-                            view.words,
-                            view.minutes,
-                          )
-                        : l10n.todayCourseDay(view.courseDay),
-                    role: DpTextRole.body,
-                  ),
-                if (step != null && !view.isRestDay) ...<Widget>[
-                  const SizedBox(height: 8),
-                  DpSegmentedBar(
-                    done: words.done,
-                    learning: words.learning,
-                    todo: words.todo,
-                    height: 6,
-                  ),
-                  const SizedBox(height: 8),
-                  DpText(
-                    l10n.todayStepWords(words.done, words.total, step),
-                    role: DpTextRole.caption,
-                    color: tokens.color.textSecondary,
-                  ),
+                  ] else
+                    DpText(
+                      view.isDone
+                          ? l10n.todayDoneLine(
+                              view.courseDay,
+                              view.words,
+                              view.minutes,
+                            )
+                          : l10n.todayCourseDay(view.courseDay),
+                      role: DpTextRole.body,
+                    ),
+                  if (step != null && !view.isRestDay) ...<Widget>[
+                    const SizedBox(height: 8),
+                    DpSegmentedBar(
+                      done: words.done,
+                      learning: words.learning,
+                      todo: words.todo,
+                      height: 6,
+                    ),
+                    const SizedBox(height: 8),
+                    DpText(
+                      l10n.todayStepWords(words.done, words.total, step),
+                      role: DpTextRole.caption,
+                      color: tokens.color.textSecondary,
+                    ),
+                  ],
                 ],
-              ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -312,6 +322,9 @@ class PlanSectionCard extends StatelessWidget {
             : tokens.color.onAccent);
 
     return Semantics(
+      // Its own node even when it can't be pressed (Revise · 0): its text
+      // was read run into the next card's (#162).
+      container: true,
       button: onTap != null,
       child: DpSurface(
         kind: DpSurfaceKind.bar,
@@ -549,55 +562,60 @@ class ContextualCard extends StatelessWidget {
       ),
     };
 
-    return DpSurface(
-      kind: DpSurfaceKind.bar,
-      padding: EdgeInsets.all(edge),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(tokens.shape.card - edge),
-        child: IntrinsicHeight(
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              ColoredBox(color: strip, child: const SizedBox(width: 6)),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 12),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      DpText(title, role: DpTextRole.body, weight: 600),
-                      const SizedBox(height: 2),
-                      DpText(
-                        body,
-                        role: DpTextRole.label,
-                        weight: 400,
-                        color: tokens.color.textSecondary,
-                      ),
-                      if (action != null)
-                        DpButton(
-                          label: action,
-                          onPressed: onAction,
-                          kind: DpButtonKind.text,
-                          expand: false,
+    // One stop for a screen reader: its text read as the card, not run
+    // into the next card's (#162).
+    return Semantics(
+      container: true,
+      child: DpSurface(
+        kind: DpSurfaceKind.bar,
+        padding: EdgeInsets.all(edge),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(tokens.shape.card - edge),
+          child: IntrinsicHeight(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                ColoredBox(color: strip, child: const SizedBox(width: 6)),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        DpText(title, role: DpTextRole.body, weight: 600),
+                        const SizedBox(height: 2),
+                        DpText(
+                          body,
+                          role: DpTextRole.label,
+                          weight: 400,
+                          color: tokens.color.textSecondary,
                         ),
-                    ],
+                        if (action != null)
+                          DpButton(
+                            label: action,
+                            onPressed: onAction,
+                            kind: DpButtonKind.text,
+                            expand: false,
+                          ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-              if (offer.dismissible)
-                Align(
-                  alignment: Alignment.topCenter,
-                  child: _IconAction(
-                    icon: Icons.close,
-                    label: l10n.todayCardDismiss,
-                    colour: tokens.color.textSecondary,
-                    onTap: onDismiss,
-                  ),
-                )
-              else
-                const SizedBox(width: 12),
-            ],
+                if (offer.dismissible)
+                  Align(
+                    alignment: Alignment.topCenter,
+                    child: _IconAction(
+                      icon: Icons.close,
+                      label: l10n.todayCardDismiss,
+                      colour: tokens.color.textSecondary,
+                      onTap: onDismiss,
+                    ),
+                  )
+                else
+                  const SizedBox(width: 12),
+              ],
+            ),
           ),
         ),
       ),
@@ -615,27 +633,32 @@ class RestDayNote extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final before = view.dueTomorrow ?? 0;
-    return DpSurface(
-      kind: DpSurfaceKind.bar,
-      padding: const EdgeInsets.all(14),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          DpText(l10n.todayRestNote, role: DpTextRole.body),
-          // Only with something to revise: a lead with no numbers after it
-          // would promise and stop.
-          if (view.revise.open > 0 && before > 0) ...<Widget>[
-            DpText(l10n.todayRestLighterLead, role: DpTextRole.body),
-            // ponytail: the artboard bolds this inline; DpText has no spans,
-            // so it takes its own line. Add emphasis to DpText if another
-            // screen needs the same.
-            DpText(
-              l10n.todayRestLighter(before, view.dueTomorrowIfRevised),
-              role: DpTextRole.body,
-              weight: 700,
-            ),
+    // One stop for a screen reader: its text read as the card, not run
+    // into the next card's (#162).
+    return Semantics(
+      container: true,
+      child: DpSurface(
+        kind: DpSurfaceKind.bar,
+        padding: const EdgeInsets.all(14),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            DpText(l10n.todayRestNote, role: DpTextRole.body),
+            // Only with something to revise: a lead with no numbers after it
+            // would promise and stop.
+            if (view.revise.open > 0 && before > 0) ...<Widget>[
+              DpText(l10n.todayRestLighterLead, role: DpTextRole.body),
+              // ponytail: the artboard bolds this inline; DpText has no spans,
+              // so it takes its own line. Add emphasis to DpText if another
+              // screen needs the same.
+              DpText(
+                l10n.todayRestLighter(before, view.dueTomorrowIfRevised),
+                role: DpTextRole.body,
+                weight: 700,
+              ),
+            ],
           ],
-        ],
+        ),
       ),
     );
   }
@@ -661,37 +684,46 @@ class TodayDoneCard extends StatelessWidget {
       if (view.backlog == 0) l10n.todayBacklogCleared,
     ];
 
-    return DpSurface(
-      kind: DpSurfaceKind.bar,
-      padding: const EdgeInsets.all(16),
-      child: Row(
-        children: <Widget>[
-          Container(
-            width: 36,
-            height: 36,
-            decoration: BoxDecoration(
-              color: tokens.color.easy,
-              shape: BoxShape.circle,
-              border: Border.all(color: tokens.color.ink, width: 1.5),
+    // One stop for a screen reader: its text read as the card, not run
+    // into the next card's (#162).
+    return Semantics(
+      container: true,
+      child: DpSurface(
+        kind: DpSurfaceKind.bar,
+        padding: const EdgeInsets.all(16),
+        child: Row(
+          children: <Widget>[
+            Container(
+              width: 36,
+              height: 36,
+              decoration: BoxDecoration(
+                color: tokens.color.easy,
+                shape: BoxShape.circle,
+                border: Border.all(color: tokens.color.ink, width: 1.5),
+              ),
+              child: Icon(Icons.check, size: 14, color: tokens.color.onAccent),
             ),
-            child: Icon(Icons.check, size: 14, color: tokens.color.onAccent),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                DpText(l10n.todayDoneTitle, role: DpTextRole.body, weight: 600),
-                const SizedBox(height: 2),
-                DpText(
-                  parts.join(' · '),
-                  role: DpTextRole.caption,
-                  color: tokens.color.textSecondary,
-                ),
-              ],
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  DpText(
+                    l10n.todayDoneTitle,
+                    role: DpTextRole.body,
+                    weight: 600,
+                  ),
+                  const SizedBox(height: 2),
+                  DpText(
+                    parts.join(' · '),
+                    role: DpTextRole.caption,
+                    color: tokens.color.textSecondary,
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -709,58 +741,63 @@ class TomorrowCard extends StatelessWidget {
     final l10n = AppLocalizations.of(context);
     final category = tomorrow.category;
 
-    return DpSurface(
-      kind: DpSurfaceKind.bar,
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          DpText(
-            l10n.todayTomorrow.toUpperCase(),
-            semanticsLabel: l10n.todayTomorrow,
-            role: DpTextRole.caption,
-            weight: 700,
-            letterSpacing: 0.6,
-            color: tokens.color.textSecondary,
-          ),
-          const SizedBox(height: 8),
-          if (tomorrow.restDay)
-            DpText(l10n.todayTomorrowRest, role: DpTextRole.body)
-          else ...<Widget>[
-            Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: <Widget>[
-                if (tomorrow.revise > 0)
-                  DpPill(
-                    label: l10n.todayTomorrowRevisions(tomorrow.revise),
-                    fill: tokens.color.primary,
-                    ink: tokens.color.onPrimary,
-                  ),
-                if (tomorrow.newWords > 0)
-                  DpPill(
-                    label: l10n.todayTomorrowNew(tomorrow.newWords),
-                    fill: tokens.color.accent,
-                  ),
-                if (tomorrow.grammar > 0)
-                  DpPill(
-                    label: l10n.todayGrammarDue(tomorrow.grammar),
-                    fill: tokens.surface.muted,
-                    // Oat is the muted surface, so it takes the page's ink.
-                    ink: tokens.color.ink,
-                  ),
-              ],
-            ),
-            const SizedBox(height: 8),
+    // One stop for a screen reader: its text read as the card, not run
+    // into the next card's (#162).
+    return Semantics(
+      container: true,
+      child: DpSurface(
+        kind: DpSurfaceKind.bar,
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
             DpText(
-              category == null
-                  ? l10n.todayEstimate(tomorrow.minutes)
-                  : l10n.todayTomorrowContinues(tomorrow.minutes, category),
+              l10n.todayTomorrow.toUpperCase(),
+              semanticsLabel: l10n.todayTomorrow,
               role: DpTextRole.caption,
+              weight: 700,
+              letterSpacing: 0.6,
               color: tokens.color.textSecondary,
             ),
+            const SizedBox(height: 8),
+            if (tomorrow.restDay)
+              DpText(l10n.todayTomorrowRest, role: DpTextRole.body)
+            else ...<Widget>[
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: <Widget>[
+                  if (tomorrow.revise > 0)
+                    DpPill(
+                      label: l10n.todayTomorrowRevisions(tomorrow.revise),
+                      fill: tokens.color.primary,
+                      ink: tokens.color.onPrimary,
+                    ),
+                  if (tomorrow.newWords > 0)
+                    DpPill(
+                      label: l10n.todayTomorrowNew(tomorrow.newWords),
+                      fill: tokens.color.accent,
+                    ),
+                  if (tomorrow.grammar > 0)
+                    DpPill(
+                      label: l10n.todayGrammarDue(tomorrow.grammar),
+                      fill: tokens.surface.muted,
+                      // Oat is the muted surface, so it takes the page's ink.
+                      ink: tokens.color.ink,
+                    ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              DpText(
+                category == null
+                    ? l10n.todayEstimate(tomorrow.minutes)
+                    : l10n.todayTomorrowContinues(tomorrow.minutes, category),
+                role: DpTextRole.caption,
+                color: tokens.color.textSecondary,
+              ),
+            ],
           ],
-        ],
+        ),
       ),
     );
   }
@@ -825,16 +862,22 @@ class _IconAction extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Semantics(
+    // Its own node: inside a card that is one, it would merge into the
+    // card and read as its text (#162).
+    container: true,
     button: true,
     label: label,
     excludeSemantics: true,
     onTap: onTap,
-    child: GestureDetector(
-      onTap: onTap,
-      behavior: HitTestBehavior.opaque,
-      child: SizedBox.square(
-        dimension: 44,
-        child: Icon(icon, size: 24, color: colour),
+    child: AdaptiveTooltip(
+      message: label,
+      child: GestureDetector(
+        onTap: onTap,
+        behavior: HitTestBehavior.opaque,
+        child: SizedBox.square(
+          dimension: 44,
+          child: Icon(icon, size: 24, color: colour),
+        ),
       ),
     ),
   );

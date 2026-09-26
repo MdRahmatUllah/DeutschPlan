@@ -469,17 +469,20 @@ class _Feedback extends ConsumerWidget {
             label: l10n.quizPlay,
             onTap: () => unawaited(say(ref, context, heard)),
             child: ExcludeSemantics(
-              child: GestureDetector(
-                behavior: HitTestBehavior.opaque,
-                onTap: () => unawaited(say(ref, context, heard)),
-                child: SizedBox.square(
-                  dimension: 48,
-                  child: Center(
-                    child: DpSpeakerButton(
-                      size: 32,
-                      state: speakerState(ref, heard),
-                      semanticLabel: l10n.quizPlay,
-                      onPressed: () => unawaited(say(ref, context, heard)),
+              child: AdaptiveTooltip(
+                message: l10n.quizPlay,
+                child: GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: () => unawaited(say(ref, context, heard)),
+                  child: SizedBox.square(
+                    dimension: 48,
+                    child: Center(
+                      child: DpSpeakerButton(
+                        size: 32,
+                        state: speakerState(ref, heard),
+                        semanticLabel: l10n.quizPlay,
+                        onPressed: () => unawaited(say(ref, context, heard)),
+                      ),
                     ),
                   ),
                 ),

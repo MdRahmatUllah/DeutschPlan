@@ -220,12 +220,66 @@ void goldenTest(
       );
     }
   }
+  // #162: every control a screen reader can press has a name, checked on
+  // every case once (phone, light), after its act.
+  testWidgets('$name · labels', tags: <String>[goldenTag], (tester) async {
+    final handle = tester.ensureSemantics();
+    await tester.pumpGolden(
+      builder: builder,
+      mode: GoldenMode.light,
+      device: GoldenDevice.phone,
+      chrome: chrome,
+      still: still,
+      overrides: overrides,
+    );
+    if (act != null) {
+      await act(tester);
+      await tester.pumpAndSettle(
+        const Duration(milliseconds: 100),
+        EnginePhase.sendSemanticsUpdate,
+        settleTimeout,
+      );
+    }
+    await expectLater(tester, meetsGuideline(labeledTapTargetGuideline));
+    if (chrome != AdaptiveChrome.cupertino) expectIconButtonsTipped(tester);
+    handle.dispose();
+  });
 }
 
 /// [linear] as Android 14+ gives it, when text is scaled at all.
 TextScaler _phone(TextScaler linear) {
   final factor = linear.scale(1);
   return factor == 1 ? linear : AndroidTextScaler(factor);
+}
+
+/// #162: under Material chrome every icon-only control — something tappable
+/// that shows an icon and no text — names itself on a long press, as a
+/// Material icon button does ([AdaptiveTooltip]).
+void expectIconButtonsTipped(WidgetTester tester) {
+  final untipped = <String>[];
+  for (final element
+      in find
+          .byWidgetPredicate(
+            (widget) =>
+                (widget is GestureDetector && widget.onTap != null) ||
+                (widget is InkResponse && widget.onTap != null),
+          )
+          .hitTestable()
+          .evaluate()) {
+    final tappable = find.byElementPredicate((e) => e == element);
+    final icons = find.descendant(of: tappable, matching: find.byType(Icon));
+    // Text, not RichText: an Icon draws its glyph with a RichText.
+    final text = find.descendant(of: tappable, matching: find.byType(Text));
+    if (icons.evaluate().isEmpty || text.evaluate().isNotEmpty) continue;
+    final tip = find.ancestor(of: tappable, matching: find.byType(Tooltip));
+    if (tip.evaluate().isEmpty) {
+      untipped.add(
+        '${(icons.evaluate().first.widget as Icon).icon} in '
+        '${element.widget.runtimeType} at ${tester.getRect(tappable)}',
+      );
+    }
+  }
+  expect(untipped, isEmpty, reason: 'icon-only controls without a tooltip');
 }
 
 extension GoldenTester on WidgetTester {

@@ -389,15 +389,18 @@ class _Hero extends StatelessWidget {
               label: l10n.examResultClose,
               onTap: onClose,
               excludeSemantics: true,
-              child: GestureDetector(
-                behavior: HitTestBehavior.opaque,
-                onTap: onClose,
-                // The artboards: a back arrow on Android, a cross on iOS.
-                child: SizedBox.square(
-                  dimension: 48,
-                  child: Icon(
-                    context.isCupertino ? Icons.close : Icons.arrow_back,
-                    color: ink,
+              child: AdaptiveTooltip(
+                message: l10n.examResultClose,
+                child: GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: onClose,
+                  // The artboards: a back arrow on Android, a cross on iOS.
+                  child: SizedBox.square(
+                    dimension: 48,
+                    child: Icon(
+                      context.isCupertino ? Icons.close : Icons.arrow_back,
+                      color: ink,
+                    ),
                   ),
                 ),
               ),

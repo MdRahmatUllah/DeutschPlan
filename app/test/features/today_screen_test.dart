@@ -1,4 +1,5 @@
 import 'package:deutschplan/core/adaptive/adaptive.dart';
+import 'package:deutschplan/core/typography/dp_text.dart';
 import 'package:deutschplan/features/sentences/sentences_screen.dart';
 import 'package:deutschplan/core/components/dp_coach_mark.dart';
 
@@ -7,6 +8,7 @@ import 'package:deutschplan/features/study/study_screen.dart';
 import '../core/text_clipping.dart';
 
 import 'dart:io';
+import 'dart:ui' show LocaleStringAttribute;
 
 import 'package:deutschplan/data/db/content_dao.dart';
 import 'package:deutschplan/data/repositories/setting_keys.dart';
@@ -107,6 +109,19 @@ void main() {
     await tester.pumpAndSettle();
   }
 
+  testWidgets('#162 each card is its own stop for a screen reader: the '
+      "course card isn't read run into Revise's", (tester) async {
+    final semantics = tester.ensureSemantics();
+    await pump(tester);
+    final course = tester.getSemantics(
+      find.bySemanticsLabel(RegExp(l10n.todayCourseDay(34))),
+    );
+    expect(course.label, isNot(contains(l10n.todayRevise(10))));
+    // The card's own node, not the list's with the card's text in it.
+    expect(course.rect.size, tester.getSize(find.byType(ProgressRingCard)));
+    semantics.dispose();
+  });
+
   group('the header', () {
     testWidgets('German date and greeting, whatever the UI language', (
       tester,
@@ -115,6 +130,26 @@ void main() {
 
       expect(find.text('Montag, 21. September'), findsOneWidget);
       expect(find.text('Guten Morgen, Maruf'), findsOneWidget);
+    });
+
+    testWidgets('#162 the greeting is read in a German voice, in a Bangla '
+        'UI too', (tester) async {
+      final semantics = tester.ensureSemantics();
+      await pump(tester, locale: const Locale('bn'));
+      final label = tester
+          .getSemantics(find.text('Guten Morgen, Maruf'))
+          .attributedLabel;
+      final greeting = label.string.indexOf('Guten Morgen, Maruf');
+      expect(
+        label.attributes.whereType<LocaleStringAttribute>().any(
+          (tag) =>
+              tag.locale == DpScript.deDE &&
+              tag.range.start <= greeting &&
+              tag.range.end >= greeting + 'Guten Morgen, Maruf'.length,
+        ),
+        isTrue,
+      );
+      semantics.dispose();
     });
 
     testWidgets('no name, no comma', (tester) async {

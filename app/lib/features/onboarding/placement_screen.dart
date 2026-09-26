@@ -224,12 +224,15 @@ class _TopBar extends StatelessWidget {
           label: closeLabel,
           excludeSemantics: true,
           onTap: onClose,
-          child: GestureDetector(
-            onTap: onClose,
-            behavior: HitTestBehavior.opaque,
-            child: SizedBox.square(
-              dimension: side,
-              child: Icon(Icons.close, color: context.tokens.color.ink),
+          child: AdaptiveTooltip(
+            message: closeLabel,
+            child: GestureDetector(
+              onTap: onClose,
+              behavior: HitTestBehavior.opaque,
+              child: SizedBox.square(
+                dimension: side,
+                child: Icon(Icons.close, color: context.tokens.color.ink),
+              ),
             ),
           ),
         ),
@@ -330,13 +333,20 @@ class _Question extends ConsumerWidget {
         DpText(ask, role: DpTextRole.body, color: tokens.color.textSecondary),
         const SizedBox(height: 10),
         if (item.kind == PlacementKind.gap)
-          DpText(item.sentence!, role: DpTextRole.title, weight: 600)
+          DpText(
+            item.sentence!,
+            role: DpTextRole.title,
+            weight: 600,
+            german: true,
+          )
         else
           Row(
             children: <Widget>[
               Flexible(
                 child: Text.rich(
                   TextSpan(
+                    // Read in a German voice (#162).
+                    locale: DpScript.deDE,
                     children: <InlineSpan>[
                       if (word.article != null &&
                           item.kind != PlacementKind.article)

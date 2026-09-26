@@ -565,12 +565,15 @@ class _TopBar extends StatelessWidget {
           label: semantic,
           excludeSemantics: true,
           onTap: onTap,
-          child: GestureDetector(
-            onTap: onTap,
-            behavior: HitTestBehavior.opaque,
-            child: SizedBox.square(
-              dimension: 48,
-              child: Icon(icon, color: tokens.color.ink),
+          child: AdaptiveTooltip(
+            message: semantic,
+            child: GestureDetector(
+              onTap: onTap,
+              behavior: HitTestBehavior.opaque,
+              child: SizedBox.square(
+                dimension: 48,
+                child: Icon(icon, color: tokens.color.ink),
+              ),
             ),
           ),
         );

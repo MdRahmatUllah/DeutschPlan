@@ -14,6 +14,7 @@ import 'package:deutschplan/l10n/generated/app_localizations.dart';
 import 'package:deutschplan/main.dart'
     show appLocalizationsDelegates, supportedLocales;
 import 'package:deutschplan/router/routes.dart';
+import 'package:flutter/semantics.dart' show SemanticsAction;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
@@ -118,6 +119,23 @@ void main() {
         tester.widget<WordDetailView>(find.byType(WordDetailView)).uid,
         'uid-ursache',
       );
+    });
+
+    testWidgets('#162 FR-W2-01 to a screen reader a header is one button, '
+        'named by its headword, beside its own play button', (tester) async {
+      final semantics = tester.ensureSemantics();
+      await pump(tester);
+      final header = tester.getSemantics(
+        find.bySemanticsLabel(RegExp(r'^der Grund, masculine')),
+      );
+      expect(header.flagsCollection.isButton, isTrue);
+      expect(header.getSemanticsData().hasAction(SemanticsAction.tap), isTrue);
+      expect(
+        find.bySemanticsLabel(l10n.wordPronounce('der Grund')),
+        findsOneWidget,
+        reason: 'the play button stays its own',
+      );
+      semantics.dispose();
     });
 
     testWidgets('FR-W2-01 a member the course has no word for opens nothing', (

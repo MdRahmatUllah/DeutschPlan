@@ -503,6 +503,62 @@ void main() {
     });
   });
 
+  group('#162 AdaptiveTooltip', () {
+    // An icon-only control: a name to show, and the same words as its label.
+    // Not excluding its children's semantics, as WordPlayButton doesn't, so
+    // a tooltip that were read would show here.
+    Widget gear({bool longPress = true, String? message = 'Settings'}) =>
+        Semantics(
+          button: true,
+          label: 'Settings',
+          child: AdaptiveTooltip(
+            message: message,
+            longPress: longPress,
+            child: GestureDetector(
+              onTap: () {},
+              child: const SizedBox.square(
+                dimension: 48,
+                child: Icon(Icons.settings_outlined),
+              ),
+            ),
+          ),
+        );
+
+    testWidgets('#162 Y01 Material: a long press shows the name, which a '
+        'screen reader does not hear twice', (tester) async {
+      final semantics = tester.ensureSemantics();
+      await pump(tester, AdaptiveChrome.material, gear());
+      expect(tester.widget<Tooltip>(find.byType(Tooltip)).message, 'Settings');
+
+      await tester.longPress(find.byType(GestureDetector));
+      await tester.pumpAndSettle();
+      expect(find.text('Settings'), findsOneWidget);
+
+      final node = tester.getSemantics(find.byType(AdaptiveTooltip));
+      expect(node.label, 'Settings');
+      expect(node.tooltip, isEmpty);
+      semantics.dispose();
+    });
+
+    testWidgets('#162 Y01 iOS has no tooltips', (tester) async {
+      await pump(tester, AdaptiveChrome.cupertino, gear());
+      expect(find.byType(Tooltip), findsNothing);
+    });
+
+    testWidgets("#162 Y01 where a long press has its own job, it doesn't show "
+        'the name', (tester) async {
+      await pump(tester, AdaptiveChrome.material, gear(longPress: false));
+      await tester.longPress(find.byType(GestureDetector));
+      await tester.pumpAndSettle();
+      expect(find.text('Settings'), findsNothing);
+    });
+
+    testWidgets('#162 Y01 no name, no tooltip', (tester) async {
+      await pump(tester, AdaptiveChrome.material, gear(message: null));
+      expect(find.byType(Tooltip), findsNothing);
+    });
+  });
+
   group('AdaptiveSwitch', () {
     testWidgets(
       'renders the Cupertino control on iOS and Material on Android',

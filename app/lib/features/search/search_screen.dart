@@ -440,16 +440,19 @@ class _Header extends StatelessWidget {
                             label: l10n.searchClear,
                             onTap: onClear,
                             excludeSemantics: true,
-                            child: GestureDetector(
-                              behavior: HitTestBehavior.opaque,
-                              onTap: onClear,
-                              child: SizedBox(
-                                width: 48,
-                                height: 48,
-                                child: Icon(
-                                  Icons.close,
-                                  size: 22,
-                                  color: tokens.color.textSecondary,
+                            child: AdaptiveTooltip(
+                              message: l10n.searchClear,
+                              child: GestureDetector(
+                                behavior: HitTestBehavior.opaque,
+                                onTap: onClear,
+                                child: SizedBox(
+                                  width: 48,
+                                  height: 48,
+                                  child: Icon(
+                                    Icons.close,
+                                    size: 22,
+                                    color: tokens.color.textSecondary,
+                                  ),
                                 ),
                               ),
                             ),

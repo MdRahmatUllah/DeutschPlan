@@ -197,15 +197,22 @@ class _StudyWordCardState extends ConsumerState<StudyWordCard> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    // FR-T2-09: a long-press copies the word.
-                    Semantics(
-                      onLongPressHint: l10n.studyCopyHint,
-                      child: GestureDetector(
-                        onLongPress: _copy,
-                        child: DpHeadword(
-                          word.german,
-                          article: word.article,
-                          role: DpTextRole.display,
+                    // accessibility-performance.md: after a rating the focus
+                    // moves to the next card, which is a new one (T2's
+                    // switcher), so a screen reader follows (#162).
+                    Focus(
+                      autofocus: true,
+                      // FR-T2-09: a long-press copies the word.
+                      child: Semantics(
+                        onLongPressHint: l10n.studyCopyHint,
+                        child: GestureDetector(
+                          onLongPress: _copy,
+                          child: DpHeadword(
+                            word.german,
+                            article: word.article,
+                            plural: word.forms,
+                            role: DpTextRole.display,
+                          ),
                         ),
                       ),
                     ),

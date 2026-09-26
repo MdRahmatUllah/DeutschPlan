@@ -613,6 +613,7 @@ class _Match extends StatelessWidget {
                       DpHeadword(
                         word.german,
                         article: word.article,
+                        plural: word.forms,
                         role: DpTextRole.label,
                         weight: 600,
                       ),
