@@ -43,7 +43,11 @@ void main() {
   });
 
   /// Straße to revise — a cloze card, BR-FSRS-06 — then Haus, new.
-  Future<void> open({String mode = 'cloze', String? example}) async {
+  Future<void> open({
+    String mode = 'cloze',
+    String? example,
+    bool chosen = false,
+  }) async {
     db = AppDatabase.memory();
     final directory = Directory.systemTemp.createTempSync('dp_cloze');
     final content = ContentFixture.write('${directory.path}/content.db');
@@ -63,9 +67,10 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code) VALUES
 ''');
     await db.customStatement('''
 INSERT INTO word_state (word_uid, status, introduced_on, due, stability,
-  difficulty, reps, lapses, fsrs_state, last_review, card_mode)
+  difficulty, reps, lapses, fsrs_state, last_review, card_mode,
+  card_mode_manual)
 VALUES ('$strasse', 'learning', '2026-09-10', '2026-09-21', 4.5, 5.2, 2, 0,
-  2, '2026-09-15T08:00:00.000Z', '$mode')
+  2, '2026-09-15T08:00:00.000Z', '$mode', ${chosen ? 1 : 0})
 ''');
     settings = SettingsRepository(db);
     await settings.load();
@@ -85,9 +90,12 @@ VALUES ('$strasse', 'learning', '2026-09-10', '2026-09-21', 4.5, 5.2, 2, 0,
     String mode = 'cloze',
     String? example,
     bool voice = true,
+    bool chosen = false,
   }) async {
     spoken = <String>[];
-    await tester.runAsync(() => open(mode: mode, example: example));
+    await tester.runAsync(
+      () => open(mode: mode, example: example, chosen: chosen),
+    );
     addTearDown(
       () => tester.runAsync(() async {
         await settings.dispose();
@@ -190,6 +198,14 @@ VALUES ('$strasse', 'learning', '2026-09-10', '2026-09-21', 4.5, 5.2, 2, 0,
     expect(find.text(l10n.studyClozeRatePrompt), findsOneWidget);
     expect(find.byType(DpRatingBar), findsOneWidget);
     expect(container.read(studySessionProvider(args)).value?.revealed, isTrue);
+  });
+
+  testWidgets('#515 BR-FSRS-06 a cloze card the learner chose in W1 says so, '
+      'not the two ratings', (tester) async {
+    await pump(tester, chosen: true);
+    await answer(tester, 'Straße');
+    expect(find.text(l10n.studyClozeFootnoteChosen), findsOneWidget);
+    expect(find.text(l10n.studyClozeFootnote), findsNothing);
   });
 
   testWidgets('BR-ANS-02 the article is not required, nor wrong to add', (

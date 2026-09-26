@@ -750,9 +750,10 @@ class StudyCardSlot extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tokens = context.tokens;
-    final word = item.kind == SessionBlockKind.grammar
+    final studied = item.kind == SessionBlockKind.grammar
         ? null
-        : ref.watch(studyWordProvider(item.uid)).value?.word;
+        : ref.watch(studyWordProvider(item.uid)).value;
+    final word = studied?.word;
     final cloze = word == null ? null : ref.watch(studyClozeProvider(item.uid));
     if (word != null && cloze != null && !cloze.isLoading) {
       final gap = cloze.value;
@@ -764,6 +765,7 @@ class StudyCardSlot extends ConsumerWidget {
           cloze: gap,
           // A verdict that scores nothing (BR-ANS-04): Again and Hard only.
           onChecked: (verdict) => onReveal?.call(missed: verdict.score == 0),
+          chosen: studied?.state?.cardModeManual == 1,
         );
       }
       return StudyWordCard(

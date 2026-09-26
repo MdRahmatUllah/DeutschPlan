@@ -1728,6 +1728,10 @@
   "@studyClozeFootnote": {
     "description": "T2 cloze card: why the card changed (BR-FSRS-06) and how to change it back."
   },
+  "studyClozeFootnoteChosen": "You chose the cloze card for this word. Switch back to plain cards from the word's detail.",
+  "@studyClozeFootnoteChosen": {
+    "description": "T2 cloze card, when the learner chose the cloze card themselves in W1 (word_state.card_mode_manual, BR-FSRS-06): not the two-ratings reason (#515)."
+  },
   "summaryTitle": "Gut gemacht!",
   "@summaryTitle": {
     "description": "T3 summary headline. German in every UI language — it is part of the course's voice."
