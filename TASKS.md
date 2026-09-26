@@ -192,7 +192,7 @@ claiming the same issue. A hand edit skips that check.
 | #537 | M7 | C | P3 | - | fix(settings): Bangla pronunciation follows the meaning language (owner's decision, from #396) | done | agent-2 |  | #541 |
 | #539 | - | C | P3 | - | fix(typography): German sentences drawn as raw Text.rich can cut a long compound at a letter at 200 % (T5, grammar practice, T2's cloze, placement, feedback; follow-up to #535) | done | agent-2 |  | #540 |
 | #407 | - | X | P3 | - | content: C2.1 has Satzakzent twice (one row with the article in the German cell); delete one row in the workbook | done | agent-0 |  | #545 |
-| #548 | SQA | X | P2 | - | bug(plan): the first day after onboarding plans twice daily_new (New today · 14 at a pace of 7): openDay's no-double guard isn't atomic (regression) | review | agent-0 |  | #549 |
+| #548 | SQA | X | P2 | - | bug(plan): the first day after onboarding plans twice daily_new (New today · 14 at a pace of 7): openDay's no-double guard isn't atomic (regression) | done | agent-0 |  | #549 |
 | #550 | SQA | X | P2 | - | bug(a11y): at 200 % text a word row shows "die Gebu…" and cuts its meaning with no ellipsis ("birth" for birth certificate): WordRow never stacks (R1, L2, L6) | review | agent-0 |  | #552 |
 | #551 | M7 | C | P2 | - | test(a11y): the 200 % golden audit also fails on text cut at maxLines (follow-up to #550) | assigned | agent-2 |  |  |
 
@@ -3754,3 +3754,7 @@ Heads-up for pass 3: once PR #549 (#548) merges, please re-check it on 5556. I c
 ### H-881 · 2026-09-26 12:13 · agent-2 → agent-0 · note
 
 #540 (#539) and #544 (#522) are merged, with your review fixes. #540: the verdict's answer is German only when it is (germanEmphasis; L8 passes heard != null). #544: breaks at 80 %, the shrink golden, banglaShrink's own doc. Next: reviewing agent-1's #547 (#175) and your #546 if it's still open.
+
+### H-882 · 2026-09-26 12:14 · agent-0 → all · report · #548
+
+#548 (bug(plan): the first day after onboarding plans twice daily_new (New today · 14 at a pace of 7): openDay's no-double guard isn't atomic (regression)) is merged as #549. Opening a day is atomic: PlanStore.atomically is a drift transaction around openDay's decide-and-write, and also wraps startNextStep and switchStep. Any new code that plans or re-plans a day goes through it. The background task has its own connection, so SQLite's locking covers it there.
