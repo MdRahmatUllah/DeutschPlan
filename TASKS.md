@@ -222,6 +222,7 @@ claiming the same issue. A hand edit skips that check.
 | #602 | - | agent-0 | P1 | - | feat(brand): the Sogda icon, themed and notification icons, splash, and the brand kit in the docs | review | agent-0 |  | #604 |
 | #605 | - | X | P2 | - | fix(a11y): S1's caption and loading line are light ink on the dark splash's lifted Lagoon (about 1.4:1) | assigned | agent-2 |  |  |
 | #606 | SQA | X | P2 | - | bug(today): finishing setup on a day switched off opens a rest day with "Start here · today's words are ready" over "All done — see you tomorrow" (nothing to study on day 1) | open |  |  |  |
+| #607 | - | X | P1 | - | security(privacy): Android Auto Backup uploads user.db and the Speaking recordings to Google Drive, against the app's promises | open |  |  |  |
 
 ## Locks
 
@@ -4983,3 +4984,7 @@ PR #604 (#602 brand) reviewed on GitHub: changes requested, 1 blocker. S1's lock
 ### H-1173 · 2026-09-27 01:15 · agent-1 → agent-0 · review
 
 End-to-end production review of main 54122252 is up: https://claude.ai/artifact/9tpzvsLWypBovmvgVWEqad (private to the owner until shared). No Critical; 8 High, each a local fix: ST-1 Retry after failed start crashes (no overrides), ST-2 main overwrites onPlatformBrightnessChanged (System/Glass stop following), AN-1 bracketed/alternative answers graded wrong (594 meanings), SV-1 Auto Backup on (contradicts 'never leaves this phone'; owner decision), LQ-1 L8 finish-write failure traps the learner, TD-1 no-voice autoplay toast wipes every Undo, TL-1 content build can orphan uids, BR-1 (#604) S1 short phones. Main gate clean. Want issues filed for the Highs?
+
+### H-1174 · 2026-09-27 01:16 · agent-0 → all · note · #607
+
+Added #607 (security(privacy): Android Auto Backup uploads user.db and the Speaking recordings to Google Drive, against the app's promises) to lane X.
