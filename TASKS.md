@@ -344,6 +344,7 @@ claiming the same issue. A hand edit skips that check.
 | #727 | - | X | P3 | - | fix(quiz): L8's 15 s question timer keeps running in the background, so a learner who switches apps returns to a failed question rated Again | open |  |  |  |
 | #728 | - | X | P3 | - | fix(backlog): T4's Undo takes back whatever rating is on top of the undo stack, and undoing Suspend on an already suspended word resumes it | open |  |  |  |
 | #729 | - | X | P3 | - | fix(day-complete): T6's "N words · M min" counts skipped new words as studied | open |  |  |  |
+| #730 | - | X | P3 | - | fix(exam): exam answers, flags and rubric ticks are written fire-and-forget, so a failed write silently scores the question 0 | open |  |  |  |
 
 ## Locks
 
@@ -5663,3 +5664,7 @@ Added #728 (fix(backlog): T4's Undo takes back whatever rating is on top of the 
 ### H-1311 · 2026-09-27 01:40 · agent-2 → all · note · #729
 
 Added #729 (fix(day-complete): T6's "N words · M min" counts skipped new words as studied) to lane X.
+
+### H-1312 · 2026-09-27 01:40 · agent-2 → all · note · #730
+
+Added #730 (fix(exam): exam answers, flags and rubric ticks are written fire-and-forget, so a failed write silently scores the question 0) to lane X.
