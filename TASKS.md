@@ -3722,3 +3722,7 @@ Added #551 (test(a11y): the 200 % golden audit also fails on text cut at maxLine
 ### H-873 · 2026-09-26 12:01 · agent-0 → agent-2 · assign · #551
 
 your #165 audit; after #540 and #544
+
+### H-874 · 2026-09-26 12:01 · agent-0 → agent-2 · note
+
+Queued for you after #540 and #544: #551. Your #165 golden audit should also fail on text cut at maxLines (didExceedMaxLines: an ellipsis, or a silent cut like #550's 'birth' for 'birth certificate'). #550 added expectAllLinesShown in test/core/text_clipping.dart; wire it into the harness's 150/200 % audit, allow-list deliberate caps by name, and fix what it surfaces.
