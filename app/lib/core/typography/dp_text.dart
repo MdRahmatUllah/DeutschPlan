@@ -132,8 +132,8 @@ abstract final class DpScript {
   /// The soft hyphen: a place a line may break.
   ///
   /// ponytail: Flutter breaks there but draws no hyphen at the break
-  /// (flutter/flutter#18443 is open), so the break shows as a plain wrap
-  /// between two syllables; drawing "-" is #419.
+  /// (flutter/flutter#18443 is open); a headword and single-script
+  /// `DpText` draw it themselves (`_Hyphenated`, #419).
   static const String softHyphen = '­';
 
   /// Lets a long German compound break between syllables rather than
