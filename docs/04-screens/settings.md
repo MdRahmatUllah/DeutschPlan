@@ -21,7 +21,7 @@ Grouped list (Material headers / Cupertino inset groups). Changes save instantly
 | Display | Meaning language | EN / বাংলা / Both | `meaning_language` |
 | | App language | EN / বাংলা | `ui_language` |
 | | Theme | System / Light / Dark / Glass | `theme_mode` |
-| | Show Bangla pronunciation | switch | `show_pron_bn` |
+| | Show Bangla pronunciation | switch; setup's meaning language sets it (off for English only), and M3's *Meaning language* row leaves it to the learner (#527, #537) | `show_pron_bn` |
 | Audio | Voice engine | Supertonic · Anna / Phone voice → M4 | `tts_engine`, `tts_voice` |
 | | Speech speed | slider, "1.0× · long-press any speaker for 0.75×" | `tts_speed` |
 | | Auto-play headword / first example | switches | `autoplay_*` |
@@ -54,5 +54,6 @@ Details M3 settles (#146):
 - FR-M3-01 The retention subtitle estimates reviews/day = Σ over learned words of 1 ÷ intervalDays(stability) at the chosen retention (sampled, cached).
 - FR-M3-02 Theme changes apply immediately app-wide (`themeProvider`).
 - FR-M3-03 Turning translation on without a model opens M4 and leaves the switch off until the model is ready.
+- FR-M3-04 *Show Bangla pronunciation* follows the meaning language in setup only (S2 page 2: off for English only). M3's *Meaning language* row leaves the switch as the learner set it (#537).
 
 **Tests.** each row writes its key; FR-M3-01 estimate; goldens top/bottom × 3 themes.
