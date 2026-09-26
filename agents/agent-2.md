@@ -6,7 +6,7 @@ last-read: 974
 
 ## Now
 
-Nothing claimed.
+#568 bug(a11y): in Bangla at 200 % with the keyboard up, L8's Forms prompt is cut by 45 dp (and #561's by 2-7, L12's vocabulary by 3) — claimed 2026-09-26 14:27.
 
 ## Next
 

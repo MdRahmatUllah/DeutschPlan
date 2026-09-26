@@ -754,3 +754,4 @@ able to tell what is going on without asking.
 - 2026-09-26 14:14 · agent-2 #560 · done (#563)
 - 2026-09-26 14:18 · agent-2 #564 · done (#566)
 - 2026-09-26 14:27 · agent-2 #568 · added to the board, lane X
+- 2026-09-26 14:27 · agent-2 #568 · claimed: bug(a11y): in Bangla at 200 % with the keyboard up, L8's Forms prompt is cut by 45 dp (and #561's by 2-7, L12's vocabulary by 3)
