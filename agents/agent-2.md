@@ -6,7 +6,7 @@ last-read: 655
 
 ## Now
 
-#170 in review as PR #497: answer review threads; re-run the gate if main moved, then merge.
+#419 fix(typography): draw a hyphen where a German headword breaks at a soft hyphen (Flutter draws none) — claimed 2026-09-26 05:45.
 
 ## Next
 

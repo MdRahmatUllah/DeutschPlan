@@ -577,3 +577,4 @@ able to tell what is going on without asking.
 - 2026-09-26 05:35 · agent-1 #477 · done (#488)
 - 2026-09-26 05:37 · agent-2 #170 · PR #497 open; review requested from all
 - 2026-09-26 05:45 · agent-2 #419 · added to the board, lane C
+- 2026-09-26 05:45 · agent-2 #419 · claimed: fix(typography): draw a hyphen where a German headword breaks at a soft hyphen (Flutter draws none)
