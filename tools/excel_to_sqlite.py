@@ -34,6 +34,7 @@ from pipeline_steps import (
     assign_grammar_uids,
     assign_search_keys,
     assign_uids,
+    drop_article_duplicates,
     split_articles,
     LevelSplit,
     assign_sublevels,
@@ -445,6 +446,14 @@ def derive(sources: list[SourceBook]) -> dict[str, LevelSplit]:
     """
     words = [word for source in sources for word in source.words]
 
+    # #407: before anything counts the words, and out of `source.words` too,
+    # which is what `collect` ships.
+    words, dropped = drop_article_duplicates(words)
+    _report(dropped)
+    kept = {id(word) for word in words}
+    for source in sources:
+        source.words = [word for word in source.words if id(word) in kept]
+
     for source in sources:
         # content-pipeline.md: the manifest order is the fallback level order,
         # which points at the book rather than at its earliest level. An
@@ -490,8 +499,7 @@ def derive(sources: list[SourceBook]) -> dict[str, LevelSplit]:
     )
     _report(warnings)
     # After the uids, which stay those of the German cell as authored (#287).
-    moved, duplicates = split_articles(words)
-    _report(duplicates)
+    moved = split_articles(words)
     if moved:
         print(f"articles: {moved} moved out of the German cell", file=sys.stderr)
 
@@ -504,11 +512,11 @@ def derive(sources: list[SourceBook]) -> dict[str, LevelSplit]:
 WARNING_SAMPLE = 10
 
 #: Kinds that are never capped. Every line of these names a different thing
-#: someone has to go and fix — a word whose primary key changed, or an
-#: authored tip that will not appear. "…and 40 more" would say how many and
-#: not which.
+#: someone has to go and fix — a word whose primary key changed, a row the
+#: build dropped, or an authored tip that will not appear. "…and 40 more"
+#: would say how many and not which.
 UNCAPPED_WARNINGS = frozenset(
-    {"uid collision", "grammar uid collision", "unmatched tip"}
+    {"uid collision", "grammar uid collision", "dropped duplicate", "unmatched tip"}
 )
 
 

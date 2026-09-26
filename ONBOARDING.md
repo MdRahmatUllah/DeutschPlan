@@ -24,7 +24,7 @@ then again whenever something surprises you.
 ## 1. The project
 
 DeutschPlan is an offline German course for Bangla and English speakers, built
-in Flutter for Android and iOS. It covers 12 steps, A1.1 → C2.2: 5,594 words
+in Flutter for Android and iOS. It covers 12 steps, A1.1 → C2.2: 5,593 words
 and 182 grammar topics. It has:
 
 - a daily plan scheduled by FSRS

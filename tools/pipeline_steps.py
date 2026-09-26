@@ -491,38 +491,76 @@ def assign_search_keys(words: Sequence) -> None:
 # The article moves into `article`. A pair ("die Rente ↔ die Miete", "die
 # Kohle / die Kohlen", "die Zuspitzung — die Pointe") is two nouns and keeps
 # its articles. Run after the uids: they stay those of the cell as authored,
-# so no learner's progress on these words is reset.
+# so no learner's progress on these words is reset. A row the move would make
+# another row's word is dropped instead, before the split (#407).
 
 #: A leading article, and a rest that is one noun: no second article and no
 #: pair's separator. What `split_articles` moves.
 LEADING_ARTICLE = r"^(der|die|das) (?!.*(?:↔|/|—|–| der | die | das ))(.+)$"
 
 
-def split_articles(words: Sequence) -> tuple[int, list[str]]:
-    """Moves a typed-in article into `article`. Returns how many moved, and
-    a warning for each left alone because moving it would make it the same
-    word as another row: that is a duplicate for the author to delete."""
+def _typed_article(word):
+    """The `LEADING_ARTICLE` match of a noun whose Article cell is empty."""
     import re
 
-    pattern = re.compile(LEADING_ARTICLE)
-    same = {(w.level, w.german, w.pos, w.english) for w in words}
-    moved, warnings = 0, []
+    if getattr(word, "pos", None) != "noun" or getattr(word, "article", None):
+        return None
+    return re.match(LEADING_ARTICLE, (word.german or "").strip())
+
+
+def _uid_key(word, german: str) -> tuple[str, ...]:
+    """The fields the uid is made of, with `german` in place of the cell."""
+    return tuple(
+        german if name == "german" else _uid_part(word, name) for name in UID_FIELDS
+    )
+
+
+def drop_article_duplicates(words: Sequence) -> tuple[list, list[str]]:
+    """#407: drops a row that moving its article would make another row.
+
+    "der Satzakzent" with the Article cell empty beside "Satzakzent" of the
+    same level, part of speech and English: once the article moves, the two
+    are one word in every field the uid is made of, and the learner would meet
+    it twice under two uids. The row with the article in its German cell goes,
+    the clean one stays. Run before anything counts the words, so the steps,
+    `seq` and the manifest see only the row that ships.
+
+    Returns the kept words, and a warning per dropped row naming it, so the
+    author can delete it.
+    """
+    by_key: dict[tuple[str, ...], object] = {}
     for word in words:
-        if getattr(word, "pos", None) != "noun" or getattr(word, "article", None):
+        by_key.setdefault(_uid_key(word, word.german), word)
+
+    kept, warnings = [], []
+    for word in words:
+        match = _typed_article(word)
+        other = by_key.get(_uid_key(word, match.group(2))) if match else None
+        if other is None:
+            kept.append(word)
             continue
-        match = pattern.match((word.german or "").strip())
-        if not match:
-            continue
-        if (word.level, match.group(2), word.pos, word.english) in same:
-            warnings.append(
-                f"duplicate: {word.german!r} ({word.level}) is also a row of "
-                f"its own without the article. Its article stays in the "
-                f"German cell; delete one of the two rows."
-            )
-            continue
-        word.article, word.german = match.group(1), match.group(2)
-        moved += 1
-    return moved, warnings
+        warnings.append(
+            f"dropped duplicate: {word.source_file} All Words row {word.row} "
+            f"({word.german!r}, {word.level}): dropped a duplicate of "
+            f"{other.german!r} ({other.source_file} row {other.row}, kept). "
+            f"Delete row {word.row} in the workbook."
+        )
+    return kept, warnings
+
+
+def split_articles(words: Sequence) -> int:
+    """Moves a typed-in article into `article`. Returns how many moved.
+
+    A row the move would make the same word as another row is gone by now:
+    `drop_article_duplicates` runs first (#407).
+    """
+    moved = 0
+    for word in words:
+        match = _typed_article(word)
+        if match:
+            word.article, word.german = match.group(1), match.group(2)
+            moved += 1
+    return moved
 
 
 # PIPE-05 and PIPE-06: examples, and the cells Excel would have eaten.
