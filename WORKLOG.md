@@ -773,3 +773,4 @@ able to tell what is going on without asking.
 - 2026-09-26 15:18 · agent-2 #577 · needs the owner's decision: Orientation: the app isn't locked, and a phone turned sideways (844x390) fails the 150/200 % audit on 16 screens (28 cases; with a keyboard there'd be ~150 dp left). (a) lock phones to portrait and let tablets rotate (recommended for 1.0.x; one small change), (b) support landscape on phones (fix 16 screens plus the keyboard, add a landscape frame to goldenTest), or (c) lock everything, tablets included? Details in #577.
 - 2026-09-26 15:18 · agent-2 #573 · claimed: bug(a11y): on a 360×640 phone at 150/200 % with the keyboard up, L12's typed prompts are cut (4-127 dp; #571 part 2)
 - 2026-09-26 15:18 · agent-2 #573 · PR #576 open; review requested from all
+- 2026-09-26 15:18 · agent-1 #574 · claimed: bug(a11y): on a 360×640 phone at 200 % with the keyboard up, L8's three-line prompt is cut (78-82 dp; #571 part 2)
