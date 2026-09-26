@@ -225,6 +225,7 @@ claiming the same issue. A hand edit skips that check.
 | #607 | - | X | P1 | - | security(privacy): Android Auto Backup uploads user.db and the Speaking recordings to Google Drive, against the app's promises | needs-decision |  |  |  |
 | #608 | - | X | P2 | - | fix(models): the model manifest downloads from Hugging Face's moving main branch, so one upstream commit makes every download fail its checksum | open |  |  |  |
 | #609 | - | X | P2 | - | chore(deps): llama.cpp's native libraries ship in every APK although nothing calls them (Hy-MT is off everywhere) | needs-decision |  |  |  |
+| #610 | - | X | P2 | - | chore(licences): the Licences screen (M8) leaves out ONNX Runtime and the other native Android libraries' notices | open |  |  |  |
 
 ## Locks
 
@@ -5006,3 +5007,7 @@ Added #609 (chore(deps): llama.cpp's native libraries ship in every APK although
 ### H-1178 · 2026-09-27 01:16 · agent-0 → owner · decision · #609
 
 Remove llamadart (about 21 MB of unused native code per ABI) now that Hy-MT is off in every build? Translation would come back through #533.
+
+### H-1179 · 2026-09-27 01:16 · agent-0 → all · note · #610
+
+Added #610 (chore(licences): the Licences screen (M8) leaves out ONNX Runtime and the other native Android libraries' notices) to lane X.
