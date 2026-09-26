@@ -1286,49 +1286,68 @@ class _TypedConfirmState extends State<_TypedConfirm> {
     );
     void cancel() => Navigator.of(context).pop(false);
 
+    // The keyboard's room as plain padding, in the same frame, and none for
+    // the dialog's own: Material and Cupertino animate their inset over
+    // 100 ms, and the field's reveal, run on the keyboard's first frame, saw
+    // the dialog where it was, so at 200 % on a 360 × 640 phone the field
+    // stayed under the keyboard until typing (#586).
+    Widget keyboardAware(Widget dialog) => Padding(
+      padding: EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(context).bottom),
+      child: MediaQuery.removeViewInsets(
+        context: context,
+        removeBottom: true,
+        child: dialog,
+      ),
+    );
+
     if (widget.ios) {
-      return cupertino.CupertinoAlertDialog(
-        title: DpText(
-          widget.title,
-          role: DpTextRole.body,
-          weight: 600,
-          textAlign: TextAlign.center,
-        ),
-        content: Column(
-          children: <Widget>[
-            DpText(
-              widget.message,
-              role: DpTextRole.caption,
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 12),
-            cupertino.CupertinoTextField(
-              controller: _typed,
-              autofocus: true,
-              autocorrect: false,
-              enableSuggestions: false,
-              textCapitalization: TextCapitalization.characters,
-              style: DpText.styleFor(tokens, DpTextRole.body),
-              // Ink-edged, as the artboard draws it on both platforms.
-              // 44 pt tall, Apple's minimum target: the default padding made
-              // it 38 (#478).
-              padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 10),
-              decoration: BoxDecoration(
-                color: tokens.surface.cardStrong,
-                border: Border.all(color: tokens.color.ink),
-                borderRadius: BorderRadius.circular(tokens.shape.button),
+      return keyboardAware(
+        cupertino.CupertinoAlertDialog(
+          title: DpText(
+            widget.title,
+            role: DpTextRole.body,
+            weight: 600,
+            textAlign: TextAlign.center,
+          ),
+          content: Column(
+            children: <Widget>[
+              DpText(
+                widget.message,
+                role: DpTextRole.caption,
+                textAlign: TextAlign.center,
               ),
+              const SizedBox(height: 12),
+              cupertino.CupertinoTextField(
+                controller: _typed,
+                autofocus: true,
+                autocorrect: false,
+                enableSuggestions: false,
+                textCapitalization: TextCapitalization.characters,
+                style: DpText.styleFor(tokens, DpTextRole.body),
+                // Ink-edged, as the artboard draws it on both platforms.
+                // 44 pt tall, Apple's minimum target: the default padding made
+                // it 38 (#478).
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 7,
+                  vertical: 10,
+                ),
+                decoration: BoxDecoration(
+                  color: tokens.surface.cardStrong,
+                  border: Border.all(color: tokens.color.ink),
+                  borderRadius: BorderRadius.circular(tokens.shape.button),
+                ),
+              ),
+            ],
+          ),
+          actions: <Widget>[
+            cupertino.CupertinoDialogAction(
+              onPressed: cancel,
+              textStyle: font,
+              child: Text(widget.cancelLabel),
             ),
+            typed,
           ],
         ),
-        actions: <Widget>[
-          cupertino.CupertinoDialogAction(
-            onPressed: cancel,
-            textStyle: font,
-            child: Text(widget.cancelLabel),
-          ),
-          typed,
-        ],
       );
     }
 
@@ -1383,18 +1402,6 @@ class _TypedConfirmState extends State<_TypedConfirm> {
         typed,
       ],
     );
-    // The keyboard's room as plain padding, in the same frame, and none for
-    // the dialog's own: Material animates its inset over 100 ms, and the
-    // field's reveal, run on the keyboard's first frame, saw the dialog where
-    // it was, so at 200 % on a 360 × 640 phone the field stayed under the
-    // keyboard until typing (#586).
-    return Padding(
-      padding: EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(context).bottom),
-      child: MediaQuery.removeViewInsets(
-        context: context,
-        removeBottom: true,
-        child: dialog,
-      ),
-    );
+    return keyboardAware(dialog);
   }
 }
