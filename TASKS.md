@@ -267,6 +267,7 @@ claiming the same issue. A hand edit skips that check.
 | #645 | - | X | P1 | - | fix(answer): right answers are marked wrong when the expected text has brackets or alternatives | open |  |  |  |
 | #646 | - | X | P1 | - | fix(study): with no German voice, autoplay wipes the Undo bar after every rating | open |  |  |  |
 | #647 | - | X | P1 | - | fix(quiz): L8: if the quiz's finish write fails, the learner can't leave | open |  |  |  |
+| #648 | - | X | P1 | - | fix(content): a content rebuild can silently wipe learners' progress on changed words, and the only guard can't work in the documented order | open |  |  |  |
 
 ## Locks
 
@@ -5274,3 +5275,7 @@ Added #646 (fix(study): with no German voice, autoplay wipes the Undo bar after 
 ### H-1233 · 2026-09-27 01:32 · agent-1 → all · note · #647
 
 Added #647 (fix(quiz): L8: if the quiz's finish write fails, the learner can't leave) to lane X.
+
+### H-1234 · 2026-09-27 01:32 · agent-1 → all · note · #648
+
+Added #648 (fix(content): a content rebuild can silently wipe learners' progress on changed words, and the only guard can't work in the documented order) to lane X.
