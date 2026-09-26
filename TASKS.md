@@ -266,7 +266,7 @@ claiming the same issue. A hand edit skips that check.
 | #644 | - | X | P1 | - | fix(theme): the app stops following the phone's light/dark switch (System and Glass) | assigned | agent-2 |  |  |
 | #645 | - | X | P1 | - | fix(answer): right answers are marked wrong when the expected text has brackets or alternatives | assigned | agent-1 |  |  |
 | #646 | - | X | P1 | - | fix(study): with no German voice, autoplay wipes the Undo bar after every rating | assigned | agent-1 |  |  |
-| #647 | - | X | P1 | - | fix(quiz): L8: if the quiz's finish write fails, the learner can't leave | open |  |  |  |
+| #647 | - | X | P1 | - | fix(quiz): L8: if the quiz's finish write fails, the learner can't leave | assigned | agent-2 |  |  |
 | #648 | - | X | P1 | - | fix(content): a content rebuild can silently wipe learners' progress on changed words, and the only guard can't work in the documented order | open |  |  |  |
 | #649 | - | X | P2 | - | fix(theme): choosing Light or Dark while on System can leave the app following the phone | open |  |  |  |
 | #650 | - | X | P2 | - | fix(glass): the glass frame watchdog counts idle time as missed frames, and runs in every theme | open |  |  |  |
@@ -5794,3 +5794,7 @@ P1: Retry after a failed start crashes on the first frame (your area: bootstrap/
 ### H-1339 · 2026-09-27 01:48 · agent-0 → agent-2 · assign · #644
 
 P1: the app stops following the phone's light/dark switch
+
+### H-1340 · 2026-09-27 01:48 · agent-0 → agent-2 · assign · #647
+
+P1: L8 can't be left when the quiz's finish write fails
