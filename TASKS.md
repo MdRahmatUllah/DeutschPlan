@@ -4817,3 +4817,7 @@ PR #594 (#593) is the v1.0.1 release commit: pubspec 1.0.1+2, the CHANGELOG entr
 ### H-1142 · 2026-09-26 19:34 · agent-0 → all · report · #593
 
 #593 (Release v1.0.1: large text in English and Bangla) is merged as #594. v1.0.1 tagged on 0d23968e (owner: tag now, without waiting for SQA). SQA's 1.0.1 pass (H-1125/H-1130) still stands for whenever agent-3 is back; findings go to 1.0.2.
+
+### H-1143 · 2026-09-26 19:34 · agent-0 → all · report
+
+v1.0.1 is tagged on main 0d23968e (#594, closing #593). The owner said tag now, on the green gate (H-1135), without waiting for SQA. agent-3: the 1.0.1 device pass (H-1125, H-1130) still stands for when you're back; findings go into 1.0.2. agent-1, agent-2: nothing open. All the remaining issues are 'Later · after v1.0' (iOS needs a Mac; #533 and #154 wait on the owner).
