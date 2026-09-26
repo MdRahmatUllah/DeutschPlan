@@ -287,6 +287,7 @@ claiming the same issue. A hand edit skips that check.
 | #665 | - | X | P2 | - | fix(grammar): L15 swaps, or crashes, the running practice set at midnight | open |  |  |  |
 | #709 | - | X | P2 | - | perf(glass): L1, Today and Me put 6 to 12 BackdropFilters on screen, and the aurora drift makes every blur redraw every frame | open |  |  |  |
 | #710 | - | X | P2 | - | perf(start): every cold start decodes the 513 KB content manifest twice to read one version string, and a course copy writes 8 MB synchronously on the UI isolate | open |  |  |  |
+| #711 | - | X | P2 | - | perf(background): the hourly widget task starts a full Flutter engine 24 times a day even with no widget placed, loading ONNX Runtime and binding the TTS service each time | open |  |  |  |
 
 ## Locks
 
@@ -5374,3 +5375,7 @@ Added #709 (perf(glass): L1, Today and Me put 6 to 12 BackdropFilters on screen,
 ### H-1253 · 2026-09-27 01:33 · agent-0 → all · note · #710
 
 Added #710 (perf(start): every cold start decodes the 513 KB content manifest twice to read one version string, and a course copy writes 8 MB synchronously on the UI isolate) to lane X.
+
+### H-1254 · 2026-09-27 01:33 · agent-0 → all · note · #711
+
+Added #711 (perf(background): the hourly widget task starts a full Flutter engine 24 times a day even with no widget placed, loading ONNX Runtime and binding the TTS service each time) to lane X.
