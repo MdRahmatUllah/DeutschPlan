@@ -902,7 +902,7 @@
   "licencesPackages": "প্যাকেজ",
   "licencesOther": "লাইসেন্স",
   "modelNotifyRunning": "মডেল ডাউনলোড",
-  "modelNotifyRunningNote": "ব্যাকগ্রাউন্ডে চলতে থাকবে। শুধু ওয়াই-ফাই চালু থাকলে ওয়াই-ফাইয়ের অপেক্ষা করবে",
+  "modelNotifyRunningNote": "“শুধু ওয়াই-ফাই” চালু থাকলে ওয়াই-ফাইয়ের অপেক্ষা করে",
   "modelNotifyPaused": "মডেল ডাউনলোড থেমে আছে",
   "modelNotifyPausedNote": "ওয়াই-ফাইতে আবার চলবে, বা ভয়েস ও অনুবাদ থেকে",
   "modelNotifyComplete": "মডেল ডাউনলোড শেষ",

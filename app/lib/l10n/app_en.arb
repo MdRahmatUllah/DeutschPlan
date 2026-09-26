@@ -5678,9 +5678,9 @@
   "@modelNotifyRunning": {
     "description": "The model downloads' notification title, while files are queued or downloading (FR-M4-01, #438). No state and no count: the platform keeps each task's texts for the whole download, and counts files per app process, so either would go stale."
   },
-  "modelNotifyRunningNote": "Carries on in the background. With Wi-Fi only on, it waits for Wi-Fi",
+  "modelNotifyRunningNote": "Waits for Wi-Fi when “Wi-Fi only” is on",
   "@modelNotifyRunningNote": {
-    "description": "Under the model downloads' notification: the rule, not the network's state, which the platform can't update (#438)."
+    "description": "Under the model downloads' notification: the Wi-Fi rule, not the network's state, which the platform can't update (#438). One line: the platform draws the body unexpanded, so it is cut at about 40 characters. “Wi-Fi only” is M4's switch, quoted as modelsWifiOnly names it."
   },
   "modelNotifyPaused": "Model download paused",
   "@modelNotifyPaused": {

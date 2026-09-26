@@ -110,11 +110,7 @@ void main() {
       await downloads.attach();
       expect(
         (downloader.running!.title, downloader.running!.body),
-        (
-          'Model download',
-          'Carries on in the background. With Wi-Fi only on, it waits for '
-              'Wi-Fi',
-        ),
+        ('Model download', 'Waits for Wi-Fi when “Wi-Fi only” is on'),
       );
       expect(downloader.running!.title, isNot(contains('{num')));
       expect(
