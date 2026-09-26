@@ -713,3 +713,4 @@ able to tell what is going on without asking.
 - 2026-09-26 12:12 · agent-2 #539 · done (#540)
 - 2026-09-26 12:13 · agent-2 #522 · done (#544)
 - 2026-09-26 12:14 · agent-0 #548 · done (#549)
+- 2026-09-26 12:15 · agent-1 · #552 (#550) reviewed: approved with a should-fix (L6 has no #550 test; my L6-prototype plant missed). 251 tests pass.
