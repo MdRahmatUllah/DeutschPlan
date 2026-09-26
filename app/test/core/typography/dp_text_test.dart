@@ -431,6 +431,10 @@ void main() {
   });
 
   group("#419 the lines are the headword's own", () {
+    // A line break between two Bangla letters: the word broken, not shrunk
+    // whole (#522). A break after the opening "/" doesn't count.
+    final insideBangla = RegExp('[ঀ-৿‌]\n[ঀ-৿]');
+
     // Where each drawn line ends: after the headword's own newline, or the
     // paragraph broke it by itself, at a syllable with no "-" or anywhere.
     List<String> lineEnds(WidgetTester tester) {
@@ -612,7 +616,7 @@ void main() {
       // Too wide even at 80 %: it breaks between aksharas, with no "-"
       // (#522).
       final pron = (await drawnAt(120, asked: true)).split('/')[1];
-      expect(pron, contains('\n'));
+      expect(pron, contains(insideBangla), reason: 'broken, not shrunk');
       expect(pron, isNot(contains('-')));
       expect(
         await drawnAt(120, asked: false),
@@ -716,7 +720,7 @@ void main() {
           .text
           .toPlainText(includeSemanticsLabels: false);
       final pron = drawn.split('/')[1];
-      expect(pron, contains('\n'), reason: drawn);
+      expect(pron, contains(insideBangla), reason: 'broken, not shrunk');
       expect(pron, isNot(contains('-')), reason: 'no "-" in Bangla (#522)');
       expectNoWordBroken(tester);
       expect(
