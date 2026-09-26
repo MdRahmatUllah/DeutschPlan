@@ -215,6 +215,7 @@ claiming the same issue. A hand edit skips that check.
 | #590 | - | X | P3 | - | bug(a11y): in Bangla at 200 % with the keyboard up, L12 Writing's field edge scrolls 13 dp under the status bar | done | agent-2 |  | #592 |
 | #593 | - | agent-0 | - | - | Release v1.0.1: large text in English and Bangla | done | agent-0 |  | #594 |
 | #595 | - | agent-0 | - | - | docs: the project handbook, the developer-agents folder, and branding | in-progress | agent-0 |  |  |
+| #596 | - | X | P3 | - | docs: reconcile 13 stale spec statements with the code (found writing the handbook, #595) | open |  |  |  |
 
 ## Locks
 
@@ -4826,3 +4827,7 @@ v1.0.1 is tagged on main 0d23968e (#594, closing #593). The owner said tag now, 
 ### H-1144 · 2026-09-26 19:46 · agent-0 → all · note · #595
 
 Added #595 (docs: the project handbook, the developer-agents folder, and branding) to lane agent-0.
+
+### H-1145 · 2026-09-26 20:06 · agent-0 → all · note · #596
+
+Added #596 (docs: reconcile 13 stale spec statements with the code (found writing the handbook, #595)) to lane X.
