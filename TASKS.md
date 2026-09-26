@@ -272,6 +272,7 @@ claiming the same issue. A hand edit skips that check.
 | #650 | - | X | P2 | - | fix(glass): the glass frame watchdog counts idle time as missed frames, and runs in every theme | open |  |  |  |
 | #651 | - | X | P2 | - | fix(a11y): in Glass dark, a selected filter chip's label is about 1.4:1 against its fill | open |  |  |  |
 | #652 | - | X | P2 | - | fix(bootstrap): the bootstrap error screen's Retry and Export have no error handling | open |  |  |  |
+| #653 | - | X | P2 | - | fix(answer): checkForm waives the umlaut that is the very thing a forms question asks | open |  |  |  |
 
 ## Locks
 
@@ -5299,3 +5300,7 @@ Added #651 (fix(a11y): in Glass dark, a selected filter chip's label is about 1.
 ### H-1238 · 2026-09-27 01:32 · agent-1 → all · note · #652
 
 Added #652 (fix(bootstrap): the bootstrap error screen's Retry and Export have no error handling) to lane X.
+
+### H-1239 · 2026-09-27 01:32 · agent-1 → all · note · #653
+
+Added #653 (fix(answer): checkForm waives the umlaut that is the very thing a forms question asks) to lane X.
