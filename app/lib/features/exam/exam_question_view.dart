@@ -618,8 +618,10 @@ class _Target extends StatelessWidget {
           ? AppLocalizations.of(context).examWritingTargetUsed(word)
           : word,
       excludeSemantics: true,
+      // The artboard's 26, grown with the text size: a fixed 26 cut
+      // "Wohnung" at 150 % (#165).
       child: Container(
-        height: 26,
+        height: DpScript.grow(context, 26),
         padding: const EdgeInsets.symmetric(horizontal: 8),
         decoration: BoxDecoration(
           color: used ? tokens.color.easy : null,
@@ -891,6 +893,20 @@ class _ExamSpeakingState extends ConsumerState<ExamSpeaking> {
     final task = widget.task;
     final topic = task.category ?? l10n.examWritingTopicFallback;
     final max = task.seconds;
+    final retake = DpButton(
+      label: l10n.examSpeakingRetake(_retakesLeft),
+      kind: DpButtonKind.secondary,
+      compact: true,
+      onPressed: _retakesLeft > 0 ? () => unawaited(_record()) : null,
+    );
+    final delete = DpButton(
+      label: l10n.examSpeakingDelete,
+      kind: DpButtonKind.secondary,
+      colour: tokens.surface.cardStrong,
+      onColour: tokens.color.ink,
+      compact: true,
+      onPressed: () => unawaited(_delete()),
+    );
 
     final (
       IconData icon,
@@ -1015,34 +1031,20 @@ class _ExamSpeakingState extends ConsumerState<ExamSpeaking> {
                 if (_mic == _Mic.recorded) ...<Widget>[
                   const SizedBox(height: 12),
                   // Widths as their labels need them: "Delete recording" is the
-                  // longer, and half the card each wraps it.
-                  Row(
-                    children: <Widget>[
-                      Expanded(
-                        flex: 5,
-                        child: DpButton(
-                          label: l10n.examSpeakingRetake(_retakesLeft),
-                          kind: DpButtonKind.secondary,
-                          compact: true,
-                          onPressed: _retakesLeft > 0
-                              ? () => unawaited(_record())
-                              : null,
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      Expanded(
-                        flex: 6,
-                        child: DpButton(
-                          label: l10n.examSpeakingDelete,
-                          kind: DpButtonKind.secondary,
-                          colour: tokens.surface.cardStrong,
-                          onColour: tokens.color.ink,
-                          compact: true,
-                          onPressed: () => unawaited(_delete()),
-                        ),
-                      ),
-                    ],
-                  ),
+                  // longer, and half the card each wraps it. Past 130 % text
+                  // they stack: side by side, "recording" broke (#165).
+                  if (DpScript.large(context)) ...<Widget>[
+                    retake,
+                    const SizedBox(height: 8),
+                    delete,
+                  ] else
+                    Row(
+                      children: <Widget>[
+                        Expanded(flex: 5, child: retake),
+                        const SizedBox(width: 8),
+                        Expanded(flex: 6, child: delete),
+                      ],
+                    ),
                 ],
                 if (_mic == _Mic.denied) ...<Widget>[
                   const SizedBox(height: 12),

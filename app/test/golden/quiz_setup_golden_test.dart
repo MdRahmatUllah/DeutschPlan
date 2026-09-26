@@ -7,6 +7,7 @@ import 'package:deutschplan/features/learn/step_detail_screen.dart';
 import 'package:deutschplan/router/routes.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart' show Scrollable;
 
 import '../features/today_fixtures.dart';
 import 'golden_harness.dart';
@@ -15,6 +16,17 @@ import 'golden_harness.dart';
 /// tab: DE → EN, 20 questions, this step's learned words, timer off.
 void main() {
   Future<void> openCustom(WidgetTester tester) async {
+    // At large text the tiles stack, and Custom is below the fold, not yet
+    // built (#165). Only then: scrollUntilVisible ends in ensureVisible,
+    // which would move the page at 100 % too.
+    if (find.text('Custom').hitTestable().evaluate().isEmpty) {
+      await tester.scrollUntilVisible(
+        find.text('Custom'),
+        200,
+        scrollable: find.byType(Scrollable).last,
+      );
+      await tester.pumpAndSettle();
+    }
     await tester.tap(find.text('Custom'));
     await tester.pumpAndSettle();
   }

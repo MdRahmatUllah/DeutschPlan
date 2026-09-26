@@ -139,6 +139,18 @@ class StepHeader extends StatelessWidget {
     final ink = tokens.isGlass ? tokens.color.ink : tokens.color.onAccent;
     final name = CourseLevel.name(step.levelCode);
     final counts = l10n.stepHeaderCounts(step.words, step.grammar);
+    final code = DpText(
+      step.code,
+      role: DpTextRole.display,
+      weight: 700,
+      color: ink,
+    );
+    final summary = DpText(
+      name == null ? counts : '$name · $counts',
+      role: DpTextRole.body,
+      weight: 600,
+      color: ink,
+    );
 
     final content = Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -187,27 +199,22 @@ class StepHeader extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.baseline,
-                textBaseline: TextBaseline.alphabetic,
-                children: <Widget>[
-                  DpText(
-                    step.code,
-                    role: DpTextRole.display,
-                    weight: 700,
-                    color: ink,
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: DpText(
-                      name == null ? counts : '$name · $counts',
-                      role: DpTextRole.body,
-                      weight: 600,
-                      color: ink,
-                    ),
-                  ),
-                ],
-              ),
+              // Past 130 % text the code takes most of the row, and the line
+              // beside it broke "Grundstufe" mid-word (#165): it goes under.
+              if (DpScript.large(context)) ...[
+                code,
+                const SizedBox(height: 4),
+                summary,
+              ] else
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.baseline,
+                  textBaseline: TextBaseline.alphabetic,
+                  children: <Widget>[
+                    code,
+                    const SizedBox(width: 10),
+                    Expanded(child: summary),
+                  ],
+                ),
               const SizedBox(height: 8),
               DpSegmentedBar(
                 done: step.done,

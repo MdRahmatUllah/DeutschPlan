@@ -217,6 +217,9 @@ class _Reward extends StatelessWidget {
                   weight: 700,
                   color: ink,
                   textAlign: TextAlign.center,
+                  // German at display size: at 200 % it breaks at a syllable,
+                  // not at a letter (#165).
+                  allowBreaks: true,
                 ),
                 const SizedBox(height: 16),
                 DpText(

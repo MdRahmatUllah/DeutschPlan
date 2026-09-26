@@ -269,7 +269,7 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
     DpUndo.show(
       context,
       message: message(word == null ? item.uid : spokenForm(word)),
-      lift: StudyFrontActions.clearance,
+      lift: StudyFrontActions.clearanceOf(context),
       onUndo: () => unawaited(guardWrite(context, notifier.undo)),
     );
   }
@@ -575,8 +575,10 @@ class _TopBar extends StatelessWidget {
           ),
         );
 
-    return SizedBox(
-      height: 56,
+    // The artboard's 56 at least: at 200 % "New today · 2 / 7" takes two
+    // lines, and a fixed 56 cut them (#165).
+    return ConstrainedBox(
+      constraints: const BoxConstraints(minHeight: 56),
       child: Row(
         children: <Widget>[
           const SizedBox(width: 8),

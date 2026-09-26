@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/rendering.dart' show RenderParagraph;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
@@ -31,6 +33,96 @@ void expectNothingClipped(WidgetTester tester, {Finder? within}) {
     checked++;
   }
   expect(checked, greaterThan(0), reason: 'no text found to check');
+}
+
+/// Fails when a word in text under [within] breaks across two lines other
+/// than at a soft hyphen: L2's "Stand / ard" at 200 % (#165). A cut word
+/// reads as two; a long compound may break at its syllables
+/// (`DpText.allowBreaks`), and text may wrap at a space, a dash, a slash or
+/// a dot (a file name's).
+void expectNoWordBroken(
+  WidgetTester tester, {
+  Finder? within,
+  bool syllables = true,
+}) {
+  final paragraphs = tester.renderObjectList<RenderParagraph>(
+    within == null
+        ? find.byType(RichText)
+        : find.descendant(of: within, matching: find.byType(RichText)),
+  );
+  final offered = RegExp('[^\\s\u00AD​/.·–—-]{2,}');
+  final whole = RegExp('[^\\s​/.·–—-]{2,}');
+  final broken = <String>[];
+  for (final paragraph in paragraphs) {
+    final text = paragraph.text.toPlainText();
+    // A soft hyphen is a break the text offers, unless [syllables] is off:
+    // then a word must not break even there (#419 draws no hyphen yet).
+    for (final word in (syllables ? offered : whole).allMatches(text)) {
+      final boxes = paragraph.getBoxesForSelection(
+        TextSelection(baseOffset: word.start, extentOffset: word.end),
+      );
+      if (boxes.isEmpty) continue;
+      // On two lines when two of its boxes don't overlap vertically. Not by
+      // their tops: Bangla digits beside a Latin "%" come from two fonts,
+      // whose boxes on one line start at different heights.
+      final lowestTop = boxes.map((box) => box.top).reduce(math.max);
+      final highestBottom = boxes.map((box) => box.bottom).reduce(math.min);
+      if (lowestTop >= highestBottom - 1) {
+        broken.add('"${word[0]}" in "$text"');
+      }
+    }
+  }
+  expect(broken, isEmpty, reason: 'broken mid-word: ${broken.join('; ')}');
+}
+
+/// Android 14+'s text scaling, which is nonlinear: small text grows by the
+/// whole factor, large text by less, and 100 sp not at all (#165). At 200 %,
+/// measured on the emulator (API 36): 14 → 28, 24 → 40, 30 → 48, 100 → 100,
+/// so a box sized `scale(96)` stays about 97. Flutter's test scaler is
+/// linear, which hid that; the golden audit takes this one.
+/// ponytail: four measured points, interpolated, and other factors take the
+/// same curve in proportion; Android's own tables if it ever matters.
+class AndroidTextScaler extends TextScaler {
+  const AndroidTextScaler(this.factor);
+
+  final double factor;
+
+  static const List<(double, double)> _at200 = <(double, double)>[
+    (0, 0),
+    (14, 28),
+    (24, 40),
+    (30, 48),
+    (100, 100),
+  ];
+
+  @override
+  double scale(double fontSize) {
+    for (var i = 1; i < _at200.length; i++) {
+      final (x0, y0) = _at200[i - 1];
+      final (x1, y1) = _at200[i];
+      if (fontSize <= x1) {
+        final doubled = y0 + (y1 - y0) * (fontSize - x0) / (x1 - x0);
+        return fontSize + (doubled - fontSize) * (factor - 1);
+      }
+    }
+    return fontSize;
+  }
+
+  @override
+  double get textScaleFactor => scale(14) / 14;
+
+  @override
+  TextScaler clamp({
+    double minScaleFactor = 0,
+    double maxScaleFactor = double.infinity,
+  }) => AndroidTextScaler(factor.clamp(minScaleFactor, maxScaleFactor));
+
+  @override
+  bool operator ==(Object other) =>
+      other is AndroidTextScaler && other.factor == factor;
+
+  @override
+  int get hashCode => factor.hashCode;
 }
 
 /// Runs the rest of the test at [scale] times the system text size, as the

@@ -211,6 +211,34 @@ class _SentencesScreenState extends ConsumerState<SentencesScreen> {
       _pages = PageController(initialPage: _page);
     }
     final count = list?.length ?? 0;
+    final answers = list == null || list.isEmpty
+        ? const <Widget>[]
+        : <Widget>[
+            for (final (rating, label, colour)
+                in <(SentenceRating, String, Color)>[
+                  (
+                    SentenceRating.understood,
+                    l10n.sentencesUnderstood,
+                    tokens.color.easy,
+                  ),
+                  (
+                    SentenceRating.partly,
+                    l10n.sentencesPartly,
+                    tokens.color.hard,
+                  ),
+                  (
+                    SentenceRating.notYet,
+                    l10n.sentencesNotYet,
+                    tokens.color.again,
+                  ),
+                ])
+              _Answer(
+                label: label,
+                colour: colour,
+                chosen: list[_page].rating == rating.value,
+                onPressed: () => unawaited(_rate(_page, count, rating)),
+              ),
+          ];
 
     final ink = tokens.isGlass ? tokens.color.ink : tokens.color.onAccent;
     final bar = SafeArea(
@@ -291,39 +319,22 @@ class _SentencesScreenState extends ConsumerState<SentencesScreen> {
                     color: tokens.color.textSecondary,
                   ),
                   const SizedBox(height: 10),
-                  Row(
-                    children: <Widget>[
-                      for (final (i, (rating, label, colour))
-                          in <(SentenceRating, String, Color)>[
-                            (
-                              SentenceRating.understood,
-                              l10n.sentencesUnderstood,
-                              tokens.color.easy,
-                            ),
-                            (
-                              SentenceRating.partly,
-                              l10n.sentencesPartly,
-                              tokens.color.hard,
-                            ),
-                            (
-                              SentenceRating.notYet,
-                              l10n.sentencesNotYet,
-                              tokens.color.again,
-                            ),
-                          ].indexed) ...<Widget>[
-                        if (i > 0) const SizedBox(width: 10),
-                        Expanded(
-                          child: _Answer(
-                            label: label,
-                            colour: colour,
-                            chosen: list[_page].rating == rating.value,
-                            onPressed: () =>
-                                unawaited(_rate(_page, count, rating)),
-                          ),
-                        ),
+                  // Past 130 % text three abreast broke "Understood"
+                  // mid-word (#165): they stack, full width.
+                  if (DpScript.large(context))
+                    for (final (i, answer) in answers.indexed) ...<Widget>[
+                      if (i > 0) const SizedBox(height: 10),
+                      answer,
+                    ]
+                  else
+                    Row(
+                      children: <Widget>[
+                        for (final (i, answer) in answers.indexed) ...<Widget>[
+                          if (i > 0) const SizedBox(width: 10),
+                          Expanded(child: answer),
+                        ],
                       ],
-                    ],
-                  ),
+                    ),
                 ],
               ),
             ),
@@ -656,8 +667,10 @@ class _Answer extends StatelessWidget {
         child: GestureDetector(
           onTap: onPressed,
           behavior: HitTestBehavior.opaque,
+          // 48, grown with the text size: a fixed 48 cut "Understood" at
+          // 150 % (#165).
           child: Container(
-            height: 48,
+            height: DpScript.grow(context, 48),
             alignment: Alignment.center,
             decoration: BoxDecoration(
               color: colour,

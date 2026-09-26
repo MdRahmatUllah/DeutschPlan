@@ -8,6 +8,8 @@ import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 
+import '../core/text_clipping.dart';
+
 /// The golden harness.
 ///
 /// `docs/05-dev-guide/testing.md`: "Goldens — every screen × light/dark/glass ×
@@ -31,6 +33,9 @@ const Duration settleTimeout = Duration(seconds: 10);
 /// differ. These are generated and verified on ONE platform; running them
 /// elsewhere produces diffs that are about the renderer, not the design.
 const String goldenTag = 'golden';
+
+/// The text sizes every golden screen is also checked at (#165).
+const List<double> textAuditScales = <double>[1.5, 2];
 
 /// The two frames `testing.md` names.
 enum GoldenDevice {
@@ -98,7 +103,15 @@ Widget goldenApp({
           // `Scaffold` reading insets, a layout builder — then lays out
           // against nothing. It renders, so it looks like a screen with a
           // layout bug rather than a harness with one.
-          data: MediaQuery.of(context).copyWith(disableAnimations: still),
+          data: MediaQuery.of(context).copyWith(
+            disableAnimations: still,
+            // Large text as an Android phone scales it, not as Flutter's
+            // test scaler does (linear): a box sized from a font size then
+            // shows it doesn't grow (#165). iOS keeps the linear one.
+            textScaler: chrome == AdaptiveChrome.cupertino
+                ? null
+                : _phone(MediaQuery.textScalerOf(context)),
+          ),
           child: AdaptiveChromeScope(
             chrome: chrome ?? AdaptiveChrome.material,
             child: child,
@@ -139,13 +152,47 @@ void goldenTest(
   Future<void> Function(WidgetTester tester)? act,
   bool still = true,
   List<Override>? overrides,
+  bool textAudit = true,
+  double? textScale,
 }) {
+  // #165: the same screen at 150 % and 200 % text, on the phone in light:
+  // nothing cut, no word broken mid-word, no layout error. The text size is
+  // the axis here, not the theme; one golden per screen and chrome carries
+  // it, so a variant that only restages a state can opt out.
+  if (textAudit) {
+    for (final scale in textAuditScales) {
+      testWidgets('$name · text ${(scale * 100).round()} %', (tester) async {
+        textAt(tester, scale);
+        await tester.pumpGolden(
+          builder: builder,
+          mode: GoldenMode.light,
+          device: GoldenDevice.phone,
+          chrome: chrome,
+          still: still,
+          overrides: overrides,
+        );
+        if (act != null) {
+          await act(tester);
+          await tester.pumpAndSettle(
+            const Duration(milliseconds: 100),
+            EnginePhase.sendSemanticsUpdate,
+            settleTimeout,
+          );
+        }
+        expect(tester.takeException(), isNull);
+        expectNothingClipped(tester);
+        expectNoWordBroken(tester);
+      });
+    }
+  }
   for (final mode in modes) {
     for (final device in devices) {
       testWidgets(
         '$name · ${mode.name} · ${device.name}',
         tags: <String>[goldenTag],
         (tester) async {
+          // #165: a golden at a learner's larger text size.
+          if (textScale != null) textAt(tester, textScale);
           await tester.pumpGolden(
             builder: builder,
             mode: mode,
@@ -173,6 +220,12 @@ void goldenTest(
       );
     }
   }
+}
+
+/// [linear] as Android 14+ gives it, when text is scaled at all.
+TextScaler _phone(TextScaler linear) {
+  final factor = linear.scale(1);
+  return factor == 1 ? linear : AndroidTextScaler(factor);
 }
 
 extension GoldenTester on WidgetTester {

@@ -239,30 +239,34 @@ class _Storage extends StatelessWidget {
     final l10n = AppLocalizations.of(context);
     final space = this.space;
     final total = space?.total ?? 0;
+    final label = DpText(
+      l10n.modelsStorage,
+      role: DpTextRole.label,
+      weight: 600,
+    );
+    final free = space == null
+        ? null
+        : DpText(
+            l10n.modelsStorageFree(
+              modelSize(l10n, space.free),
+              modelSize(l10n, total),
+            ),
+            role: DpTextRole.label,
+            weight: 400,
+            color: tokens.color.textSecondary,
+          );
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
-        Row(
-          children: <Widget>[
-            Expanded(
-              child: DpText(
-                l10n.modelsStorage,
-                role: DpTextRole.label,
-                weight: 600,
-              ),
-            ),
-            if (space != null)
-              DpText(
-                l10n.modelsStorageFree(
-                  modelSize(l10n, space.free),
-                  modelSize(l10n, total),
-                ),
-                role: DpTextRole.label,
-                weight: 400,
-                color: tokens.color.textSecondary,
-              ),
-          ],
-        ),
+        // Past 130 % text the free space goes under its label, which it
+        // squeezed until "storage" broke mid-word (#165).
+        if (DpScript.large(context)) ...<Widget>[label, ?free] else
+          Row(
+            children: <Widget>[
+              Expanded(child: label),
+              ?free,
+            ],
+          ),
         if (space != null && total > 0) ...<Widget>[
           const SizedBox(height: 6),
           ExcludeSemantics(
@@ -347,52 +351,60 @@ class _ModelCardView extends ConsumerWidget {
       color: tokens.color.textSecondary,
     );
 
+    final heading = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        DpText(title, role: DpTextRole.bodyLarge, weight: 600),
+        const SizedBox(height: 2),
+        if (_isVoice || licence == null)
+          subtitle
+        else
+          // FR-M4-04: the licence link opens the full text.
+          Semantics(
+            button: true,
+            label: l10n.modelsLicenceRead(licence.kind),
+            excludeSemantics: true,
+            onTap: () => unawaited(showLicence(context, licence)),
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () => unawaited(showLicence(context, licence)),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Flexible(child: subtitle),
+                  Icon(
+                    Icons.arrow_forward,
+                    size: 14,
+                    color: tokens.color.textSecondary,
+                  ),
+                ],
+              ),
+            ),
+          ),
+      ],
+    );
+    final pill = _StatusPill(status: status, live: card.live);
+
     return DpSurface(
       padding: const EdgeInsets.all(14),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    DpText(title, role: DpTextRole.bodyLarge, weight: 600),
-                    const SizedBox(height: 2),
-                    if (_isVoice || licence == null)
-                      subtitle
-                    else
-                      // FR-M4-04: the licence link opens the full text.
-                      Semantics(
-                        button: true,
-                        label: l10n.modelsLicenceRead(licence.kind),
-                        excludeSemantics: true,
-                        onTap: () => unawaited(showLicence(context, licence)),
-                        child: GestureDetector(
-                          behavior: HitTestBehavior.opaque,
-                          onTap: () => unawaited(showLicence(context, licence)),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: <Widget>[
-                              Flexible(child: subtitle),
-                              Icon(
-                                Icons.arrow_forward,
-                                size: 14,
-                                color: tokens.color.textSecondary,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                  ],
-                ),
-              ),
-              const SizedBox(width: 8),
-              _StatusPill(status: status, live: card.live),
-            ],
-          ),
+          // Past 130 % text the status goes under the name, which it
+          // squeezed until "translation" broke mid-word (#165).
+          if (DpScript.large(context)) ...<Widget>[
+            heading,
+            const SizedBox(height: 8),
+            Align(alignment: AlignmentDirectional.centerStart, child: pill),
+          ] else
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Expanded(child: heading),
+                const SizedBox(width: 8),
+                pill,
+              ],
+            ),
           ..._body(context, ref, status),
         ],
       ),
@@ -690,35 +702,38 @@ class _Progress extends ConsumerWidget {
         .read(SettingKeys.modelsWifiOnly);
     final done = modelSize(l10n, (card.variant.bytes * progress).round());
     final total = modelSize(l10n, card.variant.bytes);
+    final phase = DpText(
+      switch (live?.phase) {
+        DownloadPhase.waitingForWifi => l10n.modelsProgressWaiting,
+        DownloadPhase.paused => l10n.modelsProgressPaused(percent),
+        _ => l10n.modelsProgress(percent),
+      },
+      role: DpTextRole.label,
+      weight: 600,
+    );
+    final bytes = DpText(
+      wifiOnly
+          ? l10n.modelsProgressBytesWifi(done, total)
+          : l10n.modelsProgressBytes(done, total),
+      role: DpTextRole.label,
+      weight: 400,
+      color: tokens.color.textSecondary,
+    );
     return Padding(
       padding: const EdgeInsets.only(top: 10),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          Row(
-            children: <Widget>[
-              Expanded(
-                child: DpText(
-                  switch (live?.phase) {
-                    DownloadPhase.waitingForWifi => l10n.modelsProgressWaiting,
-                    DownloadPhase.paused => l10n.modelsProgressPaused(percent),
-                    _ => l10n.modelsProgress(percent),
-                  },
-                  role: DpTextRole.label,
-                  weight: 600,
-                ),
-              ),
-              const SizedBox(width: 8),
-              DpText(
-                wifiOnly
-                    ? l10n.modelsProgressBytesWifi(done, total)
-                    : l10n.modelsProgressBytes(done, total),
-                role: DpTextRole.label,
-                weight: 400,
-                color: tokens.color.textSecondary,
-              ),
-            ],
-          ),
+          // Past 130 % text the bytes go under the phase, which they
+          // squeezed until "Downloading" broke mid-word (#165).
+          if (DpScript.large(context)) ...<Widget>[phase, bytes] else
+            Row(
+              children: <Widget>[
+                Expanded(child: phase),
+                const SizedBox(width: 8),
+                bytes,
+              ],
+            ),
           const SizedBox(height: 6),
           ExcludeSemantics(
             child: ClipRRect(

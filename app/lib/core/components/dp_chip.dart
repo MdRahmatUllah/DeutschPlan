@@ -185,7 +185,18 @@ class DpChip extends StatelessWidget {
             leading,
             SizedBox(width: tokens.spacing.xs),
           ],
-          DpText(label, role: role, weight: weight, color: ink),
+          // A label wraps inside the chip rather than running out of it: at
+          // 200 % "This step's learned words" was wider than L7's sheet
+          // (#165). The chip's own width may be unbounded (a scrolling row),
+          // so the cap is the screen's, not a Flexible's.
+          // ponytail: 80 % of the screen; measure the parent if a chip sits
+          // somewhere narrower than that at 200 %.
+          ConstrainedBox(
+            constraints: BoxConstraints(
+              maxWidth: MediaQuery.sizeOf(context).width * 0.8,
+            ),
+            child: DpText(label, role: role, weight: weight, color: ink),
+          ),
           // The web-link mark trails its label, as the artboard draws it.
           if (trailing != null) ...<Widget>[
             SizedBox(width: tokens.spacing.xs),

@@ -1065,7 +1065,13 @@ class _NoResults extends ConsumerWidget {
         ),
         const SizedBox(height: 28),
         DpButton(
-          label: l10n.searchNoneAdd(query),
+          // Above 100 % the German typed in may break at its syllables:
+          // "Wohnungsgeberbestätigung" is wider than the button (#165).
+          label: l10n.searchNoneAdd(
+            DpScript.scaled(context)
+                ? DpScript.allowBreaks(query, threshold: 4)
+                : query,
+          ),
           onPressed: () {
             onUse();
             AddWordRoute.open(context, german: query);

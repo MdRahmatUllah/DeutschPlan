@@ -207,10 +207,14 @@ class SplashMark extends StatelessWidget {
                       ),
                   ],
                 ),
+                // The mark is the logo, drawn at its size in its square: it
+                // does not grow with the learner's text size (#165), as the
+                // wordmark below does.
                 child: _Lockup(
                   'D',
                   size: _SplashMetrics.letterSize,
                   colour: tokens.color.onAccent,
+                  scales: false,
                 ),
               ),
             ],
@@ -253,6 +257,7 @@ class _Lockup extends StatelessWidget {
     required this.size,
     required this.colour,
     this.letterSpacing,
+    this.scales = true,
   });
 
   final String data;
@@ -260,9 +265,13 @@ class _Lockup extends StatelessWidget {
   final Color colour;
   final double? letterSpacing;
 
+  /// With the system text size: false for the logo's letter.
+  final bool scales;
+
   @override
   Widget build(BuildContext context) => Text(
     data,
+    textScaler: scales ? null : TextScaler.noScaling,
     style: TextStyle(
       fontFamily: AppFonts.latin,
       fontSize: size,

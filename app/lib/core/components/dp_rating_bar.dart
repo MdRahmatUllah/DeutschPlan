@@ -119,8 +119,14 @@ class _RatingButton extends StatelessWidget {
         child: GestureDetector(
           onTap: onTap,
           behavior: HitTestBehavior.opaque,
+          // The artboard's 60: two lines of text (32) and the room around
+          // them. The lines grow with the text size and the room doesn't: a
+          // fixed 60 overflowed at 200 % (#165).
           child: Container(
-            height: DpRatingBar.height,
+            height:
+                DpRatingBar.height -
+                32 +
+                DpScript.grow(context, 32, role: DpTextRole.label),
             decoration: BoxDecoration(
               color: colour.withValues(alpha: rating.fillOpacity),
               borderRadius: BorderRadius.circular(tokens.shape.button),

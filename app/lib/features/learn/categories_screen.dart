@@ -152,7 +152,14 @@ class CategoryCard extends StatelessWidget {
               ),
               const SizedBox(height: 10),
               const Spacer(),
-              DpText(category.name, role: DpTextRole.body, weight: 600),
+              DpText(
+                category.name,
+                role: DpTextRole.body,
+                weight: 600,
+                // "Behörden & Formulare" in a half-width tile: at 200 % it
+                // breaks at a syllable, not a letter (#165).
+                allowBreaks: DpScript.scaled(context),
+              ),
               const SizedBox(height: 2),
               DpText(
                 l10n.categoriesWords(category.words),

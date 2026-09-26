@@ -131,6 +131,40 @@ abstract final class DpScript {
         .join(' ');
   }
 
+  /// The word length [allowBreaks] starts at, for text in [context]. Above
+  /// 100 % text any word of five letters or more may break at its syllables,
+  /// not only a long compound: at 200 % a display-size "Wohnung" or
+  /// "geschafft!" is wider than its line, and Flutter would cut it at any
+  /// letter (#165). Not at 100 %, where it fits, and a soft hyphen would
+  /// still split its kerning.
+  static int breakThreshold(BuildContext context) => scaled(context) ? 4 : 14;
+
+  /// Whether text in [context] is larger than 100 %: where a label that fits
+  /// at 100 % may need a syllable to break at (#165).
+  static bool scaled(BuildContext context) =>
+      MediaQuery.textScalerOf(context).scale(1) > 1;
+
+  /// [size], a box around text at [role], grown as that text grows: by the
+  /// factor the text takes, not by `scale(size)`. Android 14+ scales text
+  /// nonlinearly — at 200 % 14 sp is 28, but 96 is about 97 — so a box's
+  /// own size scaled as if it were a font barely grows (#165).
+  static double grow(
+    BuildContext context,
+    double size, {
+    DpTextRole role = DpTextRole.body,
+  }) {
+    final text = role.token(context.tokens.typography).size;
+    return size * MediaQuery.textScalerOf(context).scale(text) / text;
+  }
+
+  /// Whether text in [context] is past 130 %, where two things side by side
+  /// no longer fit a phone's width and one goes under the other (#165), as
+  /// the tab bar scrolls from there (#314).
+  /// ponytail: a threshold, not a measurement; measure where one row's
+  /// content needs it.
+  static bool large(BuildContext context) =>
+      MediaQuery.textScalerOf(context).scale(14) > 14 * 1.3;
+
   static const String _vowels = 'aeiouyäöüAEIOUYÄÖÜ';
 
   /// The consonants that can open a German syllable together, besides any
@@ -214,7 +248,12 @@ class DpText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final tokens = context.tokens;
-    final text = allowBreaks ? DpScript.allowBreaks(data) : data;
+    final text = allowBreaks
+        ? DpScript.allowBreaks(
+            data,
+            threshold: DpScript.breakThreshold(context),
+          )
+        : data;
 
     // Applied to every style, not just the Latin one: a weight silently
     // dropped on mixed strings would be dropped on most of this app's copy.
@@ -453,7 +492,10 @@ class DpHeadword extends StatelessWidget {
               style: style(colour ?? articleColour ?? tokens.color.ink),
             ),
           TextSpan(
-            text: DpScript.allowBreaks(word),
+            text: DpScript.allowBreaks(
+              word,
+              threshold: DpScript.breakThreshold(context),
+            ),
             style: style(colour ?? tokens.color.ink),
             locale: const Locale('de', 'DE'),
           ),

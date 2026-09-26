@@ -174,6 +174,18 @@ class _OnboardingVoicePageState extends ConsumerState<OnboardingVoicePage> {
 
     final sample = l10n.onboardingVoiceSample;
 
+    final titled = _Titled(title: l10n.onboardingReminder, note: reminderNote);
+    final timeButton = _TimeButton(
+      time: time,
+      on: draft.reminderOn,
+      label: l10n.onboardingReminderTime(time),
+      onTap: () => _pickTime(draft.reminderTime),
+    );
+    final reminderSwitch = AdaptiveSwitch(
+      value: draft.reminderOn,
+      onChanged: (on) => _notifier.setReminder(on: on),
+      semanticLabel: l10n.onboardingReminder,
+    );
     return OnboardingShell(
       page: OnboardingPage.reminderAndVoice,
       headline: l10n.onboardingVoiceHeadline,
@@ -189,29 +201,32 @@ class _OnboardingVoicePageState extends ConsumerState<OnboardingVoicePage> {
           DpSurface(
             kind: DpSurfaceKind.bar,
             padding: const EdgeInsets.all(16),
-            child: Row(
-              children: <Widget>[
-                Expanded(
-                  child: _Titled(
-                    title: l10n.onboardingReminder,
-                    note: reminderNote,
+            // Past 130 % text the time and the switch go under the title,
+            // which they squeezed until "reminder" broke mid-word (#165).
+            child: DpScript.large(context)
+                ? Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: <Widget>[
+                      titled,
+                      const SizedBox(height: 12),
+                      Row(
+                        children: <Widget>[
+                          timeButton,
+                          const Spacer(),
+                          reminderSwitch,
+                        ],
+                      ),
+                    ],
+                  )
+                : Row(
+                    children: <Widget>[
+                      Expanded(child: titled),
+                      const SizedBox(width: 12),
+                      timeButton,
+                      const SizedBox(width: 12),
+                      reminderSwitch,
+                    ],
                   ),
-                ),
-                const SizedBox(width: 12),
-                _TimeButton(
-                  time: time,
-                  on: draft.reminderOn,
-                  label: l10n.onboardingReminderTime(time),
-                  onTap: () => _pickTime(draft.reminderTime),
-                ),
-                const SizedBox(width: 12),
-                AdaptiveSwitch(
-                  value: draft.reminderOn,
-                  onChanged: (on) => _notifier.setReminder(on: on),
-                  semanticLabel: l10n.onboardingReminder,
-                ),
-              ],
-            ),
           ),
           const SizedBox(height: 12),
           DpSurface(
@@ -401,6 +416,20 @@ class _SupertonicCard extends StatelessWidget {
     // much. Disabled looks it: no colour of ours, so the button greys out.
     final canDownload = asked && short == 0;
 
+    final download = DpButton(
+      label: l10n.onboardingSupertonicDownload,
+      onPressed: canDownload ? onDownload : null,
+      kind: DpButtonKind.secondary,
+      colour: canDownload ? actionColour : null,
+      onColour: canDownload ? onActionColour : null,
+    );
+    final later = DpButton(
+      label: l10n.onboardingSupertonicLater,
+      onPressed: onLater,
+      kind: DpButtonKind.secondary,
+      colour: glass ? null : tokens.color.accent,
+      onColour: glass ? null : tokens.color.onAccent,
+    );
     return DpSurface(
       // Solid Sun with the chosen edge — 2 px ink and the hard shadow — on
       // paper; the glass artboards tint a pane instead, with no edge.
@@ -437,29 +466,20 @@ class _SupertonicCard extends StatelessWidget {
           ],
           if (phase == null && offer == VoiceOffer.offered) ...<Widget>[
             const SizedBox(height: 10),
-            Row(
-              children: <Widget>[
-                Expanded(
-                  child: DpButton(
-                    label: l10n.onboardingSupertonicDownload,
-                    onPressed: canDownload ? onDownload : null,
-                    kind: DpButtonKind.secondary,
-                    colour: canDownload ? actionColour : null,
-                    onColour: canDownload ? onActionColour : null,
-                  ),
-                ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: DpButton(
-                    label: l10n.onboardingSupertonicLater,
-                    onPressed: onLater,
-                    kind: DpButtonKind.secondary,
-                    colour: glass ? null : tokens.color.accent,
-                    onColour: glass ? null : tokens.color.onAccent,
-                  ),
-                ),
-              ],
-            ),
+            // Past 130 % text they stack: side by side, "Download" broke
+            // mid-word at 200 % (#165).
+            if (DpScript.large(context)) ...<Widget>[
+              download,
+              const SizedBox(height: 8),
+              later,
+            ] else
+              Row(
+                children: <Widget>[
+                  Expanded(child: download),
+                  const SizedBox(width: 8),
+                  Expanded(child: later),
+                ],
+              ),
           ],
           if (status != null) ...<Widget>[
             const SizedBox(height: 10),

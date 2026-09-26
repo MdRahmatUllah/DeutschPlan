@@ -624,21 +624,30 @@ class _Band extends StatelessWidget {
                 Semantics(
                   label: l10n.examRunTimeLeft(seconds ~/ 60, seconds % 60),
                   excludeSemantics: true,
+                  // At least the artboard's 32, and taller at large text:
+                  // a fixed 32 cut "14:32" at 150 % (#165).
                   child: Container(
-                    height: 32,
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                    alignment: Alignment.center,
+                    constraints: const BoxConstraints(minHeight: 32),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 2,
+                    ),
                     decoration: BoxDecoration(
                       color: coral
                           ? tokens.color.again
                           : ink.withValues(alpha: 0.18),
                       borderRadius: BorderRadius.circular(8),
                     ),
-                    child: DpText(
-                      AppLocalizations.of(context).digits(_clock(seconds)),
-                      role: DpTextRole.body,
-                      weight: 700,
-                      color: coral ? tokens.color.ink : ink,
+                    // Its own height, centred: an Align would fill the bar.
+                    child: Center(
+                      widthFactor: 1,
+                      heightFactor: 1,
+                      child: DpText(
+                        AppLocalizations.of(context).digits(_clock(seconds)),
+                        role: DpTextRole.body,
+                        weight: 700,
+                        color: coral ? tokens.color.ink : ink,
+                      ),
                     ),
                   ),
                 ),

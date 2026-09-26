@@ -77,6 +77,8 @@ class TodayHeader extends StatelessWidget {
                         : l10n.todayGreetingNamed(greeting, view.learnerName!),
                     role: DpTextRole.headline,
                     color: ink,
+                    // German: at 200 % "geschafft" breaks at a syllable (#165).
+                    allowBreaks: true,
                   ),
                 ],
               ),

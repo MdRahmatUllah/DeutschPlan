@@ -38,6 +38,9 @@ void main() {
       child: const SentencesScreen(),
     ),
     act: (tester) async {
+      // At large text the page scrolls, and the link is below its fold.
+      await tester.ensureVisible(find.text('Show translation'));
+      await tester.pumpAndSettle();
       await tester.tap(find.text('Show translation'));
     },
   );

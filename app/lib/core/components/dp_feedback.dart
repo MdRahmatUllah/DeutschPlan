@@ -119,9 +119,10 @@ class _UmlautKey extends StatelessWidget {
           onTap: onTap,
           onLongPress: onLongPress,
           behavior: HitTestBehavior.opaque,
+          // The artboard's height at least, taller at large text: a fixed one
+          // cut "ä" at 150 % (#165).
           child: Container(
-            height: DpUmlautBar.keyHeight,
-            alignment: Alignment.center,
+            constraints: const BoxConstraints(minHeight: DpUmlautBar.keyHeight),
             decoration: BoxDecoration(
               color: tokens.surface.card,
               borderRadius: BorderRadius.circular(tokens.shape.chip),
@@ -130,7 +131,11 @@ class _UmlautKey extends StatelessWidget {
                 width: tokens.surface.outlineWidth,
               ),
             ),
-            child: DpText(label, role: DpTextRole.title, weight: 500),
+            // Its own height, centred: an Align would fill a tall parent.
+            child: Center(
+              heightFactor: 1,
+              child: DpText(label, role: DpTextRole.title, weight: 500),
+            ),
           ),
         ),
       ),

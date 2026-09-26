@@ -261,8 +261,8 @@ class _Body extends StatelessWidget {
       builder: (context, constraints) {
         // FR-W2-04: a tablet shows every column; a phone scrolls them.
         final fits =
-            CompareTable.labelWidth +
-                members.length * CompareTable.columnWidth <=
+            CompareTable.labelWidthOf(context) +
+                members.length * CompareTable.columnWidthOf(context) <=
             constraints.maxWidth - 32;
         return Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -332,7 +332,17 @@ class CompareTable extends ConsumerWidget {
 
   /// The artboard's: a 96 dp label column, members 170 dp at least.
   static const double labelWidth = 96;
+
+  /// [labelWidth], grown with the text size: at 150 % a fixed 96 broke
+  /// "MEANING" mid-word (#165).
+  static double labelWidthOf(BuildContext context) =>
+      DpScript.grow(context, labelWidth, role: DpTextRole.caption);
   static const double columnWidth = 170;
+
+  /// [columnWidth], grown with the text size: at 200 % on a phone a fixed
+  /// 170 broke "self-assured" mid-word (#165).
+  static double columnWidthOf(BuildContext context) =>
+      DpScript.grow(context, columnWidth);
 
   /// A cell the course leaves empty (FR-W2-02).
   static const String missing = '—';
@@ -392,8 +402,13 @@ class CompareTable extends ConsumerWidget {
       ),
     );
 
-    Widget text(String? value) =>
-        DpText(value ?? missing, role: DpTextRole.body);
+    // A member's German in a 170 dp column: above 100 % it breaks at a
+    // syllable, not a letter ("Jubiläums", #165).
+    Widget text(String? value) => DpText(
+      value ?? missing,
+      role: DpTextRole.body,
+      allowBreaks: DpScript.scaled(context),
+    );
 
     // Right to left, the labels last: see the class comment.
     TableRow row(
@@ -414,9 +429,9 @@ class CompareTable extends ConsumerWidget {
       defaultVerticalAlignment: TableCellVerticalAlignment.intrinsicHeight,
       defaultColumnWidth: sideways == null
           ? const FlexColumnWidth()
-          : const FixedColumnWidth(columnWidth),
+          : FixedColumnWidth(columnWidthOf(context)),
       columnWidths: <int, TableColumnWidth>{
-        members.length: const FixedColumnWidth(labelWidth),
+        members.length: FixedColumnWidth(labelWidthOf(context)),
       },
       children: <TableRow>[
         row(null, (member) => _Header(member), bottom: head),
@@ -470,6 +485,9 @@ class CompareTable extends ConsumerWidget {
                     example.german,
                     role: DpTextRole.body,
                     italic: true,
+                    // German in a 170 dp column: "Jubiläums" breaks at a
+                    // syllable above 100 % (#165).
+                    allowBreaks: DpScript.scaled(context),
                   ),
                 ),
               ],

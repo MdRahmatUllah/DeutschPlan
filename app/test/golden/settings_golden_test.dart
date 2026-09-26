@@ -25,6 +25,15 @@ void main() {
   }
 
   goldenTest('settings', builder: screen);
+  // #165: at 200 % text.
+  goldenTest(
+    'settings_200',
+    builder: screen,
+    modes: const <GoldenMode>[GoldenMode.light],
+    devices: const <GoldenDevice>[GoldenDevice.phone],
+    textScale: 2,
+    textAudit: false,
+  );
   goldenTest('settings_bottom', builder: screen, act: toTheEnd);
   goldenTest(
     'settings_ios',

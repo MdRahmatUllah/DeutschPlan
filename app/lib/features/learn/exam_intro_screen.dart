@@ -329,6 +329,12 @@ class _Sections extends StatelessWidget {
       );
     }
 
+    // Past 130 % text two columns broke "Vocabulary" mid-word (#165): one.
+    if (DpScript.large(context)) {
+      return Column(
+        children: <Widget>[for (final entry in sections) cell(entry)],
+      );
+    }
     return Column(
       children: <Widget>[
         for (var i = 0; i < sections.length; i += 2)
