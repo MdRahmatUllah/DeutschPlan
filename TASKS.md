@@ -245,7 +245,7 @@ claiming the same issue. A hand edit skips that check.
 | #627 | - | X | P3 | - | fix(tts): if one Supertonic ONNX session fails to open, the sessions already opened are never closed | open |  |  |  |
 | #628 | - | X | P1 | - | fix(content): 44 example sentences contain the course author's own personal details (family names, employer, home town, postcode) | needs-decision |  |  |  |
 | #629 | - | X | P1 | - | fix(content): 31 "X — Y" headwords glue an unrelated word onto the one taught, so the learner learns the wrong meaning and gender for X | open |  |  |  |
-| #630 | - | X | P2 | - | fix(content): about 180 lesson notes are authored as vocabulary (word formation, ↔ comparisons, grammar-concept names), so they are scheduled as flashcards and asked in quizzes and exams (18 % of C2) | open |  |  |  |
+| #630 | - | X | P2 | - | fix(content): about 180 lesson notes are authored as vocabulary (word formation, ↔ comparisons, grammar-concept names), so they are scheduled as flashcards and asked in quizzes and exams (18 % of C2) | needs-decision |  |  |  |
 
 ## Locks
 
@@ -5153,3 +5153,7 @@ Added #629 (fix(content): 31 "X — Y" headwords glue an unrelated word onto the
 ### H-1208 · 2026-09-27 01:23 · agent-0 → all · note · #630
 
 Added #630 (fix(content): about 180 lesson notes are authored as vocabulary (word formation, ↔ comparisons, grammar-concept names), so they are scheduled as flashcards and asked in quizzes and exams (18 % of C2)) to lane X.
+
+### H-1209 · 2026-09-27 01:23 · agent-0 → owner · decision · #630
+
+About 180 note-like rows (word formation, ↔ comparisons, grammar names) are taught as vocabulary: move them to grammar topics, or add a 'kind' column that keeps them out of the word pools?

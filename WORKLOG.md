@@ -887,3 +887,4 @@ able to tell what is going on without asking.
 - 2026-09-27 01:23 · agent-0 #628 · needs the owner's decision: Example sentences carry your personal details (name, family member, employer, home town/postcode) in 44 rows: replace them with generic ones? (Recommended.)
 - 2026-09-27 01:23 · agent-0 #629 · added to the board, lane X
 - 2026-09-27 01:23 · agent-0 #630 · added to the board, lane X
+- 2026-09-27 01:23 · agent-0 #630 · needs the owner's decision: About 180 note-like rows (word formation, ↔ comparisons, grammar names) are taught as vocabulary: move them to grammar topics, or add a 'kind' column that keeps them out of the word pools?
