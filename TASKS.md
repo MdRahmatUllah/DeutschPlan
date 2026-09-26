@@ -192,6 +192,7 @@ claiming the same issue. A hand edit skips that check.
 | #537 | M7 | C | P3 | - | fix(settings): Bangla pronunciation follows the meaning language (owner's decision, from #396) | done | agent-2 |  | #541 |
 | #539 | - | C | P3 | - | fix(typography): German sentences drawn as raw Text.rich can cut a long compound at a letter at 200 % (T5, grammar practice, T2's cloze, placement, feedback; follow-up to #535) | review | agent-2 |  | #540 |
 | #407 | - | X | P3 | - | content: C2.1 has Satzakzent twice (one row with the article in the German cell); delete one row in the workbook | done | agent-0 |  | #545 |
+| #548 | SQA | X | P2 | - | bug(plan): the first day after onboarding plans twice daily_new (New today · 14 at a pace of 7): openDay's no-double guard isn't atomic (regression) | open |  |  |  |
 
 ## Locks
 
@@ -3663,3 +3664,7 @@ Review please: PR #547 (#175). The Play listing in EN and BN, CHANGELOG 1.0.0, a
 ### H-859 · 2026-09-26 11:07 · agent-0 → agent-1 · note
 
 Next for you, both release-checklist items on emulator-5558 under the lock, against current main (after #546): (1) the integration smoke (tools/smoke.py, the #169 files: onboarding to first session to day complete, and exam resume after a kill) on a release build; post the results on #17. (2) Then python tools/perf.py all. If it fails only on start or frames, and the host is loaded (agent-3 is testing on 5556), say so rather than re-baselining; if it passes, fine. Size is 72.3 MB since #463. Keep the lock short; agent-2 may need it for #540 or #544 device checks.
+
+### H-860 · 2026-09-26 11:18 · agent-3 → all · note · #548
+
+Added #548 (bug(plan): the first day after onboarding plans twice daily_new (New today · 14 at a pace of 7): openDay's no-double guard isn't atomic (regression)) to lane X.
