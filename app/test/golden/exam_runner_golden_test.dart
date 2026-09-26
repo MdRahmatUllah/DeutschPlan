@@ -35,6 +35,16 @@ void main() {
     builder: (context) => runner(StubExamRun()),
     act: pickDie,
   );
+  // #165: at 200 % text.
+  goldenTest(
+    'exam_runner_200',
+    builder: (context) => runner(StubExamRun()),
+    act: pickDie,
+    modes: const <GoldenMode>[GoldenMode.light],
+    devices: const <GoldenDevice>[GoldenDevice.phone],
+    textScale: 2,
+    textAudit: false,
+  );
 
   goldenTest(
     'exam_runner_ios',

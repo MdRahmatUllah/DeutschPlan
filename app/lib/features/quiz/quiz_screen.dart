@@ -246,6 +246,16 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
       final item = _queue.current;
       final verdict = _verdict;
       final typed = item.direction != QuizDirection.articles && !item.tiles;
+      final onceMore = _queue.reasking
+          ? DpChip(label: l10n.quizOnceMore, kind: DpChipKind.status)
+          : null;
+      final ask = DpChip(label: askName(l10n, item), kind: DpChipKind.status);
+      final timer = widget.args.timer && verdict == null
+          ? DpPill(
+              label: l10n.quizSecondsLeft(_left),
+              fill: _left <= 5 ? tokens.color.again : tokens.surface.muted,
+            )
+          : null;
       body = Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
@@ -257,23 +267,26 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
             child: ListView(
               padding: const EdgeInsets.fromLTRB(16, 20, 16, 16),
               children: <Widget>[
-                Row(
-                  children: <Widget>[
-                    if (_queue.reasking) ...<Widget>[
-                      DpChip(label: l10n.quizOnceMore, kind: DpChipKind.status),
-                      const SizedBox(width: 8),
+                // Past 130 % text they wrap: in one row the chips and the
+                // timer ran 26 dp off the screen at 200 % (#165).
+                if (DpScript.large(context))
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: <Widget>[?onceMore, ask, ?timer],
+                  )
+                else
+                  Row(
+                    children: <Widget>[
+                      if (onceMore != null) ...<Widget>[
+                        onceMore,
+                        const SizedBox(width: 8),
+                      ],
+                      ask,
+                      const Spacer(),
+                      ?timer,
                     ],
-                    DpChip(label: askName(l10n, item), kind: DpChipKind.status),
-                    const Spacer(),
-                    if (widget.args.timer && verdict == null)
-                      DpPill(
-                        label: l10n.quizSecondsLeft(_left),
-                        fill: _left <= 5
-                            ? tokens.color.again
-                            : tokens.surface.muted,
-                      ),
-                  ],
-                ),
+                  ),
                 const SizedBox(height: 10),
                 QuizItemView(
                   key: ValueKey<int>(_answers),

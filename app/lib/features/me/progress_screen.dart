@@ -276,7 +276,9 @@ class _Key extends StatelessWidget {
           ),
         ),
         const SizedBox(width: 6),
-        DpText(label, role: DpTextRole.caption),
+        // Wraps inside the legend's Wrap, which bounds it: at 200 % a key
+        // ran off the card and broke "introduced" (#165).
+        Flexible(child: DpText(label, role: DpTextRole.caption)),
       ],
     );
   }
@@ -634,27 +636,41 @@ class _Totals extends StatelessWidget {
         ),
       ),
     );
+    final totals = <Widget>[
+      total(
+        minutes >= 60
+            ? l10n.progressHours(minutes ~/ 60, minutes % 60)
+            : l10n.progressMinutes(minutes),
+        l10n.progressStudyTime,
+      ),
+      total(number.format(view.totals.introduced), l10n.progressIntroduced),
+      total(number.format(view.totals.reviews), l10n.progressReviews),
+      total(
+        l10n.progressStreakBest(view.streak, view.best),
+        l10n.progressStreakLabel,
+      ),
+    ];
     return DpSurface(
       kind: DpSurfaceKind.bar,
       radius: 16,
       padding: const EdgeInsets.all(14),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          total(
-            minutes >= 60
-                ? l10n.progressHours(minutes ~/ 60, minutes % 60)
-                : l10n.progressMinutes(minutes),
-            l10n.progressStudyTime,
-          ),
-          total(number.format(view.totals.introduced), l10n.progressIntroduced),
-          total(number.format(view.totals.reviews), l10n.progressReviews),
-          total(
-            l10n.progressStreakBest(view.streak, view.best),
-            l10n.progressStreakLabel,
-          ),
-        ],
-      ),
+      // Past 130 % text two to a row: four abreast broke "introduced"
+      // mid-word at 150 % (#165).
+      child: DpScript.large(context)
+          ? Column(
+              children: <Widget>[
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: totals.sublist(0, 2),
+                ),
+                const SizedBox(height: 12),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: totals.sublist(2),
+                ),
+              ],
+            )
+          : Row(crossAxisAlignment: CrossAxisAlignment.start, children: totals),
     );
   }
 }

@@ -12,6 +12,7 @@ import 'package:deutschplan/features/study/study_session.dart';
 import 'package:deutschplan/router/routes.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart' show BuildContext, Widget;
 
 import 'golden_harness.dart';
 
@@ -59,22 +60,30 @@ void main() {
     searchKeyAlt: 'rechnung',
   );
 
-  goldenTest(
-    'study_front',
-    builder: (context) => ProviderScope(
-      overrides: [
-        settingsProvider.overrideWithValue(settings),
-        studySessionProvider(args).overrideWith(_Fourth.new),
-        studyWordProvider('r3').overrideWith(
-          (ref) async => const WordWithState(
-            word: rechnung,
-            state: null,
-            status: WordStatus.learning,
-          ),
+  Widget front(BuildContext context) => ProviderScope(
+    overrides: [
+      settingsProvider.overrideWithValue(settings),
+      studySessionProvider(args).overrideWith(_Fourth.new),
+      studyWordProvider('r3').overrideWith(
+        (ref) async => const WordWithState(
+          word: rechnung,
+          state: null,
+          status: WordStatus.learning,
         ),
-      ],
-      child: StudyScreen(args: args),
-    ),
+      ),
+    ],
+    child: StudyScreen(args: args),
+  );
+
+  goldenTest('study_front', builder: front);
+  // #165: at 200 % text.
+  goldenTest(
+    'study_front_200',
+    builder: front,
+    modes: const <GoldenMode>[GoldenMode.light],
+    devices: const <GoldenDevice>[GoldenDevice.phone],
+    textScale: 2,
+    textAudit: false,
   );
 
   // #363: a word of the learner's own, fourth in the same Revise block. Its

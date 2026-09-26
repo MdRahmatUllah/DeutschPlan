@@ -18,4 +18,14 @@ void main() {
     builder: (context) =>
         ProviderScope(overrides: todayStub(), child: const TodayScreen()),
   );
+  // #165: at 200 % text.
+  goldenTest(
+    'today_200',
+    builder: (context) =>
+        ProviderScope(overrides: todayStub(), child: const TodayScreen()),
+    modes: const <GoldenMode>[GoldenMode.light],
+    devices: const <GoldenDevice>[GoldenDevice.phone],
+    textScale: 2,
+    textAudit: false,
+  );
 }

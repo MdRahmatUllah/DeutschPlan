@@ -49,7 +49,7 @@ void expectNoWordBroken(WidgetTester tester, {Finder? within}) {
   final broken = <String>[];
   for (final paragraph in paragraphs) {
     final text = paragraph.text.toPlainText();
-    for (final word in RegExp('[^\\s\u00AD/.·–—-]{2,}').allMatches(text)) {
+    for (final word in RegExp('[^\\s\u00AD​/.·–—-]{2,}').allMatches(text)) {
       final boxes = paragraph.getBoxesForSelection(
         TextSelection(baseOffset: word.start, extentOffset: word.end),
       );

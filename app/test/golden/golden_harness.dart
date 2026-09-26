@@ -145,6 +145,7 @@ void goldenTest(
   bool still = true,
   List<Override>? overrides,
   bool textAudit = true,
+  double? textScale,
 }) {
   // #165: the same screen at 150 % and 200 % text, on the phone in light:
   // nothing cut, no word broken mid-word, no layout error. The text size is
@@ -182,6 +183,8 @@ void goldenTest(
         '$name · ${mode.name} · ${device.name}',
         tags: <String>[goldenTag],
         (tester) async {
+          // #165: a golden at a learner's larger text size.
+          if (textScale != null) textAt(tester, textScale);
           await tester.pumpGolden(
             builder: builder,
             mode: mode,

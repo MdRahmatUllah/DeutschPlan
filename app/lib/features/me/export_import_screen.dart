@@ -380,7 +380,16 @@ class _FileTile extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                DpText(name, role: DpTextRole.body, weight: 600),
+                // No line may break at "-2026" (a hyphen before a digit), so
+                // the whole name is one word, and at 150 % Flutter cut it
+                // between "2" and "0" (#165). Above 100 % it may break after
+                // each hyphen; a screen reader hears the name as it is.
+                DpText(
+                  DpScript.scaled(context) ? name.replaceAll('-', '-​') : name,
+                  role: DpTextRole.body,
+                  weight: 600,
+                  semanticsLabel: name,
+                ),
                 if (line case final line?) ...<Widget>[
                   const SizedBox(height: 1),
                   _Caption(line),
