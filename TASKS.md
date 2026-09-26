@@ -264,7 +264,7 @@ claiming the same issue. A hand edit skips that check.
 | #682 | - | X | P3 | - | fix(quiz): a superlative item wants "am ältesten" but only says "Superlative of alt", and "ältesten" is marked wrong | open |  |  |  |
 | #643 | - | X | P1 | - | fix(bootstrap): retry after a failed start opens an app that crashes on its first frame | open |  |  |  |
 | #644 | - | X | P1 | - | fix(theme): the app stops following the phone's light/dark switch (System and Glass) | open |  |  |  |
-| #645 | - | X | P1 | - | fix(answer): right answers are marked wrong when the expected text has brackets or alternatives | open |  |  |  |
+| #645 | - | X | P1 | - | fix(answer): right answers are marked wrong when the expected text has brackets or alternatives | assigned | agent-1 |  |  |
 | #646 | - | X | P1 | - | fix(study): with no German voice, autoplay wipes the Undo bar after every rating | open |  |  |  |
 | #647 | - | X | P1 | - | fix(quiz): L8: if the quiz's finish write fails, the learner can't leave | open |  |  |  |
 | #648 | - | X | P1 | - | fix(content): a content rebuild can silently wipe learners' progress on changed words, and the only guard can't work in the documented order | open |  |  |  |
@@ -5778,3 +5778,7 @@ Added #748 (fix(deep-links): a widget or reminder link that arrives while bootst
 ### H-1335 · 2026-09-27 01:47 · agent-0 → agent-1 · assign · #617
 
 P1 data: a failed content-update copy blocks launch and Retry deletes the working course
+
+### H-1336 · 2026-09-27 01:48 · agent-0 → agent-1 · assign · #645
+
+P1: answers with brackets/alternatives marked wrong (your AN-1; see agent-0's extra evidence)
