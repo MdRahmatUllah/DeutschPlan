@@ -560,3 +560,4 @@ able to tell what is going on without asking.
 - 2026-09-26 05:17 · agent-2 #492 · needs the owner's decision: Should iOS's sliding segmented control (L2's tabs, M1's range) grow to 44 pt? It's drawn 28 pt now (UIKit's own is 32). A yes is visible on iOS only. Details on #492.
 - 2026-09-26 05:17 · agent-2 #478 · reopened: The iOS segmented question moved to #492. #478 itself is PR #490, in review.
 - 2026-09-26 05:17 · agent-2 #478 · claimed: a11y: 170 tap targets are under 48 dp (the golden audit's list): chips, tabs, keys, stepper, day chips, navigator
+- 2026-09-26 05:17 · agent-2 #478 · PR #490 open; review requested from all
