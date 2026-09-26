@@ -155,12 +155,12 @@ void main() {
     final buttons =
         <(String, IconData, Widget Function(BuildContext, WidgetRef, String))>[
           (
-            "a word row's (L5, L2's words, Q2)",
+            "a word row's button",
             Icons.volume_up,
             (_, _, text) => WordPlayButton(word: text),
           ),
           (
-            'the mini play (T2, W1, T3, the cloze, W4, the exam review)',
+            'the mini play, its own button',
             Icons.play_arrow,
             (context, ref, text) => StudyPlayButton(
               label: text,
@@ -169,24 +169,45 @@ void main() {
           ),
         ];
     for (final (name, icon, speaker) in buttons) {
-      testWidgets('$name: no German voice, slashed before any tap, and a tap '
-          'says how to install one', (tester) async {
-        await pump(tester, [
-          fakeVoice(FakeTts(voice: false)),
-        ], speaker: speaker);
-        expect(find.byIcon(Icons.volume_off), findsOneWidget);
-        expect(find.byIcon(icon), findsNothing);
+      testWidgets(
+        'V01 $name: no German voice, slashed before any tap, and a tap '
+        'says how to install one',
+        (tester) async {
+          await pump(tester, [
+            fakeVoice(FakeTts(voice: false)),
+          ], speaker: speaker);
+          expect(find.byIcon(Icons.volume_off), findsOneWidget);
+          expect(find.byIcon(icon), findsNothing);
 
-        await tester.tap(find.bySemanticsLabel(RegExp('Hallo')));
-        await tester.pump();
-        expect(find.text(l10n.speakerNoVoice), findsOneWidget);
-      });
+          await tester.tap(find.bySemanticsLabel(RegExp('Hallo')));
+          await tester.pump();
+          expect(find.text(l10n.speakerNoVoice), findsOneWidget);
+        },
+      );
 
-      testWidgets('$name: with a voice, its own icon', (tester) async {
+      testWidgets('V01 $name: with a voice, its own icon', (tester) async {
         await pump(tester, [fakeVoice(FakeTts())], speaker: speaker);
         expect(find.byIcon(icon), findsOneWidget);
         expect(find.byIcon(Icons.volume_off), findsNothing);
       });
+    }
+
+    // Drawn in a row that is the target as a whole (T2's back, W1's
+    // examples): no tap of its own, and slashed all the same.
+    for (final (voice, drawn) in <(bool, IconData)>[
+      (false, Icons.volume_off),
+      (true, Icons.play_arrow),
+    ]) {
+      testWidgets(
+        'V01 the mini play drawn in a row, ${voice ? 'with' : 'without'} '
+        'a German voice',
+        (tester) async {
+          await pump(tester, [
+            fakeVoice(FakeTts(voice: voice)),
+          ], speaker: (_, _, _) => const StudyPlayButton());
+          expect(find.byIcon(drawn), findsOneWidget);
+        },
+      );
     }
   });
 
