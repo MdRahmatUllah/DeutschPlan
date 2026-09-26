@@ -426,38 +426,63 @@ extension GoldenTester on WidgetTester {
   }
 }
 
-/// A 300 dp keyboard up over the screen's first field, focused: no layout
-/// error, the field above the keyboard, nothing clipped, and nothing cut to
-/// its lines but the field's own hint, which keeps one line while typing
-/// past 130 % (#570). A screen with no field passes as it is (#584).
-///
-/// ponytail: the audit's phone only. Resizing to SQA's 411 × 731 with a
-/// dialog open left it where it was, so a faithful second frame is a second
-/// pump of every case; L8's and L12's own tests run that frame.
+/// The keyboard up over the screen's last field (the one it fights; a
+/// dialog's, over a screen), focused, with SQA's room: its 24 dp status bar
+/// and the keyboard's top at [keyboardTop], as Gboard leaves it on SQA's
+/// 411 × 731 phone, which covers a 300 dp keyboard too. Then no layout error,
+/// the field in the room (under the status bar, above the keyboard, and
+/// hit-testable, so neither scrolled out of its list nor covered), nothing
+/// clipped, no word broken, and nothing cut to its lines but that field's
+/// own one-line hint while typing past 130 % (#570). A screen with no field
+/// passes as it is (#584).
 Future<void> expectKeyboardFits(WidgetTester tester) async {
   final fields = find.byType(EditableText);
   if (fields.evaluate().isEmpty) return;
   final ratio = tester.view.devicePixelRatio;
-  await tester.showKeyboard(fields.first);
-  tester.view.viewInsets = FakeViewPadding(bottom: keyboardHeight * ratio);
+  final height = tester.view.physicalSize.height / ratio;
+  await tester.showKeyboard(fields.last);
+  tester.view
+    ..padding = FakeViewPadding(top: statusBar * ratio)
+    ..viewInsets = FakeViewPadding(bottom: (height - keyboardTop) * ratio);
+  addTearDown(tester.view.resetPadding);
   addTearDown(tester.view.resetViewInsets);
-  await tester.pumpAndSettle();
+  await tester.pumpAndSettle(
+    const Duration(milliseconds: 100),
+    EnginePhase.sendSemanticsUpdate,
+    settleTimeout,
+  );
   expect(tester.takeException(), isNull, reason: 'with the keyboard up');
-  final keyboardTop = tester.view.physicalSize.height / ratio - keyboardHeight;
+  final field = tester.getRect(fields.last);
   expect(
-    tester.getRect(fields.first).bottom,
+    field.top,
+    greaterThanOrEqualTo(statusBar - 0.5),
+    reason: 'under the status bar',
+  );
+  expect(
+    field.bottom,
     lessThanOrEqualTo(keyboardTop + 0.5),
-    reason: 'the focused field above the keyboard',
+    reason: 'above the keyboard',
+  );
+  expect(
+    fields.last.hitTestable(),
+    findsOneWidget,
+    reason: 'in view, not covered',
   );
   expectNothingClipped(tester);
-  final hint = find
-      .ancestor(of: fields.first, matching: find.byType(InputDecorator))
+  expectNoWordBroken(tester);
+  final oneLineHint = find
+      .ancestor(of: fields.last, matching: find.byType(InputDecorator))
       .evaluate()
-      .map((e) => (e.widget as InputDecorator).decoration.hintText)
+      .map((e) => (e.widget as InputDecorator).decoration)
+      .where((decoration) => decoration.hintMaxLines == 1)
+      .map((decoration) => decoration.hintText)
       .nonNulls;
-  expectAllLinesShown(tester, except: hint.toSet());
+  expectAllLinesShown(tester, except: oneLineHint.toSet());
 }
 
-/// The keyboard [expectKeyboardFits] puts up: Gboard with its suggestion
-/// strip on SQA's phone, as #554's tests have it.
-const double keyboardHeight = 300;
+/// SQA's status bar, dp.
+const double statusBar = 24;
+
+/// Where the keyboard's top is in [expectKeyboardFits]: Gboard with its
+/// suggestion strip on SQA's phone, 731 − 335 dp.
+const double keyboardTop = 731.0 - 335;
