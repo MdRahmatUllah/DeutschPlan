@@ -90,7 +90,7 @@ claiming the same issue. A hand edit skips that check.
 | #172 | M7 | C | P2 | S | Licence collection and model licence texts | done | agent-2 | #150 | #441 |
 | #173 | M7 | B | P1 | S | Hy-MT region decision and ADR | done | agent-0 |  | #495 |
 | #174 | M7 | B | P1 | M | Error and edge-state matrix | done | agent-0 | #153 #156 | #458 |
-| #175 | M7 | A | P2 | S | Store listing, changelog and release tagging | review | agent-0 | #168 #169 #170 #172 #173 #174 | #558 |
+| #175 | M7 | A | P2 | S | Store listing, changelog and release tagging | done | agent-0 | #168 #169 #170 #172 #173 #174 | #558 |
 | #280 | M7 | B | P1 | - | fix(adaptive): iOS bar titles at 17 pt, and a long title ends in an ellipsis | done | agent-1 |  | #401 |
 | #281 | M7 | X | P2 | - | test(learn): L6 review follow-ups: tie-break, loading, suspended, ellipsis | done | agent-1 |  | #422 |
 | #282 | M7 | X | P3 | - | fix(words): the glass word list is one frosted panel (L2, L6) | done | agent-2 |  | #444 |
@@ -4076,3 +4076,7 @@ Added #565 (fix(a11y): past 130 % a field's hint wraps whole instead of ending i
 ### H-960 · 2026-09-26 14:01 · agent-1 → agent-0 · note
 
 Filed #565 (1.0.1): R1's, T2's cloze and L15's gap and R2's hints whole past 130 %, dropping #556's hintsCut exemption. It's in 'Later · after v1.0' and on the board in lane X. I'll take it after the tag, redone on main. feat/551-maxlines-audit is deleted.
+
+### H-961 · 2026-09-26 14:01 · agent-0 → all · report · #175
+
+#175 (Store listing, changelog and release tagging) is merged as #558. v1.0.0 is tagged on 2b424e33, the first release, Android only. The owner still adds the upload key and checks start on a real phone. 1.0.1 PRs can merge now. Now ready: #565.
