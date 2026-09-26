@@ -7,7 +7,7 @@ DeutschPlan's releases. The version is `pubspec.yaml`'s; each entry lands in the
 The first release, on Android. The tag and the date wait for the owner's go-ahead.
 
 ### The course
-- 12 steps from A1.1 to C2.2: 5,594 words and 182 grammar topics, in English and Bangla, fully offline, with no account.
+- 12 steps from A1.1 to C2.2: 5,593 words and 182 grammar topics, in English and Bangla, fully offline, with no account.
 - Setup: the meaning language (which also sets the app's), a starting step or a short placement check, the daily pace and study days, a reminder, and the optional voice.
 - Today's plan: revision by FSRS, new words, the week's grammar topic and practice sentences, with rest days, a backlog and a reminder only when something is due.
 - Word cards, cloze cards after two Good or Easy ratings, word detail with examples and the pronunciation in Bangla letters, near-synonym comparisons, and words of the learner's own.

@@ -19,7 +19,7 @@ DeutschPlan is a complete German course that works fully offline: no account, no
 
 WHAT YOU LEARN
 • 12 steps from A1.1 to C2.2, built around the exams
-• 5,594 words, each with examples and its pronunciation written in Bangla letters, and its article and forms where it has them
+• 5,593 words, each with examples and its pronunciation written in Bangla letters, and its article and forms where it has them
 • 182 grammar topics, each with its rule and a short practice
 • Meanings in English, Bangla, or both
 
@@ -61,7 +61,7 @@ DeutschPlan একটি পূর্ণাঙ্গ জার্মান ক�
 
 যা শিখবেন
 • পরীক্ষার কাঠামো: A1.1 থেকে C2.2 পর্যন্ত ১২টি ধাপ
-• ৫,৫৯৪টি শব্দ, প্রতিটির উদাহরণ আর বাংলা হরফে লেখা উচ্চারণসহ, আর যেখানে আছে সেখানে আর্টিকেল ও রূপ
+• ৫,৫৯৩টি শব্দ, প্রতিটির উদাহরণ আর বাংলা হরফে লেখা উচ্চারণসহ, আর যেখানে আছে সেখানে আর্টিকেল ও রূপ
 • ১৮২টি ব্যাকরণ বিষয়, প্রতিটির নিয়ম আর ছোট অনুশীলনসহ
 • অর্থ ইংরেজিতে, বাংলায়, বা দুটোতেই
 
@@ -90,4 +90,19 @@ DeutschPlan একটি পূর্ণাঙ্গ জার্মান ক�
 
 ## Screenshots
 
-From the release x86_64 APK on emulator-5558, English UI, the course's own content: T1 (Today), T2 (a word card), L2 (a step), L12 (a mock exam), W1 (a word), in light and dark, phone and 10-inch tablet (Play's phone and tablet slots). They are taken after a fresh install walked through S2, with a few days studied so Today has revisions. They live under `docs/05-dev-guide/store/` (#175).
+`store/phone-light`, `phone-dark`, `tablet-light` and `tablet-dark`, six each, from the release x86_64 APK on emulator-5558 (wiped, API 36), English UI, the course's own content:
+
+| File | Screen |
+|---|---|
+| `01-today.png` | T1, day 1 with three of today's words studied |
+| `02-card-front.png` | T2, a new word's card |
+| `03-card-back.png` | T2, turned over: meanings, examples, the rating bar |
+| `04-course.png` | L1, the course by level |
+| `05-step.png` | L2, a step's words |
+| `06-word.png` | W1 over L2 (a sheet on the phone, a side pane on the tablet) |
+
+- **Phone:** 1080 × 2160 (`wm size`), since Play takes at most 2:1.
+- **Tablet:** 1600 × 2560 at density 320, a 10-inch tablet.
+- **The status bar** is Android's demo mode (10:00, full Wi-Fi and battery). Light and dark follow the system setting.
+- **Format:** RGB PNGs without alpha, as Play asks. `test_store_listing.py` checks the format, the sizes and the ratio.
+- **Not included:** a mock exam (L12), which unlocks only once 90 % of a step is introduced; day 1 can't reach it. Take one on a device with progress before the upload if the owner wants it.
