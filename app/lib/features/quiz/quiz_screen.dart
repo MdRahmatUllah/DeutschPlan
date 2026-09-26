@@ -270,7 +270,9 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
           ),
           Expanded(
             child: ListView(
-              padding: const EdgeInsets.fromLTRB(16, 20, 16, 16),
+              // Typing past 130 %, the foot's 8 dp more go to the prompt too
+              // (#561).
+              padding: EdgeInsets.fromLTRB(16, 20, 16, typing ? 8 : 16),
               children: <Widget>[
                 // Past 130 % text they wrap: in one row the chips and the
                 // timer ran 26 dp off the screen at 200 % (#165).

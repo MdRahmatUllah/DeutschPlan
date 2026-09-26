@@ -152,7 +152,18 @@ class QuizItemView extends ConsumerWidget {
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: <Widget>[prompt, const SizedBox(height: 20), answer],
+      children: <Widget>[
+        prompt,
+        // Typing past 130 %, 12 dp of the gap go to a two-line prompt, which
+        // otherwise lost the top of its first line under the strip (#561).
+        // ponytail: with the list's foot, 20 dp won back against ~7 dp short
+        // on SQA's 731 dp phone; a three-line prompt (a long meaning over
+        // its Bangla) still loses its top. The list sits at its end then, so
+        // what's above the prompt is off screen and no lever; the next ones
+        // are the field's 14 dp vertical padding, then Check beside ä ö ü ß.
+        SizedBox(height: typing ? 8 : 20),
+        answer,
+      ],
     );
   }
 }

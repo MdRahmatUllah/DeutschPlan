@@ -560,14 +560,34 @@ void main() {
   group('L8 #554 typing at large text', () {
     const keyboardTop = 731.0 - 300;
 
+    // #561: a prompt that wraps, and one whose Bangla hint is its second
+    // line (the meaning language Both), as SQA found them on 5556.
+    const wraps = QuizItem(
+      ord: 1,
+      wordUid: 'bitte',
+      direction: QuizDirection.enDe,
+      prompt: "here you are / you're welcome",
+      expected: 'bitte',
+    );
+    const withHint = QuizItem(
+      ord: 1,
+      wordUid: 'wiedersehen',
+      direction: QuizDirection.enDe,
+      prompt: 'goodbye',
+      expected: 'Auf Wiedersehen',
+      hint: 'বিদায় (আনুষ্ঠানিক)',
+    );
+
     // SQA's 731 dp phone, its status bar, and a 300 dp keyboard.
     Future<void> typing(
       WidgetTester tester,
       QuizItem item, {
       required TextScaler textScaler,
+      double width = 390,
+      double keyboard = 300,
     }) async {
       tester.view
-        ..physicalSize = const Size(390, 731) * 3
+        ..physicalSize = Size(width, 731) * 3
         ..devicePixelRatio = 3
         ..padding = const FakeViewPadding(top: 24 * 3);
       addTearDown(tester.view.reset);
@@ -578,8 +598,45 @@ void main() {
         textScaler: textScaler,
       );
       await tester.showKeyboard(find.byType(TextField));
-      tester.view.viewInsets = const FakeViewPadding(bottom: 300 * 3);
+      tester.view.viewInsets = FakeViewPadding(bottom: keyboard * 3);
       await tester.pumpAndSettle();
+    }
+
+    // #561: on SQA's 5556 (1080 × 1920 at 420 dpi: 411 × 731 dp) Gboard
+    // left about 7 dp less than the prompt, its gap and the field need (a
+    // keyboard of about 330 dp here), and a two-line prompt lost the top of
+    // its first line under the progress strip. While typing past 130 % the
+    // prompt's gap to the field and the list's foot give 12 and 8 dp back;
+    // at 335 dp both are needed.
+    for (final item in <QuizItem>[wraps, withHint]) {
+      testWidgets('#561 ${item.wordUid}: at 200 % on a 411 dp phone with a '
+          'taller keyboard, both lines of the prompt show whole above the '
+          'field', (tester) async {
+        await typing(
+          tester,
+          item,
+          textScaler: AndroidTextScaler(2),
+          width: 411,
+          keyboard: 335,
+        );
+        final room = tester.getRect(find.byType(ListView));
+        final lines = <Finder>[
+          find.text(item.prompt),
+          if (item.hint case final hint?) find.text(hint),
+        ];
+        for (final line in lines) {
+          expect(
+            tester.getRect(line).top,
+            greaterThanOrEqualTo(room.top),
+            reason: 'line ${lines.indexOf(line) + 1} is under the strip',
+          );
+        }
+        expect(
+          tester.getRect(find.byType(TextField)).bottom,
+          lessThanOrEqualTo(room.bottom),
+          reason: 'the field shows whole',
+        );
+      });
     }
 
     for (final item in <QuizItem>[
@@ -591,6 +648,8 @@ void main() {
         expected: 'Es tut mir leid',
         hint: 'আমি দুঃখিত',
       ),
+      wraps,
+      withHint,
       const QuizItem(
         ord: 1,
         wordUid: 'benehmen',
