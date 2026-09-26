@@ -107,8 +107,8 @@ class BackgroundModelDownloads implements ModelDownloads {
   final FileDownloader _downloader;
   final DeviceStorage _storage;
 
-  /// How long a stop that comes before the downloader hears Wi-Fi go waits
-  /// for it to (#455).
+  /// How long a stop that comes before the downloader hears the network go
+  /// waits for it to (#455).
   // ponytail: 2 s. On the emulator the stop came a few milliseconds ahead of
   // the downloader's reading; a stop still read on Wi-Fi after this is taken
   // for the learner's *Cancel*, and fails.
@@ -226,6 +226,10 @@ class BackgroundModelDownloads implements ModelDownloads {
   /// by the downloader's own reading of the network.
   bool get _offWifi =>
       _settings.read(SettingKeys.modelsWifiOnly) && !_downloader.isWiFi;
+
+  /// No network a download may use: off Wi-Fi under *Wi-Fi only*, or none at
+  /// all (#455).
+  bool get _offline => _offWifi || !_downloader.isConnected;
 
   /// Queues [modelId]'s files, or those [only] names, as the current attempt.
   Future<void> _queue(
@@ -365,31 +369,43 @@ class BackgroundModelDownloads implements ModelDownloads {
       ),
       _ => (status: was, done: sofar),
     };
-    // #455: with *Wi-Fi only* on, a file in flight as the phone leaves Wi-Fi
-    // is stopped by the system. It comes back canceled, though no one
-    // cancelled it (the downloader's word for a stop), and the platform runs
-    // it again once the phone is back on Wi-Fi: it is waiting, not failed.
-    // A cancel this code made needs no telling apart: a file of the model
-    // has failed for good by then, and holds it failed.
-    // ponytail: such a stop loses the file's partial bytes, so it starts
-    // again from nothing (background_downloader 9.6.x deletes its temp file
-    // on a stop; one drop in three on the emulator); a stop that comes back
-    // failed keeps them, and resumes. Keeping them always needs the
-    // downloader to keep the temp file on a stop.
-    var stopped = false;
-    if (status == TaskStatus.canceled &&
-        _settings.read(SettingKeys.modelsWifiOnly)) {
-      // The stop comes as the phone leaves Wi-Fi, and often before the
-      // downloader has heard that it has: its reading is given a moment.
-      if (!_offWifi) await Future<void>.delayed(_wifiGrace);
+    // #455: a file in flight as the phone leaves Wi-Fi (under *Wi-Fi only*)
+    // or loses its connection is stopped by the system. The downloader says
+    // so as a canceled no one asked for, or, its retries spent on earlier
+    // drops, as a failure with no cause but the connection. Either way the
+    // file is waiting for the network, not failed, and it is queued again as
+    // a new task of the attempt, the stopped one cancelled by its id: left
+    // to the platform's own rerun, the downloader stops tracking it, and
+    // pause, the switch, the notification and a relaunch all lose it.
+    // A model already failed is left failed: its files' late cancels are
+    // this code's own.
+    // ponytail: the file starts again from nothing, as a canceled one's
+    // partial file is gone (background_downloader 9.6.x deletes it); a stop
+    // the downloader retries itself keeps its bytes where the server takes
+    // ranges. Keeping them always needs the downloader to keep the temp file
+    // on a stop.
+    if (update case TaskStatusUpdate(:final exception)
+        when (status == TaskStatus.canceled ||
+                (status == TaskStatus.failed &&
+                    (exception == null ||
+                        exception is TaskConnectionException))) &&
+            _last[modelId]?.phase != DownloadPhase.failed) {
+      // The stop comes as the network goes, and often before the downloader
+      // has heard that it has: its reading is given a moment.
+      if (!_offline) await Future<void>.delayed(_wifiGrace);
       // A newer word on the file while it waited stands.
       if (files[name] != before) return;
-      stopped = _offWifi;
+      if (_offline) {
+        // Queued first, so the stopped task's echo is an earlier attempt's.
+        await _queue(modelId, only: (file) => file == name);
+        await _downloader.cancelTaskWithId(update.task.taskId);
+        return;
+      }
     }
     files[name] = (
       task: update.task.taskId,
       created: update.task.creationTime,
-      status: stopped ? TaskStatus.enqueued : status,
+      status: status,
       done: done,
     );
     await _settle(modelId);
