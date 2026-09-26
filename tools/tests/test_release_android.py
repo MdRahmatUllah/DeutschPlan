@@ -71,8 +71,40 @@ def test_a_misaligned_bundle_fails_the_check(tmp_path, monkeypatch):
     assert release.main(["--check"]) == 1
 
 
-def test_the_key_is_named(tmp_path, monkeypatch):
-    monkeypatch.setattr(release, "KEY_PROPERTIES", tmp_path / "key.properties")
-    assert "DEBUG" in release.signed_by()
-    (tmp_path / "key.properties").write_text("keyAlias=upload\n", encoding="utf-8")
-    assert "upload key" in release.signed_by()
+def test_the_key_is_read_from_the_bundles_certificate(tmp_path, monkeypatch):
+    monkeypatch.setattr(release, "keytool", lambda: "keytool")
+
+    def printcert(output):
+        return lambda *args, **kwargs: type("Done", (), {"stdout": output})()
+
+    monkeypatch.setattr(release.subprocess, "run", printcert(
+        "Signer #1:\n\nCertificate #1:\nOwner: C=US, O=Android, CN=Android Debug\n"))
+    assert "DEBUG" in release.signed_by(release.signer(tmp_path / "app.aab"))
+
+    monkeypatch.setattr(release.subprocess, "run", printcert(
+        "Certificate #1:\nOwner: CN=Rahmat Ullah, O=DeutschPlan\nIssuer: CN=Rahmat Ullah\n"))
+    assert release.signed_by(release.signer(tmp_path / "app.aab")) == "CN=Rahmat Ullah, O=DeutschPlan"
+
+    monkeypatch.setattr(release.subprocess, "run", printcert("Not a signed jar file\n"))
+    assert "UNKNOWN" in release.signed_by(release.signer(tmp_path / "app.aab"))
+
+
+def test_without_keytool_the_key_is_unknown(tmp_path, monkeypatch):
+    monkeypatch.setattr(release, "keytool", lambda: None)
+    assert release.signer(tmp_path / "app.aab") is None
+
+
+def test_the_owners_checkout_builds_without_the_lock(monkeypatch):
+    built = []
+    monkeypatch.setattr(release.device, "agent", lambda: "")
+    monkeypatch.setattr(release, "build", lambda: built.append(True))
+    monkeypatch.setattr(release, "BUNDLE", Path("no-such.aab"))
+    release.main([])
+    assert built == [True]
+
+
+def test_an_agent_without_the_lock_is_refused(monkeypatch):
+    monkeypatch.setattr(release.device, "agent", lambda: "agent-2")
+    monkeypatch.setattr(release, "holds_device", lambda who: False)
+    monkeypatch.setattr(release, "build", lambda: pytest.fail("built without the lock"))
+    assert release.main([]) == 2
