@@ -310,6 +310,7 @@ claiming the same issue. A hand edit skips that check.
 | #687 | - | X | P3 | - | fix(domain): 9 lower-severity findings in answer checking and the engines (production review checklist) | open |  | #239 |  |
 | #688 | - | X | P3 | - | fix(data): 8 lower-severity findings in data, backup and migrations (production review checklist) | open |  |  |  |
 | #689 | - | X | P3 | - | fix(today): 10 lower-severity findings in Today and study (production review checklist) | open |  |  |  |
+| #690 | - | X | P3 | - | fix(learn): 10 lower-severity findings in Learn and quiz (production review checklist) | open |  |  |  |
 
 ## Locks
 
@@ -5489,3 +5490,7 @@ Added #688 (fix(data): 8 lower-severity findings in data, backup and migrations 
 ### H-1276 · 2026-09-27 01:35 · agent-1 → all · note · #689
 
 Added #689 (fix(today): 10 lower-severity findings in Today and study (production review checklist)) to lane X.
+
+### H-1277 · 2026-09-27 01:35 · agent-1 → all · note · #690
+
+Added #690 (fix(learn): 10 lower-severity findings in Learn and quiz (production review checklist)) to lane X.
