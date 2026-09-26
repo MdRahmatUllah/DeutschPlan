@@ -770,3 +770,4 @@ able to tell what is going on without asking.
 - 2026-09-26 15:08 · agent-1 #571 · claimed: bug(a11y): on a 360×640 phone with the keyboard up, L12's field is cut at 100 %, and L8/L12/T2 prompts at 150-200 % (the #554 family on small phones)
 - 2026-09-26 15:13 · agent-1 #571 · PR #575 open; review requested from all
 - 2026-09-26 15:17 · agent-2 #577 · added to the board, lane X
+- 2026-09-26 15:18 · agent-2 #577 · needs the owner's decision: Orientation: the app isn't locked, and a phone turned sideways (844x390) fails the 150/200 % audit on 16 screens (28 cases; with a keyboard there'd be ~150 dp left). (a) lock phones to portrait and let tablets rotate (recommended for 1.0.x; one small change), (b) support landscape on phones (fix 16 screens plus the keyboard, add a landscape frame to goldenTest), or (c) lock everything, tablets included? Details in #577.
