@@ -175,6 +175,39 @@ void main() {
     expectNothingClipped(tester, within: find.byType(CategoryWordsScreen));
   });
 
+  testWidgets("FR-L6-01 #550 at 200 % a long word's row is taller than a "
+      "short one's and shows whole", (tester) async {
+    textAt(tester, 2);
+    final short = artboardCategoryWords().first;
+    await pump(
+      tester,
+      words: <StepWord>[
+        short,
+        (
+          meaning: 'preventive check-up, to take part in a screening',
+          word: WordWithState(
+            word: short.word.word.copyWith(
+              uid: 'vorsorge',
+              german: 'Vorsorgeuntersuchung',
+            ),
+            state: null,
+            status: WordStatus.todo,
+          ),
+        ),
+      ],
+    );
+    expect(tester.takeException(), isNull);
+    final long = row('Vorsorgeuntersuchung');
+    expectAllLinesShown(tester, within: long);
+    expectNothingClipped(tester, within: find.byType(WordRow));
+    expectNoWordBroken(tester, within: find.byType(WordRow));
+    expect(
+      tester.getSize(long).height,
+      greaterThan(tester.getSize(row(short.word.word.german)).height),
+      reason: "no prototype holds a row to the first one's height",
+    );
+  });
+
   testWidgets('the level chips: All · A1 · A2 · B1 · B2+', (tester) async {
     await pump(tester);
     final labels = tester
