@@ -195,7 +195,7 @@ claiming the same issue. A hand edit skips that check.
 | #548 | SQA | X | P2 | - | bug(plan): the first day after onboarding plans twice daily_new (New today · 14 at a pace of 7): openDay's no-double guard isn't atomic (regression) | done | agent-0 |  | #549 |
 | #550 | SQA | X | P2 | - | bug(a11y): at 200 % text a word row shows "die Gebu…" and cuts its meaning with no ellipsis ("birth" for birth certificate): WordRow never stacks (R1, L2, L6) | done | agent-0 |  | #552 |
 | #551 | M7 | C | P2 | - | test(a11y): the 200 % golden audit also fails on text cut at maxLines (follow-up to #550) | in-progress | agent-2 |  |  |
-| #554 | SQA | X | P2 | - | bug(a11y): at 200 % text, L8's typed answer hides its prompt behind the keyboard ("I'm sorry" scrolled off; only the field, Check and ä ö ü ß show) | open |  |  |  |
+| #554 | SQA | X | P2 | - | bug(a11y): at 200 % text, L8's typed answer hides its prompt behind the keyboard ("I'm sorry" scrolled off; only the field, Check and ä ö ü ß show) | in-progress | agent-0 |  |  |
 
 ## Locks
 

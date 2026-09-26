@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-09-26 12:23
+last-seen: 2026-09-26 12:27
 last-read: 490
 
 ## Now
 
-Nothing claimed.
+#554 bug(a11y): at 200 % text, L8's typed answer hides its prompt behind the keyboard ("I'm sorry" scrolled off; only the field, Check and ä ö ü ß show) — claimed 2026-09-26 12:27.
 
 ## Next
 
