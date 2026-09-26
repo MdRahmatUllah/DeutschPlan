@@ -1,3 +1,4 @@
+import 'package:deutschplan/core/adaptive/adaptive.dart';
 import 'package:deutschplan/core/components/dp_button.dart';
 import 'package:deutschplan/core/components/dp_chip.dart';
 import 'package:deutschplan/core/components/dp_pill.dart';
@@ -830,12 +831,15 @@ class _IconAction extends StatelessWidget {
     label: label,
     excludeSemantics: true,
     onTap: onTap,
-    child: GestureDetector(
-      onTap: onTap,
-      behavior: HitTestBehavior.opaque,
-      child: SizedBox.square(
-        dimension: 44,
-        child: Icon(icon, size: 24, color: colour),
+    child: AdaptiveTooltip(
+      message: label,
+      child: GestureDetector(
+        onTap: onTap,
+        behavior: HitTestBehavior.opaque,
+        child: SizedBox.square(
+          dimension: 44,
+          child: Icon(icon, size: 24, color: colour),
+        ),
       ),
     ),
   );

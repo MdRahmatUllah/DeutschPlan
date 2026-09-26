@@ -342,34 +342,37 @@ class AdaptiveBackButton extends StatelessWidget {
         // 200 % it is 48 dp, and a fixed 44 cut it.
         child: SizedBox(
           height: heightOf(context, label: label),
-          child: TextButton(
-            onPressed: onPressed,
-            style: TextButton.styleFrom(
-              foregroundColor: colour ?? tokens.color.link,
-              padding: EdgeInsets.symmetric(
-                horizontal: cupertinoChrome ? 8 : 12,
+          child: AdaptiveTooltip(
+            message: MaterialLocalizations.of(context).backButtonTooltip,
+            child: TextButton(
+              onPressed: onPressed,
+              style: TextButton.styleFrom(
+                foregroundColor: colour ?? tokens.color.link,
+                padding: EdgeInsets.symmetric(
+                  horizontal: cupertinoChrome ? 8 : 12,
+                ),
+                minimumSize: const Size(44, 44),
               ),
-              minimumSize: const Size(44, 44),
-            ),
-            child: ExcludeSemantics(
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  Icon(
-                    cupertinoChrome
-                        ? cupertino.CupertinoIcons.back
-                        : Icons.arrow_back,
-                    color: colour ?? tokens.color.link,
-                  ),
-                  if (cupertinoChrome && label != null) ...<Widget>[
-                    const SizedBox(width: 2),
-                    DpText(
-                      label!,
-                      role: DpTextRole.bodyLarge,
+              child: ExcludeSemantics(
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Icon(
+                      cupertinoChrome
+                          ? cupertino.CupertinoIcons.back
+                          : Icons.arrow_back,
                       color: colour ?? tokens.color.link,
                     ),
+                    if (cupertinoChrome && label != null) ...<Widget>[
+                      const SizedBox(width: 2),
+                      DpText(
+                        label!,
+                        role: DpTextRole.bodyLarge,
+                        color: colour ?? tokens.color.link,
+                      ),
+                    ],
                   ],
-                ],
+                ),
               ),
             ),
           ),
@@ -377,6 +380,37 @@ class AdaptiveBackButton extends StatelessWidget {
       ),
     );
   }
+}
+
+/// An icon-only control's name, shown on a long press (or a hover) under
+/// Material chrome, as a Material icon button's tooltip is (#162). Not under
+/// iOS chrome, which has no tooltips, and never read: the control carries
+/// the same words as its label.
+class AdaptiveTooltip extends StatelessWidget {
+  const AdaptiveTooltip({
+    required this.message,
+    required this.child,
+    super.key,
+    this.longPress = true,
+  });
+
+  /// None: no name to show, so no tooltip.
+  final String? message;
+  final Widget child;
+
+  /// False where a long press has its own job (a speaker's slow replay):
+  /// then only a hover shows it.
+  final bool longPress;
+
+  @override
+  Widget build(BuildContext context) => context.isCupertino || message == null
+      ? child
+      : Tooltip(
+          message: message,
+          excludeFromSemantics: true,
+          triggerMode: longPress ? null : TooltipTriggerMode.manual,
+          child: child,
+        );
 }
 
 /// The on/off control. Lagoon when on in both chromes; the sizes differ.

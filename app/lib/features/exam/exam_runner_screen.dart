@@ -439,16 +439,21 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
                   label: _flagged[_at] ? l10n.examRunFlagged : l10n.examRunFlag,
                   onTap: _toggleFlag,
                   excludeSemantics: true,
-                  child: GestureDetector(
-                    behavior: HitTestBehavior.opaque,
-                    onTap: _toggleFlag,
-                    child: SizedBox.square(
-                      dimension: 48,
-                      child: Icon(
-                        _flagged[_at] ? Icons.flag : Icons.outlined_flag,
-                        color: _flagged[_at]
-                            ? tokens.color.learning
-                            : tokens.color.ink,
+                  child: AdaptiveTooltip(
+                    message: _flagged[_at]
+                        ? l10n.examRunFlagged
+                        : l10n.examRunFlag,
+                    child: GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      onTap: _toggleFlag,
+                      child: SizedBox.square(
+                        dimension: 48,
+                        child: Icon(
+                          _flagged[_at] ? Icons.flag : Icons.outlined_flag,
+                          color: _flagged[_at]
+                              ? tokens.color.learning
+                              : tokens.color.ink,
+                        ),
                       ),
                     ),
                   ),
@@ -601,12 +606,15 @@ class _Band extends StatelessWidget {
                 label: l10n.examRunPause,
                 onTap: onPause,
                 excludeSemantics: true,
-                child: GestureDetector(
-                  behavior: HitTestBehavior.opaque,
-                  onTap: onPause,
-                  child: SizedBox.square(
-                    dimension: 48,
-                    child: Icon(Icons.pause, color: ink),
+                child: AdaptiveTooltip(
+                  message: l10n.examRunPause,
+                  child: GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onTap: onPause,
+                    child: SizedBox.square(
+                      dimension: 48,
+                      child: Icon(Icons.pause, color: ink),
+                    ),
                   ),
                 ),
               ),
@@ -656,12 +664,15 @@ class _Band extends StatelessWidget {
                 label: l10n.examNavOpen,
                 onTap: onNavigator,
                 excludeSemantics: true,
-                child: GestureDetector(
-                  behavior: HitTestBehavior.opaque,
-                  onTap: onNavigator,
-                  child: SizedBox.square(
-                    dimension: 48,
-                    child: Icon(Icons.grid_view_outlined, color: ink),
+                child: AdaptiveTooltip(
+                  message: l10n.examNavOpen,
+                  child: GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onTap: onNavigator,
+                    child: SizedBox.square(
+                      dimension: 48,
+                      child: Icon(Icons.grid_view_outlined, color: ink),
+                    ),
                   ),
                 ),
               ),

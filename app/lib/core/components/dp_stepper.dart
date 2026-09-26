@@ -148,20 +148,23 @@ class _RoundButton extends StatelessWidget {
       label: label,
       excludeSemantics: true,
       onTap: onTap,
-      child: GestureDetector(
-        onTap: onTap,
-        behavior: HitTestBehavior.opaque,
-        child: SizedBox.square(
-          dimension: tapTarget,
-          child: Center(
-            child: Container(
-              width: DpStepper.button,
-              height: DpStepper.button,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(color: colour, width: 1.5),
+      child: AdaptiveTooltip(
+        message: label,
+        child: GestureDetector(
+          onTap: onTap,
+          behavior: HitTestBehavior.opaque,
+          child: SizedBox.square(
+            dimension: tapTarget,
+            child: Center(
+              child: Container(
+                width: DpStepper.button,
+                height: DpStepper.button,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(color: colour, width: 1.5),
+                ),
+                child: Icon(icon, size: 18, color: colour),
               ),
-              child: Icon(icon, size: 18, color: colour),
             ),
           ),
         ),
@@ -190,17 +193,20 @@ class _PillButton extends StatelessWidget {
       label: label,
       excludeSemantics: true,
       onTap: onTap,
-      child: GestureDetector(
-        onTap: onTap,
-        behavior: HitTestBehavior.opaque,
-        child: SizedBox.square(
-          dimension: 44,
-          child: Icon(
-            icon,
-            size: 18,
-            color: onTap == null
-                ? tokens.color.textSecondary
-                : tokens.color.ink,
+      child: AdaptiveTooltip(
+        message: label,
+        child: GestureDetector(
+          onTap: onTap,
+          behavior: HitTestBehavior.opaque,
+          child: SizedBox.square(
+            dimension: 44,
+            child: Icon(
+              icon,
+              size: 18,
+              color: onTap == null
+                  ? tokens.color.textSecondary
+                  : tokens.color.ink,
+            ),
           ),
         ),
       ),

@@ -726,10 +726,17 @@ class _IconButton extends StatelessWidget {
   Widget build(BuildContext context) => Semantics(
     button: true,
     label: label,
-    child: GestureDetector(
-      onTap: onPressed,
-      behavior: HitTestBehavior.opaque,
-      child: SizedBox(width: 48, height: 48, child: Icon(icon, color: colour)),
+    child: AdaptiveTooltip(
+      message: label,
+      child: GestureDetector(
+        onTap: onPressed,
+        behavior: HitTestBehavior.opaque,
+        child: SizedBox(
+          width: 48,
+          height: 48,
+          child: Icon(icon, color: colour),
+        ),
+      ),
     ),
   );
 }

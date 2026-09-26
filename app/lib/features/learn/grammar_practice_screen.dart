@@ -312,12 +312,15 @@ class PracticeHeader extends StatelessWidget {
                 label: closeLabel ?? l10n.practiceClose,
                 onTap: onClose,
                 excludeSemantics: true,
-                child: GestureDetector(
-                  behavior: HitTestBehavior.opaque,
-                  onTap: onClose,
-                  child: SizedBox.square(
-                    dimension: 48,
-                    child: Icon(Icons.close, color: ink),
+                child: AdaptiveTooltip(
+                  message: closeLabel ?? l10n.practiceClose,
+                  child: GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onTap: onClose,
+                    child: SizedBox.square(
+                      dimension: 48,
+                      child: Icon(Icons.close, color: ink),
+                    ),
                   ),
                 ),
               ),

@@ -543,28 +543,14 @@ class _Header extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
-    final uid = member.uid;
-    void open() => WordRoute.open(context, uid!);
-    final headword = DpHeadword(
-      member.headword,
-      article: member.article,
-      role: DpTextRole.title,
-    );
     final content = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        // To a screen reader the headword is the button that opens the word:
-        // the header around it holds its own play button, so a label can't
-        // gather onto the header, which was read as a nameless button (#162).
-        if (uid == null)
-          headword
-        else
-          Semantics(
-            container: true,
-            button: true,
-            onTap: open,
-            child: headword,
-          ),
+        DpHeadword(
+          member.headword,
+          article: member.article,
+          role: DpTextRole.title,
+        ),
         const SizedBox(height: 6),
         Row(
           children: <Widget>[
@@ -577,12 +563,22 @@ class _Header extends ConsumerWidget {
         ),
       ],
     );
+    final uid = member.uid;
     if (uid == null) return content;
-    return GestureDetector(
-      behavior: HitTestBehavior.opaque,
+    void open() => WordRoute.open(context, uid);
+    // Its own node: the play button inside is one too, and without a
+    // container the headword's label never reached this button, which was
+    // read as nameless (#162).
+    return Semantics(
+      container: true,
+      button: true,
       onTap: open,
-      excludeFromSemantics: true,
-      child: content,
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: open,
+        excludeFromSemantics: true,
+        child: content,
+      ),
     );
   }
 }

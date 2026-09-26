@@ -1,3 +1,4 @@
+import 'package:deutschplan/core/adaptive/adaptive.dart';
 import 'package:deutschplan/core/theme/dp_tokens.dart';
 import 'package:material_ui/material_ui.dart';
 
@@ -68,27 +69,31 @@ class DpSpeakerButton extends StatelessWidget {
       onTap: _enabled ? onPressed : null,
       onLongPress: _enabled ? onLongPress : null,
       child: ExcludeSemantics(
-        child: GestureDetector(
-          onTap: _enabled ? onPressed : null,
-          onLongPress: _enabled ? onLongPress : null,
-          behavior: HitTestBehavior.opaque,
-          child: Container(
-            width: size,
-            height: size,
-            decoration: BoxDecoration(
-              color: _mute ? tokens.surface.muted : tokens.color.primary,
-              shape: BoxShape.circle,
-              border: Border.all(color: tokens.color.ink, width: 2),
-              boxShadow: tokens.isGlass
-                  ? const <BoxShadow>[]
-                  : <BoxShadow>[
-                      BoxShadow(
-                        color: tokens.surface.shadow,
-                        offset: tokens.surface.shadowOffset,
-                      ),
-                    ],
+        child: AdaptiveTooltip(
+          message: semanticLabel,
+          longPress: onLongPress == null,
+          child: GestureDetector(
+            onTap: _enabled ? onPressed : null,
+            onLongPress: _enabled ? onLongPress : null,
+            behavior: HitTestBehavior.opaque,
+            child: Container(
+              width: size,
+              height: size,
+              decoration: BoxDecoration(
+                color: _mute ? tokens.surface.muted : tokens.color.primary,
+                shape: BoxShape.circle,
+                border: Border.all(color: tokens.color.ink, width: 2),
+                boxShadow: tokens.isGlass
+                    ? const <BoxShadow>[]
+                    : <BoxShadow>[
+                        BoxShadow(
+                          color: tokens.surface.shadow,
+                          offset: tokens.surface.shadowOffset,
+                        ),
+                      ],
+              ),
+              child: Center(child: _content(tokens)),
             ),
-            child: Center(child: _content(tokens)),
           ),
         ),
       ),
