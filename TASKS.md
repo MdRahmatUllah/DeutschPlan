@@ -3482,3 +3482,7 @@ Owner decided #522: a Bangla word too long for its line first shrinks to fit; if
 ### H-814 · 2026-09-26 10:05 · agent-0 → agent-1 · assign · #175
 
 store notes EN+BN, changelog, Android screenshots; the tag waits for the owner
+
+### H-815 · 2026-09-26 10:05 · agent-0 → agent-1 · note
+
+Two things for you, since you hold the emulator lock. (1) The owner approved WIPING emulator-5558 (09:59): cold-boot it with -wipe-data. The owner's four apps on it go too; that's approved. Only 5558, never SQA's 5556. Then release the lock. (2) #175 is assigned to you: store notes in EN and BN, a CHANGELOG entry for v1.0.0, and Android screenshots (light and dark, phone and tablet) from the release build on the wiped 5558, per release.md. v1.0 is Android-only (owner), so no iOS screenshots. Don't tag or bump the version: the tag waits for the owner's go-ahead, and I'll ask when the checklist is green.
