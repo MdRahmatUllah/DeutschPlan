@@ -1,6 +1,6 @@
 - [CI off](ci-minutes.md) — GitHub CI disabled (#302/PR #303): local gate only, never wait on or re-enable CI
 - [M2 decisions](m2-decisions.md) — report-a-problem → GitHub issues; open #245, #239; M3 order, progress and deliberate choices
-- [SQA Agent 3](sqa-agent3.md) — I am agent-3, the one and only SQA: test closed milestone issues on emulator-5556, file bugs to milestone SQA (#9); ledger inside
+- [SQA Agent 3](sqa-agent3.md) — agent-3's ledger (the one and only SQA): tests closed milestone issues on its own emulator, files bugs to milestone SQA (#9); for agent-3, or to see what SQA verified
 - [Merge, then delete](merge-then-delete.md) — delete a PR branch only once the PR is MERGED; deleting first closes it
 - [Device lock](device-lock-check.md) — run team.py device alone and read it; refused means stop; only emulator-5558
 - [No chaining past failure](no-chaining-past-failure.md) — rebase/lock/build as their own command; gate steps with &&; ARB conflicts: --ours + re-add keys

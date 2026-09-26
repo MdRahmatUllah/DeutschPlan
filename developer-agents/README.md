@@ -17,7 +17,7 @@ device, read this page first**, then the folder of the identity you take.
 
 | | PRs merged | Reviews for others | Notes |
 |---|---|---|---|
-| Before the team (M0–M3) | 101 (#176–#279) | a self-review pass on each | one Claude Code session, working alone; it went on as agent-0 (inferred) |
+| Before the team (M0–M3) | 102 (#176–#279, and #285) | a self-review pass on each | one Claude Code session, working alone; it went on as agent-0 (inferred) |
 | agent-0 | 66 | about 57 | also 9 epics, milestones M4–M7, and both release tags |
 | agent-1 | 65 | about 49 | 14 of its issues were SQA bugs |
 | agent-2 | 57 | about 54 | ran the milestone and release gates |
@@ -39,8 +39,8 @@ does (see "Restore the memory" below).
 ```mermaid
 flowchart LR
   owner([Owner]) -- decisions, go/no-go --> a0[agent-0 · lead]
-  a0 -- assign, review, merge --> a1[agent-1 · lane B]
-  a0 -- assign, review, merge --> a2[agent-2 · lane C]
+  a0 -- assign, review --> a1[agent-1 · lane B]
+  a0 -- assign, review --> a2[agent-2 · lane C]
   a3[agent-3 · SQA] -- bugs to milestone SQA --> gh[(GitHub issues + PRs)]
   a0 -- triage SQA bugs --> a1 & a2
   a1 & a2 & a0 -- one issue, one PR --> gh
@@ -54,8 +54,9 @@ flowchart LR
   (`Closes #N`), squash merge. Every agent acts as the owner's account, so
   each PR body starts with `**Agent-N**` on line 1 to say who wrote it.
 - **The emulators**: the developers share `emulator-5558` under a local lock
-  (`team.py device`). SQA has its own (`emulator-5556` today; `5554` is also
-  reserved for it). Nobody touches another agent's emulator.
+  (`team.py device`). SQA has its own: `emulator-5554`, which `tools/device.py`
+  reserves for it (on the first machine it ran on 5556). Nobody touches
+  another agent's emulator.
 - **CI is off** (the owner's call, #302). The local gate is the only check.
 
 The full procedure is [`ONBOARDING.md`](../ONBOARDING.md); the one-page
@@ -69,11 +70,11 @@ first machine, `F:/appDevs`). The tools find everything relative to the main
 checkout, so any `<root>` works.
 
 1. **Install.**
-   - Windows 11 with Git Bash (PowerShell where the docs say so). macOS or Linux works for everything except where a doc names a Windows path.
-   - Flutter **3.47.5** / Dart 3.13.4 on `PATH` (the version in `.fvmrc`). There is no `fvm` and no `make`.
+   - Windows 11 with Git Bash (PowerShell where the docs say so). macOS or Linux work too, but the goldens are verified on Windows only.
+   - Flutter **3.47.5** / Dart 3.13.4 on `PATH` (the version in `.fvmrc`; fvm is optional). There is no `make`.
    - Python 3.10+ with `pip install -r tools/requirements.txt` (openpyxl, PyYAML, pytest), plus `pip install Pillow` for `tools/artboard.py`.
-   - The Android SDK (platform-tools, emulator, an API 36 system image), and `ANDROID_HOME` if it isn't under `%LOCALAPPDATA%/Android/Sdk`.
-   - `gh`, logged in as `rahmat-ullah`, and Claude Code.
+   - The Android SDK (platform-tools, emulator, an API 36 x86_64 system image), with `ANDROID_HOME` set if it isn't under `%LOCALAPPDATA%/Android/Sdk`, and `<sdk>/emulator` and `<sdk>/platform-tools` on `PATH`.
+   - `gh`, logged in as `rahmat-ullah` (`gh auth login`, then `gh auth setup-git` so HTTPS pushes use it), and Claude Code.
 2. **Clone and set the identity** (the owner's rule: everything that reaches
    GitHub is authored as the owner):
    ```bash
@@ -84,13 +85,15 @@ checkout, so any `<root>` works.
    ```
    The workbooks in `data/` are not in git. Copy them from the old machine
    only if you will change content.
-3. **Restore the memory.** Start Claude Code once in `<root>/deutschplan`. Its
-   system prompt names the memory folder ("You have a persistent file-based
-   memory at …"), usually `~/.claude/projects/<root path, with : \ / as ->/memory/`
-   (for `F:\appDevs\deutschplan` that is `F--appDevs-deutschplan`). Copy the
-   shared memory into it:
+3. **Restore the memory.** Start Claude Code once in `<root>/deutschplan` and
+   ask the session where its memory folder is (its system prompt names it). It
+   is `~/.claude/projects/<mangled>/memory/`, where `<mangled>` is the main
+   checkout's full path with every character that is not a letter or digit
+   replaced by `-` (for `F:\appDevs\deutschplan`, `F--appDevs-deutschplan`).
+   Copy the shared memory into it:
    ```bash
-   cp developer-agents/shared-memory/*.md ~/.claude/projects/<mangled-path>/memory/
+   mkdir -p ~/.claude/projects/<mangled>/memory
+   cp developer-agents/shared-memory/*.md ~/.claude/projects/<mangled>/memory/
    ```
    Every session started in the main checkout then loads the index
    (`MEMORY.md`) automatically.
@@ -102,12 +105,17 @@ checkout, so any `<root>` works.
    ```
    Then run the code generation sequence in it (`ONBOARDING.md` §2, "Your
    worktree"). Generated code is not committed (ADR 17).
-5. **Emulators.** Create two AVDs (API 36). Start them on fixed ports so the
-   serials match the rules the tools enforce:
+5. **Emulators.** Create two AVDs, then start them on fixed ports so the
+   serials match the rules `tools/device.py` enforces:
    ```bash
-   emulator -avd <sqa-avd> -port 5556      # agent-3's (tools/device.py also reserves 5554 for SQA)
-   emulator -avd <dev-avd> -port 5558      # the developers', tools/device.py's default
+   sdkmanager "system-images;android-36;google_apis;x86_64"
+   avdmanager create avd -n dp-sqa -k "system-images;android-36;google_apis;x86_64"
+   avdmanager create avd -n dp-dev -k "system-images;android-36;google_apis;x86_64"
+   emulator -avd dp-sqa -port 5554      # agent-3's: device.py's SQA_SERIAL, refused to anyone else
+   emulator -avd dp-dev -port 5558      # the developers': device.py's default
    ```
+   (On the first machine SQA's emulator ended up on 5556, so agent-3's memory
+   says 5556 and passes `--serial`; on a new machine use 5554.)
    Device checks use a release x64 APK (`flutter build apk --release --target-platform android-x64`).
 6. **Start the sessions.** Open one Claude Code session per agent, each in
    `<root>/deutschplan` (the session starts in the main checkout, and the
@@ -151,10 +159,15 @@ These are binding. Each links to the memory that records why.
 The board changes all day; this folder is refreshed by hand when it matters:
 at the end of a milestone, at a release, or before moving to another machine.
 
-1. Copy the local memory in, then **redact** it (the repo is public: no phone
-   serials, no other people's apps or files, no keys, no personal paths):
+1. Copy the local memory to a scratch folder first, never straight into the
+   repo, and **redact** it there (the repo is public: no phone serials, no
+   other people's apps or files, no keys, no personal paths). Strip the
+   `originSessionId`, `modified` and `node_type` frontmatter lines, then copy
+   it in and check before `git add`:
    ```bash
-   cp ~/.claude/projects/<mangled-path>/memory/*.md developer-agents/shared-memory/
+   cp ~/.claude/projects/<mangled>/memory/*.md "$TMP/mem/"      # redact here
+   cp "$TMP/mem/"*.md developer-agents/shared-memory/
+   grep -rnE "R5C|SM-[A-Z]|C:/Users|originSessionId|@[a-z]+\.(com|net)" developer-agents/   # only the owner's email may show
    ```
 2. Update each `agent-N/memory.md` "Board memory" section from
    `<root>/dp-team/agent-N/agents/agent-N.md`.

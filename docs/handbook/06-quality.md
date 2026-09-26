@@ -81,7 +81,8 @@ rule is broken, so the rules don't depend on review:
 6. Nothing writes to the attached course.
 7. No I/O inside a widget's `build()` (FR-S1-01).
 8. The keepAlive providers are exactly those `state-management.md` lists, the
-   doc's four core ones are all there, and no repository is kept alive.
+   doc's four core ones are all there, and the word and plan repositories
+   are not kept alive.
 9. Navigation goes through the typed routes, their helpers and
    `context.jumpToTab`: no inline paths.
 10. `runApp` is handed a `ProviderScope`.
@@ -329,8 +330,8 @@ Dart and Python search keys stay byte-identical.
 
 A dedicated agent, agent-3, is the project's SQA engineer. It doesn't write
 features. It takes every *closed* milestone issue, oldest first, and tests it
-on its own emulator (`emulator-5556` today; `emulator-5554` is also reserved
-for it) with a fresh release x64 build of `main`. What it finds becomes a
+on its own emulator (`emulator-5554`, which `tools/device.py` reserves for
+it; on the first machine it ran on `emulator-5556`) with a fresh release x64 build of `main`. What it finds becomes a
 GitHub issue in the **SQA milestone (#9)**, with steps to reproduce, expected
 and actual behaviour, and links to the source issue and PR, and a priority.
 The developer agents fix them, and SQA verifies each fix once it merges,

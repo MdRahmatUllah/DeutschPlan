@@ -90,7 +90,7 @@ step. *Skip* (from page 3) applies the defaults for the rest.
 | 1 Welcome | — (three promises: offline, 12 exam-structured steps, progress stays on the phone) |
 | 2 Meaning language | English, বাংলা or Both. This also sets the app's language, and turns the Bangla pronunciation line on for বাংলা or Both |
 | 3 Starting point | One of the 12 steps (A1.1 pre-selected), or *Not sure? Take a 3-minute check* (S3) |
-| 4 Daily pace | New words a day (3–30; presets Relaxed 5, Steady 7, Intensive 15) with a live estimate ("A1.1 takes about 69 days at 7 words a day"), revisions a day (10), and the study days |
+| 4 Daily pace | New words a day (3–30; presets Relaxed 5, Steady 7, Intensive 15) with a live estimate ("A1.1 takes about 91 days at 7 words a day", from `courseDays`), revisions a day (10), and the study days |
 | 5 Reminder & voice | A daily reminder (off by default, 19:30) and the optional Supertonic voice: *Download now* or *Later*, with a "Guten Tag!" sample in the phone's voice |
 
 Finishing opens Today with the first day planned and a one-time coach mark
@@ -343,8 +343,8 @@ words and grammar, and say that they are not official Goethe or telc papers
   are used, a live word count against the level's minimum (A1 30 up to C2
   250) and the connectors found. The app gives a point for 6+ target words
   and a point for the minimum length; the learner's two rubric ticks (task
-  covered, structure) add half a point each. The task counts out of 4, so it
-  can earn 3 of them (BR-EXAM-03 against FR-L12W-03: a spec gap).
+  covered, structure) add a point each, so the task is worth 4 (BR-EXAM-03).
+  Until #597 the ticks were worth half a point and Writing topped out at 3.
 - **Speaking:** a spoken task of 60, 90 or 120 seconds by level, recorded on
   the phone (one retake), played back, and self-assessed on four rubric
   points. The recording never leaves the phone. If the microphone is

@@ -21,7 +21,7 @@ ships on Android only; the iOS pipeline waits for a Mac.
 | OS | Windows 11, commands in Git Bash (PowerShell where a doc says so). macOS or Linux work for everything but the goldens, which are verified on Windows only |
 | Flutter | 3.47.5 with Dart 3.13.4, on `PATH`. `.fvmrc` pins it; check `flutter --version` matches. fvm is optional (`getting-started.md`, "Using fvm") |
 | Python | 3.10+ with `pip install -r tools/requirements.txt` (openpyxl, PyYAML, pytest). `tools/artboard.py` also needs Pillow; `tools/render_design.py` needs Playwright |
-| Android | The Android SDK with API 37 (compileSdk and targetSdk), platform-tools, the emulator and an API 36 system image. The NDK is Flutter's own. The build machine's SDK is at `C:/Users/User/AppData/Local/Android/Sdk` |
+| Android | The Android SDK with API 37 (compileSdk and targetSdk), platform-tools, the emulator and an API 36 system image. The NDK is Flutter's own. On Windows the SDK is usually at `%LOCALAPPDATA%/Android/Sdk` (else set `ANDROID_HOME`); put its `emulator` and `platform-tools` folders on `PATH` |
 | iOS | Xcode 16+ with an iOS 16 simulator, on a Mac only. Not needed for v1.0 |
 | GitHub | `gh`, logged in as `rahmat-ullah` |
 | Memory | About 32 GB, often only ~4 GB free. A release build starts a Gradle daemon with an 8 GB heap (`org.gradle.jvmargs=-Xmx8G`), so build APKs one at a time, under the device lock |
@@ -48,7 +48,7 @@ git fetch -q origin
 git worktree add --detach ../dp-wt/agent-N origin/main
 cd ../dp-wt/agent-N
 python tools/team.py agents           # pick an idle identity
-python tools/team.py join agent-N     # clones the board to ../dp-team/agent-N
+python tools/team.py join agent-N     # clones the board to <root>/dp-team/agent-N
 ```
 
 **Generate the code.** Generated code isn't committed (ADR 17), so a new
@@ -75,14 +75,14 @@ serials match what the tools enforce:
 
 ```bash
 emulator -avd <dev-avd> -port 5558     # the developers', tools/device.py's default
-emulator -avd <sqa-avd> -port 5556     # the SQA agent's
+emulator -avd <sqa-avd> -port 5554     # the SQA agent's: tools/device.py's SQA_SERIAL
 ```
 
 | Serial | Who | Rule |
 |---|---|---|
 | `emulator-5558` | the developer agents | Shared under the local device lock: `python tools/team.py device` before any APK build or device check, `--release` after. The lock breaks after 45 minutes |
-| `emulator-5556` | agent-3 (SQA) | Its test device, with learner data kept between passes. Nobody else installs on it |
-| `emulator-5554` | agent-3 (SQA) | Reserved for SQA by `tools/device.py` (`SQA_SERIAL`), which refuses it to anyone else |
+| `emulator-5554` | agent-3 (SQA) | Reserved for SQA by `tools/device.py` (`SQA_SERIAL`): agent-3's default, refused to anyone else. Use it on a new machine |
+| `emulator-5556` | agent-3 (SQA), first machine only | Where SQA's emulator ended up on the first machine, with learner data kept between passes; agent-3 names it with `--serial emulator-5556`. Nobody else installs on it |
 
 A plain `adb` call names its device (`adb -s emulator-5558 …`), since several
 emulators run at once. Leave any other running emulator alone.

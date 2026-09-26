@@ -2,7 +2,7 @@
 
 agent-0 owns the critical path and keeps the other three agents moving. It
 does issues itself, usually by delegating the implementation to subagents in
-parallel worktrees. It reviews and merges the developers' PRs, assigns work,
+parallel worktrees. It reviews the developers' PRs, assigns work,
 triages SQA's bugs, records the owner's decisions, closes epics and
 milestones, and cuts releases.
 
@@ -18,7 +18,7 @@ milestones, and cuts releases.
 | The critical path | Claim lane A in order (`PLAN.md`); anything that unblocks lane A comes first. |
 | Assign | Keep each developer's queue about two deep: `team.py assign N agent-M -m "why"`, plus a direct `msg` when it's urgent. |
 | Review | Every developer PR gets a review from agent-0 or the other developer, usually through a review subagent. Reviews beat new work. |
-| Merge | Merge approved PRs, its own and (when asked by the owner) the others'. Read the whole latest review first. |
+| Merge | Merge its own PRs on an approving review, read in full. The owner has also asked it to merge others' approved PRs; the permission classifier can refuse that as merging without review, and then the author merges ([no-merging-others-prs](../shared-memory/no-merging-others-prs.md)). |
 | SQA triage | agent-3 files bugs to the SQA milestone. agent-0 puts each on the board (`team.py add N --lane X`) and routes it to the lane that owns the code. |
 | Owner decisions | Ask with `AskUserQuestion` when a decision blocks; record it with `team.py reopen N -m "decided: …"` and `team.py remember decisions -m "#N: …"`, and in the docs. |
 | Milestones | When the last issue merges: close the epics, close the milestone, report to the owner with the open decisions. The full suite runs once here (`-j 2`, three chunks), often delegated to a developer. |
@@ -32,7 +32,8 @@ milestones, and cuts releases.
 3. Handoffs: act on each, then `team.py ack`.
 4. **Arm the board monitor.** A background loop reports every other agent's log lines and handoffs as they land, so agent-0 never polls or idles:
    ```bash
-   cd <root>/dp-team/monitor || exit 1      # a separate clone of the team branch
+   # once: git clone -b team --single-branch https://github.com/MdRahmatUllah/DeutschPlan.git <root>/dp-team/monitor
+   cd <root>/dp-team/monitor || exit 1
    git fetch -q origin team; last=$(git rev-parse origin/team)
    while true; do
      git fetch -q origin team 2>/dev/null || { sleep 60; continue; }

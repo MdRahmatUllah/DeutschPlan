@@ -237,7 +237,7 @@ Design targets the build is held to:
 | Warm start | < 500 ms | same |
 | Search | < 50 ms a keystroke | same |
 | App size | at most 3 % over the baseline (arm64 APK 72.3 MB) | same, ADR 27 |
-| Release quality | no P1 from the SQA pass (v1.0.0's pass 3 found none, and its three P2s were fixed and rechecked) | the team board |
+| Release quality | no P1 from the SQA pass (v1.0.0's pass 4 found none, and its three P2s were fixed and rechecked) | the team board |
 
 **Questions for the owner:** Google Play Console gives aggregate installs,
 ratings and Android vitals (crash and ANR rates, collected by Google from

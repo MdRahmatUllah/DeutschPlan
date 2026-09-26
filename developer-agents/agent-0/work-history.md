@@ -177,7 +177,7 @@ P1s. It also fixed the developer-filed follow-ups kept in the SQA milestone.
   - On #385, #414 and #429 it is marked as a subagent review.
   - These reviews were not rubber stamps. #414's run of `compare_set.dart` over all 60 real sets came back "changes needed", and so did #429's review.
 - **Probing against the real course.** It routinely checked a change
-  against all 5,594 words or every topic-day, not just the fixtures:
+  against the whole course or every topic-day, not just the fixtures:
   - #291's benchmark;
   - #403's regex patterns probed over the whole course;
   - reviews that found a crash on 3 of 21,840 topic-days (#386) and made-up options in #416.

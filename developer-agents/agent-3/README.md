@@ -8,7 +8,7 @@ the device. It writes no product code.
 
 - **Worktree:** `<root>/dp-wt/agent-3`, detached on `origin/main`. It runs the gen sequence after each fetch. `app/test/sqa/` there holds **uncommitted** probe tests; they are never committed.
 - **Board clone:** `<root>/dp-team/agent-3`.
-- **Device:** `emulator-5556` (AVD `flutter_emulator`, API 36, 1080 × 1920). `tools/device.py` also reserves `emulator-5554` for SQA. It never touches the developers' `emulator-5558`, and doesn't take their device lock.
+- **Device:** on a new machine, `emulator-5554`, which `tools/device.py` reserves for SQA (agent-3's default, refused to anyone else). On the first machine it was `emulator-5556` (AVD `flutter_emulator`, API 36, 1080 × 1920), always named with `--serial emulator-5556`. It never touches the developers' `emulator-5558`, and doesn't take their device lock.
 - **Memory:** [`memory.md`](memory.md); the full ledger is [`../shared-memory/sqa-agent3.md`](../shared-memory/sqa-agent3.md). **What it found:** [`work-history.md`](work-history.md).
 
 ## How a pass runs
@@ -58,6 +58,7 @@ the device. It writes no product code.
 ## The passes so far
 
 - **Pass 1** (2026-09-24/25): every closed M0–M6 issue; about two dozen bugs filed (22 on the board, 23 in its own count).
-- **Pass 2** (2026-09-25, at `3bbd5e5`): every closed milestone issue and SQA fix.
-- **Pass 3** (2026-09-26, before v1.0.0): the M7 issues; its re-checks gated the v1.0.0 tag.
+- **Pass 2** (2026-09-25, at `3bbd5e5`): newly closed issues and the SQA fixes; 18 fixes verified, 6 new issues.
+- **Pass 3** (2026-09-25/26): M5–M7's issues as they closed, almost in real time.
+- **Pass 4** (2026-09-26, before v1.0.0): about 30 closed issues on a release build; its re-checks gated the v1.0.0 tag.
 - **Open:** the 1.0.1 pass (see [`memory.md`](memory.md)).

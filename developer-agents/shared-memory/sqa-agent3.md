@@ -5,10 +5,10 @@ metadata:
   type: project
 ---
 
-**Role (user, 2026-09-24):** I am Agent 3, the Flutter SQA engineer. Test every *closed* issue of the milestones (M0→M7, oldest issue number first) on `emulator-5556` (AVD `flutter_emulator`, API 36, 1080x1920; NOT the team's shared 5554). Bugs/gaps → a GitHub issue in milestone **SQA** (milestone #9, https://github.com/MdRahmatUllah/DeutschPlan/milestone/9) with details, steps to reproduce, expected/actual, and links to the source issue + PR. Other agents fix them. Also report how the agents are working.
+**Role (user, 2026-09-24):** I am Agent 3, the Flutter SQA engineer. Test every *closed* issue of the milestones (M0→M7, oldest issue number first) on `emulator-5556` (AVD `flutter_emulator`, API 36, 1080x1920; on a new machine use 5554, which tools/device.py reserves for SQA). Bugs/gaps → a GitHub issue in milestone **SQA** (milestone #9, https://github.com/MdRahmatUllah/DeutschPlan/milestone/9) with details, steps to reproduce, expected/actual, and links to the source issue + PR. Other agents fix them. Also report how the agents are working.
 
 **Setup:** worktree `F:/appDevs/dp-wt/agent-3` (detached origin/main; run the gen sequence after each fetch), board identity `agent-3` (`python tools/team.py join agent-3`, board clone `F:/appDevs/dp-team/agent-3`). adb at `%LOCALAPPDATA%/Android/Sdk/platform-tools`; always `adb -s emulator-5556` / `tools/device.py --serial emulator-5556`. Release x64 APK only. RAM is tight (~2 GB free): build one APK at a time.
-The team's device lock (`team.py device`) guards 5554, not 5556: I don't take it.
+The team's device lock (`team.py device`) guards the developers' 5558, not SQA's emulator: I don't take it.
 
 **Filing:** `gh issue create --milestone SQA --label bug,P? ...`, then `team.py add <N> --lane X` and `team.py msg all --kind note`. Title: `bug(<area>): <symptom> (found in #<src>)`.
 

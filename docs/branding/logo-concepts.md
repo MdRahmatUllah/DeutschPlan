@@ -14,8 +14,8 @@ the current mark: a **"D" in a Sun speech bubble**, 120 × 92 with a 28 corner
 radius, a 3 px ink outline and a 3 px hard offset shadow, on a **Lagoon**
 screen, with the wordmark in Inter Bold. That "Paper & Ink" style is the
 app's own: solid saturated fills, ink outlines, hard shadows, no gradients.
-Duolingo, Babbel, Busuu and Memrise all use soft, rounded, gradient-free or
-gradient-heavy marks with no outline, so it also sets the app apart. The
+The big language apps' marks are soft and rounded, with no ink outline (a
+general impression, not a survey), so it also sets the app apart. The
 concepts keep it and drop the "D", which only works for German.
 
 **Today the app ships Flutter's default launcher icon** (`app/android/app/src/main/res/mipmap-*/ic_launcher.png`). The logo work fills that gap, and it must land before the first Play upload.
@@ -49,8 +49,8 @@ steps are the course (the app calls its levels "steps", ধাপ in Bangla).
 **Construction** (on the 256 grid):
 - **The bubble:** a rounded rectangle 200 × 150 with a 44 corner radius, and a tail at the bottom left pointing down-left, as in today's mark.
 - **The outline and shadow:** a 7 px ink outline with round joins, and the same shape offset by 7, 7 in ink as the hard shadow.
-- **The staircase:** three steps of equal width, 42 wide, rising 26–28 each, sitting on a common base. The last step (48 wide, full height) is Lagoon, outlined in ink.
-- **Proportion:** the staircase fills about 55 % of the bubble's width and is centred slightly low, so the bubble reads first.
+- **The staircase:** three steps on a common base, rising left to right: two ink steps 42 wide and 32 and 58 high, then the top step, the goal, 48 wide and 86 high, in Lagoon with an ink outline. Each rise is 26–32.
+- **Proportion:** the staircase spans about 66 % of the bubble's width and is centred slightly low, so the bubble reads first.
 
 **Why it's first.**
 - It keeps the equity the app already has (Sun bubble, ink outline, hard shadow, Lagoon ground) and drops the one German-specific element.

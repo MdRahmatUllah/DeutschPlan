@@ -168,7 +168,7 @@ The target is WCAG 2.2 AA ([`accessibility-performance.md`](../01-architecture/a
 |---|---|
 | Course steps | 12 (A1.1 … C2.2), in 6 CEFR levels |
 | Words and phrases | 5,593: A1 1,316 · A2 1,038 · B1 379 · B2 1,219 · C1 963 · C2 678 |
-| Example sentences | 11,186 (every word has at least one) |
+| Example sentences | 11,186 (two for every word) |
 | Grammar topics | 182: 10 or 11 per step from A1.1 to B1.2, 20 per step from B2.1 |
 | Word categories | 159 |
 | Interference tips | 622, in English and Bangla |
@@ -292,7 +292,6 @@ or dark mode, and draws the glass theme as its opaque fallback.
 | **No translation** | Hy-MT is off in every build (ADR 9); the translator (#154) and a replacement (#533) wait on the owner |
 | **English-only parts of the course** | Example translations, grammar rules and category names |
 | **Self-assessed speaking and writing** | No speech recognition; the app checks length, target words and connectors, and the learner ticks the rubric |
-| **Writing earns at most 3 of its 4 points** | The spec gives Writing 4 points (BR-EXAM-03) but a rubric of two half-point ticks (FR-L12W-03), and the code follows both, so a perfect paper is 47 of 48 |
 | **Thin B1** | 379 words, against 1,038 at A2 and 1,219 at B2; mock exams at A1.1–B1.2 reuse a grammar topic or two |
 | **One course, one learner per phone** | No profiles, no sync; progress moves by export file |
 | **Supertonic's first sound for a new word** | About 1 s, over the 300 ms budget, unless prepared ahead |

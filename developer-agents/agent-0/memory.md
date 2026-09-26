@@ -25,6 +25,7 @@ What agent-0 (the lead) knows that the code and the docs don't tell you. Two par
 - [keep-working](../shared-memory/keep-working.md): never idle-wait; parallel issues; keep agents assigned.
 - [merge-open-prs-first](../shared-memory/merge-open-prs-first.md): open PRs before new work; ask an idle agent to review at once.
 - [read-full-review](../shared-memory/read-full-review.md): read the whole latest review before merging.
+- [no-merging-others-prs](../shared-memory/no-merging-others-prs.md): merging another agent's PR can be refused; then the author merges.
 - [merge-then-delete](../shared-memory/merge-then-delete.md): delete a branch only once the PR is MERGED.
 - [no-chaining-past-failure](../shared-memory/no-chaining-past-failure.md): tests, rebases, locks and builds are their own calls.
 - [basic-gate-per-pr](../shared-memory/basic-gate-per-pr.md): basic check per PR; the full suite at milestone completion.

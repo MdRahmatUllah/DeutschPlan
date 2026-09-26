@@ -30,8 +30,8 @@ without the internet.
 what to do next, and you can see how far you've come.
 
 **Who it is for.**
-- First, Bangla speakers (Bangladesh, West Bengal, the diaspora) who need German for study, work, training or family reunion. Most need A1, B1 or B2 exam results (Goethe, telc), on mid-range Android phones, often with patchy or costly data.
-- Then English speakers, and later Hindi, Urdu and Arabic speakers, learning German and other languages.
+- First, Bangla speakers (Bangladesh, West Bengal, the diaspora) who need German for study, work, training or family reunion. Many need A1, B1 or B2 exam results (Goethe, telc), on mid-range Android phones, often with patchy or costly data. (This picture is an assumption to confirm with real learners.)
+- Then English speakers, and later speakers of other languages (Hindi, Urdu and Arabic are examples here, not decisions), learning German and other languages.
 
 **What sets it apart** (from [`../handbook/01-business.md`](../handbook/01-business.md)):
 
@@ -40,7 +40,7 @@ what to do next, and you can see how far you've come.
 | **A plan, not a game** | 12 steps from A1.1 to C2.2, a daily plan, FSRS revision, mock exams per step: structure over streak-chasing. |
 | **In your language** | Every meaning in the learner's language, pronunciation in their script, the whole app in their language. |
 | **Yours alone** | Offline, no account, no ads, no analytics. Progress stays on the phone. |
-| **Exam-ready** | Mock exams with all five sections, including writing and speaking, and results by section. |
+| **Exam-ready** | Mock exams covering five skills (vocabulary, grammar, listening, writing, speaking), with results by section. |
 | **For everyone** | Text up to 200 %, screen readers, light, dark and glass themes, checked on every screen. |
 
 **Personality.** A calm, patient tutor who takes you seriously: clear, warm,
@@ -61,13 +61,13 @@ app's own copy already is.
    - Arabic has no /p/ ("path" drifts to "bath"), and "th" becomes s or t.
    - Hindi and Urdu are close to Bangla here.
 4. **No bad meanings.** Checked in Bangla, Hindi, Urdu, Arabic, German, Spanish and French.
-5. **Short.** At most 10 letters and 3 syllables, so it fits under a launcher icon (about 12 characters show) and in Play's 30-character title with a descriptor.
+5. **Short.** Ideally at most 10 letters and 3 syllables, so it fits under a launcher icon (about 12 characters show) and in Play's 30-character title with a descriptor.
 6. **Free to use.** No same-field app, company or trademark on it, and a usable domain (.com or .app).
 7. **Fits the product.** "Step", "ladder", "plan", "path" or "way" match the 12-step course and the daily plan. **"Step" also matches the app's own word** for a level: *step*, ধাপ in Bangla.
 
 ## What the check found
 
-On 2026-09-26, 48 names were checked in two rounds of web searches: the Play
+On 2026-09-26, 47 names were checked in two rounds of web searches: the Play
 Store, the App Store (through the web), companies and trademarks in the
 field, the .com and .app domains, and how each sounds in Bangla, Hindi, Urdu,
 Arabic and German. **This is not a trademark clearance** (see "Before choosing").

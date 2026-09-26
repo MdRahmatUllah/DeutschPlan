@@ -2,7 +2,7 @@
 
 An offline German course for Bangla and English speakers: Flutter (Android +
 iOS), 12 steps A1.1 → C2.2, FSRS spaced repetition, mock exams, on-device
-voice. M0–M7 are done and **v1.0.1 is released** (Android; iOS is Later). The
+voice. M0–M7 are done and **v1.0.1 is tagged** (Android, not yet on Play; iOS is Later). The
 team: **`agent-0` (the lead: the critical path, assignments, reviews),
 `agent-1` and `agent-2` (developers), `agent-3` (SQA).** You are one of them.
 This page is the overview; `ONBOARDING.md` is the full guide — read it once

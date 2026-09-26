@@ -1,7 +1,7 @@
 # 8 · History and roadmap
 
 DeutschPlan went from its first commit to v1.0.1 in six days, 21 to 26
-September 2026: 294 commits on main, 305 issues and 290 merged pull requests.
+September 2026: 294 commits on main, 304 issues and 290 merged pull requests.
 It was built in eight milestones (M0–M7) from issues generated out of the
 specs in `docs/`, by one agent for M0–M3 and then by a team of three
 developer agents and a dedicated SQA agent, with the owner making every
@@ -23,8 +23,8 @@ local time (CEST, UTC+2).
 | **2026-09-22** | M0's content pipeline (Excel to SQLite, uids, search keys, FTS5, interference tips, integrity gates) and data layer (the drift schema, migrations, settings). M1 began |
 | **2026-09-23** | M0 and M1 closed: the engines (FSRS, answer checking, the plan engine), splash, onboarding and placement. M2 began |
 | **2026-09-24** | M2 closed at 09:44 and M3 at 10:44: the daily loop and Learn. The team board opened at 10:45, and at 11:27 the work became three agents with agent-0 as the lead (#285, #286). GitHub CI was switched off by the owner at 17:00 (#302): the local gate became the only check. The SQA milestone was created, and the SQA agent joined at 21:25 |
-| **2026-09-25** | M4 closed (quizzes and mock exams) and M5 (search, words, Me). SQA pass 1 (M0–M6, 23 issues) ended at 00:31 and pass 2 at 14:41 |
-| **2026-09-26** | The owner's release decisions: Android only, Hy-MT off in every build (ADR 9). M6 closed (voice, widget). "Later · after v1.0" was created. SQA pass 3 found no P1 and three P2s, all fixed and rechecked. **v1.0.0 tagged at 13:47** on `2b424e33` (#558, closing #175), and M7 closed at 14:01. Seventeen PRs of large-text and Bangla work followed, and **v1.0.1 was tagged at 19:33** on `0d23968e` (#594, closing #593) |
+| **2026-09-25** | M4 closed (quizzes and mock exams) and M5 (search, words, Me). SQA pass 1 (M0–M6, about two dozen issues) ended at 00:31 and pass 2 at 14:41; pass 3 followed M5–M7 as they closed, into the night |
+| **2026-09-26** | The owner's release decisions: Android only, Hy-MT off in every build (ADR 9). M6 closed (voice, widget). "Later · after v1.0" was created. SQA pass 4 found no P1 and three P2s, all fixed and rechecked. **v1.0.0 tagged at 14:00** on `2b424e33` (#558, closing #175), and M7 closed at 14:01. Seventeen PRs of large-text and Bangla work followed, and **v1.0.1 was tagged at 19:34** on `0d23968e` (#594, closing #593) |
 
 Commits on main per day: 22, 46, 22, 44, 74 and 86.
 
@@ -89,9 +89,10 @@ developers fix; SQA rechecks.
 
 | Pass | Ended | Scope | Found |
 |---|---|---|---|
-| 1 | 2026-09-25 00:31 | M0–M6's closed issues | 23 issues |
-| 2 | 2026-09-25 14:41 | The fixes since pass 1 | 14 fixes verified, 2 new bugs (#405, #406) |
-| 3 | 2026-09-26 13:07 | Before v1.0.0: about 30 closed issues on a release build | No P1; three P2s (#548, #550, #554), fixed and rechecked before the tag |
+| 1 | 2026-09-25 00:31 | M0–M6's closed issues | About two dozen issues (22 on the board) |
+| 2 | 2026-09-25 14:41 | Newly closed issues and the SQA fixes | 18 fixes verified; 6 new issues (#388, #389, #390, #396, #405, #406) |
+| 3 | 2026-09-26 about 04:00 | M5–M7's issues as they closed, almost in real time | See [agent-3's work history](../../developer-agents/agent-3/work-history.md) |
+| 4 | 2026-09-26 13:31 | Before v1.0.0: about 30 closed issues on a release build, then the final re-checks | No P1; three P2s (#548, #550, #554), fixed and rechecked before the tag |
 | 1.0.1 | Pending | The v1.0.1 changes | Findings go into 1.0.2 |
 
 The SQA milestone holds 52 issues, all closed.
@@ -112,7 +113,7 @@ The SQA milestone holds 52 issues, all closed.
 ### v1.0.0 (2026-09-26, `2b424e33`)
 
 The first release, on Android. The release checklist on its code: the full
-gate green (4,145 Flutter tests and 339 pytest), the smoke test 7 of 7 on the
+gate green (4,166 Flutter tests and 339 pytest), the smoke test 7 of 7 on the
 release build, content rebuilt, licences current, Hy-MT off, the 16 KB check
 passing, `perf.py all` passing, the store listing in English and Bangla with
 screenshots. Two items were left to the owner: signing with the upload key,
@@ -214,8 +215,8 @@ The milestone's open issues, each blocked on the owner or on a Mac:
 
 ### The direction: more languages, and more robust features
 
-The owner's stated direction (2026-09-26; the languages are recorded in
-#595):
+The owner's stated direction (2026-09-26, in the request that produced this
+handbook):
 
 - **More meaning languages.** Learners who think in other languages, with the
   same course. This is mostly data: translations through the workbooks, a

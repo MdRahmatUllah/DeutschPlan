@@ -236,8 +236,9 @@ papers together from `Random(hash(step, seed))` (ADR 10), so no item repeats
 across them. A paper has nine sections: 40 one-point questions (Vocabulary 10,
 Reverse 8, Articles 6, Word forms 4, Gap fill 6, Grammar 4, Listening 2) and a
 writing and a speaking task worth 4 points each, 48 points in all. Papers already sat are excluded. Grading scores each item
-with `answer_check`, the writing task by target words and length, the
-speaking task by its self-rubric (only with a recording), and passes at
+with `answer_check`, the writing task by target words and length plus its
+two rubric ticks (only with a text), the speaking task by its four (only with
+a recording), a point a tick, and passes at
 `exam_pass_percent` (default 60).
 
 **Answer checking** (`answer_check.dart`, `text_norm.dart`, `edit_distance.dart`, [`answer-checking.md`](../03-domain/answer-checking.md)).
@@ -335,10 +336,11 @@ architecture test holds the keepAlive set to this list.
 | `searchResults(query)`, `stepProgress`, `grammarCourse` | autoDispose | Search, per-step progress, the course text grammar practice checks against |
 | `examRunService`, `modelCard(id)`, `phoneSpace`, `ttsPlayback` | autoDispose | L12's reads and writes, M4's cards, what the voice is sounding |
 
-Every repository and service (`wordRepository`, `planRepository`,
+The repositories and services (`wordRepository`, `planRepository`,
 `ratingService`, `examRepository`, `searchRepository`, `backupRepository`,
-`planEngine`, `quizBuilder`, …) is an auto-disposed provider in
-`app/lib/core/providers/app_providers.dart`.
+`planEngine`, `quizBuilder`, …) are auto-disposed providers in
+`app/lib/core/providers/app_providers.dart`, except the few that
+`state-management.md` lists as keepAlive (the model repository among them).
 
 ## Settings keys
 

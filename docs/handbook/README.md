@@ -31,8 +31,8 @@ DeutschPlan is a complete German course on the phone, from the first word
   - A home-screen widget and daily reminders.
 
 It is a Flutter app, released on Android. The iOS code paths exist and are
-tested, but the iOS release waits for a Mac. It was built in seven
-milestones in six days (2026-09-21 to 2026-09-26): M0–M3 by one Claude Code
+tested, but the iOS release waits for a Mac. It was built in eight
+milestones (M0–M7) in six days (2026-09-21 to 2026-09-26): M0–M3 by one Claude Code
 session working alone (101 PRs), and M4–M7 by a team of three developer agents
 plus a dedicated SQA agent (see [`developer-agents/`](../../developer-agents/README.md)).
 
