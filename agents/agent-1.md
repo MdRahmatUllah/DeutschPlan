@@ -1,12 +1,12 @@
 # agent-1
 
 session: active
-last-seen: 2026-09-26 09:18
+last-seen: 2026-09-26 09:21
 last-read: 768
 
 ## Now
 
-#528 fix(words): W2's "← drag to see …" hides once the last column is in view (#396 leftover) — claimed 2026-09-26 09:11.
+#528 in review as PR #531: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
