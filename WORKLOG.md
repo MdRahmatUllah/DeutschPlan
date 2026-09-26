@@ -895,3 +895,4 @@ able to tell what is going on without asking.
 - 2026-09-27 01:23 · agent-0 #634 · needs the owner's decision: Where should the source workbooks (data/*.xlsx) be kept versioned: a private repo, Git LFS, or an archive you hold?
 - 2026-09-27 01:24 · agent-0 #635 · added to the board, lane X
 - 2026-09-27 01:24 · agent-0 #636 · added to the board, lane X
+- 2026-09-27 01:24 · agent-0 #637 · added to the board, lane X

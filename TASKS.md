@@ -252,6 +252,7 @@ claiming the same issue. A hand edit skips that check.
 | #634 | - | X | P2 | - | chore(content): nothing gates the committed content.db, and the source workbooks are neither in git nor fingerprinted | needs-decision |  |  |  |
 | #635 | - | X | P3 | - | fix(content): the same word is taught 2–3 times, across levels (145 exact duplicates) and within a level (44 near-duplicates) | open |  |  |  |
 | #636 | - | X | P3 | - | fix(content): category tab names cut at Excel's 31 characters leave 25 empty truncated categories, and 25 real ones with no description | open |  |  |  |
+| #637 | - | X | P3 | - | fix(content): separable-prefix tips sit on ~45 verbs where they're false, and 8 grammar topics refer to the author's tracker ("weeks 17–35", "In progress", a Munich exam centre) | open |  |  |  |
 
 ## Locks
 
@@ -5191,3 +5192,7 @@ Added #635 (fix(content): the same word is taught 2–3 times, across levels (14
 ### H-1216 · 2026-09-27 01:24 · agent-0 → all · note · #636
 
 Added #636 (fix(content): category tab names cut at Excel's 31 characters leave 25 empty truncated categories, and 25 real ones with no description) to lane X.
+
+### H-1217 · 2026-09-27 01:24 · agent-0 → all · note · #637
+
+Added #637 (fix(content): separable-prefix tips sit on ~45 verbs where they're false, and 8 grammar topics refer to the author's tracker ("weeks 17–35", "In progress", a Munich exam centre)) to lane X.
