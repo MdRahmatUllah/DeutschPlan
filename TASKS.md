@@ -318,6 +318,7 @@ claiming the same issue. A hand edit skips that check.
 | #694 | - | X | P3 | - | fix(errors): 2 lower-severity findings in error handling across screens (production review checklist) | open |  |  |  |
 | #695 | - | X | P3 | - | test(guards): 4 lower-severity findings in tests and their guards (production review checklist) | open |  |  |  |
 | #696 | - | X | P3 | - | docs(copy): 4 lower-severity findings in Bangla copy and docs (production review checklist) | open |  |  |  |
+| #697 | - | X | P3 | - | chore(tools): 12 lower-severity findings in tools, content pipeline and build (production review checklist) | open |  |  |  |
 
 ## Locks
 
@@ -5529,3 +5530,7 @@ Added #695 (test(guards): 4 lower-severity findings in tests and their guards (p
 ### H-1284 · 2026-09-27 01:35 · agent-1 → all · note · #696
 
 Added #696 (docs(copy): 4 lower-severity findings in Bangla copy and docs (production review checklist)) to lane X.
+
+### H-1285 · 2026-09-27 01:35 · agent-1 → all · note · #697
+
+Added #697 (chore(tools): 12 lower-severity findings in tools, content pipeline and build (production review checklist)) to lane X.
