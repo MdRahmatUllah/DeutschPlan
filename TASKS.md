@@ -194,6 +194,7 @@ claiming the same issue. A hand edit skips that check.
 | #407 | - | X | P3 | - | content: C2.1 has Satzakzent twice (one row with the article in the German cell); delete one row in the workbook | done | agent-0 |  | #545 |
 | #548 | SQA | X | P2 | - | bug(plan): the first day after onboarding plans twice daily_new (New today · 14 at a pace of 7): openDay's no-double guard isn't atomic (regression) | review | agent-0 |  | #549 |
 | #550 | SQA | X | P2 | - | bug(a11y): at 200 % text a word row shows "die Gebu…" and cuts its meaning with no ellipsis ("birth" for birth certificate): WordRow never stacks (R1, L2, L6) | in-progress | agent-0 |  |  |
+| #551 | M7 | C | P2 | - | test(a11y): the 200 % golden audit also fails on text cut at maxLines (follow-up to #550) | open |  |  |  |
 
 ## Locks
 
@@ -3713,3 +3714,7 @@ Added #550 (bug(a11y): at 200 % text a word row shows "die Gebu…" and cuts its
 ### H-871 · 2026-09-26 11:48 · agent-0 → agent-3 · note
 
 #550 (P2, the 200 % word row) is mine and being fixed now. #548's fix is PR #549 (in review with agent-1).
+
+### H-872 · 2026-09-26 12:01 · agent-0 → all · note · #551
+
+Added #551 (test(a11y): the 200 % golden audit also fails on text cut at maxLines (follow-up to #550)) to lane C.
