@@ -273,23 +273,23 @@ abstract final class DpScript {
     return breaks;
   }
 
-  /// [word], Bangla too wide for its line, with a soft hyphen between its
-  /// aksharas (#504): before a consonant the letter before doesn't join
-  /// with a hasanta, so no conjunct is split and a vowel sign stays on its
-  /// letter. That takes in the content's own joints, a hasanta with a
-  /// zero-width non-joiner ("…কাইট্‌|স…", "…কার্টেন্‌|আউ…"). Never before a
-  /// consonant, or a conjunct, that such a joint, khanda-ta or the word's end
-  /// closes
-  /// ("…লা|ন্ট্‌" would take it from its syllable), before khanda-ta (ৎ),
-  /// which ends one too, nor before an independent vowel but after a joint
-  /// ("কা|ইট" would split a diphthong). Two aksharas from either end at
-  /// least, so nothing breaks right after an opening "/" or "(".
   /// How small a Bangla word too wide for its line may shrink before it
   /// breaks instead (#522): the owner's "reduced size". Shrink first, and
   /// break between aksharas, with no "-", only when even this doesn't fit.
   // ponytail: 80 %, a floor that keeps a pronunciation legible beside its
   // German; the owner can move it.
   static const double banglaShrink = 0.8;
+
+  /// [word], Bangla too wide for its line, with a soft hyphen between its
+  /// aksharas (#504): before a consonant the letter before doesn't join
+  /// with a hasanta, so no conjunct is split and a vowel sign stays on its
+  /// letter. That takes in the content's own joints, a hasanta with a
+  /// zero-width non-joiner ("…কাইট্‌|স…", "…কার্টেন্‌|আউ…"). Never before a
+  /// consonant, or a conjunct, that such a joint, khanda-ta or the word's end
+  /// closes ("…লা|ন্ট্‌" would take it from its syllable), before khanda-ta (ৎ),
+  /// which ends one too, nor before an independent vowel but after a joint
+  /// ("কা|ইট" would split a diphthong). Two aksharas from either end at
+  /// least, so nothing breaks right after an opening "/" or "(".
 
   // ponytail: a legacy khanda-ta (ত্‍, a hasanta and a zero-width joiner)
   // isn't read as closed; the content writes ৎ.
@@ -944,12 +944,24 @@ class _RenderHyphenated extends RenderProxyBox {
             word.isEmpty ||
             word.contains(DpScript.softHyphen) ||
             widthOf([TextSpan(text: word, style: run.style)]) <= width;
-        final smaller = fits || !DpScript.hasBengali(word)
-            ? null
-            : fitted(word, run.style);
-        if (smaller != null) {
+        if (!fits && DpScript.hasBengali(word)) {
+          // Shrunk to fit; or, too wide even at the floor, broken between
+          // aksharas at that reduced size, the owner's order (#522).
+          final smaller = fitted(word, run.style);
+          final size = run.style?.fontSize ?? root?.fontSize;
+          final reduced =
+              smaller ??
+              (size == null
+                  ? run.style
+                  : (run.style ?? const TextStyle()).copyWith(
+                      fontSize: size * DpScript.banglaShrink,
+                    ));
           part('$said$space', '$shown$space', run.style);
-          part(word, word, smaller);
+          part(
+            word,
+            smaller == null ? DpScript.banglaBreaks(word) : word,
+            reduced,
+          );
           (said, shown, shrunk) = ('', '', true);
           continue;
         }

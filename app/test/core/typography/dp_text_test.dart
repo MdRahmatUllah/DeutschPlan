@@ -722,6 +722,23 @@ void main() {
       final pron = drawn.split('/')[1];
       expect(pron, contains(insideBangla), reason: 'broken, not shrunk');
       expect(pron, isNot(contains('-')), reason: 'no "-" in Bangla (#522)');
+      // Broken at the reduced size, the owner's order: shrink, then break.
+      final spans = <TextSpan>[];
+      tester
+          .renderObject<RenderParagraph>(find.byType(RichText))
+          .text
+          .visitChildren((span) {
+            if (span is TextSpan && span.text != null) spans.add(span);
+            return true;
+          });
+      final own = DpText.styleFor(
+        DpTokens.light(),
+        DpTextRole.body.oneStepLarger,
+      ).fontSize!;
+      expect(
+        spans.singleWhere((s) => DpScript.hasBengali(s.text!)).style!.fontSize,
+        moreOrLessEquals(own * DpScript.banglaShrink),
+      );
       expectNoWordBroken(tester);
       expect(
         tester.getSemantics(find.byType(RichText)).label,
