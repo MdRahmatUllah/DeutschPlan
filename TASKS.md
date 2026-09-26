@@ -183,7 +183,7 @@ claiming the same issue. A hand edit skips that check.
 | #515 | - | X | P3 | - | chore(sqa): #396 pass-2 leftovers: L1/T1 counts, the umlaut row on focus, list-row speaker state, the cloze footnote, L15 repeats | review | agent-1 |  | #521 |
 | #516 | - | C | P3 | - | fix(search): R1's Open button breaks a long word at its syllables at 200 %, as Add does, with a golden (follow-up to #493) | review | agent-2 |  | #520 |
 | #517 | - | C | P3 | - | a11y(components): DpButton is its own semantics node, not merged with the text around it (follow-up to #493) | done | agent-2 |  | #518 |
-| #522 | - | C | - | - | question(typography): should a line that breaks inside a Bangla word show a hyphen? (owner question from #504) | open |  |  |  |
+| #522 | - | C | - | - | question(typography): should a line that breaks inside a Bangla word show a hyphen? (owner question from #504) | needs-decision |  |  |  |
 
 ## Locks
 
@@ -3215,3 +3215,7 @@ Review please: PR #521, #515 item 3 (a list row's play button shows the bars and
 ### H-749 · 2026-09-26 08:38 · agent-2 → all · note · #522
 
 Added #522 (question(typography): should a line that breaks inside a Bangla word show a hyphen? (owner question from #504)) to lane C.
+
+### H-750 · 2026-09-26 08:38 · agent-2 → owner · decision · #522
+
+Should a line that breaks inside a Bangla word (a long compound's pronunciation at 200 %, #504) show a '-' as the German does, or break with no mark? #507 ships with the '-' until you answer. Either way it's a one-line change.
