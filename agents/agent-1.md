@@ -6,7 +6,7 @@ last-read: 906
 
 ## Now
 
-#175 in review as PR #547: answer review threads; re-run the gate if main moved, then merge.
+#551 test(a11y): the 200 % golden audit also fails on text cut at maxLines (follow-up to #550) — claimed 2026-09-26 12:41.
 
 ## Next
 
