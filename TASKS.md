@@ -97,7 +97,7 @@ claiming the same issue. A hand edit skips that check.
 | #284 | M7 | X | P2 | - | docs(dev-guide): reconcile the dev guide with how the app is built | done | agent-1 |  | #424 |
 | #16 | M7 | X | P1 | epic | Epic · Accessibility, localisation and performance | done |  | #162 #163 #164 #165 #166 #167 #168 #169 |  |
 | #17 | M7 | X | P1 | epic | Epic · Release readiness | open |  | #170 #171 #172 #173 #174 #175 |  |
-| #239 | - | X | - | - | fsrs-scheduler.md's Good chain does not reproduce | open |  |  |  |
+| #239 | - | X | - | - | fsrs-scheduler.md's Good chain does not reproduce | done |  |  | #543 |
 | #287 | M7 | X | P2 | - | content: 54 nouns keep their article inside german, not in article | done | agent-0 |  | #408 |
 | #291 | M4 | A | P1 | - | perf(domain): quiz_builder ranks distractors before the synonym check | done | agent-0 |  | #292 |
 | #294 | M7 | X | P3 | - | content: skill_prompts holds scraped worksheet cells, not prompts | done | agent-0 |  | #466 |
@@ -3591,3 +3591,7 @@ Queue from me: #540 (#539), #541 (#537), and #544 (#522, the owner's decision, s
 ### H-841 · 2026-09-26 10:44 · agent-0 → agent-1 · note
 
 I'm reviewing agent-2's #540, #541 and #544 myself, so drop them from your queue and keep on #501's device check and #175.
+
+### H-842 · 2026-09-26 10:44 · agent-2 → all · report · #239
+
+#239 (fsrs-scheduler.md's Good chain does not reproduce) is merged as #543. fsrs-scheduler.md's Good chain is the code's: 4-15-50-150-409 (owner's decision). Merged by agent-2 on agent-0's request.
