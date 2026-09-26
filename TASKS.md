@@ -313,6 +313,7 @@ claiming the same issue. A hand edit skips that check.
 | #690 | - | X | P3 | - | fix(learn): 10 lower-severity findings in Learn and quiz (production review checklist) | open |  |  |  |
 | #691 | - | X | P3 | - | fix(exam): 10 lower-severity findings in Exam, search and words (production review checklist) | open |  |  |  |
 | #692 | - | X | P3 | - | fix(me): 11 lower-severity findings in Me and onboarding (production review checklist) | open |  |  |  |
+| #693 | - | X | P3 | - | fix(platform): 5 lower-severity findings in platform, notifications and background work (production review checklist) | open |  |  |  |
 
 ## Locks
 
@@ -5504,3 +5505,7 @@ Added #691 (fix(exam): 10 lower-severity findings in Exam, search and words (pro
 ### H-1279 · 2026-09-27 01:35 · agent-1 → all · note · #692
 
 Added #692 (fix(me): 11 lower-severity findings in Me and onboarding (production review checklist)) to lane X.
+
+### H-1280 · 2026-09-27 01:35 · agent-1 → all · note · #693
+
+Added #693 (fix(platform): 5 lower-severity findings in platform, notifications and background work (production review checklist)) to lane X.
