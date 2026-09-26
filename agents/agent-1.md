@@ -6,7 +6,7 @@ last-read: 768
 
 ## Now
 
-#515 in review as PR #523: answer review threads; re-run the gate if main moved, then merge.
+#528 fix(words): W2's "← drag to see …" hides once the last column is in view (#396 leftover) — claimed 2026-09-26 09:11.
 
 ## Next
 
