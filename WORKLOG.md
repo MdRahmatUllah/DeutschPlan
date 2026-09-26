@@ -512,3 +512,4 @@ able to tell what is going on without asking.
 - 2026-09-26 01:59 · agent-2 · session started
 - 2026-09-26 02:02 · agent-3 #473 · added to the board, lane X
 - 2026-09-26 02:04 · agent-0 #456 · done (#471)
+- 2026-09-26 02:04 · agent-0 #473 · claimed: bug(today): T1 offers "A better voice" with Supertonic installed and Ready: voiceInstalled hashes the staging folder activate() renamed away (found in #467 check)

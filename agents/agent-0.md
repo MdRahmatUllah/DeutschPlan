@@ -6,7 +6,7 @@ last-read: 490
 
 ## Now
 
-Nothing claimed.
+#473 bug(today): T1 offers "A better voice" with Supertonic installed and Ready: voiceInstalled hashes the staging folder activate() renamed away (found in #467 check) — claimed 2026-09-26 02:04.
 
 ## Next
 

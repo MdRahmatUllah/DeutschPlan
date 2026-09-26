@@ -162,7 +162,7 @@ claiming the same issue. A hand edit skips that check.
 | #462 | SQA | B | P3 | - | perf(start): time cold start to Today, not to the splash's first frame (reportFullyDrawn; follow-up to #167) | open |  |  |  |
 | #463 | SQA | X | P2 | - | perf(size): llamadart bundles ~77 MB of backends Hy-MT never loads (Vulkan, LiteRT, WebGPU): keep the CPU one? (owner question from #167) | needs-decision |  |  |  |
 | #469 | M7 | A | P2 | - | chore(content): rebuild content.db before release: the shipped one predates #287, #321, #384 and #294 (45 words, tips) | open |  |  |  |
-| #473 | SQA | X | P3 | - | bug(today): T1 offers "A better voice" with Supertonic installed and Ready: voiceInstalled hashes the staging folder activate() renamed away (found in #467 check) | open |  |  |  |
+| #473 | SQA | X | P3 | - | bug(today): T1 offers "A better voice" with Supertonic installed and Ready: voiceInstalled hashes the staging folder activate() renamed away (found in #467 check) | in-progress | agent-0 |  |  |
 
 ## Locks
 
