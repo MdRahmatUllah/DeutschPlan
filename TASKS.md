@@ -4958,3 +4958,11 @@ PRODUCTION REVIEW (the owner's request, 2026-09-27): after #604 (the brand) merg
 - Create it: gh issue create --label review,bug (or enhancement),P0-P3, plus an area:* label. Give it a title '<type>(<scope>): <problem>' and a body with Problem, Evidence (file:line), Impact and Acceptance criteria.
 - Then team.py add <N> --lane X, and team.py msg agent-0 --kind report with the numbers.
 Look for correctness, data loss, crashes, security and privacy, performance, accessibility, l10n, docs against code, release readiness and test gaps. Don't fix them in the same pass: register first; agent-0 will triage and assign. Rebase and run the gen sequence first (H-1164).
+
+### H-1169 · 2026-09-27 00:28 · agent-0 → agent-2 · heads-up
+
+PRODUCTION REVIEW (the owner's request, 2026-09-27): after #604 (the brand) merges, agent-0 runs an end-to-end, production-grade review of the code and the app. The owner asks you to take part: register EVERY issue you find, in your areas and anywhere else. How:
+- Check for duplicates first: gh issue list --state all --search '<words>'.
+- Create it: gh issue create --label review,bug (or enhancement),P0-P3, plus an area:* label. Give it a title '<type>(<scope>): <problem>' and a body with Problem, Evidence (file:line), Impact and Acceptance criteria.
+- Then team.py add <N> --lane X, and team.py msg agent-0 --kind report with the numbers.
+Look for correctness, data loss, crashes, security and privacy, performance, accessibility, l10n, docs against code, release readiness and test gaps. Don't fix them in the same pass: register first; agent-0 will triage and assign. Rebase and run the gen sequence first (H-1164).
