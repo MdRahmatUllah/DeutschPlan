@@ -588,6 +588,34 @@ void main() {
       expect(model.asked, hasLength(1), reason: 'stopped at the first');
     });
 
+    test('#486 the first clip a list makes is loaded into the player, once, '
+        'while nothing has been said', () async {
+      await install();
+      await tts.prepare(<String>['das Haus', 'die Tür']);
+      final first = await cache.fileFor('das Haus', voice: 'Anna', speed: 1);
+      expect(player.loaded.single.path, first.path);
+      await tts.prepare(<String>['die Straße']);
+      expect(player.loaded, hasLength(1), reason: 'once');
+      expect(player.played, isEmpty, reason: 'loaded, not played');
+    });
+
+    test('#486 a load that fails, interrupted by a speak, leaves the rest '
+        'of the list to be made', () async {
+      await install();
+      player.failLoad = true;
+      await tts.prepare(<String>['das Haus', 'die Tür', 'die Straße']);
+      expect(player.loaded, hasLength(1));
+      expect(model.asked.map((a) => a.$1), hasLength(3));
+    });
+
+    test('#486 after a speak the player is left alone: a load would stop '
+        'its sound', () async {
+      await install();
+      await tts.speak('Haus');
+      await tts.prepare(<String>['das Haus']);
+      expect(player.loaded, isEmpty);
+    });
+
     test('#460 warm opens the sessions once, with no clip made, and the '
         'first speak finds them open', () async {
       await install();
@@ -786,10 +814,16 @@ class _Model implements SupertonicModel {
 
 class _Player implements ClipPlayer {
   final List<File> played = <File>[];
+
+  /// The clips loaded ahead of a play.
+  final List<File> loaded = <File>[];
   final List<Completer<void>> _ends = <Completer<void>>[];
   int stops = 0;
   bool fail = false;
   bool disposed = false;
+
+  /// A load that throws, as just_audio's does when a speak interrupts it.
+  bool failLoad = false;
 
   /// The last clip ends.
   void finish() => _ends.last.complete();
@@ -800,6 +834,12 @@ class _Player implements ClipPlayer {
     played.add(clip);
     _ends.add(Completer<void>());
     return (ended: _ends.last.future);
+  }
+
+  @override
+  Future<void> load(File clip) async {
+    loaded.add(clip);
+    if (failLoad) throw StateError('interrupted');
   }
 
   @override
