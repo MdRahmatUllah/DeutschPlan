@@ -791,48 +791,52 @@ class _Badge extends StatelessWidget {
           )
         : Border.all(color: tokens.color.ink, width: 1.5);
 
-    return AdaptiveTapTarget(
-      child: Semantics(
-        button: true,
-        label: l10n.meBadge(step.code, state),
+    return Semantics(
+      // Twelve in a row can't each be 48 dp wide: grown, a badge took its
+      // neighbour's taps (#478). Each is its own node, as drawn: 23.5 dp
+      // with 4 dp gaps meets WCAG 2.2's 24 with spacing (2.5.8), and the
+      // golden check skips a `dense:` node.
+      container: true,
+      identifier: 'dense:step-badge',
+      button: true,
+      label: l10n.meBadge(step.code, state),
+      onTap: onTap,
+      excludeSemantics: true,
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
         onTap: onTap,
-        excludeSemantics: true,
-        child: GestureDetector(
-          behavior: HitTestBehavior.opaque,
-          onTap: onTap,
-          child: SizedBox(
-            height: 48,
-            child: Center(
-              child: Container(
-                height: 26,
-                decoration: BoxDecoration(
-                  color: fill,
-                  borderRadius: BorderRadius.circular(6),
-                  border: border,
-                ),
-                alignment: Alignment.center,
-                // The artboard's 9 px: twelve codes across a phone. Scaled
-                // down as one: each code sits in the box of the widest, so a
-                // `.2` is not drawn smaller than a `.1`.
-                child: FittedBox(
-                  fit: BoxFit.scaleDown,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 2),
-                    child: Stack(
-                      alignment: Alignment.center,
-                      children: <Widget>[
-                        for (final widest in const <String>[
-                          'A2.2',
-                          'B2.2',
-                          'C2.2',
-                        ])
-                          Visibility.maintain(
-                            visible: false,
-                            child: label(widest),
-                          ),
-                        label(step.code),
-                      ],
-                    ),
+        child: SizedBox(
+          height: 48,
+          child: Center(
+            child: Container(
+              height: 26,
+              decoration: BoxDecoration(
+                color: fill,
+                borderRadius: BorderRadius.circular(6),
+                border: border,
+              ),
+              alignment: Alignment.center,
+              // The artboard's 9 px: twelve codes across a phone. Scaled
+              // down as one: each code sits in the box of the widest, so a
+              // `.2` is not drawn smaller than a `.1`.
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 2),
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: <Widget>[
+                      for (final widest in const <String>[
+                        'A2.2',
+                        'B2.2',
+                        'C2.2',
+                      ])
+                        Visibility.maintain(
+                          visible: false,
+                          child: label(widest),
+                        ),
+                      label(step.code),
+                    ],
                   ),
                 ),
               ),

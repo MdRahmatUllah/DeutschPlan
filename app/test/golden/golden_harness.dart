@@ -1,3 +1,5 @@
+import 'dart:ui' show CheckedState, Tristate;
+
 import 'package:deutschplan/core/adaptive/adaptive.dart';
 import 'package:deutschplan/core/theme/app_theme.dart';
 import 'package:deutschplan/core/theme/glass_capability.dart';
@@ -248,7 +250,7 @@ void goldenTest(
       meetsGuideline(
         chrome == AdaptiveChrome.cupertino
             ? const _IosTapTargets()
-            : androidTapTargetGuideline,
+            : const _AndroidTapTargets(),
       ),
     );
     if (chrome != AdaptiveChrome.cupertino) expectIconButtonsTipped(tester);
@@ -268,9 +270,33 @@ class _IosTapTargets extends MinimumTapTargetGuideline {
       );
 
   @override
+  bool shouldSkipNode(SemanticsNode node) {
+    final flags = node.getSemanticsData().flagsCollection;
+    return _AndroidTapTargets.dense(node) ||
+        super.shouldSkipNode(node) ||
+        // A segment: selectable, in a group, not a checkable radio.
+        (flags.isInMutuallyExclusiveGroup &&
+            flags.isButton &&
+            flags.isSelected != Tristate.none &&
+            flags.isChecked == CheckedState.none);
+  }
+}
+
+/// Android's 48 dp, less a control in a row too dense for it, which says so
+/// with a `dense:` semantics identifier (Me's step badges, #478).
+class _AndroidTapTargets extends MinimumTapTargetGuideline {
+  const _AndroidTapTargets()
+    : super(
+        size: const Size(48, 48),
+        link: 'https://support.google.com/accessibility/android/answer/7101858',
+      );
+
+  static bool dense(SemanticsNode node) =>
+      node.getSemanticsData().identifier.startsWith('dense:');
+
+  @override
   bool shouldSkipNode(SemanticsNode node) =>
-      super.shouldSkipNode(node) ||
-      node.getSemanticsData().flagsCollection.isInMutuallyExclusiveGroup;
+      dense(node) || super.shouldSkipNode(node);
 }
 
 /// [linear] as Android 14+ gives it, when text is scaled at all.

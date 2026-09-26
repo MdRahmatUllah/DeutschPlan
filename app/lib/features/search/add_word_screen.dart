@@ -628,6 +628,8 @@ class _Match extends StatelessWidget {
               ),
             ),
           ),
+          // The link is drawn as a line of text; the target makes it 48 dp to
+          // press (#478).
           AdaptiveTapTarget(
             child: Semantics(
               label: l10n.addWordOpenLabel(name),
