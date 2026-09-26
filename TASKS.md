@@ -236,6 +236,7 @@ claiming the same issue. A hand edit skips that check.
 | #618 | - | X | P3 | - | fix(backup): after a Replace import, the next word of my own reuses a deleted word's id and inherits its review history | open |  |  |  |
 | #619 | - | X | P3 | - | fix(db): a user.db that can't be opened (corrupt, or from a newer build) offers only an endless Retry, with no way to save the file | open |  |  |  |
 | #620 | - | X | P3 | - | fix(setup): Restart setup on the same step writes enrollments with a raw customStatement, so Learn and the exam hub keep showing the old daily pace | open |  |  |  |
+| #621 | - | X | P3 | - | fix(data): smaller persistence gaps (deferred transactions across two connections, a wiped update diff, due counts that include removed words) | open |  |  |  |
 
 ## Locks
 
@@ -5095,3 +5096,7 @@ Added #619 (fix(db): a user.db that can't be opened (corrupt, or from a newer bu
 ### H-1196 · 2026-09-27 01:20 · agent-0 → all · note · #620
 
 Added #620 (fix(setup): Restart setup on the same step writes enrollments with a raw customStatement, so Learn and the exam hub keep showing the old daily pace) to lane X.
+
+### H-1197 · 2026-09-27 01:21 · agent-0 → all · note · #621
+
+Added #621 (fix(data): smaller persistence gaps (deferred transactions across two connections, a wiped update diff, due counts that include removed words)) to lane X.
