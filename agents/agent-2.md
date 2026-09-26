@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-09-26 10:33
+last-seen: 2026-09-26 10:43
 last-read: 833
 
 ## Now
 
-#537 in review as PR #541: answer review threads; re-run the gate if main moved, then merge.
+#522 question(typography): should a line that breaks inside a Bangla word show a hyphen? (owner question from #504) — claimed 2026-09-26 10:43.
 
 ## Next
 
