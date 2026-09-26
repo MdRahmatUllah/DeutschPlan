@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:sogda/core/adaptive/adaptive.dart';
 import 'package:sogda/core/components/sg_button.dart';
+import 'package:sogda/core/components/sg_mark.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/core/theme/aurora_backdrop.dart';
 import 'package:sogda/core/theme/sg_surface.dart';
@@ -265,28 +266,7 @@ class _Preview extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             // The app's icon, as the phone draws it beside a notification.
-            ExcludeSemantics(
-              child: SizedBox.square(
-                dimension: 36,
-                child: DecoratedBox(
-                  decoration: BoxDecoration(
-                    color: tokens.color.accent,
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: tokens.color.ink, width: 1.5),
-                  ),
-                  // An icon, not text: it keeps its size at 200 %.
-                  child: Center(
-                    child: MediaQuery.withNoTextScaling(
-                      child: SgText(
-                        'D',
-                        role: SgTextRole.title,
-                        color: tokens.color.onAccent,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
+            const SgMark.appIcon(size: 36),
             const SizedBox(width: 10),
             Expanded(
               child: Column(

@@ -51,14 +51,14 @@ plus a dedicated SQA agent (see [`developer-agents/`](../../developer-agents/REA
 
 Beside the handbook:
 
-- **Branding:** [`docs/branding/`](../branding/README.md), with name candidates for the app's multi-language future and the logo concepts.
+- **The brand kit:** [`docs/sogda-brand-kit/`](../sogda-brand-kit/README.md): the name Sogda (ADR 28), the tiles mark (an "a" behind, an "Ä" in front), the colours, the type, and the icon, lockup and store files with their rules.
 - **The team:** [`developer-agents/`](../../developer-agents/README.md), covering who builds the app, how each agent works, their memory, and the setup on a new device.
 - **The working guides:** [`ONBOARDING.md`](../../ONBOARDING.md) (the full team process) and [`CLAUDE.md`](../../CLAUDE.md) (the one-page version).
 - **The changes:** [`CHANGELOG.md`](../../CHANGELOG.md), one entry per release.
 
 ## Reading paths
 
-- **Deciding about the product:** 1 → 2 → 3 → 8, then the branding.
+- **Deciding about the product:** 1 → 2 → 3 → 8, then the brand kit.
 - **Joining as a developer:** this page → 4 → 5 → 6 → 7, then `ONBOARDING.md` and your `developer-agents/agent-N/` folder.
 - **Testing the app:** 2 → 3 → 6, then [`developer-agents/agent-3/`](../../developer-agents/agent-3/README.md).
 - **Releasing:** 7 → [`release.md`](../05-dev-guide/release.md) → [`store-listing.md`](../05-dev-guide/store-listing.md).

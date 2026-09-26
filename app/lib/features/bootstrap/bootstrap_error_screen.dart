@@ -86,7 +86,9 @@ class BootstrapErrorScreen extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              const ExcludeSemantics(child: SplashMark()),
+              // S1's lockup at 60 %: at full size it pushed *Export progress*
+              // to the fold on a 360 × 640 phone.
+              const ExcludeSemantics(child: SplashMark(scale: 0.6)),
               const SizedBox(height: 40),
               panel,
             ],

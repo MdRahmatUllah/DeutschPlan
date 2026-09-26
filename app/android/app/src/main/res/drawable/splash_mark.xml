@@ -1,34 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- The "D" in its speech bubble, at the artboard's own 120 x 104 geometry.
+<!-- The pre-12 launch window's mark: the brand kit's tiles (#602) at the
+     size S1's Flutter frame draws them, 8/3 dp per unit of the kit's 108
+     grid, which is also Android 12's `splash_icon.xml`.
 
-     A vector rather than a bitmap so it stays sharp at every density, and
-     because the Android 12 splash icon has to be a vector anyway. The numbers
-     match `_SplashMetrics` in `splash_screen.dart` — bubble 120 x 92, radius
-     28, a 3 px ink border, and the tail at x 22, 24 wide, 20 tall. -->
+     Cropped tight, not on a padded canvas: this window is not masked. The
+     crop is centred on the point of the art that the Flutter mark's square
+     is centred on, (54, 56 - 2/1.32), because `launch_background.xml` centres
+     this drawable on the screen, and S1 centres that square there.
+
+     Converted from `docs/sogda-brand-kit/svg/icon-tiles-foreground.svg` as
+     `splash_icon.xml` is (read its note): the same paths inside one
+     translating group. -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="120dp"
-    android:height="104dp"
-    android:viewportWidth="120"
-    android:viewportHeight="104">
+    android:width="146.6667dp"
+    android:height="130.6667dp"
+    android:viewportWidth="55"
+    android:viewportHeight="49">
 
-    <!-- The tail, drawn first so the bubble's border covers where they meet. -->
-    <path
-        android:fillColor="@color/splash_ink"
-        android:pathData="M22,84 L46,84 L34,104 Z" />
-
-    <!-- The bubble. -->
-    <path
-        android:fillColor="@color/splash_mark"
-        android:strokeColor="@color/splash_ink"
-        android:strokeWidth="3"
-        android:pathData="M1.5,29.5 A28,28 0 0 1 29.5,1.5 L90.5,1.5 A28,28 0 0 1 118.5,29.5 L118.5,62.5 A28,28 0 0 1 90.5,90.5 L29.5,90.5 A28,28 0 0 1 1.5,62.5 Z" />
-
-    <!-- The letter, as a path: a vector drawable cannot render text, and a
-         font the launcher does not have is not something to rely on at boot.
-         Stem from x 38, bowl radius 30, counter radius 16 — Inter Bold's
-         proportions at a 60 px cap height. -->
-    <path
-        android:fillColor="@color/splash_ink"
-        android:fillType="evenOdd"
-        android:pathData="M38,16 L60,16 A30,30 0 0 1 60,76 L38,76 Z M52,30 L60,30 A16,16 0 0 1 60,62 L52,62 Z" />
+    <group
+        android:translateX="-26.5"
+        android:translateY="-29.9848">
+        <group android:translateX="44.5" android:translateY="49.5">
+            <group android:rotation="-10">
+                <group android:translateX="2.4" android:translateY="2.4">
+                    <path
+                        android:fillColor="@color/splash_ink"
+                        android:pathData="M-8.5,-14 L8.5,-14 A5.5,5.5 0 0 1 14,-8.5 L14,8.5 A5.5,5.5 0 0 1 8.5,14 L-8.5,14 A5.5,5.5 0 0 1 -14,8.5 L-14,-8.5 A5.5,5.5 0 0 1 -8.5,-14 Z"
+                        android:strokeColor="@color/splash_ink"
+                        android:strokeWidth="2.6"
+                        android:strokeLineJoin="round" />
+                </group>
+                <path
+                    android:fillColor="@color/splash_paper"
+                    android:pathData="M-8.5,-14 L8.5,-14 A5.5,5.5 0 0 1 14,-8.5 L14,8.5 A5.5,5.5 0 0 1 8.5,14 L-8.5,14 A5.5,5.5 0 0 1 -14,8.5 L-14,-8.5 A5.5,5.5 0 0 1 -8.5,-14 Z"
+                    android:strokeColor="@color/splash_ink"
+                    android:strokeWidth="2.6"
+                    android:strokeLineJoin="round" />
+                <group android:translateX="-7.64" android:translateY="7.24">
+                    <group android:scaleX="0.0264" android:scaleY="-0.0264">
+                        <path
+                            android:fillColor="@color/splash_ink"
+                            android:pathData="M326 559Q429 559 485.5 509.0Q542 459 542 363V0H425L392 74H388Q353 29 314.0 9.5Q275 -10 206 -10Q134 -10 86.0 33.0Q38 76 38 165Q38 252 100.0 295.0Q162 338 282 343L373 346V359Q373 402 353.0 420.0Q333 438 297 438Q262 438 222.5 426.0Q183 414 144 397L95 510Q140 534 198.0 546.5Q256 559 326 559ZM323 248Q260 245 235.0 226.5Q210 208 210 173Q210 141 228.0 126.5Q246 112 275 112Q316 112 345.0 137.0Q374 162 374 206V250Z" />
+                    </group>
+                </group>
+            </group>
+        </group>
+        <group android:translateX="62.5" android:translateY="59.5">
+            <group android:rotation="7">
+                <group android:translateX="2.4" android:translateY="2.4">
+                    <path
+                        android:fillColor="@color/splash_ink"
+                        android:pathData="M-8.5,-14 L8.5,-14 A5.5,5.5 0 0 1 14,-8.5 L14,8.5 A5.5,5.5 0 0 1 8.5,14 L-8.5,14 A5.5,5.5 0 0 1 -14,8.5 L-14,-8.5 A5.5,5.5 0 0 1 -8.5,-14 Z"
+                        android:strokeColor="@color/splash_ink"
+                        android:strokeWidth="2.6"
+                        android:strokeLineJoin="round" />
+                </group>
+                <path
+                    android:fillColor="@color/splash_mark"
+                    android:pathData="M-8.5,-14 L8.5,-14 A5.5,5.5 0 0 1 14,-8.5 L14,8.5 A5.5,5.5 0 0 1 8.5,14 L-8.5,14 A5.5,5.5 0 0 1 -14,8.5 L-14,-8.5 A5.5,5.5 0 0 1 -8.5,-14 Z"
+                    android:strokeColor="@color/splash_ink"
+                    android:strokeWidth="2.6"
+                    android:strokeLineJoin="round" />
+                <group android:translateX="-7.47" android:translateY="10.25">
+                    <group android:scaleX="0.0211" android:scaleY="-0.0211">
+                        <path
+                            android:fillColor="@color/splash_ink"
+                            android:pathData="M521 0L476 152H233L187 0H0L243 717H463L708 0ZM397 432Q392 448 383.5 481.0Q375 514 366.5 548.0Q358 582 354 604Q349 581 341.5 548.5Q334 516 326.0 484.5Q318 453 312 432L271 294H438ZM165 853Q165 890 187.0 907.0Q209 924 241 924Q271 924 294.0 907.0Q317 890 317 853Q317 817 294.0 800.0Q271 783 241 783Q209 783 187.0 800.0Q165 817 165 853ZM390 853Q390 890 411.5 907.0Q433 924 466 924Q496 924 519.0 907.0Q542 890 542 853Q542 817 519.0 800.0Q496 783 466 783Q433 783 411.5 800.0Q390 817 390 853Z" />
+                    </group>
+                </group>
+            </group>
+        </group>
+    </group>
 </vector>

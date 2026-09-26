@@ -7,7 +7,7 @@ Translation (Hy-MT) is off in every v1.0 build (ADR 9), so the listing doesn't m
 ## English (en-US)
 
 ### Title
-Sogda – German A1 to C2
+Sogda: German A1–C2
 
 ### Short description
 Learn German offline, A1 to C2, with English or Bangla meanings
@@ -49,7 +49,7 @@ Large text works better, in English and in Bangla: up to 200 %, typing no longer
 ## Bangla (bn-BD)
 
 ### Title
-Sogda – জার্মান A1–C2
+Sogda: জার্মান A1–C2
 
 ### Short description
 অফলাইনে জার্মান শিখুন, A1 থেকে C2, ইংরেজি বা বাংলা অর্থসহ
@@ -106,3 +106,9 @@ Sogda একটি পূর্ণাঙ্গ জার্মান কোর�
 - **The status bar** is Android's demo mode (10:00, full Wi-Fi and battery). Light and dark follow the system setting.
 - **Format:** RGB PNGs without alpha, as Play asks. `test_store_listing.py` checks the format, the sizes and the ratio.
 - **Not included:** a mock exam (L12), which unlocks only once 90 % of a step is introduced; day 1 can't reach it. Take one on a device with progress before the upload if the owner wants it.
+
+## Website and icon
+
+- **Website:** https://sogda.de, the brand kit's domain (#602): the Play Console's *Website* under the store listing's contact details.
+- **App icon:** [`docs/sogda-brand-kit/png/play-store-icon-512.png`](../sogda-brand-kit/png/play-store-icon-512.png), 512 × 512, the kit's tiles on full-bleed Lagoon. Play rounds the corners; add no shadow (the kit's rule). Play wants a 32-bit PNG with alpha, and the kit's file is RGB: upload an RGBA copy with an opaque alpha channel, and leave the kit's file as it is. `test_store_listing.py` checks the file and its size.
+- **Feature graphic** (1024 × 500, required before the first upload): not made yet. The kit names `svg/lockup-horizontal-tiles-light.svg` for it; variant B (the Silk Road dots) is allowed there too, never on the icon.

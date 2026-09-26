@@ -6,10 +6,12 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'dart:ui' show Color, Size;
 
+import 'package:sogda/core/theme/sg_brand.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-/// The native launch screens — #85, and iOS's in #238.
+/// The native launch screens — #85, iOS's in #238 — and the launcher icon,
+/// with the brand kit's tiles (#602).
 ///
 /// "Native launch screen and the first Flutter frame are visually identical."
 /// The Android window is painted before any Dart runs, so its colours cannot
@@ -19,6 +21,31 @@ void main() {
   /// `#RRGGBB` as an opaque [Color].
   Color hex(String value) =>
       Color(int.parse(value.replaceFirst('#', 'ff'), radix: 16));
+
+  /// A PNG's pixel size, from its IHDR chunk.
+  Size pngSize(String path) {
+    final bytes = File(path).readAsBytesSync();
+    final data = ByteData.sublistView(bytes, 16, 24);
+    return Size(data.getUint32(0).toDouble(), data.getUint32(4).toDouble());
+  }
+
+  /// The file with its comments stripped.
+  ///
+  /// Every one of these files explains itself, and those explanations name
+  /// the very attributes being asserted about — so a check against the raw
+  /// text passes or fails on prose. That has now caught me three times in
+  /// this session; the markup is what ships, so the markup is what is read.
+  String read(String path) {
+    final file = File(path);
+    expect(file.existsSync(), isTrue, reason: '$path is missing');
+
+    return file.readAsStringSync().replaceAll(
+      RegExp(r'<!--.*?-->', dotAll: true),
+      '',
+    );
+  }
+
+  const res = 'android/app/src/main/res';
 
   /// The `<color name="…">#…</color>` entries of one resource file.
   Map<String, Color> coloursIn(String path) {
@@ -33,24 +60,25 @@ void main() {
   }
 
   group('the Android launch colours match the palette', () {
-    test('light is the light palette', () {
-      final colours = coloursIn('android/app/src/main/res/values/colors.xml');
-      const palette = SgPalette.light;
+    /// The tiles are the kit's in both files: it never recolours them.
+    void expectTheKitsTiles(Map<String, Color> colours) {
+      expect(colours['splash_mark'], SgBrand.sun);
+      expect(colours['splash_ink'], SgBrand.ink);
+      expect(colours['splash_paper'], SgBrand.paper);
+    }
 
-      expect(colours['splash_field'], palette.primary);
-      expect(colours['splash_mark'], palette.accent);
-      expect(colours['splash_ink'], palette.ink);
+    test('FR-S1-05 #602 light is the light field and the kit’s tiles', () {
+      final colours = coloursIn('$res/values/colors.xml');
+
+      expect(colours['splash_field'], SgPalette.light.primary);
+      expectTheKitsTiles(colours);
     });
 
-    test('and night is the dark palette', () {
-      final colours = coloursIn(
-        'android/app/src/main/res/values-night/colors.xml',
-      );
-      const palette = SgPalette.dark;
+    test('FR-S1-05 #602 and night is the dark field and the same tiles', () {
+      final colours = coloursIn('$res/values-night/colors.xml');
 
-      expect(colours['splash_field'], palette.primary);
-      expect(colours['splash_mark'], palette.accent);
-      expect(colours['splash_ink'], palette.ink);
+      expect(colours['splash_field'], SgPalette.dark.primary);
+      expectTheKitsTiles(colours);
     });
 
     test('every name is defined in both', () {
@@ -65,22 +93,6 @@ void main() {
   });
 
   group('the launch theme', () {
-    /// The file with its comments stripped.
-    ///
-    /// Every one of these files explains itself, and those explanations name
-    /// the very attributes being asserted about — so a check against the raw
-    /// text passes or fails on prose. That has now caught me three times in
-    /// this session; the markup is what ships, so the markup is what is read.
-    String read(String path) {
-      final file = File(path);
-      expect(file.existsSync(), isTrue, reason: '$path is missing');
-
-      return file.readAsStringSync().replaceAll(
-        RegExp(r'<!--.*?-->', dotAll: true),
-        '',
-      );
-    }
-
     test('Android 12 draws the field and the mark', () {
       for (final path in const <String>[
         'android/app/src/main/res/values-v31/styles.xml',
@@ -103,7 +115,7 @@ void main() {
 
     test('and no circle is drawn behind the mark', () {
       // `windowSplashScreenIconBackgroundColor` would put a filled disc under
-      // the speech bubble, which is not in any artboard.
+      // the tiles, which is not in any artboard.
       expect(
         read('android/app/src/main/res/values-v31/styles.xml'),
         isNot(contains('windowSplashScreenIconBackgroundColor')),
@@ -111,12 +123,25 @@ void main() {
     });
 
     test('pre-12 draws the same field and mark', () {
-      final xml = read(
-        'android/app/src/main/res/drawable/launch_background.xml',
-      );
+      final xml = read('$res/drawable/launch_background.xml');
 
       expect(xml, contains('@color/splash_field'));
       expect(xml, contains('@drawable/splash_mark'));
+    });
+
+    test('FR-S1-05 #602 and it is the one pre-12 phones read', () {
+      // A `drawable-v21` copy wins over this file on every API the app runs
+      // on (26+): the template's was there, and drew a plain window.
+      expect(
+        File('$res/drawable-v21/launch_background.xml').existsSync(),
+        isFalse,
+      );
+      // The mark is a vector, which a `<bitmap>` cannot decode: the window
+      // would fail to inflate.
+      expect(
+        read('$res/drawable/launch_background.xml'),
+        isNot(contains('<bitmap')),
+      );
     });
 
     test('and neither theme draws a system title bar', () {
@@ -152,10 +177,19 @@ void main() {
   });
 
   group('the mark drawable', () {
-    String mark(String name) =>
-        File('android/app/src/main/res/drawable/$name.xml')
-            .readAsStringSync()
-            .replaceAll(RegExp(r'<!--.*?-->', dotAll: true), '');
+    String mark(String name) => read('$res/drawable/$name.xml');
+
+    /// dp per viewport unit, across and down.
+    (double, double) scale(String name) {
+      final xml = mark(name);
+      double attr(String key) => double.parse(
+        RegExp('android:$key="([0-9.]+)(?:dp)?"').firstMatch(xml)!.group(1)!,
+      );
+      return (
+        attr('width') / attr('viewportWidth'),
+        attr('height') / attr('viewportHeight'),
+      );
+    }
 
     test('is a vector, so it stays sharp at every density', () {
       for (final name in const <String>['splash_mark', 'splash_icon']) {
@@ -164,23 +198,44 @@ void main() {
       }
     });
 
-    test('carries the bubble, the tail and the letter', () {
-      // Three paths. The tail is the piece Android 12 cropped when the icon
-      // was drawn at its own size, so its presence is worth asserting.
-      expect(RegExp('<path').allMatches(mark('splash_icon')).length, 3);
-      expect(RegExp('<path').allMatches(mark('splash_mark')).length, 3);
+    test('FR-S1-05 #602 carries the two tiles, their shadows and letters', () {
+      for (final name in const <String>['splash_mark', 'splash_icon']) {
+        final xml = mark(name);
+
+        expect(RegExp('<path').allMatches(xml).length, 6, reason: name);
+        // The kit's own letters, as SgMark draws them: one letterform.
+        expect(xml, contains('android:pathData="M326 559'), reason: name);
+        expect(xml, contains('android:pathData="M521 0'), reason: name);
+        expect(xml, contains('@color/splash_paper'), reason: name);
+        expect(xml, contains('@color/splash_mark'), reason: name);
+      }
     });
 
-    test('and the Android 12 icon leaves room for the circular mask', () {
-      // Android masks the splash icon into a circle and shows roughly the
-      // inner two thirds. Drawing the mark at 120 x 104 on a 120 x 104 canvas
-      // loses the corners and the whole tail — which is what happened before
-      // this canvas existed.
+    test('FR-S1-05 #602 the Android 12 icon keeps the kit’s 108 grid on the '
+        '288 dp canvas', () {
+      // Android draws the icon's canvas at 288 dp and masks it to the inner
+      // two thirds, the adaptive icon's safe zone: the kit's art is inside.
       final icon = mark('splash_icon');
 
-      expect(icon, contains('android:viewportWidth="288"'));
-      expect(icon, contains('android:viewportHeight="288"'));
-      expect(icon, contains('<group'), reason: 'the art is not inset');
+      expect(icon, contains('android:width="288dp"'));
+      expect(icon, contains('android:viewportWidth="108"'));
+      expect(icon, contains('android:viewportHeight="108"'));
+      // Raised so the point S1's square centres on, (54, 56 - 2/1.32), is
+      // the canvas's centre, where the platform centres the icon.
+      expect(
+        RegExp(r'<vector[^>]*>\s*<group android:translateY="([-0-9.]+)"')
+            .firstMatch(icon)
+            ?.group(1),
+        (54 - (56 - 2 / 1.32)).toStringAsFixed(4),
+      );
+    });
+
+    test('FR-S1-05 #602 and pre-12 draws the tiles at that scale too', () {
+      // S1's Flutter frame draws them at 288 / 108 dp per unit as well.
+      final (across, down) = scale('splash_mark');
+
+      expect(across, moreOrLessEquals(288 / 108, epsilon: 1e-3));
+      expect(down, moreOrLessEquals(288 / 108, epsilon: 1e-3));
     });
 
     test('the colours come from the resources, never inline', () {
@@ -191,6 +246,71 @@ void main() {
           isFalse,
           reason: name,
         );
+      }
+    });
+  });
+
+  group('the launcher icon', () {
+    const densities = <String, int>{
+      'mdpi': 108,
+      'hdpi': 162,
+      'xhdpi': 216,
+      'xxhdpi': 324,
+      'xxxhdpi': 432,
+    };
+
+    test('#602 is adaptive, with a monochrome layer for the '
+        'Android 13+ themed icon', () {
+      final xml = read('$res/mipmap-anydpi-v26/ic_launcher.xml');
+
+      expect(xml, contains('<adaptive-icon'));
+      expect(
+        xml,
+        contains(
+          '<background android:drawable="@color/ic_launcher_background"',
+        ),
+      );
+      expect(
+        xml,
+        contains(
+          '<foreground android:drawable="@mipmap/ic_launcher_foreground"',
+        ),
+      );
+      expect(
+        xml,
+        contains(
+          '<monochrome android:drawable="@mipmap/ic_launcher_monochrome"',
+        ),
+      );
+      expect(
+        read('android/app/src/main/AndroidManifest.xml'),
+        contains('android:icon="@mipmap/ic_launcher"'),
+      );
+    });
+
+    test('#602 its ground is Lagoon, day and night', () {
+      for (final values in const <String>['values', 'values-night']) {
+        expect(
+          coloursIn('$res/$values/colors.xml')['ic_launcher_background'],
+          SgBrand.lagoon,
+          reason: values,
+        );
+      }
+    });
+
+    test('#602 every density has both layers, and the legacy icon', () {
+      for (final MapEntry(key: density, value: px) in densities.entries) {
+        for (final layer in const <String>[
+          'ic_launcher_foreground',
+          'ic_launcher_monochrome',
+        ]) {
+          final path = '$res/mipmap-$density/$layer.png';
+          expect(File(path).existsSync(), isTrue, reason: path);
+          expect(pngSize(path), Size.square(px.toDouble()), reason: path);
+        }
+        // 48 dp, where a layer is 108 dp.
+        final legacy = '$res/mipmap-$density/ic_launcher.png';
+        expect(pngSize(legacy), Size.square(px * 48 / 108), reason: legacy);
       }
     });
   });
@@ -209,13 +329,6 @@ void main() {
         (entry['appearances'] as List<dynamic>? ?? const <dynamic>[]).any(
           (a) => (a as Map<String, dynamic>)['value'] == 'dark',
         );
-
-    /// A PNG's pixel size, from its IHDR chunk.
-    Size pngSize(String path) {
-      final bytes = File(path).readAsBytesSync();
-      final data = ByteData.sublistView(bytes, 16, 24);
-      return Size(data.getUint32(0).toDouble(), data.getUint32(4).toDouble());
-    }
 
     String storyboard() =>
         File('ios/Runner/Base.lproj/LaunchScreen.storyboard')

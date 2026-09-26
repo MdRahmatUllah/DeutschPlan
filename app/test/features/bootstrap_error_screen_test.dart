@@ -239,7 +239,7 @@ void main() {
       await pump(tester, failure: failureOf(BootstrapStep.content));
 
       expect(find.bySemanticsLabel(l10n.bootstrapErrorContent), findsOneWidget);
-      expect(find.bySemanticsLabel('D'), findsNothing);
+      expect(find.bySemanticsLabel(RegExp(r'^(Sogda|a|Ä)$')), findsNothing);
 
       handle.dispose();
     });

@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- The dark artboard's values: `SgPalette.dark` primary, accent and ink. -->
+<!-- The dark artboard's field: `SgPalette.dark.primary`. -->
 <resources>
     <color name="splash_field">#2EE6D6</color>
-    <color name="splash_mark">#FFD54A</color>
-    <color name="splash_ink">#F4F1FF</color>
+
+    <!-- The mark's tiles and the launcher's ground stay the brand kit's at
+         night (#602): the kit never recolours them. -->
+    <color name="splash_mark">#FFC61A</color>
+    <color name="splash_ink">#15121F</color>
+    <color name="splash_paper">#FFF8EE</color>
+    <color name="ic_launcher_background">#00C2B2</color>
 
     <!-- X1's dark tokens (#160). Glass draws as this opaque fallback. -->
     <color name="widget_card">#1E1B2C</color>

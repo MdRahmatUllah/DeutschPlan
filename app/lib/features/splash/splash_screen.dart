@@ -1,24 +1,25 @@
 import 'dart:async';
 
 import 'package:sogda/core/adaptive/adaptive.dart';
+import 'package:sogda/core/components/sg_mark.dart';
 import 'package:sogda/core/theme/aurora_backdrop.dart';
-import 'package:sogda/core/theme/sg_surface.dart';
+import 'package:sogda/core/theme/sg_brand.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
-import 'package:sogda/core/typography/app_fonts.dart';
 import 'package:sogda/core/typography/sg_text.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:material_ui/material_ui.dart';
 
-/// S1 · Splash. `docs/04-screens/splash.md`, artboards `Splash-android*.html`.
+/// S1 · Splash. `docs/04-screens/splash.md`, artboards `Splash-android*.html`,
+/// with the brand kit's mark (#602).
 ///
 /// The composition the native launch screen also draws, so the hand-off from
-/// the platform splash to Flutter's first frame shows no jump: Lagoon field,
-/// the "D" mark in a Sun speech bubble, the wordmark, and the caption.
+/// the platform splash to Flutter's first frame shows no jump: the Lagoon
+/// field and the tiles at the size and place Android 12 draws them, then the
+/// wordmark and the caption under them.
 ///
-/// Every colour is a token. The artboards' light and dark values *are* the
-/// palette — background `primary`, mark `accent`, rule and text `ink`, the
-/// offset `shadow` — which is why this needs no mode switch: reading the
-/// tokens produces both artboards.
+/// The field is the palette's `primary`, Lagoon in light and lifted in dark,
+/// as `colors.xml` paints the native window. The tiles and the wordmark are
+/// the kit's own colours in every mode ([SgMark]): the kit sets Ink on Lagoon.
 class SplashScreen extends StatelessWidget {
   const SplashScreen({super.key, this.showProgress = false});
 
@@ -33,34 +34,47 @@ class SplashScreen extends StatelessWidget {
     final tokens = context.tokens;
     final l10n = AppLocalizations.of(context);
 
-    final body = Column(
-      // Stretch, because `Scaffold.body` passes loose horizontal constraints:
-      // without it the column shrinks to its widest child and sits against the
-      // left edge, and the caption's `TextAlign.center` has no width to centre
-      // within. The artboard is centred on the full screen.
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: <Widget>[
-        Expanded(
-          child: Center(child: SplashLockup(showProgress: showProgress)),
-        ),
-        Padding(
-          padding: const EdgeInsets.fromLTRB(24, 0, 24, 48),
-          child: SgText(
-            l10n.splashPreparing,
-            role: SgTextRole.caption,
-            textAlign: TextAlign.center,
-            // Ink on the solid field, secondary on glass — the artboards
-            // differ here because the glass paper is much lighter.
-            color: tokens.isGlass ? tokens.color.textSecondary : null,
-          ),
-        ),
-      ],
+    final caption = Padding(
+      padding: const EdgeInsets.fromLTRB(24, 0, 24, 48),
+      child: SgText(
+        l10n.splashPreparing,
+        role: SgTextRole.caption,
+        textAlign: TextAlign.center,
+        // Ink on the solid field, secondary on glass — the artboards
+        // differ here because the glass paper is much lighter.
+        color: tokens.isGlass ? tokens.color.textSecondary : null,
+      ),
     );
 
-    // Glass replaces the Lagoon field with the aurora paper, and the mark sits
-    // on a blurred panel rather than directly on the colour.
-    // A scaffold, not a bare ColoredBox: text needs a Material ancestor or
-    // Flutter paints the missing-material debug underline across the wordmark.
+    // The mark at the screen's centre, where the platform's splash drew it.
+    // The scaffold keeps the body above the navigation bar, so the top gives
+    // back as much; and the caption's invisible twin over the lockup balances
+    // the caption under it (Opacity 0 also keeps it from a screen reader).
+    // So the centre is the screen's, and the lockup, scaled down on a screen
+    // too short for it, never reaches the caption.
+    final body = Padding(
+      padding: EdgeInsets.only(top: MediaQuery.paddingOf(context).bottom),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          Opacity(opacity: 0, child: caption),
+          Expanded(
+            child: Center(
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: SplashLockup(showProgress: showProgress),
+              ),
+            ),
+          ),
+          caption,
+        ],
+      ),
+    );
+
+    // Glass replaces the Lagoon field with the aurora paper, and the mark
+    // takes its Lagoon square, the kit's form for any other ground.
+    // A scaffold, not a bare ColoredBox: the screen's text needs a Material
+    // ancestor or Flutter paints the missing-material debug underline.
     //
     // The field is `primary` directly rather than the theme's paper, because
     // the artboard fills the screen with the Lagoon brand colour. Under glass
@@ -78,8 +92,9 @@ class SplashScreen extends StatelessWidget {
   }
 }
 
-/// S1's centred column: the mark, the gap under it, and the progress line's
-/// slot.
+/// S1's centred column: the mark, the wordmark, the gap under it, and the
+/// progress line's slot — with as much empty space above the mark as hangs
+/// under it, so the mark is the column's centre.
 ///
 /// Public because the iOS launch image is this widget, rendered (#238). The
 /// slot is empty until [showProgress], so the image carries the same space
@@ -93,194 +108,85 @@ class SplashLockup extends StatelessWidget {
   Widget build(BuildContext context) => Column(
     mainAxisSize: MainAxisSize.min,
     children: <Widget>[
-      // The mark is decorative. A reader that announced "D, Sogda"
-      // would say nothing about the wait; the caption below is the screen's
-      // actual announcement.
+      const SizedBox(height: _SplashMetrics.underMark),
+      // The mark is decorative. A reader that announced "Sogda" would say
+      // nothing about the wait; the caption is the screen's announcement.
       const ExcludeSemantics(child: SplashMark()),
-      const SizedBox(height: 40),
+      const SizedBox(height: _SplashMetrics.ruleGap),
       // The line holds its space whether or not it is drawn, so the mark does
       // not jump 3 px when bootstrap crosses the threshold.
       SizedBox(
         height: _SplashMetrics.ruleHeight,
-        child: showProgress ? const _ProgressRule() : null,
+        // Its own layer: the indeterminate bar animates every frame, and
+        // would otherwise repaint the mark and the wordmark with it.
+        child: showProgress
+            ? const RepaintBoundary(child: _ProgressRule())
+            : null,
       ),
     ],
   );
 }
 
-/// The measurements the artboards give, in one place.
+/// The measurements, in one place.
 ///
 /// Named rather than inline because the native launch screens have to match
-/// them exactly — `splash_mark.xml` is a separate file that cannot read Dart,
-/// so the numbers it copies need somewhere to be copied *from*.
+/// them — `splash_icon.xml` and `splash_mark.xml` cannot read Dart, so the
+/// numbers they copy need somewhere to be copied *from*.
 abstract final class _SplashMetrics {
-  static const double bubbleWidth = 120;
-  static const double bubbleHeight = 92;
-  static const double bubbleRadius = 28;
-  static const double markHeight = 104;
+  /// The mark's square. Android 12 draws its splash icon's 108 grid on 288 dp;
+  /// the kit's lockup framing (1.32×) reaches that scale in this square, so
+  /// the tiles here are the platform's, dp for dp.
+  static const double markSize = 288 / 1.32;
 
-  /// The tail sits under the bubble, left of centre.
-  static const double tailLeft = 22;
-  static const double tailWidth = 24;
-  static const double tailHeight = 20;
+  /// The kit's stacked lockup (`svg/lockup-stacked-tiles-light.svg`) sets the
+  /// wordmark at 84 under a 200 square, its cap height 18.7 below it.
+  static const double _kit = markSize / 200;
+  static const double wordmarkSize = 84 * _kit;
+  static const double wordmarkGap = 18.7 * _kit;
 
-  static const double letterSize = 60;
-  static const double wordmarkSize = 28;
-  static const double borderWidth = 3;
-  static const double shadowOffset = 3;
-
+  static const double ruleGap = 40;
   static const double ruleWidth = 120;
   static const double ruleHeight = 3;
+
+  /// All that hangs under the mark, repeated over it to centre it.
+  static const double underMark =
+      wordmarkGap + SgWordmark.height * wordmarkSize + ruleGap + ruleHeight;
 
   /// How far bootstrap has to run before the line is worth showing.
   static const Duration progressAfter = Duration(milliseconds: 600);
 }
 
-/// The "D" in its speech bubble, plus the wordmark.
+/// The kit's stacked lockup: the tiles over the wordmark.
+///
+/// On the Lagoon field the square is the field itself, so only the tiles are
+/// drawn; on glass the aurora is the ground, and the mark takes its square.
 ///
 /// Public because S1's error state (#86) draws the same mark: the learner is
 /// looking at the splash when bootstrap fails, and keeping the mark is what
 /// stops the failure reading as a crash into a different app.
 class SplashMark extends StatelessWidget {
-  const SplashMark({super.key});
+  const SplashMark({super.key, this.scale = 1});
+
+  /// S1's size times this. The error state draws it smaller, so the message
+  /// and its actions reach above the fold on a small phone.
+  final double scale;
 
   @override
   Widget build(BuildContext context) {
     final tokens = context.tokens;
-
-    final mark = Column(
+    final size = _SplashMetrics.markSize * scale;
+    return Column(
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
-        SizedBox(
-          width: _SplashMetrics.bubbleWidth,
-          height: _SplashMetrics.markHeight,
-          child: Stack(
-            clipBehavior: Clip.none,
-            children: <Widget>[
-              Positioned(
-                left: _SplashMetrics.tailLeft,
-                top: _SplashMetrics.bubbleHeight - _SplashMetrics.borderWidth,
-                child: CustomPaint(
-                  size: const Size(
-                    _SplashMetrics.tailWidth,
-                    _SplashMetrics.tailHeight,
-                  ),
-                  painter: _TailPainter(
-                    // On the solid field the tail is drawn in ink, continuing
-                    // the bubble's border. On glass there is no border, so it
-                    // continues the bubble's fill instead.
-                    colour: tokens.isGlass
-                        ? tokens.color.accent
-                        : tokens.color.ink,
-                  ),
-                ),
-              ),
-              Container(
-                width: _SplashMetrics.bubbleWidth,
-                height: _SplashMetrics.bubbleHeight,
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  color: tokens.color.accent,
-                  borderRadius: BorderRadius.circular(
-                    _SplashMetrics.bubbleRadius,
-                  ),
-                  border: tokens.isGlass
-                      ? null
-                      : Border.all(
-                          color: tokens.color.ink,
-                          width: _SplashMetrics.borderWidth,
-                        ),
-                  boxShadow: <BoxShadow>[
-                    if (tokens.isGlass)
-                      BoxShadow(
-                        color: tokens.surface.shadow,
-                        blurRadius: 24,
-                        offset: const Offset(0, 8),
-                      )
-                    else
-                      BoxShadow(
-                        color: tokens.surface.shadow,
-                        offset: const Offset(
-                          _SplashMetrics.shadowOffset,
-                          _SplashMetrics.shadowOffset,
-                        ),
-                      ),
-                  ],
-                ),
-                // The mark is the logo, drawn at its size in its square: it
-                // does not grow with the learner's text size (#165), as the
-                // wordmark below does.
-                child: _Lockup(
-                  'D',
-                  size: _SplashMetrics.letterSize,
-                  colour: tokens.color.onAccent,
-                  scales: false,
-                ),
-              ),
-            ],
-          ),
-        ),
-        const SizedBox(height: 20),
-        _Lockup(
-          'Sogda',
-          size: _SplashMetrics.wordmarkSize,
-          colour: tokens.color.ink,
-          letterSpacing: -0.5,
+        if (tokens.isGlass) SgMark.appIcon(size: size) else SgMark(size: size),
+        SizedBox(height: _SplashMetrics.wordmarkGap * scale),
+        SgWordmark(
+          fontSize: _SplashMetrics.wordmarkSize * scale,
+          colour: tokens.isGlass ? tokens.color.ink : SgBrand.ink,
         ),
       ],
     );
-
-    // The wordmark is the product's name, not course content, so it is not in
-    // the ARB — translating it would be renaming the app.
-    return tokens.isGlass
-        ? SgSurface(
-            padding: const EdgeInsets.fromLTRB(44, 36, 44, 32),
-            radius: _SplashMetrics.bubbleRadius,
-            child: mark,
-          )
-        : mark;
   }
-}
-
-/// A piece of the brand lockup.
-///
-/// `Text` rather than [SgText], and on purpose: the scale is for content, and
-/// these two sizes — 60 for the glyph, 28 for the wordmark — are artwork fixed
-/// by the artboards. Bending them to the nearest role would move the mark, and
-/// the native launch screens have to match it pixel for pixel.
-///
-/// The Bangla fallback [SgText] exists to enforce does not apply: "D" and
-/// "Sogda" are the product's name, in Latin, in every locale.
-class _Lockup extends StatelessWidget {
-  const _Lockup(
-    this.data, {
-    required this.size,
-    required this.colour,
-    this.letterSpacing,
-    this.scales = true,
-  });
-
-  final String data;
-  final double size;
-  final Color colour;
-  final double? letterSpacing;
-
-  /// With the system text size: false for the logo's letter.
-  final bool scales;
-
-  @override
-  Widget build(BuildContext context) => Text(
-    data,
-    textScaler: scales ? null : TextScaler.noScaling,
-    style: TextStyle(
-      fontFamily: AppFonts.latin,
-      fontSize: size,
-      height: 1,
-      letterSpacing: letterSpacing,
-      color: colour,
-      fontVariations: AppFonts.weight(700),
-    ),
-  );
 }
 
 /// The thin Lagoon rule under the mark.
@@ -326,27 +232,6 @@ class _ProgressRule extends StatelessWidget {
       ),
     );
   }
-}
-
-/// The speech-bubble tail: a downward triangle.
-class _TailPainter extends CustomPainter {
-  const _TailPainter({required this.colour});
-
-  final Color colour;
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final path = Path()
-      ..moveTo(0, 0)
-      ..lineTo(size.width, 0)
-      ..lineTo(size.width / 2, size.height)
-      ..close();
-
-    canvas.drawPath(path, Paint()..color = colour);
-  }
-
-  @override
-  bool shouldRepaint(_TailPainter oldDelegate) => oldDelegate.colour != colour;
 }
 
 /// Shows [SplashScreen] bare, then with its progress line once bootstrap has

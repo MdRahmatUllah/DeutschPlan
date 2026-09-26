@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:sogda/router/deep_links.dart';
 import 'package:sogda/services/reminder_notifications.dart';
 import 'package:flutter/services.dart';
@@ -38,6 +40,7 @@ void main() {
                 'payload': PlatformReminderNotifications.link,
               },
             ],
+            'initialize' => true,
             _ => null,
           };
         });
@@ -72,6 +75,38 @@ void main() {
       expect(cancelled(), isNot(contains(1009911796)));
     },
   );
+
+  test('#602 its small icon is the tiles drawable the app ships, white on '
+      'transparent, and kept in a shrunk release build', () async {
+    await PlatformReminderNotifications().init((_) {});
+
+    final init = calls.singleWhere((call) => call.method == 'initialize');
+    final icon =
+        (init.arguments as Map<Object?, Object?>)['defaultIcon'] as String?;
+    expect(icon, PlatformReminderNotifications.smallIcon);
+    // A drawable: the launcher's mipmap is a colour square, which the status
+    // bar draws as a white blob.
+    final name = RegExp(r'^@drawable/(\w+)$').firstMatch(icon!)?.group(1);
+    expect(name, isNotNull, reason: icon);
+    final file = File('android/app/src/main/res/drawable/$name.xml');
+    expect(file.existsSync(), isTrue, reason: file.path);
+    final xml = file.readAsStringSync();
+    expect(xml, contains('<vector'));
+    // Named only from Dart, so the release build's resource shrinking would
+    // strip it without this.
+    final keep = File('android/app/src/main/res/raw/keep.xml')
+        .readAsStringSync()
+        .replaceAll(RegExp(r'<!--.*?-->', dotAll: true), '');
+    final kept = RegExp(r'tools:keep="([^"]*)"').firstMatch(keep)?.group(1);
+    expect(kept?.split(','), contains('@drawable/$name'));
+    expect(
+      RegExp(r'(?:fill|stroke)Color="([^"]+)"')
+          .allMatches(xml)
+          .map((match) => match.group(1))
+          .toSet(),
+      <String>{'#FFFFFFFF'},
+    );
+  });
 
   test("#601 a tapped reminder opens Today through the app's own scheme", () {
     // A link in an older name's scheme would fall through to the fallback.

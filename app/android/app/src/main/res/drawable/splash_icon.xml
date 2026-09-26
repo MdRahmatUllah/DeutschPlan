@@ -1,40 +1,82 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- The Android 12 splash icon: the same mark, on the canvas the platform
-     expects.
+<!-- The Android 12+ splash icon (`windowSplashScreenAnimatedIcon`): the
+     brand kit's tiles (#602), on the 108 grid of
+     `docs/sogda-brand-kit/svg/icon-tiles-foreground.svg`.
 
-     Android masks this into a circle and shows roughly the inner two thirds,
-     so drawing the mark at its own 120 x 104 size loses the bubble's corners
-     and the whole tail — which is exactly what happened the first time. The
-     art is therefore scaled to 132 x 114 inside a 288 x 288 canvas, whose
-     diagonal (174) clears the 192 safe circle.
+     Android draws the icon's canvas at 288 dp and masks it to the inner
+     192 dp circle, the adaptive icon's two thirds. The kit's 108 viewport on
+     the 288 dp canvas keeps the art inside its 66-unit safe circle, so
+     nothing is cropped. S1's Flutter frame draws the tiles at this same
+     scale (`_SplashMetrics.markSize`) at the screen's centre, where the
+     platform puts this, so the hand-off moves nothing (FR-S1-05).
 
-     `splash_mark.xml` keeps the unpadded geometry for the pre-12 window, which
-     is not masked and can place the mark at the artboard's own size. -->
+     `splash_mark.xml` is the same art cropped tight, for the pre-12 window,
+     which is not masked.
+
+     The art is raised 0.4848 of a unit, so that the point of the grid S1's
+     square is centred on, (54, 56 - 2/1.32), falls on this canvas's centre.
+
+     Converted from the kit's SVG, not drawn by hand: one group per SVG
+     transform, outer first; each tile its rounded-rect path; the letters the
+     kit's own outlines, as `SgMark` draws them; fill and stroke taken down
+     from the SVG's groups. The colours are resources, the kit's in both
+     modes: the tiles are never recoloured. -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="288dp"
     android:height="288dp"
-    android:viewportWidth="288"
-    android:viewportHeight="288">
+    android:viewportWidth="108"
+    android:viewportHeight="108">
 
-    <group
-        android:translateX="78"
-        android:translateY="87"
-        android:scaleX="1.1"
-        android:scaleY="1.1">
-
-        <path
-            android:fillColor="@color/splash_ink"
-            android:pathData="M22,84 L46,84 L34,104 Z" />
-
-        <path
-            android:fillColor="@color/splash_mark"
-            android:strokeColor="@color/splash_ink"
-            android:strokeWidth="3"
-            android:pathData="M1.5,29.5 A28,28 0 0 1 29.5,1.5 L90.5,1.5 A28,28 0 0 1 118.5,29.5 L118.5,62.5 A28,28 0 0 1 90.5,90.5 L29.5,90.5 A28,28 0 0 1 1.5,62.5 Z" />
-
-        <path
-            android:fillColor="@color/splash_ink"
-            android:fillType="evenOdd"
-            android:pathData="M38,16 L60,16 A30,30 0 0 1 60,76 L38,76 Z M52,30 L60,30 A16,16 0 0 1 60,62 L52,62 Z" />
+    <group android:translateY="-0.4848">
+        <group android:translateX="44.5" android:translateY="49.5">
+            <group android:rotation="-10">
+                <group android:translateX="2.4" android:translateY="2.4">
+                    <path
+                        android:fillColor="@color/splash_ink"
+                        android:pathData="M-8.5,-14 L8.5,-14 A5.5,5.5 0 0 1 14,-8.5 L14,8.5 A5.5,5.5 0 0 1 8.5,14 L-8.5,14 A5.5,5.5 0 0 1 -14,8.5 L-14,-8.5 A5.5,5.5 0 0 1 -8.5,-14 Z"
+                        android:strokeColor="@color/splash_ink"
+                        android:strokeWidth="2.6"
+                        android:strokeLineJoin="round" />
+                </group>
+                <path
+                    android:fillColor="@color/splash_paper"
+                    android:pathData="M-8.5,-14 L8.5,-14 A5.5,5.5 0 0 1 14,-8.5 L14,8.5 A5.5,5.5 0 0 1 8.5,14 L-8.5,14 A5.5,5.5 0 0 1 -14,8.5 L-14,-8.5 A5.5,5.5 0 0 1 -8.5,-14 Z"
+                    android:strokeColor="@color/splash_ink"
+                    android:strokeWidth="2.6"
+                    android:strokeLineJoin="round" />
+                <group android:translateX="-7.64" android:translateY="7.24">
+                    <group android:scaleX="0.0264" android:scaleY="-0.0264">
+                        <path
+                            android:fillColor="@color/splash_ink"
+                            android:pathData="M326 559Q429 559 485.5 509.0Q542 459 542 363V0H425L392 74H388Q353 29 314.0 9.5Q275 -10 206 -10Q134 -10 86.0 33.0Q38 76 38 165Q38 252 100.0 295.0Q162 338 282 343L373 346V359Q373 402 353.0 420.0Q333 438 297 438Q262 438 222.5 426.0Q183 414 144 397L95 510Q140 534 198.0 546.5Q256 559 326 559ZM323 248Q260 245 235.0 226.5Q210 208 210 173Q210 141 228.0 126.5Q246 112 275 112Q316 112 345.0 137.0Q374 162 374 206V250Z" />
+                    </group>
+                </group>
+            </group>
+        </group>
+        <group android:translateX="62.5" android:translateY="59.5">
+            <group android:rotation="7">
+                <group android:translateX="2.4" android:translateY="2.4">
+                    <path
+                        android:fillColor="@color/splash_ink"
+                        android:pathData="M-8.5,-14 L8.5,-14 A5.5,5.5 0 0 1 14,-8.5 L14,8.5 A5.5,5.5 0 0 1 8.5,14 L-8.5,14 A5.5,5.5 0 0 1 -14,8.5 L-14,-8.5 A5.5,5.5 0 0 1 -8.5,-14 Z"
+                        android:strokeColor="@color/splash_ink"
+                        android:strokeWidth="2.6"
+                        android:strokeLineJoin="round" />
+                </group>
+                <path
+                    android:fillColor="@color/splash_mark"
+                    android:pathData="M-8.5,-14 L8.5,-14 A5.5,5.5 0 0 1 14,-8.5 L14,8.5 A5.5,5.5 0 0 1 8.5,14 L-8.5,14 A5.5,5.5 0 0 1 -14,8.5 L-14,-8.5 A5.5,5.5 0 0 1 -8.5,-14 Z"
+                    android:strokeColor="@color/splash_ink"
+                    android:strokeWidth="2.6"
+                    android:strokeLineJoin="round" />
+                <group android:translateX="-7.47" android:translateY="10.25">
+                    <group android:scaleX="0.0211" android:scaleY="-0.0211">
+                        <path
+                            android:fillColor="@color/splash_ink"
+                            android:pathData="M521 0L476 152H233L187 0H0L243 717H463L708 0ZM397 432Q392 448 383.5 481.0Q375 514 366.5 548.0Q358 582 354 604Q349 581 341.5 548.5Q334 516 326.0 484.5Q318 453 312 432L271 294H438ZM165 853Q165 890 187.0 907.0Q209 924 241 924Q271 924 294.0 907.0Q317 890 317 853Q317 817 294.0 800.0Q271 783 241 783Q209 783 187.0 800.0Q165 817 165 853ZM390 853Q390 890 411.5 907.0Q433 924 466 924Q496 924 519.0 907.0Q542 890 542 853Q542 817 519.0 800.0Q496 783 466 783Q433 783 411.5 800.0Q390 817 390 853Z" />
+                    </group>
+                </group>
+            </group>
+        </group>
     </group>
 </vector>

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The notification's small icon (#602): the brand kit's mono tiles,
+     `docs/sogda-brand-kit/svg/icon-tiles-mono.svg`, all white on
+     transparent, as Android draws a status-bar icon from its alpha alone.
+     `PlatformReminderNotifications.smallIcon` names it.
+
+     The viewport is a square around the art, with a little room, rather
+     than the kit's 108 grid, so the tiles fill the 24 dp. The kit masks the
+     back tile where the front one overlaps; a vector drawable has no mask,
+     so the clip path is the whole grid with the front tile's padded outline
+     as a hole, wound the other way.
+
+     Converted from the kit's SVG, not drawn by hand: one group per SVG
+     transform, outer first; each tile its rounded-rect path. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="54"
+    android:viewportHeight="54">
+
+    <group
+        android:translateX="-26.3128"
+        android:translateY="-27.3128">
+        <group>
+            <clip-path android:pathData="M0,0 L108,0 L108,108 L0,108 Z M47.2807,48.06 L44.9652,66.9183 A7,7 0 0 0 51.06,74.7193 L69.9183,77.0348 A7,7 0 0 0 77.7193,70.94 L80.0348,52.0817 A7,7 0 0 0 73.94,44.2807 L55.0817,41.9652 A7,7 0 0 0 47.2807,48.06 Z" />
+            <group android:translateX="44.5" android:translateY="49.5">
+                <group android:rotation="-10">
+                    <path
+                        android:pathData="M-8.5,-14 L8.5,-14 A5.5,5.5 0 0 1 14,-8.5 L14,8.5 A5.5,5.5 0 0 1 8.5,14 L-8.5,14 A5.5,5.5 0 0 1 -14,8.5 L-14,-8.5 A5.5,5.5 0 0 1 -8.5,-14 Z"
+                        android:strokeColor="#FFFFFFFF"
+                        android:strokeWidth="2.6"
+                        android:strokeLineJoin="round" />
+                    <group android:translateX="-7.64" android:translateY="7.24">
+                        <group android:scaleX="0.0264" android:scaleY="-0.0264">
+                            <path
+                                android:fillColor="#FFFFFFFF"
+                                android:pathData="M326 559Q429 559 485.5 509.0Q542 459 542 363V0H425L392 74H388Q353 29 314.0 9.5Q275 -10 206 -10Q134 -10 86.0 33.0Q38 76 38 165Q38 252 100.0 295.0Q162 338 282 343L373 346V359Q373 402 353.0 420.0Q333 438 297 438Q262 438 222.5 426.0Q183 414 144 397L95 510Q140 534 198.0 546.5Q256 559 326 559ZM323 248Q260 245 235.0 226.5Q210 208 210 173Q210 141 228.0 126.5Q246 112 275 112Q316 112 345.0 137.0Q374 162 374 206V250Z" />
+                        </group>
+                    </group>
+                </group>
+            </group>
+        </group>
+        <group android:translateX="62.5" android:translateY="59.5">
+            <group android:rotation="7">
+                <path
+                    android:pathData="M-8.5,-14 L8.5,-14 A5.5,5.5 0 0 1 14,-8.5 L14,8.5 A5.5,5.5 0 0 1 8.5,14 L-8.5,14 A5.5,5.5 0 0 1 -14,8.5 L-14,-8.5 A5.5,5.5 0 0 1 -8.5,-14 Z"
+                    android:strokeColor="#FFFFFFFF"
+                    android:strokeWidth="2.6"
+                    android:strokeLineJoin="round" />
+                <group android:translateX="-7.47" android:translateY="10.25">
+                    <group android:scaleX="0.0211" android:scaleY="-0.0211">
+                        <path
+                            android:fillColor="#FFFFFFFF"
+                            android:pathData="M521 0L476 152H233L187 0H0L243 717H463L708 0ZM397 432Q392 448 383.5 481.0Q375 514 366.5 548.0Q358 582 354 604Q349 581 341.5 548.5Q334 516 326.0 484.5Q318 453 312 432L271 294H438ZM165 853Q165 890 187.0 907.0Q209 924 241 924Q271 924 294.0 907.0Q317 890 317 853Q317 817 294.0 800.0Q271 783 241 783Q209 783 187.0 800.0Q165 817 165 853ZM390 853Q390 890 411.5 907.0Q433 924 466 924Q496 924 519.0 907.0Q542 890 542 853Q542 817 519.0 800.0Q496 783 466 783Q433 783 411.5 800.0Q390 817 390 853Z" />
+                    </group>
+                </group>
+            </group>
+        </group>
+    </group>
+</vector>
