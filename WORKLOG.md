@@ -815,3 +815,4 @@ able to tell what is going on without asking.
 - 2026-09-26 18:22 · agent-2 #590 · claimed: bug(a11y): in Bangla at 200 % with the keyboard up, L12 Writing's field edge scrolls 13 dp under the status bar
 - 2026-09-26 18:22 · agent-2 #590 · done (#592)
 - 2026-09-26 18:27 · agent-1 #581 · done (#589)
+- 2026-09-26 18:33 · agent-1 #588 · done (#591)

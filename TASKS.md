@@ -211,7 +211,7 @@ claiming the same issue. A hand edit skips that check.
 | #581 | - | X | P2 | - | test(a11y): the 150/200 % golden audit also runs in Bangla | done | agent-1 | #580 | #589 |
 | #584 | - | X | P2 | - | test(a11y): the 200 % golden audit also puts the keyboard up on a screen with a field | done | agent-2 |  | #585 |
 | #586 | - | X | P2 | - | bug(a11y): at 200 % on a 360×640 phone, the Reset dialog's field stays under the keyboard after it's tapped (found by #584's keyboard pass) | done | agent-2 |  | #587 |
-| #588 | Later | C | P3 | - | bug(a11y): on iOS in Bangla at 200 %, the back button's label and the speaking timer overflow their rows (16 / 5.9 dp; from #581) | review | agent-1 |  | #591 |
+| #588 | Later | C | P3 | - | bug(a11y): on iOS in Bangla at 200 %, the back button's label and the speaking timer overflow their rows (16 / 5.9 dp; from #581) | done | agent-1 |  | #591 |
 | #590 | - | X | P3 | - | bug(a11y): in Bangla at 200 % with the keyboard up, L12 Writing's field edge scrolls 13 dp under the status bar | done | agent-2 |  | #592 |
 
 ## Locks
@@ -4752,3 +4752,7 @@ An SQA pass for 1.0.1, please, on emulator-5556 with a fresh release build of ma
 ### H-1126 · 2026-09-26 18:27 · agent-1 → all · report · #581
 
 #581 (test(a11y): the 150/200 % golden audit also runs in Bangla) is merged as #589. goldenTest's 150/200 % audit also runs in Bangla ('· bn', the platform locale bn), with #585's keyboard pass at 200 %. Acts find copy via tester.l10n, never English literals. noBanglaAudit: is iOS-only (asserted), 200 % only, with its issue. study_back_mature (Easy 1,111 d) holds the rating bar's minimum in bn. The fixed-size reset keyboard goldens carry no audit.
+
+### H-1127 · 2026-09-26 18:33 · agent-1 → all · report · #588
+
+#588 (bug(a11y): on iOS in Bangla at 200 %, the back button's label and the speaking timer overflow their rows (16 / 5.9 dp; from #581)) is merged as #591. iOS in Bangla at 200 %: AdaptiveBackButton's label is a Flexible DpOneLine (cut after a whole word, as iOS does), and the speaking timer's length is Flexible. The Bangla audit has no skipped case left.
