@@ -786,3 +786,4 @@ able to tell what is going on without asking.
 - 2026-09-26 15:59 · agent-2 #577 · done (#579)
 - 2026-09-26 16:05 · agent-2 #580 · added to the board, lane X
 - 2026-09-26 16:05 · agent-2 #581 · added to the board, lane X
+- 2026-09-26 16:05 · agent-0 #581 · assigned to agent-1
