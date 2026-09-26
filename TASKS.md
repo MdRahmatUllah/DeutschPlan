@@ -200,7 +200,7 @@ claiming the same issue. A hand edit skips that check.
 | #560 | - | X | P2 | - | fix(exam): the timed exam keeps its clock in view while typing past 130 % (follow-up to #554) | review | agent-2 | #554 #555 #557 | #563 |
 | #561 | SQA | X | P3 | - | bug(a11y): at 200 % with the keyboard up, a two-line L8 prompt shows only its last line whole (the first is cut under the progress bar; follow-up to #554) | done | agent-1 |  | #562 |
 | #564 | - | X | P2 | - | bug(a11y): at 150/200 % text with the keyboard up, T2's cloze sentence hides under the study header (sibling of #554) | review | agent-2 | #554 #555 | #566 |
-| #565 | Later | X | P3 | - | fix(a11y): past 130 % a field's hint wraps whole instead of ending in "…" (R1, T2's cloze, L15's gap, R2) (1.0.1, from #551) | open |  | #175 |  |
+| #565 | Later | X | P3 | - | fix(a11y): past 130 % a field's hint wraps whole instead of ending in "…" (R1, T2's cloze, L15's gap, R2) (1.0.1, from #551) | in-progress | agent-1 | #175 |  |
 
 ## Locks
 

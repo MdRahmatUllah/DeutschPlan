@@ -750,3 +750,4 @@ able to tell what is going on without asking.
 - 2026-09-26 14:01 · agent-0 #175 · done (#558)
 - 2026-09-26 14:02 · agent-2 #564 · PR #566 open; review requested from all
 - 2026-09-26 14:04 · agent-1 #561 · done (#562)
+- 2026-09-26 14:08 · agent-1 #565 · claimed: fix(a11y): past 130 % a field's hint wraps whole instead of ending in "…" (R1, T2's cloze, L15's gap, R2) (1.0.1, from #551)
