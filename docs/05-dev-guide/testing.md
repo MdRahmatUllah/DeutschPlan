@@ -7,7 +7,7 @@
 | Widgets | `flutter_test`, with provider overrides and hand-written fakes for TTS, the translator and the downloader (`todayStub()`, `wordStub()`) | key flows | reveal → rate → undo; navigator jump; settings rows write keys |
 | Goldens | `matchesGoldenFile`, through `test/golden/golden_harness.dart` | every screen × light/dark/glass × phone/tablet | stored under `test/golden/goldens/` |
 | Integration | `integration_test` on the Android emulator (`tools/smoke.py`) | smoke | onboarding → first session → day complete; exam resume after kill |
-| Performance | `flutter drive --profile` timeline | budgets in `accessibility-performance.md` | glass list scroll, card transition |
+| Performance | `tools/perf.py`: `flutter drive --profile` frame timings, `am start -W`, APK size, against baselines | budgets in `accessibility-performance.md` | glass list scroll, card transition, search, start, size; with the milestone's full suite and before a release |
 
 Rules:
 - Test names carry FR/BR IDs.

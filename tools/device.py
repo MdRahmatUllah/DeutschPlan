@@ -127,7 +127,9 @@ class Device:
         path.write_bytes(self.run("exec-out", "screencap", "-p").stdout)
         return path
 
-    def install(self, apk: Path = APK) -> None:
+    def install(self, apk: Path = APK) -> bool:
+        """Installs [apk]; whether adb answered `Success`. A refusal (a version
+        downgrade, say) goes to adb's stderr and leaves the old app in place."""
         if not apk.exists():
             raise SystemExit(f"no APK at {apk}: `cd app && flutter build apk --release --target-platform android-x64`")
         out = self.run("install", "-r", str(apk)).stdout.decode("utf-8", "replace")
@@ -135,6 +137,7 @@ class Device:
             self.sh("pm", "trim-caches", "16G")
             out = self.run("install", "-r", str(apk)).stdout.decode("utf-8", "replace")
         print(out.strip().splitlines()[-1] if out.strip() else "installed")
+        return out.strip().endswith("Success")
 
     def launch(self) -> None:
         self.sh("am", "force-stop", PACKAGE)
