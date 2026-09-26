@@ -20,9 +20,9 @@ WaitTime: 830
 Complete
 """
 
-LOGCAT = """09-26 05:03:15.234   718   749 I ActivityTaskManager: Displayed com.example.deutschplan/.MainActivity for user 0: +1s12ms
+LOGCAT = """09-26 05:03:15.234   718   749 I ActivityTaskManager: Displayed io.github.rahmatullah.deutschplan/.MainActivity for user 0: +1s12ms
 09-26 05:03:15.901   718   749 I ActivityTaskManager: Fully drawn com.example.other/.MainActivity: +3s1ms
-09-26 05:03:16.234   718   749 I ActivityTaskManager: Fully drawn com.example.deutschplan/.MainActivity: +1s634ms
+09-26 05:03:16.234   718   749 I ActivityTaskManager: Fully drawn io.github.rahmatullah.deutschplan/.MainActivity: +1s634ms
 """
 
 
