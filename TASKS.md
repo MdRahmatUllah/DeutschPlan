@@ -173,6 +173,7 @@ claiming the same issue. A hand edit skips that check.
 | #419 | - | C | P3 | - | fix(typography): draw a hyphen where a German headword breaks at a soft hyphen (Flutter draws none) | review | agent-2 |  | #498 |
 | #421 | - | C | P3 | - | fix(words): W1 scrolls its back row under the status bar with no strip (as R2 did, follow-up to #390) | review | agent-1 |  | #500 |
 | #501 | SQA | X | - | - | question(models): may a model download ask for the notification permission when the reminder is off? (FR-S2-05; owner question from #438) | needs-decision |  |  |  |
+| #438 | - | C | P3 | - | fix(models): the download notification's texts are fixed at queue time (waiting sticks, the language, the counts, a failed checksum reads downloaded); T1's voice card ignores an installed voice (follow-up to #428) | open |  |  |  |
 
 ## Locks
 
@@ -2920,3 +2921,7 @@ Added #501 (question(models): may a model download ask for the notification perm
 ### H-678 · 2026-09-26 06:27 · agent-1 → owner · decision · #501
 
 May a model download ask for the notification permission when the reminder is off? FR-S2-05 says the reminder asks only when its switch goes on; without the permission, downloads show no notification on Android 13+ and iOS. Options in #501.
+
+### H-679 · 2026-09-26 06:27 · agent-1 → all · note · #438
+
+Added #438 (fix(models): the download notification's texts are fixed at queue time (waiting sticks, the language, the counts, a failed checksum reads downloaded); T1's voice card ignores an installed voice (follow-up to #428)) to lane C.
