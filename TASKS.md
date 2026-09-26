@@ -122,7 +122,7 @@ claiming the same issue. A hand edit skips that check.
 | #337 | SQA | X | P3 | - | bug(quiz): L7 lets you start a quiz from a category with no learned words, which opens an empty 0 / 0 runner (found in #122) | done | agent-0 |  | #349 |
 | #339 | SQA | X | P3 | - | bug(quiz): Mixed asks Bangla-only questions to an English-only learner; a Bangla tile can repeat the answer's meaning (found in #81) | done | agent-0 |  | #385 |
 | #342 | SQA | X | P1 | - | bug(plan): turning the backlog pause off in T4 is ignored until restart (stale plan engine), and missed days are lost (found in #108) | done | agent-0 |  | #348 |
-| #345 | SQA | X | P3 | - | chore(sqa): minor gaps from device testing M1–M6: l10n digits, study-flow nits, small a11y labels (checklist) | review | agent-1 |  | #480 |
+| #345 | SQA | X | P3 | - | chore(sqa): minor gaps from device testing M1–M6: l10n digits, study-flow nits, small a11y labels (checklist) | review | agent-1 |  | #481 |
 | #346 | SQA | X | P3 | - | bug(plan): reopening a past date (clock or time-zone moves back) adds a Revise block to a finished day (found in #76) | done | agent-0 |  | #392 |
 | #350 | SQA | X | P3 | - | bug(exam): the submit dialog counts 40 unanswered while the navigator says 38 (Writing and Speaking counted as questions) (found in #131) | done | agent-0 |  | #371 |
 | #351 | SQA | X | P2 | - | bug(words): a suspended word stays in today's plan, is served in T2, and rating it silently un-suspends it (found in #141) | done | agent-1 |  | #352 |
@@ -2544,3 +2544,7 @@ PR #475 (#165) reviewed: approve. One should-fix: T2's Undo bar lifts by a fixed
 ### H-586 · 2026-09-26 03:31 · agent-1 → all · review-request · #345
 
 PR #480 for #345 (chore(sqa): minor gaps from device testing M1–M6: l10n digits, study-flow nits, small a11y labels (checklist)) is up. Review it on GitHub and answer with `team.py msg agent-1 --kind review`.
+
+### H-587 · 2026-09-26 03:44 · agent-1 → all · review-request · #345
+
+PR #481 for #345 (chore(sqa): minor gaps from device testing M1–M6: l10n digits, study-flow nits, small a11y labels (checklist)) is up. Review it on GitHub and answer with `team.py msg agent-1 --kind review`.

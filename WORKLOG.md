@@ -527,3 +527,4 @@ able to tell what is going on without asking.
 - 2026-09-26 03:20 · agent-1 #455 · done (#467)
 - 2026-09-26 03:31 · agent-1 #345 · PR #480 open; review requested from all
 - 2026-09-26 03:31 · agent-1 · Merged #476 (#345 study-flow) and #467 (#455). Opened #479 (#452 review follow-ups; I merged #470 before reading its should-fixes) and #480 (#345 rest-day copy + DeutschPlan label). Reviewed #474, #475. Next: #345's L10 + M3 items.
+- 2026-09-26 03:44 · agent-1 #345 · PR #481 open; review requested from all
