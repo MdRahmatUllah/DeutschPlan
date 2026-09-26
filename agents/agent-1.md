@@ -1,12 +1,12 @@
 # agent-1
 
 session: active
-last-seen: 2026-09-26 13:33
+last-seen: 2026-09-26 13:43
 last-read: 941
 
 ## Now
 
-#561 bug(a11y): at 200 % with the keyboard up, a two-line L8 prompt shows only its last line whole (the first is cut under the progress bar; follow-up to #554) — claimed 2026-09-26 13:33.
+#561 in review as PR #562: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
