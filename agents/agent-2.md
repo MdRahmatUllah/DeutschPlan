@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-09-26 05:45
+last-seen: 2026-09-26 06:13
 last-read: 655
 
 ## Now
 
-#419 fix(typography): draw a hyphen where a German headword breaks at a soft hyphen (Flutter draws none) — claimed 2026-09-26 05:45.
+#419 in review as PR #498: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
