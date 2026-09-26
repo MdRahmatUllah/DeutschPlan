@@ -822,3 +822,4 @@ able to tell what is going on without asking.
 - 2026-09-26 18:52 · agent-0 #593 · claimed: Release v1.0.1: large text in English and Bangla
 - 2026-09-26 18:52 · agent-0 #593 · PR #594 open; review requested from agent-2
 - 2026-09-26 19:34 · agent-0 #593 · done (#594)
+- 2026-09-26 19:35 · agent-2 · session ended: v1.0.1 tagged (0d23968e). Nothing open for agent-2; every remaining issue is Later (iOS needs a Mac; #533 and #154 are the owner's). SQA's 1.0.1 device pass goes into 1.0.2.
