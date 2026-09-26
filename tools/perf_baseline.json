@@ -1,7 +1,7 @@
 {
   "margins": {
     "size": 0.03,
-    "start": 0.25,
+    "start": 0.5,
     "card": 0.5,
     "list": 0.5,
     "search": 0.25,
@@ -16,6 +16,7 @@
     "search.first_ms": null
   },
   "budgets": {
+    "size": null,
     "start.cold_ms": 1500,
     "start.warm_ms": 500,
     "card": 16,
@@ -28,26 +29,26 @@
   },
   "metrics": {
     "size.arm64_mb": 159.54,
-    "card.build_avg_ms": 2.005,
-    "card.build_p90_ms": 4.524,
-    "card.build_p99_ms": 10.709,
-    "card.raster_avg_ms": 26.098,
-    "card.raster_p90_ms": 35.87,
-    "card.raster_p99_ms": 52.764,
-    "card.missed_build": 0,
-    "card.missed_raster": 123,
-    "list.build_avg_ms": 2.165,
-    "list.build_p90_ms": 3.383,
-    "list.build_p99_ms": 4.326,
-    "list.raster_avg_ms": 27.432,
-    "list.raster_p90_ms": 34.015,
-    "list.raster_p99_ms": 43.596,
+    "card.build_avg_ms": 4.02,
+    "card.build_p90_ms": 9.189,
+    "card.build_p99_ms": 23.395,
+    "card.raster_avg_ms": 63.427,
+    "card.raster_p90_ms": 83.054,
+    "card.raster_p99_ms": 125.512,
+    "card.missed_build": 2,
+    "card.missed_raster": 58,
+    "list.build_avg_ms": 2.868,
+    "list.build_p90_ms": 4.843,
+    "list.build_p99_ms": 7.174,
+    "list.raster_avg_ms": 68.66,
+    "list.raster_p90_ms": 93.313,
+    "list.raster_p99_ms": 115.877,
     "list.missed_build": 0,
-    "list.missed_raster": 495,
-    "search.median_ms": 26.21,
-    "search.max_ms": 47.28,
-    "search.first_ms": 49.32,
-    "start.cold_ms": 2227,
-    "start.warm_ms": 573
+    "list.missed_raster": 198,
+    "search.median_ms": 17.77,
+    "search.max_ms": 32.64,
+    "search.first_ms": 314.21,
+    "start.cold_ms": 2799,
+    "start.warm_ms": 1048
   }
 }

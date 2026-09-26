@@ -1,6 +1,6 @@
 """#167's performance budgets, measured on the developers' emulator.
 
-    python tools/team.py device            # frames and start drive the emulator
+    python tools/team.py device            # every step: APK builds and the emulator
     python tools/perf.py all               # size, frames, start; exit 1 on a regression
     python tools/team.py device --release
 
@@ -11,10 +11,15 @@ is off, #302). `accessibility-performance.md` has the budgets.
     frames    integration_test/perf_test.dart under `flutter drive --profile`
               on a fresh install: five cards rated (card), L2's word list
               flung under glass (list), and R1's search timed per keystroke
-    start     the x86_64 split installed over the app: cold and warm
-              `am start -W`, the median of five each. Run it after frames
-              (as `all` does), which leaves the app past S2.
+    start     the x86_64 split on a fresh install, S2 walked with its
+              defaults (A1.1, the default theme, day 1 unstudied): cold and
+              warm `am start -W`, the median of five each
     all       size, frames, start
+
+The app is uninstalled at the start and the end, so the next agent finds
+neither a profile build nor a glass theme nor a studied day. Its data goes
+with it, a downloaded voice model included: re-download it if a check needs
+it.
 
     --update-baseline   write today's numbers into tools/perf_baseline.json
 
@@ -84,8 +89,10 @@ def run(command: list[str]) -> None:
 
 def build_splits() -> None:
     """The release APKs, one per ABI, built as release.md builds the bundle.
-    The ABI's 1000 × n stays out of the version code, so the x86_64 APK can
-    replace a profile or release build without a downgrade refusal."""
+    `force-version-code-ignoring-abi` keeps each at pubspec's version code N:
+    a split APK's is otherwise 1000 × its ABI's number + N (4000 + N for
+    x86_64), and the next agent's plain release build, N, would be refused
+    over it as a downgrade — should the uninstall at the end not have run."""
     run([flutter(), "build", "apk", "--release", "--split-per-abi",
          "--obfuscate", "--split-debug-info=build/symbols",
          "-P", "force-version-code-ignoring-abi=true"])
@@ -102,30 +109,69 @@ def measure_size() -> dict[str, float]:
     return {"size.arm64_mb": round(apk.stat().st_size / 1e6, 2)}
 
 
-def total_time(am_output: str) -> int:
-    """`am start -W`'s TotalTime, in ms."""
-    found = re.search(r"^TotalTime:\s*(\d+)", am_output, re.MULTILINE)
-    if not found:
-        raise SystemExit(f"no TotalTime in `am start -W`'s answer:\n{am_output}")
-    return int(found.group(1))
+def total_time(am_output: str, launch: str) -> int:
+    """`am start -W`'s TotalTime in ms, when it answered `Status: ok` for a
+    [launch] launch (COLD, HOT). A warm run that found no process is a cold
+    one, and would read as a regression."""
+    fields = dict(re.findall(r"^(\w+): (.*?)\s*$", am_output, re.MULTILINE))
+    if fields.get("Status") != "ok" or fields.get("LaunchState") != launch or "TotalTime" not in fields:
+        raise SystemExit(f"not a {launch} launch with `Status: ok` and a TotalTime:\n{am_output}")
+    return int(fields["TotalTime"])
+
+
+def activity_state(dump: str, package: str) -> str:
+    """The state `dumpsys activity activities` gives [package]'s activity
+    (RESUMED, PAUSED, STOPPED...); empty when it lists none."""
+    for record in re.split(r"\n\s*\* Hist\s+#\d+: ", dump)[1:]:
+        if package in record.split("\n", 1)[0]:
+            found = re.search(r"^\s*state=(\w+)", record, re.MULTILINE)
+            return found.group(1) if found else ""
+    return ""
+
+
+def walk_setup(dev: device.Device) -> None:
+    """Launches a fresh install and walks S2's five pages with their
+    defaults to Today, tapping what app_en.arb calls each (English is the
+    app's default language)."""
+    arb = json.loads((APP / "lib" / "l10n" / "app_en.arb").read_text(encoding="utf-8"))
+    dev.launch()
+    dev.tap(arb["onboardingWelcomeStart"])
+    for page in ("onboardingMeaningHeadline", "onboardingStartHeadline", "onboardingPaceHeadline"):
+        dev.wait(arb[page], anywhere=True)
+        dev.tap(arb["continueAction"])
+    dev.wait(arb["onboardingVoiceHeadline"], anywhere=True)
+    dev.tap(arb["onboardingStartLearning"])
+    dev.wait(arb["todayCourseDay"].split("}")[-1], anywhere=True)  # "Day 1 of your course"
 
 
 def measure_start(dev: device.Device, build: bool = True) -> dict[str, float]:
+    """The same state every run: a fresh install past S2, on Today."""
     if build:
         build_splits()
-    dev.install(SPLITS / "app-x86_64-release.apk")
+    dev.run("uninstall", device.PACKAGE)
+    if not dev.install(SPLITS / "app-x86_64-release.apk"):
+        raise SystemExit("the release x86_64 APK did not install")
+    walk_setup(dev)
     launcher = ["-a", "android.intent.action.MAIN", "-c", "android.intent.category.LAUNCHER"]
 
     def cold() -> int:
-        dev.sh("am", "force-stop", device.PACKAGE)
-        ms = total_time(dev.sh("am", "start", "-S", "-W", *launcher, "-n", ACTIVITY))
+        # -S: force-stopped first.
+        ms = total_time(dev.sh("am", "start", "-S", "-W", *launcher, "-n", ACTIVITY), "COLD")
         time.sleep(4)  # bootstrap and Today, before the next kill
         return ms
 
     def warm() -> int:
         dev.sh("input", "keyevent", "3")  # HOME
-        time.sleep(2)
-        ms = total_time(dev.sh("am", "start", "-W", *launcher, "-n", ACTIVITY))
+        # Until the app has stopped, which a loaded host can take seconds
+        # over: started before, it is not launched at all (LaunchState
+        # UNKNOWN, no TotalTime).
+        deadline = time.time() + 30
+        while activity_state(dev.sh("dumpsys", "activity", "activities"), device.PACKAGE) != "STOPPED":
+            if time.time() > deadline:
+                raise SystemExit("HOME never stopped the app")
+            time.sleep(0.5)
+        time.sleep(1)
+        ms = total_time(dev.sh("am", "start", "-W", *launcher, "-n", ACTIVITY), "HOT")
         time.sleep(2)
         return ms
 
@@ -151,22 +197,13 @@ def search_metrics(keystrokes: list[list]) -> dict[str, float]:
     }
 
 
-def measure_frames(dev: device.Device) -> dict[str, float]:
-    RESPONSE.unlink(missing_ok=True)
-    dev.run("uninstall", device.PACKAGE)  # the test walks S2 on a fresh install
-    dev.sh("pm", "trim-caches", "16G")
-    # --no-dds: watchPerformance opens the app's own VM service, which DDS
-    # would hold for the driver alone. --keep-app-running: without it drive
-    # uninstalls the app, and start would find S2 again.
-    run([flutter(), "drive", "--profile", "--no-dds", "--keep-app-running",
-         "--driver=test_driver/perf_driver.dart",
-         "--target=integration_test/perf_test.dart", "-d", dev.serial])
-    dev.sh("am", "force-stop", device.PACKAGE)
-    data = json.loads(RESPONSE.read_text(encoding="utf-8"))
+def frames_from(data: dict) -> dict[str, float]:
+    """What perf_test.dart reported → the metrics. A list trace that ran
+    without its BackdropFilter measured something else: it is never compared,
+    and never written as the baseline."""
     glass = data["glass"]
-    print(f"glass blur: {'on' if glass['blur'] else 'OFF ' + ', '.join(glass['reasons'])}")
-    slowest = sorted(data["search"]["keystrokes"], key=lambda pair: -statistics.median(pair[1]))[:3]
-    print("slowest keystrokes: " + ", ".join(f"{q!r} {runs} ms" for q, runs in slowest))
+    if not glass["blur"]:
+        raise SystemExit(f"glass did not blur ({', '.join(glass['reasons'])}): the list trace is not the budgeted one")
     return {
         **frame_metrics("card", data["card"]),
         **frame_metrics("list", data["list"]),
@@ -174,11 +211,35 @@ def measure_frames(dev: device.Device) -> dict[str, float]:
     }
 
 
+def measure_frames(dev: device.Device) -> dict[str, float]:
+    RESPONSE.unlink(missing_ok=True)
+    dev.run("uninstall", device.PACKAGE)  # the test walks S2 on a fresh install
+    dev.sh("pm", "trim-caches", "16G")
+    # --no-dds: watchPerformance reads the timeline through the VM service
+    # from inside the app. With DDS started, the VM service answers DDS alone,
+    # and DDS listens on the host, where the app cannot reach it. Drive stops
+    # and uninstalls the app when it is done.
+    run([flutter(), "drive", "--profile", "--no-dds",
+         "--driver=test_driver/perf_driver.dart",
+         "--target=integration_test/perf_test.dart", "-d", dev.serial])
+    data = json.loads(RESPONSE.read_text(encoding="utf-8"))
+    slowest = sorted(data["search"]["keystrokes"], key=lambda pair: -statistics.median(pair[1]))[:3]
+    print("slowest keystrokes: " + ", ".join(f"{q!r} {runs} ms" for q, runs in slowest))
+    return frames_from(data)
+
+
 # --- Verdicts ----------------------------------------------------------------------------------
 
 def lookup(table: dict, metric: str):
-    """[metric]'s own entry, else its group's (`start` for `start.cold_ms`)."""
-    return table[metric] if metric in table else table.get(metric.split(".")[0])
+    """[metric]'s own entry, else its group's (`start` for `start.cold_ms`).
+    Null is an answer (no margin: information only; no budget); no entry
+    at all is a mistake in perf_baseline.json."""
+    group = metric.split(".")[0]
+    if metric in table:
+        return table[metric]
+    if group in table:
+        return table[group]
+    raise SystemExit(f"perf_baseline.json has no entry for {metric} or its group {group!r}")
 
 
 def verdict(measured: float, baseline: float | None, margin: float | None,
@@ -221,7 +282,8 @@ def main(argv: list[str] | None = None) -> int:
     if hasattr(sys.stdout, "reconfigure"):
         sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
-    if args.what != "size" and not holds_device(device.agent()):
+    # An APK build takes the lock too (CLAUDE.md), so size needs it as well.
+    if not holds_device(device.agent()):
         print("refused: hold the emulator first: `python tools/team.py device`", file=sys.stderr)
         return 2
 
@@ -230,17 +292,21 @@ def main(argv: list[str] | None = None) -> int:
         measured.update(measure_size())
     if args.what != "size":
         dev = device.Device(args.device)
-        if args.what in ("frames", "all"):
-            measured.update(measure_frames(dev))
-        if args.what in ("start", "all"):
-            measured.update(measure_start(dev, build=args.what == "start"))
+        try:
+            if args.what in ("frames", "all"):
+                measured.update(measure_frames(dev))
+            if args.what in ("start", "all"):
+                measured.update(measure_start(dev, build=args.what == "start"))
+        finally:
+            print("perf: uninstalling the app (its data and any voice model go)")
+            dev.run("uninstall", device.PACKAGE)
 
     doc = json.loads(BASELINE.read_text(encoding="utf-8"))
     passed = report(measured, doc)
     if args.update_baseline:
         doc["metrics"].update(measured)
         BASELINE.write_text(json.dumps(doc, indent=2) + "\n", encoding="utf-8")
-        print(f"\nbaseline written: {BASELINE.relative_to(TOOLS.parent)}")
+        print(f"\nbaseline written: {BASELINE}")
         return 0
     return 0 if passed else 1
 

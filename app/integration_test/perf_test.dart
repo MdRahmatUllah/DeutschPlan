@@ -2,8 +2,7 @@
 // in a profile build on the emulator. Run by `tools/perf.py frames`, which
 // uninstalls the app first:
 //
-//   flutter drive --profile --no-dds --keep-app-running \
-//       --driver=test_driver/perf_driver.dart \
+//   flutter drive --profile --no-dds --driver=test_driver/perf_driver.dart \
 //       --target=integration_test/perf_test.dart -d emulator-5558
 //
 // Each measurement goes into the binding's `reportData`, which the driver
@@ -20,7 +19,6 @@ import 'package:deutschplan/main.dart' as app;
 import 'package:deutschplan/router/routes.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:go_router/go_router.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:material_ui/material_ui.dart';
 
@@ -43,28 +41,39 @@ const List<String> _typed = <String>[
 
 void main() {
   final binding = IntegrationTestWidgetsFlutterBinding.ensureInitialized();
-  // Every frame the app asks for is drawn, as on a phone. The default draws
-  // only the frames the test pumps, which would time the test, not the app.
-  binding.framePolicy = LiveTestWidgetsFlutterBindingFramePolicy.fullyLive;
+
+  /// Watches the frames of [action] under [key]. Inside, only the app asks
+  /// for frames, as on a phone, and the test's pumps just wait; outside, the
+  /// smoke helpers' pumps drive the frames as usual.
+  Future<void> trace(String key, Future<void> Function() action) async {
+    binding.framePolicy =
+        LiveTestWidgetsFlutterBindingFramePolicy.benchmarkLive;
+    try {
+      await binding.watchPerformance(action, reportKey: key);
+    } finally {
+      binding.framePolicy =
+          LiveTestWidgetsFlutterBindingFramePolicy.fadePointers;
+    }
+  }
 
   testWidgets(
     'Y06: the card transition, the glass word list and search, measured',
     timeout: const Timeout(Duration(minutes: 10)),
     (tester) async {
       final l10n = await launch(tester);
+      // Blur stays on for the whole run, so the list is always measured with
+      // the BackdropFilter it is budgeted for. The emulator misses frames,
+      // and the watchdog would turn glass opaque for the session: it is
+      // stopped the moment bootstrap hands it over.
+      final scope = find.byType(GlassCapabilityScope);
+      await pumpUntil(tester, scope, timeout: launchTimeout);
+      final glass = tester.widget<GlassCapabilityScope>(scope).notifier!;
+      glass.stopFrameWatchdog();
       expect(
         await startsInSetup(tester, l10n),
         isTrue,
         reason: 'a fresh install: run tools/perf.py frames, which uninstalls',
       );
-      // Blur stays on for the whole run. The emulator misses frames while it
-      // warms up, and the watchdog would turn glass opaque for the session:
-      // the list would then be measured without the BackdropFilter it is
-      // budgeted for, or with it, depending on the run.
-      final glass = tester
-          .widget<GlassCapabilityScope>(find.byType(GlassCapabilityScope))
-          .notifier!;
-      glass.stopFrameWatchdog();
       await onboard(tester, l10n);
       final container = ProviderScope.containerOf(
         tester.element(find.byType(app.DeutschPlanApp)),
@@ -80,17 +89,13 @@ void main() {
               widget is PrimaryActionBar && widget.action == TodayAction.start,
         ),
       );
-      await binding.watchPerformance(
-        () => _rateCards(tester, l10n),
-        reportKey: 'card',
-      );
+      await trace('card', () => _rateCards(tester, l10n));
 
       // (b) L2's word list under glass, flung down and back up.
-      await container
-          .read(themeProvider.notifier)
-          .choose(ThemeModeSetting.glass);
-      GoRouter.of(tester.element(find.byType(StudyScreen)))
-          .go(const LearnStepRoute(code: 'A1.1').location);
+      final theme = container.read(themeProvider.notifier);
+      await theme.choose(ThemeModeSetting.glass);
+      const LearnStepRoute(code: 'A1.1')
+          .go(tester.element(find.byType(StudyScreen)));
       final list = find.byKey(const PageStorageKey<String>('step-words-A1.1'));
       await pumpUntil(tester, list);
       await tester.pump(const Duration(seconds: 2));
@@ -98,33 +103,40 @@ void main() {
         'blur': glass.blurAllowed,
         'reasons': <String>[for (final reason in glass.reasons) reason.name],
       };
-      await binding.watchPerformance(() async {
+      await trace('list', () async {
         for (var fling = 0; fling < 8; fling++) {
           await tester.fling(list, Offset(0, fling < 4 ? -600 : 600), 3000);
           await tester.pump(const Duration(milliseconds: 1500));
         }
-      }, reportKey: 'list');
+      });
 
-      // (c) R1's own call against the real content.db, three times per
-      // keystroke: perf.py takes each one's median, so one slow run (the
-      // emulator shares its host) is not the keystroke's time. The very
-      // first is the cold one, reported on its own.
+      // (c) R1's own call against the real content.db, at each keystroke:
+      // the whole list three times over, not each query three times running,
+      // which would time SQLite's page cache. perf.py takes each keystroke's
+      // median; the very first run, the cold one, is reported on its own.
       final search = container.read(searchRepositoryProvider);
-      final timings = <List<Object>>[];
-      for (final word in _typed) {
-        final runes = word.runes.toList();
-        for (var length = 1; length <= runes.length; length++) {
-          final query = String.fromCharCodes(runes.take(length));
-          final runs = <double>[];
-          for (var run = 0; run < 3; run++) {
-            final clock = Stopwatch()..start();
-            await search.search(query);
-            runs.add(clock.elapsedMicroseconds / 1000);
-          }
-          timings.add(<Object>[query, runs]);
+      final keystrokes = <String>[
+        for (final word in _typed)
+          for (var length = 1; length <= word.runes.length; length++)
+            String.fromCharCodes(word.runes.take(length)),
+      ];
+      final runs = <List<double>>[for (final _ in keystrokes) <double>[]];
+      for (var pass = 0; pass < 3; pass++) {
+        for (var i = 0; i < keystrokes.length; i++) {
+          final clock = Stopwatch()..start();
+          await search.search(keystrokes[i]);
+          runs[i].add(clock.elapsedMicroseconds / 1000);
         }
       }
-      data['search'] = <String, Object>{'keystrokes': timings};
+      data['search'] = <String, Object>{
+        'keystrokes': <List<Object>>[
+          for (var i = 0; i < keystrokes.length; i++)
+            <Object>[keystrokes[i], runs[i]],
+        ],
+      };
+
+      // The default theme back, should the app outlive the run.
+      await theme.choose(ThemeModeSetting.system);
     },
   );
 }
