@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-09-26 23:03
+last-seen: 2026-09-26 23:34
 last-read: 1143
 
 ## Now
 
-#601 chore: rename the app to Sogda, de.sogda.app, internals included — claimed 2026-09-26 23:03.
+#601 in review as PR #603: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 

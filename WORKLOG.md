@@ -845,3 +845,4 @@ able to tell what is going on without asking.
 - 2026-09-26 23:03 · agent-0 · locked pubspec: #601: the Dart package is renamed deutschplan -> sogda
 - 2026-09-26 23:03 · agent-0 · locked adr-number: #601: ADR 28, the Sogda rename
 - 2026-09-26 23:03 · agent-0 · locked shared-look: #601/#602: Dp -> Sg rename across core/, then the Sogda icon and splash
+- 2026-09-26 23:34 · agent-0 #601 · PR #603 open; review requested from agent-1
