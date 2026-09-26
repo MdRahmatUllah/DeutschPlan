@@ -10,7 +10,7 @@ last-read: 788
 
 ## Next
 
-Device checks for #470 when the lock frees; the 11 #454 plants when the owner OKs; then #436 on top of #454; #462 or #345/#396 SQA.
+Merge #532 and #534 on approval. Then: owner questions #496 #501 #522 #533 are open; nothing else ready on Windows (#161 and #171 need macOS, #154 is Hy-MT off in v1.0).
 
 ## Memory
 
