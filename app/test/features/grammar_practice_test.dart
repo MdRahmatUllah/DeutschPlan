@@ -20,6 +20,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 
+import '../core/text_clipping.dart';
 import '../db/content_fixture.dart';
 import 'today_fixtures.dart';
 
@@ -143,6 +144,38 @@ void main() {
     expect(find.text('Konjunktiv II – Höflichkeit'), findsOneWidget);
     expect(find.text('1 / 3'), findsOneWidget);
     expect(find.text(l10n.practicePickTheForm), findsOneWidget);
+  });
+
+  testWidgets('#551 at 200 % a long topic wraps whole, and the header grows '
+      'with it', (tester) async {
+    tester.view
+      ..physicalSize = const Size(390, 731) * 3
+      ..devicePixelRatio = 3;
+    addTearDown(tester.view.reset);
+    await tester.pumpWidget(
+      MaterialApp(
+        theme: AppTheme.light(),
+        localizationsDelegates: appLocalizationsDelegates,
+        supportedLocales: supportedLocales,
+        builder: (context, child) => MediaQuery(
+          data: MediaQuery.of(context)
+              .copyWith(textScaler: const TextScaler.linear(2)),
+          child: child!,
+        ),
+        home: Scaffold(
+          body: Align(
+            alignment: Alignment.topCenter,
+            child: PracticeHeader(
+              title: 'Konjunktiv II – Höflichkeit mit könnte, würde und hätte',
+              place: (1, 3),
+              onClose: () {},
+            ),
+          ),
+        ),
+      ),
+    );
+    expectNothingClipped(tester);
+    expectAllLinesShown(tester);
   });
 
   group('FR-L15-02 immediate feedback', () {

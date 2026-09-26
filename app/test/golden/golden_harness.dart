@@ -38,6 +38,15 @@ const String goldenTag = 'golden';
 /// The text sizes every golden screen is also checked at (#165).
 const List<double> textAuditScales = <double>[1.5, 2];
 
+/// The widgets that cut their text to its lines on purpose, which the
+/// audit's maxLines check leaves be (#551). A `DpOneLine` needs no entry:
+/// it draws only the words that fit, and says so with "…".
+const Set<Type> auditCapped = <Type>{
+  // A one-line field's hint, cut as every platform cuts one; the field's
+  // own text scrolls.
+  InputDecorator,
+};
+
 /// The two frames `testing.md` names.
 enum GoldenDevice {
   /// The reference phone the artboards were drawn at.
@@ -183,6 +192,8 @@ void goldenTest(
         expect(tester.takeException(), isNull);
         expectNothingClipped(tester);
         expectNoWordBroken(tester);
+        // #551: and nothing cut to its maxLines, "…" or not (#550).
+        expectAllLinesShown(tester, capped: auditCapped);
       });
     }
   }

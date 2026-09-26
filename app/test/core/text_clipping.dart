@@ -39,18 +39,31 @@ void expectNothingClipped(WidgetTester tester, {Finder? within}) {
 /// it show: ended in "…", or cut at a word with none, so "birth" reads as
 /// the whole of "birth certificate" (#550). [expectNothingClipped] lets
 /// both pass; this is for text that must be read whole.
-void expectAllLinesShown(WidgetTester tester, {required Finder within}) {
-  final paragraphs = tester.renderObjectList<RenderParagraph>(
-    find.descendant(of: within, matching: find.byType(RichText)),
-  );
-  expect(paragraphs, isNotEmpty, reason: 'no text found to check');
-  for (final paragraph in paragraphs) {
-    expect(
-      paragraph.didExceedMaxLines,
-      isFalse,
-      reason: '"${paragraph.text.toPlainText()}" is cut to its maxLines',
-    );
+///
+/// [within] null checks the whole screen, as the golden audit does (#551),
+/// less text under a widget of a type in [capped]: one that cuts on purpose.
+void expectAllLinesShown(
+  WidgetTester tester, {
+  Finder? within,
+  Set<Type> capped = const <Type>{},
+}) {
+  final texts = within == null
+      ? find.byType(RichText)
+      : find.descendant(of: within, matching: find.byType(RichText));
+  final elements = texts.evaluate().toList();
+  expect(elements, isNotEmpty, reason: 'no text found to check');
+  final cut = <String>[];
+  for (final element in elements) {
+    final paragraph = element.renderObject! as RenderParagraph;
+    if (!paragraph.didExceedMaxLines) continue;
+    var deliberate = false;
+    element.visitAncestorElements((ancestor) {
+      deliberate = capped.contains(ancestor.widget.runtimeType);
+      return !deliberate;
+    });
+    if (!deliberate) cut.add('"${paragraph.text.toPlainText()}"');
   }
+  expect(cut, isEmpty, reason: 'cut to its maxLines: ${cut.join('; ')}');
 }
 
 /// Fails when a word in text under [within] breaks across two lines other

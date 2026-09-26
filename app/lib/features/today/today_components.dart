@@ -434,58 +434,64 @@ class GrammarPreviewCard extends StatelessWidget {
         padding: EdgeInsets.all(edge),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(tokens.shape.card - edge),
-          child: IntrinsicHeight(
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: <Widget>[
-                ColoredBox(
-                  color: tokens.color.accent,
-                  child: const SizedBox(width: 6),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        DpText(
-                          l10n.todayGrammarWeek.toUpperCase(),
-                          semanticsLabel: l10n.todayGrammarWeek,
-                          role: DpTextRole.caption,
-                          weight: 700,
-                          letterSpacing: 0.6,
-                          color: tokens.color.textSecondary,
-                        ),
-                        const SizedBox(height: 2),
-                        DpText(
-                          preview.topic,
-                          role: DpTextRole.body,
-                          weight: 600,
-                        ),
-                        if (showRule && preview.rule.isNotEmpty) ...<Widget>[
-                          const SizedBox(height: 2),
+          // The strip is the box's left border, so it runs the card's height
+          // with no IntrinsicHeight, which the rule's DpOneLine can't answer
+          // (it measures with a LayoutBuilder; #551).
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              border: Border(
+                left: BorderSide(color: tokens.color.accent, width: 6),
+              ),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.only(left: 6 + 12),
+              child: Row(
+                children: <Widget>[
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
                           DpText(
-                            preview.rule,
-                            role: DpTextRole.label,
-                            weight: 400,
-                            maxLines: 1,
+                            l10n.todayGrammarWeek.toUpperCase(),
+                            semanticsLabel: l10n.todayGrammarWeek,
+                            role: DpTextRole.caption,
+                            weight: 700,
+                            letterSpacing: 0.6,
                             color: tokens.color.textSecondary,
                           ),
+                          const SizedBox(height: 2),
+                          DpText(
+                            preview.topic,
+                            role: DpTextRole.body,
+                            weight: 600,
+                          ),
+                          if (showRule && preview.rule.isNotEmpty) ...<Widget>[
+                            const SizedBox(height: 2),
+                            // A preview: one line, cut after a whole word
+                            // with "…" (#280), the rest on the topic's page.
+                            DpOneLine(
+                              preview.rule,
+                              role: DpTextRole.label,
+                              weight: 400,
+                              color: tokens.color.textSecondary,
+                            ),
+                          ],
                         ],
-                      ],
+                      ),
                     ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12),
-                  child: Icon(
-                    Icons.chevron_right,
-                    size: 20,
-                    color: tokens.color.ink,
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    child: Icon(
+                      Icons.chevron_right,
+                      size: 20,
+                      color: tokens.color.ink,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
