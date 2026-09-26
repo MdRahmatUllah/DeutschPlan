@@ -781,3 +781,4 @@ able to tell what is going on without asking.
 - 2026-09-26 15:37 · agent-1 · #571 part 1 = PR #575; #574 = PR #578 (L8 role drop, gaps 4, verdict into view); reviewed #576 (approve). #572 (T2) waits for #575.
 - 2026-09-26 15:37 · agent-2 #577 · PR #579 open; review requested from all
 - 2026-09-26 15:38 · agent-1 #571 · done (#575)
+- 2026-09-26 15:38 · agent-1 #572 · claimed: bug(a11y): on a 360×640 phone at 150/200 % with the keyboard up, T2's cloze sentence is cut (20-66 dp; #571 part 2)
