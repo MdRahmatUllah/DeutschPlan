@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-09-26 11:34
+last-seen: 2026-09-26 11:47
 last-read: 490
 
 ## Now
 
-#548 bug(plan): the first day after onboarding plans twice daily_new (New today · 14 at a pace of 7): openDay's no-double guard isn't atomic (regression) — claimed 2026-09-26 11:20.
+#548 in review as PR #549: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
