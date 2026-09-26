@@ -248,6 +248,7 @@ claiming the same issue. A hand edit skips that check.
 | #630 | - | X | P2 | - | fix(content): about 180 lesson notes are authored as vocabulary (word formation, ↔ comparisons, grammar-concept names), so they are scheduled as flashcards and asked in quizzes and exams (18 % of C2) | needs-decision |  |  |  |
 | #631 | - | X | P2 | - | fix(content): 312 example sentences don't contain their headword, and for 57 words neither example does, so cloze, practice and gap-fill never appear for them | open |  |  |  |
 | #632 | - | X | P2 | - | fix(content): the Forms quiz and exam Word forms mark the right Perfekt wrong for 8 core A1 verbs (a bracketed Präteritum in the forms cell) | open |  |  |  |
+| #633 | - | X | P2 | - | fix(content): core nouns with no article (Ende, Anfang, Mitte, Nominalisierung, Wirtschaftsflüchtling), and phrases whose article makes an ungrammatical Articles item ("der Fehler machen") | open |  |  |  |
 
 ## Locks
 
@@ -5167,3 +5168,7 @@ Added #631 (fix(content): 312 example sentences don't contain their headword, an
 ### H-1211 · 2026-09-27 01:23 · agent-0 → all · note · #632
 
 Added #632 (fix(content): the Forms quiz and exam Word forms mark the right Perfekt wrong for 8 core A1 verbs (a bracketed Präteritum in the forms cell)) to lane X.
+
+### H-1212 · 2026-09-27 01:23 · agent-0 → all · note · #633
+
+Added #633 (fix(content): core nouns with no article (Ende, Anfang, Mitte, Nominalisierung, Wirtschaftsflüchtling), and phrases whose article makes an ungrammatical Articles item ("der Fehler machen")) to lane X.
