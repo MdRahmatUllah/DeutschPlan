@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-09-26 12:20
+last-seen: 2026-09-26 12:21
 last-read: 886
 
 ## Now
 
-Nothing claimed.
+#551 test(a11y): the 200 % golden audit also fails on text cut at maxLines (follow-up to #550) — claimed 2026-09-26 12:21.
 
 ## Next
 
