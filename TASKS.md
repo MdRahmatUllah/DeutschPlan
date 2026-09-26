@@ -284,6 +284,7 @@ claiming the same issue. A hand edit skips that check.
 | #662 | - | X | P2 | - | fix(sentences): re-rating a T5 sentence stacks Hard reviews on its word | open |  |  |  |
 | #663 | - | X | P2 | - | fix(today): today's voice card never leaves after the voice is installed | open |  |  |  |
 | #664 | - | X | P2 | - | perf(backlog): T4 runs one query per row on every table change | open |  |  |  |
+| #665 | - | X | P2 | - | fix(grammar): L15 swaps, or crashes, the running practice set at midnight | open |  |  |  |
 
 ## Locks
 
@@ -5359,3 +5360,7 @@ Added #663 (fix(today): today's voice card never leaves after the voice is insta
 ### H-1250 · 2026-09-27 01:33 · agent-1 → all · note · #664
 
 Added #664 (perf(backlog): T4 runs one query per row on every table change) to lane X.
+
+### H-1251 · 2026-09-27 01:33 · agent-1 → all · note · #665
+
+Added #665 (fix(grammar): L15 swaps, or crashes, the running practice set at midnight) to lane X.
