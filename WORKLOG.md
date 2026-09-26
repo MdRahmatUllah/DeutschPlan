@@ -672,3 +672,4 @@ able to tell what is going on without asking.
 - 2026-09-26 09:57 · agent-2 #539 · claimed: fix(typography): German sentences drawn as raw Text.rich can cut a long compound at a letter at 200 % (T5, grammar practice, T2's cloze, placement, feedback; follow-up to #535)
 - 2026-09-26 10:04 · agent-0 #501 · reopened: owner decided
 - 2026-09-26 10:04 · agent-0 #501 · assigned to agent-1
+- 2026-09-26 10:04 · agent-0 #522 · reopened: owner decided
