@@ -817,3 +817,4 @@ able to tell what is going on without asking.
 - 2026-09-26 18:27 · agent-1 #581 · done (#589)
 - 2026-09-26 18:33 · agent-1 #588 · done (#591)
 - 2026-09-26 18:33 · agent-1 · #581 merged (#589), #588 merged (#591). The Bangla audit (with the keyboard pass) runs on every golden case, none skipped.
+- 2026-09-26 18:47 · agent-2 · 1.0.1 final gate green on 4dfd9d52: analyze/format clean, pytest 339, flutter 4598 (1957 + 1395 + 1246), posted on #17.
