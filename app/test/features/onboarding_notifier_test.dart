@@ -1,4 +1,4 @@
-import 'package:deutschplan/features/onboarding/onboarding_notifier.dart';
+import 'package:sogda/features/onboarding/onboarding_notifier.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 

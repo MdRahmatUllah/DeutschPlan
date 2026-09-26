@@ -70,4 +70,4 @@ the author it is approved ([no-merging-others-prs](../shared-memory/no-merging-o
 - The TTS stack: the `tts` seam, system TTS, Supertonic on ONNX Runtime (R8 must keep `ai.onnxruntime`), audio caching and player warm-up.
 - Downloads with `background_downloader`: the Wi-Fi-only rule, resume, the notification, the space check.
 - Search: `search_repository.dart`'s four tiers, `WordRow`, and meanings in the learner's language (`withMeanings`).
-- Large text with the keyboard up: `DpScript.largeTyping`, and "one role smaller, then scroll" for prompts.
+- Large text with the keyboard up: `SgScript.largeTyping`, and "one role smaller, then scroll" for prompts.

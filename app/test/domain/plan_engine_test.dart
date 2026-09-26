@@ -1,8 +1,8 @@
 @TestOn('vm')
 library;
 
-import 'package:deutschplan/domain/fsrs.dart';
-import 'package:deutschplan/domain/plan_engine.dart';
+import 'package:sogda/domain/fsrs.dart';
+import 'package:sogda/domain/plan_engine.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 /// The plan engine — #76, BR-PLAN-01…05.

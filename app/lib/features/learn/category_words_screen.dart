@@ -1,19 +1,19 @@
 import 'dart:math' as math;
 
-import 'package:deutschplan/core/adaptive/adaptive.dart';
-import 'package:deutschplan/core/components/dp_button.dart';
-import 'package:deutschplan/core/components/dp_chip.dart';
-import 'package:deutschplan/core/components/dp_progress_ring.dart';
-import 'package:deutschplan/core/providers/app_providers.dart';
-import 'package:deutschplan/core/theme/aurora_backdrop.dart';
-import 'package:deutschplan/core/theme/dp_tokens.dart';
-import 'package:deutschplan/core/typography/dp_text.dart';
-import 'package:deutschplan/features/learn/categories_screen.dart';
-import 'package:deutschplan/features/learn/step_quiz.dart';
-import 'package:deutschplan/features/learn/step_words.dart';
-import 'package:deutschplan/features/words/word_row.dart';
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
-import 'package:deutschplan/router/routes.dart';
+import 'package:sogda/core/adaptive/adaptive.dart';
+import 'package:sogda/core/components/sg_button.dart';
+import 'package:sogda/core/components/sg_chip.dart';
+import 'package:sogda/core/components/sg_progress_ring.dart';
+import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/core/theme/aurora_backdrop.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/core/typography/sg_text.dart';
+import 'package:sogda/features/learn/categories_screen.dart';
+import 'package:sogda/features/learn/step_quiz.dart';
+import 'package:sogda/features/learn/step_words.dart';
+import 'package:sogda/features/words/word_row.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
+import 'package:sogda/router/routes.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -107,14 +107,14 @@ class _CategoryWordsScreenState extends ConsumerState<CategoryWordsScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
-                  DpText(
+                  SgText(
                     l10n.categoryWordsLine(category.words, stepRange(words)),
-                    role: DpTextRole.label,
+                    role: SgTextRole.label,
                     weight: 400,
                     color: tokens.color.textSecondary,
                   ),
                   const SizedBox(height: 8),
-                  DpSegmentedBar(
+                  SgSegmentedBar(
                     done: category.done,
                     learning: category.learning,
                     todo: category.todo,
@@ -130,11 +130,11 @@ class _CategoryWordsScreenState extends ConsumerState<CategoryWordsScreen> {
             child: Row(
               children: <Widget>[
                 for (final filter in LevelFilter.values) ...<Widget>[
-                  DpChip(
+                  SgChip(
                     label: filter == LevelFilter.all
                         ? l10n.stepFilterAll
                         : filter.code,
-                    kind: DpChipKind.filter,
+                    kind: SgChipKind.filter,
                     selected: _filter == filter,
                     onTap: () => setState(() => _filter = filter),
                   ),
@@ -146,9 +146,9 @@ class _CategoryWordsScreenState extends ConsumerState<CategoryWordsScreen> {
           Expanded(
             child: shown.isEmpty
                 ? Center(
-                    child: DpText(
+                    child: SgText(
                       l10n.stepWordsNone,
-                      role: DpTextRole.body,
+                      role: SgTextRole.body,
                       color: tokens.color.textSecondary,
                     ),
                   )
@@ -163,7 +163,7 @@ class _CategoryWordsScreenState extends ConsumerState<CategoryWordsScreen> {
                       // Its panel ends at the last row (#282): the extent is
                       // the prototype's times the count, so nothing more is built.
                       shrinkWrap: true,
-                      prototypeItem: shown.isEmpty || DpScript.large(context)
+                      prototypeItem: shown.isEmpty || SgScript.large(context)
                           ? null
                           : WordRow(
                               word: shown.first.word,
@@ -202,9 +202,9 @@ class _CategoryWordsScreenState extends ConsumerState<CategoryWordsScreen> {
       ),
       actions: <Widget>[
         // Closed until the category has words to quiz, as L2's tiles are.
-        DpButton(
+        SgButton(
           label: l10n.stepTabQuiz,
-          kind: DpButtonKind.text,
+          kind: SgButtonKind.text,
           expand: false,
           onPressed: learned < StepQuizTab.minimumLearned
               ? null

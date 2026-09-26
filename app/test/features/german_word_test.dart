@@ -1,7 +1,7 @@
-import 'package:deutschplan/core/theme/app_theme.dart';
-import 'package:deutschplan/core/theme/dp_tokens.dart';
-import 'package:deutschplan/core/typography/dp_text.dart';
-import 'package:deutschplan/features/quiz/quiz_item_view.dart';
+import 'package:sogda/core/theme/app_theme.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/core/typography/sg_text.dart';
+import 'package:sogda/features/quiz/quiz_item_view.dart';
 import 'package:flutter/rendering.dart' show RenderParagraph;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
@@ -9,7 +9,7 @@ import 'package:material_ui/material_ui.dart';
 import '../core/text_clipping.dart';
 
 /// L8's, L12's and L14's German word (#405): `accessibility-performance.md`'s
-/// "long compounds soft-hyphenate", as DpHeadword does on W1 and T2.
+/// "long compounds soft-hyphenate", as SgHeadword does on W1 and T2.
 void main() {
   Future<void> pump(WidgetTester tester, String word) async {
     await tester.pumpWidget(
@@ -19,7 +19,7 @@ void main() {
           body: Center(
             child: SizedBox(
               width: 360,
-              child: GermanWord(word, role: DpTextRole.display),
+              child: GermanWord(word, role: SgTextRole.display),
             ),
           ),
         ),
@@ -34,7 +34,7 @@ void main() {
     );
     // As drawn: the span's label is the word whole (#419).
     final text = paragraph.text.toPlainText(includeSemanticsLabels: false);
-    expect(text, contains(DpScript.softHyphen));
+    expect(text, contains(SgScript.softHyphen));
 
     // The same span at the same width, where the line boundaries can be read.
     final painter = TextPainter(

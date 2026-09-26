@@ -1,7 +1,7 @@
-import 'package:deutschplan/core/theme/app_theme.dart';
-import 'package:deutschplan/core/theme/aurora_backdrop.dart';
-import 'package:deutschplan/core/theme/dp_tokens.dart';
-import 'package:deutschplan/core/theme/glass_capability.dart';
+import 'package:sogda/core/theme/app_theme.dart';
+import 'package:sogda/core/theme/aurora_backdrop.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/core/theme/glass_capability.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 
@@ -71,7 +71,7 @@ void main() {
         AuroraRole.cobalt,
       ]);
 
-      const palette = DpPalette.light;
+      const palette = SgPalette.light;
       expect(AuroraRole.lagoon.from(palette), palette.primary);
       expect(AuroraRole.sun.from(palette), palette.accent);
       expect(AuroraRole.raspberry.from(palette), palette.die);
@@ -80,10 +80,10 @@ void main() {
 
     test('roles resolve to the dark palette in the dark variant', () {
       // Named by role rather than colour so this substitution is automatic.
-      expect(AuroraRole.lagoon.from(DpPalette.dark), DpPalette.dark.primary);
+      expect(AuroraRole.lagoon.from(SgPalette.dark), SgPalette.dark.primary);
       expect(
-        AuroraRole.lagoon.from(DpPalette.dark),
-        isNot(AuroraRole.lagoon.from(DpPalette.light)),
+        AuroraRole.lagoon.from(SgPalette.dark),
+        isNot(AuroraRole.lagoon.from(SgPalette.light)),
       );
     });
 
@@ -215,7 +215,7 @@ void main() {
     testWidgets('takes the tab colour when one is given', (tester) async {
       // theming.md: Today Lagoon, Learn Sun, Search Raspberry, Me Cobalt, and
       // a study session shifts it toward the noun's gender colour.
-      await pump(tester, leading: DpPalette.light.die, disableAnimations: true);
+      await pump(tester, leading: SgPalette.light.die, disableAnimations: true);
 
       final painters = tester
           .widgetList<CustomPaint>(within(CustomPaint))

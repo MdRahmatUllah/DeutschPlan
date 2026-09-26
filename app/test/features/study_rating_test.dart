@@ -3,28 +3,28 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:ui' show Tristate;
 
-import 'package:deutschplan/core/components/dp_rating_bar.dart';
-import 'package:deutschplan/core/providers/app_providers.dart';
-import 'package:deutschplan/core/theme/app_theme.dart';
-import 'package:deutschplan/core/typography/dp_text.dart';
-import 'package:deutschplan/data/db/app_database.dart';
-import 'package:deutschplan/data/db/content_dao.dart';
-import 'package:deutschplan/data/repositories/plan_repository.dart';
-import 'package:deutschplan/data/repositories/rating_service.dart';
-import 'package:deutschplan/data/repositories/setting_keys.dart';
-import 'package:deutschplan/data/repositories/settings_repository.dart';
-import 'package:deutschplan/data/repositories/word_repository.dart';
-import 'package:deutschplan/domain/fsrs.dart';
-import 'package:deutschplan/features/me/export_import_screen.dart'
+import 'package:sogda/core/components/sg_rating_bar.dart';
+import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/core/theme/app_theme.dart';
+import 'package:sogda/core/typography/sg_text.dart';
+import 'package:sogda/data/db/app_database.dart';
+import 'package:sogda/data/db/content_dao.dart';
+import 'package:sogda/data/repositories/plan_repository.dart';
+import 'package:sogda/data/repositories/rating_service.dart';
+import 'package:sogda/data/repositories/setting_keys.dart';
+import 'package:sogda/data/repositories/settings_repository.dart';
+import 'package:sogda/data/repositories/word_repository.dart';
+import 'package:sogda/domain/fsrs.dart';
+import 'package:sogda/features/me/export_import_screen.dart'
     show backupFilesProvider;
-import 'package:deutschplan/features/study/study_rating.dart';
-import 'package:deutschplan/features/study/study_screen.dart';
-import 'package:deutschplan/features/study/study_session.dart';
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
-import 'package:deutschplan/main.dart'
+import 'package:sogda/features/study/study_rating.dart';
+import 'package:sogda/features/study/study_screen.dart';
+import 'package:sogda/features/study/study_session.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
+import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
-import 'package:deutschplan/router/routes.dart';
-import 'package:deutschplan/services/backup_files.dart';
+import 'package:sogda/router/routes.dart';
+import 'package:sogda/services/backup_files.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
@@ -55,7 +55,7 @@ void main() {
   Future<void> open() async {
     now = DateTime(2026, 9, 21, 9);
     db = AppDatabase.memory();
-    final directory = Directory.systemTemp.createTempSync('dp_rate');
+    final directory = Directory.systemTemp.createTempSync('sg_rate');
     final content = ContentFixture.write('${directory.path}/content.db');
     await db.customStatement(
       "ATTACH DATABASE '${ContentDao.attachPath(content.file)}' AS c",
@@ -322,7 +322,7 @@ VALUES ('$strasse', 'learning', '2026-09-10', '2026-09-21', 4.5, 5.2, 2, 0,
         );
       }
       expect(
-        tester.widget<DpRatingBar>(find.byType(DpRatingBar)).enabled,
+        tester.widget<SgRatingBar>(find.byType(SgRatingBar)).enabled,
         isTrue,
       );
     });
@@ -379,7 +379,7 @@ VALUES ('$strasse', 'learning', '2026-09-10', '2026-09-21', 4.5, 5.2, 2, 0,
       await tester.tap(find.text(l10n.studyShowMeaning));
       await tester.pump();
       expect(
-        tester.widget<DpRatingBar>(find.byType(DpRatingBar)).enabled,
+        tester.widget<SgRatingBar>(find.byType(SgRatingBar)).enabled,
         isFalse,
       );
     });
@@ -405,7 +405,7 @@ VALUES ('$strasse', 'learning', '2026-09-10', '2026-09-21', 4.5, 5.2, 2, 0,
         haus,
       );
       // The next card comes face down.
-      expect(find.byType(DpRatingBar), findsNothing);
+      expect(find.byType(SgRatingBar), findsNothing);
 
       await tester.runAsync(() async {
         await tester.tap(find.text(l10n.undo));
@@ -454,10 +454,10 @@ VALUES ('$strasse', 'learning', '2026-09-10', '2026-09-21', 4.5, 5.2, 2, 0,
         final at = FocusManager.instance.primaryFocus!.context!;
         final headword = find.descendant(
           of: find.byElementPredicate((element) => element == at),
-          matching: find.byType(DpHeadword),
+          matching: find.byType(SgHeadword),
         );
         return (
-          tester.widget<DpHeadword>(headword).word,
+          tester.widget<SgHeadword>(headword).word,
           tester.getSemantics(headword).flagsCollection.isFocused ==
               Tristate.isTrue,
         );
@@ -580,7 +580,7 @@ VALUES ('$strasse', 'learning', '2026-09-10', '2026-09-21', 4.5, 5.2, 2, 0,
         await tap(tester, l10n.exportProgress);
 
         final file = files.shared.single;
-        expect(file.name, 'deutschplan-2026-09-21.json');
+        expect(file.name, 'sogda-2026-09-21.json');
         expect(jsonDecode(file.json), isA<Map<String, dynamic>>());
         expect(find.byType(StudyScreen), findsOneWidget);
         expect(find.text(l10n.saveAnswerFailed), findsOneWidget);
@@ -623,7 +623,7 @@ VALUES ('$strasse', 'learning', '2026-09-10', '2026-09-21', 4.5, 5.2, 2, 0,
         expect(find.text(l10n.undo), findsNothing, reason: 'nothing written');
         expect(current(container), strasse);
         expect(
-          tester.widget<DpRatingBar>(find.byType(DpRatingBar)).enabled,
+          tester.widget<SgRatingBar>(find.byType(SgRatingBar)).enabled,
           isTrue,
         );
 

@@ -1,15 +1,15 @@
-import 'package:deutschplan/core/adaptive/adaptive.dart';
-import 'package:deutschplan/core/theme/dp_tokens.dart';
-import 'package:deutschplan/core/typography/dp_text.dart';
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
-import 'package:deutschplan/l10n/ui_digits.dart';
+import 'package:sogda/core/adaptive/adaptive.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/core/typography/sg_text.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
+import 'package:sogda/l10n/ui_digits.dart';
 import 'package:material_ui/material_ui.dart';
 
 /// − value +, as `OnboardingPace` and `Settings` both draw it: two 36 dp
 /// outlined circles either side of the number. On iOS both draw the number
 /// and then UIStepper's pill: − | + on Oat.
-class DpStepper extends StatelessWidget {
-  const DpStepper({
+class SgStepper extends StatelessWidget {
+  const SgStepper({
     required this.value,
     required this.min,
     required this.max,
@@ -50,9 +50,9 @@ class DpStepper extends StatelessWidget {
       return Row(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          DpText(
+          SgText(
             AppLocalizations.of(context).digits(value),
-            role: DpTextRole.bodyLarge,
+            role: SgTextRole.bodyLarge,
             color: tokens.color.textSecondary,
           ),
           const SizedBox(width: 12),
@@ -105,9 +105,9 @@ class DpStepper extends StatelessWidget {
         const SizedBox(width: 8),
         ConstrainedBox(
           constraints: const BoxConstraints(minWidth: 24),
-          child: DpText(
+          child: SgText(
             AppLocalizations.of(context).digits(value),
-            role: DpTextRole.bodyLarge,
+            role: SgTextRole.bodyLarge,
             weight: 600,
             textAlign: TextAlign.center,
           ),
@@ -157,8 +157,8 @@ class _RoundButton extends StatelessWidget {
             dimension: tapTarget,
             child: Center(
               child: Container(
-                width: DpStepper.button,
-                height: DpStepper.button,
+                width: SgStepper.button,
+                height: SgStepper.button,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   border: Border.all(color: colour, width: 1.5),

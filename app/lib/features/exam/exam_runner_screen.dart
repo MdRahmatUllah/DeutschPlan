@@ -1,24 +1,23 @@
 import 'dart:async';
 import 'dart:math' as math;
 
-import 'package:deutschplan/core/adaptive/adaptive.dart';
-import 'package:deutschplan/core/components/dp_button.dart';
-import 'package:deutschplan/core/components/dp_feedback.dart';
-import 'package:deutschplan/core/providers/app_providers.dart';
-import 'package:deutschplan/core/theme/aurora_backdrop.dart';
-import 'package:deutschplan/core/theme/dp_surface.dart';
-import 'package:deutschplan/core/theme/dp_tokens.dart';
-import 'package:deutschplan/core/typography/dp_text.dart';
-import 'package:deutschplan/data/repositories/exam_run_service.dart';
-import 'package:deutschplan/domain/exam_generator.dart'
-    show ExamSection, WritingTask;
-import 'package:deutschplan/features/exam/exam_navigator_sheet.dart';
-import 'package:deutschplan/features/exam/exam_question_view.dart';
-import 'package:deutschplan/features/learn/step_exams.dart'
+import 'package:sogda/core/adaptive/adaptive.dart';
+import 'package:sogda/core/components/sg_button.dart';
+import 'package:sogda/core/components/sg_feedback.dart';
+import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/core/theme/aurora_backdrop.dart';
+import 'package:sogda/core/theme/sg_surface.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/core/typography/sg_text.dart';
+import 'package:sogda/data/repositories/exam_run_service.dart';
+import 'package:sogda/domain/exam_generator.dart' show ExamSection, WritingTask;
+import 'package:sogda/features/exam/exam_navigator_sheet.dart';
+import 'package:sogda/features/exam/exam_question_view.dart';
+import 'package:sogda/features/learn/step_exams.dart'
     show examMinutes, examSectionName;
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
-import 'package:deutschplan/l10n/ui_digits.dart';
-import 'package:deutschplan/router/back_behaviour.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
+import 'package:sogda/l10n/ui_digits.dart';
+import 'package:sogda/router/back_behaviour.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 
@@ -368,7 +367,7 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
       _submitting = false;
       if (!mounted) return;
       _tick = Timer.periodic(const Duration(seconds: 1), (_) => _second());
-      DpToast.show(context, AppLocalizations.of(context).examRunSubmitFailed);
+      SgToast.show(context, AppLocalizations.of(context).examRunSubmitFailed);
       return;
     }
     if (mounted) setState(() => _done = true);
@@ -386,9 +385,9 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
       body = Center(
         child: Padding(
           padding: const EdgeInsets.all(16),
-          child: DpText(
+          child: SgText(
             l10n.examRunLoadFailed,
-            role: DpTextRole.body,
+            role: SgTextRole.body,
             textAlign: TextAlign.center,
           ),
         ),
@@ -419,7 +418,7 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
           MediaQuery.viewInsetsOf(context).bottom -
           MediaQuery.paddingOf(context).top;
       final cramped =
-          DpScript.largeTyping(context) || (typing && room < shortRoom);
+          SgScript.largeTyping(context) || (typing && room < shortRoom);
       // #560: the band collapsed on a timed paper, its clock goes to the bar
       // above the keyboard.
       final clockBelow = cramped && _timed;
@@ -428,15 +427,15 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
       final nav = Row(
         children: <Widget>[
           Expanded(
-            child: DpButton(
+            child: SgButton(
               label: l10n.examRunPrevious,
-              kind: DpButtonKind.secondary,
+              kind: SgButtonKind.secondary,
               onPressed: _at == 0 ? null : () => _go(_at - 1),
             ),
           ),
           const SizedBox(width: 10),
           Expanded(
-            child: DpButton(
+            child: SgButton(
               label: last
                   ? l10n.examRunSubmit
                   : item is WritingTask
@@ -467,11 +466,11 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
               child: Row(
                 children: <Widget>[
                   Expanded(
-                    child: DpText(
+                    child: SgText(
                       examNumbered(item)
                           ? l10n.examRunQuestion(number.length, count)
                           : '',
-                      role: DpTextRole.caption,
+                      role: SgTextRole.caption,
                       color: tokens.color.textSecondary,
                     ),
                   ),
@@ -518,7 +517,7 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
                   // Past 130 % only, not `cramped`: a short phone at 100 %
                   // collapses the band (#571) but keeps what is asked at
                   // its size, which fits there (#573).
-                  typingLarge: DpScript.largeTyping(context),
+                  typingLarge: SgScript.largeTyping(context),
                   given: _given[_at],
                   field: _field,
                   countPinned: typing && item is WritingTask,
@@ -571,8 +570,8 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
           // the band collapsed, its clock sits here above the keyboard, beside
           // the umlaut keys, which give it width rather than the prompt height.
           if (examTypesGerman(item) || clockBelow)
-            DpSurface(
-              kind: DpSurfaceKind.bar,
+            SgSurface(
+              kind: SgSurfaceKind.bar,
               radius: 0,
               // The clock alone, for an answer typed in English, takes less
               // than the keys' row: in Bangla its row left 3 dp of the word
@@ -590,7 +589,7 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
                         child: Row(
                           children: <Widget>[
                             if (examTypesGerman(item)) ...<Widget>[
-                              Expanded(child: DpUmlautBar(controller: _field)),
+                              Expanded(child: SgUmlautBar(controller: _field)),
                               const SizedBox(width: 8),
                             ] else
                               const Spacer(),
@@ -599,7 +598,7 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
                         ),
                       ),
                     )
-                  : DpUmlautBar(controller: _field),
+                  : SgUmlautBar(controller: _field),
             ),
         ],
       );
@@ -676,9 +675,9 @@ class _Clock extends StatelessWidget {
         child: Center(
           widthFactor: 1,
           heightFactor: 1,
-          child: DpText(
+          child: SgText(
             l10n.digits(_clock(seconds)),
-            role: DpTextRole.body,
+            role: SgTextRole.body,
             weight: 700,
             color: coral ? tokens.color.ink : ink,
           ),
@@ -748,9 +747,9 @@ class _Band extends StatelessWidget {
                   ),
                 ),
                 Expanded(
-                  child: DpText(
+                  child: SgText(
                     title,
-                    role: DpTextRole.body,
+                    role: SgTextRole.body,
                     weight: 600,
                     color: ink,
                     textAlign: TextAlign.center,
@@ -781,8 +780,8 @@ class _Band extends StatelessWidget {
       ],
     );
     return tokens.isGlass
-        ? DpSurface(
-            kind: DpSurfaceKind.tint(tokens.color.der),
+        ? SgSurface(
+            kind: SgSurfaceKind.tint(tokens.color.der),
             radius: 0,
             child: content,
           )

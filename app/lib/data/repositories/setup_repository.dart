@@ -1,9 +1,9 @@
-import 'package:deutschplan/data/db/app_database.dart';
+import 'package:sogda/data/db/app_database.dart';
 import 'package:drift/drift.dart' show Value;
-import 'package:deutschplan/data/repositories/plan_store.dart';
-import 'package:deutschplan/data/repositories/setting_keys.dart';
-import 'package:deutschplan/data/repositories/settings_repository.dart';
-import 'package:deutschplan/domain/plan_engine.dart';
+import 'package:sogda/data/repositories/plan_store.dart';
+import 'package:sogda/data/repositories/setting_keys.dart';
+import 'package:sogda/data/repositories/settings_repository.dart';
+import 'package:sogda/domain/plan_engine.dart';
 
 /// What S2 decided, ready to be written.
 class SetupChoice {

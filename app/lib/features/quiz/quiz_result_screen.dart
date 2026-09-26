@@ -1,23 +1,23 @@
 import 'dart:async';
 import 'dart:math' as math;
 
-import 'package:deutschplan/core/adaptive/adaptive.dart';
-import 'package:deutschplan/core/components/dp_button.dart';
-import 'package:deutschplan/core/components/dp_feedback.dart';
-import 'package:deutschplan/core/providers/app_providers.dart';
-import 'package:deutschplan/core/theme/aurora_backdrop.dart';
-import 'package:deutschplan/core/theme/dp_surface.dart';
-import 'package:deutschplan/core/theme/dp_tokens.dart';
-import 'package:deutschplan/core/typography/dp_text.dart';
-import 'package:deutschplan/data/repositories/exam_repository.dart'
+import 'package:sogda/core/adaptive/adaptive.dart';
+import 'package:sogda/core/components/sg_button.dart';
+import 'package:sogda/core/components/sg_feedback.dart';
+import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/core/theme/aurora_backdrop.dart';
+import 'package:sogda/core/theme/sg_surface.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/core/typography/sg_text.dart';
+import 'package:sogda/data/repositories/exam_repository.dart'
     show QuizMistakeRowsResult, QuizResult;
-import 'package:deutschplan/domain/quiz_builder.dart' show QuizDirection;
-import 'package:deutschplan/features/learn/step_quiz.dart';
-import 'package:deutschplan/features/quiz/quiz_screen.dart' show quizTitle;
-import 'package:deutschplan/features/words/word_row.dart' show WordPlayButton;
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
-import 'package:deutschplan/l10n/ui_digits.dart';
-import 'package:deutschplan/router/routes.dart';
+import 'package:sogda/domain/quiz_builder.dart' show QuizDirection;
+import 'package:sogda/features/learn/step_quiz.dart';
+import 'package:sogda/features/quiz/quiz_screen.dart' show quizTitle;
+import 'package:sogda/features/words/word_row.dart' show WordPlayButton;
+import 'package:sogda/l10n/generated/app_localizations.dart';
+import 'package:sogda/l10n/ui_digits.dart';
+import 'package:sogda/router/routes.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -84,7 +84,7 @@ class _QuizResultViewState extends ConsumerState<QuizResultView> {
       today: ref.read(todayProvider),
     );
     if (!mounted) return;
-    DpToast.show(
+    SgToast.show(
       context,
       AppLocalizations.of(context).quizAddedToRevision(mistakes.length),
     );
@@ -131,12 +131,12 @@ class _QuizResultViewState extends ConsumerState<QuizResultView> {
               children: <Widget>[
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: DpText(
+                  child: SgText(
                     (uids.isEmpty
                             ? l10n.quizResultNoMistakes
                             : l10n.quizResultMistakes(uids.length))
                         .toUpperCase(),
-                    role: DpTextRole.caption,
+                    role: SgTextRole.caption,
                     weight: 700,
                     letterSpacing: 0.6,
                     color: tokens.color.textSecondary,
@@ -144,8 +144,8 @@ class _QuizResultViewState extends ConsumerState<QuizResultView> {
                 ),
                 const SizedBox(height: 8),
                 if (uids.isNotEmpty)
-                  DpSurface(
-                    kind: DpSurfaceKind.bar,
+                  SgSurface(
+                    kind: SgSurfaceKind.bar,
                     radius: 0,
                     child: Column(
                       children: <Widget>[
@@ -169,23 +169,23 @@ class _QuizResultViewState extends ConsumerState<QuizResultView> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
                 if (uids.isNotEmpty) ...<Widget>[
-                  DpButton(
+                  SgButton(
                     label: l10n.quizRetryMistakes(uids.length),
                     onPressed: () => _retry(uids),
                   ),
                   const SizedBox(height: 8),
-                  DpButton(
+                  SgButton(
                     label: l10n.quizAddToRevision,
-                    kind: DpButtonKind.secondary,
+                    kind: SgButtonKind.secondary,
                     onPressed: _added
                         ? null
                         : () => unawaited(_addToRevision(result.mistakes)),
                   ),
                   const SizedBox(height: 8),
                 ],
-                DpButton(
+                SgButton(
                   label: l10n.done,
-                  kind: DpButtonKind.text,
+                  kind: SgButtonKind.text,
                   onPressed: close,
                 ),
               ],
@@ -274,14 +274,14 @@ class _Score extends StatelessWidget {
               ),
             ),
           ),
-          DpText(score, role: DpTextRole.display, weight: 700, color: ink),
+          SgText(score, role: SgTextRole.display, weight: 700, color: ink),
           const SizedBox(height: 6),
-          DpText(line, role: DpTextRole.body, weight: 600, color: ink),
+          SgText(line, role: SgTextRole.body, weight: 600, color: ink),
         ],
       ),
     );
     return tokens.isGlass
-        ? DpSurface(kind: DpSurfaceKind.tint(colour), radius: 0, child: content)
+        ? SgSurface(kind: SgSurfaceKind.tint(colour), radius: 0, child: content)
         : ColoredBox(color: colour, child: content);
   }
 }
@@ -334,16 +334,16 @@ class _MistakeRow extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                DpHeadword(
+                SgHeadword(
                   german,
                   article: article,
-                  role: DpTextRole.bodyLarge,
+                  role: SgTextRole.bodyLarge,
                   weight: 600,
                 ),
                 const SizedBox(height: 2),
-                DpText(
+                SgText(
                   wrote,
-                  role: DpTextRole.label,
+                  role: SgTextRole.label,
                   weight: 400,
                   color: tokens.color.wrongText,
                 ),

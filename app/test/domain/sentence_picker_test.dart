@@ -1,5 +1,5 @@
-import 'package:deutschplan/domain/plan_engine.dart';
-import 'package:deutschplan/domain/sentence_picker.dart';
+import 'package:sogda/domain/plan_engine.dart';
+import 'package:sogda/domain/sentence_picker.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 /// The practice sentence picker — #80, `docs/03-domain/sentences.md`.

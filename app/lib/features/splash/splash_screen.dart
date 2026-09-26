@@ -1,12 +1,12 @@
 import 'dart:async';
 
-import 'package:deutschplan/core/adaptive/adaptive.dart';
-import 'package:deutschplan/core/theme/aurora_backdrop.dart';
-import 'package:deutschplan/core/theme/dp_surface.dart';
-import 'package:deutschplan/core/theme/dp_tokens.dart';
-import 'package:deutschplan/core/typography/app_fonts.dart';
-import 'package:deutschplan/core/typography/dp_text.dart';
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
+import 'package:sogda/core/adaptive/adaptive.dart';
+import 'package:sogda/core/theme/aurora_backdrop.dart';
+import 'package:sogda/core/theme/sg_surface.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/core/typography/app_fonts.dart';
+import 'package:sogda/core/typography/sg_text.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:material_ui/material_ui.dart';
 
 /// S1 · Splash. `docs/04-screens/splash.md`, artboards `Splash-android*.html`.
@@ -45,9 +45,9 @@ class SplashScreen extends StatelessWidget {
         ),
         Padding(
           padding: const EdgeInsets.fromLTRB(24, 0, 24, 48),
-          child: DpText(
+          child: SgText(
             l10n.splashPreparing,
-            role: DpTextRole.caption,
+            role: SgTextRole.caption,
             textAlign: TextAlign.center,
             // Ink on the solid field, secondary on glass — the artboards
             // differ here because the glass paper is much lighter.
@@ -93,7 +93,7 @@ class SplashLockup extends StatelessWidget {
   Widget build(BuildContext context) => Column(
     mainAxisSize: MainAxisSize.min,
     children: <Widget>[
-      // The mark is decorative. A reader that announced "D, DeutschPlan"
+      // The mark is decorative. A reader that announced "D, Sogda"
       // would say nothing about the wait; the caption below is the screen's
       // actual announcement.
       const ExcludeSemantics(child: SplashMark()),
@@ -222,7 +222,7 @@ class SplashMark extends StatelessWidget {
         ),
         const SizedBox(height: 20),
         _Lockup(
-          'DeutschPlan',
+          'Sogda',
           size: _SplashMetrics.wordmarkSize,
           colour: tokens.color.ink,
           letterSpacing: -0.5,
@@ -233,7 +233,7 @@ class SplashMark extends StatelessWidget {
     // The wordmark is the product's name, not course content, so it is not in
     // the ARB — translating it would be renaming the app.
     return tokens.isGlass
-        ? DpSurface(
+        ? SgSurface(
             padding: const EdgeInsets.fromLTRB(44, 36, 44, 32),
             radius: _SplashMetrics.bubbleRadius,
             child: mark,
@@ -244,13 +244,13 @@ class SplashMark extends StatelessWidget {
 
 /// A piece of the brand lockup.
 ///
-/// `Text` rather than [DpText], and on purpose: the scale is for content, and
+/// `Text` rather than [SgText], and on purpose: the scale is for content, and
 /// these two sizes — 60 for the glyph, 28 for the wordmark — are artwork fixed
 /// by the artboards. Bending them to the nearest role would move the mark, and
 /// the native launch screens have to match it pixel for pixel.
 ///
-/// The Bangla fallback [DpText] exists to enforce does not apply: "D" and
-/// "DeutschPlan" are the product's name, in Latin, in every locale.
+/// The Bangla fallback [SgText] exists to enforce does not apply: "D" and
+/// "Sogda" are the product's name, in Latin, in every locale.
 class _Lockup extends StatelessWidget {
   const _Lockup(
     this.data, {

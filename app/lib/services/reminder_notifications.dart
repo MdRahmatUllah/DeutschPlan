@@ -40,7 +40,7 @@ class PlatformReminderNotifications implements ReminderNotifications {
       FlutterLocalNotificationsPlugin();
 
   /// Where a tapped reminder goes (`navigation.md`).
-  static const String link = 'deutschplan://today';
+  static const String link = 'sogda://today';
 
   static const String channel = 'reminder';
 

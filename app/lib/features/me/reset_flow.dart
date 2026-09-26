@@ -1,13 +1,13 @@
-import 'package:deutschplan/core/adaptive/adaptive.dart';
-import 'package:deutschplan/core/components/dp_feedback.dart';
-import 'package:deutschplan/core/providers/app_providers.dart';
-import 'package:deutschplan/core/theme/dp_tokens.dart';
-import 'package:deutschplan/core/typography/dp_text.dart';
-import 'package:deutschplan/features/onboarding/onboarding_notifier.dart';
-import 'package:deutschplan/features/study/study_session.dart';
-import 'package:deutschplan/features/today/today_providers.dart';
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
-import 'package:deutschplan/router/routes.dart';
+import 'package:sogda/core/adaptive/adaptive.dart';
+import 'package:sogda/core/components/sg_feedback.dart';
+import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/core/typography/sg_text.dart';
+import 'package:sogda/features/onboarding/onboarding_notifier.dart';
+import 'package:sogda/features/study/study_session.dart';
+import 'package:sogda/features/today/today_providers.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
+import 'package:sogda/router/routes.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 
@@ -47,7 +47,7 @@ Future<void> _resetStep(BuildContext context, WidgetRef ref) async {
   final steps = await reset.steps();
   if (!context.mounted) return;
   if (steps.isEmpty) {
-    DpToast.show(context, l10n.resetNoStep);
+    SgToast.show(context, l10n.resetNoStep);
     return;
   }
   final step = await Adaptive.showSheet<({String code, bool current})>(
@@ -71,7 +71,7 @@ Future<void> _resetStep(BuildContext context, WidgetRef ref) async {
   try {
     exams = await reset.resetStep(step.code, today: ref.read(todayProvider));
   } on Object {
-    if (context.mounted) DpToast.show(context, l10n.resetFailed);
+    if (context.mounted) SgToast.show(context, l10n.resetFailed);
     return;
   }
   await _dropRecordings(ref, exams);
@@ -80,7 +80,7 @@ Future<void> _resetStep(BuildContext context, WidgetRef ref) async {
   ref
     ..invalidate(planEngineProvider)
     ..invalidate(todayPlanProvider);
-  if (context.mounted) DpToast.show(context, l10n.resetStepDone(step.code));
+  if (context.mounted) SgToast.show(context, l10n.resetStepDone(step.code));
 }
 
 /// FR-M7-02: the RESET dialog, then user.db as new but for the theme and
@@ -99,7 +99,7 @@ Future<void> _resetEverything(BuildContext context, WidgetRef ref) async {
   try {
     await ref.read(resetRepositoryProvider).resetEverything();
   } on Object {
-    if (context.mounted) DpToast.show(context, l10n.resetFailed);
+    if (context.mounted) SgToast.show(context, l10n.resetFailed);
     return;
   }
   await _dropRecordings(ref);
@@ -143,16 +143,16 @@ class _Choice extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                DpText(
+                SgText(
                   title,
-                  role: DpTextRole.body,
+                  role: SgTextRole.body,
                   weight: 600,
                   color: color ?? tokens.color.ink,
                 ),
                 if (note case final note?)
-                  DpText(
+                  SgText(
                     note,
-                    role: DpTextRole.caption,
+                    role: SgTextRole.caption,
                     color: tokens.color.textSecondary,
                   ),
               ],
@@ -178,7 +178,7 @@ class _Sheet extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
-        Semantics(header: true, child: DpText(title, role: DpTextRole.title)),
+        Semantics(header: true, child: SgText(title, role: SgTextRole.title)),
         const SizedBox(height: 8),
         Flexible(
           child: SingleChildScrollView(

@@ -1,9 +1,9 @@
-import 'package:deutschplan/core/components/dp_progress_ring.dart';
-import 'package:deutschplan/core/components/dp_speaker_button.dart';
-import 'package:deutschplan/core/components/dp_stepper.dart';
-import 'package:deutschplan/core/theme/app_theme.dart';
-import 'package:deutschplan/core/theme/dp_tokens.dart';
-import 'package:deutschplan/main.dart'
+import 'package:sogda/core/components/sg_progress_ring.dart';
+import 'package:sogda/core/components/sg_speaker_button.dart';
+import 'package:sogda/core/components/sg_stepper.dart';
+import 'package:sogda/core/theme/app_theme.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
@@ -36,13 +36,13 @@ void main() {
     }
   }
 
-  group('DpProgressRing', () {
+  group('SgProgressRing', () {
     test('progress is the completed fraction, clamped', () {
-      expect(const DpProgressRing(completed: 12, total: 20).progress, 0.6);
-      expect(const DpProgressRing(completed: 0, total: 20).progress, 0);
-      expect(const DpProgressRing(completed: 20, total: 20).progress, 1);
+      expect(const SgProgressRing(completed: 12, total: 20).progress, 0.6);
+      expect(const SgProgressRing(completed: 0, total: 20).progress, 0);
+      expect(const SgProgressRing(completed: 20, total: 20).progress, 1);
       expect(
-        const DpProgressRing(completed: 25, total: 20).progress,
+        const SgProgressRing(completed: 25, total: 20).progress,
         1,
         reason: 'an over-full ring would draw past the circle',
       );
@@ -50,31 +50,31 @@ void main() {
 
     test('an empty plan is 0, not a divide by zero', () {
       // Rest days have no plan at all — TodayRest shows "Frei · no plan".
-      expect(const DpProgressRing(completed: 0, total: 0).progress, 0);
-      expect(const DpProgressRing(completed: 3, total: 0).progress, 0);
+      expect(const SgProgressRing(completed: 0, total: 0).progress, 0);
+      expect(const SgProgressRing(completed: 3, total: 0).progress, 0);
     });
 
     testWidgets('#437 the track is surface.track, under a Lagoon arc', (
       tester,
     ) async {
-      await pump(tester, const DpProgressRing(completed: 12, total: 20));
+      await pump(tester, const SgProgressRing(completed: 12, total: 20));
       expect(
         tester.renderObject(
           find.descendant(
-            of: find.byType(DpProgressRing),
+            of: find.byType(SgProgressRing),
             matching: find.byType(CustomPaint),
           ),
         ),
         paints
-          ..circle(color: DpSurfaceTokens.light.track)
-          ..arc(color: DpPalette.light.primary),
+          ..circle(color: SgSurfaceTokens.light.track)
+          ..arc(color: SgPalette.light.primary),
       );
     });
 
     testWidgets('it renders the count and the caption', (tester) async {
       await pump(
         tester,
-        const DpProgressRing(completed: 12, total: 20, caption: '6 min left'),
+        const SgProgressRing(completed: 12, total: 20, caption: '6 min left'),
       );
       expect(find.text('12 / 20'), findsOneWidget);
       expect(find.text('6 min left'), findsOneWidget);
@@ -83,14 +83,14 @@ void main() {
     testWidgets('a screen reader hears the count and the percentage', (
       tester,
     ) async {
-      await pump(tester, const DpProgressRing(completed: 12, total: 20));
+      await pump(tester, const SgProgressRing(completed: 12, total: 20));
       expect(find.bySemanticsLabel('12 of 20'), findsOneWidget);
     });
 
     testWidgets('the box is square at the requested size', (tester) async {
       for (final size in <double>[120, 132]) {
-        await pump(tester, DpProgressRing(completed: 1, total: 4, size: size));
-        expect(tester.getSize(find.byType(DpProgressRing)), Size(size, size));
+        await pump(tester, SgProgressRing(completed: 1, total: 4, size: size));
+        expect(tester.getSize(find.byType(SgProgressRing)), Size(size, size));
       }
     });
 
@@ -108,7 +108,7 @@ void main() {
             data: const MediaQueryData(textScaler: TextScaler.linear(2)),
             child: const Scaffold(
               body: Center(
-                child: DpProgressRing(
+                child: SgProgressRing(
                   completed: 12,
                   total: 20,
                   caption: '6 min left',
@@ -122,7 +122,7 @@ void main() {
 
       expect(tester.takeException(), isNull);
       expect(
-        tester.getSize(find.byType(DpProgressRing)),
+        tester.getSize(find.byType(SgProgressRing)),
         const Size(120, 120),
         reason: 'the ring keeps its diameter; the centre is what gives way',
       );
@@ -136,7 +136,7 @@ void main() {
       ]) {
         await pump(
           tester,
-          const DpProgressRing(completed: 12, total: 20),
+          const SgProgressRing(completed: 12, total: 20),
           theme: theme,
         );
         expect(tester.takeException(), isNull);
@@ -144,13 +144,13 @@ void main() {
     });
   });
 
-  group('DpSegmentedBar', () {
+  group('SgSegmentedBar', () {
     testWidgets('it is 8 dp tall by default', (tester) async {
       await pump(
         tester,
-        const DpSegmentedBar(done: 184, learning: 60, todo: 296),
+        const SgSegmentedBar(done: 184, learning: 60, todo: 296),
       );
-      expect(tester.getSize(find.byType(DpSegmentedBar)).height, 8);
+      expect(tester.getSize(find.byType(SgSegmentedBar)).height, 8);
     });
 
     testWidgets('every segment fills the bar, even in a start-aligned column', (
@@ -166,14 +166,14 @@ void main() {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              DpSegmentedBar(done: 184, learning: 60, todo: 296, height: 6),
+              SgSegmentedBar(done: 184, learning: 60, todo: 296, height: 6),
             ],
           ),
         ),
       );
 
       final segments = find.descendant(
-        of: find.byType(DpSegmentedBar),
+        of: find.byType(SgSegmentedBar),
         matching: find.byType(ColoredBox),
       );
       expect(segments, findsNWidgets(3));
@@ -182,7 +182,7 @@ void main() {
         expect(size.height, 6);
         expect(size.width, greaterThan(0));
       }
-      expect(tester.getSize(find.byType(DpSegmentedBar)).width, 300);
+      expect(tester.getSize(find.byType(SgSegmentedBar)).width, 300);
     });
 
     testWidgets('segments are weighted by count', (tester) async {
@@ -190,28 +190,28 @@ void main() {
         tester,
         const SizedBox(
           width: 300,
-          child: DpSegmentedBar(done: 184, learning: 60, todo: 296),
+          child: SgSegmentedBar(done: 184, learning: 60, todo: 296),
         ),
       );
 
       final boxes = tester
           .widgetList<ColoredBox>(
             find.descendant(
-              of: find.byType(DpSegmentedBar),
+              of: find.byType(SgSegmentedBar),
               matching: find.byType(ColoredBox),
             ),
           )
           .toList();
       expect(boxes, hasLength(3));
-      expect(boxes[0].color, DpPalette.light.easy, reason: 'Done is Lime');
+      expect(boxes[0].color, SgPalette.light.easy, reason: 'Done is Lime');
       expect(
         boxes[1].color,
-        DpPalette.light.learning,
+        SgPalette.light.learning,
         reason: 'Learning is Sun',
       );
       expect(
         boxes[2].color,
-        DpSurfaceTokens.light.track,
+        SgSurfaceTokens.light.track,
         reason: 'To do is the track, 3:1 on its card (#437)',
       );
 
@@ -232,13 +232,13 @@ void main() {
         tester,
         const SizedBox(
           width: 300,
-          child: DpSegmentedBar(done: 1, learning: 0, todo: 540),
+          child: SgSegmentedBar(done: 1, learning: 0, todo: 540),
         ),
       );
       final boxes = tester
           .widgetList<ColoredBox>(
             find.descendant(
-              of: find.byType(DpSegmentedBar),
+              of: find.byType(SgSegmentedBar),
               matching: find.byType(ColoredBox),
             ),
           )
@@ -247,7 +247,7 @@ void main() {
       expect(boxes, hasLength(2), reason: 'an empty segment is not drawn');
       expect(
         tester.getSize(find.byWidget(boxes[0])).width,
-        greaterThanOrEqualTo(DpSegmentedBar.minimumSegment),
+        greaterThanOrEqualTo(SgSegmentedBar.minimumSegment),
       );
     });
 
@@ -258,16 +258,16 @@ void main() {
         tester,
         const SizedBox(
           width: 300,
-          child: DpSegmentedBar(done: 0, learning: 0, todo: 0),
+          child: SgSegmentedBar(done: 0, learning: 0, todo: 0),
         ),
       );
       final box = tester.widget<ColoredBox>(
         find.descendant(
-          of: find.byType(DpSegmentedBar),
+          of: find.byType(SgSegmentedBar),
           matching: find.byType(ColoredBox),
         ),
       );
-      expect(box.color, DpSurfaceTokens.light.track);
+      expect(box.color, SgSurfaceTokens.light.track);
     });
 
     testWidgets('a bar too narrow for the floor still does not overflow', (
@@ -281,7 +281,7 @@ void main() {
           tester,
           SizedBox(
             width: width,
-            child: const DpSegmentedBar(done: 184, learning: 60, todo: 296),
+            child: const SgSegmentedBar(done: 184, learning: 60, todo: 296),
           ),
         );
         expect(tester.takeException(), isNull, reason: 'at width $width');
@@ -291,7 +291,7 @@ void main() {
     testWidgets('a screen reader hears all three counts', (tester) async {
       await pump(
         tester,
-        const DpSegmentedBar(done: 184, learning: 60, todo: 296),
+        const SgSegmentedBar(done: 184, learning: 60, todo: 296),
       );
       expect(
         find.bySemanticsLabel('184 done, 60 learning, 296 to do'),
@@ -300,23 +300,23 @@ void main() {
     });
   });
 
-  group('DpSpeakerButton', () {
+  group('SgSpeakerButton', () {
     testWidgets('it is 56 dp, circular, with the hard offset shadow', (
       tester,
     ) async {
       await pump(
         tester,
-        DpSpeakerButton(onPressed: () {}, semanticLabel: 'Pronounce Rechnung'),
+        SgSpeakerButton(onPressed: () {}, semanticLabel: 'Pronounce Rechnung'),
       );
 
-      expect(tester.getSize(find.byType(DpSpeakerButton)), const Size(56, 56));
+      expect(tester.getSize(find.byType(SgSpeakerButton)), const Size(56, 56));
 
       final decoration =
           tester
                   .widget<Container>(
                     find
                         .descendant(
-                          of: find.byType(DpSpeakerButton),
+                          of: find.byType(SgSpeakerButton),
                           matching: find.byType(Container),
                         )
                         .first,
@@ -325,7 +325,7 @@ void main() {
               as BoxDecoration;
 
       expect(decoration.shape, BoxShape.circle);
-      expect(decoration.color, DpPalette.light.primary);
+      expect(decoration.color, SgPalette.light.primary);
       expect((decoration.border! as Border).top.width, 2);
       expect(decoration.boxShadow!.single.offset, const Offset(3, 3));
     });
@@ -333,17 +333,17 @@ void main() {
     testWidgets('playing swaps the horn for three bars', (tester) async {
       await pump(
         tester,
-        DpSpeakerButton(
+        SgSpeakerButton(
           onPressed: () {},
           semanticLabel: 'Pronounce',
-          state: DpSpeakerState.playing,
+          state: SgSpeakerState.playing,
         ),
       );
       expect(find.byIcon(Icons.volume_up), findsNothing);
       // Three bars plus the button's own container.
       expect(
         find.descendant(
-          of: find.byType(DpSpeakerButton),
+          of: find.byType(SgSpeakerButton),
           matching: find.byType(Container),
         ),
         findsNWidgets(4),
@@ -355,10 +355,10 @@ void main() {
       // different thing from "sound is coming out".
       await pump(
         tester,
-        DpSpeakerButton(
+        SgSpeakerButton(
           onPressed: () {},
           semanticLabel: 'Pronounce',
-          state: DpSpeakerState.loading,
+          state: SgSpeakerState.loading,
         ),
         settle: false,
       );
@@ -374,10 +374,10 @@ void main() {
       var taps = 0;
       await pump(
         tester,
-        DpSpeakerButton(
+        SgSpeakerButton(
           onPressed: () => taps++,
           semanticLabel: 'No German voice installed',
-          state: DpSpeakerState.unavailable,
+          state: SgSpeakerState.unavailable,
         ),
       );
 
@@ -388,16 +388,16 @@ void main() {
                   .widget<Container>(
                     find
                         .descendant(
-                          of: find.byType(DpSpeakerButton),
+                          of: find.byType(SgSpeakerButton),
                           matching: find.byType(Container),
                         )
                         .first,
                   )
                   .decoration!
               as BoxDecoration;
-      expect(decoration.color, DpSurfaceTokens.light.muted);
+      expect(decoration.color, SgSurfaceTokens.light.muted);
 
-      await tester.tap(find.byType(DpSpeakerButton));
+      await tester.tap(find.byType(SgSpeakerButton));
       await tester.pumpAndSettle();
       expect(
         taps,
@@ -413,16 +413,16 @@ void main() {
       var longPresses = 0;
       await pump(
         tester,
-        DpSpeakerButton(
+        SgSpeakerButton(
           onPressed: () => taps++,
           onLongPress: () => longPresses++,
           semanticLabel: 'Pronounce',
         ),
       );
 
-      await tester.tap(find.byType(DpSpeakerButton));
+      await tester.tap(find.byType(SgSpeakerButton));
       await tester.pumpAndSettle();
-      await tester.longPress(find.byType(DpSpeakerButton));
+      await tester.longPress(find.byType(SgSpeakerButton));
       await tester.pumpAndSettle();
 
       expect(taps, 1);
@@ -440,7 +440,7 @@ void main() {
           children: <Widget>[
             // A headword beside it, as on W1 and T2: it must not merge in.
             const Text('die Rechnung'),
-            DpSpeakerButton(
+            SgSpeakerButton(
               onPressed: () => taps++,
               onLongPress: () => longPresses++,
               semanticLabel: 'Pronounce Rechnung',
@@ -460,7 +460,7 @@ void main() {
     testWidgets('it is announced with its label', (tester) async {
       await pump(
         tester,
-        DpSpeakerButton(onPressed: () {}, semanticLabel: 'Pronounce Rechnung'),
+        SgSpeakerButton(onPressed: () {}, semanticLabel: 'Pronounce Rechnung'),
       );
       expect(find.bySemanticsLabel('Pronounce Rechnung'), findsOneWidget);
     });
@@ -473,10 +473,10 @@ void main() {
       const Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          DpProgressRing(completed: 12, total: 20),
+          SgProgressRing(completed: 12, total: 20),
           SizedBox(
             width: 200,
-            child: DpSegmentedBar(done: 184, learning: 60, todo: 296),
+            child: SgSegmentedBar(done: 184, learning: 60, todo: 296),
           ),
         ],
       ),
@@ -502,8 +502,8 @@ void main() {
       Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          const DpProgressRing(completed: 12, total: 20),
-          DpStepper(
+          const SgProgressRing(completed: 12, total: 20),
+          SgStepper(
             value: 15,
             min: 5,
             max: 30,

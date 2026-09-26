@@ -1,11 +1,10 @@
-import 'package:deutschplan/core/providers/app_providers.dart';
-import 'package:deutschplan/data/repositories/model_repository.dart';
-import 'package:deutschplan/data/repositories/setting_keys.dart';
-import 'package:deutschplan/data/repositories/word_repository.dart'
-    show WordStatus;
-import 'package:deutschplan/domain/plan_engine.dart';
-import 'package:deutschplan/features/study/study_card.dart' show spokenForm;
-import 'package:deutschplan/features/today/today_view.dart';
+import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/data/repositories/model_repository.dart';
+import 'package:sogda/data/repositories/setting_keys.dart';
+import 'package:sogda/data/repositories/word_repository.dart' show WordStatus;
+import 'package:sogda/domain/plan_engine.dart';
+import 'package:sogda/features/study/study_card.dart' show spokenForm;
+import 'package:sogda/features/today/today_view.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'today_providers.g.dart';

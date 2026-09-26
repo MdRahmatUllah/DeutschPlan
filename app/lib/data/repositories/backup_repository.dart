@@ -1,7 +1,7 @@
 import 'dart:convert';
 
-import 'package:deutschplan/data/db/app_database.dart';
-import 'package:deutschplan/data/repositories/word_repository.dart'
+import 'package:sogda/data/db/app_database.dart';
+import 'package:sogda/data/repositories/word_repository.dart'
     show customId, customUid;
 import 'package:drift/drift.dart';
 import 'package:flutter/foundation.dart' show immutable;
@@ -497,7 +497,7 @@ class BackupRepository {
         decoded['tables'] is! Map<String, Object?>) {
       throw ImportException(
         ImportRefusal.notABackup,
-        'That file is JSON, but not a DeutschPlan export.',
+        'That file is JSON, but not a Sogda export.',
       );
     }
 
@@ -505,7 +505,7 @@ class BackupRepository {
     if (version > AppDatabase.latestSchemaVersion) {
       throw ImportException(
         ImportRefusal.newerSchema,
-        'That file was written by a newer version of DeutschPlan '
+        'That file was written by a newer version of Sogda '
         '(format $version, this build reads up to '
         '${AppDatabase.latestSchemaVersion}). Update the app and try again.',
       );

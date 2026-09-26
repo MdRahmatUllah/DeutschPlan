@@ -1,18 +1,18 @@
-import 'package:deutschplan/core/adaptive/adaptive.dart';
-import 'package:deutschplan/core/components/dp_button.dart';
-import 'package:deutschplan/core/components/dp_feedback.dart';
-import 'package:deutschplan/core/providers/app_providers.dart';
-import 'package:deutschplan/core/theme/aurora_backdrop.dart';
-import 'package:deutschplan/core/theme/dp_surface.dart';
-import 'package:deutschplan/core/theme/dp_tokens.dart';
-import 'package:deutschplan/core/typography/dp_text.dart';
-import 'package:deutschplan/data/repositories/exam_repository.dart';
-import 'package:deutschplan/data/repositories/setting_keys.dart';
-import 'package:deutschplan/domain/exam_generator.dart';
-import 'package:deutschplan/features/learn/step_exams.dart';
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
-import 'package:deutschplan/l10n/ui_digits.dart';
-import 'package:deutschplan/router/routes.dart';
+import 'package:sogda/core/adaptive/adaptive.dart';
+import 'package:sogda/core/components/sg_button.dart';
+import 'package:sogda/core/components/sg_feedback.dart';
+import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/core/theme/aurora_backdrop.dart';
+import 'package:sogda/core/theme/sg_surface.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/core/typography/sg_text.dart';
+import 'package:sogda/data/repositories/exam_repository.dart';
+import 'package:sogda/data/repositories/setting_keys.dart';
+import 'package:sogda/domain/exam_generator.dart';
+import 'package:sogda/features/learn/step_exams.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
+import 'package:sogda/l10n/ui_digits.dart';
+import 'package:sogda/router/routes.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -112,7 +112,7 @@ class _ExamIntroScreenState extends ConsumerState<ExamIntroScreen> {
           .begin(widget.step, widget.seed, timer: timer);
       if (id != null && mounted) ExamRoute.open(context, id);
     } on Exception {
-      if (mounted) DpToast.show(context, l10n.examIntroFailed);
+      if (mounted) SgToast.show(context, l10n.examIntroFailed);
     }
   }
 
@@ -140,11 +140,11 @@ class _ExamIntroScreenState extends ConsumerState<ExamIntroScreen> {
       body = ListView(
         padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
         children: <Widget>[
-          DpText(title, role: DpTextRole.headline),
+          SgText(title, role: SgTextRole.headline),
           const SizedBox(height: 4),
-          DpText(
+          SgText(
             line,
-            role: DpTextRole.caption,
+            role: SgTextRole.caption,
             color: tokens.color.textSecondary,
           ),
           const SizedBox(height: 12),
@@ -173,7 +173,7 @@ class _ExamIntroScreenState extends ConsumerState<ExamIntroScreen> {
                           color: tokens.color.correctText,
                         ),
                         const SizedBox(width: 10),
-                        Expanded(child: DpText(rule, role: DpTextRole.body)),
+                        Expanded(child: SgText(rule, role: SgTextRole.body)),
                       ],
                     ),
                   ),
@@ -189,15 +189,15 @@ class _ExamIntroScreenState extends ConsumerState<ExamIntroScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      DpText(
+                      SgText(
                         l10n.examIntroTimer,
-                        role: DpTextRole.body,
+                        role: SgTextRole.body,
                         weight: 500,
                       ),
                       const SizedBox(height: 1),
-                      DpText(
+                      SgText(
                         l10n.examIntroTimerLine(examMinutes),
-                        role: DpTextRole.caption,
+                        role: SgTextRole.caption,
                         color: tokens.color.textSecondary,
                       ),
                     ],
@@ -215,7 +215,7 @@ class _ExamIntroScreenState extends ConsumerState<ExamIntroScreen> {
             ),
           ),
           const SizedBox(height: 12),
-          DpButton(
+          SgButton(
             label: l10n.examIntroBegin,
             onPressed: busy ? null : () => _begin(timer),
           ),
@@ -250,17 +250,17 @@ class _Card extends StatelessWidget {
   final Widget child;
 
   @override
-  Widget build(BuildContext context) => DpSurface(
-    kind: DpSurfaceKind.bar,
+  Widget build(BuildContext context) => SgSurface(
+    kind: SgSurfaceKind.bar,
     padding: const EdgeInsets.all(14),
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
         Semantics(
           header: true,
-          child: DpText(
+          child: SgText(
             heading.toUpperCase(),
-            role: DpTextRole.caption,
+            role: SgTextRole.caption,
             weight: 700,
             letterSpacing: 0.6,
             color: context.tokens.color.textSecondary,
@@ -306,24 +306,24 @@ class _Sections extends StatelessWidget {
                 crossAxisAlignment: WrapCrossAlignment.center,
                 children: <Widget>[
                   // The artboard's 14 px sits between label and body.
-                  DpText(
+                  SgText(
                     examSectionName(l10n, section),
-                    role: DpTextRole.label,
+                    role: SgTextRole.label,
                     weight: 400,
                   ),
                   if (selfAssessed)
-                    DpText(
+                    SgText(
                       l10n.examIntroSelfAssessed,
-                      role: DpTextRole.caption,
+                      role: SgTextRole.caption,
                       color: tokens.color.textSecondary,
                     ),
                 ],
               ),
             ),
             const SizedBox(width: 6),
-            DpText(
+            SgText(
               AppLocalizations.of(context).digits(count),
-              role: DpTextRole.label,
+              role: SgTextRole.label,
               weight: 700,
             ),
           ],
@@ -332,7 +332,7 @@ class _Sections extends StatelessWidget {
     }
 
     // Past 130 % text two columns broke "Vocabulary" mid-word (#165): one.
-    if (DpScript.large(context)) {
+    if (SgScript.large(context)) {
       return Column(
         children: <Widget>[for (final entry in sections) cell(entry)],
       );

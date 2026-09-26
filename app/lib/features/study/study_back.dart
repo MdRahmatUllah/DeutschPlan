@@ -1,15 +1,14 @@
-import 'package:deutschplan/core/adaptive/adaptive.dart';
-import 'package:deutschplan/core/components/dp_chip.dart';
-import 'package:deutschplan/core/components/dp_feedback.dart';
-import 'package:deutschplan/core/providers/app_providers.dart';
-import 'package:deutschplan/core/theme/dp_tokens.dart';
-import 'package:deutschplan/core/typography/dp_text.dart';
-import 'package:deutschplan/data/db/app_database.dart';
-import 'package:deutschplan/data/repositories/setting_keys.dart';
-import 'package:deutschplan/data/repositories/word_repository.dart'
-    show customId;
-import 'package:deutschplan/features/words/speak.dart';
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
+import 'package:sogda/core/adaptive/adaptive.dart';
+import 'package:sogda/core/components/sg_chip.dart';
+import 'package:sogda/core/components/sg_feedback.dart';
+import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/core/typography/sg_text.dart';
+import 'package:sogda/data/db/app_database.dart';
+import 'package:sogda/data/repositories/setting_keys.dart';
+import 'package:sogda/data/repositories/word_repository.dart' show customId;
+import 'package:sogda/features/words/speak.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -120,17 +119,17 @@ class StudyBack extends StatelessWidget {
           const SizedBox(height: 8),
         ],
         if (english != null)
-          DpText(english, role: DpTextRole.bodyLarge, weight: 500),
+          SgText(english, role: SgTextRole.bodyLarge, weight: 500),
         if (english != null && bangla != null) const SizedBox(height: 2),
         if (bangla != null)
-          DpText(
+          SgText(
             bangla,
-            role: DpTextRole.bodyLarge,
+            role: SgTextRole.bodyLarge,
             color: english == null ? null : tokens.color.textSecondary,
           ),
         if (tip != null) ...<Widget>[
           const SizedBox(height: 14),
-          DpCallout.text(l10n.studyTip(tipText(tip, meaning))),
+          SgCallout.text(l10n.studyTip(tipText(tip, meaning))),
         ],
         for (final example in extras?.examples ?? const <StudyExample>[])
           Padding(
@@ -142,18 +141,18 @@ class StudyBack extends StatelessWidget {
           ),
         if (collocations != null && collocations.isNotEmpty) ...<Widget>[
           const SizedBox(height: 14),
-          DpText(
+          SgText(
             // The course separates them with semicolons; the card with dots.
             l10n.studyCollocations(collocations.split('; ').join(' · ')),
-            role: DpTextRole.caption,
+            role: SgTextRole.caption,
             color: tokens.color.textSecondary,
           ),
         ],
         if (register != null && register.isNotEmpty) ...<Widget>[
           const SizedBox(height: 4),
-          DpText(
+          SgText(
             l10n.studyRegister(register),
-            role: DpTextRole.caption,
+            role: SgTextRole.caption,
             color: tokens.color.textSecondary,
           ),
         ],
@@ -170,9 +169,9 @@ class UpdatedChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    return DpChip(
+    return SgChip(
       label: l10n.wordUpdated,
-      kind: DpChipKind.status,
+      kind: SgChipKind.status,
       // "Updated" alone, read next to "Done", could be the word's status.
       semanticLabel: l10n.wordUpdatedSemantic,
     );
@@ -277,17 +276,17 @@ class StudyExampleRow extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  DpText(
+                  SgText(
                     example.german,
-                    role: DpTextRole.bodyLarge,
+                    role: SgTextRole.bodyLarge,
                     italic: true,
                     german: true,
                   ),
                   if (english != null) ...<Widget>[
                     const SizedBox(height: 2),
-                    DpText(
+                    SgText(
                       english,
-                      role: DpTextRole.body,
+                      role: SgTextRole.body,
                       color: tokens.color.textSecondary,
                     ),
                   ],

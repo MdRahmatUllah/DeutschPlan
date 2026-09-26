@@ -1,13 +1,13 @@
 import 'dart:async';
 
-import 'package:deutschplan/core/adaptive/adaptive.dart';
-import 'package:deutschplan/core/theme/app_theme.dart';
-import 'package:deutschplan/data/repositories/word_repository.dart';
-import 'package:deutschplan/features/learn/step_detail_screen.dart';
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
-import 'package:deutschplan/main.dart'
+import 'package:sogda/core/adaptive/adaptive.dart';
+import 'package:sogda/core/theme/app_theme.dart';
+import 'package:sogda/data/repositories/word_repository.dart';
+import 'package:sogda/features/learn/step_detail_screen.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
+import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
-import 'package:deutschplan/router/routes.dart';
+import 'package:sogda/router/routes.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';

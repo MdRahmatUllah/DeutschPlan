@@ -5,22 +5,22 @@ import 'dart:async';
 import 'dart:io' show FileSystemException;
 
 import 'package:cupertino_ui/cupertino_ui.dart' show CupertinoDatePicker;
-import 'package:deutschplan/core/adaptive/adaptive.dart';
-import 'package:deutschplan/core/components/dp_button.dart';
-import 'package:deutschplan/core/components/dp_speaker_button.dart';
-import 'package:deutschplan/core/providers/app_providers.dart';
-import 'package:deutschplan/core/theme/app_theme.dart';
-import 'package:deutschplan/core/theme/dp_tokens.dart';
-import 'package:deutschplan/data/db/app_database.dart';
-import 'package:deutschplan/data/repositories/model_repository.dart';
-import 'package:deutschplan/data/repositories/settings_repository.dart';
-import 'package:deutschplan/features/onboarding/onboarding_notifier.dart';
-import 'package:deutschplan/features/onboarding/onboarding_voice_page.dart';
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
-import 'package:deutschplan/main.dart'
+import 'package:sogda/core/adaptive/adaptive.dart';
+import 'package:sogda/core/components/sg_button.dart';
+import 'package:sogda/core/components/sg_speaker_button.dart';
+import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/core/theme/app_theme.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/data/db/app_database.dart';
+import 'package:sogda/data/repositories/model_repository.dart';
+import 'package:sogda/data/repositories/settings_repository.dart';
+import 'package:sogda/features/onboarding/onboarding_notifier.dart';
+import 'package:sogda/features/onboarding/onboarding_voice_page.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
+import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
-import 'package:deutschplan/services/model_downloads.dart';
-import 'package:deutschplan/services/notification_permission.dart';
+import 'package:sogda/services/model_downloads.dart';
+import 'package:sogda/services/notification_permission.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
@@ -58,7 +58,7 @@ void main() {
     int shortfall = 0,
     DownloadProgress? inFlight,
     List<SupertonicOnPhone?>? heard,
-    DpMode mode = DpMode.light,
+    SgMode mode = SgMode.light,
     double textScale = 1,
     VoidCallback? onFinish,
     VoidCallback? onBack,
@@ -102,9 +102,9 @@ void main() {
         container: container,
         child: MaterialApp(
           theme: switch (mode) {
-            DpMode.light => AppTheme.light(),
-            DpMode.dark => AppTheme.dark(),
-            DpMode.glass => AppTheme.glass(),
+            SgMode.light => AppTheme.light(),
+            SgMode.dark => AppTheme.dark(),
+            SgMode.glass => AppTheme.glass(),
           },
           localizationsDelegates: appLocalizationsDelegates,
           supportedLocales: supportedLocales,
@@ -236,7 +236,7 @@ void main() {
       // "Preview uses the system voice so it works before any model exists."
       await pump(tester);
 
-      await tester.tap(find.byType(DpSpeakerButton));
+      await tester.tap(find.byType(SgSpeakerButton));
       await tester.pump();
 
       expect(tts.spoken, <String>['Guten Tag!']);
@@ -246,13 +246,13 @@ void main() {
     testWidgets('and says so when there is no German voice', (tester) async {
       await pump(tester, germanVoice: false);
 
-      await tester.tap(find.byType(DpSpeakerButton));
+      await tester.tap(find.byType(SgSpeakerButton));
       await tester.pump();
 
       expect(find.text(l10n.onboardingVoiceMissing), findsOneWidget);
       expect(
-        tester.widget<DpSpeakerButton>(find.byType(DpSpeakerButton)).state,
-        DpSpeakerState.unavailable,
+        tester.widget<SgSpeakerButton>(find.byType(SgSpeakerButton)).state,
+        SgSpeakerState.unavailable,
       );
     });
   });
@@ -338,8 +338,8 @@ void main() {
     ) async {
       await pump(tester, asking: true);
 
-      final download = tester.widget<DpButton>(
-        find.widgetWithText(DpButton, l10n.onboardingSupertonicDownload),
+      final download = tester.widget<SgButton>(
+        find.widgetWithText(SgButton, l10n.onboardingSupertonicDownload),
       );
       expect(download.onPressed, isNull);
     });
@@ -376,8 +376,8 @@ void main() {
       await tester.pump();
     }
 
-    DpButton downloadButton(WidgetTester tester) => tester.widget<DpButton>(
-      find.widgetWithText(DpButton, l10n.onboardingSupertonicDownload),
+    SgButton downloadButton(WidgetTester tester) => tester.widget<SgButton>(
+      find.widgetWithText(SgButton, l10n.onboardingSupertonicDownload),
     );
 
     testWidgets('FR-S2-06 FR-M4 a phone short of space disables Download now '
@@ -430,13 +430,13 @@ void main() {
       await say(tester, DownloadPhase.failed, 0.6);
       downloads.retryShort = 50500000;
 
-      await tester.tap(find.widgetWithText(DpButton, l10n.retry));
+      await tester.tap(find.widgetWithText(SgButton, l10n.retry));
       await tester.pump();
       await tester.pump();
 
       expect(find.text(l10n.onboardingSupertonicShortfall(51)), findsOneWidget);
       expect(find.text(l10n.onboardingSupertonicDownloadFailed), findsNothing);
-      expect(find.widgetWithText(DpButton, l10n.retry), findsOneWidget);
+      expect(find.widgetWithText(SgButton, l10n.retry), findsOneWidget);
     });
 
     testWidgets('#428 a phone that could not be asked leaves Download now '
@@ -481,7 +481,7 @@ void main() {
         find.text(l10n.onboardingSupertonicDownloadFailed),
         findsOneWidget,
       );
-      await tester.tap(find.widgetWithText(DpButton, l10n.retry));
+      await tester.tap(find.widgetWithText(SgButton, l10n.retry));
       await tester.pump();
 
       expect(downloads.retried, <String>[OnboardingNotifier.supertonic]);
@@ -539,8 +539,8 @@ void main() {
       // renders — the learner can see where setup ends — but does nothing.
       await pump(tester);
 
-      final start = tester.widget<DpButton>(
-        find.widgetWithText(DpButton, l10n.onboardingStartLearning),
+      final start = tester.widget<SgButton>(
+        find.widgetWithText(SgButton, l10n.onboardingStartLearning),
       );
       expect(start.onPressed, isNull);
     });
@@ -558,7 +558,7 @@ void main() {
       expect(find.byType(IconButton), findsNothing);
     });
 
-    for (final mode in <DpMode>[DpMode.dark, DpMode.glass]) {
+    for (final mode in <SgMode>[SgMode.dark, SgMode.glass]) {
       testWidgets('and ${mode.name} renders it', (tester) async {
         await pump(tester, mode: mode);
         expect(find.text(l10n.onboardingSupertonicTitle), findsOneWidget);

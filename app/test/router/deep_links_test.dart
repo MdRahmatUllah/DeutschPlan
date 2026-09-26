@@ -1,9 +1,9 @@
 @TestOn('vm')
 library;
 
-import 'package:deutschplan/features/exam/exam_runner_screen.dart';
-import 'package:deutschplan/features/sentences/sentences_screen.dart';
-import 'package:deutschplan/features/today/today_screen.dart';
+import 'package:sogda/features/exam/exam_runner_screen.dart';
+import 'package:sogda/features/sentences/sentences_screen.dart';
+import 'package:sogda/features/today/today_screen.dart';
 
 import '../features/today_fixtures.dart';
 import '../services/fake_tts.dart';
@@ -12,24 +12,24 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'dart:io';
 
-import 'package:deutschplan/core/adaptive/adaptive.dart';
-import 'package:deutschplan/core/theme/app_theme.dart';
-import 'package:deutschplan/main.dart'
+import 'package:sogda/core/adaptive/adaptive.dart';
+import 'package:sogda/core/theme/app_theme.dart';
+import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
-import 'package:deutschplan/router/app_router.dart';
-import 'package:deutschplan/router/app_shell.dart';
-import 'package:deutschplan/router/deep_links.dart';
-import 'package:deutschplan/router/route_guards.dart';
-import 'package:deutschplan/router/routes.dart';
+import 'package:sogda/router/app_router.dart';
+import 'package:sogda/router/app_shell.dart';
+import 'package:sogda/router/deep_links.dart';
+import 'package:sogda/router/route_guards.dart';
+import 'package:sogda/router/routes.dart';
 import 'package:flutter/services.dart';
-import 'package:deutschplan/features/learn/step_detail_screen.dart';
+import 'package:sogda/features/learn/step_detail_screen.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
-import 'package:deutschplan/core/providers/app_providers.dart';
-import 'package:deutschplan/data/db/app_database.dart';
-import 'package:deutschplan/data/repositories/settings_repository.dart';
-import 'package:deutschplan/features/words/word_detail_screen.dart';
+import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/data/db/app_database.dart';
+import 'package:sogda/data/repositories/settings_repository.dart';
+import 'package:sogda/features/words/word_detail_screen.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 
 /// Deep links — #70.
@@ -40,46 +40,46 @@ import 'package:flutter_riverpod/misc.dart' show Override;
 void main() {
   group('resolveDeepLink', () {
     test('the four shapes navigation.md names', () {
-      expect(resolveDeepLink(Uri.parse('deutschplan://today')), '/today');
+      expect(resolveDeepLink(Uri.parse('sogda://today')), '/today');
       expect(
-        resolveDeepLink(Uri.parse('deutschplan://learn/A2.1')),
+        resolveDeepLink(Uri.parse('sogda://learn/A2.1')),
         '/learn/step/A2.1',
       );
       expect(
-        resolveDeepLink(Uri.parse('deutschplan://word/uid-haus')),
+        resolveDeepLink(Uri.parse('sogda://word/uid-haus')),
         '/word/uid-haus',
       );
       expect(
-        resolveDeepLink(Uri.parse('deutschplan://exam/A1.2')),
+        resolveDeepLink(Uri.parse('sogda://exam/A1.2')),
         '/learn/step/A1.2?tab=exams',
       );
     });
 
     test('an exam link opens the hub, not the runner', () {
-      // `deutschplan://exam/A1.2` names a *step*; `/exam/:attemptId` in the
+      // `sogda://exam/A1.2` names a *step*; `/exam/:attemptId` in the
       // route table is the runner for one attempt. Passing the link through
       // unchanged would open an exam whose attempt id is "A1.2".
-      final resolved = resolveDeepLink(Uri.parse('deutschplan://exam/A1.2'));
+      final resolved = resolveDeepLink(Uri.parse('sogda://exam/A1.2'));
       expect(resolved, isNot(startsWith('/exam/')));
       expect(resolved, contains('tab=exams'));
     });
 
     test('a trailing slash is the same link', () {
-      // Flutter hands `deutschplan://today` over as `deutschplan://today/`.
-      expect(resolveDeepLink(Uri.parse('deutschplan://today/')), '/today');
+      // Flutter hands `sogda://today` over as `sogda://today/`.
+      expect(resolveDeepLink(Uri.parse('sogda://today/')), '/today');
     });
 
     group('?speak=1', () {
       test('is carried through', () {
         expect(
-          resolveDeepLink(Uri.parse('deutschplan://word/uid-haus?speak=1')),
+          resolveDeepLink(Uri.parse('sogda://word/uid-haus?speak=1')),
           '/word/uid-haus?speak=1',
         );
       });
 
       test('and is not invented when it is absent', () {
         expect(
-          resolveDeepLink(Uri.parse('deutschplan://word/uid-haus')),
+          resolveDeepLink(Uri.parse('sogda://word/uid-haus')),
           isNot(contains('speak')),
         );
       });
@@ -111,24 +111,21 @@ void main() {
     group('anything else lands on Today', () {
       test('an unknown host', () {
         expect(
-          resolveDeepLink(Uri.parse('deutschplan://nonsense')),
+          resolveDeepLink(Uri.parse('sogda://nonsense')),
           fallbackLocation,
         );
       });
 
       test('a shape from an older build', () {
+        expect(resolveDeepLink(Uri.parse('sogda://word')), fallbackLocation);
         expect(
-          resolveDeepLink(Uri.parse('deutschplan://word')),
-          fallbackLocation,
-        );
-        expect(
-          resolveDeepLink(Uri.parse('deutschplan://word/a/b/c')),
+          resolveDeepLink(Uri.parse('sogda://word/a/b/c')),
           fallbackLocation,
         );
       });
 
       test('nothing at all', () {
-        expect(resolveDeepLink(Uri.parse('deutschplan://')), fallbackLocation);
+        expect(resolveDeepLink(Uri.parse('sogda://')), fallbackLocation);
       });
     });
 
@@ -136,7 +133,7 @@ void main() {
       // uids are hashes today, but a link is a URL and the encoding has to be
       // right whatever ends up in one.
       final resolved = resolveDeepLink(
-        Uri.parse('deutschplan://word/${Uri.encodeComponent('a/b c')}'),
+        Uri.parse('sogda://word/${Uri.encodeComponent('a/b c')}'),
       );
       expect(Uri.parse(resolved).pathSegments, <String>['word', 'a/b c']);
     });
@@ -187,10 +184,10 @@ void main() {
 
     testWidgets('the notification link opens Today', (tester) async {
       await pumpApp(tester);
-      await openLink(tester, 'deutschplan://learn/A2.1');
+      await openLink(tester, 'sogda://learn/A2.1');
       expect(find.byType(StepDetailScreen), findsOneWidget);
 
-      await openLink(tester, 'deutschplan://today');
+      await openLink(tester, 'sogda://today');
 
       expect(location(), '/today');
       expect(find.byType(TodayScreen), findsOneWidget);
@@ -198,7 +195,7 @@ void main() {
 
     testWidgets('a step link opens the step', (tester) async {
       await pumpApp(tester);
-      await openLink(tester, 'deutschplan://learn/A2.1');
+      await openLink(tester, 'sogda://learn/A2.1');
 
       expect(location(), '/learn/step/A2.1');
       expect(find.byType(StepDetailScreen), findsOneWidget);
@@ -207,7 +204,7 @@ void main() {
 
     testWidgets('a word link opens the word', (tester) async {
       await pumpApp(tester);
-      await openLink(tester, 'deutschplan://word/uid-haus');
+      await openLink(tester, 'sogda://word/uid-haus');
 
       expect(location(), '/word/uid-haus');
       // FR-W1 presentation: a deep link is the full page.
@@ -240,7 +237,7 @@ void main() {
           fakeVoice(tts),
         ],
       );
-      await openLink(tester, 'deutschplan://word/uid-haus?speak=1');
+      await openLink(tester, 'sogda://word/uid-haus?speak=1');
 
       expect(location(), '/word/uid-haus?speak=1&arrival=1');
       expect(
@@ -273,13 +270,13 @@ void main() {
         ],
       );
       // agent-3's steps: the widget's word opens W1, then *Pronounce*.
-      await openLink(tester, 'deutschplan://word/uid-haus');
+      await openLink(tester, 'sogda://word/uid-haus');
       expect(tts.spoken, isEmpty);
-      await openLink(tester, 'deutschplan://word/uid-haus?speak=1');
+      await openLink(tester, 'sogda://word/uid-haus?speak=1');
       expect(tts.spoken, <String>['die Straße']);
 
       // The same link again: a new arrival, so it speaks again.
-      await openLink(tester, 'deutschplan://word/uid-haus?speak=1');
+      await openLink(tester, 'sogda://word/uid-haus?speak=1');
       expect(location(), '/word/uid-haus?speak=1&arrival=2');
       expect(tts.spoken, <String>['die Straße', 'die Straße']);
       expect(find.byType(WordDetailScreen), findsOneWidget);
@@ -288,14 +285,14 @@ void main() {
     testWidgets('a word link opened cold: back goes to Today, not out of '
         'the app', (tester) async {
       await pumpApp(tester);
-      await openLink(tester, 'deutschplan://word/uid-haus');
+      await openLink(tester, 'sogda://word/uid-haus');
       expect(location(), '/word/uid-haus');
 
       await tester.tap(find.byType(AdaptiveBackButton));
       await tester.pumpAndSettle();
       expect(location(), '/today');
 
-      await openLink(tester, 'deutschplan://word/uid-haus');
+      await openLink(tester, 'sogda://word/uid-haus');
       // Android's back, which a lone page would otherwise answer by leaving.
       await tester.binding.handlePopRoute();
       await tester.pumpAndSettle();
@@ -304,7 +301,7 @@ void main() {
 
     testWidgets('the same link without it does not', (tester) async {
       await pumpApp(tester);
-      await openLink(tester, 'deutschplan://word/uid-haus');
+      await openLink(tester, 'sogda://word/uid-haus');
 
       expect(
         tester.widget<WordDetailScreen>(find.byType(WordDetailScreen)).speak,
@@ -314,7 +311,7 @@ void main() {
 
     testWidgets('an exam link opens the step"s exams tab', (tester) async {
       await pumpApp(tester);
-      await openLink(tester, 'deutschplan://exam/A1.2');
+      await openLink(tester, 'sogda://exam/A1.2');
 
       expect(location(), '/learn/step/A1.2?tab=exams');
       expect(find.byType(StepDetailScreen), findsOneWidget);
@@ -328,7 +325,7 @@ void main() {
       tester,
     ) async {
       await pumpApp(tester);
-      await openLink(tester, 'deutschplan://nonsense/from/an/old/build');
+      await openLink(tester, 'sogda://nonsense/from/an/old/build');
 
       expect(location(), fallbackLocation);
       expect(find.byType(TodayScreen), findsOneWidget);
@@ -359,7 +356,7 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.byType(ExamRunnerScreen), findsOneWidget);
 
-      await openLink(tester, 'deutschplan://today');
+      await openLink(tester, 'sogda://today');
 
       expect(location(), '/exam/7');
       expect(find.byType(ExamRunnerScreen), findsOneWidget);
@@ -368,7 +365,7 @@ void main() {
     testWidgets('and works again once the exam is done', (tester) async {
       // Dropped, not queued — but not disabled either.
       await pumpApp(tester);
-      await openLink(tester, 'deutschplan://today');
+      await openLink(tester, 'sogda://today');
       expect(location(), '/today');
     });
 
@@ -380,7 +377,7 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.byType(SentencesScreen), findsOneWidget);
 
-      await openLink(tester, 'deutschplan://today');
+      await openLink(tester, 'sogda://today');
       expect(location(), '/today');
     });
 
@@ -407,7 +404,7 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      await openLink(tester, 'deutschplan://today');
+      await openLink(tester, 'sogda://today');
       expect(location(), '/today');
     });
   });
@@ -437,7 +434,7 @@ void main() {
     test('both name the same scheme the resolver answers to', () {
       // Three places, one string. A rename in one of them would be a link
       // the OS delivers and the app throws away, or the reverse.
-      expect(deepLinkScheme, 'deutschplan');
+      expect(deepLinkScheme, 'sogda');
 
       final manifest = File('android/app/src/main/AndroidManifest.xml')
           .readAsStringSync();

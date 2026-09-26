@@ -1,4 +1,4 @@
-import 'package:deutschplan/domain/plan_engine.dart'
+import 'package:sogda/domain/plan_engine.dart'
     show PlanDate, addDays, parsePlanDate, planDate;
 
 /// M2's three views (`progress.md`).

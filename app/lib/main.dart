@@ -1,34 +1,33 @@
 import 'dart:async';
 
-import 'package:deutschplan/features/bootstrap/bootstrap_error_screen.dart';
-import 'package:deutschplan/features/splash/splash_screen.dart';
-import 'package:deutschplan/features/today/today_providers.dart'
-    show warmTodaysVoice;
+import 'package:sogda/features/bootstrap/bootstrap_error_screen.dart';
+import 'package:sogda/features/splash/splash_screen.dart';
+import 'package:sogda/features/today/today_providers.dart' show warmTodaysVoice;
 import 'package:flutter/foundation.dart' show kReleaseMode, debugPrint;
 import 'package:flutter/services.dart';
 
 import 'dart:io';
 
-import 'package:deutschplan/data/repositories/backup_repository.dart';
-import 'package:deutschplan/core/theme/system_bars.dart';
-import 'package:deutschplan/core/adaptive/orientation.dart';
+import 'package:sogda/data/repositories/backup_repository.dart';
+import 'package:sogda/core/theme/system_bars.dart';
+import 'package:sogda/core/adaptive/orientation.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:deutschplan/bootstrap.dart';
-import 'package:deutschplan/core/theme/app_theme.dart';
-import 'package:deutschplan/core/providers/app_providers.dart';
-import 'package:deutschplan/core/theme/dp_tokens.dart';
-import 'package:deutschplan/core/theme/glass_capability.dart';
-import 'package:deutschplan/core/theme/theme_mode.dart';
-import 'package:deutschplan/data/repositories/setting_keys.dart';
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
-import 'package:deutschplan/l10n/ui_language_locale.dart';
-import 'package:deutschplan/router/app_router.dart';
-import 'package:deutschplan/router/deep_links.dart';
-import 'package:deutschplan/services/background_tasks.dart';
-import 'package:deutschplan/services/background_work.dart';
-import 'package:deutschplan/services/reminder_notifications.dart';
-import 'package:deutschplan/services/widget_snapshot.dart';
+import 'package:sogda/bootstrap.dart';
+import 'package:sogda/core/theme/app_theme.dart';
+import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/core/theme/glass_capability.dart';
+import 'package:sogda/core/theme/theme_mode.dart';
+import 'package:sogda/data/repositories/setting_keys.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
+import 'package:sogda/l10n/ui_language_locale.dart';
+import 'package:sogda/router/app_router.dart';
+import 'package:sogda/router/deep_links.dart';
+import 'package:sogda/services/background_tasks.dart';
+import 'package:sogda/services/background_work.dart';
+import 'package:sogda/services/reminder_notifications.dart';
+import 'package:sogda/services/widget_snapshot.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 // `Override` is not in the main barrel in Riverpod 3.
 import 'package:flutter_riverpod/misc.dart' show Override;
@@ -43,7 +42,7 @@ import 'package:flutter_localizations/flutter_localizations.dart'
 
 import 'dart:ui' show PlatformDispatcher;
 
-export 'package:deutschplan/l10n/ui_language_locale.dart';
+export 'package:sogda/l10n/ui_language_locale.dart';
 
 /// Entry point.
 ///
@@ -280,12 +279,12 @@ Widget appFor(BootstrapResult result) => switch (result) {
   // re-open what bootstrap already opened.
   BootstrapReady(:final bootstrap) => GlassCapabilityScope(
     notifier: bootstrap.glass,
-    child: DeutschPlanApp(router: bootstrap.router),
+    child: SogdaApp(router: bootstrap.router),
   ),
   BootstrapFailed(:final failure) => BootstrapGate(failure: failure),
 };
 
-/// Supported UI languages, English first — see `supportedLocales` in [DeutschPlanApp].
+/// Supported UI languages, English first — see `supportedLocales` in [SogdaApp].
 const List<Locale> supportedLocales = <Locale>[Locale('en'), Locale('bn')];
 
 /// The delegates every `MaterialApp` here takes — not gen_l10n's own list.
@@ -303,9 +302,8 @@ const List<LocalizationsDelegate<Object?>> appLocalizationsDelegates =
       GlobalWidgetsLocalizations.delegate,
     ];
 
-class DeutschPlanApp extends ConsumerWidget {
-  DeutschPlanApp({GoRouter? router, super.key})
-    : router = router ?? buildRouter();
+class SogdaApp extends ConsumerWidget {
+  SogdaApp({GoRouter? router, super.key}) : router = router ?? buildRouter();
 
   /// Built by [bootstrap] and held for the life of the app.
   ///
@@ -334,15 +332,15 @@ class DeutschPlanApp extends ConsumerWidget {
       locale: ref.watch(languagesProvider).ui.locale,
       // FR-M3-02: Glass is a theme of its own, in a light and a smoked dark
       // variant; the platform's light/dark picks between them (theming.md).
-      theme: mode == DpMode.glass ? AppTheme.glass() : AppTheme.light(),
-      darkTheme: mode == DpMode.glass
+      theme: mode == SgMode.glass ? AppTheme.glass() : AppTheme.light(),
+      darkTheme: mode == SgMode.glass
           ? AppTheme.glass(dark: true)
           : AppTheme.dark(),
       themeMode: switch (mode) {
-        _ when followsPlatform || mode == DpMode.glass => ThemeMode.system,
-        DpMode.light => ThemeMode.light,
-        DpMode.dark => ThemeMode.dark,
-        DpMode.glass => ThemeMode.system,
+        _ when followsPlatform || mode == SgMode.glass => ThemeMode.system,
+        SgMode.light => ThemeMode.light,
+        SgMode.dark => ThemeMode.dark,
+        SgMode.glass => ThemeMode.system,
       },
       localizationsDelegates: appLocalizationsDelegates,
       // English first: gen_l10n orders supportedLocales alphabetically, which puts
@@ -460,7 +458,7 @@ class _BootstrapGateState extends State<BootstrapGate> {
 ///
 /// Named rather than inlined because FR-M6 will read it back, and a file the
 /// import side cannot recognise is a backup the learner cannot restore.
-const String exportFileName = 'deutschplan-backup.json';
+const String exportFileName = 'sogda-backup.json';
 
 /// FR-S1-03: a full-screen, recoverable error. Never a blank screen.
 ///

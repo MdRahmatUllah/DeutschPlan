@@ -1,11 +1,11 @@
 // #169, flow 1 of 2: a fresh install, set up, studies its first day and is
 // told the day is done. Run by `tools/smoke.py`, which uninstalls first.
 
-import 'package:deutschplan/core/components/dp_button.dart';
-import 'package:deutschplan/features/study/study_summary.dart';
-import 'package:deutschplan/features/today/today_components.dart';
-import 'package:deutschplan/features/today/today_view.dart';
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
+import 'package:sogda/core/components/sg_button.dart';
+import 'package:sogda/features/study/study_summary.dart';
+import 'package:sogda/features/today/today_components.dart';
+import 'package:sogda/features/today/today_view.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 
@@ -82,7 +82,7 @@ Future<void> _studyTheDay(WidgetTester tester, AppLocalizations l10n) async {
     // a second tap while T5 replaces the session would replace it twice.
     if (summary.evaluate().isNotEmpty) {
       await tester.tap(
-        find.descendant(of: summary, matching: find.byType(DpButton)).first,
+        find.descendant(of: summary, matching: find.byType(SgButton)).first,
         warnIfMissed: false,
       );
       for (var i = 0; i < 30 && summary.evaluate().isNotEmpty; i++) {

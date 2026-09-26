@@ -15,7 +15,7 @@ abstract interface class BackupFiles {
   /// The system file picker; null when the learner backs out.
   ///
   /// Throws [FormatException] for a file that isn't UTF-8 text, which the
-  /// screen shows as "not a DeutschPlan export".
+  /// screen shows as "not a Sogda export".
   Future<PickedBackup?> pick();
 
   /// Writes [json] to a temporary file called [name] and opens the share

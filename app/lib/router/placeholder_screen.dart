@@ -1,6 +1,6 @@
-import 'package:deutschplan/core/adaptive/adaptive.dart';
-import 'package:deutschplan/core/theme/dp_tokens.dart';
-import 'package:deutschplan/core/typography/dp_text.dart';
+import 'package:sogda/core/adaptive/adaptive.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/core/typography/sg_text.dart';
 import 'package:material_ui/material_ui.dart';
 
 /// A stand-in for a screen that has not been built yet.
@@ -37,12 +37,12 @@ class PlaceholderScreen extends StatelessWidget {
       body: ListView(
         padding: EdgeInsets.all(tokens.spacing.lg),
         children: <Widget>[
-          DpText(screen, role: DpTextRole.display),
+          SgText(screen, role: SgTextRole.display),
           SizedBox(height: tokens.spacing.sm),
-          DpText(title, role: DpTextRole.title),
+          SgText(title, role: SgTextRole.title),
           if (detail != null) ...<Widget>[
             SizedBox(height: tokens.spacing.xs),
-            DpText(detail!, role: DpTextRole.caption),
+            SgText(detail!, role: SgTextRole.caption),
           ],
           SizedBox(height: tokens.spacing.xl),
           // Long enough to scroll, which is what the shell's re-tap behaviour
@@ -50,7 +50,7 @@ class PlaceholderScreen extends StatelessWidget {
           for (var i = 1; i <= 40; i++)
             Padding(
               padding: EdgeInsets.symmetric(vertical: tokens.spacing.xs),
-              child: DpText('$screen row $i', role: DpTextRole.body),
+              child: SgText('$screen row $i', role: SgTextRole.body),
             ),
         ],
       ),

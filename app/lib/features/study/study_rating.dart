@@ -1,9 +1,9 @@
-import 'package:deutschplan/core/components/dp_rating_bar.dart';
-import 'package:deutschplan/core/providers/app_providers.dart';
-import 'package:deutschplan/core/theme/dp_tokens.dart';
-import 'package:deutschplan/core/typography/dp_text.dart';
-import 'package:deutschplan/domain/fsrs.dart';
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
+import 'package:sogda/core/components/sg_rating_bar.dart';
+import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/core/typography/sg_text.dart';
+import 'package:sogda/domain/fsrs.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -50,20 +50,20 @@ class StudyRatingActions extends ConsumerWidget {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
-        DpText(
+        SgText(
           prompt,
-          role: DpTextRole.caption,
+          role: SgTextRole.caption,
           color: tokens.color.textSecondary,
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: 8),
-        DpRatingBar(
+        SgRatingBar(
           // Held until the previews exist: a rating tapped before its
           // interval shows is a rating made blind.
           enabled: days != null,
-          only: missed ? const <DpRating>{DpRating.again, DpRating.hard} : null,
-          intervals: <DpRating, String>{
-            for (final rating in DpRating.values)
+          only: missed ? const <SgRating>{SgRating.again, SgRating.hard} : null,
+          intervals: <SgRating, String>{
+            for (final rating in SgRating.values)
               rating: switch (days?[Rating.parse(rating.value)]) {
                 final n? => l10n.studyIntervalDays(n),
                 null => '',

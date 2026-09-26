@@ -1,7 +1,7 @@
 import 'dart:convert';
 
-import 'package:deutschplan/data/db/app_database.dart';
-import 'package:deutschplan/data/repositories/plan_store.dart' show inCourse;
+import 'package:sogda/data/db/app_database.dart';
+import 'package:sogda/data/repositories/plan_store.dart' show inCourse;
 import 'package:drift/drift.dart';
 import 'package:flutter/foundation.dart' show immutable;
 

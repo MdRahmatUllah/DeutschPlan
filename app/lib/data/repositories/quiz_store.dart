@@ -1,10 +1,10 @@
-import 'package:deutschplan/data/db/content_dao.dart';
-import 'package:deutschplan/data/repositories/setting_keys.dart';
-import 'package:deutschplan/data/repositories/settings_repository.dart';
-import 'package:deutschplan/data/repositories/word_repository.dart';
-import 'package:deutschplan/domain/compare_set.dart';
-import 'package:deutschplan/domain/plan_engine.dart' show planDate;
-import 'package:deutschplan/domain/quiz_builder.dart';
+import 'package:sogda/data/db/content_dao.dart';
+import 'package:sogda/data/repositories/setting_keys.dart';
+import 'package:sogda/data/repositories/settings_repository.dart';
+import 'package:sogda/data/repositories/word_repository.dart';
+import 'package:sogda/domain/compare_set.dart';
+import 'package:sogda/domain/plan_engine.dart' show planDate;
+import 'package:sogda/domain/quiz_builder.dart';
 
 /// The quiz builder's view of the course (`quiz-engine.md`, #81): the
 /// queries in `word_queries.drift`, shaped into [QuizWord]s.

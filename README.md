@@ -1,4 +1,6 @@
-# DeutschPlan
+# Sogda
+
+**The road to a new language** · [sogda.de](https://sogda.de) · named DeutschPlan up to v1.0.1 (ADR 28)
 
 Offline-first German vocabulary and grammar trainer for Android and iOS, built with Flutter. v1.0 ships on Android; iOS follows once a Mac is available to build it (#171).
 

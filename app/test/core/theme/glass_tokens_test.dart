@@ -1,13 +1,13 @@
 import 'dart:io';
 
-import 'package:deutschplan/core/theme/app_theme.dart';
-import 'package:deutschplan/core/theme/dp_tokens.dart';
+import 'package:sogda/core/theme/app_theme.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 
 /// Aurora Glass has its own design set — `deutsch-plan-v2-aurora-glass-html`.
 /// Its surfaces are rgba fills behind a blur, so the hex-based checks in
-/// dp_tokens_test.dart cannot see them at all; these read the rgba()
+/// sg_tokens_test.dart cannot see them at all; these read the rgba()
 /// declarations out of the artboard and compare numerically.
 void main() {
   // A token's alpha is an 8-bit channel, so the artboard's rgba(…,0.55)
@@ -38,14 +38,14 @@ void main() {
         (d.$4 - c.a).abs() < 0.004,
   );
 
-  final canvases = <String, ({String path, DpTokens tokens})>{
+  final canvases = <String, ({String path, SgTokens tokens})>{
     'glass light': (
       path: '../deutsch-plan-v2-aurora-glass-html/android-light/screens/Foundations.html',
-      tokens: DpTokens.glass(),
+      tokens: SgTokens.glass(),
     ),
     'glass dark': (
       path: '../deutsch-plan-v2-aurora-glass-html/android-dark/screens/Foundations.html',
-      tokens: DpTokens.glassDark(),
+      tokens: SgTokens.glassDark(),
     ),
   };
 
@@ -167,18 +167,18 @@ void main() {
 
   test('the aurora dims from 55 % to 35 % in the dark variant', () {
     // theming.md: "Glass has a dark variant (aurora at 35 %…)".
-    expect(DpSurfaceTokens.glass.auroraOpacity, 0.55);
-    expect(DpSurfaceTokens.glassDark.auroraOpacity, 0.35);
+    expect(SgSurfaceTokens.glass.auroraOpacity, 0.55);
+    expect(SgSurfaceTokens.glassDark.auroraOpacity, 0.35);
     expect(
-      DpSurfaceTokens.light.auroraOpacity,
+      SgSurfaceTokens.light.auroraOpacity,
       0,
       reason: 'no aurora outside glass',
     );
-    expect(DpSurfaceTokens.dark.auroraOpacity, 0);
+    expect(SgSurfaceTokens.dark.auroraOpacity, 0);
   });
 
   test('glass surfaces are translucent and the solid modes are not', () {
-    for (final s in [DpSurfaceTokens.glass, DpSurfaceTokens.glassDark]) {
+    for (final s in [SgSurfaceTokens.glass, SgSurfaceTokens.glassDark]) {
       expect(s.card.a, lessThan(1.0));
       expect(s.cardStrong.a, lessThan(1.0));
       expect(
@@ -188,7 +188,7 @@ void main() {
       );
       expect(s.blur, greaterThan(0));
     }
-    for (final s in [DpSurfaceTokens.light, DpSurfaceTokens.dark]) {
+    for (final s in [SgSurfaceTokens.light, SgSurfaceTokens.dark]) {
       expect(s.card.a, 1.0);
       expect(s.blur, 0);
     }
@@ -198,9 +198,9 @@ void main() {
       'for contrast over the aurora', () {
     // theming.md: glass has its own text palette (#163), the rest is Light's
     // and Dark's.
-    for (final (glass, base) in <(DpPalette, DpPalette)>[
-      (DpTokens.glass().color, DpPalette.light),
-      (DpTokens.glassDark().color, DpPalette.dark),
+    for (final (glass, base) in <(SgPalette, SgPalette)>[
+      (SgTokens.glass().color, SgPalette.light),
+      (SgTokens.glassDark().color, SgPalette.dark),
     ]) {
       for (final (fill, of) in <(Color, Color)>[
         (glass.primary, base.primary),
@@ -220,8 +220,8 @@ void main() {
         expect(fill, of);
       }
     }
-    expect(DpTokens.glass().color, same(DpPalette.glass));
-    expect(DpTokens.glassDark().color, same(DpPalette.glassDark));
+    expect(SgTokens.glass().color, same(SgPalette.glass));
+    expect(SgTokens.glassDark().color, same(SgPalette.glassDark));
   });
 
   testWidgets('AppTheme.glass carries glass tokens and the right brightness', (
@@ -231,7 +231,7 @@ void main() {
       (false, Brightness.light),
       (true, Brightness.dark),
     ]) {
-      late DpTokens seen;
+      late SgTokens seen;
       late Brightness brightness;
       await tester.pumpWidget(
         MaterialApp(
@@ -251,7 +251,7 @@ void main() {
       // and ThemeData.lerp keeps the OLD brightness until t = 0.5.
       await tester.pumpAndSettle();
 
-      expect(seen.mode, DpMode.glass);
+      expect(seen.mode, SgMode.glass);
       expect(seen.isGlass, isTrue);
       expect(
         brightness,

@@ -1,23 +1,23 @@
 @TestOn('vm')
 library;
 
-import 'package:deutschplan/core/adaptive/adaptive.dart';
-import 'package:deutschplan/core/components/dp_button.dart';
-import 'package:deutschplan/core/components/dp_speaker_button.dart';
-import 'package:deutschplan/core/providers/app_providers.dart';
-import 'package:deutschplan/core/theme/app_theme.dart';
-import 'package:deutschplan/core/theme/aurora_backdrop.dart';
-import 'package:deutschplan/core/theme/dp_surface.dart';
-import 'package:deutschplan/core/theme/dp_tokens.dart';
-import 'package:deutschplan/data/db/app_database.dart';
-import 'package:deutschplan/data/db/content_dao.dart';
-import 'package:deutschplan/data/repositories/setting_keys.dart';
-import 'package:deutschplan/data/repositories/settings_repository.dart';
-import 'package:deutschplan/domain/placement.dart';
-import 'package:deutschplan/features/onboarding/onboarding_start_page.dart';
-import 'package:deutschplan/features/onboarding/placement_screen.dart';
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
-import 'package:deutschplan/main.dart'
+import 'package:sogda/core/adaptive/adaptive.dart';
+import 'package:sogda/core/components/sg_button.dart';
+import 'package:sogda/core/components/sg_speaker_button.dart';
+import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/core/theme/app_theme.dart';
+import 'package:sogda/core/theme/aurora_backdrop.dart';
+import 'package:sogda/core/theme/sg_surface.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/data/db/app_database.dart';
+import 'package:sogda/data/db/content_dao.dart';
+import 'package:sogda/data/repositories/setting_keys.dart';
+import 'package:sogda/data/repositories/settings_repository.dart';
+import 'package:sogda/domain/placement.dart';
+import 'package:sogda/features/onboarding/onboarding_start_page.dart';
+import 'package:sogda/features/onboarding/placement_screen.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
+import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
@@ -48,7 +48,7 @@ void main() {
 
   Future<void> pump(
     WidgetTester tester, {
-    DpMode mode = DpMode.light,
+    SgMode mode = SgMode.light,
     double textScale = 1,
     MeaningLanguage meaning = MeaningLanguage.english,
     bool voice = true,
@@ -83,9 +83,9 @@ void main() {
         ],
         child: MaterialApp(
           theme: switch (mode) {
-            DpMode.light => AppTheme.light(),
-            DpMode.dark => AppTheme.dark(),
-            DpMode.glass => AppTheme.glass(),
+            SgMode.light => AppTheme.light(),
+            SgMode.dark => AppTheme.dark(),
+            SgMode.glass => AppTheme.glass(),
           },
           localizationsDelegates: appLocalizationsDelegates,
           supportedLocales: supportedLocales,
@@ -105,7 +105,7 @@ void main() {
 
   Finder options() => find.descendant(
     of: find.byType(SingleChildScrollView),
-    matching: find.byType(DpSurface),
+    matching: find.byType(SgSurface),
   );
 
   /// Picks the right option when [right], a wrong one otherwise, and moves
@@ -118,14 +118,14 @@ void main() {
 
     await tester.tap(options().at(index));
     await tester.pump();
-    await tester.tap(find.widgetWithText(DpButton, l10n.placementNext));
+    await tester.tap(find.widgetWithText(SgButton, l10n.placementNext));
     await tester.pump();
     await tester.pump();
     await tester.pump();
   }
 
   /// A check that settles on A2.2 after nine answers.
-  Future<void> finish(WidgetTester tester, {DpMode mode = DpMode.light}) async {
+  Future<void> finish(WidgetTester tester, {SgMode mode = SgMode.light}) async {
     await pump(tester, mode: mode);
     for (final right in <bool>[
       true, true, true, true, true, true, true, false, true, //
@@ -148,10 +148,10 @@ void main() {
       'install one',
       (tester) async {
         await pump(tester, voice: false);
-        final speaker = find.byType(DpSpeakerButton);
+        final speaker = find.byType(SgSpeakerButton);
         expect(
-          tester.widget<DpSpeakerButton>(speaker).state,
-          DpSpeakerState.unavailable,
+          tester.widget<SgSpeakerButton>(speaker).state,
+          SgSpeakerState.unavailable,
         );
 
         await tester.tap(speaker);
@@ -163,12 +163,12 @@ void main() {
     testWidgets('Next waits for an answer', (tester) async {
       await pump(tester);
 
-      final next = find.widgetWithText(DpButton, l10n.placementNext);
-      expect(tester.widget<DpButton>(next).onPressed, isNull);
+      final next = find.widgetWithText(SgButton, l10n.placementNext);
+      expect(tester.widget<SgButton>(next).onPressed, isNull);
 
       await tester.tap(options().first);
       await tester.pump();
-      expect(tester.widget<DpButton>(next).onPressed, isNotNull);
+      expect(tester.widget<SgButton>(next).onPressed, isNotNull);
     });
 
     testWidgets('FR-S3-01 two right move it up a step', (tester) async {
@@ -263,7 +263,7 @@ void main() {
       }
     });
 
-    for (final mode in <DpMode>[DpMode.light, DpMode.glass]) {
+    for (final mode in <SgMode>[SgMode.light, SgMode.glass]) {
       testWidgets("draws the ${mode.name} artboard's card and pills", (
         tester,
       ) async {
@@ -271,13 +271,13 @@ void main() {
         // pills edged like it — a selected glass card would ring in Lagoon.
         await finish(tester, mode: mode);
         final tokens = tester.element(find.byType(PlacementScreen)).tokens;
-        final glass = mode == DpMode.glass;
+        final glass = mode == SgMode.glass;
 
-        final card = tester.widget<DpSurface>(
+        final card = tester.widget<SgSurface>(
           find
               .ancestor(
                 of: find.text(l10n.placementRationale('A2.2')),
-                matching: find.byType(DpSurface),
+                matching: find.byType(SgSurface),
               )
               .first,
         );
@@ -390,7 +390,7 @@ void main() {
 
       await tester.tap(options().first);
       await tester.pump();
-      final next = find.widgetWithText(DpButton, l10n.placementNext);
+      final next = find.widgetWithText(SgButton, l10n.placementNext);
       await tester.tap(next);
       await tester.tap(next);
       await tester.pump();
@@ -440,7 +440,7 @@ void main() {
       expect(find.byType(RadioListTile<int>), findsNothing);
     });
 
-    for (final mode in <DpMode>[DpMode.dark, DpMode.glass]) {
+    for (final mode in <SgMode>[SgMode.dark, SgMode.glass]) {
       testWidgets('and ${mode.name} renders it', (tester) async {
         await pump(tester, mode: mode);
         expect(options(), findsWidgets);
@@ -448,7 +448,7 @@ void main() {
         // screen is black, and every option still "renders".
         expect(
           find.byType(AuroraBackdrop),
-          mode == DpMode.glass ? findsOneWidget : findsNothing,
+          mode == SgMode.glass ? findsOneWidget : findsNothing,
         );
       });
     }

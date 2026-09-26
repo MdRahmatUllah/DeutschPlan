@@ -1,7 +1,7 @@
-import 'package:deutschplan/data/db/app_database.dart' show Word;
-import 'package:deutschplan/data/db/content_dao.dart';
-import 'package:deutschplan/domain/edit_distance.dart';
-import 'package:deutschplan/domain/text_norm.dart';
+import 'package:sogda/data/db/app_database.dart' show Word;
+import 'package:sogda/data/db/content_dao.dart';
+import 'package:sogda/domain/edit_distance.dart';
+import 'package:sogda/domain/text_norm.dart';
 import 'package:flutter/foundation.dart' show immutable;
 
 /// The four tiers of `search.md`, in the order BR-SEARCH-01 puts them.

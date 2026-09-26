@@ -1,8 +1,8 @@
-import 'package:deutschplan/core/adaptive/adaptive.dart';
-import 'package:deutschplan/core/providers/app_providers.dart';
-import 'package:deutschplan/core/theme/aurora_backdrop.dart';
-import 'package:deutschplan/core/theme/dp_tokens.dart';
-import 'package:deutschplan/features/words/word_detail_screen.dart';
+import 'package:sogda/core/adaptive/adaptive.dart';
+import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/core/theme/aurora_backdrop.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/features/words/word_detail_screen.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:material_ui/material_ui.dart';
 

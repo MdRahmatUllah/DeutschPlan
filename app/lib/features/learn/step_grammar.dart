@@ -1,13 +1,13 @@
-import 'package:deutschplan/core/components/dp_button.dart';
-import 'package:deutschplan/core/providers/app_providers.dart';
-import 'package:deutschplan/core/theme/dp_tokens.dart';
-import 'package:deutschplan/core/typography/dp_text.dart';
-import 'package:deutschplan/data/repositories/grammar_repository.dart';
-import 'package:deutschplan/data/repositories/word_repository.dart';
-import 'package:deutschplan/domain/plan_engine.dart' show daysBetween;
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
-import 'package:deutschplan/l10n/ui_digits.dart';
-import 'package:deutschplan/router/routes.dart';
+import 'package:sogda/core/components/sg_button.dart';
+import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/core/typography/sg_text.dart';
+import 'package:sogda/data/repositories/grammar_repository.dart';
+import 'package:sogda/data/repositories/word_repository.dart';
+import 'package:sogda/domain/plan_engine.dart' show daysBetween;
+import 'package:sogda/l10n/generated/app_localizations.dart';
+import 'package:sogda/l10n/ui_digits.dart';
+import 'package:sogda/router/routes.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -61,7 +61,7 @@ class StepGrammarTab extends ConsumerWidget {
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 14, 16, 10),
             // Every due topic, back to back in L15.
-            child: DpButton(
+            child: SgButton(
               label: l10n.stepPractiseDue(due.length),
               drawnHeight: 48,
               onPressed: () => GrammarPracticeRoute.open(
@@ -152,9 +152,9 @@ class TopicRow extends StatelessWidget {
             children: <Widget>[
               SizedBox(
                 width: 24,
-                child: DpText(
+                child: SgText(
                   AppLocalizations.of(context).digits(number),
-                  role: DpTextRole.label,
+                  role: SgTextRole.label,
                   weight: 700,
                   color: tokens.color.textSecondary,
                 ),
@@ -164,23 +164,23 @@ class TopicRow extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    DpText(
+                    SgText(
                       topic.topic.topic,
-                      role: DpTextRole.body,
+                      role: SgTextRole.body,
                       weight: 600,
                     ),
                     if (rule != null && rule.isNotEmpty) ...<Widget>[
                       const SizedBox(height: 2),
-                      DpOneLine(
+                      SgOneLine(
                         rule,
-                        role: DpTextRole.label,
+                        role: SgTextRole.label,
                         weight: 400,
                         color: tokens.color.textSecondary,
                       ),
                     ],
                     if (line != null) ...<Widget>[
                       const SizedBox(height: 2),
-                      DpText(line, role: DpTextRole.caption, color: lineColour),
+                      SgText(line, role: SgTextRole.caption, color: lineColour),
                     ],
                   ],
                 ),

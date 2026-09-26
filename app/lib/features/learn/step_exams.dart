@@ -1,22 +1,22 @@
 import 'dart:math' as math;
 
-import 'package:deutschplan/core/components/dp_button.dart';
-import 'package:deutschplan/core/components/dp_pill.dart';
-import 'package:deutschplan/core/components/dp_progress_ring.dart';
-import 'package:deutschplan/core/providers/app_providers.dart';
-import 'package:deutschplan/core/theme/dp_surface.dart';
-import 'package:deutschplan/core/theme/dp_tokens.dart';
-import 'package:deutschplan/core/typography/dp_text.dart';
-import 'package:deutschplan/data/repositories/exam_repository.dart';
-import 'package:deutschplan/data/repositories/setting_keys.dart';
-import 'package:deutschplan/data/repositories/word_repository.dart';
-import 'package:deutschplan/domain/exam_generator.dart';
-import 'package:deutschplan/domain/plan_stats.dart' show courseDays;
-import 'package:deutschplan/features/today/today_providers.dart';
-import 'package:deutschplan/features/today/today_screen.dart';
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
-import 'package:deutschplan/router/cross_tab.dart';
-import 'package:deutschplan/router/routes.dart';
+import 'package:sogda/core/components/sg_button.dart';
+import 'package:sogda/core/components/sg_pill.dart';
+import 'package:sogda/core/components/sg_progress_ring.dart';
+import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/core/theme/sg_surface.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/core/typography/sg_text.dart';
+import 'package:sogda/data/repositories/exam_repository.dart';
+import 'package:sogda/data/repositories/setting_keys.dart';
+import 'package:sogda/data/repositories/word_repository.dart';
+import 'package:sogda/domain/exam_generator.dart';
+import 'package:sogda/domain/plan_stats.dart' show courseDays;
+import 'package:sogda/features/today/today_providers.dart';
+import 'package:sogda/features/today/today_screen.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
+import 'package:sogda/router/cross_tab.dart';
+import 'package:sogda/router/routes.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -237,19 +237,19 @@ class MockCard extends StatelessWidget {
     // FR-L10-02: the best finished score. An attempt left unfinished counts
     // as an attempt with no score (FR-L12-04), and so has no pill.
     final Widget? status = switch (line) {
-      SeedSummary(everPassed: true) => DpPill(
+      SeedSummary(everPassed: true) => SgPill(
         label: l10n.examHubPassed(best),
         fill: tokens.color.easy,
         icon: Icons.check,
       ),
-      SeedSummary(finished: > 0) => DpPill(
+      SeedSummary(finished: > 0) => SgPill(
         label: l10n.examHubNotYet(best),
         fill: tokens.color.again,
       ),
       // Begun but never finished: Resume says it all.
-      _ when attempts == 0 && resume == null => DpText(
+      _ when attempts == 0 && resume == null => SgText(
         l10n.examHubNotAttempted,
-        role: DpTextRole.caption,
+        role: SgTextRole.caption,
         color: tokens.color.textSecondary,
       ),
       _ => null,
@@ -266,8 +266,8 @@ class MockCard extends StatelessWidget {
     ].join(' · ');
     final open = resume;
 
-    return DpSurface(
-      kind: DpSurfaceKind.bar,
+    return SgSurface(
+      kind: SgSurfaceKind.bar,
       padding: const EdgeInsets.all(14),
       child: Row(
         children: <Widget>[
@@ -280,25 +280,25 @@ class MockCard extends StatelessWidget {
                   runSpacing: 4,
                   crossAxisAlignment: WrapCrossAlignment.center,
                   children: <Widget>[
-                    DpText(
+                    SgText(
                       l10n.examHubMock(seed),
-                      role: DpTextRole.bodyLarge,
+                      role: SgTextRole.bodyLarge,
                       weight: 600,
                     ),
                     ?status,
                   ],
                 ),
                 const SizedBox(height: 6),
-                DpText(
+                SgText(
                   details,
-                  role: DpTextRole.caption,
+                  role: SgTextRole.caption,
                   color: tokens.color.textSecondary,
                 ),
               ],
             ),
           ),
           const SizedBox(width: 12),
-          DpButton(
+          SgButton(
             label: open == null ? l10n.examHubStart : l10n.examHubResume,
             compact: true,
             expand: false,
@@ -362,23 +362,23 @@ class ExamContents extends StatelessWidget {
         children: <Widget>[
           Semantics(
             header: true,
-            child: DpText(
+            child: SgText(
               l10n.examHubContents.toUpperCase(),
-              role: DpTextRole.caption,
+              role: SgTextRole.caption,
               weight: 700,
               letterSpacing: 0.6,
               color: tokens.color.textSecondary,
             ),
           ),
           const SizedBox(height: 6),
-          DpText(sections, role: DpTextRole.label, weight: 400),
+          SgText(sections, role: SgTextRole.label, weight: 400),
           const SizedBox(height: 6),
-          DpText(
+          SgText(
             <String>[
               l10n.examHubDisclaimer(passPercent),
               if (locked) l10n.examHubThreshold,
             ].join(' '),
-            role: DpTextRole.caption,
+            role: SgTextRole.caption,
             color: tokens.color.textSecondary,
           ),
         ],
@@ -423,10 +423,10 @@ class LockedExams extends ConsumerWidget {
     final today = ref.watch(todayViewProvider).value;
     final blocks = today == null ? const <SessionBlock>[] : openBlocks(today);
 
-    return DpSurface(
+    return SgSurface(
       // Solid Sun on paper and dark; a Sun wash under glass, as the glass
       // artboard draws it.
-      kind: DpSurfaceKind.tint(
+      kind: SgSurfaceKind.tint(
         tokens.color.accent,
         opacity: tokens.isGlass ? 0.22 : 1,
       ),
@@ -442,9 +442,9 @@ class LockedExams extends ConsumerWidget {
               Icon(Icons.lock_outline, size: 20, color: ink),
               const SizedBox(width: 10),
               Expanded(
-                child: DpText(
+                child: SgText(
                   l10n.examHubUnlocksWhen(unlockPercent, step.code),
-                  role: DpTextRole.bodyLarge,
+                  role: SgTextRole.bodyLarge,
                   weight: 600,
                   color: ink,
                 ),
@@ -454,7 +454,7 @@ class LockedExams extends ConsumerWidget {
           const SizedBox(height: 12),
           // The line under it says the same; a screen reader hears it once.
           ExcludeSemantics(
-            child: DpSegmentedBar(
+            child: SgSegmentedBar(
               done: step.introduced,
               learning: 0,
               todo: left,
@@ -469,7 +469,7 @@ class LockedExams extends ConsumerWidget {
             ),
           ),
           const SizedBox(height: 12),
-          DpText(
+          SgText(
             <String>[
               l10n.examHubIntroduced(step.introduced, goal),
               // Only on the step being studied, as *Study now*: another
@@ -477,7 +477,7 @@ class LockedExams extends ConsumerWidget {
               if (step.active && days != null && days > 0)
                 l10n.examHubDaysAt(days, step.dailyNew),
             ].join(' · '),
-            role: DpTextRole.label,
+            role: SgTextRole.label,
             color: ink,
           ),
           // FR-L10-01's *Study now*: today's session, as L1's *Study* opens
@@ -490,7 +490,7 @@ class LockedExams extends ConsumerWidget {
             Semantics(
               container: true,
               child: Builder(
-                builder: (button) => DpButton(
+                builder: (button) => SgButton(
                   label: l10n.examHubStudyNow,
                   // A raised white (dark: card) button on Sun, as Day
                   // complete's; under glass the call to action stays Lagoon.

@@ -2,8 +2,8 @@
 // so it is a root scope in fact. The lint cannot tell from inside a builder.
 // ignore_for_file: riverpod_lint/scoped_providers_should_specify_dependencies
 
-import 'package:deutschplan/features/onboarding/onboarding_voice_page.dart';
-import 'package:deutschplan/services/model_downloads.dart';
+import 'package:sogda/features/onboarding/onboarding_voice_page.dart';
+import 'package:sogda/services/model_downloads.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 

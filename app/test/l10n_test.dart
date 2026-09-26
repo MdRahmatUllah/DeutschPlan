@@ -2,9 +2,9 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:ui' show Locale;
 
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
-import 'package:deutschplan/l10n/ui_digits.dart';
-import 'package:deutschplan/features/today/today_view.dart' show germanDate;
+import 'package:sogda/l10n/generated/app_localizations.dart';
+import 'package:sogda/l10n/ui_digits.dart';
+import 'package:sogda/features/today/today_view.dart' show germanDate;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:intl/intl.dart' show Intl;
 
@@ -205,11 +205,11 @@ void main() {
 
   test('#425 a number is never written straight into text: it goes through '
       'l10n.digits', () {
-    // DpText('$count'), or a pill's `label: streak.toString()`, prints 0–9 in
+    // SgText('$count'), or a pill's `label: streak.toString()`, prints 0–9 in
     // the Bangla UI; T1's streak pill did.
-    // A DpText literal that is only numbers once its interpolations go
+    // An SgText literal that is only numbers once its interpolations go
     // ("$n", "${a} / ${b}"), and a label that is a number's toString.
-    final text = RegExp(r"DpText\(\s*'([^'\n]*\$[^'\n]*)'");
+    final text = RegExp(r"SgText\(\s*'([^'\n]*\$[^'\n]*)'");
     final label = RegExp(r'\blabel:\s*[\w.]+\.toString\(\)');
     // A literal that is words, not a number (a headword and a step code),
     // is marked `// ponytail: allow-literal` on the line above it, which
@@ -289,7 +289,7 @@ void main() {
 
   test('#425 a component words nothing itself: an interpolated literal in '
       'core/components has no letter outside its placeholders', () {
-    // DpProgressRing's "$completed of $total" was a screen-reader label no
+    // SgProgressRing's "$completed of $total" was a screen-reader label no
     // ARB check could see, so a Bangla learner heard English.
     final literals = <RegExp>[
       RegExp(r"'([^'\n]*\$[^'\n]*)'"),

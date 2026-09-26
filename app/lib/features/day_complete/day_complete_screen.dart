@@ -1,21 +1,21 @@
 import 'dart:async';
 import 'dart:math' as math;
 
-import 'package:deutschplan/core/adaptive/adaptive.dart';
-import 'package:deutschplan/core/components/dp_button.dart';
-import 'package:deutschplan/core/components/dp_chip.dart';
-import 'package:deutschplan/core/components/dp_progress_ring.dart';
-import 'package:deutschplan/core/providers/app_providers.dart';
-import 'package:deutschplan/core/theme/aurora_backdrop.dart';
-import 'package:deutschplan/core/theme/dp_surface.dart';
-import 'package:deutschplan/core/theme/dp_tokens.dart';
-import 'package:deutschplan/core/typography/dp_text.dart';
-import 'package:deutschplan/features/today/today_providers.dart';
-import 'package:deutschplan/features/today/today_view.dart';
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
-import 'package:deutschplan/l10n/ui_digits.dart';
-import 'package:deutschplan/router/cross_tab.dart';
-import 'package:deutschplan/router/routes.dart';
+import 'package:sogda/core/adaptive/adaptive.dart';
+import 'package:sogda/core/components/sg_button.dart';
+import 'package:sogda/core/components/sg_chip.dart';
+import 'package:sogda/core/components/sg_progress_ring.dart';
+import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/core/theme/aurora_backdrop.dart';
+import 'package:sogda/core/theme/sg_surface.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/core/typography/sg_text.dart';
+import 'package:sogda/features/today/today_providers.dart';
+import 'package:sogda/features/today/today_view.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
+import 'package:sogda/l10n/ui_digits.dart';
+import 'package:sogda/router/cross_tab.dart';
+import 'package:sogda/router/routes.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -136,8 +136,8 @@ class _DayCompleteScreenState extends ConsumerState<DayCompleteScreen>
       body: tokens.isGlass
           ? AuroraBackdrop(
               leading: tokens.color.easy,
-              child: DpSurface(
-                kind: DpSurfaceKind.tint(tokens.color.easy, opacity: 0.35),
+              child: SgSurface(
+                kind: SgSurfaceKind.tint(tokens.color.easy, opacity: 0.35),
                 radius: 0,
                 child: page,
               ),
@@ -176,7 +176,7 @@ class _Reward extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                DpSurface(
+                SgSurface(
                   radius: 84,
                   padding: const EdgeInsets.all(12),
                   child: SizedBox(
@@ -185,7 +185,7 @@ class _Reward extends StatelessWidget {
                     child: Stack(
                       alignment: Alignment.center,
                       children: <Widget>[
-                        const DpProgressRing(
+                        const SgProgressRing(
                           completed: 1,
                           total: 1,
                           size: 140,
@@ -211,9 +211,9 @@ class _Reward extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 24),
-                DpText(
+                SgText(
                   l10n.dayCompleteTitle,
-                  role: DpTextRole.display,
+                  role: SgTextRole.display,
                   weight: 700,
                   color: ink,
                   textAlign: TextAlign.center,
@@ -222,9 +222,9 @@ class _Reward extends StatelessWidget {
                   allowBreaks: true,
                 ),
                 const SizedBox(height: 16),
-                DpText(
+                SgText(
                   l10n.dayCompleteStats(words, view.minutes),
-                  role: DpTextRole.bodyLarge,
+                  role: SgTextRole.bodyLarge,
                   color: ink,
                 ),
                 const SizedBox(height: 16),
@@ -240,15 +240,15 @@ class _Reward extends StatelessWidget {
                             0.2 * math.sin(math.pi * play.value.clamp(0, 1)),
                         child: chip,
                       ),
-                      child: DpChip(
+                      child: SgChip(
                         label: AppLocalizations.of(context).digits(view.streak),
-                        kind: DpChipKind.streak,
+                        kind: SgChipKind.streak,
                       ),
                     ),
                     const SizedBox(width: 8),
-                    DpText(
+                    SgText(
                       l10n.dayCompleteStreak(view.streak),
-                      role: DpTextRole.body,
+                      role: SgTextRole.body,
                       weight: 600,
                       color: ink,
                     ),
@@ -256,14 +256,14 @@ class _Reward extends StatelessWidget {
                 ),
                 if (tomorrow != null) ...<Widget>[
                   const SizedBox(height: 16),
-                  DpText(
+                  SgText(
                     tomorrow.restDay
                         ? l10n.dayCompleteTomorrowRest
                         : l10n.dayCompleteTomorrow(
                             tomorrow.revise,
                             tomorrow.newWords,
                           ),
-                    role: DpTextRole.body,
+                    role: SgTextRole.body,
                     color: ink,
                     textAlign: TextAlign.center,
                   ),
@@ -274,7 +274,7 @@ class _Reward extends StatelessWidget {
         ),
         Padding(
           padding: const EdgeInsets.fromLTRB(24, 0, 24, 48),
-          child: DpButton(
+          child: SgButton(
             label: l10n.dayCompleteBack,
             colour: tokens.surface.cardStrong,
             onColour: tokens.color.ink,

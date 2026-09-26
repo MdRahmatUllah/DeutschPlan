@@ -1,24 +1,24 @@
 import 'dart:math' as math;
 
-import 'package:deutschplan/core/adaptive/adaptive.dart';
-import 'package:deutschplan/core/components/dp_feedback.dart';
-import 'package:deutschplan/core/components/dp_progress_ring.dart';
-import 'package:deutschplan/core/providers/app_providers.dart';
-import 'package:deutschplan/core/theme/aurora_backdrop.dart';
-import 'package:deutschplan/core/theme/dp_surface.dart';
-import 'package:deutschplan/core/theme/dp_tokens.dart';
-import 'package:deutschplan/core/typography/dp_text.dart';
-import 'package:deutschplan/data/repositories/word_repository.dart';
-import 'package:deutschplan/domain/plan_engine.dart' show parsePlanDate;
-import 'package:deutschplan/domain/plan_stats.dart' show courseDays;
-import 'package:deutschplan/features/learn/learn_screen.dart';
-import 'package:deutschplan/features/learn/step_exams.dart';
-import 'package:deutschplan/features/learn/step_grammar.dart';
-import 'package:deutschplan/features/learn/step_quiz.dart';
-import 'package:deutschplan/features/learn/step_words.dart';
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
-import 'package:deutschplan/router/cross_tab.dart';
-import 'package:deutschplan/router/routes.dart';
+import 'package:sogda/core/adaptive/adaptive.dart';
+import 'package:sogda/core/components/sg_feedback.dart';
+import 'package:sogda/core/components/sg_progress_ring.dart';
+import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/core/theme/aurora_backdrop.dart';
+import 'package:sogda/core/theme/sg_surface.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/core/typography/sg_text.dart';
+import 'package:sogda/data/repositories/word_repository.dart';
+import 'package:sogda/domain/plan_engine.dart' show parsePlanDate;
+import 'package:sogda/domain/plan_stats.dart' show courseDays;
+import 'package:sogda/features/learn/learn_screen.dart';
+import 'package:sogda/features/learn/step_exams.dart';
+import 'package:sogda/features/learn/step_grammar.dart';
+import 'package:sogda/features/learn/step_quiz.dart';
+import 'package:sogda/features/learn/step_words.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
+import 'package:sogda/router/cross_tab.dart';
+import 'package:sogda/router/routes.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:material_ui/material_ui.dart';
@@ -89,7 +89,7 @@ class _StepDetailScreenState extends ConsumerState<StepDetailScreen> {
       body = Center(
         child: Padding(
           padding: const EdgeInsets.all(16),
-          child: DpErrorPanel(
+          child: SgErrorPanel(
             message: l10n.stepNotFound(widget.code),
             retryLabel: l10n.stepBackToCourse,
             onRetry: () => context.jumpToTab(const LearnRoute()),
@@ -100,7 +100,7 @@ class _StepDetailScreenState extends ConsumerState<StepDetailScreen> {
       body = Center(
         child: Padding(
           padding: const EdgeInsets.all(16),
-          child: DpErrorPanel(
+          child: SgErrorPanel(
             message: l10n.learnLoadFailed,
             retryLabel: l10n.retry,
             onRetry: () => ref.invalidate(stepProgressProvider),
@@ -139,15 +139,15 @@ class StepHeader extends StatelessWidget {
     final ink = tokens.isGlass ? tokens.color.ink : tokens.color.onAccent;
     final name = CourseLevel.name(step.levelCode);
     final counts = l10n.stepHeaderCounts(step.words, step.grammar);
-    final code = DpText(
+    final code = SgText(
       step.code,
-      role: DpTextRole.display,
+      role: SgTextRole.display,
       weight: 700,
       color: ink,
     );
-    final summary = DpText(
+    final summary = SgText(
       name == null ? counts : '$name · $counts',
-      role: DpTextRole.body,
+      role: SgTextRole.body,
       weight: 600,
       color: ink,
     );
@@ -175,9 +175,9 @@ class StepHeader extends StatelessWidget {
               ),
               Expanded(
                 child: cupertino
-                    ? DpText(
+                    ? SgText(
                         step.code,
-                        role: DpTextRole.bodyLarge,
+                        role: SgTextRole.bodyLarge,
                         weight: 600,
                         color: ink,
                         textAlign: TextAlign.center,
@@ -201,7 +201,7 @@ class StepHeader extends StatelessWidget {
             children: <Widget>[
               // Past 130 % text the code takes most of the row, and the line
               // beside it broke "Grundstufe" mid-word (#165): it goes under.
-              if (DpScript.large(context)) ...[
+              if (SgScript.large(context)) ...[
                 code,
                 const SizedBox(height: 4),
                 summary,
@@ -216,7 +216,7 @@ class StepHeader extends StatelessWidget {
                   ],
                 ),
               const SizedBox(height: 8),
-              DpSegmentedBar(
+              SgSegmentedBar(
                 done: step.done,
                 learning: step.learning,
                 todo: step.todo,
@@ -229,9 +229,9 @@ class StepHeader extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 8),
-              DpText(
+              SgText(
                 paceLine(l10n, Localizations.localeOf(context), step),
-                role: DpTextRole.label,
+                role: SgTextRole.label,
                 weight: 500,
                 color: ink,
               ),
@@ -242,8 +242,8 @@ class StepHeader extends StatelessWidget {
     );
 
     return tokens.isGlass
-        ? DpSurface(
-            kind: DpSurfaceKind.tint(tokens.color.accent),
+        ? SgSurface(
+            kind: SgSurfaceKind.tint(tokens.color.accent),
             radius: 0,
             child: content,
           )

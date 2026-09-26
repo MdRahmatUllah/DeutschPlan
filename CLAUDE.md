@@ -1,4 +1,6 @@
-# DeutschPlan — read this first
+# Sogda — read this first
+
+*The app was named DeutschPlan up to v1.0.1; ADR 28 renamed it, internals included (the Dp prefix is now Sg).*
 
 An offline German course for Bangla and English speakers: Flutter (Android +
 iOS), 12 steps A1.1 → C2.2, FSRS spaced repetition, mock exams, on-device
@@ -50,9 +52,9 @@ session must know), `team.py leave -m "..."`.
 app/lib/
   main.dart, bootstrap.dart      startup: open user.db, attach content.db (schema c), load settings
   core/adaptive/                 ALL platform chrome: AdaptiveScaffold, AdaptiveBackButton, Adaptive.showSheet/showConfirm…
-  core/components/               DpButton, DpChip, DpPill, DpSegmentedBar, DpErrorPanel, DpUmlautBar, DpToast…
-  core/theme/                    DpTokens (context.tokens), DpSurface (the only surface), AuroraBackdrop, glass
-  core/typography/dp_text.dart   DpText (never Text), DpHeadword, DpOneLine
+  core/components/               SgButton, SgChip, SgPill, SgSegmentedBar, SgErrorPanel, SgUmlautBar, SgToast…
+  core/theme/                    SgTokens (context.tokens), SgSurface (the only surface), AuroraBackdrop, glass
+  core/typography/sg_text.dart   SgText (never Text), SgHeadword, SgOneLine
   core/providers/app_providers.dart   every repository/service provider
   data/db/                       user_schema.drift (user.db DDL), *_queries.drift, content.drift, app_database.dart
   data/repositories/             the only layer that touches drift

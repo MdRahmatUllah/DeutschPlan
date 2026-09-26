@@ -1,45 +1,45 @@
 import 'dart:ui' show ImageFilter;
 
-import 'package:deutschplan/core/theme/dp_tokens.dart';
-import 'package:deutschplan/core/theme/glass_capability.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/core/theme/glass_capability.dart';
 import 'package:material_ui/material_ui.dart';
 
-/// What a [DpSurface] is being drawn as.
+/// What a [SgSurface] is being drawn as.
 ///
 /// `docs/01-architecture/theming.md`: "Every card, sheet, header and tab bar is
-/// drawn by one widget, `DpSurface`, with a `kind`."
-sealed class DpSurfaceKind {
-  const DpSurfaceKind();
+/// drawn by one widget, `SgSurface`, with a `kind`."
+sealed class SgSurfaceKind {
+  const SgSurfaceKind();
 
   /// The ordinary panel: `surface.card`, blurred 24 under glass.
-  static const DpSurfaceKind card = _Card();
+  static const SgSurfaceKind card = _Card();
 
   /// The denser panel used for sheets and the study card: `surface.cardStrong`,
   /// blurred 32 under glass.
-  static const DpSurfaceKind cardStrong = _CardStrong();
+  static const SgSurfaceKind cardStrong = _CardStrong();
 
   /// A header, tab bar or banner. Same treatment as [card] but without the
   /// drop shadow, since bars sit flush against the screen edge.
-  static const DpSurfaceKind bar = _Bar();
+  static const SgSurfaceKind bar = _Bar();
 
   /// A panel tinted toward [colour] — the Lagoon Today header, the Raspberry
   /// sentences band, a gender-tinted study card.
-  const factory DpSurfaceKind.tint(Color colour, {double opacity}) = _Tint;
+  const factory SgSurfaceKind.tint(Color colour, {double opacity}) = _Tint;
 }
 
-final class _Card extends DpSurfaceKind {
+final class _Card extends SgSurfaceKind {
   const _Card();
 }
 
-final class _CardStrong extends DpSurfaceKind {
+final class _CardStrong extends SgSurfaceKind {
   const _CardStrong();
 }
 
-final class _Bar extends DpSurfaceKind {
+final class _Bar extends SgSurfaceKind {
   const _Bar();
 }
 
-final class _Tint extends DpSurfaceKind {
+final class _Tint extends SgSurfaceKind {
   const _Tint(this.colour, {this.opacity = 0.22});
 
   final Color colour;
@@ -61,13 +61,13 @@ final class _Tint extends DpSurfaceKind {
 /// layers on screen — header, one panel, tab bar — and asks for 60 fps with one
 /// `BackdropFilter` per list panel. A long list of glass cards (Backlog, Learn,
 /// the grammar library, search results) will blow that on a mid-range phone.
-/// Rows in a scrolling list should use [DpSurfaceKind.bar], which skips the
+/// Rows in a scrolling list should use [SgSurfaceKind.bar], which skips the
 /// drop shadow, or wait for the shared-backdrop mechanism in #34.
-class DpSurface extends StatefulWidget {
-  const DpSurface({
+class SgSurface extends StatefulWidget {
+  const SgSurface({
     required this.child,
     super.key,
-    this.kind = DpSurfaceKind.card,
+    this.kind = SgSurfaceKind.card,
     this.padding,
     this.radius,
     this.pressed = false,
@@ -77,7 +77,7 @@ class DpSurface extends StatefulWidget {
   });
 
   final Widget child;
-  final DpSurfaceKind kind;
+  final SgSurfaceKind kind;
   final EdgeInsetsGeometry? padding;
 
   /// Defaults to the card radius of the active mode.
@@ -89,7 +89,7 @@ class DpSurface extends StatefulWidget {
   final bool pressed;
 
   /// Drawn as the chosen one of a set: a 2 px border in ink — Lagoon under
-  /// glass — and the drop shadow even on a [DpSurfaceKind.bar]. The S2 choice
+  /// glass — and the drop shadow even on a [SgSurfaceKind.bar]. The S2 choice
   /// cards are a bar each until one is picked; the artboards draw exactly
   /// that pair.
   final bool selected;
@@ -101,10 +101,10 @@ class DpSurface extends StatefulWidget {
   final VoidCallback? onTap;
 
   @override
-  State<DpSurface> createState() => _DpSurfaceState();
+  State<SgSurface> createState() => _SgSurfaceState();
 }
 
-class _DpSurfaceState extends State<DpSurface> {
+class _SgSurfaceState extends State<SgSurface> {
   bool _down = false;
 
   @override
@@ -153,7 +153,7 @@ class _DpSurfaceState extends State<DpSurface> {
   /// The caller's explicit state, or a live press on our own gesture.
   bool get _pressed => widget.pressed || _down;
 
-  Color _fill(DpTokens tokens, {required bool degraded}) {
+  Color _fill(SgTokens tokens, {required bool degraded}) {
     final base = switch (widget.kind) {
       _Card() || _Bar() => tokens.surface.card,
       _CardStrong() => tokens.surface.cardStrong,
@@ -177,7 +177,7 @@ class _DpSurfaceState extends State<DpSurface> {
   /// The opacity a glass panel falls back to, per theming.md.
   static const double _opaqueFallbackAlpha = 0.92;
 
-  double _blur(DpTokens tokens) => switch (widget.kind) {
+  double _blur(SgTokens tokens) => switch (widget.kind) {
     _CardStrong() => tokens.surface.strongBlur,
     _ => tokens.surface.blur,
   };
@@ -188,7 +188,7 @@ class _DpSurfaceState extends State<DpSurface> {
 
   static const double _selectedOutlineWidth = 2;
 
-  Widget _solid(DpTokens tokens, BorderRadius borderRadius, Widget body) {
+  Widget _solid(SgTokens tokens, BorderRadius borderRadius, Widget body) {
     final surface = tokens.surface;
     return DecoratedBox(
       decoration: BoxDecoration(
@@ -211,7 +211,7 @@ class _DpSurfaceState extends State<DpSurface> {
     );
   }
 
-  Widget _glass(DpTokens tokens, BorderRadius borderRadius, Widget body) {
+  Widget _glass(SgTokens tokens, BorderRadius borderRadius, Widget body) {
     final surface = tokens.surface;
     final blur = _blur(tokens);
 

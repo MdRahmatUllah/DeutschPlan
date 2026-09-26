@@ -1,7 +1,7 @@
 @TestOn('vm')
 library;
 
-import 'package:deutschplan/domain/edit_distance.dart';
+import 'package:sogda/domain/edit_distance.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 /// `editDistance` — BR-SEARCH-03's OSA distance.

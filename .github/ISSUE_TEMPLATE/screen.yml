@@ -36,7 +36,7 @@ body:
       description: Quote the FR and BR IDs the screen doc lists. Tests carry these IDs.
       value: |
         - [ ] FR-
-        - [ ] Renders from `DpSurface` and tokens only — no raw colours, no direct Material/Cupertino chrome
+        - [ ] Renders from `SgSurface` and tokens only — no raw colours, no direct Material/Cupertino chrome
         - [ ] Copy lives in ARB (en + bn); German course text comes from content.db
         - [ ] Goldens for light, dark and glass on the phone and tablet frames
         - [ ] Test names carry their FR/BR IDs

@@ -1,24 +1,24 @@
 import 'dart:async';
 
-import 'package:deutschplan/core/adaptive/adaptive.dart';
-import 'package:deutschplan/core/components/dp_button.dart';
-import 'package:deutschplan/core/components/dp_chip.dart';
-import 'package:deutschplan/core/components/dp_feedback.dart';
-import 'package:deutschplan/core/providers/app_providers.dart';
-import 'package:deutschplan/core/theme/aurora_backdrop.dart';
-import 'package:deutschplan/core/theme/dp_surface.dart';
-import 'package:deutschplan/core/theme/dp_tokens.dart';
-import 'package:deutschplan/core/typography/dp_text.dart';
-import 'package:deutschplan/data/repositories/grammar_repository.dart';
-import 'package:deutschplan/domain/answer_check.dart';
-import 'package:deutschplan/domain/grammar_item_generator.dart';
-import 'package:deutschplan/features/learn/grammar_topic_screen.dart';
-import 'package:deutschplan/features/study/study_cloze.dart';
-import 'package:deutschplan/features/study/study_summary.dart';
-import 'package:deutschplan/features/study/write_guard.dart';
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
-import 'package:deutschplan/l10n/ui_digits.dart';
-import 'package:deutschplan/router/routes.dart';
+import 'package:sogda/core/adaptive/adaptive.dart';
+import 'package:sogda/core/components/sg_button.dart';
+import 'package:sogda/core/components/sg_chip.dart';
+import 'package:sogda/core/components/sg_feedback.dart';
+import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/core/theme/aurora_backdrop.dart';
+import 'package:sogda/core/theme/sg_surface.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/core/typography/sg_text.dart';
+import 'package:sogda/data/repositories/grammar_repository.dart';
+import 'package:sogda/domain/answer_check.dart';
+import 'package:sogda/domain/grammar_item_generator.dart';
+import 'package:sogda/features/learn/grammar_topic_screen.dart';
+import 'package:sogda/features/study/study_cloze.dart';
+import 'package:sogda/features/study/study_summary.dart';
+import 'package:sogda/features/study/write_guard.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
+import 'package:sogda/l10n/ui_digits.dart';
+import 'package:sogda/router/routes.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -187,7 +187,7 @@ class _GrammarPracticeScreenState extends ConsumerState<GrammarPracticeScreen> {
       // sentence scrolled away. The header's row and *Next* (off until the
       // answer is checked, which closes the field) give theirs to it, and
       // come back with the keyboard's going.
-      final typing = DpScript.largeTyping(context);
+      final typing = SgScript.largeTyping(context);
       body = Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
@@ -213,9 +213,9 @@ class _GrammarPracticeScreenState extends ConsumerState<GrammarPracticeScreen> {
               children: <Widget>[
                 Align(
                   alignment: AlignmentDirectional.centerStart,
-                  child: DpChip(
+                  child: SgChip(
                     label: itemKind(l10n, item),
-                    kind: DpChipKind.status,
+                    kind: SgChipKind.status,
                   ),
                 ),
                 const SizedBox(height: 12),
@@ -245,7 +245,7 @@ class _GrammarPracticeScreenState extends ConsumerState<GrammarPracticeScreen> {
           if (!typing || right != null)
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
-              child: DpButton(
+              child: SgButton(
                 label: l10n.practiceNext,
                 onPressed: right == null ? null : () => unawaited(_next(set)),
               ),
@@ -318,7 +318,7 @@ class PracticeHeader extends StatelessWidget {
         // a long topic wraps rather than be cut to one line (#551).
         if (!collapsed)
           ConstrainedBox(
-            constraints: BoxConstraints(minHeight: DpScript.grow(context, 56)),
+            constraints: BoxConstraints(minHeight: SgScript.grow(context, 56)),
             child: Row(
               children: <Widget>[
                 const SizedBox(width: 4),
@@ -340,9 +340,9 @@ class PracticeHeader extends StatelessWidget {
                   ),
                 ),
                 Expanded(
-                  child: DpText(
+                  child: SgText(
                     title,
-                    role: DpTextRole.bodyLarge,
+                    role: SgTextRole.bodyLarge,
                     weight: 600,
                     color: ink,
                     textAlign: TextAlign.center,
@@ -351,10 +351,10 @@ class PracticeHeader extends StatelessWidget {
                 // 52, grown with the text size: at 200 % a fixed 52 wrapped
                 // "7 / 20" onto two lines and cut it (#165).
                 SizedBox(
-                  width: DpScript.grow(context, 52, role: DpTextRole.label),
-                  child: DpText(
+                  width: SgScript.grow(context, 52, role: SgTextRole.label),
+                  child: SgText(
                     l10n.digits('${place.$1} / ${place.$2}'),
-                    role: DpTextRole.label,
+                    role: SgTextRole.label,
                     weight: 700,
                     color: ink,
                     textAlign: TextAlign.center,
@@ -367,8 +367,8 @@ class PracticeHeader extends StatelessWidget {
       ],
     );
     return tokens.isGlass
-        ? DpSurface(
-            kind: DpSurfaceKind.tint(tokens.color.accent),
+        ? SgSurface(
+            kind: SgSurfaceKind.tint(tokens.color.accent),
             radius: 0,
             child: content,
           )
@@ -429,13 +429,13 @@ class _TopicBanner extends StatelessWidget {
             padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
             child: Semantics(
               liveRegion: true,
-              child: DpSurface(
-                kind: DpSurfaceKind.tint(tokens.color.accent),
+              child: SgSurface(
+                kind: SgSurfaceKind.tint(tokens.color.accent),
                 padding: const EdgeInsets.symmetric(
                   horizontal: 12,
                   vertical: 8,
                 ),
-                child: DpText(label, role: DpTextRole.label),
+                child: SgText(label, role: SgTextRole.label),
               ),
             ),
           )
@@ -520,9 +520,9 @@ class PracticeItemView extends StatelessWidget {
     RuleRecall(:final question, :final options, :final answer) => Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
-        DpText(
+        SgText(
           AppLocalizations.of(context).practiceRecallQuestion(question),
-          role: DpTextRole.title,
+          role: SgTextRole.title,
         ),
         const SizedBox(height: 14),
         _Options(
@@ -553,24 +553,24 @@ class _Sentence extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final tokens = context.tokens;
-    final style = DpText.styleFor(tokens, DpTextRole.title);
+    final style = SgText.styleFor(tokens, SgTextRole.title);
     // Punctuation sits against the gap; words get a space.
     final tail = after.isEmpty || RegExp(r'^[.,!?;:…]').hasMatch(after)
         ? after
         : ' $after';
     // A long compound breaks at a syllable at 200 % (#539).
     // The German in a German voice; the blank, "_____", in the app's (#539).
-    return DpRuns(<TextSpan>[
-      if (before.isNotEmpty) TextSpan(text: '$before ', locale: DpScript.deDE),
+    return SgRuns(<TextSpan>[
+      if (before.isNotEmpty) TextSpan(text: '$before ', locale: SgScript.deDE),
       TextSpan(
         text: filled ?? '_____',
         style: TextStyle(
           color: filled == null ? tokens.color.textSecondary : null,
           fontWeight: filled == null ? null : FontWeight.w700,
         ),
-        locale: filled == null ? null : DpScript.deDE,
+        locale: filled == null ? null : SgScript.deDE,
       ),
-      TextSpan(text: tail, locale: DpScript.deDE),
+      TextSpan(text: tail, locale: SgScript.deDE),
     ], style: style);
   }
 }
@@ -583,9 +583,9 @@ class _Translation extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Padding(
     padding: const EdgeInsets.only(top: 6),
-    child: DpText(
+    child: SgText(
       text,
-      role: DpTextRole.label,
+      role: SgTextRole.label,
       weight: 400,
       color: context.tokens.color.textSecondary,
     ),
@@ -624,9 +624,9 @@ class _Options extends StatelessWidget {
               final label = Row(
                 children: <Widget>[
                   Expanded(
-                    child: DpText(
+                    child: SgText(
                       option,
-                      role: DpTextRole.bodyLarge,
+                      role: SgTextRole.bodyLarge,
                       weight: 600,
                       color: faded ? tokens.color.textSecondary : null,
                     ),
@@ -648,8 +648,8 @@ class _Options extends StatelessWidget {
                   ? (tokens.color.again, tokens.color.wrongText)
                   : null;
               final tile = verdict == null
-                  ? DpSurface(
-                      kind: DpSurfaceKind.bar,
+                  ? SgSurface(
+                      kind: SgSurfaceKind.bar,
                       onTap: answered ? null : () => onPick(option),
                       padding: padding,
                       child: label,
@@ -747,13 +747,13 @@ class _GapFillViewState extends State<_GapFillView> {
             umlautRowBelow: true,
           ),
           const SizedBox(height: 8),
-          DpUmlautBar(controller: _typed),
+          SgUmlautBar(controller: _typed),
           const SizedBox(height: 12),
           ListenableBuilder(
             listenable: _typed,
-            builder: (context, _) => DpButton(
+            builder: (context, _) => SgButton(
               label: l10n.practiceCheck,
-              kind: DpButtonKind.secondary,
+              kind: SgButtonKind.secondary,
               onPressed: _typed.text.trim().isEmpty ? null : _check,
             ),
           ),
@@ -787,9 +787,9 @@ class _SpotView extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
-        DpText(
+        SgText(
           l10n.practiceSpotPrompt,
-          role: DpTextRole.label,
+          role: SgTextRole.label,
           weight: 400,
           color: tokens.color.textSecondary,
         ),
@@ -859,9 +859,9 @@ class _OrderViewState extends State<_OrderView> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
-        DpText(
+        SgText(
           l10n.practiceOrderPrompt,
-          role: DpTextRole.label,
+          role: SgTextRole.label,
           weight: 400,
           color: tokens.color.textSecondary,
         ),
@@ -905,9 +905,9 @@ class _OrderViewState extends State<_OrderView> {
         ),
         if (!widget.answered) ...<Widget>[
           const SizedBox(height: 12),
-          DpButton(
+          SgButton(
             label: l10n.practiceCheck,
-            kind: DpButtonKind.secondary,
+            kind: SgButtonKind.secondary,
             onPressed: _placed.length == widget.chips.length ? _check : null,
           ),
         ],
@@ -932,14 +932,14 @@ class _WordChip extends StatelessWidget {
     return AdaptiveTapTarget(
       child: Semantics(
         button: onTap != null,
-        child: DpSurface(
+        child: SgSurface(
           kind: tone == null
-              ? DpSurfaceKind.bar
-              : DpSurfaceKind.tint(tone!, opacity: 0.3),
+              ? SgSurfaceKind.bar
+              : SgSurfaceKind.tint(tone!, opacity: 0.3),
           radius: 10,
           onTap: onTap,
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-          child: DpText(word, role: DpTextRole.bodyLarge),
+          child: SgText(word, role: SgTextRole.bodyLarge),
         ),
       ),
     );
@@ -981,12 +981,12 @@ class PracticeFeedback extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          DpVerdictRow(
+          SgVerdictRow(
             verdict: almost
-                ? DpVerdict.almost
+                ? SgVerdict.almost
                 : right
-                ? DpVerdict.correct
-                : DpVerdict.wrong,
+                ? SgVerdict.correct
+                : SgVerdict.wrong,
             message: almost
                 ? l10n.practiceAlmost(answer)
                 : right
@@ -995,10 +995,10 @@ class PracticeFeedback extends StatelessWidget {
           ),
           if (!right && line != null && line.isNotEmpty) ...<Widget>[
             const SizedBox(height: 6),
-            DpText(l10n.practiceRuleLine(line), role: DpTextRole.body),
-            DpButton(
+            SgText(l10n.practiceRuleLine(line), role: SgTextRole.body),
+            SgButton(
               label: l10n.practiceSeeRule,
-              kind: DpButtonKind.text,
+              kind: SgButtonKind.text,
               expand: false,
               onPressed: onSeeRule,
             ),
@@ -1027,19 +1027,19 @@ class RuleSheet extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            DpText(topic.topic.topic, role: DpTextRole.title),
+            SgText(topic.topic.topic, role: SgTextRole.title),
             if (rule != null && rule.isNotEmpty) ...<Widget>[
               const SizedBox(height: 12),
-              DpText(rule, role: DpTextRole.bodyLarge),
+              SgText(rule, role: SgTextRole.bodyLarge),
             ],
             if (watchOut != null && watchOut.isNotEmpty) ...<Widget>[
               const SizedBox(height: 14),
               WatchOut(text: watchOut),
             ],
             const SizedBox(height: 16),
-            DpButton(
+            SgButton(
               label: l10n.practiceBackToItem,
-              kind: DpButtonKind.secondary,
+              kind: SgButtonKind.secondary,
               onPressed: () => Navigator.of(context).pop(),
             ),
           ],

@@ -1,8 +1,8 @@
 import 'dart:math';
 
-import 'package:deutschplan/domain/cloze.dart';
-import 'package:deutschplan/domain/plan_engine.dart' show PlanDate;
-import 'package:deutschplan/domain/text_norm.dart';
+import 'package:sogda/domain/cloze.dart';
+import 'package:sogda/domain/plan_engine.dart' show PlanDate;
+import 'package:sogda/domain/text_norm.dart';
 
 /// An example sentence that could be practised: its headword and place in
 /// the word's examples, which together are its key in `sentence_log`.

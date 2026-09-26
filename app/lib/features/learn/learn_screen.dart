@@ -1,20 +1,20 @@
-import 'package:deutschplan/core/adaptive/adaptive.dart';
-import 'package:deutschplan/core/components/dp_button.dart';
-import 'package:deutschplan/core/components/dp_feedback.dart';
-import 'package:deutschplan/core/components/dp_pill.dart';
-import 'package:deutschplan/core/components/dp_progress_ring.dart';
-import 'package:deutschplan/core/providers/app_providers.dart';
-import 'package:deutschplan/core/theme/aurora_backdrop.dart';
-import 'package:deutschplan/core/theme/dp_surface.dart';
-import 'package:deutschplan/core/theme/dp_tokens.dart';
-import 'package:deutschplan/core/typography/dp_text.dart';
-import 'package:deutschplan/data/repositories/word_repository.dart';
-import 'package:deutschplan/features/today/today_providers.dart';
-import 'package:deutschplan/features/today/today_screen.dart';
-import 'package:deutschplan/features/today/today_view.dart';
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
-import 'package:deutschplan/router/cross_tab.dart';
-import 'package:deutschplan/router/routes.dart';
+import 'package:sogda/core/adaptive/adaptive.dart';
+import 'package:sogda/core/components/sg_button.dart';
+import 'package:sogda/core/components/sg_feedback.dart';
+import 'package:sogda/core/components/sg_pill.dart';
+import 'package:sogda/core/components/sg_progress_ring.dart';
+import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/core/theme/aurora_backdrop.dart';
+import 'package:sogda/core/theme/sg_surface.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/core/typography/sg_text.dart';
+import 'package:sogda/data/repositories/word_repository.dart';
+import 'package:sogda/features/today/today_providers.dart';
+import 'package:sogda/features/today/today_screen.dart';
+import 'package:sogda/features/today/today_view.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
+import 'package:sogda/router/cross_tab.dart';
+import 'package:sogda/router/routes.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 
@@ -38,7 +38,7 @@ abstract final class CourseLevel {
 
   /// The band's fill, cycling through the palette in course order, and the
   /// ink that reads on it.
-  static (Color, Color) colours(DpTokens tokens, String code) {
+  static (Color, Color) colours(SgTokens tokens, String code) {
     final c = tokens.color;
     return switch (code) {
       'A1' => (c.primary, c.onPrimary),
@@ -115,7 +115,7 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
       body = Center(
         child: Padding(
           padding: const EdgeInsets.all(16),
-          child: DpErrorPanel(
+          child: SgErrorPanel(
             message: l10n.learnLoadFailed,
             retryLabel: l10n.retry,
             onRetry: () => ref.invalidate(stepProgressProvider),
@@ -254,20 +254,20 @@ class LearnHeader extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          DpText(l10n.learnTitle, role: DpTextRole.headline, color: ink),
+          SgText(l10n.learnTitle, role: SgTextRole.headline, color: ink),
           const SizedBox(height: 8),
-          DpText(
+          SgText(
             l10n.learnCourseLine(
               done,
               sum((step) => step.words),
               sum((step) => step.grammarLearned),
               sum((step) => step.grammar),
             ),
-            role: DpTextRole.label,
+            role: SgTextRole.label,
             color: ink,
           ),
           const SizedBox(height: 8),
-          DpSegmentedBar(
+          SgSegmentedBar(
             done: done,
             learning: sum((step) => step.learning),
             todo: sum((step) => step.todo),
@@ -282,8 +282,8 @@ class LearnHeader extends StatelessWidget {
     );
 
     return tokens.isGlass
-        ? DpSurface(
-            kind: DpSurfaceKind.tint(tokens.color.accent),
+        ? SgSurface(
+            kind: SgSurfaceKind.tint(tokens.color.accent),
             radius: 0,
             child: content,
           )
@@ -306,9 +306,9 @@ class LevelBand extends StatelessWidget {
     final (fill, onFill) = CourseLevel.colours(tokens, code);
     final label = Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-      child: DpText(
+      child: SgText(
         CourseLevel.band(code).toUpperCase(),
-        role: DpTextRole.caption,
+        role: SgTextRole.caption,
         weight: 700,
         letterSpacing: 0.6,
         color: tokens.isGlass ? tokens.color.ink : onFill,
@@ -324,7 +324,7 @@ class LevelBand extends StatelessWidget {
         fit: StackFit.passthrough,
         children: <Widget>[
           if (tokens.isGlass)
-            DpSurface(kind: DpSurfaceKind.tint(fill), radius: 0, child: label)
+            SgSurface(kind: SgSurfaceKind.tint(fill), radius: 0, child: label)
           else
             ColoredBox(color: fill, child: label),
           if (path)
@@ -365,16 +365,16 @@ class StepTile extends StatelessWidget {
     final locked = badge == StepBadge.locked;
 
     final Widget? mark = switch (badge) {
-      StepBadge.passed => DpPill(
+      StepBadge.passed => SgPill(
         label: l10n.learnPassed,
         fill: tokens.color.easy,
         icon: Icons.check,
       ),
-      StepBadge.current => DpPill(
+      StepBadge.current => SgPill(
         label: l10n.learnCurrent,
         fill: tokens.color.accent,
       ),
-      StepBadge.examsUnlocked => DpPill(
+      StepBadge.examsUnlocked => SgPill(
         label: l10n.learnExamsUnlocked,
         fill: tokens.color.primary,
         ink: tokens.color.onPrimary,
@@ -394,8 +394,8 @@ class StepTile extends StatelessWidget {
     // ("Continue · 29 left" there, "Today · 29 left" here).
     final left = view?.left ?? 0;
 
-    final tile = DpSurface(
-      kind: current ? DpSurfaceKind.card : DpSurfaceKind.bar,
+    final tile = SgSurface(
+      kind: current ? SgSurfaceKind.card : SgSurfaceKind.bar,
       selected: current,
       glassOutline: tokens.color.accent,
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
@@ -407,9 +407,9 @@ class StepTile extends StatelessWidget {
           Row(
             children: <Widget>[
               Expanded(
-                child: DpText(
+                child: SgText(
                   step.code,
-                  role: DpTextRole.title,
+                  role: SgTextRole.title,
                   color: locked ? tokens.color.textSecondary : null,
                 ),
               ),
@@ -417,16 +417,16 @@ class StepTile extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 8),
-          DpSegmentedBar(
+          SgSegmentedBar(
             done: step.done,
             learning: step.learning,
             todo: step.todo,
             height: 6,
           ),
           const SizedBox(height: 8),
-          DpText(
+          SgText(
             l10n.learnStepLine(step.words, step.grammar),
-            role: DpTextRole.caption,
+            role: SgTextRole.caption,
             color: tokens.color.textSecondary,
           ),
           if (view != null) ...<Widget>[
@@ -439,11 +439,11 @@ class StepTile extends StatelessWidget {
             Row(
               children: <Widget>[
                 Expanded(
-                  child: DpText(
+                  child: SgText(
                     blocks.isEmpty
                         ? l10n.learnTodayDone
                         : l10n.learnTodayLeft(left),
-                    role: DpTextRole.body,
+                    role: SgTextRole.body,
                     weight: 600,
                   ),
                 ),
@@ -451,7 +451,7 @@ class StepTile extends StatelessWidget {
                   const SizedBox(width: 12),
                   // FR-L1-04: the session Today's button opens.
                   Builder(
-                    builder: (button) => DpButton(
+                    builder: (button) => SgButton(
                       label: l10n.learnStudy,
                       compact: true,
                       expand: false,
@@ -582,8 +582,8 @@ class LinkCard extends StatelessWidget {
     final tokens = context.tokens;
     return Semantics(
       button: true,
-      child: DpSurface(
-        kind: DpSurfaceKind.bar,
+      child: SgSurface(
+        kind: SgSurfaceKind.bar,
         onTap: onTap,
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
         child: ConstrainedBox(
@@ -597,11 +597,11 @@ class LinkCard extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    DpText(title, role: DpTextRole.body, weight: 600),
+                    SgText(title, role: SgTextRole.body, weight: 600),
                     const SizedBox(height: 1),
-                    DpText(
+                    SgText(
                       subtitle,
-                      role: DpTextRole.caption,
+                      role: SgTextRole.caption,
                       color: tokens.color.textSecondary,
                     ),
                   ],

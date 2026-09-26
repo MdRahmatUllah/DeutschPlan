@@ -1,21 +1,21 @@
 import 'dart:async';
 
-import 'package:deutschplan/core/components/dp_button.dart';
-import 'package:deutschplan/core/components/dp_feedback.dart';
-import 'package:deutschplan/core/components/dp_speaker_button.dart';
-import 'package:deutschplan/core/typography/dp_text.dart';
-import 'package:deutschplan/core/providers/app_providers.dart';
-import 'package:deutschplan/core/theme/app_theme.dart';
-import 'package:deutschplan/core/theme/dp_surface.dart';
-import 'package:deutschplan/domain/answer_check.dart';
-import 'package:deutschplan/domain/quiz_builder.dart';
-import 'package:deutschplan/features/quiz/quiz_item_view.dart' show GermanWord;
-import 'package:deutschplan/features/quiz/quiz_result_screen.dart';
-import 'package:deutschplan/features/quiz/quiz_screen.dart';
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
-import 'package:deutschplan/main.dart'
+import 'package:sogda/core/components/sg_button.dart';
+import 'package:sogda/core/components/sg_feedback.dart';
+import 'package:sogda/core/components/sg_speaker_button.dart';
+import 'package:sogda/core/typography/sg_text.dart';
+import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/core/theme/app_theme.dart';
+import 'package:sogda/core/theme/sg_surface.dart';
+import 'package:sogda/domain/answer_check.dart';
+import 'package:sogda/domain/quiz_builder.dart';
+import 'package:sogda/features/quiz/quiz_item_view.dart' show GermanWord;
+import 'package:sogda/features/quiz/quiz_result_screen.dart';
+import 'package:sogda/features/quiz/quiz_screen.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
+import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
-import 'package:deutschplan/router/routes.dart';
+import 'package:sogda/router/routes.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
@@ -390,7 +390,7 @@ void main() {
 
     await next(tester);
     expect(find.text(l10n.quizAskListening), findsOneWidget);
-    expect(find.byType(DpSpeakerButton), findsOneWidget);
+    expect(find.byType(SgSpeakerButton), findsOneWidget);
     expect(find.text('das Haus'), findsNothing);
   });
 
@@ -422,13 +422,13 @@ void main() {
       expect(find.text(l10n.quizAnswerIs('বাড়ি')), findsOneWidget);
       // #539: a Bangla answer in its own voice, not German's.
       expect(
-        tester.widget<DpVerdictRow>(find.byType(DpVerdictRow)).germanEmphasis,
+        tester.widget<SgVerdictRow>(find.byType(SgVerdictRow)).germanEmphasis,
         isFalse,
       );
       bool selected(String tile) => tester
-          .widget<DpSurface>(
+          .widget<SgSurface>(
             find
-                .ancestor(of: find.text(tile), matching: find.byType(DpSurface))
+                .ancestor(of: find.text(tile), matching: find.byType(SgSurface))
                 .first,
           )
           .selected;
@@ -520,7 +520,7 @@ void main() {
         ),
       );
       expect(find.text('দরজা'), findsOneWidget);
-      expect(find.byType(DpUmlautBar), findsOneWidget);
+      expect(find.byType(SgUmlautBar), findsOneWidget);
       await tester.enterText(find.byType(TextField), 'die T');
       await tester.tap(find.text('ü'));
       await tester.enterText(find.byType(TextField), '${field(tester)}r');
@@ -533,8 +533,8 @@ void main() {
     testWidgets('a meaning is typed without the umlaut row', (tester) async {
       await one(tester, haus);
       expect(find.byType(TextField), findsOneWidget);
-      expect(find.byType(DpUmlautBar), findsNothing);
-      expect(find.byType(DpSpeakerButton), findsOneWidget, reason: 'play');
+      expect(find.byType(SgUmlautBar), findsNothing);
+      expect(find.byType(SgSpeakerButton), findsOneWidget, reason: 'play');
     });
 
     testWidgets('almost: the answer is set apart in ink', (tester) async {
@@ -549,7 +549,7 @@ void main() {
         ),
       );
       await answer(tester, 'der Mietvertag');
-      final row = tester.widget<DpVerdictRow>(find.byType(DpVerdictRow));
+      final row = tester.widget<SgVerdictRow>(find.byType(SgVerdictRow));
       expect(row.emphasis, <String>['der Mietvertrag']);
       // #539: a German answer, read in a German voice.
       expect(row.germanEmphasis, isTrue);
@@ -661,15 +661,15 @@ void main() {
             final asked = item.form == null
                 ? item.prompt
                 : t.quizFormPerfekt(item.prompt);
-            DpTextRole role() => tester
-                .widget<DpText>(
+            SgTextRole role() => tester
+                .widget<SgText>(
                   find.ancestor(
                     of: find.text(asked),
-                    matching: find.byType(DpText),
+                    matching: find.byType(SgText),
                   ),
                 )
                 .role;
-            expect(role(), DpTextRole.title, reason: 'a role smaller');
+            expect(role(), SgTextRole.title, reason: 'a role smaller');
             final room = tester.getRect(find.byType(ListView));
             final lines = <Finder>[
               find.text(asked),
@@ -690,7 +690,7 @@ void main() {
 
             tester.view.resetViewInsets();
             await tester.pumpAndSettle();
-            expect(role(), DpTextRole.headline, reason: 'its own role');
+            expect(role(), SgTextRole.headline, reason: 'its own role');
           });
         }
       }
@@ -711,10 +711,10 @@ void main() {
       await tester.tap(find.bySemanticsLabel(l10n.quizCheck));
       await tester.pumpAndSettle();
       final room = tester.getRect(find.byType(ListView));
-      final verdict = tester.getRect(find.byType(DpVerdictRow));
+      final verdict = tester.getRect(find.byType(SgVerdictRow));
       expect(verdict.top, greaterThanOrEqualTo(room.top));
       expect(verdict.bottom, lessThanOrEqualTo(room.bottom));
-      expect(find.widgetWithText(DpButton, l10n.practiceNext), findsOneWidget);
+      expect(find.widgetWithText(SgButton, l10n.practiceNext), findsOneWidget);
     });
 
     for (final item in <QuizItem>[wraps, withHint, threeLines, benehmen]) {
@@ -816,8 +816,8 @@ void main() {
             }
             // #568: Check is a key on the umlaut row, and its row is the
             // prompt's.
-            expect(find.widgetWithText(DpButton, t.quizCheck), findsNothing);
-            final bar = tester.getRect(find.byType(DpUmlautBar));
+            expect(find.widgetWithText(SgButton, t.quizCheck), findsNothing);
+            final bar = tester.getRect(find.byType(SgUmlautBar));
             final check = tester.getRect(find.byIcon(Icons.check));
             expect(bar.bottom, lessThanOrEqualTo(keyboardTop));
             expect(check.bottom, lessThanOrEqualTo(keyboardTop));
@@ -834,7 +834,7 @@ void main() {
               findsOneWidget,
               reason: 'the header row',
             );
-            expect(find.widgetWithText(DpButton, t.quizCheck), findsOneWidget);
+            expect(find.widgetWithText(SgButton, t.quizCheck), findsOneWidget);
             // In Bangla the caption and the field's hint are one string.
             expect(
               find.text(t.quizYourAnswer.toUpperCase()),
@@ -876,13 +876,13 @@ void main() {
       semantics.dispose();
       await tester.tap(key, warnIfMissed: false);
       await tester.pumpAndSettle();
-      expect(find.byType(DpVerdictRow), findsNothing, reason: 'off: empty');
+      expect(find.byType(SgVerdictRow), findsNothing, reason: 'off: empty');
       await tester.enterText(find.byType(TextField), 'Es tut mir leid');
       await tester.pump();
       await tester.tap(key);
       await tester.pumpAndSettle();
-      expect(find.byType(DpVerdictRow), findsOneWidget);
-      final next = find.widgetWithText(DpButton, l10n.practiceNext);
+      expect(find.byType(SgVerdictRow), findsOneWidget);
+      final next = find.widgetWithText(SgButton, l10n.practiceNext);
       expect(next, findsOneWidget);
       expect(
         tester.getRect(next).bottom,
@@ -949,10 +949,10 @@ void main() {
         'going', (tester) async {
       await typing(tester, haus, textScaler: AndroidTextScaler(2));
       GermanWord word() => tester.widget<GermanWord>(find.byType(GermanWord));
-      expect(word().role, DpTextRole.title);
+      expect(word().role, SgTextRole.title);
       tester.view.resetViewInsets();
       await tester.pumpAndSettle();
-      expect(word().role, DpTextRole.headline);
+      expect(word().role, SgTextRole.headline);
     });
 
     testWidgets('at 100 % the keyboard leaves the header and caption be', (
@@ -961,7 +961,7 @@ void main() {
       await typing(tester, vertrag, textScaler: TextScaler.noScaling);
       expect(close(), findsOneWidget, reason: 'the header row');
       expect(
-        find.widgetWithText(DpButton, l10n.quizCheck),
+        find.widgetWithText(SgButton, l10n.quizCheck),
         findsOneWidget,
         reason: 'Check keeps its row (#568)',
       );
@@ -969,14 +969,14 @@ void main() {
       // #574: at 130 % and below what is asked keeps its role.
       expect(
         tester
-            .widget<DpText>(
+            .widget<SgText>(
               find.ancestor(
                 of: find.text(vertrag.prompt),
-                matching: find.byType(DpText),
+                matching: find.byType(SgText),
               ),
             )
             .role,
-        DpTextRole.headline,
+        SgTextRole.headline,
         reason: 'its full role at 100 %',
       );
     });

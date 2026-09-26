@@ -1,5 +1,5 @@
-import 'package:deutschplan/domain/answer_check.dart';
-import 'package:deutschplan/domain/quiz_builder.dart';
+import 'package:sogda/domain/answer_check.dart';
+import 'package:sogda/domain/quiz_builder.dart';
 
 /// The order a run asks its items in (FR-L8-03, BR-QUIZ-01): the quiz, then
 /// each item not answered correctly, asked once more at the end. L9 counts a

@@ -1,11 +1,11 @@
-import 'package:deutschplan/data/db/app_database.dart';
-import 'package:deutschplan/data/repositories/grammar_repository.dart';
-import 'package:deutschplan/data/repositories/plan_repository.dart';
-import 'package:deutschplan/data/repositories/setting_keys.dart';
-import 'package:deutschplan/data/repositories/settings_repository.dart';
-import 'package:deutschplan/data/repositories/word_repository.dart';
-import 'package:deutschplan/domain/fsrs.dart';
-import 'package:deutschplan/domain/plan_engine.dart' show planDate;
+import 'package:sogda/data/db/app_database.dart';
+import 'package:sogda/data/repositories/grammar_repository.dart';
+import 'package:sogda/data/repositories/plan_repository.dart';
+import 'package:sogda/data/repositories/setting_keys.dart';
+import 'package:sogda/data/repositories/settings_repository.dart';
+import 'package:sogda/data/repositories/word_repository.dart';
+import 'package:sogda/domain/fsrs.dart';
+import 'package:sogda/domain/plan_engine.dart' show planDate;
 import 'package:drift/drift.dart';
 
 /// Rating a word: the piece between `domain/fsrs.dart` and `plan_items`.

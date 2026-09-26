@@ -1,16 +1,16 @@
 import 'dart:async';
 import 'dart:math' as math;
 
-import 'package:deutschplan/core/providers/app_providers.dart';
-import 'package:deutschplan/core/theme/dp_surface.dart';
-import 'package:deutschplan/core/theme/dp_tokens.dart';
-import 'package:deutschplan/core/typography/dp_text.dart';
-import 'package:deutschplan/data/repositories/exam_repository.dart';
-import 'package:deutschplan/data/repositories/word_repository.dart';
-import 'package:deutschplan/features/quiz/quiz_setup_sheet.dart';
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
-import 'package:deutschplan/l10n/ui_digits.dart';
-import 'package:deutschplan/router/routes.dart';
+import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/core/theme/sg_surface.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/core/typography/sg_text.dart';
+import 'package:sogda/data/repositories/exam_repository.dart';
+import 'package:sogda/data/repositories/word_repository.dart';
+import 'package:sogda/features/quiz/quiz_setup_sheet.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
+import 'package:sogda/l10n/ui_digits.dart';
+import 'package:sogda/router/routes.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:material_ui/material_ui.dart';
@@ -78,15 +78,15 @@ class StepQuizTab extends ConsumerWidget {
     );
     // Past 130 % text three tiles abreast break "Standard" mid-word (#165,
     // #396): they stack, full width.
-    final stacked = DpScript.large(context);
+    final stacked = SgScript.large(context);
 
     return ListView(
       key: PageStorageKey<String>('step-quiz-${step.code}'),
       padding: const EdgeInsets.fromLTRB(16, 14, 16, 16),
       children: <Widget>[
-        DpText(
+        SgText(
           open ? l10n.quizTilesCaption.toUpperCase() : l10n.quizLocked(learned),
-          role: DpTextRole.caption,
+          role: SgTextRole.caption,
           weight: open ? 700 : 400,
           letterSpacing: open ? 0.6 : null,
           color: tokens.color.textSecondary,
@@ -167,8 +167,8 @@ class QuizTile extends StatelessWidget {
     final tokens = context.tokens;
     final enabled = onTap != null;
     final align = centred ? TextAlign.center : TextAlign.start;
-    final tile = DpSurface(
-      kind: DpSurfaceKind.bar,
+    final tile = SgSurface(
+      kind: SgSurfaceKind.bar,
       onTap: onTap,
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
       child: Column(
@@ -176,17 +176,17 @@ class QuizTile extends StatelessWidget {
             ? CrossAxisAlignment.center
             : CrossAxisAlignment.start,
         children: <Widget>[
-          DpText(
+          SgText(
             title,
-            role: DpTextRole.bodyLarge,
+            role: SgTextRole.bodyLarge,
             weight: 600,
             textAlign: align,
             color: enabled ? null : tokens.color.textSecondary,
           ),
           const SizedBox(height: 4),
-          DpText(
+          SgText(
             subtitle,
-            role: DpTextRole.caption,
+            role: SgTextRole.caption,
             textAlign: align,
             color: tokens.color.textSecondary,
           ),
@@ -222,8 +222,8 @@ class LastQuizCard extends StatelessWidget {
       // Its local day: `finished_at` is a UTC instant (#391's review).
     ).format(DateTime.parse(quiz.finishedAt).toLocal());
 
-    return DpSurface(
-      kind: DpSurfaceKind.bar,
+    return SgSurface(
+      kind: SgSurfaceKind.bar,
       padding: const EdgeInsets.all(12),
       child: Row(
         children: <Widget>[
@@ -242,9 +242,9 @@ class LastQuizCard extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 3),
               child: FittedBox(
                 fit: BoxFit.scaleDown,
-                child: DpText(
+                child: SgText(
                   quizPoints(quiz.score),
-                  role: DpTextRole.label,
+                  role: SgTextRole.label,
                   weight: 700,
                   color: tokens.color.onAccent,
                 ),
@@ -256,16 +256,16 @@ class LastQuizCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                DpText(
+                SgText(
                   l10n.quizLast(
                     l10n.digits(quizPoints(quiz.score)),
                     l10n.digits(quizPoints(quiz.outOf)),
                   ),
-                  role: DpTextRole.body,
+                  role: SgTextRole.body,
                   weight: 600,
                 ),
                 const SizedBox(height: 1),
-                DpText(
+                SgText(
                   // A Forms quiz is its own direction: "Forms · Sun 20 Sep",
                   // not "Forms · Forms · …".
                   quiz.direction == 'forms'
@@ -275,7 +275,7 @@ class LastQuizCard extends StatelessWidget {
                           quizDirectionName(l10n, quiz.direction),
                           date,
                         ),
-                  role: DpTextRole.caption,
+                  role: SgTextRole.caption,
                   color: tokens.color.textSecondary,
                 ),
               ],
@@ -295,7 +295,7 @@ String quizPoints(double points) => points == points.roundToDouble()
 /// A quiz direction as the app names it: "DE → EN", "Articles".
 /// A quiz result's colour (`quiz.md`): Lime from 80 %, Sun from 50 %, Coral
 /// under.
-Color quizColour(DpPalette palette, double share) => share >= 0.8
+Color quizColour(SgPalette palette, double share) => share >= 0.8
     ? palette.easy
     : share >= 0.5
     ? palette.learning

@@ -1,10 +1,10 @@
-import 'package:deutschplan/core/adaptive/adaptive.dart';
-import 'package:deutschplan/core/components/dp_button.dart';
-import 'package:deutschplan/core/theme/aurora_backdrop.dart';
-import 'package:deutschplan/core/theme/dp_surface.dart';
-import 'package:deutschplan/core/theme/dp_tokens.dart';
-import 'package:deutschplan/core/typography/dp_text.dart';
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
+import 'package:sogda/core/adaptive/adaptive.dart';
+import 'package:sogda/core/components/sg_button.dart';
+import 'package:sogda/core/theme/aurora_backdrop.dart';
+import 'package:sogda/core/theme/sg_surface.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/core/typography/sg_text.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:material_ui/material_ui.dart';
 
 /// S2's five pages, and the frame they share. `docs/04-screens/onboarding.md`.
@@ -56,7 +56,7 @@ enum OnboardingPage {
 /// Read off the palette rather than written as hex, so the block follows the
 /// theme into dark and glass the way every other surface does.
 extension OnboardingPageColour on OnboardingPage {
-  Color headerColour(DpTokens tokens) => switch (this) {
+  Color headerColour(SgTokens tokens) => switch (this) {
     OnboardingPage.welcome => tokens.color.primary, // Lagoon
     OnboardingPage.meaningLanguage => tokens.color.accent, // Sun
     OnboardingPage.startingPoint => tokens.color.die, // Raspberry
@@ -68,7 +68,7 @@ extension OnboardingPageColour on OnboardingPage {
   /// light-mode Cobalt, dark ink on every other colour. Glass has no fill —
   /// the pane is frosted paper tinted with the colour — so it takes the page
   /// ink, which under glass-dark is the light one.
-  Color headerInk(DpTokens tokens) {
+  Color headerInk(SgTokens tokens) {
     if (tokens.isGlass) return tokens.color.ink;
     return switch (this) {
       OnboardingPage.dailyPace => tokens.color.onDer,
@@ -152,9 +152,9 @@ class OnboardingShell extends StatelessWidget {
               if (error != null) ...<Widget>[
                 Semantics(
                   liveRegion: true,
-                  child: DpText(
+                  child: SgText(
                     error!,
-                    role: DpTextRole.caption,
+                    role: SgTextRole.caption,
                     weight: 600,
                     color: tokens.color.wrongText,
                     textAlign: TextAlign.center,
@@ -162,17 +162,17 @@ class OnboardingShell extends StatelessWidget {
                 ),
                 const SizedBox(height: 8),
               ],
-              DpButton(label: primaryLabel, onPressed: busy ? null : onPrimary),
+              SgButton(label: primaryLabel, onPressed: busy ? null : onPrimary),
               if (page.hasBack) ...<Widget>[
                 const SizedBox(height: 8),
                 // A link at the start edge, as the artboard draws it — not a
                 // second full-width button competing with *Continue*.
                 Align(
                   alignment: AlignmentDirectional.centerStart,
-                  child: DpButton(
+                  child: SgButton(
                     label: l10n.back,
                     onPressed: onBack,
-                    kind: DpButtonKind.text,
+                    kind: SgButtonKind.text,
                     expand: false,
                   ),
                 ),
@@ -240,13 +240,13 @@ class _Header extends StatelessWidget {
               Row(
                 children: <Widget>[
                   Expanded(
-                    child: DpText(
+                    child: SgText(
                       // Uppercase and tracked, as the artboard sets it; read
                       // aloud in sentence case, so TalkBack does not spell it.
                       // `toUpperCase` leaves Bangla alone, which has no case.
                       stepOf.toUpperCase(),
                       semanticsLabel: stepOf,
-                      role: DpTextRole.caption,
+                      role: SgTextRole.caption,
                       weight: 700,
                       letterSpacing: 0.6,
                       color: page.headerInk(tokens),
@@ -255,10 +255,10 @@ class _Header extends StatelessWidget {
                   // Only with somewhere to go: a Skip that cannot skip is worse
                   // than none, and finishing is #92's.
                   if (page.hasSkip && onSkip != null)
-                    DpButton(
+                    SgButton(
                       label: l10n.skip,
                       onPressed: busy ? null : onSkip,
-                      kind: DpButtonKind.text,
+                      kind: SgButtonKind.text,
                       expand: false,
                       // The header's ink, not link teal, which on Raspberry
                       // or Cobalt would all but vanish.
@@ -267,9 +267,9 @@ class _Header extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 6),
-              DpText(
+              SgText(
                 headline,
-                role: DpTextRole.headline,
+                role: SgTextRole.headline,
                 color: page.headerInk(tokens),
               ),
             ],
@@ -290,8 +290,8 @@ class _Header extends StatelessWidget {
     // a solid fill — the glass artboards lay the colour at 22 % over frosted
     // white, so the aurora still shows through the top of the screen.
     return tokens.isGlass
-        ? DpSurface(
-            kind: DpSurfaceKind.tint(page.headerColour(tokens)),
+        ? SgSurface(
+            kind: SgSurfaceKind.tint(page.headerColour(tokens)),
             radius: 0,
             child: content,
           )

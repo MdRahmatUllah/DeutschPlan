@@ -1,6 +1,6 @@
 # 3 · Capabilities
 
-What DeutschPlan v1.0.1 can do as a system, apart from its features: where it
+What Sogda v1.0.1 can do as a system, apart from its features: where it
 runs, what works offline, which languages it speaks, how accessible it is,
 how it looks, what its voice can do, how much content it carries, how it
 keeps a learner's data safe, how fast and how big it is, what it asks

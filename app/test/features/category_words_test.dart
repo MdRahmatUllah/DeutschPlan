@@ -3,25 +3,25 @@ import '../core/text_clipping.dart';
 import 'dart:async';
 import 'dart:io';
 
-import 'package:deutschplan/core/components/dp_chip.dart';
-import 'package:deutschplan/core/components/dp_progress_ring.dart';
-import 'package:deutschplan/core/providers/app_providers.dart';
-import 'package:deutschplan/core/theme/app_theme.dart';
-import 'package:deutschplan/core/theme/dp_surface.dart';
-import 'package:deutschplan/core/theme/glass_capability.dart';
-import 'package:deutschplan/data/db/app_database.dart';
-import 'package:deutschplan/data/db/content_dao.dart';
-import 'package:deutschplan/data/repositories/setting_keys.dart';
-import 'package:deutschplan/data/repositories/settings_repository.dart';
-import 'package:deutschplan/data/repositories/word_repository.dart';
-import 'package:deutschplan/features/learn/categories_screen.dart';
-import 'package:deutschplan/features/learn/category_words_screen.dart';
-import 'package:deutschplan/features/learn/step_words.dart' show StepWord;
-import 'package:deutschplan/features/words/word_row.dart';
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
-import 'package:deutschplan/main.dart'
+import 'package:sogda/core/components/sg_chip.dart';
+import 'package:sogda/core/components/sg_progress_ring.dart';
+import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/core/theme/app_theme.dart';
+import 'package:sogda/core/theme/sg_surface.dart';
+import 'package:sogda/core/theme/glass_capability.dart';
+import 'package:sogda/data/db/app_database.dart';
+import 'package:sogda/data/db/content_dao.dart';
+import 'package:sogda/data/repositories/setting_keys.dart';
+import 'package:sogda/data/repositories/settings_repository.dart';
+import 'package:sogda/data/repositories/word_repository.dart';
+import 'package:sogda/features/learn/categories_screen.dart';
+import 'package:sogda/features/learn/category_words_screen.dart';
+import 'package:sogda/features/learn/step_words.dart' show StepWord;
+import 'package:sogda/features/words/word_row.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
+import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
-import 'package:deutschplan/router/routes.dart';
+import 'package:sogda/router/routes.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:drift/drift.dart' show DatabaseConnection, Value;
@@ -29,7 +29,7 @@ import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
-import 'package:deutschplan/features/words/word_detail_screen.dart';
+import 'package:sogda/features/words/word_detail_screen.dart';
 
 import '../db/content_fixture.dart';
 import 'today_fixtures.dart';
@@ -126,7 +126,7 @@ void main() {
       find.text(l10n.categoryWordsLine(412, 'A1.1 → B1.1')),
       findsOneWidget,
     );
-    final bar = tester.widget<DpSegmentedBar>(find.byType(DpSegmentedBar));
+    final bar = tester.widget<SgSegmentedBar>(find.byType(SgSegmentedBar));
     expect((bar.done, bar.learning, bar.todo), (150, 40, 222));
   });
 
@@ -211,9 +211,9 @@ void main() {
   testWidgets('the level chips: All · A1 · A2 · B1 · B2+', (tester) async {
     await pump(tester);
     final labels = tester
-        .widgetList<DpChip>(
+        .widgetList<SgChip>(
           find.byWidgetPredicate(
-            (widget) => widget is DpChip && widget.kind == DpChipKind.filter,
+            (widget) => widget is SgChip && widget.kind == SgChipKind.filter,
           ),
         )
         .map((chip) => chip.label);
@@ -366,7 +366,7 @@ void main() {
           .getBottomLeft(
             find.descendant(
               of: find.byType(WordListPanel),
-              matching: find.byType(DpSurface),
+              matching: find.byType(SgSurface),
             ),
           )
           .dy,
@@ -441,7 +441,7 @@ void main() {
       addTearDown(never.close);
       await pump(tester, stream: never.stream);
       expect(tester.takeException(), isNull);
-      expect(find.byType(DpSegmentedBar), findsNothing);
+      expect(find.byType(SgSegmentedBar), findsNothing);
       expect(
         find.text(l10n.categoryWordsLine(412, 'A1.1 → B1.1')),
         findsNothing,
@@ -459,7 +459,7 @@ void main() {
       // two streams, which must not take the screen down.
       await pump(tester, words: const <StepWord>[]);
       expect(tester.takeException(), isNull);
-      expect(find.byType(DpSegmentedBar), findsNothing);
+      expect(find.byType(SgSegmentedBar), findsNothing);
       expect(find.text(l10n.stepWordsNone), findsOneWidget);
     },
   );
@@ -468,7 +468,7 @@ void main() {
     tester,
   ) async {
     await pump(tester, id: 99, words: const <StepWord>[]);
-    expect(find.byType(DpSegmentedBar), findsNothing);
+    expect(find.byType(SgSegmentedBar), findsNothing);
     expect(find.text(l10n.stepWordsNone), findsOneWidget);
     await tester.tap(find.text(l10n.stepTabQuiz));
     await tester.pumpAndSettle();
@@ -482,7 +482,7 @@ void main() {
     late ProviderContainer container;
 
     setUp(() async {
-      directory = Directory.systemTemp.createTempSync('deutschplan_category');
+      directory = Directory.systemTemp.createTempSync('sogda_category');
       final content = ContentFixture.write('${directory.path}/content.db').file;
       db = AppDatabase(DatabaseConnection(NativeDatabase.memory()));
       await db.customStatement(

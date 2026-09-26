@@ -1,5 +1,5 @@
-import 'package:deutschplan/core/theme/dp_tokens.dart';
-import 'package:deutschplan/core/typography/dp_text.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/core/typography/sg_text.dart';
 import 'package:material_ui/material_ui.dart';
 
 /// A count on a coloured pill: S3's scores, Today's Tomorrow card, L1's
@@ -7,8 +7,8 @@ import 'package:material_ui/material_ui.dart';
 ///
 /// 24 dp, a 1.5 px ink edge — the panel's edge under glass, as the glass
 /// artboards draw it — and a bold label.
-class DpPill extends StatelessWidget {
-  const DpPill({
+class SgPill extends StatelessWidget {
+  const SgPill({
     required this.label,
     required this.fill,
     super.key,
@@ -34,9 +34,9 @@ class DpPill extends StatelessWidget {
   Widget build(BuildContext context) {
     final tokens = context.tokens;
     final colour = ink ?? tokens.color.onAccent;
-    final text = DpText(
+    final text = SgText(
       label,
-      role: small ? DpTextRole.caption : DpTextRole.label,
+      role: small ? SgTextRole.caption : SgTextRole.label,
       weight: 700,
       color: colour,
     );

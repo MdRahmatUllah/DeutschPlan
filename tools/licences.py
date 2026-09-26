@@ -53,7 +53,7 @@ def normalise(text: str) -> str:
 
 
 def fetch(url: str) -> str:
-    request = urllib.request.Request(url, headers={"User-Agent": "deutschplan-licences"})
+    request = urllib.request.Request(url, headers={"User-Agent": "sogda-licences"})
     with urllib.request.urlopen(request, timeout=60) as response:
         return response.read().decode("utf-8")
 

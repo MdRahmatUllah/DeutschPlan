@@ -10,7 +10,7 @@ import 'package:flutter/widgets.dart';
 /// reports once Today or setup is shown, if ever: `tools/perf.py` starts the
 /// launcher's intent, which opens on one of them.
 abstract final class StartReport {
-  static const MethodChannel _channel = MethodChannel('deutschplan/start');
+  static const MethodChannel _channel = MethodChannel('sogda/start');
 
   static bool _reported = false;
 

@@ -1,22 +1,22 @@
 import 'dart:async';
 import 'dart:math' as math;
 
-import 'package:deutschplan/core/adaptive/adaptive.dart';
-import 'package:deutschplan/core/components/dp_button.dart';
-import 'package:deutschplan/core/components/dp_chip.dart';
-import 'package:deutschplan/core/providers/app_providers.dart';
-import 'package:deutschplan/core/theme/aurora_backdrop.dart';
-import 'package:deutschplan/core/theme/dp_surface.dart';
-import 'package:deutschplan/core/theme/dp_tokens.dart';
-import 'package:deutschplan/core/typography/dp_text.dart';
-import 'package:deutschplan/data/repositories/course_text.dart';
-import 'package:deutschplan/data/repositories/grammar_repository.dart';
-import 'package:deutschplan/domain/grammar_item_generator.dart';
-import 'package:deutschplan/domain/plan_engine.dart' show daysBetween;
-import 'package:deutschplan/features/learn/step_grammar.dart';
-import 'package:deutschplan/features/words/speak.dart';
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
-import 'package:deutschplan/router/routes.dart';
+import 'package:sogda/core/adaptive/adaptive.dart';
+import 'package:sogda/core/components/sg_button.dart';
+import 'package:sogda/core/components/sg_chip.dart';
+import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/core/theme/aurora_backdrop.dart';
+import 'package:sogda/core/theme/sg_surface.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/core/typography/sg_text.dart';
+import 'package:sogda/data/repositories/course_text.dart';
+import 'package:sogda/data/repositories/grammar_repository.dart';
+import 'package:sogda/domain/grammar_item_generator.dart';
+import 'package:sogda/domain/plan_engine.dart' show daysBetween;
+import 'package:sogda/features/learn/step_grammar.dart';
+import 'package:sogda/features/words/speak.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
+import 'package:sogda/router/routes.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -148,7 +148,7 @@ class _Topic extends ConsumerWidget {
               if (rule != null && rule.isNotEmpty) ...<Widget>[
                 _Label(l10n.topicRule),
                 const SizedBox(height: 6),
-                DpText(rule, role: DpTextRole.bodyLarge),
+                SgText(rule, role: SgTextRole.bodyLarge),
                 const SizedBox(height: 14),
               ],
               if (examples.isNotEmpty) ...<Widget>[
@@ -166,9 +166,9 @@ class _Topic extends ConsumerWidget {
               // FR-L4-02: L15 for this topic; finishing it marks it learned.
               // Its count waits for the course; the rest of the page doesn't.
               if (items == null)
-                const SizedBox(height: DpButton.primaryHeight)
+                const SizedBox(height: SgButton.primaryHeight)
               else
-                DpButton(
+                SgButton(
                   label: l10n.topicPractise(items.length),
                   onPressed: () => GrammarPracticeRoute.open(
                     context,
@@ -181,7 +181,7 @@ class _Topic extends ConsumerWidget {
               else
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 12),
-                  child: DpText(
+                  child: SgText(
                     switch (due) {
                       TopicDue.due => l10n.topicLearnedDue,
                       TopicDue.suspended => l10n.wordStatusSuspended,
@@ -189,7 +189,7 @@ class _Topic extends ConsumerWidget {
                         daysBetween(today, topic.state!.due!),
                       ),
                     },
-                    role: DpTextRole.body,
+                    role: SgTextRole.body,
                     weight: 600,
                     textAlign: TextAlign.center,
                     color: tokens.color.textSecondary,
@@ -245,9 +245,9 @@ class _MarkLearnedState extends ConsumerState<_MarkLearned> {
   }
 
   @override
-  Widget build(BuildContext context) => DpButton(
+  Widget build(BuildContext context) => SgButton(
     label: AppLocalizations.of(context).topicMarkLearned,
-    kind: DpButtonKind.secondary,
+    kind: SgButtonKind.secondary,
     onPressed: _busy ? null : () => unawaited(_mark()),
   );
 }
@@ -301,12 +301,12 @@ class _Header extends StatelessWidget {
             children: <Widget>[
               Row(
                 children: <Widget>[
-                  DpChip(label: topic.topic.sublevelCode, ink: ink),
+                  SgChip(label: topic.topic.sublevelCode, ink: ink),
                   if (place case (final at, final of)) ...<Widget>[
                     const SizedBox(width: 8),
-                    DpText(
+                    SgText(
                       l10n.topicPlace(at, of),
-                      role: DpTextRole.caption,
+                      role: SgTextRole.caption,
                       weight: 700,
                       color: ink,
                     ),
@@ -314,15 +314,15 @@ class _Header extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 8),
-              DpText(topic.topic.topic, role: DpTextRole.title, color: ink),
+              SgText(topic.topic.topic, role: SgTextRole.title, color: ink),
             ],
           ),
         ),
       ],
     );
     return tokens.isGlass
-        ? DpSurface(
-            kind: DpSurfaceKind.tint(tokens.color.accent),
+        ? SgSurface(
+            kind: SgSurfaceKind.tint(tokens.color.accent),
             radius: 0,
             child: content,
           )
@@ -336,9 +336,9 @@ class _Label extends StatelessWidget {
   final String text;
 
   @override
-  Widget build(BuildContext context) => DpText(
+  Widget build(BuildContext context) => SgText(
     text.toUpperCase(),
-    role: DpTextRole.caption,
+    role: SgTextRole.caption,
     weight: 700,
     letterSpacing: 0.6,
     color: context.tokens.color.textSecondary,
@@ -403,16 +403,16 @@ class _Example extends ConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              DpText(
+              SgText(
                 german,
-                role: DpTextRole.bodyLarge,
+                role: SgTextRole.bodyLarge,
                 italic: true,
                 german: true,
               ),
               if (english != null)
-                DpText(
+                SgText(
                   english!,
-                  role: DpTextRole.body,
+                  role: SgTextRole.body,
                   color: tokens.color.textSecondary,
                 ),
             ],
@@ -451,14 +451,14 @@ class WatchOut extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      DpText(
+                      SgText(
                         l10n.topicWatchOut.toUpperCase(),
-                        role: DpTextRole.caption,
+                        role: SgTextRole.caption,
                         weight: 700,
                         letterSpacing: 0.6,
                       ),
                       const SizedBox(height: 2),
-                      DpText(text, role: DpTextRole.body),
+                      SgText(text, role: SgTextRole.body),
                     ],
                   ),
                 ),
@@ -508,9 +508,9 @@ class _Neighbour extends StatelessWidget {
               if (!forward) arrow,
               const SizedBox(width: 4),
               Flexible(
-                child: DpOneLine(
+                child: SgOneLine(
                   topic.topic.topic,
-                  role: DpTextRole.label,
+                  role: SgTextRole.label,
                   color: tokens.color.link,
                 ),
               ),

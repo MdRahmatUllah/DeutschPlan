@@ -1,14 +1,13 @@
 import 'dart:async';
 
-import 'package:deutschplan/core/components/dp_speaker_button.dart';
-import 'package:deutschplan/core/theme/dp_surface.dart';
-import 'package:deutschplan/core/theme/dp_tokens.dart';
-import 'package:deutschplan/core/typography/dp_text.dart';
-import 'package:deutschplan/domain/quiz_builder.dart';
-import 'package:deutschplan/features/study/study_cloze.dart'
-    show StudyAnswerField;
-import 'package:deutschplan/features/words/speak.dart';
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
+import 'package:sogda/core/components/sg_speaker_button.dart';
+import 'package:sogda/core/theme/sg_surface.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/core/typography/sg_text.dart';
+import 'package:sogda/domain/quiz_builder.dart';
+import 'package:sogda/features/study/study_cloze.dart' show StudyAnswerField;
+import 'package:sogda/features/words/speak.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 
@@ -71,13 +70,13 @@ class QuizItemView extends ConsumerWidget {
     // on #571: reduce first, then scroll), as L12's is (#573): on a 360 dp
     // phone a long meaning over its Bangla filled the room above the field
     // (#574). What still doesn't fit scrolls; the field keeps the keyboard.
-    DpTextRole asked(DpTextRole role) => typing ? role.oneStepSmaller : role;
+    SgTextRole asked(SgTextRole role) => typing ? role.oneStepSmaller : role;
 
     final prompt = switch (item.direction) {
       // The word is the answer, so it is only heard.
       QuizDirection.listening => Align(
         alignment: AlignmentDirectional.centerStart,
-        child: DpSpeakerButton(
+        child: SgSpeakerButton(
           size: 64,
           state: speakerState(ref, item.prompt),
           semanticLabel: l10n.quizAskListening,
@@ -88,16 +87,16 @@ class QuizItemView extends ConsumerWidget {
       QuizDirection.enDe || QuizDirection.compare => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          DpText(item.prompt, role: asked(DpTextRole.headline), weight: 600),
+          SgText(item.prompt, role: asked(SgTextRole.headline), weight: 600),
           if (item.hint case final hint? when hint.isNotEmpty)
-            DpText(
+            SgText(
               hint,
-              role: asked(DpTextRole.bodyLarge),
+              role: asked(SgTextRole.bodyLarge),
               color: tokens.color.textSecondary,
             ),
         ],
       ),
-      QuizDirection.forms => DpText(
+      QuizDirection.forms => SgText(
         switch (item.form) {
           FormLabel.plural => l10n.quizFormPlural(item.prompt),
           FormLabel.thirdPerson => l10n.quizFormThirdPerson(item.prompt),
@@ -106,17 +105,17 @@ class QuizItemView extends ConsumerWidget {
           FormLabel.superlative => l10n.quizFormSuperlative(item.prompt),
           null => item.prompt,
         },
-        role: asked(DpTextRole.headline),
+        role: asked(SgTextRole.headline),
         weight: 600,
       ),
       // German: the word, and a speaker to hear it.
       _ => Row(
         children: <Widget>[
           Flexible(
-            child: GermanWord(item.prompt, role: asked(DpTextRole.headline)),
+            child: GermanWord(item.prompt, role: asked(SgTextRole.headline)),
           ),
           const SizedBox(width: 12),
-          DpSpeakerButton(
+          SgSpeakerButton(
             state: speakerState(ref, item.prompt),
             semanticLabel: l10n.quizPlay,
             onPressed: () => unawaited(say(ref, context, item.prompt)),
@@ -139,9 +138,9 @@ class QuizItemView extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           if (!typing) ...<Widget>[
-            DpText(
+            SgText(
               l10n.quizYourAnswer.toUpperCase(),
-              role: DpTextRole.caption,
+              role: SgTextRole.caption,
               weight: 700,
               letterSpacing: 0.6,
               color: tokens.color.textSecondary,
@@ -180,13 +179,13 @@ class QuizItemView extends ConsumerWidget {
 }
 
 /// A German word with its article in the gender's colour, as the app writes
-/// every noun: a [DpHeadword] at 600, so a long compound breaks at a soft
+/// every noun: a [SgHeadword] at 600, so a long compound breaks at a soft
 /// hyphen rather than mid-syllable, and is read out without it (#405).
 class GermanWord extends StatelessWidget {
-  const GermanWord(this.word, {super.key, this.role = DpTextRole.headline});
+  const GermanWord(this.word, {super.key, this.role = SgTextRole.headline});
 
   final String word;
-  final DpTextRole role;
+  final SgTextRole role;
 
   @override
   Widget build(BuildContext context) {
@@ -195,7 +194,7 @@ class GermanWord extends StatelessWidget {
     final article = const <String>{'der', 'die', 'das'}.contains(first)
         ? first
         : null;
-    return DpHeadword(
+    return SgHeadword(
       article == null ? word : word.substring(space + 1),
       article: article,
       role: role,
@@ -230,7 +229,7 @@ class ChoiceTiles extends StatelessWidget {
             onTap: () => onPick(option),
             child: Align(
               alignment: AlignmentDirectional.centerStart,
-              child: DpText(option, role: DpTextRole.bodyLarge, weight: 600),
+              child: SgText(option, role: SgTextRole.bodyLarge, weight: 600),
             ),
           ),
         ),
@@ -257,7 +256,7 @@ class ArticleButtons extends StatelessWidget {
           Expanded(
             child: _Choice(
               // Solid, not tinted: the artboard fills each button.
-              kind: DpSurfaceKind.tint(switch (article) {
+              kind: SgSurfaceKind.tint(switch (article) {
                 'der' => tokens.color.der,
                 'die' => tokens.color.die,
                 _ => tokens.color.das,
@@ -269,9 +268,9 @@ class ArticleButtons extends StatelessWidget {
               selected: tokens.isGlass && picked == article,
               onTap: () => onPick(article),
               child: Center(
-                child: DpText(
+                child: SgText(
                   article,
-                  role: DpTextRole.title,
+                  role: SgTextRole.title,
                   weight: 700,
                   // Cobalt takes white in light mode; Raspberry and Emerald
                   // take ink in both.
@@ -294,7 +293,7 @@ class _Choice extends StatelessWidget {
     required this.selected,
     required this.onTap,
     required this.child,
-    this.kind = DpSurfaceKind.bar,
+    this.kind = SgSurfaceKind.bar,
     this.height = 32,
     this.pressed = false,
   });
@@ -305,7 +304,7 @@ class _Choice extends StatelessWidget {
   final bool pressed;
   final VoidCallback? onTap;
   final Widget child;
-  final DpSurfaceKind kind;
+  final SgSurfaceKind kind;
   final double height;
 
   @override
@@ -313,7 +312,7 @@ class _Choice extends StatelessWidget {
     selected: selected || pressed,
     button: true,
     inMutuallyExclusiveGroup: true,
-    child: DpSurface(
+    child: SgSurface(
       kind: kind,
       selected: selected,
       pressed: pressed,

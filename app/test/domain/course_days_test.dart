@@ -1,4 +1,4 @@
-import 'package:deutschplan/domain/plan_stats.dart';
+import 'package:sogda/domain/plan_stats.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 /// FR-S2-04 — the estimate on S2 page 4.

@@ -1,22 +1,22 @@
-import 'package:deutschplan/core/adaptive/adaptive.dart';
-import 'package:deutschplan/core/components/dp_slider.dart';
-import 'package:deutschplan/core/components/dp_stepper.dart';
-import 'package:deutschplan/core/providers/app_providers.dart';
-import 'package:deutschplan/core/theme/aurora_backdrop.dart';
-import 'package:deutschplan/core/theme/dp_surface.dart';
-import 'package:deutschplan/core/theme/dp_tokens.dart';
-import 'package:deutschplan/core/typography/dp_text.dart';
-import 'package:deutschplan/data/repositories/model_repository.dart';
-import 'package:deutschplan/data/repositories/setting_keys.dart';
-import 'package:deutschplan/data/repositories/settings_repository.dart';
-import 'package:deutschplan/domain/fsrs.dart';
-import 'package:deutschplan/features/me/reset_flow.dart';
-import 'package:deutschplan/features/today/today_providers.dart'
+import 'package:sogda/core/adaptive/adaptive.dart';
+import 'package:sogda/core/components/sg_slider.dart';
+import 'package:sogda/core/components/sg_stepper.dart';
+import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/core/theme/aurora_backdrop.dart';
+import 'package:sogda/core/theme/sg_surface.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/core/typography/sg_text.dart';
+import 'package:sogda/data/repositories/model_repository.dart';
+import 'package:sogda/data/repositories/setting_keys.dart';
+import 'package:sogda/data/repositories/settings_repository.dart';
+import 'package:sogda/domain/fsrs.dart';
+import 'package:sogda/features/me/reset_flow.dart';
+import 'package:sogda/features/today/today_providers.dart'
     show voiceInstalledProvider;
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
-import 'package:deutschplan/l10n/ui_digits.dart';
-import 'package:deutschplan/router/cross_tab.dart';
-import 'package:deutschplan/router/routes.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
+import 'package:sogda/l10n/ui_digits.dart';
+import 'package:sogda/router/cross_tab.dart';
+import 'package:sogda/router/routes.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:material_ui/material_ui.dart';
@@ -258,7 +258,7 @@ class SettingsScreen extends ConsumerWidget {
                       ),
                 labelledByControl: true,
                 trailing: _slider(
-                  DpSlider(
+                  SgSlider(
                     value: retention,
                     min: (Fsrs.minRetention * 100).round(),
                     max: (Fsrs.maxRetention * 100).round(),
@@ -402,7 +402,7 @@ class SettingsScreen extends ConsumerWidget {
                 ),
                 labelledByControl: true,
                 trailing: _slider(
-                  DpSlider(
+                  SgSlider(
                     value: speedQuarters.clamp(speed.min, speed.max),
                     min: speed.min,
                     max: speed.max,
@@ -553,7 +553,7 @@ class SettingsScreen extends ConsumerWidget {
     String decrease,
     String increase,
     Future<void> Function<T>(SettingKey<T> key, T value) set,
-  ) => DpStepper(
+  ) => SgStepper(
     value: settings.read(key).clamp(range.min, range.max),
     min: range.min,
     max: range.max,
@@ -563,7 +563,7 @@ class SettingsScreen extends ConsumerWidget {
   );
 
   /// The artboard's 120 dp slider beside its row's text.
-  static Widget _slider(DpSlider slider) => SizedBox(width: 120, child: slider);
+  static Widget _slider(SgSlider slider) => SizedBox(width: 120, child: slider);
 
   /// Quarters as the speed reads: 4 is "1.0", 3 is "0.75".
   static String _times(int quarters) => quarters.isEven
@@ -630,7 +630,7 @@ class SettingsScreen extends ConsumerWidget {
           children: <Widget>[
             Semantics(
               header: true,
-              child: DpText(title, role: DpTextRole.title),
+              child: SgText(title, role: SgTextRole.title),
             ),
             const SizedBox(height: 8),
             // Scrolls: Unlock's eleven rows outgrow a phone held sideways,
@@ -653,9 +653,9 @@ class SettingsScreen extends ConsumerWidget {
                             child: Row(
                               children: <Widget>[
                                 Expanded(
-                                  child: DpText(
+                                  child: SgText(
                                     label,
-                                    role: DpTextRole.body,
+                                    role: SgTextRole.body,
                                     weight: value == current ? 600 : 400,
                                   ),
                                 ),
@@ -715,17 +715,17 @@ class _Group extends StatelessWidget {
             child: Semantics(
               header: true,
               child: cupertino
-                  ? DpText(
+                  ? SgText(
                       title.toUpperCase(),
-                      role: DpTextRole.label,
+                      role: SgTextRole.label,
                       weight: 500,
                       letterSpacing: 0.4,
                       color: tokens.color.textSecondary,
                     )
                   // The artboard's #2F46E0: Cobalt's text shade.
-                  : DpText(
+                  : SgText(
                       title,
-                      role: DpTextRole.label,
+                      role: SgTextRole.label,
                       weight: 700,
                       color: tokens.color.derText,
                     ),
@@ -734,8 +734,8 @@ class _Group extends StatelessWidget {
           if (cupertino)
             // ponytail: a blur per group under glass, past the budget of
             // three; #34's shared backdrop is the fix for every list.
-            DpSurface(
-              kind: DpSurfaceKind.bar,
+            SgSurface(
+              kind: SgSurfaceKind.bar,
               radius: 12,
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: body,
@@ -775,7 +775,7 @@ class _Row extends StatelessWidget {
     final tokens = context.tokens;
     final subtitle = this.subtitle;
     final value = this.value;
-    final heading = DpText(title, role: DpTextRole.body, weight: 500);
+    final heading = SgText(title, role: SgTextRole.body, weight: 500);
 
     // 52 dp, as the artboards draw every row. The padding is the text's
     // alone: the controls' 48 dp tap targets fill the row themselves.
@@ -794,9 +794,9 @@ class _Row extends StatelessWidget {
                   else
                     heading,
                   if (subtitle != null)
-                    DpText(
+                    SgText(
                       subtitle,
-                      role: DpTextRole.caption,
+                      role: SgTextRole.caption,
                       color: tokens.color.textSecondary,
                     ),
                 ],
@@ -807,9 +807,9 @@ class _Row extends StatelessWidget {
           ?trailing,
           if (onTap != null) ...<Widget>[
             if (value != null)
-              DpText(
+              SgText(
                 value,
-                role: DpTextRole.body,
+                role: SgTextRole.body,
                 color: tokens.color.textSecondary,
               ),
             Icon(

@@ -1,4 +1,4 @@
-import 'package:deutschplan/domain/plan_engine.dart';
+import 'package:sogda/domain/plan_engine.dart';
 
 /// A [PlanStore] that reads through to [_inner] and keeps every write to
 /// itself, so [PlanEngine.previewDay] can run the real `openDay` and leave no

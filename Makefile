@@ -1,4 +1,4 @@
-# DeutschPlan developer entry points.
+# Sogda developer entry points.
 #
 # docs/05-dev-guide/getting-started.md documents these; this file is what makes
 # them real. Every target runs from the repository root.

@@ -1,4 +1,4 @@
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
 
 final RegExp _latinDigit = RegExp('[0-9]');
 

@@ -1,16 +1,16 @@
-import 'package:deutschplan/core/adaptive/adaptive.dart';
-import 'package:deutschplan/core/components/dp_chip.dart';
-import 'package:deutschplan/core/components/dp_slider.dart';
-import 'package:deutschplan/core/components/dp_stepper.dart';
-import 'package:deutschplan/core/theme/dp_tokens.dart';
-import 'package:deutschplan/core/typography/dp_text.dart';
-import 'package:deutschplan/domain/plan_stats.dart';
-import 'package:deutschplan/features/onboarding/onboarding_notifier.dart';
-import 'package:deutschplan/features/onboarding/onboarding_shell.dart';
-import 'package:deutschplan/features/onboarding/setup_flow.dart';
-import 'package:deutschplan/features/onboarding/onboarding_start_page.dart';
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
-import 'package:deutschplan/l10n/ui_digits.dart';
+import 'package:sogda/core/adaptive/adaptive.dart';
+import 'package:sogda/core/components/sg_chip.dart';
+import 'package:sogda/core/components/sg_slider.dart';
+import 'package:sogda/core/components/sg_stepper.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/core/typography/sg_text.dart';
+import 'package:sogda/domain/plan_stats.dart';
+import 'package:sogda/features/onboarding/onboarding_notifier.dart';
+import 'package:sogda/features/onboarding/onboarding_shell.dart';
+import 'package:sogda/features/onboarding/setup_flow.dart';
+import 'package:sogda/features/onboarding/onboarding_start_page.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
+import 'package:sogda/l10n/ui_digits.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 
@@ -80,21 +80,21 @@ class OnboardingPacePage extends ConsumerWidget {
             textBaseline: TextBaseline.alphabetic,
             children: <Widget>[
               Expanded(
-                child: DpText(
+                child: SgText(
                   l10n.onboardingPaceNewWords,
-                  role: DpTextRole.body,
+                  role: SgTextRole.body,
                   weight: 600,
                 ),
               ),
-              DpText(
+              SgText(
                 AppLocalizations.of(context).digits(draft.dailyNew),
-                role: DpTextRole.title,
+                role: SgTextRole.title,
                 weight: 700,
               ),
             ],
           ),
           const SizedBox(height: 6),
-          DpSlider(
+          SgSlider(
             value: draft.dailyNew,
             min: OnboardingDraft.minDailyNew,
             max: OnboardingDraft.maxDailyNew,
@@ -106,7 +106,7 @@ class OnboardingPacePage extends ConsumerWidget {
           // rather than having to go looking for it.
           Semantics(
             liveRegion: true,
-            child: DpText(
+            child: SgText(
               days == null
                   ? ''
                   : l10n.onboardingPaceEstimate(
@@ -114,7 +114,7 @@ class OnboardingPacePage extends ConsumerWidget {
                       draft.step,
                       draft.dailyNew,
                     ),
-              role: DpTextRole.caption,
+              role: SgTextRole.caption,
               color: tokens.color.textSecondary,
             ),
           ),
@@ -128,9 +128,9 @@ class OnboardingPacePage extends ConsumerWidget {
                 (steady, l10n.onboardingPaceSteady(steady)),
                 (intensive, l10n.onboardingPaceIntensive(intensive)),
               ])
-                DpChip(
+                SgChip(
                   label: label,
-                  kind: DpChipKind.filter,
+                  kind: SgChipKind.filter,
                   selected: draft.dailyNew == count,
                   onTap: () => notifier().setDailyNew(count),
                 ),
@@ -143,21 +143,21 @@ class OnboardingPacePage extends ConsumerWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    DpText(
+                    SgText(
                       l10n.onboardingPaceRevisions,
-                      role: DpTextRole.body,
+                      role: SgTextRole.body,
                       weight: 600,
                     ),
                     const SizedBox(height: 1),
-                    DpText(
+                    SgText(
                       l10n.onboardingPaceRevisionsNote,
-                      role: DpTextRole.caption,
+                      role: SgTextRole.caption,
                       color: tokens.color.textSecondary,
                     ),
                   ],
                 ),
               ),
-              DpStepper(
+              SgStepper(
                 value: draft.reviseCount,
                 min: OnboardingDraft.minReviseCount,
                 max: OnboardingDraft.maxReviseCount,
@@ -168,9 +168,9 @@ class OnboardingPacePage extends ConsumerWidget {
             ],
           ),
           const SizedBox(height: groupGap),
-          DpText(
+          SgText(
             l10n.onboardingPaceStudyDays,
-            role: DpTextRole.body,
+            role: SgTextRole.body,
             weight: 600,
           ),
           const SizedBox(height: 8),
@@ -267,9 +267,9 @@ class StudyDayToggle extends StatelessWidget {
             // They shrink to fit rather than wrap.
             child: FittedBox(
               fit: BoxFit.scaleDown,
-              child: DpText(
+              child: SgText(
                 short,
-                role: DpTextRole.label,
+                role: SgTextRole.label,
                 weight: 700,
                 color: on ? tokens.color.onPrimary : tokens.color.ink,
                 maxLines: 1,

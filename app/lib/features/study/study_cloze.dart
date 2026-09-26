@@ -1,18 +1,18 @@
 import 'dart:async';
 
-import 'package:deutschplan/core/components/dp_button.dart';
-import 'package:deutschplan/core/components/dp_chip.dart';
-import 'package:deutschplan/core/components/dp_feedback.dart';
-import 'package:deutschplan/core/providers/app_providers.dart';
-import 'package:deutschplan/core/theme/dp_tokens.dart';
-import 'package:deutschplan/core/typography/dp_text.dart';
-import 'package:deutschplan/data/db/app_database.dart';
-import 'package:deutschplan/domain/answer_check.dart';
-import 'package:deutschplan/domain/cloze.dart';
-import 'package:deutschplan/features/study/study_back.dart';
-import 'package:deutschplan/features/study/study_card.dart';
-import 'package:deutschplan/features/words/speak.dart';
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
+import 'package:sogda/core/components/sg_button.dart';
+import 'package:sogda/core/components/sg_chip.dart';
+import 'package:sogda/core/components/sg_feedback.dart';
+import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/core/typography/sg_text.dart';
+import 'package:sogda/data/db/app_database.dart';
+import 'package:sogda/domain/answer_check.dart';
+import 'package:sogda/domain/cloze.dart';
+import 'package:sogda/features/study/study_back.dart';
+import 'package:sogda/features/study/study_card.dart';
+import 'package:sogda/features/words/speak.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 
@@ -110,11 +110,11 @@ class _StudyClozeCardState extends ConsumerState<StudyClozeCard> {
     // 37 letters) fit at 200 %; a longer sentence scrolls, field first, as
     // L8's and L12's do (#573): the field and its umlaut row stay in view,
     // and a drag shows the sentence. The next lever: a second role down.
-    final typing = DpScript.largeTypingInView(context);
-    DpTextRole asked(DpTextRole role) => typing ? role.oneStepSmaller : role;
-    final line = DpText.styleFor(
+    final typing = SgScript.largeTypingInView(context);
+    SgTextRole asked(SgTextRole role) => typing ? role.oneStepSmaller : role;
+    final line = SgText.styleFor(
       tokens,
-      asked(DpTextRole.title),
+      asked(SgTextRole.title),
     ).copyWith(fontWeight: FontWeight.w500);
     final english = example.english;
 
@@ -128,15 +128,15 @@ class _StudyClozeCardState extends ConsumerState<StudyClozeCard> {
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
-                DpChip(label: word.sublevelCode),
+                SgChip(label: word.sublevelCode),
                 const SizedBox(width: 6),
-                DpChip(label: l10n.studyClozeChip, fill: tokens.color.primary),
+                SgChip(label: l10n.studyClozeChip, fill: tokens.color.primary),
               ],
             ),
             const SizedBox(height: 14),
-            DpText(
+            SgText(
               l10n.studyClozePrompt.toUpperCase(),
-              role: DpTextRole.caption,
+              role: SgTextRole.caption,
               weight: 700,
               letterSpacing: 0.6,
               color: tokens.color.textSecondary,
@@ -149,7 +149,7 @@ class _StudyClozeCardState extends ConsumerState<StudyClozeCard> {
             LayoutBuilder(
               builder: (context, box) {
                 TextSpan broken(String text) => TextSpan(
-                  text: DpScript.breakTooWide(
+                  text: SgScript.breakTooWide(
                     text,
                     style: line,
                     width: box.maxWidth,
@@ -161,7 +161,7 @@ class _StudyClozeCardState extends ConsumerState<StudyClozeCard> {
                   TextSpan(
                     style: line,
                     // Read in a German voice (#162).
-                    locale: DpScript.deDE,
+                    locale: SgScript.deDE,
                     children: <InlineSpan>[
                       broken(example.german.substring(0, gap.start)),
                       WidgetSpan(
@@ -182,9 +182,9 @@ class _StudyClozeCardState extends ConsumerState<StudyClozeCard> {
             ),
             if (english != null) ...<Widget>[
               SizedBox(height: typing ? 2 : 6),
-              DpText(
+              SgText(
                 english,
-                role: asked(DpTextRole.body),
+                role: asked(SgTextRole.body),
                 color: tokens.color.textSecondary,
               ),
             ],
@@ -197,23 +197,23 @@ class _StudyClozeCardState extends ConsumerState<StudyClozeCard> {
                 dense: typing,
               ),
               const SizedBox(height: 8),
-              DpUmlautBar(controller: _answer),
+              SgUmlautBar(controller: _answer),
               const SizedBox(height: 12),
               ListenableBuilder(
                 listenable: _answer,
-                builder: (context, _) => DpButton(
+                builder: (context, _) => SgButton(
                   label: l10n.studyClozeCheck,
                   onPressed: _answer.text.trim().isEmpty ? null : _check,
-                  kind: DpButtonKind.secondary,
+                  kind: SgButtonKind.secondary,
                 ),
               ),
             ] else ...<Widget>[
-              DpVerdictRow(
+              SgVerdictRow(
                 verdict: switch (verdict) {
-                  Verdict.correct => DpVerdict.correct,
-                  Verdict.almost => DpVerdict.almost,
-                  Verdict.wrongArticle => DpVerdict.wrongArticle,
-                  Verdict.wrong => DpVerdict.wrong,
+                  Verdict.correct => SgVerdict.correct,
+                  Verdict.almost => SgVerdict.almost,
+                  Verdict.wrongArticle => SgVerdict.wrongArticle,
+                  Verdict.wrong => SgVerdict.wrong,
                 },
                 message: switch (verdict) {
                   Verdict.correct => l10n.studyClozeCorrect,
@@ -230,11 +230,11 @@ class _StudyClozeCardState extends ConsumerState<StudyClozeCard> {
                     onPressed: _play,
                   ),
                   Expanded(
-                    child: DpText(
+                    child: SgText(
                       widget.chosen
                           ? l10n.studyClozeFootnoteChosen
                           : l10n.studyClozeFootnote,
-                      role: DpTextRole.label,
+                      role: SgTextRole.label,
                       weight: 400,
                       color: tokens.color.textSecondary,
                     ),
@@ -268,7 +268,7 @@ class _Gap extends StatelessWidget {
       ),
       // A long target too wide for the line breaks at a syllable with its
       // "-", in a German voice (#539).
-      child: DpGermanRuns(
+      child: SgGermanRuns(
         <TextSpan>[TextSpan(text: word ?? '')],
         textAlign: TextAlign.center,
         // A WidgetSpan's child is scaled with its sentence already: scaled
@@ -316,7 +316,7 @@ class StudyAnswerField extends StatelessWidget {
   Widget build(BuildContext context) {
     final tokens = context.tokens;
     final l10n = AppLocalizations.of(context);
-    final typing = DpScript.largeTypingInView(context);
+    final typing = SgScript.largeTypingInView(context);
     final edge = OutlineInputBorder(
       borderRadius: BorderRadius.circular(tokens.shape.button),
       borderSide: BorderSide(color: tokens.color.ink, width: 2),
@@ -327,7 +327,7 @@ class StudyAnswerField extends StatelessWidget {
       enableSuggestions: false,
       textInputAction: TextInputAction.done,
       scrollPadding: umlautRowBelow
-          ? DpUmlautBar.scrollPadding(
+          ? SgUmlautBar.scrollPadding(
               context,
               // Past 130 % the few lines above the keyboard are the
               // question's, and *Check* may scroll under it: the keyboard's
@@ -335,9 +335,9 @@ class StudyAnswerField extends StatelessWidget {
               // ponytail: one threshold, so at 150 % Check goes though it
               // would still fit under a two-line sentence once T2's top bar
               // is gone; measure the sentence if 150 % should keep it.
-              below: DpScript.large(context)
+              below: SgScript.large(context)
                   ? 0
-                  : 12 + DpButton.minimumTapTarget,
+                  : 12 + SgButton.minimumTapTarget,
               // Typing past 130 %, 8 dp of the margin under the keys go to
               // what is asked: T2's cloze (a three-line one fits a 360 × 640
               // phone) and L15's gap, which this field also serves (#572).
@@ -346,9 +346,9 @@ class StudyAnswerField extends StatelessWidget {
             )
           : const EdgeInsets.all(20),
       onSubmitted: (_) => onSubmitted(),
-      style: DpText.styleFor(
+      style: SgText.styleFor(
         tokens,
-        DpTextRole.title,
+        SgTextRole.title,
       ).copyWith(fontWeight: FontWeight.w400),
       decoration: InputDecoration(
         hintText: hint ?? l10n.studyClozeHint,

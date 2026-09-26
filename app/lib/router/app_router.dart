@@ -1,6 +1,6 @@
-import 'package:deutschplan/router/deep_links.dart';
-import 'package:deutschplan/router/route_guards.dart';
-import 'package:deutschplan/router/routes.dart';
+import 'package:sogda/router/deep_links.dart';
+import 'package:sogda/router/route_guards.dart';
+import 'package:sogda/router/routes.dart';
 import 'package:go_router/go_router.dart';
 
 /// The route table of `docs/01-architecture/navigation.md`.
@@ -25,7 +25,7 @@ GoRouter buildRouter({String initialLocation = '/today', RouteGuards? guards}) {
     initialLocation: initialLocation,
     routes: $appRoutes,
     redirect: (context, state) {
-      // A `deutschplan://` link is not a location: `deutschplan://exam/A1.2`
+      // A `sogda://` link is not a location: `sogda://exam/A1.2`
       // names a step, and `/exam/:attemptId` in the table is the runner for
       // one attempt. Resolved first, then the result goes round again and
       // meets the guards like any other navigation.
@@ -34,7 +34,7 @@ GoRouter buildRouter({String initialLocation = '/today', RouteGuards? guards}) {
         //
         // Redirected back to where the learner already is, not `null`:
         // returning null means "carry on with the incoming location", and the
-        // incoming location is a `deutschplan://` URI that matches no route —
+        // incoming location is a `sogda://` URI that matches no route —
         // so the link would land on Today through `onException` anyway. The
         // first version of this guard did exactly that.
         final current = router.routerDelegate.currentConfiguration.uri;

@@ -1,9 +1,9 @@
 import 'dart:io';
 
-import 'package:deutschplan/data/db/app_database.dart';
-import 'package:deutschplan/data/db/content_dao.dart';
-import 'package:deutschplan/data/repositories/sentence_store.dart';
-import 'package:deutschplan/domain/sentence_picker.dart';
+import 'package:sogda/data/db/app_database.dart';
+import 'package:sogda/data/db/content_dao.dart';
+import 'package:sogda/data/repositories/sentence_store.dart';
+import 'package:sogda/domain/sentence_picker.dart';
 import 'package:drift/drift.dart' show DatabaseConnection, Table, TableInfo;
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -18,7 +18,7 @@ void main() {
   const today = '2026-09-21';
 
   setUp(() async {
-    directory = Directory.systemTemp.createTempSync('deutschplan_sentences');
+    directory = Directory.systemTemp.createTempSync('sogda_sentences');
     final content = ContentFixture.write('${directory.path}/content.db').file;
     db = AppDatabase(DatabaseConnection(NativeDatabase.memory()));
     await db.customStatement(

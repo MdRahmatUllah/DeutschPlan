@@ -5,13 +5,13 @@ import 'dart:isolate';
 import 'dart:math' as math;
 import 'dart:typed_data';
 
-import 'package:deutschplan/data/repositories/model_repository.dart';
-import 'package:deutschplan/data/repositories/setting_keys.dart';
-import 'package:deutschplan/data/repositories/settings_repository.dart';
-import 'package:deutschplan/data/repositories/synthesis_cache.dart';
-import 'package:deutschplan/services/model_downloads.dart';
-import 'package:deutschplan/services/tts/supertonic_text.dart';
-import 'package:deutschplan/services/tts/tts_engine.dart';
+import 'package:sogda/data/repositories/model_repository.dart';
+import 'package:sogda/data/repositories/setting_keys.dart';
+import 'package:sogda/data/repositories/settings_repository.dart';
+import 'package:sogda/data/repositories/synthesis_cache.dart';
+import 'package:sogda/services/model_downloads.dart';
+import 'package:sogda/services/tts/supertonic_text.dart';
+import 'package:sogda/services/tts/tts_engine.dart';
 import 'package:flutter_onnxruntime/flutter_onnxruntime.dart';
 import 'package:just_audio/just_audio.dart';
 

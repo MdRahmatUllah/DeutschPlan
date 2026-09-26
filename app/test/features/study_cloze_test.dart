@@ -1,25 +1,25 @@
 import 'dart:io';
 
-import 'package:deutschplan/core/components/dp_button.dart';
-import 'package:deutschplan/core/components/dp_feedback.dart';
-import 'package:deutschplan/core/components/dp_rating_bar.dart';
-import 'package:deutschplan/core/components/dp_speaker_button.dart';
-import 'package:deutschplan/core/providers/app_providers.dart';
-import 'package:deutschplan/core/theme/app_theme.dart';
-import 'package:deutschplan/core/theme/dp_tokens.dart';
-import 'package:deutschplan/core/typography/dp_text.dart';
-import 'package:deutschplan/data/db/app_database.dart';
-import 'package:deutschplan/data/db/content_dao.dart';
-import 'package:deutschplan/data/repositories/setting_keys.dart';
-import 'package:deutschplan/data/repositories/settings_repository.dart';
-import 'package:deutschplan/features/study/study_card.dart';
-import 'package:deutschplan/features/study/study_cloze.dart';
-import 'package:deutschplan/features/study/study_screen.dart';
-import 'package:deutschplan/features/study/study_session.dart';
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
-import 'package:deutschplan/main.dart'
+import 'package:sogda/core/components/sg_button.dart';
+import 'package:sogda/core/components/sg_feedback.dart';
+import 'package:sogda/core/components/sg_rating_bar.dart';
+import 'package:sogda/core/components/sg_speaker_button.dart';
+import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/core/theme/app_theme.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/core/typography/sg_text.dart';
+import 'package:sogda/data/db/app_database.dart';
+import 'package:sogda/data/db/content_dao.dart';
+import 'package:sogda/data/repositories/setting_keys.dart';
+import 'package:sogda/data/repositories/settings_repository.dart';
+import 'package:sogda/features/study/study_card.dart';
+import 'package:sogda/features/study/study_cloze.dart';
+import 'package:sogda/features/study/study_screen.dart';
+import 'package:sogda/features/study/study_session.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
+import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
-import 'package:deutschplan/router/routes.dart';
+import 'package:sogda/router/routes.dart';
 import 'package:flutter/rendering.dart' show RenderParagraph;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
@@ -53,7 +53,7 @@ void main() {
     bool chosen = false,
   }) async {
     db = AppDatabase.memory();
-    final directory = Directory.systemTemp.createTempSync('dp_cloze');
+    final directory = Directory.systemTemp.createTempSync('sg_cloze');
     final content = ContentFixture.write('${directory.path}/content.db');
     await db.customStatement(
       "ATTACH DATABASE '${ContentDao.attachPath(content.file)}' AS c",
@@ -140,7 +140,7 @@ VALUES ('$strasse', 'learning', '2026-09-10', '2026-09-21', 4.5, 5.2, 2, 0,
   Future<void> answer(WidgetTester tester, String text) async {
     await tester.enterText(find.byType(TextField), text);
     await tester.pump();
-    await tester.tap(find.widgetWithText(DpButton, l10n.studyClozeCheck));
+    await tester.tap(find.widgetWithText(SgButton, l10n.studyClozeCheck));
     await tester.runAsync(
       () => Future<void>.delayed(const Duration(milliseconds: 50)),
     );
@@ -181,13 +181,13 @@ VALUES ('$strasse', 'learning', '2026-09-10', '2026-09-21', 4.5, 5.2, 2, 0,
 
     const keyboardTop = 600.0 - 250;
     expect(
-      tester.getRect(find.byType(DpUmlautBar)).bottom,
+      tester.getRect(find.byType(SgUmlautBar)).bottom,
       lessThanOrEqualTo(keyboardTop),
       reason: 'the umlaut row, whole',
     );
     expect(
       tester
-          .getRect(find.widgetWithText(DpButton, l10n.studyClozeCheck))
+          .getRect(find.widgetWithText(SgButton, l10n.studyClozeCheck))
           .bottom,
       lessThanOrEqualTo(keyboardTop),
       reason: 'and Check',
@@ -204,12 +204,12 @@ VALUES ('$strasse', 'learning', '2026-09-10', '2026-09-21', 4.5, 5.2, 2, 0,
     expect(find.text('The street is long.'), findsOneWidget);
     // The word itself is what is asked: not shown, not spoken.
     expect(find.text('Straße'), findsNothing);
-    expect(find.byType(DpSpeakerButton), findsNothing);
+    expect(find.byType(SgSpeakerButton), findsNothing);
     expect(find.byType(TextField), findsOneWidget);
-    expect(find.byType(DpUmlautBar), findsOneWidget);
+    expect(find.byType(SgUmlautBar), findsOneWidget);
     // No Show meaning, and no rating bar yet.
     expect(find.text(l10n.studyShowMeaning), findsNothing);
-    expect(find.byType(DpRatingBar), findsNothing);
+    expect(find.byType(SgRatingBar), findsNothing);
   });
 
   testWidgets('a plain word keeps the plain front', (tester) async {
@@ -238,7 +238,7 @@ VALUES ('$strasse', 'learning', '2026-09-10', '2026-09-21', 4.5, 5.2, 2, 0,
     await pump(tester);
     expect(
       tester
-          .widget<DpButton>(find.widgetWithText(DpButton, l10n.studyClozeCheck))
+          .widget<SgButton>(find.widgetWithText(SgButton, l10n.studyClozeCheck))
           .onPressed,
       isNull,
     );
@@ -256,7 +256,7 @@ VALUES ('$strasse', 'learning', '2026-09-10', '2026-09-21', 4.5, 5.2, 2, 0,
     expect(find.text(l10n.studyClozeFootnote), findsOneWidget);
     expect(find.byType(TextField), findsNothing);
     expect(find.text(l10n.studyClozeRatePrompt), findsOneWidget);
-    expect(find.byType(DpRatingBar), findsOneWidget);
+    expect(find.byType(SgRatingBar), findsOneWidget);
     expect(container.read(studySessionProvider(args)).value?.revealed, isTrue);
   });
 
@@ -292,7 +292,7 @@ VALUES ('$strasse', 'learning', '2026-09-10', '2026-09-21', 4.5, 5.2, 2, 0,
 
     expect(find.text(l10n.studyClozeAlmost('Straße')), findsOneWidget);
     expect(spoken, isEmpty);
-    expect(find.byType(DpRatingBar), findsOneWidget);
+    expect(find.byType(SgRatingBar), findsOneWidget);
   });
 
   testWidgets('wrong: the answer shown, and rating allowed', (tester) async {
@@ -301,7 +301,7 @@ VALUES ('$strasse', 'learning', '2026-09-10', '2026-09-21', 4.5, 5.2, 2, 0,
 
     expect(find.text(l10n.studyClozeWrong('Straße')), findsOneWidget);
     expect(spoken, isEmpty);
-    expect(find.byType(DpRatingBar), findsOneWidget);
+    expect(find.byType(SgRatingBar), findsOneWidget);
   });
 
   /// Whether [rating]'s button takes a tap.
@@ -397,7 +397,7 @@ VALUES ('$strasse', 'learning', '2026-09-10', '2026-09-21', 4.5, 5.2, 2, 0,
       tester.widget<TextField>(find.byType(TextField)).controller?.text,
       isEmpty,
     );
-    expect(find.byType(DpRatingBar), findsNothing);
+    expect(find.byType(SgRatingBar), findsNothing);
   });
 
   testWidgets('two cloze cards in a row: the second starts clean', (
@@ -571,7 +571,7 @@ VALUES ('$haus', 'learning', 8, 5, 2, 0, 2, 'cloze')
             expect(rect.bottom, lessThanOrEqualTo(room.bottom), reason: name);
           }
           expect(
-            tester.getRect(find.byType(DpUmlautBar)).bottom,
+            tester.getRect(find.byType(SgUmlautBar)).bottom,
             lessThanOrEqualTo(size.height - keyboard),
           );
           final typed = sentenceSize(tester);
@@ -605,7 +605,7 @@ VALUES ('$haus', 'learning', 8, 5, 2, 0, 2, 'cloze')
         final room = window(tester);
         for (final (name, shown) in <(String, Finder)>[
           ('the field', find.byType(TextField)),
-          ('the umlaut row', find.byType(DpUmlautBar)),
+          ('the umlaut row', find.byType(SgUmlautBar)),
         ]) {
           final rect = tester.getRect(shown);
           expect(rect.top, greaterThanOrEqualTo(room.top), reason: name);
@@ -666,7 +666,7 @@ VALUES ('$haus', 'learning', 8, 5, 2, 0, 2, 'cloze')
         expect(close(), findsOneWidget);
         expect(
           sentenceSize(tester),
-          DpTextRole.title
+          SgTextRole.title
               .token(tester.element(sentence()).tokens.typography)
               .size,
           reason: 'title, as drawn',

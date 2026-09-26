@@ -1,17 +1,17 @@
 import 'dart:io';
 
-import 'package:deutschplan/core/adaptive/adaptive.dart';
-import 'package:deutschplan/core/theme/dp_tokens.dart';
-import 'package:deutschplan/core/components/dp_button.dart';
-import 'package:deutschplan/core/components/dp_feedback.dart';
-import 'package:deutschplan/core/providers/app_providers.dart';
-import 'package:deutschplan/core/theme/app_theme.dart';
-import 'package:deutschplan/data/db/app_database.dart';
-import 'package:deutschplan/data/db/content_dao.dart';
-import 'package:deutschplan/data/repositories/settings_repository.dart';
-import 'package:deutschplan/features/search/add_word_screen.dart';
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
-import 'package:deutschplan/main.dart'
+import 'package:sogda/core/adaptive/adaptive.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/core/components/sg_button.dart';
+import 'package:sogda/core/components/sg_feedback.dart';
+import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/core/theme/app_theme.dart';
+import 'package:sogda/data/db/app_database.dart';
+import 'package:sogda/data/db/content_dao.dart';
+import 'package:sogda/data/repositories/settings_repository.dart';
+import 'package:sogda/features/search/add_word_screen.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
+import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
 import 'package:drift/drift.dart' show Value;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -55,7 +55,7 @@ void main() {
     addTearDown(tester.view.reset);
     await tester.runAsync(() async {
       db = AppDatabase.memory();
-      final directory = Directory.systemTemp.createTempSync('dp_add_word');
+      final directory = Directory.systemTemp.createTempSync('sg_add_word');
       final content = ContentFixture.write('${directory.path}/content.db');
       await db.customStatement(
         "ATTACH DATABASE '${ContentDao.attachPath(content.file)}' AS c",
@@ -122,8 +122,8 @@ void main() {
     await settle(tester);
   }
 
-  DpButton button(WidgetTester tester, String label) =>
-      tester.widget<DpButton>(find.widgetWithText(DpButton, label));
+  SgButton button(WidgetTester tester, String label) =>
+      tester.widget<SgButton>(find.widgetWithText(SgButton, label));
 
   testWidgets('#590 in bn at 200 %, the keyboard up in SQA room, the German '
       "field focused sits under the status bar, not behind it: R2's list runs "
@@ -176,7 +176,7 @@ void main() {
     const keyboardTop = 640.0 - 350;
     expect(tester.getRect(german).bottom, lessThanOrEqualTo(keyboardTop));
     expect(
-      tester.getRect(find.byType(DpUmlautBar)).bottom,
+      tester.getRect(find.byType(SgUmlautBar)).bottom,
       lessThanOrEqualTo(keyboardTop),
       reason: 'the umlaut row, whole',
     );
@@ -445,7 +445,7 @@ void main() {
     tester,
   ) async {
     await pump(tester);
-    expect(find.byType(DpUmlautBar), findsNothing);
+    expect(find.byType(SgUmlautBar), findsNothing);
     await tester.tap(
       find.descendant(
         of: field(l10n.addWordGerman),
@@ -453,7 +453,7 @@ void main() {
       ),
     );
     await tester.pump();
-    expect(find.byType(DpUmlautBar), findsOneWidget);
+    expect(find.byType(SgUmlautBar), findsOneWidget);
   });
 
   testWidgets("#390 R2's Raspberry stays behind the status bar when the form "

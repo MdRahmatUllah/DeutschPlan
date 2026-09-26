@@ -1,41 +1,41 @@
 import 'dart:async';
 
-import 'package:deutschplan/core/adaptive/adaptive.dart';
-import 'package:deutschplan/core/typography/dp_text.dart';
-import 'package:deutschplan/features/sentences/sentences_screen.dart';
-import 'package:deutschplan/services/start_report.dart';
-import 'package:deutschplan/core/components/dp_coach_mark.dart';
+import 'package:sogda/core/adaptive/adaptive.dart';
+import 'package:sogda/core/typography/sg_text.dart';
+import 'package:sogda/features/sentences/sentences_screen.dart';
+import 'package:sogda/services/start_report.dart';
+import 'package:sogda/core/components/sg_coach_mark.dart';
 
-import 'package:deutschplan/features/study/study_screen.dart';
+import 'package:sogda/features/study/study_screen.dart';
 
 import '../core/text_clipping.dart';
 
 import 'dart:io';
 import 'dart:ui' show LocaleStringAttribute;
 
-import 'package:deutschplan/data/db/content_dao.dart';
-import 'package:deutschplan/data/repositories/setting_keys.dart';
-import 'package:deutschplan/core/components/dp_button.dart';
-import 'package:deutschplan/core/theme/dp_tokens.dart';
-import 'package:deutschplan/data/db/app_database.dart';
-import 'package:deutschplan/data/repositories/settings_repository.dart';
-import 'package:deutschplan/features/today/today_screen.dart';
-import 'package:deutschplan/core/components/dp_feedback.dart';
-import 'package:deutschplan/core/components/dp_progress_ring.dart';
-import 'package:deutschplan/core/providers/app_providers.dart';
-import 'package:deutschplan/core/theme/app_theme.dart';
-import 'package:deutschplan/features/today/today_components.dart';
-import 'package:deutschplan/features/today/today_providers.dart';
-import 'package:deutschplan/features/today/today_view.dart';
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
-import 'package:deutschplan/main.dart'
+import 'package:sogda/data/db/content_dao.dart';
+import 'package:sogda/data/repositories/setting_keys.dart';
+import 'package:sogda/core/components/sg_button.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/data/db/app_database.dart';
+import 'package:sogda/data/repositories/settings_repository.dart';
+import 'package:sogda/features/today/today_screen.dart';
+import 'package:sogda/core/components/sg_feedback.dart';
+import 'package:sogda/core/components/sg_progress_ring.dart';
+import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/core/theme/app_theme.dart';
+import 'package:sogda/features/today/today_components.dart';
+import 'package:sogda/features/today/today_providers.dart';
+import 'package:sogda/features/today/today_view.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
+import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
-import 'package:deutschplan/router/app_router.dart';
-import 'package:deutschplan/router/routes.dart';
+import 'package:sogda/router/app_router.dart';
+import 'package:sogda/router/routes.dart';
 import 'package:flutter/services.dart' show MethodChannel;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
-import 'package:deutschplan/features/learn/grammar_practice_screen.dart';
+import 'package:sogda/features/learn/grammar_practice_screen.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
@@ -147,7 +147,7 @@ void main() {
       expect(
         label.attributes.whereType<LocaleStringAttribute>().any(
           (tag) =>
-              tag.locale == DpScript.deDE &&
+              tag.locale == SgScript.deDE &&
               tag.range.start <= greeting &&
               tag.range.end >= greeting + 'Guten Morgen, Maruf'.length,
         ),
@@ -204,7 +204,7 @@ void main() {
       final ring = tester.getRect(
         find.descendant(
           of: find.byType(ProgressRingCard),
-          matching: find.byType(DpProgressRing),
+          matching: find.byType(SgProgressRing),
         ),
       );
       // The inner circle: the stroke's centre line less half its width.
@@ -231,10 +231,10 @@ void main() {
     ) async {
       await pump(tester);
 
-      final ring = tester.widget<DpProgressRing>(
+      final ring = tester.widget<SgProgressRing>(
         find.descendant(
           of: find.byType(ProgressRingCard),
-          matching: find.byType(DpProgressRing),
+          matching: find.byType(SgProgressRing),
         ),
       );
       expect((ring.completed, ring.total), (12, 20));
@@ -252,7 +252,7 @@ void main() {
         final node = tester.getSemantics(
           find.descendant(
             of: find.byType(ProgressRingCard),
-            matching: find.byType(DpProgressRing),
+            matching: find.byType(SgProgressRing),
           ),
         );
         final data = node.getSemanticsData();
@@ -505,25 +505,25 @@ void main() {
         isNull,
       );
       // TodayDone: Lime, and the ink stays ink rather than greying out.
-      final button = tester.widget<DpButton>(find.byType(DpButton));
-      expect(button.colour, DpPalette.light.easy);
+      final button = tester.widget<SgButton>(find.byType(SgButton));
+      expect(button.colour, SgPalette.light.easy);
       final text = tester.widget<Text>(
         find.descendant(
-          of: find.byType(DpButton),
+          of: find.byType(SgButton),
           matching: find.text(l10n.todayAllDone),
         ),
       );
-      expect(text.style?.color, DpPalette.light.onAccent);
+      expect(text.style?.color, SgPalette.light.onAccent);
     });
 
     testWidgets('FR-S2-03 carries the one-time coach mark', (tester) async {
       await pump(tester, coachMark: true);
-      final mark = tester.widget<DpCoachMark>(find.byType(DpCoachMark));
+      final mark = tester.widget<SgCoachMark>(find.byType(SgCoachMark));
       expect(mark.visible, isTrue);
       expect(find.text(l10n.todayCoachMark), findsOneWidget);
       expect(
         find.descendant(
-          of: find.byType(DpCoachMark),
+          of: find.byType(SgCoachMark),
           matching: find.byType(PrimaryActionBar),
         ),
         findsOneWidget,
@@ -538,8 +538,8 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(session(tester), isNotNull);
-      final mark = tester.widget<DpCoachMark>(
-        find.byType(DpCoachMark, skipOffstage: false),
+      final mark = tester.widget<SgCoachMark>(
+        find.byType(SgCoachMark, skipOffstage: false),
       );
       expect(mark.visible, isFalse);
     });
@@ -548,7 +548,7 @@ void main() {
       tester,
     ) async {
       await pump(tester, view: artboardDone(), coachMark: true);
-      final mark = tester.widget<DpCoachMark>(find.byType(DpCoachMark));
+      final mark = tester.widget<SgCoachMark>(find.byType(SgCoachMark));
       expect(mark.visible, isFalse);
       expect(find.text(l10n.todayCoachMark), findsNothing);
     });
@@ -591,13 +591,13 @@ void main() {
       tester,
     ) async {
       await pump(tester, view: artboardDone());
-      final ring = tester.widget<DpProgressRing>(
+      final ring = tester.widget<SgProgressRing>(
         find.descendant(
           of: find.byType(ProgressRingCard),
-          matching: find.byType(DpProgressRing),
+          matching: find.byType(SgProgressRing),
         ),
       );
-      expect(ring.colour, DpPalette.light.easy);
+      expect(ring.colour, SgPalette.light.easy);
       expect(ring.caption, isNull);
       expect(ring.captionIcon, Icons.check);
     });
@@ -649,10 +649,10 @@ void main() {
 
       expect(find.text(l10n.todayRestDay), findsOneWidget, reason: 'no name');
       expect(find.text(l10n.todayRestOff('Sunday')), findsOneWidget);
-      final ring = tester.widget<DpProgressRing>(
+      final ring = tester.widget<SgProgressRing>(
         find.descendant(
           of: find.byType(ProgressRingCard),
-          matching: find.byType(DpProgressRing),
+          matching: find.byType(SgProgressRing),
         ),
       );
       expect(ring.countLabel, l10n.todayRestFree);
@@ -921,7 +921,7 @@ void main() {
       // The course, as the app always has it attached: Today reads its
       // example sentences.
       await tester.runAsync(() async {
-        final directory = Directory.systemTemp.createTempSync('dp_today');
+        final directory = Directory.systemTemp.createTempSync('sg_today');
         final content = ContentFixture.write('${directory.path}/content.db');
         await db.customStatement(
           "ATTACH DATABASE '${ContentDao.attachPath(content.file)}' AS c",
@@ -1023,7 +1023,7 @@ void main() {
   });
 
   group('#462 the cold start ends when the plan is drawn', () {
-    const channel = MethodChannel('deutschplan/start');
+    const channel = MethodChannel('sogda/start');
     final messenger =
         TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger;
     late List<String> calls;
@@ -1078,7 +1078,7 @@ void main() {
         matching: find.byIcon(Icons.menu_book_outlined),
       ),
     );
-    expect(icon.color, DpPalette.light.onDer);
+    expect(icon.color, SgPalette.light.onDer);
   });
 
   testWidgets('a failed load says so, with Retry', (tester) async {
@@ -1088,7 +1088,7 @@ void main() {
         (ref) async => throw StateError('db'),
       ),
     );
-    expect(find.byType(DpErrorPanel), findsOneWidget);
+    expect(find.byType(SgErrorPanel), findsOneWidget);
     expect(find.text(l10n.todayLoadFailed), findsOneWidget);
     expect(find.text(l10n.retry), findsOneWidget);
   });

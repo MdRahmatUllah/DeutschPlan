@@ -1,11 +1,11 @@
-import 'package:deutschplan/core/components/dp_feedback.dart';
-import 'package:deutschplan/core/components/dp_speaker_button.dart';
-import 'package:deutschplan/core/providers/app_providers.dart';
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
-import 'package:deutschplan/router/cross_tab.dart';
-import 'package:deutschplan/router/routes.dart';
-import 'package:deutschplan/services/tts/tts_engine.dart';
-import 'package:deutschplan/services/tts/tts_service.dart';
+import 'package:sogda/core/components/sg_feedback.dart';
+import 'package:sogda/core/components/sg_speaker_button.dart';
+import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
+import 'package:sogda/router/cross_tab.dart';
+import 'package:sogda/router/routes.dart';
+import 'package:sogda/services/tts/tts_engine.dart';
+import 'package:sogda/services/tts/tts_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
@@ -40,7 +40,7 @@ Future<bool> say(
       // The top of the stack: a pushed `/study` over Today counts as `/study`.
       final location = GoRouter.maybeOf(context)?.state.uri.path;
       final link = location != null && isTabDestination(location);
-      DpToast.show(
+      SgToast.show(
         context,
         l10n.speakerFallback,
         lift: lift,
@@ -53,7 +53,7 @@ Future<bool> say(
       return true;
     case TtsOutcome.silent:
       ref.invalidate(ttsAvailableProvider);
-      DpToast.show(context, l10n.speakerNoVoice, lift: lift);
+      SgToast.show(context, l10n.speakerNoVoice, lift: lift);
       return false;
   }
 }
@@ -66,8 +66,8 @@ bool noVoice(WidgetRef ref) => ref.watch(ttsAvailableProvider).value == false;
 /// The speaker's look for [text]: slashed once it is known there is no German
 /// voice; playing while [text] sounds, and loading while it is synthesised
 /// past `tts.md`'s 150 ms; idle otherwise.
-DpSpeakerState speakerState(WidgetRef ref, String text) {
-  if (noVoice(ref)) return DpSpeakerState.unavailable;
+SgSpeakerState speakerState(WidgetRef ref, String text) {
+  if (noVoice(ref)) return SgSpeakerState.unavailable;
   final state = ref.watch(
     ttsPlaybackProvider.select((playback) {
       final now = playback.value;
@@ -75,8 +75,8 @@ DpSpeakerState speakerState(WidgetRef ref, String text) {
     }),
   );
   return switch (state) {
-    TtsState.idle => DpSpeakerState.idle,
-    TtsState.loading => DpSpeakerState.loading,
-    TtsState.playing => DpSpeakerState.playing,
+    TtsState.idle => SgSpeakerState.idle,
+    TtsState.loading => SgSpeakerState.loading,
+    TtsState.playing => SgSpeakerState.playing,
   };
 }

@@ -1,13 +1,13 @@
 import 'dart:math' as math;
 
-import 'package:deutschplan/core/providers/app_providers.dart';
-import 'package:deutschplan/core/theme/app_theme.dart';
-import 'package:deutschplan/core/theme/dp_tokens.dart';
-import 'package:deutschplan/data/repositories/exam_result_service.dart';
-import 'package:deutschplan/domain/exam_generator.dart';
-import 'package:deutschplan/features/exam/exam_results_screen.dart';
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
-import 'package:deutschplan/main.dart'
+import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/core/theme/app_theme.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/data/repositories/exam_result_service.dart';
+import 'package:sogda/domain/exam_generator.dart';
+import 'package:sogda/features/exam/exam_results_screen.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
+import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -75,7 +75,7 @@ void main() {
     await tester.pumpAndSettle();
   }
 
-  DpTokens tokens(WidgetTester tester) =>
+  SgTokens tokens(WidgetTester tester) =>
       tester.element(find.byType(ExamResultsScreen)).tokens;
 
   testWidgets('FR-L13-01 a pass: Bestanden!, the score, the pass mark and '

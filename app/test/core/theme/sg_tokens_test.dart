@@ -1,7 +1,7 @@
 import 'dart:io';
 
-import 'package:deutschplan/core/theme/app_theme.dart';
-import 'package:deutschplan/core/theme/dp_tokens.dart';
+import 'package:sogda/core/theme/app_theme.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 
@@ -13,38 +13,38 @@ void main() {
       '#${(c.toARGB32() & 0xFFFFFF).toRadixString(16).toUpperCase().padLeft(6, '0')}';
 
   // Each mode is checked against its own canvas. Glass joins this table in #32.
-  final canvases = <DpMode, String>{
-    DpMode.light:
+  final canvases = <SgMode, String>{
+    SgMode.light:
         '../deutsch-plan-design-html/android-light/screens/Foundations.html',
-    DpMode.dark:
+    SgMode.dark:
         '../deutsch-plan-design-html/android-dark/screens/Foundations.html',
   };
 
   // Colours that appear in an artboard but are not app tokens.
-  final outOfScope = <DpMode, Set<String>>{
+  final outOfScope = <SgMode, Set<String>>{
     // The canvas the device frame is pasted onto.
-    DpMode.light: {'#E9E4DA'},
-    DpMode.dark: {'#0B0A10'},
+    SgMode.light: {'#E9E4DA'},
+    SgMode.dark: {'#0B0A10'},
   };
 
   // Tokens theming.md defines that the artboard never actually paints.
-  final specOnly = <DpMode, Set<String>>{
-    DpMode.light: {'#2F46E0'}, // derText
-    DpMode.dark: <String>{},
+  final specOnly = <SgMode, Set<String>>{
+    SgMode.light: {'#2F46E0'}, // derText
+    SgMode.dark: <String>{},
   };
 
   /// Artboard colours a token deliberately moved off for WCAG AA (#163):
   /// the artboard's value, by token. The token must still differ only for
   /// the reason given, so its artboard value is accounted for here and the
   /// token's own value is checked by `contrast_test.dart`.
-  final adjustedForContrast = <DpMode, Map<String, String>>{
-    DpMode.light: {'almostText': '#B45F00'}, // 4.35:1 on paper -> #AE5C01
-    DpMode.dark: <String, String>{},
+  final adjustedForContrast = <SgMode, Map<String, String>>{
+    SgMode.light: {'almostText': '#B45F00'}, // 4.35:1 on paper -> #AE5C01
+    SgMode.dark: <String, String>{},
   };
 
   canvases.forEach((mode, path) {
     final name = mode.name;
-    final tokens = mode == DpMode.light ? DpTokens.light() : DpTokens.dark();
+    final tokens = mode == SgMode.light ? SgTokens.light() : SgTokens.dark();
     final palette = tokens.color;
     final surface = tokens.surface;
 
@@ -126,7 +126,7 @@ void main() {
             isEmpty,
             reason:
                 'the $name artboard uses a colour no token covers — add it to '
-                'DpPalette/DpSurfaceTokens, or list it as out of scope here',
+                'SgPalette/SgSurfaceTokens, or list it as out of scope here',
           );
         },
       );
@@ -156,7 +156,7 @@ void main() {
         // The colour is the half this used to miss: `shadow` is not in `named`,
         // and the reverse scan only sees #RRGGBB, so an rgba() shadow was
         // unchecked in both modes.
-        final rendered = mode == DpMode.light
+        final rendered = mode == SgMode.light
             ? '3px 3px 0 ${hex(surface.shadow).toLowerCase()}'
             : '3px 3px 0 rgba(255,255,255,'
                   '${_trimZero(surface.shadow.a)})';
@@ -171,8 +171,8 @@ void main() {
   });
 
   test('dark lifts every brand and rating colour away from light', () {
-    const l = DpPalette.light;
-    const d = DpPalette.dark;
+    const l = SgPalette.light;
+    const d = SgPalette.dark;
     // Night Ink is not light with a swapped background: the fills are lifted a
     // step so they stay readable on a dark surface.
     for (final pair in <List<Color>>[
@@ -195,17 +195,17 @@ void main() {
 
   test('ink and paper invert between the two modes', () {
     expect(
-      DpPalette.dark.ink.computeLuminance(),
-      greaterThan(DpPalette.light.ink.computeLuminance()),
+      SgPalette.dark.ink.computeLuminance(),
+      greaterThan(SgPalette.light.ink.computeLuminance()),
     );
     expect(
-      DpSurfaceTokens.dark.paper.computeLuminance(),
-      lessThan(DpSurfaceTokens.light.paper.computeLuminance()),
+      SgSurfaceTokens.dark.paper.computeLuminance(),
+      lessThan(SgSurfaceTokens.light.paper.computeLuminance()),
     );
   });
 
   group('scales match theming.md', () {
-    const t = DpTypeTokens.defaults;
+    const t = SgTypeTokens.defaults;
 
     test(
       'the type scale is 40/48 · 28/34 · 20/26 · 17/24 · 15/22 · 13/16 · 12/16',
@@ -226,11 +226,11 @@ void main() {
     });
 
     test('the spacing scale is 4/8/12/16/24/32/48', () {
-      expect(DpSpacingTokens.defaults.all, <double>[4, 8, 12, 16, 24, 32, 48]);
+      expect(SgSpacingTokens.defaults.all, <double>[4, 8, 12, 16, 24, 32, 48]);
     });
 
     test('radii are cards 16, buttons 12, chips 8, sheets 24', () {
-      const s = DpShapeTokens.defaults;
+      const s = SgShapeTokens.defaults;
       expect([s.card, s.button, s.chip, s.sheet], <double>[16, 12, 8, 24]);
       expect(
         s.sheetRadius.bottomLeft,
@@ -240,7 +240,7 @@ void main() {
     });
 
     test('motion is 100 / 200 / 300 / 400 / 1200 ms', () {
-      const m = DpMotionTokens.defaults;
+      const m = SgMotionTokens.defaults;
       expect(
         [
           m.instant,
@@ -256,7 +256,7 @@ void main() {
 
   group('gender colours', () {
     test('resolve from the article, case and padding insensitively', () {
-      const p = DpPalette.light;
+      const p = SgPalette.light;
       expect(p.forArticle('der'), p.der);
       expect(p.forArticle('DIE'), p.die);
       expect(p.forArticle(' das '), p.das);
@@ -264,14 +264,14 @@ void main() {
     });
 
     test('a word without an article has no gender colour', () {
-      const p = DpPalette.light;
+      const p = SgPalette.light;
       expect(p.forArticle(null), isNull);
       expect(p.forArticle(''), isNull);
       expect(p.forArticle('the'), isNull);
     });
 
     test('are distinct from the rating colours', () {
-      const p = DpPalette.light;
+      const p = SgPalette.light;
       final gender = {p.der, p.die, p.das};
       final ratings = {p.again, p.hard, p.easy};
       expect(gender.intersection(ratings), isEmpty);
@@ -280,7 +280,7 @@ void main() {
 
   group('the theme carries the tokens', () {
     testWidgets('context.tokens returns the light set', (tester) async {
-      late DpTokens seen;
+      late SgTokens seen;
       await tester.pumpWidget(
         MaterialApp(
           theme: AppTheme.light(),
@@ -293,9 +293,9 @@ void main() {
         ),
       );
 
-      expect(seen.mode, DpMode.light);
-      expect(seen.surface.card, DpSurfaceTokens.light.card);
-      expect(seen.color.primary, DpPalette.light.primary);
+      expect(seen.mode, SgMode.light);
+      expect(seen.surface.card, SgSurfaceTokens.light.card);
+      expect(seen.color.primary, SgPalette.light.primary);
     });
 
     testWidgets('the scaffold background is paper, not white', (tester) async {
@@ -303,13 +303,13 @@ void main() {
         MaterialApp(theme: AppTheme.light(), home: const Scaffold()),
       );
       final theme = Theme.of(tester.element(find.byType(Scaffold)));
-      expect(theme.scaffoldBackgroundColor, DpSurfaceTokens.light.paper);
+      expect(theme.scaffoldBackgroundColor, SgSurfaceTokens.light.paper);
     });
 
     test('lerp moves colours but never the scale', () {
-      final a = DpTokens.light();
-      final b = DpTokens.light().copyWith(
-        color: DpPalette.light.lerp(DpPalette.light, 1),
+      final a = SgTokens.light();
+      final b = SgTokens.light().copyWith(
+        color: SgPalette.light.lerp(SgPalette.light, 1),
       );
       final mid = a.lerp(b, 0.5);
       expect(mid.spacing.all, a.spacing.all);

@@ -2,18 +2,18 @@
 // so there is no parent scope for the lint's dependency list to describe.
 // ignore_for_file: riverpod_lint/scoped_providers_should_specify_dependencies
 
-import 'package:deutschplan/core/components/dp_button.dart';
-import 'package:deutschplan/core/providers/app_providers.dart';
-import 'package:deutschplan/data/db/app_database.dart';
-import 'package:deutschplan/data/repositories/setting_keys.dart';
-import 'package:deutschplan/data/repositories/settings_repository.dart';
-import 'package:deutschplan/data/repositories/word_repository.dart';
-import 'package:deutschplan/domain/fsrs.dart' show Rating;
-import 'package:deutschplan/features/study/study_back.dart';
-import 'package:deutschplan/features/study/study_rating.dart';
-import 'package:deutschplan/features/study/study_screen.dart';
-import 'package:deutschplan/features/study/study_session.dart';
-import 'package:deutschplan/router/routes.dart';
+import 'package:sogda/core/components/sg_button.dart';
+import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/data/db/app_database.dart';
+import 'package:sogda/data/repositories/setting_keys.dart';
+import 'package:sogda/data/repositories/settings_repository.dart';
+import 'package:sogda/data/repositories/word_repository.dart';
+import 'package:sogda/domain/fsrs.dart' show Rating;
+import 'package:sogda/features/study/study_back.dart';
+import 'package:sogda/features/study/study_rating.dart';
+import 'package:sogda/features/study/study_screen.dart';
+import 'package:sogda/features/study/study_session.dart';
+import 'package:sogda/router/routes.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart'
@@ -126,7 +126,7 @@ void main() {
   Future<void> answer(WidgetTester tester, String typed) async {
     await tester.enterText(find.byType(TextField), typed);
     await tester.pump();
-    await tester.tap(find.byType(DpButton).last);
+    await tester.tap(find.byType(SgButton).last);
   }
 
   goldenTest(

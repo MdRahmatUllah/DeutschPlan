@@ -1,5 +1,5 @@
-import 'package:deutschplan/core/theme/dp_tokens.dart';
-import 'package:deutschplan/core/typography/dp_text.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/core/typography/sg_text.dart';
 import 'package:material_ui/material_ui.dart';
 
 /// A one-line hint pointing at a control, in the Paper & Ink treatment: a Sun
@@ -9,8 +9,8 @@ import 'package:material_ui/material_ui.dart';
 /// FR-S2-03 puts one on Today's primary button after setup. The bubble floats
 /// above [child] in the overlay, so it neither moves the layout nor gets
 /// clipped by it; a tap on it dismisses it.
-class DpCoachMark extends StatefulWidget {
-  const DpCoachMark({
+class SgCoachMark extends StatefulWidget {
+  const SgCoachMark({
     required this.child,
     required this.message,
     required this.visible,
@@ -30,10 +30,10 @@ class DpCoachMark extends StatefulWidget {
   final VoidCallback? onShown;
 
   @override
-  State<DpCoachMark> createState() => _DpCoachMarkState();
+  State<SgCoachMark> createState() => _SgCoachMarkState();
 }
 
-class _DpCoachMarkState extends State<DpCoachMark> {
+class _SgCoachMarkState extends State<SgCoachMark> {
   final OverlayPortalController _portal = OverlayPortalController();
   final LayerLink _link = LayerLink();
   bool _reported = false;
@@ -45,7 +45,7 @@ class _DpCoachMarkState extends State<DpCoachMark> {
   }
 
   @override
-  void didUpdateWidget(DpCoachMark old) {
+  void didUpdateWidget(SgCoachMark old) {
     super.didUpdateWidget(old);
     if (old.visible != widget.visible) _sync();
   }
@@ -128,9 +128,9 @@ class _Bubble extends StatelessWidget {
                     horizontal: 14,
                     vertical: 10,
                   ),
-                  child: DpText(
+                  child: SgText(
                     message,
-                    role: DpTextRole.label,
+                    role: SgTextRole.label,
                     weight: 600,
                     color: tokens.color.onAccent,
                     textAlign: TextAlign.center,

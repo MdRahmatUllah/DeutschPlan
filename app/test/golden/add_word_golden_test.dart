@@ -1,5 +1,5 @@
-import 'package:deutschplan/data/repositories/search_repository.dart';
-import 'package:deutschplan/features/search/add_word_screen.dart';
+import 'package:sogda/data/repositories/search_repository.dart';
+import 'package:sogda/features/search/add_word_screen.dart';
 import 'package:drift/drift.dart' show Value;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';

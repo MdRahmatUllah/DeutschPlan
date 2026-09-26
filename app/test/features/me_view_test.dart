@@ -1,12 +1,12 @@
 import 'dart:io';
 
-import 'package:deutschplan/core/providers/app_providers.dart';
-import 'package:deutschplan/data/db/app_database.dart';
-import 'package:deutschplan/data/db/content_dao.dart';
-import 'package:deutschplan/data/repositories/setting_keys.dart';
-import 'package:deutschplan/data/repositories/settings_repository.dart';
-import 'package:deutschplan/features/me/me_screen.dart';
-import 'package:deutschplan/features/today/today_providers.dart';
+import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/data/db/app_database.dart';
+import 'package:sogda/data/db/content_dao.dart';
+import 'package:sogda/data/repositories/setting_keys.dart';
+import 'package:sogda/data/repositories/settings_repository.dart';
+import 'package:sogda/features/me/me_screen.dart';
+import 'package:sogda/features/today/today_providers.dart';
 import 'package:drift/drift.dart' show DatabaseConnection, Value;
 import 'package:drift/native.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -26,7 +26,7 @@ void main() {
   const today = '2026-09-21';
 
   setUp(() async {
-    directory = Directory.systemTemp.createTempSync('deutschplan_me');
+    directory = Directory.systemTemp.createTempSync('sogda_me');
     final content = ContentFixture.write('${directory.path}/content.db').file;
     // Last week's b1, b2 and c1 below must be in the course, or they are a
     // content update's removed words and not counted (BR-CONTENT-02).

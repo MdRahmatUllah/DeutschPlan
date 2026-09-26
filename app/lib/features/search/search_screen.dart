@@ -1,25 +1,25 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:deutschplan/core/adaptive/adaptive.dart';
-import 'package:deutschplan/core/components/dp_button.dart';
-import 'package:deutschplan/core/components/dp_chip.dart';
-import 'package:deutschplan/core/components/dp_feedback.dart';
-import 'package:deutschplan/core/providers/app_providers.dart';
-import 'package:deutschplan/core/theme/aurora_backdrop.dart';
-import 'package:deutschplan/core/theme/dp_surface.dart';
-import 'package:deutschplan/core/theme/dp_tokens.dart';
-import 'package:deutschplan/core/typography/dp_text.dart';
-import 'package:deutschplan/data/repositories/search_repository.dart';
-import 'package:deutschplan/data/repositories/setting_keys.dart';
-import 'package:deutschplan/data/repositories/settings_repository.dart';
-import 'package:deutschplan/data/repositories/word_repository.dart';
-import 'package:deutschplan/domain/text_norm.dart';
-import 'package:deutschplan/features/learn/step_words.dart';
-import 'package:deutschplan/features/words/word_row.dart';
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
-import 'package:deutschplan/router/cross_tab.dart';
-import 'package:deutschplan/router/routes.dart';
+import 'package:sogda/core/adaptive/adaptive.dart';
+import 'package:sogda/core/components/sg_button.dart';
+import 'package:sogda/core/components/sg_chip.dart';
+import 'package:sogda/core/components/sg_feedback.dart';
+import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/core/theme/aurora_backdrop.dart';
+import 'package:sogda/core/theme/sg_surface.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/core/typography/sg_text.dart';
+import 'package:sogda/data/repositories/search_repository.dart';
+import 'package:sogda/data/repositories/setting_keys.dart';
+import 'package:sogda/data/repositories/settings_repository.dart';
+import 'package:sogda/data/repositories/word_repository.dart';
+import 'package:sogda/domain/text_norm.dart';
+import 'package:sogda/features/learn/step_words.dart';
+import 'package:sogda/features/words/word_row.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
+import 'package:sogda/router/cross_tab.dart';
+import 'package:sogda/router/routes.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -330,7 +330,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                 ? Center(
                     child: Padding(
                       padding: const EdgeInsets.all(16),
-                      child: DpErrorPanel(
+                      child: SgErrorPanel(
                         message: l10n.searchFailed,
                         retryLabel: l10n.retry,
                         onRetry: () => ref.invalidate(
@@ -398,7 +398,7 @@ class _Header extends StatelessWidget {
         children: <Widget>[
           // On paper the field is the artboard's: 2 px ink and the hard
           // shadow. Under glass it is frosted like every other panel.
-          DpSurface(
+          SgSurface(
             radius: tokens.shape.button,
             selected: !tokens.isGlass,
             // The artboard's 52 as a minimum: at large text the hint wraps,
@@ -422,9 +422,9 @@ class _Header extends StatelessWidget {
                         textInputAction: TextInputAction.search,
                         onChanged: onChanged,
                         onSubmitted: onSubmitted,
-                        style: DpText.styleFor(
+                        style: SgText.styleFor(
                           tokens,
-                          DpTextRole.bodyLarge,
+                          SgTextRole.bodyLarge,
                           color: tokens.color.ink,
                         ),
                         decoration: InputDecoration.collapsed(
@@ -436,9 +436,9 @@ class _Header extends StatelessWidget {
                           // hint's three with the query at their top.
                           hintMaxLines: 3,
                           maintainHintSize: false,
-                          hintStyle: DpText.styleFor(
+                          hintStyle: SgText.styleFor(
                             tokens,
-                            DpTextRole.bodyLarge,
+                            SgTextRole.bodyLarge,
                             color: tokens.color.textSecondary,
                           ),
                         ),
@@ -478,9 +478,9 @@ class _Header extends StatelessWidget {
           ),
           if (step != null) ...<Widget>[
             const SizedBox(height: 10),
-            DpChip(
+            SgChip(
               label: step,
-              kind: DpChipKind.filter,
+              kind: SgChipKind.filter,
               selected: true,
               icon: Icon(Icons.close, size: 14, color: tokens.color.ink),
               semanticLabel: l10n.searchRemoveStep(step),
@@ -491,8 +491,8 @@ class _Header extends StatelessWidget {
       ),
     );
     return tokens.isGlass
-        ? DpSurface(
-            kind: DpSurfaceKind.tint(tokens.color.die),
+        ? SgSurface(
+            kind: SgSurfaceKind.tint(tokens.color.die),
             radius: 0,
             child: content,
           )
@@ -551,18 +551,18 @@ class _Results extends StatelessWidget {
                 (WordStatus.learning, l10n.wordStatusLearning),
                 (WordStatus.done, l10n.wordStatusDone),
               ])
-                DpChip(
+                SgChip(
                   label: label,
-                  kind: DpChipKind.filter,
+                  kind: SgChipKind.filter,
                   selected: status == value,
                   onTap: () => onStatus(value),
                 ),
               // One step (L2's, or a query that only has one) is no filter.
               if (steps.length > 1)
                 for (final code in steps)
-                  DpChip(
+                  SgChip(
                     label: code,
-                    kind: DpChipKind.filter,
+                    kind: SgChipKind.filter,
                     selected: step == code,
                     onTap: () => onStep(code),
                   ),
@@ -670,9 +670,9 @@ class _WebRow extends ConsumerWidget {
     return _Chips(
       children: <Widget>[
         for (final source in WebSource.values)
-          DpChip(
+          SgChip(
             label: source.label,
-            kind: DpChipKind.webLink,
+            kind: SgChipKind.webLink,
             semanticLabel: l10n.searchOpenWeb(source.label),
             onTap: () {
               onUse();
@@ -699,9 +699,9 @@ class _Heading extends StatelessWidget {
       // A heading to a screen reader too, so a learner can move group by
       // group.
       header: true,
-      child: DpText(
+      child: SgText(
         text.toUpperCase(),
-        role: DpTextRole.caption,
+        role: SgTextRole.caption,
         weight: 700,
         letterSpacing: 0.6,
         color: context.tokens.color.textSecondary,
@@ -767,9 +767,9 @@ class _SentenceRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final tokens = context.tokens;
-    final style = DpText.styleFor(
+    final style = SgText.styleFor(
       tokens,
-      DpTextRole.body,
+      SgTextRole.body,
       color: tokens.color.ink,
     ).copyWith(fontStyle: FontStyle.italic);
     final english = sentence.english;
@@ -796,7 +796,7 @@ class _SentenceRow extends StatelessWidget {
           children: <Widget>[
             // A long compound breaks at a syllable at 200 %, not at a
             // letter (#535).
-            DpGermanRuns(<TextSpan>[
+            SgGermanRuns(<TextSpan>[
               for (final (text, marked) in sentence.runs)
                 TextSpan(
                   text: text,
@@ -810,18 +810,18 @@ class _SentenceRow extends StatelessWidget {
             ]),
             if (english != null) ...<Widget>[
               const SizedBox(height: 2),
-              DpText(
+              SgText(
                 english,
-                role: DpTextRole.label,
+                role: SgTextRole.label,
                 weight: 400,
                 color: tokens.color.textSecondary,
               ),
             ],
             const SizedBox(height: 2),
-            DpText(
+            SgText(
               // ponytail: allow-literal — a headword and a step code, no number.
               '$head · ${sentence.step}',
-              role: DpTextRole.caption,
+              role: SgTextRole.caption,
               color: tokens.color.textSecondary,
             ),
           ],
@@ -866,9 +866,9 @@ class _Idle extends ConsumerWidget {
                   unawaited(ref.read(recentSearchesProvider.notifier).clear()),
               child: Padding(
                 padding: const EdgeInsets.only(right: 12),
-                child: DpButton(
+                child: SgButton(
                   label: l10n.searchClearRecent,
-                  kind: DpButtonKind.text,
+                  kind: SgButtonKind.text,
                   expand: false,
                   onPressed: () => unawaited(
                     ref.read(recentSearchesProvider.notifier).clear(),
@@ -884,9 +884,9 @@ class _Idle extends ConsumerWidget {
               runSpacing: 8,
               children: <Widget>[
                 for (final term in recent)
-                  DpChip(
+                  SgChip(
                     label: term,
-                    kind: DpChipKind.filter,
+                    kind: SgChipKind.filter,
                     onTap: () => onRecent(term),
                   ),
               ],
@@ -898,9 +898,9 @@ class _Idle extends ConsumerWidget {
             l10n.searchMyWords(words.length),
             trailing: Padding(
               padding: const EdgeInsets.only(right: 12),
-              child: DpText(
+              child: SgText(
                 l10n.searchMyWordsFrom,
-                role: DpTextRole.caption,
+                role: SgTextRole.caption,
                 color: tokens.color.textSecondary,
               ),
             ),
@@ -914,9 +914,9 @@ class _Idle extends ConsumerWidget {
         ],
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-          child: DpButton(
+          child: SgButton(
             label: l10n.searchAddWord,
-            kind: DpButtonKind.secondary,
+            kind: SgButtonKind.secondary,
             onPressed: () => AddWordRoute.open(context),
           ),
         ),
@@ -946,25 +946,25 @@ class _MyWordRow extends StatelessWidget {
     ].join(' · ');
     // Past 130 % text, as WordRow does (#550): the words whole over a line
     // with the chip and the chevron, not "das Pfand…" and a line cut short.
-    final large = DpScript.large(context);
+    final large = SgScript.large(context);
     final text = <Widget>[
-      DpHeadword(
+      SgHeadword(
         word.german,
         article: word.article,
-        role: DpTextRole.bodyLarge,
+        role: SgTextRole.bodyLarge,
         weight: 600,
         maxLines: large ? null : 1,
       ),
       const SizedBox(height: 2),
-      DpText(
+      SgText(
         line,
-        role: DpTextRole.label,
+        role: SgTextRole.label,
         weight: 400,
         maxLines: large ? null : 1,
         color: tokens.color.textSecondary,
       ),
     ];
-    final chip = DpChip(label: l10n.searchMyWord, kind: DpChipKind.status);
+    final chip = SgChip(label: l10n.searchMyWord, kind: SgChipKind.status);
     final chevron = Icon(
       Icons.chevron_right,
       size: 22,
@@ -1038,8 +1038,8 @@ class _NoResults extends ConsumerWidget {
     final links = SearchRepository.webLinks(query);
     // Above 100 % the German in a button may break at its syllables:
     // "Wohnungsgeberbestätigung" is wider than the button (#165, #516).
-    String breakable(String german) => DpScript.scaled(context)
-        ? DpScript.allowBreaks(german, threshold: 4)
+    String breakable(String german) => SgScript.scaled(context)
+        ? SgScript.allowBreaks(german, threshold: 4)
         : german;
     // #396: a word the learner has saved already is offered to open, not to
     // add twice. Keyed as the exact tier keys a word (R2's FR-R2-01 check),
@@ -1073,18 +1073,18 @@ class _NoResults extends ConsumerWidget {
         const SizedBox(height: 14),
         Semantics(
           header: true,
-          child: DpText(
+          child: SgText(
             l10n.searchNoneTitle,
-            role: DpTextRole.title,
+            role: SgTextRole.title,
             textAlign: TextAlign.center,
           ),
         ),
         const SizedBox(height: 14),
-        DpText(
+        SgText(
           words == null
               ? l10n.searchNoneBodyNoCount
               : l10n.searchNoneBody(words),
-          role: DpTextRole.caption,
+          role: SgTextRole.caption,
           textAlign: TextAlign.center,
           color: tokens.color.textSecondary,
         ),
@@ -1097,9 +1097,9 @@ class _NoResults extends ConsumerWidget {
           runSpacing: 8,
           children: <Widget>[
             for (final source in WebSource.values)
-              DpChip(
+              SgChip(
                 label: source.label,
-                kind: DpChipKind.webLink,
+                kind: SgChipKind.webLink,
                 large: true,
                 semanticLabel: l10n.searchOpenWeb(source.label),
                 onTap: () {
@@ -1111,7 +1111,7 @@ class _NoResults extends ConsumerWidget {
         ),
         const SizedBox(height: 28),
         if (mine == null)
-          DpButton(
+          SgButton(
             label: l10n.searchNoneAdd(breakable(query)),
             onPressed: () {
               onUse();
@@ -1119,14 +1119,14 @@ class _NoResults extends ConsumerWidget {
             },
           )
         else ...<Widget>[
-          DpText(
+          SgText(
             l10n.searchNoneMine,
-            role: DpTextRole.body,
+            role: SgTextRole.body,
             weight: 600,
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 10),
-          DpButton(
+          SgButton(
             label: l10n.searchNoneOpenMine(
               breakable(
                 mine.article == null
@@ -1134,7 +1134,7 @@ class _NoResults extends ConsumerWidget {
                     : '${mine.article} ${mine.german}',
               ),
             ),
-            kind: DpButtonKind.secondary,
+            kind: SgButtonKind.secondary,
             onPressed: () {
               onUse();
               EditCustomWordRoute.open(context, mine.id);
@@ -1142,9 +1142,9 @@ class _NoResults extends ConsumerWidget {
           ),
         ],
         const SizedBox(height: 14),
-        DpText(
+        SgText(
           l10n.searchNoneFootnote,
-          role: DpTextRole.caption,
+          role: SgTextRole.caption,
           textAlign: TextAlign.center,
           color: tokens.color.textSecondary,
         ),

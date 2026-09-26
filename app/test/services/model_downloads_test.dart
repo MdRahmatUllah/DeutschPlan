@@ -4,12 +4,12 @@ import 'dart:io';
 
 import 'package:background_downloader/background_downloader.dart';
 import 'package:crypto/crypto.dart';
-import 'package:deutschplan/data/db/app_database.dart';
-import 'package:deutschplan/data/repositories/model_repository.dart';
-import 'package:deutschplan/data/repositories/setting_keys.dart';
-import 'package:deutschplan/data/repositories/settings_repository.dart';
-import 'package:deutschplan/services/device_storage.dart';
-import 'package:deutschplan/services/model_downloads.dart';
+import 'package:sogda/data/db/app_database.dart';
+import 'package:sogda/data/repositories/model_repository.dart';
+import 'package:sogda/data/repositories/setting_keys.dart';
+import 'package:sogda/data/repositories/settings_repository.dart';
+import 'package:sogda/services/device_storage.dart';
+import 'package:sogda/services/model_downloads.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 /// The download manager (#156, FR-M4-01) over a fake platform downloader: the
@@ -56,7 +56,7 @@ void main() {
   ]);
 
   setUp(() async {
-    support = Directory.systemTemp.createTempSync('dp_downloads');
+    support = Directory.systemTemp.createTempSync('sg_downloads');
     final db = AppDatabase.memory();
     addTearDown(db.close);
     settings = SettingsRepository(db);

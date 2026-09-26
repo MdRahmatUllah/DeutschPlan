@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:deutschplan/core/typography/app_fonts.dart';
+import 'package:sogda/core/typography/app_fonts.dart';
 import 'package:flutter/services.dart' show FontLoader;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';

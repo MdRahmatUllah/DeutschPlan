@@ -4,7 +4,7 @@
 
 **Prototype.** `WordDetail` (sheet over Search for "die Straße").
 
-**Reached from.** R1, T2 overflow, T4, L2 Words, L6, L14, W2 column, deep link `deutschplan://word/<uid>`. **Leads to.** W2 (*Compare a synonym set*), R2 (*Edit* for custom words), in-app browser.
+**Reached from.** R1, T2 overflow, T4, L2 Words, L6, L14, W2 column, deep link `sogda://word/<uid>`. **Leads to.** W2 (*Compare a synonym set*), R2 (*Edit* for custom words), in-app browser.
 
 **Presentation.** Phones: bottom sheet with medium/large detents; tablets: right pane; deep link: full page.
 - The sheet opens at the large detent (740 of 844 px, as the artboard draws it). Medium is half the screen. Dragging below medium closes it.

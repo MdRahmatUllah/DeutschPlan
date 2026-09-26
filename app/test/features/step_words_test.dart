@@ -1,18 +1,18 @@
 import 'dart:io';
 
-import 'package:deutschplan/core/components/dp_chip.dart';
-import 'package:deutschplan/core/providers/app_providers.dart';
-import 'package:deutschplan/core/theme/app_theme.dart';
-import 'package:deutschplan/core/typography/dp_text.dart';
-import 'package:deutschplan/data/db/app_database.dart';
-import 'package:deutschplan/data/db/content_dao.dart';
-import 'package:deutschplan/data/repositories/settings_repository.dart';
-import 'package:deutschplan/data/repositories/word_repository.dart';
-import 'package:deutschplan/features/learn/step_detail_screen.dart';
-import 'package:deutschplan/features/learn/step_words.dart';
-import 'package:deutschplan/features/words/word_row.dart';
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
-import 'package:deutschplan/main.dart'
+import 'package:sogda/core/components/sg_chip.dart';
+import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/core/theme/app_theme.dart';
+import 'package:sogda/core/typography/sg_text.dart';
+import 'package:sogda/data/db/app_database.dart';
+import 'package:sogda/data/db/content_dao.dart';
+import 'package:sogda/data/repositories/settings_repository.dart';
+import 'package:sogda/data/repositories/word_repository.dart';
+import 'package:sogda/features/learn/step_detail_screen.dart';
+import 'package:sogda/features/learn/step_words.dart';
+import 'package:sogda/features/words/word_row.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
+import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
 import 'package:drift/drift.dart' show Value;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -20,7 +20,7 @@ import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
-import 'package:deutschplan/features/words/word_detail_screen.dart';
+import 'package:sogda/features/words/word_detail_screen.dart';
 
 import '../core/text_clipping.dart';
 import '../db/content_fixture.dart';
@@ -132,7 +132,7 @@ void main() {
     // A filter chip, not a row's status chip with the same words.
     await tester.tap(
       find.byWidgetPredicate(
-        (w) => w is DpChip && w.kind == DpChipKind.filter && w.label == label,
+        (w) => w is SgChip && w.kind == SgChipKind.filter && w.label == label,
       ),
     );
     await tester.pumpAndSettle();
@@ -211,7 +211,7 @@ void main() {
     expectNoWordBroken(tester, within: rows);
     final headword = find.descendant(
       of: rows.at(1),
-      matching: find.byType(DpHeadword),
+      matching: find.byType(SgHeadword),
     );
     expect(
       tester
@@ -323,7 +323,7 @@ void main() {
   test("the category chips: the step's categories, the biggest first", () async {
     final db = AppDatabase.memory();
     addTearDown(db.close);
-    final directory = Directory.systemTemp.createTempSync('dp_categories');
+    final directory = Directory.systemTemp.createTempSync('sg_categories');
     final content = ContentFixture.write('${directory.path}/content.db');
     await db.customStatement(
       "ATTACH DATABASE '${ContentDao.attachPath(content.file)}' AS c",
@@ -373,7 +373,7 @@ void main() {
     late SettingsRepository settings;
     await tester.runAsync(() async {
       db = AppDatabase.memory();
-      final directory = Directory.systemTemp.createTempSync('dp_words');
+      final directory = Directory.systemTemp.createTempSync('sg_words');
       final content = ContentFixture.write('${directory.path}/content.db');
       await db.customStatement(
         "ATTACH DATABASE '${ContentDao.attachPath(content.file)}' AS c",

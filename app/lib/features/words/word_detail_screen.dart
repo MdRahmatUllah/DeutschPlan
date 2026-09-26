@@ -1,37 +1,36 @@
 import 'dart:async';
 import 'dart:math' as math;
 
-import 'package:deutschplan/core/adaptive/orientation.dart';
-import 'package:deutschplan/core/adaptive/adaptive.dart';
-import 'package:deutschplan/core/components/dp_chip.dart';
-import 'package:deutschplan/core/components/dp_feedback.dart';
-import 'package:deutschplan/core/components/dp_speaker_button.dart';
-import 'package:deutschplan/core/providers/app_providers.dart';
-import 'package:deutschplan/core/theme/aurora_backdrop.dart';
-import 'package:deutschplan/core/theme/dp_surface.dart';
-import 'package:deutschplan/core/theme/dp_tokens.dart';
-import 'package:deutschplan/core/typography/dp_text.dart';
-import 'package:deutschplan/data/repositories/setting_keys.dart';
-import 'package:deutschplan/data/repositories/word_repository.dart';
-import 'package:deutschplan/domain/compare_set.dart' show comparesSet;
-import 'package:deutschplan/domain/fsrs.dart' show Rating;
-import 'package:deutschplan/domain/plan_engine.dart' show daysBetween;
-import 'package:deutschplan/features/study/study_back.dart';
-import 'package:deutschplan/features/study/study_card.dart';
-import 'package:deutschplan/features/today/today_providers.dart';
-import 'package:deutschplan/features/words/speak.dart';
-import 'package:deutschplan/features/words/word_row.dart';
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
-import 'package:deutschplan/router/cross_tab.dart';
-import 'package:deutschplan/router/routes.dart';
+import 'package:sogda/core/adaptive/orientation.dart';
+import 'package:sogda/core/adaptive/adaptive.dart';
+import 'package:sogda/core/components/sg_chip.dart';
+import 'package:sogda/core/components/sg_feedback.dart';
+import 'package:sogda/core/components/sg_speaker_button.dart';
+import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/core/theme/aurora_backdrop.dart';
+import 'package:sogda/core/theme/sg_surface.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/core/typography/sg_text.dart';
+import 'package:sogda/data/repositories/setting_keys.dart';
+import 'package:sogda/data/repositories/word_repository.dart';
+import 'package:sogda/domain/compare_set.dart' show comparesSet;
+import 'package:sogda/domain/fsrs.dart' show Rating;
+import 'package:sogda/domain/plan_engine.dart' show daysBetween;
+import 'package:sogda/features/study/study_back.dart';
+import 'package:sogda/features/study/study_card.dart';
+import 'package:sogda/features/today/today_providers.dart';
+import 'package:sogda/features/words/speak.dart';
+import 'package:sogda/features/words/word_row.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
+import 'package:sogda/router/cross_tab.dart';
+import 'package:sogda/router/routes.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:deutschplan/core/components/dp_button.dart';
-import 'package:deutschplan/data/repositories/rating_service.dart'
-    show CardMode;
-import 'package:deutschplan/data/repositories/search_repository.dart';
-import 'package:deutschplan/data/repositories/word_actions.dart';
+import 'package:sogda/core/components/sg_button.dart';
+import 'package:sogda/data/repositories/rating_service.dart' show CardMode;
+import 'package:sogda/data/repositories/search_repository.dart';
+import 'package:sogda/data/repositories/word_actions.dart';
 import 'package:flutter/services.dart' show Clipboard, ClipboardData;
 
 part 'word_detail_screen.g.dart';
@@ -183,7 +182,7 @@ void showWordDetail(BuildContext context, String uid) {
   );
 }
 
-/// W1 as a page of its own: `deutschplan://word/<uid>`, and the widget's
+/// W1 as a page of its own: `sogda://word/<uid>`, and the widget's
 /// *Pronounce* with `?speak=1` (FR-X1-02), which plays the headword on
 /// arrival.
 class WordDetailScreen extends ConsumerWidget {
@@ -326,7 +325,7 @@ class _WordDetailViewState extends ConsumerState<WordDetailView> {
     final Widget body;
     if (detail.hasError) {
       body = _Message(
-        child: DpErrorPanel(
+        child: SgErrorPanel(
           message: l10n.wordLoadFailed,
           retryLabel: l10n.retry,
           onRetry: () => ref.invalidate(wordDetailProvider(widget.uid)),
@@ -336,9 +335,9 @@ class _WordDetailViewState extends ConsumerState<WordDetailView> {
       body = _Body(detail: value);
     } else if (detail.hasValue) {
       body = _Message(
-        child: DpText(
+        child: SgText(
           l10n.wordNotFound,
-          role: DpTextRole.body,
+          role: SgTextRole.body,
           textAlign: TextAlign.center,
         ),
       );
@@ -478,7 +477,7 @@ class _Header extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Expanded(
-                child: DpHeadword(
+                child: SgHeadword(
                   word.word.german,
                   article: article,
                   plural: word.word.forms,
@@ -486,7 +485,7 @@ class _Header extends ConsumerWidget {
                 ),
               ),
               const SizedBox(width: 12),
-              DpSpeakerButton(
+              SgSpeakerButton(
                 semanticLabel: l10n.wordPronounce(spokenForm(word.word)),
                 state: speakerState(ref, spokenForm(word.word)),
                 onPressed: () =>
@@ -502,7 +501,7 @@ class _Header extends ConsumerWidget {
             spacing: 8,
             runSpacing: 8,
             children: <Widget>[
-              DpChip(label: word.word.sublevelCode, ink: onFill),
+              SgChip(label: word.word.sublevelCode, ink: onFill),
               WordStatusChip(word.status),
               if (updated) const UpdatedChip(),
             ],
@@ -522,8 +521,8 @@ class _Header extends ConsumerWidget {
         : content;
 
     if (tokens.isGlass) {
-      return DpSurface(
-        kind: gender == null ? DpSurfaceKind.bar : DpSurfaceKind.tint(gender),
+      return SgSurface(
+        kind: gender == null ? SgSurfaceKind.bar : SgSurfaceKind.tint(gender),
         radius: 0,
         child: framed,
       );
@@ -573,11 +572,11 @@ class _Body extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          DpText(
+          SgText(
             // A long compound's forms break at a syllable, not at any
             // letter; a shorter word wraps whole (#419).
-            DpScript.allowBreaks(frontCaption(word, l10n, pron: detail.pron)),
-            role: DpTextRole.caption,
+            SgScript.allowBreaks(frontCaption(word, l10n, pron: detail.pron)),
+            role: SgTextRole.caption,
             color: tokens.color.textSecondary,
             // Its Bangla pronunciation too, though no German in it is long
             // (#504).
@@ -585,19 +584,19 @@ class _Body extends ConsumerWidget {
           ),
           gap(12),
           if (english != null)
-            DpText(english, role: DpTextRole.bodyLarge, weight: 500),
+            SgText(english, role: SgTextRole.bodyLarge, weight: 500),
           if (english != null && bangla != null) gap(2),
           if (bangla != null)
-            DpText(
+            SgText(
               bangla,
-              role: DpTextRole.bodyLarge,
+              role: SgTextRole.bodyLarge,
               color: english == null ? null : tokens.color.textSecondary,
             ),
           if (detail.examples.isNotEmpty) ...<Widget>[
             gap(12),
-            DpText(
+            SgText(
               l10n.wordExamples.toUpperCase(),
-              role: DpTextRole.caption,
+              role: SgTextRole.caption,
               weight: 700,
               letterSpacing: 0.6,
               color: tokens.color.textSecondary,
@@ -611,9 +610,9 @@ class _Body extends ConsumerWidget {
               if (translated[example.german] case final line?)
                 Padding(
                   padding: const EdgeInsets.only(left: 42, top: 2),
-                  child: DpText(
+                  child: SgText(
                     line,
-                    role: DpTextRole.body,
+                    role: SgTextRole.body,
                     color: tokens.color.textSecondary,
                   ),
                 ),
@@ -621,7 +620,7 @@ class _Body extends ConsumerWidget {
           ],
           if (tip != null) ...<Widget>[
             gap(12),
-            DpCallout.text(l10n.studyTip(tipText(tip, meaning))),
+            SgCallout.text(l10n.studyTip(tipText(tip, meaning))),
           ],
           if (notes.isNotEmpty || compare) ...<Widget>[
             gap(12),
@@ -633,9 +632,9 @@ class _Body extends ConsumerWidget {
           ],
           if (caption != null) ...<Widget>[
             gap(12),
-            DpText(
+            SgText(
               caption,
-              role: DpTextRole.caption,
+              role: SgTextRole.caption,
               color: tokens.color.textSecondary,
             ),
           ],
@@ -680,7 +679,7 @@ class _ActionsState extends ConsumerState<_Actions> {
       final undo = await action(ref.read(wordActionsProvider));
       replan();
       if (!mounted) return;
-      DpUndo.show(
+      SgUndo.show(
         context,
         message: message,
         onUndo: () => unawaited(undo().then((_) => replan())),
@@ -730,9 +729,9 @@ class _ActionsState extends ConsumerState<_Actions> {
     final detail = widget.detail;
 
     Widget button(IconData icon, String label, VoidCallback onPressed) =>
-        DpButton(
+        SgButton(
           label: label,
-          kind: DpButtonKind.secondary,
+          kind: SgButtonKind.secondary,
           compact: true,
           expand: false,
           icon: Icon(icon, size: 18),
@@ -806,7 +805,7 @@ class _ActionsState extends ConsumerState<_Actions> {
               ),
             button(Icons.copy, l10n.wordCopy, () {
               unawaited(Clipboard.setData(ClipboardData(text: name)));
-              DpToast.show(context, l10n.wordCopied(name));
+              SgToast.show(context, l10n.wordCopied(name));
             }),
             // An English learner's examples come translated already.
             if (detail.translate &&
@@ -820,15 +819,15 @@ class _ActionsState extends ConsumerState<_Actions> {
           spacing: 8,
           runSpacing: 8,
           children: <Widget>[
-            DpChip(
+            SgChip(
               label: l10n.wordPlainCard,
-              kind: DpChipKind.filter,
+              kind: SgChipKind.filter,
               selected: !cloze,
               onTap: cloze && !_busy ? () => mode(CardMode.plain) : null,
             ),
-            DpChip(
+            SgChip(
               label: l10n.wordClozeCard,
-              kind: DpChipKind.filter,
+              kind: SgChipKind.filter,
               selected: cloze,
               onTap: !cloze && !_busy ? () => mode(CardMode.cloze) : null,
             ),
@@ -844,9 +843,9 @@ class _ActionsState extends ConsumerState<_Actions> {
               WebSource.dwds,
               WebSource.wiktionary,
             ])
-              DpChip(
+              SgChip(
                 label: source.label,
-                kind: DpChipKind.webLink,
+                kind: SgChipKind.webLink,
                 semanticLabel: l10n.searchOpenWeb(source.label),
                 onTap: () =>
                     unawaited(ref.read(openWebProvider)(links[source]!)),
@@ -883,7 +882,7 @@ class _Notes extends StatelessWidget {
           children: <Widget>[
             for (final (index, note) in notes.indexed) ...<Widget>[
               if (index > 0) const SizedBox(height: 4),
-              DpText(note, role: DpTextRole.caption),
+              SgText(note, role: SgTextRole.caption),
             ],
             if (uid != null) _CompareLink(uid: uid, set: set),
           ],
@@ -919,9 +918,9 @@ class _CompareLink extends StatelessWidget {
           child: Row(
             children: <Widget>[
               Flexible(
-                child: DpText(
+                child: SgText(
                   label,
-                  role: DpTextRole.caption,
+                  role: SgTextRole.caption,
                   weight: 700,
                   color: tokens.color.link,
                 ),

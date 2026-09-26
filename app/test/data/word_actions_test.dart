@@ -3,19 +3,18 @@ library;
 
 import 'dart:io';
 
-import 'package:deutschplan/data/db/app_database.dart';
-import 'package:deutschplan/data/db/content_dao.dart';
-import 'package:deutschplan/data/repositories/plan_repository.dart';
-import 'package:deutschplan/data/repositories/plan_store.dart';
-import 'package:deutschplan/data/repositories/rating_service.dart';
-import 'package:deutschplan/data/repositories/settings_repository.dart';
-import 'package:deutschplan/data/repositories/translation_repository.dart';
-import 'package:deutschplan/data/repositories/word_actions.dart';
-import 'package:deutschplan/data/repositories/word_repository.dart';
-import 'package:deutschplan/domain/fsrs.dart' show Rating;
-import 'package:deutschplan/domain/plan_engine.dart'
-    show ActiveStep, PlanEngine;
-import 'package:deutschplan/services/translation/translator.dart';
+import 'package:sogda/data/db/app_database.dart';
+import 'package:sogda/data/db/content_dao.dart';
+import 'package:sogda/data/repositories/plan_repository.dart';
+import 'package:sogda/data/repositories/plan_store.dart';
+import 'package:sogda/data/repositories/rating_service.dart';
+import 'package:sogda/data/repositories/settings_repository.dart';
+import 'package:sogda/data/repositories/translation_repository.dart';
+import 'package:sogda/data/repositories/word_actions.dart';
+import 'package:sogda/data/repositories/word_repository.dart';
+import 'package:sogda/domain/fsrs.dart' show Rating;
+import 'package:sogda/domain/plan_engine.dart' show ActiveStep, PlanEngine;
+import 'package:sogda/services/translation/translator.dart';
 import 'package:drift/drift.dart' hide isNotNull, isNull;
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -38,7 +37,7 @@ void main() {
   late RatingService rating;
 
   setUp(() async {
-    directory = Directory.systemTemp.createTempSync('deutschplan_actions');
+    directory = Directory.systemTemp.createTempSync('sogda_actions');
     final content = ContentFixture.write('${directory.path}/content.db').file;
     db = AppDatabase(DatabaseConnection(NativeDatabase.memory()));
     await db.customStatement(

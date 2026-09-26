@@ -1,17 +1,17 @@
 @TestOn('vm')
 library;
 
-import 'package:deutschplan/core/components/dp_feedback.dart';
-import 'package:deutschplan/core/providers/app_providers.dart';
-import 'package:deutschplan/core/theme/app_theme.dart';
-import 'package:deutschplan/core/theme/dp_tokens.dart';
-import 'package:deutschplan/data/db/app_database.dart';
-import 'package:deutschplan/data/repositories/exam_repository.dart';
-import 'package:deutschplan/data/repositories/setting_keys.dart';
-import 'package:deutschplan/data/repositories/settings_repository.dart';
-import 'package:deutschplan/domain/quiz_builder.dart' show QuizDirection;
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
-import 'package:deutschplan/main.dart'
+import 'package:sogda/core/components/sg_feedback.dart';
+import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/core/theme/app_theme.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/data/db/app_database.dart';
+import 'package:sogda/data/repositories/exam_repository.dart';
+import 'package:sogda/data/repositories/setting_keys.dart';
+import 'package:sogda/data/repositories/settings_repository.dart';
+import 'package:sogda/domain/quiz_builder.dart' show QuizDirection;
+import 'package:sogda/l10n/generated/app_localizations.dart';
+import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
@@ -145,10 +145,10 @@ void main() {
   group('the theme notifier', () {
     test('follows the setting', () async {
       final ref = container();
-      expect(ref.read(themeProvider), DpMode.light);
+      expect(ref.read(themeProvider), SgMode.light);
 
       await ref.read(themeProvider.notifier).choose(ThemeModeSetting.dark);
-      expect(ref.read(themeProvider), DpMode.dark);
+      expect(ref.read(themeProvider), SgMode.dark);
     });
 
     test('choosing writes the setting through, not around it', () async {
@@ -158,7 +158,7 @@ void main() {
       await ref.read(themeProvider.notifier).choose(ThemeModeSetting.glass);
 
       expect(settings.read(SettingKeys.themeMode), ThemeModeSetting.glass);
-      expect(ref.read(themeProvider), DpMode.glass);
+      expect(ref.read(themeProvider), SgMode.glass);
     });
 
     test('follows the platform only when the learner asked it to', () async {
@@ -167,13 +167,13 @@ void main() {
 
       // The default is `system`.
       theme.platformBrightnessChanged(Brightness.dark);
-      expect(ref.read(themeProvider), DpMode.dark);
+      expect(ref.read(themeProvider), SgMode.dark);
 
       await theme.choose(ThemeModeSetting.light);
       theme.platformBrightnessChanged(Brightness.dark);
       expect(
         ref.read(themeProvider),
-        DpMode.light,
+        SgMode.light,
         reason: 'the platform overrode an explicit choice',
       );
     });
@@ -201,12 +201,12 @@ void main() {
       await _settle();
 
       expect(rebuilds, 0);
-      expect(ref.read(themeProvider), DpMode.light);
+      expect(ref.read(themeProvider), SgMode.light);
     });
 
     test('and one that is following does rebuild', () async {
       final ref = container();
-      expect(ref.read(themeProvider), DpMode.light);
+      expect(ref.read(themeProvider), SgMode.light);
 
       var rebuilds = 0;
       ref.listen(themeProvider, (_, _) => rebuilds++);
@@ -217,7 +217,7 @@ void main() {
       await _settle();
 
       expect(rebuilds, 1);
-      expect(ref.read(themeProvider), DpMode.dark);
+      expect(ref.read(themeProvider), SgMode.dark);
     });
 
     test('glass is chosen, never inferred', () async {
@@ -227,7 +227,7 @@ void main() {
       ref
           .read(themeProvider.notifier)
           .platformBrightnessChanged(Brightness.dark);
-      expect(ref.read(themeProvider), DpMode.glass);
+      expect(ref.read(themeProvider), SgMode.glass);
     });
   });
 
@@ -354,7 +354,7 @@ void main() {
                     const AsyncValue<int>.error('nope', StackTrace.empty).when(
                       data: (value) => Text('$value'),
                       loading: () => const CircularProgressIndicator(),
-                      error: (error, stack) => DpErrorPanel(
+                      error: (error, stack) => SgErrorPanel(
                         message: 'Something went wrong.',
                         retryLabel: l10n.retry,
                         onRetry: () => retried++,
@@ -367,7 +367,7 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      expect(find.byType(DpErrorPanel), findsOneWidget);
+      expect(find.byType(SgErrorPanel), findsOneWidget);
       expect(find.text(l10n.retry), findsOneWidget);
 
       await tester.tap(find.text(l10n.retry));
@@ -377,7 +377,7 @@ void main() {
     test('the panel never shows a raw exception', () {
       // A learner cannot act on a stack trace. `detail` is documented as
       // "never a raw exception string"; this is the reminder in test form.
-      const panel = DpErrorPanel(message: 'x', retryLabel: 'Retry');
+      const panel = SgErrorPanel(message: 'x', retryLabel: 'Retry');
       expect(panel.detail, isNull);
     });
   });

@@ -1,7 +1,7 @@
 # Project structure
 
 ```
-deutschplan/                        ← repository root
+deutschplan/                  ← repository root
 ├── data/                           ← content sources, the German_*_Tracker.xlsx workbooks (git-ignored;
 │                                     only where content is edited). The pipeline compiles the ones
 │                                     content/manifest.yaml lists
@@ -43,7 +43,7 @@ deutschplan/                        ← repository root
     │   ├── main.dart · bootstrap.dart   ← startup: open user.db, attach content.db, load settings
     │   ├── core/                   ← adaptive/ (all platform chrome), components/, providers/
     │   │                              (every repository and service provider), theme/ (tokens, 3 modes,
-    │   │                              glass, AuroraBackdrop), typography/ (DpText)
+    │   │                              glass, AuroraBackdrop), typography/ (SgText)
     │   ├── data/
     │   │   ├── db/                 ← user_schema.drift (authoritative DDL), *_queries.drift, content.drift,
     │   │   │                          AppDatabase (with its migration steps), ContentDao, content attach

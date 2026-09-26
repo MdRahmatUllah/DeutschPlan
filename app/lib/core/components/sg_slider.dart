@@ -1,6 +1,6 @@
-import 'package:deutschplan/core/theme/dp_tokens.dart';
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
-import 'package:deutschplan/l10n/ui_digits.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
+import 'package:sogda/l10n/ui_digits.dart';
 import 'package:material_ui/material_ui.dart';
 
 /// A whole-number slider in the Paper & Ink treatment.
@@ -12,8 +12,8 @@ import 'package:material_ui/material_ui.dart';
 ///
 /// Settings draws a smaller one: [compact], a 4 dp track and a 20 dp thumb
 /// with no shadow.
-class DpSlider extends StatelessWidget {
-  const DpSlider({
+class SgSlider extends StatelessWidget {
+  const SgSlider({
     required this.value,
     required this.min,
     required this.max,

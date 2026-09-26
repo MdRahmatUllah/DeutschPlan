@@ -1,4 +1,4 @@
-package io.github.rahmatullah.deutschplan
+package de.sogda.app
 
 import android.os.Build
 import android.os.StatFs
@@ -27,13 +27,13 @@ import java.util.function.Consumer
  */
 class MainActivity : FlutterActivity() {
     private companion object {
-        const val CHANNEL = "deutschplan/glass"
+        const val CHANNEL = "sogda/glass"
 
         /** `lib/services/device_storage.dart`: M4's free space (#156). */
-        const val STORAGE_CHANNEL = "deutschplan/storage"
+        const val STORAGE_CHANNEL = "sogda/storage"
 
         /** `lib/services/start_report.dart`: the start drawn in full (#462). */
-        const val START_CHANNEL = "deutschplan/start"
+        const val START_CHANNEL = "sogda/start"
     }
 
     private var channel: MethodChannel? = null

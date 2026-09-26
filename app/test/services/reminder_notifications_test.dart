@@ -1,4 +1,5 @@
-import 'package:deutschplan/services/reminder_notifications.dart';
+import 'package:sogda/router/deep_links.dart';
+import 'package:sogda/services/reminder_notifications.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -71,4 +72,11 @@ void main() {
       expect(cancelled(), isNot(contains(1009911796)));
     },
   );
+
+  test("#601 a tapped reminder opens Today through the app's own scheme", () {
+    // A link in an older name's scheme would fall through to the fallback.
+    final link = Uri.parse(PlatformReminderNotifications.link);
+    expect(link.scheme, deepLinkScheme);
+    expect(resolveDeepLink(link), '/today');
+  });
 }

@@ -1,11 +1,11 @@
-import 'package:deutschplan/core/providers/app_providers.dart';
-import 'package:deutschplan/data/db/app_database.dart' show QuizAttempt;
-import 'package:deutschplan/data/repositories/exam_repository.dart'
+import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/data/db/app_database.dart' show QuizAttempt;
+import 'package:sogda/data/repositories/exam_repository.dart'
     show QuizMistakeRowsResult, QuizResult;
-import 'package:deutschplan/data/repositories/quiz_run_service.dart';
-import 'package:deutschplan/domain/answer_check.dart';
-import 'package:deutschplan/domain/plan_engine.dart' show PlanDate;
-import 'package:deutschplan/domain/quiz_builder.dart';
+import 'package:sogda/data/repositories/quiz_run_service.dart';
+import 'package:sogda/domain/answer_check.dart';
+import 'package:sogda/domain/plan_engine.dart' show PlanDate;
+import 'package:sogda/domain/quiz_builder.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 
 /// The QuizRunner artboard's run: Standard · DE → EN over A2.1, twenty

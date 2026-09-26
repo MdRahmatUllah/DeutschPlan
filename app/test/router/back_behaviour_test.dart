@@ -1,12 +1,12 @@
 @TestOn('vm')
 library;
 
-import 'package:deutschplan/features/exam/exam_runner_screen.dart';
-import 'package:deutschplan/features/backlog/backlog_screen.dart';
-import 'package:deutschplan/features/me/me_screen.dart';
-import 'package:deutschplan/features/me/reminder_days_screen.dart';
-import 'package:deutschplan/features/me/settings_screen.dart';
-import 'package:deutschplan/features/today/today_screen.dart';
+import 'package:sogda/features/exam/exam_runner_screen.dart';
+import 'package:sogda/features/backlog/backlog_screen.dart';
+import 'package:sogda/features/me/me_screen.dart';
+import 'package:sogda/features/me/reminder_days_screen.dart';
+import 'package:sogda/features/me/settings_screen.dart';
+import 'package:sogda/features/today/today_screen.dart';
 
 import '../features/today_fixtures.dart';
 
@@ -14,15 +14,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'dart:io';
 
-import 'package:deutschplan/core/theme/app_theme.dart';
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
-import 'package:deutschplan/main.dart'
+import 'package:sogda/core/theme/app_theme.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
+import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
-import 'package:deutschplan/router/app_router.dart';
-import 'package:deutschplan/router/app_shell.dart';
-import 'package:deutschplan/router/back_behaviour.dart';
-import 'package:deutschplan/router/route_guards.dart';
-import 'package:deutschplan/router/routes.dart';
+import 'package:sogda/router/app_router.dart';
+import 'package:sogda/router/app_shell.dart';
+import 'package:sogda/router/back_behaviour.dart';
+import 'package:sogda/router/route_guards.dart';
+import 'package:sogda/router/routes.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';

@@ -1,10 +1,10 @@
-import 'package:deutschplan/core/adaptive/adaptive.dart';
-import 'package:deutschplan/core/theme/dp_tokens.dart';
-import 'package:deutschplan/core/typography/dp_text.dart';
+import 'package:sogda/core/adaptive/adaptive.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/core/typography/sg_text.dart';
 import 'package:material_ui/material_ui.dart';
 
 /// The three button weights the Foundations artboard defines.
-enum DpButtonKind {
+enum SgButtonKind {
   /// The one call to action on a screen. 56 dp, brand fill, ink border, hard
   /// offset shadow. "Start today · 20 cards".
   primary,
@@ -24,12 +24,12 @@ enum DpButtonKind {
 ///
 /// Under glass the fill stays solid: `theming.md` says "Buttons stay solid so
 /// calls to action never blur".
-class DpButton extends StatefulWidget {
-  const DpButton({
+class SgButton extends StatefulWidget {
+  const SgButton({
     required this.label,
     required this.onPressed,
     super.key,
-    this.kind = DpButtonKind.primary,
+    this.kind = SgButtonKind.primary,
     this.icon,
     this.expand = true,
     this.colour,
@@ -44,7 +44,7 @@ class DpButton extends StatefulWidget {
   /// primary, so this has to render, not disappear.
   final VoidCallback? onPressed;
 
-  final DpButtonKind kind;
+  final SgButtonKind kind;
   final Widget? icon;
 
   /// Primary buttons are docked full width; a text button hugs its label.
@@ -84,16 +84,16 @@ class DpButton extends StatefulWidget {
   double get height => switch (kind) {
     _ when drawnHeight != null => drawnHeight!,
     _ when compact => compactHeight,
-    DpButtonKind.primary => primaryHeight,
-    DpButtonKind.secondary => secondaryHeight,
-    DpButtonKind.text => textHeight,
+    SgButtonKind.primary => primaryHeight,
+    SgButtonKind.secondary => secondaryHeight,
+    SgButtonKind.text => textHeight,
   };
 
   @override
-  State<DpButton> createState() => _DpButtonState();
+  State<SgButton> createState() => _SgButtonState();
 }
 
-class _DpButtonState extends State<DpButton> {
+class _SgButtonState extends State<SgButton> {
   bool _down = false;
 
   bool get _enabled => widget.onPressed != null;
@@ -104,26 +104,26 @@ class _DpButtonState extends State<DpButton> {
     final kind = widget.kind;
 
     final fill = switch (kind) {
-      DpButtonKind.primary => widget.colour ?? tokens.color.primary,
-      DpButtonKind.secondary => widget.colour ?? tokens.surface.muted,
-      DpButtonKind.text => null,
+      SgButtonKind.primary => widget.colour ?? tokens.color.primary,
+      SgButtonKind.secondary => widget.colour ?? tokens.surface.muted,
+      SgButtonKind.text => null,
     };
 
     final foreground =
         widget.onColour ??
         switch (kind) {
-          DpButtonKind.primary => tokens.color.onPrimary,
-          DpButtonKind.secondary => tokens.color.ink,
-          DpButtonKind.text => widget.colour ?? tokens.color.link,
+          SgButtonKind.primary => tokens.color.onPrimary,
+          SgButtonKind.secondary => tokens.color.ink,
+          SgButtonKind.text => widget.colour ?? tokens.color.link,
         };
 
-    final role = kind == DpButtonKind.primary && !widget.compact
-        ? DpTextRole.bodyLarge
-        : DpTextRole.body;
+    final role = kind == SgButtonKind.primary && !widget.compact
+        ? SgTextRole.bodyLarge
+        : SgTextRole.body;
 
     // Only the primary carries the hard offset shadow, and only when it is up.
-    final shadowed = kind == DpButtonKind.primary && !_down && _enabled;
-    final borderless = tokens.isGlass && kind == DpButtonKind.primary;
+    final shadowed = kind == SgButtonKind.primary && !_down && _enabled;
+    final borderless = tokens.isGlass && kind == SgButtonKind.primary;
 
     Widget content = Row(
       mainAxisSize: widget.expand ? MainAxisSize.max : MainAxisSize.min,
@@ -134,7 +134,7 @@ class _DpButtonState extends State<DpButton> {
           SizedBox(width: tokens.spacing.sm),
         ],
         Flexible(
-          child: DpText(
+          child: SgText(
             widget.label,
             role: role,
             weight: 600,
@@ -156,7 +156,7 @@ class _DpButtonState extends State<DpButton> {
     // is a disabled state designed on purpose: Today's Lime "All done".
     final live = _enabled || widget.colour != null;
 
-    if (kind != DpButtonKind.text) {
+    if (kind != SgButtonKind.text) {
       content = DecoratedBox(
         decoration: BoxDecoration(
           color: live ? fill : tokens.surface.muted,
@@ -201,10 +201,10 @@ class _DpButtonState extends State<DpButton> {
       heightFactor: 1,
       child: ConstrainedBox(
         constraints: BoxConstraints(
-          minHeight: kind == DpButtonKind.text
+          minHeight: kind == SgButtonKind.text
               ? (context.isCupertino
                     ? widget.height
-                    : DpButton.minimumTapTarget)
+                    : SgButton.minimumTapTarget)
               : widget.height,
           minWidth: widget.expand ? double.infinity : 0,
         ),
@@ -215,7 +215,7 @@ class _DpButtonState extends State<DpButton> {
       // Drawn at 40, touched at 48: the Align above centres the drawing in
       // the taller box.
       button = ConstrainedBox(
-        constraints: const BoxConstraints(minHeight: DpButton.minimumTapTarget),
+        constraints: const BoxConstraints(minHeight: SgButton.minimumTapTarget),
         child: button,
       );
     }
@@ -232,7 +232,7 @@ class _DpButtonState extends State<DpButton> {
           onTapCancel: _enabled ? () => setState(() => _down = false) : null,
           behavior: HitTestBehavior.opaque,
           // Always present so the tree shape does not change on press, which
-          // would drop the gesture — the same trap DpSurface hit in #188.
+          // would drop the gesture — the same trap SgSurface hit in #188.
           child: Transform.translate(
             offset: _down && _enabled && !context.tokens.isGlass
                 ? tokens.surface.shadowOffset

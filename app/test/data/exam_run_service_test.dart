@@ -1,13 +1,13 @@
 import 'dart:io';
 
-import 'package:deutschplan/data/db/app_database.dart';
-import 'package:deutschplan/data/repositories/exam_repository.dart';
-import 'package:deutschplan/data/repositories/exam_run_service.dart';
-import 'package:deutschplan/data/repositories/model_repository.dart';
-import 'package:deutschplan/data/repositories/setting_keys.dart';
-import 'package:deutschplan/data/repositories/settings_repository.dart';
-import 'package:deutschplan/domain/exam_generator.dart';
-import 'package:deutschplan/domain/grammar_item_generator.dart';
+import 'package:sogda/data/db/app_database.dart';
+import 'package:sogda/data/repositories/exam_repository.dart';
+import 'package:sogda/data/repositories/exam_run_service.dart';
+import 'package:sogda/data/repositories/model_repository.dart';
+import 'package:sogda/data/repositories/setting_keys.dart';
+import 'package:sogda/data/repositories/settings_repository.dart';
+import 'package:sogda/domain/exam_generator.dart';
+import 'package:sogda/domain/grammar_item_generator.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 /// L12's data over a real database (#130).
@@ -28,7 +28,7 @@ void main() {
       () => DateTime.utc(2026, 9, 21, 19),
       ModelRepository(
         settings,
-        support: Directory.systemTemp.createTempSync('dp_recordings'),
+        support: Directory.systemTemp.createTempSync('sg_recordings'),
       ),
     );
   });

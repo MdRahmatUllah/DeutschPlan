@@ -1,8 +1,8 @@
 import 'dart:ui' show LocaleStringAttribute, StringAttribute;
 
-import 'package:deutschplan/core/theme/dp_tokens.dart';
-import 'package:deutschplan/core/typography/app_fonts.dart';
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/core/typography/app_fonts.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:flutter/foundation.dart' show listEquals;
 import 'package:flutter/rendering.dart' show RenderParagraph, RenderProxyBox;
 import 'package:flutter/semantics.dart' show AttributedString;
@@ -10,28 +10,28 @@ import 'package:material_ui/material_ui.dart';
 
 /// One role of the type scale, named so callers ask for a role rather than a
 /// number. `docs/01-architecture/theming.md` defines all seven.
-enum DpTextRole { display, headline, title, bodyLarge, body, label, caption }
+enum SgTextRole { display, headline, title, bodyLarge, body, label, caption }
 
-extension DpTextRoleTokens on DpTextRole {
-  DpTextToken token(DpTypeTokens type) => switch (this) {
-    DpTextRole.display => type.display,
-    DpTextRole.headline => type.headline,
-    DpTextRole.title => type.title,
-    DpTextRole.bodyLarge => type.bodyLarge,
-    DpTextRole.body => type.body,
-    DpTextRole.label => type.label,
-    DpTextRole.caption => type.caption,
+extension SgTextRoleTokens on SgTextRole {
+  SgTextToken token(SgTypeTokens type) => switch (this) {
+    SgTextRole.display => type.display,
+    SgTextRole.headline => type.headline,
+    SgTextRole.title => type.title,
+    SgTextRole.bodyLarge => type.bodyLarge,
+    SgTextRole.body => type.body,
+    SgTextRole.label => type.label,
+    SgTextRole.caption => type.caption,
   };
 
   /// The next role up, used for Bangla. `display` is already the top.
-  DpTextRole get oneStepLarger => switch (this) {
-    DpTextRole.display => DpTextRole.display,
-    DpTextRole.headline => DpTextRole.display,
-    DpTextRole.title => DpTextRole.headline,
-    DpTextRole.bodyLarge => DpTextRole.title,
-    DpTextRole.body => DpTextRole.bodyLarge,
-    DpTextRole.label => DpTextRole.body,
-    DpTextRole.caption => DpTextRole.label,
+  SgTextRole get oneStepLarger => switch (this) {
+    SgTextRole.display => SgTextRole.display,
+    SgTextRole.headline => SgTextRole.display,
+    SgTextRole.title => SgTextRole.headline,
+    SgTextRole.bodyLarge => SgTextRole.title,
+    SgTextRole.body => SgTextRole.bodyLarge,
+    SgTextRole.label => SgTextRole.body,
+    SgTextRole.caption => SgTextRole.label,
   };
 
   /// The next role down: what is asked while typing past 130 % (the lead's
@@ -40,14 +40,14 @@ extension DpTextRoleTokens on DpTextRole {
   /// step over the Latin; but a Bangla run of a `display` role doesn't
   /// shrink (`headline.oneStepLarger` is `display`), moot while no prompt
   /// sets Bangla at display.
-  DpTextRole get oneStepSmaller => switch (this) {
-    DpTextRole.display => DpTextRole.headline,
-    DpTextRole.headline => DpTextRole.title,
-    DpTextRole.title => DpTextRole.bodyLarge,
-    DpTextRole.bodyLarge => DpTextRole.body,
-    DpTextRole.body => DpTextRole.label,
-    DpTextRole.label => DpTextRole.caption,
-    DpTextRole.caption => DpTextRole.caption,
+  SgTextRole get oneStepSmaller => switch (this) {
+    SgTextRole.display => SgTextRole.headline,
+    SgTextRole.headline => SgTextRole.title,
+    SgTextRole.title => SgTextRole.bodyLarge,
+    SgTextRole.bodyLarge => SgTextRole.body,
+    SgTextRole.body => SgTextRole.label,
+    SgTextRole.label => SgTextRole.caption,
+    SgTextRole.caption => SgTextRole.caption,
   };
 }
 
@@ -61,7 +61,7 @@ extension DpTextRoleTokens on DpTextRole {
 /// caption, the widget's Wort des Tages — so the step applies per run, not per
 /// string. A string that is half German gets German at its role and Bangla one
 /// step up, in the same line.
-abstract final class DpScript {
+abstract final class SgScript {
   /// The Bengali Unicode block.
   static const int _bengaliStart = 0x0980;
   static const int _bengaliEnd = 0x09FF;
@@ -149,7 +149,7 @@ abstract final class DpScript {
   /// The soft hyphen: a place a line may break.
   ///
   /// ponytail: Flutter breaks there but draws no hyphen at the break
-  /// (flutter/flutter#18443 is open); a headword and `DpText` draw it
+  /// (flutter/flutter#18443 is open); a headword and `SgText` draw it
   /// themselves (`_Hyphenated`, #419, #502).
   static const String softHyphen = '­';
 
@@ -234,7 +234,7 @@ abstract final class DpScript {
   static double grow(
     BuildContext context,
     double size, {
-    DpTextRole role = DpTextRole.body,
+    SgTextRole role = SgTextRole.body,
   }) {
     final text = role.token(context.tokens.typography).size;
     return size * MediaQuery.textScalerOf(context).scale(text) / text;
@@ -374,8 +374,8 @@ abstract final class DpScript {
 ///
 /// Screens use this rather than `Text` so the Bangla rule cannot be forgotten
 /// on the one screen where it matters most.
-class DpText extends StatelessWidget {
-  const DpText(
+class SgText extends StatelessWidget {
+  const SgText(
     this.data, {
     required this.role,
     super.key,
@@ -392,7 +392,7 @@ class DpText extends StatelessWidget {
   });
 
   final String data;
-  final DpTextRole role;
+  final SgTextRole role;
   final Color? color;
 
   /// Overrides the role's own weight on the variable font's `wght` axis.
@@ -424,15 +424,15 @@ class DpText extends StatelessWidget {
   Widget build(BuildContext context) {
     final tokens = context.tokens;
     final text = allowBreaks
-        ? DpScript.allowBreaks(
+        ? SgScript.allowBreaks(
             data,
-            threshold: DpScript.breakThreshold(context),
+            threshold: SgScript.breakThreshold(context),
           )
         : data;
 
     // Applied to every style, not just the Latin one: a weight silently
     // dropped on mixed strings would be dropped on most of this app's copy.
-    TextStyle dressed(DpTextRole forRole) {
+    TextStyle dressed(SgTextRole forRole) {
       final style = styleFor(tokens, forRole, color: color ?? tokens.color.ink)
           .copyWith(
             fontStyle: italic ? FontStyle.italic : FontStyle.normal,
@@ -450,11 +450,11 @@ class DpText extends StatelessWidget {
     Widget hyphenated(Widget child, List<TextSpan> runs) =>
         maxLines != null ||
             semanticsLabel != null ||
-            !(breakTooWide || german || text.contains(DpScript.softHyphen))
+            !(breakTooWide || german || text.contains(SgScript.softHyphen))
         ? child
         : _Hyphenated(runs: runs, child: child);
 
-    if (!german && !DpScript.hasBengali(text)) {
+    if (!german && !SgScript.hasBengali(text)) {
       return hyphenated(
         Text(
           text,
@@ -471,7 +471,7 @@ class DpText extends StatelessWidget {
     // so TalkBack and VoiceOver switch voices mid-string. The spans carry
     // the tags: a label on the whole would drop them (#162), so only a
     // caller's own replaces them.
-    final spans = DpScript.spans(
+    final spans = SgScript.spans(
       text,
       latin: base,
       bengali: dressed(role.oneStepLarger),
@@ -489,7 +489,7 @@ class DpText extends StatelessWidget {
   }
 
   /// The [TextStyle] for one role, with the family, fallback and `wght` axis set.
-  static TextStyle styleFor(DpTokens tokens, DpTextRole role, {Color? color}) {
+  static TextStyle styleFor(SgTokens tokens, SgTextRole role, {Color? color}) {
     final token = role.token(tokens.typography);
     return TextStyle(
       fontFamily: AppFonts.latin,
@@ -504,8 +504,8 @@ class DpText extends StatelessWidget {
 
 /// One line of [text], cut at a word rather than inside one: "konnte,
 /// musste, wollte — no …" and never "wol…". L2's rule previews.
-class DpOneLine extends StatelessWidget {
-  const DpOneLine(
+class SgOneLine extends StatelessWidget {
+  const SgOneLine(
     this.text, {
     required this.role,
     super.key,
@@ -515,7 +515,7 @@ class DpOneLine extends StatelessWidget {
   });
 
   final String text;
-  final DpTextRole role;
+  final SgTextRole role;
   final Color? color;
   final double? weight;
 
@@ -530,8 +530,8 @@ class DpOneLine extends StatelessWidget {
     // Measured as it will be drawn: `Text` merges the ambient text style —
     // a Material body's letter spacing — and a measure without it cut the
     // line a few pixels too late, clipping a letter in half.
-    TextStyle styled(DpTextRole at, {double? size}) {
-      final own = DpText.styleFor(context.tokens, at, color: color);
+    TextStyle styled(SgTextRole at, {double? size}) {
+      final own = SgText.styleFor(context.tokens, at, color: color);
       return DefaultTextStyle.of(context).style.merge(
         own.copyWith(
           fontSize: size,
@@ -541,13 +541,13 @@ class DpOneLine extends StatelessWidget {
     }
 
     final style = styled(role, size: size);
-    // Bangla one step larger, as DpText sets it (`theming.md`).
+    // Bangla one step larger, as SgText sets it (`theming.md`).
     final larger = styled(role.oneStepLarger);
-    TextSpan span(String line) => !DpScript.hasBengali(line)
+    TextSpan span(String line) => !SgScript.hasBengali(line)
         ? TextSpan(text: line, style: style)
         : TextSpan(
             style: style,
-            children: DpScript.spans(line, latin: style, bengali: larger),
+            children: SgScript.spans(line, latin: style, bengali: larger),
           );
     final scaler = MediaQuery.textScalerOf(context);
     final direction = Directionality.of(context);
@@ -583,7 +583,7 @@ class DpOneLine extends StatelessWidget {
               ? ellipsis
               : '${words.take(low).join(' ').replaceAll(RegExp(r'[,;:—–&·/+-]+$'), '').trimRight()}$ellipsis';
         }
-        return DpScript.hasBengali(shown)
+        return SgScript.hasBengali(shown)
             ? Text.rich(
                 span(shown),
                 maxLines: 1,
@@ -616,12 +616,12 @@ class DpOneLine extends StatelessWidget {
 /// its nominal size — a few pixels tall — which inverts the setting the learner
 /// chose. Wrapping onto two or three lines keeps the size they asked for, and a
 /// break opportunity is offered so the wrap lands somewhere sensible.
-class DpHeadword extends StatelessWidget {
-  const DpHeadword(
+class SgHeadword extends StatelessWidget {
+  const SgHeadword(
     this.word, {
     super.key,
     this.article,
-    this.role = DpTextRole.display,
+    this.role = SgTextRole.display,
     this.textAlign,
     this.weight,
     this.maxLines,
@@ -638,7 +638,7 @@ class DpHeadword extends StatelessWidget {
   /// says the noun is feminine and not a plural itself (#162).
   final String? plural;
 
-  final DpTextRole role;
+  final SgTextRole role;
   final TextAlign? textAlign;
 
   /// The role's own unless given: a list row sets its headword at 600.
@@ -658,7 +658,7 @@ class DpHeadword extends StatelessWidget {
     final tokens = context.tokens;
     final articleColour = tokens.color.textForArticle(article);
     TextStyle style(Color colour) {
-      final base = DpText.styleFor(tokens, role, color: colour);
+      final base = SgText.styleFor(tokens, role, color: colour);
       return weight == null
           ? base
           : base.copyWith(fontVariations: AppFonts.weight(weight!));
@@ -666,9 +666,9 @@ class DpHeadword extends StatelessWidget {
 
     final articleStyle = style(colour ?? articleColour ?? tokens.color.ink);
     final wordStyle = style(colour ?? tokens.color.ink);
-    final broken = DpScript.allowBreaks(
+    final broken = SgScript.allowBreaks(
       word,
-      threshold: DpScript.breakThreshold(context),
+      threshold: SgScript.breakThreshold(context),
     );
     final text = Text.rich(
       TextSpan(
@@ -695,7 +695,7 @@ class DpHeadword extends StatelessWidget {
         attributes: <StringAttribute>[
           LocaleStringAttribute(
             range: TextRange(start: 0, end: said.length),
-            locale: DpScript.deDE,
+            locale: SgScript.deDE,
           ),
         ],
       ),
@@ -728,13 +728,13 @@ class DpHeadword extends StatelessWidget {
         };
 }
 
-/// Text in runs of their own style and voice, laid out as [DpText] is: a
+/// Text in runs of their own style and voice, laid out as [SgText] is: a
 /// word too wide for its line breaks at a syllable and shows its "-", in
 /// its run's style (#419), and a screen reader hears each run whole in its
 /// own voice (#162). For a text whose parts differ: T2's verdict, the
 /// German marked in the app's copy (#539).
-class DpRuns extends StatelessWidget {
-  const DpRuns(
+class SgRuns extends StatelessWidget {
+  const SgRuns(
     this.runs, {
     super.key,
     this.style,
@@ -780,10 +780,10 @@ class DpRuns extends StatelessWidget {
 }
 
 /// The course's German in runs of their own style, as R1 draws a sentence
-/// with the searched word marked: [DpRuns], every run in a German voice
+/// with the searched word marked: [SgRuns], every run in a German voice
 /// (#535, #539).
-class DpGermanRuns extends StatelessWidget {
-  const DpGermanRuns(
+class SgGermanRuns extends StatelessWidget {
+  const SgGermanRuns(
     this.runs, {
     super.key,
     this.style,
@@ -800,20 +800,20 @@ class DpGermanRuns extends StatelessWidget {
   final TextScaler? textScaler;
 
   @override
-  Widget build(BuildContext context) => DpRuns(
+  Widget build(BuildContext context) => SgRuns(
     <TextSpan>[
       for (final run in runs)
         TextSpan(
           text: run.text,
           style: run.style,
           recognizer: run.recognizer,
-          locale: DpScript.deDE,
+          locale: SgScript.deDE,
         ),
     ],
     style: style,
     textAlign: textAlign,
     textScaler: textScaler,
-    locale: DpScript.deDE,
+    locale: SgScript.deDE,
   );
 }
 
@@ -830,7 +830,7 @@ class _Hyphenated extends SingleChildRenderObjectWidget {
 
   /// The text in runs of one style and voice, with their soft hyphens: a
   /// headword's article and word, or a text's scripts, German or the app's
-  /// copy and Bangla one role larger (`DpScript.spans`, #502).
+  /// copy and Bangla one role larger (`SgScript.spans`, #502).
   final List<TextSpan> runs;
 
   @override
@@ -879,7 +879,7 @@ class _RenderHyphenated extends RenderProxyBox {
           style: run.style,
           recognizer: run.recognizer,
           locale: run.locale,
-          semanticsLabel: run.text!.replaceAll(DpScript.softHyphen, ''),
+          semanticsLabel: run.text!.replaceAll(SgScript.softHyphen, ''),
         ),
     ],
   );
@@ -930,12 +930,12 @@ class _RenderHyphenated extends RenderProxyBox {
     }
 
     // [word] in [style], as small as it must be to fit a line of its own,
-    // down to [DpScript.banglaShrink] of its size; null if even that is
+    // down to [SgScript.banglaShrink] of its size; null if even that is
     // too wide.
     TextStyle? fitted(String word, TextStyle? style) {
       final size = style?.fontSize ?? root?.fontSize;
       if (size == null) return null;
-      for (var scale = 0.95; scale >= DpScript.banglaShrink - 0.001;) {
+      for (var scale = 0.95; scale >= SgScript.banglaShrink - 0.001;) {
         final smaller = (style ?? const TextStyle()).copyWith(
           fontSize: size * scale,
         );
@@ -976,9 +976,9 @@ class _RenderHyphenated extends RenderProxyBox {
         final space = i == 0 ? '' : ' ';
         final fits =
             word.isEmpty ||
-            word.contains(DpScript.softHyphen) ||
+            word.contains(SgScript.softHyphen) ||
             widthOf([TextSpan(text: word, style: run.style)]) <= width;
-        if (!fits && DpScript.hasBengali(word)) {
+        if (!fits && SgScript.hasBengali(word)) {
           // Shrunk to fit; or, too wide even at the floor, broken between
           // aksharas at that reduced size, the owner's order (#522).
           final smaller = fitted(word, run.style);
@@ -988,12 +988,12 @@ class _RenderHyphenated extends RenderProxyBox {
               (size == null
                   ? run.style
                   : (run.style ?? const TextStyle()).copyWith(
-                      fontSize: size * DpScript.banglaShrink,
+                      fontSize: size * SgScript.banglaShrink,
                     ));
           part('$said$space', '$shown$space', run.style);
           part(
             word,
-            smaller == null ? DpScript.banglaBreaks(word) : word,
+            smaller == null ? SgScript.banglaBreaks(word) : word,
             reduced,
           );
           (said, shown, shrunk) = ('', '', true);
@@ -1003,16 +1003,16 @@ class _RenderHyphenated extends RenderProxyBox {
         shown +=
             '$space${fits
                 ? word
-                : DpScript.hasBengali(word)
-                ? DpScript.banglaBreaks(word)
-                : DpScript.allowBreaks(word, threshold: 4)}';
+                : SgScript.hasBengali(word)
+                ? SgScript.banglaBreaks(word)
+                : SgScript.allowBreaks(word, threshold: 4)}';
       }
       part(said, shown, run.style);
     }
     final full = texts.join();
     // A soft hyphen in Bangla breaks with no "-" (#522).
     bool bare(int at) =>
-        at + 1 < full.length && DpScript.isBengaliRune(full.codeUnitAt(at + 1));
+        at + 1 < full.length && SgScript.isBengaliRune(full.codeUnitAt(at + 1));
     final starts = [0];
     for (final text in texts) {
       starts.add(starts.last + text.length);
@@ -1049,7 +1049,7 @@ class _RenderHyphenated extends RenderProxyBox {
     for (var i = 0; i < full.length; i++) {
       final c = full[i];
       final held = i + 1 < full.length && '/)]}!?,.;:'.contains(full[i + 1]);
-      if ((c == ' ' && !held) || c == DpScript.softHyphen) {
+      if ((c == ' ' && !held) || c == SgScript.softHyphen) {
         pieces.add((from, i, c));
         from = i + 1;
       } else if ('-/–—'.contains(c) && i + 1 < full.length) {
@@ -1064,7 +1064,7 @@ class _RenderHyphenated extends RenderProxyBox {
     var (line, end, after) = pieces.first;
     for (final (start, to, next) in pieces.skip(1)) {
       // Room for the "-" should the line end at this piece's syllable.
-      final hyphen = next == DpScript.softHyphen && !bare(to) ? '-' : '';
+      final hyphen = next == SgScript.softHyphen && !bare(to) ? '-' : '';
       if (widthOf(stretch(line, to, hyphen)) <= width) {
         (end, after) = (to, next);
         continue;
@@ -1082,7 +1082,7 @@ class _RenderHyphenated extends RenderProxyBox {
       for (var i = starts[run]; i < starts[run + 1]; i++) {
         text.write(switch (ends[i]) {
           ' ' => '\n',
-          DpScript.softHyphen => bare(i) ? '\n' : '-\n',
+          SgScript.softHyphen => bare(i) ? '\n' : '-\n',
           _ => full[i],
         });
         // After a dash, the line ends after it.

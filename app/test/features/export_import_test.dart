@@ -1,19 +1,19 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:deutschplan/core/adaptive/adaptive.dart';
-import 'package:deutschplan/core/providers/app_providers.dart';
-import 'package:deutschplan/core/theme/app_theme.dart';
-import 'package:deutschplan/data/db/app_database.dart';
-import 'package:deutschplan/data/db/content_dao.dart';
-import 'package:deutschplan/data/repositories/backup_repository.dart';
-import 'package:deutschplan/data/repositories/setting_keys.dart';
-import 'package:deutschplan/data/repositories/settings_repository.dart';
-import 'package:deutschplan/features/me/export_import_screen.dart';
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
-import 'package:deutschplan/main.dart'
+import 'package:sogda/core/adaptive/adaptive.dart';
+import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/core/theme/app_theme.dart';
+import 'package:sogda/data/db/app_database.dart';
+import 'package:sogda/data/db/content_dao.dart';
+import 'package:sogda/data/repositories/backup_repository.dart';
+import 'package:sogda/data/repositories/setting_keys.dart';
+import 'package:sogda/data/repositories/settings_repository.dart';
+import 'package:sogda/features/me/export_import_screen.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
+import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
-import 'package:deutschplan/services/backup_files.dart';
+import 'package:sogda/services/backup_files.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
@@ -59,7 +59,7 @@ void main() {
 
   setUpAll(() async {
     l10n = await AppLocalizations.delegate.load(supportedLocales.first);
-    directory = Directory.systemTemp.createTempSync('deutschplan_m6');
+    directory = Directory.systemTemp.createTempSync('sogda_m6');
     content = ContentFixture.write('${directory.path}/content.db').file;
   });
 
@@ -150,7 +150,7 @@ void main() {
   }
 
   Future<void> choose(WidgetTester tester, String json) async {
-    files.picked = (name: 'deutschplan-2026-09-20.json', json: json);
+    files.picked = (name: 'sogda-2026-09-20.json', json: json);
     await tester.tap(find.text(l10n.exportImportChoose));
     await tester.pumpAndSettle();
   }
@@ -176,7 +176,7 @@ void main() {
       await tester.pumpAndSettle();
 
       final file = files.shared.single;
-      expect(file.name, 'deutschplan-2026-09-21.json');
+      expect(file.name, 'sogda-2026-09-21.json');
       final backup = jsonDecode(file.json) as Map<String, Object?>;
       expect(backup['content_version'], ContentFixture.version);
       final tables = backup['tables']! as Map<String, Object?>;
@@ -206,7 +206,7 @@ void main() {
 
       await choose(tester, await otherPhone());
 
-      expect(find.text('deutschplan-2026-09-20.json'), findsOneWidget);
+      expect(find.text('sogda-2026-09-20.json'), findsOneWidget);
       expect(
         find.text('2 word states · last active 20 Sep · A1.1'),
         findsOneWidget,
@@ -285,7 +285,7 @@ void main() {
       files.picked = null;
       await tester.tap(find.text(l10n.exportImportChooseOther));
       await tester.pumpAndSettle();
-      expect(find.text('deutschplan-2026-09-20.json'), findsOneWidget);
+      expect(find.text('sogda-2026-09-20.json'), findsOneWidget);
     });
   });
 

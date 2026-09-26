@@ -1,14 +1,14 @@
 import 'dart:io';
 
-import 'package:deutschplan/data/db/app_database.dart';
-import 'package:deutschplan/domain/compare_set.dart';
-import 'package:deutschplan/domain/placement.dart';
-import 'package:deutschplan/domain/text_norm.dart' show searchKey;
+import 'package:sogda/data/db/app_database.dart';
+import 'package:sogda/domain/compare_set.dart';
+import 'package:sogda/domain/placement.dart';
+import 'package:sogda/domain/text_norm.dart' show searchKey;
 import 'package:drift/drift.dart';
 
 import 'dart:convert';
 
-import 'package:deutschplan/data/db/content_update.dart';
+import 'package:sogda/data/db/content_update.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:path_provider/path_provider.dart';
 

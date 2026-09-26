@@ -1,7 +1,7 @@
 import 'dart:isolate';
 
-import 'package:deutschplan/data/db/app_database.dart';
-import 'package:deutschplan/domain/grammar_item_generator.dart';
+import 'package:sogda/data/db/app_database.dart';
+import 'package:sogda/domain/grammar_item_generator.dart';
 
 /// #330: what the grammar generator checks a made-up form against and takes
 /// *Pick the form*'s sentence from — every word, its forms and examples, and

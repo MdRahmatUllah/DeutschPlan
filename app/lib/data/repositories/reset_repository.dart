@@ -1,8 +1,8 @@
-import 'package:deutschplan/data/db/app_database.dart';
-import 'package:deutschplan/data/repositories/backup_repository.dart';
-import 'package:deutschplan/data/repositories/setting_keys.dart';
-import 'package:deutschplan/data/repositories/settings_repository.dart';
-import 'package:deutschplan/domain/plan_engine.dart'
+import 'package:sogda/data/db/app_database.dart';
+import 'package:sogda/data/repositories/backup_repository.dart';
+import 'package:sogda/data/repositories/setting_keys.dart';
+import 'package:sogda/data/repositories/settings_repository.dart';
+import 'package:sogda/domain/plan_engine.dart'
     show PlanDate, addDays, parsePlanDate, planDate;
 import 'package:drift/drift.dart' show Variable;
 

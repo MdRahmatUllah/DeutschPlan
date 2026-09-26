@@ -4,7 +4,7 @@
 `pubspec.yaml` `version: MAJOR.MINOR.PATCH+BUILD`. Content has its own `content_version` (build timestamp) shown in About; a content-only release bumps PATCH.
 
 ## Android (#170)
-- **The app id** is `io.github.rahmatullah.deutschplan`, the owner's. It can never change once the app is on Play. The Kotlin sources live in `android/app/src/main/kotlin/io/github/rahmatullah/deutschplan/`.
+- **The app id** is `de.sogda.app`, the owner's (ADR 28; it replaced `io.github.rahmatullah.deutschplan`, #170, before the first upload). It can never change once the app is on Play. The Kotlin sources live in `android/app/src/main/kotlin/de/sogda/app/`.
 - **Signing.** Release builds use the owner's upload key when `app/android/key.properties` exists. It is gitignored, as are keystores, so it's never committed:
   ```
   storePassword=…
@@ -36,7 +36,7 @@
 
 - Deployment target 16.0; SPM; `flutter build ipa --release`.
 - Privacy manifest: no tracking; mic usage string; notifications; background modes `fetch` + `processing` for downloads/widget refresh.
-- Widget extension target shares App Group `group.app.deutschplan`.
+- Widget extension target shares App Group `group.de.sogda.app`.
 
 ## Checklist
 1. `make lint test goldens-verify` green (not `make goldens`, which rewrites every golden instead of checking it); integration smoke on both platforms.

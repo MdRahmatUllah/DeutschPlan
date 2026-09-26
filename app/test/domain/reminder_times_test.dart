@@ -1,4 +1,4 @@
-import 'package:deutschplan/domain/reminder_times.dart';
+import 'package:sogda/domain/reminder_times.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 /// #157: when the daily reminder fires.

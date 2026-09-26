@@ -1,20 +1,20 @@
 import 'dart:io';
 
-import 'package:deutschplan/core/components/dp_rating_bar.dart';
-import 'package:deutschplan/core/providers/app_providers.dart';
-import 'package:deutschplan/core/theme/app_theme.dart';
-import 'package:deutschplan/data/db/app_database.dart';
-import 'package:deutschplan/data/db/content_dao.dart';
-import 'package:deutschplan/data/repositories/setting_keys.dart';
-import 'package:deutschplan/data/repositories/settings_repository.dart';
-import 'package:deutschplan/features/study/study_card.dart';
-import 'package:deutschplan/features/study/study_motion.dart';
-import 'package:deutschplan/features/study/study_screen.dart';
-import 'package:deutschplan/features/study/study_session.dart';
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
-import 'package:deutschplan/main.dart'
+import 'package:sogda/core/components/sg_rating_bar.dart';
+import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/core/theme/app_theme.dart';
+import 'package:sogda/data/db/app_database.dart';
+import 'package:sogda/data/db/content_dao.dart';
+import 'package:sogda/data/repositories/setting_keys.dart';
+import 'package:sogda/data/repositories/settings_repository.dart';
+import 'package:sogda/features/study/study_card.dart';
+import 'package:sogda/features/study/study_motion.dart';
+import 'package:sogda/features/study/study_screen.dart';
+import 'package:sogda/features/study/study_session.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
+import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
-import 'package:deutschplan/router/routes.dart';
+import 'package:sogda/router/routes.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
@@ -53,7 +53,7 @@ void main() {
   }) async {
     await tester.runAsync(() async {
       db = AppDatabase.memory();
-      final directory = Directory.systemTemp.createTempSync('dp_motion');
+      final directory = Directory.systemTemp.createTempSync('sg_motion');
       final content = ContentFixture.write('${directory.path}/content.db');
       await db.customStatement(
         "ATTACH DATABASE '${ContentDao.attachPath(content.file)}' AS c",
@@ -235,7 +235,7 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code) VALUES
 
     testWidgets('every swipe keeps its button: the bar stays', (tester) async {
       await pump(tester, swipe: true);
-      expect(find.byType(DpRatingBar), findsOneWidget);
+      expect(find.byType(SgRatingBar), findsOneWidget);
     });
   });
 

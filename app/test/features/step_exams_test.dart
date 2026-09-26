@@ -1,13 +1,13 @@
-import 'package:deutschplan/core/theme/app_theme.dart';
-import 'package:deutschplan/core/theme/dp_tokens.dart';
-import 'package:deutschplan/core/components/dp_pill.dart';
-import 'package:deutschplan/data/repositories/exam_repository.dart';
-import 'package:deutschplan/data/repositories/word_repository.dart';
-import 'package:deutschplan/features/learn/step_exams.dart';
-import 'package:deutschplan/features/today/today_providers.dart';
-import 'package:deutschplan/features/today/today_view.dart';
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
-import 'package:deutschplan/main.dart'
+import 'package:sogda/core/theme/app_theme.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/core/components/sg_pill.dart';
+import 'package:sogda/data/repositories/exam_repository.dart';
+import 'package:sogda/data/repositories/word_repository.dart';
+import 'package:sogda/features/learn/step_exams.dart';
+import 'package:sogda/features/today/today_providers.dart';
+import 'package:sogda/features/today/today_view.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
+import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
@@ -133,8 +133,8 @@ void main() {
   group('FR-L10-02 each mock\'s card', () {
     testWidgets('passed: its best score, in Lime', (tester) async {
       await pump(tester);
-      final pill = tester.widget<DpPill>(
-        find.descendant(of: card(1), matching: find.byType(DpPill)),
+      final pill = tester.widget<SgPill>(
+        find.descendant(of: card(1), matching: find.byType(SgPill)),
       );
       final tokens = tester.element(card(1)).tokens;
 
@@ -153,8 +153,8 @@ void main() {
 
     testWidgets('not yet: its best score, in Coral', (tester) async {
       await pump(tester);
-      final pill = tester.widget<DpPill>(
-        find.descendant(of: card(2), matching: find.byType(DpPill)),
+      final pill = tester.widget<SgPill>(
+        find.descendant(of: card(2), matching: find.byType(SgPill)),
       );
 
       expect(pill.label, l10n.examHubNotYet(62));
@@ -200,7 +200,7 @@ void main() {
       );
 
       expect(
-        find.descendant(of: card(1), matching: find.byType(DpPill)),
+        find.descendant(of: card(1), matching: find.byType(SgPill)),
         findsNothing,
       );
       expect(

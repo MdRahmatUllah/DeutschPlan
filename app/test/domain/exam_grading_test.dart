@@ -1,10 +1,10 @@
 import 'dart:convert';
 
-import 'package:deutschplan/domain/answer_check.dart';
-import 'package:deutschplan/domain/exam_generator.dart';
-import 'package:deutschplan/domain/exam_grading.dart';
-import 'package:deutschplan/domain/grammar_item_generator.dart';
-import 'package:deutschplan/domain/quiz_builder.dart';
+import 'package:sogda/domain/answer_check.dart';
+import 'package:sogda/domain/exam_generator.dart';
+import 'package:sogda/domain/exam_grading.dart';
+import 'package:sogda/domain/grammar_item_generator.dart';
+import 'package:sogda/domain/quiz_builder.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 /// `exam_grading.dart` — #84.

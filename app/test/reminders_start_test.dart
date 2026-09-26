@@ -1,10 +1,10 @@
-import 'package:deutschplan/core/providers/app_providers.dart';
-import 'package:deutschplan/data/db/app_database.dart';
-import 'package:deutschplan/data/repositories/setting_keys.dart';
-import 'package:deutschplan/data/repositories/settings_repository.dart';
-import 'package:deutschplan/main.dart';
-import 'package:deutschplan/services/background_work.dart';
-import 'package:deutschplan/services/reminder_notifications.dart';
+import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/data/db/app_database.dart';
+import 'package:sogda/data/repositories/setting_keys.dart';
+import 'package:sogda/data/repositories/settings_repository.dart';
+import 'package:sogda/main.dart';
+import 'package:sogda/services/background_work.dart';
+import 'package:sogda/services/reminder_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';

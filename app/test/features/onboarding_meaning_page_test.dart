@@ -1,19 +1,19 @@
 @TestOn('vm')
 library;
 
-import 'package:deutschplan/core/adaptive/adaptive.dart';
-import 'package:deutschplan/core/components/dp_button.dart';
-import 'package:deutschplan/core/providers/app_providers.dart';
-import 'package:deutschplan/core/theme/app_theme.dart';
-import 'package:deutschplan/core/theme/dp_surface.dart';
-import 'package:deutschplan/core/theme/dp_tokens.dart';
-import 'package:deutschplan/data/db/app_database.dart';
-import 'package:deutschplan/data/repositories/setting_keys.dart';
-import 'package:deutschplan/data/repositories/settings_repository.dart';
-import 'package:deutschplan/data/repositories/word_repository.dart';
-import 'package:deutschplan/features/onboarding/onboarding_meaning_page.dart';
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
-import 'package:deutschplan/main.dart'
+import 'package:sogda/core/adaptive/adaptive.dart';
+import 'package:sogda/core/components/sg_button.dart';
+import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/core/theme/app_theme.dart';
+import 'package:sogda/core/theme/sg_surface.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/data/db/app_database.dart';
+import 'package:sogda/data/repositories/setting_keys.dart';
+import 'package:sogda/data/repositories/settings_repository.dart';
+import 'package:sogda/data/repositories/word_repository.dart';
+import 'package:sogda/features/onboarding/onboarding_meaning_page.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
+import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
@@ -54,7 +54,7 @@ void main() {
     bool noSample = false,
     bool sampleThrows = false,
     MeaningLanguage? stored,
-    DpMode mode = DpMode.light,
+    SgMode mode = SgMode.light,
     VoidCallback? onContinue,
     VoidCallback? onBack,
   }) async {
@@ -86,9 +86,9 @@ void main() {
         ],
         child: MaterialApp(
           theme: switch (mode) {
-            DpMode.light => AppTheme.light(),
-            DpMode.dark => AppTheme.dark(),
-            DpMode.glass => AppTheme.glass(),
+            SgMode.light => AppTheme.light(),
+            SgMode.dark => AppTheme.dark(),
+            SgMode.glass => AppTheme.glass(),
           },
           localizationsDelegates: appLocalizationsDelegates,
           supportedLocales: supportedLocales,
@@ -102,10 +102,10 @@ void main() {
   }
 
   Finder card(String title) =>
-      find.ancestor(of: find.text(title), matching: find.byType(DpSurface));
+      find.ancestor(of: find.text(title), matching: find.byType(SgSurface));
 
   bool isSelected(WidgetTester tester, String title) =>
-      tester.widget<DpSurface>(card(title)).selected;
+      tester.widget<SgSurface>(card(title)).selected;
 
   List<String> selectedTitles(WidgetTester tester) => <String>[
     for (final title in <String>[
@@ -322,8 +322,8 @@ void main() {
       var back = 0;
       await pump(tester, onContinue: () => continued++, onBack: () => back++);
 
-      await tester.tap(find.widgetWithText(DpButton, l10n.continueAction));
-      await tester.tap(find.widgetWithText(DpButton, l10n.back));
+      await tester.tap(find.widgetWithText(SgButton, l10n.continueAction));
+      await tester.tap(find.widgetWithText(SgButton, l10n.back));
       await tester.pump();
 
       expect(<int>[continued, back], <int>[1, 1]);
@@ -334,7 +334,7 @@ void main() {
       // defaulted — Skip starts on page 3.
       await pump(tester);
 
-      expect(find.widgetWithText(DpButton, l10n.skip), findsNothing);
+      expect(find.widgetWithText(SgButton, l10n.skip), findsNothing);
     });
   });
 
@@ -348,7 +348,7 @@ void main() {
     });
 
     testWidgets('and glass and dark render it', (tester) async {
-      for (final mode in <DpMode>[DpMode.dark, DpMode.glass]) {
+      for (final mode in <SgMode>[SgMode.dark, SgMode.glass]) {
         await pump(tester, mode: mode);
         expect(selectedTitles(tester), hasLength(1), reason: mode.name);
       }

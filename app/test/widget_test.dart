@@ -1,15 +1,15 @@
 import 'dart:async';
 
-import 'package:deutschplan/features/backlog/backlog_screen.dart';
-import 'package:deutschplan/features/today/today_screen.dart';
-import 'package:deutschplan/core/providers/app_providers.dart';
-import 'package:deutschplan/core/theme/dp_tokens.dart';
-import 'package:deutschplan/data/db/app_database.dart';
-import 'package:deutschplan/data/repositories/setting_keys.dart';
-import 'package:deutschplan/data/repositories/settings_repository.dart';
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
-import 'package:deutschplan/main.dart';
-import 'package:deutschplan/router/app_shell.dart';
+import 'package:sogda/features/backlog/backlog_screen.dart';
+import 'package:sogda/features/today/today_screen.dart';
+import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/data/db/app_database.dart';
+import 'package:sogda/data/repositories/setting_keys.dart';
+import 'package:sogda/data/repositories/settings_repository.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
+import 'package:sogda/main.dart';
+import 'package:sogda/router/app_shell.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
@@ -19,9 +19,9 @@ import 'package:material_ui/material_ui.dart'
 void main() {
   /// The app under a scope with the overrides bootstrap would have supplied.
   ///
-  /// The theme is watched from a provider now, so a bare `DeutschPlanApp`
+  /// The theme is watched from a provider now, so a bare `SogdaApp`
   /// has nothing to read it from.
-  Future<DeutschPlanApp> pumpApp(
+  Future<SogdaApp> pumpApp(
     WidgetTester tester, {
     ThemeModeSetting? choose,
     bool settle = true,
@@ -35,7 +35,7 @@ void main() {
       await settings.write(SettingKeys.themeMode, choose);
     }
 
-    final app = DeutschPlanApp();
+    final app = SogdaApp();
     await tester.pumpWidget(
       ProviderScope(
         overrides: <Override>[
@@ -85,8 +85,8 @@ void main() {
 
     final app = tester.widget<MaterialApp>(find.byType(MaterialApp));
     expect(app.themeMode, ThemeMode.system);
-    expect(app.theme!.extension<DpTokens>()!.isGlass, isTrue);
-    expect(app.darkTheme!.extension<DpTokens>()!.isGlass, isTrue);
+    expect(app.theme!.extension<SgTokens>()!.isGlass, isTrue);
+    expect(app.darkTheme!.extension<SgTokens>()!.isGlass, isTrue);
     expect(app.darkTheme!.brightness, Brightness.dark);
   });
 
@@ -243,7 +243,7 @@ void main() {
         onChanged: (_) {},
       );
 
-      expect(container.read(themeProvider), DpMode.dark);
+      expect(container.read(themeProvider), SgMode.dark);
     });
 
     test('and follows it afterwards', () async {
@@ -256,14 +256,14 @@ void main() {
         read: () => brightness,
         onChanged: (callback) => listener = callback,
       );
-      expect(container.read(themeProvider), DpMode.light);
+      expect(container.read(themeProvider), SgMode.light);
       expect(listener, isNotNull, reason: 'nothing was registered');
 
       brightness = Brightness.dark;
       listener!();
       await Future<void>.delayed(Duration.zero);
 
-      expect(container.read(themeProvider), DpMode.dark);
+      expect(container.read(themeProvider), SgMode.dark);
     });
 
     test('an explicit choice is not overridden', () async {
@@ -275,7 +275,7 @@ void main() {
         onChanged: (_) {},
       );
 
-      expect(container.read(themeProvider), DpMode.light);
+      expect(container.read(themeProvider), SgMode.light);
     });
   });
 

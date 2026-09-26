@@ -1,8 +1,8 @@
-import 'package:deutschplan/data/db/app_database.dart';
-import 'package:deutschplan/data/repositories/word_repository.dart';
-import 'package:deutschplan/domain/compare_set.dart';
-import 'package:deutschplan/features/today/today_providers.dart';
-import 'package:deutschplan/features/words/compare_screen.dart';
+import 'package:sogda/data/db/app_database.dart';
+import 'package:sogda/data/repositories/word_repository.dart';
+import 'package:sogda/domain/compare_set.dart';
+import 'package:sogda/features/today/today_providers.dart';
+import 'package:sogda/features/words/compare_screen.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 
 /// A course word To do, for *Add all*.

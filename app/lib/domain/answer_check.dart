@@ -12,8 +12,8 @@
 /// Plain Dart: no Flutter, no drift.
 library;
 
-import 'package:deutschplan/domain/edit_distance.dart';
-import 'package:deutschplan/domain/text_norm.dart';
+import 'package:sogda/domain/edit_distance.dart';
+import 'package:sogda/domain/text_norm.dart';
 
 /// What an answer was worth. BR-ANS-04: *almost* scores 0.5.
 enum Verdict {

@@ -1,14 +1,14 @@
-import 'package:deutschplan/core/adaptive/adaptive.dart';
-import 'package:deutschplan/core/components/dp_chip.dart';
-import 'package:deutschplan/core/providers/app_providers.dart';
-import 'package:deutschplan/core/theme/aurora_backdrop.dart';
-import 'package:deutschplan/core/theme/dp_tokens.dart';
-import 'package:deutschplan/core/typography/dp_text.dart';
-import 'package:deutschplan/data/repositories/grammar_repository.dart';
-import 'package:deutschplan/features/learn/learn_screen.dart';
-import 'package:deutschplan/features/learn/step_grammar.dart';
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
-import 'package:deutschplan/router/routes.dart';
+import 'package:sogda/core/adaptive/adaptive.dart';
+import 'package:sogda/core/components/sg_chip.dart';
+import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/core/theme/aurora_backdrop.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/core/typography/sg_text.dart';
+import 'package:sogda/data/repositories/grammar_repository.dart';
+import 'package:sogda/features/learn/learn_screen.dart';
+import 'package:sogda/features/learn/step_grammar.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
+import 'package:sogda/router/routes.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -67,7 +67,7 @@ class _GrammarLibraryScreenState extends ConsumerState<GrammarLibraryScreen> {
       // The band's height at the learner's text size: a caption line (16)
       // and 6 dp above and below. The line grows as caption text does, not
       // as 16 sp would (#165).
-      final band = DpScript.grow(context, 16, role: DpTextRole.caption) + 12;
+      final band = SgScript.grow(context, 16, role: SgTextRole.caption) + 12;
 
       body = Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -93,9 +93,9 @@ class _GrammarLibraryScreenState extends ConsumerState<GrammarLibraryScreen> {
                     l10n.libraryDue(count(LibraryFilter.due)),
                   ),
                 ]) ...<Widget>[
-                  DpChip(
+                  SgChip(
                     label: label,
-                    kind: DpChipKind.filter,
+                    kind: SgChipKind.filter,
                     selected: _filter == filter,
                     onTap: () => setState(() => _filter = filter),
                   ),
@@ -107,9 +107,9 @@ class _GrammarLibraryScreenState extends ConsumerState<GrammarLibraryScreen> {
           Expanded(
             child: shown.isEmpty
                 ? Center(
-                    child: DpText(
+                    child: SgText(
                       l10n.libraryNone,
-                      role: DpTextRole.body,
+                      role: SgTextRole.body,
                       color: tokens.color.textSecondary,
                     ),
                   )
@@ -213,14 +213,14 @@ class LibraryRow extends StatelessWidget {
           child: Row(
             children: <Widget>[
               Expanded(
-                child: DpOneLine(
+                child: SgOneLine(
                   topic.topic.topic,
-                  role: DpTextRole.body,
+                  role: SgTextRole.body,
                   weight: 500,
                 ),
               ),
               const SizedBox(width: 10),
-              DpChip(label: topic.topic.sublevelCode),
+              SgChip(label: topic.topic.sublevelCode),
               const SizedBox(width: 16),
               TopicDot(due: due),
               const SizedBox(width: 16),

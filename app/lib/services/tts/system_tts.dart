@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:deutschplan/services/tts/tts_engine.dart';
+import 'package:sogda/services/tts/tts_engine.dart';
 import 'package:flutter/services.dart'
     show MissingPluginException, PlatformException;
 import 'package:flutter_tts/flutter_tts.dart';

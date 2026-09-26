@@ -1,10 +1,10 @@
-import 'package:deutschplan/core/adaptive/adaptive.dart';
-import 'package:deutschplan/core/components/dp_button.dart';
-import 'package:deutschplan/core/theme/dp_surface.dart';
-import 'package:deutschplan/core/theme/dp_tokens.dart';
-import 'package:deutschplan/core/typography/dp_text.dart';
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
-import 'package:deutschplan/l10n/ui_digits.dart';
+import 'package:sogda/core/adaptive/adaptive.dart';
+import 'package:sogda/core/components/sg_button.dart';
+import 'package:sogda/core/theme/sg_surface.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/core/typography/sg_text.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
+import 'package:sogda/l10n/ui_digits.dart';
 import 'package:material_ui/material_ui.dart';
 
 /// One numbered question in the navigator.
@@ -58,12 +58,12 @@ class ExamNavigatorSheet extends StatelessWidget {
             textBaseline: TextBaseline.alphabetic,
             children: <Widget>[
               Expanded(
-                child: DpText(l10n.examNavTitle, role: DpTextRole.title),
+                child: SgText(l10n.examNavTitle, role: SgTextRole.title),
               ),
               if (left case final time?)
-                DpText(
+                SgText(
                   l10n.examNavLeft(l10n.digits(time)),
-                  role: DpTextRole.caption,
+                  role: SgTextRole.caption,
                   color: tokens.color.textSecondary,
                 ),
             ],
@@ -100,14 +100,14 @@ class ExamNavigatorSheet extends StatelessWidget {
             },
           ),
           const SizedBox(height: 24),
-          DpText(
+          SgText(
             l10n.examNavUnanswered(unanswered),
-            role: DpTextRole.caption,
+            role: SgTextRole.caption,
             textAlign: TextAlign.center,
             color: tokens.color.textSecondary,
           ),
           const SizedBox(height: 10),
-          DpButton(
+          SgButton(
             label: l10n.examRunSubmit,
             onPressed: () => Navigator.of(context).pop((jump: null)),
           ),
@@ -142,7 +142,7 @@ class _Key extends StatelessWidget {
           ),
         ),
         const SizedBox(width: 6),
-        DpText(label, role: DpTextRole.caption),
+        SgText(label, role: SgTextRole.caption),
       ],
     );
   }
@@ -193,10 +193,10 @@ class _Cell extends StatelessWidget {
           excludeSemantics: true,
           // ponytail: 40 dp tall, as the artboard draws it; eight to a row
           // leaves no room for 48 on a phone.
-          child: DpSurface(
+          child: SgSurface(
             kind: fill == null
-                ? DpSurfaceKind.bar
-                : DpSurfaceKind.tint(fill, opacity: 1),
+                ? SgSurfaceKind.bar
+                : SgSurfaceKind.tint(fill, opacity: 1),
             selected: current,
             radius: 8,
             onTap: onTap,
@@ -207,9 +207,9 @@ class _Cell extends StatelessWidget {
                 // a role larger, and at 200 % the 40 cut it (#580).
                 child: FittedBox(
                   fit: BoxFit.scaleDown,
-                  child: DpText(
+                  child: SgText(
                     AppLocalizations.of(context).digits(n),
-                    role: DpTextRole.label,
+                    role: SgTextRole.label,
                     weight: 700,
                     color: fill == null
                         ? tokens.color.ink

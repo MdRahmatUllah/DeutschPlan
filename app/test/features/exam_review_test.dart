@@ -1,11 +1,11 @@
-import 'package:deutschplan/core/providers/app_providers.dart';
-import 'package:deutschplan/core/theme/app_theme.dart';
-import 'package:deutschplan/data/repositories/exam_result_service.dart';
-import 'package:deutschplan/data/repositories/setting_keys.dart';
-import 'package:deutschplan/features/exam/exam_review_screen.dart';
-import 'package:deutschplan/features/study/study_back.dart';
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
-import 'package:deutschplan/main.dart'
+import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/core/theme/app_theme.dart';
+import 'package:sogda/data/repositories/exam_result_service.dart';
+import 'package:sogda/data/repositories/setting_keys.dart';
+import 'package:sogda/features/exam/exam_review_screen.dart';
+import 'package:sogda/features/study/study_back.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
+import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';

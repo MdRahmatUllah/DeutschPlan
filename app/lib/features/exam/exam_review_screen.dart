@@ -1,34 +1,33 @@
 import 'dart:async';
 
-import 'package:deutschplan/core/adaptive/adaptive.dart';
-import 'package:deutschplan/core/components/dp_chip.dart';
-import 'package:deutschplan/core/providers/app_providers.dart';
-import 'package:deutschplan/core/theme/aurora_backdrop.dart';
-import 'package:deutschplan/core/theme/dp_surface.dart';
-import 'package:deutschplan/core/theme/dp_tokens.dart';
-import 'package:deutschplan/core/typography/dp_text.dart';
-import 'package:deutschplan/data/repositories/exam_result_service.dart';
-import 'package:deutschplan/data/repositories/grammar_repository.dart'
+import 'package:sogda/core/adaptive/adaptive.dart';
+import 'package:sogda/core/components/sg_chip.dart';
+import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/core/theme/aurora_backdrop.dart';
+import 'package:sogda/core/theme/sg_surface.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/core/typography/sg_text.dart';
+import 'package:sogda/data/repositories/exam_result_service.dart';
+import 'package:sogda/data/repositories/grammar_repository.dart'
     show TopicWithState;
-import 'package:deutschplan/domain/answer_check.dart' show Verdict;
-import 'package:deutschplan/domain/exam_generator.dart';
-import 'package:deutschplan/domain/exam_grading.dart' show verdictFor;
-import 'package:deutschplan/domain/grammar_item_generator.dart';
-import 'package:deutschplan/features/exam/exam_question_view.dart'
+import 'package:sogda/domain/answer_check.dart' show Verdict;
+import 'package:sogda/domain/exam_generator.dart';
+import 'package:sogda/domain/exam_grading.dart' show verdictFor;
+import 'package:sogda/domain/grammar_item_generator.dart';
+import 'package:sogda/features/exam/exam_question_view.dart'
     show examFormPrompt, examNumbered;
-import 'package:deutschplan/features/exam/exam_results_screen.dart'
+import 'package:sogda/features/exam/exam_results_screen.dart'
     show examResultProvider;
-import 'package:deutschplan/features/learn/grammar_practice_screen.dart'
+import 'package:sogda/features/learn/grammar_practice_screen.dart'
     show RuleSheet, itemAnswer;
-import 'package:deutschplan/features/learn/step_exams.dart'
-    show examSectionName;
-import 'package:deutschplan/features/quiz/quiz_item_view.dart' show GermanWord;
-import 'package:deutschplan/features/study/study_back.dart'
+import 'package:sogda/features/learn/step_exams.dart' show examSectionName;
+import 'package:sogda/features/quiz/quiz_item_view.dart' show GermanWord;
+import 'package:sogda/features/study/study_back.dart'
     show StudyPlayButton, StudyTip, studyBackProvider, tipText;
-import 'package:deutschplan/data/repositories/setting_keys.dart';
-import 'package:deutschplan/features/words/speak.dart' show say;
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
-import 'package:deutschplan/router/routes.dart';
+import 'package:sogda/data/repositories/setting_keys.dart';
+import 'package:sogda/features/words/speak.dart' show say;
+import 'package:sogda/l10n/generated/app_localizations.dart';
+import 'package:sogda/router/routes.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -132,9 +131,9 @@ class _ExamReviewViewState extends ConsumerState<ExamReviewView> {
           })
             card,
       ];
-      DpChip chip(String label, ExamReviewFilter filter) => DpChip(
+      SgChip chip(String label, ExamReviewFilter filter) => SgChip(
         label: label,
-        kind: DpChipKind.filter,
+        kind: SgChipKind.filter,
         selected: _filter == filter,
         onTap: () => setState(() => _filter = filter),
       );
@@ -154,9 +153,9 @@ class _ExamReviewViewState extends ConsumerState<ExamReviewView> {
           if (shown.isEmpty)
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 32),
-              child: DpText(
+              child: SgText(
                 l10n.examReviewNone,
-                role: DpTextRole.body,
+                role: SgTextRole.body,
                 color: tokens.color.textSecondary,
                 textAlign: TextAlign.center,
               ),
@@ -250,14 +249,14 @@ class _Card extends ConsumerWidget {
         Row(
           children: <Widget>[
             Expanded(
-              child: DpText(
+              child: SgText(
                 l10n
                     .examReviewHeader(
                       card.number,
                       examSectionName(l10n, item.section),
                     )
                     .toUpperCase(),
-                role: DpTextRole.caption,
+                role: SgTextRole.caption,
                 weight: 700,
                 letterSpacing: 0.6,
                 color: tokens.color.textSecondary,
@@ -265,7 +264,7 @@ class _Card extends ConsumerWidget {
             ),
             Icon(icon, size: 14, color: colour),
             const SizedBox(width: 4),
-            DpText(label, role: DpTextRole.caption, weight: 700, color: colour),
+            SgText(label, role: SgTextRole.caption, weight: 700, color: colour),
           ],
         ),
         const SizedBox(height: 8),
@@ -274,10 +273,10 @@ class _Card extends ConsumerWidget {
             section: ExamSection.vocabulary || ExamSection.listening,
             :final prompt,
           ) =>
-            GermanWord(prompt, role: DpTextRole.bodyLarge),
-          _ => DpText(
+            GermanWord(prompt, role: SgTextRole.bodyLarge),
+          _ => SgText(
             _prompt(l10n, item),
-            role: DpTextRole.bodyLarge,
+            role: SgTextRole.bodyLarge,
             weight: 600,
           ),
         },
@@ -305,14 +304,14 @@ class _Card extends ConsumerWidget {
         ..._explanation(context, ref, item),
       ],
     );
-    // The artboard's card: flat, a thin outline (every DpSurface kind draws
+    // The artboard's card: flat, a thin outline (every SgSurface kind draws
     // an edge or a shadow); frosted under glass.
     // ponytail: each glass card blurs its own backdrop, four or five on
-    // screen against dp_surface.dart's budget of three; one frosted panel
+    // screen against sg_surface.dart's budget of three; one frosted panel
     // behind the list if scrolling stutters on a low-end phone.
     return tokens.isGlass
-        ? DpSurface(
-            kind: DpSurfaceKind.card,
+        ? SgSurface(
+            kind: SgSurfaceKind.card,
             radius: 20,
             padding: const EdgeInsets.all(14),
             child: content,
@@ -338,9 +337,9 @@ class _Card extends ConsumerWidget {
   ) {
     final tokens = context.tokens;
     final l10n = AppLocalizations.of(context);
-    Widget note(String text) => DpText(
+    Widget note(String text) => SgText(
       text,
-      role: DpTextRole.label,
+      role: SgTextRole.label,
       weight: 400,
       color: tokens.color.textSecondary,
     );
@@ -428,18 +427,18 @@ class _Example extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    DpText(
+                    SgText(
                       german,
-                      role: DpTextRole.label,
+                      role: SgTextRole.label,
                       weight: 400,
                       italic: true,
                       german: true,
                       color: tokens.color.textSecondary,
                     ),
                     if (english != null)
-                      DpText(
+                      SgText(
                         english,
-                        role: DpTextRole.label,
+                        role: SgTextRole.label,
                         weight: 400,
                         color: tokens.color.textSecondary,
                       ),
@@ -479,7 +478,7 @@ class _Link extends StatelessWidget {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              DpText(label, role: DpTextRole.label, color: tokens.color.link),
+              SgText(label, role: SgTextRole.label, color: tokens.color.link),
               Icon(Icons.chevron_right, size: 16, color: tokens.color.link),
             ],
           ),
@@ -515,9 +514,9 @@ class _Answer extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          DpText(
+          SgText(
             label,
-            role: DpTextRole.body,
+            role: SgTextRole.body,
             color: tokens.color.textSecondary,
           ),
           const SizedBox(width: 6),
@@ -527,9 +526,9 @@ class _Answer extends StatelessWidget {
                 decoration: struck ? TextDecoration.lineThrough : null,
                 decorationColor: colour,
               ),
-              child: DpText(
+              child: SgText(
                 value,
-                role: DpTextRole.body,
+                role: SgTextRole.body,
                 weight: bold ? 700 : 400,
                 color: colour,
               ),

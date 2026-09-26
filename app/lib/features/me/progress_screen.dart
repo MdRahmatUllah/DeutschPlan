@@ -1,23 +1,23 @@
 import 'dart:math' as math;
 
-import 'package:deutschplan/core/adaptive/adaptive.dart';
-import 'package:deutschplan/core/components/dp_feedback.dart';
-import 'package:deutschplan/core/components/dp_chip.dart';
-import 'package:deutschplan/core/components/dp_progress_ring.dart';
-import 'package:deutschplan/core/providers/app_providers.dart';
-import 'package:deutschplan/core/theme/aurora_backdrop.dart';
-import 'package:deutschplan/core/theme/dp_surface.dart';
-import 'package:deutschplan/core/theme/dp_tokens.dart';
-import 'package:deutschplan/core/typography/dp_text.dart';
-import 'package:deutschplan/data/repositories/progress_repository.dart';
-import 'package:deutschplan/data/repositories/setting_keys.dart';
-import 'package:deutschplan/data/repositories/word_repository.dart';
-import 'package:deutschplan/domain/plan_engine.dart'
+import 'package:sogda/core/adaptive/adaptive.dart';
+import 'package:sogda/core/components/sg_feedback.dart';
+import 'package:sogda/core/components/sg_chip.dart';
+import 'package:sogda/core/components/sg_progress_ring.dart';
+import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/core/theme/aurora_backdrop.dart';
+import 'package:sogda/core/theme/sg_surface.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/core/typography/sg_text.dart';
+import 'package:sogda/data/repositories/progress_repository.dart';
+import 'package:sogda/data/repositories/setting_keys.dart';
+import 'package:sogda/data/repositories/word_repository.dart';
+import 'package:sogda/domain/plan_engine.dart'
     show PlanDate, addDays, daysBetween, parsePlanDate;
-import 'package:deutschplan/domain/progress_stats.dart';
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
-import 'package:deutschplan/router/cross_tab.dart';
-import 'package:deutschplan/router/routes.dart';
+import 'package:sogda/domain/progress_stats.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
+import 'package:sogda/router/cross_tab.dart';
+import 'package:sogda/router/routes.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -144,7 +144,7 @@ class _ProgressScreenState extends ConsumerState<ProgressScreen> {
             _RetentionChart(range: range, view: view),
           ] else if (progress.hasError) ...<Widget>[
             const SizedBox(height: 24),
-            DpErrorPanel(
+            SgErrorPanel(
               message: l10n.meLoadFailed,
               retryLabel: l10n.retry,
               onRetry: () => ref.invalidate(progressViewProvider(_range)),
@@ -217,15 +217,15 @@ class _ChartCard extends StatelessWidget {
     final tokens = context.tokens;
     final heading = Semantics(
       header: true,
-      child: DpText(title, role: DpTextRole.body, weight: 700),
+      child: SgText(title, role: SgTextRole.body, weight: 700),
     );
-    final cornerLine = DpText(
+    final cornerLine = SgText(
       corner,
-      role: DpTextRole.caption,
+      role: SgTextRole.caption,
       color: tokens.color.textSecondary,
     );
-    return DpSurface(
-      kind: DpSurfaceKind.bar,
+    return SgSurface(
+      kind: SgSurfaceKind.bar,
       radius: 16,
       padding: const EdgeInsets.fromLTRB(14, 14, 14, 12),
       child: Column(
@@ -233,7 +233,7 @@ class _ChartCard extends StatelessWidget {
         children: <Widget>[
           // Past 130 % text the corner line goes under the title: beside it,
           // it ran 84 dp off the card at 200 % (#165).
-          if (DpScript.large(context)) ...<Widget>[heading, cornerLine] else
+          if (SgScript.large(context)) ...<Widget>[heading, cornerLine] else
             Row(
               crossAxisAlignment: CrossAxisAlignment.baseline,
               textBaseline: TextBaseline.alphabetic,
@@ -278,7 +278,7 @@ class _Key extends StatelessWidget {
         const SizedBox(width: 6),
         // Wraps inside the legend's Wrap, which bounds it: at 200 % a key
         // ran off the card and broke "introduced" (#165).
-        Flexible(child: DpText(label, role: DpTextRole.caption)),
+        Flexible(child: SgText(label, role: SgTextRole.caption)),
       ],
     );
   }
@@ -352,10 +352,10 @@ class _CardsChart extends StatelessWidget {
                       showTitles: true,
                       // Grown with the text size: a fixed 22 cut "Mo" at
                       // 150 % (#165).
-                      reservedSize: DpScript.grow(
+                      reservedSize: SgScript.grow(
                         context,
                         22,
-                        role: DpTextRole.caption,
+                        role: SgTextRole.caption,
                       ),
                       getTitlesWidget: (value, meta) {
                         final i = value.toInt();
@@ -364,9 +364,9 @@ class _CardsChart extends StatelessWidget {
                         }
                         return Padding(
                           padding: const EdgeInsets.only(top: 6),
-                          child: DpText(
+                          child: SgText(
                             _when(context, range, bars[i].start),
-                            role: DpTextRole.caption,
+                            role: SgTextRole.caption,
                             color: tokens.color.textSecondary,
                           ),
                         );
@@ -439,9 +439,9 @@ class _RetentionChart extends StatelessWidget {
 
     final Widget body;
     if (left != null) {
-      body = DpText(
+      body = SgText(
         l10n.progressRetentionLater(math.max(1, left)),
-        role: DpTextRole.caption,
+        role: SgTextRole.caption,
         color: tokens.color.textSecondary,
       );
     } else {
@@ -538,8 +538,8 @@ class _ByStep extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final tokens = context.tokens;
-    return DpSurface(
-      kind: DpSurfaceKind.bar,
+    return SgSurface(
+      kind: SgSurfaceKind.bar,
       radius: 16,
       padding: const EdgeInsets.fromLTRB(14, 14, 14, 6),
       child: Column(
@@ -547,9 +547,9 @@ class _ByStep extends StatelessWidget {
         children: <Widget>[
           Semantics(
             header: true,
-            child: DpText(
+            child: SgText(
               l10n.progressByStep.toUpperCase(),
-              role: DpTextRole.caption,
+              role: SgTextRole.caption,
               weight: 700,
               letterSpacing: 0.6,
               color: tokens.color.textSecondary,
@@ -571,10 +571,10 @@ class _ByStep extends StatelessWidget {
                   ),
                   child: Row(
                     children: <Widget>[
-                      DpChip(label: step.code),
+                      SgChip(label: step.code),
                       const SizedBox(width: 12),
                       Expanded(
-                        child: DpSegmentedBar(
+                        child: SgSegmentedBar(
                           done: step.done,
                           learning: step.learning,
                           todo: math.max(
@@ -589,9 +589,9 @@ class _ByStep extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(width: 12),
-                      DpText(
+                      SgText(
                         l10n.progressStepCount(step.done, step.words),
-                        role: DpTextRole.caption,
+                        role: SgTextRole.caption,
                         color: tokens.color.textSecondary,
                       ),
                       Icon(
@@ -630,10 +630,10 @@ class _Totals extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            DpText(value, role: DpTextRole.title, weight: 700),
-            DpText(
+            SgText(value, role: SgTextRole.title, weight: 700),
+            SgText(
               label,
-              role: DpTextRole.caption,
+              role: SgTextRole.caption,
               color: tokens.color.textSecondary,
             ),
           ],
@@ -654,13 +654,13 @@ class _Totals extends StatelessWidget {
         l10n.progressStreakLabel,
       ),
     ];
-    return DpSurface(
-      kind: DpSurfaceKind.bar,
+    return SgSurface(
+      kind: SgSurfaceKind.bar,
       radius: 16,
       padding: const EdgeInsets.all(14),
       // Past 130 % text two to a row: four abreast broke "introduced"
       // mid-word at 150 % (#165).
-      child: DpScript.large(context)
+      child: SgScript.large(context)
           ? Column(
               children: <Widget>[
                 Row(

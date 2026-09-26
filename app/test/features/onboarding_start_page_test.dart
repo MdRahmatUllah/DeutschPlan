@@ -3,16 +3,16 @@ library;
 
 import 'dart:async';
 
-import 'package:deutschplan/core/adaptive/adaptive.dart';
-import 'package:deutschplan/core/components/dp_button.dart';
-import 'package:deutschplan/core/theme/app_theme.dart';
-import 'package:deutschplan/core/theme/dp_surface.dart';
-import 'package:deutschplan/core/theme/dp_tokens.dart';
-import 'package:deutschplan/data/db/content_dao.dart';
-import 'package:deutschplan/features/onboarding/onboarding_notifier.dart';
-import 'package:deutschplan/features/onboarding/onboarding_start_page.dart';
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
-import 'package:deutschplan/main.dart'
+import 'package:sogda/core/adaptive/adaptive.dart';
+import 'package:sogda/core/components/sg_button.dart';
+import 'package:sogda/core/theme/app_theme.dart';
+import 'package:sogda/core/theme/sg_surface.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/data/db/content_dao.dart';
+import 'package:sogda/features/onboarding/onboarding_notifier.dart';
+import 'package:sogda/features/onboarding/onboarding_start_page.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
+import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
@@ -49,7 +49,7 @@ void main() {
   Future<void> pump(
     WidgetTester tester, {
     List<CourseStep> steps = course,
-    DpMode mode = DpMode.light,
+    SgMode mode = SgMode.light,
     Future<String?> Function()? onPlacement,
     VoidCallback? onContinue,
     VoidCallback? onBack,
@@ -79,9 +79,9 @@ void main() {
         container: container,
         child: MaterialApp(
           theme: switch (mode) {
-            DpMode.light => AppTheme.light(),
-            DpMode.dark => AppTheme.dark(),
-            DpMode.glass => AppTheme.glass(),
+            SgMode.light => AppTheme.light(),
+            SgMode.dark => AppTheme.dark(),
+            SgMode.glass => AppTheme.glass(),
           },
           localizationsDelegates: appLocalizationsDelegates,
           supportedLocales: supportedLocales,
@@ -104,11 +104,11 @@ void main() {
   }
 
   Finder chip(String code) =>
-      find.ancestor(of: find.text(code), matching: find.byType(DpSurface));
+      find.ancestor(of: find.text(code), matching: find.byType(SgSurface));
 
   List<String> picked(WidgetTester tester) => <String>[
     for (final step in course)
-      if (tester.widget<DpSurface>(chip(step.code)).selected) step.code,
+      if (tester.widget<SgSurface>(chip(step.code)).selected) step.code,
   ];
 
   group('the twelve steps', () {
@@ -290,8 +290,8 @@ void main() {
       var back = 0;
       await pump(tester, onContinue: () => continued++, onBack: () => back++);
 
-      await tester.tap(find.widgetWithText(DpButton, l10n.continueAction));
-      await tester.tap(find.widgetWithText(DpButton, l10n.back));
+      await tester.tap(find.widgetWithText(SgButton, l10n.continueAction));
+      await tester.tap(find.widgetWithText(SgButton, l10n.back));
       await tester.pump();
 
       expect(<int>[continued, back], <int>[1, 1]);
@@ -303,8 +303,8 @@ void main() {
       await pump(tester, onSkip: () {});
       final tokens = tester.element(find.byType(OnboardingStartPage)).tokens;
 
-      final skip = tester.widget<DpButton>(
-        find.widgetWithText(DpButton, l10n.skip),
+      final skip = tester.widget<SgButton>(
+        find.widgetWithText(SgButton, l10n.skip),
       );
       expect(skip.colour, tokens.color.onPrimary);
     });
@@ -321,7 +321,7 @@ void main() {
 
     // One mode per test: swapping containers inside a test leaves Riverpod's
     // dispose timer for the old one pending when the test ends.
-    for (final mode in <DpMode>[DpMode.dark, DpMode.glass]) {
+    for (final mode in <SgMode>[SgMode.dark, SgMode.glass]) {
       testWidgets('and ${mode.name} renders it', (tester) async {
         await pump(tester, mode: mode);
         expect(picked(tester), <String>['A1.1']);

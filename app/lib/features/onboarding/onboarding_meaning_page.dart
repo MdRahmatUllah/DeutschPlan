@@ -1,11 +1,11 @@
-import 'package:deutschplan/core/providers/app_providers.dart';
-import 'package:deutschplan/core/theme/dp_surface.dart';
-import 'package:deutschplan/core/theme/dp_tokens.dart';
-import 'package:deutschplan/core/typography/dp_text.dart';
-import 'package:deutschplan/data/repositories/word_repository.dart';
-import 'package:deutschplan/data/repositories/setting_keys.dart';
-import 'package:deutschplan/features/onboarding/onboarding_shell.dart';
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
+import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/core/theme/sg_surface.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/core/typography/sg_text.dart';
+import 'package:sogda/data/repositories/word_repository.dart';
+import 'package:sogda/data/repositories/setting_keys.dart';
+import 'package:sogda/features/onboarding/onboarding_shell.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -96,9 +96,9 @@ class OnboardingMeaningPage extends ConsumerWidget {
           // well, and the note adds 4 of its own.
           Padding(
             padding: const EdgeInsets.only(top: 4),
-            child: DpText(
+            child: SgText(
               l10n.onboardingMeaningNote,
-              role: DpTextRole.caption,
+              role: SgTextRole.caption,
               color: tokens.color.textSecondary,
             ),
           ),
@@ -145,20 +145,20 @@ class _LanguageCard extends StatelessWidget {
         fit: StackFit.passthrough,
         clipBehavior: Clip.none,
         children: <Widget>[
-          DpSurface(
-            kind: DpSurfaceKind.bar,
+          SgSurface(
+            kind: SgSurfaceKind.bar,
             selected: selected,
             onTap: onTap,
             padding: const EdgeInsets.all(16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                DpText(title, role: DpTextRole.bodyLarge, weight: 600),
+                SgText(title, role: SgTextRole.bodyLarge, weight: 600),
                 if (sample != null) ...<Widget>[
                   const SizedBox(height: 4),
-                  DpText(
+                  SgText(
                     sample!,
-                    role: DpTextRole.label,
+                    role: SgTextRole.label,
                     weight: 400,
                     color: tokens.color.textSecondary,
                   ),

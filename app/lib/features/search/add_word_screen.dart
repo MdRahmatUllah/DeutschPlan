@@ -1,19 +1,19 @@
 import 'dart:async';
 
-import 'package:deutschplan/core/adaptive/adaptive.dart';
-import 'package:deutschplan/core/components/dp_button.dart';
-import 'package:deutschplan/core/components/dp_chip.dart';
-import 'package:deutschplan/core/components/dp_feedback.dart';
-import 'package:deutschplan/core/providers/app_providers.dart';
-import 'package:deutschplan/core/theme/aurora_backdrop.dart';
-import 'package:deutschplan/core/theme/dp_surface.dart';
-import 'package:deutschplan/core/theme/dp_tokens.dart';
-import 'package:deutschplan/core/typography/dp_text.dart';
-import 'package:deutschplan/data/repositories/search_repository.dart';
-import 'package:deutschplan/data/repositories/word_repository.dart';
-import 'package:deutschplan/features/today/today_providers.dart';
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
-import 'package:deutschplan/router/routes.dart';
+import 'package:sogda/core/adaptive/adaptive.dart';
+import 'package:sogda/core/components/sg_button.dart';
+import 'package:sogda/core/components/sg_chip.dart';
+import 'package:sogda/core/components/sg_feedback.dart';
+import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/core/theme/aurora_backdrop.dart';
+import 'package:sogda/core/theme/sg_surface.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/core/typography/sg_text.dart';
+import 'package:sogda/data/repositories/search_repository.dart';
+import 'package:sogda/data/repositories/word_repository.dart';
+import 'package:sogda/features/today/today_providers.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
+import 'package:sogda/router/routes.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -163,7 +163,7 @@ class _AddWordState extends ConsumerState<AddWordScreen> {
       // Revise block once it is read again.
       if (revise) ref.invalidate(todayPlanProvider);
       if (!mounted) return;
-      DpToast.show(
+      SgToast.show(
         context,
         revise ? l10n.addWordSavedRevise(name) : l10n.addWordSaved(name),
       );
@@ -173,7 +173,7 @@ class _AddWordState extends ConsumerState<AddWordScreen> {
     } on Object catch (error) {
       debugPrint('add word: $error');
       if (!mounted) return;
-      DpToast.show(context, l10n.addWordSaveFailed);
+      SgToast.show(context, l10n.addWordSaveFailed);
       setState(() => _busy = false);
     }
   }
@@ -188,7 +188,7 @@ class _AddWordState extends ConsumerState<AddWordScreen> {
     try {
       await words.logSighting(match.uid);
       if (mounted) {
-        DpToast.show(context, l10n.addWordLogged(_headword(match)));
+        SgToast.show(context, l10n.addWordLogged(_headword(match)));
       }
     } finally {
       if (mounted) setState(() => _busy = false);
@@ -263,14 +263,14 @@ class _AddWordState extends ConsumerState<AddWordScreen> {
                   german: true,
                   // On focus, its umlaut row and the next field show above
                   // the keyboard: 14 dp, a label and a 48 dp field (#515).
-                  scrollPadding: DpUmlautBar.scrollPadding(
+                  scrollPadding: SgUmlautBar.scrollPadding(
                     context,
                     below: 14 + 22 + 48,
                   ),
                 ),
                 if (_germanFocus.hasFocus) ...<Widget>[
                   const SizedBox(height: 8),
-                  DpUmlautBar(controller: _german),
+                  SgUmlautBar(controller: _german),
                 ],
                 if (match != null) ...<Widget>[
                   const SizedBox(height: 14),
@@ -296,7 +296,7 @@ class _AddWordState extends ConsumerState<AddWordScreen> {
                   german: true,
                 ),
                 const SizedBox(height: 24),
-                DpButton(
+                SgButton(
                   label: l10n.addWordSave,
                   onPressed: _complete && !_busy
                       ? () => unawaited(_save(match))
@@ -304,9 +304,9 @@ class _AddWordState extends ConsumerState<AddWordScreen> {
                 ),
                 if (!inRevision) ...<Widget>[
                   const SizedBox(height: 8),
-                  DpButton(
+                  SgButton(
                     label: l10n.addWordSaveRevise,
-                    kind: DpButtonKind.secondary,
+                    kind: SgButtonKind.secondary,
                     onPressed: _complete && !_busy
                         ? () => unawaited(_save(match, revise: true))
                         : null,
@@ -314,9 +314,9 @@ class _AddWordState extends ConsumerState<AddWordScreen> {
                 ],
                 if (id != null) ...<Widget>[
                   const SizedBox(height: 8),
-                  DpButton(
+                  SgButton(
                     label: l10n.addWordDelete,
-                    kind: DpButtonKind.text,
+                    kind: SgButtonKind.text,
                     onPressed: _busy ? null : () => unawaited(_delete(id)),
                   ),
                 ],
@@ -361,15 +361,15 @@ class _Header extends StatelessWidget {
               children: <Widget>[
                 Semantics(
                   header: true,
-                  child: DpText(
+                  child: SgText(
                     l10n.addWordTitle,
-                    role: DpTextRole.headline,
+                    role: SgTextRole.headline,
                     color: tokens.color.ink,
                   ),
                 ),
-                DpText(
+                SgText(
                   l10n.addWordIntro,
-                  role: DpTextRole.caption,
+                  role: SgTextRole.caption,
                   color: tokens.color.ink,
                 ),
               ],
@@ -379,8 +379,8 @@ class _Header extends StatelessWidget {
       ),
     );
     return tokens.isGlass
-        ? DpSurface(
-            kind: DpSurfaceKind.tint(tokens.color.die),
+        ? SgSurface(
+            kind: SgSurfaceKind.tint(tokens.color.die),
             radius: 0,
             child: content,
           )
@@ -400,9 +400,9 @@ class _Label extends StatelessWidget {
     child: ExcludeSemantics(
       // The field carries the same words as its label, so this isn't read
       // twice.
-      child: DpText(
+      child: SgText(
         text.toUpperCase(),
-        role: DpTextRole.caption,
+        role: SgTextRole.caption,
         weight: 700,
         letterSpacing: 0.6,
         color: context.tokens.color.textSecondary,
@@ -456,9 +456,9 @@ class _Field extends StatelessWidget {
         scrollPadding: scrollPadding.copyWith(
           top: scrollPadding.top + MediaQuery.paddingOf(context).top,
         ),
-        style: DpText.styleFor(
+        style: SgText.styleFor(
           tokens,
-          DpTextRole.body,
+          SgTextRole.body,
         ).copyWith(fontSize: 16, color: tokens.color.ink),
         decoration: InputDecoration(
           filled: true,
@@ -478,9 +478,9 @@ class _Field extends StatelessWidget {
           // Whole, not cut to one line, as R1's is (#565).
           hintMaxLines: 3,
           maintainHintSize: false,
-          hintStyle: DpText.styleFor(
+          hintStyle: SgText.styleFor(
             tokens,
-            DpTextRole.body,
+            SgTextRole.body,
           ).copyWith(fontSize: 16, color: tokens.color.textSecondary),
         ),
       ),
@@ -568,9 +568,9 @@ class _ArticleOption extends StatelessWidget {
                 width: selected ? 2 : 1.5,
               ),
             ),
-            child: DpText(
+            child: SgText(
               label,
-              role: DpTextRole.label,
+              role: SgTextRole.label,
               weight: 700,
               color: selected ? ink : tokens.color.ink,
             ),
@@ -624,23 +624,23 @@ class _Match extends StatelessWidget {
                   Wrap(
                     crossAxisAlignment: WrapCrossAlignment.center,
                     children: <Widget>[
-                      DpText(
+                      SgText(
                         // ponytail: allow-literal — ARB text and a space, no number.
                         '${l10n.addWordInCourse(word.sublevelCode)} ',
-                        role: DpTextRole.label,
+                        role: SgTextRole.label,
                       ),
-                      DpHeadword(
+                      SgHeadword(
                         word.german,
                         article: word.article,
                         plural: word.forms,
-                        role: DpTextRole.label,
+                        role: SgTextRole.label,
                         weight: 600,
                       ),
                     ],
                   ),
-                  DpText(
+                  SgText(
                     l10n.addWordLogHint,
-                    role: DpTextRole.caption,
+                    role: SgTextRole.caption,
                     color: tokens.color.textSecondary,
                   ),
                 ],
@@ -655,18 +655,18 @@ class _Match extends StatelessWidget {
               button: true,
               onTap: onOpen,
               excludeSemantics: true,
-              child: DpButton(
+              child: SgButton(
                 label: l10n.addWordOpen,
-                kind: DpButtonKind.text,
+                kind: SgButtonKind.text,
                 expand: false,
                 onPressed: onOpen,
               ),
             ),
           ),
           const SizedBox(width: 4),
-          DpChip(
+          SgChip(
             label: l10n.addWordLogIt,
-            kind: DpChipKind.filter,
+            kind: SgChipKind.filter,
             onTap: busy ? null : onLog,
           ),
         ],

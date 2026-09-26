@@ -1,14 +1,14 @@
-import 'package:deutschplan/bootstrap.dart';
-import 'package:deutschplan/core/adaptive/adaptive.dart';
-import 'package:deutschplan/core/components/dp_button.dart';
-import 'package:deutschplan/core/theme/app_theme.dart';
-import 'package:deutschplan/core/theme/aurora_backdrop.dart';
-import 'package:deutschplan/core/theme/dp_surface.dart';
-import 'package:deutschplan/core/theme/dp_tokens.dart';
-import 'package:deutschplan/core/typography/dp_text.dart';
-import 'package:deutschplan/features/splash/splash_screen.dart';
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
-import 'package:deutschplan/main.dart'
+import 'package:sogda/bootstrap.dart';
+import 'package:sogda/core/adaptive/adaptive.dart';
+import 'package:sogda/core/components/sg_button.dart';
+import 'package:sogda/core/theme/app_theme.dart';
+import 'package:sogda/core/theme/aurora_backdrop.dart';
+import 'package:sogda/core/theme/sg_surface.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/core/typography/sg_text.dart';
+import 'package:sogda/features/splash/splash_screen.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
+import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
 import 'package:material_ui/material_ui.dart';
 
@@ -49,19 +49,19 @@ class BootstrapErrorScreen extends StatelessWidget {
     // the background and reads as an outline; and the text button's link
     // colour against Lagoon is far too low-contrast to be an affordance.
     // On paper both behave the way the Foundations artboard draws them.
-    final panel = DpSurface(
+    final panel = SgSurface(
       padding: const EdgeInsets.fromLTRB(24, 28, 24, 20),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          DpText(
+          SgText(
             _message(l10n),
-            role: DpTextRole.bodyLarge,
+            role: SgTextRole.bodyLarge,
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 24),
-          DpButton(label: l10n.retry, onPressed: onRetry),
+          SgButton(label: l10n.retry, onPressed: onRetry),
 
           // FR-S1-03 offers a route into export, but only when there is
           // anything to export: `canExport` is true once user.db opened. A
@@ -69,10 +69,10 @@ class BootstrapErrorScreen extends StatelessWidget {
           // learner taps it precisely because their data is what worries them.
           if (failure.canExport) ...<Widget>[
             const SizedBox(height: 4),
-            DpButton(
+            SgButton(
               label: l10n.exportProgress,
               onPressed: onExport,
-              kind: DpButtonKind.text,
+              kind: SgButtonKind.text,
             ),
           ],
         ],

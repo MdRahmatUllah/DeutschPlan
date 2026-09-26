@@ -1,15 +1,15 @@
-import 'package:deutschplan/core/components/dp_feedback.dart';
-import 'package:deutschplan/core/components/dp_speaker_button.dart';
-import 'package:deutschplan/core/providers/app_providers.dart';
-import 'package:deutschplan/core/theme/app_theme.dart';
-import 'package:deutschplan/core/theme/dp_surface.dart';
-import 'package:deutschplan/core/theme/dp_tokens.dart';
-import 'package:deutschplan/data/db/app_database.dart';
-import 'package:deutschplan/data/repositories/setting_keys.dart';
-import 'package:deutschplan/data/repositories/settings_repository.dart';
-import 'package:deutschplan/features/study/study_card.dart';
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
-import 'package:deutschplan/main.dart'
+import 'package:sogda/core/components/sg_feedback.dart';
+import 'package:sogda/core/components/sg_speaker_button.dart';
+import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/core/theme/app_theme.dart';
+import 'package:sogda/core/theme/sg_surface.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/data/db/app_database.dart';
+import 'package:sogda/data/repositories/setting_keys.dart';
+import 'package:sogda/data/repositories/settings_repository.dart';
+import 'package:sogda/features/study/study_card.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
+import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -140,7 +140,7 @@ void main() {
 
     testWidgets('the gender bar is the article colour', (tester) async {
       await pump(tester);
-      expect(bar(tester), DpPalette.light.die);
+      expect(bar(tester), SgPalette.light.die);
     });
 
     testWidgets('der and das take theirs, and no article is neutral', (
@@ -150,29 +150,29 @@ void main() {
         tester,
         of: word(article: 'der', german: 'Tisch'),
       );
-      expect(bar(tester), DpPalette.light.der);
+      expect(bar(tester), SgPalette.light.der);
 
       await pump(
         tester,
         of: word(article: 'das', german: 'Haus'),
       );
-      expect(bar(tester), DpPalette.light.das);
+      expect(bar(tester), SgPalette.light.das);
 
       await pump(
         tester,
         of: word(article: null, german: 'gehen', pos: 'verb'),
       );
-      expect(bar(tester), DpSurfaceTokens.light.muted);
+      expect(bar(tester), SgSurfaceTokens.light.muted);
     });
 
     testWidgets('under glass the card takes the gender tint too', (
       tester,
     ) async {
       await pump(tester, theme: AppTheme.glass());
-      final surface = tester.widget<DpSurface>(find.byType(DpSurface).first);
+      final surface = tester.widget<SgSurface>(find.byType(SgSurface).first);
       expect(surface.selected, isFalse);
-      expect(surface.kind, isNot(DpSurfaceKind.card));
-      expect(bar(tester), DpPalette.light.die);
+      expect(surface.kind, isNot(SgSurfaceKind.card));
+      expect(bar(tester), SgPalette.light.die);
     });
 
     testWidgets('FR-T2-09 a long-press on the headword copies it', (
@@ -207,7 +207,7 @@ void main() {
 
     testWidgets('the speaker plays the word with its article', (tester) async {
       await pump(tester);
-      await tester.tap(find.byType(DpSpeakerButton));
+      await tester.tap(find.byType(SgSpeakerButton));
       await tester.pump();
       expect(tts.said, <(String, double)>[('die Rechnung', 1)]);
     });
@@ -216,7 +216,7 @@ void main() {
       tester,
     ) async {
       await pump(tester);
-      await tester.longPress(find.byType(DpSpeakerButton));
+      await tester.longPress(find.byType(SgSpeakerButton));
       await tester.pump();
       expect(tts.said, <(String, double)>[('die Rechnung', 0.75)]);
     });
@@ -224,7 +224,7 @@ void main() {
     testWidgets('and at the chosen speech speed', (tester) async {
       await pump(tester);
       await tester.runAsync(() => settings.write(SettingKeys.ttsSpeed, 1.25));
-      await tester.longPress(find.byType(DpSpeakerButton));
+      await tester.longPress(find.byType(SgSpeakerButton));
       await tester.pump();
       expect(tts.said.single.$2, closeTo(1.25 * 0.75, 1e-9));
     });
@@ -248,22 +248,22 @@ void main() {
       tester,
     ) async {
       await pump(tester, voice: false);
-      await tester.tap(find.byType(DpSpeakerButton));
+      await tester.tap(find.byType(SgSpeakerButton));
       await tester.pump();
 
       expect(
-        tester.widget<DpSpeakerButton>(find.byType(DpSpeakerButton)).state,
-        DpSpeakerState.unavailable,
+        tester.widget<SgSpeakerButton>(find.byType(SgSpeakerButton)).state,
+        SgSpeakerState.unavailable,
       );
       expect(find.text(l10n.speakerNoVoice), findsOneWidget);
 
       // A tap on the slashed speaker explains again and asks nothing more
       // of the engine.
       await tester.pumpAndSettle();
-      await tester.pump(DpToast.duration);
+      await tester.pump(SgToast.duration);
       await tester.pumpAndSettle();
       expect(find.text(l10n.speakerNoVoice), findsNothing);
-      await tester.tap(find.byType(DpSpeakerButton));
+      await tester.tap(find.byType(SgSpeakerButton));
       await tester.pump();
       expect(find.text(l10n.speakerNoVoice), findsOneWidget);
       expect(tts.said, hasLength(1));
@@ -273,8 +273,8 @@ void main() {
         'so', (tester) async {
       await pump(tester, voice: false);
       expect(
-        tester.widget<DpSpeakerButton>(find.byType(DpSpeakerButton)).state,
-        DpSpeakerState.unavailable,
+        tester.widget<SgSpeakerButton>(find.byType(SgSpeakerButton)).state,
+        SgSpeakerState.unavailable,
       );
       expect(tts.said, isEmpty);
     });
@@ -285,7 +285,7 @@ void main() {
       expect(find.text(l10n.speakerNoVoice), findsOneWidget);
 
       await tester.pumpAndSettle();
-      await tester.pump(DpToast.duration);
+      await tester.pump(SgToast.duration);
       await tester.pumpAndSettle();
       await tester.pumpWidget(
         ProviderScope(

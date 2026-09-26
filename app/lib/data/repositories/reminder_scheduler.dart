@@ -1,10 +1,10 @@
 import 'dart:async';
 
-import 'package:deutschplan/data/repositories/setting_keys.dart';
-import 'package:deutschplan/data/repositories/settings_repository.dart';
-import 'package:deutschplan/domain/reminder_times.dart';
-import 'package:deutschplan/services/background_work.dart';
-import 'package:deutschplan/services/reminder_notifications.dart';
+import 'package:sogda/data/repositories/setting_keys.dart';
+import 'package:sogda/data/repositories/settings_repository.dart';
+import 'package:sogda/domain/reminder_times.dart';
+import 'package:sogda/services/background_work.dart';
+import 'package:sogda/services/reminder_notifications.dart';
 
 /// Keeps the scheduled reminders what the settings say (#157): the next
 /// week's study days at `reminder_time` while `reminder_enabled` is on, and

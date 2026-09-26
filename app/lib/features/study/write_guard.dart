@@ -1,11 +1,11 @@
 import 'dart:async';
 
-import 'package:deutschplan/core/adaptive/adaptive.dart';
-import 'package:deutschplan/core/components/dp_button.dart';
-import 'package:deutschplan/core/components/dp_feedback.dart';
-import 'package:deutschplan/core/providers/app_providers.dart';
-import 'package:deutschplan/features/me/export_import_screen.dart';
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
+import 'package:sogda/core/adaptive/adaptive.dart';
+import 'package:sogda/core/components/sg_button.dart';
+import 'package:sogda/core/components/sg_feedback.dart';
+import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/features/me/export_import_screen.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 
@@ -65,7 +65,7 @@ class _WriteFailedState extends ConsumerState<_WriteFailed> {
       await files.share(ExportImportScreen.fileName(now), json);
     } on Object catch (error) {
       debugPrint('export: $error');
-      if (mounted) DpToast.show(context, l10n.exportImportExportFailed);
+      if (mounted) SgToast.show(context, l10n.exportImportExportFailed);
     } finally {
       if (mounted) setState(() => _busy = false);
     }
@@ -76,13 +76,13 @@ class _WriteFailedState extends ConsumerState<_WriteFailed> {
     final l10n = AppLocalizations.of(context);
     return Padding(
       padding: const EdgeInsets.all(16),
-      child: DpErrorPanel(
+      child: SgErrorPanel(
         message: l10n.saveAnswerFailed,
         retryLabel: l10n.retry,
         onRetry: () => Navigator.of(context).pop(true),
-        action: DpButton(
+        action: SgButton(
           label: l10n.exportProgress,
-          kind: DpButtonKind.secondary,
+          kind: SgButtonKind.secondary,
           onPressed: _busy ? null : () => unawaited(_export()),
         ),
       ),

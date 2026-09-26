@@ -1,10 +1,10 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:deutschplan/bootstrap.dart';
-import 'package:deutschplan/core/adaptive/orientation.dart';
-import 'package:deutschplan/data/repositories/setting_keys.dart';
-import 'package:deutschplan/main.dart' show BootstrapHost;
+import 'package:sogda/bootstrap.dart';
+import 'package:sogda/core/adaptive/orientation.dart';
+import 'package:sogda/data/repositories/setting_keys.dart';
+import 'package:sogda/main.dart' show BootstrapHost;
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 

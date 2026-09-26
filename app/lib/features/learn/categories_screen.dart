@@ -1,14 +1,14 @@
-import 'package:deutschplan/core/adaptive/adaptive.dart';
-import 'package:deutschplan/core/components/dp_progress_ring.dart';
-import 'package:deutschplan/core/providers/app_providers.dart';
-import 'package:deutschplan/core/theme/aurora_backdrop.dart';
-import 'package:deutschplan/core/theme/dp_surface.dart';
-import 'package:deutschplan/core/theme/dp_tokens.dart';
-import 'package:deutschplan/core/typography/dp_text.dart';
-import 'package:deutschplan/data/repositories/word_repository.dart';
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
-import 'package:deutschplan/router/cross_tab.dart';
-import 'package:deutschplan/router/routes.dart';
+import 'package:sogda/core/adaptive/adaptive.dart';
+import 'package:sogda/core/components/sg_progress_ring.dart';
+import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/core/theme/aurora_backdrop.dart';
+import 'package:sogda/core/theme/sg_surface.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/core/typography/sg_text.dart';
+import 'package:sogda/data/repositories/word_repository.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
+import 'package:sogda/router/cross_tab.dart';
+import 'package:sogda/router/routes.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -22,7 +22,7 @@ Stream<List<CategoryProgress>> categories(Ref ref) =>
 
 /// A card's tile colour and the ink on it, cycling through the palette in
 /// the grid's order: the same list always colours the same way.
-(Color, Color) categoryColours(DpTokens tokens, int index) {
+(Color, Color) categoryColours(SgTokens tokens, int index) {
   final c = tokens.color;
   final palette = <(Color, Color)>[
     (c.primary, c.onPrimary),
@@ -60,9 +60,9 @@ class CategoriesScreen extends ConsumerWidget {
           if (row == 0) {
             return Padding(
               padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-              child: DpText(
+              child: SgText(
                 l10n.categoriesLine,
-                role: DpTextRole.caption,
+                role: SgTextRole.caption,
                 color: tokens.color.textSecondary,
               ),
             );
@@ -128,8 +128,8 @@ class CategoryCard extends StatelessWidget {
     final (fill, ink) = colours;
     return Semantics(
       button: true,
-      child: DpSurface(
-        kind: DpSurfaceKind.bar,
+      child: SgSurface(
+        kind: SgSurfaceKind.bar,
         padding: const EdgeInsets.all(14),
         onTap: () => context.jumpToTab(CategoryRoute(id: category.id)),
         child: ConstrainedBox(
@@ -152,22 +152,22 @@ class CategoryCard extends StatelessWidget {
               ),
               const SizedBox(height: 10),
               const Spacer(),
-              DpText(
+              SgText(
                 category.name,
-                role: DpTextRole.body,
+                role: SgTextRole.body,
                 weight: 600,
                 // "Behörden & Formulare" in a half-width tile: at 200 % it
                 // breaks at a syllable, not a letter (#165).
-                allowBreaks: DpScript.scaled(context),
+                allowBreaks: SgScript.scaled(context),
               ),
               const SizedBox(height: 2),
-              DpText(
+              SgText(
                 l10n.categoriesWords(category.words),
-                role: DpTextRole.caption,
+                role: SgTextRole.caption,
                 color: tokens.color.textSecondary,
               ),
               const SizedBox(height: 10),
-              DpSegmentedBar(
+              SgSegmentedBar(
                 done: category.done,
                 learning: category.learning,
                 todo: category.todo,

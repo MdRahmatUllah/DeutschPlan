@@ -1,23 +1,22 @@
 import 'dart:async';
 import 'dart:math' as math;
 
-import 'package:deutschplan/core/adaptive/adaptive.dart';
-import 'package:deutschplan/core/components/dp_button.dart';
-import 'package:deutschplan/core/components/dp_feedback.dart';
-import 'package:deutschplan/core/providers/app_providers.dart';
-import 'package:deutschplan/core/theme/aurora_backdrop.dart';
-import 'package:deutschplan/core/theme/dp_surface.dart';
-import 'package:deutschplan/core/theme/dp_tokens.dart';
-import 'package:deutschplan/core/typography/dp_text.dart';
-import 'package:deutschplan/data/repositories/exam_result_service.dart';
-import 'package:deutschplan/domain/exam_generator.dart';
-import 'package:deutschplan/features/exam/exam_question_view.dart'
+import 'package:sogda/core/adaptive/adaptive.dart';
+import 'package:sogda/core/components/sg_button.dart';
+import 'package:sogda/core/components/sg_feedback.dart';
+import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/core/theme/aurora_backdrop.dart';
+import 'package:sogda/core/theme/sg_surface.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/core/typography/sg_text.dart';
+import 'package:sogda/data/repositories/exam_result_service.dart';
+import 'package:sogda/domain/exam_generator.dart';
+import 'package:sogda/features/exam/exam_question_view.dart'
     show ExamRubricTick, examRubricLines;
-import 'package:deutschplan/features/exam/exam_review_screen.dart';
-import 'package:deutschplan/features/learn/step_exams.dart'
-    show examSectionName;
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
-import 'package:deutschplan/l10n/ui_digits.dart';
+import 'package:sogda/features/exam/exam_review_screen.dart';
+import 'package:sogda/features/learn/step_exams.dart' show examSectionName;
+import 'package:sogda/l10n/generated/app_localizations.dart';
+import 'package:sogda/l10n/ui_digits.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -76,11 +75,11 @@ class _ExamResultsScreenState extends ConsumerState<ExamResultsScreen> {
     } on Object {
       if (!mounted) return;
       setState(() => _added = false);
-      DpToast.show(context, l10n.examResultAddFailed);
+      SgToast.show(context, l10n.examResultAddFailed);
       return;
     }
     if (!mounted) return;
-    DpToast.show(context, l10n.examResultAdded(uids.length));
+    SgToast.show(context, l10n.examResultAdded(uids.length));
   }
 
   /// FR-L13-03: a task's rubric, ticked here; each tick grades again.
@@ -132,9 +131,9 @@ class _ExamResultsScreenState extends ConsumerState<ExamResultsScreen> {
       content = Center(
         child: Padding(
           padding: const EdgeInsets.all(24),
-          child: DpText(
+          child: SgText(
             l10n.examRunLoadFailed,
-            role: DpTextRole.body,
+            role: SgTextRole.body,
             textAlign: TextAlign.center,
           ),
         ),
@@ -262,9 +261,9 @@ class _Result extends StatelessWidget {
                 padding: const EdgeInsets.fromLTRB(16, 14, 16, 8),
                 child: Semantics(
                   header: true,
-                  child: DpText(
+                  child: SgText(
                     l10n.examResultBySection.toUpperCase(),
-                    role: DpTextRole.caption,
+                    role: SgTextRole.caption,
                     weight: 700,
                     letterSpacing: 0.6,
                     color: tokens.color.textSecondary,
@@ -288,28 +287,28 @@ class _Result extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
-              DpButton(label: l10n.examResultReview, onPressed: onReview),
+              SgButton(label: l10n.examResultReview, onPressed: onReview),
               const SizedBox(height: 8),
-              DpButton(
+              SgButton(
                 label: l10n.examResultAddMissed(missed.length),
-                kind: DpButtonKind.secondary,
+                kind: SgButtonKind.secondary,
                 onPressed: missed.isEmpty || added ? null : () => onAdd(missed),
               ),
               const SizedBox(height: 8),
               Row(
                 children: <Widget>[
                   Expanded(
-                    child: DpButton(
+                    child: SgButton(
                       label: l10n.examResultAnotherMock,
-                      kind: DpButtonKind.text,
+                      kind: SgButtonKind.text,
                       onPressed: onHub,
                     ),
                   ),
                   const SizedBox(width: 8),
                   Expanded(
-                    child: DpButton(
+                    child: SgButton(
                       label: l10n.examResultBackToStep,
-                      kind: DpButtonKind.text,
+                      kind: SgButtonKind.text,
                       onPressed: onStep,
                     ),
                   ),
@@ -413,17 +412,17 @@ class _Hero extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.baseline,
             textBaseline: TextBaseline.alphabetic,
             children: <Widget>[
-              DpText(
+              SgText(
                 l10n.examResultPercent(percent),
-                role: DpTextRole.display,
+                role: SgTextRole.display,
                 weight: 700,
                 color: ink,
               ),
               const SizedBox(width: 12),
               Flexible(
-                child: DpText(
+                child: SgText(
                   points,
-                  role: DpTextRole.body,
+                  role: SgTextRole.body,
                   weight: 600,
                   color: ink,
                 ),
@@ -433,12 +432,12 @@ class _Hero extends StatelessWidget {
           const SizedBox(height: 12),
           _PassBar(share: share, passPercent: passPercent, ink: ink),
           const SizedBox(height: 8),
-          DpText(line, role: DpTextRole.label, weight: 600, color: ink),
+          SgText(line, role: SgTextRole.label, weight: 600, color: ink),
         ],
       ),
     );
     return tokens.isGlass
-        ? DpSurface(kind: DpSurfaceKind.tint(colour), radius: 0, child: content)
+        ? SgSurface(kind: SgSurfaceKind.tint(colour), radius: 0, child: content)
         : ColoredBox(color: colour, child: content);
   }
 }
@@ -525,9 +524,9 @@ class _BadgeState extends State<_Badge> with SingleTickerProviderStateMixin {
                 color: tokens.color.ink,
               ),
               const SizedBox(width: 6),
-              DpText(
+              SgText(
                 label,
-                role: DpTextRole.body,
+                role: SgTextRole.body,
                 weight: 700,
                 color: tokens.color.ink,
               ),
@@ -599,9 +598,9 @@ class _PassBar extends StatelessWidget {
             bar,
             Align(
               alignment: Alignment(mark * 2 - 1, 0),
-              child: DpText(
+              child: SgText(
                 l10n.examResultPassMark(passPercent),
-                role: DpTextRole.caption,
+                role: SgTextRole.caption,
                 weight: 700,
                 color: ink,
               ),
@@ -652,16 +651,16 @@ class _SectionRow extends StatelessWidget {
         child: ColoredBox(color: tokens.color.easy),
       ),
     );
-    final scoreText = DpText(score, role: DpTextRole.label, weight: 700);
+    final scoreText = SgText(score, role: SgTextRole.label, weight: 700);
     final note = task == null
         ? null
         : Row(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               Flexible(
-                child: DpText(
+                child: SgText(
                   l10n.examResultSelfAssessed,
-                  role: DpTextRole.caption,
+                  role: SgTextRole.caption,
                   color: tokens.color.link,
                 ),
               ),
@@ -686,9 +685,9 @@ class _SectionRow extends StatelessWidget {
                   Row(
                     children: <Widget>[
                       Expanded(
-                        child: DpText(
+                        child: SgText(
                           name,
-                          role: DpTextRole.label,
+                          role: SgTextRole.label,
                           weight: 400,
                         ),
                       ),
@@ -705,7 +704,7 @@ class _SectionRow extends StatelessWidget {
                 children: <Widget>[
                   SizedBox(
                     width: 96,
-                    child: DpText(name, role: DpTextRole.label, weight: 400),
+                    child: SgText(name, role: SgTextRole.label, weight: 400),
                   ),
                   const SizedBox(width: 10),
                   Expanded(child: bar),
@@ -807,15 +806,15 @@ class _RubricSheetState extends State<_RubricSheet> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            DpText(widget.title, role: DpTextRole.title),
+            SgText(widget.title, role: SgTextRole.title),
             const SizedBox(height: 4),
-            DpText(
+            SgText(
               widget.empty
                   ? (widget.speaking
                         ? l10n.examResultRubricNoRecording
                         : l10n.examResultRubricNoText)
                   : l10n.examResultRubricIntro,
-              role: DpTextRole.label,
+              role: SgTextRole.label,
             ),
             const SizedBox(height: 8),
             for (final (i, line) in widget.lines.indexed)
@@ -831,9 +830,9 @@ class _RubricSheetState extends State<_RubricSheet> {
               ),
             if (widget.speaking && !widget.empty) ...<Widget>[
               const SizedBox(height: 8),
-              DpButton(
+              SgButton(
                 label: l10n.examSpeakingDelete,
-                kind: DpButtonKind.text,
+                kind: SgButtonKind.text,
                 onPressed: () => unawaited(_delete()),
               ),
             ],

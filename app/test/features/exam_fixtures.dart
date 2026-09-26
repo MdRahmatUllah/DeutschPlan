@@ -1,8 +1,8 @@
 import 'dart:async';
 
-import 'package:deutschplan/data/repositories/exam_repository.dart';
-import 'package:deutschplan/features/learn/exam_intro_screen.dart';
-import 'package:deutschplan/features/learn/step_exams.dart';
+import 'package:sogda/data/repositories/exam_repository.dart';
+import 'package:sogda/features/learn/exam_intro_screen.dart';
+import 'package:sogda/features/learn/step_exams.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 
 /// The ExamHub artboard: Mock 1 passed at 78 % in two attempts, Mock 2 at

@@ -62,7 +62,7 @@ choice, and the rejected alternatives, are in
 
 ```
 deutschplan/
-├── app/                              the Flutter app (package deutschplan)
+├── app/                              the Flutter app (package sogda)
 │   ├── pubspec.yaml · l10n.yaml · analysis_options.yaml
 │   ├── lib/
 │   │   ├── main.dart · bootstrap.dart
@@ -299,16 +299,16 @@ In `app/lib/core/`; screens reuse these rather than drawing their own.
 
 | Component | File | What it is |
 |---|---|---|
-| `DpText`, `DpHeadword`, `DpOneLine`, `DpRuns`, `DpGermanRuns`, `DpScript` | `typography/dp_text.dart` | All text: roles, the Bangla step-up, language tags, syllable and akshara breaking |
-| `DpSurface` (`DpSurfaceKind.card`, `cardStrong`, `bar`, `tint`) | `theme/dp_surface.dart` | The only surface: solid in light and dark, frosted in glass |
-| `DpTokens`, `context.tokens` | `theme/dp_tokens.dart` | Colour, surface, type, shape, spacing and motion tokens per mode |
+| `SgText`, `SgHeadword`, `SgOneLine`, `SgRuns`, `SgGermanRuns`, `SgScript` | `typography/sg_text.dart` | All text: roles, the Bangla step-up, language tags, syllable and akshara breaking |
+| `SgSurface` (`SgSurfaceKind.card`, `cardStrong`, `bar`, `tint`) | `theme/sg_surface.dart` | The only surface: solid in light and dark, frosted in glass |
+| `SgTokens`, `context.tokens` | `theme/sg_tokens.dart` | Colour, surface, type, shape, spacing and motion tokens per mode |
 | `AuroraBackdrop`, `GlassCapability` | `theme/` | The glass backdrop, and whether this device may blur |
-| `DpButton` (primary, secondary, text) | `components/dp_button.dart` | Every button |
-| `DpChip` (step, status, filter, streak, webLink), `DpPill` | `components/` | Chips and pills |
-| `DpProgressRing`, `DpSegmentedBar` | `components/dp_progress_ring.dart` | Today's ring, progress bars |
-| `DpRatingBar` | `components/dp_rating_bar.dart` | Again, Hard, Good, Easy with their intervals |
-| `DpUmlautBar`, `DpCallout`, `DpErrorPanel`, `DpVerdictRow`, `DpToast`, `DpUndo` | `components/dp_feedback.dart` | The umlaut keys under a German field, callouts, the error panel with Retry, verdicts, toasts and undo |
-| `DpSlider`, `DpStepper`, `DpSpeakerButton`, `DpCoachMark` | `components/` | Settings controls, the speaker with its three states, the one-time coach mark |
+| `SgButton` (primary, secondary, text) | `components/sg_button.dart` | Every button |
+| `SgChip` (step, status, filter, streak, webLink), `SgPill` | `components/` | Chips and pills |
+| `SgProgressRing`, `SgSegmentedBar` | `components/sg_progress_ring.dart` | Today's ring, progress bars |
+| `SgRatingBar` | `components/sg_rating_bar.dart` | Again, Hard, Good, Easy with their intervals |
+| `SgUmlautBar`, `SgCallout`, `SgErrorPanel`, `SgVerdictRow`, `SgToast`, `SgUndo` | `components/sg_feedback.dart` | The umlaut keys under a German field, callouts, the error panel with Retry, verdicts, toasts and undo |
+| `SgSlider`, `SgStepper`, `SgSpeakerButton`, `SgCoachMark` | `components/` | Settings controls, the speaker with its three states, the one-time coach mark |
 | `Adaptive*` | `adaptive/adaptive.dart` | All platform chrome ([chapter 4](04-architecture.md#adaptive-chrome)) |
 
 Feature-level widgets reused across screens include `WordRow`
@@ -402,12 +402,12 @@ the practice in ONBOARDING §6.
   `dart analyze --fatal-infos` (no path arguments, never `flutter analyze`,
   ADR 18). `dart format` is the style. Generated code is excluded.
 - **Imports.** `package:material_ui/…` and `package:cupertino_ui/…`, never the
-  SDK's Material or Cupertino; `package:deutschplan/…` everywhere, no relative
+  SDK's Material or Cupertino; `package:sogda/…` everywhere, no relative
   imports.
 - **Values.** `@immutable` classes, records, enums and `sealed` hierarchies
   (`ExamItem`, `GrammarItem`, `BootstrapResult`, `SettingKey`). No `@freezed`
   class exists.
-- **Text.** `DpText(role:)`, never `Text`; every string in both ARB files, with
+- **Text.** `SgText(role:)`, never `Text`; every string in both ARB files, with
   an `@key` description in English naming the screen; fixed German UI copy is
   ARB and says so. A genuine non-copy literal is marked
   `// ponytail: allow-literal`.
@@ -440,7 +440,7 @@ The full table, with each decision's reason and when to revisit it, is
 | 8 | Supertonic 3 via flutter_onnxruntime, with the system voice as fallback |
 | 9 | Hy-MT1.5-1.8B via llamadart behind `ENABLE_HYMT_DOWNLOAD`, off in every v1.0 build |
 | 10 | One seeded exam generator, seeds 1–3 |
-| 11 | Three theme modes; glass through one `DpSurface` renderer |
+| 11 | Three theme modes; glass through one `SgSurface` renderer |
 | 12 | No dynamic (Material You) colour |
 | 13 | No analytics, no accounts |
 | 14 | `sqlite3` 3.x instead of the end-of-life `sqlite3_flutter_libs` |

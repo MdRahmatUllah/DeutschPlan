@@ -1,12 +1,12 @@
 import 'dart:io';
 
 import 'package:background_downloader/background_downloader.dart';
-import 'package:deutschplan/data/db/app_database.dart';
-import 'package:deutschplan/data/repositories/model_repository.dart';
-import 'package:deutschplan/data/repositories/settings_repository.dart';
-import 'package:deutschplan/services/model_downloads.dart';
-import 'package:deutschplan/services/tts/system_tts.dart';
-import 'package:deutschplan/services/tts/tts_engine.dart';
+import 'package:sogda/data/db/app_database.dart';
+import 'package:sogda/data/repositories/model_repository.dart';
+import 'package:sogda/data/repositories/settings_repository.dart';
+import 'package:sogda/services/model_downloads.dart';
+import 'package:sogda/services/tts/system_tts.dart';
+import 'package:sogda/services/tts/tts_engine.dart';
 import 'package:flutter/services.dart' show PlatformException;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_tts/flutter_tts.dart';
@@ -23,7 +23,7 @@ void main() {
     late _FakeDownloader downloader;
 
     setUp(() async {
-      support = Directory.systemTemp.createTempSync('deutschplan_models');
+      support = Directory.systemTemp.createTempSync('sogda_models');
       final db = AppDatabase.memory();
       addTearDown(db.close);
       settings = SettingsRepository(db);

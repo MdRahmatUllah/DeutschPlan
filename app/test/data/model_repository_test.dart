@@ -6,11 +6,11 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:crypto/crypto.dart';
-import 'package:deutschplan/data/db/app_database.dart';
-import 'package:deutschplan/data/repositories/model_repository.dart';
-import 'package:deutschplan/data/repositories/setting_keys.dart';
-import 'package:deutschplan/data/repositories/settings_repository.dart';
-import 'package:deutschplan/data/repositories/synthesis_cache.dart';
+import 'package:sogda/data/db/app_database.dart';
+import 'package:sogda/data/repositories/model_repository.dart';
+import 'package:sogda/data/repositories/setting_keys.dart';
+import 'package:sogda/data/repositories/settings_repository.dart';
+import 'package:sogda/data/repositories/synthesis_cache.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_test/flutter_test.dart';
 
@@ -72,7 +72,7 @@ void main() {
   }
 
   setUp(() async {
-    support = Directory.systemTemp.createTempSync('deutschplan_models');
+    support = Directory.systemTemp.createTempSync('sogda_models');
     db = AppDatabase.memory();
     settings = SettingsRepository(db);
     await settings.load();

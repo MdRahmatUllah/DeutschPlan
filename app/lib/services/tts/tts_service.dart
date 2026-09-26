@@ -1,8 +1,8 @@
 import 'dart:async';
 
-import 'package:deutschplan/data/repositories/setting_keys.dart';
-import 'package:deutschplan/data/repositories/settings_repository.dart';
-import 'package:deutschplan/services/tts/tts_engine.dart';
+import 'package:sogda/data/repositories/setting_keys.dart';
+import 'package:sogda/data/repositories/settings_repository.dart';
+import 'package:sogda/services/tts/tts_engine.dart';
 import 'package:flutter/foundation.dart' show immutable;
 
 /// What the one player is doing, and for which text: the speaker that says

@@ -1,20 +1,20 @@
 import 'dart:async';
 
-import 'package:deutschplan/core/adaptive/adaptive.dart';
-import 'package:deutschplan/core/components/dp_pill.dart';
-import 'package:deutschplan/core/components/dp_button.dart';
-import 'package:deutschplan/core/components/dp_chip.dart';
-import 'package:deutschplan/core/components/dp_speaker_button.dart';
-import 'package:deutschplan/core/providers/app_providers.dart';
-import 'package:deutschplan/core/theme/aurora_backdrop.dart';
-import 'package:deutschplan/core/theme/dp_surface.dart';
-import 'package:deutschplan/core/theme/dp_tokens.dart';
-import 'package:deutschplan/core/typography/dp_text.dart';
-import 'package:deutschplan/data/repositories/setting_keys.dart';
-import 'package:deutschplan/domain/placement.dart';
-import 'package:deutschplan/features/onboarding/onboarding_start_page.dart';
-import 'package:deutschplan/features/words/speak.dart';
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
+import 'package:sogda/core/adaptive/adaptive.dart';
+import 'package:sogda/core/components/sg_pill.dart';
+import 'package:sogda/core/components/sg_button.dart';
+import 'package:sogda/core/components/sg_chip.dart';
+import 'package:sogda/core/components/sg_speaker_button.dart';
+import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/core/theme/aurora_backdrop.dart';
+import 'package:sogda/core/theme/sg_surface.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/core/typography/sg_text.dart';
+import 'package:sogda/data/repositories/setting_keys.dart';
+import 'package:sogda/domain/placement.dart';
+import 'package:sogda/features/onboarding/onboarding_start_page.dart';
+import 'package:sogda/features/words/speak.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 
@@ -164,7 +164,7 @@ class PlacementScreenState extends ConsumerState<PlacementScreen> {
                 ),
                 Padding(
                   padding: const EdgeInsets.fromLTRB(16, 16, 16, 32),
-                  child: DpButton(
+                  child: SgButton(
                     label: l10n.placementNext,
                     onPressed: _picked == null || _loading ? null : _submit,
                   ),
@@ -237,9 +237,9 @@ class _TopBar extends StatelessWidget {
           ),
         ),
         Expanded(
-          child: DpText(
+          child: SgText(
             title,
-            role: DpTextRole.bodyLarge,
+            role: SgTextRole.bodyLarge,
             weight: 600,
             textAlign: TextAlign.center,
           ),
@@ -328,14 +328,14 @@ class _Question extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        DpChip(label: tag, kind: DpChipKind.status),
+        SgChip(label: tag, kind: SgChipKind.status),
         const SizedBox(height: 10),
-        DpText(ask, role: DpTextRole.body, color: tokens.color.textSecondary),
+        SgText(ask, role: SgTextRole.body, color: tokens.color.textSecondary),
         const SizedBox(height: 10),
         if (item.kind == PlacementKind.gap)
-          DpText(
+          SgText(
             item.sentence!,
-            role: DpTextRole.title,
+            role: SgTextRole.title,
             weight: 600,
             german: true,
           )
@@ -345,7 +345,7 @@ class _Question extends ConsumerWidget {
               Flexible(
                 // Read in a German voice (#162); a word too wide for the
                 // line breaks at a syllable, as a headword does (#539).
-                child: DpGermanRuns(
+                child: SgGermanRuns(
                   <TextSpan>[
                     if (word.article != null &&
                         item.kind != PlacementKind.article)
@@ -355,15 +355,15 @@ class _Question extends ConsumerWidget {
                       ),
                     TextSpan(text: word.german),
                   ],
-                  style: DpText.styleFor(
+                  style: SgText.styleFor(
                     tokens,
-                    DpTextRole.display,
+                    SgTextRole.display,
                     color: tokens.color.ink,
                   ),
                 ),
               ),
               const SizedBox(width: 14),
-              DpSpeakerButton(
+              SgSpeakerButton(
                 size: 48,
                 semanticLabel: l10n.placementPronounce,
                 state: speakerState(ref, word.german),
@@ -379,8 +379,8 @@ class _Question extends ConsumerWidget {
               selected: picked == index,
               button: true,
               inMutuallyExclusiveGroup: true,
-              child: DpSurface(
-                kind: DpSurfaceKind.bar,
+              child: SgSurface(
+                kind: SgSurfaceKind.bar,
                 selected: picked == index,
                 radius: tokens.shape.button,
                 onTap: onPick == null ? null : () => onPick!(index),
@@ -392,9 +392,9 @@ class _Question extends ConsumerWidget {
                   constraints: const BoxConstraints(minHeight: 32),
                   child: Align(
                     alignment: AlignmentDirectional.centerStart,
-                    child: DpText(
+                    child: SgText(
                       option,
-                      role: DpTextRole.bodyLarge,
+                      role: SgTextRole.bodyLarge,
                       weight: 600,
                     ),
                   ),
@@ -403,9 +403,9 @@ class _Question extends ConsumerWidget {
             ),
           ),
         const SizedBox(height: 8),
-        DpText(
+        SgText(
           l10n.placementRule,
-          role: DpTextRole.caption,
+          role: SgTextRole.caption,
           color: tokens.color.textSecondary,
         ),
       ],
@@ -456,14 +456,14 @@ class PlacementResultView extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: <Widget>[
-                    DpSurface(
+                    SgSurface(
                       // The paper card has the artboard's 2 px ink edge; the
                       // glass one is a plain panel.
                       selected: !tokens.isGlass,
                       padding: const EdgeInsets.fromLTRB(20, 24, 20, 24),
                       child: Column(
                         children: <Widget>[
-                          DpPill(
+                          SgPill(
                             label: l10n.placementScore(
                               result.correct,
                               result.answered,
@@ -472,24 +472,24 @@ class PlacementResultView extends StatelessWidget {
                             small: true,
                           ),
                           const SizedBox(height: 14),
-                          DpText(
+                          SgText(
                             l10n.placementSuggest.toUpperCase(),
                             semanticsLabel: l10n.placementSuggest,
-                            role: DpTextRole.caption,
+                            role: SgTextRole.caption,
                             weight: 700,
                             letterSpacing: 0.6,
                             color: tokens.color.textSecondary,
                           ),
                           const SizedBox(height: 14),
-                          DpText(
+                          SgText(
                             result.step,
-                            role: DpTextRole.display,
+                            role: SgTextRole.display,
                             weight: 700,
                           ),
                           const SizedBox(height: 14),
-                          DpText(
+                          SgText(
                             l10n.placementRationale(result.step),
-                            role: DpTextRole.body,
+                            role: SgTextRole.body,
                             textAlign: TextAlign.center,
                           ),
                           const SizedBox(height: 14),
@@ -499,7 +499,7 @@ class PlacementResultView extends StatelessWidget {
                             alignment: WrapAlignment.center,
                             children: <Widget>[
                               for (final area in result.areas)
-                                DpPill(
+                                SgPill(
                                   label: area.area == PlacementSession.articles
                                       ? l10n.placementAreaArticles(
                                           area.correct,
@@ -521,9 +521,9 @@ class PlacementResultView extends StatelessWidget {
                     // BR-COURSE-04: starting further on marks nothing known.
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 12),
-                      child: DpText(
+                      child: SgText(
                         l10n.placementBrowsable,
-                        role: DpTextRole.caption,
+                        role: SgTextRole.caption,
                         color: tokens.color.textSecondary,
                         textAlign: TextAlign.center,
                       ),
@@ -538,15 +538,15 @@ class PlacementResultView extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
-                DpButton(
+                SgButton(
                   label: l10n.placementUse(result.step),
                   onPressed: () => onDone(result.step),
                 ),
                 const SizedBox(height: 8),
-                DpButton(
+                SgButton(
                   label: l10n.placementChooseMyself,
                   onPressed: () => onDone(null),
-                  kind: DpButtonKind.secondary,
+                  kind: SgButtonKind.secondary,
                 ),
               ],
             ),

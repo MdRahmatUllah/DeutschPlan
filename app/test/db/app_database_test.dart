@@ -3,7 +3,7 @@ library;
 
 import 'dart:io';
 
-import 'package:deutschplan/data/db/app_database.dart';
+import 'package:sogda/data/db/app_database.dart';
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -242,7 +242,7 @@ void main() {
         'INSERT INTO quiz_answers '
         '(attempt_id, ord, word_uid, prompt, expected, verdict) '
         "VALUES (1, 1, 'w1', 'p', 'e', 'nearly')",
-        because: 'DpVerdictRow draws correct, almost, wrongArticle and wrong',
+        because: 'SgVerdictRow draws correct, almost, wrongArticle and wrong',
       );
       // Unanswered is legal: rows are pre-inserted before they are answered.
       await db.customStatement(
@@ -311,7 +311,7 @@ void main() {
     // The generated migrationSteps() raises for a version it has no step for.
     // An empty onUpgrade would swallow that, and the first learner to update
     // would open their existing file against the new schema.
-    final dir = Directory.systemTemp.createTempSync('deutschplan_upgrade');
+    final dir = Directory.systemTemp.createTempSync('sogda_upgrade');
     final file = File('${dir.path}/user.sqlite');
 
     final v1 = AppDatabase(DatabaseConnection(NativeDatabase(file)));
@@ -341,7 +341,7 @@ void main() {
     // reports 'memory', so this is the only place the setting can actually be
     // checked — and it runs through configureConnection, the same callback the
     // real isolate connection uses.
-    final dir = Directory.systemTemp.createTempSync('deutschplan_wal');
+    final dir = Directory.systemTemp.createTempSync('sogda_wal');
 
     final onDisk = AppDatabase(
       DatabaseConnection(

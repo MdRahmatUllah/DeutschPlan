@@ -1,18 +1,18 @@
 @TestOn('vm')
 library;
 
-import 'package:deutschplan/core/adaptive/adaptive.dart';
-import 'package:deutschplan/core/components/dp_button.dart';
-import 'package:deutschplan/core/theme/app_theme.dart';
-import 'package:deutschplan/core/theme/dp_surface.dart';
-import 'package:deutschplan/core/theme/dp_tokens.dart';
-import 'package:deutschplan/core/typography/dp_text.dart';
-import 'package:deutschplan/features/onboarding/onboarding_shell.dart';
-import 'package:deutschplan/features/onboarding/onboarding_welcome_page.dart';
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
-import 'package:deutschplan/services/start_report.dart';
+import 'package:sogda/core/adaptive/adaptive.dart';
+import 'package:sogda/core/components/sg_button.dart';
+import 'package:sogda/core/theme/app_theme.dart';
+import 'package:sogda/core/theme/sg_surface.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/core/typography/sg_text.dart';
+import 'package:sogda/features/onboarding/onboarding_shell.dart';
+import 'package:sogda/features/onboarding/onboarding_welcome_page.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
+import 'package:sogda/services/start_report.dart';
 import 'package:flutter/services.dart' show MethodChannel;
-import 'package:deutschplan/main.dart'
+import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
@@ -35,14 +35,14 @@ void main() {
     VoidCallback? onPrimary,
     VoidCallback? onBack,
     VoidCallback? onSkip,
-    DpMode mode = DpMode.light,
+    SgMode mode = SgMode.light,
   }) async {
     await tester.pumpWidget(
       MaterialApp(
         theme: switch (mode) {
-          DpMode.light => AppTheme.light(),
-          DpMode.dark => AppTheme.dark(),
-          DpMode.glass => AppTheme.glass(),
+          SgMode.light => AppTheme.light(),
+          SgMode.dark => AppTheme.dark(),
+          SgMode.glass => AppTheme.glass(),
         },
         localizationsDelegates: appLocalizationsDelegates,
         supportedLocales: supportedLocales,
@@ -62,9 +62,9 @@ void main() {
     await tester.pump();
   }
 
-  DpTokens tokensOf(WidgetTester tester) =>
+  SgTokens tokensOf(WidgetTester tester) =>
       Theme.of(tester.element(find.byType(OnboardingShell)))
-          .extension<DpTokens>()!;
+          .extension<SgTokens>()!;
 
   group('the five pages', () {
     test('are numbered 1 to 5, in order', () {
@@ -156,7 +156,7 @@ void main() {
     testWidgets('and in dark mode, every header takes dark ink', (
       tester,
     ) async {
-      await pumpShell(tester, page: OnboardingPage.welcome, mode: DpMode.dark);
+      await pumpShell(tester, page: OnboardingPage.welcome, mode: SgMode.dark);
       final dark = tokensOf(tester);
 
       for (final page in OnboardingPage.values) {
@@ -187,8 +187,8 @@ void main() {
       await tester.pump();
       final tokens = tokensOf(tester);
 
-      final headline = tester.widget<DpText>(
-        find.widgetWithText(DpText, 'A headline'),
+      final headline = tester.widget<SgText>(
+        find.widgetWithText(SgText, 'A headline'),
       );
       expect(headline.color, tokens.color.ink);
       expect(headline.color, isNot(const Color(0xFF15121F)));
@@ -233,13 +233,13 @@ void main() {
     testWidgets('and a tinted pane under glass', (tester) async {
       // The glass artboards lay the page colour at 22 % over frosted white. A
       // solid block there would hide the aurora the whole mode is for.
-      await pumpShell(tester, page: OnboardingPage.welcome, mode: DpMode.glass);
+      await pumpShell(tester, page: OnboardingPage.welcome, mode: SgMode.glass);
 
       expect(solidHeader(tester), isNull);
       expect(
         find.ancestor(
           of: find.text('A headline'),
-          matching: find.byType(DpSurface),
+          matching: find.byType(SgSurface),
         ),
         findsOneWidget,
       );
@@ -276,12 +276,12 @@ void main() {
   group('the actions', () {
     testWidgets('Back appears from page 2, never on page 1', (tester) async {
       await pumpShell(tester, page: OnboardingPage.welcome);
-      expect(find.widgetWithText(DpButton, l10n.back), findsNothing);
+      expect(find.widgetWithText(SgButton, l10n.back), findsNothing);
 
       for (final page in OnboardingPage.values.skip(1)) {
         await pumpShell(tester, page: page, onBack: () {});
         expect(
-          find.widgetWithText(DpButton, l10n.back),
+          find.widgetWithText(SgButton, l10n.back),
           findsOneWidget,
           reason: 'page ${page.step}',
         );
@@ -296,7 +296,7 @@ void main() {
         await pumpShell(tester, page: page, onSkip: () {});
 
         expect(
-          find.widgetWithText(DpButton, l10n.skip),
+          find.widgetWithText(SgButton, l10n.skip),
           page.step >= 3 ? findsOneWidget : findsNothing,
           reason: 'page ${page.step}',
         );
@@ -312,8 +312,8 @@ void main() {
         onBack: () {},
       );
 
-      final back = find.widgetWithText(DpButton, l10n.back);
-      expect(tester.widget<DpButton>(back).expand, isFalse);
+      final back = find.widgetWithText(SgButton, l10n.back);
+      expect(tester.widget<SgButton>(back).expand, isFalse);
       expect(
         tester.getTopLeft(back).dx,
         lessThan(tester.getCenter(find.byType(OnboardingShell)).dx),
@@ -325,7 +325,7 @@ void main() {
       // setup, a page with no `onSkip` leaves it out.
       await pumpShell(tester, page: OnboardingPage.startingPoint);
 
-      expect(find.widgetWithText(DpButton, l10n.skip), findsNothing);
+      expect(find.widgetWithText(SgButton, l10n.skip), findsNothing);
     });
 
     testWidgets('while finishing, both are drawn and neither responds', (
@@ -352,11 +352,11 @@ void main() {
       );
       await tester.pump();
 
-      final primary = tester.widget<DpButton>(
-        find.widgetWithText(DpButton, 'Continue'),
+      final primary = tester.widget<SgButton>(
+        find.widgetWithText(SgButton, 'Continue'),
       );
-      final skip = tester.widget<DpButton>(
-        find.widgetWithText(DpButton, l10n.skip),
+      final skip = tester.widget<SgButton>(
+        find.widgetWithText(SgButton, l10n.skip),
       );
       expect(primary.onPressed, isNull);
       expect(skip.onPressed, isNull);
@@ -371,7 +371,7 @@ void main() {
         onPrimary: () => advanced++,
       );
 
-      await tester.tap(find.widgetWithText(DpButton, 'Continue'));
+      await tester.tap(find.widgetWithText(SgButton, 'Continue'));
       await tester.pump();
 
       expect(advanced, 1);
@@ -387,8 +387,8 @@ void main() {
         onSkip: () => skip++,
       );
 
-      await tester.tap(find.widgetWithText(DpButton, l10n.back));
-      await tester.tap(find.widgetWithText(DpButton, l10n.skip));
+      await tester.tap(find.widgetWithText(SgButton, l10n.back));
+      await tester.tap(find.widgetWithText(SgButton, l10n.skip));
       await tester.pump();
 
       expect(<int>[back, skip], <int>[1, 1]);
@@ -406,7 +406,7 @@ void main() {
 
     testWidgets('and glass still renders every page', (tester) async {
       for (final page in OnboardingPage.values) {
-        await pumpShell(tester, page: page, mode: DpMode.glass);
+        await pumpShell(tester, page: page, mode: SgMode.glass);
         expect(find.byType(OnboardingShell), findsOneWidget);
       }
     });
@@ -477,7 +477,7 @@ void main() {
     testWidgets('#462 a first run\'s cold start ends when it is drawn', (
       tester,
     ) async {
-      const channel = MethodChannel('deutschplan/start');
+      const channel = MethodChannel('sogda/start');
       final messenger =
           TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger;
       final calls = <String>[];
@@ -508,7 +508,7 @@ void main() {
       await pumpWelcome(tester);
 
       expect(
-        find.widgetWithText(DpButton, l10n.onboardingWelcomeStart),
+        find.widgetWithText(SgButton, l10n.onboardingWelcomeStart),
         findsOneWidget,
       );
     });
@@ -518,7 +518,7 @@ void main() {
       await pumpWelcome(tester, onStart: () => started++);
 
       await tester.tap(
-        find.widgetWithText(DpButton, l10n.onboardingWelcomeStart),
+        find.widgetWithText(SgButton, l10n.onboardingWelcomeStart),
       );
       await tester.pump();
 
@@ -528,8 +528,8 @@ void main() {
     testWidgets('it writes no setting, so it offers no Skip', (tester) async {
       await pumpWelcome(tester);
 
-      expect(find.widgetWithText(DpButton, l10n.skip), findsNothing);
-      expect(find.widgetWithText(DpButton, l10n.back), findsNothing);
+      expect(find.widgetWithText(SgButton, l10n.skip), findsNothing);
+      expect(find.widgetWithText(SgButton, l10n.back), findsNothing);
     });
   });
 }

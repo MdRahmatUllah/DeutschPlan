@@ -1,19 +1,19 @@
 import 'dart:math' as math;
 
-import 'package:deutschplan/core/adaptive/adaptive.dart';
-import 'package:deutschplan/core/components/dp_button.dart';
-import 'package:deutschplan/core/components/dp_chip.dart';
-import 'package:deutschplan/core/providers/app_providers.dart';
-import 'package:deutschplan/core/theme/dp_tokens.dart';
-import 'package:deutschplan/core/typography/dp_text.dart';
-import 'package:deutschplan/data/repositories/quiz_store.dart';
-import 'package:deutschplan/data/repositories/setting_keys.dart';
-import 'package:deutschplan/domain/quiz_builder.dart';
-import 'package:deutschplan/features/learn/step_quiz.dart';
-import 'package:deutschplan/features/learn/step_words.dart';
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
-import 'package:deutschplan/l10n/ui_digits.dart';
-import 'package:deutschplan/router/routes.dart';
+import 'package:sogda/core/adaptive/adaptive.dart';
+import 'package:sogda/core/components/sg_button.dart';
+import 'package:sogda/core/components/sg_chip.dart';
+import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/core/typography/sg_text.dart';
+import 'package:sogda/data/repositories/quiz_store.dart';
+import 'package:sogda/data/repositories/setting_keys.dart';
+import 'package:sogda/domain/quiz_builder.dart';
+import 'package:sogda/features/learn/step_quiz.dart';
+import 'package:sogda/features/learn/step_words.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
+import 'package:sogda/l10n/ui_digits.dart';
+import 'package:sogda/router/routes.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -158,9 +158,9 @@ class _QuizSetupSheetState extends ConsumerState<QuizSetupSheet> {
     Widget section(String label, List<Widget> chips) => Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        DpText(
+        SgText(
           label.toUpperCase(),
-          role: DpTextRole.caption,
+          role: SgTextRole.caption,
           weight: 700,
           letterSpacing: 0.6,
           color: tokens.color.textSecondary,
@@ -170,13 +170,13 @@ class _QuizSetupSheetState extends ConsumerState<QuizSetupSheet> {
       ],
     );
 
-    DpChip chip(
+    SgChip chip(
       String label, {
       required bool selected,
       required VoidCallback? onTap,
-    }) => DpChip(
+    }) => SgChip(
       label: label,
-      kind: DpChipKind.filter,
+      kind: SgChipKind.filter,
       selected: selected,
       onTap: onTap,
     );
@@ -206,7 +206,7 @@ class _QuizSetupSheetState extends ConsumerState<QuizSetupSheet> {
                       ),
                     ),
                   ),
-                  DpText(l10n.quizSetupTitle, role: DpTextRole.title),
+                  SgText(l10n.quizSetupTitle, role: SgTextRole.title),
                   const SizedBox(height: 4),
                   section(l10n.quizSetupDirection, <Widget>[
                     for (final direction in customDirections)
@@ -263,9 +263,9 @@ class _QuizSetupSheetState extends ConsumerState<QuizSetupSheet> {
                   ]),
                   if (category != null && !categoryOpen) ...<Widget>[
                     const SizedBox(height: 6),
-                    DpText(
+                    SgText(
                       l10n.quizSourceLocked(category.name, categoryLearned),
-                      role: DpTextRole.caption,
+                      role: SgTextRole.caption,
                       color: tokens.color.textSecondary,
                     ),
                   ],
@@ -276,17 +276,17 @@ class _QuizSetupSheetState extends ConsumerState<QuizSetupSheet> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
-                            DpText(
+                            SgText(
                               l10n.quizSetupTimer,
-                              role: DpTextRole.body,
+                              role: SgTextRole.body,
                               weight: 500,
                             ),
                             const SizedBox(height: 1),
-                            DpText(
+                            SgText(
                               _timer
                                   ? l10n.quizSetupTimerOn
                                   : l10n.quizSetupTimerOff,
-                              role: DpTextRole.caption,
+                              role: SgTextRole.caption,
                               color: tokens.color.textSecondary,
                             ),
                           ],
@@ -304,7 +304,7 @@ class _QuizSetupSheetState extends ConsumerState<QuizSetupSheet> {
                   ),
                   const Spacer(),
                   const SizedBox(height: 16),
-                  DpButton(
+                  SgButton(
                     label: l10n.quizStart(l10n.quizQuestions(_length)),
                     onPressed: () => Navigator.of(context).pop(
                       customQuiz(

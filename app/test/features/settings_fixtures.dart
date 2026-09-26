@@ -1,12 +1,12 @@
 import 'dart:async';
 
-import 'package:deutschplan/core/providers/app_providers.dart'
+import 'package:sogda/core/providers/app_providers.dart'
     show settingsSourceProvider;
-import 'package:deutschplan/data/repositories/model_repository.dart';
-import 'package:deutschplan/data/repositories/setting_keys.dart';
-import 'package:deutschplan/data/repositories/settings_repository.dart';
-import 'package:deutschplan/features/me/settings_screen.dart';
-import 'package:deutschplan/features/today/today_providers.dart'
+import 'package:sogda/data/repositories/model_repository.dart';
+import 'package:sogda/data/repositories/setting_keys.dart';
+import 'package:sogda/data/repositories/settings_repository.dart';
+import 'package:sogda/features/me/settings_screen.dart';
+import 'package:sogda/features/today/today_providers.dart'
     show voiceInstalledProvider;
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';

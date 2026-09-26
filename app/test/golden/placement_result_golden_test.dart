@@ -1,5 +1,5 @@
-import 'package:deutschplan/domain/placement.dart';
-import 'package:deutschplan/features/onboarding/placement_screen.dart';
+import 'package:sogda/domain/placement.dart';
+import 'package:sogda/features/onboarding/placement_screen.dart';
 
 import 'golden_harness.dart';
 

@@ -1,8 +1,8 @@
-import 'package:deutschplan/core/adaptive/adaptive.dart';
-import 'package:deutschplan/core/theme/app_theme.dart';
-import 'package:deutschplan/core/theme/glass_capability.dart';
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
-import 'package:deutschplan/main.dart'
+import 'package:sogda/core/adaptive/adaptive.dart';
+import 'package:sogda/core/theme/app_theme.dart';
+import 'package:sogda/core/theme/glass_capability.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
+import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
 import 'package:flutter/semantics.dart' show SemanticsNode;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -205,7 +205,7 @@ void goldenTest(
             expectNothingClipped(tester);
             expectNoWordBroken(tester);
             // #551: and nothing cut to its maxLines, "…" or not (#550), a
-            // field's hint included (#565). A DpOneLine draws only the words
+            // field's hint included (#565). An SgOneLine draws only the words
             // that fit, then "…".
             expectAllLinesShown(tester);
             // The keyboard up at 200 % on a screen with a field: the #554

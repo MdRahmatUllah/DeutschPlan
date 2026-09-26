@@ -1,19 +1,19 @@
 import 'dart:io';
 
-import 'package:deutschplan/core/components/dp_button.dart';
-import 'package:deutschplan/core/providers/app_providers.dart';
-import 'package:deutschplan/core/theme/app_theme.dart';
-import 'package:deutschplan/data/db/app_database.dart';
-import 'package:deutschplan/data/db/content_dao.dart';
-import 'package:deutschplan/data/repositories/plan_repository.dart';
-import 'package:deutschplan/data/repositories/settings_repository.dart';
-import 'package:deutschplan/domain/plan_engine.dart' show parsePlanDate;
-import 'package:deutschplan/features/day_complete/day_complete_screen.dart';
-import 'package:deutschplan/features/study/study_summary.dart';
-import 'package:deutschplan/features/today/today_providers.dart';
-import 'package:deutschplan/features/today/today_view.dart';
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
-import 'package:deutschplan/main.dart'
+import 'package:sogda/core/components/sg_button.dart';
+import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/core/theme/app_theme.dart';
+import 'package:sogda/data/db/app_database.dart';
+import 'package:sogda/data/db/content_dao.dart';
+import 'package:sogda/data/repositories/plan_repository.dart';
+import 'package:sogda/data/repositories/settings_repository.dart';
+import 'package:sogda/domain/plan_engine.dart' show parsePlanDate;
+import 'package:sogda/features/day_complete/day_complete_screen.dart';
+import 'package:sogda/features/study/study_summary.dart';
+import 'package:sogda/features/today/today_providers.dart';
+import 'package:sogda/features/today/today_view.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
+import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
@@ -154,7 +154,7 @@ void main() {
   ) async {
     await pump(tester);
     await tester.pump(const Duration(milliseconds: 1300));
-    expect(find.byType(DpButton), findsOneWidget);
+    expect(find.byType(SgButton), findsOneWidget);
     expect(find.text(l10n.dayCompleteBack), findsOneWidget);
     await tester.pump(DayCompleteScreen.stay);
     await tester.pumpAndSettle();
@@ -287,7 +287,7 @@ void main() {
     final db = AppDatabase.memory();
     addTearDown(db.close);
     // The sentence picker reads the course's examples.
-    final directory = Directory.systemTemp.createTempSync('dp_t6');
+    final directory = Directory.systemTemp.createTempSync('sg_t6');
     final content = ContentFixture.write('${directory.path}/content.db');
     await db.customStatement(
       "ATTACH DATABASE '${ContentDao.attachPath(content.file)}' AS c",
@@ -322,7 +322,7 @@ void main() {
     () async {
       final db = AppDatabase.memory();
       addTearDown(db.close);
-      final directory = Directory.systemTemp.createTempSync('dp_t6');
+      final directory = Directory.systemTemp.createTempSync('sg_t6');
       final content = ContentFixture.write('${directory.path}/content.db');
       await db.customStatement(
         "ATTACH DATABASE '${ContentDao.attachPath(content.file)}' AS c",
@@ -359,7 +359,7 @@ void main() {
     () async {
       final db = AppDatabase.memory();
       addTearDown(db.close);
-      final directory = Directory.systemTemp.createTempSync('dp_t6');
+      final directory = Directory.systemTemp.createTempSync('sg_t6');
       final content = ContentFixture.write('${directory.path}/content.db');
       await db.customStatement(
         "ATTACH DATABASE '${ContentDao.attachPath(content.file)}' AS c",
@@ -390,7 +390,7 @@ void main() {
       'not hold the day open: its row stays, T6 still comes', () async {
     final db = AppDatabase.memory();
     addTearDown(db.close);
-    final directory = Directory.systemTemp.createTempSync('dp_t6');
+    final directory = Directory.systemTemp.createTempSync('sg_t6');
     final content = ContentFixture.write('${directory.path}/content.db');
     await db.customStatement(
       "ATTACH DATABASE '${ContentDao.attachPath(content.file)}' AS c",

@@ -1,18 +1,18 @@
 @TestOn('vm')
 library;
 
-import 'package:deutschplan/core/adaptive/adaptive.dart';
-import 'package:deutschplan/core/components/dp_chip.dart';
-import 'package:deutschplan/core/components/dp_slider.dart';
-import 'package:deutschplan/core/components/dp_stepper.dart';
-import 'package:deutschplan/core/theme/app_theme.dart';
-import 'package:deutschplan/core/theme/dp_tokens.dart';
-import 'package:deutschplan/data/db/content_dao.dart';
-import 'package:deutschplan/features/onboarding/onboarding_notifier.dart';
-import 'package:deutschplan/features/onboarding/onboarding_pace_page.dart';
-import 'package:deutschplan/features/onboarding/onboarding_start_page.dart';
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
-import 'package:deutschplan/main.dart'
+import 'package:sogda/core/adaptive/adaptive.dart';
+import 'package:sogda/core/components/sg_chip.dart';
+import 'package:sogda/core/components/sg_slider.dart';
+import 'package:sogda/core/components/sg_stepper.dart';
+import 'package:sogda/core/theme/app_theme.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/data/db/content_dao.dart';
+import 'package:sogda/features/onboarding/onboarding_notifier.dart';
+import 'package:sogda/features/onboarding/onboarding_pace_page.dart';
+import 'package:sogda/features/onboarding/onboarding_start_page.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
+import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
@@ -38,7 +38,7 @@ void main() {
 
   Future<void> pump(
     WidgetTester tester, {
-    DpMode mode = DpMode.light,
+    SgMode mode = SgMode.light,
     double textScale = 1,
     VoidCallback? onContinue,
     VoidCallback? onBack,
@@ -60,9 +60,9 @@ void main() {
         container: container,
         child: MaterialApp(
           theme: switch (mode) {
-            DpMode.light => AppTheme.light(),
-            DpMode.dark => AppTheme.dark(),
-            DpMode.glass => AppTheme.glass(),
+            SgMode.light => AppTheme.light(),
+            SgMode.dark => AppTheme.dark(),
+            SgMode.glass => AppTheme.glass(),
           },
           localizationsDelegates: appLocalizationsDelegates,
           supportedLocales: supportedLocales,
@@ -140,7 +140,7 @@ void main() {
     ) async {
       await pump(tester);
 
-      final slider = tester.widget<DpSlider>(find.byType(DpSlider));
+      final slider = tester.widget<SgSlider>(find.byType(SgSlider));
       expect(<int>[slider.min, slider.value, slider.max], <int>[3, 7, 30]);
       expect(find.text('7'), findsOneWidget);
     });
@@ -150,7 +150,7 @@ void main() {
     ) async {
       await pump(tester);
 
-      await tester.drag(find.byType(DpSlider), const Offset(2000, 0));
+      await tester.drag(find.byType(SgSlider), const Offset(2000, 0));
       await tester.pump();
 
       expect(draft().dailyNew, 30);
@@ -162,7 +162,7 @@ void main() {
       await pump(tester);
 
       final chips = tester
-          .widgetList<DpChip>(find.byType(DpChip))
+          .widgetList<SgChip>(find.byType(SgChip))
           .map((chip) => (chip.label, chip.selected))
           .toList();
       expect(chips, <(String, bool)>[
@@ -179,7 +179,7 @@ void main() {
       await tester.pump();
 
       expect(
-        tester.widgetList<DpChip>(find.byType(DpChip)).where((c) => c.selected),
+        tester.widgetList<SgChip>(find.byType(SgChip)).where((c) => c.selected),
         isEmpty,
       );
     });
@@ -220,7 +220,7 @@ void main() {
         ..setReviseCount(0);
       await tester.pump();
 
-      expect(tester.widget<DpStepper>(find.byType(DpStepper)).value, 0);
+      expect(tester.widget<SgStepper>(find.byType(SgStepper)).value, 0);
       await tester.tap(
         find.bySemanticsLabel(l10n.onboardingPaceRevisionsDecrease),
       );
@@ -330,7 +330,7 @@ void main() {
       expect(find.byType(IconButton), findsNothing);
     });
 
-    for (final mode in <DpMode>[DpMode.dark, DpMode.glass]) {
+    for (final mode in <SgMode>[SgMode.dark, SgMode.glass]) {
       testWidgets('and ${mode.name} renders it', (tester) async {
         await pump(tester, mode: mode);
         expect(find.text(estimate(91, 'A1.1', 7)), findsOneWidget);
@@ -346,11 +346,11 @@ void main() {
       await pump(tester);
 
       // The node the slider's own Semantics makes — found through its gesture
-      // detector, which sits inside it; the DpSlider widget itself is above.
+      // detector, which sits inside it; the SgSlider widget itself is above.
       expect(
         tester.getSemantics(
           find.descendant(
-            of: find.byType(DpSlider),
+            of: find.byType(SgSlider),
             matching: find.byType(GestureDetector),
           ),
         ),

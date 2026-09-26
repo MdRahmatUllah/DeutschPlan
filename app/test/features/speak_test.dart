@@ -1,22 +1,21 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:deutschplan/core/components/dp_speaker_button.dart';
-import 'package:deutschplan/core/providers/app_providers.dart';
-import 'package:deutschplan/core/theme/app_theme.dart';
-import 'package:deutschplan/data/db/app_database.dart';
-import 'package:deutschplan/data/repositories/model_repository.dart';
-import 'package:deutschplan/data/repositories/setting_keys.dart';
-import 'package:deutschplan/data/repositories/settings_repository.dart';
-import 'package:deutschplan/features/study/study_back.dart'
-    show StudyPlayButton;
-import 'package:deutschplan/features/words/speak.dart';
-import 'package:deutschplan/features/words/word_row.dart' show WordPlayButton;
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
-import 'package:deutschplan/router/routes.dart' show rootNavigatorKey;
-import 'package:deutschplan/main.dart'
+import 'package:sogda/core/components/sg_speaker_button.dart';
+import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/core/theme/app_theme.dart';
+import 'package:sogda/data/db/app_database.dart';
+import 'package:sogda/data/repositories/model_repository.dart';
+import 'package:sogda/data/repositories/setting_keys.dart';
+import 'package:sogda/data/repositories/settings_repository.dart';
+import 'package:sogda/features/study/study_back.dart' show StudyPlayButton;
+import 'package:sogda/features/words/speak.dart';
+import 'package:sogda/features/words/word_row.dart' show WordPlayButton;
+import 'package:sogda/l10n/generated/app_localizations.dart';
+import 'package:sogda/router/routes.dart' show rootNavigatorKey;
+import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
-import 'package:deutschplan/services/tts/tts_service.dart';
+import 'package:sogda/services/tts/tts_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
@@ -41,7 +40,7 @@ void main() {
   late GoRouter router;
 
   /// Speakers for [texts] on Today — a tab — and on `/study`, a full-screen
-  /// route over it, over [overrides]: `DpSpeakerButton`s, or what [speaker]
+  /// route over it, over [overrides]: `SgSpeakerButton`s, or what [speaker]
   /// builds.
   Future<void> pump(
     WidgetTester tester,
@@ -70,7 +69,7 @@ void main() {
               Consumer(
                 builder: (context, ref, _) =>
                     speaker?.call(context, ref, text) ??
-                    DpSpeakerButton(
+                    SgSpeakerButton(
                       key: ValueKey<String>(text),
                       semanticLabel: text,
                       state: speakerState(ref, text),
@@ -110,17 +109,17 @@ void main() {
     await tester.pumpAndSettle();
   }
 
-  DpSpeakerState state(WidgetTester tester, [String text = 'Hallo']) =>
-      tester.widget<DpSpeakerButton>(find.byKey(ValueKey<String>(text))).state;
+  SgSpeakerState state(WidgetTester tester, [String text = 'Hallo']) =>
+      tester.widget<SgSpeakerButton>(find.byKey(ValueKey<String>(text))).state;
 
   testWidgets('V01 a speaker says its text at tts_speed, and at 0.75× of it '
       'on a long-press (FR-T2-09)', (tester) async {
     final tts = FakeTts();
     await pump(tester, [fakeVoice(tts)]);
-    expect(state(tester), DpSpeakerState.idle);
+    expect(state(tester), SgSpeakerState.idle);
 
-    await tester.tap(find.byType(DpSpeakerButton));
-    await tester.longPress(find.byType(DpSpeakerButton));
+    await tester.tap(find.byType(SgSpeakerButton));
+    await tester.longPress(find.byType(SgSpeakerButton));
     await tester.pump();
 
     expect(tts.said, <(String, double)>[('Hallo', 1.25), ('Hallo', 0.9375)]);
@@ -130,9 +129,9 @@ void main() {
   testWidgets('V01 no German voice: slashed before any tap, and each tap says '
       'how to install one', (tester) async {
     await pump(tester, [fakeVoice(FakeTts(voice: false))]);
-    expect(state(tester), DpSpeakerState.unavailable);
+    expect(state(tester), SgSpeakerState.unavailable);
 
-    await tester.tap(find.byType(DpSpeakerButton));
+    await tester.tap(find.byType(SgSpeakerButton));
     await tester.pump();
     expect(find.text(l10n.speakerNoVoice), findsOneWidget);
   });
@@ -141,14 +140,14 @@ void main() {
       'speaker', (tester) async {
     final tts = FakeTts();
     await pump(tester, [fakeVoice(tts)]);
-    expect(state(tester), DpSpeakerState.idle);
+    expect(state(tester), SgSpeakerState.idle);
 
     tts.voice = false;
-    await tester.tap(find.byType(DpSpeakerButton));
+    await tester.tap(find.byType(SgSpeakerButton));
     await tester.pumpAndSettle();
 
     expect(find.text(l10n.speakerNoVoice), findsOneWidget);
-    expect(state(tester), DpSpeakerState.unavailable);
+    expect(state(tester), SgSpeakerState.unavailable);
   });
 
   group('V01 #452 the small play buttons are slashed too', () {
@@ -226,18 +225,18 @@ void main() {
 
     testWidgets('and the first time says so, once a session', (tester) async {
       await pump(tester, missing);
-      await tester.tap(find.byType(DpSpeakerButton));
+      await tester.tap(find.byType(SgSpeakerButton));
       await tester.pump();
       expect(phone.spoken, <String>['Hallo']);
       expect(find.text(l10n.speakerFallback), findsOneWidget);
       expect(find.text(l10n.speakerNoVoice), findsNothing);
 
-      // In, then DpUndo's 4 s, as a toast with a link has.
+      // In, then SgUndo's 4 s, as a toast with a link has.
       await tester.pumpAndSettle();
       await tester.pump(const Duration(seconds: 4));
       await tester.pumpAndSettle();
       expect(find.text(l10n.speakerFallback), findsNothing);
-      await tester.tap(find.byType(DpSpeakerButton));
+      await tester.tap(find.byType(SgSpeakerButton));
       await tester.pumpAndSettle();
       expect(phone.spoken, <String>['Hallo', 'Hallo']);
       expect(find.text(l10n.speakerFallback), findsNothing);
@@ -245,7 +244,7 @@ void main() {
 
     testWidgets('from a tab, with a link that opens Settings', (tester) async {
       await pump(tester, missing);
-      await tester.tap(find.byType(DpSpeakerButton));
+      await tester.tap(find.byType(SgSpeakerButton));
       await tester.pumpAndSettle();
       await tester.tap(find.text(l10n.speakerFallbackSettings));
       await tester.pumpAndSettle();
@@ -256,7 +255,7 @@ void main() {
       tester,
     ) async {
       await pump(tester, missing);
-      await tester.tap(find.byType(DpSpeakerButton));
+      await tester.tap(find.byType(SgSpeakerButton));
       await tester.pump();
       // Today's speaker goes; the toast, in the app's messenger, stays.
       router.go('/study');
@@ -272,7 +271,7 @@ void main() {
       await pump(tester, missing);
       unawaited(router.push('/study'));
       await tester.pumpAndSettle();
-      await tester.tap(find.byType(DpSpeakerButton));
+      await tester.tap(find.byType(SgSpeakerButton));
       await tester.pump();
       expect(find.text(l10n.speakerFallback), findsOneWidget);
       expect(find.text(l10n.speakerFallbackSettings), findsNothing);
@@ -284,7 +283,7 @@ void main() {
     tester,
   ) async {
     final phone = FakeTts();
-    final support = Directory.systemTemp.createTempSync('dp_speak');
+    final support = Directory.systemTemp.createTempSync('sg_speak');
     addTearDown(() {
       try {
         support.deleteSync(recursive: true);
@@ -299,7 +298,7 @@ void main() {
       ),
     ]);
     expect(settings.read(SettingKeys.ttsEngine), TtsEngineSetting.supertonic);
-    await tester.tap(find.byType(DpSpeakerButton));
+    await tester.tap(find.byType(SgSpeakerButton));
     // SupertonicTts asks the disk whether its model is there: real I/O.
     await tester.runAsync(() async {
       for (var i = 0; i < 100 && phone.said.isEmpty; i++) {
@@ -318,17 +317,17 @@ void main() {
 
     await tester.tap(find.byKey(const ValueKey<String>('Hallo')));
     await tester.pump();
-    expect(state(tester), DpSpeakerState.playing);
-    expect(state(tester, 'Tschüss'), DpSpeakerState.idle);
+    expect(state(tester), SgSpeakerState.playing);
+    expect(state(tester, 'Tschüss'), SgSpeakerState.idle);
 
     await tester.tap(find.byKey(const ValueKey<String>('Tschüss')));
     await tester.pump();
-    expect(state(tester), DpSpeakerState.idle, reason: 'stopped');
-    expect(state(tester, 'Tschüss'), DpSpeakerState.playing);
+    expect(state(tester), SgSpeakerState.idle, reason: 'stopped');
+    expect(state(tester, 'Tschüss'), SgSpeakerState.playing);
 
     tts.finish();
     await tester.pump();
-    expect(state(tester, 'Tschüss'), DpSpeakerState.idle);
+    expect(state(tester, 'Tschüss'), SgSpeakerState.idle);
   });
 
   testWidgets("#515 a list row's small play button shows the bars while its "
@@ -340,7 +339,7 @@ void main() {
       texts: <String>['Hallo', 'Tschüss'],
       speaker: (context, ref, text) => WordPlayButton(word: text),
     );
-    expect(find.byType(DpPlayingBars), findsNothing);
+    expect(find.byType(SgPlayingBars), findsNothing);
 
     await tester.tap(find.bySemanticsLabel(l10n.summaryPlay('Hallo')));
     await tester.pump(const Duration(milliseconds: 160));
@@ -348,12 +347,12 @@ void main() {
 
     tts.synthesis!.complete();
     await tester.pump();
-    expect(find.byType(DpPlayingBars), findsOneWidget);
+    expect(find.byType(SgPlayingBars), findsOneWidget);
     expect(find.byIcon(Icons.volume_up), findsOneWidget, reason: 'Tschüss');
 
     tts.finish();
     await tester.pump();
-    expect(find.byType(DpPlayingBars), findsNothing);
+    expect(find.byType(SgPlayingBars), findsNothing);
     expect(find.byIcon(Icons.volume_up), findsNWidgets(2));
   });
 
@@ -363,19 +362,19 @@ void main() {
     final tts = FakeTts(holds: true)..synthesis = Completer<void>();
     await pump(tester, [fakeVoice(tts)]);
 
-    await tester.tap(find.byType(DpSpeakerButton));
+    await tester.tap(find.byType(SgSpeakerButton));
     await tester.pump(const Duration(milliseconds: 140));
-    expect(state(tester), DpSpeakerState.idle);
+    expect(state(tester), SgSpeakerState.idle);
     expect(find.byType(CircularProgressIndicator), findsNothing);
 
     await tester.pump(const Duration(milliseconds: 20));
-    expect(state(tester), DpSpeakerState.loading);
+    expect(state(tester), SgSpeakerState.loading);
     expect(find.byType(CircularProgressIndicator), findsOneWidget);
 
     tts.synthesis!.complete();
     await tester.pump();
     await tester.pump();
-    expect(state(tester), DpSpeakerState.playing);
+    expect(state(tester), SgSpeakerState.playing);
     tts.finish();
     await tester.pumpAndSettle();
   });

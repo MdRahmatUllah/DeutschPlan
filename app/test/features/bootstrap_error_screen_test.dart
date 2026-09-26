@@ -1,17 +1,17 @@
 @TestOn('vm')
 library;
 
-import 'package:deutschplan/bootstrap.dart';
-import 'package:deutschplan/data/db/app_database.dart';
-import 'package:deutschplan/core/adaptive/adaptive.dart';
-import 'package:deutschplan/core/components/dp_button.dart';
-import 'package:deutschplan/core/theme/app_theme.dart';
-import 'package:deutschplan/core/theme/aurora_backdrop.dart';
-import 'package:deutschplan/core/theme/dp_tokens.dart';
-import 'package:deutschplan/features/bootstrap/bootstrap_error_screen.dart';
-import 'package:deutschplan/features/splash/splash_screen.dart';
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
-import 'package:deutschplan/main.dart'
+import 'package:sogda/bootstrap.dart';
+import 'package:sogda/data/db/app_database.dart';
+import 'package:sogda/core/adaptive/adaptive.dart';
+import 'package:sogda/core/components/sg_button.dart';
+import 'package:sogda/core/theme/app_theme.dart';
+import 'package:sogda/core/theme/aurora_backdrop.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/features/bootstrap/bootstrap_error_screen.dart';
+import 'package:sogda/features/splash/splash_screen.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
+import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
@@ -44,14 +44,14 @@ void main() {
     required BootstrapFailure failure,
     VoidCallback? onRetry,
     VoidCallback? onExport,
-    DpMode mode = DpMode.light,
+    SgMode mode = SgMode.light,
   }) async {
     await tester.pumpWidget(
       MaterialApp(
         theme: switch (mode) {
-          DpMode.light => AppTheme.light(),
-          DpMode.dark => AppTheme.dark(),
-          DpMode.glass => AppTheme.glass(),
+          SgMode.light => AppTheme.light(),
+          SgMode.dark => AppTheme.dark(),
+          SgMode.glass => AppTheme.glass(),
         },
         localizationsDelegates: appLocalizationsDelegates,
         supportedLocales: supportedLocales,
@@ -65,8 +65,8 @@ void main() {
     await tester.pump();
   }
 
-  final Finder retry = find.widgetWithText(DpButton, 'Retry');
-  final Finder export = find.widgetWithText(DpButton, 'Export progress');
+  final Finder retry = find.widgetWithText(SgButton, 'Retry');
+  final Finder export = find.widgetWithText(SgButton, 'Export progress');
 
   group('FR-S1-03 — never a blank screen', () {
     testWidgets('every failure step says what went wrong', (tester) async {
@@ -159,7 +159,7 @@ void main() {
       await pump(tester, failure: failureOf(BootstrapStep.content));
 
       expect(retry, findsOneWidget);
-      expect(tester.widget<DpButton>(retry).onPressed, isNull);
+      expect(tester.widget<SgButton>(retry).onPressed, isNull);
     });
 
     testWidgets('Retry is the primary action and export is not', (
@@ -172,8 +172,8 @@ void main() {
         failure: failureOf(BootstrapStep.content, canExport: true),
       );
 
-      expect(tester.widget<DpButton>(retry).kind, DpButtonKind.primary);
-      expect(tester.widget<DpButton>(export).kind, DpButtonKind.text);
+      expect(tester.widget<SgButton>(retry).kind, SgButtonKind.primary);
+      expect(tester.widget<SgButton>(export).kind, SgButtonKind.text);
     });
   });
 
@@ -193,7 +193,7 @@ void main() {
       await pump(tester, failure: failureOf(BootstrapStep.content));
 
       final tokens = Theme.of(tester.element(find.byType(BootstrapErrorScreen)))
-          .extension<DpTokens>()!;
+          .extension<SgTokens>()!;
 
       expect(
         tester
@@ -207,7 +207,7 @@ void main() {
       await pump(
         tester,
         failure: failureOf(BootstrapStep.content),
-        mode: DpMode.glass,
+        mode: SgMode.glass,
       );
 
       expect(find.byType(AuroraBackdrop), findsOneWidget);

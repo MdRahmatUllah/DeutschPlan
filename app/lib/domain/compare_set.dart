@@ -6,9 +6,9 @@ library;
 
 import 'dart:math';
 
-import 'package:deutschplan/domain/cloze.dart';
-import 'package:deutschplan/domain/quiz_builder.dart';
-import 'package:deutschplan/domain/text_norm.dart';
+import 'package:sogda/domain/cloze.dart';
+import 'package:sogda/domain/quiz_builder.dart';
+import 'package:sogda/domain/text_norm.dart';
 
 /// An example sentence, and its English when the course has one.
 typedef CompareExample = ({String german, String? english});

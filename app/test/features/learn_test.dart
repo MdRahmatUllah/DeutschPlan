@@ -1,13 +1,13 @@
-import 'package:deutschplan/core/theme/dp_tokens.dart';
-import 'package:deutschplan/core/components/dp_button.dart';
-import 'package:deutschplan/core/theme/app_theme.dart';
-import 'package:deutschplan/data/repositories/word_repository.dart';
-import 'package:deutschplan/features/learn/learn_screen.dart';
-import 'package:deutschplan/features/today/today_view.dart';
-import 'package:deutschplan/l10n/generated/app_localizations.dart';
-import 'package:deutschplan/main.dart'
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/core/components/sg_button.dart';
+import 'package:sogda/core/theme/app_theme.dart';
+import 'package:sogda/data/repositories/word_repository.dart';
+import 'package:sogda/features/learn/learn_screen.dart';
+import 'package:sogda/features/today/today_view.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
+import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
-import 'package:deutschplan/router/routes.dart';
+import 'package:sogda/router/routes.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
@@ -254,7 +254,7 @@ void main() {
     tester,
   ) async {
     await pump(tester);
-    await tester.tap(find.widgetWithText(DpButton, l10n.learnStudy));
+    await tester.tap(find.widgetWithText(SgButton, l10n.learnStudy));
     await tester.pumpAndSettle();
     expect(went, '/study');
     expect(session!.planDate, '2026-09-21');

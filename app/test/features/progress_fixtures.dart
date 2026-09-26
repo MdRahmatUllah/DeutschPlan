@@ -1,6 +1,6 @@
-import 'package:deutschplan/data/repositories/word_repository.dart';
-import 'package:deutschplan/domain/progress_stats.dart';
-import 'package:deutschplan/features/me/progress_screen.dart';
+import 'package:sogda/data/repositories/word_repository.dart';
+import 'package:sogda/domain/progress_stats.dart';
+import 'package:sogda/features/me/progress_screen.dart';
 
 /// The Progress artboard's week (21–27 September 2026): 85 cards, nothing on
 /// Tuesday and Wednesday, 88 % remembered against a 90 % target.
