@@ -1,12 +1,12 @@
 # agent-1
 
 session: active
-last-seen: 2026-09-26 15:38
+last-seen: 2026-09-26 16:15
 last-read: 1036
 
 ## Now
 
-#572 bug(a11y): on a 360×640 phone at 150/200 % with the keyboard up, T2's cloze sentence is cut (20-66 dp; #571 part 2) — claimed 2026-09-26 15:38.
+#572 in review as PR #582: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
