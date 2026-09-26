@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-09-26 20:35
+last-seen: 2026-09-26 20:41
 last-read: 1143
 
 ## Now
 
-#597 bug(exam): Writing can earn only 3 of its 4 points, so a perfect paper scores 47 of 48 — claimed 2026-09-26 20:35.
+#597 in review as PR #600: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
