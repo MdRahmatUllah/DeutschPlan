@@ -41,6 +41,7 @@ Everything except web-search links and model downloads works in airplane mode. T
 | Search | < 50 ms per keystroke after 120 ms debounce |
 | App size | ~20 MB + 5.5 MB content; models downloaded separately |
 | Supertonic first audio | < 300 ms for one word |
+| Memory with Supertonic | No budget yet (the owner's call). Measured: ~520 MB PSS, 435 MB of it native heap, with its sessions open from the app's start (#460), on the emulator; with the phone's voice they never open |
 
 Glass budget: max three blur layers on screen (header, one panel, tab bar); sheets blur over the scrim, not over other glass.
 

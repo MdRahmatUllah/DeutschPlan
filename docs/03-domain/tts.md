@@ -19,7 +19,7 @@
     - A newer list replaces the old one at its next clip. So do a reload, a dispose and a change of voice, which stop the list.
     - A speak for a clip being made waits for that synthesis rather than making it twice.
     - A speak of another text goes first: the list waits for it before its next clip. The plugin runs its calls interleaved on one queue, so the speak still shares it with the one clip in synthesis, about a second more at most (a `ponytail:`).
-    - The first card still waits for the sessions to open (#460).
+    - The sessions open ahead (`warm`, #460) once the app has drawn its first frame, when Supertonic is the chosen voice and on the phone, and today's first three headwords are made then too (`warmTodaysVoice`: revisions, then new words), so a session's first card doesn't wait the ~2.3 s the sessions take nor its synthesis. On the emulator, card 1 played 506 ms after its speak: the audio player's first start, which cards after it don't pay (127 ms). They stay open, about 400 MB, as they did after a first clip (a `ponytail:`). A load that fails is remembered, and the next speak falls back at once.
   - **Resolution:** `speak` resolves once the clip starts playing, as `SystemTts` does; `idle` follows when it ends or is stopped.
   - **Release build:** R8 must keep `ai.onnxruntime.**`, which ORT's native library finds by name (`android/app/proguard-rules.pro`). Without the rule, the first synthesis crashes the release app.
 - **SystemTts** — `flutter_tts` with `de-DE`; fallback and the onboarding preview.

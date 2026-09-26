@@ -21,6 +21,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:sqlite3/sqlite3.dart' as sqlite;
 
 import '../db/content_fixture.dart';
+import '../services/fake_tts.dart';
 
 /// T1's data, against a real plan — #95.
 void main() {
@@ -422,6 +423,26 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code, completed_at, 
       decodeMaskHistory(settings.read(SettingKeys.studyDaysHistory)),
       <MaskSpan>[(from: '', mask: 127), (from: today, mask: 0x1F)],
     );
+  });
+
+  test('#460 at the start the voice is warmed, and today\'s first cards '
+      'made: its revisions, then its new words', () async {
+    final voice = FakePrefetchTts();
+    final start = ProviderContainer(
+      overrides: <Override>[
+        appDatabaseProvider.overrideWithValue(db),
+        settingsProvider.overrideWithValue(settings),
+        clockProvider.overrideWithValue(() => now),
+        voiceInstalledProvider.overrideWith((ref) async => true),
+        fakeVoice(voice),
+      ],
+    );
+    addTearDown(start.dispose);
+
+    await warmTodaysVoice(start);
+    expect(voice.warms, 1);
+    // r2 is open to revise, Haus new; Tür was skipped to the backlog.
+    expect(voice.prepared.single, <String>['r2', 'das Haus']);
   });
 
   group('#97 a rest day', () {

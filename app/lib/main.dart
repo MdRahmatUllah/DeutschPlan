@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:deutschplan/features/bootstrap/bootstrap_error_screen.dart';
 import 'package:deutschplan/features/splash/splash_screen.dart';
+import 'package:deutschplan/features/today/today_providers.dart'
+    show warmTodaysVoice;
 import 'package:flutter/foundation.dart' show kReleaseMode, debugPrint;
 import 'package:flutter/services.dart';
 
@@ -168,6 +170,10 @@ class _BootstrapHostState extends State<BootstrapHost> {
       // FR-M4-01: model downloads carry on from where the app left them, and
       // report as they go (#156).
       unawaited(container.read(modelDownloadsProvider).attach());
+      // #460: Supertonic ready before the first session opens.
+      WidgetsBinding.instance.addPostFrameCallback(
+        (_) => unawaited(warmTodaysVoice(container)),
+      );
     }
     setState(() {
       _app = UncontrolledProviderScope(

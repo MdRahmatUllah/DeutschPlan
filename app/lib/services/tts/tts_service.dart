@@ -140,6 +140,13 @@ class TtsService {
     );
   }
 
+  /// #460: Supertonic's sessions opened ahead, when it is the chosen voice.
+  Future<void> warm() async {
+    final supertonic = _supertonic;
+    if (supertonic is! SpeechPrefetch || !_wantsSupertonic) return;
+    await _quietly((supertonic as SpeechPrefetch).warm);
+  }
+
   /// Stops [texts]' list, if Supertonic is still making it; whichever voice
   /// is chosen now, since it was asked while Supertonic was.
   Future<void> stopPreparing(List<String> texts) async {
