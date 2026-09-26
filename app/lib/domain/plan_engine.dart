@@ -121,6 +121,14 @@ class RevisionCandidate {
 /// put the revise ordering in SQL, where it could not use the same
 /// retrievability formula the scheduler does.
 abstract interface class PlanStore {
+  /// Runs [body] as one unit: no other [atomically] block, and no other
+  /// write, runs until it completes (#548).
+  ///
+  /// What makes opening a day happen once. Its no-double guard reads, then
+  /// writes; two openings that overlap (setup's finish and a live Today)
+  /// would both read an empty day and both plan it.
+  Future<T> atomically<T>(Future<T> Function() body);
+
   /// The open enrollment, or null before the learner has started a step.
   Future<ActiveStep?> activeStep();
 
@@ -364,11 +372,14 @@ class PlanEngine {
   /// pace, and lets planning reach today again so its first new words are
   /// today's rather than tomorrow's. Returns the step, or null when a step is
   /// already active or the course is finished.
+  ///
+  /// [PlanStore.atomically], as [openDay] is (#548): an opening in between
+  /// would see the step without today given back to it.
   Future<String?> startNextStep(
     PlanDate today, {
     required int dailyNew,
     required int studyDaysMask,
-  }) async {
+  }) => _store.atomically(() async {
     if (await _store.activeStep() != null) return null;
     final next = await _nextStepAfterFinishing(true);
     if (next == null) return null;
@@ -386,7 +397,7 @@ class PlanEngine {
       await _store.setLastPlannedDate(addDays(today, -1));
     }
     return next;
-  }
+  });
 
   /// FR-L2-03's *Start*: [code] becomes the active step (BR-COURSE-04). The
   /// current enrollment, if any, completes [today] and [code]'s opens with
@@ -395,12 +406,14 @@ class PlanEngine {
   /// Today's plan is left as it is (BR-PLAN-08): unlike [startNextStep],
   /// the last planned date does not move back, so the new step's words start
   /// tomorrow.
+  ///
+  /// Atomic (#548): an opening between the two writes would find no step.
   Future<void> switchStep(
     String code,
     PlanDate today, {
     required int dailyNew,
     required int studyDaysMask,
-  }) async {
+  }) => _store.atomically(() async {
     final current = await _store.activeStep();
     if (current?.sublevelCode == code) return;
     if (current != null) {
@@ -414,7 +427,7 @@ class PlanEngine {
         studyDaysMask: studyDaysMask,
       ),
     );
-  }
+  });
 
   /// [openDay] for [date], writing nothing: the plan it would open, for
   /// Today's Tomorrow card and T6 (FR-T6-02).
@@ -437,12 +450,16 @@ class PlanEngine {
   /// generating would let a word planned as new today also be picked to
   /// revise, which is what BR-PLAN-03's exclusion is for.
   Future<DailyPlan> openDay(PlanDate date) async {
-    // A day opened before keeps its revisions, even none (BR-PLAN-08): a
-    // revise_count raised mid-day waits for tomorrow (#342).
-    final last = await _store.lastPlannedDate();
-    final reopened = last != null && last.compareTo(date) >= 0;
-    await generateNewThrough(date);
-    if (!reopened) await ensureRevise(date);
+    // Deciding and writing as one (#548): a second opening waits, then finds
+    // the day planned and adds nothing.
+    await _store.atomically(() async {
+      // A day opened before keeps its revisions, even none (BR-PLAN-08): a
+      // revise_count raised mid-day waits for tomorrow (#342).
+      final last = await _store.lastPlannedDate();
+      final reopened = last != null && last.compareTo(date) >= 0;
+      await generateNewThrough(date);
+      if (!reopened) await ensureRevise(date);
+    });
 
     final step = await _store.activeStep();
     final backlog = await _store.backlogBefore(date);
