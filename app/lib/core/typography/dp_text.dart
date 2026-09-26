@@ -238,6 +238,61 @@ abstract final class DpScript {
     }
     return breaks;
   }
+
+  /// [word], Bangla too wide for its line, with a soft hyphen between its
+  /// aksharas (#504): before a consonant the letter before doesn't join
+  /// with a hasanta, so no conjunct is split and a vowel sign stays on its
+  /// letter. That takes in the content's own joints, a hasanta with a
+  /// zero-width non-joiner ("…কাইট্‌|স…", "…কার্টেন্‌|আউ…"). Never before a
+  /// consonant, or a conjunct, that such a joint, khanda-ta or the word's end
+  /// closes
+  /// ("…লা|ন্ট্‌" would take it from its syllable), before khanda-ta (ৎ),
+  /// which ends one too, nor before an independent vowel but after a joint
+  /// ("কা|ইট" would split a diphthong). Two aksharas from either end at
+  /// least, so nothing breaks right after an opening "/" or "(".
+  // ponytail: a legacy khanda-ta (ত্‍, a hasanta and a zero-width joiner)
+  // isn't read as closed; the content writes ৎ.
+  static String banglaBreaks(String word) {
+    const hasanta = 0x9CD, joint = 0x200C, khandaTa = 0x9CE;
+    int at(int i) => i >= 0 && i < word.length ? word.codeUnitAt(i) : 0;
+    bool consonant(int c) =>
+        (c >= 0x995 && c <= 0x9B9) || (c >= 0x9DC && c <= 0x9DF);
+    bool vowel(int c) => c >= 0x985 && c <= 0x994;
+    bool closed(int i) {
+      var last = i;
+      while (at(last + 1) == hasanta && consonant(at(last + 2))) {
+        last += 2;
+      }
+      // Closed by a joint, the word's end, or khanda-ta ("…শ্মে|র্ৎ" would
+      // start a line with র্ৎ).
+      return at(last + 1) == hasanta &&
+          (at(last + 2) == joint ||
+              at(last + 2) == 0 ||
+              at(last + 2) == khandaTa);
+    }
+
+    // Where each akshara begins, whether a line may start there or not: a
+    // consonant no hasanta joins to the one before, or an independent vowel.
+    final aksharas = <int>[
+      for (var i = 0; i < word.length; i++)
+        if ((consonant(at(i)) && at(i - 1) != hasanta) || vowel(at(i))) i,
+    ];
+    bool twoEachSide(int i) =>
+        aksharas.where((a) => a < i).length >= 2 &&
+        aksharas.where((a) => a >= i).length >= 2;
+    final breaks = <int>[
+      for (var i = 1; i < word.length; i++)
+        if (((consonant(at(i)) && at(i - 1) != hasanta && !closed(i)) ||
+                (vowel(at(i)) && at(i - 1) == joint)) &&
+            twoEachSide(i))
+          i,
+    ];
+    return breaks.reversed.fold(
+      word,
+      (broken, at) =>
+          '${broken.substring(0, at)}$softHyphen${broken.substring(at)}',
+    );
+  }
 }
 
 /// Text at a role from the scale, with Bangla automatically one step larger.
@@ -258,6 +313,7 @@ class DpText extends StatelessWidget {
     this.semanticsLabel,
     this.letterSpacing,
     this.german = false,
+    this.breakTooWide = false,
   });
 
   final String data;
@@ -282,6 +338,12 @@ class DpText extends StatelessWidget {
   /// The course's German (an example, a sentence), not the app's copy: a
   /// screen reader reads it in a German voice (#162).
   final bool german;
+
+  /// A word too wide for its line breaks at a syllable, with its "-", even
+  /// in a text that offers no soft hyphen: T2's and W1's caption, whose
+  /// Bangla pronunciation can be wider than a line at 200 % with no long
+  /// German beside it (#504). A text with a soft hyphen always does.
+  final bool breakTooWide;
 
   @override
   Widget build(BuildContext context) {
@@ -313,7 +375,7 @@ class DpText extends StatelessWidget {
     Widget hyphenated(Widget child, List<TextSpan> runs) =>
         maxLines != null ||
             semanticsLabel != null ||
-            !text.contains(DpScript.softHyphen)
+            !(breakTooWide || text.contains(DpScript.softHyphen))
         ? child
         : _Hyphenated(runs: runs, child: child);
 
@@ -700,17 +762,19 @@ class _RenderHyphenated extends RenderProxyBox {
 
     // A word too wide for a line of its own breaks at its syllables,
     // whatever its length: "selbstbewusst" (13) at T2's display size (#419).
-    // One that fits keeps its letters together, and its kerning. Bangla has
-    // none to break at: `allowBreaks` knows German's.
+    // One that fits keeps its letters together, and its kerning. A Bangla
+    // one, a long compound's pronunciation, breaks between aksharas (#504).
     final texts = [
       for (final run in _widget.runs)
         [
           for (final word in run.text!.split(' '))
-            word.isNotEmpty &&
-                    !word.contains(DpScript.softHyphen) &&
-                    widthOf([TextSpan(text: word, style: run.style)]) > width
-                ? DpScript.allowBreaks(word, threshold: 4)
-                : word,
+            word.isEmpty ||
+                    word.contains(DpScript.softHyphen) ||
+                    widthOf([TextSpan(text: word, style: run.style)]) <= width
+                ? word
+                : DpScript.hasBengali(word)
+                ? DpScript.banglaBreaks(word)
+                : DpScript.allowBreaks(word, threshold: 4),
         ].join(' '),
     ];
     final full = texts.join();
@@ -739,7 +803,9 @@ class _RenderHyphenated extends RenderProxyBox {
     // The pieces a line may end after, [from, to), each with what follows
     // it: a space (the break takes its place), a soft hyphen (the break
     // draws "-"), or nothing, after a "-", "/" or dash, which the paragraph
-    // breaks after too.
+    // breaks after too. Not a space before a "/", ")", "!", "," and the like,
+    // which the paragraph never breaks before (UAX #14, LB13): "· /…/"
+    // goes on together, as the paragraph put it.
     // ponytail: an opening "/" can end a line, apart from its
     // pronunciation, as the paragraph's own breaking has it. Keeping them
     // together needs a look-ahead for when the two no longer fit a line.
@@ -747,7 +813,8 @@ class _RenderHyphenated extends RenderProxyBox {
     var from = 0;
     for (var i = 0; i < full.length; i++) {
       final c = full[i];
-      if (c == ' ' || c == DpScript.softHyphen) {
+      final held = i + 1 < full.length && '/)]}!?,.;:'.contains(full[i + 1]);
+      if ((c == ' ' && !held) || c == DpScript.softHyphen) {
         pieces.add((from, i, c));
         from = i + 1;
       } else if ('-/–—'.contains(c) && i + 1 < full.length) {

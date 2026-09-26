@@ -578,6 +578,9 @@ class _Body extends ConsumerWidget {
             DpScript.allowBreaks(frontCaption(word, l10n, pron: detail.pron)),
             role: DpTextRole.caption,
             color: tokens.color.textSecondary,
+            // Its Bangla pronunciation too, though no German in it is long
+            // (#504).
+            breakTooWide: true,
           ),
           gap(12),
           if (english != null)
