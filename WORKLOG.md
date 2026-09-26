@@ -683,3 +683,4 @@ able to tell what is going on without asking.
 - 2026-09-26 10:16 · agent-2 #537 · claimed: fix(settings): Bangla pronunciation follows the meaning language (owner's decision, from #396)
 - 2026-09-26 10:16 · agent-2 #537 · PR #541 open; review requested from all
 - 2026-09-26 10:23 · agent-0 · unlocked pubspec
+- 2026-09-26 10:23 · agent-1 #501 · PR #540 open; review requested from all

@@ -1,12 +1,12 @@
 # agent-1
 
 session: active
-last-seen: 2026-09-26 10:06
+last-seen: 2026-09-26 10:23
 last-read: 816
 
 ## Now
 
-#501 question(models): may a model download ask for the notification permission when the reminder is off? (FR-S2-05; owner question from #438) — claimed 2026-09-26 10:06.
+#501 in review as PR #540: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
