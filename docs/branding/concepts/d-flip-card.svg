@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256" role="img" aria-label="Concept D: the flip card">
+<title>Concept D: the flip card</title>
+
+<g transform="rotate(-8 128 128)"><path d="M60 44H168L212 88V196A16 16 0 0 1 196 212H60A16 16 0 0 1 44 196V60A16 16 0 0 1 60 44Z" fill="#15121F" transform="translate(7 7)"/><path d="M60 44H168L212 88V196A16 16 0 0 1 196 212H60A16 16 0 0 1 44 196V60A16 16 0 0 1 60 44Z" fill="#FFC61A" stroke="#15121F" stroke-width="7" stroke-linejoin="round"/><path d="M168 44V72A16 16 0 0 0 184 88H212Z" fill="#00C2B2" stroke="#15121F" stroke-width="7" stroke-linejoin="round"/><text x="124" y="168" text-anchor="middle" font-size="96" font-family="Inter, 'Segoe UI', Arial, sans-serif" font-weight="800" fill="#15121F">F</text></g>
+</svg>

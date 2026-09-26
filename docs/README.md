@@ -15,6 +15,9 @@ This folder is the **single source of truth**. When code and these documents dis
 | `04-screens/` | One guide per screen (large screens have two) — purpose, prototype reference, layout, functional requirements, business rules, navigation, states, developer notes, tests | You build or change a screen |
 | `05-dev-guide/` | Getting started, coding standards, testing, release, adding content, decision records | You are a developer on the project |
 | [`../ONBOARDING.md`](../ONBOARDING.md), [`../CLAUDE.md`](../CLAUDE.md) | Working as one of several parallel agents: worktrees, the `team` branch task board, the per-issue workflow, collision rules | You are an agent picking up issues alongside others |
+| [`handbook/`](handbook/README.md) | The whole project in readable form: business, features, capabilities, architecture, technical reference, quality, operations, history and roadmap. It explains; the folders above decide. | You want the big picture before the detail |
+| [`branding/`](branding/README.md) | Name candidates and logo concepts for the app's multi-language future | You decide the name, the icon or the store look |
+| [`../developer-agents/`](../developer-agents/README.md) | The team of agents: each one's role, memory and way of working; the setup on a new device | You start on a new machine, or take an agent identity |
 
 ## Screen index
 

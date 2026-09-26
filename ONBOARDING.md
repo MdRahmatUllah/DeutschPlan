@@ -59,6 +59,11 @@ action (BR-PRIV-01).
 
 ## 2. Setting up
 
+On a **new machine**, start with [`developer-agents/README.md`](developer-agents/README.md):
+the install list, the clone and identity, restoring the agents' memory, the
+emulator ports and how to start each agent's session. What follows is the
+first machine, as it was set up.
+
 ### This machine
 
 | | |

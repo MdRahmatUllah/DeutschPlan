@@ -1,0 +1,20 @@
+- [CI off](ci-minutes.md) — GitHub CI disabled (#302/PR #303): local gate only, never wait on or re-enable CI
+- [M2 decisions](m2-decisions.md) — report-a-problem → GitHub issues; open #245, #239; M3 order, progress and deliberate choices
+- [SQA Agent 3](sqa-agent3.md) — I am agent-3, the one and only SQA: test closed milestone issues on emulator-5556, file bugs to milestone SQA (#9); ledger inside
+- [Merge, then delete](merge-then-delete.md) — delete a PR branch only once the PR is MERGED; deleting first closes it
+- [Device lock](device-lock-check.md) — run team.py device alone and read it; refused means stop; only emulator-5558
+- [No chaining past failure](no-chaining-past-failure.md) — rebase/lock/build as their own command; gate steps with &&; ARB conflicts: --ours + re-add keys
+- [Full suite run](full-suite-j2.md) — when due: -j 2, foreground, three chunks; don't restart reaped processes
+- [Merge open PRs first](merge-open-prs-first.md) — owner: drive open PRs to merge before starting new work
+- [Basic gate per PR](basic-gate-per-pr.md) — owner: PRs merge on analyze/format/touched tests/plants; full suite only at milestone completion
+- [PR author line](pr-author-line.md) — owner: every PR description starts with **Agent-N** on line 1
+- [Keep working](keep-working.md) — owner: never idle-wait; take next issues in parallel, keep agents assigned until M7 is done
+- [Read full review](read-full-review.md) — print the whole latest review comment before merging; approvals carry should-fixes
+- [Decision resets issue](decision-resets-issue.md) — team.py decision on an issue in review drops it off the board; raise follow-up questions on a new issue
+- [Reboot before perf](perf-reboot-emulator.md) — emulator-5558 with full swap reads starts ~2.3x slow; reboot under the lock before perf.py
+- [viewInsets are physical](test-viewinsets-physical.md) — widget-test keyboard insets are physical px: multiply by devicePixelRatio (3.0)
+- [Dispose semantics inline](test-semantics-dispose-inline.md) — addTearDown(semantics.dispose) fails; flutter_test checks handles before teardowns
+- [v1.0 scope](v1-scope.md) — owner 2026-09-26: Android-only, Hy-MT off, #154/#161/#171 Later; empty ready list → ask agent-0
+- [No merging others' PRs](no-merging-others-prs.md) — classifier refuses it even on request: post the review alone, tell the author to merge
+- [v1 releases](v1-release.md) — v1.0.0 (2b424e33) + v1.0.1 (0d23968e) tagged 2026-09-26, Android-only; owner decisions; upload key + phone check still the owner's
+- [Stash, not checkout](stash-not-checkout.md) — discard my own edit with git stash push -- file; git checkout -- file got the next command blocked

@@ -2,10 +2,16 @@
 
 An offline German course for Bangla and English speakers: Flutter (Android +
 iOS), 12 steps A1.1 → C2.2, FSRS spaced repetition, mock exams, on-device
-voice. M0–M3 are done; **M4–M7 are being built by three agents in parallel:
-`agent-0` (the lead: the critical path, assignments, reviews), `agent-1` and
-`agent-2`.** You are one of them. This page is the overview; `ONBOARDING.md` is the full
-guide — read it once per identity, and whenever something here is unclear.
+voice. M0–M7 are done and **v1.0.1 is released** (Android; iOS is Later). The
+team: **`agent-0` (the lead: the critical path, assignments, reviews),
+`agent-1` and `agent-2` (developers), `agent-3` (SQA).** You are one of them.
+This page is the overview; `ONBOARDING.md` is the full guide — read it once
+per identity, and whenever something here is unclear.
+
+**New device, or new to the team?** Read `developer-agents/README.md` first:
+the team, the setup, and how to restore the agents' memory. Your identity's
+role, memory and way of working are in `developer-agents/agent-N/`. The
+product and the code are explained in `docs/handbook/`.
 
 ## Start every session like this
 
@@ -14,7 +20,8 @@ guide — read it once per identity, and whenever something here is unclear.
    one up is `ONBOARDING.md` §2 — never work in the main checkout).
 2. Read your memory — the board is cloned at `F:/appDevs/dp-team/agent-N/`
    (the main checkout's parent + `dp-team`; `join` prints it): `agents/agent-N.md`
-   (Now, Next, Memory) and the project memory `MEMORY.md`.
+   (Now, Next, Memory) and the project memory `MEMORY.md`; for anything older,
+   `developer-agents/agent-N/memory.md`.
 3. `python tools/team.py status` — handoffs for you (act on them, then
    `team.py ack`), your work, what is in flight, what is ready.
 4. Reviews first: an open review request from another agent beats new work.
@@ -32,6 +39,8 @@ session must know), `team.py leave -m "..."`.
 | Behaviour (the source of truth: docs win over code) | `docs/` — `docs/README.md` indexes it; screens `docs/04-screens/`, engines `docs/03-domain/`, rules `docs/00-product/business-rules.md` (BR-*), data `docs/02-data/` |
 | How it is built | `docs/01-architecture/` (structure, state, navigation, theming, a11y/perf), `docs/05-dev-guide/` (standards, testing, ADRs in `decisions.md`, release) |
 | What it looks like | artboards `deutsch-plan-design-html/<canvas>/screens/*.html` (PNG: `docs/design/<canvas>/`), glass `deutsch-plan-v2-aurora-glass-html/…` |
+| The whole picture, readable | `docs/handbook/` (business, features, capabilities, architecture, reference, quality, operations, roadmap); branding in `docs/branding/` |
+| The team and how each agent works | `developer-agents/` (setup on a new device, each agent's role, memory, history) |
 | What to do, who does it | the `team` branch, cloned at `F:/appDevs/dp-team/<you>/`: `TASKS.md` (the task file + handoffs), `STATUS.md`, `PLAN.md`, `MEMORY.md`, `WORKLOG.md`, `agents/` |
 | Each issue | GitHub issue (Goal, Design, Specification, Acceptance criteria, Dependencies) |
 
