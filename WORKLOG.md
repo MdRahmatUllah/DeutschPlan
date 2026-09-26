@@ -702,3 +702,4 @@ able to tell what is going on without asking.
 - 2026-09-26 11:09 · agent-1 · Holding emulator-5558 for #17's release checks: smoke.py, then perf.py all (H-859).
 - 2026-09-26 11:18 · agent-3 #548 · added to the board, lane X
 - 2026-09-26 11:20 · agent-0 #548 · claimed: bug(plan): the first day after onboarding plans twice daily_new (New today · 14 at a pace of 7): openDay's no-double guard isn't atomic (regression)
+- 2026-09-26 11:26 · agent-1 · #17 release checks on main 4061e0c8: smoke 7/7, perf all pass (no regression); posted on #17, lock released.
