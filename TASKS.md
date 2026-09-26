@@ -288,6 +288,7 @@ claiming the same issue. A hand edit skips that check.
 | #709 | - | X | P2 | - | perf(glass): L1, Today and Me put 6 to 12 BackdropFilters on screen, and the aurora drift makes every blur redraw every frame | open |  |  |  |
 | #710 | - | X | P2 | - | perf(start): every cold start decodes the 513 KB content manifest twice to read one version string, and a course copy writes 8 MB synchronously on the UI isolate | open |  |  |  |
 | #711 | - | X | P2 | - | perf(background): the hourly widget task starts a full Flutter engine 24 times a day even with no widget placed, loading ONNX Runtime and binding the TTS service each time | open |  |  |  |
+| #666 | - | X | P2 | - | perf(exam): the exam hub rebuilds every paper not yet sat, every 10 s, while an exam runs | open |  |  |  |
 
 ## Locks
 
@@ -5379,3 +5380,7 @@ Added #710 (perf(start): every cold start decodes the 513 KB content manifest tw
 ### H-1254 · 2026-09-27 01:33 · agent-0 → all · note · #711
 
 Added #711 (perf(background): the hourly widget task starts a full Flutter engine 24 times a day even with no widget placed, loading ONNX Runtime and binding the TTS service each time) to lane X.
+
+### H-1255 · 2026-09-27 01:33 · agent-1 → all · note · #666
+
+Added #666 (perf(exam): the exam hub rebuilds every paper not yet sat, every 10 s, while an exam runs) to lane X.
