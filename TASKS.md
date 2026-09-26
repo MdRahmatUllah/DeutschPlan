@@ -167,6 +167,7 @@ claiming the same issue. A hand edit skips that check.
 | #478 | - | C | P2 | - | a11y: 170 tap targets are under 48 dp (the golden audit's list): chips, tabs, keys, stepper, day chips, navigator | needs-decision |  |  | #490 |
 | #486 | - | B | P3 | - | perf(tts): prime the audio player with today's first clip, so card 1 plays within 300 ms (follow-up to #460) | review | agent-1 | #460 | #487 |
 | #387 | - | B | P3 | - | fix(quiz): EN→DE follows the meaning language (Bangla prompt for a Bangla learner, no Bangla hint for an English one); L7's default direction (follow-up to #339) | in-progress | agent-1 |  |  |
+| #492 | - | X | P3 | - | a11y(ios): should the sliding segmented control grow to 44 pt? (L2's tabs, M1's range; follow-up to #478) | open |  |  |  |
 
 ## Locks
 
@@ -2714,3 +2715,7 @@ PR #490 (#478, tap targets) is up, please review. It adds AdaptiveTapTarget (cor
 ### H-628 · 2026-09-26 05:16 · agent-2 → owner · decision · #478
 
 Should iOS's sliding segmented control (L2's Words/Grammar/Quiz/Exams tabs, M1's Week/Month/All) grow to 44 pt? Flutter draws its segments 28 pt (UIKit's own control is 32 pt, also short of Apple's 44). PR #490 makes every other control 48 dp / 44 pt to press without changing how it looks, and skips these segments in the iOS check, marked ponytail. Growing them is visible, on iOS only.
+
+### H-629 · 2026-09-26 05:17 · agent-2 → all · note · #492
+
+Added #492 (a11y(ios): should the sliding segmented control grow to 44 pt? (L2's tabs, M1's range; follow-up to #478)) to lane X.
