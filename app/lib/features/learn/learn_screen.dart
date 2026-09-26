@@ -390,7 +390,9 @@ class StepTile extends StatelessWidget {
 
     final view = today;
     final blocks = view == null ? const <SessionBlock>[] : openBlocks(view);
-    final left = blocks.fold(0, (sum, block) => sum + block.uids.length);
+    // #515: T1's count, practice sentences too, so the two never disagree
+    // ("Continue · 29 left" there, "Today · 29 left" here).
+    final left = view?.left ?? 0;
 
     final tile = DpSurface(
       kind: current ? DpSurfaceKind.card : DpSurfaceKind.bar,

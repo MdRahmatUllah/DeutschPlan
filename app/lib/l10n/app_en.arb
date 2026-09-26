@@ -2465,9 +2465,9 @@
   "@learnNotStarted": {
     "description": "L1: read out for the lock on a step not yet started."
   },
-  "learnTodayLeft": "Today · {count, plural, =1{1 card left} other{{count} cards left}}",
+  "learnTodayLeft": "Today · {count} left",
   "@learnTodayLeft": {
-    "description": "L1 current tile: what is left of today's study blocks.",
+    "description": "L1 current tile: what is left of today's plan, the same count as T1's button and ring (practice sentences too), worded as T1's 'Continue · {count} left' (#515).",
     "placeholders": {
       "count": {
         "type": "int",

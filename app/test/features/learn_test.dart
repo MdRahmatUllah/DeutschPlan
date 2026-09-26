@@ -174,14 +174,20 @@ void main() {
     tester,
   ) async {
     await pump(tester);
-    expect(find.text(l10n.learnTodayLeft(8)), findsOneWidget);
+    // pump's day: artboardToday(reviseDone: 7).
+    final left = artboardToday(reviseDone: 7).left;
+    expect(find.text(l10n.learnTodayLeft(left)), findsOneWidget);
     expect(find.text(l10n.learnStudy), findsOneWidget);
   });
 
-  testWidgets('counting only what is still open', (tester) async {
-    await pump(tester, today: artboardToday());
-    // Revise 10/10 and new 2/7: five new words still open.
-    expect(find.text(l10n.learnTodayLeft(5)), findsOneWidget);
+  testWidgets("#515 counting what is still open as T1 does, the practice "
+      "sentences too", (tester) async {
+    final today = artboardToday();
+    await pump(tester, today: today);
+    // T1's "Continue · N left" and its ring's numerator count the same.
+    expect(todayViewState(today).count, today.left);
+    expect(today.sentences.open, greaterThan(0), reason: 'the case #396 saw');
+    expect(find.text(l10n.learnTodayLeft(today.left)), findsOneWidget);
   });
 
   testWidgets('and once today is studied, no Study', (tester) async {
