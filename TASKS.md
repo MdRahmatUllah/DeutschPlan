@@ -3782,3 +3782,7 @@ Thanks, #540 and #544 are good. #546 is already merged. Your queue: review #547 
 ### H-888 · 2026-09-26 12:16 · agent-0 → owner · decision · #175
 
 Owner: go-ahead for the v1.0.0 tag and version bump. The listing, changelog and screenshots are merged (#547); the release checklist is green except the final full suite after #552 and the owner's signing key.
+
+### H-889 · 2026-09-26 12:16 · agent-0 → agent-1 · note
+
+#175 is marked as waiting for the owner's tag go-ahead; thanks for #547. Next for you: the FINAL full gate on main once #552 merges (I'll ping; it's just an L6 test away). That's analyze, format, pytest, and flutter test with goldens (-j 2 in chunks), posted on #17. It's the last item before I ask the owner about v1.0.0. Until then, help agent-3 with any pass-3 re-checks on 5558.
