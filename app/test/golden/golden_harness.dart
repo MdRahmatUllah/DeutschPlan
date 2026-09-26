@@ -187,6 +187,9 @@ void goldenTest(
         // field's hint included (#565). A DpOneLine draws only the words
         // that fit, then "…".
         expectAllLinesShown(tester);
+        // The keyboard up at 200 % on a screen with a field: the #554
+        // family's layouts, where only four screens had tests of their own.
+        if (scale == textAuditScales.last) await expectKeyboardFits(tester);
       });
     }
   }
@@ -422,3 +425,39 @@ extension GoldenTester on WidgetTester {
     );
   }
 }
+
+/// A 300 dp keyboard up over the screen's first field, focused: no layout
+/// error, the field above the keyboard, nothing clipped, and nothing cut to
+/// its lines but the field's own hint, which keeps one line while typing
+/// past 130 % (#570). A screen with no field passes as it is (#584).
+///
+/// ponytail: the audit's phone only. Resizing to SQA's 411 × 731 with a
+/// dialog open left it where it was, so a faithful second frame is a second
+/// pump of every case; L8's and L12's own tests run that frame.
+Future<void> expectKeyboardFits(WidgetTester tester) async {
+  final fields = find.byType(EditableText);
+  if (fields.evaluate().isEmpty) return;
+  final ratio = tester.view.devicePixelRatio;
+  await tester.showKeyboard(fields.first);
+  tester.view.viewInsets = FakeViewPadding(bottom: keyboardHeight * ratio);
+  addTearDown(tester.view.resetViewInsets);
+  await tester.pumpAndSettle();
+  expect(tester.takeException(), isNull, reason: 'with the keyboard up');
+  final keyboardTop = tester.view.physicalSize.height / ratio - keyboardHeight;
+  expect(
+    tester.getRect(fields.first).bottom,
+    lessThanOrEqualTo(keyboardTop + 0.5),
+    reason: 'the focused field above the keyboard',
+  );
+  expectNothingClipped(tester);
+  final hint = find
+      .ancestor(of: fields.first, matching: find.byType(InputDecorator))
+      .evaluate()
+      .map((e) => (e.widget as InputDecorator).decoration.hintText)
+      .nonNulls;
+  expectAllLinesShown(tester, except: hint.toSet());
+}
+
+/// The keyboard [expectKeyboardFits] puts up: Gboard with its suggestion
+/// strip on SQA's phone, as #554's tests have it.
+const double keyboardHeight = 300;

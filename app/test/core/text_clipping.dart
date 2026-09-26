@@ -42,7 +42,14 @@ void expectNothingClipped(WidgetTester tester, {Finder? within}) {
 ///
 /// [within] null checks the whole screen, as the golden audit does (#551).
 /// A field's hint too: past 130 % it wraps (#565).
-void expectAllLinesShown(WidgetTester tester, {Finder? within}) {
+///
+/// [except] names text that may be cut: a focused answer field's hint, which
+/// keeps one line while typing past 130 % (#570, #584).
+void expectAllLinesShown(
+  WidgetTester tester, {
+  Finder? within,
+  Set<String> except = const <String>{},
+}) {
   final paragraphs = tester.renderObjectList<RenderParagraph>(
     within == null
         ? find.byType(RichText)
@@ -51,7 +58,9 @@ void expectAllLinesShown(WidgetTester tester, {Finder? within}) {
   expect(paragraphs, isNotEmpty, reason: 'no text found to check');
   final cut = <String>[
     for (final paragraph in paragraphs)
-      if (paragraph.didExceedMaxLines) '"${paragraph.text.toPlainText()}"',
+      if (paragraph.didExceedMaxLines &&
+          !except.contains(paragraph.text.toPlainText()))
+        '"${paragraph.text.toPlainText()}"',
   ];
   expect(cut, isEmpty, reason: 'cut to its maxLines: ${cut.join('; ')}');
 }
