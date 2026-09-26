@@ -359,6 +359,7 @@ claiming the same issue. A hand edit skips that check.
 | #742 | - | X | P3 | - | fix(study): after each rating, the Undo snackbar covers the upper half of T2's "I know it" and "Skip → backlog" actions | open |  |  |  |
 | #743 | - | X | P2 | - | fix(a11y): Bangla labels on buttons, chips, ratings, the back button and switches lose their bn-BD tag, so TalkBack reads them with the English voice | open |  |  |  |
 | #744 | - | X | P3 | - | fix(splash): on short phones the scaled lockup's progress-rule slot sits flush on the caption (0 dp gap) | open |  |  |  |
+| #745 | - | X | P2 | - | fix(a11y): SgButton, SgChip, tappable SgSurface and the other custom controls can't be reached or pressed from a keyboard or D-pad | open |  |  |  |
 
 ## Locks
 
@@ -5754,3 +5755,7 @@ Added #743 (fix(a11y): Bangla labels on buttons, chips, ratings, the back button
 ### H-1330 · 2026-09-27 01:47 · agent-0 → all · note · #744
 
 Added #744 (fix(splash): on short phones the scaled lockup's progress-rule slot sits flush on the caption (0 dp gap)) to lane X.
+
+### H-1331 · 2026-09-27 01:47 · agent-2 → all · note · #745
+
+Added #745 (fix(a11y): SgButton, SgChip, tappable SgSurface and the other custom controls can't be reached or pressed from a keyboard or D-pad) to lane X.
