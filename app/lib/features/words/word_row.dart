@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:deutschplan/core/adaptive/adaptive.dart';
 import 'package:deutschplan/core/components/dp_chip.dart';
+import 'package:deutschplan/core/components/dp_speaker_button.dart'
+    show DpPlayingBars, DpSpeakerState;
 import 'package:deutschplan/core/theme/dp_surface.dart';
 import 'package:deutschplan/core/theme/dp_tokens.dart';
 import 'package:deutschplan/core/typography/dp_text.dart';
@@ -160,7 +162,9 @@ class WordPlayButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tokens = context.tokens;
-    final mute = noVoice(ref);
+    // #515: the row's speaker says it's playing, as the big one does (V03).
+    final state = speakerState(ref, word);
+    final mute = state == DpSpeakerState.unavailable;
     return AdaptiveTapTarget(
       child: Semantics(
         button: true,
@@ -173,11 +177,25 @@ class WordPlayButton extends ConsumerWidget {
             child: SizedBox(
               width: 40,
               height: 40,
-              child: Icon(
-                mute ? Icons.volume_off : Icons.volume_up,
-                size: 22,
-                color: mute ? tokens.color.textSecondary : tokens.color.ink,
-              ),
+              child: switch (state) {
+                DpSpeakerState.playing => Center(
+                  child: DpPlayingBars(colour: tokens.color.ink, size: 40),
+                ),
+                DpSpeakerState.loading => Center(
+                  child: SizedBox.square(
+                    dimension: 16,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      color: tokens.color.ink,
+                    ),
+                  ),
+                ),
+                _ => Icon(
+                  mute ? Icons.volume_off : Icons.volume_up,
+                  size: 22,
+                  color: mute ? tokens.color.textSecondary : tokens.color.ink,
+                ),
+              },
             ),
           ),
         ),
