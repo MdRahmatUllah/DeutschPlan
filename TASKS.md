@@ -192,7 +192,7 @@ claiming the same issue. A hand edit skips that check.
 | #537 | M7 | C | P3 | - | fix(settings): Bangla pronunciation follows the meaning language (owner's decision, from #396) | done | agent-2 |  | #541 |
 | #539 | - | C | P3 | - | fix(typography): German sentences drawn as raw Text.rich can cut a long compound at a letter at 200 % (T5, grammar practice, T2's cloze, placement, feedback; follow-up to #535) | review | agent-2 |  | #540 |
 | #407 | - | X | P3 | - | content: C2.1 has Satzakzent twice (one row with the article in the German cell); delete one row in the workbook | done | agent-0 |  | #545 |
-| #548 | SQA | X | P2 | - | bug(plan): the first day after onboarding plans twice daily_new (New today · 14 at a pace of 7): openDay's no-double guard isn't atomic (regression) | open |  |  |  |
+| #548 | SQA | X | P2 | - | bug(plan): the first day after onboarding plans twice daily_new (New today · 14 at a pace of 7): openDay's no-double guard isn't atomic (regression) | in-progress | agent-0 |  |  |
 
 ## Locks
 
