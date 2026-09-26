@@ -335,6 +335,7 @@ class DpVerdictRow extends StatelessWidget {
     required this.message,
     super.key,
     this.emphasis = const <String>[],
+    this.germanEmphasis = false,
   });
 
   final DpVerdict verdict;
@@ -347,6 +348,11 @@ class DpVerdictRow extends StatelessWidget {
   /// order: a translation may put text around them, but must keep them in
   /// this order.
   final List<String> emphasis;
+
+  /// Whether [emphasis] is the course's German, read in a German voice. L8's
+  /// answer can be English or Bangla too (DE → EN, DE → বাংলা): then the
+  /// app's voice, or Bangla's, and Bangla one role up (#539).
+  final bool germanEmphasis;
 
   /// `correct` and `wrong` are a tick and a cross in the artboard, which
   /// Material has. `almost` is the mathematical "approximately equal" sign, and
@@ -414,9 +420,9 @@ class DpVerdictRow extends StatelessWidget {
 }
 
 extension on DpVerdictRow {
-  /// [message] in runs: the app's copy in its colour (Bangla one role up,
-  /// as [DpText] sets it), and each [emphasis], the German answer, in ink
-  /// and a German voice (#539).
+  /// [message] in runs: the app's copy in its colour, and each [emphasis],
+  /// the answer, in ink. Bangla one role up and in its voice, as [DpText]
+  /// sets it; the answer in a German voice only when it is German (#539).
   List<TextSpan> _runs(DpTokens tokens, Color colour) {
     TextStyle at(DpTextRole role) => DpText.styleFor(
       tokens,
@@ -435,11 +441,13 @@ extension on DpVerdictRow {
       final found = part.isEmpty ? -1 : message.indexOf(part, from);
       if (found < 0) continue;
       if (found > from) runs.addAll(copy(message.substring(from, found)));
-      runs.add(
-        TextSpan(
-          text: part,
-          style: latin.copyWith(color: tokens.color.ink),
-          locale: DpScript.deDE,
+      runs.addAll(
+        DpScript.spans(
+          part,
+          latin: latin.copyWith(color: tokens.color.ink),
+          bengali: at(DpTextRole.body.oneStepLarger)
+              .copyWith(color: tokens.color.ink),
+          german: germanEmphasis,
         ),
       );
       from = found + part.length;
