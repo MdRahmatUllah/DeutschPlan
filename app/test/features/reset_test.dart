@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:deutschplan/core/adaptive/adaptive.dart';
 import 'package:deutschplan/core/providers/app_providers.dart';
 import 'package:deutschplan/core/theme/app_theme.dart';
 import 'package:deutschplan/data/db/app_database.dart';
@@ -19,6 +20,7 @@ import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 
 import '../db/content_fixture.dart';
+import '../core/text_clipping.dart' show AndroidTextScaler;
 
 /// The recordings, deleted without a disk: `reset_repository_test.dart`
 /// deletes real ones, and file I/O never finishes in a widget test's clock.
@@ -80,9 +82,15 @@ void main() {
       (await db.customSelect('SELECT COUNT(*) AS n FROM $table').getSingle())
           .read<int>('n');
 
-  Future<void> pump(WidgetTester tester) async {
+  Future<void> pump(
+    WidgetTester tester, {
+    Size screen = const Size(600, 4500),
+    TextScaler? textScaler,
+    AdaptiveChrome chrome = AdaptiveChrome.material,
+    Locale? locale,
+  }) async {
     tester.view
-      ..physicalSize = const Size(1200, 9000)
+      ..physicalSize = screen * 2
       ..devicePixelRatio = 2;
     addTearDown(tester.view.reset);
 
@@ -101,29 +109,40 @@ void main() {
           translationModelProvider.overrideWith((ref) async => null),
           modelRepositoryProvider.overrideWithValue(recordings),
         ],
-        child: MaterialApp.router(
-          theme: AppTheme.light(),
-          localizationsDelegates: appLocalizationsDelegates,
-          supportedLocales: supportedLocales,
-          routerConfig: GoRouter(
-            initialLocation: '/me/settings',
-            routes: <RouteBase>[
-              GoRoute(
-                path: '/me',
-                builder: (_, _) => const SizedBox(),
-                routes: <RouteBase>[
-                  GoRoute(
-                    path: 'settings',
-                    builder: (_, _) => const SettingsScreen(),
+        child: AdaptiveChromeScope(
+          chrome: chrome,
+          child: MaterialApp.router(
+            locale: locale,
+            theme: AppTheme.light(),
+            localizationsDelegates: appLocalizationsDelegates,
+            supportedLocales: supportedLocales,
+            builder: textScaler == null
+                ? null
+                : (context, child) => MediaQuery(
+                    data: MediaQuery.of(context)
+                        .copyWith(textScaler: textScaler),
+                    child: child!,
                   ),
-                  GoRoute(path: 'export', builder: (_, state) => away(state)),
-                ],
-              ),
-              GoRoute(
-                path: '/onboarding/:page',
-                builder: (_, state) => away(state),
-              ),
-            ],
+            routerConfig: GoRouter(
+              initialLocation: '/me/settings',
+              routes: <RouteBase>[
+                GoRoute(
+                  path: '/me',
+                  builder: (_, _) => const SizedBox(),
+                  routes: <RouteBase>[
+                    GoRoute(
+                      path: 'settings',
+                      builder: (_, _) => const SettingsScreen(),
+                    ),
+                    GoRoute(path: 'export', builder: (_, state) => away(state)),
+                  ],
+                ),
+                GoRoute(
+                  path: '/onboarding/:page',
+                  builder: (_, state) => away(state),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -147,6 +166,60 @@ void main() {
     expect(went, '/me/export');
     expect(await count('word_state'), 1);
   });
+
+  // #586: the typed confirm's field, focused, comes above the keyboard with
+  // nothing typed yet, inside the dialog's own scroll view, which ends where
+  // its actions start. Before the fix it stayed hidden on a budget phone at
+  // 150 % and 200 %, and on SQA's phone too.
+  for (final chrome in AdaptiveChrome.values) {
+    for (final (screen, keyboard, percent, lang)
+        in <(Size, double, int, String)>[
+          (const Size(360, 640), 280, 200, 'en'),
+          (const Size(360, 640), 280, 150, 'en'),
+          (const Size(411, 731), 335, 200, 'en'),
+          (const Size(411, 731), 335, 150, 'en'),
+          // Bangla's actions may stack, which leaves the least room.
+          (const Size(360, 640), 280, 200, 'bn'),
+        ]) {
+      testWidgets('FR-M7-02 #586 ${chrome.name}, $lang at $percent % on '
+          '${screen.width.round()} × ${screen.height.round()} with a '
+          '${keyboard.round()} dp keyboard: the focused field shows whole in '
+          "the dialog's scroll view, with nothing typed", (tester) async {
+        final t = lookupAppLocalizations(Locale(lang));
+        await pump(
+          tester,
+          screen: screen,
+          textScaler: AndroidTextScaler(percent / 100),
+          chrome: chrome,
+          locale: Locale(lang),
+        );
+        tester.view.padding = const FakeViewPadding(top: 24 * 2);
+        await tester.scrollUntilVisible(
+          find.text(t.settingsReset),
+          300,
+          scrollable: find.byType(Scrollable).first,
+        );
+        await tester.pumpAndSettle();
+        await tap(tester, t.settingsReset);
+        await tap(tester, t.resetEverything);
+
+        final field = find.byType(EditableText);
+        await tester.showKeyboard(field);
+        tester.view.viewInsets = FakeViewPadding(bottom: keyboard * 2);
+        addTearDown(tester.view.resetViewInsets);
+        await tester.pumpAndSettle();
+
+        expect(tester.takeException(), isNull);
+        final window = tester.getRect(
+          find.ancestor(of: field, matching: find.byType(Scrollable)).first,
+        );
+        final rect = tester.getRect(field);
+        expect(rect.top, greaterThanOrEqualTo(window.top - 0.5));
+        expect(rect.bottom, lessThanOrEqualTo(window.bottom + 0.5));
+        expect(window.bottom, lessThanOrEqualTo(screen.height - keyboard));
+      });
+    }
+  }
 
   testWidgets('FR-M7-02 Reset stays off until the field says RESET exactly', (
     tester,
