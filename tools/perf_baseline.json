@@ -28,7 +28,7 @@
     "list.missed_raster": 0
   },
   "metrics": {
-    "size.arm64_mb": 159.54,
+    "size.arm64_mb": 72.33,
     "card.build_avg_ms": 4.02,
     "card.build_p90_ms": 9.189,
     "card.build_p99_ms": 23.395,
