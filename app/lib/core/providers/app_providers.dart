@@ -188,11 +188,19 @@ class Languages extends _$Languages {
   /// Invalidated before the disk write finishes, not after: `write` puts the
   /// value in memory first, so the tick and the new locale land on the next
   /// frame instead of waiting on SQLite.
+  ///
+  /// The Bangla pronunciation follows too: off for a learner who chose only
+  /// English, who may not read Bangla, as #339 did for the quiz's direction
+  /// (#396, #527). M3's switch changes it after.
   Future<void> chooseMeaning(MeaningLanguage meaning) {
     final settings = ref.read(settingsProvider);
     final written = Future.wait(<Future<void>>[
       settings.write(SettingKeys.meaningLanguage, meaning),
       settings.write(SettingKeys.uiLanguage, meaning.uiLanguage),
+      settings.write(
+        SettingKeys.showPronBn,
+        meaning != MeaningLanguage.english,
+      ),
     ]);
     ref.invalidateSelf();
     return written;
