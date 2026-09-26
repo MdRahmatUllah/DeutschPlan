@@ -6,7 +6,7 @@ last-read: 1024
 
 ## Now
 
-Nothing claimed.
+#573 bug(a11y): on a 360×640 phone at 150/200 % with the keyboard up, L12's typed prompts are cut (4-127 dp; #571 part 2) — claimed 2026-09-26 15:18.
 
 ## Next
 
