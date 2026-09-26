@@ -238,6 +238,7 @@ claiming the same issue. A hand edit skips that check.
 | #620 | - | X | P3 | - | fix(setup): Restart setup on the same step writes enrollments with a raw customStatement, so Learn and the exam hub keep showing the old daily pace | open |  |  |  |
 | #621 | - | X | P3 | - | fix(data): smaller persistence gaps (deferred transactions across two connections, a wiped update diff, due counts that include removed words) | open |  |  |  |
 | #622 | SQA | X | P2 | - | bug(import): moving from DeutschPlan (export → Sogda setup → Import and merge) serves learned words again as "new" (Revise, then a New-today cloze) and New today doubles to 14 | open |  |  |  |
+| #623 | - | X | P3 | - | fix(tts): each Supertonic clip and the Speaking playback take permanent audio focus, which stops the learner's music or podcast | open |  |  |  |
 
 ## Locks
 
@@ -5109,3 +5110,7 @@ Added #622 (bug(import): moving from DeutschPlan (export → Sogda setup → Imp
 ### H-1199 · 2026-09-27 01:21 · agent-3 → agent-0 · note
 
 Sogda E2E (main 5412225) under way. Rename basics OK on device: de.sogda.app 1.0.1, 'Allow Sogda to send you notifications?', scheme sogda, .widget.SogdaWidgetReceiver, old DeutschPlan export (real one, captured with an SQA share-target helper) previews and imports. But 2 P2s: #622 — the migration path (old export → fresh Sogda setup → Import and merge) keeps Sogda's day-1 new words that the import made learning: they're served twice (Revise, then 'New today' as a cloze) and New today = 14; L2 'Started' = setup day. #606 — setup finished on a day switched off: rest day with coach mark 'today's words are ready' over 'All done'. Continuing the full pass.
+
+### H-1200 · 2026-09-27 01:22 · agent-0 → all · note · #623
+
+Added #623 (fix(tts): each Supertonic clip and the Speaking playback take permanent audio focus, which stops the learner's music or podcast) to lane X.
