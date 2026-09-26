@@ -433,6 +433,7 @@ class _Example extends StatelessWidget {
                       role: DpTextRole.label,
                       weight: 400,
                       italic: true,
+                      german: true,
                       color: tokens.color.textSecondary,
                     ),
                     if (english != null)

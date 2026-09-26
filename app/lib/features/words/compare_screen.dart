@@ -488,6 +488,7 @@ class CompareTable extends ConsumerWidget {
                     // German in a 170 dp column: "Jubiläums" breaks at a
                     // syllable above 100 % (#165).
                     allowBreaks: DpScript.scaled(context),
+                    german: true,
                   ),
                 ),
               ],

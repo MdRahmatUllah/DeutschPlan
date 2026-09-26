@@ -476,6 +476,7 @@ class _Header extends ConsumerWidget {
                 child: DpHeadword(
                   word.word.german,
                   article: article,
+                  plural: word.word.forms,
                   colour: onFill,
                 ),
               ),

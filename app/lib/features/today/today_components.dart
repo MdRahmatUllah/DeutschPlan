@@ -68,6 +68,7 @@ class TodayHeader extends StatelessWidget {
                     germanDate(view.date),
                     role: DpTextRole.label,
                     color: ink,
+                    german: true,
                   ),
                   const SizedBox(height: 4),
                   DpText(

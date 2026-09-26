@@ -400,7 +400,12 @@ class _Example extends ConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              DpText(german, role: DpTextRole.bodyLarge, italic: true),
+              DpText(
+                german,
+                role: DpTextRole.bodyLarge,
+                italic: true,
+                german: true,
+              ),
               if (english != null)
                 DpText(
                   english!,

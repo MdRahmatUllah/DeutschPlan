@@ -1,5 +1,9 @@
+import 'dart:ui' show LocaleStringAttribute, StringAttribute;
+
 import 'package:deutschplan/core/theme/dp_tokens.dart';
 import 'package:deutschplan/core/typography/app_fonts.dart';
+import 'package:deutschplan/l10n/generated/app_localizations.dart';
+import 'package:flutter/semantics.dart' show AttributedString;
 import 'package:material_ui/material_ui.dart';
 
 /// One role of the type scale, named so callers ask for a role rather than a
@@ -88,6 +92,33 @@ abstract final class DpScript {
     if (buffer.isNotEmpty) out.add((buffer.toString(), current ?? false));
     return out;
   }
+
+  /// The course's German, for a screen reader's voice.
+  static const Locale deDE = Locale('de', 'DE');
+
+  /// Bangla, for a screen reader's voice.
+  static const Locale bnBD = Locale('bn', 'BD');
+
+  /// [text] as spans a screen reader reads each in its own voice (#162):
+  /// Bangla tagged bn-BD, and the rest de-DE when it is the course's German
+  /// ([german]). Otherwise the rest is the app's own copy, and untagged, so
+  /// it is read in the app's language. A soft hyphen is not read.
+  static List<TextSpan> spans(
+    String text, {
+    required TextStyle latin,
+    required TextStyle bengali,
+    bool german = false,
+  }) => <TextSpan>[
+    for (final (run, isBengali) in runs(text))
+      TextSpan(
+        text: run,
+        style: isBengali ? bengali : latin,
+        locale: isBengali ? bnBD : (german ? deDE : null),
+        semanticsLabel: run.contains(softHyphen)
+            ? run.replaceAll(softHyphen, '')
+            : null,
+      ),
+  ];
 
   static bool _isLetterOrMark(int rune) {
     if (rune >= 0x41 && rune <= 0x5A) return true; // A-Z
@@ -224,6 +255,7 @@ class DpText extends StatelessWidget {
     this.allowBreaks = false,
     this.semanticsLabel,
     this.letterSpacing,
+    this.german = false,
   });
 
   final String data;
@@ -244,6 +276,10 @@ class DpText extends StatelessWidget {
 
   /// Tracking in logical pixels, for the few uppercase labels that carry it.
   final double? letterSpacing;
+
+  /// The course's German (an example, a sentence), not the app's copy: a
+  /// screen reader reads it in a German voice (#162).
+  final bool german;
 
   @override
   Widget build(BuildContext context) {
@@ -270,7 +306,7 @@ class DpText extends StatelessWidget {
 
     final base = dressed(role);
 
-    if (!DpScript.hasBengali(text)) {
+    if (!german && !DpScript.hasBengali(text)) {
       return Text(
         text,
         style: base,
@@ -280,26 +316,22 @@ class DpText extends StatelessWidget {
       );
     }
 
-    final larger = dressed(role.oneStepLarger);
-
+    // accessibility-performance.md: German is tagged de-DE and Bangla bn-BD,
+    // so TalkBack and VoiceOver switch voices mid-string. The spans carry
+    // the tags: a label on the whole would drop them (#162), so only a
+    // caller's own replaces them.
     return Text.rich(
       TextSpan(
-        children: <InlineSpan>[
-          for (final (runText, bengali) in DpScript.runs(text))
-            TextSpan(
-              text: runText,
-              style: bengali ? larger : base,
-              // accessibility-performance.md: German is tagged de-DE and Bangla
-              // bn-BD so TalkBack and VoiceOver switch voices mid-string.
-              locale: bengali
-                  ? const Locale('bn', 'BD')
-                  : const Locale('de', 'DE'),
-            ),
-        ],
+        children: DpScript.spans(
+          text,
+          latin: base,
+          bengali: dressed(role.oneStepLarger),
+          german: german,
+        ),
       ),
       textAlign: textAlign,
       maxLines: maxLines,
-      semanticsLabel: semanticsLabel ?? text,
+      semanticsLabel: semanticsLabel,
     );
   }
 
@@ -362,16 +394,7 @@ class DpOneLine extends StatelessWidget {
         ? TextSpan(text: line, style: style)
         : TextSpan(
             style: style,
-            children: <InlineSpan>[
-              for (final (run, bengali) in DpScript.runs(line))
-                TextSpan(
-                  text: run,
-                  style: bengali ? larger : style,
-                  locale: bengali
-                      ? const Locale('bn', 'BD')
-                      : const Locale('de', 'DE'),
-                ),
-            ],
+            children: DpScript.spans(line, latin: style, bengali: larger),
           );
     final scaler = MediaQuery.textScalerOf(context);
     final direction = Directionality.of(context);
@@ -450,12 +473,17 @@ class DpHeadword extends StatelessWidget {
     this.weight,
     this.maxLines,
     this.colour,
+    this.plural,
   });
 
   final String word;
 
   /// Printed, never implied by colour alone.
   final String? article;
+
+  /// A noun's plural (`Word.forms`), if it has one: with *die* it is what
+  /// says the noun is feminine and not a plural itself (#162).
+  final String? plural;
 
   final DpTextRole role;
   final TextAlign? textAlign;
@@ -483,30 +511,57 @@ class DpHeadword extends StatelessWidget {
           : base.copyWith(fontVariations: AppFonts.weight(weight!));
     }
 
-    return Text.rich(
-      TextSpan(
-        children: <InlineSpan>[
-          if (article != null)
-            TextSpan(
-              text: '$article ',
-              style: style(colour ?? articleColour ?? tokens.color.ink),
-            ),
-          TextSpan(
-            text: DpScript.allowBreaks(
-              word,
-              threshold: DpScript.breakThreshold(context),
-            ),
-            style: style(colour ?? tokens.color.ink),
-            locale: const Locale('de', 'DE'),
+    // Announced with its article and gender, the German in a German voice
+    // and the gender in the app's ("die Wohnung, feminine"), as
+    // accessibility-performance.md requires, and without the soft hyphen.
+    final said = article == null ? word : '$article $word';
+    final gender = _gender(
+      Localizations.of<AppLocalizations>(context, AppLocalizations),
+    );
+    return Semantics(
+      attributedLabel: AttributedString(
+        gender == null ? said : '$said, $gender',
+        attributes: <StringAttribute>[
+          LocaleStringAttribute(
+            range: TextRange(start: 0, end: said.length),
+            locale: DpScript.deDE,
           ),
         ],
       ),
-      textAlign: textAlign,
-      maxLines: maxLines,
-      overflow: maxLines == null ? null : TextOverflow.ellipsis,
-      // Announced with its article, as accessibility-performance.md requires,
-      // and without the soft hyphen a screen reader would otherwise voice.
-      semanticsLabel: article == null ? word : '$article $word',
+      excludeSemantics: true,
+      child: Text.rich(
+        TextSpan(
+          children: <InlineSpan>[
+            if (article != null)
+              TextSpan(
+                text: '$article ',
+                style: style(colour ?? articleColour ?? tokens.color.ink),
+              ),
+            TextSpan(
+              text: DpScript.allowBreaks(
+                word,
+                threshold: DpScript.breakThreshold(context),
+              ),
+              style: style(colour ?? tokens.color.ink),
+            ),
+          ],
+        ),
+        textAlign: textAlign,
+        maxLines: maxLines,
+        overflow: maxLines == null ? null : TextOverflow.ellipsis,
+      ),
     );
   }
+
+  /// The gender the article gives. None for *die* without a plural: a
+  /// plural-only noun (die Leute, die Kosten) takes *die* too, and the
+  /// course doesn't mark one, so "feminine" could be wrong (#162).
+  String? _gender(AppLocalizations? l10n) => l10n == null
+      ? null
+      : switch (article) {
+          'der' => l10n.genderMasculine,
+          'das' => l10n.genderNeuter,
+          'die' when plural != null => l10n.genderFeminine,
+          _ => null,
+        };
 }

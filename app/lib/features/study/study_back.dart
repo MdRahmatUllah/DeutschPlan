@@ -271,6 +271,7 @@ class StudyExampleRow extends StatelessWidget {
                     example.german,
                     role: DpTextRole.bodyLarge,
                     italic: true,
+                    german: true,
                   ),
                   if (english != null) ...<Widget>[
                     const SizedBox(height: 2),

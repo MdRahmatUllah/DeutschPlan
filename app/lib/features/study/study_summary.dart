@@ -411,6 +411,7 @@ class _WatchRow extends ConsumerWidget {
             child: DpHeadword(
               word.german,
               article: word.article,
+              plural: word.forms,
               role: DpTextRole.bodyLarge,
             ),
           ),

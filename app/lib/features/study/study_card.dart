@@ -205,6 +205,7 @@ class _StudyWordCardState extends ConsumerState<StudyWordCard> {
                         child: DpHeadword(
                           word.german,
                           article: word.article,
+                          plural: word.forms,
                           role: DpTextRole.display,
                         ),
                       ),

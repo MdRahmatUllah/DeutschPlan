@@ -1,7 +1,13 @@
 import 'package:deutschplan/core/theme/app_theme.dart';
 import 'package:deutschplan/core/theme/dp_tokens.dart';
+
+import 'dart:ui' show LocaleStringAttribute;
+
 import 'package:deutschplan/core/typography/dp_text.dart';
+import 'package:deutschplan/l10n/generated/app_localizations.dart';
+import 'package:deutschplan/main.dart' show appLocalizationsDelegates;
 import 'package:flutter/rendering.dart' show RenderParagraph;
+import 'package:flutter/semantics.dart' show AttributedString;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 
@@ -14,10 +20,14 @@ void main() {
     WidgetTester tester,
     Widget child, {
     double textScale = 1,
+    Locale locale = const Locale('en'),
   }) async {
     await tester.pumpWidget(
       MaterialApp(
         theme: AppTheme.light(),
+        locale: locale,
+        localizationsDelegates: appLocalizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
         home: MediaQuery(
           data: MediaQueryData(textScaler: TextScaler.linear(textScale)),
           child: Scaffold(body: Center(child: child)),
@@ -178,7 +188,11 @@ void main() {
     ) async {
       await pump(
         tester,
-        const DpText('die Wohnung · ফ্ল্যাট', role: DpTextRole.body),
+        const DpText(
+          'die Wohnung · ফ্ল্যাট',
+          role: DpTextRole.body,
+          german: true,
+        ),
       );
       final children =
           (tester.widget<Text>(find.byType(Text)).textSpan! as TextSpan)
@@ -187,6 +201,155 @@ void main() {
 
       expect(children.first.locale, const Locale('de', 'DE'));
       expect(children.last.locale, const Locale('bn', 'BD'));
+    });
+  });
+
+  group('#162 screen-reader voices', () {
+    // What TalkBack and VoiceOver are given: the words, and the stretches
+    // each voice reads.
+    Future<AttributedString> said(
+      WidgetTester tester,
+      Widget child, {
+      Locale locale = const Locale('en'),
+    }) async {
+      await pump(tester, child, locale: locale);
+      return tester.getSemantics(find.byWidget(child)).attributedLabel;
+    }
+
+    List<(String, Locale)> voices(AttributedString label) => <(String, Locale)>[
+      for (final attribute in label.attributes)
+        if (attribute is LocaleStringAttribute)
+          (
+            label.string.substring(attribute.range.start, attribute.range.end),
+            attribute.locale,
+          ),
+    ];
+
+    testWidgets('#162 Y01 the course German is read in a German voice', (
+      tester,
+    ) async {
+      final semantics = tester.ensureSemantics();
+      final label = await said(
+        tester,
+        const DpText(
+          'Ich wohne in Berlin.',
+          role: DpTextRole.body,
+          german: true,
+        ),
+      );
+      expect(label.string, 'Ich wohne in Berlin.');
+      expect(voices(label), <(String, Locale)>[
+        ('Ich wohne in Berlin.', DpScript.deDE),
+      ]);
+      semantics.dispose();
+    });
+
+    testWidgets("#162 Y01 the app's copy is untagged, so it is read in the "
+        "app's language, not in German", (tester) async {
+      final semantics = tester.ensureSemantics();
+      final copy = await said(
+        tester,
+        const DpText('Continue', role: DpTextRole.body),
+      );
+      expect(copy.string, 'Continue');
+      expect(voices(copy), isEmpty);
+
+      final mixed = await said(
+        tester,
+        const DpText('Meaning · অর্থ', role: DpTextRole.body),
+      );
+      expect(voices(mixed), <(String, Locale)>[('অর্থ', DpScript.bnBD)]);
+      semantics.dispose();
+    });
+
+    testWidgets('#162 Y01 German with its Bangla: each in its own voice', (
+      tester,
+    ) async {
+      final semantics = tester.ensureSemantics();
+      final label = await said(
+        tester,
+        const DpText(
+          'die Wohnung · ফ্ল্যাট',
+          role: DpTextRole.body,
+          german: true,
+        ),
+      );
+      expect(voices(label), <(String, Locale)>[
+        ('die Wohnung · ', DpScript.deDE),
+        ('ফ্ল্যাট', DpScript.bnBD),
+      ]);
+      semantics.dispose();
+    });
+
+    testWidgets('#162 Y01 a soft hyphen offered for a break is not read', (
+      tester,
+    ) async {
+      final semantics = tester.ensureSemantics();
+      final label = await said(
+        tester,
+        const DpText(
+          'Haftpflichtversicherung',
+          role: DpTextRole.body,
+          allowBreaks: true,
+          german: true,
+        ),
+      );
+      expect(label.string, 'Haftpflichtversicherung');
+      expect(voices(label).single.$2, DpScript.deDE);
+      semantics.dispose();
+    });
+
+    testWidgets('#162 Y01 the headword: article and gender, the German in a '
+        'German voice ("die Wohnung, feminine")', (tester) async {
+      final semantics = tester.ensureSemantics();
+      final die = await said(
+        tester,
+        const DpHeadword('Wohnung', article: 'die', plural: 'Wohnungen'),
+      );
+      expect(die.string, 'die Wohnung, feminine');
+      expect(voices(die), <(String, Locale)>[('die Wohnung', DpScript.deDE)]);
+
+      final der = await said(tester, const DpHeadword('Tisch', article: 'der'));
+      expect(der.string, 'der Tisch, masculine');
+
+      final das = await said(tester, const DpHeadword('Haus', article: 'das'));
+      expect(das.string, 'das Haus, neuter');
+      semantics.dispose();
+    });
+
+    testWidgets('#162 Y01 die without a plural says no gender: a plural-only '
+        'noun takes die too', (tester) async {
+      final semantics = tester.ensureSemantics();
+      final label = await said(
+        tester,
+        const DpHeadword('Leute', article: 'die'),
+      );
+      expect(label.string, 'die Leute');
+      semantics.dispose();
+    });
+
+    testWidgets("#162 Y01 the gender is in the app's language: Bangla", (
+      tester,
+    ) async {
+      final semantics = tester.ensureSemantics();
+      final label = await said(
+        tester,
+        const DpHeadword('Tisch', article: 'der'),
+        locale: const Locale('bn'),
+      );
+      expect(label.string, 'der Tisch, পুংলিঙ্গ');
+      expect(voices(label), <(String, Locale)>[('der Tisch', DpScript.deDE)]);
+      semantics.dispose();
+    });
+
+    testWidgets('#162 Y01 no article, no gender: a verb is only itself', (
+      tester,
+    ) async {
+      final semantics = tester.ensureSemantics();
+      final label = await said(tester, const DpHeadword('schnell'));
+      expect(label.string, 'schnell');
+      expect(voices(label), <(String, Locale)>[('schnell', DpScript.deDE)]);
+      semantics.dispose();
     });
   });
 

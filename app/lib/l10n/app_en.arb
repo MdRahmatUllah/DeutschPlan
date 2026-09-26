@@ -1967,6 +1967,18 @@
   "@wordStatusSuspended": {
     "description": "A word's status chip: suspended (BR-STATUS-03)."
   },
+  "genderMasculine": "masculine",
+  "@genderMasculine": {
+    "description": "Screen readers only: said after a der-noun's headword, as in 'der Tisch, masculine' (accessibility-performance.md, #162)."
+  },
+  "genderFeminine": "feminine",
+  "@genderFeminine": {
+    "description": "Screen readers only: said after a die-noun's headword, as in 'die Wohnung, feminine' (accessibility-performance.md, #162)."
+  },
+  "genderNeuter": "neuter",
+  "@genderNeuter": {
+    "description": "Screen readers only: said after a das-noun's headword, as in 'das Haus, neuter' (accessibility-performance.md, #162)."
+  },
   "wordUpdated": "Updated",
   "@wordUpdated": {
     "description": "W1 header and T2 card back: the chip on a word whose meaning a content update changed in the last 7 days (BR-CONTENT-02)."

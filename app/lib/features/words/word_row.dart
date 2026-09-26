@@ -56,6 +56,7 @@ class WordRow extends StatelessWidget {
               DpHeadword(
                 word.word.german,
                 article: word.word.article,
+                plural: word.word.forms,
                 role: DpTextRole.bodyLarge,
                 weight: 600,
                 maxLines: 1,
