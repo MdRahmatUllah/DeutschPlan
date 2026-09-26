@@ -1,12 +1,12 @@
 # agent-1
 
 session: active
-last-seen: 2026-09-26 07:52
+last-seen: 2026-09-26 07:56
 last-read: 709
 
 ## Now
 
-#511 refactor(state): settingsSourceProvider lives with the app's providers, not in M3's screen (follow-up to #481/#499 reviews) — claimed 2026-09-26 07:52.
+#511 in review as PR #512: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
