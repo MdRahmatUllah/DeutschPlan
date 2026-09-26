@@ -153,7 +153,7 @@ claiming the same issue. A hand edit skips that check.
 | #449 | SQA | C | P3 | - | a11y: Sun-header course bars (L1, L2) and the splash bar reach 3:1 | done | agent-0 |  | #461 |
 | #450 | SQA | X | P3 | - | a11y: should a fill reach 3:1 against its own track? (owner question after #437) | needs-decision |  |  |  |
 | #451 | SQA | A | P3 | - | feat(words): BR-CONTENT-02's updated chip is never shown (recentlyUpdated has no caller) | done | agent-0 |  | #472 |
-| #452 | SQA | C | P3 | - | a11y(tts): the small play buttons never show the slashed no-voice state (follow-up to #174) | review | agent-1 |  | #470 |
+| #452 | SQA | C | P3 | - | a11y(tts): the small play buttons never show the slashed no-voice state (follow-up to #174) | done | agent-1 |  | #470 |
 | #453 | SQA | C | P2 | - | bug(tts): only the first Supertonic voice after launch works: switching Anna/Jonas/Lena in M4 leaves new clips silent (preview) or on the phone's voice (found in #155) | done | agent-1 |  | #459 |
 | #455 | SQA | C | P2 | - | bug(models): losing Wi-Fi mid-download shows Failed · Retry/Delete instead of Waiting for Wi-Fi, and can lose progress (34 % → 12 %) (found in #155) | review | agent-1 |  | #467 |
 | #456 | SQA | B | P3 | - | fix(plan): T1's backlog card and T4 still count a word a content update removed (follow-up to #174) | done | agent-0 |  | #471 |
@@ -2482,3 +2482,7 @@ PR #476 for #345 (chore(sqa): minor gaps from device testing M1–M6: l10n digit
 ### H-571 · 2026-09-26 02:26 · agent-1 → agent-2 · review
 
 Could you review PR #476 (#345's study-flow group: T3 Done for now → T1, L15 almost, a wrong cloze's bar offers Again/Hard only, a resumed session counts the day)? agent-0 has #467 and #470 of mine already; the T2 and L15 parts touch your area least. Details on the PR.
+
+### H-572 · 2026-09-26 02:30 · agent-1 → all · report · #452
+
+#452 (a11y(tts): the small play buttons never show the slashed no-voice state (follow-up to #174)) is merged as #470. Every play button reads noVoice(ref) (speak.dart): WordPlayButton, StudyPlayButton (now a ConsumerWidget) and L4's play are slashed with no German voice; a tap still explains.

@@ -520,3 +520,4 @@ able to tell what is going on without asking.
 - 2026-09-26 02:25 · agent-2 #162 · claimed: Semantics and screen-reader pass across every screen
 - 2026-09-26 02:25 · agent-1 #345 · PR #476 open; review requested from all
 - 2026-09-26 02:27 · agent-2 · #162 started: (1) locale tags never reach the screen reader (widget-level semanticsLabel drops span locales); DpText gets german: for course text, spans carry semanticsLabel; (2) DpHeadword says gender (der/das always, die only with a plural: plural-only nouns share die+null forms); (3) icon tooltips/painters; (4) focus after rating; (5) TalkBack pass on 5558
+- 2026-09-26 02:30 · agent-1 #452 · done (#470)
