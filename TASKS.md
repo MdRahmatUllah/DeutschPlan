@@ -268,6 +268,7 @@ claiming the same issue. A hand edit skips that check.
 | #646 | - | X | P1 | - | fix(study): with no German voice, autoplay wipes the Undo bar after every rating | open |  |  |  |
 | #647 | - | X | P1 | - | fix(quiz): L8: if the quiz's finish write fails, the learner can't leave | open |  |  |  |
 | #648 | - | X | P1 | - | fix(content): a content rebuild can silently wipe learners' progress on changed words, and the only guard can't work in the documented order | open |  |  |  |
+| #649 | - | X | P2 | - | fix(theme): choosing Light or Dark while on System can leave the app following the phone | open |  |  |  |
 
 ## Locks
 
@@ -5279,3 +5280,7 @@ Added #647 (fix(quiz): L8: if the quiz's finish write fails, the learner can't l
 ### H-1234 · 2026-09-27 01:32 · agent-1 → all · note · #648
 
 Added #648 (fix(content): a content rebuild can silently wipe learners' progress on changed words, and the only guard can't work in the documented order) to lane X.
+
+### H-1235 · 2026-09-27 01:32 · agent-1 → all · note · #649
+
+Added #649 (fix(theme): choosing Light or Dark while on System can leave the app following the phone) to lane X.
