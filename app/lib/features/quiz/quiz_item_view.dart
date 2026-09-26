@@ -67,6 +67,11 @@ class QuizItemView extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final tokens = context.tokens;
     final l10n = AppLocalizations.of(context);
+    // Typing past 130 %, what is asked is one role smaller (the lead's call
+    // on #571: reduce first, then scroll), as L12's is (#573): on a 360 dp
+    // phone a long meaning over its Bangla filled the room above the field
+    // (#574). What still doesn't fit scrolls; the field keeps the keyboard.
+    DpTextRole asked(DpTextRole role) => typing ? role.oneStepSmaller : role;
 
     final prompt = switch (item.direction) {
       // The word is the answer, so it is only heard.
@@ -83,11 +88,11 @@ class QuizItemView extends ConsumerWidget {
       QuizDirection.enDe || QuizDirection.compare => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          DpText(item.prompt, role: DpTextRole.headline, weight: 600),
+          DpText(item.prompt, role: asked(DpTextRole.headline), weight: 600),
           if (item.hint case final hint? when hint.isNotEmpty)
             DpText(
               hint,
-              role: DpTextRole.bodyLarge,
+              role: asked(DpTextRole.bodyLarge),
               color: tokens.color.textSecondary,
             ),
         ],
@@ -101,13 +106,15 @@ class QuizItemView extends ConsumerWidget {
           FormLabel.superlative => l10n.quizFormSuperlative(item.prompt),
           null => item.prompt,
         },
-        role: DpTextRole.headline,
+        role: asked(DpTextRole.headline),
         weight: 600,
       ),
       // German: the word, and a speaker to hear it.
       _ => Row(
         children: <Widget>[
-          Flexible(child: GermanWord(item.prompt)),
+          Flexible(
+            child: GermanWord(item.prompt, role: asked(DpTextRole.headline)),
+          ),
           const SizedBox(width: 12),
           DpSpeakerButton(
             state: speakerState(ref, item.prompt),
@@ -155,15 +162,17 @@ class QuizItemView extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
         prompt,
-        // Typing past 130 %, 12 dp of the gap go to a two-line prompt, which
-        // otherwise lost the top of its first line under the strip (#561).
-        // A long meaning over its Bangla (three or four lines) fits too on a
-        // 731 dp phone: Check is a key on the umlaut row, the strip goes and
-        // the field's padding closes (#568).
-        // ponytail: on a 640 dp phone, or past four lines, it still loses its
-        // top; the list sits at its end then, so the next lever is the
-        // prompt's own size, one role smaller while typing (#574).
-        SizedBox(height: typing ? 8 : 20),
+        // Typing past 130 %, 16 dp of the gap go to what is asked, which
+        // otherwise lost the top of its first line under the strip (#561,
+        // #574). A long meaning over its Bangla (three or four lines) fits
+        // too on a 731 dp phone: Check is a key on the umlaut row, the strip
+        // goes and the field's padding closes (#568); and on a 640 dp phone
+        // with the prompt a role smaller (#574), 3 to 7 dp to spare.
+        // ponytail: past that it scrolls, the field keeping the keyboard, as
+        // L12's does (#573); the list sits at its end then, so what's above
+        // the prompt (the chips) is no lever. The next ones: a second role
+        // down, or a lower umlaut row.
+        SizedBox(height: typing ? 4 : 20),
         answer,
       ],
     );

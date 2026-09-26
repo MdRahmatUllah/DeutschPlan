@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:deutschplan/core/components/dp_button.dart';
 import 'package:deutschplan/core/components/dp_feedback.dart';
 import 'package:deutschplan/core/components/dp_speaker_button.dart';
+import 'package:deutschplan/core/typography/dp_text.dart';
 import 'package:deutschplan/core/providers/app_providers.dart';
 import 'package:deutschplan/core/theme/app_theme.dart';
 import 'package:deutschplan/core/theme/dp_surface.dart';
@@ -598,11 +599,12 @@ void main() {
       QuizItem item, {
       required TextScaler textScaler,
       double width = 390,
+      double height = 731,
       double keyboard = 300,
       Locale? locale,
     }) async {
       tester.view
-        ..physicalSize = Size(width, 731) * 3
+        ..physicalSize = Size(width, height) * 3
         ..devicePixelRatio = 3
         ..padding = const FakeViewPadding(top: 24 * 3);
       addTearDown(tester.view.reset);
@@ -634,6 +636,86 @@ void main() {
       expected: 'hat sich benommen',
       form: FormLabel.perfekt,
     );
+    // #574: a 360 × 640 budget phone and its 280 dp keyboard. Typing past
+    // 130 % what is asked is one role smaller (#571's rule) and the gaps
+    // around the field close to 4 dp; then a long meaning over its Bangla
+    // (78-82 dp under the strip before) shows whole too.
+    for (final item in <QuizItem>[wraps, withHint, threeLines, benehmen]) {
+      for (final percent in <int>[200, 150]) {
+        for (final lang in <String>['en', 'bn']) {
+          testWidgets('#574 ${item.wordUid} in $lang at $percent % on a 360 × '
+              '640 phone with the keyboard up: what is asked is one role '
+              "smaller and shows whole above the field; its role is back at "
+              "the keyboard's going", (tester) async {
+            await typing(
+              tester,
+              item,
+              textScaler: AndroidTextScaler(percent / 100),
+              width: 360,
+              height: 640,
+              keyboard: 280,
+              locale: Locale(lang),
+            );
+            final t = lang == 'bn' ? bn : l10n;
+            final asked = item.form == null
+                ? item.prompt
+                : t.quizFormPerfekt(item.prompt);
+            DpTextRole role() => tester
+                .widget<DpText>(
+                  find.ancestor(
+                    of: find.text(asked),
+                    matching: find.byType(DpText),
+                  ),
+                )
+                .role;
+            expect(role(), DpTextRole.title, reason: 'a role smaller');
+            final room = tester.getRect(find.byType(ListView));
+            final lines = <Finder>[
+              find.text(asked),
+              if (item.hint case final hint?) find.text(hint),
+            ];
+            for (final line in lines) {
+              expect(
+                tester.getRect(line).top,
+                greaterThanOrEqualTo(room.top),
+                reason: 'line ${lines.indexOf(line) + 1} is under the strip',
+              );
+            }
+            expect(
+              tester.getRect(find.byType(TextField)).bottom,
+              lessThanOrEqualTo(room.bottom),
+              reason: 'the field shows whole',
+            );
+
+            tester.view.resetViewInsets();
+            await tester.pumpAndSettle();
+            expect(role(), DpTextRole.headline, reason: 'its own role');
+          });
+        }
+      }
+    }
+
+    testWidgets("#574 Check on the keys at 200 % on a 360 × 640 phone: the "
+        "verdict shows in the window, not under it", (tester) async {
+      await typing(
+        tester,
+        threeLines,
+        textScaler: AndroidTextScaler(2),
+        width: 360,
+        height: 640,
+        keyboard: 280,
+      );
+      await tester.enterText(find.byType(TextField), 'verantwortlich');
+      await tester.pumpAndSettle();
+      await tester.tap(find.bySemanticsLabel(l10n.quizCheck));
+      await tester.pumpAndSettle();
+      final room = tester.getRect(find.byType(ListView));
+      final verdict = tester.getRect(find.byType(DpVerdictRow));
+      expect(verdict.top, greaterThanOrEqualTo(room.top));
+      expect(verdict.bottom, lessThanOrEqualTo(room.bottom));
+      expect(find.widgetWithText(DpButton, l10n.practiceNext), findsOneWidget);
+    });
+
     for (final item in <QuizItem>[wraps, withHint, threeLines, benehmen]) {
       for (final lang in <String>['en', 'bn']) {
         testWidgets('#561 #568 ${item.wordUid} in $lang: at 200 % on a 411 dp '

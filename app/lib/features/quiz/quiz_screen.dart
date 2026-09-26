@@ -60,6 +60,9 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
   /// The current item's verdict once answered; null before.
   Verdict? _verdict;
   String _given = '';
+
+  /// The answered item's feedback, scrolled into view once it shows (#574).
+  final GlobalKey _feedback = GlobalKey();
   bool _timedOut = false;
   double _points = 0;
 
@@ -145,6 +148,20 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
       _timedOut = timedOut;
       // FR-L8-03: a re-ask is feedback, not score.
       if (!reask) _points += verdict.score;
+    });
+    // #574: the feedback is the list's last row, and *Next*'s row coming
+    // back shrinks the list: typing on a short phone, the verdict was built
+    // under the window and *Next* could be pressed unseen. A jump, so no
+    // motion to reduce.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final shown = _feedback.currentContext;
+      if (shown == null || !shown.mounted) return;
+      unawaited(
+        Scrollable.ensureVisible(
+          shown,
+          alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtEnd,
+        ),
+      );
     });
     if (reask) {
       await _service.reasked(run, item);
@@ -282,9 +299,9 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
             // around it, or the field in it would lose the keyboard (#568).
             key: const ValueKey<String>('question'),
             child: ListView(
-              // Typing past 130 %, the foot's 8 dp more go to the prompt too
-              // (#561).
-              padding: EdgeInsets.fromLTRB(16, 20, 16, typing ? 8 : 16),
+              // Typing past 130 %, the foot's 12 dp go to the prompt too
+              // (#561, #574).
+              padding: EdgeInsets.fromLTRB(16, 20, 16, typing ? 4 : 16),
               children: <Widget>[
                 // Past 130 % text they wrap: in one row the chips and the
                 // timer ran 26 dp off the screen at 200 % (#165).
@@ -318,6 +335,7 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
                 if (verdict != null) ...<Widget>[
                   const SizedBox(height: 12),
                   _Feedback(
+                    key: _feedback,
                     item: item,
                     verdict: verdict,
                     given: _given,
@@ -457,6 +475,7 @@ class _Feedback extends ConsumerWidget {
     required this.verdict,
     required this.given,
     required this.timedOut,
+    super.key,
   });
 
   final QuizItem item;
