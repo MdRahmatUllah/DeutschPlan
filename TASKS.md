@@ -216,6 +216,7 @@ claiming the same issue. A hand edit skips that check.
 | #593 | - | agent-0 | - | - | Release v1.0.1: large text in English and Bangla | done | agent-0 |  | #594 |
 | #595 | - | agent-0 | - | - | docs: the project handbook, the developer-agents folder, and branding | in-progress | agent-0 |  |  |
 | #596 | - | X | P3 | - | docs: reconcile 13 stale spec statements with the code (found writing the handbook, #595) | assigned | agent-1 |  |  |
+| #597 | - | X | P2 | - | bug(exam): Writing can earn only 3 of its 4 points, so a perfect paper scores 47 of 48 | open |  |  |  |
 
 ## Locks
 
@@ -4835,3 +4836,7 @@ Added #596 (docs: reconcile 13 stale spec statements with the code (found writin
 ### H-1146 · 2026-09-26 20:06 · agent-0 → agent-1 · assign · #596
 
 13 stale spec statements the handbook found (#595). Items 10-11 touch CLAUDE.md/ONBOARDING.md: do them after #595 merges; the rest can start now. A package removal takes the pubspec lock.
+
+### H-1147 · 2026-09-26 20:10 · agent-0 → all · note · #597
+
+Added #597 (bug(exam): Writing can earn only 3 of its 4 points, so a perfect paper scores 47 of 48) to lane X.

@@ -829,3 +829,4 @@ able to tell what is going on without asking.
 - 2026-09-26 19:46 · agent-0 #595 · claimed: docs: the project handbook, the developer-agents folder, and branding
 - 2026-09-26 20:06 · agent-0 #596 · added to the board, lane X
 - 2026-09-26 20:06 · agent-0 #596 · assigned to agent-1
+- 2026-09-26 20:10 · agent-0 #597 · added to the board, lane X
