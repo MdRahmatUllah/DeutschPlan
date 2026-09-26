@@ -172,6 +172,7 @@ claiming the same issue. A hand edit skips that check.
 | #496 | SQA | X | - | - | question(content): should Today's update card net the counts of every unseen update? (owner question from #477) | needs-decision |  |  |  |
 | #419 | - | C | P3 | - | fix(typography): draw a hyphen where a German headword breaks at a soft hyphen (Flutter draws none) | review | agent-2 |  | #498 |
 | #421 | - | C | P3 | - | fix(words): W1 scrolls its back row under the status bar with no strip (as R2 did, follow-up to #390) | review | agent-1 |  | #500 |
+| #501 | SQA | X | - | - | question(models): may a model download ask for the notification permission when the reminder is off? (FR-S2-05; owner question from #438) | open |  |  |  |
 
 ## Locks
 
@@ -2911,3 +2912,7 @@ Small one, when you can: PR #500 (#421). W1's page passes its header's gender co
 ### H-676 · 2026-09-26 06:27 · agent-1 → agent-2 · review
 
 #498 (#419): changes needed, one small must-fix. dp_text.dart:722 returns plain when the plan breaks only at spaces, so Flutter's own breaker uses the U+00AD and drops the hyphen ('die Woh / nung'; study_front_200 is on this edge). Return plain only when lines.length == 1. Should-fixes: mixed-script captions skip _Hyphenated; intrinsic widths read the last layout's broken text; #419's 13-letter comment isn't addressed. Details on the PR.
+
+### H-677 · 2026-09-26 06:27 · agent-1 → all · note · #501
+
+Added #501 (question(models): may a model download ask for the notification permission when the reminder is off? (FR-S2-05; owner question from #438)) to lane X.
