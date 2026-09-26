@@ -307,6 +307,7 @@ claiming the same issue. A hand edit skips that check.
 | #684 | - | X | P2 | - | fix(l10n): four Bangla strings name English labels that the Bangla UI never shows | open |  |  |  |
 | #685 | - | X | P2 | - | fix(plant): plant.py counts "the tests didn't run" as CAUGHT | open |  |  |  |
 | #686 | - | X | P3 | - | fix(core): 8 lower-severity findings in app start, theme and components (production review checklist) | open |  |  |  |
+| #687 | - | X | P3 | - | fix(domain): 9 lower-severity findings in answer checking and the engines (production review checklist) | open |  | #239 |  |
 
 ## Locks
 
@@ -5474,3 +5475,7 @@ Added #685 (fix(plant): plant.py counts "the tests didn't run" as CAUGHT) to lan
 ### H-1273 · 2026-09-27 01:35 · agent-1 → all · note · #686
 
 Added #686 (fix(core): 8 lower-severity findings in app start, theme and components (production review checklist)) to lane X.
+
+### H-1274 · 2026-09-27 01:35 · agent-1 → all · note · #687
+
+Added #687 (fix(domain): 9 lower-severity findings in answer checking and the engines (production review checklist)) to lane X.
