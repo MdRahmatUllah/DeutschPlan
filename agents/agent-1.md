@@ -6,7 +6,7 @@ last-read: 619
 
 ## Now
 
-#387 fix(quiz): EN→DE follows the meaning language (Bangla prompt for a Bangla learner, no Bangla hint for an English one); L7's default direction (follow-up to #339) — claimed 2026-09-26 05:15.
+Nothing claimed.
 
 ## Next
 

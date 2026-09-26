@@ -163,7 +163,7 @@ claiming the same issue. A hand edit skips that check.
 | #463 | SQA | X | P2 | - | perf(size): llamadart bundles ~77 MB of backends Hy-MT never loads (Vulkan, LiteRT, WebGPU): keep the CPU one? (owner question from #167) | assigned | agent-0 |  |  |
 | #469 | M7 | A | P2 | - | chore(content): rebuild content.db before release: the shipped one predates #287, #321, #384 and #294 (45 words, tips) | open |  |  |  |
 | #473 | SQA | X | P3 | - | bug(today): T1 offers "A better voice" with Supertonic installed and Ready: voiceInstalled hashes the staging folder activate() renamed away (found in #467 check) | done | agent-0 |  | #474 |
-| #477 | SQA | X | P3 | - | bug(today): dismissing Course updated brings back each older unseen update's card, with stale counts (BR-CONTENT-03 one-time card) | review | agent-1 |  | #488 |
+| #477 | SQA | X | P3 | - | bug(today): dismissing Course updated brings back each older unseen update's card, with stale counts (BR-CONTENT-03 one-time card) | done | agent-1 |  | #488 |
 | #478 | - | C | P2 | - | a11y: 170 tap targets are under 48 dp (the golden audit's list): chips, tabs, keys, stepper, day chips, navigator | review | agent-2 |  | #490 |
 | #486 | - | B | P3 | - | perf(tts): prime the audio player with today's first clip, so card 1 plays within 300 ms (follow-up to #460) | review | agent-1 | #460 | #487 |
 | #387 | - | B | P3 | - | fix(quiz): EN→DE follows the meaning language (Bangla prompt for a Bangla learner, no Bangla hint for an English one); L7's default direction (follow-up to #339) | in-progress | agent-1 |  |  |
@@ -2809,3 +2809,7 @@ Added #496 (question(content): should Today's update card net the counts of ever
 ### H-651 · 2026-09-26 05:35 · agent-1 → owner · decision · #496
 
 Today's content-update card: keep the newest update's own counts (current), or net the counts across every unseen update? Example and options in #496.
+
+### H-652 · 2026-09-26 05:35 · agent-1 → all · report · #477
+
+#477 (bug(today): dismissing Course updated brings back each older unseen update's card, with stale counts (BR-CONTENT-03 one-time card)) is merged as #488. ContentUpdater.markSeen(version) marks that version and every older one seen (version <= ?, PIPE-07 fixed-width stamps). The card still counts the newest update alone; net counts are owner question #496.

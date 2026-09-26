@@ -574,3 +574,4 @@ able to tell what is going on without asking.
 - 2026-09-26 05:32 · agent-0 · locked pubspec: #463: hooks.user_defines.llamadart (CPU backend only)
 - 2026-09-26 05:35 · agent-1 #496 · added to the board, lane X
 - 2026-09-26 05:35 · agent-1 #496 · needs the owner's decision: Today's content-update card: keep the newest update's own counts (current), or net the counts across every unseen update? Example and options in #496.
+- 2026-09-26 05:35 · agent-1 #477 · done (#488)
