@@ -270,6 +270,7 @@
   "studyClozeWrong": "হয়নি · সঠিকটি {answer}",
   "studyClozeRatePrompt": "কতটা জানতেন?",
   "studyClozeFootnote": "দুবার Good বা Easy → এই শব্দটি এখন লিখে অনুশীলন হচ্ছে। শব্দের বিস্তারিত থেকে সাধারণ কার্ডে ফিরতে পারেন।",
+  "studyClozeFootnoteChosen": "এই শব্দের জন্য আপনি শূন্যস্থান কার্ড বেছে নিয়েছেন। শব্দের বিস্তারিত থেকে সাধারণ কার্ডে ফিরতে পারেন।",
   "summaryTitle": "Gut gemacht!",
   "summaryStats": "{cards}টি কার্ড · {minutes} মিনিট",
   "summaryPill": "{rating} {count}",

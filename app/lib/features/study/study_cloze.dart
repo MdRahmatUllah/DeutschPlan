@@ -43,6 +43,7 @@ class StudyClozeCard extends ConsumerStatefulWidget {
     required this.word,
     required this.cloze,
     required this.onChecked,
+    this.chosen = false,
     super.key,
   });
 
@@ -52,6 +53,11 @@ class StudyClozeCard extends ConsumerStatefulWidget {
   /// The answer is checked, with its verdict: the session turns the card
   /// over.
   final ValueChanged<Verdict> onChecked;
+
+  /// The learner chose the cloze card in W1 (`card_mode_manual`,
+  /// BR-FSRS-06), so the footnote doesn't give the two ratings as the
+  /// reason (#515).
+  final bool chosen;
 
   @override
   ConsumerState<StudyClozeCard> createState() => _StudyClozeCardState();
@@ -194,7 +200,9 @@ class _StudyClozeCardState extends ConsumerState<StudyClozeCard> {
                   ),
                   Expanded(
                     child: DpText(
-                      l10n.studyClozeFootnote,
+                      widget.chosen
+                          ? l10n.studyClozeFootnoteChosen
+                          : l10n.studyClozeFootnote,
                       role: DpTextRole.label,
                       weight: 400,
                       color: tokens.color.textSecondary,
