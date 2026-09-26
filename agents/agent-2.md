@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-09-26 09:54
+last-seen: 2026-09-26 09:56
 last-read: 794
 
 ## Now
 
-#535 fix(search): R1's sentence hits break a long compound at a letter at 200 % (found on device) — claimed 2026-09-26 09:54.
+#535 in review as PR #538: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
