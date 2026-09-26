@@ -21,7 +21,7 @@ Grouped list (Material headers / Cupertino inset groups). Changes save instantly
 | Display | Meaning language | EN / বাংলা / Both | `meaning_language` |
 | | App language | EN / বাংলা | `ui_language` |
 | | Theme | System / Light / Dark / Glass | `theme_mode` |
-| | Show Bangla pronunciation | switch | `show_pron_bn` |
+| | Show Bangla pronunciation | switch; setup's meaning language sets it (off for English only), and M3's *Meaning language* row leaves it to the learner (#527, #537) | `show_pron_bn` |
 | Audio | Voice engine | Supertonic · Anna / Phone voice → M4 | `tts_engine`, `tts_voice` |
 | | Speech speed | slider, "1.0× · long-press any speaker for 0.75×" | `tts_speed` |
 | | Auto-play headword / first example | switches | `autoplay_*` |
