@@ -536,6 +536,49 @@ void main() {
       semantics.dispose();
     });
 
+    testWidgets('#502 German after Bangla: a break in a later run is drawn '
+        'there, in that run, which keeps its style and voice', (tester) async {
+      final semantics = tester.ensureSemantics();
+      const text = 'গেশভিন্ডিশকাইট · die Geschwindigkeitsbegrenzung';
+      Future<void> at(double width) => pump(
+        tester,
+        SizedBox(
+          width: width,
+          child: DpText(
+            DpScript.allowBreaks(text, threshold: 4),
+            role: DpTextRole.body,
+            german: true,
+          ),
+        ),
+      );
+      for (var width = 150.0; width <= 330; width += 1) {
+        await at(width);
+        for (final line in lineEnds(tester)) {
+          expect(line, endsWith('\n'), reason: 'at $width: "$line"');
+        }
+      }
+      await at(150);
+      final spans = <TextSpan>[];
+      tester
+          .renderObject<RenderParagraph>(find.byType(RichText))
+          .text
+          .visitChildren((span) {
+            if (span is TextSpan && span.text != null) spans.add(span);
+            return true;
+          });
+      final bangla = spans.singleWhere((s) => DpScript.hasBengali(s.text!));
+      // Found by what it says: its drawn text has the lines' "-\n".
+      final german = spans.singleWhere(
+        (s) => s.semanticsLabel!.contains('Geschwindigkeitsbegrenzung'),
+      );
+      expect(spans.indexOf(german), greaterThan(spans.indexOf(bangla)));
+      expect(german.text, contains('-\n'));
+      expect(german.locale, DpScript.deDE);
+      expect(german.style!.fontSize, lessThan(bangla.style!.fontSize!));
+      expect(tester.getSemantics(find.byType(RichText)).label, text);
+      semantics.dispose();
+    });
+
     testWidgets('#419 lines that all end at spaces are given too: where '
         '"Wohnungsamt Ab" fits but not its "-", the paragraph left to itself '
         'would end the line at a bare syllable', (tester) async {
@@ -585,6 +628,31 @@ void main() {
           tester.renderObject<RenderParagraph>(find.byType(RichText)).parent!
               as RenderBox;
       expect(box.getMaxIntrinsicWidth(double.infinity), greaterThan(300));
+    });
+
+    testWidgets('#419 under an ambient maxLines its height is the '
+        "paragraph's own: one line, not the lines it would break", (
+      tester,
+    ) async {
+      await pump(
+        tester,
+        SizedBox(
+          width: 150,
+          child: DefaultTextStyle.merge(
+            maxLines: 1,
+            child: DpText(
+              DpScript.allowBreaks('die Haftpflichtversicherung zahlt'),
+              role: DpTextRole.body,
+              german: true,
+            ),
+          ),
+        ),
+      );
+      final paragraph = tester.renderObject<RenderParagraph>(
+        find.byType(RichText),
+      );
+      final box = paragraph.parent! as RenderBox;
+      expect(box.getMinIntrinsicHeight(150), paragraph.size.height);
     });
   });
 

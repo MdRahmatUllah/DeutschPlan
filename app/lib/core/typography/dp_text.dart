@@ -3,6 +3,7 @@ import 'dart:ui' show LocaleStringAttribute, StringAttribute;
 import 'package:deutschplan/core/theme/dp_tokens.dart';
 import 'package:deutschplan/core/typography/app_fonts.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
+import 'package:flutter/foundation.dart' show listEquals;
 import 'package:flutter/rendering.dart' show RenderParagraph, RenderProxyBox;
 import 'package:flutter/semantics.dart' show AttributedString;
 import 'package:material_ui/material_ui.dart';
@@ -622,6 +623,8 @@ class _RenderHyphenated extends RenderProxyBox {
 
   _Hyphenated _widget;
   set widget(_Hyphenated value) {
+    // A rebuild with the same text keeps the lines worked out.
+    if (listEquals(value.runs, _widget.runs)) return;
     _widget = value;
     _cache = null;
     markNeedsLayout();
@@ -703,7 +706,8 @@ class _RenderHyphenated extends RenderProxyBox {
       for (final run in _widget.runs)
         [
           for (final word in run.text!.split(' '))
-            !word.contains(DpScript.softHyphen) &&
+            word.isNotEmpty &&
+                    !word.contains(DpScript.softHyphen) &&
                     widthOf([TextSpan(text: word, style: run.style)]) > width
                 ? DpScript.allowBreaks(word, threshold: 4)
                 : word,
@@ -736,6 +740,9 @@ class _RenderHyphenated extends RenderProxyBox {
     // it: a space (the break takes its place), a soft hyphen (the break
     // draws "-"), or nothing, after a "-", "/" or dash, which the paragraph
     // breaks after too.
+    // ponytail: an opening "/" can end a line, apart from its
+    // pronunciation, as the paragraph's own breaking has it. Keeping them
+    // together needs a look-ahead for when the two no longer fit a line.
     final pieces = <(int, int, String)>[];
     var from = 0;
     for (var i = 0; i < full.length; i++) {
@@ -818,32 +825,41 @@ class _RenderHyphenated extends RenderProxyBox {
     return measured;
   }
 
+  /// Whether the paragraph measures itself: when this breaks no lines, as
+  /// under an ambient `maxLines` or `softWrap: false`.
+  bool get _asIs {
+    final paragraph = _paragraph;
+    return paragraph == null ||
+        paragraph.maxLines != null ||
+        !paragraph.softWrap;
+  }
+
   // The intrinsics and the dry layout are the text's as it will be drawn,
   // not the last layout's lines, which were for another width.
   @override
-  double computeMinIntrinsicWidth(double height) => _paragraph == null
+  double computeMinIntrinsicWidth(double height) => _asIs
       ? super.computeMinIntrinsicWidth(height)
       : _laidOut(double.infinity, (p) => p.minIntrinsicWidth, plain: true);
 
   @override
-  double computeMaxIntrinsicWidth(double height) => _paragraph == null
+  double computeMaxIntrinsicWidth(double height) => _asIs
       ? super.computeMaxIntrinsicWidth(height)
       : _laidOut(double.infinity, (p) => p.maxIntrinsicWidth, plain: true);
 
   @override
-  double computeMinIntrinsicHeight(double width) => _paragraph == null
+  double computeMinIntrinsicHeight(double width) => _asIs
       ? super.computeMinIntrinsicHeight(width)
       : _laidOut(width, (p) => p.height);
 
   @override
-  double computeMaxIntrinsicHeight(double width) => _paragraph == null
+  double computeMaxIntrinsicHeight(double width) => _asIs
       ? super.computeMaxIntrinsicHeight(width)
       : _laidOut(width, (p) => p.height);
 
   @override
   Size computeDryLayout(covariant BoxConstraints constraints) {
-    final paragraph = _paragraph;
-    if (paragraph == null) return super.computeDryLayout(constraints);
+    if (_asIs) return super.computeDryLayout(constraints);
+    final paragraph = _paragraph!;
     final painter = _painter(paragraph, _shown(paragraph, constraints.maxWidth))
       ..layout(minWidth: constraints.minWidth, maxWidth: constraints.maxWidth);
     final size = constraints.constrain(painter.size);
