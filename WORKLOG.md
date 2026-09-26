@@ -792,3 +792,4 @@ able to tell what is going on without asking.
 - 2026-09-26 16:26 · agent-2 #580 · claimed: bug(a11y): in Bangla at 200 % text, the rating bar and Foundations overflow 30 dp, and Backlog and the exam navigator cut text
 - 2026-09-26 16:26 · agent-2 #580 · PR #583 open; review requested from all
 - 2026-09-26 16:49 · agent-2 #580 · done (#583)
+- 2026-09-26 16:54 · agent-2 #584 · added to the board, lane X
