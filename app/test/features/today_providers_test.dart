@@ -490,6 +490,25 @@ INSERT INTO word_state (word_uid, status, introduced_on, due, stability, reps, l
       expect(view.revise.open, 3, reason: 'revisions are still picked');
       expect(view.dueTomorrowIfRevised, 0);
     });
+
+    test('#345 tomorrow off too: what is due by the next study day, and '
+        'which day that is', () async {
+      // Monday and Tuesday off: Wednesday the 23rd, with Straße due on it.
+      await db.customStatement(
+        "UPDATE enrollments SET study_days_mask = 124 WHERE sublevel_code = 'A1.1'",
+      );
+      await db.customStatement(
+        "UPDATE word_state SET due = '2026-09-23' "
+        "WHERE word_uid = '${ContentFixture.strasse}'",
+      );
+      container
+        ..invalidate(todayPlanProvider)
+        ..invalidate(todayViewProvider);
+      final view = await container.read(todayViewProvider.future);
+
+      expect(view.nextStudyDay, '2026-09-23');
+      expect(view.dueTomorrow, 3, reason: 'by Wednesday; by Tuesday it is 2');
+    });
   });
 
   group('FR-T1-06 the contextual card, from what is stored', () {

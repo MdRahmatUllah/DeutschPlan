@@ -655,6 +655,36 @@ void main() {
       expect(find.text(l10n.todayRestLighter(12, 6)), findsOneWidget);
     });
 
+    testWidgets('#345 tomorrow off too: the note names the next study day', (
+      tester,
+    ) async {
+      // Sunday the 27th, with Monday off as well: Tuesday.
+      await pump(tester, view: artboardRest(nextStudyDay: '2026-09-29'));
+      expect(
+        find.text(l10n.todayRestLighterLeadDay('Tuesday')),
+        findsOneWidget,
+      );
+      expect(find.text(l10n.todayRestLighterLead), findsNothing);
+    });
+
+    testWidgets('#345 in the Bangla UI the day is named in Bangla, inside the '
+        'Bangla sentence', (tester) async {
+      final bn = await AppLocalizations.delegate.load(const Locale('bn'));
+      await pump(
+        tester,
+        view: artboardRest(nextStudyDay: '2026-09-29'),
+        locale: const Locale('bn'),
+      );
+      expect(find.text(bn.todayRestLighterLeadDay('মঙ্গলবার')), findsOneWidget);
+    });
+
+    testWidgets('#345 tomorrow the next study day: the note says tomorrow', (
+      tester,
+    ) async {
+      await pump(tester, view: artboardRest(nextStudyDay: '2026-09-28'));
+      expect(find.text(l10n.todayRestLighterLead), findsOneWidget);
+    });
+
     testWidgets('with today revised, the note has nothing to promise', (
       tester,
     ) async {

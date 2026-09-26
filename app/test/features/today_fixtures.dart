@@ -106,7 +106,7 @@ TodayView artboardDone({int backlog = 0, TomorrowPreview? tomorrow}) =>
 
 /// The TodayRest artboard: Sunday the 27th off, six revisions optional, and
 /// twelve due tomorrow if they are left alone.
-TodayView artboardRest({int reviseDone = 0}) => TodayView(
+TodayView artboardRest({int reviseDone = 0, String? nextStudyDay}) => TodayView(
   date: '2026-09-27',
   hour: 10,
   revise: BlockProgress(done: reviseDone, total: 6),
@@ -124,6 +124,7 @@ TodayView artboardRest({int reviseDone = 0}) => TodayView(
   step: 'A2.1',
   learnerName: 'Maruf',
   dueTomorrow: 12,
+  nextStudyDay: nextStudyDay,
   grammar: const GrammarPreview(
     uid: 'konj2',
     topic: 'Konjunktiv II – Höflichkeit',

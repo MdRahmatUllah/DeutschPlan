@@ -16,7 +16,7 @@
          shows no preview of where it is going, however the Flutter side is
          written. -->
     <application
-        android:label="deutschplan"
+        android:label="DeutschPlan"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
         android:enableOnBackInvokedCallback="true">

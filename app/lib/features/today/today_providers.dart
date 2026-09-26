@@ -176,10 +176,19 @@ Future<TodayView> todayView(Ref ref) async {
     sentences: openSentences,
   );
   final category = await content.mainCategory(plan.newToday);
-  // TodayRest's note: what revising anyway would take off tomorrow.
-  final dueTomorrow = plan.isStudyDay
+  // TodayRest's note: what revising anyway would take off the next study
+  // day: tomorrow, or the first day after that isn't off too (#345).
+  String? nextStudyDay;
+  if (!plan.isStudyDay) {
+    for (var ahead = 1; ahead <= 7 && nextStudyDay == null; ahead++) {
+      final day = addDays(date, ahead);
+      if (await engine.studyDayOn(day)) nextStudyDay = day;
+    }
+    nextStudyDay ??= addDays(date, 1);
+  }
+  final dueTomorrow = nextStudyDay == null
       ? null
-      : await plans.dueBy(addDays(date, 1));
+      : await plans.dueBy(nextStudyDay);
   final update = await updates.unseen();
   final contextual = contextualFor(
     ContextualFacts(
@@ -248,6 +257,7 @@ Future<TodayView> todayView(Ref ref) async {
     minutes: seconds ~/ 60,
     tomorrow: tomorrow,
     dueTomorrow: dueTomorrow,
+    nextStudyDay: nextStudyDay,
     contextual: contextual,
   );
 

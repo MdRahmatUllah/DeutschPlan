@@ -7,7 +7,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>Deutschplan</string>
+	<string>DeutschPlan</string>
 	<key>BGTaskSchedulerPermittedIdentifiers</key>
 	<array>
 		<string>plan_pregenerate</string>

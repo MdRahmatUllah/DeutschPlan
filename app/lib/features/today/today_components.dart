@@ -6,7 +6,8 @@ import 'package:deutschplan/core/components/dp_progress_ring.dart';
 import 'package:deutschplan/core/theme/dp_surface.dart';
 import 'package:deutschplan/core/theme/dp_tokens.dart';
 import 'package:deutschplan/core/typography/dp_text.dart';
-import 'package:deutschplan/domain/plan_engine.dart' show parsePlanDate;
+import 'package:deutschplan/domain/plan_engine.dart'
+    show addDays, parsePlanDate;
 import 'package:deutschplan/features/today/today_view.dart';
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
 import 'package:deutschplan/l10n/ui_digits.dart';
@@ -647,7 +648,19 @@ class RestDayNote extends StatelessWidget {
             // Only with something to revise: a lead with no numbers after it
             // would promise and stop.
             if (view.revise.open > 0 && before > 0) ...<Widget>[
-              DpText(l10n.todayRestLighterLead, role: DpTextRole.body),
+              DpText(
+                // The next study day by name when tomorrow is off too (#345).
+                switch (view.nextStudyDay) {
+                  final day? when day != addDays(view.date, 1) =>
+                    l10n.todayRestLighterLeadDay(
+                      DateFormat.EEEE(
+                        Localizations.localeOf(context).toString(),
+                      ).format(parsePlanDate(day)),
+                    ),
+                  _ => l10n.todayRestLighterLead,
+                },
+                role: DpTextRole.body,
+              ),
               // ponytail: the artboard bolds this inline; DpText has no spans,
               // so it takes its own line. Add emphasis to DpText if another
               // screen needs the same.

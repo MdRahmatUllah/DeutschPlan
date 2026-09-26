@@ -19,7 +19,7 @@
 **States.**
 - *First day*: Revise card reads "Revision starts tomorrow".
 - *All done* (`TodayDone`): header "Tag geschafft, {name}", ring 20/20 Lime, one collapsed "Today · done" row ("Revise 10 · New 7 · Sentences 3 · backlog cleared"), a *Tomorrow* card ("12 revisions · 7 new · Grammar due · 1 · ≈ 13 min · {category} continues").
-- *Rest day* (`TodayRest`): header "Rest day", ring shows "Frei · no plan", explanation "Sunday is off in your study days. The streak is safe." with a link to Settings; Revise card "6 due · optional today"; note "Nothing is scheduled and nothing moves to the backlog. Revising anyway keeps tomorrow lighter: 12 → 6 revisions."
+- *Rest day* (`TodayRest`): header "Rest day", ring shows "Frei · no plan", explanation "Sunday is off in your study days. The streak is safe." with a link to Settings; Revise card "6 words · optional today" (the block is filled to `revise_count` with words not yet due, BR-PLAN-03, so "words", not "due"); note "Nothing is scheduled and nothing moves to the backlog. Revising anyway keeps tomorrow lighter: 12 → 6 revisions." The count is what is due by the next study day, and when tomorrow is off too the note names that day: "keeps Tuesday lighter" (#345).
 - *Course finished*: revision-only mode with a completion card: revisions are still planned, no new words, the backlog only shrinks; the completion card shows once no other contextual card is waiting.
 - *Error*: `ErrorPanel` with Retry.
 

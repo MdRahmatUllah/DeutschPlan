@@ -257,6 +257,7 @@ class TodayView {
     this.minutes = 0,
     this.tomorrow,
     this.dueTomorrow,
+    this.nextStudyDay,
     this.contextual,
     this.backlogFrom,
     this.backlogTo,
@@ -297,8 +298,13 @@ class TodayView {
   /// Tomorrow's plan, previewed once today is done; null before that.
   final TomorrowPreview? tomorrow;
 
-  /// On a rest day: the words due by tomorrow, if today's are left alone.
+  /// On a rest day: the words due by the next study day, if today's are
+  /// left alone. That is tomorrow, unless tomorrow is off too (#345).
   final int? dueTomorrow;
+
+  /// On a rest day: the next study day, tomorrow or later; null on a study
+  /// day. TodayRest's note names it when it isn't tomorrow (#345).
+  final String? nextStudyDay;
 
   /// FR-T1-06's one contextual card, if any applies.
   final ContextualOffer? contextual;
