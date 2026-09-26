@@ -216,7 +216,16 @@ class SupertonicTts implements TtsEngine, SpeechPrefetch {
         // would stop a sound under way.
         if (!_primed && _turn == 0) {
           _primed = true;
-          await _player.load(clip);
+          // Not awaited, so the next clip isn't held back, and its own catch:
+          // a speak during it interrupts it (just_audio), which mustn't end
+          // the list.
+          unawaited(() async {
+            try {
+              await _player.load(clip);
+            } on Object {
+              // Best effort: card 1 then pays the player's start, as before.
+            }
+          }());
         }
       } on Object {
         // The model can't make it now; a speak will say so, and fall back.
