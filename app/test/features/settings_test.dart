@@ -17,6 +17,8 @@ import 'package:deutschplan/data/repositories/word_repository.dart';
 import 'package:deutschplan/domain/fsrs.dart';
 import 'package:deutschplan/domain/plan_engine.dart';
 import 'package:deutschplan/features/me/settings_screen.dart';
+import 'package:deutschplan/features/today/today_providers.dart'
+    show voiceInstalledProvider;
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
 import 'package:deutschplan/main.dart'
     show appLocalizationsDelegates, supportedLocales;
@@ -55,6 +57,7 @@ void main() {
     ModelState? model,
     AdaptiveChrome chrome = AdaptiveChrome.material,
     Locale? locale,
+    bool voiceInstalled = true,
   }) async {
     // Tall enough that every row is built: the table below reaches all of
     // them without scrolling.
@@ -75,6 +78,7 @@ void main() {
           settingsProvider.overrideWithValue(settings),
           learnedStabilitiesProvider.overrideWith((ref) async => stabilities),
           translationModelProvider.overrideWith((ref) async => model),
+          voiceInstalledProvider.overrideWith((ref) async => voiceInstalled),
         ],
         child: MaterialApp.router(
           builder: (context, child) =>
@@ -209,6 +213,20 @@ void main() {
     ]) {
       final before = settings.read(key);
       await tester.tap(switchFor(label));
+      await tester.pumpAndSettle();
+      expect(settings.read(key), !before, reason: key.name);
+    }
+  });
+
+  testWidgets('#345 a switch row flips from anywhere on it, not only its '
+      'switch', (tester) async {
+    await pump(tester);
+    for (final (label, key) in <(String, BoolSetting)>[
+      (l10n.settingsSwipeToRate, SettingKeys.swipeToRate),
+      (l10n.settingsAutoplayExample, SettingKeys.autoplayExample),
+    ]) {
+      final before = settings.read(key);
+      await tester.tap(find.text(label));
       await tester.pumpAndSettle();
       expect(settings.read(key), !before, reason: key.name);
     }
@@ -477,6 +495,70 @@ void main() {
     await settings.write(SettingKeys.ttsEngine, TtsEngineSetting.system);
     await tester.pumpAndSettle();
     expect(find.text(l10n.settingsVoicePhone), findsOneWidget);
+  });
+
+  testWidgets('#345 Supertonic chosen but not on the phone: the phone voice '
+      'speaks, and the row says so', (tester) async {
+    await pump(tester, voiceInstalled: false);
+    expect(find.text(l10n.settingsVoicePhoneForSupertonic), findsOneWidget);
+    expect(find.text(l10n.settingsVoiceSupertonic('Anna')), findsNothing);
+  });
+
+  testWidgets('#345 a change of theme keeps the list where it was', (
+    tester,
+  ) async {
+    // The aurora drifts forever unless motion is reduced.
+    tester.platformDispatcher.accessibilityFeaturesTestValue =
+        const FakeAccessibilityFeatures(disableAnimations: true);
+    addTearDown(tester.platformDispatcher.clearAccessibilityFeaturesTestValue);
+    final theme = ValueNotifier<ThemeData>(AppTheme.light());
+    final router = GoRouter(
+      routes: <RouteBase>[
+        GoRoute(path: '/', builder: (_, _) => const SettingsScreen()),
+      ],
+    );
+    addTearDown(router.dispose);
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: <Override>[
+          appDatabaseProvider.overrideWithValue(db),
+          settingsProvider.overrideWithValue(settings),
+          learnedStabilitiesProvider.overrideWith(
+            (ref) async => const <double>[],
+          ),
+          translationModelProvider.overrideWith((ref) async => null),
+          voiceInstalledProvider.overrideWith((ref) async => true),
+        ],
+        child: ValueListenableBuilder<ThemeData>(
+          valueListenable: theme,
+          builder: (_, value, _) => MaterialApp.router(
+            theme: value,
+            localizationsDelegates: appLocalizationsDelegates,
+            supportedLocales: supportedLocales,
+            routerConfig: router,
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    await tester.drag(find.byType(ListView), const Offset(0, -500));
+    await tester.pumpAndSettle();
+    double offset() => tester
+        .state<ScrollableState>(
+          find.descendant(
+            of: find.byType(ListView),
+            matching: find.byType(Scrollable),
+          ),
+        )
+        .position
+        .pixels;
+    final before = offset();
+    expect(before, greaterThan(0));
+
+    // Glass wraps the screen in its aurora, which builds the list anew.
+    theme.value = AppTheme.glass();
+    await tester.pumpAndSettle();
+    expect(offset(), before);
   });
 
   group('rows that open another screen', () {

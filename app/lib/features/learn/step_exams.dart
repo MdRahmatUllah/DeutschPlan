@@ -472,7 +472,9 @@ class LockedExams extends ConsumerWidget {
           DpText(
             <String>[
               l10n.examHubIntroduced(step.introduced, goal),
-              if (days != null && days > 0)
+              // Only on the step being studied, as *Study now*: another
+              // step's new words don't come while this one waits (#345).
+              if (step.active && days != null && days > 0)
                 l10n.examHubDaysAt(days, step.dailyNew),
             ].join(' · '),
             role: DpTextRole.label,

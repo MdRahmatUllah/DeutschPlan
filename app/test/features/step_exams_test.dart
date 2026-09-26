@@ -428,6 +428,9 @@ void main() {
       await pump(tester, progress: locked(started: false));
       expect(find.text(l10n.examHubUnlocksWhen(90, 'A1.2')), findsOneWidget);
       expect(find.text(l10n.examHubStudyNow), findsNothing);
+      // #345: nor the days it would take, which no plan brings.
+      expect(find.text(l10n.examHubIntroduced(244, 486)), findsOneWidget);
+      expect(find.textContaining(l10n.examHubDaysAt(35, 7)), findsNothing);
     });
 
     testWidgets('Study now opens today\'s session', (tester) async {

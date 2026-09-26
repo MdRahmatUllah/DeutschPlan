@@ -11,6 +11,8 @@ import 'package:deutschplan/data/repositories/setting_keys.dart';
 import 'package:deutschplan/data/repositories/settings_repository.dart';
 import 'package:deutschplan/domain/fsrs.dart';
 import 'package:deutschplan/features/me/reset_flow.dart';
+import 'package:deutschplan/features/today/today_providers.dart'
+    show voiceInstalledProvider;
 import 'package:deutschplan/l10n/generated/app_localizations.dart';
 import 'package:deutschplan/l10n/ui_digits.dart';
 import 'package:deutschplan/router/cross_tab.dart';
@@ -175,6 +177,9 @@ class SettingsScreen extends ConsumerWidget {
           ? tokens.surface.paper.withValues(alpha: 0)
           : tokens.surface.paper,
       body: ListView(
+        // Where the learner had scrolled to survives a change of theme: glass
+        // wraps the screen in its aurora, which builds the list anew (#345).
+        key: const PageStorageKey<String>('settings'),
         padding: const EdgeInsets.only(bottom: 24),
         children: <Widget>[
           _Group(
@@ -374,7 +379,13 @@ class SettingsScreen extends ConsumerWidget {
             rows: <Widget>[
               _Row(
                 title: l10n.settingsVoiceEngine,
+                // What speaks: Supertonic chosen but not on the phone is the
+                // phone's voice, standing in (#345). Until the check answers
+                // it reads as chosen.
                 subtitle: switch (settings.read(SettingKeys.ttsEngine)) {
+                  TtsEngineSetting.supertonic
+                      when ref.watch(voiceInstalledProvider).value == false =>
+                    l10n.settingsVoicePhoneForSupertonic,
                   TtsEngineSetting.supertonic => l10n.settingsVoiceSupertonic(
                     settings.read(SettingKeys.ttsVoice) ??
                         SettingKeys.ttsVoice.defaultValue!,
@@ -811,14 +822,28 @@ class _Row extends StatelessWidget {
       ),
     );
 
+    // A switch row flips from anywhere on it, as Material's rows do, through
+    // the switch's own onChanged, so each keeps its rule; a screen reader
+    // already hears the row as the switch (#345).
+    final tap =
+        onTap ??
+        switch (trailing) {
+          AdaptiveSwitch(:final value, :final onChanged?) => () => onChanged(
+            !value,
+          ),
+          _ => null,
+        };
     return Semantics(
       container: true,
       button: onTap != null,
-      child: onTap == null
+      child: tap == null
           ? row
           : GestureDetector(
               behavior: HitTestBehavior.opaque,
-              onTap: onTap,
+              // A switch row's tap is its switch's, which a screen reader
+              // already has.
+              excludeFromSemantics: onTap == null,
+              onTap: tap,
               child: row,
             ),
     );
