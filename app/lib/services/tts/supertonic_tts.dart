@@ -214,6 +214,22 @@ class SupertonicTts implements TtsEngine, SpeechPrefetch {
     }
   }
 
+  /// #460: the sessions opened at the app's start, so the first card of a
+  /// session doesn't wait the ~2.3 s they take. A failure is remembered as a
+  /// speak's is, and the next speak falls back at once.
+  // ponytail: about 400 MB held from the start on a phone that speaks with
+  // Supertonic, as they are from its first clip already; open on the first
+  // speaker's screen instead if memory is tight on low-end phones.
+  @override
+  Future<void> warm() async {
+    if (!await isAvailable()) return;
+    try {
+      await _open();
+    } on Object {
+      // Remembered in [_broken]; the next speak says so and falls back.
+    }
+  }
+
   @override
   Future<void> stopPreparing(List<String> texts) async {
     if (!identical(texts, _list)) return;

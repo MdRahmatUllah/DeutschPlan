@@ -98,6 +98,19 @@ void main() {
       expect(prefetch.stopped.single, same(list));
     });
 
+    testWidgets('#460 warm reaches Supertonic when it is the chosen voice, '
+        "not with the phone's", (tester) async {
+      final prefetch = FakePrefetchTts();
+      final tts = TtsService(phone, settings, supertonic: prefetch);
+      addTearDown(tts.dispose);
+      await tts.warm();
+      expect(prefetch.warms, 1);
+
+      await choose(tester, TtsEngineSetting.system);
+      await tts.warm();
+      expect(prefetch.warms, 1);
+    });
+
     testWidgets('an engine that cannot prepare is left alone', (tester) async {
       final tts = service();
       await tts.prepare(<String>['das Haus']);

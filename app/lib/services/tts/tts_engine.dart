@@ -41,4 +41,8 @@ abstract interface class SpeechPrefetch {
   /// Stops [texts]' list, if it is still the one being made: a screen stops
   /// its own list, never the one the screen that replaced it asked for.
   Future<void> stopPreparing(List<String> texts);
+
+  /// Opens what a first clip needs (Supertonic's sessions, seconds of work)
+  /// ahead of any speak, without making a clip. Never throws (#460).
+  Future<void> warm();
 }

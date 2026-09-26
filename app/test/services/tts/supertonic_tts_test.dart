@@ -588,6 +588,37 @@ void main() {
       expect(model.asked, hasLength(1), reason: 'stopped at the first');
     });
 
+    test('#460 warm opens the sessions once, with no clip made, and the '
+        'first speak finds them open', () async {
+      await install();
+      await tts.warm();
+      expect(loads, hasLength(1));
+      expect(model.asked, isEmpty);
+      expect(player.played, isEmpty);
+
+      await tts.speak('Haus');
+      expect(loads, hasLength(1), reason: 'opened once');
+    });
+
+    test('#460 without the model, warm opens nothing', () async {
+      await tts.warm();
+      expect(loads, isEmpty);
+    });
+
+    test('#460 a warm whose load fails is quiet, and remembered: the next '
+        'speak falls back at once', () async {
+      await install();
+      final failing = SupertonicTts(
+        models: models,
+        settings: settings,
+        cache: cache,
+        load: (dir) async => throw StateError('not enough memory'),
+        player: player,
+      );
+      await failing.warm();
+      expect(await failing.speak('Haus'), isFalse);
+    });
+
     test('#152 disposed: the sessions close, and the player goes', () async {
       await install();
       await tts.speak('Haus');

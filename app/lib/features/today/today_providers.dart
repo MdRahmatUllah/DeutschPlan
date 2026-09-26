@@ -4,6 +4,7 @@ import 'package:deutschplan/data/repositories/setting_keys.dart';
 import 'package:deutschplan/data/repositories/word_repository.dart'
     show WordStatus;
 import 'package:deutschplan/domain/plan_engine.dart';
+import 'package:deutschplan/features/study/study_card.dart' show spokenForm;
 import 'package:deutschplan/features/today/today_view.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -78,6 +79,32 @@ Stream<List<String>> todayBacklog(Ref ref) => ref
     .watch(planRepositoryProvider)
     .watchBacklog(ref.watch(todayProvider))
     .map((rows) => <String>[for (final row in rows) row.planDate]);
+
+/// #460: once the app has drawn its first frame, Supertonic's sessions
+/// opened and today's first cards made, so a session's first card plays
+/// from the cache rather than waiting ~2.3 s for the sessions and a second
+/// for its synthesis. Best effort: a voice that can't be reached here is a
+/// speak's to report.
+// ponytail: the first three headwords, Revise then New as a session orders
+// them (BR-PLAN-02); the session prepares the rest as it opens (#430).
+Future<void> warmTodaysVoice(ProviderContainer container) async {
+  // Held while it is read: nothing else may be listening yet.
+  final hold = container.listen(todayViewProvider, (_, _) {});
+  try {
+    final tts = container.read(ttsProvider);
+    await tts.warm();
+    final view = await container.read(todayViewProvider.future);
+    final words = container.read(wordRepositoryProvider);
+    await tts.prepare(<String>[
+      for (final uid in <String>[...view.openRevise, ...view.openNew].take(3))
+        if (await words.find(uid) case final found?) spokenForm(found.word),
+    ]);
+  } on Object {
+    // As above.
+  } finally {
+    hold.close();
+  }
+}
 
 /// Everything T1 draws, rendered from the persisted plan.
 @riverpod
