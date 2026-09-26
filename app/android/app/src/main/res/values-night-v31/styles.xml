@@ -1,15 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Android 12+ SplashScreen API.
 
-     The field colour and the mark are the artboard's, so the hand-off to
-     Flutter's first frame shows no change of colour and no change of mark.
-
-     What the platform will not let us match exactly is the mark's *size*:
-     Android sizes and masks the splash icon itself, so it lands a little
-     smaller than the 120 dp the artboard draws. That is a platform rule, not
-     something worth faking with a scaled-up asset that would then be cropped —
-     `windowSplashScreenIconBackgroundColor` is deliberately unset so at least
-     no circle appears behind it. -->
+     The field colour and the mark are S1's, so the hand-off to Flutter's
+     first frame changes neither colour nor mark. Android sizes the icon
+     itself: its 288 dp canvas, masked to the inner 192 dp circle. So
+     `splash_icon.xml` keeps the brand kit's 108 grid on that canvas, and S1
+     draws the tiles at the same scale, at the screen's centre, where this
+     lands (#602). `windowSplashScreenIconBackgroundColor` is deliberately
+     unset, so no circle appears behind the tiles. -->
 <resources>
     <style name="LaunchTheme" parent="@android:style/Theme.DeviceDefault.DayNight">
         <item name="android:windowSplashScreenBackground">@color/splash_field</item>

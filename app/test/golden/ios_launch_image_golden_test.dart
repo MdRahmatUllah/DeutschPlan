@@ -12,9 +12,10 @@ import 'golden_harness.dart';
 /// `goldens-verify` fails the moment the widget and the PNG disagree.
 ///
 /// Transparent, because the storyboard paints the field from `SplashField`.
-/// The lockup's empty progress slot keeps S1's space under the mark, so the
-/// storyboard centres the image the way Flutter centres the column. Light and
-/// dark only: a launch screen has no glass.
+/// The lockup carries as much empty space over the mark as hangs under it
+/// (the wordmark, the progress slot), so the storyboard, centring the image,
+/// centres the mark on the screen, as S1 does (#602). Light and dark only: a
+/// launch screen has no glass.
 void main() {
   const imageSet = '../../ios/Runner/Assets.xcassets/LaunchImage.imageset';
   Widget lockup(GoldenMode mode) => Directionality(

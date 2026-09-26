@@ -41,7 +41,7 @@ session must know), `team.py leave -m "..."`.
 | Behaviour (the source of truth: docs win over code) | `docs/` — `docs/README.md` indexes it; screens `docs/04-screens/`, engines `docs/03-domain/`, rules `docs/00-product/business-rules.md` (BR-*), data `docs/02-data/` |
 | How it is built | `docs/01-architecture/` (structure, state, navigation, theming, a11y/perf), `docs/05-dev-guide/` (standards, testing, ADRs in `decisions.md`, release) |
 | What it looks like | artboards `deutsch-plan-design-html/<canvas>/screens/*.html` (PNG: `docs/design/<canvas>/`), glass `deutsch-plan-v2-aurora-glass-html/…` |
-| The whole picture, readable | `docs/handbook/` (business, features, capabilities, architecture, reference, quality, operations, roadmap); branding in `docs/branding/` |
+| The whole picture, readable | `docs/handbook/` (business, features, capabilities, architecture, reference, quality, operations, roadmap); the brand kit in `docs/sogda-brand-kit/` |
 | The team and how each agent works | `developer-agents/` (setup on a new device, each agent's role, memory, history) |
 | What to do, who does it | the `team` branch, cloned at `F:/appDevs/dp-team/<you>/`: `TASKS.md` (the task file + handoffs), `STATUS.md`, `PLAN.md`, `MEMORY.md`, `WORKLOG.md`, `agents/` |
 | Each issue | GitHub issue (Goal, Design, Specification, Acceptance criteria, Dependencies) |

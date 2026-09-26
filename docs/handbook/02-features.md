@@ -73,7 +73,8 @@ here is the model manager, not the milestone.
 
 ### Splash · S1
 
-The app mark shows while the app opens its database and, on the first start
+The Sogda mark (the brand kit's tiles) and the name show while the app
+opens its database and, on the first start
 or after an app update with new content, copies the course into place. A
 thin progress line appears only if this takes over 600 ms. If anything
 fails, a full-screen error offers *Retry* and *Export progress*, never a

@@ -87,3 +87,13 @@ def test_every_screenshot_is_one_play_takes_175(folder):
         assert colour == 2, f"{folder}/{name}: alpha (Play wants RGB)"
         assert 320 <= min(width, height) and max(width, height) <= 3840, f"{folder}/{name}"
         assert max(width, height) <= 2 * min(width, height), f"{folder}/{name}: over 2:1"
+
+
+def test_the_title_the_website_and_the_icon_are_the_brand_kits_602():
+    listing = texts()
+    assert listing[("English (en-US)", "Title")] == "Sogda: German A1–C2"
+    assert listing[("Bangla (bn-BD)", "Title")] == "Sogda: জার্মান A1–C2"
+    text = LISTING.read_text(encoding="utf-8")
+    assert "**Website:** https://sogda.de" in text
+    icon = re.search(r"\*\*App icon:\*\* \[`([^`]+)`\]", text)[1]
+    assert png_header(LISTING.parents[2] / icon)[:2] == (512, 512), icon

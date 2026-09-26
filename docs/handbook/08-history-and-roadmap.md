@@ -236,5 +236,6 @@ handbook):
 
 [Chapter 1](01-business.md#growth-more-languages-to-learn-and-more-meaning-languages)
 has the full analysis of what the current design already supports and what
-would change, and [`docs/branding/`](../branding/README.md) has name ideas
-for an app that is no longer only about German.
+would change. The name is already one for many languages: Sogda (ADR 28),
+with the brand kit in [`docs/sogda-brand-kit/`](../sogda-brand-kit/README.md),
+whose mark changes only its front tile for each new course.

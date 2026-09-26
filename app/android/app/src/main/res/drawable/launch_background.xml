@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Pre-Android-12 launch window: the Lagoon field with the mark centred, which
-     is the composition Flutter's first frame draws. Android 12 and up use
-     `values-v31/styles.xml` instead, where the platform owns the icon's size. -->
+<!-- Pre-Android-12 launch window: the Lagoon field with the mark centred,
+     where Flutter's first frame draws it. Android 12 and up use
+     `values-v31/styles.xml` instead, where the platform owns the icon.
+
+     The mark is an item with a gravity, not a `<bitmap>`: `splash_mark` is a
+     vector, and a `<bitmap>` can only decode a bitmap. There is no
+     `drawable-v21` copy of this file any more: on every API the app runs on
+     (26+) it won over this one, and drew the template's plain window. -->
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:drawable="@color/splash_field" />
-    <item>
-        <bitmap
-            android:gravity="center"
-            android:src="@drawable/splash_mark" />
-    </item>
+    <item
+        android:drawable="@drawable/splash_mark"
+        android:gravity="center" />
 </layer-list>

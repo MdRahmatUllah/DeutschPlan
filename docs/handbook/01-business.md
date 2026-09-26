@@ -258,7 +258,7 @@ the product to?
 | **Low-end phones** | With Supertonic's sessions open the app uses about 520 MB of memory (PSS, on the emulator); the voice is 399 MB to download | The voice is optional; a 100 MB free-space margin is enforced; the phone voice is the fallback | Owner: a memory budget (none yet) |
 | **Release depends on the owner** | Release builds are debug-signed until the upload key is added; start time on a real phone is unchecked | `tools/release_android.py` reports the signing key | Owner: upload key, real-phone check |
 | **The app id is permanent** | `de.sogda.app` can never change once on Play | Chosen by the owner (ADR 28, #601) | — |
-| **Exam claims and trademarks** | Implying official exams would mislead | Mock exams are labelled generated; Goethe and telc named only for the level | Branding review (`docs/branding/`) |
+| **Exam claims and trademarks** | Implying official exams would mislead | Mock exams are labelled generated; Goethe and telc named only for the level | Recheck the store texts (`store-listing.md`) before each upload; the brand kit (`docs/sogda-brand-kit/`) names no exam body |
 | **Store policy** | Foreground-service and notification rules change | Declarations listed in `release.md` | Recheck each Play upload |
 
 ## Growth: more languages to learn, and more meaning languages
@@ -305,7 +305,7 @@ to change. It is an analysis, not a plan.
 | **Answer checking and search** | Umlaut folding (ä/ae/a, ß/ss) shared by Python and Dart (`text_norm`); article stripping | Checking typed meanings in a new language | A normaliser per language |
 | **Learning logic** | Articles der/die/das with their colours and spoken gender; the cloze's separable verbs and reflexive *sich*; grammar practice's German inflection classes; Writing's verb-stem matching; the umlaut row; placement's article questions | None | Rewritten or made pluggable per language |
 | **Voice and text** | `SystemTts` speaks `de-DE`; Supertonic's input is tagged `<de>`; course text is tagged `de-DE` for screen readers; Today's date is always German | None | A voice per language (whether Supertonic speaks it is unchecked) |
-| **Links and names** | Web links to Duden and DWDS; the name "Sogda" | None | New dictionaries; a new name (`docs/branding/`) |
+| **Links and names** | Web links to Duden and DWDS | None | New dictionaries. The name already fits every language: Sogda (ADR 28), whose mark changes only its front tile per course (É for French, Ñ for Spanish; `docs/sogda-brand-kit/`) |
 | **One course per install** | `content.db` is one course, and progress assumes it | None | A course picker, and progress kept per course |
 
 Adding a meaning language is mostly data (translations through the

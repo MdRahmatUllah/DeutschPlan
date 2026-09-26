@@ -44,6 +44,11 @@ class PlatformReminderNotifications implements ReminderNotifications {
 
   static const String channel = 'reminder';
 
+  /// The status bar's icon: the kit's mono tiles, white on transparent
+  /// (`drawable/ic_notification.xml`, #602). The default for every
+  /// notification this plugin shows, the model downloads' last word too.
+  static const String smallIcon = '@drawable/ic_notification';
+
   /// One reminder a day, so the date is its id: `reminder_compose` finds
   /// today's without keeping a list.
   static int idFor(DateTime day) =>
@@ -53,7 +58,7 @@ class PlatformReminderNotifications implements ReminderNotifications {
   Future<void> init(void Function(String link) onTap) async {
     await _plugin.initialize(
       settings: const InitializationSettings(
-        android: AndroidInitializationSettings('@mipmap/ic_launcher'),
+        android: AndroidInitializationSettings(smallIcon),
         // Not here: the permission is asked when the reminder goes on.
         iOS: DarwinInitializationSettings(
           requestAlertPermission: false,

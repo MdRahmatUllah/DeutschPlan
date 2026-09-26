@@ -1,40 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- The Android 12 splash icon: the same mark, on the canvas the platform
-     expects.
+<!-- The Android 12+ splash icon (`windowSplashScreenAnimatedIcon`): the
+     brand kit's tiles (#602), on the 108 grid of
+     `docs/sogda-brand-kit/svg/icon-tiles-foreground.svg`.
 
-     Android masks this into a circle and shows roughly the inner two thirds,
-     so drawing the mark at its own 120 x 104 size loses the bubble's corners
-     and the whole tail — which is exactly what happened the first time. The
-     art is therefore scaled to 132 x 114 inside a 288 x 288 canvas, whose
-     diagonal (174) clears the 192 safe circle.
+     Android draws the icon's canvas at 288 dp and masks it to the inner
+     192 dp circle, the adaptive icon's two thirds. The kit's 108 viewport on
+     the 288 dp canvas keeps the art inside its 66-unit safe circle, so
+     nothing is cropped. S1's Flutter frame draws the tiles at this same
+     scale (`_SplashMetrics.markSize`) at the screen's centre, where the
+     platform puts this, so the hand-off moves nothing.
 
-     `splash_mark.xml` keeps the unpadded geometry for the pre-12 window, which
-     is not masked and can place the mark at the artboard's own size. -->
+     `splash_mark.xml` is the same art cropped tight, for the pre-12 window,
+     which is not masked.
+
+     Converted from the kit's SVG, not drawn by hand: one group per SVG
+     transform, outer first; each tile its rounded-rect path; fill and stroke
+     taken down from the SVG's groups. The letters are Inter ExtraBold's
+     outlines (optical size 32), placed as `SgMark` places them, because the
+     Flutter frame draws Inter. The colours are resources, the kit's in both
+     modes: the tiles are never recoloured. -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="288dp"
     android:height="288dp"
-    android:viewportWidth="288"
-    android:viewportHeight="288">
+    android:viewportWidth="108"
+    android:viewportHeight="108">
 
-    <group
-        android:translateX="78"
-        android:translateY="87"
-        android:scaleX="1.1"
-        android:scaleY="1.1">
-
-        <path
-            android:fillColor="@color/splash_ink"
-            android:pathData="M22,84 L46,84 L34,104 Z" />
-
-        <path
-            android:fillColor="@color/splash_mark"
-            android:strokeColor="@color/splash_ink"
-            android:strokeWidth="3"
-            android:pathData="M1.5,29.5 A28,28 0 0 1 29.5,1.5 L90.5,1.5 A28,28 0 0 1 118.5,29.5 L118.5,62.5 A28,28 0 0 1 90.5,90.5 L29.5,90.5 A28,28 0 0 1 1.5,62.5 Z" />
-
-        <path
-            android:fillColor="@color/splash_ink"
-            android:fillType="evenOdd"
-            android:pathData="M38,16 L60,16 A30,30 0 0 1 60,76 L38,76 Z M52,30 L60,30 A16,16 0 0 1 60,62 L52,62 Z" />
+    <group android:translateX="44.5" android:translateY="49.5">
+        <group android:rotation="-10">
+            <group android:translateX="2.4" android:translateY="2.4">
+                <path
+                    android:fillColor="@color/splash_ink"
+                    android:pathData="M-8.5,-14 L8.5,-14 A5.5,5.5 0 0 1 14,-8.5 L14,8.5 A5.5,5.5 0 0 1 8.5,14 L-8.5,14 A5.5,5.5 0 0 1 -14,8.5 L-14,-8.5 A5.5,5.5 0 0 1 -8.5,-14 Z"
+                    android:strokeColor="@color/splash_ink"
+                    android:strokeWidth="2.6"
+                    android:strokeLineJoin="round" />
+            </group>
+            <path
+                android:fillColor="@color/splash_paper"
+                android:pathData="M-8.5,-14 L8.5,-14 A5.5,5.5 0 0 1 14,-8.5 L14,8.5 A5.5,5.5 0 0 1 8.5,14 L-8.5,14 A5.5,5.5 0 0 1 -14,8.5 L-14,-8.5 A5.5,5.5 0 0 1 -8.5,-14 Z"
+                android:strokeColor="@color/splash_ink"
+                android:strokeWidth="2.6"
+                android:strokeLineJoin="round" />
+            <group android:translateX="-7.9434" android:translateY="7.24">
+                <group android:scaleX="0.0137" android:scaleY="-0.0137">
+                    <path
+                        android:fillColor="@color/splash_ink"
+                        android:pathData="M419.11962890625 -18.280029296875Q313.359619140625 -18.280029296875 231.879638671875 16.199951171875Q150.399658203125 50.679931640625 103.7996826171875 120.2799072265625Q57.19970703125 189.8798828125 57.19970703125 294.8798828125Q57.19970703125 384.35986328125 89.2796630859375 444.7799072265625Q121.359619140625 505.199951171875 177.819580078125 543.02001953125Q234.279541015625 580.840087890625 308.6395263671875 600.5001220703125Q382.99951171875 620.16015625 466.5595703125 627.1201171875Q561.4794921875 635.0400390625 618.3394775390625 644.7000732421875Q675.199462890625 654.360107421875 700.0794677734375 671.880126953125Q724.95947265625 689.400146484375 724.95947265625 721.0400390625V726.47998046875Q724.95947265625 757.879638671875 706.9595947265625 781.4793701171875Q688.959716796875 805.0791015625 656.219970703125 818.4189453125Q623.480224609375 831.7587890625 577.6005859375 831.7587890625Q530.44091796875 831.7587890625 495.22119140625 817.5189208984375Q460.00146484375 803.279052734375 439.8016357421875 776.8592529296875Q419.601806640625 750.439453125 415.601806640625 714.15966796875H95.919921875Q103.9599609375 828.639892578125 162.760009765625 910.219970703125Q221.56005859375 991.800048828125 329.1002197265625 1035.4200439453125Q436.640380859375 1079.0400390625 589.7607421875 1079.0400390625Q704.56103515625 1079.0400390625 793.501220703125 1054.4200439453125Q882.44140625 1029.800048828125 943.301513671875 982.280029296875Q1004.16162109375 934.760009765625 1035.20166015625 866.5799560546875Q1066.24169921875 798.39990234375 1066.24169921875 711.27978515625V0H729.51953125V148.47998046875H725.51953125Q694.359375 91.479736328125 651.279296875 54.499755859375Q608.19921875 17.519775390625 551.019287109375 -0.380126953125Q493.83935546875 -18.280029296875 419.11962890625 -18.280029296875ZM523.6806640625 207.44091796875Q581.320068359375 207.44091796875 627.6998291015625 228.980712890625Q674.07958984375 250.5205078125 701.03955078125 289.240234375Q727.99951171875 327.9599609375 727.99951171875 380.23974609375V475.75927734375Q714.199462890625 469.79931640625 695.299560546875 464.079345703125Q676.399658203125 458.359375 652.7198486328125 453.139404296875Q629.0400390625 447.91943359375 600.8802490234375 442.8194580078125Q572.720458984375 437.719482421875 540.640625 432.4794921875Q494.8408203125 425.239501953125 459.341064453125 409.9195556640625Q423.84130859375 394.599609375 403.521484375 370.1197509765625Q383.20166015625 345.639892578125 383.20166015625 310.72021484375Q383.20166015625 278.4404296875 400.9615478515625 255.1005859375Q418.721435546875 231.7607421875 450.2412109375 219.600830078125Q481.760986328125 207.44091796875 523.6806640625 207.44091796875Z" />
+                </group>
+            </group>
+        </group>
+    </group>
+    <group android:translateX="62.5" android:translateY="59.5">
+        <group android:rotation="7">
+            <group android:translateX="2.4" android:translateY="2.4">
+                <path
+                    android:fillColor="@color/splash_ink"
+                    android:pathData="M-8.5,-14 L8.5,-14 A5.5,5.5 0 0 1 14,-8.5 L14,8.5 A5.5,5.5 0 0 1 8.5,14 L-8.5,14 A5.5,5.5 0 0 1 -14,8.5 L-14,-8.5 A5.5,5.5 0 0 1 -8.5,-14 Z"
+                    android:strokeColor="@color/splash_ink"
+                    android:strokeWidth="2.6"
+                    android:strokeLineJoin="round" />
+            </group>
+            <path
+                android:fillColor="@color/splash_mark"
+                android:pathData="M-8.5,-14 L8.5,-14 A5.5,5.5 0 0 1 14,-8.5 L14,8.5 A5.5,5.5 0 0 1 8.5,14 L-8.5,14 A5.5,5.5 0 0 1 -14,8.5 L-14,-8.5 A5.5,5.5 0 0 1 -8.5,-14 Z"
+                android:strokeColor="@color/splash_ink"
+                android:strokeWidth="2.6"
+                android:strokeLineJoin="round" />
+            <group android:translateX="-7.5993" android:translateY="10.25">
+                <group android:scaleX="0.0101" android:scaleY="-0.0101">
+                    <path
+                        android:fillColor="@color/splash_ink"
+                        android:pathData="M4.7998046875 0L516.79931640625 1490H991.36279296875L1505.722412109375 0H1103.959716796875L901.921142578125 654.796875Q853.44091796875 819.037841796875 805.4407958984375 985.978515625Q757.440673828125 1152.919189453125 706.80078125 1348.039306640625H804.4013671875Q752.241455078125 1152.919189453125 703.4813232421875 985.978515625Q654.72119140625 819.037841796875 604.48095703125 654.796875L395.722412109375 0ZM356.440673828125 286.518310546875V568.119873046875H1154.841552734375V286.518310546875ZM984.5265981708458 1597.19873046875Q905.9609375 1597.19873046875 854.8607177734375 1645.9620552810968Q803.760498046875 1694.7253800934436 803.760498046875 1768.8461100260417Q803.760498046875 1843.4150411314884 855.0273844401042 1891.7875986907443Q906.2942708333334 1940.16015625 984.5735043584706 1940.16015625Q1062.852737883608 1940.16015625 1113.9074480433665 1891.935301272455Q1164.962158203125 1843.71044629491 1164.962158203125 1768.894773928705Q1164.962158203125 1694.0791015625 1114.0272085224083 1645.638916015625Q1063.0922588416915 1597.19873046875 984.5265981708458 1597.19873046875ZM528.1461050067833 1597.19873046875Q449.200439453125 1597.19873046875 398.480224609375 1645.9620552810968Q347.760009765625 1694.7253800934436 347.760009765625 1768.8461100260417Q347.760009765625 1843.4150411314884 398.64689127604163 1891.7875986907443Q449.5337727864583 1940.16015625 528.1930111944081 1940.16015625Q606.8522496023578 1940.16015625 657.9069597621165 1891.935301272455Q708.961669921875 1843.71044629491 708.961669921875 1768.894773928705Q708.961669921875 1694.0791015625 658.0267202411583 1645.638916015625Q607.0917705604415 1597.19873046875 528.1461050067833 1597.19873046875Z" />
+                </group>
+            </group>
+        </group>
     </group>
 </vector>

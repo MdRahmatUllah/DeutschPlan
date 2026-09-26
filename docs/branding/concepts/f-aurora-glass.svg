@@ -1,5 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256" role="img" aria-label="Concept F: aurora glass">
-<title>Concept F: aurora glass</title>
-
-<defs><filter id="blur" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="26"/></filter><clipPath id="sq"><rect width="256" height="256" rx="56"/></clipPath></defs><g clip-path="url(#sq)"><rect width="256" height="256" fill="#F6F3FF"/><g filter="url(#blur)"><circle cx="60" cy="60" r="90" fill="#00C2B2"/><circle cx="210" cy="70" r="80" fill="#FFC61A"/><circle cx="200" cy="210" r="90" fill="#FF3D7F"/><circle cx="50" cy="210" r="80" fill="#3D5AFE"/></g></g><g transform="translate(32 26) scale(0.75)"><path d="M72 40H184A44 44 0 0 1 228 84V146A44 44 0 0 1 184 190H108L64 228L72 190A44 44 0 0 1 28 146V84A44 44 0 0 1 72 40Z" fill="#FFFFFF" fill-opacity="0.6" stroke="#FFFFFF" stroke-opacity="0.85" stroke-width="5"/><path d="M62 164V132H104V106H146V164Z" fill="#15121F" stroke="#15121F" stroke-width="6" stroke-linejoin="round"/><path d="M146 164V78H194V164Z" fill="#00C2B2" stroke="#15121F" stroke-width="6" stroke-linejoin="round"/></g>
-</svg>

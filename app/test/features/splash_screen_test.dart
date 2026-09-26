@@ -7,7 +7,9 @@ import 'dart:async';
 
 import 'package:sogda/bootstrap.dart';
 import 'package:sogda/core/adaptive/adaptive.dart';
+import 'package:sogda/core/components/sg_mark.dart';
 import 'package:sogda/core/theme/app_theme.dart';
+import 'package:sogda/core/theme/sg_brand.dart';
 import 'package:sogda/core/theme/sg_surface.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/features/splash/splash_screen.dart';
@@ -53,12 +55,64 @@ void main() {
           .extension<SgTokens>()!;
 
   group('the composition', () {
-    testWidgets('shows the wordmark, the mark and the caption', (tester) async {
+    testWidgets('#602 shows the tiles, the wordmark and the caption', (
+      tester,
+    ) async {
       await pump(tester);
 
-      expect(find.text('Sogda'), findsOneWidget);
-      expect(find.text('D'), findsOneWidget);
+      expect(find.byType(SgMark), findsOneWidget);
+      expect(find.byType(SgWordmark), findsOneWidget);
       expect(find.text(l10n.splashPreparing), findsOneWidget);
+    });
+
+    testWidgets('FR-S1-01 #602 the tiles are the size and place Android 12 '
+        'draws its splash icon: its 108 grid on 288 dp, at the centre', (
+      tester,
+    ) async {
+      // `splash_icon.xml` is the kit's grid on a 288 dp canvas, which the
+      // platform centres on the screen. The kit's lockup frames the grid at
+      // 1.32× in its square, so the square is 288 / 1.32.
+      await pump(tester);
+      final mark = find.byType(SgMark);
+
+      expect(tester.getSize(mark).width * 1.32, moreOrLessEquals(288));
+      expect(
+        tester.getCenter(mark),
+        tester.getCenter(find.byType(SplashScreen)),
+      );
+    });
+
+    testWidgets('#602 and the tiles and the wordmark are the kit’s in dark '
+        'too, Ink on the lifted Lagoon', (tester) async {
+      await pump(tester, mode: SgMode.dark);
+
+      expect(tester.widget<SgMark>(find.byType(SgMark)).square, isFalse);
+      expect(
+        tester.widget<SgWordmark>(find.byType(SgWordmark)).colour,
+        SgBrand.ink,
+      );
+    });
+
+    testWidgets('#602 and neither grows with the text size: they are the '
+        'logo', (tester) async {
+      await pump(tester);
+      final mark = tester.getSize(find.byType(SgMark));
+      final wordmark = tester.getSize(find.byType(SgWordmark));
+
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: AppTheme.light(),
+          localizationsDelegates: appLocalizationsDelegates,
+          supportedLocales: supportedLocales,
+          home: const MediaQuery(
+            data: MediaQueryData(textScaler: TextScaler.linear(2)),
+            child: SplashScreen(),
+          ),
+        ),
+      );
+
+      expect(tester.getSize(find.byType(SgMark)), mark);
+      expect(tester.getSize(find.byType(SgWordmark)), wordmark);
     });
 
     testWidgets('the field is the primary token, not a hex value', (
@@ -87,7 +141,7 @@ void main() {
       expect(
         tokens.color.ink,
         const Color(0xFFF4F1FF),
-        reason: 'the dark artboard draws the mark border in light ink',
+        reason: 'the dark caption and rule are the page’s light ink',
       );
     });
   });
@@ -110,11 +164,11 @@ void main() {
       // whole composition jumps 3 px at 600 ms, which is exactly the moment
       // the learner is looking at it.
       await pump(tester);
-      final before = tester.getCenter(find.text('Sogda'));
+      final before = tester.getCenter(find.byType(SgMark));
 
       await pump(tester, child: const SplashScreen(showProgress: true));
 
-      expect(tester.getCenter(find.text('Sogda')), before);
+      expect(tester.getCenter(find.byType(SgMark)), before);
     });
 
     testWidgets('holds still under reduce-motion (#Y03)', (tester) async {
@@ -199,13 +253,17 @@ void main() {
       await tester.pump();
     }
 
-    testWidgets('puts the mark on a panel over the aurora', (tester) async {
+    testWidgets('#602 puts the mark on its Lagoon square over the aurora', (
+      tester,
+    ) async {
       // The glass artboard replaces the flat Lagoon field with the aurora
-      // paper and lifts the mark onto a blurred panel.
+      // paper. The kit's rule for any ground but Lagoon: the tiles on their
+      // square. No panel: the square is the mark's own ground.
       await pumpGlass(tester);
 
       expect(find.byType(AuroraBackdrop), findsOneWidget);
-      expect(find.byType(SgSurface), findsOneWidget);
+      expect(tester.widget<SgMark>(find.byType(SgMark)).square, isTrue);
+      expect(find.byType(SgSurface), findsNothing);
     });
 
     testWidgets('and the solid modes use neither', (tester) async {
@@ -213,7 +271,11 @@ void main() {
         await pump(tester, mode: mode);
 
         expect(find.byType(AuroraBackdrop), findsNothing, reason: mode.name);
-        expect(find.byType(SgSurface), findsNothing, reason: mode.name);
+        expect(
+          tester.widget<SgMark>(find.byType(SgMark)).square,
+          isFalse,
+          reason: mode.name,
+        );
       }
     });
   });
@@ -341,13 +403,21 @@ void main() {
       handle.dispose();
     });
 
-    testWidgets('and the mark is decorative, not read out', (tester) async {
-      // "D, Sogda" says nothing about the wait. The caption does.
+    testWidgets('#602 and the mark is decorative, not read out', (
+      tester,
+    ) async {
+      // "Sogda" says nothing about the wait. The caption does.
       final handle = tester.ensureSemantics();
       await pump(tester);
 
-      expect(find.bySemanticsLabel('D'), findsNothing);
-      expect(find.bySemanticsLabel('Sogda'), findsNothing);
+      expect(find.bySemanticsLabel(RegExp(r'^(Sogda|a|Ä)$')), findsNothing);
+      expect(
+        find.ancestor(
+          of: find.byType(SplashMark),
+          matching: find.byType(ExcludeSemantics),
+        ),
+        findsWidgets,
+      );
 
       handle.dispose();
     });

@@ -1,4 +1,5 @@
 import 'package:sogda/core/adaptive/adaptive.dart';
+import 'package:sogda/core/components/sg_mark.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/core/theme/aurora_backdrop.dart';
 import 'package:sogda/core/theme/sg_surface.dart';
@@ -73,7 +74,8 @@ class AboutScreen extends ConsumerWidget {
         children: <Widget>[
           Row(
             children: <Widget>[
-              const _Mark(),
+              // The app's icon, as the artboard draws it beside the name.
+              const SgMark.appIcon(size: 60),
               const SizedBox(width: 12),
               Expanded(
                 child: Column(
@@ -160,40 +162,6 @@ class AboutScreen extends ConsumerWidget {
     return tokens.isGlass
         ? AuroraBackdrop(leading: tokens.color.accent, child: scaffold)
         : scaffold;
-  }
-}
-
-/// The "D" on Sun with the ink edge: the app's mark, as the artboard draws
-/// it beside the name.
-class _Mark extends StatelessWidget {
-  const _Mark();
-
-  @override
-  Widget build(BuildContext context) {
-    final tokens = context.tokens;
-    return ExcludeSemantics(
-      child: SizedBox.square(
-        dimension: 60,
-        child: DecoratedBox(
-          decoration: BoxDecoration(
-            color: tokens.color.accent,
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: tokens.color.ink, width: 2),
-          ),
-          child: Center(
-            // The mark, not text: it keeps its size at 200 %.
-            child: MediaQuery.withNoTextScaling(
-              child: SgText(
-                'D',
-                role: SgTextRole.title,
-                weight: 800,
-                color: tokens.color.onAccent,
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
   }
 }
 

@@ -11,7 +11,7 @@
 - The reminder switch asks for the permission as S2 page 5 does. Refused, it stays off: "Notifications are blocked · allow them in your phone's settings", with *Open settings* (the app's page in the phone's settings). Off, it reads "Off · asks for permission only when switched on"; on, "Permission was granted".
 - *Time* opens the platform's picker. The new time is saved, and `ReminderScheduler`, which follows `reminder_time`, reschedules the reminders and `reminder_compose` (FR-M5-04).
 - The preview shows while the reminder is on. Its text is `reminderBody`, the composer `reminder_compose` uses (FR-M5-03), over today's plan: "12 revisions · 7 new · about 9 min", and "Grammar due: …" on the second line. With nothing due it says "Nothing to do today, so no reminder." under *Only when there is something to do*, and the plain text otherwise. On a rest day it says "Today is a rest day: no reminder."
-- The "D" is the app's icon as the phone draws it beside a notification; it doesn't scale with the text size.
+- The icon beside it is the app's (`SgMark.appIcon`: the brand kit's tiles on the Lagoon square, #602), as the phone draws it beside a notification; it doesn't scale with the text size.
 
 **Functional requirements**
 - FR-M5-01 At least one study day must remain enabled.

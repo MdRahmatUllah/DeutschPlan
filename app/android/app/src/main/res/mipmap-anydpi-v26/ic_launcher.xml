@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The launcher icon (#602): the brand kit's tiles on Lagoon, as an adaptive
+     icon, so each launcher's own mask shapes it. Every phone the app runs on
+     (API 26+) reads this; the legacy `mipmap-*/ic_launcher.png` are the Play
+     icon, scaled, for anything that asks for a bitmap.
+
+     The layers are `docs/sogda-brand-kit/png/adaptive-*-432.png`, scaled per
+     density: the art sits inside the 66-unit safe circle of the 108 grid.
+     The monochrome layer is the Android 13+ themed icon, which the launcher
+     tints from its alpha alone; it is a render of `svg/icon-tiles-mono.svg`,
+     because the kit's PNG of it lost the SVG's mask. -->
+<adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
+    <background android:drawable="@color/ic_launcher_background" />
+    <foreground android:drawable="@mipmap/ic_launcher_foreground" />
+    <monochrome android:drawable="@mipmap/ic_launcher_monochrome" />
+</adaptive-icon>
