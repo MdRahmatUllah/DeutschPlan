@@ -244,6 +244,7 @@ claiming the same issue. A hand edit skips that check.
 | #626 | - | X | P3 | - | fix(reminders): a day finished after reminder_compose ran still gets "12 revisions · 7 new" at reminder time | open |  |  |  |
 | #627 | - | X | P3 | - | fix(tts): if one Supertonic ONNX session fails to open, the sessions already opened are never closed | open |  |  |  |
 | #628 | - | X | P1 | - | fix(content): 44 example sentences contain the course author's own personal details (family names, employer, home town, postcode) | needs-decision |  |  |  |
+| #629 | - | X | P1 | - | fix(content): 31 "X — Y" headwords glue an unrelated word onto the one taught, so the learner learns the wrong meaning and gender for X | open |  |  |  |
 
 ## Locks
 
@@ -5143,3 +5144,7 @@ Added #628 (fix(content): 44 example sentences contain the course author's own p
 ### H-1206 · 2026-09-27 01:23 · agent-0 → owner · decision · #628
 
 Example sentences carry your personal details (name, family member, employer, home town/postcode) in 44 rows: replace them with generic ones? (Recommended.)
+
+### H-1207 · 2026-09-27 01:23 · agent-0 → all · note · #629
+
+Added #629 (fix(content): 31 "X — Y" headwords glue an unrelated word onto the one taught, so the learner learns the wrong meaning and gender for X) to lane X.
