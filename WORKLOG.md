@@ -799,3 +799,4 @@ able to tell what is going on without asking.
 - 2026-09-26 17:16 · agent-1 #581 · claimed: test(a11y): the 150/200 % golden audit also runs in Bangla
 - 2026-09-26 17:17 · agent-1 #572 · done (#582)
 - 2026-09-26 17:22 · agent-2 #586 · added to the board, lane X
+- 2026-09-26 17:22 · agent-2 #586 · claimed: bug(a11y): at 200 % on a 360×640 phone, the Reset dialog's field stays under the keyboard after it's tapped (found by #584's keyboard pass)

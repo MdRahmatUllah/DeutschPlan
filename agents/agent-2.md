@@ -6,7 +6,7 @@ last-read: 1081
 
 ## Now
 
-#584 in review as PR #585: answer review threads; re-run the gate if main moved, then merge.
+#586 bug(a11y): at 200 % on a 360×640 phone, the Reset dialog's field stays under the keyboard after it's tapped (found by #584's keyboard pass) — claimed 2026-09-26 17:22.
 
 ## Next
 
