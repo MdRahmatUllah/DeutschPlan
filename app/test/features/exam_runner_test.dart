@@ -751,8 +751,6 @@ void main() {
   });
 
   group('L12 #554 a typed question with the keyboard up', () {
-    const keyboardTop = 731.0 - 300;
-
     // What is asked, as the question shows it.
     List<String> asked(ExamItem item, AppLocalizations t) => switch (item) {
       // A vocabulary word is a GermanWord, found by its type.
@@ -813,22 +811,28 @@ void main() {
         expected: 'apartment building',
       ),
     ]) {
-      for (final (percent, scaler) in <(int, TextScaler)>[
-        (200, const AndroidTextScaler(2)),
-        (150, const AndroidTextScaler(1.5)),
-        (100, TextScaler.noScaling),
-      ]) {
+      for (final (percent, scaler, width, height, keyboard, collapsed)
+          in <(int, TextScaler, double, double, double, bool)>[
+            // SQA's 731 dp phone, its status bar, and a 300 dp keyboard.
+            (200, const AndroidTextScaler(2), 390, 731, 300, true),
+            (150, const AndroidTextScaler(1.5), 390, 731, 300, true),
+            (100, TextScaler.noScaling, 390, 731, 300, false),
+            // #571: a budget phone with its 280 dp keyboard, whose room is
+            // short of shortRoom: at 100 % the field ended under Previous /
+            // Next. (Past 130 % there it's #573.)
+            (100, TextScaler.noScaling, 360, 640, 280, true),
+          ]) {
         for (final lang in <String>['en', 'bn']) {
           testWidgets('${item is WordQuestion ? item.section.name : 'gap'} '
-              'in $lang at $percent %: past 130 % the question shows whole above the '
-              'field and the umlaut row, the buttons scrolling under it; at '
-              "100 % they stay pinned (#529); all is back at the keyboard's "
+              'in $lang at $percent % on ${width.round()} × ${height.round()}: '
+              'past 130 % or on a short phone the question shows whole above '
+              'the field and the umlaut row, the buttons scrolling under it; '
+              "otherwise they stay pinned (#529); all is back at the keyboard's "
               'going', (tester) async {
-            final large = percent > 130;
+            final keyboardTop = height - keyboard;
             final t = lang == 'bn' ? bn : l10n;
-            // SQA's 731 dp phone, its status bar, and a 300 dp keyboard.
             tester.view
-              ..physicalSize = const Size(390, 731) * 3
+              ..physicalSize = Size(width, height) * 3
               ..devicePixelRatio = 3
               ..padding = const FakeViewPadding(top: 24 * 3);
             addTearDown(tester.view.reset);
@@ -842,7 +846,7 @@ void main() {
               locale: Locale(lang),
             );
             await tester.showKeyboard(find.byType(TextField));
-            tester.view.viewInsets = const FakeViewPadding(bottom: 300 * 3);
+            tester.view.viewInsets = FakeViewPadding(bottom: keyboard * 3);
             await tester.pumpAndSettle();
 
             expect(
@@ -858,9 +862,9 @@ void main() {
               // ponytail: at 100 % the buttons stay pinned (#529), and only
               // the field is sure to show: a two-line gap's sentence sits
               // above the window, as it did before #554.
-              if (large)
+              if (collapsed)
                 for (final text in asked(item, t)) (text, find.text(text)),
-              if (large && !german) ('the word', find.byType(GermanWord)),
+              if (collapsed && !german) ('the word', find.byType(GermanWord)),
               ('the field', find.byType(TextField)),
             ]) {
               final rect = tester.getRect(shown);
@@ -886,13 +890,13 @@ void main() {
             final left = tester.getRect(clock());
             expect(left.bottom, lessThanOrEqualTo(keyboardTop));
             expect(
-              large ? left.top : window.top,
-              greaterThanOrEqualTo(large ? window.bottom : left.bottom),
-              reason: large ? 'above the keyboard' : 'in the band',
+              collapsed ? left.top : window.top,
+              greaterThanOrEqualTo(collapsed ? window.bottom : left.bottom),
+              reason: collapsed ? 'above the keyboard' : 'in the band',
             );
             expect(
               inTheList(t.examRunNext),
-              large ? findsOneWidget : findsNothing,
+              collapsed ? findsOneWidget : findsNothing,
             );
             expect(
               find.widgetWithText(DpButton, t.examRunNext),
@@ -901,7 +905,7 @@ void main() {
             // Past 130 % the band keeps only its colour.
             expect(
               find.byIcon(Icons.pause),
-              large ? findsNothing : findsOneWidget,
+              collapsed ? findsNothing : findsOneWidget,
             );
 
             tester.view.resetViewInsets();
@@ -921,6 +925,34 @@ void main() {
         }
       }
     }
+
+    testWidgets('#571 a screen short with no keyboard up (a budget phone '
+        'turned, 640 × 360) keeps the band and the pinned buttons', (
+      tester,
+    ) async {
+      tester.view
+        ..physicalSize = const Size(640, 360) * 3
+        ..devicePixelRatio = 3
+        ..padding = const FakeViewPadding(top: 24 * 3);
+      addTearDown(tester.view.reset);
+      await pump(
+        tester,
+        stub: StubExamRun(
+          items: <ExamItem>[
+            const WordQuestion(
+              ExamSection.reverse,
+              'sorry',
+              prompt: "I'm sorry",
+              expected: 'Es tut mir leid',
+            ),
+            ...artboardPaper(),
+          ],
+          given: <int, String>{},
+        ),
+      );
+      expect(find.byIcon(Icons.pause), findsOneWidget, reason: 'the band');
+      expect(inTheList(l10n.examRunNext), findsNothing, reason: 'pinned');
+    });
 
     for (final item in <ExamItem>[
       const WordQuestion(
