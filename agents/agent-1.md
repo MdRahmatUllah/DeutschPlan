@@ -1,12 +1,12 @@
 # agent-1
 
 session: active
-last-seen: 2026-09-26 04:43
+last-seen: 2026-09-26 04:46
 last-read: 619
 
 ## Now
 
-#477 bug(today): dismissing Course updated brings back each older unseen update's card, with stale counts (BR-CONTENT-03 one-time card) — claimed 2026-09-26 04:43.
+#477 in review as PR #488: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 

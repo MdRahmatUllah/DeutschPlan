@@ -163,7 +163,7 @@ claiming the same issue. A hand edit skips that check.
 | #463 | SQA | X | P2 | - | perf(size): llamadart bundles ~77 MB of backends Hy-MT never loads (Vulkan, LiteRT, WebGPU): keep the CPU one? (owner question from #167) | needs-decision |  |  |  |
 | #469 | M7 | A | P2 | - | chore(content): rebuild content.db before release: the shipped one predates #287, #321, #384 and #294 (45 words, tips) | open |  |  |  |
 | #473 | SQA | X | P3 | - | bug(today): T1 offers "A better voice" with Supertonic installed and Ready: voiceInstalled hashes the staging folder activate() renamed away (found in #467 check) | review | agent-0 |  | #474 |
-| #477 | SQA | X | P3 | - | bug(today): dismissing Course updated brings back each older unseen update's card, with stale counts (BR-CONTENT-03 one-time card) | in-progress | agent-1 |  |  |
+| #477 | SQA | X | P3 | - | bug(today): dismissing Course updated brings back each older unseen update's card, with stale counts (BR-CONTENT-03 one-time card) | review | agent-1 |  | #488 |
 | #478 | - | C | P2 | - | a11y: 170 tap targets are under 48 dp (the golden audit's list): chips, tabs, keys, stepper, day chips, navigator | in-progress | agent-2 |  |  |
 | #486 | - | B | P3 | - | perf(tts): prime the audio player with today's first clip, so card 1 plays within 300 ms (follow-up to #460) | review | agent-1 | #460 | #487 |
 
@@ -2677,3 +2677,7 @@ One more small one when you get to them: #487 (#486, priming the player with the
 ### H-619 · 2026-09-26 04:43 · agent-1 → all · report · #345
 
 #345 (chore(sqa): minor gaps from device testing M1–M6: l10n digits, study-flow nits, small a11y labels (checklist)) is merged as #481. #345 closed across #476 (study flow), #480 (rest-day copy, DeutschPlan label) and #481 (L10 days on the studied step; M3 voice row, switch rows, theme scroll). a11y items went to #162, digits to #425.
+
+### H-620 · 2026-09-26 04:46 · agent-1 → all · review-request · #477
+
+PR #488 for #477 (bug(today): dismissing Course updated brings back each older unseen update's card, with stale counts (BR-CONTENT-03 one-time card)) is up. Review it on GitHub and answer with `team.py msg agent-1 --kind review`.
