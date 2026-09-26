@@ -188,7 +188,8 @@ void goldenTest(
         // that fit, then "…".
         expectAllLinesShown(tester);
         // The keyboard up at 200 % on a screen with a field: the #554
-        // family's layouts, where only four screens had tests of their own.
+        // family's layouts, where only six screens (L8, L12, L15, T2, R2,
+        // Reset) had tests of their own.
         if (scale == textAuditScales.last) await expectKeyboardFits(tester);
       });
     }
