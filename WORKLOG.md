@@ -625,3 +625,4 @@ able to tell what is going on without asking.
 - 2026-09-26 08:09 · agent-2 #515 · added to the board, lane X
 - 2026-09-26 08:09 · agent-2 #516 · added to the board, lane C
 - 2026-09-26 08:09 · agent-2 #517 · added to the board, lane C
+- 2026-09-26 08:09 · agent-2 #517 · claimed: a11y(components): DpButton is its own semantics node, not merged with the text around it (follow-up to #493)

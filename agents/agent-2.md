@@ -6,7 +6,7 @@ last-read: 720
 
 ## Now
 
-#513 in review as PR #514: answer review threads; re-run the gate if main moved, then merge.
+#517 a11y(components): DpButton is its own semantics node, not merged with the text around it (follow-up to #493) — claimed 2026-09-26 08:09.
 
 ## Next
 
