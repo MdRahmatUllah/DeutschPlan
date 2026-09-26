@@ -347,6 +347,25 @@ void main() {
       await pump(tester);
       expectNothingClipped(tester, within: find.byType(CompareScreen));
     });
+
+    testWidgets('#165 FR-W2-04 at 200 % text the columns grow: a long '
+        "meaning doesn't break mid-word", (tester) async {
+      textAt(tester, 2);
+      await pump(
+        tester,
+        view: artboardCompare(
+          members: <CompareMember>[
+            for (final (german, english) in <(String, String)>[
+              ('selbstbewusst', 'self-assured'),
+              ('arrogant', 'arrogant'),
+              ('überheblich', 'overbearing'),
+            ])
+              CompareMember(headword: german, step: 'C2.1', meaning: english),
+          ],
+        ),
+      );
+      expectNoWordBroken(tester, within: find.byType(CompareScreen));
+    });
   });
 }
 
