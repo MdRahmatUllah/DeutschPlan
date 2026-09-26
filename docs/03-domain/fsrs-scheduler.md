@@ -12,7 +12,7 @@
 
 Rating bar preview: the four intervals shown under Again/Hard/Good/Easy are `Fsrs.review(state, r, now).scheduledDays` for r = 1..4, computed on reveal.
 
-Reference values (tests): first review intervals at 90 % retention = 1 / 1 / 4 / 14 days; a chain of Good reviews taken on their due day grows 4 → 16 → 53 → 157 → 420; `intervalDays(10) == 10`; at 80 % retention `intervalDays(10) == 24`.
+Reference values (tests): first review intervals at 90 % retention = 1 / 1 / 4 / 14 days; a chain of Good reviews taken on their due day grows 4 → 15 → 50 → 150 → 409 (the owner's decision on #239: the chain this doc used to give, 4 → 16 → 53 → 157 → 420, came from no formulation of these weights, while the three other values pin them); `intervalDays(10) == 10`; at 80 % retention `intervalDays(10) == 24`.
 
 Grammar topics use the same class on `grammar_state`.
 
