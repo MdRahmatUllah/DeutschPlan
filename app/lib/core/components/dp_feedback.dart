@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:deutschplan/core/adaptive/adaptive.dart';
 import 'package:deutschplan/core/components/dp_button.dart';
 import 'package:deutschplan/core/theme/dp_surface.dart';
@@ -43,18 +45,29 @@ class DpUmlautBar extends StatelessWidget {
   /// A German field's `scrollPadding` when this row sits under it: how far
   /// the page scrolls the field up from the keyboard on focus. Flutter's
   /// 20 dp alone left the keys cut at the keyboard's edge (#396, #515). The
-  /// row's 8 dp gap and its keys, grown as their text grows, then [below]:
-  /// what else must show under it.
-  static EdgeInsets scrollPadding(BuildContext context, {double below = 0}) =>
-      EdgeInsets.fromLTRB(
-        20,
-        20,
-        20,
-        20 +
-            8 +
-            DpScript.grow(context, keyHeight, role: DpTextRole.title) +
-            below,
-      );
+  /// row's 8 dp gap and its keys, as tall as they draw, then [below]: what
+  /// else must show under it.
+  /// [margin] under the keys: 20 dp as Flutter's own padding, less where
+  /// the room above the keyboard is short: `StudyAnswerField` typing past
+  /// 130 %, so T2's cloze and L15's gap (#572).
+  static EdgeInsets scrollPadding(
+    BuildContext context, {
+    double below = 0,
+    double margin = 20,
+  }) =>
+      EdgeInsets.fromLTRB(20, 20, 20, margin + 8 + rowHeight(context) + below);
+
+  /// The keys' height as [_UmlautKey] draws it: [keyHeight], or its text's
+  /// line and border once that is taller. Scaling all 44 dp by the text's
+  /// growth reserved 79 at 200 % for a 49 dp row, and a three-line cloze
+  /// went under T2's top for the 30 dp between (#572).
+  static double rowHeight(BuildContext context) {
+    final tokens = context.tokens;
+    final title = DpTextRole.title.token(tokens.typography);
+    final line =
+        MediaQuery.textScalerOf(context).scale(title.size) * title.heightFactor;
+    return math.max(keyHeight, line + 2 * tokens.surface.outlineWidth);
+  }
 
   /// Inserts [text] at the cursor, replacing any selection, and leaves the
   /// caret after it.

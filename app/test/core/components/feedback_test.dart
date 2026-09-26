@@ -8,6 +8,8 @@ import 'package:flutter/rendering.dart' show RenderParagraph;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 
+import '../text_clipping.dart' show AndroidTextScaler;
+
 /// answer-checking.md: the umlaut row and its long-press.
 /// state-management.md: one shared ErrorPanel with Retry.
 /// accessibility-performance.md: "verdicts have icons and words".
@@ -75,6 +77,29 @@ void main() {
         tester.getSize(find.byType(DpUmlautBar)).height,
         DpUmlautBar.keyHeight,
       );
+    });
+
+    testWidgets('#572 rowHeight is the height the keys draw, at 100, 150 and '
+        '200 %: what a field above them reserves', (tester) async {
+      for (final percent in <int>[100, 150, 200]) {
+        final controller = TextEditingController();
+        await pump(
+          tester,
+          Builder(
+            builder: (context) => MediaQuery(
+              data: MediaQuery.of(context)
+                  .copyWith(textScaler: AndroidTextScaler(percent / 100)),
+              child: DpUmlautBar(controller: controller),
+            ),
+          ),
+        );
+        final bar = find.byType(DpUmlautBar);
+        expect(
+          DpUmlautBar.rowHeight(tester.element(bar)),
+          moreOrLessEquals(tester.getSize(bar).height, epsilon: 0.5),
+          reason: '$percent %',
+        );
+      }
     });
 
     testWidgets('tapping a key types it', (tester) async {

@@ -6,6 +6,8 @@ import 'package:deutschplan/core/components/dp_rating_bar.dart';
 import 'package:deutschplan/core/components/dp_speaker_button.dart';
 import 'package:deutschplan/core/providers/app_providers.dart';
 import 'package:deutschplan/core/theme/app_theme.dart';
+import 'package:deutschplan/core/theme/dp_tokens.dart';
+import 'package:deutschplan/core/typography/dp_text.dart';
 import 'package:deutschplan/data/db/app_database.dart';
 import 'package:deutschplan/data/db/content_dao.dart';
 import 'package:deutschplan/data/repositories/setting_keys.dart';
@@ -18,6 +20,7 @@ import 'package:deutschplan/l10n/generated/app_localizations.dart';
 import 'package:deutschplan/main.dart'
     show appLocalizationsDelegates, supportedLocales;
 import 'package:deutschplan/router/routes.dart';
+import 'package:flutter/rendering.dart' show RenderParagraph;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
@@ -93,6 +96,7 @@ VALUES ('$strasse', 'learning', '2026-09-10', '2026-09-21', 4.5, 5.2, 2, 0,
     bool voice = true,
     bool chosen = false,
     TextScaler? textScaler,
+    Locale? locale,
   }) async {
     spoken = <String>[];
     await tester.runAsync(
@@ -114,6 +118,7 @@ VALUES ('$strasse', 'learning', '2026-09-10', '2026-09-21', 4.5, 5.2, 2, 0,
         ],
         child: MaterialApp(
           theme: AppTheme.light(),
+          locale: locale,
           localizationsDelegates: appLocalizationsDelegates,
           supportedLocales: supportedLocales,
           builder: textScaler == null
@@ -446,87 +451,237 @@ VALUES ('$haus', 'learning', 8, 5, 2, 0, 2, 'cloze')
   });
 
   group('T2 #564 a cloze typed with the keyboard up', () {
-    const keyboardTop = 731.0 - 300;
-
     // SQA's 731 dp phone, its status bar, and a 300 dp keyboard.
     Future<void> typing(
       WidgetTester tester,
       TextScaler textScaler, {
       String? example,
+      Size size = const Size(390, 731),
+      double keyboard = 300,
+      Locale? locale,
     }) async {
       tester.view
-        ..physicalSize = const Size(390, 731) * 3
+        ..physicalSize = size * 3
         ..devicePixelRatio = 3
         ..padding = const FakeViewPadding(top: 24 * 3);
       addTearDown(tester.view.reset);
-      await pump(tester, textScaler: textScaler, example: example);
+      await pump(
+        tester,
+        textScaler: textScaler,
+        example: example,
+        locale: locale,
+      );
       await tester.showKeyboard(find.byType(TextField));
-      tester.view.viewInsets = const FakeViewPadding(bottom: 300 * 3);
+      tester.view.viewInsets = FakeViewPadding(bottom: keyboard * 3);
       addTearDown(tester.view.resetViewInsets);
       await tester.pumpAndSettle();
     }
 
     Finder close() => find.byIcon(Icons.close);
 
-    for (final (percent, example) in <(int, String?)>[
-      (200, null),
-      (150, null),
-      // Three lines at 200 %.
-      (200, 'Die Straße vor unserem Haus ist lang.'),
-    ]) {
-      testWidgets(
-        'at $percent %${example == null ? '' : ', three lines,'} the sentence and its translation show whole '
-        "above the field; the top bar comes back with the keyboard's going",
-        (tester) async {
+    // The window the card scrolls in, and the sentence as it's drawn.
+    Rect window(WidgetTester tester) => tester.getRect(
+      find
+          .ancestor(
+            of: find.byType(TextField),
+            matching: find.byType(Scrollable),
+          )
+          .first,
+    );
+    Finder sentence() =>
+        find.textContaining('ist lang', findRichText: true).first;
+    bool focused(WidgetTester tester) => tester
+        .widget<EditableText>(find.byType(EditableText))
+        .focusNode
+        .hasFocus;
+    // The sentence's own style: the span Text.rich holds under its default.
+    double sentenceSize(WidgetTester tester) =>
+        ((tester.widget<RichText>(sentence()).text as TextSpan).children!.first
+                as TextSpan)
+            .style!
+            .fontSize!;
+
+    const threeLines = 'Die Straße vor unserem Haus ist lang.';
+    const sqa = Size(390, 731);
+    // #572: a 360 × 640 budget phone and its 280 dp keyboard, where a
+    // three-line sentence was 66 dp under the top.
+    const budget = Size(360, 640);
+
+    for (final (percent, example, size, keyboard)
+        in <(int, String?, Size, double)>[
+          (200, null, sqa, 300),
+          (150, null, sqa, 300),
+          (200, threeLines, sqa, 300),
+          (200, null, budget, 280),
+          (150, null, budget, 280),
+          (200, threeLines, budget, 280),
+          (150, threeLines, budget, 280),
+        ]) {
+      for (final lang in <String>['en', 'bn']) {
+        testWidgets('in $lang at $percent % on ${size.width.round()} × '
+            '${size.height.round()}${example == null ? '' : ', the long example,'} '
+            'the sentence and its translation show whole above the field, a '
+            'role smaller (#572); the top bar and their size are back at the '
+            "keyboard's going", (tester) async {
           await typing(
             tester,
             AndroidTextScaler(percent / 100),
             example: example,
+            size: size,
+            keyboard: keyboard,
+            locale: Locale(lang),
           );
           expect(
-            tester
-                .widget<EditableText>(find.byType(EditableText))
-                .focusNode
-                .hasFocus,
+            focused(tester),
             isTrue,
             reason: 'the field kept the keyboard',
           );
           expect(close(), findsNothing, reason: 'the top bar gave its row');
-          final window = tester.getRect(
-            find
-                .ancestor(
-                  of: find.byType(TextField),
-                  matching: find.byType(Scrollable),
-                )
-                .first,
-          );
+          if (example != null && percent == 200) {
+            // Its lines: the boxes' tops, a line apart (the gap's box sits
+            // a few dp off its line's text).
+            final drawn = tester.renderObject<RenderParagraph>(sentence());
+            final tops = <double>[
+              for (final box in drawn.getBoxesForSelection(
+                TextSelection(
+                  baseOffset: 0,
+                  extentOffset: drawn.text.toPlainText().length,
+                ),
+              ))
+                box.top,
+            ]..sort();
+            var lines = 1;
+            for (var i = 1; i < tops.length; i++) {
+              if (tops[i] - tops[i - 1] > 10) lines++;
+            }
+            expect(
+              lines,
+              3,
+              reason: 'the long example is three lines at 200 %',
+            );
+          }
+          final room = window(tester);
           for (final (name, shown) in <(String, Finder)>[
-            (
-              'the sentence',
-              find.textContaining('ist lang', findRichText: true).first,
-            ),
+            ('the sentence', sentence()),
             ('the translation', find.text('The street is long.')),
             ('the field', find.byType(TextField)),
           ]) {
             final rect = tester.getRect(shown);
-            expect(rect.top, greaterThanOrEqualTo(window.top), reason: name);
-            expect(rect.bottom, lessThanOrEqualTo(window.bottom), reason: name);
+            expect(rect.top, greaterThanOrEqualTo(room.top), reason: name);
+            expect(rect.bottom, lessThanOrEqualTo(room.bottom), reason: name);
           }
           expect(
             tester.getRect(find.byType(DpUmlautBar)).bottom,
-            lessThanOrEqualTo(keyboardTop),
+            lessThanOrEqualTo(size.height - keyboard),
           );
+          final typed = sentenceSize(tester);
 
           tester.view.resetViewInsets();
           await tester.pumpAndSettle();
           expect(close(), findsOneWidget, reason: 'the top bar is back');
-        },
-      );
+          expect(sentenceSize(tester), greaterThan(typed), reason: 'its role');
+        });
+      }
     }
 
-    testWidgets('at 100 % the keyboard keeps the top bar', (tester) async {
-      await typing(tester, TextScaler.noScaling);
-      expect(close(), findsOneWidget);
-    });
+    // #572, agent-0's review: 1,936 examples pass 45 characters, and on the
+    // budget phone at 200 % one that long doesn't fit even reduced. It
+    // scrolls field first, as L8's and L12's do (#573): the field and its
+    // umlaut row show; a drag shows the whole sentence and its translation,
+    // the field keeping the keyboard.
+    const longer = 'Die Straße vor dem alten Haus unserer Großeltern ist lang.';
+    for (final lang in <String>['en', 'bn']) {
+      testWidgets('#572 in $lang at 200 % on 360 × 640 a sentence of four '
+          'lines or more scrolls: the field first, then the whole sentence '
+          'after a drag, the field keeping the keyboard', (tester) async {
+        await typing(
+          tester,
+          AndroidTextScaler(2),
+          example: longer,
+          size: budget,
+          keyboard: 280,
+          locale: Locale(lang),
+        );
+        final room = window(tester);
+        for (final (name, shown) in <(String, Finder)>[
+          ('the field', find.byType(TextField)),
+          ('the umlaut row', find.byType(DpUmlautBar)),
+        ]) {
+          final rect = tester.getRect(shown);
+          expect(rect.top, greaterThanOrEqualTo(room.top), reason: name);
+          expect(rect.bottom, lessThanOrEqualTo(room.bottom), reason: name);
+        }
+        expect(focused(tester), isTrue, reason: 'the field has the keyboard');
+        expect(
+          tester.getRect(sentence()).top,
+          lessThan(room.top),
+          reason: 'it does not fit, so this case tests the scroll',
+        );
+
+        // Drawn down until the sentence's top reaches the window's.
+        final under = room.top - tester.getRect(sentence()).top;
+        await tester.drag(
+          find
+              .ancestor(
+                of: find.byType(TextField),
+                matching: find.byType(Scrollable),
+              )
+              .first,
+          Offset(0, under),
+        );
+        await tester.pumpAndSettle();
+        expect(
+          tester.getRect(sentence()).top,
+          greaterThanOrEqualTo(room.top - 0.5),
+          reason: 'the sentence from its top',
+        );
+        expect(
+          tester.getRect(find.text('The street is long.')).bottom,
+          lessThanOrEqualTo(room.bottom),
+          reason: 'to its translation',
+        );
+        expect(focused(tester), isTrue, reason: 'the field kept the keyboard');
+      });
+    }
+
+    // At 130 % and below nothing changes (#564, #572): the top bar, the
+    // sentence's role, the 14 dp gap and the full field.
+    for (final (size, keyboard) in <(Size, double)>[
+      (sqa, 300),
+      (budget, 280),
+    ]) {
+      testWidgets('at 100 % on ${size.width.round()} × ${size.height.round()} '
+          'the keyboard keeps the top bar, the sentence its role, the 14 dp '
+          'gap and the full field', (tester) async {
+        await typing(
+          tester,
+          TextScaler.noScaling,
+          size: size,
+          keyboard: keyboard,
+        );
+        // Built again with the keyboard up, as a later rebuild while typing
+        // would: at 100 % nothing above rebuilds on the keyboard itself.
+        tester.element(find.byType(StudyClozeCard)).markNeedsBuild();
+        await tester.pumpAndSettle();
+        expect(close(), findsOneWidget);
+        expect(
+          sentenceSize(tester),
+          DpTextRole.title
+              .token(tester.element(sentence()).tokens.typography)
+              .size,
+          reason: 'title, as drawn',
+        );
+        expect(
+          tester.getRect(find.byType(TextField)).top -
+              tester.getRect(find.text('The street is long.')).bottom,
+          moreOrLessEquals(14, epsilon: 0.5),
+          reason: 'the 14 dp gap',
+        );
+        expect(
+          tester.widget<StudyAnswerField>(find.byType(StudyAnswerField)).dense,
+          isFalse,
+        );
+      });
+    }
   });
 }

@@ -103,9 +103,18 @@ class _StudyClozeCardState extends ConsumerState<StudyClozeCard> {
     final example = widget.cloze.example;
     final gap = widget.cloze.gap;
     final verdict = _verdict;
+    // #572, the lead's rule from #571 (reduce first, then scroll): typing
+    // past 130 % on a 360 × 640 phone the sentence went under the top.
+    // What is asked is a role smaller, and the gaps and the field close.
+    // ponytail: on that phone with a 280 dp keyboard, three lines (about
+    // 37 letters) fit at 200 %; a longer sentence scrolls, field first, as
+    // L8's and L12's do (#573): the field and its umlaut row stay in view,
+    // and a drag shows the sentence. The next lever: a second role down.
+    final typing = DpScript.largeTypingInView(context);
+    DpTextRole asked(DpTextRole role) => typing ? role.oneStepSmaller : role;
     final line = DpText.styleFor(
       tokens,
-      DpTextRole.title,
+      asked(DpTextRole.title),
     ).copyWith(fontWeight: FontWeight.w500);
     final english = example.english;
 
@@ -172,19 +181,20 @@ class _StudyClozeCardState extends ConsumerState<StudyClozeCard> {
               },
             ),
             if (english != null) ...<Widget>[
-              const SizedBox(height: 6),
+              SizedBox(height: typing ? 2 : 6),
               DpText(
                 english,
-                role: DpTextRole.body,
+                role: asked(DpTextRole.body),
                 color: tokens.color.textSecondary,
               ),
             ],
-            const SizedBox(height: 14),
+            SizedBox(height: typing ? 6 : 14),
             if (verdict == null) ...<Widget>[
               StudyAnswerField(
                 controller: _answer,
                 onSubmitted: _check,
                 umlautRowBelow: true,
+                dense: typing,
               ),
               const SizedBox(height: 8),
               DpUmlautBar(controller: _answer),
@@ -306,13 +316,7 @@ class StudyAnswerField extends StatelessWidget {
   Widget build(BuildContext context) {
     final tokens = context.tokens;
     final l10n = AppLocalizations.of(context);
-    // DpScript.largeTyping, read from the view: this field sits in a
-    // scaffold's body, which the keyboard's inset is taken out of (#529).
-    // ponytail: the view is no dependency; the screens above rebuild on the
-    // keyboard (their collapsed headers read it), and so this. Pass
-    // `typing` down if one of them ever stops rebuilding it.
-    final typing =
-        DpScript.large(context) && View.of(context).viewInsets.bottom > 0;
+    final typing = DpScript.largeTypingInView(context);
     final edge = OutlineInputBorder(
       borderRadius: BorderRadius.circular(tokens.shape.button),
       borderSide: BorderSide(color: tokens.color.ink, width: 2),
@@ -334,6 +338,11 @@ class StudyAnswerField extends StatelessWidget {
               below: DpScript.large(context)
                   ? 0
                   : 12 + DpButton.minimumTapTarget,
+              // Typing past 130 %, 8 dp of the margin under the keys go to
+              // what is asked: T2's cloze (a three-line one fits a 360 × 640
+              // phone) and L15's gap, which this field also serves (#572).
+              // 12 dp is the keys' floor above the keyboard.
+              margin: typing ? 12 : 20,
             )
           : const EdgeInsets.all(20),
       onSubmitted: (_) => onSubmitted(),
