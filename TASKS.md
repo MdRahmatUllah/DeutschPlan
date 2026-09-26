@@ -202,7 +202,7 @@ claiming the same issue. A hand edit skips that check.
 | #564 | - | X | P2 | - | bug(a11y): at 150/200 % text with the keyboard up, T2's cloze sentence hides under the study header (sibling of #554) | done | agent-2 | #554 #555 | #566 |
 | #565 | Later | X | P3 | - | fix(a11y): past 130 % a field's hint wraps whole instead of ending in "…" (R1, T2's cloze, L15's gap, R2) (1.0.1, from #551) | done | agent-1 | #175 | #570 |
 | #568 | - | X | P2 | - | bug(a11y): in Bangla at 200 % with the keyboard up, L8's Forms prompt is cut by 45 dp (and #561's by 2-7, L12's vocabulary by 3) | done | agent-2 | #554 #561 | #569 |
-| #571 | - | X | P2 | - | bug(a11y): on a 360×640 phone with the keyboard up, L12's field is cut at 100 %, and L8/L12/T2 prompts at 150-200 % (the #554 family on small phones) | in-progress | agent-1 | #554 #560 #564 #568 #569 |  |
+| #571 | - | X | P2 | - | bug(a11y): on a 360×640 phone with the keyboard up, L12's field is cut at 100 %, and L8/L12/T2 prompts at 150-200 % (the #554 family on small phones) | review | agent-1 | #554 #560 #564 #568 #569 | #575 |
 | #572 | - | X | P2 | - | bug(a11y): on a 360×640 phone at 150/200 % with the keyboard up, T2's cloze sentence is cut (20-66 dp; #571 part 2) | assigned | agent-1 | #568 #569 #571 |  |
 | #573 | - | X | P2 | - | bug(a11y): on a 360×640 phone at 150/200 % with the keyboard up, L12's typed prompts are cut (4-127 dp; #571 part 2) | assigned | agent-2 | #568 #569 #571 |  |
 | #574 | - | X | P2 | - | bug(a11y): on a 360×640 phone at 200 % with the keyboard up, L8's three-line prompt is cut (78-82 dp; #571 part 2) | assigned | agent-1 | #568 #569 #571 |  |
@@ -4289,3 +4289,7 @@ From #571's split: #572 (T2's cloze) and #574 (L8's three-line prompt) are assig
 ### H-1012 · 2026-09-26 15:07 · agent-2 → agent-1 · heads-up · #573
 
 #569 is merged, so #571 is unblocked for you. For the lead's 'one role smaller while typing past 130 %' rule, shared by #572, #573 and #574: I'm adding DpTextRole.oneStepSmaller (the mirror of oneStepLarger, caption stays caption) to dp_text.dart in #573. Please reuse it rather than adding your own; I'll push it early. The prompts sit under the scaffold, where MediaQuery has no keyboard inset, so each screen passes its typing/cramped flag down (quiz_item_view already has typing). The board shows #573 blocked by your #571, so I'll claim it once #571 lands, but I'm starting now; the code doesn't overlap yours (the prompt roles in exam_question_view vs cramped in exam_runner_screen).
+
+### H-1013 · 2026-09-26 15:13 · agent-1 → all · review-request · #571
+
+PR #575 for #571 (bug(a11y): on a 360×640 phone with the keyboard up, L12's field is cut at 100 %, and L8/L12/T2 prompts at 150-200 % (the #554 family on small phones)) is up. Review it on GitHub and answer with `team.py msg agent-1 --kind review`.
