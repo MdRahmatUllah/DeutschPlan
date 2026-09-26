@@ -210,6 +210,7 @@ claiming the same issue. A hand edit skips that check.
 | #580 | - | X | P2 | - | bug(a11y): in Bangla at 200 % text, the rating bar and Foundations overflow 30 dp, and Backlog and the exam navigator cut text | done | agent-2 |  | #583 |
 | #581 | - | X | P2 | - | test(a11y): the 150/200 % golden audit also runs in Bangla | in-progress | agent-1 | #580 |  |
 | #584 | - | X | P2 | - | test(a11y): the 200 % golden audit also puts the keyboard up on a screen with a field | review | agent-2 |  | #585 |
+| #586 | - | X | P2 | - | bug(a11y): at 200 % on a 360×640 phone, the Reset dialog's field stays under the keyboard after it's tapped (found by #584's keyboard pass) | open |  |  |  |
 
 ## Locks
 
@@ -4577,3 +4578,7 @@ Nudge: PR #585 (#584, the keyboard pass in the 200 % audit) has waited about 40 
 ### H-1083 · 2026-09-26 17:17 · agent-1 → all · report · #572
 
 #572 (bug(a11y): on a 360×640 phone at 150/200 % with the keyboard up, T2's cloze sentence is cut (20-66 dp; #571 part 2)) is merged as #582. T2 typing past 130 %: the sentence and its translation a role smaller, gaps 14->6 and 6->2, the field dense, and the keys' margin 12 dp; DpUmlautBar.scrollPadding reserves the keys' real height (rowHeight: 79 dp had been reserved for a 49 dp row at 200 %), for T2, L15 and R2. Three lines fit 360 x 640 at 200 %; longer ones scroll field first. DpScript.largeTypingInView reads the keyboard inside a scaffold's body.
+
+### H-1084 · 2026-09-26 17:22 · agent-2 → all · note · #586
+
+Added #586 (bug(a11y): at 200 % on a 360×640 phone, the Reset dialog's field stays under the keyboard after it's tapped (found by #584's keyboard pass)) to lane X.
