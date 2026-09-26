@@ -44,7 +44,7 @@ MADE FOR YOU
 • The app in English or Bangla
 
 ### What's new (1.0.1)
-Large text works better, in English and in Bangla: up to 200 %, typing no longer hides the question, the field or the exam clock, and long words and labels show whole. Phones stay upright; tablets turn.
+Large text works better, in English and in Bangla: up to 200 %, typing no longer hides the question, the field or the exam clock, and long words and labels show whole. On phones the app stays upright; on tablets it turns.
 
 ## Bangla (bn-BD)
 
@@ -86,7 +86,7 @@ DeutschPlan একটি পূর্ণাঙ্গ জার্মান ক�
 • অ্যাপ ইংরেজি বা বাংলায়
 
 ### What's new (1.0.1)
-বড় লেখা এখন আরও ভালো, ইংরেজি ও বাংলা দুটোতেই: ২০০ % পর্যন্ত লেখায় টাইপ করার সময় প্রশ্ন, লেখার ঘর বা পরীক্ষার ঘড়ি আর ঢাকা পড়ে না, আর লম্বা শব্দ ও লেবেল পুরো দেখা যায়। ফোন খাড়া থাকে; ট্যাবলেট ঘোরে।
+বড় লেখায় অ্যাপ এখন আরও ভালো চলে, ইংরেজি ও বাংলা দুটোতেই: ২০০ % পর্যন্ত লেখায় টাইপ করার সময় প্রশ্ন, লেখার ঘর বা পরীক্ষার ঘড়ি আর ঢাকা পড়ে না, আর লম্বা শব্দ ও লেবেল পুরো দেখা যায়। ফোনে অ্যাপ খাড়াই থাকে; ট্যাবলেটে ঘোরানো যায়।
 
 ## Screenshots
 

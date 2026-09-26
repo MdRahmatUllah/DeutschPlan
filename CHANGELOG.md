@@ -7,9 +7,9 @@ DeutschPlan's releases. The version is `pubspec.yaml`'s; each entry lands in the
 Large text, in English and in Bangla.
 
 ### Fixed
-- Typing with text past 130 %: the question stays in view above the field, a prompt that doesn't fit is one size smaller and then scrolls, and a verdict scrolls into view (L8, L12, T2's cloze, R2, Writing, the Reset dialog).
+- Typing with text past 130 %, or on a short phone at any size: the question stays in view above the field, a prompt that doesn't fit is one size smaller and then scrolls, and a verdict scrolls into view (L8, L12, T2's cloze, R2, Writing, the Reset dialog).
 - The timed exam keeps its clock in view while typing, and it turns Coral near the end.
-- A field's hint wraps whole instead of ending in "…".
+- A field's hint wraps whole instead of ending in "…" (R1, T2's cloze, L15's gap, R2).
 - In Bangla at 200 %: the rating label, Backlog's day line, the navigator's numbers, the back button's label and the Speaking timer show whole.
 - Phones stay portrait; tablets turn.
 
