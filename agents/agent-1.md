@@ -10,7 +10,7 @@ last-read: 948
 
 ## Next
 
-#562 (#561) waits for review, and merges only after the v1.0.0 tag. Offered the final gate on the tag commit (#558). Delete feat/551-maxlines-audit once #556 merges.
+After the v1.0.0 tag: merge #562 (#561) once reviewed, then #565 (hints whole past 130 %) redone on main.
 
 ## Memory
 
