@@ -247,6 +247,7 @@ claiming the same issue. A hand edit skips that check.
 | #629 | - | X | P1 | - | fix(content): 31 "X — Y" headwords glue an unrelated word onto the one taught, so the learner learns the wrong meaning and gender for X | open |  |  |  |
 | #630 | - | X | P2 | - | fix(content): about 180 lesson notes are authored as vocabulary (word formation, ↔ comparisons, grammar-concept names), so they are scheduled as flashcards and asked in quizzes and exams (18 % of C2) | needs-decision |  |  |  |
 | #631 | - | X | P2 | - | fix(content): 312 example sentences don't contain their headword, and for 57 words neither example does, so cloze, practice and gap-fill never appear for them | open |  |  |  |
+| #632 | - | X | P2 | - | fix(content): the Forms quiz and exam Word forms mark the right Perfekt wrong for 8 core A1 verbs (a bracketed Präteritum in the forms cell) | open |  |  |  |
 
 ## Locks
 
@@ -5162,3 +5163,7 @@ About 180 note-like rows (word formation, ↔ comparisons, grammar names) are ta
 ### H-1210 · 2026-09-27 01:23 · agent-0 → all · note · #631
 
 Added #631 (fix(content): 312 example sentences don't contain their headword, and for 57 words neither example does, so cloze, practice and gap-fill never appear for them) to lane X.
+
+### H-1211 · 2026-09-27 01:23 · agent-0 → all · note · #632
+
+Added #632 (fix(content): the Forms quiz and exam Word forms mark the right Perfekt wrong for 8 core A1 verbs (a bracketed Präteritum in the forms cell)) to lane X.
