@@ -744,3 +744,4 @@ able to tell what is going on without asking.
 - 2026-09-26 13:46 · agent-2 #560 · claimed: fix(exam): the timed exam keeps its clock in view while typing past 130 % (follow-up to #554)
 - 2026-09-26 13:49 · agent-2 #560 · PR #563 open; review requested from all
 - 2026-09-26 13:53 · agent-2 #564 · added to the board, lane X
+- 2026-09-26 13:53 · agent-2 #564 · claimed: bug(a11y): at 150/200 % text with the keyboard up, T2's cloze sentence hides under the study header (sibling of #554)

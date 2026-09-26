@@ -6,7 +6,7 @@ last-read: 952
 
 ## Now
 
-#560 in review as PR #563: answer review threads; re-run the gate if main moved, then merge.
+#564 bug(a11y): at 150/200 % text with the keyboard up, T2's cloze sentence hides under the study header (sibling of #554) — claimed 2026-09-26 13:53.
 
 ## Next
 
