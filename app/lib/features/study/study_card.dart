@@ -225,6 +225,9 @@ class _StudyWordCardState extends ConsumerState<StudyWordCard> {
                       ),
                       role: DpTextRole.caption,
                       color: tokens.color.textSecondary,
+                      // Its Bangla pronunciation too, though no German in
+                      // it is long (#504).
+                      breakTooWide: true,
                     ),
                   ],
                 ),

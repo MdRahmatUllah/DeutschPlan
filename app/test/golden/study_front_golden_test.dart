@@ -134,6 +134,32 @@ void main() {
     textScale: 2,
   );
 
+  // #504: a caption with only a pronunciation, no forms to offer a soft
+  // hyphen: its Bangla still breaks between aksharas at 200 %, and the
+  // text audit checks it.
+  goldenTest(
+    'study_front_pron_200',
+    builder: (context) => card(
+      const Word(
+        uid: 'r3',
+        sublevelCode: 'C1.1',
+        levelCode: 'C1',
+        seq: 1,
+        seqInSublevel: 1,
+        article: 'die',
+        german: 'Vergangenheitsbewältigung',
+        pos: 'noun',
+        pronBn: 'ফেয়াগাঙেনহাইট্‌সবেভেল্টিগুং',
+        english: 'coming to terms with the past',
+        searchKey: 'vergangenheitsbewaltigung',
+        searchKeyAlt: 'vergangenheitsbewaeltigung',
+      ),
+    ),
+    modes: const <GoldenMode>[GoldenMode.light],
+    devices: const <GoldenDevice>[GoldenDevice.phone],
+    textScale: 2,
+  );
+
   // #363: a word of the learner's own, fourth in the same Revise block. Its
   // chip says so where a course word's names its step.
   final mine = SessionArgs(

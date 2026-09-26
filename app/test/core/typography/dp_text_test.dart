@@ -579,6 +579,44 @@ void main() {
       semantics.dispose();
     });
 
+    testWidgets('#504 a caption with only a pronunciation, no long German to '
+        'offer a soft hyphen, breaks it between aksharas too: its caller '
+        'asks (breakTooWide)', (tester) async {
+      // Vergangenheitsbewältigung has no forms: "Nomen · /…/".
+      const caption = 'Nomen · /ফেয়াগাঙেনহাইট্‌সবেভেল্টিগুং/';
+      Future<String> drawnAt(double width, {required bool asked}) async {
+        await pump(
+          tester,
+          SizedBox(
+            width: width,
+            child: DpText(
+              DpScript.allowBreaks(caption),
+              role: DpTextRole.body,
+              breakTooWide: asked,
+            ),
+          ),
+        );
+        return tester
+            .renderObject<RenderParagraph>(find.byType(RichText))
+            .text
+            .toPlainText(includeSemanticsLabels: false);
+      }
+
+      expect(DpScript.allowBreaks(caption), caption, reason: 'no hyphen');
+      for (var width = 110.0; width <= 300; width += 1) {
+        await drawnAt(width, asked: true);
+        for (final line in lineEnds(tester)) {
+          expect(line, endsWith('\n'), reason: 'at $width: "$line"');
+        }
+      }
+      expect(await drawnAt(120, asked: true), contains('-\n'));
+      expect(
+        await drawnAt(120, asked: false),
+        isNot(contains('-\n')),
+        reason: 'not asked, the paragraph breaks it at a letter, as before',
+      );
+    });
+
     testWidgets('#504 a Bangla pronunciation too wide for its line breaks '
         'between aksharas, with its "-", and is read whole', (tester) async {
       final semantics = tester.ensureSemantics();
@@ -731,42 +769,99 @@ void main() {
   });
 
   group('#504 a Bangla word too wide for its line', () {
-    // Geschwindigkeitsbegrenzung's, from content.db, with its joints.
-    const pron = 'গেশ্ভিন্ডিশকাইট্‌সবেগ্রেন্‌ৎসুং';
-    final broken = DpScript.banglaBreaks(pron);
+    // Real pronunciations from content.db, and where each may break.
+    const table = <String, List<String>>{
+      // Joints (hasanta + ZWNJ) break; the last akshara stays with one more.
+      'Geschwindigkeitsbegrenzung': <String>[
+        'গেশ্ভি', 'ন্ডি', 'শ', 'কাইট্‌', 'স', 'বে', 'গ্রেন্‌ৎসুং', //
+      ],
+      // A closed conjunct (ন্ট্‌) starts no line: never "লা|ন্ট্‌".
+      'Bruttoinlandsprodukt': <String>[
+        'ব্রুটোই', 'ন', 'লান্ট্‌', 'স', 'প্রো', 'ডুক্ট', //
+      ],
+      // Nor "রে|শ্ট্‌".
+      'Rechtsschutzversicherung': <String>[
+        'রেশ্ট্‌', 'স', 'শুৎ', 'স', 'ফে', 'য়া', 'জি', 'শারুং', //
+      ],
+      // A reph and too few aksharas: whole.
+      'Morgen': <String>['মর্গেন'],
+      // A ya-phala written with a zero-width joiner: whole.
+      'Brücke': <String>['ব্র‍্যুকে'],
+      // No lone coda on the last line: "…বা|র|শুস", not "…শু|স".
+      'Handelsbilanzüberschuss': <String>[
+        'হান্ডে', 'ল্স', 'বি', 'লান্‌ৎ', 'স', 'য়্যু', 'বা', 'র', 'শুস', //
+      ],
+      // An independent vowel after a joint begins a line: ein|und.
+      'einundzwanzig': <String>['আইন্‌', 'উন্ট্‌ৎ', 'স', 'ভান্‌ৎ', 'সিশ'],
+      'Fahrkartenautomat': <String>[
+        'ফার', 'কা', 'র্টেন্‌', 'আউ', 'টো', 'মাট', //
+      ],
+    };
+    const prons = <String, String>{
+      'Geschwindigkeitsbegrenzung': 'গেশ্ভিন্ডিশকাইট্‌সবেগ্রেন্‌ৎসুং',
+      'Bruttoinlandsprodukt': 'ব্রুটোইনলান্ট্‌সপ্রোডুক্ট',
+      'Rechtsschutzversicherung': 'রেশ্ট্‌সশুৎসফেয়াজিশারুং',
+      'Morgen': 'মর্গেন',
+      'Brücke': 'ব্র‍্যুকে',
+      'Handelsbilanzüberschuss': 'হান্ডেল্সবিলান্‌ৎসয়্যুবারশুস',
+      'einundzwanzig': 'আইন্‌উন্ট্‌ৎসভান্‌ৎসিশ',
+      'Fahrkartenautomat': 'ফারকার্টেন্‌আউটোমাট',
+    };
 
-    test("#504 breaks between aksharas, and at the content's own joints", () {
-      expect(broken.replaceAll(DpScript.softHyphen, ''), pron);
-      expect(broken.split(DpScript.softHyphen), <String>[
-        'গে', 'শ্ভি', 'ন্ডি', 'শ', 'কাইট্‌', 'স', 'বে', 'গ্রেন্‌ৎ', 'সুং', //
-      ]);
-    });
-
-    test('#504 never inside a conjunct, nor before a vowel sign, a mark, '
-        'khanda-ta, an independent vowel or a consonant a joint closes', () {
-      const shy = 0xAD, hasanta = 0x9CD, joint = 0x200C;
-      final units = broken.codeUnits;
-      for (var i = 0; i < units.length; i++) {
-        if (units[i] != shy) continue;
-        final after = units[i + 1];
-        expect(units[i - 1], isNot(hasanta), reason: 'a conjunct split');
+    test("#504 each breaks between its aksharas, and at the content's own "
+        'joints, as the table says', () {
+      for (final MapEntry(key: german, value: pron) in prons.entries) {
+        final broken = DpScript.banglaBreaks(pron);
+        expect(broken.replaceAll(DpScript.softHyphen, ''), pron);
         expect(
-          (after >= 0x995 && after <= 0x9B9) ||
-              (after >= 0x9DC && after <= 0x9DF),
-          isTrue,
-          reason: 'a line starts with a consonant: $broken',
-        );
-        expect(
-          units[i + 2] == hasanta && units[i + 3] == joint,
-          isFalse,
-          reason: 'a closed consonant starts no line: $broken',
+          broken.split(DpScript.softHyphen),
+          table[german],
+          reason: german,
         );
       }
     });
 
-    test('#504 a word too wide for its line: a short one breaks too, since '
-        "it's only asked when it doesn't fit", () {
-      expect(DpScript.banglaBreaks('ভোনুং'), 'ভো${DpScript.softHyphen}নুং');
+    test('#504 no line starts with a vowel sign, a mark, khanda-ta, or a '
+        'consonant a joint closes, and none follows a hasanta', () {
+      const shy = 0xAD, hasanta = 0x9CD, joint = 0x200C;
+      for (final pron in prons.values) {
+        final units = DpScript.banglaBreaks(pron).codeUnits;
+        int at(int i) => i < units.length ? units[i] : 0;
+        for (var i = 0; i < units.length; i++) {
+          if (units[i] != shy) continue;
+          expect(units[i - 1], isNot(hasanta), reason: 'a conjunct split');
+          final next = units[i + 1];
+          expect(
+            (next >= 0x995 && next <= 0x9B9) ||
+                (next >= 0x9DC && next <= 0x9DF) ||
+                (next >= 0x985 && next <= 0x994 && units[i - 1] == joint),
+            isTrue,
+            reason: 'a line starts with an akshara: $pron',
+          );
+          var last = i + 1;
+          while (at(last + 1) == hasanta &&
+              at(last + 2) >= 0x995 &&
+              at(last + 2) <= 0x9DF) {
+            last += 2;
+          }
+          expect(
+            at(last + 1) == hasanta &&
+                (at(last + 2) == joint || at(last + 2) == 0),
+            isFalse,
+            reason: 'a closed consonant starts a line: $pron',
+          );
+        }
+      }
+    });
+
+    test('#504 nothing breaks before the first Bangla letter: an opening "/" '
+        'stays with it', () {
+      final broken = DpScript.banglaBreaks('/${prons['Morgen']}/');
+      expect(broken, isNot(contains(DpScript.softHyphen)));
+      final long = DpScript.banglaBreaks(
+        '/${prons['Geschwindigkeitsbegrenzung']}/',
+      );
+      expect(long.indexOf(DpScript.softHyphen), greaterThan(3));
     });
   });
 
