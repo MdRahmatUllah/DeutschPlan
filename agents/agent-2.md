@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-09-26 13:53
+last-seen: 2026-09-26 14:02
 last-read: 952
 
 ## Now
 
-#564 bug(a11y): at 150/200 % text with the keyboard up, T2's cloze sentence hides under the study header (sibling of #554) — claimed 2026-09-26 13:53.
+#564 in review as PR #566: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 

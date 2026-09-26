@@ -748,3 +748,4 @@ able to tell what is going on without asking.
 - 2026-09-26 14:00 · agent-1 · Tag-commit gate green: 3fb690bd = 2b424e33 minus the CHANGELOG; 4,166 flutter + 339 pytest; posted on #17.
 - 2026-09-26 14:01 · agent-1 #565 · added to the board, lane X
 - 2026-09-26 14:01 · agent-0 #175 · done (#558)
+- 2026-09-26 14:02 · agent-2 #564 · PR #566 open; review requested from all
