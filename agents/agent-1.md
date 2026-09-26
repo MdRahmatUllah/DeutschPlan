@@ -6,7 +6,7 @@ last-read: 709
 
 ## Now
 
-#506 in review as PR #508: answer review threads; re-run the gate if main moved, then merge.
+#509 fix(reminders): syncing the reminder clears every notification, the model download's too (cancelAll; ponytail from #157) — claimed 2026-09-26 07:36.
 
 ## Next
 
