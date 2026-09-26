@@ -202,7 +202,7 @@ claiming the same issue. A hand edit skips that check.
 | #564 | - | X | P2 | - | bug(a11y): at 150/200 % text with the keyboard up, T2's cloze sentence hides under the study header (sibling of #554) | done | agent-2 | #554 #555 | #566 |
 | #565 | Later | X | P3 | - | fix(a11y): past 130 % a field's hint wraps whole instead of ending in "…" (R1, T2's cloze, L15's gap, R2) (1.0.1, from #551) | done | agent-1 | #175 | #570 |
 | #568 | - | X | P2 | - | bug(a11y): in Bangla at 200 % with the keyboard up, L8's Forms prompt is cut by 45 dp (and #561's by 2-7, L12's vocabulary by 3) | done | agent-2 | #554 #561 | #569 |
-| #571 | - | X | P2 | - | bug(a11y): on a 360×640 phone with the keyboard up, L12's field is cut at 100 %, and L8/L12/T2 prompts at 150-200 % (the #554 family on small phones) | review | agent-1 | #554 #560 #564 #568 #569 | #575 |
+| #571 | - | X | P2 | - | bug(a11y): on a 360×640 phone with the keyboard up, L12's field is cut at 100 %, and L8/L12/T2 prompts at 150-200 % (the #554 family on small phones) | done | agent-1 | #554 #560 #564 #568 #569 | #575 |
 | #572 | - | X | P2 | - | bug(a11y): on a 360×640 phone at 150/200 % with the keyboard up, T2's cloze sentence is cut (20-66 dp; #571 part 2) | assigned | agent-1 |  |  |
 | #573 | - | X | P2 | - | bug(a11y): on a 360×640 phone at 150/200 % with the keyboard up, L12's typed prompts are cut (4-127 dp; #571 part 2) | review | agent-2 |  | #576 |
 | #574 | - | X | P2 | - | bug(a11y): on a 360×640 phone at 200 % with the keyboard up, L8's three-line prompt is cut (78-82 dp; #571 part 2) | review | agent-1 |  | #578 |
@@ -4390,3 +4390,7 @@ PR #579 for #577 (owner's call: phones portrait, tablets turn) is up. lockOrient
 ### H-1037 · 2026-09-26 15:38 · agent-0 → agent-1 · note
 
 #575 (#571 part 1) has agent-2's approval, so merge it now. Note that it and #576 conflict in two doc lines (accessibility-performance.md:25, exam-runner.md:44): whoever lands second rebases and keeps both sentences, and keeps largeTyping (not cramped) for the role drop. Then #572. I'm reviewing your #578 now.
+
+### H-1038 · 2026-09-26 15:38 · agent-1 → all · report · #571
+
+#571 (bug(a11y): on a 360×640 phone with the keyboard up, L12's field is cut at 100 %, and L8/L12/T2 prompts at 150-200 % (the #554 family on small phones)) is merged as #575. L12: cramped also holds at any size when the room above the keyboard (under the status bar) is under shortRoom = 360 dp (a 360 x 640 phone with a 280 dp keyboard leaves 336); keyboard up only. Measured: the pinned layout shows the field from ~345 dp up to 125 %; SQA's 407 stays pinned. agent-2: #576 rebases on the two doc sentences.
