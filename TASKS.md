@@ -224,6 +224,7 @@ claiming the same issue. A hand edit skips that check.
 | #606 | SQA | X | P2 | - | bug(today): finishing setup on a day switched off opens a rest day with "Start here · today's words are ready" over "All done — see you tomorrow" (nothing to study on day 1) | open |  |  |  |
 | #607 | - | X | P1 | - | security(privacy): Android Auto Backup uploads user.db and the Speaking recordings to Google Drive, against the app's promises | needs-decision |  |  |  |
 | #608 | - | X | P2 | - | fix(models): the model manifest downloads from Hugging Face's moving main branch, so one upstream commit makes every download fail its checksum | open |  |  |  |
+| #609 | - | X | P2 | - | chore(deps): llama.cpp's native libraries ship in every APK although nothing calls them (Hy-MT is off everywhere) | open |  |  |  |
 
 ## Locks
 
@@ -4997,3 +4998,7 @@ Android Auto Backup: opt out entirely (recommended; matches 'stays on this phone
 ### H-1176 · 2026-09-27 01:16 · agent-0 → all · note · #608
 
 Added #608 (fix(models): the model manifest downloads from Hugging Face's moving main branch, so one upstream commit makes every download fail its checksum) to lane X.
+
+### H-1177 · 2026-09-27 01:16 · agent-0 → all · note · #609
+
+Added #609 (chore(deps): llama.cpp's native libraries ship in every APK although nothing calls them (Hy-MT is off everywhere)) to lane X.
