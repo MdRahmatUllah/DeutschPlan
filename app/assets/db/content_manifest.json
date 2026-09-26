@@ -7,13 +7,13 @@
     "C1.2": 20,
     "C2.2": 20
   },
-  "built_at": "2026-09-26T06:12:10+00:00",
-  "content_version": "202609260612",
+  "built_at": "2026-09-26T08:37:50+00:00",
+  "content_version": "202609260837",
   "counts": {
-    "examples": 11188,
+    "examples": 11186,
     "grammar": 182,
     "tips": 622,
-    "words": 5594
+    "words": 5593
   },
   "format": 1,
   "grammar": {
@@ -913,7 +913,6 @@
     "1f6152a9087e886a": "8056a9cf77425018",
     "1f66fc6b778f5e9a": "c17ffe853d4ccd3a",
     "1f6f0009c2e1375c": "4b30e0b1b91f7f94",
-    "1f86e3a7d0a24921": "57b6bad21528ade5",
     "1f86e7b2a49e7635": "4b56fb1f6231bbc0",
     "1f87ddeaf9167111": "b72d935f1e8b5ddc",
     "1f8909204ecf1ac5": "9a89cc932e7505ae",
@@ -5854,9 +5853,9 @@
       "words": 469
     },
     "C2.1": {
-      "examples": 684,
+      "examples": 682,
       "grammar": 20,
-      "words": 342
+      "words": 341
     },
     "C2.2": {
       "examples": 674,
@@ -6577,7 +6576,6 @@
     "1f6152a9087e886a": "067a1cb549c2860f",
     "1f66fc6b778f5e9a": "729e60ae69cd0ceb",
     "1f6f0009c2e1375c": "aa519c4f49e92a0d",
-    "1f86e3a7d0a24921": "740ffba50bbffe40",
     "1f86e7b2a49e7635": "3ba8d201bf3442ed",
     "1f87ddeaf9167111": "1a3f7ea67a6060ce",
     "1f8909204ecf1ac5": "5d8ee3697d0c1f51",

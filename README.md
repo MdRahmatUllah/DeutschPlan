@@ -17,7 +17,7 @@ Click any screenshot to open that screen as HTML. Inside the prototype, buttons 
 
 ## What the app does
 
-- **Course map.** 12 steps (A1.1 … C2.2), 5,594 words, 182 grammar topics, 11,188 example sentences. Each step has Words, Grammar, Quiz and Exams tabs. A 3-minute adaptive placement check picks the starting step.
+- **Course map.** 12 steps (A1.1 … C2.2), 5,593 words, 182 grammar topics, 11,186 example sentences. Each step has Words, Grammar, Quiz and Exams tabs. A 3-minute adaptive placement check picks the starting step.
 - **Today.** One daily plan: words to revise, new words from the current topic, a backlog of missed days, practice sentences built from known words, and the grammar topic of the week. Rest days and an "all done" state are first-class.
 - **Study session.** Flashcards with article colour (der / die / das), audio, Bengali transliteration, cloze cards, undo. A four-button rating bar (Again / Hard / Good / Easy) shows the next FSRS interval under each label. Target retention is a setting.
 - **Grammar.** Library of topics with explanations and practice drills, tied to the step where they are introduced.

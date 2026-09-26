@@ -10,7 +10,7 @@
 
 **Idle.** "Recent" chips (Clear), "My words · 3" list ("das Pfandflasche — deposit bottle · Rewe receipt · seen 3× · My word"), *Add a word I found*.
 
-**No results.** "Not in the course — 5,594 words, none spelled like this. Typos are tolerated, so it is probably a compound or a rare word."; enlarged web chips; *Add "…" as my word*; footnote "Opens the web in an in-app browser — the only time DeutschPlan goes online."
+**No results.** "Not in the course — 5,593 words, none spelled like this. Typos are tolerated, so it is probably a compound or a rare word."; enlarged web chips; *Add "…" as my word*; footnote "Opens the web in an in-app browser — the only time DeutschPlan goes online."
 
 **Filled in by #137:**
 - **FR-R1-07.** The status chips (To do · Learning · Done) and one chip per step in the results each narrow the words. Step chips show only when the results span more than one step. A new search starts unfiltered. A second tap clears a chip. Status and step apply together. A status chip hides the sentences, which have no status.
@@ -27,7 +27,7 @@
 
 **Filled in by #139 (no results):**
 - The page shows when a search of the whole course finds no word and no sentence. Kept to L2's step, an empty result says nothing about the course, so it stays the list with the web row.
-- The count is the course's own, `meta.word_count`, formatted for the language ("5,594"). A course without it says "None of the course words…".
+- The count is the course's own, `meta.word_count`, formatted for the language ("5,593"). A course without it says "None of the course words…".
 - The web chips are the five of FR-R1-06 at 44 dp (`DpChip(large: true)`, a pill under glass). A chip, like *Add "…" as my word*, counts as a search (FR-R1-04).
 - *Add "…" as my word* opens R2 with the word filled in: `/search/add?german=…`.
 - A word the learner has saved already is not offered again (#396): when one of `custom_words` keys as the query does (the exact tier's `search_key` or `search_key_alt`, so "Quarkbrotchen" finds the saved "Quarkbrötchen"), the page says "Already one of my words" and *Open "das Quarkbrötchen"* opens it in R2 (`/search/add/:id`) instead of *Add "…" as my word*.

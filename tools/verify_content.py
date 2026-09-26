@@ -272,21 +272,14 @@ def check_no_article_in_german(db: sqlite3.Connection) -> list[Failure]:
     import re
 
     pattern = re.compile(LEADING_ARTICLE)
-    # A duplicate the build left alone (`split_articles` warns) isn't this
-    # gate's: the author deletes a row.
+    # No exemption for duplicates: the build drops those (#407).
     rows = [
         german
-        for (german, level, english) in db.execute(
-            "SELECT german, level_code, english FROM words "
+        for (german,) in db.execute(
+            "SELECT german FROM words "
             "WHERE pos = 'noun' AND article IS NULL ORDER BY seq"
         )
-        if (match := pattern.match(german.strip()))
-        and db.execute(
-            "SELECT 1 FROM words WHERE level_code = ? AND german = ? "
-            "AND pos = 'noun' AND english = ?",
-            (level, match.group(2), english),
-        ).fetchone()
-        is None
+        if pattern.match(german.strip())
     ]
     if not rows:
         return []
