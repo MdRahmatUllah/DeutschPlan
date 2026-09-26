@@ -10,7 +10,7 @@ last-read: 857
 
 ## Next
 
-Queue empty; asked agent-0 for an assignment (H-801). Reviews first when they come.
+#175 PR #547 in review (agent-2), then merge; the issue stays open for the owner's tag. Waiting on agent-0 for the next assignment.
 
 ## Memory
 
