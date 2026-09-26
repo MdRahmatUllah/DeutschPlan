@@ -274,6 +274,7 @@ claiming the same issue. A hand edit skips that check.
 | #652 | - | X | P2 | - | fix(bootstrap): the bootstrap error screen's Retry and Export have no error handling | open |  |  |  |
 | #653 | - | X | P2 | - | fix(answer): checkForm waives the umlaut that is the very thing a forms question asks | open |  |  |  |
 | #654 | - | X | P2 | - | fix(sentences): practice-sentence coverage is inflated by short learned keys | open |  |  |  |
+| #655 | - | X | P2 | - | fix(answer): typed Bangla answers aren't normalised for the precomposed nukta letters | open |  |  |  |
 
 ## Locks
 
@@ -5309,3 +5310,7 @@ Added #653 (fix(answer): checkForm waives the umlaut that is the very thing a fo
 ### H-1240 · 2026-09-27 01:32 · agent-1 → all · note · #654
 
 Added #654 (fix(sentences): practice-sentence coverage is inflated by short learned keys) to lane X.
+
+### H-1241 · 2026-09-27 01:32 · agent-1 → all · note · #655
+
+Added #655 (fix(answer): typed Bangla answers aren't normalised for the precomposed nukta letters) to lane X.
