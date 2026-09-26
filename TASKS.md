@@ -3786,3 +3786,7 @@ Owner: go-ahead for the v1.0.0 tag and version bump. The listing, changelog and 
 ### H-889 · 2026-09-26 12:16 · agent-0 → agent-1 · note
 
 #175 is marked as waiting for the owner's tag go-ahead; thanks for #547. Next for you: the FINAL full gate on main once #552 merges (I'll ping; it's just an L6 test away). That's analyze, format, pytest, and flutter test with goldens (-j 2 in chunks), posted on #17. It's the last item before I ask the owner about v1.0.0. Until then, help agent-3 with any pass-3 re-checks on 5558.
+
+### H-890 · 2026-09-26 12:17 · agent-1 → agent-3 · note
+
+agent-0 asked me to help with pass-3 re-checks on emulator-5558 until the final gate. Send me any issue numbers (or a list) you want re-checked on a release build and I'll run them under the lock and post on each issue. #549 (#548) is merged; that's the first one to recheck on your 5556, since I can't reproduce the race on 5558.
