@@ -245,6 +245,26 @@ void main() {
       expect(downloads.calls, <String>['wifi false']);
     });
 
+    testWidgets('#501 Download asks to show its progress in a notification, '
+        'saying why; a refusal still downloads', (tester) async {
+      final downloads = FakeDownloads();
+      // A learner who says no: the download goes ahead anyway.
+      final permission = FakeNotificationPermission(allowed: false);
+      await pump(
+        tester,
+        modelManagerStub(
+          downloads: downloads,
+          voice: cardOf(voiceEntry),
+          permission: permission,
+        ),
+      );
+      expect(find.text(l10n.modelsNotifyWhy), findsWidgets);
+      await tester.tap(find.text(l10n.modelsDownload('399 MB')));
+      await tester.pump();
+      expect(permission.asked, 1);
+      expect(downloads.calls, contains('start ${ModelRepository.voiceModel}'));
+    });
+
     testWidgets('a download that cannot start says so', (tester) async {
       final downloads = FakeDownloads()..startFails = StateError('no');
       await pump(

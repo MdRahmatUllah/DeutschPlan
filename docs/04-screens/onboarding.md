@@ -21,7 +21,7 @@
 - FR-S2-02 Values MUST persist when navigating back.
 - FR-S2-03 Finishing MUST call `PlanEngine.enroll(step, dailyNew)` and open Today with the first day planned and a one-time coach mark on the primary button (gone once the button or a session is used, and never over a finished day: `today.md`, #396).
 - FR-S2-04 The estimate on page 4 MUST use the selected step's word count ÷ daily_new × (7 ÷ study days per week).
-- FR-S2-05 Reminder permission MUST be requested only when the switch is turned on.
+- FR-S2-05 Reminder permission MUST be requested only when the switch is turned on. The one other asker is a model download the learner starts (*Download now* here, M4's *Download* / *Retry* / *Update*): it asks on Android 13+ and iOS, so the download can show its progress, with the line "It asks to show the download's progress in a notification" under the button; a refusal still downloads, without a notification (#501, the owner's decision).
 - FR-S2-06 *Download now* MUST start the Supertonic download in the background and continue onboarding.
 
 **Page 5's Supertonic card (#428)** shows the voice as it stands on the phone, from `ModelRepository` and `ModelDownloads.watch` (`supertonicOnPhoneProvider`), and follows it while the page is open:

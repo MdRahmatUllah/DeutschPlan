@@ -3,6 +3,7 @@ import 'package:deutschplan/data/repositories/model_repository.dart';
 import 'package:deutschplan/data/repositories/setting_keys.dart';
 import 'package:deutschplan/data/repositories/setup_repository.dart';
 import 'package:deutschplan/features/onboarding/onboarding_shell.dart';
+import 'package:deutschplan/services/notification_permission.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'onboarding_notifier.g.dart';
@@ -198,6 +199,7 @@ class OnboardingNotifier extends _$OnboardingNotifier {
   /// the queueing worked; the bytes arrive long after this returns.
   Future<bool> downloadVoice() async {
     if (state.voice == VoiceOffer.started) return true;
+    await askToNotifyDownload(ref.read(notificationPermissionProvider));
     try {
       await ref.read(modelDownloadsProvider).start(supertonic);
     } on Object {

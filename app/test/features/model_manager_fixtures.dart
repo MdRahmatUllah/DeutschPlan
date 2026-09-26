@@ -7,6 +7,7 @@ import 'package:deutschplan/data/repositories/settings_repository.dart';
 import 'package:deutschplan/features/me/model_manager_screen.dart';
 import 'package:deutschplan/services/device_storage.dart';
 import 'package:deutschplan/services/model_downloads.dart';
+import 'package:deutschplan/services/notification_permission.dart';
 import 'package:deutschplan/services/tts/tts_engine.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart' show Fake;
@@ -164,6 +165,7 @@ List<Override> modelManagerStub({
   ModelRepository? models,
   TtsEngine? supertonic,
   SettingsRepository? settings,
+  NotificationPermission? permission,
 }) => <Override>[
   modelCardProvider(ModelRepository.voiceModel)
       .overrideWith((ref) => Stream.value(voice ?? artboardVoice)),
@@ -174,4 +176,26 @@ List<Override> modelManagerStub({
   modelRepositoryProvider.overrideWithValue(models ?? FakeModels()),
   supertonicTtsProvider.overrideWithValue(supertonic ?? FakeTts()),
   settingsProvider.overrideWithValue(settings ?? StubSettings()),
+  // #501: a download asks first; no platform to answer in a test.
+  notificationPermissionProvider.overrideWithValue(
+    permission ?? FakeNotificationPermission(),
+  ),
 ];
+
+/// The notification question a download asks (#501): counted, and answered
+/// [allowed].
+class FakeNotificationPermission implements NotificationPermission {
+  FakeNotificationPermission({this.allowed = true});
+
+  final bool allowed;
+  int asked = 0;
+
+  @override
+  Future<bool> request() async {
+    asked++;
+    return allowed;
+  }
+
+  @override
+  Future<bool> openSettings() async => true;
+}

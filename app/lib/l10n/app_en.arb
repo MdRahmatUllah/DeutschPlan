@@ -6075,6 +6075,10 @@
   "@modelsHymtGated": {
     "description": "Under Hy-MT's download when the build's licence flag is off (FR-M4-04)."
   },
+  "modelsNotifyWhy": "It asks to show the download's progress in a notification",
+  "@modelsNotifyWhy": {
+    "description": "Under S2 page 5's Download now and M4's Download: why the download asks for the notification permission (Android 13+, iOS; #501, the owner's decision). A refusal still downloads."
+  },
   "modelsVoiceLabel": "Voice",
   "@modelsVoiceLabel": {
     "description": "Above the voice chips."
