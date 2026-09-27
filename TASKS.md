@@ -463,7 +463,7 @@ The emulator lock is local, not here: `team.py device`.
 | adr-number |  |  |  |
 | pubspec |  |  |  |
 | ci-config |  |  |  |
-| shared-look |  |  |  |
+| shared-look | agent-0 | 2026-09-28 00:06 | #686/#698: sheets rounded at the top only (SgSurface borderRadius), pressed look reset |
 
 ## Handoffs
 

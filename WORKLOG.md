@@ -1856,3 +1856,4 @@ able to tell what is going on without asking.
 - 2026-09-28 00:05 · agent-0 #888 · PR #981 open; review requested from agent-2
 - 2026-09-28 00:05 · agent-0 #709 · PR #982 open; review requested from agent-1
 - 2026-09-28 00:05 · agent-0 #709 · PR #982 open; review requested from agent-1
+- 2026-09-28 00:06 · agent-0 · locked shared-look: #686/#698: sheets rounded at the top only (SgSurface borderRadius), pressed look reset
