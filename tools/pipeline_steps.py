@@ -68,7 +68,7 @@ class LevelSplit:
         return sum(1 for week in self.weeks if week >= self.boundary_week)
 
 
-def split_level(words: Sequence, level: str) -> LevelSplit:
+def split_level(words: Sequence, level: str, boundary: int | None = None) -> LevelSplit:
     """PIPE-02: the week boundary nearest the middle of the level by word count.
 
     Not the middle week, and not the middle word: the boundary that leaves the
@@ -78,6 +78,10 @@ def split_level(words: Sequence, level: str) -> LevelSplit:
 
     Ties go to the earlier boundary, so the result never depends on iteration
     order.
+
+    A [boundary] given is the shipped course's (#923), kept rather than
+    recomputed: dropping a level's rows must not move its other words between
+    steps under the learners. It must still leave both halves words.
     """
     of_level = [w for w in words if w.level == level]
     if not of_level:
@@ -88,6 +92,21 @@ def split_level(words: Sequence, level: str) -> LevelSplit:
         )
 
     weeks = sorted({_week_of(w) for w in of_level})
+    if boundary is not None:
+        in_first = sum(1 for w in of_level if _week_of(w) < boundary)
+        if in_first in (0, len(of_level)):
+            raise SplitError(
+                f"{level}'s shipped boundary, week {boundary}, would leave "
+                f"{level}.{1 if in_first == 0 else 2} with no words (#923). "
+                f"Rerun with --move-boundaries to split the level anew."
+            )
+        return LevelSplit(
+            level=level,
+            boundary_week=boundary,
+            words_in_first=in_first,
+            words_in_second=len(of_level) - in_first,
+            weeks=tuple(weeks),
+        )
     if len(weeks) < 2:
         raise SplitError(
             f"{level} has only week {weeks[0]}, so there is no boundary to "
@@ -132,17 +151,20 @@ def _week_of(word) -> int:
     return word.week if getattr(word, "week", None) else 1
 
 
-def assign_sublevels(words: Sequence) -> dict[str, LevelSplit]:
+def assign_sublevels(
+    words: Sequence, kept: dict[str, int] | None = None
+) -> dict[str, LevelSplit]:
     """Sets `sublevel_code` on every word and returns the boundaries.
 
     The returned map is what goes into `meta.sublevel_week_boundaries`, so the
-    app can say "Step A1.2 starts at week 7" without re-deriving it.
+    app can say "Step A1.2 starts at week 7" without re-deriving it. [kept]
+    is the shipped course's boundary week per level (#923), kept.
     """
     splits: dict[str, LevelSplit] = {}
     for level in LEVELS:
         if not any(w.level == level for w in words):
             continue
-        split = split_level(words, level)
+        split = split_level(words, level, (kept or {}).get(level))
         splits[level] = split
         for word in words:
             if word.level != level:

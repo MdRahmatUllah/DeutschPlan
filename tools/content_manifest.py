@@ -133,9 +133,10 @@ def build_manifest(inputs, splits, aliases: dict[str, str] | None = None) -> dic
         # change, the *Updated* chip only these.
         "meanings": {word.uid: _meaning_digest(word) for word in inputs.words},
         "grammar": {row.uid: _grammar_digest(row) for row in inputs.grammar},
-        # PIPE-09: old uid -> the uid the same word carries now. Every link
-        # since the first build, not only this one's: a learner can skip
-        # versions, and the app moves their rows along these on install.
+        # PIPE-09: old uid -> the uid the same word, or grammar topic
+        # (#808), carries now. Every link since the first build, not only
+        # this one's: a learner can skip versions, and the app moves their
+        # rows along these on install.
         "aliases": aliases or {},
     }
 
@@ -150,22 +151,55 @@ def word_key(level, german, pos, english) -> WordKey:
     return tuple(uid_text(part or "").casefold() for part in (level, german, pos, english))
 
 
-def previous_build(directory: Path) -> tuple[dict[str, WordKey], dict | None]:
-    """The committed asset in [directory]: its words by uid, and its manifest.
+def grammar_key(level, topic) -> WordKey:
+    """#808: a grammar topic compared as a word with no part of speech or
+    English, so `link_uids` links a topic whose title changed case or
+    spacing (pass 1) or that moved level (pass 2). A renamed topic is not
+    guessed at: its title is all a topic's uid has, and "the nearest title
+    in the level" would move progress between two different topics. It is
+    linked by a `links:` pin in `content/corrections.yaml`."""
+    return word_key(level, topic, "", "")
+
+
+@dataclass(frozen=True)
+class PreviousBuild:
+    """The committed asset: what learners have (PIPE-09)."""
+
+    words: dict[str, WordKey]
+    grammar: dict[str, WordKey]
+    manifest: dict | None
+
+    @property
+    def boundaries(self) -> dict[str, int]:
+        """#923: each level's shipped boundary week, by level ("B2": 21)."""
+        kept = (self.manifest or {}).get("boundaries", {})
+        return {code.split(".")[0]: week for code, week in kept.items()}
+
+
+def previous_build(directory: Path) -> PreviousBuild:
+    """The committed asset in [directory]: its words and grammar topics by
+    uid, and its manifest.
 
     Empty when there is none yet: the first build has nothing to lose.
     """
     db, manifest = directory / "content.db", directory / MANIFEST_NAME
     if not db.exists() or not manifest.exists():
-        return {}, None
+        return PreviousBuild({}, {}, None)
     connection = sqlite3.connect(f"file:{db.as_posix()}?mode=ro", uri=True)
     try:
-        rows = connection.execute(
+        words = connection.execute(
             "SELECT uid, level_code, german, pos, english FROM words"
+        ).fetchall()
+        grammar = connection.execute(
+            "SELECT uid, level_code, topic FROM grammar_topics"
         ).fetchall()
     finally:
         connection.close()
-    return {uid: word_key(*rest) for uid, *rest in rows}, read_manifest(manifest)
+    return PreviousBuild(
+        {uid: word_key(*rest) for uid, *rest in words},
+        {uid: grammar_key(*rest) for uid, *rest in grammar},
+        read_manifest(manifest),
+    )
 
 
 def link_uids(
@@ -173,6 +207,7 @@ def link_uids(
     after: dict[str, WordKey],
     carried: dict[str, str] | None = None,
     known: dict[str, str] | None = None,
+    refused: set[str] | frozenset[str] = frozenset(),
 ) -> tuple[dict[str, str], list[str]]:
     """PIPE-09 (#648): which new uid each removed one became.
 
@@ -184,9 +219,13 @@ def link_uids(
     1. the same level, German and part of speech: the nearest English wins;
     2. else the same German, part of speech and English: it moved level.
 
-    Each added uid takes one removed uid at most. [known] links come first:
-    a row `content/corrections.yaml` changed maps the uid it had as read to
-    the one it has now, exactly, whatever it changed (#629). [carried] is the
+    Each added uid takes one removed uid at most, best match first across
+    every pair (#807): two senses of one word re-glossed in one build each
+    get their own nearest, whichever uid sorts first. [known] links come
+    first: a row `content/corrections.yaml` changed maps the uid it had as
+    read to the one it has now, exactly, whatever it changed (#629), and a
+    `links:` pin names one outright. [refused] uids are linked to nothing
+    (a `links:` refusal, #807): they come back as removed. [carried] is the
     previous build's map, followed through this one's, so a learner who
     skipped a version still lands on the word as it is now.
 
@@ -196,7 +235,7 @@ def link_uids(
     links = {
         old: new
         for old, new in (known or {}).items()
-        if old in before and old not in after and new in after
+        if old in before and old not in after and new in after and old not in refused
     }
     removed = sorted(set(before) - set(after) - set(links))
     free = {
@@ -204,27 +243,30 @@ def link_uids(
         for uid in sorted(set(after) - set(before) - set(links.values()))
     }
 
-    def link(old: str, same, closeness) -> None:
-        candidates = [uid for uid, key in free.items() if same(before[old], key)]
-        if candidates:
-            # max keeps the first of equals, and `free` is sorted: stable.
-            new = max(candidates, key=lambda uid: closeness(before[old], free[uid]))
-            links[old] = new
-            del free[new]
+    def link(same, closeness) -> None:
+        pairs = [
+            (closeness(before[old], key), old, new)
+            for old in removed
+            if old not in links and old not in refused
+            for new, key in free.items()
+            if same(before[old], key)
+        ]
+        # Best first; `sorted` is stable and the pairs come in uid order, so
+        # equals go to the first old uid, then the first new one.
+        for _, old, new in sorted(pairs, key=lambda pair: -pair[0]):
+            if old not in links and new in free:
+                links[old] = new
+                del free[new]
 
-    for old in removed:
-        link(
-            old,
-            lambda a, b: a[:3] == b[:3],
-            lambda a, b: difflib.SequenceMatcher(None, a[3], b[3]).ratio(),
-        )
-    for old in removed:
-        if old not in links:
-            link(old, lambda a, b: a[1:] == b[1:], lambda a, b: 0)
+    link(
+        lambda a, b: a[:3] == b[:3],
+        lambda a, b: difflib.SequenceMatcher(None, a[3], b[3]).ratio(),
+    )
+    link(lambda a, b: a[1:] == b[1:], lambda a, b: 0)
 
     for old, new in (carried or {}).items():
         new = links.get(new, new)
-        if old not in after and new in after:
+        if old not in after and new in after and old not in refused:
             links.setdefault(old, new)
 
     return dict(sorted(links.items())), [uid for uid in removed if uid not in links]
@@ -328,7 +370,10 @@ def diff(previous: dict, current: dict) -> ContentDiff:
     meanings = _compare(
         _follow(previous.get("meanings", {}), aliases), current.get("meanings", {})
     )
-    grammar = _compare(previous.get("grammar", {}), current.get("grammar", {}))
+    # #808: a topic linked to its new uid is changed, not removed and added.
+    grammar = _compare(
+        _follow(previous.get("grammar", {}), aliases), current.get("grammar", {})
+    )
 
     return ContentDiff(
         added=words[0],
