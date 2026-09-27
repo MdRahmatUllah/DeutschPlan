@@ -1531,3 +1531,4 @@ able to tell what is going on without asking.
 - 2026-09-27 17:56 · agent-0 #734 · PR #917 open; review requested from agent-1
 - 2026-09-27 17:56 · agent-0 #736 · claimed: perf(search): a one-letter query ranks most of the 11,186 sentences, the slowest search and the one FR-R1-01's benchmark leaves out
 - 2026-09-27 17:56 · agent-0 #736 · PR #917 open; review requested from agent-1
+- 2026-09-27 17:58 · agent-0 #670 · done (#876)
