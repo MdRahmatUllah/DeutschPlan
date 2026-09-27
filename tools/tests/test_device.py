@@ -76,3 +76,13 @@ def test_697_a_failed_install_stops_the_steps(tmp_path, monkeypatch):
     monkeypatch.setattr(device.Device, "install", lambda self, apk=None: False)
     monkeypatch.setattr(device.Device, "launch", lambda self: pytest.fail("launched the old app"))
     assert device.main(["--serial", "emulator-5558", "install", "launch"]) == 1
+
+
+def test_707_typed_text_reaches_the_device_shell_quoted(monkeypatch):
+    # adb hands `input text` to the device's shell: an & or ; must stay text.
+    sent = []
+    monkeypatch.setattr(device, "adb_path", lambda: "adb")
+    monkeypatch.setattr(device.Device, "sh", lambda self, *args: sent.append(args) or "")
+    monkeypatch.setattr(device.time, "sleep", lambda s: None)
+    assert device.main(["--serial", "emulator-5558", "type:Tom & Jerry; ls"]) == 0
+    assert sent == [("input", "text", "'Tom%s&%sJerry;%sls'")]

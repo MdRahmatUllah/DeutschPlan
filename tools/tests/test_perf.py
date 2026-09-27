@@ -251,9 +251,18 @@ def test_without_the_update_the_baseline_is_left_alone(baseline):
 
 
 def test_even_size_needs_the_device_lock(baseline, monkeypatch):
+    monkeypatch.setattr(perf.device, "agent", lambda: "agent-2")
     monkeypatch.setattr(perf, "holds_device", lambda agent: False)
     monkeypatch.setattr(perf, "measure_size", lambda: pytest.fail("built without the lock"))
     assert perf.main(["size"]) == 2
+
+
+def test_707_the_owners_checkout_measures_without_the_lock(baseline, monkeypatch):
+    # Release step 6 runs in the owner's checkout, which has no agent and so
+    # no lock to hold, as release_android.py.
+    monkeypatch.setattr(perf.device, "agent", lambda: "")
+    monkeypatch.setattr(perf, "holds_device", lambda agent: pytest.fail("asked for a lock"))
+    assert perf.main(["size"]) == 0
 
 
 def test_697_each_step_refreshes_the_device_lock(baseline, monkeypatch):

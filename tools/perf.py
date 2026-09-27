@@ -322,7 +322,10 @@ def main(argv: list[str] | None = None) -> int:
         sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
     # An APK build takes the lock too (CLAUDE.md), so size needs it as well.
-    if not holds_device(device.agent()):
+    # The owner's own checkout has no agent and no lock to take (release step
+    # 6), as release_android.py (#707).
+    who = device.agent()
+    if who and not holds_device(who):
         print("refused: hold the emulator first: `python tools/team.py device`", file=sys.stderr)
         return 2
 
