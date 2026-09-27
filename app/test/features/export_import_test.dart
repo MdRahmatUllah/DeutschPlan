@@ -672,6 +672,39 @@ void main() {
       expect(await count('word_state'), 1);
     });
 
+    testWidgets('a file from a newer Sogda writes nothing and says update', (
+      tester,
+    ) async {
+      final newer = jsonDecode(await otherPhone()) as Map<String, Object?>;
+      newer['schema_version'] = AppDatabase.latestSchemaVersion + 1;
+      await restore(tester, jsonEncode(newer));
+
+      expect(went, isEmpty);
+      expect(find.text(l10n.exportImportNewer), findsOneWidget);
+      expect(await count('word_state'), 1);
+    });
+
+    testWidgets('an import that fails writes nothing and says so', (
+      tester,
+    ) async {
+      final broken = jsonDecode(await otherPhone()) as Map<String, Object?>;
+      // A rating of 9 fails review_log's CHECK, after the wipe has run.
+      ((broken['tables']! as Map<String, Object?>)['review_log']!
+              as List<Object?>)
+          .add(<String, Object?>{
+            'word_uid': ContentFixture.haus,
+            'reviewed_at': '2026-09-20T10:00:00Z',
+            'rating': 9,
+            'source': 'daily',
+          });
+      await restore(tester, jsonEncode(broken));
+
+      expect(went, isEmpty);
+      expect(find.text(l10n.exportImportFailed), findsOneWidget);
+      expect(await count('word_state'), 1);
+      expect(recordings.deletions, 0);
+    });
+
     testWidgets('backing out of the picker does nothing', (tester) async {
       went = <String>[];
       await pump(
