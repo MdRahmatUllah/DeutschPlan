@@ -169,3 +169,17 @@ def test_the_article_column_is_not_prepended():
     )
     assign_search_keys([word])
     assert word.search_key == "haus"
+
+
+def test_the_latin_ranges_cover_every_letter_and_reproduce():
+    """#716: the parity check over U+00C0-U+024F and U+1E00-U+1EFF.
+
+    `text_norm.dart` spells out, as a table, what NFD does here; the Dart test
+    keys this same input letter by letter against these same keys.
+    """
+    ranges = json.loads(VECTORS.read_text(encoding="utf-8"))["latin_ranges"]
+    letters = [chr(c) for lo, hi in ((0xC0, 0x24F), (0x1E00, 0x1EFF)) for c in range(lo, hi + 1)]
+    assert ranges["input"] == " ".join(letters)
+    assert search_key(ranges["input"]) == ranges["search_key"]
+    assert search_key_alt(ranges["input"]) == ranges["search_key_alt"]
+    assert len(ranges["search_key"].split(" ")) == len(letters)
