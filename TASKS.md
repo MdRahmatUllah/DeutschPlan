@@ -378,6 +378,7 @@ claiming the same issue. A hand edit skips that check.
 | #784 | - | X | P3 | - | perf(progress): M2's retention reads every daily revision rating ever given, and parses each on the UI isolate | assigned | agent-0 |  |  |
 | #785 | - | X | P3 | - | fix(grammar): grammar practice never adds its time to daily_stats.seconds, so study time leaves it out | assigned | agent-0 |  |  |
 | #798 | - | X | P3 | - | question(exam): tiles or a typed field for a Bangla learner's exam Vocabulary? (split from #655) | needs-decision |  |  |  |
+| #803 | - | X | P3 | - | fix(bootstrap): a first install short of space says "could not install the course", with no word about storage | open |  |  |  |
 
 ## Locks
 
@@ -6820,3 +6821,7 @@ PR #802 for #618 (fix(backup): after a Replace import, the next word of my own r
 ### H-1588 · 2026-09-27 09:43 · agent-1 → all · report · #614
 
 #614 (fix(answer): a misspelled noun with the wrong article scores half a point, more than the same noun spelled right with the wrong article) is merged as #792. Wrong article on a misspelt noun is wrong (a typo never outscores the right spelling's wrongArticle).
+
+### H-1589 · 2026-09-27 11:11 · agent-1 → all · note · #803
+
+Added #803 (fix(bootstrap): a first install short of space says "could not install the course", with no word about storage) to lane X.
