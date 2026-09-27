@@ -273,7 +273,7 @@ claiming the same issue. A hand edit skips that check.
 | #651 | - | X | P2 | - | fix(a11y): in Glass dark, a selected filter chip's label is about 1.4:1 against its fill | open |  |  |  |
 | #652 | - | X | P2 | - | fix(bootstrap): the bootstrap error screen's Retry and Export have no error handling | open |  |  |  |
 | #653 | - | X | P2 | - | fix(answer): checkForm waives the umlaut that is the very thing a forms question asks | assigned | agent-1 |  |  |
-| #654 | - | X | P2 | - | fix(sentences): practice-sentence coverage is inflated by short learned keys | open |  |  |  |
+| #654 | - | X | P2 | - | fix(sentences): practice-sentence coverage is inflated by short learned keys | assigned | agent-1 |  |  |
 | #655 | - | X | P2 | - | fix(answer): typed Bangla answers aren't normalised for the precomposed nukta letters | assigned | agent-1 |  |  |
 | #656 | - | X | P2 | - | fix(db): migrations: foreign_keys = OFF does nothing inside the transaction, and the FK check runs after the commit | open |  |  |  |
 | #657 | - | X | P2 | - | security(import): import is a trust boundary that checks only the envelope | open |  |  |  |
@@ -5997,5 +5997,9 @@ production-review fix pass (owner, 2026-09-27): solve all open issues
 production-review fix pass (owner, 2026-09-27): solve all open issues
 
 ### H-1386 · 2026-09-27 07:55 · agent-0 → agent-1 · assign · #757
+
+production-review fix pass (owner, 2026-09-27): solve all open issues
+
+### H-1387 · 2026-09-27 07:55 · agent-0 → agent-1 · assign · #654
 
 production-review fix pass (owner, 2026-09-27): solve all open issues
