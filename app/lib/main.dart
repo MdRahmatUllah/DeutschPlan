@@ -428,7 +428,7 @@ class BootstrapGate extends StatefulWidget {
   /// can drive the *wiring* and not just the file format. A test that only
   /// checked the artefact could not tell this button from an empty closure,
   /// which is how it shipped as one.
-  final Future<void> Function(XFile file)? onShare;
+  final Future<void> Function(List<XFile> files)? onShare;
 
   @override
   State<BootstrapGate> createState() => _BootstrapGateState();
@@ -500,7 +500,11 @@ class _BootstrapGateState extends State<BootstrapGate> {
   Widget build(BuildContext context) => BootstrapErrorApp(
     failure: _failure,
     onRetry: _retrying || _exporting ? null : _retry,
-    onExport: _failure.canExport && !_retrying && !_exporting && !_closed
+    onExport:
+        (_failure.canExport || _failure.file != null) &&
+            !_retrying &&
+            !_exporting &&
+            !_closed
         ? _export
         : null,
   );
@@ -520,23 +524,35 @@ class _BootstrapGateState extends State<BootstrapGate> {
   /// Answers whether the backup was handed over, so the screen can say when
   /// it wasn't (#652): this is most likely the corrupt-database case the
   /// button exists for, and a throw used to vanish with no word.
+  ///
+  /// A database that never opened has no backup to make (#619): the file
+  /// itself goes instead, with its write-ahead log when there is one, which
+  /// holds whatever was saved since the last checkpoint.
   Future<bool> _export() async {
     final db = _failure.db;
-    if (db == null || _exporting) return true;
+    final raw = _failure.file;
+    if ((db == null && raw == null) || _exporting) return true;
     setState(() => _exporting = true);
     try {
-      final json = await BackupRepository(db).exportJson();
-      final file = File(
-        '${(await getTemporaryDirectory()).path}/$exportFileName',
-      );
-      await file.writeAsString(json, flush: true);
+      final List<File> files;
+      if (db != null) {
+        final json = await BackupRepository(db).exportJson();
+        final file = File(
+          '${(await getTemporaryDirectory()).path}/$exportFileName',
+        );
+        await file.writeAsString(json, flush: true);
+        files = <File>[file];
+      } else {
+        final wal = File('${raw!.path}-wal');
+        files = <File>[raw, if (wal.existsSync()) wal];
+      }
 
       final share =
           widget.onShare ??
-          (XFile shared) async {
-            await SharePlus.instance.share(ShareParams(files: <XFile>[shared]));
+          (List<XFile> shared) async {
+            await SharePlus.instance.share(ShareParams(files: shared));
           };
-      await share(XFile(file.path));
+      await share(<XFile>[for (final file in files) XFile(file.path)]);
       return true;
     } on Object catch (error) {
       debugPrint('export: $error');

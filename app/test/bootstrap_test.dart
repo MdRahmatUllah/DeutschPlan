@@ -353,6 +353,47 @@ void main() {
       expect(failure.canExport, isFalse, reason: 'there is nothing to export');
     });
 
+    group('#619 a user.db that will not open offers the file itself', () {
+      File userDb() => File('${support.path}/${AppDatabase.fileName}');
+      AppDatabase openUserDb() => AppDatabase(
+        DatabaseConnection(
+          NativeDatabase(userDb(), setup: configureConnection),
+        ),
+      );
+
+      test('one from a newer build says to update', () async {
+        final raw = sqlite3.open(userDb().path)
+          ..execute('CREATE TABLE later (x INTEGER)')
+          ..userVersion = AppDatabase.latestSchemaVersion + 1;
+        raw.close();
+
+        final result = await bootstrap(
+          openDatabase: openUserDb,
+          glass: GlassCapability(),
+        );
+
+        final failure = (result as BootstrapFailed).failure;
+        expect(failure.step, BootstrapStep.database);
+        expect(failure.canExport, isFalse);
+        expect(failure.file?.path, userDb().path);
+        expect(failure.newer, isTrue);
+      });
+
+      test('a corrupt one is offered too, and is not called newer', () async {
+        userDb().writeAsBytesSync(List<int>.filled(4096, 7));
+
+        final result = await bootstrap(
+          openDatabase: openUserDb,
+          glass: GlassCapability(),
+        );
+
+        final failure = (result as BootstrapFailed).failure;
+        expect(failure.step, BootstrapStep.database);
+        expect(failure.file?.path, userDb().path);
+        expect(failure.newer, isFalse);
+      });
+    });
+
     test('a course that will not install keeps the learner"s data', () async {
       // The one that matters. Every review they have ever done is in user.db,
       // and the error screen offers *Export progress* — so the database has to
@@ -788,7 +829,7 @@ void main() {
               db: db,
             ),
             onReady: (_) {},
-            onShare: (file) async => shared = file,
+            onShare: (files) async => shared = files.single,
           ),
         ),
       );
@@ -810,6 +851,41 @@ void main() {
       expect(shared, isNotNull, reason: 'the button did nothing');
       expect(shared!.path, endsWith(exportFileName));
       expect(File(shared!.path).existsSync(), isTrue);
+    });
+
+    testWidgets('#619 a user.db that would not open shares the file and its '
+        'log', (tester) async {
+      final raw = File('${support.path}/${AppDatabase.fileName}')
+        ..writeAsStringSync('not a database');
+      File('${raw.path}-wal').writeAsStringSync('frames');
+
+      List<XFile>? shared;
+      await tester.pumpWidget(
+        BootstrapGate(
+          failure: BootstrapFailure(
+            step: BootstrapStep.database,
+            error: 'file is not a database',
+            stackTrace: StackTrace.empty,
+            db: null,
+            file: raw,
+          ),
+          onReady: (_) {},
+          onShare: (files) async => shared = files,
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.runAsync(() async {
+        await tester.tap(find.widgetWithText(SgButton, 'Share your data file'));
+        for (var i = 0; i < 100 && shared == null; i++) {
+          await Future<void>.delayed(const Duration(milliseconds: 20));
+        }
+      });
+
+      expect(shared?.map((file) => file.path), <String>[
+        raw.path,
+        '${raw.path}-wal',
+      ]);
     });
 
     testWidgets('#652 an export that fails says so, and can be tried again', (

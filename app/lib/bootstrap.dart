@@ -126,6 +126,8 @@ class BootstrapFailure {
     required this.error,
     required this.stackTrace,
     required this.db,
+    this.file,
+    this.newer = false,
   });
 
   final BootstrapStep step;
@@ -142,6 +144,17 @@ class BootstrapFailure {
 
   /// Whether the learner's data can still be exported from here.
   bool get canExport => db != null;
+
+  /// user.db itself, when it would not open (#619): a corrupt file, or one a
+  /// newer build wrote. Nothing can export from it, but the file can still
+  /// leave the phone, which is the learner's way out short of clearing the
+  /// app's data.
+  final File? file;
+
+  /// Whether [file] was written by a newer build: its `user_version` is past
+  /// this build's schema, and drift refuses to downgrade. Updating the app,
+  /// not retrying, is what opens it.
+  final bool newer;
 
   Future<void> dispose() async => db?.close();
 }
@@ -269,14 +282,33 @@ Future<BootstrapResult> bootstrap({
     );
   } on Object catch (error, stackTrace) {
     watch.stop();
+    final file = opened == null ? await _userDbFile() : null;
     return BootstrapFailed(
       BootstrapFailure(
         step: step,
         error: error,
         stackTrace: stackTrace,
         db: opened,
+        file: file,
+        newer:
+            file != null &&
+            (AppDatabase.versionOf(file) ?? 0) >
+                AppDatabase.latestSchemaVersion,
       ),
     );
+  }
+}
+
+/// user.db on disk, or null when there is none: a first start that failed
+/// has nothing to save (#619). Never throws, as [bootstrap] never does.
+Future<File?> _userDbFile() async {
+  try {
+    final file = File(
+      '${(await getApplicationSupportDirectory()).path}/${AppDatabase.fileName}',
+    );
+    return file.existsSync() ? file : null;
+  } on Object {
+    return null;
   }
 }
 
