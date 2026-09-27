@@ -518,6 +518,28 @@ void main() {
       );
     });
 
+    test('#606 the setup day studies whatever the mask; the mask applies '
+        'from the next day', () async {
+      // The owner's call (a), FR-S2-03: setup finished on a Saturday, off.
+      final saturday = addDays(monday, 5);
+      store.enrollment = ActiveStep(
+        sublevelCode: 'A1.1',
+        startedOn: saturday,
+        dailyNew: 7,
+        studyDaysMask: 0x1F,
+      );
+      final engine = engineWith();
+
+      final first = await engine.openDay(saturday);
+      expect(first.isStudyDay, isTrue);
+      expect(first.newToday, hasLength(7));
+      expect(await engine.studyDayOn(saturday), isTrue);
+
+      // Sunday is off, as the learner chose; the next Saturday too.
+      expect((await engine.openDay(addDays(saturday, 1))).isStudyDay, isFalse);
+      expect((await engine.openDay(addDays(saturday, 7))).isStudyDay, isFalse);
+    });
+
     test('a rest day grows nothing', () async {
       final saturday = addDays(monday, 5);
       final engine = engineWith();

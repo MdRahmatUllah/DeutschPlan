@@ -19,7 +19,7 @@ Every rule has an ID. Engines in `03-domain/` implement them; screens in `04-scr
 
 ## Daily plan
 
-- **BR-PLAN-01** A study day is any weekday enabled in `study_days_mask` (default all seven). Non-study days are *rest days*: no new words, no backlog growth, streak preserved; revisions are optional.
+- **BR-PLAN-01** A study day is any weekday enabled in `study_days_mask` (default all seven). Non-study days are *rest days*: no new words, no backlog growth, streak preserved; revisions are optional. The setup day is a study day whatever the mask: day 1 is planned with `daily_new`, and the mask applies from the next day (the owner's call, #606).
 - **BR-PLAN-02** On a study day the plan is: Revise (`revise_count`, default 10) → New today (`daily_new`, default 7, from the active step in teaching order) → Grammar due (topics whose FSRS due ≤ today) → Practice sentences (`sentence_count`, default 3).
 - **BR-PLAN-03** Revise picks FSRS-due words first (earliest due), then fills with the lowest-retrievability learned words, excluding today's new words. It never exceeds `revise_count`; excess due cards wait.
 - **BR-PLAN-04** Plans are generated when a day is first opened and persisted. Reopening the same day shows the same plan.

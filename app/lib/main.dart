@@ -21,7 +21,6 @@ import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/l10n/ui_language_locale.dart';
 import 'package:sogda/router/app_router.dart';
-import 'package:sogda/router/deep_links.dart';
 import 'package:sogda/services/background_tasks.dart';
 import 'package:sogda/services/background_work.dart';
 import 'package:sogda/services/reminder_notifications.dart';
@@ -307,12 +306,14 @@ Future<StreamSubscription<SettingKey<Object?>>?> startReminders(
   BackgroundWork work, {
   required void Function(String location) open,
 }) async {
-  void go(String link) => open(resolveDeepLink(Uri.parse(link)));
+  // The link goes to the router as it is, not resolved here: the router
+  // resolves it, and holds a running exam against it as against any
+  // arrival (#676).
   try {
-    await notifications.init(go);
+    await notifications.init(open);
     // A tap that started the app arrives here, not through [init]'s
     // callback, which hears only taps while it runs.
-    if (await notifications.launchedWith() case final link?) go(link);
+    if (await notifications.launchedWith() case final link?) open(link);
     await startBackgroundWork(work, container.read(clockProvider)());
   } on Object catch (error) {
     debugPrint('reminders: $error');
