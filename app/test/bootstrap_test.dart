@@ -849,6 +849,40 @@ void main() {
       expect(find.text(bn.retry), findsOneWidget);
     });
 
+    testWidgets('FR-S1-03 #720 a Retry that reads ui_language = bn and fails '
+        'further on shows its failure in Bangla', (tester) async {
+      // The first start fails before the peek, so the screen follows the
+      // phone; the retry opens user.db, reads bn, then fails at the course.
+      tester.platformDispatcher.localesTestValue = const <Locale>[
+        Locale('en', 'US'),
+      ];
+      addTearDown(tester.platformDispatcher.clearLocalesTestValue);
+      final bn = await AppLocalizations.delegate.load(const Locale('bn'));
+      var runs = 0;
+      await tester.pumpWidget(
+        BootstrapHost(
+          run:
+              ({
+                Brightness platformBrightness = Brightness.light,
+                void Function(UiLanguage)? onUiLanguage,
+              }) async {
+                if (runs++ == 0) {
+                  return BootstrapFailed(failureOf(BootstrapStep.database));
+                }
+                onUiLanguage?.call(UiLanguage.bangla);
+                return BootstrapFailed(failureOf(BootstrapStep.content));
+              },
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('Sogda could not open your data.'), findsOneWidget);
+
+      await tester.tap(_retryButton);
+      await tester.pumpAndSettle();
+      expect(runs, 2);
+      expect(find.text(bn.bootstrapErrorContent), findsOneWidget);
+    });
+
     testWidgets(
       'FR-S1-03 #720 with nothing read, it is the phone\'s language',
       (tester) async {

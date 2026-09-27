@@ -95,7 +95,9 @@ class BootstrapHost extends StatefulWidget {
 
 class _BootstrapHostState extends State<BootstrapHost>
     with WidgetsBindingObserver {
-  Widget? _app;
+  /// What the app on screen was built from: kept, not the widget, so the
+  /// error screen follows a language a *Retry* read later (#720).
+  BootstrapResult? _result;
 
   /// #577: a phone stays portrait, a tablet turns. Decided from the window's
   /// size as it comes, not before `runApp`, when it can still be empty, and
@@ -217,18 +219,7 @@ class _BootstrapHostState extends State<BootstrapHost>
     setState(() {
       _container = container;
       _ready = result is BootstrapReady;
-      _app = UncontrolledProviderScope(
-        // Keyed by its container: a retry replaces the whole tree, rather
-        // than swapping the container under widgets that read the old one.
-        key: ObjectKey(container),
-        container: container,
-        child: appFor(
-          result,
-          retry: _run,
-          onReady: _adopt,
-          locale: _splashLocale,
-        ),
-      );
+      _result = result;
     });
     // The failed start's. Nothing was opened through it, and it goes once
     // the frame that drops its tree has been built.
@@ -238,20 +229,32 @@ class _BootstrapHostState extends State<BootstrapHost>
   }
 
   @override
-  Widget build(BuildContext context) =>
-      _app ??
-      MaterialApp(
-        debugShowCheckedModeBanner: false,
-        // Platform brightness, because settings are exactly what bootstrap has
-        // not read yet. It is also what the native launch window followed, so
-        // the hand-off does not change colour.
-        theme: AppTheme.light(),
-        darkTheme: AppTheme.dark(),
+  Widget build(BuildContext context) => switch ((_result, _container)) {
+    (final result?, final container?) => UncontrolledProviderScope(
+      // Keyed by its container: a retry replaces the whole tree, rather
+      // than swapping the container under widgets that read the old one.
+      key: ObjectKey(container),
+      container: container,
+      child: appFor(
+        result,
+        retry: _run,
+        onReady: _adopt,
         locale: _splashLocale,
-        localizationsDelegates: appLocalizationsDelegates,
-        supportedLocales: supportedLocales,
-        home: const SplashProgressGate(),
-      );
+      ),
+    ),
+    _ => MaterialApp(
+      debugShowCheckedModeBanner: false,
+      // Platform brightness, because settings are exactly what bootstrap has
+      // not read yet. It is also what the native launch window followed, so
+      // the hand-off does not change colour.
+      theme: AppTheme.light(),
+      darkTheme: AppTheme.dark(),
+      locale: _splashLocale,
+      localizationsDelegates: appLocalizationsDelegates,
+      supportedLocales: supportedLocales,
+      home: const SplashProgressGate(),
+    ),
+  };
 }
 
 /// A ready app's plugins: the reminders, the home-screen widget, model
