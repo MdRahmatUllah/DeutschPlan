@@ -44,6 +44,7 @@ void main() {
     ],
   );
   const mietvertrag = Word(
+    kind: 'vocab',
     uid: 'n1',
     sublevelCode: 'A2.1',
     levelCode: 'A2',

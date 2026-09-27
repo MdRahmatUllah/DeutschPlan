@@ -53,7 +53,7 @@ learnableWordsForStep:
     ELSE 'learning' END AS derived_status
   FROM words w
   LEFT JOIN word_state s ON s.word_uid = w.uid
-  WHERE w.sublevel_code = :code
+  WHERE w.sublevel_code = :code AND w.kind = 'vocab'
     AND (s.status IS NULL OR s.status != 'suspended')
   ORDER BY w.seq_in_sublevel;
 
@@ -89,7 +89,7 @@ categoryProgress:
       AND NOT (s.introduced_on IS NULL AND s.reps = 0)
       AND s.stability >= :doneAfter THEN 1 ELSE 0 END), 0) AS done
   FROM categories k
-  JOIN words w ON w.category_id = k.id
+  JOIN words w ON w.category_id = k.id AND w.kind = 'vocab'
   LEFT JOIN word_state s ON s.word_uid = w.uid
   GROUP BY k.id
   ORDER BY total DESC, k.id;
@@ -114,7 +114,7 @@ dueWords:
   FROM word_state s
   JOIN words w ON w.uid = s.word_uid
   WHERE s.due IS NOT NULL AND s.due <= :today
-    AND s.status != 'suspended'
+    AND s.status != 'suspended' AND w.kind = 'vocab'
   ORDER BY s.due, w.seq;
 
 -- The counts the step list and Today draw. One row, four numbers: a COUNT per
@@ -140,7 +140,7 @@ statusCountsForStep:
       AS suspended
   FROM words w
   LEFT JOIN word_state s ON s.word_uid = w.uid
-  WHERE w.sublevel_code = :code;
+  WHERE w.sublevel_code = :code AND w.kind = 'vocab';
 
 wordStateFor:
   SELECT * FROM word_state WHERE word_uid = :uid;
@@ -198,6 +198,7 @@ stepProgress:
         AND s.stability >= :doneAfter THEN 1 ELSE 0 END) AS done
     FROM words wd
     LEFT JOIN word_state s ON s.word_uid = wd.uid
+    WHERE wd.kind = 'vocab'
     GROUP BY wd.sublevel_code
   ) w ON w.sublevel_code = sl.code
   ORDER BY l.ord, sl.ord;
@@ -216,7 +217,7 @@ quizWords:
     s.last_review AS reviewed
   FROM word_state s
   JOIN words w ON w.uid = s.word_uid
-  WHERE s.status IN ('learning', 'done')
+  WHERE s.status IN ('learning', 'done') AND w.kind = 'vocab'
   ORDER BY w.seq;
 
 -- A step's distractor pool: every word, whatever its status.
@@ -225,7 +226,7 @@ quizPool:
     w.english AS english, w.bangla AS bangla, w.sublevel_code AS step,
     w.synonyms_register AS synonyms
   FROM words w
-  WHERE w.sublevel_code = :step
+  WHERE w.sublevel_code = :step AND w.kind = 'vocab'
   ORDER BY w.seq;
 
 -- FR-M3-01: what Settings' retention estimate sums over — every word that has

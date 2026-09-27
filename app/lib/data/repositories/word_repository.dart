@@ -78,6 +78,10 @@ class WordWithState {
   String get uid => word.uid;
 
   bool get isSuspended => status == WordStatus.suspended;
+
+  /// BR-CONTENT-04 (#630): a word to learn. A note or a comparison is
+  /// listed, searched and opened, and has no status: it is never studied.
+  bool get studied => word.kind == 'vocab';
 }
 
 /// One category's card on L5 (FR-L5-01): its words, suspended ones
@@ -556,6 +560,7 @@ class WordRepository extends DatabaseAccessor<AppDatabase>
         english: row.cw.meaning,
         searchKey: '',
         searchKeyAlt: '',
+        kind: 'vocab',
       ),
       state: row.s,
       status: WordStatus.parse(row.derivedStatus),

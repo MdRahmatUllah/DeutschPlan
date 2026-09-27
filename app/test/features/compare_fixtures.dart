@@ -9,6 +9,7 @@ import 'package:flutter_riverpod/misc.dart' show Override;
 WordWithState compareWord(String uid, String german, String? article) =>
     WordWithState(
       word: Word(
+        kind: 'vocab',
         uid: uid,
         sublevelCode: 'C1.1',
         levelCode: 'C1',

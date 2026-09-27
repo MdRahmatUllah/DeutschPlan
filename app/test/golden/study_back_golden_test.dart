@@ -49,6 +49,7 @@ void main() {
     ],
   );
   const rechnung = Word(
+    kind: 'vocab',
     uid: 'r3',
     sublevelCode: 'A2.1',
     levelCode: 'A2',

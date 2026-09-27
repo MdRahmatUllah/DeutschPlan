@@ -77,7 +77,7 @@ class WordRow extends StatelessWidget {
         SgChip(label: step, kind: SgChipKind.step),
         const SizedBox(width: 6),
       ],
-      WordStatusChip(word.status),
+      if (word.studied) WordStatusChip(word.status),
     ];
     final play = WordPlayButton(word: spokenForm(word.word));
 

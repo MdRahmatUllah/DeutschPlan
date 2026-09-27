@@ -466,6 +466,7 @@ VALUES ('$haus', 'learning', 8, 5, 2, 0, 2, 'cloze')
 
   test('clozeOf takes the first example that holds the word', () {
     const word = Word(
+      kind: 'vocab',
       uid: 'w',
       sublevelCode: 'A1.1',
       levelCode: 'A1',

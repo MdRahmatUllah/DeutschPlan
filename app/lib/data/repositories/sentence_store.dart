@@ -49,7 +49,7 @@ SELECT e.word_uid, e.ord, e.german, e.english, w.german AS headword, w.pos
 FROM word_examples e
 JOIN words w ON w.uid = e.word_uid
 JOIN word_state s ON s.word_uid = e.word_uid
-WHERE s.status IN ('learning', 'done')
+WHERE s.status IN ('learning', 'done') AND w.kind = 'vocab'
   AND NOT EXISTS (
     SELECT 1 FROM sentence_log l
     WHERE l.word_uid = e.word_uid AND l.ord = e.ord AND l.shown_on > ?1

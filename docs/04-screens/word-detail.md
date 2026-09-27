@@ -29,6 +29,7 @@
 - **Reset word** clears `word_state`, the word's open plan rows from today on, and every `new` row, done or not. A word with a `new` row is never planned again (`DriftPlanStore.unplannedWords`), and a reset word is To do again, so it goes back into the pool. Done revisions stay, because they are the day's history, and so do `daily_stats` and `review_log`. *Undo* restores exactly what went.
 - **Undo** restores the row as it was. For a word never met, that means no `word_state` row at all.
 - **One action at a time.** A second tap while one is running does nothing.
+- **A note or a comparison** (BR-CONTENT-04, #630: "beantworten — Präfix be-", "machen ↔ tun") has no status chip, and none of *Add to today*, *Mark known*, *Suspend* / *Resume* or the card chips: it is never studied. *Reset word* (for one met before it was a note), *Copy*, *Translate* and the web chips stay. The word lists (L2, L6, R1) show it without a status chip too; L2 lists it under *All* only.
 
 **Functional requirements**
 - FR-W1-01 *Add to today* inserts a `plan_items(today, uid, 'new')` row for the active step (allowed for any step's To-do word).

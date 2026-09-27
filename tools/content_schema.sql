@@ -70,7 +70,13 @@ CREATE TABLE words (
   collocations      TEXT,
   synonyms_register TEXT,
   search_key        TEXT NOT NULL,
-  search_key_alt    TEXT NOT NULL
+  search_key_alt    TEXT NOT NULL,
+
+  -- BR-CONTENT-04 (#630): `vocab` is a word to learn. A `note` (word
+  -- formation, a grammar rule's name) and a `compare` ("machen ↔ tun") are
+  -- lessons: shown in the word lists, search and W1, never planned, revised,
+  -- quizzed, examined, placed or counted. The pipeline assigns it (PIPE-10).
+  kind              TEXT NOT NULL CHECK (kind IN ('vocab', 'note', 'compare'))
 );
 
 CREATE INDEX idx_words_step ON words (sublevel_code, seq_in_sublevel);
