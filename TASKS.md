@@ -416,6 +416,7 @@ claiming the same issue. A hand edit skips that check.
 | #932 | - | X | P2 | - | fix(deep-links): a link arriving during setup sends the learner back to setup's page 1 (from #926's review) | open |  |  |  |
 | #933 | - | X | P3 | - | chore(review): should-fixes from reviewing #928 and #929 (a dead wrapper, an SQA check, two tips, correction values unchecked) | open |  |  |  |
 | #937 | - | X | P3 | - | fix(backup): a merge after part of today's Revise is done drops the rest of the block and re-picks nothing (from #936's review) | assigned | agent-0 |  |  |
+| #817 | - | X | P3 | - | fix(today): tomorrow's preview memoises the time estimate's read, so the next day misses the evening's study (#768) | open |  |  |  |
 
 ## Locks
 
@@ -8354,3 +8355,7 @@ Added #937 (fix(backup): a merge after part of today's Revise is done drops the 
 ### H-1962 · 2026-09-27 21:00 · agent-0 → agent-0 · assign · #937
 
 Please take #937 (fix(backup): a merge after part of today's Revise is done drops the rest of the block and re-picks nothing (from #936's review)).
+
+### H-1963 · 2026-09-27 21:00 · agent-0 → all · note · #817
+
+Added #817 (fix(today): tomorrow's preview memoises the time estimate's read, so the next day misses the evening's study (#768)) to lane X.
