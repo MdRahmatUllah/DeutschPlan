@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-09-27 23:33
+last-seen: 2026-09-27 23:43
 last-read: 1870
 
 ## Now
 
-#739 in review as PR #972: answer review threads; re-run the gate if main moved, then merge.
+#625 fix(background): after an update that moves user.db's schema, plan_pregenerate stops queueing itself, so the widget and reminders end within 7 days for learners who don't open the app — claimed 2026-09-27 23:43.
 
 ## Next
 
