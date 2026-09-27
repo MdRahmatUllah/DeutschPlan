@@ -79,8 +79,8 @@ void main() {
   SgTokens tokens(WidgetTester tester) =>
       tester.element(find.byType(ExamResultsScreen)).tokens;
 
-  testWidgets('FR-L13-01 a pass: Bestanden!, the score, the pass mark and '
-      'the previous attempt', (tester) async {
+  testWidgets('FR-L13-01 #964 a pass: Bestanden!, the score, the pass mark '
+      'and the previous attempt, 15 percentage points below', (tester) async {
     await pump(tester);
     expect(find.text(l10n.examResultPassed), findsOneWidget);
     expect(find.text(l10n.examResultPercent(77)), findsOneWidget);
@@ -89,7 +89,9 @@ void main() {
     expect(
       find.text(
         '${l10n.examResultLine('A1.2', 2, '18:41')} · '
-        '${l10n.examResultCompare('+7', 1, 62)}',
+        // 77 % after 62 %: +15 percentage points, as the artboard reads,
+        // not the +7 score points between 37 and 30 of 48.
+        '${l10n.examResultCompare('+15', 1, 62)}',
       ),
       findsOneWidget,
     );
@@ -126,6 +128,32 @@ void main() {
       ),
       findsWidgets,
       reason: 'on Coral',
+    );
+  });
+
+  testWidgets('FR-L13-01 #964 a worse attempt reads its drop in percentage '
+      'points, the two percents as shown', (tester) async {
+    await pump(
+      tester,
+      with_: StubExamResult(
+        result: (
+          attempt: resultAttempt(score: 35.5),
+          rows: artboardRows(),
+          previous: (attempt: resultAttempt(id: 3, score: 37), number: 1),
+          passPercent: 60,
+          missed: const <String>[],
+          added: 0,
+        ),
+      ),
+    );
+    // 73 % after 77 %: −4, where the score points differ by 1.5.
+    expect(find.text(l10n.examResultPercent(73)), findsOneWidget);
+    expect(
+      find.text(
+        '${l10n.examResultLine('A1.2', 2, '18:41')} · '
+        '${l10n.examResultCompare('−4', 1, 77)}',
+      ),
+      findsOneWidget,
     );
   });
 
@@ -457,7 +485,7 @@ void main() {
     expect(
       find.text(
         '${bn.examResultLine('A1.2', 2, '১৮:৪১')} · '
-        '${bn.examResultCompare('+৭', 1, 62)}',
+        '${bn.examResultCompare('+১৫', 1, 62)}',
       ),
       findsOneWidget,
     );

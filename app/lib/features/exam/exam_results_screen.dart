@@ -240,6 +240,7 @@ class _Result extends StatelessWidget {
       }
     }
 
+    final percent = _percent(attempt.scorePoints, attempt.maxPoints);
     final previous = result.previous;
     final line = <String>[
       l10n.examResultLine(
@@ -247,13 +248,19 @@ class _Result extends StatelessWidget {
         attempt.seed,
         l10n.digits(examClock(attempt.durationSec)),
       ),
-      if (previous != null)
+      if (previous case (attempt: final before, :final number))
+        // #964: in percentage points, the two percents as shown: 77 % after
+        // 62 % reads +15, as the learner would subtract them. Score points
+        // gave +7, beside "37 of 48 points".
         l10n.examResultCompare(
           l10n.digits(
-            _signed(attempt.scorePoints - previous.attempt.scorePoints),
+            _signed(
+              (percent - _percent(before.scorePoints, before.maxPoints))
+                  .toDouble(),
+            ),
           ),
-          previous.number,
-          _percent(previous.attempt.scorePoints, previous.attempt.maxPoints),
+          number,
+          _percent(before.scorePoints, before.maxPoints),
         ),
     ].join(' · ');
 
@@ -267,7 +274,7 @@ class _Result extends StatelessWidget {
               _Hero(
                 passed: attempt.passed != 0,
                 share: share,
-                percent: _percent(attempt.scorePoints, attempt.maxPoints),
+                percent: percent,
                 points: l10n.examResultPoints(
                   l10n.digits(_points(attempt.scorePoints)),
                   l10n.digits(_points(attempt.maxPoints)),

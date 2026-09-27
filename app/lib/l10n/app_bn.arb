@@ -828,7 +828,7 @@
   "examResultPoints": "{max}-এর মধ্যে {points} পয়েন্ট",
   "examResultPassMark": "পাস {percent}%",
   "examResultLine": "{step} · মক {mock} · {time}",
-  "examResultCompare": "চেষ্টা {number}-এর ({percent}%) তুলনায় {delta} পয়েন্ট",
+  "examResultCompare": "চেষ্টা {number}-এর ({percent}%) তুলনায় {delta} শতাংশ পয়েন্ট",
   "examResultBySection": "বিভাগ অনুযায়ী",
   "examResultSectionPoints": "{points} / {max}",
   "examResultSelfAssessed": "নিজে যাচাই",
