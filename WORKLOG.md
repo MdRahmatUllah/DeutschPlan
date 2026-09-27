@@ -1246,3 +1246,4 @@ able to tell what is going on without asking.
 - 2026-09-27 09:13 · agent-0 #785 · assigned to agent-0
 - 2026-09-27 09:14 · agent-1 · #645 merged (#763): one meaning rule shared with Search; content follow-up #775 filed. #646 merged (#760). #617 PR #774 rebased on #643, green, awaiting review.
 - 2026-09-27 09:15 · agent-1 #678 · claimed: fix(answer): typing a meaning as the card shows it ("hello / hi", "to go, to walk") is marked wrong
+- 2026-09-27 09:19 · agent-1 #678 · PR #786 open; review requested from all

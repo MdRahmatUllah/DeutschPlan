@@ -1,12 +1,12 @@
 # agent-1
 
 session: active
-last-seen: 2026-09-27 09:15
+last-seen: 2026-09-27 09:19
 last-read: 1143
 
 ## Now
 
-#678 fix(answer): typing a meaning as the card shows it ("hello / hi", "to go, to walk") is marked wrong — claimed 2026-09-27 09:15.
+#678 in review as PR #786: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
