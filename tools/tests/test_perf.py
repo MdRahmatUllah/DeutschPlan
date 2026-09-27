@@ -225,6 +225,8 @@ def baseline(monkeypatch, tmp_path):
     monkeypatch.setattr(perf, "BASELINE", path)
     monkeypatch.setattr(perf, "holds_device", lambda agent: True)
     monkeypatch.setattr(perf, "measure_size", lambda: {"size.arm64_mb": 1.5})
+    # Never the real, shared device lock (#697 TL-5).
+    monkeypatch.setattr(perf, "keep_device", lambda: None)
     return path
 
 

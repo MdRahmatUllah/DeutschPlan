@@ -336,7 +336,8 @@ def sync(root: Path) -> None:
     # Committed but not pushed is lost to the reset just the same (#697 TL-6).
     if git(root, "log", "--oneline", f"origin/{BRANCH}..HEAD", "--", "PLAN.md", check=False).stdout.strip():
         raise SystemExit(f"{root / 'PLAN.md'} has commits that are not pushed: "
-                         f"`git -C {root} push origin HEAD:{BRANCH}` first")
+                         f"`git -C {root} pull --rebase origin {BRANCH}`, then "
+                         f"`git -C {root} push origin HEAD:{BRANCH}`, first")
     git(root, "reset", "--quiet", "--hard", f"origin/{BRANCH}")
     git(root, "clean", "--quiet", "-fd")
 
@@ -649,6 +650,16 @@ def cmd_device(team_root: Path, agent: str, release: bool, refresh: bool = False
                 os.replace(lock, aside)
             except OSError:
                 continue
+            if time.time() - aside.stat().st_mtime < DEVICE_LOCK_STALE_SECONDS:
+                # Another agent broke it and took it between our look and our
+                # rename: that fresh lock is theirs, so it goes back.
+                # ponytail: a third agent taking it in that gap still makes two
+                # holders; a PID + heartbeat file if that ever happens.
+                try:
+                    os.rename(aside, lock)
+                except OSError:
+                    pass
+                raise Refused("another agent has just taken the device: do other work and try again")
             shutil.rmtree(aside, ignore_errors=True)
     else:
         raise Refused("the device lock is changing hands: try again")

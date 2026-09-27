@@ -325,3 +325,23 @@ def test_697_a_stale_device_lock_is_broken_in_one_step_and_can_be_refreshed(tmp_
     team.cmd_device(tmp_path, "agent-2", release=False)  # breaks the stale one
     assert (tmp_path / ".device.lock" / "owner").read_text(encoding="utf-8").startswith("agent-2")
     assert [p.name for p in tmp_path.iterdir()] == [".device.lock"]
+
+
+def test_697_two_agents_breaking_one_stale_lock_leave_one_holder(tmp_path, monkeypatch):
+    # TL-5: A reads the lock as stale; before A's rename, B breaks it and
+    # takes it. A must give B's fresh lock back, not take the device too.
+    team.cmd_device(tmp_path, "agent-1", release=False)
+    old = time.time() - team.DEVICE_LOCK_STALE_SECONDS - 60
+    os.utime(tmp_path / ".device.lock", (old, old))
+    real = os.replace
+
+    def b_first(src, dst):
+        monkeypatch.setattr(team.os, "replace", real)
+        team.cmd_device(tmp_path, "agent-2", release=False)
+        monkeypatch.setattr(team.os, "replace", b_first)
+        return real(src, dst)
+
+    monkeypatch.setattr(team.os, "replace", b_first)
+    with pytest.raises(team.Refused):
+        team.cmd_device(tmp_path, "agent-3", release=False)
+    assert (tmp_path / ".device.lock" / "owner").read_text(encoding="utf-8").startswith("agent-2")
