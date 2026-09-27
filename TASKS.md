@@ -296,7 +296,7 @@ claiming the same issue. A hand edit skips that check.
 | #670 | - | X | P2 | - | fix(exam): L12 doesn't handle the app going to the background | assigned | agent-2 |  |  |
 | #671 | - | X | P2 | - | fix(exam): recordings of abandoned attempts are kept for ever | assigned | agent-2 |  |  |
 | #672 | - | X | P2 | - | fix(settings): after Reset everything or a Replace import, the meaning language, UI language and theme are stale | assigned | agent-2 |  |  |
-| #673 | - | X | P2 | - | fix(models): a voice download can be queued twice | assigned | agent-1 |  |  |
+| #673 | - | X | P2 | - | fix(models): a voice download can be queued twice | in-progress | agent-1 |  |  |
 | #674 | - | X | P2 | - | fix(deep-links): a cold start from a sogda:// link skips onboarding (the #236 bug returns) | assigned | agent-1 |  |  |
 | #676 | - | X | P2 | - | fix(deep-links): a reminder or widget link takes over a running exam | assigned | agent-1 |  |  |
 | #677 | - | X | P2 | - | fix(errors): async errors render blank screens, often with no way out | assigned | agent-0 |  |  |

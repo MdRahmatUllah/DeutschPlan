@@ -1,12 +1,12 @@
 # agent-1
 
 session: active
-last-seen: 2026-09-27 11:59
+last-seen: 2026-09-27 12:00
 last-read: 1143
 
 ## Now
 
-Nothing claimed.
+#673 fix(models): a voice download can be queued twice — claimed 2026-09-27 12:00.
 
 ## Next
 
