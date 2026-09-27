@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:sogda/features/bootstrap/bootstrap_error_screen.dart';
 import 'package:sogda/features/splash/splash_screen.dart';
-import 'package:sogda/features/today/today_providers.dart' show warmTodaysVoice;
 import 'package:flutter/foundation.dart' show kReleaseMode, debugPrint;
 import 'package:flutter/services.dart';
 
@@ -26,6 +25,7 @@ import 'package:sogda/router/deep_links.dart';
 import 'package:sogda/services/background_tasks.dart';
 import 'package:sogda/services/background_work.dart';
 import 'package:sogda/services/reminder_notifications.dart';
+import 'package:sogda/services/tts/tts_service.dart' show VoiceRelease;
 import 'package:sogda/services/widget_snapshot.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 // `Override` is not in the main barrel in Riverpod 3.
@@ -268,9 +268,10 @@ void wireApp(ProviderContainer container, Bootstrap bootstrap) {
   // FR-M4-01: model downloads carry on from where the app left them, and
   // report as they go (#156).
   unawaited(container.read(modelDownloadsProvider).attach());
-  // #460: Supertonic ready before the first session opens.
-  WidgetsBinding.instance.addPostFrameCallback(
-    (_) => unawaited(warmTodaysVoice(container)),
+  // #638: Supertonic opens on the first clip a screen needs, not here, and
+  // lets go of its sessions in the background or under memory pressure.
+  WidgetsBinding.instance.addObserver(
+    VoiceRelease(() => container.read(ttsProvider).release()),
   );
 }
 

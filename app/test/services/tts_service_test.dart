@@ -5,6 +5,7 @@ import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/data/repositories/settings_repository.dart';
 import 'package:sogda/services/tts/tts_engine.dart';
 import 'package:sogda/services/tts/tts_service.dart';
+import 'package:flutter/widgets.dart' show AppLifecycleState;
 import 'package:flutter_test/flutter_test.dart';
 
 import 'fake_tts.dart';
@@ -98,17 +99,44 @@ void main() {
       expect(prefetch.stopped.single, same(list));
     });
 
-    testWidgets('#460 warm reaches Supertonic when it is the chosen voice, '
-        "not with the phone's", (tester) async {
+    testWidgets('#638 release reaches Supertonic whichever voice is chosen '
+        'now', (tester) async {
       final prefetch = FakePrefetchTts();
       final tts = TtsService(phone, settings, supertonic: prefetch);
       addTearDown(tts.dispose);
-      await tts.warm();
-      expect(prefetch.warms, 1);
+      await tts.release();
+      expect(prefetch.releases, 1);
 
       await choose(tester, TtsEngineSetting.system);
-      await tts.warm();
-      expect(prefetch.warms, 1);
+      await tts.release();
+      expect(prefetch.releases, 2, reason: 'what it opened is still open');
+    });
+
+    testWidgets('#638 VoiceRelease: memory pressure and the background let go '
+        'of the sessions, a pause on the way there does not', (tester) async {
+      final prefetch = FakePrefetchTts();
+      final tts = TtsService(phone, settings, supertonic: prefetch);
+      addTearDown(tts.dispose);
+      final observer = VoiceRelease(tts.release);
+      tester.binding.addObserver(observer);
+      addTearDown(() => tester.binding.removeObserver(observer));
+
+      tester.binding.handleMemoryPressure();
+      await tester.pump();
+      expect(prefetch.releases, 1);
+
+      for (final state in <AppLifecycleState>[
+        AppLifecycleState.inactive,
+        AppLifecycleState.hidden,
+      ]) {
+        observer.didChangeAppLifecycleState(state);
+      }
+      await tester.pump();
+      expect(prefetch.releases, 1);
+
+      observer.didChangeAppLifecycleState(AppLifecycleState.paused);
+      await tester.pump();
+      expect(prefetch.releases, 2);
     });
 
     testWidgets('an engine that cannot prepare is left alone', (tester) async {
