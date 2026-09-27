@@ -270,6 +270,7 @@ class ExamRepository extends DatabaseAccessor<AppDatabase>
             watchOut: topic.watchOut ?? '',
             tags: topic.tags.split(','),
             levelCode: topic.levelCode,
+            sublevelCode: step,
           ),
       ],
       categories: <int, String>{
