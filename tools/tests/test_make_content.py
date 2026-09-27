@@ -85,17 +85,20 @@ class TestTheRecipe:
         )
 
         copied = {
-            match.group(1)
+            (match.group(1), match.group(2))
             for line in recipe("content")
-            for match in [re.search(r"\$\(APP\)/(assets/\S+)/[^/\s]+$", line)]
+            if re.match(r"@?cp\s", line.strip())
+            for match in [re.search(r"\$\(APP\)/(assets/\S+)/([^/\s]+)$", line)]
             if match
         }
         assert copied, "the recipe copies nothing into assets/"
 
-        for directory in copied:
-            assert f"{directory}/" in declared, (
-                f"`make content` copies into {directory}/ and pubspec.yaml "
-                f"does not declare it, so the file never ships"
+        # The file itself, or its whole folder (#707 names the files, so the
+        # folder's README stays out of the APK).
+        for directory, name in copied:
+            assert f"{directory}/{name}" in declared or f"{directory}/" in declared, (
+                f"`make content` copies {name} into {directory}/ and pubspec.yaml "
+                f"declares neither, so the file never ships"
             )
 
     def test_every_target_in_the_file_is_declared_phony(self):
