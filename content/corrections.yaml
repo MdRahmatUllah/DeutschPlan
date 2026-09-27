@@ -304,3 +304,52 @@ words:
     why: "#629: the headword is the word the row teaches, and its article is das"
     article: "das"
     german: "Vetorecht"
+  "db7c9612c31bf21e":
+    why: "#632: the forms cell is 3rd person · Perfekt; the Präteritum moves to the synonyms"
+    forms: "darf · hat gedurft"
+    synonyms_register: "Präteritum: durfte"
+  "1a40e6b702700966":
+    why: "#632: the forms cell is 3rd person · Perfekt; the Präteritum moves to the synonyms"
+    forms: "hat · hat gehabt"
+    synonyms_register: "Präteritum: hatte"
+  "f607aa135108c5d5":
+    why: "#632: the forms cell is 3rd person · Perfekt; the Präteritum moves to the synonyms"
+    forms: "kann · hat gekonnt"
+    synonyms_register: "Präteritum: konnte"
+  "efb7b214f95549c0":
+    why: "#632: möchten has no Perfekt of its own; its Präteritum moves to the synonyms"
+    forms: "möchte"
+    synonyms_register: "Präteritum: wollte (möchten has no Perfekt)"
+  "6160c674735ccd8a":
+    why: "#632: the forms cell is 3rd person · Perfekt; the Präteritum moves to the synonyms"
+    forms: "muss · hat gemusst"
+    synonyms_register: "Präteritum: musste"
+  "600946d210411231":
+    why: "#632: the forms cell is 3rd person · Perfekt; the Präteritum moves to the synonyms"
+    forms: "ist · ist gewesen"
+    synonyms_register: "Präteritum: war"
+  "a559d16747ace9ef":
+    why: "#632: the forms cell is 3rd person · Perfekt; the Präteritum moves to the synonyms"
+    forms: "soll · hat gesollt"
+    synonyms_register: "Präteritum: sollte"
+  "b37d78f3d893fbaa":
+    why: "#632: the forms cell is 3rd person · Perfekt; the Präteritum moves to the synonyms"
+    forms: "will · hat gewollt"
+    synonyms_register: "Präteritum: wollte"
+  "54fa3d814e3c4adf":
+    why: "#632: one Perfekt to ask; the other sense's auxiliary moves to the synonyms"
+    forms: "bricht auf · ist aufgebrochen"
+    synonyms_register: "transitive = break open (hat aufgebrochen), intransitive = depart (ist aufgebrochen)"
+  "24a51ee920b13f81":
+    why: "#632: one Perfekt to ask; the other sense's auxiliary moves to the synonyms"
+    forms: "eskaliert · ist eskaliert"
+    synonyms_register: "transitive = pass up (hat eskaliert); intransitive = get worse (ist eskaliert)"
+  "97455b9edb773217":
+    why: "#632: a comparison of two verbs has no 3rd person · Perfekt"
+    forms: null
+  "2cef4a605ce921c7":
+    why: "#632: a comparison of two verbs has no 3rd person · Perfekt"
+    forms: null
+  "d8b65dec5f4518fb":
+    why: "#632: the second form is the Perfekt, not the Präteritum"
+    forms: "ist dabei · ist dabei gewesen"

@@ -328,6 +328,38 @@ def check_no_pair_headword(db: sqlite3.Connection) -> list[Failure]:
     ]
 
 
+#: What `parseForms` reads a two-part verb or phrase cell as: the 3rd person,
+#: then the Perfekt with its auxiliary. Nothing in brackets (#632).
+VERB_FORMS = r"[^·()]+ · (hat|ist) [^()]+"
+
+
+def check_verb_forms(db: sqlite3.Connection) -> list[Failure]:
+    """#632: a two-part verb or phrase `forms` cell that is not
+    "3rd person · Perfekt". The Forms quiz and the exams expect part two
+    verbatim, so "hat gedurft (durfte)" marked "hat gedurft" wrong."""
+    import re
+
+    rows = [
+        f"{german} ({forms})"
+        for german, forms in db.execute(
+            "SELECT german, forms FROM words "
+            "WHERE pos IN ('verb', 'phrase') AND forms IS NOT NULL ORDER BY seq"
+        )
+        if len([part for part in forms.split("·") if part.strip()]) == 2
+        and not re.fullmatch(VERB_FORMS, forms.strip())
+    ]
+    if not rows:
+        return []
+    return [
+        Failure(
+            "forms",
+            f"{len(rows)} verb forms cells are not '3rd person · hat/ist "
+            f"Perfekt': {_sample(rows)}. One auxiliary, and no brackets: put "
+            f"a Präteritum or a second sense in Synonyms / register.",
+        )
+    ]
+
+
 def read_denylist(path: Path | None) -> list[tuple[int, str]]:
     """One term per line; `#` starts a comment. Case-folded, with the line
     number a failure names it by."""
@@ -407,6 +439,7 @@ GATES = (
     check_tips_fit_their_word_class,
     check_no_article_in_german,
     check_no_pair_headword,
+    check_verb_forms,
     check_no_denylisted_terms,
 )
 

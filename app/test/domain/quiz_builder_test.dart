@@ -640,7 +640,8 @@ void main() {
       expect(parseForms(verb('y', 'gehen', 'to go', forms: '  ')), isEmpty);
     });
 
-    test('every forms cell in the real content.db parses, but for the four synonym sets', () {
+    test('every forms cell in the real content.db parses, but for the four '
+        'synonym sets and #632 möchten, which has no Perfekt', () {
       final db = sqlite3.open('assets/db/content.db', mode: OpenMode.readOnly);
       addTearDown(db.close);
       final rows = db.select(
@@ -663,9 +664,13 @@ void main() {
             '${row['german']}: ${row['forms']}',
       ];
       expect(rows.length, greaterThan(3000));
-      expect(unparsed, hasLength(4), reason: unparsed.join('\n'));
+      // The synonym sets have three parts; möchten has one form, so it is
+      // never asked a Perfekt it doesn't have (#632).
+      expect(unparsed, hasLength(5), reason: unparsed.join('\n'));
       expect(
-        unparsed.every((u) => u.split('·').length == 3),
+        unparsed.every(
+          (u) => u.split('·').length == 3 || u == 'möchten: möchte',
+        ),
         isTrue,
         reason: unparsed.join('\n'),
       );
