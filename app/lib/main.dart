@@ -79,7 +79,7 @@ Future<void> main() async {
 
 /// Shows S1 while [bootstrap] runs, then swaps in the real app.
 class BootstrapHost extends StatefulWidget {
-  const BootstrapHost({super.key, this.run});
+  const BootstrapHost({super.key, this.run, this.wire});
 
   /// Overridden in tests. Defaults to the real [bootstrap].
   final Future<BootstrapResult> Function({
@@ -87,6 +87,10 @@ class BootstrapHost extends StatefulWidget {
     void Function(UiLanguage)? onUiLanguage,
   })?
   run;
+
+  /// Overridden in tests, which have no platform side for the plugins behind
+  /// it. Defaults to [wireApp].
+  final void Function(ProviderContainer container, Bootstrap bootstrap)? wire;
 
   @override
   State<BootstrapHost> createState() => _BootstrapHostState();
@@ -122,18 +126,35 @@ class _BootstrapHostState extends State<BootstrapHost>
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
+    // Its own: an `UncontrolledProviderScope` leaves the container alone.
+    _container?.dispose();
     super.dispose();
   }
 
-  Future<void> _start() async {
-    final platform = PlatformDispatcher.instance;
-    final result = await (widget.run ?? bootstrap)(
-      platformBrightness: platform.platformBrightness,
-      onUiLanguage: (ui) {
-        if (mounted) setState(() => _splashLocale = ui.locale);
-      },
-    );
+  /// The container the app runs in: the first start's, or a retry's.
+  ProviderContainer? _container;
 
+  Future<void> _start() async {
+    final result = await _run();
+    if (mounted) _adopt(result);
+  }
+
+  /// [bootstrap], or the test's stand-in: at launch, and again from the
+  /// error screen's *Retry*.
+  Future<BootstrapResult> _run() => (widget.run ?? bootstrap)(
+    platformBrightness: PlatformDispatcher.instance.platformBrightness,
+    onUiLanguage: (ui) {
+      if (mounted) setState(() => _splashLocale = ui.locale);
+    },
+  );
+
+  /// Puts the app for [result] on screen, in a container of its own.
+  ///
+  /// Also where a retry that worked lands (#643). The failed start's
+  /// container carries no overrides, so an app built under it threw on its
+  /// first frame, and nothing it needs had been started. This gives it a new
+  /// container and the same wiring as a first start.
+  void _adopt(BootstrapResult result) {
     // ProviderScope at the very root, on both paths: riverpod_lint enforces
     // it, and the error screen's *Export progress* reads a repository too.
     //
@@ -147,61 +168,38 @@ class _BootstrapHostState extends State<BootstrapHost>
       },
     );
 
-    // The system light/dark switch. Without this the theme notifier never
-    // hears about it, and a learner following the platform would keep whatever
-    // the phone was on when the app launched.
     if (result is BootstrapReady) {
-      container
-          .read(themeProvider.notifier)
-          .platformBrightnessChanged(platform.platformBrightness);
-      platform.onPlatformBrightnessChanged = () => container
-          .read(themeProvider.notifier)
-          .platformBrightnessChanged(platform.platformBrightness);
+      // FR-S1-02 is a budget, and a budget nobody can read is a budget nobody
+      // keeps. One line in logcat, so the number is measurable on a device
+      // rather than inferred from `am start -W` — which now reports the
+      // splash frame rather than the time to Today. Release builds report
+      // Today as Android's "Fully drawn" instead (#462).
+      //
+      // Debug *and* profile, never release: a debug build is JIT and its
+      // numbers mean nothing against a 500 ms budget, so the only build worth
+      // measuring is an AOT one.
+      if (!kReleaseMode) {
+        debugPrint('bootstrap: ${result.bootstrap.elapsed.inMilliseconds} ms');
+      }
+      (widget.wire ?? wireApp)(container, result.bootstrap);
     }
 
-    // FR-S1-02 is a budget, and a budget nobody can read is a budget nobody
-    // keeps. One line in logcat, so the number is measurable on a device
-    // rather than inferred from `am start -W` — which now reports the splash
-    // frame rather than the time to Today. Release builds report Today as
-    // Android's "Fully drawn" instead (#462).
-    //
-    // Debug *and* profile, never release: a debug build is JIT and its
-    // numbers mean nothing against a 500 ms budget, so the only build worth
-    // measuring is an AOT one.
-    if (!kReleaseMode && result is BootstrapReady) {
-      debugPrint('bootstrap: ${result.bootstrap.elapsed.inMilliseconds} ms');
-    }
-
-    if (!mounted) {
-      container.dispose();
-      return;
-    }
-    if (result is BootstrapReady) {
-      final router = result.bootstrap.router;
-      unawaited(
-        startReminders(
-          container,
-          PlatformReminderNotifications(),
-          const WorkmanagerWork(),
-          open: router.go,
-        ),
-      );
-      // FR-X1-01: the home-screen widget's snapshot, kept to today (#159).
-      followWidget(container, const HomeWidgetStore());
-      // FR-M4-01: model downloads carry on from where the app left them, and
-      // report as they go (#156).
-      unawaited(container.read(modelDownloadsProvider).attach());
-      // #460: Supertonic ready before the first session opens.
-      WidgetsBinding.instance.addPostFrameCallback(
-        (_) => unawaited(warmTodaysVoice(container)),
-      );
-    }
+    final previous = _container;
     setState(() {
+      _container = container;
       _app = UncontrolledProviderScope(
+        // Keyed by its container: a retry replaces the whole tree, rather
+        // than swapping the container under widgets that read the old one.
+        key: ObjectKey(container),
         container: container,
-        child: appFor(result),
+        child: appFor(result, retry: _run, onReady: _adopt),
       );
     });
+    // The failed start's. Nothing was opened through it, and it goes once
+    // the frame that drops its tree has been built.
+    if (previous != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) => previous.dispose());
+    }
   }
 
   @override
@@ -219,6 +217,41 @@ class _BootstrapHostState extends State<BootstrapHost>
         supportedLocales: supportedLocales,
         home: const SplashProgressGate(),
       );
+}
+
+/// A ready app's platform side: the light/dark switch, the reminders, the
+/// home-screen widget, model downloads and the voice.
+///
+/// Once per app container, at launch or after a retry that worked (#643).
+void wireApp(ProviderContainer container, Bootstrap bootstrap) {
+  final platform = PlatformDispatcher.instance;
+  // The system light/dark switch. Without this the theme notifier never
+  // hears about it, and a learner following the platform would keep whatever
+  // the phone was on when the app launched.
+  container
+      .read(themeProvider.notifier)
+      .platformBrightnessChanged(platform.platformBrightness);
+  platform.onPlatformBrightnessChanged = () => container
+      .read(themeProvider.notifier)
+      .platformBrightnessChanged(platform.platformBrightness);
+
+  unawaited(
+    startReminders(
+      container,
+      PlatformReminderNotifications(),
+      const WorkmanagerWork(),
+      open: bootstrap.router.go,
+    ),
+  );
+  // FR-X1-01: the home-screen widget's snapshot, kept to today (#159).
+  followWidget(container, const HomeWidgetStore());
+  // FR-M4-01: model downloads carry on from where the app left them, and
+  // report as they go (#156).
+  unawaited(container.read(modelDownloadsProvider).attach());
+  // #460: Supertonic ready before the first session opens.
+  WidgetsBinding.instance.addPostFrameCallback(
+    (_) => unawaited(warmTodaysVoice(container)),
+  );
 }
 
 /// The daily reminder (#157) and the background tasks (#158): the plugins
@@ -272,16 +305,24 @@ void followPlatformBrightness(
 
 /// The app for a finished bootstrap, or FR-S1-03's error screen.
 ///
-/// Split out so the error path is something a widget test can build without a
-/// disk behind it.
-Widget appFor(BootstrapResult result) => switch (result) {
+/// The error screen's *Retry* runs [retry], and hands a result that worked to
+/// [onReady]: the host, which builds the app its own container (#643).
+Widget appFor(
+  BootstrapResult result, {
+  required void Function(BootstrapReady ready) onReady,
+  Future<BootstrapResult> Function()? retry,
+}) => switch (result) {
   // The providers #71 declares are overridden from here, so nothing has to
   // re-open what bootstrap already opened.
   BootstrapReady(:final bootstrap) => GlassCapabilityScope(
     notifier: bootstrap.glass,
     child: SogdaApp(router: bootstrap.router),
   ),
-  BootstrapFailed(:final failure) => BootstrapGate(failure: failure),
+  BootstrapFailed(:final failure) => BootstrapGate(
+    failure: failure,
+    onRetry: retry,
+    onReady: onReady,
+  ),
 };
 
 /// Supported UI languages, English first — see `supportedLocales` in [SogdaApp].
@@ -364,6 +405,7 @@ class SogdaApp extends ConsumerWidget {
 class BootstrapGate extends StatefulWidget {
   const BootstrapGate({
     required this.failure,
+    required this.onReady,
     this.onRetry,
     this.onShare,
     super.key,
@@ -371,7 +413,14 @@ class BootstrapGate extends StatefulWidget {
 
   final BootstrapFailure failure;
 
-  /// Overridden in tests, which have no disk to bootstrap against.
+  /// Where a retry that worked goes: [BootstrapHost], which builds the app a
+  /// container carrying bootstrap's overrides (#643). The gate never builds
+  /// the app itself: it sits under the failed start's container, which has
+  /// none, and the app's first frame threw there.
+  final void Function(BootstrapReady ready) onReady;
+
+  /// The host's bootstrap, and a stand-in in tests, which have no disk to
+  /// bootstrap against.
   final Future<BootstrapResult> Function()? onRetry;
 
   /// Hands the finished backup to the platform. Overridden in tests, which
@@ -387,7 +436,6 @@ class BootstrapGate extends StatefulWidget {
 
 class _BootstrapGateState extends State<BootstrapGate> {
   late BootstrapFailure _failure = widget.failure;
-  Widget? _next;
   var _retrying = false;
 
   Future<void> _retry() async {
@@ -404,25 +452,23 @@ class _BootstrapGateState extends State<BootstrapGate> {
     final result = await (widget.onRetry ?? bootstrap)();
     if (!mounted) return;
 
-    setState(() {
-      _retrying = false;
-      switch (result) {
-        case BootstrapReady():
-          _next = appFor(result);
-        case BootstrapFailed(:final failure):
+    switch (result) {
+      case BootstrapReady():
+        widget.onReady(result);
+      case BootstrapFailed(:final failure):
+        setState(() {
+          _retrying = false;
           _failure = failure;
-      }
-    });
+        });
+    }
   }
 
   @override
-  Widget build(BuildContext context) =>
-      _next ??
-      BootstrapErrorApp(
-        failure: _failure,
-        onRetry: _retrying ? null : _retry,
-        onExport: _failure.canExport ? _export : null,
-      );
+  Widget build(BuildContext context) => BootstrapErrorApp(
+    failure: _failure,
+    onRetry: _retrying ? null : _retry,
+    onExport: _failure.canExport ? _export : null,
+  );
 
   /// FR-S1-03's second half: get the learner's data out when nothing else in
   /// the app will start.
