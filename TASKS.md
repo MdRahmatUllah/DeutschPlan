@@ -301,7 +301,7 @@ claiming the same issue. A hand edit skips that check.
 | #676 | - | X | P2 | - | fix(deep-links): a reminder or widget link takes over a running exam | open |  |  |  |
 | #677 | - | X | P2 | - | fix(errors): async errors render blank screens, often with no way out | open |  |  |  |
 | #679 | - | X | P2 | - | fix(riverpod): WidgetRef is used after an await on screens the learner can leave (Riverpod 3.4.3 throws) | open |  |  |  |
-| #713 | - | X | P2 | - | fix(search): the FTS tokenizer splits Bangla words at their vowel signs, so a Bangla "starts with" search is mostly noise | open |  |  |  |
+| #713 | - | X | P2 | - | fix(search): the FTS tokenizer splits Bangla words at their vowel signs, so a Bangla "starts with" search is mostly noise | assigned | agent-1 |  |  |
 | #681 | - | X | P2 | - | test(l10n): the hard-coded copy guard can't see SgText, the only text widget screens use | open |  |  |  |
 | #683 | - | X | P2 | - | test(flaky): timing-dependent tests can flake under parallel load | open |  |  |  |
 | #684 | - | X | P2 | - | fix(l10n): four Bangla strings name English labels that the Bangla UI never shows | open |  |  |  |
@@ -5941,5 +5941,9 @@ production-review fix pass (owner, 2026-09-27): solve all open issues
 production-review fix pass (owner, 2026-09-27): solve all open issues
 
 ### H-1372 · 2026-09-27 07:54 · agent-0 → agent-1 · assign · #682
+
+production-review fix pass (owner, 2026-09-27): solve all open issues
+
+### H-1373 · 2026-09-27 07:54 · agent-0 → agent-1 · assign · #713
 
 production-review fix pass (owner, 2026-09-27): solve all open issues
