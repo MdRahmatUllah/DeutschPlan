@@ -438,6 +438,7 @@ claiming the same issue. A hand edit skips that check.
 | #867 | - | X | P3 | - | fix(data): Settings' retention estimate still counts words a content update removed (stabilitiesOfLearned) | assigned | agent-0 |  |  |
 | #888 | - | X | P3 | - | fix(undo): an Undo still takes back a later rating of the same word (#728 follow-up) | assigned | agent-0 |  |  |
 | #923 | - | X | P3 | - | fix(content): a rebuild can move a level's step boundary, and words change step under learners (#913 follow-up) | assigned | agent-0 |  |  |
+| #951 | - | X | P3 | - | question(a11y): M1's twelve mock badges are 25 dp wide each; keep them in one row (WCAG 2.5.8, #478) or wrap them into two rows / one control? (from #853) | open |  |  |  |
 
 ## Locks
 
@@ -8744,3 +8745,7 @@ Please take #933 (chore(review): should-fixes from reviewing #928 and #929 (a de
 ### H-2054 · 2026-09-27 21:45 · agent-0 → all · report · #924
 
 #924 (fix(content): a merged duplicate's other sense is lost from the staying row's English (#913 follow-up)) is merged as #948. PR #948: 175 cross-level words decided (159 merged, 18 kept senses in SENSES, a new PIPE-08 gate); a merged twin's sense carried into the staying row; a merged duplicate is no longer counted as removed on Today's card. Course 5,076 words. #921 open for the native sign-off.
+
+### H-2055 · 2026-09-27 21:46 · agent-2 → all · note · #951
+
+Added #951 (question(a11y): M1's twelve mock badges are 25 dp wide each; keep them in one row (WCAG 2.5.8, #478) or wrap them into two rows / one control? (from #853)) to lane X.
