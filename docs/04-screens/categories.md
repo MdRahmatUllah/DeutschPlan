@@ -13,6 +13,6 @@
 **Functional requirements**
 - FR-L5-01 Counts and status bars per category from a single grouped query.
 - FR-L6-01 Order: `sublevel ord`, then `freq DESC`, then `seq`.
-- FR-L6-02 *Quiz* opens L7 with source `category(id)`.
+- FR-L6-02 *Quiz* opens L7 with source `category(id)`. It starts in the learner's meaning direction, as L7 does (#667). The code starts the quiz (L8) directly, not L7: whether it should open L7 is the owner's call (#963).
 
 **Tests.** ordering; category quiz args.

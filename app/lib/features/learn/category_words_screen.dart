@@ -6,6 +6,8 @@ import 'package:sogda/core/components/sg_button.dart';
 import 'package:sogda/core/components/sg_chip.dart';
 import 'package:sogda/core/components/sg_progress_ring.dart';
 import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/features/quiz/quiz_setup_sheet.dart'
+    show meaningDirection;
 import 'package:sogda/core/theme/aurora_backdrop.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/core/typography/sg_text.dart';
@@ -52,9 +54,10 @@ enum LevelFilter {
       this == LevelFilter.all || levels.contains(row.word.word.levelCode);
 }
 
-/// FR-L6-02: the quiz L6's *Quiz* starts, from the category's learned words.
-QuizArgs categoryQuiz(int id) => QuizArgs(
-  direction: 'deEn',
+/// FR-L6-02: the quiz L6's *Quiz* starts, from the category's learned words,
+/// in the learner's meaning direction (#667).
+QuizArgs categoryQuiz(int id, {String direction = 'deEn'}) => QuizArgs(
+  direction: direction,
   source: 'category',
   sourceRef: '$id',
   seed: math.Random().nextInt(1 << 31),
@@ -218,7 +221,13 @@ class _CategoryWordsScreenState extends ConsumerState<CategoryWordsScreen> {
           expand: false,
           onPressed: learned < StepQuizTab.minimumLearned
               ? null
-              : () => QuizRoute.open(context, categoryQuiz(widget.id)),
+              : () => QuizRoute.open(
+                  context,
+                  categoryQuiz(
+                    widget.id,
+                    direction: meaningDirection(ref).name,
+                  ),
+                ),
         ),
         // The artboard's 8 dp bar inset and the link's own 10.
         const SizedBox(width: 18),

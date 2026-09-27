@@ -34,6 +34,7 @@ import 'package:sogda/features/words/word_detail_screen.dart';
 import '../db/content_fixture.dart';
 import 'today_fixtures.dart';
 import 'word_fixtures.dart';
+import 'settings_fixtures.dart';
 
 /// L6 · Category words — #121.
 void main() {
@@ -86,6 +87,7 @@ void main() {
                 stream ?? Stream.value(words ?? artboardCategoryWords()),
           ),
           ...wordStub(),
+          ...settingsStub(),
         ],
         // A phone that composites blur, as the glass goldens have it.
         child: GlassCapabilityScope(
@@ -401,6 +403,18 @@ void main() {
     expect(quiz!.source, 'category');
     expect(quiz!.sourceRef, '1');
     expect(quiz!.direction, 'deEn');
+  });
+
+  testWidgets("#667 FR-L6-02 a Bangla learner's Quiz asks DE → বাংলা, as L7 "
+      'starts', (tester) async {
+    await pump(tester);
+    (ProviderScope.containerOf(tester.element(find.byType(CategoryWordsScreen)))
+                .read(settingsSourceProvider)
+            as StubSettings)
+        .put(SettingKeys.meaningLanguage, MeaningLanguage.bangla);
+    await tester.tap(find.text(l10n.stepTabQuiz));
+    await tester.pumpAndSettle();
+    expect(quiz!.direction, 'deBn');
   });
 
   testWidgets(
