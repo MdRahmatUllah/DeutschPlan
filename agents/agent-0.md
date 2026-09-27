@@ -6,7 +6,7 @@ last-read: 1870
 
 ## Now
 
-#924 fix(content): a merged duplicate's other sense is lost from the staying row's English (#913 follow-up) — claimed 2026-09-27 21:28.
+#924 in review as PR #948: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 

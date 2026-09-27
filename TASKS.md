@@ -419,7 +419,7 @@ claiming the same issue. A hand edit skips that check.
 | #817 | - | X | P3 | - | fix(today): tomorrow's preview memoises the time estimate's read, so the next day misses the evening's study (#768) | done | agent-0 |  | #940 |
 | #921 | - | X | P3 | - | content: 175 words are still taught in two or three levels with the English worded differently (after #913) | review | agent-0 |  | #948 |
 | #922 | - | X | P3 | - | fix(content-update): Today's card counts a merged duplicate as a removed word (#913 follow-up) | review | agent-0 |  | #948 |
-| #924 | - | X | P3 | - | fix(content): a merged duplicate's other sense is lost from the staying row's English (#913 follow-up) | in-progress | agent-0 |  |  |
+| #924 | - | X | P3 | - | fix(content): a merged duplicate's other sense is lost from the staying row's English (#913 follow-up) | review | agent-0 |  | #948 |
 
 ## Locks
 
@@ -8454,3 +8454,7 @@ PR #948 for #921 (content: 175 words are still taught in two or three levels wit
 ### H-1986 · 2026-09-27 21:28 · agent-0 → agent-2 · review-request · #922
 
 PR #948 for #922 (fix(content-update): Today's card counts a merged duplicate as a removed word (#913 follow-up)) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.
+
+### H-1987 · 2026-09-27 21:28 · agent-0 → agent-2 · review-request · #924
+
+PR #948 for #924 (fix(content): a merged duplicate's other sense is lost from the staying row's English (#913 follow-up)) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.
