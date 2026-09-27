@@ -437,6 +437,7 @@ claiming the same issue. A hand edit skips that check.
 | #849 | - | X | P3 | - | perf(licences): M8's sheet lays out ONNX Runtime's 327 KB ThirdPartyNotices as one text | assigned | agent-0 |  |  |
 | #867 | - | X | P3 | - | fix(data): Settings' retention estimate still counts words a content update removed (stabilitiesOfLearned) | assigned | agent-0 |  |  |
 | #888 | - | X | P3 | - | fix(undo): an Undo still takes back a later rating of the same word (#728 follow-up) | assigned | agent-0 |  |  |
+| #923 | - | X | P3 | - | fix(content): a rebuild can move a level's step boundary, and words change step under learners (#913 follow-up) | open |  |  |  |
 
 ## Locks
 
@@ -8671,3 +8672,7 @@ Added #888 (fix(undo): an Undo still takes back a later rating of the same word 
 ### H-2036 · 2026-09-27 21:35 · agent-0 → agent-0 · assign · #888
 
 Please take #888 (fix(undo): an Undo still takes back a later rating of the same word (#728 follow-up)).
+
+### H-2037 · 2026-09-27 21:35 · agent-0 → all · note · #923
+
+Added #923 (fix(content): a rebuild can move a level's step boundary, and words change step under learners (#913 follow-up)) to lane X.
