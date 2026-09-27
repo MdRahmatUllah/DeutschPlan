@@ -280,7 +280,7 @@ claiming the same issue. A hand edit skips that check.
 | #658 | - | X | P2 | - | fix(import): restoring onto a fresh phone with Merge (the default) demotes the backup's step and keeps onboarding's settings | done | agent-0 |  | #799 |
 | #659 | - | X | P2 | - | fix(stats): daily_stats.sentences_done is never written | done | agent-0 |  | #781 |
 | #660 | - | X | P2 | - | fix(day-complete): a session that crosses midnight claims today's day-complete for yesterday's plan | review | agent-1 |  | #859 |
-| #661 | - | X | P2 | - | fix(study): swipe-to-rate gives Good after a wrong cloze answer | assigned | agent-1 |  |  |
+| #661 | - | X | P2 | - | fix(study): swipe-to-rate gives Good after a wrong cloze answer | in-progress | agent-1 |  |  |
 | #662 | - | X | P2 | - | fix(sentences): re-rating a T5 sentence stacks Hard reviews on its word | assigned | agent-1 |  |  |
 | #663 | - | X | P2 | - | fix(today): today's voice card never leaves after the voice is installed | assigned | agent-1 |  |  |
 | #664 | - | X | P2 | - | perf(backlog): T4 runs one query per row on every table change | done | agent-0 |  | #773 |
