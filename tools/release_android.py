@@ -10,18 +10,20 @@ The bundle is `flutter build appbundle --release --obfuscate
 --split-debug-info=build/symbols` (`docs/05-dev-guide/release.md`), at
 `app/build/app/outputs/bundle/release/app-release.aab`. Then:
 
-    libs    libflutter.so and libapp.so are there for each 64-bit ABI, so
-            an empty or half bundle can't pass the 16 KB check (#697 TL-9)
+    libs    libflutter.so and libapp.so are there for each ABI the bundle
+            ships (armeabi-v7a too), so an empty or half bundle can't pass
+            the 16 KB check (#697 TL-9, #858)
     16 KB   every 64-bit native library in it has its loadable segments
             aligned to 16 KB, as Play requires of apps targeting Android 15+
             (32-bit ones are exempt: no 16 KB device runs them)
     key     the certificate that signed it (`keytool -printcert -jarfile`):
             the owner's upload key, from `app/android/key.properties`, or the
             debug key, which Play refuses
-    symbols Dart's, in `app/build/symbols`, one file per 64-bit ABI,
-            copied to `app/build/release-symbols/<version>/` to keep with the
-            release (see release.md); the plugins' native ones ride in the
-            bundle
+    symbols Dart's, in `app/build/symbols`, one file per ABI (32-bit
+            crashes need theirs too, #858), copied to
+            `app/build/release-symbols/<version>/` to keep with the release
+            (see release.md) once every check has passed; the plugins' native
+            ones ride in the bundle
     perms   the permissions the merged manifest asks for are exactly the ones
             release.md's Play Console list declares, and no service has a
             foreground-service type (#611)
@@ -62,9 +64,11 @@ ANDROID = "{http://schemas.android.com/apk/res/android}"
 ANDROID_STUDIO_KEYTOOL = Path("C:/Program Files/Android/Android Studio/jbr/bin/keytool.exe")
 PAGE = 16 * 1024
 ABIS_64 = ("arm64-v8a", "x86_64")
+# Every ABI the bundle ships: it has no ABI filter, so 32-bit ARM too (#858).
+ABIS = ("armeabi-v7a", *ABIS_64)
 REQUIRED_LIBS = ("libflutter.so", "libapp.so")
 # `--split-debug-info` names each ABI's file so.
-SYMBOL_FILES = ("app.android-arm64.symbols", "app.android-x64.symbols")
+SYMBOL_FILES = ("app.android-arm.symbols", "app.android-arm64.symbols", "app.android-x64.symbols")
 KEPT_SYMBOLS = APP / "build" / "release-symbols"
 PT_LOAD = 1
 
@@ -131,18 +135,18 @@ def permission_problems(manifest: Path = MANIFEST, release_md: Path = RELEASE_MD
 
 
 def missing_libs(bundle: Path) -> list[str]:
-    """The Flutter engine and the app's code, for each 64-bit ABI, that
-    [bundle] lacks: with no library at all, the 16 KB check passes on
-    nothing (#697 TL-9)."""
+    """The Flutter engine and the app's code, for each ABI, that [bundle]
+    lacks: with no library at all, the 16 KB check passes on nothing (#697
+    TL-9)."""
     with zipfile.ZipFile(bundle) as aab:
         names = set(aab.namelist())
-    return [f"base/lib/{abi}/{lib}: missing" for abi in ABIS_64 for lib in REQUIRED_LIBS
+    return [f"base/lib/{abi}/{lib}: missing" for abi in ABIS for lib in REQUIRED_LIBS
             if f"base/lib/{abi}/{lib}" not in names]
 
 
 def missing_symbols(symbols: Path = SYMBOLS) -> list[str]:
-    """Dart's symbol files for the 64-bit ABIs that [symbols] lacks, or an
-    empty one."""
+    """Dart's symbol files, one per ABI, that [symbols] lacks, or an empty
+    one."""
     return [f"{symbols / name}: missing" for name in SYMBOL_FILES
             if not (symbols / name).exists() or (symbols / name).stat().st_size == 0]
 
@@ -241,13 +245,17 @@ def main(argv: list[str] | None = None) -> int:
     unsigned = args.require_upload_key and (owner is None or "CN=Android Debug" in owner)
     print(f"key:     {signed_by(owner)}{'  FAIL: --require-upload-key' if unsigned else ''}")
     lost = missing_symbols()
+    failed = libs or bad or perms or lost or unsigned
     if lost:
         print("symbols: FAIL")
         for line in lost:
             print(f"         {line}")
+    elif failed:
+        # A bundle that failed is not a release: its symbols aren't kept (#858).
+        print("symbols: ok, not kept (the bundle failed a check)")
     else:
         print(f"symbols: kept in {keep_symbols(app_version())} (store it privately with the release)")
-    return 1 if libs or bad or perms or lost or unsigned else 0
+    return 1 if failed else 0
 
 
 if __name__ == "__main__":

@@ -292,3 +292,75 @@ def test_697_each_step_refreshes_the_device_lock(baseline, monkeypatch):
     monkeypatch.setattr(perf, "keep_device", lambda: calls.append(1))
     assert perf.main(["size"]) == 0
     assert calls == [1]
+
+
+def test_818_the_seed_is_done_failed_or_pending_by_what_it_logged():
+    assert perf.seed_outcome("I flutter : perf-seed: done\n") is True
+    assert perf.seed_outcome("I flutter : starting\n") is None
+    with pytest.raises(SystemExit, match="no such table: c.words"):
+        perf.seed_outcome("I flutter : perf-seed: failed: no such table: c.words\n")
+
+
+def test_818_a_year_metric_takes_its_fresh_twins_margin_and_budget():
+    doc = json.loads(perf.BASELINE.read_text(encoding="utf-8"))
+    assert perf.lookup(doc["margins"], "year.start.cold_ms") == doc["margins"]["start"]
+    assert perf.lookup(doc["budgets"], "year.start.cold_ms") == 1500
+    assert perf.lookup(doc["margins"], "year.card.missed_build") is None
+    # Its own baseline: a year's start is not a fresh one's.
+    doc["metrics"]["year.start.cold_ms"] = 900
+    assert perf.report({"year.start.cold_ms": 1000, "year.search.max_ms": 60}, doc)
+    assert not perf.report({"year.start.cold_ms": 1400}, doc)
+
+
+@pytest.fixture
+def measured(baseline, monkeypatch):
+    """Which measurements ran, and with which profile; no device, no build."""
+    calls = []
+
+    class Dev:
+        def __init__(self, serial=None):
+            pass
+
+        def run(self, *args):
+            calls.append(("run", *args))
+
+    monkeypatch.setattr(perf.device, "Device", Dev)
+    monkeypatch.setattr(perf, "build_seed", lambda: calls.append("build_seed"))
+    monkeypatch.setattr(perf, "measure_frames", lambda dev, year=False: calls.append(("frames", year)) or {"card.build_avg_ms": 4.0})
+    monkeypatch.setattr(perf, "measure_start", lambda dev, build=True, year=False: calls.append(("start", year)) or {"start.cold_ms": 900})
+    return calls
+
+
+def test_818_the_year_profile_seeds_first_and_reports_year_metrics(measured, baseline):
+    assert perf.main(["start", "--profile", "year", "--update-baseline"]) == 0
+    assert measured[:2] == ["build_seed", ("start", True)]
+    metrics = json.loads(baseline.read_text(encoding="utf-8"))["metrics"]
+    assert metrics["year.start.cold_ms"] == 900
+    assert metrics["start.cold_ms"] == 2799, "the fresh baseline is left alone"
+
+
+def test_818_a_fresh_run_neither_seeds_nor_prefixes(measured, baseline):
+    assert perf.main(["frames", "--update-baseline"]) == 0
+    assert "build_seed" not in measured and ("frames", False) in measured
+    metrics = json.loads(baseline.read_text(encoding="utf-8"))["metrics"]
+    assert metrics["card.build_avg_ms"] == 4.0 and "year.card.build_avg_ms" not in metrics
+
+
+def test_845_the_owners_checkout_refuses_the_emulator_an_agent_holds(measured, monkeypatch, tmp_path):
+    monkeypatch.setattr(perf.device, "owner_checkout", lambda: True)
+    monkeypatch.setattr(perf.team, "team_root", lambda: tmp_path)
+    assert perf.device_held_by() is None
+    assert perf.main(["start"]) == 0
+
+    (tmp_path / ".device.lock").mkdir()
+    (tmp_path / ".device.lock" / "owner").write_text("agent-2 2026-09-27 10:00\n", encoding="utf-8")
+    measured.clear()
+    assert perf.main(["start"]) == 2
+    assert measured == [], "nothing uninstalled or measured"
+    assert perf.main(["size"]) == 0, "a build doesn't touch the emulator"
+
+    # A stale lock is nobody's.
+    import os
+    old = perf.time.time() - perf.team.DEVICE_LOCK_STALE_SECONDS - 60
+    os.utime(tmp_path / ".device.lock", (old, old))
+    assert perf.main(["start"]) == 0

@@ -7,6 +7,10 @@
 //
 // Each measurement goes into the binding's `reportData`, which the driver
 // writes to build/integration_response_data.json for perf.py to read.
+//
+// `--dart-define=SG_PERF_PROFILE=year` (`perf.py frames --profile year`,
+// #818): the same run on a learner with a year behind them, seeded into
+// user.db before the app starts (year_profile.dart), so it opens on Today.
 
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/core/theme/glass_capability.dart';
@@ -23,6 +27,10 @@ import 'package:integration_test/integration_test.dart';
 import 'package:material_ui/material_ui.dart';
 
 import 'smoke.dart';
+import 'year_profile.dart';
+
+/// perf.py's `--profile year`: a year of study seeded before the launch.
+const bool _year = String.fromEnvironment('SG_PERF_PROFILE') == 'year';
 
 /// The cards rated while the frames are watched. Day 1 has seven new words
 /// (`daily_new`'s default), so five never reach T3.
@@ -60,6 +68,7 @@ void main() {
     'Y06: the card transition, the glass word list and search, measured',
     timeout: const Timeout(Duration(minutes: 10)),
     (tester) async {
+      if (_year) await seedInstalledApp();
       final l10n = await launch(tester);
       // Blur stays on for the whole run, so the list is always measured with
       // the BackdropFilter it is budgeted for. The emulator misses frames,
@@ -71,10 +80,10 @@ void main() {
       glass.stopFrameWatchdog();
       expect(
         await startsInSetup(tester, l10n),
-        isTrue,
+        !_year,
         reason: 'a fresh install: run tools/perf.py frames, which uninstalls',
       );
-      await onboard(tester, l10n);
+      if (!_year) await onboard(tester, l10n);
       final container = ProviderScope.containerOf(
         tester.element(find.byType(app.SogdaApp)),
         listen: false,
