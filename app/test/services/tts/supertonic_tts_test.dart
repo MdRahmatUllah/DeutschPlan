@@ -14,6 +14,8 @@ import 'package:sogda/services/model_downloads.dart';
 import 'package:sogda/services/tts/supertonic_tts.dart';
 import 'package:sogda/services/tts/tts_engine.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart' show WidgetsBinding;
+import 'package:sogda/services/tts/tts_service.dart' show VoiceRelease;
 import 'package:flutter_test/flutter_test.dart';
 
 /// `SupertonicTts` (#152): the engine over a fake voice and player, and the
@@ -616,35 +618,46 @@ void main() {
       expect(player.loaded, isEmpty);
     });
 
-    test('#460 warm opens the sessions once, with no clip made, and the '
-        'first speak finds them open', () async {
+    test('#638 memory pressure closes the sessions, and the next speak '
+        'opens them again', () async {
       await install();
-      await tts.warm();
-      expect(loads, hasLength(1));
-      expect(model.asked, isEmpty);
-      expect(player.played, isEmpty);
-
+      final observer = VoiceRelease(tts.release);
+      WidgetsBinding.instance.addObserver(observer);
+      addTearDown(() => WidgetsBinding.instance.removeObserver(observer));
       await tts.speak('Haus');
-      expect(loads, hasLength(1), reason: 'opened once');
-    });
+      expect(loads, hasLength(1));
 
-    test('#460 without the model, warm opens nothing', () async {
-      await tts.warm();
-      expect(loads, isEmpty);
-    });
-
-    test('#460 a warm whose load fails is quiet, and remembered: the next '
-        'speak falls back at once', () async {
-      await install();
-      final failing = SupertonicTts(
-        models: models,
-        settings: settings,
-        cache: cache,
-        load: (dir) async => throw StateError('not enough memory'),
-        player: player,
+      WidgetsBinding.instance.handleMemoryPressure();
+      await pumpEventQueue();
+      expect(model.closed, isTrue);
+      expect(
+        (await cache.fileFor('Haus', voice: 'Anna', speed: 1)).existsSync(),
+        isTrue,
+        reason: 'the clips made stay',
       );
-      await failing.warm();
-      expect(await failing.speak('Haus'), isFalse);
+
+      await tts.speak('die Tür');
+      expect(loads, hasLength(2));
+    });
+
+    test('#638 release stops the list being made: its next clip would open '
+        'the sessions again', () async {
+      await install();
+      final list = tts.prepare(<String>['das Haus', 'die Tür', 'die Straße']);
+      await tts.release();
+      await list;
+      expect(model.asked.length, lessThan(3), reason: 'the list stopped');
+      expect(
+        loads.isEmpty || model.closed,
+        isTrue,
+        reason: 'nothing left open',
+      );
+    });
+
+    test('#638 with nothing open, release opens nothing', () async {
+      await install();
+      await tts.release();
+      expect(loads, isEmpty);
     });
 
     test('#152 disposed: the sessions close, and the player goes', () async {
