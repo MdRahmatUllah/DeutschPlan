@@ -6,7 +6,7 @@ last-read: 1364
 
 ## Now
 
-#643 in review as PR #765: answer review threads; re-run the gate if main moved, then merge.
+#647 fix(quiz): L8: if the quiz's finish write fails, the learner can't leave — claimed 2026-09-27 08:37.
 
 ## Next
 

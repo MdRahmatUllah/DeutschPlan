@@ -266,7 +266,7 @@ claiming the same issue. A hand edit skips that check.
 | #644 | - | X | P1 | - | fix(theme): the app stops following the phone's light/dark switch (System and Glass) | assigned | agent-2 |  |  |
 | #645 | - | X | P1 | - | fix(answer): right answers are marked wrong when the expected text has brackets or alternatives | review | agent-1 |  | #763 |
 | #646 | - | X | P1 | - | fix(study): with no German voice, autoplay wipes the Undo bar after every rating | review | agent-1 |  | #760 |
-| #647 | - | X | P1 | - | fix(quiz): L8: if the quiz's finish write fails, the learner can't leave | assigned | agent-2 |  |  |
+| #647 | - | X | P1 | - | fix(quiz): L8: if the quiz's finish write fails, the learner can't leave | in-progress | agent-2 |  |  |
 | #648 | - | X | P1 | - | fix(content): a content rebuild can silently wipe learners' progress on changed words, and the only guard can't work in the documented order | assigned | agent-0 |  |  |
 | #649 | - | X | P2 | - | fix(theme): choosing Light or Dark while on System can leave the app following the phone | assigned | agent-2 |  |  |
 | #650 | - | X | P2 | - | fix(glass): the glass frame watchdog counts idle time as missed frames, and runs in every theme | assigned | agent-2 |  |  |
