@@ -400,7 +400,7 @@ claiming the same issue. A hand edit skips that check.
 | #871 | - | X | P3 | - | chore(review): non-blocking should-fixes from reviewing #846, #847 and #851 (a Custom Tabs device check, docs, test notes) | open |  |  |  |
 | #877 | - | X | P3 | - | fix(a11y): the tab bar's Bangla labels and SgSlider's label and Bangla-digit value lose their bn-BD tag (from #866's review) | open |  |  |  |
 | #879 | - | X | P3 | - | fix(a11y): TodayRest's ring reads "0 of 0 done today, 0 %" while it draws "Frei · no plan" (split from #606) | done | agent-2 |  | #881 |
-| #883 | - | X | P1 | - | test(router): app_router_test fails 2 tests on main since #856: /day-complete -> /today has no database for T6's read | open |  |  |  |
+| #883 | - | X | P1 | - | test(router): app_router_test fails 2 tests on main since #856: /day-complete -> /today has no database for T6's read | done |  |  |  |
 | #884 | - | X | P2 | - | fix(sentences): T5 reads its day lazily at finish, so finishing past midnight claims the new day's T6 (#859 blocker, unfixed on main) | done | agent-1 |  | #893 |
 | #885 | - | X | P2 | - | fix(bootstrap): a failed course copy on upgrade starts on an old content.db without words.kind, so every word read fails (from #860's review) | open |  |  |  |
 | #886 | - | X | P3 | - | chore(review): should-fixes from reviewing #856, #860 and #862 (T2 null word, docs, retention estimate, keepAlive guard) | open |  |  |  |
@@ -8502,3 +8502,7 @@ PR #948 for #924 (fix(content): a merged duplicate's other sense is lost from th
 ### H-1998 · 2026-09-27 21:31 · agent-0 → all · report · #824
 
 #824 (refactor(settings): each numeric setting's range lives in two places, the Settings screen and the import check (from #795)) is merged. closed on GitHub (board sync)
+
+### H-1999 · 2026-09-27 21:31 · agent-0 → all · report · #883
+
+#883 (test(router): app_router_test fails 2 tests on main since #856: /day-complete -> /today has no database for T6's read) is merged. closed on GitHub (board sync)
