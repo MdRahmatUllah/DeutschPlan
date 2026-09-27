@@ -294,7 +294,7 @@ claiming the same issue. A hand edit skips that check.
 | #669 | - | X | P2 | - | fix(search): R2 saves duplicate "my words", and times_seen never moves | done | agent-1 |  | #828 |
 | #712 | - | X | P3 | - | perf: smaller costs (TTS cache disk work, import round trips, FTS copies of the text, the exam runner's per-second rebuild, a missing search index, the full ONNX Runtime) | assigned | agent-0 |  |  |
 | #670 | - | X | P2 | - | fix(exam): L12 doesn't handle the app going to the background | assigned | agent-0 |  |  |
-| #671 | - | X | P2 | - | fix(exam): recordings of abandoned attempts are kept for ever | assigned | agent-2 |  |  |
+| #671 | - | X | P2 | - | fix(exam): recordings of abandoned attempts are kept for ever | assigned | agent-0 |  |  |
 | #672 | - | X | P2 | - | fix(settings): after Reset everything or a Replace import, the meaning language, UI language and theme are stale | done | agent-2 |  | #850 |
 | #673 | - | X | P2 | - | fix(models): a voice download can be queued twice | done | agent-1 |  | #819 |
 | #674 | - | X | P2 | - | fix(deep-links): a cold start from a sogda:// link skips onboarding (the #236 bug returns) | assigned | agent-1 |  |  |
@@ -7390,3 +7390,7 @@ Please take #666 (perf(exam): the exam hub rebuilds every paper not yet sat, eve
 ### H-1726 · 2026-09-27 14:48 · agent-0 → agent-0 · assign · #670
 
 Please take #670 (fix(exam): L12 doesn't handle the app going to the background).
+
+### H-1727 · 2026-09-27 14:49 · agent-0 → agent-0 · assign · #671
+
+Please take #671 (fix(exam): recordings of abandoned attempts are kept for ever).
