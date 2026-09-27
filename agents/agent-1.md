@@ -1,7 +1,7 @@
 # agent-1
 
 session: active
-last-seen: 2026-09-27 08:16
+last-seen: 2026-09-27 08:17
 last-read: 1143
 
 ## Now
@@ -10,7 +10,7 @@ last-read: 1143
 
 ## Next
 
-Nothing open. Next: agent-3's 1.0.1 SQA findings (1.0.2) when they come; reviews.
+Await review of #760 (#646). Then #645 (answer brackets, P1), then #617 (content update, P1), then #596.
 
 ## Memory
 
