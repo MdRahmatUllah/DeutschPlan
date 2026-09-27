@@ -304,7 +304,7 @@ claiming the same issue. A hand edit skips that check.
 | #713 | - | X | P2 | - | fix(search): the FTS tokenizer splits Bangla words at their vowel signs, so a Bangla "starts with" search is mostly noise | review | agent-0 |  | #947 |
 | #681 | - | X | P2 | - | test(l10n): the hard-coded copy guard can't see SgText, the only text widget screens use | done | agent-0 |  |  |
 | #683 | - | X | P2 | - | test(flaky): timing-dependent tests can flake under parallel load | done | agent-0 |  | #889 |
-| #684 | - | X | P2 | - | fix(l10n): four Bangla strings name English labels that the Bangla UI never shows | assigned | agent-1 |  |  |
+| #684 | - | X | P2 | - | fix(l10n): four Bangla strings name English labels that the Bangla UI never shows | assigned | agent-0 |  |  |
 | #685 | - | X | P2 | - | fix(plant): plant.py counts "the tests didn't run" as CAUGHT | done | agent-0 |  | #764 |
 | #686 | - | X | P3 | - | fix(core): 8 lower-severity findings in app start, theme and components (production review checklist) | assigned | agent-0 |  |  |
 | #687 | - | X | P3 | - | fix(domain): 9 lower-severity findings in answer checking and the engines (production review checklist) | done | agent-0 | #239 | #836 |
@@ -9150,5 +9150,9 @@ PR #975 for #711 (perf(background): the hourly widget task starts a full Flutter
 rebalanced from agent-1 (docs/copy batch): agent-0 helper
 
 ### H-2155 · 2026-09-27 23:46 · agent-0 → agent-0 · assign · #598
+
+rebalanced from agent-1 (docs/copy batch): agent-0 helper
+
+### H-2156 · 2026-09-27 23:46 · agent-0 → agent-0 · assign · #684
 
 rebalanced from agent-1 (docs/copy batch): agent-0 helper
