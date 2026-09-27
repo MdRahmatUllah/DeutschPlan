@@ -58,6 +58,14 @@
   "@bootstrapErrorSettings": {
     "description": "Full-screen bootstrap error when the settings table would not load. FR-S1-03."
   },
+  "bootstrapErrorNewerDatabase": "Your data was saved by a newer version of Sogda. Update the app to open it.",
+  "@bootstrapErrorNewerDatabase": {
+    "description": "Full-screen bootstrap error when user.db was written by a newer build (its schema version is past this one's), after a downgrade or a restore from a newer phone. Retrying cannot open it; updating the app can. FR-S1-03, #619."
+  },
+  "bootstrapShareDataFile": "Share your data file",
+  "@bootstrapShareDataFile": {
+    "description": "Action on the bootstrap error screen when user.db would not open (corrupt, or from a newer build): shares the raw database file so the learner's progress is not lost. Stands where Export progress does. FR-S1-03, #619."
+  },
   "exportProgress": "Export progress",
   "@exportProgress": {
     "description": "Action on the bootstrap error screen and on Export / import. Writes everything the learner has done to a JSON file. FR-S1-03, FR-M6-01."

@@ -104,11 +104,15 @@ class SetupRepository {
         if (active == choice.step) {
           // The same step again — restart setup with a new pace. The
           // enrollment keeps its start; only the pace it was frozen at moves,
-          // and BR-PLAN-08 has that reach the plan from tomorrow.
-          await _db.customStatement(
-            'UPDATE enrollments SET daily_new = ?2, study_days_mask = ?3 '
-            'WHERE sublevel_code = ?1',
-            <Object>[choice.step, choice.dailyNew, choice.studyDaysMask],
+          // and BR-PLAN-08 has that reach the plan from tomorrow. Typed, so
+          // the watches on `enrollments` hear it (#620).
+          await (_db.update(
+            _db.enrollments,
+          )..where((e) => e.sublevelCode.equals(choice.step))).write(
+            EnrollmentsCompanion(
+              dailyNew: Value(choice.dailyNew),
+              studyDaysMask: Value(choice.studyDaysMask),
+            ),
           );
           return;
         }
@@ -118,10 +122,9 @@ class SetupRepository {
         // schema's only way to say "no longer active", and backup import
         // closes a surplus one the same way.
         if (active != null) {
-          await _db.customStatement(
-            'UPDATE enrollments SET completed_on = ?2 WHERE sublevel_code = ?1',
-            <Object>[active, today],
-          );
+          await (_db.update(_db.enrollments)
+                ..where((e) => e.sublevelCode.equals(active)))
+              .write(EnrollmentsCompanion(completedOn: Value(today)));
         }
         await _store.enroll(
           ActiveStep(

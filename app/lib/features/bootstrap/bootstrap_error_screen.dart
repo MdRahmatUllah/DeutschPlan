@@ -80,10 +80,13 @@ class BootstrapErrorScreen extends StatelessWidget {
           // anything to export: `canExport` is true once user.db opened. A
           // button that cannot do what it says is worse than no button — the
           // learner taps it precisely because their data is what worries them.
-          if (failure.canExport) ...<Widget>[
+          // A user.db that would not open still offers the file itself (#619).
+          if (failure.canExport || failure.file != null) ...<Widget>[
             const SizedBox(height: 4),
             SgButton(
-              label: l10n.exportProgress,
+              label: failure.canExport
+                  ? l10n.exportProgress
+                  : l10n.bootstrapShareDataFile,
               onPressed: onExport == null
                   ? null
                   : () => unawaited(_export(context)),
@@ -128,6 +131,10 @@ class BootstrapErrorScreen extends StatelessWidget {
   /// open your data" and "could not install the course" call for different
   /// worries, and a stack trace on a splash screen helps nobody.
   String _message(AppLocalizations l10n) => switch (failure.step) {
+    // #619: a newer build's file opens once the app is updated; retrying
+    // this build fails for ever.
+    BootstrapStep.database when failure.newer =>
+      l10n.bootstrapErrorNewerDatabase,
     BootstrapStep.database => l10n.bootstrapErrorDatabase,
     BootstrapStep.content => l10n.bootstrapErrorContent,
     BootstrapStep.settings => l10n.bootstrapErrorSettings,

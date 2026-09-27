@@ -116,9 +116,12 @@ double coverage(String sentence, Set<String> learned) {
   if (tokens.isEmpty) return 0;
   // The token's prefixes looked up in the set, longest first: the same rule
   // as "starts with a learned key", at the token's length rather than the
-  // vocabulary's — thousands of keys by the end of the course.
+  // vocabulary's — thousands of keys by the end of the course. A prefix
+  // never shorter than [minKey], as the cloze has it: A1.1's "er", "an" and
+  // "zu" would otherwise make "erklärt", "andere" and "zusammen" known, and
+  // most of any German text with them (#654).
   bool known(String token) {
-    for (var end = token.length; end > 0; end--) {
+    for (var end = token.length; end >= minKey; end--) {
       if (learned.contains(token.substring(0, end))) return true;
     }
     return false;
