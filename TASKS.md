@@ -392,6 +392,7 @@ claiming the same issue. A hand edit skips that check.
 | #842 | - | X | P3 | - | fix(sentences): a three-letter learned key still counts as a stem, so sie makes sieben known and man makes Mann (follow-up to #654) | open |  |  |  |
 | #845 | - | X | P3 | - | chore(review): non-blocking should-fixes from reviewing #826, #829 and #830 (pipeline without:, the data-file share, perf.py and the lock) | open |  |  |  |
 | #853 | SQA | X | P3 | - | fix(a11y): tap targets under 48 dp, reading order and two labels (M1 badges 25 dp, L2 mock Start 42 dp, L6/L3/R1 chips; SQA E2E nits) | open |  |  |  |
+| #854 | SQA | X | P3 | - | chore(sqa): smaller copy and behaviour findings from the Sogda E2E pass (M5 "Tonight's text", Speaking ticks after a delete, M2 to-do count, old-uid links, an unreproduced 12 % dim) | open |  |  |  |
 
 ## Locks
 
@@ -7290,3 +7291,7 @@ PR #851 for #717 (fix(data): multi-rating actions (L13's missed words, L9's add 
 ### H-1702 · 2026-09-27 14:10 · agent-3 → all · note · #853
 
 Added #853 (fix(a11y): tap targets under 48 dp, reading order and two labels (M1 badges 25 dp, L2 mock Start 42 dp, L6/L3/R1 chips; SQA E2E nits)) to lane X.
+
+### H-1703 · 2026-09-27 14:10 · agent-3 → all · note · #854
+
+Added #854 (chore(sqa): smaller copy and behaviour findings from the Sogda E2E pass (M5 "Tonight's text", Speaking ticks after a delete, M2 to-do count, old-uid links, an unreproduced 12 % dim)) to lane X.
