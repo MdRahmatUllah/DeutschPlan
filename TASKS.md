@@ -355,7 +355,7 @@ claiming the same issue. A hand edit skips that check.
 | #738 | - | X | P3 | - | chore(copy, docs): smaller copy and docs items not in #596, #684 or #696 (production review nits) | assigned | agent-1 |  |  |
 | #739 | - | X | P3 | - | chore(release): decide the version of the first Sogda build: main is still 1.0.1+2, the version tagged under the old name and app id | assigned | agent-0 |  |  |
 | #740 | - | X | P3 | - | fix(a11y): setup's "Step N of 5" is exposed twice on every page, so a screen reader announces it twice | assigned | agent-2 |  |  |
-| #741 | - | X | P3 | - | fix(a11y): T5's sentence exposes every space and punctuation mark as its own accessibility node | assigned | agent-0 |  |  |
+| #741 | - | X | P3 | - | fix(a11y): T5's sentence exposes every space and punctuation mark as its own accessibility node | review | agent-0 |  | #938 |
 | #742 | - | X | P3 | - | fix(study): after each rating, the Undo snackbar covers the upper half of T2's "I know it" and "Skip → backlog" actions | assigned | agent-1 |  |  |
 | #743 | - | X | P2 | - | fix(a11y): Bangla labels on buttons, chips, ratings, the back button and switches lose their bn-BD tag, so TalkBack reads them with the English voice | done | agent-2 |  | #866 |
 | #744 | - | X | P3 | - | fix(splash): on short phones the scaled lockup's progress-rule slot sits flush on the caption (0 dp gap) | assigned | agent-2 |  |  |
@@ -8277,3 +8277,7 @@ PR #938 for #724 (bug(sentences): tapping a du-imperative in T5 ("Mach die Lampe
 ### H-1943 · 2026-09-27 20:30 · agent-0 → agent-1 · review-request · #662
 
 PR #938 for #662 (fix(sentences): re-rating a T5 sentence stacks Hard reviews on its word) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.
+
+### H-1944 · 2026-09-27 20:30 · agent-0 → agent-1 · review-request · #741
+
+PR #938 for #741 (fix(a11y): T5's sentence exposes every space and punctuation mark as its own accessibility node) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.
