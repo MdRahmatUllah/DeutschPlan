@@ -289,6 +289,28 @@ void main() {
       );
     });
 
+    test("#687 AN-10 a phrase's leading das or den is one of its words", () {
+      Verdict phrase(String given, String german) =>
+          checkGerman(given, german, phrase: true);
+      expect(phrase('Das stimmt nicht', 'Das stimmt nicht'), Verdict.correct);
+      expect(phrase('das stimmt nicht', 'Das stimmt nicht'), Verdict.correct);
+      expect(phrase('stimmt nicht', 'Das stimmt nicht'), Verdict.wrong);
+      expect(phrase('den Tisch decken', 'den Tisch decken'), Verdict.correct);
+      expect(phrase('Tisch decken', 'den Tisch decken'), Verdict.wrong);
+      expect(
+        phrase('die Tisch decken', 'den Tisch decken'),
+        Verdict.wrong,
+        reason: 'den is the case, not an article to name',
+      );
+      // Still German: a bare vowel is almost, a slash an alternative.
+      expect(
+        phrase('die Daumen drucken', 'die Daumen drücken'),
+        Verdict.almost,
+      );
+      // Not a phrase (a paper written before the flag): as it always was.
+      expect(checkGerman('stimmt nicht', 'Das stimmt nicht'), Verdict.correct);
+    });
+
     test('an article on a word that has none is ignored', () {
       // Verbs and adjectives have no article to get wrong, so a stray one is
       // just part of what was typed.

@@ -82,7 +82,20 @@ Verdict checkMeaning(String given, String expected) {
 /// cells do: "prima / super / klasse", "hat/ist aufgebrochen", "denn
 /// (Partikel)". Any one alternative counts, and the note may be left out
 /// (#645).
-Verdict checkGerman(String given, String german, {String? article}) {
+///
+/// [phrase]: a phrase with no article of its own, whose leading der, die,
+/// das, den, dem or des is one of its words: "Das stimmt nicht" wants all
+/// three, and "die Tisch decken" for "den Tisch decken" is wrong, not a
+/// wrong article (#687 AN-10).
+Verdict checkGerman(
+  String given,
+  String german, {
+  String? article,
+  bool phrase = false,
+}) {
+  if (phrase) {
+    return _best(given, germanForms(german), german: true, article: false);
+  }
   var best = Verdict.wrong;
   for (final form in germanForms(german)) {
     final verdict = _checkGermanForm(given, form, article: article);
@@ -226,11 +239,17 @@ Verdict _best(
   String given,
   Iterable<String> candidates, {
   required bool german,
+  bool article = true,
 }) {
   var best = Verdict.wrong;
 
   for (final candidate in candidates) {
-    final verdict = _compare(given, candidate, german: german);
+    final verdict = _compare(
+      given,
+      candidate,
+      german: german,
+      article: article,
+    );
     if (verdict == Verdict.correct) return Verdict.correct;
     if (verdict == Verdict.almost) best = Verdict.almost;
   }
@@ -242,12 +261,19 @@ Verdict _best(
 /// [german] decides whether a leading article is stripped. It must be false
 /// for a meaning: `text_norm` peels der/die/das, and `die` is an ordinary
 /// English verb — with it on, "die out" keys to "out" and a learner who types
-/// half the answer scores full marks.
-Verdict _compare(String given, String expected, {required bool german}) {
-  final key = searchKey(given, stripArticle: german);
-  final alt = searchKeyAlt(given, stripArticle: german);
-  final expectedKey = searchKey(expected, stripArticle: german);
-  final expectedAlt = searchKeyAlt(expected, stripArticle: german);
+/// half the answer scores full marks. [article] false keeps it for a German
+/// phrase too, whose leading "das" is a word of it (#687 AN-10).
+Verdict _compare(
+  String given,
+  String expected, {
+  required bool german,
+  bool article = true,
+}) {
+  final strip = german && article;
+  final key = searchKey(given, stripArticle: strip);
+  final alt = searchKeyAlt(given, stripArticle: strip);
+  final expectedKey = searchKey(expected, stripArticle: strip);
+  final expectedAlt = searchKeyAlt(expected, stripArticle: strip);
 
   if (key.isEmpty || expectedKey.isEmpty) return Verdict.wrong;
 

@@ -774,6 +774,45 @@ void main() {
       );
     });
 
+    test('#687 AN-10 a phrase with no article is typed whole, on EN → DE and '
+        'listening', () async {
+      const phrase = QuizWord(
+        uid: 'p',
+        german: 'Das stimmt nicht',
+        english: "that's not right",
+        step: 'A1.1',
+        pos: 'phrase',
+      );
+      expect(phrase.isPhrase, isTrue);
+      expect(twelve.first.isPhrase, isFalse, reason: 'a noun');
+      expect(
+        const QuizWord(
+          uid: 'f',
+          german: 'Fehler machen',
+          english: 'to make a mistake',
+          step: 'A1.1',
+          article: 'der',
+          pos: 'phrase',
+        ).isPhrase,
+        isFalse,
+        reason: 'its article is an article',
+      );
+      for (final direction in <QuizDirection>[
+        QuizDirection.enDe,
+        QuizDirection.listening,
+      ]) {
+        final asked = (await build(
+          <QuizWord>[phrase],
+          pool: <QuizWord>[phrase, ...twelve],
+          direction: direction,
+          length: 1,
+        )).items.single;
+        expect(asked.phrase, isTrue, reason: '$direction');
+        expect(grade(asked, 'stimmt nicht'), Verdict.wrong);
+        expect(grade(asked, 'das stimmt nicht'), Verdict.correct);
+      }
+    });
+
     test('BR-ANS-03 articles are exact; a form allows a typo', () {
       expect(
         grade(item(QuizDirection.articles, 'die'), 'die'),

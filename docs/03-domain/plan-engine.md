@@ -21,7 +21,8 @@ day = last_planned_date + 1  (or enrollment.started_on)
 day = max(day, today - backlog_catchup_days)
 for each day ≤ today:
   if !isStudyDay(day) or pause_new_when_backlog && backlogNotEmpty: continue
-  need = daily_new(enrollment)
+  need = daily_new(enrollment) - new words planned on day already  // #687
+  if need <= 0: continue   // reopening a day never doubles it
   while need > 0:
     picked = next To-do words of active step in seq order not yet planned, limit need
     insert plan_items(day, uid, 'new')
@@ -33,7 +34,7 @@ for each day ≤ today:
 last_planned_date = max(last_planned_date, today)
 ```
 
-`last_planned_date` never moves back (#346): a clock or time zone that goes back reopens a past day as it was planned. Recording it would plan the days after it again, and give a finished day a Revise block. A day with no active step, after the course or after a step with auto-advance off, is recorded too, with no new words and as a study day (the finished step's rest days no longer apply, as `streak` counts them), so it picks its Revise block once like any other (BR-PLAN-08, #457). A step started on such a day (L2's *Start*, restart setup) begins tomorrow, as it does over an active step; *Start next step* moves the date back and begins today. Before onboarding nothing is recorded: a first step enrolled today still plans today.
+`last_planned_date` never moves back (#346): a clock or time zone that goes back reopens a past day as it was planned. Recording it would plan the days after it again, and give a finished day a Revise block. A day with no active step, after the course or after a step with auto-advance off, is recorded too, with no new words and as a study day (the finished step's rest days no longer apply, as `streak` counts them), so it picks its Revise block once like any other (BR-PLAN-08, #457). A step started on such a day (L2's *Start*, restart setup) begins tomorrow, as it does over an active step; *Start next step* moves the date back and plans today again at once: a day the last step ran out on part-way through is topped up to the new pace from the new step, and today stays opened, so it keeps the Revise block it picked (#342, #687). Before onboarding nothing is recorded: a first step enrolled today still plans today.
 
 ### ensureRevise (BR-PLAN-03)
 
@@ -47,7 +48,7 @@ last_planned_date = max(last_planned_date, today)
 
 ### Rest day
 
-`isStudyDay(date) == false` → no new rows, no backlog generation for that day, revise is still offered (optional), `daily_stats` counts as complete for the streak.
+`isStudyDay(date) == false` → no new rows, no backlog generation for that day, revise is still offered (optional), and the streak carries over it without growing (see Streak).
 
 Today keeps the study days it was planned with (BR-PLAN-08, #147): planning a day records the mask as `planned_study_days`, and `openDay` decides that day's `isStudyDay` from it. Switching today off in M5 leaves today a study day, and switching a rest day on leaves it a rest day; the new mask plans tomorrow.
 
@@ -64,7 +65,7 @@ Today keeps the study days it was planned with (BR-PLAN-08, #147): planning a da
 
 ## Streak
 
-Count consecutive days back from today (or yesterday if today has no activity yet) where `daily_stats` has activity **or** the day was a rest day.
+Walk back from today (or from yesterday if today has no activity yet) and count the days with activity in `daily_stats`. A rest day with none carries the streak without lengthening it, so a two-day study week never claims seven; a study day with none ends it (#687).
 
 Each past day is judged by the study-days mask in force *on it* (#377). `study_days_history` keeps the masks over time; a change in M5 or restart setup is in force from the next day (BR-PLAN-08), or from today when today isn't planned yet (it will be planned with the new one), and the first change also keeps the mask before it. So turning a rest day on never breaks a streak already earned, turning one off never mends a missed one, and a day after the change is judged by the new mask. With no history, and from the last change on, a day is judged by the enrolment's mask: a stale history (a merged backup's) never overrules it. With no step open (after the course, or a step with auto-advance off), the days up to the day the last step closed are judged by that step's mask, so finishing a step or the course never shrinks the streak or the best one, and the days after it as study days, as they are planned (#457, #615).
 
