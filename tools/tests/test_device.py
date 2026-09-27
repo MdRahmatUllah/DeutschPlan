@@ -53,11 +53,13 @@ def _device(tmp_path, monkeypatch, adb):
     return dev, apk
 
 
-def test_697_an_install_refused_on_stderr_is_a_failure(tmp_path, monkeypatch):
+def test_697_an_install_refused_on_stderr_is_a_failure(tmp_path, monkeypatch, capsys):
     # TL-4: adb says `Failure [...]` on stderr, and nothing useful on stdout.
     dev, apk = _device(tmp_path, monkeypatch, _Adb(
         (b"Performing Streamed Install\n", b"adb: failed to install app.apk: Failure [INSTALL_FAILED_VERSION_DOWNGRADE]\n")))
     assert dev.install(apk) is False
+    # The refusal is what it prints, not stdout's "Performing Streamed Install".
+    assert "INSTALL_FAILED_VERSION_DOWNGRADE" in capsys.readouterr().out
     dev, apk = _device(tmp_path, monkeypatch, _Adb((b"Performing Streamed Install\nSuccess\n", b"")))
     assert dev.install(apk) is True
 
