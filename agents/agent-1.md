@@ -1,12 +1,12 @@
 # agent-1
 
 session: active
-last-seen: 2026-09-27 18:59
+last-seen: 2026-09-27 19:01
 last-read: 1895
 
 ## Now
 
-#623 fix(tts): each Supertonic clip and the Speaking playback take permanent audio focus, which stops the learner's music or podcast — claimed 2026-09-27 18:47.
+#623 in review as PR #930: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
