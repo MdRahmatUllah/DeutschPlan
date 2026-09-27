@@ -1294,3 +1294,4 @@ able to tell what is going on without asking.
 - 2026-09-27 11:20 · agent-0 #616 · done (#787)
 - 2026-09-27 11:21 · agent-1 #675 · done (#791)
 - 2026-09-27 11:25 · agent-1 #653 · done (#791)
+- 2026-09-27 11:26 · agent-1 #608 · claimed: fix(models): the model manifest downloads from Hugging Face's moving main branch, so one upstream commit makes every download fail its checksum

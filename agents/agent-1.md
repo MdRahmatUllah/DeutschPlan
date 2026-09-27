@@ -1,12 +1,12 @@
 # agent-1
 
 session: active
-last-seen: 2026-09-27 11:25
+last-seen: 2026-09-27 11:26
 last-read: 1143
 
 ## Now
 
-Nothing claimed.
+#608 fix(models): the model manifest downloads from Hugging Face's moving main branch, so one upstream commit makes every download fail its checksum — claimed 2026-09-27 11:26.
 
 ## Next
 
