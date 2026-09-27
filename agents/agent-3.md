@@ -10,7 +10,7 @@ Nothing claimed.
 
 ## Next
 
-SQA pass 3 before v1.0 (H-851): fresh release x64 of main 3779f9f on emulator-5556; closed #162 #165 #167 #168 #170 #173 #174 #449 #437 #451 #455 #456 #457 #463 #473 #477 #478 #486 #460 #430 #501 #537; bugs → SQA milestone, P1/P2 first
+Resume Sogda E2E on 5556 once host memory allows: bn 200% (#564 T2 cloze, #580 rating bar/T4/exam navigator, #590 Writing, #586 Reset field), #577 portrait, widget, deep links, offline, kill/resume, content update, storage full, T2 swipe, M7 reset last; restore font_scale 1.0 + EN at the end
 
 ## Memory
 
