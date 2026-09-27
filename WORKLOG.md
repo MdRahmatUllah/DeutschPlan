@@ -1755,3 +1755,4 @@ able to tell what is going on without asking.
 - 2026-09-27 22:38 · agent-0 #814 · claimed: fix(plant): a custom plant command naming dart or flutter crashes plant.py on Windows since #764
 - 2026-09-27 22:39 · agent-0 #814 · PR #960 open; review requested from agent-1
 - 2026-09-27 22:39 · agent-0 #837 · claimed: fix(pipeline): a header renamed in every workbook at once still builds, and the course ships without that column
+- 2026-09-27 22:39 · agent-0 #837 · PR #960 open; review requested from agent-1

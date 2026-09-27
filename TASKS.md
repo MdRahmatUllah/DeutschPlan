@@ -431,7 +431,7 @@ claiming the same issue. A hand edit skips that check.
 | #816 | - | X | P3 | - | docs(l10n): the rule that fails on an unread ARB key (#640) isn't in the dev guide, the handbook or CLAUDE.md | assigned | agent-0 |  |  |
 | #818 | - | X | P3 | - | perf(tools): perf.py gains a seeded one-year profile for start and frames (#708's third criterion) | assigned | agent-0 |  |  |
 | #820 | - | X | P3 | - | fix(backup): an import still accepts a date that isn't one and an unranged backlog_catchup_days (#657 follow-up) | assigned | agent-0 |  |  |
-| #837 | - | X | P3 | - | fix(pipeline): a header renamed in every workbook at once still builds, and the course ships without that column | in-progress | agent-0 |  |  |
+| #837 | - | X | P3 | - | fix(pipeline): a header renamed in every workbook at once still builds, and the course ships without that column | review | agent-0 |  | #960 |
 | #843 | - | X | P3 | - | chore: the should-fixes left from the reviews of #826, #829 and #833 | assigned | agent-0 |  |  |
 | #848 | - | X | P3 | - | chore(licences): M8 leaves out desugar_jdk_libs (GPL-2.0 with the Classpath Exception), which the release DEX carries | assigned | agent-0 |  |  |
 | #849 | - | X | P3 | - | perf(licences): M8's sheet lays out ONNX Runtime's 327 KB ThirdPartyNotices as one text | assigned | agent-0 |  |  |
@@ -8862,3 +8862,7 @@ PR #953 reviewed: approved with should-fixes (see the Agent-0 review comment): 1
 ### H-2083 · 2026-09-27 22:39 · agent-0 → agent-1 · review-request · #814
 
 PR #960 for #814 (fix(plant): a custom plant command naming dart or flutter crashes plant.py on Windows since #764) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.
+
+### H-2084 · 2026-09-27 22:39 · agent-0 → agent-1 · review-request · #837
+
+PR #960 for #837 (fix(pipeline): a header renamed in every workbook at once still builds, and the course ships without that column) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.
