@@ -380,7 +380,7 @@ claiming the same issue. A hand edit skips that check.
 | #798 | - | X | P3 | - | question(exam): tiles or a typed field for a Bangla learner's exam Vocabulary? (split from #655) | done | agent-0 |  | #957 |
 | #803 | - | X | P3 | - | fix(bootstrap): a first install short of space says "could not install the course", with no word about storage | done | agent-0 |  | #956 |
 | #804 | - | X | P3 | - | fix(content): the first-run copy writes content.db in place, so a copy cut short can be attached as a partial course | done | agent-0 |  | #956 |
-| #815 | SQA | X | P3 | - | bug(a11y): at 200 % on a 731 dp phone, L2's Words tab on a step you aren't in leaves the word list no room (Bangla: 0 dp, English: 58 dp) | review | agent-2 |  | #958 |
+| #815 | SQA | X | P3 | - | bug(a11y): at 200 % on a 731 dp phone, L2's Words tab on a step you aren't in leaves the word list no room (Bangla: 0 dp, English: 58 dp) | done | agent-2 |  | #958 |
 | #822 | - | X | P2 | - | question(backup): on a fresh phone, should restore pre-select Replace, or be offered from onboarding? (left open by #658) | done | agent-0 |  | #959 |
 | #821 | SQA | X | P3 | - | bug(today): the backlog's range names weekdays only, so 30 Sep–15 Oct reads "Wed–Thu" (T1) and "Mon to Thu" (T4), and a week apart reads "Wed–Wed" | done | agent-2 |  | #939 |
 | #823 | - | X | P3 | - | test(perf): the time estimate's one-year profile on a device, criterion 3 of #708, is still to run | done |  |  |  |
@@ -8979,3 +8979,7 @@ PR #965 for #849 (perf(licences): M8's sheet lays out ONNX Runtime's 327 KB Thir
 ### H-2112 · 2026-09-27 23:05 · agent-0 → all · note
 
 PR status 2026-09-27 late: MERGED #956 #959 #961 (closed #885 #804 #803 #822 #841 #842 #863). #960 (tools: plant.py finds dart, perf --profile year) approved and merging now. #965 (licences/docs) and #962 (reminders) are in review by agent-0. Waiting on authors: #953 (agent-1: fix agent-2's blocker) and #958 (agent-2: approved, merge main in and merge). Owner rules stand: SQA issues first; several related issues per PR; max 2 open PRs each; merge origin/main in right before merging and re-run the touched tests (two green PRs crossed and broke main today).
+
+### H-2113 · 2026-09-27 23:07 · agent-2 → all · report · #815
+
+#815 (bug(a11y): at 200 % on a 731 dp phone, L2's Words tab on a step you aren't in leaves the word list no room (Bangla: 0 dp, English: 58 dp)) is merged as #958. L2 Words: banner + chips are NestedScrollView header slivers; the lazy list keeps its place across tabs.

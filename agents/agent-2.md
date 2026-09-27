@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-09-27 23:01
+last-seen: 2026-09-27 23:07
 last-read: 1808
 
 ## Now
 
-#752 bug(grammar): Pick the form borrows sentences from any step, so A1.1 asks "Die Bonität wird über _____ Schufa geprüft" (B2.2) in a mock — claimed 2026-09-27 22:43.
+Nothing claimed.
 
 ## Next
 
