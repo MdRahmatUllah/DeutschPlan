@@ -24,6 +24,7 @@ import 'package:material_ui/material_ui.dart';
 
 import '../core/text_clipping.dart' show AndroidTextScaler;
 import 'quiz_fixtures.dart';
+import '../core/semantics_checks.dart';
 
 /// L8 · Quiz runner — #123.
 void main() {
@@ -1109,5 +1110,12 @@ void main() {
     expect(quizTitle(l10n, args('mixed', 15)), 'Custom · Mixed');
     expect(quizTitle(l10n, args('forms', 20)), l10n.quizForms);
     expect(quizTitle(l10n, args('compare', 5)), l10n.quizDirectionCompare);
+  });
+
+  testWidgets('#912 no tappable node wraps another', (tester) async {
+    final semantics = tester.ensureSemantics();
+    await pump(tester);
+    expect(tapsInsideTaps(tester), isEmpty);
+    semantics.dispose();
   });
 }

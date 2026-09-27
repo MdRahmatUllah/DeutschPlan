@@ -33,6 +33,7 @@ import '../db/content_fixture.dart';
 import '../services/fake_tts.dart';
 import 'search_fixtures.dart';
 import 'today_fixtures.dart';
+import '../core/semantics_checks.dart';
 
 /// R1 · Search results (#137, spec key R01): `search.md` and the engine's
 /// `03-domain/search.md`.
@@ -954,5 +955,12 @@ void main() {
     await settle(tester);
     expect(find.bySemanticsLabel(l10n.searchRemoveStep('A1.2')), findsOne);
     expect(heading(l10n.searchSentences(1)), findsOneWidget);
+  });
+
+  testWidgets('#912 no tappable node wraps another', (tester) async {
+    final semantics = tester.ensureSemantics();
+    await pump(tester);
+    expect(tapsInsideTaps(tester), isEmpty);
+    semantics.dispose();
   });
 }

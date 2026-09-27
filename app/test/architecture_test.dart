@@ -657,6 +657,42 @@ void main() {
     );
   });
 
+  test('#912 a card button is its own semantics node', () {
+    // accessibility-performance.md: a `Semantics(button: …)` over a card (an
+    // `SgSurface` or a `GestureDetector`) with no `container` merges its
+    // flag, label and tap up into whatever node holds it. T1's grammar card
+    // became a button over the whole card list that way (#749). Right under
+    // `AdaptiveTapTarget` or `MergeSemantics` it is a node already.
+    final card = RegExp(r'^\s*(?:SgSurface|GestureDetector)\(');
+    final held = RegExp(
+      r'(?:AdaptiveTapTarget|MergeSemantics)\([^()]*child:\s*$',
+    );
+    final offenders = <String>[];
+    for (final file in _dartFilesIn('lib')) {
+      final source = file.readAsStringSync();
+      for (final call in _semanticsCalls(source)) {
+        final button = RegExp(r'\bbutton:\s*(?!false\b)').hasMatch(call.args);
+        final hides =
+            call.args.contains('excludeSemantics: true') ||
+            call.child.trimLeft().startsWith('ExcludeSemantics(');
+        if (button &&
+            !hides &&
+            card.hasMatch(call.child) &&
+            !call.args.contains('container: true') &&
+            !held.hasMatch(call.before)) {
+          offenders.add('${_rel(file)}:${call.line}');
+        }
+      }
+    }
+
+    expect(
+      offenders,
+      isEmpty,
+      reason:
+          'give the card button `container: true`:\n${offenders.join('\n')}',
+    );
+  });
+
   test('#437 no text colour is a token faded on the screen', () {
     // theming.md, Contrast: text contrast is measured over the tokens by
     // contrast_test.dart. `ink.withValues(alpha: 0.9)` is a colour that test
@@ -739,11 +775,11 @@ void main() {
 }
 
 /// Every `Semantics(…)` call in [source]: its own arguments (up to its
-/// top-level `child:`), the child, and the line it starts on. Bracket-matched,
-/// so a nested call's `child:` is not mistaken for this one's.
-Iterable<({String args, String child, int line})> _semanticsCalls(
-  String source,
-) sync* {
+/// top-level `child:`), the child, the line it starts on, and the source
+/// before it. Bracket-matched, so a nested call's `child:` is not mistaken for
+/// this one's.
+Iterable<({String args, String child, int line, String before})>
+_semanticsCalls(String source) sync* {
   for (final match in RegExp(r'(?<![A-Za-z])Semantics\(').allMatches(source)) {
     var depth = 0;
     var childAt = -1;
@@ -757,6 +793,7 @@ Iterable<({String args, String child, int line})> _semanticsCalls(
             args: source.substring(match.end, childAt == -1 ? i : childAt),
             child: childAt == -1 ? '' : source.substring(childAt + 6, i),
             line: '\n'.allMatches(source.substring(0, match.start)).length + 1,
+            before: source.substring(0, match.start),
           );
           break;
         }

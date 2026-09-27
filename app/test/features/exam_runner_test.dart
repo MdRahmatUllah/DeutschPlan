@@ -29,6 +29,7 @@ import '../core/text_clipping.dart'
     show AndroidTextScaler, expectNothingClipped;
 import '../services/fake_tts.dart';
 import 'exam_run_fixtures.dart';
+import '../core/semantics_checks.dart';
 
 /// L12 · Exam runner — #130.
 void main() {
@@ -1547,5 +1548,12 @@ void main() {
         expect(typing(tester), isTrue, reason: name);
       }
     });
+  });
+
+  testWidgets('#912 no tappable node wraps another', (tester) async {
+    final semantics = tester.ensureSemantics();
+    await pump(tester);
+    expect(tapsInsideTaps(tester), isEmpty);
+    semantics.dispose();
   });
 }

@@ -13,6 +13,7 @@ import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 
 import 'today_fixtures.dart';
+import '../core/semantics_checks.dart';
 
 /// L3 · Grammar library — #117.
 void main() {
@@ -210,5 +211,12 @@ void main() {
     routes.pop();
     await tester.pumpAndSettle();
     expect(find.byType(GrammarLibraryScreen), findsOneWidget);
+  });
+
+  testWidgets('#912 no tappable node wraps another', (tester) async {
+    final semantics = tester.ensureSemantics();
+    await pump(tester);
+    expect(tapsInsideTaps(tester), isEmpty);
+    semantics.dispose();
   });
 }

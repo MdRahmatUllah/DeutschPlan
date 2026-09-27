@@ -134,6 +134,7 @@ class CategoryCard extends StatelessWidget {
     final l10n = AppLocalizations.of(context);
     final (fill, ink) = colours;
     return Semantics(
+      container: true,
       button: true,
       child: SgSurface(
         kind: SgSurfaceKind.bar,

@@ -15,6 +15,7 @@ import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 
 import 'me_fixtures.dart';
+import '../core/semantics_checks.dart';
 
 /// M1 · Me — #144.
 void main() {
@@ -563,5 +564,12 @@ void main() {
       ),
       findsNothing,
     );
+  });
+
+  testWidgets('#912 no tappable node wraps another', (tester) async {
+    final semantics = tester.ensureSemantics();
+    await pump(tester);
+    expect(tapsInsideTaps(tester), isEmpty);
+    semantics.dispose();
   });
 }

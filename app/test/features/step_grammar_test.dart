@@ -17,6 +17,7 @@ import 'package:flutter/rendering.dart' show RenderParagraph;
 import 'package:material_ui/material_ui.dart';
 
 import 'today_fixtures.dart';
+import '../core/semantics_checks.dart';
 
 /// L2 · Grammar tab — #115.
 void main() {
@@ -224,5 +225,12 @@ void main() {
       await shown(tester, 90);
       expect(tester.widget<Text>(find.byType(Text)).semanticsLabel, rule);
     });
+  });
+
+  testWidgets('#912 no tappable node wraps another', (tester) async {
+    final semantics = tester.ensureSemantics();
+    await pump(tester);
+    expect(tapsInsideTaps(tester), isEmpty);
+    semantics.dispose();
   });
 }
