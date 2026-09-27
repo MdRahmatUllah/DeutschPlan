@@ -1,6 +1,7 @@
 import 'dart:ui' show Tristate;
 
-import 'package:flutter/semantics.dart' show SemanticsAction, SemanticsNode;
+import 'package:flutter/semantics.dart'
+    show DebugSemanticsDumpOrder, SemanticsAction, SemanticsNode;
 import 'package:flutter_test/flutter_test.dart';
 
 /// The labels of tappable semantics nodes under another tappable node, from
@@ -48,4 +49,23 @@ List<String> tapsInsideTaps(WidgetTester tester, [Finder? root]) {
     false,
   );
   return inside;
+}
+
+/// The labels a screen reader reaches under [root], in its reading order
+/// (#853): each node's children as it traverses them, merged nodes skipped.
+List<String> readingOrder(WidgetTester tester, Finder root) {
+  final order = <String>[];
+  void walk(SemanticsNode node) {
+    if (node.isMergedIntoParent) return;
+    final label = node.getSemanticsData().label;
+    if (label.isNotEmpty) order.add(label);
+    for (final child in node.debugListChildrenInOrder(
+      DebugSemanticsDumpOrder.traversalOrder,
+    )) {
+      walk(child);
+    }
+  }
+
+  walk(tester.getSemantics(root));
+  return order;
 }

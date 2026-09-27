@@ -133,7 +133,9 @@ class _CategoryWordsScreenState extends ConsumerState<CategoryWordsScreen> {
           // and a fixed box would cut them (#314).
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+            // 8 above and below: a 32 dp chip's 48 dp target fits inside
+            // the scroll view, which cuts what reaches past it (#853).
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
             child: Row(
               children: <Widget>[
                 for (final filter in LevelFilter.values) ...<Widget>[
@@ -145,7 +147,9 @@ class _CategoryWordsScreenState extends ConsumerState<CategoryWordsScreen> {
                     selected: _filter == filter,
                     onTap: () => setState(() => _filter = filter),
                   ),
-                  const SizedBox(width: 8),
+                  // A1 and A2 are narrow chips whose 48 dp targets reach
+                  // about 6 dp past them: 14 keeps neighbours apart (#853).
+                  const SizedBox(width: 14),
                 ],
               ],
             ),
