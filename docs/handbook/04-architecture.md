@@ -101,7 +101,8 @@ Startup is `main()` and `bootstrap()` (`app/lib/main.dart`,
    starts the reminders and background tasks (`startReminders`), the widget
    snapshot (`followWidget`), the model download manager
    (`modelDownloadsProvider.attach()`) and, after the first frame, warms the
-   Supertonic voice (`warmTodaysVoice`). `SogdaApp` is a
+   Supertonic voice (`warmTodaysVoice`); all of it in `wireApp`. A *Retry*
+   that works goes the same way, in a new container (#643). `SogdaApp` is a
    `MaterialApp.router` whose theme, locale and theme mode are watched from
    providers.
 
