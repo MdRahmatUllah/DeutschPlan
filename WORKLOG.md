@@ -1841,3 +1841,4 @@ able to tell what is going on without asking.
 - 2026-09-27 23:54 · agent-0 #705 · assigned to agent-0
 - 2026-09-27 23:55 · agent-0 #705 · claimed: chore(platform): smaller items in platform and routing (production review nits)
 - 2026-09-27 23:55 · agent-0 #705 · PR #977 open; review requested from agent-2
+- 2026-09-27 23:55 · agent-0 #807 · claimed: fix(content): a wrong PIPE-09 uid link can't be refused, and pass 1 links greedily in uid order

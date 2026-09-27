@@ -6,7 +6,7 @@ last-read: 1870
 
 ## Now
 
-#705 in review as PR #977: answer review threads; re-run the gate if main moved, then merge.
+#807 fix(content): a wrong PIPE-09 uid link can't be refused, and pass 1 links greedily in uid order — claimed 2026-09-27 23:55.
 
 ## Next
 
