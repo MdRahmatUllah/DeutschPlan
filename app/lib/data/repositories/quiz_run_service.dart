@@ -59,6 +59,7 @@ class QuizRunService {
       source: source.name,
       sourceRef: sourceRef,
       seed: seed,
+      length: length,
       questions: <exam.QuizQuestion>[
         for (final item in quiz.items)
           exam.QuizQuestion(

@@ -525,6 +525,7 @@
   "quizTimeUp": "সময় শেষ — উত্তর হলো {answer}",
   "quizSecondsLeft": "{seconds} সে.",
   "quizEmpty": "এখানে কুইজের জন্য এখনও কোনো শেখা শব্দ নেই।",
+  "quizEmptyKind": "এখানকার শেখা শব্দগুলোর কোনোটি দিয়ে এখনও এভাবে কুইজ করা যায় না।",
   "quizLoadFailed": "এই কুইজটি তৈরি করা যায়নি।",
   "libraryTitle": "ব্যাকরণ লাইব্রেরি",
   "libraryAll": "সব · {count}",
