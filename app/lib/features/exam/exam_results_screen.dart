@@ -19,6 +19,7 @@ import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/l10n/ui_digits.dart';
 import 'package:sogda/router/cross_tab.dart';
 import 'package:sogda/router/routes.dart';
+import 'package:sogda/features/study/write_guard.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -106,10 +107,16 @@ class _ExamResultsScreenState extends ConsumerState<ExamResultsScreen> {
               .rubric(widget.attemptId, task.ord, ticks);
           ref.invalidate(examResultProvider(widget.attemptId));
         },
+        // #891: a write that fails is asked about (*Retry* · *Export
+        // progress*), and closed, the take and its answer stay.
         onDelete: () async {
-          await ref
-              .read(examResultServiceProvider)
-              .deleteRecording(widget.attemptId, task.ord, task.given!);
+          await guardWrite(context, () async {
+            await ref
+                .read(examResultServiceProvider)
+                .deleteRecording(widget.attemptId, task.ord, task.given!);
+            return true;
+          });
+          if (!mounted) return;
           ref.invalidate(examResultProvider(widget.attemptId));
         },
       ),

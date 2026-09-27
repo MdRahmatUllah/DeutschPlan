@@ -90,9 +90,10 @@ class ExamQuestionView extends ConsumerWidget {
   final ValueChanged<List<bool>>? onRubric;
 
   /// Where Speaking records (FR-L12S-02), and the recording deleted from the
-  /// phone (FR-L12S-04).
+  /// phone (FR-L12S-04): the empty answer written first, then the file, and
+  /// false when the write failed and both stay (#891).
   final Future<String> Function()? recordingPath;
-  final Future<void> Function(String path)? onDiscard;
+  final Future<bool> Function(String path)? onDiscard;
 
   /// Speaking: how to stop the recording and keep it while one runs, and
   /// null once it doesn't. *Submit exam* stops it first (#372).
@@ -133,7 +134,7 @@ class ExamQuestionView extends ConsumerWidget {
         onRubric: onRubric ?? (_) {},
         recordingPath:
             recordingPath ?? () => throw StateError('no recording path'),
-        onDiscard: onDiscard ?? (_) async {},
+        onDiscard: onDiscard ?? (_) async => true,
         onRecording: onRecording ?? (_) {},
         retakesLeft: retakesLeft,
         onRetake: onRetake ?? () {},
@@ -793,7 +794,7 @@ class ExamSpeaking extends ConsumerStatefulWidget {
   final ValueChanged<String> onGiven;
   final ValueChanged<List<bool>> onRubric;
   final Future<String> Function() recordingPath;
-  final Future<void> Function(String path) onDiscard;
+  final Future<bool> Function(String path) onDiscard;
 
   /// Told how to stop and keep a recording while one runs, and null after.
   final ValueChanged<Future<void> Function()?> onRecording;
@@ -1006,8 +1007,14 @@ class _ExamSpeakingState extends ConsumerState<ExamSpeaking> {
     final recorder = _recorder;
     final path = _path;
     await recorder.stopPlaying();
-    if (path != null) await widget.onDiscard(path);
-    widget.onGiven('');
+    // The empty answer first, and the file once that is written (#891): a
+    // write that fails, its sheet closed, keeps the take and its answer,
+    // rather than an answer pointing at a file already gone.
+    if (path == null) {
+      widget.onGiven('');
+    } else if (!await widget.onDiscard(path)) {
+      return;
+    }
     if (_ticks.contains(true)) {
       _ticks = _padded(const <bool>[]);
       widget.onRubric(_ticks);

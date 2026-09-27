@@ -233,15 +233,24 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
   /// [guardWrite]: a write that fails brings up its sheet (*Retry* ·
   /// *Export progress*), and closed, the question is as it was stored, so
   /// the navigator and the submit's confirm don't count an answer the
-  /// grading won't find.
-  Future<void> _answer(int index, String? value) async {
+  /// grading won't find. Whether it was written.
+  Future<bool> _answer(int index, String? value) async {
     final was = _given[index];
     _change(() => _given[index] = value);
     final ord = _paper!.questions[index].ord;
     if (await _written(() => _service.answer(widget.attemptId, ord, value))) {
-      return;
+      return true;
     }
     if (_given[index] == value) _change(() => _given[index] = was);
+    return false;
+  }
+
+  /// FR-L12S-04: Speaking's take deleted, the empty answer written first and
+  /// the file only once it is (#891).
+  Future<bool> _discard(int index, String path) async {
+    if (!await _answer(index, null)) return false;
+    await _service.discard(path);
+    return true;
   }
 
   /// Whether the runner is on screen. Not in [dispose], which writes what
@@ -616,7 +625,7 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
                     ),
                   ),
                   recordingPath: () => _service.recordingPath(widget.attemptId),
-                  onDiscard: _service.discard,
+                  onDiscard: (path) => _discard(at, path),
                   plays: _plays[questions[_at].ord] ?? 0,
                   onPlay: () => setState(
                     () => _plays.update(

@@ -127,16 +127,18 @@ class ExamResultService {
     );
   }
 
-  /// FR-L12S-04 from L13: the recording gone from the phone, the answer
-  /// cleared, which zeros Speaking (#84), and the paper graded again.
+  /// FR-L12S-04 from L13: the answer cleared, which zeros Speaking (#84),
+  /// the paper graded again, and then the recording gone from the phone:
+  /// a write that fails leaves the take and its answer, never an answer
+  /// pointing at a file already deleted (#891).
   Future<void> deleteRecording(int attemptId, int ord, String path) async {
-    final file = File(path);
-    if (file.existsSync()) await file.delete();
     await _exams.answer(attemptId: attemptId, ord: ord, given: null);
     await _exams.grade(
       attemptId,
       passPercent: _settings.read(SettingKeys.examPassPercent),
     );
+    final file = File(path);
+    if (file.existsSync()) await file.delete();
   }
 
   /// FR-L13-02: every missed word rated Again (source `exam`), then due
