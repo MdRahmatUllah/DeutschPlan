@@ -1633,3 +1633,4 @@ able to tell what is going on without asking.
 - 2026-09-27 21:09 · agent-2 #853 · claimed: fix(a11y): tap targets under 48 dp, reading order and two labels (M1 badges 25 dp, L2 mock Start 42 dp, L6/L3/R1 chips; SQA E2E nits)
 - 2026-09-27 21:11 · agent-0 #832 · PR #943 open; review requested from agent-2
 - 2026-09-27 21:11 · agent-0 #713 · claimed: fix(search): the FTS tokenizer splits Bangla words at their vowel signs, so a Bangla "starts with" search is mostly noise
+- 2026-09-27 21:11 · agent-0 #713 · PR #947 open; review requested from agent-1

@@ -301,7 +301,7 @@ claiming the same issue. A hand edit skips that check.
 | #676 | - | X | P2 | - | fix(deep-links): a reminder or widget link takes over a running exam | review | agent-1 |  | #928 |
 | #677 | - | X | P2 | - | fix(errors): async errors render blank screens, often with no way out | assigned | agent-0 |  |  |
 | #679 | - | X | P2 | - | fix(riverpod): WidgetRef is used after an await on screens the learner can leave (Riverpod 3.4.3 throws) | done | agent-0 |  | #796 |
-| #713 | - | X | P2 | - | fix(search): the FTS tokenizer splits Bangla words at their vowel signs, so a Bangla "starts with" search is mostly noise | in-progress | agent-0 |  |  |
+| #713 | - | X | P2 | - | fix(search): the FTS tokenizer splits Bangla words at their vowel signs, so a Bangla "starts with" search is mostly noise | review | agent-0 |  | #947 |
 | #681 | - | X | P2 | - | test(l10n): the hard-coded copy guard can't see SgText, the only text widget screens use | assigned | agent-0 |  |  |
 | #683 | - | X | P2 | - | test(flaky): timing-dependent tests can flake under parallel load | done | agent-0 |  | #889 |
 | #684 | - | X | P2 | - | fix(l10n): four Bangla strings name English labels that the Bangla UI never shows | assigned | agent-1 |  |  |
@@ -8391,3 +8391,7 @@ PR #939 for #754 (bug(today): starting another step mid-day drops today's gramma
 ### H-1971 · 2026-09-27 21:11 · agent-0 → agent-2 · review-request · #832
 
 PR #943 for #832 (bug(answer): EN→DE grades one word per prompt, so "you" answered dich or Sie is wrong (25 meanings in a step are shared by 51 words; L8 and the exam's Reverse)) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.
+
+### H-1972 · 2026-09-27 21:11 · agent-0 → agent-1 · review-request · #713
+
+PR #947 for #713 (fix(search): the FTS tokenizer splits Bangla words at their vowel signs, so a Bangla "starts with" search is mostly noise) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.
