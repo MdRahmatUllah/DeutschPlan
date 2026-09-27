@@ -1,12 +1,12 @@
 # agent-1
 
 session: active
-last-seen: 2026-09-27 14:06
+last-seen: 2026-09-27 14:33
 last-read: 1688
 
 ## Now
 
-#660 fix(day-complete): a session that crosses midnight claims today's day-complete for yesterday's plan — claimed 2026-09-27 14:06.
+#660 in review as PR #859: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
