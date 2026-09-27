@@ -324,7 +324,7 @@ claiming the same issue. A hand edit skips that check.
 | #716 | - | X | P3 | - | fix(text-norm): the Python and Dart search keys disagree for ø ł đ ŧ, for accented letters outside Dart's table, for precomposed Bangla nukta, and for some whitespace | assigned | agent-1 |  |  |
 | #700 | - | X | P3 | - | chore(data): dead code, stale docs and small inconsistencies in data (production review nits) | open |  |  |  |
 | #701 | - | X | P3 | - | chore(today): smaller items in Today and study (production review nits) | open |  |  |  |
-| #702 | - | X | P3 | - | chore(learn): smaller items in Learn and quiz (production review nits) | open |  |  |  |
+| #702 | - | X | P3 | - | chore(learn): smaller items in Learn and quiz (production review nits) | assigned | agent-1 |  |  |
 | #703 | - | X | P3 | - | chore(exam): smaller items in Exam, search and words (production review nits) | open |  |  |  |
 | #704 | - | X | P3 | - | chore(me): smaller items in Me and onboarding (production review nits) | open |  |  |  |
 | #717 | - | X | P3 | - | fix(data): multi-rating actions (L13's missed words, L9's add to revision, W1's Mark known) span several transactions, so a failure half way leaves some words rated and a retry rates them again | open |  |  |  |
@@ -6077,5 +6077,9 @@ production-review fix pass (owner, 2026-09-27): solve all open issues
 production-review fix pass (owner, 2026-09-27): solve all open issues
 
 ### H-1406 · 2026-09-27 07:56 · agent-0 → agent-1 · assign · #691
+
+production-review fix pass (owner, 2026-09-27): solve all open issues
+
+### H-1407 · 2026-09-27 07:56 · agent-0 → agent-1 · assign · #702
 
 production-review fix pass (owner, 2026-09-27): solve all open issues
