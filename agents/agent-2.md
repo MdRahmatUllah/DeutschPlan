@@ -6,7 +6,7 @@ last-read: 1573
 
 ## Now
 
-#743 in review as PR #866: answer review threads; re-run the gate if main moved, then merge.
+#726 fix(a11y): grammar practice's Spot the error marks the right word and a wrong tap by tint alone, with no icon or state for a reader — claimed 2026-09-27 14:49.
 
 ## Next
 

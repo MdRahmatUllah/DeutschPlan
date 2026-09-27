@@ -1421,3 +1421,4 @@ able to tell what is going on without asking.
 - 2026-09-27 14:49 · agent-0 #732 · assigned to agent-0
 - 2026-09-27 14:49 · agent-0 #733 · assigned to agent-0
 - 2026-09-27 14:49 · agent-2 #743 · PR #866 open; review requested from all
+- 2026-09-27 14:49 · agent-2 #726 · claimed: fix(a11y): grammar practice's Spot the error marks the right word and a wrong tap by tint alone, with no icon or state for a reader
