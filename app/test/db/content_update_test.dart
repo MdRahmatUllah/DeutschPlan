@@ -36,10 +36,14 @@ void main() {
   /// The bytes each asset currently serves.
   late Map<String, Object> assets;
 
+  /// Every asset asked for, in order (#710).
+  final requested = <String?>[];
+
   void serveAssets() {
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
         .setMockMessageHandler('flutter/assets', (ByteData? message) async {
           final key = const StringCodec().decodeMessage(message);
+          requested.add(key);
           final value = assets[key];
           if (value == null) return null;
           if (value is String) {
@@ -191,6 +195,43 @@ void main() {
   test('an unchanged asset is not an update', () async {
     expect(await updater.runIfNeeded(), isNull);
     expect(await updater.unseen(), isNull);
+  });
+
+  test('#710 a launch with no update reads the two versions without '
+      'decoding the manifests', () async {
+    // Past their version both manifests are garbage: a launch that decoded
+    // either would fall back to the 8 MB probe, or install again.
+    const head = '{"format": 1, "content_version": "202601010000", ';
+    final garbage = head + 'x' * 8192;
+    File('${support.path}/${ContentUpdater.manifestFile}')
+        .writeAsStringSync(garbage);
+    assets[ContentUpdater.manifestAsset] = garbage;
+    rootBundle.evict(ContentUpdater.manifestAsset);
+    requested.clear();
+
+    expect(await updater.runIfNeeded(), isNull);
+    expect(requested, isNot(contains(ContentDao.asset)));
+  });
+
+  test('#710 #648 the version is found however far the aliases push it', () {
+    // `aliases` sorts before `content_version` and only grows.
+    final text = jsonEncode(<String, Object>{
+      'aliases': <String, String>{
+        for (var i = 0; i < 400; i++) 'old-uid-$i': 'new-uid-$i',
+      },
+      'content_version': '202609271200',
+    });
+    expect(text.length, greaterThan(8192));
+    expect(ContentUpdater.versionIn(utf8.encode(text)), '202609271200');
+  });
+
+  test('#710 the shipped manifest\'s version is found without a decode', () {
+    final bytes = File('assets/db/content_manifest.json').readAsBytesSync();
+    final version = (jsonDecode(
+      utf8.decode(bytes),
+    ) as Map<String, dynamic>)['content_version'];
+
+    expect(ContentUpdater.versionIn(bytes), version);
   });
 
   group('when the bundled course is newer', () {
