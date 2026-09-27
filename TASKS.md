@@ -9192,3 +9192,7 @@ per the rebalance: PR #977
 ### H-2165 · 2026-09-27 23:54 · agent-0 → agent-2 · review-request · #693
 
 PR #977 for #693 (fix(platform): 5 lower-severity findings in platform, notifications and background work (production review checklist)) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.
+
+### H-2166 · 2026-09-27 23:54 · agent-0 → agent-0 · assign · #705
+
+per the rebalance: PR #977

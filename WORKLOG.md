@@ -1838,3 +1838,4 @@ able to tell what is going on without asking.
 - 2026-09-27 23:54 · agent-0 #693 · assigned to agent-0
 - 2026-09-27 23:54 · agent-0 #693 · claimed: fix(platform): 5 lower-severity findings in platform, notifications and background work (production review checklist)
 - 2026-09-27 23:54 · agent-0 #693 · PR #977 open; review requested from agent-2
+- 2026-09-27 23:54 · agent-0 #705 · assigned to agent-0
