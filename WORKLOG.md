@@ -1508,3 +1508,4 @@ able to tell what is going on without asking.
 - 2026-09-27 17:30 · agent-2 #749 · done (#900)
 - 2026-09-27 17:32 · agent-2 #665 · done (#898)
 - 2026-09-27 17:32 · agent-2 #912 · added to the board, lane X
+- 2026-09-27 17:33 · agent-2 #912 · claimed: fix(a11y): other card buttons have no Semantics container and may merge up like #749's grammar card (from #900's review)

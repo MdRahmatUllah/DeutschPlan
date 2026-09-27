@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-09-27 17:32
+last-seen: 2026-09-27 17:33
 last-read: 1808
 
 ## Now
 
-Nothing claimed.
+#912 fix(a11y): other card buttons have no Semantics container and may merge up like #749's grammar card (from #900's review) — claimed 2026-09-27 17:33.
 
 ## Next
 

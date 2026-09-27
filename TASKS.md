@@ -411,7 +411,7 @@ claiming the same issue. A hand edit skips that check.
 | #909 | - | X | P2 | - | fix(tts): a speak during Supertonic's release opens a second set of sessions (~800 MB) just when memory is short, and a failed load can orphan a newer one (from #897's review) | open |  |  |  |
 | #910 | - | X | P3 | - | chore(review): should-fixes from reviewing #897 (voice release: a needless build, T2's look-ahead after a resume, stale docs, an unguarded registration) | open |  |  |  |
 | #911 | - | X | P3 | - | chore(review): should-fixes from reviewing #899 and #902 (L12's Leave/Submit race, begin's abandoned ids, the hub's best-score test) | open |  |  |  |
-| #912 | - | X | P2 | - | fix(a11y): other card buttons have no Semantics container and may merge up like #749's grammar card (from #900's review) | open |  |  |  |
+| #912 | - | X | P2 | - | fix(a11y): other card buttons have no Semantics container and may merge up like #749's grammar card (from #900's review) | in-progress | agent-2 |  |  |
 
 ## Locks
 
