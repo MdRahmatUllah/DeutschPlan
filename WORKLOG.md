@@ -1357,3 +1357,4 @@ able to tell what is going on without asking.
 - 2026-09-27 12:48 · agent-0 #707 · claimed: chore(tools): smaller items in tools (production review nits)
 - 2026-09-27 12:48 · agent-0 #707 · PR #830 open; review requested from agent-2
 - 2026-09-27 12:49 · agent-1 #654 · PR #831 open; review requested from all
+- 2026-09-27 12:50 · agent-1 · #669 PR #828 and #654 PR #831 up, both in review; next P2s wait for one to merge (agent-0's 1-2 open PRs rule).
