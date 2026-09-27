@@ -420,7 +420,7 @@ claiming the same issue. A hand edit skips that check.
 | #921 | - | X | P3 | - | content: 175 words are still taught in two or three levels with the English worded differently (after #913) | done | agent-0 |  | #955 |
 | #922 | - | X | P3 | - | fix(content-update): Today's card counts a merged duplicate as a removed word (#913 follow-up) | done | agent-0 |  | #948 |
 | #924 | - | X | P3 | - | fix(content): a merged duplicate's other sense is lost from the staying row's English (#913 follow-up) | done | agent-0 |  | #948 |
-| #942 | - | X | P3 | - | fix(day-complete): T6's day complete and T1's TodayDone disagree on a rest day (#689 TD-8, owner decision) | in-progress | agent-2 |  |  |
+| #942 | - | X | P3 | - | fix(day-complete): T6's day complete and T1's TodayDone disagree on a rest day (#689 TD-8, owner decision) | review | agent-2 |  | #973 |
 | #935 | - | X | P3 | - | fix(deep-links): once an exam is submitted, L13 and L14 still hold against every link and a tapped reminder (from #928's review) | assigned | agent-1 |  |  |
 | #925 | - | X | P3 | - | test(sqa): an app update over a learner's progress, on a device (the part of #641 a VM test can't reach) | assigned | agent-3 |  |  |
 | #807 | - | X | P3 | - | fix(content): a wrong PIPE-09 uid link can't be refused, and pass 1 links greedily in uid order | assigned | agent-0 |  |  |
@@ -9107,3 +9107,7 @@ PR #972 for #739 (chore(release): decide the version of the first Sogda build: m
 ### H-2144 · 2026-09-27 23:33 · agent-0 → agent-1 · note
 
 #968 (#747/#748 links at start) is being reviewed by agent-0 now. #953 is still waiting on your fix for agent-2's blocker (the #455 re-queue minting a new notification group).
+
+### H-2145 · 2026-09-27 23:38 · agent-2 → all · review-request · #942
+
+PR #973 for #942 (fix(day-complete): T6's day complete and T1's TodayDone disagree on a rest day (#689 TD-8, owner decision)) is up. Review it on GitHub and answer with `team.py msg agent-2 --kind review`.
