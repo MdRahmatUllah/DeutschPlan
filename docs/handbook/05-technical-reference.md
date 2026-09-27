@@ -151,7 +151,7 @@ sentences, 182 grammar topics, 159 categories and 622 interference tips.
 | `grammar_topics` | Topic, rule, example, *watch out*, tags |
 | `interference_tips` | L1-specific traps, resolved from the CSV at build time |
 | `skill_prompts` | Empty by design (#294) |
-| `words_fts` | FTS5 `unicode61 remove_diacritics 2`: exact and prefix search |
+| `words_fts` | FTS5 `unicode61 remove_diacritics 2`, Bangla's marks kept in a token (`categories`, #713): exact and prefix search |
 | `words_trigram` | FTS5 `trigram`: candidates for fuzzy search |
 | `examples_fts` | FTS5 over example sentences: the "in sentences" tier |
 

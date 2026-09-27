@@ -567,6 +567,23 @@ void main() {
       expect(await exact('bar'), <String>['bar', 'Bar', 'Bär']);
     });
 
+    test(
+      '#713 FR-R1-01 a Bangla search finds the meanings with a word that '
+      'starts so, not every meaning that starts with its first letter',
+      () async {
+        // unicode61 had split মেয়ে at its vowel signs, and "starts with"
+        // matched ম্যাচ (Spiel) and প্রিমিয়াম (Beitrag) for it.
+        final words = (await search.search('মেয়ে')).words;
+        expect(
+          words.map((hit) => hit.word.german),
+          containsAll(<String>['Mädchen', 'Tochter']),
+        );
+        for (final hit in words) {
+          expect(hit.word.bangla, contains('মেয়ে'), reason: hit.word.german);
+        }
+      },
+    );
+
     test('#736 a one-letter query skips the sentences: "a"* is most of '
         'them', () async {
       final one = await search.search('a');

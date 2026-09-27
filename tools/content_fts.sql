@@ -13,7 +13,13 @@
 --
 -- `remove_diacritics 2` is the one that also folds combining marks on
 -- precomposed letters, so "Tür" is findable as "Tur" here as well as through
--- search_key_alt. Bangla is unaffected: unicode61 does not decompose it.
+-- search_key_alt.
+--
+-- `categories` adds the marks (Mn, Mc) to what a token is made of. By
+-- default unicode61 splits at them, and Bangla writes its vowel signs,
+-- hasanta and nukta as marks: মেয়ে was indexed as ম + য, so "মে"* matched
+-- about 950 meanings and R1's Bangla "starts with" was mostly noise (#713).
+-- A Latin mark is still folded away by remove_diacritics.
 --
 -- `uid` is UNINDEXED — it is carried so a MATCH can join back to `words`, not
 -- so anyone can search for a hash.
@@ -23,7 +29,7 @@ CREATE VIRTUAL TABLE words_fts USING fts5(
   english,
   bangla,
   search_key,
-  tokenize = 'unicode61 remove_diacritics 2'
+  tokenize = 'unicode61 remove_diacritics 2 categories ''L* N* Co Mn Mc'''
 );
 
 -- Tier 3: fuzzy candidates for a misspelling.

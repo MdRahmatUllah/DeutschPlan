@@ -110,7 +110,7 @@ CREATE VIRTUAL TABLE words_fts USING fts5(
   english,
   bangla,
   search_key,
-  tokenize = 'unicode61 remove_diacritics 2'
+  tokenize = 'unicode61 remove_diacritics 2 categories ''L* N* Co Mn Mc'''
 );
 
 CREATE VIRTUAL TABLE words_trigram USING fts5(

@@ -184,8 +184,8 @@ class TestTokenizers:
         assert ("probe",) in rows
 
     def test_bangla_survives_the_tokenizer(self, database):
-        # unicode61 does not decompose Bangla, so a Bangla meaning is still
-        # findable as itself — tier 1's `bangla = raw` match.
+        # A Bangla meaning is findable as itself — tier 1's `bangla = raw`
+        # match.
         with probe_row(
             database,
             "INSERT INTO words_fts (uid, german, english, bangla, search_key) "
@@ -196,6 +196,55 @@ class TestTokenizers:
                 ['bangla : "মেয়ে"'],
             ).fetchall()
         assert ("probe",) in rows
+
+    def test_713_a_bangla_word_is_one_token_vowel_signs_and_all(self, database):
+        # unicode61 split at Bangla's vowel signs, hasanta and nukta (Mn, Mc):
+        # মেয়ে was ম + য, and মতামত began with ম too, so "মে"* matched both
+        # and R1's Bangla "starts with" was mostly noise (#713).
+        with probe_row(
+            database,
+            "INSERT INTO words_fts (uid, german, english, bangla, search_key) "
+            "VALUES ('girl', 'Mädchen', 'girl', 'মেয়ে', 'maedchen'), "
+            "('opinion', 'Meinung', 'opinion', 'মতামত', 'meinung'), "
+            "('friction', 'Reibung', 'friction', 'ঘর্ষণ', 'reibung')",
+        ):
+            def found(query: str) -> set[str]:
+                return {
+                    uid
+                    for (uid,) in database.execute(
+                        "SELECT uid FROM words_fts WHERE words_fts MATCH ?",
+                        ["bangla : " + query],
+                    )
+                }
+
+            assert found('"মে"*') == {"girl"}
+            assert found('"মেয়ে"*') == {"girl"}
+            assert found('"ঘর"*') == {"friction"}, "a prefix still finds"
+            assert found('"ঘর"') == set(), "but ঘর্ষণ is no word ঘর"
+
+    def test_713_the_shipped_course_starts_bangla_words_whole(self):
+        # Over the committed asset: every meaning "মেয়ে"* finds has a word
+        # that starts with মেয়ে, which only a rebuild with the tokenizer
+        # above gives.
+        asset = Path(__file__).resolve().parents[2] / "app/assets/db/content.db"
+        shipped = sqlite3.connect(f"file:{asset}?mode=ro", uri=True)
+        try:
+            meanings = [
+                bangla
+                for (bangla,) in shipped.execute(
+                    "SELECT w.bangla FROM words_fts f JOIN words w "
+                    "ON w.uid = f.uid WHERE words_fts MATCH ?",
+                    ['bangla : "মেয়ে"*'],
+                )
+            ]
+        finally:
+            shipped.close()
+        assert meanings, "the course has মেয়ে"
+        for bangla in meanings:
+            assert any(
+                word.startswith("মেয়ে")
+                for word in bangla.replace("(", " ").replace("/", " ").split()
+            ), bangla
 
     def test_the_uid_column_is_not_searchable(self, database):
         # UNINDEXED: it is carried so a MATCH can join back, not so anyone can
