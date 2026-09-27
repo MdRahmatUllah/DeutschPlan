@@ -23,13 +23,14 @@
   - **The plugins' native symbol tables** ride in the bundle (`debugSymbolLevel = "SYMBOL_TABLE"`), and Play symbolicates their crashes from them.
 - **Play Console declarations.**
   - **Data safety:** no data collected and none shared. There is no account, no analytics and no ads. Model downloads fetch files and send nothing, and progress stays on the phone (export is the learner's own file). *Report a problem* opens a pre-filled GitHub issue page in the browser, with the card's id, and the learner sends it there, or doesn't.
-  - **Permissions**, as the merged manifest has them (`aapt2 dump permissions`):
+  - **Permissions**, as the merged manifest has them. `tools/release_android.py` fails when the two differ (#611):
     - `RECORD_AUDIO`: the Speaking exam's recording, asked for on the first Record and kept on the phone.
-    - `POST_NOTIFICATIONS`: the daily reminder, asked for when it's switched on.
+    - `POST_NOTIFICATIONS`: the daily reminder, asked for when it's switched on, and a model download's progress.
     - `RECEIVE_BOOT_COMPLETED`: reminders scheduled again after a restart.
     - `INTERNET` and `ACCESS_NETWORK_STATE`: model downloads, and their Wi-Fi-only rule.
-    - `FOREGROUND_SERVICE`, `FOREGROUND_SERVICE_SHORT_SERVICE` and `WAKE_LOCK`: background_downloader carrying a model download on with the app in the background. The foreground-service form in the Console declares it as a download the learner started.
+    - `WAKE_LOCK`: WorkManager keeps the phone awake while a model download or the widget's refresh runs in the background.
     - `VIBRATE`: the reminder notification.
+  - **Foreground services:** none, so the Console's foreground-service form doesn't apply. WorkManager and background_downloader declare them, and the app's manifest removes both permissions and their services' types (#611). A download carries on in the background as WorkManager work, paused and resumed by it.
 
 ## iOS
 **Not in v1.0** (owner, 2026-09-26): v1.0 ships on Android only. iOS waits for a Mac with Xcode: its pipeline (#171) and widget (#161) are in the milestone "Later · after v1.0". The iOS code paths stay tested on Windows (adaptive chrome, the iOS goldens). When a Mac is available:
