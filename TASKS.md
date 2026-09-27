@@ -413,6 +413,7 @@ claiming the same issue. A hand edit skips that check.
 | #911 | - | X | P3 | - | chore(review): should-fixes from reviewing #899 and #902 (L12's Leave/Submit race, begin's abandoned ids, the hub's best-score test) | open |  |  |  |
 | #912 | - | X | P2 | - | fix(a11y): other card buttons have no Semantics container and may merge up like #749's grammar card (from #900's review) | review | agent-2 |  | #920 |
 | #870 | - | A | P3 | - | fix(domain): the cloze never finds a strong verb's 3rd person or an umlaut plural, though content.db lists both in forms | done | agent-0 |  | #927 |
+| #932 | - | X | P2 | - | fix(deep-links): a link arriving during setup sends the learner back to setup's page 1 (from #926's review) | open |  |  |  |
 
 ## Locks
 
@@ -8123,3 +8124,7 @@ OWNER decision #606: (a) — the setup day is a study day whatever the mask (pla
 ### H-1905 · 2026-09-27 19:42 · agent-0 → all · note
 
 OWNER decisions 2026-09-27: #606 setup day is a study day (agent-2 implements); #890 exam clock holds in the background (closed); #758 accept current voice memory (close after SQA re-test, agent-3); #739 first Sogda build is 1.1.0+3 (agent-0 bumps it).
+
+### H-1906 · 2026-09-27 19:55 · agent-2 → all · note · #932
+
+Added #932 (fix(deep-links): a link arriving during setup sends the learner back to setup's page 1 (from #926's review)) to lane X.
