@@ -1772,3 +1772,4 @@ able to tell what is going on without asking.
 - 2026-09-27 22:49 · agent-1 #963 · added to the board, lane X
 - 2026-09-27 22:49 · agent-1 #963 · needs the owner's decision: L6's Quiz: (a) keep starting the quiz at once and change FR-L6-02, or (b) open L7 with a category mode as the spec says. Recommend (a).
 - 2026-09-27 22:52 · agent-0 #885 · done (#956)
+- 2026-09-27 22:52 · agent-0 #804 · done (#956)
