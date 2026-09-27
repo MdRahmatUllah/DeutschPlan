@@ -6,7 +6,7 @@ last-read: 1870
 
 ## Now
 
-#858 chore(review): non-blocking should-fixes from reviewing #835, #838 and #844 (32-bit symbols, T4's load-failed copy) — claimed 2026-09-27 22:39.
+#858 in review as PR #960: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
