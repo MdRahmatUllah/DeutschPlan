@@ -15,8 +15,9 @@ import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/router/cross_tab.dart';
 import 'package:sogda/router/routes.dart';
 import 'package:sogda/services/start_report.dart';
+import 'package:sogda/features/backlog/backlog_screen.dart'
+    show backlogDayFormat;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
 import 'package:material_ui/material_ui.dart';
 
 /// T1 · Today, in progress. `docs/04-screens/today.md`, `Today-android.html`.
@@ -486,12 +487,16 @@ class _Plan extends ConsumerWidget {
     return block.total == 0 ? SectionTrailing.none : SectionTrailing.progress;
   }
 
-  /// "Tue–Wed", in the UI's language: these are the learner's own days.
+  /// "Tue–Wed", or "30 Sep–15 Oct" once it goes back further (#821).
   String _backlogDays(BuildContext context, AppLocalizations l10n) {
-    final weekday = DateFormat.E(Localizations.localeOf(context).toString());
     final from = view.backlogFrom;
     final to = view.backlogTo;
     if (from == null || to == null) return l10n.todayBacklog(view.backlog);
+    final weekday = backlogDayFormat(
+      Localizations.localeOf(context).toString(),
+      from,
+      view.date,
+    );
     final first = weekday.format(parsePlanDate(from));
     final last = weekday.format(parsePlanDate(to));
     return from == to

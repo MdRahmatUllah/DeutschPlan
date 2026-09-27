@@ -39,6 +39,10 @@ import '../db/content_fixture.dart';
 import '../core/text_clipping.dart';
 import '../core/semantics_checks.dart';
 
+import 'package:intl/date_symbol_data_local.dart';
+import 'package:intl/intl.dart';
+import 'package:sogda/domain/plan_engine.dart' show parsePlanDate;
+
 /// T4 · Backlog — #108.
 void main() {
   const today = '2026-09-21'; // a Monday
@@ -134,9 +138,19 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code, skipped,
     String at = '/today/backlog',
     Locale? locale,
     TextScaler? textScaler,
+    // Tuesday's rows moved to this day instead (#821).
+    String? firstDay,
   }) async {
     spoken = <String>[];
     await tester.runAsync(open);
+    if (firstDay != null) {
+      await tester.runAsync(
+        () => db.customStatement(
+          'UPDATE plan_items SET plan_date = ? WHERE plan_date = ?',
+          <Object>[firstDay, '2026-09-15'],
+        ),
+      );
+    }
     if (empty) {
       await tester.runAsync(
         () => db.customStatement(
@@ -304,6 +318,15 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code, skipped,
       expect(tester.takeException(), isNull);
       expectNothingClipped(tester);
       expectAllLinesShown(tester);
+    });
+
+    testWidgets('#821 BR-PLAN-05 a backlog from more than six days back says '
+        'its dates, not "Wed to Wed"', (tester) async {
+      await pump(tester, firstDay: '2026-09-02');
+      expect(
+        find.text(l10n.backlogIntroTwo('Sep 2', 'Sep 16')),
+        findsOneWidget,
+      );
     });
 
     testWidgets('the header says where they come from, without pressure', (
@@ -759,6 +782,31 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code, skipped,
         l10n.summaryPlay(word),
     ]);
     semantics.dispose();
+  });
+
+  group('#821 backlogDayFormat', () {
+    const today = '2026-09-21'; // a Monday
+    setUpAll(initializeDateFormatting);
+    String say(String oldest, [String locale = 'en']) =>
+        backlogDayFormat(locale, oldest, today).format(parsePlanDate(oldest));
+
+    test('within six days, the weekday: each names one day', () {
+      expect(say('2026-09-15'), 'Tue');
+      expect(say('2026-09-20'), 'Sun');
+    });
+
+    test('from a week back, the date: a weekday would name two days', () {
+      expect(say('2026-09-14'), 'Sep 14');
+      expect(say('2026-08-30'), 'Aug 30');
+    });
+
+    test('in the UI language', () {
+      expect(
+        say('2026-09-14', 'bn'),
+        DateFormat.MMMd('bn').format(DateTime(2026, 9, 14)),
+      );
+      expect(say('2026-09-14', 'bn'), isNot(contains('14')));
+    });
   });
 }
 
