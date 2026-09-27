@@ -148,12 +148,9 @@ class _ExportImportState extends ConsumerState<ExportImportScreen> {
     final container = ProviderScope.containerOf(context, listen: false);
     final mode = _mode;
     setState(() => _busy = true);
+    final today = container.read(todayProvider);
     try {
-      await backups.import(
-        file.json,
-        mode: mode,
-        today: container.read(todayProvider),
-      );
+      await backups.import(file.json, mode: mode, today: today);
       if (mode == ImportMode.replace) {
         // #688 DA-6: the attempts replaced leave their recordings behind,
         // and an imported attempt given the same id would take one on. After
@@ -168,8 +165,18 @@ class _ExportImportState extends ConsumerState<ExportImportScreen> {
       // kept alive under Today) and Today's plan were read before the
       // import: the streams follow drift, these don't.
       await settings.reload();
+      container.invalidate(planEngineProvider);
+      if (mode == ImportMode.merge) {
+        // #622, #937: today planned again from the merged data, by the
+        // engine the file's settings made. Best effort: the data is in, and
+        // Today opens on what is planned either way.
+        try {
+          await container.read(planEngineProvider).replanToday(today);
+        } on Object catch (error) {
+          debugPrint('import: today not planned again: $error');
+        }
+      }
       container
-        ..invalidate(planEngineProvider)
         ..invalidate(todayPlanProvider)
         ..invalidate(exportSizeProvider);
       if (!mounted) return;

@@ -685,7 +685,20 @@ class PlanEngine {
     // schedule has moved on since.
     if ((await _store.plannedOn(date, PlanKind.revise)).isNotEmpty) return;
 
-    final excluded = (await _store.plannedOn(date, PlanKind.newWord)).toSet();
+    await _topUpRevise(date);
+  }
+
+  /// Picks revisions for [date] up to [_reviseCount], leaving out the words
+  /// [date] already holds, new or to revise.
+  Future<void> _topUpRevise(PlanDate date) async {
+    final have = await _store.plannedOn(date, PlanKind.revise);
+    final limit = _reviseCount - have.length;
+    if (limit <= 0) return;
+
+    final excluded = <String>{
+      ...have,
+      ...await _store.plannedOn(date, PlanKind.newWord),
+    };
     final candidates = <RevisionCandidate>[
       for (final c in await _store.revisionCandidates())
         if (!excluded.contains(c.uid)) c,
@@ -694,13 +707,34 @@ class PlanEngine {
     final picked = selectRevisions(
       candidates,
       on: date,
-      limit: _reviseCount,
+      limit: limit,
       fsrs: _fsrs,
     );
     if (picked.isEmpty) return;
 
     await _store.addToPlan(date, PlanKind.revise, picked);
   }
+
+  /// After an *Import and merge* (#622, #937): [today] planned again from
+  /// the merged data. The import has dropped the open new rows of words the
+  /// file has a schedule for, and today's open revisions. This tops the new
+  /// words up to the pace, under the mask today was planned with
+  /// (BR-PLAN-08, the setup day's included), and the revisions up to
+  /// `revise_count` from the merged schedule, leaving out what today holds.
+  /// What was done today stays. A day not opened yet is [openDay]'s.
+  Future<void> replanToday(PlanDate today) => _store.atomically(() async {
+    if (await _store.lastPlannedDate() != today) return;
+
+    final step = await _store.activeStep();
+    final mask = await _store.plannedMask() ?? step?.studyDaysMask ?? allDays;
+    if (step != null && isStudyDay(today, mask) && !await _isPaused(today)) {
+      final planned = (await _store.plannedOn(today, PlanKind.newWord)).length;
+      if (planned < step.dailyNew) {
+        await _planDay(today, step, planned: planned);
+      }
+    }
+    if (_reviseCount > 0) await _topUpRevise(today);
+  });
 
   /// How many days in a row the learner has kept going, each past day judged
   /// by [_studyDayThen] (BR-PLAN-01, -08).
