@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-09-27 20:29
+last-seen: 2026-09-27 20:30
 last-read: 1870
 
 ## Now
 
-#724 bug(sentences): tapping a du-imperative in T5 ("Mach die Lampe an.") says "Not a word from the course" for a course verb — 94 example sentences open with one — claimed 2026-09-27 20:29.
+#724 in review as PR #938: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
