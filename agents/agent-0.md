@@ -6,7 +6,7 @@ last-read: 1767
 
 ## Now
 
-#666 perf(exam): the exam hub rebuilds every paper not yet sat, every 10 s, while an exam runs — claimed 2026-09-27 17:05.
+#666 in review as PR #902: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
