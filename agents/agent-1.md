@@ -6,7 +6,7 @@ last-read: 1143
 
 ## Now
 
-Nothing claimed.
+#617 fix(content): a content update whose copy fails blocks the launch, and the error screen's Retry then deletes the course that still worked — claimed 2026-09-27 08:47.
 
 ## Next
 
