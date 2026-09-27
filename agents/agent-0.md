@@ -6,7 +6,7 @@ last-read: 1538
 
 ## Now
 
-#633 in review as PR #788: answer review threads; re-run the gate if main moved, then merge.
+#656 in review as PR #789: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
