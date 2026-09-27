@@ -217,7 +217,7 @@ claiming the same issue. A hand edit skips that check.
 | #595 | - | agent-0 | - | - | docs: the project handbook, the developer-agents folder, and branding | done | agent-0 |  | #599 |
 | #596 | - | X | P3 | - | docs: reconcile 13 stale spec statements with the code (found writing the handbook, #595) | assigned | agent-0 |  |  |
 | #597 | - | X | P2 | - | bug(exam): Writing can earn only 3 of its 4 points, so a perfect paper scores 47 of 48 | done | agent-0 |  | #600 |
-| #598 | - | X | - | - | question(content): practice sentences have no Bangla translation, but T5's spec promises one | assigned | agent-1 |  |  |
+| #598 | - | X | - | - | question(content): practice sentences have no Bangla translation, but T5's spec promises one | assigned | agent-0 |  |  |
 | #601 | - | agent-0 | P1 | - | chore: rename the app to Sogda, de.sogda.app, internals included | done | agent-0 |  | #603 |
 | #602 | - | agent-0 | P1 | - | feat(brand): the Sogda icon, themed and notification icons, splash, and the brand kit in the docs | done | agent-0 |  | #604 |
 | #605 | - | X | P2 | - | fix(a11y): S1's caption and loading line are light ink on the dark splash's lifted Lagoon (about 1.4:1) | done | agent-2 |  | #801 |
@@ -9146,5 +9146,9 @@ per the rebalance (#625 #711 #693 #705 to agent-0's helpers): fixed with #625 in
 PR #975 for #711 (perf(background): the hourly widget task starts a full Flutter engine 24 times a day even with no widget placed, loading ONNX Runtime and binding the TTS service each time) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.
 
 ### H-2154 · 2026-09-27 23:46 · agent-0 → agent-0 · assign · #596
+
+rebalanced from agent-1 (docs/copy batch): agent-0 helper
+
+### H-2155 · 2026-09-27 23:46 · agent-0 → agent-0 · assign · #598
 
 rebalanced from agent-1 (docs/copy batch): agent-0 helper
