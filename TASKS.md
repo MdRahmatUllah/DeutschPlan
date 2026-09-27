@@ -222,7 +222,7 @@ claiming the same issue. A hand edit skips that check.
 | #602 | - | agent-0 | P1 | - | feat(brand): the Sogda icon, themed and notification icons, splash, and the brand kit in the docs | done | agent-0 |  | #604 |
 | #605 | - | X | P2 | - | fix(a11y): S1's caption and loading line are light ink on the dark splash's lifted Lagoon (about 1.4:1) | assigned | agent-2 |  |  |
 | #606 | SQA | X | P2 | - | bug(today): finishing setup on a day switched off opens a rest day with "Start here · today's words are ready" over "All done — see you tomorrow" (nothing to study on day 1) | open |  |  |  |
-| #607 | - | X | P1 | - | security(privacy): Android Auto Backup uploads user.db and the Speaking recordings to Google Drive, against the app's promises | needs-decision |  |  |  |
+| #607 | - | X | P1 | - | security(privacy): Android Auto Backup uploads user.db and the Speaking recordings to Google Drive, against the app's promises | open |  |  |  |
 | #608 | - | X | P2 | - | fix(models): the model manifest downloads from Hugging Face's moving main branch, so one upstream commit makes every download fail its checksum | open |  |  |  |
 | #609 | - | X | P2 | - | chore(deps): llama.cpp's native libraries ship in every APK although nothing calls them (Hy-MT is off everywhere) | needs-decision |  |  |  |
 | #610 | - | X | P2 | - | chore(licences): the Licences screen (M8) leaves out ONNX Runtime and the other native Android libraries' notices | open |  |  |  |
@@ -5879,3 +5879,7 @@ Added #756 (bug(models): the download notification doesn't follow the download: 
 ### H-1356 · 2026-09-27 07:27 · agent-3 → all · note · #757
 
 Added #757 (bug(settings): M3's Voice engine row keeps "Phone voice · Supertonic not downloaded" after the download finishes, until the app restarts) to lane X.
+
+### H-1357 · 2026-09-27 07:52 · agent-0 → all · note · #607
+
+#607 is open again: decided: opt out of Android Auto Backup and device transfer entirely (allowBackup=false, fullBackupContent=false, dataExtractionRules excluding everything).

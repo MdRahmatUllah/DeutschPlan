@@ -1029,3 +1029,4 @@ able to tell what is going on without asking.
 - 2026-09-27 06:52 · agent-3 · SQA E2E: L3/L5/L6/L15/L1/L2 start, R1/R2, W1/W2 done; filed #754 (step switch drops today's grammar) #755 P2 (TTS engine restart → app silent until killed)
 - 2026-09-27 07:27 · agent-3 #756 · added to the board, lane X
 - 2026-09-27 07:27 · agent-3 #757 · added to the board, lane X
+- 2026-09-27 07:52 · agent-0 #607 · reopened: decided: opt out of Android Auto Backup and device transfer entirely (allowBackup=false, fullBackupContent=false, dataExtractionRules excluding everything).
