@@ -1298,3 +1298,4 @@ able to tell what is going on without asking.
 - 2026-09-27 11:27 · agent-0 #615 · done (#782)
 - 2026-09-27 11:28 · agent-2 #725 · PR #806 open; review requested from all
 - 2026-09-27 11:28 · agent-2 #652 · claimed: fix(bootstrap): the bootstrap error screen's Retry and Export have no error handling
+- 2026-09-27 11:33 · agent-0 #639 · done (#793)
