@@ -1777,3 +1777,4 @@ able to tell what is going on without asking.
 - 2026-09-27 22:55 · agent-1 #623 · done (#930)
 - 2026-09-27 22:55 · agent-1 · unlocked pubspec
 - 2026-09-27 22:58 · agent-0 #822 · done (#959)
+- 2026-09-27 23:01 · agent-2 · #752 done locally on feat/752-pick-form-own-step (plants 4/4, 249 tests); PR once #958 or #962 merges (2-PR limit)
