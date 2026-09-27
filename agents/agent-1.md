@@ -10,7 +10,7 @@ last-read: 1143
 
 ## Next
 
-Await reviews: #763 (#645), #774 (#617). Then #596 (docs, P3), then P2s in my areas (TTS/search/W1/downloads).
+In review: #774 (#617), #786 (#678). Next P2s in the answer family: #653/#675 (umlaut fold), #614 (article), #655 (nukta); then #608 (HF pin), #673, #669.
 
 ## Memory
 
