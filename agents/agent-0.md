@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-09-27 18:44
+last-seen: 2026-09-27 18:45
 last-read: 1870
 
 ## Now
 
-Nothing claimed.
+#637 fix(content): separable-prefix tips sit on ~45 verbs where they're false, and 8 grammar topics refer to the author's tracker ("weeks 17–35", "In progress", a Munich exam centre) — claimed 2026-09-27 18:45.
 
 ## Next
 

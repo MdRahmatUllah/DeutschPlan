@@ -252,7 +252,7 @@ claiming the same issue. A hand edit skips that check.
 | #634 | - | X | P2 | - | chore(content): nothing gates the committed content.db, and the source workbooks are neither in git nor fingerprinted | assigned | agent-0 |  |  |
 | #635 | - | X | P3 | - | fix(content): the same word is taught 2–3 times, across levels (145 exact duplicates) and within a level (44 near-duplicates) | done | agent-0 |  | #913 |
 | #636 | - | X | P3 | - | fix(content): category tab names cut at Excel's 31 characters leave 25 empty truncated categories, and 25 real ones with no description | done | agent-0 |  | #797 |
-| #637 | - | X | P3 | - | fix(content): separable-prefix tips sit on ~45 verbs where they're false, and 8 grammar topics refer to the author's tracker ("weeks 17–35", "In progress", a Munich exam centre) | assigned | agent-0 |  |  |
+| #637 | - | X | P3 | - | fix(content): separable-prefix tips sit on ~45 verbs where they're false, and 8 grammar topics refer to the author's tracker ("weeks 17–35", "In progress", a Munich exam centre) | in-progress | agent-0 |  |  |
 | #638 | - | X | P3 | - | perf(tts): the Supertonic model (about 400 MB) is loaded at every launch and never released, even under memory pressure | done | agent-1 |  | #897 |
 | #639 | - | X | P3 | - | refactor(status): the "done" rule (stability ≥ done_stability_days) is written in five places, in Dart and SQL | done | agent-0 |  | #793 |
 | #640 | - | X | P3 | - | chore(l10n): 4 ARB keys nothing in the app uses, and no test catches an unused key | done | agent-0 |  | #779 |
