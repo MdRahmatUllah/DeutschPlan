@@ -64,9 +64,11 @@ String _normalise(
   required bool stripArticle,
 }) {
   // Composed first, or "u" + combining diaeresis never matches the ü in the
-  // table below. Dart has no NFC, so the four letters German needs are spelled
-  // out; anything else is handled by the combining-mark strip further down.
-  final lowered = _compose(text.trim().toLowerCase());
+  // table below. Dart has no NFC, so [nfc] spells out the letters whose NFC
+  // form changes a key; anything else is handled by the combining-mark strip
+  // further down. No trim: the split below drops the ends, on Python's
+  // whitespace rather than Dart's (#716).
+  final lowered = nfc(text.toLowerCase());
 
   // Before the diacritic strip, or the decomposition below would take ä apart
   // into a + combining diaeresis and it would key as "a" rather than "ae".
@@ -77,7 +79,7 @@ String _normalise(
   }
 
   final stripped = _stripLatinMarks(_dropPunctuation(buffer.toString()));
-  final collapsed = stripped.split(RegExp(r'\s+')).where((p) => p.isNotEmpty);
+  final collapsed = stripped.split(_whitespace).where((p) => p.isNotEmpty);
   return stripArticle ? _stripArticle(collapsed.toList()) : collapsed.join(' ');
 }
 
@@ -101,13 +103,23 @@ const Map<String, String> _composed = <String, String>{
   '\u09DF': '\u09AF\u09BC',
 };
 
-String _compose(String text) {
+/// [text] with [_composed]'s letters as NFC writes them: the umlauts
+/// composed, Bangla's nukta letters taken apart. Search's exact tier matches
+/// `bangla` with it too, as content.db stores it (#716).
+String nfc(String text) {
   var result = text;
   for (final MapEntry(key: from, value: to) in _composed.entries) {
     result = result.replaceAll(from, to);
   }
   return result;
 }
+
+/// Python's whitespace (`str.isspace`), which `str.split()` in
+/// `tools/pipeline_steps.py` splits the stored keys on. Dart's `\s` and `trim`
+/// add U+FEFF and leave out U+001C–U+001F and U+0085 (#716).
+final RegExp _whitespace = RegExp(
+  '[\t-\r\x1C-\x20\x85\xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000]+',
+);
 
 String _stripArticle(List<String> parts) {
   // A whole word, so "Diebstahl" keeps its "die" and "der Tisch" loses its
@@ -139,13 +151,11 @@ final RegExp _punctuation = RegExp(r'[!-#%-*,-/:;?@\[-\]_{}¡§«¶·»¿‐-‧
 /// combining characters too, and `search.md` matches `bangla = raw`, so a
 /// Bangla meaning has to come back unchanged.
 ///
-/// Dart has no NFD, so the decomposition is a table of the precomposed Latin
-/// letters that actually turn up in German and in loan words. Anything not in
-/// it passes through, and that is not always what Python does: its NFD strips
-/// the mark of every precomposed Latin letter, so an unmapped one ("ǎ") keys
-/// differently on the two sides (#699). A letter the course comes to use goes
-/// in the table, with a vector in `tools/test_vectors.json`. A letter with no
-/// decomposition (ø, ł, đ, ŧ) is not in it: Python keeps it, and so must this.
+/// Dart has no NFD, so the decomposition is [_latinBases], every precomposed
+/// letter of U+00C0–U+024F and U+1E00–U+1EFF that Python's NFD takes apart
+/// (#716). A letter with no decomposition (ø, ł, đ, ŧ) is not in it: Python
+/// keeps it, and so does this. `tools/test_vectors.json`'s `latin_ranges`
+/// holds the two sides to it, letter by letter.
 String _stripLatinMarks(String text) {
   final buffer = StringBuffer();
   var baseWasLatin = false;
@@ -161,100 +171,63 @@ String _stripLatinMarks(String text) {
 
     final char = String.fromCharCode(rune);
     final folded = _latinFolds[char];
-    baseWasLatin = folded != null || _isBasicLatinLetter(rune);
+    baseWasLatin = folded != null || _isLatinLetter(rune);
     buffer.write(folded ?? char);
   }
   return buffer.toString();
 }
 
-/// Combining Diacritical Marks. Latin-Extended letters that are not in
-/// [_latinFolds] arrive here already decomposed only if the caller decomposed
-/// them, so this block is the one Python's NFD would produce.
+/// Combining Diacritical Marks: the block every mark of [_latinBases]'s
+/// letters decomposes into, so the one Python's NFD would produce.
 const int _combiningStart = 0x0300;
 const int _combiningEnd = 0x036F;
 
-bool _isBasicLatinLetter(int rune) =>
-    (rune >= 0x61 && rune <= 0x7A) || (rune >= 0x41 && rune <= 0x5A);
+/// Python's test is "LATIN" in the letter's name. Over the ranges
+/// [_latinBases] covers, that is every code point but × and ÷.
+bool _isLatinLetter(int rune) =>
+    (rune >= 0x61 && rune <= 0x7A) ||
+    (rune >= 0x41 && rune <= 0x5A) ||
+    (rune >= 0xC0 && rune <= 0x24F && rune != 0xD7 && rune != 0xF7) ||
+    (rune >= 0x1E00 && rune <= 0x1EFF);
 
-/// Precomposed Latin letters folded to their base.
-///
-/// Lower case only: `_normalise` lower-cases before this runs.
-const Map<String, String> _latinFolds = <String, String>{
-  'á': 'a',
-  'à': 'a',
-  'â': 'a',
-  'ã': 'a',
-  'å': 'a',
-  'ā': 'a',
-  'ă': 'a',
-  'ą': 'a',
-  'ç': 'c',
-  'ć': 'c',
-  'č': 'c',
-  'ĉ': 'c',
-  'ċ': 'c',
-  'ď': 'd',
-  'é': 'e',
-  'è': 'e',
-  'ê': 'e',
-  'ë': 'e',
-  'ē': 'e',
-  'ĕ': 'e',
-  'ė': 'e',
-  'ę': 'e',
-  'ě': 'e',
-  'ĝ': 'g',
-  'ğ': 'g',
-  'ġ': 'g',
-  'ģ': 'g',
-  'ĥ': 'h',
-  'í': 'i',
-  'ì': 'i',
-  'î': 'i',
-  'ï': 'i',
-  'ĩ': 'i',
-  'ī': 'i',
-  'ĭ': 'i',
-  'į': 'i',
-  'ĵ': 'j',
-  'ķ': 'k',
-  'ĺ': 'l',
-  'ļ': 'l',
-  'ľ': 'l',
-  'ñ': 'n',
-  'ń': 'n',
-  'ņ': 'n',
-  'ň': 'n',
-  'ó': 'o',
-  'ò': 'o',
-  'ô': 'o',
-  'õ': 'o',
-  'ō': 'o',
-  'ŏ': 'o',
-  'ő': 'o',
-  'ŕ': 'r',
-  'ŗ': 'r',
-  'ř': 'r',
-  'ś': 's',
-  'ŝ': 's',
-  'ş': 's',
-  'š': 's',
-  'ţ': 't',
-  'ť': 't',
-  'ú': 'u',
-  'ù': 'u',
-  'û': 'u',
-  'ũ': 'u',
-  'ū': 'u',
-  'ŭ': 'u',
-  'ů': 'u',
-  'ű': 'u',
-  'ų': 'u',
-  'ŵ': 'w',
-  'ý': 'y',
-  'ÿ': 'y',
-  'ŷ': 'y',
-  'ź': 'z',
-  'ż': 'z',
-  'ž': 'z',
+/// Each base, and the lower-case letters Python's NFD strip folds to it
+/// (`_strip_latin_marks`). The umlauts are not here: [umlautExpansions] and
+/// [umlautFolds] map them first. Lower case only: `_normalise` lower-cases
+/// before this runs.
+const Map<String, String> _latinBases = <String, String>{
+  'a': 'àáâãåāăąǎǟǡǻȁȃȧḁạảấầẩẫậắằẳẵặ',
+  'b': 'ḃḅḇ',
+  'c': 'çćĉċčḉ',
+  'd': 'ďḋḍḏḑḓ',
+  'e': 'èéêëēĕėęěȅȇȩḕḗḙḛḝẹẻẽếềểễệ',
+  'f': 'ḟ',
+  'g': 'ĝğġģǧǵḡ',
+  'h': 'ĥȟḣḥḧḩḫẖ',
+  'i': 'ìíîïĩīĭįǐȉȋḭḯỉị',
+  'j': 'ĵǰ',
+  'k': 'ķǩḱḳḵ',
+  'l': 'ĺļľḷḹḻḽ',
+  'm': 'ḿṁṃ',
+  'n': 'ñńņňǹṅṇṉṋ',
+  'o': 'òóôõōŏőơǒǫǭȍȏȫȭȯȱṍṏṑṓọỏốồổỗộớờởỡợ',
+  'p': 'ṕṗ',
+  'r': 'ŕŗřȑȓṙṛṝṟ',
+  's': 'śŝşšșṡṣṥṧṩ',
+  't': 'ţťțṫṭṯṱẗ',
+  'u': 'ùúûũūŭůűųưǔǖǘǚǜȕȗṳṵṷṹṻụủứừửữự',
+  'v': 'ṽṿ',
+  'w': 'ŵẁẃẅẇẉẘ',
+  'x': 'ẋẍ',
+  'y': 'ýÿŷȳẏẙỳỵỷỹ',
+  'z': 'źżžẑẓẕ',
+  'æ': 'ǣǽ',
+  'ø': 'ǿ',
+  'ſ': 'ẛ',
+  'ʒ': 'ǯ',
+};
+
+/// [_latinBases] the other way round: a letter to its base.
+final Map<String, String> _latinFolds = <String, String>{
+  for (final MapEntry(key: base, value: letters) in _latinBases.entries)
+    for (final letter in letters.runes) String.fromCharCode(letter): base,
 };

@@ -13,14 +13,14 @@
 **No results.** "Not in the course — 5,433 words, none spelled like this. Typos are tolerated, so it is probably a compound or a rare word."; enlarged web chips; *Add "…" as my word*; footnote "Opens the web in an in-app browser — the only time Sogda goes online."
 
 **Filled in by #137:**
-- **FR-R1-07.** The status chips (To do · Learning · Done) and one chip per step in the results each narrow the words. Step chips show only when the results span more than one step. A new search starts unfiltered. A second tap clears a chip. Status and step apply together. A status chip hides the sentences, which have no status.
+- **Filters (FR-R1-07).** The status chips (To do · Learning · Done) and one chip per step in the results each narrow the words. Step chips show only when the results span more than one step. A new search starts unfiltered. A second tap clears a chip. Status and step apply together. A status chip hides the sentences, which have no status.
 - **L2's step.** It shows as a chip under the field that keeps words and sentences to that step, in the search itself, before the caps. Tapping the chip removes it by going to `/search`, so a second trip from the step brings it back.
 - **Between keystrokes** the last results stay up until the next query answers.
-- **FR-R1-06.** The web chips open through `url_launcher`'s in-app browser view, which is a Custom Tab on Android and `SFSafariViewController` on iOS. That is what `flutter_custom_tabs` would give, with no new dependency.
+- **The in-app browser (FR-R1-06).** The web chips open through `url_launcher`'s in-app browser view, which is a Custom Tab on Android and `SFSafariViewController` on iOS. That is what `flutter_custom_tabs` would give, with no new dependency.
 - **In sentences.** The words FTS matched are marked in Sun, from `highlight()`.
 
 **Filled in by #138 (idle):**
-- **FR-R1-04.** A search counts once the learner commits to it: the search key, a result or web chip opened, or a recent chip tapped. A pause in typing doesn't count. The same search again moves to the front, compared without case, and the oldest past ten goes. `recent_searches` is a JSON list, newest first. *Clear* forgets them all, and a screen reader hears it as "Clear recent searches".
+- **What counts as a search (FR-R1-04).** A search counts once the learner commits to it: the search key, a result or web chip opened, or a recent chip tapped. A pause in typing doesn't count. The same search again moves to the front, compared without case, and the oldest past ten goes. `recent_searches` is a JSON list, newest first. *Clear* forgets them all, and a screen reader hears it as "Clear recent searches".
 - A recent chip fills the field and searches at once.
 - **My words** lists `custom_words` newest first: the headword with its article's colour, then "meaning · where it was seen · seen N×". The count shows from the second time. A row opens R2 on that word (`/search/add/:id`). A screen reader hears each row as one button: its headword, its line and *My word* (#445). Past 130 % text it stacks as a result row does (#550).
 - With no recents or no words of one's own, that heading is left out, and *Add a word I found* (R2, `/search/add`) is always there.

@@ -164,7 +164,9 @@ class SearchRepository {
   /// [step] keeps every tier to one step (L2's search icon), in each query,
   /// so the caps count that step's rows only.
   Future<SearchResults> search(String query, {String? step}) async {
-    final raw = query.trim();
+    // NFC's nukta letters, as `bangla` is stored: the exact tier matches the
+    // column as typed, and a keyboard may type ড় as its one letter (#716).
+    final raw = nfc(query.trim());
     if (raw.isEmpty) return const SearchResults.empty();
 
     final key = searchKey(raw);

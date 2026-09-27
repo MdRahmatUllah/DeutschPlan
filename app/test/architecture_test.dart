@@ -693,6 +693,49 @@ void main() {
           '${offenders.join('\n')}',
     );
   });
+
+  test('#706 every business rule is named by a test', () {
+    // testing.md: test names carry FR/BR ids. Not every name can (an issue
+    // number serves where no rule applies), but no rule goes untested by
+    // name. The pipeline's rules are tested in tools/tests, named
+    // `test_BR_COURSE_02_…`.
+    final rules = RegExp(r'\*\*(BR-[A-Z]+-\d+)\*\*')
+        .allMatches(
+          File('../docs/00-product/business-rules.md').readAsStringSync(),
+        )
+        .map((m) => m.group(1)!)
+        .toSet();
+    final dartName = RegExp(
+      r'''\b(?:test|testWidgets|group|goldenTest)\(\s*((?:(?:'[^']*'|"[^"]*")\s*)+)''',
+    );
+    final pythonName = RegExp(
+      r'^\s*(?:def|class) (Test\w+|test_\w+)',
+      multiLine: true,
+    );
+    final names = <String>[
+      for (final file in [
+        ..._dartFilesIn('test'),
+        ..._dartFilesIn('integration_test'),
+      ])
+        for (final m in dartName.allMatches(file.readAsStringSync())) m[1]!,
+      for (final file in Directory(
+        '../tools/tests',
+      ).listSync().whereType<File>())
+        if (file.path.endsWith('.py'))
+          for (final m in pythonName.allMatches(file.readAsStringSync()))
+            m[1]!.replaceAll('_', '-'),
+    ].join('\n');
+
+    expect(rules, isNotEmpty, reason: 'business-rules.md read as no rules');
+    expect(
+      <String>[
+        for (final rule in rules)
+          if (!RegExp('${RegExp.escape(rule)}(?!\\d)').hasMatch(names)) rule,
+      ],
+      isEmpty,
+      reason: 'put the rule id in the name of a test that checks it',
+    );
+  });
 }
 
 /// Every `Semantics(…)` call in [source]: its own arguments (up to its

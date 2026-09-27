@@ -34,7 +34,7 @@ Grading on submit: `answer_check` per item; Listening compares the typed text wi
 - **Sittings days apart.** A paper is stored when it is begun (FR-L10-03), and the course can change before the next: a word suspended, listening turned off, a content update. So:
   - L11 passes the refs of every paper already sat as `sat` (`satRefs`). Those seeds are not drawn again, and their refs count as drawn before anything else, so a new paper shares nothing with them.
   - A retake sits the stored paper (`storedPaper`), not a newly drawn one.
-- **FR-L10-04.** Without listening, Vocabulary gets 11 items and Reverse 9: still 40 questions and 48 points.
+- **Without listening** (FR-L10-04), Vocabulary gets 11 items and Reverse 9: still 40 questions and 48 points.
 - **Meanings.** With the meaning language set to Bangla, Vocabulary expects the Bangla meaning and Reverse shows it, where the course has one; otherwise English, as the word lists do.
 - **What each item asks:**
 

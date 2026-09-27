@@ -142,19 +142,20 @@ void main() {
           text.data!,
     ];
 
-    testWidgets('with their counts, Writing and Speaking self-assessed', (
-      tester,
-    ) async {
-      await pump(tester, null, true);
+    testWidgets(
+      'BR-EXAM-06 with their counts, Writing and Speaking self-assessed',
+      (tester) async {
+        await pump(tester, null, true);
 
-      expect(names(tester), <String>[
-        'Vocabulary', 'Reverse', 'Articles', 'Word forms', 'Gap fill', //
-        'Grammar', 'Listening', 'Writing', 'Speaking',
-      ]);
-      expect(find.text(l10n.examIntroSelfAssessed), findsNWidgets(2));
-      expect(find.text('10'), findsOneWidget);
-      expect(find.text('8'), findsOneWidget);
-    });
+        expect(names(tester), <String>[
+          'Vocabulary', 'Reverse', 'Articles', 'Word forms', 'Gap fill', //
+          'Grammar', 'Listening', 'Writing', 'Speaking',
+        ]);
+        expect(find.text(l10n.examIntroSelfAssessed), findsNWidgets(2));
+        expect(find.text('10'), findsOneWidget);
+        expect(find.text('8'), findsOneWidget);
+      },
+    );
 
     testWidgets('FR-L10-04 without listening, its points moved', (
       tester,
