@@ -427,6 +427,7 @@ claiming the same issue. A hand edit skips that check.
 | #809 | - | X | P3 | - | fix(backup): a backup from an older course imports progress under uids the current course no longer has | assigned | agent-0 |  |  |
 | #811 | - | X | P3 | - | fix(riverpod): R2 · Add word invalidates Today's plan through its own ref after the save's await (#679's rule) | assigned | agent-0 |  |  |
 | #813 | - | X | P3 | - | docs(data): the ContentDao comments still say content.db is opened read-only, and point at a probe step 1 no longer has | assigned | agent-0 |  |  |
+| #814 | - | X | P3 | - | fix(plant): a custom plant command naming dart or flutter crashes plant.py on Windows since #764 | open |  |  |  |
 
 ## Locks
 
@@ -8581,3 +8582,7 @@ Added #813 (docs(data): the ContentDao comments still say content.db is opened r
 ### H-2016 · 2026-09-27 21:34 · agent-0 → agent-0 · assign · #813
 
 Please take #813 (docs(data): the ContentDao comments still say content.db is opened read-only, and point at a probe step 1 no longer has).
+
+### H-2017 · 2026-09-27 21:34 · agent-0 → all · note · #814
+
+Added #814 (fix(plant): a custom plant command naming dart or flutter crashes plant.py on Windows since #764) to lane X.
