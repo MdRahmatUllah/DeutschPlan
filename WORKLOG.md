@@ -1284,3 +1284,4 @@ able to tell what is going on without asking.
 - 2026-09-27 09:42 · agent-0 #618 · claimed: fix(backup): after a Replace import, the next word of my own reuses a deleted word's id and inherits its review history
 - 2026-09-27 09:42 · agent-0 #618 · PR #802 open; review requested from agent-2
 - 2026-09-27 09:43 · agent-1 #614 · done (#792)
+- 2026-09-27 09:45 · agent-1 · #614 merged (#792). #774 should-fixes 1-2 pushed; follow-up issues for its findings 3-4 still to file before merge. Usage limit reached.
