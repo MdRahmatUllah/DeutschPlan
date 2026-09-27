@@ -213,14 +213,16 @@ class _Cell extends StatelessWidget {
             onTap: onTap,
             child: SizedBox(
               height: 40,
-              child: Stack(
-                children: <Widget>[
-                  Center(
-                    // A number in a fixed cell shrinks to fit: a Bangla digit
-                    // is a role larger, and at 200 % the 40 cut it (#580).
-                    child: FittedBox(
-                      fit: BoxFit.scaleDown,
-                      child: SgText(
+              child: Center(
+                // A number in a fixed cell shrinks to fit: a Bangla digit is
+                // a role larger, and at 200 % the 40 cut it (#580).
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      SgText(
                         AppLocalizations.of(context).digits(n),
                         role: SgTextRole.label,
                         weight: 700,
@@ -228,21 +230,19 @@ class _Cell extends StatelessWidget {
                             ? tokens.color.ink
                             : tokens.color.onAccent,
                       ),
-                    ),
+                      // Flagged is told from answered by this mark, not only
+                      // by Sun against Lagoon, about 1.4:1 apart (#733, WCAG
+                      // 1.4.1). Beside the number and shrunk with it: in a
+                      // corner, 200 % text drew the number under it.
+                      if (cell.flagged)
+                        Icon(
+                          Icons.flag,
+                          size: 12,
+                          color: tokens.color.onAccent,
+                        ),
+                    ],
                   ),
-                  // Flagged is told from answered by this mark, not only by
-                  // Sun against Lagoon, about 1.4:1 apart (#733, WCAG 1.4.1).
-                  if (cell.flagged)
-                    Positioned(
-                      top: 3,
-                      right: 3,
-                      child: Icon(
-                        Icons.flag,
-                        size: 12,
-                        color: tokens.color.onAccent,
-                      ),
-                    ),
-                ],
+                ),
               ),
             ),
           ),

@@ -16,6 +16,7 @@ import 'package:sogda/domain/quiz_builder.dart' show FormLabel;
 import 'package:sogda/features/exam/exam_runner_screen.dart';
 import 'package:sogda/features/quiz/quiz_item_view.dart' show GermanWord;
 import 'package:sogda/l10n/generated/app_localizations.dart';
+import 'package:sogda/l10n/ui_digits.dart';
 import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -425,6 +426,42 @@ void main() {
     Future<void> open(WidgetTester tester) async {
       await tester.tap(find.bySemanticsLabel(l10n.examNavOpen));
       await tester.pumpAndSettle();
+    }
+
+    for (final bangla in <bool>[false, true]) {
+      testWidgets('#733 at 200 % ${bangla ? 'in Bangla ' : ''}on 360 × 640 '
+          "a flag never covers its question's number", (tester) async {
+        final semantics = tester.ensureSemantics();
+        tester.view
+          ..physicalSize = const Size(360, 640) * 3
+          ..devicePixelRatio = 3;
+        addTearDown(tester.view.reset);
+        await pump(
+          tester,
+          textScaler: const AndroidTextScaler(2),
+          locale: bangla ? const Locale('bn') : null,
+          stub: StubExamRun(flagged: const <int>{7, 21, 38}),
+        );
+        final loc = bangla ? bn : l10n;
+        await tester.tap(find.bySemanticsLabel(loc.examNavOpen));
+        await tester.pumpAndSettle();
+        for (final n in <int>[7, 21, 38]) {
+          final cell = find.bySemanticsLabel(loc.examNavQuestion(n));
+          Rect inCell(Finder f) =>
+              tester.getRect(find.descendant(of: cell, matching: f));
+          final flag = inCell(find.byIcon(Icons.flag));
+          final number = inCell(find.text(loc.digits(n)));
+          final overlap = flag.intersect(number);
+          expect(
+            overlap.width <= 0 || overlap.height <= 0,
+            isTrue,
+            reason: '$n: the flag $flag is on the number $number',
+          );
+        }
+        expect(tester.takeException(), isNull);
+        expectNothingClipped(tester);
+        semantics.dispose();
+      });
     }
 
     testWidgets("#580 in Bangla at 200 % a question's number shows whole in "
