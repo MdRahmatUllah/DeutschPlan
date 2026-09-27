@@ -414,9 +414,7 @@ void main() {
     );
     Future<void> settle() async {
       for (var i = 0; i < 5; i++) {
-        await tester.runAsync(
-          () => Future<void>.delayed(const Duration(milliseconds: 20)),
-        );
+        await tester.runAsync(pumpEventQueue);
         await tester.pump();
       }
     }

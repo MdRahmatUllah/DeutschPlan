@@ -86,7 +86,9 @@ def _grammar_digest(row) -> str:
     it. Tracking the uids is what lets the update say so.
     """
     parts = (row.topic, row.rule, row.example_de, row.example_en, row.watch_out)
-    joined = "".join(part or "" for part in parts)
+    # The escape, not the raw character: a raw U+001E is invisible, and
+    # the review read it as no separator at all (#697 TL-14).
+    joined = "\u001e".join(part or "" for part in parts)
     return hashlib.sha1(joined.encode("utf-8")).hexdigest()[:16]
 
 
@@ -231,10 +233,11 @@ def link_uids(
 def write_manifest(path: Path, manifest: dict) -> None:
     """Writes the manifest, sorted.
 
-    `sort_keys` is what makes two builds of unchanged content byte-identical,
-    and that is what makes `git diff` on the manifest the content diff rather
-    than a wall of reordered lines. The uid map is built in reading order and
-    sorted here — sorting it twice would only look careful.
+    `sort_keys` is what makes two builds of unchanged content identical but
+    for `content_version` and `built_at`, and that is what makes `git diff`
+    on the manifest the content diff rather than a wall of reordered lines.
+    The uid map is built in reading order and sorted here — sorting it twice
+    would only look careful.
     """
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("w", encoding="utf-8", newline="\n") as handle:

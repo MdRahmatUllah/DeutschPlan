@@ -435,6 +435,38 @@ def check_articles(db: sqlite3.Connection) -> list[Failure]:
     return failures
 
 
+def check_every_word_can_be_gapped(db: sqlite3.Connection) -> list[Failure]:
+    """#631: a word to learn whose examples the cloze cannot gap gets no cloze
+    card, no practice sentence and no exam gap fill. `tools/cloze.py` is the
+    app's `clozeGap`; a note's examples show its lesson (#630). A word with
+    no example at all is `check_every_word_has_an_example`'s."""
+    from cloze import cloze_gap
+
+    examples: dict[str, list[str]] = {}
+    for uid, german in db.execute("SELECT word_uid, german FROM word_examples"):
+        examples.setdefault(uid, []).append(german)
+    rows = [
+        f"{german} ({uid})"
+        for uid, german, pos in db.execute(
+            "SELECT uid, german, pos FROM words WHERE kind = 'vocab' ORDER BY seq"
+        )
+        if examples.get(uid)
+        and all(cloze_gap(sentence, german, pos) is None for sentence in examples[uid])
+    ]
+    if not rows:
+        return []
+    return [
+        Failure(
+            "examples",
+            f"{len(rows)} words have no example the cloze can gap, so no "
+            f"cloze card, practice sentence or gap fill ever shows them: "
+            f"{_sample(rows)}. Add or rewrite an example that says the word "
+            f"(an infinitive or a participle for a strong verb) in "
+            f"content/corrections.yaml.",
+        )
+    ]
+
+
 def check_no_starred_example(db: sqlite3.Connection) -> list[Failure]:
     """#630: an example marked ungrammatical ("nicht: *Ich bin arbeitend"),
     which TTS reads out as a model sentence."""
@@ -538,6 +570,7 @@ GATES = (
     check_no_pair_headword,
     check_verb_forms,
     check_articles,
+    check_every_word_can_be_gapped,
     check_no_starred_example,
     check_every_category_has_words,
     check_no_denylisted_terms,

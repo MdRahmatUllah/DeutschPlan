@@ -66,20 +66,31 @@ class ExamStart extends _$ExamStart {
     state = true;
     try {
       final settings = ref.read(settingsProvider);
-      final id = await ref
-          .read(examRepositoryProvider)
-          .start(
-            step: step,
-            seed: seed,
-            listening: settings.read(SettingKeys.listeningQuestions),
-            bangla:
-                settings.read(SettingKeys.meaningLanguage) ==
-                MeaningLanguage.bangla,
-            startedAt: ref.read(clockProvider)().toUtc().toIso8601String(),
-          );
+      final exams = ref.read(examRepositoryProvider);
+      // The unfinished attempt `begin` abandons for this one (#671).
+      final replaced = <int>[
+        for (final a in await exams.inProgressBySeed(step).get())
+          if (a.seed == seed) a.id,
+      ];
+      final id = await exams.start(
+        step: step,
+        seed: seed,
+        listening: settings.read(SettingKeys.listeningQuestions),
+        bangla:
+            settings.read(SettingKeys.meaningLanguage) ==
+            MeaningLanguage.bangla,
+        startedAt: ref.read(clockProvider)().toUtc().toIso8601String(),
+      );
       // Only once the attempt exists: a failed start must not change the
       // timer another mock resumes with.
       await settings.write(SettingKeys.examTimer, timer);
+      // Its recording goes: nothing opens an abandoned attempt again. Best
+      // effort, since the new attempt is begun either way.
+      try {
+        await ref.read(modelRepositoryProvider).deleteRecordings(replaced);
+      } on Object catch (error) {
+        debugPrint('exam: old recording not deleted: $error');
+      }
       return id;
     } finally {
       state = false;

@@ -52,7 +52,7 @@ void main() {
     overrides: [
       ...todayStub(),
       practiceSetProvider.overrideWith(
-        (ref, uid) async => (
+        (ref, _) async => (
           topic: artboardTopic(),
           items: <GrammarItem>[first, gap, pick, spot, order],
         ),

@@ -180,6 +180,22 @@ void main() {
     );
   });
 
+  test('#671 FR-L12-04 leaving deletes the recording; a leave after the '
+      'submit keeps it', () async {
+    final left = await sit();
+    final leftFile = File(await service.recordingPath(left))
+      ..writeAsStringSync('aac');
+    await service.abandon(left);
+    expect(leftFile.existsSync(), isFalse, reason: 'nothing reopens it');
+
+    final graded = await sit();
+    final gradedFile = File(await service.recordingPath(graded))
+      ..writeAsStringSync('aac');
+    await service.submit(graded);
+    await service.abandon(graded);
+    expect(gradedFile.existsSync(), isTrue, reason: 'L13 plays it');
+  });
+
   test('FR-L12-03 run and paused seconds add up apart', () async {
     final id = await sit();
     await service.recordTime(id, running: 10);

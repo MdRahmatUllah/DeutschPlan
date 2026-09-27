@@ -20,6 +20,7 @@ from pathlib import Path
 import yaml
 from openpyxl import load_workbook
 
+from cloze import examples_without_their_word
 from content_manifest import (
     MANIFEST_NAME,
     build_manifest,
@@ -651,6 +652,7 @@ def derive(sources: list[SourceBook]) -> dict[str, LevelSplit]:
         + check_formula_prefixes(grammar, GRAMMAR_TEXT_FIELDS)
         + assign_uids(words)
         + assign_grammar_uids(grammar)
+        + examples_without_their_word(words)
     )
     _report(warnings)
     # After the uids, which stay those of the German cell as authored (#287).
@@ -678,6 +680,7 @@ UNCAPPED_WARNINGS = frozenset(
         "unmatched tip",
         "uid link",
         "removed",
+        "example without its word",
     }
 )
 

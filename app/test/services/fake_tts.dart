@@ -41,11 +41,11 @@ class FakePrefetchTts extends FakeTts implements SpeechPrefetch {
     current = texts;
   }
 
-  /// How many times the sessions were asked to open ahead.
-  int warms = 0;
+  /// How many times the sessions were let go of (#638).
+  int releases = 0;
 
   @override
-  Future<void> warm() async => warms++;
+  Future<void> release() async => releases++;
 
   @override
   Future<void> stopPreparing(List<String> texts) async {

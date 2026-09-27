@@ -2,6 +2,8 @@ import 'package:sogda/domain/plan_engine.dart';
 import 'package:sogda/domain/sentence_picker.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import '../timing.dart';
+
 /// The practice sentence picker — #80, `docs/03-domain/sentences.md`.
 void main() {
   SentenceCandidate s(String uid, int ord, String german) =>
@@ -31,7 +33,7 @@ void main() {
       expect(coverage('groß', learned), 1.0, reason: 'groß → gross');
     });
 
-    test('stays quick with a whole course learned', () {
+    test('stays quick with a whole course learned', () async {
       // The stem match runs for every token of every sampled sentence, on the
       // first open of the day. Scanning the vocabulary per token took seconds
       // at this size; a prefix lookup takes milliseconds.
@@ -40,9 +42,12 @@ void main() {
         for (var i = 0; i < 400; i++)
           s('w$i', 1, 'Das große Haus hat einen schönen Garten mit Bäumen.'),
       ];
-      final clock = Stopwatch()..start();
-      pickSentences(sentences, learned: vocabulary, count: 3, seed: 1);
-      expect(clock.elapsed, lessThan(const Duration(seconds: 1)));
+      // The fastest of three, so a busy machine isn't what's measured (#683).
+      final fastest = await fastestOf(
+        3,
+        () => pickSentences(sentences, learned: vocabulary, count: 3, seed: 1),
+      );
+      expect(fastest, lessThan(const Duration(seconds: 1)));
     });
 
     test('an empty sentence covers nothing', () {

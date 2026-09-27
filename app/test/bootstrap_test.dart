@@ -32,6 +32,7 @@ import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 import 'package:sqlite3/sqlite3.dart';
 
 import 'db/content_fixture.dart';
+import 'timing.dart';
 
 /// `bootstrap()` — FR-S1-01…04.
 ///
@@ -524,28 +525,49 @@ void main() {
   });
 
   group('FR-S1-02 — the launch budget', () {
+    // The fastest of three each, so a busy machine isn't what's measured
+    // (#683). The phone's own launch time is perf.py's.
     test('a warm start is under 500 ms', () async {
       final first = await run();
       await first.dispose();
 
-      final warm = await run();
-      addTearDown(warm.dispose);
+      var fastest = const Duration(days: 1);
+      for (var i = 0; i < 3; i++) {
+        final warm = await run();
+        await warm.dispose();
+        if (warm.elapsed < fastest) fastest = warm.elapsed;
+      }
 
       expect(
-        warm.elapsed.inMilliseconds,
+        fastest.inMilliseconds,
         lessThan(500),
-        reason: 'warm start took ${warm.elapsed.inMilliseconds} ms',
+        reason: 'the fastest warm start took ${fastest.inMilliseconds} ms',
       );
     });
 
     test('a first run is under 2 s', () async {
-      final first = await run();
-      addTearDown(first.dispose);
+      var fastest = const Duration(days: 1);
+      for (var i = 0; i < 3; i++) {
+        if (i > 0) {
+          // A first run again: an empty app-support folder.
+          final used = support;
+          support = Directory.systemTemp.createTempSync('sogda_support');
+          PathProviderPlatform.instance = _FakePathProvider(support, temp);
+          try {
+            used.deleteSync(recursive: true);
+          } on FileSystemException {
+            // Windows releases it a moment later.
+          }
+        }
+        final first = await run();
+        await first.dispose();
+        if (first.elapsed < fastest) fastest = first.elapsed;
+      }
 
       expect(
-        first.elapsed.inMilliseconds,
+        fastest.inMilliseconds,
         lessThan(2000),
-        reason: 'first run took ${first.elapsed.inMilliseconds} ms',
+        reason: 'the fastest first run took ${fastest.inMilliseconds} ms',
       );
     });
   });
@@ -855,9 +877,7 @@ void main() {
         // written. Bounded rather than a fixed delay — a sleep long enough to
         // be safe on a slow machine is a second wasted on every run, and one
         // short enough to be quick is a flake.
-        for (var i = 0; i < 100 && shared == null; i++) {
-          await Future<void>.delayed(const Duration(milliseconds: 20));
-        }
+        await until(() => shared != null);
       });
 
       expect(shared, isNotNull, reason: 'the button did nothing');
@@ -889,9 +909,7 @@ void main() {
 
       await tester.runAsync(() async {
         await tester.tap(find.widgetWithText(SgButton, 'Share your data file'));
-        for (var i = 0; i < 100 && shared == null; i++) {
-          await Future<void>.delayed(const Duration(milliseconds: 20));
-        }
+        await until(() => shared != null);
       });
 
       expect(shared?.map((file) => file.path), <String>[
@@ -927,10 +945,8 @@ void main() {
 
       await tester.runAsync(() async {
         await tester.tap(_exportButton);
-        for (var i = 0; i < 100 && tries == 0; i++) {
-          await Future<void>.delayed(const Duration(milliseconds: 20));
-        }
-        await Future<void>.delayed(const Duration(milliseconds: 50));
+        await until(() => tries > 0);
+        await pumpEventQueue();
       });
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 300));
@@ -965,9 +981,7 @@ void main() {
 
       await tester.runAsync(() async {
         await tester.tap(_exportButton);
-        for (var i = 0; i < 100 && shares == 0; i++) {
-          await Future<void>.delayed(const Duration(milliseconds: 20));
-        }
+        await until(() => shares > 0);
       });
       await tester.pump();
       expect(tester.widget<SgButton>(_exportButton).onPressed, isNull);
@@ -980,7 +994,7 @@ void main() {
       await tester.tap(_exportButton, warnIfMissed: false);
       await tester.runAsync(() async {
         open.complete();
-        await Future<void>.delayed(const Duration(milliseconds: 50));
+        await pumpEventQueue();
       });
       await tester.pump();
       expect(shares, 1);

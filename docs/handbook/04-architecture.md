@@ -55,7 +55,7 @@ What each layer is, and the rule that keeps it that way:
 | Core | `app/lib/core/` | `adaptive/` (all platform chrome), `components/` (the Sg widgets), `providers/` (every repository and service provider), `theme/` (tokens, `SgSurface`, aurora, glass), `typography/` (`SgText`) | Shared by every screen, so a change here re-renders other screens' goldens (the `shared-look` lock, [06-quality](06-quality.md)). |
 | Router | `app/lib/router/` | `routes.dart` (typed routes, args, `open`/`instead` helpers), `app_router.dart`, `app_shell.dart`, `cross_tab.dart`, `route_guards.dart`, `back_behaviour.dart`, `deep_links.dart` | Navigation outside this folder uses the typed routes, their helpers or `context.jumpToTab`: no inline paths, so every destination is a route the tests can see. |
 | Data | `app/lib/data/db/`, `app/lib/data/repositories/` | `AppDatabase`, the `.drift` files, `ContentDao`, `ContentUpdater`; repositories and services such as `PlanRepository`, `RatingService`, `ExamRepository`, `SearchRepository`, `SettingsRepository` | The only layer that imports drift. Nothing writes to the course tables (ADR 26). |
-| Domain | `app/lib/domain/` | The engines, as pure functions and small classes, with interfaces for what they need from storage (`PlanStore`, `QuizStore`, `SentenceStore`) | Imports nothing from Flutter, drift, Riverpod, go_router or any plugin, so every engine is unit-testable with plain Dart and a fake clock. |
+| Domain | `app/lib/domain/` | The engines, as pure functions and small classes, with interfaces for what they need from storage (`PlanStore`, `QuizStore`, `SentenceStore`) | Imports nothing from Flutter, drift, Riverpod, go_router, any plugin, `dart:io` or the app's other layers, so every engine is unit-testable with plain Dart and a fake clock. |
 | Services | `app/lib/services/` | `tts/` (`TtsEngine`, `SystemTts`, `SupertonicTts`, `TtsService`), `translation/` (`Translator`), `model_downloads`, `reminder_notifications`, `background_tasks`, `widget_snapshot`, `exam_recorder`, `backup_files`, `device_storage`, `notification_permission`, `start_report` | Each plugin sits behind a small interface with a `Platform…` implementation, so widget tests pass a fake (`test/services/fake_tts.dart`). |
 | Copy | `app/lib/l10n/` | `app_en.arb` (the template, with descriptions), `app_bn.arb`, `ui_digits.dart` | Every user-facing string is an ARB key; German course text comes from content.db, never from ARB. |
 
@@ -65,7 +65,8 @@ What each layer is, and the rule that keeps it that way:
 only in `data/`, no raw colours outside `core/theme/`, no Material or
 Cupertino chrome outside `core/adaptive/`, no writes to content tables, no I/O
 in `build()`, `DateTime.now()` only through `clockProvider`, typed navigation
-only, and keepAlive providers only where `state-management.md` lists them.
+only, text only through `SgText`, and keepAlive providers only where
+`state-management.md` lists them.
 
 ## Startup
 

@@ -69,30 +69,38 @@ rule is broken, so the rules don't depend on review:
 1. No file under `lib/` imports `package:flutter/material.dart` or
    `cupertino.dart` (use `material_ui` and `cupertino_ui`).
 2. `lib/domain/` imports nothing from Flutter, drift, sqlite3, Riverpod,
-   go_router or `dart:ui`.
+   go_router, `dart:ui` or `dart:io`, nor anything of the app's outside
+   `domain/` (`package:sogda/core/`, `data/`…, or a `../` import).
 3. Only `lib/core/theme/` names a raw colour (`Color(0x…)`, `Colors.x`);
    escape hatch `// ponytail: allow-raw-colour`.
 4. Screens reach for chrome only through the adaptive wrappers: `Scaffold`,
    `AppBar`, `Switch`, `SegmentedButton`, `TabBar`, `showModalBottomSheet`,
-   `AlertDialog`, `showTimePicker`, the Material buttons and chips, and their
-   Cupertino equivalents, are banned elsewhere; escape hatch
-   `// ponytail: allow-chrome`.
+   `AlertDialog`, `showDialog` and the other dialogs, `IconButton`,
+   `SnackBar`, `showTimePicker`, the Material buttons and chips, and their
+   Cupertino equivalents, are banned elsewhere, `main.dart` included; escape
+   hatch `// ponytail: allow-chrome`, on the line or ending the comment above
+   it. A `TextField` is allowed.
 5. Only `lib/data/` touches drift.
-6. Nothing writes to the attached course.
+6. Nothing writes to the attached course: not in SQL (`OR IGNORE` included,
+   in any `.drift` file) and not through drift's API (`into(db.words)`).
 7. No I/O inside a widget's `build()` (FR-S1-01).
 8. The keepAlive providers are exactly those `state-management.md` lists, the
    doc's four core ones are all there, and the word and plan repositories
    are not kept alive.
 9. Navigation goes through the typed routes, their helpers and
-   `context.jumpToTab`: no inline paths.
+   `context.jumpToTab`: no inline paths (either quote, any verb), no route
+   names, no `SomeRoute().go(context)`.
 10. `runApp` is handed a `ProviderScope`.
 11. Every `MaterialApp` takes `appLocalizationsDelegates`, not gen_l10n's list.
-12. `DateTime.now()` appears only in the clock provider and a short, commented
-    allow-list (export and update timestamps, the synthesis cache, the time
-    picker).
+12. `DateTime.now` (called or torn off) and `DateTime.timestamp()` appear only
+    in the clock provider and a short, commented allow-list (export and
+    update timestamps, the synthesis cache, the time picker).
 13. A `Semantics` button that hides its child's gesture carries the tap itself
     (#312).
 14. No text colour is a token faded on the screen (#437).
+15. Text is `SgText` (`SgOneLine`, `SgHeadword`, `SgRuns`): no raw `Text(`,
+    `Text.rich(` or `RichText(` outside `core/typography/` and
+    `core/adaptive/`; escape hatch `// ponytail: allow-raw-text`.
 
 ## The l10n test
 

@@ -28,19 +28,19 @@ part 'grammar_practice_screen.g.dart';
 /// One topic's run: the topic, and today's items for it.
 typedef PracticeSet = ({TopicWithState topic, List<GrammarItem> items});
 
-/// FR-L15-01: [uid]'s items from the generator, seeded per topic and day,
-/// its step's other rules the recall options — the same as L4 counts.
+/// FR-L15-01: [uid]'s items from the generator, seeded per topic and [day],
+/// its step's other rules the recall options — the same as L4 counts. The
+/// day is the one L15 opened on, not a watched today: past midnight a new
+/// seed would swap the running set, or cut it short under the learner
+/// (#665).
 @riverpod
-Future<PracticeSet?> practiceSet(Ref ref, String uid) async {
+Future<PracticeSet?> practiceSet(Ref ref, String uid, String day) async {
   final grammar = ref.watch(grammarRepositoryProvider);
   final topic = await grammar.find(uid);
   if (topic == null) return null;
   final step = await grammar.step(topic.topic.sublevelCode);
   final course = await ref.watch(grammarCourseProvider.future);
-  return (
-    topic: topic,
-    items: practiceItemsFor(topic, step, ref.watch(todayProvider), course),
-  );
+  return (topic: topic, items: practiceItemsFor(topic, step, day, course));
 }
 
 /// L15 · Grammar practice (`grammar-practice.md`, `GrammarPractice-android.html`):
@@ -60,6 +60,10 @@ class GrammarPracticeScreen extends ConsumerStatefulWidget {
 }
 
 class _GrammarPracticeScreenState extends ConsumerState<GrammarPracticeScreen> {
+  /// The plan day it opened on, the one `_finish` asks about and T6
+  /// celebrates, midnight or not (FR-T6-01, #884), and the one its items
+  /// are seeded with (#665).
+  late final String _day;
   int _topic = 0;
   int _item = 0;
   int _correct = 0;
@@ -78,6 +82,12 @@ class _GrammarPracticeScreenState extends ConsumerState<GrammarPracticeScreen> {
   bool _banner = false;
   Timer? _hide;
   bool _leaving = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _day = ref.read(todayProvider);
+  }
 
   @override
   void dispose() {
@@ -147,7 +157,7 @@ class _GrammarPracticeScreenState extends ConsumerState<GrammarPracticeScreen> {
 
   /// Every topic done: T6 if that completes the day, else back.
   Future<void> _finish() async {
-    final today = ref.read(todayProvider);
+    final today = _day;
     ref.invalidate(studyNextProvider(today));
     // Listened to while it answers: read alone, an auto-disposing provider
     // can go before its future does.
@@ -176,7 +186,7 @@ class _GrammarPracticeScreenState extends ConsumerState<GrammarPracticeScreen> {
     final uid = widget.topicUids.isEmpty ? null : widget.topicUids[_topic];
     final practiceState = uid == null
         ? null
-        : ref.watch(practiceSetProvider(uid));
+        : ref.watch(practiceSetProvider(uid, _day));
     final set = practiceState?.value;
 
     final Widget body;
@@ -189,7 +199,7 @@ class _GrammarPracticeScreenState extends ConsumerState<GrammarPracticeScreen> {
               (practiceState.hasError || practiceState.hasValue)
           ? SgLoadFailed(
               message: l10n.learnLoadFailed,
-              onRetry: () => ref.invalidate(practiceSetProvider(uid!)),
+              onRetry: () => ref.invalidate(practiceSetProvider(uid!, _day)),
               onBack: () => Navigator.of(context).maybePop(),
             )
           : const SizedBox.expand();
