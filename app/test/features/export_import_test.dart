@@ -13,6 +13,7 @@ import 'package:sogda/data/repositories/model_repository.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/data/repositories/settings_repository.dart';
 import 'package:sogda/features/me/export_import_screen.dart';
+import 'package:sogda/features/onboarding/onboarding_welcome_page.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
@@ -164,6 +165,7 @@ void main() {
   Future<void> pump(
     WidgetTester tester, {
     AdaptiveChrome chrome = AdaptiveChrome.material,
+    Widget home = const ExportImportScreen(),
   }) async {
     tester.view
       ..physicalSize = const Size(1200, 2600)
@@ -184,7 +186,7 @@ void main() {
           supportedLocales: supportedLocales,
           builder: (context, child) =>
               AdaptiveChromeScope(chrome: chrome, child: child!),
-          home: const ExportImportScreen(),
+          home: home,
         ),
       ),
     );
@@ -619,6 +621,78 @@ void main() {
     await pump(tester);
     await choose(tester, await otherPhone());
     expectNothingClipped(tester, within: find.byType(ExportImportScreen));
+  });
+
+  group('#822 S2 page 1 · Restore a backup', () {
+    late List<String> went;
+
+    Future<void> restore(WidgetTester tester, String json) async {
+      went = <String>[];
+      await pump(
+        tester,
+        home: OnboardingWelcomePage(
+          onStart: () => went.add('page 2'),
+          onRestored: () => went.add('today'),
+        ),
+      );
+      files.picked = (name: 'sogda-2026-09-20.json', json: json);
+      await tester.tap(find.text(l10n.onboardingRestoreBackup));
+      await tester.pumpAndSettle();
+    }
+
+    testWidgets("the file becomes the phone's data, and Today opens", (
+      tester,
+    ) async {
+      await restore(tester, await otherPhone());
+
+      expect(went, <String>['today']);
+      // A Replace: this phone's own word is gone, the file's two are in.
+      expect(await count('word_state'), 2);
+      expect(await count('review_log'), 1);
+      expect(settings.read(SettingKeys.learnerName), 'Rahim');
+      expect(recordings.deletions, 1);
+    });
+
+    testWidgets('a file with no step carries on to page 2', (tester) async {
+      final empty = await open();
+      addTearDown(empty.close);
+      await restore(tester, await BackupRepository(empty).exportJson());
+
+      expect(went, <String>['page 2']);
+      expect(await count('word_state'), 0);
+    });
+
+    testWidgets('a file that is not a backup writes nothing and says so', (
+      tester,
+    ) async {
+      await restore(tester, '{"not": "a backup"}');
+
+      expect(went, isEmpty);
+      expect(find.text(l10n.exportImportNotABackup), findsOneWidget);
+      expect(await count('word_state'), 1);
+    });
+
+    testWidgets('backing out of the picker does nothing', (tester) async {
+      went = <String>[];
+      await pump(
+        tester,
+        home: OnboardingWelcomePage(
+          onStart: () => went.add('page 2'),
+          onRestored: () => went.add('today'),
+        ),
+      );
+      await tester.tap(find.text(l10n.onboardingRestoreBackup));
+      await tester.pumpAndSettle();
+
+      expect(went, isEmpty);
+      expect(find.text(l10n.exportImportNotABackup), findsNothing);
+      expect(await count('word_state'), 1);
+    });
+
+    testWidgets('with nowhere to go after, there is no link', (tester) async {
+      await pump(tester, home: OnboardingWelcomePage(onStart: () {}));
+      expect(find.text(l10n.onboardingRestoreBackup), findsNothing);
+    });
   });
 
   testWidgets('iOS: "Settings" beside the back chevron', (tester) async {

@@ -41,6 +41,48 @@ Future<int> exportSize(Ref ref) async {
   return utf8.encode(json).length;
 }
 
+/// FR-M6-03/04: [json] into this phone's data, one transaction, and what
+/// read the data before told. M6's import and S2 page 1's *Restore a backup*
+/// (#822, a Replace).
+Future<void> importBackup(
+  ProviderContainer container,
+  String json,
+  ImportMode mode,
+) async {
+  final today = container.read(todayProvider);
+  await container
+      .read(backupRepositoryProvider)
+      .import(json, mode: mode, today: today);
+  if (mode == ImportMode.replace) {
+    // #688 DA-6: the attempts replaced leave their recordings behind, and
+    // an imported attempt given the same id would take one on. After the
+    // data and best effort, as a reset drops them.
+    try {
+      await container.read(modelRepositoryProvider).deleteRecordings();
+    } on Object catch (error) {
+      debugPrint('import: recordings not deleted: $error');
+    }
+  }
+  // The settings cache, the plan engine (built with four of them, and kept
+  // alive under Today) and Today's plan were read before the import: the
+  // streams follow drift, these don't.
+  await container.read(settingsSourceProvider).reload();
+  container.invalidate(planEngineProvider);
+  if (mode == ImportMode.merge) {
+    // #622, #937: today planned again from the merged data, by the engine
+    // the file's settings made. Best effort: the data is in, and Today opens
+    // on what is planned either way.
+    try {
+      await container.read(planEngineProvider).replanToday(today);
+    } on Object catch (error) {
+      debugPrint('import: today not planned again: $error');
+    }
+  }
+  container
+    ..invalidate(todayPlanProvider)
+    ..invalidate(exportSizeProvider);
+}
+
 /// What the import card has to say instead of a preview.
 enum _Problem { notABackup, newer, failed }
 
@@ -141,44 +183,13 @@ class _ExportImportState extends ConsumerState<ExportImportScreen> {
       );
       if (sure != true || !mounted) return;
     }
-    final backups = ref.read(backupRepositoryProvider);
-    final settings = ref.read(settingsSourceProvider);
     // Held, not this screen's ref: Back can close M6 during the import,
     // and Today must still let go of the old plan (#679).
     final container = ProviderScope.containerOf(context, listen: false);
     final mode = _mode;
     setState(() => _busy = true);
-    final today = container.read(todayProvider);
     try {
-      await backups.import(file.json, mode: mode, today: today);
-      if (mode == ImportMode.replace) {
-        // #688 DA-6: the attempts replaced leave their recordings behind,
-        // and an imported attempt given the same id would take one on. After
-        // the data and best effort, as a reset drops them.
-        try {
-          await container.read(modelRepositoryProvider).deleteRecordings();
-        } on Object catch (error) {
-          debugPrint('import: recordings not deleted: $error');
-        }
-      }
-      // The settings cache, the plan engine (built with four of them, and
-      // kept alive under Today) and Today's plan were read before the
-      // import: the streams follow drift, these don't.
-      await settings.reload();
-      container.invalidate(planEngineProvider);
-      if (mode == ImportMode.merge) {
-        // #622, #937: today planned again from the merged data, by the
-        // engine the file's settings made. Best effort: the data is in, and
-        // Today opens on what is planned either way.
-        try {
-          await container.read(planEngineProvider).replanToday(today);
-        } on Object catch (error) {
-          debugPrint('import: today not planned again: $error');
-        }
-      }
-      container
-        ..invalidate(todayPlanProvider)
-        ..invalidate(exportSizeProvider);
+      await importBackup(container, file.json, mode);
       if (!mounted) return;
       setState(() {
         _file = null;

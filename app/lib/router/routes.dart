@@ -641,6 +641,9 @@ class OnboardingRoute extends GoRouteData with $OnboardingRoute {
       // does page 1 in restart mode, which never links there itself.
       OnboardingPage.welcome || null => OnboardingWelcomePage(
         onStart: () => next(OnboardingPage.meaningLanguage),
+        // #822: a restore skips the rest of setup. Not in restart setup,
+        // where it would replace the learner's progress.
+        onRestored: restart ? null : () => const TodayRoute().go(context),
       ),
 
       OnboardingPage.meaningLanguage => OnboardingMeaningPage(
