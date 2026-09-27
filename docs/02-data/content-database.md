@@ -28,7 +28,7 @@ Indexes: `words(sublevel_code, seq_in_sublevel)`, `words(search_key)`, `words(se
 drift does not generate classes for an attached database, so content access is through `ContentDao` with **hand-written SQL in `.drift` files** (`lib/data/db/content.drift`) that drift type-checks against a declared schema (`content_schema.drift` mirrors the DDL). Typical queries:
 
 ```sql
-wordsForStep: SELECT * FROM c.words WHERE sublevel_code = :code ORDER BY seq_in_sublevel;
+wordByUid: SELECT * FROM c.words WHERE uid = :uid;
 exactMatches: SELECT * FROM c.words WHERE search_key = :k OR search_key_alt = :alt OR bangla = :raw;
 prefixMatches: SELECT w.*, f.rank FROM c.words w JOIN (SELECT uid, rank FROM c.words_fts WHERE words_fts MATCH :q) f ON f.uid = w.uid ORDER BY f.rank LIMIT :n;
 sentenceMatches: SELECT e.*, w.german AS head FROM c.examples_fts e JOIN c.words w ON w.uid = e.word_uid WHERE examples_fts MATCH :q LIMIT :n;

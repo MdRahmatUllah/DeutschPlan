@@ -389,12 +389,8 @@ class ExamRepository extends DatabaseAccessor<AppDatabase>
     return row != null;
   }
 
-  /// The attempt to offer *Continue* on, or null. Today's *Resume* card.
-  Future<ExamAttempt?> resumable(String sublevelCode) =>
-      inProgressExam(sublevelCode).getSingleOrNull();
-
-  /// The same, per seed, for the hub's three cards (FR-L10-02): a seed with an
-  /// entry shows *Resume* instead of *Start*.
+  /// The attempts to offer *Resume* on, per seed, for the hub's three cards
+  /// (FR-L10-02): a seed with an entry shows *Resume* instead of *Start*.
   Stream<Map<int, ExamAttempt>> watchResumable(String sublevelCode) =>
       inProgressBySeed(sublevelCode).watch().map(
         // At most one row per seed: `begin` abandons the one it replaces.
@@ -417,9 +413,6 @@ class ExamRepository extends DatabaseAccessor<AppDatabase>
   /// Its answer rows, in paper order.
   Future<List<ExamAnswer>> answers(int attemptId) =>
       answersFor(attemptId).get();
-
-  Stream<List<ExamAnswer>> watchAnswers(int attemptId) =>
-      answersFor(attemptId).watch();
 
   /// Adds elapsed seconds. `duration_sec` counts only while the timer runs.
   ///
@@ -533,11 +526,6 @@ class ExamRepository extends DatabaseAccessor<AppDatabase>
         ],
       );
 
-  /// Whether the step counts as passed. A query, not a flag: a flag would have
-  /// to be kept in step with attempts a data reset can delete.
-  Stream<bool> watchStepPassed(String sublevelCode) =>
-      stepPassed(sublevelCode).watchSingle();
-
   // --- Quizzes --------------------------------------------------------------
 
   Future<int> beginQuiz({
@@ -618,24 +606,12 @@ class ExamRepository extends DatabaseAccessor<AppDatabase>
     ),
   );
 
-  Stream<List<QuizAnswer>> watchQuizAnswers(int attemptId) =>
-      quizAnswersFor(attemptId).watch();
-
   /// L9 (#126): a quiz attempt and its mistakes; null for an unknown id.
   Future<QuizResult?> quizResult(int attemptId) async {
     final attempt = await quizAttemptById(attemptId).getSingleOrNull();
     if (attempt == null) return null;
     return (attempt: attempt, mistakes: await quizMistakeRows(attemptId).get());
   }
-
-  /// The uids *Retry mistakes* builds a new quiz from.
-  Future<List<String>> mistakeUids(int attemptId) async {
-    final rows = await quizMistakes(attemptId).get();
-    return <String>[for (final row in rows) row.wordUid];
-  }
-
-  Stream<List<QuizAttempt>> watchRecentQuizzes({int limit = 10}) =>
-      recentQuizzes(limit).watch();
 
   /// L2's "Last quiz · 16 / 20 · Standard · DE → EN · Sun 20 Sep": the
   /// step's latest finished quiz, or null before the first.

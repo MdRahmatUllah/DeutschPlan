@@ -11,7 +11,7 @@ Created on first launch from `lib/data/db/user_schema.drift`, which is the autho
 | `settings` (key, value) | all preferences | see keys below |
 | `enrollments` (sublevel_code PK, started_on, daily_new, study_days_mask, completed_on) | steps started | one row with `completed_on IS NULL` = active step |
 | `word_state` (word_uid PK, status, introduced_on, due, stability, difficulty, reps, lapses, fsrs_state, last_review, card_mode, times_logged, note, card_mode_manual) | per-word learning state | `card_mode`: `plain` or `cloze`; `card_mode_manual`: 1 once the learner chose the card in W1, so BR-FSRS-06 keeps it (v3, #316); status per BR-STATUS |
-| `review_log` (id, word_uid, reviewed_at, rating, source, elapsed_days, scheduled_days) | every rating | never deleted; used for stats and future FSRS optimisation |
+| `review_log` (id, word_uid, reviewed_at, rating, source, elapsed_days, scheduled_days) | every rating | kept for stats and future FSRS optimisation; a row goes only with its rating's *Undo*, a step reset (FR-M7-01), *Reset everything* or an import's *Replace* (#700) |
 | `plan_items` (plan_date, word_uid, kind, sublevel_code, completed_at, skipped) PK(plan_date, word_uid, kind) | the daily plan | open `new` rows with plan_date < today = backlog |
 | `grammar_state` (grammar_uid PK, status, due, stability, difficulty, reps, lapses, last_review) | grammar scheduling | same FSRS fields as words |
 | `grammar_practice_log` (id, grammar_uid, practised_at, items, correct) | practice history | |
@@ -20,7 +20,7 @@ Created on first launch from `lib/data/db/user_schema.drift`, which is the autho
 | `exam_attempts` (id, sublevel_code, seed, started_at, finished_at, paused_sec, duration_sec, score_points, max_points, passed, status) | mock exams | status: `in_progress`, `finished`, `abandoned` |
 | `exam_answers` (attempt_id, ord, section, item_ref, prompt, options_json, expected, given, flagged, points, self_rubric_json) | per question | recordings referenced by path in `given` for Speaking |
 | `custom_words` (id, created_at, article, german, meaning, where_seen, example, matched_uid, times_seen) | "My words" | `matched_uid` set when the word exists in content. Scheduled, a word is `custom:<id>` wherever a course uid goes: `word_state`, `plan_items`, `review_log`, `quiz_answers` (#363) |
-| `daily_stats` (day PK, new_done, reviews_done, grammar_done, sentences_done, seconds) | per-day totals | streak and charts |
+| `daily_stats` (day PK, new_done, reviews_done, grammar_done, sentences_done, seconds, completed_shown) | per-day totals | streak and charts; `completed_shown` is 1 once the day's T6 has been shown (FR-T6-01, `claimDayComplete`) |
 | `content_updates` (version PK, added, removed, changed_json, seen, recorded_at) | update cards | `recorded_at` is when this device saw the update; `version` is the build time |
 | `translation_cache` | Hy-MT outputs | keyed by (src_lang, tgt_lang, src_text, model) |
 | `undo_stack` (id, created_at, payload_json) | last-action undo | trimmed to 20 rows |

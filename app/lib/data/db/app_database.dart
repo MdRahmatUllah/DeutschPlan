@@ -157,10 +157,12 @@ class AppDatabase extends _$AppDatabase {
   ///   `Migrator.alterTable` issues inside it does nothing: recreating
   ///   `exam_attempts` would drop the parent with the keys on, and
   ///   `ON DELETE CASCADE` would delete every answer.
-  /// - **One transaction.** drift doesn't put one here and writes
-  ///   `user_version` once this returns: a step that throws part-way would
-  ///   leave the file partly migrated at the old version, and the next open
-  ///   would replay the steps against a schema that had already moved.
+  /// - **One transaction.** drift doesn't put one here, and `stepByStep`
+  ///   writes `user_version` after each step (#700): a step that throws
+  ///   part-way would leave the file partly migrated at the last finished
+  ///   step's version, and the next open would replay the failed step
+  ///   against a schema that had already half moved. Inside it, those
+  ///   writes roll back with the steps.
   /// - **The key check inside it.** With the keys off, a step can leave a
   ///   reference pointing at nothing. The check throws before the commit, so
   ///   the file stays at the old version, untouched, and the next launch

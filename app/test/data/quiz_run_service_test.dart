@@ -33,6 +33,15 @@ void main() {
   late ExamRepository exams;
   late QuizRunService service;
 
+  /// A quiz's answer rows, in paper order.
+  Future<List<QuizAnswer>> quizAnswers(int attemptId) =>
+      (db.select(db.quizAnswers)
+            ..where((t) => t.attemptId.equals(attemptId))
+            ..orderBy(<OrderClauseGenerator<QuizAnswers>>[
+              (t) => OrderingTerm.asc(t.ord),
+            ]))
+          .get();
+
   setUp(() async {
     directory = Directory.systemTemp.createTempSync('sogda_quiz_run');
     final content = ContentFixture.write('${directory.path}/content.db').file;
@@ -94,7 +103,7 @@ void main() {
       (attempt.seed, attempt.direction, attempt.source, attempt.length),
       (42, 'enDe', 'allLearned', 2),
     );
-    final answers = await exams.watchQuizAnswers(run.attemptId!).first;
+    final answers = await quizAnswers(run.attemptId!);
     expect(
       [for (final a in answers) (a.ord, a.wordUid, a.expected)],
       [for (final i in run.quiz.items) (i.ord, i.wordUid, i.expected)],
@@ -120,7 +129,7 @@ void main() {
       given: 'die Straße',
       verdict: Verdict.almost,
     );
-    final answers = await exams.watchQuizAnswers(run.attemptId!).first;
+    final answers = await quizAnswers(run.attemptId!);
     expect(
       [for (final a in answers) (a.ord, a.given, a.verdict, a.points)],
       [(1, 'x', 'wrong', 0.0), (2, 'die Straße', 'almost', 0.5)],
@@ -156,7 +165,7 @@ void main() {
     final first = run.quiz.items.first;
     await service.answer(run, first, given: 'x', verdict: Verdict.wrong);
     await service.reasked(run, first);
-    final row = (await exams.watchQuizAnswers(run.attemptId!).first).first;
+    final row = (await quizAnswers(run.attemptId!)).first;
     expect(
       (row.given, row.verdict, row.points, row.reAsked),
       ('x', 'wrong', 0.0, 1),
@@ -233,7 +242,7 @@ void main() {
       throwsA(anything),
     );
 
-    final answers = await exams.watchQuizAnswers(run.attemptId!).first;
+    final answers = await quizAnswers(run.attemptId!);
     expect(answers.first.given, isNull, reason: 'rolled back with the rating');
     expect(await db.select(db.reviewLog).get(), isEmpty);
   });
@@ -372,7 +381,7 @@ void main() {
       db.wordState,
     )..where((s) => s.wordUid.equals(ContentFixture.strasse))).getSingle();
     expect((after.due, after.reps), (before.due, before.reps));
-    final answers = await exams.watchQuizAnswers(id).first;
+    final answers = await quizAnswers(id);
     expect([for (final a in answers) a.verdict], everyElement('correct'));
   });
 }
