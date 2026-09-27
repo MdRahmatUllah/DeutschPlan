@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-09-27 21:00
+last-seen: 2026-09-27 21:03
 last-read: 1870
 
 ## Now
 
-Nothing claimed.
+#689 fix(today): 10 lower-severity findings in Today and study (production review checklist) — claimed 2026-09-27 21:03.
 
 ## Next
 
