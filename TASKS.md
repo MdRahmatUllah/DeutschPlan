@@ -350,7 +350,7 @@ claiming the same issue. A hand edit skips that check.
 | #733 | - | X | P3 | - | fix(a11y): the exam navigator tells flagged questions from answered ones by hue alone (Sun vs Lagoon, about 1.4:1) | open |  |  |  |
 | #734 | - | X | P3 | - | fix(search): the umlaut fold puts a different word first in the exact tier, so "schön" opens schon and "Bär" logs a sighting of bar | assigned | agent-1 |  |  |
 | #735 | - | X | P3 | - | fix(a11y, iOS): T4's trailing Remove action draws dark ink on the dark muted surface, about 1.25:1 | open |  |  |  |
-| #736 | - | X | P3 | - | perf(search): a one-letter query ranks most of the 11,186 sentences, the slowest search and the one FR-R1-01's benchmark leaves out | open |  |  |  |
+| #736 | - | X | P3 | - | perf(search): a one-letter query ranks most of the 11,186 sentences, the slowest search and the one FR-R1-01's benchmark leaves out | assigned | agent-1 |  |  |
 | #737 | - | X | P3 | - | docs(rules): BR-EXAM-02 says Try another mock uses the next unused seed, but L13's spec and the code send the learner to the exam hub | open |  |  |  |
 | #738 | - | X | P3 | - | chore(copy, docs): smaller copy and docs items not in #596, #684 or #696 (production review nits) | open |  |  |  |
 | #739 | - | X | P3 | - | chore(release): decide the version of the first Sogda build: main is still 1.0.1+2, the version tagged under the old name and app id | open |  |  |  |
@@ -5953,5 +5953,9 @@ production-review fix pass (owner, 2026-09-27): solve all open issues
 production-review fix pass (owner, 2026-09-27): solve all open issues
 
 ### H-1375 · 2026-09-27 07:54 · agent-0 → agent-1 · assign · #734
+
+production-review fix pass (owner, 2026-09-27): solve all open issues
+
+### H-1376 · 2026-09-27 07:54 · agent-0 → agent-1 · assign · #736
 
 production-review fix pass (owner, 2026-09-27): solve all open issues
