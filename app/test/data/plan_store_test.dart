@@ -698,6 +698,49 @@ ORDER BY w.seq_in_sublevel
 
       expect(await store.grammarDueOn(monday), isEmpty);
     });
+
+    Future<void> practised(String uid, String at) => db.customStatement(
+      'INSERT INTO grammar_practice_log '
+      '(grammar_uid, practised_at, items, correct) VALUES (?, ?, 3, 3)',
+      <Object?>[uid, at],
+    );
+
+    test(
+      '#754 the day keeps a topic practised on it, whose due moved on',
+      () async {
+        // g1 was due and practised on Monday, which moved it to next week;
+        // g2 is still due. A day built again (a restart) must keep both.
+        await topic('g1', due: '2026-03-09');
+        await practised('g1', '2026-03-02T12:00:00Z');
+        await topic('g2', due: monday);
+
+        expect(await store.grammarDueOn(monday), <String>['g2']);
+        expect(await store.grammarOfDay(monday), <String>['g2', 'g1']);
+      },
+    );
+
+    test(
+      '#754 but not one practised the day before, nor a suspended one',
+      () async {
+        await topic('g1', due: '2026-03-09');
+        await practised('g1', '2026-03-01T12:00:00Z');
+        await topic('g2', due: '2026-03-09', status: 'suspended');
+        await practised('g2', '2026-03-02T12:00:00Z');
+
+        expect(await store.grammarOfDay(monday), isEmpty);
+      },
+    );
+
+    test(
+      '#754 a topic practised twice, and still due, is there once',
+      () async {
+        await topic('g1', due: monday);
+        await practised('g1', '2026-03-02T11:00:00Z');
+        await practised('g1', '2026-03-02T12:00:00Z');
+
+        expect(await store.grammarOfDay(monday), <String>['g1']);
+      },
+    );
   });
 
   group('last_planned_date', () {
