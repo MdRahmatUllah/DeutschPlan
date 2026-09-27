@@ -6,7 +6,7 @@ last-read: 1364
 
 ## Now
 
-#647 in review as PR #772: answer review threads; re-run the gate if main moved, then merge.
+#644 fix(theme): the app stops following the phone's light/dark switch (System and Glass) — claimed 2026-09-27 08:54.
 
 ## Next
 

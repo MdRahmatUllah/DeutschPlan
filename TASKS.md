@@ -263,7 +263,7 @@ claiming the same issue. A hand edit skips that check.
 | #680 | - | X | P2 | - | fix(placement): a meaning item can offer a synonym of the answer as a distractor, so the right choice can score wrong | assigned | agent-1 |  |  |
 | #682 | - | X | P3 | - | fix(quiz): a superlative item wants "am ältesten" but only says "Superlative of alt", and "ältesten" is marked wrong | assigned | agent-1 |  |  |
 | #643 | - | X | P1 | - | fix(bootstrap): retry after a failed start opens an app that crashes on its first frame | review | agent-2 |  | #765 |
-| #644 | - | X | P1 | - | fix(theme): the app stops following the phone's light/dark switch (System and Glass) | assigned | agent-2 |  |  |
+| #644 | - | X | P1 | - | fix(theme): the app stops following the phone's light/dark switch (System and Glass) | in-progress | agent-2 |  |  |
 | #645 | - | X | P1 | - | fix(answer): right answers are marked wrong when the expected text has brackets or alternatives | review | agent-1 |  | #763 |
 | #646 | - | X | P1 | - | fix(study): with no German voice, autoplay wipes the Undo bar after every rating | done | agent-1 |  | #760 |
 | #647 | - | X | P1 | - | fix(quiz): L8: if the quiz's finish write fails, the learner can't leave | review | agent-2 |  | #772 |
