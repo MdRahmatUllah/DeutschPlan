@@ -16,7 +16,7 @@ Created on first launch from `lib/data/db/user_schema.drift`, which is the autho
 | `grammar_state` (grammar_uid PK, status, due, stability, difficulty, reps, lapses, last_review) | grammar scheduling | same FSRS fields as words |
 | `grammar_practice_log` (id, grammar_uid, practised_at, items, correct) | practice history | |
 | `sentence_log` (word_uid, ord, shown_on, self_rating) | practice sentences shown | avoids repeats within `sentence_repeat_gap_days` |
-| `quiz_attempts` / `quiz_answers` | quizzes | direction, source, seed, per-answer verdict |
+| `quiz_attempts` / `quiz_answers` | quizzes | direction, source, seed, length (the length asked for, not the questions built, #690 LQ-7), per-answer verdict |
 | `exam_attempts` (id, sublevel_code, seed, started_at, finished_at, paused_sec, duration_sec, score_points, max_points, passed, status) | mock exams | status: `in_progress`, `finished`, `abandoned` |
 | `exam_answers` (attempt_id, ord, section, item_ref, prompt, options_json, expected, given, flagged, points, self_rubric_json) | per question | recordings referenced by path in `given` for Speaking |
 | `custom_words` (id, created_at, article, german, meaning, where_seen, example, matched_uid, times_seen) | "My words" | `matched_uid` set when the word exists in content. Scheduled, a word is `custom:<id>` wherever a course uid goes: `word_state`, `plan_items`, `review_log`, `quiz_answers` (#363) |

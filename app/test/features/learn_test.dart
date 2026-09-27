@@ -10,6 +10,7 @@ import 'package:sogda/main.dart'
 import 'package:sogda/router/routes.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter/semantics.dart' show SemanticsAction;
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 
@@ -286,6 +287,18 @@ void main() {
     await tester.tap(find.text(l10n.learnCategories));
     await tester.pumpAndSettle();
     expect(went, '/learn/categories');
+  });
+
+  testWidgets('#690 LQ-11 FR-L1-03 a step tile is a button to a screen '
+      'reader, as the cards under it are', (tester) async {
+    final semantics = tester.ensureSemantics();
+    await pump(tester);
+    final tile = tester
+        .getSemantics(find.text('A1.1').first)
+        .getSemanticsData();
+    expect(tile.flagsCollection.isButton, isTrue);
+    expect(tile.hasAction(SemanticsAction.tap), isTrue);
+    semantics.dispose();
   });
 
   testWidgets('#912 no tappable node wraps another but the current tile, '

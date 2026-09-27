@@ -550,11 +550,16 @@ class ExamRepository extends DatabaseAccessor<AppDatabase>
 
   // --- Quizzes --------------------------------------------------------------
 
+  /// [length] is the length asked for (10, 20, 30), not the questions
+  /// built: a Standard quiz on a step with 14 learned words is still
+  /// Standard on L2's last quiz card (#690 LQ-7), and the seed and the
+  /// length rebuild the attempt (FR-L8-01).
   Future<int> beginQuiz({
     required String startedAt,
     required String direction,
     required String source,
     required int seed,
+    required int length,
     required List<QuizQuestion> questions,
     String? sourceRef,
   }) => db.transaction(() async {
@@ -565,7 +570,7 @@ class ExamRepository extends DatabaseAccessor<AppDatabase>
         source: source,
         sourceRef: Value(sourceRef),
         seed: seed,
-        length: questions.length,
+        length: length,
       ),
     );
 

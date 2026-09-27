@@ -3414,6 +3414,10 @@
   "@quizEmpty": {
     "description": "L8 when the source has no learned words."
   },
+  "quizEmptyKind": "None of the learned words here can be quizzed this way yet.",
+  "@quizEmptyKind": {
+    "description": "L8 when a Forms, Articles, listening or compare quiz has no word it can ask: words are learned, but none fits the kind (#690 LQ-10)."
+  },
   "quizLoadFailed": "This quiz could not be built.",
   "@quizLoadFailed": {
     "description": "L8 error panel."

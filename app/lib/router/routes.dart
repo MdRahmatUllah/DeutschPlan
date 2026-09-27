@@ -882,9 +882,13 @@ class GrammarPracticeRoute extends GoRouteData with $GrammarPracticeRoute {
 class QuizRoute extends GoRouteData with $QuizRoute {
   const QuizRoute();
 
-  /// L8 over the shell, as [StudyRoute.open].
-  static void open(BuildContext context, QuizArgs args) =>
-      unawaited(context.push<void>(const QuizRoute().location, extra: args));
+  /// L8 over the shell, as [StudyRoute.open]. Once: a second tap, the
+  /// quiz already on its way over [context]'s page, pushes no second L8 and
+  /// writes no second attempt (#690 LQ-15).
+  static void open(BuildContext context, QuizArgs args) {
+    if (ModalRoute.isCurrentOf(context) == false) return;
+    unawaited(context.push<void>(const QuizRoute().location, extra: args));
+  }
 
   /// L9's *Retry mistakes*: a new quiz in place of the finished one, so back
   /// still returns to whatever opened the first.
