@@ -5415,9 +5415,9 @@
   "@reminderDaysOnlyWhenDueNote": {
     "description": "M5 under the only-when-due switch."
   },
-  "reminderDaysTonight": "Tonight's text",
+  "reminderDaysTonight": "The reminder's text",
   "@reminderDaysTonight": {
-    "description": "M5's preview heading, shown in capitals."
+    "description": "M5's preview heading, shown in capitals. Not \"tonight\": the reminder may be at any time (#854)."
   },
   "reminderDaysFrom": "{app} · {time}",
   "@reminderDaysFrom": {

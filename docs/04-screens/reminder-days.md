@@ -4,7 +4,7 @@
 
 **Reached from.** M3. **Leads to.** M3.
 
-**Layout.** Study days toggle pills Mo–Su with note "Sunday is a rest day: no plan, no backlog, streak kept. Applies from tomorrow." Daily reminder switch ("Permission was granted"), Time 19:30, switch *Only when there is something to do* ("Skipped on finished days and rest days"). Preview card "Tonight's text — Sogda · 19:30 — 12 revisions · 7 new · about 9 min — Grammar due: Konjunktiv II" with note "Built from the real plan at send time. Tapping it opens Today."
+**Layout.** Study days toggle pills Mo–Su with note "Sunday is a rest day: no plan, no backlog, streak kept. Applies from tomorrow." Daily reminder switch ("Permission was granted"), Time 19:30, switch *Only when there is something to do* ("Skipped on finished days and rest days"). Preview card "The reminder's text (not "Tonight's": the time may be any, #854) — Sogda · 19:30 — 12 revisions · 7 new · about 9 min — Grammar due: Konjunktiv II" with note "Built from the real plan at send time. Tapping it opens Today."
 
 **Filled in by #147:**
 - The day pills are S2 page 4's. A change writes `study_days_mask` and the open enrollment's, which is where the plan reads it (BR-PLAN-01), so it reaches the plan from tomorrow (BR-PLAN-08). The note names the rest days ("Sunday is a rest day", "Saturday and Sunday are rest days"), or says every day is a study day.
