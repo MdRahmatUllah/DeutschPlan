@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-09-27 17:33
+last-seen: 2026-09-27 18:09
 last-read: 1808
 
 ## Now
 
-#912 fix(a11y): other card buttons have no Semantics container and may merge up like #749's grammar card (from #900's review) — claimed 2026-09-27 17:33.
+#912 in review as PR #920: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 

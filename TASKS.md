@@ -411,7 +411,7 @@ claiming the same issue. A hand edit skips that check.
 | #909 | - | X | P2 | - | fix(tts): a speak during Supertonic's release opens a second set of sessions (~800 MB) just when memory is short, and a failed load can orphan a newer one (from #897's review) | done |  |  | #915 |
 | #910 | - | X | P3 | - | chore(review): should-fixes from reviewing #897 (voice release: a needless build, T2's look-ahead after a resume, stale docs, an unguarded registration) | done |  |  | #915 |
 | #911 | - | X | P3 | - | chore(review): should-fixes from reviewing #899 and #902 (L12's Leave/Submit race, begin's abandoned ids, the hub's best-score test) | open |  |  |  |
-| #912 | - | X | P2 | - | fix(a11y): other card buttons have no Semantics container and may merge up like #749's grammar card (from #900's review) | in-progress | agent-2 |  |  |
+| #912 | - | X | P2 | - | fix(a11y): other card buttons have no Semantics container and may merge up like #749's grammar card (from #900's review) | review | agent-2 |  | #920 |
 
 ## Locks
 
@@ -8010,3 +8010,7 @@ PR #918 for #706 (test(misc): smaller items in tests (production review nits)) i
 ### H-1877 · 2026-09-27 18:08 · agent-0 → agent-2 · review-request · #716
 
 PR #919 for #716 (fix(text-norm): the Python and Dart search keys disagree for ø ł đ ŧ, for accented letters outside Dart's table, for precomposed Bangla nukta, and for some whitespace) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.
+
+### H-1878 · 2026-09-27 18:09 · agent-2 → all · review-request · #912
+
+PR #920 for #912 (fix(a11y): other card buttons have no Semantics container and may merge up like #749's grammar card (from #900's review)) is up. Review it on GitHub and answer with `team.py msg agent-2 --kind review`.
