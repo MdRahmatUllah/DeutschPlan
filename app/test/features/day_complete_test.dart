@@ -62,6 +62,7 @@ void main() {
     bool shownAlready = false,
     bool still = false,
     TodayView? view,
+    bool viewFails = false,
   }) async {
     if (still) {
       tester.platformDispatcher.accessibilityFeaturesTestValue =
@@ -92,7 +93,11 @@ void main() {
           appDatabaseProvider.overrideWithValue(db),
           settingsProvider.overrideWithValue(settings),
           clockProvider.overrideWithValue(() => DateTime(2026, 9, 21, 20)),
-          todayViewProvider.overrideWith((ref) async => view ?? artboardDone()),
+          todayViewProvider.overrideWith(
+            (ref) async => viewFails
+                ? throw StateError('the read failed')
+                : view ?? artboardDone(),
+          ),
         ],
         child: MaterialApp.router(
           theme: AppTheme.light(),
@@ -416,5 +421,13 @@ void main() {
 
     expect(next.revise, isEmpty, reason: 'no blank card to study');
     expect(next.dayDone, isTrue);
+  });
+
+  testWidgets('#677 FR-T6 a day that will not read goes on to Today, not a '
+      'blank page', (tester) async {
+    await pump(tester, viewFails: true);
+    await tester.pumpAndSettle();
+    expect(find.byType(DayCompleteScreen), findsNothing);
+    expect(find.text('T1 today'), findsOneWidget);
   });
 }
