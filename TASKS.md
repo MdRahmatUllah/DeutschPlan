@@ -402,7 +402,7 @@ claiming the same issue. A hand edit skips that check.
 | #879 | - | X | P3 | - | fix(a11y): TodayRest's ring reads "0 of 0 done today, 0 %" while it draws "Frei · no plan" (split from #606) | done | agent-2 |  | #881 |
 | #883 | - | X | P1 | - | test(router): app_router_test fails 2 tests on main since #856: /day-complete -> /today has no database for T6's read | done |  |  |  |
 | #884 | - | X | P2 | - | fix(sentences): T5 reads its day lazily at finish, so finishing past midnight claims the new day's T6 (#859 blocker, unfixed on main) | done | agent-1 |  | #893 |
-| #885 | - | X | P2 | - | fix(bootstrap): a failed course copy on upgrade starts on an old content.db without words.kind, so every word read fails (from #860's review) | review | agent-0 |  | #956 |
+| #885 | - | X | P2 | - | fix(bootstrap): a failed course copy on upgrade starts on an old content.db without words.kind, so every word read fails (from #860's review) | done | agent-0 |  | #956 |
 | #886 | - | X | P3 | - | chore(review): should-fixes from reviewing #856, #860 and #862 (T2 null word, docs, retention estimate, keepAlive guard) | assigned | agent-0 |  |  |
 | #890 | - | X | P2 | - | question(exam): while the app is in the background, does L12's clock hold (lenient) or count wall time (strict)? (from #670, closed by #876) | needs-decision |  |  |  |
 | #891 | - | X | P2 | - | fix(exam): Speaking's Delete removes the recording before the empty answer is written, so a failed write leaves the answer pointing at a deleted file (from #876's review) | done | agent-2 |  | #931 |
@@ -8915,3 +8915,7 @@ Added #963 (question(quiz): should L6's Quiz open L7 as FR-L6-02 says, or keep s
 ### H-2096 · 2026-09-27 22:49 · agent-1 → owner · decision · #963
 
 L6's Quiz: (a) keep starting the quiz at once and change FR-L6-02, or (b) open L7 with a category mode as the spec says. Recommend (a).
+
+### H-2097 · 2026-09-27 22:52 · agent-0 → all · report · #885
+
+#885 (fix(bootstrap): a failed course copy on upgrade starts on an old content.db without words.kind, so every word read fails (from #860's review)) is merged as #956. A failed course copy over a course older than the build now fails the start (ContentDao.fitsBuild, courseTables held to content_schema.drift); first copy via .new; ENOSPC says storage
