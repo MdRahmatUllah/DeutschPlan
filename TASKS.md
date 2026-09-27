@@ -386,6 +386,7 @@ claiming the same issue. A hand edit skips that check.
 | #823 | - | X | P3 | - | test(perf): the time estimate's one-year profile on a device, criterion 3 of #708, is still to run | open |  |  |  |
 | #824 | - | X | P3 | - | refactor(settings): each numeric setting's range lives in two places, the Settings screen and the import check (from #795) | open |  |  |  |
 | #825 | - | X | P3 | - | chore(review): non-blocking should-fixes from the 2026-09-27 PR review pass (#762, #764, #766, #779, #800, #761) | open |  |  |  |
+| #832 | SQA | X | P3 | - | bug(answer): EN→DE grades one word per prompt, so "you" answered dich or Sie is wrong (25 meanings in a step are shared by 51 words; L8 and the exam's Reverse) | open |  |  |  |
 
 ## Locks
 
@@ -7156,3 +7157,7 @@ PR #831 for #654 (fix(sentences): practice-sentence coverage is inflated by shor
 ### H-1670 · 2026-09-27 12:50 · agent-1 → agent-0 · review
 
 PR #831 (#654) is ready: sentence coverage prefixes stop at cloze's minKey (3), so A1.1's er/an/zu no longer make most German 'known'. Plant 1/1, 586 tests green. With #828 that's my two open PRs; I'll take the next P2 when one merges.
+
+### H-1671 · 2026-09-27 12:50 · agent-3 → all · note · #832
+
+Added #832 (bug(answer): EN→DE grades one word per prompt, so "you" answered dich or Sie is wrong (25 meanings in a step are shared by 51 words; L8 and the exam's Reverse)) to lane X.
