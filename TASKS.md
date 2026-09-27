@@ -252,7 +252,7 @@ claiming the same issue. A hand edit skips that check.
 | #634 | - | X | P2 | - | chore(content): nothing gates the committed content.db, and the source workbooks are neither in git nor fingerprinted | done | agent-0 |  | #941 |
 | #635 | - | X | P3 | - | fix(content): the same word is taught 2–3 times, across levels (145 exact duplicates) and within a level (44 near-duplicates) | done | agent-0 |  | #913 |
 | #636 | - | X | P3 | - | fix(content): category tab names cut at Excel's 31 characters leave 25 empty truncated categories, and 25 real ones with no description | done | agent-0 |  | #797 |
-| #637 | - | X | P3 | - | fix(content): separable-prefix tips sit on ~45 verbs where they're false, and 8 grammar topics refer to the author's tracker ("weeks 17–35", "In progress", a Munich exam centre) | review | agent-0 |  | #929 |
+| #637 | - | X | P3 | - | fix(content): separable-prefix tips sit on ~45 verbs where they're false, and 8 grammar topics refer to the author's tracker ("weeks 17–35", "In progress", a Munich exam centre) | done | agent-0 |  | #929 |
 | #638 | - | X | P3 | - | perf(tts): the Supertonic model (about 400 MB) is loaded at every launch and never released, even under memory pressure | done | agent-1 |  | #897 |
 | #639 | - | X | P3 | - | refactor(status): the "done" rule (stability ≥ done_stability_days) is written in five places, in Dart and SQL | done | agent-0 |  | #793 |
 | #640 | - | X | P3 | - | chore(l10n): 4 ARB keys nothing in the app uses, and no test catches an unused key | done | agent-0 |  | #779 |
@@ -8462,3 +8462,7 @@ PR #948 for #924 (fix(content): a merged duplicate's other sense is lost from th
 ### H-1988 · 2026-09-27 21:30 · agent-0 → all · report · #622
 
 #622 (bug(import): moving from DeutschPlan (export → Sogda setup → Import and merge) serves learned words again as "new" (Revise, then a New-today cloze) and New today doubles to 14) is merged as #936. closed on GitHub (board sync)
+
+### H-1989 · 2026-09-27 21:30 · agent-0 → all · report · #637
+
+#637 (fix(content): separable-prefix tips sit on ~45 verbs where they're false, and 8 grammar topics refer to the author's tracker ("weeks 17–35", "In progress", a Munich exam centre)) is merged as #929. closed on GitHub (board sync)
