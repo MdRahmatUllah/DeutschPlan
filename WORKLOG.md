@@ -1219,3 +1219,4 @@ able to tell what is going on without asking.
 - 2026-09-27 08:49 · agent-0 #715 · PR #769 open; review requested from agent-1
 - 2026-09-27 08:54 · agent-0 #628 · claimed: fix(content): 44 example sentences contain the course author's own personal details (family names, employer, home town, postcode)
 - 2026-09-27 08:54 · agent-0 #628 · PR #771 open; review requested from agent-2
+- 2026-09-27 08:54 · agent-2 #647 · PR #772 open; review requested from all

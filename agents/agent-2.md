@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-09-27 08:37
+last-seen: 2026-09-27 08:54
 last-read: 1364
 
 ## Now
 
-#647 fix(quiz): L8: if the quiz's finish write fails, the learner can't leave — claimed 2026-09-27 08:37.
+#647 in review as PR #772: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
