@@ -276,6 +276,32 @@ void main() {
       expect(find.text(l10n.practiceNotQuite('Könnten')), findsOneWidget);
     });
 
+    testWidgets('#726 spot the error marks the error with a tick and a wrong '
+        'tap with a cross, and says which is which', (tester) async {
+      // A 30 % Lime or Coral tint alone told them apart by hue only: a
+      // deuteranope couldn't, and a screen reader heard nothing.
+      final semantics = tester.ensureSemantics();
+      await pump(tester, items: <GrammarItem>[spot, pick, gap]);
+      await tester.tap(find.text('mir'));
+      await tester.pumpAndSettle();
+
+      Finder iconBeside(String word, IconData icon) => find.descendant(
+        of: find.ancestor(of: find.text(word), matching: find.byType(Row)),
+        matching: find.byIcon(icon),
+      );
+      expect(iconBeside('Können', Icons.check), findsOneWidget);
+      expect(iconBeside('mir', Icons.close), findsOneWidget);
+      expect(
+        find.bySemanticsLabel(l10n.practiceSpotIsError('Können')),
+        findsOneWidget,
+      );
+      expect(
+        find.bySemanticsLabel(l10n.practiceSpotNotError('mir')),
+        findsOneWidget,
+      );
+      semantics.dispose();
+    });
+
     testWidgets('order the sentence: placed, taken back, placed, checked', (
       tester,
     ) async {

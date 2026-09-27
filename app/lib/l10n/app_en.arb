@@ -3599,6 +3599,24 @@
   "@practiceSpotPrompt": {
     "description": "L15 spot the error instruction."
   },
+  "practiceSpotIsError": "{word}, the error",
+  "@practiceSpotIsError": {
+    "description": "L15 Spot the error, once answered: a screen reader's label for the word that was wrong, the answer (#726). word is the German word.",
+    "placeholders": {
+      "word": {
+        "type": "String"
+      }
+    }
+  },
+  "practiceSpotNotError": "{word}, your tap, not the error",
+  "@practiceSpotNotError": {
+    "description": "L15 Spot the error, once answered: a screen reader's label for a word the learner tapped that wasn't the error (#726). word is the German word.",
+    "placeholders": {
+      "word": {
+        "type": "String"
+      }
+    }
+  },
   "practiceOrderPrompt": "Tap the words in the right order.",
   "@practiceOrderPrompt": {
     "description": "L15 order the sentence instruction."
