@@ -410,6 +410,20 @@ void main() {
     });
   });
 
+  test('#655 BR-ANS-01 a Bangla meaning typed with a precomposed nukta '
+      'letter is right: the course stores letter + nukta', () {
+    // সময়, as a keyboard sending the one letter য় types it, and as the
+    // course spells it (য + nukta).
+    expect(
+      checkMeaning('\u09B8\u09AE\u09DF', '\u09B8\u09AE\u09AF\u09BC'),
+      Verdict.correct,
+    );
+    expect(
+      checkMeaning('\u09AA\u09DC\u09BE', '\u09AA\u09A1\u09BC\u09BE'),
+      Verdict.correct,
+    );
+  });
+
   group('splitMeanings', () {
     test('splits on / , and ;', () {
       expect(splitMeanings('house / home, building; flat'), <String>[

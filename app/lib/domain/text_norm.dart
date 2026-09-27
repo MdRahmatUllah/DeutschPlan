@@ -81,16 +81,24 @@ String _normalise(
   return stripArticle ? _stripArticle(collapsed.toList()) : collapsed.join(' ');
 }
 
-/// The precomposed forms of the letters the umlaut tables key on.
+/// The letters whose NFC form changes a key, spelled out: Dart has no
+/// `String.normalize`, and `tools/pipeline_steps.py` applies NFC.
 ///
-/// Dart has no `String.normalize`, and these four are the only ones where the
-/// difference changes the answer rather than just the diacritic strip: an
-/// unmapped decomposed letter still loses its mark below, but a decomposed ü
-/// would lose its umlaut instead of becoming "ue".
+/// German's umlauts are composed: an unmapped decomposed letter still loses
+/// its mark below, but a decomposed ü would lose its umlaut instead of
+/// becoming "ue".
 const Map<String, String> _composed = <String, String>{
   'ä': 'ä',
   'ö': 'ö',
   'ü': 'ü',
+  // The other way for Bangla's three nukta letters, which NFC takes apart
+  // (composition exclusions): content.db and the pipeline's keys hold the
+  // letter + nukta, and a keyboard may type the one precomposed letter. Left
+  // alone, a word typed with it is two edits from the course's and wrong
+  // (#655).
+  '\u09DC': '\u09A1\u09BC',
+  '\u09DD': '\u09A2\u09BC',
+  '\u09DF': '\u09AF\u09BC',
 };
 
 String _compose(String text) {
