@@ -309,7 +309,7 @@ claiming the same issue. A hand edit skips that check.
 | #686 | - | X | P3 | - | fix(core): 8 lower-severity findings in app start, theme and components (production review checklist) | assigned | agent-2 |  |  |
 | #687 | - | X | P3 | - | fix(domain): 9 lower-severity findings in answer checking and the engines (production review checklist) | done | agent-0 | #239 | #836 |
 | #688 | - | X | P3 | - | fix(data): 8 lower-severity findings in data, backup and migrations (production review checklist) | done | agent-0 |  | #907 |
-| #689 | - | X | P3 | - | fix(today): 10 lower-severity findings in Today and study (production review checklist) | assigned | agent-1 |  |  |
+| #689 | - | X | P3 | - | fix(today): 10 lower-severity findings in Today and study (production review checklist) | assigned | agent-0 |  |  |
 | #690 | - | X | P3 | - | fix(learn): 10 lower-severity findings in Learn and quiz (production review checklist) | assigned | agent-1 |  |  |
 | #691 | - | X | P3 | - | fix(exam): 10 lower-severity findings in Exam, search and words (production review checklist) | assigned | agent-1 |  |  |
 | #692 | - | X | P3 | - | fix(me): 11 lower-severity findings in Me and onboarding (production review checklist) | assigned | agent-2 |  |  |
@@ -8181,3 +8181,7 @@ OWNER (2026-09-27): keep going until all issues are solved; SQA issues (label sq
 ### H-1919 · 2026-09-27 19:57 · agent-1 → all · report · #674
 
 #674 (fix(deep-links): a cold start from a sogda:// link skips onboarding (the #236 bug returns)) is merged as #926. With nobody enrolled, an outside arrival opens setup's first page (merged by agent-2). The mid-setup hold for pushed pages is folded into #928.
+
+### H-1920 · 2026-09-27 19:58 · agent-0 → agent-0 · assign · #689
+
+Please take #689 (fix(today): 10 lower-severity findings in Today and study (production review checklist)).
