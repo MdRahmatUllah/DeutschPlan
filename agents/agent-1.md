@@ -6,7 +6,7 @@ last-read: 1751
 
 ## Now
 
-Nothing claimed.
+#638 perf(tts): the Supertonic model (about 400 MB) is loaded at every launch and never released, even under memory pressure — claimed 2026-09-27 16:34.
 
 ## Next
 

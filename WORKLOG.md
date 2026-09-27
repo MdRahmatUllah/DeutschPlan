@@ -1473,3 +1473,4 @@ able to tell what is going on without asking.
 - 2026-09-27 16:32 · agent-2 #879 · done (#881)
 - 2026-09-27 16:34 · agent-1 #613 · done (#882)
 - 2026-09-27 16:34 · agent-0 #642 · done (#878)
+- 2026-09-27 16:34 · agent-1 #638 · claimed: perf(tts): the Supertonic model (about 400 MB) is loaded at every launch and never released, even under memory pressure
