@@ -6,7 +6,7 @@ last-read: 1870
 
 ## Now
 
-#922 fix(content-update): Today's card counts a merged duplicate as a removed word (#913 follow-up) — claimed 2026-09-27 21:28.
+#922 in review as PR #948: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 

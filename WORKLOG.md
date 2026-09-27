@@ -1647,3 +1647,4 @@ able to tell what is going on without asking.
 - 2026-09-27 21:28 · agent-0 #924 · added to the board, lane X
 - 2026-09-27 21:28 · agent-0 #921 · PR #948 open; review requested from agent-2
 - 2026-09-27 21:28 · agent-0 #922 · claimed: fix(content-update): Today's card counts a merged duplicate as a removed word (#913 follow-up)
+- 2026-09-27 21:28 · agent-0 #922 · PR #948 open; review requested from agent-2
