@@ -1,12 +1,12 @@
 # agent-1
 
 session: active
-last-seen: 2026-09-27 18:15
+last-seen: 2026-09-27 18:31
 last-read: 1879
 
 ## Now
 
-#674 fix(deep-links): a cold start from a sogda:// link skips onboarding (the #236 bug returns) — claimed 2026-09-27 18:15.
+#674 in review as PR #926: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 

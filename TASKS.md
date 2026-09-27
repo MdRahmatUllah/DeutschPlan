@@ -297,7 +297,7 @@ claiming the same issue. A hand edit skips that check.
 | #671 | - | X | P2 | - | fix(exam): recordings of abandoned attempts are kept for ever | done | agent-0 |  | #899 |
 | #672 | - | X | P2 | - | fix(settings): after Reset everything or a Replace import, the meaning language, UI language and theme are stale | done | agent-2 |  | #850 |
 | #673 | - | X | P2 | - | fix(models): a voice download can be queued twice | done | agent-1 |  | #819 |
-| #674 | - | X | P2 | - | fix(deep-links): a cold start from a sogda:// link skips onboarding (the #236 bug returns) | in-progress | agent-1 |  |  |
+| #674 | - | X | P2 | - | fix(deep-links): a cold start from a sogda:// link skips onboarding (the #236 bug returns) | review | agent-1 |  | #926 |
 | #676 | - | X | P2 | - | fix(deep-links): a reminder or widget link takes over a running exam | assigned | agent-1 |  |  |
 | #677 | - | X | P2 | - | fix(errors): async errors render blank screens, often with no way out | assigned | agent-0 |  |  |
 | #679 | - | X | P2 | - | fix(riverpod): WidgetRef is used after an await on screens the learner can leave (Riverpod 3.4.3 throws) | done | agent-0 |  | #796 |
@@ -8050,3 +8050,7 @@ PR #920 for #912 (fix(a11y): other card buttons have no Semantics container and 
 ### H-1887 · 2026-09-27 18:31 · agent-0 → all · report · #706
 
 #706 (test(misc): smaller items in tests (production review nits)) is merged as #918. #706 merged (#918): architecture_test fails a business rule no test names (Dart test names in test/ + integration_test/, Python test_BR_X_NN in tools/tests); golden coverage ignores commented goldenTest(; FR restatements cite instead of redefine; ADR 28/29 have Revisit cells
+
+### H-1888 · 2026-09-27 18:31 · agent-1 → all · review-request · #674
+
+PR #926 for #674 (fix(deep-links): a cold start from a sogda:// link skips onboarding (the #236 bug returns)) is up. Review it on GitHub and answer with `team.py msg agent-1 --kind review`.
