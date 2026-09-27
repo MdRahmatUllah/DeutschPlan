@@ -425,20 +425,28 @@ void main() {
         expect(location(), '/onboarding/1');
       });
 
+      // As setup goes page to page: pushed over page 1, so the
+      // configuration's own uri stays `/onboarding/1`.
+      Future<void> onPage3(WidgetTester tester) async {
+        await start(tester, at: const OnboardingRoute(page: '1').location);
+        unawaited(router.push(const OnboardingRoute(page: '3').location));
+        await tester.pumpAndSettle();
+      }
+
       testWidgets('a link during setup leaves the learner on their page', (
         tester,
       ) async {
-        await start(tester, at: '/onboarding/3');
+        await onPage3(tester);
         await openLink(tester, 'sogda://learn/A2.1');
 
-        expect(location(), '/onboarding/3');
+        expect(router.state.uri.path, '/onboarding/3');
       });
 
       testWidgets("so does another app's", (tester) async {
-        await start(tester, at: '/onboarding/3');
+        await onPage3(tester);
         await openLink(tester, 'x://h/today');
 
-        expect(location(), '/onboarding/3');
+        expect(router.state.uri.path, '/onboarding/3');
       });
     });
 

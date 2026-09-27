@@ -24,17 +24,24 @@ GoRouter buildRouter({String initialLocation = '/today', RouteGuards? guards}) {
     navigatorKey: rootNavigatorKey,
     initialLocation: initialLocation,
     routes: $appRoutes,
-    // An exam in progress is the one screen an arrival from outside (a link,
-    // a tapped reminder, another app's URI) never takes over, FR-L12-04's
-    // leave being a decision. Blocked here, before any redirect, so the stack
-    // stays as it is: a redirect can only `go` somewhere, which rebuilds the
-    // stack without an exam pushed over its step (`ExamRoute.open`). And
-    // [current] is the top route, a push included, where the configuration's
-    // own `uri` is the stack's base, `/learn/step/…` under that exam (#676).
-    onEnter: (context, current, next, router) =>
-        arrival(next.uri) && !interruptible(current.uri.path)
-        ? const Block.stop()
-        : const Allow(),
+    // An arrival from outside (a link, a tapped reminder, another app's URI)
+    // never takes over a running exam, FR-L12-04's leave being a decision
+    // (#676), nor setup when nobody is enrolled yet (#674). Blocked here,
+    // before any redirect, so the stack stays as it is: a redirect can only
+    // `go` somewhere, which rebuilds the stack without the exam pushed over
+    // its step (`ExamRoute.open`), or setup's pushed pages. And [current] is
+    // the top route, a push included, where the configuration's own `uri` is
+    // the stack's base: `/learn/step/…` under that exam, `/onboarding/1`
+    // under setup's page 3.
+    onEnter: (context, current, next, router) async {
+      if (!arrival(next.uri)) return const Allow();
+      final top = current.uri.path;
+      if (!interruptible(top)) return const Block.stop();
+      if (top.startsWith('/onboarding') && !await checks.isEnrolled()) {
+        return const Block.stop();
+      }
+      return const Allow();
+    },
     redirect: (context, state) async {
       // A `sogda://` link is not a location: `sogda://exam/A1.2`
       // names a step, and `/exam/:attemptId` in the table is the runner for
@@ -46,16 +53,15 @@ GoRouter buildRouter({String initialLocation = '/today', RouteGuards? guards}) {
       // any intent's data over as the route, so another app's `x://h/exam/7`
       // would otherwise match the table by its path.
       if (arrival(state.uri)) {
-        // A running exam never gets here: [onEnter] has blocked the arrival.
-        final current = router.routerDelegate.currentConfiguration.uri;
+        // A running exam, or setup under way, never gets here: [onEnter] has
+        // blocked the arrival.
+        //
         // #674: with nobody enrolled there is nothing to link into. A cold
         // start from a link (the widget, placed before the first launch)
         // takes the link over bootstrap's first location, and skipped setup:
-        // setup from its first page, or the page the learner is on.
+        // setup, from its first page.
         if (!await checks.isEnrolled()) {
-          return current.path.startsWith('/onboarding')
-              ? current.toString()
-              : const OnboardingRoute(page: '1').location;
+          return const OnboardingRoute(page: '1').location;
         }
         if (state.uri.scheme != deepLinkScheme) return fallbackLocation;
 
