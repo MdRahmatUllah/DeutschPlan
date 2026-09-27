@@ -178,7 +178,8 @@ class _ExamResultsScreenState extends ConsumerState<ExamResultsScreen> {
       canPop: false,
       onPopInvokedWithResult: (didPop, _) {
         if (didPop) return;
-        // With no result there is no hub to go to: the course (#725).
+        // No step yet, or none (a result that could not load): no hub to
+        // go to, so the course (#725).
         step == null ? _leave() : widget.onHub(step);
       },
       child: scaffold,
