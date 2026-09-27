@@ -17,7 +17,7 @@ Column names are backticked; `tools/tests/test_schema.py` reads them out of this
 | `grammar_topics` | `uid` PK, `sublevel_code`, `level_code`, `seq`, `source_week`, `topic`, `rule`, `example_de`, `example_en`, `watch_out`, `tags` | Grammar |
 | `skill_prompts` | (`level_code`, `ord`), `prompt` | Empty (#294): the workbooks' only skills content is a fixed four-line weekly checklist, the same every week, not imported because nothing shows it. Kept in the schema; nothing reads it |
 | `interference_tips` | `word_uid`, `tip_en`, `tip_bn` | L1-specific traps (from CSV) |
-| `words_fts` | `uid` UNINDEXED, `german`, `english`, `bangla`, `search_key` — FTS5 `unicode61 remove_diacritics 2` | Exact / prefix search |
+| `words_fts` | `uid` UNINDEXED, `german`, `english`, `bangla`, `search_key` — FTS5 `unicode61 remove_diacritics 2 categories 'L* N* Co Mn Mc'`: marks are part of a token, so a Bangla word keeps its vowel signs, hasanta and nukta and "মে"* is the words that start so (#713) | Exact / prefix search |
 | `words_trigram` | `uid` UNINDEXED, `german`, `english`, `search_key` — FTS5 `trigram` | Fuzzy candidates |
 | `examples_fts` | `word_uid` UNINDEXED, `german`, `english` — FTS5 `unicode61 remove_diacritics 2` | "In sentences" tier |
 
