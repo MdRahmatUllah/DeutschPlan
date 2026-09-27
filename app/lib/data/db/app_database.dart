@@ -105,43 +105,63 @@ class AppDatabase extends _$AppDatabase {
   @override
   MigrationStrategy get migration => MigrationStrategy(
     onCreate: (m) => m.createAll(),
-    onUpgrade: (m, from, to) async {
-      // In a transaction because drift does not put one here and only writes
-      // `user_version` once this returns: a step that throws part-way would
-      // otherwise leave the file partly migrated at the old version, and the
-      // next open would replay the steps against a schema that had already
-      // moved. On the learner's device, permanently.
-      await transaction(
-        () => stepByStep(
-          // v2: `content_updates.recorded_at`. Nullable, so the rows already
-          // there keep their data — the rule is to add a nullable column
-          // rather than drop or back-fill one. The "updated" chip reads a
-          // null as "before this device started recording", which is exactly
-          // what it means.
-          from1To2: (m, schema) => m.addColumn(
-            schema.contentUpdates,
-            schema.contentUpdates.recordedAt,
-          ),
-          // v3: `word_state.card_mode_manual` (#316). Every row already there
-          // was the rule's, so the default 0 says exactly that.
-          from2To3: (m, schema) =>
-              m.addColumn(schema.wordState, schema.wordState.cardModeManual),
-        )(m, from, to),
-      );
-
-      // `Migrator.alterTable` turns foreign keys off while it recreates a
-      // table, so a migration can leave dangling references behind and
-      // nothing would notice until a query returned a row that points at
-      // nothing.
-      final dangling = await customSelect('PRAGMA foreign_key_check').get();
-      if (dangling.isNotEmpty) {
-        throw StateError(
-          'migration $from -> $to left ${dangling.length} dangling '
-          'reference(s): ${dangling.map((r) => r.data).toList()}',
-        );
-      }
-    },
+    onUpgrade: (m, from, to) => upgrade(
+      from,
+      to,
+      () => stepByStep(
+        // v2: `content_updates.recorded_at`. Nullable, so the rows already
+        // there keep their data — the rule is to add a nullable column
+        // rather than drop or back-fill one. The "updated" chip reads a
+        // null as "before this device started recording", which is exactly
+        // what it means.
+        from1To2: (m, schema) => m.addColumn(
+          schema.contentUpdates,
+          schema.contentUpdates.recordedAt,
+        ),
+        // v3: `word_state.card_mode_manual` (#316). Every row already there
+        // was the rule's, so the default 0 says exactly that.
+        from2To3: (m, schema) =>
+            m.addColumn(schema.wordState, schema.wordState.cardModeManual),
+      )(m, from, to),
+    ),
   );
+
+  /// Runs [steps], the migration from [from] to [to], as drift's own
+  /// snippet does (`VersionedSchema.runMigrationSteps`), and #656 needs.
+  ///
+  /// - **Foreign keys off first, outside the transaction.** SQLite ignores
+  ///   `PRAGMA foreign_keys` while one is open, so the pragma
+  ///   `Migrator.alterTable` issues inside it does nothing: recreating
+  ///   `exam_attempts` would drop the parent with the keys on, and
+  ///   `ON DELETE CASCADE` would delete every answer.
+  /// - **One transaction.** drift doesn't put one here and writes
+  ///   `user_version` once this returns: a step that throws part-way would
+  ///   leave the file partly migrated at the old version, and the next open
+  ///   would replay the steps against a schema that had already moved.
+  /// - **The key check inside it.** With the keys off, a step can leave a
+  ///   reference pointing at nothing. The check throws before the commit, so
+  ///   the file stays at the old version, untouched, and the next launch
+  ///   checks again rather than opening a migrated file that skips it.
+  ///
+  /// Public so a test can run a step main doesn't have yet, an `alterTable`.
+  Future<void> upgrade(int from, int to, Future<void> Function() steps) async {
+    await customStatement('PRAGMA foreign_keys = OFF');
+    try {
+      await transaction(() async {
+        await steps();
+        final dangling = await customSelect('PRAGMA foreign_key_check').get();
+        if (dangling.isNotEmpty) {
+          throw StateError(
+            'migration $from -> $to left ${dangling.length} dangling '
+            'reference(s): ${dangling.map((r) => r.data).toList()}',
+          );
+        }
+      });
+    } finally {
+      // `configureConnection`'s setting, for every query after this one.
+      await customStatement('PRAGMA foreign_keys = ON');
+    }
+  }
 
   /// Only what user.db owns.
   ///

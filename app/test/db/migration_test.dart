@@ -1,11 +1,14 @@
 @TestOn('vm')
 library;
 
+import 'dart:io';
+
 import 'package:sogda/data/db/app_database.dart';
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
 import 'package:drift_dev/api/migrations_native.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:sqlite3/sqlite3.dart' show sqlite3;
 
 import 'generated/schema.dart';
 
@@ -27,6 +30,8 @@ import 'generated/schema.dart';
 const _strict = ValidationOptions(validateDropped: true);
 
 void main() {
+  driftRuntimeOptions.dontWarnAboutMultipleDatabases = true;
+
   late SchemaVerifier verifier;
 
   setUpAll(() {
@@ -91,4 +96,101 @@ void main() {
 
     await verifier.migrateAndValidate(db, db.schemaVersion, options: _strict);
   });
+
+  group('#656 a step of the kind main has none of yet', () {
+    const previous = AppDatabase.latestSchemaVersion - 1;
+    late Directory directory;
+    late File file;
+
+    // A learner's file one version back, with the connection the app opens,
+    // foreign keys on: an exam attempt and its two answers.
+    setUp(() async {
+      directory = Directory.systemTemp.createTempSync('sogda_migrate');
+      file = File('${directory.path}/user.db');
+      final db = AppDatabase(NativeDatabase(file, setup: configureConnection));
+      await db.customStatement(
+        'INSERT INTO exam_attempts (id, sublevel_code, seed, started_at) '
+        "VALUES (1, 'A1.1', 2, '2026-09-01T09:00:00Z')",
+      );
+      await db.customStatement(
+        'INSERT INTO exam_answers (attempt_id, ord, section, prompt) '
+        "VALUES (1, 0, 'lesen', 'p0'), (1, 1, 'lesen', 'p1')",
+      );
+      await db.customStatement('PRAGMA user_version = $previous');
+      await db.close();
+    });
+
+    tearDown(() {
+      try {
+        directory.deleteSync(recursive: true);
+      } on FileSystemException {
+        // Windows releases it a moment later.
+      }
+    });
+
+    _Planted open(Future<void> Function(AppDatabase db, Migrator m) step) =>
+        _Planted(NativeDatabase(file, setup: configureConnection), step);
+
+    test('#656 recreating a parent table keeps its children', () async {
+      // alterTable drops exam_attempts and renames a copy into its place.
+      // With the keys on, the drop's ON DELETE CASCADE takes every answer.
+      final db = open((db, m) => m.alterTable(TableMigration(db.examAttempts)));
+      addTearDown(db.close);
+
+      final answers = await db
+          .customSelect('SELECT COUNT(*) AS n FROM exam_answers')
+          .getSingle();
+      final keys = await db.customSelect('PRAGMA foreign_keys').getSingle();
+
+      expect(answers.read<int>('n'), 2);
+      expect(keys.read<int>('foreign_keys'), 1, reason: 'and back on after');
+      expect(await db.fileSchemaVersion(), AppDatabase.latestSchemaVersion);
+    });
+
+    test('#656 a step that leaves a dangling reference changes nothing, and '
+        'the next launch checks again', () async {
+      final db = open(
+        (db, m) => db.customStatement(
+          'INSERT INTO exam_answers (attempt_id, ord, section, prompt) '
+          "VALUES (99, 0, 'lesen', 'orphan')",
+        ),
+      );
+      await expectLater(
+        db.customSelect('SELECT 1').get(),
+        throwsA(
+          isA<StateError>().having(
+            (e) => e.message,
+            'message',
+            contains('dangling'),
+          ),
+        ),
+      );
+      await db.close();
+
+      final raw = sqlite3.open(file.path);
+      addTearDown(raw.close);
+      expect(raw.select('PRAGMA user_version').single.values.single, previous);
+      expect(
+        raw
+            .select('SELECT COUNT(*) FROM exam_answers WHERE attempt_id = 99')
+            .single
+            .values
+            .single,
+        0,
+      );
+    });
+  });
+}
+
+/// The app's database with one planted migration step, run through the real
+/// [AppDatabase.upgrade] (#656).
+class _Planted extends AppDatabase {
+  _Planted(super.e, this._step);
+
+  final Future<void> Function(AppDatabase db, Migrator m) _step;
+
+  @override
+  MigrationStrategy get migration => MigrationStrategy(
+    onUpgrade: (m, from, to) => upgrade(from, to, () => _step(this, m)),
+  );
 }
