@@ -382,7 +382,7 @@ claiming the same issue. A hand edit skips that check.
 | #804 | - | X | P3 | - | fix(content): the first-run copy writes content.db in place, so a copy cut short can be attached as a partial course | open |  |  |  |
 | #815 | SQA | X | P3 | - | bug(a11y): at 200 % on a 731 dp phone, L2's Words tab on a step you aren't in leaves the word list no room (Bangla: 0 dp, English: 58 dp) | assigned | agent-2 |  |  |
 | #822 | - | X | P2 | - | question(backup): on a fresh phone, should restore pre-select Replace, or be offered from onboarding? (left open by #658) | open |  |  |  |
-| #821 | SQA | X | P3 | - | bug(today): the backlog's range names weekdays only, so 30 Sep–15 Oct reads "Wed–Thu" (T1) and "Mon to Thu" (T4), and a week apart reads "Wed–Wed" | assigned | agent-2 |  |  |
+| #821 | SQA | X | P3 | - | bug(today): the backlog's range names weekdays only, so 30 Sep–15 Oct reads "Wed–Thu" (T1) and "Mon to Thu" (T4), and a week apart reads "Wed–Wed" | in-progress | agent-2 |  |  |
 | #823 | - | X | P3 | - | test(perf): the time estimate's one-year profile on a device, criterion 3 of #708, is still to run | open |  |  |  |
 | #824 | - | X | P3 | - | refactor(settings): each numeric setting's range lives in two places, the Settings screen and the import check (from #795) | open |  |  |  |
 | #825 | - | X | P3 | - | chore(review): non-blocking should-fixes from the 2026-09-27 PR review pass (#762, #764, #766, #779, #800, #761) | open |  |  |  |

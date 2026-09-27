@@ -1591,3 +1591,4 @@ able to tell what is going on without asking.
 - 2026-09-27 20:10 · agent-2 #606 · PR #934 open; review requested from all
 - 2026-09-27 20:13 · agent-2 #912 · done (#920)
 - 2026-09-27 20:16 · agent-2 #891 · done (#931)
+- 2026-09-27 20:17 · agent-2 #821 · claimed: bug(today): the backlog's range names weekdays only, so 30 Sep–15 Oct reads "Wed–Thu" (T1) and "Mon to Thu" (T4), and a week apart reads "Wed–Wed"

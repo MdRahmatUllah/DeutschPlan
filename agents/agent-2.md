@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-09-27 20:16
+last-seen: 2026-09-27 20:17
 last-read: 1808
 
 ## Now
 
-Nothing claimed.
+#821 bug(today): the backlog's range names weekdays only, so 30 Sep–15 Oct reads "Wed–Thu" (T1) and "Mon to Thu" (T4), and a week apart reads "Wed–Wed" — claimed 2026-09-27 20:17.
 
 ## Next
 
