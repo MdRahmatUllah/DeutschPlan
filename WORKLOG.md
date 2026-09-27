@@ -1263,3 +1263,4 @@ able to tell what is going on without asking.
 - 2026-09-27 09:31 · agent-2 #647 · done (#772)
 - 2026-09-27 09:31 · agent-1 #655 · claimed: fix(answer): typed Bangla answers aren't normalised for the precomposed nukta letters
 - 2026-09-27 09:32 · agent-0 #639 · claimed: refactor(status): the "done" rule (stability ≥ done_stability_days) is written in five places, in Dart and SQL
+- 2026-09-27 09:32 · agent-0 #639 · PR #793 open; review requested from agent-1
