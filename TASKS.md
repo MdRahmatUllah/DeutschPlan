@@ -244,7 +244,7 @@ claiming the same issue. A hand edit skips that check.
 | #626 | - | X | P3 | - | fix(reminders): a day finished after reminder_compose ran still gets "12 revisions · 7 new" at reminder time | assigned | agent-2 |  |  |
 | #627 | - | X | P3 | - | fix(tts): if one Supertonic ONNX session fails to open, the sessions already opened are never closed | assigned | agent-1 |  |  |
 | #628 | - | X | P1 | - | fix(content): 44 example sentences contain the course author's own personal details (family names, employer, home town, postcode) | assigned | agent-0 |  |  |
-| #629 | - | X | P1 | - | fix(content): 31 "X — Y" headwords glue an unrelated word onto the one taught, so the learner learns the wrong meaning and gender for X | open |  |  |  |
+| #629 | - | X | P1 | - | fix(content): 31 "X — Y" headwords glue an unrelated word onto the one taught, so the learner learns the wrong meaning and gender for X | assigned | agent-0 |  |  |
 | #630 | - | X | P2 | - | fix(content): about 180 lesson notes are authored as vocabulary (word formation, ↔ comparisons, grammar-concept names), so they are scheduled as flashcards and asked in quizzes and exams (18 % of C2) | open |  |  |  |
 | #631 | - | X | P2 | - | fix(content): 312 example sentences don't contain their headword, and for 57 words neither example does, so cloze, practice and gap-fill never appear for them | open |  |  |  |
 | #632 | - | X | P2 | - | fix(content): the Forms quiz and exam Word forms mark the right Perfekt wrong for 8 core A1 verbs (a bracketed Präteritum in the forms cell) | open |  |  |  |
@@ -6309,5 +6309,9 @@ production-review fix pass (owner, 2026-09-27): solve all open issues
 production-review fix pass (owner, 2026-09-27): solve all open issues
 
 ### H-1464 · 2026-09-27 08:01 · agent-0 → agent-0 · assign · #628
+
+production-review fix pass (owner, 2026-09-27): solve all open issues
+
+### H-1465 · 2026-09-27 08:01 · agent-0 → agent-0 · assign · #629
 
 production-review fix pass (owner, 2026-09-27): solve all open issues
