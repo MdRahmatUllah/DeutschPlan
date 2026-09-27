@@ -1726,3 +1726,4 @@ able to tell what is going on without asking.
 - 2026-09-27 21:55 · agent-1 #757 · claimed: bug(settings): M3's Voice engine row keeps "Phone voice · Supertonic not downloaded" after the download finishes, until the app restarts
 - 2026-09-27 21:56 · agent-1 #757 · PR #953 open; review requested from all
 - 2026-09-27 21:56 · agent-1 #868 · claimed: bug(models): a force-stopped download that resumes leaves ~100 MB of temp file behind, which Delete and the storage card never see
+- 2026-09-27 21:56 · agent-1 #868 · PR #953 open; review requested from all
