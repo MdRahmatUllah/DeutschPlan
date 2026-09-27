@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:sogda/core/components/sg_feedback.dart';
 import 'package:sogda/core/adaptive/adaptive.dart';
 import 'package:sogda/core/components/sg_button.dart';
 import 'package:sogda/core/components/sg_chip.dart';
@@ -130,7 +131,8 @@ class _StepWordsTabState extends ConsumerState<StepWordsTab> {
     final tokens = context.tokens;
     final l10n = AppLocalizations.of(context);
     final code = widget.step.code;
-    final words = ref.watch(stepWordsProvider(code)).value;
+    final wordsState = ref.watch(stepWordsProvider(code));
+    final words = wordsState.value;
     final categories =
         ref.watch(stepCategoriesProvider(code)).value ??
         const <({int id, String name})>[];
@@ -196,7 +198,12 @@ class _StepWordsTabState extends ConsumerState<StepWordsTab> {
         ),
         Expanded(
           child: words == null
-              ? const SizedBox.expand()
+              ? wordsState.hasError
+                    ? SgLoadFailed(
+                        message: l10n.learnLoadFailed,
+                        onRetry: () => ref.invalidate(stepWordsProvider(code)),
+                      )
+                    : const SizedBox.expand()
               : shown.isEmpty
               ? Center(
                   child: SgText(

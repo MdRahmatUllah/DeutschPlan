@@ -174,11 +174,22 @@ class _GrammarPracticeScreenState extends ConsumerState<GrammarPracticeScreen> {
     final tokens = context.tokens;
     final l10n = AppLocalizations.of(context);
     final uid = widget.topicUids.isEmpty ? null : widget.topicUids[_topic];
-    final set = uid == null ? null : ref.watch(practiceSetProvider(uid)).value;
+    final practiceState = uid == null
+        ? null
+        : ref.watch(practiceSetProvider(uid));
+    final set = practiceState?.value;
 
     final Widget body;
     if (set == null || set.items.isEmpty) {
-      body = const SizedBox.expand();
+      // A topic that won't read (a stale uid, say) must not stop the run on a
+      // blank page (#677).
+      body = practiceState != null && practiceState.hasError
+          ? SgLoadFailed(
+              message: l10n.learnLoadFailed,
+              onRetry: () => ref.invalidate(practiceSetProvider(uid!)),
+              onBack: () => Navigator.of(context).maybePop(),
+            )
+          : const SizedBox.expand();
     } else {
       final item = set.items[_item];
       final right = _right;
