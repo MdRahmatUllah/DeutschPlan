@@ -223,7 +223,7 @@ claiming the same issue. A hand edit skips that check.
 | #605 | - | X | P2 | - | fix(a11y): S1's caption and loading line are light ink on the dark splash's lifted Lagoon (about 1.4:1) | assigned | agent-2 |  |  |
 | #606 | SQA | X | P2 | - | bug(today): finishing setup on a day switched off opens a rest day with "Start here · today's words are ready" over "All done — see you tomorrow" (nothing to study on day 1) | open |  |  |  |
 | #607 | - | X | P1 | - | security(privacy): Android Auto Backup uploads user.db and the Speaking recordings to Google Drive, against the app's promises | open |  |  |  |
-| #608 | - | X | P2 | - | fix(models): the model manifest downloads from Hugging Face's moving main branch, so one upstream commit makes every download fail its checksum | open |  |  |  |
+| #608 | - | X | P2 | - | fix(models): the model manifest downloads from Hugging Face's moving main branch, so one upstream commit makes every download fail its checksum | assigned | agent-1 |  |  |
 | #609 | - | X | P2 | - | chore(deps): llama.cpp's native libraries ship in every APK although nothing calls them (Hy-MT is off everywhere) | open |  |  |  |
 | #610 | - | X | P2 | - | chore(licences): the Licences screen (M8) leaves out ONNX Runtime and the other native Android libraries' notices | open |  |  |  |
 | #611 | - | X | P2 | - | fix(release): the app never starts a foreground service, but the merged manifest declares two and the docs tell the owner to declare one to Play | open |  |  |  |
@@ -5961,5 +5961,9 @@ production-review fix pass (owner, 2026-09-27): solve all open issues
 production-review fix pass (owner, 2026-09-27): solve all open issues
 
 ### H-1377 · 2026-09-27 07:54 · agent-0 → agent-1 · assign · #669
+
+production-review fix pass (owner, 2026-09-27): solve all open issues
+
+### H-1378 · 2026-09-27 07:54 · agent-0 → agent-1 · assign · #608
 
 production-review fix pass (owner, 2026-09-27): solve all open issues
