@@ -112,6 +112,8 @@ void main() {
     WidgetTester tester, {
     String code = 'A2.1',
     List<Override>? overrides,
+    Locale? locale,
+    TextScaler? textScaler,
   }) async {
     routes = GoRouter(
       routes: <RouteBase>[
@@ -126,9 +128,16 @@ void main() {
         overrides: overrides ?? todayStub(),
         child: MaterialApp.router(
           theme: AppTheme.light(),
+          locale: locale,
           localizationsDelegates: appLocalizationsDelegates,
           supportedLocales: supportedLocales,
           routerConfig: routes,
+          builder: textScaler == null
+              ? null
+              : (context, child) => MediaQuery(
+                  data: MediaQuery.of(context).copyWith(textScaler: textScaler),
+                  child: child!,
+                ),
         ),
       ),
     );
@@ -296,6 +305,38 @@ void main() {
       first,
     );
   });
+
+  for (final locale in <Locale>[Locale('bn'), Locale('en')]) {
+    testWidgets('#815 FR-L2-02 a step not started, at 200 % on a 731 dp '
+        'phone (${locale.languageCode}): every word can be scrolled to', (
+      tester,
+    ) async {
+      tester.view
+        ..physicalSize = const Size(411, 731) * 3
+        ..devicePixelRatio = 3;
+      addTearDown(tester.view.reset);
+      await pump(
+        tester,
+        code: 'A1.1',
+        overrides: over(<StepWord>[for (var i = 0; i < 30; i++) word(i)]),
+        locale: locale,
+        textScaler: const TextScaler.linear(2),
+      );
+      expect(tester.takeException(), isNull, reason: 'no overflow');
+      expect(find.byType(StartBanner), findsOneWidget);
+
+      final last = find.byWidgetPredicate(
+        (widget) => widget is WordRow && widget.word.word.uid == 'w29',
+      );
+      await tester.dragUntilVisible(
+        last,
+        find.byType(NestedScrollView),
+        const Offset(0, -200),
+      );
+      expect(last.hitTestable(), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    });
+  }
 
   testWidgets('and after a trip to another tab', (tester) async {
     await pump(
