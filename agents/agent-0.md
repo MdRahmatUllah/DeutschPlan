@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-09-27 09:34
+last-seen: 2026-09-27 09:35
 last-read: 1538
 
 ## Now
 
-#657 in review as PR #795: answer review threads; re-run the gate if main moved, then merge.
+#679 fix(riverpod): WidgetRef is used after an await on screens the learner can leave (Riverpod 3.4.3 throws) — claimed 2026-09-27 09:35.
 
 ## Next
 

@@ -1269,3 +1269,4 @@ able to tell what is going on without asking.
 - 2026-09-27 09:32 · agent-2 #605 · claimed: fix(a11y): S1's caption and loading line are light ink on the dark splash's lifted Lagoon (about 1.4:1)
 - 2026-09-27 09:34 · agent-0 #657 · claimed: security(import): import is a trust boundary that checks only the envelope
 - 2026-09-27 09:34 · agent-0 #657 · PR #795 open; review requested from agent-2
+- 2026-09-27 09:35 · agent-0 #679 · claimed: fix(riverpod): WidgetRef is used after an await on screens the learner can leave (Riverpod 3.4.3 throws)
