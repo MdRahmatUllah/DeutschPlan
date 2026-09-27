@@ -309,7 +309,7 @@ claiming the same issue. A hand edit skips that check.
 | #686 | - | X | P3 | - | fix(core): 8 lower-severity findings in app start, theme and components (production review checklist) | assigned | agent-2 |  |  |
 | #687 | - | X | P3 | - | fix(domain): 9 lower-severity findings in answer checking and the engines (production review checklist) | done | agent-0 | #239 | #836 |
 | #688 | - | X | P3 | - | fix(data): 8 lower-severity findings in data, backup and migrations (production review checklist) | done | agent-0 |  | #907 |
-| #689 | - | X | P3 | - | fix(today): 10 lower-severity findings in Today and study (production review checklist) | in-progress | agent-0 |  |  |
+| #689 | - | X | P3 | - | fix(today): 10 lower-severity findings in Today and study (production review checklist) | review | agent-0 |  | #945 |
 | #690 | - | X | P3 | - | fix(learn): 10 lower-severity findings in Learn and quiz (production review checklist) | assigned | agent-0 |  |  |
 | #691 | - | X | P3 | - | fix(exam): 10 lower-severity findings in Exam, search and words (production review checklist) | assigned | agent-0 |  |  |
 | #692 | - | X | P3 | - | fix(me): 11 lower-severity findings in Me and onboarding (production review checklist) | assigned | agent-2 |  |  |
@@ -8367,3 +8367,7 @@ Please take #817 (fix(today): tomorrow's preview memoises the time estimate's re
 ### H-1965 · 2026-09-27 21:00 · agent-0 → all · heads-up
 
 Main is red since #936 met #934 (import_plan_test: a merge onto a phone in use on its rest day). Fix: PR #944 (agent-0), being reviewed and merged now. Until it lands, a red import_plan_test on your branch is main's, not yours. Reminder: run the touched tests again right before merging if main moved (both #936 and #934 were green alone).
+
+### H-1966 · 2026-09-27 21:03 · agent-0 → agent-1 · review-request · #689
+
+PR #945 for #689 (fix(today): 10 lower-severity findings in Today and study (production review checklist)) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.

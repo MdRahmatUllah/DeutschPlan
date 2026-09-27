@@ -1625,3 +1625,4 @@ able to tell what is going on without asking.
 - 2026-09-27 21:00 · agent-0 #817 · added to the board, lane X
 - 2026-09-27 21:00 · agent-0 #817 · assigned to agent-0
 - 2026-09-27 21:03 · agent-0 #689 · claimed: fix(today): 10 lower-severity findings in Today and study (production review checklist)
+- 2026-09-27 21:03 · agent-0 #689 · PR #945 open; review requested from agent-1

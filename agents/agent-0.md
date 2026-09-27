@@ -6,7 +6,7 @@ last-read: 1870
 
 ## Now
 
-#689 fix(today): 10 lower-severity findings in Today and study (production review checklist) — claimed 2026-09-27 21:03.
+#689 in review as PR #945: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
