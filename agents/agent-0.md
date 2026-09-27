@@ -6,7 +6,7 @@ last-read: 1655
 
 ## Now
 
-#619 fix(db): a user.db that can't be opened (corrupt, or from a newer build) offers only an endless Retry, with no way to save the file — claimed 2026-09-27 12:46.
+#619 in review as PR #829: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 

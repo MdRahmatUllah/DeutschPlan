@@ -1353,3 +1353,4 @@ able to tell what is going on without asking.
 - 2026-09-27 12:45 · agent-1 #669 · PR #828 open; review requested from all
 - 2026-09-27 12:45 · agent-1 #654 · claimed: fix(sentences): practice-sentence coverage is inflated by short learned keys
 - 2026-09-27 12:46 · agent-0 #619 · claimed: fix(db): a user.db that can't be opened (corrupt, or from a newer build) offers only an endless Retry, with no way to save the file
+- 2026-09-27 12:46 · agent-0 #619 · PR #829 open; review requested from agent-1
