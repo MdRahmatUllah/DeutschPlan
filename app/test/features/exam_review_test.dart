@@ -207,6 +207,7 @@ void main() {
         previous: null,
         passPercent: 60,
         missed: none.missed,
+        added: 0,
       ),
     );
     await tap(tester, l10n.examNavFlagged(0));

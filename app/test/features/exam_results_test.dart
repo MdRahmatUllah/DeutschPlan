@@ -113,6 +113,7 @@ void main() {
           previous: null,
           passPercent: 60,
           missed: const <String>[],
+          added: 0,
         ),
       ),
     );
@@ -140,6 +141,7 @@ void main() {
           previous: null,
           passPercent: 60,
           missed: const <String>[],
+          added: 0,
         ),
       ),
     );
@@ -183,8 +185,28 @@ void main() {
       reason: 'the service adds a day',
     );
     expect(find.text(l10n.examResultAdded(9)), findsOneWidget);
-    await tap(tester, l10n.examResultAddMissed(9));
+    await tap(tester, l10n.examResultMissedAdded);
     expect(stub.added, hasLength(1), reason: 'done once');
+  });
+
+  testWidgets('FR-L13-02 #642 on a later visit the words sent stay sent: the '
+      'button says so, and does nothing', (tester) async {
+    await pump(
+      tester,
+      with_: StubExamResult(
+        result: (
+          attempt: resultAttempt(),
+          rows: artboardRows(),
+          previous: null,
+          passPercent: 60,
+          missed: const <String>[],
+          added: 9,
+        ),
+      ),
+    );
+    expect(find.text(l10n.examResultAddMissed(0)), findsNothing);
+    await tap(tester, l10n.examResultMissedAdded);
+    expect(stub.added, isEmpty);
   });
 
   testWidgets('FR-L13-03 a Writing tick grades the paper again', (
@@ -300,6 +322,7 @@ void main() {
           previous: null,
           passPercent: 60,
           missed: const <String>[],
+          added: 0,
         ),
       ),
     );

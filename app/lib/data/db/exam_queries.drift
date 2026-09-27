@@ -182,3 +182,10 @@ finishedAttempts:
 introducedAmong:
   SELECT word_uid FROM word_state
   WHERE word_uid IN :uids AND introduced_on IS NOT NULL;
+
+-- FR-L13-02 (#642): which of the words an exam has rated Again at or after
+-- :since, an attempt's finish. They are in revision already: offered again
+-- from the same result, they would lapse again.
+examRatedSince:
+  SELECT DISTINCT word_uid FROM review_log
+  WHERE source = 'exam' AND word_uid IN :uids AND reviewed_at >= :since;

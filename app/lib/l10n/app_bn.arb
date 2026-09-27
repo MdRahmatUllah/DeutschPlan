@@ -828,6 +828,7 @@
   "examResultRubricIntro": "যা পেরেছেন তাতে টিক দিন। টিক দিলেই স্কোর বদলাবে।",
   "examResultReview": "উত্তরগুলো দেখুন",
   "examResultAddMissed": "{count, plural, =0{কোনো ভুল শব্দ নেই} other{ভুল শব্দগুলো রিভিশনে যোগ করুন · {count}}}",
+  "examResultMissedAdded": "ভুল শব্দগুলো রিভিশনে যোগ হয়েছে",
   "examResultAdded": "{count, plural, other{{count}টি শব্দ রিভিশনে যোগ হয়েছে · কাল আসবে}}",
   "examResultAnotherMock": "আরেকটি মক দিন",
   "examResultBackToStep": "ধাপে ফিরুন",

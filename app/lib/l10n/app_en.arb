@@ -5254,6 +5254,10 @@
       }
     }
   },
+  "examResultMissedAdded": "Missed words added to revision",
+  "@examResultMissedAdded": {
+    "description": "L13 button (FR-L13-02), disabled: this attempt's missed words were already added to revision (#642)."
+  },
   "examResultAdded": "{count, plural, =1{1 word added to revision · due tomorrow} other{{count} words added to revision · due tomorrow}}",
   "@examResultAdded": {
     "description": "L13 toast after Add missed words to revision.",
