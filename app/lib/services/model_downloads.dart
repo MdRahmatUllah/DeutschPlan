@@ -115,6 +115,17 @@ class BackgroundModelDownloads implements ModelDownloads {
   /// The one notification every model file shares.
   static const String notificationGroup = 'models';
 
+  /// Each attempt's own group notification (#756): the platform keeps a
+  /// group's counts and last text for the whole process, so a retry under
+  /// the same group froze at the failed attempt's 11 %, and a download after
+  /// *Delete* read "finished" at 5 %.
+  // ponytail: numbered per process. A task the system resumes after a
+  // relaunch keeps the group it was queued with, and this process numbers
+  // from 1 again, which a group of the last process can't clash with in
+  // the platform's per-process counts.
+  int _attempts = 0;
+  String _group = notificationGroup;
+
   /// How long a stop that comes before the downloader hears the network go
   /// waits for it to (#455).
   // ponytail: 2 s. On the emulator the stop came a few milliseconds ahead of
@@ -145,6 +156,13 @@ class BackgroundModelDownloads implements ModelDownloads {
     if (_updates != null) return;
     // Before `start()`, which queues again the tasks the system killed.
     _notify();
+    // A file's copy while it downloads goes under `models/` (#868), where
+    // *Delete* and a landed download clear it.
+    await _downloader.configure(
+      globalConfig: <(String, String)>[
+        (Config.tempFilePath, (await _models.partialDirectory()).path),
+      ],
+    );
     _updates = _downloader.updates.listen((update) => unawaited(_on(update)));
     // The downloader's own record: a task the system or the learner killed
     // is scheduled again, and one that finished while the app was away says
@@ -242,7 +260,7 @@ class BackgroundModelDownloads implements ModelDownloads {
         l10n.modelNotifyFailedNote,
       ),
       progressBar: true,
-      groupNotificationId: notificationGroup,
+      groupNotificationId: _group,
     );
   }
 
@@ -299,6 +317,10 @@ class BackgroundModelDownloads implements ModelDownloads {
         done: 0,
       );
     }
+    // A new attempt starts its own notification, the old ones taken down,
+    // unless another model is still downloading under them (#756).
+    _group = '$notificationGroup-${++_attempts}';
+    if (_files.keys.every((id) => id == modelId)) await _notice.clear();
     _notify();
     await _downloader.enqueueAll(tasks);
     // Said now, not at the platform's first word: page 5 reads *Waiting for
@@ -481,10 +503,14 @@ class BackgroundModelDownloads implements ModelDownloads {
           _settings.read(SettingKeys.uiLanguage).locale,
         );
         await _notice.ended(
+          _group,
           status == ModelStatus.ready
               ? (l10n.modelNotifyComplete, l10n.modelNotifyCompleteNote)
               : (l10n.modelNotifyFailed, l10n.modelNotifyFailedNote),
         );
+        // Nothing downloading any more: what a force-stopped task left can
+        // go (#868).
+        await _models.clearPartial();
       }
       // Done with: the next launch mustn't verify a staging folder that was
       // renamed into place, or that *Retry* throws away.
@@ -539,8 +565,14 @@ class BackgroundModelDownloads implements ModelDownloads {
 /// #506: says how the model downloads ended, over the platform's own
 /// notification for them.
 abstract interface class DownloadNotice {
-  /// [text] is the title and the line under it.
-  Future<void> ended((String, String) text);
+  /// [group]'s notification says how it ended, the only one left; [text] is
+  /// the title and the line under it.
+  Future<void> ended(String group, (String, String) text);
+
+  /// Every model download notification taken down: an attempt that another
+  /// replaces, or one a relaunch left under a group this process can't name
+  /// (#756).
+  Future<void> clear();
 }
 
 /// [DownloadNotice] on Android: the same notification id and channel as
@@ -568,14 +600,22 @@ class PlatformDownloadNotice implements DownloadNotice {
     return hash >= 0x80000000 ? hash - 0x100000000 : hash;
   }
 
+  /// The downloader's notification channel.
+  static const String _channel = 'background_downloader';
+
   @override
-  Future<void> ended((String, String) text) async {
+  Future<void> ended(String group, (String, String) text) async {
     // iOS keeps its own count, which the emulator showed no fault in.
     if (defaultTargetPlatform != TargetPlatform.android) return;
     final (title, body) = text;
+    final plugin = FlutterLocalNotificationsPlugin();
     try {
-      await FlutterLocalNotificationsPlugin().show(
-        id: groupId(BackgroundModelDownloads.notificationGroup),
+      // A task resumed after a relaunch kept its old attempt's group, whose
+      // notification the platform finished too: two "finished" on the
+      // emulator (#756).
+      await _clearChannel(plugin);
+      await plugin.show(
+        id: groupId(group),
         title: title,
         body: body,
         notificationDetails: const NotificationDetails(
@@ -590,6 +630,28 @@ class PlatformDownloadNotice implements DownloadNotice {
       );
     } on Object {
       // No notifications allowed, or none at all: the app says it anyway.
+    }
+  }
+
+  @override
+  Future<void> clear() async {
+    if (defaultTargetPlatform != TargetPlatform.android) return;
+    try {
+      await _clearChannel(FlutterLocalNotificationsPlugin());
+    } on Object {
+      // None to take down.
+    }
+  }
+
+  /// Every notification on the downloader's channel, whatever group or
+  /// process posted it.
+  static Future<void> _clearChannel(
+    FlutterLocalNotificationsPlugin plugin,
+  ) async {
+    for (final shown in await plugin.getActiveNotifications()) {
+      if (shown.channelId == _channel && shown.id != null) {
+        await plugin.cancel(id: shown.id!, tag: shown.tag);
+      }
     }
   }
 }

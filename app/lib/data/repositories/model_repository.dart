@@ -475,6 +475,36 @@ class ModelRepository {
     );
   }
 
+  /// Where the downloader writes a file until it is whole (#868): under
+  /// `models/`, which *Delete* and a landed download clear, and not app
+  /// support's root, where the platform's default put a big file's copy and
+  /// a force-stopped download left ~100 MB for good.
+  Future<Directory> partialDirectory() async =>
+      Directory('${(await _root()).path}/.partial');
+
+  /// Every part-downloaded file thrown away (#868): [partialDirectory], and
+  /// the downloader's own copies an older build left in app support's root.
+  /// Only with no download running, which writes there.
+  Future<void> clearPartial() async {
+    final partial = await partialDirectory();
+    if (partial.existsSync()) partial.deleteSync(recursive: true);
+    final root = support ?? await getApplicationSupportDirectory();
+    if (!root.existsSync()) return;
+    for (final entity in root.listSync()) {
+      if (entity is File &&
+          entity.uri.pathSegments.last.startsWith(_downloaderTemp)) {
+        try {
+          entity.deleteSync();
+        } on FileSystemException {
+          // Held by something: the next clear takes it.
+        }
+      }
+    }
+  }
+
+  /// How background_downloader names its copy of a file being downloaded.
+  static const String _downloaderTemp = 'com.bbflight.background_downloader';
+
   /// FR-M4-03: deleting a model turns off what depended on it.
   ///
   /// The setting is written after the files are gone, so a failure to delete
@@ -489,6 +519,9 @@ class ModelRepository {
     ]) {
       if (directory.existsSync()) directory.deleteSync(recursive: true);
     }
+    // What an interrupted download left, which no model's folder holds
+    // (#868). *Delete* is offered only once a model is in place.
+    await clearPartial();
 
     switch (entry.disables) {
       case 'tts_engine':

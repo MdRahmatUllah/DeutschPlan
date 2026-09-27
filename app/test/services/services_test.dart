@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'dart:io';
 
 import 'package:background_downloader/background_downloader.dart';
@@ -170,6 +172,93 @@ void main() {
       expect(await SystemTts(tts).speak('Guten Tag!'), isFalse);
     });
 
+    group("#755 the phone's TTS engine died under the app", () {
+      // A speak goes unanswered for [stuck], and a binding may take
+      // [rebinding]: short here, seconds on a phone.
+      SystemTts engine(_FakeFlutterTts tts) => SystemTts(
+        tts,
+        const Duration(milliseconds: 50),
+        const Duration(milliseconds: 200),
+      );
+
+      test('a speak it parked: bound again, the replay stopped, German '
+          'said again', () async {
+        final tts = _FakeFlutterTts(available: true)..dead = true;
+
+        expect(await engine(tts).speak('Guten Tag!'), isTrue);
+        expect(tts.calls, <String>[
+          'setLanguage de-DE',
+          'setSpeechRate 0.5',
+          'speak Guten Tag!',
+          'setEngine com.google.android.tts',
+          'stop',
+          'setLanguage de-DE',
+          'setSpeechRate 0.5',
+          'speak Guten Tag!',
+        ]);
+      });
+
+      test('a speak it answered 0: bound again too', () async {
+        final tts = _FakeFlutterTts(available: true)..nextSpeak = 0;
+
+        expect(await engine(tts).speak('Guten Tag!'), isTrue);
+        expect(tts.calls, contains('setEngine com.google.android.tts'));
+      });
+
+      test('no engine comes back: no, so the no-voice state shows (#452), '
+          'not silence', () async {
+        final tts = _FakeFlutterTts(available: true)
+          ..dead = true
+          ..neverBinds = true;
+
+        expect(await engine(tts).speak('Guten Tag!'), isFalse);
+        expect(
+          tts.calls.last,
+          'setEngine com.google.android.tts',
+          reason: 'given up at once, not spoken into nothing again',
+        );
+      });
+
+      test('no engine on the phone at all: no', () async {
+        final tts = _FakeFlutterTts(available: true)
+          ..dead = true
+          ..defaultEngine = null;
+
+        expect(await engine(tts).speak('Guten Tag!'), isFalse);
+      });
+
+      test('killed after German was there, every question reads "not '
+          'bound": bound again once, and it speaks', () async {
+        // On the emulator: `isLanguageAvailable failed: not bound to TTS
+        // engine`, so the speak never reached the engine at all.
+        final tts = _FakeFlutterTts(available: true);
+        final voice = engine(tts);
+        expect(await voice.speak('Hallo'), isTrue);
+
+        tts
+          ..dead = true
+          ..unboundSaysNo = true
+          ..calls.clear();
+        expect(await voice.speak('Guten Tag!'), isTrue);
+        expect(tts.calls, <String>[
+          'setEngine com.google.android.tts',
+          'setLanguage de-DE',
+          'setSpeechRate 0.5',
+          'speak Guten Tag!',
+        ]);
+      });
+
+      test(
+        'a phone that never had German is not bound again on every tap',
+        () async {
+          final tts = _FakeFlutterTts(available: false);
+
+          expect(await engine(tts).speak('Guten Tag!'), isFalse);
+          expect(tts.calls, isNot(contains(startsWith('setEngine'))));
+        },
+      );
+    });
+
     test('V01 isAvailable reports the German voice honestly', () async {
       // The speaker is slashed on this answer (accessibility-performance.md),
       // so "maybe" and "the engine threw" are both no.
@@ -282,11 +371,46 @@ class _FakeFlutterTts implements FlutterTts {
   final bool throws;
   final List<String> calls = <String>[];
 
+  /// #755: the engine's process died. flutter_tts parks a speak until an
+  /// engine starts, and replays it then.
+  bool dead = false;
+
+  /// #755: what the next speak answers, once (flutter_tts says 0 for no).
+  Object? nextSpeak;
+
+  /// #755: a new binding that never comes up.
+  bool neverBinds = false;
+
+  /// #755: the phone's default engine, if it has one.
+  Object? defaultEngine = 'com.google.android.tts';
+
+  final List<Completer<dynamic>> _parked = <Completer<dynamic>>[];
+
+  @override
+  Future<dynamic> get getDefaultEngine async => defaultEngine;
+
+  @override
+  Future<dynamic> setEngine(String engine) {
+    calls.add('setEngine $engine');
+    if (neverBinds) return Completer<dynamic>().future;
+    dead = false;
+    for (final parked in _parked) {
+      parked.complete(1);
+    }
+    _parked.clear();
+    return Future<dynamic>.value(1);
+  }
+
   @override
   Future<dynamic> isLanguageAvailable(String language) async {
     if (throws) throw PlatformException(code: 'TTS', message: 'not bound');
+    if (dead && unboundSaysNo) return false;
     return available;
   }
+
+  /// #755: a dead engine answers no to every question (the emulator's
+  /// "isLanguageAvailable failed: not bound to TTS engine").
+  bool unboundSaysNo = false;
 
   @override
   Future<dynamic> setLanguage(String language) async {
@@ -301,9 +425,16 @@ class _FakeFlutterTts implements FlutterTts {
   }
 
   @override
-  Future<dynamic> speak(String text, {bool focus = false}) async {
+  Future<dynamic> speak(String text, {bool focus = false}) {
     calls.add('speak $text');
-    return 1;
+    if (dead) {
+      final parked = Completer<dynamic>();
+      _parked.add(parked);
+      return parked.future;
+    }
+    final answer = nextSpeak ?? 1;
+    nextSpeak = null;
+    return Future<dynamic>.value(answer);
   }
 
   @override

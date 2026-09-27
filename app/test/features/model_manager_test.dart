@@ -14,6 +14,8 @@ import 'package:sogda/services/device_storage.dart';
 import 'package:sogda/services/model_downloads.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
+import 'package:sogda/features/today/today_providers.dart'
+    show voiceInstalledProvider;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 
@@ -340,6 +342,16 @@ void main() {
           models: ModelRepository(settings, support: support),
         ),
       );
+      // Held, as Today and M3 hold it (#757): a delete is no download, so
+      // only M4's invalidation reads it again.
+      final container = ProviderScope.containerOf(
+        tester.element(find.byType(ModelManagerScreen)),
+      );
+      var reads = 0;
+      final held = container.listen(voiceInstalledProvider, (_, next) {
+        if (next.isLoading) reads++;
+      });
+      addTearDown(held.close);
       await tester.tap(find.text(l10n.modelsDelete('399 MB')));
       await tester.pumpAndSettle();
       await tester.tap(find.text(l10n.modelsDeleteConfirm));
@@ -349,6 +361,7 @@ void main() {
       await tester.pumpAndSettle();
       expect(settings.read(SettingKeys.ttsEngine), TtsEngineSetting.system);
       expect(voice.availabilityChecks, 1);
+      expect(reads, 1, reason: "#757: Today's card and M3's row read again");
     });
   });
 
