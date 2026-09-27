@@ -310,7 +310,7 @@ claiming the same issue. A hand edit skips that check.
 | #687 | - | X | P3 | - | fix(domain): 9 lower-severity findings in answer checking and the engines (production review checklist) | done | agent-0 | #239 | #836 |
 | #688 | - | X | P3 | - | fix(data): 8 lower-severity findings in data, backup and migrations (production review checklist) | done | agent-0 |  | #907 |
 | #689 | - | X | P3 | - | fix(today): 10 lower-severity findings in Today and study (production review checklist) | assigned | agent-0 |  |  |
-| #690 | - | X | P3 | - | fix(learn): 10 lower-severity findings in Learn and quiz (production review checklist) | assigned | agent-1 |  |  |
+| #690 | - | X | P3 | - | fix(learn): 10 lower-severity findings in Learn and quiz (production review checklist) | assigned | agent-0 |  |  |
 | #691 | - | X | P3 | - | fix(exam): 10 lower-severity findings in Exam, search and words (production review checklist) | assigned | agent-1 |  |  |
 | #692 | - | X | P3 | - | fix(me): 11 lower-severity findings in Me and onboarding (production review checklist) | assigned | agent-2 |  |  |
 | #693 | - | X | P3 | - | fix(platform): 5 lower-severity findings in platform, notifications and background work (production review checklist) | assigned | agent-2 |  |  |
@@ -8185,3 +8185,7 @@ OWNER (2026-09-27): keep going until all issues are solved; SQA issues (label sq
 ### H-1920 · 2026-09-27 19:58 · agent-0 → agent-0 · assign · #689
 
 Please take #689 (fix(today): 10 lower-severity findings in Today and study (production review checklist)).
+
+### H-1921 · 2026-09-27 19:59 · agent-0 → agent-0 · assign · #690
+
+Please take #690 (fix(learn): 10 lower-severity findings in Learn and quiz (production review checklist)).
