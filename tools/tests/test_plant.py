@@ -106,6 +106,16 @@ def test_697_kill_own_testers_matches_this_worktree_only():
     # TL-12: `*...\\agent-1*` also matched agent-1-review's testers.
     import fnmatch
 
+    def tester(worktree: str) -> str:
+        # A real flutter_tester command line, trimmed.
+        return (r"F:\flutter\bin\cache\artifacts\engine\windows-x64\flutter_tester.exe "
+                rf"--non-interactive --packages={worktree}\app\.dart_tool\package_config.json "
+                rf"--flutter-assets-dir={worktree}\app\build\unit_test_assets C:\Temp\listener.dart.dill")
+
     pattern = plant.own_pattern(Path("F:/appDevs/dp-wt/agent-1"))
-    assert fnmatch.fnmatchcase(r"F:\appDevs\dp-wt\agent-1\app\build\flutter_tester.exe --x", pattern)
-    assert not fnmatch.fnmatchcase(r"F:\appDevs\dp-wt\agent-1-review\app\build\flutter_tester.exe", pattern)
+    assert fnmatch.fnmatchcase(tester(r"F:\appDevs\dp-wt\agent-1"), pattern)
+    assert not fnmatch.fnmatchcase(tester(r"F:\appDevs\dp-wt\agent-1-review"), pattern)
+    # The main checkout holds worktrees of its own under .claude/worktrees/.
+    main = plant.own_pattern(Path("F:/appDevs/deutschplan"))
+    assert fnmatch.fnmatchcase(tester(r"F:\appDevs\deutschplan"), main)
+    assert not fnmatch.fnmatchcase(tester(r"F:\appDevs\deutschplan\.claude\worktrees\agent-a0f"), main)

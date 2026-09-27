@@ -125,11 +125,12 @@ def plant(entry: dict, tests: list[str], command: list[str] | None = None) -> st
 
 
 def own_pattern(worktree: Path | None = None) -> str:
-    """PowerShell's -like pattern for a command line inside [worktree]: the
-    path and a separator, so `agent-1` never matches `agent-1-review`
-    (#697 TL-12)."""
+    """PowerShell's -like pattern for a tester of [worktree]'s: its
+    `--packages=` names the worktree's own package config, so `agent-1`
+    never matches `agent-1-review` (#697 TL-12), and the main checkout never
+    matches a worktree nested in it (`.claude/worktrees/`)."""
     here = str(worktree or APP.parent).replace("/", "\\")
-    return f"*{here}\\*"
+    return f"*--packages={here}\\app\\.dart_tool\\*"
 
 
 def kill_own_testers() -> None:
