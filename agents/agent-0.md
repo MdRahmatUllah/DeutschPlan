@@ -6,7 +6,7 @@ last-read: 1538
 
 ## Now
 
-#632 fix(content): the Forms quiz and exam Word forms mark the right Perfekt wrong for 8 core A1 verbs (a bracketed Präteritum in the forms cell) — claimed 2026-09-27 09:11.
+#632 in review as PR #780: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
