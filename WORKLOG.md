@@ -1826,3 +1826,4 @@ able to tell what is going on without asking.
 - 2026-09-27 23:44 · agent-0 #703 · done (#966)
 - 2026-09-27 23:44 · agent-0 #964 · added to the board, lane X
 - 2026-09-27 23:44 · agent-0 #711 · assigned to agent-0
+- 2026-09-27 23:44 · agent-0 #711 · claimed: perf(background): the hourly widget task starts a full Flutter engine 24 times a day even with no widget placed, loading ONNX Runtime and binding the TTS service each time
