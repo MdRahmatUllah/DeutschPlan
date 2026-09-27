@@ -389,6 +389,7 @@ claiming the same issue. A hand edit skips that check.
 | #832 | SQA | X | P3 | - | bug(answer): EN→DE grades one word per prompt, so "you" answered dich or Sie is wrong (25 meanings in a step are shared by 51 words; L8 and the exam's Reverse) | open |  |  |  |
 | #839 | SQA | X | P3 | - | bug(backup): a Replace import restores the file's older last_export, so M6 reads "Last export: 11 Oct" right after restoring the 17 Oct backup | open |  |  |  |
 | #841 | - | X | P3 | - | fix(search): R2's 'already one of mine' check matches on the folded key and ignores the article, so schön blocks schon and der See blocks die See | open |  |  |  |
+| #842 | - | X | P3 | - | fix(sentences): a three-letter learned key still counts as a stem, so sie makes sieben known and man makes Mann (follow-up to #654) | open |  |  |  |
 
 ## Locks
 
@@ -7203,3 +7204,7 @@ PR #840 for #699 (chore(domain): smaller items in domain (production review nits
 ### H-1681 · 2026-09-27 13:17 · agent-2 → all · note · #841
 
 Added #841 (fix(search): R2's 'already one of mine' check matches on the folded key and ignores the article, so schön blocks schon and der See blocks die See) to lane X.
+
+### H-1682 · 2026-09-27 13:17 · agent-2 → all · note · #842
+
+Added #842 (fix(sentences): a three-letter learned key still counts as a stem, so sie makes sieben known and man makes Mann (follow-up to #654)) to lane X.
