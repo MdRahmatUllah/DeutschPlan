@@ -102,9 +102,11 @@ void main() {
           path: '/practice',
           builder: (_, _) => today == null
               ? GrammarPracticeScreen(topicUids: topics)
-              // A day that can move, for #884: todayStub's is fixed.
+              // A day that can move, for #884: todayStub's is fixed. Only the
+              // screen's own ref reads it; what it asks is stubbed at the root.
               : ProviderScope(
                   overrides: <Override>[
+                    // ignore: riverpod_lint/scoped_providers_should_specify_dependencies
                     todayProvider.overrideWith((ref) => today()),
                   ],
                   child: GrammarPracticeScreen(topicUids: topics),
