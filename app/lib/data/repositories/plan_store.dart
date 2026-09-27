@@ -64,10 +64,28 @@ class DriftPlanStore implements PlanStore {
     );
   }
 
+  /// [unplannedWords]' query, public so a test can `EXPLAIN` it (#715).
+  ///
+  /// `NOT IN` over a subquery that names no outer column: SQLite builds the
+  /// planned list once. The `NOT EXISTS` it replaced was correlated, and with
+  /// no index led by `word_uid` it scanned every `new` plan row for each word
+  /// of the step: seconds per catch-up late in the course, inside `openDay`'s
+  /// write lock. `word_uid` is NOT NULL, so `NOT IN` can't meet a NULL.
+  static const String unplannedWordsSql = '''
+SELECT w.uid AS uid
+FROM words w
+LEFT JOIN word_state s ON s.word_uid = w.uid
+WHERE w.sublevel_code = ?1
+  AND COALESCE(s.status, 'todo') = 'todo'
+  AND w.uid NOT IN (SELECT word_uid FROM plan_items WHERE kind = 'new')
+ORDER BY w.seq_in_sublevel
+LIMIT ?2
+''';
+
   /// The next To-do words of a step in teaching order, never planned before.
   ///
   /// `seq_in_sublevel` is the teaching order (`content-model.md`), and the
-  /// `NOT EXISTS` is what stops a word being planned twice — the backlog is
+  /// `NOT IN` is what stops a word being planned twice — the backlog is
   /// made of plan rows, so a word already sitting in it must not come round
   /// again as new.
   ///
@@ -83,18 +101,7 @@ class DriftPlanStore implements PlanStore {
 
     final rows = await _db
         .customSelect(
-          '''
-SELECT w.uid AS uid
-FROM words w
-LEFT JOIN word_state s ON s.word_uid = w.uid
-WHERE w.sublevel_code = ?1
-  AND COALESCE(s.status, 'todo') = 'todo'
-  AND NOT EXISTS (
-    SELECT 1 FROM plan_items p WHERE p.word_uid = w.uid AND p.kind = 'new'
-  )
-ORDER BY w.seq_in_sublevel
-LIMIT ?2
-''',
+          unplannedWordsSql,
           variables: <Variable<Object>>[
             Variable<String>(sublevelCode),
             Variable<int>(limit),
