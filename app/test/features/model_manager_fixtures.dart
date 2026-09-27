@@ -151,12 +151,22 @@ class FakeDownloads extends Fake implements ModelDownloads {
       .stream;
 }
 
-/// The model files, recording what M4 deletes.
+/// The model files, recording what M4 deletes, with the voice [voice].
 class FakeModels extends Fake implements ModelRepository {
   final List<String> deleted = <String>[];
 
+  ModelStatus voice = ModelStatus.notDownloaded;
+
   @override
   Future<void> delete(ModelEntry entry) async => deleted.add(entry.id);
+
+  @override
+  Future<ModelManifest> manifest() async =>
+      ModelManifest(version: 1, models: <ModelEntry>[voiceEntry]);
+
+  @override
+  Future<ModelState> stateOf(ModelEntry entry, ModelVariant variant) async =>
+      ModelState(entry: entry, variant: variant, status: voice, bytesOnDisk: 0);
 }
 
 /// M4 without a disk, a downloader or a voice: the artboard's cards, or what

@@ -219,6 +219,27 @@ void main() {
         );
       });
 
+      test('asked for its engine, the plugin never answers: no, in the '
+          'bound', () async {
+        final tts = _FakeFlutterTts(available: true)
+          ..dead = true
+          ..engineUnanswered = true;
+
+        expect(await engine(tts).speak('Guten Tag!'), isFalse);
+      });
+
+      test('bound again and still no German: the next question binds no '
+          'more', () async {
+        final tts = _FakeFlutterTts(available: true);
+        final voice = engine(tts);
+        expect(await voice.isAvailable(), isTrue);
+
+        tts.available = false;
+        expect(await voice.isAvailable(), isFalse);
+        expect(await voice.isAvailable(), isFalse);
+        expect(tts.calls.where((c) => c.startsWith('setEngine')), hasLength(1));
+      });
+
       test('no engine on the phone at all: no', () async {
         final tts = _FakeFlutterTts(available: true)
           ..dead = true
@@ -367,7 +388,7 @@ class _FakeDownloader implements FileDownloader {
 class _FakeFlutterTts implements FlutterTts {
   _FakeFlutterTts({required this.available, this.throws = false});
 
-  final Object available;
+  Object available;
   final bool throws;
   final List<String> calls = <String>[];
 
@@ -384,10 +405,15 @@ class _FakeFlutterTts implements FlutterTts {
   /// #755: the phone's default engine, if it has one.
   Object? defaultEngine = 'com.google.android.tts';
 
+  /// #755: asked for its default engine, the plugin never answers.
+  bool engineUnanswered = false;
+
   final List<Completer<dynamic>> _parked = <Completer<dynamic>>[];
 
   @override
-  Future<dynamic> get getDefaultEngine async => defaultEngine;
+  Future<dynamic> get getDefaultEngine => engineUnanswered
+      ? Completer<dynamic>().future
+      : Future<dynamic>.value(defaultEngine);
 
   @override
   Future<dynamic> setEngine(String engine) {

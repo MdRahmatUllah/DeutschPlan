@@ -521,6 +521,9 @@ class ModelRepository {
     }
     // What an interrupted download left, which no model's folder holds
     // (#868). *Delete* is offered only once a model is in place.
+    // ponytail: .partial is every model's, so deleting one while another
+    // downloads fails that download (Retry fetches it again). Only the voice
+    // downloads in v1 (Hy-MT is off); a folder per model once two can.
     await clearPartial();
 
     switch (entry.disables) {

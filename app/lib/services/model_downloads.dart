@@ -273,10 +273,12 @@ class BackgroundModelDownloads implements ModelDownloads {
   /// all (#455).
   bool get _offline => _offWifi || !_downloader.isConnected;
 
-  /// Queues [modelId]'s files, or those [only] names, as the current attempt.
+  /// Queues [modelId]'s files, or those [only] names: a new [attempt] (*Start*,
+  /// *Retry*), or more of the current one (#455's re-queue).
   Future<void> _queue(
     String modelId, {
     bool Function(String name)? only,
+    bool attempt = true,
   }) async {
     final model = (await _models.manifest()).model(modelId);
     if (model == null || model.variants.isEmpty) {
@@ -318,9 +320,12 @@ class BackgroundModelDownloads implements ModelDownloads {
       );
     }
     // A new attempt starts its own notification, the old ones taken down,
-    // unless another model is still downloading under them (#756).
-    _group = '$notificationGroup-${++_attempts}';
-    if (_files.keys.every((id) => id == modelId)) await _notice.clear();
+    // unless another model is still downloading under them (#756). A file
+    // queued again after a network drop stays in its attempt's.
+    if (attempt) {
+      _group = '$notificationGroup-${++_attempts}';
+      if (_files.keys.every((id) => id == modelId)) await _notice.clear();
+    }
     _notify();
     await _downloader.enqueueAll(tasks);
     // Said now, not at the platform's first word: page 5 reads *Waiting for
@@ -450,7 +455,7 @@ class BackgroundModelDownloads implements ModelDownloads {
       }
       if (_offline) {
         // Queued first, so the stopped task's echo is an earlier attempt's.
-        await _queue(modelId, only: (file) => file == name);
+        await _queue(modelId, only: (file) => file == name, attempt: false);
         await _downloader.cancelTaskWithId(update.task.taskId);
         return;
       }

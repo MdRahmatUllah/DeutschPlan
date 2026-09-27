@@ -422,6 +422,7 @@ void main() {
         downloader,
         _Storage(free: 1 << 30),
         grace,
+        notice,
       );
       seen = <DownloadProgress>[];
       final sub = downloads.watch('hymt').listen(seen.add);
@@ -450,6 +451,21 @@ void main() {
       // The stopped files' partial bytes are gone: each starts again.
       expect(seen.last, (phase: DownloadPhase.waitingForWifi, progress: 0.0));
       expect(downloader.calls, isNot(contains('cancel hymt')));
+    });
+
+    test('#756 a file queued again stays in its attempt\'s notification: no '
+        'new group, nothing taken down', () async {
+      expect(downloader.notification, 'models-1');
+      downloader.isWiFi = false;
+      await report((t) => TaskStatusUpdate(t, TaskStatus.canceled), 'one.gguf');
+      await report((t) => TaskStatusUpdate(t, TaskStatus.canceled), 'two.gguf');
+
+      expect(
+        downloader.queued.where((t) => t.filename == 'one.gguf'),
+        hasLength(2),
+      );
+      expect(downloader.notification, 'models-1');
+      expect(notice.clears, 1);
     });
 
     test(

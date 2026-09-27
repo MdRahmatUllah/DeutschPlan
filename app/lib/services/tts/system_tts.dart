@@ -57,8 +57,10 @@ class SystemTts implements TtsEngine {
     // #755: the phone's TTS engine died under the app (a memory kill, a Play
     // update), and every question reads "not bound": a new binding, once,
     // then the question again. Never on a phone that had no German.
+    // Still no after it: the phone lost German, and the next question costs
+    // no binding.
     if (!_hadGerman || !await _rebind()) return false;
-    return _german();
+    return _hadGerman = await _german();
   }
 
   Future<bool> _german() async {
@@ -78,12 +80,20 @@ class SystemTts implements TtsEngine {
   /// A new engine bound, the phone's default: the plugin creates it, and
   /// replays what it parked meanwhile, in the new engine's own language
   /// (#755). False when none comes up in [_rebinding].
+  // ponytail: a dead engine costs a word up to 2 × [_rebinding] + 2 × _stuck
+  // (26 s) before the no-voice state; a shorter bound once devices show
+  // binding takes well under 10 s.
   Future<bool> _rebind() async {
-    try {
+    Future<bool> bind() async {
       final engine = await _tts.getDefaultEngine;
       if (engine is! String) return false;
-      await _tts.setEngine(engine).timeout(_rebinding);
+      await _tts.setEngine(engine);
       return true;
+    }
+
+    try {
+      // The engine asked for and bound, both under the one bound.
+      return await bind().timeout(_rebinding);
     } on TimeoutException {
       return false;
     } on PlatformException {
