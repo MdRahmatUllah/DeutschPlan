@@ -330,6 +330,17 @@ void main() {
       );
     });
 
+    testWidgets("#747 a launch link that isn't a URI at all opens where "
+        'bootstrap says, not a failed start', (tester) async {
+      // go_router parsed it with Uri.parse and threw, inside bootstrap's
+      // settings step, so Retry failed the same way until the app was killed.
+      tester.platformDispatcher.defaultRouteNameTestValue = 'sogda://[::1/x';
+      addTearDown(tester.platformDispatcher.clearDefaultRouteNameTestValue);
+      await pumpApp(tester);
+
+      expect(location(), '/today');
+    });
+
     testWidgets('an unknown link lands on Today, not on an error', (
       tester,
     ) async {

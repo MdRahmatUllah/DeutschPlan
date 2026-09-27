@@ -133,6 +133,19 @@ class _BootstrapHostState extends State<BootstrapHost>
     if (_ready) _tellBrightness(_container!);
   }
 
+  /// #748: a link that arrives before the app is ready (the widget tapped
+  /// during a first run's course copy), which the splash's own app would
+  /// push as a named route and throw on. Kept, and opened by the router once
+  /// the app is ready, under the same rules as any arrival.
+  Uri? _pendingLink;
+
+  @override
+  Future<bool> didPushRouteInformation(RouteInformation routeInformation) {
+    if (_ready) return Future<bool>.value(false);
+    _pendingLink = routeInformation.uri;
+    return Future<bool>.value(true);
+  }
+
   /// Tells the theme notifier the phone's brightness, which its own default
   /// can't know: a dark phone would otherwise get a light first frame.
   void _tellBrightness(ProviderContainer container) => container
@@ -220,6 +233,12 @@ class _BootstrapHostState extends State<BootstrapHost>
       _ready = result is BootstrapReady;
       _result = result;
     });
+    if (result case BootstrapReady(:final bootstrap)) {
+      if (_pendingLink case final link?) {
+        _pendingLink = null;
+        bootstrap.router.go(link.toString());
+      }
+    }
     // The failed start's. Nothing was opened through it, and it goes once
     // the frame that drops its tree has been built.
     if (previous != null) {

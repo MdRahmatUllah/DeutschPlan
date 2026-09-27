@@ -5,6 +5,7 @@ import 'package:sogda/core/theme/glass_capability.dart';
 import 'package:sogda/data/db/content_dao.dart';
 import 'package:sogda/features/backlog/backlog_screen.dart';
 import 'package:sogda/router/app_router.dart';
+import 'package:sogda/router/route_guards.dart';
 import 'package:sogda/features/today/today_screen.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
@@ -16,6 +17,7 @@ import 'package:sogda/main.dart';
 import 'package:sogda/router/app_shell.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
+import 'package:flutter/services.dart' show JSONMethodCodec, MethodCall;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart'
     show Brightness, Locale, MaterialApp, Navigator, ThemeMode;
@@ -345,6 +347,85 @@ void main() {
       await flip(tester, Brightness.dark);
       expect(shown(tester), (Brightness.light, SgMode.light));
     });
+  });
+
+  testWidgets('#748 a link that arrives while bootstrap runs is kept, and '
+      'opened once the app is ready', (tester) async {
+    final db = AppDatabase.memory();
+    addTearDown(db.close);
+    final settings = SettingsRepository(db);
+    await settings.load();
+    addTearDown(settings.dispose);
+    final router = buildRouter(
+      initialLocation: '/learn',
+      guards: RouteGuards(
+        hasExamAttempt: (_) async => true,
+        isEnrolled: () async => true,
+      ),
+    );
+    final running = Completer<BootstrapResult>();
+    await tester.pumpWidget(
+      BootstrapHost(
+        run: ({
+          Brightness platformBrightness = Brightness.light,
+          void Function(UiLanguage)? onUiLanguage,
+        }) => running.future,
+        wire: (_, _) {},
+      ),
+    );
+
+    // The widget's tap during a first run's course copy: before this, the
+    // splash's own app pushed it as a named route and threw.
+    await tester.binding.defaultBinaryMessenger.handlePlatformMessage(
+      'flutter/navigation',
+      const JSONMethodCodec().encodeMethodCall(
+        const MethodCall('pushRouteInformation', <String, dynamic>{
+          'location': 'sogda://today',
+          'state': null,
+        }),
+      ),
+      (_) {},
+    );
+    await tester.pump();
+    expect(tester.takeException(), isNull);
+
+    running.complete(
+      BootstrapReady(
+        Bootstrap(
+          db: db,
+          content: ContentDao(db),
+          settings: settings,
+          glass: GlassCapability(),
+          router: router,
+          contentVersion: 'test',
+          contentChange: null,
+          themeMode: SgMode.light,
+          themeSetting: ThemeModeSetting.light,
+          isFirstRun: true,
+          elapsed: Duration.zero,
+        ),
+      ),
+    );
+    await tester.pump();
+    await tester.pump(const Duration(seconds: 1));
+
+    expect(router.routerDelegate.currentConfiguration.uri.path, '/today');
+
+    // Once the app is ready, a link is the router's again, not kept.
+    router.go('/learn');
+    await tester.pump(const Duration(seconds: 1));
+    await tester.binding.defaultBinaryMessenger.handlePlatformMessage(
+      'flutter/navigation',
+      const JSONMethodCodec().encodeMethodCall(
+        const MethodCall('pushRouteInformation', <String, dynamic>{
+          'location': 'sogda://today',
+          'state': null,
+        }),
+      ),
+      (_) {},
+    );
+    await tester.pump(const Duration(seconds: 1));
+    expect(router.routerDelegate.currentConfiguration.uri.path, '/today');
   });
 
   test('English leads supportedLocales so it is the fallback locale', () {

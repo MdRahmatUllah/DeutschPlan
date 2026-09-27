@@ -1,6 +1,7 @@
 import 'package:sogda/router/deep_links.dart';
 import 'package:sogda/router/route_guards.dart';
 import 'package:sogda/router/routes.dart';
+import 'package:flutter/widgets.dart' show WidgetsBinding;
 import 'package:go_router/go_router.dart';
 
 /// The route table of `docs/01-architecture/navigation.md`.
@@ -23,6 +24,15 @@ GoRouter buildRouter({String initialLocation = '/today', RouteGuards? guards}) {
   router = GoRouter(
     navigatorKey: rootNavigatorKey,
     initialLocation: initialLocation,
+    // #747: a launch link that isn't a URI at all (`sogda://[::1/x`, from a
+    // web page: the filter is BROWSABLE) threw from here and failed the start,
+    // and every Retry, until the app was killed. It is dropped, and the app
+    // opens where bootstrap says.
+    overridePlatformDefaultLocation:
+        Uri.tryParse(
+          WidgetsBinding.instance.platformDispatcher.defaultRouteName,
+        ) ==
+        null,
     routes: $appRoutes,
     // An arrival from outside (a link, a tapped reminder, another app's URI)
     // never takes over a running exam, FR-L12-04's leave being a decision
