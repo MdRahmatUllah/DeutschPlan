@@ -201,9 +201,13 @@ class FakeRecorder implements ExamRecorder {
   bool openedSettings = false;
   final StreamController<double> heard = StreamController<double>.broadcast();
 
+  /// Holds the phone's dialog open, as a learner still reading it would.
+  Completer<void>? asking;
+
   @override
   Future<bool> permission() async {
     asked++;
+    await asking?.future;
     return allowed;
   }
 

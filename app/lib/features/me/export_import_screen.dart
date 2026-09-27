@@ -50,9 +50,11 @@ Future<void> importBackup(
   ImportMode mode,
 ) async {
   final today = container.read(todayProvider);
+  // #809: a file from an older course, under the uids this one has now.
+  final aliases = await container.read(contentUpdaterProvider).aliases();
   await container
       .read(backupRepositoryProvider)
-      .import(json, mode: mode, today: today);
+      .import(json, mode: mode, today: today, aliases: aliases);
   if (mode == ImportMode.replace) {
     // #688 DA-6: the attempts replaced leave their recordings behind, and
     // an imported attempt given the same id would take one on. After the

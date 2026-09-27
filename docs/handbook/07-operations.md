@@ -271,8 +271,10 @@ flowchart LR
 - **user.db migrations** ship the same way: a new schema version migrates the
   learner's file on the first open, in one transaction, followed by a foreign
   key check. A failure there shows the start-up error screen (FR-S1-03) with
-  *Retry*, never a blank screen; *Export progress* is offered only when the
-  database opened.
+  *Retry*, never a blank screen; *Export progress* is offered when the
+  database opened, and *Share your data file* when it didn't: it shares
+  `user.sqlite` with its `-wal`, so the learner's progress can still leave the
+  phone (#619).
 
 ## Troubleshooting
 

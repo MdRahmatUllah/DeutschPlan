@@ -126,6 +126,48 @@ void main() {
     },
   );
 
+  group('#751 BR-PLAN-08 a study-day change applies from tomorrow', () {
+    Future<void> plannedToday(int mask) async {
+      await settings.write(SettingKeys.lastPlannedDate, DateTime(2026, 9, 21));
+      await settings.write(SettingKeys.plannedStudyDays, mask);
+    }
+
+    setUp(() async {
+      await settings.write(SettingKeys.reminderEnabled, true);
+      await settings.write(SettingKeys.reminderTime, (hour: 19, minute: 30));
+    });
+
+    test("today switched off keeps today's reminder", () async {
+      await plannedToday(127);
+      await settings.write(SettingKeys.studyDaysMask, 2); // Tuesdays only
+
+      await scheduler.sync();
+
+      expect(reminders.scheduled, <DateTime>[
+        DateTime(2026, 9, 21, 19, 30),
+        DateTime(2026, 9, 22, 19, 30),
+      ]);
+    });
+
+    test('today switched on over a rest day gets none today', () async {
+      await plannedToday(2); // today, a Monday, was planned a rest day
+      await settings.write(SettingKeys.studyDaysMask, 1 | 2);
+
+      await scheduler.sync();
+
+      // Next Monday's is past the week the schedule covers.
+      expect(reminders.scheduled, <DateTime>[DateTime(2026, 9, 22, 19, 30)]);
+    });
+
+    test('a day not planned yet follows the days as they are', () async {
+      await settings.write(SettingKeys.studyDaysMask, 2);
+
+      await scheduler.sync();
+
+      expect(reminders.scheduled, <DateTime>[DateTime(2026, 9, 22, 19, 30)]);
+    });
+  });
+
   test('followed: a change reschedules, off cancels', () async {
     final following = scheduler.follow();
     addTearDown(following.cancel);
