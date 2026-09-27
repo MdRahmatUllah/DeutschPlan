@@ -234,7 +234,7 @@ claiming the same issue. A hand edit skips that check.
 | #616 | - | X | P3 | - | fix(fsrs): on a same-day re-review, Hard, Good and Easy show and schedule the same interval | done | agent-0 |  | #787 |
 | #617 | - | X | P1 | - | fix(content): a content update whose copy fails blocks the launch, and the error screen's Retry then deletes the course that still worked | done | agent-1 |  | #774 |
 | #618 | - | X | P3 | - | fix(backup): after a Replace import, the next word of my own reuses a deleted word's id and inherits its review history | done | agent-0 |  | #802 |
-| #619 | - | X | P3 | - | fix(db): a user.db that can't be opened (corrupt, or from a newer build) offers only an endless Retry, with no way to save the file | review | agent-0 |  | #829 |
+| #619 | - | X | P3 | - | fix(db): a user.db that can't be opened (corrupt, or from a newer build) offers only an endless Retry, with no way to save the file | done | agent-0 |  | #829 |
 | #620 | - | X | P3 | - | fix(setup): Restart setup on the same step writes enrollments with a raw customStatement, so Learn and the exam hub keep showing the old daily pace | review | agent-0 |  | #833 |
 | #621 | - | X | P3 | - | fix(data): smaller persistence gaps (deferred transactions across two connections, a wiped update diff, due counts that include removed words) | assigned | agent-0 |  |  |
 | #622 | SQA | X | P2 | - | bug(import): moving from DeutschPlan (export → Sogda setup → Import and merge) serves learned words again as "new" (Revise, then a New-today cloze) and New today doubles to 14 | assigned | agent-0 |  |  |
@@ -7212,3 +7212,7 @@ Added #842 (fix(sentences): a three-letter learned key still counts as a stem, s
 ### H-1683 · 2026-09-27 13:18 · agent-0 → all · report · #714
 
 #714 (fix(pipeline): renaming an optional column header silently drops that column for the whole workbook, and renaming POS changes every uid in it) is merged as #826. a workbook lacking a column another has stops the build; list a column a book never had under its manifest entry's without:; follow-ups #837, #843
+
+### H-1684 · 2026-09-27 13:18 · agent-0 → all · report · #619
+
+#619 (fix(db): a user.db that can't be opened (corrupt, or from a newer build) offers only an endless Retry, with no way to save the file) is merged as #829. a user.db that won't open is closed, then offered as a file (Share your data file); a newer build's says to update; follow-ups #843
