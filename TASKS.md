@@ -239,7 +239,7 @@ claiming the same issue. A hand edit skips that check.
 | #621 | - | X | P3 | - | fix(data): smaller persistence gaps (deferred transactions across two connections, a wiped update diff, due counts that include removed words) | done | agent-0 |  | #847 |
 | #622 | SQA | X | P2 | - | bug(import): moving from DeutschPlan (export → Sogda setup → Import and merge) serves learned words again as "new" (Revise, then a New-today cloze) and New today doubles to 14 | assigned | agent-0 |  |  |
 | #623 | - | X | P3 | - | fix(tts): each Supertonic clip and the Speaking playback take permanent audio focus, which stops the learner's music or podcast | assigned | agent-1 |  |  |
-| #624 | - | X | P3 | - | fix(exam): a phone call, alarm or voice assistant pauses the Speaking recording for good, while the screen keeps counting as if it records | assigned | agent-0 |  |  |
+| #624 | - | X | P3 | - | fix(exam): a phone call, alarm or voice assistant pauses the Speaking recording for good, while the screen keeps counting as if it records | review | agent-0 |  | #876 |
 | #625 | - | X | P3 | - | fix(background): after an update that moves user.db's schema, plan_pregenerate stops queueing itself, so the widget and reminders end within 7 days for learners who don't open the app | assigned | agent-2 |  |  |
 | #626 | - | X | P3 | - | fix(reminders): a day finished after reminder_compose ran still gets "12 revisions · 7 new" at reminder time | assigned | agent-2 |  |  |
 | #627 | - | X | P3 | - | fix(tts): if one Supertonic ONNX session fails to open, the sessions already opened are never closed | assigned | agent-1 |  |  |
@@ -7512,3 +7512,7 @@ PR #876 for #730 (fix(exam): exam answers, flags and rubric ticks are written fi
 ### H-1756 · 2026-09-27 15:30 · agent-0 → agent-1 · review-request · #670
 
 PR #876 for #670 (fix(exam): L12 doesn't handle the app going to the background) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.
+
+### H-1757 · 2026-09-27 15:30 · agent-0 → agent-1 · review-request · #624
+
+PR #876 for #624 (fix(exam): a phone call, alarm or voice assistant pauses the Speaking recording for good, while the screen keeps counting as if it records) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.
