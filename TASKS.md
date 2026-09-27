@@ -389,7 +389,7 @@ claiming the same issue. A hand edit skips that check.
 | #832 | SQA | X | P3 | - | bug(answer): EN→DE grades one word per prompt, so "you" answered dich or Sie is wrong (25 meanings in a step are shared by 51 words; L8 and the exam's Reverse) | done | agent-0 |  | #943 |
 | #839 | SQA | X | P3 | - | bug(backup): a Replace import restores the file's older last_export, so M6 reads "Last export: 11 Oct" right after restoring the 17 Oct backup | done | agent-0 |  | #936 |
 | #841 | - | X | P3 | - | fix(search): R2's 'already one of mine' check matches on the folded key and ignores the article, so schön blocks schon and der See blocks die See | assigned | agent-0 |  |  |
-| #842 | - | X | P3 | - | fix(sentences): a three-letter learned key still counts as a stem, so sie makes sieben known and man makes Mann (follow-up to #654) | open |  |  |  |
+| #842 | - | X | P3 | - | fix(sentences): a three-letter learned key still counts as a stem, so sie makes sieben known and man makes Mann (follow-up to #654) | assigned | agent-0 |  |  |
 | #845 | - | X | P3 | - | chore(review): non-blocking should-fixes from reviewing #826, #829 and #830 (pipeline without:, the data-file share, perf.py and the lock) | open |  |  |  |
 | #853 | SQA | X | P3 | - | fix(a11y): tap targets under 48 dp, reading order and two labels (M1 badges 25 dp, L2 mock Start 42 dp, L6/L3/R1 chips; SQA E2E nits) | in-progress | agent-2 |  |  |
 | #854 | SQA | X | P3 | - | chore(sqa): smaller copy and behaviour findings from the Sogda E2E pass (M5 "Tonight's text", Speaking ticks after a delete, M2 to-do count, old-uid links, an unreproduced 12 % dim) | assigned | agent-2 |  |  |
@@ -8684,3 +8684,7 @@ Please take #923 (fix(content): a rebuild can move a level's step boundary, and 
 ### H-2039 · 2026-09-27 21:35 · agent-0 → agent-0 · assign · #841
 
 Please take #841 (fix(search): R2's 'already one of mine' check matches on the folded key and ignores the article, so schön blocks schon and der See blocks die See).
+
+### H-2040 · 2026-09-27 21:35 · agent-0 → agent-0 · assign · #842
+
+Please take #842 (fix(sentences): a three-letter learned key still counts as a stem, so sie makes sieben known and man makes Mann (follow-up to #654)).
