@@ -6,7 +6,7 @@ last-read: 1870
 
 ## Now
 
-#750 bug(sentences): the day's practice sentences can double from 3 to 6 mid-day (a second set is picked and logged), so Today's count grows after a rating — claimed 2026-09-27 20:29.
+#750 in review as PR #938: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
