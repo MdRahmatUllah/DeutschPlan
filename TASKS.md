@@ -372,7 +372,7 @@ claiming the same issue. A hand edit skips that check.
 | #754 | SQA | X | P3 | - | bug(today): starting another step mid-day drops today's grammar item, so the ring falls from 1 of 21 to 0 of 21 (today's plan should be unchanged) | open |  |  |  |
 | #755 | SQA | X | P2 | - | bug(tts): when the phone's TTS engine restarts, every Play in Sogda stays silent until the app is killed (no re-bind, no "no voice" message) | assigned | agent-1 |  |  |
 | #756 | SQA | X | P3 | - | bug(models): the download notification doesn't follow the download: frozen at 11 % on a retry, and "Model download finished" during a whole second download | assigned | agent-1 |  |  |
-| #757 | SQA | X | P3 | - | bug(settings): M3's Voice engine row keeps "Phone voice · Supertonic not downloaded" after the download finishes, until the app restarts | open |  |  |  |
+| #757 | SQA | X | P3 | - | bug(settings): M3's Voice engine row keeps "Phone voice · Supertonic not downloaded" after the download finishes, until the app restarts | assigned | agent-1 |  |  |
 
 ## Locks
 
@@ -5993,5 +5993,9 @@ production-review fix pass (owner, 2026-09-27): solve all open issues
 production-review fix pass (owner, 2026-09-27): solve all open issues
 
 ### H-1385 · 2026-09-27 07:55 · agent-0 → agent-1 · assign · #756
+
+production-review fix pass (owner, 2026-09-27): solve all open issues
+
+### H-1386 · 2026-09-27 07:55 · agent-0 → agent-1 · assign · #757
 
 production-review fix pass (owner, 2026-09-27): solve all open issues
