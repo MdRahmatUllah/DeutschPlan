@@ -1436,3 +1436,4 @@ able to tell what is going on without asking.
 - 2026-09-27 15:18 · agent-0 #695 · PR #874 open; review requested from agent-1
 - 2026-09-27 15:23 · agent-1 #613 · claimed: security(deep-links): an explicit intent from another app can open any route, bypassing the deep-link allow-list and the exam's leave guard
 - 2026-09-27 15:23 · agent-2 #668 · PR #875 open; review requested from all
+- 2026-09-27 15:26 · agent-0 #630 · done (#860)
