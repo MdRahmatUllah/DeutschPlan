@@ -353,3 +353,45 @@ words:
   "d8b65dec5f4518fb":
     why: "#632: the second form is the Perfekt, not the Präteritum"
     forms: "ist dabei · ist dabei gewesen"
+  "5eb6d001c484de17":
+    why: "#633: a noun carries its article"
+    article: "das"
+  "bd9e3f9baf678b1c":
+    why: "#633: a noun carries its article"
+    article: "der"
+  "21245ac3c9d49716":
+    why: "#633: a noun carries its article"
+    article: "die"
+  "048d2e76ae06890e":
+    why: "#633: a noun carries its article"
+    article: "die"
+  "13c2a7ac6970624d":
+    why: "#633: a noun carries its article"
+    article: "der"
+  "5118798e663cbc15":
+    why: "#633: the article made the phrase ungrammatical, and the Articles quiz asked it"
+    article: null
+  "e4877b9cd96454e8":
+    why: "#633: the article made the phrase ungrammatical, and the Articles quiz asked it"
+    article: null
+  "0df9a0fad39b6894":
+    why: "#633: the article made the phrase ungrammatical, and the Articles quiz asked it"
+    article: null
+  "e373dabb778f5c12":
+    why: "#633: the article made the phrase ungrammatical, and the Articles quiz asked it"
+    article: null
+  "69f04f13d5920289":
+    why: "#633: a noun phrase is a noun: its article is asked as the noun's"
+    pos: "noun"
+  "48912fc1974f1fb6":
+    why: "#633: a noun phrase is a noun: its article is asked as the noun's"
+    pos: "noun"
+  "2cd559861594d525":
+    why: "#633: a noun phrase is a noun: its article is asked as the noun's"
+    pos: "noun"
+  "1ed829b198587d9e":
+    why: "#633: a noun phrase is a noun: its article is asked as the noun's"
+    pos: "noun"
+  "a95924d25ee9c929":
+    why: "#633: a noun phrase is a noun: its article is asked as the noun's"
+    pos: "noun"

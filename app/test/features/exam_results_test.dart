@@ -11,6 +11,7 @@ import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 
 import '../core/text_clipping.dart';
@@ -343,6 +344,66 @@ void main() {
   testWidgets('an attempt that is not there says so', (tester) async {
     await pump(tester, with_: StubExamResult(missing: true));
     expect(find.text(l10n.examRunLoadFailed), findsOneWidget);
+  });
+
+  group('#725 a result that cannot load still has a way out', () {
+    // Through a router, as the app has one: the way out is Learn, a tab.
+    Future<StubExamResult> pumpRouted(WidgetTester tester) async {
+      final missing = StubExamResult(missing: true);
+      final router = GoRouter(
+        initialLocation: '/exam',
+        routes: <RouteBase>[
+          GoRoute(
+            path: '/exam',
+            builder: (_, _) =>
+                ExamResultsScreen(attemptId: 7, onHub: (_) {}, onStep: (_) {}),
+          ),
+          GoRoute(path: '/learn', builder: (_, _) => const Text('learn tab')),
+        ],
+      );
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            ...examResultStub(missing),
+            clockProvider.overrideWithValue(() => DateTime(2026, 9, 21, 20)),
+          ],
+          child: MaterialApp.router(
+            theme: AppTheme.light(),
+            localizationsDelegates: appLocalizationsDelegates,
+            supportedLocales: supportedLocales,
+            routerConfig: router,
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      return missing;
+    }
+
+    testWidgets('Back to your course leaves for Learn', (tester) async {
+      await pumpRouted(tester);
+      expect(find.text(l10n.examRunLoadFailed), findsOneWidget);
+
+      await tester.tap(find.text(l10n.stepBackToCourse));
+      await tester.pumpAndSettle();
+      expect(find.text('learn tab'), findsOneWidget);
+    });
+
+    testWidgets('and so does back, which used to do nothing', (tester) async {
+      await pumpRouted(tester);
+
+      await tester.binding.handlePopRoute();
+      await tester.pumpAndSettle();
+      expect(find.text('learn tab'), findsOneWidget);
+    });
+
+    testWidgets('Retry reads the result again', (tester) async {
+      final stub = await pumpRouted(tester);
+      final before = stub.reads;
+
+      await tester.tap(find.text(l10n.retry));
+      await tester.pumpAndSettle();
+      expect(stub.reads, before + 1);
+    });
   });
 
   testWidgets('#425 in the Bangla UI, the points, the time and the difference '

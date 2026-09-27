@@ -4,7 +4,7 @@
 
 - Sources: `stepLearned(code)` (default), `allLearned`, `category(id)`, `compareSet(uids)`. `allLearned` also asks the learner's own words (`custom:<id>`, FR-R2-04) when `quiz_custom_words` is on, once they have been reviewed; a `compareSet` asks the ones it names (L9's *Retry mistakes*); nothing else does (#363).
 - Directions: `deEn`, `deBn`, `enDe`, `articles`, `listening`, `forms`, `mixed` (round-robin of the above that apply, in the learner's meaning language), and `compare` (W2's *Quiz these*, never in a mix).
-- Eligible words: status learning/done, not suspended; `articles` needs an article; `forms` needs a non-empty `forms` cell parsed into `(label, form)` pairs (`fasst zusammen · hat zusammengefasst` → 3rd person, Perfekt; `-en` / `Häuser` → plural).
+- Eligible words: status learning/done, not suspended; `articles` needs an article (the pipeline gives every noun one and no phrase one, #633); `forms` needs a non-empty `forms` cell parsed into `(label, form)` pairs (`fasst zusammen · hat zusammengefasst` → 3rd person, Perfekt; `-en` / `Häuser` → plural).
 - Selection: seeded shuffle, prefer words with the lowest retrievability so quizzes double as revision.
 - Multiple-choice distractors: same POS, same step where possible, never a synonym of the answer.
 - Flow: immediate feedback per item (`answer_check`), wrong items re-asked once at the end (BR-QUIZ-01), each answer also rated into FSRS (BR-FSRS-03, source `quiz`).
