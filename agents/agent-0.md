@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-09-27 20:21
+last-seen: 2026-09-27 20:29
 last-read: 1870
 
 ## Now
 
-#839 in review as PR #936: answer review threads; re-run the gate if main moved, then merge.
+#750 bug(sentences): the day's practice sentences can double from 3 to 6 mid-day (a second set is picked and logged), so Today's count grows after a rating — claimed 2026-09-27 20:29.
 
 ## Next
 

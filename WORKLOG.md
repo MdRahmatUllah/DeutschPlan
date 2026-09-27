@@ -1595,3 +1595,4 @@ able to tell what is going on without asking.
 - 2026-09-27 20:18 · agent-0 #622 · claimed: bug(import): moving from DeutschPlan (export → Sogda setup → Import and merge) serves learned words again as "new" (Revise, then a New-today cloze) and New today doubles to 14
 - 2026-09-27 20:18 · agent-0 #622 · PR #936 open; review requested from agent-1
 - 2026-09-27 20:18 · agent-0 #839 · PR #936 open; review requested from agent-1
+- 2026-09-27 20:29 · agent-0 #750 · claimed: bug(sentences): the day's practice sentences can double from 3 to 6 mid-day (a second set is picked and logged), so Today's count grows after a rating
