@@ -6,7 +6,7 @@ last-read: 1870
 
 ## Now
 
-#798 question(exam): tiles or a typed field for a Bangla learner's exam Vocabulary? (split from #655) — claimed 2026-09-27 22:17.
+#798 in review as PR #957: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 

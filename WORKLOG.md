@@ -1743,3 +1743,4 @@ able to tell what is going on without asking.
 - 2026-09-27 22:16 · agent-0 #885 · claimed: fix(bootstrap): a failed course copy on upgrade starts on an old content.db without words.kind, so every word read fails (from #860's review)
 - 2026-09-27 22:16 · agent-0 #885 · PR #956 open; review requested from agent-1
 - 2026-09-27 22:17 · agent-0 #798 · claimed: question(exam): tiles or a typed field for a Bangla learner's exam Vocabulary? (split from #655)
+- 2026-09-27 22:17 · agent-0 #798 · PR #957 open; review requested from agent-1
