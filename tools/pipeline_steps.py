@@ -742,6 +742,7 @@ def apply_corrections(words: Sequence, corrections: dict[str, dict], fields) -> 
                 f"workbook changed under it: re-key or delete the entry."
             )
         word = rows[0]
+        word.corrected_from = uid
         for field, value in entry.items():
             example = re.fullmatch(EXAMPLE_FIELD, field)
             if field == "why":

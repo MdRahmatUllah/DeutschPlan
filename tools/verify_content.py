@@ -298,6 +298,36 @@ def check_no_article_in_german(db: sqlite3.Connection) -> list[Failure]:
     ]
 
 
+#: A word-formation note ("beantworten — Präfix be-"): the one shape of
+#: "X — Y" a headword may take (#629).
+WORD_FORMATION = r" — (Präfix|Wortbildung|Negation) "
+
+
+def check_no_pair_headword(db: sqlite3.Connection) -> list[Failure]:
+    """#629: "X — Y" in `german`. Every other column of such a row was about
+    Y, so the card paired Y's meaning with X, TTS read both, and the
+    Articles and Forms quizzes asked X with Y's article and plural."""
+    import re
+
+    rows = [
+        german
+        for (german,) in db.execute(
+            "SELECT german FROM words WHERE german LIKE '% — %' ORDER BY seq"
+        )
+        if not re.search(WORD_FORMATION, german)
+    ]
+    if not rows:
+        return []
+    return [
+        Failure(
+            "headwords",
+            f"{len(rows)} headwords are two words, 'X — Y': {_sample(rows)}. "
+            f"Make the German cell the word the row teaches, and put a real "
+            f"contrast in Synonyms / register.",
+        )
+    ]
+
+
 def read_denylist(path: Path | None) -> list[tuple[int, str]]:
     """One term per line; `#` starts a comment. Case-folded, with the line
     number a failure names it by."""
@@ -376,6 +406,7 @@ GATES = (
     check_fts_is_populated,
     check_tips_fit_their_word_class,
     check_no_article_in_german,
+    check_no_pair_headword,
     check_no_denylisted_terms,
 )
 
