@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-09-27 22:24
+last-seen: 2026-09-27 22:25
 last-read: 1808
 
 ## Now
 
-#815 in review as PR #958: answer review threads; re-run the gate if main moved, then merge.
+#751 bug(reminder): switching today off in study days drops today's reminder at once, though the plan applies the change from tomorrow (BR-PLAN-08) — claimed 2026-09-27 22:25.
 
 ## Next
 

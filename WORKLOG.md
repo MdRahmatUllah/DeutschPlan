@@ -1749,3 +1749,4 @@ able to tell what is going on without asking.
 - 2026-09-27 22:24 · agent-2 #853 · PR #958 open; review requested from all
 - 2026-09-27 22:24 · agent-2 #815 · claimed: bug(a11y): at 200 % on a 731 dp phone, L2's Words tab on a step you aren't in leaves the word list no room (Bangla: 0 dp, English: 58 dp)
 - 2026-09-27 22:24 · agent-2 #815 · PR #958 open; review requested from all
+- 2026-09-27 22:25 · agent-2 #751 · claimed: bug(reminder): switching today off in study days drops today's reminder at once, though the plan applies the change from tomorrow (BR-PLAN-08)
