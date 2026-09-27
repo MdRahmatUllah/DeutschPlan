@@ -41,7 +41,7 @@ Grading on submit: `answer_check` per item; Listening compares the typed text wi
   | Section | Prompt | Expected | Check |
   |---|---|---|---|
   | Vocabulary | the headword with its article | the meaning list | `checkMeaning` |
-  | Reverse | the meaning | the headword (article optional) | `checkGerman` |
+  | Reverse | the meaning | the headword (article optional), or any course word the meaning's cell also means (#832) | `checkGerman` |
   | Articles | the noun; buttons der · die · das | `der`/`die`/`das` | `checkArticle` |
   | Word forms | the word and a form label (`parseForms`) | the form | `checkForm` |
   | Gap fill | one of the word's examples, blanked by the cloze rules (`clozeGap`), with its translation | the form the sentence uses | `checkGerman` |

@@ -10,6 +10,7 @@ import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/core/typography/sg_text.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/data/repositories/word_repository.dart';
+import 'package:sogda/features/study/study_back.dart' show meaningLine;
 import 'package:sogda/features/words/word_row.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/router/routes.dart';
@@ -31,19 +32,12 @@ Stream<List<StepWord>> stepWords(Ref ref, String code) => ref
     .map((words) => withMeanings(ref, words));
 
 /// [words] with their meanings in the learner's meaning language: English
-/// where the course has no Bangla.
+/// where the course has no Bangla, and both for both (#689 TD-15).
 List<StepWord> withMeanings(Ref ref, List<WordWithState> words) {
-  final bangla =
-      ref.read(settingsProvider).read(SettingKeys.meaningLanguage) ==
-      MeaningLanguage.bangla;
+  final meaning = ref.read(settingsProvider).read(SettingKeys.meaningLanguage);
   return <StepWord>[
     for (final word in words)
-      (
-        word: word,
-        meaning: bangla
-            ? word.word.bangla ?? word.word.english
-            : word.word.english,
-      ),
+      (word: word, meaning: meaningLine(word.word, meaning)),
   ];
 }
 

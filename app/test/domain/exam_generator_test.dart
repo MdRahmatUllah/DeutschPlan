@@ -1,4 +1,6 @@
+import 'package:sogda/domain/answer_check.dart' show GermanAnswer, Verdict;
 import 'package:sogda/domain/exam_generator.dart';
+import 'package:sogda/domain/exam_grading.dart' show verdictFor;
 import 'package:sogda/domain/grammar_item_generator.dart';
 import 'package:sogda/domain/quiz_builder.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -534,6 +536,57 @@ void main() {
         of<WordQuestion>(ExamSection.reverse).map((i) => i.phrase),
         everyElement(isFalse),
         reason: 'nouns and verbs',
+      );
+    });
+
+    test('#832 FR-L12 Reverse takes every course word its meaning is, and '
+        'it survives being stored', () {
+      final full = pool();
+      final shared = <String, List<QuizWord>>{
+        for (final w in full.words)
+          w.word.english: <QuizWord>[
+            w.word,
+            QuizWord(
+              uid: 'other-${w.word.uid}',
+              german: 'Anders',
+              english: w.word.english,
+              step: 'A1.1',
+              article: 'das',
+              pos: 'noun',
+            ),
+          ],
+      };
+      final exam = buildExam(
+        ExamPool(
+          step: full.step,
+          level: full.level,
+          words: full.words,
+          topics: full.topics,
+          categories: full.categories,
+          connectors: full.connectors,
+          sharedMeanings: shared,
+        ),
+        seed: 1,
+      );
+      final reverse = exam.items.whereType<WordQuestion>().where(
+        (i) => i.section == ExamSection.reverse,
+      );
+      expect(reverse, isNotEmpty);
+      for (final item in reverse) {
+        expect(item.also, <GermanAnswer>[
+          (german: 'das Anders', phrase: false),
+        ]);
+        final stored = ExamItem.decode(item.encode()) as WordQuestion;
+        expect(stored.also, item.also);
+        expect(verdictFor(stored, 'Anders'), Verdict.correct);
+        expect(verdictFor(stored, item.expected), Verdict.correct);
+      }
+      expect(
+        exam.items.whereType<WordQuestion>().where(
+          (i) => i.section != ExamSection.reverse && i.also.isNotEmpty,
+        ),
+        isEmpty,
+        reason: 'only Reverse asks the German for a meaning',
       );
     });
 

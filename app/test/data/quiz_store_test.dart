@@ -183,6 +183,22 @@ void main() {
     });
   });
 
+  test('#832 the course words by the meaning cells they share, English or '
+      'Bangla, whatever the step', () async {
+    await db.customStatement('''
+INSERT INTO c.words (uid, sublevel_code, level_code, seq, seq_in_sublevel,
+  article, german, pos, english, bangla, search_key, search_key_alt, kind)
+VALUES ('uid-heim', 'A1.2', 'A1', 9, 9, 'das', 'Heim', 'noun', 'house',
+  'ঘর', 'heim', 'heim', 'vocab')
+''');
+    final shared = await store.sharedMeanings();
+    expect(shared.keys, <String>['house']);
+    expect(shared['house']!.map((w) => w.headword), <String>[
+      'das Haus',
+      'das Heim',
+    ]);
+  });
+
   test("a step's pool is every word of it, whatever its status", () async {
     await state(ContentFixture.tuer, 'suspended');
     final pool = await store.stepWords('A1.1');

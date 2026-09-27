@@ -64,6 +64,9 @@ class _GrammarPracticeScreenState extends ConsumerState<GrammarPracticeScreen> {
   /// celebrates, midnight or not (FR-T6-01, #884), and the one its items
   /// are seeded with (#665).
   late final String _day;
+
+  /// When the current topic's run began: its time is the day's (#785).
+  late DateTime _startedAt;
   int _topic = 0;
   int _item = 0;
   int _correct = 0;
@@ -87,6 +90,7 @@ class _GrammarPracticeScreenState extends ConsumerState<GrammarPracticeScreen> {
   void initState() {
     super.initState();
     _day = ref.read(todayProvider);
+    _startedAt = ref.read(clockProvider)();
   }
 
   @override
@@ -127,6 +131,7 @@ class _GrammarPracticeScreenState extends ConsumerState<GrammarPracticeScreen> {
             set.topic.uid,
             items: set.items.length,
             correct: _correct,
+            startedAt: _startedAt,
           );
       return true;
     });
@@ -136,6 +141,7 @@ class _GrammarPracticeScreenState extends ConsumerState<GrammarPracticeScreen> {
       return;
     }
     if (_topic < widget.topicUids.length - 1) {
+      _startedAt = ref.read(clockProvider)();
       setState(() {
         _topic++;
         _item = 0;

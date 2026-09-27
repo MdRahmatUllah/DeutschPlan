@@ -646,4 +646,8 @@ class _Sets implements QuizStore {
 
   @override
   Future<CompareSet?> compareSet(String uid) async => _sets[uid];
+
+  @override
+  Future<Map<String, List<QuizWord>>> sharedMeanings() async =>
+      const <String, List<QuizWord>>{};
 }

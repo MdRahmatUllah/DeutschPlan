@@ -74,7 +74,7 @@ Each past day is judged by the study-days mask in force *on it* (#377). `study_d
 
 ## Time estimate (BR-PLAN-09)
 
-Defaults 25/45/60/40 s; after 7 sessions use the learner's median seconds per item type from `review_log` timestamps (grammar from `grammar_practice_log`), the gaps taken within each local day (a stored UTC instant is grouped by its local date, #347). The window is the last 30 study days (`daily_stats` days with activity) before the plan date, today excluded (#708): the answer can't change during the day, so the engine reads it once per plan date rather than on every rebuild of Today, and the read stays the same size however long the history grows.
+Defaults 25/45/60/40 s; after 7 sessions use the learner's median seconds per item type from `review_log` timestamps (grammar from `grammar_practice_log`), the gaps taken within each local day (a stored UTC instant is grouped by its local date, #347). The window is the last 30 study days (`daily_stats` days with activity) before the plan date, today excluded (#708): the answer can't change during the day, so the engine reads it once per plan date rather than on every rebuild of Today, and the read stays the same size however long the history grows. Tomorrow's preview reads it afresh each time and keeps nothing (#817): it is drawn while today can still be studied, and the engine outlives midnight.
 
 ## Tests (must exist)
 

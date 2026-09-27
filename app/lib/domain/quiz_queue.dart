@@ -47,6 +47,7 @@ class QuizQueue {
           form: item.form,
           hint: item.hint,
           phrase: item.phrase,
+          also: item.also,
         );
 
   /// Moves to the next item; false when there is none.

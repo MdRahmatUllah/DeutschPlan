@@ -12,7 +12,14 @@ import 'package:sogda/data/repositories/setup_repository.dart';
 import 'package:sogda/features/today/today_providers.dart';
 import 'package:sogda/domain/plan_engine.dart'
     show MaskSpan, addDays, decodeMaskHistory, planDate;
-import 'package:drift/drift.dart' show DatabaseConnection, Table, TableInfo;
+import 'package:drift/drift.dart'
+    show
+        ApplyInterceptor,
+        DatabaseConnection,
+        QueryExecutor,
+        QueryInterceptor,
+        Table,
+        TableInfo;
 import 'package:drift/native.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
@@ -26,6 +33,7 @@ import '../db/content_fixture.dart';
 void main() {
   late Directory directory;
   late AppDatabase db;
+  late _Measures measures;
   late SettingsRepository settings;
   late DateTime now;
   late ProviderContainer container;
@@ -54,7 +62,10 @@ VALUES (?, 'A0.9', 'A1', ?, ?, ?, ?, ?, ?, 'vocab')
     } finally {
       raw.close();
     }
-    db = AppDatabase(DatabaseConnection(NativeDatabase.memory()));
+    measures = _Measures();
+    db = AppDatabase(
+      DatabaseConnection(NativeDatabase.memory().interceptWith(measures)),
+    );
     await db.customStatement(
       "ATTACH DATABASE '${ContentDao.attachPath(content)}' AS c",
     );
@@ -284,6 +295,27 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code, completed_at, 
       expect(after.sentences.done, 1);
       expect(after.estimate, const Duration(seconds: 70));
     });
+
+    test('#689 TD-11 a rated sentence a content update took away is not '
+        "counted: never 2 / 1, so the day's sentences can be done", () async {
+      await container.read(todayViewProvider.future);
+      await db.customUpdate(
+        "UPDATE sentence_log SET self_rating = 2 WHERE shown_on = '$today'",
+        updates: <TableInfo<Table, Object?>>{db.sentenceLog},
+      );
+      // Rated, and then its example left the course.
+      await db.customUpdate(
+        'INSERT INTO sentence_log (word_uid, ord, shown_on, self_rating) '
+        "VALUES ('gone', 0, '$today', 2)",
+        updates: <TableInfo<Table, Object?>>{db.sentenceLog},
+      );
+      await pumpEventQueue();
+      final view = await container.read(todayViewProvider.future);
+
+      expect(view.sentences.total, 1);
+      expect(view.sentences.done, 1);
+      expect(view.sentences.open, 0);
+    });
   });
 
   group('#96 all done', () {
@@ -333,6 +365,19 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code, completed_at, 
         reason: 'planning did not move on',
       );
       expect(settings.read(SettingKeys.plannedStudyDays), 99);
+    });
+
+    test("BR-PLAN-09 #817 Tomorrow's timings are read again on each rebuild, "
+        'not kept for tomorrow, which would miss the evening', () async {
+      await finishTheDay();
+      await container.read(todayViewProvider.future);
+      final first = measures.of('2026-09-22');
+      expect(first, greaterThan(0));
+
+      container.invalidate(todayViewProvider);
+      await container.read(todayViewProvider.future);
+
+      expect(measures.of('2026-09-22'), first + 1);
     });
 
     test('BR-PLAN-01 it knows when tomorrow is a rest day', () async {
@@ -781,4 +826,23 @@ INSERT INTO word_state (word_uid, status, introduced_on, due, stability, reps, l
       expect(view.contextual?.kind, ContextualKind.contentUpdate);
     });
   });
+}
+
+/// BR-PLAN-09's timings read, by the plan date they were read for (#817).
+class _Measures extends QueryInterceptor {
+  final Map<Object?, int> _reads = <Object?, int>{};
+
+  int of(String date) => _reads[date] ?? 0;
+
+  @override
+  Future<List<Map<String, Object?>>> runSelect(
+    QueryExecutor executor,
+    String statement,
+    List<Object?> args,
+  ) {
+    if (statement.contains('MIN(day) AS since')) {
+      _reads.update(args.first, (n) => n + 1, ifAbsent: () => 1);
+    }
+    return executor.runSelect(statement, args);
+  }
 }

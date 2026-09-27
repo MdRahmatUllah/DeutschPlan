@@ -286,30 +286,36 @@ class StudySession extends _$StudySession {
 
   /// FR-T2-02: rates the card — one transaction through [RatingService] —
   /// and moves on.
-  Future<bool> rate(Rating rating) => _act((item) async {
-    final row = _row(item);
-    await _rating.rate(
-      item.uid,
-      rating,
-      source: ReviewSource.daily,
-      planDate: row.date,
-      kind: row.kind,
-      seconds: _secondsOnCard(),
-    );
-    advance(switch (rating) {
-      Rating.again => CardOutcome.again,
-      Rating.hard => CardOutcome.hard,
-      Rating.good => CardOutcome.good,
-      Rating.easy => CardOutcome.easy,
-    });
-  });
+  Future<bool> rate(Rating rating, {StudyItem? card}) =>
+      _act(card, (item) async {
+        final row = _row(item);
+        await _rating.rate(
+          item.uid,
+          rating,
+          source: ReviewSource.daily,
+          planDate: row.date,
+          kind: row.kind,
+          seconds: _secondsOnCard(),
+        );
+        advance(switch (rating) {
+          Rating.again => CardOutcome.again,
+          Rating.hard => CardOutcome.hard,
+          Rating.good => CardOutcome.good,
+          Rating.easy => CardOutcome.easy,
+        });
+      });
 
   /// Runs [write] on the current card. False when it did not run: no card,
-  /// or a write still in flight (a double tap) — nothing to offer an *Undo*
-  /// for.
-  Future<bool> _act(Future<void> Function(StudyItem item) write) async {
+  /// a write still in flight (a double tap), or [card] — the card the action
+  /// came from — no longer the current one: a swipe on a card still leaving
+  /// must not rate the one come in its place (#689 TD-10). Nothing to offer
+  /// an *Undo* for.
+  Future<bool> _act(
+    StudyItem? card,
+    Future<void> Function(StudyItem item) write,
+  ) async {
     final item = state.value?.current;
-    if (item == null || _busy) return false;
+    if (item == null || _busy || (card != null && card != item)) return false;
     _busy = true;
     try {
       await write(item);
@@ -321,7 +327,7 @@ class StudySession extends _$StudySession {
 
   /// FR-T2-04: *I know it* rates the new word Easy (BR-STATUS-04), completes
   /// its plan row and moves on.
-  Future<bool> knewIt() => _act((item) async {
+  Future<bool> knewIt({StudyItem? card}) => _act(card, (item) async {
     final row = _row(item);
     await _rating.markKnown(item.uid, planDate: row.date, kind: row.kind);
     advance(CardOutcome.knewIt);
@@ -329,7 +335,7 @@ class StudySession extends _$StudySession {
 
   /// FR-T2-03: *Skip → backlog* leaves the row open and skipped
   /// (BR-PLAN-06), so it waits in tomorrow's backlog, and moves on.
-  Future<bool> skip() => _act((item) async {
+  Future<bool> skip({StudyItem? card}) => _act(card, (item) async {
     final date = _row(item).date;
     if (date != null) {
       await PlanRepository(ref.read(appDatabaseProvider))

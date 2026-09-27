@@ -348,5 +348,32 @@ void main() {
       expect(await key('Pass'), isNot('passen'), reason: 'der Pass');
       expect(await key('erfolgt', first: true), isNot('erfolg'));
     });
+
+    test('#832 BR-ANS-02 every meaning cell two course words share, English '
+        'or Bangla, lists them all for EN → DE: "you" is du, dich and Sie', () async {
+      final shared = await ContentDao(real).sharedMeanings();
+      expect(
+        shared['you']!.map((w) => w.headword),
+        containsAll(<String>['du', 'dich', 'Sie']),
+      );
+      for (final column in <String>['english', 'bangla']) {
+        final cells = await real
+            .customSelect(
+              'SELECT $column AS cell, group_concat(uid) AS uids FROM c.words '
+              "WHERE kind = 'vocab' AND $column IS NOT NULL "
+              'GROUP BY $column HAVING COUNT(*) > 1',
+            )
+            .get();
+        expect(cells, isNotEmpty, reason: column);
+        for (final row in cells) {
+          final cell = row.read<String>('cell');
+          expect(
+            <String>{...?shared[cell]?.map((w) => w.uid)},
+            row.read<String>('uids').split(',').toSet(),
+            reason: cell,
+          );
+        }
+      }
+    });
   });
 }

@@ -378,7 +378,7 @@ class PlanEngine {
   /// before it, so they cannot change during it: Today's rebuild after every
   /// rating, resume and widget refresh reads them once a day, not each time.
   /// An import rebuilds the engine, and with it this.
-  // ponytail: one entry per date asked about, today's and tomorrow's preview;
+  // ponytail: one entry per day Today has estimated (not the preview, #817);
   // an engine alive for weeks keeps a few dozen, which is nothing.
   final Map<PlanDate, Future<MeasuredSeconds>> _measured =
       <PlanDate, Future<MeasuredSeconds>>{};
@@ -805,15 +805,26 @@ class PlanEngine {
   /// The learner's own medians once there are seven sessions, the published
   /// defaults before that — and the defaults stay for anything that could not
   /// be measured, which is what [MeasuredSeconds] leaves null.
-  Future<Duration> estimate(DailyPlan plan, {int sentences = 0}) async {
-    final pending = _measured[plan.date] ??= _store.measuredSeconds(plan.date);
+  ///
+  /// [remember] false reads afresh and keeps nothing (#817): tomorrow's
+  /// preview is drawn while today can still be studied, and a read kept
+  /// under tomorrow's date would miss the evening once tomorrow comes, the
+  /// engine outliving midnight.
+  Future<Duration> estimate(
+    DailyPlan plan, {
+    int sentences = 0,
+    bool remember = true,
+  }) async {
+    final pending = remember
+        ? _measured[plan.date] ??= _store.measuredSeconds(plan.date)
+        : _store.measuredSeconds(plan.date);
     final MeasuredSeconds measured;
     try {
       measured = await pending;
     } catch (_) {
       // A failed read is not remembered: the next rebuild asks again. The
       // removed future is the one that just failed, rethrown below.
-      _measured.remove(plan.date)?.ignore();
+      if (remember) _measured.remove(plan.date)?.ignore();
       rethrow;
     }
 

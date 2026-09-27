@@ -51,7 +51,8 @@ Future<StudyBackExtras> studyBack(Ref ref, String uid) async {
 
 /// The meanings to show in [meaning]: English, Bangla or both, null where
 /// the learner's language leaves one out. A Bangla-only learner still gets
-/// English where the course has no Bangla. T2's back and W1.
+/// English where the course has no Bangla. T2's back and W1; a row's is
+/// [meaningLine].
 ({String? english, String? bangla}) meaningsFor(
   Word word,
   MeaningLanguage meaning,
@@ -63,6 +64,13 @@ Future<StudyBackExtras> studyBack(Ref ref, String uid) async {
         : word.english,
     bangla: bangla,
   );
+}
+
+/// [meaningsFor] on one line, for a list's row or a sheet: "table · টেবিল"
+/// for both (#689 TD-15), as the home-screen widget has it.
+String meaningLine(Word word, MeaningLanguage meaning) {
+  final (:english, :bangla) = meaningsFor(word, meaning);
+  return <String>[?english, ?bangla].join(' · ');
 }
 
 /// The card turned over (`StudyBack`): the meanings per `meaning_language`,
