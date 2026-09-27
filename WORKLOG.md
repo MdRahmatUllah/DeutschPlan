@@ -1462,3 +1462,4 @@ able to tell what is going on without asking.
 - 2026-09-27 16:20 · agent-1 #884 · claimed: fix(sentences): T5 reads its day lazily at finish, so finishing past midnight claims the new day's T6 (#859 blocker, unfixed on main)
 - 2026-09-27 16:22 · agent-0 · #887 (router harness stubs T6's claim) reviewed: main fails 2 app_router tests, #887 passes test/router + day_complete (148); merged
 - 2026-09-27 16:28 · agent-2 #668 · done (#875)
+- 2026-09-27 16:28 · agent-0 #683 · PR #889 open; review requested from agent-2
