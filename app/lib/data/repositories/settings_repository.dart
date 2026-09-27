@@ -10,11 +10,12 @@ import 'package:sogda/data/repositories/setting_keys.dart';
 /// `build` — a theme, a language, whether to autoplay — and an async read there
 /// means a frame of the wrong thing first.
 ///
-/// It is affordable: the doc lists thirty-one keys. The app is the table's
+/// It is affordable: the doc lists thirty-nine keys. The app is the table's
 /// only writer while it runs, except the background tasks (their own
 /// connection), which write `last_planned_date` and `planned_study_days` through
-/// `openDay`. That is safe, because `openDay` re-checks the database before
-/// planning a day, so a stale cached value can't double one (#723).
+/// `openDay`. So those two are read with [fresh], from the table: the 00:05
+/// task can plan today while the app is alive, and a cached yesterday would
+/// have the app plan it again (#688 DA-7).
 class SettingsRepository {
   SettingsRepository(this._db);
 
@@ -74,6 +75,9 @@ class SettingsRepository {
   /// `daily_new`, `revise_count` and `study_days_mask` only reach the plan from
   /// tomorrow — is the plan engine's, which generates from
   /// `last_planned_date + 1` and never rewrites today.
+  ///
+  /// A write that fails puts the cache back ([guard]). One in a transaction
+  /// needs the transaction [guard]ed too: its rollback undoes this write.
   Future<void> write<T>(SettingKey<T> key, T value) {
     final encoded = key.encode(value);
 
@@ -83,20 +87,53 @@ class SettingsRepository {
       final had = _loadedValues.remove(key.name) != null;
       if (!had) return Future<void>.value();
       _changes.add(key);
-      return (_db.delete(
-        _db.settings,
-      )..where((t) => t.key.equals(key.name))).go();
+      return guard(
+        () => (_db.delete(
+          _db.settings,
+        )..where((t) => t.key.equals(key.name))).go(),
+      );
     }
 
     if (_loadedValues[key.name] == encoded) return Future<void>.value();
     _loadedValues[key.name] = encoded;
     _changes.add(key);
 
-    return _db
-        .into(_db.settings)
-        .insertOnConflictUpdate(
-          SettingsCompanion.insert(key: key.name, value: encoded),
-        );
+    return guard(
+      () => _db
+          .into(_db.settings)
+          .insertOnConflictUpdate(
+            SettingsCompanion.insert(key: key.name, value: encoded),
+          ),
+    );
+  }
+
+  /// Runs [body]; if it fails, the cache is read back from the table before
+  /// the error goes on (#688 DA-8). [write] puts a value in memory before the
+  /// disk, so a failed write, or a transaction rolled back around one, would
+  /// leave them disagreeing until the next launch. [reload], not [load]: a
+  /// listener that followed the write (the reminders) follows it back.
+  Future<T> guard<T>(Future<T> Function() body) async {
+    try {
+      return await body();
+    } on Object {
+      await reload();
+      rethrow;
+    }
+  }
+
+  /// [read], from the table rather than the cache, and the cache put right
+  /// (#688 DA-7): for a key another connection writes.
+  Future<T> fresh<T>(SettingKey<T> key) async {
+    final row = await (_db.select(
+      _db.settings,
+    )..where((t) => t.key.equals(key.name))).getSingleOrNull();
+    final values = _loadedValues;
+    if (row == null) {
+      values.remove(key.name);
+      return key.defaultValue;
+    }
+    values[key.name] = row.value;
+    return key.decode(row.value);
   }
 
   /// Runs [query] with the current value of [key], and runs it again with the

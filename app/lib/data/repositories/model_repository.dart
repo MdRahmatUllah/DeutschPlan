@@ -301,7 +301,22 @@ class ModelRepository {
   /// leaves the device, and nothing browses it.
   Future<File> recordingFor(int attemptId) async {
     final root = support ?? await getApplicationSupportDirectory();
-    return File('${root.path}/recordings/$attemptId.m4a');
+    return File('${root.path}/${recordingName(attemptId)}');
+  }
+
+  /// What a Speaking answer's `given` holds (#688 DA-6): the recording's
+  /// name under app support, not where this install keeps it, which moves
+  /// with the app id and with an iOS update.
+  static String recordingName(int attemptId) => 'recordings/$attemptId.m4a';
+
+  /// The recording a Speaking answer's [given] names, or null when it names
+  /// none or the file isn't on this phone: a missing file is not recorded
+  /// (#688 DA-6). Found by [attemptId], so a row that stored the old
+  /// absolute path finds it too.
+  Future<String?> recordingOf(int attemptId, String? given) async {
+    if (given == null || given.isEmpty) return null;
+    final file = await recordingFor(attemptId);
+    return await file.exists() ? file.path : null;
   }
 
   /// M7 (#149): the recordings of [attempts], or every one when it is null.
@@ -383,10 +398,13 @@ class ModelRepository {
     final staging = await stagingFor(modelId);
     final previous = Directory('${active.path}$_previousSuffix');
 
+    // Stamped in staging, so the rename is the one step that activates
+    // (#688 DA-10): stamped after it, a crash between the two left a
+    // verified model reading as failed, and a 1.1 GB download again.
+    await _stampFile(staging).writeAsString(variant.fingerprint);
     if (previous.existsSync()) previous.deleteSync(recursive: true);
     if (active.existsSync()) active.renameSync(previous.path);
     staging.renameSync(active.path);
-    await _writeStamp(modelId, variant);
     if (previous.existsSync()) previous.deleteSync(recursive: true);
 
     return ModelStatus.ready;
@@ -495,14 +513,11 @@ class ModelRepository {
 
   /// The fingerprint this directory was activated with, so an update can be
   /// spotted without re-reading the model.
-  Future<File> _stampFile(String modelId) async =>
-      File('${(await directoryFor(modelId)).path}/.installed');
-
-  Future<void> _writeStamp(String modelId, ModelVariant variant) async =>
-      (await _stampFile(modelId)).writeAsString(variant.fingerprint);
+  static File _stampFile(Directory directory) =>
+      File('${directory.path}/.installed');
 
   Future<String?> _readStamp(String modelId) async {
-    final file = await _stampFile(modelId);
+    final file = _stampFile(await directoryFor(modelId));
     if (!file.existsSync()) return null;
     final stamp = (await file.readAsString()).trim();
     return stamp.isEmpty ? null : stamp;

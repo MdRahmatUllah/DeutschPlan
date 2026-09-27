@@ -172,6 +172,58 @@ void main() {
 
     String key(String ref) => ref.split('#').first;
 
+    test('#753 every Writing and Speaking task is about a theme, never a word '
+        'class or a language feature', () async {
+      // What SQA and #908's review saw drawn, held apart from `notThemes` so
+      // a name dropped from the list is caught too: the word classes, B2.1's
+      // level label and C1.1's register.
+      const reported = <String>{
+        'Core verbs',
+        'Core adjectives & adverbs',
+        'Numbers, time & dates',
+        'Question words & pronouns',
+        'Connectors & function words',
+        'Everyday life at B2',
+        'Advanced verbs',
+        'Verbs with prepositions',
+        'Advanced adjectives & adverbs',
+        'Idioms & sayings',
+        'Professional & leadership language',
+      };
+      for (final step in steps) {
+        final pool = await exams.pool(step);
+        final themes = pool.categories.values.where(
+          (name) => !notThemes.contains(name),
+        );
+        expect(
+          themes.length,
+          greaterThanOrEqualTo(themesPerStep),
+          reason: '$step has too few themes for three papers',
+        );
+        for (var seed = 1; seed <= 3; seed++) {
+          final paper = buildExam(pool, seed: seed);
+          for (final category in <String?>[
+            paper.items.whereType<WritingTask>().single.category,
+            paper.items.whereType<SpeakingTask>().single.category,
+          ]) {
+            expect(category, isNotNull, reason: '$step $seed');
+            expect(notThemes, isNot(contains(category)), reason: '$step $seed');
+            expect(reported, isNot(contains(category)), reason: '$step $seed');
+          }
+        }
+      }
+    });
+
+    test('#753 every name the generator leaves out is a category of the '
+        'course', () async {
+      final names = <String>{
+        for (final row
+            in await db.customSelect('SELECT name FROM c.categories').get())
+          row.read<String>('name'),
+      };
+      expect(notThemes.difference(names), isEmpty);
+    });
+
     for (final listening in <bool>[true, false]) {
       test('BR-EXAM-02/03 three full papers that never share an item'
           '${listening ? '' : ', listening off'}', () async {

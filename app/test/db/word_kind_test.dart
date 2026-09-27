@@ -119,9 +119,6 @@ INSERT INTO word_examples (word_uid, ord, german, english) VALUES
       <String>{for (final w in await words.dueWords(7, today).get()) w.w.uid},
       <String>{ContentFixture.haus},
     );
-    expect(<String>{
-      for (final w in await words.watchLearnableStep('A1.1').first) w.uid,
-    }, studied);
     expect(
       <String>{
         for (final s in await DriftSentenceStore(

@@ -253,6 +253,19 @@ void main() {
       expect((await stateOf(uid))!.cardMode, CardMode.cloze.name);
     });
 
+    test('#700 a reset word starts its run again: the Good from before the '
+        'reset is not one of two', () async {
+      await rateRun(<Rating>[Rating.good]);
+      // W1's *Reset word*: the state goes, review_log stays
+      // (word-detail.md).
+      await (db.delete(db.wordState)..where((t) => t.wordUid.equals(uid))).go();
+
+      await rateRun(<Rating>[Rating.good]);
+      expect((await stateOf(uid))!.cardMode, CardMode.plain.name);
+      await rateRun(<Rating>[Rating.good]);
+      expect((await stateOf(uid))!.cardMode, CardMode.cloze.name);
+    });
+
     test('a broken run has to start again', () async {
       await rateRun(<Rating>[Rating.good, Rating.again, Rating.good]);
       expect((await stateOf(uid))!.cardMode, CardMode.plain.name);

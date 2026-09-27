@@ -51,7 +51,8 @@ Grading on submit: `answer_check` per item; Listening compares the typed text wi
   | Speaking | see below | — | rubric |
 
 - **Stored.** `exam_answers.prompt` is the item as JSON, so every kind comes back whole after a restart (`ExamItem.decode`). `options_json` holds the buttons (Articles, pick the form, rule recall). `item_ref` is the ref above.
-- **Writing.** The step's biggest categories go to papers 1, 2 and 3 in turn: a big category gives the most to write about.
+- **Themes only (#753).** A task is about one of the step's theme categories, never a word class or a language feature: "Core verbs", "Collocations at C2" and the like are left out by name (`notThemes` in `exam_generator.dart`). Every step keeps at least six themes besides them (a test holds the shipped course to it), enough for three papers' writing and speaking.
+- **Writing.** The step's biggest theme categories go to papers 1, 2 and 3 in turn: a big category gives the most to write about.
   - It has 10 target words, single words from that category (so FR-L12W-01's token match can find them), topped up from the step.
   - The targets never include a word the paper asks, by uid or by spelling. The runner goes back and forth, and a target must not be an answer to copy.
   - The minimum length is FR-L12W-02's.

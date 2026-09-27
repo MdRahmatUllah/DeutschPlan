@@ -146,9 +146,20 @@ class _ExportImportState extends ConsumerState<ExportImportScreen> {
     // Held, not this screen's ref: Back can close M6 during the import,
     // and Today must still let go of the old plan (#679).
     final container = ProviderScope.containerOf(context, listen: false);
+    final mode = _mode;
     setState(() => _busy = true);
     try {
-      await backups.import(file.json, mode: _mode);
+      await backups.import(file.json, mode: mode);
+      if (mode == ImportMode.replace) {
+        // #688 DA-6: the attempts replaced leave their recordings behind,
+        // and an imported attempt given the same id would take one on. After
+        // the data and best effort, as a reset drops them.
+        try {
+          await container.read(modelRepositoryProvider).deleteRecordings();
+        } on Object catch (error) {
+          debugPrint('import: recordings not deleted: $error');
+        }
+      }
       // The settings cache, the plan engine (built with four of them, and
       // kept alive under Today) and Today's plan were read before the
       // import: the streams follow drift, these don't.

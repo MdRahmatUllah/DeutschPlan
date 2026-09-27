@@ -3,17 +3,10 @@ import 'user_schema.drift';
 
 -- Mock exams and quizzes. One query per thing a screen asks for.
 
--- The attempt to resume. FR-L12-04 keeps an abandoned attempt's answers, so
--- `in_progress` is the only status the hub offers to continue.
-inProgressExam:
-  SELECT * FROM exam_attempts
-  WHERE sublevel_code = :code AND status = 'in_progress'
-  ORDER BY started_at DESC, id DESC
-  LIMIT 1;
-
--- The same thing per seed. The hub has a card per mock (FR-L10-02), so one
--- answer for the whole step would leave a crashed Mock 1 showing *Start*
--- while Mock 2 was running.
+-- The attempts to resume, per seed. FR-L12-04 keeps an abandoned attempt's
+-- answers, so `in_progress` is the only status the hub offers to continue.
+-- The hub has a card per mock (FR-L10-02), so one answer for the whole step
+-- would leave a crashed Mock 1 showing *Start* while Mock 2 was running.
 inProgressBySeed:
   SELECT * FROM exam_attempts
   WHERE sublevel_code = :code AND status = 'in_progress'
@@ -53,22 +46,6 @@ examSeedSummary:
   GROUP BY seed
   ORDER BY seed;
 
--- Passing marks the step: a query, not a flag (BR-EXAM).
-stepPassed:
-  SELECT EXISTS(
-    SELECT 1 FROM exam_attempts
-    WHERE sublevel_code = :code AND status = 'finished' AND passed = 1
-  ) AS passed;
-
-quizAnswersFor:
-  SELECT * FROM quiz_answers WHERE attempt_id = :id ORDER BY ord;
-
--- The mistakes *Retry mistakes* and *Add mistakes to revision* work from.
-quizMistakes:
-  SELECT * FROM quiz_answers
-  WHERE attempt_id = :id AND verdict IS NOT NULL AND verdict != 'correct'
-  ORDER BY ord;
-
 -- L9's mistake rows (#126): each answer that wasn't right, with its word as
 -- the course writes it, or as the learner saved it (`custom:<id>`, #363).
 -- LEFT JOIN: a word a content update removed still shows, by what it
@@ -86,12 +63,6 @@ quizMistakeRows:
 
 quizAttemptById:
   SELECT * FROM quiz_attempts WHERE id = :id;
-
-recentQuizzes:
-  SELECT * FROM quiz_attempts
-  WHERE finished_at IS NOT NULL
-  ORDER BY finished_at DESC, id DESC
-  LIMIT :limit;
 
 -- L2's last quiz card: the step's latest finished quiz from its words.
 lastStepQuiz:
