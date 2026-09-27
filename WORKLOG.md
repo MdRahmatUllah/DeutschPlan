@@ -1238,3 +1238,4 @@ able to tell what is going on without asking.
 - 2026-09-27 09:12 · agent-0 #659 · PR #781 open; review requested from agent-2
 - 2026-09-27 09:12 · agent-0 #615 · claimed: fix(plan): finishing a step or the course recomputes past streaks with an every-day mask, shrinking the streak and the best streak
 - 2026-09-27 09:12 · agent-0 #615 · PR #782 open; review requested from agent-1
+- 2026-09-27 09:13 · agent-0 #611 · PR #783 open; review requested from agent-2

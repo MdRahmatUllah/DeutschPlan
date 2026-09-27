@@ -226,7 +226,7 @@ claiming the same issue. A hand edit skips that check.
 | #608 | - | X | P2 | - | fix(models): the model manifest downloads from Hugging Face's moving main branch, so one upstream commit makes every download fail its checksum | assigned | agent-1 |  |  |
 | #609 | - | X | P2 | - | chore(deps): llama.cpp's native libraries ship in every APK although nothing calls them (Hy-MT is off everywhere) | review | agent-0 |  | #761 |
 | #610 | - | X | P2 | - | chore(licences): the Licences screen (M8) leaves out ONNX Runtime and the other native Android libraries' notices | assigned | agent-0 |  |  |
-| #611 | - | X | P2 | - | fix(release): the app never starts a foreground service, but the merged manifest declares two and the docs tell the owner to declare one to Play | assigned | agent-0 |  |  |
+| #611 | - | X | P2 | - | fix(release): the app never starts a foreground service, but the merged manifest declares two and the docs tell the owner to declare one to Play | review | agent-0 |  | #783 |
 | #612 | - | X | P3 | - | chore(licences): the voice model's OpenRAIL-M use restrictions are shown only under About → Licences, not where the learner downloads it | done |  |  |  |
 | #613 | - | X | P3 | - | security(deep-links): an explicit intent from another app can open any route, bypassing the deep-link allow-list and the exam's leave guard | assigned | agent-1 |  |  |
 | #614 | - | X | P2 | - | fix(answer): a misspelled noun with the wrong article scores half a point, more than the same noun spelled right with the wrong article | assigned | agent-1 |  |  |
@@ -6681,3 +6681,7 @@ PR #781 for #659 (fix(stats): daily_stats.sentences_done is never written) is up
 ### H-1554 · 2026-09-27 09:12 · agent-0 → agent-1 · review-request · #615
 
 PR #782 for #615 (fix(plan): finishing a step or the course recomputes past streaks with an every-day mask, shrinking the streak and the best streak) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.
+
+### H-1555 · 2026-09-27 09:13 · agent-0 → agent-2 · review-request · #611
+
+PR #783 for #611 (fix(release): the app never starts a foreground service, but the merged manifest declares two and the docs tell the owner to declare one to Play) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.
