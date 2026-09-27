@@ -130,6 +130,12 @@ class DryRunPlanStore implements PlanStore {
     _completed = sublevelCode;
   }
 
+  // ponytail: the streak is never dry-run; overlay this run's close, as
+  // lastCompletedStep does, if something ever reads it here.
+  @override
+  Future<({PlanDate on, int mask})?> lastCompletedMask() =>
+      _inner.lastCompletedMask();
+
   @override
   Future<void> enroll(ActiveStep step) async {
     _stepChanged = true;
