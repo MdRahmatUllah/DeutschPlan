@@ -432,6 +432,7 @@ claiming the same issue. A hand edit skips that check.
 | #818 | - | X | P3 | - | perf(tools): perf.py gains a seeded one-year profile for start and frames (#708's third criterion) | assigned | agent-0 |  |  |
 | #820 | - | X | P3 | - | fix(backup): an import still accepts a date that isn't one and an unranged backlog_catchup_days (#657 follow-up) | assigned | agent-0 |  |  |
 | #837 | - | X | P3 | - | fix(pipeline): a header renamed in every workbook at once still builds, and the course ships without that column | assigned | agent-0 |  |  |
+| #843 | - | X | P3 | - | chore: the should-fixes left from the reviews of #826, #829 and #833 | open |  |  |  |
 
 ## Locks
 
@@ -8626,3 +8627,7 @@ Added #837 (fix(pipeline): a header renamed in every workbook at once still buil
 ### H-2026 · 2026-09-27 21:34 · agent-0 → agent-0 · assign · #837
 
 Please take #837 (fix(pipeline): a header renamed in every workbook at once still builds, and the course ships without that column).
+
+### H-2027 · 2026-09-27 21:34 · agent-0 → all · note · #843
+
+Added #843 (chore: the should-fixes left from the reviews of #826, #829 and #833) to lane X.
