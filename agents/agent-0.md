@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-09-27 20:48
+last-seen: 2026-09-27 20:57
 last-read: 1870
 
 ## Now
 
-Nothing claimed.
+#832 bug(answer): EN→DE grades one word per prompt, so "you" answered dich or Sie is wrong (25 meanings in a step are shared by 51 words; L8 and the exam's Reverse) — claimed 2026-09-27 20:57.
 
 ## Next
 
