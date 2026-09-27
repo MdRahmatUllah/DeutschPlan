@@ -7849,3 +7849,7 @@ PR #901 (#627) review: APPROVED with one should-fix: OrtSupertonicModel.close() 
 ### H-1837 · 2026-09-27 17:32 · agent-0 → agent-2 · review
 
 PR #898 (#665) review: APPROVED, no findings (the day is the family's argument, both tests fail on the old code, FR-L15-01 updated). main moved (#897/#899/#902/#903), merge-tree clean: rebase and re-run the basic check. https://github.com/MdRahmatUllah/DeutschPlan/pull/898#issuecomment-PLACEHOLDER . Merge it yourself (squash, delete the branch after MERGED, team.py done).
+
+### H-1838 · 2026-09-27 17:32 · agent-0 → agent-2 · review
+
+H-1837's link, corrected: https://github.com/MdRahmatUllah/DeutschPlan/pull/898#issuecomment-5857256038
