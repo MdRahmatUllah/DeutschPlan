@@ -149,7 +149,11 @@ class _ExportImportState extends ConsumerState<ExportImportScreen> {
     final mode = _mode;
     setState(() => _busy = true);
     try {
-      await backups.import(file.json, mode: mode);
+      await backups.import(
+        file.json,
+        mode: mode,
+        today: container.read(todayProvider),
+      );
       if (mode == ImportMode.replace) {
         // #688 DA-6: the attempts replaced leave their recordings behind,
         // and an imported attempt given the same id would take one on. After
