@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:sogda/core/components/sg_button.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/core/theme/app_theme.dart';
@@ -303,7 +301,7 @@ void main() {
     final db = AppDatabase.memory();
     addTearDown(db.close);
     // The sentence picker reads the course's examples.
-    final directory = Directory.systemTemp.createTempSync('sg_t6');
+    final directory = tempDir('sg_t6');
     final content = ContentFixture.write('${directory.path}/content.db');
     await db.customStatement(
       "ATTACH DATABASE '${ContentDao.attachPath(content.file)}' AS c",
@@ -338,7 +336,7 @@ void main() {
     () async {
       final db = AppDatabase.memory();
       addTearDown(db.close);
-      final directory = Directory.systemTemp.createTempSync('sg_t6');
+      final directory = tempDir('sg_t6');
       final content = ContentFixture.write('${directory.path}/content.db');
       await db.customStatement(
         "ATTACH DATABASE '${ContentDao.attachPath(content.file)}' AS c",
@@ -375,7 +373,7 @@ void main() {
     () async {
       final db = AppDatabase.memory();
       addTearDown(db.close);
-      final directory = Directory.systemTemp.createTempSync('sg_t6');
+      final directory = tempDir('sg_t6');
       final content = ContentFixture.write('${directory.path}/content.db');
       await db.customStatement(
         "ATTACH DATABASE '${ContentDao.attachPath(content.file)}' AS c",
@@ -406,7 +404,7 @@ void main() {
       'not hold the day open: its row stays, T6 still comes', () async {
     final db = AppDatabase.memory();
     addTearDown(db.close);
-    final directory = Directory.systemTemp.createTempSync('sg_t6');
+    final directory = tempDir('sg_t6');
     final content = ContentFixture.write('${directory.path}/content.db');
     await db.customStatement(
       "ATTACH DATABASE '${ContentDao.attachPath(content.file)}' AS c",

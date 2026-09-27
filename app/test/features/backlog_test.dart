@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:sogda/core/adaptive/adaptive.dart';
 import 'package:sogda/core/components/sg_button.dart';
 import 'package:sogda/core/providers/app_providers.dart';
@@ -68,7 +66,7 @@ void main() {
               closeStreamsSynchronously: true,
             ),
           );
-    final directory = Directory.systemTemp.createTempSync('sg_backlog');
+    final directory = tempDir('sg_backlog');
     final content = ContentFixture.write('${directory.path}/content.db');
     await db.customStatement(
       "ATTACH DATABASE '${ContentDao.attachPath(content.file)}' AS c",

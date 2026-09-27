@@ -4414,6 +4414,14 @@
   "@examSpeakingRecorded": {
     "description": "L12 Speaking: once recorded."
   },
+  "examSpeakingInterrupted": "Paused · the phone is using the microphone",
+  "@examSpeakingInterrupted": {
+    "description": "L12 Speaking: while recording, a call, an alarm or a voice assistant has the microphone; the recording goes on when it is free (#624)."
+  },
+  "examSpeakingPlayFailed": "This recording can't be played.",
+  "@examSpeakingPlayFailed": {
+    "description": "L12 Speaking: a toast when the take can't be read, e.g. half-written when the app was killed (#732)."
+  },
   "examSpeakingRecord": "Record",
   "@examSpeakingRecord": {
     "description": "L12 Speaking: the round button before recording, for screen readers."

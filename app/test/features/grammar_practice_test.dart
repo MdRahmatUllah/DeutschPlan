@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:sogda/core/components/sg_button.dart';
 import 'package:sogda/core/components/sg_feedback.dart';
@@ -477,7 +476,7 @@ void main() {
     () async {
       final db = AppDatabase.memory();
       addTearDown(db.close);
-      final directory = Directory.systemTemp.createTempSync('sg_practice');
+      final directory = tempDir('sg_practice');
       final content = ContentFixture.write('${directory.path}/content.db');
       await db.customStatement(
         "ATTACH DATABASE '${ContentDao.attachPath(content.file)}' AS c",

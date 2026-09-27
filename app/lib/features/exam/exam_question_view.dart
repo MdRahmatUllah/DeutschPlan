@@ -3,6 +3,7 @@ import 'dart:math' as math;
 
 import 'package:sogda/core/adaptive/adaptive.dart';
 import 'package:sogda/core/components/sg_button.dart';
+import 'package:sogda/core/components/sg_feedback.dart';
 import 'package:sogda/core/components/sg_speaker_button.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/core/theme/sg_surface.dart';
@@ -63,6 +64,8 @@ class ExamQuestionView extends ConsumerWidget {
     this.recordingPath,
     this.onDiscard,
     this.onRecording,
+    this.retakesLeft = ExamSpeaking.retakes,
+    this.onRetake,
     this.countPinned = false,
     this.typingLarge = false,
   });
@@ -94,6 +97,11 @@ class ExamQuestionView extends ConsumerWidget {
   /// Speaking: how to stop the recording and keep it while one runs, and
   /// null once it doesn't. *Submit exam* stops it first (#372).
   final ValueChanged<Future<void> Function()?>? onRecording;
+
+  /// Speaking's retakes left, and a retake begun: counted by the runner,
+  /// which outlives the view as the learner moves between questions (#731).
+  final int retakesLeft;
+  final VoidCallback? onRetake;
 
   /// Writing's count line is pinned above the keyboard by the runner, so
   /// the question leaves it out ([ExamWriting.countPinned], #529).
@@ -127,6 +135,8 @@ class ExamQuestionView extends ConsumerWidget {
             recordingPath ?? () => throw StateError('no recording path'),
         onDiscard: onDiscard ?? (_) async {},
         onRecording: onRecording ?? (_) {},
+        retakesLeft: retakesLeft,
+        onRetake: onRetake ?? () {},
       );
     }
 
@@ -768,6 +778,8 @@ class ExamSpeaking extends ConsumerStatefulWidget {
     required this.recordingPath,
     required this.onDiscard,
     required this.onRecording,
+    required this.retakesLeft,
+    required this.onRetake,
     super.key,
   });
 
@@ -786,6 +798,12 @@ class ExamSpeaking extends ConsumerStatefulWidget {
   /// Told how to stop and keep a recording while one runs, and null after.
   final ValueChanged<Future<void> Function()?> onRecording;
 
+  /// FR-L12S-02: the retakes left, and one begun. The runner counts them per
+  /// task: this view is built again on every visit, and a count kept here
+  /// offered the retake again after *Next* and *Previous* (#731).
+  final int retakesLeft;
+  final VoidCallback onRetake;
+
   /// FR-L12S-02: one retake.
   static const int retakes = 1;
 
@@ -802,16 +820,19 @@ class _ExamSpeakingState extends ConsumerState<ExamSpeaking> {
   late final ProviderSubscription<ExamRecorder> _held;
   ExamRecorder get _recorder => _held.read();
   late _Mic _mic = widget.given == null ? _Mic.idle : _Mic.recorded;
-  late List<bool> _ticks = <bool>[
-    for (var i = 0; i < ExamSpeaking.ticks; i++)
-      i < widget.rubric.length && widget.rubric[i],
+  late List<bool> _ticks = _padded(widget.rubric);
+
+  static List<bool> _padded(List<bool> rubric) => <bool>[
+    for (var i = 0; i < ExamSpeaking.ticks; i++) i < rubric.length && rubric[i],
   ];
 
   /// While recording, the seconds so far; once recorded, its length.
   int _seconds = 0;
 
-  // ponytail: in memory, so a resumed attempt offers the retake again.
-  int _retakesLeft = ExamSpeaking.retakes;
+  /// A call, an alarm or a voice assistant has the microphone (#624): the
+  /// recording waits, and so does its clock.
+  bool _interrupted = false;
+  StreamSubscription<bool>? _interruptions;
 
   /// The levels heard while recording, for the bars.
   final List<double> _levels = <double>[];
@@ -840,12 +861,21 @@ class _ExamSpeakingState extends ConsumerState<ExamSpeaking> {
     }
   }
 
+  /// A tick the runner could not write is taken back there (#730), and
+  /// shown so here.
+  @override
+  void didUpdateWidget(ExamSpeaking old) {
+    super.didUpdateWidget(old);
+    if (!identical(widget.rubric, old.rubric)) _ticks = _padded(widget.rubric);
+  }
+
   @override
   void dispose() {
     // Leaving mid-recording keeps what was said.
     if (_mic == _Mic.recording) unawaited(_finish(mounted: false));
     _tick?.cancel();
     unawaited(_heard?.cancel());
+    unawaited(_interruptions?.cancel());
     unawaited(_recorder.stopPlaying());
     _held.close();
     super.dispose();
@@ -882,20 +912,26 @@ class _ExamSpeakingState extends ConsumerState<ExamSpeaking> {
       widget.onGiven(path);
       return;
     }
+    if (retake) widget.onRetake();
     setState(() {
-      if (retake) _retakesLeft--;
       _path = path;
       _mic = _Mic.recording;
       _seconds = 0;
+      _interrupted = false;
       _levels.clear();
     });
     _heard = recorder.levels.listen((level) {
       if (mounted) setState(() => _levels.add(level));
     });
+    _interruptions = recorder.interrupted.listen((interrupted) {
+      if (mounted) setState(() => _interrupted = interrupted);
+    });
     _finishing = null;
     widget.onRecording(_finish);
     _tick = Timer.periodic(const Duration(seconds: 1), (_) {
-      if (!mounted) return;
+      // #624: the time is what was recorded, so it holds while the phone
+      // has the microphone.
+      if (!mounted || _interrupted) return;
       setState(() => _seconds++);
       // FR-L12S-02: the level's length, then it stops by itself.
       if (_seconds >= widget.task.seconds) unawaited(_finish());
@@ -917,6 +953,9 @@ class _ExamSpeakingState extends ConsumerState<ExamSpeaking> {
     // and the recording must stop now.
     unawaited(_heard?.cancel());
     _heard = null;
+    unawaited(_interruptions?.cancel());
+    _interruptions = null;
+    _interrupted = false;
     try {
       await recorder.stop();
     } on Object {
@@ -944,17 +983,35 @@ class _ExamSpeakingState extends ConsumerState<ExamSpeaking> {
       return;
     }
     setState(() => _playing = true);
-    await recorder.play(path);
-    if (mounted) setState(() => _playing = false);
+    try {
+      await recorder.play(path);
+    } on Object catch (error) {
+      // A take the phone can't read (half-written when the app was killed,
+      // or restored from another phone) says so, and Play comes back (#732).
+      debugPrint('play: $error');
+      if (mounted) {
+        SgToast.show(
+          context,
+          AppLocalizations.of(context).examSpeakingPlayFailed,
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _playing = false);
+    }
   }
 
-  /// FR-L12S-04: the file gone and the section zero.
+  /// FR-L12S-04: the file gone and the section zero. Its ticks go with it:
+  /// kept, they scored the next take before it was heard (#731).
   Future<void> _delete() async {
     final recorder = _recorder;
     final path = _path;
     await recorder.stopPlaying();
     if (path != null) await widget.onDiscard(path);
     widget.onGiven('');
+    if (_ticks.contains(true)) {
+      _ticks = _padded(const <bool>[]);
+      widget.onRubric(_ticks);
+    }
     if (!mounted) return;
     setState(() {
       _mic = _Mic.idle;
@@ -978,10 +1035,10 @@ class _ExamSpeakingState extends ConsumerState<ExamSpeaking> {
     final topic = task.category ?? l10n.examWritingTopicFallback;
     final max = task.seconds;
     final retake = SgButton(
-      label: l10n.examSpeakingRetake(_retakesLeft),
+      label: l10n.examSpeakingRetake(widget.retakesLeft),
       kind: SgButtonKind.secondary,
       compact: true,
-      onPressed: _retakesLeft > 0 ? () => unawaited(_record()) : null,
+      onPressed: widget.retakesLeft > 0 ? () => unawaited(_record()) : null,
     );
     final delete = SgButton(
       label: l10n.examSpeakingDelete,
@@ -1101,6 +1158,8 @@ class _ExamSpeakingState extends ConsumerState<ExamSpeaking> {
                           SgText(
                             switch (_mic) {
                               _Mic.idle => l10n.examSpeakingReady,
+                              _Mic.recording when _interrupted =>
+                                l10n.examSpeakingInterrupted,
                               _Mic.recording => l10n.examSpeakingRecording,
                               _Mic.recorded => l10n.examSpeakingRecorded,
                               _Mic.denied => l10n.examSpeakingDenied,

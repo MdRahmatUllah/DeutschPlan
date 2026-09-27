@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 import 'dart:ui' show Tristate;
 
 import 'package:sogda/core/components/sg_rating_bar.dart';
@@ -55,7 +54,7 @@ void main() {
   Future<void> open() async {
     now = DateTime(2026, 9, 21, 9);
     db = AppDatabase.memory();
-    final directory = Directory.systemTemp.createTempSync('sg_rate');
+    final directory = tempDir('sg_rate');
     final content = ContentFixture.write('${directory.path}/content.db');
     await db.customStatement(
       "ATTACH DATABASE '${ContentDao.attachPath(content.file)}' AS c",
