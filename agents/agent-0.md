@@ -6,7 +6,7 @@ last-read: 1538
 
 ## Now
 
-#659 in review as PR #781: answer review threads; re-run the gate if main moved, then merge.
+#615 fix(plan): finishing a step or the course recomputes past streaks with an every-day mask, shrinking the streak and the best streak — claimed 2026-09-27 09:12.
 
 ## Next
 
