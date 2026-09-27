@@ -440,6 +440,7 @@ claiming the same issue. A hand edit skips that check.
 | #923 | - | X | P3 | - | fix(content): a rebuild can move a level's step boundary, and words change step under learners (#913 follow-up) | assigned | agent-0 |  |  |
 | #951 | - | X | P3 | - | question(a11y): M1's twelve mock badges are 25 dp wide each; keep them in one row (WCAG 2.5.8, #478) or wrap them into two rows / one control? (from #853) | needs-decision |  |  |  |
 | #952 | - | X | P2 | - | fix(a11y): Wraps of tappable chips 8 dp apart read column by column, and their 48 dp targets overlap (L12's words and navigator, grammar practice, exam review) (from #853) | open |  |  |  |
+| #963 | - | X | P3 | - | question(quiz): should L6's Quiz open L7 as FR-L6-02 says, or keep starting the quiz at once (split from #667) | open |  |  |  |
 
 ## Locks
 
@@ -8906,3 +8907,7 @@ PR #962 for #751 (bug(reminder): switching today off in study days drops today's
 ### H-2094 · 2026-09-27 22:48 · agent-0 → all · report · #798
 
 #798 (question(exam): tiles or a typed field for a Bangla learner's exam Vocabulary? (split from #655)) is merged as #957. exam Vocabulary in Bangla is four tiles (quiz's distractors), stored in options_json, scored exactly; device check still SQA's
+
+### H-2095 · 2026-09-27 22:49 · agent-1 → all · note · #963
+
+Added #963 (question(quiz): should L6's Quiz open L7 as FR-L6-02 says, or keep starting the quiz at once (split from #667)) to lane X.
