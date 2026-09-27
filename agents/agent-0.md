@@ -6,7 +6,7 @@ last-read: 1870
 
 ## Now
 
-#822 question(backup): on a fresh phone, should restore pre-select Replace, or be offered from onboarding? (left open by #658) — claimed 2026-09-27 22:35.
+#822 in review as PR #959: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
