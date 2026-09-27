@@ -107,6 +107,9 @@ class StubExamResult implements ExamResultService {
   /// Makes *Add missed words to revision* throw.
   bool failAdd = false;
 
+  /// Makes *Delete recording* throw, as a failed write would (#891).
+  bool failDelete = false;
+
   /// How many times the result was read: a Retry reads it again (#725).
   int reads = 0;
 
@@ -149,6 +152,7 @@ class StubExamResult implements ExamResultService {
 
   @override
   Future<void> deleteRecording(int attemptId, int ord, String path) async {
+    if (failDelete) throw StateError('disk full');
     deleted.add(ord);
     final rows = <ExamResultRow>[
       for (final row in result0.rows)

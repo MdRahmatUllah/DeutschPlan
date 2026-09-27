@@ -221,6 +221,7 @@ class LibraryRow extends StatelessWidget {
     final tokens = context.tokens;
     final l10n = AppLocalizations.of(context);
     return Semantics(
+      container: true,
       button: true,
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,

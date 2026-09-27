@@ -95,7 +95,9 @@ class BootstrapHost extends StatefulWidget {
 
 class _BootstrapHostState extends State<BootstrapHost>
     with WidgetsBindingObserver {
-  Widget? _app;
+  /// What the app on screen was built from: kept, not the widget, so the
+  /// error screen follows a language a *Retry* read later (#720).
+  BootstrapResult? _result;
 
   /// #577: a phone stays portrait, a tablet turns. Decided from the window's
   /// size as it comes, not before `runApp`, when it can still be empty, and
@@ -217,13 +219,7 @@ class _BootstrapHostState extends State<BootstrapHost>
     setState(() {
       _container = container;
       _ready = result is BootstrapReady;
-      _app = UncontrolledProviderScope(
-        // Keyed by its container: a retry replaces the whole tree, rather
-        // than swapping the container under widgets that read the old one.
-        key: ObjectKey(container),
-        container: container,
-        child: appFor(result, retry: _run, onReady: _adopt),
-      );
+      _result = result;
     });
     // The failed start's. Nothing was opened through it, and it goes once
     // the frame that drops its tree has been built.
@@ -233,20 +229,32 @@ class _BootstrapHostState extends State<BootstrapHost>
   }
 
   @override
-  Widget build(BuildContext context) =>
-      _app ??
-      MaterialApp(
-        debugShowCheckedModeBanner: false,
-        // Platform brightness, because settings are exactly what bootstrap has
-        // not read yet. It is also what the native launch window followed, so
-        // the hand-off does not change colour.
-        theme: AppTheme.light(),
-        darkTheme: AppTheme.dark(),
+  Widget build(BuildContext context) => switch ((_result, _container)) {
+    (final result?, final container?) => UncontrolledProviderScope(
+      // Keyed by its container: a retry replaces the whole tree, rather
+      // than swapping the container under widgets that read the old one.
+      key: ObjectKey(container),
+      container: container,
+      child: appFor(
+        result,
+        retry: _run,
+        onReady: _adopt,
         locale: _splashLocale,
-        localizationsDelegates: appLocalizationsDelegates,
-        supportedLocales: supportedLocales,
-        home: const SplashProgressGate(),
-      );
+      ),
+    ),
+    _ => MaterialApp(
+      debugShowCheckedModeBanner: false,
+      // Platform brightness, because settings are exactly what bootstrap has
+      // not read yet. It is also what the native launch window followed, so
+      // the hand-off does not change colour.
+      theme: AppTheme.light(),
+      darkTheme: AppTheme.dark(),
+      locale: _splashLocale,
+      localizationsDelegates: appLocalizationsDelegates,
+      supportedLocales: supportedLocales,
+      home: const SplashProgressGate(),
+    ),
+  };
 }
 
 /// A ready app's plugins: the reminders, the home-screen widget, model
@@ -316,11 +324,14 @@ Future<StreamSubscription<SettingKey<Object?>>?> startReminders(
 /// The app for a finished bootstrap, or FR-S1-03's error screen.
 ///
 /// The error screen's *Retry* runs [retry], and hands a result that worked to
-/// [onReady]: the host, which builds the app its own container (#643).
+/// [onReady]: the host, which builds the app its own container (#643). The
+/// error screen is in [locale], the app language bootstrap read, if it did
+/// (#720).
 Widget appFor(
   BootstrapResult result, {
   required void Function(BootstrapReady ready) onReady,
   required Future<BootstrapResult> Function() retry,
+  Locale? locale,
 }) => switch (result) {
   // The providers #71 declares are overridden from here, so nothing has to
   // re-open what bootstrap already opened.
@@ -332,6 +343,7 @@ Widget appFor(
     failure: failure,
     onRetry: retry,
     onReady: onReady,
+    locale: locale,
   ),
 };
 
@@ -417,10 +429,14 @@ class BootstrapGate extends StatefulWidget {
     required this.onReady,
     this.onRetry,
     this.onShare,
+    this.locale,
     super.key,
   });
 
   final BootstrapFailure failure;
+
+  /// The learner's app language, if bootstrap read it (#720).
+  final Locale? locale;
 
   /// Where a retry that worked goes: [BootstrapHost], which builds the app a
   /// container carrying bootstrap's overrides (#643). The gate never builds
@@ -508,6 +524,7 @@ class _BootstrapGateState extends State<BootstrapGate> {
   @override
   Widget build(BuildContext context) => BootstrapErrorApp(
     failure: _failure,
+    locale: widget.locale,
     onRetry: _retrying || _exporting ? null : _retry,
     onExport:
         (_failure.canExport || _failure.file != null) &&

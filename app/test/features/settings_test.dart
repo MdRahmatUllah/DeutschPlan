@@ -30,6 +30,7 @@ import 'package:material_ui/material_ui.dart';
 
 import '../db/content_fixture.dart';
 import 'settings_fixtures.dart';
+import '../core/semantics_checks.dart';
 
 /// M3 · Settings — #146.
 void main() {
@@ -713,5 +714,12 @@ INSERT INTO word_state (word_uid, status, stability, reps) VALUES
     final model = await container.read(translationModelProvider.future);
     expect(model!.variant.id, 'q4_k_m');
     expect(model.status, ModelStatus.notDownloaded);
+  });
+
+  testWidgets('#912 no tappable node wraps another', (tester) async {
+    final semantics = tester.ensureSemantics();
+    await pump(tester);
+    expect(tapsInsideTaps(tester), isEmpty);
+    semantics.dispose();
   });
 }

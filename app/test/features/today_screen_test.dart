@@ -13,8 +13,6 @@ import '../core/text_clipping.dart';
 import 'dart:io';
 import 'dart:ui' show LocaleStringAttribute;
 
-import 'package:flutter/semantics.dart' show SemanticsAction, SemanticsNode;
-
 import 'package:sogda/data/db/content_dao.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/core/components/sg_button.dart';
@@ -45,6 +43,7 @@ import 'package:material_ui/material_ui.dart';
 import '../db/content_fixture.dart';
 import 'settings_fixtures.dart';
 import 'today_fixtures.dart';
+import '../core/semantics_checks.dart';
 
 /// T1 · Today in progress — #95.
 void main() {
@@ -421,23 +420,7 @@ void main() {
 
         // A button that wraps the ring and the plan cards reads first and
         // takes every tap between them (#749).
-        bool tappable(SemanticsNode n) =>
-            n.getSemanticsData().hasAction(SemanticsAction.tap);
-        final wrapping = <String>[];
-        void walk(SemanticsNode n, bool under) {
-          // Merged into its parent, it is part of the parent's one node.
-          if (n.isMergedIntoParent) return;
-          if (under && tappable(n)) {
-            wrapping.add(n.getSemanticsData().label);
-          }
-          n.visitChildren((child) {
-            walk(child, under || tappable(n));
-            return true;
-          });
-        }
-
-        walk(tester.getSemantics(find.byType(TodayScreen)), false);
-        expect(wrapping, isEmpty);
+        expect(tapsInsideTaps(tester, find.byType(TodayScreen)), isEmpty);
         semantics.dispose();
       });
     }
@@ -555,6 +538,15 @@ void main() {
         ),
       );
       expect(text.style?.color, SgPalette.light.onAccent);
+    });
+
+    testWidgets('FR-S2-03 #912 with the coach mark up, no tappable node wraps '
+        'another', (tester) async {
+      final semantics = tester.ensureSemantics();
+      await pump(tester, coachMark: true);
+      expect(find.text(l10n.todayCoachMark), findsOneWidget);
+      expect(tapsInsideTaps(tester), isEmpty);
+      semantics.dispose();
     });
 
     testWidgets('FR-S2-03 carries the one-time coach mark', (tester) async {

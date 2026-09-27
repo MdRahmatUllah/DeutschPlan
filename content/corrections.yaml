@@ -2037,3 +2037,54 @@ words:
   "fd6c2736b84de9bf":
     why: "#635: unbeschadet, the C2.2 word glossed another way"
     merge_into: "16a90963569ffeac"
+
+# Grammar topics, keyed by their uid as built (`grammar_topics.uid`). An
+# entry sets a topic's `rule`, `example_de`, `example_en` or `watch_out`, never
+# its level or title: they make its uid (#637).
+grammar:
+  "97ae2951ee9b24bc":
+    why: "#637: the author's own city in an example, made a generic one (as #628)"
+    example_de: "Ich bin nach Hamburg gefahren. Er ist um 6 aufgestanden."
+    example_en: "I went to Hamburg. He got up at 6."
+  "e2573d1c2268733d":
+    why: "#637: the author's own city in an example, made a generic one (as #628)"
+    example_de: "Seit Januar wohne ich in Hamburg. Vor zwei Wochen war ich in Dhaka."
+    example_en: "I've lived in Hamburg since January. Two weeks ago I was in Dhaka."
+  "09a5abbd2c8199bb":
+    why: "#637: the author's own city in an example, made a generic one (as #628)"
+    example_de: "Ich lerne Deutsch, weil ich in Hamburg arbeite. Ich glaube, dass es regnet."
+    example_en: "I learn German because I work in Hamburg. I think it's raining."
+  "9967522f0531832d":
+    why: "#637: the author's own city in an example, made a generic one (as #628)"
+    example_de: "Hamburg ist teurer als Dhaka. Ich trinke lieber Tee."
+    example_en: "Hamburg is more expensive than Dhaka. I prefer tea."
+  "3925154239e578c6":
+    why: "#637: the author's own city in an example, made a generic one (as #628)"
+    example_de: "Ich habe mit einem neuen Angestellten gesprochen. Viele junge Leute ziehen nach Hamburg."
+    example_en: "I spoke with a new employee. Many young people move to Hamburg."
+  "7fc3c51b43cb30d1":
+    why: "#637: the author's tracker (its weeks, its 'In progress' marks, their exam centre), which the app does not have"
+    rule: "Redo the quizzes of the A1 and A2 steps; write 10 sentences of your own for each grammar topic."
+    watch_out: "Go back to the topics you get wrong and practise them again."
+  "8b93ebe000229cad":
+    why: "#637: the author's tracker (its weeks, its 'In progress' marks, their exam centre), which the app does not have"
+    watch_out: "Teil 5 tests grammar words (Konnektoren, Präpositionen) – revise the connector and preposition topics first."
+  "2ba3857698862c48":
+    why: "#637: the author's tracker (its weeks, its 'In progress' marks, their exam centre), which the app does not have"
+    rule: "Second full mock exam; analyse errors by type (grammar, vocabulary, strategy); revise the grammar topics you got wrong."
+    watch_out: "Book the exam about two months in advance: exam centres are often full."
+  "13f757c8843bf794":
+    why: "#637: the author's tracker (its weeks, its 'In progress' marks, their exam centre), which the app does not have"
+    watch_out: "Record yourself regularly and count your filler words."
+  "b49bbdd3c7e07cb4":
+    why: "#637: the author's tracker (its weeks, its 'In progress' marks, their exam centre), which the app does not have"
+    watch_out: "The gap text rewards exactly the right connector: revise the connectors and discourse markers first."
+  "b753a7ad02a9d4cc":
+    why: "#637: the author's tracker (its weeks, its 'In progress' marks, their exam centre), which the app does not have"
+    watch_out: "Book the exam two to three months in advance."
+  "579f5bd59ff87c4d":
+    why: "#637: the author's tracker (its weeks, its 'In progress' marks, their exam centre), which the app does not have"
+    rule: "Second full mock; analyse errors by type; revise the grammar topics you still get wrong; decide whether to sit Goethe C1 or telc C1 Hochschule."
+  "4b85c70fa865687b":
+    why: "#637: the author's tracker (its weeks, its 'In progress' marks, their exam centre), which the app does not have"
+    watch_out: "The attitude task tests exactly your work on connotation and irony."

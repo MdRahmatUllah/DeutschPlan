@@ -22,6 +22,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from content_writer import build  # noqa: E402
 from excel_to_sqlite import (  # noqa: E402
     HEADER_MAP,
+    GrammarRow,
     Word,
     collect,
     correct,
@@ -33,6 +34,7 @@ from fixtures.make_workbooks import BOOK_LEVELS, write_all  # noqa: E402
 from pipeline_steps import (  # noqa: E402
     PipelineError,
     apply_corrections,
+    apply_grammar_corrections,
     cross_level_duplicates,
     read_corrections,
     uid_for,
@@ -176,6 +178,80 @@ class TestCorrections:
             connection.close()
         assert german == "Ganz neu."
         assert uid != key, "the uid is the corrected word's"
+
+
+class TestGrammar:
+    """#637: a grammar topic's text, corrected by its uid as built."""
+
+    @staticmethod
+    def topic() -> GrammarRow:
+        row = GrammarRow(source_file="t.xlsx", row=1, level="A2", topic="Perfekt", rule="alt")
+        row.uid = "0123456789abcdef"
+        return row
+
+    def test_637_a_correction_sets_a_topics_text(self):
+        row = self.topic()
+        apply_grammar_corrections([row], {row.uid: {"why": "t", "rule": "neu", "watch_out": "Achtung"}})
+        assert (row.rule, row.watch_out, row.topic) == ("neu", "Achtung", "Perfekt")
+
+    @pytest.mark.parametrize(
+        ("entries", "message"),
+        [
+            ({"fedcba9876543210": {"why": "t", "rule": "x"}}, "matches no topic"),
+            ({"0123456789abcdef": {"why": "t", "topic": "x"}}, "only rule"),
+            ({"0123456789abcdef": {"why": "t", "level": "B1"}}, "only rule"),
+        ],
+    )
+    def test_637_an_unknown_topic_or_its_title_fails_the_build(self, entries, message):
+        with pytest.raises(PipelineError, match=message):
+            apply_grammar_corrections([self.topic()], entries)
+
+    def test_637_the_build_applies_the_files_grammar_section(self, tmp_path):
+        write_all(tmp_path)
+        books = [{"file": str(tmp_path / n)} for n in BOOK_LEVELS]
+        manifest = tmp_path / "manifest.yaml"
+        manifest.write_text(yaml.safe_dump({"workbooks": books}), encoding="utf-8")
+        out = tmp_path / "build" / "content.db"
+        argv = ["--manifest", str(manifest), "--out", str(out), "--previous", str(tmp_path / "none")]
+        assert build_main(argv) == 0
+        with sqlite3.connect(out) as connection:
+            (uid,) = connection.execute("SELECT uid FROM grammar_topics ORDER BY rowid LIMIT 1").fetchone()
+        connection.close()
+
+        (tmp_path / "corrections.yaml").write_text(
+            f'grammar:\n  "{uid}":\n    why: t\n    watch_out: "Ganz neu."\n', encoding="utf-8"
+        )
+        manifest.write_text(
+            yaml.safe_dump({"workbooks": books, "corrections": str(tmp_path / "corrections.yaml")}),
+            encoding="utf-8",
+        )
+        assert build_main(argv) == 0
+        with sqlite3.connect(out) as connection:
+            (watch_out,) = connection.execute(
+                "SELECT watch_out FROM grammar_topics WHERE uid = ?", (uid,)
+            ).fetchone()
+        connection.close()
+        assert watch_out == "Ganz neu."
+
+    def test_637_the_committed_grammar_entries_read(self):
+        entries = read_corrections(REPO / "content" / "corrections.yaml", "grammar")
+        assert entries and all(set(entry) - {"why"} for entry in entries.values())
+
+    def test_637_the_shipped_grammar_names_no_tracker_week_mark_or_exam_centre(self):
+        import re
+
+        connection = sqlite3.connect(REPO / "app" / "assets" / "db" / "content.db")
+        try:
+            rows = connection.execute(
+                "SELECT topic, rule, watch_out, example_de, example_en FROM grammar_topics"
+            ).fetchall()
+        finally:
+            connection.close()
+        # The advice: no week of the tracker, no 'In progress', no exam
+        # centre. The examples translate "Wochen" as weeks, rightly.
+        advice = re.compile(r"week|in progress|münchen", re.IGNORECASE)
+        assert [t for t, rule, watch, *_ in rows if advice.search(f"{rule} {watch}")] == []
+        assert [t for t, *_, de, en in rows if "München" in f"{de} {en}" or "Munich" in en] == []
 
 
 class TestDuplicates:

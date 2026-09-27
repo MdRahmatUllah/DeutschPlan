@@ -230,6 +230,24 @@ void main() {
     expect((await service.result(id))!.rows.last.given, isNull);
   });
 
+  test('FR-L12S-04 #891 a delete from L13 whose write fails keeps the '
+      'recording', () async {
+    final id = await sit('2026-09-20T10:00:00Z');
+    final file = File('${directory.path}/rec.m4a')..writeAsStringSync('x');
+    await exams.answer(attemptId: id, ord: 3, given: file.path);
+    // The disk refuses the answer's write.
+    await db.customStatement(
+      'CREATE TRIGGER no_write BEFORE UPDATE ON exam_answers '
+      "BEGIN SELECT RAISE(ABORT, 'disk full'); END",
+    );
+
+    await expectLater(
+      service.deleteRecording(id, 3, file.path),
+      throwsA(anything),
+    );
+    expect(file.existsSync(), isTrue, reason: 'the answer still names it');
+  });
+
   test("#688 DA-6 FR-L12S-04 L13 reads a Speaking answer as this phone's "
       'file, and as not recorded once the file is gone', () async {
     final id = await exams.begin(

@@ -27,6 +27,7 @@ import 'package:material_ui/material_ui.dart';
 import '../services/fake_tts.dart';
 
 import '../domain/placement_test.dart' show wordFor;
+import '../core/semantics_checks.dart';
 
 /// S3 · the placement check on screen — #93. The walk itself is
 /// `placement_test.dart`'s; this is the screen around it.
@@ -481,6 +482,13 @@ void main() {
 
       expect(tester.takeException(), isNull);
     });
+  });
+
+  testWidgets('#912 no tappable node wraps another', (tester) async {
+    final semantics = tester.ensureSemantics();
+    await pump(tester);
+    expect(tapsInsideTaps(tester), isEmpty);
+    semantics.dispose();
   });
 }
 

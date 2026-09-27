@@ -144,6 +144,7 @@ class TopicRow extends StatelessWidget {
     };
 
     return Semantics(
+      container: true,
       button: true,
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,

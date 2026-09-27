@@ -43,6 +43,7 @@ from pipeline_steps import (
     assign_examples,
     assign_kinds,
     apply_corrections,
+    apply_grammar_corrections,
     read_corrections,
     assign_grammar_uids,
     assign_search_keys,
@@ -832,6 +833,11 @@ def main(argv: list[str] | None = None) -> int:
         sources = read_sources(manifest, args.allow_missing_columns)
         correct(sources, read_corrections(manifest.corrections))
         splits = derive(sources)
+        # After the grammar uids, which key them (#637).
+        apply_grammar_corrections(
+            [row for source in sources for row in source.grammar],
+            read_corrections(manifest.corrections, "grammar"),
+        )
         resolved, tip_warnings = resolve_tips(
             read_tips(manifest.tips),
             [word for source in sources for word in source.words],

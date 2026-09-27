@@ -176,6 +176,7 @@ class _StepChip extends StatelessWidget {
     final l10n = AppLocalizations.of(context);
 
     return Semantics(
+      container: true,
       // Twelve choices, one picked — read as a group, like page 2's cards.
       selected: selected,
       button: true,

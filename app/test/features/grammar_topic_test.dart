@@ -23,6 +23,7 @@ import '../services/fake_tts.dart';
 import '../core/text_clipping.dart';
 
 import 'today_fixtures.dart';
+import '../core/semantics_checks.dart';
 
 /// L4 · Grammar topic — #118.
 void main() {
@@ -202,6 +203,26 @@ void main() {
     expect(find.text(l10n.topicLearnedNext(4)), findsOneWidget);
   });
 
+  testWidgets('#912 FR-L4-04 on a first topic the next-topic link is its '
+      'own node, its words over its 48 dp, not a button over the rule', (
+    tester,
+  ) async {
+    // With no previous link beside it, nothing conflicts with it, and a
+    // button that is not a node merged up into the page (agent-3's dump).
+    final topics = artboardTopics();
+    final semantics = tester.ensureSemantics();
+    await pump(tester, topic: topics.first);
+    final words = l10n.topicNext(topics[1].topic.topic);
+    final next = find.bySemanticsLabel(words);
+    await tester.ensureVisible(next);
+    await tester.pumpAndSettle();
+    final node = tester.getSemantics(next);
+    expect(node.rect.height, lessThanOrEqualTo(48));
+    expect(node.getSemanticsData().label, words);
+    expect(tapsInsideTaps(tester), isEmpty);
+    semantics.dispose();
+  });
+
   testWidgets('FR-L4-04 previous and next stay within the step', (
     tester,
   ) async {
@@ -227,6 +248,13 @@ void main() {
       await pump(tester, chrome: chrome);
       expectNothingClipped(tester, within: find.byType(AdaptiveBackButton));
     }
+  });
+
+  testWidgets('#912 no tappable node wraps another', (tester) async {
+    final semantics = tester.ensureSemantics();
+    await pump(tester);
+    expect(tapsInsideTaps(tester), isEmpty);
+    semantics.dispose();
   });
 }
 

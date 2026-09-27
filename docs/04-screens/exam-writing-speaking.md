@@ -24,7 +24,7 @@ Prompt "Describe your morning routine — 1 minute." + hint "Say what you do, wh
 - FR-L12S-01 Mic permission requested on first use with rationale; denial shows a message and the section can be skipped (0 points) without blocking the exam.
 - FR-L12S-02 Recording via `record` (AAC, mono, 32 kbps) to `<appSupport>/recordings/<attemptId>.m4a`; max length per level (60/90/120 s); one retake.
 - FR-L12S-03 Rubric ticks → `self_rubric_json`; 1 point each.
-- FR-L12S-04 *Delete recording* from here or from L13 removes the file and zeros the section.
+- FR-L12S-04 *Delete recording* from here or from L13 removes the file and zeros the section. The empty answer is written first and the file deleted only once it is: a write that fails asks (*Retry* · *Export progress*), and closed, the take and its answer stay, never an answer naming a file already gone (#891).
 
 Details Speaking settles (#134):
 - The task is exam-generator.md's per level with the paper's category, then its length ("— 1 minute", "— 90 seconds"), and the hint "Speak in whole sentences. Then listen back and tick what you managed." The artboard's morning routine is a sample of one.

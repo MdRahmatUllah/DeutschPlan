@@ -21,6 +21,7 @@ import 'package:material_ui/material_ui.dart';
 import 'quiz_fixtures.dart';
 import 'settings_fixtures.dart';
 import 'today_fixtures.dart';
+import '../core/semantics_checks.dart';
 
 /// L7 · Custom quiz — #122 (`quiz.md`, FR-L2-04's *Custom* tile).
 void main() {
@@ -396,5 +397,12 @@ void main() {
       seed: 42,
     );
     expect(a.seed, 42);
+  });
+
+  testWidgets('#912 no tappable node wraps another', (tester) async {
+    final semantics = tester.ensureSemantics();
+    await pump(tester);
+    expect(tapsInsideTaps(tester), isEmpty);
+    semantics.dispose();
   });
 }

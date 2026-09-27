@@ -20,6 +20,8 @@ import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 
+import '../core/semantics_checks.dart';
+
 /// S2 page 3 · Starting point — #89.
 void main() {
   late AppLocalizations l10n;
@@ -387,5 +389,12 @@ void main() {
     await tester.tap(find.text(l10n.retry));
     await tester.pumpAndSettle();
     expect(reads, 2);
+  });
+
+  testWidgets('#912 no tappable node wraps another', (tester) async {
+    final semantics = tester.ensureSemantics();
+    await pump(tester);
+    expect(tapsInsideTaps(tester), isEmpty);
+    semantics.dispose();
   });
 }

@@ -581,6 +581,7 @@ class LinkCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final tokens = context.tokens;
     return Semantics(
+      container: true,
       button: true,
       child: SgSurface(
         kind: SgSurfaceKind.bar,

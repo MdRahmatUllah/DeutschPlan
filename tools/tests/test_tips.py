@@ -92,7 +92,22 @@ class TestTheSeedSet:
                 # head is the Tag.
                 "Aufschwung",
                 "Tag der Deutschen Einheit",
-            ]
+            ],
+            # #637: "stress decides whether it separates" is false on a verb
+            # that is only ever inseparable, or only ever separable.
+            "separable": [
+                "überzeugen",
+                "überraschen",
+                "überprüfen",
+                "sich übergeben",
+                "unterschreiben",
+                "untersuchen",
+                "sich unterhalten",
+                "umsteigen",
+                "umziehen",
+                "durchführen",
+                "widersprechen",
+            ],
         }
         always = {
             "gender": [
@@ -103,8 +118,16 @@ class TestTheSeedSet:
                 "Freiheit",
                 "psychische Gesundheit",
             ],
-            # #384: a reflexive verb is still its prefix's.
-            "separable": ["sich unterhalten", "sich übergeben", "übersetzen"],
+            # #637: the verbs with both readings.
+            "separable": [
+                "übersetzen",
+                "überholen",
+                "umgehen",
+                "umfahren ↔ umfahren",
+                "unterstellen",
+                "unterschlagen",
+                "durchbrechen",
+            ],
         }
 
         for tag, words in never.items():
@@ -284,6 +307,10 @@ def test_the_seed_tips_reach_words_in_a_real_build(tmp_path):
 
     write_all(tmp_path)
     sources = [read_workbook(tmp_path / name) for name in BOOK_LEVELS]
+    # A real verb the seed has a tip for (#637): the invented ones carry a
+    # suffix no seed pattern matches.
+    assert sources[0].words[1].pos == "verb"
+    sources[0].words[1].german = "übersetzen"
     words = [w for s in sources for w in s.words]
     splits = derive(sources)
     resolved, _ = resolve_tips(read_tips(SEED), words)
@@ -380,6 +407,12 @@ class TestTheShippedCourse:
             # #384
             assert tips("Aufschwung") == []
             assert tips("Tag der Deutschen Einheit") == []
-            assert any("separable" in tip for tip in tips("sich unterhalten"))
+            # #637: a stress tip only where stress decides.
+            assert any("Stress decides" in tip for tip in tips("übersetzen"))
+            assert any("separable" in tip for tip in tips("unterstellen"))
+            for verb in ("überzeugen", "unterschreiben", "umsteigen", "sich unterhalten"):
+                assert not any(
+                    "Stress decides" in tip or "separable" in tip for tip in tips(verb)
+                ), verb
         finally:
             db.close()

@@ -909,6 +909,7 @@ class _CompareLink extends StatelessWidget {
     final label = AppLocalizations.of(context).wordCompare(set);
     void open() => CompareRoute.open(context, uid);
     return Semantics(
+      container: true,
       button: true,
       label: label,
       onTap: open,
