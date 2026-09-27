@@ -8,6 +8,7 @@ import 'package:sogda/domain/exam_generator.dart';
 import 'package:sogda/features/exam/exam_runner_screen.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
+import 'package:flutter_test/flutter_test.dart' show find;
 import 'package:material_ui/material_ui.dart';
 
 import '../features/exam_run_fixtures.dart';
@@ -39,6 +40,23 @@ void main() {
   );
 
   goldenTest('exam_speaking', builder: runner);
+  // #691 EX-6: the retake used and the recording deleted: Record is off,
+  // dimmed, and the line says why.
+  goldenTest(
+    'exam_speaking_spent',
+    devices: const <GoldenDevice>[GoldenDevice.phone],
+    textAudit: false,
+    builder: runner,
+    act: (tester) async {
+      await tester.tap(find.text(tester.l10n.examSpeakingRetake(1)));
+      await tester.pump();
+      await tester.pump();
+      await tester.tap(find.byIcon(Icons.stop));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text(tester.l10n.examSpeakingDelete));
+      await tester.pumpAndSettle();
+    },
+  );
   goldenTest(
     'exam_speaking_ios',
     modes: const <GoldenMode>[GoldenMode.light],

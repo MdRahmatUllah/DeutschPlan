@@ -68,9 +68,11 @@ class ExamQuestionView extends ConsumerWidget {
   /// A choice was tapped, or the field submitted.
   final ValueChanged<String> onGiven;
 
-  /// How often a Listening word has been played.
+  /// How often a Listening word has been played, and a play counted: 1 as
+  /// it starts, so a second tap meanwhile finds it counted, and -1 when no
+  /// voice said it, as with no German voice on the phone (#691 EX-7).
   final int plays;
-  final VoidCallback onPlay;
+  final ValueChanged<int> onPlay;
 
   /// Typing past 130 % with the keyboard up: what is asked is one role
   /// smaller, so a display-size word or a two-line gap still fits above the
@@ -119,9 +121,9 @@ class ExamQuestionView extends ConsumerWidget {
                   semanticLabel: l10n.quizAskListening,
                   onPressed: plays >= examPlays
                       ? null
-                      : () {
-                          onPlay();
-                          unawaited(say(ref, context, prompt));
+                      : () async {
+                          onPlay(1);
+                          if (!await say(ref, context, prompt)) onPlay(-1);
                         },
                 ),
                 const SizedBox(height: 8),

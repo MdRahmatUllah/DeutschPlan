@@ -1,5 +1,7 @@
 import 'dart:async';
+import 'dart:io';
 
+import 'package:sogda/data/repositories/model_repository.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:record/record.dart';
@@ -19,11 +21,12 @@ abstract interface class ExamRecorder {
   /// allowed again.
   Future<void> openSettings();
 
-  /// FR-L12S-02: records to [path], AAC mono at 32 kbps, replacing what is
-  /// there.
+  /// FR-L12S-02: records for [path], AAC mono at 32 kbps. What is there
+  /// stays until [stop] completes (#691 EX-5).
   Future<void> start(String path);
 
-  /// Stops; the file at the path given to [start] is complete.
+  /// Stops; the file at the path given to [start] is complete, replaced by
+  /// this take. One that throws leaves what was there.
   Future<void> stop();
 
   /// The input level while recording, 0 (silence) to 1, a few times a second.
@@ -46,8 +49,15 @@ abstract interface class ExamRecorder {
 
 /// [ExamRecorder] on the `record` and `just_audio` plugins.
 class PlatformExamRecorder implements ExamRecorder {
-  final AudioRecorder _recorder = AudioRecorder();
-  final AudioPlayer _player = AudioPlayer();
+  /// [recorder] for a test; the plugin's otherwise.
+  PlatformExamRecorder({AudioRecorder? recorder})
+    : _recorder = recorder ?? AudioRecorder();
+
+  final AudioRecorder _recorder;
+  late final AudioPlayer _player = AudioPlayer();
+
+  /// The recording the take in progress replaces once it stops.
+  String? _path;
 
   /// FR-L12S-02's encoding. A call, an alarm or a voice assistant that
   /// takes the microphone pauses the recording, and it goes on once they
@@ -66,12 +76,27 @@ class PlatformExamRecorder implements ExamRecorder {
     await openAppSettings();
   }
 
+  /// #691 EX-5: the take records beside [path] (`ModelRepository.takeOf`):
+  /// recording over it, a retake that failed had already spoilt the take
+  /// the learner kept.
   @override
-  Future<void> start(String path) => _recorder.start(config, path: path);
+  Future<void> start(String path) async {
+    _path = path;
+    await _recorder.start(config, path: ModelRepository.takeOf(path));
+  }
 
   @override
   Future<void> stop() async {
-    await _recorder.stop();
+    final path = _path;
+    _path = null;
+    final take = path == null ? null : File(ModelRepository.takeOf(path));
+    try {
+      await _recorder.stop();
+    } on Object {
+      if (take != null && await take.exists()) await take.delete();
+      rethrow;
+    }
+    if (path != null && take != null) await take.rename(path);
   }
 
   /// dBFS runs from about −60 (silence) to 0 (the loudest the microphone

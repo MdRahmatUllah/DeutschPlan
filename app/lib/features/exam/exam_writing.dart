@@ -5,6 +5,8 @@ import 'package:sogda/domain/exam_grading.dart'
     show connectorsUsed, targetsUsed, textWords;
 import 'package:sogda/features/exam/exam_question_view.dart' show examTaskPanel;
 import 'package:sogda/l10n/generated/app_localizations.dart';
+import 'package:flutter/services.dart'
+    show LengthLimitingTextInputFormatter, TextInputFormatter;
 import 'package:material_ui/material_ui.dart';
 
 /// L12's Writing (`exam-writing-speaking.md`, the ExamWriting artboard): the
@@ -24,6 +26,10 @@ class ExamWriting extends StatelessWidget {
 
   final WritingTask task;
   final TextEditingController field;
+
+  /// The longest text, in characters (#691 EX-13): about 700 words, near
+  /// three times C2's 250, where a pasted page was counted on every key.
+  static const int maxLength = 5000;
 
   /// The keyboard is up and the runner shows [ExamWritingCount] above it,
   /// where the button row was: under the field, it would scroll away with
@@ -113,6 +119,9 @@ class ExamWriting extends StatelessWidget {
                 expands: true,
                 maxLines: null,
                 keyboardType: TextInputType.multiline,
+                inputFormatters: <TextInputFormatter>[
+                  LengthLimitingTextInputFormatter(maxLength),
+                ],
                 // A tap on the task, the band or the chips closes the keyboard,
                 // and *Previous* / *Submit text* come back: a multiline field
                 // has no Done key, and iOS no back gesture that closes it

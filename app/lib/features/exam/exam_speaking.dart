@@ -39,8 +39,8 @@ class ExamSpeaking extends ConsumerStatefulWidget {
     required this.recordingPath,
     required this.onDiscard,
     required this.onRecording,
-    required this.retakesLeft,
-    required this.onRetake,
+    required this.takes,
+    required this.onTake,
     super.key,
   });
 
@@ -59,11 +59,13 @@ class ExamSpeaking extends ConsumerStatefulWidget {
   /// Told how to stop and keep a recording while one runs, and null after.
   final ValueChanged<Future<void> Function()?> onRecording;
 
-  /// FR-L12S-02: the retakes left, and one begun. The runner counts them per
-  /// task: this view is built again on every visit, and a count kept here
-  /// offered the retake again after *Next* and *Previous* (#731).
-  final int retakesLeft;
-  final VoidCallback onRetake;
+  /// FR-L12S-02: the takes made, the first included, and one begun. The
+  /// runner counts them per task: this view is built again on every visit,
+  /// and a count kept here offered the retake again after *Next* and
+  /// *Previous* (#731). Takes, not a Record after a recording: after
+  /// *Delete recording* the next take is the retake too (#691 EX-6).
+  final int takes;
+  final VoidCallback onTake;
 
   /// FR-L12S-02: one retake.
   static const int retakes = 1;
@@ -145,6 +147,9 @@ class _ExamSpeakingState extends ConsumerState<ExamSpeaking> {
   // Each takes the recorder before its first await: dispose closes the
   // subscription, and a recording left mid-way still has to be stopped.
 
+  /// The takes left: the first, and [ExamSpeaking.retakes] more.
+  int get _takesLeft => 1 + ExamSpeaking.retakes - widget.takes;
+
   Future<void> _record() async {
     if (_starting || _mic == _Mic.recording) return;
     _starting = true;
@@ -162,10 +167,14 @@ class _ExamSpeakingState extends ConsumerState<ExamSpeaking> {
       if (mounted) setState(() => _mic = _Mic.denied);
       return;
     }
+    // #691 EX-8: the phone's dialog can outlast the task, as 0:00 submits
+    // the paper under it. Gone, it records nothing: a take would be written
+    // into an attempt already graded.
+    if (!mounted) return;
     await recorder.stopPlaying();
-    final retake = _mic == _Mic.recorded;
     final path = await widget.recordingPath();
     await recorder.start(path);
+    widget.onTake();
     if (!mounted) {
       // The task left the screen while the recorder started: stop it, and
       // keep what little it has, as leaving mid-recording does.
@@ -173,7 +182,6 @@ class _ExamSpeakingState extends ConsumerState<ExamSpeaking> {
       widget.onGiven(path);
       return;
     }
-    if (retake) widget.onRetake();
     setState(() {
       _path = path;
       _mic = _Mic.recording;
@@ -302,10 +310,10 @@ class _ExamSpeakingState extends ConsumerState<ExamSpeaking> {
     final topic = task.category ?? l10n.examWritingTopicFallback;
     final max = task.seconds;
     final retake = SgButton(
-      label: l10n.examSpeakingRetake(widget.retakesLeft),
+      label: l10n.examSpeakingRetake(_takesLeft),
       kind: SgButtonKind.secondary,
       compact: true,
-      onPressed: widget.retakesLeft > 0 ? () => unawaited(_record()) : null,
+      onPressed: _takesLeft > 0 ? () => unawaited(_record()) : null,
     );
     final delete = SgButton(
       label: l10n.examSpeakingDelete,
@@ -320,13 +328,14 @@ class _ExamSpeakingState extends ConsumerState<ExamSpeaking> {
       IconData icon,
       String label,
       Color fill,
-      VoidCallback onTap,
+      VoidCallback? onTap,
     ) = switch (_mic) {
       _Mic.idle || _Mic.denied => (
         Icons.mic,
         l10n.examSpeakingRecord,
         tokens.color.again,
-        () => unawaited(_record()),
+        // #691 EX-6: the take and the retake used, deleted or not.
+        _takesLeft > 0 ? () => unawaited(_record()) : null,
       ),
       _Mic.recording => (
         Icons.stop,
@@ -424,6 +433,8 @@ class _ExamSpeakingState extends ConsumerState<ExamSpeaking> {
                           ),
                           SgText(
                             switch (_mic) {
+                              _Mic.idle when _takesLeft <= 0 =>
+                                l10n.examSpeakingRetake(0),
                               _Mic.idle => l10n.examSpeakingReady,
                               _Mic.recording when _interrupted =>
                                 l10n.examSpeakingInterrupted,
@@ -537,9 +548,10 @@ class _RoundButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final tokens = context.tokens;
     // Its own node: folded into the card's, the card would read as the button.
-    return Semantics(
+    final button = Semantics(
       container: true,
       button: true,
+      enabled: onTap != null,
       label: label,
       excludeSemantics: true,
       onTap: onTap,
@@ -570,6 +582,8 @@ class _RoundButton extends StatelessWidget {
         ),
       ),
     );
+    // Off, dimmed as a rubric tick that can't be ticked is.
+    return onTap == null ? Opacity(opacity: 0.5, child: button) : button;
   }
 }
 

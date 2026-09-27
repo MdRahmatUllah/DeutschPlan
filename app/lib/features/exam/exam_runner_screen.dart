@@ -65,6 +65,10 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
   bool _done = false;
   bool _submitting = false;
 
+  /// A submit failed (#691 EX-4): 0:00 no longer submits by itself, or it
+  /// would try, and toast, every second. *Submit exam* still sends it.
+  bool _submitFailed = false;
+
   int _at = 0;
   final List<String?> _given = <String?>[];
   final List<bool> _flagged = <bool>[];
@@ -73,11 +77,13 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
   // gives each word three again; a column on exam_answers when it matters.
   final Map<int, int> _plays = <int, int>{};
 
-  /// Speaking's retakes used, by ord: here, not in the task's view, which is
-  /// built again on every visit (#731).
+  /// Speaking's takes, by ord: here, not in the task's view, which is built
+  /// again on every visit (#731). Every take counts, the first too, so one
+  /// after *Delete recording* is the retake (#691 EX-6); a recording there
+  /// on load counts as one.
   // ponytail: in memory, so a resumed attempt offers the retake again; a
   // column on exam_answers when it matters.
-  final Map<int, int> _retakes = <int, int>{};
+  final Map<int, int> _takes = <int, int>{};
   final TextEditingController _field = TextEditingController();
 
   bool _timed = true;
@@ -163,6 +169,12 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
         _rubrics
           ..clear()
           ..addAll([for (final q in paper.questions) q.rubric]);
+        _takes
+          ..clear()
+          ..addAll({
+            for (final q in paper.questions)
+              if (q.item is SpeakingTask && q.given != null) q.ord: 1,
+          });
         _at = paper.resumeAt;
         _field.text = _typedHere ? _given[_at] ?? '' : '';
         _timed = _service.timed;
@@ -199,7 +211,9 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
     if (_runPending + _pausePending >= ExamRunnerScreen.flushEvery) {
       unawaited(_flush());
     }
-    if (_timed && _left <= 0) unawaited(_submit(asked: true));
+    if (_timed && _left <= 0 && !_submitFailed) {
+      unawaited(_submit(asked: true));
+    }
   }
 
   Future<void> _flush() async {
@@ -377,7 +391,12 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
   /// Not while a submit is under way: that one finishes, and L13 follows.
   Future<void> _leave() async {
     final paper = _paper;
-    if (paper == null || _submitting || _done) return;
+    if (paper == null || _submitting || _done) {
+      // #691 EX-12: the dialog is gone, so its pause is over. Kept, it froze
+      // the clock of a submit that then failed, and 0:00 never came.
+      if (mounted) setState(() => _paused = false);
+      return;
+    }
     _tick?.cancel();
     await _saveTyped();
     // Stopped before the abandon deletes it (#671): a recorder that wrote
@@ -458,12 +477,21 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
       // The answers are written already: stay on the paper, clock running,
       // and let the learner submit again.
       _submitting = false;
+      _submitFailed = true;
       if (!mounted) return;
       _tick = Timer.periodic(const Duration(seconds: 1), (_) => _second());
       SgToast.show(context, AppLocalizations.of(context).examRunSubmitFailed);
       return;
     }
-    if (mounted) setState(() => _done = true);
+    if (!mounted) return;
+    // #691 EX-11: 0:00 can submit under the navigator's sheet, whose
+    // choices then do nothing over L13: what is open over the paper closes.
+    // The sheets and dialogs are all on the root navigator (Adaptive).
+    Navigator.of(
+      context,
+      rootNavigator: true,
+    ).popUntil((r) => r is! PopupRoute);
+    setState(() => _done = true);
   }
 
   @override
@@ -620,11 +648,9 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
                     onRecording: (stop) => _stopRecording = stop,
                     rubric: _rubrics[at],
                     onRubric: (ticks) => unawaited(_rubric(at, ticks)),
-                    retakesLeft:
-                        ExamSpeaking.retakes -
-                        (_retakes[questions[at].ord] ?? 0),
-                    onRetake: () => _change(
-                      () => _retakes.update(
+                    takes: _takes[questions[at].ord] ?? 0,
+                    onTake: () => _change(
+                      () => _takes.update(
                         questions[at].ord,
                         (n) => n + 1,
                         ifAbsent: () => 1,
@@ -644,12 +670,12 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
                     given: _given[at],
                     field: _field,
                     onGiven: (value) => _record(value, at: at),
-                    plays: _plays[questions[_at].ord] ?? 0,
-                    onPlay: () => setState(
+                    plays: _plays[questions[at].ord] ?? 0,
+                    onPlay: (n) => _change(
                       () => _plays.update(
-                        questions[_at].ord,
-                        (n) => n + 1,
-                        ifAbsent: () => 1,
+                        questions[at].ord,
+                        (plays) => plays + n,
+                        ifAbsent: () => n,
                       ),
                     ),
                   ),

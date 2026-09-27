@@ -224,6 +224,13 @@ List<bool> rubricTicks(String? json) {
   return const <bool>[];
 }
 
+/// Whether a task's rubric counts: Writing's needs a text of words, and
+/// Speaking's a recording, its [given]. L13's rubric sheet asks the same, so
+/// it never offers ticks that score nothing (#703).
+bool rubricCounts(ExamItem item, String? given) => item is WritingTask
+    ? textWords(given ?? '').isNotEmpty
+    : (given ?? '').trim().isNotEmpty;
+
 /// What an item earns: [given] checked by `answer_check`; Writing its app
 /// points plus 2 × 1 for its rubric; Speaking 4 × 1 for its rubric
 /// (BR-EXAM-03: each is worth 4).
@@ -237,8 +244,8 @@ double itemPoints(ExamItem item, {String? given, String? rubric}) {
   return switch (item) {
     WritingTask() =>
       writingAppPoints(item, given ?? '') +
-          (textWords(given ?? '').isEmpty ? 0 : ticked(2)),
-    SpeakingTask() => (given ?? '').trim().isEmpty ? 0 : ticked(4).toDouble(),
+          (rubricCounts(item, given) ? ticked(2) : 0),
+    SpeakingTask() => rubricCounts(item, given) ? ticked(4).toDouble() : 0,
     // A blank answer needs no guard of its own: every check marks it wrong.
     _ => given == null ? 0 : verdictFor(item, given)!.score,
   };

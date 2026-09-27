@@ -11,6 +11,7 @@ import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/core/typography/sg_text.dart';
 import 'package:sogda/data/repositories/exam_result_service.dart';
 import 'package:sogda/domain/exam_generator.dart';
+import 'package:sogda/domain/exam_grading.dart' show rubricCounts;
 import 'package:sogda/features/exam/exam_question_view.dart'
     show ExamRubricTick, examClock, examRubricLines;
 import 'package:sogda/features/exam/exam_review_screen.dart';
@@ -95,11 +96,9 @@ class _ExamResultsScreenState extends ConsumerState<ExamResultsScreen> {
         title: examSectionName(l10n, task.item.section),
         lines: examRubricLines(l10n, task.item.section),
         ticks: task.rubric,
-        // #84 counts the ticks only with a text or a recording.
-        empty: switch (task.given) {
-          final given? => given.trim().isEmpty,
-          null => true,
-        },
+        // #84 counts the ticks only with a text of words or a recording:
+        // the grading's own rule, so a text of dots offers none (#703).
+        empty: !rubricCounts(task.item, task.given),
         speaking: task.item is SpeakingTask,
         onChanged: (ticks) async {
           await ref

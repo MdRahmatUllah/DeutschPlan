@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:sogda/data/db/app_database.dart' show ExamAttempt;
 import 'package:sogda/data/repositories/exam_repository.dart';
@@ -100,10 +99,7 @@ class ExamRunService {
 
   /// FR-L12S-04: the recording gone from the phone. The row's `given` is
   /// cleared by the runner, which is what zeros the section (#84).
-  Future<void> discard(String path) async {
-    final file = File(path);
-    if (file.existsSync()) await file.delete();
-  }
+  Future<void> discard(String path) => ModelRepository.deleteRecordingAt(path);
 
   Future<void> flag(int attemptId, int ord, {required bool flagged}) =>
       _exams.flag(attemptId: attemptId, ord: ord, flagged: flagged);

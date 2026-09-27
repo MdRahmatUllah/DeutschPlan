@@ -298,39 +298,44 @@ void main() {
     expect(hub, <String>['A1.2']);
   });
 
-  testWidgets('FR-L13-03 no text: the Writing ticks are there but count '
-      'nothing', (tester) async {
-    final rows = <ExamResultRow>[
-      for (final row in artboardRows())
-        row.item is WritingTask
-            ? (
-                ord: row.ord,
-                item: row.item,
-                given: null,
-                points: 0.0,
-                rubric: row.rubric,
-                flagged: false,
-              )
-            : row,
-    ];
-    await pump(
-      tester,
-      with_: StubExamResult(
-        result: (
-          attempt: resultAttempt(),
-          rows: rows,
-          previous: null,
-          passPercent: 60,
-          missed: const <String>[],
-          added: 0,
+  // #703: a text of dots and dashes has no words, which the grading counts:
+  // its ticks scored nothing, yet the sheet offered them.
+  for (final given in <String?>[null, '… !? —']) {
+    testWidgets('FR-L13-03 ${given == null ? '' : '#703 '}no '
+        '${given == null ? 'text' : 'words'}: the Writing ticks are there but '
+        'count nothing', (tester) async {
+      final rows = <ExamResultRow>[
+        for (final row in artboardRows())
+          row.item is WritingTask
+              ? (
+                  ord: row.ord,
+                  item: row.item,
+                  given: given,
+                  points: 0.0,
+                  rubric: row.rubric,
+                  flagged: false,
+                )
+              : row,
+      ];
+      await pump(
+        tester,
+        with_: StubExamResult(
+          result: (
+            attempt: resultAttempt(),
+            rows: rows,
+            previous: null,
+            passPercent: 60,
+            missed: const <String>[],
+            added: 0,
+          ),
         ),
-      ),
-    );
-    await tap(tester, l10n.examSectionWriting);
-    expect(find.text(l10n.examResultRubricNoText), findsOneWidget);
-    await tap(tester, l10n.examWritingRubricTask);
-    expect(stub.rubrics, isEmpty);
-  });
+      );
+      await tap(tester, l10n.examSectionWriting);
+      expect(find.text(l10n.examResultRubricNoText), findsOneWidget);
+      await tap(tester, l10n.examWritingRubricTask);
+      expect(stub.rubrics, isEmpty);
+    });
+  }
 
   testWidgets('FR-L12S-04 from L13: Delete recording, asked first', (
     tester,

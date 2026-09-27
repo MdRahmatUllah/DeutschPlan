@@ -20,6 +20,8 @@ import 'package:sogda/features/words/word_row.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/router/cross_tab.dart';
 import 'package:sogda/router/routes.dart';
+import 'package:flutter/services.dart'
+    show LengthLimitingTextInputFormatter, TextInputFormatter;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -452,6 +454,12 @@ class _Header extends StatelessWidget {
                         // fresh open only; coming back keeps query and scroll.
                         autofocus: true,
                         textInputAction: TextInputAction.search,
+                        // #691 EX-13: what is searched, whole.
+                        inputFormatters: <TextInputFormatter>[
+                          LengthLimitingTextInputFormatter(
+                            SearchRepository.maxQueryLength,
+                          ),
+                        ],
                         onChanged: onChanged,
                         onSubmitted: onSubmitted,
                         style: SgText.styleFor(
@@ -645,17 +653,23 @@ class _Results extends StatelessWidget {
       _Framed(
         children: <Widget>[
           for (final (index, row) in rows.indexed)
-            GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onTap: () {
-                onUse();
-                WordRoute.open(context, row.word.word.uid);
-              },
-              child: WordRow(
-                word: row.word.word,
-                meaning: row.word.meaning,
-                step: row.word.word.word.sublevelCode,
-                last: index == rows.length - 1,
+            // A button a screen reader names by the row's words (#703, as
+            // #445 made My words'); its speaker stays a node of its own.
+            Semantics(
+              container: true,
+              button: true,
+              child: GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: () {
+                  onUse();
+                  WordRoute.open(context, row.word.word.uid);
+                },
+                child: WordRow(
+                  word: row.word.word,
+                  meaning: row.word.meaning,
+                  step: row.word.word.word.sublevelCode,
+                  last: index == rows.length - 1,
+                ),
               ),
             ),
         ],
@@ -808,55 +822,60 @@ class _SentenceRow extends StatelessWidget {
     final head = sentence.article == null
         ? sentence.head
         : '${sentence.article} ${sentence.head}';
-    return GestureDetector(
-      behavior: HitTestBehavior.opaque,
-      onTap: () {
-        onUse();
-        WordRoute.open(context, sentence.wordUid);
-      },
-      child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.fromLTRB(16, 10, 16, 12),
-        decoration: BoxDecoration(
-          color: tokens.surface.card,
-          border: last
-              ? null
-              : Border(bottom: BorderSide(color: tokens.surface.outline)),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            // A long compound breaks at a syllable at 200 %, not at a
-            // letter (#535).
-            SgGermanRuns(<TextSpan>[
-              for (final (text, marked) in sentence.runs)
-                TextSpan(
-                  text: text,
-                  style: marked
-                      ? style.copyWith(
-                          backgroundColor: tokens.color.accent,
-                          color: tokens.color.onAccent,
-                        )
-                      : style,
+    // A button a screen reader names by the sentence (#703).
+    return Semantics(
+      container: true,
+      button: true,
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: () {
+          onUse();
+          WordRoute.open(context, sentence.wordUid);
+        },
+        child: Container(
+          width: double.infinity,
+          padding: const EdgeInsets.fromLTRB(16, 10, 16, 12),
+          decoration: BoxDecoration(
+            color: tokens.surface.card,
+            border: last
+                ? null
+                : Border(bottom: BorderSide(color: tokens.surface.outline)),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              // A long compound breaks at a syllable at 200 %, not at a
+              // letter (#535).
+              SgGermanRuns(<TextSpan>[
+                for (final (text, marked) in sentence.runs)
+                  TextSpan(
+                    text: text,
+                    style: marked
+                        ? style.copyWith(
+                            backgroundColor: tokens.color.accent,
+                            color: tokens.color.onAccent,
+                          )
+                        : style,
+                  ),
+              ]),
+              if (english != null) ...<Widget>[
+                const SizedBox(height: 2),
+                SgText(
+                  english,
+                  role: SgTextRole.label,
+                  weight: 400,
+                  color: tokens.color.textSecondary,
                 ),
-            ]),
-            if (english != null) ...<Widget>[
+              ],
               const SizedBox(height: 2),
               SgText(
-                english,
-                role: SgTextRole.label,
-                weight: 400,
+                // ponytail: allow-literal — a headword and a step code, no number.
+                '$head · ${sentence.step}',
+                role: SgTextRole.caption,
                 color: tokens.color.textSecondary,
               ),
             ],
-            const SizedBox(height: 2),
-            SgText(
-              // ponytail: allow-literal — a headword and a step code, no number.
-              '$head · ${sentence.step}',
-              role: SgTextRole.caption,
-              color: tokens.color.textSecondary,
-            ),
-          ],
+          ),
         ),
       ),
     );
