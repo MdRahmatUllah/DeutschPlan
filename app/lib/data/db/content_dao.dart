@@ -387,18 +387,18 @@ class ContentDao extends DatabaseAccessor<AppDatabase> with _$ContentDaoMixin {
 
     try {
       await _copyAsset(incoming);
-    } on Object {
-      // A copy that fails part-way, on a full disk most likely, leaves a
-      // partial file that nothing will ever read (#617).
-      if (incoming.existsSync()) incoming.deleteSync();
-      rethrow;
-    }
-    await detach();
-    try {
-      incoming.renameSync(installed.path);
+      await detach();
+      try {
+        incoming.renameSync(installed.path);
+      } finally {
+        // Whatever happened, the course has to come back.
+        await attach();
+      }
     } finally {
-      // Whatever happened, the course has to come back.
-      await attach();
+      // A copy, detach or rename that fails, on a full disk most likely,
+      // leaves a file nothing will ever read (#617). After a rename there is
+      // nothing left to delete.
+      if (incoming.existsSync()) incoming.deleteSync();
     }
   }
 

@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/db/content_dao.dart';
 import 'package:drift/drift.dart';
-import 'package:flutter/foundation.dart' show immutable;
+import 'package:flutter/foundation.dart' show debugPrint, immutable;
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:path_provider/path_provider.dart';
 
@@ -112,7 +112,8 @@ class ContentUpdater {
 
     try {
       await _dao.replaceWithBundled();
-    } on Object {
+    } on Object catch (error) {
+      debugPrint('content update: $error');
       // #617: a copy that fails, on a full disk most likely, leaves the old
       // course attached (`replaceWithBundled`). Nothing is recorded and the
       // kept manifest stays the old one, so the next launch tries again. The
