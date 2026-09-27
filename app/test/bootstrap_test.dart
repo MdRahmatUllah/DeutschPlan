@@ -26,10 +26,11 @@ import 'package:drift/native.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart'
-    show Brightness, MaterialApp, Text;
+    show Brightness, Locale, MaterialApp, Text;
 import 'package:path_provider_platform_interface/path_provider_platform_interface.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 import 'package:sqlite3/sqlite3.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
 
 import 'db/content_fixture.dart';
 import 'db/generated/schema_v1.dart' as v1;
@@ -822,6 +823,51 @@ void main() {
       expect(runs, 2);
       expect(wired, <Bootstrap>[ready], reason: 'the retry was not wired');
     });
+
+    testWidgets('FR-S1-03 #720 a start that read ui_language = bn fails in '
+        'Bangla on an English phone', (tester) async {
+      tester.platformDispatcher.localesTestValue = const <Locale>[
+        Locale('en', 'US'),
+      ];
+      addTearDown(tester.platformDispatcher.clearLocalesTestValue);
+      final bn = await AppLocalizations.delegate.load(const Locale('bn'));
+      await tester.pumpWidget(
+        BootstrapHost(
+          run:
+              ({
+                Brightness platformBrightness = Brightness.light,
+                void Function(UiLanguage)? onUiLanguage,
+              }) async {
+                // Settings read, then the course failed to install.
+                onUiLanguage?.call(UiLanguage.bangla);
+                return BootstrapFailed(failureOf(BootstrapStep.content));
+              },
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text(bn.bootstrapErrorContent), findsOneWidget);
+      expect(find.text(bn.retry), findsOneWidget);
+    });
+
+    testWidgets(
+      'FR-S1-03 #720 with nothing read, it is the phone\'s language',
+      (tester) async {
+        tester.platformDispatcher.localesTestValue = const <Locale>[
+          Locale('en', 'US'),
+        ];
+        addTearDown(tester.platformDispatcher.clearLocalesTestValue);
+        await tester.pumpWidget(
+          BootstrapHost(
+            run: ({
+              Brightness platformBrightness = Brightness.light,
+              void Function(UiLanguage)? onUiLanguage,
+            }) async => BootstrapFailed(failureOf(BootstrapStep.database)),
+          ),
+        );
+        await tester.pumpAndSettle();
+        expect(find.text('Sogda could not open your data.'), findsOneWidget);
+      },
+    );
 
     testWidgets('FR-S1-03 #652 a Retry that throws leaves Retry live', (
       tester,

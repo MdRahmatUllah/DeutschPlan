@@ -152,17 +152,23 @@ class BootstrapErrorApp extends StatelessWidget {
     super.key,
     this.onRetry,
     this.onExport,
+    this.locale,
   });
 
   final BootstrapFailure failure;
   final VoidCallback? onRetry;
   final Future<bool> Function()? onExport;
 
+  /// The learner's app language, when bootstrap read it before failing, as
+  /// the splash showed it (#720). Null: the phone's language.
+  final Locale? locale;
+
   @override
   Widget build(BuildContext context) => MaterialApp(
     debugShowCheckedModeBanner: false,
     theme: AppTheme.light(),
     darkTheme: AppTheme.dark(),
+    locale: locale,
     localizationsDelegates: appLocalizationsDelegates,
     supportedLocales: supportedLocales,
     home: BootstrapErrorScreen(
