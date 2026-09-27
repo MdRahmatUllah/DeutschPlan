@@ -279,12 +279,17 @@ void main() {
       expect(tts.said, isEmpty);
     });
 
-    testWidgets('and autoplay says so once, not on every card', (tester) async {
+    testWidgets('#646 and autoplay never says so: the slashed speaker does, '
+        'and a toast would replace the Undo', (tester) async {
       await pump(tester, autoplay: true, voice: false);
       await tester.pump();
-      expect(find.text(l10n.speakerNoVoice), findsOneWidget);
+      expect(find.text(l10n.speakerNoVoice), findsNothing);
 
       await tester.pumpAndSettle();
+      expect(
+        tester.widget<SgSpeakerButton>(find.byType(SgSpeakerButton)).state,
+        SgSpeakerState.unavailable,
+      );
       await tester.pump(SgToast.duration);
       await tester.pumpAndSettle();
       await tester.pumpWidget(
