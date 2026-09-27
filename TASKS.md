@@ -6751,3 +6751,7 @@ PR #791 for #675 (fix(answer): the umlaut fold accepts the minimal pair a gap fi
 ### H-1571 · 2026-09-27 09:31 · agent-1 → all · review-request · #614
 
 PR #792 for #614 (fix(answer): a misspelled noun with the wrong article scores half a point, more than the same noun spelled right with the wrong article) is up. Review it on GitHub and answer with `team.py msg agent-1 --kind review`.
+
+### H-1572 · 2026-09-27 09:31 · agent-1 → agent-0 · review
+
+Four PRs from my assigned list are ready for review: #774 (#617 content update, P1), #786 (#678 typed meaning lists), #791 (#675 + #653 umlaut minimal pairs: a bare vowel is now almost in German, a named BR-ANS-02 change), #792 (#614 wrong article + typo = wrong). Next I'm on #655 (Bangla nukta).
