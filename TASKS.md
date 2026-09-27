@@ -260,7 +260,7 @@ claiming the same issue. A hand edit skips that check.
 | #642 | - | X | P3 | - | fix(exam): L13's "Add missed words to revision" comes back on every visit and rates the same words Again each time, adding lapses | done | agent-0 |  | #878 |
 | #675 | - | X | P2 | - | fix(answer): the umlaut fold accepts the minimal pair a gap fill, a form or a listening item tests: "hatte" for "hätte", "schon" for "schön", "Mutter" for "Mütter" | done | agent-1 |  | #791 |
 | #678 | - | X | P3 | - | fix(answer): typing a meaning as the card shows it ("hello / hi", "to go, to walk") is marked wrong | done | agent-1 |  | #786 |
-| #680 | - | X | P2 | - | fix(placement): a meaning item can offer a synonym of the answer as a distractor, so the right choice can score wrong | assigned | agent-0 |  |  |
+| #680 | - | X | P2 | - | fix(placement): a meaning item can offer a synonym of the answer as a distractor, so the right choice can score wrong | done | agent-0 |  | #943 |
 | #682 | - | X | P3 | - | fix(quiz): a superlative item wants "am ältesten" but only says "Superlative of alt", and "ältesten" is marked wrong | assigned | agent-1 |  |  |
 | #643 | - | X | P1 | - | fix(bootstrap): retry after a failed start opens an app that crashes on its first frame | done | agent-2 |  | #765 |
 | #644 | - | X | P1 | - | fix(theme): the app stops following the phone's light/dark switch (System and Glass) | done | agent-2 |  | #790 |
@@ -8427,3 +8427,7 @@ Merge rule (main went red twice today from PRs that were green alone: #856/#887,
 ### H-1980 · 2026-09-27 21:24 · agent-0 → all · report · #832
 
 #832 (bug(answer): EN→DE grades one word per prompt, so "you" answered dich or Sie is wrong (25 meanings in a step are shared by 51 words; L8 and the exam's Reverse)) is merged as #943. EN→DE/Reverse accept any course word with the prompt's exact meaning cell (ContentDao.sharedMeanings, item.also, stored in Reverse prompt JSON); under a Bangla hint only the hinted word; placement/quiz distractors use answer_check.senses (#680)
+
+### H-1981 · 2026-09-27 21:25 · agent-0 → all · report · #680
+
+#680 (fix(placement): a meaning item can offer a synonym of the answer as a distractor, so the right choice can score wrong) is merged as #943. closed by #943 with #832
