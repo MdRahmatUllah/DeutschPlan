@@ -60,6 +60,9 @@ class GrammarPracticeScreen extends ConsumerStatefulWidget {
 }
 
 class _GrammarPracticeScreenState extends ConsumerState<GrammarPracticeScreen> {
+  /// The plan day it opened on, the one `_finish` asks about and T6
+  /// celebrates, midnight or not (FR-T6-01, #884).
+  late final String _day;
   int _topic = 0;
   int _item = 0;
   int _correct = 0;
@@ -78,6 +81,12 @@ class _GrammarPracticeScreenState extends ConsumerState<GrammarPracticeScreen> {
   bool _banner = false;
   Timer? _hide;
   bool _leaving = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _day = ref.read(todayProvider);
+  }
 
   @override
   void dispose() {
@@ -147,7 +156,7 @@ class _GrammarPracticeScreenState extends ConsumerState<GrammarPracticeScreen> {
 
   /// Every topic done: T6 if that completes the day, else back.
   Future<void> _finish() async {
-    final today = ref.read(todayProvider);
+    final today = _day;
     ref.invalidate(studyNextProvider(today));
     // Listened to while it answers: read alone, an auto-disposing provider
     // can go before its future does.

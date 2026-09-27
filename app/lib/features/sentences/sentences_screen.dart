@@ -129,14 +129,22 @@ class SentencesScreen extends ConsumerStatefulWidget {
 }
 
 class _SentencesScreenState extends ConsumerState<SentencesScreen> {
-  /// The day it opened on, as [PracticeSentences] keeps it (#660).
-  late final String _day = ref.read(todayProvider);
+  /// The day it opened on, as [PracticeSentences] keeps it (#660). Read in
+  /// [initState]: a `late final` initialiser would run at its first read,
+  /// which is `_finish`, past midnight the new day (#884).
+  late final String _day;
   PageController? _pages;
   int _page = 0;
   bool _leaving = false;
 
   /// One answer at a time: a double tap must not rate the word twice.
   bool _busy = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _day = ref.read(todayProvider);
+  }
 
   @override
   void dispose() {
