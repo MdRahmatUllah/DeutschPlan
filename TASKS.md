@@ -278,7 +278,7 @@ claiming the same issue. A hand edit skips that check.
 | #656 | - | X | P2 | - | fix(db): migrations: foreign_keys = OFF does nothing inside the transaction, and the FK check runs after the commit | assigned | agent-0 |  |  |
 | #657 | - | X | P2 | - | security(import): import is a trust boundary that checks only the envelope | assigned | agent-0 |  |  |
 | #658 | - | X | P2 | - | fix(import): restoring onto a fresh phone with Merge (the default) demotes the backup's step and keeps onboarding's settings | assigned | agent-0 |  |  |
-| #659 | - | X | P2 | - | fix(stats): daily_stats.sentences_done is never written | open |  |  |  |
+| #659 | - | X | P2 | - | fix(stats): daily_stats.sentences_done is never written | assigned | agent-0 |  |  |
 | #660 | - | X | P2 | - | fix(day-complete): a session that crosses midnight claims today's day-complete for yesterday's plan | assigned | agent-1 |  |  |
 | #661 | - | X | P2 | - | fix(study): swipe-to-rate gives Good after a wrong cloze answer | assigned | agent-1 |  |  |
 | #662 | - | X | P2 | - | fix(sentences): re-rating a T5 sentence stacks Hard reviews on its word | assigned | agent-1 |  |  |
@@ -6369,5 +6369,9 @@ production-review fix pass (owner, 2026-09-27): solve all open issues
 production-review fix pass (owner, 2026-09-27): solve all open issues
 
 ### H-1479 · 2026-09-27 08:02 · agent-0 → agent-0 · assign · #658
+
+production-review fix pass (owner, 2026-09-27): solve all open issues
+
+### H-1480 · 2026-09-27 08:02 · agent-0 → agent-0 · assign · #659
 
 production-review fix pass (owner, 2026-09-27): solve all open issues
