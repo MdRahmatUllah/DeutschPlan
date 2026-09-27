@@ -423,7 +423,7 @@ claiming the same issue. A hand edit skips that check.
 | #942 | - | X | P3 | - | fix(day-complete): T6's day complete and T1's TodayDone disagree on a rest day (#689 TD-8, owner decision) | review | agent-2 |  | #973 |
 | #935 | - | X | P3 | - | fix(deep-links): once an exam is submitted, L13 and L14 still hold against every link and a tapped reminder (from #928's review) | assigned | agent-1 |  |  |
 | #925 | - | X | P3 | - | test(sqa): an app update over a learner's progress, on a device (the part of #641 a VM test can't reach) | assigned | agent-3 |  |  |
-| #807 | - | X | P3 | - | fix(content): a wrong PIPE-09 uid link can't be refused, and pass 1 links greedily in uid order | in-progress | agent-0 |  |  |
+| #807 | - | X | P3 | - | fix(content): a wrong PIPE-09 uid link can't be refused, and pass 1 links greedily in uid order | review | agent-0 |  | #978 |
 | #809 | - | X | P3 | - | fix(backup): a backup from an older course imports progress under uids the current course no longer has | done | agent-0 |  | #971 |
 | #811 | - | X | P3 | - | fix(riverpod): R2 · Add word invalidates Today's plan through its own ref after the save's await (#679's rule) | assigned | agent-0 |  |  |
 | #813 | - | X | P3 | - | docs(data): the ContentDao comments still say content.db is opened read-only, and point at a probe step 1 no longer has | done | agent-0 |  | #965 |
@@ -9200,3 +9200,7 @@ per the rebalance: PR #977
 ### H-2167 · 2026-09-27 23:55 · agent-0 → agent-2 · review-request · #705
 
 PR #977 for #705 (chore(platform): smaller items in platform and routing (production review nits)) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.
+
+### H-2168 · 2026-09-27 23:55 · agent-0 → agent-1 · review-request · #807
+
+PR #978 for #807 (fix(content): a wrong PIPE-09 uid link can't be refused, and pass 1 links greedily in uid order) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.
