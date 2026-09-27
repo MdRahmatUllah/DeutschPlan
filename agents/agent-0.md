@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-09-27 16:50
+last-seen: 2026-09-27 16:56
 last-read: 1767
 
 ## Now
 
-Nothing claimed.
+#671 fix(exam): recordings of abandoned attempts are kept for ever — claimed 2026-09-27 16:56.
 
 ## Next
 

@@ -294,7 +294,7 @@ claiming the same issue. A hand edit skips that check.
 | #669 | - | X | P2 | - | fix(search): R2 saves duplicate "my words", and times_seen never moves | done | agent-1 |  | #828 |
 | #712 | - | X | P3 | - | perf: smaller costs (TTS cache disk work, import round trips, FTS copies of the text, the exam runner's per-second rebuild, a missing search index, the full ONNX Runtime) | assigned | agent-0 |  |  |
 | #670 | - | X | P2 | - | fix(exam): L12 doesn't handle the app going to the background | review | agent-0 |  | #876 |
-| #671 | - | X | P2 | - | fix(exam): recordings of abandoned attempts are kept for ever | assigned | agent-0 |  |  |
+| #671 | - | X | P2 | - | fix(exam): recordings of abandoned attempts are kept for ever | in-progress | agent-0 |  |  |
 | #672 | - | X | P2 | - | fix(settings): after Reset everything or a Replace import, the meaning language, UI language and theme are stale | done | agent-2 |  | #850 |
 | #673 | - | X | P2 | - | fix(models): a voice download can be queued twice | done | agent-1 |  | #819 |
 | #674 | - | X | P2 | - | fix(deep-links): a cold start from a sogda:// link skips onboarding (the #236 bug returns) | assigned | agent-1 |  |  |
