@@ -16,6 +16,8 @@ import 'package:sogda/services/tts/tts_engine.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import '../../timing.dart';
+
 /// `SupertonicTts` (#152): the engine over a fake voice and player, and the
 /// pipeline's own arithmetic against the reference SDK's numbers. The ONNX
 /// sessions themselves run on the device.
@@ -169,9 +171,7 @@ void main() {
 
     /// Until the model has been asked for [n] clips: the disk is real.
     Future<void> untilAsked(int n) async {
-      for (var i = 0; i < 500 && model.asked.length < n; i++) {
-        await Future<void>.delayed(const Duration(milliseconds: 2));
-      }
+      await until(() => model.asked.length >= n);
     }
 
     Future<void> install() async {
@@ -425,9 +425,7 @@ void main() {
       await install();
       model.gate = Completer<void>();
       final speaking = tts.speak('Haus');
-      for (var i = 0; i < 500 && model.asked.isEmpty; i++) {
-        await Future<void>.delayed(const Duration(milliseconds: 2));
-      }
+      await until(() => model.asked.isNotEmpty);
       final reloading = tts.reload();
       await pumpEventQueue();
       expect(model.closed, isFalse, reason: 'still synthesising');
@@ -533,9 +531,7 @@ void main() {
         // Until the list's first clip is written, and a moment more: without
         // the wait for the speak, the list would ask for its next clip here.
         final eins = await cache.fileFor('eins', voice: 'Anna', speed: 1);
-        for (var i = 0; i < 500 && !eins.existsSync(); i++) {
-          await Future<void>.delayed(const Duration(milliseconds: 2));
-        }
+        await until(eins.existsSync);
         await Future<void>.delayed(const Duration(milliseconds: 100));
         expect(model.asked.map((a) => a.$1), <String>['eins', 'Haus']);
 

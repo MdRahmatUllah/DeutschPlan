@@ -307,9 +307,7 @@ VALUES ('$strasse', 'learning', '2026-09-10', '2026-09-21', 4.5, 5.2, 2, 0,
 
     Future<void> reveal(WidgetTester tester) async {
       await tester.tap(find.text(l10n.studyShowMeaning));
-      await tester.runAsync(
-        () => Future<void>.delayed(const Duration(milliseconds: 50)),
-      );
+      await tester.runAsync(pumpEventQueue);
       await tester.pumpAndSettle();
     }
 
@@ -401,7 +399,7 @@ VALUES ('$strasse', 'learning', '2026-09-10', '2026-09-21', 4.5, 5.2, 2, 0,
 
       await tester.runAsync(() async {
         await tester.tap(find.text(l10n.ratingGood));
-        await Future<void>.delayed(const Duration(milliseconds: 50));
+        await pumpEventQueue();
       });
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 750));
@@ -418,7 +416,7 @@ VALUES ('$strasse', 'learning', '2026-09-10', '2026-09-21', 4.5, 5.2, 2, 0,
 
       await tester.runAsync(() async {
         await tester.tap(find.text(l10n.undo));
-        await Future<void>.delayed(const Duration(milliseconds: 50));
+        await pumpEventQueue();
       });
       await tester.pumpAndSettle();
       expect(
@@ -448,7 +446,7 @@ VALUES ('$strasse', 'learning', '2026-09-10', '2026-09-21', 4.5, 5.2, 2, 0,
 
         await tester.runAsync(() async {
           await tester.tap(find.text(l10n.ratingGood));
-          await Future<void>.delayed(const Duration(milliseconds: 50));
+          await pumpEventQueue();
         });
         await tester.pump();
         for (var frame = 0; frame < 4; frame++) {
@@ -480,9 +478,7 @@ VALUES ('$strasse', 'learning', '2026-09-10', '2026-09-21', 4.5, 5.2, 2, 0,
         // And it still works. Tapped outside runAsync: the bar's exit then
         // finishes in the test's own clock, not after the test.
         await tester.tap(find.text(l10n.undo));
-        await tester.runAsync(
-          () => Future<void>.delayed(const Duration(milliseconds: 50)),
-        );
+        await tester.runAsync(pumpEventQueue);
         await tester.pumpAndSettle();
         expect(
           container.read(studySessionProvider(args)).value?.current?.uid,
@@ -500,7 +496,7 @@ VALUES ('$strasse', 'learning', '2026-09-10', '2026-09-21', 4.5, 5.2, 2, 0,
       await reveal(tester);
       await tester.runAsync(() async {
         await tester.tap(find.text(l10n.ratingGood));
-        await Future<void>.delayed(const Duration(milliseconds: 50));
+        await pumpEventQueue();
       });
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 750));
@@ -545,7 +541,7 @@ VALUES ('$strasse', 'learning', '2026-09-10', '2026-09-21', 4.5, 5.2, 2, 0,
       await reveal(tester);
       await tester.runAsync(() async {
         await tester.tap(find.text(l10n.ratingGood));
-        await Future<void>.delayed(const Duration(milliseconds: 50));
+        await pumpEventQueue();
       });
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 750));
@@ -586,7 +582,7 @@ VALUES ('$strasse', 'learning', '2026-09-10', '2026-09-21', 4.5, 5.2, 2, 0,
       Future<void> tap(WidgetTester tester, String text) async {
         await tester.runAsync(() async {
           await tester.tap(find.text(text));
-          await Future<void>.delayed(const Duration(milliseconds: 50));
+          await pumpEventQueue();
         });
         await tester.pumpAndSettle();
       }
