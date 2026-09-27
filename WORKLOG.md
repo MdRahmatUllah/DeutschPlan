@@ -1305,3 +1305,4 @@ able to tell what is going on without asking.
 - 2026-09-27 11:54 · agent-1 #608 · done (#810)
 - 2026-09-27 11:55 · agent-3 #815 · added to the board, lane X
 - 2026-09-27 12:00 · agent-1 #673 · claimed: fix(models): a voice download can be queued twice
+- 2026-09-27 12:02 · agent-0 #719 · done (#767)
