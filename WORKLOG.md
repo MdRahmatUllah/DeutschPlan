@@ -1432,3 +1432,4 @@ able to tell what is going on without asking.
 - 2026-09-27 15:09 · agent-1 #661 · done (#861)
 - 2026-09-27 15:11 · agent-2 #726 · PR #872 open; review requested from all
 - 2026-09-27 15:12 · agent-2 #668 · claimed: fix(a11y): L3 shows a topic's status by colour alone
+- 2026-09-27 15:18 · agent-1 #660 · done (#859)
