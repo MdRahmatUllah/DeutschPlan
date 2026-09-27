@@ -215,6 +215,52 @@ VALUES (?, ?, ?, ?, ?)
       );
     });
 
+    test('#715 the same words as the NOT EXISTS it replaced, over a mixed '
+        'plan', () async {
+      // Planned new (the backlog), planned only to revise, suspended,
+      // learning, and untouched.
+      await store.addToPlan(monday, PlanKind.newWord, <String>['s1', 's2']);
+      await store.addToPlan(addDays(monday, 1), PlanKind.newWord, <String>[
+        's5',
+      ]);
+      await store.addToPlan(monday, PlanKind.revise, <String>['s3', 's4']);
+      await wordState('s6', status: 'suspended');
+      await wordState('s7');
+
+      final before = await db.customSelect('''
+SELECT w.uid AS uid
+FROM words w
+LEFT JOIN word_state s ON s.word_uid = w.uid
+WHERE w.sublevel_code = 'A1.1'
+  AND COALESCE(s.status, 'todo') = 'todo'
+  AND NOT EXISTS (
+    SELECT 1 FROM plan_items p WHERE p.word_uid = w.uid AND p.kind = 'new'
+  )
+ORDER BY w.seq_in_sublevel
+''').get();
+      final picked = await store.unplannedWords('A1.1', limit: 100);
+
+      expect(picked, <String>[for (final row in before) row.read('uid')]);
+      expect(picked, containsAll(<String>['s3', 's4', 's8']));
+      expect(picked, isNot(contains('s1')));
+    });
+
+    test('#715 the planned words are read once, not once per word', () async {
+      final plan = await db
+          .customSelect(
+            'EXPLAIN QUERY PLAN ${DriftPlanStore.unplannedWordsSql}',
+            variables: <Variable<Object>>[
+              Variable<String>('A1.1'),
+              Variable<int>(7),
+            ],
+          )
+          .get();
+      final steps = <String>[for (final row in plan) row.read('detail')];
+
+      expect(steps, isNot(contains(contains('CORRELATED'))));
+      expect(steps, contains(startsWith('LIST SUBQUERY')));
+    });
+
     test('a limit of zero asks for nothing', () async {
       expect(await store.unplannedWords('A1.1', limit: 0), isEmpty);
     });
