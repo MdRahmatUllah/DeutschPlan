@@ -328,7 +328,7 @@ claiming the same issue. A hand edit skips that check.
 | #703 | - | X | P3 | - | chore(exam): smaller items in Exam, search and words (production review nits) | assigned | agent-1 |  |  |
 | #704 | - | X | P3 | - | chore(me): smaller items in Me and onboarding (production review nits) | assigned | agent-2 |  |  |
 | #717 | - | X | P3 | - | fix(data): multi-rating actions (L13's missed words, L9's add to revision, W1's Mark known) span several transactions, so a failure half way leaves some words rated and a retry rates them again | open |  |  |  |
-| #705 | - | X | P3 | - | chore(platform): smaller items in platform and routing (production review nits) | open |  |  |  |
+| #705 | - | X | P3 | - | chore(platform): smaller items in platform and routing (production review nits) | assigned | agent-2 |  |  |
 | #706 | - | X | P3 | - | test(misc): smaller items in tests (production review nits) | open |  |  |  |
 | #707 | - | X | P3 | - | chore(tools): smaller items in tools (production review nits) | open |  |  |  |
 | #718 | - | X | P3 | - | fix(content-build): the database and the manifest take built_at from two clocks, so about 8 % of builds fail the FR-M9-01 test that says they agree | open |  |  |  |
@@ -6285,5 +6285,9 @@ production-review fix pass (owner, 2026-09-27): solve all open issues
 production-review fix pass (owner, 2026-09-27): solve all open issues
 
 ### H-1458 · 2026-09-27 08:01 · agent-0 → agent-2 · assign · #693
+
+production-review fix pass (owner, 2026-09-27): solve all open issues
+
+### H-1459 · 2026-09-27 08:01 · agent-0 → agent-2 · assign · #705
 
 production-review fix pass (owner, 2026-09-27): solve all open issues
