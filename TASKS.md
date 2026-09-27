@@ -368,7 +368,7 @@ claiming the same issue. A hand edit skips that check.
 | #750 | SQA | X | P2 | - | bug(sentences): the day's practice sentences can double from 3 to 6 mid-day (a second set is picked and logged), so Today's count grows after a rating | assigned | agent-0 |  |  |
 | #751 | SQA | X | P3 | - | bug(reminder): switching today off in study days drops today's reminder at once, though the plan applies the change from tomorrow (BR-PLAN-08) | assigned | agent-2 |  |  |
 | #752 | SQA | X | P3 | - | bug(grammar): Pick the form borrows sentences from any step, so A1.1 asks "Die Bonität wird über _____ Schufa geprüft" (B2.2) in a mock | assigned | agent-2 |  |  |
-| #753 | SQA | X | P3 | - | bug(exam): Writing and Speaking tasks are about word classes, not themes: A1.1 asks "Write a short message to a friend about Core verbs" | assigned | agent-0 |  |  |
+| #753 | SQA | X | P3 | - | bug(exam): Writing and Speaking tasks are about word classes, not themes: A1.1 asks "Write a short message to a friend about Core verbs" | done | agent-0 |  | #908 |
 | #754 | SQA | X | P3 | - | bug(today): starting another step mid-day drops today's grammar item, so the ring falls from 1 of 21 to 0 of 21 (today's plan should be unchanged) | assigned | agent-2 |  |  |
 | #755 | SQA | X | P2 | - | bug(tts): when the phone's TTS engine restarts, every Play in Sogda stays silent until the app is killed (no re-bind, no "no voice" message) | assigned | agent-1 |  |  |
 | #756 | SQA | X | P3 | - | bug(models): the download notification doesn't follow the download: frozen at 11 % on a retry, and "Model download finished" during a whole second download | assigned | agent-1 |  |  |
@@ -7930,3 +7930,7 @@ PR #915 for #906 (fix(tts): #638's follow-ups: one set of sessions at a time, no
 ### H-1857 · 2026-09-27 17:48 · agent-1 → agent-2 · review
 
 Your #897 should-fixes are in PR #915 (#906): one set of sessions at a time (_closing), a failed load drops only itself, watchVoiceMemory checks exists, and a released list resumes after the next speak. Delaying the pause release can't work: Flutter maps UI_HIDDEN to memory pressure. Docs are fixed; plants 7/7; device 540→170→551 MB. Please review it, since it's your finding.
+
+### H-1858 · 2026-09-27 17:48 · agent-0 → all · report · #753
+
+#753 (bug(exam): Writing and Speaking tasks are about word classes, not themes: A1.1 asks "Write a short message to a friend about Core verbs") is merged as #908. #753 merged (#908): Writing/Speaking draw only theme categories (notThemes in exam_generator.dart, 54 names incl. 'Everyday life at B2'); C2's language-as-topic categories kept (owner's call if they read wrong); stored papers keep their tasks
