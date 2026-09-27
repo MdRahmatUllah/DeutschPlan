@@ -650,6 +650,95 @@ void main() {
       );
     });
 
+    test('#906 one set of sessions at a time: a speak during a release waits '
+        'for the old set to close before it opens the new', () async {
+      await install();
+      final closedAtLoad = <bool>[];
+      tts = SupertonicTts(
+        models: models,
+        settings: settings,
+        cache: cache,
+        load: (dir) async {
+          loads.add(dir);
+          closedAtLoad.add(model.closed);
+          return model;
+        },
+        player: player,
+      );
+      model.gate = Completer<void>();
+      final first = tts.speak('Haus');
+      await until(() => loads.length == 1);
+      final released = tts.release();
+      final second = tts.speak('die Tür');
+      // A wait for something not to happen: the second speak reaching its
+      // load while the first set is still open.
+      await Future<void>.delayed(const Duration(milliseconds: 100));
+      expect(loads, hasLength(1), reason: 'not while the old set is open');
+
+      model.gate!.complete();
+      await first;
+      await released;
+      expect(await second, isTrue);
+      expect(closedAtLoad, <bool>[false, true]);
+    });
+
+    test('#906 a load that fails after a release leaves the newer load '
+        'owned: its sessions still close', () async {
+      await install();
+      final failing = Completer<SupertonicModel>();
+      final newer = _Model();
+      var calls = 0;
+      tts = SupertonicTts(
+        models: models,
+        settings: settings,
+        cache: cache,
+        load: (dir) => ++calls == 1 ? failing.future : Future.value(newer),
+        player: player,
+      );
+      final first = tts.speak('Haus');
+      await until(() => calls == 1);
+      final released = tts.release();
+      final second = tts.speak('die Tür');
+      // Time for the second speak to reach its own load before the first
+      // fails, the order the bug needs: longer on a busy machine, never red.
+      await Future<void>.delayed(const Duration(milliseconds: 100));
+
+      failing.completeError(StateError('not enough memory'));
+      await expectLater(first, throwsStateError);
+      await released;
+      expect(await second, isTrue);
+
+      await tts.release();
+      expect(newer.closed, isTrue);
+    });
+
+    test('#906 the list a release stopped goes on after the next speak, and '
+        'one its screen stopped does not', () async {
+      await install();
+      final list = <String>['das Haus', 'die Tür', 'die Straße'];
+      final files = <File>[
+        for (final text in list)
+          await cache.fileFor(text, voice: 'Anna', speed: 1),
+      ];
+
+      final prepared = tts.prepare(list);
+      await tts.release();
+      await prepared;
+      await tts.speak('das Haus');
+      await until(() => files.every((file) => file.existsSync()));
+
+      final other = <String>['der Tisch', 'die Lampe'];
+      final again = tts.prepare(other);
+      await tts.release();
+      await again;
+      await tts.stopPreparing(other);
+      await tts.speak('der Tisch');
+      // A wait for something not to happen: its list would have made it by
+      // now, as the one above did.
+      await Future<void>.delayed(const Duration(milliseconds: 100));
+      expect(model.asked.map((a) => a.$1), isNot(contains('die Lampe')));
+    });
+
     test('#638 with nothing open, release opens nothing', () async {
       await install();
       await tts.release();
