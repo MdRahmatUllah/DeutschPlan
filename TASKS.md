@@ -272,7 +272,7 @@ claiming the same issue. A hand edit skips that check.
 | #650 | - | X | P2 | - | fix(glass): the glass frame watchdog counts idle time as missed frames, and runs in every theme | open |  |  |  |
 | #651 | - | X | P2 | - | fix(a11y): in Glass dark, a selected filter chip's label is about 1.4:1 against its fill | open |  |  |  |
 | #652 | - | X | P2 | - | fix(bootstrap): the bootstrap error screen's Retry and Export have no error handling | open |  |  |  |
-| #653 | - | X | P2 | - | fix(answer): checkForm waives the umlaut that is the very thing a forms question asks | open |  |  |  |
+| #653 | - | X | P2 | - | fix(answer): checkForm waives the umlaut that is the very thing a forms question asks | assigned | agent-1 |  |  |
 | #654 | - | X | P2 | - | fix(sentences): practice-sentence coverage is inflated by short learned keys | open |  |  |  |
 | #655 | - | X | P2 | - | fix(answer): typed Bangla answers aren't normalised for the precomposed nukta letters | open |  |  |  |
 | #656 | - | X | P2 | - | fix(db): migrations: foreign_keys = OFF does nothing inside the transaction, and the FK check runs after the commit | open |  |  |  |
@@ -5921,5 +5921,9 @@ production-review fix pass (owner, 2026-09-27): solve all open issues
 production-review fix pass (owner, 2026-09-27): solve all open issues
 
 ### H-1367 · 2026-09-27 07:53 · agent-0 → agent-1 · assign · #614
+
+production-review fix pass (owner, 2026-09-27): solve all open issues
+
+### H-1368 · 2026-09-27 07:53 · agent-0 → agent-1 · assign · #653
 
 production-review fix pass (owner, 2026-09-27): solve all open issues
