@@ -355,7 +355,7 @@ claiming the same issue. A hand edit skips that check.
 | #738 | - | X | P3 | - | chore(copy, docs): smaller copy and docs items not in #596, #684 or #696 (production review nits) | open |  |  |  |
 | #739 | - | X | P3 | - | chore(release): decide the version of the first Sogda build: main is still 1.0.1+2, the version tagged under the old name and app id | open |  |  |  |
 | #740 | - | X | P3 | - | fix(a11y): setup's "Step N of 5" is exposed twice on every page, so a screen reader announces it twice | open |  |  |  |
-| #741 | - | X | P3 | - | fix(a11y): T5's sentence exposes every space and punctuation mark as its own accessibility node | open |  |  |  |
+| #741 | - | X | P3 | - | fix(a11y): T5's sentence exposes every space and punctuation mark as its own accessibility node | assigned | agent-1 |  |  |
 | #742 | - | X | P3 | - | fix(study): after each rating, the Undo snackbar covers the upper half of T2's "I know it" and "Skip → backlog" actions | open |  |  |  |
 | #743 | - | X | P2 | - | fix(a11y): Bangla labels on buttons, chips, ratings, the back button and switches lose their bn-BD tag, so TalkBack reads them with the English voice | open |  |  |  |
 | #744 | - | X | P3 | - | fix(splash): on short phones the scaled lockup's progress-rule slot sits flush on the caption (0 dp gap) | open |  |  |  |
@@ -6009,5 +6009,9 @@ production-review fix pass (owner, 2026-09-27): solve all open issues
 production-review fix pass (owner, 2026-09-27): solve all open issues
 
 ### H-1389 · 2026-09-27 07:55 · agent-0 → agent-1 · assign · #724
+
+production-review fix pass (owner, 2026-09-27): solve all open issues
+
+### H-1390 · 2026-09-27 07:55 · agent-0 → agent-1 · assign · #741
 
 production-review fix pass (owner, 2026-09-27): solve all open issues
