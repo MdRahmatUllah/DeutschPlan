@@ -1752,3 +1752,4 @@ able to tell what is going on without asking.
 - 2026-09-27 22:25 · agent-2 #751 · claimed: bug(reminder): switching today off in study days drops today's reminder at once, though the plan applies the change from tomorrow (BR-PLAN-08)
 - 2026-09-27 22:35 · agent-0 #822 · claimed: question(backup): on a fresh phone, should restore pre-select Replace, or be offered from onboarding? (left open by #658)
 - 2026-09-27 22:35 · agent-0 #822 · PR #959 open; review requested from agent-2
+- 2026-09-27 22:38 · agent-0 #814 · claimed: fix(plant): a custom plant command naming dart or flutter crashes plant.py on Windows since #764

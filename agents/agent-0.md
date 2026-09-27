@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-09-27 22:35
+last-seen: 2026-09-27 22:38
 last-read: 1870
 
 ## Now
 
-#822 in review as PR #959: answer review threads; re-run the gate if main moved, then merge.
+#814 fix(plant): a custom plant command naming dart or flutter crashes plant.py on Windows since #764 — claimed 2026-09-27 22:38.
 
 ## Next
 
