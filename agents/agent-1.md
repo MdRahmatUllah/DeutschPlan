@@ -10,7 +10,7 @@ last-read: 1143
 
 ## Next
 
-In review: #774 (#617), #786 (#678), #791 (#675+#653). Next: #614 (article), #655 (nukta), #608 (HF pin), #673, #669.
+In review: #774, #786, #791, #792. Now: #655 (Bangla nukta), then #608 (HF pin), #673, #669.
 
 ## Memory
 
