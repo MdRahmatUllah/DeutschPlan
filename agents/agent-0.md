@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-09-27 12:46
+last-seen: 2026-09-27 12:48
 last-read: 1655
 
 ## Now
 
-#619 in review as PR #829: answer review threads; re-run the gate if main moved, then merge.
+#707 chore(tools): smaller items in tools (production review nits) — claimed 2026-09-27 12:48.
 
 ## Next
 
