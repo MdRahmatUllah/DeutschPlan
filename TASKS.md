@@ -336,7 +336,7 @@ claiming the same issue. A hand edit skips that check.
 | #720 | - | X | P3 | - | fix(bootstrap): the start-up error screen ignores the learner's app language and follows the phone's | assigned | agent-2 |  |  |
 | #721 | - | X | P3 | - | chore(me): smaller items in Me and onboarding not in #692 or #704 (production review nits) | assigned | agent-2 |  |  |
 | #722 | - | X | P3 | - | chore(tools): smaller items in tools and content not in #697 (production review nits) | open |  |  |  |
-| #723 | - | X | P3 | - | docs(data): content.db is documented as read-only and user.db by the wrong name, the update flow is stale, and the manifest is decoded twice on every start | open |  |  |  |
+| #723 | - | X | P3 | - | docs(data): content.db is documented as read-only and user.db by the wrong name, the update flow is stale, and the manifest is decoded twice on every start | assigned | agent-0 |  |  |
 | #714 | - | X | P2 | - | fix(pipeline): renaming an optional column header silently drops that column for the whole workbook, and renaming POS changes every uid in it | open |  |  |  |
 | #724 | SQA | X | P3 | - | bug(sentences): tapping a du-imperative in T5 ("Mach die Lampe an.") says "Not a word from the course" for a course verb — 94 example sentences open with one | assigned | agent-1 |  |  |
 | #725 | - | X | P2 | - | fix(exam): when L13's result fails to load, the learner can't leave: no close button, and back is swallowed | assigned | agent-2 |  |  |
@@ -6385,5 +6385,9 @@ production-review fix pass (owner, 2026-09-27): solve all open issues
 production-review fix pass (owner, 2026-09-27): solve all open issues
 
 ### H-1483 · 2026-09-27 08:03 · agent-0 → agent-0 · assign · #717
+
+production-review fix pass (owner, 2026-09-27): solve all open issues
+
+### H-1484 · 2026-09-27 08:03 · agent-0 → agent-0 · assign · #723
 
 production-review fix pass (owner, 2026-09-27): solve all open issues
