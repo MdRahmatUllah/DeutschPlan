@@ -626,6 +626,34 @@ void main() {
       },
     );
 
+    test('a move that fails moves nothing, and the next launch moves it '
+        'all', () async {
+      await learnHaus();
+      // The last table in the list fails, after the others have moved.
+      await db.customStatement(
+        'CREATE TRIGGER fail_move BEFORE UPDATE OF matched_uid ON custom_words '
+        "BEGIN SELECT RAISE(ABORT, 'disk full'); END",
+      );
+      publish(glossFixed());
+      await expectLater(updater.runIfNeeded(), throwsA(anything));
+
+      for (final (table, column) in ContentUpdater.aliasedColumns) {
+        expect(
+          await count(table, column, ContentFixture.haus),
+          1,
+          reason: '$table.$column rolled back',
+        );
+        expect(await count(table, column, home), 0, reason: '$table.$column');
+      }
+      expect(await count('content_updates', 'version', '202602020000'), 0);
+
+      await db.customStatement('DROP TRIGGER fail_move');
+      await updater.runIfNeeded();
+      for (final (table, column) in ContentUpdater.aliasedColumns) {
+        expect(await count(table, column, home), 1, reason: '$table.$column');
+      }
+    });
+
     test('every user.db column named for a word uid is moved', () async {
       // A table added later with a word_uid column, and left out of the
       // list, would lose its rows on the next gloss fix.
