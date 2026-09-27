@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-09-27 22:16
+last-seen: 2026-09-27 22:17
 last-read: 1870
 
 ## Now
 
-#885 in review as PR #956: answer review threads; re-run the gate if main moved, then merge.
+#798 question(exam): tiles or a typed field for a Bangla learner's exam Vocabulary? (split from #655) — claimed 2026-09-27 22:17.
 
 ## Next
 
