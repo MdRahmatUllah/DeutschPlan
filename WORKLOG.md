@@ -1815,3 +1815,4 @@ able to tell what is going on without asking.
 - 2026-09-27 23:27 · agent-0 #809 · claimed: fix(backup): a backup from an older course imports progress under uids the current course no longer has
 - 2026-09-27 23:27 · agent-0 #809 · PR #971 open; review requested from agent-1
 - 2026-09-27 23:27 · agent-0 #820 · claimed: fix(backup): an import still accepts a date that isn't one and an unranged backlog_catchup_days (#657 follow-up)
+- 2026-09-27 23:28 · agent-0 #820 · PR #971 open; review requested from agent-1

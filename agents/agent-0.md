@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-09-27 23:27
+last-seen: 2026-09-27 23:28
 last-read: 1870
 
 ## Now
 
-#820 fix(backup): an import still accepts a date that isn't one and an unranged backlog_catchup_days (#657 follow-up) — claimed 2026-09-27 23:27.
+#820 in review as PR #971: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
