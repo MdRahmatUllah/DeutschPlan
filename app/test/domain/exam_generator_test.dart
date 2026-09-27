@@ -391,6 +391,99 @@ void main() {
       }
     });
 
+    test('#798 in Bangla, Vocabulary is four tiles: the Bangla meaning and '
+        'three others, seeded apart from the paper', () {
+      final bangla = buildExam(pool(), seed: 1, bangla: true);
+      final asked = <WordQuestion>[
+        for (final item in bangla.items.whereType<WordQuestion>())
+          if (item.section == ExamSection.vocabulary) item,
+      ];
+      expect(asked.where((item) => item.tiles.isNotEmpty), isNotEmpty);
+      for (final item in asked) {
+        if (int.parse(item.ref.substring(1)) % 5 == 0) {
+          expect(item.tiles, isEmpty, reason: 'an English meaning is typed');
+          expect(item.options, isNull);
+          continue;
+        }
+        expect(item.tiles, hasLength(4));
+        expect(item.tiles.toSet(), hasLength(4));
+        expect(item.tiles, contains(item.expected));
+        expect(item.tiles.every((t) => t.startsWith('অর্থ ')), isTrue);
+        expect(item.options, item.tiles, reason: 'stored in options_json');
+      }
+      expect(
+        <int>{
+          for (final item in asked)
+            if (item.tiles.isNotEmpty) item.tiles.indexOf(item.expected),
+        },
+        hasLength(greaterThan(1)),
+        reason: 'the answer is not always the first tile',
+      );
+      // The same seed, the same tiles; and the paper draws what it draws
+      // without them.
+      expect(
+        <ExamRow>[
+          for (final item in buildExam(pool(), seed: 1, bangla: true).items)
+            item.encode(),
+        ],
+        <ExamRow>[for (final item in bangla.items) item.encode()],
+      );
+      expect(
+        <String>[for (final item in bangla.items) item.ref],
+        <String>[for (final item in exam.items) item.ref],
+      );
+      expect(
+        bangla.items.whereType<WritingTask>().single.targets,
+        exam.items.whereType<WritingTask>().single.targets,
+      );
+      expect(
+        exam.items.whereType<WordQuestion>().every((i) => i.tiles.isEmpty),
+        isTrue,
+        reason: 'an English learner types',
+      );
+    });
+
+    test('#798 a tile never shares a sense with the answer', () {
+      // Pairs of words, each pair a part of speech of its own, so without
+      // the check a word's partner is always its first distractor: an even
+      // pair shares an English sense (#943's `senses`), an odd one a Bangla
+      // alternative.
+      final words = <ExamWord>[
+        for (var i = 0; i < 80; i++)
+          ExamWord(
+            word: QuizWord(
+              uid: 'w$i',
+              german: 'Wort${tag(i)}',
+              english: (i ~/ 2).isEven
+                  ? 'to word $i, to sense ${i ~/ 2}'
+                  : 'word $i',
+              step: 'A1.1',
+              pos: 'p${i ~/ 2}',
+              bangla: (i ~/ 2).isEven ? 'অর্থ $i' : 'অর্থ $i / ভাব ${i ~/ 2}',
+            ),
+          ),
+      ];
+      final paired = ExamPool(
+        step: 'A1.1',
+        level: 'A1',
+        words: words,
+        topics: const <GrammarSource>[],
+      );
+      var asked = 0;
+      for (var seed = 1; seed <= 3; seed++) {
+        for (final item in buildExam(paired, seed: seed, bangla: true).items) {
+          if (item is! WordQuestion || item.section != ExamSection.vocabulary) {
+            continue;
+          }
+          final i = int.parse(item.ref.substring(1));
+          expect(item.tiles, hasLength(4));
+          expect(item.tiles, isNot(contains(words[i ^ 1].word.bangla)));
+          asked++;
+        }
+      }
+      expect(asked, 30);
+    });
+
     test('Reverse: the meaning, the headword with its article expected', () {
       for (final item in of<WordQuestion>(ExamSection.reverse)) {
         final i = int.parse(item.ref.substring(1));
@@ -679,12 +772,15 @@ void main() {
   });
 
   group('FR-L12-01 a paper survives being stored', () {
-    test('every item decodes to what was encoded', () {
+    test('every item decodes to what was encoded, #798 tiles too', () {
       for (var seed = 1; seed <= 3; seed++) {
-        for (final item in buildExam(pool(), seed: seed).items) {
-          final row = item.encode();
-          expect(ExamItem.decode(row).encode(), row, reason: row.prompt);
-          expect(ExamItem.decode(row).runtimeType, item.runtimeType);
+        for (final bangla in <bool>[false, true]) {
+          final exam = buildExam(pool(), seed: seed, bangla: bangla);
+          for (final item in exam.items) {
+            final row = item.encode();
+            expect(ExamItem.decode(row).encode(), row, reason: row.prompt);
+            expect(ExamItem.decode(row).runtimeType, item.runtimeType);
+          }
         }
       }
     });

@@ -15,8 +15,18 @@ import 'package:sogda/domain/text_norm.dart';
 /// The verdict [given] earns on a question item; null for Writing and
 /// Speaking, which have no single right answer.
 Verdict? verdictFor(ExamItem item, String given) => switch (item) {
-  WordQuestion(:final section, :final expected, :final phrase, :final also) =>
+  WordQuestion(
+    :final section,
+    :final expected,
+    :final phrase,
+    :final also,
+    :final tiles,
+  ) =>
     switch (section) {
+      // A tile is the answer or it isn't (#798), as the quiz's: its text is
+      // the whole cell, which `checkMeaning` would split and match none of.
+      _ when tiles.isNotEmpty =>
+        given == expected ? Verdict.correct : Verdict.wrong,
       ExamSection.vocabulary => checkMeaning(given, expected),
       ExamSection.articles => checkArticle(given, expected),
       ExamSection.wordForms => checkForm(given, expected),
