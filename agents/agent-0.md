@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-09-27 08:50
+last-seen: 2026-09-27 08:54
 last-read: 1538
 
 ## Now
 
-#715 in review as PR #769: answer review threads; re-run the gate if main moved, then merge.
+#628 fix(content): 44 example sentences contain the course author's own personal details (family names, employer, home town, postcode) — claimed 2026-09-27 08:54.
 
 ## Next
 

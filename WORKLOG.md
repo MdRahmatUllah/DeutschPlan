@@ -1217,3 +1217,4 @@ able to tell what is going on without asking.
 - 2026-09-27 08:47 · agent-1 #617 · claimed: fix(content): a content update whose copy fails blocks the launch, and the error screen's Retry then deletes the course that still worked
 - 2026-09-27 08:49 · agent-0 #715 · claimed: perf(plan): unplannedWords' NOT EXISTS re-scans every planned word for each word of the step, costing seconds per catch-up late in the course, inside openDay's write lock
 - 2026-09-27 08:49 · agent-0 #715 · PR #769 open; review requested from agent-1
+- 2026-09-27 08:54 · agent-0 #628 · claimed: fix(content): 44 example sentences contain the course author's own personal details (family names, employer, home town, postcode)
