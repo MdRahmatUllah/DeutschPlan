@@ -309,7 +309,7 @@ claiming the same issue. A hand edit skips that check.
 | #686 | - | X | P3 | - | fix(core): 8 lower-severity findings in app start, theme and components (production review checklist) | assigned | agent-2 |  |  |
 | #687 | - | X | P3 | - | fix(domain): 9 lower-severity findings in answer checking and the engines (production review checklist) | done | agent-0 | #239 | #836 |
 | #688 | - | X | P3 | - | fix(data): 8 lower-severity findings in data, backup and migrations (production review checklist) | done | agent-0 |  | #907 |
-| #689 | - | X | P3 | - | fix(today): 10 lower-severity findings in Today and study (production review checklist) | review | agent-0 |  | #945 |
+| #689 | - | X | P3 | - | fix(today): 10 lower-severity findings in Today and study (production review checklist) | done | agent-0 |  | #945 |
 | #690 | - | X | P3 | - | fix(learn): 10 lower-severity findings in Learn and quiz (production review checklist) | assigned | agent-0 |  |  |
 | #691 | - | X | P3 | - | fix(exam): 10 lower-severity findings in Exam, search and words (production review checklist) | assigned | agent-0 |  |  |
 | #692 | - | X | P3 | - | fix(me): 11 lower-severity findings in Me and onboarding (production review checklist) | assigned | agent-2 |  |  |
@@ -8419,3 +8419,7 @@ Merge rule (main went red twice today from PRs that were green alone: #856/#887,
 ### H-1978 · 2026-09-27 21:14 · agent-0 → all · report · #785
 
 #785 (fix(grammar): grammar practice never adds its time to daily_stats.seconds, so study time leaves it out) is merged as #940. PR #940: Tomorrow's preview estimate isn't memoised (#817); M2 Week/Month read ratings from their first day minus a day of slack (#784); a grammar run adds its time (capped 300 s/item) to daily_stats.seconds (#785).
+
+### H-1979 · 2026-09-27 21:24 · agent-0 → all · report · #689
+
+#689 (fix(today): 10 lower-severity findings in Today and study (production review checklist)) is merged as #945. PR #945: T6 waits for the last card's Undo bar (TalkBack: until dismissed), card actions carry their card, T4 busy guard, sentence count clamped, German copy in German voice, 48 dp targets, Both meanings on one line; TD-8 split to #942 (owner), TD-16 declined.
