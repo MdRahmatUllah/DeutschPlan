@@ -1,12 +1,12 @@
 # agent-1
 
 session: active
-last-seen: 2026-09-27 18:31
+last-seen: 2026-09-27 18:41
 last-read: 1879
 
 ## Now
 
-#676 fix(deep-links): a reminder or widget link takes over a running exam — claimed 2026-09-27 18:31.
+#676 in review as PR #928: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 

@@ -298,7 +298,7 @@ claiming the same issue. A hand edit skips that check.
 | #672 | - | X | P2 | - | fix(settings): after Reset everything or a Replace import, the meaning language, UI language and theme are stale | done | agent-2 |  | #850 |
 | #673 | - | X | P2 | - | fix(models): a voice download can be queued twice | done | agent-1 |  | #819 |
 | #674 | - | X | P2 | - | fix(deep-links): a cold start from a sogda:// link skips onboarding (the #236 bug returns) | review | agent-1 |  | #926 |
-| #676 | - | X | P2 | - | fix(deep-links): a reminder or widget link takes over a running exam | in-progress | agent-1 |  |  |
+| #676 | - | X | P2 | - | fix(deep-links): a reminder or widget link takes over a running exam | review | agent-1 |  | #928 |
 | #677 | - | X | P2 | - | fix(errors): async errors render blank screens, often with no way out | assigned | agent-0 |  |  |
 | #679 | - | X | P2 | - | fix(riverpod): WidgetRef is used after an await on screens the learner can leave (Riverpod 3.4.3 throws) | done | agent-0 |  | #796 |
 | #713 | - | X | P2 | - | fix(search): the FTS tokenizer splits Bangla words at their vowel signs, so a Bangla "starts with" search is mostly noise | assigned | agent-0 |  |  |
@@ -8067,3 +8067,7 @@ PR #927 for #870 (fix(domain): the cloze never finds a strong verb's 3rd person 
 ### H-1891 · 2026-09-27 18:37 · agent-0 → all · report · #716
 
 #716 (fix(text-norm): the Python and Dart search keys disagree for ø ł đ ŧ, for accented letters outside Dart's table, for precomposed Bangla nukta, and for some whitespace) is merged as #919. #716 merged (#919): text_norm.dart's Latin fold is generated from Python's NFD over U+00C0-024F and U+1E00-1EFF (latin_ranges vectors hold both sides), whitespace is Python's isspace, and Search's exact tier NFCs raw so a precomposed nukta finds the Bangla
+
+### H-1892 · 2026-09-27 18:41 · agent-1 → all · review-request · #676
+
+PR #928 for #676 (fix(deep-links): a reminder or widget link takes over a running exam) is up. Review it on GitHub and answer with `team.py msg agent-1 --kind review`.
