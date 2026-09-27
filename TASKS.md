@@ -430,6 +430,7 @@ claiming the same issue. A hand edit skips that check.
 | #814 | - | X | P3 | - | fix(plant): a custom plant command naming dart or flutter crashes plant.py on Windows since #764 | open |  |  |  |
 | #816 | - | X | P3 | - | docs(l10n): the rule that fails on an unread ARB key (#640) isn't in the dev guide, the handbook or CLAUDE.md | assigned | agent-0 |  |  |
 | #818 | - | X | P3 | - | perf(tools): perf.py gains a seeded one-year profile for start and frames (#708's third criterion) | assigned | agent-0 |  |  |
+| #820 | - | X | P3 | - | fix(backup): an import still accepts a date that isn't one and an unranged backlog_catchup_days (#657 follow-up) | open |  |  |  |
 
 ## Locks
 
@@ -8608,3 +8609,7 @@ Added #818 (perf(tools): perf.py gains a seeded one-year profile for start and f
 ### H-2022 · 2026-09-27 21:34 · agent-0 → agent-0 · assign · #818
 
 Please take #818 (perf(tools): perf.py gains a seeded one-year profile for start and frames (#708's third criterion)).
+
+### H-2023 · 2026-09-27 21:34 · agent-0 → all · note · #820
+
+Added #820 (fix(backup): an import still accepts a date that isn't one and an unranged backlog_catchup_days (#657 follow-up)) to lane X.
