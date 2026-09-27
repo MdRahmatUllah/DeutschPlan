@@ -526,7 +526,7 @@ practice adds:
 
 - **Lints:** flutter_lints + riverpod_lint + `prefer_final_locals`, `avoid_dynamic_calls`, `require_trailing_commas`, `always_declare_return_types`. Zero warnings. `dart format` is the style.
 - **Imports:** package imports (`package:sogda/...`) everywhere. That is the practice, whatever the doc says about relative ones.
-- **Value types:** `@immutable` classes, records and `sealed` class hierarchies. Not freezed: it is a dependency but unused.
+- **Value types:** `@immutable` classes, records and `sealed` class hierarchies (no freezed).
 - **Text:** `SgText(role:)`, never `Text`. Headwords use `SgHeadword`. Every string is in ARB:
   - `app_en.arb` needs an `@key` with a description that names the screen id.
   - `app_bn.arb` has the same key, no metadata, and plurals with `other` only.
@@ -636,7 +636,6 @@ When a lane is blocked, in this order:
 
 #284 reconciled the dev guide with how the app is built: the commands spelled out without `make` or `fvm`, the tree in `project-structure.md`, the golden and fake practice in `testing.md`, the coding standards, ADR 26 and the stale issue numbers in code. What is left:
 
-- `mocktail`, `alchemist`, `freezed` and `logging` are in `pubspec.yaml` but unused. The docs say so; removing them needs the `pubspec` lock.
 - The PR template's checklist is the minimum. The M3 PR body (§4, step 11) is the practice.
 
 ## 12. Troubleshooting

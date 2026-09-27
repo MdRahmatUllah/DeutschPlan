@@ -30,10 +30,3 @@ targets:
           # exist. Nothing uses the manager API; the queries are hand-written.
           generate_manager: false
 
-      # Immutable models and JSON — docs/05-dev-guide/coding-standards.md.
-      json_serializable:
-        options:
-          explicit_to_json: true
-          field_rename: snake
-          create_factory: true
-          create_to_json: true
