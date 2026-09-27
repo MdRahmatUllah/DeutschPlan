@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-09-27 09:20
+last-seen: 2026-09-27 09:32
 last-read: 1538
 
 ## Now
 
-#656 in review as PR #789: answer review threads; re-run the gate if main moved, then merge.
+#639 refactor(status): the "done" rule (stability ≥ done_stability_days) is written in five places, in Dart and SQL — claimed 2026-09-27 09:32.
 
 ## Next
 
