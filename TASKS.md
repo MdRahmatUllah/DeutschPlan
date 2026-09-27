@@ -376,6 +376,7 @@ claiming the same issue. A hand edit skips that check.
 | #758 | SQA | X | P2 | - | bug(tts): with Supertonic installed Sogda holds ~570 MB (385 MB swapped) and ANRs on a 2 GB phone while typing; the memory budget is still "the owner's call" | open |  |  |  |
 | #775 | - | X | P3 | - | fix(content): 17 phrase meanings hold a comma outside brackets, so a fragment ("please" for "the bill, please") is graded right | open |  |  |  |
 | #784 | - | X | P3 | - | perf(progress): M2's retention reads every daily revision rating ever given, and parses each on the UI isolate | assigned | agent-0 |  |  |
+| #785 | - | X | P3 | - | fix(grammar): grammar practice never adds its time to daily_stats.seconds, so study time leaves it out | open |  |  |  |
 
 ## Locks
 
@@ -6702,3 +6703,7 @@ Added #784 (perf(progress): M2's retention reads every daily revision rating eve
 ### H-1559 · 2026-09-27 09:13 · agent-0 → agent-0 · assign · #784
 
 Please take #784 (perf(progress): M2's retention reads every daily revision rating ever given, and parses each on the UI isolate).
+
+### H-1560 · 2026-09-27 09:13 · agent-0 → all · note · #785
+
+Added #785 (fix(grammar): grammar practice never adds its time to daily_stats.seconds, so study time leaves it out) to lane X.
