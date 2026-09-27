@@ -435,6 +435,7 @@ claiming the same issue. A hand edit skips that check.
 | #843 | - | X | P3 | - | chore: the should-fixes left from the reviews of #826, #829 and #833 | assigned | agent-0 |  |  |
 | #848 | - | X | P3 | - | chore(licences): M8 leaves out desugar_jdk_libs (GPL-2.0 with the Classpath Exception), which the release DEX carries | assigned | agent-0 |  |  |
 | #849 | - | X | P3 | - | perf(licences): M8's sheet lays out ONNX Runtime's 327 KB ThirdPartyNotices as one text | assigned | agent-0 |  |  |
+| #867 | - | X | P3 | - | fix(data): Settings' retention estimate still counts words a content update removed (stabilitiesOfLearned) | open |  |  |  |
 
 ## Locks
 
@@ -8653,3 +8654,7 @@ Added #849 (perf(licences): M8's sheet lays out ONNX Runtime's 327 KB ThirdParty
 ### H-2032 · 2026-09-27 21:35 · agent-0 → agent-0 · assign · #849
 
 Please take #849 (perf(licences): M8's sheet lays out ONNX Runtime's 327 KB ThirdPartyNotices as one text).
+
+### H-2033 · 2026-09-27 21:35 · agent-0 → all · note · #867
+
+Added #867 (fix(data): Settings' retention estimate still counts words a content update removed (stabilitiesOfLearned)) to lane X.
