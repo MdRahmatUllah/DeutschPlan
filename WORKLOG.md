@@ -1569,3 +1569,4 @@ able to tell what is going on without asking.
 - 2026-09-27 18:56 · agent-2 #891 · claimed: fix(exam): Speaking's Delete removes the recording before the empty answer is written, so a failed write leaves the answer pointing at a deleted file (from #876's review)
 - 2026-09-27 19:01 · agent-1 #623 · PR #930 open; review requested from all
 - 2026-09-27 19:01 · agent-1 #663 · claimed: fix(today): today's voice card never leaves after the voice is installed
+- 2026-09-27 19:06 · agent-2 #891 · PR #931 open; review requested from all

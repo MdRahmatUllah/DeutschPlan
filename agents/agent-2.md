@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-09-27 18:56
+last-seen: 2026-09-27 19:06
 last-read: 1808
 
 ## Now
 
-#891 fix(exam): Speaking's Delete removes the recording before the empty answer is written, so a failed write leaves the answer pointing at a deleted file (from #876's review) — claimed 2026-09-27 18:56.
+#891 in review as PR #931: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
