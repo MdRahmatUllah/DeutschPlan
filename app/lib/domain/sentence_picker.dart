@@ -67,8 +67,13 @@ abstract interface class SentenceStore {
   /// The search keys of the learned words.
   Future<Set<String>> learnedKeys();
 
-  /// Writes [picked] to `sentence_log` as shown on [date].
-  Future<void> record(PlanDate date, List<SentenceCandidate> picked);
+  /// Writes [picked] to `sentence_log` as shown on [date], and returns the
+  /// day's set: [picked], or the set another pick recorded first. Atomic, so
+  /// two picks that raced (Today, T3 and T5 all ask) keep one set (#750).
+  Future<List<SentenceCandidate>> record(
+    PlanDate date,
+    List<SentenceCandidate> picked,
+  );
 }
 
 /// Picks the day's practice sentences (`docs/03-domain/sentences.md`).
@@ -95,8 +100,7 @@ class SentencePicker {
       count: count,
       seed: seedFor(today),
     );
-    if (picked.isNotEmpty) await _store.record(today, picked);
-    return picked;
+    return picked.isEmpty ? picked : _store.record(today, picked);
   }
 
   /// The day's seed: the same date draws the same jitter.

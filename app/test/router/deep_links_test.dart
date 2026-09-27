@@ -1,6 +1,8 @@
 @TestOn('vm')
 library;
 
+import 'dart:async';
+
 import 'package:sogda/features/exam/exam_runner_screen.dart';
 import 'package:sogda/features/sentences/sentences_screen.dart';
 import 'package:sogda/features/today/today_screen.dart';
@@ -423,20 +425,68 @@ void main() {
         expect(location(), '/onboarding/1');
       });
 
+      // As setup goes page to page: pushed over page 1, so the
+      // configuration's own uri stays `/onboarding/1`.
+      Future<void> onPage3(WidgetTester tester) async {
+        await start(tester, at: const OnboardingRoute(page: '1').location);
+        unawaited(router.push(const OnboardingRoute(page: '3').location));
+        await tester.pumpAndSettle();
+      }
+
       testWidgets('a link during setup leaves the learner on their page', (
         tester,
       ) async {
-        await start(tester, at: '/onboarding/3');
+        await onPage3(tester);
         await openLink(tester, 'sogda://learn/A2.1');
 
-        expect(location(), '/onboarding/3');
+        expect(router.state.uri.path, '/onboarding/3');
       });
 
       testWidgets("so does another app's", (tester) async {
-        await start(tester, at: '/onboarding/3');
+        await onPage3(tester);
         await openLink(tester, 'x://h/today');
 
-        expect(location(), '/onboarding/3');
+        expect(router.state.uri.path, '/onboarding/3');
+      });
+    });
+
+    group('#676 FR-L12-04 an exam pushed over its step', () {
+      // As the hub opens one (`ExamRoute.open`): the configuration's own uri
+      // stays the step's, and only the top route is the exam.
+      Future<void> examOverStep(WidgetTester tester) async {
+        await pumpApp(tester);
+        router.go('/learn/step/A1.2');
+        await tester.pumpAndSettle();
+        unawaited(router.push(const ExamRoute(attemptId: 7).location));
+        await tester.pumpAndSettle();
+        expect(find.byType(ExamRunnerScreen), findsOneWidget);
+      }
+
+      testWidgets('a widget link does not take it over', (tester) async {
+        await examOverStep(tester);
+        await openLink(tester, 'sogda://today');
+
+        expect(find.byType(ExamRunnerScreen), findsOneWidget);
+        expect(router.state.uri.path, '/exam/7');
+      });
+
+      testWidgets("nor does a tapped reminder's, which goes to the router "
+          'as it is', (tester) async {
+        await examOverStep(tester);
+        router.go('sogda://today');
+        await tester.pumpAndSettle();
+
+        expect(find.byType(ExamRunnerScreen), findsOneWidget);
+        expect(router.state.uri.path, '/exam/7');
+      });
+
+      testWidgets('once it is left, a link works again', (tester) async {
+        await examOverStep(tester);
+        router.pop();
+        await tester.pumpAndSettle();
+        await openLink(tester, 'sogda://today');
+
+        expect(location(), '/today');
       });
     });
 
