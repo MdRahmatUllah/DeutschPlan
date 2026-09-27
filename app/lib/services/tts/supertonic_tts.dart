@@ -467,17 +467,40 @@ class OrtSupertonicModel implements SupertonicModel {
     // and 4 took 59, and 8 took 74; more only fights the UI for cores.
     final options = OrtSessionOptions(intraOpNumThreads: 2);
     final runtime = OnnxRuntime();
-    Future<OrtSession> open(String name) =>
-        runtime.createSession('${model.path}/$name', options: options);
+    // #627: one by one, and closed again if a later one fails (out of memory,
+    // a bad file): nothing else would ever own them, and a load that failed
+    // is not tried again (`SupertonicTts._broken`).
+    final sessions = <OrtSession>[];
+    try {
+      for (final name in const <String>[
+        'duration_predictor.onnx',
+        'text_encoder.onnx',
+        'vector_estimator.onnx',
+        'vocoder.onnx',
+      ]) {
+        sessions.add(
+          await runtime.createSession('${model.path}/$name', options: options),
+        );
+      }
+    } on Object {
+      for (final session in sessions) {
+        try {
+          await session.close();
+        } on Object {
+          // The load's own failure is the one to report.
+        }
+      }
+      rethrow;
+    }
 
     return OrtSupertonicModel._(
       model,
       SupertonicText(indexer),
       config,
-      await open('duration_predictor.onnx'),
-      await open('text_encoder.onnx'),
-      await open('vector_estimator.onnx'),
-      await open('vocoder.onnx'),
+      sessions[0],
+      sessions[1],
+      sessions[2],
+      sessions[3],
       random ?? math.Random(),
     );
   }

@@ -689,17 +689,7 @@ void main() {
       addTearDown(onnx.uninstall);
       await install();
       final model = await models.directoryFor(ModelRepository.voiceModel);
-      File('${model.path}/tts.json').writeAsStringSync(
-        jsonEncode(<String, Object?>{
-          'ae': <String, Object?>{'sample_rate': 44100, 'base_chunk_size': 512},
-          'ttl': <String, Object?>{
-            'chunk_compress_factor': 6,
-            'latent_dim': 24,
-          },
-        }),
-      );
-      File('${model.path}/unicode_indexer.json')
-          .writeAsStringSync(jsonEncode(List<int>.generate(128, (i) => i)));
+      _writeConfig(model);
       File('${model.path}/M1.json').writeAsStringSync(styleOf(2));
       File('${model.path}/F2.json').writeAsStringSync(styleOf(3));
       final engine = SupertonicTts(
@@ -723,7 +713,37 @@ void main() {
         <double>[3, 3],
       ], reason: "F1's, M1's and F2's own style, in turn");
     });
+
+    test('#627 a session that fails to open closes the ones opened before '
+        'it', () async {
+      final onnx = _Onnx()..failOn = 3;
+      addTearDown(onnx.uninstall);
+      final model = Directory('${support.path}/model')..createSync();
+      _writeConfig(model);
+
+      await expectLater(
+        OrtSupertonicModel.load(model),
+        throwsA(isA<PlatformException>()),
+      );
+      expect(onnx.closed, <String>[
+        'duration_predictor.onnx',
+        'text_encoder.onnx',
+      ]);
+    });
   });
+}
+
+/// Supertonic 3's `tts.json` and `unicode_indexer.json`, as small as the
+/// loader takes them.
+void _writeConfig(Directory model) {
+  File('${model.path}/tts.json').writeAsStringSync(
+    jsonEncode(<String, Object?>{
+      'ae': <String, Object?>{'sample_rate': 44100, 'base_chunk_size': 512},
+      'ttl': <String, Object?>{'chunk_compress_factor': 6, 'latent_dim': 24},
+    }),
+  );
+  File('${model.path}/unicode_indexer.json')
+      .writeAsStringSync(jsonEncode(List<int>.generate(128, (i) => i)));
 }
 
 /// `flutter_onnxruntime`'s channel, stubbed: what `OrtSupertonicModel` asks
@@ -743,6 +763,12 @@ class _Onnx {
 
   /// The sessions opened.
   int sessions = 0;
+
+  /// The session (1 is the first) whose open fails, as out of memory would.
+  int? failOn;
+
+  /// The sessions closed, by file name.
+  final List<String> closed = <String>[];
 
   /// The style each clip's duration was predicted in, in order.
   final List<List<double>> styles = <List<double>>[];
@@ -766,6 +792,9 @@ class _Onnx {
     switch (call.method) {
       case 'createSession':
         sessions++;
+        if (sessions == failOn) {
+          throw PlatformException(code: 'OOM', message: 'out of memory');
+        }
         return <String, Object?>{
           'sessionId': (args!['modelPath']! as String).split('/').last,
           'inputNames': <String>[],
@@ -789,8 +818,11 @@ class _Onnx {
         };
       case 'getOrtValueData':
         return <String, Object?>{'data': _values[args!['valueId']]};
+      case 'closeSession':
+        closed.add(args!['sessionId']! as String);
+        return null;
       default:
-        // releaseOrtValue, closeSession.
+        // releaseOrtValue.
         return null;
     }
   }
