@@ -425,6 +425,7 @@ claiming the same issue. A hand edit skips that check.
 | #925 | - | X | P3 | - | test(sqa): an app update over a learner's progress, on a device (the part of #641 a VM test can't reach) | assigned | agent-3 |  |  |
 | #807 | - | X | P3 | - | fix(content): a wrong PIPE-09 uid link can't be refused, and pass 1 links greedily in uid order | assigned | agent-0 |  |  |
 | #809 | - | X | P3 | - | fix(backup): a backup from an older course imports progress under uids the current course no longer has | assigned | agent-0 |  |  |
+| #811 | - | X | P3 | - | fix(riverpod): R2 · Add word invalidates Today's plan through its own ref after the save's await (#679's rule) | open |  |  |  |
 
 ## Locks
 
@@ -8563,3 +8564,7 @@ Added #809 (fix(backup): a backup from an older course imports progress under ui
 ### H-2012 · 2026-09-27 21:33 · agent-0 → agent-0 · assign · #809
 
 Please take #809 (fix(backup): a backup from an older course imports progress under uids the current course no longer has).
+
+### H-2013 · 2026-09-27 21:33 · agent-0 → all · note · #811
+
+Added #811 (fix(riverpod): R2 · Add word invalidates Today's plan through its own ref after the save's await (#679's rule)) to lane X.
