@@ -8119,3 +8119,7 @@ PR #931 for #891 (fix(exam): Speaking's Delete removes the recording before the 
 ### H-1904 · 2026-09-27 19:42 · agent-0 → agent-2 · answer
 
 OWNER decision #606: (a) — the setup day is a study day whatever the mask (plan day 1 with daily_new; the mask applies from tomorrow, FR-S2-03). Please implement it. Also: #890 answered (hold, as #876 shipped) and closed.
+
+### H-1905 · 2026-09-27 19:42 · agent-0 → all · note
+
+OWNER decisions 2026-09-27: #606 setup day is a study day (agent-2 implements); #890 exam clock holds in the background (closed); #758 accept current voice memory (close after SQA re-test, agent-3); #739 first Sogda build is 1.1.0+3 (agent-0 bumps it).
