@@ -114,8 +114,10 @@ flutter:
     - assets/licences/
     # The compiled course, and the manifest the app stores as its new baseline
     # after an update so the next one can say what changed
-    # (content-database.md, step 2). Written by `make content`.
-    - assets/db/
+    # (content-database.md, step 2). Written by `make content`. Named, not
+    # the folder, so assets/db/README.md stays out of the APK (#707).
+    - assets/db/content.db
+    - assets/db/content_manifest.json
     # The model manifest: URL, size, SHA-256 and licence per variant
     # (FR-M4-02). The models themselves are downloaded, never bundled.
     - assets/models/

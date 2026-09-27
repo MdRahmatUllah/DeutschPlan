@@ -31,6 +31,7 @@ from __future__ import annotations
 import os
 import re
 import shutil
+import shlex
 import subprocess
 import sys
 import tempfile
@@ -51,6 +52,13 @@ def agent() -> str:
     """This worktree's agent, from the `.dp-agent` that `team.py join` wrote."""
     marker = Path(__file__).resolve().parents[1] / ".dp-agent"
     return marker.read_text(encoding="utf-8").strip() if marker.exists() else ""
+
+
+def owner_checkout(root: Path = Path(__file__).resolve().parents[1]) -> bool:
+    """The owner's own checkout: the main one (`.git` a folder, where a
+    worktree has a file) with no agent. It has no device lock to take; an
+    agent's worktree without its marker is not it (#707)."""
+    return not agent() and (root / ".git").is_dir()
 
 
 def pick_serial(serial: str | None, who: str) -> str:
@@ -150,6 +158,11 @@ class Device:
         time.sleep(3)
 
 
+def typed(text: str) -> str:
+    """[text] as adb's `input text` takes it: %s for a space."""
+    return text.replace(" ", "%s")
+
+
 def main(argv: list[str]) -> int:
     # Labels carry arrows and Bangla; a Windows console is cp1252.
     if hasattr(sys.stdout, "reconfigure"):
@@ -199,8 +212,10 @@ def main(argv: list[str]) -> int:
             device.sh("input", "tap", x.strip(), y.strip())
             time.sleep(1.2)
         elif step.startswith("type:"):
-            # adb's `input text` takes ASCII only, and %s for a space.
-            device.sh("input", "text", step[5:].replace(" ", "%s"))
+            # adb's `input text` takes ASCII only, and %s for a space. Quoted,
+            # because adb hands the line to the device's shell: an & or a ;
+            # in the text would run as a command (#707).
+            device.sh("input", "text", shlex.quote(typed(step[5:])))
             time.sleep(1)
         elif step.startswith("wait:"):
             device.wait(step[5:])
