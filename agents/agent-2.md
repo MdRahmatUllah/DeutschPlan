@@ -6,7 +6,7 @@ last-read: 1808
 
 ## Now
 
-Nothing claimed.
+#754 bug(today): starting another step mid-day drops today's grammar item, so the ring falls from 1 of 21 to 0 of 21 (today's plan should be unchanged) — claimed 2026-09-27 20:39.
 
 ## Next
 
