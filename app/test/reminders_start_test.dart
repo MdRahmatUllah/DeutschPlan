@@ -53,7 +53,7 @@ void main() {
     addTearDown(() => following?.cancel());
 
     reminders.onTap!(PlatformReminderNotifications.link);
-    expect(opened, <String>['/today']);
+    expect(opened, <String>[PlatformReminderNotifications.link]);
   });
 
   test('a tap that started the app opens what it links to', () async {
@@ -67,7 +67,7 @@ void main() {
       open: opened.add,
     );
     addTearDown(() => following?.cancel());
-    expect(opened, <String>['/today']);
+    expect(opened, <String>[PlatformReminderNotifications.link]);
   });
 
   test('an ordinary start opens nothing', () async {
