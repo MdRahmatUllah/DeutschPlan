@@ -6,7 +6,7 @@ last-read: 1870
 
 ## Now
 
-#706 in review as PR #918: answer review threads; re-run the gate if main moved, then merge.
+#716 fix(text-norm): the Python and Dart search keys disagree for ø ł đ ŧ, for accented letters outside Dart's table, for precomposed Bangla nukta, and for some whitespace — claimed 2026-09-27 18:08.
 
 ## Next
 
