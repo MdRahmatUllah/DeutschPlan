@@ -432,7 +432,7 @@ The emulator lock is local, not here: `team.py device`.
 |---|---|---|---|
 | user-db-schema |  |  |  |
 | adr-number |  |  |  |
-| pubspec |  |  |  |
+| pubspec | agent-1 | 2026-09-27 18:47 | #623: audio_session as a direct dependency (already transitive via just_audio, 0.2.4) |
 | ci-config |  |  |  |
 | shared-look |  |  |  |
 

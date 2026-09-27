@@ -1563,3 +1563,4 @@ able to tell what is going on without asking.
 - 2026-09-27 18:44 · agent-0 #870 · done (#927)
 - 2026-09-27 18:45 · agent-0 #637 · claimed: fix(content): separable-prefix tips sit on ~45 verbs where they're false, and 8 grammar topics refer to the author's tracker ("weeks 17–35", "In progress", a Munich exam centre)
 - 2026-09-27 18:45 · agent-0 #637 · PR #929 open; review requested from agent-1
+- 2026-09-27 18:47 · agent-1 · locked pubspec: #623: audio_session as a direct dependency (already transitive via just_audio, 0.2.4)
