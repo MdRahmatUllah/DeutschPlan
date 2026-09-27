@@ -410,7 +410,7 @@ claiming the same issue. A hand edit skips that check.
 | #906 | - | X | P2 | - | fix(tts): #638's follow-ups: one set of sessions at a time, no TTS stack built to release nothing, release after a long background | done | agent-1 |  | #915 |
 | #909 | - | X | P2 | - | fix(tts): a speak during Supertonic's release opens a second set of sessions (~800 MB) just when memory is short, and a failed load can orphan a newer one (from #897's review) | done |  |  | #915 |
 | #910 | - | X | P3 | - | chore(review): should-fixes from reviewing #897 (voice release: a needless build, T2's look-ahead after a resume, stale docs, an unguarded registration) | done |  |  | #915 |
-| #911 | - | X | P3 | - | chore(review): should-fixes from reviewing #899 and #902 (L12's Leave/Submit race, begin's abandoned ids, the hub's best-score test) | assigned | agent-0 |  |  |
+| #911 | - | X | P3 | - | chore(review): should-fixes from reviewing #899 and #902 (L12's Leave/Submit race, begin's abandoned ids, the hub's best-score test) | in-progress | agent-0 |  |  |
 | #912 | - | X | P2 | - | fix(a11y): other card buttons have no Semantics container and may merge up like #749's grammar card (from #900's review) | done | agent-2 |  | #920 |
 | #870 | - | A | P3 | - | fix(domain): the cloze never finds a strong verb's 3rd person or an umlaut plural, though content.db lists both in forms | done | agent-0 |  | #927 |
 | #932 | - | X | P2 | - | fix(deep-links): a link arriving during setup sends the learner back to setup's page 1 (from #926's review) | done |  |  |  |

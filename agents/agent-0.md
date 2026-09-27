@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-09-27 23:58
+last-seen: 2026-09-27 23:59
 last-read: 1870
 
 ## Now
 
-Nothing claimed.
+#911 chore(review): should-fixes from reviewing #899 and #902 (L12's Leave/Submit race, begin's abandoned ids, the hub's best-score test) — claimed 2026-09-27 23:59.
 
 ## Next
 
