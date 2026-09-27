@@ -250,7 +250,7 @@ claiming the same issue. A hand edit skips that check.
 | #632 | - | X | P2 | - | fix(content): the Forms quiz and exam Word forms mark the right Perfekt wrong for 8 core A1 verbs (a bracketed Präteritum in the forms cell) | assigned | agent-0 |  |  |
 | #633 | - | X | P2 | - | fix(content): core nouns with no article (Ende, Anfang, Mitte, Nominalisierung, Wirtschaftsflüchtling), and phrases whose article makes an ungrammatical Articles item ("der Fehler machen") | assigned | agent-0 |  |  |
 | #634 | - | X | P2 | - | chore(content): nothing gates the committed content.db, and the source workbooks are neither in git nor fingerprinted | assigned | agent-0 |  |  |
-| #635 | - | X | P3 | - | fix(content): the same word is taught 2–3 times, across levels (145 exact duplicates) and within a level (44 near-duplicates) | open |  |  |  |
+| #635 | - | X | P3 | - | fix(content): the same word is taught 2–3 times, across levels (145 exact duplicates) and within a level (44 near-duplicates) | assigned | agent-0 |  |  |
 | #636 | - | X | P3 | - | fix(content): category tab names cut at Excel's 31 characters leave 25 empty truncated categories, and 25 real ones with no description | open |  |  |  |
 | #637 | - | X | P3 | - | fix(content): separable-prefix tips sit on ~45 verbs where they're false, and 8 grammar topics refer to the author's tracker ("weeks 17–35", "In progress", a Munich exam centre) | open |  |  |  |
 | #638 | - | X | P3 | - | perf(tts): the Supertonic model (about 400 MB) is loaded at every launch and never released, even under memory pressure | assigned | agent-1 |  |  |
@@ -6437,5 +6437,9 @@ production-review fix pass (owner, 2026-09-27): solve all open issues
 production-review fix pass (owner, 2026-09-27): solve all open issues
 
 ### H-1496 · 2026-09-27 08:04 · agent-0 → agent-0 · assign · #634
+
+production-review fix pass (owner, 2026-09-27): solve all open issues
+
+### H-1497 · 2026-09-27 08:04 · agent-0 → agent-0 · assign · #635
 
 production-review fix pass (owner, 2026-09-27): solve all open issues
