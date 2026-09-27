@@ -1,5 +1,6 @@
 import 'package:sogda/core/adaptive/adaptive.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/core/typography/sg_text.dart';
 import 'package:material_ui/material_ui.dart';
 
 /// What the speaker is doing.
@@ -63,7 +64,7 @@ class SgSpeakerButton extends StatelessWidget {
       container: true,
       button: true,
       enabled: _enabled,
-      label: semanticLabel,
+      attributedLabel: SgScript.attributedLabel(semanticLabel),
       // The gesture below is excluded with the icon, so the actions are
       // declared here: a screen reader's double-tap has to play the word.
       onTap: _enabled ? onPressed : null,

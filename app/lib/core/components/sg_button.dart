@@ -224,7 +224,7 @@ class _SgButtonState extends State<SgButton> {
       child: Semantics(
         button: true,
         enabled: _enabled,
-        label: widget.label,
+        attributedLabel: SgScript.attributedLabel(widget.label),
         child: GestureDetector(
           onTap: widget.onPressed,
           onTapDown: _enabled ? (_) => setState(() => _down = true) : null,
