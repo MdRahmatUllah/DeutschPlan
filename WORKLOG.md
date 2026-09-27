@@ -1511,3 +1511,4 @@ able to tell what is going on without asking.
 - 2026-09-27 17:33 · agent-2 #912 · claimed: fix(a11y): other card buttons have no Semantics container and may merge up like #749's grammar card (from #900's review)
 - 2026-09-27 17:40 · agent-0 #733 · done (#905)
 - 2026-09-27 17:41 · agent-0 #713 · assigned to agent-0
+- 2026-09-27 17:41 · agent-0 #716 · assigned to agent-0
