@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-09-27 14:33
+last-seen: 2026-09-27 14:41
 last-read: 1655
 
 ## Now
 
-#631 fix(content): 312 example sentences don't contain their headword, and for 57 words neither example does, so cloze, practice and gap-fill never appear for them — claimed 2026-09-27 14:33.
+Nothing claimed.
 
 ## Next
 
