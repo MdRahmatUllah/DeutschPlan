@@ -1572,3 +1572,4 @@ able to tell what is going on without asking.
 - 2026-09-27 19:06 · agent-2 #891 · PR #931 open; review requested from all
 - 2026-09-27 19:55 · agent-2 #932 · added to the board, lane X
 - 2026-09-27 19:55 · agent-2 #933 · added to the board, lane X
+- 2026-09-27 19:56 · agent-2 #606 · reopened: Owner decided (a): the setup day is a study day whatever the mask.

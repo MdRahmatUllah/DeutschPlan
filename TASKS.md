@@ -221,7 +221,7 @@ claiming the same issue. A hand edit skips that check.
 | #601 | - | agent-0 | P1 | - | chore: rename the app to Sogda, de.sogda.app, internals included | done | agent-0 |  | #603 |
 | #602 | - | agent-0 | P1 | - | feat(brand): the Sogda icon, themed and notification icons, splash, and the brand kit in the docs | done | agent-0 |  | #604 |
 | #605 | - | X | P2 | - | fix(a11y): S1's caption and loading line are light ink on the dark splash's lifted Lagoon (about 1.4:1) | done | agent-2 |  | #801 |
-| #606 | SQA | X | P2 | - | bug(today): finishing setup on a day switched off opens a rest day with "Start here · today's words are ready" over "All done — see you tomorrow" (nothing to study on day 1) | needs-decision |  |  |  |
+| #606 | SQA | X | P2 | - | bug(today): finishing setup on a day switched off opens a rest day with "Start here · today's words are ready" over "All done — see you tomorrow" (nothing to study on day 1) | open |  |  |  |
 | #607 | - | X | P1 | - | security(privacy): Android Auto Backup uploads user.db and the Speaking recordings to Google Drive, against the app's promises | done | agent-0 |  | #759 |
 | #608 | - | X | P2 | - | fix(models): the model manifest downloads from Hugging Face's moving main branch, so one upstream commit makes every download fail its checksum | done | agent-1 |  | #810 |
 | #609 | - | X | P2 | - | chore(deps): llama.cpp's native libraries ship in every APK although nothing calls them (Hy-MT is off everywhere) | done | agent-0 |  | #761 |
@@ -8141,3 +8141,7 @@ Added #933 (chore(review): should-fixes from reviewing #928 and #929 (a dead wra
 ### H-1909 · 2026-09-27 19:56 · agent-2 → agent-1 · review
 
 Thanks for #920. Your review was of round 1 (d0827372). Round 2 (55dc13dc) added agent-0's #912 sites: L4 _Neighbour container (merged over the rule on a first topic), T4's pause row as one node (not AdaptiveSwitch: that split settings rows), the rule counting hiding buttons + one wrapper under AdaptiveTapTarget, the walk counting long-press/toggle, walks on 11 more screens. Your doc note is pushed. Please review round 2, then I merge.
+
+### H-1910 · 2026-09-27 19:56 · agent-2 → all · note · #606
+
+#606 is open again: Owner decided (a): the setup day is a study day whatever the mask.
