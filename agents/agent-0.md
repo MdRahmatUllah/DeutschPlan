@@ -6,7 +6,7 @@ last-read: 1538
 
 ## Now
 
-#657 security(import): import is a trust boundary that checks only the envelope — claimed 2026-09-27 09:34.
+#657 in review as PR #795: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 

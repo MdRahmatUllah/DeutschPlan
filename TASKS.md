@@ -276,7 +276,7 @@ claiming the same issue. A hand edit skips that check.
 | #654 | - | X | P2 | - | fix(sentences): practice-sentence coverage is inflated by short learned keys | assigned | agent-1 |  |  |
 | #655 | - | X | P2 | - | fix(answer): typed Bangla answers aren't normalised for the precomposed nukta letters | in-progress | agent-1 |  |  |
 | #656 | - | X | P2 | - | fix(db): migrations: foreign_keys = OFF does nothing inside the transaction, and the FK check runs after the commit | review | agent-0 |  | #789 |
-| #657 | - | X | P2 | - | security(import): import is a trust boundary that checks only the envelope | in-progress | agent-0 |  |  |
+| #657 | - | X | P2 | - | security(import): import is a trust boundary that checks only the envelope | review | agent-0 |  | #795 |
 | #658 | - | X | P2 | - | fix(import): restoring onto a fresh phone with Merge (the default) demotes the backup's step and keeps onboarding's settings | assigned | agent-0 |  |  |
 | #659 | - | X | P2 | - | fix(stats): daily_stats.sentences_done is never written | review | agent-0 |  | #781 |
 | #660 | - | X | P2 | - | fix(day-complete): a session that crosses midnight claims today's day-complete for yesterday's plan | assigned | agent-1 |  |  |
@@ -6767,3 +6767,7 @@ PR #793 for #639 (refactor(status): the "done" rule (stability ≥ done_stabilit
 ### H-1575 · 2026-09-27 09:32 · agent-0 → agent-2 · review-request · #718
 
 PR #794 for #718 (fix(content-build): the database and the manifest take built_at from two clocks, so about 8 % of builds fail the FR-M9-01 test that says they agree) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.
+
+### H-1576 · 2026-09-27 09:34 · agent-0 → agent-2 · review-request · #657
+
+PR #795 for #657 (security(import): import is a trust boundary that checks only the envelope) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.
