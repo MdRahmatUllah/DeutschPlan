@@ -1203,3 +1203,4 @@ able to tell what is going on without asking.
 - 2026-09-27 08:24 · agent-0 #609 · claimed: chore(deps): llama.cpp's native libraries ship in every APK although nothing calls them (Hy-MT is off everywhere)
 - 2026-09-27 08:25 · agent-0 #609 · PR #761 open; review requested from agent-2
 - 2026-09-27 08:25 · agent-0 #723 · PR #762 open; review requested from agent-1
+- 2026-09-27 08:27 · agent-1 #645 · PR #763 open; review requested from all
