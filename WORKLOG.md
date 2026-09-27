@@ -1557,3 +1557,4 @@ able to tell what is going on without asking.
 - 2026-09-27 18:31 · agent-1 #676 · claimed: fix(deep-links): a reminder or widget link takes over a running exam
 - 2026-09-27 18:32 · agent-0 #870 · added to the board, lane A
 - 2026-09-27 18:32 · agent-0 #870 · claimed: fix(domain): the cloze never finds a strong verb's 3rd person or an umlaut plural, though content.db lists both in forms
+- 2026-09-27 18:32 · agent-0 #870 · PR #927 open; review requested from agent-2
