@@ -435,7 +435,7 @@ claiming the same issue. A hand edit skips that check.
 | #843 | - | X | P3 | - | chore: the should-fixes left from the reviews of #826, #829 and #833 | assigned | agent-0 |  |  |
 | #848 | - | X | P3 | - | chore(licences): M8 leaves out desugar_jdk_libs (GPL-2.0 with the Classpath Exception), which the release DEX carries | done | agent-0 |  | #965 |
 | #849 | - | X | P3 | - | perf(licences): M8's sheet lays out ONNX Runtime's 327 KB ThirdPartyNotices as one text | done | agent-0 |  | #965 |
-| #867 | - | X | P3 | - | fix(data): Settings' retention estimate still counts words a content update removed (stabilitiesOfLearned) | in-progress | agent-0 |  |  |
+| #867 | - | X | P3 | - | fix(data): Settings' retention estimate still counts words a content update removed (stabilitiesOfLearned) | review | agent-0 |  | #979 |
 | #888 | - | X | P3 | - | fix(undo): an Undo still takes back a later rating of the same word (#728 follow-up) | assigned | agent-0 |  |  |
 | #923 | - | X | P3 | - | fix(content): a rebuild can move a level's step boundary, and words change step under learners (#913 follow-up) | review | agent-0 |  | #978 |
 | #951 | - | X | P3 | - | question(a11y): M1's twelve mock badges are 25 dp wide each; keep them in one row (WCAG 2.5.8, #478) or wrap them into two rows / one control? (from #853) | needs-decision |  |  |  |
@@ -9216,3 +9216,7 @@ PR #978 for #923 (fix(content): a rebuild can move a level's step boundary, and 
 ### H-2171 · 2026-09-27 23:59 · agent-0 → agent-2 · review-request · #911
 
 PR #979 for #911 (chore(review): should-fixes from reviewing #899 and #902 (L12's Leave/Submit race, begin's abandoned ids, the hub's best-score test)) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.
+
+### H-2172 · 2026-09-27 23:59 · agent-0 → agent-2 · review-request · #867
+
+PR #979 for #867 (fix(data): Settings' retention estimate still counts words a content update removed (stabilitiesOfLearned)) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.
