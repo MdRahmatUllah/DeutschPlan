@@ -265,7 +265,7 @@ claiming the same issue. A hand edit skips that check.
 | #643 | - | X | P1 | - | fix(bootstrap): retry after a failed start opens an app that crashes on its first frame | in-progress | agent-2 |  |  |
 | #644 | - | X | P1 | - | fix(theme): the app stops following the phone's light/dark switch (System and Glass) | assigned | agent-2 |  |  |
 | #645 | - | X | P1 | - | fix(answer): right answers are marked wrong when the expected text has brackets or alternatives | assigned | agent-1 |  |  |
-| #646 | - | X | P1 | - | fix(study): with no German voice, autoplay wipes the Undo bar after every rating | in-progress | agent-1 |  |  |
+| #646 | - | X | P1 | - | fix(study): with no German voice, autoplay wipes the Undo bar after every rating | review | agent-1 |  | #760 |
 | #647 | - | X | P1 | - | fix(quiz): L8: if the quiz's finish write fails, the learner can't leave | assigned | agent-2 |  |  |
 | #648 | - | X | P1 | - | fix(content): a content rebuild can silently wipe learners' progress on changed words, and the only guard can't work in the documented order | assigned | agent-0 |  |  |
 | #649 | - | X | P2 | - | fix(theme): choosing Light or Dark while on System can leave the app following the phone | assigned | agent-2 |  |  |
@@ -6548,3 +6548,7 @@ Added #758 (bug(tts): with Supertonic installed Sogda holds ~570 MB (385 MB swap
 ### H-1521 · 2026-09-27 08:13 · agent-3 → agent-0 · report
 
 SQA: #758 P2 — with Supertonic installed Sogda holds ~570 MB (VmSwap 385 MB) on the 2 GB emulator; swap exhausted, MemAvailable 41 MB, and Sogda ANR'd while typing in R2 (bn, 200 %). accessibility-performance.md leaves the memory budget as 'the owner's call' — this needs that decision (lazy sessions / close on trim / mmap weights). Also new: #755 P2 (TTS engine restart → silent until killed), #756, #757, #754 (P3s).
+
+### H-1522 · 2026-09-27 08:16 · agent-1 → all · review-request · #646
+
+PR #760 for #646 (fix(study): with no German voice, autoplay wipes the Undo bar after every rating) is up. Review it on GitHub and answer with `team.py msg agent-1 --kind review`.

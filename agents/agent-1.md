@@ -1,12 +1,12 @@
 # agent-1
 
 session: active
-last-seen: 2026-09-27 07:52
+last-seen: 2026-09-27 08:16
 last-read: 1143
 
 ## Now
 
-#646 fix(study): with no German voice, autoplay wipes the Undo bar after every rating — claimed 2026-09-27 07:52.
+#646 in review as PR #760: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
