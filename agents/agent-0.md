@@ -6,7 +6,7 @@ last-read: 1870
 
 ## Now
 
-#837 in review as PR #960: answer review threads; re-run the gate if main moved, then merge.
+#818 perf(tools): perf.py gains a seeded one-year profile for start and frames (#708's third criterion) — claimed 2026-09-27 22:39.
 
 ## Next
 
