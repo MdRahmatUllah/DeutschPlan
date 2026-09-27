@@ -730,6 +730,21 @@ void main() {
         'text_encoder.onnx',
       ]);
     });
+
+    test('#627 a session that fails to close leaves none of the others '
+        'open', () async {
+      final onnx = _Onnx()..failClose = 'duration_predictor.onnx';
+      addTearDown(onnx.uninstall);
+      final model = Directory('${support.path}/model')..createSync();
+      _writeConfig(model);
+
+      await (await OrtSupertonicModel.load(model)).close();
+      expect(onnx.closed, <String>[
+        'text_encoder.onnx',
+        'vector_estimator.onnx',
+        'vocoder.onnx',
+      ]);
+    });
   });
 }
 
@@ -769,6 +784,9 @@ class _Onnx {
 
   /// The sessions closed, by file name.
   final List<String> closed = <String>[];
+
+  /// The session, by file name, whose close fails.
+  String? failClose;
 
   /// The style each clip's duration was predicted in, in order.
   final List<List<double>> styles = <List<double>>[];
@@ -819,7 +837,9 @@ class _Onnx {
       case 'getOrtValueData':
         return <String, Object?>{'data': _values[args!['valueId']]};
       case 'closeSession':
-        closed.add(args!['sessionId']! as String);
+        final id = args!['sessionId']! as String;
+        if (id == failClose) throw PlatformException(code: 'CLOSE');
+        closed.add(id);
         return null;
       default:
         // releaseOrtValue.

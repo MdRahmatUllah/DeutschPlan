@@ -628,7 +628,13 @@ class OrtSupertonicModel implements SupertonicModel {
       _estimator,
       _vocoder,
     ]) {
-      await session.close();
+      // Each its own: one that fails to close must not keep the others open,
+      // on every trip to the background since #638 (#627).
+      try {
+        await session.close();
+      } on Object {
+        // Nothing to do but close the rest.
+      }
     }
   }
 
