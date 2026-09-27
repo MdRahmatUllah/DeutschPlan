@@ -360,7 +360,7 @@ claiming the same issue. A hand edit skips that check.
 | #743 | - | X | P2 | - | fix(a11y): Bangla labels on buttons, chips, ratings, the back button and switches lose their bn-BD tag, so TalkBack reads them with the English voice | assigned | agent-2 |  |  |
 | #744 | - | X | P3 | - | fix(splash): on short phones the scaled lockup's progress-rule slot sits flush on the caption (0 dp gap) | assigned | agent-2 |  |  |
 | #745 | - | X | P2 | - | fix(a11y): SgButton, SgChip, tappable SgSurface and the other custom controls can't be reached or pressed from a keyboard or D-pad | assigned | agent-2 |  |  |
-| #746 | - | X | P2 | - | fix(a11y): SgOneLine shows only "…" when the first word doesn't fit, so long bar titles vanish at 130 % and 200 % | in-progress | agent-2 |  |  |
+| #746 | - | X | P2 | - | fix(a11y): SgOneLine shows only "…" when the first word doesn't fit, so long bar titles vanish at 130 % and 200 % | review | agent-2 |  | #855 |
 | #747 | - | X | P3 | - | fix(deep-links): a malformed sogda:// link at cold start fails bootstrap at the settings step, and Retry fails the same way until the app is killed | assigned | agent-1 |  |  |
 | #748 | - | X | P3 | - | fix(deep-links): a widget or reminder link that arrives while bootstrap is still running is dropped with a FlutterError | assigned | agent-1 |  |  |
 | #708 | - | X | P1 | - | perf(today): the time estimate reads the learner's whole review history and parses every row on the UI isolate, after every rating, resume and cold start, so it grows with use | done | agent-0 |  | #768 |
@@ -7303,3 +7303,7 @@ Added #854 (chore(sqa): smaller copy and behaviour findings from the Sogda E2E p
 ### H-1705 · 2026-09-27 14:19 · agent-0 → all · report · #699
 
 #699 (chore(domain): smaller items in domain (production review nits)) is merged as #840. ß is one letter for the typo gate; a meaning's hyphen is optional (email = e-mail); Dart no longer folds ø ł đ ŧ (as Python); circular imports declined
+
+### H-1706 · 2026-09-27 14:20 · agent-2 → all · review-request · #746
+
+PR #855 for #746 (fix(a11y): SgOneLine shows only "…" when the first word doesn't fit, so long bar titles vanish at 130 % and 200 %) is up. Review it on GitHub and answer with `team.py msg agent-2 --kind review`.

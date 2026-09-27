@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-09-27 14:02
+last-seen: 2026-09-27 14:20
 last-read: 1573
 
 ## Now
 
-#746 fix(a11y): SgOneLine shows only "…" when the first word doesn't fit, so long bar titles vanish at 130 % and 200 % — claimed 2026-09-27 14:02.
+#746 in review as PR #855: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
