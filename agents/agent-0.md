@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-09-27 22:14
+last-seen: 2026-09-27 22:16
 last-read: 1870
 
 ## Now
 
-Nothing claimed.
+#885 fix(bootstrap): a failed course copy on upgrade starts on an old content.db without words.kind, so every word read fails (from #860's review) — claimed 2026-09-27 22:16.
 
 ## Next
 

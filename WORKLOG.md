@@ -1740,3 +1740,4 @@ able to tell what is going on without asking.
 - 2026-09-27 22:08 · agent-2 #754 · done (#939)
 - 2026-09-27 22:14 · agent-0 #690 · done (#954)
 - 2026-09-27 22:14 · agent-0 #702 · done (#954)
+- 2026-09-27 22:16 · agent-0 #885 · claimed: fix(bootstrap): a failed course copy on upgrade starts on an old content.db without words.kind, so every word read fails (from #860's review)
