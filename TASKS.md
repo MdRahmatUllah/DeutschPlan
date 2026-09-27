@@ -295,7 +295,7 @@ claiming the same issue. A hand edit skips that check.
 | #712 | - | X | P3 | - | perf: smaller costs (TTS cache disk work, import round trips, FTS copies of the text, the exam runner's per-second rebuild, a missing search index, the full ONNX Runtime) | open |  |  |  |
 | #670 | - | X | P2 | - | fix(exam): L12 doesn't handle the app going to the background | assigned | agent-2 |  |  |
 | #671 | - | X | P2 | - | fix(exam): recordings of abandoned attempts are kept for ever | assigned | agent-2 |  |  |
-| #672 | - | X | P2 | - | fix(settings): after Reset everything or a Replace import, the meaning language, UI language and theme are stale | open |  |  |  |
+| #672 | - | X | P2 | - | fix(settings): after Reset everything or a Replace import, the meaning language, UI language and theme are stale | assigned | agent-2 |  |  |
 | #673 | - | X | P2 | - | fix(models): a voice download can be queued twice | assigned | agent-1 |  |  |
 | #674 | - | X | P2 | - | fix(deep-links): a cold start from a sogda:// link skips onboarding (the #236 bug returns) | assigned | agent-1 |  |  |
 | #676 | - | X | P2 | - | fix(deep-links): a reminder or widget link takes over a running exam | assigned | agent-1 |  |  |
@@ -6241,5 +6241,9 @@ production-review fix pass (owner, 2026-09-27): solve all open issues
 production-review fix pass (owner, 2026-09-27): solve all open issues
 
 ### H-1447 · 2026-09-27 08:00 · agent-0 → agent-2 · assign · #624
+
+production-review fix pass (owner, 2026-09-27): solve all open issues
+
+### H-1448 · 2026-09-27 08:00 · agent-0 → agent-2 · assign · #672
 
 production-review fix pass (owner, 2026-09-27): solve all open issues
