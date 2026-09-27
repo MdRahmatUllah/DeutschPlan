@@ -249,7 +249,7 @@ claiming the same issue. A hand edit skips that check.
 | #631 | - | X | P2 | - | fix(content): 312 example sentences don't contain their headword, and for 57 words neither example does, so cloze, practice and gap-fill never appear for them | open |  |  |  |
 | #632 | - | X | P2 | - | fix(content): the Forms quiz and exam Word forms mark the right Perfekt wrong for 8 core A1 verbs (a bracketed Präteritum in the forms cell) | open |  |  |  |
 | #633 | - | X | P2 | - | fix(content): core nouns with no article (Ende, Anfang, Mitte, Nominalisierung, Wirtschaftsflüchtling), and phrases whose article makes an ungrammatical Articles item ("der Fehler machen") | open |  |  |  |
-| #634 | - | X | P2 | - | chore(content): nothing gates the committed content.db, and the source workbooks are neither in git nor fingerprinted | needs-decision |  |  |  |
+| #634 | - | X | P2 | - | chore(content): nothing gates the committed content.db, and the source workbooks are neither in git nor fingerprinted | open |  |  |  |
 | #635 | - | X | P3 | - | fix(content): the same word is taught 2–3 times, across levels (145 exact duplicates) and within a level (44 near-duplicates) | open |  |  |  |
 | #636 | - | X | P3 | - | fix(content): category tab names cut at Excel's 31 characters leave 25 empty truncated categories, and 25 real ones with no description | open |  |  |  |
 | #637 | - | X | P3 | - | fix(content): separable-prefix tips sit on ~45 verbs where they're false, and 8 grammar topics refer to the author's tracker ("weeks 17–35", "In progress", a Munich exam centre) | open |  |  |  |
@@ -5899,3 +5899,7 @@ Added #757 (bug(settings): M3's Voice engine row keeps "Phone voice · Supertoni
 ### H-1361 · 2026-09-27 07:52 · agent-0 → all · note · #630
 
 #630 is open again: decided: add an authored 'kind' column (vocab/note/compare); notes stay visible in lists and search but are never planned, quizzed or examined; fix the wrong rows too.
+
+### H-1362 · 2026-09-27 07:52 · agent-0 → all · note · #634
+
+#634 is open again: decided: the owner will make the repo private before release. Add the shipped-content pytest gate and workbook SHA-256s now; commit data/*.xlsx only AFTER the repo is private.

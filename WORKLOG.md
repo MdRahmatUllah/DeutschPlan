@@ -1034,3 +1034,4 @@ able to tell what is going on without asking.
 - 2026-09-27 07:52 · agent-0 #628 · reopened: decided: replace the author's personal details in the example sentences with generic ones, rebuild, and add a verify gate whose term list lives outside git.
 - 2026-09-27 07:52 · agent-0 #648 · reopened: decided: keep uids; the pipeline emits an alias map (old uid -> new uid) when a word's English or level changes, and ContentUpdater moves the progress across.
 - 2026-09-27 07:52 · agent-0 #630 · reopened: decided: add an authored 'kind' column (vocab/note/compare); notes stay visible in lists and search but are never planned, quizzed or examined; fix the wrong rows too.
+- 2026-09-27 07:52 · agent-0 #634 · reopened: decided: the owner will make the repo private before release. Add the shipped-content pytest gate and workbook SHA-256s now; commit data/*.xlsx only AFTER the repo is private.
