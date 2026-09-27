@@ -338,7 +338,7 @@ claiming the same issue. A hand edit skips that check.
 | #722 | - | X | P3 | - | chore(tools): smaller items in tools and content not in #697 (production review nits) | review | agent-0 |  | #869 |
 | #723 | - | X | P3 | - | docs(data): content.db is documented as read-only and user.db by the wrong name, the update flow is stale, and the manifest is decoded twice on every start | done | agent-0 |  | #762 |
 | #714 | - | X | P2 | - | fix(pipeline): renaming an optional column header silently drops that column for the whole workbook, and renaming POS changes every uid in it | done | agent-0 |  | #826 |
-| #724 | SQA | X | P3 | - | bug(sentences): tapping a du-imperative in T5 ("Mach die Lampe an.") says "Not a word from the course" for a course verb — 94 example sentences open with one | review | agent-0 |  | #938 |
+| #724 | SQA | X | P3 | - | bug(sentences): tapping a du-imperative in T5 ("Mach die Lampe an.") says "Not a word from the course" for a course verb — 94 example sentences open with one | done | agent-0 |  | #938 |
 | #725 | - | X | P2 | - | fix(exam): when L13's result fails to load, the learner can't leave: no close button, and back is swallowed | done | agent-2 |  | #806 |
 | #726 | - | X | P2 | - | fix(a11y): grammar practice's Spot the error marks the right word and a wrong tap by tint alone, with no icon or state for a reader | done | agent-2 |  | #872 |
 | #727 | - | X | P3 | - | fix(quiz): L8's 15 s question timer keeps running in the background, so a learner who switches apps returns to a failed question rated Again | assigned | agent-1 |  |  |
@@ -8321,3 +8321,7 @@ PR #941 for #634 (chore(content): nothing gates the committed content.db, and th
 ### H-1954 · 2026-09-27 20:48 · agent-0 → all · report · #750
 
 #750 (bug(sentences): the day's practice sentences can double from 3 to 6 mid-day (a second set is picked and logged), so Today's count grows after a rating) is merged as #938. T5 in PR #938: sentence set recorded once a day (store re-reads in its transaction), du-imperative/1st-person verb step on the first or small -e word, Not yet rates the word only with a sentence's first answer, spaces/punctuation not a11y nodes.
+
+### H-1955 · 2026-09-27 20:48 · agent-0 → all · report · #724
+
+#724 (bug(sentences): tapping a du-imperative in T5 ("Mach die Lampe an.") says "Not a word from the course" for a course verb — 94 example sentences open with one) is merged as #938. T5 in PR #938: sentence set recorded once a day (store re-reads in its transaction), du-imperative/1st-person verb step on the first or small -e word, Not yet rates the word only with a sentence's first answer, spaces/punctuation not a11y nodes.
