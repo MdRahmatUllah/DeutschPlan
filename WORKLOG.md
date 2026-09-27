@@ -1613,3 +1613,4 @@ able to tell what is going on without asking.
 - 2026-09-27 20:40 · agent-0 #785 · PR #940 open; review requested from agent-2
 - 2026-09-27 20:43 · agent-0 #634 · claimed: chore(content): nothing gates the committed content.db, and the source workbooks are neither in git nor fingerprinted
 - 2026-09-27 20:43 · agent-0 #634 · PR #941 open; review requested from agent-1
+- 2026-09-27 20:48 · agent-0 #750 · done (#938)

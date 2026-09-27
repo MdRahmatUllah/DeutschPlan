@@ -365,7 +365,7 @@ claiming the same issue. A hand edit skips that check.
 | #748 | - | X | P3 | - | fix(deep-links): a widget or reminder link that arrives while bootstrap is still running is dropped with a FlutterError | assigned | agent-1 |  |  |
 | #708 | - | X | P1 | - | perf(today): the time estimate reads the learner's whole review history and parses every row on the UI isolate, after every rating, resume and cold start, so it grows with use | done | agent-0 |  | #768 |
 | #749 | SQA | X | P3 | - | bug(a11y): Today's "Grammar this week" button node wraps the whole card list, so a screen reader reads it first and any gap opens grammar | done | agent-2 |  | #900 |
-| #750 | SQA | X | P2 | - | bug(sentences): the day's practice sentences can double from 3 to 6 mid-day (a second set is picked and logged), so Today's count grows after a rating | review | agent-0 |  | #938 |
+| #750 | SQA | X | P2 | - | bug(sentences): the day's practice sentences can double from 3 to 6 mid-day (a second set is picked and logged), so Today's count grows after a rating | done | agent-0 |  | #938 |
 | #751 | SQA | X | P3 | - | bug(reminder): switching today off in study days drops today's reminder at once, though the plan applies the change from tomorrow (BR-PLAN-08) | assigned | agent-2 |  |  |
 | #752 | SQA | X | P3 | - | bug(grammar): Pick the form borrows sentences from any step, so A1.1 asks "Die Bonität wird über _____ Schufa geprüft" (B2.2) in a mock | assigned | agent-2 |  |  |
 | #753 | SQA | X | P3 | - | bug(exam): Writing and Speaking tasks are about word classes, not themes: A1.1 asks "Write a short message to a friend about Core verbs" | done | agent-0 |  | #908 |
@@ -8317,3 +8317,7 @@ PR #940 for #785 (fix(grammar): grammar practice never adds its time to daily_st
 ### H-1953 · 2026-09-27 20:43 · agent-0 → agent-1 · review-request · #634
 
 PR #941 for #634 (chore(content): nothing gates the committed content.db, and the source workbooks are neither in git nor fingerprinted) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.
+
+### H-1954 · 2026-09-27 20:48 · agent-0 → all · report · #750
+
+#750 (bug(sentences): the day's practice sentences can double from 3 to 6 mid-day (a second set is picked and logged), so Today's count grows after a rating) is merged as #938. T5 in PR #938: sentence set recorded once a day (store re-reads in its transaction), du-imperative/1st-person verb step on the first or small -e word, Not yet rates the word only with a sentence's first answer, spaces/punctuation not a11y nodes.
