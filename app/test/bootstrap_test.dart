@@ -333,8 +333,7 @@ void main() {
     );
 
     // The update: a later course, where w1 changed and w2 is new.
-    final staging = Directory.systemTemp.createTempSync('sogda_update');
-    addTearDown(() => staging.deleteSync(recursive: true));
+    final staging = tempDir('sogda_update');
     final next = ContentFixture.write('${staging.path}/content.db').file;
     final raw = sqlite3.open(next.path);
     raw.execute(
