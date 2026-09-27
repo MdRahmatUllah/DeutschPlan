@@ -48,12 +48,21 @@ void main() {
       'package:sqlite3/',
       'package:go_router/',
       'dart:ui',
+      // No disk either: a store in data/ reads it (#695 TS-4).
+      'dart:io',
     ];
+    // Nor the app's other layers, which build on domain/, not under it: a
+    // package import outside lib/domain/, or a relative one out of it.
+    final app = RegExp(
+      r'''^\s*(?:import|export)\s+['"](?:package:sogda/(?!domain/)|\.\./)''',
+      multiLine: true,
+    );
 
     final domain = Directory('lib/domain');
 
     test(
-      'imports nothing from Flutter, drift or any plugin',
+      'imports nothing from Flutter, drift, any plugin, dart:io or the '
+      "app's other layers",
       () {
         final offenders = <String>[];
         for (final file in _dartFilesIn('lib/domain')) {
@@ -62,6 +71,9 @@ void main() {
             if (_imports(source, package, prefix: true)) {
               offenders.add('${_rel(file)}: imports $package');
             }
+          }
+          for (final match in app.allMatches(source)) {
+            offenders.add('${_rel(file)}: ${match.group(0)!.trim()}');
           }
         }
 
@@ -142,20 +154,31 @@ void main() {
       'FilterChip(': 'SgChip(kind: filter)',
       'ActionChip(': 'SgChip',
       'CupertinoDatePicker(': 'Adaptive.showTimePickerFor',
+      // #695 TS-4. A TextField isn't here: the SDK's own follows the platform
+      // (its cursor, handles and menu), and each of ours is drawn from the
+      // tokens, the same on both, as a content component is.
+      'showDialog(': 'Adaptive.showConfirm or Adaptive.showPane',
+      'showCupertinoDialog(': 'Adaptive.showConfirm or Adaptive.showPane',
+      'showGeneralDialog(': 'Adaptive.showConfirm or Adaptive.showPane',
+      'Dialog(': 'Adaptive.showConfirm or Adaptive.showPane',
+      'SimpleDialog(': 'Adaptive.showConfirm or Adaptive.showPane',
+      'IconButton(': 'an Adaptive or Sg control',
+      'SnackBar(': 'SgToast',
     };
 
     final offenders = <String>[];
     for (final file in _dartFilesIn('lib')) {
       final path = _rel(file);
-      // The wrappers themselves, and main.dart's root MaterialApp.
+      // The wrappers themselves. main.dart is read too: its MaterialApp is
+      // the root, not chrome, and anything else there is (#695 TS-4).
       if (path.startsWith('lib/core/adaptive/')) continue;
-      if (path == 'lib/main.dart') continue;
 
       final lines = file.readAsLinesSync();
       for (var i = 0; i < lines.length; i++) {
         final line = lines[i];
         if (line.trimLeft().startsWith('//')) continue;
-        if (line.contains('ponytail: allow-chrome')) continue;
+        // On the line, or ending the comment above it (#695 TS-4).
+        if (_marked(lines, i, 'ponytail: allow-chrome')) continue;
         for (final entry in chrome.entries) {
           // , or `SgChip(` matches `Chip(` and `AdaptiveSwitch(` matches
           // and `AdaptiveSwitch(` matches `Switch(`. Built from a RAW string —
@@ -174,6 +197,39 @@ void main() {
       reason:
           'chrome belongs behind lib/core/adaptive/:\n'
           '${offenders.join('\n')}',
+    );
+  });
+
+  test('#695 TS-4 text is SgText, never a raw Text', () {
+    // A raw Text has no role, no Bangla fallback, no German voice and no
+    // syllable breaks: what SgText, SgOneLine, SgHeadword and SgRuns add.
+    // lib/core/typography/ builds those from Text; lib/core/adaptive/'s
+    // Material and Cupertino chrome takes the platform's text.
+    final raw = RegExp(r'\bText(?:\.rich)?\(');
+
+    final offenders = <String>[];
+    for (final file in _dartFilesIn('lib')) {
+      final path = _rel(file);
+      if (path.startsWith('lib/core/typography/')) continue;
+      if (path.startsWith('lib/core/adaptive/')) continue;
+
+      final lines = file.readAsLinesSync();
+      for (var i = 0; i < lines.length; i++) {
+        final line = lines[i];
+        if (line.trimLeft().startsWith('//')) continue;
+        if (_marked(lines, i, 'ponytail: allow-raw-text')) continue;
+        if (raw.hasMatch(line)) {
+          offenders.add('$path:${i + 1}: ${line.trim()}');
+        }
+      }
+    }
+
+    expect(
+      offenders,
+      isEmpty,
+      reason:
+          'use SgText (SgOneLine, SgHeadword, SgRuns), or say on the line '
+          'why not with // ponytail: allow-raw-text:\n${offenders.join('\n')}',
     );
   });
 
@@ -214,33 +270,61 @@ void main() {
       'words_fts',
       'words_trigram',
       'examples_fts',
+      'meta',
     ];
+    // SQL, `OR IGNORE` and the other conflict clauses included, in any
+    // schema (#695 TS-4).
     final write = RegExp(
-      r'\b(INSERT\s+INTO|UPDATE|DELETE\s+FROM|REPLACE\s+INTO)\s+'
-      r'(c\.)?"?(\w+)"?',
+      r'\b(INSERT(?:\s+OR\s+\w+)?\s+INTO|UPDATE(?:\s+OR\s+\w+)?|'
+      r'DELETE\s+FROM|REPLACE\s+INTO)\s+'
+      r'(\w+\.)?"?(\w+)"?',
       caseSensitive: false,
+    );
+    // drift's own API, by the tables' Dart names: `into(db.words)`,
+    // `update(words)`, `batch.insertAll(wordExamples, …)`.
+    final dartNames = <String>{
+      for (final table in contentTables)
+        table.replaceAllMapped(
+          RegExp('_([a-z])'),
+          (m) => m.group(1)!.toUpperCase(),
+        ),
+    };
+    final api = RegExp(
+      r'\b(?:into|update|delete|insert|insertAll|insertOnConflictUpdate|'
+      r'insertAllOnConflictUpdate|replace|replaceAll|deleteWhere|deleteAll)'
+      r'\(\s*(?:[\w.]+\.)?(\w+)\s*[,)]',
     );
 
     final offenders = <String>[];
     for (final file in _dartFilesIn('lib')) {
-      for (final match in write.allMatches(file.readAsStringSync())) {
+      final source = file.readAsStringSync();
+      for (final match in write.allMatches(source)) {
         final table = match.group(3);
         if (contentTables.contains(table)) {
           offenders.add('${_rel(file)}: ${match.group(0)}');
         }
       }
-    }
-
-    // The .drift files hold the SQL drift compiles, so they are checked too.
-    for (final name in <String>['content.drift', 'content_schema.drift']) {
-      final file = File('lib/data/db/$name');
-      if (!file.existsSync()) continue;
-      for (final match in write.allMatches(file.readAsStringSync())) {
-        if (contentTables.contains(match.group(3))) {
-          offenders.add('$name: ${match.group(0)}');
+      for (final match in api.allMatches(source)) {
+        if (dartNames.contains(match.group(1))) {
+          offenders.add('${_rel(file)}: ${match.group(0)}');
         }
       }
     }
+
+    // The .drift files hold the SQL drift compiles, so they are checked too:
+    // every one, the *_queries.drift files included.
+    final drift = Directory('lib')
+        .listSync(recursive: true)
+        .whereType<File>()
+        .where((file) => file.path.endsWith('.drift'));
+    for (final file in drift) {
+      for (final match in write.allMatches(file.readAsStringSync())) {
+        if (contentTables.contains(match.group(3))) {
+          offenders.add('${_rel(file)}: ${match.group(0)}');
+        }
+      }
+    }
+    expect(drift, isNotEmpty);
 
     expect(
       offenders,
@@ -398,13 +482,18 @@ void main() {
     // Matched against the whole file rather than line by line: `dart format`
     // wraps a long call, and a regex needing the quote on the same line as
     // the parenthesis would miss exactly the longest paths.
+    //
+    // In either quote, by any of go_router's verbs, and by name too: a
+    // route's name is as unchecked as its path (#695 TS-4).
     final patterns = <String, RegExp>{
       'a path written inline — use the typed route or a named constant': RegExp(
-        r"\b(?:go|push|replace)\(\s*['"
-        "]/",
+        r'''\b(?:go|push|replace|pushReplacement)\(\s*['"]/''',
+      ),
+      'a route opened by name — use the typed route': RegExp(
+        r'\b(?:go|push|replace|pushReplacement)Named\(',
       ),
       'a typed route opened directly — use context.jumpToTab(...)': RegExp(
-        r"\)\.(?:go|push)\(\s*(?:context|this)\b",
+        r'\)\.(?:go|push|replace|pushReplacement)\(\s*(?:context|this)\b',
       ),
     };
 
@@ -483,7 +572,8 @@ void main() {
     // streak and the scheduler all turn on which day it is — a second clock
     // means two answers to "is this due", and only one of them is testable.
     //
-    // Three files are allowed one, and each says why on the line.
+    // Five files are allowed one, and each says why above it. `DateTime.now`
+    // torn off, and `DateTime.timestamp()`, are the same clock (#695 TS-4).
     const allowed = <String>{
       // The clock itself.
       'lib/core/providers/app_providers.dart',
@@ -499,12 +589,16 @@ void main() {
       'lib/core/adaptive/adaptive.dart',
     };
 
+    final now = RegExp(r'\bDateTime\.(?:now|timestamp)\b');
+
     final offenders = <String>[];
     for (final file in _dartFilesIn('lib')) {
       final path = _rel(file);
       if (allowed.contains(path)) continue;
-      if (file.readAsStringSync().contains('DateTime.now(')) {
-        offenders.add(path);
+      final lines = file.readAsLinesSync();
+      for (var i = 0; i < lines.length; i++) {
+        if (lines[i].trimLeft().startsWith('//')) continue;
+        if (now.hasMatch(lines[i])) offenders.add('$path:${i + 1}');
       }
     }
 
@@ -712,6 +806,15 @@ Set<String> _keepAliveIn(String source) {
   }
   return names;
 }
+
+/// True when line [i] of [lines] carries [marker], or the comment line just
+/// above it does: `dart format` moves a comment after an opening bracket to
+/// the next line.
+bool _marked(List<String> lines, int i, String marker) =>
+    lines[i].contains(marker) ||
+    (i > 0 &&
+        lines[i - 1].trimLeft().startsWith('//') &&
+        lines[i - 1].contains(marker));
 
 /// Repo-relative path with forward slashes on every platform.
 ///
