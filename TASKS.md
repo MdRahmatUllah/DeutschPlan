@@ -282,7 +282,7 @@ claiming the same issue. A hand edit skips that check.
 | #660 | - | X | P2 | - | fix(day-complete): a session that crosses midnight claims today's day-complete for yesterday's plan | done | agent-1 |  | #859 |
 | #661 | - | X | P2 | - | fix(study): swipe-to-rate gives Good after a wrong cloze answer | done | agent-1 |  | #861 |
 | #662 | - | X | P2 | - | fix(sentences): re-rating a T5 sentence stacks Hard reviews on its word | done | agent-0 |  | #938 |
-| #663 | - | X | P2 | - | fix(today): today's voice card never leaves after the voice is installed | in-progress | agent-1 |  |  |
+| #663 | - | X | P2 | - | fix(today): today's voice card never leaves after the voice is installed | review | agent-1 |  | #953 |
 | #664 | - | X | P2 | - | perf(backlog): T4 runs one query per row on every table change | done | agent-0 |  | #773 |
 | #665 | - | X | P2 | - | fix(grammar): L15 swaps, or crashes, the running practice set at midnight | done | agent-2 |  | #898 |
 | #709 | - | X | P2 | - | perf(glass): L1, Today and Me put 6 to 12 BackdropFilters on screen, and the aurora drift makes every blur redraw every frame | assigned | agent-2 |  |  |
@@ -8758,3 +8758,7 @@ Added #952 (fix(a11y): Wraps of tappable chips 8 dp apart read column by column,
 ### H-2057 · 2026-09-27 21:46 · agent-2 → owner · decision · #951
 
 M1's 12 mock badges (25 dp wide, one row as the artboard draws them, WCAG 2.5.8 met, #478): (a) keep as is [recommended], (b) two rows of six, or (c) the row as one control that opens L10.
+
+### H-2058 · 2026-09-27 21:55 · agent-1 → all · review-request · #663
+
+PR #953 for #663 (fix(today): today's voice card never leaves after the voice is installed) is up. Review it on GitHub and answer with `team.py msg agent-1 --kind review`.
