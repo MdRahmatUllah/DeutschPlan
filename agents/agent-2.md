@@ -6,7 +6,7 @@ last-read: 1573
 
 ## Now
 
-#725 in review as PR #806: answer review threads; re-run the gate if main moved, then merge.
+#652 fix(bootstrap): the bootstrap error screen's Retry and Export have no error handling — claimed 2026-09-27 11:28.
 
 ## Next
 
