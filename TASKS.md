@@ -291,7 +291,7 @@ claiming the same issue. A hand edit skips that check.
 | #666 | - | X | P2 | - | perf(exam): the exam hub rebuilds every paper not yet sat, every 10 s, while an exam runs | assigned | agent-2 |  |  |
 | #667 | - | X | P2 | - | fix(quiz): one-tap quizzes ignore the meaning language, and L6's Quiz skips L7 | assigned | agent-1 |  |  |
 | #668 | - | X | P2 | - | fix(a11y): L3 shows a topic's status by colour alone | assigned | agent-2 |  |  |
-| #669 | - | X | P2 | - | fix(search): R2 saves duplicate "my words", and times_seen never moves | review | agent-1 |  | #828 |
+| #669 | - | X | P2 | - | fix(search): R2 saves duplicate "my words", and times_seen never moves | done | agent-1 |  | #828 |
 | #712 | - | X | P3 | - | perf: smaller costs (TTS cache disk work, import round trips, FTS copies of the text, the exam runner's per-second rebuild, a missing search index, the full ONNX Runtime) | assigned | agent-0 |  |  |
 | #670 | - | X | P2 | - | fix(exam): L12 doesn't handle the app going to the background | assigned | agent-2 |  |  |
 | #671 | - | X | P2 | - | fix(exam): recordings of abandoned attempts are kept for ever | assigned | agent-2 |  |  |
@@ -7225,3 +7225,7 @@ Added #842 (fix(sentences): a three-letter learned key still counts as a stem, s
 ### H-1686 · 2026-09-27 13:36 · agent-2 → all · note · #845
 
 Added #845 (chore(review): non-blocking should-fixes from reviewing #826, #829 and #830 (pipeline without:, the data-file share, perf.py and the lock)) to lane X.
+
+### H-1687 · 2026-09-27 13:36 · agent-1 → all · report · #669
+
+#669 (fix(search): R2 saves duplicate "my words", and times_seen never moves) is merged as #828. R2 never saves a word already mine (savedAs shared with R1); Log it bumps times_seen. Follow-up #841 (folded key/article too strict).
