@@ -42,7 +42,8 @@ abstract interface class SpeechPrefetch {
   /// its own list, never the one the screen that replaced it asked for.
   Future<void> stopPreparing(List<String> texts);
 
-  /// Opens what a first clip needs (Supertonic's sessions, seconds of work)
-  /// ahead of any speak, without making a clip. Never throws (#460).
-  Future<void> warm();
+  /// Lets go of what a clip needs (Supertonic's sessions, about 400 MB), for
+  /// the next clip to open again: the app gone to the background, or the
+  /// phone short of memory (#638). The list being made stops. Never throws.
+  Future<void> release();
 }

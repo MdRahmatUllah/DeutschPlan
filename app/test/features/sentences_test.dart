@@ -265,9 +265,7 @@ INSERT INTO sentence_log (word_uid, ord, shown_on, self_rating) VALUES
 
       now = DateTime(2026, 9, 22, 0, 5);
       container.invalidate(todayProvider);
-      await tester.runAsync(
-        () => Future<void>.delayed(const Duration(milliseconds: 60)),
-      );
+      await tester.runAsync(pumpEventQueue);
       await tester.pumpAndSettle();
       await answer(tester, l10n.sentencesUnderstood);
 

@@ -85,9 +85,11 @@ words:
     example_de_2: "Beste Grüße, Anna"
     example_en_2: "Best regards, Anna"
   "747ec6fc30ae6225":
-    why: "#628: personal details replaced with generic ones"
+    why: "#628: personal details replaced with generic ones; #631: no example the cloze can gap; one that names the word"
     example_de_2: "Wir haben beschlossen, in Hamburg zu bleiben."
     example_en_2: "We decided to stay in Hamburg."
+    example_de_3: "Der Rat will heute ein neues Gesetz beschließen."
+    example_en_3: "The council intends to pass a new law today."
   "79a6f97561839383":
     why: "#628: personal details replaced with generic ones"
     example_de_1: "Ich arbeite bei der Firma Müller."
@@ -237,8 +239,10 @@ words:
     why: "#629: the headword is the word the row teaches (its second half)"
     german: "abschwächen"
   "4a21b186e8b3b9f3":
-    why: "#629: the headword is the word the row teaches (its second half)"
+    why: "#629: the headword is the word the row teaches (its second half); #631: no example the cloze can gap; one that names the word"
     german: "ausfallen"
+    example_de_3: "Wegen des Streiks kann der Zug ausfallen."
+    example_en_3: "The train may be cancelled because of the strike."
   "63f8482ffda2bedc":
     why: "#629: the headword is the word the row teaches (its second half)"
     german: "sich auszahlen"
@@ -306,37 +310,49 @@ words:
     article: "das"
     german: "Vetorecht"
   "db7c9612c31bf21e":
-    why: "#632: the forms cell is 3rd person · Perfekt; the Präteritum moves to the synonyms"
+    why: "#632: the forms cell is 3rd person · Perfekt; the Präteritum moves to the synonyms; #631: no example the cloze can gap; one that names the word"
     forms: "darf · hat gedurft"
     synonyms_register: "Präteritum: durfte"
+    example_de_3: "Kinder dürfen hier spielen."
+    example_en_3: "Children are allowed to play here."
   "1a40e6b702700966":
-    why: "#632: the forms cell is 3rd person · Perfekt; the Präteritum moves to the synonyms"
+    why: "#632: the forms cell is 3rd person · Perfekt; the Präteritum moves to the synonyms; #631: the example did not name its word"
     forms: "hat · hat gehabt"
     synonyms_register: "Präteritum: hatte"
+    example_de_2: "Habt ihr heute Zeit?"
+    example_en_2: "Do you (all) have time today?"
   "f607aa135108c5d5":
-    why: "#632: the forms cell is 3rd person · Perfekt; the Präteritum moves to the synonyms"
+    why: "#632: the forms cell is 3rd person · Perfekt; the Präteritum moves to the synonyms; #631: no example the cloze can gap; one that names the word"
     forms: "kann · hat gekonnt"
     synonyms_register: "Präteritum: konnte"
+    example_de_3: "Wir können morgen kommen."
+    example_en_3: "We can come tomorrow."
   "efb7b214f95549c0":
     why: "#632: möchten has no Perfekt of its own; its Präteritum moves to the synonyms"
     forms: "möchte"
     synonyms_register: "Präteritum: wollte (möchten has no Perfekt)"
   "6160c674735ccd8a":
-    why: "#632: the forms cell is 3rd person · Perfekt; the Präteritum moves to the synonyms"
+    why: "#632: the forms cell is 3rd person · Perfekt; the Präteritum moves to the synonyms; #631: no example the cloze can gap; one that names the word"
     forms: "muss · hat gemusst"
     synonyms_register: "Präteritum: musste"
+    example_de_3: "Wir müssen noch einkaufen."
+    example_en_3: "We still have to go shopping."
   "600946d210411231":
-    why: "#632: the forms cell is 3rd person · Perfekt; the Präteritum moves to the synonyms"
+    why: "#632: the forms cell is 3rd person · Perfekt; the Präteritum moves to the synonyms; #631: no example the cloze can gap; one that names the word"
     forms: "ist · ist gewesen"
     synonyms_register: "Präteritum: war"
+    example_de_3: "Morgen wird es sonnig sein."
+    example_en_3: "Tomorrow it will be sunny."
   "a559d16747ace9ef":
     why: "#632: the forms cell is 3rd person · Perfekt; the Präteritum moves to the synonyms"
     forms: "soll · hat gesollt"
     synonyms_register: "Präteritum: sollte"
   "b37d78f3d893fbaa":
-    why: "#632: the forms cell is 3rd person · Perfekt; the Präteritum moves to the synonyms"
+    why: "#632: the forms cell is 3rd person · Perfekt; the Präteritum moves to the synonyms; #631: no example the cloze can gap; one that names the word"
     forms: "will · hat gewollt"
     synonyms_register: "Präteritum: wollte"
+    example_de_3: "Die Kinder wollen draußen spielen."
+    example_en_3: "The children want to play outside."
   "54fa3d814e3c4adf":
     why: "#632: one Perfekt to ask; the other sense's auxiliary moves to the synonyms"
     forms: "bricht auf · ist aufgebrochen"
@@ -364,11 +380,15 @@ words:
     why: "#633: a noun carries its article"
     article: "die"
   "048d2e76ae06890e":
-    why: "#633: a noun carries its article"
+    why: "#633: a noun carries its article; #631: the example did not name its word"
     article: "die"
+    example_de_2: "Die Nominalisierung macht aus einem Verb ein Nomen."
+    example_en_2: "Nominalisation turns a verb into a noun."
   "13c2a7ac6970624d":
-    why: "#633: a noun carries its article"
+    why: "#633: a noun carries its article; #631: the example did not name its word"
     article: "der"
+    example_de_2: "Statt von Wirtschaftsflüchtlingen spricht man sachlich von Arbeitsmigration."
+    example_en_2: "Rather than 'economic refugees', the neutral term is 'labour migration'."
   "5118798e663cbc15":
     why: "#633: the article made the phrase ungrammatical, and the Articles quiz asked it"
     article: null
@@ -379,8 +399,10 @@ words:
     why: "#633: the article made the phrase ungrammatical, and the Articles quiz asked it"
     article: null
   "e373dabb778f5c12":
-    why: "#633: the article made the phrase ungrammatical, and the Articles quiz asked it"
+    why: "#633: the article made the phrase ungrammatical, and the Articles quiz asked it; #631: the example did not name its word"
     article: null
+    example_de_2: "Wer Unsicherheit kommuniziert, nennt eine Bandbreite statt einer Punktschätzung."
+    example_en_2: "Anyone who communicates uncertainty gives a range rather than a point estimate."
   "69f04f13d5920289":
     why: "#633: a noun phrase is a noun: its article is asked as the noun's"
     pos: "noun"
@@ -394,8 +416,10 @@ words:
     why: "#633: a noun phrase is a noun: its article is asked as the noun's"
     pos: "noun"
   "a95924d25ee9c929":
-    why: "#633: a noun phrase is a noun: its article is asked as the noun's"
+    why: "#633: a noun phrase is a noun: its article is asked as the noun's; #631: the example did not name its word"
     pos: "noun"
+    example_de_2: "Der Vorbehalt der Vorläufigkeit ist keine Schwäche, sondern Methode."
+    example_en_2: "The proviso of provisionality is not a weakness but a method."
   "3fdadd10b11315dd":
     why: "#630: a lesson note (present participle as attribute (active, ongoing)), not a word to learn"
     kind: note
@@ -532,3 +556,915 @@ words:
   "78b95eba293e3f4b":
     why: "#630: a lesson note (the reporting subjunctive), not a word to learn"
     kind: note
+  "bd0849c79a904eb0":
+    why: "#631: no example the cloze can gap; one that names the word"
+    example_de_3: "Der Bus ist schon abgefahren."
+    example_en_3: "The bus has already left."
+  "29e06caf21199c22":
+    why: "#631: the example did not name its word"
+    example_de_1: "Wir treffen uns an der Haltestelle."
+    example_en_1: "We'll meet at the stop."
+  "984932f49decbca7":
+    why: "#631: no example the cloze can gap; one that names the word"
+    example_de_3: "Auf dem Foto hast du toll ausgesehen."
+    example_en_3: "You looked great in the photo."
+  "d2cb3a71ed949301":
+    why: "#631: no example the cloze can gap; one that names the word"
+    example_de_3: "Wollen wir zusammen essen?"
+    example_en_3: "Shall we eat together?"
+  "ab03862c4fef001a":
+    why: "#631: the example did not name its word"
+    example_de_1: "Kannst du mir bitte das Buch geben?"
+    example_en_1: "Can you give me the book, please?"
+  "74c204b5606755ad":
+    why: "#631: no example the cloze can gap; one that names the word"
+    example_de_3: "Das Konzert hat mir sehr gut gefallen."
+    example_en_3: "I really liked the concert."
+  "eab2e83e459535c3":
+    why: "#631: no example the cloze can gap; one that names the word"
+    example_de_3: "Die Kinder mögen Schokolade."
+    example_en_3: "The children like chocolate."
+  "52b2d94f9c57b17d":
+    why: "#631: no example the cloze can gap; one that names the word"
+    example_de_3: "Ich möchte mehr über Deutschland wissen."
+    example_en_3: "I'd like to know more about Germany."
+  "f257735871ec6d13":
+    why: "#631: the example did not name its word"
+    example_de_1: "Ich fahre morgen zu meiner Schwester."
+    example_en_1: "Tomorrow I'm going to my sister's."
+  "3375b9b7657ce670":
+    why: "#631: no example the cloze can gap; one that names the word"
+    example_de_3: "Mathe ist ein schweres Fach."
+    example_en_3: "Maths is a difficult subject."
+  "6b53eb582d3c1cad":
+    why: "#631: the example did not name its word"
+    example_de_2: "Tickets gibt es am Fahrkartenautomaten."
+    example_en_2: "Tickets are available at the ticket machine."
+  "2a10f67fc7774dd7":
+    why: "#631: no example the cloze can gap; one that names the word"
+    example_de_3: "Du bist hier immer ein willkommener Gast."
+    example_en_3: "You are always a welcome guest here."
+  "c92e808187f6132f":
+    why: "#631: the example did not name its word"
+    example_de_1: "Die S-Bahn S8 fährt zum Flughafen."
+    example_en_1: "The S8 suburban train goes to the airport."
+  "2839c21baa769c58":
+    why: "#631: the example did not name its word"
+    example_de_2: "Ich fahre mit der Straßenbahn zur Arbeit."
+    example_en_2: "I take the tram to work."
+  "fad033eeb98d8702":
+    why: "#631: the example did not name its word"
+    example_de_2: "Euer Zimmer ist schön."
+    example_en_2: "Your room is nice. (plural)"
+  "304e8d8f5ebf79e5":
+    why: "#631: the example did not name its word"
+    example_de_2: "Der Berg ist sehr hoch."
+    example_en_2: "The mountain is very high."
+  "363599aaed8bc369":
+    why: "#631: no example the cloze can gap; one that names the word"
+    example_de_3: "Den Kontoauszug bekomme ich per Post."
+    example_en_3: "I get the bank statement by post."
+  "6034eb9678dd631a":
+    why: "#631: the example did not name its word"
+    example_de_2: "Ein Zimmer in einer Wohngemeinschaft kostet 450 Euro."
+    example_en_2: "A room in a shared flat costs 450 euros."
+  "13a4797fa3365f3e":
+    why: "#631: no example the cloze can gap; one that names the word"
+    example_de_3: "Pass auf, das Eis kann brechen!"
+    example_en_3: "Careful, the ice can break!"
+  "0eee70cb1193d5ef":
+    why: "#631: no example the cloze can gap; one that names the word"
+    example_de_3: "Ich will nicht noch einmal durchfallen."
+    example_en_3: "I don't want to fail again."
+  "452097381466b650":
+    why: "#631: no example the cloze can gap; one that names the word"
+    example_de_3: "Unsere Mannschaft will das Spiel gewinnen."
+    example_en_3: "Our team wants to win the game."
+  "bbcbbe7a75199286":
+    why: "#631: no example the cloze can gap; one that names the word"
+    example_de_3: "Man sollte nie den Mut verlieren."
+    example_en_3: "You should never lose heart."
+  "d3e47e28c62ae9b3":
+    why: "#631: the example did not name its word"
+    example_de_2: "Das Altpapier kommt in die blaue Tonne."
+    example_en_2: "Waste paper goes in the blue bin."
+  "c2d1e4454fb37760":
+    why: "#631: no example the cloze can gap; one that names the word"
+    example_de_3: "Ein Fahrgast hat seinen Koffer vergessen."
+    example_en_3: "A passenger forgot their suitcase."
+  "1d97296444336286":
+    why: "#631: no example the cloze can gap; one that names the word"
+    example_de_3: "Die Nuss ist sehr hart."
+    example_en_3: "The nut is very hard."
+  "5813a72615c1c174":
+    why: "#631: the example did not name its word"
+    example_de_2: "Ich mache einen Kurs an der Volkshochschule."
+    example_en_2: "I'm doing a course at the adult education centre."
+  "3cc18c84edfd4f05":
+    why: "#631: no example the cloze can gap; one that names the word"
+    example_de_3: "Ich muss noch meine Hemden bügeln."
+    example_en_3: "I still have to iron my shirts."
+  "c5987f809b1c04f0":
+    why: "#631: no example the cloze can gap; one that names the word"
+    example_de_3: "Diebe wollten das Auto stehlen."
+    example_en_3: "Thieves wanted to steal the car."
+  "2df4653a1d9ad43f":
+    why: "#631: no example the cloze can gap; one that names the word"
+    example_de_3: "Ab Januar soll eine neue Regel gelten."
+    example_en_3: "A new rule is to apply from January."
+  "5da00f1e35bed6b5":
+    why: "#631: the example did not name its word"
+    example_de_2: "Künstliche Intelligenz verändert die Arbeit."
+    example_en_2: "Artificial intelligence is changing work."
+  "ea344495752e906a":
+    why: "#631: the example did not name its word"
+    example_de_2: "Die U-Untersuchung U3 ist in der vierten bis fünften Lebenswoche."
+    example_en_2: "The U3 check-up is in the baby's fourth to fifth week."
+  "66ff7ada283ba172":
+    why: "#631: no example the cloze can gap; one that names the word"
+    example_de_3: "Du musst dich beim Essen gut benehmen."
+    example_en_3: "You have to behave well at the table."
+  "a818dea7b4e71951":
+    why: "#631: no example the cloze can gap; one that names the word"
+    example_de_3: "Daran kann man nicht zweifeln."
+    example_en_3: "There is no doubting that."
+  "4731c068a3390999":
+    why: "#631: the example did not name its word"
+    example_de_2: "Statt Studiengebühren ist nur der Semesterbeitrag fällig."
+    example_en_2: "Instead of tuition fees, only the semester contribution is due."
+  "87cd7cc5cf3fb672":
+    why: "#631: no example the cloze can gap; one that names the word"
+    example_de_3: "Ein wichtiger Umstand wurde übersehen."
+    example_en_3: "An important circumstance was overlooked."
+  "a97ed47380f1ef56":
+    why: "#631: no example the cloze can gap; one that names the word"
+    example_de_3: "Die Zahl der Geburten wird weiter abnehmen."
+    example_en_3: "The number of births will continue to decrease."
+  "2f9d744fe9399ca5":
+    why: "#631: no example the cloze can gap; one that names the word"
+    example_de_3: "Die Kosten dürften etwa 500 Euro betragen."
+    example_en_3: "The costs are likely to come to about 500 euros."
+  "a54d798530cf6a86":
+    why: "#631: no example the cloze can gap; one that names the word"
+    example_de_3: "Die neuen Regeln werden vor allem Familien betreffen."
+    example_en_3: "The new rules will mainly affect families."
+  "93c115292e662b12":
+    why: "#631: no example the cloze can gap; one that names the word"
+    example_de_3: "Wir wollen nächste Woche eine Umfrage durchführen."
+    example_en_3: "We want to conduct a survey next week."
+  "1c0bd279c176acf9":
+    why: "#631: no example the cloze can gap; one that names the word"
+    example_de_3: "Das Projekt kann nur gemeinsam gelingen."
+    example_en_3: "The project can only succeed if we work together."
+  "21cfdce3ef9d5881":
+    why: "#631: no example the cloze can gap; one that names the word"
+    example_de_3: "Ich möchte zwei Punkte besonders hervorheben."
+    example_en_3: "I'd like to highlight two points in particular."
+  "2547385aa30697ac":
+    why: "#631: no example the cloze can gap; one that names the word"
+    example_de_3: "Das lässt sich nur schwer nachweisen."
+    example_en_3: "That is hard to prove."
+  "63e7397536ffd1c8":
+    why: "#631: no example the cloze can gap; one that names the word"
+    example_de_3: "Wie soll ich mich in dieser Situation verhalten?"
+    example_en_3: "How should I behave in this situation?"
+  "620eb3a768484688":
+    why: "#631: no example the cloze can gap; one that names the word"
+    example_de_3: "Man sollte sich nicht zu viel vornehmen."
+    example_en_3: "You shouldn't take on too much."
+  "3ffac83b3e5853be":
+    why: "#631: no example the cloze can gap; one that names the word"
+    example_de_3: "Wir müssen sicherstellen, dass alle informiert sind."
+    example_en_3: "We have to make sure everyone is informed."
+  "fd786dc96edcf85a":
+    why: "#631: the example did not name its word"
+    example_de_2: "Die Temperaturen steigen auf über 30 Grad."
+    example_en_2: "Temperatures are rising to over 30 degrees."
+  "25ce614ae71334b9":
+    why: "#631: no example the cloze can gap; one that names the word"
+    example_de_3: "Ich weiß, dass die Stelle Erfahrung voraussetzt."
+    example_en_3: "I know that the position requires experience."
+  "fe4e3ba2ac33df9a":
+    why: "#631: no example the cloze can gap; one that names the word"
+    example_de_3: "Der Verkehr wird in Zukunft zunehmen."
+    example_en_3: "Traffic will increase in future."
+  "e073767200147f17":
+    why: "#631: the example did not name its word"
+    example_de_2: "Prüfen Sie die Quelle, damit Sie keine Falschmeldung teilen."
+    example_en_2: "Check the source so that you don't share fake news."
+  "c213708b68dfdc81":
+    why: "#631: the example did not name its word"
+    example_de_2: "Der Gesetzentwurf wurde abgelehnt."
+    example_en_2: "The bill was rejected."
+  "d5ae3f94d7c3004d":
+    why: "#631: the example did not name its word"
+    example_de_2: "Mein Opa sagt immer: Morgenstund hat Gold im Mund."
+    example_en_2: "My grandpa always says: the early bird catches the worm."
+  "221ee73b08f0a162":
+    why: "#631: the example did not name its word"
+    example_de_2: "„Was Hänschen nicht lernt, lernt Hans nimmermehr“, sagte meine Oma oft."
+    example_en_2: "My grandma often said you can't teach an old dog new tricks."
+  "7205113593a5eada":
+    why: "#631: no example the cloze can gap; one that names the word"
+    example_de_3: "Das Gericht kann die Klage abweisen."
+    example_en_3: "The court can dismiss the suit."
+  "0f719b8def3c34b1":
+    why: "#631: no example the cloze can gap; one that names the word"
+    example_de_3: "Bis zum Sommer musst du noch durchhalten."
+    example_en_3: "You have to hold out until the summer."
+  "5ba87f57ab550db4":
+    why: "#631: no example the cloze can gap; one that names the word"
+    example_de_3: "Der erste Versuch kann auch fehlschlagen."
+    example_en_3: "The first attempt may also fail."
+  "81524371183d4251":
+    why: "#631: no example the cloze can gap; one that names the word"
+    example_de_3: "Die Lage ist heikel."
+    example_en_3: "The situation is delicate."
+  "651250d8fe60ee35":
+    why: "#631: no example the cloze can gap; one that names the word"
+    example_de_3: "Wir dürfen nicht hinterherhinken."
+    example_en_3: "We mustn't lag behind."
+  "df68269f3cc884d5":
+    why: "#631: no example the cloze can gap; one that names the word"
+    example_de_3: "Sie ist im Stande, das Projekt allein zu leiten."
+    example_en_3: "She is capable of leading the project alone."
+  "89fd4beb85d03442":
+    why: "#631: the example did not name its word"
+    example_de_2: "Der Anteil blieb nahezu konstant."
+    example_en_2: "The share remained almost constant."
+  "5f342d320f6f6bf9":
+    why: "#631: no example the cloze can gap; one that names the word"
+    example_de_3: "Ein Streik könnte den ganzen Verkehr lahmlegen."
+    example_en_3: "A strike could bring all traffic to a standstill."
+  "5e74948a87e9783c":
+    why: "#631: no example the cloze can gap; one that names the word"
+    example_de_3: "Die Methode könnte sich als nützlich erweisen."
+    example_en_3: "The method could prove useful."
+  "8af426a19630aba4":
+    why: "#631: no example the cloze can gap; one that names the word"
+    example_de_3: "Wir müssen noch einige Änderungen vornehmen."
+    example_en_3: "We still have to make a few changes."
+  "9e56f93fd78a6514":
+    why: "#631: no example the cloze can gap; one that names the word"
+    example_de_3: "Der Minister ist gestern zurückgetreten."
+    example_en_3: "The minister resigned yesterday."
+  "da6126e1699ab5a0":
+    why: "#631: no example the cloze can gap; one that names the word"
+    example_de_3: "Kaum jemand kann diesen Rekord übertreffen."
+    example_en_3: "Hardly anyone can beat this record."
+  "32e49101c0c1018b":
+    why: "#631: the example did not name its word"
+    example_de_2: "Gemessen am Bruttoinlandsprodukt ist der Anteil gering."
+    example_en_2: "Measured against GDP, the share is small."
+  "6015e941f52ca481":
+    why: "#631: the example did not name its word"
+    example_de_2: "Die Einwilligung kann jederzeit widerrufen werden."
+    example_en_2: "Consent can be withdrawn at any time."
+  "5a8d180c968fe4c1":
+    why: "#631: no example the cloze can gap; one that names the word"
+    example_de_3: "Dieser Missstand muss sofort beseitigt werden."
+    example_en_3: "This deplorable state of affairs must be remedied at once."
+  "12f7631630d2c00b":
+    why: "#631: no example the cloze can gap; one that names the word"
+    example_de_3: "Die Firma will die Verluste bald ausgleichen."
+    example_en_3: "The company wants to offset the losses soon."
+  "b9bf041ccc45d403":
+    why: "#631: no example the cloze can gap; one that names the word"
+    example_de_3: "Die neue Technik kann auch Risiken bergen."
+    example_en_3: "The new technology can also entail risks."
+  "1a51822a34ac6edb":
+    why: "#631: no example the cloze can gap; one that names the word"
+    example_de_3: "Wir wollen neue Daten erheben."
+    example_en_3: "We want to collect new data."
+  "1e66ace96d12e844":
+    why: "#631: no example the cloze can gap; one that names the word"
+    example_de_3: "Die Gemeinde will eine neue Steuer erheben."
+    example_en_3: "The municipality wants to levy a new tax."
+  "4c715dde81a5cc79":
+    why: "#631: no example the cloze can gap; one that names the word"
+    example_de_3: "Hier kann man ein Zertifikat erwerben."
+    example_en_3: "You can acquire a certificate here."
+  "8fe82b93bc2b38d1":
+    why: "#631: no example the cloze can gap; one that names the word"
+    example_de_3: "Solche Krisen können neue Ideen hervorbringen."
+    example_en_3: "Such crises can produce new ideas."
+  "dad124114af5e625":
+    why: "#631: no example the cloze can gap; one that names the word"
+    example_de_3: "Die Ergebnisse könnten eine andere Erklärung nahelegen."
+    example_en_3: "The results might suggest a different explanation."
+  "6f8a13e044ebe7b4":
+    why: "#631: no example the cloze can gap; one that names the word"
+    example_de_3: "Die Firma muss ihre Zahlen offenlegen."
+    example_en_3: "The company has to disclose its figures."
+  "128eb3033ba6d7ea":
+    why: "#631: no example the cloze can gap; one that names the word"
+    example_de_3: "Die Reform wird sich erst später in den Zahlen niederschlagen."
+    example_en_3: "The reform will only be reflected in the figures later."
+  "aa6ccb95a1c6556e":
+    why: "#631: no example the cloze can gap; one that names the word"
+    example_de_3: "Solche Skandale können das Vertrauen untergraben."
+    example_en_3: "Scandals like that can undermine trust."
+  "656fbcd07aacc017":
+    why: "#631: no example the cloze can gap; one that names the word"
+    example_de_3: "Wir mussten den ersten Plan verwerfen."
+    example_en_3: "We had to discard the first plan."
+  "53a6c1188f85abf5":
+    why: "#631: no example the cloze can gap; one that names the word"
+    example_de_3: "Die Regierung will den Ausbau der Netze vorantreiben."
+    example_en_3: "The government wants to push ahead with expanding the networks."
+  "8059f8d1f188a6e5":
+    why: "#631: no example the cloze can gap; one that names the word"
+    example_de_3: "Sie können Ihre Einwände in der Sitzung vorbringen."
+    example_en_3: "You can put forward your objections at the meeting."
+  "e6188b53f5f64cf7":
+    why: "#631: no example the cloze can gap; one that names the word"
+    example_de_3: "Ich will das Ergebnis nicht vorwegnehmen."
+    example_en_3: "I don't want to give away the result."
+  "af2b2e3fb4fc9f89":
+    why: "#631: no example the cloze can gap; one that names the word"
+    example_de_3: "Beide Zeugen wollen den Täter gesehen haben."
+    example_en_3: "Both witnesses claim to have seen the culprit."
+  "e8add2e62e77c46c":
+    why: "#631: no example the cloze can gap; one that names the word"
+    example_de_3: "Zwischen Stadt und Land gibt es ein deutliches Gefälle."
+    example_en_3: "There is a clear disparity between town and country."
+  "d6e11a6adf3f3cf0":
+    why: "#631: the example did not name its word"
+    example_de_2: "Der Handelsbilanzüberschuss schrumpft."
+    example_en_2: "The trade surplus is shrinking."
+  "f787af869ee4dc98":
+    why: "#631: the example did not name its word"
+    example_de_2: "Hier ist keine Schriftform nötig, die Textform genügt."
+    example_en_2: "No written form is needed here; text form suffices."
+  "68c92202afa0c592":
+    why: "#631: the example did not name its word"
+    example_de_2: "Der Begriff Vergangenheitsbewältigung ist selbst umstritten."
+    example_en_2: "The term 'Vergangenheitsbewältigung' is itself contested."
+  "bd4b70ffc170cbfb":
+    why: "#631: the example did not name its word"
+    example_de_2: "Die Versiegelung rückgängig zu machen ist teuer."
+    example_en_2: "Reversing soil sealing is expensive."
+  "6391e2d4e5b11fcb":
+    why: "#631: the example did not name its word"
+    example_de_2: "Planen Sie bei der Zeiteinteilung zehn Minuten für die Überarbeitung ein."
+    example_en_2: "When planning your time, allow ten minutes for revision."
+  "103c70b107f779bf":
+    why: "#631: no example the cloze can gap; one that names the word"
+    example_de_3: "Die Zahlen sind um Preiseffekte bereinigt."
+    example_en_3: "The figures are adjusted for price effects."
+  "c3909766c2968206":
+    why: "#631: the example did not name its word"
+    example_de_2: "Um die Aufgabenstellung zu erfüllen, müssen alle vier Leitpunkte bearbeitet werden."
+    example_en_2: "To meet the task requirements, all four guiding points have to be addressed."
+  "fee939556b9d7262":
+    why: "#631: no example the cloze can gap; one that names the word"
+    example_de_3: "Solche Details dürfen nicht durchsickern."
+    example_en_3: "Details like that must not leak out."
+  "94c20586f2959d2d":
+    why: "#631: no example the cloze can gap; one that names the word"
+    example_de_3: "Die Uni will mehr Drittmittel einwerben."
+    example_en_3: "The university wants to raise more third-party funding."
+  "a60e86ab1f79edc6":
+    why: "#631: no example the cloze can gap; one that names the word"
+    example_de_3: "Können Sie uns beim Termin entgegenkommen?"
+    example_en_3: "Can you accommodate us on the date?"
+  "1343b2743f1b5bc5":
+    why: "#631: the example did not name its word"
+    example_de_2: "Er ringt sichtlich um Worte."
+    example_en_2: "He is visibly struggling for words."
+  "d321b965bc97a3b0":
+    why: "#631: no example the cloze can gap; one that names the word"
+    example_de_3: "In der Prüfung muss man sich kurzfassen."
+    example_en_3: "In the exam you have to be brief."
+  "e6eb88b0a7a86325":
+    why: "#631: no example the cloze can gap; one that names the word"
+    example_de_3: "Das Geld soll vor allem Familien zugutekommen."
+    example_en_3: "The money is mainly meant to benefit families."
+  "6061e7cd9b4aa131":
+    why: "#631: no example the cloze can gap; one that names the word"
+    example_de_3: "Ihr soll eine besondere Ehre zuteilwerden."
+    example_en_3: "A special honour is to be bestowed on her."
+  "23119fd60599df8f":
+    why: "#631: no example the cloze can gap; one that names the word"
+    example_de_3: "Wir dürfen die Bürokratie nicht überhandnehmen lassen."
+    example_en_3: "We mustn't let the bureaucracy get out of hand."
+  "650ce11177659912":
+    why: "#631: the example did not name its word"
+    example_de_2: "Nach zwei Fehlversuchen sagte sie: Aller guten Dinge sind drei."
+    example_en_2: "After two failed attempts she said: third time lucky."
+  "b92ada70f8ef9c43":
+    why: "#631: the example did not name its word"
+    example_de_2: "Im Ausland denke ich oft: Andere Länder, andere Sitten."
+    example_en_2: "Abroad I often think: other countries, other customs."
+  "2ff8b2dc916f0019":
+    why: "#631: the example did not name its word"
+    example_de_2: "Laut Aufgabenstellung müssen alle Leitpunkte bearbeitet werden."
+    example_en_2: "According to the task, all guiding points must be addressed."
+  "a04cf2bfb54e3634":
+    why: "#631: the example did not name its word"
+    example_de_2: "Kant definierte die Aufklärung als Ausgang aus selbstverschuldeter Unmündigkeit."
+    example_en_2: "Kant defined the Enlightenment as emergence from self-incurred immaturity."
+  "c36775084aae54a5":
+    why: "#631: the example did not name its word"
+    example_de_2: "Der Satz „Ausnahmen bestätigen die Regel“ wird gern missbraucht."
+    example_en_2: "The saying 'the exception proves the rule' is often misused."
+  "6f6f21ab6b95b7f8":
+    why: "#631: the example did not name its word"
+    example_de_2: "So mit Kunden zu sprechen – das geht gar nicht."
+    example_en_2: "Talking to customers like that – that's simply not on."
+  "4848aa0a2e5dfa1d":
+    why: "#631: the example did not name its word"
+    example_de_1: "Die Ellipse „Ich komme morgen, du übermorgen“ spart das zweite Verb aus."
+    example_en_1: "The ellipsis 'I'm coming tomorrow, you the day after' omits the second verb."
+  "cd18405c9eb5ec2f":
+    why: "#631: the example did not name its word"
+    example_de_2: "Jede Disziplin pflegt ihre eigene Fachterminologie."
+    example_en_2: "Every discipline maintains its own terminology."
+  "ffd8dd84d54ca4d1":
+    why: "#631: the example did not name its word"
+    example_de_2: "Zählen Sie jedes Füllwort in einer Aufnahme."
+    example_en_2: "Count every filler word in a recording."
+  "b83539e65df4b2c1":
+    why: "#631: the example did not name its word"
+    example_de_2: "Hochmut kommt vor dem Fall, heißt es schon in der Bibel."
+    example_en_2: "Pride comes before a fall, as the Bible says."
+  "bd6bdf20e4f799b0":
+    why: "#631: the example did not name its word"
+    example_de_2: "Kindern sagt man: Lügen haben kurze Beine."
+    example_en_2: "Children are told: lies have short legs."
+  "d8f1362dffce4917":
+    why: "#631: the example did not name its word"
+    example_de_2: "Hinter der Fassade sieht es anders aus: Nicht alles, was glänzt, ist Gold."
+    example_en_2: "Behind the façade it looks different: all that glitters is not gold."
+  "10d192e57b73d675":
+    why: "#631: the example did not name its word"
+    example_de_2: "Manchmal gilt das Gegenteil von „Reden ist Silber, Schweigen ist Gold“."
+    example_en_2: "Sometimes the opposite of 'speech is silver, silence is golden' applies."
+  "9f453b0ef0c33174":
+    why: "#631: the example did not name its word"
+    example_de_2: "Ein Kurzsatz am Absatzende bricht den Rhythmus und setzt einen Akzent."
+    example_en_2: "A short sentence at the end of a paragraph breaks the rhythm and adds emphasis."
+  "87a8bfff48a81a11":
+    why: "#631: the example did not name its word"
+    example_de_2: "Die Semmel heißt in Berlin Schrippe, in Hamburg Rundstück."
+    example_en_2: "In Berlin a Semmel is called Schrippe, in Hamburg Rundstück."
+  "9705d1a7dc0466d2":
+    why: "#631: the example did not name its word"
+    example_de_2: "Die Wettbewerbsfähigkeit wird oft an Lohnstückkosten gemessen."
+    example_en_2: "Competitiveness is often measured by unit labour costs."
+  "5084e2ca0949a587":
+    why: "#631: the example did not name its word"
+    example_de_2: "Nach der Unterbrechung fragte sie ruhig: Wo war ich stehen geblieben?"
+    example_en_2: "After the interruption she calmly asked: where was I?"
+  "ec9371d67a85834a":
+    why: "#631: the example did not name its word"
+    example_de_2: "Aktuell heißt „currently“; „actually“ heißt eigentlich."
+    example_en_2: "'Aktuell' means 'currently'; 'actually' is 'eigentlich'."
+  "1b5ab421ec110885":
+    why: "#631: no example the cloze can gap; one that names the word"
+    example_de_3: "Dieser Schritt wird keiner weiteren Erklärung bedürfen."
+    example_en_3: "This step will need no further explanation."
+  "6266211865353565":
+    why: "#631: the example did not name its word"
+    example_de_2: "Bekommen heißt „to get“; „to become“ heißt werden."
+    example_en_2: "'Bekommen' means 'to get'; 'to become' is 'werden'."
+  "25ec0ff43d498745":
+    why: "#631: no example the cloze can gap; one that names the word"
+    example_de_3: "Das Duzen und Siezen regelt jede Firma anders."
+    example_en_3: "Every company handles 'du' and 'Sie' differently."
+  "3cf7f78357047f50":
+    why: "#631: the example did not name its word"
+    example_de_2: "Dereinst klingt hochgestochen, kann aber wirkungsvoll sein."
+    example_en_2: "'Dereinst' sounds lofty but can be effective."
+  "ce154dda4c4f75e9":
+    why: "#631: the example did not name its word"
+    example_de_2: "Wer langsamer spricht und deutlich artikuliert, löst die meisten Verständnisprobleme."
+    example_en_2: "Speaking more slowly and articulating clearly solves most comprehension problems."
+  "8b0f2a4e0b21ae8d":
+    why: "#631: the example did not name its word"
+    example_de_2: "Dieweil sagt man heute nur noch scherzhaft."
+    example_en_2: "Today 'dieweil' is only used jokingly."
+  "7a522ce5f5ea8e98":
+    why: "#631: the example did not name its word"
+    example_de_2: "Wer zehn Minuten täglich dranbleibt, erreicht in drei Jahren ein neues Sprachniveau."
+    example_en_2: "If you stick with it for ten minutes a day, you'll reach a new level in three years."
+  "fa6c98279278de54":
+    why: "#631: no example the cloze can gap; one that names the word"
+    example_de_3: "Mehr hat die Quelle nicht hergegeben."
+    example_en_3: "The source yielded no more than that."
+  "7bd9ae36a24591c9":
+    why: "#631: no example the cloze can gap; one that names the word"
+    example_de_3: "Man sollte nicht in alte Muster verfallen."
+    example_en_3: "One shouldn't lapse into old patterns."
+  "6efd3f58ab3dde72":
+    why: "#631: the example did not name its word"
+    example_de_2: "Krass ist seit den 1990ern fest etabliert und nicht mehr nur jugendsprachlich."
+    example_en_2: "'Krass' has been firmly established since the 1990s and is no longer just youth slang."
+  "c45a26fd7eca2269":
+    why: "#631: no example the cloze can gap; one that names the word"
+    example_de_3: "Alle Beteiligten müssen ihre Interessen offenlegen."
+    example_en_3: "Everyone involved has to disclose their interests."
+  "082ccfe867f8c9b6":
+    why: "#631: the example did not name its word"
+    example_de_2: "Sensibel heißt „sensitive“; „sensible“ heißt vernünftig."
+    example_en_2: "'Sensibel' means 'sensitive'; 'sensible' is 'vernünftig'."
+  "7e662701077fa808":
+    why: "#631: the example did not name its word"
+    example_de_2: "Wer sich spät zur Prüfung anmeldet, bekommt oft keinen Platz mehr."
+    example_en_2: "If you register late for the exam, you often won't get a place."
+  "e6cd1247afbe0a06":
+    why: "#631: no example the cloze can gap; one that names the word"
+    example_de_3: "Bei der Abstimmung wird sie sich enthalten."
+    example_en_3: "She will abstain in the vote."
+  "57bc23d243445af4":
+    why: "#631: the example did not name its word"
+    example_de_2: "Mit der Überleitung „Damit komme ich zum zweiten Punkt“ wechselt man das Thema."
+    example_en_2: "With the transition 'That brings me to the second point' you change topic."
+  "5245f1eaa18f9dd6":
+    why: "#631: the example did not name its word"
+    example_de_1: "Die Anapher „wir haben geplant, wir haben geprüft“ wirkt eindringlich."
+    example_en_1: "The anaphora 'we planned, we examined' is forceful."
+  "d969590cdc209cc3":
+    why: "#631: the example did not name its word"
+    example_de_2: "Die Aufklärungskritik warnt: Vernunft kann in Herrschaft umschlagen."
+    example_en_2: "The critique of the Enlightenment warns: reason can turn into domination."
+  "4afe46ab46be6c56":
+    why: "#631: the example did not name its word"
+    example_de_2: "Innerhalb der Bandbreite ist kein einzelner Wert „die“ Prognose."
+    example_en_2: "Within the range no single value is 'the' forecast."
+  "b0a8ae6dec926399":
+    why: "#631: the example did not name its word"
+    example_de_2: "Die Beitragsanpassung klingt neutral, meint aber fast immer eine Erhöhung."
+    example_en_2: "'Contribution adjustment' sounds neutral but almost always means an increase."
+  "c1c770407d929515":
+    why: "#631: the example did not name its word"
+    example_de_2: "Die Benrather Linie markiert die Grenze zum Niederdeutschen."
+    example_en_2: "The Benrath line marks the boundary with Low German."
+  "ed4f44b2582be654":
+    why: "#631: the example did not name its word"
+    example_de_2: "Zu den Bewertungskriterien gehören Kohärenz, Wortschatz und Aussprache."
+    example_en_2: "The assessment criteria include coherence, vocabulary and pronunciation."
+    example_de_1: "Wer die Bewertungskriterien kennt, schreibt gezielter."
+    example_en_1: "Anyone who knows the assessment criteria writes more purposefully."
+  "55ea79f8f0df5478":
+    why: "#631: the example did not name its word"
+    example_de_2: "Um die Bürokratielast zu messen, wird der Erfüllungsaufwand berechnet."
+    example_en_2: "To measure the regulatory burden, the compliance cost is calculated."
+  "69ceb03be79e696d":
+    why: "#631: the example did not name its word"
+    example_de_2: "Für den Deepfake hat sich kein deutsches Wort durchgesetzt."
+    example_en_2: "No German word for deepfake has established itself."
+  "7a4a6deb38bb9869":
+    why: "#631: the example did not name its word"
+    example_de_2: "In Führungsdebatten heißt es oft: Der Fisch stinkt vom Kopf her."
+    example_en_2: "In leadership debates people often say: the fish rots from the head."
+  "affb8ef95c07922c":
+    why: "#631: the example did not name its word"
+    example_de_2: "Beim Dienst nach Vorschrift wird alles korrekt erledigt, aber nichts darüber hinaus."
+    example_en_2: "When working to rule, everything is done correctly, but nothing more."
+  "05a12e3ebce0c154":
+    why: "#631: the example did not name its word"
+    example_de_2: "Der Doppelwumms war Kanzlerdeutsch, das haften blieb."
+    example_en_2: "'Doppelwumms' was chancellor-speak that stuck."
+  "e12b3afe6b9497e8":
+    why: "#631: the example did not name its word"
+    example_de_2: "Der Erdapfel heißt in Deutschland Kartoffel."
+    example_en_2: "In Germany the Erdapfel is called Kartoffel."
+  "683cd83bb3a43f74":
+    why: "#631: the example did not name its word"
+    example_de_2: "Den Erfüllungsaufwand prüft der Normenkontrollrat."
+    example_en_2: "The regulatory control council reviews the compliance cost."
+  "1c18e535a9be0fe5":
+    why: "#631: the example did not name its word"
+    example_de_2: "Die Erörterung ist schematischer als der Essay."
+    example_en_2: "The Erörterung is more schematic than an essay."
+  "ed60338f2f1a1725":
+    why: "#631: the example did not name its word"
+    example_de_2: "Ein Essay darf subjektiv sein, aber nicht beliebig."
+    example_en_2: "An essay may be subjective but not arbitrary."
+  "25e546b1ad09fc2f":
+    why: "#631: the example did not name its word"
+    example_de_2: "Falschbalance entsteht, wenn Ausgewogenheit als Gleichverteilung der Redezeit missverstanden wird."
+    example_en_2: "False balance arises when balance is misunderstood as equal airtime."
+  "582905e399041603":
+    why: "#631: the example did not name its word"
+    example_de_2: "Im Fehlerprotokoll stehen Kategorien wie Register, Kollokation und Kongruenz."
+    example_en_2: "The error log has categories such as register, collocation and agreement."
+  "5945c82e065930a0":
+    why: "#631: the example did not name its word"
+    example_de_2: "Das Forschungsdesiderat wird im Ausblick benannt."
+    example_en_2: "The research gap is named in the outlook."
+  "eb5dc4604f99d953":
+    why: "#631: the example did not name its word"
+    example_de_2: "Wörter wie Freisetzung sollte man als Beschönigung benennen."
+    example_en_2: "Words like 'Freisetzung' should be called out as euphemisms."
+  "ac546bbd83fcab1e":
+    why: "#631: the example did not name its word"
+    example_de_2: "Für das Gehörtraining eignen sich Deutschlandfunk, Podcasts und Vorlesungen."
+    example_en_2: "Deutschlandfunk, podcasts and lectures are good for ear training."
+  "ffc0ad95319f643f":
+    why: "#631: the example did not name its word"
+    example_de_2: "Im Schweizerdeutschen sagt man Merci vielmal – ein französischer Einfluss."
+    example_en_2: "In Swiss German you say 'Merci vielmal' – a French influence."
+  "3ab57e1772d6c03f":
+    why: "#631: the example did not name its word"
+    example_de_2: "Nach Ablauf ihrer Halbwertszeit wirken solche Wörter cringe."
+    example_en_2: "Once their half-life is over, such words seem cringe."
+  "aefca736ac10347c":
+    why: "#631: the example did not name its word"
+    example_de_1: "Der Kategorische Imperativ sagt: Handle so, dass die Maxime deines Willens ein allgemeines Gesetz werden könnte."
+    example_en_1: "The categorical imperative says: act so that the maxim of your will could become a universal law."
+  "05193e6e34a9a02d":
+    why: "#631: the example did not name its word"
+    example_de_2: "Meine Oma sparte jeden Cent: Kleinvieh macht auch Mist."
+    example_en_2: "My grandma saved every cent: every little helps."
+  "62bae5e6b1c18fc9":
+    why: "#631: the example did not name its word"
+    example_de_2: "Neutraler als „Klimakleber“ ist die Bezeichnung „Klimaaktivisten“."
+    example_en_2: "'Klimaaktivisten' (climate activists) is a more neutral term than 'Klimakleber'."
+  "03006936991022d7":
+    why: "#631: the example did not name its word"
+    example_de_2: "Wer Komplexität reduziert, zahlt dafür einen Preis."
+    example_en_2: "Anyone who reduces complexity pays a price for it."
+  "0cf46f07c8bfb1d9":
+    why: "#631: the example did not name its word"
+    example_de_2: "Viele Wortunterschiede folgen der Mainlinie."
+    example_en_2: "Many lexical differences follow the Main line."
+  "cdbfa39b600477df":
+    why: "#631: the example did not name its word"
+    example_de_2: "„Man nehme …“ stammt aus alten Kochbüchern."
+    example_en_2: "'Man nehme …' comes from old cookbooks."
+  "b14674fb2889e6d4":
+    why: "#631: the example did not name its word"
+    example_de_2: "Machen Sie mindestens einen Modellsatz unter Prüfungsbedingungen."
+    example_en_2: "Do at least one practice test under exam conditions."
+  "bb2ffd516b4c3c00":
+    why: "#631: no example the cloze can gap; one that names the word"
+    example_de_3: "„Nachhaltig“ ist ein typisches Modewort."
+    example_en_3: "'Nachhaltig' is a typical buzzword."
+  "b2bf208544acb767":
+    why: "#631: the example did not name its word"
+    example_de_2: "Goethes Definition der Novelle prägt den Begriff bis heute."
+    example_en_2: "Goethe's definition of the novella still shapes the term."
+  "804260202b70d588":
+    why: "#631: the example did not name its word"
+    example_de_2: "Ordnungspolitik ist ein Kernbegriff der sozialen Marktwirtschaft."
+    example_en_2: "Framework policy is a core term of the social market economy."
+  "c5f823d30a63e090":
+    why: "#631: the example did not name its word"
+    example_de_2: "Im Süden sagt man zum Aufbruch gern: Pack ma's!"
+    example_en_2: "In the south people like to say 'Pack ma's!' when setting off."
+  "21d9a5f07cd818a4":
+    why: "#631: the example did not name its word"
+    example_de_2: "Auf dem Wiener Markt heißen Tomaten Paradeiser."
+    example_en_2: "At the Viennese market tomatoes are called Paradeiser."
+  "1b7dfab00c871d74":
+    why: "#631: the example did not name its word"
+    example_de_2: "Plattdeutsch ist als Regionalsprache anerkannt."
+    example_en_2: "Low German is recognised as a regional language."
+  "bd6182241e04f344":
+    why: "#631: the example did not name its word"
+    example_de_2: "Im Sackerl steckt die österreichische Verkleinerungsform -erl."
+    example_en_2: "'Sackerl' contains the Austrian diminutive -erl."
+  "9513d1ada7bfa1bf":
+    why: "#631: the example did not name its word"
+    example_de_2: "Sauerei ist etwas derb, aber in Alltagsgesprächen häufig."
+    example_en_2: "'Sauerei' is somewhat coarse but common in everyday speech."
+  "fd40def571cc2966":
+    why: "#631: the example did not name its word"
+    example_de_2: "Fünf Minuten Schattensprechen täglich verbessern Rhythmus und Akzent."
+    example_en_2: "Five minutes of shadowing a day improves rhythm and accent."
+  "6df4f50481480203":
+    why: "#631: the example did not name its word"
+    example_de_2: "Streichen Sie im Schlusssatz Floskeln wie „Zusammenfassend lässt sich sagen“."
+    example_en_2: "In the closing sentence, cut phrases like 'In summary it can be said'."
+  "f20b320f08eb1f65":
+    why: "#631: the example did not name its word"
+    example_de_2: "Was in Berlin Schrippe heißt, heißt in Hamburg Rundstück."
+    example_en_2: "What is called Schrippe in Berlin is Rundstück in Hamburg."
+  "69656660fb4c8dfa":
+    why: "#631: the example did not name its word"
+    example_de_2: "Das Wort Shitstorm wird im Deutschen als weniger vulgär empfunden als im Englischen."
+    example_en_2: "The word 'Shitstorm' is felt to be less vulgar in German than in English."
+  "318d2af226a9b1ba":
+    why: "#631: the example did not name its word"
+    example_de_2: "Was in Österreich Spital heißt, ist in Deutschland ein Krankenhaus."
+    example_en_2: "What Austrians call a Spital is a Krankenhaus in Germany."
+  "9c82fe06e92c3c86":
+    why: "#631: the example did not name its word"
+    example_de_2: "Eine übertriebene Sprechmelodie wirkt theatralisch."
+    example_en_2: "An exaggerated speech melody sounds theatrical."
+  "4ea8df2b4a2226c4":
+    why: "#631: the example did not name its word"
+    example_de_1: "Eine Sprechpause strukturiert mehr als jedes Füllwort."
+    example_en_1: "A pause structures more than any filler word."
+    example_de_2: "Eine Sprechpause vor der Pointe verstärkt sie."
+    example_en_2: "A pause before the punchline strengthens it."
+  "8b90a61b90dc36f1":
+    why: "#631: the example did not name its word"
+    example_de_2: "Der Subventionsabbau scheitert meist an der Verteilungsfrage."
+    example_en_2: "Cutting subsidies usually founders on the question of distribution."
+  "6e0a86ac1c71c4fe":
+    why: "#631: no example the cloze can gap; one that names the word"
+    example_de_3: "Im schlimmsten Szenario steigen die Preise um zehn Prozent."
+    example_en_3: "In the worst-case scenario prices rise by ten percent."
+  "594b71f6c0c40be6":
+    why: "#631: the example did not name its word"
+    example_de_2: "Bei der Textumformung ändern sich Register und Adressat, der Inhalt bleibt."
+    example_en_2: "In the transformation task, register and audience change, but the content stays the same."
+  "53dd78f52ee977c6":
+    why: "#631: the example did not name its word"
+    example_de_2: "Ob Umverteilung gerecht ist, ist eine normative Frage."
+    example_en_2: "Whether redistribution is just is a normative question."
+  "cba0314f830bf5d5":
+    why: "#631: the example did not name its word"
+    example_de_2: "Der Begriff Unmündigkeit stammt in diesem Sinn von Kant."
+    example_en_2: "The term 'Unmündigkeit' in this sense comes from Kant."
+  "684f0a43976c1472":
+    why: "#631: the example did not name its word"
+    example_de_2: "Zum Unwort des Jahres wurden etwa „alternativlos“ und „Sozialtourismus“ gewählt."
+    example_en_2: "'Alternativlos' and 'Sozialtourismus', for example, were chosen as the non-word of the year."
+  "e469a5710b8d7d18":
+    why: "#631: the example did not name its word"
+    example_de_2: "Was in der Schweiz Velo heißt, ist in Deutschland das Fahrrad."
+    example_en_2: "What the Swiss call a Velo is a Fahrrad in Germany."
+  "b0556006746d68d2":
+    why: "#631: the example did not name its word"
+    example_de_2: "Ein Verfahrensfehler ist ein formeller, kein materieller Fehler."
+    example_en_2: "A procedural error is a formal, not a substantive, error."
+  "a88bda3279c4153f":
+    why: "#631: the example did not name its word"
+    example_de_2: "Mit Verkehrswende und Wärmewende ist das Muster „-wende“ produktiv geworden."
+    example_en_2: "With Verkehrswende and Wärmewende the pattern '-wende' has become productive."
+  "fdec5b93329f77e8":
+    why: "#631: the example did not name its word"
+    example_de_2: "Eine Watschn ist öfter bildlich als wörtlich gemeint."
+    example_en_2: "A 'Watschn' is more often meant figuratively than literally."
+  "b7cf957a07406571":
+    why: "#631: the example did not name its word"
+    example_de_2: "Wer rastet, der rostet – deshalb lerne ich täglich zehn Minuten."
+    example_en_2: "Use it or lose it – that's why I study ten minutes a day."
+  "9d55e2d3fb23ee1e":
+    why: "#631: the example did not name its word"
+    example_de_2: "„Wo gehobelt wird, da fallen Späne“ ist keine Entschuldigung für Kollateralschäden."
+    example_en_2: "'You can't make an omelette without breaking eggs' is no excuse for collateral damage."
+  "959e5191c6a5cc60":
+    why: "#631: the example did not name its word"
+    example_de_1: "Eine gute Zeiteinteilung: 15 Minuten planen, 55 schreiben, 10 überarbeiten."
+    example_en_1: "Good time management: 15 minutes planning, 55 writing, 10 revising."
+    example_de_2: "Bei der Zeiteinteilung gilt: Die Überarbeitung bringt mehr Punkte als der letzte Absatz."
+    example_en_2: "In time management, revision earns more marks than the final paragraph."
+  "caffe4f54f94a84f":
+    why: "#631: the example did not name its word"
+    example_de_2: "Zeitgeist ist ein Wort, das ins Englische gewandert ist."
+    example_en_2: "Zeitgeist is a word that has migrated into English."
+  "9a4f6867e3159af4":
+    why: "#631: the example did not name its word"
+    example_de_2: "Nach dem Znüni am Morgen gibt es am Nachmittag das Zvieri."
+    example_en_2: "After the Znüni in the morning comes the Zvieri in the afternoon."
+  "cb4d091bac2af418":
+    why: "#631: the example did not name its word"
+    example_de_2: "Derselbe Inhalt, adressatengerecht in drei Fassungen."
+    example_en_2: "The same content, in three audience-appropriate versions."
+  "1b21becaff266afe":
+    why: "#631: the example did not name its word"
+    example_de_2: "Das Wort alternativlos beendet Debatten, statt sie zu führen."
+    example_en_2: "The word 'alternativlos' ends debates instead of conducting them."
+  "58c1ae872f6951ed":
+    why: "#631: the example did not name its word"
+    example_de_2: "Cringe ist ein Jugendwort mit kurzer Halbwertszeit."
+    example_en_2: "'Cringe' is a youth word with a short half-life."
+  "6d5e438751612122":
+    why: "#631: the example did not name its word"
+    example_de_2: "Wenn der Algorithmus entscheidet, zählt Reichweite mehr als Qualität."
+    example_en_2: "When the algorithm decides, reach counts for more than quality."
+  "4dad4ebd982831d6":
+    why: "#631: the example did not name its word"
+    example_de_2: "Statt Kohle sagt man auch Knete, Kies oder Moneten."
+    example_en_2: "Instead of 'Kohle' people also say 'Knete', 'Kies' or 'Moneten'."
+  "76825b5360f21c79":
+    why: "#631: the example did not name its word"
+    example_de_2: "Wer eine Metapher nicht durchhält, mischt die Bilder."
+    example_en_2: "Anyone who fails to sustain a metaphor ends up mixing images."
+  "4fa23ca93c9f3d77":
+    why: "#631: the example did not name its word"
+    example_de_2: "Flexen ist ein Anglizismus mit deutscher Konjugation."
+    example_en_2: "'Flexen' is an anglicism with German conjugation."
+  "234b4d1c2976cc8c":
+    why: "#631: the example did not name its word"
+    example_de_2: "Fürwahr sagt man heute nur noch ironisch."
+    example_en_2: "Today 'fürwahr' is only used ironically."
+  "2a13e90e3c27d9ce":
+    why: "#631: the example did not name its word"
+    example_de_2: "Das Wort heuer ist in Norddeutschland kaum gebräuchlich."
+    example_en_2: "In northern Germany the word 'heuer' is hardly used."
+  "fb0e2538076c0632":
+    why: "#631: the example did not name its word"
+    example_de_2: "Im Amt und in der Prüfung sollte man hochdeutsch sprechen."
+    example_en_2: "At public offices and in exams, you should speak standard German."
+  "c8c4a9f405361964":
+    why: "#631: no example the cloze can gap; one that names the word"
+    example_de_3: "Kann einer Regel Willkür innewohnen?"
+    example_en_3: "Can arbitrariness be inherent in a rule?"
+  "92b7acaa86a1b1ce":
+    why: "#631: the example did not name its word"
+    example_de_2: "Weil Deutsch eine plurizentrische Sprache ist, ist keine Standardvarietät „falsches Deutsch“."
+    example_en_2: "Because German is a pluricentric language, no standard variety is 'wrong German'."
+  "787723b03186576d":
+    why: "#631: no example the cloze can gap; one that names the word"
+    example_de_3: "Die Stadt will sich des Problems annehmen."
+    example_en_3: "The city intends to take care of the problem."
+  "1b2de13d001e46e5":
+    why: "#631: the example did not name its word"
+    example_de_1: "C2 dauert länger als jede andere Stufe – lassen Sie sich nicht entmutigen."
+    example_en_1: "C2 takes longer than any other level – don't let yourself be discouraged."
+    example_de_2: "Zwischen C1 und C2 liegen oft zwei Jahre, davon darf man sich nicht entmutigen lassen."
+    example_en_2: "There are often two years between C1 and C2 – don't let that discourage you."
+  "d38512bc8c0f4929":
+    why: "#631: the example did not name its word"
+    example_de_2: "Sintemal verwendet man nur als bewusstes Stilmittel."
+    example_en_2: "'Sintemal' is only used as a deliberate stylistic device."
+  "83ee9a1983283884":
+    why: "#631: the example did not name its word"
+    example_de_2: "Der Begriff soziale Marktwirtschaft prägt die deutsche Wirtschaftsdebatte seit 1948."
+    example_en_2: "The term 'social market economy' has shaped German economic debate since 1948."
+  "dcdd08305a43908e":
+    why: "#631: the example did not name its word"
+    example_de_1: "Sparsam eingesetzt sind sozusagen und quasi Heckenausdrücke, im Übermaß Füllwörter."
+    example_en_1: "Used sparingly, 'sozusagen' and 'quasi' are hedges; in excess, fillers."
+  "c62502973995a946":
+    why: "#631: the example did not name its word"
+    example_de_2: "Sus wurde durch das Spiel „Among Us“ populär."
+    example_en_2: "'Sus' became popular through the game Among Us."
+  "0015074736a38184":
+    why: "#631: the example did not name its word"
+    example_de_2: "Unter Prüfungsbedingungen heißt: gleiche Uhrzeit, kein Wörterbuch, keine Pause."
+    example_en_2: "Under exam conditions means: same time of day, no dictionary, no break."
+  "a081c266739ed1c7":
+    why: "#631: the example did not name its word"
+    example_de_2: "Weiland findet man nur noch in historischen Texten."
+    example_en_2: "'Weiland' is only found in historical texts."
+  "c3347f91b63ff580":
+    why: "#631: a lesson whose examples show the concept, not the word: a note (PIPE-10)"
+    kind: note
+  "b650799c27f9b363":
+    why: "#631: a lesson whose examples show the concept, not the word: a note (PIPE-10)"
+    kind: note
+  "7239652ae4c4eebd":
+    why: "#631: a lesson whose examples show the concept, not the word: a note (PIPE-10)"
+    kind: note
+  "2ed16ebb2a5eb28e":
+    why: "#631: a lesson whose examples show the concept, not the word: a note (PIPE-10)"
+    kind: note
+  "c517a8fd27c7333c":
+    why: "#631: a lesson whose examples show the concept, not the word: a note (PIPE-10)"
+    kind: note
+  "f80df2b15c23093d":
+    why: "#631: a lesson whose examples show the concept, not the word: a note (PIPE-10)"
+    kind: note
+  "32d8a657536adb50":
+    why: "#631: a lesson whose examples show the concept, not the word: a note (PIPE-10)"
+    kind: note
+  "1fef8dacb33b7269":
+    why: "#631: a lesson whose examples show the concept, not the word: a note (PIPE-10)"
+    kind: note
+  "2d3d11129201dbb4":
+    why: "#631: a lesson whose examples show the concept, not the word: a note (PIPE-10)"
+    kind: note
+  "b18f2a4943e4ddae":
+    why: "#631: a lesson whose examples show the concept, not the word: a note (PIPE-10)"
+    kind: note
+  "555d6c32ac57bf31":
+    why: "#631: a lesson whose examples show the concept, not the word: a note (PIPE-10)"
+    kind: note
+  "4f6c95a487dc71da":
+    why: "#631: a lesson whose examples show the concept, not the word: a note (PIPE-10)"
+    kind: note
+  "031caee3cdeeeacc":
+    why: "#631: a lesson whose examples show the concept, not the word: a note (PIPE-10)"
+    kind: note
+  "ab9a4231b0845c24":
+    why: "#631: a lesson whose examples show the concept, not the word: a note (PIPE-10)"
+    kind: note
+  "18a2fbd8694e977d":
+    why: "#631: a lesson whose examples show the concept, not the word: a note (PIPE-10)"
+    kind: note
+  "688e86fe5bfaa98d":
+    why: "#631: a lesson whose examples show the concept, not the word: a note (PIPE-10)"
+    kind: note
+  "1d3560d7674e42fc":
+    why: "#631: a lesson whose examples show the concept, not the word: a note (PIPE-10)"
+    kind: note
+  "f87be3a0f8a17178":
+    why: "#631: a lesson whose examples show the concept, not the word: a note (PIPE-10)"
+    kind: note
+  "954f82e88e418093":
+    why: "#631: a lesson whose examples show the concept, not the word: a note (PIPE-10)"
+    kind: note
+  "4e0249d3fde0a87f":
+    why: "#631: a lesson whose examples show the concept, not the word: a note (PIPE-10)"
+    kind: note
+  "7b8a1edfef9d030c":
+    why: "#631: the example did not name its word"
+    example_de_2: "Der Begriff Entfremdung spielt in der marxistischen Tradition eine zentrale Rolle."
+    example_en_2: "The term 'alienation' plays a central role in the Marxist tradition."

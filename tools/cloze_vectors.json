@@ -1,0 +1,32 @@
+{
+  "note": "FR-T2-10, #631. Both lib/domain/cloze.dart (clozeGap) and tools/cloze.py (cloze_gap) must blank exactly `gap` in `sentence`, or nothing when it is null. The content gates judge the course by the Python port, so a port that drifts passes words the app cannot gap.",
+  "vectors": [
+    {"sentence": "Ich habe die Rechnung noch nicht bezahlt.", "german": "Rechnung", "pos": null, "gap": "Rechnung", "why": "the headword itself"},
+    {"sentence": "Die Rechnungen liegen hier.", "german": "Rechnung", "pos": null, "gap": "Rechnungen", "why": "an inflected form, by search-key prefix"},
+    {"sentence": "Die TÜR ist offen.", "german": "Tür", "pos": null, "gap": "TÜR", "why": "case and umlauts folded"},
+    {"sentence": "Wir gehen über die Straße.", "german": "Straße", "pos": null, "gap": "Straße", "why": "ß"},
+    {"sentence": "Er arbeitet heute.", "german": "arbeiten", "pos": "verb", "gap": "arbeitet", "why": "a verb loses its infinitive ending"},
+    {"sentence": "Er arbeitet heute.", "german": "arbeiten", "pos": null, "gap": null, "why": "not without its part of speech"},
+    {"sentence": "Vielen Dank und auf Wiedersehen!", "german": "Auf Wiedersehen", "pos": null, "gap": "auf Wiedersehen", "why": "a phrase whole"},
+    {"sentence": "Wir gehen ins Kino.", "german": "in", "pos": null, "gap": null, "why": "a short key only as a whole word"},
+    {"sentence": "Er ist in Berlin.", "german": "in", "pos": null, "gap": "in", "why": "a short key as itself"},
+    {"sentence": "Das ist gut.", "german": "Rechnung", "pos": null, "gap": null, "why": "none"},
+    {"sentence": "Du solltest dich mehr bewegen.", "german": "sich bewegen", "pos": "verb", "gap": "bewegen", "why": "a reflexive without its sich"},
+    {"sentence": "Sie haben sich gut benommen.", "german": "sich benehmen", "pos": "verb", "gap": null, "why": "never the sich alone"},
+    {"sentence": "Hallo Anna, wie geht's?", "german": "Wie geht's?", "pos": null, "gap": "wie geht's", "why": "a phrase's words in a row, without its punctuation"},
+    {"sentence": "Die Firma stellt uns einen Laptop zur Verfügung.", "german": "zur Verfügung stellen", "pos": "phrase", "gap": "Verfügung", "why": "a phrase not in a row: its noun"},
+    {"sentence": "Der Datenschutz hegt Bedenken.", "german": "Zweifel hegen", "pos": null, "gap": "hegt", "why": "a phrase's infinitive as a verb"},
+    {"sentence": "Nach diesem Grundsatz handeln wir.", "german": "Der Zweck heiligt die Mittel", "pos": null, "gap": null, "why": "never an article alone"},
+    {"sentence": "Können Sie bitte das wiederholen?", "german": "Können Sie das bitte wiederholen?", "pos": null, "gap": "wiederholen", "why": "not a pronoun"},
+    {"sentence": "Der Ausgang ist links.", "german": "eine Bilanz fällt aus", "pos": null, "gap": null, "why": "a phrase's short word only as itself"},
+    {"sentence": "Deutsch lernen macht Spaß.", "german": "Spaß machen", "pos": null, "gap": "Spaß", "why": "a noun before an infinitive"},
+    {"sentence": "Der Aufwand hat sich gelohnt.", "german": "sich lohnen", "pos": "verb", "gap": "gelohnt", "why": "a participle"},
+    {"sentence": "Ich habe das Paket aufgegeben.", "german": "aufgeben", "pos": "verb", "gap": "aufgegeben", "why": "a separable verb's participle"},
+    {"sentence": "Ich räume die Wohnung auf.", "german": "aufräumen", "pos": "verb", "gap": "räume", "why": "a separable verb split, its particle after it"},
+    {"sentence": "Auf dem Tisch räume ich.", "german": "aufräumen", "pos": "verb", "gap": null, "why": "the particle has to come after the verb"},
+    {"sentence": "Das ist aber schön!", "german": "aber (Partikel)", "pos": "particle", "gap": "aber", "why": "#631: a bracket is tried without it"},
+    {"sentence": "Die Gemeinde will eine neue Steuer erheben.", "german": "erheben (Steuern)", "pos": "verb", "gap": "erheben", "why": "#631: with its bracket first, then without it"},
+    {"sentence": "Beim Shadowing spricht man mit.", "german": "Schattensprechen (Shadowing)", "pos": "noun", "gap": "Shadowing", "why": "#631: the bracket first: it may be what the sentence says"},
+    {"sentence": "Ob des Lärms konnte niemand schlafen.", "german": "ob (+ Genitiv)", "pos": "prep", "gap": "Ob", "why": "#631: a short word, once its bracket is gone"}
+  ]
+}
