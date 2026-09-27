@@ -6,7 +6,7 @@ last-read: 1879
 
 ## Now
 
-#676 in review as PR #928: answer review threads; re-run the gate if main moved, then merge.
+#623 fix(tts): each Supertonic clip and the Speaking playback take permanent audio focus, which stops the learner's music or podcast — claimed 2026-09-27 18:47.
 
 ## Next
 
