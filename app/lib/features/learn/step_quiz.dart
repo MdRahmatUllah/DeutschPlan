@@ -11,6 +11,7 @@ import 'package:sogda/features/quiz/quiz_setup_sheet.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/l10n/ui_digits.dart';
 import 'package:sogda/router/routes.dart';
+import 'package:sogda/features/quiz/quiz_names.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:material_ui/material_ui.dart';
@@ -243,7 +244,8 @@ class LastQuizCard extends StatelessWidget {
               child: FittedBox(
                 fit: BoxFit.scaleDown,
                 child: SgText(
-                  quizPoints(quiz.score),
+                  // "১৬" in Bangla, as the line beside it (#690 LQ-6).
+                  l10n.digits(quizPoints(quiz.score)),
                   role: SgTextRole.label,
                   weight: 700,
                   color: tokens.color.onAccent,
@@ -286,37 +288,3 @@ class LastQuizCard extends StatelessWidget {
     );
   }
 }
-
-/// "16", or "15.5": a quiz scores in halves (BR-ANS-04).
-String quizPoints(double points) => points == points.roundToDouble()
-    ? '${points.round()}'
-    : points.toStringAsFixed(1);
-
-/// A quiz direction as the app names it: "DE → EN", "Articles".
-/// A quiz result's colour (`quiz.md`): Lime from 80 %, Sun from 50 %, Coral
-/// under.
-Color quizColour(SgPalette palette, double share) => share >= 0.8
-    ? palette.easy
-    : share >= 0.5
-    ? palette.learning
-    : palette.again;
-
-/// A quiz named by its length, as L2's tiles name them.
-String quizKindName(AppLocalizations l10n, int length) => switch (length) {
-  10 => l10n.quizQuick,
-  20 => l10n.quizStandard,
-  30 => l10n.quizLong,
-  _ => l10n.quizCustom,
-};
-
-String quizDirectionName(AppLocalizations l10n, String direction) =>
-    switch (direction) {
-      'deEn' => 'DE → EN',
-      'deBn' => 'DE → বাংলা',
-      'enDe' => 'EN → DE',
-      'articles' => l10n.quizDirectionArticles,
-      'listening' => l10n.quizDirectionListening,
-      'forms' => l10n.quizForms,
-      'compare' => l10n.quizDirectionCompare,
-      _ => l10n.quizDirectionMixed,
-    };

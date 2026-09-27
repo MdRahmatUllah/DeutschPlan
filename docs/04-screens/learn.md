@@ -11,7 +11,7 @@
 **Functional requirements**
 - FR-L1-01 Tiles read `stepProgressProvider` (todo/learning/done counts, grammar done, passed = any finished passed exam attempt, unlocked = introduced ≥ `exam_unlock_percent`).
 - FR-L1-02 The current tile MUST be scrolled into view on open.
-- FR-L1-03 Locked tiles are tappable (browse), never blocked.
+- FR-L1-03 Locked tiles are tappable (browse), never blocked. A tile is a button to a screen reader, as the cards under it are (#690 LQ-11).
 - FR-L1-04 *Study* opens T2 with today's open blocks (same as Today's button).
 
 **Business rules.** BR-COURSE-01/04, BR-EXAM-01/04.

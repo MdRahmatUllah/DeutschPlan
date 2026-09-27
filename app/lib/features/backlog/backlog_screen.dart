@@ -11,7 +11,8 @@ import 'package:sogda/core/typography/sg_text.dart';
 import 'package:sogda/data/repositories/plan_repository.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/data/repositories/word_repository.dart';
-import 'package:sogda/domain/plan_engine.dart' show parsePlanDate;
+import 'package:sogda/domain/plan_engine.dart'
+    show PlanDate, daysBetween, parsePlanDate;
 import 'package:sogda/features/study/study_back.dart' show meaningLine;
 import 'package:sogda/features/study/study_card.dart';
 import 'package:sogda/features/words/word_row.dart';
@@ -32,6 +33,15 @@ typedef BacklogWord = ({String planDate, WordWithState word, String meaning});
 
 /// What a row action did, so its *Undo* can take it back.
 enum BacklogAction { known, suspended, removed }
+
+/// How T1's Backlog card and T4's header name the backlog's days (#821):
+/// by weekday while the oldest is within the last six days, where each
+/// weekday names one day ("Tue–Wed"); by date past that, where "Wed–Wed" or
+/// "Mon to Thu" would name several ("30 Sep–15 Oct"). In the UI's language.
+DateFormat backlogDayFormat(String locale, PlanDate oldest, PlanDate today) =>
+    daysBetween(oldest, today) <= 6
+    ? DateFormat.E(locale)
+    : DateFormat.MMMd(locale);
 
 /// T4's rows (FR-T4-01): the uncompleted new plan rows from before today,
 /// newest day first (BR-PLAN-05), with their words. A stream, so a word
@@ -207,8 +217,10 @@ class _Backlog extends ConsumerWidget {
     for (final row in rows) {
       (days[row.planDate] ??= <BacklogWord>[]).add(row);
     }
-    final weekday = DateFormat.E(locale);
     final dates = days.keys.toList();
+    final weekday = dates.isEmpty
+        ? DateFormat.E(locale)
+        : backlogDayFormat(locale, dates.last, today);
     final intro = switch (dates.length) {
       0 => null,
       1 => l10n.backlogIntroDay(weekday.format(parsePlanDate(dates.single))),
