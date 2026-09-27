@@ -225,13 +225,19 @@ class TestMeta:
         assert set(boundaries) == {code for code in SUBLEVELS if code.endswith(".2")}
         assert all(isinstance(week, int) and week > 1 for week in boundaries.values())
 
-    def test_sources_lists_the_workbooks(self, database):
+    def test_634_sources_lists_the_workbooks_with_their_sha256(self, database):
+        import hashlib
+
         sources = json.loads(
             database.execute(
                 "SELECT value FROM meta WHERE key = 'sources'"
             ).fetchone()[0]
         )
-        assert sources == list(BOOK_LEVELS)
+        directory = Path(database.execute("PRAGMA database_list").fetchone()[2]).parent
+        assert sources == [
+            {"file": name, "sha256": hashlib.sha256((directory / name).read_bytes()).hexdigest()}
+            for name in BOOK_LEVELS
+        ]
 
 
 class TestContent:

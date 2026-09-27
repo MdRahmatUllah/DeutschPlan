@@ -55,8 +55,11 @@ Future<ProgressView> progressView(Ref ref, ProgressRange range) async {
   final today = ref.watch(todayProvider);
   final target = ref.watch(settingsProvider).read(SettingKeys.desiredRetention);
   final days = await repo.days();
-  final ratings = await repo.revisionRatings();
   final bars = progressBars(range, today, days);
+  // #784: Week and Month read only the days their bars cover.
+  final ratings = await repo.revisionRatings(
+    since: range == ProgressRange.all ? null : bars.first.start,
+  );
 
   List<int> ratingsOf(ProgressBar bar) => range == ProgressRange.all
       ? <int>[

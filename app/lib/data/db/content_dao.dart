@@ -47,8 +47,20 @@ class ContentDao extends DatabaseAccessor<AppDatabase> with _$ContentDaoMixin {
   /// longest key, three letters at least, that the token is plus an
   /// inflection ending ("Wohnungen" for *Wohnung*, "leichter" for
   /// *leicht*). A compound is not its first part: "Hausfrau" is not *Haus*.
+  /// Else, for the sentence's [first] word or a small-letter one ending in
+  /// -e, the verb it is the du-imperative or first person of (#724): "Mach"
+  /// *machen*, "Sei" *sein*, "habe" *haben*. Anywhere else a bare stem is
+  /// most often an adjective or a split verb's particle ("leid", "wahr",
+  /// "teil"), and a capital a noun ("Stimme" is no *stimmen*).
   /// Null for a word the course lacks.
-  Future<Word?> wordForToken(String key) async {
+  // ponytail: "Mach die Lampe an." is *machen*, not *anmachen*: a particle
+  // at the clause's end isn't looked for. And a word the course lacks,
+  // opening a sentence, may be read as a verb: "Stille Diplomatie…" opens
+  // *stillen*, "Anstoß erregen…" *anstoßen*, "dank + Dativ…" *danken* (3 of
+  // the 35 first words this step matches in the course); telling them apart
+  // needs the part of speech of a word the course doesn't have.
+  Future<Word?> wordForToken(String token, {bool first = false}) async {
+    final key = searchKey(token, stripArticle: false);
     if (key.isEmpty) return null;
     Future<Word?> where(String sql, List<Variable<Object>> variables) async {
       final row = await customSelect(
@@ -75,7 +87,7 @@ class ContentDao extends DatabaseAccessor<AppDatabase> with _$ContentDaoMixin {
       Variable<String>(key),
     ]);
     if (phrase != null) return phrase;
-    return where(
+    final ending = await where(
       "length(search_key) >= 3 AND ?1 LIKE search_key || '%' "
       'AND substr(?1, length(search_key) + 1) IN '
       // Not -t or -st: the headwords are infinitives, nouns and
@@ -84,7 +96,17 @@ class ContentDao extends DatabaseAccessor<AppDatabase> with _$ContentDaoMixin {
       "('e', 'en', 'er', 'es', 'em', 'ern', 'ens', 'n', 's')",
       <Variable<Object>>[Variable<String>(key)],
     );
+    if (ending != null ||
+        !(first || (key.endsWith('e') && _small.hasMatch(token)))) {
+      return ending;
+    }
+    return where(
+      "pos = 'verb' AND search_key IN (?1 || 'en', ?1 || 'n')",
+      <Variable<Object>>[Variable<String>(key)],
+    );
   }
+
+  static final RegExp _small = RegExp(r'^\p{Ll}', unicode: true);
 
   /// Every form in `words.forms`, by search key, to its word: the first by
   /// the course's order where two share one. Built once per DAO.

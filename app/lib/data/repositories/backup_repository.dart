@@ -5,7 +5,7 @@ import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/data/repositories/word_repository.dart'
     show customId, customUid;
 import 'package:sogda/domain/exam_generator.dart' show ExamSection;
-import 'package:sogda/domain/plan_engine.dart' show PlanDate, addDays;
+import 'package:sogda/domain/plan_engine.dart' show PlanDate;
 import 'package:drift/drift.dart';
 import 'package:flutter/foundation.dart' show immutable;
 
@@ -248,7 +248,8 @@ class BackupRepository {
   /// most for [ImportMode.replace], where the alternative is a phone with the
   /// old data deleted and the new data not written.
   ///
-  /// [today] is the day Today is on: a merge plans it again (#622).
+  /// [today] is the day Today is on: a merge clears what it can no longer
+  /// hold, for `PlanEngine.replanToday` to plan again (#622).
   Future<void> import(
     String json, {
     required ImportMode mode,
@@ -325,14 +326,13 @@ class BackupRepository {
     _db.markTablesUpdated(_db.allTables.toSet());
   }
 
-  /// #622: after a merge, [today] is planned again from the merged data.
+  /// #622: after a merge, what the merged data says can't stay planned.
   ///
   /// A new word the file has a schedule for can't be new here any more, on
-  /// any day, so its open `new` rows go. Today's open revisions go too, and
-  /// `last_planned_date` moves back a day if it had reached today, as
-  /// *Start next step* does it: the next opening tops today's new words up
-  /// to the pace from words not met yet, and picks revisions from the merged
-  /// schedule. What was done today stays done.
+  /// any day, so its open `new` rows go. Today's open revisions go too: they
+  /// were picked from this phone's schedule alone. `PlanEngine.replanToday`
+  /// then tops today up from the merged data (#937). What was done today
+  /// stays done.
   Future<void> _replan(PlanDate today) async {
     await _db.customStatement('''
 DELETE FROM plan_items
@@ -344,10 +344,6 @@ WHERE kind = 'new' AND completed_at IS NULL
       "DELETE FROM plan_items WHERE plan_date = ? AND kind = 'revise' "
       'AND completed_at IS NULL',
       <Object?>[today],
-    );
-    await _db.customStatement(
-      'UPDATE settings SET value = ? WHERE key = ? AND value >= ?',
-      <Object?>[addDays(today, -1), SettingKeys.lastPlannedDate.name, today],
     );
   }
 

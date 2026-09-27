@@ -334,6 +334,27 @@ def test_the_seed_tips_reach_words_in_a_real_build(tmp_path):
         connection.close()
 
 
+def test_634_a_tip_that_matches_no_word_fails_the_build(tmp_path, capsys):
+    import yaml
+    from excel_to_sqlite import main as build_main
+    from fixtures.make_workbooks import BOOK_LEVELS, write_all
+
+    write_all(tmp_path)
+    tips = csv(tmp_path, 'german,Zzyzx,"A tip about nothing.",একটি টিপ,\n')
+    manifest = tmp_path / "manifest.yaml"
+    books = [{"file": str(tmp_path / name)} for name in BOOK_LEVELS]
+    manifest.write_text(yaml.safe_dump({"workbooks": books, "tips": str(tips)}), encoding="utf-8")
+    out = tmp_path / "build" / "content.db"
+    argv = ["--manifest", str(manifest), "--out", str(out), "--previous", str(tmp_path / "none")]
+
+    assert build_main(argv) == 1
+    assert "unmatched tip: interference_tips.csv line 2" in capsys.readouterr().err
+    assert not out.exists(), "nothing written"
+
+    csv(tmp_path, 'pattern,^überlegen,"A tip.",একটি টিপ,\n')
+    assert build_main(argv) == 0
+
+
 def _tip(
     match_type: str, match: str, tip_en: str = "a tip", tags: str | None = None
 ):

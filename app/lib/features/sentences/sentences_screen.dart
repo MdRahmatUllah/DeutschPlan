@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ui' show LocaleStringAttribute, StringAttribute;
 
 import 'package:sogda/core/components/sg_feedback.dart';
 import 'package:sogda/core/adaptive/adaptive.dart';
@@ -15,13 +16,13 @@ import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/domain/cloze.dart';
 import 'package:sogda/domain/fsrs.dart' show Rating;
 import 'package:sogda/domain/sentence_picker.dart';
-import 'package:sogda/domain/text_norm.dart' show searchKey;
 import 'package:sogda/features/study/study_summary.dart';
 import 'package:sogda/features/study/write_guard.dart';
 import 'package:sogda/features/words/speak.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/router/routes.dart';
 import 'package:flutter/gestures.dart' show TapGestureRecognizer;
+import 'package:flutter/semantics.dart' show AttributedString;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -456,11 +457,12 @@ class _SentencePageState extends ConsumerState<_SentencePage> {
   void _play({double pace = 1}) =>
       unawaited(say(ref, context, widget.item.sentence.german, pace: pace));
 
-  /// FR-T5-03: the word's course meaning, or a way to look it up.
-  Future<void> _lookUp(String token) async {
+  /// FR-T5-03: the word's course meaning, or a way to look it up. [first]:
+  /// the sentence's first word, where a du-imperative stands (#724).
+  Future<void> _lookUp(String token, {required bool first}) async {
     final word = await ref
         .read(contentDaoProvider)
-        .wordForToken(searchKey(token, stripArticle: false));
+        .wordForToken(token, first: first);
     if (!mounted) return;
     await Adaptive.showSheet<void>(
       context: context,
@@ -477,13 +479,14 @@ class _SentencePageState extends ConsumerState<_SentencePage> {
     final gap = widget.item.gap;
     final spans = <TextSpan>[];
     var at = 0;
-    for (final match in RegExp(r'\p{L}+', unicode: true).allMatches(text)) {
+    final words = RegExp(r'\p{L}+', unicode: true).allMatches(text);
+    for (final (i, match) in words.indexed) {
       if (match.start > at) {
-        spans.add(TextSpan(text: text.substring(at, match.start)));
+        spans.add(_between(text.substring(at, match.start)));
       }
       final token = match[0]!;
       final tap = TapGestureRecognizer()
-        ..onTap = () => unawaited(_lookUp(token));
+        ..onTap = () => unawaited(_lookUp(token, first: i == 0));
       _taps.add(tap);
       final target =
           gap != null && match.start >= gap.start && match.end <= gap.end;
@@ -502,9 +505,14 @@ class _SentencePageState extends ConsumerState<_SentencePage> {
       );
       at = match.end;
     }
-    if (at < text.length) spans.add(TextSpan(text: text.substring(at)));
+    if (at < text.length) spans.add(_between(text.substring(at)));
     return spans;
   }
+
+  /// The spaces and punctuation between words: seen, never read on their
+  /// own. A screen reader stops on the words alone (#741).
+  static TextSpan _between(String text) =>
+      TextSpan(text: text, semanticsLabel: '');
 
   @override
   Widget build(BuildContext context) {
@@ -530,11 +538,27 @@ class _SentencePageState extends ConsumerState<_SentencePage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               // Read in a German voice (#162); a long compound breaks at a
-              // syllable at 200 % (#539).
-              SgGermanRuns(
-                _spans(style, underline),
-                style: style,
-                textAlign: TextAlign.center,
+              // syllable at 200 % (#539). A screen reader hears the whole
+              // line, then each word to tap (#741).
+              Semantics(
+                container: true,
+                attributedLabel: AttributedString(
+                  widget.item.sentence.german,
+                  attributes: <StringAttribute>[
+                    LocaleStringAttribute(
+                      range: TextRange(
+                        start: 0,
+                        end: widget.item.sentence.german.length,
+                      ),
+                      locale: SgScript.deDE,
+                    ),
+                  ],
+                ),
+                child: SgGermanRuns(
+                  _spans(style, underline),
+                  style: style,
+                  textAlign: TextAlign.center,
+                ),
               ),
               const SizedBox(height: 22),
               SgSpeakerButton(

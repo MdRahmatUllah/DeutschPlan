@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:sogda/data/db/app_database.dart';
@@ -5,6 +6,7 @@ import 'package:sogda/data/db/content_dao.dart';
 import 'package:sogda/data/repositories/plan_store.dart';
 import 'package:sogda/data/repositories/sentence_store.dart';
 import 'package:sogda/data/repositories/settings_repository.dart';
+import 'package:sogda/domain/plan_engine.dart' show PlanDate;
 import 'package:sogda/domain/sentence_picker.dart';
 import 'package:drift/drift.dart'
     show DatabaseConnection, Table, TableInfo, Variable;
@@ -121,6 +123,42 @@ INSERT INTO word_state (word_uid, status, introduced_on) VALUES
     expect(await store.shownOn('2026-09-22'), isEmpty);
   });
 
+  test('#750 FR-T5-01 a day recorded already keeps its set', () async {
+    const tuer = SentenceCandidate(
+      wordUid: ContentFixture.tuer,
+      ord: 1,
+      german: '',
+    );
+    const haus = SentenceCandidate(
+      wordUid: ContentFixture.haus,
+      ord: 1,
+      german: '',
+    );
+    expect(await store.record(today, const <SentenceCandidate>[tuer]), [tuer]);
+
+    expect(await store.record(today, const <SentenceCandidate>[haus]), [tuer]);
+    expect(await store.shownOn(today), <SentenceCandidate>[tuer]);
+  });
+
+  test('#750 FR-T5-01 two picks that race record one set: the second read '
+      'the day empty before the first wrote', () async {
+    final gate = Completer<void>();
+    final second = SentencePicker(
+      _ReadsEarly(store, gate.future),
+      count: 1,
+      gapDays: 14,
+    ).forDay(today);
+    final first = await SentencePicker(
+      store,
+      count: 1,
+      gapDays: 14,
+    ).forDay(today);
+    gate.complete();
+
+    expect(await second, first);
+    expect(await store.shownOn(today), first);
+  });
+
   test("today's rated count follows the ratings", () async {
     await store.record(today, <SentenceCandidate>[
       const SentenceCandidate(wordUid: ContentFixture.tuer, ord: 1, german: ''),
@@ -192,6 +230,25 @@ INSERT INTO word_state (word_uid, status, introduced_on) VALUES
       },
     );
 
+    test('#662 BR-FSRS-04 the word is rated with the first answer only: '
+        'Not yet again, or after a change, rates nothing more', () async {
+      var hard = 0;
+      Future<void> rateHard() async => hard++;
+
+      await store.rate(today, tuer, 1, andThen: rateHard);
+      await store.rate(today, tuer, 1, andThen: rateHard);
+      await store.rate(today, tuer, 3);
+      await store.rate(today, tuer, 1, andThen: rateHard);
+      expect(hard, 1);
+      expect(await store.ratings(today), <(String, int), int>{
+        (ContentFixture.tuer, 1): 1,
+      });
+
+      await store.rate(today, haus, 3);
+      await store.rate(today, haus, 1, andThen: rateHard);
+      expect(hard, 1, reason: 'a changed answer changes the sentence only');
+    });
+
     test('#659 and a rating that fails counts nothing', () async {
       await expectLater(
         store.rate(today, tuer, 3, andThen: () => throw StateError('disk')),
@@ -201,4 +258,35 @@ INSERT INTO word_state (word_uid, status, introduced_on) VALUES
       expect(await sentencesDone(), 0);
     });
   });
+}
+
+/// A store whose [shownOn] read is answered only once [gate] opens: a pick
+/// that read the day before another pick wrote it (#750).
+class _ReadsEarly implements SentenceStore {
+  _ReadsEarly(this._store, this._gate);
+
+  final SentenceStore _store;
+  final Future<void> _gate;
+
+  @override
+  Future<List<SentenceCandidate>> shownOn(PlanDate date) async {
+    final shown = await _store.shownOn(date);
+    await _gate;
+    return shown;
+  }
+
+  @override
+  Future<List<SentenceCandidate>> candidates(
+    PlanDate today, {
+    required int gapDays,
+  }) => _store.candidates(today, gapDays: gapDays);
+
+  @override
+  Future<Set<String>> learnedKeys() => _store.learnedKeys();
+
+  @override
+  Future<List<SentenceCandidate>> record(
+    PlanDate date,
+    List<SentenceCandidate> picked,
+  ) => _store.record(date, picked);
 }

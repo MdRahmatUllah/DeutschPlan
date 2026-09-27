@@ -300,7 +300,7 @@ it once cost a bug.
    ```bash
    dart analyze --fatal-infos                         # NO path args (ADR 18)
    dart format --output=none --set-exit-if-changed .
-   python -m pytest ../tools/tests -q                 # only if tools/ changed
+   python -m pytest ../tools/tests -q                 # only if tools/, content/ or app/assets/db/ changed
    flutter test --timeout 60s <the test files you touched, and their goldens>
    ```
    All green, and the plants (step 8) all caught, or you don't go on. **GitHub

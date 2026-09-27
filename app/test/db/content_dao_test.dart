@@ -324,5 +324,29 @@ void main() {
         }
       },
     );
+
+    test('#724 FR-T5-03 a du-imperative opening the sentence, or a first '
+        'person, is its verb; a stem or a noun elsewhere is not', () async {
+      final dao = ContentDao(real);
+      Future<String?> key(String token, {bool first = false}) async =>
+          (await dao.wordForToken(token, first: first))?.searchKey;
+      for (final (token, verb) in <(String, String)>[
+        ('Mach', 'machen'),
+        ('Komm', 'kommen'),
+        ('Schreib', 'schreiben'),
+        ('Sag', 'sagen'),
+        ('Zeig', 'zeigen'),
+        ('Sei', 'sein'),
+      ]) {
+        expect(await key(token, first: true), verb, reason: token);
+      }
+      expect(await key('habe'), 'haben', reason: 'ich habe');
+      expect(await key('gehe'), 'gehen', reason: 'ich gehe');
+      expect(await key('leid'), isNot('leiden'), reason: 'es tut mir leid');
+      expect(await key('wahr'), isNot('wahren'), reason: 'an adjective');
+      expect(await key('Stimme'), isNot('stimmen'), reason: 'a noun');
+      expect(await key('Pass'), isNot('passen'), reason: 'der Pass');
+      expect(await key('erfolgt', first: true), isNot('erfolg'));
+    });
   });
 }
