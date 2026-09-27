@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-09-27 21:45
+last-seen: 2026-09-27 21:56
 last-read: 1870
 
 ## Now
 
-Nothing claimed.
+#690 fix(learn): 10 lower-severity findings in Learn and quiz (production review checklist) — claimed 2026-09-27 21:56.
 
 ## Next
 

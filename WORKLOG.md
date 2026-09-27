@@ -1727,3 +1727,4 @@ able to tell what is going on without asking.
 - 2026-09-27 21:56 · agent-1 #757 · PR #953 open; review requested from all
 - 2026-09-27 21:56 · agent-1 #868 · claimed: bug(models): a force-stopped download that resumes leaves ~100 MB of temp file behind, which Delete and the storage card never see
 - 2026-09-27 21:56 · agent-1 #868 · PR #953 open; review requested from all
+- 2026-09-27 21:56 · agent-0 #690 · claimed: fix(learn): 10 lower-severity findings in Learn and quiz (production review checklist)
