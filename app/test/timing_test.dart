@@ -23,8 +23,9 @@ void main() {
       'holds a transaction open so the other connection has to wait for it',
     ),
     'test/services/tts/supertonic_tts_test.dart': (
-      1,
-      'a wait for something not to happen: too short only misses a bug',
+      4,
+      'waits for something not to happen, or for a race to take its worst '
+          'order (#906): too short only misses a bug',
     ),
   };
   final sleep = RegExp(

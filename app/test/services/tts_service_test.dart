@@ -1,11 +1,16 @@
 import 'dart:async';
+import 'dart:io';
 
+import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/data/repositories/settings_repository.dart';
 import 'package:sogda/services/tts/tts_engine.dart';
+import 'package:sogda/main.dart' show watchVoiceMemory;
 import 'package:sogda/services/tts/tts_service.dart';
 import 'package:flutter/widgets.dart' show AppLifecycleState;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
 
 import 'fake_tts.dart';
@@ -137,6 +142,40 @@ void main() {
       observer.didChangeAppLifecycleState(AppLifecycleState.paused);
       await tester.pump();
       expect(prefetch.releases, 2);
+    });
+
+    testWidgets('#906 watchVoiceMemory: a voice no screen has built is not '
+        'built to release nothing; a built one is released', (tester) async {
+      final prefetch = FakePrefetchTts();
+      final container = ProviderContainer(
+        overrides: <Override>[
+          settingsProvider.overrideWithValue(settings),
+          fakeVoice(prefetch),
+        ],
+      );
+      addTearDown(container.dispose);
+      final observer = watchVoiceMemory(container);
+      addTearDown(() => tester.binding.removeObserver(observer));
+
+      tester.binding.handleMemoryPressure();
+      await tester.pump();
+      expect(container.exists(ttsProvider), isFalse);
+
+      container.read(ttsProvider);
+      tester.binding.handleMemoryPressure();
+      await tester.pump();
+      expect(prefetch.releases, 1);
+    });
+
+    test('#906 the app watches the voice from its start', () {
+      final main = File('lib/main.dart')
+          .readAsStringSync()
+          .replaceAll('\r\n', '\n');
+      final wire = main.substring(main.indexOf('void wireApp('));
+      expect(
+        wire.substring(0, wire.indexOf('\n}\n')),
+        contains('watchVoiceMemory(container);'),
+      );
     });
 
     testWidgets('an engine that cannot prepare is left alone', (tester) async {
