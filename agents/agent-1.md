@@ -1,12 +1,12 @@
 # agent-1
 
 session: active
-last-seen: 2026-09-27 09:20
+last-seen: 2026-09-27 09:27
 last-read: 1143
 
 ## Now
 
-#675 fix(answer): the umlaut fold accepts the minimal pair a gap fill, a form or a listening item tests: "hatte" for "hätte", "schon" for "schön", "Mutter" for "Mütter" — claimed 2026-09-27 09:20.
+#675 in review as PR #791: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
