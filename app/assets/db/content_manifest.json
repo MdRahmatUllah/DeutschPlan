@@ -245,8 +245,8 @@
     "C1.2": 20,
     "C2.2": 20
   },
-  "built_at": "2026-09-27T15:26:27+00:00",
-  "content_version": "20260927152627",
+  "built_at": "2026-09-27T16:48:24+00:00",
+  "content_version": "20260927164824",
   "counts": {
     "examples": 10883,
     "grammar": 182,
@@ -5841,10 +5841,22 @@
     "fffd171c88cef794": "7d109776699ab4ed"
   },
   "sources": [
-    "German_B1_Tracker.xlsx",
-    "German_B2_Tracker.xlsx",
-    "German_C1_Tracker.xlsx",
-    "German_C2_Tracker.xlsx"
+    {
+      "file": "German_B1_Tracker.xlsx",
+      "sha256": "210591db3d84336bcb20affcc3db0c65598a9ce15ad1dba3b976263631c57012"
+    },
+    {
+      "file": "German_B2_Tracker.xlsx",
+      "sha256": "ff79311d77146a6740f8e0887fca42caf0bebdc8887b9e9b29f8da58f5b3943a"
+    },
+    {
+      "file": "German_C1_Tracker.xlsx",
+      "sha256": "519287a17935d7df889f70ab12b408de11a7f17b51d92b8059abd8a930318ef4"
+    },
+    {
+      "file": "German_C2_Tracker.xlsx",
+      "sha256": "050be435943e5d7a54915c9442ea0eb0d6bb67ac610f0bd78d7a6f863aac8c43"
+    }
   ],
   "steps": {
     "A1.1": {

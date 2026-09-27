@@ -61,6 +61,14 @@ class TestContents:
             "aliases",
         }
 
+    def test_634_it_carries_each_workbooks_sha256(self, built, tmp_path):
+        import hashlib
+
+        assert build_manifest(*built)["sources"] == [
+            {"file": name, "sha256": hashlib.sha256((tmp_path / name).read_bytes()).hexdigest()}
+            for name in BOOK_LEVELS
+        ]
+
     def test_the_counts_match_the_build(self, built):
         inputs, _ = built
         manifest = build_manifest(*built)

@@ -11,6 +11,7 @@ asset. Running this module directly does the compile step alone.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import re
 import sys
 from dataclasses import dataclass, field
@@ -192,6 +193,9 @@ class SourceBook:
     """Everything read out of one workbook."""
 
     file: str
+    #: The workbook's SHA-256, so a build says which bytes it came from
+    #: (#634): `meta.sources` and the manifest carry it.
+    sha256: str = ""
     words: list[Word] = field(default_factory=list)
     grammar: list[GrammarRow] = field(default_factory=list)
     categories: list[Category] = field(default_factory=list)
@@ -373,7 +377,9 @@ def read_workbook(path: Path) -> SourceBook:
                 f"Found: {', '.join(book.sheetnames)}"
             )
 
-        source = SourceBook(file=path.name)
+        source = SourceBook(
+            file=path.name, sha256=hashlib.sha256(path.read_bytes()).hexdigest()
+        )
         source.words = _read_words(book[sheets[WORDS_SHEET]], source)
         source.grammar = _read_grammar(book[sheets[GRAMMAR_SHEET]], source)
         source.categories = _read_categories(book)
@@ -739,7 +745,7 @@ def collect(
         categories=[c for source in sources for c in source.categories],
         splits=splits,
         tips=tips or [],
-        sources=[source.file for source in sources],
+        sources=[{"file": s.file, "sha256": s.sha256} for s in sources],
         # UTC. The app compares this string against the installed copy to
         # decide whether to replace it, so a local clock would let a build in
         # UTC+6 sort above a later one in CI and the new content would
@@ -831,6 +837,13 @@ def main(argv: list[str] | None = None) -> int:
             [word for source in sources for word in source.words],
         )
         _report(tip_warnings)
+        if tip_warnings:
+            # #634: a tip nobody sees is authored text that never ships.
+            raise PipelineError(
+                f"{len(tip_warnings)} tip(s) in the tips CSV match no word "
+                f"(listed above as 'unmatched tip'). Fix the match, or delete "
+                f"the row until the course has the word."
+            )
         inputs = collect(sources, splits, resolved)
         aliases, previous = link_previous(inputs.words, args.previous, args.allow_removed)
         build(args.out, inputs)
