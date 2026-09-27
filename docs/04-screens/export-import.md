@@ -22,6 +22,7 @@
 - FR-M6-01 Export = JSON `{schema_version, content_version, exported_at, tables{…}}` excluding `translation_cache`, `undo_stack`; written to a temp file and shared with `share_plus`; recordings are not included (size), noted in the UI.
 - FR-M6-02 Import validates schema version (migrate forward if older; refuse if newer), shows the preview before writing.
 - FR-M6-03 Merge rule: per table row key, keep the row with the later `last_review`/`updated_at`; `review_log` is unioned by (word_uid, reviewed_at). Words of the learner's own come in under this phone's ids, and their `custom:<id>` rows follow them (#369, `user-database.md`).
+  - Onto a phone where nothing has been studied yet (no `review_log` and no `grammar_practice_log`), a file with enrolments says where the learner is (#658). M6 comes after onboarding, so such a phone always has setup's first guess: an open step, its pace and study days, and today's plan. The file's enrolments and plan replace this phone's, and its settings win key by key; a key the file lacks stays. Everything else merges as above. On a phone in use, this phone's open step and settings stay, and an imported open step comes in closed.
 - FR-M6-04 Replace wipes user tables in one transaction then inserts; a failed import leaves the previous data intact.
 
 **Tests.** round-trip export→import equality; merge precedence; refuse newer schema.
