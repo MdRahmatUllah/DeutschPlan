@@ -6,7 +6,7 @@ last-read: 1655
 
 ## Now
 
-#630 fix(content): about 180 lesson notes are authored as vocabulary (word formation, ↔ comparisons, grammar-concept names), so they are scheduled as flashcards and asked in quizzes and exams (18 % of C2) — claimed 2026-09-27 14:33.
+#630 in review as PR #860: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
