@@ -130,11 +130,16 @@ void main() {
     expect(find.text(l10n.licencesTitle), findsOneWidget);
   });
 
-  test("FR-M8-01 the models' and fonts' licences are bundled whole", () async {
+  test("FR-M8-01 #610 the models', fonts' and native libraries' licences are "
+      'bundled whole', () async {
     TestWidgetsFlutterBinding.ensureInitialized();
     final container = ProviderContainer();
     addTearDown(container.dispose);
-    for (final licence in <Licence>[...modelLicences, ...fontLicences]) {
+    for (final licence in <Licence>[
+      ...modelLicences,
+      ...fontLicences,
+      ...nativeLicences,
+    ]) {
       final asset = licence.asset!;
       expect(
         await container.read(licenceTextProvider(asset).future),
@@ -146,11 +151,36 @@ void main() {
       File('assets/licences/HY-MT1.5-Tencent-HY.txt').readAsStringSync(),
       startsWith('TENCENT HY COMMUNITY LICENSE AGREEMENT'),
     );
+    // #610: ONNX Runtime ships in every APK (libonnxruntime.so).
+    expect(
+      File(nativeLicences.first.asset!).readAsStringSync(),
+      contains('Copyright (c) Microsoft Corporation'),
+      reason: nativeLicences.first.name,
+    );
+    expect(
+      File('assets/licences/AndroidX-Apache-2.0.txt').readAsStringSync(),
+      contains('Apache License'),
+    );
     // #172: the SDK whose text front end supertonic_text.dart ports.
     expect(
       File('assets/licences/Supertonic-SDK-MIT.txt').readAsStringSync(),
       startsWith('MIT License'),
     );
+  });
+
+  testWidgets('FR-M8-01 #610 the native libraries have their own section', (
+    tester,
+  ) async {
+    await pump(tester, at: '/me/about/licences');
+    await tester.scrollUntilVisible(
+      find.text(nativeLicences.last.name),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
+    expect(find.text(l10n.licencesNative.toUpperCase()), findsOneWidget);
+    for (final licence in nativeLicences) {
+      expect(find.text(licence.name), findsOneWidget, reason: licence.name);
+    }
   });
 
   testWidgets('FR-M8-01 the models and fonts, each licence shown in full', (
@@ -183,8 +213,9 @@ void main() {
       expect(find.text(package.name), findsOneWidget);
     }
     expect(find.text('BSD-2-Clause'), findsOneWidget);
-    // The three MIT packages, and the Supertonic SDK above them (#172).
-    expect(find.text('MIT'), findsNWidgets(4));
+    // The three MIT packages, and above them the Supertonic SDK (#172) and
+    // ONNX Runtime (#610).
+    expect(find.text('MIT'), findsNWidgets(5));
   });
 
   test('M8 the packages come from Flutter\'s licence registry', () async {

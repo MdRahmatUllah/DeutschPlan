@@ -5738,6 +5738,10 @@
   "@licencesFonts": {
     "description": "M8's section of the bundled fonts, drawn in capitals."
   },
+  "licencesNative": "Native libraries",
+  "@licencesNative": {
+    "description": "M8's section of the native Android libraries no package's licence covers (ONNX Runtime, AndroidX…), drawn in capitals."
+  },
   "licencesPackages": "Packages",
   "@licencesPackages": {
     "description": "M8's section of the app's packages, from Flutter's licence registry, drawn in capitals."
