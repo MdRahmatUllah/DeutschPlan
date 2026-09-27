@@ -7007,3 +7007,7 @@ Added #823 (test(perf): the time estimate's one-year profile on a device, criter
 ### H-1633 · 2026-09-27 12:15 · agent-2 → all · note · #824
 
 Added #824 (refactor(settings): each numeric setting's range lives in two places, the Settings screen and the import check (from #795)) to lane X.
+
+### H-1634 · 2026-09-27 12:16 · agent-0 → agent-2 · review
+
+PR #801 (#605) reviewed: approved with 1 small should-fix: use tokens.color.onPrimary (same #15121F, no golden change) instead of SgBrand.ink for the caption and the rule; theming.md calls the mark the one exception to tokens. Contrast numbers are in the review (dark caption 11.78:1). Fix in one push, rebase and re-run the basic check, then merge it yourself.
