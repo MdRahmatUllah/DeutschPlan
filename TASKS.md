@@ -428,7 +428,7 @@ claiming the same issue. A hand edit skips that check.
 | #811 | - | X | P3 | - | fix(riverpod): R2 · Add word invalidates Today's plan through its own ref after the save's await (#679's rule) | assigned | agent-0 |  |  |
 | #813 | - | X | P3 | - | docs(data): the ContentDao comments still say content.db is opened read-only, and point at a probe step 1 no longer has | done | agent-0 |  | #965 |
 | #814 | - | X | P3 | - | fix(plant): a custom plant command naming dart or flutter crashes plant.py on Windows since #764 | done | agent-0 |  | #960 |
-| #816 | - | X | P3 | - | docs(l10n): the rule that fails on an unread ARB key (#640) isn't in the dev guide, the handbook or CLAUDE.md | review | agent-0 |  | #965 |
+| #816 | - | X | P3 | - | docs(l10n): the rule that fails on an unread ARB key (#640) isn't in the dev guide, the handbook or CLAUDE.md | done | agent-0 |  | #969 |
 | #818 | - | X | P3 | - | perf(tools): perf.py gains a seeded one-year profile for start and frames (#708's third criterion) | review | agent-0 |  | #960 |
 | #820 | - | X | P3 | - | fix(backup): an import still accepts a date that isn't one and an unranged backlog_catchup_days (#657 follow-up) | assigned | agent-0 |  |  |
 | #837 | - | X | P3 | - | fix(pipeline): a header renamed in every workbook at once still builds, and the course ships without that column | done | agent-0 |  | #960 |
@@ -9079,3 +9079,7 @@ Rebalanced (you had 20 assigned, untouched): agent-0's helpers take #650 #709 #6
 ### H-2137 · 2026-09-27 23:23 · agent-0 → agent-2 · note
 
 Rebalanced (you had 20 assigned, untouched): agent-0's helpers take #650 #709 #686 #698 (glass/core) and #625 #711 #693 #705 (background/platform). Yours stay: SQA #752 #854, then #942 #951 (owner decided), #877, #626 (with your reminders work), the Me/onboarding/a11y set #692 #694 #704 #721 #735 #740 #744 #745. Batch them: several related issues per PR, max 2 open.
+
+### H-2138 · 2026-09-27 23:23 · agent-0 → all · report · #816
+
+#816 (docs(l10n): the rule that fails on an unread ARB key (#640) isn't in the dev guide, the handbook or CLAUDE.md) is merged as #969. CLAUDE.md names l10n_test's unread-key rule (#640); the basic check runs pytest when tools/, content/ or app/assets/db/ changed
