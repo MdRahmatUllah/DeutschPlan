@@ -401,6 +401,30 @@ void main() {
     });
   });
 
+  group('#678 BR-ANS-01 several meanings typed', () {
+    test('as the card shows them, or in any order, are right', () {
+      expect(checkMeaning('hello / hi', 'hello / hi'), Verdict.correct);
+      expect(
+        checkMeaning('to go, to walk', 'to go / to walk'),
+        Verdict.correct,
+      );
+      expect(checkMeaning('hi / hello', 'hello / hi'), Verdict.correct);
+      expect(checkMeaning('walk; go', 'to go / to walk'), Verdict.correct);
+    });
+
+    test('with one of them misspelt, almost', () {
+      expect(
+        checkMeaning('grasp / understnad', 'understand / grasp'),
+        Verdict.almost,
+      );
+    });
+
+    test('and with one that is not the meaning, wrong', () {
+      expect(checkMeaning('hello / bye', 'hello / hi'), Verdict.wrong);
+      expect(checkMeaning('house, garden', 'house / home'), Verdict.wrong);
+    });
+  });
+
   group('#645 notes in brackets and alternatives', () {
     test('BR-ANS-01 a meaning counts with or without its note', () {
       for (final (given, expected) in const <(String, String)>[
