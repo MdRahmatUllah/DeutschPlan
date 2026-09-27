@@ -222,6 +222,23 @@ class ContentUpdater {
     ('custom_words', 'matched_uid'),
   ];
 
+  /// The installed course's PIPE-09 `aliases`, old uid to uid now: an import
+  /// moves a backup's rows along them, since a file exported under an older
+  /// course names its words as that course did (#809). The kept manifest,
+  /// not the bundled one: it describes the course attached. Empty when there
+  /// is none, or none this build can read.
+  Future<Map<String, String>> aliases() async {
+    try {
+      final aliases = (await _readInstalledManifest())?['aliases'];
+      if (aliases is Map<String, dynamic>) {
+        return Map<String, String>.from(aliases);
+      }
+    } on Object catch (error) {
+      debugPrint('content aliases: $error');
+    }
+    return const <String, String>{};
+  }
+
   /// PIPE-09 (#648): a word whose uid changed between builds keeps the
   /// learner's progress. The manifest's `aliases` map each old uid to the one
   /// the word has now, and every row under an old uid moves to it, in one

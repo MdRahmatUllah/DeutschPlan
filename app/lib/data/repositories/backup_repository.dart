@@ -1,11 +1,13 @@
 import 'dart:convert';
 
 import 'package:sogda/data/db/app_database.dart';
+import 'package:sogda/data/db/content_update.dart' show ContentUpdater;
 import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/data/repositories/word_repository.dart'
     show customId, customUid;
 import 'package:sogda/domain/exam_generator.dart' show ExamSection;
-import 'package:sogda/domain/plan_engine.dart' show PlanDate;
+import 'package:sogda/domain/fsrs.dart' show Fsrs;
+import 'package:sogda/domain/plan_engine.dart' show PlanDate, addDays;
 import 'package:drift/drift.dart';
 import 'package:flutter/foundation.dart' show immutable;
 
@@ -250,10 +252,15 @@ class BackupRepository {
   ///
   /// [today] is the day Today is on: a merge clears what it can no longer
   /// hold, for `PlanEngine.replanToday` to plan again (#622).
+  ///
+  /// [aliases] are the installed course's PIPE-09 links, old uid to uid now
+  /// (`ContentUpdater.aliases`): a file's rows under an old uid come in under
+  /// the new one (#809).
   Future<void> import(
     String json, {
     required ImportMode mode,
     PlanDate? today,
+    Map<String, String> aliases = const <String, String>{},
   }) async {
     final backup = _parse(json);
     final data = backup['tables']! as Map<String, Object?>;
@@ -306,6 +313,7 @@ class BackupRepository {
           _rowsIn(data, table),
           mode,
           remap,
+          aliases,
           fileWins: fileWins,
         );
       }
@@ -351,13 +359,20 @@ WHERE kind = 'new' AND completed_at IS NULL
     String table,
     List<Map<String, Object?>> rows,
     ImportMode mode,
-    Map<String, Map<int, int>> remap, {
+    Map<String, Map<int, int>> remap,
+    Map<String, String> aliases, {
     bool fileWins = false,
   }) async {
     if (rows.isEmpty) return;
 
     final columns = await _columnsOf(table);
     final child = _childOf[table];
+    // #809: the column naming a course word, and the file's keys, which a
+    // row moved to its word's uid now must not take (below).
+    final aliased = <String, String>{
+      for (final (name, column) in ContentUpdater.aliasedColumns) name: column,
+    }[table];
+    final taken = <String>{for (final row in rows) _keyOf(table, row)};
     // Merged words of the learner's own get fresh ids, as attempts do; a
     // replace keeps them, and the mapping is then each id to itself (#618).
     final ownIds = table == _customWords;
@@ -430,6 +445,20 @@ WHERE kind = 'new' AND completed_at IS NULL
           final here = remap[_customWords]?[id];
           if (here == null) continue;
           mapped['word_uid'] = customUid(here);
+        }
+      }
+
+      // #809: a file exported under an older course names a word whose uid
+      // has changed since by the old uid, which nothing here reads. It comes
+      // in under the uid now, before the key is taken, so a merge compares
+      // it with this phone's row as ever. Where the file has a row under the
+      // new uid too, the update's rule (`UPDATE OR IGNORE`): that row wins,
+      // and the old one stays where it was.
+      if (aliases[mapped[aliased]] case final now? when aliased != null) {
+        final moved = <String, Object?>{...mapped, aliased: now};
+        if (!rowKeys[table]!.contains(aliased) ||
+            taken.add(_keyOf(table, moved))) {
+          mapped[aliased] = now;
         }
       }
 
@@ -601,16 +630,13 @@ WHERE kind = 'new' AND completed_at IS NULL
   /// `settings.md`'s steppers and slider give them, and at least one study
   /// day (BR-PLAN-01; M5 keeps the last one). A `daily_new` of a million
   /// plans the whole course today, and a mask of 0 has no study day ever.
-  /// Checked on `settings` rows by key and on `enrollments` by column.
-  static const Map<String, (num, num)> ranges = <String, (num, num)>{
-    'daily_new': (1, 50),
-    'revise_count': (0, 100),
-    'sentence_count': (0, 20),
-    'study_days_mask': (1, 127),
-    'done_stability_days': (3, 60),
-    'desired_retention': (0.80, 0.97),
-    'exam_unlock_percent': (50, 100),
-    'exam_pass_percent': (50, 90),
+  /// Checked on `settings` rows by key and on `enrollments` by column. Read
+  /// from the keys M3 reads them from, and FSRS's retention bounds (#820).
+  static final Map<String, (num, num)> ranges = <String, (num, num)>{
+    for (final key in SettingKeys.all)
+      if (key case IntSetting(range: (:final min, :final max)))
+        key.name: (min, max),
+    SettingKeys.desiredRetention.name: (Fsrs.minRetention, Fsrs.maxRetention),
   };
 
   /// Parses and checks the version. FR-M6-02.
@@ -694,7 +720,9 @@ WHERE kind = 'new' AND completed_at IS NULL
           String() => column.type == DriftSqlType.string,
           _ => false,
         };
-        if (!fits) _refuse('$table[$index].$name: $value');
+        if (!fits || (value is String && !_isWhen(name, value))) {
+          _refuse('$table[$index].$name: $value');
+        }
       }
       final ranged = switch (table) {
         'settings' => <(String, Object?)>[
@@ -715,6 +743,23 @@ WHERE kind = 'new' AND completed_at IS NULL
       }
     }
   }
+
+  /// #820: a date or an instant is `TEXT`, so the type check passes any
+  /// string, and a date that isn't one throws in every read that parses it
+  /// (Today's estimate, the next rating). A day (`*_on`, `plan_date`, `day`)
+  /// is a real `YYYY-MM-DD`; an instant (`*_at`, `due`, `last_review`) is
+  /// one `DateTime.parse` reads. Any other column passes.
+  static bool _isWhen(String column, String value) {
+    if (column.endsWith('_on') || column == 'plan_date' || column == 'day') {
+      return _day.hasMatch(value) && addDays(value, 0) == value;
+    }
+    if (column.endsWith('_at') || column == 'due' || column == 'last_review') {
+      return DateTime.tryParse(value) != null;
+    }
+    return true;
+  }
+
+  static final RegExp _day = RegExp(r'^\d{4}-\d{2}-\d{2}$');
 
   static Never _refuse(String what) => throw ImportException(
     ImportRefusal.notABackup,

@@ -4,6 +4,7 @@ library;
 import 'dart:convert';
 
 import 'package:sogda/data/db/app_database.dart';
+import 'package:sogda/data/db/content_update.dart';
 import 'package:sogda/data/repositories/backup_repository.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -1252,6 +1253,58 @@ void main() {
       expect(() => backup.preview(enrolment), refused('study_days_mask'));
     });
 
+    test('#820 #657 a date or an instant that is not one is refused: each '
+        'read that parses it would throw', () {
+      for (final (table, column, value) in <(String, String, String)>[
+        ('review_log', 'reviewed_at', 'x'),
+        ('word_state', 'due', 'x'),
+        ('word_state', 'last_review', '2026-03-01Tx'),
+        ('word_state', 'introduced_on', '2026-03-01T09:00:00Z'),
+        ('plan_items', 'plan_date', '2026-02-30'),
+        ('enrollments', 'started_on', '1 March 2026'),
+        ('sentence_log', 'shown_on', ''),
+        ('daily_stats', 'day', '2026-3-1'),
+      ]) {
+        final file = fileWith(<String, Object?>{
+          table: <Object?>[
+            <String, Object?>{column: value},
+          ],
+        });
+        expect(() => backup.preview(file), refused('$table[0].$column'));
+      }
+    });
+
+    test('#820 #657 backlog_catchup_days and sentence_repeat_gap_days, which '
+        'no screen sets, are ranged too', () {
+      for (final key in <String>[
+        'backlog_catchup_days',
+        'sentence_repeat_gap_days',
+      ]) {
+        final file = fileWith(<String, Object?>{
+          'settings': <Object?>[
+            <String, Object?>{'key': key, 'value': '1000000'},
+          ],
+        });
+        expect(() => backup.preview(file), refused(key));
+      }
+    });
+
+    test("#820 the ranges are M3's, from the one place both read, and "
+        'export-import.md lists them', () {
+      expect(BackupRepository.ranges, <String, (num, num)>{
+        'daily_new': (1, 50),
+        'revise_count': (0, 100),
+        'sentence_count': (0, 20),
+        'sentence_repeat_gap_days': (0, 365),
+        'study_days_mask': (1, 127),
+        'backlog_catchup_days': (0, 365),
+        'desired_retention': (0.80, 0.97),
+        'done_stability_days': (3, 60),
+        'exam_unlock_percent': (50, 100),
+        'exam_pass_percent': (50, 90),
+      });
+    });
+
     test('#657 a table that is not a list of rows is refused, not a '
         'TypeError', () {
       expect(
@@ -1306,6 +1359,101 @@ void main() {
       });
 
       expect(backup.preview(file).lastActive, '2026-03-01T09:00:00Z');
+    });
+  });
+
+  group('#809 a backup from an older course', () {
+    // A gloss fix gave Haus a new uid; the file was written before it.
+    const home = 'uid-haus-home';
+    const aliases = <String, String>{'uid-haus': home};
+
+    Future<int> under(String table, String column, String uid) async =>
+        (await db
+                .customSelect(
+                  'SELECT COUNT(*) AS n FROM "$table" '
+                  "WHERE \"$column\" = '$uid'",
+                )
+                .getSingle())
+            .read<int>('n');
+
+    test('#809 FR-M6-04 a replace brings every row in under the uid the '
+        'word has now', () async {
+      await fillEverything();
+      await sql("UPDATE exam_answers SET item_ref = 'uid-haus'");
+      await sql("UPDATE custom_words SET matched_uid = 'uid-haus'");
+      final json = await backup.exportJson();
+
+      await backup.import(json, mode: ImportMode.replace, aliases: aliases);
+
+      for (final (table, column) in ContentUpdater.aliasedColumns) {
+        expect(await under(table, column, 'uid-haus'), 0, reason: table);
+        expect(await under(table, column, home), 1, reason: table);
+      }
+    });
+
+    test('#809 FR-M6-03 a merge compares it with the row here under the new '
+        'uid: the later wins, and a review both have is not doubled', () async {
+      // This phone took the update: Haus's rows are under the new uid.
+      await sql(
+        'INSERT INTO word_state (word_uid, status, stability, last_review) '
+        "VALUES ('$home', 'learning', 1, '2026-03-01T09:00:00Z')",
+      );
+      await sql(
+        'INSERT INTO review_log (word_uid, reviewed_at, rating, source) '
+        "VALUES ('$home', '2026-03-08T09:00:00Z', 3, 'daily')",
+      );
+      final file = jsonEncode(<String, Object?>{
+        'schema_version': AppDatabase.latestSchemaVersion,
+        'content_version': null,
+        'exported_at': '2026-03-09T00:00:00Z',
+        'tables': <String, Object?>{
+          'word_state': <Object?>[
+            <String, Object?>{
+              'word_uid': 'uid-haus',
+              'status': 'learning',
+              'stability': 99,
+              'last_review': '2026-03-08T09:00:00Z',
+            },
+          ],
+          'review_log': <Object?>[
+            <String, Object?>{
+              'word_uid': 'uid-haus',
+              'reviewed_at': '2026-03-08T09:00:00Z',
+              'rating': 3,
+              'source': 'daily',
+            },
+          ],
+        },
+      });
+
+      await backup.import(file, mode: ImportMode.merge, aliases: aliases);
+
+      final state = (await rowsOf('word_state')).single;
+      expect(state['word_uid'], home);
+      expect(state['stability'], 99, reason: "the file's row is the later");
+      expect(await under('review_log', 'word_uid', home), 1);
+      expect(await count('review_log'), 1);
+    });
+
+    test('#809 where the file has a row under the new uid too, that row '
+        'wins and the old one stays, as on an update', () async {
+      await sql(
+        'INSERT INTO word_state (word_uid, status, reps) VALUES '
+        "('uid-haus', 'learning', 7), ('$home', 'todo', 1)",
+      );
+      final json = await backup.exportJson();
+
+      for (final mode in ImportMode.values) {
+        await backup.import(json, mode: mode, aliases: aliases);
+
+        expect(await under('word_state', 'word_uid', 'uid-haus'), 1);
+        final now = await db
+            .customSelect(
+              "SELECT reps FROM word_state WHERE word_uid = '$home'",
+            )
+            .getSingle();
+        expect(now.read<int>('reps'), 1, reason: mode.name);
+      }
     });
   });
 
