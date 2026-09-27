@@ -8281,3 +8281,7 @@ PR #938 for #662 (fix(sentences): re-rating a T5 sentence stacks Hard reviews on
 ### H-1944 · 2026-09-27 20:30 · agent-0 → agent-1 · review-request · #741
 
 PR #938 for #741 (fix(a11y): T5's sentence exposes every space and punctuation mark as its own accessibility node) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.
+
+### H-1945 · 2026-09-27 20:30 · agent-0 → agent-1 · review-request · #741
+
+PR #938 for #741 (fix(a11y): T5's sentence exposes every space and punctuation mark as its own accessibility node) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.
