@@ -102,8 +102,14 @@ class ExamRunService {
   Future<void> recordTime(int attemptId, {int running = 0, int paused = 0}) =>
       _exams.recordTime(attemptId: attemptId, running: running, paused: paused);
 
-  /// FR-L12-04: left. The answers stay, as an attempt without a score.
-  Future<void> abandon(int attemptId) => _exams.abandon(attemptId);
+  /// FR-L12-04: left. The answers stay, as an attempt without a score; the
+  /// recording goes, since nothing opens an abandoned attempt again (#671).
+  /// A *Leave* that lost the race to the submit keeps the graded one's.
+  Future<void> abandon(int attemptId) async {
+    if (await _exams.abandon(attemptId)) {
+      await _models.deleteRecordings(<int>[attemptId]);
+    }
+  }
 
   /// The submit: graded as the answers stand, and finished.
   Future<ExamScore> submit(int attemptId) => _exams.grade(
