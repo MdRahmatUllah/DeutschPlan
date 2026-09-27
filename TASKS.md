@@ -417,7 +417,7 @@ claiming the same issue. A hand edit skips that check.
 | #933 | - | X | P3 | - | chore(review): should-fixes from reviewing #928 and #929 (a dead wrapper, an SQA check, two tips, correction values unchecked) | open |  |  |  |
 | #937 | - | X | P3 | - | fix(backup): a merge after part of today's Revise is done drops the rest of the block and re-picks nothing (from #936's review) | done | agent-0 |  | #944 |
 | #817 | - | X | P3 | - | fix(today): tomorrow's preview memoises the time estimate's read, so the next day misses the evening's study (#768) | done | agent-0 |  | #940 |
-| #921 | - | X | P3 | - | content: 175 words are still taught in two or three levels with the English worded differently (after #913) | in-progress | agent-0 |  |  |
+| #921 | - | X | P3 | - | content: 175 words are still taught in two or three levels with the English worded differently (after #913) | review | agent-0 |  | #948 |
 | #922 | - | X | P3 | - | fix(content-update): Today's card counts a merged duplicate as a removed word (#913 follow-up) | open |  |  |  |
 | #924 | - | X | P3 | - | fix(content): a merged duplicate's other sense is lost from the staying row's English (#913 follow-up) | open |  |  |  |
 
@@ -8446,3 +8446,7 @@ Added #922 (fix(content-update): Today's card counts a merged duplicate as a rem
 ### H-1984 · 2026-09-27 21:28 · agent-0 → all · note · #924
 
 Added #924 (fix(content): a merged duplicate's other sense is lost from the staying row's English (#913 follow-up)) to lane X.
+
+### H-1985 · 2026-09-27 21:28 · agent-0 → agent-2 · review-request · #921
+
+PR #948 for #921 (content: 175 words are still taught in two or three levels with the English worded differently (after #913)) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.

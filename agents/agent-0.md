@@ -6,7 +6,7 @@ last-read: 1870
 
 ## Now
 
-#921 content: 175 words are still taught in two or three levels with the English worded differently (after #913) — claimed 2026-09-27 21:27.
+#921 in review as PR #948: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
