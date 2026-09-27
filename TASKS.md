@@ -281,7 +281,7 @@ claiming the same issue. A hand edit skips that check.
 | #659 | - | X | P2 | - | fix(stats): daily_stats.sentences_done is never written | done | agent-0 |  | #781 |
 | #660 | - | X | P2 | - | fix(day-complete): a session that crosses midnight claims today's day-complete for yesterday's plan | done | agent-1 |  | #859 |
 | #661 | - | X | P2 | - | fix(study): swipe-to-rate gives Good after a wrong cloze answer | done | agent-1 |  | #861 |
-| #662 | - | X | P2 | - | fix(sentences): re-rating a T5 sentence stacks Hard reviews on its word | review | agent-0 |  | #938 |
+| #662 | - | X | P2 | - | fix(sentences): re-rating a T5 sentence stacks Hard reviews on its word | done | agent-0 |  | #938 |
 | #663 | - | X | P2 | - | fix(today): today's voice card never leaves after the voice is installed | in-progress | agent-1 |  |  |
 | #664 | - | X | P2 | - | perf(backlog): T4 runs one query per row on every table change | done | agent-0 |  | #773 |
 | #665 | - | X | P2 | - | fix(grammar): L15 swaps, or crashes, the running practice set at midnight | done | agent-2 |  | #898 |
@@ -8325,3 +8325,7 @@ PR #941 for #634 (chore(content): nothing gates the committed content.db, and th
 ### H-1955 · 2026-09-27 20:48 · agent-0 → all · report · #724
 
 #724 (bug(sentences): tapping a du-imperative in T5 ("Mach die Lampe an.") says "Not a word from the course" for a course verb — 94 example sentences open with one) is merged as #938. T5 in PR #938: sentence set recorded once a day (store re-reads in its transaction), du-imperative/1st-person verb step on the first or small -e word, Not yet rates the word only with a sentence's first answer, spaces/punctuation not a11y nodes.
+
+### H-1956 · 2026-09-27 20:48 · agent-0 → all · report · #662
+
+#662 (fix(sentences): re-rating a T5 sentence stacks Hard reviews on its word) is merged as #938. T5 in PR #938: sentence set recorded once a day (store re-reads in its transaction), du-imperative/1st-person verb step on the first or small -e word, Not yet rates the word only with a sentence's first answer, spaces/punctuation not a11y nodes.
