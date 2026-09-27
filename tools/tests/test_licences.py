@@ -63,3 +63,28 @@ def test_a_package_without_a_licence_file_is_named(tmp_path):
         ],
     }), encoding="utf-8")
     assert [p.split(":")[0] for p in licences.unlicensed(config)] == ["bare"]
+
+
+def test_719_every_bundled_font_family_has_a_licence_text(tmp_path):
+    assert licences.unlicensed_fonts() == []
+    pubspec = (ROOT / "app" / "pubspec.yaml").read_text(encoding="utf-8")
+    added = pubspec.replace(
+        "  fonts:\n", "  fonts:\n    - family: Brand Sans\n      fonts:\n        - asset: assets/fonts/BrandSans.ttf\n", 1)
+    assert added != pubspec
+    copy = tmp_path / "pubspec.yaml"
+    copy.write_text(added, encoding="utf-8")
+    problems = licences.unlicensed_fonts(copy)
+    assert len(problems) == 1 and "Brand Sans" in problems[0] and "BrandSans-*.txt" in problems[0]
+
+
+def test_719_check_fails_on_an_unlicensed_font(tmp_path, monkeypatch, capsys):
+    config = tmp_path / "package_config.json"
+    config.write_text("{}", encoding="utf-8")
+    pubspec = tmp_path / "pubspec.yaml"
+    pubspec.write_text("flutter:\n  fonts:\n    - family: Brand Sans\n", encoding="utf-8")
+    monkeypatch.setattr(licences, "PACKAGE_CONFIG", config)
+    monkeypatch.setattr(licences, "PUBSPEC", pubspec)
+    monkeypatch.setattr(licences, "stale", lambda: [])
+    monkeypatch.setattr(licences, "unlicensed", lambda: [])
+    assert licences.main(["licences.py", "check"]) == 1
+    assert "Brand Sans" in capsys.readouterr().out

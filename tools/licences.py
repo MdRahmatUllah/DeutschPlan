@@ -6,6 +6,8 @@
 `check` fails when:
 - a bundled model or font licence differs from what its maker publishes
   (line endings aside), is missing, or isn't listed here;
+- a font family in pubspec's `fonts:` has no licence text here (named
+  `<Family without spaces>-*.txt`), so M8 wouldn't list it (#719);
 - a package the app resolves ships no LICENSE file. Flutter's LicenseRegistry,
   which M8 lists, is built from those files, so such a package would be left
   out of M8 without a word. Flutter's own packages are covered by the SDK's
@@ -27,6 +29,7 @@ from typing import Callable
 ROOT = Path(__file__).resolve().parents[1]
 LICENCES = ROOT / "app" / "assets" / "licences"
 PACKAGE_CONFIG = ROOT / "app" / ".dart_tool" / "package_config.json"
+PUBSPEC = ROOT / "app" / "pubspec.yaml"
 
 # Each bundled text, and where its maker publishes it.
 SOURCES = {
@@ -98,6 +101,21 @@ def unlicensed(config: Path = PACKAGE_CONFIG) -> list[str]:
     return missing
 
 
+def unlicensed_fonts(pubspec: Path = PUBSPEC, names: set[str] | None = None) -> list[str]:
+    """The font families [pubspec] bundles with no licence text among [names]
+    (SOURCES by default, which M8 lists): a new font can't ship unlisted (#719)."""
+    import yaml
+
+    fonts = (yaml.safe_load(pubspec.read_text(encoding="utf-8")).get("flutter") or {}).get("fonts") or []
+    names = set(SOURCES) if names is None else names
+    missing = []
+    for family in (entry["family"] for entry in fonts):
+        stem = family.replace(" ", "")
+        if not any(name.startswith(stem + "-") for name in names):
+            missing.append(f"font {family}: no licence text ({stem}-*.txt) in tools/licences.py, so M8 omits it")
+    return missing
+
+
 def update(folder: Path = LICENCES, get: Callable[[str], str] = fetch) -> None:
     """Writes each text as its maker publishes it, byte for byte."""
     for name, url in SOURCES.items():
@@ -116,7 +134,7 @@ def main(argv: list[str]) -> int:
     if not PACKAGE_CONFIG.exists():
         print("run `flutter pub get` in app/ first")
         return 1
-    problems = stale() + unlicensed()
+    problems = stale() + unlicensed() + unlicensed_fonts(PUBSPEC)
     for problem in problems:
         print(problem)
     print("licences: all current" if not problems else f"licences: {len(problems)} to fix")
