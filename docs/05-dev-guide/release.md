@@ -17,7 +17,7 @@
   - It builds with `flutter build appbundle --release --obfuscate --split-debug-info=build/symbols`, into `app/build/app/outputs/bundle/release/app-release.aab`.
   - **16 KB:** every 64-bit native library in the bundle (`arm64-v8a`, `x86_64`) must have its loadable segments aligned to 16 KB, as Play requires of apps targeting Android 15+. The tool reads the ELF headers itself, and exits 1 on a library that fails.
   - **Key:** it says which key signed the bundle.
-  - It passed on 2026-09-26 with AGP 9.1 and the plugins as pinned: ONNX Runtime, llama.cpp's backends, flutter_tts and the rest. The bundle is 272 MB, all four ABIs.
+  - It passed on 2026-09-26 with AGP 9.1 and the plugins as pinned: ONNX Runtime, llama.cpp's backends, flutter_tts and the rest. The bundle was 272 MB then, all four ABIs; llamadart's removal (ADR 29) shrinks it, so re-measure at the next release.
 - **Symbols.**
   - **Dart's** are in `app/build/symbols`, one file per ABI. `flutter symbolize` needs them to read an obfuscated Dart stack trace, so keep them with each release, **privately**: they hold the real, unobfuscated names, which is why the build warns about "unobfuscated DWARF". A private store, not a public GitHub release.
   - **The plugins' native symbol tables** ride in the bundle (`debugSymbolLevel = "SYMBOL_TABLE"`), and Play symbolicates their crashes from them.
