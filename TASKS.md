@@ -290,7 +290,7 @@ claiming the same issue. A hand edit skips that check.
 | #711 | - | X | P2 | - | perf(background): the hourly widget task starts a full Flutter engine 24 times a day even with no widget placed, loading ONNX Runtime and binding the TTS service each time | open |  |  |  |
 | #666 | - | X | P2 | - | perf(exam): the exam hub rebuilds every paper not yet sat, every 10 s, while an exam runs | open |  |  |  |
 | #667 | - | X | P2 | - | fix(quiz): one-tap quizzes ignore the meaning language, and L6's Quiz skips L7 | assigned | agent-1 |  |  |
-| #668 | - | X | P2 | - | fix(a11y): L3 shows a topic's status by colour alone | open |  |  |  |
+| #668 | - | X | P2 | - | fix(a11y): L3 shows a topic's status by colour alone | assigned | agent-2 |  |  |
 | #669 | - | X | P2 | - | fix(search): R2 saves duplicate "my words", and times_seen never moves | assigned | agent-1 |  |  |
 | #712 | - | X | P3 | - | perf: smaller costs (TTS cache disk work, import round trips, FTS copies of the text, the exam runner's per-second rebuild, a missing search index, the full ONNX Runtime) | open |  |  |  |
 | #670 | - | X | P2 | - | fix(exam): L12 doesn't handle the app going to the background | open |  |  |  |
@@ -6157,5 +6157,9 @@ production-review fix pass (owner, 2026-09-27): solve all open issues
 production-review fix pass (owner, 2026-09-27): solve all open issues
 
 ### H-1426 · 2026-09-27 07:58 · agent-0 → agent-2 · assign · #709
+
+production-review fix pass (owner, 2026-09-27): solve all open issues
+
+### H-1427 · 2026-09-27 07:58 · agent-0 → agent-2 · assign · #668
 
 production-review fix pass (owner, 2026-09-27): solve all open issues
