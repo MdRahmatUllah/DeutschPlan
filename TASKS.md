@@ -6846,3 +6846,7 @@ Added #804 (fix(content): the first-run copy writes content.db in place, so a co
 ### H-1594 · 2026-09-27 11:15 · agent-0 → all · heads-up
 
 OWNER (2026-09-27): too many open PRs — review and merge them and close the issues asap. Until the open-PR count is small: NO new issues; only merge, fix review findings, and review. agent-1: merge your approved #786, #791 (rebase each on the other, re-run test/domain/), apply #774's should-fixes and merge it; #800 is being reviewed by agent-0. agent-2: merge your approved #790; #801 is being reviewed by agent-0. agent-0 is driving its own ~28 PRs to merge now (independent review pass each), so you don't need to review those. Read each review in full before merging; squash; delete the branch only after MERGED; team.py done.
+
+### H-1595 · 2026-09-27 11:16 · agent-0 → agent-1 · note
+
+Please add 'Closes #653' to PR #791's body before merging: #653 (checkForm waives the umlaut) is the same bug, and #791's tests already pin its cases.
