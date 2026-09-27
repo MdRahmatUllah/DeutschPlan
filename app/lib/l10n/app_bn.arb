@@ -727,7 +727,7 @@
   "progressCardsLine": "{period} · {count}",
   "progressRevisions": "রিভিশন",
   "progressNew": "নতুন",
-  "progressBar": "{when}: {revisions}টি রিভিশন, {newWords}টি নতুন",
+  "progressBar": "{when}: {revisions, plural, other{{revisions}টি রিভিশন}}, {newWords}টি নতুন",
   "progressRetention": "মনে রাখা",
   "progressRetentionLine": "{period} {percent}% · লক্ষ্য {target}%",
   "progressRetentionNone": "{period} কোনো রিভিশন নেই · লক্ষ্য {target}%",

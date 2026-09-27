@@ -55,6 +55,11 @@ SOURCES = {
         "https://raw.githubusercontent.com/microsoft/onnxruntime/be835efc56aca19b8e810538ec93c8e150e0fc61/ThirdPartyNotices.txt",
     "AndroidX-Apache-2.0.txt":
         "https://raw.githubusercontent.com/androidx/androidx/4e64160870c4c38395c2bd8997088991e94295f6/LICENSE.txt",
+    # desugar_jdk_libs 2.1.5 (build.gradle.kts' coreLibraryDesugaring, #848):
+    # OpenJDK's java.time and friends, compiled into the release DEX. GPL-2.0
+    # with the Classpath Exception; the commit that prepared 2.1.5.
+    "DesugarJdkLibs-GPL-2.0-Classpath-Exception.txt":
+        "https://raw.githubusercontent.com/google/desugar_jdk_libs/73170c345e6a762fc6a1f0301bb15218850023ef/LICENSE",
 }
 
 LICENCE_FILES = ("LICENSE", "LICENCE", "COPYING")
