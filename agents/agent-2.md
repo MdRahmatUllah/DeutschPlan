@@ -6,7 +6,7 @@ last-read: 1808
 
 ## Now
 
-#752 in review as PR #967: answer review threads; re-run the gate if main moved, then merge.
+#942 fix(day-complete): T6's day complete and T1's TodayDone disagree on a rest day (#689 TD-8, owner decision) — claimed 2026-09-27 23:13.
 
 ## Next
 

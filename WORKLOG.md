@@ -1798,3 +1798,4 @@ able to tell what is going on without asking.
 - 2026-09-27 23:13 · agent-1 #747 · PR #968 open; review requested from all
 - 2026-09-27 23:13 · agent-1 #748 · PR #968 open; review requested from all
 - 2026-09-27 23:13 · agent-2 #752 · PR #967 open; review requested from all
+- 2026-09-27 23:13 · agent-2 #942 · claimed: fix(day-complete): T6's day complete and T1's TodayDone disagree on a rest day (#689 TD-8, owner decision)
