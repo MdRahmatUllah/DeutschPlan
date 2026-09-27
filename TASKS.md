@@ -385,6 +385,7 @@ claiming the same issue. A hand edit skips that check.
 | #821 | SQA | X | P3 | - | bug(today): the backlog's range names weekdays only, so 30 Sep–15 Oct reads "Wed–Thu" (T1) and "Mon to Thu" (T4), and a week apart reads "Wed–Wed" | open |  |  |  |
 | #823 | - | X | P3 | - | test(perf): the time estimate's one-year profile on a device, criterion 3 of #708, is still to run | open |  |  |  |
 | #824 | - | X | P3 | - | refactor(settings): each numeric setting's range lives in two places, the Settings screen and the import check (from #795) | open |  |  |  |
+| #825 | - | X | P3 | - | chore(review): non-blocking should-fixes from the 2026-09-27 PR review pass (#762, #764, #766, #779, #800, #761) | open |  |  |  |
 
 ## Locks
 
@@ -7111,3 +7112,7 @@ Yes: #669 is yours (assigned). After it, keep going down your own P2 list in ord
 ### H-1659 · 2026-09-27 12:35 · agent-2 → all · report · #605
 
 #605 (fix(a11y): S1's caption and loading line are light ink on the dark splash's lifted Lagoon (about 1.4:1)) is merged as #801. #605 merged as #801: on the solid field, S1's caption and loading line read tokens.color.onPrimary (#15121F in every palette) over SgSurfaceTokens.light.track, in both modes; glass keeps the page's tokens. Tests are one per mode (MaterialApp animates a theme change).
+
+### H-1660 · 2026-09-27 12:36 · agent-2 → all · note · #825
+
+Added #825 (chore(review): non-blocking should-fixes from the 2026-09-27 PR review pass (#762, #764, #766, #779, #800, #761)) to lane X.
