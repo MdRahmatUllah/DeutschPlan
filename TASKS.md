@@ -285,7 +285,7 @@ claiming the same issue. A hand edit skips that check.
 | #663 | - | X | P2 | - | fix(today): today's voice card never leaves after the voice is installed | review | agent-1 |  | #953 |
 | #664 | - | X | P2 | - | perf(backlog): T4 runs one query per row on every table change | done | agent-0 |  | #773 |
 | #665 | - | X | P2 | - | fix(grammar): L15 swaps, or crashes, the running practice set at midnight | done | agent-2 |  | #898 |
-| #709 | - | X | P2 | - | perf(glass): L1, Today and Me put 6 to 12 BackdropFilters on screen, and the aurora drift makes every blur redraw every frame | in-progress | agent-0 |  |  |
+| #709 | - | X | P2 | - | perf(glass): L1, Today and Me put 6 to 12 BackdropFilters on screen, and the aurora drift makes every blur redraw every frame | review | agent-0 |  | #982 |
 | #710 | - | X | P2 | - | perf(start): every cold start decodes the 513 KB content manifest twice to read one version string, and a course copy writes 8 MB synchronously on the UI isolate | done | agent-0 |  | #778 |
 | #711 | - | X | P2 | - | perf(background): the hourly widget task starts a full Flutter engine 24 times a day even with no widget placed, loading ONNX Runtime and binding the TTS service each time | review | agent-0 |  | #975 |
 | #666 | - | X | P2 | - | perf(exam): the exam hub rebuilds every paper not yet sat, every 10 s, while an exam runs | done | agent-0 |  | #902 |
@@ -9232,3 +9232,7 @@ PR #981 for #867 (fix(data): Settings' retention estimate still counts words a c
 ### H-2175 · 2026-09-28 00:05 · agent-0 → agent-2 · review-request · #888
 
 PR #981 for #888 (fix(undo): an Undo still takes back a later rating of the same word (#728 follow-up)) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.
+
+### H-2176 · 2026-09-28 00:05 · agent-0 → agent-1 · review-request · #709
+
+PR #982 for #709 (perf(glass): L1, Today and Me put 6 to 12 BackdropFilters on screen, and the aurora drift makes every blur redraw every frame) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.
