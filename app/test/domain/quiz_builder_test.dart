@@ -833,6 +833,7 @@ void main() {
         pool: <QuizWord>[du, you('dich', 'dich'), you('sie', 'Sie'), ...twelve],
         direction: QuizDirection.enDe,
         length: 1,
+        meanings: const <QuizDirection>{QuizDirection.deEn},
       )).items.single;
       expect(asked.also.map((a) => a.german), <String>['dich', 'Sie']);
       expect(grade(asked, 'du'), Verdict.correct);
@@ -870,17 +871,12 @@ void main() {
         ],
         direction: QuizDirection.enDe,
         length: 1,
-        meanings: const <QuizDirection>{
-          QuizDirection.deEn,
-          QuizDirection.deBn,
-        },
+        meanings: const <QuizDirection>{QuizDirection.deEn, QuizDirection.deBn},
       )).items.single;
       expect((both.prompt, both.hint), ('you', 'তুমি du'));
-      expect(
-        both.also.map((a) => a.german),
-        <String>['dein'],
-        reason: 'the Bangla under "you" says which you: not dich',
-      );
+      expect(both.also.map((a) => a.german), <String>[
+        'dein',
+      ], reason: 'the Bangla under "you" says which you: not dich');
     });
 
     test('BR-ANS-03 articles are exact; a form allows a typo', () {
