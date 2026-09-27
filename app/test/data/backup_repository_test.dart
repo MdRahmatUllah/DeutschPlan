@@ -907,32 +907,120 @@ void main() {
     });
   });
 
-  group('a file that is the right shape but wrong inside', () {
-    test('previews rather than crashing', () {
-      // `_parse` checks the envelope, not every row. A null where a timestamp
-      // belongs must read as a file we cannot say much about, not a crash.
-      final file = jsonEncode(<String, Object?>{
-        'schema_version': AppDatabase.latestSchemaVersion,
-        'content_version': null,
-        'exported_at': '2026-03-09T00:00:00Z',
-        'tables': <String, Object?>{
-          'review_log': <Object?>[
-            <String, Object?>{'word_uid': 'uid-haus', 'reviewed_at': null},
-            <String, Object?>{
-              'word_uid': 'uid-tuer',
-              'reviewed_at': '2026-03-01T09:00:00Z',
-            },
-          ],
-          'enrollments': <Object?>[
-            <String, Object?>{'sublevel_code': null, 'completed_on': null},
-          ],
-        },
+  group('#657 a file that is the right shape but wrong inside', () {
+    String fileWith(Map<String, Object?> tables, {Object? content}) =>
+        jsonEncode(<String, Object?>{
+          'schema_version': AppDatabase.latestSchemaVersion,
+          'content_version': content,
+          'exported_at': '2026-03-09T00:00:00Z',
+          'tables': tables,
+        });
+
+    Matcher refused(String what) => throwsA(
+      isA<ImportException>()
+          .having((e) => e.reason, 'reason', ImportRefusal.notABackup)
+          .having((e) => e.message, 'message', contains(what)),
+    );
+
+    test('#657 FR-M6-02 a value of the wrong type is refused before the '
+        'preview', () {
+      // SQLite would keep "x" as text in a REAL column, and every typed read
+      // of it would throw: Today's plan, each time it opened.
+      final file = fileWith(<String, Object?>{
+        'word_state': <Object?>[
+          <String, Object?>{'word_uid': 'uid-haus', 'stability': 'x'},
+        ],
       });
 
-      final preview = backup.preview(file);
-      expect(preview.lastActive, '2026-03-01T09:00:00Z');
-      expect(preview.activeStep, isNull);
-      expect(preview.rowCounts['review_log'], 2);
+      expect(() => backup.preview(file), refused('word_state[0].stability'));
+    });
+
+    test('#657 and so is a null where the column holds none', () {
+      final file = fileWith(<String, Object?>{
+        'review_log': <Object?>[
+          <String, Object?>{'word_uid': 'uid-haus', 'reviewed_at': null},
+        ],
+      });
+
+      expect(() => backup.preview(file), refused('review_log[0].reviewed_at'));
+    });
+
+    test('#657 a daily_new no screen allows is refused, in settings and in '
+        'the enrolment', () {
+      final setting = fileWith(<String, Object?>{
+        'settings': <Object?>[
+          <String, Object?>{'key': 'daily_new', 'value': '1000000'},
+        ],
+      });
+      final enrolment = fileWith(<String, Object?>{
+        'enrollments': <Object?>[
+          <String, Object?>{
+            'sublevel_code': 'A1.1',
+            'started_on': '2026-01-05',
+            'daily_new': 7,
+            'study_days_mask': 0,
+          },
+        ],
+      });
+
+      expect(() => backup.preview(setting), refused('daily_new'));
+      expect(() => backup.preview(enrolment), refused('study_days_mask'));
+    });
+
+    test('#657 a table that is not a list of rows is refused, not a '
+        'TypeError', () {
+      expect(
+        () => backup.preview(fileWith(<String, Object?>{'review_log': 3})),
+        refused('tables.review_log'),
+      );
+      expect(
+        () => backup.preview(
+          fileWith(<String, Object?>{
+            'review_log': <Object?>['a row'],
+          }),
+        ),
+        refused('tables.review_log'),
+      );
+      expect(
+        () => backup.preview(fileWith(const <String, Object?>{}, content: 7)),
+        refused('content_version'),
+      );
+    });
+
+    test(
+      '#657 FR-M6-04 and import refuses it too, with nothing written',
+      () async {
+        await fillEverything();
+        final file = await backup.export();
+        final tables = file['tables']! as Map<String, Object?>;
+        ((tables['word_state']! as List<Object?>).single!
+                as Map<String, Object?>)['stability'] =
+            'x';
+
+        await expectLater(
+          backup.import(jsonEncode(file), mode: ImportMode.replace),
+          refused('stability'),
+        );
+        expect(await count('word_state'), 1);
+        expect((await rowsOf('word_state')).single['stability'], 3.5);
+      },
+    );
+
+    test('#657 a column this build does not have is not checked', () {
+      // A file from before a column was dropped: the import leaves it out.
+      final file = fileWith(<String, Object?>{
+        'review_log': <Object?>[
+          <String, Object?>{
+            'word_uid': 'uid-haus',
+            'reviewed_at': '2026-03-01T09:00:00Z',
+            'rating': 3,
+            'source': 'daily',
+            'gone': <Object?>[],
+          },
+        ],
+      });
+
+      expect(backup.preview(file).lastActive, '2026-03-01T09:00:00Z');
     });
   });
 
