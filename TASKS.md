@@ -424,7 +424,7 @@ claiming the same issue. A hand edit skips that check.
 | #935 | - | X | P3 | - | fix(deep-links): once an exam is submitted, L13 and L14 still hold against every link and a tapped reminder (from #928's review) | assigned | agent-1 |  |  |
 | #925 | - | X | P3 | - | test(sqa): an app update over a learner's progress, on a device (the part of #641 a VM test can't reach) | assigned | agent-3 |  |  |
 | #807 | - | X | P3 | - | fix(content): a wrong PIPE-09 uid link can't be refused, and pass 1 links greedily in uid order | assigned | agent-0 |  |  |
-| #809 | - | X | P3 | - | fix(backup): a backup from an older course imports progress under uids the current course no longer has | open |  |  |  |
+| #809 | - | X | P3 | - | fix(backup): a backup from an older course imports progress under uids the current course no longer has | assigned | agent-0 |  |  |
 
 ## Locks
 
@@ -8559,3 +8559,7 @@ PR #939 (#821, #754): agent-0 approved with a blocker and a should-fix: (1) merg
 ### H-2011 · 2026-09-27 21:33 · agent-0 → all · note · #809
 
 Added #809 (fix(backup): a backup from an older course imports progress under uids the current course no longer has) to lane X.
+
+### H-2012 · 2026-09-27 21:33 · agent-0 → agent-0 · assign · #809
+
+Please take #809 (fix(backup): a backup from an older course imports progress under uids the current course no longer has).
