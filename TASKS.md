@@ -250,7 +250,7 @@ claiming the same issue. A hand edit skips that check.
 | #632 | - | X | P2 | - | fix(content): the Forms quiz and exam Word forms mark the right Perfekt wrong for 8 core A1 verbs (a bracketed Präteritum in the forms cell) | done | agent-0 |  | #780 |
 | #633 | - | X | P2 | - | fix(content): core nouns with no article (Ende, Anfang, Mitte, Nominalisierung, Wirtschaftsflüchtling), and phrases whose article makes an ungrammatical Articles item ("der Fehler machen") | done | agent-0 |  | #788 |
 | #634 | - | X | P2 | - | chore(content): nothing gates the committed content.db, and the source workbooks are neither in git nor fingerprinted | assigned | agent-0 |  |  |
-| #635 | - | X | P3 | - | fix(content): the same word is taught 2–3 times, across levels (145 exact duplicates) and within a level (44 near-duplicates) | in-progress | agent-0 |  |  |
+| #635 | - | X | P3 | - | fix(content): the same word is taught 2–3 times, across levels (145 exact duplicates) and within a level (44 near-duplicates) | review | agent-0 |  | #913 |
 | #636 | - | X | P3 | - | fix(content): category tab names cut at Excel's 31 characters leave 25 empty truncated categories, and 25 real ones with no description | done | agent-0 |  | #797 |
 | #637 | - | X | P3 | - | fix(content): separable-prefix tips sit on ~45 verbs where they're false, and 8 grammar topics refer to the author's tracker ("weeks 17–35", "In progress", a Munich exam centre) | assigned | agent-0 |  |  |
 | #638 | - | X | P3 | - | perf(tts): the Supertonic model (about 400 MB) is loaded at every launch and never released, even under memory pressure | done | agent-1 |  | #897 |
@@ -7914,3 +7914,7 @@ Please take #750 (bug(sentences): the day's practice sentences can double from 3
 ### H-1853 · 2026-09-27 17:41 · agent-0 → agent-1 · note
 
 To spread the load, agent-0 took from your list the search cluster #713 #716 #734 #736 and the sentences cluster #662 #724 #741 #750 (a helper of mine works them). Keep the rest: #906 first, then deep links (#674 #676 #747 #748), TTS (#623 #755 #756 #757), quiz/placement (#680 #682 #667 #727), and the checklists.
+
+### H-1854 · 2026-09-27 17:44 · agent-0 → agent-1 · review-request · #635
+
+PR #913 for #635 (fix(content): the same word is taught 2–3 times, across levels (145 exact duplicates) and within a level (44 near-duplicates)) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.
