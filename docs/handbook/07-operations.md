@@ -146,8 +146,11 @@ From [`release.md`](../05-dev-guide/release.md), with the real commands:
 4. **Translation stays off.** The release build passes no
    `--dart-define=ENABLE_HYMT_DOWNLOAD` (ADR 9, #173). Changing that needs a
    new ADR 9 entry first.
-5. **The bundle.** `python tools/release_android.py`, with the device lock held
-   (an app build takes it):
+5. **The bundle.** `python tools/release_android.py --require-upload-key`, with
+   the device lock held (an app build takes it). It fails on a missing engine or
+   app library, a misaligned one, a permission release.md doesn't list, a debug
+   or unsigned bundle, or missing Dart symbols, which it otherwise keeps in
+   `app/build/release-symbols/<version>/` (#697):
    - it builds `flutter build appbundle --release --obfuscate --split-debug-info=build/symbols`
      into `app/build/app/outputs/bundle/release/app-release.aab`;
    - **16 KB:** it reads the ELF headers of every 64-bit native library in the

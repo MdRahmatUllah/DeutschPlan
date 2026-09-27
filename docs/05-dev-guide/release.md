@@ -13,10 +13,12 @@
   storeFile=C:/path/to/upload-keystore.jks
   ```
   Without it, a release build is signed with the debug key, so builds and device checks work before the keystore exists. Play refuses a debug-signed upload.
-- **Build and check:** `python tools/release_android.py`, with the emulator held (an app build takes the lock). `--check` checks the last build without building.
+- **Build and check:** `python tools/release_android.py`, with the emulator held (an app build takes the lock). `--check` checks the last build without building; `--require-upload-key` fails a bundle that isn't signed with the owner's upload key (use it for the build that goes to Play).
+  - **Libraries:** `libflutter.so` and `libapp.so` must be in the bundle for both 64-bit ABIs, so a half-built bundle can't pass the 16 KB check on nothing (#697).
   - It builds with `flutter build appbundle --release --obfuscate --split-debug-info=build/symbols`, into `app/build/app/outputs/bundle/release/app-release.aab`.
   - **16 KB:** every 64-bit native library in the bundle (`arm64-v8a`, `x86_64`) must have its loadable segments aligned to 16 KB, as Play requires of apps targeting Android 15+. The tool reads the ELF headers itself, and exits 1 on a library that fails.
-  - **Key:** it says which key signed the bundle.
+  - **Key:** it says which key signed the bundle; a debug or unsigned bundle fails only with `--require-upload-key`.
+  - **Symbols:** it fails if `app/build/symbols` lacks Dart's arm64 or x64 file, and otherwise copies the folder to `app/build/release-symbols/<version>/`, so a later build (perf.py's writes to `build/perf-symbols`) can't overwrite them.
   - It passed on 2026-09-26 with AGP 9.1 and the plugins as pinned: ONNX Runtime, llama.cpp's backends, flutter_tts and the rest. The bundle was 272 MB then, all four ABIs; llamadart's removal (ADR 29) shrinks it, so re-measure at the next release.
 - **Symbols.**
   - **Dart's** are in `app/build/symbols`, one file per ABI. `flutter symbolize` needs them to read an obfuscated Dart stack trace, so keep them with each release, **privately**: they hold the real, unobfuscated names, which is why the build warns about "unobfuscated DWARF". A private store, not a public GitHub release.
@@ -44,6 +46,6 @@
 2. Content rebuilt from the workbooks in `data/`; manifest diff reviewed (`make content-diff`: added/removed/changed words).
 3. `python tools/licences.py check` passes (after `flutter pub get` in `app/`). It fails if a bundled model or font licence differs from what its maker publishes, is missing, or has no source listed, and if a font family in pubspec's `fonts:` has no licence text (`<Family without spaces>-*.txt`, #719); `python tools/licences.py update` fetches them again. It also fails if a package ships no LICENSE file, which M8's list (Flutter's `LicenseRegistry`) would silently leave out (#172).
 4. `ENABLE_HYMT_DOWNLOAD` stays **off** (ADR 9, #173): the release build passes no `--dart-define=ENABLE_HYMT_DOWNLOAD`, so M4 says Hy-MT is "Not offered in this version of the app" and M3 hides its Translation group (#513). Changing that needs a new ADR 9 entry first.
-5. `python tools/release_android.py` passes (16 KB), signed with the upload key; `build/symbols` stored.
+5. `python tools/release_android.py --require-upload-key` passes (libraries, 16 KB, permissions, the upload key, the symbols); `app/build/release-symbols/<version>/` stored privately.
 6. `python tools/perf.py all` passes, with the emulator held (`team.py device`): size, frames, search and start against their baselines (`accessibility-performance.md`, #167). Then cold and warm start timed by hand on a real mid-range phone against the absolute budgets.
 7. Tag `vX.Y.Z`, changelog entry (`CHANGELOG.md`), store notes in EN and BN (`store-listing.md`, which `tools/tests/test_store_listing.py` holds to Play's limits), and the screenshots beside it.

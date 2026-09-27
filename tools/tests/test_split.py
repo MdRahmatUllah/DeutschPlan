@@ -210,17 +210,15 @@ class TestGrammar:
         split_grammar(rows)
         assert [r.level_code for r in rows] == ["B2", "B2"]
 
-    def test_the_fallback_is_the_book_level_not_its_earliest(self):
+    def test_the_fallback_is_the_book_level_not_its_earliest(self, tmp_path):
         # German_B1_Tracker carries A1 and A2 on the way to B1. An unlabelled
         # topic in it is a B1 topic; filing it under A1 would teach it in the
         # very first step.
         from excel_to_sqlite import derive, read_workbook  # noqa: PLC0415
 
-        import tempfile
-
         from fixtures.make_workbooks import write_all
 
-        directory = Path(tempfile.mkdtemp())
+        directory = tmp_path  # pytest removes it; mkdtemp leaked (#707)
         write_all(directory)
         sources = [
             read_workbook(directory / name)
