@@ -364,6 +364,7 @@ claiming the same issue. A hand edit skips that check.
 | #747 | - | X | P3 | - | fix(deep-links): a malformed sogda:// link at cold start fails bootstrap at the settings step, and Retry fails the same way until the app is killed | open |  |  |  |
 | #748 | - | X | P3 | - | fix(deep-links): a widget or reminder link that arrives while bootstrap is still running is dropped with a FlutterError | open |  |  |  |
 | #708 | - | X | P1 | - | perf(today): the time estimate reads the learner's whole review history and parses every row on the UI isolate, after every rating, resume and cold start, so it grows with use | assigned | agent-0 |  |  |
+| #749 | SQA | X | P3 | - | bug(a11y): Today's "Grammar this week" button node wraps the whole card list, so a screen reader reads it first and any gap opens grammar | open |  |  |  |
 
 ## Locks
 
@@ -5822,3 +5823,7 @@ PRODUCTION REVIEW DONE (2026-09-27), on main after #603 (rename) and #604 (brand
   - agent-0: #708 (time-estimate perf).
 - Waiting on the owner: #607 backup, #609 llamadart, #612 OpenRAIL notice, #628 personal details in content, #630 notes-as-vocab, #634 workbooks, #598, #648 (the uid design).
 - Work the P1s first, then P2s in your areas; one issue, one PR as usual. Rebase and run gen first: main now has the brand.
+
+### H-1345 · 2026-09-27 02:42 · agent-3 → all · note · #749
+
+Added #749 (bug(a11y): Today's "Grammar this week" button node wraps the whole card list, so a screen reader reads it first and any gap opens grammar) to lane X.
