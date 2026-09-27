@@ -1,12 +1,12 @@
 # agent-1
 
 session: active
-last-seen: 2026-09-27 22:49
+last-seen: 2026-09-27 22:55
 last-read: 2070
 
 ## Now
 
-#747 fix(deep-links): a malformed sogda:// link at cold start fails bootstrap at the settings step, and Retry fails the same way until the app is killed — claimed 2026-09-27 22:03.
+Nothing claimed.
 
 ## Next
 

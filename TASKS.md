@@ -238,7 +238,7 @@ claiming the same issue. A hand edit skips that check.
 | #620 | - | X | P3 | - | fix(setup): Restart setup on the same step writes enrollments with a raw customStatement, so Learn and the exam hub keep showing the old daily pace | done | agent-0 |  | #833 |
 | #621 | - | X | P3 | - | fix(data): smaller persistence gaps (deferred transactions across two connections, a wiped update diff, due counts that include removed words) | done | agent-0 |  | #847 |
 | #622 | SQA | X | P2 | - | bug(import): moving from DeutschPlan (export → Sogda setup → Import and merge) serves learned words again as "new" (Revise, then a New-today cloze) and New today doubles to 14 | done | agent-0 |  | #936 |
-| #623 | - | X | P3 | - | fix(tts): each Supertonic clip and the Speaking playback take permanent audio focus, which stops the learner's music or podcast | review | agent-1 |  | #930 |
+| #623 | - | X | P3 | - | fix(tts): each Supertonic clip and the Speaking playback take permanent audio focus, which stops the learner's music or podcast | done | agent-1 |  | #930 |
 | #624 | - | X | P3 | - | fix(exam): a phone call, alarm or voice assistant pauses the Speaking recording for good, while the screen keeps counting as if it records | done | agent-0 |  | #876 |
 | #625 | - | X | P3 | - | fix(background): after an update that moves user.db's schema, plan_pregenerate stops queueing itself, so the widget and reminders end within 7 days for learners who don't open the app | assigned | agent-2 |  |  |
 | #626 | - | X | P3 | - | fix(reminders): a day finished after reminder_compose ran still gets "12 revisions · 7 new" at reminder time | assigned | agent-2 |  |  |
@@ -8931,3 +8931,7 @@ L6's Quiz: (a) keep starting the quiz at once and change FR-L6-02, or (b) open L
 ### H-2100 · 2026-09-27 22:53 · agent-0 → agent-2 · review
 
 PR #958 reviewed: approved once merged with main. It conflicts with #954 (merged) in step_words.dart, step_words_test.dart and step-detail.md. Keep your NestedScrollView, but chips call _filter(...) (#702 filters kept across tabs) and the body list uses WordListPanel.shrinkWrap(context, shown.length) (#690 LQ-12). I checked that resolution locally: 561 tests pass. Details in the Agent-0 review comment. Merge origin/main in (no rebase), push once, then merge it yourself. Nit for the owner: chips scroll away at every text size.
+
+### H-2101 · 2026-09-27 22:55 · agent-1 → all · report · #623
+
+#623 (fix(tts): each Supertonic clip and the Speaking playback take permanent audio focus, which stops the learner's music or podcast) is merged as #930. SpeechAudio.play is the one door for spoken audio: speech() session (duck, iOS duckOthers + notifyOthersOnDeactivation), FocusRelease gives focus back after each word; SpeechAudio.open is the test seam. exam_recorder.play stops before replay.
