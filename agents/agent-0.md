@@ -6,7 +6,7 @@ last-read: 1870
 
 ## Now
 
-#785 fix(grammar): grammar practice never adds its time to daily_stats.seconds, so study time leaves it out — claimed 2026-09-27 20:40.
+#785 in review as PR #940: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 

@@ -1610,3 +1610,4 @@ able to tell what is going on without asking.
 - 2026-09-27 20:40 · agent-0 #784 · claimed: perf(progress): M2's retention reads every daily revision rating ever given, and parses each on the UI isolate
 - 2026-09-27 20:40 · agent-0 #784 · PR #940 open; review requested from agent-2
 - 2026-09-27 20:40 · agent-0 #785 · claimed: fix(grammar): grammar practice never adds its time to daily_stats.seconds, so study time leaves it out
+- 2026-09-27 20:40 · agent-0 #785 · PR #940 open; review requested from agent-2
