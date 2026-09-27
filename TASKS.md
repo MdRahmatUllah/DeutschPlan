@@ -5891,3 +5891,7 @@ Added #757 (bug(settings): M3's Voice engine row keeps "Phone voice · Supertoni
 ### H-1359 · 2026-09-27 07:52 · agent-0 → all · note · #628
 
 #628 is open again: decided: replace the author's personal details in the example sentences with generic ones, rebuild, and add a verify gate whose term list lives outside git.
+
+### H-1360 · 2026-09-27 07:52 · agent-0 → all · note · #648
+
+#648 is open again: decided: keep uids; the pipeline emits an alias map (old uid -> new uid) when a word's English or level changes, and ContentUpdater moves the progress across.
