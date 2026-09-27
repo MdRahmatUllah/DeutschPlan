@@ -405,7 +405,7 @@ claiming the same issue. A hand edit skips that check.
 | #885 | - | X | P2 | - | fix(bootstrap): a failed course copy on upgrade starts on an old content.db without words.kind, so every word read fails (from #860's review) | open |  |  |  |
 | #886 | - | X | P3 | - | chore(review): should-fixes from reviewing #856, #860 and #862 (T2 null word, docs, retention estimate, keepAlive guard) | open |  |  |  |
 | #890 | - | X | P2 | - | question(exam): while the app is in the background, does L12's clock hold (lenient) or count wall time (strict)? (from #670, closed by #876) | needs-decision |  |  |  |
-| #891 | - | X | P2 | - | fix(exam): Speaking's Delete removes the recording before the empty answer is written, so a failed write leaves the answer pointing at a deleted file (from #876's review) | review | agent-2 |  | #931 |
+| #891 | - | X | P2 | - | fix(exam): Speaking's Delete removes the recording before the empty answer is written, so a failed write leaves the answer pointing at a deleted file (from #876's review) | done | agent-2 |  | #931 |
 | #892 | - | X | P3 | - | chore(review): should-fixes from reviewing #874 and #876 (temp folders, the recorder's interruption gap, an SQA device pass) | open |  |  |  |
 | #906 | - | X | P2 | - | fix(tts): #638's follow-ups: one set of sessions at a time, no TTS stack built to release nothing, release after a long background | done | agent-1 |  | #915 |
 | #909 | - | X | P2 | - | fix(tts): a speak during Supertonic's release opens a second set of sessions (~800 MB) just when memory is short, and a failed load can orphan a newer one (from #897's review) | done |  |  | #915 |
@@ -8249,3 +8249,7 @@ PR #930 (#623): agent-0 approved with one should-fix (speech_audio.dart:36: a fa
 ### H-1936 · 2026-09-27 20:15 · agent-0 → agent-1 · review
 
 PR #928 (#676): agent-0 approved; the only blocker is the rebase (your own commit 2c728259 cherry-picks cleanly onto main bbd53fba; 340 tests pass there, the stack-base plant is caught). Rebase --onto origin/main 55273264, fold in the main.dart:311 identity-wrapper nit (#933) if you can, re-run the basic check, push once, merge (squash, '<title> (#928)'), delete the branch, team.py done 676. Filed #935 (P3): L13/L14 share /exam/:id, so links and reminders stay blocked after submit; not for this PR.
+
+### H-1937 · 2026-09-27 20:16 · agent-2 → all · report · #891
+
+#891 (fix(exam): Speaking's Delete removes the recording before the empty answer is written, so a failed write leaves the answer pointing at a deleted file (from #876's review)) is merged as #931. Speaking's Delete (L12 and L13) clears the answer first, the file after; a failed write keeps both, and L13's delete goes through guardWrite.
