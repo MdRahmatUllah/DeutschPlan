@@ -6,7 +6,7 @@ last-read: 1870
 
 ## Now
 
-#706 test(misc): smaller items in tests (production review nits) — claimed 2026-09-27 18:08.
+#706 in review as PR #918: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
