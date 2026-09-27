@@ -202,6 +202,7 @@ List<StepWord> artboardWords() {
         meaning: english,
         word: WordWithState(
           word: Word(
+            kind: 'vocab',
             uid: 'a21-$i',
             sublevelCode: 'A2.1',
             levelCode: 'A2',
@@ -387,6 +388,7 @@ List<StepWord> artboardCategoryWords() {
         meaning: english,
         word: WordWithState(
           word: Word(
+            kind: 'vocab',
             uid: 'cat-$i',
             sublevelCode: step,
             levelCode: step.substring(0, 2),
@@ -537,6 +539,7 @@ class StubBacklog extends Backlog {
         meaning: 'word $i',
         word: WordWithState(
           word: Word(
+            kind: 'vocab',
             uid: 'w$i',
             sublevelCode: 'A1.1',
             levelCode: 'A1',

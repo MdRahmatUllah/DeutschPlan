@@ -85,6 +85,7 @@ void main() {
     late FakeTts tts;
 
     final rechnung = Word(
+      kind: 'vocab',
       uid: 'rechnung',
       sublevelCode: 'A2.1',
       levelCode: 'A2',

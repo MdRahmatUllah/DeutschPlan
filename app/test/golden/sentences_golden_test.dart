@@ -64,6 +64,7 @@ void main() {
 class _Long extends PracticeSentences {
   // The headword itself, underlined, is the long compound (#539).
   static const Word _limit = Word(
+    kind: 'vocab',
     uid: 'geschwindigkeitsbegrenzung',
     sublevelCode: 'B2.2',
     levelCode: 'B2',
@@ -93,6 +94,7 @@ class _Long extends PracticeSentences {
 
 class _Artboard extends PracticeSentences {
   static const Word _nebenkosten = Word(
+    kind: 'vocab',
     uid: 'nebenkosten',
     sublevelCode: 'A2.1',
     levelCode: 'A2',

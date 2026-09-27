@@ -44,6 +44,7 @@ void main() {
   );
 
   Word word(String uid, String article, String german) => Word(
+    kind: 'vocab',
     uid: uid,
     sublevelCode: 'A2.1',
     levelCode: 'A2',

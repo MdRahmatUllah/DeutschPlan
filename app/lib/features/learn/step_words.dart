@@ -56,8 +56,9 @@ Future<List<({int id, String name})>> stepCategories(Ref ref, String code) =>
 /// The Words tab's status chips.
 enum WordFilter { all, todo, learning, done }
 
-/// FR-L2-02: a status AND a category. *All* keeps suspended words, greyed;
-/// a status chip shows only its own.
+/// FR-L2-02: a status AND a category. *All* keeps suspended words, greyed,
+/// and notes; a status chip shows only its own, and a note has none
+/// (BR-CONTENT-04).
 List<StepWord> filterWords(
   List<StepWord> words, {
   required WordFilter status,
@@ -65,6 +66,7 @@ List<StepWord> filterWords(
 }) => <StepWord>[
   for (final row in words)
     if ((category == null || row.word.word.categoryId == category) &&
+        (status == WordFilter.all || row.word.studied) &&
         switch (status) {
           WordFilter.all => true,
           WordFilter.todo => row.word.status == WordStatus.todo,

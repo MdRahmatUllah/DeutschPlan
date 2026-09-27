@@ -192,8 +192,8 @@ class TestTheBuild:
         previous = self.previous(
             tmp_path,
             "INSERT INTO words (uid, sublevel_code, level_code, seq, seq_in_sublevel, "
-            "german, english, search_key, search_key_alt) VALUES ('lostuid', 'A1.1', "
-            "'A1', 999, 999, 'Zzyzx', 'nothing', 'zzyzx', 'zzyzx')",
+            "german, english, search_key, search_key_alt, kind) VALUES ('lostuid', "
+            "'A1.1', 'A1', 999, 999, 'Zzyzx', 'nothing', 'zzyzx', 'zzyzx', 'vocab')",
         )
         assert self.build(tmp_path, "--previous", str(previous)) == 1
         err = capsys.readouterr().err

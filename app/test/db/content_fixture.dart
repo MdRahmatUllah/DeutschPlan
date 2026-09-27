@@ -138,8 +138,8 @@ class ContentFixture {
     db.execute(
       'INSERT INTO words (uid, sublevel_code, level_code, seq, '
       'seq_in_sublevel, article, german, pos, english, bangla, freq, '
-      'category_id, source_week, search_key, search_key_alt) '
-      'VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+      'category_id, source_week, search_key, search_key_alt, kind) '
+      "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'vocab')",
       <Object?>[
         uid,
         step,
