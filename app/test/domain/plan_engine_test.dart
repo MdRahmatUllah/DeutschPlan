@@ -157,6 +157,63 @@ void main() {
       expect(opened.newToday, <String>['a1', 'a2', 'a3', 'b1', 'b2']);
       expect(opened.revise, isEmpty, reason: 'today was opened before');
       expect(store.lastPlanned, monday);
+      final again = await engine.openDay(monday);
+      expect(again.newToday, hasLength(5), reason: 'never doubled');
+    });
+
+    // The top-up reaches today only, and only where planning would have
+    // given today new words anyway.
+    test('#687 AN-7 a day before today, where the step ran out, is left short '
+        'after a catch-up', () async {
+      store.wordsByStep['A1.1'] = <String>['a1', 'a2', 'a3'];
+      final engine = engineWith(autoAdvance: false);
+      await engine.openDay(monday);
+      final thursday = addDays(monday, 3);
+      await engine.openDay(thursday); // away Tuesday and Wednesday
+      await engine.startNextStep(
+        thursday,
+        dailyNew: 5,
+        studyDaysMask: PlanEngine.allDays,
+      );
+      await engine.openDay(thursday);
+      expect(store.plan['$monday/new'], <String>['a1', 'a2', 'a3']);
+      expect(store.plan['${addDays(monday, 1)}/new'], isNull);
+      expect(store.plan['$thursday/new'], hasLength(5));
+    });
+
+    test('#687 AN-7 BR-PLAN-07 a paused day is not topped up', () async {
+      store.wordsByStep['A1.1'] = <String>['a1', 'a2', 'a3'];
+      // Yesterday's word, never studied: backlog, while the pause was off.
+      await store.addToPlan(addDays(monday, -1), PlanKind.newWord, <String>[
+        'w0',
+      ]);
+      await engineWith(autoAdvance: false).openDay(monday);
+
+      final paused = engineWith(autoAdvance: false, pauseNewWhenBacklog: true);
+      await paused.startNextStep(
+        monday,
+        dailyNew: 5,
+        studyDaysMask: PlanEngine.allDays,
+      );
+      final opened = await paused.openDay(monday);
+      expect(opened.newToday, <String>['a1', 'a2', 'a3']);
+    });
+
+    test('#687 AN-7 BR-PLAN-01 a rest day of the new pace is not topped '
+        'up', () async {
+      store.wordsByStep['A1.1'] = <String>['a1', 'a2', 'a3'];
+      final engine = engineWith(autoAdvance: false);
+      await engine.openDay(monday);
+      await engine.startNextStep(
+        monday,
+        dailyNew: 5,
+        studyDaysMask: PlanEngine.allDays & ~1, // Monday is bit 0
+      );
+      expect((await engine.openDay(monday)).newToday, <String>[
+        'a1',
+        'a2',
+        'a3',
+      ]);
     });
 
     test('does nothing while a step is active', () async {
