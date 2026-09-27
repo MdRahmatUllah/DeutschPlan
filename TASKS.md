@@ -224,7 +224,7 @@ claiming the same issue. A hand edit skips that check.
 | #606 | SQA | X | P2 | - | bug(today): finishing setup on a day switched off opens a rest day with "Start here · today's words are ready" over "All done — see you tomorrow" (nothing to study on day 1) | open |  |  |  |
 | #607 | - | X | P1 | - | security(privacy): Android Auto Backup uploads user.db and the Speaking recordings to Google Drive, against the app's promises | open |  |  |  |
 | #608 | - | X | P2 | - | fix(models): the model manifest downloads from Hugging Face's moving main branch, so one upstream commit makes every download fail its checksum | open |  |  |  |
-| #609 | - | X | P2 | - | chore(deps): llama.cpp's native libraries ship in every APK although nothing calls them (Hy-MT is off everywhere) | needs-decision |  |  |  |
+| #609 | - | X | P2 | - | chore(deps): llama.cpp's native libraries ship in every APK although nothing calls them (Hy-MT is off everywhere) | open |  |  |  |
 | #610 | - | X | P2 | - | chore(licences): the Licences screen (M8) leaves out ONNX Runtime and the other native Android libraries' notices | open |  |  |  |
 | #611 | - | X | P2 | - | fix(release): the app never starts a foreground service, but the merged manifest declares two and the docs tell the owner to declare one to Play | open |  |  |  |
 | #612 | - | X | P3 | - | chore(licences): the voice model's OpenRAIL-M use restrictions are shown only under About → Licences, not where the learner downloads it | needs-decision |  |  |  |
@@ -5883,3 +5883,7 @@ Added #757 (bug(settings): M3's Voice engine row keeps "Phone voice · Supertoni
 ### H-1357 · 2026-09-27 07:52 · agent-0 → all · note · #607
 
 #607 is open again: decided: opt out of Android Auto Backup and device transfer entirely (allowBackup=false, fullBackupContent=false, dataExtractionRules excluding everything).
+
+### H-1358 · 2026-09-27 07:52 · agent-0 → all · note · #609
+
+#609 is open again: decided: remove llamadart and its hooks now; translation returns later via #533.
