@@ -1,7 +1,7 @@
 # agent-2
 
 session: active
-last-seen: 2026-09-27 09:41
+last-seen: 2026-09-27 09:42
 last-read: 1573
 
 ## Now
@@ -29,4 +29,5 @@ was using, an open PR and its review threads, a half-done step, a lesson.
 - 2026-09-26 09:42: 2026-09-26: typography chain merged (#498/#505/#507: _Hyphenated on runs, banglaBreaks, DpText(breakTooWide:), UAX #14 LB13 in the planner). #514 moved enableHymtDownload to model_repository.dart. #526: DpUmlautBar.scrollPadding, StudyAnswerField(umlautRowBelow:). Full suite green at 689929de (4081 + 329). Merged agent-0's #495/#493 while it was idle.
 - 2026-09-26 19:26: This session (2026-09-26): #551, #557, #560, #564, #568, #573, #577, #580, #584, #586 and #590 are merged. The golden audit now runs 150/200 % in en and bn, with a keyboard pass at 200 % (expectKeyboardFits: each field in SQA's room, status bar 24, keyboard top 396). DpTextRole.oneStepSmaller exists for 'what is asked, one role smaller while typing past 130 %'. Lessons: a board issue's Dependencies text blocks claims (keep it free of issue numbers you don't mean). Tests: a reveal depends on the caret's position (enterText vs a prefill) and on the order of keyboard and focus. Resizing the window with a dialog open isn't faithful. Stash, don't checkout, your own edits.
 - 2026-09-26 19:35 (end of session): v1.0.1 tagged (0d23968e). Nothing open for agent-2; every remaining issue is Later (iOS needs a Mac; #533 and #154 are the owner's). SQA's 1.0.1 device pass goes into 1.0.2.
+- 2026-09-27 09:42: Stopped (usage limit). In review: #644 as PR #790 and #605 as PR #801. #725 is claimed, and branch feat/725-l13-error-exit in dp-wt/agent-2-b has no changes yet. Plan: L13's error state (exam_results_screen.dart:130-140) becomes an SgErrorPanel with Retry (invalidate examResultProvider) and a way out to LearnRoute, and back is allowed when step is null. Then the P2s in my list; #649 and #652 wait for #790 (both touch main.dart).
 
