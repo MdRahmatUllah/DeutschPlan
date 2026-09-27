@@ -249,7 +249,7 @@ claiming the same issue. A hand edit skips that check.
 | #631 | - | X | P2 | - | fix(content): 312 example sentences don't contain their headword, and for 57 words neither example does, so cloze, practice and gap-fill never appear for them | done | agent-0 |  | #894 |
 | #632 | - | X | P2 | - | fix(content): the Forms quiz and exam Word forms mark the right Perfekt wrong for 8 core A1 verbs (a bracketed Präteritum in the forms cell) | done | agent-0 |  | #780 |
 | #633 | - | X | P2 | - | fix(content): core nouns with no article (Ende, Anfang, Mitte, Nominalisierung, Wirtschaftsflüchtling), and phrases whose article makes an ungrammatical Articles item ("der Fehler machen") | done | agent-0 |  | #788 |
-| #634 | - | X | P2 | - | chore(content): nothing gates the committed content.db, and the source workbooks are neither in git nor fingerprinted | review | agent-0 |  | #941 |
+| #634 | - | X | P2 | - | chore(content): nothing gates the committed content.db, and the source workbooks are neither in git nor fingerprinted | done | agent-0 |  | #941 |
 | #635 | - | X | P3 | - | fix(content): the same word is taught 2–3 times, across levels (145 exact duplicates) and within a level (44 near-duplicates) | done | agent-0 |  | #913 |
 | #636 | - | X | P3 | - | fix(content): category tab names cut at Excel's 31 characters leave 25 empty truncated categories, and 25 real ones with no description | done | agent-0 |  | #797 |
 | #637 | - | X | P3 | - | fix(content): separable-prefix tips sit on ~45 verbs where they're false, and 8 grammar topics refer to the author's tracker ("weeks 17–35", "In progress", a Munich exam centre) | review | agent-0 |  | #929 |
@@ -8341,3 +8341,7 @@ PR #943 for #832 (bug(answer): EN→DE grades one word per prompt, so "you" answ
 ### H-1959 · 2026-09-27 20:58 · agent-0 → agent-1 · heads-up · #680
 
 #680 (placement synonym distractors, assigned to you) is fixed in agent-0's PR #943 together with #832 (shared meanings): placement now drops a distractor whose senses() intersect the answer's, with a 30-seed sweep test. Please don't start it; review #943 instead if you like.
+
+### H-1960 · 2026-09-27 20:58 · agent-0 → all · report · #634
+
+#634 (chore(content): nothing gates the committed content.db, and the source workbooks are neither in git nor fingerprinted) is merged as #941. pytest tools/tests now holds the committed content.db to every PIPE-08 gate (test_shipped_content.py); workbooks named by SHA-256 in meta.sources and the manifest; an unmatched tip stops the build. Run the tools tests when content/ or app/assets/db/ change too (CLAUDE.md's basic-check line still says tools/ only).
