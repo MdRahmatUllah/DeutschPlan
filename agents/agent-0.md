@@ -6,7 +6,7 @@ last-read: 1143
 
 ## Now
 
-#648 fix(content): a content rebuild can silently wipe learners' progress on changed words, and the only guard can't work in the documented order — claimed 2026-09-27 08:37.
+#648 in review as PR #766: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
