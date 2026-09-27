@@ -6,7 +6,7 @@
 
 **Reached from.** T1 Backlog card, T3, M1 schedule card. **Leads to.** T2 (all or one day), W1 (row).
 
-**Layout.** Header "Backlog · 14 words" with copy "From Tue and Wed — take them when you have time. Nothing here is overdue." Top card: *Study all · 14* + switch "Pause new words until this is clear — Revisions continue as normal". Groups by original date, newest first: "Wed 16 Sep · 7 words" + *Study this day* (its row at least 48 dp, 44 pt on iOS, for the button's target, #689 TD-14) + word rows (article-coloured headword, meaning, status chip).
+**Layout.** Header "Backlog · 14 words" with copy "From Tue and Wed — take them when you have time. Nothing here is overdue." (weekdays while the oldest day is within the last six, dates past that, as T1's card, #821) Top card: *Study all · 14* + switch "Pause new words until this is clear — Revisions continue as normal". Groups by original date, newest first: "Wed 16 Sep · 7 words" + *Study this day* (its row at least 48 dp, 44 pt on iOS, for the button's target, #689 TD-14) + word rows (article-coloured headword, meaning, status chip).
 
 Empty: illustration, "Nothing waiting. Nice.", "Skipped or missed new words land here, without a deadline.", *Back to Today*.
 

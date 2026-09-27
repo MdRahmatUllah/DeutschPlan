@@ -70,6 +70,9 @@ class DryRunPlanStore implements PlanStore {
   Future<List<String>> grammarDueOn(PlanDate date) => _inner.grammarDueOn(date);
 
   @override
+  Future<List<String>> grammarOfDay(PlanDate date) => _inner.grammarOfDay(date);
+
+  @override
   Future<void> addToPlan(
     PlanDate date,
     PlanKind kind,

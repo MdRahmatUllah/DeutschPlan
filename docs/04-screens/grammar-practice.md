@@ -4,9 +4,9 @@
 
 **Prototype.** `GrammarPractice` (Pick the form).
 
-**Reached from.** L4, L2 Grammar tab (*Practise all due*), T1 Grammar due card, inline in T2. **Leads to.** L4 (*See rule*), T6 if it completes the day, else back.
+**Reached from.** L4, L2 Grammar tab (*Practise all due*), T1 Grammar due card, T2 (the session's grammar, once its words are done, in the session's place). **Leads to.** T6 if it completes the day, else back. *See rule* opens the topic's rule in a sheet over L15, not L4 (#690 LQ-13).
 
-**Layout.** Top: close, topic title, "3 / 5", progress strip. Item types: Gap fill (text + umlaut row) · Pick the form (3 option tiles with labels like "Konjunktiv II · polite", "your pick · Präsens", "Präteritum") · Spot the error (tappable tokens; once answered, the error has a tick and a wrong tap a cross, beside their Lime and Coral tints, and a screen reader hears "Können, the error" and "mir, your tap, not the error": never hue alone, #726) · Order the sentence (chips) · Rule recall (4 options). Feedback line: "Not quite — the polite form is *Könnten*. Rule: könnte / würde + infinitive at the end of the sentence." with *See rule*; *Next*.
+**Layout.** Top: close, topic title, "3 / 5", progress strip. Item types: Gap fill (text + umlaut row) · Pick the form (3 option tiles, each its form alone; once answered the right one Lime with a tick, a wrong pick Coral with a cross, the rest faded. The artboard's labels, "Konjunktiv II · polite", "your pick · Präsens", are not drawn: the generator knows the forms, not their names, #690 LQ-13) · Spot the error (tappable tokens; once answered, the error has a tick and a wrong tap a cross, beside their Lime and Coral tints, and a screen reader hears "Können, the error" and "mir, your tap, not the error": never hue alone, #726) · Order the sentence (chips) · Rule recall (4 options). Feedback line: "Not quite — the polite form is *Könnten*. Rule: könnte / würde + infinitive at the end of the sentence." with *See rule*; *Next*.
 
 **Typing at large text** (#557, as L8's #554): past 130 % with the keyboard up, the gap's field and umlaut row alone filled the room above it and the sentence scrolled away. The header gives up its row (close, the topic and "3 / 5"; its colour stays behind the status bar), and so does *Next*, which is off until the answer is checked. The sentence and its translation then show above the field. As on T2, the field stops keeping *Check* in view, since the keyboard's Done checks too (#564). Both come back when the keyboard goes, and *Next* stays once the answer is checked. At 130 % and below nothing changes.
 
@@ -14,6 +14,6 @@
 - FR-L15-01 Items from `GrammarItemGenerator` (`03-domain/grammar-practice.md`); 3–5 per topic; seeded per (topic, day). The day is the one L15 opened on: a run that crosses midnight keeps its items, rather than reseeding under the learner when the app reads the date again (#665).
 - FR-L15-02 Immediate feedback; the rule line shows on a wrong answer. A typed gap fill that is *almost* (BR-ANS-01) says "Almost · it's hätte", as T2's cloze does, with no rule line, and counts as right for the topic's rating (BR-FSRS-05): a set whose only misses are *almost* is Good (the lead's call, #345).
 - FR-L15-03 On the last item the topic is rated as a whole (BR-FSRS-05), written to `grammar_state` and `grammar_practice_log`.
-- FR-L15-04 Multiple due topics run back to back with a short banner between them.
+- FR-L15-04 Multiple due topics run back to back with a short banner between them. The next topic is read before it takes the page, so the page never goes blank between topics, and the banner's 1.6 s start as it shows (#690 LQ-8).
 
 **Tests.** generator produces ≥ 2 item types for every topic in content (data test); rating rule.

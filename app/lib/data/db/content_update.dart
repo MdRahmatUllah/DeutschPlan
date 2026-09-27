@@ -124,6 +124,9 @@ class ContentUpdater {
       // learner studies the old course meanwhile, rather than meeting an app
       // that won't open. If the old course did not come back either,
       // bootstrap's `version()` right after still fails the start.
+      // #885: so does one older than this build reads, with the copy's own
+      // error, which says storage when it was the space.
+      if (!await _dao.fitsBuild()) rethrow;
       return null;
     }
     final current = await _readBundledManifest();

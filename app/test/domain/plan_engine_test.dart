@@ -1804,6 +1804,9 @@ class FakeStore implements PlanStore {
   Future<List<String>> grammarDueOn(PlanDate date) async => grammarDue;
 
   @override
+  Future<List<String>> grammarOfDay(PlanDate date) async => grammarDue;
+
+  @override
   Future<void> addToPlan(
     PlanDate date,
     PlanKind kind,

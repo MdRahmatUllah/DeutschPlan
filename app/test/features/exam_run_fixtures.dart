@@ -138,6 +138,16 @@ List<ExamItem> artboardPaper() => <ExamItem>[
   ),
 ];
 
+/// #798: a Bangla-meaning learner's Vocabulary item, with four tiles as the
+/// quiz's DE → বাংলা draws them.
+const WordQuestion banglaVocabulary = WordQuestion(
+  ExamSection.vocabulary,
+  'wohnung',
+  prompt: 'die Wohnung',
+  expected: 'ফ্ল্যাট / বাসা',
+  tiles: <String>['দরজা', 'ফ্ল্যাট / বাসা', 'রান্নাঘর', 'বাগান'],
+);
+
 /// The ExamWriting artboard's task: A1, its ten target words.
 const WritingTask artboardWriting = WritingTask(
   'writing:1',

@@ -131,6 +131,16 @@ class WordListPanel extends StatelessWidget {
 
   final Widget child;
 
+  /// Whether a list of [rows] in the panel shrink-wraps, so the panel ends
+  /// at its last row (#282). Past 130 % the rows have no prototype, and a
+  /// shrink-wrapped list without one sizes itself again as it scrolls, over
+  /// L6's and L2's hundreds of rows (#690 LQ-12). A list longer than the
+  /// screen fills it either way, so only a short one wraps there.
+  /// ponytail: 20 rows over-fill a tablet at 130 %; a device profile at
+  /// 200 % is still to come.
+  static bool shrinkWrap(BuildContext context, int rows) =>
+      !SgScript.large(context) || rows <= 20;
+
   @override
   Widget build(BuildContext context) {
     final tokens = context.tokens;

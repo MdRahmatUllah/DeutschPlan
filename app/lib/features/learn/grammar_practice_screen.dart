@@ -141,6 +141,21 @@ class _GrammarPracticeScreenState extends ConsumerState<GrammarPracticeScreen> {
       return;
     }
     if (_topic < widget.topicUids.length - 1) {
+      // #690 LQ-8: the next topic's set is read before it takes the page, so
+      // the page never goes blank between topics, and the banner's time
+      // starts as the banner shows. Held until the page watches it.
+      final next = practiceSetProvider(widget.topicUids[_topic + 1], _day);
+      final hold = ref.listenManual(next, (_, _) {});
+      try {
+        await ref.read(next.future);
+      } on Object {
+        // The page says so, with Retry, once it shows the topic.
+      }
+      if (!mounted) {
+        hold.close();
+        return;
+      }
+      WidgetsBinding.instance.addPostFrameCallback((_) => hold.close());
       _startedAt = ref.read(clockProvider)();
       setState(() {
         _topic++;
@@ -325,7 +340,10 @@ class PracticeHeader extends StatelessWidget {
   });
 
   final String title;
-  final (int, int) place;
+
+  /// "3 / 5"; null while there is nothing to count, as L8 loading or
+  /// empty, rather than "0 / 0" (#702).
+  final (int, int)? place;
   final VoidCallback onClose;
 
   /// Only its colour behind the status bar: L8 typing at large text gives
@@ -382,13 +400,16 @@ class PracticeHeader extends StatelessWidget {
                 // "7 / 20" onto two lines and cut it (#165).
                 SizedBox(
                   width: SgScript.grow(context, 52, role: SgTextRole.label),
-                  child: SgText(
-                    l10n.digits('${place.$1} / ${place.$2}'),
-                    role: SgTextRole.label,
-                    weight: 700,
-                    color: ink,
-                    textAlign: TextAlign.center,
-                  ),
+                  child: switch (place) {
+                    null => null,
+                    (final done, final of) => SgText(
+                      l10n.digits('$done / $of'),
+                      role: SgTextRole.label,
+                      weight: 700,
+                      color: ink,
+                      textAlign: TextAlign.center,
+                    ),
+                  },
                 ),
                 const SizedBox(width: 4),
               ],

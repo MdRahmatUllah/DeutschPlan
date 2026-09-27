@@ -112,6 +112,7 @@ void main() {
     WidgetTester tester, {
     String code = 'A2.1',
     List<Override>? overrides,
+    TextScaler? textScaler,
   }) async {
     routes = GoRouter(
       routes: <RouteBase>[
@@ -129,6 +130,12 @@ void main() {
           localizationsDelegates: appLocalizationsDelegates,
           supportedLocales: supportedLocales,
           routerConfig: routes,
+          builder: textScaler == null
+              ? null
+              : (context, child) => MediaQuery(
+                  data: MediaQuery.of(context).copyWith(textScaler: textScaler),
+                  child: child!,
+                ),
         ),
       ),
     );
@@ -166,6 +173,63 @@ void main() {
     expect(rows(tester), 6);
     expect(find.text('bill, invoice'), findsOneWidget);
     expect(find.text('Wohnen & Haushalt'), findsOneWidget);
+  });
+
+  bool wraps(WidgetTester tester) => tester
+      .widget<ListView>(
+        find.ancestor(
+          of: find.byType(WordRow).first,
+          matching: find.byType(ListView),
+        ),
+      )
+      .shrinkWrap;
+
+  testWidgets('#690 LQ-12 past 130 % a long list, with no prototype, fills '
+      'the panel rather than shrink-wrap; a short one still ends at its last '
+      'row (#282)', (tester) async {
+    await pump(
+      tester,
+      overrides: over(<StepWord>[for (var i = 0; i < 40; i++) word(i)]),
+      textScaler: const TextScaler.linear(1.5),
+    );
+    expect(wraps(tester), isFalse);
+  });
+
+  testWidgets('#690 LQ-12 and a short list at 150 %, or any at 100 %, wraps', (
+    tester,
+  ) async {
+    await pump(
+      tester,
+      overrides: over(<StepWord>[for (var i = 0; i < 5; i++) word(i)]),
+      textScaler: const TextScaler.linear(1.5),
+    );
+    expect(wraps(tester), isTrue);
+  });
+
+  testWidgets('#702 FR-L2-02 the filters hold across a trip to another '
+      'inner tab and back', (tester) async {
+    await pump(tester);
+    await chip(tester, l10n.wordStatusLearning);
+    await chip(tester, 'Wohnen & Haushalt');
+    final filtered = rows(tester);
+    await tester.tap(find.text(l10n.stepTabQuiz));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text(l10n.stepTabWords));
+    await tester.pumpAndSettle();
+    expect(rows(tester), filtered);
+    expect(
+      tester
+          .widget<SgChip>(
+            find.byWidgetPredicate(
+              (w) =>
+                  w is SgChip &&
+                  w.kind == SgChipKind.filter &&
+                  w.label == l10n.wordStatusLearning,
+            ),
+          )
+          .selected,
+      isTrue,
+    );
   });
 
   testWidgets('FR-L2-02 the chips filter, and combine', (tester) async {

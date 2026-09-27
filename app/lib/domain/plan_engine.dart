@@ -163,6 +163,11 @@ abstract interface class PlanStore {
   /// Grammar topics whose FSRS due falls on or before [date].
   Future<List<String>> grammarDueOn(PlanDate date);
 
+  /// The day's grammar (#754): [grammarDueOn], and every topic practised on
+  /// [date], whose practice moved its due on. So a day built again (a
+  /// restart, *Start* on another step) keeps what it has done.
+  Future<List<String>> grammarOfDay(PlanDate date);
+
   /// Adds plan rows. Rows already present are left alone — that is what makes
   /// reopening a day idempotent (BR-PLAN-04).
   Future<void> addToPlan(PlanDate date, PlanKind kind, List<String> uids);
@@ -493,7 +498,7 @@ class PlanEngine {
       date: date,
       revise: await _store.plannedOn(date, PlanKind.revise),
       newToday: await _store.plannedOn(date, PlanKind.newWord),
-      grammarDue: await _store.grammarDueOn(date),
+      grammarDue: await _store.grammarOfDay(date),
       backlog: backlog,
       activeStep: step?.sublevelCode,
       nextStep: await _nextStepAfterFinishing(finished),
