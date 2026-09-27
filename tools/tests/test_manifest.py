@@ -82,16 +82,33 @@ class TestContents:
         assert manifest["boundaries"]
         assert all(code.endswith(".2") for code in manifest["boundaries"])
 
-    def test_two_builds_of_unchanged_content_are_byte_identical(
+    def test_two_builds_of_unchanged_content_differ_only_in_their_stamps_697(
         self, built, tmp_path
     ):
-        # Byte-identical is what makes `git diff` on the manifest the content
-        # diff, rather than a wall of reordered lines.
+        # What makes `git diff` on the manifest the content diff, rather than
+        # a wall of reordered lines. Two real builds: a second read of the
+        # workbooks, at another time (#697 TL-14).
         inputs, splits = built
+        sources = [read_workbook(tmp_path / name) for name in BOOK_LEVELS]
+        again = collect(sources, derive(sources))
+        again.content_version = "20990101000000"
+        again.built_at = "2099-01-01T00:00:00+00:00"
         first, second = tmp_path / "a.json", tmp_path / "b.json"
         write_manifest(first, build_manifest(inputs, splits))
-        write_manifest(second, build_manifest(inputs, splits))
-        assert first.read_bytes() == second.read_bytes()
+        write_manifest(second, build_manifest(again, splits))
+        a = first.read_text(encoding="utf-8").splitlines()
+        b = second.read_text(encoding="utf-8").splitlines()
+        assert len(a) == len(b)
+        changed = [x.split(":")[0].strip() for x, y in zip(a, b) if x != y]
+        assert changed == ['"built_at"', '"content_version"']
+
+    def test_grammar_text_moved_to_the_next_field_is_a_change_697(self, built):
+        # The fields are joined with a separator (#697 TL-14).
+        inputs, splits = built
+        row = next(r for r in inputs.grammar if r.rule and r.example_de)
+        before = build_manifest(inputs, splits)["grammar"][row.uid]
+        row.rule, row.example_de = row.rule + row.example_de, ""
+        assert build_manifest(inputs, splits)["grammar"][row.uid] != before
 
 
 class TestDiff:

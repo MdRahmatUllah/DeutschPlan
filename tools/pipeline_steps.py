@@ -883,7 +883,9 @@ def read_tips(path) -> list[Tip]:
         )
 
     tips: list[Tip] = []
-    with path.open(encoding="utf-8", newline="") as handle:
+    # utf-8-sig: Excel's "CSV UTF-8" starts the file with a BOM, which would
+    # otherwise become part of the first header, "match_type" (#697 TL-13).
+    with path.open(encoding="utf-8-sig", newline="") as handle:
         for number, row in enumerate(csv.DictReader(handle), start=2):
             missing = [
                 column
