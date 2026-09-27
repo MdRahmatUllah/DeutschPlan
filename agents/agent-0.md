@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-09-27 14:24
+last-seen: 2026-09-27 14:33
 last-read: 1655
 
 ## Now
 
-Nothing claimed.
+#630 fix(content): about 180 lesson notes are authored as vocabulary (word formation, ↔ comparisons, grammar-concept names), so they are scheduled as flashcards and asked in quizzes and exams (18 % of C2) — claimed 2026-09-27 14:33.
 
 ## Next
 
