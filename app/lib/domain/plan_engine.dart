@@ -537,18 +537,28 @@ class PlanEngine {
       return;
     }
 
+    // BR-PLAN-01 (#606, the owner's call): the setup day, the day the first
+    // step starts with nothing planned yet, is a study day whatever the
+    // mask. FR-S2-03 opens Today with the first day planned, and the mask
+    // applies from tomorrow.
+    final setupDay =
+        step.startedOn == today && await _store.lastPlannedDate() == null;
     final days = await _daysToPlan(today, step);
     // BR-PLAN-08: [today] is being planned now, with this mask, and keeps it
     // for the rest of the day. The pace carries over when a step advances,
     // so the mask is the same after one.
-    if (days.isNotEmpty) await _store.setPlannedMask(step.studyDaysMask);
+    if (days.isNotEmpty) {
+      await _store.setPlannedMask(setupDay ? allDays : step.studyDaysMask);
+    }
     for (final day in days) {
       // Re-read each turn: `_planDay` may have advanced the step, and the new
       // one carries its own mask.
       final current = step;
       if (current == null) break;
 
-      if (!isStudyDay(day, current.studyDaysMask)) continue;
+      if (!isStudyDay(day, setupDay ? allDays : current.studyDaysMask)) {
+        continue;
+      }
 
       // BR-PLAN-07. Checked per day, not once: planning a day creates the
       // rows that are backlog for the day after, so a learner who is already
