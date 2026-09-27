@@ -159,6 +159,22 @@ void main() {
       expect(await backup.exportJson(), isNot(contains('recordings')));
     });
 
+    test('#700 is read in one transaction: a write that arrives mid-export '
+        'lands after it, not half in the file', () async {
+      await fillEverything();
+      final exporting = backup.export();
+      // Queued behind the export's first read. Without the transaction it
+      // runs between two tables' reads, and review_log carries it.
+      await sql(
+        'INSERT INTO review_log (word_uid, reviewed_at, rating, source) '
+        "VALUES ('uid-haus', '2026-03-02T09:00:00Z', 3, 'daily')",
+      );
+      final tables = (await exporting)['tables']! as Map<String, Object?>;
+
+      expect(tables['review_log']! as List<Object?>, hasLength(1));
+      expect(await count('review_log'), 2);
+    });
+
     test('is JSON that survives a round trip through a file', () async {
       await fillEverything();
       final json = await backup.exportJson();

@@ -67,8 +67,21 @@ void main() {
     scheduledDays: 3,
   );
 
+  /// Plan rows, as the plan engine writes them.
+  Future<void> writePlan(List<PlanEntry> entries) => db.batch(
+    (batch) => batch.insertAll(db.planItems, <PlanItemsCompanion>[
+      for (final entry in entries)
+        PlanItemsCompanion.insert(
+          planDate: entry.planDate,
+          wordUid: entry.wordUid,
+          kind: entry.kind.wire,
+          sublevelCode: entry.sublevelCode,
+        ),
+    ]),
+  );
+
   Future<void> planFor(String uid, {PlanKind kind = PlanKind.newWord}) =>
-      plan.writePlan(<PlanEntry>[
+      writePlan(<PlanEntry>[
         PlanEntry(
           planDate: today,
           wordUid: uid,
@@ -83,27 +96,6 @@ void main() {
         .getSingle();
     return row.read<int>('n');
   }
-
-  group('writing a plan', () {
-    test('is idempotent, so reopening the day does not double it', () async {
-      await planFor('w1');
-      await planFor('w1');
-      expect(await count('plan_items'), 1);
-    });
-
-    test('a whole day goes in together', () async {
-      await plan.writePlan(<PlanEntry>[
-        for (final uid in <String>['w1', 'w2', 'w3'])
-          PlanEntry(
-            planDate: today,
-            wordUid: uid,
-            kind: PlanKind.newWord,
-            sublevelCode: 'A1.1',
-          ),
-      ]);
-      expect(await plan.watchPlan(today).first, hasLength(3));
-    });
-  });
 
   group('rating', () {
     test('writes all five tables', () async {
@@ -318,6 +310,16 @@ void main() {
       expect(item.skipped, 0, reason: 'a rated row is not a skipped one');
     });
 
+    test('#700 and its Undo skips it again', () async {
+      await planFor('w1');
+      await plan.skip(planDate: today, uid: 'w1', kind: PlanKind.newWord);
+      await rateOnce('w1');
+      await plan.undo();
+
+      final item = (await plan.watchPlan(today).first).single;
+      expect((item.completedAt, item.skipped), (null, 1));
+    });
+
     test('nothing to undo is not an error', () async {
       expect(await plan.undo(), isNull);
     });
@@ -357,7 +359,7 @@ void main() {
           today: today,
         );
       }
-      expect(await plan.undoDepthNow(), PlanRepository.undoDepth);
+      expect(await count('undo_stack'), PlanRepository.undoDepth);
     });
 
     test('the twenty it keeps are the most recent', () async {
@@ -383,7 +385,7 @@ void main() {
     test('is open new rows from before today, newest first', () async {
       // BR-PLAN-05: there is no backlog table, because an incomplete plan row
       // *is* the backlog.
-      await plan.writePlan(<PlanEntry>[
+      await writePlan(<PlanEntry>[
         for (final (date, uid) in <(String, String)>[
           ('2026-03-01', ContentFixture.haus),
           ('2026-03-02', ContentFixture.tuer),
@@ -405,7 +407,7 @@ void main() {
     });
 
     test('a completed row leaves it', () async {
-      await plan.writePlan(<PlanEntry>[
+      await writePlan(<PlanEntry>[
         const PlanEntry(
           planDate: '2026-03-01',
           wordUid: ContentFixture.haus,
@@ -429,7 +431,7 @@ void main() {
 
     test('a skipped row stays in it', () async {
       // Skip is not completion: the word comes back tomorrow.
-      await plan.writePlan(<PlanEntry>[
+      await writePlan(<PlanEntry>[
         const PlanEntry(
           planDate: '2026-03-01',
           wordUid: ContentFixture.haus,
@@ -447,7 +449,7 @@ void main() {
     });
 
     test('revise rows are not backlog', () async {
-      await plan.writePlan(<PlanEntry>[
+      await writePlan(<PlanEntry>[
         const PlanEntry(
           planDate: '2026-03-01',
           wordUid: ContentFixture.haus,
@@ -460,7 +462,7 @@ void main() {
 
     test("#368 a suspended word's row: out of Today's count, still in T4's "
         'list, which follows its state', () async {
-      await plan.writePlan(<PlanEntry>[
+      await writePlan(<PlanEntry>[
         for (final uid in <String>[ContentFixture.haus, ContentFixture.tuer])
           PlanEntry(
             planDate: '2026-03-01',
@@ -502,7 +504,7 @@ void main() {
     const yesterday = '2026-03-03';
 
     Future<void> planOn(String date, List<String> uids) =>
-        plan.writePlan(<PlanEntry>[
+        writePlan(<PlanEntry>[
           for (final uid in uids)
             PlanEntry(
               planDate: date,
@@ -595,4 +597,19 @@ void main() {
 
     expect(seen.last, now);
   });
+}
+
+/// One plan row, as the plan engine writes it.
+class PlanEntry {
+  const PlanEntry({
+    required this.planDate,
+    required this.wordUid,
+    required this.kind,
+    required this.sublevelCode,
+  });
+
+  final String planDate;
+  final String wordUid;
+  final PlanKind kind;
+  final String sublevelCode;
 }

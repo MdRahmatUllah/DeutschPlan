@@ -443,12 +443,6 @@ class WordRepository extends DatabaseAccessor<AppDatabase>
     );
   }
 
-  /// The same step, ready to be learned from. BR-STATUS-03.
-  Stream<List<WordWithState>> watchLearnableStep(String code) => _watchWords(
-    (days) => learnableWordsForStep(days, code).watch(),
-    (row) => _word(row.w, row.s, row.derivedStatus),
-  );
-
   Stream<List<WordWithState>> watchCategory(int categoryId) => _watchWords(
     (days) => wordsWithStateForCategory(days, categoryId).watch(),
     (row) => _word(row.w, row.s, row.derivedStatus),
@@ -609,18 +603,12 @@ class WordRepository extends DatabaseAccessor<AppDatabase>
     },
   );
 
-  /// [watchStatusCounts], once.
+  /// A step's words by status, once.
   Future<StatusCountsForStepResult> statusCounts(String code) =>
       statusCountsForStep(
         _settings.read(SettingKeys.doneStabilityDays).toDouble(),
         code,
       ).getSingle();
-
-  Stream<StatusCountsForStepResult> watchStatusCounts(String code) =>
-      _settings.switchOn(
-        SettingKeys.doneStabilityDays,
-        (int days) => statusCountsForStep(days.toDouble(), code).watchSingle(),
-      );
 
   /// Suspends a word. Its FSRS state is untouched (BR-STATUS-03).
   Future<void> suspend(String uid) => _setStatus(uid, WordStatus.suspended);
@@ -637,54 +625,25 @@ class WordRepository extends DatabaseAccessor<AppDatabase>
     )..where((t) => t.wordUid.equals(uid))).getSingleOrNull();
     if (state == null) return;
 
-    // `derivedStatus`, not `statusFor`: the latter answers "suspended" for a
-    // suspended row, which is correct everywhere except here — resuming would
-    // then set it back to suspended and nothing would ever come out of it.
+    // `derivedStatus`, which ignores the suspension: honouring it here would
+    // set the word back to suspended and nothing would ever come out of it.
     await _setStatus(uid, derivedStatus(state));
   }
 
-  /// BR-STATUS-02: `done` is derived from stability, never set by hand.
-  ///
-  /// Read from settings on every call rather than cached, because
-  /// `done_stability_days` is a Settings row the learner can move — and when
-  /// they do, every word's status has to follow without a rebuild.
-  WordStatus statusFor(WordStateData state) =>
-      state.status == WordStatus.suspended.wire
-      ? WordStatus.suspended
-      : derivedStatus(state);
-
-  /// What the FSRS state alone says, ignoring any suspension.
-  ///
-  /// This is the derivation BR-STATUS-02 describes. It is separate from
-  /// [statusFor] because resuming needs the answer a suspended row would have
-  /// had — asking [statusFor] there returns `suspended` and the word can never
-  /// come back.
+  /// What the FSRS state alone says, ignoring any suspension: the derivation
+  /// BR-STATUS-02 describes. `done` is derived from stability, never set by
+  /// hand, against `done_stability_days` read on every call, so a threshold
+  /// the learner moves moves every word.
   WordStatus derivedStatus(WordStateData state) {
-    // Introduced is what decides, not reviewed: `introduce()` writes the date
-    // and leaves reps at 0, and reading that as never-met would put the word
-    // back to `todo` on the next refresh and offer it as new again.
+    // Introduced is what decides, not reviewed: a word of the learner's own
+    // added to revision has the date and reps at 0, and reading that as
+    // never-met would offer it as new again.
     if (state.introducedOn == null && state.reps == 0) return WordStatus.todo;
 
     return statusForStability(
       state.stability,
       _settings.read(SettingKeys.doneStabilityDays),
     );
-  }
-
-  /// Recomputes and stores the derived status for one word.
-  ///
-  /// Called after every rating. The stored column is a cache of the
-  /// derivation, kept because the status chip is drawn in a list and a
-  /// per-row computation would mean reading settings once per row.
-  Future<WordStatus> refreshStatus(String uid) async {
-    final state = await (select(
-      db.wordState,
-    )..where((t) => t.wordUid.equals(uid))).getSingleOrNull();
-    if (state == null) return WordStatus.todo;
-
-    final status = statusFor(state);
-    if (status.wire != state.status) await _setStatus(uid, status);
-    return status;
   }
 
   /// Upsert, not update: a word at `todo` has no `word_state` row at all, and
@@ -702,19 +661,4 @@ class WordRepository extends DatabaseAccessor<AppDatabase>
       (update(db.wordState)..where((t) => t.wordUid.isIn(uids))).write(
         WordStateCompanion(due: Value(date)),
       );
-
-  /// Creates the state row a word gets when it is first introduced.
-  ///
-  /// `introduced_on` is a local date: "the day I met this word" is a local
-  /// day, and it is what the streak and the stats read.
-  Future<void> introduce(String uid, {required String today}) async {
-    await into(db.wordState).insert(
-      WordStateCompanion.insert(
-        wordUid: uid,
-        status: const Value('learning'),
-        introducedOn: Value(today),
-      ),
-      mode: InsertMode.insertOrIgnore,
-    );
-  }
 }
