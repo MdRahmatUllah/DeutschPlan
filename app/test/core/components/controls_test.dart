@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:sogda/core/components/sg_button.dart';
 import 'package:sogda/core/components/sg_chip.dart';
 import 'package:sogda/core/components/sg_feedback.dart';
@@ -559,6 +561,33 @@ void main() {
         reason: 'a pill, not a rounded rectangle',
       );
     });
+
+    // One test per theme: MaterialApp animates a theme change, so a second
+    // pump in one test would still read the first theme's colours.
+    for (final (name, theme) in <(String, ThemeData Function())>[
+      ('glass', AppTheme.glass),
+      ('glass dark', () => AppTheme.glass(dark: true)),
+    ]) {
+      testWidgets('#651 a selected glass filter chip reads 4.5:1 on its '
+          'Lagoon, $name', (tester) async {
+        double ratio(Color a, Color b) {
+          final (x, y) = (a.computeLuminance(), b.computeLuminance());
+          return (math.max(x, y) + 0.05) / (math.min(x, y) + 0.05);
+        }
+
+        await pump(
+          tester,
+          const SgChip(label: 'All', kind: SgChipKind.filter, selected: true),
+          theme: theme(),
+        );
+        final fill = tester.element(find.byType(SgChip)).tokens.color.primary;
+        final label = tester.widget<Text>(find.text('All')).style!.color!;
+        final tick = tester.widget<Icon>(find.byIcon(Icons.check)).color!;
+
+        expect(ratio(label, fill), greaterThanOrEqualTo(4.5));
+        expect(ratio(tick, fill), greaterThanOrEqualTo(3));
+      });
+    }
 
     testWidgets('each kind draws the icon the artboard gives it', (
       tester,
