@@ -122,7 +122,9 @@ class ContentUpdater {
       // bootstrap's `version()` right after still fails the start.
       return null;
     }
-    final change = _diff(previous, await _readBundledManifest(), bundled);
+    final current = await _readBundledManifest();
+    await _moveAliased(current);
+    final change = _diff(previous, current, bundled);
 
     await _record(change);
     // Last: until this is written, the update has not happened as far as the
@@ -200,6 +202,42 @@ class ContentUpdater {
     };
   }
 
+  /// Every user.db column holding a course word's uid.
+  static const List<(String, String)> aliasedColumns = <(String, String)>[
+    ('word_state', 'word_uid'),
+    ('review_log', 'word_uid'),
+    ('plan_items', 'word_uid'),
+    ('sentence_log', 'word_uid'),
+    ('quiz_answers', 'word_uid'),
+    // A word section's ref is the bare uid; grammar, writing and speaking
+    // refs carry `#` or a prefix and never match one.
+    ('exam_answers', 'item_ref'),
+    ('custom_words', 'matched_uid'),
+  ];
+
+  /// PIPE-09 (#648): a word whose uid changed between builds keeps the
+  /// learner's progress. The manifest's `aliases` map each old uid to the one
+  /// the word has now, and every row under an old uid moves to it, in one
+  /// transaction. Re-runnable: once moved, nothing is under the old uid.
+  ///
+  /// OR IGNORE: where a row under the new uid already holds the key, it
+  /// wins, and the old one stays where it was, as it would without the map.
+  Future<void> _moveAliased(Map<String, dynamic>? manifest) async {
+    final aliases = manifest?['aliases'];
+    if (aliases is! Map<String, dynamic> || aliases.isEmpty) return;
+    final json = jsonEncode(aliases);
+    await _db.transaction(() async {
+      for (final (table, column) in aliasedColumns) {
+        await _db.customStatement(
+          'UPDATE OR IGNORE $table SET $column = '
+          '(SELECT value FROM json_each(?1) WHERE key = $column) '
+          'WHERE $column IN (SELECT key FROM json_each(?1))',
+          <Object?>[json],
+        );
+      }
+    });
+  }
+
   ContentChange _diff(
     Map<String, dynamic>? previous,
     Map<String, dynamic>? current,
@@ -222,7 +260,18 @@ class ContentUpdater {
           ),
         ]..sort();
 
-    final before = digests(previous, 'words');
+    // PIPE-09: a word whose uid changed is the same word, changed, not one
+    // removed and one added. `diff` in tools/content_manifest.py does the same.
+    final aliases = digests(current, 'aliases');
+    Map<String, String> follow(Map<String, String> before) => <String, String>{
+      for (final MapEntry(key: uid, value: digest) in before.entries)
+        switch (aliases[uid]) {
+          final String now when !before.containsKey(now) => now,
+          _ => uid,
+        }: digest,
+    };
+
+    final before = follow(digests(previous, 'words'));
     final after = digests(current, 'words');
 
     return ContentChange(
@@ -235,7 +284,7 @@ class ContentUpdater {
       // A kept manifest from before `meanings` compares nothing: no chip,
       // rather than a false one.
       meaning: moved(
-        digests(previous, 'meanings'),
+        follow(digests(previous, 'meanings')),
         digests(current, 'meanings'),
       ),
     );

@@ -15,10 +15,14 @@ CI does the same between two builds to produce the update summary Today shows
 
 from __future__ import annotations
 
+import difflib
 import hashlib
 import json
+import sqlite3
 from dataclasses import dataclass
 from pathlib import Path
+
+from pipeline_steps import uid_text
 
 MANIFEST_NAME = "content_manifest.json"
 
@@ -86,8 +90,8 @@ def _grammar_digest(row) -> str:
     return hashlib.sha1(joined.encode("utf-8")).hexdigest()[:16]
 
 
-def build_manifest(inputs, splits) -> dict:
-    """The manifest for one build."""
+def build_manifest(inputs, splits, aliases: dict[str, str] | None = None) -> dict:
+    """The manifest for one build. [aliases] is `link_uids`'s map (PIPE-09)."""
 
     steps: dict[str, dict[str, int]] = {}
     for word in inputs.words:
@@ -125,7 +129,91 @@ def build_manifest(inputs, splits) -> dict:
         # change, the *Updated* chip only these.
         "meanings": {word.uid: _meaning_digest(word) for word in inputs.words},
         "grammar": {row.uid: _grammar_digest(row) for row in inputs.grammar},
+        # PIPE-09: old uid -> the uid the same word carries now. Every link
+        # since the first build, not only this one's: a learner can skip
+        # versions, and the app moves their rows along these on install.
+        "aliases": aliases or {},
     }
+
+
+#: What `link_uids` compares a word by: `(level, german, pos, english)`.
+WordKey = tuple[str, str, str, str]
+
+
+def word_key(level, german, pos, english) -> WordKey:
+    """The uid's four fields, spelled so that a case or spacing change to a
+    part of speech, or an NFD paste, is still the same word."""
+    return tuple(uid_text(part or "").casefold() for part in (level, german, pos, english))
+
+
+def previous_build(directory: Path) -> tuple[dict[str, WordKey], dict | None]:
+    """The committed asset in [directory]: its words by uid, and its manifest.
+
+    Empty when there is none yet: the first build has nothing to lose.
+    """
+    db, manifest = directory / "content.db", directory / MANIFEST_NAME
+    if not db.exists() or not manifest.exists():
+        return {}, None
+    connection = sqlite3.connect(f"file:{db.as_posix()}?mode=ro", uri=True)
+    try:
+        rows = connection.execute(
+            "SELECT uid, level_code, german, pos, english FROM words"
+        ).fetchall()
+    finally:
+        connection.close()
+    return {uid: word_key(*rest) for uid, *rest in rows}, read_manifest(manifest)
+
+
+def link_uids(
+    before: dict[str, WordKey],
+    after: dict[str, WordKey],
+    carried: dict[str, str] | None = None,
+) -> tuple[dict[str, str], list[str]]:
+    """PIPE-09 (#648): which new uid each removed one became.
+
+    A uid is `sha1(level|german|pos|english)`, so fixing a gloss or re-levelling
+    a word gives it a new one, and the learner's rows under the old one would
+    stop appearing. A removed uid is linked to an added one that is the same
+    word:
+
+    1. the same level, German and part of speech: the nearest English wins;
+    2. else the same German, part of speech and English: it moved level.
+
+    Each added uid takes one removed uid at most. [carried] is the previous
+    build's map, followed through this one's, so a learner who skipped a
+    version still lands on the word as it is now.
+
+    Returns the map and the removed uids nothing matched, which the build
+    refuses to drop without `--allow-removed`.
+    """
+    removed = sorted(set(before) - set(after))
+    free = {uid: after[uid] for uid in sorted(set(after) - set(before))}
+    links: dict[str, str] = {}
+
+    def link(old: str, same, closeness) -> None:
+        candidates = [uid for uid, key in free.items() if same(before[old], key)]
+        if candidates:
+            # max keeps the first of equals, and `free` is sorted: stable.
+            new = max(candidates, key=lambda uid: closeness(before[old], free[uid]))
+            links[old] = new
+            del free[new]
+
+    for old in removed:
+        link(
+            old,
+            lambda a, b: a[:3] == b[:3],
+            lambda a, b: difflib.SequenceMatcher(None, a[3], b[3]).ratio(),
+        )
+    for old in removed:
+        if old not in links:
+            link(old, lambda a, b: a[1:] == b[1:], lambda a, b: 0)
+
+    for old, new in (carried or {}).items():
+        new = links.get(new, new)
+        if old not in after and new in after:
+            links.setdefault(old, new)
+
+    return dict(sorted(links.items())), [uid for uid in removed if uid not in links]
 
 
 def write_manifest(path: Path, manifest: dict) -> None:
@@ -198,8 +286,10 @@ def diff(previous: dict, current: dict) -> ContentDiff:
 
     A uid in both whose digest differs is *changed*: the learner's
     `word_state` for it survives, and Today says the word was updated. A uid
-    only in the old one is *removed*, and its `word_state` is kept — plan
-    generation joins to `c.words`, so the word simply stops appearing.
+    only in the old one, and not linked to a new one by the current
+    manifest's `aliases` (PIPE-09), is *removed*, and its `word_state` is
+    kept — plan generation joins to `c.words`, so the word simply stops
+    appearing.
     """
     for name, manifest in (("previous", previous), ("current", current)):
         if manifest.get("format") != MANIFEST_FORMAT:
@@ -210,10 +300,17 @@ def diff(previous: dict, current: dict) -> ContentDiff:
                 f"as removed; rebuild the previous version or skip the diff."
             )
 
-    words = _compare(previous.get("words", {}), current.get("words", {}))
+    # PIPE-09: a word whose uid changed is the same word, changed, not one
+    # removed and one added. ContentUpdater._diff does the same.
+    aliases = current.get("aliases", {})
+    words = _compare(
+        _follow(previous.get("words", {}), aliases), current.get("words", {})
+    )
     # A previous manifest from before `meanings` compares nothing: no chip,
     # rather than a false one.
-    meanings = _compare(previous.get("meanings", {}), current.get("meanings", {}))
+    meanings = _compare(
+        _follow(previous.get("meanings", {}), aliases), current.get("meanings", {})
+    )
     grammar = _compare(previous.get("grammar", {}), current.get("grammar", {}))
 
     return ContentDiff(
@@ -227,6 +324,15 @@ def diff(previous: dict, current: dict) -> ContentDiff:
         previous_version=previous["content_version"],
         version=current["content_version"],
     )
+
+
+def _follow(digests: dict[str, str], aliases: dict[str, str]) -> dict[str, str]:
+    """[digests] under the uids their words carry now."""
+    moved: dict[str, str] = {}
+    for uid, digest in digests.items():
+        new = aliases.get(uid)
+        moved[new if new and new not in digests else uid] = digest
+    return moved
 
 
 def _compare(
@@ -265,6 +371,15 @@ def main(argv: list[str] | None = None) -> int:
         # failure — it is every learner's first install.
         print(f"no previous manifest at {args.previous}; nothing to diff")
         return 0
+    if not args.current.exists():
+        # A clean checkout: content/build/ is ignored, so nothing is there
+        # until the pipeline runs — which diffs by itself (#648).
+        print(
+            f"no build at {args.current}; run the pipeline, which prints this "
+            f"diff itself",
+            file=sys.stderr,
+        )
+        return 1
 
     try:
         result = diff(read_manifest(args.previous), read_manifest(args.current))
