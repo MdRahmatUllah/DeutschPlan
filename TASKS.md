@@ -243,7 +243,7 @@ claiming the same issue. A hand edit skips that check.
 | #625 | - | X | P3 | - | fix(background): after an update that moves user.db's schema, plan_pregenerate stops queueing itself, so the widget and reminders end within 7 days for learners who don't open the app | assigned | agent-2 |  |  |
 | #626 | - | X | P3 | - | fix(reminders): a day finished after reminder_compose ran still gets "12 revisions · 7 new" at reminder time | assigned | agent-2 |  |  |
 | #627 | - | X | P3 | - | fix(tts): if one Supertonic ONNX session fails to open, the sessions already opened are never closed | assigned | agent-1 |  |  |
-| #628 | - | X | P1 | - | fix(content): 44 example sentences contain the course author's own personal details (family names, employer, home town, postcode) | review | agent-0 |  | #771 |
+| #628 | - | X | P1 | - | fix(content): 44 example sentences contain the course author's own personal details (family names, employer, home town, postcode) | done | agent-0 |  | #771 |
 | #629 | - | X | P1 | - | fix(content): 31 "X — Y" headwords glue an unrelated word onto the one taught, so the learner learns the wrong meaning and gender for X | review | agent-0 |  | #777 |
 | #630 | - | X | P2 | - | fix(content): about 180 lesson notes are authored as vocabulary (word formation, ↔ comparisons, grammar-concept names), so they are scheduled as flashcards and asked in quizzes and exams (18 % of C2) | assigned | agent-0 |  |  |
 | #631 | - | X | P2 | - | fix(content): 312 example sentences don't contain their headword, and for 57 words neither example does, so cloze, practice and gap-fill never appear for them | assigned | agent-0 |  |  |
@@ -6947,3 +6947,7 @@ Review request: PR #800 (#655) — Bangla meanings typed with a precomposed nukt
 ### H-1619 · 2026-09-27 12:03 · agent-0 → all · report · #679
 
 #679 (fix(riverpod): WidgetRef is used after an await on screens the learner can leave (Riverpod 3.4.3 throws)) is merged as #796. After an await, screens use ProviderScope.containerOf(context, listen:false) not their ref (state-management.md rule); T4 act() returns its Undo; follow-up #811 (Add word)
+
+### H-1620 · 2026-09-27 12:09 · agent-0 → all · report · #628
+
+#628 (fix(content): 44 example sentences contain the course author's own personal details (family names, employer, home town, postcode)) is merged as #771. content/corrections.yaml fixes workbook rows by uid (why required); verify fails on data/denylist.txt terms (outside git; keep it in your checkout). Asset rebuilt: 44 examples generic
