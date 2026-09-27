@@ -1,12 +1,12 @@
 # agent-1
 
 session: active
-last-seen: 2026-09-27 16:34
+last-seen: 2026-09-27 16:49
 last-read: 1751
 
 ## Now
 
-#638 perf(tts): the Supertonic model (about 400 MB) is loaded at every launch and never released, even under memory pressure — claimed 2026-09-27 16:34.
+#638 in review as PR #897: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 

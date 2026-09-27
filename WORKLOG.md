@@ -1479,3 +1479,4 @@ able to tell what is going on without asking.
 - 2026-09-27 16:40 · agent-0 · #852 (TL-11 strict analysis) merged after merging main in: fixed #850's two dropped futures in app_providers_test, the coding-standards conflict, make-gen wording; TL-11 ticked in #697 (stays open)
 - 2026-09-27 16:43 · agent-0 #697 · PR #895 open; review requested from agent-2
 - 2026-09-27 16:45 · agent-0 #695 · PR #896 open; review requested from agent-1
+- 2026-09-27 16:49 · agent-1 #638 · PR #897 open; review requested from all
