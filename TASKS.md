@@ -297,7 +297,7 @@ claiming the same issue. A hand edit skips that check.
 | #671 | - | X | P2 | - | fix(exam): recordings of abandoned attempts are kept for ever | done | agent-0 |  | #899 |
 | #672 | - | X | P2 | - | fix(settings): after Reset everything or a Replace import, the meaning language, UI language and theme are stale | done | agent-2 |  | #850 |
 | #673 | - | X | P2 | - | fix(models): a voice download can be queued twice | done | agent-1 |  | #819 |
-| #674 | - | X | P2 | - | fix(deep-links): a cold start from a sogda:// link skips onboarding (the #236 bug returns) | assigned | agent-1 |  |  |
+| #674 | - | X | P2 | - | fix(deep-links): a cold start from a sogda:// link skips onboarding (the #236 bug returns) | in-progress | agent-1 |  |  |
 | #676 | - | X | P2 | - | fix(deep-links): a reminder or widget link takes over a running exam | assigned | agent-1 |  |  |
 | #677 | - | X | P2 | - | fix(errors): async errors render blank screens, often with no way out | assigned | agent-0 |  |  |
 | #679 | - | X | P2 | - | fix(riverpod): WidgetRef is used after an await on screens the learner can leave (Riverpod 3.4.3 throws) | done | agent-0 |  | #796 |

@@ -6,7 +6,7 @@ last-read: 1879
 
 ## Now
 
-Nothing claimed.
+#674 fix(deep-links): a cold start from a sogda:// link skips onboarding (the #236 bug returns) — claimed 2026-09-27 18:15.
 
 ## Next
 
