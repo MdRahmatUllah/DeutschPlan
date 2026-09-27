@@ -8,10 +8,12 @@ import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/db/content_dao.dart';
 import 'package:sogda/data/repositories/search_repository.dart';
 import 'package:sogda/domain/text_norm.dart';
+import 'package:flutter/foundation.dart' show debugPrint;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sqlite3/sqlite3.dart';
 
 import '../db/content_fixture.dart';
+import '../timing.dart';
 
 /// `SearchRepository` — the four tiers of `search.md`.
 ///
@@ -529,6 +531,81 @@ void main() {
       expect(worst, lessThan(250), reason: report);
     });
   });
+
+  group('on the real course', () {
+    late AppDatabase db;
+    late SearchRepository search;
+
+    setUpAll(() async {
+      db = AppDatabase.memory();
+      await db.customStatement(
+        "ATTACH DATABASE '${ContentDao.attachPath(realContent())}' AS c",
+      );
+      search = SearchRepository(ContentDao(db));
+    });
+
+    tearDownAll(() => db.close());
+
+    test('#734 FR-R1-02 BR-SEARCH-02 the spelling as typed comes first in the '
+        'exact tier, before a word that only folds to it', () async {
+      // schon and schön tie on frequency, and bar outranks Bär on it: the
+      // umlaut fold made "schön" open schon, and R2 log "Bär" against bar.
+      Future<List<String>> exact(String query) async =>
+          (await search.search(query))
+              .inTier(SearchTier.exact)
+              .map((hit) => hit.word.german)
+              .toList();
+      expect((await exact('schön')).first, 'schön');
+      expect(await exact('schon'), <String>['schon', 'schön']);
+      expect((await exact('Bär')).first, 'Bär');
+      expect(await exact('bar'), <String>['bar', 'Bar', 'Bär']);
+    });
+
+    test('#736 a one-letter query skips the sentences: "a"* is most of '
+        'them', () async {
+      final one = await search.search('a');
+      expect(one.sentences, isEmpty);
+      expect(one.words, isNotEmpty);
+      expect((await search.search('ab')).sentences, isNotEmpty);
+    });
+
+    test('#736 FR-R1-01 under 50 ms per query, one-letter queries '
+        'included', () async {
+      const queries = <String>[
+        'a',
+        'd',
+        's',
+        'ab',
+        'ist',
+        'haus',
+        'Straße',
+        'strase',
+        'house',
+        'মেয়ে',
+        'Wohnungsgeberbestätigung',
+      ];
+      for (final query in queries) {
+        await search.search(query); // Warm the page cache and the indexes.
+      }
+      // The fastest of three (#683), per query.
+      final timings = <String, Duration>{
+        for (final query in queries)
+          query: await fastestOf(3, () => search.search(query)),
+      };
+      final report = timings.entries
+          .map((e) => '${e.key} ${e.value.inMicroseconds / 1000} ms')
+          .join(', ');
+      // ponytail: on the dev PC, not a phone; the device profile is a gap.
+      debugPrint(report);
+      for (final MapEntry(key: query, value: fastest) in timings.entries) {
+        expect(
+          fastest,
+          lessThan(const Duration(milliseconds: 50)),
+          reason: '$query: $report',
+        );
+      }
+    });
+  });
 }
 
 /// The real course: `content-database.md` counts 5,594 words and 11,188
@@ -540,9 +617,10 @@ const int _wordCount = 5594;
 /// One of each kind of query, because they cost different things: an exact hit
 /// is an index probe, a short prefix is the widest FTS scan, a misspelling is
 /// the trigram tier plus four hundred edit distances, and a common word is the
-/// sentence index.
+/// sentence index. One letter is the widest prefix of all (#736).
 const List<String> _benchmarkQueries = <String>[
   'Wort1000',
+  'w',
   'wor',
   'Wrot1000',
   'ist',
