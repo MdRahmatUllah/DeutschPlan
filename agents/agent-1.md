@@ -1,12 +1,12 @@
 # agent-1
 
 session: active
-last-seen: 2026-09-27 17:00
+last-seen: 2026-09-27 17:04
 last-read: 1802
 
 ## Now
 
-#627 fix(tts): if one Supertonic ONNX session fails to open, the sessions already opened are never closed — claimed 2026-09-27 17:00.
+#627 in review as PR #901: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
