@@ -6,7 +6,16 @@ import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/core/theme/app_theme.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/data/db/app_database.dart';
-import 'package:drift/drift.dart' as drift show Table, TableInfo;
+import 'package:drift/drift.dart'
+    as drift
+    show
+        ApplyInterceptor,
+        DatabaseConnection,
+        QueryExecutor,
+        QueryInterceptor,
+        Table,
+        TableInfo;
+import 'package:drift/native.dart' show NativeDatabase;
 import 'package:sogda/data/db/content_dao.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/data/repositories/settings_repository.dart';
@@ -49,8 +58,16 @@ void main() {
 
   /// Tuesday's Haus, and Tür skipped; Wednesday's Straße. Then rows that are
   /// not backlog: an old one done, an old revision, and today's.
-  Future<void> open() async {
-    db = AppDatabase.memory();
+  Future<void> open({drift.QueryInterceptor? through}) async {
+    db = through == null
+        ? AppDatabase.memory()
+        : AppDatabase(
+            drift.DatabaseConnection(
+              NativeDatabase.memory(setup: configureConnection)
+                  .interceptWith(through),
+              closeStreamsSynchronously: true,
+            ),
+          );
     final directory = Directory.systemTemp.createTempSync('sg_backlog');
     final content = ContentFixture.write('${directory.path}/content.db');
     await db.customStatement(
@@ -250,6 +267,31 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code, skipped,
       // Done, a revision and today's are not backlog.
       expect(word('die Straße'), findsOneWidget);
       expect(word('das Haus'), findsOneWidget);
+    });
+
+    test('#664 FR-T4-01 its words are one read, not one per row', () async {
+      // T4 stays mounted under a Study all session, and the rows are read
+      // again after every rating: one query per row was ~210 in a row.
+      final selects = _Selects();
+      spoken = <String>[];
+      await open(through: selects);
+      final container = ProviderContainer(overrides: overrides());
+      addTearDown(() async {
+        container.dispose();
+        await settings.dispose();
+        await db.close();
+      });
+      container.listen(backlogProvider, (_, _) {});
+      selects.count = 0;
+
+      final rows = await container.read(backlogProvider.future);
+
+      expect(rows.map((row) => row.word.uid), <String>[strasse, haus, tuer]);
+      expect(
+        selects.count,
+        2,
+        reason: 'the backlog rows, then their three words together',
+      );
     });
 
     testWidgets("#580 in Bangla at 200 % each day's line shows whole: it "
@@ -623,4 +665,19 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code, skipped,
     // Already in the backlog: nowhere to skip it to.
     expect(find.text(l10n.studySkip), findsNothing);
   });
+}
+
+/// Counts the queries that read (#664).
+class _Selects extends drift.QueryInterceptor {
+  int count = 0;
+
+  @override
+  Future<List<Map<String, Object?>>> runSelect(
+    drift.QueryExecutor executor,
+    String statement,
+    List<Object?> args,
+  ) {
+    count++;
+    return executor.runSelect(statement, args);
+  }
 }
