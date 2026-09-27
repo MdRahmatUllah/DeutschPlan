@@ -74,8 +74,9 @@ class SupertonicTts implements TtsEngine, SpeechPrefetch {
   final StreamController<TtsState> _state =
       StreamController<TtsState>.broadcast();
 
-  /// The four sessions, opened on the first clip and kept: they take seconds
-  /// to open. A voice is only a style the open model is given.
+  /// The four sessions, opened on the first clip and kept until [release]:
+  /// they take seconds to open. A voice is only a style the open model is
+  /// given.
   Future<SupertonicModel>? _model;
 
   /// A load that failed, remembered for the app session: a phone that can't
@@ -234,20 +235,18 @@ class SupertonicTts implements TtsEngine, SpeechPrefetch {
     }
   }
 
-  /// #460: the sessions opened at the app's start, so the first card of a
-  /// session doesn't wait the ~2.3 s they take. A failure is remembered as a
-  /// speak's is, and the next speak falls back at once.
-  // ponytail: about 400 MB held from the start on a phone that speaks with
-  // Supertonic, as they are from its first clip already; open on the first
-  // speaker's screen instead if memory is tight on low-end phones.
+  /// #638: the sessions closed, about 400 MB, and opened again by the next
+  /// clip (~2.3 s). The list being made stops, or its next clip would open
+  /// them again. The clips already made stay in the cache.
+  // ponytail: opened by the first clip a screen needs (T2's list as it opens,
+  // a tap elsewhere), not at the app's start (#460's warm-up), and let go of
+  // in the background or under memory pressure (`VoiceRelease`). A phone
+  // with the memory to spare pays the ~2.3 s again on its first clip after;
+  // warming again on high-memory phones is the owner's budget call (#758).
   @override
-  Future<void> warm() async {
-    if (!await isAvailable()) return;
-    try {
-      await _open();
-    } on Object {
-      // Remembered in [_broken]; the next speak says so and falls back.
-    }
+  Future<void> release() async {
+    _run++;
+    await _release();
   }
 
   @override
@@ -468,17 +467,40 @@ class OrtSupertonicModel implements SupertonicModel {
     // and 4 took 59, and 8 took 74; more only fights the UI for cores.
     final options = OrtSessionOptions(intraOpNumThreads: 2);
     final runtime = OnnxRuntime();
-    Future<OrtSession> open(String name) =>
-        runtime.createSession('${model.path}/$name', options: options);
+    // #627: one by one, and closed again if a later one fails (out of memory,
+    // a bad file): nothing else would ever own them, and a load that failed
+    // is not tried again (`SupertonicTts._broken`).
+    final sessions = <OrtSession>[];
+    try {
+      for (final name in const <String>[
+        'duration_predictor.onnx',
+        'text_encoder.onnx',
+        'vector_estimator.onnx',
+        'vocoder.onnx',
+      ]) {
+        sessions.add(
+          await runtime.createSession('${model.path}/$name', options: options),
+        );
+      }
+    } on Object {
+      for (final session in sessions) {
+        try {
+          await session.close();
+        } on Object {
+          // The load's own failure is the one to report.
+        }
+      }
+      rethrow;
+    }
 
     return OrtSupertonicModel._(
       model,
       SupertonicText(indexer),
       config,
-      await open('duration_predictor.onnx'),
-      await open('text_encoder.onnx'),
-      await open('vector_estimator.onnx'),
-      await open('vocoder.onnx'),
+      sessions[0],
+      sessions[1],
+      sessions[2],
+      sessions[3],
       random ?? math.Random(),
     );
   }
@@ -606,7 +628,13 @@ class OrtSupertonicModel implements SupertonicModel {
       _estimator,
       _vocoder,
     ]) {
-      await session.close();
+      // Each its own: one that fails to close must not keep the others open,
+      // on every trip to the background since #638 (#627).
+      try {
+        await session.close();
+      } on Object {
+        // Nothing to do but close the rest.
+      }
     }
   }
 

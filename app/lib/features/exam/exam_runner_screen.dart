@@ -120,7 +120,7 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
 
   /// #670: the app goes to the background, where the OS may kill it and
   /// Android silences the microphone. What was typed and the time are
-  /// written, a recording is stopped and kept, as leaving the exam keeps it,
+  /// written, a recording is stopped and kept, as leaving the task keeps it,
   /// and the clock holds until the learner is back.
   void _hide() {
     _away = true;
@@ -288,8 +288,8 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
       unawaited(_saveTyped());
       return;
     }
-    // Speaking stopped by leaving the exam lands after the runner has gone,
-    // and is still written: what was said is kept.
+    // Speaking stopped by the runner's going (its dispose) lands after it has
+    // gone, and is still written: what was said is kept.
     unawaited(_answer(index, value.isEmpty ? null : value));
   }
 
@@ -368,6 +368,9 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
     if (paper == null || _submitting || _done) return;
     _tick?.cancel();
     await _saveTyped();
+    // Stopped before the abandon deletes it (#671): a recorder that wrote
+    // on after the delete would leave the file behind.
+    if (_stopRecording case final stop?) await stop();
     try {
       await _flush();
       await _service.abandon(widget.attemptId);

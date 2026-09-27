@@ -579,6 +579,7 @@ ExamResultService examResultService(Ref ref) => ExamResultService(
   ref.watch(settingsProvider),
   ref.watch(ratingServiceProvider),
   ref.watch(wordRepositoryProvider),
+  ref.watch(modelRepositoryProvider),
 );
 
 /// L12's Speaking (#134): the microphone and the playback, while the task is

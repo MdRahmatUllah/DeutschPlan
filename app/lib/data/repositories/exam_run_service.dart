@@ -62,7 +62,10 @@ class ExamRunService {
             options: row.optionsJson,
             expected: row.expected,
           )),
-          given: row.given,
+          // #688 DA-6: Speaking's, as the file it names, if it's here.
+          given: row.section == ExamSection.speaking.name
+              ? await _models.recordingOf(attemptId, row.given)
+              : row.given,
           flagged: row.flagged != 0,
           rubric: rubricTicks(row.selfRubricJson),
         ),
@@ -73,9 +76,16 @@ class ExamRunService {
   }
 
   /// FR-L12-01: written as it is given, so a restart loses at most the
-  /// answer being typed.
-  Future<void> answer(int attemptId, int ord, String? given) =>
-      _exams.answer(attemptId: attemptId, ord: ord, given: given);
+  /// answer being typed. A recording, [recordingPath], is written as its
+  /// name (#688 DA-6).
+  Future<void> answer(int attemptId, int ord, String? given) {
+    final name = ModelRepository.recordingName(attemptId);
+    return _exams.answer(
+      attemptId: attemptId,
+      ord: ord,
+      given: given != null && given.endsWith('/$name') ? name : given,
+    );
+  }
 
   /// FR-L12S-03: the ticks, written as they are ticked.
   Future<void> rubric(int attemptId, int ord, List<bool> ticks) =>
@@ -102,8 +112,14 @@ class ExamRunService {
   Future<void> recordTime(int attemptId, {int running = 0, int paused = 0}) =>
       _exams.recordTime(attemptId: attemptId, running: running, paused: paused);
 
-  /// FR-L12-04: left. The answers stay, as an attempt without a score.
-  Future<void> abandon(int attemptId) => _exams.abandon(attemptId);
+  /// FR-L12-04: left. The answers stay, as an attempt without a score; the
+  /// recording goes, since nothing opens an abandoned attempt again (#671).
+  /// A *Leave* that lost the race to the submit keeps the graded one's.
+  Future<void> abandon(int attemptId) async {
+    if (await _exams.abandon(attemptId)) {
+      await _models.deleteRecordings(<int>[attemptId]);
+    }
+  }
 
   /// The submit: graded as the answers stand, and finished.
   Future<ExamScore> submit(int attemptId) => _exams.grade(

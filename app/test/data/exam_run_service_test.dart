@@ -126,11 +126,11 @@ void main() {
     'FR-L12S-03 the rubric is written alone, and read back with the paper',
     () async {
       final id = await sit();
-      await service.answer(id, 2, '/recordings/1.m4a');
+      await service.answer(id, 2, 'door');
       await service.rubric(id, 2, <bool>[true, false, true, false]);
 
       final written = await row(id, 2);
-      expect(written.given, '/recordings/1.m4a', reason: 'the answer stays');
+      expect(written.given, 'door', reason: 'the answer stays');
       expect(written.selfRubricJson, '[true,false,true,false]');
       final paper = (await service.load(id))!;
       expect(paper.questions[1].rubric, <bool>[true, false, true, false]);
@@ -151,6 +151,50 @@ void main() {
       await service.discard(path);
     },
   );
+
+  test('#688 DA-6 FR-L12S-02 a recording is written as its name, and read '
+      "back as this install's file while it is there", () async {
+    final id = await exams.begin(
+      sublevelCode: 'A1.1',
+      seed: 2,
+      startedAt: '2026-09-21T18:40:00Z',
+      questions: <ExamQuestion>[
+        ExamQuestion.of(
+          1,
+          const SpeakingTask('s', level: 'A1', category: null, seconds: 60),
+        ),
+      ],
+    );
+    final path = await service.recordingPath(id);
+    await service.answer(id, 1, path);
+    expect((await row(id, 1)).given, 'recordings/$id.m4a');
+
+    File(path).writeAsStringSync('aac');
+    expect((await service.load(id))!.questions.single.given, path);
+
+    File(path).deleteSync();
+    expect(
+      (await service.load(id))!.questions.single.given,
+      isNull,
+      reason: 'a missing file is not recorded',
+    );
+  });
+
+  test('#671 FR-L12-04 leaving deletes the recording; a leave after the '
+      'submit keeps it', () async {
+    final left = await sit();
+    final leftFile = File(await service.recordingPath(left))
+      ..writeAsStringSync('aac');
+    await service.abandon(left);
+    expect(leftFile.existsSync(), isFalse, reason: 'nothing reopens it');
+
+    final graded = await sit();
+    final gradedFile = File(await service.recordingPath(graded))
+      ..writeAsStringSync('aac');
+    await service.submit(graded);
+    await service.abandon(graded);
+    expect(gradedFile.existsSync(), isTrue, reason: 'L13 plays it');
+  });
 
   test('FR-L12-03 run and paused seconds add up apart', () async {
     final id = await sit();

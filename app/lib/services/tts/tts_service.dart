@@ -4,6 +4,8 @@ import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/data/repositories/settings_repository.dart';
 import 'package:sogda/services/tts/tts_engine.dart';
 import 'package:flutter/foundation.dart' show immutable;
+import 'package:flutter/widgets.dart'
+    show AppLifecycleState, WidgetsBindingObserver;
 
 /// What the one player is doing, and for which text: the speaker that says
 /// [text] shows [state], and every other speaker is idle.
@@ -140,11 +142,11 @@ class TtsService {
     );
   }
 
-  /// #460: Supertonic's sessions opened ahead, when it is the chosen voice.
-  Future<void> warm() async {
+  /// #638: Supertonic's sessions let go of, whichever voice is chosen now.
+  Future<void> release() async {
     final supertonic = _supertonic;
-    if (supertonic is! SpeechPrefetch || !_wantsSupertonic) return;
-    await _quietly((supertonic as SpeechPrefetch).warm);
+    if (supertonic is! SpeechPrefetch) return;
+    await _quietly((supertonic as SpeechPrefetch).release);
   }
 
   /// Stops [texts]' list, if Supertonic is still making it; whichever voice
@@ -240,5 +242,23 @@ Future<void> _quietly(Future<void> Function() stop) async {
     await stop();
   } on Object {
     // Nothing to do: see above.
+  }
+}
+
+/// #638: Supertonic's sessions, about 400 MB, let go of when the app goes to
+/// the background or the phone runs short of memory, so Android keeps a
+/// small app rather than killing a big one. The next clip opens them again.
+/// Observes for the app's life, from `main.dart`.
+class VoiceRelease with WidgetsBindingObserver {
+  VoiceRelease(this._release);
+
+  final Future<void> Function() _release;
+
+  @override
+  void didHaveMemoryPressure() => unawaited(_release());
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused) unawaited(_release());
   }
 }

@@ -477,6 +477,27 @@ void main() {
     expect(run.answers, <(int, String?)>[(1, path)]);
   });
 
+  testWidgets('#671 Leave stops a live recording before the attempt, and '
+      'its recording, go', (tester) async {
+    final semantics = tester.ensureSemantics();
+    await pump(tester);
+    await press(tester, Icons.mic);
+    await tester.pump(const Duration(seconds: 12));
+    final stopping = mic.stopping = Completer<void>();
+
+    await tester.tap(find.bySemanticsLabel(l10n.examRunPause));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text(l10n.examLeaveConfirm));
+    await tester.pump();
+    expect(run.abandoned, 0, reason: 'the recorder is still writing');
+
+    stopping.complete();
+    await tester.pumpAndSettle();
+    expect(mic.stopped, 1);
+    expect(run.abandoned, 1);
+    semantics.dispose();
+  });
+
   testWidgets('a screen reader hears the task, the recorder and the rubric '
       'apart', (tester) async {
     final semantics = tester.ensureSemantics();

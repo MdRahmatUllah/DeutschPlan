@@ -82,6 +82,75 @@ class ExamWord {
   final List<({String german, String english})> examples;
 }
 
+/// The course's categories that are language features, not themes: a
+/// Writing or Speaking task "about core verbs" or "about collocations at C2"
+/// gives the learner nothing to write or talk about (#753). By name, as the
+/// course names them; `exam_pool_test` holds every name to the shipped
+/// course, and every step to at least [themesPerStep] themes besides them.
+// ponytail: a list here, not a content column; a `kind` on categories (as
+// #630 gave words) if the pipeline ever needs it too.
+const Set<String> notThemes = <String>{
+  'Question words & pronouns',
+  'Core verbs',
+  'Core adjectives & adverbs',
+  'Connectors & function words',
+  'Prepositions & articles',
+  'Numbers, time & dates',
+  'Everyday expressions & idioms',
+  'Argumentation & discourse markers',
+  'Connectors & text cohesion',
+  'Advanced verbs',
+  'Advanced adjectives & adverbs',
+  'Nomen-Verb-Verbindungen',
+  'Verbs with prepositions',
+  'Collocations & fixed expressions',
+  'Abstract nouns & concepts',
+  'Word formation',
+  'Synonyms & register',
+  'Idioms & sayings',
+  'Academic & scientific language',
+  'Abstract & analytical nouns',
+  'Precise verbs',
+  'Precise adjectives & nuance',
+  'Funktionsverbgefüge (advanced)',
+  'Discourse markers & text cohesion',
+  'Hedging, modality & stance',
+  'Argumentation & rhetoric',
+  'Register & stylistic variation',
+  'Word formation (advanced)',
+  'Collocations & Kollokationen',
+  'Idioms & figurative language',
+  'Written-academic phrases',
+  'Everyday C1 precision',
+  // A level's label, and a register: nothing to write about either.
+  'Everyday life at B2',
+  'Professional & leadership language',
+  'Exam strategy & summarising',
+  'Connotation & semantic nuance',
+  'Near-synonyms distinguished',
+  'Stylistic registers & Stilbruch',
+  'Idiomatic depth',
+  'Proverbs & Sprichwörter',
+  'Humour, irony & understatement',
+  'Literary language & Textanalyse',
+  'Verb valency & Rektion',
+  'Prepositional nuance',
+  'Modal particles & Abtönung',
+  'Word order & emphasis',
+  'Archaic & literary forms',
+  'Anglicisms & false friends',
+  'Colloquial & Umgangssprache',
+  'Sound, prosody & Aussprache',
+  'Collocations at C2',
+  'Translation traps (EN/BN → DE)',
+  'Text production: Erörterung & Essay',
+  'Exam strategy: Goethe C2 (GDS)',
+};
+
+/// The themes a step's three papers want: a writing and a speaking task
+/// each, all different.
+const int themesPerStep = 6;
+
 /// Everything a step's mocks are built from (`exam-generator.md`, step 1).
 class ExamPool {
   const ExamPool({
@@ -554,11 +623,15 @@ Exam buildExam(
   }
   // The categories a task can be about, the biggest first: a big one gives
   // the learner the most to write about, so papers 1–3 take the first three.
+  // Themes only, never a word class or a language feature (#753).
   final categories = <int?>[
-    ...byCategory.keys.toList()..sort((a, b) {
-      final bySize = byCategory[b]!.length.compareTo(byCategory[a]!.length);
-      return bySize != 0 ? bySize : a.compareTo(b);
-    }),
+    ...byCategory.keys
+        .where((id) => !notThemes.contains(pool.categories[id]))
+        .toList()
+      ..sort((a, b) {
+        final bySize = byCategory[b]!.length.compareTo(byCategory[a]!.length);
+        return bySize != 0 ? bySize : a.compareTo(b);
+      }),
   ];
   if (categories.isEmpty) categories.add(null);
   final writingAbout = <int, int?>{};

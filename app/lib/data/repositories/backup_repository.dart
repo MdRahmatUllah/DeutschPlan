@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/repositories/word_repository.dart'
     show customId, customUid;
+import 'package:sogda/domain/exam_generator.dart' show ExamSection;
 import 'package:drift/drift.dart';
 import 'package:flutter/foundation.dart' show immutable;
 
@@ -84,7 +85,8 @@ class BackupRepository {
   final AppDatabase _db;
 
   /// `translation_cache` is a cache and `undo_stack` is this session's, so
-  /// neither means anything on another phone. FR-M6-01 names both.
+  /// neither means anything on another phone. FR-M6-01 names both. An import
+  /// empties `undo_stack` (#688 DA-5) and leaves the cache.
   static const Set<String> excluded = <String>{
     'translation_cache',
     'undo_stack',
@@ -254,6 +256,10 @@ class BackupRepository {
     final remap = <String, Map<int, int>>{};
 
     await _db.transaction(() async {
+      // #688 DA-5: an Undo still on screen would put back a word's
+      // pre-import state, and delete the review_log row with its stored id,
+      // which may now be another word's review. A reset empties it too.
+      await _db.customStatement('DELETE FROM undo_stack');
       if (mode == ImportMode.replace) {
         // Children first: the foreign keys are on, so a parent cannot go
         // before the rows pointing at it.
@@ -332,6 +338,14 @@ class BackupRepository {
       // studied share (#369).
       if (mode == ImportMode.merge && !rowKeys[table]!.contains('id')) {
         incoming.remove('id');
+      }
+
+      // #688 DA-6: recordings stay on the phone that made them (FR-M6-01),
+      // so an imported Speaking answer names no file here, or another
+      // attempt's. It comes in unrecorded; its points stand.
+      if (table == 'exam_answers' &&
+          incoming['section'] == ExamSection.speaking.name) {
+        incoming['given'] = null;
       }
 
       // The parent's new id goes on before the key is taken: a child row's

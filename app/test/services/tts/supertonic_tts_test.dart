@@ -14,6 +14,8 @@ import 'package:sogda/services/model_downloads.dart';
 import 'package:sogda/services/tts/supertonic_tts.dart';
 import 'package:sogda/services/tts/tts_engine.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart' show WidgetsBinding;
+import 'package:sogda/services/tts/tts_service.dart' show VoiceRelease;
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../timing.dart';
@@ -612,35 +614,46 @@ void main() {
       expect(player.loaded, isEmpty);
     });
 
-    test('#460 warm opens the sessions once, with no clip made, and the '
-        'first speak finds them open', () async {
+    test('#638 memory pressure closes the sessions, and the next speak '
+        'opens them again', () async {
       await install();
-      await tts.warm();
-      expect(loads, hasLength(1));
-      expect(model.asked, isEmpty);
-      expect(player.played, isEmpty);
-
+      final observer = VoiceRelease(tts.release);
+      WidgetsBinding.instance.addObserver(observer);
+      addTearDown(() => WidgetsBinding.instance.removeObserver(observer));
       await tts.speak('Haus');
-      expect(loads, hasLength(1), reason: 'opened once');
-    });
+      expect(loads, hasLength(1));
 
-    test('#460 without the model, warm opens nothing', () async {
-      await tts.warm();
-      expect(loads, isEmpty);
-    });
-
-    test('#460 a warm whose load fails is quiet, and remembered: the next '
-        'speak falls back at once', () async {
-      await install();
-      final failing = SupertonicTts(
-        models: models,
-        settings: settings,
-        cache: cache,
-        load: (dir) async => throw StateError('not enough memory'),
-        player: player,
+      WidgetsBinding.instance.handleMemoryPressure();
+      await pumpEventQueue();
+      expect(model.closed, isTrue);
+      expect(
+        (await cache.fileFor('Haus', voice: 'Anna', speed: 1)).existsSync(),
+        isTrue,
+        reason: 'the clips made stay',
       );
-      await failing.warm();
-      expect(await failing.speak('Haus'), isFalse);
+
+      await tts.speak('die Tür');
+      expect(loads, hasLength(2));
+    });
+
+    test('#638 release stops the list being made: its next clip would open '
+        'the sessions again', () async {
+      await install();
+      final list = tts.prepare(<String>['das Haus', 'die Tür', 'die Straße']);
+      await tts.release();
+      await list;
+      expect(model.asked.length, lessThan(3), reason: 'the list stopped');
+      expect(
+        loads.isEmpty || model.closed,
+        isTrue,
+        reason: 'nothing left open',
+      );
+    });
+
+    test('#638 with nothing open, release opens nothing', () async {
+      await install();
+      await tts.release();
+      expect(loads, isEmpty);
     });
 
     test('#152 disposed: the sessions close, and the player goes', () async {
@@ -676,17 +689,7 @@ void main() {
       addTearDown(onnx.uninstall);
       await install();
       final model = await models.directoryFor(ModelRepository.voiceModel);
-      File('${model.path}/tts.json').writeAsStringSync(
-        jsonEncode(<String, Object?>{
-          'ae': <String, Object?>{'sample_rate': 44100, 'base_chunk_size': 512},
-          'ttl': <String, Object?>{
-            'chunk_compress_factor': 6,
-            'latent_dim': 24,
-          },
-        }),
-      );
-      File('${model.path}/unicode_indexer.json')
-          .writeAsStringSync(jsonEncode(List<int>.generate(128, (i) => i)));
+      _writeConfig(model);
       File('${model.path}/M1.json').writeAsStringSync(styleOf(2));
       File('${model.path}/F2.json').writeAsStringSync(styleOf(3));
       final engine = SupertonicTts(
@@ -710,7 +713,52 @@ void main() {
         <double>[3, 3],
       ], reason: "F1's, M1's and F2's own style, in turn");
     });
+
+    test('#627 a session that fails to open closes the ones opened before '
+        'it', () async {
+      final onnx = _Onnx()..failOn = 3;
+      addTearDown(onnx.uninstall);
+      final model = Directory('${support.path}/model')..createSync();
+      _writeConfig(model);
+
+      await expectLater(
+        OrtSupertonicModel.load(model),
+        throwsA(isA<PlatformException>()),
+      );
+      expect(onnx.closed, <String>[
+        'duration_predictor.onnx',
+        'text_encoder.onnx',
+      ]);
+    });
+
+    test('#627 a session that fails to close leaves none of the others '
+        'open', () async {
+      final onnx = _Onnx()..failClose = 'duration_predictor.onnx';
+      addTearDown(onnx.uninstall);
+      final model = Directory('${support.path}/model')..createSync();
+      _writeConfig(model);
+
+      await (await OrtSupertonicModel.load(model)).close();
+      expect(onnx.closed, <String>[
+        'text_encoder.onnx',
+        'vector_estimator.onnx',
+        'vocoder.onnx',
+      ]);
+    });
   });
+}
+
+/// Supertonic 3's `tts.json` and `unicode_indexer.json`, as small as the
+/// loader takes them.
+void _writeConfig(Directory model) {
+  File('${model.path}/tts.json').writeAsStringSync(
+    jsonEncode(<String, Object?>{
+      'ae': <String, Object?>{'sample_rate': 44100, 'base_chunk_size': 512},
+      'ttl': <String, Object?>{'chunk_compress_factor': 6, 'latent_dim': 24},
+    }),
+  );
+  File('${model.path}/unicode_indexer.json')
+      .writeAsStringSync(jsonEncode(List<int>.generate(128, (i) => i)));
 }
 
 /// `flutter_onnxruntime`'s channel, stubbed: what `OrtSupertonicModel` asks
@@ -730,6 +778,15 @@ class _Onnx {
 
   /// The sessions opened.
   int sessions = 0;
+
+  /// The session (1 is the first) whose open fails, as out of memory would.
+  int? failOn;
+
+  /// The sessions closed, by file name.
+  final List<String> closed = <String>[];
+
+  /// The session, by file name, whose close fails.
+  String? failClose;
 
   /// The style each clip's duration was predicted in, in order.
   final List<List<double>> styles = <List<double>>[];
@@ -753,6 +810,9 @@ class _Onnx {
     switch (call.method) {
       case 'createSession':
         sessions++;
+        if (sessions == failOn) {
+          throw PlatformException(code: 'OOM', message: 'out of memory');
+        }
         return <String, Object?>{
           'sessionId': (args!['modelPath']! as String).split('/').last,
           'inputNames': <String>[],
@@ -776,8 +836,13 @@ class _Onnx {
         };
       case 'getOrtValueData':
         return <String, Object?>{'data': _values[args!['valueId']]};
+      case 'closeSession':
+        final id = args!['sessionId']! as String;
+        if (id == failClose) throw PlatformException(code: 'CLOSE');
+        closed.add(id);
+        return null;
       default:
-        // releaseOrtValue, closeSession.
+        // releaseOrtValue.
         return null;
     }
   }

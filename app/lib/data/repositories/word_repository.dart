@@ -359,7 +359,8 @@ class WordRepository extends DatabaseAccessor<AppDatabase>
         );
         // Before the day is opened, a row here would count as its revisions
         // picked (BR-PLAN-04), and the day would get no others.
-        final planned = _settings.read(SettingKeys.lastPlannedDate);
+        // From the table: the 00:05 task may have planned today (#688 DA-7).
+        final planned = await _settings.fresh(SettingKeys.lastPlannedDate);
         if (planned == null || planDate(planned).compareTo(today) < 0) return;
         final step =
             await (select(db.enrollments)

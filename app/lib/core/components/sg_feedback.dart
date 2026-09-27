@@ -447,6 +447,8 @@ class SgVerdictRow extends StatelessWidget {
           else
             SizedBox(
               width: markSize,
+              // A mark in the Icon's place, at its size: not a text role
+              // (#695 TS-4). ponytail: allow-raw-text
               child: Text(
                 almostGlyph,
                 textAlign: TextAlign.center,
@@ -528,6 +530,7 @@ void _showInverse(
   ScaffoldMessenger.of(context)
     ..hideCurrentSnackBar()
     ..showSnackBar(
+      // SgToast is this wrapper (#695 TS-4). ponytail: allow-chrome
       SnackBar(
         duration: duration,
         // A bar with an action persists by default; ours time out (#319,

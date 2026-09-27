@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/repositories/exam_repository.dart';
+import 'package:sogda/data/repositories/model_repository.dart';
 import 'package:sogda/data/repositories/plan_repository.dart' show ReviewSource;
 import 'package:sogda/data/repositories/rating_service.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
@@ -51,9 +52,16 @@ typedef ExamResult = ({
 /// into revision (FR-L13-02). The screen talks to this and nothing else, so
 /// a test or a golden can hand it a result without a database.
 class ExamResultService {
-  ExamResultService(this._exams, this._settings, this._rating, this._words);
+  ExamResultService(
+    this._exams,
+    this._settings,
+    this._rating,
+    this._words,
+    this._models,
+  );
 
   final ExamRepository _exams;
+  final ModelRepository _models;
   final SettingsRepository _settings;
   final RatingService _rating;
   final WordRepository _words;
@@ -72,7 +80,10 @@ class ExamResultService {
             options: row.optionsJson,
             expected: row.expected,
           )),
-          given: row.given,
+          // #688 DA-6: Speaking's, as the file it names, if it's here.
+          given: row.section == ExamSection.speaking.name
+              ? await _models.recordingOf(attemptId, row.given)
+              : row.given,
           points: row.points,
           rubric: rubricTicks(row.selfRubricJson),
           flagged: row.flagged != 0,
