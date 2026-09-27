@@ -6,7 +6,7 @@ last-read: 1538
 
 ## Now
 
-#639 in review as PR #793: answer review threads; re-run the gate if main moved, then merge.
+#718 fix(content-build): the database and the manifest take built_at from two clocks, so about 8 % of builds fail the FR-M9-01 test that says they agree — claimed 2026-09-27 09:32.
 
 ## Next
 
