@@ -372,7 +372,7 @@
   "sentencesDuden": "Duden-এ দেখুন",
   "dayCompleteTitle": "Tag geschafft!",
   "dayCompleteStats": "{words}টি শব্দ · {minutes} মিনিট",
-  "dayCompleteStreak": "দিনের ধারা",
+  "dayCompleteStreak": "{days, plural, other{দিনের ধারা}}",
   "dayCompleteTomorrow": "আগামীকাল: {revise}টি রিভিশন · {fresh}টি নতুন",
   "dayCompleteTomorrowRest": "আগামীকাল বিশ্রামের দিন",
   "dayCompleteBack": "আজকের পাতায় ফিরুন",
