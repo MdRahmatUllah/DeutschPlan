@@ -1845,3 +1845,4 @@ able to tell what is going on without asking.
 - 2026-09-27 23:55 · agent-0 #807 · PR #978 open; review requested from agent-1
 - 2026-09-27 23:56 · agent-0 #923 · claimed: fix(content): a rebuild can move a level's step boundary, and words change step under learners (#913 follow-up)
 - 2026-09-27 23:56 · agent-0 #923 · PR #978 open; review requested from agent-1
+- 2026-09-27 23:58 · agent-0 #739 · done (#972)
