@@ -24,7 +24,7 @@ GoRouter buildRouter({String initialLocation = '/today', RouteGuards? guards}) {
     navigatorKey: rootNavigatorKey,
     initialLocation: initialLocation,
     routes: $appRoutes,
-    redirect: (context, state) {
+    redirect: (context, state) async {
       // A `sogda://` link is not a location: `sogda://exam/A1.2`
       // names a step, and `/exam/:attemptId` in the table is the runner for
       // one attempt. Resolved first, then the result goes round again and
@@ -44,6 +44,15 @@ GoRouter buildRouter({String initialLocation = '/today', RouteGuards? guards}) {
         // first version of this guard did exactly that.
         final current = router.routerDelegate.currentConfiguration.uri;
         if (!interruptible(current.path)) return current.toString();
+        // #674: with nobody enrolled there is nothing to link into. A cold
+        // start from a link (the widget, placed before the first launch)
+        // takes the link over bootstrap's first location, and skipped setup:
+        // setup from its first page, or the page the learner is on.
+        if (!await checks.isEnrolled()) {
+          return current.path.startsWith('/onboarding')
+              ? current.toString()
+              : const OnboardingRoute(page: '1').location;
+        }
         if (state.uri.scheme != deepLinkScheme) return fallbackLocation;
 
         final resolved = resolveDeepLink(state.uri);
