@@ -6,7 +6,7 @@ last-read: 1655
 
 ## Now
 
-Nothing claimed.
+#669 fix(search): R2 saves duplicate "my words", and times_seen never moves — claimed 2026-09-27 12:31.
 
 ## Next
 
