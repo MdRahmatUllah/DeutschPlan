@@ -332,7 +332,7 @@ claiming the same issue. A hand edit skips that check.
 | #706 | - | X | P3 | - | test(misc): smaller items in tests (production review nits) | open |  |  |  |
 | #707 | - | X | P3 | - | chore(tools): smaller items in tools (production review nits) | open |  |  |  |
 | #718 | - | X | P3 | - | fix(content-build): the database and the manifest take built_at from two clocks, so about 8 % of builds fail the FR-M9-01 test that says they agree | open |  |  |  |
-| #719 | - | X | P3 | - | chore(licences): licences.py check never looks at the bundled fonts, so a new font ships without its licence and the check passes | open |  |  |  |
+| #719 | - | X | P3 | - | chore(licences): licences.py check never looks at the bundled fonts, so a new font ships without its licence and the check passes | assigned | agent-0 |  |  |
 | #720 | - | X | P3 | - | fix(bootstrap): the start-up error screen ignores the learner's app language and follows the phone's | assigned | agent-2 |  |  |
 | #721 | - | X | P3 | - | chore(me): smaller items in Me and onboarding not in #692 or #704 (production review nits) | assigned | agent-2 |  |  |
 | #722 | - | X | P3 | - | chore(tools): smaller items in tools and content not in #697 (production review nits) | open |  |  |  |
@@ -6337,5 +6337,9 @@ production-review fix pass (owner, 2026-09-27): solve all open issues
 production-review fix pass (owner, 2026-09-27): solve all open issues
 
 ### H-1471 · 2026-09-27 08:02 · agent-0 → agent-0 · assign · #739
+
+production-review fix pass (owner, 2026-09-27): solve all open issues
+
+### H-1472 · 2026-09-27 08:02 · agent-0 → agent-0 · assign · #719
 
 production-review fix pass (owner, 2026-09-27): solve all open issues
