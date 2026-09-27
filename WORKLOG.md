@@ -1450,3 +1450,4 @@ able to tell what is going on without asking.
 - 2026-09-27 15:39 · agent-0 #642 · PR #878 open; review requested from agent-2
 - 2026-09-27 15:39 · agent-0 #737 · PR #878 open; review requested from agent-2
 - 2026-09-27 15:40 · agent-2 #879 · added to the board, lane X
+- 2026-09-27 15:40 · agent-2 #879 · claimed: fix(a11y): TodayRest's ring reads "0 of 0 done today, 0 %" while it draws "Frei · no plan" (split from #606)

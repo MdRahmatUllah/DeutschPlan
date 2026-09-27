@@ -6,7 +6,7 @@ last-read: 1761
 
 ## Now
 
-#606 bug(today): finishing setup on a day switched off opens a rest day with "Start here · today's words are ready" over "All done — see you tomorrow" (nothing to study on day 1) — claimed 2026-09-27 15:38.
+#879 fix(a11y): TodayRest's ring reads "0 of 0 done today, 0 %" while it draws "Frei · no plan" (split from #606) — claimed 2026-09-27 15:40.
 
 ## Next
 
