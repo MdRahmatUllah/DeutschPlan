@@ -140,7 +140,9 @@ class TestCorrections:
             encoding="utf-8",
         )
         out = tmp_path / "build" / "content.db"
-        assert build_main(["--manifest", str(manifest), "--out", str(out)]) == 0
+        # --previous: no committed course to link against (PIPE-09).
+        argv = ["--manifest", str(manifest), "--out", str(out)]
+        assert build_main(argv + ["--previous", str(tmp_path / "none")]) == 0
         connection = sqlite3.connect(out)
         try:
             (german,) = connection.execute(
@@ -201,7 +203,7 @@ class TestDenylist:
         failures = self.check(database, "# a comment\nnichts\nZEBRASTADT\n", tmp_path)
         assert len(failures) == 1
         assert failures[0].gate == "denylist"
-        assert "term 2" in failures[0].message and "word_examples u1" in failures[0].message
+        assert "line 3" in failures[0].message and "word_examples u1" in failures[0].message
         # The log names the term by its line, never by the term.
         assert "zebrastadt" not in failures[0].message.casefold()
 

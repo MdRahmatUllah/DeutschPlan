@@ -298,13 +298,16 @@ def check_no_article_in_german(db: sqlite3.Connection) -> list[Failure]:
     ]
 
 
-def read_denylist(path: Path | None) -> list[str]:
-    """One term per line; `#` starts a comment. Case-folded."""
+def read_denylist(path: Path | None) -> list[tuple[int, str]]:
+    """One term per line; `#` starts a comment. Case-folded, with the line
+    number a failure names it by."""
     if path is None or not path.exists():
         return []
     return [
-        line.strip().casefold()
-        for line in path.read_text(encoding="utf-8").splitlines()
+        (number, line.strip().casefold())
+        for number, line in enumerate(
+            path.read_text(encoding="utf-8").splitlines(), start=1
+        )
         if line.strip() and not line.lstrip().startswith("#")
     ]
 
@@ -352,13 +355,13 @@ def check_no_denylisted_terms(
         ).fetchall()
         for where, *values in rows:
             text = " ".join(value for value in values if value).casefold()
-            for number, term in enumerate(terms, start=1):
+            for number, term in terms:
                 if term in text:
                     hits.setdefault(number, []).append(f"{table} {where}")
     return [
         Failure(
             "denylist",
-            f"denylisted term {number} is in {len(where)} rows: "
+            f"the denylisted term on line {number} is in {len(where)} rows: "
             f"{_sample(where)}. Replace it through content/corrections.yaml.",
         )
         for number, where in sorted(hits.items())

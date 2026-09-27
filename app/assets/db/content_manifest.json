@@ -1,4 +1,5 @@
 {
+  "aliases": {},
   "boundaries": {
     "A1.2": 14,
     "A2.2": 39,
@@ -7,8 +8,8 @@
     "C1.2": 20,
     "C2.2": 20
   },
-  "built_at": "2026-09-27T06:43:43+00:00",
-  "content_version": "202609270643",
+  "built_at": "2026-09-27T09:55:09+00:00",
+  "content_version": "20260927095509",
   "counts": {
     "examples": 11186,
     "grammar": 182,
