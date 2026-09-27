@@ -58,7 +58,7 @@ def test_the_grammar_recipe_is_its_own():
     assert grammar_uid_for(row) == hashlib.sha1(b"A1|Dative").hexdigest()[:16]
 
 
-def test_the_recipe_is_the_one_the_doc_gives():
+def test_BR_CONTENT_01_the_recipe_is_the_one_the_doc_gives():
     assert UID_FIELDS == ("level", "german", "pos", "english")
     assert UID_LENGTH == 16
     expected = hashlib.sha1(b"A1|Haus|noun|house").hexdigest()[:16]

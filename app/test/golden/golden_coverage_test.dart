@@ -100,11 +100,24 @@ void main() {
     }
     expect(narrow, isEmpty, reason: 'only narrowed cases');
   });
+
+  test('#706 a goldenTest( in a comment is no full case', () {
+    expect(
+      _hasFullCase(
+        '/// Like `goldenTest(name, build)`.\n'
+        "goldenTest('a', build, devices: [GoldenDevice.phone]);",
+      ),
+      isFalse,
+    );
+    expect(_hasFullCase("goldenTest('a', build);"), isTrue);
+  });
 }
 
 /// Whether a `goldenTest(` call in [source] takes the default matrix: no
 /// `modes:` or `devices:` of its own, or a helper's defaults passed through.
-bool _hasFullCase(String source) {
+/// Comment lines are no call (#706).
+bool _hasFullCase(String file) {
+  final source = file.replaceAll(RegExp(r'^\s*//.*$', multiLine: true), '');
   for (final call in RegExp(r'goldenTest\(').allMatches(source)) {
     var depth = 1;
     var end = call.end;

@@ -11,13 +11,18 @@ import 'golden_harness.dart';
 void main() => goldenTest('today', builder: (_) => const TodayScreen());
 ```
 
-That is the whole test. It emits six files into `goldens/`:
+That is the whole case. It runs eleven tests, and six of them write files into
+`goldens/`:
 
 ```
 today_light_phone.png   today_light_tablet.png
 today_dark_phone.png    today_dark_tablet.png
 today_glass_phone.png   today_glass_tablet.png
 ```
+
+The other five draw no file: the text audit at 150 and 200 %, in English and in
+Bangla (`textAudit:`), and the labels check (`· labels`). `testing.md` says what
+each one asserts.
 
 Narrow the matrix with `modes:` or `devices:` where a screen genuinely has no
 tablet layout — but say so in the test, because the default is all six.
