@@ -116,15 +116,16 @@ class ExamResultService {
 
   /// FR-L13-02: every missed word rated Again (source `exam`), then due
   /// tomorrow. The exam itself rated nothing (BR-EXAM-05).
-  Future<void> addToRevision(
-    List<String> uids, {
-    required PlanDate today,
-  }) async {
-    for (final uid in uids) {
-      await _rating.rate(uid, Rating.again, source: ReviewSource.exam);
-    }
-    await _words.dueOn(uids, addDays(today, 1));
-  }
+  ///
+  /// One transaction (#717): a retry after a failure part way must not rate
+  /// the first words Again twice.
+  Future<void> addToRevision(List<String> uids, {required PlanDate today}) =>
+      _words.transaction(() async {
+        for (final uid in uids) {
+          await _rating.rate(uid, Rating.again, source: ReviewSource.exam);
+        }
+        await _words.dueOn(uids, addDays(today, 1));
+      });
 }
 
 /// The words [rows] missed: a word item (every section but Grammar, Writing
