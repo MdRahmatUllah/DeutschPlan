@@ -1,10 +1,13 @@
 @TestOn('vm')
 library;
 
+import 'dart:io';
+
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/db/content_dao.dart';
 import 'package:sogda/data/repositories/exam_repository.dart';
+import 'package:sogda/data/repositories/model_repository.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/data/repositories/settings_repository.dart';
 import 'package:sogda/features/learn/exam_intro_screen.dart';
@@ -129,6 +132,37 @@ void main() {
       '2026-09-21T08:00:00.000Z',
     );
     expect(container.read(examStartProvider), isFalse);
+  });
+
+  test('#671 Begin exam over an unfinished attempt deletes its '
+      'recording', () async {
+    final settings = SettingsRepository(db);
+    await settings.load();
+    addTearDown(settings.dispose);
+    final models = ModelRepository(settings, support: tempDir('sg_rec'));
+    final container = ProviderContainer(
+      overrides: <Override>[
+        appDatabaseProvider.overrideWithValue(db),
+        settingsProvider.overrideWithValue(settings),
+        modelRepositoryProvider.overrideWithValue(models),
+      ],
+    );
+    addTearDown(container.dispose);
+    container.listen(examStartProvider, (_, _) {});
+    Future<File> recorded(int id) async {
+      final file = await models.recordingFor(id);
+      await file.parent.create(recursive: true);
+      return file..writeAsStringSync('aac');
+    }
+
+    final replaced = await recorded(await start(1));
+    final other = await recorded(await start(2));
+    await container
+        .read(examStartProvider.notifier)
+        .begin('A2.1', 1, timer: true);
+
+    expect(replaced.existsSync(), isFalse, reason: 'begin abandoned it');
+    expect(other.existsSync(), isTrue, reason: "another mock's, resumable");
   });
 
   test("FR-L10-03 Begin exam asks in the learner's meaning language", () async {

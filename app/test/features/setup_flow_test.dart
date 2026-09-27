@@ -172,7 +172,7 @@ VALUES (?, ?, 'A1', ?, ?, ?, ?, ?, ?, 'vocab')
 
     test('BR-PLAN-04 #548: once, with Today live and rebuilt by the commit, '
         'opening the same day alongside', () async {
-      // As warmTodaysVoice holds it from the first frame (#460), and as a
+      // As T1 holds it from its first frame, and as a
       // frame rebuilds it: as soon as the commit's revise_count write has
       // invalidated the engine, while finish is still to open the day.
       // In memory both openings pick the same seven before either writes,

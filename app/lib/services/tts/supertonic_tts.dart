@@ -74,8 +74,9 @@ class SupertonicTts implements TtsEngine, SpeechPrefetch {
   final StreamController<TtsState> _state =
       StreamController<TtsState>.broadcast();
 
-  /// The four sessions, opened on the first clip and kept: they take seconds
-  /// to open. A voice is only a style the open model is given.
+  /// The four sessions, opened on the first clip and kept until [release]:
+  /// they take seconds to open. A voice is only a style the open model is
+  /// given.
   Future<SupertonicModel>? _model;
 
   /// A load that failed, remembered for the app session: a phone that can't
@@ -234,20 +235,18 @@ class SupertonicTts implements TtsEngine, SpeechPrefetch {
     }
   }
 
-  /// #460: the sessions opened at the app's start, so the first card of a
-  /// session doesn't wait the ~2.3 s they take. A failure is remembered as a
-  /// speak's is, and the next speak falls back at once.
-  // ponytail: about 400 MB held from the start on a phone that speaks with
-  // Supertonic, as they are from its first clip already; open on the first
-  // speaker's screen instead if memory is tight on low-end phones.
+  /// #638: the sessions closed, about 400 MB, and opened again by the next
+  /// clip (~2.3 s). The list being made stops, or its next clip would open
+  /// them again. The clips already made stay in the cache.
+  // ponytail: opened by the first clip a screen needs (T2's list as it opens,
+  // a tap elsewhere), not at the app's start (#460's warm-up), and let go of
+  // in the background or under memory pressure (`VoiceRelease`). A phone
+  // with the memory to spare pays the ~2.3 s again on its first clip after;
+  // warming again on high-memory phones is the owner's budget call (#758).
   @override
-  Future<void> warm() async {
-    if (!await isAvailable()) return;
-    try {
-      await _open();
-    } on Object {
-      // Remembered in [_broken]; the next speak says so and falls back.
-    }
+  Future<void> release() async {
+    _run++;
+    await _release();
   }
 
   @override
