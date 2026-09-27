@@ -418,7 +418,7 @@ claiming the same issue. A hand edit skips that check.
 | #937 | - | X | P3 | - | fix(backup): a merge after part of today's Revise is done drops the rest of the block and re-picks nothing (from #936's review) | done | agent-0 |  | #944 |
 | #817 | - | X | P3 | - | fix(today): tomorrow's preview memoises the time estimate's read, so the next day misses the evening's study (#768) | done | agent-0 |  | #940 |
 | #921 | - | X | P3 | - | content: 175 words are still taught in two or three levels with the English worded differently (after #913) | review | agent-0 |  | #948 |
-| #922 | - | X | P3 | - | fix(content-update): Today's card counts a merged duplicate as a removed word (#913 follow-up) | open |  |  |  |
+| #922 | - | X | P3 | - | fix(content-update): Today's card counts a merged duplicate as a removed word (#913 follow-up) | in-progress | agent-0 |  |  |
 | #924 | - | X | P3 | - | fix(content): a merged duplicate's other sense is lost from the staying row's English (#913 follow-up) | open |  |  |  |
 
 ## Locks
