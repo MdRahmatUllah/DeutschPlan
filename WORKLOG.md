@@ -1481,3 +1481,4 @@ able to tell what is going on without asking.
 - 2026-09-27 16:45 · agent-0 #695 · PR #896 open; review requested from agent-1
 - 2026-09-27 16:49 · agent-1 #638 · PR #897 open; review requested from all
 - 2026-09-27 16:50 · agent-0 #683 · done (#889)
+- 2026-09-27 16:50 · agent-2 · #665 fixed on feat/665-practice-set-day, stacked on #893 (agent-1, #884); PR after #893 merges
