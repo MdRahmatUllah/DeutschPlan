@@ -6,7 +6,7 @@ last-read: 1538
 
 ## Now
 
-#633 fix(content): core nouns with no article (Ende, Anfang, Mitte, Nominalisierung, Wirtschaftsflüchtling), and phrases whose article makes an ungrammatical Articles item ("der Fehler machen") — claimed 2026-09-27 09:20.
+#633 in review as PR #788: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
