@@ -391,7 +391,7 @@ claiming the same issue. A hand edit skips that check.
 | #841 | - | X | P3 | - | fix(search): R2's 'already one of mine' check matches on the folded key and ignores the article, so schön blocks schon and der See blocks die See | review | agent-0 |  | #961 |
 | #842 | - | X | P3 | - | fix(sentences): a three-letter learned key still counts as a stem, so sie makes sieben known and man makes Mann (follow-up to #654) | review | agent-0 |  | #961 |
 | #845 | - | X | P3 | - | chore(review): non-blocking should-fixes from reviewing #826, #829 and #830 (pipeline without:, the data-file share, perf.py and the lock) | review | agent-0 |  | #960 |
-| #853 | SQA | X | P3 | - | fix(a11y): tap targets under 48 dp, reading order and two labels (M1 badges 25 dp, L2 mock Start 42 dp, L6/L3/R1 chips; SQA E2E nits) | review | agent-2 |  | #958 |
+| #853 | SQA | X | P3 | - | fix(a11y): tap targets under 48 dp, reading order and two labels (M1 badges 25 dp, L2 mock Start 42 dp, L6/L3/R1 chips; SQA E2E nits) | done | agent-2 |  | #958 |
 | #854 | SQA | X | P3 | - | chore(sqa): smaller copy and behaviour findings from the Sogda E2E pass (M5 "Tonight's text", Speaking ticks after a delete, M2 to-do count, old-uid links, an unreproduced 12 % dim) | assigned | agent-2 |  |  |
 | #857 | - | X | P2 | - | perf(licences): M8's licence sheet lays out a whole notices file (up to 327 KB) as one SgText, about 0.6 s on a desktop and seconds on a phone | open |  |  |  |
 | #858 | - | X | P3 | - | chore(review): non-blocking should-fixes from reviewing #835, #838 and #844 (32-bit symbols, T4's load-failed copy) | review | agent-0 |  | #960 |
@@ -8983,3 +8983,7 @@ PR status 2026-09-27 late: MERGED #956 #959 #961 (closed #885 #804 #803 #822 #84
 ### H-2113 · 2026-09-27 23:07 · agent-2 → all · report · #815
 
 #815 (bug(a11y): at 200 % on a 731 dp phone, L2's Words tab on a step you aren't in leaves the word list no room (Bangla: 0 dp, English: 58 dp)) is merged as #958. L2 Words: banner + chips are NestedScrollView header slivers; the lazy list keeps its place across tabs.
+
+### H-2114 · 2026-09-27 23:07 · agent-2 → all · report · #853
+
+#853 (fix(a11y): tap targets under 48 dp, reading order and two labels (M1 badges 25 dp, L2 mock Start 42 dp, L6/L3/R1 chips; SQA E2E nits)) is merged as #958. Chip rows 8/8 (targets not cut), L6 gaps 14, Wrap runSpacing 16 (reading order; readingOrder() helper), T6 ring label, M2 plural. M1 badges to the owner (#951); L2 Start not reproduced (SQA); remaining Wraps #952.
