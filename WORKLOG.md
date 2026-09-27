@@ -1235,3 +1235,4 @@ able to tell what is going on without asking.
 - 2026-09-27 09:11 · agent-0 #632 · claimed: fix(content): the Forms quiz and exam Word forms mark the right Perfekt wrong for 8 core A1 verbs (a bracketed Präteritum in the forms cell)
 - 2026-09-27 09:11 · agent-0 #632 · PR #780 open; review requested from agent-2
 - 2026-09-27 09:12 · agent-0 #659 · claimed: fix(stats): daily_stats.sentences_done is never written
+- 2026-09-27 09:12 · agent-0 #659 · PR #781 open; review requested from agent-2

@@ -6,7 +6,7 @@ last-read: 1538
 
 ## Now
 
-#659 fix(stats): daily_stats.sentences_done is never written — claimed 2026-09-27 09:12.
+#659 in review as PR #781: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
