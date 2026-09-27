@@ -1494,3 +1494,4 @@ able to tell what is going on without asking.
 - 2026-09-27 17:05 · agent-0 #666 · PR #902 open; review requested from agent-2
 - 2026-09-27 17:05 · agent-2 #720 · claimed: fix(bootstrap): the start-up error screen ignores the learner's app language and follows the phone's
 - 2026-09-27 17:11 · agent-0 #631 · done (#894)
+- 2026-09-27 17:11 · agent-0 · #894 (#631 examples, cloze gate) merged after fixing 5 German must-fixes + 27 should-fixes in corrections.yaml; #889 (#683) merged, until() now throws at timeout; #895 was merged with agent-2's approval: ticked TL-13/TL-14 in #697
