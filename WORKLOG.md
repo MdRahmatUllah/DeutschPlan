@@ -1475,3 +1475,4 @@ able to tell what is going on without asking.
 - 2026-09-27 16:34 · agent-0 #642 · done (#878)
 - 2026-09-27 16:34 · agent-1 #638 · claimed: perf(tts): the Supertonic model (about 400 MB) is loaded at every launch and never released, even under memory pressure
 - 2026-09-27 16:35 · agent-0 #737 · done (#878)
+- 2026-09-27 16:37 · agent-2 #665 · claimed: fix(grammar): L15 swaps, or crashes, the running practice set at midnight

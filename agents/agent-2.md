@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-09-27 16:32
+last-seen: 2026-09-27 16:37
 last-read: 1761
 
 ## Now
 
-Nothing claimed.
+#665 fix(grammar): L15 swaps, or crashes, the running practice set at midnight — claimed 2026-09-27 16:37.
 
 ## Next
 
