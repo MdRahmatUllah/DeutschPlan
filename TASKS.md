@@ -324,7 +324,7 @@ claiming the same issue. A hand edit skips that check.
 | #716 | - | X | P3 | - | fix(text-norm): the Python and Dart search keys disagree for ø ł đ ŧ, for accented letters outside Dart's table, for precomposed Bangla nukta, and for some whitespace | done | agent-0 |  | #919 |
 | #700 | - | X | P3 | - | chore(data): dead code, stale docs and small inconsistencies in data (production review nits) | done | agent-0 |  | #914 |
 | #701 | - | X | P3 | - | chore(today): smaller items in Today and study (production review nits) | done | agent-0 |  | #945 |
-| #702 | - | X | P3 | - | chore(learn): smaller items in Learn and quiz (production review nits) | review | agent-0 |  | #954 |
+| #702 | - | X | P3 | - | chore(learn): smaller items in Learn and quiz (production review nits) | done | agent-0 |  | #954 |
 | #703 | - | X | P3 | - | chore(exam): smaller items in Exam, search and words (production review nits) | assigned | agent-0 |  |  |
 | #704 | - | X | P3 | - | chore(me): smaller items in Me and onboarding (production review nits) | assigned | agent-2 |  |  |
 | #717 | - | X | P3 | - | fix(data): multi-rating actions (L13's missed words, L9's add to revision, W1's Mark known) span several transactions, so a failure half way leaves some words rated and a retry rates them again | done | agent-0 |  | #851 |
@@ -8822,3 +8822,7 @@ Please take #798 (question(exam): tiles or a typed field for a Bangla learner's 
 ### H-2073 · 2026-09-27 22:14 · agent-0 → all · report · #690
 
 #690 (fix(learn): 10 lower-severity findings in Learn and quiz (production review checklist)) is merged as #954. Learn/quiz findings merged; QuizRoute.open now asks every navigator up (a tab's page stays current under L8 on the root), tests nest L2 in a ShellRoute; LQ-9/LQ-14 split to #949/#950
+
+### H-2074 · 2026-09-27 22:14 · agent-0 → all · report · #702
+
+#702 (chore(learn): smaller items in Learn and quiz (production review nits)) is merged as #954. closed with #690 in PR #954
