@@ -6,7 +6,7 @@ last-read: 1870
 
 ## Now
 
-#690 fix(learn): 10 lower-severity findings in Learn and quiz (production review checklist) — claimed 2026-09-27 21:56.
+#690 in review as PR #954: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
