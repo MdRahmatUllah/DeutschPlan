@@ -11,8 +11,9 @@ import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/core/typography/sg_text.dart';
 import 'package:sogda/data/repositories/exam_result_service.dart';
 import 'package:sogda/domain/exam_generator.dart';
+import 'package:sogda/domain/exam_grading.dart' show rubricCounts;
 import 'package:sogda/features/exam/exam_question_view.dart'
-    show ExamRubricTick, examRubricLines;
+    show ExamRubricTick, examClock, examRubricLines;
 import 'package:sogda/features/exam/exam_review_screen.dart';
 import 'package:sogda/features/learn/step_exams.dart' show examSectionName;
 import 'package:sogda/l10n/generated/app_localizations.dart';
@@ -95,11 +96,9 @@ class _ExamResultsScreenState extends ConsumerState<ExamResultsScreen> {
         title: examSectionName(l10n, task.item.section),
         lines: examRubricLines(l10n, task.item.section),
         ticks: task.rubric,
-        // #84 counts the ticks only with a text or a recording.
-        empty: switch (task.given) {
-          final given? => given.trim().isEmpty,
-          null => true,
-        },
+        // #84 counts the ticks only with a text of words or a recording:
+        // the grading's own rule, so a text of dots offers none (#703).
+        empty: !rubricCounts(task.item, task.given),
         speaking: task.item is SpeakingTask,
         onChanged: (ticks) async {
           await ref
@@ -241,20 +240,27 @@ class _Result extends StatelessWidget {
       }
     }
 
+    final percent = _percent(attempt.scorePoints, attempt.maxPoints);
     final previous = result.previous;
     final line = <String>[
       l10n.examResultLine(
         attempt.sublevelCode,
         attempt.seed,
-        l10n.digits(_clock(attempt.durationSec)),
+        l10n.digits(examClock(attempt.durationSec)),
       ),
-      if (previous != null)
+      if (previous case (attempt: final before, :final number))
+        // #964: in percentage points, the two percents as shown: 77 % after
+        // 62 % reads +15, as the learner would subtract them. Score points
+        // gave +7, beside "37 of 48 points".
         l10n.examResultCompare(
           l10n.digits(
-            _signed(attempt.scorePoints - previous.attempt.scorePoints),
+            _signed(
+              (percent - _percent(before.scorePoints, before.maxPoints))
+                  .toDouble(),
+            ),
           ),
-          previous.number,
-          _percent(previous.attempt.scorePoints, previous.attempt.maxPoints),
+          number,
+          _percent(before.scorePoints, before.maxPoints),
         ),
     ].join(' · ');
 
@@ -268,7 +274,7 @@ class _Result extends StatelessWidget {
               _Hero(
                 passed: attempt.passed != 0,
                 share: share,
-                percent: _percent(attempt.scorePoints, attempt.maxPoints),
+                percent: percent,
                 points: l10n.examResultPoints(
                   l10n.digits(_points(attempt.scorePoints)),
                   l10n.digits(_points(attempt.maxPoints)),
@@ -362,10 +368,6 @@ String _signed(double delta) => delta > 0
     : delta < 0
     ? '−${_points(-delta)}'
     : '±0';
-
-/// "18:41", the time the paper ran.
-String _clock(int seconds) =>
-    '${seconds ~/ 60}:${(seconds % 60).toString().padLeft(2, '0')}';
 
 /// The block on the result's colour: close, the badge, the score, the pass
 /// mark on its bar, and the line.

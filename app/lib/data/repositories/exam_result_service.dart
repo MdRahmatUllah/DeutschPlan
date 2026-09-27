@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/repositories/exam_repository.dart';
@@ -137,8 +136,7 @@ class ExamResultService {
       attemptId,
       passPercent: _settings.read(SettingKeys.examPassPercent),
     );
-    final file = File(path);
-    if (file.existsSync()) await file.delete();
+    await ModelRepository.deleteRecordingAt(path);
   }
 
   /// FR-L13-02: every missed word rated Again (source `exam`), then due

@@ -404,6 +404,33 @@ void main() {
     );
   });
 
+  testWidgets('#703 a result row and a sentence row are buttons named by '
+      'their words; a row speaker stays its own', (tester) async {
+    final semantics = tester.ensureSemantics();
+    await pump(tester);
+    await type(tester, 'Haus');
+    for (final words in <String>['house · বাড়ি', 'The house is big.']) {
+      final data = tester.getSemantics(find.text(words)).getSemanticsData();
+      expect(data.flagsCollection.isButton, isTrue, reason: words);
+      expect(data.hasAction(SemanticsAction.tap), isTrue, reason: words);
+      expect(data.label, contains(words));
+    }
+    expect(tapsInsideTaps(tester), <String>['Play das Haus']);
+    semantics.dispose();
+  });
+
+  testWidgets('#691 EX-13 FR-R1-01 the field takes 80 characters, what is '
+      'searched', (tester) async {
+    await pump(tester);
+    await tester.enterText(find.byType(TextField), 'Haus' * 50);
+    expect(
+      tester.widget<TextField>(find.byType(TextField)).controller!.text,
+      hasLength(SearchRepository.maxQueryLength),
+    );
+    expect(SearchRepository.maxQueryLength, 80);
+    await settle(tester);
+  });
+
   testWidgets('FR-R1-03 the play icon pronounces without opening the row', (
     tester,
   ) async {
