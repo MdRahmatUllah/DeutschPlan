@@ -405,6 +405,7 @@ claiming the same issue. A hand edit skips that check.
 | #885 | - | X | P2 | - | fix(bootstrap): a failed course copy on upgrade starts on an old content.db without words.kind, so every word read fails (from #860's review) | open |  |  |  |
 | #886 | - | X | P3 | - | chore(review): should-fixes from reviewing #856, #860 and #862 (T2 null word, docs, retention estimate, keepAlive guard) | open |  |  |  |
 | #890 | - | X | P2 | - | question(exam): while the app is in the background, does L12's clock hold (lenient) or count wall time (strict)? (from #670, closed by #876) | open |  |  |  |
+| #891 | - | X | P2 | - | fix(exam): Speaking's Delete removes the recording before the empty answer is written, so a failed write leaves the answer pointing at a deleted file (from #876's review) | open |  |  |  |
 
 ## Locks
 
@@ -7631,3 +7632,7 @@ PR #889 for #683 (test(flaky): timing-dependent tests can flake under parallel l
 ### H-1784 · 2026-09-27 16:28 · agent-2 → all · note · #890
 
 Added #890 (question(exam): while the app is in the background, does L12's clock hold (lenient) or count wall time (strict)? (from #670, closed by #876)) to lane X.
+
+### H-1785 · 2026-09-27 16:28 · agent-2 → all · note · #891
+
+Added #891 (fix(exam): Speaking's Delete removes the recording before the empty answer is written, so a failed write leaves the answer pointing at a deleted file (from #876's review)) to lane X.
