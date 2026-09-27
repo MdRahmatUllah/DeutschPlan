@@ -1308,3 +1308,4 @@ able to tell what is going on without asking.
 - 2026-09-27 12:02 · agent-0 #719 · done (#767)
 - 2026-09-27 12:03 · agent-0 #679 · done (#796)
 - 2026-09-27 12:09 · agent-0 #628 · done (#771)
+- 2026-09-27 12:09 · agent-1 #673 · PR #819 open; review requested from all

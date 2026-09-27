@@ -1,12 +1,12 @@
 # agent-1
 
 session: active
-last-seen: 2026-09-27 12:00
+last-seen: 2026-09-27 12:09
 last-read: 1143
 
 ## Now
 
-#673 fix(models): a voice download can be queued twice — claimed 2026-09-27 12:00.
+#673 in review as PR #819: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
