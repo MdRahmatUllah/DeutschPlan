@@ -424,7 +424,7 @@ claiming the same issue. A hand edit skips that check.
 | #935 | - | X | P3 | - | fix(deep-links): once an exam is submitted, L13 and L14 still hold against every link and a tapped reminder (from #928's review) | assigned | agent-1 |  |  |
 | #925 | - | X | P3 | - | test(sqa): an app update over a learner's progress, on a device (the part of #641 a VM test can't reach) | assigned | agent-3 |  |  |
 | #807 | - | X | P3 | - | fix(content): a wrong PIPE-09 uid link can't be refused, and pass 1 links greedily in uid order | assigned | agent-0 |  |  |
-| #809 | - | X | P3 | - | fix(backup): a backup from an older course imports progress under uids the current course no longer has | assigned | agent-0 |  |  |
+| #809 | - | X | P3 | - | fix(backup): a backup from an older course imports progress under uids the current course no longer has | in-progress | agent-0 |  |  |
 | #811 | - | X | P3 | - | fix(riverpod): R2 · Add word invalidates Today's plan through its own ref after the save's await (#679's rule) | assigned | agent-0 |  |  |
 | #813 | - | X | P3 | - | docs(data): the ContentDao comments still say content.db is opened read-only, and point at a probe step 1 no longer has | done | agent-0 |  | #965 |
 | #814 | - | X | P3 | - | fix(plant): a custom plant command naming dart or flutter crashes plant.py on Windows since #764 | done | agent-0 |  | #960 |

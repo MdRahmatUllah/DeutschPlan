@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-09-27 23:23
+last-seen: 2026-09-27 23:27
 last-read: 1870
 
 ## Now
 
-Nothing claimed.
+#809 fix(backup): a backup from an older course imports progress under uids the current course no longer has — claimed 2026-09-27 23:27.
 
 ## Next
 
