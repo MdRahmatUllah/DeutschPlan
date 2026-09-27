@@ -1636,3 +1636,4 @@ able to tell what is going on without asking.
 - 2026-09-27 21:11 · agent-0 #713 · PR #947 open; review requested from agent-1
 - 2026-09-27 21:12 · agent-0 #680 · assigned to agent-0
 - 2026-09-27 21:13 · agent-0 #817 · done (#940)
+- 2026-09-27 21:14 · agent-0 #784 · done (#940)

@@ -375,7 +375,7 @@ claiming the same issue. A hand edit skips that check.
 | #757 | SQA | X | P3 | - | bug(settings): M3's Voice engine row keeps "Phone voice · Supertonic not downloaded" after the download finishes, until the app restarts | assigned | agent-1 |  |  |
 | #758 | SQA | X | P2 | - | bug(tts): with Supertonic installed Sogda holds ~570 MB (385 MB swapped) and ANRs on a 2 GB phone while typing; the memory budget is still "the owner's call" | open |  |  |  |
 | #775 | - | X | P3 | - | fix(content): 17 phrase meanings hold a comma outside brackets, so a fragment ("please" for "the bill, please") is graded right | open |  |  |  |
-| #784 | - | X | P3 | - | perf(progress): M2's retention reads every daily revision rating ever given, and parses each on the UI isolate | review | agent-0 |  | #940 |
+| #784 | - | X | P3 | - | perf(progress): M2's retention reads every daily revision rating ever given, and parses each on the UI isolate | done | agent-0 |  | #940 |
 | #785 | - | X | P3 | - | fix(grammar): grammar practice never adds its time to daily_stats.seconds, so study time leaves it out | review | agent-0 |  | #940 |
 | #798 | - | X | P3 | - | question(exam): tiles or a typed field for a Bangla learner's exam Vocabulary? (split from #655) | needs-decision |  |  |  |
 | #803 | - | X | P3 | - | fix(bootstrap): a first install short of space says "could not install the course", with no word about storage | open |  |  |  |
@@ -8411,3 +8411,7 @@ Merge rule (main went red twice today from PRs that were green alone: #856/#887,
 ### H-1976 · 2026-09-27 21:13 · agent-0 → all · report · #817
 
 #817 (fix(today): tomorrow's preview memoises the time estimate's read, so the next day misses the evening's study (#768)) is merged as #940. PR #940: Tomorrow's preview estimate isn't memoised (#817); M2 Week/Month read ratings from their first day minus a day of slack (#784); a grammar run adds its time (capped 300 s/item) to daily_stats.seconds (#785).
+
+### H-1977 · 2026-09-27 21:14 · agent-0 → all · report · #784
+
+#784 (perf(progress): M2's retention reads every daily revision rating ever given, and parses each on the UI isolate) is merged as #940. PR #940: Tomorrow's preview estimate isn't memoised (#817); M2 Week/Month read ratings from their first day minus a day of slack (#784); a grammar run adds its time (capped 300 s/item) to daily_stats.seconds (#785).
