@@ -421,6 +421,128 @@ void main() {
       },
     });
 
+    /// The phone in use: a rating given on it (#658).
+    Future<void> studiedHere() => sql(
+      'INSERT INTO review_log (word_uid, reviewed_at, rating, source) '
+      "VALUES ('uid-strasse', '2026-03-05T09:00:00Z', 3, 'daily')",
+    );
+
+    test('#658 FR-M6-03 onto a phone where nothing is studied yet, the file '
+        'says where the learner is', () async {
+      // Onboarding's first guess: A1.1 from today, its pace and its plan.
+      await sql(
+        "INSERT INTO settings VALUES ('daily_new', '7'), "
+        "('learner_name', 'Neu'), ('theme', 'glass')",
+      );
+      await sql(
+        'INSERT INTO enrollments (sublevel_code, started_on, daily_new, '
+        "study_days_mask) VALUES ('A1.1', '2026-03-09', 7, 127)",
+      );
+      await sql(
+        'INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code) '
+        "VALUES ('2026-03-09', 'uid-haus', 'new', 'A1.1')",
+      );
+      final file = jsonEncode(<String, Object?>{
+        'schema_version': AppDatabase.latestSchemaVersion,
+        'content_version': null,
+        'exported_at': '2026-03-09T00:00:00Z',
+        'tables': <String, Object?>{
+          'settings': <Object?>[
+            <String, Object?>{'key': 'daily_new', 'value': '12'},
+            <String, Object?>{'key': 'learner_name', 'value': 'Rahim'},
+          ],
+          'enrollments': <Object?>[
+            <String, Object?>{
+              'sublevel_code': 'A1.1',
+              'started_on': '2026-01-01',
+              'daily_new': 12,
+              'study_days_mask': 127,
+              'completed_on': '2026-01-31',
+            },
+            <String, Object?>{
+              'sublevel_code': 'A1.2',
+              'started_on': '2026-02-01',
+              'daily_new': 12,
+              'study_days_mask': 127,
+              'completed_on': null,
+            },
+          ],
+          'plan_items': <Object?>[
+            <String, Object?>{
+              'plan_date': '2026-03-08',
+              'word_uid': 'uid-tuer',
+              'kind': 'new',
+              'sublevel_code': 'A1.2',
+            },
+          ],
+          'review_log': <Object?>[
+            <String, Object?>{
+              'word_uid': 'uid-tuer',
+              'reviewed_at': '2026-03-08T09:00:00Z',
+              'rating': 3,
+              'source': 'daily',
+            },
+          ],
+        },
+      });
+
+      await backup.import(file, mode: ImportMode.merge);
+
+      final steps = <String, Object?>{
+        for (final row in await rowsOf('enrollments'))
+          row['sublevel_code']! as String: row['completed_on'],
+      };
+      final settings = <String, Object?>{
+        for (final row in await rowsOf('settings'))
+          row['key']! as String: row['value'],
+      };
+      expect(steps, <String, Object?>{'A1.1': '2026-01-31', 'A1.2': null});
+      expect(settings['daily_new'], '12');
+      expect(settings['learner_name'], 'Rahim');
+      expect(settings['theme'], 'glass', reason: 'what the file lacks stays');
+      expect(
+        (await rowsOf('plan_items')).map((row) => row['word_uid']),
+        <String>['uid-tuer'],
+        reason: "setup's plan for A1.1 is not the learner's",
+      );
+    });
+
+    test(
+      '#658 and onto a phone in use, this phone keeps its settings',
+      () async {
+        await studiedHere();
+        await sql("INSERT INTO settings VALUES ('daily_new', '7')");
+        await sql(
+          'INSERT INTO enrollments (sublevel_code, started_on, daily_new, '
+          "study_days_mask) VALUES ('A2.1', '2026-02-01', 7, 127)",
+        );
+        final file = jsonEncode(<String, Object?>{
+          'schema_version': AppDatabase.latestSchemaVersion,
+          'content_version': null,
+          'exported_at': '2026-03-09T00:00:00Z',
+          'tables': <String, Object?>{
+            'settings': <Object?>[
+              <String, Object?>{'key': 'daily_new', 'value': '12'},
+            ],
+            'enrollments': <Object?>[
+              <String, Object?>{
+                'sublevel_code': 'A1.2',
+                'started_on': '2026-01-01',
+                'daily_new': 12,
+                'study_days_mask': 127,
+                'completed_on': null,
+              },
+            ],
+          },
+        });
+
+        await backup.import(file, mode: ImportMode.merge);
+
+        expect((await rowsOf('settings')).single['value'], '7');
+        expect(await count('enrollments'), 2);
+      },
+    );
+
     test('a later row wins', () async {
       await fillEverything();
       await backup.import(
@@ -637,6 +759,7 @@ void main() {
         'INSERT INTO enrollments (sublevel_code, started_on, daily_new, '
         "study_days_mask) VALUES ('A2.1', '2026-02-01', 7, 127)",
       );
+      await studiedHere();
 
       final file = jsonEncode(<String, Object?>{
         'schema_version': AppDatabase.latestSchemaVersion,
@@ -672,6 +795,7 @@ void main() {
         'INSERT INTO enrollments (sublevel_code, started_on, daily_new, '
         "study_days_mask) VALUES ('A2.1', '2026-02-01', 7, 127)",
       );
+      await studiedHere();
       final file = jsonEncode(<String, Object?>{
         'schema_version': AppDatabase.latestSchemaVersion,
         'content_version': null,

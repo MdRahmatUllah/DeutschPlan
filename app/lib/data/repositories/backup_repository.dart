@@ -262,8 +262,32 @@ class BackupRepository {
         }
       }
 
+      // #658: restoring onto a phone where nothing has been studied yet.
+      // M6 comes after onboarding, so such a phone always has an open step,
+      // a pace, study days and today's plan, and none of it is the learner's
+      // history: it is setup's first guess. Merged by the usual rules, that
+      // guess would close the file's open step on the day it started and
+      // keep onboarding's settings. Here the file says where they are: its
+      // steps and plan replace setup's, and its settings win. Everything
+      // else merges as ever, and nothing studied is lost, because there is
+      // none.
+      final fileWins =
+          mode == ImportMode.merge &&
+          _rowsIn(data, 'enrollments').isNotEmpty &&
+          !await _studiedHere();
+      if (fileWins) {
+        await _db.customStatement('DELETE FROM plan_items');
+        await _db.customStatement('DELETE FROM enrollments');
+      }
+
       for (final table in tables) {
-        await _importTable(table, _rowsIn(data, table), mode, remap);
+        await _importTable(
+          table,
+          _rowsIn(data, table),
+          mode,
+          remap,
+          fileWins: fileWins,
+        );
       }
     });
 
@@ -274,8 +298,9 @@ class BackupRepository {
     String table,
     List<Map<String, Object?>> rows,
     ImportMode mode,
-    Map<String, Map<int, int>> remap,
-  ) async {
+    Map<String, Map<int, int>> remap, {
+    bool fileWins = false,
+  }) async {
     if (rows.isEmpty) return;
 
     final columns = await _columnsOf(table);
@@ -348,7 +373,8 @@ class BackupRepository {
           if ((child != null || ownIds) && row['id'] is int) {
             remapped[row['id']! as int] = local['id']! as int;
           }
-          if (!_isNewer(table, mapped, local)) continue;
+          final wins = fileWins && table == 'settings';
+          if (!wins && !_isNewer(table, mapped, local)) continue;
           await _replaceRow(table, mapped);
           continue;
         }
@@ -454,6 +480,18 @@ class BackupRepository {
   Future<List<String>> _columnsOf(String table) async {
     final rows = await _db.customSelect('PRAGMA table_info("$table")').get();
     return <String>[for (final row in rows) row.read<String>('name')];
+  }
+
+  /// Whether anything has been studied on this phone: a rating, or a
+  /// grammar run (#658).
+  Future<bool> _studiedHere() async {
+    final row = await _db
+        .customSelect(
+          'SELECT EXISTS (SELECT 1 FROM review_log) '
+          'OR EXISTS (SELECT 1 FROM grammar_practice_log) AS studied',
+        )
+        .getSingle();
+    return row.read<bool>('studied');
   }
 
   Future<bool> _hasOpenEnrollment() async {
