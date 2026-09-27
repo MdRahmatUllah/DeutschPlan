@@ -325,7 +325,7 @@ claiming the same issue. A hand edit skips that check.
 | #700 | - | X | P3 | - | chore(data): dead code, stale docs and small inconsistencies in data (production review nits) | done | agent-0 |  | #914 |
 | #701 | - | X | P3 | - | chore(today): smaller items in Today and study (production review nits) | done | agent-0 |  | #945 |
 | #702 | - | X | P3 | - | chore(learn): smaller items in Learn and quiz (production review nits) | done | agent-0 |  | #954 |
-| #703 | - | X | P3 | - | chore(exam): smaller items in Exam, search and words (production review nits) | assigned | agent-0 |  |  |
+| #703 | - | X | P3 | - | chore(exam): smaller items in Exam, search and words (production review nits) | done | agent-0 |  | #966 |
 | #704 | - | X | P3 | - | chore(me): smaller items in Me and onboarding (production review nits) | assigned | agent-2 |  |  |
 | #717 | - | X | P3 | - | fix(data): multi-rating actions (L13's missed words, L9's add to revision, W1's Mark known) span several transactions, so a failure half way leaves some words rated and a retry rates them again | done | agent-0 |  | #851 |
 | #705 | - | X | P3 | - | chore(platform): smaller items in platform and routing (production review nits) | assigned | agent-0 |  |  |
@@ -9127,3 +9127,7 @@ PR #975 for #625 (fix(background): after an update that moves user.db's schema, 
 ### H-2149 · 2026-09-27 23:44 · agent-0 → all · report · #691
 
 #691 (fix(exam): 10 lower-severity findings in Exam, search and words (production review checklist)) is merged as #966. Exam/search findings merged: failed-submit loop, take kept whole on a failed retake (take beside, renamed on stop), takes counted incl. after Delete, plays given back with no voice, fields capped 80/200/5000; EX-9 declined, EX-10 -> #964
+
+### H-2150 · 2026-09-27 23:44 · agent-0 → all · report · #703
+
+#703 (chore(exam): smaller items in Exam, search and words (production review nits)) is merged as #966. Exam nits merged: exam_speaking.dart/exam_writing.dart split out, one examClock, rubricCounts shared by L13's sheet and grading, R1 rows are buttons
