@@ -238,6 +238,34 @@ ORDER BY due, grammar_uid
     return <String>[for (final row in rows) row.read<String>('uid')];
   }
 
+  @override
+  Future<List<String>> grammarOfDay(PlanDate date) async {
+    final practised = await _db
+        .customSelect(
+          '''
+SELECT l.grammar_uid AS uid, l.practised_at AS at
+FROM grammar_practice_log l
+JOIN grammar_state s ON s.grammar_uid = l.grammar_uid
+WHERE l.practised_at >= ?1 AND l.practised_at < ?2
+  AND s.status != 'suspended'
+ORDER BY l.practised_at, l.id
+''',
+          variables: _instantBounds(date, addDays(date, 1)),
+          readsFrom: <ResultSetImplementation<Object, Object>>{
+            _db.grammarPracticeLog,
+            _db.grammarState,
+          },
+        )
+        .get();
+    // Due first, as [grammarDueOn] orders them; then the ones practised on
+    // the learner's own day (#347), once each.
+    return <String>{
+      ...await grammarDueOn(date),
+      for (final row in practised)
+        if (_localDay(row.read<String>('at')) == date) row.read<String>('uid'),
+    }.toList();
+  }
+
   /// Adds plan rows in one transaction.
   ///
   /// `insertOnConflictUpdate` would overwrite `completed_at`, so this ignores
