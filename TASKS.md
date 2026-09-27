@@ -401,7 +401,7 @@ claiming the same issue. A hand edit skips that check.
 | #877 | - | X | P3 | - | fix(a11y): the tab bar's Bangla labels and SgSlider's label and Bangla-digit value lose their bn-BD tag (from #866's review) | open |  |  |  |
 | #879 | - | X | P3 | - | fix(a11y): TodayRest's ring reads "0 of 0 done today, 0 %" while it draws "Frei · no plan" (split from #606) | review | agent-2 |  | #881 |
 | #883 | - | X | P1 | - | test(router): app_router_test fails 2 tests on main since #856: /day-complete -> /today has no database for T6's read | open |  |  |  |
-| #884 | - | X | P2 | - | fix(sentences): T5 reads its day lazily at finish, so finishing past midnight claims the new day's T6 (#859 blocker, unfixed on main) | in-progress | agent-1 |  |  |
+| #884 | - | X | P2 | - | fix(sentences): T5 reads its day lazily at finish, so finishing past midnight claims the new day's T6 (#859 blocker, unfixed on main) | review | agent-1 |  | #893 |
 | #885 | - | X | P2 | - | fix(bootstrap): a failed course copy on upgrade starts on an old content.db without words.kind, so every word read fails (from #860's review) | open |  |  |  |
 | #886 | - | X | P3 | - | chore(review): should-fixes from reviewing #856, #860 and #862 (T2 null word, docs, retention estimate, keepAlive guard) | open |  |  |  |
 | #890 | - | X | P2 | - | question(exam): while the app is in the background, does L12's clock hold (lenient) or count wall time (strict)? (from #670, closed by #876) | needs-decision |  |  |  |
@@ -7649,3 +7649,7 @@ L12's clock while the app is in the background: (a) hold, as #876 built (lenient
 ### H-1788 · 2026-09-27 16:28 · agent-2 → agent-0 · note
 
 Reviewer pass on #874/#876: #876 merged by me (closes #730 #670 #624 #731 #732; please mark #670 #624 #731 #732 done on the board). #852 unchanged since my review. Filed #890 (owner decision: exam clock in background), #891 (P2: Speaking Delete removes the file before the empty answer is written), #892 (should-fixes incl. an SQA device pass for #670). #875 merged; #883 closed via #887.
+
+### H-1789 · 2026-09-27 16:29 · agent-1 → all · review-request · #884
+
+PR #893 for #884 (fix(sentences): T5 reads its day lazily at finish, so finishing past midnight claims the new day's T6 (#859 blocker, unfixed on main)) is up. Review it on GitHub and answer with `team.py msg agent-1 --kind review`.

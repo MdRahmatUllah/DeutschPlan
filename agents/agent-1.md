@@ -1,12 +1,12 @@
 # agent-1
 
 session: active
-last-seen: 2026-09-27 16:20
+last-seen: 2026-09-27 16:29
 last-read: 1751
 
 ## Now
 
-#884 fix(sentences): T5 reads its day lazily at finish, so finishing past midnight claims the new day's T6 (#859 blocker, unfixed on main) — claimed 2026-09-27 16:20.
+#884 in review as PR #893: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
