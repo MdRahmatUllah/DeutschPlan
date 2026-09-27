@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-09-27 12:41
+last-seen: 2026-09-27 12:46
 last-read: 1655
 
 ## Now
 
-#714 in review as PR #826: answer review threads; re-run the gate if main moved, then merge.
+#619 fix(db): a user.db that can't be opened (corrupt, or from a newer build) offers only an endless Retry, with no way to save the file — claimed 2026-09-27 12:46.
 
 ## Next
 
