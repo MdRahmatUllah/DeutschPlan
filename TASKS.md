@@ -284,7 +284,7 @@ claiming the same issue. A hand edit skips that check.
 | #662 | - | X | P2 | - | fix(sentences): re-rating a T5 sentence stacks Hard reviews on its word | assigned | agent-1 |  |  |
 | #663 | - | X | P2 | - | fix(today): today's voice card never leaves after the voice is installed | assigned | agent-1 |  |  |
 | #664 | - | X | P2 | - | perf(backlog): T4 runs one query per row on every table change | done | agent-0 |  | #773 |
-| #665 | - | X | P2 | - | fix(grammar): L15 swaps, or crashes, the running practice set at midnight | in-progress | agent-2 |  |  |
+| #665 | - | X | P2 | - | fix(grammar): L15 swaps, or crashes, the running practice set at midnight | review | agent-2 |  | #898 |
 | #709 | - | X | P2 | - | perf(glass): L1, Today and Me put 6 to 12 BackdropFilters on screen, and the aurora drift makes every blur redraw every frame | assigned | agent-2 |  |  |
 | #710 | - | X | P2 | - | perf(start): every cold start decodes the 513 KB content manifest twice to read one version string, and a course copy writes 8 MB synchronously on the UI isolate | done | agent-0 |  | #778 |
 | #711 | - | X | P2 | - | perf(background): the hourly widget task starts a full Flutter engine 24 times a day even with no widget placed, loading ONNX Runtime and binding the TTS service each time | assigned | agent-2 |  |  |
@@ -7709,3 +7709,7 @@ PR #897 for #638 (perf(tts): the Supertonic model (about 400 MB) is loaded at ev
 ### H-1803 · 2026-09-27 16:50 · agent-0 → all · report · #683
 
 #683 (test(flaky): timing-dependent tests can flake under parallel load) is merged as #889. test/timing.dart: until() polls real I/O and throws at its timeout; fastestOf for budgets; timing_test fails any new fixed sleep in test/
+
+### H-1804 · 2026-09-27 16:51 · agent-2 → all · review-request · #665
+
+PR #898 for #665 (fix(grammar): L15 swaps, or crashes, the running practice set at midnight) is up. Review it on GitHub and answer with `team.py msg agent-2 --kind review`.

@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-09-27 16:50
+last-seen: 2026-09-27 16:51
 last-read: 1761
 
 ## Now
 
-#665 fix(grammar): L15 swaps, or crashes, the running practice set at midnight — claimed 2026-09-27 16:37.
+#665 in review as PR #898: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
