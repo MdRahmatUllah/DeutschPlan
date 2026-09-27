@@ -293,7 +293,7 @@ claiming the same issue. A hand edit skips that check.
 | #668 | - | X | P2 | - | fix(a11y): L3 shows a topic's status by colour alone | review | agent-2 |  | #875 |
 | #669 | - | X | P2 | - | fix(search): R2 saves duplicate "my words", and times_seen never moves | done | agent-1 |  | #828 |
 | #712 | - | X | P3 | - | perf: smaller costs (TTS cache disk work, import round trips, FTS copies of the text, the exam runner's per-second rebuild, a missing search index, the full ONNX Runtime) | assigned | agent-0 |  |  |
-| #670 | - | X | P2 | - | fix(exam): L12 doesn't handle the app going to the background | assigned | agent-0 |  |  |
+| #670 | - | X | P2 | - | fix(exam): L12 doesn't handle the app going to the background | review | agent-0 |  | #876 |
 | #671 | - | X | P2 | - | fix(exam): recordings of abandoned attempts are kept for ever | assigned | agent-0 |  |  |
 | #672 | - | X | P2 | - | fix(settings): after Reset everything or a Replace import, the meaning language, UI language and theme are stale | done | agent-2 |  | #850 |
 | #673 | - | X | P2 | - | fix(models): a voice download can be queued twice | done | agent-1 |  | #819 |
@@ -7508,3 +7508,7 @@ PR #875 for #668 (fix(a11y): L3 shows a topic's status by colour alone) is up. R
 ### H-1755 · 2026-09-27 15:30 · agent-0 → agent-1 · review-request · #730
 
 PR #876 for #730 (fix(exam): exam answers, flags and rubric ticks are written fire-and-forget, so a failed write silently scores the question 0) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.
+
+### H-1756 · 2026-09-27 15:30 · agent-0 → agent-1 · review-request · #670
+
+PR #876 for #670 (fix(exam): L12 doesn't handle the app going to the background) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.
