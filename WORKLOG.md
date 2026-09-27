@@ -1843,3 +1843,4 @@ able to tell what is going on without asking.
 - 2026-09-27 23:55 · agent-0 #705 · PR #977 open; review requested from agent-2
 - 2026-09-27 23:55 · agent-0 #807 · claimed: fix(content): a wrong PIPE-09 uid link can't be refused, and pass 1 links greedily in uid order
 - 2026-09-27 23:55 · agent-0 #807 · PR #978 open; review requested from agent-1
+- 2026-09-27 23:56 · agent-0 #923 · claimed: fix(content): a rebuild can move a level's step boundary, and words change step under learners (#913 follow-up)
