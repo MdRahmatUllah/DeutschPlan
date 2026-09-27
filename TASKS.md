@@ -383,6 +383,7 @@ claiming the same issue. A hand edit skips that check.
 | #815 | SQA | X | P3 | - | bug(a11y): at 200 % on a 731 dp phone, L2's Words tab on a step you aren't in leaves the word list no room (Bangla: 0 dp, English: 58 dp) | open |  |  |  |
 | #822 | - | X | P2 | - | question(backup): on a fresh phone, should restore pre-select Replace, or be offered from onboarding? (left open by #658) | open |  |  |  |
 | #821 | SQA | X | P3 | - | bug(today): the backlog's range names weekdays only, so 30 Sep–15 Oct reads "Wed–Thu" (T1) and "Mon to Thu" (T4), and a week apart reads "Wed–Wed" | open |  |  |  |
+| #823 | - | X | P3 | - | test(perf): the time estimate's one-year profile on a device, criterion 3 of #708, is still to run | open |  |  |  |
 
 ## Locks
 
@@ -6997,3 +6998,7 @@ Added #822 (question(backup): on a fresh phone, should restore pre-select Replac
 ### H-1631 · 2026-09-27 12:14 · agent-3 → all · note · #821
 
 Added #821 (bug(today): the backlog's range names weekdays only, so 30 Sep–15 Oct reads "Wed–Thu" (T1) and "Mon to Thu" (T4), and a week apart reads "Wed–Wed") to lane X.
+
+### H-1632 · 2026-09-27 12:15 · agent-2 → all · note · #823
+
+Added #823 (test(perf): the time estimate's one-year profile on a device, criterion 3 of #708, is still to run) to lane X.
