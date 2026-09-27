@@ -317,7 +317,7 @@ claiming the same issue. A hand edit skips that check.
 | #715 | - | X | P2 | - | perf(plan): unplannedWords' NOT EXISTS re-scans every planned word for each word of the step, costing seconds per catch-up late in the course, inside openDay's write lock | done | agent-0 |  | #769 |
 | #694 | - | X | P3 | - | fix(errors): 2 lower-severity findings in error handling across screens (production review checklist) | assigned | agent-2 |  |  |
 | #695 | - | X | P3 | - | test(guards): 4 lower-severity findings in tests and their guards (production review checklist) | done | agent-0 |  | #896 |
-| #696 | - | X | P3 | - | docs(copy): 4 lower-severity findings in Bangla copy and docs (production review checklist) | assigned | agent-1 |  |  |
+| #696 | - | X | P3 | - | docs(copy): 4 lower-severity findings in Bangla copy and docs (production review checklist) | assigned | agent-0 |  |  |
 | #697 | - | X | P3 | - | chore(tools): 12 lower-severity findings in tools, content pipeline and build (production review checklist) | review | agent-0 |  | #895 |
 | #698 | - | X | P3 | - | chore(core): smaller items in core (production review nits) | assigned | agent-0 |  |  |
 | #699 | - | X | P3 | - | chore(domain): smaller items in domain (production review nits) | done | agent-0 |  | #840 |
@@ -9154,5 +9154,9 @@ rebalanced from agent-1 (docs/copy batch): agent-0 helper
 rebalanced from agent-1 (docs/copy batch): agent-0 helper
 
 ### H-2156 · 2026-09-27 23:46 · agent-0 → agent-0 · assign · #684
+
+rebalanced from agent-1 (docs/copy batch): agent-0 helper
+
+### H-2157 · 2026-09-27 23:46 · agent-0 → agent-0 · assign · #696
 
 rebalanced from agent-1 (docs/copy batch): agent-0 helper
