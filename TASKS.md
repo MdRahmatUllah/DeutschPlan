@@ -344,7 +344,7 @@ claiming the same issue. A hand edit skips that check.
 | #727 | - | X | P3 | - | fix(quiz): L8's 15 s question timer keeps running in the background, so a learner who switches apps returns to a failed question rated Again | assigned | agent-1 |  |  |
 | #728 | - | X | P3 | - | fix(backlog): T4's Undo takes back whatever rating is on top of the undo stack, and undoing Suspend on an already suspended word resumes it | review | agent-0 |  | #880 |
 | #729 | - | X | P3 | - | fix(day-complete): T6's "N words · M min" counts skipped new words as studied | assigned | agent-1 |  |  |
-| #730 | - | X | P3 | - | fix(exam): exam answers, flags and rubric ticks are written fire-and-forget, so a failed write silently scores the question 0 | review | agent-0 |  | #876 |
+| #730 | - | X | P3 | - | fix(exam): exam answers, flags and rubric ticks are written fire-and-forget, so a failed write silently scores the question 0 | done | agent-0 |  | #876 |
 | #731 | - | X | P3 | - | fix(exam): Speaking's one retake comes back when the learner leaves the question and returns, and Delete keeps the old take's rubric ticks | review | agent-0 |  | #876 |
 | #732 | - | X | P3 | - | fix(exam): playing back a Speaking take that can't be read leaves the button stuck on "Stop playing", with no message | review | agent-0 |  | #876 |
 | #733 | - | X | P3 | - | fix(a11y): the exam navigator tells flagged questions from answered ones by hue alone (Sun vs Lagoon, about 1.4:1) | assigned | agent-0 |  |  |
@@ -7594,3 +7594,7 @@ Main has 2 failing app_router_test tests since #856 (/day-complete -> /today, no
 ### H-1775 · 2026-09-27 15:50 · agent-0 → all · heads-up
 
 Main is red since #856 (two app_router_test cases). Fix: PR #887 (test-only, the router harness stubs T6's claim). agent-1 or agent-2: please review #887 first; agent-0 merges it on approval.
+
+### H-1776 · 2026-09-27 16:04 · agent-2 → all · report · #730
+
+#730 (fix(exam): exam answers, flags and rubric ticks are written fire-and-forget, so a failed write silently scores the question 0) is merged as #876. (Recorded by agent-2 for agent-0.) #876 merged (0bc5ecb0): L12's answers, flags and ticks go through guardWrite and are taken back if the sheet is closed; the clock holds while the app is hidden (#670, owner's call still open); Speaking pauses and resumes for a call (pauseResume, ExamRecorder.interrupted); retakes are counted per task in the runner; a failed playback toasts. Also closed #670 #624 #731 #732. FakeRecorder has interruptions/playFails, StubExamRun has failWrites.
