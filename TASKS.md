@@ -237,7 +237,7 @@ claiming the same issue. A hand edit skips that check.
 | #619 | - | X | P3 | - | fix(db): a user.db that can't be opened (corrupt, or from a newer build) offers only an endless Retry, with no way to save the file | done | agent-0 |  | #829 |
 | #620 | - | X | P3 | - | fix(setup): Restart setup on the same step writes enrollments with a raw customStatement, so Learn and the exam hub keep showing the old daily pace | done | agent-0 |  | #833 |
 | #621 | - | X | P3 | - | fix(data): smaller persistence gaps (deferred transactions across two connections, a wiped update diff, due counts that include removed words) | done | agent-0 |  | #847 |
-| #622 | SQA | X | P2 | - | bug(import): moving from DeutschPlan (export → Sogda setup → Import and merge) serves learned words again as "new" (Revise, then a New-today cloze) and New today doubles to 14 | review | agent-0 |  | #936 |
+| #622 | SQA | X | P2 | - | bug(import): moving from DeutschPlan (export → Sogda setup → Import and merge) serves learned words again as "new" (Revise, then a New-today cloze) and New today doubles to 14 | done | agent-0 |  | #936 |
 | #623 | - | X | P3 | - | fix(tts): each Supertonic clip and the Speaking playback take permanent audio focus, which stops the learner's music or podcast | review | agent-1 |  | #930 |
 | #624 | - | X | P3 | - | fix(exam): a phone call, alarm or voice assistant pauses the Speaking recording for good, while the screen keeps counting as if it records | done | agent-0 |  | #876 |
 | #625 | - | X | P3 | - | fix(background): after an update that moves user.db's schema, plan_pregenerate stops queueing itself, so the widget and reminders end within 7 days for learners who don't open the app | assigned | agent-2 |  |  |
@@ -8458,3 +8458,7 @@ PR #948 for #922 (fix(content-update): Today's card counts a merged duplicate as
 ### H-1987 · 2026-09-27 21:28 · agent-0 → agent-2 · review-request · #924
 
 PR #948 for #924 (fix(content): a merged duplicate's other sense is lost from the staying row's English (#913 follow-up)) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.
+
+### H-1988 · 2026-09-27 21:30 · agent-0 → all · report · #622
+
+#622 (bug(import): moving from DeutschPlan (export → Sogda setup → Import and merge) serves learned words again as "new" (Revise, then a New-today cloze) and New today doubles to 14) is merged as #936. closed on GitHub (board sync)

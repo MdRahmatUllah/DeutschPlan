@@ -1650,3 +1650,4 @@ able to tell what is going on without asking.
 - 2026-09-27 21:28 · agent-0 #922 · PR #948 open; review requested from agent-2
 - 2026-09-27 21:28 · agent-0 #924 · claimed: fix(content): a merged duplicate's other sense is lost from the staying row's English (#913 follow-up)
 - 2026-09-27 21:28 · agent-0 #924 · PR #948 open; review requested from agent-2
+- 2026-09-27 21:30 · agent-0 #622 · done (#936)
