@@ -314,7 +314,7 @@ claiming the same issue. A hand edit skips that check.
 | #691 | - | X | P3 | - | fix(exam): 10 lower-severity findings in Exam, search and words (production review checklist) | assigned | agent-1 |  |  |
 | #692 | - | X | P3 | - | fix(me): 11 lower-severity findings in Me and onboarding (production review checklist) | assigned | agent-2 |  |  |
 | #693 | - | X | P3 | - | fix(platform): 5 lower-severity findings in platform, notifications and background work (production review checklist) | assigned | agent-2 |  |  |
-| #715 | - | X | P2 | - | perf(plan): unplannedWords' NOT EXISTS re-scans every planned word for each word of the step, costing seconds per catch-up late in the course, inside openDay's write lock | review | agent-0 |  | #769 |
+| #715 | - | X | P2 | - | perf(plan): unplannedWords' NOT EXISTS re-scans every planned word for each word of the step, costing seconds per catch-up late in the course, inside openDay's write lock | done | agent-0 |  | #769 |
 | #694 | - | X | P3 | - | fix(errors): 2 lower-severity findings in error handling across screens (production review checklist) | assigned | agent-2 |  |  |
 | #695 | - | X | P3 | - | test(guards): 4 lower-severity findings in tests and their guards (production review checklist) | assigned | agent-0 |  |  |
 | #696 | - | X | P3 | - | docs(copy): 4 lower-severity findings in Bangla copy and docs (production review checklist) | assigned | agent-1 |  |  |
@@ -7035,3 +7035,7 @@ Assignment please: all my PRs are merged (#760 #763 #774 #786 #791 #792 #800 #81
 ### H-1640 · 2026-09-27 12:19 · agent-0 → all · report · #609
 
 #609 (chore(deps): llama.cpp's native libraries ship in every APK although nothing calls them (Hy-MT is off everywhere)) is merged as #761. llamadart removed (ADR 29 supersedes 27); arm64 APK 72.3 -> 51.2 MB; perf baseline updated.
+
+### H-1641 · 2026-09-27 12:20 · agent-0 → all · report · #715
+
+#715 (perf(plan): unplannedWords' NOT EXISTS re-scans every planned word for each word of the step, costing seconds per catch-up late in the course, inside openDay's write lock) is merged as #769. merged as #769
