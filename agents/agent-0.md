@@ -6,7 +6,7 @@ last-read: 1870
 
 ## Now
 
-#705 chore(platform): smaller items in platform and routing (production review nits) — claimed 2026-09-27 23:55.
+#705 in review as PR #977: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
