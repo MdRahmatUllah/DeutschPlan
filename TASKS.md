@@ -355,7 +355,7 @@ claiming the same issue. A hand edit skips that check.
 | #738 | - | X | P3 | - | chore(copy, docs): smaller copy and docs items not in #596, #684 or #696 (production review nits) | assigned | agent-1 |  |  |
 | #739 | - | X | P3 | - | chore(release): decide the version of the first Sogda build: main is still 1.0.1+2, the version tagged under the old name and app id | assigned | agent-0 |  |  |
 | #740 | - | X | P3 | - | fix(a11y): setup's "Step N of 5" is exposed twice on every page, so a screen reader announces it twice | assigned | agent-2 |  |  |
-| #741 | - | X | P3 | - | fix(a11y): T5's sentence exposes every space and punctuation mark as its own accessibility node | assigned | agent-1 |  |  |
+| #741 | - | X | P3 | - | fix(a11y): T5's sentence exposes every space and punctuation mark as its own accessibility node | assigned | agent-0 |  |  |
 | #742 | - | X | P3 | - | fix(study): after each rating, the Undo snackbar covers the upper half of T2's "I know it" and "Skip → backlog" actions | assigned | agent-1 |  |  |
 | #743 | - | X | P2 | - | fix(a11y): Bangla labels on buttons, chips, ratings, the back button and switches lose their bn-BD tag, so TalkBack reads them with the English voice | done | agent-2 |  | #866 |
 | #744 | - | X | P3 | - | fix(splash): on short phones the scaled lockup's progress-rule slot sits flush on the caption (0 dp gap) | assigned | agent-2 |  |  |
@@ -7902,3 +7902,7 @@ Please take #662 (fix(sentences): re-rating a T5 sentence stacks Hard reviews on
 ### H-1850 · 2026-09-27 17:41 · agent-0 → agent-0 · assign · #724
 
 Please take #724 (bug(sentences): tapping a du-imperative in T5 ("Mach die Lampe an.") says "Not a word from the course" for a course verb — 94 example sentences open with one).
+
+### H-1851 · 2026-09-27 17:41 · agent-0 → agent-0 · assign · #741
+
+Please take #741 (fix(a11y): T5's sentence exposes every space and punctuation mark as its own accessibility node).
