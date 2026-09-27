@@ -20,7 +20,7 @@
   |---|---|---|---|
   | deEn | the headword with its article | the meaning list | `checkMeaning` |
   | deBn | the headword | the Bangla meaning (needs one) | `checkMeaning` |
-  | enDe | the meaning in the learner's meaning language (#387): English for `en`; Bangla for `bn` where the word has one, else English, as the exam's Reverse; English with the Bangla as `hint` for `both` | the headword | `checkGerman` |
+  | enDe | the meaning in the learner's meaning language (#387): English for `en`; Bangla for `bn` where the word has one, else English, as the exam's Reverse; English with the Bangla as `hint` for `both` | the headword, or any course word the prompt's cell also means (#832) | `checkGerman` |
   | articles | the noun without its article | `der`/`die`/`das` (needs one) | `checkArticle` |
   | listening | the headword, played | the headword, typed | `checkGerman` |
   | forms | the word | one form, with its label | `checkForm` |

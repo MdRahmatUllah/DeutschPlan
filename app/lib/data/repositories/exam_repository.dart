@@ -1,4 +1,5 @@
 import 'package:sogda/data/db/app_database.dart';
+import 'package:sogda/data/db/content_dao.dart';
 import 'package:sogda/data/repositories/course_text.dart';
 import 'package:sogda/domain/exam_generator.dart';
 import 'package:sogda/domain/exam_grading.dart';
@@ -239,6 +240,7 @@ class ExamRepository extends DatabaseAccessor<AppDatabase>
       step: step,
       level: step.split('.').first,
       course: await loadCourseText(db),
+      sharedMeanings: await ContentDao(db).sharedMeanings(),
       words: <ExamWord>[
         for (final row in await examWords(step).get())
           ExamWord(

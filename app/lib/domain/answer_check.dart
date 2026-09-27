@@ -87,7 +87,34 @@ Verdict checkMeaning(String given, String expected) {
 /// das, den, dem or des is one of its words: "Das stimmt nicht" wants all
 /// three, and "die Tisch decken" for "den Tisch decken" is wrong, not a
 /// wrong article (#687 AN-10).
+///
+/// [also]: EN → DE's other right answers, the course's other words whose
+/// meaning cell is the prompt ("you" is du, dich and Sie, #832). One of them
+/// counts only when it is right: a near miss or a wrong article is judged
+/// against [german], the word asked, which the feedback names.
 Verdict checkGerman(
+  String given,
+  String german, {
+  String? article,
+  bool phrase = false,
+  List<GermanAnswer> also = const <GermanAnswer>[],
+}) {
+  final verdict = _checkGerman(given, german, article: article, phrase: phrase);
+  if (verdict == Verdict.correct) return verdict;
+  for (final other in also) {
+    if (_checkGerman(given, other.german, phrase: other.phrase) ==
+        Verdict.correct) {
+      return Verdict.correct;
+    }
+  }
+  return verdict;
+}
+
+/// A German answer as EN → DE takes it: the headword, article and all, and
+/// whether it is a phrase typed whole ([checkGerman]'s `phrase`).
+typedef GermanAnswer = ({String german, bool phrase});
+
+Verdict _checkGerman(
   String given,
   String german, {
   String? article,
@@ -155,6 +182,14 @@ Verdict checkForm(String given, String expectedForm) =>
 /// second splitter there would drift from this one.
 List<String> splitMeanings(String expected) =>
     _splitOutsideBrackets(expected, const <String>{'/', ',', ';'});
+
+/// A meaning cell's synonyms as two words' meanings are compared: lower
+/// case, without "to ". Two words that share one would both be right, so
+/// neither is the other's distractor (quizzes, placement #680).
+Set<String> senses(String cell) => <String>{
+  for (final meaning in splitMeanings(cell))
+    _stripInfinitiveTo(meaning).toLowerCase(),
+};
 
 /// Every way a meaning cell may be answered: the cell as shown ("the bill,
 /// please" is one phrase, not two synonyms) and each of its synonyms, each

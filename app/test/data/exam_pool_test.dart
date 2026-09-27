@@ -91,6 +91,23 @@ void main() {
       expect(pool.words.map((w) => w.word.uid), <String>[ContentFixture.haus]);
     });
 
+    test(
+      '#832 and the course words that share a meaning, for Reverse',
+      () async {
+        await db.customStatement('''
+INSERT INTO c.words (uid, sublevel_code, level_code, seq, seq_in_sublevel,
+  article, german, pos, english, bangla, search_key, search_key_alt, kind)
+VALUES ('uid-heim', 'A1.2', 'A1', 9, 9, 'das', 'Heim', 'noun', 'house',
+  'ঘর', 'heim', 'heim', 'vocab')
+''');
+        final pool = await exams.pool('A1.1');
+        expect(pool.sharedMeanings['house']!.map((w) => w.uid), <String>[
+          ContentFixture.haus,
+          'uid-heim',
+        ]);
+      },
+    );
+
     test('the step\'s grammar topics, with their tags', () async {
       final pool = await exams.pool('A1.1');
 

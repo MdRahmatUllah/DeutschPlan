@@ -19,6 +19,10 @@ class DriftQuizStore implements QuizStore {
   final ContentDao _content;
 
   @override
+  Future<Map<String, List<QuizWord>>> sharedMeanings() =>
+      _content.sharedMeanings();
+
+  @override
   Future<List<QuizWord>> learned(QuizSource source, {String? ref}) async {
     final uids = source == QuizSource.compareSet
         ? <String>{
