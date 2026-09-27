@@ -328,7 +328,7 @@ claiming the same issue. A hand edit skips that check.
 | #703 | - | X | P3 | - | chore(exam): smaller items in Exam, search and words (production review nits) | assigned | agent-0 |  |  |
 | #704 | - | X | P3 | - | chore(me): smaller items in Me and onboarding (production review nits) | assigned | agent-2 |  |  |
 | #717 | - | X | P3 | - | fix(data): multi-rating actions (L13's missed words, L9's add to revision, W1's Mark known) span several transactions, so a failure half way leaves some words rated and a retry rates them again | done | agent-0 |  | #851 |
-| #705 | - | X | P3 | - | chore(platform): smaller items in platform and routing (production review nits) | assigned | agent-2 |  |  |
+| #705 | - | X | P3 | - | chore(platform): smaller items in platform and routing (production review nits) | assigned | agent-0 |  |  |
 | #706 | - | X | P3 | - | test(misc): smaller items in tests (production review nits) | done | agent-0 |  | #918 |
 | #707 | - | X | P3 | - | chore(tools): smaller items in tools (production review nits) | done | agent-0 |  | #830 |
 | #718 | - | X | P3 | - | fix(content-build): the database and the manifest take built_at from two clocks, so about 8 % of builds fail the FR-M9-01 test that says they agree | done | agent-0 |  | #794 |
@@ -9065,5 +9065,9 @@ rebalanced from agent-2: agent-0 helper, background/platform batch
 PR #962 (#751, part of #854): approved with 2 should-fixes (review on the PR): reminder-days.md:7 has the #854 note inside the quoted card copy; reminder_days_screen.dart:24 and :235 comments still say tonight's. Fold them in, merge origin/main in (merge-tree is clean), re-run reminder_times/reminder_scheduler/reminder_days tests, the M5 goldens, l10n_test and architecture_test on the merge, then merge it yourself.
 
 ### H-2134 · 2026-09-27 23:23 · agent-0 → agent-0 · assign · #693
+
+rebalanced from agent-2: agent-0 helper, background/platform batch
+
+### H-2135 · 2026-09-27 23:23 · agent-0 → agent-0 · assign · #705
 
 rebalanced from agent-2: agent-0 helper, background/platform batch
