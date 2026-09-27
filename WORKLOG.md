@@ -1287,3 +1287,4 @@ able to tell what is going on without asking.
 - 2026-09-27 09:45 · agent-1 · #614 merged (#792). #774 should-fixes 1-2 pushed; follow-up issues for its findings 3-4 still to file before merge. Usage limit reached.
 - 2026-09-27 11:11 · agent-1 #803 · added to the board, lane X
 - 2026-09-27 11:11 · agent-1 #804 · added to the board, lane X
+- 2026-09-27 11:11 · agent-1 #617 · done (#774)
