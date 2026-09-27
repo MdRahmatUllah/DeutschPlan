@@ -6,7 +6,7 @@ last-read: 1751
 
 ## Now
 
-#613 in review as PR #882: answer review threads; re-run the gate if main moved, then merge.
+#884 fix(sentences): T5 reads its day lazily at finish, so finishing past midnight claims the new day's T6 (#859 blocker, unfixed on main) — claimed 2026-09-27 16:20.
 
 ## Next
 

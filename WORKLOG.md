@@ -1459,3 +1459,4 @@ able to tell what is going on without asking.
 - 2026-09-27 15:49 · agent-2 #885 · added to the board, lane X
 - 2026-09-27 15:50 · agent-2 #886 · added to the board, lane X
 - 2026-09-27 16:04 · agent-2 #730 · done (#876)
+- 2026-09-27 16:20 · agent-1 #884 · claimed: fix(sentences): T5 reads its day lazily at finish, so finishing past midnight claims the new day's T6 (#859 blocker, unfixed on main)
