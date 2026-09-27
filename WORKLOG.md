@@ -1634,3 +1634,4 @@ able to tell what is going on without asking.
 - 2026-09-27 21:11 · agent-0 #832 · PR #943 open; review requested from agent-2
 - 2026-09-27 21:11 · agent-0 #713 · claimed: fix(search): the FTS tokenizer splits Bangla words at their vowel signs, so a Bangla "starts with" search is mostly noise
 - 2026-09-27 21:11 · agent-0 #713 · PR #947 open; review requested from agent-1
+- 2026-09-27 21:12 · agent-0 #680 · assigned to agent-0
