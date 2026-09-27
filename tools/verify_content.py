@@ -271,6 +271,29 @@ def check_tips_fit_their_word_class(
     return failures
 
 
+def check_every_category_has_words(db: sqlite3.Connection) -> list[Failure]:
+    """#636: a category no word is in. It is a tab the words' Category cells
+    do not name (the tab name cut at 31 characters, say), so its twin from
+    the cells has no description and the tab's is lost."""
+    rows = [
+        name
+        for (name,) in db.execute(
+            "SELECT name FROM categories c WHERE NOT EXISTS "
+            "(SELECT 1 FROM words w WHERE w.category_id = c.id) ORDER BY id"
+        )
+    ]
+    if not rows:
+        return []
+    return [
+        Failure(
+            "categories",
+            f"{len(rows)} categories have no words: {_sample(rows)}. The "
+            f"tab's title cell ('Category: <name>') must spell the name the "
+            f"Category column uses.",
+        )
+    ]
+
+
 def check_no_article_in_german(db: sqlite3.Connection) -> list[Failure]:
     """#287: a noun whose article is still inside `german`, so the headword
     has no gender colour and the Articles quiz never asks it."""
@@ -360,6 +383,57 @@ def check_verb_forms(db: sqlite3.Connection) -> list[Failure]:
     ]
 
 
+#: Nouns that take no article: the holidays (#633).
+NO_ARTICLE = frozenset({"Silvester", "Weihnachten", "Neujahr", "Ostern"})
+
+#: What makes a noun row a set of words rather than one ("Grund / Ursache",
+#: "Mitleid ↔ Sympathie", "Geld vs. Kohle"): no one article fits it.
+WORD_SET = r"/|↔| vs\. "
+
+
+def check_articles(db: sqlite3.Connection) -> list[Failure]:
+    """#633: a noun without an article, which gets no gender colour and no
+    Articles practice; and a phrase with one, which the Articles quiz asks
+    ("___ Fehler machen")."""
+    import re
+
+    bare = [
+        german
+        for (german,) in db.execute(
+            "SELECT german FROM words WHERE pos = 'noun' AND article IS NULL "
+            "ORDER BY seq"
+        )
+        if german not in NO_ARTICLE and not re.search(WORD_SET, german)
+    ]
+    phrases = [
+        f"{article} {german}"
+        for article, german in db.execute(
+            "SELECT article, german FROM words "
+            "WHERE pos = 'phrase' AND article IS NOT NULL ORDER BY seq"
+        )
+    ]
+    failures = []
+    if bare:
+        failures.append(
+            Failure(
+                "articles",
+                f"{len(bare)} nouns have no article: {_sample(bare)}. Fill in "
+                f"the Article column (a noun that takes none goes in "
+                f"NO_ARTICLE in {Path(__file__).name}).",
+            )
+        )
+    if phrases:
+        failures.append(
+            Failure(
+                "articles",
+                f"{len(phrases)} phrases carry an article, which the Articles "
+                f"quiz would ask: {_sample(phrases)}. Clear it, or make a noun "
+                f"phrase a noun.",
+            )
+        )
+    return failures
+
+
 def read_denylist(path: Path | None) -> list[tuple[int, str]]:
     """One term per line; `#` starts a comment. Case-folded, with the line
     number a failure names it by."""
@@ -440,6 +514,8 @@ GATES = (
     check_no_article_in_german,
     check_no_pair_headword,
     check_verb_forms,
+    check_articles,
+    check_every_category_has_words,
     check_no_denylisted_terms,
 )
 

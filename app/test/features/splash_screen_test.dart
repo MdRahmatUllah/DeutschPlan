@@ -4,6 +4,7 @@ library;
 import 'package:sogda/core/theme/aurora_backdrop.dart';
 
 import 'dart:async';
+import 'dart:math' as math;
 
 import 'package:sogda/bootstrap.dart';
 import 'package:sogda/core/adaptive/adaptive.dart';
@@ -208,12 +209,53 @@ void main() {
 
       expect(tokens.color.primary, const Color(0xFF2EE6D6));
       expect(tokens.color.accent, const Color(0xFFFFD54A));
-      expect(
-        tokens.color.ink,
-        const Color(0xFFF4F1FF),
-        reason: 'the dark caption and rule are the page’s light ink',
-      );
     });
+
+    // One test per mode: MaterialApp animates a theme change, so a second
+    // pump in the same test would still read the first mode's colours.
+    for (final mode in <SgMode>[SgMode.light, SgMode.dark]) {
+      testWidgets('#605 the caption reaches 4.5:1 and the progress line 3:1 '
+          'on the field, ${mode.name}', (tester) async {
+        // The dark page's light ink was about 1.4:1 on the lifted Lagoon;
+        // they are the kit's Ink now, as the wordmark is.
+        double ratio(Color a, Color b) {
+          final (x, y) = (a.computeLuminance(), b.computeLuminance());
+          return (math.max(x, y) + 0.05) / (math.min(x, y) + 0.05);
+        }
+
+        await pump(
+          tester,
+          mode: mode,
+          child: const SplashScreen(showProgress: true),
+        );
+        final field = tokensOf(tester).color.primary;
+        expect(
+          field,
+          mode == SgMode.dark
+              ? const Color(0xFF2EE6D6)
+              : const Color(0xFF00C2B2),
+          reason: "the field is the mode's",
+        );
+        final caption = tester
+            .widget<Text>(find.text(l10n.splashPreparing).last)
+            .style!
+            .color!;
+        final bar = tester.widget<LinearProgressIndicator>(
+          find.byType(LinearProgressIndicator),
+        );
+        final value = bar.valueColor!.value!;
+        final track = Color.alphaBlend(bar.backgroundColor!, field);
+
+        expect(ratio(caption, field), greaterThanOrEqualTo(4.5));
+        expect(ratio(value, field), greaterThanOrEqualTo(3));
+        expect(ratio(value, track), greaterThanOrEqualTo(3));
+        expect(
+          bar.backgroundColor,
+          SgSurfaceTokens.light.track,
+          reason: 'the same rule in both modes: Ink over its light track',
+        );
+      });
+    }
   });
 
   group('FR-S1: the progress line', () {
