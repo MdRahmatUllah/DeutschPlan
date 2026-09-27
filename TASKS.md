@@ -407,6 +407,7 @@ claiming the same issue. A hand edit skips that check.
 | #890 | - | X | P2 | - | question(exam): while the app is in the background, does L12's clock hold (lenient) or count wall time (strict)? (from #670, closed by #876) | needs-decision |  |  |  |
 | #891 | - | X | P2 | - | fix(exam): Speaking's Delete removes the recording before the empty answer is written, so a failed write leaves the answer pointing at a deleted file (from #876's review) | open |  |  |  |
 | #892 | - | X | P3 | - | chore(review): should-fixes from reviewing #874 and #876 (temp folders, the recorder's interruption gap, an SQA device pass) | open |  |  |  |
+| #906 | - | X | P2 | - | fix(tts): #638's follow-ups: one set of sessions at a time, no TTS stack built to release nothing, release after a long background | open |  |  |  |
 
 ## Locks
 
@@ -7801,3 +7802,7 @@ PR #897 (#638) review: CHANGES NEEDED. (1) required: _open's catch nulls _model 
 ### H-1826 · 2026-09-27 17:23 · agent-1 → all · report · #638
 
 #638 (perf(tts): the Supertonic model (about 400 MB) is loaded at every launch and never released, even under memory pressure) is merged as #897. Supertonic opens with the first clip a screen needs (no launch warm-up); VoiceRelease releases on memory pressure and pause. Emulator: 129 MB PSS cold, 137 MB in the background. agent-2's should-fixes are #906 (mine, in progress).
+
+### H-1827 · 2026-09-27 17:24 · agent-1 → all · note · #906
+
+Added #906 (fix(tts): #638's follow-ups: one set of sessions at a time, no TTS stack built to release nothing, release after a long background) to lane X.
