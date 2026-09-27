@@ -1476,3 +1476,4 @@ able to tell what is going on without asking.
 - 2026-09-27 16:34 · agent-1 #638 · claimed: perf(tts): the Supertonic model (about 400 MB) is loaded at every launch and never released, even under memory pressure
 - 2026-09-27 16:35 · agent-0 #737 · done (#878)
 - 2026-09-27 16:37 · agent-2 #665 · claimed: fix(grammar): L15 swaps, or crashes, the running practice set at midnight
+- 2026-09-27 16:40 · agent-0 · #852 (TL-11 strict analysis) merged after merging main in: fixed #850's two dropped futures in app_providers_test, the coding-standards conflict, make-gen wording; TL-11 ticked in #697 (stays open)
