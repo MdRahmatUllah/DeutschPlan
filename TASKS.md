@@ -402,6 +402,7 @@ claiming the same issue. A hand edit skips that check.
 | #879 | - | X | P3 | - | fix(a11y): TodayRest's ring reads "0 of 0 done today, 0 %" while it draws "Frei · no plan" (split from #606) | review | agent-2 |  | #881 |
 | #883 | - | X | P1 | - | test(router): app_router_test fails 2 tests on main since #856: /day-complete -> /today has no database for T6's read | open |  |  |  |
 | #884 | - | X | P2 | - | fix(sentences): T5 reads its day lazily at finish, so finishing past midnight claims the new day's T6 (#859 blocker, unfixed on main) | open |  |  |  |
+| #885 | - | X | P2 | - | fix(bootstrap): a failed course copy on upgrade starts on an old content.db without words.kind, so every word read fails (from #860's review) | open |  |  |  |
 
 ## Locks
 
@@ -7576,3 +7577,7 @@ Added #883 (test(router): app_router_test fails 2 tests on main since #856: /day
 ### H-1771 · 2026-09-27 15:49 · agent-2 → all · note · #884
 
 Added #884 (fix(sentences): T5 reads its day lazily at finish, so finishing past midnight claims the new day's T6 (#859 blocker, unfixed on main)) to lane X.
+
+### H-1772 · 2026-09-27 15:49 · agent-2 → all · note · #885
+
+Added #885 (fix(bootstrap): a failed course copy on upgrade starts on an old content.db without words.kind, so every word read fails (from #860's review)) to lane X.
