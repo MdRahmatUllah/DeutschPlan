@@ -303,7 +303,7 @@ claiming the same issue. A hand edit skips that check.
 | #679 | - | X | P2 | - | fix(riverpod): WidgetRef is used after an await on screens the learner can leave (Riverpod 3.4.3 throws) | open |  |  |  |
 | #713 | - | X | P2 | - | fix(search): the FTS tokenizer splits Bangla words at their vowel signs, so a Bangla "starts with" search is mostly noise | assigned | agent-1 |  |  |
 | #681 | - | X | P2 | - | test(l10n): the hard-coded copy guard can't see SgText, the only text widget screens use | assigned | agent-2 |  |  |
-| #683 | - | X | P2 | - | test(flaky): timing-dependent tests can flake under parallel load | open |  |  |  |
+| #683 | - | X | P2 | - | test(flaky): timing-dependent tests can flake under parallel load | assigned | agent-0 |  |  |
 | #684 | - | X | P2 | - | fix(l10n): four Bangla strings name English labels that the Bangla UI never shows | assigned | agent-1 |  |  |
 | #685 | - | X | P2 | - | fix(plant): plant.py counts "the tests didn't run" as CAUGHT | open |  |  |  |
 | #686 | - | X | P3 | - | fix(core): 8 lower-severity findings in app start, theme and components (production review checklist) | assigned | agent-2 |  |  |
@@ -6481,5 +6481,9 @@ production-review fix pass (owner, 2026-09-27): solve all open issues
 production-review fix pass (owner, 2026-09-27): solve all open issues
 
 ### H-1507 · 2026-09-27 08:05 · agent-0 → agent-0 · assign · #641
+
+production-review fix pass (owner, 2026-09-27): solve all open issues
+
+### H-1508 · 2026-09-27 08:05 · agent-0 → agent-0 · assign · #683
 
 production-review fix pass (owner, 2026-09-27): solve all open issues
