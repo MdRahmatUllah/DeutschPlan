@@ -54,6 +54,16 @@
   "@bootstrapErrorContent": {
     "description": "Full-screen bootstrap error when content.db could not be copied or attached. FR-S1-03."
   },
+  "bootstrapErrorContentSpace": "There isn't room on this phone for the course. Free about {megabytes} MB, then tap Retry.",
+  "@bootstrapErrorContentSpace": {
+    "description": "Full-screen bootstrap error when the course copy failed because the phone's storage is full (#803). megabytes is about the size of the course. FR-S1-03.",
+    "placeholders": {
+      "megabytes": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
   "bootstrapErrorSettings": "Sogda could not read your settings.",
   "@bootstrapErrorSettings": {
     "description": "Full-screen bootstrap error when the settings table would not load. FR-S1-03."

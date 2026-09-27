@@ -10,6 +10,7 @@
   "ratingEasy": "সহজ",
   "bootstrapErrorDatabase": "Sogda আপনার ডেটা খুলতে পারেনি।",
   "bootstrapErrorContent": "Sogda কোর্সটি ইনস্টল করতে পারেনি।",
+  "bootstrapErrorContentSpace": "এই ফোনে কোর্সটির জন্য জায়গা নেই। প্রায় {megabytes} MB জায়গা খালি করুন, তারপর আবার চেষ্টা করুন চাপুন।",
   "bootstrapErrorSettings": "Sogda আপনার সেটিংস পড়তে পারেনি।",
   "bootstrapErrorNewerDatabase": "আপনার ডেটা Sogda-র একটি নতুন সংস্করণে সেভ করা হয়েছে। খুলতে অ্যাপটি আপডেট করুন।",
   "bootstrapShareDataFile": "আপনার ডেটা ফাইল শেয়ার করুন",

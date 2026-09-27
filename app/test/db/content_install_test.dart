@@ -84,6 +84,43 @@ void main() {
     );
   });
 
+  test('#804 a first-run copy cut short is copied again through .new, and '
+      'none is left', () async {
+    // What a first run killed mid-copy leaves: a partial `.new`, no course.
+    final installed = await dao.installedFile();
+    final partial = File('${installed.path}.new')
+      ..writeAsBytesSync(assetBytes.sublist(0, assetBytes.length ~/ 3));
+
+    expect(await dao.attach(), ContentFixture.version);
+    expect(partial.existsSync(), isFalse);
+    expect(ContentDao.readable(installed), isTrue);
+  });
+
+  test('#804 a first-run copy that fails leaves no .new behind', () async {
+    // The rename fails: a folder stands where the course goes. The copy
+    // landed in `.new`, and it goes.
+    final installed = await dao.installedFile();
+    Directory(installed.path).createSync(recursive: true);
+
+    await expectLater(dao.attach(), throwsA(anything));
+    expect(File('${installed.path}.new').existsSync(), isFalse);
+  });
+
+  test(
+    '#885 a course without a column this build reads does not fit it',
+    () async {
+      await dao.attach();
+      expect(await dao.fitsBuild(), isTrue);
+      await dao.detach();
+
+      sqlite3.open((await dao.installedFile()).path)
+        ..execute('ALTER TABLE words DROP COLUMN kind')
+        ..close();
+      await dao.attach();
+      expect(await dao.fitsBuild(), isFalse);
+    },
+  );
+
   test('a second run reuses the installed copy', () async {
     await dao.attach();
     await dao.detach();
