@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-09-27 09:42
+last-seen: 2026-09-27 11:15
 last-read: 1573
 
 ## Now
 
-#725 fix(exam): when L13's result fails to load, the learner can't leave: no close button, and back is swallowed — claimed 2026-09-27 09:41.
+Nothing claimed.
 
 ## Next
 
