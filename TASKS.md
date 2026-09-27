@@ -323,7 +323,7 @@ claiming the same issue. A hand edit skips that check.
 | #699 | - | X | P3 | - | chore(domain): smaller items in domain (production review nits) | done | agent-0 |  | #840 |
 | #716 | - | X | P3 | - | fix(text-norm): the Python and Dart search keys disagree for ø ł đ ŧ, for accented letters outside Dart's table, for precomposed Bangla nukta, and for some whitespace | done | agent-0 |  | #919 |
 | #700 | - | X | P3 | - | chore(data): dead code, stale docs and small inconsistencies in data (production review nits) | done | agent-0 |  | #914 |
-| #701 | - | X | P3 | - | chore(today): smaller items in Today and study (production review nits) | in-progress | agent-0 |  |  |
+| #701 | - | X | P3 | - | chore(today): smaller items in Today and study (production review nits) | review | agent-0 |  | #945 |
 | #702 | - | X | P3 | - | chore(learn): smaller items in Learn and quiz (production review nits) | assigned | agent-0 |  |  |
 | #703 | - | X | P3 | - | chore(exam): smaller items in Exam, search and words (production review nits) | assigned | agent-0 |  |  |
 | #704 | - | X | P3 | - | chore(me): smaller items in Me and onboarding (production review nits) | assigned | agent-2 |  |  |
@@ -8371,3 +8371,7 @@ Main is red since #936 met #934 (import_plan_test: a merge onto a phone in use o
 ### H-1966 · 2026-09-27 21:03 · agent-0 → agent-1 · review-request · #689
 
 PR #945 for #689 (fix(today): 10 lower-severity findings in Today and study (production review checklist)) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.
+
+### H-1967 · 2026-09-27 21:03 · agent-0 → agent-1 · review-request · #701
+
+PR #945 for #701 (chore(today): smaller items in Today and study (production review nits)) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.
