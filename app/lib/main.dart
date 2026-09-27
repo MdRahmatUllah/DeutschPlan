@@ -40,8 +40,6 @@ import 'package:cupertino_ui/cupertino_ui.dart'
 import 'package:flutter_localizations/flutter_localizations.dart'
     show GlobalWidgetsLocalizations;
 
-import 'dart:ui' show PlatformDispatcher;
-
 export 'package:sogda/l10n/ui_language_locale.dart';
 
 /// Entry point.
@@ -123,6 +121,26 @@ class _BootstrapHostState extends State<BootstrapHost>
     unawaited(_orientation.update(view.physicalSize / view.devicePixelRatio));
   }
 
+  /// The system light/dark switch, heard as an observer (#644).
+  ///
+  /// Never by taking the dispatcher's `onPlatformBrightnessChanged`, as
+  /// `main` once did: that callback is the framework's own. Replaced, the
+  /// theme notifier heard the switch but the root `MediaQuery` never did, so
+  /// the app's system theme mode kept the old brightness until some other
+  /// metric changed.
+  @override
+  void didChangePlatformBrightness() {
+    if (_ready) _tellBrightness(_container!);
+  }
+
+  /// Tells the theme notifier the phone's brightness, which its own default
+  /// can't know: a dark phone would otherwise get a light first frame.
+  void _tellBrightness(ProviderContainer container) => container
+      .read(themeProvider.notifier)
+      .platformBrightnessChanged(
+        WidgetsBinding.instance.platformDispatcher.platformBrightness,
+      );
+
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
@@ -134,6 +152,9 @@ class _BootstrapHostState extends State<BootstrapHost>
   /// The container the app runs in: the first start's, or a retry's.
   ProviderContainer? _container;
 
+  /// Whether [_container] is a ready app's, which has a theme to tell.
+  bool _ready = false;
+
   Future<void> _start() async {
     final result = await _run();
     if (mounted) _adopt(result);
@@ -142,7 +163,8 @@ class _BootstrapHostState extends State<BootstrapHost>
   /// [bootstrap], or the test's stand-in: at launch, and again from the
   /// error screen's *Retry*.
   Future<BootstrapResult> _run() => (widget.run ?? bootstrap)(
-    platformBrightness: PlatformDispatcher.instance.platformBrightness,
+    platformBrightness:
+        WidgetsBinding.instance.platformDispatcher.platformBrightness,
     onUiLanguage: (ui) {
       if (mounted) setState(() => _splashLocale = ui.locale);
     },
@@ -181,12 +203,14 @@ class _BootstrapHostState extends State<BootstrapHost>
       if (!kReleaseMode) {
         debugPrint('bootstrap: ${result.bootstrap.elapsed.inMilliseconds} ms');
       }
+      _tellBrightness(container);
       (widget.wire ?? wireApp)(container, result.bootstrap);
     }
 
     final previous = _container;
     setState(() {
       _container = container;
+      _ready = result is BootstrapReady;
       _app = UncontrolledProviderScope(
         // Keyed by its container: a retry replaces the whole tree, rather
         // than swapping the container under widgets that read the old one.
@@ -219,22 +243,12 @@ class _BootstrapHostState extends State<BootstrapHost>
       );
 }
 
-/// A ready app's platform side: the light/dark switch, the reminders, the
-/// home-screen widget, model downloads and the voice.
+/// A ready app's plugins: the reminders, the home-screen widget, model
+/// downloads and the voice. The light/dark switch is the host's own
+/// (`didChangePlatformBrightness`, #644).
 ///
 /// Once per app container, at launch or after a retry that worked (#643).
 void wireApp(ProviderContainer container, Bootstrap bootstrap) {
-  final platform = PlatformDispatcher.instance;
-  // The system light/dark switch. Without this the theme notifier never
-  // hears about it, and a learner following the platform would keep whatever
-  // the phone was on when the app launched.
-  container
-      .read(themeProvider.notifier)
-      .platformBrightnessChanged(platform.platformBrightness);
-  platform.onPlatformBrightnessChanged = () => container
-      .read(themeProvider.notifier)
-      .platformBrightnessChanged(platform.platformBrightness);
-
   unawaited(
     startReminders(
       container,
@@ -258,9 +272,8 @@ void wireApp(ProviderContainer container, Bootstrap bootstrap) {
 /// set up, a tapped reminder opening what it links to, and the schedule kept
 /// to the settings from now on.
 ///
-/// Like [followPlatformBrightness], a function a test can call: `main` is
-/// the one no test does. A plugin that fails to start costs the reminder,
-/// never the app.
+/// A function a test can call: `main` is the one no test does. A plugin that
+/// fails to start costs the reminder, never the app.
 Future<StreamSubscription<SettingKey<Object?>>?> startReminders(
   ProviderContainer container,
   ReminderNotifications notifications,
@@ -279,28 +292,6 @@ Future<StreamSubscription<SettingKey<Object?>>?> startReminders(
     return null;
   }
   return remindersFor(container, notifications, work).follow();
-}
-
-/// Keeps the theme notifier in step with the system light/dark switch.
-///
-/// Without this the notifier never hears about it, and a learner following
-/// the platform keeps whatever the phone was on when the app launched.
-///
-/// [read] and [onChanged] rather than a `PlatformDispatcher`, so the wiring
-/// is something a test can drive: `main` is the one function no test calls,
-/// and a hook installed only there is a hook nothing checks.
-void followPlatformBrightness(
-  ProviderContainer container, {
-  required Brightness Function() read,
-  required void Function(VoidCallback listener) onChanged,
-}) {
-  void tell() =>
-      container.read(themeProvider.notifier).platformBrightnessChanged(read());
-
-  // Once now, because the notifier's own default is only what a test gets —
-  // a dark phone would otherwise see a light first frame.
-  tell();
-  onChanged(tell);
 }
 
 /// The app for a finished bootstrap, or FR-S1-03's error screen.
