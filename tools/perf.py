@@ -96,7 +96,7 @@ def build_splits() -> None:
     x86_64), and the next agent's plain release build, N, would be refused
     over it as a downgrade — should the uninstall at the end not have run."""
     run([flutter(), "build", "apk", "--release", "--split-per-abi",
-         "--obfuscate", "--split-debug-info=build/symbols",
+         "--obfuscate", "--split-debug-info=build/perf-symbols",  # not the AAB's (#697 TL-9)
          "-P", "force-version-code-ignoring-abi=true"])
 
 

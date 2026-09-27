@@ -386,7 +386,7 @@ Python 3.10+, run from the repository root unless noted. Their tests are
 | `device.py` | Drives the emulator: install the release APK, tap by label, type, screenshot | `python tools/device.py install launch tap:Learn shot:x.png` |
 | `smoke.py` | The integration smoke: three `integration_test` files on the emulator | `python tools/smoke.py [--device …]` |
 | `perf.py` | Size, frames, start and search against `perf_baseline.json` | `python tools/perf.py size\|frames\|start\|all [--update-baseline]` |
-| `release_android.py` | Builds the signed, obfuscated app bundle; checks 16 KB alignment and the signing key | `python tools/release_android.py [--check]` |
+| `release_android.py` | Builds the signed, obfuscated app bundle; checks its libraries, 16 KB alignment, permissions, signing key and Dart symbols, and keeps the symbols per version | `python tools/release_android.py [--check] [--require-upload-key]` |
 | `licences.py` | Checks, or re-fetches, the bundled licence texts and that every package ships a LICENSE | `python tools/licences.py check\|update` |
 | `render_design.py` | Renders the Paper & Ink artboards to `docs/design/` (needs Playwright) | `python tools/render_design.py` |
 | `team.py` | The agents' board on the `team` branch: identities, claims, handoffs, locks, the device lock | `python tools/team.py status` (ONBOARDING §3) |

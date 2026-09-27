@@ -100,3 +100,12 @@ def test_685_a_skipped_plant_fails_the_run(app, tmp_path, capsys):
 
 def test_a_snippet_that_is_not_there_exactly_once_is_skipped(app):
     assert plant.plant({"name": "n", "file": "lib/x.dart", "old": "nowhere", "new": "x"}, [], CHECK).startswith("SKIP")
+
+
+def test_697_kill_own_testers_matches_this_worktree_only():
+    # TL-12: `*...\\agent-1*` also matched agent-1-review's testers.
+    import fnmatch
+
+    pattern = plant.own_pattern(Path("F:/appDevs/dp-wt/agent-1"))
+    assert fnmatch.fnmatchcase(r"F:\appDevs\dp-wt\agent-1\app\build\flutter_tester.exe --x", pattern)
+    assert not fnmatch.fnmatchcase(r"F:\appDevs\dp-wt\agent-1-review\app\build\flutter_tester.exe", pattern)
