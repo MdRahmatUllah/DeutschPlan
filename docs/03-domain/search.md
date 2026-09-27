@@ -4,7 +4,7 @@
 
 Tiers, in order (BR-SEARCH-01…03):
 
-1. **Exact** — `search_key = k OR search_key_alt = alt OR bangla = raw`, plus English rows whose synonym list contains the query exactly (via `words_fts` column filter then `checkMeaning == correct`).
+1. **Exact** — `search_key = k OR search_key_alt = alt OR bangla = raw` (`raw` has Bangla's precomposed nukta letters taken apart, as `bangla` stores them, #716), plus English rows whose synonym list contains the query exactly (via `words_fts` column filter then `checkMeaning == correct`).
 2. **Starts with** — `words_fts MATCH '{search_key english bangla} : "k"*'` ordered by rank, freq bonus.
 3. **Similar** — trigram candidates (`words_trigram MATCH` OR of query trigrams, limit 400) filtered by OSA edit distance ≤ 2 (≤ 3 if query > 5 chars) and ranked by distance, prefix bonus, freq.
 4. **In sentences** — `examples_fts MATCH '"k"* OR german : ("alt"* OR "raw"* OR "resp"*)'`, ordered by rank, highlight via FTS `highlight()`. `examples_fts` folds umlauts but keeps ß, so the key alone missed "Tür" and "Straße" (#137). The German-only forms are the folded key, the query as typed (lower-cased), and the key respelled: ae/oe/ue → a/o/u, ss → ß, so "tuer" and "strasse" find "Tür" and "Straße". They search `german` only, because `"tur"*` in `english` is "Turn on the light". The key alone searches both columns, so "house" still finds the sentences that mean it.

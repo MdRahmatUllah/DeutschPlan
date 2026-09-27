@@ -83,6 +83,12 @@ void main() {
         expect(results.inTier(SearchTier.exact).single.word.german, 'Haus');
       });
 
+      test('#716 FR-R1-02 matches Bangla typed with the one-letter ড় '
+          '(U+09DC), which content.db stores as ড + nukta', () async {
+        final results = await search.search('বাড়ি');
+        expect(results.inTier(SearchTier.exact).single.word.german, 'Haus');
+      });
+
       test('matches an English meaning', () async {
         final results = await search.search('door');
         expect(results.inTier(SearchTier.exact).single.word.german, 'Tür');

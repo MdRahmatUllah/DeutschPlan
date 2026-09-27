@@ -17,10 +17,29 @@ import 'package:flutter_test/flutter_test.dart';
 /// the Python pipeline wrote, the learner types something that looks right,
 /// and nothing comes back.
 void main() {
-  final vectors =
-      (jsonDecode(File('../tools/test_vectors.json').readAsStringSync())
-              as Map<String, dynamic>)['vectors']
-          as List<dynamic>;
+  final file = jsonDecode(
+    File('../tools/test_vectors.json').readAsStringSync(),
+  ) as Map<String, dynamic>;
+  final vectors = file['vectors'] as List<dynamic>;
+
+  test('#716 every letter of U+00C0–U+024F and U+1E00–U+1EFF keys as the '
+      'Python pipeline keys it', () {
+    // `tools/tests/test_search_key.py` holds `input` to the whole ranges.
+    final ranges = file['latin_ranges'] as Map<String, dynamic>;
+    final letters = (ranges['input'] as String).split(' ');
+    final keys = (ranges['search_key'] as String).split(' ');
+    final alts = (ranges['search_key_alt'] as String).split(' ');
+    expect(letters, hasLength(0x24F - 0xC0 + 1 + 0x1EFF - 0x1E00 + 1));
+    final differ = <String>[
+      for (var i = 0; i < letters.length; i++)
+        if (searchKey(letters[i]) != keys[i] ||
+            searchKeyAlt(letters[i]) != alts[i])
+          'U+${letters[i].runes.first.toRadixString(16).toUpperCase()} '
+              '${letters[i]}: ${searchKey(letters[i])} / '
+              '${searchKeyAlt(letters[i])}, Python ${keys[i]} / ${alts[i]}',
+    ];
+    expect(differ, isEmpty, reason: differ.join('\n'));
+  });
 
   test('the vector file was found and is populated', () {
     // Every assertion below iterates it, so an empty or misplaced file would
