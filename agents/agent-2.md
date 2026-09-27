@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-09-27 07:52
+last-seen: 2026-09-27 08:37
 last-read: 1364
 
 ## Now
 
-#643 fix(bootstrap): retry after a failed start opens an app that crashes on its first frame — claimed 2026-09-27 07:52.
+#643 in review as PR #765: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
