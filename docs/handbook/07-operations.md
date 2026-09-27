@@ -139,7 +139,8 @@ From [`release.md`](../05-dev-guide/release.md), with the real commands:
    manifest diff reviewed (below).
 3. **Licences.** `python tools/licences.py check`, after `flutter pub get`. It
    fails if a bundled model or font licence differs from its maker's, is
-   missing or has no source, or if a package ships no LICENSE file (which
+   missing or has no source, if a pubspec font family has no licence text
+   (#719), or if a package ships no LICENSE file (which
    Flutter's `LicenseRegistry`, and so M8, would silently leave out).
    `python tools/licences.py update` fetches the texts again.
 4. **Translation stays off.** The release build passes no

@@ -28,6 +28,6 @@
   - The Supertonic SDK is under MIT (`supertone-inc/supertonic-py`): `supertonic_text.dart` ports its text front end (#172).
   - Hy-MT 1.5 (1.8B) is under the **Tencent HY Community License** (`tencent/HY-MT1.5-1.8B`). It is named that, not "Hy-MT licence" as the artboard has it. Its text excludes the EU, the UK and South Korea, which the model manager's region gate follows.
 - **Fonts:** Inter and Noto Sans Bengali, SIL OFL 1.1, bundled.
-- **Collection** is a release step (`release.md`): `tools/licences.py` lists each bundled text's source, and `check` compares them with what the makers publish. It also fails if a package ships no LICENSE file.
+- **Collection** is a release step (`release.md`): `tools/licences.py` lists each bundled text's source, and `check` compares them with what the makers publish. It also fails if a package ships no LICENSE file, or if a font family in pubspec's `fonts:` has no licence text (#719).
 - **Packages** come from Flutter's `LicenseRegistry`, each package once, in name order. The registry gives texts, not names, so the line under a package is the licence its text is (MIT, BSD-2-Clause, BSD-3-Clause, Apache-2.0, MPL-2.0, OFL-1.1, ISC), else "Licence".
 - **A licence's text** opens in full in a sheet that scrolls: M8 has no page per licence, so the route table is unchanged.
