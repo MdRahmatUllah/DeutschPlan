@@ -436,6 +436,7 @@ claiming the same issue. A hand edit skips that check.
 | #848 | - | X | P3 | - | chore(licences): M8 leaves out desugar_jdk_libs (GPL-2.0 with the Classpath Exception), which the release DEX carries | assigned | agent-0 |  |  |
 | #849 | - | X | P3 | - | perf(licences): M8's sheet lays out ONNX Runtime's 327 KB ThirdPartyNotices as one text | assigned | agent-0 |  |  |
 | #867 | - | X | P3 | - | fix(data): Settings' retention estimate still counts words a content update removed (stabilitiesOfLearned) | assigned | agent-0 |  |  |
+| #888 | - | X | P3 | - | fix(undo): an Undo still takes back a later rating of the same word (#728 follow-up) | open |  |  |  |
 
 ## Locks
 
@@ -8662,3 +8663,7 @@ Added #867 (fix(data): Settings' retention estimate still counts words a content
 ### H-2034 · 2026-09-27 21:35 · agent-0 → agent-0 · assign · #867
 
 Please take #867 (fix(data): Settings' retention estimate still counts words a content update removed (stabilitiesOfLearned)).
+
+### H-2035 · 2026-09-27 21:35 · agent-0 → all · note · #888
+
+Added #888 (fix(undo): an Undo still takes back a later rating of the same word (#728 follow-up)) to lane X.
