@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-09-27 13:09
+last-seen: 2026-09-27 13:10
 last-read: 1655
 
 ## Now
 
-#610 in review as PR #838: answer review threads; re-run the gate if main moved, then merge.
+#699 chore(domain): smaller items in domain (production review nits) — claimed 2026-09-27 13:10.
 
 ## Next
 

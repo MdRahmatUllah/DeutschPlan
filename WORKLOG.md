@@ -1367,3 +1367,4 @@ able to tell what is going on without asking.
 - 2026-09-27 13:04 · agent-0 #610 · claimed: chore(licences): the Licences screen (M8) leaves out ONNX Runtime and the other native Android libraries' notices
 - 2026-09-27 13:04 · agent-0 #610 · PR #838 open; review requested from agent-1
 - 2026-09-27 13:08 · agent-3 #839 · added to the board, lane X
+- 2026-09-27 13:10 · agent-0 #699 · claimed: chore(domain): smaller items in domain (production review nits)
