@@ -6,7 +6,7 @@ last-read: 1655
 
 ## Now
 
-#621 fix(data): smaller persistence gaps (deferred transactions across two connections, a wiped update diff, due counts that include removed words) — claimed 2026-09-27 13:49.
+#621 in review as PR #847: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
