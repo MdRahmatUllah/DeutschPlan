@@ -261,7 +261,12 @@ void main() {
       await updater.runIfNeeded();
 
       expect(await dao.version(), '202602020000');
-      expect(await dao.wordsForStep('A1.2').get(), hasLength(2));
+      expect(
+        await dao
+            .customSelect("SELECT uid FROM words WHERE sublevel_code = 'A1.2'")
+            .get(),
+        hasLength(2),
+      );
     });
 
     test('the row Today reads is written with seen = 0', () async {

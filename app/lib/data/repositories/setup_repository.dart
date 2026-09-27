@@ -47,24 +47,28 @@ class SetupRepository {
   ///
   /// Through drift's typed update, not a raw statement, so the step lines
   /// that show the pace ("about 41 days left at 15 words/day") hear it.
-  Future<void> setDailyNew(int count) => _db.transaction(() async {
-    await _settings.write(SettingKeys.dailyNew, count);
-    await (_db.update(_db.enrollments)..where((e) => e.completedOn.isNull()))
-        .write(EnrollmentsCompanion(dailyNew: Value(count)));
-  });
+  Future<void> setDailyNew(int count) => _settings.guard(
+    () => _db.transaction(() async {
+      await _settings.write(SettingKeys.dailyNew, count);
+      await (_db.update(_db.enrollments)..where((e) => e.completedOn.isNull()))
+          .write(EnrollmentsCompanion(dailyNew: Value(count)));
+    }),
+  );
 
   /// M5's study days (#147): the setting, and the open enrollment, which is
   /// where the plan engine reads them (BR-PLAN-01, -08).
   /// The change is kept in `study_days_history` from tomorrow (#377), so
   /// the streak judges the days before it by the mask they had.
   Future<void> setStudyDays(int mask, {required PlanDate today}) =>
-      _db.transaction(() async {
-        await _recordStudyDays(mask, today);
-        await _settings.write(SettingKeys.studyDaysMask, mask);
-        await (_db.update(_db.enrollments)
-              ..where((e) => e.completedOn.isNull()))
-            .write(EnrollmentsCompanion(studyDaysMask: Value(mask)));
-      });
+      _settings.guard(
+        () => _db.transaction(() async {
+          await _recordStudyDays(mask, today);
+          await _settings.write(SettingKeys.studyDaysMask, mask);
+          await (_db.update(_db.enrollments)
+                ..where((e) => e.completedOn.isNull()))
+              .write(EnrollmentsCompanion(studyDaysMask: Value(mask)));
+        }),
+      );
 
   /// #377: a new mask in `study_days_history`, from the day after [today]
   /// (BR-PLAN-08), or from today when today isn't planned yet: it will be
@@ -91,8 +95,10 @@ class SetupRepository {
   /// days already planned — is not touched: restart setup changes the plan,
   /// not the history (`onboarding.md`).
   Future<void> commit(SetupChoice choice, {required PlanDate today}) async {
-    try {
-      await _db.transaction(() async {
+    // `write` puts each value in memory before the database, so a rolled-back
+    // transaction is read back from the disk before the error goes on.
+    await _settings.guard(
+      () => _db.transaction(() async {
         await _settings.write(SettingKeys.dailyNew, choice.dailyNew);
         await _settings.write(SettingKeys.reviseCount, choice.reviseCount);
         await _recordStudyDays(choice.studyDaysMask, today);
@@ -134,14 +140,8 @@ class SetupRepository {
             studyDaysMask: choice.studyDaysMask,
           ),
         );
-      });
-    } on Object {
-      // `write` puts each value in memory before the database. A rolled-back
-      // transaction would leave the cache saying what the disk does not, so
-      // it is read back from the disk before the error goes on.
-      await _settings.load();
-      rethrow;
-    }
+      }),
+    );
   }
 
   /// The step restart setup starts from, or null before the first setup.

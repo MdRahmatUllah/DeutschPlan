@@ -724,6 +724,20 @@ ORDER BY w.seq_in_sublevel
       );
     });
 
+    test("#688 DA-7 the 00:05 task's writes are read from the table, not "
+        "from this app's cache of yesterday", () async {
+      await store.setLastPlannedDate('2026-03-01');
+      // The task: its own connection, its own settings.
+      final task = SettingsRepository(db);
+      await task.load();
+      addTearDown(task.dispose);
+      await DriftPlanStore(db, task).setLastPlannedDate(monday);
+      await DriftPlanStore(db, task).setPlannedMask(31);
+
+      expect(await store.lastPlannedDate(), monday);
+      expect(await store.plannedMask(), 31);
+    });
+
     test('keeps single-digit months and days padded', () async {
       // The column sorts as a string and every query compares it that way. An
       // unpadded "2026-3-4" sorts after "2026-12-31".
@@ -1364,6 +1378,31 @@ FROM n
       expect(plan.revise, contains('s20'));
       expect(plan.revise.toSet().intersection(plan.newToday.toSet()), isEmpty);
     });
+
+    test(
+      '#688 DA-7 BR-PLAN-08 #342: a day the 00:05 task opened without '
+      'revisions stays without, in an app alive since the day before',
+      () async {
+        await enroll(startedOn: '2026-03-01');
+        PlanEngine engine(SettingsRepository settings) => PlanEngine(
+          store: DriftPlanStore(db, settings),
+          reviseCount: 10,
+          backlogCatchupDays: 30,
+        );
+        await engine(settings).openDay('2026-03-01');
+        final task = SettingsRepository(db);
+        await task.load();
+        addTearDown(task.dispose);
+        await engine(task).openDay(monday);
+        // Due since, after the day was opened with none.
+        await wordState('s20', due: '2026-02-28');
+
+        final plan = await engine(settings).openDay(monday);
+
+        expect(plan.revise, isEmpty);
+        expect(plan.newToday, hasLength(7), reason: 'and not planned twice');
+      },
+    );
 
     test('BR-PLAN-04 FR-S2-03 #548: two openings of a fresh first day that '
         'overlap, from two engines, plan it once', () async {

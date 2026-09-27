@@ -117,15 +117,6 @@ void main() {
   });
 
   group('the four documented query shapes', () {
-    test('wordsForStep is ordered by seq_in_sublevel', () async {
-      final words = await dao.wordsForStep('A1.1').get();
-      expect(
-        <String>[for (final w in words) w.german],
-        <String>['Haus', 'Tür'],
-      );
-      expect(<int>[for (final w in words) w.seqInSublevel], <int>[1, 2]);
-    });
-
     test('exactMatches takes both keys and the raw Bangla', () async {
       // search.md tier 1. The Bangla is matched as typed, because a Bangla
       // query is not normalised.
@@ -193,12 +184,6 @@ void main() {
       expect(examples.last.english, isNull);
     });
 
-    test('a step reports its stored counts', () async {
-      final counts = await dao.countForStep('A1.1').getSingle();
-      expect(counts.wordCount, 2);
-      expect(counts.grammarCount, 1);
-    });
-
     test('sublevels come back with their level name and exam target', () async {
       final steps = await dao.allSublevels().get();
       expect(steps.first.code, 'A1.1');
@@ -249,18 +234,9 @@ void main() {
       expect(pool.map((w) => w.uid).toSet(), hasLength(pool.length));
     });
 
-    test('grammar carries the tags the generator reads', () async {
-      final topics = await dao.grammarForStep('A1.1').get();
-      expect(topics.single.tags.split(','), contains('word-order'));
-    });
-
     test('an interference tip reaches its word', () async {
       final tips = await dao.tipsForWord(ContentFixture.strasse).get();
       expect(tips.single.tipBn, isNotNull);
-    });
-
-    test('skill prompts belong to a level', () async {
-      expect(await dao.skillPromptsForLevel('A1').get(), hasLength(1));
     });
   });
 

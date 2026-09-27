@@ -171,6 +171,45 @@ def check_no_uid_collision(db: sqlite3.Connection) -> list[Failure]:
     ]
 
 
+#: Same level, German and part of speech, and two words all the same (#635):
+#: the review kept both rows.
+HOMONYMS = frozenset(
+    {
+        ("A1", "ihr", "pron"),  # her / their; you (plural)
+        ("A1", "einfach", "adj"),  # simple; one-way (ticket)
+        ("A2", "Sendung", "noun"),  # programme; shipment
+        ("A2", "Gericht", "noun"),  # dish; court
+        ("B2", "Anlage", "noun"),  # enclosure; investment
+        ("C1", "Belastungsgrenze", "noun"),  # limit of endurance; co-payment cap
+    }
+)
+
+
+def check_no_same_level_duplicates(db: sqlite3.Connection) -> list[Failure]:
+    """#635: one level teaching the same German and part of speech twice,
+    with the English worded differently ("Kunde: customer" and "Kunde:
+    client / customer"). Two new-word slots for one word."""
+    rows = [
+        f"{german} ({level}, {pos}) x{count}"
+        for level, german, pos, count in db.execute(
+            "SELECT level_code, german, pos, COUNT(*) AS n FROM words "
+            "GROUP BY level_code, german, pos HAVING n > 1 ORDER BY level_code, german"
+        )
+        if (level, german, pos) not in HOMONYMS
+    ]
+    if not rows:
+        return []
+    return [
+        Failure(
+            "duplicates",
+            f"{len(rows)} words are taught twice in one level: {_sample(rows)}. "
+            f"Merge the later row into the first in content/corrections.yaml "
+            f"(merge_into); two different words go in HOMONYMS in "
+            f"{Path(__file__).name}.",
+        )
+    ]
+
+
 def check_fts_is_populated(db: sqlite3.Connection) -> list[Failure]:
     """Gate 5: an empty FTS table.
 
@@ -564,6 +603,7 @@ GATES = (
     check_every_step_has_words,
     check_every_word_has_an_example,
     check_no_uid_collision,
+    check_no_same_level_duplicates,
     check_fts_is_populated,
     check_tips_fit_their_word_class,
     check_no_article_in_german,

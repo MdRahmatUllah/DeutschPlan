@@ -25,6 +25,20 @@ void main() {
 
   tearDown(() => db.close());
 
+  /// The attempt the hub offers to resume on the step, as [watchResumable]
+  /// has it.
+  Future<ExamAttempt?> resumable(String code) async =>
+      (await exams.watchResumable(code).first).values.firstOrNull;
+
+  /// A quiz's answer rows, in paper order.
+  Future<List<QuizAnswer>> quizAnswers(int attemptId) =>
+      (db.select(db.quizAnswers)
+            ..where((t) => t.attemptId.equals(attemptId))
+            ..orderBy(<OrderClauseGenerator<QuizAnswers>>[
+              (t) => OrderingTerm.asc(t.ord),
+            ]))
+          .get();
+
   List<ExamQuestion> paper({int count = 3}) => <ExamQuestion>[
     for (var ord = 1; ord <= count; ord++)
       ExamQuestion(
@@ -51,7 +65,7 @@ void main() {
   group('beginning an exam', () {
     test('pre-inserts every question', () async {
       final id = await begin();
-      final answers = await exams.watchAnswers(id).first;
+      final answers = await exams.answers(id);
 
       expect(answers, hasLength(3));
       expect(answers.map((a) => a.ord), <int>[1, 2, 3]);
@@ -62,7 +76,7 @@ void main() {
 
     test('a writing question carries no expected answer', () async {
       final id = await begin();
-      final answers = await exams.watchAnswers(id).first;
+      final answers = await exams.answers(id);
       expect(answers.last.section, 'writing');
       expect(answers.last.expected, isNull);
     });
@@ -99,7 +113,7 @@ void main() {
       final id = await begin();
       await exams.answer(attemptId: id, ord: 2, given: 'das Haus');
 
-      final answers = await exams.watchAnswers(id).first;
+      final answers = await exams.answers(id);
       expect(answers, hasLength(3), reason: 'answering inserted a row');
       expect(answers[1].given, 'das Haus');
     });
@@ -114,7 +128,7 @@ void main() {
       );
       await exams.answer(attemptId: id, ord: 3, given: 'Mein Tag …', points: 2);
 
-      final answers = await exams.watchAnswers(id).first;
+      final answers = await exams.answers(id);
       expect(answers.last.selfRubricJson, '{"structure":1}');
       expect(answers.last.points, 2);
     });
@@ -124,7 +138,7 @@ void main() {
       await exams.answer(attemptId: id, ord: 1, given: 'das Haus');
       await exams.flag(attemptId: id, ord: 1, flagged: true);
 
-      final answers = await exams.watchAnswers(id).first;
+      final answers = await exams.answers(id);
       expect(answers.first.flagged, 1);
       expect(answers.first.given, 'das Haus');
     });
@@ -133,7 +147,7 @@ void main() {
   group('resuming', () {
     test('finds the attempt that was left running', () async {
       final id = await begin();
-      final found = await exams.resumable('A1.1');
+      final found = await resumable('A1.1');
       expect(found!.id, id);
     });
 
@@ -144,7 +158,7 @@ void main() {
         finishedAt: '2026-03-04T10:00:00Z',
         score: const ExamScore(scorePoints: 30, maxPoints: 48, passed: true),
       );
-      expect(await exams.resumable('A1.1'), isNull);
+      expect(await resumable('A1.1'), isNull);
     });
 
     test('#132 abandon leaves a finished attempt finished', () async {
@@ -166,14 +180,14 @@ void main() {
       await exams.answer(attemptId: id, ord: 1, given: 'das Haus');
       await exams.abandon(id);
 
-      expect(await exams.resumable('A1.1'), isNull);
-      final answers = await exams.watchAnswers(id).first;
+      expect(await resumable('A1.1'), isNull);
+      final answers = await exams.answers(id);
       expect(answers.first.given, 'das Haus');
     });
 
     test('another step is another exam', () async {
       await begin();
-      expect(await exams.resumable('A1.2'), isNull);
+      expect(await resumable('A1.2'), isNull);
     });
 
     test('the hub gets one answer per seed', () async {
@@ -383,21 +397,6 @@ void main() {
       expect(await exams.watchSeeds('A1.2').first, isEmpty);
     });
 
-    test('the step is passed once any seed has been', () async {
-      expect(await exams.watchStepPassed('A1.1').first, isFalse);
-
-      await sat(seed: 1, points: 12, passed: false);
-      expect(await exams.watchStepPassed('A1.1').first, isFalse);
-
-      await sat(seed: 3, points: 36, passed: true);
-      expect(await exams.watchStepPassed('A1.1').first, isTrue);
-    });
-
-    test('a pass on one step does not pass another', () async {
-      await sat(seed: 1, points: 36, passed: true);
-      expect(await exams.watchStepPassed('A1.2').first, isFalse);
-    });
-
     test('the hub re-emits when an attempt finishes', () async {
       final seen = <int>[];
       final subscription = exams
@@ -435,7 +434,7 @@ void main() {
 
     test('are pre-inserted the same way', () async {
       final id = await quiz();
-      final answers = await exams.watchQuizAnswers(id).first;
+      final answers = await quizAnswers(id);
       expect(answers, hasLength(3));
       expect(answers.every((a) => a.verdict == null), isTrue);
     });
@@ -458,42 +457,10 @@ void main() {
         points: 0.5,
       );
 
-      final answers = await exams.watchQuizAnswers(id).first;
+      final answers = await quizAnswers(id);
       expect(answers.first.verdict, 'almost');
       expect(answers.first.points, 0.5);
       expect(answers.first.reAsked, 0);
-    });
-
-    test('the mistakes are what BR-QUIZ-01 re-asks', () async {
-      final id = await quiz();
-      await exams.answerQuiz(
-        attemptId: id,
-        ord: 1,
-        given: 'house',
-        verdict: Verdict.correct,
-        points: 1,
-      );
-      await exams.answerQuiz(
-        attemptId: id,
-        ord: 2,
-        given: 'der Tür',
-        verdict: Verdict.wrongArticle,
-        points: 0.5,
-      );
-      await exams.answerQuiz(
-        attemptId: id,
-        ord: 3,
-        given: '',
-        verdict: Verdict.wrong,
-        points: 0,
-      );
-
-      expect(await exams.mistakeUids(id), <String>['uid-2', 'uid-3']);
-    });
-
-    test('an unanswered question is not a mistake', () async {
-      final id = await quiz();
-      expect(await exams.mistakeUids(id), isEmpty);
     });
 
     test('a re-asked answer is marked as one', () async {
@@ -507,32 +474,8 @@ void main() {
         reAsked: true,
       );
 
-      final answers = await exams.watchQuizAnswers(id).first;
+      final answers = await quizAnswers(id);
       expect(answers[1].reAsked, 1);
-    });
-
-    test('only finished quizzes show in the history, newest first', () async {
-      final first = await quiz();
-      final second = await quiz();
-
-      await exams.finishQuiz(
-        attemptId: first,
-        finishedAt: '2026-03-04T09:10:00Z',
-        scorePoints: 8,
-        maxPoints: 10,
-      );
-
-      expect(await exams.watchRecentQuizzes().first, hasLength(1));
-
-      await exams.finishQuiz(
-        attemptId: second,
-        finishedAt: '2026-03-05T09:10:00Z',
-        scorePoints: 10,
-        maxPoints: 10,
-      );
-
-      final history = await exams.watchRecentQuizzes().first;
-      expect(history.map((row) => row.id), <int>[second, first]);
     });
 
     test('a verdict the database does not know is refused', () async {
@@ -568,7 +511,7 @@ void main() {
     // and the data reset both delete attempts.
     final id = await begin();
     await (db.delete(db.examAttempts)..where((t) => t.id.equals(id))).go();
-    expect(await exams.watchAnswers(id).first, isEmpty);
+    expect(await exams.answers(id), isEmpty);
   });
 
   test("L2's last quiz: the step's latest finished quiz from its words", () async {

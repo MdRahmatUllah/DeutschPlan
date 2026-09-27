@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/repositories/word_repository.dart'
     show customId, customUid;
+import 'package:sogda/domain/exam_generator.dart' show ExamSection;
 import 'package:drift/drift.dart';
 import 'package:flutter/foundation.dart' show immutable;
 
@@ -84,7 +85,8 @@ class BackupRepository {
   final AppDatabase _db;
 
   /// `translation_cache` is a cache and `undo_stack` is this session's, so
-  /// neither means anything on another phone. FR-M6-01 names both.
+  /// neither means anything on another phone. FR-M6-01 names both. An import
+  /// empties `undo_stack` (#688 DA-5) and leaves the cache.
   static const Set<String> excluded = <String>{
     'translation_cache',
     'undo_stack',
@@ -144,11 +146,6 @@ class BackupRepository {
     'exam_attempts': 'exam_answers',
   };
 
-  /// Tables whose `id` nothing reads back, so the insert does not pay for a
-  /// `last_insert_rowid()` round trip. Only the two attempt tables and the
-  /// learner's own words do.
-  static final Set<String> _needsId = <String>{..._childOf.keys, _customWords};
-
   /// The learner's own words (#363). On a merge their ids are this phone's
   /// to assign, like an attempt's. The rows that name one as `custom:<id>`
   /// follow the id it ends up with (#369).
@@ -173,11 +170,16 @@ class BackupRepository {
   /// Recordings are not in it — they are the only thing on the phone bigger
   /// than the course, and a backup nobody can email is not a backup. The UI
   /// says so; this is where it is true.
+  ///
+  /// Read in one transaction (#700), so a rating landing mid-export can't
+  /// put its `review_log` row in the file without its `word_state`.
   Future<Map<String, Object?>> export({String? contentVersion}) async {
     final data = <String, List<Map<String, Object?>>>{};
-    for (final table in tables) {
-      data[table] = await _rowsOf(table);
-    }
+    await _db.transaction(() async {
+      for (final table in tables) {
+        data[table] = await _rowsOf(table);
+      }
+    });
 
     return <String, Object?>{
       'schema_version': AppDatabase.latestSchemaVersion,
@@ -254,6 +256,10 @@ class BackupRepository {
     final remap = <String, Map<int, int>>{};
 
     await _db.transaction(() async {
+      // #688 DA-5: an Undo still on screen would put back a word's
+      // pre-import state, and delete the review_log row with its stored id,
+      // which may now be another word's review. A reset empties it too.
+      await _db.customStatement('DELETE FROM undo_stack');
       if (mode == ImportMode.replace) {
         // Children first: the foreign keys are on, so a parent cannot go
         // before the rows pointing at it.
@@ -334,6 +340,14 @@ class BackupRepository {
         incoming.remove('id');
       }
 
+      // #688 DA-6: recordings stay on the phone that made them (FR-M6-01),
+      // so an imported Speaking answer names no file here, or another
+      // attempt's. It comes in unrecorded; its points stand.
+      if (table == 'exam_answers' &&
+          incoming['section'] == ExamSection.speaking.name) {
+        incoming['given'] = null;
+      }
+
       // The parent's new id goes on before the key is taken: a child row's
       // key is `(attempt_id, ord)`, and the attempt_id in the file is the
       // other phone's. Keying on that would match a local answer that has
@@ -396,32 +410,22 @@ class BackupRepository {
     if (ownIds) remap[_customWords] = remapped;
   }
 
-  /// Inserts one row, and returns its id only for the tables whose children
-  /// need it. Thirteen of the fifteen never read it, and the extra
-  /// `last_insert_rowid()` round trip is the expensive half of a large import.
+  /// Inserts one row and returns its id, which an attempt's answers and a
+  /// word of the learner's own's rows are remapped to. `customInsert` hands
+  /// it back from the insert itself: no `last_insert_rowid()` round trip
+  /// (#700).
   Future<int> _insertRow(String table, Map<String, Object?> row) async {
     final names = row.keys.toList();
     if (names.isEmpty) return 0;
 
     final placeholders = List<String>.filled(names.length, '?').join(', ');
     final quoted = names.map((name) => '"$name"').join(', ');
-    final sql = 'INSERT INTO "$table" ($quoted) VALUES ($placeholders)';
-    final variables = <Variable<Object>>[
-      for (final name in names) Variable<Object>(row[name]),
-    ];
-
-    if (!_needsId.contains(table)) {
-      await _db.customStatement(sql, <Object?>[
-        for (final name in names) row[name],
-      ]);
-      return 0;
-    }
-
-    await _db.customInsert(sql, variables: variables);
-    final inserted = await _db
-        .customSelect('SELECT last_insert_rowid() AS id')
-        .getSingle();
-    return inserted.read<int>('id');
+    return _db.customInsert(
+      'INSERT INTO "$table" ($quoted) VALUES ($placeholders)',
+      variables: <Variable<Object>>[
+        for (final name in names) Variable<Object>(row[name]),
+      ],
+    );
   }
 
   Future<void> _replaceRow(String table, Map<String, Object?> row) async {

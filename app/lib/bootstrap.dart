@@ -317,9 +317,7 @@ Future<void> _closeQuietly(AppDatabase? db) async {
 /// has nothing to save (#619). Never throws, as [bootstrap] never does.
 Future<File?> _userDbFile() async {
   try {
-    final file = File(
-      '${(await getApplicationSupportDirectory()).path}/${AppDatabase.fileName}',
-    );
+    final file = await AppDatabase.file();
     return file.existsSync() ? file : null;
   } on Object {
     return null;

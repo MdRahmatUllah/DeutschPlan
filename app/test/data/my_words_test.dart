@@ -110,6 +110,23 @@ void main() {
       expect(await words.isMyWordInRevision(id), isFalse);
     });
 
+    test('#688 DA-7 with today opened by the 00:05 task while the app was '
+        "alive, it joins today's plan all the same", () async {
+      // The task: its own connection, its own settings.
+      final task = SettingsRepository(db);
+      await task.load();
+      addTearDown(task.dispose);
+      await PlanEngine(
+        store: DriftPlanStore(db, task),
+        reviseCount: 10,
+        backlogCatchupDays: 30,
+      ).openDay(monday);
+
+      final id = await revise();
+
+      expect((await rows(id)).single.planDate, monday);
+    });
+
     test('with today open, the next Today shows it in Revise, in the step '
         'being studied', () async {
       await engine.openDay(monday);

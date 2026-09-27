@@ -48,7 +48,7 @@ Every rule has an ID. Engines in `03-domain/` implement them; screens in `04-scr
 
 ## Search
 
-- **BR-SEARCH-01** Result order: Exact match → Starts with → Similar words → In sentences. Within a tier, higher frequency first.
+- **BR-SEARCH-01** Result order: Exact match → Starts with → Similar words → In sentences. Within a tier, higher frequency first; in Exact match, after the words keyed as the query is spelled ("schön" before schon, #734).
 - **BR-SEARCH-02** Exact match ignores article, case and umlaut spelling; matches English synonyms exactly and Bangla exactly.
 - **BR-SEARCH-03** Similar = trigram candidates within edit distance ≤ 2 (≤ 3 for queries > 5 chars).
 - **BR-SEARCH-04** Web search opens Duden, DWDS, Wiktionary, Linguee or Google in an in-app browser. Nothing is sent by the app itself.

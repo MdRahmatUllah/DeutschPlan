@@ -159,6 +159,22 @@ void main() {
       expect(await backup.exportJson(), isNot(contains('recordings')));
     });
 
+    test('#700 is read in one transaction: a write that arrives mid-export '
+        'lands after it, not half in the file', () async {
+      await fillEverything();
+      final exporting = backup.export();
+      // Queued behind the export's first read. Without the transaction it
+      // runs between two tables' reads, and review_log carries it.
+      await sql(
+        'INSERT INTO review_log (word_uid, reviewed_at, rating, source) '
+        "VALUES ('uid-haus', '2026-03-02T09:00:00Z', 3, 'daily')",
+      );
+      final tables = (await exporting)['tables']! as Map<String, Object?>;
+
+      expect(tables['review_log']! as List<Object?>, hasLength(1));
+      expect(await count('review_log'), 2);
+    });
+
     test('is JSON that survives a round trip through a file', () async {
       await fillEverything();
       final json = await backup.exportJson();
@@ -379,15 +395,64 @@ void main() {
       expect(await count('quiz_attempts'), 1);
     });
 
-    test('it does not touch the cache or the undo stack', () async {
-      // They are not in the file, so a replace that wiped them would be
-      // deleting data the import cannot put back.
+    test('#688 DA-5 FR-M6-03/04 an import empties the undo stack, and leaves '
+        'the cache', () async {
+      // The cache isn't in the file, so wiping it would delete what the
+      // import can't put back. An Undo on screen would put back a word's
+      // pre-import state, and delete a review_log row by an id that may now
+      // be another word's.
       await fillEverything();
       final json = await backup.exportJson();
-      await backup.import(json, mode: ImportMode.replace);
+      for (final mode in ImportMode.values) {
+        await sql(
+          "INSERT INTO undo_stack (created_at, payload_json) VALUES ('x', '{}')",
+        );
+        await backup.import(json, mode: mode);
 
-      expect(await count('translation_cache'), 1);
-      expect(await count('undo_stack'), 1);
+        expect(await count('translation_cache'), 1, reason: mode.name);
+        expect(await count('undo_stack'), 0, reason: mode.name);
+      }
+    });
+
+    test('#688 DA-6 FR-M6-01 a Speaking answer comes in unrecorded, its '
+        'points kept, in both modes', () async {
+      // The recordings stay on the phone that made them: the name would be
+      // no file here, or another attempt's.
+      await fillEverything();
+      await sql(
+        'INSERT INTO exam_answers (attempt_id, ord, section, prompt, given, '
+        "points) VALUES (1, 2, 'speaking', 'Sprich', 'recordings/1.m4a', 3), "
+        "(1, 3, 'writing', 'Schreib', 'Ein Text.', 2)",
+      );
+      final json = await backup.exportJson();
+      for (final mode in ImportMode.values) {
+        final other = AppDatabase.memory();
+        addTearDown(other.close);
+        await BackupRepository(other).import(json, mode: mode);
+
+        final rows = await other
+            .customSelect(
+              'SELECT section, given, points FROM exam_answers WHERE ord > 1 '
+              'ORDER BY ord',
+            )
+            .get();
+        expect(
+          <Map<String, Object?>>[for (final row in rows) row.data],
+          <Map<String, Object?>>[
+            <String, Object?>{
+              'section': 'speaking',
+              'given': null,
+              'points': 3,
+            },
+            <String, Object?>{
+              'section': 'writing',
+              'given': 'Ein Text.',
+              'points': 2,
+            },
+          ],
+          reason: mode.name,
+        );
+      }
     });
   });
 

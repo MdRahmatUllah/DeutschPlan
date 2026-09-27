@@ -60,22 +60,6 @@ enum PlanKind {
   String get wire => this == PlanKind.newWord ? 'new' : 'revise';
 }
 
-/// One entry of the daily plan, as it goes into `plan_items`.
-@immutable
-class PlanEntry {
-  const PlanEntry({
-    required this.planDate,
-    required this.wordUid,
-    required this.kind,
-    required this.sublevelCode,
-  });
-
-  final String planDate;
-  final String wordUid;
-  final PlanKind kind;
-  final String sublevelCode;
-}
-
 /// The daily plan, the ratings that complete it, and undo.
 ///
 /// `docs/03-domain/plan-engine.md` decides *what* goes in a plan; this decides
@@ -92,28 +76,6 @@ class PlanRepository {
   /// history: keeping every rating would make the table the largest thing in
   /// the database within a month, and it is excluded from the export anyway.
   static const int undoDepth = 20;
-
-  /// Writes a whole day's plan. One transaction, as the doc requires.
-  ///
-  /// Half a plan is worse than none: the learner would open Today, see four
-  /// of seven new words, and there would be nothing to say the rest were
-  /// missing.
-  ///
-  /// Rows already there are left alone, which is what makes `openDay`
-  /// idempotent — reopening the app on the same day must not double the plan.
-  Future<void> writePlan(List<PlanEntry> entries) => _db.transaction(() async {
-    await _db.batch((batch) {
-      batch.insertAll(_db.planItems, <PlanItemsCompanion>[
-        for (final entry in entries)
-          PlanItemsCompanion.insert(
-            planDate: entry.planDate,
-            wordUid: entry.wordUid,
-            kind: entry.kind.wire,
-            sublevelCode: entry.sublevelCode,
-          ),
-      ], mode: InsertMode.insertOrIgnore);
-    });
-  });
 
   /// Records one rating.
   ///
@@ -177,23 +139,29 @@ class PlanRepository {
           ),
         );
 
+    // What the row was, for the undo: a skipped row rated and undone is
+    // skipped again (#700).
+    var skipped = 0;
     if (planDate != null && kind != null) {
-      await (_db.update(_db.planItems)..where(
-            (t) =>
-                t.planDate.equals(planDate) &
-                t.wordUid.equals(uid) &
-                t.kind.equals(kind.wire),
-          ))
-          .write(
-            PlanItemsCompanion(
-              completedAt: Value(reviewedAt),
-              // A rated row is not a skipped one, whatever happened
-              // yesterday. The backlog filters on completed_at and would be
-              // right either way, but anything reading `skipped` would say
-              // "you skipped this" about a word that is done.
-              skipped: const Value(0),
-            ),
-          );
+      Expression<bool> row(PlanItems t) =>
+          t.planDate.equals(planDate) &
+          t.wordUid.equals(uid) &
+          t.kind.equals(kind.wire);
+      skipped =
+          (await (_db.select(
+            _db.planItems,
+          )..where(row)).getSingleOrNull())?.skipped ??
+          0;
+      await (_db.update(_db.planItems)..where(row)).write(
+        PlanItemsCompanion(
+          completedAt: Value(reviewedAt),
+          // A rated row is not a skipped one, whatever happened
+          // yesterday. The backlog filters on completed_at and would be
+          // right either way, but anything reading `skipped` would say
+          // "you skipped this" about a word that is done.
+          skipped: const Value(0),
+        ),
+      );
     }
 
     await _bumpDailyStats(
@@ -212,6 +180,7 @@ class PlanRepository {
       kind: kind,
       today: today,
       seconds: seconds,
+      skipped: skipped,
     );
   });
 
@@ -283,7 +252,12 @@ class PlanRepository {
                 t.wordUid.equals(uid) &
                 t.kind.equals(kind),
           ))
-          .write(const PlanItemsCompanion(completedAt: Value<String?>(null)));
+          .write(
+            PlanItemsCompanion(
+              completedAt: const Value<String?>(null),
+              skipped: Value(payload['skipped'] as int? ?? 0),
+            ),
+          );
     }
 
     await _bumpDailyStats(
@@ -533,13 +507,6 @@ WHERE due IS NOT NULL AND due <= ?1 AND status != 'suspended'
   static int _items(DailyStat row) =>
       row.newDone + row.reviewsDone + row.grammarDone + row.sentencesDone;
 
-  Future<int> undoDepthNow() async {
-    final row = await _db
-        .customSelect('SELECT COUNT(*) AS n FROM undo_stack')
-        .getSingle();
-    return row.read<int>('n');
-  }
-
   Future<void> _bumpDailyStats(
     String day, {
     required int newDone,
@@ -571,6 +538,7 @@ WHERE due IS NOT NULL AND due <= ?1 AND status != 'suspended'
     required PlanKind? kind,
     required String today,
     required int seconds,
+    required int skipped,
   }) async {
     await _db
         .into(_db.undoStack)
@@ -584,6 +552,7 @@ WHERE due IS NOT NULL AND due <= ?1 AND status != 'suspended'
               'seconds': seconds,
               'plan_date': planDate,
               'kind': kind?.wire,
+              'skipped': skipped,
               'day': today,
               'word_state': before == null
                   ? null

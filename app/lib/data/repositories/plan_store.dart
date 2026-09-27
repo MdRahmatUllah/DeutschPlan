@@ -36,17 +36,11 @@ class DriftPlanStore implements PlanStore {
   /// can't go stale under its commit (no SQLITE_BUSY_SNAPSHOT; #621, pinned
   /// in `app_database_open_test.dart`).
   ///
-  /// The settings [body] writes are in memory before the commit, as in
-  /// `SetupRepository.commit`: read back from the disk if it rolls back.
+  /// The settings [body] writes are in memory before the commit, so they
+  /// are read back from the disk if it rolls back ([SettingsRepository.guard]).
   @override
-  Future<T> atomically<T>(Future<T> Function() body) async {
-    try {
-      return await _db.transaction(body);
-    } on Object {
-      await _settings.load();
-      rethrow;
-    }
-  }
+  Future<T> atomically<T>(Future<T> Function() body) =>
+      _settings.guard(() => _db.transaction(body));
 
   @override
   Future<List<MaskSpan>> studyDaysHistory() async =>
@@ -331,9 +325,12 @@ ORDER BY plan_date DESC, word_uid
   /// `YYYY-MM-DD` strings. Converted here rather than widening the setting: the
   /// setting is shared, and a second representation of a date in the settings
   /// table is a second thing to keep in step.
+  ///
+  /// Both this and [plannedMask] are read from the table: the 00:05 task
+  /// writes them through its own connection (#688 DA-7).
   @override
   Future<PlanDate?> lastPlannedDate() async {
-    final stored = _settings.read(SettingKeys.lastPlannedDate);
+    final stored = await _settings.fresh(SettingKeys.lastPlannedDate);
     return stored == null ? null : planDate(stored);
   }
 
@@ -343,7 +340,7 @@ ORDER BY plan_date DESC, word_uid
 
   @override
   Future<int?> plannedMask() async {
-    final mask = _settings.read(SettingKeys.plannedStudyDays);
+    final mask = await _settings.fresh(SettingKeys.plannedStudyDays);
     return mask == 0 ? null : mask;
   }
 

@@ -4263,7 +4263,7 @@
   },
   "examWritingTask": "{level, select, A1{Write a short message to a friend about {category}.} A2{Write an email to a friend about {category}.} B1{Write a personal letter about {category}: what happened and what you think.} B2{Write a formal letter or opinion text on {category}.} C1{Write an argumentative text on {category}: both sides, then your view.} other{Write a commentary on {category} for a newspaper.}}",
   "@examWritingTask": {
-    "description": "L12 Writing: the task per level (exam-generator.md). level is A1…C2; category is the category's German name from content.db.",
+    "description": "L12 Writing: the task per level (exam-generator.md). level is A1…C2; category is a theme category's name from content.db, as the course names it, in English ('Daily routine', 'Food & drink'): never a word class or a language feature (#753).",
     "placeholders": {
       "level": {
         "type": "String"
@@ -4360,7 +4360,7 @@
   },
   "examSpeakingTask": "{level, select, A1{Say what you do and like around {category}.} A2{Describe an experience with {category}.} B1{Talk about {category}: your experience and your opinion.} B2{Give your opinion on {category}, with reasons and an example.} C1{Argue a position on {category} and answer the other side.} other{Give a short talk on {category} as if to an audience.}}",
   "@examSpeakingTask": {
-    "description": "L12 Speaking: the task per level (exam-generator.md). level is A1…C2; category is the category's name from content.db.",
+    "description": "L12 Speaking: the task per level (exam-generator.md). level is A1…C2; category is a theme category's name from content.db, as the course names it, in English ('Daily routine', 'Food & drink'): never a word class or a language feature (#753).",
     "placeholders": {
       "level": {
         "type": "String"

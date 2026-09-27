@@ -4,9 +4,12 @@ library;
 import 'dart:io';
 
 import 'package:sogda/data/db/app_database.dart';
+import 'package:sogda/services/background_tasks.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:path_provider_platform_interface/path_provider_platform_interface.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
+
+import 'content_fixture.dart';
 
 /// `AppDatabase.open()` is the constructor that ships, and it is the one with
 /// the parts that cannot fail in a unit test elsewhere: the storage directory,
@@ -49,7 +52,7 @@ void main() {
   });
 
   test('opens in app-support storage, on an isolate, configured', () async {
-    final db = AppDatabase.open(name: 'user_test');
+    final db = AppDatabase.open();
 
     final mode = await db.customSelect('PRAGMA journal_mode').getSingle();
     expect(mode.read<String>('journal_mode'), 'wal');
@@ -63,13 +66,32 @@ void main() {
     await db.close();
 
     expect(
-      File('${storage.path}/user_test.sqlite').existsSync(),
+      File('${storage.path}/user.sqlite').existsSync(),
       isTrue,
       reason:
           'drift defaults to the documents directory; user.db is ours, not '
-          'something the learner browses',
+          'something the learner browses. And user.sqlite is the file every '
+          'install already has: another name strands their progress',
     );
-    expect(File('${documents.path}/user_test.sqlite').existsSync(), isFalse);
+    expect(File('${documents.path}/user.sqlite').existsSync(), isFalse);
+  });
+
+  test('#641 a background task opens the file the app opened', () async {
+    final app = AppDatabase.open();
+    await app.fileSchemaVersion();
+    await app.close();
+    ContentFixture.write('${storage.path}/content.db');
+
+    var ran = false;
+    await withBackgroundDatabase((_) async => ran = true);
+
+    expect(
+      ran,
+      isTrue,
+      reason:
+          'a task that looks for user.db anywhere else finds nothing at this '
+          'schema, and skips every night as "left for the app"',
+    );
   });
 
   test('#621 an app transaction that reads, then writes, survives the '
@@ -79,8 +101,8 @@ void main() {
     // read, and the background write (#158) waits under busy_timeout. A
     // deferred BEGIN would let it commit under the app's read snapshot, and
     // the app's write would fail with SQLITE_BUSY_SNAPSHOT.
-    final app = AppDatabase.open(name: 'user_test');
-    final background = AppDatabase.open(name: 'user_test', shared: false);
+    final app = AppDatabase.open();
+    final background = AppDatabase.open(shared: false);
     Future<void> put(AppDatabase db, String key) => db.customStatement(
       "INSERT INTO settings (\"key\", value) VALUES ('$key', '1')",
     );
