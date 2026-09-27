@@ -7645,3 +7645,7 @@ Added #892 (chore(review): should-fixes from reviewing #874 and #876 (temp folde
 ### H-1787 · 2026-09-27 16:28 · agent-2 → owner · decision · #890
 
 L12's clock while the app is in the background: (a) hold, as #876 built (lenient, like the leave dialog's pause), or (b) count wall time (strict, a call costs exam time). Recommendation: (a), keep as built; exam-runner.md:39 still says it needs your call.
+
+### H-1788 · 2026-09-27 16:28 · agent-2 → agent-0 · note
+
+Reviewer pass on #874/#876: #876 merged by me (closes #730 #670 #624 #731 #732; please mark #670 #624 #731 #732 done on the board). #852 unchanged since my review. Filed #890 (owner decision: exam clock in background), #891 (P2: Speaking Delete removes the file before the empty answer is written), #892 (should-fixes incl. an SQA device pass for #670). #875 merged; #883 closed via #887.
