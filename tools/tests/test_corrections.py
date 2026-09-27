@@ -1,4 +1,4 @@
-"""#628: the corrections layer, and the denylist gate.
+"""#628: the corrections layer, and the denylist gate; #635: duplicates.
 
 The workbooks are never written by a tool (#545), so a fix to a row lives in
 `content/corrections.yaml` and is applied by the pipeline. The denylist gate
@@ -8,6 +8,8 @@ git, so the tests plant their own.
 
 from __future__ import annotations
 
+import json
+import shutil
 import sqlite3
 import sys
 from pathlib import Path
@@ -31,12 +33,14 @@ from fixtures.make_workbooks import BOOK_LEVELS, write_all  # noqa: E402
 from pipeline_steps import (  # noqa: E402
     PipelineError,
     apply_corrections,
+    cross_level_duplicates,
     read_corrections,
     uid_for,
 )
 from verify_content import (  # noqa: E402
     DEFAULT_DENYLIST,
     check_no_denylisted_terms,
+    check_no_same_level_duplicates,
     verify,
 )
 
@@ -172,6 +176,113 @@ class TestCorrections:
             connection.close()
         assert german == "Ganz neu."
         assert uid != key, "the uid is the corrected word's"
+
+
+class TestDuplicates:
+    """#635: a word taught twice, across levels or within one."""
+
+    def test_635_merge_into_drops_the_row_and_the_one_that_stays_takes_its_uid_and_blanks(self):
+        haus = word(bangla="বাড়ি", examples_de=None, examples_en=None)
+        twin = word(row=2, level="B2", collocations="ein Haus bauen", article="das", bangla="ঘর")
+        kept = corrected([haus, twin], {uid_for(twin): {"why": "t", "merge_into": uid_for(haus)}})
+        assert kept == [haus]
+        assert haus.merged_from == [uid_for(twin)]
+        assert (haus.collocations, haus.article) == ("ein Haus bauen", "das")
+        assert haus.bangla == "বাড়ি", "only its blanks"
+        assert haus.examples_de is None, "never the examples"
+
+    def test_635_the_link_is_from_the_uid_the_row_ships_with(self):
+        # A row whose own correction changed its uid: learners hold that one.
+        haus, twin = word(), word(row=2, level="B2", german="Haus — Heim")
+        corrected(
+            [haus, twin],
+            {uid_for(twin): {"why": "t", "german": "Haus", "merge_into": uid_for(haus)}},
+        )
+        assert haus.merged_from == [uid_for(word(level="B2"))]
+
+    def test_635_merge_into_a_row_that_does_not_stay_fails_the_build(self):
+        haus, twin = word(), word(row=2, level="B2")
+        with pytest.raises(PipelineError, match="not one row that stays"):
+            corrected([haus], {uid_for(haus): {"why": "t", "merge_into": "0123456789abcdef"}})
+        with pytest.raises(PipelineError, match="not one row that stays"):
+            corrected(
+                [haus, twin],
+                {
+                    uid_for(twin): {"why": "t", "merge_into": uid_for(haus)},
+                    uid_for(haus): {"why": "t", "delete": True},
+                },
+            )
+
+    def test_635_a_merged_row_links_its_uid_to_the_row_that_stays(self, tmp_path):
+        write_all(tmp_path)
+        keep, twin = read_workbook(tmp_path / BOOK_LEVELS_FIRST).words[:2]
+        manifest = tmp_path / "manifest.yaml"
+        books = [{"file": str(tmp_path / n)} for n in BOOK_LEVELS]
+        manifest.write_text(yaml.safe_dump({"workbooks": books}), encoding="utf-8")
+        out = tmp_path / "build" / "content.db"
+        argv = ["--manifest", str(manifest), "--out", str(out)]
+        assert build_main(argv + ["--previous", str(tmp_path / "none")]) == 0
+        shutil.copytree(out.parent, tmp_path / "previous")
+
+        (tmp_path / "corrections.yaml").write_text(
+            f'words:\n  "{uid_for(twin)}":\n    why: t\n    merge_into: "{uid_for(keep)}"\n',
+            encoding="utf-8",
+        )
+        manifest.write_text(
+            yaml.safe_dump({"workbooks": books, "corrections": str(tmp_path / "corrections.yaml")}),
+            encoding="utf-8",
+        )
+        assert build_main(argv + ["--previous", str(tmp_path / "previous")]) == 0
+        manifest_json = json.loads((out.parent / "content_manifest.json").read_text(encoding="utf-8"))
+        assert manifest_json["aliases"] == {uid_for(twin): uid_for(keep)}
+
+    def test_635_a_word_in_two_levels_is_listed_in_the_build_report(self):
+        a1, b2 = word(), word(row=2, level="B2", english="House")
+        lines = cross_level_duplicates(
+            [a1, b2, word(row=3, level="B2", english="home"), word(row=4, german="Maus")]
+        )
+        assert len(lines) == 1
+        assert lines[0].startswith("cross-level duplicate: 'Haus'")
+        assert "A1 (t.xlsx row 1), B2 (t.xlsx row 2)" in lines[0]
+        assert cross_level_duplicates([a1, word(row=2, english="home")]) == []
+        assert cross_level_duplicates([a1, word(row=2)]) == [], "one level: PIPE-08's"
+
+    @staticmethod
+    def same_level(rows):
+        connection = sqlite3.connect(":memory:")
+        connection.execute("CREATE TABLE words (level_code TEXT, german TEXT, pos TEXT)")
+        connection.executemany("INSERT INTO words VALUES (?, ?, ?)", rows)
+        try:
+            return check_no_same_level_duplicates(connection)
+        finally:
+            connection.close()
+
+    def test_635_one_word_twice_in_a_level_fails_verify_unless_two_words(self):
+        failures = self.same_level([("A1", "Kunde", "noun")] * 2 + [("B2", "Kunde", "noun")])
+        assert [f.gate for f in failures] == ["duplicates"]
+        assert "Kunde (A1, noun) x2" in failures[0].message
+        # Two words, kept on purpose; and case makes a word: Sie and sie.
+        assert self.same_level([("A1", "ihr", "pron")] * 2 + [("A1", "Sie", "pron"), ("A1", "sie", "pron")]) == []
+
+    def test_635_verify_runs_the_gate(self, tmp_path):
+        write_all(tmp_path)
+        sources = [read_workbook(tmp_path / name) for name in BOOK_LEVELS]
+        course = tmp_path / "course.db"
+        build(course, collect(sources, derive(sources)))
+        with sqlite3.connect(course) as connection:
+            connection.execute(
+                "UPDATE words SET (german, pos) = (SELECT german, pos FROM words WHERE seq = 1) "
+                "WHERE seq = 2"
+            )
+        connection.close()
+        assert "duplicates" in {failure.gate for failure in verify(course)}
+
+    def test_635_the_shipped_course_teaches_each_word_once_per_level(self):
+        connection = sqlite3.connect(REPO / "app" / "assets" / "db" / "content.db")
+        try:
+            assert check_no_same_level_duplicates(connection) == []
+        finally:
+            connection.close()
 
 
 class TestDenylist:

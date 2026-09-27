@@ -134,14 +134,14 @@ void main() {
   group(
     'BR-STATUS-03 — suspended words are out of everything that teaches',
     () {
-      test('the learnable list drops them', () async {
+      test('the Words tab still shows them, greyed', () async {
         await state(ContentFixture.tuer, status: 'suspended');
 
-        expect(await words.watchLearnableStep('A1.1').first, hasLength(1));
+        final step = await words.watchStep('A1.1').first;
+        expect(step, hasLength(2));
         expect(
-          await words.watchStep('A1.1').first,
-          hasLength(2),
-          reason: 'the Words tab still shows them, greyed',
+          step.firstWhere((w) => w.uid == ContentFixture.tuer).status,
+          WordStatus.suspended,
         );
       });
 
@@ -167,42 +167,36 @@ void main() {
   );
 
   group('BR-STATUS-02 — done is derived, never set by hand', () {
+    Future<WordStatus> derived() async =>
+        words.derivedStatus((await words.find(ContentFixture.haus))!.state!);
+
     test('stability at the threshold is done', () async {
       await state(ContentFixture.haus, stability: 7);
-      expect(await words.refreshStatus(ContentFixture.haus), WordStatus.done);
+      expect(await derived(), WordStatus.done);
     });
 
     test('below it is learning', () async {
       await state(ContentFixture.haus, stability: 6.9);
-      expect(
-        await words.refreshStatus(ContentFixture.haus),
-        WordStatus.learning,
-      );
+      expect(await derived(), WordStatus.learning);
     });
 
     test('a lapse moves a done word back to learning', () async {
       await state(ContentFixture.haus, status: 'done', stability: 10);
-      expect(await words.refreshStatus(ContentFixture.haus), WordStatus.done);
+      expect(await derived(), WordStatus.done);
 
       // Rating Again collapses stability.
       await state(ContentFixture.haus, status: 'done', stability: 0.5);
-      expect(
-        await words.refreshStatus(ContentFixture.haus),
-        WordStatus.learning,
-      );
+      expect(await derived(), WordStatus.learning);
     });
 
     test('the threshold is the learner setting, read every time', () async {
       await state(ContentFixture.haus, stability: 10);
-      expect(await words.refreshStatus(ContentFixture.haus), WordStatus.done);
+      expect(await derived(), WordStatus.done);
 
       // They raise the bar. Every word's status has to follow, with no
       // rebuild and no stored flag to migrate.
       await settings.write(SettingKeys.doneStabilityDays, 30);
-      expect(
-        await words.refreshStatus(ContentFixture.haus),
-        WordStatus.learning,
-      );
+      expect(await derived(), WordStatus.learning);
     });
 
     test(
@@ -214,7 +208,7 @@ void main() {
           reps: 0,
           lastReview: null,
         );
-        expect(await words.refreshStatus(ContentFixture.haus), WordStatus.todo);
+        expect(await derived(), WordStatus.todo);
       },
     );
   });
@@ -246,7 +240,7 @@ void main() {
   group('the counts the step list draws', () {
     test('add up to the step', () async {
       await state(ContentFixture.haus, status: 'learning');
-      final counts = await words.watchStatusCounts('A1.1').first;
+      final counts = await words.statusCounts('A1.1');
 
       expect(counts.total, 2);
       expect(counts.todo, 1);
@@ -256,7 +250,7 @@ void main() {
     });
 
     test('a word with no state row counts as todo', () async {
-      final counts = await words.watchStatusCounts('A1.1').first;
+      final counts = await words.statusCounts('A1.1');
       expect(counts.todo, 2);
     });
   });
@@ -268,12 +262,16 @@ void main() {
       // to reach them.
       final seen = <int>[];
       final subscription = words
-          .watchLearnableStep('A1.1')
-          .listen((rows) => seen.add(rows.length));
+          .watchStep('A1.1')
+          .listen(
+            (rows) => seen.add(
+              rows.where((w) => w.status == WordStatus.suspended).length,
+            ),
+          );
       addTearDown(subscription.cancel);
 
       await pumpEventQueue();
-      expect(seen.last, 2);
+      expect(seen.last, 0);
 
       await state(ContentFixture.tuer, status: 'suspended');
       await pumpEventQueue();
@@ -301,27 +299,13 @@ void main() {
 
       expect(seen.last, WordStatus.learning);
     });
-
-    test('the status counts re-emit too', () async {
-      final seen = <int>[];
-      final subscription = words
-          .watchStatusCounts('A1.1')
-          .listen((counts) => seen.add(counts.learning));
-      addTearDown(subscription.cancel);
-
-      await pumpEventQueue();
-      await state(ContentFixture.haus, status: 'learning');
-      await pumpEventQueue();
-
-      expect(seen.last, 1);
-    });
   });
 
   group('what the lists show', () {
     test('the status is derived, so moving the threshold moves them', () async {
-      // The claim that matters: `refreshStatus` only runs after a rating, so
-      // if the lists read the stored column, lowering the threshold would
-      // change nothing until each word happened to come round again.
+      // The claim that matters: the stored column is written only by a
+      // rating, so if the lists read it, lowering the threshold would change
+      // nothing until each word happened to come round again.
       await state(ContentFixture.haus, stability: 10);
 
       final before = await words.watchStep('A1.1').first;
@@ -341,10 +325,10 @@ void main() {
 
     test('the counts follow the threshold too', () async {
       await state(ContentFixture.haus, stability: 10);
-      expect((await words.watchStatusCounts('A1.1').first).done, 1);
+      expect((await words.statusCounts('A1.1')).done, 1);
 
       await settings.write(SettingKeys.doneStabilityDays, 30);
-      final counts = await words.watchStatusCounts('A1.1').first;
+      final counts = await words.statusCounts('A1.1');
       expect(counts.done, 0);
       expect(counts.learning, 1);
     });
@@ -352,10 +336,18 @@ void main() {
     test(
       'an introduced word is learning even before its first review',
       () async {
-        // `introduce` writes the date and leaves reps at 0. Reading that as
-        // never-met put the word back to `todo` and the plan offered it as new
-        // again.
-        await words.introduce(ContentFixture.haus, today: '2026-01-05');
+        // A word added to revision has the date and reps at 0. Reading that
+        // as never-met put the word back to `todo` and the plan offered it as
+        // new again.
+        await db
+            .into(db.wordState)
+            .insert(
+              WordStateCompanion.insert(
+                wordUid: ContentFixture.haus,
+                status: const Value('learning'),
+                introducedOn: const Value('2026-01-05'),
+              ),
+            );
 
         final step = await words.watchStep('A1.1').first;
         expect(
@@ -363,9 +355,8 @@ void main() {
           WordStatus.learning,
         );
         expect(
-          await words.refreshStatus(ContentFixture.haus),
+          words.derivedStatus((await words.find(ContentFixture.haus))!.state!),
           WordStatus.learning,
-          reason: 'a refresh after any rating would have reset it',
         );
       },
     );
@@ -381,7 +372,7 @@ void main() {
 
       final found = await words.find(ContentFixture.haus);
       expect(found!.status, WordStatus.suspended);
-      expect(await words.watchLearnableStep('A1.1').first, hasLength(1));
+      expect((await words.statusCounts('A1.1')).suspended, 1);
     });
 
     test('and resuming it puts it back to todo', () async {
@@ -389,17 +380,8 @@ void main() {
       await words.resume(ContentFixture.haus);
 
       expect((await words.find(ContentFixture.haus))!.status, WordStatus.todo);
-      expect(await words.watchLearnableStep('A1.1').first, hasLength(2));
+      expect((await words.statusCounts('A1.1')).suspended, 0);
     });
-  });
-
-  test('introducing a word is idempotent', () async {
-    await words.introduce(ContentFixture.haus, today: '2026-01-05');
-    await words.introduce(ContentFixture.haus, today: '2026-02-09');
-
-    final found = await words.find(ContentFixture.haus);
-    expect(found!.state!.introducedOn, '2026-01-05');
-    expect(found.status, WordStatus.learning);
   });
 
   group('FR-L1-01 the course, a row per step', () {

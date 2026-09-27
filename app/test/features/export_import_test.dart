@@ -9,6 +9,7 @@ import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/db/content_dao.dart';
 import 'package:sogda/data/repositories/backup_repository.dart';
+import 'package:sogda/data/repositories/model_repository.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/data/repositories/settings_repository.dart';
 import 'package:sogda/features/me/export_import_screen.dart';
@@ -67,6 +68,17 @@ class FakeBackupFiles implements BackupFiles {
   }
 }
 
+/// The recordings, deleted without a disk: file I/O never finishes in a
+/// widget test's clock.
+class _Recordings extends Fake implements ModelRepository {
+  int deletions = 0;
+
+  @override
+  Future<void> deleteRecordings([Iterable<int>? attempts]) async {
+    if (attempts == null) deletions++;
+  }
+}
+
 /// M6 · Export / import — #148.
 void main() {
   late AppLocalizations l10n;
@@ -75,6 +87,7 @@ void main() {
   late AppDatabase db;
   late SettingsRepository settings;
   late FakeBackupFiles files;
+  late _Recordings recordings;
 
   setUpAll(() async {
     l10n = await AppLocalizations.delegate.load(supportedLocales.first);
@@ -140,6 +153,7 @@ void main() {
       "'2026-09-18T09:00:00Z')",
     );
     files = FakeBackupFiles();
+    recordings = _Recordings();
   });
 
   tearDown(() async {
@@ -162,6 +176,7 @@ void main() {
           settingsProvider.overrideWithValue(settings),
           clockProvider.overrideWithValue(() => DateTime(2026, 9, 21, 8)),
           backupFilesProvider.overrideWithValue(files),
+          modelRepositoryProvider.overrideWithValue(recordings),
         ],
         child: MaterialApp(
           theme: AppTheme.light(),
@@ -351,6 +366,7 @@ void main() {
     expect(await count('review_log'), 1);
     expect(find.text(l10n.exportImportDone), findsOneWidget);
     expect(find.text(l10n.exportImportChoose), findsOneWidget);
+    expect(recordings.deletions, 0, reason: "this phone's attempts stay");
   });
 
   group('FR-M6-04 replace', () {
@@ -387,6 +403,11 @@ void main() {
         <String>[ContentFixture.haus, ContentFixture.tuer],
       );
       expect(find.text(l10n.exportImportDone), findsOneWidget);
+      expect(
+        recordings.deletions,
+        1,
+        reason: "#688 DA-6: the replaced attempts' recordings go with them",
+      );
     });
 
     testWidgets('the settings the file brings are read at once', (

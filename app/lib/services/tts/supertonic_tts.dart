@@ -100,6 +100,18 @@ class SupertonicTts implements TtsEngine, SpeechPrefetch {
   /// The list [prepare] is making, for [stopPreparing] to know it by.
   List<String>? _list;
 
+  /// [_list]'s speed.
+  double _listSpeed = 1;
+
+  /// [_list], stopped by a [release]: the next speak opens the sessions
+  /// again anyway, and then the list goes on, rather than every later card
+  /// paying its synthesis on its tap (#906).
+  bool _listReleased = false;
+
+  /// The sessions a [release] is closing: the next open waits for them, so
+  /// there is one set at a time, never two (#906).
+  Future<void>? _closing;
+
   /// The player has had a clip loaded ahead of its first play (#486).
   bool _primed = false;
 
@@ -148,6 +160,10 @@ class SupertonicTts implements TtsEngine, SpeechPrefetch {
       if (clip == null) {
         _state.add(TtsState.loading);
         clip = await (_tapped = _clip(text, voice: voice, speed: speed));
+      }
+      if (_listReleased && _list != null) {
+        _listReleased = false;
+        unawaited(prepare(_list!, speed: _listSpeed));
       }
       if (turn != _turn) return true;
       final Future<void> ended;
@@ -199,6 +215,8 @@ class SupertonicTts implements TtsEngine, SpeechPrefetch {
   Future<void> prepare(List<String> texts, {double speed = 1}) async {
     final run = ++_run;
     _list = texts;
+    _listSpeed = speed;
+    _listReleased = false;
     if (texts.isEmpty || !await isAvailable()) return;
     final voice = _voice();
     for (final text in texts.take(prepareLimit)) {
@@ -246,6 +264,7 @@ class SupertonicTts implements TtsEngine, SpeechPrefetch {
   @override
   Future<void> release() async {
     _run++;
+    _listReleased = _list != null;
     await _release();
   }
 
@@ -254,6 +273,7 @@ class SupertonicTts implements TtsEngine, SpeechPrefetch {
     if (!identical(texts, _list)) return;
     _run++;
     _list = null;
+    _listReleased = false;
   }
 
   /// The learner's voice, or Anna when this download hasn't theirs.
@@ -302,36 +322,44 @@ class SupertonicTts implements TtsEngine, SpeechPrefetch {
     await _cache.clear();
   }
 
-  Future<SupertonicModel> _open() => _model ??= () async {
-    try {
-      return await _load(
-        await _models.directoryFor(ModelRepository.voiceModel),
-      );
-    } on Object {
-      _broken = true;
-      _model = null;
-      rethrow;
-    }
-  }();
+  Future<SupertonicModel> _open() {
+    late final Future<SupertonicModel> opening;
+    return _model ??= opening = () async {
+      try {
+        await _closing;
+        return await _load(
+          await _models.directoryFor(ModelRepository.voiceModel),
+        );
+      } on Object {
+        _broken = true;
+        // Only this load's own: a release may have let go of it since, and a
+        // newer one be under way, whose sessions would have no owner (#906).
+        if (identical(_model, opening)) _model = null;
+        rethrow;
+      }
+    }();
+  }
 
-  Future<void> _release() async {
+  Future<void> _release() {
     final model = _model;
     _model = null;
-    if (model == null) return;
-    // Sessions closed under a clip being made would fail it; the cache
-    // cleared under its write would lose it.
-    for (final making in _making.values.toList()) {
-      try {
-        await making;
-      } on Object {
-        // Its speak or prepare says so.
+    if (model == null) return _closing ?? Future<void>.value();
+    return _closing = () async {
+      // Sessions closed under a clip being made would fail it; the cache
+      // cleared under its write would lose it.
+      for (final making in _making.values.toList()) {
+        try {
+          await making;
+        } on Object {
+          // Its speak or prepare says so.
+        }
       }
-    }
-    try {
-      await (await model).close();
-    } on Object {
-      // A model that never opened has nothing to close.
-    }
+      try {
+        await (await model).close();
+      } on Object {
+        // A model that never opened has nothing to close.
+      }
+    }();
   }
 
   /// [samples] (-1 to 1) as a mono 16-bit PCM WAV, which `just_audio` plays.

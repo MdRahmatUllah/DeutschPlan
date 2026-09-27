@@ -178,6 +178,11 @@ class RatingService {
       return CardMode.values.byName(before.cardMode);
     }
     if (rating.value < Rating.good.value) return CardMode.plain;
+    // No review since the state began: a reset word's old ratings stay in
+    // review_log (word-detail.md), and aren't a run with this one (#700).
+    // ponytail: exact while the run is two, one rating back; a longer run
+    // would bound the query below by the state's first review.
+    if (before?.lastReview == null) return CardMode.plain;
 
     final recent = await _db
         .customSelect(
