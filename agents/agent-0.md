@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-09-27 09:04
+last-seen: 2026-09-27 09:05
 last-read: 1538
 
 ## Now
 
-#629 in review as PR #777: answer review threads; re-run the gate if main moved, then merge.
+#710 perf(start): every cold start decodes the 513 KB content manifest twice to read one version string, and a course copy writes 8 MB synchronously on the UI isolate — claimed 2026-09-27 09:05.
 
 ## Next
 
