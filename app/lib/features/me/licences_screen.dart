@@ -56,6 +56,31 @@ const List<Licence> fontLicences = <Licence>[
   ),
 ];
 
+/// FR-M8-01 (#610): the native libraries in the APK that no package's
+/// LICENSE covers, bundled in full: ONNX Runtime (the Supertonic voice's
+/// engine) with its third-party notices, and the Apache-2.0 Android
+/// libraries the plugins pull in. `tools/licences.py` fetches and checks them.
+const List<Licence> nativeLicences = <Licence>[
+  (
+    name: 'ONNX Runtime',
+    kind: 'MIT',
+    asset: 'assets/licences/ONNXRuntime-MIT.txt',
+    text: null,
+  ),
+  (
+    name: 'ONNX Runtime · ThirdPartyNotices',
+    kind: 'MIT, BSD, Apache-2.0 …',
+    asset: 'assets/licences/ONNXRuntime-ThirdPartyNotices.txt',
+    text: null,
+  ),
+  (
+    name: 'AndroidX, Jetpack Glance, WorkManager, Kotlin, Gson',
+    kind: 'Apache-2.0',
+    asset: 'assets/licences/AndroidX-Apache-2.0.txt',
+    text: null,
+  ),
+];
+
 /// The app's packages and their licences, from Flutter's registry: each
 /// package once, in name order whatever the case ("abseil-cpp", "OpenSSL",
 /// "sqflite"), its texts joined.
@@ -119,6 +144,8 @@ class LicencesScreen extends ConsumerWidget {
       ...modelLicences,
       l10n.licencesFonts,
       ...fontLicences,
+      l10n.licencesNative,
+      ...nativeLicences,
       l10n.licencesPackages,
       ...packages,
     ];
