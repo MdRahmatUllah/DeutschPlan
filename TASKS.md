@@ -417,7 +417,7 @@ claiming the same issue. A hand edit skips that check.
 | #933 | - | X | P3 | - | chore(review): should-fixes from reviewing #928 and #929 (a dead wrapper, an SQA check, two tips, correction values unchecked) | open |  |  |  |
 | #937 | - | X | P3 | - | fix(backup): a merge after part of today's Revise is done drops the rest of the block and re-picks nothing (from #936's review) | done | agent-0 |  | #944 |
 | #817 | - | X | P3 | - | fix(today): tomorrow's preview memoises the time estimate's read, so the next day misses the evening's study (#768) | done | agent-0 |  | #940 |
-| #921 | - | X | P3 | - | content: 175 words are still taught in two or three levels with the English worded differently (after #913) | open |  |  |  |
+| #921 | - | X | P3 | - | content: 175 words are still taught in two or three levels with the English worded differently (after #913) | in-progress | agent-0 |  |  |
 
 ## Locks
 
