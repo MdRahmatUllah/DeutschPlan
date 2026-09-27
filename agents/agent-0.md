@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-09-27 22:24
+last-seen: 2026-09-27 22:35
 last-read: 1870
 
 ## Now
 
-Nothing claimed.
+#822 question(backup): on a fresh phone, should restore pre-select Replace, or be offered from onboarding? (left open by #658) — claimed 2026-09-27 22:35.
 
 ## Next
 
