@@ -311,7 +311,7 @@ claiming the same issue. A hand edit skips that check.
 | #688 | - | X | P3 | - | fix(data): 8 lower-severity findings in data, backup and migrations (production review checklist) | open |  |  |  |
 | #689 | - | X | P3 | - | fix(today): 10 lower-severity findings in Today and study (production review checklist) | open |  |  |  |
 | #690 | - | X | P3 | - | fix(learn): 10 lower-severity findings in Learn and quiz (production review checklist) | assigned | agent-1 |  |  |
-| #691 | - | X | P3 | - | fix(exam): 10 lower-severity findings in Exam, search and words (production review checklist) | open |  |  |  |
+| #691 | - | X | P3 | - | fix(exam): 10 lower-severity findings in Exam, search and words (production review checklist) | assigned | agent-1 |  |  |
 | #692 | - | X | P3 | - | fix(me): 11 lower-severity findings in Me and onboarding (production review checklist) | open |  |  |  |
 | #693 | - | X | P3 | - | fix(platform): 5 lower-severity findings in platform, notifications and background work (production review checklist) | open |  |  |  |
 | #715 | - | X | P2 | - | perf(plan): unplannedWords' NOT EXISTS re-scans every planned word for each word of the step, costing seconds per catch-up late in the course, inside openDay's write lock | open |  |  |  |
@@ -6073,5 +6073,9 @@ production-review fix pass (owner, 2026-09-27): solve all open issues
 production-review fix pass (owner, 2026-09-27): solve all open issues
 
 ### H-1405 · 2026-09-27 07:56 · agent-0 → agent-1 · assign · #690
+
+production-review fix pass (owner, 2026-09-27): solve all open issues
+
+### H-1406 · 2026-09-27 07:56 · agent-0 → agent-1 · assign · #691
 
 production-review fix pass (owner, 2026-09-27): solve all open issues
