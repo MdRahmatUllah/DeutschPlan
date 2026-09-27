@@ -5,7 +5,7 @@ import 'package:sogda/domain/exam_grading.dart';
 import 'package:sogda/domain/grammar_item_generator.dart';
 import 'package:sogda/domain/quiz_builder.dart';
 import 'package:drift/drift.dart';
-import 'package:flutter/foundation.dart' show immutable;
+import 'package:flutter/foundation.dart' show immutable, listEquals;
 
 part 'exam_repository.g.dart';
 
@@ -144,6 +144,21 @@ class SeedSummary {
 
   final double bestPercent;
   final bool everPassed;
+
+  // Equal lines are the same line (#666): the hub skips a re-read that
+  // changed nothing it shows.
+  @override
+  bool operator ==(Object other) =>
+      other is SeedSummary &&
+      other.seed == seed &&
+      other.attempts == attempts &&
+      other.finished == finished &&
+      other.bestPercent == bestPercent &&
+      other.everPassed == everPassed;
+
+  @override
+  int get hashCode =>
+      Object.hash(seed, attempts, finished, bestPercent, everPassed);
 }
 
 /// Mock exams and quizzes, written per question.
@@ -518,20 +533,25 @@ class ExamRepository extends DatabaseAccessor<AppDatabase>
           .write(const ExamAttemptsCompanion(status: Value('abandoned'))) >
       0;
 
-  /// One line per seed that has been sat, for the exam hub.
+  /// One line per seed that has been sat, for the exam hub. Only when a
+  /// line changes (#666): a running exam writes its clock every 10 s, and
+  /// drift re-reads the table for each write.
   Stream<List<SeedSummary>> watchSeeds(String sublevelCode) =>
-      examSeedSummary(sublevelCode).watch().map(
-        (rows) => <SeedSummary>[
-          for (final row in rows)
-            SeedSummary(
-              seed: row.seed,
-              attempts: row.attempts,
-              finished: row.finished ?? 0,
-              bestPercent: row.bestPercent ?? 0,
-              everPassed: row.everPassed == 1,
-            ),
-        ],
-      );
+      examSeedSummary(sublevelCode)
+          .watch()
+          .map(
+            (rows) => <SeedSummary>[
+              for (final row in rows)
+                SeedSummary(
+                  seed: row.seed,
+                  attempts: row.attempts,
+                  finished: row.finished ?? 0,
+                  bestPercent: row.bestPercent ?? 0,
+                  everPassed: row.everPassed == 1,
+                ),
+            ],
+          )
+          .distinct(listEquals);
 
   /// Whether the step counts as passed. A query, not a flag: a flag would have
   /// to be kept in step with attempts a data reset can delete.
