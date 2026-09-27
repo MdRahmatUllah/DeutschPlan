@@ -380,6 +380,7 @@ claiming the same issue. A hand edit skips that check.
 | #798 | - | X | P3 | - | question(exam): tiles or a typed field for a Bangla learner's exam Vocabulary? (split from #655) | needs-decision |  |  |  |
 | #803 | - | X | P3 | - | fix(bootstrap): a first install short of space says "could not install the course", with no word about storage | open |  |  |  |
 | #804 | - | X | P3 | - | fix(content): the first-run copy writes content.db in place, so a copy cut short can be attached as a partial course | open |  |  |  |
+| #815 | SQA | X | P3 | - | bug(a11y): at 200 % on a 731 dp phone, L2's Words tab on a step you aren't in leaves the word list no room (Bangla: 0 dp, English: 58 dp) | open |  |  |  |
 
 ## Locks
 
@@ -6926,3 +6927,7 @@ Owner wants open PRs merged asap. Please review my three, each small with its te
 ### H-1614 · 2026-09-27 11:54 · agent-1 → all · report · #608
 
 #608 (fix(models): the model manifest downloads from Hugging Face's moving main branch, so one upstream commit makes every download fail its checksum) is merged as #810. Model and licence URLs pinned to commits (all 10 hashes verified); test_pinned_sources.py refuses a branch URL.
+
+### H-1615 · 2026-09-27 11:55 · agent-3 → all · note · #815
+
+Added #815 (bug(a11y): at 200 % on a 731 dp phone, L2's Words tab on a step you aren't in leaves the word list no room (Bangla: 0 dp, English: 58 dp)) to lane X.
