@@ -413,6 +413,60 @@ void main() {
       addTearDown(ready.dispose);
       expect(ready.contentVersion, ContentFixture.version);
     });
+
+    test('#617 FR-S1-03 an update whose copy fails starts on the old course, '
+        'and the next launch installs it', () async {
+      final first = await run();
+      await first.dispose();
+
+      // A newer course ships and its copy fails, as on a full disk: the
+      // manifest says so, the database never lands.
+      const newer = '202701010000';
+      final newerManifest = Uint8List.fromList(
+        '{"content_version":"$newer","words":{}}'.codeUnits,
+      );
+      _serveAssets(<String, Uint8List>{
+        ContentUpdater.manifestAsset: newerManifest,
+      });
+      final second = await run();
+      expect(second.contentVersion, ContentFixture.version);
+      expect(
+        support.listSync().where((file) => file.path.endsWith('.new')),
+        isEmpty,
+      );
+      await second.dispose();
+
+      // The next launch, with the space back: the newer course installs.
+      final staging = File('${temp.path}/newer.db')
+        ..writeAsBytesSync(contentAsset);
+      sqlite3.open(staging.path)
+        ..execute(
+          "UPDATE meta SET value = '$newer' WHERE key = 'content_version'",
+        )
+        ..close();
+      _serveAssets(<String, Uint8List>{
+        ContentDao.asset: staging.readAsBytesSync(),
+        ContentUpdater.manifestAsset: newerManifest,
+      });
+      final third = await run();
+      addTearDown(third.dispose);
+      expect(third.contentVersion, newer);
+    });
+
+    test('#617 FR-S1-03 Retry never deletes a course that reads', () async {
+      final ready = await run();
+      await ready.dispose();
+
+      await resetInstalledContent(support: support);
+      expect(
+        File('${support.path}/${ContentDao.fileName}').existsSync(),
+        isTrue,
+      );
+      expect(
+        File('${support.path}/${ContentUpdater.manifestFile}').existsSync(),
+        isTrue,
+      );
+    });
   });
 
   group('FR-S1-02 — the launch budget', () {

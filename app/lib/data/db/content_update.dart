@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/db/content_dao.dart';
 import 'package:drift/drift.dart';
-import 'package:flutter/foundation.dart' show immutable;
+import 'package:flutter/foundation.dart' show debugPrint, immutable;
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:path_provider/path_provider.dart';
 
@@ -110,7 +110,18 @@ class ContentUpdater {
     final bundled = await _dao.bundledVersion();
     if (bundled.isEmpty || bundled == installed) return null;
 
-    await _dao.replaceWithBundled();
+    try {
+      await _dao.replaceWithBundled();
+    } on Object catch (error) {
+      debugPrint('content update: $error');
+      // #617: a copy that fails, on a full disk most likely, leaves the old
+      // course attached (`replaceWithBundled`). Nothing is recorded and the
+      // kept manifest stays the old one, so the next launch tries again. The
+      // learner studies the old course meanwhile, rather than meeting an app
+      // that won't open. If the old course did not come back either,
+      // bootstrap's `version()` right after still fails the start.
+      return null;
+    }
     final change = _diff(previous, await _readBundledManifest(), bundled);
 
     await _record(change);

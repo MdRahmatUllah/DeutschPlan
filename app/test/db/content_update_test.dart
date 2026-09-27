@@ -409,6 +409,38 @@ void main() {
     });
   });
 
+  test('#617 a newer course whose copy fails keeps the old one, records '
+      'nothing, and installs on the next launch', () async {
+    final newer = course(version: '202602020000', addWord: true);
+    // The manifest ships but the database never lands, as on a full disk.
+    assets = <String, Object>{ContentUpdater.manifestAsset: newer.manifest};
+    rootBundle.evict(ContentDao.asset);
+    rootBundle.evict(ContentUpdater.manifestAsset);
+    final kept = File('${support.path}/${ContentUpdater.manifestFile}');
+    final before = kept.readAsStringSync();
+
+    expect(await updater.runIfNeeded(), isNull);
+    expect(await dao.version(), '202601010000', reason: 'the old course');
+    expect(
+      await db.customSelect('SELECT * FROM content_updates').get(),
+      isEmpty,
+    );
+    expect(
+      kept.readAsStringSync(),
+      before,
+      reason: 'so the next launch retries',
+    );
+    expect(
+      support.listSync().where((file) => file.path.endsWith('.new')),
+      isEmpty,
+    );
+
+    // The next launch, with the space back.
+    publish(newer);
+    expect((await updater.runIfNeeded())?.version, '202602020000');
+    expect(await dao.version(), '202602020000');
+  });
+
   group('an interrupted update', () {
     test('runs again on the next launch', () async {
       // The crash window: the file is swapped and the app dies before the row
