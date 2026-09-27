@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-09-27 18:01
+last-seen: 2026-09-27 18:08
 last-read: 1870
 
 ## Now
 
-Nothing claimed.
+#706 test(misc): smaller items in tests (production review nits) — claimed 2026-09-27 18:08.
 
 ## Next
 
