@@ -392,7 +392,7 @@ The emulator lock is local, not here: `team.py device`.
 | Resource | Owner | Since | Why |
 |---|---|---|---|
 | user-db-schema |  |  |  |
-| adr-number |  |  |  |
+| adr-number | agent-0 | 2026-09-27 08:16 | #609: ADR 29, llamadart removed |
 | pubspec | agent-0 | 2026-09-27 08:14 | #609: remove llamadart |
 | ci-config |  |  |  |
 | shared-look |  |  |  |

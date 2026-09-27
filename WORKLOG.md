@@ -1195,3 +1195,4 @@ able to tell what is going on without asking.
 - 2026-09-27 08:12 · agent-0 #607 · PR #759 open; review requested from agent-2
 - 2026-09-27 08:13 · agent-3 #758 · added to the board, lane X
 - 2026-09-27 08:14 · agent-0 · locked pubspec: #609: remove llamadart
+- 2026-09-27 08:16 · agent-0 · locked adr-number: #609: ADR 29, llamadart removed
