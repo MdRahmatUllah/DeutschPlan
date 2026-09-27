@@ -16,7 +16,6 @@ import 'package:sogda/services/widget_snapshot.dart';
 import 'package:flutter/foundation.dart' show debugPrint;
 import 'package:path_provider/path_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:sqlite3/sqlite3.dart' show OpenMode, sqlite3;
 import 'package:workmanager/workmanager.dart';
 
 part 'background_tasks.g.dart';
@@ -258,15 +257,8 @@ void backgroundDispatcher() {
 /// start, and a task that opened the file first would run the migration on
 /// a connection of its own, beside an app that may start and run it too.
 /// Tonight's task skips, and tomorrow's finds the file migrated.
-bool atCurrentSchema(File file) {
-  if (!file.existsSync()) return false;
-  final db = sqlite3.open(file.path, mode: OpenMode.readOnly);
-  try {
-    return db.userVersion == AppDatabase.latestSchemaVersion;
-  } finally {
-    db.close();
-  }
-}
+bool atCurrentSchema(File file) =>
+    AppDatabase.versionOf(file) == AppDatabase.latestSchemaVersion;
 
 /// user.db with the course attached and the settings loaded: what a task
 /// needs of `bootstrap`, without the router, the theme or a course install.
@@ -277,9 +269,8 @@ bool atCurrentSchema(File file) {
 Future<void> withBackgroundDatabase(
   Future<void> Function(ProviderContainer container) run,
 ) async {
-  // drift_flutter's file for `AppDatabase.open`'s name, `user`.
   final support = await getApplicationSupportDirectory();
-  if (!atCurrentSchema(File('${support.path}/user.sqlite'))) {
+  if (!atCurrentSchema(File('${support.path}/${AppDatabase.fileName}'))) {
     debugPrint('background: user.db is not at this schema; left for the app');
     return;
   }

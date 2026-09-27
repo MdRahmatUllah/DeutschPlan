@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
 import 'package:sogda/data/db/content_dao.dart';
@@ -5,6 +7,7 @@ import 'package:sogda/data/db/schema_versions.dart';
 import 'package:drift_flutter/drift_flutter.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqlite3/common.dart';
+import 'package:sqlite3/sqlite3.dart' show OpenMode, sqlite3;
 
 part 'app_database.g.dart';
 
@@ -68,6 +71,26 @@ class AppDatabase extends _$AppDatabase {
 
   /// Readable without an instance, which the migration tests need.
   static const int latestSchemaVersion = 3;
+
+  /// [AppDatabase.open]'s file in app support: drift_flutter adds `.sqlite`
+  /// to its name, `user`.
+  static const String fileName = 'user.sqlite';
+
+  /// The `user_version` of the database at [file], read without drift and
+  /// without writing, or null when it has none to give: no file, or one that
+  /// isn't a database (#619).
+  static int? versionOf(File file) {
+    try {
+      final db = sqlite3.open(file.path, mode: OpenMode.readOnly);
+      try {
+        return db.userVersion;
+      } finally {
+        db.close();
+      }
+    } on Object {
+      return null;
+    }
+  }
 
   /// The tables this database actually owns.
   ///

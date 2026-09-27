@@ -96,7 +96,7 @@ def build_splits() -> None:
     x86_64), and the next agent's plain release build, N, would be refused
     over it as a downgrade — should the uninstall at the end not have run."""
     run([flutter(), "build", "apk", "--release", "--split-per-abi",
-         "--obfuscate", "--split-debug-info=build/symbols",
+         "--obfuscate", "--split-debug-info=build/perf-symbols",  # not the AAB's (#697 TL-9)
          "-P", "force-version-code-ignoring-abi=true"])
 
 
@@ -322,7 +322,9 @@ def main(argv: list[str] | None = None) -> int:
         sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
     # An APK build takes the lock too (CLAUDE.md), so size needs it as well.
-    if not holds_device(device.agent()):
+    # The owner's own checkout has no agent and no lock to take (release step
+    # 6), as release_android.py (#707).
+    if not device.owner_checkout() and not holds_device(device.agent()):
         print("refused: hold the emulator first: `python tools/team.py device`", file=sys.stderr)
         return 2
 

@@ -49,10 +49,12 @@ class TestTheSeedSet:
         tips = read_tips(SEED)
         assert len(tips) >= 15
 
-    def test_every_match_type_is_used(self):
-        # A type nobody uses is a type nobody has tested on real content.
+    def test_every_match_type_but_uid_is_used(self):
+        # A type nobody uses is a type nobody has tested on real content. `uid`
+        # pins a tip to one row, which the seed has no need of; its matching
+        # is tested on its own (#707).
         used = {tip.match_type for tip in read_tips(SEED)}
-        assert used == {"german", "pattern"}, used
+        assert used == set(MATCH_TYPES) - {"uid"}, used
 
     def test_every_tip_has_bangla(self):
         # The audience is Bangla speakers. An English-only interference tip is

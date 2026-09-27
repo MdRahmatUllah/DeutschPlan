@@ -47,6 +47,7 @@ void main() {
     Future<int> Function()? seed,
     Locale? locale,
     TextScaler? textScaler,
+    bool edit = true,
   }) async {
     int? id;
     tester.view
@@ -93,7 +94,8 @@ void main() {
                 child: GestureDetector(
                   onTap: () => Navigator.of(context).push(
                     MaterialPageRoute<void>(
-                      builder: (_) => AddWordScreen(german: german, id: id),
+                      builder: (_) =>
+                          AddWordScreen(german: german, id: edit ? id : null),
                     ),
                   ),
                   child: const Text('R1'),
@@ -256,6 +258,48 @@ void main() {
       await tester.runAsync(() => db.select(db.customWords).get()),
       isEmpty,
     );
+  });
+
+  group('#669 FR-R2-01 a word already one of mine', () {
+    Future<int> saved() => db
+        .into(db.customWords)
+        .insert(
+          CustomWordsCompanion.insert(
+            createdAt: '2026-09-20T10:00:00Z',
+            german: 'Brötchen',
+            meaning: 'bread roll',
+            article: const Value('das'),
+          ),
+        );
+    Future<List<CustomWord>> mine(WidgetTester tester) => tester
+        .runAsync(() => db.select(db.customWords).get())
+        .then((rows) => rows!);
+
+    testWidgets('typed again, it says so with Open and Log it, and neither '
+        'Save saves it twice', (tester) async {
+      await pump(tester, german: 'Brötchen', seed: saved, edit: false);
+      await enter(tester, l10n.addWordMeaning, 'bread roll');
+      expect(find.textContaining(l10n.searchNoneMine), findsOneWidget);
+      expect(find.text(l10n.addWordOpen), findsOneWidget);
+      expect(button(tester, l10n.addWordSave).onPressed, isNull);
+      expect(button(tester, l10n.addWordSaveRevise).onPressed, isNull);
+    });
+
+    testWidgets('keyed as search keys it: another case, a bare vowel', (
+      tester,
+    ) async {
+      await pump(tester, german: 'brotchen', seed: saved, edit: false);
+      expect(find.textContaining(l10n.searchNoneMine), findsOneWidget);
+    });
+
+    testWidgets('Log it counts one more sighting of it, and saves no second '
+        'word', (tester) async {
+      await pump(tester, german: 'Brötchen', seed: saved, edit: false);
+      await tester.tap(find.text(l10n.addWordLogIt));
+      await settle(tester);
+      expect((await mine(tester)).single.timesSeen, 2);
+      expect(find.text(l10n.addWordLogged('das Brötchen')), findsOneWidget);
+    });
   });
 
   group('FR-R2-03 Save', () {

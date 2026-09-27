@@ -136,6 +136,23 @@ Future<int?> courseWords(Ref ref) =>
 Stream<List<MyWord>> myWords(Ref ref) =>
     ref.watch(wordRepositoryProvider).watchMyWords();
 
+/// The learner's own word [german] already is, if any, other than [except]:
+/// keyed as the exact tier keys a word, so "Quarkbrotchen" finds the
+/// "Quarkbrötchen" saved from it. R1's no-results page offers to open it
+/// rather than add it twice (#396), and R2 won't save it again (#669).
+MyWord? savedAs(Iterable<MyWord>? words, String german, {int? except}) {
+  final key = searchKey(german);
+  if (key.isEmpty) return null;
+  final alt = searchKeyAlt(german);
+  return words
+      ?.where(
+        (word) =>
+            word.id != except &&
+            (searchKey(word.german) == key || searchKeyAlt(word.german) == alt),
+      )
+      .firstOrNull;
+}
+
 /// R1 · Search (`search.md`, Search artboards): the Raspberry header with
 /// its field, the web row, and the results grouped as BR-SEARCH-01 orders
 /// them. [step] is L2's search icon: the results kept to that step, with a
@@ -1042,18 +1059,8 @@ class _NoResults extends ConsumerWidget {
         ? SgScript.allowBreaks(german, threshold: 4)
         : german;
     // #396: a word the learner has saved already is offered to open, not to
-    // add twice. Keyed as the exact tier keys a word (R2's FR-R2-01 check),
-    // so "Quarkbrotchen" finds the "Quarkbrötchen" saved from it.
-    final key = searchKey(query);
-    final alt = searchKeyAlt(query);
-    final mine = ref
-        .watch(myWordsProvider)
-        .value
-        ?.where(
-          (word) =>
-              searchKey(word.german) == key || searchKeyAlt(word.german) == alt,
-        )
-        .firstOrNull;
+    // add twice.
+    final mine = savedAs(ref.watch(myWordsProvider).value, query);
 
     return ListView(
       key: const PageStorageKey<String>('search-none'),

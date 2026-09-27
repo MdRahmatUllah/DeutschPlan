@@ -164,6 +164,27 @@ class Theme extends _$Theme {
   }
 }
 
+/// Whether the theme setting follows the phone's light/dark (*System*). The
+/// root reads it for `ThemeMode.system`, as it reads Glass from [Theme].
+///
+/// A provider of its own, and followed rather than read once (#649): [Theme]'s
+/// mode can't carry it. *Dark* chosen on a dark phone resolves to the mode
+/// *System* already had, so nothing rebuilt, and the app went on following
+/// the phone despite the choice. Settings, import and reset all write it.
+@riverpod
+class ThemeFollowsPlatform extends _$ThemeFollowsPlatform {
+  @override
+  bool build() {
+    final settings = ref.watch(settingsProvider);
+    bool follows() => settings.read(SettingKeys.themeMode).followsPlatform;
+    final changes = settings.changes
+        .where((key) => key == SettingKeys.themeMode)
+        .listen((_) => state = follows());
+    ref.onDispose(changes.cancel);
+    return follows();
+  }
+}
+
 /// The two languages: the meaning printed beside each German word, and the
 /// app's own. Kept together because S2 sets both from one choice.
 ///
