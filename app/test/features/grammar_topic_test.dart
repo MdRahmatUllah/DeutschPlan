@@ -279,5 +279,6 @@ class _Rating implements GrammarRatingService {
     String uid, {
     required int items,
     required int correct,
+    DateTime? startedAt,
   }) async {}
 }

@@ -390,6 +390,33 @@ void main() {
       expect(stats.read<int>('grammar_done'), 1);
     });
 
+    test("#785 FR-M2-03 the run's time is the day's study time, capped at "
+        'five minutes an item as a card is', () async {
+      Future<int> seconds() async =>
+          (await db
+                  .customSelect(
+                    "SELECT seconds FROM daily_stats WHERE day = '2026-09-21'",
+                  )
+                  .getSingle())
+              .read<int>('seconds');
+
+      await service().ratePractice(
+        'g1',
+        items: 5,
+        correct: 5,
+        startedAt: DateTime(2026, 9, 21, 8, 57),
+      );
+      expect(await seconds(), 180, reason: 'a grammar-only day has minutes');
+
+      await service().ratePractice(
+        'g1',
+        items: 2,
+        correct: 2,
+        startedAt: DateTime(2026, 9, 21, 7),
+      );
+      expect(await seconds(), 180 + 600, reason: 'two hours: 2 × 300 s');
+    });
+
     test('BR-FSRS-05: all right Good, one wrong Hard, more Again', () async {
       final fsrs = Fsrs(
         desiredRetention: settings.read(SettingKeys.desiredRetention),
