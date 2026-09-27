@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:sogda/core/components/sg_chip.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/core/theme/app_theme.dart';
@@ -51,7 +49,7 @@ void main() {
   }) async {
     await tester.runAsync(() async {
       db = AppDatabase.memory();
-      final directory = Directory.systemTemp.createTempSync('sg_my_word');
+      final directory = tempDir('sg_my_word');
       final content = ContentFixture.write('${directory.path}/content.db');
       await db.customStatement(
         "ATTACH DATABASE '${ContentDao.attachPath(content.file)}' AS c",

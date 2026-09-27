@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 
+import 'package:sogda/core/components/sg_feedback.dart';
 import 'package:sogda/core/adaptive/adaptive.dart';
 import 'package:sogda/core/components/sg_button.dart';
 import 'package:sogda/core/components/sg_chip.dart';
@@ -90,12 +91,18 @@ class _CategoryWordsScreenState extends ConsumerState<CategoryWordsScreen> {
         .value
         ?.where((category) => category.id == widget.id)
         .firstOrNull;
-    final words = ref.watch(categoryWordsProvider(widget.id)).value;
+    final wordsState = ref.watch(categoryWordsProvider(widget.id));
+    final words = wordsState.value;
     final learned = (category?.learning ?? 0) + (category?.done ?? 0);
 
     final Widget body;
     if (words == null) {
-      body = const SizedBox.expand();
+      body = wordsState.hasError
+          ? SgLoadFailed(
+              message: l10n.learnLoadFailed,
+              onRetry: () => ref.invalidate(categoryWordsProvider(widget.id)),
+            )
+          : const SizedBox.expand();
     } else {
       final shown = words.where(_filter.holds).toList();
       body = Column(

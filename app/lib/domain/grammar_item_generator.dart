@@ -109,7 +109,7 @@ class CourseText {
   Set<int> _wordsOf(String form) {
     final listed = _lemmasOf(form);
     if (listed.isNotEmpty || !knows(form)) return listed;
-    final ending = RegExp(r'(en|er|es|em|st|e|n|t|s)$').firstMatch(form);
+    final ending = _ending.firstMatch(form);
     final end = ending?.group(0) ?? '';
     final root = form.substring(0, form.length - end.length);
     Set<int> headed(String head) => <int>{
@@ -329,6 +329,10 @@ List<GrammarItem> generateItems(
   // is what there is to practise.
   final example = _blank(source.exampleDe) ? source.rule : source.exampleDe;
   final sentences = _sentences(example, german: !_blank(source.exampleDe));
+  // #687 AN-11: a rule and an example with no word to ask (a content
+  // update's slip) are no items, not a throw that takes L15 and the step's
+  // mock exams down with them.
+  if (sentences.isEmpty) return <GrammarItem>[];
   final translations = _blank(source.exampleDe)
       ? <String>[]
       : _sentences(source.exampleEn, german: false);
@@ -361,6 +365,7 @@ List<GrammarItem> generateItems(
       : source.exampleEn;
   final translation = translationOf(first);
   final (before, answer, after) = _blankAt(tokens, gap);
+  if (answer.length < 2) return <GrammarItem>[]; // no word to ask (AN-11)
   final distractors = _distractors(answer, source, text, random);
 
   items.add(
@@ -621,9 +626,16 @@ List<String> _alternatives(String sentence) {
   return sides.length > 1 && sides.every(whole) ? sides : <String>[sentence];
 }
 
+// Built once, not per call (#687 AN-13): the generator runs for every topic
+// of a step on each practice and mock exam.
+final RegExp _ending = RegExp(r'(en|er|es|em|st|e|n|t|s)$');
+final RegExp _space = RegExp(r'\s+');
+final RegExp _wordRun = RegExp(r"[A-Za-zÄÖÜäöüß'-]+");
+final RegExp _edges = RegExp(r"^[^A-Za-zÄÖÜäöüß]+|[^A-Za-zÄÖÜäöüß]+$");
+
 /// A sentence's tokens, punctuation left on the word it follows.
 List<String> _tokens(String sentence) =>
-    sentence.split(RegExp(r'\s+')).where((token) => token.isNotEmpty).toList();
+    sentence.split(_space).where((token) => token.isNotEmpty).toList();
 
 /// [word] as it would be written inside a sentence: "Könnten" → "könnten".
 String _lower(String word) =>
@@ -637,12 +649,9 @@ const Set<String> _glue = <String>{
 
 /// The letters of [text]'s words.
 Iterable<String> _words(String text) =>
-    RegExp(r"[A-Za-zÄÖÜäöüß'-]+")
-        .allMatches(text)
-        .map((match) => match.group(0)!);
+    _wordRun.allMatches(text).map((match) => match.group(0)!);
 
-String _bare(String token) =>
-    token.replaceAll(RegExp(r"^[^A-Za-zÄÖÜäöüß]+|[^A-Za-zÄÖÜäöüß]+$"), '');
+String _bare(String token) => token.replaceAll(_edges, '');
 
 /// [tokens] with the word at [at] taken out: the text before it, the word,
 /// and the text after it, its own punctuation included — "Sie?" is the
@@ -844,7 +853,7 @@ const List<List<String>> _choices = <List<String>>[
   };
 
   final changed = <String>{};
-  final ending = RegExp(r'(en|er|es|em|st|e|n|t|s)$').firstMatch(word);
+  final ending = _ending.firstMatch(word);
   final root = ending == null ? word : word.substring(0, ending.start);
   for (final end in <String>['e', 'en', 'er', 'es', 'em', 't', 'st', '']) {
     if ('$root$end'.length > 1) changed.add('$root$end');

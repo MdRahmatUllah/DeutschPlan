@@ -386,9 +386,11 @@ class PlanEngine {
   /// BR-COURSE-05 with auto-advance off: Today's *Start next step*.
   ///
   /// Enrolls the step after the last finished one, at the learner's current
-  /// pace, and lets planning reach today again so its first new words are
-  /// today's rather than tomorrow's. Returns the step, or null when a step is
-  /// already active or the course is finished.
+  /// pace, and plans an open today again at once, so its first new words are
+  /// today's rather than tomorrow's: a day the last step ran out part-way
+  /// through is topped up to the new pace (#687 AN-7). Today stays opened,
+  /// so it keeps the revisions it picked (#342). Returns the step, or null
+  /// when a step is already active or the course is finished.
   ///
   /// [PlanStore.atomically], as [openDay] is (#548): an opening in between
   /// would see the step without today given back to it.
@@ -412,6 +414,7 @@ class PlanEngine {
     final last = await _store.lastPlannedDate();
     if (last != null && daysBetween(today, last) >= 0) {
       await _store.setLastPlannedDate(addDays(today, -1));
+      await generateNewThrough(today);
     }
     return next;
   });
@@ -552,10 +555,12 @@ class PlanEngine {
       // behind stays paused for the whole catch-up rather than digging deeper.
       if (await _isPaused(day)) continue;
 
-      // Already planned — reopening the same day must not double it.
-      if ((await _store.plannedOn(day, PlanKind.newWord)).isNotEmpty) continue;
+      // Already planned — reopening the same day must not double it. A day
+      // the last step ran out part-way through is topped up (AN-7).
+      final planned = (await _store.plannedOn(day, PlanKind.newWord)).length;
+      if (planned >= current.dailyNew) continue;
 
-      step = await _planDay(day, current);
+      step = await _planDay(day, current, planned: planned);
       if (step == null) break; // the course ran out, or auto-advance is off
     }
 
@@ -580,10 +585,14 @@ class PlanEngine {
   /// Plans one study day, advancing the step if it runs out (BR-COURSE-05).
   ///
   /// Returns the step to carry into the next day, or null when there is none
-  /// left to plan from.
-  Future<ActiveStep?> _planDay(PlanDate day, ActiveStep step) async {
+  /// left to plan from. [planned] are the new words [day] has already.
+  Future<ActiveStep?> _planDay(
+    PlanDate day,
+    ActiveStep step, {
+    int planned = 0,
+  }) async {
     var current = step;
-    var need = current.dailyNew;
+    var need = current.dailyNew - planned;
 
     // Bounded. Each turn either fills the day or advances a step, and the
     // course is finite, so this terminates — but a content file with a run of
@@ -853,18 +862,20 @@ List<String> selectRevisions(
 
   // Lowest retrievability first. Computed rather than approximated by
   // `elapsed / stability`, so the fill order and the scheduler agree on what
-  // "most likely to be forgotten" means.
-  double recall(RevisionCandidate c) =>
-      fsrs.retrievability(daysBetween(c.lastReview, on), c.stability);
-
-  rest.sort((a, b) {
-    final byRecall = recall(a).compareTo(recall(b));
-    return byRecall != 0 ? byRecall : a.uid.compareTo(b.uid);
+  // "most likely to be forgotten" means. Once per candidate, not per
+  // comparison (#687 AN-13).
+  final ranked = <(String, double)>[
+    for (final c in rest)
+      (c.uid, fsrs.retrievability(daysBetween(c.lastReview, on), c.stability)),
+  ];
+  ranked.sort((a, b) {
+    final byRecall = a.$2.compareTo(b.$2);
+    return byRecall != 0 ? byRecall : a.$1.compareTo(b.$1);
   });
 
   return <String>[
     for (final c in due) c.uid,
-    for (final c in rest.take(limit - due.length)) c.uid,
+    for (final (uid, _) in ranked.take(limit - due.length)) uid,
   ];
 }
 

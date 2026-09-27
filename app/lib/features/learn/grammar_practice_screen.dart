@@ -156,7 +156,7 @@ class _GrammarPracticeScreenState extends ConsumerState<GrammarPracticeScreen> {
     hold.close();
     if (!mounted) return;
     if (next.dayDone && next.sentences == 0) {
-      DayCompleteRoute.instead(context);
+      DayCompleteRoute.instead(context, today);
     } else {
       unawaited(Navigator.of(context).maybePop());
     }
@@ -174,11 +174,25 @@ class _GrammarPracticeScreenState extends ConsumerState<GrammarPracticeScreen> {
     final tokens = context.tokens;
     final l10n = AppLocalizations.of(context);
     final uid = widget.topicUids.isEmpty ? null : widget.topicUids[_topic];
-    final set = uid == null ? null : ref.watch(practiceSetProvider(uid)).value;
+    final practiceState = uid == null
+        ? null
+        : ref.watch(practiceSetProvider(uid));
+    final set = practiceState?.value;
 
     final Widget body;
     if (set == null || set.items.isEmpty) {
-      body = const SizedBox.expand();
+      // A topic that won't read, a stale uid (read, but no topic: null) or a
+      // topic with nothing to practise must not stop the run on a blank page
+      // (#677): blank only while it loads.
+      body =
+          practiceState != null &&
+              (practiceState.hasError || practiceState.hasValue)
+          ? SgLoadFailed(
+              message: l10n.learnLoadFailed,
+              onRetry: () => ref.invalidate(practiceSetProvider(uid!)),
+              onBack: () => Navigator.of(context).maybePop(),
+            )
+          : const SizedBox.expand();
     } else {
       final item = set.items[_item];
       final right = _right;
@@ -801,12 +815,12 @@ class _SpotView extends StatelessWidget {
             for (var i = 0; i < words.length; i++)
               _WordChip(
                 word: words[i],
-                tone: !answered
+                mark: !answered
                     ? null
                     : i == wrong
-                    ? tokens.color.easy
+                    ? _Mark.error
                     : '$i' == given
-                    ? tokens.color.again
+                    ? _Mark.notIt
                     : null,
                 onTap: answered
                     ? null
@@ -916,30 +930,70 @@ class _OrderViewState extends State<_OrderView> {
   }
 }
 
+/// How an answered Spot the error marks a word.
+enum _Mark {
+  /// The word that was wrong: the answer.
+  error,
+
+  /// A tap on a word that wasn't.
+  notIt,
+}
+
 /// A word as a tappable chip: Spot the error's tokens, Order the sentence's
 /// pieces.
 class _WordChip extends StatelessWidget {
-  const _WordChip({required this.word, required this.onTap, this.tone});
+  const _WordChip({required this.word, required this.onTap, this.mark});
 
   final String word;
   final VoidCallback? onTap;
 
-  /// Lime for the right word, Coral for a wrong tap, once answered.
-  final Color? tone;
+  /// Once answered: the error in Lime with a tick, a wrong tap in Coral with
+  /// a cross, as `_Options` marks its tiles, and said to a screen reader. A
+  /// tint alone told them apart by hue only (#726, WCAG 1.4.1).
+  final _Mark? mark;
 
   @override
   Widget build(BuildContext context) {
+    final tokens = context.tokens;
+    final l10n = AppLocalizations.of(context);
+    final (tone, icon, iconColour, said) = switch (mark) {
+      _Mark.error => (
+        tokens.color.easy,
+        Icons.check,
+        tokens.color.correctText,
+        l10n.practiceSpotIsError(word),
+      ),
+      _Mark.notIt => (
+        tokens.color.again,
+        Icons.close,
+        tokens.color.wrongText,
+        l10n.practiceSpotNotError(word),
+      ),
+      null => (null, null, null, null),
+    };
+    final text = SgText(word, role: SgTextRole.bodyLarge);
     return AdaptiveTapTarget(
       child: Semantics(
         button: onTap != null,
+        attributedLabel: SgScript.attributedLabel(said),
+        excludeSemantics: said != null,
         child: SgSurface(
           kind: tone == null
               ? SgSurfaceKind.bar
-              : SgSurfaceKind.tint(tone!, opacity: 0.3),
+              : SgSurfaceKind.tint(tone, opacity: 0.3),
           radius: 10,
           onTap: onTap,
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-          child: SgText(word, role: SgTextRole.bodyLarge),
+          child: icon == null
+              ? text
+              : Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Flexible(child: text),
+                    const SizedBox(width: 6),
+                    Icon(icon, size: 18, color: iconColour),
+                  ],
+                ),
         ),
       ),
     );

@@ -64,12 +64,10 @@ class _ExamResultsScreenState extends ConsumerState<ExamResultsScreen> {
   /// Out of a result that could not load: Learn, the course (#725).
   void _leave() => context.jumpToTab(const LearnRoute());
 
-  /// *Add missed words to revision* is done once.
+  /// *Add missed words to revision* is done once: here, from the tap on,
+  /// and on a later visit from the review log (`ExamResult.added`, #642).
   bool _added = false;
 
-  // ponytail: "once" is this visit's; L13 opened again offers it again,
-  // and a second go rates the words Again once more. A column on the
-  // attempt if that matters.
   Future<void> _addToRevision(List<String> uids) async {
     setState(() => _added = true);
     final l10n = AppLocalizations.of(context);
@@ -305,7 +303,11 @@ class _Result extends StatelessWidget {
               SgButton(label: l10n.examResultReview, onPressed: onReview),
               const SizedBox(height: 8),
               SgButton(
-                label: l10n.examResultAddMissed(missed.length),
+                // #642: sent once, it says so, on this visit and every later
+                // one, rather than "No missed words".
+                label: added || (missed.isEmpty && result.added > 0)
+                    ? l10n.examResultMissedAdded
+                    : l10n.examResultAddMissed(missed.length),
                 kind: SgButtonKind.secondary,
                 onPressed: missed.isEmpty || added ? null : () => onAdd(missed),
               ),

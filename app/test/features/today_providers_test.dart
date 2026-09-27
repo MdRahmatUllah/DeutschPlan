@@ -46,8 +46,8 @@ void main() {
         raw.execute(
           '''
 INSERT INTO words (uid, sublevel_code, level_code, seq, seq_in_sublevel,
-                   german, english, search_key, search_key_alt)
-VALUES (?, 'A0.9', 'A1', ?, ?, ?, ?, ?, ?)
+                   german, english, search_key, search_key_alt, kind)
+VALUES (?, 'A0.9', 'A1', ?, ?, ?, ?, ?, ?, 'vocab')
 ''',
           <Object>[uid, 90 + i, i + 1, uid, uid, uid, uid],
         );
@@ -705,8 +705,8 @@ INSERT INTO word_state (word_uid, status, introduced_on, due, stability, reps, l
       for (var i = 1; i <= 40; i++) {
         await db.customStatement(
           'INSERT INTO c.words (uid, sublevel_code, level_code, seq, '
-          'seq_in_sublevel, german, english, search_key, search_key_alt) '
-          "VALUES (?, 'A1.1', 'A1', ?, ?, ?, ?, ?, ?)",
+          'seq_in_sublevel, german, english, search_key, search_key_alt, '
+          "kind) VALUES (?, 'A1.1', 'A1', ?, ?, ?, ?, ?, ?, 'vocab')",
           <Object>['x$i', 200 + i, 10 + i, 'Wort$i', 'word$i', 'wort$i', 'x$i'],
         );
       }

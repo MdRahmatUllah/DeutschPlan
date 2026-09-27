@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:sogda/core/components/sg_feedback.dart';
 import 'package:sogda/core/adaptive/adaptive.dart';
 import 'package:sogda/core/components/sg_button.dart';
 import 'package:sogda/core/components/sg_chip.dart';
@@ -55,8 +56,9 @@ Future<List<({int id, String name})>> stepCategories(Ref ref, String code) =>
 /// The Words tab's status chips.
 enum WordFilter { all, todo, learning, done }
 
-/// FR-L2-02: a status AND a category. *All* keeps suspended words, greyed;
-/// a status chip shows only its own.
+/// FR-L2-02: a status AND a category. *All* keeps suspended words, greyed,
+/// and notes; a status chip shows only its own, and a note has none
+/// (BR-CONTENT-04).
 List<StepWord> filterWords(
   List<StepWord> words, {
   required WordFilter status,
@@ -64,6 +66,7 @@ List<StepWord> filterWords(
 }) => <StepWord>[
   for (final row in words)
     if ((category == null || row.word.word.categoryId == category) &&
+        (status == WordFilter.all || row.word.studied) &&
         switch (status) {
           WordFilter.all => true,
           WordFilter.todo => row.word.status == WordStatus.todo,
@@ -130,7 +133,8 @@ class _StepWordsTabState extends ConsumerState<StepWordsTab> {
     final tokens = context.tokens;
     final l10n = AppLocalizations.of(context);
     final code = widget.step.code;
-    final words = ref.watch(stepWordsProvider(code)).value;
+    final wordsState = ref.watch(stepWordsProvider(code));
+    final words = wordsState.value;
     final categories =
         ref.watch(stepCategoriesProvider(code)).value ??
         const <({int id, String name})>[];
@@ -196,7 +200,12 @@ class _StepWordsTabState extends ConsumerState<StepWordsTab> {
         ),
         Expanded(
           child: words == null
-              ? const SizedBox.expand()
+              ? wordsState.hasError
+                    ? SgLoadFailed(
+                        message: l10n.learnLoadFailed,
+                        onRetry: () => ref.invalidate(stepWordsProvider(code)),
+                      )
+                    : const SizedBox.expand()
               : shown.isEmpty
               ? Center(
                   child: SgText(

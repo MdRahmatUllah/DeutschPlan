@@ -14,12 +14,14 @@ WordDetail artboardWordDetail({
   WordStatus status = WordStatus.done,
   MeaningLanguage meaning = MeaningLanguage.both,
   bool translate = false,
+  String kind = 'vocab',
 }) => WordDetail(
   meaning: meaning,
   pron: true,
   translate: translate,
   word: WordWithState(
     word: Word(
+      kind: kind,
       uid: uid,
       sublevelCode: 'A1.1',
       levelCode: 'A1',

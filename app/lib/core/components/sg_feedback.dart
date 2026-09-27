@@ -151,7 +151,9 @@ class _UmlautKey extends StatelessWidget {
       child: Semantics(
         button: true,
         enabled: onTap != null,
-        label: AppLocalizations.of(context).umlautLongPressHint(label, shifted),
+        attributedLabel: SgScript.attributedLabel(
+          AppLocalizations.of(context).umlautLongPressHint(label, shifted),
+        ),
         onTap: onTap,
         onLongPress: onLongPress,
         child: ExcludeSemantics(
@@ -328,6 +330,45 @@ class SgErrorPanel extends StatelessWidget {
               ],
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+/// What a screen shows where its content would be when the read behind it
+/// failed (#677): the shared [SgErrorPanel], centred, with *Retry* (which
+/// reads it again) and, for a screen whose back row is part of that content,
+/// *Back*. Never a blank page with no way on.
+class SgLoadFailed extends StatelessWidget {
+  const SgLoadFailed({
+    required this.message,
+    required this.onRetry,
+    this.onBack,
+    super.key,
+  });
+
+  final String message;
+  final VoidCallback onRetry;
+  final VoidCallback? onBack;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: SgErrorPanel(
+          message: message,
+          retryLabel: l10n.retry,
+          onRetry: onRetry,
+          action: onBack == null
+              ? null
+              : SgButton(
+                  label: l10n.back,
+                  kind: SgButtonKind.secondary,
+                  onPressed: onBack,
+                ),
         ),
       ),
     );

@@ -332,6 +332,56 @@ void main() {
       expect(find.byType(AppShell), findsOneWidget);
     });
 
+    group('#613 a URI from another app', () {
+      // MainActivity is exported, and Flutter hands any intent's data over
+      // as the route. Only `sogda://` is ours: anything else lands on Today,
+      // however well its path matches a route.
+      for (final link in const <String>[
+        'x://h/onboarding/2?restart=true',
+        'x://learn/A2.1', // a sogda-shaped link, but not sogda
+        'https://example.com/exam/7',
+        '//h/onboarding/2?restart=true',
+      ]) {
+        testWidgets('$link lands on Today', (tester) async {
+          await pumpApp(tester);
+          router.go('/sentences');
+          await tester.pumpAndSettle();
+
+          await openLink(tester, link);
+
+          expect(location(), fallbackLocation);
+          expect(find.byType(TodayScreen), findsOneWidget);
+        });
+      }
+
+      testWidgets('and does not take over a running exam either', (
+        tester,
+      ) async {
+        router = buildRouter(
+          initialLocation: '/exam/7',
+          guards: RouteGuards.permissive(),
+        );
+        addTearDown(router.dispose);
+        await tester.pumpWidget(
+          ProviderScope(
+            overrides: todayStub(),
+            child: MaterialApp.router(
+              routerConfig: router,
+              theme: AppTheme.light(),
+              localizationsDelegates: appLocalizationsDelegates,
+              supportedLocales: supportedLocales,
+            ),
+          ),
+        );
+        await tester.pumpAndSettle();
+
+        await openLink(tester, 'x://h/today');
+
+        expect(location(), '/exam/7');
+        expect(find.byType(ExamRunnerScreen), findsOneWidget);
+      });
+    });
+
     testWidgets('a link does not take over a running exam', (tester) async {
       // FR-L12-04 makes leaving an exam a decision, with a dialog and an
       // abandoned attempt. A `go` is not a pop, so #69's `canPop: false`
@@ -422,6 +472,37 @@ void main() {
         reason: 'without BROWSABLE the widget intent does not reach the app',
       );
       expect(manifest, contains('android.intent.action.VIEW'));
+    });
+
+    test('#613 Android drops another app\'s data before Flutter reads it', () {
+      // An explicit intent skips the manifest's filter, and its scheme-less
+      // `/exam/7` would reach the router as one of the app's own locations.
+      final activity = File(
+        'android/app/src/main/kotlin/de/sogda/app/MainActivity.kt',
+      ).readAsStringSync();
+
+      expect(
+        RegExp(r'ownLinksOnly\(intent\)\s+super\.onCreate').hasMatch(activity),
+        isTrue,
+        reason: 'the first intent, before FlutterActivity reads it',
+      );
+      expect(
+        RegExp(r'ownLinksOnly\(intent\)\s+super\.onNewIntent')
+            .hasMatch(activity),
+        isTrue,
+        reason: 'a link to the running app',
+      );
+      expect(
+        activity,
+        contains(
+          'intent.data?.scheme != "$deepLinkScheme") intent.data = null',
+        ),
+      );
+      expect(
+        activity,
+        contains('override fun getInitialRoute(): String? = null'),
+        reason: 'a `route` extra would be the first route otherwise',
+      );
     });
 
     test('iOS declares the scheme', () {

@@ -3442,6 +3442,10 @@
       }
     }
   },
+  "libraryTopicNotLearned": "not learned yet",
+  "@libraryTopicNotLearned": {
+    "description": "L3 row: what a hollow status dot says to a screen reader, for a topic never learned (#668)."
+  },
   "libraryDue": "Due · {count}",
   "@libraryDue": {
     "description": "L3 filter chip: learned topics due today or before.",
@@ -3598,6 +3602,24 @@
   "practiceSpotPrompt": "Tap the word that is wrong.",
   "@practiceSpotPrompt": {
     "description": "L15 spot the error instruction."
+  },
+  "practiceSpotIsError": "{word}, the error",
+  "@practiceSpotIsError": {
+    "description": "L15 Spot the error, once answered: a screen reader's label for the word that was wrong, the answer (#726). word is the German word.",
+    "placeholders": {
+      "word": {
+        "type": "String"
+      }
+    }
+  },
+  "practiceSpotNotError": "{word}, your tap, not the error",
+  "@practiceSpotNotError": {
+    "description": "L15 Spot the error, once answered: a screen reader's label for a word the learner tapped that wasn't the error (#726). word is the German word.",
+    "placeholders": {
+      "word": {
+        "type": "String"
+      }
+    }
   },
   "practiceOrderPrompt": "Tap the words in the right order.",
   "@practiceOrderPrompt": {
@@ -4395,6 +4417,14 @@
   "examSpeakingRecorded": "Recorded · stays on this phone",
   "@examSpeakingRecorded": {
     "description": "L12 Speaking: once recorded."
+  },
+  "examSpeakingInterrupted": "Paused · the phone is using the microphone",
+  "@examSpeakingInterrupted": {
+    "description": "L12 Speaking: while recording, a call, an alarm or a voice assistant has the microphone; the recording goes on when it is free (#624)."
+  },
+  "examSpeakingPlayFailed": "This recording can't be played.",
+  "@examSpeakingPlayFailed": {
+    "description": "L12 Speaking: a toast when the take can't be read, e.g. half-written when the app was killed (#732)."
   },
   "examSpeakingRecord": "Record",
   "@examSpeakingRecord": {
@@ -5254,6 +5284,10 @@
       }
     }
   },
+  "examResultMissedAdded": "Missed words added to revision",
+  "@examResultMissedAdded": {
+    "description": "L13 button (FR-L13-02), disabled: this attempt's missed words were already added to revision (#642)."
+  },
   "examResultAdded": "{count, plural, =1{1 word added to revision · due tomorrow} other{{count} words added to revision · due tomorrow}}",
   "@examResultAdded": {
     "description": "L13 toast after Add missed words to revision.",
@@ -5737,6 +5771,10 @@
   "licencesFonts": "Fonts",
   "@licencesFonts": {
     "description": "M8's section of the bundled fonts, drawn in capitals."
+  },
+  "licencesNative": "Native libraries",
+  "@licencesNative": {
+    "description": "M8's section of the native Android libraries no package's licence covers (ONNX Runtime, AndroidX…), drawn in capitals."
   },
   "licencesPackages": "Packages",
   "@licencesPackages": {

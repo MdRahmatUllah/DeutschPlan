@@ -130,8 +130,13 @@ String today(Ref ref) {
 class Theme extends _$Theme {
   @override
   SgMode build() {
-    final setting = ref.watch(settingsProvider).read(SettingKeys.themeMode);
-    return setting.resolve(_platformBrightness);
+    final settings = ref.watch(settingsProvider);
+    // Followed, not read once (#672): a Replace import and Reset everything
+    // write the setting too, not only [choose], and `reload` announces it.
+    _followSettings(ref, settings, const <SettingKey<Object?>>{
+      SettingKeys.themeMode,
+    });
+    return settings.read(SettingKeys.themeMode).resolve(_platformBrightness);
   }
 
   /// The platform's current brightness.
@@ -196,6 +201,12 @@ class Languages extends _$Languages {
   @override
   ({MeaningLanguage meaning, UiLanguage ui}) build() {
     final settings = ref.watch(settingsProvider);
+    // Followed, not read once (#672): a Replace import writes both, and
+    // Reset everything the meaning language, not only this notifier.
+    _followSettings(ref, settings, const <SettingKey<Object?>>{
+      SettingKeys.meaningLanguage,
+      SettingKeys.uiLanguage,
+    });
     return (
       meaning: settings.read(SettingKeys.meaningLanguage),
       ui: settings.read(SettingKeys.uiLanguage),

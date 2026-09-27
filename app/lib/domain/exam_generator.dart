@@ -214,6 +214,7 @@ sealed class ExamItem {
           final String form => FormLabel.values.byName(form),
           _ => null,
         },
+        phrase: json['phrase'] == true,
       ),
     };
   }
@@ -230,12 +231,18 @@ final class WordQuestion extends ExamItem {
     required this.prompt,
     required this.expected,
     this.form,
+    this.phrase = false,
   });
 
   final String prompt;
   @override
   final String expected;
   final FormLabel? form;
+
+  /// Reverse and Listening: [expected] is a phrase whose leading article-like
+  /// word is typed like the rest ([QuizWord.isPhrase]). A paper written
+  /// before it has none, and grades as it did.
+  final bool phrase;
 
   @override
   List<String>? get options => section == ExamSection.articles
@@ -246,6 +253,7 @@ final class WordQuestion extends ExamItem {
   Map<String, Object?> get _prompt => <String, Object?>{
     'prompt': prompt,
     if (form != null) 'form': form!.name,
+    if (phrase) 'phrase': true,
   };
 }
 
@@ -687,6 +695,7 @@ WordQuestion _wordQuestion(
         word.uid,
         prompt: meaning,
         expected: word.headword,
+        phrase: word.isPhrase,
       );
     case ExamSection.articles:
       return WordQuestion(
@@ -711,6 +720,7 @@ WordQuestion _wordQuestion(
         word.uid,
         prompt: word.headword,
         expected: word.headword,
+        phrase: word.isPhrase,
       );
   }
 }

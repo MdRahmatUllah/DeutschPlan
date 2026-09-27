@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:sogda/core/adaptive/adaptive.dart';
 import 'package:sogda/core/components/sg_feedback.dart';
@@ -625,6 +624,23 @@ void main() {
       expect(find.text('Linguee'), findsNothing, reason: "R1's, not W1's");
     });
 
+    testWidgets('BR-CONTENT-04 a note has no status and no way into study: '
+        'no Add to today, Mark known, Suspend or card', (tester) async {
+      await pump(
+        tester,
+        detail: artboardWordDetail(status: WordStatus.todo, kind: 'note'),
+      );
+      expect(find.text(l10n.wordStatusToDo), findsNothing);
+      expect(action(l10n.wordAddToday), findsNothing);
+      expect(action(l10n.wordMarkKnown), findsNothing);
+      expect(action(l10n.wordSuspend), findsNothing);
+      expect(action(l10n.wordResume), findsNothing);
+      expect(find.text(l10n.wordPlainCard), findsNothing);
+      expect(find.text(l10n.wordClozeCard), findsNothing);
+      expect(action(l10n.wordCopy), findsOneWidget, reason: 'still a text');
+      expect(find.text('Duden'), findsOneWidget);
+    });
+
     testWidgets("FR-W1-01 a To-do word offers Add to today; FR-W1-04 its "
         'snackbar undoes it', (tester) async {
       await pump(tester, detail: artboardWordDetail(status: WordStatus.todo));
@@ -907,7 +923,7 @@ void main() {
   group('R04 over the database', () {
     testWidgets('the course\'s examples and tip; the status follows a '
         'rating while the sheet is open', (tester) async {
-      final directory = Directory.systemTemp.createTempSync('sogda_w1');
+      final directory = tempDir('sogda_w1');
       final content = ContentFixture.write('${directory.path}/content.db').file;
       final db = AppDatabase.memory();
       await tester.runAsync(

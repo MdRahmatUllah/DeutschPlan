@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:sogda/core/adaptive/adaptive.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/core/components/sg_button.dart';
@@ -56,7 +54,7 @@ void main() {
     addTearDown(tester.view.reset);
     await tester.runAsync(() async {
       db = AppDatabase.memory();
-      final directory = Directory.systemTemp.createTempSync('sg_add_word');
+      final directory = tempDir('sg_add_word');
       final content = ContentFixture.write('${directory.path}/content.db');
       await db.customStatement(
         "ATTACH DATABASE '${ContentDao.attachPath(content.file)}' AS c",

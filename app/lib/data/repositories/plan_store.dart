@@ -7,10 +7,12 @@ import 'package:drift/drift.dart';
 
 /// BR-CONTENT-02 (#174, #456): [column] names a word of the learner's own, or
 /// a course word still in content.db. A word a content update removed keeps
-/// its rows in user.db, with its history, and is read nowhere.
+/// its rows in user.db, with its history, and is read nowhere. Nor is a note
+/// (BR-CONTENT-04, #630): it is never studied.
 String inCourse(String column) =>
     "($column LIKE 'custom:%' "
-    'OR EXISTS (SELECT 1 FROM words w WHERE w.uid = $column))';
+    'OR EXISTS (SELECT 1 FROM words w '
+    "WHERE w.uid = $column AND w.kind = 'vocab'))";
 
 /// [PlanStore] over drift — the engine's half of `plan_items` and friends.
 ///
@@ -29,7 +31,10 @@ class DriftPlanStore implements PlanStore {
   /// runs and holds it to the commit; every other statement or transaction
   /// on the database, from any engine or isolate sharing it, waits. Inside,
   /// statements through [_db] join it, and a nested transaction (addToPlan's)
-  /// is a savepoint.
+  /// is a savepoint. The background task's own connection (#158) waits too,
+  /// under busy_timeout: drift's native BEGIN is IMMEDIATE, so a read here
+  /// can't go stale under its commit (no SQLITE_BUSY_SNAPSHOT; #621, pinned
+  /// in `app_database_open_test.dart`).
   ///
   /// The settings [body] writes are in memory before the commit, as in
   /// `SetupRepository.commit`: read back from the disk if it rolls back.
@@ -76,7 +81,7 @@ SELECT w.uid AS uid
 FROM words w
 LEFT JOIN word_state s ON s.word_uid = w.uid
 WHERE w.sublevel_code = ?1
-  AND COALESCE(s.status, 'todo') = 'todo'
+  AND COALESCE(s.status, 'todo') = 'todo' AND w.kind = 'vocab'
   AND w.uid NOT IN (SELECT word_uid FROM plan_items WHERE kind = 'new')
 ORDER BY w.seq_in_sublevel
 LIMIT ?2
@@ -146,7 +151,8 @@ SELECT word_uid AS uid, stability, due, last_review
 FROM word_state
 WHERE status IN ('learning', 'done')
   AND (last_review IS NOT NULL OR due IS NOT NULL)
-  AND (EXISTS (SELECT 1 FROM words w WHERE w.uid = word_uid)
+  AND (EXISTS (SELECT 1 FROM words w
+               WHERE w.uid = word_uid AND w.kind = 'vocab')
        OR EXISTS (SELECT 1 FROM custom_words c
                   WHERE 'custom:' || c.id = word_uid))
 ''',

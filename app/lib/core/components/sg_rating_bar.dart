@@ -119,7 +119,9 @@ class _RatingButton extends StatelessWidget {
       onTap: onTap,
       // The interval is part of the decision, so it is part of the label rather
       // than a separate node a screen reader might read out of order.
-      label: interval == null ? name : '$name, $interval',
+      attributedLabel: SgScript.attributedLabel(
+        interval == null ? name : '$name, $interval',
+      ),
       child: ExcludeSemantics(
         child: GestureDetector(
           onTap: onTap,

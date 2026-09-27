@@ -76,52 +76,58 @@ class WordActions {
   /// for the word — today's, or the backlog's — closes with it, or the word
   /// just marked known would still be served. A skipped row stays skipped:
   /// the day it belongs to is already complete (BR-PLAN-10).
-  Future<Undo> markKnown(String uid, {required String today}) async {
-    final open =
-        await (_db.select(_db.planItems)
-              ..where(
-                (t) =>
-                    t.wordUid.equals(uid) &
-                    t.completedAt.isNull() &
-                    t.skipped.equals(0) &
-                    t.planDate.isSmallerOrEqualValue(today),
-              )
-              ..orderBy(<OrderClauseGenerator<PlanItems>>[
-                (t) => OrderingTerm.desc(t.planDate),
-              ]))
-            .get();
-    final first = open.firstOrNull;
-    // The newest goes with the rating, so the rating's undo reopens it; the
-    // rest close at the same moment and reopen with it.
-    await _rating.markKnown(
-      uid,
-      planDate: first?.planDate,
-      kind: switch (first?.kind) {
-        null => null,
-        'new' => PlanKind.newWord,
-        _ => PlanKind.revise,
-      },
-    );
-    final rest = open.skip(1).toList();
-    if (first != null && rest.isNotEmpty) {
-      final closed = await (_db.select(
-        _db.planItems,
-      )..where((t) => _same(t, first))).getSingle();
-      for (final row in rest) {
-        await (_db.update(_db.planItems)..where((t) => _same(t, row))).write(
-          PlanItemsCompanion(completedAt: Value(closed.completedAt)),
+  ///
+  /// One transaction (#717): the rating and the rows it closes land together
+  /// or not at all.
+  Future<Undo> markKnown(String uid, {required String today}) =>
+      _db.transaction(() async {
+        final open =
+            await (_db.select(_db.planItems)
+                  ..where(
+                    (t) =>
+                        t.wordUid.equals(uid) &
+                        t.completedAt.isNull() &
+                        t.skipped.equals(0) &
+                        t.planDate.isSmallerOrEqualValue(today),
+                  )
+                  ..orderBy(<OrderClauseGenerator<PlanItems>>[
+                    (t) => OrderingTerm.desc(t.planDate),
+                  ]))
+                .get();
+        final first = open.firstOrNull;
+        // The newest goes with the rating, so the rating's undo reopens it;
+        // the rest close at the same moment and reopen with it.
+        await _rating.markKnown(
+          uid,
+          planDate: first?.planDate,
+          kind: switch (first?.kind) {
+            null => null,
+            'new' => PlanKind.newWord,
+            _ => PlanKind.revise,
+          },
         );
-      }
-    }
-    return () => _db.transaction(() async {
-      await _rating.undo();
-      for (final row in rest) {
-        await _db
-            .into(_db.planItems)
-            .insertOnConflictUpdate(row.toCompanion(false));
-      }
-    });
-  }
+        final rest = open.skip(1).toList();
+        if (first != null && rest.isNotEmpty) {
+          final closed = await (_db.select(
+            _db.planItems,
+          )..where((t) => _same(t, first))).getSingle();
+          for (final row in rest) {
+            await (_db.update(
+              _db.planItems,
+            )..where((t) => _same(t, row))).write(
+              PlanItemsCompanion(completedAt: Value(closed.completedAt)),
+            );
+          }
+        }
+        return () => _db.transaction(() async {
+          if (await _rating.undo(expectUid: uid) == null) return;
+          for (final row in rest) {
+            await _db
+                .into(_db.planItems)
+                .insertOnConflictUpdate(row.toCompanion(false));
+          }
+        });
+      });
 
   /// FR-W1-02, BR-STATUS-03: a suspended word is out of today's plan
   /// (#351), so Today no longer counts it and the session doesn't serve it.

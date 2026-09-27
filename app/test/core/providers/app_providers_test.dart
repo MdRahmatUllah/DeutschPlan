@@ -142,6 +142,45 @@ void main() {
     });
   });
 
+  group('#672 the theme and the languages follow any writer', () {
+    // A Replace import and Reset everything write the settings through SQL,
+    // then `reload` announces what changed. The notifiers read the settings
+    // once and kept the old theme and languages until a relaunch.
+    Future<void> writeElsewhere(void Function(SettingsRepository) write) async {
+      final other = SettingsRepository(db);
+      await other.load();
+      write(other);
+      await Future<void>.delayed(Duration.zero);
+      await other.dispose();
+      await settings.reload();
+      await Future<void>.delayed(Duration.zero);
+    }
+
+    test('the theme', () async {
+      final ref = container();
+      expect(ref.read(themeProvider), SgMode.light);
+
+      await writeElsewhere(
+        (other) => other.write(SettingKeys.themeMode, ThemeModeSetting.dark),
+      );
+      expect(ref.read(themeProvider), SgMode.dark);
+    });
+
+    test('the meaning and the app language', () async {
+      final ref = container();
+      expect(ref.read(languagesProvider).ui, UiLanguage.english);
+
+      await writeElsewhere((other) {
+        other.write(SettingKeys.uiLanguage, UiLanguage.bangla);
+        other.write(SettingKeys.meaningLanguage, MeaningLanguage.bangla);
+      });
+      expect(ref.read(languagesProvider), (
+        meaning: MeaningLanguage.bangla,
+        ui: UiLanguage.bangla,
+      ));
+    });
+  });
+
   group('the theme notifier', () {
     test('follows the setting', () async {
       final ref = container();

@@ -76,6 +76,9 @@ class Backlog extends _$Backlog {
     BacklogWord row,
   ) async {
     final uid = row.word.word.uid;
+    // Suspending a suspended word changes nothing, so its *Undo* must not
+    // resume it (#728).
+    final wasSuspended = row.word.isSuspended;
     final rating = ref.read(ratingServiceProvider);
     final plans = ref.read(planRepositoryProvider);
     final clock = ref.read(clockProvider);
@@ -101,12 +104,13 @@ class Backlog extends _$Backlog {
     return () async {
       switch (action) {
         case BacklogAction.known:
-          await rating.undo();
+          // Only this word's rating: another made since stays (#728).
+          await rating.undo(expectUid: uid);
         case BacklogAction.suspended:
-          await rating.resume(uid);
+          if (!wasSuspended) await rating.resume(uid);
         case BacklogAction.removed:
           await complete(at: null);
-          await rating.resume(uid);
+          if (!wasSuspended) await rating.resume(uid);
       }
     };
   }
@@ -134,12 +138,19 @@ class BacklogScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tokens = context.tokens;
-    final rows = ref.watch(backlogProvider).value;
+    final rowsState = ref.watch(backlogProvider);
+    final rows = rowsState.value;
     return AdaptiveScaffold(
       backgroundColor: tokens.surface.paper,
-      body: rows == null
-          ? const SizedBox.shrink()
-          : _Backlog(rows: rows, today: ref.watch(todayProvider)),
+      body: rows != null
+          ? _Backlog(rows: rows, today: ref.watch(todayProvider))
+          : rowsState.hasError
+          ? SgLoadFailed(
+              message: AppLocalizations.of(context).todayLoadFailed,
+              onRetry: () => ref.invalidate(backlogProvider),
+              onBack: () => Navigator.of(context).maybePop(),
+            )
+          : const SizedBox.shrink(),
     );
   }
 }

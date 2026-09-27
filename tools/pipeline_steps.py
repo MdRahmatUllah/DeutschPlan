@@ -183,8 +183,9 @@ def split_grammar(rows: Sequence) -> None:
 def resolve_grammar_levels(rows: Iterable, fallback: str) -> None:
     """Fills in the level for grammar rows that name none.
 
-    The fallback is the first level of the workbook the row came from — the
-    manifest's order is what makes that deterministic.
+    The fallback is the last (highest) level of the workbook the row came
+    from: an unlabelled topic in German_B1_Tracker is a B1 topic, since that
+    book carries A1 and A2 on the way to B1 (`excel_to_sqlite.derive`).
     """
     for row in rows:
         if not getattr(row, "level", None):
@@ -266,8 +267,7 @@ def assign_uids(words: Sequence) -> list[str]:
 
     A collision is resolved by hashing again with the *occurrence* number
     appended: the second word to hash to a given uid gets suffix 2, the third
-    3. The doc says "the sequence number", and the global `seq` would satisfy
-    the letter of it, but `seq` is reading order across every workbook — one
+    3. Not the global `seq`: that is reading order across every workbook — one
     unrelated word inserted at the top shifts it, and the colliding word's uid
     would change with it, orphaning that learner's progress over an edit that
     had nothing to do with their word. The occurrence index depends only on
@@ -771,6 +771,48 @@ def _set_example(word, language: str, number: int, value: str, uid: str) -> None
         )
     lines[number - 1 : number] = [value]
     setattr(word, name, "\n".join(lines))
+
+
+#: PIPE-10 (#630): what a row of All Words is. Only `vocab` is studied
+#: (BR-CONTENT-04); a `note` and a `compare` are lessons beside the words.
+KINDS = ("vocab", "note", "compare")
+
+#: A note's headword: word formation (an affix, "-ung" or "be-", but not the
+#: truncation in "Hals- und Beinbruch"; Präfix, Suffix, Wortbildung,
+#: Wortfamilie), a construction ("seit + Präsens", "Adjektiv → Nomen"), or an
+#: exam module ("Hören (C2)").
+NOTE_SHAPE = (
+    r"(^|\s)-\w|\w-(?!\s+(und|oder)\b)(\s|$|/)"
+    r"|\b(Präfix|Suffix|Wortbildung|Wortfamilie)\b| \+ | → |\([ABC][12]\)$"
+)
+
+#: A comparison's: "machen ↔ tun", "sagen vs. behaupten".
+COMPARE_SHAPE = r" ↔ |\svs\.\s"
+
+
+def assign_kinds(words: Sequence) -> dict[str, int]:
+    """PIPE-10: each word's `kind`, from its headword's shape, unless a
+    correction set it: the reviewed override list is `content/corrections.yaml`
+    (a grammar rule's name, "Vorfeldbesetzung", has no shape to find).
+    Returns how many of each.
+    """
+    import re
+
+    counts = dict.fromkeys(KINDS, 0)
+    for word in words:
+        if word.kind is None:
+            word.kind = (
+                "note"
+                if re.search(NOTE_SHAPE, word.german)
+                else "compare" if re.search(COMPARE_SHAPE, word.german) else "vocab"
+            )
+        elif word.kind not in KINDS:
+            raise PipelineError(
+                f"corrections: {word.german!r} has kind {word.kind!r}, not one "
+                f"of {', '.join(KINDS)}."
+            )
+        counts[word.kind] += 1
+    return counts
 
 
 def assign_examples(words: Sequence) -> None:

@@ -21,7 +21,8 @@ analyzer:
     - build/**
     - android/**
     - ios/**
-    # Generated code is rebuilt by `make gen`; linting it is not actionable.
+    # Generated code is rebuilt by getting-started.md's generation block;
+    # linting it is not actionable.
     - "**/*.g.dart"
     - "**/*.drift.dart"
     - "lib/l10n/generated/**"

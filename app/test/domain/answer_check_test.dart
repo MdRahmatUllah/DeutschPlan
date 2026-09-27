@@ -87,6 +87,15 @@ void main() {
       expect(checkMeaning('und', 'understand'), Verdict.wrong);
     });
 
+    test("#699 BR-ANS-01 a meaning's hyphen may be left out", () {
+      expect(checkMeaning('email', 'e-mail'), Verdict.correct);
+      expect(checkMeaning('e-mail', 'e-mail'), Verdict.correct);
+      expect(checkMeaning('well known', 'well-known'), Verdict.correct);
+      expect(meaningAnswers('e-mail / letter'), contains('email'));
+      // Not in German: "Email" is enamel.
+      expect(checkGerman('Email', 'E-Mail'), isNot(Verdict.correct));
+    });
+
     test('the best verdict across the list wins, not the first', () {
       // "wlak" is wrong against "go" and almost against "walk". Stopping at
       // the first candidate would call it wrong.
@@ -238,6 +247,21 @@ void main() {
       expect(checkForm('Muetter', 'Mütter'), Verdict.correct);
     });
 
+    test('#699 BR-ANS-01 ß is one letter for the typo gate, not two', () {
+      // Five letters: one out is a different word ("Grüße"), not a typo.
+      expect(checkGerman('Grüße', 'Größe'), Verdict.wrong);
+      expect(checkGerman('die Grüße', 'die Größe'), Verdict.wrong);
+      expect(checkGerman('Grosse', 'Größe'), Verdict.almost, reason: 'ö/o');
+      // Six letters, as "Straße" is: a typo still.
+      expect(checkGerman('Strase', 'Straße'), Verdict.almost);
+      // The gate lines up with the key's words when an article is stripped.
+      expect(checkForm('Strasen', 'die Straßen'), Verdict.almost);
+      expect(
+        checkGerman('die Strase', 'Straße', article: 'die'),
+        Verdict.almost,
+      );
+    });
+
     test('ß and ss are the same word', () {
       expect(checkGerman('Straße', 'Strasse'), Verdict.correct);
       expect(checkGerman('Strasse', 'Straße'), Verdict.correct);
@@ -287,6 +311,28 @@ void main() {
         checkGerman('das Fentser', 'Fenster', article: 'das'),
         Verdict.almost,
       );
+    });
+
+    test("#687 AN-10 a phrase's leading das or den is one of its words", () {
+      Verdict phrase(String given, String german) =>
+          checkGerman(given, german, phrase: true);
+      expect(phrase('Das stimmt nicht', 'Das stimmt nicht'), Verdict.correct);
+      expect(phrase('das stimmt nicht', 'Das stimmt nicht'), Verdict.correct);
+      expect(phrase('stimmt nicht', 'Das stimmt nicht'), Verdict.wrong);
+      expect(phrase('den Tisch decken', 'den Tisch decken'), Verdict.correct);
+      expect(phrase('Tisch decken', 'den Tisch decken'), Verdict.wrong);
+      expect(
+        phrase('die Tisch decken', 'den Tisch decken'),
+        Verdict.wrong,
+        reason: 'den is the case, not an article to name',
+      );
+      // Still German: a bare vowel is almost, a slash an alternative.
+      expect(
+        phrase('die Daumen drucken', 'die Daumen drücken'),
+        Verdict.almost,
+      );
+      // Not a phrase (a paper written before the flag): as it always was.
+      expect(checkGerman('stimmt nicht', 'Das stimmt nicht'), Verdict.correct);
     });
 
     test('an article on a word that has none is ignored', () {

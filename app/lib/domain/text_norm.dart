@@ -141,8 +141,11 @@ final RegExp _punctuation = RegExp(r'[!-#%-*,-/:;?@\[-\]_{}¡§«¶·»¿‐-‧
 ///
 /// Dart has no NFD, so the decomposition is a table of the precomposed Latin
 /// letters that actually turn up in German and in loan words. Anything not in
-/// it passes through — which is the safe direction: an unmapped letter keys as
-/// itself on both sides, while a wrong mapping keys differently from Python.
+/// it passes through, and that is not always what Python does: its NFD strips
+/// the mark of every precomposed Latin letter, so an unmapped one ("ǎ") keys
+/// differently on the two sides (#699). A letter the course comes to use goes
+/// in the table, with a vector in `tools/test_vectors.json`. A letter with no
+/// decomposition (ø, ł, đ, ŧ) is not in it: Python keeps it, and so must this.
 String _stripLatinMarks(String text) {
   final buffer = StringBuffer();
   var baseWasLatin = false;
@@ -191,7 +194,6 @@ const Map<String, String> _latinFolds = <String, String>{
   'ĉ': 'c',
   'ċ': 'c',
   'ď': 'd',
-  'đ': 'd',
   'é': 'e',
   'è': 'e',
   'ê': 'e',
@@ -219,7 +221,6 @@ const Map<String, String> _latinFolds = <String, String>{
   'ĺ': 'l',
   'ļ': 'l',
   'ľ': 'l',
-  'ł': 'l',
   'ñ': 'n',
   'ń': 'n',
   'ņ': 'n',
@@ -231,7 +232,6 @@ const Map<String, String> _latinFolds = <String, String>{
   'ō': 'o',
   'ŏ': 'o',
   'ő': 'o',
-  'ø': 'o',
   'ŕ': 'r',
   'ŗ': 'r',
   'ř': 'r',
@@ -241,7 +241,6 @@ const Map<String, String> _latinFolds = <String, String>{
   'š': 's',
   'ţ': 't',
   'ť': 't',
-  'ŧ': 't',
   'ú': 'u',
   'ù': 'u',
   'û': 'u',

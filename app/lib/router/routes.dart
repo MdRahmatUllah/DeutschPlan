@@ -842,16 +842,20 @@ class SentencesRoute extends GoRouteData with $SentencesRoute {
 
 @TypedGoRoute<DayCompleteRoute>(path: '/day-complete')
 class DayCompleteRoute extends GoRouteData with $DayCompleteRoute {
-  const DayCompleteRoute();
+  const DayCompleteRoute({this.day});
+
+  /// The plan day the finished session studied (`?day=`): past midnight it
+  /// is no longer today, and T6 mustn't celebrate, or claim, today (#660).
+  final String? day;
 
   /// T6 in place of the finished session (T3: "skipped entirely — T6 shown
   /// instead — when the day is complete and no sentences are open").
-  static void instead(BuildContext context) =>
-      context.pushReplacement(const DayCompleteRoute().location);
+  static void instead(BuildContext context, String day) =>
+      context.pushReplacement(DayCompleteRoute(day: day).location);
 
   @override
   Widget build(BuildContext context, GoRouterState state) =>
-      const DayCompleteScreen();
+      DayCompleteScreen(day: day);
 }
 
 @TypedGoRoute<GrammarPracticeRoute>(path: '/grammar-practice')

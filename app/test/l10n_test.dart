@@ -59,6 +59,79 @@ void main() {
     }
   });
 
+  group('#695 TS-5 every translation matches the template', () {
+    Map<String, Object?> arb(String name) =>
+        jsonDecode(File('lib/l10n/$name').readAsStringSync())
+            as Map<String, Object?>;
+    final en = arb('app_en.arb');
+    final others = <String, Map<String, Object?>>{
+      for (final file
+          in Directory('lib/l10n')
+              .listSync()
+              .whereType<File>()
+              .where((f) => f.path.endsWith('.arb'))
+              .where((f) => !f.path.endsWith('app_en.arb')))
+        file.uri.pathSegments.last:
+            jsonDecode(file.readAsStringSync()) as Map<String, Object?>,
+    };
+
+    test('no key the template lacks', () {
+      // The other direction of "every key is translated": a key only a
+      // translation has is never shown, and is usually a rename half done.
+      for (final MapEntry(key: name, value: other) in others.entries) {
+        final extra = other.keys
+            .where((key) => !key.startsWith('@') && !en.containsKey(key))
+            .toList();
+        expect(extra, isEmpty, reason: '$name has keys app_en.arb lacks');
+      }
+    });
+
+    test('every placeholder the template declares', () {
+      // A dropped {count} reads fine in the file and wrong on the screen.
+      for (final MapEntry(key: name, value: other) in others.entries) {
+        final missing = <String>[];
+        for (final key in en.keys.where((key) => !key.startsWith('@'))) {
+          final meta = en['@$key'] as Map<String, Object?>?;
+          final placeholders =
+              (meta?['placeholders'] as Map<String, Object?>?)?.keys ??
+              const <String>[];
+          final text = other[key] as String?;
+          if (text == null) continue;
+          for (final placeholder in placeholders) {
+            if (!RegExp('\\{$placeholder\\s*[,}]').hasMatch(text)) {
+              missing.add('$key: {$placeholder}');
+            }
+          }
+        }
+        expect(missing, isEmpty, reason: '$name drops placeholders');
+      }
+    });
+
+    test("the same select cases as the template's", () {
+      // A select case a translation lacks falls through to its `other`, a
+      // case it adds is never chosen: either way the text is the wrong one.
+      Set<String> cases(String text) => <String>{
+        for (final match in RegExp(
+          r'(?<![\w-])([A-Za-z]\w*)\{',
+        ).allMatches(text))
+          match.group(1)!,
+      };
+      for (final MapEntry(key: name, value: other) in others.entries) {
+        final differ = <String>[];
+        for (final key in en.keys.where((key) => !key.startsWith('@'))) {
+          final template = en[key]! as String;
+          final text = other[key] as String?;
+          if (text == null || !template.contains(', select,')) continue;
+          final (want, have) = (cases(template), cases(text));
+          if (want.length != have.length || !want.containsAll(have)) {
+            differ.add('$key: ${cases(template)} vs ${cases(text)}');
+          }
+        }
+        expect(differ, isEmpty, reason: '$name select cases differ');
+      }
+    });
+  });
+
   test('#166 a string Bangla leaves as English is German on purpose, a name '
       'or a unit; any other one is untranslated', () {
     // German the learner is looking at stays German in every UI language:
@@ -265,15 +338,20 @@ void main() {
     );
   });
 
-  test('no user-facing string is hard-coded under lib/', () {
-    // Matches Text('literal') / Text("literal") and tooltip:/semanticsLabel:
-    // string literals — the two ways copy usually leaks past ARB. A literal that
-    // is genuinely not copy (an asset key, a route name) belongs in a const, not
-    // in one of these positions.
+  test('#681 no user-facing string is hard-coded under lib/', () {
+    // A string literal where copy goes: the text widgets (`Text`, and the
+    // `SgText`, `SgOneLine` and `SgHeadword` the screens use: `\bText` never
+    // matched inside `SgText`) and tooltip:/semanticsLabel:/label:/hintText:.
+    // Matched over the whole file, not line by line: `dart format` puts a
+    // long literal on the line after its call (#681). A literal that is
+    // genuinely not copy (an asset key, a route name) belongs in a const, or
+    // carries `ponytail: allow-literal` on its line.
     final patterns = <RegExp>[
-      RegExp(r'''\bText\(\s*(['"])(?!\s*\1)[^'"]*\1'''),
       RegExp(
-        r'''\b(?:tooltip|semanticsLabel|label|hintText)\s*:\s*(['"])(?!\s*\1)[^'"]*\1''',
+        r'''(?<![A-Za-z])(?:Sg)?(?:Text|OneLine|Headword)\(\s*(['"])(?!\s*\1)''',
+      ),
+      RegExp(
+        r'''\b(?:tooltip|semanticsLabel|label|hintText)\s*:\s*(['"])(?!\s*\1)''',
       ),
     ];
 
@@ -283,16 +361,16 @@ void main() {
     ).listSync(recursive: true).whereType<File>()) {
       if (!file.path.endsWith('.dart')) continue;
       if (file.path.contains('l10n')) continue; // generated localisations
-      final lines = file.readAsLinesSync();
-      for (var i = 0; i < lines.length; i++) {
-        final line = lines[i];
-        if (line.trimLeft().startsWith('//')) continue;
-        if (line.contains('ponytail: allow-literal')) continue;
-        for (final p in patterns) {
-          if (p.hasMatch(line)) {
-            final path = file.path.split(Platform.pathSeparator).join('/');
-            offenders.add('$path:${i + 1}: ${line.trim()}');
-          }
+      final source = file.readAsStringSync().replaceAll('\r\n', '\n');
+      final lines = source.split('\n');
+      for (final p in patterns) {
+        for (final match in p.allMatches(source)) {
+          final at = '\n'.allMatches(source.substring(0, match.start)).length;
+          final line = lines[at];
+          if (line.trimLeft().startsWith('//')) continue;
+          if (line.contains('ponytail: allow-literal')) continue;
+          final path = file.path.split(Platform.pathSeparator).join('/');
+          offenders.add('$path:${at + 1}: ${line.trim()}');
         }
       }
     }

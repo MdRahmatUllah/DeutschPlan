@@ -143,7 +143,8 @@ def test_the_build_drops_the_duplicate(tmp_path, capsys):
 def test_the_shipped_course_has_no_single_noun_with_its_article_inside():
     from verify_content import check_no_article_in_german
 
-    db = sqlite3.connect(REPO / "app" / "assets" / "db" / "content.db")
+    # Read-only: a missing asset is an error, not a new empty file (#722).
+    db = sqlite3.connect(f"{(REPO / 'app' / 'assets' / 'db' / 'content.db').as_uri()}?mode=ro", uri=True)
     try:
         assert check_no_article_in_german(db) == []
         assert db.execute(

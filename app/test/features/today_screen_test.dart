@@ -661,6 +661,25 @@ void main() {
       expect(find.bySemanticsLabel(l10n.todayStreak(12)), findsOneWidget);
     });
 
+    testWidgets(
+      'BR-PLAN-01 #879 its ring reads "no plan", not "0 of 0 done", and no %',
+      (tester) async {
+        final semantics = tester.ensureSemantics();
+        await pump(tester, view: artboardRest());
+        final data = tester
+            .getSemantics(
+              find.descendant(
+                of: find.byType(ProgressRingCard),
+                matching: find.byType(SgProgressRing),
+              ),
+            )
+            .getSemanticsData();
+        expect(data.label, l10n.todayRestNoPlan);
+        expect(data.value, isEmpty);
+        semantics.dispose();
+      },
+    );
+
     testWidgets('Revise is optional, and opens a Revise-only session', (
       tester,
     ) async {
@@ -921,7 +940,7 @@ void main() {
       // The course, as the app always has it attached: Today reads its
       // example sentences.
       await tester.runAsync(() async {
-        final directory = Directory.systemTemp.createTempSync('sg_today');
+        final directory = tempDir('sg_today');
         final content = ContentFixture.write('${directory.path}/content.db');
         await db.customStatement(
           "ATTACH DATABASE '${ContentDao.attachPath(content.file)}' AS c",

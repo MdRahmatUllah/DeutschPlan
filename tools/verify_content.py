@@ -394,14 +394,15 @@ WORD_SET = r"/|↔| vs\. "
 def check_articles(db: sqlite3.Connection) -> list[Failure]:
     """#633: a noun without an article, which gets no gender colour and no
     Articles practice; and a phrase with one, which the Articles quiz asks
-    ("___ Fehler machen")."""
+    ("___ Fehler machen"). A note is never practised (#630): "Suffix -ismus"
+    has no article to give."""
     import re
 
     bare = [
         german
         for (german,) in db.execute(
             "SELECT german FROM words WHERE pos = 'noun' AND article IS NULL "
-            "ORDER BY seq"
+            "AND kind = 'vocab' ORDER BY seq"
         )
         if german not in NO_ARTICLE and not re.search(WORD_SET, german)
     ]
@@ -432,6 +433,28 @@ def check_articles(db: sqlite3.Connection) -> list[Failure]:
             )
         )
     return failures
+
+
+def check_no_starred_example(db: sqlite3.Connection) -> list[Failure]:
+    """#630: an example marked ungrammatical ("nicht: *Ich bin arbeitend"),
+    which TTS reads out as a model sentence."""
+    rows = [
+        f"{german} ({uid})"
+        for uid, german in db.execute(
+            "SELECT word_uid, german FROM word_examples "
+            "WHERE german LIKE '% *%' OR german LIKE '*%' ORDER BY word_uid, ord"
+        )
+    ]
+    if not rows:
+        return []
+    return [
+        Failure(
+            "examples",
+            f"{len(rows)} example sentences carry a starred, ungrammatical "
+            f"one, which is read aloud as a model: {_sample(rows)}. Keep the "
+            f"right sentence; the contrast belongs in Synonyms / register.",
+        )
+    ]
 
 
 def read_denylist(path: Path | None) -> list[tuple[int, str]]:
@@ -515,6 +538,7 @@ GATES = (
     check_no_pair_headword,
     check_verb_forms,
     check_articles,
+    check_no_starred_example,
     check_every_category_has_words,
     check_no_denylisted_terms,
 )

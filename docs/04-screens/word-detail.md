@@ -19,7 +19,7 @@
 - The history caption shows only for a word reviewed at least once: "Next review in N days" (or "Due today", "Next review tomorrow") · "reviewed N times" · "last: <rating>". It counts every `review_log` row. A suspended word has no next review, so that part is left out.
 - **The actions row (#141).** In this order:
   - *Add to today*, for a To-do word only. The row goes in the active step's plan, or the word's own step's when no step is under way. A word already planned and not studied keeps its one row: a backlog row moves to today (unskipped), and back on *Undo*.
-  - *Mark known*, except for a suspended word, which is out of review until resumed (BR-STATUS-03).
+  - *Mark known*, except for a suspended word, which is out of review until resumed (BR-STATUS-03). Its *Undo* takes back only this word's rating: when a rating of another word was made since, on a screen with no *Undo* of its own, nothing changes (#728).
   - *Suspend*, or *Resume* for a suspended word. *Suspend* takes the word out of today's plan, so Today no longer counts it and the session doesn't serve it (#351). It drops today's open revision, and skips today's open `new` row, which is backlog from tomorrow. Its backlog rows stay, as T4's own *Suspend* keeps them, and a done row is history (#368). T4 lists a suspended word without studying it. A new word needs its row, since only the active step's new words are planned: a word from an earlier step, or one moved to today by *Add to today*, would have no other way back. *Undo* restores exactly what went. *Resume* brings back nothing more; the plan picks the word up again.
   - *Reset word*, when the word has a state to reset.
   - *Copy*.
@@ -29,6 +29,7 @@
 - **Reset word** clears `word_state`, the word's open plan rows from today on, and every `new` row, done or not. A word with a `new` row is never planned again (`DriftPlanStore.unplannedWords`), and a reset word is To do again, so it goes back into the pool. Done revisions stay, because they are the day's history, and so do `daily_stats` and `review_log`. *Undo* restores exactly what went.
 - **Undo** restores the row as it was. For a word never met, that means no `word_state` row at all.
 - **One action at a time.** A second tap while one is running does nothing.
+- **A note or a comparison** (BR-CONTENT-04, #630: "beantworten — Präfix be-", "machen ↔ tun") has no status chip, and none of *Add to today*, *Mark known*, *Suspend* / *Resume* or the card chips: it is never studied. *Reset word* (for one met before it was a note), *Copy*, *Translate* and the web chips stay. The word lists (L2, L6, R1) show it without a status chip too; L2 lists it under *All* only.
 
 **Functional requirements**
 - FR-W1-01 *Add to today* inserts a `plan_items(today, uid, 'new')` row for the active step (allowed for any step's To-do word).

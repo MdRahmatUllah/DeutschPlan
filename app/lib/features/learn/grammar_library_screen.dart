@@ -1,3 +1,4 @@
+import 'package:sogda/core/components/sg_feedback.dart';
 import 'package:sogda/core/adaptive/adaptive.dart';
 import 'package:sogda/core/components/sg_chip.dart';
 import 'package:sogda/core/providers/app_providers.dart';
@@ -5,6 +6,7 @@ import 'package:sogda/core/theme/aurora_backdrop.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/core/typography/sg_text.dart';
 import 'package:sogda/data/repositories/grammar_repository.dart';
+import 'package:sogda/domain/plan_engine.dart' show daysBetween;
 import 'package:sogda/features/learn/learn_screen.dart';
 import 'package:sogda/features/learn/step_grammar.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
@@ -49,12 +51,18 @@ class _GrammarLibraryScreenState extends ConsumerState<GrammarLibraryScreen> {
   Widget build(BuildContext context) {
     final tokens = context.tokens;
     final l10n = AppLocalizations.of(context);
-    final topics = ref.watch(libraryTopicsProvider).value;
+    final topicsState = ref.watch(libraryTopicsProvider);
+    final topics = topicsState.value;
     final today = ref.watch(todayProvider);
 
     final Widget body;
     if (topics == null) {
-      body = const SizedBox.expand();
+      body = topicsState.hasError
+          ? SgLoadFailed(
+              message: l10n.learnLoadFailed,
+              onRetry: () => ref.invalidate(libraryTopicsProvider),
+            )
+          : const SizedBox.expand();
     } else {
       int count(LibraryFilter filter) =>
           topics.where((topic) => inFilter(filter, topic, today)).length;
@@ -136,6 +144,12 @@ class _GrammarLibraryScreenState extends ConsumerState<GrammarLibraryScreen> {
                                 itemBuilder: (context, index) => LibraryRow(
                                   topic: rows[index],
                                   due: topicDue(rows[index], today),
+                                  daysLeft: rows[index].state?.due == null
+                                      ? 0
+                                      : daysBetween(
+                                          today,
+                                          rows[index].state!.due!,
+                                        ),
                                 ),
                               ),
                             ],
@@ -189,14 +203,23 @@ class _Band extends SliverPersistentHeaderDelegate {
 
 /// One topic: its title on one line, its step and its status dot.
 class LibraryRow extends StatelessWidget {
-  const LibraryRow({required this.topic, required this.due, super.key});
+  const LibraryRow({
+    required this.topic,
+    required this.due,
+    required this.daysLeft,
+    super.key,
+  });
 
   final TopicWithState topic;
   final TopicDue due;
 
+  /// Days until it is due, for the dot's "next practice in 4 d".
+  final int daysLeft;
+
   @override
   Widget build(BuildContext context) {
     final tokens = context.tokens;
+    final l10n = AppLocalizations.of(context);
     return Semantics(
       button: true,
       child: GestureDetector(
@@ -222,7 +245,16 @@ class LibraryRow extends StatelessWidget {
               const SizedBox(width: 10),
               SgChip(label: topic.topic.sublevelCode),
               const SizedBox(width: 16),
-              TopicDot(due: due),
+              // #668: the dot's state in words, as L2's line says it.
+              Semantics(
+                attributedLabel: SgScript.attributedLabel(switch (due) {
+                  TopicDue.due => l10n.stepTopicDueToday,
+                  TopicDue.scheduled => l10n.stepTopicNextIn(daysLeft),
+                  TopicDue.suspended => l10n.wordStatusSuspended,
+                  TopicDue.notLearned => l10n.libraryTopicNotLearned,
+                }),
+                child: TopicDot(due: due),
+              ),
               const SizedBox(width: 16),
               Icon(
                 Icons.chevron_right,

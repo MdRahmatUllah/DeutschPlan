@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 import 'dart:ui' show SemanticsAction;
 
 import 'package:sogda/core/components/sg_chip.dart';
@@ -75,7 +74,7 @@ void main() {
     opened = <Uri>[];
     await tester.runAsync(() async {
       db = AppDatabase.memory();
-      final directory = Directory.systemTemp.createTempSync('sg_search');
+      final directory = tempDir('sg_search');
       final content = ContentFixture.write('${directory.path}/content.db');
       await db.customStatement(
         "ATTACH DATABASE '${ContentDao.attachPath(content.file)}' AS c",
@@ -319,6 +318,38 @@ void main() {
         greaterThanOrEqualTo(tester.getBottomLeft(meaning).dy),
       );
     });
+  });
+
+  testWidgets('BR-CONTENT-04 a note is found like any word, and its row has '
+      'no status', (tester) async {
+    await pump(
+      tester,
+      extra: <Override>[
+        searchResultsProvider.overrideWith(
+          (ref, args) => Stream.value(
+            SearchView(
+              words: <SearchRow>[
+                searchRow(
+                  'note',
+                  german: 'beantworten — Präfix be-',
+                  meaning: 'prefix be-',
+                  tier: SearchTier.exact,
+                  kind: 'note',
+                ),
+              ],
+              sentences: const <SentenceHit>[],
+            ),
+          ),
+        ),
+      ],
+    );
+    await type(tester, 'beantworten');
+    final row = find.byType(WordRow);
+    expect(row, findsOneWidget);
+    expect(
+      find.descendant(of: row, matching: find.byType(WordStatusChip)),
+      findsNothing,
+    );
   });
 
   testWidgets('FR-R1-01 a failed search says so, and Retry asks again', (

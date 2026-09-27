@@ -318,6 +318,37 @@ void main() {
       },
     );
 
+    test('#687 AN-11 a topic with nothing to ask is left out, not a throw', () {
+      final full = pool();
+      final exam = buildExam(
+        ExamPool(
+          step: full.step,
+          level: full.level,
+          words: full.words,
+          topics: <GrammarSource>[
+            const GrammarSource(
+              uid: 'blank',
+              topic: 'Blank',
+              rule: '—',
+              exampleDe: '—',
+              exampleEn: '—',
+              watchOut: '—',
+              tags: <String>['gap-fill', 'pick-the-form'],
+              levelCode: 'A2',
+            ),
+            ...full.topics,
+          ],
+          categories: full.categories,
+          connectors: full.connectors,
+        ),
+        seed: 1,
+      );
+      expect(
+        exam.items.whereType<GrammarQuestion>().map((i) => key(i.ref)),
+        allOf(isNotEmpty, isNot(contains('blank'))),
+      );
+    });
+
     test('grammar items come from four topics when there are four', () {
       for (final step in <String>['A2.1', 'A2.2', 'B1.1']) {
         for (var seed = 1; seed <= 3; seed++) {
@@ -428,6 +459,50 @@ void main() {
       expect(gap.answer, 'Rechnungen');
       expect(gap.before, 'Zwei ');
       expect(gap.after, ' liegen hier.');
+    });
+
+    test('#687 AN-10 Reverse and Listening mark a phrase with no article, '
+        'and it survives being stored', () {
+      final full = pool();
+      final phrases = buildExam(
+        ExamPool(
+          step: full.step,
+          level: full.level,
+          words: <ExamWord>[
+            for (final w in full.words)
+              ExamWord(
+                word: QuizWord(
+                  uid: w.word.uid,
+                  german: 'den ${w.word.german}',
+                  english: w.word.english,
+                  step: w.word.step,
+                  pos: 'phrase',
+                ),
+                category: w.category,
+              ),
+          ],
+          topics: full.topics,
+          categories: full.categories,
+          connectors: full.connectors,
+        ),
+        seed: 1,
+      );
+      final typed = phrases.items.whereType<WordQuestion>().where(
+        (i) => <ExamSection>{
+          ExamSection.reverse,
+          ExamSection.listening,
+        }.contains(i.section),
+      );
+      expect(typed, isNotEmpty);
+      for (final item in typed) {
+        expect(item.phrase, isTrue);
+        expect((ExamItem.decode(item.encode()) as WordQuestion).phrase, isTrue);
+      }
+      expect(
+        of<WordQuestion>(ExamSection.reverse).map((i) => i.phrase),
+        everyElement(isFalse),
+        reason: 'nouns and verbs',
+      );
     });
 
     test('Listening: the headword, typed back', () {

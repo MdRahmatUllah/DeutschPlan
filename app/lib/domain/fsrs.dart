@@ -94,7 +94,10 @@ class CardState {
   /// these, one per rating.
   final int scheduledDays;
 
-  bool get isFresh => state == FsrsState.fresh;
+  /// Never reviewed, or reviewed with no stability to grow (0, negative or
+  /// NaN): no review leaves one, but an imported row can bring it, and
+  /// `fsrs_state` has no CHECK (#687 AN-6). Such a card starts again.
+  bool get isFresh => state == FsrsState.fresh || !(stability > 0);
 
   @override
   String toString() =>
@@ -169,12 +172,12 @@ class Fsrs {
   ///
   /// `(1 + 19/81 · t/S)^(-0.5)`.
   double retrievability(num elapsedDays, double stability) {
-    if (stability <= 0) return 0;
+    if (!(stability > 0)) return 0; // NaN too (AN-6)
 
     // `pow` of a negative base to -0.5 is NaN, and NaN compares false against
     // everything — a clock that moved backwards would scramble BR-PLAN-03's
-    // "lowest retrievability first" sort rather than failing. Nothing recalls
-    // worse than perfectly at the moment of review, so zero is the floor.
+    // "lowest retrievability first" sort rather than failing. So no time, or
+    // less than none, is the moment of review, when recall is perfect.
     if (elapsedDays <= 0) return 1;
 
     return math.pow(1 + factor * elapsedDays / stability, -0.5).toDouble();
@@ -183,12 +186,14 @@ class Fsrs {
   /// Days until recall falls to [desiredRetention].
   ///
   /// `S / (19/81) · (R^(-2) − 1)`, clamped 1…36500 — a card is never due
-  /// today-and-also-yesterday, and never a thousand years out.
+  /// today-and-also-yesterday, and never a thousand years out. Clamped before
+  /// it is rounded, so an infinite stability is the longest interval rather
+  /// than a throw, and NaN is one day (AN-6).
   int intervalDays(double stability) {
-    if (stability <= 0) return 1;
+    if (!(stability > 0)) return 1;
     final raw =
         stability / factor * (math.pow(desiredRetention, -2).toDouble() - 1);
-    return raw.round().clamp(1, maxInterval);
+    return raw.clamp(1, maxInterval).round();
   }
 
   /// FR-M3-01: about how many reviews a day cards of these [stabilities] ask
@@ -228,9 +233,10 @@ class Fsrs {
     final (stability, difficulty) = _next(state, rating, elapsed);
 
     // An Again on a first review comes out at one day without a special case:
-    // `w0` is small enough that the interval rounds to zero and the clamp in
-    // `intervalDays` lifts it, at every retention in the 0.80–0.97 range. I
-    // wrote the special case first, then found it never fired.
+    // `w0` is small enough that its interval is under a day and a half at
+    // every retention in the 0.80–0.97 range (1.17 days at 0.80, 0.13 at
+    // 0.97), so it rounds to 1, or to 0, which the clamp in `intervalDays`
+    // lifts to 1. I wrote the special case first, then found it never fired.
     final scheduled = rating == Rating.again
         ? intervalDays(stability)
         : _passingIntervals(state, elapsed)[rating.value - 2];
@@ -289,6 +295,11 @@ class Fsrs {
 
   /// Difficulty drifts by the rating, then reverts towards the difficulty an
   /// Easy first review would have given (`w7`).
+  ///
+  /// That target, `w4 − w5`, is FSRS-5's; FSRS-4.5 reverts towards `w4`
+  /// (a Good first review's). Kept on purpose (#687 AN-5): it gives the Good
+  /// chain #239 pinned, 4 → 15 → 50 → 150 → 409, where `w4` gives 4 → 15 →
+  /// 49 → 146 → 393, and changing it would move every learner's schedule.
   ///
   /// Without the reversion a card the learner keeps failing ratchets to 10 and
   /// stays there even once they have learned it.

@@ -28,6 +28,10 @@ abstract interface class ExamRecorder {
   /// The input level while recording, 0 (silence) to 1, a few times a second.
   Stream<double> get levels;
 
+  /// True while a call, an alarm or a voice assistant has the microphone and
+  /// the recording waits for it, false once it records again (#624).
+  Stream<bool> get interrupted;
+
   /// Plays [path] once; completes when it ends or [stopPlaying] is called.
   Future<void> play(String path);
 
@@ -44,10 +48,13 @@ class PlatformExamRecorder implements ExamRecorder {
   final AudioRecorder _recorder = AudioRecorder();
   final AudioPlayer _player = AudioPlayer();
 
-  /// FR-L12S-02's encoding.
+  /// FR-L12S-02's encoding. A call, an alarm or a voice assistant that
+  /// takes the microphone pauses the recording, and it goes on once they
+  /// give it back (#624): `pause`, the default, never went on.
   static const RecordConfig config = RecordConfig(
     bitRate: 32000,
     numChannels: 1,
+    audioInterruption: AudioInterruptionMode.pauseResume,
   );
 
   @override
@@ -72,6 +79,10 @@ class PlatformExamRecorder implements ExamRecorder {
   Stream<double> get levels => _recorder
       .onAmplitudeChanged(const Duration(milliseconds: 250))
       .map((level) => ((level.current + 60) / 60).clamp(0.0, 1.0));
+
+  @override
+  Stream<bool> get interrupted =>
+      _recorder.onStateChanged().map((state) => state == RecordState.pause);
 
   @override
   Future<void> play(String path) async {

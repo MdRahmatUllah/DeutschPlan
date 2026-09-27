@@ -71,6 +71,40 @@ void main() {
     );
     expect(File('${documents.path}/user_test.sqlite').existsSync(), isFalse);
   });
+
+  test('#621 an app transaction that reads, then writes, survives the '
+      'background connection committing in between', () async {
+    // `DriftPlanStore.atomically`'s claim: drift's native transactions are
+    // BEGIN IMMEDIATE, so the app's holds the write lock from its first
+    // read, and the background write (#158) waits under busy_timeout. A
+    // deferred BEGIN would let it commit under the app's read snapshot, and
+    // the app's write would fail with SQLITE_BUSY_SNAPSHOT.
+    final app = AppDatabase.open(name: 'user_test');
+    final background = AppDatabase.open(name: 'user_test', shared: false);
+    Future<void> put(AppDatabase db, String key) => db.customStatement(
+      "INSERT INTO settings (\"key\", value) VALUES ('$key', '1')",
+    );
+    Future<int> rows(AppDatabase db) async =>
+        (await db
+                .customSelect('SELECT COUNT(*) AS n FROM settings')
+                .getSingle())
+            .read<int>('n');
+    final before = await rows(app);
+    await rows(background); // both connections open and migrated
+
+    late Future<void> backgroundWrite;
+    await app.transaction(() async {
+      await rows(app);
+      backgroundWrite = background.transaction(() => put(background, 'bg'));
+      await Future<void>.delayed(const Duration(milliseconds: 300));
+      await put(app, 'app');
+    });
+    await backgroundWrite;
+
+    expect(await rows(app), before + 2);
+    await background.close();
+    await app.close();
+  });
 }
 
 /// Points `getApplicationSupportDirectory()` at a temp directory.

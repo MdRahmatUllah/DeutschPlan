@@ -309,39 +309,13 @@ void main() {
       };
     }
 
-    /// The `@Riverpod(keepAlive: true)` names in the source.
-    ///
-    /// Two shapes, and the first version of this got both wrong: a function
-    /// provider is `DateTime Function() clock(Ref ref)`, where a regex that
-    /// took the word before the parenthesis captured `Function`; and a
-    /// notifier is `class Theme extends _$Theme`, which has no parenthesis
-    /// at all. Matched on what each one really looks like instead.
-    Set<String> declaredKeepAlive() {
-      final source = File('lib/core/providers/app_providers.dart')
-          .readAsStringSync();
-
-      final names = <String>{};
-      for (final match in RegExp(
-        r'@Riverpod\(keepAlive: true\)',
-      ).allMatches(source)) {
-        // Everything up to the end of the declaration's first line.
-        final rest = source.substring(match.end);
-        final declaration = rest
-            .split('\n')
-            .skipWhile((line) => line.trim().isEmpty)
-            .first;
-
-        final notifier = RegExp(r'class\s+(\w+)').firstMatch(declaration);
-        if (notifier != null) {
-          names.add(_lowerFirst(notifier.group(1)!));
-          continue;
-        }
-
-        final function = RegExp(r'(\w+)\s*\(Ref \w+\)').firstMatch(declaration);
-        if (function != null) names.add(function.group(1)!);
-      }
-      return names;
-    }
+    /// The `@Riverpod(keepAlive: true)` names in the source: every file under
+    /// lib/, where reading only app_providers.dart let a keepAlive in a
+    /// feature file pass unseen (#695 TS-3).
+    Set<String> declaredKeepAlive() => <String>{
+      for (final file in _dartFilesIn('lib'))
+        ..._keepAliveIn(file.readAsStringSync()),
+    };
 
     test('the doc really does list some', () {
       // Both checks below are set comparisons, and two empty sets are equal.
@@ -361,14 +335,40 @@ void main() {
       );
     });
 
-    test('the four the doc names are all there', () {
-      // #71's criterion: "the keep-alive set is exactly the one
-      // state-management.md allows". The doc lists more than this file owns —
-      // `studySession`, `examAttempt`, `tts` and `modelManager` belong to
-      // their own screens — so this is the part of it that is #71's.
+    test('#695 TS-3 everything the doc keeps alive is kept alive in code', () {
+      // #71's criterion, "the keep-alive set is exactly the one
+      // state-management.md allows", both ways now that every file is read:
+      // a row for a provider that is gone, or no longer kept alive, is drift
+      // too.
+      final missing = documentedKeepAlive().difference(declaredKeepAlive());
+      expect(
+        missing,
+        isEmpty,
+        reason:
+            'state-management.md keeps these alive, and the code does not:\n'
+            '${missing.join(', ')}',
+      );
+    });
+
+    test('#695 TS-3 a keepAlive in a feature file is seen, by its provider '
+        'name', () {
       expect(
         declaredKeepAlive(),
-        containsAll(<String>['appDatabase', 'settings', 'clock', 'theme']),
+        containsAll(<String>['onboarding', 'studySession', 'theme']),
+      );
+      expect(
+        _keepAliveIn(
+          '@Riverpod(keepAlive: true)\n'
+          r'class PlanDraftNotifier extends _$PlanDraftNotifier {',
+        ),
+        <String>{'planDraft'},
+      );
+      expect(
+        _keepAliveIn(
+          '@Riverpod(keepAlive: true)\n'
+          'Stream<int> wordCount(Ref ref, String code) => ref',
+        ),
+        <String>{'wordCount'},
       );
     });
 
@@ -672,6 +672,46 @@ int _endOfExpression(String source, int arrow) {
 
 /// `AppDatabase` -> `appDatabase`.
 String _lowerFirst(String name) => name[0].toLowerCase() + name.substring(1);
+
+/// The provider names that `@Riverpod(keepAlive: true)` declares in
+/// [source].
+///
+/// Two shapes, and the first version of this got both wrong: a function
+/// provider is `DateTime Function() clock(Ref ref)`, where a regex that took
+/// the word before the parenthesis captured `Function`; and a notifier is
+/// `class Theme extends _$Theme`, which has no parenthesis at all. Matched on
+/// what each one really looks like instead. A notifier's provider drops a
+/// `Notifier` suffix, as riverpod_generator names it (`OnboardingNotifier` →
+/// `onboardingProvider`).
+Set<String> _keepAliveIn(String source) {
+  final names = <String>{};
+  for (final match in RegExp(
+    r'@Riverpod\(keepAlive: true\)',
+  ).allMatches(source)) {
+    // Everything up to the end of the declaration's first line.
+    final declaration = source
+        .substring(match.end)
+        .split('\n')
+        .skipWhile((line) => line.trim().isEmpty)
+        .first;
+
+    final notifier = RegExp(r'class\s+(\w+)').firstMatch(declaration);
+    if (notifier != null) {
+      final name = _lowerFirst(notifier.group(1)!);
+      names.add(
+        name.endsWith('Notifier') && name != 'Notifier'
+            ? name.substring(0, name.length - 'Notifier'.length)
+            : name,
+      );
+      continue;
+    }
+
+    // A family's parameters follow the ref: `stepWords(Ref ref, String code)`.
+    final function = RegExp(r'(\w+)\s*\(Ref \w+[,)]').firstMatch(declaration);
+    if (function != null) names.add(function.group(1)!);
+  }
+  return names;
+}
 
 /// Repo-relative path with forward slashes on every platform.
 ///

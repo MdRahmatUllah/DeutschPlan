@@ -66,6 +66,7 @@ class _Artboard extends Backlog {
         meaning: english,
         word: WordWithState(
           word: Word(
+            kind: 'vocab',
             uid: 'w$i',
             sublevelCode: 'A2.1',
             levelCode: 'A2',

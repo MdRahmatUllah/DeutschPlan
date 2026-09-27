@@ -1,3 +1,5 @@
 openpyxl>=3.1
 PyYAML>=6.0
 pytest>=8.0
+# Optional, for tools/render_design.py only (artboard PNGs), not the build:
+#   pip install playwright && playwright install chromium

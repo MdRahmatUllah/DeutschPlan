@@ -335,8 +335,8 @@ void main() {
     });
 
     test('an abandoned attempt shows without a score', () async {
-      // FR-L12-04. It also has to count, or BR-EXAM-02's *Try another mock*
-      // would offer a seed the learner walked out of as never sat.
+      // FR-L12-04. It also has to count, or the hub (*Try another mock*,
+      // BR-EXAM-02) would show a seed the learner walked out of as never sat.
       final id = await begin();
       await exams.abandon(id);
 

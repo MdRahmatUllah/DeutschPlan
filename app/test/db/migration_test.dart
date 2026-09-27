@@ -61,14 +61,37 @@ void main() {
         addTearDown(db.close);
 
         // Runs the real onUpgrade, then compares every table, column, index
-        // and constraint against the fixture for the target version.
-        //
-        // With one fixture this is a no-op upgrade: onUpgrade never fires, so
-        // today it proves only that the fixture matches, the same as the test
-        // below. The first real exercise of stepByStep() is the v1 -> v2 step.
+        // and constraint against the fixture for the target version. From
+        // the current version itself onUpgrade never fires: that one proves
+        // only that its fixture matches, as the test below does.
         await verifier.migrateAndValidate(db, current, options: _strict);
       });
     }
+  });
+
+  test('v1 -> v2: an update already recorded keeps its row, with no '
+      'recorded_at, and progress stays (#695)', () async {
+    final schema = await verifier.schemaAt(1);
+    schema.rawDatabase.execute(
+      'INSERT INTO content_updates (version, added, removed, seen) '
+      "VALUES ('202601011200', 3, 1, 1)",
+    );
+    schema.rawDatabase.execute(
+      "INSERT INTO word_state (word_uid, status, reps) VALUES ('w1', 'learning', 4)",
+    );
+    final db = AppDatabase(schema.newConnection());
+    addTearDown(db.close);
+    await verifier.migrateAndValidate(db, 2, options: _strict);
+
+    final update = await db.select(db.contentUpdates).getSingle();
+    expect(update.version, '202601011200');
+    expect((update.added, update.removed, update.seen), (3, 1, 1));
+    expect(update.recordedAt, null);
+    // At v2 word_state has no card_mode_manual yet, so not its row class.
+    final word = await db
+        .customSelect('SELECT word_uid, status, reps FROM word_state')
+        .getSingle();
+    expect(word.data, {'word_uid': 'w1', 'status': 'learning', 'reps': 4});
   });
 
   test('v2 -> v3: a word already there keeps the card the rule gave it '

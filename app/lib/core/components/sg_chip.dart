@@ -141,13 +141,14 @@ class SgChip extends StatelessWidget {
 
     // Sun is bright in every mode, so what sits on it is the dark ink; the
     // page's ink is light under dark and would vanish into it.
-    // Dark ink on a bright fill, in dark mode too. The Lagoon rule is for
-    // an explicit [fill] only: glass filter chips keep their own ink.
+    // Dark ink on a bright fill, in dark mode too: an explicit Lagoon [fill],
+    // and a selected glass filter, whose fill is solid Lagoon. Its label was
+    // the page's ink, light in glass dark and about 1.4:1 there (#651).
     final ink =
         this.ink ??
         (fill == tokens.color.accent
             ? tokens.color.onAccent
-            : this.fill == tokens.color.primary
+            : this.fill == tokens.color.primary || (glassFilter && selected)
             ? tokens.color.onPrimary
             : tokens.color.ink);
 
@@ -208,7 +209,7 @@ class SgChip extends StatelessWidget {
     );
 
     final named = Semantics(
-      label: semanticLabel ?? label,
+      attributedLabel: SgScript.attributedLabel(semanticLabel ?? label),
       selected: kind == SgChipKind.filter || kind == SgChipKind.step
           ? selected
           : null,

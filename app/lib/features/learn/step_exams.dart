@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 
+import 'package:sogda/core/components/sg_feedback.dart';
 import 'package:sogda/core/components/sg_button.dart';
 import 'package:sogda/core/components/sg_pill.dart';
 import 'package:sogda/core/components/sg_progress_ring.dart';
@@ -172,8 +173,16 @@ class StepExamsTab extends ConsumerWidget {
       );
     }
 
-    final hub = ref.watch(examHubProvider(step.code)).value;
-    if (hub == null) return const SizedBox.expand();
+    final hubState = ref.watch(examHubProvider(step.code));
+    final hub = hubState.value;
+    if (hub == null) {
+      return hubState.hasError
+          ? SgLoadFailed(
+              message: AppLocalizations.of(context).learnLoadFailed,
+              onRetry: () => ref.invalidate(examHubProvider(step.code)),
+            )
+          : const SizedBox.expand();
+    }
 
     return ListView(
       key: PageStorageKey<String>('step-exams-${step.code}'),

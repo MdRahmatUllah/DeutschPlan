@@ -46,13 +46,14 @@ Dart file under `lib/` imports it at v1.0.1.
 | Charts | `fl_chart` | ^1.2.0 → 1.2.0 | M2's progress charts |
 | Platform | `permission_handler`, `package_info_plus` | ^13.0.2 → 13.0.2, ^10.2.1 → 10.2.1 | Mic and notification permissions; the app version in About |
 | Checksums | `crypto`, `convert` | ^3.0.6 → 3.0.7, ^3.1.2 → 3.1.2 | SHA-256 of model files, hashed in chunks |
-| Unused | `flutter_custom_tabs`, `flutter_animate`, `device_info_plus`, `freezed_annotation`, `json_annotation`, `logging` | lock: 2.6.0, 4.5.2, 13.2.0, 3.1.0, 4.12.0, 1.3.0 | Declared but not imported (removing them needs the `pubspec` lock) |
 
 Dev dependencies: `build_runner` 2.16.1, `riverpod_generator` 4.0.9,
 `go_router_builder` 4.5.0, `drift_dev` 2.35.0, `flutter_lints` 6.0.0,
-`riverpod_lint` 3.1.9 (a native analyser plugin, ADR 15), `integration_test`;
-`freezed` 4.0.2, `json_serializable` 6.14.1, `mocktail` 1.0.5 and `alchemist`
-0.14.0 are present but unused. llamadart, and the native-assets
+`riverpod_lint` 3.1.9 (a native analyser plugin, ADR 15), `integration_test`.
+Ten packages that were declared but never imported (`flutter_custom_tabs`,
+`flutter_animate`, `device_info_plus`, `freezed`, `freezed_annotation`,
+`json_annotation`, `json_serializable`, `logging`, `mocktail`, `alchemist`) were
+removed (#697 TL-10). llamadart, and the native-assets
 `user_defines` that trimmed it to llama.cpp's CPU backend (ADR 27), were
 removed (ADR 29): the arm64 APK went from 159.5 MB to 72.3 MB, then to 51.2 MB. The rationale for each
 choice, and the rejected alternatives, are in
@@ -313,7 +314,7 @@ In `app/lib/core/`; screens reuse these rather than drawing their own.
 | `SgChip` (step, status, filter, streak, webLink), `SgPill` | `components/` | Chips and pills |
 | `SgProgressRing`, `SgSegmentedBar` | `components/sg_progress_ring.dart` | Today's ring, progress bars |
 | `SgRatingBar` | `components/sg_rating_bar.dart` | Again, Hard, Good, Easy with their intervals |
-| `SgUmlautBar`, `SgCallout`, `SgErrorPanel`, `SgVerdictRow`, `SgToast`, `SgUndo` | `components/sg_feedback.dart` | The umlaut keys under a German field, callouts, the error panel with Retry, verdicts, toasts and undo |
+| `SgUmlautBar`, `SgCallout`, `SgErrorPanel`, `SgLoadFailed`, `SgVerdictRow`, `SgToast`, `SgUndo` | `components/sg_feedback.dart` | The umlaut keys under a German field, callouts, the error panel with Retry (and, centred where a screen's read failed, `SgLoadFailed`), verdicts, toasts and undo |
 | `SgSlider`, `SgStepper`, `SgSpeakerButton`, `SgCoachMark` | `components/` | Settings controls, the speaker with its three states, the one-time coach mark |
 | `Adaptive*` | `adaptive/adaptive.dart` | All platform chrome ([chapter 4](04-architecture.md#adaptive-chrome)) |
 

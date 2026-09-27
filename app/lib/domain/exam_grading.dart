@@ -15,13 +15,15 @@ import 'package:sogda/domain/text_norm.dart';
 /// The verdict [given] earns on a question item; null for Writing and
 /// Speaking, which have no single right answer.
 Verdict? verdictFor(ExamItem item, String given) => switch (item) {
-  WordQuestion(:final section, :final expected) => switch (section) {
-    ExamSection.vocabulary => checkMeaning(given, expected),
-    ExamSection.articles => checkArticle(given, expected),
-    ExamSection.wordForms => checkForm(given, expected),
-    // Reverse and Listening: the headword, article optional.
-    _ => checkGerman(given, expected),
-  },
+  WordQuestion(:final section, :final expected, :final phrase) =>
+    switch (section) {
+      ExamSection.vocabulary => checkMeaning(given, expected),
+      ExamSection.articles => checkArticle(given, expected),
+      ExamSection.wordForms => checkForm(given, expected),
+      // Reverse and Listening: the headword, article optional; a phrase
+      // typed whole (#687 AN-10).
+      _ => checkGerman(given, expected, phrase: phrase),
+    },
   GapQuestion(:final answer) => checkGerman(given, answer),
   GrammarQuestion(:final item, :final expected) => switch (item) {
     GapFill() => checkGerman(given, expected),
@@ -198,10 +200,19 @@ double writingAppPoints(WritingTask task, String text) =>
     (targetsUsed(text, task.targets).length >= 6 ? 1 : 0) +
     (textWords(text).length >= task.minWords ? 1 : 0);
 
-/// The rubric ticks in `self_rubric_json`: a JSON list of booleans.
-List<bool> rubricTicks(String? json) => json == null
-    ? const <bool>[]
-    : (jsonDecode(json) as List<Object?>).map((t) => t == true).toList();
+/// The rubric ticks in `self_rubric_json`: a JSON list of booleans. Anything
+/// else (a corrupted or restored attempt) is none ticked, so the paper still
+/// scores (#687 AN-12).
+List<bool> rubricTicks(String? json) {
+  try {
+    if (jsonDecode(json ?? 'null') case final List<Object?> ticks) {
+      return <bool>[for (final t in ticks) t == true];
+    }
+  } on FormatException {
+    // Below.
+  }
+  return const <bool>[];
+}
 
 /// What an item earns: [given] checked by `answer_check`; Writing its app
 /// points plus 2 × 1 for its rubric; Speaking 4 × 1 for its rubric

@@ -55,7 +55,9 @@ CREATE TABLE words (
   collocations      TEXT,
   synonyms_register TEXT,
   search_key        TEXT NOT NULL,
-  search_key_alt    TEXT NOT NULL
+  search_key_alt    TEXT NOT NULL,
+
+  kind              TEXT NOT NULL CHECK (kind IN ('vocab', 'note', 'compare'))
 );
 
 CREATE INDEX idx_words_step ON words (sublevel_code, seq_in_sublevel);

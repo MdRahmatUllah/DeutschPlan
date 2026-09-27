@@ -11,7 +11,7 @@ import 'content_schema.drift';
 -- and SQLite resolves it: `main` (user.db) has no table of that name, so the
 -- search falls through to the attached database.
 --
--- That resolution is load-bearing. `content_attach_test.dart` asserts no table
+-- That resolution is load-bearing. `content_dao_test.dart` asserts no table
 -- name exists in both schemas, because a `words` table added to user.db would
 -- silently capture every one of these queries.
 
@@ -123,6 +123,6 @@ contentMeta:
 -- and example sentences are counted, as the pipeline's manifest counts them.
 contentCounts:
   SELECT
-    (SELECT COUNT(*) FROM words) AS word_total,
+    (SELECT COUNT(*) FROM words WHERE kind = 'vocab') AS word_total,
     (SELECT COUNT(*) FROM grammar_topics) AS grammar_total,
     (SELECT COUNT(*) FROM word_examples) AS sentence_total;
