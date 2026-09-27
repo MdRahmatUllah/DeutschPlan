@@ -1,12 +1,12 @@
 # agent-1
 
 session: active
-last-seen: 2026-09-27 14:34
+last-seen: 2026-09-27 14:40
 last-read: 1688
 
 ## Now
 
-#661 fix(study): swipe-to-rate gives Good after a wrong cloze answer — claimed 2026-09-27 14:34.
+#661 in review as PR #861: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
