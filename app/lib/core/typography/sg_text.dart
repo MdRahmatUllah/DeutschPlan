@@ -117,10 +117,6 @@ abstract final class SgScript {
   /// Bangla, for a screen reader's voice.
   static const Locale bnBD = Locale('bn', 'BD');
 
-  /// [text] as spans a screen reader reads each in its own voice (#162):
-  /// Bangla tagged bn-BD, and the rest de-DE when it is the course's German
-  /// ([german]). Otherwise the rest is the app's own copy, and untagged, so
-  /// it is read in the app's language. A soft hyphen is not read.
   /// [text] as a semantics label, each Bangla run tagged bn-BD as [spans]
   /// tags it on screen (#743). A control's label is a plain string, and a
   /// screen reader on an English phone read the Bangla ones with its English
@@ -143,6 +139,10 @@ abstract final class SgScript {
     return AttributedString(text, attributes: attributes);
   }
 
+  /// [text] as spans a screen reader reads each in its own voice (#162):
+  /// Bangla tagged bn-BD, and the rest de-DE when it is the course's German
+  /// ([german]). Otherwise the rest is the app's own copy, and untagged, so
+  /// it is read in the app's language. A soft hyphen is not read.
   static List<TextSpan> spans(
     String text, {
     required TextStyle latin,
