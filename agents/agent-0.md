@@ -6,7 +6,7 @@ last-read: 1767
 
 ## Now
 
-#736 perf(search): a one-letter query ranks most of the 11,186 sentences, the slowest search and the one FR-R1-01's benchmark leaves out — claimed 2026-09-27 17:56.
+#736 in review as PR #917: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
