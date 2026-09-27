@@ -20,7 +20,7 @@ void main() {
         db: AppDatabase.memory(),
       ),
       onRetry: () {},
-      onExport: () {},
+      onExport: () async => true,
     ),
   );
 }

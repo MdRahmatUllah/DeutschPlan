@@ -203,8 +203,15 @@ class _BootstrapHostState extends State<BootstrapHost>
       if (!kReleaseMode) {
         debugPrint('bootstrap: ${result.bootstrap.elapsed.inMilliseconds} ms');
       }
-      _tellBrightness(container);
-      (widget.wire ?? wireApp)(container, result.bootstrap);
+      try {
+        _tellBrightness(container);
+        (widget.wire ?? wireApp)(container, result.bootstrap);
+      } on Object {
+        // Nothing half-built stays behind (#652). A retry's gate shows its
+        // failure again, and disposes the result's database.
+        container.dispose();
+        rethrow;
+      }
     }
 
     final previous = _container;
@@ -431,36 +438,62 @@ class _BootstrapGateState extends State<BootstrapGate> {
   late BootstrapFailure _failure = widget.failure;
   var _retrying = false;
 
+  /// Set while a backup is being made (#652): Retry closes the database it
+  /// reads, so the two never overlap, and a second tap makes no second file.
+  var _exporting = false;
+
   Future<void> _retry() async {
-    if (_retrying) return;
+    if (_retrying || _exporting) return;
     setState(() => _retrying = true);
 
-    // A content failure is nearly always a half-written or corrupt copy, and
-    // retrying against the same file would fail identically for ever.
-    if (_failure.step == BootstrapStep.content) {
-      await resetInstalledContent();
-    }
-    await _failure.dispose();
+    BootstrapResult? result;
+    try {
+      // The database first (#652): the course file is attached to it, and a
+      // content retry deletes that file.
+      await _failure.dispose();
+      // A content failure is nearly always a half-written or corrupt copy,
+      // and retrying against the same file would fail identically for ever.
+      if (_failure.step == BootstrapStep.content) {
+        await resetInstalledContent();
+      }
 
-    final result = await (widget.onRetry ?? bootstrap)();
-    if (!mounted) return;
+      result = await (widget.onRetry ?? bootstrap)();
+      if (!mounted) {
+        if (result case BootstrapReady(:final bootstrap)) {
+          await bootstrap.dispose();
+        }
+        return;
+      }
 
-    switch (result) {
-      case BootstrapReady():
-        widget.onReady(result);
-      case BootstrapFailed(:final failure):
-        setState(() {
-          _retrying = false;
-          _failure = failure;
-        });
+      switch (result) {
+        case BootstrapReady():
+          // `_retrying` stays set: the host swaps this tree on its next
+          // frame, and until then Retry stays off, so a second tap can't
+          // adopt a second app (#643).
+          widget.onReady(result);
+        case BootstrapFailed(:final failure):
+          setState(() {
+            _retrying = false;
+            _failure = failure;
+          });
+      }
+    } on Object catch (error) {
+      // #652: a step that throws leaves Retry live, not dead. A ready result
+      // whose app never took over is closed, rather than left holding
+      // user.db open behind the next try.
+      debugPrint('retry: $error');
+      if (result case BootstrapReady(:final bootstrap)) {
+        await bootstrap.dispose();
+      }
+      if (mounted) setState(() => _retrying = false);
     }
   }
 
   @override
   Widget build(BuildContext context) => BootstrapErrorApp(
     failure: _failure,
-    onRetry: _retrying ? null : _retry,
-    onExport: _failure.canExport ? _export : null,
+    onRetry: _retrying || _exporting ? null : _retry,
+    onExport: _failure.canExport && !_retrying && !_exporting ? _export : null,
   );
 
   /// FR-S1-03's second half: get the learner's data out when nothing else in
@@ -474,22 +507,34 @@ class _BootstrapGateState extends State<BootstrapGate> {
   /// The file goes to temporary storage rather than app support: it is a copy
   /// being handed to another app, not state, and the OS may clear it
   /// afterwards — which is the right lifetime for something already sent.
-  Future<void> _export() async {
+  ///
+  /// Answers whether the backup was handed over, so the screen can say when
+  /// it wasn't (#652): this is most likely the corrupt-database case the
+  /// button exists for, and a throw used to vanish with no word.
+  Future<bool> _export() async {
     final db = _failure.db;
-    if (db == null) return;
+    if (db == null || _exporting) return true;
+    setState(() => _exporting = true);
+    try {
+      final json = await BackupRepository(db).exportJson();
+      final file = File(
+        '${(await getTemporaryDirectory()).path}/$exportFileName',
+      );
+      await file.writeAsString(json, flush: true);
 
-    final json = await BackupRepository(db).exportJson();
-    final file = File(
-      '${(await getTemporaryDirectory()).path}/$exportFileName',
-    );
-    await file.writeAsString(json, flush: true);
-
-    final share =
-        widget.onShare ??
-        (XFile shared) async {
-          await SharePlus.instance.share(ShareParams(files: <XFile>[shared]));
-        };
-    await share(XFile(file.path));
+      final share =
+          widget.onShare ??
+          (XFile shared) async {
+            await SharePlus.instance.share(ShareParams(files: <XFile>[shared]));
+          };
+      await share(XFile(file.path));
+      return true;
+    } on Object catch (error) {
+      debugPrint('export: $error');
+      return false;
+    } finally {
+      if (mounted) setState(() => _exporting = false);
+    }
   }
 }
 

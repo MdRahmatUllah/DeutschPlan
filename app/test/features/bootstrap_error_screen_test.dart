@@ -43,7 +43,7 @@ void main() {
     WidgetTester tester, {
     required BootstrapFailure failure,
     VoidCallback? onRetry,
-    VoidCallback? onExport,
+    Future<bool> Function()? onExport,
     SgMode mode = SgMode.light,
   }) async {
     await tester.pumpWidget(
@@ -126,7 +126,10 @@ void main() {
       await pump(
         tester,
         failure: failureOf(BootstrapStep.content, canExport: true),
-        onExport: () => exported++,
+        onExport: () async {
+          exported++;
+          return true;
+        },
       );
 
       await tester.tap(export);

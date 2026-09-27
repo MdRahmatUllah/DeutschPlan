@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:sogda/bootstrap.dart';
 import 'package:sogda/core/adaptive/adaptive.dart';
 import 'package:sogda/core/components/sg_button.dart';
+import 'package:sogda/core/components/sg_feedback.dart';
 import 'package:sogda/core/theme/app_theme.dart';
 import 'package:sogda/core/theme/aurora_backdrop.dart';
 import 'package:sogda/core/theme/sg_surface.dart';
@@ -36,7 +39,17 @@ class BootstrapErrorScreen extends StatelessWidget {
   /// than hiding it — a button that vanishes under the finger reads as a crash.
   final VoidCallback? onRetry;
 
-  final VoidCallback? onExport;
+  /// Null while a retry or an export runs. Answers whether the backup was
+  /// handed over; when it wasn't, the screen says so (#652).
+  final Future<bool> Function()? onExport;
+
+  Future<void> _export(BuildContext context) async {
+    if (await onExport!() || !context.mounted) return;
+    SgToast.show(
+      context,
+      AppLocalizations.of(context).exportImportExportFailed,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -71,7 +84,9 @@ class BootstrapErrorScreen extends StatelessWidget {
             const SizedBox(height: 4),
             SgButton(
               label: l10n.exportProgress,
-              onPressed: onExport,
+              onPressed: onExport == null
+                  ? null
+                  : () => unawaited(_export(context)),
               kind: SgButtonKind.text,
             ),
           ],
@@ -134,7 +149,7 @@ class BootstrapErrorApp extends StatelessWidget {
 
   final BootstrapFailure failure;
   final VoidCallback? onRetry;
-  final VoidCallback? onExport;
+  final Future<bool> Function()? onExport;
 
   @override
   Widget build(BuildContext context) => MaterialApp(
