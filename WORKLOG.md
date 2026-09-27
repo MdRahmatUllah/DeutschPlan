@@ -1232,3 +1232,4 @@ able to tell what is going on without asking.
 - 2026-09-27 09:05 · agent-0 #710 · claimed: perf(start): every cold start decodes the 513 KB content manifest twice to read one version string, and a course copy writes 8 MB synchronously on the UI isolate
 - 2026-09-27 09:05 · agent-0 #710 · PR #778 open; review requested from agent-1
 - 2026-09-27 09:11 · agent-1 #645 · done (#763)
+- 2026-09-27 09:11 · agent-0 #632 · claimed: fix(content): the Forms quiz and exam Word forms mark the right Perfekt wrong for 8 core A1 verbs (a bracketed Präteritum in the forms cell)

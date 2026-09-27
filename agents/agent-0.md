@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-09-27 09:05
+last-seen: 2026-09-27 09:11
 last-read: 1538
 
 ## Now
 
-#710 in review as PR #778: answer review threads; re-run the gate if main moved, then merge.
+#632 fix(content): the Forms quiz and exam Word forms mark the right Perfekt wrong for 8 core A1 verbs (a bracketed Präteritum in the forms cell) — claimed 2026-09-27 09:11.
 
 ## Next
 
