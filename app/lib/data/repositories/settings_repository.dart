@@ -122,7 +122,7 @@ class SettingsRepository {
     late StreamController<R> controller;
 
     void run() {
-      inner?.cancel();
+      unawaited(inner?.cancel());
       inner = query().listen(controller.add, onError: controller.addError);
     }
 

@@ -49,9 +49,7 @@ void main() {
   });
 
   Future<void> settle(WidgetTester tester) async {
-    await tester.runAsync(
-      () => Future<void>.delayed(const Duration(milliseconds: 80)),
-    );
+    await tester.runAsync(pumpEventQueue);
     await tester.pumpAndSettle();
   }
 
@@ -138,9 +136,7 @@ void main() {
       await tester.pump(const Duration(milliseconds: 100));
       // The database gets real time to answer, but the clock stands still:
       // settling would run it past the 120 ms.
-      await tester.runAsync(
-        () => Future<void>.delayed(const Duration(milliseconds: 80)),
-      );
+      await tester.runAsync(pumpEventQueue);
       await tester.pump();
       await tester.pump();
       expect(heading(l10n.searchExact(1)), findsNothing);

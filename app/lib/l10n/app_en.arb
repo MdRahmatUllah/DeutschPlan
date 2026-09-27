@@ -3442,6 +3442,10 @@
       }
     }
   },
+  "libraryTopicNotLearned": "not learned yet",
+  "@libraryTopicNotLearned": {
+    "description": "L3 row: what a hollow status dot says to a screen reader, for a topic never learned (#668)."
+  },
   "libraryDue": "Due · {count}",
   "@libraryDue": {
     "description": "L3 filter chip: learned topics due today or before.",
@@ -5279,6 +5283,10 @@
         "format": "decimalPattern"
       }
     }
+  },
+  "examResultMissedAdded": "Missed words added to revision",
+  "@examResultMissedAdded": {
+    "description": "L13 button (FR-L13-02), disabled: this attempt's missed words were already added to revision (#642)."
   },
   "examResultAdded": "{count, plural, =1{1 word added to revision · due tomorrow} other{{count} words added to revision · due tomorrow}}",
   "@examResultAdded": {

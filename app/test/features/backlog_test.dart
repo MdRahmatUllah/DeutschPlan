@@ -15,6 +15,7 @@ import 'package:drift/drift.dart'
         TableInfo;
 import 'package:drift/native.dart' show NativeDatabase;
 import 'package:sogda/data/db/content_dao.dart';
+import 'package:sogda/data/repositories/plan_repository.dart' show ReviewSource;
 import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/data/repositories/settings_repository.dart';
 import 'package:sogda/domain/fsrs.dart';
@@ -170,17 +171,13 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code, skipped,
         ),
       ),
     );
-    await tester.runAsync(
-      () => Future<void>.delayed(const Duration(milliseconds: 50)),
-    );
+    await tester.runAsync(pumpEventQueue);
     await tester.pumpAndSettle();
   }
 
   /// Lets a write land and the backlog stream answer.
   Future<void> settle(WidgetTester tester) async {
-    await tester.runAsync(
-      () => Future<void>.delayed(const Duration(milliseconds: 80)),
-    );
+    await tester.runAsync(pumpEventQueue);
     await tester.pumpAndSettle();
   }
 
@@ -570,6 +567,74 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code, skipped,
       await tester.pumpAndSettle();
     });
 
+    Future<String?> statusOf(WidgetTester tester, String uid) async =>
+        (await tester.runAsync(
+              () => db
+                  .customSelect(
+                    "SELECT status FROM word_state WHERE word_uid = '$uid'",
+                  )
+                  .getSingleOrNull(),
+            ))?.data['status']
+            as String?;
+
+    for (final action in <BacklogAction>[
+      BacklogAction.suspended,
+      BacklogAction.removed,
+    ]) {
+      testWidgets('#728 ${action.name} a word already suspended, then Undo: '
+          'it stays suspended', (tester) async {
+        await pump(tester);
+        // Suspended from W1, and T4 still lists it (#368).
+        final container = ProviderScope.containerOf(
+          tester.element(find.byType(BacklogScreen)),
+        );
+        await tester.runAsync(
+          () => container.read(ratingServiceProvider).suspend(haus),
+        );
+        await settle(tester);
+        expect(find.text(l10n.wordStatusSuspended), findsOneWidget);
+        await longPress(
+          tester,
+          action == BacklogAction.suspended
+              ? l10n.backlogSuspend
+              : l10n.backlogRemove,
+        );
+
+        await tester.tap(find.text(l10n.undo));
+        await settle(tester);
+        expect(await statusOf(tester, haus), 'suspended');
+        await tester.pump(const Duration(seconds: 5));
+        await tester.pumpAndSettle();
+      });
+    }
+
+    testWidgets("#728 Mark known's Undo leaves a later rating of another "
+        'word alone', (tester) async {
+      await pump(tester);
+      await longPress(tester, l10n.backlogMarkKnown);
+      // An answer on a screen with no Undo of its own, under the bar a
+      // screen reader keeps (L8's quiz).
+      final container = ProviderScope.containerOf(
+        tester.element(find.byType(BacklogScreen)),
+      );
+      await tester.runAsync(
+        () => container
+            .read(ratingServiceProvider)
+            .rate(strasse, Rating.good, source: ReviewSource.daily),
+      );
+
+      await tester.tap(find.text(l10n.undo));
+      await settle(tester);
+      final log = await tester.runAsync(
+        () => db
+            .customSelect('SELECT word_uid FROM review_log ORDER BY id')
+            .get(),
+      );
+      expect(log!.map((r) => r.data['word_uid']), <String>[haus, strasse]);
+      await tester.pump(const Duration(seconds: 5));
+      await tester.pumpAndSettle();
+    });
+
     testWidgets('Remove from course suspends it and completes its row', (
       tester,
     ) async {
@@ -670,9 +735,7 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code, skipped,
         ),
       ),
     );
-    await tester.runAsync(
-      () => Future<void>.delayed(const Duration(milliseconds: 50)),
-    );
+    await tester.runAsync(pumpEventQueue);
     await tester.pumpAndSettle();
     await tester.pump(StudyScreen.bannerTime);
     await tester.pumpAndSettle();

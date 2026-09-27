@@ -21,6 +21,7 @@ import '../core/text_clipping.dart';
 import '../services/fake_tts.dart';
 import 'model_manager_fixtures.dart';
 import 'settings_fixtures.dart';
+import '../timing.dart';
 
 /// M4 · Model manager — #155.
 void main() {
@@ -340,12 +341,10 @@ void main() {
       );
       await tester.tap(find.text(l10n.modelsDelete('399 MB')));
       await tester.pumpAndSettle();
-      await tester.runAsync(() async {
-        await tester.tap(find.text(l10n.modelsDeleteConfirm));
-        for (var i = 0; i < 100 && voice.availabilityChecks == 0; i++) {
-          await Future<void>.delayed(const Duration(milliseconds: 10));
-        }
-      });
+      await tester.tap(find.text(l10n.modelsDeleteConfirm));
+      // The sheet closes on frames; the delete is real disk I/O after it.
+      await tester.pumpAndSettle();
+      await tester.runAsync(() => until(() => voice.availabilityChecks > 0));
       await tester.pumpAndSettle();
       expect(settings.read(SettingKeys.ttsEngine), TtsEngineSetting.system);
       expect(voice.availabilityChecks, 1);

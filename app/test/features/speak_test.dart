@@ -23,6 +23,7 @@ import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 
 import '../services/fake_tts.dart';
+import '../timing.dart';
 
 /// #151's seam and #153's service: every speaker speaks through `ttsProvider`;
 /// one with no German voice behind it is slashed and says how to install one
@@ -301,9 +302,7 @@ void main() {
     await tester.tap(find.byType(SgSpeakerButton));
     // SupertonicTts asks the disk whether its model is there: real I/O.
     await tester.runAsync(() async {
-      for (var i = 0; i < 100 && phone.said.isEmpty; i++) {
-        await Future<void>.delayed(const Duration(milliseconds: 20));
-      }
+      await until(() => phone.said.isNotEmpty);
     });
     await tester.pump();
     expect(phone.said, <(String, double)>[('Hallo', 1.25)]);

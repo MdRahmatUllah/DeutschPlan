@@ -192,7 +192,9 @@ class ProgressRingCard extends StatelessWidget {
                       captionIcon: view.isDone ? Icons.check : null,
                       // TodayRest: nothing planned, and the ring says so.
                       countLabel: view.isRestDay ? l10n.todayRestFree : null,
-                      semanticLabel: l10n.todayRing(view.completed, view.total),
+                      semanticLabel: view.isRestDay
+                          ? l10n.todayRestNoPlan
+                          : l10n.todayRing(view.completed, view.total),
                     ),
                   ),
                 ),

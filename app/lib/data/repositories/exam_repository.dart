@@ -132,9 +132,9 @@ class SeedSummary {
   final int seed;
 
   /// Every attempt that is no longer running, abandoned ones included:
-  /// FR-L12-04 shows one as an attempt without a score, and BR-EXAM-02's
-  /// *Try another mock* must not offer a seed the learner walked out of as
-  /// though it had never been sat.
+  /// FR-L12-04 shows one as an attempt without a score, and the hub, where
+  /// *Try another mock* goes (BR-EXAM-02), must not show a seed the learner
+  /// walked out of as *Not attempted*.
   final int attempts;
 
   /// How many of those were graded. [bestPercent] and [everPassed] come from

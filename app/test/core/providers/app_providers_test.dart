@@ -146,10 +146,12 @@ void main() {
     // A Replace import and Reset everything write the settings through SQL,
     // then `reload` announces what changed. The notifiers read the settings
     // once and kept the old theme and languages until a relaunch.
-    Future<void> writeElsewhere(void Function(SettingsRepository) write) async {
+    Future<void> writeElsewhere(
+      Future<void> Function(SettingsRepository) write,
+    ) async {
       final other = SettingsRepository(db);
       await other.load();
-      write(other);
+      await write(other);
       await Future<void>.delayed(Duration.zero);
       await other.dispose();
       await settings.reload();
@@ -170,9 +172,9 @@ void main() {
       final ref = container();
       expect(ref.read(languagesProvider).ui, UiLanguage.english);
 
-      await writeElsewhere((other) {
-        other.write(SettingKeys.uiLanguage, UiLanguage.bangla);
-        other.write(SettingKeys.meaningLanguage, MeaningLanguage.bangla);
+      await writeElsewhere((other) async {
+        await other.write(SettingKeys.uiLanguage, UiLanguage.bangla);
+        await other.write(SettingKeys.meaningLanguage, MeaningLanguage.bangla);
       });
       expect(ref.read(languagesProvider), (
         meaning: MeaningLanguage.bangla,

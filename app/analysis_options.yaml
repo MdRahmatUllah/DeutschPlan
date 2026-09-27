@@ -1,6 +1,7 @@
 # Static analysis for Sogda.
 # Rules here are the ones docs/05-dev-guide/coding-standards.md requires.
-# CI runs `make lint`, which fails on any analyzer issue and on a format diff.
+# The basic check runs `dart analyze --fatal-infos` (no path args, ADR 18),
+# which fails on any issue below; CI is off (#302).
 
 include: package:flutter_lints/flutter.yaml
 
@@ -10,15 +11,23 @@ plugins:
   riverpod_lint: ^3.1.9
 
 analyzer:
+  # #697 TL-11: no implicit dynamic casts, no inferred dynamic, no raw
+  # generics.
+  language:
+    strict-casts: true
+    strict-inference: true
+    strict-raw-types: true
   exclude:
     - build/**
     - android/**
     - ios/**
-    # Generated code is rebuilt by `make gen`; linting it is not actionable.
+    # Generated code is rebuilt by getting-started.md's generation block;
+    # linting it is not actionable.
     - "**/*.g.dart"
-    - "**/*.freezed.dart"
     - "**/*.drift.dart"
     - "lib/l10n/generated/**"
+    # drift_dev's schema snapshots for the migration tests.
+    - "test/db/generated/**"
 
 linter:
   rules:
@@ -27,3 +36,7 @@ linter:
     - avoid_dynamic_calls
     - require_trailing_commas
     - always_declare_return_types
+    # #697 TL-11: a dropped future (a DB write, CC-3) is a decision, spelled
+    # `unawaited(...)`, never an accident.
+    - discarded_futures
+    - unawaited_futures

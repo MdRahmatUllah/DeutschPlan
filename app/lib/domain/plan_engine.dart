@@ -767,8 +767,9 @@ class PlanEngine {
     try {
       measured = await pending;
     } catch (_) {
-      // A failed read is not remembered: the next rebuild asks again.
-      _measured.remove(plan.date);
+      // A failed read is not remembered: the next rebuild asks again. The
+      // removed future is the one that just failed, rethrown below.
+      _measured.remove(plan.date)?.ignore();
       rethrow;
     }
 

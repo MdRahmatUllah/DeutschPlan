@@ -89,6 +89,7 @@ class StubExamResult implements ExamResultService {
             ),
             passPercent: 60,
             missed: missedWords(artboardRows()),
+            added: 0,
           );
 
   ExamResult result0;
@@ -142,6 +143,7 @@ class StubExamResult implements ExamResultService {
       previous: result0.previous,
       passPercent: result0.passPercent,
       missed: result0.missed,
+      added: result0.added,
     );
   }
 
@@ -167,6 +169,7 @@ class StubExamResult implements ExamResultService {
       previous: result0.previous,
       passPercent: result0.passPercent,
       missed: result0.missed,
+      added: result0.added,
     );
   }
 
@@ -211,6 +214,7 @@ ExamResult failedResult() {
     previous: null,
     passPercent: 60,
     missed: missedWords(rows),
+    added: 0,
   );
 }
 
@@ -295,5 +299,6 @@ ExamResult reviewResult() {
     previous: null,
     passPercent: 60,
     missed: missedWords(rows),
+    added: 0,
   );
 }
