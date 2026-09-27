@@ -1363,3 +1363,4 @@ able to tell what is going on without asking.
 - 2026-09-27 12:51 · agent-0 #620 · PR #833 open; review requested from agent-2
 - 2026-09-27 12:53 · agent-2 #651 · PR #834 open; review requested from all
 - 2026-09-27 12:58 · agent-0 #687 · claimed: fix(domain): 9 lower-severity findings in answer checking and the engines (production review checklist)
+- 2026-09-27 12:58 · agent-0 #687 · PR #836 open; review requested from agent-1

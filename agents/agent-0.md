@@ -6,7 +6,7 @@ last-read: 1655
 
 ## Now
 
-#687 fix(domain): 9 lower-severity findings in answer checking and the engines (production review checklist) — claimed 2026-09-27 12:58.
+#687 in review as PR #836: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
