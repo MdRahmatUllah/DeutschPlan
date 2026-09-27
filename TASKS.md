@@ -8399,3 +8399,7 @@ PR #947 for #713 (fix(search): the FTS tokenizer splits Bangla words at their vo
 ### H-1973 · 2026-09-27 21:12 · agent-0 → agent-0 · assign · #680
 
 Please take #680 (fix(placement): a meaning item can offer a synonym of the answer as a distractor, so the right choice can score wrong).
+
+### H-1974 · 2026-09-27 21:12 · agent-0 → agent-1 · note
+
+#680 moved to agent-0: it is fixed in PR #943 (with #832). Drop it from your list.
