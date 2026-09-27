@@ -11,6 +11,8 @@ import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/core/typography/sg_text.dart';
 import 'package:sogda/data/repositories/search_repository.dart';
 import 'package:sogda/data/repositories/word_repository.dart';
+import 'package:sogda/features/search/search_screen.dart'
+    show myWordsProvider, savedAs;
 import 'package:sogda/features/today/today_providers.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/router/routes.dart';
@@ -195,6 +197,29 @@ class _AddWordState extends ConsumerState<AddWordScreen> {
     }
   }
 
+  /// The word of the learner's own the German already is, other than the one
+  /// being edited (#669).
+  MyWord? _mine(List<MyWord>? words) =>
+      savedAs(words, _german.text, except: widget.id);
+
+  /// *Log it* on a word of the learner's own (#669): one more real-life
+  /// sighting, "seen N×" in R1's *My words*, and no second word.
+  Future<void> _logMine(MyWord word) async {
+    if (_busy) return;
+    final l10n = AppLocalizations.of(context);
+    final words = ref.read(wordRepositoryProvider);
+    final name = word.article == null || word.article!.isEmpty
+        ? word.german
+        : '${word.article} ${word.german}';
+    setState(() => _busy = true);
+    try {
+      await words.logMySighting(word.id);
+      if (mounted) SgToast.show(context, l10n.addWordLogged(name));
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
+  }
+
   /// Edit mode's *Delete*, after asking.
   Future<void> _delete(int id) async {
     final l10n = AppLocalizations.of(context);
@@ -227,6 +252,9 @@ class _AddWordState extends ConsumerState<AddWordScreen> {
         ? null
         : ref.watch(courseMatchProvider(_checked)).value;
     final id = widget.id;
+    // #669: already one of my words (another, in edit mode). Read from the
+    // field, not the debounced check: a quick Save must not make it twice.
+    final mine = _mine(ref.watch(myWordsProvider).value);
     // Until it is known, as if it were: the button appears rather than
     // flashing up and going.
     final inRevision =
@@ -272,10 +300,23 @@ class _AddWordState extends ConsumerState<AddWordScreen> {
                   const SizedBox(height: 8),
                   SgUmlautBar(controller: _german),
                 ],
-                if (match != null) ...<Widget>[
+                if (mine != null) ...<Widget>[
                   const SizedBox(height: 14),
                   _Match(
-                    match: match,
+                    title: l10n.searchNoneMine,
+                    german: mine.german,
+                    article: mine.article,
+                    busy: _busy,
+                    onOpen: () => EditCustomWordRoute.open(context, mine.id),
+                    onLog: () => unawaited(_logMine(mine)),
+                  ),
+                ] else if (match != null) ...<Widget>[
+                  const SizedBox(height: 14),
+                  _Match(
+                    title: l10n.addWordInCourse(match.word.sublevelCode),
+                    german: match.word.german,
+                    article: match.word.article,
+                    plural: match.word.forms,
                     busy: _busy,
                     onOpen: () => WordRoute.open(context, match.uid),
                     onLog: () => unawaited(_log(match)),
@@ -298,7 +339,7 @@ class _AddWordState extends ConsumerState<AddWordScreen> {
                 const SizedBox(height: 24),
                 SgButton(
                   label: l10n.addWordSave,
-                  onPressed: _complete && !_busy
+                  onPressed: _complete && !_busy && mine == null
                       ? () => unawaited(_save(match))
                       : null,
                 ),
@@ -307,7 +348,7 @@ class _AddWordState extends ConsumerState<AddWordScreen> {
                   SgButton(
                     label: l10n.addWordSaveRevise,
                     kind: SgButtonKind.secondary,
-                    onPressed: _complete && !_busy
+                    onPressed: _complete && !_busy && mine == null
                         ? () => unawaited(_save(match, revise: true))
                         : null,
                   ),
@@ -585,13 +626,21 @@ class _ArticleOption extends StatelessWidget {
 /// as one more real-life sighting (FR-R2-02).
 class _Match extends StatelessWidget {
   const _Match({
-    required this.match,
+    required this.title,
+    required this.german,
+    required this.article,
     required this.busy,
     required this.onOpen,
     required this.onLog,
+    this.plural,
   });
 
-  final WordHit match;
+  /// What it already is: "Already in the course · A1.2 ·", or one of my
+  /// words (#669).
+  final String title;
+  final String german;
+  final String? article;
+  final String? plural;
   final bool busy;
   final VoidCallback onOpen;
   final VoidCallback onLog;
@@ -600,10 +649,9 @@ class _Match extends StatelessWidget {
   Widget build(BuildContext context) {
     final tokens = context.tokens;
     final l10n = AppLocalizations.of(context);
-    final word = match.word;
-    final name = word.article == null || word.article!.isEmpty
-        ? word.german
-        : '${word.article} ${word.german}';
+    final name = article == null || article!.isEmpty
+        ? german
+        : '$article $german';
     return Container(
       padding: const EdgeInsets.fromLTRB(12, 10, 8, 10),
       decoration: BoxDecoration(
@@ -626,13 +674,13 @@ class _Match extends StatelessWidget {
                     children: <Widget>[
                       SgText(
                         // ponytail: allow-literal — ARB text and a space, no number.
-                        '${l10n.addWordInCourse(word.sublevelCode)} ',
+                        '$title ',
                         role: SgTextRole.label,
                       ),
                       SgHeadword(
-                        word.german,
-                        article: word.article,
-                        plural: word.forms,
+                        german,
+                        article: article,
+                        plural: plural,
                         role: SgTextRole.label,
                         weight: 600,
                       ),

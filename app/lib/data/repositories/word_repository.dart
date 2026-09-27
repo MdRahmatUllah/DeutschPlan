@@ -399,6 +399,15 @@ class WordRepository extends DatabaseAccessor<AppDatabase>
     ),
   );
 
+  /// R2's *Log it* on a word of the learner's own (#669): one more real-life
+  /// sighting, which R1's *My words* shows as "seen N×" from the second.
+  Future<void> logMySighting(int id) =>
+      (update(db.customWords)..where((t) => t.id.equals(id))).write(
+        CustomWordsCompanion.custom(
+          timesSeen: db.customWords.timesSeen + const Constant(1),
+        ),
+      );
+
   /// R1's *My words* (#138): the learner's own words, newest first, as they
   /// change.
   Stream<List<MyWord>> watchMyWords() => myWords().watch().map(
