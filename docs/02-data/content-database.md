@@ -1,6 +1,6 @@
-# content.db — course content (read-only)
+# content.db — course content (never written by the app)
 
-Bundled at `assets/db/content.db`, copied to app-support storage on first run or when `meta.content_version` differs, then **attached** to the user database as schema `c`. Opened read-only; the app never writes to it.
+Bundled at `assets/db/content.db`, copied to app-support storage on first run or when `meta.content_version` differs, then **attached** to the user database as schema `c`. It is attached by plain path, so SQLite would allow writes (ADR 26): it is read-only by construction instead. The app never writes to it, and `architecture_test.dart` rejects a write to a course table.
 
 ## Tables
 
@@ -38,7 +38,7 @@ FTS `MATCH` refers to the virtual table name without the schema prefix; query st
 
 ## Update flow
 
-1. On launch, read `content_version` from the bundled asset (probe copy) and from the installed file.
+1. On launch, compare the `content_version` of the bundled `content_manifest.json` with that of the manifest kept in app support from the last install (`content_update.dart`). No kept manifest means a first run. (Decoding both whole manifests for this is #710.)
 2. If different: overwrite the installed file, then compute `added/removed/changed` uids against `content_manifest.json` stored from the previous version (kept in app support). `changed` is a uid whose `words` digest (everything the learner sees) differs; `meaning` is a uid whose `meanings` digest (its English and Bangla meanings) differs. `english` is part of the uid (PIPE-03), so a new English meaning is a removed word and an added one, and only a new Bangla meaning reaches `meaning`. A kept manifest from before `meanings` gives no `meaning` uids.
 3. Write the diff to `user.db.content_updates` (version, added, removed, changed_json = the `added`, `removed`, `changed` and `meaning` lists, seen=0). Today shows the update card while `seen = 0`; its counts are `added`, `removed` and `changed`. It is one card, for the newest unseen update: dismissing it marks that update and every older one seen (#477). Its counts are that update's alone, against the build before it, not against what the learner last saw: an older unseen update's changes aren't counted. Two updates between launches, the first adding a word and the second removing it and another, read "0 added · 2 removed" though the learner lost one word. Net counts across the unseen updates are the owner's call.
 4. Removed uids: `word_state` rows are kept; plan generation and queries join to `c.words`, so they naturally disappear.

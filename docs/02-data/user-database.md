@@ -1,5 +1,7 @@
 # user.db — learner data (on device, writable)
 
+*On disk the file is `user.sqlite` in app support: `AppDatabase.open` names it `user`, and drift_flutter adds `.sqlite`. These docs call it user.db.*
+
 Created on first launch from `lib/data/db/user_schema.drift`, which is the authoritative DDL *and* the file drift generates the typed table classes from — one source, so the schema and the Dart cannot drift apart (ADR 22). It is ordinary SQL; anything wanting the raw DDL can read it. Lives in app-support storage; never leaves the device except through the learner's own export.
 
 ## Tables
