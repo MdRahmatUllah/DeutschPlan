@@ -27,7 +27,7 @@ Every rule has an ID. Engines in `03-domain/` implement them; screens in `04-scr
 - **BR-PLAN-06** *Skip* leaves a new word uncompleted; it appears in the backlog from the next day. Backlog has no deadline and is never shown as overdue.
 - **BR-PLAN-07** Backlog pause: when on, no new words are planned until the backlog is empty; revisions continue. Today offers this when backlog > 3 × `daily_new`.
 - **BR-PLAN-08** Changes to `daily_new`, `revise_count`, `study_days_mask` take effect from the next day; today's plan is fixed.
-- **BR-PLAN-09** Time estimate = 25 s per revision + 45 s per new word + 60 s per grammar topic + 40 s per sentence, replaced by the learner's own median timings once ≥ 7 sessions exist.
+- **BR-PLAN-09** Time estimate = 25 s per revision + 45 s per new word + 60 s per grammar topic + 40 s per sentence, replaced by the learner's own median timings once ≥ 7 sessions exist before today; measured over the last 30 study days before today, so the estimate is fixed for the day (#708).
 - **BR-PLAN-10** Day complete = every plan item of today is completed or skipped, and no grammar/sentence item is open. Rest days count as complete for streak purposes.
 
 ## Scheduling (FSRS)

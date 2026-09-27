@@ -175,5 +175,6 @@ class DryRunPlanStore implements PlanStore {
   }
 
   @override
-  Future<MeasuredSeconds> measuredSeconds() => _inner.measuredSeconds();
+  Future<MeasuredSeconds> measuredSeconds(PlanDate before) =>
+      _inner.measuredSeconds(before);
 }

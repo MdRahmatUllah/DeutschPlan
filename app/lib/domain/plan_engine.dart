@@ -216,8 +216,10 @@ abstract interface class PlanStore {
   Future<int> openPlanItems(PlanDate date);
 
   /// The learner's own median seconds per item, or null where there is not
-  /// enough history to measure one (BR-PLAN-09).
-  Future<MeasuredSeconds> measuredSeconds();
+  /// enough history to measure one (BR-PLAN-09): over the last
+  /// [measuredTimingsWindow] study days before [before], so the answer is
+  /// fixed for the day and the read does not grow with the history (#708).
+  Future<MeasuredSeconds> measuredSeconds(PlanDate before);
 }
 
 /// What could be measured from the logs, per item type.
@@ -232,7 +234,8 @@ class MeasuredSeconds {
     this.grammar,
   });
 
-  /// Days with any activity. BR-PLAN-09 wants seven before it trusts these.
+  /// Days with any activity, counted up to [measuredTimingsWindow].
+  /// BR-PLAN-09 wants seven before it trusts these.
   final int sessions;
 
   final int? revision;
@@ -365,6 +368,15 @@ class PlanEngine {
   final bool _pauseNewWhenBacklog;
 
   final Fsrs _fsrs;
+
+  /// BR-PLAN-09's timings per plan date (#708). They measure only the days
+  /// before it, so they cannot change during it: Today's rebuild after every
+  /// rating, resume and widget refresh reads them once a day, not each time.
+  /// An import rebuilds the engine, and with it this.
+  // ponytail: one entry per date asked about, today's and tomorrow's preview;
+  // an engine alive for weeks keeps a few dozen, which is nothing.
+  final Map<PlanDate, Future<MeasuredSeconds>> _measured =
+      <PlanDate, Future<MeasuredSeconds>>{};
 
   /// BR-COURSE-05 with auto-advance off: Today's *Start next step*.
   ///
@@ -730,7 +742,15 @@ class PlanEngine {
   /// defaults before that — and the defaults stay for anything that could not
   /// be measured, which is what [MeasuredSeconds] leaves null.
   Future<Duration> estimate(DailyPlan plan, {int sentences = 0}) async {
-    final measured = await _store.measuredSeconds();
+    final pending = _measured[plan.date] ??= _store.measuredSeconds(plan.date);
+    final MeasuredSeconds measured;
+    try {
+      measured = await pending;
+    } catch (_) {
+      // A failed read is not remembered: the next rebuild asks again.
+      _measured.remove(plan.date);
+      rethrow;
+    }
 
     return timeEstimate(
       revisions: plan.revise.length,

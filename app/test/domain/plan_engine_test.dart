@@ -1411,6 +1411,33 @@ void main() {
       expect(await engineWith().estimate(plan), const Duration(seconds: 70));
     });
 
+    test('BR-PLAN-09 #708 the timings are read once a day, not on every '
+        'estimate', () async {
+      // Today's view rebuilds after every rating, resume and widget refresh.
+      // What it measures is the days before today, fixed for the day.
+      store.measured = const MeasuredSeconds(sessions: 7, newWord: 10);
+      final engine = engineWith();
+      final plan = await engine.openDay(monday);
+
+      for (var i = 0; i < 3; i++) {
+        expect(await engine.estimate(plan), const Duration(seconds: 70));
+      }
+      await engine.estimate(await engine.previewDay(addDays(monday, 1)));
+      await engine.estimate(plan);
+
+      expect(store.measuredFor, <PlanDate>[monday, addDays(monday, 1)]);
+    });
+
+    test('BR-PLAN-09 #708 and a read that failed is asked again', () async {
+      store.measured = const MeasuredSeconds(sessions: 7, newWord: 10);
+      store.measureError = StateError('disk I/O error');
+      final engine = engineWith();
+      final plan = await engine.openDay(monday);
+
+      await expectLater(engine.estimate(plan), throwsStateError);
+      expect(await engine.estimate(plan), const Duration(seconds: 70));
+    });
+
     test('a timing that could not be measured keeps its default', () async {
       store.candidates = <RevisionCandidate>[
         const RevisionCandidate(uid: 'seen', stability: 5, lastReview: monday),
@@ -1659,6 +1686,18 @@ class FakeStore implements PlanStore {
   Future<int> openPlanItems(PlanDate date) async =>
       open[date] ?? (plan['$date/new'] ?? const <String>[]).length;
 
+  /// The days the estimate asked to have measured, one per read (#708).
+  final List<PlanDate> measuredFor = <PlanDate>[];
+
+  /// Thrown by the next read of the timings, once.
+  Object? measureError;
+
   @override
-  Future<MeasuredSeconds> measuredSeconds() async => measured;
+  Future<MeasuredSeconds> measuredSeconds(PlanDate before) async {
+    measuredFor.add(before);
+    final error = measureError;
+    measureError = null;
+    if (error != null) throw error;
+    return measured;
+  }
 }
