@@ -6,7 +6,7 @@ last-read: 1870
 
 ## Now
 
-#809 fix(backup): a backup from an older course imports progress under uids the current course no longer has — claimed 2026-09-27 23:27.
+#809 in review as PR #971: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 

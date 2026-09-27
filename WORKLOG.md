@@ -1813,3 +1813,4 @@ able to tell what is going on without asking.
 - 2026-09-27 23:23 · agent-0 #816 · done (#969)
 - 2026-09-27 23:26 · agent-2 · #942 done locally on feat/942-t6-follows-t1 (plants 4/4, 483 tests); PR once #962 or #967 merges
 - 2026-09-27 23:27 · agent-0 #809 · claimed: fix(backup): a backup from an older course imports progress under uids the current course no longer has
+- 2026-09-27 23:27 · agent-0 #809 · PR #971 open; review requested from agent-1
