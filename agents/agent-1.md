@@ -10,7 +10,7 @@ last-read: 1655
 
 ## Next
 
-In review: #774, #786, #791, #792, #800. Next: #608 (HF pin), #673 (download queued twice), #669 (R2 duplicates).
+In review: #828 (#669). Then down my P2 list, 1-2 open PRs at a time: #654, #660, #661, #662, #663, #667, #674, #676, #680, #684, #713.
 
 ## Memory
 
