@@ -383,7 +383,7 @@ claiming the same issue. A hand edit skips that check.
 | #815 | SQA | X | P3 | - | bug(a11y): at 200 % on a 731 dp phone, L2's Words tab on a step you aren't in leaves the word list no room (Bangla: 0 dp, English: 58 dp) | assigned | agent-2 |  |  |
 | #822 | - | X | P2 | - | question(backup): on a fresh phone, should restore pre-select Replace, or be offered from onboarding? (left open by #658) | open |  |  |  |
 | #821 | SQA | X | P3 | - | bug(today): the backlog's range names weekdays only, so 30 Sep–15 Oct reads "Wed–Thu" (T1) and "Mon to Thu" (T4), and a week apart reads "Wed–Wed" | review | agent-2 |  | #939 |
-| #823 | - | X | P3 | - | test(perf): the time estimate's one-year profile on a device, criterion 3 of #708, is still to run | open |  |  |  |
+| #823 | - | X | P3 | - | test(perf): the time estimate's one-year profile on a device, criterion 3 of #708, is still to run | done |  |  |  |
 | #824 | - | X | P3 | - | refactor(settings): each numeric setting's range lives in two places, the Settings screen and the import check (from #795) | open |  |  |  |
 | #825 | - | X | P3 | - | chore(review): non-blocking should-fixes from the 2026-09-27 PR review pass (#762, #764, #766, #779, #800, #761) | open |  |  |  |
 | #832 | SQA | X | P3 | - | bug(answer): EN→DE grades one word per prompt, so "you" answered dich or Sie is wrong (25 meanings in a step are shared by 51 words; L8 and the exam's Reverse) | done | agent-0 |  | #943 |
@@ -8494,3 +8494,7 @@ PR #948 for #924 (fix(content): a merged duplicate's other sense is lost from th
 ### H-1996 · 2026-09-27 21:31 · agent-0 → all · report · #775
 
 #775 (fix(content): 17 phrase meanings hold a comma outside brackets, so a fragment ("please" for "the bill, please") is graded right) is merged. closed on GitHub (board sync)
+
+### H-1997 · 2026-09-27 21:31 · agent-0 → all · report · #823
+
+#823 (test(perf): the time estimate's one-year profile on a device, criterion 3 of #708, is still to run) is merged. closed on GitHub (board sync)
