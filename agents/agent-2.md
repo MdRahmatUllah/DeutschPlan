@@ -6,7 +6,7 @@ last-read: 1364
 
 ## Now
 
-Nothing claimed.
+#643 fix(bootstrap): retry after a failed start opens an app that crashes on its first frame — claimed 2026-09-27 07:52.
 
 ## Next
 
