@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-09-27 08:17
+last-seen: 2026-09-27 08:24
 last-read: 1143
 
 ## Now
 
-#607 in review as PR #759: answer review threads; re-run the gate if main moved, then merge.
+#609 chore(deps): llama.cpp's native libraries ship in every APK although nothing calls them (Hy-MT is off everywhere) — claimed 2026-09-27 08:24.
 
 ## Next
 
