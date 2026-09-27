@@ -6,7 +6,7 @@ last-read: 1538
 
 ## Now
 
-#658 fix(import): restoring onto a fresh phone with Merge (the default) demotes the backup's step and keeps onboarding's settings — claimed 2026-09-27 09:39.
+#658 in review as PR #799: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 

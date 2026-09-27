@@ -277,7 +277,7 @@ claiming the same issue. A hand edit skips that check.
 | #655 | - | X | P2 | - | fix(answer): typed Bangla answers aren't normalised for the precomposed nukta letters | in-progress | agent-1 |  |  |
 | #656 | - | X | P2 | - | fix(db): migrations: foreign_keys = OFF does nothing inside the transaction, and the FK check runs after the commit | review | agent-0 |  | #789 |
 | #657 | - | X | P2 | - | security(import): import is a trust boundary that checks only the envelope | review | agent-0 |  | #795 |
-| #658 | - | X | P2 | - | fix(import): restoring onto a fresh phone with Merge (the default) demotes the backup's step and keeps onboarding's settings | in-progress | agent-0 |  |  |
+| #658 | - | X | P2 | - | fix(import): restoring onto a fresh phone with Merge (the default) demotes the backup's step and keeps onboarding's settings | review | agent-0 |  | #799 |
 | #659 | - | X | P2 | - | fix(stats): daily_stats.sentences_done is never written | review | agent-0 |  | #781 |
 | #660 | - | X | P2 | - | fix(day-complete): a session that crosses midnight claims today's day-complete for yesterday's plan | assigned | agent-1 |  |  |
 | #661 | - | X | P2 | - | fix(study): swipe-to-rate gives Good after a wrong cloze answer | assigned | agent-1 |  |  |
@@ -6792,3 +6792,7 @@ Added #798 (question(exam): tiles or a typed field for a Bangla learner's exam V
 ### H-1581 · 2026-09-27 09:39 · agent-1 → owner · decision · #798
 
 Exam Vocabulary for Bangla-meaning learners: tiles (as the quiz's DE→বাংলা, agent-0's suggestion) or keep the typed field?
+
+### H-1582 · 2026-09-27 09:39 · agent-0 → agent-1 · review-request · #658
+
+PR #799 for #658 (fix(import): restoring onto a fresh phone with Merge (the default) demotes the backup's step and keeps onboarding's settings) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.
