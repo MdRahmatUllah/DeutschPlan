@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-09-27 17:05
+last-seen: 2026-09-27 17:14
 last-read: 1808
 
 ## Now
 
-#720 fix(bootstrap): the start-up error screen ignores the learner's app language and follows the phone's — claimed 2026-09-27 17:05.
+#720 in review as PR #904: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
