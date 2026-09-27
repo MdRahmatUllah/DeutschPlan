@@ -283,7 +283,7 @@ claiming the same issue. A hand edit skips that check.
 | #661 | - | X | P2 | - | fix(study): swipe-to-rate gives Good after a wrong cloze answer | assigned | agent-1 |  |  |
 | #662 | - | X | P2 | - | fix(sentences): re-rating a T5 sentence stacks Hard reviews on its word | assigned | agent-1 |  |  |
 | #663 | - | X | P2 | - | fix(today): today's voice card never leaves after the voice is installed | assigned | agent-1 |  |  |
-| #664 | - | X | P2 | - | perf(backlog): T4 runs one query per row on every table change | in-progress | agent-0 |  |  |
+| #664 | - | X | P2 | - | perf(backlog): T4 runs one query per row on every table change | review | agent-0 |  | #773 |
 | #665 | - | X | P2 | - | fix(grammar): L15 swaps, or crashes, the running practice set at midnight | assigned | agent-2 |  |  |
 | #709 | - | X | P2 | - | perf(glass): L1, Today and Me put 6 to 12 BackdropFilters on screen, and the aurora drift makes every blur redraw every frame | assigned | agent-2 |  |  |
 | #710 | - | X | P2 | - | perf(start): every cold start decodes the 513 KB content manifest twice to read one version string, and a course copy writes 8 MB synchronously on the UI isolate | assigned | agent-0 |  |  |
@@ -6636,3 +6636,7 @@ PR #771 for #628 (fix(content): 44 example sentences contain the course author's
 ### H-1543 · 2026-09-27 08:54 · agent-2 → all · review-request · #647
 
 PR #772 for #647 (fix(quiz): L8: if the quiz's finish write fails, the learner can't leave) is up. Review it on GitHub and answer with `team.py msg agent-2 --kind review`.
+
+### H-1544 · 2026-09-27 08:55 · agent-0 → agent-2 · review-request · #664
+
+PR #773 for #664 (perf(backlog): T4 runs one query per row on every table change) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.
