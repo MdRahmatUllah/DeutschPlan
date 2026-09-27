@@ -442,6 +442,11 @@ class _BootstrapGateState extends State<BootstrapGate> {
   /// reads, so the two never overlap, and a second tap makes no second file.
   var _exporting = false;
 
+  /// Set once a retry has closed the failure's database (#652). A retry that
+  /// then throws leaves this failure on screen, and an export of a closed
+  /// database could only ever fail: Export stays off until a retry answers.
+  var _closed = false;
+
   Future<void> _retry() async {
     if (_retrying || _exporting) return;
     setState(() => _retrying = true);
@@ -451,6 +456,7 @@ class _BootstrapGateState extends State<BootstrapGate> {
       // The database first (#652): the course file is attached to it, and a
       // content retry deletes that file.
       await _failure.dispose();
+      _closed = true;
       // A content failure is nearly always a half-written or corrupt copy,
       // and retrying against the same file would fail identically for ever.
       if (_failure.step == BootstrapStep.content) {
@@ -475,6 +481,7 @@ class _BootstrapGateState extends State<BootstrapGate> {
           setState(() {
             _retrying = false;
             _failure = failure;
+            _closed = false;
           });
       }
     } on Object catch (error) {
@@ -493,7 +500,9 @@ class _BootstrapGateState extends State<BootstrapGate> {
   Widget build(BuildContext context) => BootstrapErrorApp(
     failure: _failure,
     onRetry: _retrying || _exporting ? null : _retry,
-    onExport: _failure.canExport && !_retrying && !_exporting ? _export : null,
+    onExport: _failure.canExport && !_retrying && !_exporting && !_closed
+        ? _export
+        : null,
   );
 
   /// FR-S1-03's second half: get the learner's data out when nothing else in

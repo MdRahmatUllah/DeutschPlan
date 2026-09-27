@@ -667,6 +667,35 @@ void main() {
       expect(attempts, 2);
     });
 
+    testWidgets('FR-S1-03 #652 a Retry that throws after closing the '
+        'database leaves Export off, not offered on a closed file', (
+      tester,
+    ) async {
+      // The retry closed the failure's database before it threw, so the
+      // failure left on screen has nothing to export from: the export could
+      // only ever say it failed.
+      final db = AppDatabase.memory();
+      addTearDown(db.close);
+      await tester.pumpWidget(
+        BootstrapGate(
+          failure: failureOf(BootstrapStep.database, db: db),
+          onReady: (_) {},
+          onRetry: () async => throw StateError('disk full'),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(tester.widget<SgButton>(_exportButton).onPressed, isNotNull);
+
+      await tester.tap(_retryButton);
+      await tester.pumpAndSettle();
+      expect(tester.widget<SgButton>(_exportButton).onPressed, isNull);
+      expect(
+        tester.widget<SgButton>(_retryButton).onPressed,
+        isNotNull,
+        reason: 'Retry is the way on',
+      );
+    });
+
     testWidgets('FR-S1-03 #652 a ready retry whose app fails to start leaves '
         'Retry live, and closes that database', (tester) async {
       final db = AppDatabase.memory();
