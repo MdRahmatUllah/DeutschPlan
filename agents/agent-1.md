@@ -10,7 +10,7 @@ last-read: 1143
 
 ## Next
 
-In review: #774, #786, #791, #792. Now: #655 (Bangla nukta), then #608 (HF pin), #673, #669.
+In review: #774, #786, #791, #792, #800. Next: #608 (HF pin), #673 (download queued twice), #669 (R2 duplicates).
 
 ## Memory
 
