@@ -7,6 +7,8 @@ import 'package:sogda/domain/quiz_builder.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sqlite3/sqlite3.dart';
 
+import '../timing.dart';
+
 /// `quiz_builder.dart` — #81, `docs/03-domain/quiz-engine.md`.
 void main() {
   const today = '2026-09-21';
@@ -702,22 +704,24 @@ void main() {
     ];
     expect(words.length, greaterThan(5000));
     final builder = QuizBuilder(_Store(words, words));
-    final watch = Stopwatch()..start();
-    final quiz = await builder.build(
-      direction: QuizDirection.deEn,
-      source: QuizSource.allLearned,
-      length: 30,
-      seed: 11,
-      today: today,
-    );
-    watch.stop();
+    late Quiz quiz;
+    final fastest = await fastestOf(3, () async {
+      quiz = await builder.build(
+        direction: QuizDirection.deEn,
+        source: QuizSource.allLearned,
+        length: 30,
+        seed: 11,
+        today: today,
+      );
+    });
     expect(quiz.items, hasLength(30));
     for (final item in quiz.items) {
       expect(item.options.toSet(), hasLength(4), reason: item.prompt);
     }
     // Checking every candidate before ranking took 5.4 s here; ranking
-    // first and checking lazily takes a small fraction of a second.
-    expect(watch.elapsedMilliseconds, lessThan(1500));
+    // first and checking lazily takes a small fraction of a second. The
+    // fastest of three, so a busy machine isn't what's measured (#683).
+    expect(fastest.inMilliseconds, lessThan(1500));
   });
 
   test('the wire names round-trip', () {

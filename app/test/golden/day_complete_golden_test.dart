@@ -65,9 +65,7 @@ void main() {
 
 /// The day claimed off the fake clock, then the 1.2 s fall.
 Future<void> land(WidgetTester tester) async {
-  await tester.runAsync(
-    () => Future<void>.delayed(const Duration(milliseconds: 50)),
-  );
+  await tester.runAsync(pumpEventQueue);
   await tester.pump();
   await tester.pump();
   await tester.pump(const Duration(milliseconds: 1300));

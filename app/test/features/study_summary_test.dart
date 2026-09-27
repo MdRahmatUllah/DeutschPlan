@@ -188,9 +188,7 @@ VALUES ('$today', 9, 12, 900)
     await tester.runAsync(
       () => act(container.read(studySessionProvider(args).notifier)),
     );
-    await tester.runAsync(
-      () => Future<void>.delayed(const Duration(milliseconds: 50)),
-    );
+    await tester.runAsync(pumpEventQueue);
     await tester.pumpAndSettle();
   }
 
@@ -750,13 +748,11 @@ VALUES ('$today', 9, 12, 900)
     });
     // The last card, rated through the screen so its undo bar shows.
     await tester.tap(find.text(l10n.studyShowMeaning));
-    await tester.runAsync(
-      () => Future<void>.delayed(const Duration(milliseconds: 50)),
-    );
+    await tester.runAsync(pumpEventQueue);
     await tester.pumpAndSettle();
     await tester.runAsync(() async {
       await tester.tap(find.text(l10n.ratingGood));
-      await Future<void>.delayed(const Duration(milliseconds: 50));
+      await pumpEventQueue();
     });
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 750));
@@ -766,9 +762,7 @@ VALUES ('$today', 9, 12, 900)
     // Tapped in the test's own zone: the bar's hide animation completes
     // there, not on the real event loop after the tree has gone.
     await tester.tap(find.text(l10n.undo));
-    await tester.runAsync(
-      () => Future<void>.delayed(const Duration(milliseconds: 50)),
-    );
+    await tester.runAsync(pumpEventQueue);
     await tester.pumpAndSettle();
     expect(find.byType(StudySummarySheet), findsNothing);
     expect(

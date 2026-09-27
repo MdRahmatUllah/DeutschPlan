@@ -266,7 +266,7 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code) VALUES
 
       await tester.runAsync(() async {
         await tester.tap(find.text(l10n.studySkip));
-        await Future<void>.delayed(const Duration(milliseconds: 50));
+        await pumpEventQueue();
       });
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 750));
@@ -283,7 +283,7 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code) VALUES
 
       await tester.runAsync(() async {
         await tester.tap(find.text(l10n.undo));
-        await Future<void>.delayed(const Duration(milliseconds: 50));
+        await pumpEventQueue();
       });
       await tester.pumpAndSettle();
       expect(
@@ -337,7 +337,7 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code) VALUES
       await toNew(tester, container);
       await tester.runAsync(() async {
         await tester.tap(find.text(l10n.studySkip));
-        await Future<void>.delayed(const Duration(milliseconds: 50));
+        await pumpEventQueue();
       });
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 750));
@@ -357,7 +357,7 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code) VALUES
 
       await tester.runAsync(() async {
         await tester.tap(find.text(l10n.studyKnowIt));
-        await Future<void>.delayed(const Duration(milliseconds: 50));
+        await pumpEventQueue();
       });
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 750));

@@ -95,9 +95,7 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code) VALUES
     await tester.pumpAndSettle();
     if (reveal) {
       await tester.tap(find.text(l10n.studyShowMeaning));
-      await tester.runAsync(
-        () => Future<void>.delayed(const Duration(milliseconds: 50)),
-      );
+      await tester.runAsync(pumpEventQueue);
       await tester.pumpAndSettle();
     }
     return ProviderScope.containerOf(tester.element(find.byType(StudyScreen)));
@@ -115,7 +113,7 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code) VALUES
   Future<void> drag(WidgetTester tester, Offset by) async {
     await tester.runAsync(() async {
       await tester.drag(find.byType(StudyWordCard), by);
-      await Future<void>.delayed(const Duration(milliseconds: 50));
+      await pumpEventQueue();
     });
     await tester.pumpAndSettle();
   }
@@ -151,7 +149,7 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code) VALUES
       await pump(tester, swipe: true);
       await tester.runAsync(() async {
         await tester.drag(find.byType(StudyWordCard), const Offset(-300, 0));
-        await Future<void>.delayed(const Duration(milliseconds: 50));
+        await pumpEventQueue();
       });
       await tester.pump();
       // The swiped card, on its way out: still where it was dragged to.
@@ -219,7 +217,7 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code) VALUES
           const Offset(60, 0),
           1500,
         );
-        await Future<void>.delayed(const Duration(milliseconds: 50));
+        await pumpEventQueue();
       });
       await tester.pumpAndSettle();
       expect(await tester.runAsync(ratings), <int>[3]);
@@ -267,7 +265,7 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code) VALUES
       listen(tester);
       await tester.runAsync(() async {
         await tester.tap(find.text(l10n.ratingGood));
-        await Future<void>.delayed(const Duration(milliseconds: 50));
+        await pumpEventQueue();
       });
       await tester.pumpAndSettle();
       expect(felt, <String>['HapticFeedbackType.lightImpact']);
@@ -278,7 +276,7 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code) VALUES
       listen(tester);
       await tester.runAsync(() async {
         await tester.tap(find.text(l10n.ratingAgain));
-        await Future<void>.delayed(const Duration(milliseconds: 50));
+        await pumpEventQueue();
       });
       await tester.pumpAndSettle();
       expect(felt, <String>['HapticFeedbackType.mediumImpact']);
@@ -310,7 +308,7 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code) VALUES
     Future<void> rateMidway(WidgetTester tester, String rating) async {
       await tester.runAsync(() async {
         await tester.tap(find.text(rating));
-        await Future<void>.delayed(const Duration(milliseconds: 50));
+        await pumpEventQueue();
       });
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 100));

@@ -31,9 +31,7 @@ void main() {
   });
 
   Future<void> settle(WidgetTester tester) async {
-    await tester.runAsync(
-      () => Future<void>.delayed(const Duration(milliseconds: 80)),
-    );
+    await tester.runAsync(pumpEventQueue);
     await tester.pumpAndSettle();
   }
 
@@ -219,9 +217,7 @@ void main() {
       await tester.pump(const Duration(milliseconds: 100));
       // The database gets real time to answer, but the clock stands still:
       // settling would run it past the debounce.
-      await tester.runAsync(
-        () => Future<void>.delayed(const Duration(milliseconds: 80)),
-      );
+      await tester.runAsync(pumpEventQueue);
       await tester.pump();
       await tester.pump();
       expect(find.text(l10n.addWordLogIt), findsNothing);
@@ -367,7 +363,7 @@ void main() {
       await tester.runAsync(() => db.close());
       await tester.runAsync(() async {
         await tester.tap(find.text(l10n.addWordSave));
-        await Future<void>.delayed(const Duration(milliseconds: 80));
+        await pumpEventQueue();
       });
       await tester.pumpAndSettle();
       expect(find.text(l10n.addWordSaveFailed), findsOneWidget);
@@ -405,7 +401,7 @@ void main() {
       await tester.runAsync(() async {
         await tester.tap(find.text(l10n.addWordSave));
         await tester.tap(find.text(l10n.addWordSave), warnIfMissed: false);
-        await Future<void>.delayed(const Duration(milliseconds: 80));
+        await pumpEventQueue();
       });
       await settle(tester);
       final rows = await tester.runAsync(() => db.select(db.customWords).get());

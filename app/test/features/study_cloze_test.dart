@@ -141,9 +141,7 @@ VALUES ('$strasse', 'learning', '2026-09-10', '2026-09-21', 4.5, 5.2, 2, 0,
     await tester.enterText(find.byType(TextField), text);
     await tester.pump();
     await tester.tap(find.widgetWithText(SgButton, l10n.studyClozeCheck));
-    await tester.runAsync(
-      () => Future<void>.delayed(const Duration(milliseconds: 50)),
-    );
+    await tester.runAsync(pumpEventQueue);
     await tester.pumpAndSettle();
   }
 
@@ -315,9 +313,7 @@ VALUES ('$strasse', 'learning', '2026-09-10', '2026-09-21', 4.5, 5.2, 2, 0,
     await pump(tester);
     await answer(tester, 'Haus');
     // The intervals load before the bar takes a rating.
-    await tester.runAsync(
-      () => Future<void>.delayed(const Duration(milliseconds: 50)),
-    );
+    await tester.runAsync(pumpEventQueue);
     await tester.pumpAndSettle();
     expect(offered(tester, l10n.ratingAgain), isTrue);
     expect(offered(tester, l10n.ratingHard), isTrue);
@@ -338,9 +334,7 @@ VALUES ('$strasse', 'learning', '2026-09-10', '2026-09-21', 4.5, 5.2, 2, 0,
         () => settings.write(SettingKeys.swipeToRate, true),
       );
       await answer(tester, answered);
-      await tester.runAsync(
-        () => Future<void>.delayed(const Duration(milliseconds: 50)),
-      );
+      await tester.runAsync(pumpEventQueue);
       await tester.pumpAndSettle();
       expect(
         tester.widget<StudySwipeToRate>(find.byType(StudySwipeToRate)).enabled,
@@ -352,9 +346,7 @@ VALUES ('$strasse', 'learning', '2026-09-10', '2026-09-21', 4.5, 5.2, 2, 0,
   testWidgets('#345 almost: all four offered', (tester) async {
     await pump(tester);
     await answer(tester, 'Strase');
-    await tester.runAsync(
-      () => Future<void>.delayed(const Duration(milliseconds: 50)),
-    );
+    await tester.runAsync(pumpEventQueue);
     await tester.pumpAndSettle();
     for (final rating in <String>[
       l10n.ratingAgain,
@@ -411,7 +403,7 @@ VALUES ('$strasse', 'learning', '2026-09-10', '2026-09-21', 4.5, 5.2, 2, 0,
 
     await tester.runAsync(() async {
       await tester.tap(find.text(l10n.ratingGood));
-      await Future<void>.delayed(const Duration(milliseconds: 50));
+      await pumpEventQueue();
     });
     await tester.pumpAndSettle();
     expect(
@@ -446,7 +438,7 @@ VALUES ('$haus', 'learning', 8, 5, 2, 0, 2, 'cloze')
     await answer(tester, 'Straße');
     await tester.runAsync(() async {
       await tester.tap(find.text(l10n.ratingGood));
-      await Future<void>.delayed(const Duration(milliseconds: 50));
+      await pumpEventQueue();
     });
     await tester.pumpAndSettle();
 
