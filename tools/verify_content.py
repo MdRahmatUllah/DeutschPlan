@@ -38,6 +38,11 @@ from pipeline_steps import (  # noqa: E402
 REPO_ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_DB = REPO_ROOT / "content" / "build" / "content.db"
 
+#: Terms that must never ship (#628): personal details that once sat in
+#: example sentences. Outside git (`data/` is ignored) and outside the
+#: database, so the list does not publish what it guards against.
+DEFAULT_DENYLIST = REPO_ROOT / "data" / "denylist.txt"
+
 
 def _manifest_tips() -> Path | None:
     """The tips CSV the build reads: `tips:` in content/manifest.yaml."""
@@ -293,6 +298,73 @@ def check_no_article_in_german(db: sqlite3.Connection) -> list[Failure]:
     ]
 
 
+def read_denylist(path: Path | None) -> list[str]:
+    """One term per line; `#` starts a comment. Case-folded."""
+    if path is None or not path.exists():
+        return []
+    return [
+        line.strip().casefold()
+        for line in path.read_text(encoding="utf-8").splitlines()
+        if line.strip() and not line.lstrip().startswith("#")
+    ]
+
+
+def check_no_denylisted_terms(
+    db: sqlite3.Connection, denylist: Path | None = None
+) -> list[Failure]:
+    """#628: a denylisted term anywhere in the course's text.
+
+    Every TEXT column of every table; the search index's columns are untyped
+    copies. The failure names the term by its line in the denylist, not by
+    the term: a build log is not where it should appear either.
+    """
+    denylist = denylist or DEFAULT_DENYLIST
+    terms = read_denylist(denylist)
+    if not terms:
+        if not denylist.exists():
+            print(
+                f"content verify: no denylist at {denylist}; the personal "
+                f"data gate did not run",
+                file=sys.stderr,
+            )
+        return []
+
+    hits: dict[int, list[str]] = {}
+    tables = [
+        name
+        for (name,) in db.execute(
+            "SELECT name FROM sqlite_master WHERE type = 'table'"
+        )
+    ]
+    for table in tables:
+        columns = [
+            column[1]
+            for column in db.execute(f'PRAGMA table_info("{table}")')
+            if column[2].upper() == "TEXT"
+        ]
+        if not columns:
+            continue
+        # The word's uid where there is one: it is what corrections.yaml is
+        # keyed by.
+        key = next((c for c in ("word_uid", "uid") if c in columns), "rowid")
+        rows = db.execute(
+            f"SELECT {key}, {', '.join(columns)} FROM \"{table}\""
+        ).fetchall()
+        for where, *values in rows:
+            text = " ".join(value for value in values if value).casefold()
+            for number, term in enumerate(terms, start=1):
+                if term in text:
+                    hits.setdefault(number, []).append(f"{table} {where}")
+    return [
+        Failure(
+            "denylist",
+            f"denylisted term {number} is in {len(where)} rows: "
+            f"{_sample(where)}. Replace it through content/corrections.yaml.",
+        )
+        for number, where in sorted(hits.items())
+    ]
+
+
 GATES = (
     check_the_database_is_readable,
     check_every_step_has_words,
@@ -301,6 +373,7 @@ GATES = (
     check_fts_is_populated,
     check_tips_fit_their_word_class,
     check_no_article_in_german,
+    check_no_denylisted_terms,
 )
 
 

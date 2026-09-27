@@ -182,8 +182,9 @@ flowchart LR
   `domain/text_norm.dart`, shared through `tools/test_vectors.json`; formula
   cells stored as text; examples paired by line; `content_version` is the
   build time `YYYYMMDDHHMMSS`, read once with `built_at`; verification fails on a missing column, an empty
-  step, a word without an example, a uid collision, empty FTS tables or a
-  misplaced tip.
+  step, a word without an example, a uid collision, empty FTS tables, a
+  misplaced tip or a term of `data/denylist.txt` (#628). A fix to a workbook
+  row goes into `content/corrections.yaml`, never into the workbook.
 - **Rebuild and verify** (from the repository root, with the workbooks in
   `data/`): `python tools/excel_to_sqlite.py`, then
   `python tools/verify_content.py`, then copy `content/build/content.db` and
