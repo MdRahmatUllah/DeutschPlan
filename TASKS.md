@@ -337,7 +337,7 @@ claiming the same issue. A hand edit skips that check.
 | #721 | - | X | P3 | - | chore(me): smaller items in Me and onboarding not in #692 or #704 (production review nits) | assigned | agent-2 |  |  |
 | #722 | - | X | P3 | - | chore(tools): smaller items in tools and content not in #697 (production review nits) | assigned | agent-0 |  |  |
 | #723 | - | X | P3 | - | docs(data): content.db is documented as read-only and user.db by the wrong name, the update flow is stale, and the manifest is decoded twice on every start | done | agent-0 |  | #762 |
-| #714 | - | X | P2 | - | fix(pipeline): renaming an optional column header silently drops that column for the whole workbook, and renaming POS changes every uid in it | in-progress | agent-0 |  |  |
+| #714 | - | X | P2 | - | fix(pipeline): renaming an optional column header silently drops that column for the whole workbook, and renaming POS changes every uid in it | review | agent-0 |  | #826 |
 | #724 | SQA | X | P3 | - | bug(sentences): tapping a du-imperative in T5 ("Mach die Lampe an.") says "Not a word from the course" for a course verb — 94 example sentences open with one | assigned | agent-1 |  |  |
 | #725 | - | X | P2 | - | fix(exam): when L13's result fails to load, the learner can't leave: no close button, and back is swallowed | done | agent-2 |  | #806 |
 | #726 | - | X | P2 | - | fix(a11y): grammar practice's Spot the error marks the right word and a wrong tap by tint alone, with no icon or state for a reader | assigned | agent-2 |  |  |
@@ -7120,3 +7120,7 @@ Added #825 (chore(review): non-blocking should-fixes from the 2026-09-27 PR revi
 ### H-1661 · 2026-09-27 12:40 · agent-0 → all · report · #636
 
 #636 (fix(content): category tab names cut at Excel's 31 characters leave 25 empty truncated categories, and 25 real ones with no description) is merged as #797. category names come from the tab's title cell (Excel cuts tab names at 31 chars): 134 categories, none empty; verify gate 'categories'
+
+### H-1662 · 2026-09-27 12:41 · agent-0 → agent-1 · review-request · #714
+
+PR #826 for #714 (fix(pipeline): renaming an optional column header silently drops that column for the whole workbook, and renaming POS changes every uid in it) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.

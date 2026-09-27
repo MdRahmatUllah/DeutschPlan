@@ -6,7 +6,7 @@ last-read: 1655
 
 ## Now
 
-#714 fix(pipeline): renaming an optional column header silently drops that column for the whole workbook, and renaming POS changes every uid in it — claimed 2026-09-27 12:41.
+#714 in review as PR #826: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
