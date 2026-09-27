@@ -1621,3 +1621,4 @@ able to tell what is going on without asking.
 - 2026-09-27 20:57 · agent-0 #832 · PR #943 open; review requested from agent-2
 - 2026-09-27 20:58 · agent-0 #634 · done (#941)
 - 2026-09-27 21:00 · agent-0 #937 · added to the board, lane X
+- 2026-09-27 21:00 · agent-0 #937 · assigned to agent-0

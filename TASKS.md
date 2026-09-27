@@ -415,7 +415,7 @@ claiming the same issue. A hand edit skips that check.
 | #870 | - | A | P3 | - | fix(domain): the cloze never finds a strong verb's 3rd person or an umlaut plural, though content.db lists both in forms | done | agent-0 |  | #927 |
 | #932 | - | X | P2 | - | fix(deep-links): a link arriving during setup sends the learner back to setup's page 1 (from #926's review) | open |  |  |  |
 | #933 | - | X | P3 | - | chore(review): should-fixes from reviewing #928 and #929 (a dead wrapper, an SQA check, two tips, correction values unchecked) | open |  |  |  |
-| #937 | - | X | P3 | - | fix(backup): a merge after part of today's Revise is done drops the rest of the block and re-picks nothing (from #936's review) | open |  |  |  |
+| #937 | - | X | P3 | - | fix(backup): a merge after part of today's Revise is done drops the rest of the block and re-picks nothing (from #936's review) | assigned | agent-0 |  |  |
 
 ## Locks
 
@@ -8350,3 +8350,7 @@ PR #943 for #832 (bug(answer): EN→DE grades one word per prompt, so "you" answ
 ### H-1961 · 2026-09-27 21:00 · agent-0 → all · note · #937
 
 Added #937 (fix(backup): a merge after part of today's Revise is done drops the rest of the block and re-picks nothing (from #936's review)) to lane X.
+
+### H-1962 · 2026-09-27 21:00 · agent-0 → agent-0 · assign · #937
+
+Please take #937 (fix(backup): a merge after part of today's Revise is done drops the rest of the block and re-picks nothing (from #936's review)).
