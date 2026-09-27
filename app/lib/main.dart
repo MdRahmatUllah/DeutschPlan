@@ -18,7 +18,6 @@ import 'package:sogda/core/theme/app_theme.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/core/theme/glass_capability.dart';
-import 'package:sogda/core/theme/theme_mode.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/l10n/ui_language_locale.dart';
@@ -358,10 +357,7 @@ class SogdaApp extends ConsumerWidget {
     // new mode has to reach the first frame after it, which a value captured
     // at launch cannot do.
     final mode = ref.watch(themeProvider);
-    final followsPlatform = ref
-        .watch(settingsProvider)
-        .read(SettingKeys.themeMode)
-        .followsPlatform;
+    final followsPlatform = ref.watch(themeFollowsPlatformProvider);
 
     return MaterialApp.router(
       routerConfig: router,

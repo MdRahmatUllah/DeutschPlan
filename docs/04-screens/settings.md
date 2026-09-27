@@ -47,7 +47,7 @@ Details M3 settles (#146):
 - *Translation* is hidden while the build doesn't offer Hy-MT's download (`ENABLE_HYMT_DOWNLOAD`, off in every v1.0 build, ADR 9) and no Hy-MT model is on the phone: the switch could never turn on. A model a flag-on build downloaded keeps the group, so it can still be turned off (#513). M4's Hy-MT card still reads "Not offered in this version of the app".
 - M4 and M6 are pushed over M3 (navigation.md), so back returns to Settings. A choice's list scrolls when it outgrows the sheet (a phone held sideways, 200 % text).
 - *Reset* opens M7's sheet (`reset.md`, #149).
-- FR-M3-02: *Glass* gives the app `AppTheme.glass`, its light and smoked dark variants picked by the phone's light/dark, as theming.md says. Before #146 the root drew paper whatever was chosen. *System* and *Glass* follow the phone's light/dark switch while the app runs: `BootstrapHost` hears it as a binding observer and tells `themeProvider` (#644).
+- FR-M3-02: *Glass* gives the app `AppTheme.glass`, its light and smoked dark variants picked by the phone's light/dark, as theming.md says. Before #146 the root drew paper whatever was chosen. *System* and *Glass* follow the phone's light/dark switch while the app runs: `BootstrapHost` hears it as a binding observer and tells `themeProvider` (#644). Choosing *Light* or *Dark* stops that at once, even when the mode it resolves to is the one *System* had: the root follows the setting itself (`themeFollowsPlatformProvider`), not the resolved mode (#649).
 - Android: a Cobalt header over flat rows (on the aurora under glass). iOS: an upper-case header over an inset panel, and the stepper is the number beside UIStepper's − | + pill (as OnboardingPace-ios draws it too). Every row is 52 dp.
 
 **Functional requirements**
