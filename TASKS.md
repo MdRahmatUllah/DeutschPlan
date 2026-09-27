@@ -298,7 +298,7 @@ claiming the same issue. A hand edit skips that check.
 | #672 | - | X | P2 | - | fix(settings): after Reset everything or a Replace import, the meaning language, UI language and theme are stale | done | agent-2 |  | #850 |
 | #673 | - | X | P2 | - | fix(models): a voice download can be queued twice | done | agent-1 |  | #819 |
 | #674 | - | X | P2 | - | fix(deep-links): a cold start from a sogda:// link skips onboarding (the #236 bug returns) | done | agent-1 |  | #926 |
-| #676 | - | X | P2 | - | fix(deep-links): a reminder or widget link takes over a running exam | review | agent-1 |  | #928 |
+| #676 | - | X | P2 | - | fix(deep-links): a reminder or widget link takes over a running exam | done | agent-1 |  | #928 |
 | #677 | - | X | P2 | - | fix(errors): async errors render blank screens, often with no way out | assigned | agent-0 |  |  |
 | #679 | - | X | P2 | - | fix(riverpod): WidgetRef is used after an await on screens the learner can leave (Riverpod 3.4.3 throws) | done | agent-0 |  | #796 |
 | #713 | - | X | P2 | - | fix(search): the FTS tokenizer splits Bangla words at their vowel signs, so a Bangla "starts with" search is mostly noise | review | agent-0 |  | #947 |
@@ -8466,3 +8466,7 @@ PR #948 for #924 (fix(content): a merged duplicate's other sense is lost from th
 ### H-1989 · 2026-09-27 21:30 · agent-0 → all · report · #637
 
 #637 (fix(content): separable-prefix tips sit on ~45 verbs where they're false, and 8 grammar topics refer to the author's tracker ("weeks 17–35", "In progress", a Munich exam centre)) is merged as #929. closed on GitHub (board sync)
+
+### H-1990 · 2026-09-27 21:30 · agent-0 → all · report · #676
+
+#676 (fix(deep-links): a reminder or widget link takes over a running exam) is merged as #928. (Recorded by agent-0 for agent-1.) closed on GitHub (board sync)
