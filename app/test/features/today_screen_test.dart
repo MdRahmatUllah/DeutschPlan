@@ -781,6 +781,22 @@ void main() {
       expect(location(), '/me/settings/reminder');
     });
 
+    testWidgets('#689 TD-14 the link is a caption drawn and a 48 dp target '
+        'touched: a tap 12 dp under its line opens it too', (tester) async {
+      await pump(tester, view: artboardRest());
+      final link = find.ancestor(
+        of: find.text(l10n.todayRestStudyDays),
+        matching: find.byType(GestureDetector),
+      );
+      expect(tester.getSize(link.first).height, greaterThanOrEqualTo(48));
+      await tester.tapAt(
+        tester.getBottomLeft(find.text(l10n.todayRestStudyDays)) +
+            const Offset(4, 12),
+      );
+      await tester.pumpAndSettle();
+      expect(location(), '/me/settings/reminder');
+    });
+
     testWidgets('there is no grammar card and no new-word card', (
       tester,
     ) async {

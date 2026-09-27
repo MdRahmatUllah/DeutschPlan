@@ -262,6 +262,19 @@ VALUES ('$strasse', 'learning', '2026-09-10', '2026-09-21', 4.5, 5.2, 2, 0,
       expect(await undo, isTrue);
       expect(await notifier.undo(), isFalse, reason: 'nothing left to undo');
     });
+
+    test('#689 TD-10 an action from a card that has left writes nothing: a '
+        'swipe on the outgoing card never rates the one come in', () async {
+      const gone = StudyItem(SessionBlockKind.revise, strasse);
+      expect(await notifier.rate(Rating.good, card: gone), isTrue);
+      expect(session().current?.uid, haus);
+
+      expect(await notifier.rate(Rating.again, card: gone), isFalse);
+      expect(await notifier.knewIt(card: gone), isFalse);
+      expect(await notifier.skip(card: gone), isFalse);
+      expect((await log()).map((row) => row['word_uid']), <String>[strasse]);
+      expect(session().current?.uid, haus);
+    });
   });
 
   group('the bar', () {

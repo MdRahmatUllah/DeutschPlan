@@ -16,6 +16,7 @@ import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/domain/cloze.dart';
 import 'package:sogda/domain/fsrs.dart' show Rating;
 import 'package:sogda/domain/sentence_picker.dart';
+import 'package:sogda/features/study/study_back.dart' show meaningLine;
 import 'package:sogda/features/study/study_summary.dart';
 import 'package:sogda/features/study/write_guard.dart';
 import 'package:sogda/features/words/speak.dart';
@@ -636,9 +637,9 @@ class _TokenSheet extends ConsumerWidget {
     final tokens = context.tokens;
     final l10n = AppLocalizations.of(context);
     final word = this.word;
-    final bangla =
-        ref.watch(settingsProvider).read(SettingKeys.meaningLanguage) ==
-        MeaningLanguage.bangla;
+    final meaning = ref
+        .watch(settingsProvider)
+        .read(SettingKeys.meaningLanguage);
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 20, 20, 12),
       child: Column(
@@ -654,7 +655,7 @@ class _TokenSheet extends ConsumerWidget {
             ),
             const SizedBox(height: 6),
             SgText(
-              bangla ? word.bangla ?? word.english : word.english,
+              meaningLine(word, meaning),
               role: SgTextRole.bodyLarge,
               color: tokens.color.textSecondary,
             ),

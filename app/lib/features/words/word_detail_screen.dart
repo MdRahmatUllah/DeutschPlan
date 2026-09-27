@@ -679,10 +679,12 @@ class _ActionsState extends ConsumerState<_Actions> {
       final undo = await action(ref.read(wordActionsProvider));
       replan();
       if (!mounted) return;
-      SgUndo.show(
-        context,
-        message: message,
-        onUndo: () => unawaited(undo().then((_) => replan())),
+      unawaited(
+        SgUndo.show(
+          context,
+          message: message,
+          onUndo: () => unawaited(undo().then((_) => replan())),
+        ),
       );
     } finally {
       if (mounted) setState(() => _busy = false);
