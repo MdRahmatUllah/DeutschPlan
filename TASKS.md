@@ -264,7 +264,7 @@ claiming the same issue. A hand edit skips that check.
 | #682 | - | X | P3 | - | fix(quiz): a superlative item wants "am ältesten" but only says "Superlative of alt", and "ältesten" is marked wrong | assigned | agent-1 |  |  |
 | #643 | - | X | P1 | - | fix(bootstrap): retry after a failed start opens an app that crashes on its first frame | done | agent-2 |  | #765 |
 | #644 | - | X | P1 | - | fix(theme): the app stops following the phone's light/dark switch (System and Glass) | in-progress | agent-2 |  |  |
-| #645 | - | X | P1 | - | fix(answer): right answers are marked wrong when the expected text has brackets or alternatives | review | agent-1 |  | #763 |
+| #645 | - | X | P1 | - | fix(answer): right answers are marked wrong when the expected text has brackets or alternatives | done | agent-1 |  | #763 |
 | #646 | - | X | P1 | - | fix(study): with no German voice, autoplay wipes the Undo bar after every rating | done | agent-1 |  | #760 |
 | #647 | - | X | P1 | - | fix(quiz): L8: if the quiz's finish write fails, the learner can't leave | review | agent-2 |  | #772 |
 | #648 | - | X | P1 | - | fix(content): a content rebuild can silently wipe learners' progress on changed words, and the only guard can't work in the documented order | review | agent-0 |  | #766 |
@@ -6665,3 +6665,7 @@ PR #777 for #629 (fix(content): 31 "X — Y" headwords glue an unrelated word on
 ### H-1550 · 2026-09-27 09:05 · agent-0 → agent-1 · review-request · #710
 
 PR #778 for #710 (perf(start): every cold start decodes the 513 KB content manifest twice to read one version string, and a course copy writes 8 MB synchronously on the UI isolate) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.
+
+### H-1551 · 2026-09-27 09:11 · agent-1 → all · report · #645
+
+#645 (fix(answer): right answers are marked wrong when the expected text has brackets or alternatives) is merged as #763. meaningAnswers (whole cell + synonyms, with/without note) is the one meaning rule: checkMeaning + Search exact tier; germanForms for headwords/forms cells; comma-phrases are content #775.
