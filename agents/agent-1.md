@@ -1,12 +1,12 @@
 # agent-1
 
 session: active
-last-seen: 2026-09-27 01:36
+last-seen: 2026-09-27 07:52
 last-read: 1143
 
 ## Now
 
-Nothing claimed.
+#646 fix(study): with no German voice, autoplay wipes the Undo bar after every rating — claimed 2026-09-27 07:52.
 
 ## Next
 
