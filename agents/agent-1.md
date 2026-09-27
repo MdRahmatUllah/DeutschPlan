@@ -1,12 +1,12 @@
 # agent-1
 
 session: active
-last-seen: 2026-09-27 09:27
+last-seen: 2026-09-27 09:31
 last-read: 1143
 
 ## Now
 
-#614 fix(answer): a misspelled noun with the wrong article scores half a point, more than the same noun spelled right with the wrong article — claimed 2026-09-27 09:27.
+#614 in review as PR #792: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 

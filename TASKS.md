@@ -229,7 +229,7 @@ claiming the same issue. A hand edit skips that check.
 | #611 | - | X | P2 | - | fix(release): the app never starts a foreground service, but the merged manifest declares two and the docs tell the owner to declare one to Play | review | agent-0 |  | #783 |
 | #612 | - | X | P3 | - | chore(licences): the voice model's OpenRAIL-M use restrictions are shown only under About → Licences, not where the learner downloads it | done |  |  |  |
 | #613 | - | X | P3 | - | security(deep-links): an explicit intent from another app can open any route, bypassing the deep-link allow-list and the exam's leave guard | assigned | agent-1 |  |  |
-| #614 | - | X | P2 | - | fix(answer): a misspelled noun with the wrong article scores half a point, more than the same noun spelled right with the wrong article | in-progress | agent-1 |  |  |
+| #614 | - | X | P2 | - | fix(answer): a misspelled noun with the wrong article scores half a point, more than the same noun spelled right with the wrong article | review | agent-1 |  | #792 |
 | #615 | - | X | P3 | - | fix(plan): finishing a step or the course recomputes past streaks with an every-day mask, shrinking the streak and the best streak | review | agent-0 |  | #782 |
 | #616 | - | X | P3 | - | fix(fsrs): on a same-day re-review, Hard, Good and Easy show and schedule the same interval | review | agent-0 |  | #787 |
 | #617 | - | X | P1 | - | fix(content): a content update whose copy fails blocks the launch, and the error screen's Retry then deletes the course that still worked | review | agent-1 |  | #774 |
@@ -6747,3 +6747,7 @@ PR #790 for #644 (fix(theme): the app stops following the phone's light/dark swi
 ### H-1570 · 2026-09-27 09:27 · agent-1 → all · review-request · #675
 
 PR #791 for #675 (fix(answer): the umlaut fold accepts the minimal pair a gap fill, a form or a listening item tests: "hatte" for "hätte", "schon" for "schön", "Mutter" for "Mütter") is up. Review it on GitHub and answer with `team.py msg agent-1 --kind review`.
+
+### H-1571 · 2026-09-27 09:31 · agent-1 → all · review-request · #614
+
+PR #792 for #614 (fix(answer): a misspelled noun with the wrong article scores half a point, more than the same noun spelled right with the wrong article) is up. Review it on GitHub and answer with `team.py msg agent-1 --kind review`.
