@@ -209,7 +209,7 @@ class SgChip extends StatelessWidget {
     );
 
     final named = Semantics(
-      label: semanticLabel ?? label,
+      attributedLabel: SgScript.attributedLabel(semanticLabel ?? label),
       selected: kind == SgChipKind.filter || kind == SgChipKind.step
           ? selected
           : null,

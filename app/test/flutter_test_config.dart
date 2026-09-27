@@ -4,6 +4,8 @@ import 'dart:convert';
 import 'package:flutter/services.dart' show FontLoader, rootBundle;
 import 'package:flutter_test/flutter_test.dart';
 
+import 'db/content_fixture.dart' show deleteTempDirs;
+
 /// Runs once for every test suite under `test/`, before any test.
 ///
 /// Fonts are loaded here rather than inside a test body: a `testWidgets`
@@ -17,6 +19,8 @@ import 'package:flutter_test/flutter_test.dart';
 Future<void> testExecutable(FutureOr<void> Function() testMain) async {
   TestWidgetsFlutterBinding.ensureInitialized();
   await _loadFontsFromManifest();
+  // After every test's tear-downs, so their databases are closed (#695).
+  tearDownAll(deleteTempDirs);
   await testMain();
 }
 

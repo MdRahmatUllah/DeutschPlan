@@ -502,7 +502,7 @@ class _Header extends ConsumerWidget {
             runSpacing: 8,
             children: <Widget>[
               SgChip(label: word.word.sublevelCode, ink: onFill),
-              WordStatusChip(word.status),
+              if (word.studied) WordStatusChip(word.status),
               if (updated) const UpdatedChip(),
             ],
           ),
@@ -754,7 +754,8 @@ class _ActionsState extends ConsumerState<_Actions> {
           spacing: 8,
           runSpacing: 8,
           children: <Widget>[
-            if (word.status == WordStatus.todo)
+            // BR-CONTENT-04: a note is never studied, so it has no way in.
+            if (word.studied && word.status == WordStatus.todo)
               button(
                 Icons.add,
                 l10n.wordAddToday,
@@ -768,7 +769,7 @@ class _ActionsState extends ConsumerState<_Actions> {
                 ),
               ),
             // A suspended word is out of review until resumed (BR-STATUS-03).
-            if (!word.isSuspended)
+            if (word.studied && !word.isSuspended)
               button(
                 Icons.check,
                 l10n.wordMarkKnown,
@@ -778,7 +779,7 @@ class _ActionsState extends ConsumerState<_Actions> {
                   l10n.wordMarkedKnown(name),
                 ),
               ),
-            if (word.isSuspended)
+            if (word.studied && word.isSuspended)
               button(
                 Icons.play_arrow,
                 l10n.wordResume,
@@ -787,7 +788,7 @@ class _ActionsState extends ConsumerState<_Actions> {
                   l10n.wordResumed(name),
                 ),
               )
-            else
+            else if (word.studied)
               button(
                 Icons.pause,
                 l10n.wordSuspend,
@@ -814,25 +815,28 @@ class _ActionsState extends ConsumerState<_Actions> {
               button(Icons.translate, l10n.wordTranslate, _translate),
           ],
         ),
-        const SizedBox(height: 10),
-        Wrap(
-          spacing: 8,
-          runSpacing: 8,
-          children: <Widget>[
-            SgChip(
-              label: l10n.wordPlainCard,
-              kind: SgChipKind.filter,
-              selected: !cloze,
-              onTap: cloze && !_busy ? () => mode(CardMode.plain) : null,
-            ),
-            SgChip(
-              label: l10n.wordClozeCard,
-              kind: SgChipKind.filter,
-              selected: cloze,
-              onTap: !cloze && !_busy ? () => mode(CardMode.cloze) : null,
-            ),
-          ],
-        ),
+        // A note is no card (BR-CONTENT-04).
+        if (word.studied) ...<Widget>[
+          const SizedBox(height: 10),
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: <Widget>[
+              SgChip(
+                label: l10n.wordPlainCard,
+                kind: SgChipKind.filter,
+                selected: !cloze,
+                onTap: cloze && !_busy ? () => mode(CardMode.plain) : null,
+              ),
+              SgChip(
+                label: l10n.wordClozeCard,
+                kind: SgChipKind.filter,
+                selected: cloze,
+                onTap: !cloze && !_busy ? () => mode(CardMode.cloze) : null,
+              ),
+            ],
+          ),
+        ],
         const SizedBox(height: 10),
         Wrap(
           spacing: 8,

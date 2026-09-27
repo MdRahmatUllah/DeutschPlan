@@ -36,8 +36,8 @@ void main() {
         raw.execute(
           '''
 INSERT INTO words (uid, sublevel_code, level_code, seq, seq_in_sublevel,
-                   german, english, search_key, search_key_alt)
-VALUES (?, 'A0.9', 'A1', ?, ?, ?, ?, ?, ?)
+                   german, english, search_key, search_key_alt, kind)
+VALUES (?, 'A0.9', 'A1', ?, ?, ?, ?, ?, ?, 'vocab')
 ''',
           <Object>[uid, 90 + i, i + 1, uid, uid, uid, uid],
         );

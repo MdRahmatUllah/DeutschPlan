@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:sogda/core/components/sg_button.dart';
 import 'package:sogda/core/components/sg_feedback.dart';
 import 'package:sogda/core/components/sg_rating_bar.dart';
@@ -54,7 +52,7 @@ void main() {
     bool chosen = false,
   }) async {
     db = AppDatabase.memory();
-    final directory = Directory.systemTemp.createTempSync('sg_cloze');
+    final directory = tempDir('sg_cloze');
     final content = ContentFixture.write('${directory.path}/content.db');
     await db.customStatement(
       "ATTACH DATABASE '${ContentDao.attachPath(content.file)}' AS c",
@@ -466,6 +464,7 @@ VALUES ('$haus', 'learning', 8, 5, 2, 0, 2, 'cloze')
 
   test('clozeOf takes the first example that holds the word', () {
     const word = Word(
+      kind: 'vocab',
       uid: 'w',
       sublevelCode: 'A1.1',
       levelCode: 'A1',

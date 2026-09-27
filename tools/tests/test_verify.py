@@ -114,9 +114,9 @@ class TestUidGate:
         break_it(
             database,
             "INSERT INTO words (uid, level_code, german, pos, english, "
-            "sublevel_code, seq, seq_in_sublevel, search_key, search_key_alt) "
+            "sublevel_code, seq, seq_in_sublevel, search_key, search_key_alt, kind) "
             "VALUES ('duplicate-uid', '{}', '{}', '{}', '{}', '{}', {}, {}, "
-            "'{}', '{}')".format(
+            "'{}', '{}', 'vocab')".format(
                 row[0], row[1], row[2], row[3], row[4], 9999, 9999, row[7], row[8]
             ),
         )
@@ -133,9 +133,9 @@ class TestUidGate:
         break_it(
             database,
             "INSERT INTO words (uid, level_code, german, pos, english, "
-            "sublevel_code, seq, seq_in_sublevel, search_key, search_key_alt) "
+            "sublevel_code, seq, seq_in_sublevel, search_key, search_key_alt, kind) "
             "VALUES ('second-sense', '{}', '{}', '{}', 'a different sense', "
-            "'{}', 9999, 9999, '{}', '{}')".format(
+            "'{}', 9999, 9999, '{}', '{}', 'vocab')".format(
                 row[0], row[1], row[2], row[3], row[4], row[5]
             ),
         )

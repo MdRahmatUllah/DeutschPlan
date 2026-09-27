@@ -3599,6 +3599,24 @@
   "@practiceSpotPrompt": {
     "description": "L15 spot the error instruction."
   },
+  "practiceSpotIsError": "{word}, the error",
+  "@practiceSpotIsError": {
+    "description": "L15 Spot the error, once answered: a screen reader's label for the word that was wrong, the answer (#726). word is the German word.",
+    "placeholders": {
+      "word": {
+        "type": "String"
+      }
+    }
+  },
+  "practiceSpotNotError": "{word}, your tap, not the error",
+  "@practiceSpotNotError": {
+    "description": "L15 Spot the error, once answered: a screen reader's label for a word the learner tapped that wasn't the error (#726). word is the German word.",
+    "placeholders": {
+      "word": {
+        "type": "String"
+      }
+    }
+  },
   "practiceOrderPrompt": "Tap the words in the right order.",
   "@practiceOrderPrompt": {
     "description": "L15 order the sentence instruction."
@@ -4395,6 +4413,14 @@
   "examSpeakingRecorded": "Recorded · stays on this phone",
   "@examSpeakingRecorded": {
     "description": "L12 Speaking: once recorded."
+  },
+  "examSpeakingInterrupted": "Paused · the phone is using the microphone",
+  "@examSpeakingInterrupted": {
+    "description": "L12 Speaking: while recording, a call, an alarm or a voice assistant has the microphone; the recording goes on when it is free (#624)."
+  },
+  "examSpeakingPlayFailed": "This recording can't be played.",
+  "@examSpeakingPlayFailed": {
+    "description": "L12 Speaking: a toast when the take can't be read, e.g. half-written when the app was killed (#732)."
   },
   "examSpeakingRecord": "Record",
   "@examSpeakingRecord": {

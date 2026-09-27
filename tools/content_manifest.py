@@ -98,7 +98,9 @@ def build_manifest(inputs, splits, aliases: dict[str, str] | None = None) -> dic
         entry = steps.setdefault(
             word.sublevel_code, {"words": 0, "grammar": 0, "examples": 0}
         )
-        entry["words"] += 1
+        # BR-CONTENT-04 (#630): what the step teaches; `words` below, the
+        # digests, has every row.
+        entry["words"] += word.kind == "vocab"
         entry["examples"] += len(getattr(word, "examples", []))
     for row in inputs.grammar:
         steps.setdefault(
@@ -113,7 +115,7 @@ def build_manifest(inputs, splits, aliases: dict[str, str] | None = None) -> dic
         "built_at": inputs.built_at,
         "sources": inputs.sources,
         "counts": {
-            "words": len(inputs.words),
+            "words": sum(word.kind == "vocab" for word in inputs.words),
             "grammar": len(inputs.grammar),
             "examples": sum(
                 len(getattr(w, "examples", [])) for w in inputs.words

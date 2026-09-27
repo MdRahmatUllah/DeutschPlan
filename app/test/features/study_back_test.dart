@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:sogda/core/components/sg_feedback.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/core/theme/app_theme.dart';
@@ -37,7 +35,7 @@ void main() {
 
     setUp(() async {
       db = AppDatabase.memory();
-      final directory = Directory.systemTemp.createTempSync('sg_back');
+      final directory = tempDir('sg_back');
       final content = ContentFixture.write('${directory.path}/content.db');
       await db.customStatement(
         "ATTACH DATABASE '${ContentDao.attachPath(content.file)}' AS c",
@@ -85,6 +83,7 @@ void main() {
     late FakeTts tts;
 
     final rechnung = Word(
+      kind: 'vocab',
       uid: 'rechnung',
       sublevelCode: 'A2.1',
       levelCode: 'A2',

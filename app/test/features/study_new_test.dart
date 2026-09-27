@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:sogda/core/components/sg_feedback.dart';
 import 'package:sogda/core/components/sg_chip.dart';
 import 'package:sogda/core/providers/app_providers.dart';
@@ -44,7 +42,7 @@ void main() {
   /// Straße to revise, Haus and Tür new.
   Future<void> open() async {
     db = AppDatabase.memory();
-    final directory = Directory.systemTemp.createTempSync('sg_new');
+    final directory = tempDir('sg_new');
     final content = ContentFixture.write('${directory.path}/content.db');
     await db.customStatement(
       "ATTACH DATABASE '${ContentDao.attachPath(content.file)}' AS c",

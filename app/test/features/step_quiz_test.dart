@@ -11,6 +11,7 @@ import 'package:sogda/router/routes.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart' show DateFormat;
 import 'package:material_ui/material_ui.dart';
 
 import '../core/text_clipping.dart';
@@ -170,40 +171,39 @@ void main() {
     });
   });
 
-  // 23:59Z is tomorrow east of UTC, and 00:01Z yesterday west of it.
-  final offset = DateTime(2026, 9, 20, 12).timeZoneOffset;
-  testWidgets("#335 the last quiz's day is the local one, not its UTC date", (
-    tester,
-  ) async {
-    await tester.pumpWidget(
-      MaterialApp(
-        theme: AppTheme.light(),
-        localizationsDelegates: appLocalizationsDelegates,
-        supportedLocales: supportedLocales,
-        home: Scaffold(
-          body: LastQuizCard(
-            quiz: (
-              score: 16,
-              outOf: 20,
-              length: 20,
-              direction: 'deEn',
-              finishedAt: offset > Duration.zero
-                  ? '2026-09-20T23:59:00Z'
-                  : '2026-09-20T00:01:00Z',
+  // 23:59Z is tomorrow east of UTC, and 00:01Z yesterday west of it: off
+  // UTC, one of the two is on another local day. On a UTC host both are
+  // their own UTC day, which is the local one there, so it runs everywhere.
+  for (final finishedAt in ['2026-09-20T23:59:00Z', '2026-09-20T00:01:00Z']) {
+    testWidgets("#335 the last quiz's day is the local one, not its UTC date "
+        '($finishedAt)', (tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: AppTheme.light(),
+          localizationsDelegates: appLocalizationsDelegates,
+          supportedLocales: supportedLocales,
+          home: Scaffold(
+            body: LastQuizCard(
+              quiz: (
+                score: 16,
+                outOf: 20,
+                length: 20,
+                direction: 'deEn',
+                finishedAt: finishedAt,
+              ),
             ),
           ),
         ),
-      ),
-    );
-    expect(
-      find.text(
-        offset > Duration.zero
-            ? 'Standard · DE → EN · Mon 21 Sep'
-            : 'Standard · DE → EN · Sat 19 Sep',
-      ),
-      findsOneWidget,
-    );
-  }, skip: offset == Duration.zero);
+      );
+      final local = DateTime.parse(finishedAt).toLocal();
+      expect(
+        find.text(
+          'Standard · DE → EN · ${DateFormat('EEE d MMM', 'en').format(local)}',
+        ),
+        findsOneWidget,
+      );
+    });
+  }
 
   testWidgets('#335 a half score fits its badge at 200 % text', (tester) async {
     textAt(tester, 2);

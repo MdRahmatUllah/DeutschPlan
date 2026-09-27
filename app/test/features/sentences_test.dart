@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:sogda/core/components/sg_speaker_button.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/core/theme/app_theme.dart';
@@ -45,7 +43,7 @@ void main() {
   /// so the day is not complete.
   Future<void> open({bool planOpen = true, String? rated}) async {
     db = AppDatabase.memory();
-    final directory = Directory.systemTemp.createTempSync('sg_sentences');
+    final directory = tempDir('sg_sentences');
     final content = ContentFixture.write('${directory.path}/content.db');
     await db.customStatement(
       "ATTACH DATABASE '${ContentDao.attachPath(content.file)}' AS c",
@@ -524,12 +522,12 @@ INSERT INTO sentence_log (word_uid, ord, shown_on, self_rating) VALUES
         '(#324)', () async {
       await db.customStatement('''
 INSERT INTO c.words (uid, sublevel_code, level_code, seq, seq_in_sublevel,
-  german, forms, pos, english, search_key, search_key_alt)
+  german, forms, pos, english, search_key, search_key_alt, kind)
 VALUES
   ('uid-sein', 'A1.1', 'A1', 7, 7, 'sein', 'ist · ist gewesen (war)', 'verb',
-   'to be', 'sein', 'sein'),
+   'to be', 'sein', 'sein', 'vocab'),
   ('uid-geben', 'A1.1', 'A1', 8, 8, 'geben', 'gibt · hat gegeben', 'verb',
-   'to give', 'geben', 'geben')
+   'to give', 'geben', 'geben', 'vocab')
 ''');
       final dao = ContentDao(db);
       expect((await dao.wordForToken('ist'))?.uid, 'uid-sein');
@@ -546,8 +544,8 @@ VALUES
     test('a short key only as itself: "in" does not claim "innen"', () async {
       await db.customStatement('''
 INSERT INTO c.words (uid, sublevel_code, level_code, seq, seq_in_sublevel,
-  german, english, search_key, search_key_alt)
-VALUES ('uid-in', 'A1.1', 'A1', 9, 9, 'in', 'in', 'in', 'in')
+  german, english, search_key, search_key_alt, kind)
+VALUES ('uid-in', 'A1.1', 'A1', 9, 9, 'in', 'in', 'in', 'in', 'vocab')
 ''');
       final dao = ContentDao(db);
       expect((await dao.wordForToken('in'))?.uid, 'uid-in');

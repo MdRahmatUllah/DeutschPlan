@@ -59,6 +59,79 @@ void main() {
     }
   });
 
+  group('#695 TS-5 every translation matches the template', () {
+    Map<String, Object?> arb(String name) =>
+        jsonDecode(File('lib/l10n/$name').readAsStringSync())
+            as Map<String, Object?>;
+    final en = arb('app_en.arb');
+    final others = <String, Map<String, Object?>>{
+      for (final file
+          in Directory('lib/l10n')
+              .listSync()
+              .whereType<File>()
+              .where((f) => f.path.endsWith('.arb'))
+              .where((f) => !f.path.endsWith('app_en.arb')))
+        file.uri.pathSegments.last:
+            jsonDecode(file.readAsStringSync()) as Map<String, Object?>,
+    };
+
+    test('no key the template lacks', () {
+      // The other direction of "every key is translated": a key only a
+      // translation has is never shown, and is usually a rename half done.
+      for (final MapEntry(key: name, value: other) in others.entries) {
+        final extra = other.keys
+            .where((key) => !key.startsWith('@') && !en.containsKey(key))
+            .toList();
+        expect(extra, isEmpty, reason: '$name has keys app_en.arb lacks');
+      }
+    });
+
+    test('every placeholder the template declares', () {
+      // A dropped {count} reads fine in the file and wrong on the screen.
+      for (final MapEntry(key: name, value: other) in others.entries) {
+        final missing = <String>[];
+        for (final key in en.keys.where((key) => !key.startsWith('@'))) {
+          final meta = en['@$key'] as Map<String, Object?>?;
+          final placeholders =
+              (meta?['placeholders'] as Map<String, Object?>?)?.keys ??
+              const <String>[];
+          final text = other[key] as String?;
+          if (text == null) continue;
+          for (final placeholder in placeholders) {
+            if (!RegExp('\\{$placeholder\\s*[,}]').hasMatch(text)) {
+              missing.add('$key: {$placeholder}');
+            }
+          }
+        }
+        expect(missing, isEmpty, reason: '$name drops placeholders');
+      }
+    });
+
+    test("the same select cases as the template's", () {
+      // A select case a translation lacks falls through to its `other`, a
+      // case it adds is never chosen: either way the text is the wrong one.
+      Set<String> cases(String text) => <String>{
+        for (final match in RegExp(
+          r'(?<![\w-])([A-Za-z]\w*)\{',
+        ).allMatches(text))
+          match.group(1)!,
+      };
+      for (final MapEntry(key: name, value: other) in others.entries) {
+        final differ = <String>[];
+        for (final key in en.keys.where((key) => !key.startsWith('@'))) {
+          final template = en[key]! as String;
+          final text = other[key] as String?;
+          if (text == null || !template.contains(', select,')) continue;
+          final (want, have) = (cases(template), cases(text));
+          if (want.length != have.length || !want.containsAll(have)) {
+            differ.add('$key: ${cases(template)} vs ${cases(text)}');
+          }
+        }
+        expect(differ, isEmpty, reason: '$name select cases differ');
+      }
+    });
+  });
+
   test('#166 a string Bangla leaves as English is German on purpose, a name '
       'or a unit; any other one is untranslated', () {
     // German the learner is looking at stays German in every UI language:

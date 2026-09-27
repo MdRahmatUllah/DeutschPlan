@@ -149,6 +149,126 @@ void main() {
     semantics.dispose();
   });
 
+  group('#730 a write that fails', () {
+    Future<void> openNavigator(WidgetTester tester) async {
+      await tester.tap(find.bySemanticsLabel(l10n.examNavOpen));
+      await tester.pumpAndSettle();
+    }
+
+    Future<void> closeSheet(WidgetTester tester) async {
+      Navigator.of(tester.element(find.text(l10n.saveAnswerFailed))).pop();
+      await tester.pumpAndSettle();
+    }
+
+    testWidgets('FR-L12-01 a tapped answer: the write-error sheet, and the '
+        'question is not counted as answered', (tester) async {
+      final semantics = tester.ensureSemantics();
+      await pump(tester);
+      run.failWrites = true;
+      await tap(tester, 'der');
+      expect(find.text(l10n.saveAnswerFailed), findsOneWidget);
+
+      await closeSheet(tester);
+      await openNavigator(tester);
+      expect(find.text(l10n.examNavAnswered(20)), findsOneWidget);
+      expect(find.text(l10n.examNavEmpty(20)), findsOneWidget);
+      semantics.dispose();
+    });
+
+    testWidgets('FR-L12-01 Retry writes it, and then it counts', (
+      tester,
+    ) async {
+      final semantics = tester.ensureSemantics();
+      await pump(tester);
+      run.failWrites = true;
+      await tap(tester, 'der');
+      run.failWrites = false;
+      await tap(tester, l10n.retry);
+
+      expect(find.text(l10n.saveAnswerFailed), findsNothing);
+      expect(run.answers, [(21, 'der'), (21, 'der')]);
+      await openNavigator(tester);
+      expect(find.text(l10n.examNavAnswered(21)), findsOneWidget);
+      semantics.dispose();
+    });
+
+    testWidgets('FR-L12-01 a typed answer moved on from is empty again', (
+      tester,
+    ) async {
+      await pump(tester, stub: StubExamRun(given: <int, String>{}));
+      run.failWrites = true;
+      await tester.enterText(find.byType(TextField), 'word 1');
+      await tap(tester, l10n.examRunNext);
+      expect(find.text(l10n.saveAnswerFailed), findsOneWidget);
+      await closeSheet(tester);
+
+      await tap(tester, l10n.examRunPrevious);
+      expect(
+        tester.widget<TextField>(find.byType(TextField)).controller!.text,
+        isEmpty,
+        reason: 'what the grading will find',
+      );
+    });
+
+    testWidgets('a flag is taken back', (tester) async {
+      final semantics = tester.ensureSemantics();
+      await pump(tester);
+      run.failWrites = true;
+      await tester.tap(find.bySemanticsLabel(l10n.examRunFlag));
+      await tester.pumpAndSettle();
+      await closeSheet(tester);
+
+      expect(find.bySemanticsLabel(l10n.examRunFlagged), findsNothing);
+      expect(find.bySemanticsLabel(l10n.examRunFlag), findsOneWidget);
+      semantics.dispose();
+    });
+  });
+
+  group('#670 the app in the background', () {
+    Future<void> away(WidgetTester tester) async {
+      tester.binding
+        ..handleAppLifecycleStateChanged(AppLifecycleState.inactive)
+        ..handleAppLifecycleStateChanged(AppLifecycleState.hidden)
+        ..handleAppLifecycleStateChanged(AppLifecycleState.paused);
+      await tester.pump();
+    }
+
+    Future<void> back(WidgetTester tester) async {
+      tester.binding
+        ..handleAppLifecycleStateChanged(AppLifecycleState.hidden)
+        ..handleAppLifecycleStateChanged(AppLifecycleState.inactive)
+        ..handleAppLifecycleStateChanged(AppLifecycleState.resumed);
+      await tester.pump();
+    }
+
+    testWidgets('FR-L12-03 the clock holds, and runs again on return', (
+      tester,
+    ) async {
+      await pump(tester);
+      await tester.pump(const Duration(seconds: 3));
+      expect(find.text('14:29'), findsOneWidget);
+
+      await away(tester);
+      expect(run.times, [(3, 0)], reason: 'the time so far is written');
+      await tester.pump(const Duration(minutes: 1));
+      expect(find.text('14:29'), findsOneWidget);
+
+      await back(tester);
+      await tester.pump(const Duration(seconds: 1));
+      expect(find.text('14:28'), findsOneWidget);
+      expect(run.times, [(3, 0)], reason: 'the minute away is not counted');
+    });
+
+    testWidgets('FR-L12-01 what was typed is written', (tester) async {
+      await pump(tester, stub: StubExamRun(given: <int, String>{}));
+      await tester.enterText(find.byType(TextField), 'word 1');
+
+      await away(tester);
+      expect(run.answers, [(1, 'word 1')]);
+      await back(tester);
+    });
+  });
+
   group('FR-L12-03 the clock', () {
     testWidgets('counts down and is written every 10 s', (tester) async {
       await pump(tester);
