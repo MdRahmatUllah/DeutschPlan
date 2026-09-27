@@ -85,7 +85,7 @@ class ExamWord {
 /// The course's categories that are language features, not themes: a
 /// Writing or Speaking task "about core verbs" or "about collocations at C2"
 /// gives the learner nothing to write or talk about (#753). By name, as the
-/// course names them; `exam_repository_test` holds every name to the shipped
+/// course names them; `exam_pool_test` holds every name to the shipped
 /// course, and every step to at least [themesPerStep] themes besides them.
 // ponytail: a list here, not a content column; a `kind` on categories (as
 // #630 gave words) if the pipeline ever needs it too.
@@ -122,6 +122,9 @@ const Set<String> notThemes = <String>{
   'Idioms & figurative language',
   'Written-academic phrases',
   'Everyday C1 precision',
+  // A level's label, and a register: nothing to write about either.
+  'Everyday life at B2',
+  'Professional & leadership language',
   'Exam strategy & summarising',
   'Connotation & semantic nuance',
   'Near-synonyms distinguished',

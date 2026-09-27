@@ -174,6 +174,22 @@ void main() {
 
     test('#753 every Writing and Speaking task is about a theme, never a word '
         'class or a language feature', () async {
+      // What SQA and #908's review saw drawn, held apart from `notThemes` so
+      // a name dropped from the list is caught too: the word classes, B2.1's
+      // level label and C1.1's register.
+      const reported = <String>{
+        'Core verbs',
+        'Core adjectives & adverbs',
+        'Numbers, time & dates',
+        'Question words & pronouns',
+        'Connectors & function words',
+        'Everyday life at B2',
+        'Advanced verbs',
+        'Verbs with prepositions',
+        'Advanced adjectives & adverbs',
+        'Idioms & sayings',
+        'Professional & leadership language',
+      };
       for (final step in steps) {
         final pool = await exams.pool(step);
         final themes = pool.categories.values.where(
@@ -192,6 +208,7 @@ void main() {
           ]) {
             expect(category, isNotNull, reason: '$step $seed');
             expect(notThemes, isNot(contains(category)), reason: '$step $seed');
+            expect(reported, isNot(contains(category)), reason: '$step $seed');
           }
         }
       }
