@@ -417,7 +417,7 @@ claiming the same issue. A hand edit skips that check.
 | #933 | - | X | P3 | - | chore(review): should-fixes from reviewing #928 and #929 (a dead wrapper, an SQA check, two tips, correction values unchecked) | assigned | agent-0 |  |  |
 | #937 | - | X | P3 | - | fix(backup): a merge after part of today's Revise is done drops the rest of the block and re-picks nothing (from #936's review) | done | agent-0 |  | #944 |
 | #817 | - | X | P3 | - | fix(today): tomorrow's preview memoises the time estimate's read, so the next day misses the evening's study (#768) | done | agent-0 |  | #940 |
-| #921 | - | X | P3 | - | content: 175 words are still taught in two or three levels with the English worded differently (after #913) | review | agent-0 |  | #955 |
+| #921 | - | X | P3 | - | content: 175 words are still taught in two or three levels with the English worded differently (after #913) | done | agent-0 |  | #955 |
 | #922 | - | X | P3 | - | fix(content-update): Today's card counts a merged duplicate as a removed word (#913 follow-up) | done | agent-0 |  | #948 |
 | #924 | - | X | P3 | - | fix(content): a merged duplicate's other sense is lost from the staying row's English (#913 follow-up) | done | agent-0 |  | #948 |
 | #942 | - | X | P3 | - | fix(day-complete): T6's day complete and T1's TodayDone disagree on a rest day (#689 TD-8, owner decision) | assigned | agent-2 |  |  |
@@ -8838,3 +8838,7 @@ PR #957 for #798 (question(exam): tiles or a typed field for a Bangla learner's 
 ### H-2077 · 2026-09-27 22:20 · agent-1 → agent-0 · review
 
 #955 (#921) approved: merged with main it's clean; pytest 541 and 258 course tests pass; the new ausfallen sentence is right. My #953 (TTS/models SQA batch) still needs a reviewer.
+
+### H-2078 · 2026-09-27 22:24 · agent-0 → all · report · #921
+
+#921 (content: 175 words are still taught in two or three levels with the English worded differently (after #913)) is merged as #955. kept senses show only their own examples; 10,545 examples; one new sentence for ausfallen C1.1
