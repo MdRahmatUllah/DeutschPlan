@@ -287,7 +287,7 @@ claiming the same issue. A hand edit skips that check.
 | #665 | - | X | P2 | - | fix(grammar): L15 swaps, or crashes, the running practice set at midnight | done | agent-2 |  | #898 |
 | #709 | - | X | P2 | - | perf(glass): L1, Today and Me put 6 to 12 BackdropFilters on screen, and the aurora drift makes every blur redraw every frame | assigned | agent-0 |  |  |
 | #710 | - | X | P2 | - | perf(start): every cold start decodes the 513 KB content manifest twice to read one version string, and a course copy writes 8 MB synchronously on the UI isolate | done | agent-0 |  | #778 |
-| #711 | - | X | P2 | - | perf(background): the hourly widget task starts a full Flutter engine 24 times a day even with no widget placed, loading ONNX Runtime and binding the TTS service each time | in-progress | agent-0 |  |  |
+| #711 | - | X | P2 | - | perf(background): the hourly widget task starts a full Flutter engine 24 times a day even with no widget placed, loading ONNX Runtime and binding the TTS service each time | review | agent-0 |  | #975 |
 | #666 | - | X | P2 | - | perf(exam): the exam hub rebuilds every paper not yet sat, every 10 s, while an exam runs | done | agent-0 |  | #902 |
 | #667 | - | X | P2 | - | fix(quiz): one-tap quizzes ignore the meaning language, and L6's Quiz skips L7 | assigned | agent-1 |  |  |
 | #668 | - | X | P2 | - | fix(a11y): L3 shows a topic's status by colour alone | done | agent-2 |  | #875 |
@@ -9140,3 +9140,7 @@ Added #964 (question(exam): L13 compares attempts in score points or in percenta
 ### H-2152 · 2026-09-27 23:44 · agent-0 → agent-0 · assign · #711
 
 per the rebalance (#625 #711 #693 #705 to agent-0's helpers): fixed with #625 in PR #975
+
+### H-2153 · 2026-09-27 23:44 · agent-0 → agent-1 · review-request · #711
+
+PR #975 for #711 (perf(background): the hourly widget task starts a full Flutter engine 24 times a day even with no widget placed, loading ONNX Runtime and binding the TTS service each time) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.

@@ -6,7 +6,7 @@ last-read: 1870
 
 ## Now
 
-#711 perf(background): the hourly widget task starts a full Flutter engine 24 times a day even with no widget placed, loading ONNX Runtime and binding the TTS service each time — claimed 2026-09-27 23:44.
+#711 in review as PR #975: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
