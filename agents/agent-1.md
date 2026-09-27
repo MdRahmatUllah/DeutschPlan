@@ -6,7 +6,7 @@ last-read: 1929
 
 ## Now
 
-#663 in review as PR #953: answer review threads; re-run the gate if main moved, then merge.
+#755 bug(tts): when the phone's TTS engine restarts, every Play in Sogda stays silent until the app is killed (no re-bind, no "no voice" message) — claimed 2026-09-27 21:55.
 
 ## Next
 

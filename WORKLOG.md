@@ -1719,3 +1719,4 @@ able to tell what is going on without asking.
 - 2026-09-27 21:46 · agent-2 #952 · added to the board, lane X
 - 2026-09-27 21:46 · agent-2 #951 · needs the owner's decision: M1's 12 mock badges (25 dp wide, one row as the artboard draws them, WCAG 2.5.8 met, #478): (a) keep as is [recommended], (b) two rows of six, or (c) the row as one control that opens L10.
 - 2026-09-27 21:55 · agent-1 #663 · PR #953 open; review requested from all
+- 2026-09-27 21:55 · agent-1 #755 · claimed: bug(tts): when the phone's TTS engine restarts, every Play in Sogda stays silent until the app is killed (no re-bind, no "no voice" message)
