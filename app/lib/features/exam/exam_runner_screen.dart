@@ -65,8 +65,9 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
   bool _done = false;
   bool _submitting = false;
 
-  /// A submit failed (#691 EX-4): 0:00 no longer submits by itself, or it
-  /// would try, and toast, every second. *Submit exam* still sends it.
+  /// A submit at 0:00 failed (#691 EX-4): 0:00 no longer submits by itself,
+  /// or it would try, and toast, every second. *Submit exam* still sends it.
+  /// One by hand that failed with time left leaves 0:00 its try.
   bool _submitFailed = false;
 
   int _at = 0;
@@ -477,7 +478,7 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
       // The answers are written already: stay on the paper, clock running,
       // and let the learner submit again.
       _submitting = false;
-      _submitFailed = true;
+      _submitFailed = _left <= 0;
       if (!mounted) return;
       _tick = Timer.periodic(const Duration(seconds: 1), (_) => _second());
       SgToast.show(context, AppLocalizations.of(context).examRunSubmitFailed);

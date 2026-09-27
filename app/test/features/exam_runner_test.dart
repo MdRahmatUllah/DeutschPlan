@@ -321,6 +321,28 @@ void main() {
       expect(find.text('L13'), findsOneWidget);
     });
 
+    testWidgets('#691 EX-4 FR-L12-03 a submit by hand that fails with time '
+        'left still leaves 0:00 its try', (tester) async {
+      await pump(
+        tester,
+        stub: StubExamRun(attempt: artboardAttempt(durationSec: 20 * 60 - 30))
+          ..failSubmit = true,
+      );
+      await tester.tap(find.bySemanticsLabel(l10n.examNavOpen));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text(l10n.examRunSubmit).last);
+      await tester.pumpAndSettle();
+      await tap(tester, l10n.examRunSubmitConfirm);
+      expect(run.submitted, 1);
+
+      await tester.pump(const Duration(seconds: 30));
+      await tester.pump();
+      expect(run.submitted, 2, reason: '0:00 submits, once');
+      await tester.pump(const Duration(seconds: 5));
+      expect(run.submitted, 2);
+      await tester.pumpAndSettle(); // the toast's 2 s are over
+    });
+
     testWidgets('#703 a timed attempt resumed after its time ran out '
         'submits as it opens', (tester) async {
       await pump(
