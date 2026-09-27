@@ -33,6 +33,7 @@ void main() {
   const bangla = 'ফ্ল্যাট / অ্যাপার্টমেন্ট';
 
   Word wohnung({String? bn = bangla}) => Word(
+    kind: 'vocab',
     uid: meaningSampleUid,
     sublevelCode: 'A1.1',
     levelCode: 'A1',

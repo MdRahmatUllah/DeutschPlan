@@ -109,7 +109,8 @@ examWords:
     w.synonyms_register AS synonyms, w.category_id AS category_id
   FROM words w
   LEFT JOIN word_state s ON s.word_uid = w.uid
-  WHERE w.sublevel_code = :step AND COALESCE(s.status, '') != 'suspended'
+  WHERE w.sublevel_code = :step AND w.kind = 'vocab'
+    AND COALESCE(s.status, '') != 'suspended'
   ORDER BY w.seq;
 
 -- Their example sentences, the gap fills' source.
@@ -117,7 +118,7 @@ examExamples:
   SELECT e.word_uid AS uid, e.german AS german, e.english AS english
   FROM word_examples e
   JOIN words w ON w.uid = e.word_uid
-  WHERE w.sublevel_code = :step
+  WHERE w.sublevel_code = :step AND w.kind = 'vocab'
   ORDER BY w.seq, e.ord;
 
 -- The step's grammar topics, every one (the doc's pool).

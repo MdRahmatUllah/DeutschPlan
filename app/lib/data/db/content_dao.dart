@@ -195,7 +195,8 @@ class ContentDao extends DatabaseAccessor<AppDatabase> with _$ContentDaoMixin {
       'SELECT w.uid, w.article, w.german, w.english, w.bangla, w.pos, '
       'e.german AS example '
       'FROM words w LEFT JOIN word_examples e ON e.word_uid = w.uid '
-      'WHERE w.sublevel_code = ?1 ORDER BY w.seq_in_sublevel, e.ord',
+      "WHERE w.sublevel_code = ?1 AND w.kind = 'vocab' "
+      'ORDER BY w.seq_in_sublevel, e.ord',
       variables: <Variable<Object>>[Variable<String>(step)],
     ).get();
 

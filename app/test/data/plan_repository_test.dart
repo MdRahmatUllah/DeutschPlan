@@ -556,6 +556,19 @@ void main() {
       });
       expect(await goneRows(), 1);
     });
+
+    test("#621 BR-CONTENT-02 dueBy: TodayRest's due count leaves it out, "
+        'and its state stays', () async {
+      for (final uid in <String>[ContentFixture.haus, gone, mine]) {
+        await db.customStatement(
+          'INSERT INTO word_state (word_uid, status, due) '
+          "VALUES ('$uid', 'learning', '$yesterday')",
+        );
+      }
+
+      expect(await plan.dueBy(today), 2);
+      expect(await count("word_state WHERE word_uid = '$gone'"), 1);
+    });
   });
 
   test('the plan stream re-emits when a rating completes a row', () async {

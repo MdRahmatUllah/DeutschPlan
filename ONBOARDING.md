@@ -282,13 +282,11 @@ it once cost a bug.
    - A missing spec detail that is a pure gap: fill it, update the doc, and flag it in the PR. A real decision: `team.py decision`.
 4. **Implement.**
    - Follow the architecture rules (§5) and guidelines (§6).
-   - A screen replaces its `PlaceholderScreen` in `routes.dart`.
    - Copy goes in both ARB files.
    - `team.py log` when a part works.
 5. **Test** (§7).
    - Unit tests for logic, widget tests for behaviour, DB tests for queries, all with FR/BR ids in the test names.
    - Add the screen's providers to `todayStub()`.
-   - Update the router tests that asserted the placeholder text.
 6. **Goldens.**
    - Write `test/golden/<name>_golden_test.dart` (six files: light/dark/glass × phone/tablet; plus `<name>_ios` where the iOS chrome differs).
    - Generate it on its own: `flutter test test/golden/<name>_golden_test.dart --update-goldens`.
@@ -491,7 +489,7 @@ app/lib/
   Most M4–M6 tables already exist (quiz/exam attempts and answers, custom_words, translation_cache).
 
 **Navigation (go_router, typed)**
-- Every documented route already exists in `routes.dart`. Unbuilt ones render `PlaceholderScreen`, and your issue replaces it.
+- Every documented route exists in `routes.dart`, each with its screen (the old `PlaceholderScreen` for unbuilt ones went with the last of them, #681).
 - Full-screen routes are pushed through their helpers (`QuizRoute.open(context, QuizArgs)`, `WordRoute.open`, …). In-tab destinations use `context.jumpToTab(Route(...))`.
 - A new route, or a new `extra`-carrying route, also needs:
   - a row in `docs/01-architecture/navigation.md`, which `app_router_test` parses;
@@ -526,7 +524,7 @@ practice adds:
 
 - **Lints:** flutter_lints + riverpod_lint + `prefer_final_locals`, `avoid_dynamic_calls`, `require_trailing_commas`, `always_declare_return_types`. Zero warnings. `dart format` is the style.
 - **Imports:** package imports (`package:sogda/...`) everywhere. That is the practice, whatever the doc says about relative ones.
-- **Value types:** `@immutable` classes, records and `sealed` class hierarchies. Not freezed: it is a dependency but unused.
+- **Value types:** `@immutable` classes, records and `sealed` class hierarchies (no freezed).
 - **Text:** `SgText(role:)`, never `Text`. Headwords use `SgHeadword`. Every string is in ARB:
   - `app_en.arb` needs an `@key` with a description that names the screen id.
   - `app_bn.arb` has the same key, no metadata, and plurals with `other` only.
@@ -636,7 +634,6 @@ When a lane is blocked, in this order:
 
 #284 reconciled the dev guide with how the app is built: the commands spelled out without `make` or `fvm`, the tree in `project-structure.md`, the golden and fake practice in `testing.md`, the coding standards, ADR 26 and the stale issue numbers in code. What is left:
 
-- `mocktail`, `alchemist`, `freezed` and `logging` are in `pubspec.yaml` but unused. The docs say so; removing them needs the `pubspec` lock.
 - The PR template's checklist is the minimum. The M3 PR body (§4, step 11) is the practice.
 
 ## 12. Troubleshooting

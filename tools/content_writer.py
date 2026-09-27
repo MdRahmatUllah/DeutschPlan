@@ -163,19 +163,21 @@ def _write_categories(
 
 
 def _write_sublevels(connection: sqlite3.Connection, inputs: BuildInputs) -> None:
-    word_counts = _counted(inputs.words)
+    present = _counted(inputs.words)
+    # BR-CONTENT-04 (#630): a step's words are what it teaches, not its notes.
+    word_counts = _counted(_vocab(inputs.words))
     grammar_counts = _counted(inputs.grammar)
 
     rows = []
     for index, code in enumerate(SUBLEVELS):
-        if code not in word_counts:
+        if code not in present:
             continue
         rows.append(
             (
                 code,
                 code.split(".")[0],
                 index + 1,
-                word_counts[code],
+                word_counts.get(code, 0),
                 grammar_counts.get(code, 0),
             )
         )
@@ -186,6 +188,10 @@ def _write_sublevels(connection: sqlite3.Connection, inputs: BuildInputs) -> Non
         "VALUES (?, ?, ?, ?, ?)",
         rows,
     )
+
+
+def _vocab(words) -> list:
+    return [word for word in words if word.kind == "vocab"]
 
 
 def _counted(rows) -> dict[str, int]:
@@ -206,8 +212,8 @@ def _write_words(
         "INSERT INTO words (uid, sublevel_code, level_code, seq, "
         "seq_in_sublevel, article, german, forms, pos, pron_bn, english, "
         "bangla, freq, category_id, source_week, collocations, "
-        "synonyms_register, search_key, search_key_alt) "
-        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        "synonyms_register, search_key, search_key_alt, kind) "
+        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
         [
             (
                 word.uid,
@@ -229,6 +235,7 @@ def _write_words(
                 word.synonyms_register,
                 word.search_key,
                 word.search_key_alt,
+                word.kind,
             )
             for word in inputs.words
         ],
@@ -296,7 +303,7 @@ def _write_meta(connection: sqlite3.Connection, inputs: BuildInputs) -> None:
             ("content_version", inputs.content_version),
             ("built_at", inputs.built_at),
             ("sources", json.dumps(inputs.sources)),
-            ("word_count", str(len(inputs.words))),
+            ("word_count", str(len(_vocab(inputs.words)))),
             (
                 "sublevel_week_boundaries",
                 json.dumps(boundaries, sort_keys=True),

@@ -94,7 +94,7 @@ class TestRules:
         assert set(UMLAUT_EXPANSIONS) == set(UMLAUT_FOLDS)
 
 
-def test_the_article_column_is_folded_into_the_key():
+def test_the_article_column_stays_out_of_the_key():
     # A learner searching "das Haus" and one searching "Haus" want the same
     # row, and the article lives in its own column.
     word = Word(

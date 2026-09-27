@@ -326,7 +326,7 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
             : () => _step(StudyNextStep.grammar, session),
       );
     } else if (dayComplete) {
-      _once(() => _leave(() => DayCompleteRoute.instead(context)));
+      _once(() => _leave(() => DayCompleteRoute.instead(context, date!)));
     }
     if (session != null && _bannered == null && session.startsBlock) {
       // The first block's banner, once the queue has been built.
@@ -369,6 +369,12 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
         : ref.watch(studyClozeProvider(item.uid));
     final settled = clozeState == null || !clozeState.isLoading;
     final cloze = clozeState?.value;
+    // #677: a card whose word hasn't loaded, or won't, offers nothing to
+    // rate: the learner can't rate a card they never saw.
+    final wordLoaded =
+        item == null ||
+        item.kind == SessionBlockKind.grammar ||
+        ref.watch(studyWordProvider(item.uid)).value != null;
 
     // #564, as L8 (#554) and L15 (#557): typing a cloze's answer at large
     // text, the field, its umlaut row and *Check* filled the room above the
@@ -413,8 +419,12 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
                         curve: Curves.easeOut,
                         child: SingleChildScrollView(
                           child: StudySwipeToRate(
+                            // Not after a wrong cloze answer: a right swipe
+                            // is Good, and then only Again and Hard are
+                            // offered (#345, #661). The bar still is.
                             enabled:
                                 revealed &&
+                                !session.missed &&
                                 item.kind != SessionBlockKind.grammar &&
                                 ref
                                     .watch(settingsProvider)
@@ -457,6 +467,7 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
               item.kind != SessionBlockKind.grammar &&
               !revealed &&
               settled &&
+              wordLoaded &&
               cloze == null)
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 0, 16, 32),
@@ -765,10 +776,17 @@ class StudyCardSlot extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tokens = context.tokens;
-    final studied = item.kind == SessionBlockKind.grammar
+    final studiedState = item.kind == SessionBlockKind.grammar
         ? null
-        : ref.watch(studyWordProvider(item.uid)).value;
+        : ref.watch(studyWordProvider(item.uid));
+    final studied = studiedState?.value;
     final word = studied?.word;
+    if (studied == null && (studiedState?.hasError ?? false)) {
+      return SgLoadFailed(
+        message: AppLocalizations.of(context).wordLoadFailed,
+        onRetry: () => ref.invalidate(studyWordProvider(item.uid)),
+      );
+    }
     final cloze = word == null ? null : ref.watch(studyClozeProvider(item.uid));
     if (word != null && cloze != null && !cloze.isLoading) {
       final gap = cloze.value;

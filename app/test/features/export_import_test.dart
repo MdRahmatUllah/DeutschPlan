@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:sogda/core/adaptive/adaptive.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/core/theme/app_theme.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/db/content_dao.dart';
 import 'package:sogda/data/repositories/backup_repository.dart';
@@ -97,12 +98,20 @@ void main() {
 
   /// Another phone's export: two words, a review on 20 September, in A1.1,
   /// and the learner's name.
-  Future<String> otherPhone({String name = 'Rahim'}) async {
+  Future<String> otherPhone({
+    String name = 'Rahim',
+    Map<String, String> settings = const <String, String>{},
+  }) async {
     final other = await open();
     addTearDown(other.close);
     await other.customStatement(
       "INSERT INTO settings VALUES ('learner_name', '$name')",
     );
+    for (final MapEntry(:key, :value) in settings.entries) {
+      await other.customStatement(
+        "INSERT INTO settings VALUES ('$key', '$value')",
+      );
+    }
     await other.customStatement(
       'INSERT INTO enrollments (sublevel_code, started_on, daily_new, '
       "study_days_mask) VALUES ('A1.1', '2026-09-01', 7, 127)",
@@ -398,6 +407,32 @@ void main() {
 
       expect(settings.read(SettingKeys.learnerName), 'Nadia');
       expect(heard, contains(SettingKeys.learnerName));
+    });
+
+    testWidgets('#672 the theme and the app language the file brings reach '
+        'the app at once, not at the next launch', (tester) async {
+      await pump(tester);
+      final container = ProviderScope.containerOf(
+        tester.element(find.byType(ExportImportScreen)),
+      );
+      expect(container.read(themeProvider), SgMode.light);
+      expect(container.read(languagesProvider).ui, UiLanguage.english);
+
+      await choose(
+        tester,
+        await otherPhone(
+          settings: <String, String>{'theme_mode': 'dark', 'ui_language': 'bn'},
+        ),
+      );
+      await tester.tap(find.text(l10n.exportImportReplace));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text(l10n.exportImportDoReplace));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text(l10n.exportImportReplaceConfirm));
+      await tester.pumpAndSettle();
+
+      expect(container.read(themeProvider), SgMode.dark);
+      expect(container.read(languagesProvider).ui, UiLanguage.bangla);
     });
 
     testWidgets('#679 Back during the import: Today still lets go of the '

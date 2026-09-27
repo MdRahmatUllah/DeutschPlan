@@ -60,7 +60,7 @@ app/lib/
   data/repositories/             the only layer that touches drift
   domain/                        pure Dart engines (no Flutter, no drift): fsrs, plan_engine, answer_check, …
   features/<group>/              screens; a screen's providers sit at the top of its file
-  router/routes.dart             typed go_router routes + open()/instead() helpers; unbuilt screens = PlaceholderScreen
+  router/routes.dart             typed go_router routes + open()/instead() helpers
   l10n/app_en.arb, app_bn.arb    all copy (German course text comes from content.db)
 ```
 

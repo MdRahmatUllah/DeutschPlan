@@ -338,15 +338,20 @@ void main() {
     );
   });
 
-  test('no user-facing string is hard-coded under lib/', () {
-    // Matches Text('literal') / Text("literal") and tooltip:/semanticsLabel:
-    // string literals — the two ways copy usually leaks past ARB. A literal that
-    // is genuinely not copy (an asset key, a route name) belongs in a const, not
-    // in one of these positions.
+  test('#681 no user-facing string is hard-coded under lib/', () {
+    // A string literal where copy goes: the text widgets (`Text`, and the
+    // `SgText`, `SgOneLine` and `SgHeadword` the screens use: `\bText` never
+    // matched inside `SgText`) and tooltip:/semanticsLabel:/label:/hintText:.
+    // Matched over the whole file, not line by line: `dart format` puts a
+    // long literal on the line after its call (#681). A literal that is
+    // genuinely not copy (an asset key, a route name) belongs in a const, or
+    // carries `ponytail: allow-literal` on its line.
     final patterns = <RegExp>[
-      RegExp(r'''\bText\(\s*(['"])(?!\s*\1)[^'"]*\1'''),
       RegExp(
-        r'''\b(?:tooltip|semanticsLabel|label|hintText)\s*:\s*(['"])(?!\s*\1)[^'"]*\1''',
+        r'''(?<![A-Za-z])(?:Sg)?(?:Text|OneLine|Headword)\(\s*(['"])(?!\s*\1)''',
+      ),
+      RegExp(
+        r'''\b(?:tooltip|semanticsLabel|label|hintText)\s*:\s*(['"])(?!\s*\1)''',
       ),
     ];
 
@@ -356,16 +361,16 @@ void main() {
     ).listSync(recursive: true).whereType<File>()) {
       if (!file.path.endsWith('.dart')) continue;
       if (file.path.contains('l10n')) continue; // generated localisations
-      final lines = file.readAsLinesSync();
-      for (var i = 0; i < lines.length; i++) {
-        final line = lines[i];
-        if (line.trimLeft().startsWith('//')) continue;
-        if (line.contains('ponytail: allow-literal')) continue;
-        for (final p in patterns) {
-          if (p.hasMatch(line)) {
-            final path = file.path.split(Platform.pathSeparator).join('/');
-            offenders.add('$path:${i + 1}: ${line.trim()}');
-          }
+      final source = file.readAsStringSync().replaceAll('\r\n', '\n');
+      final lines = source.split('\n');
+      for (final p in patterns) {
+        for (final match in p.allMatches(source)) {
+          final at = '\n'.allMatches(source.substring(0, match.start)).length;
+          final line = lines[at];
+          if (line.trimLeft().startsWith('//')) continue;
+          if (line.contains('ponytail: allow-literal')) continue;
+          final path = file.path.split(Platform.pathSeparator).join('/');
+          offenders.add('$path:${at + 1}: ${line.trim()}');
         }
       }
     }

@@ -8,7 +8,7 @@ Every rule has an ID. Engines in `03-domain/` implement them; screens in `04-scr
 - **BR-COURSE-02** A word belongs to exactly one step. Its level comes from the workbook's `Level` column; its step is assigned by the content pipeline at the week boundary nearest the middle of the level (see `02-data/content-pipeline.md`).
 - **BR-COURSE-03** Grammar topics are split between X.1 and X.2 by count, keeping teaching order.
 - **BR-COURSE-04** A learner can browse any step at any time. Studying (new words) happens only in the *active* step. Exactly one step is active at a time.
-- **BR-COURSE-05** Auto-advance (default on): when every word of the active step has been planned, the next step becomes active automatically on the next study day. With auto-advance off, Today shows "Step complete" and offers *Start next step*.
+- **BR-COURSE-05** Auto-advance (default on): when every word of the active step has been planned, the next step becomes active at once, and the day the step ran out on is filled from it at the same pace (#687). With auto-advance off, Today shows "Step complete" and offers *Start next step*.
 
 ## Word status
 
@@ -42,7 +42,7 @@ Every rule has an ID. Engines in `03-domain/` implement them; screens in `04-scr
 ## Answers
 
 - **BR-ANS-01** DE→EN: any synonym in the `/`- or `,`-separated list counts, and so does the whole cell as shown ("the bill, please"), or several of its synonyms typed as a list in any order ("hi / hello"; one that isn't a synonym makes the list wrong); a separator inside brackets belongs to a note, not the list, and a synonym counts with or without its bracketed note ("to save (a file)" takes "to save", never "a file"); case and a leading "to " are ignored; one-character typos on words ≥ 6 letters are *almost*.
-- **BR-ANS-02** EN→DE: the word with or without its article; any one of the German's ` / ` alternatives, each side of an in-word slash ("hat/ist aufgebrochen"), with or without a bracketed note; umlauts as ä or ae, ü or ue, ö or oe, and ß as ss; a bare vowel for an umlaut (a for ä) is *almost*, because it can be another word or form ("hatte" for "hätte", "Mutter" for "Mütter") (#675); a wrong article on a correct noun is *wrong article* (counts as wrong for scoring, but the feedback names the article); a wrong article on a misspelt noun is just *wrong*, so a typo never scores more than the spelling it got wrong (#614).
+- **BR-ANS-02** EN→DE: the word with or without its article, while a phrase with no article of its own is typed whole, its leading "Das" or "den" included (#687); any one of the German's ` / ` alternatives, each side of an in-word slash ("hat/ist aufgebrochen"), with or without a bracketed note; umlauts as ä or ae, ü or ue, ö or oe, and ß as ss; a bare vowel for an umlaut (a for ä) is *almost*, because it can be another word or form ("hatte" for "hätte", "Mutter" for "Mütter") (#675); a wrong article on a correct noun is *wrong article* (counts as wrong for scoring, but the feedback names the article); a wrong article on a misspelt noun is just *wrong*, so a typo never scores more than the spelling it got wrong (#614).
 - **BR-ANS-03** Articles quiz: exact match of der/die/das.
 - **BR-ANS-04** *Almost* scores 0.5 in quizzes and exams.
 
@@ -68,6 +68,7 @@ Every rule has an ID. Engines in `03-domain/` implement them; screens in `04-scr
 - **BR-CONTENT-01** Word identity is the uid hash of `level | german | pos | english`. Progress is keyed by uid and survives content updates.
 - **BR-CONTENT-02** New words join their step's To-do queue in teaching order; removed words are hidden but their history stays; changed meanings show an *updated* chip for 7 days.
 - **BR-CONTENT-03** Today shows a one-time update card with counts.
+- **BR-CONTENT-04** A row of the course is a word to learn (`vocab`), a lesson note (`note`: word formation, "beantworten — Präfix be-"; a grammar rule's name, "Vorfeldbesetzung") or a comparison (`compare`: "machen ↔ tun"). Notes and comparisons are listed, searched and opened (L2, L6, R1, W1) like any word, with no status; they are never planned, revised, quizzed, examined, placed, practised in sentences or counted in a step's or the course's words (#630). The pipeline assigns the kind (PIPE-10).
 
 ## Privacy
 

@@ -83,6 +83,29 @@ void main() {
       );
       expect(filterWords(words, status: WordFilter.all, category: 2), isEmpty);
     });
+
+    test('BR-CONTENT-04 a note is under All only: it has no status', () {
+      final note = word(9);
+      final rows = <StepWord>[
+        ...words,
+        (
+          meaning: note.meaning,
+          word: WordWithState(
+            word: note.word.word.copyWith(kind: 'note'),
+            state: null,
+            status: WordStatus.todo,
+          ),
+        ),
+      ];
+      expect(
+        germans(filterWords(rows, status: WordFilter.all)),
+        contains('Wort9'),
+      );
+      expect(
+        germans(filterWords(rows, status: WordFilter.todo)),
+        isNot(contains('Wort9')),
+      );
+    });
   });
 
   late GoRouter routes;
@@ -336,8 +359,8 @@ void main() {
     await db.customStatement(
       'INSERT INTO c.words (uid, sublevel_code, level_code, seq, '
       'seq_in_sublevel, german, english, category_id, search_key, '
-      "search_key_alt) VALUES ('uid-buero', 'A1.1', 'A1', 3, 3, 'Büro', "
-      "'office', 3, 'buero', 'buro')",
+      "search_key_alt, kind) VALUES ('uid-buero', 'A1.1', 'A1', 3, 3, 'Büro', "
+      "'office', 3, 'buero', 'buro', 'vocab')",
     );
     await db.customStatement(
       "UPDATE c.words SET category_id = 3 WHERE uid = '${ContentFixture.haus}'",

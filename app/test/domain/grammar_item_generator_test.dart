@@ -696,6 +696,33 @@ void main() {
     );
   });
 
+  test('#687 AN-11 FR-L15-01 a topic with no word to ask yields nothing, '
+      'not a throw', () {
+    for (final (rule, example) in <(String, String)>[
+      ('', ''),
+      ('—', '—'),
+      ('…', '—'),
+      ('—', '? !'),
+      ('A.', '—'),
+    ]) {
+      final source = GrammarSource(
+        uid: 'blank',
+        topic: 'Blank',
+        rule: rule,
+        exampleDe: example,
+        exampleEn: '—',
+        watchOut: '—',
+        tags: const <String>['gap-fill', 'pick-the-form', 'case'],
+        levelCode: 'A1',
+      );
+      expect(
+        generateItems(source, seed: 1, siblings: <String>[weil.rule]),
+        isEmpty,
+        reason: '"$rule" / "$example"',
+      );
+    }
+  });
+
   test('BR-FSRS-05: all right Good, one wrong Hard, more Again', () {
     expect(practiceRating(items: 5, correct: 5), 3);
     expect(practiceRating(items: 5, correct: 4), 2);

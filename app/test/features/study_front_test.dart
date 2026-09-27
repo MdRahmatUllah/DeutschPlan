@@ -34,6 +34,7 @@ void main() {
     String? pos = 'noun',
     String? pron = 'রেশনুং',
   }) => Word(
+    kind: 'vocab',
     uid: uid,
     sublevelCode: 'A2.1',
     levelCode: 'A2',

@@ -123,6 +123,6 @@ contentMeta:
 -- and example sentences are counted, as the pipeline's manifest counts them.
 contentCounts:
   SELECT
-    (SELECT COUNT(*) FROM words) AS word_total,
+    (SELECT COUNT(*) FROM words WHERE kind = 'vocab') AS word_total,
     (SELECT COUNT(*) FROM grammar_topics) AS grammar_total,
     (SELECT COUNT(*) FROM word_examples) AS sentence_total;

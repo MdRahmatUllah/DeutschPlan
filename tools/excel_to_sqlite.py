@@ -39,6 +39,7 @@ from pipeline_steps import (
     resolve_tips,
     PipelineError,
     assign_examples,
+    assign_kinds,
     apply_corrections,
     read_corrections,
     assign_grammar_uids,
@@ -148,6 +149,8 @@ class Word:
     seq_in_sublevel: int | None = None
     search_key: str | None = None
     search_key_alt: str | None = None
+    #: PIPE-10: vocab, note or compare; a correction may set it (#630).
+    kind: str | None = None
     examples: list = field(default_factory=list)
 
 
@@ -576,7 +579,7 @@ def correct(sources: list[SourceBook], corrections: dict[str, dict]) -> None:
     kept = apply_corrections(
         [word for source in sources for word in source.words],
         corrections,
-        HEADER_MAP,
+        {*HEADER_MAP, "kind"},
     )
     ids = {id(word) for word in kept}
     for source in sources:
@@ -637,6 +640,11 @@ def derive(sources: list[SourceBook]) -> dict[str, LevelSplit]:
 
     assign_search_keys(words)
     assign_examples(words)
+    kinds = assign_kinds(words)
+    print(
+        "kinds: " + ", ".join(f"{count} {kind}" for kind, count in kinds.items()),
+        file=sys.stderr,
+    )
 
     warnings = (
         check_formula_prefixes(words)

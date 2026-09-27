@@ -56,7 +56,8 @@ def test_the_listing_offers_no_translation_which_v1_leaves_out_175():
 def test_the_counts_are_content_dbs_175():
     # A content rebuild changes them (#545 dropped a duplicate word).
     root = LISTING.parents[2]
-    db = sqlite3.connect(root / "app" / "assets" / "db" / "content.db")
+    # Read-only: a missing asset is an error, not a new empty file (#722).
+    db = sqlite3.connect(f"{(root / 'app' / 'assets' / 'db' / 'content.db').as_uri()}?mode=ro", uri=True)
     words = f"{db.execute('select count(*) from words').fetchone()[0]:,}"
     topics = str(db.execute("select count(*) from grammar_topics").fetchone()[0])
     db.close()

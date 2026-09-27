@@ -54,6 +54,7 @@ void main() {
     ],
   );
   const rechnung = Word(
+    kind: 'vocab',
     uid: 'r3',
     sublevelCode: 'A2.1',
     levelCode: 'A2',
@@ -161,6 +162,7 @@ void main() {
     builder: (context) => screen(
       context,
       target: const Word(
+        kind: 'vocab',
         uid: 'r3',
         sublevelCode: 'B2.1',
         levelCode: 'B2',

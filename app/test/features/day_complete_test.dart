@@ -36,7 +36,7 @@ void main() {
     l10n = await AppLocalizations.delegate.load(supportedLocales.first);
   });
 
-  GoRouter router() => GoRouter(
+  GoRouter router({String? day}) => GoRouter(
     initialLocation: '/today',
     routes: <RouteBase>[
       GoRoute(
@@ -50,7 +50,7 @@ void main() {
       ),
       GoRoute(
         path: '/day-complete',
-        builder: (_, _) => const DayCompleteScreen(),
+        builder: (_, _) => DayCompleteScreen(day: day),
       ),
     ],
   );
@@ -62,6 +62,8 @@ void main() {
     bool shownAlready = false,
     bool still = false,
     TodayView? view,
+    bool viewFails = false,
+    String? day,
   }) async {
     if (still) {
       tester.platformDispatcher.accessibilityFeaturesTestValue =
@@ -92,13 +94,17 @@ void main() {
           appDatabaseProvider.overrideWithValue(db),
           settingsProvider.overrideWithValue(settings),
           clockProvider.overrideWithValue(() => DateTime(2026, 9, 21, 20)),
-          todayViewProvider.overrideWith((ref) async => view ?? artboardDone()),
+          todayViewProvider.overrideWith(
+            (ref) async => viewFails
+                ? throw StateError('the read failed')
+                : view ?? artboardDone(),
+          ),
         ],
         child: MaterialApp.router(
           theme: AppTheme.light(),
           localizationsDelegates: appLocalizationsDelegates,
           supportedLocales: supportedLocales,
-          routerConfig: router(),
+          routerConfig: router(day: day),
         ),
       ),
     );
@@ -147,6 +153,16 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.byType(DayCompleteScreen), findsNothing);
     expect(find.text('T1 today'), findsOneWidget);
+  });
+
+  testWidgets('#660 FR-T6-01 a session that crossed midnight goes straight '
+      "to Today, and today's T6 is still to come", (tester) async {
+    // Yesterday's plan, finished after midnight.
+    await pump(tester, day: '2026-09-20');
+    await tester.pumpAndSettle();
+    expect(find.byType(DayCompleteScreen), findsNothing);
+    expect(find.text('T1 today'), findsOneWidget);
+    expect(await tester.runAsync(shown), isNull, reason: 'not claimed');
   });
 
   testWidgets('FR-T6-03 no share prompts, ads or upsells: one way out', (
@@ -416,5 +432,13 @@ void main() {
 
     expect(next.revise, isEmpty, reason: 'no blank card to study');
     expect(next.dayDone, isTrue);
+  });
+
+  testWidgets('#677 FR-T6 a day that will not read goes on to Today, not a '
+      'blank page', (tester) async {
+    await pump(tester, viewFails: true);
+    await tester.pumpAndSettle();
+    expect(find.byType(DayCompleteScreen), findsNothing);
+    expect(find.text('T1 today'), findsOneWidget);
   });
 }

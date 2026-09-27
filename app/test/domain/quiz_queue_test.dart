@@ -98,6 +98,22 @@ void main() {
     }
   });
 
+  test('#687 AN-10 a re-asked phrase is still typed whole', () {
+    final queue = QuizQueue(<QuizItem>[
+      const QuizItem(
+        ord: 1,
+        wordUid: 'p',
+        direction: QuizDirection.enDe,
+        prompt: "that's not right",
+        expected: 'Das stimmt nicht',
+        options: <String>['Das stimmt nicht', 'Das geht', 'Das passt', 'Na'],
+        phrase: true,
+      ),
+    ])..answered(Verdict.wrong);
+    expect(queue.next(), isTrue);
+    expect(queue.current.phrase, isTrue);
+  });
+
   test('an empty quiz has nothing to move to', () {
     expect(QuizQueue(const <QuizItem>[]).next(), isFalse);
   });

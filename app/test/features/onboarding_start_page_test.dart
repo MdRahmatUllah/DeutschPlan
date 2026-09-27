@@ -3,6 +3,7 @@ library;
 
 import 'dart:async';
 
+import 'package:sogda/core/components/sg_feedback.dart';
 import 'package:sogda/core/adaptive/adaptive.dart';
 import 'package:sogda/core/components/sg_button.dart';
 import 'package:sogda/core/theme/app_theme.dart';
@@ -360,5 +361,31 @@ void main() {
 
       handle.dispose();
     });
+  });
+
+  testWidgets("#677 FR-S2 steps that won't read: Retry, and no Continue into "
+      'A1.1', (tester) async {
+    var reads = 0;
+    container = ProviderContainer(
+      overrides: <Override>[
+        courseStepsProvider.overrideWith((ref) async {
+          reads++;
+          throw StateError('the read failed');
+        }),
+      ],
+    );
+    addTearDown(container.dispose);
+    var continued = false;
+    await pump(tester, fresh: false, onContinue: () => continued = true);
+    await tester.pumpAndSettle();
+
+    expect(find.byType(SgLoadFailed), findsOneWidget);
+    await tester.tap(find.text(l10n.continueAction));
+    await tester.pumpAndSettle();
+    expect(continued, isFalse);
+
+    await tester.tap(find.text(l10n.retry));
+    await tester.pumpAndSettle();
+    expect(reads, 2);
   });
 }

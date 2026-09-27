@@ -81,8 +81,9 @@ void main() {
       if (addWord) {
         database.execute(
           "INSERT INTO words (uid, sublevel_code, level_code, seq, "
-          "seq_in_sublevel, german, english, search_key, search_key_alt) "
-          "VALUES ('uid-neu', 'A1.2', 'A1', 4, 2, 'Neu', 'new', 'neu', 'neu')",
+          "seq_in_sublevel, german, english, search_key, search_key_alt, kind) "
+          "VALUES ('uid-neu', 'A1.2', 'A1', 4, 2, 'Neu', 'new', 'neu', 'neu', "
+          "'vocab')",
         );
       }
       if (changeMeaning) {
@@ -512,6 +513,23 @@ void main() {
         isNull,
         reason: 'INSERT OR REPLACE would have reset seen',
       );
+    });
+
+    test('#621 a re-run with no baseline keeps the diff it recorded', () async {
+      publish(course(version: '202602020000', addWord: true));
+      await updater.runIfNeeded();
+
+      // A reset course or a truncated kept manifest: the re-run has nothing
+      // to diff against and records a change of nothing.
+      File('${support.path}/${ContentUpdater.manifestFile}').deleteSync();
+      expect((await updater.runIfNeeded())!.isEmpty, isTrue);
+
+      final card = await updater.unseen();
+      expect(card?.added, <String>['uid-neu'], reason: 'the card was wiped');
+      final row = await db
+          .customSelect('SELECT added FROM content_updates')
+          .getSingle();
+      expect(row.read<int>('added'), 1);
     });
   });
 

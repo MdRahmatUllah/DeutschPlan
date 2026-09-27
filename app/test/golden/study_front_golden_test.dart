@@ -45,6 +45,7 @@ void main() {
     ],
   );
   const rechnung = Word(
+    kind: 'vocab',
     uid: 'r3',
     sublevelCode: 'A2.1',
     levelCode: 'A2',
@@ -90,6 +91,7 @@ void main() {
     'study_front_hyphen_200',
     builder: (context) => card(
       const Word(
+        kind: 'vocab',
         uid: 'r3',
         sublevelCode: 'B1.2',
         levelCode: 'B1',
@@ -114,6 +116,7 @@ void main() {
     'study_front_hyphen_bn_200',
     builder: (context) => card(
       const Word(
+        kind: 'vocab',
         uid: 'r3',
         sublevelCode: 'B1.1',
         levelCode: 'B1',
@@ -141,6 +144,7 @@ void main() {
     'study_front_pron_200',
     builder: (context) => card(
       const Word(
+        kind: 'vocab',
         uid: 'r3',
         sublevelCode: 'C1.1',
         levelCode: 'C1',
@@ -179,6 +183,7 @@ void main() {
         studyWordProvider('custom:1').overrideWith(
           (ref) async => const WordWithState(
             word: Word(
+              kind: 'vocab',
               uid: 'custom:1',
               sublevelCode: '',
               levelCode: '',

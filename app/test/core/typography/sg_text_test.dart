@@ -1222,6 +1222,48 @@ void main() {
     }
   });
 
+  testWidgets('#746 a first word too long for the line is cut inside, not '
+      'shown as a bare "…": after a hyphen, else a syllable, else a letter', (
+    tester,
+  ) async {
+    for (final (title, width, shown) in <(String, double, String?)>[
+      ('Nomen-Verb-Verbindungen', 200, 'Nomen-Verb-…'),
+      ('Kommunikationsmöglichkeiten', 150, null),
+      ('Communication & meeting people', 60, null),
+      // Bangla only between aksharas: no conjunct or vowel sign is split.
+      ('প্রতিষ্ঠানগুলোর মধ্যে', 110, null),
+    ]) {
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: AppTheme.light(),
+          home: Scaffold(
+            body: Center(
+              child: SizedBox(
+                width: width,
+                child: SgOneLine(title, role: SgTextRole.title),
+              ),
+            ),
+          ),
+        ),
+      );
+      final text = tester.widget<Text>(find.byType(Text));
+      final drawn = text.data ?? text.textSpan!.toPlainText();
+      expect(drawn, isNot(SgOneLine.ellipsis), reason: title);
+      expect(drawn, endsWith(SgOneLine.ellipsis), reason: title);
+      expect(
+        title.startsWith(drawn.substring(0, drawn.length - 1)),
+        isTrue,
+        reason: '$title → $drawn',
+      );
+      if (shown != null) expect(drawn, shown, reason: title);
+      expect(
+        tester.getSize(find.byType(Text)).width,
+        lessThanOrEqualTo(width),
+        reason: '$title overflows its $width',
+      );
+    }
+  });
+
   testWidgets("#280 a cut drops the joiner before its '…': never "
       "'Argumentation &…'", (tester) async {
     for (final (title, shown) in <(String, String)>[
