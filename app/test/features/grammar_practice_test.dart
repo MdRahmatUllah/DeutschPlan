@@ -77,6 +77,9 @@ void main() {
   late _Rating rating;
   late String? went;
   late String? wentDay;
+
+  /// Every (topic, day) L15 asked items for (#665).
+  late List<(String, String)> asked;
   late GoRouter routes;
 
   Future<void> pump(
@@ -91,6 +94,7 @@ void main() {
     rating = _Rating(rated);
     went = null;
     wentDay = null;
+    asked = <(String, String)>[];
     routes = GoRouter(
       initialLocation: '/opener',
       routes: <RouteBase>[
@@ -126,12 +130,13 @@ void main() {
       ProviderScope(
         overrides: <Override>[
           ...todayStub(),
-          practiceSetProvider.overrideWith(
-            (ref, uid) async => (
+          practiceSetProvider.overrideWith((ref, args) async {
+            asked.add(args);
+            return (
               topic: artboardTopic(),
-              items: uid == 'g3' ? items : <GrammarItem>[pick, gap, spot],
-            ),
-          ),
+              items: args.$1 == 'g3' ? items : <GrammarItem>[pick, gap, spot],
+            );
+          }),
           grammarRatingServiceProvider.overrideWithValue(rating),
           studyNextProvider.overrideWith(
             (ref, date) async =>
@@ -489,6 +494,24 @@ void main() {
     expect(wentDay, '2026-09-21');
   });
 
+  testWidgets('#665 FR-L15-01 past midnight the running set stays the one '
+      'it opened with', (tester) async {
+    var day = '2026-09-21';
+    await pump(tester, items: <GrammarItem>[pick, gap], today: () => day);
+    await tester.tap(find.text('Könnten'));
+    await tester.pumpAndSettle();
+
+    // Today's resume, or the widget's snapshot, reads the date again.
+    day = '2026-09-22';
+    ProviderScope.containerOf(
+      tester.element(find.byType(GrammarPracticeScreen)),
+    ).invalidate(todayProvider);
+    await tester.pumpAndSettle();
+
+    expect(asked, <(String, String)>[('g3', '2026-09-21')]);
+    expect(find.text('Könnten'), findsOneWidget, reason: 'the item stays');
+  });
+
   testWidgets('Z05 FR-L15-03 a result that fails to save keeps the topic; '
       'Retry writes it and moves on', (tester) async {
     await pump(tester, items: <GrammarItem>[pick]);
@@ -508,43 +531,56 @@ void main() {
     expect(find.text('opener'), findsOneWidget);
   });
 
-  test(
-    'FR-L15-01 the items are the generator\'s, seeded per topic and day',
-    () async {
-      final db = AppDatabase.memory();
-      addTearDown(db.close);
-      final directory = tempDir('sg_practice');
-      final content = ContentFixture.write('${directory.path}/content.db');
-      await db.customStatement(
-        "ATTACH DATABASE '${ContentDao.attachPath(content.file)}' AS c",
-      );
-      final settings = SettingsRepository(db);
-      await settings.load();
-      addTearDown(settings.dispose);
-      final container = ProviderContainer(
-        overrides: <Override>[
-          appDatabaseProvider.overrideWithValue(db),
-          settingsProvider.overrideWithValue(settings),
-          todayProvider.overrideWithValue('2026-09-21'),
-        ],
-      );
-      addTearDown(container.dispose);
-      final hold = container.listen(practiceSetProvider('g1'), (_, _) {});
-      addTearDown(hold.close);
-      final set = (await container.read(practiceSetProvider('g1').future))!;
-      final topic = set.topic;
-      final expected = generateItems(
-        grammarSource(topic),
-        seed: practiceSeed('g1', '2026-09-21'),
-      );
-      expect(set.items.length, expected.length);
-      expect(
-        set.items.map((item) => item.runtimeType),
-        expected.map((item) => item.runtimeType),
-      );
-      expect(set.items.length, inInclusiveRange(3, 5));
-    },
-  );
+  test('FR-L15-01 #665 the items are the generator\'s, seeded per topic and '
+      'the day L15 opened on, which a new today leaves alone', () async {
+    var today = '2026-09-21';
+    final db = AppDatabase.memory();
+    addTearDown(db.close);
+    final directory = tempDir('sg_practice');
+    final content = ContentFixture.write('${directory.path}/content.db');
+    await db.customStatement(
+      "ATTACH DATABASE '${ContentDao.attachPath(content.file)}' AS c",
+    );
+    final settings = SettingsRepository(db);
+    await settings.load();
+    addTearDown(settings.dispose);
+    final container = ProviderContainer(
+      overrides: <Override>[
+        appDatabaseProvider.overrideWithValue(db),
+        settingsProvider.overrideWithValue(settings),
+        todayProvider.overrideWith((ref) => today),
+      ],
+    );
+    addTearDown(container.dispose);
+    final hold = container.listen(
+      practiceSetProvider('g1', '2026-09-21'),
+      (_, _) {},
+    );
+    addTearDown(hold.close);
+    final set = (await container.read(
+      practiceSetProvider('g1', '2026-09-21').future,
+    ))!;
+    final topic = set.topic;
+    final expected = generateItems(
+      grammarSource(topic),
+      seed: practiceSeed('g1', '2026-09-21'),
+    );
+    expect(set.items.length, expected.length);
+    expect(
+      set.items.map((item) => item.runtimeType),
+      expected.map((item) => item.runtimeType),
+    );
+    expect(set.items.length, inInclusiveRange(3, 5));
+
+    // #665: past midnight today is read again; the running set stays.
+    today = '2026-09-22';
+    container.invalidate(todayProvider);
+    await container.pump();
+    final again = await container.read(
+      practiceSetProvider('g1', '2026-09-21').future,
+    );
+    expect(again!.items, same(set.items));
+  });
 
   group('L15 #557 a gap typed with the keyboard up', () {
     const keyboardTop = 731.0 - 300;
