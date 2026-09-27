@@ -1765,3 +1765,4 @@ able to tell what is going on without asking.
 - 2026-09-27 22:40 · agent-0 #841 · claimed: fix(search): R2's 'already one of mine' check matches on the folded key and ignores the article, so schön blocks schon and der See blocks die See
 - 2026-09-27 22:40 · agent-0 #841 · PR #961 open; review requested from agent-2
 - 2026-09-27 22:40 · agent-0 #842 · PR #961 open; review requested from agent-2
+- 2026-09-27 22:40 · agent-0 #863 · PR #961 open; review requested from agent-2
