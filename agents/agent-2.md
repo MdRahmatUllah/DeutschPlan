@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-09-27 12:44
+last-seen: 2026-09-27 12:53
 last-read: 1573
 
 ## Now
 
-#651 fix(a11y): in Glass dark, a selected filter chip's label is about 1.4:1 against its fill — claimed 2026-09-27 12:44.
+#651 in review as PR #834: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 

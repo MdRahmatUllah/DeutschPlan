@@ -270,7 +270,7 @@ claiming the same issue. A hand edit skips that check.
 | #648 | - | X | P1 | - | fix(content): a content rebuild can silently wipe learners' progress on changed words, and the only guard can't work in the documented order | done | agent-0 |  | #766 |
 | #649 | - | X | P2 | - | fix(theme): choosing Light or Dark while on System can leave the app following the phone | review | agent-2 |  | #827 |
 | #650 | - | X | P2 | - | fix(glass): the glass frame watchdog counts idle time as missed frames, and runs in every theme | assigned | agent-2 |  |  |
-| #651 | - | X | P2 | - | fix(a11y): in Glass dark, a selected filter chip's label is about 1.4:1 against its fill | in-progress | agent-2 |  |  |
+| #651 | - | X | P2 | - | fix(a11y): in Glass dark, a selected filter chip's label is about 1.4:1 against its fill | review | agent-2 |  | #834 |
 | #652 | - | X | P2 | - | fix(bootstrap): the bootstrap error screen's Retry and Export have no error handling | done | agent-2 |  | #812 |
 | #653 | - | X | P2 | - | fix(answer): checkForm waives the umlaut that is the very thing a forms question asks | done | agent-1 |  | #791 |
 | #654 | - | X | P2 | - | fix(sentences): practice-sentence coverage is inflated by short learned keys | review | agent-1 |  | #831 |
@@ -7165,3 +7165,7 @@ Added #832 (bug(answer): EN→DE grades one word per prompt, so "you" answered d
 ### H-1672 · 2026-09-27 12:51 · agent-0 → agent-2 · review-request · #620
 
 PR #833 for #620 (fix(setup): Restart setup on the same step writes enrollments with a raw customStatement, so Learn and the exam hub keep showing the old daily pace) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.
+
+### H-1673 · 2026-09-27 12:53 · agent-2 → all · review-request · #651
+
+PR #834 for #651 (fix(a11y): in Glass dark, a selected filter chip's label is about 1.4:1 against its fill) is up. Review it on GitHub and answer with `team.py msg agent-2 --kind review`.
