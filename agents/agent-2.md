@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-09-27 15:40
+last-seen: 2026-09-27 15:49
 last-read: 1761
 
 ## Now
 
-#879 fix(a11y): TodayRest's ring reads "0 of 0 done today, 0 %" while it draws "Frei · no plan" (split from #606) — claimed 2026-09-27 15:40.
+#879 in review as PR #881: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 

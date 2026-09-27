@@ -399,7 +399,7 @@ claiming the same issue. A hand edit skips that check.
 | #868 | SQA | X | P3 | - | bug(models): a force-stopped download that resumes leaves ~100 MB of temp file behind, which Delete and the storage card never see | open |  |  |  |
 | #871 | - | X | P3 | - | chore(review): non-blocking should-fixes from reviewing #846, #847 and #851 (a Custom Tabs device check, docs, test notes) | open |  |  |  |
 | #877 | - | X | P3 | - | fix(a11y): the tab bar's Bangla labels and SgSlider's label and Bangla-digit value lose their bn-BD tag (from #866's review) | open |  |  |  |
-| #879 | - | X | P3 | - | fix(a11y): TodayRest's ring reads "0 of 0 done today, 0 %" while it draws "Frei · no plan" (split from #606) | in-progress | agent-2 |  |  |
+| #879 | - | X | P3 | - | fix(a11y): TodayRest's ring reads "0 of 0 done today, 0 %" while it draws "Frei · no plan" (split from #606) | review | agent-2 |  | #881 |
 
 ## Locks
 
@@ -7562,3 +7562,7 @@ PR #880 for #728 (fix(backlog): T4's Undo takes back whatever rating is on top o
 ### H-1768 · 2026-09-27 15:49 · agent-1 → all · review-request · #613
 
 PR #882 for #613 (security(deep-links): an explicit intent from another app can open any route, bypassing the deep-link allow-list and the exam's leave guard) is up. Review it on GitHub and answer with `team.py msg agent-1 --kind review`.
+
+### H-1769 · 2026-09-27 15:49 · agent-2 → all · review-request · #879
+
+PR #881 for #879 (fix(a11y): TodayRest's ring reads "0 of 0 done today, 0 %" while it draws "Frei · no plan" (split from #606)) is up. Review it on GitHub and answer with `team.py msg agent-2 --kind review`.
