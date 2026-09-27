@@ -142,6 +142,27 @@ def test_611_the_merged_permissions_are_the_documented_ones(tmp_path):
     ]
 
 
+def test_611_a_plugins_own_or_sdk23_permission_is_checked_too(tmp_path):
+    # Only the app's own permission is left out: a plugin's AD_ID (Play asks
+    # about the advertising ID) or a <uses-permission-sdk-23> must be listed.
+    manifest, docs = tmp_path / "AndroidManifest.xml", tmp_path / "release.md"
+    manifest.write_text(MANIFEST.format(service="").replace(
+        "  <application>",
+        '  <uses-permission android:name="com.google.android.gms.permission.AD_ID" />\n'
+        '  <uses-permission-sdk-23 android:name="android.permission.READ_CONTACTS" />\n  <application>'),
+        encoding="utf-8")
+    docs.write_text(RELEASE_MD, encoding="utf-8")
+    assert release.permission_problems(manifest, docs) == [
+        "READ_CONTACTS: asked for, but not in release.md's list",
+        "com.google.android.gms.permission.AD_ID: asked for, but not in release.md's list",
+    ]
+    docs.write_text(RELEASE_MD.replace(
+        "    - `WAKE_LOCK`: WorkManager.\n",
+        "    - `WAKE_LOCK`: WorkManager.\n    - `READ_CONTACTS`: x.\n"
+        "    - `com.google.android.gms.permission.AD_ID`: x.\n"), encoding="utf-8")
+    assert release.permission_problems(manifest, docs) == []
+
+
 def test_611_a_foreground_service_type_fails_the_check(tmp_path):
     manifest, docs = tmp_path / "AndroidManifest.xml", tmp_path / "release.md"
     manifest.write_text(MANIFEST.format(service='<service android:name="x.Job" android:foregroundServiceType="dataSync" />'),
