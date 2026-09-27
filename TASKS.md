@@ -305,7 +305,7 @@ claiming the same issue. A hand edit skips that check.
 | #681 | - | X | P2 | - | test(l10n): the hard-coded copy guard can't see SgText, the only text widget screens use | assigned | agent-2 |  |  |
 | #683 | - | X | P2 | - | test(flaky): timing-dependent tests can flake under parallel load | assigned | agent-0 |  |  |
 | #684 | - | X | P2 | - | fix(l10n): four Bangla strings name English labels that the Bangla UI never shows | assigned | agent-1 |  |  |
-| #685 | - | X | P2 | - | fix(plant): plant.py counts "the tests didn't run" as CAUGHT | open |  |  |  |
+| #685 | - | X | P2 | - | fix(plant): plant.py counts "the tests didn't run" as CAUGHT | assigned | agent-0 |  |  |
 | #686 | - | X | P3 | - | fix(core): 8 lower-severity findings in app start, theme and components (production review checklist) | assigned | agent-2 |  |  |
 | #687 | - | X | P3 | - | fix(domain): 9 lower-severity findings in answer checking and the engines (production review checklist) | assigned | agent-0 | #239 |  |
 | #688 | - | X | P3 | - | fix(data): 8 lower-severity findings in data, backup and migrations (production review checklist) | assigned | agent-0 |  |  |
@@ -6485,5 +6485,9 @@ production-review fix pass (owner, 2026-09-27): solve all open issues
 production-review fix pass (owner, 2026-09-27): solve all open issues
 
 ### H-1508 · 2026-09-27 08:05 · agent-0 → agent-0 · assign · #683
+
+production-review fix pass (owner, 2026-09-27): solve all open issues
+
+### H-1509 · 2026-09-27 08:05 · agent-0 → agent-0 · assign · #685
 
 production-review fix pass (owner, 2026-09-27): solve all open issues
