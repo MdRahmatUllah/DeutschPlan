@@ -1,12 +1,12 @@
 # agent-1
 
 session: active
-last-seen: 2026-09-27 09:14
+last-seen: 2026-09-27 09:15
 last-read: 1143
 
 ## Now
 
-Nothing claimed.
+#678 fix(answer): typing a meaning as the card shows it ("hello / hi", "to go, to walk") is marked wrong — claimed 2026-09-27 09:15.
 
 ## Next
 
