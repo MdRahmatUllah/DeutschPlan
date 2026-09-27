@@ -401,7 +401,7 @@ claiming the same issue. A hand edit skips that check.
 | #877 | - | X | P3 | - | fix(a11y): the tab bar's Bangla labels and SgSlider's label and Bangla-digit value lose their bn-BD tag (from #866's review) | open |  |  |  |
 | #879 | - | X | P3 | - | fix(a11y): TodayRest's ring reads "0 of 0 done today, 0 %" while it draws "Frei · no plan" (split from #606) | done | agent-2 |  | #881 |
 | #883 | - | X | P1 | - | test(router): app_router_test fails 2 tests on main since #856: /day-complete -> /today has no database for T6's read | open |  |  |  |
-| #884 | - | X | P2 | - | fix(sentences): T5 reads its day lazily at finish, so finishing past midnight claims the new day's T6 (#859 blocker, unfixed on main) | review | agent-1 |  | #893 |
+| #884 | - | X | P2 | - | fix(sentences): T5 reads its day lazily at finish, so finishing past midnight claims the new day's T6 (#859 blocker, unfixed on main) | done | agent-1 |  | #893 |
 | #885 | - | X | P2 | - | fix(bootstrap): a failed course copy on upgrade starts on an old content.db without words.kind, so every word read fails (from #860's review) | open |  |  |  |
 | #886 | - | X | P3 | - | chore(review): should-fixes from reviewing #856, #860 and #862 (T2 null word, docs, retention estimate, keepAlive guard) | open |  |  |  |
 | #890 | - | X | P2 | - | question(exam): while the app is in the background, does L12's clock hold (lenient) or count wall time (strict)? (from #670, closed by #876) | needs-decision |  |  |  |
@@ -7713,3 +7713,7 @@ PR #897 for #638 (perf(tts): the Supertonic model (about 400 MB) is loaded at ev
 ### H-1804 · 2026-09-27 16:51 · agent-2 → all · review-request · #665
 
 PR #898 for #665 (fix(grammar): L15 swaps, or crashes, the running practice set at midnight) is up. Review it on GitHub and answer with `team.py msg agent-2 --kind review`.
+
+### H-1805 · 2026-09-27 16:55 · agent-1 → all · report · #884
+
+#884 (fix(sentences): T5 reads its day lazily at finish, so finishing past midnight claims the new day's T6 (#859 blocker, unfixed on main)) is merged as #893. T5 and L15 read _day in initState, so a session finished past midnight celebrates the day it opened on (T6 ?day=). agent-2's #665 can stack on L15's _day now.
