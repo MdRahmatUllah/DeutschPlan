@@ -6,6 +6,7 @@ import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/db/content_dao.dart';
 import 'package:sogda/data/repositories/sentence_store.dart';
 import 'package:sogda/data/repositories/settings_repository.dart';
+import 'package:sogda/domain/sentence_picker.dart';
 import 'package:sogda/features/sentences/sentences_screen.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/main.dart'
@@ -36,6 +37,32 @@ void main() {
 
   setUpAll(() async {
     l10n = await AppLocalizations.delegate.load(supportedLocales.first);
+  });
+
+  test("#870 the underline finds a strong verb by the word's forms", () {
+    const lesen = Word(
+      kind: 'vocab',
+      uid: 'l',
+      sublevelCode: 'A1.1',
+      levelCode: 'A1',
+      seq: 1,
+      seqInSublevel: 1,
+      german: 'lesen',
+      english: 'to read',
+      pos: 'verb',
+      forms: 'liest · hat gelesen',
+      searchKey: 'lesen',
+      searchKeyAlt: 'lesen',
+    );
+    const practice = PracticeSentence(
+      sentence: SentenceCandidate(
+        wordUid: 'l',
+        ord: 1,
+        german: 'Er liest die Zeitung.',
+      ),
+      word: lesen,
+    );
+    expect(practice.gap, (start: 3, end: 8));
   });
 
   /// Three learned words, and today's three sentences already drawn:

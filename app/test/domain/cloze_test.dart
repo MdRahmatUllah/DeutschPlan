@@ -7,8 +7,8 @@ import 'package:sqlite3/sqlite3.dart';
 
 /// FR-T2-10 — the cloze card's gap.
 void main() {
-  String? blank(String sentence, String german, {String? pos}) {
-    final gap = clozeGap(sentence, german, pos: pos);
+  String? blank(String sentence, String german, {String? pos, String? forms}) {
+    final gap = clozeGap(sentence, german, pos: pos, forms: forms);
     return gap == null ? null : sentence.substring(gap.start, gap.end);
   }
 
@@ -196,6 +196,7 @@ void main() {
             v['sentence'] as String,
             v['german'] as String,
             pos: v['pos'] as String?,
+            forms: v['forms'] as String?,
           ),
           v['gap'],
         );
@@ -203,7 +204,7 @@ void main() {
     }
   });
 
-  test('#325 over the real course, most examples have their gap, and the right one', () {
+  test('#325 #870 over the real course, most examples have their gap, and the right one', () {
     final db = sqlite3.open('assets/db/content.db', mode: OpenMode.readOnly);
     addTearDown(db.close);
     final missed = <String, int>{};
@@ -217,7 +218,7 @@ void main() {
     };
     final total = <String, int>{};
     for (final row in db.select(
-      'SELECT w.german AS word, w.pos, e.german FROM word_examples e '
+      'SELECT w.german AS word, w.pos, w.forms, e.german FROM word_examples e '
       'JOIN words w ON w.uid = e.word_uid',
     )) {
       final word = row['word'] as String;
@@ -226,7 +227,12 @@ void main() {
           : row['pos'] as String? ?? '';
       total.update(kind, (n) => n + 1, ifAbsent: () => 1);
       final sentence = row['german'] as String;
-      final gap = clozeGap(sentence, word, pos: row['pos'] as String?);
+      final gap = clozeGap(
+        sentence,
+        word,
+        pos: row['pos'] as String?,
+        forms: row['forms'] as String?,
+      );
       if (gap == null) {
         missed.update(kind, (n) => n + 1, ifAbsent: () => 1);
         continue;
@@ -242,11 +248,12 @@ void main() {
     }
     double rate(String kind) => (missed[kind] ?? 0) / total[kind]!;
     // Before #325: reflexives 99 %, phrases 64 %, verbs 44 %, all 25 %.
+    // Before #870's forms: reflexives 9 %, verbs 14 %, all 6 %.
     expect(wrong, isEmpty);
-    expect(rate('reflexive'), lessThan(0.15));
-    expect(rate('phrase'), lessThan(0.15));
-    expect(rate('verb'), lessThan(0.2));
+    expect(rate('reflexive'), lessThan(0.05));
+    expect(rate('phrase'), lessThan(0.1));
+    expect(rate('verb'), lessThan(0.05));
     final all = missed.values.fold(0, (a, b) => a + b);
-    expect(all / total.values.fold(0, (a, b) => a + b), lessThan(0.1));
+    expect(all / total.values.fold(0, (a, b) => a + b), lessThan(0.04));
   });
 }

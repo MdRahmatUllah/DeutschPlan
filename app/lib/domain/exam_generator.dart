@@ -730,7 +730,12 @@ WordQuestion _wordQuestion(
 GapQuestion? _gap(ExamWord word, Random random) {
   final gaps = <GapQuestion>[
     for (final example in word.examples)
-      if (clozeGap(example.german, word.word.german, pos: word.word.pos)
+      if (clozeGap(
+            example.german,
+            word.word.german,
+            pos: word.word.pos,
+            forms: word.word.forms,
+          )
           case final gap?)
         GapQuestion(
           word.word.uid,

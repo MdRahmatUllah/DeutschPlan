@@ -447,11 +447,11 @@ def check_every_word_can_be_gapped(db: sqlite3.Connection) -> list[Failure]:
         examples.setdefault(uid, []).append(german)
     rows = [
         f"{german} ({uid})"
-        for uid, german, pos in db.execute(
-            "SELECT uid, german, pos FROM words WHERE kind = 'vocab' ORDER BY seq"
+        for uid, german, pos, forms in db.execute(
+            "SELECT uid, german, pos, forms FROM words WHERE kind = 'vocab' ORDER BY seq"
         )
         if examples.get(uid)
-        and all(cloze_gap(sentence, german, pos) is None for sentence in examples[uid])
+        and all(cloze_gap(sentence, german, pos, forms) is None for sentence in examples[uid])
     ]
     if not rows:
         return []

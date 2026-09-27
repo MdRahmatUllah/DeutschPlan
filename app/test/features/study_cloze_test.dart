@@ -475,6 +475,27 @@ VALUES ('$haus', 'learning', 8, 5, 2, 0, 2, 'cloze')
     expect(cloze?.gap, (start: 4, end: 8));
   });
 
+  test('FR-T2-10 #870 clozeOf finds a strong verb by its forms', () {
+    const lesen = Word(
+      kind: 'vocab',
+      uid: 'l',
+      sublevelCode: 'A1.1',
+      levelCode: 'A1',
+      seq: 1,
+      seqInSublevel: 1,
+      german: 'lesen',
+      english: 'to read',
+      pos: 'verb',
+      forms: 'liest · hat gelesen',
+      searchKey: 'lesen',
+      searchKeyAlt: 'lesen',
+    );
+    final cloze = clozeOf(lesen, const <({String german, String? english})>[
+      (german: 'Er liest die Zeitung.', english: null),
+    ]);
+    expect(cloze?.gap, (start: 3, end: 8));
+  });
+
   group('T2 #564 a cloze typed with the keyboard up', () {
     // SQA's 731 dp phone, its status bar, and a 300 dp keyboard.
     Future<void> typing(

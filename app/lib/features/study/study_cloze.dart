@@ -23,7 +23,12 @@ typedef StudyCloze = ({StudyExample example, ClozeGap gap});
 /// stays plain (study-session-states.md, Cloze rules).
 StudyCloze? clozeOf(Word word, List<StudyExample> examples) {
   for (final example in examples) {
-    final gap = clozeGap(example.german, word.german, pos: word.pos);
+    final gap = clozeGap(
+      example.german,
+      word.german,
+      pos: word.pos,
+      forms: word.forms,
+    );
     if (gap != null) return (example: example, gap: gap);
   }
   return null;

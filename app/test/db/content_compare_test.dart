@@ -63,6 +63,8 @@ void main() {
       final grund = await set('Grund / Ursache / Anlass');
       expect(grund.word.examples, isNotEmpty);
       expect(grund.resolved.keys, <String>['Grund', 'Ursache', 'Anlass']);
+      // #870: the cloze finds a member by them too, "Gründe".
+      expect(grund.resolved['Grund']!.forms, 'Gründe');
       expect(
         grund.resolved.values.map((w) => (w.article, w.german)),
         <(String?, String)>[

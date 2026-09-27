@@ -266,6 +266,32 @@ void main() {
       expect(members.first.spoken, 'der Grund');
     });
 
+    test('FR-W2-01 #870 a resolved member finds itself by its forms', () {
+      final members = compareMembers(
+        const CompareSet(
+          CompareWord(
+            uid: 's',
+            german: 'Gast / Besucher',
+            english: 'guest / visitor',
+            step: 'A2.1',
+            pos: 'noun',
+          ),
+          <String, CompareWord>{
+            'Gast': CompareWord(
+              uid: 'g',
+              german: 'Gast',
+              english: 'guest',
+              step: 'A2.1',
+              pos: 'noun',
+              forms: 'Gäste',
+            ),
+          },
+        ),
+      );
+      expect(members.first.gapIn('Wir haben heute Gäste.'), isNotNull);
+      expect(members.last.gapIn('Wir haben heute Gäste.'), isNull);
+    });
+
     test('FR-W2-01 an unresolved member has no uid and the set\'s step', () {
       final members = compareMembers(circa);
       expect(members.map((m) => m.uid), <String?>[null, null, 'uid-rund']);

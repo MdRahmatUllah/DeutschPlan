@@ -71,6 +71,17 @@ INSERT INTO word_state (word_uid, status, introduced_on) VALUES
     },
   );
 
+  test("#870 and its forms, where the underline is looked for too", () async {
+    await db.customStatement(
+      "UPDATE c.words SET forms = 'Häuser' WHERE uid = '${ContentFixture.haus}'",
+    );
+    final haus = (await store.candidates(
+      today,
+      gapDays: 14,
+    )).firstWhere((c) => c.wordUid == ContentFixture.haus);
+    expect(haus.forms, 'Häuser');
+  });
+
   test('a sentence shown within the gap is left out', () async {
     await db.customStatement(
       "INSERT INTO sentence_log (word_uid, ord, shown_on) VALUES "
