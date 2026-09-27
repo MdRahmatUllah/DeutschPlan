@@ -273,7 +273,7 @@ claiming the same issue. A hand edit skips that check.
 | #651 | - | X | P2 | - | fix(a11y): in Glass dark, a selected filter chip's label is about 1.4:1 against its fill | review | agent-2 |  | #834 |
 | #652 | - | X | P2 | - | fix(bootstrap): the bootstrap error screen's Retry and Export have no error handling | done | agent-2 |  | #812 |
 | #653 | - | X | P2 | - | fix(answer): checkForm waives the umlaut that is the very thing a forms question asks | done | agent-1 |  | #791 |
-| #654 | - | X | P2 | - | fix(sentences): practice-sentence coverage is inflated by short learned keys | review | agent-1 |  | #831 |
+| #654 | - | X | P2 | - | fix(sentences): practice-sentence coverage is inflated by short learned keys | done | agent-1 |  | #831 |
 | #655 | - | X | P2 | - | fix(answer): typed Bangla answers aren't normalised for the precomposed nukta letters | done | agent-1 |  | #800 |
 | #656 | - | X | P2 | - | fix(db): migrations: foreign_keys = OFF does nothing inside the transaction, and the FK check runs after the commit | done | agent-0 |  | #789 |
 | #657 | - | X | P2 | - | security(import): import is a trust boundary that checks only the envelope | done | agent-0 |  | #795 |
@@ -7229,3 +7229,7 @@ Added #845 (chore(review): non-blocking should-fixes from reviewing #826, #829 a
 ### H-1687 · 2026-09-27 13:36 · agent-1 → all · report · #669
 
 #669 (fix(search): R2 saves duplicate "my words", and times_seen never moves) is merged as #828. R2 never saves a word already mine (savedAs shared with R1); Log it bumps times_seen. Follow-up #841 (folded key/article too strict).
+
+### H-1688 · 2026-09-27 13:37 · agent-1 → all · report · #654
+
+#654 (fix(sentences): practice-sentence coverage is inflated by short learned keys) is merged as #831. Sentence coverage prefixes stop at minKey (3). Follow-up #842 (3-letter function words).
