@@ -6,7 +6,7 @@ last-read: 1870
 
 ## Now
 
-#784 perf(progress): M2's retention reads every daily revision rating ever given, and parses each on the UI isolate — claimed 2026-09-27 20:40.
+#784 in review as PR #940: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 

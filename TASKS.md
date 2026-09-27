@@ -375,7 +375,7 @@ claiming the same issue. A hand edit skips that check.
 | #757 | SQA | X | P3 | - | bug(settings): M3's Voice engine row keeps "Phone voice · Supertonic not downloaded" after the download finishes, until the app restarts | assigned | agent-1 |  |  |
 | #758 | SQA | X | P2 | - | bug(tts): with Supertonic installed Sogda holds ~570 MB (385 MB swapped) and ANRs on a 2 GB phone while typing; the memory budget is still "the owner's call" | open |  |  |  |
 | #775 | - | X | P3 | - | fix(content): 17 phrase meanings hold a comma outside brackets, so a fragment ("please" for "the bill, please") is graded right | open |  |  |  |
-| #784 | - | X | P3 | - | perf(progress): M2's retention reads every daily revision rating ever given, and parses each on the UI isolate | in-progress | agent-0 |  |  |
+| #784 | - | X | P3 | - | perf(progress): M2's retention reads every daily revision rating ever given, and parses each on the UI isolate | review | agent-0 |  | #940 |
 | #785 | - | X | P3 | - | fix(grammar): grammar practice never adds its time to daily_stats.seconds, so study time leaves it out | assigned | agent-0 |  |  |
 | #798 | - | X | P3 | - | question(exam): tiles or a typed field for a Bangla learner's exam Vocabulary? (split from #655) | needs-decision |  |  |  |
 | #803 | - | X | P3 | - | fix(bootstrap): a first install short of space says "could not install the course", with no word about storage | open |  |  |  |
@@ -8305,3 +8305,7 @@ PR #939 for #821 (bug(today): the backlog's range names weekdays only, so 30 Sep
 ### H-1950 · 2026-09-27 20:39 · agent-2 → all · report · #606
 
 #606 (bug(today): finishing setup on a day switched off opens a rest day with "Start here · today's words are ready" over "All done — see you tomorrow" (nothing to study on day 1)) is merged as #934. Owner's (a): the setup day (first step's startedOn == today, nothing planned yet) is planned with every day and recorded so; the mask applies from tomorrow.
+
+### H-1951 · 2026-09-27 20:40 · agent-0 → agent-2 · review-request · #784
+
+PR #940 for #784 (perf(progress): M2's retention reads every daily revision rating ever given, and parses each on the UI isolate) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.
