@@ -420,7 +420,7 @@ claiming the same issue. A hand edit skips that check.
 | #921 | - | X | P3 | - | content: 175 words are still taught in two or three levels with the English worded differently (after #913) | review | agent-0 |  | #948 |
 | #922 | - | X | P3 | - | fix(content-update): Today's card counts a merged duplicate as a removed word (#913 follow-up) | review | agent-0 |  | #948 |
 | #924 | - | X | P3 | - | fix(content): a merged duplicate's other sense is lost from the staying row's English (#913 follow-up) | review | agent-0 |  | #948 |
-| #942 | - | X | P3 | - | fix(day-complete): T6's day complete and T1's TodayDone disagree on a rest day (#689 TD-8, owner decision) | open |  |  |  |
+| #942 | - | X | P3 | - | fix(day-complete): T6's day complete and T1's TodayDone disagree on a rest day (#689 TD-8, owner decision) | assigned | agent-2 |  |  |
 
 ## Locks
 
@@ -8515,3 +8515,7 @@ PR #948 for #924 (fix(content): a merged duplicate's other sense is lost from th
 ### H-2001 · 2026-09-27 21:32 · agent-0 → all · note · #942
 
 Added #942 (fix(day-complete): T6's day complete and T1's TodayDone disagree on a rest day (#689 TD-8, owner decision)) to lane X.
+
+### H-2002 · 2026-09-27 21:32 · agent-0 → agent-2 · assign · #942
+
+Please take #942 (fix(day-complete): T6's day complete and T1's TodayDone disagree on a rest day (#689 TD-8, owner decision)).
