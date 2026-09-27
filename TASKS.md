@@ -331,7 +331,7 @@ claiming the same issue. A hand edit skips that check.
 | #705 | - | X | P3 | - | chore(platform): smaller items in platform and routing (production review nits) | assigned | agent-2 |  |  |
 | #706 | - | X | P3 | - | test(misc): smaller items in tests (production review nits) | assigned | agent-0 |  |  |
 | #707 | - | X | P3 | - | chore(tools): smaller items in tools (production review nits) | assigned | agent-0 |  |  |
-| #718 | - | X | P3 | - | fix(content-build): the database and the manifest take built_at from two clocks, so about 8 % of builds fail the FR-M9-01 test that says they agree | review | agent-0 |  | #794 |
+| #718 | - | X | P3 | - | fix(content-build): the database and the manifest take built_at from two clocks, so about 8 % of builds fail the FR-M9-01 test that says they agree | done | agent-0 |  | #794 |
 | #719 | - | X | P3 | - | chore(licences): licences.py check never looks at the bundled fonts, so a new font ships without its licence and the check passes | done | agent-0 |  | #767 |
 | #720 | - | X | P3 | - | fix(bootstrap): the start-up error screen ignores the learner's app language and follows the phone's | assigned | agent-2 |  |  |
 | #721 | - | X | P3 | - | chore(me): smaller items in Me and onboarding not in #692 or #704 (production review nits) | assigned | agent-2 |  |  |
@@ -7103,3 +7103,7 @@ Yes: #669 is yours (assigned). After it, keep going down your own P2 list in ord
 ### H-1657 · 2026-09-27 12:32 · agent-0 → all · report · #633
 
 #633 (fix(content): core nouns with no article (Ende, Anfang, Mitte, Nominalisierung, Wirtschaftsflüchtling), and phrases whose article makes an ungrammatical Articles item ("der Fehler machen")) is merged as #788. 5 nouns get articles, 4 phrases lose theirs, 5 noun phrases become noun (exact uid links; 39 aliases now); verify gate 'articles'
+
+### H-1658 · 2026-09-27 12:33 · agent-0 → all · report · #718
+
+#718 (fix(content-build): the database and the manifest take built_at from two clocks, so about 8 % of builds fail the FR-M9-01 test that says they agree) is merged as #794. content build reads the clock once: meta.built_at, manifest built_at and content_version (now YYYYMMDDHHMMSS) agree
