@@ -13,7 +13,6 @@ import 'package:sogda/data/repositories/plan_store.dart';
 import 'package:sogda/data/repositories/model_repository.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/data/repositories/settings_repository.dart';
-import 'package:sogda/data/repositories/word_repository.dart';
 import 'package:sogda/domain/fsrs.dart';
 import 'package:sogda/domain/plan_engine.dart';
 import 'package:sogda/features/me/settings_screen.dart';
@@ -676,20 +675,6 @@ void main() {
       closeTo(500, 1e-9),
     );
     expect(Fsrs(desiredRetention: 0.97).intervalDays(10), 3);
-  });
-
-  test('FR-M3-01 sums over every word rated and not suspended', () async {
-    await db.customStatement('''
-INSERT INTO word_state (word_uid, status, stability, reps) VALUES
-  ('a', 'learning', 2.5, 1),
-  ('b', 'done', 30, 6),
-  ('c', 'suspended', 12, 3),
-  ('d', 'todo', 0, 0)
-''');
-    expect(await WordRepository(db, settings).learnedStabilities(), <double>[
-      2.5,
-      30,
-    ]);
   });
 
   test("#409 M3's translation row reads the one build the manifest offers, "

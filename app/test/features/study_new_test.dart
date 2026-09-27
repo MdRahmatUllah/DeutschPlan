@@ -8,6 +8,7 @@ import 'package:sogda/data/db/content_dao.dart';
 import 'package:sogda/data/repositories/plan_repository.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/data/repositories/settings_repository.dart';
+import 'package:sogda/domain/fsrs.dart' show Rating;
 import 'package:sogda/features/study/study_card.dart';
 import 'package:sogda/features/study/study_screen.dart';
 import 'package:sogda/features/study/study_session.dart';
@@ -166,6 +167,21 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code) VALUES
       });
       expect(session().current?.uid, haus);
       expect(session().results.containsKey(1), isFalse);
+    });
+
+    test("#888 FR-T2-04 I know it's Undo leaves a later rating of the same "
+        'word alone', () async {
+      await notifier.knewIt();
+      // An L8 answer on it, under the bar a screen reader keeps.
+      await container
+          .read(ratingServiceProvider)
+          .rate(haus, Rating.again, source: ReviewSource.quiz);
+
+      await notifier.undo();
+      expect(await log(), <Map<String, Object?>>[
+        <String, Object?>{'word_uid': haus, 'rating': 4, 'source': 'known'},
+        <String, Object?>{'word_uid': haus, 'rating': 1, 'source': 'quiz'},
+      ]);
     });
 
     test("I know it's Undo restores the word as it was", () async {
