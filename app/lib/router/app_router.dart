@@ -29,16 +29,22 @@ GoRouter buildRouter({String initialLocation = '/today', RouteGuards? guards}) {
       // names a step, and `/exam/:attemptId` in the table is the runner for
       // one attempt. Resolved first, then the result goes round again and
       // meets the guards like any other navigation.
-      if (state.uri.scheme == deepLinkScheme) {
-        // An exam in progress is the one screen a link does not take over.
+      //
+      // #613: a scheme or a host is an arrival from outside the app, never
+      // one of its own locations. MainActivity is exported, and Flutter hands
+      // any intent's data over as the route, so another app's `x://h/exam/7`
+      // would otherwise match the table by its path.
+      if (state.uri.hasScheme || state.uri.hasAuthority) {
+        // An exam in progress is the one screen an arrival does not take over.
         //
         // Redirected back to where the learner already is, not `null`:
         // returning null means "carry on with the incoming location", and the
-        // incoming location is a `sogda://` URI that matches no route —
+        // incoming location is a URI that matches no route —
         // so the link would land on Today through `onException` anyway. The
         // first version of this guard did exactly that.
         final current = router.routerDelegate.currentConfiguration.uri;
         if (!interruptible(current.path)) return current.toString();
+        if (state.uri.scheme != deepLinkScheme) return fallbackLocation;
 
         final resolved = resolveDeepLink(state.uri);
         return wantsSpeech(Uri.parse(resolved))

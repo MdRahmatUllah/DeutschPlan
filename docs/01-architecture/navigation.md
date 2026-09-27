@@ -45,4 +45,4 @@ Session args are passed as `extra` **only** for ephemeral data (which cards); an
 - **Cross-tab jumps** (`T1 → L2`, `M1 → L10` …) switch the branch, then push, so back walks the target tab's natural parents.
 - **Modals never switch tabs**; closing returns to the opener.
 - **Guards**: `/exam/*` and `/study` require an existing session/attempt id; otherwise redirect to the tab root. `/onboarding/*` redirects to `/today` once enrolled.
-- **Deep links**: `sogda://today`, `…/learn/A2.1`, `…/word/<uid>`, `…/exam/A1.2`. Local scheme only; also used by the reminder notification and the widget.
+- **Deep links**: `sogda://today`, `…/learn/A2.1`, `…/word/<uid>`, `…/exam/A1.2`. Local scheme only; also used by the reminder notification and the widget. A running exam is never taken over by a link. Any other URI is not the app's (#613): Android's `MainActivity` drops another app's intent data, and a `route` extra, before Flutter reads them, so the app opens as from the launcher; one that reaches the router all the same (a foreign scheme, or a host) lands on Today, however well its path matches a route, and never takes over a running exam.
