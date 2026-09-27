@@ -45,12 +45,21 @@ void main() {
 
   test('#623 a session that fails to configure: the word plays all the '
       'same, and the next play asks again', () async {
-    // No audio_session plugin here: configuring it fails, as it might on a
-    // phone.
+    final original = SpeechAudio.open;
+    addTearDown(() => SpeechAudio.open = original);
+    var opens = 0;
+    SpeechAudio.open = () async {
+      opens++;
+      throw StateError('setCategory refused');
+    };
+
     var played = 0;
     await SpeechAudio.play(() async => played++);
     await SpeechAudio.play(() async => played++);
+    await pumpEventQueue();
+
     expect(played, 2);
+    expect(opens, greaterThanOrEqualTo(2), reason: 'no failure kept');
   });
 
   test('#623 on iOS it ducks others and lets them back', () {

@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:audio_session/audio_session.dart';
-import 'package:flutter/foundation.dart' show debugPrint;
+import 'package:flutter/foundation.dart' show debugPrint, visibleForTesting;
 
 /// #623: the app's own sounds, Supertonic's clips and Speaking's playback,
 /// share the phone's audio as the phone's voice does. A word ducks the
@@ -28,11 +28,23 @@ abstract final class SpeechAudio {
     await (await _ready()).setActive(false);
   });
 
-  static Future<AudioSession> _ready() => _session ??= () async {
+  /// The session, configured. A seam for the test of a session that fails
+  /// to configure: audio_session swallows a missing channel itself on
+  /// Android, and only iOS's `setCategory` throws.
+  @visibleForTesting
+  static Future<AudioSession> Function() open = () async {
     final session = await AudioSession.instance;
     await session.configure(configuration);
     return session;
-  }();
+  };
+
+  /// [open]'s session, once; a failure is kept by neither a play nor a
+  /// give-back, so the next of them asks again.
+  static Future<AudioSession> _ready() =>
+      _session ??= open().catchError((Object error) {
+        _session = null;
+        throw error;
+      });
 
   /// Runs [play], a just_audio `play()`, in the configured session, and
   /// gives the focus back once it, and any play started after it, has ended.
@@ -42,8 +54,8 @@ abstract final class SpeechAudio {
       await _ready();
     } on Object catch (error) {
       // The word plays all the same, as before #623, and the next play asks
-      // again: a failure kept would silence the voice for the whole run.
-      _session = null;
+      // again ([_ready] keeps no failure): a kept one would silence the voice
+      // for the whole run.
       debugPrint('audio session: $error');
     }
     final ended = play();
