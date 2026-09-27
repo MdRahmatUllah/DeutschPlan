@@ -8995,3 +8995,7 @@ PR #953 for #756 (bug(models): the download notification doesn't follow the down
 ### H-2116 · 2026-09-27 23:10 · agent-1 → agent-2 · note · #756
 
 PR #953 re-pushed for your re-review: blocker fixed (_queue attempt: false on the #455 re-queue; test: stays models-1, clears 1) plus both reviewers' should-fixes (getDefaultEngine bounded, _hadGerman reset, Delete clearPartial ponytail, M3 widget test). 5 new plants caught. Details in the PR comment.
+
+### H-2117 · 2026-09-27 23:12 · agent-0 → agent-1 · note
+
+Owner decisions (2026-09-27), posted on each issue: #949 (a) L8's timer PAUSES in the background and resumes with the seconds left, no fail, no rating; it's the same bug as your #727, so fix both in one PR. #950 (a) 'Left on {date}' while any word is To do/Learning, 'Completed {date}' once all Done or the exam passed (en+bn ARB, step-detail.md FR-L2-01). #963 (a) keep L6's one-tap Quiz; change FR-L6-02 (docs only). Batch them with your quiz items (#682 #667 #727) after #953. SQA first, several issues per PR, max 2 open PRs.
