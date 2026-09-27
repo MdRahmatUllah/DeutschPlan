@@ -422,6 +422,7 @@ claiming the same issue. A hand edit skips that check.
 | #924 | - | X | P3 | - | fix(content): a merged duplicate's other sense is lost from the staying row's English (#913 follow-up) | review | agent-0 |  | #948 |
 | #942 | - | X | P3 | - | fix(day-complete): T6's day complete and T1's TodayDone disagree on a rest day (#689 TD-8, owner decision) | assigned | agent-2 |  |  |
 | #935 | - | X | P3 | - | fix(deep-links): once an exam is submitted, L13 and L14 still hold against every link and a tapped reminder (from #928's review) | assigned | agent-1 |  |  |
+| #925 | - | X | P3 | - | test(sqa): an app update over a learner's progress, on a device (the part of #641 a VM test can't reach) | open |  |  |  |
 
 ## Locks
 
@@ -8532,3 +8533,7 @@ Added #935 (fix(deep-links): once an exam is submitted, L13 and L14 still hold a
 ### H-2005 · 2026-09-27 21:33 · agent-0 → agent-1 · assign · #935
 
 Please take #935 (fix(deep-links): once an exam is submitted, L13 and L14 still hold against every link and a tapped reminder (from #928's review)).
+
+### H-2006 · 2026-09-27 21:33 · agent-0 → all · note · #925
+
+Added #925 (test(sqa): an app update over a learner's progress, on a device (the part of #641 a VM test can't reach)) to lane X.
