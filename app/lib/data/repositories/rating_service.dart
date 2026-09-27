@@ -130,8 +130,8 @@ class RatingService {
   Future<void> resume(String uid) => _words.resume(uid);
 
   /// Undoes the most recent rating, or returns null if there is nothing to
-  /// undo.
-  Future<String?> undo() => _plan.undo();
+  /// undo — or, with [expectUid], if the most recent is another word's.
+  Future<String?> undo({String? expectUid}) => _plan.undo(expectUid: expectUid);
 
   /// The FSRS view of a stored row.
   ///

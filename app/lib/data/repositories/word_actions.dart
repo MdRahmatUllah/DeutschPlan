@@ -120,7 +120,7 @@ class WordActions {
           }
         }
         return () => _db.transaction(() async {
-          await _rating.undo();
+          if (await _rating.undo(expectUid: uid) == null) return;
           for (final row in rest) {
             await _db
                 .into(_db.planItems)

@@ -223,7 +223,11 @@ class PlanRepository {
   /// undo is a word whose schedule and history disagree.
   ///
   /// Returns the uid that was undone, or `null` when there is nothing to undo.
-  Future<String?> undo() => _db.transaction(() async {
+  ///
+  /// [expectUid] is the word the caller's *Undo* is for. When the top entry
+  /// is another word's — a rating made since, on a screen with no *Undo* of
+  /// its own — nothing changes and `null` comes back (#728).
+  Future<String?> undo({String? expectUid}) => _db.transaction(() async {
     final entry =
         await (_db.select(_db.undoStack)
               ..orderBy(<OrderClauseGenerator<UndoStack>>[
@@ -235,6 +239,7 @@ class PlanRepository {
 
     final payload = jsonDecode(entry.payloadJson) as Map<String, dynamic>;
     final uid = payload['word_uid'] as String;
+    if (expectUid != null && uid != expectUid) return null;
     final before = payload['word_state'] as Map<String, dynamic>?;
 
     if (before == null) {

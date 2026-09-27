@@ -184,6 +184,25 @@ void main() {
       expect((await plan()).single.completedAt, isNull);
     });
 
+    test("#728 Undo leaves a later rating of another word alone, and this "
+        "word's rows closed", () async {
+      await planned('2026-02-27');
+      await planned(today, kind: 'revise');
+      final undo = await actions.markKnown(uid, today: today);
+      await rating.rate(
+        ContentFixture.tuer,
+        Rating.good,
+        source: ReviewSource.daily,
+      );
+
+      await undo();
+      expect(
+        (await db.select(db.reviewLog).get()).map((row) => row.wordUid),
+        <String>[uid, ContentFixture.tuer],
+      );
+      expect(await open(), isEmpty);
+    });
+
     test('#717 a failure closing the older rows saves nothing: no rating, '
         'and every row still open', () async {
       await planned('2026-02-27');
