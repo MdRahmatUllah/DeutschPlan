@@ -6,7 +6,7 @@ last-read: 1870
 
 ## Now
 
-Nothing claimed.
+#691 fix(exam): 10 lower-severity findings in Exam, search and words (production review checklist) — claimed 2026-09-27 23:12.
 
 ## Next
 
