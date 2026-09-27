@@ -16,6 +16,16 @@ is off, #302). `accessibility-performance.md` has the budgets.
               warm `am start -W`, the median of five each
     all       size, frames, start
 
+    --profile year   frames and start on a learner with a year behind them
+              (#818): about 13,500 ratings with their plan rows and
+              daily_stats, seeded by app/integration_test/year_profile.dart.
+              Frames seeds it inside the test; start builds
+              integration_test/perf_seed.dart as a release APK of its own,
+              runs it once, and installs the app's APK over it (the same id
+              and key, so user.db stays). Its metrics are `year.<metric>`,
+              with their own baselines and the fresh ones' margins and
+              budgets.
+
 The app is uninstalled at the start and the end, so the next agent finds
 neither a profile build nor a glass theme nor a studied day. Its data goes
 with it, a downloaded voice model included: re-download it if a check needs
@@ -28,6 +38,9 @@ emulator is not the mid-range phone the budgets are written for, so an
 absolute budget is reported, not enforced (the owner checks start on a real
 phone before a release) — except search's, which fails only when it is over
 its 50 ms *and* over its baseline.
+
+The owner's checkout takes no lock, but refuses to drive the emulator while
+an agent holds it (#845).
 
 Cold start ends at Android's `Fully drawn`, which the app reports once
 Today shows its plan (#462), read from logcat. `am start -W`'s `TotalTime`
@@ -58,6 +71,8 @@ APP = TOOLS.parent / "app"
 BASELINE = TOOLS / "perf_baseline.json"
 SPLITS = APP / "build" / "app" / "outputs" / "flutter-apk"
 RESPONSE = APP / "build" / "integration_response_data.json"
+SEED_APK = APP / "build" / "perf-seed.apk"
+YEAR = "year."
 ACTIVITY = f"{device.PACKAGE}/.MainActivity"
 RUNS = 5
 
@@ -98,6 +113,40 @@ def build_splits() -> None:
     run([flutter(), "build", "apk", "--release", "--split-per-abi",
          "--obfuscate", "--split-debug-info=build/perf-symbols",  # not the AAB's (#697 TL-9)
          "-P", "force-version-code-ignoring-abi=true"])
+
+
+def build_seed() -> None:
+    """integration_test/perf_seed.dart as a release APK, kept aside from the
+    splits: the app's own id, key and version code, so the measured APK
+    installs over it and keeps what it seeded (#818)."""
+    run([flutter(), "build", "apk", "--release", "--target-platform", "android-x64",
+         "-t", "integration_test/perf_seed.dart"])
+    shutil.copyfile(SPLITS / "app-release.apk", SEED_APK)
+
+
+def seed_outcome(logcat: str) -> bool | None:
+    """Whether perf_seed.dart said it was done, or failed (which stops the
+    run, saying why); None while it has said neither."""
+    if "perf-seed: done" in logcat:
+        return True
+    failed = re.search(r"perf-seed: failed: (.*)", logcat)
+    if failed:
+        raise SystemExit(f"the year profile was not seeded: {failed.group(1)}")
+    return None
+
+
+def seed_year(dev: device.Device, seconds: float = 300) -> None:
+    """A year of study in the app's user.db, before its own APK goes on (#818)."""
+    if not dev.install(SEED_APK):
+        raise SystemExit("the seed APK did not install")
+    dev.sh("logcat", "-c")
+    dev.launch()
+    deadline = time.time() + seconds
+    while not seed_outcome(dev.sh("logcat", "-d", "-s", "flutter")):
+        if time.time() > deadline:
+            raise SystemExit("perf_seed.dart never said it was done")
+        time.sleep(1)
+    dev.sh("am", "force-stop", device.PACKAGE)
 
 
 def measure_size() -> dict[str, float]:
@@ -170,14 +219,18 @@ def walk_setup(dev: device.Device) -> None:
     dev.wait(arb["todayCourseDay"].split("}")[-1], anywhere=True)  # "Day 1 of your course"
 
 
-def measure_start(dev: device.Device, build: bool = True) -> dict[str, float]:
-    """The same state every run: a fresh install past S2, on Today."""
+def measure_start(dev: device.Device, build: bool = True, year: bool = False) -> dict[str, float]:
+    """The same state every run: a fresh install past S2, on Today; or, with
+    [year], a year of study seeded first, which opens on Today (#818)."""
     if build:
         build_splits()
     dev.run("uninstall", device.PACKAGE)
+    if year:
+        seed_year(dev)
     if not dev.install(SPLITS / "app-x86_64-release.apk"):
         raise SystemExit("the release x86_64 APK did not install")
-    walk_setup(dev)
+    if not year:
+        walk_setup(dev)
     launcher = ["-a", "android.intent.action.MAIN", "-c", "android.intent.category.LAUNCHER"]
 
     firsts: list[int] = []
@@ -241,7 +294,7 @@ def frames_from(data: dict) -> dict[str, float]:
     }
 
 
-def measure_frames(dev: device.Device) -> dict[str, float]:
+def measure_frames(dev: device.Device, year: bool = False) -> dict[str, float]:
     RESPONSE.unlink(missing_ok=True)
     dev.run("uninstall", device.PACKAGE)  # the test walks S2 on a fresh install
     dev.sh("pm", "trim-caches", "16G")
@@ -251,7 +304,8 @@ def measure_frames(dev: device.Device) -> dict[str, float]:
     # and uninstalls the app when it is done.
     run([flutter(), "drive", "--profile", "--no-dds",
          "--driver=test_driver/perf_driver.dart",
-         "--target=integration_test/perf_test.dart", "-d", dev.serial])
+         "--target=integration_test/perf_test.dart", "-d", dev.serial,
+         *(["--dart-define=SG_PERF_PROFILE=year"] if year else [])])
     data = json.loads(RESPONSE.read_text(encoding="utf-8"))
     slowest = sorted(data["search"]["keystrokes"], key=lambda pair: -statistics.median(pair[1]))[:3]
     print("slowest keystrokes: " + ", ".join(f"{q!r} {runs} ms" for q, runs in slowest))
@@ -263,7 +317,9 @@ def measure_frames(dev: device.Device) -> dict[str, float]:
 def lookup(table: dict, metric: str):
     """[metric]'s own entry, else its group's (`start` for `start.cold_ms`).
     Null is an answer (no margin: information only; no budget); no entry
-    at all is a mistake in perf_baseline.json."""
+    at all is a mistake in perf_baseline.json. A year-profile metric takes
+    its fresh twin's (#818)."""
+    metric = metric.removeprefix(YEAR)
     group = metric.split(".")[0]
     if metric in table:
         return table[metric]
@@ -296,7 +352,7 @@ def report(measured: dict[str, float], doc: dict) -> bool:
         baseline = doc["metrics"].get(metric)
         budget = lookup(doc["budgets"], metric)
         result = verdict(value, baseline, lookup(doc["margins"], metric), budget,
-                         metric.split(".")[0] in BUDGET_GATES)
+                         metric.removeprefix(YEAR).split(".")[0] in BUDGET_GATES)
         passed &= result != "FAIL"
         print(f"{metric:<22}{cell(value):>10}{cell(baseline):>10}{cell(budget):>9}  {result}")
     return passed
@@ -311,9 +367,22 @@ def keep_device() -> None:
         pass  # main checked the holder already
 
 
+def device_held_by() -> str | None:
+    """Who holds `team.py device`, while their lock is fresh."""
+    lock = team.team_root() / ".device.lock"
+    try:
+        if time.time() - lock.stat().st_mtime < team.DEVICE_LOCK_STALE_SECONDS:
+            return (lock / "owner").read_text(encoding="utf-8").strip() or "?"
+    except FileNotFoundError:
+        pass
+    return None
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("what", choices=["size", "frames", "start", "all"])
+    parser.add_argument("--profile", choices=["fresh", "year"], default="fresh",
+                        help="frames and start on a fresh install, or on a year of study (#818)")
     parser.add_argument("--update-baseline", action="store_true")
     parser.add_argument("--device", help=f"the emulator (default: {device.DEV_SERIAL})")
     args = parser.parse_args(argv)
@@ -327,8 +396,20 @@ def main(argv: list[str] | None = None) -> int:
     if not device.owner_checkout() and not holds_device(device.agent()):
         print("refused: hold the emulator first: `python tools/team.py device`", file=sys.stderr)
         return 2
+    # The owner takes no lock, but must not uninstall the app from under an
+    # agent's device check (#845).
+    holder = device.owner_checkout() and args.what != "size" and device_held_by()
+    if holder:
+        print(f"refused: an agent is using the emulator ({holder}): "
+              "try again once it is released", file=sys.stderr)
+        return 2
 
+    year = args.profile == "year"
+    prefix = YEAR if year else ""
     measured: dict[str, float] = {}
+    if year and args.what in ("start", "all"):
+        keep_device()
+        build_seed()  # before the splits: its build shares their folder
     if args.what in ("size", "all"):
         keep_device()
         measured.update(measure_size())
@@ -337,10 +418,11 @@ def main(argv: list[str] | None = None) -> int:
         try:
             if args.what in ("frames", "all"):
                 keep_device()
-                measured.update(measure_frames(dev))
+                measured.update({prefix + k: v for k, v in measure_frames(dev, year).items()})
             if args.what in ("start", "all"):
                 keep_device()
-                measured.update(measure_start(dev, build=args.what == "start"))
+                start = measure_start(dev, build=args.what == "start", year=year)
+                measured.update({prefix + k: v for k, v in start.items()})
         finally:
             print("perf: uninstalling the app (its data and any voice model go)")
             dev.run("uninstall", device.PACKAGE)

@@ -20,7 +20,7 @@ Each workbook MUST contain the sheets **All Words**, **Grammar** and the **C-…
 
 A renamed header is a column the build no longer reads, so the build refuses one (#714):
 
-- A workbook whose *All Words* or *Grammar* lacks a column that another workbook's has stops the build, naming the file, the column and the headers in that row it did not know. A column a workbook never had is listed under its entry's `without:` in `content/manifest.yaml` (B1 has no Collocations or Synonyms / register), by field name; `--allow-missing-columns` builds past it once, and each workbook without the column ships its words without it.
+- A workbook whose *All Words* or *Grammar* lacks a column the maps read stops the build, naming the file, the columns and the headers in that row it did not know. Every column of the maps, not only those another workbook has: a header renamed in every workbook at once (a find-and-replace across the trackers) leaves none carrying it (#837). A column a workbook never had is listed under its entry's `without:` in `content/manifest.yaml` (B1 has no Collocations or Synonyms / register), by field name: a list, or one field as a string (`without: collocations`). A column no workbook has is listed under every entry's. `--allow-missing-columns` builds past it once, and each workbook without the column ships its words without it.
 - The German, English, Level and POS headers are required in every workbook, whatever the others carry: POS is part of the uid (PIPE-03), and a renamed POS header would give every word of the workbook a new one. The POS *cell* may be blank.
 - Every header no map reads is reported (`warning: unknown header: …`), except the tracker's own `ID`, `Status`, `Times logged`, `#` and `Notes`.
 
@@ -103,7 +103,7 @@ words:
 
 ## Adding a fifth workbook
 
-1. Put the `.xlsx` in `data/` and add it to `content/manifest.yaml` (and to the workbook list in `tools/tests/test_shipped_content.py`).
+1. Put the `.xlsx` in `data/` and add it to `content/manifest.yaml` (and to the workbook list in `tools/tests/test_shipped_content.py`). A column the maps read that the workbook doesn't have goes under its entry's `without:`, by field name (`without: [collocations, synonyms_register]`), or the build stops on it as a renamed header (#714).
 2. Build, verify, copy (`make content` does the three): `python tools/excel_to_sqlite.py`, `python tools/verify_content.py`, then copy `content/build/content.db` and `content/build/content_manifest.json` to `app/assets/db/`.
 3. Run `python -m pytest tools/tests -q` and, from `app/`, `flutter test test/db/` (schema and count assertions read the manifest).
 4. Commit `content/manifest.yaml` and the regenerated asset together, not the workbook. The workbooks stay out of git until the owner makes the repository private (#634): until then they live in `data/`, which is git-ignored, and what the repository records is each one's SHA-256, in `meta.sources` and the manifest's `sources`.

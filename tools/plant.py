@@ -53,14 +53,13 @@ APP = Path(__file__).resolve().parents[1] / "app"
 def run_tests(tests: list[str], command: list[str] | None = None,
               timeout: float = 1200) -> tuple[int | None, str]:
     """The run's exit code (None on a timeout) and its output."""
-    if command:
-        cmd = command
-    else:
-        flutter = shutil.which("flutter")
-        if flutter is None:
-            return 127, "flutter is not on PATH"
-        cmd = [flutter, "test", "--timeout", "60s", *tests]
-    proc = subprocess.Popen(cmd, cwd=APP, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+    cmd = command or ["flutter", "test", "--timeout", "60s", *tests]
+    # On Windows dart and flutter are .bat files, which a bare Popen can't
+    # find: resolve the program first, and a missing one fails the run (#814).
+    exe = shutil.which(cmd[0])
+    if exe is None:
+        return 127, f"{cmd[0]} is not on PATH"
+    proc = subprocess.Popen([exe, *cmd[1:]], cwd=APP, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
                             text=True, encoding="utf-8", errors="replace")
     try:
         out, _ = proc.communicate(timeout=timeout)
@@ -72,7 +71,10 @@ def run_tests(tests: list[str], command: list[str] | None = None,
             subprocess.run(["taskkill", "/T", "/F", "/PID", str(proc.pid)], capture_output=True, check=False)
         else:
             proc.kill()
-        proc.communicate()
+        try:
+            proc.communicate(timeout=30)  # a failed kill must not hang the run (#814)
+        except subprocess.TimeoutExpired:
+            pass
         return None, "TIMEOUT"
 
 
