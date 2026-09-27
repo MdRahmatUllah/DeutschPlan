@@ -1260,3 +1260,4 @@ able to tell what is going on without asking.
 - 2026-09-27 09:27 · agent-1 #614 · claimed: fix(answer): a misspelled noun with the wrong article scores half a point, more than the same noun spelled right with the wrong article
 - 2026-09-27 09:31 · agent-1 #614 · PR #792 open; review requested from all
 - 2026-09-27 09:31 · agent-1 · #614 PR #792 up: wrong article + typo = wrong (never above the right noun's wrongArticle). Plants 2/2; 889 tests green.
+- 2026-09-27 09:31 · agent-2 #647 · done (#772)
