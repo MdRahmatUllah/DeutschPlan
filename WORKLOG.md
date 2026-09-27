@@ -1787,3 +1787,4 @@ able to tell what is going on without asking.
 - 2026-09-27 23:03 · agent-0 #849 · claimed: perf(licences): M8's sheet lays out ONNX Runtime's 327 KB ThirdPartyNotices as one text
 - 2026-09-27 23:03 · agent-0 #849 · PR #965 open; review requested from agent-2
 - 2026-09-27 23:05 · agent-0 #814 · done (#960)
+- 2026-09-27 23:05 · agent-0 #837 · done (#960)
