@@ -1244,3 +1244,4 @@ able to tell what is going on without asking.
 - 2026-09-27 09:13 · agent-0 #784 · assigned to agent-0
 - 2026-09-27 09:13 · agent-0 #785 · added to the board, lane X
 - 2026-09-27 09:13 · agent-0 #785 · assigned to agent-0
+- 2026-09-27 09:14 · agent-1 · #645 merged (#763): one meaning rule shared with Search; content follow-up #775 filed. #646 merged (#760). #617 PR #774 rebased on #643, green, awaiting review.
