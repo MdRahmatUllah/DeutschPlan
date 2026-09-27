@@ -69,17 +69,26 @@ void main() {
   );
 
   test(
-    '#683 until waits for its condition, and gives up at its timeout',
+    '#683 until waits for its condition, and fails at its timeout',
     () async {
       var ready = false;
       unawaited(Future(() => ready = true));
       await until(() => ready);
       expect(ready, isTrue);
 
-      await until(
-        () => false,
-        timeout: const Duration(milliseconds: 20),
-      ).timeout(const Duration(seconds: 5));
+      await expectLater(
+        until(
+          () => false,
+          timeout: const Duration(milliseconds: 20),
+        ).timeout(const Duration(seconds: 5)),
+        throwsA(
+          isA<TimeoutException>().having(
+            (e) => e.duration,
+            'duration',
+            const Duration(milliseconds: 20),
+          ),
+        ),
+      );
     },
   );
 }

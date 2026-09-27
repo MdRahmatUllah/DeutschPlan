@@ -341,10 +341,10 @@ void main() {
       );
       await tester.tap(find.text(l10n.modelsDelete('399 MB')));
       await tester.pumpAndSettle();
-      await tester.runAsync(() async {
-        await tester.tap(find.text(l10n.modelsDeleteConfirm));
-        await until(() => voice.availabilityChecks > 0);
-      });
+      await tester.tap(find.text(l10n.modelsDeleteConfirm));
+      // The sheet closes on frames; the delete is real disk I/O after it.
+      await tester.pumpAndSettle();
+      await tester.runAsync(() => until(() => voice.availabilityChecks > 0));
       await tester.pumpAndSettle();
       expect(settings.read(SettingKeys.ttsEngine), TtsEngineSetting.system);
       expect(voice.availabilityChecks, 1);

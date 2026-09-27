@@ -1,8 +1,9 @@
 import 'dart:async';
 
 /// Waits for real work (disk I/O, another isolate) by polling until [done]
-/// holds, for at most [timeout] (#683). In a widget test, call it inside
-/// `tester.runAsync`.
+/// holds, for at most [timeout] (#683), then throws a [TimeoutException]: a
+/// wait that gave up is the failure, not whatever the test asserts next. In a
+/// widget test, call it inside `tester.runAsync`.
 ///
 /// A fixed sleep long enough for a loaded machine wastes that on every run,
 /// and one short enough to be quick flakes. Work that stays in this isolate,
@@ -13,7 +14,10 @@ Future<void> until(
   Duration timeout = const Duration(seconds: 10),
 }) async {
   final clock = Stopwatch()..start();
-  while (!done() && clock.elapsed < timeout) {
+  while (!done()) {
+    if (clock.elapsed >= timeout) {
+      throw TimeoutException('until: the condition never held', timeout);
+    }
     await Future<void>.delayed(const Duration(milliseconds: 2));
   }
 }
