@@ -45,16 +45,28 @@ const int typoMinLength = 6;
 /// DE→EN and DE→BN (BR-ANS-01).
 ///
 /// [expected] is the `words.english` or `words.bangla` column as authored: one
-/// string holding synonyms separated by `/` or `,`. Any one of them counts.
+/// string holding synonyms separated by `/` or `,`. Any one of them counts,
+/// or the whole cell as shown, with or without a bracketed note
+/// ([meaningAnswers], #645).
+///
+/// Several meanings typed, as a list or a card shows them, in any order ("hi /
+/// hello"), are right when each is one of the cell's, and *almost* when each
+/// is at least almost. One that is not makes the whole answer wrong (#678).
 Verdict checkMeaning(String given, String expected) {
-  final candidates = splitMeanings(expected);
+  final candidates = meaningAnswers(expected).map(_stripInfinitiveTo).toList();
   if (candidates.isEmpty) return Verdict.wrong;
 
-  return _best(
-    _stripInfinitiveTo(given),
-    candidates.map(_stripInfinitiveTo),
-    german: false,
-  );
+  final whole = _best(_stripInfinitiveTo(given), candidates, german: false);
+  final parts = splitMeanings(given);
+  if (whole == Verdict.correct || parts.length < 2) return whole;
+
+  var listed = Verdict.correct;
+  for (final part in parts) {
+    final verdict = _best(_stripInfinitiveTo(part), candidates, german: false);
+    if (verdict == Verdict.wrong) return whole;
+    if (verdict == Verdict.almost) listed = Verdict.almost;
+  }
+  return listed.score > whole.score ? listed : whole;
 }
 
 /// EN→DE, cloze and forms (BR-ANS-02).
@@ -65,7 +77,23 @@ Verdict checkMeaning(String given, String expected) {
 ///
 /// A right noun under the wrong article is [Verdict.wrongArticle], so the
 /// caller can name the article it wanted instead of just saying no.
+///
+/// [german] may hold alternatives and a note, as some headwords and forms
+/// cells do: "prima / super / klasse", "hat/ist aufgebrochen", "denn
+/// (Partikel)". Any one alternative counts, and the note may be left out
+/// (#645).
 Verdict checkGerman(String given, String german, {String? article}) {
+  var best = Verdict.wrong;
+  for (final form in germanForms(german)) {
+    final verdict = _checkGermanForm(given, form, article: article);
+    if (verdict == Verdict.correct) return verdict;
+    // Almost beats a wrong article, which beats wrong: each says more.
+    if (verdict.score > best.score || best == Verdict.wrong) best = verdict;
+  }
+  return best;
+}
+
+Verdict _checkGermanForm(String given, String german, {String? article}) {
   final (givenArticle, givenWord) = _peelArticle(given);
   final (embedded, expectedWord) = _peelArticle(german);
 
@@ -75,17 +103,16 @@ Verdict checkGerman(String given, String german, {String? article}) {
 
   final verdict = _best(givenWord, <String>[expectedWord], german: true);
 
-  // Only when the noun itself is right. A wrong article on a wrong word is
-  // just wrong, and telling the learner about the article would bury the
-  // thing they actually got wrong.
-  if (verdict == Verdict.correct &&
-      expectedArticle.isNotEmpty &&
-      givenArticle.isNotEmpty &&
-      givenArticle != expectedArticle) {
-    return Verdict.wrongArticle;
+  if (expectedArticle.isEmpty ||
+      givenArticle.isEmpty ||
+      givenArticle == expectedArticle) {
+    return verdict;
   }
-
-  return verdict;
+  // A wrong article costs the point (BR-ANS-02). On a right noun the feedback
+  // names the article it wanted. On a misspelt one it is just wrong: a typo
+  // must never score more than the spelling it got wrong (#614), and naming
+  // the article would bury what the learner actually got wrong.
+  return verdict == Verdict.correct ? Verdict.wrongArticle : Verdict.wrong;
 }
 
 /// The articles quiz (BR-ANS-03): exact der/die/das, no typo allowance.
@@ -100,19 +127,96 @@ Verdict checkArticle(String given, String article) =>
 /// The forms quiz: [checkGerman] without the article logic.
 ///
 /// A plural or a participle has no article of its own to get wrong, so a
-/// leading one is simply part of what was typed.
+/// leading one is simply part of what was typed. Alternatives and a note
+/// count as in [checkGerman]: "hat/ist aufgebrochen" takes either (#645).
 Verdict checkForm(String given, String expectedForm) =>
-    _best(given, <String>[expectedForm], german: true);
+    _best(given, germanForms(expectedForm), german: true);
 
 /// The synonyms in an authored meaning column, in order.
 ///
+/// Split at `/`, `,` and `;`, but never inside brackets, where they belong to
+/// the note: "stop (bus/tram)" is one meaning, not "stop (bus" and "tram)"
+/// (#645).
+///
 /// Exposed because the review screen lists them under a wrong answer, and a
 /// second splitter there would drift from this one.
-List<String> splitMeanings(String expected) => expected
-    .split(RegExp(r'[/,;]'))
-    .map((part) => part.trim())
-    .where((part) => part.isNotEmpty)
-    .toList();
+List<String> splitMeanings(String expected) =>
+    _splitOutsideBrackets(expected, const <String>{'/', ',', ';'});
+
+/// Every way a meaning cell may be answered: the cell as shown ("the bill,
+/// please" is one phrase, not two synonyms) and each of its synonyms, each
+/// with and without its bracketed note.
+///
+/// The one rule for what a meaning is: [checkMeaning] grades by it, and
+/// Search's exact tier matches by it, so the two can't disagree (#645).
+Set<String> meaningAnswers(String cell) => <String>{
+  for (final meaning in <String>[cell, ...splitMeanings(cell)])
+    ..._withoutAside(meaning),
+};
+
+/// Every way [german] may be typed: its alternatives, each with and without a
+/// bracketed note, and each in-word slash taken either way.
+///
+/// "circa / etwa / rund" is three answers; "hat/ist aufgebrochen" is "hat
+/// aufgebrochen" and "ist aufgebrochen"; "hat gehabt (hatte)" is "hat gehabt"
+/// and itself. Only the text outside the note is split: written out whole,
+/// "Haltestelle (Bus / Tram)" is one answer, never "Tram)".
+List<String> germanForms(String german) {
+  final written = german.trim();
+  final bare = written.replaceAll(_aside, '').trim();
+  return <String>{
+    for (final alternative in bare.split(_spacedSlash))
+      ..._eachSlashedWord(alternative.trim()),
+    written,
+  }.where((form) => form.isNotEmpty).toList();
+}
+
+/// "a / b": alternatives of the whole. An in-word "a/b" is [_eachSlashedWord]'s.
+final RegExp _spacedSlash = RegExp(r'\s+/\s+');
+
+/// A bracketed note, and the space before it.
+final RegExp _aside = RegExp(r'\s*\([^)]*\)');
+
+/// [text] as written, and without its bracketed notes when it has any: what
+/// the note adds may be typed, or left out.
+Set<String> _withoutAside(String text) =>
+    <String>{text.trim(), text.replaceAll(_aside, '').trim()}..remove('');
+
+/// "hat/ist aufgebrochen" → "hat aufgebrochen", "ist aufgebrochen": each word
+/// holding a slash taken each way.
+Iterable<String> _eachSlashedWord(String text) {
+  var forms = <String>[''];
+  for (final word in text.split(RegExp(r'\s+'))) {
+    // ponytail: every combination, uncapped; a cell holds one or two slashed
+    // words, so a handful of forms. Cap it if content ever grows more.
+    final options = word.contains('/') && word.length > 1
+        ? word.split('/').where((option) => option.isNotEmpty)
+        : <String>[word];
+    forms = <String>[
+      for (final form in forms)
+        for (final option in options) form.isEmpty ? option : '$form $option',
+    ];
+  }
+  return forms;
+}
+
+List<String> _splitOutsideBrackets(String text, Set<String> separators) {
+  final parts = <String>[];
+  final part = StringBuffer();
+  var depth = 0;
+  for (final char in text.split('')) {
+    if (char == '(') depth++;
+    if (char == ')' && depth > 0) depth--;
+    if (depth == 0 && separators.contains(char)) {
+      parts.add(part.toString());
+      part.clear();
+    } else {
+      part.write(char);
+    }
+  }
+  parts.add(part.toString());
+  return parts.map((p) => p.trim()).where((p) => p.isNotEmpty).toList();
+}
 
 /// The best verdict [given] earns against any of [candidates].
 ///
@@ -147,16 +251,17 @@ Verdict _compare(String given, String expected, {required bool german}) {
 
   if (key.isEmpty || expectedKey.isEmpty) return Verdict.wrong;
 
-  // Two keys, because BR-ANS-02 accepts ä, ae and a alike: "Tür" and "Tuer"
-  // meet on the expanded key, "Tur" on the folded one.
-  //
-  // Each key against its own kind. Comparing them crosswise as well turns out
-  // to accept nothing extra — the folded key is a coarsening of the expanded
-  // one for exactly these letters, so `alt == alt` already covers it; I
-  // checked against a list of German pairs and found none that distinguishes
-  // the two. Written this way because it is the rule, not because it is
-  // stricter.
-  if (key == expectedKey || alt == expectedAlt) return Verdict.correct;
+  // Two keys: "Tür" and "Tuer" meet on the expanded key, "Tur" only on the
+  // folded one. The folded key is a coarsening of the expanded one for
+  // exactly the umlauts, so comparing crosswise adds nothing.
+  if (key == expectedKey) return Verdict.correct;
+
+  // BR-ANS-02: "ae" is the umlaut typed without its key, and right. A bare
+  // vowel may be another word or form, the very thing a question can test:
+  // "hatte" for "hätte", "Mutter" for "Mütter", "schon" for "schön". So in
+  // German it is *almost*: the feedback shows the umlaut, and a different form
+  // is never marked right (#675).
+  if (alt == expectedAlt) return german ? Verdict.almost : Verdict.correct;
 
   // Both spellings get a shot at the typo — a learner typing "Baeuem" for
   // "Bäume" is one character out on the expanded key and two on the folded

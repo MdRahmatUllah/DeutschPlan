@@ -13,6 +13,7 @@ content/manifest.yaml
     - file: German_C2_Tracker.xlsx
     # add more here; order = fallback level order for grammar without a level
   tips: content/interference_tips.csv
+  corrections: content/corrections.yaml   # reviewed fixes to the workbooks, below
 ```
 
 Each workbook MUST contain the sheets **All Words**, **Grammar** and the **C-…** category tabs. The week sheets (**W01**…) are the learner's own tracker and are not read: the only skills content is the same fixed four-line "Weekly skills — put an x when done" block at the foot of every week (listen, read, write, speak), which nothing shows, so `skill_prompts` is written empty (#294). Reading W01's cells had filled it with sheet headers and spreadsheet instructions. Columns are read **by header name**, so column order may change; renaming a header requires updating `HEADER_MAP` in the tool.
@@ -49,11 +50,29 @@ Grammar sheet, same contract:
 | Example (EN) | `example_en` | no |
 | Watch out | `watch_out` | no |
 
+## Corrections
+
+The workbooks are the owner's, and no tool writes them: openpyxl drops their charts (#545). A fix to a row goes into `content/corrections.yaml` instead, a reviewed file in the repo, and the pipeline applies it after reading the workbooks and before anything else looks at the words (the duplicate drop, the step split, the uids).
+
+```yaml
+words:
+  "5429a4b3f170a42e":            # the row's uid as the workbook has it, quoted
+    why: "#628: personal details replaced with generic ones"
+    example_de_1: "Die Postleitzahl von Berlin-Mitte ist 10115."
+    example_en_1: "The postcode of Berlin-Mitte is 10115."
+```
+
+- The key is the uid the row gets from its cells as read (PIPE-03, without a collision suffix), in quotes: an unquoted all-digit uid is a YAML number.
+- Every entry has a `why`: what the workbook got wrong, and the issue.
+- An entry sets any column in `HEADER_MAP` by its field name (`german`, `article`, `forms`, `english`, …); `example_de_N` / `example_en_N` replace line N of the example cells (as PIPE-06 pairs them), and N one past the last line adds one; `delete: true` drops the row.
+- A key that matches no row or more than one, a field the pipeline does not read, or an example line past the end fails the build: the workbook changed under the correction, and it has to be looked at again.
+- The repository is public: an entry holds the new text only, never the text it replaces.
+
 ## Rules the pipeline enforces
 
 - **PIPE-01** Level comes from the word's own `Level` cell, never from the week's phase label.
 - **PIPE-02** Each level is split into `X.1`/`X.2` at the week boundary nearest the middle by word count; grammar is split by count in teaching order.
-- **PIPE-03** `uid = sha1(level|german|pos|english)[:16]`. A collision inside one build appends the sequence number and is reported.
+- **PIPE-03** `uid = sha1(level|german|pos|english)[:16]`. A collision inside one build appends the sequence number and is reported. Each part is NFC-normalised with its runs of whitespace collapsed to one space first, so an NFD paste or a double space is the same word (#648; no uid changed when this came in).
   - An article typed into a noun's German cell with the Article cell empty ("das Gegenargument") moves into `article` (#287). It moves after the uid is made, so the uid stays that of the cell as authored. A pair ("die Rente ↔ die Miete", "die Kohle / die Kohlen") keeps its articles.
   - A row that the move would make the same as another row in every field the uid is made of ("der Satzakzent" beside "Satzakzent", same level, part of speech and English) is a duplicate: the build drops it before the step split, keeps the clean row, and warns `dropped duplicate: <workbook> All Words row <n> (…): dropped a duplicate of '<word>' (…, kept). Delete row <n> in the workbook.` The dropped row's uid leaves the course, and a learner's progress on it with it (#407).
 - **PIPE-04** `search_key` = lower-case, article stripped, punctuation dropped, umlauts → ae/oe/ue/ss, Latin diacritics removed; `search_key_alt` folds umlauts to a/o/u. The Dart `text_norm.dart` MUST produce identical output (shared test vectors in `tools/test_vectors.json`).
@@ -62,13 +81,14 @@ Grammar sheet, same contract:
   - Diacritics are stripped from Latin letters only, for the same reason: Bangla vowel signs are combining marks too.
 - **PIPE-05** Cells beginning with `=`, `-`, `+` or `@` are stored as text (Excel would treat them as formulas); the tool warns.
 - **PIPE-06** Example lines pair DE[i] with EN[i]; an unmatched DE line gets a null translation.
-- **PIPE-07** `content_version` = build timestamp `YYYYMMDDHHMM`; also written to `content_manifest.json` with per-step counts and the uid list — each uid with a digest of what the learner sees (`words`) and one of its meanings (`meanings`, for BR-CONTENT-02's *Updated* chip) — which CI diffs against the previous build to produce the update summary shown on Today (BR-CONTENT-03).
-- **PIPE-08** `verify_content.py` fails the build if: a required sheet/column is missing, a step has 0 words, a word has no example, a uid collision remains, FTS tables are empty, a `gender`/`separable` tip is on a word of another class (#321), or a single noun still has its article in the German cell (#287).
+- **PIPE-07** `content_version` = build timestamp `YYYYMMDDHHMMSS`, UTC (to the second since #722; a 14-digit stamp sorts after every 12-digit one before it, so an installed minute-precision course still updates). The build reads the clock once: `meta.built_at`, the manifest's `built_at` and `content_version` are the same instant (#718); also written to `content_manifest.json` with per-step counts and the uid list — each uid with a digest of what the learner sees (`words`) and one of its meanings (`meanings`, for BR-CONTENT-02's *Updated* chip) — and the `aliases` of PIPE-09. The app diffs it against the manifest it kept from the previous version to produce the update summary shown on Today (BR-CONTENT-03), and the build prints the same diff against the committed asset.
+- **PIPE-09** A word whose uid changed keeps the learner's progress (#648). Before writing, the build compares its words with the committed course (`app/assets/db/content.db`, or `--previous DIR`) and links each uid that is gone to the added uid that is the same word: first the same level, German and part of speech, the nearest English winning (a gloss fix); then the same German, part of speech and English (a re-levelled word). German, part of speech and English are compared NFC, whitespace-collapsed and case-folded, so a part of speech typed `Noun` or an article moved into its column is the same word too. Each added uid takes one old uid at most. The links go into the manifest's `aliases` (old uid → uid now), with every earlier build's links followed through this build's, so a learner who skipped a version still lands on the word as it is now; `ContentUpdater` moves their rows along them on install (`content-database.md`, update flow). Every link is printed (`warning: uid link: …`). A uid that is gone with nothing to link it to stops the build (`warning: removed: …`, one line each): restore the word, or rerun with `--allow-removed` if dropping learners' progress on it is intended.
+- **PIPE-08** `verify_content.py` fails the build if: a required sheet/column is missing, a step has 0 words, a word has no example, a uid collision remains, FTS tables are empty, a `gender`/`separable` tip is on a word of another class (#321), a single noun still has its article in the German cell (#287), or a term of the denylist is anywhere in the course's text (#628). The denylist is `data/denylist.txt`, one term per line, `#` for comments, matched case-insensitively in every `TEXT` column of every table; it lives outside git (`data/` is ignored) and outside the database, so it does not publish what it guards against. A failure names the term by its line number, never by the term, and the rows by uid. Without the file the gate says it did not run.
 
 ## Outputs
 
 - `content/build/content.db` — copied to `app/assets/db/content.db` by `make content`.
-- `content/build/content_manifest.json` — counts, boundaries, uid list with its `words` and `meanings` digests, build time.
+- `content/build/content_manifest.json` — counts, boundaries, uid list with its `words` and `meanings` digests, the `aliases` of PIPE-09, build time.
 
 ## Adding a fifth workbook
 

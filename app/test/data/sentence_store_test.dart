@@ -2,9 +2,12 @@ import 'dart:io';
 
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/db/content_dao.dart';
+import 'package:sogda/data/repositories/plan_store.dart';
 import 'package:sogda/data/repositories/sentence_store.dart';
+import 'package:sogda/data/repositories/settings_repository.dart';
 import 'package:sogda/domain/sentence_picker.dart';
-import 'package:drift/drift.dart' show DatabaseConnection, Table, TableInfo;
+import 'package:drift/drift.dart'
+    show DatabaseConnection, Table, TableInfo, Variable;
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -125,5 +128,66 @@ INSERT INTO word_state (word_uid, status, introduced_on) VALUES
     await pumpEventQueue();
 
     expect(counts, <int>[0, 1]);
+  });
+
+  group('#659 a rated sentence is a day studied', () {
+    const tuer = SentenceCandidate(
+      wordUid: ContentFixture.tuer,
+      ord: 1,
+      german: '',
+    );
+    const haus = SentenceCandidate(
+      wordUid: ContentFixture.haus,
+      ord: 1,
+      german: '',
+    );
+
+    Future<int> sentencesDone() async {
+      final rows = await db
+          .customSelect(
+            'SELECT sentences_done AS n FROM daily_stats WHERE day = ?',
+            variables: <Variable<Object>>[Variable<String>(today)],
+          )
+          .get();
+      return rows.isEmpty ? 0 : rows.single.read<int>('n');
+    }
+
+    setUp(() => store.record(today, const <SentenceCandidate>[tuer, haus]));
+
+    test(
+      "#659 each sentence counts once in the day's sentences_done",
+      () async {
+        await store.rate(today, tuer, 3);
+        await store.rate(today, tuer, 2); // a changed answer, not another
+        await store.rate(today, haus, 1);
+
+        expect(await sentencesDone(), 2);
+      },
+    );
+
+    test(
+      '#659 BR-PLAN-10 and a day of sentences alone keeps the streak',
+      () async {
+        // New words paused, nothing due: the sentences are the day's activity.
+        final settings = SettingsRepository(db);
+        await settings.load();
+        addTearDown(settings.dispose);
+        final plans = DriftPlanStore(db, settings);
+        expect(await plans.activeDays(today, lookbackDays: 7), isEmpty);
+
+        await store.rate(today, tuer, 3);
+
+        expect(await plans.activeDays(today, lookbackDays: 7), <String>{today});
+      },
+    );
+
+    test('#659 and a rating that fails counts nothing', () async {
+      await expectLater(
+        store.rate(today, tuer, 3, andThen: () => throw StateError('disk')),
+        throwsStateError,
+      );
+
+      expect(await sentencesDone(), 0);
+    });
   });
 }

@@ -225,6 +225,8 @@ def baseline(monkeypatch, tmp_path):
     monkeypatch.setattr(perf, "BASELINE", path)
     monkeypatch.setattr(perf, "holds_device", lambda agent: True)
     monkeypatch.setattr(perf, "measure_size", lambda: {"size.arm64_mb": 1.5})
+    # Never the real, shared device lock (#697 TL-5).
+    monkeypatch.setattr(perf, "keep_device", lambda: None)
     return path
 
 
@@ -252,3 +254,11 @@ def test_even_size_needs_the_device_lock(baseline, monkeypatch):
     monkeypatch.setattr(perf, "holds_device", lambda agent: False)
     monkeypatch.setattr(perf, "measure_size", lambda: pytest.fail("built without the lock"))
     assert perf.main(["size"]) == 2
+
+
+def test_697_each_step_refreshes_the_device_lock(baseline, monkeypatch):
+    # TL-5: `perf.py all` can outlast the lock's stale window.
+    calls = []
+    monkeypatch.setattr(perf, "keep_device", lambda: calls.append(1))
+    assert perf.main(["size"]) == 0
+    assert calls == [1]

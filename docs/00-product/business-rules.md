@@ -27,7 +27,7 @@ Every rule has an ID. Engines in `03-domain/` implement them; screens in `04-scr
 - **BR-PLAN-06** *Skip* leaves a new word uncompleted; it appears in the backlog from the next day. Backlog has no deadline and is never shown as overdue.
 - **BR-PLAN-07** Backlog pause: when on, no new words are planned until the backlog is empty; revisions continue. Today offers this when backlog > 3 × `daily_new`.
 - **BR-PLAN-08** Changes to `daily_new`, `revise_count`, `study_days_mask` take effect from the next day; today's plan is fixed.
-- **BR-PLAN-09** Time estimate = 25 s per revision + 45 s per new word + 60 s per grammar topic + 40 s per sentence, replaced by the learner's own median timings once ≥ 7 sessions exist.
+- **BR-PLAN-09** Time estimate = 25 s per revision + 45 s per new word + 60 s per grammar topic + 40 s per sentence, replaced by the learner's own median timings once ≥ 7 sessions exist before today; measured over the last 30 study days before today, so the estimate is fixed for the day (#708).
 - **BR-PLAN-10** Day complete = every plan item of today is completed or skipped, and no grammar/sentence item is open. Rest days count as complete for streak purposes.
 
 ## Scheduling (FSRS)
@@ -41,8 +41,8 @@ Every rule has an ID. Engines in `03-domain/` implement them; screens in `04-scr
 
 ## Answers
 
-- **BR-ANS-01** DE→EN: any synonym in the `/`- or `,`-separated list counts; case and a leading "to " are ignored; one-character typos on words ≥ 6 letters are *almost*.
-- **BR-ANS-02** EN→DE: the word with or without its article; umlauts as ä/ae/a, ü/ue/u, ö/oe/o, ß/ss; a wrong article on a correct noun is *wrong article* (counts as wrong for scoring, but the feedback names the article).
+- **BR-ANS-01** DE→EN: any synonym in the `/`- or `,`-separated list counts, and so does the whole cell as shown ("the bill, please"), or several of its synonyms typed as a list in any order ("hi / hello"; one that isn't a synonym makes the list wrong); a separator inside brackets belongs to a note, not the list, and a synonym counts with or without its bracketed note ("to save (a file)" takes "to save", never "a file"); case and a leading "to " are ignored; one-character typos on words ≥ 6 letters are *almost*.
+- **BR-ANS-02** EN→DE: the word with or without its article; any one of the German's ` / ` alternatives, each side of an in-word slash ("hat/ist aufgebrochen"), with or without a bracketed note; umlauts as ä or ae, ü or ue, ö or oe, and ß as ss; a bare vowel for an umlaut (a for ä) is *almost*, because it can be another word or form ("hatte" for "hätte", "Mutter" for "Mütter") (#675); a wrong article on a correct noun is *wrong article* (counts as wrong for scoring, but the feedback names the article); a wrong article on a misspelt noun is just *wrong*, so a typo never scores more than the spelling it got wrong (#614).
 - **BR-ANS-03** Articles quiz: exact match of der/die/das.
 - **BR-ANS-04** *Almost* scores 0.5 in quizzes and exams.
 
@@ -72,4 +72,4 @@ Every rule has an ID. Engines in `03-domain/` implement them; screens in `04-scr
 ## Privacy
 
 - **BR-PRIV-01** No network call is made without a user action (web link, model download, export share).
-- **BR-PRIV-02** All learner data lives in `user.db` and app-private files. Export is a JSON file the learner shares themselves.
+- **BR-PRIV-02** All learner data lives in `user.db` and app-private files. Export is a JSON file the learner shares themselves. Android backup and device-to-device transfer are off for the app (`allowBackup=false` and data-extraction rules that exclude everything, #607), so nothing leaves the phone any other way.

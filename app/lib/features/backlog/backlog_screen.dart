@@ -46,27 +46,45 @@ class Backlog extends _$Backlog {
     return ref
         .watch(planRepositoryProvider)
         .watchBacklogWithStates(ref.watch(todayProvider))
-        .asyncMap(
-          (rows) async => <BacklogWord>[
+        .asyncMap((rows) async {
+          // One read for every row's word (#664), not one per row: this runs
+          // again after each rating of a *Study all* session T4 sits under.
+          final found = await words.findAll(<String>{
+            for (final row in rows) row.wordUid,
+          });
+          return <BacklogWord>[
             for (final row in rows)
-              if (await words.find(row.wordUid) case final found?)
+              if (found[row.wordUid] case final word?)
                 (
                   planDate: row.planDate,
-                  word: found,
+                  word: word,
                   // English where the course has no Bangla.
                   meaning: bangla
-                      ? found.word.bangla ?? found.word.english
-                      : found.word.english,
+                      ? word.word.bangla ?? word.word.english
+                      : word.word.english,
                 ),
-          ],
-        );
+          ];
+        });
   }
 
   /// FR-T4-04: *Mark known*, *Suspend* or *Remove from course* (suspend and
-  /// complete the plan row).
-  Future<void> act(BacklogAction action, BacklogWord row) async {
+  /// complete the plan row). Returns the action's *Undo*, bound to the
+  /// services read here: its bar outlives T4, and this notifier with it
+  /// (#679).
+  Future<Future<void> Function()> act(
+    BacklogAction action,
+    BacklogWord row,
+  ) async {
     final uid = row.word.word.uid;
     final rating = ref.read(ratingServiceProvider);
+    final plans = ref.read(planRepositoryProvider);
+    final clock = ref.read(clockProvider);
+    Future<void> complete({required DateTime? at}) => plans.complete(
+      planDate: row.planDate,
+      uid: uid,
+      kind: PlanKind.newWord,
+      at: at?.toIso8601String(),
+    );
     switch (action) {
       case BacklogAction.known:
         await rating.markKnown(
@@ -78,33 +96,20 @@ class Backlog extends _$Backlog {
         await rating.suspend(uid);
       case BacklogAction.removed:
         await rating.suspend(uid);
-        await _complete(row, at: ref.read(clockProvider)().toUtc());
+        await complete(at: clock().toUtc());
     }
+    return () async {
+      switch (action) {
+        case BacklogAction.known:
+          await rating.undo();
+        case BacklogAction.suspended:
+          await rating.resume(uid);
+        case BacklogAction.removed:
+          await complete(at: null);
+          await rating.resume(uid);
+      }
+    };
   }
-
-  /// The row action's *Undo*.
-  Future<void> undo(BacklogAction action, BacklogWord row) async {
-    final uid = row.word.word.uid;
-    final rating = ref.read(ratingServiceProvider);
-    switch (action) {
-      case BacklogAction.known:
-        await rating.undo();
-      case BacklogAction.suspended:
-        await rating.resume(uid);
-      case BacklogAction.removed:
-        await _complete(row, at: null);
-        await rating.resume(uid);
-    }
-  }
-
-  Future<void> _complete(BacklogWord row, {required DateTime? at}) => ref
-      .read(planRepositoryProvider)
-      .complete(
-        planDate: row.planDate,
-        uid: row.word.word.uid,
-        kind: PlanKind.newWord,
-        at: at?.toIso8601String(),
-      );
 }
 
 /// BR-PLAN-07's switch, as T4 shows it. Writing it changes nothing today:
@@ -536,7 +541,7 @@ class BacklogRow extends ConsumerWidget {
     final l10n = AppLocalizations.of(context);
     final notifier = ref.read(backlogProvider.notifier);
     final name = spokenForm(row.word.word);
-    await notifier.act(action, row);
+    final undo = await notifier.act(action, row);
     if (!context.mounted) return;
     SgUndo.show(
       context,
@@ -545,7 +550,7 @@ class BacklogRow extends ConsumerWidget {
         BacklogAction.suspended => l10n.backlogSuspended(name),
         BacklogAction.removed => l10n.backlogRemoved(name),
       },
-      onUndo: () => unawaited(notifier.undo(action, row)),
+      onUndo: () => unawaited(undo()),
     );
   }
 

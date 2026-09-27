@@ -80,12 +80,15 @@ class QuizRunService {
   /// draws (BR-QUIZ-01), and a rating would start a To-do word — or the set
   /// word itself — or move a suspended one. Its answer still counts in
   /// L9's score and mistakes.
+  ///
+  /// One transaction, the answer and its rating (#647): L8's write-error
+  /// sheet retries it whole, which is only safe if a failure wrote nothing.
   Future<void> answer(
     QuizRun run,
     QuizItem item, {
     required String given,
     required Verdict verdict,
-  }) async {
+  }) => _words.transaction(() async {
     await _exams.answerQuiz(
       attemptId: run.attemptId!,
       ord: item.ord,
@@ -105,7 +108,7 @@ class QuizRunService {
       ratingFor(verdict),
       source: ReviewSource.quiz,
     );
-  }
+  });
 
   /// FR-L8-03: [item] was asked again at the end. Its first answer stands:
   /// a re-ask changes neither the score nor FSRS, which the first answer
@@ -121,10 +124,13 @@ class QuizRunService {
   /// (BR-FSRS-03), then due tomorrow, explicitly. A wrong answer was rated
   /// Again as it was given; an almost was rated Hard, so it is rated Again
   /// now, and FSRS, `review_log` and its status agree.
+  ///
+  /// One transaction (#647): a retry after a failure must not rate an almost
+  /// Again twice.
   Future<void> addToRevision(
     List<({String uid, String? verdict})> mistakes, {
     required PlanDate today,
-  }) async {
+  }) => _words.transaction(() async {
     for (final m in mistakes) {
       if (m.verdict == Verdict.almost.name) {
         await _rating.rate(m.uid, Rating.again, source: ReviewSource.quiz);
@@ -133,7 +139,7 @@ class QuizRunService {
     await _words.dueOn(<String>[
       for (final m in mistakes) m.uid,
     ], addDays(today, 1));
-  }
+  });
 
   /// The run is over: its score out of one point an item (BR-ANS-04).
   Future<void> finish(QuizRun run, {required double points}) =>

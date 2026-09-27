@@ -260,6 +260,27 @@ void main() {
     );
   });
 
+  testWidgets('FR-L9-01 #647 Add mistakes to revision that fails says so, '
+      'and comes back to be tried again', (tester) async {
+    // It used to stay greyed out, saying nothing.
+    await pump(tester);
+    run.writeError = StateError('disk full');
+
+    await tester.tap(find.text(l10n.quizAddToRevision));
+    await tester.pumpAndSettle();
+    expect(find.text(l10n.saveAnswerFailed), findsOneWidget);
+    Navigator.of(tester.element(find.text(l10n.saveAnswerFailed))).pop();
+    await tester.pumpAndSettle();
+    expect(run.added, isEmpty);
+    expect(find.text(l10n.quizAddedToRevision(4)), findsNothing);
+
+    run.writeError = null;
+    await tester.tap(find.text(l10n.quizAddToRevision));
+    await tester.pumpAndSettle();
+    expect(run.added, hasLength(1));
+    expect(find.text(l10n.quizAddedToRevision(4)), findsOneWidget);
+  });
+
   testWidgets('FR-L9-01 Add mistakes to revision: due tomorrow, once', (
     tester,
   ) async {

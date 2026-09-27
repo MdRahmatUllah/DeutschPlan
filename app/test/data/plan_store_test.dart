@@ -11,6 +11,7 @@ import 'package:sogda/data/repositories/plan_repository.dart' as repo;
 import 'package:sogda/data/repositories/plan_store.dart';
 import 'package:sogda/data/repositories/settings_repository.dart';
 import 'package:sogda/domain/plan_engine.dart';
+import 'package:sogda/domain/plan_stats.dart';
 import 'package:drift/drift.dart' hide isNotNull, isNull;
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -32,6 +33,7 @@ void main() {
   late AppDatabase db;
   late SettingsRepository settings;
   late DriftPlanStore store;
+  late _Reads reads;
 
   setUp(() async {
     directory = Directory.systemTemp.createTempSync('sogda_plan');
@@ -70,7 +72,10 @@ VALUES (?, 'A1.1', 'A1', ?, ?, ?, ?, ?, ?)
       raw.close();
     }
 
-    db = AppDatabase(DatabaseConnection(NativeDatabase.memory()));
+    reads = _Reads();
+    db = AppDatabase(
+      DatabaseConnection(NativeDatabase.memory().interceptWith(reads)),
+    );
     await db.customStatement(
       "ATTACH DATABASE '${ContentDao.attachPath(content)}' AS c",
     );
@@ -824,6 +829,7 @@ VALUES (?, ?, ?, ?, ?)
     test('nobody has enrolled on a fresh install', () async {
       expect(await store.hasEverEnrolled(), isFalse);
       expect(await store.lastCompletedStep(), isNull);
+      expect(await store.lastCompletedMask(), isNull);
     });
 
     test('an open step is not a completed one', () async {
@@ -846,10 +852,15 @@ VALUES (?, ?, ?, ?, ?)
       await enroll(
         step: 'A1.2',
         startedOn: '2026-02-01',
+        mask: 0x1F,
         completedOn: '2026-03-01',
       );
 
       expect(await store.lastCompletedStep(), 'A1.2');
+      expect(await store.lastCompletedMask(), (
+        on: '2026-03-01',
+        mask: 0x1F,
+      ), reason: '#615: its close and its study days');
     });
 
     test('and ties on the day break by when the step started', () async {
@@ -1002,14 +1013,109 @@ VALUES (?, ?, ?, ?, ?)
   });
 
   group('BR-PLAN-09 — the measured timings', () {
+    // Every rating below is before it.
+    const later = '2026-04-01';
+
     Future<void> log(String uid, String at) => db.customStatement(
       'INSERT INTO review_log (word_uid, reviewed_at, rating, source) '
       "VALUES (?, ?, 3, 'daily')",
       <Object>[uid, at],
     );
 
+    Future<void> studied(PlanDate day) => db.customStatement(
+      'INSERT INTO daily_stats (day, reviews_done) VALUES (?, 1)',
+      <Object>[day],
+    );
+
+    test('BR-PLAN-09 #708 the day asked about is not measured, only the '
+        'days before it', () async {
+      // So the answer is fixed for the day and can be read once.
+      await store.addToPlan(monday, PlanKind.newWord, <String>['s1', 's2']);
+      await log('s1', '2026-03-02T09:00:00Z');
+      await log('s2', '2026-03-02T09:00:30Z');
+      await db.customStatement(
+        'INSERT INTO grammar_practice_log '
+        '(grammar_uid, practised_at, items, correct) VALUES '
+        "('g1', '2026-03-02T09:10:00Z', 5, 5), "
+        "('g1', '2026-03-02T09:10:40Z', 5, 5)",
+      );
+
+      final onMonday = await store.measuredSeconds(monday);
+      final onTuesday = await store.measuredSeconds(addDays(monday, 1));
+
+      expect(onMonday.newWord, isNull);
+      expect(onMonday.grammar, isNull);
+      expect(onTuesday.newWord, 30);
+      expect(onTuesday.grammar, 40);
+    });
+
+    test('BR-PLAN-09 #708 only the last 30 study days are measured', () async {
+      // Monday's ratings, then 30 more study days without a plan row.
+      await store.addToPlan(monday, PlanKind.newWord, <String>['s1', 's2']);
+      await log('s1', '2026-03-02T09:00:00Z');
+      await log('s2', '2026-03-02T09:00:30Z');
+      for (var day = 0; day <= 30; day++) {
+        await studied(addDays(monday, day));
+      }
+
+      final inside = await store.measuredSeconds(addDays(monday, 30));
+      final outside = await store.measuredSeconds(addDays(monday, 31));
+
+      expect(inside.newWord, 30, reason: 'Monday is the 30th study day back');
+      expect(outside.newWord, isNull, reason: 'and here the 31st');
+      expect(outside.sessions, measuredTimingsWindow);
+      expect(outside.enough, isTrue);
+    });
+
+    test('BR-PLAN-09 #708 the read does not grow with the history: 1k and '
+        '30k ratings', () async {
+      // 37 ratings a day, 20 seconds apart, each with its plan row. 11:00Z
+      // plus 12 minutes is the same date from UTC-11 to UTC+12.
+      Future<MeasuredSeconds> history(int ratings) async {
+        await db.customStatement('DELETE FROM review_log');
+        await db.customStatement('DELETE FROM plan_items');
+        await db.customStatement('DELETE FROM daily_stats');
+        await db.customStatement(
+          """
+WITH RECURSIVE n(i) AS (SELECT 0 UNION ALL SELECT i + 1 FROM n WHERE i < ?1 - 1)
+INSERT INTO review_log (word_uid, reviewed_at, rating, source)
+SELECT 'w' || i,
+       strftime('%Y-%m-%dT%H:%M:%fZ', '2026-03-01 11:00:00',
+                '-' || (i / 37) || ' days', '+' || (i % 37 * 20) || ' seconds'),
+       3, 'daily'
+FROM n
+""",
+          <Object>[ratings],
+        );
+        await db.customStatement(
+          'INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code) '
+          "SELECT date(reviewed_at), word_uid, 'revise', 'A1.1' "
+          'FROM review_log',
+        );
+        await db.customStatement(
+          'INSERT INTO daily_stats (day, reviews_done) '
+          'SELECT DISTINCT date(reviewed_at), 37 FROM review_log',
+        );
+        reads.most = 0;
+        return store.measuredSeconds(monday);
+      }
+
+      final small = await history(1000);
+      final smallRead = reads.most;
+      final big = await history(30000);
+
+      expect(small.revision, 20);
+      expect(big.revision, 20);
+      expect(smallRead, 1000);
+      expect(
+        reads.most,
+        lessThanOrEqualTo(measuredTimingsWindow * 37),
+        reason: 'the last 30 study days, not two years',
+      );
+    });
+
     test('are null until there is anything to measure', () async {
-      final measured = await store.measuredSeconds();
+      final measured = await store.measuredSeconds(later);
 
       expect(measured.sessions, 0);
       expect(measured.enough, isFalse);
@@ -1027,7 +1133,7 @@ VALUES (?, ?, ?, ?, ?)
       await log('s2', '2026-03-02T09:00:30Z');
       await log('s3', '2026-03-02T09:01:10Z');
 
-      final measured = await store.measuredSeconds();
+      final measured = await store.measuredSeconds(later);
 
       expect(measured.newWord, 35, reason: 'gaps of 30 and 40, median 35');
     });
@@ -1040,7 +1146,7 @@ VALUES (?, ?, ?, ?, ?)
       await log('s3', '2026-03-02T09:02:00Z');
       await log('s4', '2026-03-02T09:02:10Z');
 
-      final measured = await store.measuredSeconds();
+      final measured = await store.measuredSeconds(later);
 
       expect(measured.newWord, 40);
       expect(measured.revision, 10);
@@ -1051,7 +1157,7 @@ VALUES (?, ?, ?, ?, ?)
       await log('s1', '2026-03-02T09:00:00Z');
       await log('s2', '2026-03-02T09:00:30Z');
 
-      expect((await store.measuredSeconds()).newWord, isNull);
+      expect((await store.measuredSeconds(later)).newWord, isNull);
     });
 
     test('BR-PLAN-09 #347 a rating counts for its local day, not its UTC '
@@ -1072,7 +1178,7 @@ VALUES (?, ?, ?, ?, ?)
         ],
       );
 
-      final measured = await store.measuredSeconds();
+      final measured = await store.measuredSeconds(later);
 
       expect(measured.newWord, 60);
       expect(
@@ -1089,7 +1195,7 @@ VALUES (?, ?, ?, ?, ?)
       await log('s1', '2026-03-03T12:00:00Z');
       await log('s2', '2026-03-03T12:00:30Z');
 
-      expect((await store.measuredSeconds()).newWord, isNull);
+      expect((await store.measuredSeconds(later)).newWord, isNull);
     });
 
     test('and the gap across two days is never taken', () async {
@@ -1102,7 +1208,7 @@ VALUES (?, ?, ?, ?, ?)
       await log('s1', '2026-03-02T09:00:00Z');
       await log('s2', '2026-03-03T09:00:10Z');
 
-      expect((await store.measuredSeconds()).newWord, isNull);
+      expect((await store.measuredSeconds(later)).newWord, isNull);
     });
 
     test('seven sessions are what make them trusted', () async {
@@ -1113,7 +1219,7 @@ VALUES (?, ?, ?, ?, ?)
         );
       }
 
-      expect((await store.measuredSeconds()).enough, isTrue);
+      expect((await store.measuredSeconds(later)).enough, isTrue);
     });
 
     test('and six are not', () async {
@@ -1124,7 +1230,7 @@ VALUES (?, ?, ?, ?, ?)
         );
       }
 
-      expect((await store.measuredSeconds()).enough, isFalse);
+      expect((await store.measuredSeconds(later)).enough, isFalse);
     });
   });
 
@@ -1216,5 +1322,21 @@ class _SlowStore extends DriftPlanStore {
     final planned = await super.plannedOn(date, kind);
     await Future<void>.delayed(Duration.zero);
     return planned;
+  }
+}
+
+/// The most rows any one query returned (#708).
+class _Reads extends QueryInterceptor {
+  int most = 0;
+
+  @override
+  Future<List<Map<String, Object?>>> runSelect(
+    QueryExecutor executor,
+    String statement,
+    List<Object?> args,
+  ) async {
+    final rows = await executor.runSelect(statement, args);
+    if (rows.length > most) most = rows.length;
+    return rows;
   }
 }

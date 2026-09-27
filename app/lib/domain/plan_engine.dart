@@ -204,6 +204,11 @@ abstract interface class PlanStore {
   /// Only used to name the step *after* it, for Today's *Start next step*.
   Future<String?> lastCompletedStep();
 
+  /// #615: the day the enrollment [lastCompletedStep] names closed on, and
+  /// its study-days mask; null if none has. With no step open, the streak
+  /// judges the days up to then by it.
+  Future<({PlanDate on, int mask})?> lastCompletedMask();
+
   /// The days on or before [today] that have any activity recorded, for the
   /// streak. Bounded by [lookbackDays] so it is one small query, not a scan.
   Future<Set<PlanDate>> activeDays(PlanDate today, {required int lookbackDays});
@@ -216,8 +221,10 @@ abstract interface class PlanStore {
   Future<int> openPlanItems(PlanDate date);
 
   /// The learner's own median seconds per item, or null where there is not
-  /// enough history to measure one (BR-PLAN-09).
-  Future<MeasuredSeconds> measuredSeconds();
+  /// enough history to measure one (BR-PLAN-09): over the last
+  /// [measuredTimingsWindow] study days before [before], so the answer is
+  /// fixed for the day and the read does not grow with the history (#708).
+  Future<MeasuredSeconds> measuredSeconds(PlanDate before);
 }
 
 /// What could be measured from the logs, per item type.
@@ -232,7 +239,8 @@ class MeasuredSeconds {
     this.grammar,
   });
 
-  /// Days with any activity. BR-PLAN-09 wants seven before it trusts these.
+  /// Days with any activity, counted up to [measuredTimingsWindow].
+  /// BR-PLAN-09 wants seven before it trusts these.
   final int sessions;
 
   final int? revision;
@@ -365,6 +373,15 @@ class PlanEngine {
   final bool _pauseNewWhenBacklog;
 
   final Fsrs _fsrs;
+
+  /// BR-PLAN-09's timings per plan date (#708). They measure only the days
+  /// before it, so they cannot change during it: Today's rebuild after every
+  /// rating, resume and widget refresh reads them once a day, not each time.
+  /// An import rebuilds the engine, and with it this.
+  // ponytail: one entry per date asked about, today's and tomorrow's preview;
+  // an engine alive for weeks keeps a few dozen, which is nothing.
+  final Map<PlanDate, Future<MeasuredSeconds>> _measured =
+      <PlanDate, Future<MeasuredSeconds>>{};
 
   /// BR-COURSE-05 with auto-advance off: Today's *Start next step*.
   ///
@@ -666,35 +683,41 @@ class PlanEngine {
     await _store.addToPlan(date, PlanKind.revise, picked);
   }
 
-  /// How many days in a row the learner has kept going.
-  ///
-  /// Reads the mask from the active step, falling back to every day when there
-  /// is none — a learner between steps still has a streak.
-  ///
-  /// Each past day by the mask in force on it (#377): turning a rest day on
-  /// never breaks a streak already earned (BR-PLAN-01, -08).
-  Future<int> streak(PlanDate today) async {
-    final step = await _store.activeStep();
-    final mask = step?.studyDaysMask ?? allDays;
-    final history = await _store.studyDaysHistory();
-
-    return streakLength(
-      today: today,
-      activeDays: await _store.activeDays(today, lookbackDays: streakLookback),
-      isStudyDay: (day) => isStudyDay(day, maskOn(day, history, mask)),
-      maxLookback: streakLookback,
-    );
-  }
+  /// How many days in a row the learner has kept going, each past day judged
+  /// by [_studyDayThen] (BR-PLAN-01, -08).
+  Future<int> streak(PlanDate today) async => streakLength(
+    today: today,
+    activeDays: await _store.activeDays(today, lookbackDays: streakLookback),
+    isStudyDay: await _studyDayThen(),
+    maxLookback: streakLookback,
+  );
 
   /// FR-M2-02: the longest streak so far, rest days as [streak] counts them.
-  Future<int> bestStreak(PlanDate today) async {
-    final step = await _store.activeStep();
-    final mask = step?.studyDaysMask ?? allDays;
+  Future<int> bestStreak(PlanDate today) async => longestStreak(
+    activeDays: await _store.activeDays(today, lookbackDays: 36500),
+    isStudyDay: await _studyDayThen(),
+    today: today,
+  );
+
+  /// Whether a past day was a study day, by the mask in force on it (#377):
+  /// turning a rest day on never breaks a streak already earned.
+  ///
+  /// The open step's mask; with none open (#615), the last closed step's up
+  /// to the day it closed, so finishing a step or the course leaves the
+  /// streak as it was, and every day after it, as those days are planned
+  /// (#457). Before any step, every day.
+  Future<bool Function(PlanDate)> _studyDayThen() async {
     final history = await _store.studyDaysHistory();
-    return longestStreak(
-      activeDays: await _store.activeDays(today, lookbackDays: 36500),
-      isStudyDay: (day) => isStudyDay(day, maskOn(day, history, mask)),
-      today: today,
+    final step = await _store.activeStep();
+    final closed = step == null ? await _store.lastCompletedMask() : null;
+
+    return (PlanDate day) => isStudyDay(
+      day,
+      step != null
+          ? maskOn(day, history, step.studyDaysMask)
+          : closed != null && day.compareTo(closed.on) <= 0
+          ? maskOn(day, history, closed.mask)
+          : allDays,
     );
   }
 
@@ -730,7 +753,15 @@ class PlanEngine {
   /// defaults before that — and the defaults stay for anything that could not
   /// be measured, which is what [MeasuredSeconds] leaves null.
   Future<Duration> estimate(DailyPlan plan, {int sentences = 0}) async {
-    final measured = await _store.measuredSeconds();
+    final pending = _measured[plan.date] ??= _store.measuredSeconds(plan.date);
+    final MeasuredSeconds measured;
+    try {
+      measured = await pending;
+    } catch (_) {
+      // A failed read is not remembered: the next rebuild asks again.
+      _measured.remove(plan.date);
+      rethrow;
+    }
 
     return timeEstimate(
       revisions: plan.revise.length,

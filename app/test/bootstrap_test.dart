@@ -23,7 +23,6 @@ import 'package:sogda/router/app_router.dart';
 import 'package:drift/drift.dart' hide isNotNull, isNull;
 import 'package:drift/native.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart'
     show Brightness, MaterialApp, Text;
@@ -414,6 +413,60 @@ void main() {
       addTearDown(ready.dispose);
       expect(ready.contentVersion, ContentFixture.version);
     });
+
+    test('#617 FR-S1-03 an update whose copy fails starts on the old course, '
+        'and the next launch installs it', () async {
+      final first = await run();
+      await first.dispose();
+
+      // A newer course ships and its copy fails, as on a full disk: the
+      // manifest says so, the database never lands.
+      const newer = '202701010000';
+      final newerManifest = Uint8List.fromList(
+        '{"content_version":"$newer","words":{}}'.codeUnits,
+      );
+      _serveAssets(<String, Uint8List>{
+        ContentUpdater.manifestAsset: newerManifest,
+      });
+      final second = await run();
+      expect(second.contentVersion, ContentFixture.version);
+      expect(
+        support.listSync().where((file) => file.path.endsWith('.new')),
+        isEmpty,
+      );
+      await second.dispose();
+
+      // The next launch, with the space back: the newer course installs.
+      final staging = File('${temp.path}/newer.db')
+        ..writeAsBytesSync(contentAsset);
+      sqlite3.open(staging.path)
+        ..execute(
+          "UPDATE meta SET value = '$newer' WHERE key = 'content_version'",
+        )
+        ..close();
+      _serveAssets(<String, Uint8List>{
+        ContentDao.asset: staging.readAsBytesSync(),
+        ContentUpdater.manifestAsset: newerManifest,
+      });
+      final third = await run();
+      addTearDown(third.dispose);
+      expect(third.contentVersion, newer);
+    });
+
+    test('#617 FR-S1-03 Retry never deletes a course that reads', () async {
+      final ready = await run();
+      await ready.dispose();
+
+      await resetInstalledContent(support: support);
+      expect(
+        File('${support.path}/${ContentDao.fileName}').existsSync(),
+        isTrue,
+      );
+      expect(
+        File('${support.path}/${ContentUpdater.manifestFile}').existsSync(),
+        isTrue,
+      );
+    });
   });
 
   group('FR-S1-02 — the launch budget', () {
@@ -504,6 +557,7 @@ void main() {
       await tester.pumpWidget(
         BootstrapGate(
           failure: failureOf(BootstrapStep.database),
+          onReady: (_) {},
           onRetry: () async {
             attempts++;
             return BootstrapFailed(failureOf(BootstrapStep.database));
@@ -520,7 +574,15 @@ void main() {
       expect(attempts, 1);
     });
 
-    testWidgets('a retry that works replaces the error screen', (tester) async {
+    testWidgets('FR-S1-03 #643 a retry that works opens the app in a '
+        'container of its own, wired as a first start', (tester) async {
+      // Through the host, as `main` runs it. The gate used to build the app
+      // itself, under the failed start's container, which carries no
+      // overrides: the app's first frame threw (settingsProvider is
+      // unimplemented there), and nothing it needs had been started. A gate
+      // wrapped in the ready overrides by hand, as this test once was, could
+      // not see either.
+      //
       // Built by hand rather than through `run()`: `testWidgets` runs in a
       // fake-async zone, and a future waiting on the real disk never
       // completes inside one.
@@ -542,32 +604,40 @@ void main() {
         elapsed: Duration.zero,
       );
 
-      // A `ProviderScope`, because the app the gate swaps in watches the
-      // theme provider. `main` builds the real one from bootstrap's
-      // overrides; this is the same shape.
+      var runs = 0;
+      final wired = <Bootstrap>[];
       await tester.pumpWidget(
-        ProviderScope(
-          overrides: ready.overrides,
-          child: BootstrapGate(
-            failure: failureOf(BootstrapStep.database),
-            onRetry: () async => BootstrapReady(ready),
-          ),
+        BootstrapHost(
+          run:
+              ({
+                Brightness platformBrightness = Brightness.light,
+                void Function(UiLanguage)? onUiLanguage,
+              }) async => runs++ == 0
+              ? BootstrapFailed(failureOf(BootstrapStep.database))
+              : BootstrapReady(ready),
+          // The plugins behind the real wiring have no platform side here.
+          wire: (container, bootstrap) => wired.add(bootstrap),
         ),
       );
       await tester.pumpAndSettle();
       expect(find.text('Sogda could not open your data.'), findsOneWidget);
+      expect(wired, isEmpty, reason: 'a failed start wires nothing');
 
       await tester.tap(_retryButton);
       await tester.pumpAndSettle();
 
+      expect(tester.takeException(), isNull);
       expect(find.byType(BootstrapErrorApp), findsNothing);
       expect(find.byType(SogdaApp), findsOneWidget);
+      expect(runs, 2);
+      expect(wired, <Bootstrap>[ready], reason: 'the retry was not wired');
     });
 
     testWidgets('a retry that fails again says so', (tester) async {
       await tester.pumpWidget(
         BootstrapGate(
           failure: failureOf(BootstrapStep.database),
+          onReady: (_) {},
           onRetry: () async =>
               BootstrapFailed(failureOf(BootstrapStep.content)),
         ),
@@ -611,6 +681,7 @@ void main() {
               stackTrace: StackTrace.empty,
               db: db,
             ),
+            onReady: (_) {},
             onShare: (file) async => shared = file,
           ),
         ),

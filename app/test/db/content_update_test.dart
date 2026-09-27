@@ -62,6 +62,7 @@ void main() {
     bool removeWord = false,
     String? edit,
     bool meanings = true,
+    Map<String, String> aliases = const <String, String>{},
   }) {
     final path = '${support.path}/build-$version.db';
     ContentFixture.write(path);
@@ -121,6 +122,7 @@ void main() {
         'content_version': version,
         'words': digests,
         if (meanings) 'meanings': meaningDigests,
+        'aliases': aliases,
       }),
     );
   }
@@ -409,6 +411,38 @@ void main() {
     });
   });
 
+  test('#617 a newer course whose copy fails keeps the old one, records '
+      'nothing, and installs on the next launch', () async {
+    final newer = course(version: '202602020000', addWord: true);
+    // The manifest ships but the database never lands, as on a full disk.
+    assets = <String, Object>{ContentUpdater.manifestAsset: newer.manifest};
+    rootBundle.evict(ContentDao.asset);
+    rootBundle.evict(ContentUpdater.manifestAsset);
+    final kept = File('${support.path}/${ContentUpdater.manifestFile}');
+    final before = kept.readAsStringSync();
+
+    expect(await updater.runIfNeeded(), isNull);
+    expect(await dao.version(), '202601010000', reason: 'the old course');
+    expect(
+      await db.customSelect('SELECT * FROM content_updates').get(),
+      isEmpty,
+    );
+    expect(
+      kept.readAsStringSync(),
+      before,
+      reason: 'so the next launch retries',
+    );
+    expect(
+      support.listSync().where((file) => file.path.endsWith('.new')),
+      isEmpty,
+    );
+
+    // The next launch, with the space back.
+    publish(newer);
+    expect((await updater.runIfNeeded())?.version, '202602020000');
+    expect(await dao.version(), '202602020000');
+  });
+
   group('an interrupted update', () {
     test('runs again on the next launch', () async {
       // The crash window: the file is swapped and the app dies before the row
@@ -466,6 +500,183 @@ void main() {
         )
         .getSingle();
     expect(joined.read<int>('n'), 0, reason: 'but the word is gone from view');
+  });
+
+  group('#648 PIPE-09 a word whose uid changed', () {
+    const home = 'uid-haus-home';
+
+    /// The gloss fix of the issue: the same Haus, a new English, a new uid,
+    /// and the manifest's alias from the old one.
+    ({Uint8List bytes, String manifest}) glossFixed() => course(
+      version: '202602020000',
+      edit:
+          "UPDATE words SET english = 'home', uid = '$home' "
+          "WHERE uid = '${ContentFixture.haus}'",
+      aliases: <String, String>{ContentFixture.haus: home},
+    );
+
+    Future<int> count(String table, String column, String uid) async =>
+        (await db
+                .customSelect(
+                  'SELECT COUNT(*) AS n FROM $table WHERE $column = ?',
+                  variables: <Variable<Object>>[Variable<String>(uid)],
+                )
+                .getSingle())
+            .read<int>('n');
+
+    Future<void> learnHaus() async {
+      final haus = ContentFixture.haus;
+      await db.customStatement(
+        "INSERT INTO word_state (word_uid, status, reps) "
+        "VALUES ('$haus', 'learning', 7)",
+      );
+      await db.customStatement(
+        'INSERT INTO review_log (word_uid, reviewed_at, rating, source) '
+        "VALUES ('$haus', '2026-01-02T08:00:00Z', 3, 'daily')",
+      );
+      await db.customStatement(
+        'INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code) '
+        "VALUES ('2026-01-02', '$haus', 'new', 'A1.1')",
+      );
+      await db.customStatement(
+        'INSERT INTO sentence_log (word_uid, ord, shown_on) '
+        "VALUES ('$haus', 1, '2026-01-02')",
+      );
+      await db.customStatement(
+        'INSERT INTO quiz_attempts (id, started_at, direction, source, seed, '
+        "length) VALUES (1, '2026-01-02T08:00:00Z', 'deToEn', 'step', 1, 1)",
+      );
+      await db.customStatement(
+        'INSERT INTO quiz_answers (attempt_id, ord, word_uid, prompt, '
+        "expected) VALUES (1, 1, '$haus', 'Haus', 'house')",
+      );
+      await db.customStatement(
+        'INSERT INTO exam_attempts (id, sublevel_code, seed, started_at) '
+        "VALUES (1, 'A1.1', 1, '2026-01-02T08:00:00Z')",
+      );
+      await db.customStatement(
+        'INSERT INTO exam_answers (attempt_id, ord, section, item_ref, prompt) '
+        "VALUES (1, 1, 'meaning', '$haus', '{}'), "
+        "(1, 2, 'grammar', 'uid-topic#1', '{}')",
+      );
+      await db.customStatement(
+        'INSERT INTO custom_words (created_at, german, meaning, matched_uid) '
+        "VALUES ('2026-01-02T08:00:00Z', 'Haus', 'house', '$haus')",
+      );
+    }
+
+    test('keeps every row the learner has under the old uid', () async {
+      await learnHaus();
+      publish(glossFixed());
+      await updater.runIfNeeded();
+
+      for (final (table, column) in ContentUpdater.aliasedColumns) {
+        expect(
+          await count(table, column, ContentFixture.haus),
+          0,
+          reason: '$table.$column still under the old uid',
+        );
+        expect(await count(table, column, home), 1, reason: '$table.$column');
+      }
+      final state = await db
+          .customSelect("SELECT reps FROM word_state WHERE word_uid = '$home'")
+          .getSingle();
+      expect(state.read<int>('reps'), 7, reason: 'the progress itself moved');
+      expect(
+        await count('exam_answers', 'item_ref', home),
+        1,
+        reason:
+            "an exam's word ref moved, so the next paper does not repeat it",
+      );
+      expect(
+        await count('exam_answers', 'item_ref', 'uid-topic#1'),
+        1,
+        reason: 'a grammar ref is not a word uid',
+      );
+    });
+
+    test('is reported as changed with a new meaning, not removed and '
+        'added', () async {
+      publish(glossFixed());
+      final change = (await updater.runIfNeeded())!;
+
+      expect(change.added, isEmpty);
+      expect(change.removed, isEmpty);
+      expect(change.changed, <String>[home]);
+      expect(change.meaning, <String>[home]);
+    });
+
+    test(
+      'a row already under the new uid wins, and the old one is kept',
+      () async {
+        await db.customStatement(
+          'INSERT INTO word_state (word_uid, status, reps) VALUES '
+          "('${ContentFixture.haus}', 'learning', 7), ('$home', 'todo', 1)",
+        );
+        publish(glossFixed());
+        await updater.runIfNeeded();
+
+        expect(await count('word_state', 'word_uid', ContentFixture.haus), 1);
+        final state = await db
+            .customSelect(
+              "SELECT reps FROM word_state WHERE word_uid = '$home'",
+            )
+            .getSingle();
+        expect(state.read<int>('reps'), 1);
+      },
+    );
+
+    test('a move that fails moves nothing, and the next launch moves it '
+        'all', () async {
+      await learnHaus();
+      // The last table in the list fails, after the others have moved.
+      await db.customStatement(
+        'CREATE TRIGGER fail_move BEFORE UPDATE OF matched_uid ON custom_words '
+        "BEGIN SELECT RAISE(ABORT, 'disk full'); END",
+      );
+      publish(glossFixed());
+      await expectLater(updater.runIfNeeded(), throwsA(anything));
+
+      for (final (table, column) in ContentUpdater.aliasedColumns) {
+        expect(
+          await count(table, column, ContentFixture.haus),
+          1,
+          reason: '$table.$column rolled back',
+        );
+        expect(await count(table, column, home), 0, reason: '$table.$column');
+      }
+      expect(await count('content_updates', 'version', '202602020000'), 0);
+
+      await db.customStatement('DROP TRIGGER fail_move');
+      await updater.runIfNeeded();
+      for (final (table, column) in ContentUpdater.aliasedColumns) {
+        expect(await count(table, column, home), 1, reason: '$table.$column');
+      }
+    });
+
+    test('every user.db column named for a word uid is moved', () async {
+      // A table added later with a word_uid column, and left out of the
+      // list, would lose its rows on the next gloss fix.
+      final tables = await db
+          .customSelect(
+            "SELECT name FROM sqlite_master WHERE type = 'table' "
+            "AND name NOT LIKE 'sqlite_%'",
+          )
+          .get();
+      final found = <(String, String)>{};
+      for (final table in tables) {
+        final name = table.read<String>('name');
+        for (final column
+            in await db.customSelect('PRAGMA table_info("$name")').get()) {
+          final columnName = column.read<String>('name');
+          if (columnName == 'word_uid' || columnName == 'matched_uid') {
+            found.add((name, columnName));
+          }
+        }
+      }
+      expect(found, isNotEmpty);
+      expect(ContentUpdater.aliasedColumns.toSet(), containsAll(found));
+    });
   });
 
   test(

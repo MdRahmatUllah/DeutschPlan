@@ -46,6 +46,9 @@ class BuildInputs:
     tips: list
     sources: list[str]
     content_version: str
+    #: ISO-8601 UTC, to the second. Stamped once, in `collect`, and written
+    #: into meta and the manifest alike (#718).
+    built_at: str
 
 
 def create_schema(connection: sqlite3.Connection) -> None:
@@ -282,7 +285,6 @@ def _write_meta(connection: sqlite3.Connection, inputs: BuildInputs) -> None:
     after the build is here.
     """
     import json
-    from datetime import datetime, timezone
 
     boundaries = {
         split.second: split.boundary_week for split in inputs.splits.values()
@@ -292,7 +294,7 @@ def _write_meta(connection: sqlite3.Connection, inputs: BuildInputs) -> None:
         "INSERT INTO meta (key, value) VALUES (?, ?)",
         [
             ("content_version", inputs.content_version),
-            ("built_at", datetime.now(timezone.utc).isoformat(timespec="seconds")),
+            ("built_at", inputs.built_at),
             ("sources", json.dumps(inputs.sources)),
             ("word_count", str(len(inputs.words))),
             (

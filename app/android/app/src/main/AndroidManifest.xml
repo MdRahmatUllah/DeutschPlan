@@ -24,10 +24,19 @@
          Without it Android 13+ runs the legacy back handler and the swipe
          shows no preview of where it is going, however the Flutter side is
          written. -->
+    <!-- No Android backup and no device-to-device copy (#607, BR-PRIV-02):
+         progress and Speaking recordings stay on this phone, as the app
+         promises. allowBackup covers Auto Backup; from Android 12 a device
+         transfer ignores it, so dataExtractionRules excludes everything too,
+         and fullBackupContent covers Android 11 and older. Export is the one
+         way progress leaves the phone. -->
     <application
         android:label="Sogda"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
+        android:allowBackup="false"
+        android:fullBackupContent="false"
+        android:dataExtractionRules="@xml/data_extraction_rules"
         android:enableOnBackInvokedCallback="true">
         <activity
             android:name=".MainActivity"

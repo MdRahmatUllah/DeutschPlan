@@ -262,8 +262,32 @@ class BackupRepository {
         }
       }
 
+      // #658: restoring onto a phone where nothing has been studied yet.
+      // M6 comes after onboarding, so such a phone always has an open step,
+      // a pace, study days and today's plan, and none of it is the learner's
+      // history: it is setup's first guess. Merged by the usual rules, that
+      // guess would close the file's open step on the day it started and
+      // keep onboarding's settings. Here the file says where they are: its
+      // steps and plan replace setup's, and its settings win. Everything
+      // else merges as ever, and nothing studied is lost, because there is
+      // none.
+      final fileWins =
+          mode == ImportMode.merge &&
+          _rowsIn(data, 'enrollments').isNotEmpty &&
+          !await _studiedHere();
+      if (fileWins) {
+        await _db.customStatement('DELETE FROM plan_items');
+        await _db.customStatement('DELETE FROM enrollments');
+      }
+
       for (final table in tables) {
-        await _importTable(table, _rowsIn(data, table), mode, remap);
+        await _importTable(
+          table,
+          _rowsIn(data, table),
+          mode,
+          remap,
+          fileWins: fileWins,
+        );
       }
     });
 
@@ -274,8 +298,9 @@ class BackupRepository {
     String table,
     List<Map<String, Object?>> rows,
     ImportMode mode,
-    Map<String, Map<int, int>> remap,
-  ) async {
+    Map<String, Map<int, int>> remap, {
+    bool fileWins = false,
+  }) async {
     if (rows.isEmpty) return;
 
     final columns = await _columnsOf(table);
@@ -348,7 +373,8 @@ class BackupRepository {
           if ((child != null || ownIds) && row['id'] is int) {
             remapped[row['id']! as int] = local['id']! as int;
           }
-          if (!_isNewer(table, mapped, local)) continue;
+          final wins = fileWins && table == 'settings';
+          if (!wins && !_isNewer(table, mapped, local)) continue;
           await _replaceRow(table, mapped);
           continue;
         }
@@ -456,6 +482,18 @@ class BackupRepository {
     return <String>[for (final row in rows) row.read<String>('name')];
   }
 
+  /// Whether anything has been studied on this phone: a rating, or a
+  /// grammar run (#658).
+  Future<bool> _studiedHere() async {
+    final row = await _db
+        .customSelect(
+          'SELECT EXISTS (SELECT 1 FROM review_log) '
+          'OR EXISTS (SELECT 1 FROM grammar_practice_log) AS studied',
+        )
+        .getSingle();
+    return row.read<bool>('studied');
+  }
+
   Future<bool> _hasOpenEnrollment() async {
     final row = await _db
         .customSelect(
@@ -473,6 +511,22 @@ class BackupRepository {
       row! as Map<String, Object?>,
   ];
 
+  /// The numbers a file could set to what no screen can (#657): the ranges
+  /// `settings.md`'s steppers and slider give them, and at least one study
+  /// day (BR-PLAN-01; M5 keeps the last one). A `daily_new` of a million
+  /// plans the whole course today, and a mask of 0 has no study day ever.
+  /// Checked on `settings` rows by key and on `enrollments` by column.
+  static const Map<String, (num, num)> ranges = <String, (num, num)>{
+    'daily_new': (1, 50),
+    'revise_count': (0, 100),
+    'sentence_count': (0, 20),
+    'study_days_mask': (1, 127),
+    'done_stability_days': (3, 60),
+    'desired_retention': (0.80, 0.97),
+    'exam_unlock_percent': (50, 100),
+    'exam_pass_percent': (50, 90),
+  };
+
   /// Parses and checks the version. FR-M6-02.
   ///
   /// An older file is read as it is: every migration this schema has had adds
@@ -480,6 +534,10 @@ class BackupRepository {
   /// it and takes the default. A *newer* file is refused, because a column we
   /// have never heard of cannot be guessed at and dropping it silently would
   /// lose the learner's data without saying so.
+  ///
+  /// The file is from outside the app, so every row is checked here, before
+  /// the preview (#657): SQLite would store `"stability": "x"` as text, and
+  /// every typed read of it would then throw, Today's plan first.
   Map<String, Object?> _parse(String json) {
     final Object? decoded;
     try {
@@ -511,6 +569,69 @@ class BackupRepository {
       );
     }
 
+    if (decoded['content_version'] is! String?) _refuse('content_version');
+    final data = decoded['tables']! as Map<String, Object?>;
+    for (final MapEntry(key: table, value: rows) in data.entries) {
+      if (rows is! List<Object?> ||
+          rows.any((row) => row is! Map<String, Object?>)) {
+        _refuse('tables.$table is not a list of rows');
+      }
+    }
+    for (final table in tables) {
+      _checkRows(table, _rowsIn(data, table));
+    }
+
     return decoded;
   }
+
+  /// Each value of [rows] against its column's declared type and
+  /// nullability, and the [ranges] (#657). A column the file has and this
+  /// build doesn't is not checked: the import leaves it out.
+  void _checkRows(String table, List<Map<String, Object?>> rows) {
+    final columns = <String, GeneratedColumn<Object>>{
+      for (final column
+          in _db.allTables
+              .firstWhere((t) => t.actualTableName == table)
+              .$columns)
+        column.name: column,
+    };
+    for (final (index, row) in rows.indexed) {
+      for (final MapEntry(key: name, value: value) in row.entries) {
+        final column = columns[name];
+        if (column == null) continue;
+        final fits = switch (value) {
+          null => column.$nullable,
+          int() =>
+            column.type == DriftSqlType.int ||
+                column.type == DriftSqlType.double,
+          double() => column.type == DriftSqlType.double,
+          String() => column.type == DriftSqlType.string,
+          _ => false,
+        };
+        if (!fits) _refuse('$table[$index].$name: $value');
+      }
+      final ranged = switch (table) {
+        'settings' => <(String, Object?)>[
+          (row['key'].toString(), num.tryParse('${row['value']}')),
+        ],
+        'enrollments' => <(String, Object?)>[
+          ('daily_new', row['daily_new']),
+          ('study_days_mask', row['study_days_mask']),
+        ],
+        _ => const <(String, Object?)>[],
+      };
+      for (final (name, value) in ranged) {
+        final range = ranges[name];
+        if (range == null || value is! num) continue;
+        if (value < range.$1 || value > range.$2) {
+          _refuse('$table[$index].$name: $value is outside $range');
+        }
+      }
+    }
+  }
+
+  static Never _refuse(String what) => throw ImportException(
+    ImportRefusal.notABackup,
+    'That file is JSON, but not a Sogda export ($what).',
+  );
 }

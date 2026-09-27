@@ -529,7 +529,7 @@ class SettingsScreen extends ConsumerWidget {
               _Row(
                 title: l10n.settingsReset,
                 subtitle: l10n.settingsResetNote,
-                onTap: () => openReset(context, ref),
+                onTap: () => openReset(context),
               ),
               _Row(
                 title: l10n.settingsRestart,

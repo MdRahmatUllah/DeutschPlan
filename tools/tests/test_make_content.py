@@ -125,7 +125,15 @@ def test_the_sequence_the_recipe_runs_works_end_to_end(tmp_path, capsys):
     )
 
     out = tmp_path / "build" / "content.db"
-    assert build_main(["--manifest", str(manifest_yaml), "--out", str(out)]) == 0
+    # --previous: a first build. The committed asset is the real course,
+    # and every fixture word would read as a word it lost (#648).
+    assert (
+        build_main(
+            ["--manifest", str(manifest_yaml), "--out", str(out)]
+            + ["--previous", str(tmp_path / "none")]
+        )
+        == 0
+    )
     assert verify_content.main(["--db", str(out)]) == 0
 
     assert out.exists()
@@ -145,6 +153,7 @@ def test_the_build_prints_the_per_step_counts(tmp_path, capsys):
 
     build_main(
         ["--manifest", str(manifest_yaml), "--out", str(tmp_path / "c.db")]
+        + ["--previous", str(tmp_path / "none")]
     )
     captured = capsys.readouterr()
 

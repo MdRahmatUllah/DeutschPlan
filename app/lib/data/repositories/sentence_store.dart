@@ -105,12 +105,29 @@ WHERE s.status IN ('learning', 'done')
   ///
   /// [andThen] — *Not yet*'s Hard rating of the headword (BR-FSRS-04) —
   /// runs in the same transaction, so a failure leaves neither (#174).
+  ///
+  /// The sentence's first rating counts it in the day's `sentences_done`
+  /// (#659): a day spent only on sentences is a day studied, for the streak
+  /// and M1's heat map. A changed answer is the same sentence, not another.
   Future<void> rate(
     PlanDate date,
     SentenceCandidate sentence,
     int rating, {
     Future<void> Function()? andThen,
   }) => _db.transaction(() async {
+    await _db.customStatement(
+      '''
+INSERT INTO daily_stats (day, sentences_done)
+SELECT ?3, 1 WHERE EXISTS (
+  SELECT 1 FROM sentence_log
+  WHERE word_uid = ?1 AND ord = ?2 AND shown_on = ?3 AND self_rating IS NULL
+)
+ON CONFLICT(day) DO UPDATE SET sentences_done = sentences_done + 1
+''',
+      <Object>[sentence.wordUid, sentence.ord, date],
+    );
+    // A raw statement, so drift has to be told which streams to re-emit.
+    _db.markTablesUpdated(<TableInfo<Table, Object?>>{_db.dailyStats});
     await _db.customUpdate(
       'UPDATE sentence_log SET self_rating = ?4 '
       'WHERE word_uid = ?1 AND ord = ?2 AND shown_on = ?3',
