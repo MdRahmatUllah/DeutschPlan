@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-09-27 09:11
+last-seen: 2026-09-27 09:12
 last-read: 1538
 
 ## Now
 
-#632 in review as PR #780: answer review threads; re-run the gate if main moved, then merge.
+#659 fix(stats): daily_stats.sentences_done is never written — claimed 2026-09-27 09:12.
 
 ## Next
 
