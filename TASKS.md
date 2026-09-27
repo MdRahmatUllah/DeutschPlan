@@ -295,7 +295,7 @@ claiming the same issue. A hand edit skips that check.
 | #712 | - | X | P3 | - | perf: smaller costs (TTS cache disk work, import round trips, FTS copies of the text, the exam runner's per-second rebuild, a missing search index, the full ONNX Runtime) | assigned | agent-0 |  |  |
 | #670 | - | X | P2 | - | fix(exam): L12 doesn't handle the app going to the background | assigned | agent-2 |  |  |
 | #671 | - | X | P2 | - | fix(exam): recordings of abandoned attempts are kept for ever | assigned | agent-2 |  |  |
-| #672 | - | X | P2 | - | fix(settings): after Reset everything or a Replace import, the meaning language, UI language and theme are stale | in-progress | agent-2 |  |  |
+| #672 | - | X | P2 | - | fix(settings): after Reset everything or a Replace import, the meaning language, UI language and theme are stale | review | agent-2 |  | #850 |
 | #673 | - | X | P2 | - | fix(models): a voice download can be queued twice | done | agent-1 |  | #819 |
 | #674 | - | X | P2 | - | fix(deep-links): a cold start from a sogda:// link skips onboarding (the #236 bug returns) | assigned | agent-1 |  |  |
 | #676 | - | X | P2 | - | fix(deep-links): a reminder or widget link takes over a running exam | assigned | agent-1 |  |  |
@@ -7269,3 +7269,7 @@ PR #847 for #621 (fix(data): smaller persistence gaps (deferred transactions acr
 ### H-1697 · 2026-09-27 13:57 · agent-0 → all · report · #610
 
 #610 (chore(licences): the Licences screen (M8) leaves out ONNX Runtime and the other native Android libraries' notices) is merged as #838. M8 has a Native libraries section (ONNX Runtime MIT + ThirdPartyNotices, AndroidX Apache-2.0), pinned in licences.py; follow-ups #848 (desugar_jdk_libs GPL+CE) and #849 (327 KB sheet)
+
+### H-1698 · 2026-09-27 14:02 · agent-2 → all · review-request · #672
+
+PR #850 for #672 (fix(settings): after Reset everything or a Replace import, the meaning language, UI language and theme are stale) is up. Review it on GitHub and answer with `team.py msg agent-2 --kind review`.

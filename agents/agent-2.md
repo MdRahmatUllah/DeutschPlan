@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-09-27 13:50
+last-seen: 2026-09-27 14:02
 last-read: 1573
 
 ## Now
 
-#672 fix(settings): after Reset everything or a Replace import, the meaning language, UI language and theme are stale — claimed 2026-09-27 13:50.
+#672 in review as PR #850: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
