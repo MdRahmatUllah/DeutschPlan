@@ -13,7 +13,7 @@ import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
-import 'package:flutter/semantics.dart' show SemanticsAction;
+import 'package:flutter/semantics.dart' show SemanticsAction, SemanticsNode;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
@@ -67,8 +67,12 @@ void main() {
 
   /// Three learned words, and today's three sentences already drawn:
   /// Straße's, then Haus's, then Tür's. [planOpen] leaves a plan row open,
-  /// so the day is not complete.
-  Future<void> open({bool planOpen = true, String? rated}) async {
+  /// so the day is not complete. [sql] then changes the course.
+  Future<void> open({
+    bool planOpen = true,
+    String? rated,
+    List<String> sql = const <String>[],
+  }) async {
     db = AppDatabase.memory();
     final directory = tempDir('sg_sentences');
     final content = ContentFixture.write('${directory.path}/content.db');
@@ -97,6 +101,9 @@ INSERT INTO sentence_log (word_uid, ord, shown_on, self_rating) VALUES
         "INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code) "
         "VALUES ('$today', '$haus', 'revise', 'A1.1')",
       );
+    }
+    for (final statement in sql) {
+      await db.customStatement(statement);
     }
     settings = SettingsRepository(db);
     await settings.load();
@@ -133,9 +140,12 @@ INSERT INTO sentence_log (word_uid, ord, shown_on, self_rating) VALUES
     String? rated,
     bool voice = true,
     DateTime Function()? clock,
+    List<String> sql = const <String>[],
   }) async {
     tts = FakeTts(voice: voice);
-    await tester.runAsync(() => open(planOpen: planOpen, rated: rated));
+    await tester.runAsync(
+      () => open(planOpen: planOpen, rated: rated, sql: sql),
+    );
     addTearDown(
       () => tester.runAsync(() async {
         await settings.dispose();
@@ -189,8 +199,14 @@ INSERT INTO sentence_log (word_uid, ord, shown_on, self_rating) VALUES
       row.data,
   ];
 
-  /// The sentence showing: the page's RichText with the headword's span.
-  Finder sentence(String text) => find.text(text, findRichText: true);
+  /// The sentence showing: the page's RichText with the headword's span, by
+  /// the text it shows (its spaces and punctuation are read as nothing,
+  /// #741).
+  Finder sentence(String text) => find.byWidgetPredicate(
+    (widget) =>
+        widget is RichText &&
+        widget.text.toPlainText(includeSemanticsLabels: false) == text,
+  );
 
   group('FR-T5-01 the day\'s sentences', () {
     testWidgets('as drawn and kept in sentence_log, one at a time', (
@@ -466,6 +482,25 @@ INSERT INTO sentence_log (word_uid, ord, shown_on, self_rating) VALUES
       );
     });
 
+    testWidgets('#724 the first word, a du-imperative, is its course verb', (
+      tester,
+    ) async {
+      await pump(
+        tester,
+        sql: <String>[
+          "UPDATE c.word_examples SET german = 'Komm in die Straße.' "
+              "WHERE word_uid = '$strasse'",
+          _verb('kommen', 'to come'),
+        ],
+      );
+      await tester.runAsync(() async {
+        await tester.tapOnText(find.textRange.ofSubstring('Komm'));
+        await pumpEventQueue();
+      });
+      await tester.pumpAndSettle();
+      expect(find.text('to come'), findsOneWidget);
+    });
+
     testWidgets('a word the course lacks: Duden', (tester) async {
       await pump(tester);
       await tester.runAsync(() async {
@@ -479,6 +514,28 @@ INSERT INTO sentence_log (word_uid, ord, shown_on, self_rating) VALUES
   });
 
   group('the page', () {
+    testWidgets('#741 a screen reader hears the sentence whole, then each '
+        'word: no stop on a space or the full stop', (tester) async {
+      final semantics = tester.ensureSemantics();
+      await pump(tester);
+      expect(find.semantics.byLabel('Die Straße ist lang.'), findsOne);
+
+      final heard = <String>[];
+      bool visit(SemanticsNode node) {
+        final data = node.getSemanticsData();
+        // What a screen reader stops on: something to read or to do.
+        if (data.label.isNotEmpty || data.actions != 0) heard.add(data.label);
+        node.visitChildren(visit);
+        return true;
+      }
+
+      tester
+          .getSemantics(sentence('Die Straße ist lang.'))
+          .visitChildren(visit);
+      expect(heard, <String>['Die', 'Straße', 'ist', 'lang']);
+      semantics.dispose();
+    });
+
     testWidgets('play speaks the sentence; a long-press, slowly', (
       tester,
     ) async {
@@ -584,6 +641,41 @@ VALUES
       );
     });
 
+    test('#724 FR-T5-03 the first word, or a small word ending in -e, is the '
+        'verb it is the du-imperative or first person of', () async {
+      for (final (german, english) in <(String, String)>[
+        ('machen', 'to make'),
+        ('kommen', 'to come'),
+        ('haben', 'to have'),
+        ('stimmen', 'to be right'),
+        ('leiden', 'to suffer'),
+      ]) {
+        await db.customStatement(_verb(german, english));
+      }
+      await db.customStatement('''
+INSERT INTO c.words (uid, sublevel_code, level_code, seq, seq_in_sublevel,
+  article, german, pos, english, search_key, search_key_alt, kind)
+VALUES ('uid-wagen', 'A1.1', 'A1', 21, 21, 'der', 'Wagen', 'noun', 'car',
+  'wagen', 'wagen', 'vocab')
+''');
+      final dao = ContentDao(db);
+      Future<String?> verb(String token, {bool first = false}) async =>
+          (await dao.wordForToken(token, first: first))?.german;
+      expect(await verb('Mach', first: true), 'machen');
+      expect(await verb('Komm', first: true), 'kommen');
+      expect(await verb('habe'), 'haben', reason: 'ich habe');
+      expect(await verb('mache'), 'machen');
+      expect(await verb('mach'), isNull, reason: 'a bare stem mid-sentence');
+      expect(await verb('leid'), isNull, reason: 'es tut mir leid');
+      expect(await verb('Stimme'), isNull, reason: 'a noun, not stimmen');
+      expect(await verb('Straße', first: true), 'Straße');
+      expect(
+        await verb('Wag', first: true),
+        isNull,
+        reason: '"Wag es!" is wagen, never der Wagen',
+      );
+    });
+
     test('a short key only as itself: "in" does not claim "innen"', () async {
       await db.customStatement('''
 INSERT INTO c.words (uid, sublevel_code, level_code, seq, seq_in_sublevel,
@@ -596,3 +688,10 @@ VALUES ('uid-in', 'A1.1', 'A1', 9, 9, 'in', 'in', 'in', 'in', 'vocab')
     });
   });
 }
+
+/// A verb of the course, as SQL for `open(sql:)`.
+String _verb(String german, String english) =>
+    'INSERT INTO c.words (uid, sublevel_code, level_code, seq, '
+    'seq_in_sublevel, german, pos, english, search_key, search_key_alt, kind) '
+    "VALUES ('uid-$german', 'A1.1', 'A1', 20, 20, '$german', 'verb', "
+    "'$english', '$german', '$german', 'vocab')";

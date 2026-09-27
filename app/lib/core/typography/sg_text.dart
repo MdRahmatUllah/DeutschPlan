@@ -818,7 +818,8 @@ class SgRuns extends StatelessWidget {
     this.locale,
   });
 
-  /// Each run's text, style over [style], voice (`locale`) and tap.
+  /// Each run's text, style over [style], voice (`locale`), tap and
+  /// `semanticsLabel` (T5's spaces and punctuation are read as nothing).
   final List<TextSpan> runs;
 
   /// What every run's style is over.
@@ -840,6 +841,7 @@ class SgRuns extends StatelessWidget {
           style: style?.merge(run.style) ?? run.style,
           recognizer: run.recognizer,
           locale: run.locale,
+          semanticsLabel: run.semanticsLabel,
         ),
     ];
     return _Hyphenated(
@@ -866,7 +868,8 @@ class SgGermanRuns extends StatelessWidget {
     this.textScaler,
   });
 
-  /// Each run's text, style over [style], and tap (T5's word look-up).
+  /// Each run's text, style over [style], tap (T5's word look-up) and
+  /// `semanticsLabel`.
   final List<TextSpan> runs;
 
   /// What every run's style is over.
@@ -883,6 +886,7 @@ class SgGermanRuns extends StatelessWidget {
           style: run.style,
           recognizer: run.recognizer,
           locale: SgScript.deDE,
+          semanticsLabel: run.semanticsLabel,
         ),
     ],
     style: style,
@@ -954,7 +958,9 @@ class _RenderHyphenated extends RenderProxyBox {
           style: run.style,
           recognizer: run.recognizer,
           locale: run.locale,
-          semanticsLabel: run.text!.replaceAll(SgScript.softHyphen, ''),
+          semanticsLabel:
+              run.semanticsLabel ??
+              run.text!.replaceAll(SgScript.softHyphen, ''),
         ),
     ],
   );
