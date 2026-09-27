@@ -42,10 +42,12 @@ class SplashScreen extends StatelessWidget {
         textAlign: TextAlign.center,
         // Ink on the solid field, secondary on glass — the artboards
         // differ here because the glass paper is much lighter.
-        // #605: on the solid field, the kit's Ink, as the wordmark: the
-        // field is a Lagoon in both modes, and the dark page's light ink was
-        // about 1.4:1 on the lifted one.
-        color: tokens.isGlass ? tokens.color.textSecondary : SgBrand.ink,
+        // #605: on the solid field, `onPrimary`, the token for what sits on
+        // the Lagoon (Ink, as the wordmark), in both modes: the dark page's
+        // light ink was about 1.4:1 on the lifted one.
+        color: tokens.isGlass
+            ? tokens.color.textSecondary
+            : tokens.color.onPrimary,
       ),
     );
 
@@ -219,10 +221,10 @@ class _ProgressRule extends StatelessWidget {
     // and the golden harness relies on. It is also what stops an indefinite
     // animation hanging any `pumpAndSettle` that lands on this screen.
     final still = MediaQuery.disableAnimationsOf(context);
-    // #605: on the solid field, the kit's Ink and the light track (Ink at
+    // #605: on the solid field, `onPrimary` over the light track (Ink at
     // 47 %), in both modes, as the caption: the field is always a Lagoon.
     // Under glass, the page's own.
-    final ink = tokens.isGlass ? tokens.color.ink : SgBrand.ink;
+    final ink = tokens.isGlass ? tokens.color.ink : tokens.color.onPrimary;
     final track = tokens.isGlass
         ? tokens.surface.track
         : SgSurfaceTokens.light.track;
