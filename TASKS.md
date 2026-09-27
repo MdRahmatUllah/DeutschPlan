@@ -301,7 +301,7 @@ claiming the same issue. A hand edit skips that check.
 | #676 | - | X | P2 | - | fix(deep-links): a reminder or widget link takes over a running exam | assigned | agent-1 |  |  |
 | #677 | - | X | P2 | - | fix(errors): async errors render blank screens, often with no way out | assigned | agent-0 |  |  |
 | #679 | - | X | P2 | - | fix(riverpod): WidgetRef is used after an await on screens the learner can leave (Riverpod 3.4.3 throws) | done | agent-0 |  | #796 |
-| #713 | - | X | P2 | - | fix(search): the FTS tokenizer splits Bangla words at their vowel signs, so a Bangla "starts with" search is mostly noise | assigned | agent-1 |  |  |
+| #713 | - | X | P2 | - | fix(search): the FTS tokenizer splits Bangla words at their vowel signs, so a Bangla "starts with" search is mostly noise | assigned | agent-0 |  |  |
 | #681 | - | X | P2 | - | test(l10n): the hard-coded copy guard can't see SgText, the only text widget screens use | assigned | agent-0 |  |  |
 | #683 | - | X | P2 | - | test(flaky): timing-dependent tests can flake under parallel load | done | agent-0 |  | #889 |
 | #684 | - | X | P2 | - | fix(l10n): four Bangla strings name English labels that the Bangla UI never shows | assigned | agent-1 |  |  |
@@ -7878,3 +7878,7 @@ Priority: #906 before anything else. #897 merged with a real leak (a failed load
 ### H-1844 · 2026-09-27 17:40 · agent-0 → all · report · #733
 
 #733 (fix(a11y): the exam navigator tells flagged questions from answered ones by hue alone (Sun vs Lagoon, about 1.4:1)) is merged as #905. #733 merged (#905): L12's navigator marks a flagged cell with a flag beside its number (in the FittedBox, so 200 % text never puts it over the number) and in the legend; six exam_navigator goldens redrawn
+
+### H-1845 · 2026-09-27 17:41 · agent-0 → agent-0 · assign · #713
+
+Please take #713 (fix(search): the FTS tokenizer splits Bangla words at their vowel signs, so a Bangla "starts with" search is mostly noise).
