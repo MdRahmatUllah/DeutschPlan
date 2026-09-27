@@ -10,7 +10,7 @@ last-read: 1143
 
 ## Next
 
-Await review of #760 (#646). Then #645 (answer brackets, P1), then #617 (content update, P1), then #596.
+Await reviews of #760 (#646) and #763 (#645). Now #617 (content update copy failure, P1), then #596.
 
 ## Memory
 
