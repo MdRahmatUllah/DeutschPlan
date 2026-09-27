@@ -225,8 +225,21 @@ class FakeRecorder implements ExamRecorder {
   @override
   Stream<double> get levels => heard.stream;
 
+  /// A call, an alarm or a voice assistant taking the microphone (#624).
+  final StreamController<bool> interruptions =
+      StreamController<bool>.broadcast();
+
   @override
-  Future<void> play(String path) async => played.add(path);
+  Stream<bool> get interrupted => interruptions.stream;
+
+  /// Makes `play` throw, as a take the phone can't read would (#732).
+  bool playFails = false;
+
+  @override
+  Future<void> play(String path) async {
+    played.add(path);
+    if (playFails) throw StateError('the take is unreadable');
+  }
 
   @override
   Future<void> stopPlaying() async {}
@@ -235,7 +248,10 @@ class FakeRecorder implements ExamRecorder {
   Future<Duration?> length(String path) async => recorded;
 
   @override
-  Future<void> dispose() => heard.close();
+  Future<void> dispose() async {
+    await heard.close();
+    await interruptions.close();
+  }
 }
 
 /// L12 without a database: a paper, and a record of what the runner did.
@@ -300,9 +316,19 @@ class StubExamRun implements ExamRunService {
   /// Each recording deleted.
   final List<String> discarded = <String>[];
 
+  /// Makes answers, flags and ticks throw, as a failed write would (#730).
+  /// Each is still listed as asked.
+  bool failWrites = false;
+
+  void _written() {
+    if (failWrites) throw StateError('disk full');
+  }
+
   @override
-  Future<void> rubric(int attemptId, int ord, List<bool> ticks) async =>
-      rubrics.add((ord, ticks));
+  Future<void> rubric(int attemptId, int ord, List<bool> ticks) async {
+    rubrics.add((ord, ticks));
+    _written();
+  }
 
   @override
   Future<String> recordingPath(int attemptId) async =>
@@ -333,12 +359,16 @@ class StubExamRun implements ExamRunService {
   }
 
   @override
-  Future<void> answer(int attemptId, int ord, String? given) async =>
-      answers.add((ord, given));
+  Future<void> answer(int attemptId, int ord, String? given) async {
+    answers.add((ord, given));
+    _written();
+  }
 
   @override
-  Future<void> flag(int attemptId, int ord, {required bool flagged}) async =>
-      flags.add((ord, flagged));
+  Future<void> flag(int attemptId, int ord, {required bool flagged}) async {
+    flags.add((ord, flagged));
+    _written();
+  }
 
   @override
   Future<void> recordTime(
