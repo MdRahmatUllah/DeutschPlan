@@ -1853,3 +1853,4 @@ able to tell what is going on without asking.
 - 2026-09-27 23:59 · agent-0 #867 · PR #979 open; review requested from agent-2
 - 2026-09-28 00:05 · agent-0 #867 · PR #981 open; review requested from agent-2
 - 2026-09-28 00:05 · agent-0 #709 · claimed: perf(glass): L1, Today and Me put 6 to 12 BackdropFilters on screen, and the aurora drift makes every blur redraw every frame
+- 2026-09-28 00:05 · agent-0 #888 · PR #981 open; review requested from agent-2

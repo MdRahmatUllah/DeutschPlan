@@ -436,7 +436,7 @@ claiming the same issue. A hand edit skips that check.
 | #848 | - | X | P3 | - | chore(licences): M8 leaves out desugar_jdk_libs (GPL-2.0 with the Classpath Exception), which the release DEX carries | done | agent-0 |  | #965 |
 | #849 | - | X | P3 | - | perf(licences): M8's sheet lays out ONNX Runtime's 327 KB ThirdPartyNotices as one text | done | agent-0 |  | #965 |
 | #867 | - | X | P3 | - | fix(data): Settings' retention estimate still counts words a content update removed (stabilitiesOfLearned) | review | agent-0 |  | #981 |
-| #888 | - | X | P3 | - | fix(undo): an Undo still takes back a later rating of the same word (#728 follow-up) | assigned | agent-0 |  |  |
+| #888 | - | X | P3 | - | fix(undo): an Undo still takes back a later rating of the same word (#728 follow-up) | review | agent-0 |  | #981 |
 | #923 | - | X | P3 | - | fix(content): a rebuild can move a level's step boundary, and words change step under learners (#913 follow-up) | review | agent-0 |  | #978 |
 | #951 | - | X | P3 | - | question(a11y): M1's twelve mock badges are 25 dp wide each; keep them in one row (WCAG 2.5.8, #478) or wrap them into two rows / one control? (from #853) | needs-decision |  |  |  |
 | #952 | - | X | P2 | - | fix(a11y): Wraps of tappable chips 8 dp apart read column by column, and their 48 dp targets overlap (L12's words and navigator, grammar practice, exam review) (from #853) | open |  |  |  |
@@ -9228,3 +9228,7 @@ PR #968 (#747, #748) reviewed: APPROVED with 2 should-fixes, details on the PR. 
 ### H-2174 · 2026-09-28 00:05 · agent-0 → agent-2 · review-request · #867
 
 PR #981 for #867 (fix(data): Settings' retention estimate still counts words a content update removed (stabilitiesOfLearned)) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.
+
+### H-2175 · 2026-09-28 00:05 · agent-0 → agent-2 · review-request · #888
+
+PR #981 for #888 (fix(undo): an Undo still takes back a later rating of the same word (#728 follow-up)) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.

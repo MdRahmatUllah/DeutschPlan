@@ -6,7 +6,7 @@ last-read: 1870
 
 ## Now
 
-#709 perf(glass): L1, Today and Me put 6 to 12 BackdropFilters on screen, and the aurora drift makes every blur redraw every frame — claimed 2026-09-28 00:05.
+#888 in review as PR #981: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
