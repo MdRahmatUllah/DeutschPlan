@@ -6,7 +6,7 @@ last-read: 1870
 
 ## Now
 
-#689 in review as PR #945: answer review threads; re-run the gate if main moved, then merge.
+#701 chore(today): smaller items in Today and study (production review nits) — claimed 2026-09-27 21:03.
 
 ## Next
 
