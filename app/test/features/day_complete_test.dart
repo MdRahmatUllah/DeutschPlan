@@ -1,5 +1,6 @@
 import 'package:sogda/core/components/sg_button.dart';
 import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/core/typography/sg_text.dart';
 import 'package:sogda/core/theme/app_theme.dart';
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/db/content_dao.dart';
@@ -59,13 +60,17 @@ void main() {
     WidgetTester tester, {
     bool shownAlready = false,
     bool still = false,
+    bool screenReader = false,
     TodayView? view,
     bool viewFails = false,
     String? day,
   }) async {
-    if (still) {
+    if (still || screenReader) {
       tester.platformDispatcher.accessibilityFeaturesTestValue =
-          const FakeAccessibilityFeatures(disableAnimations: true);
+          FakeAccessibilityFeatures(
+            disableAnimations: still,
+            accessibleNavigation: screenReader,
+          );
       addTearDown(
         tester.platformDispatcher.clearAccessibilityFeaturesTestValue,
       );
@@ -223,6 +228,30 @@ void main() {
     await tester.pump(const Duration(seconds: 1));
     await tester.pumpAndSettle();
     expect(find.text('T1 today'), findsOneWidget);
+  });
+
+  testWidgets('#689 TD-13 under a screen reader it stays until Back to '
+      'Today: no time limit (WCAG 2.2.1)', (tester) async {
+    await pump(tester, screenReader: true);
+    await tester.pump(DayCompleteScreen.stay * 2);
+    await tester.pumpAndSettle();
+    expect(find.byType(DayCompleteScreen), findsOneWidget);
+    await tester.tap(find.text(l10n.dayCompleteBack));
+    await tester.pumpAndSettle();
+    expect(find.text('T1 today'), findsOneWidget);
+  });
+
+  testWidgets('#689 TD-12 "Tag geschafft!" is German, read in a German '
+      'voice', (tester) async {
+    await pump(tester);
+    final title = tester.widget<SgText>(
+      find.byWidgetPredicate(
+        (widget) => widget is SgText && widget.data == l10n.dayCompleteTitle,
+      ),
+    );
+    expect(title.german, isTrue);
+    await tester.pump(DayCompleteScreen.stay);
+    await tester.pumpAndSettle();
   });
 
   testWidgets('or on a tap anywhere', (tester) async {

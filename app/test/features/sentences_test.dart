@@ -472,7 +472,8 @@ INSERT INTO sentence_log (word_uid, ord, shown_on, self_rating) VALUES
       });
       await tester.pumpAndSettle();
       expect(find.text('die Straße', findRichText: true), findsOneWidget);
-      expect(find.text('street'), findsOneWidget);
+      // #689 TD-15: Both, the default, is both.
+      expect(find.text('street · রাস্তা'), findsOneWidget);
 
       await tester.tap(find.text(l10n.sentencesOpenWord));
       await tester.pumpAndSettle();

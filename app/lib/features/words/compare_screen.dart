@@ -145,15 +145,17 @@ class _CompareScreenState extends ConsumerState<CompareScreen> {
       }
       replan();
       if (!mounted) return;
-      SgUndo.show(
-        context,
-        message: AppLocalizations.of(context).compareAdded(words.length),
-        onUndo: () => unawaited(() async {
-          for (final undo in undos.reversed) {
-            await undo();
-          }
-          replan();
-        }()),
+      unawaited(
+        SgUndo.show(
+          context,
+          message: AppLocalizations.of(context).compareAdded(words.length),
+          onUndo: () => unawaited(() async {
+            for (final undo in undos.reversed) {
+              await undo();
+            }
+            replan();
+          }()),
+        ),
       );
     } finally {
       if (mounted) setState(() => _busy = false);

@@ -223,16 +223,29 @@ class ProgressRingCard extends StatelessWidget {
                       ),
                       role: SgTextRole.body,
                     ),
-                    const SizedBox(height: 8),
                     Semantics(
                       link: true,
                       child: GestureDetector(
                         onTap: onStudyDays,
                         behavior: HitTestBehavior.opaque,
-                        child: SgText(
-                          l10n.todayRestStudyDays,
-                          role: SgTextRole.caption,
-                          color: tokens.color.textSecondary,
+                        // A caption drawn, a 48 dp (44 pt) target touched:
+                        // its own box, as a target grown past its parent's
+                        // takes no taps there (#689 TD-14).
+                        child: ConstrainedBox(
+                          constraints: BoxConstraints(
+                            minHeight: AdaptiveTapTarget.minimumOf(context)
+                                .height,
+                          ),
+                          child: Align(
+                            alignment: AlignmentDirectional.centerStart,
+                            widthFactor: 1,
+                            heightFactor: 1,
+                            child: SgText(
+                              l10n.todayRestStudyDays,
+                              role: SgTextRole.caption,
+                              color: tokens.color.textSecondary,
+                            ),
+                          ),
                         ),
                       ),
                     ),

@@ -1,4 +1,6 @@
 import 'package:sogda/core/components/sg_button.dart';
+import 'package:sogda/core/typography/sg_text.dart';
+import 'package:sogda/core/components/sg_feedback.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/core/theme/app_theme.dart';
 import 'package:sogda/data/db/app_database.dart';
@@ -733,6 +735,106 @@ VALUES ('$today', 9, 12, 900)
     });
     expect(find.text('T6 day complete'), findsOneWidget);
     expect(find.byType(StudySummarySheet), findsNothing);
+  });
+
+  /// Rates today's last card, Tür, through the screen, so its Undo bar
+  /// shows: the first two through the session.
+  Future<ProviderContainer> rateTheLast(
+    WidgetTester tester, {
+    required StudyNext next,
+  }) async {
+    final container = await pump(tester, next: next);
+    await session(tester, container, (n) async {
+      await n.rate(Rating.good);
+      await n.rate(Rating.good);
+    });
+    await tester.tap(find.text(l10n.studyShowMeaning));
+    await tester.runAsync(pumpEventQueue);
+    await tester.pumpAndSettle();
+    await tester.runAsync(() async {
+      await tester.tap(find.text(l10n.ratingGood));
+      await pumpEventQueue();
+    });
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 750));
+    return container;
+  }
+
+  testWidgets('#689 TD-9 FR-T2-02 the card that completes the day keeps its '
+      'Undo: T6 comes once the bar has gone', (tester) async {
+    await rateTheLast(
+      tester,
+      next: StudyNext(sentences: 0, backlog: 0, dayDone: true),
+    );
+    expect(find.text('T6 day complete'), findsNothing);
+    expect(find.text(l10n.undo), findsOneWidget);
+
+    await tester.pump(SgUndo.duration);
+    await tester.pumpAndSettle();
+    // The bar was shown from the rating's write, on the real event loop:
+    // its closing is heard there.
+    await tester.runAsync(pumpEventQueue);
+    await tester.pumpAndSettle();
+    expect(find.text('T6 day complete'), findsOneWidget);
+  });
+
+  testWidgets('#689 TD-9 and its Undo taken, the session is back on that '
+      'card, and no T6', (tester) async {
+    final container = await rateTheLast(
+      tester,
+      next: StudyNext(sentences: 0, backlog: 0, dayDone: true),
+    );
+    await tester.tap(find.text(l10n.undo));
+    await tester.runAsync(pumpEventQueue);
+    await tester.pumpAndSettle();
+    expect(
+      container.read(studySessionProvider(words)).value?.current?.uid,
+      tuer,
+    );
+    await tester.pump(const Duration(seconds: 5));
+    await tester.pumpAndSettle();
+    expect(find.text('T6 day complete'), findsNothing);
+    expect(find.byType(StudyScreen), findsOneWidget);
+  });
+
+  testWidgets('#689 TD-13 T3 is modal to a screen reader: the session under '
+      'it is out of reach, its own buttons are not', (tester) async {
+    final semantics = tester.ensureSemantics();
+    final container = await pump(
+      tester,
+      next: StudyNext(sentences: 3, backlog: 0, dayDone: true),
+    );
+    expect(find.bySemanticsLabel(l10n.studyClose), findsOneWidget);
+    await session(tester, container, (n) async {
+      for (var i = 0; i < 3; i++) {
+        await n.rate(Rating.good);
+      }
+    });
+    expect(find.byType(StudySummarySheet), findsOneWidget);
+    expect(find.bySemanticsLabel(l10n.studyClose), findsNothing);
+    expect(find.bySemanticsLabel(l10n.studyMenu), findsNothing);
+    expect(find.bySemanticsLabel(l10n.summaryDone), findsOneWidget);
+    semantics.dispose();
+  });
+
+  testWidgets('#689 TD-12 "Gut gemacht!" is German, read in a German voice', (
+    tester,
+  ) async {
+    final container = await pump(
+      tester,
+      next: StudyNext(sentences: 3, backlog: 0, dayDone: true),
+    );
+    await session(tester, container, (n) async {
+      for (var i = 0; i < 3; i++) {
+        await n.rate(Rating.good);
+      }
+    });
+    final title = tester.widget<SgText>(
+      find.byWidgetPredicate(
+        (widget) => widget is SgText && widget.data == l10n.summaryTitle,
+      ),
+    );
+    expect(title.german, isTrue);
   });
 
   testWidgets('FR-T2-02 the last card\'s Undo works from under the summary', (

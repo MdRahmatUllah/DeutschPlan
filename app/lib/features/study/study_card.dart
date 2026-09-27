@@ -98,10 +98,11 @@ class _StudyWordCardState extends ConsumerState<StudyWordCard> {
     _autoplay();
   }
 
+  /// A new word is a new card, keyed afresh by the session (`StudyCardMotion`),
+  /// so its autoplay is [initState]'s.
   @override
   void didUpdateWidget(StudyWordCard old) {
     super.didUpdateWidget(old);
-    if (old.word.uid != widget.word.uid) _autoplay();
     if (widget.revealed && !old.revealed) _autoplayExample();
   }
 

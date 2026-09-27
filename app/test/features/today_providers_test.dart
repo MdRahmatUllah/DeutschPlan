@@ -284,6 +284,27 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code, completed_at, 
       expect(after.sentences.done, 1);
       expect(after.estimate, const Duration(seconds: 70));
     });
+
+    test('#689 TD-11 a rated sentence a content update took away is not '
+        "counted: never 2 / 1, so the day's sentences can be done", () async {
+      await container.read(todayViewProvider.future);
+      await db.customUpdate(
+        "UPDATE sentence_log SET self_rating = 2 WHERE shown_on = '$today'",
+        updates: <TableInfo<Table, Object?>>{db.sentenceLog},
+      );
+      // Rated, and then its example left the course.
+      await db.customUpdate(
+        'INSERT INTO sentence_log (word_uid, ord, shown_on, self_rating) '
+        "VALUES ('gone', 0, '$today', 2)",
+        updates: <TableInfo<Table, Object?>>{db.sentenceLog},
+      );
+      await pumpEventQueue();
+      final view = await container.read(todayViewProvider.future);
+
+      expect(view.sentences.total, 1);
+      expect(view.sentences.done, 1);
+      expect(view.sentences.open, 0);
+    });
   });
 
   group('#96 all done', () {
