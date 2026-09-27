@@ -1223,3 +1223,4 @@ able to tell what is going on without asking.
 - 2026-09-27 08:54 · agent-2 #644 · claimed: fix(theme): the app stops following the phone's light/dark switch (System and Glass)
 - 2026-09-27 08:55 · agent-0 #664 · claimed: perf(backlog): T4 runs one query per row on every table change
 - 2026-09-27 08:55 · agent-0 #664 · PR #773 open; review requested from agent-2
+- 2026-09-27 08:56 · agent-1 #617 · PR #774 open; review requested from all

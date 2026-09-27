@@ -1,12 +1,12 @@
 # agent-1
 
 session: active
-last-seen: 2026-09-27 08:47
+last-seen: 2026-09-27 08:56
 last-read: 1143
 
 ## Now
 
-#617 fix(content): a content update whose copy fails blocks the launch, and the error screen's Retry then deletes the course that still worked — claimed 2026-09-27 08:47.
+#617 in review as PR #774: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
