@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:sogda/core/components/sg_feedback.dart';
 import 'package:sogda/core/adaptive/adaptive.dart';
 import 'package:sogda/core/components/sg_button.dart';
 import 'package:sogda/core/components/sg_speaker_button.dart';
@@ -202,7 +203,8 @@ class _SentencesScreenState extends ConsumerState<SentencesScreen> {
   Widget build(BuildContext context) {
     final tokens = context.tokens;
     final l10n = AppLocalizations.of(context);
-    final list = ref.watch(practiceSentencesProvider).value;
+    final listState = ref.watch(practiceSentencesProvider);
+    final list = listState.value;
     if (list != null && _pages == null && list.isNotEmpty) {
       // Reopened: back at the first sentence not yet answered.
       final first = list.indexWhere((s) => s.rating == null);
@@ -286,6 +288,13 @@ class _SentencesScreenState extends ConsumerState<SentencesScreen> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           band,
+          if (list == null && listState.hasError)
+            Expanded(
+              child: SgLoadFailed(
+                message: l10n.todayLoadFailed,
+                onRetry: () => ref.invalidate(practiceSentencesProvider),
+              ),
+            ),
           if (list != null && list.isNotEmpty) ...<Widget>[
             Padding(
               padding: const EdgeInsets.only(top: 14),
