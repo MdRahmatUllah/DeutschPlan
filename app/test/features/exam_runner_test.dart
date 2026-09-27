@@ -497,6 +497,36 @@ void main() {
       semantics.dispose();
     });
 
+    testWidgets('#733 a flagged question carries a flag, not only its '
+        'colour: in its cell and in the legend', (tester) async {
+      final semantics = tester.ensureSemantics();
+      await pump(tester, stub: StubExamRun(flagged: const <int>{7}));
+      await open(tester);
+      final flags = find.byIcon(Icons.flag);
+      // The flagged cell's mark and the legend's; an answered cell has none.
+      expect(flags, findsNWidgets(2));
+      final inCells = <int>[
+        for (var n = 1; n <= 40; n++)
+          for (var i = 0; i < 2; i++)
+            if (tester
+                .getRect(find.bySemanticsLabel(l10n.examNavQuestion(n)))
+                .contains(tester.getCenter(flags.at(i))))
+              n,
+      ];
+      expect(
+        inCells,
+        hasLength(1),
+        reason: 'one flag sits in a cell, the flagged one',
+      );
+      expect(
+        tester.getSemantics(
+          find.bySemanticsLabel(l10n.examNavQuestion(inCells.single)),
+        ),
+        isSemantics(value: l10n.examNavFlaggedState),
+      );
+      semantics.dispose();
+    });
+
     testWidgets('a number goes to its question', (tester) async {
       final semantics = tester.ensureSemantics();
       await pump(tester);

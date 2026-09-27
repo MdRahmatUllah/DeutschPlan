@@ -74,7 +74,11 @@ class ExamNavigatorSheet extends StatelessWidget {
             runSpacing: 4,
             children: <Widget>[
               _Key(tokens.color.primary, l10n.examNavAnswered(answered)),
-              _Key(tokens.color.accent, l10n.examNavFlagged(flagged)),
+              _Key(
+                tokens.color.accent,
+                l10n.examNavFlagged(flagged),
+                icon: Icons.flag,
+              ),
               _Key(null, l10n.examNavEmpty(empty)),
             ],
           ),
@@ -119,10 +123,14 @@ class ExamNavigatorSheet extends StatelessWidget {
 
 /// A legend entry: a swatch and its count.
 class _Key extends StatelessWidget {
-  const _Key(this.fill, this.label);
+  const _Key(this.fill, this.label, {this.icon});
 
   final Color? fill;
   final String label;
+
+  /// The mark the swatch's cells carry besides their fill: the flag, so
+  /// flagged is told from answered by shape, not by hue alone (#733).
+  final IconData? icon;
 
   @override
   Widget build(BuildContext context) {
@@ -140,6 +148,9 @@ class _Key extends StatelessWidget {
               color: fill == null ? tokens.surface.outline : tokens.color.ink,
             ),
           ),
+          child: icon == null
+              ? null
+              : Icon(icon, size: 10, color: tokens.color.onAccent),
         ),
         const SizedBox(width: 6),
         SgText(label, role: SgTextRole.caption),
@@ -202,20 +213,36 @@ class _Cell extends StatelessWidget {
             onTap: onTap,
             child: SizedBox(
               height: 40,
-              child: Center(
-                // A number in a fixed cell shrinks to fit: a Bangla digit is
-                // a role larger, and at 200 % the 40 cut it (#580).
-                child: FittedBox(
-                  fit: BoxFit.scaleDown,
-                  child: SgText(
-                    AppLocalizations.of(context).digits(n),
-                    role: SgTextRole.label,
-                    weight: 700,
-                    color: fill == null
-                        ? tokens.color.ink
-                        : tokens.color.onAccent,
+              child: Stack(
+                children: <Widget>[
+                  Center(
+                    // A number in a fixed cell shrinks to fit: a Bangla digit
+                    // is a role larger, and at 200 % the 40 cut it (#580).
+                    child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: SgText(
+                        AppLocalizations.of(context).digits(n),
+                        role: SgTextRole.label,
+                        weight: 700,
+                        color: fill == null
+                            ? tokens.color.ink
+                            : tokens.color.onAccent,
+                      ),
+                    ),
                   ),
-                ),
+                  // Flagged is told from answered by this mark, not only by
+                  // Sun against Lagoon, about 1.4:1 apart (#733, WCAG 1.4.1).
+                  if (cell.flagged)
+                    Positioned(
+                      top: 3,
+                      right: 3,
+                      child: Icon(
+                        Icons.flag,
+                        size: 12,
+                        color: tokens.color.onAccent,
+                      ),
+                    ),
+                ],
               ),
             ),
           ),

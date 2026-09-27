@@ -10,7 +10,7 @@
 
 **Layout.** Cobalt top band: section "Articles · 3 of 6", timer "14:32" (pause button; Coral in the last 2 min), grid icon → navigator. Sub-line "Question 21 of 40 · no feedback until the end". Body: one question per screen using the quiz item layouts (typed, article buttons, multiple choice, gap fill, listening) plus a flag icon. Footer *Previous* / *Next*.
 
-**Navigator sheet.** "Questions · 14:32 left", legend Answered · 22 (Lagoon) / Flagged · 3 (Sun) / Empty · 15 (outline); 8-column grid of numbers; note "15 unanswered — submitting asks you to confirm"; *Submit exam*.
+**Navigator sheet.** "Questions · 14:32 left", legend Answered · 22 (Lagoon) / Flagged · 3 (Sun, with a flag) / Empty · 15 (outline); 8-column grid of numbers, a flagged one carrying a small flag in its corner, so flagged is told from answered by shape as well as hue (#733); note "15 unanswered — submitting asks you to confirm"; *Submit exam*.
 
 **Leave dialog.** "Leave the exam? Your answers so far are saved as an unfinished attempt. The timer stops. You can start Mock 2 again from the exam hub." Buttons *Keep going* / *Leave* (Coral).
 
