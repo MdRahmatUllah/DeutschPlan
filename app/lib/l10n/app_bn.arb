@@ -528,6 +528,7 @@
   "libraryTitle": "ব্যাকরণ লাইব্রেরি",
   "libraryAll": "সব · {count}",
   "libraryNotLearned": "এখনও শেখা হয়নি · {count}",
+  "libraryTopicNotLearned": "এখনও শেখা হয়নি",
   "libraryDue": "বাকি · {count}",
   "libraryNone": "এখানে কোনো বিষয় নেই।",
   "topicRule": "নিয়ম",
