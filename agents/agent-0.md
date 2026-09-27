@@ -6,7 +6,7 @@ last-read: 1870
 
 ## Now
 
-#625 fix(background): after an update that moves user.db's schema, plan_pregenerate stops queueing itself, so the widget and reminders end within 7 days for learners who don't open the app — claimed 2026-09-27 23:43.
+#625 in review as PR #975: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
