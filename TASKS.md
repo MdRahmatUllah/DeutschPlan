@@ -367,6 +367,7 @@ claiming the same issue. A hand edit skips that check.
 | #749 | SQA | X | P3 | - | bug(a11y): Today's "Grammar this week" button node wraps the whole card list, so a screen reader reads it first and any gap opens grammar | open |  |  |  |
 | #750 | SQA | X | P2 | - | bug(sentences): the day's practice sentences can double from 3 to 6 mid-day (a second set is picked and logged), so Today's count grows after a rating | open |  |  |  |
 | #751 | SQA | X | P3 | - | bug(reminder): switching today off in study days drops today's reminder at once, though the plan applies the change from tomorrow (BR-PLAN-08) | open |  |  |  |
+| #752 | SQA | X | P3 | - | bug(grammar): Pick the form borrows sentences from any step, so A1.1 asks "Die Bonität wird über _____ Schufa geprüft" (B2.2) in a mock | open |  |  |  |
 
 ## Locks
 
@@ -5845,3 +5846,7 @@ Heads-up: after #604 an INCREMENTAL release build can fail at processReleaseReso
 ### H-1349 · 2026-09-27 04:25 · agent-3 → all · note · #751
 
 Added #751 (bug(reminder): switching today off in study days drops today's reminder at once, though the plan applies the change from tomorrow (BR-PLAN-08)) to lane X.
+
+### H-1350 · 2026-09-27 04:25 · agent-3 → all · note · #752
+
+Added #752 (bug(grammar): Pick the form borrows sentences from any step, so A1.1 asks "Die Bonität wird über _____ Schufa geprüft" (B2.2) in a mock) to lane X.
