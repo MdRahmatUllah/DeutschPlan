@@ -1,7 +1,9 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/core/theme/app_theme.dart';
+import 'package:sogda/data/repositories/model_repository.dart';
 import 'package:sogda/domain/exam_generator.dart';
 import 'package:sogda/features/exam/exam_runner_screen.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
@@ -13,7 +15,8 @@ import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
-import 'package:record/record.dart' show AudioInterruptionMode;
+import 'package:record/record.dart'
+    show AudioInterruptionMode, AudioRecorder, RecordConfig;
 
 import 'exam_run_fixtures.dart';
 
@@ -24,6 +27,28 @@ const WordQuestion after = WordQuestion(
   prompt: 'das Haus',
   expected: 'house',
 );
+
+/// The `record` plugin without a phone: a take writes its file as it starts,
+/// as the plugin opens it, and [fails] makes the stop throw.
+class _Plugin implements AudioRecorder {
+  String? path;
+  bool fails = false;
+
+  @override
+  Future<void> start(RecordConfig config, {required String path}) async {
+    this.path = path;
+    File(path).writeAsStringSync('take');
+  }
+
+  @override
+  Future<String?> stop() async {
+    if (fails) throw StateError('the recorder failed');
+    return path;
+  }
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
 
 /// L12 · Speaking — #134.
 void main() {
@@ -257,6 +282,97 @@ void main() {
 
       expect(find.text(l10n.examSpeakingRetake(0)), findsOneWidget);
       expect(find.text(l10n.examSpeakingRetake(1)), findsNothing);
+    });
+
+    testWidgets('#691 EX-6 Delete, then Record, is the retake: after it, no '
+        'take is left', (tester) async {
+      final semantics = tester.ensureSemantics();
+      await pump(tester);
+      await press(tester, Icons.mic);
+      await press(tester, Icons.stop);
+      await tester.pumpAndSettle();
+      await tester.tap(find.text(l10n.examSpeakingDelete));
+      await tester.pumpAndSettle();
+
+      // The retake, though the first take is gone.
+      await press(tester, Icons.mic);
+      await press(tester, Icons.stop);
+      await tester.pumpAndSettle();
+      expect(mic.started, <String>[path, path]);
+      expect(find.text(l10n.examSpeakingRetake(0)), findsOneWidget);
+
+      await tester.tap(find.text(l10n.examSpeakingDelete));
+      await tester.pumpAndSettle();
+      expect(find.text(l10n.examSpeakingRetake(0)), findsOneWidget);
+      expect(find.text(l10n.examSpeakingReady), findsNothing);
+      expect(
+        tester.getSemantics(find.bySemanticsLabel(l10n.examSpeakingRecord)),
+        isSemantics(isButton: true, isEnabled: false, hasEnabledState: true),
+      );
+      await press(tester, Icons.mic);
+      expect(mic.started, hasLength(2), reason: 'no third take');
+      semantics.dispose();
+    });
+
+    testWidgets('#691 EX-6 a recording there on resume is the first take', (
+      tester,
+    ) async {
+      await pump(
+        tester,
+        items: const <ExamItem>[artboardSpeaking],
+        given: <int, String>{1: path},
+      );
+      await tester.tap(find.text(l10n.examSpeakingDelete));
+      await tester.pumpAndSettle();
+      await press(tester, Icons.mic);
+      await press(tester, Icons.stop);
+      await tester.pumpAndSettle();
+      expect(find.text(l10n.examSpeakingRetake(0)), findsOneWidget);
+    });
+
+    testWidgets('#691 EX-8 FR-L12S-01 a task gone while the phone asks '
+        'records nothing', (tester) async {
+      final asking = FakeRecorder()..asking = Completer<void>();
+      await pump(tester, recorder: asking);
+      await tester.tap(find.byIcon(Icons.mic));
+      await tester.pump();
+      expect(asking.asked, 1);
+
+      // 0:00 submitted the paper under the dialog, and the task went.
+      await tester.pumpWidget(const SizedBox());
+      asking.asking!.complete();
+      await tester.pump();
+      await tester.pump();
+
+      expect(asking.started, isEmpty);
+      expect(run.answers, isEmpty);
+    });
+
+    test('#691 EX-5 FR-L12S-02 a take records beside the recording and '
+        'replaces it once it stops; one that fails leaves it whole', () async {
+      final folder = Directory.systemTemp.createTempSync('sg_take');
+      addTearDown(() => folder.deleteSync(recursive: true));
+      final kept = File('${folder.path}/7.m4a')..writeAsStringSync('kept');
+      final plugin = _Plugin();
+      final recorder = PlatformExamRecorder(recorder: plugin);
+
+      await recorder.start(kept.path);
+      expect(kept.readAsStringSync(), 'kept', reason: 'recording elsewhere');
+      plugin.fails = true;
+      await expectLater(recorder.stop(), throwsStateError);
+      expect(kept.readAsStringSync(), 'kept');
+      expect(File(plugin.path!).existsSync(), isFalse, reason: 'no take left');
+
+      plugin.fails = false;
+      await recorder.start(kept.path);
+      await recorder.stop();
+      expect(kept.readAsStringSync(), 'take');
+      expect(File(plugin.path!).existsSync(), isFalse);
+
+      // A take cut off by the app's being killed goes with the recording.
+      File(ModelRepository.takeOf(kept.path)).writeAsStringSync('cut off');
+      await ModelRepository.deleteRecordingAt(kept.path);
+      expect(folder.listSync(), isEmpty);
     });
 
     test('FR-L12S-02 #624 the phone pauses a recording for a call and '
