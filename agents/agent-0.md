@@ -6,7 +6,7 @@ last-read: 1767
 
 ## Now
 
-#671 fix(exam): recordings of abandoned attempts are kept for ever — claimed 2026-09-27 16:56.
+#671 in review as PR #899: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 

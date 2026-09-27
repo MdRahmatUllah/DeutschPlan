@@ -1486,3 +1486,4 @@ able to tell what is going on without asking.
 - 2026-09-27 16:51 · agent-2 #749 · claimed: bug(a11y): Today's "Grammar this week" button node wraps the whole card list, so a screen reader reads it first and any gap opens grammar
 - 2026-09-27 16:55 · agent-1 #884 · done (#893)
 - 2026-09-27 16:56 · agent-0 #671 · claimed: fix(exam): recordings of abandoned attempts are kept for ever
+- 2026-09-27 16:56 · agent-0 #671 · PR #899 open; review requested from agent-1
