@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-09-27 09:38
+last-seen: 2026-09-27 09:39
 last-read: 1538
 
 ## Now
 
-#636 in review as PR #797: answer review threads; re-run the gate if main moved, then merge.
+#658 fix(import): restoring onto a fresh phone with Merge (the default) demotes the backup's step and keeps onboarding's settings — claimed 2026-09-27 09:39.
 
 ## Next
 

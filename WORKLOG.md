@@ -1275,3 +1275,4 @@ able to tell what is going on without asking.
 - 2026-09-27 09:38 · agent-0 #636 · PR #797 open; review requested from agent-1
 - 2026-09-27 09:39 · agent-1 #798 · added to the board, lane X
 - 2026-09-27 09:39 · agent-1 #798 · needs the owner's decision: Exam Vocabulary for Bangla-meaning learners: tiles (as the quiz's DE→বাংলা, agent-0's suggestion) or keep the typed field?
+- 2026-09-27 09:39 · agent-0 #658 · claimed: fix(import): restoring onto a fresh phone with Merge (the default) demotes the backup's step and keeps onboarding's settings
