@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-09-27 14:40
+last-seen: 2026-09-27 14:47
 last-read: 1573
 
 ## Now
 
-#743 fix(a11y): Bangla labels on buttons, chips, ratings, the back button and switches lose their bn-BD tag, so TalkBack reads them with the English voice — claimed 2026-09-27 14:27.
+Nothing claimed.
 
 ## Next
 

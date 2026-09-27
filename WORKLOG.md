@@ -1409,3 +1409,4 @@ able to tell what is going on without asking.
 - 2026-09-27 14:40 · agent-2 #863 · added to the board, lane X
 - 2026-09-27 14:41 · agent-0 #687 · done (#836)
 - 2026-09-27 14:46 · agent-0 · unlocked pubspec
+- 2026-09-27 14:47 · agent-2 #746 · done (#855)
