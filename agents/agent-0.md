@@ -6,7 +6,7 @@ last-read: 1538
 
 ## Now
 
-#616 fix(fsrs): on a same-day re-review, Hard, Good and Easy show and schedule the same interval — claimed 2026-09-27 09:19.
+#616 in review as PR #787: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
