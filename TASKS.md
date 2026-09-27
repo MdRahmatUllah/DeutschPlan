@@ -403,7 +403,7 @@ claiming the same issue. A hand edit skips that check.
 | #883 | - | X | P1 | - | test(router): app_router_test fails 2 tests on main since #856: /day-complete -> /today has no database for T6's read | done |  |  |  |
 | #884 | - | X | P2 | - | fix(sentences): T5 reads its day lazily at finish, so finishing past midnight claims the new day's T6 (#859 blocker, unfixed on main) | done | agent-1 |  | #893 |
 | #885 | - | X | P2 | - | fix(bootstrap): a failed course copy on upgrade starts on an old content.db without words.kind, so every word read fails (from #860's review) | assigned | agent-0 |  |  |
-| #886 | - | X | P3 | - | chore(review): should-fixes from reviewing #856, #860 and #862 (T2 null word, docs, retention estimate, keepAlive guard) | open |  |  |  |
+| #886 | - | X | P3 | - | chore(review): should-fixes from reviewing #856, #860 and #862 (T2 null word, docs, retention estimate, keepAlive guard) | assigned | agent-0 |  |  |
 | #890 | - | X | P2 | - | question(exam): while the app is in the background, does L12's clock hold (lenient) or count wall time (strict)? (from #670, closed by #876) | needs-decision |  |  |  |
 | #891 | - | X | P2 | - | fix(exam): Speaking's Delete removes the recording before the empty answer is written, so a failed write leaves the answer pointing at a deleted file (from #876's review) | done | agent-2 |  | #931 |
 | #892 | - | X | P3 | - | chore(review): should-fixes from reviewing #874 and #876 (temp folders, the recorder's interruption gap, an SQA device pass) | open |  |  |  |
@@ -8720,3 +8720,7 @@ Please take #858 (chore(review): non-blocking should-fixes from reviewing #835, 
 ### H-2048 · 2026-09-27 21:36 · agent-0 → agent-0 · assign · #871
 
 Please take #871 (chore(review): non-blocking should-fixes from reviewing #846, #847 and #851 (a Custom Tabs device check, docs, test notes)).
+
+### H-2049 · 2026-09-27 21:36 · agent-0 → agent-0 · assign · #886
+
+Please take #886 (chore(review): should-fixes from reviewing #856, #860 and #862 (T2 null word, docs, retention estimate, keepAlive guard)).
