@@ -32,6 +32,7 @@ import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 import 'package:sqlite3/sqlite3.dart';
 
 import 'db/content_fixture.dart';
+import 'db/generated/schema_v1.dart' as v1;
 import 'timing.dart';
 
 /// `bootstrap()` — FR-S1-01…04.
@@ -296,6 +297,120 @@ void main() {
       expect(second.contentVersion, '202602021200');
       expect(second.contentChange, isNotNull);
     });
+  });
+
+  test("#641 FR-S1-01 an app update over a learner's progress: the oldest "
+      'user.db opens through AppDatabase.open, migrated, every row kept, and '
+      'the course update is noticed', () async {
+    // The phone before the update: user.db at v1, in the file every install
+    // has, and the course it had installed, with its kept manifest.
+    final old = v1.DatabaseAtV1(
+      NativeDatabase(File('${support.path}/user.sqlite')),
+    );
+    for (final insert in <String>[
+      "INSERT INTO enrollments VALUES ('A1.1', '2026-03-02', 7, 127, NULL)",
+      'INSERT INTO word_state (word_uid, status, introduced_on, due, '
+          'stability, difficulty, reps, lapses, fsrs_state, last_review, '
+          "card_mode) VALUES ('w1', 'learning', '2026-03-02', '2026-09-30', "
+          "4.5, 5.2, 3, 1, 2, '2026-09-20', 'cloze')",
+      'INSERT INTO review_log (word_uid, reviewed_at, rating, source) VALUES '
+          "('w1', '2026-03-02T10:00:00Z', 3, 'daily'), "
+          "('w1', '2026-09-20T10:00:00Z', 4, 'daily')",
+      'INSERT INTO plan_items VALUES '
+          "('2026-09-20', 'w1', 'revise', 'A1.1', '2026-09-20T10:00:00Z', 0), "
+          "('2026-09-21', 'w2', 'new', 'A1.1', NULL, 0)",
+      'INSERT INTO exam_attempts (id, sublevel_code, seed, started_at) '
+          "VALUES (1, 'A1.1', 2, '2026-09-20T09:00:00Z')",
+      'INSERT INTO exam_answers (attempt_id, ord, section, prompt, given) '
+          "VALUES (1, 0, 'lesen', 'p0', 'ja'), (1, 1, 'lesen', 'p1', NULL)",
+    ]) {
+      await old.customStatement(insert);
+    }
+    await old.close();
+    ContentFixture.write('${support.path}/${ContentDao.fileName}');
+    File('${support.path}/${ContentUpdater.manifestFile}').writeAsStringSync(
+      '{"content_version":"${ContentFixture.version}","words":{"w1":"a"}}',
+    );
+
+    // The update: a later course, where w1 changed and w2 is new.
+    final staging = Directory.systemTemp.createTempSync('sogda_update');
+    addTearDown(() => staging.deleteSync(recursive: true));
+    final next = ContentFixture.write('${staging.path}/content.db').file;
+    final raw = sqlite3.open(next.path);
+    raw.execute(
+      "UPDATE meta SET value = '202602021200' WHERE key = 'content_version'",
+    );
+    raw.close();
+    _serveAssets(<String, Uint8List>{
+      ContentDao.asset: next.readAsBytesSync(),
+      ContentUpdater.manifestAsset: Uint8List.fromList(
+        '{"content_version":"202602021200","words":{"w1":"b","w2":"c"}}'
+            .codeUnits,
+      ),
+    });
+
+    // No `openDatabase`: the open that ships, drift_flutter's isolate and all.
+    final result = await bootstrap(glass: GlassCapability());
+    expect(
+      result,
+      isA<BootstrapReady>(),
+      reason: result is BootstrapFailed
+          ? '${result.failure.step}: ${result.failure.error}'
+          : null,
+    );
+    final ready = (result as BootstrapReady).bootstrap;
+    addTearDown(ready.dispose);
+    final db = ready.db;
+    Future<List<Map<String, Object?>>> rows(String sql) async => [
+      for (final row in await db.customSelect(sql).get()) row.data,
+    ];
+
+    expect(await db.fileSchemaVersion(), AppDatabase.latestSchemaVersion);
+    expect(ready.router.routeInformationProvider.value.uri.path, '/today');
+    expect(
+      await rows(
+        'SELECT word_uid, status, due, stability, reps, lapses, card_mode, '
+        'card_mode_manual FROM word_state',
+      ),
+      [
+        {
+          'word_uid': 'w1',
+          'status': 'learning',
+          'due': '2026-09-30',
+          'stability': 4.5,
+          'reps': 3,
+          'lapses': 1,
+          'card_mode': 'cloze',
+          'card_mode_manual': 0,
+        },
+      ],
+    );
+    expect(await rows('SELECT rating FROM review_log ORDER BY id'), [
+      {'rating': 3},
+      {'rating': 4},
+    ]);
+    expect(
+      await rows(
+        'SELECT word_uid, completed_at FROM plan_items ORDER BY plan_date',
+      ),
+      [
+        {'word_uid': 'w1', 'completed_at': '2026-09-20T10:00:00Z'},
+        {'word_uid': 'w2', 'completed_at': null},
+      ],
+    );
+    expect(await rows('SELECT status, seed FROM exam_attempts'), [
+      {'status': 'in_progress', 'seed': 2},
+    ]);
+    expect(await rows('SELECT ord, given FROM exam_answers ORDER BY ord'), [
+      {'ord': 0, 'given': 'ja'},
+      {'ord': 1, 'given': null},
+    ]);
+
+    // BR-CONTENT-03: recorded in v2's column, so Today's card shows it.
+    expect(ready.contentVersion, '202602021200');
+    final update = await ContentUpdater(db, ready.content).unseen();
+    expect(update?.added, ['w2']);
+    expect(update?.changed, ['w1']);
   });
 
   group('the splash hears the app language early', () {

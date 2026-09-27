@@ -14,7 +14,6 @@ import 'package:sogda/services/background_work.dart';
 import 'package:sogda/services/reminder_notifications.dart';
 import 'package:sogda/services/widget_snapshot.dart';
 import 'package:flutter/foundation.dart' show debugPrint;
-import 'package:path_provider/path_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:workmanager/workmanager.dart';
 
@@ -269,8 +268,7 @@ bool atCurrentSchema(File file) =>
 Future<void> withBackgroundDatabase(
   Future<void> Function(ProviderContainer container) run,
 ) async {
-  final support = await getApplicationSupportDirectory();
-  if (!atCurrentSchema(File('${support.path}/${AppDatabase.fileName}'))) {
+  if (!atCurrentSchema(await AppDatabase.file())) {
     debugPrint('background: user.db is not at this schema; left for the app');
     return;
   }

@@ -43,12 +43,14 @@ class AppDatabase extends _$AppDatabase {
   /// [shared] off is for a background task (#158): its engine is gone once
   /// the task ends, and a shared database isolate it had started would go
   /// with it, from under an app that opened in the meantime and joined it.
-  AppDatabase.open({String name = 'user', bool shared = true})
+  ///
+  /// The path is [file]'s, not drift_flutter's default for the name (#641).
+  AppDatabase.open({bool shared = true})
     : this(
         driftDatabase(
-          name: name,
+          name: 'user',
           native: DriftNativeOptions(
-            databaseDirectory: getApplicationSupportDirectory,
+            databasePath: () async => (await file()).path,
             shareAcrossIsolates: shared,
             setup: configureConnection,
           ),
@@ -72,9 +74,15 @@ class AppDatabase extends _$AppDatabase {
   /// Readable without an instance, which the migration tests need.
   static const int latestSchemaVersion = 3;
 
-  /// [AppDatabase.open]'s file in app support: drift_flutter adds `.sqlite`
-  /// to its name, `user`.
+  /// user.db's file name in app support: drift_flutter's own default for
+  /// `user`, which every install has had since M0. Another name strands
+  /// every learner's progress in the old file.
   static const String fileName = 'user.sqlite';
+
+  /// user.db on disk: the one path [AppDatabase.open] opens, and bootstrap's
+  /// recovery (#619) and a background task (#158) read (#641).
+  static Future<File> file() async =>
+      File('${(await getApplicationSupportDirectory()).path}/$fileName');
 
   /// The `user_version` of the database at [file], read without drift and
   /// without writing, or null when it has none to give: no file, or one that
