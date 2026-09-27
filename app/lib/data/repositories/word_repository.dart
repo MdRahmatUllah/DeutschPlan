@@ -38,6 +38,22 @@ enum WordStatus {
   String get wire => name;
 }
 
+/// BR-STATUS-02: `done` is derived from stability, never set by hand. The
+/// one Dart statement of the rule, for words and grammar topics alike (#639).
+/// The queries that derive a status in SQL state it as `>= :doneAfter` (and
+/// `< :doneAfter` for learning); `done_rule_test.dart` holds them to this.
+///
+/// A lapse drops the stability, which is what moves a `done` word back to
+/// `learning` — there is no separate rule for it, and that is the point of
+/// deriving rather than storing.
+///
+/// Top-level and pure so the boundary can be tested. `>=`, not `>`, and the
+/// difference is unreachable through rating: FSRS stabilities are products of
+/// the weights and never land exactly on an integer threshold. The rule still
+/// says `>=`, and this is where that can be held to.
+WordStatus statusForStability(double stability, int doneStabilityDays) =>
+    stability >= doneStabilityDays ? WordStatus.done : WordStatus.learning;
+
 /// How often a word was reviewed and how it was last rated; `last` is null
 /// for a word never reviewed.
 typedef ReviewHistory = ({int reviews, Rating? last});
@@ -487,6 +503,29 @@ class WordRepository extends DatabaseAccessor<AppDatabase>
           );
   }
 
+  /// [find] for many words at once, by uid (#664): T4's rows, read again on
+  /// every change of the tables they come from. The course words are one
+  /// query, not one each.
+  // ponytail: the learner's own words are still found one by one; a backlog
+  // holds a handful at most. One query over custom_words if that changes.
+  Future<Map<String, WordWithState>> findAll(Iterable<String> uids) async {
+    final course = <String>[
+      for (final uid in uids)
+        if (customId(uid) == null) uid,
+    ];
+    final found = <String, WordWithState>{
+      if (course.isNotEmpty)
+        for (final row in await wordsWithStateByUids(_doneAfter, course).get())
+          row.w.uid: _word(row.w, row.s, row.derivedStatus),
+    };
+    for (final uid in uids) {
+      if (customId(uid) case final id?) {
+        if (await _findMine(id) case final mine?) found[uid] = mine;
+      }
+    }
+    return found;
+  }
+
   /// A word of the learner's own in a course word's shape, so T2 serves it
   /// with the card it has (#363): the headword and article, and the meaning
   /// in `english`, which every meaning language shows when there's no Bangla.
@@ -611,8 +650,10 @@ class WordRepository extends DatabaseAccessor<AppDatabase>
     // back to `todo` on the next refresh and offer it as new again.
     if (state.introducedOn == null && state.reps == 0) return WordStatus.todo;
 
-    final threshold = _settings.read(SettingKeys.doneStabilityDays);
-    return state.stability >= threshold ? WordStatus.done : WordStatus.learning;
+    return statusForStability(
+      state.stability,
+      _settings.read(SettingKeys.doneStabilityDays),
+    );
   }
 
   /// Recomputes and stores the derived status for one word.

@@ -165,6 +165,24 @@ void main() {
       expect(found.status, WordStatus.learning);
     });
 
+    test(
+      '#664 and with course words in one findAll, as T4 reads them',
+      () async {
+        final id = await revise();
+        final found = await words.findAll(<String>[
+          ContentFixture.haus,
+          customUid(id),
+          'gone',
+        ]);
+        expect(
+          found.keys,
+          unorderedEquals(<String>[ContentFixture.haus, customUid(id)]),
+        );
+        expect(found[customUid(id)]!.word.german, 'Pfand');
+        expect(found[ContentFixture.haus]!.status, WordStatus.todo);
+      },
+    );
+
     test('and rating it schedules it with the same FSRS, then plans it again '
         'when it falls due', () async {
       await engine.openDay(monday);

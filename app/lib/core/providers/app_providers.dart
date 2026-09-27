@@ -136,9 +136,10 @@ class Theme extends _$Theme {
 
   /// The platform's current brightness.
   ///
-  /// Seeded by `main` from `PlatformDispatcher` at startup — the default here
-  /// is only what a test gets before it says otherwise, and leaving it as the
-  /// app's real starting value would show a dark phone a light first frame.
+  /// Told by `BootstrapHost` when the app starts and on every switch after
+  /// (#644). The default here is only what a test gets before it says
+  /// otherwise, and leaving it as the app's real starting value would show a
+  /// dark phone a light first frame.
   Brightness _platformBrightness = Brightness.light;
 
   /// Called by Settings (FR-M3-02). An action on the notifier, not a write

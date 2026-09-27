@@ -1,5 +1,7 @@
 # user.db — learner data (on device, writable)
 
+*On disk the file is `user.sqlite` in app support: `AppDatabase.open` names it `user`, and drift_flutter adds `.sqlite`. These docs call it user.db.*
+
 Created on first launch from `lib/data/db/user_schema.drift`, which is the authoritative DDL *and* the file drift generates the typed table classes from — one source, so the schema and the Dart cannot drift apart (ADR 22). It is ordinary SQL; anything wanting the raw DDL can read it. Lives in app-support storage; never leaves the device except through the learner's own export.
 
 ## Tables
@@ -75,6 +77,7 @@ Never drop columns with data; add nullable columns or new tables.
 ## Transactions
 
 - Rating a card = one transaction: upsert `word_state`, insert `review_log`, update `plan_items`, bump `daily_stats`, push `undo_stack`.
+- Rating a practice sentence = one transaction: bump `daily_stats.sentences_done` on the sentence's first rating (a changed answer isn't another sentence, #659), set `sentence_log.self_rating`, and *Not yet*'s Hard rating of the headword, which is a card rating as above. A day of sentences alone is a day studied, for the streak and M1's heat map.
 - Plan generation for a day = one transaction.
 - Exam answers are written per question so a crash loses at most one answer.
 

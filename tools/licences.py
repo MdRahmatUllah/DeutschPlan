@@ -31,16 +31,16 @@ PACKAGE_CONFIG = ROOT / "app" / ".dart_tool" / "package_config.json"
 # Each bundled text, and where its maker publishes it.
 SOURCES = {
     "Supertonic3-OpenRAIL-M.txt":
-        "https://huggingface.co/Supertone/supertonic-3/resolve/main/LICENSE",
+        "https://huggingface.co/Supertone/supertonic-3/resolve/3cadd1ee6394adea1bd021217a0e650ede09a323/LICENSE",
     # supertonic_text.dart ports the SDK's core.py (supertonic 1.3.1).
     "Supertonic-SDK-MIT.txt":
-        "https://raw.githubusercontent.com/supertone-oss-archive/supertonic-py/main/LICENSE",
+        "https://raw.githubusercontent.com/supertone-oss-archive/supertonic-py/df0f9686dac7fbbde391b759e2ee5286a3737622/LICENSE",
     "HY-MT1.5-Tencent-HY.txt":
-        "https://huggingface.co/tencent/HY-MT1.5-1.8B/resolve/main/License.txt",
+        "https://huggingface.co/tencent/HY-MT1.5-1.8B/resolve/dbad03788f49709801014c95d481a514c272ca52/License.txt",
     "Inter-OFL.txt":
-        "https://raw.githubusercontent.com/google/fonts/main/ofl/inter/OFL.txt",
+        "https://raw.githubusercontent.com/google/fonts/23e54b51ddffbc7713c583748e3bd86f62b1fa4a/ofl/inter/OFL.txt",
     "NotoSansBengali-OFL.txt":
-        "https://raw.githubusercontent.com/google/fonts/main/ofl/notosansbengali/OFL.txt",
+        "https://raw.githubusercontent.com/google/fonts/23e54b51ddffbc7713c583748e3bd86f62b1fa4a/ofl/notosansbengali/OFL.txt",
 }
 
 LICENCE_FILES = ("LICENSE", "LICENCE", "COPYING")

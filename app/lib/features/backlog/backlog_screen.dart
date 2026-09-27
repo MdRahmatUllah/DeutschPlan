@@ -46,20 +46,25 @@ class Backlog extends _$Backlog {
     return ref
         .watch(planRepositoryProvider)
         .watchBacklogWithStates(ref.watch(todayProvider))
-        .asyncMap(
-          (rows) async => <BacklogWord>[
+        .asyncMap((rows) async {
+          // One read for every row's word (#664), not one per row: this runs
+          // again after each rating of a *Study all* session T4 sits under.
+          final found = await words.findAll(<String>{
+            for (final row in rows) row.wordUid,
+          });
+          return <BacklogWord>[
             for (final row in rows)
-              if (await words.find(row.wordUid) case final found?)
+              if (found[row.wordUid] case final word?)
                 (
                   planDate: row.planDate,
-                  word: found,
+                  word: word,
                   // English where the course has no Bangla.
                   meaning: bangla
-                      ? found.word.bangla ?? found.word.english
-                      : found.word.english,
+                      ? word.word.bangla ?? word.word.english
+                      : word.word.english,
                 ),
-          ],
-        );
+          ];
+        });
   }
 
   /// FR-T4-04: *Mark known*, *Suspend* or *Remove from course* (suspend and

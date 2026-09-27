@@ -1,6 +1,10 @@
 import 'dart:async';
 
+import 'package:sogda/bootstrap.dart';
+import 'package:sogda/core/theme/glass_capability.dart';
+import 'package:sogda/data/db/content_dao.dart';
 import 'package:sogda/features/backlog/backlog_screen.dart';
+import 'package:sogda/router/app_router.dart';
 import 'package:sogda/features/today/today_screen.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
@@ -14,7 +18,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart'
-    show Brightness, Locale, MaterialApp, ThemeMode, VoidCallback;
+    show Brightness, Locale, MaterialApp, Navigator, ThemeMode;
+import 'package:material_ui/material_ui.dart' as material show Theme;
 
 void main() {
   /// The app under a scope with the overrides bootstrap would have supplied.
@@ -209,73 +214,106 @@ void main() {
     );
   });
 
-  group('following the system brightness', () {
-    Future<(ProviderContainer, SettingsRepository)> scope({
-      ThemeModeSetting? choose,
+  group("FR-M3-02 #644 following the phone's light/dark switch", () {
+    // Through BootstrapHost, as `main` runs it, and the phone's own switch.
+    // `main` used to take the dispatcher's onPlatformBrightnessChanged, the
+    // framework's own callback: the theme notifier heard the switch, but the
+    // root MediaQuery never did, so the app's system theme mode kept the old
+    // brightness until some other metric changed.
+    // Not pumpAndSettle: Glass's aurora drifts for ever. A second covers
+    // bootstrap's answer and MaterialApp's theme animation.
+    Future<void> settle(WidgetTester tester) async {
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 1));
+    }
+
+    Future<void> pumpHost(
+      WidgetTester tester, {
+      ThemeModeSetting choose = ThemeModeSetting.system,
+      Brightness phone = Brightness.light,
     }) async {
+      tester.platformDispatcher.platformBrightnessTestValue = phone;
+      addTearDown(tester.platformDispatcher.clearPlatformBrightnessTestValue);
+
       final db = AppDatabase.memory();
       addTearDown(db.close);
       final settings = SettingsRepository(db);
       await settings.load();
       addTearDown(settings.dispose);
-      if (choose != null) {
-        await settings.write(SettingKeys.themeMode, choose);
-      }
-
-      final container = ProviderContainer(
-        overrides: <Override>[
-          appDatabaseProvider.overrideWithValue(db),
-          settingsProvider.overrideWithValue(settings),
-        ],
+      await settings.write(SettingKeys.themeMode, choose);
+      final ready = Bootstrap(
+        db: db,
+        content: ContentDao(db),
+        settings: settings,
+        glass: GlassCapability(),
+        router: buildRouter(),
+        contentVersion: 'test',
+        contentChange: null,
+        themeMode: SgMode.light,
+        themeSetting: choose,
+        isFirstRun: false,
+        elapsed: Duration.zero,
       );
-      addTearDown(container.dispose);
-      return (container, settings);
+      await tester.pumpWidget(
+        BootstrapHost(
+          run: ({
+            Brightness platformBrightness = Brightness.light,
+            void Function(UiLanguage)? onUiLanguage,
+          }) async => BootstrapReady(ready),
+          // The plugins have no platform side here; brightness isn't theirs.
+          wire: (_, _) {},
+        ),
+      );
+      await settle(tester);
     }
 
-    test('seeds the notifier with the real brightness at startup', () async {
-      // The notifier's own default is `light`. A dark phone would otherwise
-      // see a light first frame before anything changed.
-      final (container, _) = await scope();
+    /// The brightness the app draws in, and the mode its notifier holds.
+    (Brightness, SgMode) shown(WidgetTester tester) => (
+      material.Theme.of(tester.element(find.byType(Navigator).first))
+          .brightness,
+      ProviderScope.containerOf(tester.element(find.byType(SogdaApp)))
+          .read(themeProvider),
+    );
 
-      followPlatformBrightness(
-        container,
-        read: () => Brightness.dark,
-        onChanged: (_) {},
-      );
+    Future<void> flip(WidgetTester tester, Brightness phone) async {
+      tester.platformDispatcher.platformBrightnessTestValue = phone;
+      await settle(tester);
+    }
 
-      expect(container.read(themeProvider), SgMode.dark);
+    testWidgets('a dark phone gets a dark first frame', (tester) async {
+      await pumpHost(tester, phone: Brightness.dark);
+
+      expect(shown(tester), (Brightness.dark, SgMode.dark));
     });
 
-    test('and follows it afterwards', () async {
-      final (container, _) = await scope();
-      var brightness = Brightness.light;
-      VoidCallback? listener;
+    testWidgets('System follows the switch while the app runs, both ways', (
+      tester,
+    ) async {
+      await pumpHost(tester);
+      expect(shown(tester), (Brightness.light, SgMode.light));
 
-      followPlatformBrightness(
-        container,
-        read: () => brightness,
-        onChanged: (callback) => listener = callback,
-      );
-      expect(container.read(themeProvider), SgMode.light);
-      expect(listener, isNotNull, reason: 'nothing was registered');
+      await flip(tester, Brightness.dark);
+      expect(shown(tester), (Brightness.dark, SgMode.dark));
 
-      brightness = Brightness.dark;
-      listener!();
-      await Future<void>.delayed(Duration.zero);
-
-      expect(container.read(themeProvider), SgMode.dark);
+      await flip(tester, Brightness.light);
+      expect(shown(tester), (Brightness.light, SgMode.light));
     });
 
-    test('an explicit choice is not overridden', () async {
-      final (container, _) = await scope(choose: ThemeModeSetting.light);
+    testWidgets('Glass follows it too, into its smoked dark variant', (
+      tester,
+    ) async {
+      await pumpHost(tester, choose: ThemeModeSetting.glass);
+      expect(shown(tester), (Brightness.light, SgMode.glass));
 
-      followPlatformBrightness(
-        container,
-        read: () => Brightness.dark,
-        onChanged: (_) {},
-      );
+      await flip(tester, Brightness.dark);
+      expect(shown(tester), (Brightness.dark, SgMode.glass));
+    });
 
-      expect(container.read(themeProvider), SgMode.light);
+    testWidgets('an explicit choice is not overridden', (tester) async {
+      await pumpHost(tester, choose: ThemeModeSetting.light);
+
+      await flip(tester, Brightness.dark);
+      expect(shown(tester), (Brightness.light, SgMode.light));
     });
   });
 

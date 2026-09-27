@@ -247,9 +247,11 @@ flowchart LR
   and commit `content.db` and `content_manifest.json` together.
 - **What a learner keeps.** Progress is keyed by word uid,
   `sha1(level|german|pos|english)[:16]`. Editing any other column keeps it.
-  Changing a word's German, part of speech or English makes it a new word: the
-  old one is removed and its progress with it, so prefer other columns, or say
-  so in the release notes.
+  Changing a word's German, part of speech, English or level gives it a new
+  uid: the build links the old uid to the new one when it is the same word, and
+  the app moves the learner's progress along the link on install (PIPE-09). A
+  word gone with nothing to link it to stops the build unless
+  `--allow-removed`; say so in the release notes.
 - **On the phone.** At the first launch of the new version, `bootstrap()`
   compares the bundled `content_version` with the installed one, writes the
   new file beside the old, detaches, swaps and re-attaches it, diffs the kept

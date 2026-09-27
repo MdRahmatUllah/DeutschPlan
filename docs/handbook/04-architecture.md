@@ -96,7 +96,8 @@ Startup is `main()` and `bootstrap()` (`app/lib/main.dart`,
    `appDatabaseProvider` and `settingsProvider`) or `BootstrapFailed` (with the
    step that failed and the database if it opened). A failure shows FR-S1-03's
    error screen, with *Retry* (a content failure deletes the installed copy
-   first) and, when the database opened, *Export progress*.
+   first, unless it still reads, #617) and, when the database opened,
+   *Export progress*.
 5. On success `main` builds a `ProviderContainer` from the overrides, then
    starts the reminders and background tasks (`startReminders`), the widget
    snapshot (`followWidget`), the model download manager
@@ -232,7 +233,9 @@ sequenceDiagram
   B->>B: load settings, build the router
 ```
 
-Progress is keyed by word uid, so it survives. A removed word keeps its
+Progress is keyed by word uid, so it survives, and a word whose uid changed
+takes it along: the manifest's `aliases` map each old uid to the new one and
+the updater moves the rows first (PIPE-09). A removed word keeps its
 `word_state` rows, but plan generation and queries join to `c.words`, so it
 disappears from the app without being deleted. Today shows one update card
 while `seen = 0`, and words whose meaning changed wear an *Updated* chip for 7

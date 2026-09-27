@@ -524,6 +524,57 @@ void main() {
 
       expect(state.toString(), before);
     });
+
+    CardState reviewed(double stability, {double difficulty = 5}) => CardState(
+      stability: stability,
+      difficulty: difficulty,
+      reps: 3,
+      state: FsrsState.review,
+      lastReview: start,
+      scheduledDays: stability.round(),
+    );
+
+    test('#616 on a same-day re-review Hard < Good < Easy, not three of '
+        'the same', () {
+      // The review's case: S 20, rated an hour ago. Recall is 1, so the
+      // stability grows by nothing whatever the rating.
+      final now = start.add(const Duration(hours: 1));
+      expect(fsrs.preview(reviewed(20), now), <int>[3, 20, 21, 22]);
+      expect(
+        fsrs.review(reviewed(20), Rating.easy, now).stability,
+        20,
+        reason: 'only the interval moves',
+      );
+    });
+
+    test('#616 Hard < Good < Easy at any elapsed time and retention', () {
+      for (final retention in <double>[0.80, 0.90, 0.97]) {
+        final scheduler = Fsrs(desiredRetention: retention);
+        for (final state in <CardState>[
+          const CardState(),
+          for (final stability in <double>[0.5, 3, 20, 400])
+            for (final difficulty in <double>[1, 5, 10])
+              reviewed(stability, difficulty: difficulty),
+        ]) {
+          for (final days in <int>[0, 1, 3, 10, 30, 100]) {
+            final p = scheduler.preview(state, start.add(Duration(days: days)));
+            expect(
+              p[1] < p[2] && p[2] < p[3],
+              isTrue,
+              reason: '$retention $state +$days d: $p',
+            );
+          }
+        }
+      }
+    });
+
+    test('#616 and never beyond a hundred years', () {
+      final now = start.add(const Duration(days: 1));
+      expect(
+        fsrs.preview(reviewed(1e9), now).skip(1),
+        everyElement(Fsrs.maxInterval),
+      );
+    });
   });
 
   group('the enums the database stores', () {

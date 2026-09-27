@@ -8,6 +8,7 @@
 - `intervalDays(S) = S / (19/81) · (R^(-2) − 1)`, clamped 1…36500.
 - First review: `S = w[rating-1]`, `D = clamp(w4 − (rating−3)·w5, 1, 10)`; Again → 1 day.
 - Later reviews: recall formula with hard/easy multipliers `w15`, `w16`; lapse formula on Again; difficulty drifts with mean reversion (`w7`).
+- Hard < Good < Easy (#616), as py-fsrs orders them: Good's interval is at least Hard's + 1 and Easy's at least Good's + 1, up to 36500. On a same-day re-review recall is 1 and the stability grows by nothing whatever the rating, so without this all three would schedule the same. Only the intervals move; each rating keeps its own stability. The reference values below are unchanged.
 - Returns `CardState(stability, difficulty, reps, lapses, state, lastReview, due, scheduledDays)`.
 
 Rating bar preview: the four intervals shown under Again/Hard/Good/Easy are `Fsrs.review(state, r, now).scheduledDays` for r = 1..4, computed on reveal.

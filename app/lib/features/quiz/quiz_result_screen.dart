@@ -14,6 +14,7 @@ import 'package:sogda/data/repositories/exam_repository.dart'
 import 'package:sogda/domain/quiz_builder.dart' show QuizDirection;
 import 'package:sogda/features/learn/step_quiz.dart';
 import 'package:sogda/features/quiz/quiz_screen.dart' show quizTitle;
+import 'package:sogda/features/study/write_guard.dart';
 import 'package:sogda/features/words/word_row.dart' show WordPlayButton;
 import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/l10n/ui_digits.dart';
@@ -77,13 +78,22 @@ class _QuizResultViewState extends ConsumerState<QuizResultView> {
   /// FR-L9-01: the mistakes rated Again and due tomorrow, explicitly.
   Future<void> _addToRevision(List<QuizMistakeRowsResult> mistakes) async {
     setState(() => _added = true);
-    await ref.read(quizRunServiceProvider).addToRevision(
-      <({String uid, String? verdict})>[
-        for (final m in mistakes) (uid: m.uid, verdict: m.verdict),
-      ],
-      today: ref.read(todayProvider),
-    );
+    // #647: a write that fails says so, with Retry and Export (#174), and
+    // the button comes back; it used to stay greyed out, saying nothing.
+    final written = await guardWrite(context, () async {
+      await ref.read(quizRunServiceProvider).addToRevision(
+        <({String uid, String? verdict})>[
+          for (final m in mistakes) (uid: m.uid, verdict: m.verdict),
+        ],
+        today: ref.read(todayProvider),
+      );
+      return true;
+    });
     if (!mounted) return;
+    if (!written) {
+      setState(() => _added = false);
+      return;
+    }
     SgToast.show(
       context,
       AppLocalizations.of(context).quizAddedToRevision(mistakes.length),
