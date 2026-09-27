@@ -6,7 +6,7 @@ last-read: 1870
 
 ## Now
 
-#690 in review as PR #954: answer review threads; re-run the gate if main moved, then merge.
+#702 chore(learn): smaller items in Learn and quiz (production review nits) — claimed 2026-09-27 21:56.
 
 ## Next
 
