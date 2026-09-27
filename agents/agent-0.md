@@ -6,7 +6,7 @@ last-read: 1870
 
 ## Now
 
-#832 in review as PR #943: answer review threads; re-run the gate if main moved, then merge.
+#713 fix(search): the FTS tokenizer splits Bangla words at their vowel signs, so a Bangla "starts with" search is mostly noise — claimed 2026-09-27 21:11.
 
 ## Next
 
