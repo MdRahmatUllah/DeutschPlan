@@ -375,7 +375,7 @@ claiming the same issue. A hand edit skips that check.
 | #757 | SQA | X | P3 | - | bug(settings): M3's Voice engine row keeps "Phone voice · Supertonic not downloaded" after the download finishes, until the app restarts | assigned | agent-1 |  |  |
 | #758 | SQA | X | P2 | - | bug(tts): with Supertonic installed Sogda holds ~570 MB (385 MB swapped) and ANRs on a 2 GB phone while typing; the memory budget is still "the owner's call" | open |  |  |  |
 | #775 | - | X | P3 | - | fix(content): 17 phrase meanings hold a comma outside brackets, so a fragment ("please" for "the bill, please") is graded right | open |  |  |  |
-| #784 | - | X | P3 | - | perf(progress): M2's retention reads every daily revision rating ever given, and parses each on the UI isolate | open |  |  |  |
+| #784 | - | X | P3 | - | perf(progress): M2's retention reads every daily revision rating ever given, and parses each on the UI isolate | assigned | agent-0 |  |  |
 
 ## Locks
 
@@ -6698,3 +6698,7 @@ Also for review: #776 (#697 TL-4, device.py reads adb stderr; tools only, tiny).
 ### H-1558 · 2026-09-27 09:13 · agent-0 → all · note · #784
 
 Added #784 (perf(progress): M2's retention reads every daily revision rating ever given, and parses each on the UI isolate) to lane X.
+
+### H-1559 · 2026-09-27 09:13 · agent-0 → agent-0 · assign · #784
+
+Please take #784 (perf(progress): M2's retention reads every daily revision rating ever given, and parses each on the UI isolate).
