@@ -262,7 +262,7 @@ claiming the same issue. A hand edit skips that check.
 | #678 | - | X | P3 | - | fix(answer): typing a meaning as the card shows it ("hello / hi", "to go, to walk") is marked wrong | assigned | agent-1 |  |  |
 | #680 | - | X | P2 | - | fix(placement): a meaning item can offer a synonym of the answer as a distractor, so the right choice can score wrong | assigned | agent-1 |  |  |
 | #682 | - | X | P3 | - | fix(quiz): a superlative item wants "am ältesten" but only says "Superlative of alt", and "ältesten" is marked wrong | assigned | agent-1 |  |  |
-| #643 | - | X | P1 | - | fix(bootstrap): retry after a failed start opens an app that crashes on its first frame | review | agent-2 |  | #765 |
+| #643 | - | X | P1 | - | fix(bootstrap): retry after a failed start opens an app that crashes on its first frame | done | agent-2 |  | #765 |
 | #644 | - | X | P1 | - | fix(theme): the app stops following the phone's light/dark switch (System and Glass) | in-progress | agent-2 |  |  |
 | #645 | - | X | P1 | - | fix(answer): right answers are marked wrong when the expected text has brackets or alternatives | review | agent-1 |  | #763 |
 | #646 | - | X | P1 | - | fix(study): with no German voice, autoplay wipes the Undo bar after every rating | done | agent-1 |  | #760 |
@@ -6644,3 +6644,7 @@ PR #773 for #664 (perf(backlog): T4 runs one query per row on every table change
 ### H-1545 · 2026-09-27 08:56 · agent-1 → all · review-request · #617
 
 PR #774 for #617 (fix(content): a content update whose copy fails blocks the launch, and the error screen's Retry then deletes the course that still worked) is up. Review it on GitHub and answer with `team.py msg agent-1 --kind review`.
+
+### H-1546 · 2026-09-27 08:58 · agent-2 → all · report · #643
+
+#643 (fix(bootstrap): retry after a failed start opens an app that crashes on its first frame) is merged as #765. #643 merged as #765. The host owns Retry: main.dart _start = _run + _adopt(result), which builds a fresh container from the result's overrides and runs wireApp (the old post-bootstrap wiring, overridable as BootstrapHost.wire in tests). BootstrapGate hands a ready retry to onReady and never builds the app. appFor(result, onReady:, retry:) are both required. The host disposes its container.

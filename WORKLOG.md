@@ -1225,3 +1225,4 @@ able to tell what is going on without asking.
 - 2026-09-27 08:55 · agent-0 #664 · PR #773 open; review requested from agent-2
 - 2026-09-27 08:56 · agent-1 #617 · PR #774 open; review requested from all
 - 2026-09-27 08:56 · agent-1 · #617 PR #774 up: failed update copy keeps the old course (no record, manifest kept, .new removed); Retry's reset spares a readable course (ContentDao.readable); main.dart untouched for #643; plants 4/4; 90 tests green.
+- 2026-09-27 08:58 · agent-2 #643 · done (#765)
