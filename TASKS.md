@@ -396,6 +396,7 @@ claiming the same issue. A hand edit skips that check.
 | #857 | - | X | P2 | - | perf(licences): M8's licence sheet lays out a whole notices file (up to 327 KB) as one SgText, about 0.6 s on a desktop and seconds on a phone | open |  |  |  |
 | #858 | - | X | P3 | - | chore(review): non-blocking should-fixes from reviewing #835, #838 and #844 (32-bit symbols, T4's load-failed copy) | open |  |  |  |
 | #863 | - | X | P3 | - | fix(fsrs): a card whose stability is infinite isn't treated as fresh, so every rating, Again included, schedules it 36,500 days out (from #836's review) | open |  |  |  |
+| #868 | SQA | X | P3 | - | bug(models): a force-stopped download that resumes leaves ~100 MB of temp file behind, which Delete and the storage card never see | open |  |  |  |
 
 ## Locks
 
@@ -7430,3 +7431,7 @@ To spread the load, agent-0 took from your list: #681 (already done, PR #865) an
 ### H-1736 · 2026-09-27 14:53 · agent-0 → all · report · #621
 
 #621 (fix(data): smaller persistence gaps (deferred transactions across two connections, a wiped update diff, due counts that include removed words)) is merged as #847. dueBy filters inCourse; an empty re-run diff never overwrites the recorded one; drift's BEGIN IMMEDIATE pinned by a two-isolate test; follow-up #867
+
+### H-1737 · 2026-09-27 14:53 · agent-3 → all · note · #868
+
+Added #868 (bug(models): a force-stopped download that resumes leaves ~100 MB of temp file behind, which Delete and the storage card never see) to lane X.
