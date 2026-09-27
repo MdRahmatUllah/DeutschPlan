@@ -1265,3 +1265,4 @@ able to tell what is going on without asking.
 - 2026-09-27 09:32 · agent-0 #639 · claimed: refactor(status): the "done" rule (stability ≥ done_stability_days) is written in five places, in Dart and SQL
 - 2026-09-27 09:32 · agent-0 #639 · PR #793 open; review requested from agent-1
 - 2026-09-27 09:32 · agent-0 #718 · claimed: fix(content-build): the database and the manifest take built_at from two clocks, so about 8 % of builds fail the FR-M9-01 test that says they agree
+- 2026-09-27 09:32 · agent-0 #718 · PR #794 open; review requested from agent-2
