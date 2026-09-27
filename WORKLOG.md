@@ -1528,3 +1528,4 @@ able to tell what is going on without asking.
 - 2026-09-27 17:55 · agent-0 #641 · claimed: test: critical-path gaps: the background tasks' database path copies drift_flutter's internal name, and no integration test covers an upgrade with existing progress
 - 2026-09-27 17:55 · agent-0 #641 · PR #916 open; review requested from agent-1
 - 2026-09-27 17:56 · agent-0 #734 · claimed: fix(search): the umlaut fold puts a different word first in the exact tier, so "schön" opens schon and "Bär" logs a sighting of bar
+- 2026-09-27 17:56 · agent-0 #734 · PR #917 open; review requested from agent-1

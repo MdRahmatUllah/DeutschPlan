@@ -6,7 +6,7 @@ last-read: 1767
 
 ## Now
 
-#734 fix(search): the umlaut fold puts a different word first in the exact tier, so "schön" opens schon and "Bär" logs a sighting of bar — claimed 2026-09-27 17:56.
+#734 in review as PR #917: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
