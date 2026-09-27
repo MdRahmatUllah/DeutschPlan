@@ -126,6 +126,10 @@ class BackgroundModelDownloads implements ModelDownloads {
   /// word on it. Forgotten once the model is verified, which is how *Retry*
   /// tells a checksum failure from a network one.
   final Map<String, Map<String, _File>> _files = <String, Map<String, _File>>{};
+
+  /// The models a [start] is under way for. A second tap arrives while the
+  /// first is still checking the space, before any task is recorded (#673).
+  final Set<String> _starting = <String>{};
   final Map<String, StreamController<DownloadProgress>> _watchers =
       <String, StreamController<DownloadProgress>>{};
   final Map<String, DownloadProgress> _last = <String, DownloadProgress>{};
@@ -174,12 +178,27 @@ class BackgroundModelDownloads implements ModelDownloads {
     await _applyWifi(reschedule: false);
   }
 
+  /// Once per download (#673): a second tap, on M4's *Download* or setup's
+  /// *Download now*, while [modelId] is starting or has files in flight
+  /// (queued, running or paused) does nothing. It would queue a second set of
+  /// tasks for the same staging files: the data twice over, and a checksum
+  /// that fails.
   @override
   Future<void> start(String modelId) async {
-    final short = await shortfallFor(modelId);
-    if (short > 0) throw NotEnoughSpace(short);
-    await _queue(modelId);
+    if (_starting.contains(modelId) || _inFlight(modelId)) return;
+    _starting.add(modelId);
+    try {
+      final short = await shortfallFor(modelId);
+      if (short > 0) throw NotEnoughSpace(short);
+      await _queue(modelId);
+    } finally {
+      _starting.remove(modelId);
+    }
   }
+
+  bool _inFlight(String modelId) =>
+      _files[modelId]?.values.any((file) => file.status.isNotFinalState) ??
+      false;
 
   @override
   Future<int> shortfallFor(String modelId) async {

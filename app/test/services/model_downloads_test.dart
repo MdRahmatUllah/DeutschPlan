@@ -283,6 +283,37 @@ void main() {
     });
   });
 
+  group('#673 FR-M4-01 one download at a time', () {
+    test('two taps at once queue the files once', () async {
+      await Future.wait(<Future<void>>[
+        downloads.start('hymt'),
+        downloads.start('hymt'),
+      ]);
+      expect(downloader.queued, hasLength(2));
+    });
+
+    test('a tap while its files are in flight queues nothing more', () async {
+      await downloads.start('hymt');
+      await downloads.start('hymt');
+      expect(downloader.queued, hasLength(2));
+    });
+
+    test('once they have failed, Download starts again', () async {
+      await downloads.attach();
+      await downloads.start('hymt');
+      await report(
+        (t) => TaskStatusUpdate(t, TaskStatus.failed, _serverError),
+        'one.gguf',
+      );
+      await report(
+        (t) => TaskStatusUpdate(t, TaskStatus.failed, _serverError),
+        'two.gguf',
+      );
+      await downloads.start('hymt');
+      expect(downloader.queued, hasLength(4));
+    });
+  });
+
   group('#428 FR-M4-01 waiting for Wi-Fi', () {
     late List<DownloadPhase> seen;
 
