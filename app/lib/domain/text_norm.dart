@@ -103,9 +103,8 @@ const Map<String, String> _composed = <String, String>{
 
 String _compose(String text) {
   var result = text;
-  for (final MapEntry(key: decomposed, value: precomposed)
-      in _composed.entries) {
-    result = result.replaceAll(decomposed, precomposed);
+  for (final MapEntry(key: from, value: to) in _composed.entries) {
+    result = result.replaceAll(from, to);
   }
   return result;
 }
