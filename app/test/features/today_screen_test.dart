@@ -921,7 +921,7 @@ void main() {
       // The course, as the app always has it attached: Today reads its
       // example sentences.
       await tester.runAsync(() async {
-        final directory = Directory.systemTemp.createTempSync('sg_today');
+        final directory = tempDir('sg_today');
         final content = ContentFixture.write('${directory.path}/content.db');
         await db.customStatement(
           "ATTACH DATABASE '${ContentDao.attachPath(content.file)}' AS c",

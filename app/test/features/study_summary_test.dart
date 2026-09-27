@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:sogda/core/components/sg_button.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/core/theme/app_theme.dart';
@@ -61,7 +59,7 @@ void main() {
   /// reviews: FR-T3-01 counts the session, not the day.
   Future<void> open() async {
     db = AppDatabase.memory();
-    final directory = Directory.systemTemp.createTempSync('sg_summary');
+    final directory = tempDir('sg_summary');
     final content = ContentFixture.write('${directory.path}/content.db');
     await db.customStatement(
       "ATTACH DATABASE '${ContentDao.attachPath(content.file)}' AS c",

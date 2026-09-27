@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:sogda/core/components/sg_rating_bar.dart';
 import 'package:sogda/core/adaptive/adaptive.dart';
@@ -47,7 +46,7 @@ void main() {
   /// Haus and Tür new.
   Future<void> open() async {
     db = AppDatabase.memory();
-    final directory = Directory.systemTemp.createTempSync('sg_study');
+    final directory = tempDir('sg_study');
     final content = ContentFixture.write('${directory.path}/content.db');
     await db.customStatement(
       "ATTACH DATABASE '${ContentDao.attachPath(content.file)}' AS c",
