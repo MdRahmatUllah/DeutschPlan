@@ -23,7 +23,6 @@ import 'package:material_ui/material_ui.dart';
 import '../core/text_clipping.dart';
 import '../db/content_fixture.dart';
 
-/// The share sheet and the file picker without a phone.
 /// Settings whose reload waits for [gate]: an import still finishing.
 class _GatedSettings extends SettingsRepository {
   _GatedSettings(super.db);
@@ -37,6 +36,7 @@ class _GatedSettings extends SettingsRepository {
   }
 }
 
+/// The share sheet and the file picker without a phone.
 class FakeBackupFiles implements BackupFiles {
   /// What the picker hands back; null is backing out of it.
   PickedBackup? picked;
