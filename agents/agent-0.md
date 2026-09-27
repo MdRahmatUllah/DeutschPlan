@@ -6,7 +6,7 @@ last-read: 1767
 
 ## Now
 
-#641 test: critical-path gaps: the background tasks' database path copies drift_flutter's internal name, and no integration test covers an upgrade with existing progress — claimed 2026-09-27 17:55.
+#641 in review as PR #916: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
