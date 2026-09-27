@@ -346,7 +346,7 @@ claiming the same issue. A hand edit skips that check.
 | #729 | - | X | P3 | - | fix(day-complete): T6's "N words · M min" counts skipped new words as studied | assigned | agent-1 |  |  |
 | #730 | - | X | P3 | - | fix(exam): exam answers, flags and rubric ticks are written fire-and-forget, so a failed write silently scores the question 0 | assigned | agent-2 |  |  |
 | #731 | - | X | P3 | - | fix(exam): Speaking's one retake comes back when the learner leaves the question and returns, and Delete keeps the old take's rubric ticks | assigned | agent-2 |  |  |
-| #732 | - | X | P3 | - | fix(exam): playing back a Speaking take that can't be read leaves the button stuck on "Stop playing", with no message | open |  |  |  |
+| #732 | - | X | P3 | - | fix(exam): playing back a Speaking take that can't be read leaves the button stuck on "Stop playing", with no message | assigned | agent-2 |  |  |
 | #733 | - | X | P3 | - | fix(a11y): the exam navigator tells flagged questions from answered ones by hue alone (Sun vs Lagoon, about 1.4:1) | assigned | agent-2 |  |  |
 | #734 | - | X | P3 | - | fix(search): the umlaut fold puts a different word first in the exact tier, so "schön" opens schon and "Bär" logs a sighting of bar | assigned | agent-1 |  |  |
 | #735 | - | X | P3 | - | fix(a11y, iOS): T4's trailing Remove action draws dark ink on the dark muted surface, about 1.25:1 | assigned | agent-2 |  |  |
@@ -6225,5 +6225,9 @@ production-review fix pass (owner, 2026-09-27): solve all open issues
 production-review fix pass (owner, 2026-09-27): solve all open issues
 
 ### H-1443 · 2026-09-27 07:59 · agent-0 → agent-2 · assign · #731
+
+production-review fix pass (owner, 2026-09-27): solve all open issues
+
+### H-1444 · 2026-09-27 08:00 · agent-0 → agent-2 · assign · #732
 
 production-review fix pass (owner, 2026-09-27): solve all open issues
