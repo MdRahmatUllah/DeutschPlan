@@ -11,7 +11,7 @@
     - A cached clip that won't play is deleted.
     - A model that stops being available (deleted, or its files broken) is closed.
     - A download of the voice that lands (M4's *Update*, or a new download) reloads the engine: the sessions reopen from the new files on the next clip, a failed open is forgotten, and the old model's clips are cleared (#155, #436). Before this, a sample right after an in-process update was silent on the device until a relaunch.
-    - `supertonicTts` is kept alive, and its `dispose` (wired to `ref.onDispose`) closes the sessions, the player and the state stream.
+    - `supertonicTts` is kept alive, and its `dispose` (wired to `ref.onDispose`) closes the sessions, the player and the state stream. A load that fails partway (out of memory, a bad file) closes the sessions it had already opened before it rethrows, and a close closes each session on its own, so one that fails keeps none of the others open (#627).
   - **Clips made ahead (#430):** `SupertonicTts.prepare(texts, speed)`, through `TtsService.prepare` (`SpeechPrefetch`), makes clips into the cache one at a time and in order, without playing them.
     - T2 asks for its cards' sayings as the session opens: each word with its article, then its first example when `autoplay_example` is on (`studySayings`). It stops its own list when the session closes (`stopPreparing(texts)`, which does nothing once a newer list has replaced it).
       - T3's next block replaces T2, and the new screen asks for its list before the old one goes (FR-T3-02), so the old screen's stop mustn't touch it.
