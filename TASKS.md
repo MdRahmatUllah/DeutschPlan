@@ -282,7 +282,7 @@ claiming the same issue. A hand edit skips that check.
 | #660 | - | X | P2 | - | fix(day-complete): a session that crosses midnight claims today's day-complete for yesterday's plan | open |  |  |  |
 | #661 | - | X | P2 | - | fix(study): swipe-to-rate gives Good after a wrong cloze answer | open |  |  |  |
 | #662 | - | X | P2 | - | fix(sentences): re-rating a T5 sentence stacks Hard reviews on its word | open |  |  |  |
-| #663 | - | X | P2 | - | fix(today): today's voice card never leaves after the voice is installed | open |  |  |  |
+| #663 | - | X | P2 | - | fix(today): today's voice card never leaves after the voice is installed | assigned | agent-1 |  |  |
 | #664 | - | X | P2 | - | perf(backlog): T4 runs one query per row on every table change | open |  |  |  |
 | #665 | - | X | P2 | - | fix(grammar): L15 swaps, or crashes, the running practice set at midnight | open |  |  |  |
 | #709 | - | X | P2 | - | perf(glass): L1, Today and Me put 6 to 12 BackdropFilters on screen, and the aurora drift makes every blur redraw every frame | open |  |  |  |
@@ -5977,5 +5977,9 @@ production-review fix pass (owner, 2026-09-27): solve all open issues
 production-review fix pass (owner, 2026-09-27): solve all open issues
 
 ### H-1381 · 2026-09-27 07:54 · agent-0 → agent-1 · assign · #638
+
+production-review fix pass (owner, 2026-09-27): solve all open issues
+
+### H-1382 · 2026-09-27 07:54 · agent-0 → agent-1 · assign · #663
 
 production-review fix pass (owner, 2026-09-27): solve all open issues
