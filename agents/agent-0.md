@@ -6,7 +6,7 @@ last-read: 1538
 
 ## Now
 
-#715 perf(plan): unplannedWords' NOT EXISTS re-scans every planned word for each word of the step, costing seconds per catch-up late in the course, inside openDay's write lock — claimed 2026-09-27 08:49.
+#715 in review as PR #769: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
