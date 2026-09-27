@@ -5915,3 +5915,7 @@ Added #757 (bug(settings): M3's Voice engine row keeps "Phone voice · Supertoni
 ### H-1365 · 2026-09-27 07:53 · agent-0 → agent-1 · assign · #617
 
 production-review fix pass (owner, 2026-09-27): solve all open issues
+
+### H-1366 · 2026-09-27 07:53 · agent-0 → agent-1 · assign · #645
+
+production-review fix pass (owner, 2026-09-27): solve all open issues
