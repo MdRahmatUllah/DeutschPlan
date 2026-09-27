@@ -126,9 +126,7 @@ VALUES ('$today', '$uid', 'revise', 'A1.1'),
       expect(find.widgetWithText(SgChip, l10n.searchMyWord), findsOneWidget);
 
       await tester.tap(find.text(l10n.studyShowMeaning));
-      await tester.runAsync(
-        () => Future<void>.delayed(const Duration(milliseconds: 50)),
-      );
+      await tester.runAsync(pumpEventQueue);
       await tester.pumpAndSettle();
       expect(find.text('deposit'), findsOneWidget);
       expect(
@@ -143,13 +141,11 @@ VALUES ('$today', '$uid', 'revise', 'A1.1'),
     (tester) async {
       await pump(tester);
       await tester.tap(find.text(l10n.studyShowMeaning));
-      await tester.runAsync(
-        () => Future<void>.delayed(const Duration(milliseconds: 50)),
-      );
+      await tester.runAsync(pumpEventQueue);
       await tester.pumpAndSettle();
       await tester.runAsync(() async {
         await tester.tap(find.text(l10n.ratingGood));
-        await Future<void>.delayed(const Duration(milliseconds: 50));
+        await pumpEventQueue();
       });
       await tester.pumpAndSettle();
 

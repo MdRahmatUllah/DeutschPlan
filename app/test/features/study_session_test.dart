@@ -256,9 +256,7 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code) VALUES
     ) async {
       final voice = FakePrefetchTts();
       await pump(tester, voice: voice);
-      await tester.runAsync(
-        () => Future<void>.delayed(const Duration(milliseconds: 50)),
-      );
+      await tester.runAsync(pumpEventQueue);
       await tester.pump();
       expect(voice.prepared.first, <String>[
         'die Straße',
@@ -278,9 +276,7 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code) VALUES
         "screen's stop leaves the new block's list going", (tester) async {
       final voice = FakePrefetchTts();
       await pump(tester, voice: voice);
-      await tester.runAsync(
-        () => Future<void>.delayed(const Duration(milliseconds: 50)),
-      );
+      await tester.runAsync(pumpEventQueue);
       await tester.pump();
       final first = voice.prepared.single;
 
@@ -301,9 +297,7 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code) VALUES
         ),
       );
       await tester.pump();
-      await tester.runAsync(
-        () => Future<void>.delayed(const Duration(milliseconds: 50)),
-      );
+      await tester.runAsync(pumpEventQueue);
       await tester.pump();
       await tester.pumpAndSettle();
 
@@ -317,9 +311,7 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code) VALUES
         'example follows it', (tester) async {
       final voice = FakePrefetchTts();
       await pump(tester, voice: voice, examples: true);
-      await tester.runAsync(
-        () => Future<void>.delayed(const Duration(milliseconds: 50)),
-      );
+      await tester.runAsync(pumpEventQueue);
       await tester.pump();
       expect(voice.prepared.first, <String>[
         'die Straße',
@@ -517,9 +509,7 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code) VALUES
       for (var i = 0; i < 4; i++) {
         notifier.advance(CardOutcome.good);
       }
-      await tester.runAsync(
-        () => Future<void>.delayed(const Duration(milliseconds: 50)),
-      );
+      await tester.runAsync(pumpEventQueue);
       await tester.pumpAndSettle();
       expect(find.byType(StudyScreen), findsOneWidget);
       expect(find.byType(StudySummarySheet), findsOneWidget);

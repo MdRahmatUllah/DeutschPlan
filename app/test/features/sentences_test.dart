@@ -90,7 +90,12 @@ INSERT INTO sentence_log (word_uid, ord, shown_on, self_rating) VALUES
       GoRoute(path: '/sentences', builder: (_, _) => const SentencesScreen()),
       GoRoute(
         path: '/day-complete',
-        builder: (_, _) => const Text('T6 day complete'),
+        builder: (_, state) => Column(
+          children: <Widget>[
+            const Text('T6 day complete'),
+            Text('day ${state.uri.queryParameters['day']}'),
+          ],
+        ),
       ),
     ],
   );
@@ -129,9 +134,7 @@ INSERT INTO sentence_log (word_uid, ord, shown_on, self_rating) VALUES
       ),
     );
     await tester.tap(find.text('T1 today'));
-    await tester.runAsync(
-      () => Future<void>.delayed(const Duration(milliseconds: 60)),
-    );
+    await tester.runAsync(pumpEventQueue);
     await tester.pumpAndSettle();
     return ProviderScope.containerOf(
       tester.element(find.byType(SentencesScreen)),
@@ -141,13 +144,11 @@ INSERT INTO sentence_log (word_uid, ord, shown_on, self_rating) VALUES
   Future<void> answer(WidgetTester tester, String label) async {
     await tester.runAsync(() async {
       await tester.tap(find.text(label));
-      await Future<void>.delayed(const Duration(milliseconds: 80));
+      await pumpEventQueue();
     });
     await tester.pumpAndSettle();
     // The last answer reads the day's state before it leaves.
-    await tester.runAsync(
-      () => Future<void>.delayed(const Duration(milliseconds: 80)),
-    );
+    await tester.runAsync(pumpEventQueue);
     await tester.pumpAndSettle();
   }
 
@@ -215,7 +216,7 @@ INSERT INTO sentence_log (word_uid, ord, shown_on, self_rating) VALUES
       await pump(tester);
       await tester.runAsync(() async {
         tester.semantics.tap(find.semantics.byLabel(l10n.sentencesUnderstood));
-        await Future<void>.delayed(const Duration(milliseconds: 80));
+        await pumpEventQueue();
       });
       await tester.pumpAndSettle();
       expect((await tester.runAsync(log))!.first['self_rating'], 3);
@@ -231,9 +232,7 @@ INSERT INTO sentence_log (word_uid, ord, shown_on, self_rating) VALUES
       // Today's resume, after midnight, as T1's lifecycle listener does it.
       now = DateTime(2026, 9, 22, 0, 5);
       container.invalidate(todayProvider);
-      await tester.runAsync(
-        () => Future<void>.delayed(const Duration(milliseconds: 60)),
-      );
+      await tester.runAsync(pumpEventQueue);
       await tester.pumpAndSettle();
       expect(find.text(l10n.sentencesPlace(2, 3)), findsOneWidget);
 
@@ -255,6 +254,25 @@ INSERT INTO sentence_log (word_uid, ord, shown_on, self_rating) VALUES
         3,
         2,
       ]);
+    });
+
+    testWidgets('#884 FR-T6-01 finished past midnight, it celebrates the day '
+        'it opened on', (tester) async {
+      var now = DateTime(2026, 9, 21, 23, 55);
+      final container = await pump(tester, planOpen: false, clock: () => now);
+      await answer(tester, l10n.sentencesUnderstood);
+      await answer(tester, l10n.sentencesUnderstood);
+
+      now = DateTime(2026, 9, 22, 0, 5);
+      container.invalidate(todayProvider);
+      await tester.runAsync(
+        () => Future<void>.delayed(const Duration(milliseconds: 60)),
+      );
+      await tester.pumpAndSettle();
+      await answer(tester, l10n.sentencesUnderstood);
+
+      expect(find.text('T6 day complete'), findsOneWidget);
+      expect(find.text('day 2026-09-21'), findsOneWidget);
     });
 
     testWidgets('Partly writes 2', (tester) async {
@@ -286,7 +304,7 @@ INSERT INTO sentence_log (word_uid, ord, shown_on, self_rating) VALUES
       await tester.runAsync(() async {
         await tester.tap(find.text(l10n.sentencesNotYet));
         await tester.tap(find.text(l10n.sentencesNotYet));
-        await Future<void>.delayed(const Duration(milliseconds: 120));
+        await pumpEventQueue();
       });
       await tester.pumpAndSettle();
       final reviews = await tester.runAsync(
@@ -409,7 +427,7 @@ INSERT INTO sentence_log (word_uid, ord, shown_on, self_rating) VALUES
       await pump(tester);
       await tester.runAsync(() async {
         await tester.tapOnText(find.textRange.ofSubstring('Straße'));
-        await Future<void>.delayed(const Duration(milliseconds: 60));
+        await pumpEventQueue();
       });
       await tester.pumpAndSettle();
       expect(find.text('die Straße', findRichText: true), findsOneWidget);
@@ -427,7 +445,7 @@ INSERT INTO sentence_log (word_uid, ord, shown_on, self_rating) VALUES
       await pump(tester);
       await tester.runAsync(() async {
         await tester.tapOnText(find.textRange.ofSubstring('lang'));
-        await Future<void>.delayed(const Duration(milliseconds: 60));
+        await pumpEventQueue();
       });
       await tester.pumpAndSettle();
       expect(find.text(l10n.sentencesNotInCourse), findsOneWidget);

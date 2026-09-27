@@ -121,7 +121,7 @@ class PlacementScreenState extends ConsumerState<PlacementScreen> {
     _loading = true;
     final item = _item!;
     _session!.answer(item, correct: _picked == item.answer);
-    _advance();
+    unawaited(_advance());
   }
 
   @override

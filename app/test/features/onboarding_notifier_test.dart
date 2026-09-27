@@ -51,10 +51,8 @@ void main() {
     container.read(onboardingProvider.notifier).chooseStep('B1.2');
     page.close();
 
-    // Long enough for the dispose Riverpod schedules when the last listener
-    // leaves.
+    // The turns Riverpod's dispose takes when the last listener leaves.
     await pumpEventQueue();
-    await Future<void>.delayed(const Duration(milliseconds: 50));
 
     expect(container.read(onboardingProvider).step, 'B1.2');
   });

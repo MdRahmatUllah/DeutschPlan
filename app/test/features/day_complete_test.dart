@@ -107,9 +107,7 @@ void main() {
       ),
     );
     await tester.tap(find.text('T1 today'));
-    await tester.runAsync(
-      () => Future<void>.delayed(const Duration(milliseconds: 60)),
-    );
+    await tester.runAsync(pumpEventQueue);
     // The route builds, the day is claimed, and the next frame starts the
     // reward.
     await tester.pump();

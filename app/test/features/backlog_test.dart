@@ -171,17 +171,13 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code, skipped,
         ),
       ),
     );
-    await tester.runAsync(
-      () => Future<void>.delayed(const Duration(milliseconds: 50)),
-    );
+    await tester.runAsync(pumpEventQueue);
     await tester.pumpAndSettle();
   }
 
   /// Lets a write land and the backlog stream answer.
   Future<void> settle(WidgetTester tester) async {
-    await tester.runAsync(
-      () => Future<void>.delayed(const Duration(milliseconds: 80)),
-    );
+    await tester.runAsync(pumpEventQueue);
     await tester.pumpAndSettle();
   }
 
@@ -739,9 +735,7 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code, skipped,
         ),
       ),
     );
-    await tester.runAsync(
-      () => Future<void>.delayed(const Duration(milliseconds: 50)),
-    );
+    await tester.runAsync(pumpEventQueue);
     await tester.pumpAndSettle();
     await tester.pump(StudyScreen.bannerTime);
     await tester.pumpAndSettle();

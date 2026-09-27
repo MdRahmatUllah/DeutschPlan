@@ -951,9 +951,7 @@ void main() {
         ),
       );
       Future<void> settle() async {
-        await tester.runAsync(
-          () => Future<void>.delayed(const Duration(milliseconds: 60)),
-        );
+        await tester.runAsync(pumpEventQueue);
         await tester.pumpAndSettle();
       }
 
