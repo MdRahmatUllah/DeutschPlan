@@ -17,6 +17,8 @@ import 'package:sogda/features/exam/exam_review_screen.dart';
 import 'package:sogda/features/learn/step_exams.dart' show examSectionName;
 import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/l10n/ui_digits.dart';
+import 'package:sogda/router/cross_tab.dart';
+import 'package:sogda/router/routes.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -58,6 +60,9 @@ class ExamResultsScreen extends ConsumerStatefulWidget {
 
 class _ExamResultsScreenState extends ConsumerState<ExamResultsScreen> {
   bool _reviewing = false;
+
+  /// Out of a result that could not load: Learn, the course (#725).
+  void _leave() => context.jumpToTab(const LearnRoute());
 
   /// *Add missed words to revision* is done once.
   bool _added = false;
@@ -128,13 +133,20 @@ class _ExamResultsScreenState extends ConsumerState<ExamResultsScreen> {
 
     final Widget content;
     if (loaded.hasError || (loaded.hasValue && loaded.value == null)) {
+      // #725: a way out. With no result there is no step and no header, so
+      // the learner had only the message, and back did nothing.
       content = Center(
         child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: SgText(
-            l10n.examRunLoadFailed,
-            role: SgTextRole.body,
-            textAlign: TextAlign.center,
+          padding: const EdgeInsets.all(16),
+          child: SgErrorPanel(
+            message: l10n.examRunLoadFailed,
+            retryLabel: l10n.retry,
+            onRetry: () => ref.invalidate(examResultProvider(widget.attemptId)),
+            action: SgButton(
+              label: l10n.stepBackToCourse,
+              kind: SgButtonKind.secondary,
+              onPressed: _leave,
+            ),
           ),
         ),
       );
@@ -165,7 +177,9 @@ class _ExamResultsScreenState extends ConsumerState<ExamResultsScreen> {
     final guarded = PopScope(
       canPop: false,
       onPopInvokedWithResult: (didPop, _) {
-        if (!didPop && step != null) widget.onHub(step);
+        if (didPop) return;
+        // With no result there is no hub to go to: the course (#725).
+        step == null ? _leave() : widget.onHub(step);
       },
       child: scaffold,
     );

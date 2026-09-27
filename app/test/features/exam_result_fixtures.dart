@@ -106,8 +106,14 @@ class StubExamResult implements ExamResultService {
   /// Makes *Add missed words to revision* throw.
   bool failAdd = false;
 
+  /// How many times the result was read: a Retry reads it again (#725).
+  int reads = 0;
+
   @override
-  Future<ExamResult?> result(int attemptId) async => missing ? null : result0;
+  Future<ExamResult?> result(int attemptId) async {
+    reads++;
+    return missing ? null : result0;
+  }
 
   @override
   Future<void> rubric(int attemptId, int ord, List<bool> ticks) async {
