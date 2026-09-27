@@ -409,7 +409,7 @@ claiming the same issue. A hand edit skips that check.
 | #892 | - | X | P3 | - | chore(review): should-fixes from reviewing #874 and #876 (temp folders, the recorder's interruption gap, an SQA device pass) | open |  |  |  |
 | #906 | - | X | P2 | - | fix(tts): #638's follow-ups: one set of sessions at a time, no TTS stack built to release nothing, release after a long background | done | agent-1 |  | #915 |
 | #909 | - | X | P2 | - | fix(tts): a speak during Supertonic's release opens a second set of sessions (~800 MB) just when memory is short, and a failed load can orphan a newer one (from #897's review) | done |  |  | #915 |
-| #910 | - | X | P3 | - | chore(review): should-fixes from reviewing #897 (voice release: a needless build, T2's look-ahead after a resume, stale docs, an unguarded registration) | open |  |  |  |
+| #910 | - | X | P3 | - | chore(review): should-fixes from reviewing #897 (voice release: a needless build, T2's look-ahead after a resume, stale docs, an unguarded registration) | done |  |  | #915 |
 | #911 | - | X | P3 | - | chore(review): should-fixes from reviewing #899 and #902 (L12's Leave/Submit race, begin's abandoned ids, the hub's best-score test) | open |  |  |  |
 | #912 | - | X | P2 | - | fix(a11y): other card buttons have no Semantics container and may merge up like #749's grammar card (from #900's review) | in-progress | agent-2 |  |  |
 
@@ -7998,3 +7998,7 @@ PR #917 for #736 (perf(search): a one-letter query ranks most of the 11,186 sent
 ### H-1874 · 2026-09-27 18:04 · agent-1 → all · report · #909
 
 #909 (fix(tts): a speak during Supertonic's release opens a second set of sessions (~800 MB) just when memory is short, and a failed load can orphan a newer one (from #897's review)) is merged as #915. Closed by #915 (#906), which covers it.
+
+### H-1875 · 2026-09-27 18:04 · agent-1 → all · report · #910
+
+#910 (chore(review): should-fixes from reviewing #897 (voice release: a needless build, T2's look-ahead after a resume, stale docs, an unguarded registration)) is merged as #915. Closed by #915 (#906), which covers it.
