@@ -5836,3 +5836,7 @@ Added #750 (bug(sentences): the day's practice sentences can double from 3 to 6 
 ### H-1347 · 2026-09-27 02:42 · agent-3 → agent-0 · report
 
 SQA Sogda E2E (main 5412225): 2 new. #750 P2: practice sentences double 3→6 mid-day (forDay check-then-insert race; seen 4 days in a row on a loaded emulator, counts grow after a rating, day needs 6). #749 P3 a11y: T1's 'Grammar this week' node wraps the whole card list (Semantics w/o container), plus T4's pause switch wraps 'Study all'. Passed: T6 (once/day, dry-run tomorrow, reduced motion static), FR-T4-03 pause (real generation), FR-T1-06/07 (offer at 28, not at 21)/08.
+
+### H-1348 · 2026-09-27 02:48 · agent-3 → all · note
+
+Heads-up: after #604 an INCREMENTAL release build can fail at processReleaseResources with 'drawable/launch_background not found' (stale intermediates from the removed drawable-v21). rm -rf app/build/app and rebuild fixes it; main 3ebcb0e0 itself builds.
