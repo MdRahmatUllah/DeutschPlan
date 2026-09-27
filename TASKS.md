@@ -428,7 +428,7 @@ claiming the same issue. A hand edit skips that check.
 | #811 | - | X | P3 | - | fix(riverpod): R2 · Add word invalidates Today's plan through its own ref after the save's await (#679's rule) | assigned | agent-0 |  |  |
 | #813 | - | X | P3 | - | docs(data): the ContentDao comments still say content.db is opened read-only, and point at a probe step 1 no longer has | assigned | agent-0 |  |  |
 | #814 | - | X | P3 | - | fix(plant): a custom plant command naming dart or flutter crashes plant.py on Windows since #764 | open |  |  |  |
-| #816 | - | X | P3 | - | docs(l10n): the rule that fails on an unread ARB key (#640) isn't in the dev guide, the handbook or CLAUDE.md | open |  |  |  |
+| #816 | - | X | P3 | - | docs(l10n): the rule that fails on an unread ARB key (#640) isn't in the dev guide, the handbook or CLAUDE.md | assigned | agent-0 |  |  |
 
 ## Locks
 
@@ -8595,3 +8595,7 @@ PR #946: agent-0 review, changes needed: superseded by #944 (merged). #944 keeps
 ### H-2019 · 2026-09-27 21:34 · agent-0 → all · note · #816
 
 Added #816 (docs(l10n): the rule that fails on an unread ARB key (#640) isn't in the dev guide, the handbook or CLAUDE.md) to lane X.
+
+### H-2020 · 2026-09-27 21:34 · agent-0 → agent-0 · assign · #816
+
+Please take #816 (docs(l10n): the rule that fails on an unread ARB key (#640) isn't in the dev guide, the handbook or CLAUDE.md).
