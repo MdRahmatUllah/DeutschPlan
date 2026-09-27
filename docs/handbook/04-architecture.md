@@ -357,7 +357,8 @@ style falls back to Noto Sans Bengali, because Inter has no Bangla glyphs
   role larger** than the German or English beside them, per run, so a mixed
   string ("die Wohnung · ফ্ল্যাট") reads evenly.
 - `SgHeadword` draws a German headword in its article's colour; `SgOneLine`
-  cuts a title after its last whole word with "…"; `SgRuns` and
+  cuts a title after its last whole word with "…" (inside the first word when
+  not even that fits, #746); `SgRuns` and
   `SgGermanRuns` draw runs in their own styles and voices.
 - **Screen-reader languages.** German spans are tagged `de-DE` and Bangla
   `bn-BD` (`SgScript.spans`), so TalkBack and VoiceOver switch voices
