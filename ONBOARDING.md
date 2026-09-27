@@ -450,15 +450,15 @@ app/lib/
    | `showModalBottomSheet(` | `Adaptive.showSheet` |
    | `AlertDialog(` | `Adaptive.showConfirm` |
    | `showTimePicker(` | `Adaptive.showTimePickerFor` |
-   | `FilledButton`, `ElevatedButton`, `OutlinedButton`, `TextButton(` | `SgButton` (and its kinds) |
+   | `FilledButton`, `ElevatedButton`, `OutlinedButton`, `TextButton(`, `TextButton.icon(` | `SgButton` (and its kinds) |
    | `Chip(`, `ActionChip(`, `FilterChip(` | `SgChip` |
-   | `showDialog(`, `Dialog(`, `SimpleDialog(`, `showGeneralDialog(` | `Adaptive.showConfirm` or `Adaptive.showPane` |
-   | `IconButton(` | an Adaptive or Sg control |
+   | `showDialog(`, `Dialog(`, `Dialog.fullscreen(`, `SimpleDialog(`, `showGeneralDialog(` | `Adaptive.showConfirm` or `Adaptive.showPane` |
+   | `IconButton` (any constructor) | an Adaptive or Sg control |
    | `SnackBar(` | `SgToast` |
 
    The Cupertino equivalents are banned too, and `main.dart` is read like any other file. A `TextField` is allowed: the SDK's follows the platform, and ours are drawn from the tokens. Escape hatch: `// ponytail: allow-chrome` on the line, or ending the comment just above it (`dart format` moves a comment after an opening bracket).
 5. drift only in `lib/data/`.
-6. Text is `SgText` (`SgOneLine`, `SgHeadword`, `SgRuns`), never a raw `Text(` or `Text.rich(`, outside `core/typography/` and `core/adaptive/`. Escape hatch: `// ponytail: allow-raw-text`, placed as `allow-chrome` is.
+6. Text is `SgText` (`SgOneLine`, `SgHeadword`, `SgRuns`), never a raw `Text(`, `Text.rich(` or `RichText(`, outside `core/typography/` and `core/adaptive/`. Escape hatch: `// ponytail: allow-raw-text`, placed as `allow-chrome` is.
 7. Nothing writes to the course tables (words, grammar_topics, categories, meta, …): not in SQL (`OR IGNORE` and `OR REPLACE` included, in any `.drift` file), and not through drift's API (`into(db.words)`, `update(…)`, `batch.insertAll(…)`).
 8. No I/O in a widget's `build()`.
 9. keepAlive providers anywhere under `lib/` must be listed in `docs/01-architecture/state-management.md`'s Provider map, and the reverse.

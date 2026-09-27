@@ -150,6 +150,7 @@ void main() {
       'ElevatedButton': 'SgButton',
       'OutlinedButton': 'SgButton(kind: secondary)',
       'TextButton(': 'SgButton(kind: text)',
+      'TextButton.icon(': 'SgButton(kind: text)',
       'Chip(': 'SgChip',
       'FilterChip(': 'SgChip(kind: filter)',
       'ActionChip(': 'SgChip',
@@ -161,8 +162,10 @@ void main() {
       'showCupertinoDialog(': 'Adaptive.showConfirm or Adaptive.showPane',
       'showGeneralDialog(': 'Adaptive.showConfirm or Adaptive.showPane',
       'Dialog(': 'Adaptive.showConfirm or Adaptive.showPane',
+      'Dialog.fullscreen(': 'Adaptive.showConfirm or Adaptive.showPane',
       'SimpleDialog(': 'Adaptive.showConfirm or Adaptive.showPane',
-      'IconButton(': 'an Adaptive or Sg control',
+      // No `(`: `IconButton.filled(` and `.outlined(` are the same button.
+      'IconButton': 'an Adaptive or Sg control',
       'SnackBar(': 'SgToast',
     };
 
@@ -180,8 +183,8 @@ void main() {
         // On the line, or ending the comment above it (#695 TS-4).
         if (_marked(lines, i, 'ponytail: allow-chrome')) continue;
         for (final entry in chrome.entries) {
-          // , or `SgChip(` matches `Chip(` and `AdaptiveSwitch(` matches
-          // and `AdaptiveSwitch(` matches `Switch(`. Built from a RAW string —
+          // `\b` first, or `SgChip(` matches `Chip(` and `AdaptiveSwitch(`
+          // matches `Switch(`. Built from a RAW string —
           // '\b' in an ordinary Dart string is the backspace character, and
           // the pattern then silently matches nothing at all.
           if (RegExp(r'\b' + RegExp.escape(entry.key)).hasMatch(line)) {
@@ -201,11 +204,12 @@ void main() {
   });
 
   test('#695 TS-4 text is SgText, never a raw Text', () {
-    // A raw Text has no role, no Bangla fallback, no German voice and no
-    // syllable breaks: what SgText, SgOneLine, SgHeadword and SgRuns add.
+    // A raw Text (or RichText) has no role, no Bangla fallback, no German
+    // voice and no syllable breaks: what SgText, SgOneLine, SgHeadword and
+    // SgRuns add.
     // lib/core/typography/ builds those from Text; lib/core/adaptive/'s
     // Material and Cupertino chrome takes the platform's text.
-    final raw = RegExp(r'\bText(?:\.rich)?\(');
+    final raw = RegExp(r'\b(?:Rich)?Text(?:\.rich)?\(');
 
     final offenders = <String>[];
     for (final file in _dartFilesIn('lib')) {
@@ -228,8 +232,9 @@ void main() {
       offenders,
       isEmpty,
       reason:
-          'use SgText (SgOneLine, SgHeadword, SgRuns), or say on the line '
-          'why not with // ponytail: allow-raw-text:\n${offenders.join('\n')}',
+          'use SgText (SgOneLine, SgHeadword, SgRuns), or say why not with '
+          '// ponytail: allow-raw-text on the line or the comment above '
+          'it:\n${offenders.join('\n')}',
     );
   });
 
