@@ -340,7 +340,7 @@ claiming the same issue. A hand edit skips that check.
 | #714 | - | X | P2 | - | fix(pipeline): renaming an optional column header silently drops that column for the whole workbook, and renaming POS changes every uid in it | open |  |  |  |
 | #724 | SQA | X | P3 | - | bug(sentences): tapping a du-imperative in T5 ("Mach die Lampe an.") says "Not a word from the course" for a course verb — 94 example sentences open with one | assigned | agent-1 |  |  |
 | #725 | - | X | P2 | - | fix(exam): when L13's result fails to load, the learner can't leave: no close button, and back is swallowed | open |  |  |  |
-| #726 | - | X | P2 | - | fix(a11y): grammar practice's Spot the error marks the right word and a wrong tap by tint alone, with no icon or state for a reader | open |  |  |  |
+| #726 | - | X | P2 | - | fix(a11y): grammar practice's Spot the error marks the right word and a wrong tap by tint alone, with no icon or state for a reader | assigned | agent-2 |  |  |
 | #727 | - | X | P3 | - | fix(quiz): L8's 15 s question timer keeps running in the background, so a learner who switches apps returns to a failed question rated Again | assigned | agent-1 |  |  |
 | #728 | - | X | P3 | - | fix(backlog): T4's Undo takes back whatever rating is on top of the undo stack, and undoing Suspend on an already suspended word resumes it | open |  |  |  |
 | #729 | - | X | P3 | - | fix(day-complete): T6's "N words · M min" counts skipped new words as studied | assigned | agent-1 |  |  |
@@ -6161,5 +6161,9 @@ production-review fix pass (owner, 2026-09-27): solve all open issues
 production-review fix pass (owner, 2026-09-27): solve all open issues
 
 ### H-1427 · 2026-09-27 07:58 · agent-0 → agent-2 · assign · #668
+
+production-review fix pass (owner, 2026-09-27): solve all open issues
+
+### H-1428 · 2026-09-27 07:58 · agent-0 → agent-2 · assign · #726
 
 production-review fix pass (owner, 2026-09-27): solve all open issues
