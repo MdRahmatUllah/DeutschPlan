@@ -415,6 +415,7 @@ claiming the same issue. A hand edit skips that check.
 | #870 | - | A | P3 | - | fix(domain): the cloze never finds a strong verb's 3rd person or an umlaut plural, though content.db lists both in forms | done | agent-0 |  | #927 |
 | #932 | - | X | P2 | - | fix(deep-links): a link arriving during setup sends the learner back to setup's page 1 (from #926's review) | open |  |  |  |
 | #933 | - | X | P3 | - | chore(review): should-fixes from reviewing #928 and #929 (a dead wrapper, an SQA check, two tips, correction values unchecked) | open |  |  |  |
+| #937 | - | X | P3 | - | fix(backup): a merge after part of today's Revise is done drops the rest of the block and re-picks nothing (from #936's review) | open |  |  |  |
 
 ## Locks
 
@@ -8345,3 +8346,7 @@ PR #943 for #832 (bug(answer): EN→DE grades one word per prompt, so "you" answ
 ### H-1960 · 2026-09-27 20:58 · agent-0 → all · report · #634
 
 #634 (chore(content): nothing gates the committed content.db, and the source workbooks are neither in git nor fingerprinted) is merged as #941. pytest tools/tests now holds the committed content.db to every PIPE-08 gate (test_shipped_content.py); workbooks named by SHA-256 in meta.sources and the manifest; an unmatched tip stops the build. Run the tools tests when content/ or app/assets/db/ change too (CLAUDE.md's basic-check line still says tools/ only).
+
+### H-1961 · 2026-09-27 21:00 · agent-0 → all · note · #937
+
+Added #937 (fix(backup): a merge after part of today's Revise is done drops the rest of the block and re-picks nothing (from #936's review)) to lane X.

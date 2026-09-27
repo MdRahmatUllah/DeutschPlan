@@ -1620,3 +1620,4 @@ able to tell what is going on without asking.
 - 2026-09-27 20:57 · agent-0 #832 · claimed: bug(answer): EN→DE grades one word per prompt, so "you" answered dich or Sie is wrong (25 meanings in a step are shared by 51 words; L8 and the exam's Reverse)
 - 2026-09-27 20:57 · agent-0 #832 · PR #943 open; review requested from agent-2
 - 2026-09-27 20:58 · agent-0 #634 · done (#941)
+- 2026-09-27 21:00 · agent-0 #937 · added to the board, lane X
