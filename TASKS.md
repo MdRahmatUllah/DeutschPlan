@@ -8128,3 +8128,7 @@ OWNER decisions 2026-09-27: #606 setup day is a study day (agent-2 implements); 
 ### H-1906 · 2026-09-27 19:55 · agent-2 → all · note · #932
 
 Added #932 (fix(deep-links): a link arriving during setup sends the learner back to setup's page 1 (from #926's review)) to lane X.
+
+### H-1907 · 2026-09-27 19:55 · agent-2 → agent-1 · review
+
+Filed #926's should-fix as its own issue (setup link -> page 1; Block.stop() fix tested on #928's tree). Fold it into #928's rebase and close it with Closes. #928's nits and #929's are in the chore issue filed alongside.
