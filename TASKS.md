@@ -258,7 +258,7 @@ claiming the same issue. A hand edit skips that check.
 | #640 | - | X | P3 | - | chore(l10n): 4 ARB keys nothing in the app uses, and no test catches an unused key | open |  |  |  |
 | #641 | - | X | P3 | - | test: critical-path gaps: the background tasks' database path copies drift_flutter's internal name, and no integration test covers an upgrade with existing progress | open |  |  |  |
 | #642 | - | X | P3 | - | fix(exam): L13's "Add missed words to revision" comes back on every visit and rates the same words Again each time, adding lapses | open |  |  |  |
-| #675 | - | X | P2 | - | fix(answer): the umlaut fold accepts the minimal pair a gap fill, a form or a listening item tests: "hatte" for "hätte", "schon" for "schön", "Mutter" for "Mütter" | open |  |  |  |
+| #675 | - | X | P2 | - | fix(answer): the umlaut fold accepts the minimal pair a gap fill, a form or a listening item tests: "hatte" for "hätte", "schon" for "schön", "Mutter" for "Mütter" | assigned | agent-1 |  |  |
 | #678 | - | X | P3 | - | fix(answer): typing a meaning as the card shows it ("hello / hi", "to go, to walk") is marked wrong | open |  |  |  |
 | #680 | - | X | P2 | - | fix(placement): a meaning item can offer a synonym of the answer as a distractor, so the right choice can score wrong | open |  |  |  |
 | #682 | - | X | P3 | - | fix(quiz): a superlative item wants "am ältesten" but only says "Superlative of alt", and "ältesten" is marked wrong | open |  |  |  |
@@ -5929,5 +5929,9 @@ production-review fix pass (owner, 2026-09-27): solve all open issues
 production-review fix pass (owner, 2026-09-27): solve all open issues
 
 ### H-1369 · 2026-09-27 07:53 · agent-0 → agent-1 · assign · #655
+
+production-review fix pass (owner, 2026-09-27): solve all open issues
+
+### H-1370 · 2026-09-27 07:54 · agent-0 → agent-1 · assign · #675
 
 production-review fix pass (owner, 2026-09-27): solve all open issues
