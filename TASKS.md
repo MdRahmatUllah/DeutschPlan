@@ -258,7 +258,7 @@ claiming the same issue. A hand edit skips that check.
 | #640 | - | X | P3 | - | chore(l10n): 4 ARB keys nothing in the app uses, and no test catches an unused key | review | agent-0 |  | #779 |
 | #641 | - | X | P3 | - | test: critical-path gaps: the background tasks' database path copies drift_flutter's internal name, and no integration test covers an upgrade with existing progress | assigned | agent-0 |  |  |
 | #642 | - | X | P3 | - | fix(exam): L13's "Add missed words to revision" comes back on every visit and rates the same words Again each time, adding lapses | assigned | agent-2 |  |  |
-| #675 | - | X | P2 | - | fix(answer): the umlaut fold accepts the minimal pair a gap fill, a form or a listening item tests: "hatte" for "hätte", "schon" for "schön", "Mutter" for "Mütter" | assigned | agent-1 |  |  |
+| #675 | - | X | P2 | - | fix(answer): the umlaut fold accepts the minimal pair a gap fill, a form or a listening item tests: "hatte" for "hätte", "schon" for "schön", "Mutter" for "Mütter" | in-progress | agent-1 |  |  |
 | #678 | - | X | P3 | - | fix(answer): typing a meaning as the card shows it ("hello / hi", "to go, to walk") is marked wrong | review | agent-1 |  | #786 |
 | #680 | - | X | P2 | - | fix(placement): a meaning item can offer a synonym of the answer as a distractor, so the right choice can score wrong | assigned | agent-1 |  |  |
 | #682 | - | X | P3 | - | fix(quiz): a superlative item wants "am ältesten" but only says "Superlative of alt", and "ältesten" is marked wrong | assigned | agent-1 |  |  |
