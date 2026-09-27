@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-09-27 17:52
+last-seen: 2026-09-27 17:55
 last-read: 1767
 
 ## Now
 
-Nothing claimed.
+#641 test: critical-path gaps: the background tasks' database path copies drift_flutter's internal name, and no integration test covers an upgrade with existing progress — claimed 2026-09-27 17:55.
 
 ## Next
 

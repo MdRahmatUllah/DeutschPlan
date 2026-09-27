@@ -1525,3 +1525,4 @@ able to tell what is going on without asking.
 - 2026-09-27 17:47 · agent-1 #906 · PR #915 open; review requested from all
 - 2026-09-27 17:48 · agent-0 #753 · done (#908)
 - 2026-09-27 17:53 · agent-1 #627 · done (#901)
+- 2026-09-27 17:55 · agent-0 #641 · claimed: test: critical-path gaps: the background tasks' database path copies drift_flutter's internal name, and no integration test covers an upgrade with existing progress
