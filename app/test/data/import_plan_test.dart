@@ -203,7 +203,11 @@ VALUES (?, 'A1.1', 'A1', ?, ?, ?, ?, ?, ?, 'vocab')
     final plan = await phone.engine.openDay(today);
 
     expect(plan.isStudyDay, isFalse, reason: "this phone's study days stay");
-    expect(plan.newToday, isEmpty);
+    // Set up today, this phone's setup day was a study day (#606) and it
+    // studied Haus. The merged start is yesterday's, so today is re-planned
+    // as the Sunday it is: nothing new is added, and what was done here
+    // stays done.
+    expect(plan.newToday, <String>['uid-haus']);
   });
 }
 
