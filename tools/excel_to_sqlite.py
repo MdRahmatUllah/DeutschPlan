@@ -20,7 +20,15 @@ from pathlib import Path
 import yaml
 from openpyxl import load_workbook
 
-from content_manifest import MANIFEST_NAME, build_manifest, write_manifest
+from content_manifest import (
+    MANIFEST_NAME,
+    build_manifest,
+    diff,
+    link_uids,
+    previous_build,
+    word_key,
+    write_manifest,
+)
 from content_writer import BuildInputs, build
 from pipeline_steps import (
     GRAMMAR_TEXT_FIELDS,
@@ -45,6 +53,9 @@ from pipeline_steps import (
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_MANIFEST = REPO_ROOT / "content" / "manifest.yaml"
+#: The committed asset: what learners have, and what this build must not
+#: silently take their progress from (#648).
+DEFAULT_PREVIOUS = REPO_ROOT / "app" / "assets" / "db"
 
 # Columns are read by header name, so the authors may reorder them freely.
 # Renaming a header in Excel means changing it here — that is the whole
@@ -516,7 +527,14 @@ WARNING_SAMPLE = 10
 #: build dropped, or an authored tip that will not appear. "…and 40 more"
 #: would say how many and not which.
 UNCAPPED_WARNINGS = frozenset(
-    {"uid collision", "grammar uid collision", "dropped duplicate", "unmatched tip"}
+    {
+        "uid collision",
+        "grammar uid collision",
+        "dropped duplicate",
+        "unmatched tip",
+        "uid link",
+        "removed",
+    }
 )
 
 
@@ -579,6 +597,39 @@ def collect(
     )
 
 
+def link_previous(
+    words: list[Word], previous_dir: Path, allow_removed: bool
+) -> tuple[dict[str, str], dict | None]:
+    """PIPE-09 (#648): links each changed uid to the one its word has now.
+
+    Before the build writes anything, so a refusal leaves no half-built
+    course behind. Returns the alias map for the manifest, and the previous
+    manifest to print the diff against.
+    """
+    before, previous = previous_build(previous_dir)
+    after = {w.uid: word_key(w.level, w.german, w.pos, w.english) for w in words}
+    carried = (previous or {}).get("aliases", {})
+    aliases, unmatched = link_uids(before, after, carried)
+
+    fresh = {old: new for old, new in aliases.items() if old in before}
+    _report(
+        [
+            f"uid link: {old} ({'|'.join(before[old])}) -> {new} "
+            f"({'|'.join(after[new])})"
+            for old, new in fresh.items()
+        ]
+        + [f"removed: {uid} ({'|'.join(before[uid])})" for uid in unmatched]
+    )
+    if unmatched and not allow_removed:
+        raise PipelineError(
+            f"{len(unmatched)} word(s) of the committed course are gone and "
+            f"nothing in this build matches them, so learners would lose "
+            f"their progress on them (listed above as 'removed'). Restore "
+            f"them, or rerun with --allow-removed if that is intended."
+        )
+    return aliases, previous
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
@@ -593,6 +644,19 @@ def main(argv: list[str] | None = None) -> int:
         default=REPO_ROOT / "content" / "build" / "content.db",
         help="where to write content.db",
     )
+    parser.add_argument(
+        "--previous",
+        type=Path,
+        default=DEFAULT_PREVIOUS,
+        help="the directory holding the previous build's content.db and "
+        "manifest, to link changed uids against (PIPE-09)",
+    )
+    parser.add_argument(
+        "--allow-removed",
+        action="store_true",
+        help="build even when a word of the previous build is gone and "
+        "nothing matches it: learners lose their progress on it",
+    )
     args = parser.parse_args(argv)
 
     try:
@@ -605,10 +669,14 @@ def main(argv: list[str] | None = None) -> int:
         )
         _report(tip_warnings)
         inputs = collect(sources, splits, resolved)
+        aliases, previous = link_previous(inputs.words, args.previous, args.allow_removed)
         build(args.out, inputs)
 
         manifest_path = args.out.parent / MANIFEST_NAME
-        write_manifest(manifest_path, build_manifest(inputs, splits))
+        current = build_manifest(inputs, splits, aliases)
+        write_manifest(manifest_path, current)
+        if previous is not None:
+            print(diff(previous, current).summary())
     except PipelineError as error:
         print(f"content pipeline: {error}", file=sys.stderr)
         return 1
