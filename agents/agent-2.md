@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-09-27 15:12
+last-seen: 2026-09-27 15:23
 last-read: 1573
 
 ## Now
 
-#668 fix(a11y): L3 shows a topic's status by colour alone — claimed 2026-09-27 15:12.
+#668 in review as PR #875: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
