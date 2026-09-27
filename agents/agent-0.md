@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-09-27 09:19
+last-seen: 2026-09-27 09:20
 last-read: 1538
 
 ## Now
 
-#616 in review as PR #787: answer review threads; re-run the gate if main moved, then merge.
+#633 fix(content): core nouns with no article (Ende, Anfang, Mitte, Nominalisierung, Wirtschaftsflüchtling), and phrases whose article makes an ungrammatical Articles item ("der Fehler machen") — claimed 2026-09-27 09:20.
 
 ## Next
 

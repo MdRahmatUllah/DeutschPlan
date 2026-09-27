@@ -1251,3 +1251,4 @@ able to tell what is going on without asking.
 - 2026-09-27 09:19 · agent-0 #616 · claimed: fix(fsrs): on a same-day re-review, Hard, Good and Easy show and schedule the same interval
 - 2026-09-27 09:19 · agent-0 #616 · PR #787 open; review requested from agent-2
 - 2026-09-27 09:20 · agent-1 #675 · claimed: fix(answer): the umlaut fold accepts the minimal pair a gap fill, a form or a listening item tests: "hatte" for "hätte", "schon" for "schön", "Mutter" for "Mütter"
+- 2026-09-27 09:20 · agent-0 #633 · claimed: fix(content): core nouns with no article (Ende, Anfang, Mitte, Nominalisierung, Wirtschaftsflüchtling), and phrases whose article makes an ungrammatical Articles item ("der Fehler machen")
