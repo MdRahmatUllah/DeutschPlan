@@ -1,6 +1,9 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
+
+import 'timing.dart';
 
 /// #683: a test that sleeps a fixed time for work to land passes on an idle
 /// machine and fails on a busy one. Work in this isolate (an in-memory
@@ -49,4 +52,34 @@ void main() {
       expect(counts[path] ?? 0, count, reason: '$path: $why');
     }
   });
+
+  test(
+    '#683 fastestOf is the fastest run, not the first or the last',
+    () async {
+      var run = 0;
+      final fastest = await fastestOf(3, () {
+        // Busy, not asleep: the first and the last runs take 50 ms.
+        final clock = Stopwatch()..start();
+        if (run++ != 1) {
+          while (clock.elapsedMilliseconds < 50) {}
+        }
+      });
+      expect(fastest, lessThan(const Duration(milliseconds: 50)));
+    },
+  );
+
+  test(
+    '#683 until waits for its condition, and gives up at its timeout',
+    () async {
+      var ready = false;
+      unawaited(Future(() => ready = true));
+      await until(() => ready);
+      expect(ready, isTrue);
+
+      await until(
+        () => false,
+        timeout: const Duration(milliseconds: 20),
+      ).timeout(const Duration(seconds: 5));
+    },
+  );
 }
