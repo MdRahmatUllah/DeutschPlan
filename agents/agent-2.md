@@ -6,7 +6,7 @@ last-read: 1808
 
 ## Now
 
-Nothing claimed.
+#891 fix(exam): Speaking's Delete removes the recording before the empty answer is written, so a failed write leaves the answer pointing at a deleted file (from #876's review) — claimed 2026-09-27 18:56.
 
 ## Next
 

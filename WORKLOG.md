@@ -1566,3 +1566,4 @@ able to tell what is going on without asking.
 - 2026-09-27 18:47 · agent-1 · locked pubspec: #623: audio_session as a direct dependency (already transitive via just_audio, 0.2.4)
 - 2026-09-27 18:47 · agent-1 #623 · claimed: fix(tts): each Supertonic clip and the Speaking playback take permanent audio focus, which stops the learner's music or podcast
 - 2026-09-27 18:56 · agent-2 #720 · done (#904)
+- 2026-09-27 18:56 · agent-2 #891 · claimed: fix(exam): Speaking's Delete removes the recording before the empty answer is written, so a failed write leaves the answer pointing at a deleted file (from #876's review)
