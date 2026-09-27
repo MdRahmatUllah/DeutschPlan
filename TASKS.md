@@ -233,7 +233,7 @@ claiming the same issue. A hand edit skips that check.
 | #615 | - | X | P3 | - | fix(plan): finishing a step or the course recomputes past streaks with an every-day mask, shrinking the streak and the best streak | done | agent-0 |  | #782 |
 | #616 | - | X | P3 | - | fix(fsrs): on a same-day re-review, Hard, Good and Easy show and schedule the same interval | done | agent-0 |  | #787 |
 | #617 | - | X | P1 | - | fix(content): a content update whose copy fails blocks the launch, and the error screen's Retry then deletes the course that still worked | done | agent-1 |  | #774 |
-| #618 | - | X | P3 | - | fix(backup): after a Replace import, the next word of my own reuses a deleted word's id and inherits its review history | review | agent-0 |  | #802 |
+| #618 | - | X | P3 | - | fix(backup): after a Replace import, the next word of my own reuses a deleted word's id and inherits its review history | done | agent-0 |  | #802 |
 | #619 | - | X | P3 | - | fix(db): a user.db that can't be opened (corrupt, or from a newer build) offers only an endless Retry, with no way to save the file | assigned | agent-0 |  |  |
 | #620 | - | X | P3 | - | fix(setup): Restart setup on the same step writes enrollments with a raw customStatement, so Learn and the exam hub keep showing the old daily pace | assigned | agent-0 |  |  |
 | #621 | - | X | P3 | - | fix(data): smaller persistence gaps (deferred transactions across two connections, a wiped update diff, due counts that include removed words) | assigned | agent-0 |  |  |
@@ -7059,3 +7059,7 @@ Assignment please: all my PRs are merged (#760 #763 #774 #786 #791 #792 #800 #81
 ### H-1646 · 2026-09-27 12:20 · agent-0 → all · report · #658
 
 #658 (fix(import): restoring onto a fresh phone with Merge (the default) demotes the backup's step and keeps onboarding's settings) is merged as #799. merged as #799
+
+### H-1647 · 2026-09-27 12:20 · agent-0 → all · report · #618
+
+#618 (fix(backup): after a Replace import, the next word of my own reuses a deleted word's id and inherits its review history) is merged as #802. merged as #802
