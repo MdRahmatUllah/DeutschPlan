@@ -270,9 +270,21 @@ void wireApp(ProviderContainer container, Bootstrap bootstrap) {
   unawaited(container.read(modelDownloadsProvider).attach());
   // #638: Supertonic opens on the first clip a screen needs, not here, and
   // lets go of its sessions in the background or under memory pressure.
-  WidgetsBinding.instance.addObserver(
-    VoiceRelease(() => container.read(ttsProvider).release()),
-  );
+  watchVoiceMemory(container);
+}
+
+/// #638: the voice lets go of its sessions in the background and under
+/// memory pressure, for the app's life. Only a voice a screen has built: a
+/// pause before any speaker would otherwise build the whole TTS stack, a
+/// player included, to release nothing (#906).
+VoiceRelease watchVoiceMemory(ProviderContainer container) {
+  final observer = VoiceRelease(() async {
+    if (container.exists(ttsProvider)) {
+      await container.read(ttsProvider).release();
+    }
+  });
+  WidgetsBinding.instance.addObserver(observer);
+  return observer;
 }
 
 /// The daily reminder (#157) and the background tasks (#158): the plugins

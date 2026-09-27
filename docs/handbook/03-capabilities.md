@@ -144,11 +144,13 @@ The target is WCAG 2.2 AA ([`accessibility-performance.md`](../01-architecture/a
 - **Speed:** 0.5–1.5× in Settings; a long press on the study card's, W1's
   or T5's speaker plays at 0.75× of it.
 - **Timing (emulator, release build).** Supertonic's four sessions take about
-  2.3 s to open, once, so they open ahead at start when Supertonic is chosen.
+  2.3 s to open. They open with the first clip a screen needs (a session's
+  look-ahead list as it opens, or a tap), and close again in the background
+  or under memory pressure (#638, #906), about 400 MB less while unused.
   A new word then takes about 1 s to its first sound; a cached one starts at
-  once. So a session prepares its clips ahead (up to 40), and today's first
-  words are made at start: on the emulator the first card played 146–266 ms
-  after its speak. The < 300 ms budget is met for prepared clips, not for a
+  once. So a session prepares its clips ahead (up to 40), and a list a
+  release stopped goes on after the next speak: a prepared card played
+  146–266 ms after its speak on the emulator. The < 300 ms budget is met for prepared clips, not for a
   word never heard before.
 - **Cache:** the last 200 clips on disk, per voice and speed; cleared when
   the model is updated.
