@@ -51,6 +51,7 @@ from pathlib import Path
 TOOLS = Path(__file__).resolve().parent
 sys.path.insert(0, str(TOOLS))
 import device  # noqa: E402
+import team  # noqa: E402
 from smoke import holds_device  # noqa: E402
 
 APP = TOOLS.parent / "app"
@@ -301,6 +302,15 @@ def report(measured: dict[str, float], doc: dict) -> bool:
     return passed
 
 
+def keep_device() -> None:
+    """Refreshes the device lock before each long step, so `perf.py all`
+    never outlives the lock's 45-minute stale window (#697 TL-5)."""
+    try:
+        team.cmd_device(team.team_root(), device.agent(), release=False, refresh=True)
+    except team.Refused:
+        pass  # main checked the holder already
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("what", choices=["size", "frames", "start", "all"])
@@ -318,13 +328,16 @@ def main(argv: list[str] | None = None) -> int:
 
     measured: dict[str, float] = {}
     if args.what in ("size", "all"):
+        keep_device()
         measured.update(measure_size())
     if args.what != "size":
         dev = device.Device(args.device)
         try:
             if args.what in ("frames", "all"):
+                keep_device()
                 measured.update(measure_frames(dev))
             if args.what in ("start", "all"):
+                keep_device()
                 measured.update(measure_start(dev, build=args.what == "start"))
         finally:
             print("perf: uninstalling the app (its data and any voice model go)")

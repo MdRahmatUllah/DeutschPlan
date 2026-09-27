@@ -281,3 +281,47 @@ def test_add_reads_an_issue_with_bangla_on_a_cp1252_host(team_repo, monkeypatch,
     monkeypatch.setattr(team.subprocess, "run", host)
     team.cmd_add(team_repo["agent-1"], "agent-1", 320, "X")
     assert board(team_repo["agent-2"]).task(320).title == "bug: বাংলা → the meaning"
+
+
+def test_697_the_same_command_twice_is_not_a_crash(team_repo):
+    # TL-7: the second ack changes nothing (same minute), so there is nothing
+    # to commit; that used to be an uncaught CalledProcessError.
+    a1 = team_repo["agent-1"]
+    team.cmd_ack(a1, "agent-1")
+    team.cmd_ack(a1, "agent-1")
+
+
+def test_697_a_committed_unpushed_plan_is_not_reset_away(team_repo):
+    # TL-6: git status is clean once the edit is committed; the reset would
+    # still drop the commit.
+    a1 = team_repo["agent-1"]
+    team.sync(a1)
+    (a1 / "PLAN.md").write_text("# plan, committed only\n", encoding="utf-8")
+    team.git(a1, "add", "PLAN.md")
+    team.git(a1, "commit", "-qm", "plan")
+    with pytest.raises(SystemExit, match="PLAN.md has commits that are not pushed"):
+        team.cmd_claim(a1, "agent-1", 12)
+    assert (a1 / "PLAN.md").read_text(encoding="utf-8") == "# plan, committed only\n"
+
+
+def test_697_blockers_come_from_the_issue_forms_heading_too():
+    # TL-15: the issue forms render "### Blocked by".
+    data = {"title": "t", "labels": [], "body": "### Goal\nx\n\n### Blocked by\n#81, #82\n\n### Notes\n#999"}
+    assert team.task_from_issue(5, data, "A").blocked_by == [81, 82]
+
+
+def test_697_a_stale_device_lock_is_broken_in_one_step_and_can_be_refreshed(tmp_path):
+    # TL-5: breaking goes through a rename, leaving nothing behind; the
+    # holder can refresh the lock during a long run; nobody else can.
+    team.cmd_device(tmp_path, "agent-1", release=False)
+    old = time.time() - team.DEVICE_LOCK_STALE_SECONDS - 60
+    os.utime(tmp_path / ".device.lock", (old, old))
+    team.cmd_device(tmp_path, "agent-1", release=False, refresh=True)
+    with pytest.raises(team.Refused):
+        team.cmd_device(tmp_path, "agent-2", release=False)  # refreshed: not stale
+    with pytest.raises(team.Refused):
+        team.cmd_device(tmp_path, "agent-2", release=False, refresh=True)
+    os.utime(tmp_path / ".device.lock", (old, old))
+    team.cmd_device(tmp_path, "agent-2", release=False)  # breaks the stale one
+    assert (tmp_path / ".device.lock" / "owner").read_text(encoding="utf-8").startswith("agent-2")
+    assert [p.name for p in tmp_path.iterdir()] == [".device.lock"]

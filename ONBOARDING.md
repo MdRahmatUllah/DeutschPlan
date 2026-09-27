@@ -206,7 +206,7 @@ Run them from your worktree: `python tools/team.py <command>`.
 | `reopen N -m "why"` | A decision was made, or a claim went stale: open it again |
 | `add N --lane X` | Put a new GitHub issue (a follow-up, a bug) on the board |
 | `lock <resource> -m "why"` / `unlock <resource>` | Hold a shared resource (see below) |
-| `device` / `device --release` | Take or give back the emulator. This is a local lock, so it is not on the board. |
+| `device` / `device --release` / `device --refresh` | Take, give back or keep the emulator (a refresh restarts the 45-minute clock for the holder). This is a local lock, so it is not on the board. |
 
 ### Statuses
 
@@ -258,7 +258,8 @@ change):
 
 The **developers' emulator** (`emulator-5558`) has a local lock: `team.py
 device`, held from `flutter build apk` to the last screenshot. It is released
-with `device --release`, and broken automatically after 45 minutes.
+with `device --release`, and broken automatically after 45 minutes; a long
+run keeps it with `device --refresh` (`perf.py` refreshes it between steps).
 `emulator-5554` is agent-3's (SQA) alone, and `tools/device.py` refuses it to
 anyone else.
 
