@@ -150,7 +150,7 @@ class SearchRepository {
   /// compound is further from the word than a typo in "Haus".
   static const int _longQueryLength = 5;
 
-  /// How many words the course has (`meta.word_count`): R1's "5,593 words,
+  /// How many words the course has (`meta.word_count`): R1's "5,433 words,
   /// none spelled like this" (#139). Null when the course doesn't say.
   Future<int?> courseWords() async => int.tryParse(
     await _content.contentMeta('word_count').getSingleOrNull() ?? '',

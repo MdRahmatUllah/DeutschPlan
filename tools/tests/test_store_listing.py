@@ -53,19 +53,20 @@ def test_the_listing_offers_no_translation_which_v1_leaves_out_175():
         assert "অনুবাদ" not in text, f"{language} {field}"
 
 
-def test_the_counts_are_content_dbs_175():
-    # A content rebuild changes them (#545 dropped a duplicate word).
+def test_the_counts_are_abouts_175_631():
+    # A content rebuild changes them (#545 dropped a duplicate word). The words
+    # are About's (content.drift's contentCounts): words to learn, not the lesson
+    # notes and comparisons (#630). CHANGELOG's entries keep their release's count.
     root = LISTING.parents[2]
     # Read-only: a missing asset is an error, not a new empty file (#722).
     db = sqlite3.connect(f"{(root / 'app' / 'assets' / 'db' / 'content.db').as_uri()}?mode=ro", uri=True)
-    words = f"{db.execute('select count(*) from words').fetchone()[0]:,}"
+    words = f"{db.execute('select count(*) from words where kind = ?', ('vocab',)).fetchone()[0]:,}"
     topics = str(db.execute("select count(*) from grammar_topics").fetchone()[0])
     db.close()
     bangla = str.maketrans("0123456789", "০১২৩৪৫৬৭৮৯")
     listing = texts()
-    changelog = (root / "CHANGELOG.md").read_text(encoding="utf-8")
-    for text in (listing[("English (en-US)", "Full description")], changelog):
-        assert f"{words} words" in text and f"{topics} grammar topics" in text
+    en = listing[("English (en-US)", "Full description")]
+    assert f"{words} words" in en and f"{topics} grammar topics" in en
     bn = listing[("Bangla (bn-BD)", "Full description")]
     assert f"{words.translate(bangla)}টি শব্দ" in bn and f"{topics.translate(bangla)}টি ব্যাকরণ" in bn
 
