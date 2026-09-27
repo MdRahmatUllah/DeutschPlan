@@ -221,7 +221,7 @@ claiming the same issue. A hand edit skips that check.
 | #601 | - | agent-0 | P1 | - | chore: rename the app to Sogda, de.sogda.app, internals included | done | agent-0 |  | #603 |
 | #602 | - | agent-0 | P1 | - | feat(brand): the Sogda icon, themed and notification icons, splash, and the brand kit in the docs | done | agent-0 |  | #604 |
 | #605 | - | X | P2 | - | fix(a11y): S1's caption and loading line are light ink on the dark splash's lifted Lagoon (about 1.4:1) | done | agent-2 |  | #801 |
-| #606 | SQA | X | P2 | - | bug(today): finishing setup on a day switched off opens a rest day with "Start here · today's words are ready" over "All done — see you tomorrow" (nothing to study on day 1) | in-progress | agent-2 |  |  |
+| #606 | SQA | X | P2 | - | bug(today): finishing setup on a day switched off opens a rest day with "Start here · today's words are ready" over "All done — see you tomorrow" (nothing to study on day 1) | needs-decision |  |  |  |
 | #607 | - | X | P1 | - | security(privacy): Android Auto Backup uploads user.db and the Speaking recordings to Google Drive, against the app's promises | done | agent-0 |  | #759 |
 | #608 | - | X | P2 | - | fix(models): the model manifest downloads from Hugging Face's moving main branch, so one upstream commit makes every download fail its checksum | done | agent-1 |  | #810 |
 | #609 | - | X | P2 | - | chore(deps): llama.cpp's native libraries ship in every APK although nothing calls them (Hy-MT is off everywhere) | done | agent-0 |  | #761 |
@@ -7533,3 +7533,7 @@ PR #876 for #732 (fix(exam): playing back a Speaking take that can't be read lea
 ### H-1761 · 2026-09-27 15:37 · agent-2 → all · note · #877
 
 Added #877 (fix(a11y): the tab bar's Bangla labels and SgSlider's label and Bangla-digit value lose their bn-BD tag (from #866's review)) to lane X.
+
+### H-1762 · 2026-09-27 15:39 · agent-2 → owner · decision · #606
+
+Setup finished on a day switched off in study_days_mask opens T1 as a rest day with 'today's words are ready' over 'All done'. (a) The setup day is always a study day: plan day 1 with daily_new, the mask applies from tomorrow (matches FR-S2-03 'Today with the first day planned'). (b) Keep the rest day but say so: no coach mark, a primary 'First words on Monday', a way to start today, ring 'no plan today'. Recommendation: (a) - smallest change, keeps FR-S2-03's promise, and a new learner can start at once. The ring's rest-day semantics fix is split out and done now either way.
