@@ -261,7 +261,7 @@ claiming the same issue. A hand edit skips that check.
 | #675 | - | X | P2 | - | fix(answer): the umlaut fold accepts the minimal pair a gap fill, a form or a listening item tests: "hatte" for "hätte", "schon" for "schön", "Mutter" for "Mütter" | assigned | agent-1 |  |  |
 | #678 | - | X | P3 | - | fix(answer): typing a meaning as the card shows it ("hello / hi", "to go, to walk") is marked wrong | assigned | agent-1 |  |  |
 | #680 | - | X | P2 | - | fix(placement): a meaning item can offer a synonym of the answer as a distractor, so the right choice can score wrong | open |  |  |  |
-| #682 | - | X | P3 | - | fix(quiz): a superlative item wants "am ältesten" but only says "Superlative of alt", and "ältesten" is marked wrong | open |  |  |  |
+| #682 | - | X | P3 | - | fix(quiz): a superlative item wants "am ältesten" but only says "Superlative of alt", and "ältesten" is marked wrong | assigned | agent-1 |  |  |
 | #643 | - | X | P1 | - | fix(bootstrap): retry after a failed start opens an app that crashes on its first frame | in-progress | agent-2 |  |  |
 | #644 | - | X | P1 | - | fix(theme): the app stops following the phone's light/dark switch (System and Glass) | assigned | agent-2 |  |  |
 | #645 | - | X | P1 | - | fix(answer): right answers are marked wrong when the expected text has brackets or alternatives | assigned | agent-1 |  |  |
@@ -5937,5 +5937,9 @@ production-review fix pass (owner, 2026-09-27): solve all open issues
 production-review fix pass (owner, 2026-09-27): solve all open issues
 
 ### H-1371 · 2026-09-27 07:54 · agent-0 → agent-1 · assign · #678
+
+production-review fix pass (owner, 2026-09-27): solve all open issues
+
+### H-1372 · 2026-09-27 07:54 · agent-0 → agent-1 · assign · #682
 
 production-review fix pass (owner, 2026-09-27): solve all open issues
