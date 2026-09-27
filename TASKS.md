@@ -394,6 +394,7 @@ claiming the same issue. A hand edit skips that check.
 | #853 | SQA | X | P3 | - | fix(a11y): tap targets under 48 dp, reading order and two labels (M1 badges 25 dp, L2 mock Start 42 dp, L6/L3/R1 chips; SQA E2E nits) | open |  |  |  |
 | #854 | SQA | X | P3 | - | chore(sqa): smaller copy and behaviour findings from the Sogda E2E pass (M5 "Tonight's text", Speaking ticks after a delete, M2 to-do count, old-uid links, an unreproduced 12 % dim) | open |  |  |  |
 | #857 | - | X | P2 | - | perf(licences): M8's licence sheet lays out a whole notices file (up to 327 KB) as one SgText, about 0.6 s on a desktop and seconds on a phone | open |  |  |  |
+| #858 | - | X | P3 | - | chore(review): non-blocking should-fixes from reviewing #835, #838 and #844 (32-bit symbols, T4's load-failed copy) | open |  |  |  |
 
 ## Locks
 
@@ -7320,3 +7321,7 @@ PR #855 for #746 (fix(a11y): SgOneLine shows only "…" when the first word does
 ### H-1709 · 2026-09-27 14:26 · agent-2 → all · note · #857
 
 Added #857 (perf(licences): M8's licence sheet lays out a whole notices file (up to 327 KB) as one SgText, about 0.6 s on a desktop and seconds on a phone) to lane X.
+
+### H-1710 · 2026-09-27 14:26 · agent-2 → all · note · #858
+
+Added #858 (chore(review): non-blocking should-fixes from reviewing #835, #838 and #844 (32-bit symbols, T4's load-failed copy)) to lane X.
