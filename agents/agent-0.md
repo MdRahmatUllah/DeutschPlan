@@ -6,7 +6,7 @@ last-read: 1870
 
 ## Now
 
-#814 in review as PR #960: answer review threads; re-run the gate if main moved, then merge.
+#837 fix(pipeline): a header renamed in every workbook at once still builds, and the course ships without that column — claimed 2026-09-27 22:39.
 
 ## Next
 
