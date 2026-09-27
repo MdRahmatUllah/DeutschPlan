@@ -280,8 +280,9 @@ class BackupRepository {
 
     final columns = await _columnsOf(table);
     final child = _childOf[table];
-    // Merged words of the learner's own get fresh ids, as attempts do.
-    final ownIds = table == _customWords && mode == ImportMode.merge;
+    // Merged words of the learner's own get fresh ids, as attempts do; a
+    // replace keeps them, and the mapping is then each id to itself (#618).
+    final ownIds = table == _customWords;
 
     // A fresh id for every incoming attempt, and the same mapping applied to
     // its answers. Ids are per-device, so keeping them would collide with
@@ -322,7 +323,12 @@ class BackupRepository {
       // out (#369), a deleted word's reviews with them. A compare quiz's
       // `source_ref` can list `custom:<id>` too, and isn't rewritten:
       // nothing reads it back.
-      if (mode == ImportMode.merge && _namesCustomWords.contains(table)) {
+      //
+      // A replace too (#618): it keeps the file's ids, and AUTOINCREMENT
+      // resumes above the highest one, so a deleted word's id is the next
+      // one given out, and the next word the learner adds would inherit its
+      // history.
+      if (_namesCustomWords.contains(table)) {
         if (customId('${mapped['word_uid']}') case final id?) {
           final here = remap[_customWords]?[id];
           if (here == null) continue;
