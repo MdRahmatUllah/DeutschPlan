@@ -6,7 +6,7 @@ last-read: 1538
 
 ## Now
 
-#629 fix(content): 31 "X — Y" headwords glue an unrelated word onto the one taught, so the learner learns the wrong meaning and gender for X — claimed 2026-09-27 09:04.
+#629 in review as PR #777: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 

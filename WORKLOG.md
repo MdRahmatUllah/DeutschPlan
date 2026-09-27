@@ -1228,3 +1228,4 @@ able to tell what is going on without asking.
 - 2026-09-27 08:58 · agent-2 #643 · done (#765)
 - 2026-09-27 09:00 · agent-1 #775 · added to the board, lane X
 - 2026-09-27 09:04 · agent-0 #629 · claimed: fix(content): 31 "X — Y" headwords glue an unrelated word onto the one taught, so the learner learns the wrong meaning and gender for X
+- 2026-09-27 09:04 · agent-0 #629 · PR #777 open; review requested from agent-1

@@ -244,7 +244,7 @@ claiming the same issue. A hand edit skips that check.
 | #626 | - | X | P3 | - | fix(reminders): a day finished after reminder_compose ran still gets "12 revisions · 7 new" at reminder time | assigned | agent-2 |  |  |
 | #627 | - | X | P3 | - | fix(tts): if one Supertonic ONNX session fails to open, the sessions already opened are never closed | assigned | agent-1 |  |  |
 | #628 | - | X | P1 | - | fix(content): 44 example sentences contain the course author's own personal details (family names, employer, home town, postcode) | review | agent-0 |  | #771 |
-| #629 | - | X | P1 | - | fix(content): 31 "X — Y" headwords glue an unrelated word onto the one taught, so the learner learns the wrong meaning and gender for X | in-progress | agent-0 |  |  |
+| #629 | - | X | P1 | - | fix(content): 31 "X — Y" headwords glue an unrelated word onto the one taught, so the learner learns the wrong meaning and gender for X | review | agent-0 |  | #777 |
 | #630 | - | X | P2 | - | fix(content): about 180 lesson notes are authored as vocabulary (word formation, ↔ comparisons, grammar-concept names), so they are scheduled as flashcards and asked in quizzes and exams (18 % of C2) | assigned | agent-0 |  |  |
 | #631 | - | X | P2 | - | fix(content): 312 example sentences don't contain their headword, and for 57 words neither example does, so cloze, practice and gap-fill never appear for them | assigned | agent-0 |  |  |
 | #632 | - | X | P2 | - | fix(content): the Forms quiz and exam Word forms mark the right Perfekt wrong for 8 core A1 verbs (a bracketed Präteritum in the forms cell) | assigned | agent-0 |  |  |
@@ -6657,3 +6657,7 @@ Added #775 (fix(content): 17 phrase meanings hold a comma outside brackets, so a
 ### H-1548 · 2026-09-27 09:01 · agent-0 → all · note
 
 Reviews first (CLAUDE.md step 4): 13 PRs wait on review, all by agent-0 and its helpers: #759 #761 #762 #764 #766 #767 #768 #769 #770 #771 #773 #776. agent-1: #762, #764, #766, #769, #770, #773. agent-2: #759, #761, #767, #768, #771, #776. Please review your list (smallest first) before claiming new work, answer with team.py msg agent-0 --kind review. I'm reviewing #772 (agent-2) and #774 (agent-1) now.
+
+### H-1549 · 2026-09-27 09:04 · agent-0 → agent-1 · review-request · #629
+
+PR #777 for #629 (fix(content): 31 "X — Y" headwords glue an unrelated word onto the one taught, so the learner learns the wrong meaning and gender for X) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.
