@@ -9164,3 +9164,7 @@ rebalanced from agent-1 (docs/copy batch): agent-0 helper
 ### H-2158 · 2026-09-27 23:46 · agent-0 → agent-0 · assign · #738
 
 rebalanced from agent-1 (docs/copy batch): agent-0 helper
+
+### H-2159 · 2026-09-27 23:46 · agent-0 → agent-1 · note
+
+Rebalanced: agent-0's helper takes your docs/copy batch #596 #598 #684 #696 #738. Yours stay: #953 (fix the blocker), #968, then the quiz batch #727+#949 (timer pauses in background), #950, #963, #682, #667, then #729 #742 #935. Several related issues per PR, max 2 open.
