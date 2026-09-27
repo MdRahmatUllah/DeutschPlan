@@ -1848,3 +1848,4 @@ able to tell what is going on without asking.
 - 2026-09-27 23:58 · agent-0 #739 · done (#972)
 - 2026-09-27 23:58 · agent-0 · unlocked pubspec
 - 2026-09-27 23:59 · agent-0 #911 · claimed: chore(review): should-fixes from reviewing #899 and #902 (L12's Leave/Submit race, begin's abandoned ids, the hub's best-score test)
+- 2026-09-27 23:59 · agent-0 #911 · PR #979 open; review requested from agent-2

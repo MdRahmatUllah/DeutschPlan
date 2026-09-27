@@ -6,7 +6,7 @@ last-read: 1870
 
 ## Now
 
-#911 chore(review): should-fixes from reviewing #899 and #902 (L12's Leave/Submit race, begin's abandoned ids, the hub's best-score test) — claimed 2026-09-27 23:59.
+#911 in review as PR #979: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
