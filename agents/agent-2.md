@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-09-27 15:05
+last-seen: 2026-09-27 15:11
 last-read: 1573
 
 ## Now
 
-#726 fix(a11y): grammar practice's Spot the error marks the right word and a wrong tap by tint alone, with no icon or state for a reader — claimed 2026-09-27 14:49.
+#726 in review as PR #872: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
