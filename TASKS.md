@@ -305,7 +305,7 @@ claiming the same issue. A hand edit skips that check.
 | #681 | - | X | P2 | - | test(l10n): the hard-coded copy guard can't see SgText, the only text widget screens use | assigned | agent-2 |  |  |
 | #683 | - | X | P2 | - | test(flaky): timing-dependent tests can flake under parallel load | assigned | agent-0 |  |  |
 | #684 | - | X | P2 | - | fix(l10n): four Bangla strings name English labels that the Bangla UI never shows | assigned | agent-1 |  |  |
-| #685 | - | X | P2 | - | fix(plant): plant.py counts "the tests didn't run" as CAUGHT | review | agent-0 |  | #764 |
+| #685 | - | X | P2 | - | fix(plant): plant.py counts "the tests didn't run" as CAUGHT | done | agent-0 |  | #764 |
 | #686 | - | X | P3 | - | fix(core): 8 lower-severity findings in app start, theme and components (production review checklist) | assigned | agent-2 |  |  |
 | #687 | - | X | P3 | - | fix(domain): 9 lower-severity findings in answer checking and the engines (production review checklist) | assigned | agent-0 | #239 |  |
 | #688 | - | X | P3 | - | fix(data): 8 lower-severity findings in data, backup and migrations (production review checklist) | assigned | agent-0 |  |  |
@@ -6963,3 +6963,7 @@ PR #819 for #673 (fix(models): a voice download can be queued twice) is up. Revi
 ### H-1623 · 2026-09-27 12:12 · agent-0 → all · report · #640
 
 #640 (chore(l10n): 4 ARB keys nothing in the app uses, and no test catches an unused key) is merged as #779. 4 unused ARB keys dropped; l10n_test fails on an ARB key nothing in lib/ reads.
+
+### H-1624 · 2026-09-27 12:12 · agent-0 → all · report · #685
+
+#685 (fix(plant): plant.py counts "the tests didn't run" as CAUGHT) is merged as #764. plant.py: CAUGHT only when tests really fail, against a green baseline; run it from main now.
