@@ -37,6 +37,7 @@ import '../services/fake_tts.dart';
 
 import '../db/content_fixture.dart';
 import '../core/text_clipping.dart';
+import '../core/semantics_checks.dart';
 
 /// T4 · Backlog — #108.
 void main() {
@@ -745,6 +746,19 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code, skipped,
     expect(find.text(l10n.studyKnowIt), findsOneWidget);
     // Already in the backlog: nowhere to skip it to.
     expect(find.text(l10n.studySkip), findsNothing);
+  });
+
+  testWidgets('#912 no tappable node wraps another but a row, whose speaker '
+      'is its own', (tester) async {
+    final semantics = tester.ensureSemantics();
+    await pump(tester);
+    // FR-T4-04: a row opens its word, and its speaker plays it. The pause
+    // switch no longer wraps Study all (#912).
+    expect(tapsInsideTaps(tester), <String>[
+      for (final word in <String>['die Straße', 'das Haus', 'die Tür'])
+        l10n.summaryPlay(word),
+    ]);
+    semantics.dispose();
   });
 }
 

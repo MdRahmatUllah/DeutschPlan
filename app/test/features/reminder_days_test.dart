@@ -22,6 +22,7 @@ import 'package:material_ui/material_ui.dart';
 import '../core/text_clipping.dart';
 import '../db/content_fixture.dart';
 import 'today_fixtures.dart';
+import '../core/semantics_checks.dart';
 
 /// The phone's permission dialog, answered.
 class FakePermission implements NotificationPermission {
@@ -324,5 +325,12 @@ void main() {
   testWidgets('iOS: "Settings" beside the back chevron', (tester) async {
     await pump(tester, chrome: AdaptiveChrome.cupertino);
     expect(find.text(l10n.settingsTitle), findsOneWidget);
+  });
+
+  testWidgets('#912 no tappable node wraps another', (tester) async {
+    final semantics = tester.ensureSemantics();
+    await pump(tester);
+    expect(tapsInsideTaps(tester), isEmpty);
+    semantics.dispose();
   });
 }

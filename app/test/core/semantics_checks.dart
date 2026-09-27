@@ -1,3 +1,5 @@
+import 'dart:ui' show Tristate;
+
 import 'package:flutter/semantics.dart' show SemanticsAction, SemanticsNode;
 import 'package:flutter_test/flutter_test.dart';
 
@@ -15,8 +17,14 @@ import 'package:flutter_test/flutter_test.dart';
 /// they are part of the parent's one node. Call with semantics enabled
 /// (`tester.ensureSemantics()`).
 List<String> tapsInsideTaps(WidgetTester tester, [Finder? root]) {
-  bool tappable(SemanticsNode node) =>
-      node.getSemanticsData().hasAction(SemanticsAction.tap);
+  // A tap, a long press, or a toggle's state: anything a reader acts on.
+  bool tappable(SemanticsNode node) {
+    final data = node.getSemanticsData();
+    return data.hasAction(SemanticsAction.tap) ||
+        data.hasAction(SemanticsAction.longPress) ||
+        data.flagsCollection.isToggled != Tristate.none;
+  }
+
   final inside = <String>[];
   void walk(SemanticsNode node, bool under) {
     if (node.isMergedIntoParent) return;

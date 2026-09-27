@@ -664,19 +664,21 @@ void main() {
     // became a button over the whole card list that way (#749). Right under
     // `AdaptiveTapTarget` or `MergeSemantics` it is a node already.
     final card = RegExp(r'^\s*(?:SgSurface|GestureDetector)\(');
+    // One single-child wrapper may stand between: L12's navigator cell is
+    // `AdaptiveTapTarget(child: SizedBox(width: …, child: Semantics(…)))`,
+    // and the target, grown to 48 dp, is its node.
     final held = RegExp(
-      r'(?:AdaptiveTapTarget|MergeSemantics)\([^()]*child:\s*$',
+      r'(?:AdaptiveTapTarget|MergeSemantics)\([^()]*child:\s*'
+      r'(?:\w+\([^()]*child:\s*)?$',
     );
     final offenders = <String>[];
     for (final file in _dartFilesIn('lib')) {
       final source = file.readAsStringSync();
       for (final call in _semanticsCalls(source)) {
+        // Hiding its child's semantics doesn't make it a node: L4's
+        // next-topic link merged up over the whole rule that way.
         final button = RegExp(r'\bbutton:\s*(?!false\b)').hasMatch(call.args);
-        final hides =
-            call.args.contains('excludeSemantics: true') ||
-            call.child.trimLeft().startsWith('ExcludeSemantics(');
         if (button &&
-            !hides &&
             card.hasMatch(call.child) &&
             !call.args.contains('container: true') &&
             !held.hasMatch(call.before)) {

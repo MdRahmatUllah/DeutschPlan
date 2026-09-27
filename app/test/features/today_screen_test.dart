@@ -540,6 +540,15 @@ void main() {
       expect(text.style?.color, SgPalette.light.onAccent);
     });
 
+    testWidgets('FR-S2-03 #912 with the coach mark up, no tappable node wraps '
+        'another', (tester) async {
+      final semantics = tester.ensureSemantics();
+      await pump(tester, coachMark: true);
+      expect(find.text(l10n.todayCoachMark), findsOneWidget);
+      expect(tapsInsideTaps(tester), isEmpty);
+      semantics.dispose();
+    });
+
     testWidgets('FR-S2-03 carries the one-time coach mark', (tester) async {
       await pump(tester, coachMark: true);
       final mark = tester.widget<SgCoachMark>(find.byType(SgCoachMark));

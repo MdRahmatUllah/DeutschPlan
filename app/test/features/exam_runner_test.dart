@@ -1550,9 +1550,15 @@ void main() {
     });
   });
 
-  testWidgets('#912 no tappable node wraps another', (tester) async {
+  testWidgets('#912 no tappable node wraps another, on the paper and in the '
+      'navigator', (tester) async {
     final semantics = tester.ensureSemantics();
     await pump(tester);
+    expect(tapsInsideTaps(tester), isEmpty);
+
+    await tester.tap(find.bySemanticsLabel(l10n.examNavOpen));
+    await tester.pumpAndSettle();
+    expect(find.text(l10n.examNavTitle), findsOneWidget);
     expect(tapsInsideTaps(tester), isEmpty);
     semantics.dispose();
   });
