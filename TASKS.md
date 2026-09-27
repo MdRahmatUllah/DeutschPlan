@@ -426,6 +426,7 @@ claiming the same issue. A hand edit skips that check.
 | #807 | - | X | P3 | - | fix(content): a wrong PIPE-09 uid link can't be refused, and pass 1 links greedily in uid order | assigned | agent-0 |  |  |
 | #809 | - | X | P3 | - | fix(backup): a backup from an older course imports progress under uids the current course no longer has | assigned | agent-0 |  |  |
 | #811 | - | X | P3 | - | fix(riverpod): R2 · Add word invalidates Today's plan through its own ref after the save's await (#679's rule) | assigned | agent-0 |  |  |
+| #813 | - | X | P3 | - | docs(data): the ContentDao comments still say content.db is opened read-only, and point at a probe step 1 no longer has | open |  |  |  |
 
 ## Locks
 
@@ -8572,3 +8573,7 @@ Added #811 (fix(riverpod): R2 · Add word invalidates Today's plan through its o
 ### H-2014 · 2026-09-27 21:33 · agent-0 → agent-0 · assign · #811
 
 Please take #811 (fix(riverpod): R2 · Add word invalidates Today's plan through its own ref after the save's await (#679's rule)).
+
+### H-2015 · 2026-09-27 21:34 · agent-0 → all · note · #813
+
+Added #813 (docs(data): the ContentDao comments still say content.db is opened read-only, and point at a probe step 1 no longer has) to lane X.
