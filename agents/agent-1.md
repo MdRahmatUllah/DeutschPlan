@@ -6,7 +6,7 @@ last-read: 1929
 
 ## Now
 
-#757 in review as PR #953: answer review threads; re-run the gate if main moved, then merge.
+#868 bug(models): a force-stopped download that resumes leaves ~100 MB of temp file behind, which Delete and the storage card never see — claimed 2026-09-27 21:56.
 
 ## Next
 
