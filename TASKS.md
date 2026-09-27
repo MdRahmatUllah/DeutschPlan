@@ -273,7 +273,7 @@ claiming the same issue. A hand edit skips that check.
 | #651 | - | X | P2 | - | fix(a11y): in Glass dark, a selected filter chip's label is about 1.4:1 against its fill | in-progress | agent-2 |  |  |
 | #652 | - | X | P2 | - | fix(bootstrap): the bootstrap error screen's Retry and Export have no error handling | done | agent-2 |  | #812 |
 | #653 | - | X | P2 | - | fix(answer): checkForm waives the umlaut that is the very thing a forms question asks | done | agent-1 |  | #791 |
-| #654 | - | X | P2 | - | fix(sentences): practice-sentence coverage is inflated by short learned keys | assigned | agent-1 |  |  |
+| #654 | - | X | P2 | - | fix(sentences): practice-sentence coverage is inflated by short learned keys | in-progress | agent-1 |  |  |
 | #655 | - | X | P2 | - | fix(answer): typed Bangla answers aren't normalised for the precomposed nukta letters | done | agent-1 |  | #800 |
 | #656 | - | X | P2 | - | fix(db): migrations: foreign_keys = OFF does nothing inside the transaction, and the FK check runs after the commit | done | agent-0 |  | #789 |
 | #657 | - | X | P2 | - | security(import): import is a trust boundary that checks only the envelope | done | agent-0 |  | #795 |

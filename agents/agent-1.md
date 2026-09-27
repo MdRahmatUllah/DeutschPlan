@@ -6,7 +6,7 @@ last-read: 1655
 
 ## Now
 
-#669 in review as PR #828: answer review threads; re-run the gate if main moved, then merge.
+#654 fix(sentences): practice-sentence coverage is inflated by short learned keys — claimed 2026-09-27 12:45.
 
 ## Next
 
