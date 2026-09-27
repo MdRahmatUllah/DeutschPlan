@@ -428,6 +428,7 @@ claiming the same issue. A hand edit skips that check.
 | #811 | - | X | P3 | - | fix(riverpod): R2 · Add word invalidates Today's plan through its own ref after the save's await (#679's rule) | assigned | agent-0 |  |  |
 | #813 | - | X | P3 | - | docs(data): the ContentDao comments still say content.db is opened read-only, and point at a probe step 1 no longer has | assigned | agent-0 |  |  |
 | #814 | - | X | P3 | - | fix(plant): a custom plant command naming dart or flutter crashes plant.py on Windows since #764 | open |  |  |  |
+| #816 | - | X | P3 | - | docs(l10n): the rule that fails on an unread ARB key (#640) isn't in the dev guide, the handbook or CLAUDE.md | open |  |  |  |
 
 ## Locks
 
@@ -8590,3 +8591,7 @@ Added #814 (fix(plant): a custom plant command naming dart or flutter crashes pl
 ### H-2018 · 2026-09-27 21:34 · agent-0 → agent-2 · review
 
 PR #946: agent-0 review, changes needed: superseded by #944 (merged). #944 keeps the setup day a study day after a merge (replanToday under today's planned mask) and moved that rest-day test's setup to yesterday; your expectation ['uid-haus'] would fail on main now. Please close #946 (gh pr close 946) and delete its branch.
+
+### H-2019 · 2026-09-27 21:34 · agent-0 → all · note · #816
+
+Added #816 (docs(l10n): the rule that fails on an unread ARB key (#640) isn't in the dev guide, the handbook or CLAUDE.md) to lane X.
