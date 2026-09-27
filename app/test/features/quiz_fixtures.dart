@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/data/db/app_database.dart' show QuizAttempt;
 import 'package:sogda/data/repositories/exam_repository.dart'
@@ -89,6 +91,18 @@ class StubQuizRun implements QuizRunService {
   /// Thrown by [start] while set.
   Object? error;
 
+  /// Thrown by every write (answer, re-ask, finish, add to revision) while
+  /// set: a full disk, a failing database (#647).
+  Object? writeError;
+
+  /// Every write waits for this while set: a write still in flight.
+  Completer<void>? writeGate;
+
+  Future<void> _write() async {
+    if (writeGate case final gate?) await gate.future;
+    if (writeError case final error?) throw error;
+  }
+
   /// Each start's direction, source, ref, length and seed.
   final List<(QuizDirection, QuizSource, String?, int, int)> started =
       <(QuizDirection, QuizSource, String?, int, int)>[];
@@ -129,14 +143,22 @@ class StubQuizRun implements QuizRunService {
     QuizItem item, {
     required String given,
     required Verdict verdict,
-  }) async => answers.add((item.ord, given, verdict));
+  }) async {
+    await _write();
+    answers.add((item.ord, given, verdict));
+  }
 
   @override
-  Future<void> reasked(QuizRun run, QuizItem item) async => again.add(item.ord);
+  Future<void> reasked(QuizRun run, QuizItem item) async {
+    await _write();
+    again.add(item.ord);
+  }
 
   @override
-  Future<void> finish(QuizRun run, {required double points}) async =>
-      finished = points;
+  Future<void> finish(QuizRun run, {required double points}) async {
+    await _write();
+    finished = points;
+  }
 
   @override
   Future<QuizResult?> result(int attemptId) async => outcome;
@@ -145,7 +167,10 @@ class StubQuizRun implements QuizRunService {
   Future<void> addToRevision(
     List<({String uid, String? verdict})> mistakes, {
     required PlanDate today,
-  }) async => added.add((mistakes, today));
+  }) async {
+    await _write();
+    added.add((mistakes, today));
+  }
 }
 
 List<Override> quizStub([StubQuizRun? run]) => <Override>[

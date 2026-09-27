@@ -2,7 +2,8 @@ import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/domain/grammar_item_generator.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/data/repositories/settings_repository.dart';
-import 'package:sogda/data/repositories/word_repository.dart' show WordStatus;
+import 'package:sogda/data/repositories/word_repository.dart'
+    show WordStatus, statusForStability;
 import 'package:drift/drift.dart';
 import 'package:flutter/foundation.dart' show immutable;
 
@@ -242,7 +243,7 @@ class GrammarRepository extends DatabaseAccessor<AppDatabase>
     GrammarStateCompanion.insert(
       grammarUid: uid,
       status: Value(
-        suspended ? WordStatus.suspended.wire : _statusFor(stability),
+        (suspended ? WordStatus.suspended : _statusFor(stability)).wire,
       ),
       due: Value(due),
       stability: Value(stability),
@@ -266,12 +267,14 @@ class GrammarRepository extends DatabaseAccessor<AppDatabase>
       uid,
       state == null || state.lastReview == null
           ? WordStatus.todo
-          : WordStatus.parse(_statusFor(state.stability)),
+          : _statusFor(state.stability),
     );
   }
 
-  String _statusFor(double stability) =>
-      stability >= _doneAfter ? WordStatus.done.wire : WordStatus.learning.wire;
+  WordStatus _statusFor(double stability) => statusForStability(
+    stability,
+    _settings.read(SettingKeys.doneStabilityDays),
+  );
 
   /// Upsert, not update: a topic nobody has practised has no row, and Step
   /// detail offers *Suspend* on those too.

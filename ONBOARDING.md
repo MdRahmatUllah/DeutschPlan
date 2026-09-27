@@ -319,6 +319,8 @@ it once cost a bug.
    - Every plant must be `CAUGHT`.
    - `*MISSED*` means the test is too weak: strengthen it and plant again.
    - `COMPILE?` means the plant is wrong: rewrite it.
+   - `ERROR?` means the run broke without a test failing (a mistyped test path, a locked DLL): fix the run. `HUNG?` means it timed out: plant that one again.
+   - The tests first run unplanted and must pass; if they don't, nothing is planted (#685).
    - Typically 12–22 plants per issue. The PR says how many and which.
 9. **Device check** (Android screens and anything with platform behaviour):
    ```bash

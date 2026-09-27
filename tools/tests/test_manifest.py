@@ -58,6 +58,7 @@ class TestContents:
             "words",
             "meanings",
             "grammar",
+            "aliases",
         }
 
     def test_the_counts_match_the_build(self, built):
@@ -346,7 +347,13 @@ def test_the_build_writes_it_beside_the_database(tmp_path):
     )
 
     out = tmp_path / "build" / "content.db"
-    assert build_main(["--manifest", str(manifest_yaml), "--out", str(out)]) == 0
+    assert (
+        build_main(
+            ["--manifest", str(manifest_yaml), "--out", str(out)]
+            + ["--previous", str(tmp_path / "none")]
+        )
+        == 0
+    )
 
     written = read_manifest(out.parent / "content_manifest.json")
     assert written["counts"]["words"] > 0

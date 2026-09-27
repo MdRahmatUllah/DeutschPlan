@@ -401,7 +401,7 @@ void main() {
       final rows = await db
           .customSelect('SELECT COUNT(*) AS n FROM c.words')
           .getSingle();
-      expect(rows.read<int>('n'), _wordCount + 36);
+      expect(rows.read<int>('n'), _wordCount + 37);
     });
 
     test('a multi-word query is a phrase, not two terms', () async {
@@ -437,6 +437,17 @@ void main() {
       expect(
         results.inTier(SearchTier.exact).map((hit) => hit.word.german),
         contains('Ufer'),
+      );
+    });
+
+    test('#645 BR-SEARCH-02 a word inside a note is not the meaning', () async {
+      // `checkMeaning`'s rule: "stop (bus/tram)" means "stop", never "tram".
+      Iterable<String> exact(SearchResults results) =>
+          results.inTier(SearchTier.exact).map((hit) => hit.word.german);
+      expect(exact(await search.search('stop')), contains('Haltestelle'));
+      expect(
+        exact(await search.search('tram')),
+        isNot(contains('Haltestelle')),
       );
     });
 
@@ -666,6 +677,24 @@ void _writeCourseSizedContent(String path) {
       1,
       'ufer',
       'ufer',
+    ]);
+
+    // #645: a note with a separator inside it.
+    word.execute(<Object?>[
+      'uid-stop',
+      'B1.1',
+      'B1',
+      80110,
+      80110,
+      'die',
+      'Haltestelle',
+      'noun',
+      'stop (bus/tram)',
+      'স্টপ',
+      3,
+      1,
+      'haltestelle',
+      'haltestelle',
     ]);
 
     for (final phrase in const <String>['es gibt', 'zu Hause']) {

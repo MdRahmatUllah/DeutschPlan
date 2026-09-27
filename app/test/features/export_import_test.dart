@@ -30,6 +30,9 @@ class FakeBackupFiles implements BackupFiles {
   /// A file that isn't text.
   bool unreadable = false;
 
+  /// What the picker throws, for a picker that fails (#657).
+  Object? pickError;
+
   /// Whether the share sheet was used rather than dismissed.
   bool shares = true;
 
@@ -38,6 +41,7 @@ class FakeBackupFiles implements BackupFiles {
   @override
   Future<PickedBackup?> pick() async {
     if (unreadable) throw const FormatException('not UTF-8');
+    if (pickError case final error?) throw error;
     return picked;
   }
 
@@ -275,6 +279,28 @@ void main() {
       await tester.tap(find.text(l10n.exportImportChoose));
       await tester.pumpAndSettle();
       expect(find.text(l10n.exportImportNotABackup), findsOneWidget);
+    });
+
+    testWidgets('#657 nor does a picker that fails, rather than doing '
+        'nothing', (tester) async {
+      await pump(tester);
+      files.pickError = StateError('no activity to pick with');
+      await tester.tap(find.text(l10n.exportImportChoose));
+      await tester.pumpAndSettle();
+      expect(find.text(l10n.exportImportNotABackup), findsOneWidget);
+    });
+
+    testWidgets('#657 a file with a value of the wrong type is refused at the '
+        'preview', (tester) async {
+      await pump(tester);
+      final file = jsonDecode(await otherPhone()) as Map<String, Object?>;
+      (file['tables']! as Map<String, Object?>)['settings'] = <Object?>[
+        <String, Object?>{'key': 'study_days_mask', 'value': '0'},
+      ];
+      await choose(tester, jsonEncode(file));
+
+      expect(find.text(l10n.exportImportNotABackup), findsOneWidget);
+      expect(find.text(l10n.exportImportDoMerge), findsNothing);
     });
 
     testWidgets('backing out of the picker keeps the file chosen', (

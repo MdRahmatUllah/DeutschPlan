@@ -22,7 +22,7 @@
   - **Dart's** are in `app/build/symbols`, one file per ABI. `flutter symbolize` needs them to read an obfuscated Dart stack trace, so keep them with each release, **privately**: they hold the real, unobfuscated names, which is why the build warns about "unobfuscated DWARF". A private store, not a public GitHub release.
   - **The plugins' native symbol tables** ride in the bundle (`debugSymbolLevel = "SYMBOL_TABLE"`), and Play symbolicates their crashes from them.
 - **Play Console declarations.**
-  - **Data safety:** no data collected and none shared. There is no account, no analytics and no ads. Model downloads fetch files and send nothing, and progress stays on the phone (export is the learner's own file). *Report a problem* opens a pre-filled GitHub issue page in the browser, with the card's id, and the learner sends it there, or doesn't.
+  - **Data safety:** no data collected and none shared. There is no account, no analytics and no ads. Model downloads fetch files and send nothing, and progress stays on the phone (export is the learner's own file; Android backup and device transfer are off, #607). *Report a problem* opens a pre-filled GitHub issue page in the browser, with the card's id, and the learner sends it there, or doesn't.
   - **Permissions**, as the merged manifest has them (`aapt2 dump permissions`):
     - `RECORD_AUDIO`: the Speaking exam's recording, asked for on the first Record and kept on the phone.
     - `POST_NOTIFICATIONS`: the daily reminder, asked for when it's switched on.
@@ -41,7 +41,7 @@
 ## Checklist
 1. `make lint test goldens-verify` green (not `make goldens`, which rewrites every golden instead of checking it); integration smoke on both platforms.
 2. Content rebuilt from the workbooks in `data/`; manifest diff reviewed (`make content-diff`: added/removed/changed words).
-3. `python tools/licences.py check` passes (after `flutter pub get` in `app/`). It fails if a bundled model or font licence differs from what its maker publishes, is missing, or has no source listed; `python tools/licences.py update` fetches them again. It also fails if a package ships no LICENSE file, which M8's list (Flutter's `LicenseRegistry`) would silently leave out (#172).
+3. `python tools/licences.py check` passes (after `flutter pub get` in `app/`). It fails if a bundled model or font licence differs from what its maker publishes, is missing, or has no source listed, and if a font family in pubspec's `fonts:` has no licence text (`<Family without spaces>-*.txt`, #719); `python tools/licences.py update` fetches them again. It also fails if a package ships no LICENSE file, which M8's list (Flutter's `LicenseRegistry`) would silently leave out (#172).
 4. `ENABLE_HYMT_DOWNLOAD` stays **off** (ADR 9, #173): the release build passes no `--dart-define=ENABLE_HYMT_DOWNLOAD`, so M4 says Hy-MT is "Not offered in this version of the app" and M3 hides its Translation group (#513). Changing that needs a new ADR 9 entry first.
 5. `python tools/release_android.py` passes (16 KB), signed with the upload key; `build/symbols` stored.
 6. `python tools/perf.py all` passes, with the emulator held (`team.py device`): size, frames, search and start against their baselines (`accessibility-performance.md`, #167). Then cold and warm start timed by hand on a real mid-range phone against the absolute budgets.

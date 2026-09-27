@@ -86,8 +86,10 @@ class StudyWordCard extends ConsumerStatefulWidget {
 }
 
 class _StudyWordCardState extends ConsumerState<StudyWordCard> {
-  /// The phone said it has no German voice (accessibility-performance.md).
-  /// Kept across cards: the state outlives each word, so the toast is once.
+  /// The phone said it has no German voice (accessibility-performance.md), so
+  /// a tap on this card's speaker explains instead of trying again. Each card
+  /// has its own (the session keys every card afresh), so it can't keep the
+  /// autoplay quiet across cards: [mayAutoplay] does (#646).
   bool _mute = false;
 
   @override
@@ -107,13 +109,15 @@ class _StudyWordCardState extends ConsumerState<StudyWordCard> {
   void _autoplay() {
     if (!ref.read(settingsProvider).read(SettingKeys.autoplayHeadword)) return;
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted && !_mute) unawaited(_speak());
+      if (mounted && !_mute && mayAutoplay(ref)) {
+        unawaited(_speak(quiet: true));
+      }
     });
   }
 
   /// `autoplay_example`: the first example plays as the back appears.
   void _autoplayExample() {
-    if (_mute) return;
+    if (_mute || !mayAutoplay(ref)) return;
     if (!ref.read(settingsProvider).read(SettingKeys.autoplayExample)) return;
     final uid = widget.word.uid;
     // Best effort: a failed example query means no autoplay, not an
@@ -121,19 +125,25 @@ class _StudyWordCardState extends ConsumerState<StudyWordCard> {
     ref.read(studyBackProvider(uid).future).then((extras) {
       final first = extras.examples.firstOrNull;
       if (!mounted || first == null || widget.word.uid != uid) return;
-      unawaited(_speak(text: first.german));
+      unawaited(_speak(text: first.german, quiet: true));
     }).ignore();
   }
 
-  /// Says [text], the word with its article unless told otherwise.
-  Future<void> _speak({String? text, double pace = 1}) async {
-    if (_mute) return _explain();
+  /// Says [text], the word with its article unless told otherwise. An
+  /// auto-play is [quiet]: without a voice it says nothing (`say`, #646).
+  Future<void> _speak({
+    String? text,
+    double pace = 1,
+    bool quiet = false,
+  }) async {
+    if (_mute) return quiet ? null : _explain();
     final spoke = await say(
       ref,
       context,
       text ?? spokenForm(widget.word),
       pace: pace,
       lift: StudyFrontActions.clearanceOf(context),
+      quiet: quiet,
     );
     if (!spoke && mounted) setState(() => _mute = true);
   }

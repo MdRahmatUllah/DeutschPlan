@@ -35,7 +35,7 @@ content: ## Excel -> content.db -> app/assets/db/content.db
 	@echo "what the next build diffs against to say what changed."
 	@echo "content/build/ is git-ignored - it is the intermediate."
 
-content-diff: ## What changed since the committed asset. Run before `make content`.
+content-diff: ## What changed since the committed asset; the build prints it too (PIPE-09).
 	@python tools/content_manifest.py 	  $(APP)/assets/db/content_manifest.json content/build/content_manifest.json
 
 gen: ## Mirror + migration helpers, then build_runner

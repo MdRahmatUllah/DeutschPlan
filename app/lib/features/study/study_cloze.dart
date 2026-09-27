@@ -82,16 +82,14 @@ class _StudyClozeCardState extends ConsumerState<StudyClozeCard> {
     if (_verdict != null || _answer.text.trim().isEmpty) return;
     final verdict = checkGerman(_answer.text, _expected);
     setState(() => _verdict = verdict);
-    // The autoplay stays quiet once the phone is known to have no German
-    // voice: T2's front card has already said so once this session. A tap on
-    // play still explains, every time (accessibility-performance.md).
-    if (verdict.isRight && ref.read(ttsAvailableProvider).value != false) {
-      _play();
-    }
+    // The autoplay stays quiet without a German voice: a tap on play still
+    // explains, every time.
+    if (verdict.isRight && mayAutoplay(ref)) _play(quiet: true);
     widget.onChecked(verdict);
   }
 
-  void _play() => unawaited(say(ref, context, widget.cloze.example.german));
+  void _play({bool quiet = false}) =>
+      unawaited(say(ref, context, widget.cloze.example.german, quiet: quiet));
 
   @override
   Widget build(BuildContext context) {

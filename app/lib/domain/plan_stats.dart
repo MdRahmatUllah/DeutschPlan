@@ -161,6 +161,10 @@ Duration timeEstimate({
 /// learner's own timings over the defaults.
 const int measuredTimingsAfterSessions = 7;
 
+/// How many study days back BR-PLAN-09 measures (#708): the last month or so
+/// of the learner's pace, and a bounded read however long the history grows.
+const int measuredTimingsWindow = 30;
+
 /// The middle value, or null when there is nothing to take a middle of.
 ///
 /// Median rather than mean: one review interrupted by a phone call would drag

@@ -507,7 +507,8 @@ WHERE plan_date = ?1 AND completed_at IS NULL AND skipped = 0
     return row.read<int>('n');
   }
 
-  /// BR-PLAN-09's measured timings.
+  /// BR-PLAN-09's measured timings, over the last [measuredTimingsWindow]
+  /// study days before [before] (#708).
   ///
   /// Nothing records seconds per item, so these come from the gaps between
   /// consecutive log entries — which is what the doc says ("from `review_log`
@@ -516,28 +517,48 @@ WHERE plan_date = ?1 AND completed_at IS NULL AND skipped = 0
   /// New and revise are told apart by joining to the plan row for that day;
   /// a rating with no plan row — from Search, a quiz, an exam — has no block
   /// to belong to and is left out rather than guessed at.
+  ///
+  /// The window is what keeps the read small: a year of history is some
+  /// 14,000 ratings, and every one of them was read and parsed on every
+  /// rebuild of Today before it.
   @override
-  Future<MeasuredSeconds> measuredSeconds() async {
-    final sessions = await _db
+  Future<MeasuredSeconds> measuredSeconds(PlanDate before) async {
+    final window = await _db
         .customSelect(
           '''
-SELECT COUNT(*) AS n FROM daily_stats
-WHERE new_done > 0 OR reviews_done > 0 OR grammar_done > 0
-   OR sentences_done > 0
+SELECT COUNT(*) AS n, MIN(day) AS since FROM (
+  SELECT day FROM daily_stats
+  WHERE day < ?1
+    AND (new_done > 0 OR reviews_done > 0 OR grammar_done > 0
+         OR sentences_done > 0)
+  ORDER BY day DESC
+  LIMIT ?2
+)
 ''',
+          variables: <Variable<Object>>[
+            Variable<String>(before),
+            Variable<int>(measuredTimingsWindow),
+          ],
           readsFrom: <ResultSetImplementation<Object, Object>>{_db.dailyStats},
         )
         .getSingle();
+    final sessions = window.read<int>('n');
+    // Fewer study days than the window: all of them, which is few. A rating
+    // bumps `daily_stats`, so there is no long history behind a short one.
+    final since = sessions < measuredTimingsWindow
+        ? ''
+        : window.read<String>('since');
 
     return MeasuredSeconds(
-      sessions: sessions.read<int>('n'),
-      newWord: medianOf(await _wordGaps('new')),
-      revision: medianOf(await _wordGaps('revise')),
-      grammar: medianOf(await _grammarGaps()),
+      sessions: sessions,
+      newWord: medianOf(await _wordGaps('new', since, before)),
+      revision: medianOf(await _wordGaps('revise', since, before)),
+      grammar: medianOf(await _grammarGaps(since, before)),
     );
   }
 
-  /// The gaps between consecutive ratings of plan rows of one kind.
+  /// The gaps between consecutive ratings of plan rows of one kind, on the
+  /// local days from [since] up to [before].
   ///
   /// `_gapsByDay` is what separates the days, not the ordering: the last review
   /// of Monday and the first of Tuesday must never produce a gap between them.
@@ -550,20 +571,37 @@ WHERE new_done > 0 OR reviews_done > 0 OR grammar_done > 0
   /// rating east of Greenwich before its UTC midnight. The join takes the
   /// rows a day either side, the most a zone can move a date, and the local
   /// day picks the one. The primary key leaves at most one.
-  Future<List<int>> _wordGaps(String kind) async {
+  ///
+  /// #708: the log is read through `idx_review_log_at` for the window only
+  /// (a day of slack either side for the zone), and each rating finds its
+  /// plan rows by the primary key, three lookups. CROSS JOIN keeps SQLite
+  /// from starting at `plan_items` instead, which read the whole history.
+  Future<List<int>> _wordGaps(
+    String kind,
+    PlanDate since,
+    PlanDate before,
+  ) async {
     final rows = await _db
         .customSelect(
           '''
 SELECT r.reviewed_at AS at, p.plan_date AS day
 FROM review_log r
-JOIN plan_items p
+CROSS JOIN plan_items p
   ON p.word_uid = r.word_uid
  AND p.kind = ?1
- AND p.plan_date BETWEEN date(r.reviewed_at, '-1 day')
-                     AND date(r.reviewed_at, '+1 day')
+ AND p.plan_date IN (date(r.reviewed_at, '-1 day'),
+                     date(r.reviewed_at),
+                     date(r.reviewed_at, '+1 day'))
+WHERE r.reviewed_at >= ?2 AND r.reviewed_at < ?3
+  AND p.plan_date >= ?4 AND p.plan_date < ?5
 ORDER BY r.reviewed_at
 ''',
-          variables: <Variable<Object>>[Variable<String>(kind)],
+          variables: <Variable<Object>>[
+            Variable<String>(kind),
+            ..._instantBounds(since, before),
+            Variable<String>(since),
+            Variable<String>(before),
+          ],
           readsFrom: <ResultSetImplementation<Object, Object>>{
             _db.reviewLog,
             _db.planItems,
@@ -578,12 +616,15 @@ ORDER BY r.reviewed_at
     ]);
   }
 
-  Future<List<int>> _grammarGaps() async {
+  Future<List<int>> _grammarGaps(PlanDate since, PlanDate before) async {
     final rows = await _db
         .customSelect(
           '''
-SELECT practised_at AS at FROM grammar_practice_log ORDER BY practised_at
+SELECT practised_at AS at FROM grammar_practice_log
+WHERE practised_at >= ?1 AND practised_at < ?2
+ORDER BY practised_at
 ''',
+          variables: _instantBounds(since, before),
           readsFrom: <ResultSetImplementation<Object, Object>>{
             _db.grammarPracticeLog,
           },
@@ -592,9 +633,22 @@ SELECT practised_at AS at FROM grammar_practice_log ORDER BY practised_at
 
     return _gapsByDay(<(String, String)>[
       for (final row in rows)
-        (_localDay(row.read<String>('at')), row.read<String>('at')),
+        if (_localDay(row.read<String>('at')) case final day
+            when day.compareTo(since) >= 0 && day.compareTo(before) < 0)
+          (day, row.read<String>('at')),
     ]);
   }
+
+  /// The stored UTC instants that can fall on a local day from [since] up to
+  /// [before]: a day of slack either side, the most a zone moves a date.
+  /// An instant sorts after its own date, so the bounds are plain dates.
+  static List<Variable<Object>> _instantBounds(
+    PlanDate since,
+    PlanDate before,
+  ) => <Variable<Object>>[
+    Variable<String>(since.isEmpty ? '' : addDays(since, -1)),
+    Variable<String>(addDays(before, 1)),
+  ];
 
   /// The local day of a stored UTC instant (#327, #347).
   static PlanDate _localDay(String at) =>
@@ -616,20 +670,31 @@ SELECT practised_at AS at FROM grammar_practice_log ORDER BY practised_at
   /// day — which happens when a catch-up run burns through a short step —
   /// still resolve to the later one.
   @override
-  Future<String?> lastCompletedStep() async {
-    final rows = await _db
-        .customSelect(
-          '''
-SELECT sublevel_code AS code
+  Future<String?> lastCompletedStep() async =>
+      (await _lastCompleted())?.read<String>('code');
+
+  /// #615: the same enrollment's close and mask.
+  @override
+  Future<({PlanDate on, int mask})?> lastCompletedMask() async {
+    final row = await _lastCompleted();
+    return row == null
+        ? null
+        : (
+            on: row.read<String>('completed_on'),
+            mask: row.read<int>('study_days_mask'),
+          );
+  }
+
+  Future<QueryRow?> _lastCompleted() => _db
+      .customSelect(
+        '''
+SELECT sublevel_code AS code, completed_on, study_days_mask
 FROM enrollments
 WHERE completed_on IS NOT NULL
 ORDER BY completed_on DESC, started_on DESC
 LIMIT 1
 ''',
-          readsFrom: <ResultSetImplementation<Object, Object>>{_db.enrollments},
-        )
-        .get();
-
-    return rows.isEmpty ? null : rows.first.read<String>('code');
-  }
+        readsFrom: <ResultSetImplementation<Object, Object>>{_db.enrollments},
+      )
+      .getSingleOrNull();
 }

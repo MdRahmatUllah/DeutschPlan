@@ -4,10 +4,6 @@
   "@appTitle": {
     "description": "The application name. Shown in the task switcher and as the MaterialApp title. Not translated — it is the product name."
   },
-  "loadingCourse": "Preparing your course",
-  "@loadingCourse": {
-    "description": "Splash caption while the first-run bootstrap copies content.db and opens the databases. See docs/04-screens/splash.md."
-  },
   "splashPreparing": "Preparing your course · first start only",
   "@splashPreparing": {
     "description": "S1 splash caption under the wordmark. The full artboard string, including the note that the wait only happens once. See docs/04-screens/splash.md."
@@ -3815,10 +3811,6 @@
   "@examRunFlagged": {
     "description": "L12 flag button when flagged, for screen readers."
   },
-  "examRunLater": "This part arrives in a later update. Tap Next to go on.",
-  "@examRunLater": {
-    "description": "L12 Writing and Speaking until their screens are built."
-  },
   "examRunLoadFailed": "This exam could not be opened.",
   "@examRunLoadFailed": {
     "description": "L12 error panel."
@@ -4238,14 +4230,6 @@
   "settingsRestartNote": "Keeps progress, changes plan settings",
   "@settingsRestartNote": {
     "description": "M3 subtitle of the restart row."
-  },
-  "examRunResume": "Resume",
-  "@examRunResume": {
-    "description": "L12 paused: carry on (FR-L12-03)."
-  },
-  "examRunPaused": "Paused. The clock has stopped.",
-  "@examRunPaused": {
-    "description": "L12 while paused (FR-L12-03)."
   },
   "examWritingTask": "{level, select, A1{Write a short message to a friend about {category}.} A2{Write an email to a friend about {category}.} B1{Write a personal letter about {category}: what happened and what you think.} B2{Write a formal letter or opinion text on {category}.} C1{Write an argumentative text on {category}: both sides, then your view.} other{Write a commentary on {category} for a newspaper.}}",
   "@examWritingTask": {

@@ -10,8 +10,11 @@ import 'package:sogda/data/repositories/setting_keys.dart';
 /// `build` — a theme, a language, whether to autoplay — and an async read there
 /// means a frame of the wrong thing first.
 ///
-/// It is affordable: the doc lists thirty-one keys, and nothing else writes to
-/// the table, so the cache cannot go stale behind our back.
+/// It is affordable: the doc lists thirty-one keys. The app is the table's
+/// only writer while it runs, except the background tasks (their own
+/// connection), which write `last_planned_date` and `planned_study_days` through
+/// `openDay`. That is safe, because `openDay` re-checks the database before
+/// planning a day, so a stale cached value can't double one (#723).
 class SettingsRepository {
   SettingsRepository(this._db);
 
