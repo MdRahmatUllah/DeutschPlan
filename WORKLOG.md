@@ -1576,3 +1576,4 @@ able to tell what is going on without asking.
 - 2026-09-27 19:56 · agent-2 #606 · claimed: bug(today): finishing setup on a day switched off opens a rest day with "Start here · today's words are ready" over "All done — see you tomorrow" (nothing to study on day 1)
 - 2026-09-27 19:57 · agent-0 #868 · assigned to agent-1
 - 2026-09-27 19:57 · agent-0 #853 · assigned to agent-2
+- 2026-09-27 19:57 · agent-0 #815 · assigned to agent-2
