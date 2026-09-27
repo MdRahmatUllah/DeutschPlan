@@ -6,7 +6,7 @@ last-read: 1870
 
 ## Now
 
-Nothing claimed.
+#870 fix(domain): the cloze never finds a strong verb's 3rd person or an umlaut plural, though content.db lists both in forms — claimed 2026-09-27 18:32.
 
 ## Next
 
