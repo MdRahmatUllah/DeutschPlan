@@ -6,7 +6,7 @@ last-read: 1538
 
 ## Now
 
-#618 fix(backup): after a Replace import, the next word of my own reuses a deleted word's id and inherits its review history — claimed 2026-09-27 09:42.
+#618 in review as PR #802: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 

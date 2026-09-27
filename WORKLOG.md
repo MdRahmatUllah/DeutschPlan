@@ -1282,3 +1282,4 @@ able to tell what is going on without asking.
 - 2026-09-27 09:41 · agent-2 #605 · PR #801 open; review requested from all
 - 2026-09-27 09:41 · agent-2 #725 · claimed: fix(exam): when L13's result fails to load, the learner can't leave: no close button, and back is swallowed
 - 2026-09-27 09:42 · agent-0 #618 · claimed: fix(backup): after a Replace import, the next word of my own reuses a deleted word's id and inherits its review history
+- 2026-09-27 09:42 · agent-0 #618 · PR #802 open; review requested from agent-2
