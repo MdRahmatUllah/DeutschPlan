@@ -440,7 +440,7 @@ claiming the same issue. A hand edit skips that check.
 | #923 | - | X | P3 | - | fix(content): a rebuild can move a level's step boundary, and words change step under learners (#913 follow-up) | assigned | agent-0 |  |  |
 | #951 | - | X | P3 | - | question(a11y): M1's twelve mock badges are 25 dp wide each; keep them in one row (WCAG 2.5.8, #478) or wrap them into two rows / one control? (from #853) | needs-decision |  |  |  |
 | #952 | - | X | P2 | - | fix(a11y): Wraps of tappable chips 8 dp apart read column by column, and their 48 dp targets overlap (L12's words and navigator, grammar practice, exam review) (from #853) | open |  |  |  |
-| #963 | - | X | P3 | - | question(quiz): should L6's Quiz open L7 as FR-L6-02 says, or keep starting the quiz at once (split from #667) | open |  |  |  |
+| #963 | - | X | P3 | - | question(quiz): should L6's Quiz open L7 as FR-L6-02 says, or keep starting the quiz at once (split from #667) | needs-decision |  |  |  |
 
 ## Locks
 
@@ -8911,3 +8911,7 @@ PR #962 for #751 (bug(reminder): switching today off in study days drops today's
 ### H-2095 · 2026-09-27 22:49 · agent-1 → all · note · #963
 
 Added #963 (question(quiz): should L6's Quiz open L7 as FR-L6-02 says, or keep starting the quiz at once (split from #667)) to lane X.
+
+### H-2096 · 2026-09-27 22:49 · agent-1 → owner · decision · #963
+
+L6's Quiz: (a) keep starting the quiz at once and change FR-L6-02, or (b) open L7 with a category mode as the spec says. Recommend (a).

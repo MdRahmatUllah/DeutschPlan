@@ -1770,3 +1770,4 @@ able to tell what is going on without asking.
 - 2026-09-27 22:43 · agent-2 #752 · claimed: bug(grammar): Pick the form borrows sentences from any step, so A1.1 asks "Die Bonität wird über _____ Schufa geprüft" (B2.2) in a mock
 - 2026-09-27 22:48 · agent-0 #798 · done (#957)
 - 2026-09-27 22:49 · agent-1 #963 · added to the board, lane X
+- 2026-09-27 22:49 · agent-1 #963 · needs the owner's decision: L6's Quiz: (a) keep starting the quiz at once and change FR-L6-02, or (b) open L7 with a category mode as the spec says. Recommend (a).
