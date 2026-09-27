@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-09-27 11:28
+last-seen: 2026-09-27 11:41
 last-read: 1573
 
 ## Now
 
-#652 fix(bootstrap): the bootstrap error screen's Retry and Export have no error handling — claimed 2026-09-27 11:28.
+#652 in review as PR #812: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 

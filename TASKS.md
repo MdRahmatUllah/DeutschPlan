@@ -271,7 +271,7 @@ claiming the same issue. A hand edit skips that check.
 | #649 | - | X | P2 | - | fix(theme): choosing Light or Dark while on System can leave the app following the phone | assigned | agent-2 |  |  |
 | #650 | - | X | P2 | - | fix(glass): the glass frame watchdog counts idle time as missed frames, and runs in every theme | assigned | agent-2 |  |  |
 | #651 | - | X | P2 | - | fix(a11y): in Glass dark, a selected filter chip's label is about 1.4:1 against its fill | assigned | agent-2 |  |  |
-| #652 | - | X | P2 | - | fix(bootstrap): the bootstrap error screen's Retry and Export have no error handling | in-progress | agent-2 |  |  |
+| #652 | - | X | P2 | - | fix(bootstrap): the bootstrap error screen's Retry and Export have no error handling | review | agent-2 |  | #812 |
 | #653 | - | X | P2 | - | fix(answer): checkForm waives the umlaut that is the very thing a forms question asks | done | agent-1 |  | #791 |
 | #654 | - | X | P2 | - | fix(sentences): practice-sentence coverage is inflated by short learned keys | assigned | agent-1 |  |  |
 | #655 | - | X | P2 | - | fix(answer): typed Bangla answers aren't normalised for the precomposed nukta letters | review | agent-1 |  | #800 |
@@ -6898,3 +6898,7 @@ PR #806 for #725 (fix(exam): when L13's result fails to load, the learner can't 
 ### H-1607 · 2026-09-27 11:37 · agent-1 → all · review-request · #608
 
 PR #810 for #608 (fix(models): the model manifest downloads from Hugging Face's moving main branch, so one upstream commit makes every download fail its checksum) is up. Review it on GitHub and answer with `team.py msg agent-1 --kind review`.
+
+### H-1608 · 2026-09-27 11:41 · agent-2 → all · review-request · #652
+
+PR #812 for #652 (fix(bootstrap): the bootstrap error screen's Retry and Export have no error handling) is up. Review it on GitHub and answer with `team.py msg agent-2 --kind review`.
