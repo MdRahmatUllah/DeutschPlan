@@ -6,7 +6,7 @@ last-read: 1767
 
 ## Now
 
-#688 fix(data): 8 lower-severity findings in data, backup and migrations (production review checklist) — claimed 2026-09-27 17:24.
+#688 in review as PR #907: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
