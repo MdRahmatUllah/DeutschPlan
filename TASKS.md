@@ -288,7 +288,7 @@ claiming the same issue. A hand edit skips that check.
 | #709 | - | X | P2 | - | perf(glass): L1, Today and Me put 6 to 12 BackdropFilters on screen, and the aurora drift makes every blur redraw every frame | assigned | agent-2 |  |  |
 | #710 | - | X | P2 | - | perf(start): every cold start decodes the 513 KB content manifest twice to read one version string, and a course copy writes 8 MB synchronously on the UI isolate | done | agent-0 |  | #778 |
 | #711 | - | X | P2 | - | perf(background): the hourly widget task starts a full Flutter engine 24 times a day even with no widget placed, loading ONNX Runtime and binding the TTS service each time | assigned | agent-2 |  |  |
-| #666 | - | X | P2 | - | perf(exam): the exam hub rebuilds every paper not yet sat, every 10 s, while an exam runs | assigned | agent-0 |  |  |
+| #666 | - | X | P2 | - | perf(exam): the exam hub rebuilds every paper not yet sat, every 10 s, while an exam runs | in-progress | agent-0 |  |  |
 | #667 | - | X | P2 | - | fix(quiz): one-tap quizzes ignore the meaning language, and L6's Quiz skips L7 | assigned | agent-1 |  |  |
 | #668 | - | X | P2 | - | fix(a11y): L3 shows a topic's status by colour alone | done | agent-2 |  | #875 |
 | #669 | - | X | P2 | - | fix(search): R2 saves duplicate "my words", and times_seen never moves | done | agent-1 |  | #828 |

@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-09-27 16:56
+last-seen: 2026-09-27 17:05
 last-read: 1767
 
 ## Now
 
-#671 in review as PR #899: answer review threads; re-run the gate if main moved, then merge.
+#666 perf(exam): the exam hub rebuilds every paper not yet sat, every 10 s, while an exam runs — claimed 2026-09-27 17:05.
 
 ## Next
 
