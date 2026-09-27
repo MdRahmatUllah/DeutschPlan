@@ -1,5 +1,6 @@
 import 'package:sogda/data/db/app_database.dart' show Word;
 import 'package:sogda/data/db/content_dao.dart';
+import 'package:sogda/domain/answer_check.dart' show meaningAnswers;
 import 'package:sogda/domain/edit_distance.dart';
 import 'package:sogda/domain/text_norm.dart';
 import 'package:flutter/foundation.dart' show immutable;
@@ -358,28 +359,12 @@ class SearchRepository {
     return byRank != 0 ? byRank : a.uid.compareTo(b.uid);
   }
 
-  /// The synonyms in an `english` cell, normalised the same way the query is.
-  ///
-  /// The workbook writes them with commas, semicolons or slashes. When
-  /// `answer_check.dart` lands (`checkMeaning`) this is what it replaces.
-  static final RegExp _separators = RegExp('[,;/]');
-
-  /// A bracketed gloss: "house (building)" is still the meaning "house".
-  static final RegExp _aside = RegExp(r'\([^)]*\)');
-
-  static Set<String> _meanings(String english) {
-    final keys = <String>{};
-    for (final part in english.split(_separators)) {
-      // Both forms, because the aside is sometimes the disambiguation the
-      // learner typed: "bank (river)" answers to "bank" and to "bank river",
-      // and `searchKey` only strips the brackets, not the words inside them.
-      for (final form in <String>[part, part.replaceAll(_aside, '')]) {
-        final key = searchKey(form);
-        if (key.isNotEmpty) keys.add(key);
-      }
-    }
-    return keys;
-  }
+  /// The meanings in an `english` cell, normalised the same way the query is:
+  /// `checkMeaning`'s own rule ([meaningAnswers], #645). "bank (river)"
+  /// answers to "bank" and to "bank river"; "stop (bus/tram)" never to "tram".
+  static Set<String> _meanings(String english) =>
+      <String>{for (final form in meaningAnswers(english)) searchKey(form)}
+        ..remove('');
 
   /// `{search_key english bangla} : "k"*` — a prefix query, column-filtered to
   /// the three things a learner searches by. [columns] is false for

@@ -404,6 +404,19 @@ void main() {
       }
     });
 
+    test('BR-ANS-01 the whole cell, typed as shown, counts', () {
+      // "Zahlen, bitte!": a phrase with a comma is not two synonyms, and the
+      // learner who types exactly what the card says is right.
+      expect(
+        checkMeaning('the bill, please', 'the bill, please'),
+        Verdict.correct,
+      );
+      expect(
+        checkMeaning('the bill please', 'the bill, please'),
+        Verdict.correct,
+      );
+    });
+
     test('BR-ANS-01 and a word from inside the note is not the meaning', () {
       for (final (given, expected) in const <(String, String)>[
         ('tram', 'stop (bus/tram)'),

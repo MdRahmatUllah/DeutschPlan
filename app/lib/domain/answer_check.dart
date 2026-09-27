@@ -46,12 +46,10 @@ const int typoMinLength = 6;
 ///
 /// [expected] is the `words.english` or `words.bangla` column as authored: one
 /// string holding synonyms separated by `/` or `,`. Any one of them counts,
-/// with or without its bracketed note: "to save (a file)" takes "to save"
-/// (#645).
+/// or the whole cell as shown, with or without a bracketed note
+/// ([meaningAnswers], #645).
 Verdict checkMeaning(String given, String expected) {
-  final candidates = <String>{
-    for (final meaning in splitMeanings(expected)) ..._withoutAside(meaning),
-  };
+  final candidates = meaningAnswers(expected);
   if (candidates.isEmpty) return Verdict.wrong;
 
   return _best(
@@ -135,6 +133,17 @@ Verdict checkForm(String given, String expectedForm) =>
 /// second splitter there would drift from this one.
 List<String> splitMeanings(String expected) =>
     _splitOutsideBrackets(expected, const <String>{'/', ',', ';'});
+
+/// Every way a meaning cell may be answered: the cell as shown ("the bill,
+/// please" is one phrase, not two synonyms) and each of its synonyms, each
+/// with and without its bracketed note.
+///
+/// The one rule for what a meaning is: [checkMeaning] grades by it, and
+/// Search's exact tier matches by it, so the two can't disagree (#645).
+Set<String> meaningAnswers(String cell) => <String>{
+  for (final meaning in <String>[cell, ...splitMeanings(cell)])
+    ..._withoutAside(meaning),
+};
 
 /// Every way [german] may be typed: its alternatives, each with and without a
 /// bracketed note, and each in-word slash taken either way.
