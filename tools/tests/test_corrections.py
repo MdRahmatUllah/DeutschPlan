@@ -413,6 +413,32 @@ class TestDuplicates:
         assert "comprehensibility" in english["Nachvollziehbarkeit"]
         assert "supply" in english["Angebot"]
 
+    def test_921_a_kept_sense_shows_no_example_of_the_other_one(self):
+        # Each SENSES row's English names its own sense, and so must its
+        # examples: B1's "play (theatre)" showed "Ein Stück Kuchen" (#948's review).
+        other_sense = {
+            ("Stück", "B1", "Ein Stück Kuchen."),
+            ("Besprechung", "C2", "Um zehn ist die Besprechung im Büro."),
+            ("Widerspruch", "B2", "Ich habe Widerspruch eingelegt."),
+            ("beantragen", "C2", "Sie beantragte Akteneinsicht."),
+            ("zutreffend", "C1", "Zutreffendes bitte ankreuzen."),
+            ("prägen", "C1", "Die Erfahrung hat ihn geprägt."),
+            ("Zoll", "C1", "Der Zoll prüft die Sendung."),
+            ("ausfallen", "C1", "Der Kurs fällt heute aus."),
+            ("ausfallen", "C1", "Wegen des Streiks kann der Zug ausfallen."),
+        }
+        connection = sqlite3.connect(REPO / "app" / "assets" / "db" / "content.db")
+        try:
+            shown = set(
+                connection.execute(
+                    "SELECT w.german, w.level_code, e.german FROM word_examples e "
+                    "JOIN words w ON w.uid = e.word_uid"
+                )
+            )
+        finally:
+            connection.close()
+        assert other_sense & shown == set()
+
 
 class TestDenylist:
     @pytest.fixture

@@ -8,7 +8,7 @@ buildExam(ExamPool pool, seed:, listening:, bangla:, sat:) → Exam(items, reuse
 
 1. Pool = all words of the step (any status, suspended excluded) and all grammar topics of the step.
 2. RNG = `Random(hash(step, seed))`. A step-level exclusion set is built from the *other* seeds' item ids so the three mocks never share an item; when the pool is smaller than 3 × demand, the least-recently-used items are reused and the hub says so.
-3. Sections (BR-EXAM-03): Vocabulary 10 (DE→meaning, typed) · Reverse 8 (meaning→DE, typed, article optional) · Articles 6 (nouns only) · Word forms 4 (from `forms`) · Gap fill 6 (example sentence with the headword blanked; cloze check) · Grammar 4 (items from `GrammarItemGenerator` for the step's topics) · Listening 2 (TTS plays the word/sentence; type it; skipped if listening disabled — points redistributed) · Writing 1 · Speaking 1.
+3. Sections (BR-EXAM-03): Vocabulary 10 (DE→meaning, typed; a Bangla meaning picked from four tiles) · Reverse 8 (meaning→DE, typed, article optional) · Articles 6 (nouns only) · Word forms 4 (from `forms`) · Gap fill 6 (example sentence with the headword blanked; cloze check) · Grammar 4 (items from `GrammarItemGenerator` for the step's topics) · Listening 2 (TTS plays the word/sentence; type it; skipped if listening disabled — points redistributed) · Writing 1 · Speaking 1.
 4. Points: 1 per item; Writing 4 (app checks 2: ≥ 6 target words used, ≥ minimum length; rubric 2 × 1) ; Speaking 4 (rubric 4 × 1). Max 48. Score % = points / max.
 5. Writing prompt: template per level × topic category with 10 target words from the step, one of a word family (never *Beweis* and *beweisen*, #388); minimum words A1 30 · A2 60 · B1 100 · B2 150 · C1 200 · C2 250. Connector check uses the step's grammar connector list.
 6. Speaking prompt: template per level (60 s A1–A2, 90 s B1–B2, 120 s C1–C2); one retake.
@@ -36,11 +36,12 @@ Grading on submit: `answer_check` per item; Listening compares the typed text wi
   - A retake sits the stored paper (`storedPaper`), not a newly drawn one.
 - **Without listening** (FR-L10-04), Vocabulary gets 11 items and Reverse 9: still 40 questions and 48 points.
 - **Meanings.** With the meaning language set to Bangla, Vocabulary expects the Bangla meaning and Reverse shows it, where the course has one; otherwise English, as the word lists do.
+- **Tiles for a Bangla meaning** (#798, the owner's call). A Vocabulary item that expects a Bangla meaning is asked with four tiles, as the quiz's DE → বাংলা (`quiz-engine.md`, Multiple choice): a learner of German can't be assumed a Bangla keyboard. The tiles are the answer and three distractors from the step's words, picked by the quiz's `distractors` (never a meaning, English sense or Bangla alternative the answer shares, never a word its synonyms cell names), in an order seeded by the word and the mock, `Random(hash(uid, mock seed))`, apart from the paper's own draws. They are stored with the paper (`options_json`), so a retake has the same. A tile is right only when it is the answer: 1 point or 0, no *almost*. A step with fewer than three distractors types the meaning, as the quiz does. An English meaning is typed.
 - **What each item asks:**
 
   | Section | Prompt | Expected | Check |
   |---|---|---|---|
-  | Vocabulary | the headword with its article | the meaning list | `checkMeaning` |
+  | Vocabulary | the headword with its article | the meaning list | `checkMeaning`; a Bangla meaning's tile, exactly |
   | Reverse | the meaning | the headword (article optional), or any course word the meaning's cell also means (#832) | `checkGerman` |
   | Articles | the noun; buttons der · die · das | `der`/`die`/`das` | `checkArticle` |
   | Word forms | the word and a form label (`parseForms`) | the form | `checkForm` |
@@ -50,7 +51,7 @@ Grading on submit: `answer_check` per item; Listening compares the typed text wi
   | Writing | see below | — | FR-L12W-03 |
   | Speaking | see below | — | rubric |
 
-- **Stored.** `exam_answers.prompt` is the item as JSON, so every kind comes back whole after a restart (`ExamItem.decode`). `options_json` holds the buttons (Articles, pick the form, rule recall). `item_ref` is the ref above.
+- **Stored.** `exam_answers.prompt` is the item as JSON, so every kind comes back whole after a restart (`ExamItem.decode`). `options_json` holds the buttons (Articles, Vocabulary's tiles, pick the form, rule recall). `item_ref` is the ref above.
 - **Themes only (#753).** A task is about one of the step's theme categories, never a word class or a language feature: "Core verbs", "Collocations at C2" and the like are left out by name (`notThemes` in `exam_generator.dart`). Every step keeps at least six themes besides them (a test holds the shipped course to it), enough for three papers' writing and speaking.
 - **Writing.** The step's biggest theme categories go to papers 1, 2 and 3 in turn: a big category gives the most to write about.
   - It has 10 target words, single words from that category (so FR-L12W-01's token match can find them), topped up from the step.

@@ -641,6 +641,9 @@ class OnboardingRoute extends GoRouteData with $OnboardingRoute {
       // does page 1 in restart mode, which never links there itself.
       OnboardingPage.welcome || null => OnboardingWelcomePage(
         onStart: () => next(OnboardingPage.meaningLanguage),
+        // #822: a restore skips the rest of setup. Not in restart setup,
+        // where it would replace the learner's progress.
+        onRestored: restart ? null : () => const TodayRoute().go(context),
       ),
 
       OnboardingPage.meaningLanguage => OnboardingMeaningPage(
@@ -882,9 +885,20 @@ class GrammarPracticeRoute extends GoRouteData with $GrammarPracticeRoute {
 class QuizRoute extends GoRouteData with $QuizRoute {
   const QuizRoute();
 
-  /// L8 over the shell, as [StudyRoute.open].
-  static void open(BuildContext context, QuizArgs args) =>
-      unawaited(context.push<void>(const QuizRoute().location, extra: args));
+  /// L8 over the shell, as [StudyRoute.open]. Once: a second tap, the
+  /// quiz already on its way over [context]'s page, pushes no second L8 and
+  /// writes no second attempt (#690 LQ-15).
+  static void open(BuildContext context, QuizArgs args) {
+    // L2 and L6 sit in the Learn tab's navigator, where their page stays
+    // current under an L8 on the root one: every navigator up is asked.
+    for (BuildContext? at = context; at != null;) {
+      final route = ModalRoute.of(at);
+      if (route == null) break;
+      if (!route.isCurrent) return;
+      at = route.navigator?.context;
+    }
+    unawaited(context.push<void>(const QuizRoute().location, extra: args));
+  }
 
   /// L9's *Retry mistakes*: a new quiz in place of the finished one, so back
   /// still returns to whatever opened the first.

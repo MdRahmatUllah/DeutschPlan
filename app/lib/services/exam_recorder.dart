@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:just_audio/just_audio.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:record/record.dart';
+import 'package:sogda/services/speech_audio.dart';
 
 /// L12's Speaking recorder (`exam-writing-speaking.md`): the microphone, and
 /// playing the answer back to tick the rubric.
@@ -86,8 +87,13 @@ class PlatformExamRecorder implements ExamRecorder {
 
   @override
   Future<void> play(String path) async {
+    // A finished take leaves `playing` true, and `play` would return at once,
+    // before asking for the focus: the replay under the learner's music, at
+    // full volume (#623).
+    await _player.stop();
     await _player.setFilePath(path);
-    await _player.play();
+    // Ducks the learner's music, and gives it back after (#623).
+    await SpeechAudio.play(_player.play);
   }
 
   @override

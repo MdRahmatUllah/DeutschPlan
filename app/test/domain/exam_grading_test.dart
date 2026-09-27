@@ -47,6 +47,22 @@ void main() {
       expect(verdictFor(item, 'house'), Verdict.wrong);
     });
 
+    test('#798 a Bangla Vocabulary tile: the answer or not, never almost', () {
+      const item = WordQuestion(
+        ExamSection.vocabulary,
+        'w',
+        prompt: 'die Wohnung',
+        expected: 'ফ্ল্যাট / বাসা',
+        tiles: <String>['দরজা', 'ফ্ল্যাট / বাসা', 'রান্নাঘর', 'বাগান'],
+      );
+      expect(verdictFor(item, 'ফ্ল্যাট / বাসা'), Verdict.correct);
+      expect(itemPoints(item, given: 'ফ্ল্যাট / বাসা'), 1);
+      // One synonym of the cell is not the tile, as the quiz grades it.
+      expect(verdictFor(item, 'বাসা'), Verdict.wrong);
+      expect(verdictFor(item, 'দরজা'), Verdict.wrong);
+      expect(itemPoints(item, given: 'দরজা'), 0);
+    });
+
     test('Reverse: the article optional, a wrong one is wrong', () {
       final item = word(ExamSection.reverse, 'die Wohnung');
       expect(verdictFor(item, 'Wohnung'), Verdict.correct);

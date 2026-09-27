@@ -37,6 +37,8 @@ dependencies:
   intl: ^0.20.3
 
   # Speech and audio
+  # #623: the session just_audio plays in, configured as speech that ducks.
+  audio_session: ^0.2.4
   flutter_tts: ^4.2.5
   flutter_onnxruntime: ^1.8.5
   just_audio: ^0.10.6

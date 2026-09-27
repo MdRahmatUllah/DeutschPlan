@@ -17,13 +17,13 @@ import 'package:sogda/domain/quiz_builder.dart';
 import 'package:sogda/domain/quiz_queue.dart';
 import 'package:sogda/features/learn/grammar_practice_screen.dart'
     show PracticeHeader;
-import 'package:sogda/features/learn/step_quiz.dart';
 import 'package:sogda/features/quiz/quiz_item_view.dart';
 import 'package:sogda/features/quiz/quiz_result_screen.dart';
 import 'package:sogda/features/study/write_guard.dart';
 import 'package:sogda/features/words/speak.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/router/routes.dart';
+import 'package:sogda/features/quiz/quiz_names.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 
@@ -291,7 +291,17 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
         child: Padding(
           padding: const EdgeInsets.all(24),
           child: SgText(
-            l10n.quizEmpty,
+            // Forms, Articles, listening and compare ask only the words that
+            // fit them: learned words may be there, none of them fitting
+            // (#690 LQ-10).
+            const <String>{
+                  'deEn',
+                  'deBn',
+                  'enDe',
+                  'mixed',
+                }.contains(widget.args.direction)
+                ? l10n.quizEmpty
+                : l10n.quizEmptyKind,
             role: SgTextRole.body,
             textAlign: TextAlign.center,
             color: tokens.color.textSecondary,
@@ -442,7 +452,7 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
             title: quizTitle(l10n, widget.args),
             // A re-ask counts among the re-asks: "Once more · 2 / 4".
             place: items.isEmpty
-                ? (0, 0)
+                ? null
                 : _queue.reasking
                 ? _queue.reask
                 : (_queue.current.ord, items.length),

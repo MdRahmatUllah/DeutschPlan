@@ -87,6 +87,29 @@ class _StepWordsTabState extends ConsumerState<StepWordsTab> {
   int? _category;
   bool _starting = false;
 
+  /// The filters outlive a trip to another inner tab and back, which builds
+  /// this tab again (#702): kept in the page's storage, as the list's place.
+  String get _filters => 'step-words-filters-${widget.step.code}';
+
+  @override
+  void initState() {
+    super.initState();
+    if (PageStorage.maybeOf(context)?.readState(context, identifier: _filters)
+        case (final WordFilter status, final int? category)) {
+      _status = status;
+      _category = category;
+    }
+  }
+
+  void _filter(WordFilter status, int? category) {
+    setState(() {
+      _status = status;
+      _category = category;
+    });
+    PageStorage.maybeOf(context)
+        ?.writeState(context, (status, category), identifier: _filters);
+  }
+
   /// FR-L2-03: the current enrollment completes today and this step's
   /// opens at Settings' pace. Today's plan is left alone (BR-PLAN-08).
   ///
@@ -180,7 +203,7 @@ class _StepWordsTabState extends ConsumerState<StepWordsTab> {
                     label: label,
                     kind: SgChipKind.filter,
                     selected: _status == filter,
-                    onTap: () => setState(() => _status = filter),
+                    onTap: () => _filter(filter, _category),
                   ),
                   const SizedBox(width: 8),
                 ],
@@ -190,10 +213,9 @@ class _StepWordsTabState extends ConsumerState<StepWordsTab> {
                     kind: SgChipKind.filter,
                     selected: _category == category.id,
                     // A second tap lets the category go again.
-                    onTap: () => setState(
-                      () => _category = _category == category.id
-                          ? null
-                          : category.id,
+                    onTap: () => _filter(
+                      _status,
+                      _category == category.id ? null : category.id,
                     ),
                   ),
                   const SizedBox(width: 8),
@@ -228,7 +250,7 @@ class _StepWordsTabState extends ConsumerState<StepWordsTab> {
                 padding: EdgeInsets.zero,
                 // Its panel ends at the last row (#282): the extent is
                 // the prototype's times the count, so nothing more is built.
-                shrinkWrap: true,
+                shrinkWrap: WordListPanel.shrinkWrap(context, shown.length),
                 prototypeItem: shown.isEmpty || SgScript.large(context)
                     ? null
                     : WordRow(
