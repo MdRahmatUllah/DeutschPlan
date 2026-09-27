@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-09-27 12:36
+last-seen: 2026-09-27 12:37
 last-read: 1573
 
 ## Now
 
-Nothing claimed.
+#649 fix(theme): choosing Light or Dark while on System can leave the app following the phone — claimed 2026-09-27 12:37.
 
 ## Next
 

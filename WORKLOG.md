@@ -1344,3 +1344,4 @@ able to tell what is going on without asking.
 - 2026-09-27 12:33 · agent-0 #718 · done (#794)
 - 2026-09-27 12:35 · agent-2 #605 · done (#801)
 - 2026-09-27 12:36 · agent-2 #825 · added to the board, lane X
+- 2026-09-27 12:37 · agent-2 #649 · claimed: fix(theme): choosing Light or Dark while on System can leave the app following the phone
