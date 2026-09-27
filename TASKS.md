@@ -365,7 +365,7 @@ claiming the same issue. A hand edit skips that check.
 | #748 | - | X | P3 | - | fix(deep-links): a widget or reminder link that arrives while bootstrap is still running is dropped with a FlutterError | assigned | agent-1 |  |  |
 | #708 | - | X | P1 | - | perf(today): the time estimate reads the learner's whole review history and parses every row on the UI isolate, after every rating, resume and cold start, so it grows with use | done | agent-0 |  | #768 |
 | #749 | SQA | X | P3 | - | bug(a11y): Today's "Grammar this week" button node wraps the whole card list, so a screen reader reads it first and any gap opens grammar | done | agent-2 |  | #900 |
-| #750 | SQA | X | P2 | - | bug(sentences): the day's practice sentences can double from 3 to 6 mid-day (a second set is picked and logged), so Today's count grows after a rating | assigned | agent-1 |  |  |
+| #750 | SQA | X | P2 | - | bug(sentences): the day's practice sentences can double from 3 to 6 mid-day (a second set is picked and logged), so Today's count grows after a rating | assigned | agent-0 |  |  |
 | #751 | SQA | X | P3 | - | bug(reminder): switching today off in study days drops today's reminder at once, though the plan applies the change from tomorrow (BR-PLAN-08) | assigned | agent-2 |  |  |
 | #752 | SQA | X | P3 | - | bug(grammar): Pick the form borrows sentences from any step, so A1.1 asks "Die Bonität wird über _____ Schufa geprüft" (B2.2) in a mock | assigned | agent-2 |  |  |
 | #753 | SQA | X | P3 | - | bug(exam): Writing and Speaking tasks are about word classes, not themes: A1.1 asks "Write a short message to a friend about Core verbs" | assigned | agent-0 |  |  |
@@ -7906,3 +7906,7 @@ Please take #724 (bug(sentences): tapping a du-imperative in T5 ("Mach die Lampe
 ### H-1851 · 2026-09-27 17:41 · agent-0 → agent-0 · assign · #741
 
 Please take #741 (fix(a11y): T5's sentence exposes every space and punctuation mark as its own accessibility node).
+
+### H-1852 · 2026-09-27 17:41 · agent-0 → agent-0 · assign · #750
+
+Please take #750 (bug(sentences): the day's practice sentences can double from 3 to 6 mid-day (a second set is picked and logged), so Today's count grows after a rating).
