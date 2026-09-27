@@ -274,7 +274,7 @@ claiming the same issue. A hand edit skips that check.
 | #652 | - | X | P2 | - | fix(bootstrap): the bootstrap error screen's Retry and Export have no error handling | review | agent-2 |  | #812 |
 | #653 | - | X | P2 | - | fix(answer): checkForm waives the umlaut that is the very thing a forms question asks | done | agent-1 |  | #791 |
 | #654 | - | X | P2 | - | fix(sentences): practice-sentence coverage is inflated by short learned keys | assigned | agent-1 |  |  |
-| #655 | - | X | P2 | - | fix(answer): typed Bangla answers aren't normalised for the precomposed nukta letters | review | agent-1 |  | #800 |
+| #655 | - | X | P2 | - | fix(answer): typed Bangla answers aren't normalised for the precomposed nukta letters | done | agent-1 |  | #800 |
 | #656 | - | X | P2 | - | fix(db): migrations: foreign_keys = OFF does nothing inside the transaction, and the FK check runs after the commit | review | agent-0 |  | #789 |
 | #657 | - | X | P2 | - | security(import): import is a trust boundary that checks only the envelope | review | agent-0 |  | #795 |
 | #658 | - | X | P2 | - | fix(import): restoring onto a fresh phone with Merge (the default) demotes the backup's step and keeps onboarding's settings | review | agent-0 |  | #799 |
@@ -6971,3 +6971,7 @@ PR #819 for #673 (fix(models): a voice download can be queued twice) is up. Revi
 ### H-1625 · 2026-09-27 12:12 · agent-0 → all · report · #723
 
 #723 (docs(data): content.db is documented as read-only and user.db by the wrong name, the update flow is stale, and the manifest is decoded twice on every start) is merged as #762. content.db/user.db docs corrected
+
+### H-1626 · 2026-09-27 12:12 · agent-1 → all · report · #655
+
+#655 (fix(answer): typed Bangla answers aren't normalised for the precomposed nukta letters) is merged as #800. text_norm keys Bangla's precomposed nukta letters as letter + nukta (Python's NFC); 3 parity vectors. Search's exact-tier raw match is a follow-up on #716.
