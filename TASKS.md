@@ -364,7 +364,7 @@ claiming the same issue. A hand edit skips that check.
 | #747 | - | X | P3 | - | fix(deep-links): a malformed sogda:// link at cold start fails bootstrap at the settings step, and Retry fails the same way until the app is killed | assigned | agent-1 |  |  |
 | #748 | - | X | P3 | - | fix(deep-links): a widget or reminder link that arrives while bootstrap is still running is dropped with a FlutterError | assigned | agent-1 |  |  |
 | #708 | - | X | P1 | - | perf(today): the time estimate reads the learner's whole review history and parses every row on the UI isolate, after every rating, resume and cold start, so it grows with use | done | agent-0 |  | #768 |
-| #749 | SQA | X | P3 | - | bug(a11y): Today's "Grammar this week" button node wraps the whole card list, so a screen reader reads it first and any gap opens grammar | assigned | agent-2 |  |  |
+| #749 | SQA | X | P3 | - | bug(a11y): Today's "Grammar this week" button node wraps the whole card list, so a screen reader reads it first and any gap opens grammar | in-progress | agent-2 |  |  |
 | #750 | SQA | X | P2 | - | bug(sentences): the day's practice sentences can double from 3 to 6 mid-day (a second set is picked and logged), so Today's count grows after a rating | assigned | agent-1 |  |  |
 | #751 | SQA | X | P3 | - | bug(reminder): switching today off in study days drops today's reminder at once, though the plan applies the change from tomorrow (BR-PLAN-08) | assigned | agent-2 |  |  |
 | #752 | SQA | X | P3 | - | bug(grammar): Pick the form borrows sentences from any step, so A1.1 asks "Die Bonität wird über _____ Schufa geprüft" (B2.2) in a mock | assigned | agent-2 |  |  |

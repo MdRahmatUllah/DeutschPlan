@@ -1483,3 +1483,4 @@ able to tell what is going on without asking.
 - 2026-09-27 16:50 · agent-0 #683 · done (#889)
 - 2026-09-27 16:50 · agent-2 · #665 fixed on feat/665-practice-set-day, stacked on #893 (agent-1, #884); PR after #893 merges
 - 2026-09-27 16:51 · agent-2 #665 · PR #898 open; review requested from all
+- 2026-09-27 16:51 · agent-2 #749 · claimed: bug(a11y): Today's "Grammar this week" button node wraps the whole card list, so a screen reader reads it first and any gap opens grammar

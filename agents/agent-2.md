@@ -6,7 +6,7 @@ last-read: 1761
 
 ## Now
 
-#665 in review as PR #898: answer review threads; re-run the gate if main moved, then merge.
+#749 bug(a11y): Today's "Grammar this week" button node wraps the whole card list, so a screen reader reads it first and any gap opens grammar — claimed 2026-09-27 16:51.
 
 ## Next
 
