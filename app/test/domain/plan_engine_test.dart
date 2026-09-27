@@ -47,6 +47,53 @@ void main() {
       ..vocabulary = <String>[for (var i = 1; i <= 500; i++) 'w$i'];
   });
 
+  group('#622 #937 replanToday, after an Import and merge', () {
+    test('tops Revise up to revise_count from the schedule, around what '
+        'today already holds, done or not', () async {
+      final engine = engineWith(revise: 2);
+      await engine.openDay(monday);
+      store
+        ..plan['$monday/revise'] = <String>['a']
+        ..candidates = <RevisionCandidate>[
+          const RevisionCandidate(
+            uid: 'a',
+            stability: 2,
+            lastReview: '2026-02-20',
+            due: '2026-02-25',
+          ),
+          const RevisionCandidate(
+            uid: 'b',
+            stability: 2,
+            lastReview: '2026-02-20',
+            due: '2026-02-26',
+          ),
+          const RevisionCandidate(
+            uid: 'c',
+            stability: 2,
+            lastReview: '2026-02-20',
+            due: '2026-02-27',
+          ),
+        ];
+
+      await engine.replanToday(monday);
+
+      expect(await store.plannedOn(monday, PlanKind.revise), <String>[
+        'a',
+        'b',
+      ]);
+    });
+
+    test('tops new words up to the pace', () async {
+      final engine = engineWith();
+      await engine.openDay(monday);
+      store.plan['$monday/new']!.removeRange(3, 7);
+
+      await engine.replanToday(monday);
+
+      expect(await store.plannedOn(monday, PlanKind.newWord), hasLength(7));
+    });
+  });
+
   group('FR-L2-03 switchStep', () {
     test('completes the current step today and enrols the new one at the '
         'pace given', () async {

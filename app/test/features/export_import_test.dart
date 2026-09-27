@@ -369,9 +369,9 @@ void main() {
     expect(recordings.deletions, 0, reason: "this phone's attempts stay");
   });
 
-  testWidgets('#622 FR-M6-03 a merge plans again the day M6 is on', (
-    tester,
-  ) async {
+  testWidgets('#622 #937 FR-M6-03 a merge plans again the day M6 is on: '
+      "its revisions come from the file's schedule too", (tester) async {
+    // Today opened already, with nothing to revise yet.
     await settings.write(SettingKeys.lastPlannedDate, DateTime(2026, 9, 21));
     await pump(tester);
     await choose(tester, await otherPhone());
@@ -379,7 +379,15 @@ void main() {
     await tester.tap(find.text(l10n.exportImportDoMerge));
     await tester.pumpAndSettle();
 
-    expect(settings.read(SettingKeys.lastPlannedDate), DateTime(2026, 9, 20));
+    final revise = await db
+        .customSelect(
+          "SELECT word_uid FROM plan_items WHERE plan_date = '2026-09-21' "
+          "AND kind = 'revise'",
+        )
+        .get();
+    expect(<String>[
+      for (final row in revise) row.read<String>('word_uid'),
+    ], contains(ContentFixture.haus));
   });
 
   group('FR-M6-04 replace', () {
