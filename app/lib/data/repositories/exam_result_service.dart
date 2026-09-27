@@ -36,8 +36,14 @@ typedef ExamResult = ({
   int passPercent,
 
   /// FR-L13-02's words: [missedWords] the plan has introduced. A word the
-  /// paper drew before the plan taught it is left for its new-word card.
+  /// paper drew before the plan taught it is left for its new-word card,
+  /// and one already sent to revision since this attempt finished is not
+  /// offered again (#642).
   List<String> missed,
+
+  /// How many of the missed words an exam has sent to revision since this
+  /// attempt finished: *Add missed words to revision* was used (#642).
+  int added,
 });
 
 /// L13's data (`exam-results.md`, #135): the result, the rubric a learner
@@ -76,6 +82,13 @@ class ExamResultService {
     final at = finished.indexWhere((a) => a.id == attemptId);
     final missed = missedWords(rows);
     final introduced = (await _exams.introducedAmong(missed).get()).toSet();
+    // #642: once per attempt, not per visit. Read back from the review log
+    // (a query, not a flag): what an exam rated Again since this one
+    // finished went to revision from here, or from a later result.
+    final sent = <String>{
+      if (attempt.finishedAt case final since?)
+        ...await _exams.examRatedSince(missed, since).get(),
+    };
     return (
       attempt: attempt,
       rows: rows,
@@ -83,8 +96,9 @@ class ExamResultService {
       passPercent: _settings.read(SettingKeys.examPassPercent),
       missed: <String>[
         for (final uid in missed)
-          if (introduced.contains(uid)) uid,
+          if (introduced.contains(uid) && !sent.contains(uid)) uid,
       ],
+      added: sent.length,
     );
   }
 
