@@ -1445,3 +1445,4 @@ able to tell what is going on without asking.
 - 2026-09-27 15:30 · agent-0 #732 · PR #876 open; review requested from agent-1
 - 2026-09-27 15:37 · agent-2 #726 · done (#872)
 - 2026-09-27 15:37 · agent-2 #877 · added to the board, lane X
+- 2026-09-27 15:38 · agent-2 #606 · claimed: bug(today): finishing setup on a day switched off opens a rest day with "Start here · today's words are ready" over "All done — see you tomorrow" (nothing to study on day 1)
