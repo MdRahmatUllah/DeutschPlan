@@ -63,7 +63,7 @@ A write is in memory before it is on disk. A write that fails, or a transaction 
 | `recent_searches` | — | Search — FR-R1-04's last 10 searches, newest first, a JSON list |
 | `learner_name` | — | Me |
 | `exam_timer` | 1 | L11 writes it on *Begin exam* (its switch starts from `exam_timer_default`); L12 reads it, fresh or resumed |
-| `last_export` | — | M6 — the day of the last export the share sheet took (`2026-09-20`) |
+| `last_export` | — | M6 — the day of the last export the share sheet took (`2026-09-20`); an import leaves it as it was (#839) |
 | `planned_study_days` | 0 | engine — the study-days mask `last_planned_date`'s day was planned with, so an M5 change is tomorrow's (BR-PLAN-08) |
 
 ## Migrations

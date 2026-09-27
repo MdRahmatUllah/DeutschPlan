@@ -1,9 +1,11 @@
 import 'dart:convert';
 
 import 'package:sogda/data/db/app_database.dart';
+import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/data/repositories/word_repository.dart'
     show customId, customUid;
 import 'package:sogda/domain/exam_generator.dart' show ExamSection;
+import 'package:sogda/domain/plan_engine.dart' show PlanDate, addDays;
 import 'package:drift/drift.dart';
 import 'package:flutter/foundation.dart' show immutable;
 
@@ -245,7 +247,13 @@ class BackupRepository {
   /// way through leaves the previous data exactly as it was — which matters
   /// most for [ImportMode.replace], where the alternative is a phone with the
   /// old data deleted and the new data not written.
-  Future<void> import(String json, {required ImportMode mode}) async {
+  ///
+  /// [today] is the day Today is on: a merge plans it again (#622).
+  Future<void> import(
+    String json, {
+    required ImportMode mode,
+    PlanDate? today,
+  }) async {
     final backup = _parse(json);
     final data = backup['tables']! as Map<String, Object?>;
 
@@ -256,6 +264,11 @@ class BackupRepository {
     final remap = <String, Map<int, int>>{};
 
     await _db.transaction(() async {
+      // #839: `last_export` is this phone's bookkeeping, not progress, and a
+      // file carries the export before itself: the day is written once the
+      // share sheet has taken it. So an import leaves it as it was.
+      final lastExport = await _setting(SettingKeys.lastExport.name);
+
       // #688 DA-5: an Undo still on screen would put back a word's
       // pre-import state, and delete the review_log row with its stored id,
       // which may now be another word's review. A reset empties it too.
@@ -295,9 +308,47 @@ class BackupRepository {
           fileWins: fileWins,
         );
       }
+
+      await _db.customStatement('DELETE FROM settings WHERE key = ?', <Object?>[
+        SettingKeys.lastExport.name,
+      ]);
+      if (lastExport != null) {
+        await _replaceRow('settings', <String, Object?>{
+          'key': SettingKeys.lastExport.name,
+          'value': lastExport,
+        });
+      }
+
+      if (mode == ImportMode.merge && today != null) await _replan(today);
     });
 
     _db.markTablesUpdated(_db.allTables.toSet());
+  }
+
+  /// #622: after a merge, [today] is planned again from the merged data.
+  ///
+  /// A new word the file has a schedule for can't be new here any more, on
+  /// any day, so its open `new` rows go. Today's open revisions go too, and
+  /// `last_planned_date` moves back a day if it had reached today, as
+  /// *Start next step* does it: the next opening tops today's new words up
+  /// to the pace from words not met yet, and picks revisions from the merged
+  /// schedule. What was done today stays done.
+  Future<void> _replan(PlanDate today) async {
+    await _db.customStatement('''
+DELETE FROM plan_items
+WHERE kind = 'new' AND completed_at IS NULL
+  AND word_uid IN (
+    SELECT word_uid FROM word_state WHERE status IN ('learning', 'done'))
+''');
+    await _db.customStatement(
+      "DELETE FROM plan_items WHERE plan_date = ? AND kind = 'revise' "
+      'AND completed_at IS NULL',
+      <Object?>[today],
+    );
+    await _db.customStatement(
+      'UPDATE settings SET value = ? WHERE key = ? AND value >= ?',
+      <Object?>[addDays(today, -1), SettingKeys.lastPlannedDate.name, today],
+    );
   }
 
   Future<void> _importTable(
@@ -348,6 +399,17 @@ class BackupRepository {
         incoming['given'] = null;
       }
 
+      // #622: a phone in use plans its own days, so the file's plan comes in
+      // only where it was done. Its open rows would give a day planned on
+      // both phones two plans, twice the new words, and make the other
+      // phone's backlog this one's.
+      if (mode == ImportMode.merge &&
+          !fileWins &&
+          table == 'plan_items' &&
+          incoming['completed_at'] == null) {
+        continue;
+      }
+
       // The parent's new id goes on before the key is taken: a child row's
       // key is `(attempt_id, ord)`, and the attempt_id in the file is the
       // other phone's. Keying on that would match a local answer that has
@@ -392,6 +454,14 @@ class BackupRepository {
         if (local != null) {
           if ((child != null || ownIds) && row['id'] is int) {
             remapped[row['id']! as int] = local['id']! as int;
+          }
+          // #622: a step begun on both phones began on the earlier day.
+          if (table == 'enrollments' && mapped['started_on'] is String) {
+            await _db.customStatement(
+              'UPDATE enrollments SET started_on = MIN(started_on, ?) '
+              'WHERE sublevel_code = ?',
+              <Object?>[mapped['started_on'], mapped['sublevel_code']],
+            );
           }
           final wins = fileWins && table == 'settings';
           if (!wins && !_isNewer(table, mapped, local)) continue;
@@ -490,6 +560,16 @@ class BackupRepository {
   Future<List<String>> _columnsOf(String table) async {
     final rows = await _db.customSelect('PRAGMA table_info("$table")').get();
     return <String>[for (final row in rows) row.read<String>('name')];
+  }
+
+  Future<String?> _setting(String key) async {
+    final row = await _db
+        .customSelect(
+          'SELECT value FROM settings WHERE key = ?',
+          variables: <Variable<Object>>[Variable<String>(key)],
+        )
+        .getSingleOrNull();
+    return row?.read<String>('value');
   }
 
   /// Whether anything has been studied on this phone: a rating, or a

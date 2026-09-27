@@ -369,6 +369,19 @@ void main() {
     expect(recordings.deletions, 0, reason: "this phone's attempts stay");
   });
 
+  testWidgets('#622 FR-M6-03 a merge plans again the day M6 is on', (
+    tester,
+  ) async {
+    await settings.write(SettingKeys.lastPlannedDate, DateTime(2026, 9, 21));
+    await pump(tester);
+    await choose(tester, await otherPhone());
+
+    await tester.tap(find.text(l10n.exportImportDoMerge));
+    await tester.pumpAndSettle();
+
+    expect(settings.read(SettingKeys.lastPlannedDate), DateTime(2026, 9, 20));
+  });
+
   group('FR-M6-04 replace', () {
     testWidgets('asks first; keeping my data writes nothing', (tester) async {
       await pump(tester);

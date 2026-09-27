@@ -944,6 +944,63 @@ void main() {
     });
   });
 
+  group("#839 last_export is this phone's", () {
+    /// A file exported on 17 Oct, which carries the export before it.
+    String exportOf17Oct({List<Object?> enrollments = const <Object?>[]}) =>
+        jsonEncode(<String, Object?>{
+          'schema_version': AppDatabase.latestSchemaVersion,
+          'content_version': null,
+          'exported_at': '2026-10-17T08:00:00Z',
+          'tables': <String, Object?>{
+            'settings': <Object?>[
+              <String, Object?>{'key': 'last_export', 'value': '2026-10-11'},
+            ],
+            'enrollments': enrollments,
+          },
+        });
+
+    Future<Object?> lastExport() async =>
+        (await rowsOf('settings'))
+            .where((row) => row['key'] == 'last_export')
+            .map((row) => row['value'])
+            .firstOrNull;
+
+    test('#839 FR-M6-04 a replace from the file just exported keeps the '
+        "phone's day, not the file's older one", () async {
+      await sql("INSERT INTO settings VALUES ('last_export', '2026-10-17')");
+
+      await backup.import(exportOf17Oct(), mode: ImportMode.replace);
+
+      expect(await lastExport(), '2026-10-17');
+    });
+
+    test('#839 FR-M6-03 and so does a merge onto a phone where nothing is '
+        "studied yet, where the file's settings win", () async {
+      await sql("INSERT INTO settings VALUES ('last_export', '2026-10-17')");
+      final file = exportOf17Oct(
+        enrollments: <Object?>[
+          <String, Object?>{
+            'sublevel_code': 'A1.1',
+            'started_on': '2026-10-01',
+            'daily_new': 7,
+            'study_days_mask': 127,
+            'completed_on': null,
+          },
+        ],
+      );
+
+      await backup.import(file, mode: ImportMode.merge);
+
+      expect(await lastExport(), '2026-10-17');
+    });
+
+    test('#839 a phone that never exported still never has', () async {
+      await backup.import(exportOf17Oct(), mode: ImportMode.replace);
+
+      expect(await lastExport(), isNull);
+    });
+  });
+
   group('#369 words of my own, in both modes', () {
     String fileWith(Map<String, Object?> tables) =>
         jsonEncode(<String, Object?>{
@@ -996,11 +1053,13 @@ void main() {
           },
         ],
         'plan_items': <Object?>[
+          // Done: a phone in use takes only the file's done rows (#622).
           <String, Object?>{
             'plan_date': '2026-03-08',
             'word_uid': 'custom:1',
             'kind': 'revise',
             'sublevel_code': 'A1.1',
+            'completed_at': '2026-03-08T09:00:00Z',
           },
         ],
         'quiz_attempts': <Object?>[
