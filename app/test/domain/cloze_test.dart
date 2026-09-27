@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:sogda/domain/cloze.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sqlite3/sqlite3.dart';
@@ -178,6 +181,28 @@ void main() {
     });
   });
 
+  group('#631 matches tools/cloze.py on every shared vector', () {
+    final vectors =
+        (jsonDecode(File('../tools/cloze_vectors.json').readAsStringSync())
+                as Map<String, dynamic>)['vectors']
+            as List<dynamic>;
+    test('the vector file was found and is populated', () {
+      expect(vectors, hasLength(greaterThanOrEqualTo(20)));
+    });
+    for (final v in vectors.cast<Map<String, dynamic>>()) {
+      test('${v['why']}: ${v['german']}', () {
+        expect(
+          blank(
+            v['sentence'] as String,
+            v['german'] as String,
+            pos: v['pos'] as String?,
+          ),
+          v['gap'],
+        );
+      });
+    }
+  });
+
   test('#325 over the real course, most examples have their gap, and the right one', () {
     final db = sqlite3.open('assets/db/content.db', mode: OpenMode.readOnly);
     addTearDown(db.close);
@@ -206,9 +231,10 @@ void main() {
         missed.update(kind, (n) => n + 1, ifAbsent: () => 1);
         continue;
       }
-      // Precision: a phrase's one-word gap is never a function word.
+      // Precision: a phrase's one-word gap is never a function word. A
+      // bracket is a note, not a word: "aber (Partikel)" is one word (#631).
       final text = sentence.substring(gap.start, gap.end);
-      if (word.trim().contains(' ') &&
+      if (word.replaceAll(RegExp(r'\s*\([^)]*\)'), '').contains(' ') &&
           !text.contains(' ') &&
           functionWords.contains(text.toLowerCase())) {
         wrong.add('$word: [$text] $sentence');
