@@ -228,7 +228,7 @@ claiming the same issue. A hand edit skips that check.
 | #610 | - | X | P2 | - | chore(licences): the Licences screen (M8) leaves out ONNX Runtime and the other native Android libraries' notices | done | agent-0 |  | #838 |
 | #611 | - | X | P2 | - | fix(release): the app never starts a foreground service, but the merged manifest declares two and the docs tell the owner to declare one to Play | done | agent-0 |  | #783 |
 | #612 | - | X | P3 | - | chore(licences): the voice model's OpenRAIL-M use restrictions are shown only under About → Licences, not where the learner downloads it | done |  |  |  |
-| #613 | - | X | P3 | - | security(deep-links): an explicit intent from another app can open any route, bypassing the deep-link allow-list and the exam's leave guard | assigned | agent-1 |  |  |
+| #613 | - | X | P3 | - | security(deep-links): an explicit intent from another app can open any route, bypassing the deep-link allow-list and the exam's leave guard | in-progress | agent-1 |  |  |
 | #614 | - | X | P2 | - | fix(answer): a misspelled noun with the wrong article scores half a point, more than the same noun spelled right with the wrong article | done | agent-1 |  | #792 |
 | #615 | - | X | P3 | - | fix(plan): finishing a step or the course recomputes past streaks with an every-day mask, shrinking the streak and the best streak | done | agent-0 |  | #782 |
 | #616 | - | X | P3 | - | fix(fsrs): on a same-day re-review, Hard, Good and Easy show and schedule the same interval | done | agent-0 |  | #787 |

@@ -6,7 +6,7 @@ last-read: 1751
 
 ## Now
 
-Nothing claimed.
+#613 security(deep-links): an explicit intent from another app can open any route, bypassing the deep-link allow-list and the exam's leave guard — claimed 2026-09-27 15:23.
 
 ## Next
 
