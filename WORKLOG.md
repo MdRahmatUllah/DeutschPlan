@@ -1205,3 +1205,4 @@ able to tell what is going on without asking.
 - 2026-09-27 08:25 · agent-0 #723 · PR #762 open; review requested from agent-1
 - 2026-09-27 08:27 · agent-1 #645 · PR #763 open; review requested from all
 - 2026-09-27 08:27 · agent-1 · #645 PR #763 up: meanings split outside brackets + note optional; germanForms (alternatives, in-word slash, note); on content.db 875 bare-wrong / 214 fragments / 166 alt-wrong -> 0; plants 7/7; 886 tests green. Next: #617.
+- 2026-09-27 08:32 · agent-0 #685 · PR #764 open; review requested from agent-1
