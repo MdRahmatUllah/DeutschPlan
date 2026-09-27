@@ -381,6 +381,10 @@
   "@onboardingWelcomeStart": {
     "description": "S2 page 1 primary button."
   },
+  "onboardingRestoreBackup": "Restore a backup",
+  "@onboardingRestoreBackup": {
+    "description": "S2 page 1 link under Let's start: picks a Sogda export and makes it this phone's data (a Replace), then opens Today, skipping the rest of setup. For a learner moving phones (#822)."
+  },
   "onboardingPromiseOffline": "Works fully offline · no account, no signal needed",
   "@onboardingPromiseOffline": {
     "description": "S2 page 1, first promise."
@@ -4998,15 +5002,15 @@
   },
   "exportImportNotABackup": "That file isn't a Sogda export.",
   "@exportImportNotABackup": {
-    "description": "M6 import card: the chosen file is not a backup."
+    "description": "M6 import card: the chosen file is not a backup. Also on S2 page 1 under Restore a backup (#822)."
   },
   "exportImportNewer": "That file is from a newer Sogda. Update the app, then import it.",
   "@exportImportNewer": {
-    "description": "M6 import card: FR-M6-02 refuses a file from a newer schema."
+    "description": "M6 import card: FR-M6-02 refuses a file from a newer schema. Also on S2 page 1 under Restore a backup (#822)."
   },
   "exportImportFailed": "The import didn't finish. Nothing on this phone changed.",
   "@exportImportFailed": {
-    "description": "M6 import card: the import failed and was rolled back (FR-M6-04)."
+    "description": "M6 import card: the import failed and was rolled back (FR-M6-04). Also on S2 page 1 under Restore a backup (#822)."
   },
   "exportImportFooter": "Neither needs an account. The file never passes through a server.",
   "@exportImportFooter": {
