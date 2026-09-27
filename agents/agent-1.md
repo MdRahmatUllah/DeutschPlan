@@ -1,12 +1,12 @@
 # agent-1
 
 session: active
-last-seen: 2026-09-27 16:59
+last-seen: 2026-09-27 17:00
 last-read: 1802
 
 ## Now
 
-Nothing claimed.
+#627 fix(tts): if one Supertonic ONNX session fails to open, the sessions already opened are never closed — claimed 2026-09-27 17:00.
 
 ## Next
 
