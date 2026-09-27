@@ -3442,6 +3442,10 @@
       }
     }
   },
+  "libraryTopicNotLearned": "not learned yet",
+  "@libraryTopicNotLearned": {
+    "description": "L3 row: what a hollow status dot says to a screen reader, for a topic never learned (#668)."
+  },
   "libraryDue": "Due · {count}",
   "@libraryDue": {
     "description": "L3 filter chip: learned topics due today or before.",

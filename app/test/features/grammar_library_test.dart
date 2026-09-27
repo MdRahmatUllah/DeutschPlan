@@ -82,6 +82,36 @@ void main() {
     expect(find.text(l10n.libraryDue(2)), findsOneWidget);
   });
 
+  testWidgets('#668 each status dot says its state to a screen reader', (
+    tester,
+  ) async {
+    final semantics = tester.ensureSemantics();
+    await pump(tester);
+    // The row reads as one button: its title, its step, then the dot.
+    String said(String title) => tester
+        .getSemantics(
+          find.byWidgetPredicate(
+            (widget) =>
+                widget is LibraryRow && widget.topic.topic.topic == title,
+          ),
+        )
+        .label;
+    // Präsens is due 2 October, Konjunktiv II today; Dativ is not learned.
+    expect(
+      said('Präsens: regelmäßige Verben'),
+      endsWith(l10n.stepTopicNextIn(11)),
+    );
+    expect(
+      said('Konjunktiv II – Höflichkeit'),
+      endsWith(l10n.stepTopicDueToday),
+    );
+    expect(
+      said('Dativ nach Präpositionen'),
+      endsWith(l10n.libraryTopicNotLearned),
+    );
+    semantics.dispose();
+  });
+
   testWidgets('FR-L3-01 grouped by level: A1 · Anfänger first', (tester) async {
     await pump(tester);
     expect(find.text('A1 · ANFÄNGER'), findsOneWidget);
