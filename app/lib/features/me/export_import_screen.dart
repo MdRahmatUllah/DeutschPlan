@@ -97,7 +97,10 @@ class _ExportImportState extends ConsumerState<ExportImportScreen> {
     final PickedBackup? file;
     try {
       file = await files.pick();
-    } on FormatException {
+    } on Object catch (error) {
+      // Not text, too big to be a backup, or the picker failed (#657): the
+      // card says so rather than doing nothing.
+      debugPrint('import pick: $error');
       if (mounted) setState(() => _problem = _Problem.notABackup);
       return;
     }
@@ -111,6 +114,9 @@ class _ExportImportState extends ConsumerState<ExportImportScreen> {
       problem = error.reason == ImportRefusal.newerSchema
           ? _Problem.newer
           : _Problem.notABackup;
+    } on Object catch (error) {
+      debugPrint('import preview: $error');
+      problem = _Problem.notABackup;
     }
     setState(() {
       _file = file;
