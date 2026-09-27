@@ -4,6 +4,7 @@ import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/db/content_dao.dart';
 import 'package:sogda/data/repositories/exam_repository.dart';
 import 'package:sogda/data/repositories/exam_result_service.dart';
+import 'package:sogda/data/repositories/model_repository.dart';
 import 'package:sogda/data/repositories/plan_repository.dart';
 import 'package:sogda/data/repositories/rating_service.dart';
 import 'package:sogda/data/repositories/settings_repository.dart';
@@ -25,6 +26,7 @@ void main() {
   late SettingsRepository settings;
   late ExamRepository exams;
   late ExamResultService service;
+  late ModelRepository models;
 
   setUp(() async {
     directory = Directory.systemTemp.createTempSync('sogda_results');
@@ -38,11 +40,13 @@ void main() {
     exams = ExamRepository(db);
     DateTime now() => DateTime(2026, 9, 21, 19);
     final words = WordRepository(db, settings);
+    models = ModelRepository(settings, support: directory);
     service = ExamResultService(
       exams,
       settings,
       RatingService(db, settings, PlanRepository(db), words, now),
       words,
+      models,
     );
   });
 
@@ -224,6 +228,39 @@ void main() {
     await service.deleteRecording(id, 3, file.path);
     expect(file.existsSync(), isFalse);
     expect((await service.result(id))!.rows.last.given, isNull);
+  });
+
+  test("#688 DA-6 FR-L12S-04 L13 reads a Speaking answer as this phone's "
+      'file, and as not recorded once the file is gone', () async {
+    final id = await exams.begin(
+      sublevelCode: 'A1.1',
+      seed: 2,
+      startedAt: '2026-09-20T10:00:00Z',
+      questions: <ExamQuestion>[
+        ExamQuestion.of(
+          1,
+          const SpeakingTask('s', level: 'A1', category: null, seconds: 60),
+        ),
+      ],
+    );
+    await exams.answer(
+      attemptId: id,
+      ord: 1,
+      given: ModelRepository.recordingName(id),
+    );
+    expect(
+      (await service.result(id))!.rows.single.given,
+      isNull,
+      reason: 'no file: the sheet offers no ticks and no delete',
+    );
+
+    final file = await models.recordingFor(id);
+    file.parent.createSync(recursive: true);
+    file.writeAsStringSync('aac');
+    expect((await service.result(id))!.rows.single.given, file.path);
+
+    await service.deleteRecording(id, 1, file.path);
+    expect(file.existsSync(), isFalse);
   });
 
   test('FR-L13-03 a rubric tick grades the paper again', () async {

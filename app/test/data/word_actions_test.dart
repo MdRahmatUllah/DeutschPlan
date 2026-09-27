@@ -96,6 +96,16 @@ void main() {
   ];
 
   group('FR-W1-01 Add to today', () {
+    test('#688 DA-11 a double tap adds the word once, and neither tap '
+        'fails', () async {
+      await Future.wait(<Future<Undo>>[
+        actions.addToToday(uid, today: today, step: 'A1.1'),
+        actions.addToToday(uid, today: today, step: 'A1.1'),
+      ]);
+
+      expect((await plan()).single.planDate, today);
+    });
+
     test("today's plan gains the word as new, in the active step", () async {
       await db
           .into(db.enrollments)
