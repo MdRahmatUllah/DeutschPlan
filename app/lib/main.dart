@@ -310,7 +310,7 @@ void followPlatformBrightness(
 Widget appFor(
   BootstrapResult result, {
   required void Function(BootstrapReady ready) onReady,
-  Future<BootstrapResult> Function()? retry,
+  required Future<BootstrapResult> Function() retry,
 }) => switch (result) {
   // The providers #71 declares are overridden from here, so nothing has to
   // re-open what bootstrap already opened.
@@ -396,12 +396,14 @@ class SogdaApp extends ConsumerWidget {
   }
 }
 
-/// FR-S1-03's *Retry*: re-runs [bootstrap] and swaps in whatever comes back.
+/// FR-S1-03's *Retry*: re-runs bootstrap, shows a new failure itself, and
+/// hands a ready result to [onReady], the host, which builds the app (#643).
 ///
-/// Stateful rather than a callback into `main`, because the retry has to
-/// replace the widget tree it is running inside — and because the disabled
-/// buttons a callback-less error screen renders are not an error screen, they
-/// are a dead end.
+/// It never builds the app: it sits under the failed start's container,
+/// which carries no overrides, and the app's first frame threw there.
+/// Stateful for the busy flag and the failure on screen. The disabled buttons
+/// a callback-less error screen renders are not an error screen, they are a
+/// dead end.
 class BootstrapGate extends StatefulWidget {
   const BootstrapGate({
     required this.failure,
