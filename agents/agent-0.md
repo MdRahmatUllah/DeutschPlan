@@ -6,7 +6,7 @@ last-read: 1143
 
 ## Now
 
-#607 security(privacy): Android Auto Backup uploads user.db and the Speaking recordings to Google Drive, against the app's promises — claimed 2026-09-27 08:12.
+#607 in review as PR #759: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 

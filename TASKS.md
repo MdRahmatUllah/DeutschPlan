@@ -222,7 +222,7 @@ claiming the same issue. A hand edit skips that check.
 | #602 | - | agent-0 | P1 | - | feat(brand): the Sogda icon, themed and notification icons, splash, and the brand kit in the docs | done | agent-0 |  | #604 |
 | #605 | - | X | P2 | - | fix(a11y): S1's caption and loading line are light ink on the dark splash's lifted Lagoon (about 1.4:1) | assigned | agent-2 |  |  |
 | #606 | SQA | X | P2 | - | bug(today): finishing setup on a day switched off opens a rest day with "Start here · today's words are ready" over "All done — see you tomorrow" (nothing to study on day 1) | assigned | agent-2 |  |  |
-| #607 | - | X | P1 | - | security(privacy): Android Auto Backup uploads user.db and the Speaking recordings to Google Drive, against the app's promises | in-progress | agent-0 |  |  |
+| #607 | - | X | P1 | - | security(privacy): Android Auto Backup uploads user.db and the Speaking recordings to Google Drive, against the app's promises | review | agent-0 |  | #759 |
 | #608 | - | X | P2 | - | fix(models): the model manifest downloads from Hugging Face's moving main branch, so one upstream commit makes every download fail its checksum | assigned | agent-1 |  |  |
 | #609 | - | X | P2 | - | chore(deps): llama.cpp's native libraries ship in every APK although nothing calls them (Hy-MT is off everywhere) | assigned | agent-0 |  |  |
 | #610 | - | X | P2 | - | chore(licences): the Licences screen (M8) leaves out ONNX Runtime and the other native Android libraries' notices | assigned | agent-0 |  |  |
@@ -6523,3 +6523,7 @@ production-review fix pass (owner, 2026-09-27): solve all open issues
 ### H-1517 · 2026-09-27 08:12 · agent-0 → all · heads-up
 
 Release build after #604: if 'flutter build apk' fails with 'resource drawable/launch_background not found', your worktree's Gradle state is stale (it built before #604 deleted drawable-v21/launch_background.xml). Fix: rm -rf app/build/app, then build again. .dart_tool and the codegen are unaffected.
+
+### H-1518 · 2026-09-27 08:12 · agent-0 → agent-2 · review-request · #607
+
+PR #759 for #607 (security(privacy): Android Auto Backup uploads user.db and the Speaking recordings to Google Drive, against the app's promises) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.

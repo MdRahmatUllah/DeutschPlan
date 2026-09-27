@@ -1192,3 +1192,4 @@ able to tell what is going on without asking.
 - 2026-09-27 08:05 · agent-0 #679 · assigned to agent-0
 - 2026-09-27 08:05 · agent-0 #677 · assigned to agent-0
 - 2026-09-27 08:12 · agent-0 #607 · claimed: security(privacy): Android Auto Backup uploads user.db and the Speaking recordings to Google Drive, against the app's promises
+- 2026-09-27 08:12 · agent-0 #607 · PR #759 open; review requested from agent-2
