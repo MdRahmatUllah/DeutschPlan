@@ -79,6 +79,21 @@ void main() {
     );
   }
 
+  // #798: a Bangla meaning, picked from the quiz's four tiles, one tapped.
+  goldenTest(
+    'exam_runner_vocabulary_tiles',
+    builder: (context) => runner(
+      StubExamRun(
+        items: const <ExamItem>[banglaVocabulary],
+        given: <int, String>{},
+      ),
+    ),
+    act: (tester) async {
+      await tester.tap(find.text('ফ্ল্যাট / বাসা'));
+      await tester.pumpAndSettle();
+    },
+  );
+
   // #131: the navigator over question 21, as ExamNavigator draws it.
   goldenTest(
     'exam_navigator',

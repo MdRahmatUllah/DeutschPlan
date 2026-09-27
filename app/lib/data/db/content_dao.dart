@@ -316,12 +316,58 @@ class ContentDao extends DatabaseAccessor<AppDatabase> with _$ContentDaoMixin {
   Future<String> attach() async {
     final file = await installedFile();
     if (!file.existsSync()) {
-      await _copyAsset(file);
+      // #804: through `.new` and a rename, as an update is: a copy cut short
+      // leaves a `.new` the next copy overwrites, never a partial course.
+      final incoming = File('${file.path}.new');
+      try {
+        await _copyAsset(incoming);
+        incoming.renameSync(file.path);
+      } finally {
+        if (incoming.existsSync()) incoming.deleteSync();
+      }
     }
 
     await customStatement("ATTACH DATABASE '${attachPath(file)}' AS $schema");
     return version();
   }
+
+  /// #885: whether the attached course has every column this build reads.
+  /// One an older build copied can lack one (`words.kind`, #860), and every
+  /// read of it would fail.
+  Future<bool> fitsBuild() async {
+    for (final table in courseTables) {
+      final rows = await customSelect(
+        'SELECT name FROM pragma_table_info(?1, ?2)',
+        variables: <Variable<Object>>[
+          Variable<String>(table.actualTableName),
+          const Variable<String>(schema),
+        ],
+      ).get();
+      final have = <String>{for (final row in rows) row.read<String>('name')};
+      if (!table.$columns.every((column) => have.contains(column.name))) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  /// Every table `content_schema.drift` declares, as [fitsBuild] checks
+  /// them; a test holds the list to the schema file.
+  List<TableInfo<Table, Object?>> get courseTables =>
+      <TableInfo<Table, Object?>>[
+        meta,
+        levels,
+        sublevels,
+        categories,
+        words,
+        wordExamples,
+        grammarTopics,
+        skillPrompts,
+        interferenceTips,
+        wordsFts,
+        wordsTrigram,
+        examplesFts,
+      ];
 
   Future<void> detach() => customStatement('DETACH DATABASE $schema');
 
