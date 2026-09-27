@@ -169,7 +169,10 @@ class _CategoryWordsScreenState extends ConsumerState<CategoryWordsScreen> {
                       padding: EdgeInsets.zero,
                       // Its panel ends at the last row (#282): the extent is
                       // the prototype's times the count, so nothing more is built.
-                      shrinkWrap: true,
+                      shrinkWrap: WordListPanel.shrinkWrap(
+                        context,
+                        shown.length,
+                      ),
                       prototypeItem: shown.isEmpty || SgScript.large(context)
                           ? null
                           : WordRow(

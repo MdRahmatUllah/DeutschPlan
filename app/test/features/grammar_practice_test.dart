@@ -92,6 +92,7 @@ void main() {
     bool dayDone = false,
     TextScaler? textScaler,
     String Function()? today,
+    Duration nextLoad = Duration.zero,
   }) async {
     rated = <(String, int, int)>[];
     rating = _Rating(rated);
@@ -137,6 +138,10 @@ void main() {
           clockProvider.overrideWithValue(() => now),
           practiceSetProvider.overrideWith((ref, args) async {
             asked.add(args);
+            // A later topic that takes its time to read (#690 LQ-8).
+            if (args.$1 != 'g3' && nextLoad > Duration.zero) {
+              await Future<void>.delayed(nextLoad);
+            }
             return (
               topic: artboardTopic(),
               items: args.$1 == 'g3' ? items : <GrammarItem>[pick, gap, spot],
@@ -484,6 +489,37 @@ void main() {
       findsNothing,
     );
     expect(rated.single.$1, 'g3');
+  });
+
+  testWidgets('#690 LQ-8 FR-L15-04 the next topic, slow to read: the page '
+      'never goes blank, and its banner shows its whole time', (tester) async {
+    await pump(
+      tester,
+      items: <GrammarItem>[pick],
+      topics: <String>['g3', 'g4'],
+      nextLoad: const Duration(seconds: 1),
+    );
+    final banner = find.text(
+      l10n.practiceNextTopic(2, 2, 'Konjunktiv II – Höflichkeit'),
+    );
+    await tester.tap(find.text('Könnten'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text(l10n.practiceNext));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 500));
+    // Still the first topic's page while the second reads.
+    expect(find.byType(PracticeHeader), findsOneWidget);
+    expect(find.text('1 / 1'), findsOneWidget);
+
+    await tester.pump(const Duration(milliseconds: 600));
+    expect(find.text('1 / 3'), findsOneWidget, reason: 'the next topic');
+    expect(banner, findsOneWidget);
+    // 1.2 s after it showed: still there, whatever the read took.
+    await tester.pump(const Duration(milliseconds: 1200));
+    expect(banner, findsOneWidget);
+    await tester.pump(GrammarPracticeScreen.bannerTime);
+    await tester.pumpAndSettle();
+    expect(banner, findsNothing);
   });
 
   testWidgets('the last topic done: back to the opener', (tester) async {

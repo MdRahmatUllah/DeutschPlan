@@ -33,6 +33,8 @@ void main() {
       overrides: [
         settingsProvider.overrideWithValue(settings),
         backlogProvider.overrideWith(_Artboard.new),
+        // The artboard's Monday: its Tue and Wed are within the week (#821).
+        todayProvider.overrideWithValue('2026-09-21'),
       ],
       child: const BacklogScreen(),
     ),

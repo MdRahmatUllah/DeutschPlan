@@ -50,7 +50,7 @@ What does **not** need the network:
 | **Word meanings** | All 5,076 | All 5,076 |
 | **Pronunciation of each word** | — | All 5,076, in Bangla letters (on by default for বাংলা and Both) |
 | **Interference tips** | All 622 | All 622 |
-| **Example translations** (10,553) | All | None: English shows in every meaning language |
+| **Example translations** (10,545) | All | None: English shows in every meaning language |
 | **Grammar rules** (182 topics) | All | None |
 | **Category names** (159) | All | Shown in English in the Bangla UI (#425) |
 
@@ -170,7 +170,7 @@ The target is WCAG 2.2 AA ([`accessibility-performance.md`](../01-architecture/a
 |---|---|
 | Course steps | 12 (A1.1 … C2.2), in 6 CEFR levels |
 | Words and phrases | 5,076 to learn: A1 1,315 · A2 1,035 · B1 379 · B2 1,023 · C1 819 · C2 505, plus 160 lesson notes and comparisons |
-| Example sentences | 10,553 (two for almost every word) |
+| Example sentences | 10,545 (two for almost every word) |
 | Grammar topics | 182: 10 or 11 per step from A1.1 to B1.2, 20 per step from B2.1 |
 | Word categories | 159 |
 | Interference tips | 622, in English and Bangla |

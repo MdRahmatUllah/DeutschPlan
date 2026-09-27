@@ -235,6 +235,30 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code, completed_at, 
     },
   );
 
+  test('#754 FR-T1-02 a topic practised today stays done when the day is '
+      'built again (a restart, Start on another step)', () async {
+    await db.customUpdate(
+      'INSERT INTO grammar_state '
+      '(grammar_uid, status, due, stability, reps, last_review) '
+      "VALUES ('g1', 'learning', '$today', 1, 1, '2026-09-20T09:00:00Z')",
+      updates: <TableInfo<Table, Object?>>{db.grammarState},
+    );
+    container.invalidate(todayPlanProvider);
+    await container.read(todayViewProvider.future);
+    await container
+        .read(grammarRatingServiceProvider)
+        .ratePractice('g1', items: 5, correct: 5);
+    await pumpEventQueue();
+
+    // The plan read afresh, as a new process reads it.
+    container.invalidate(todayPlanProvider);
+    final view = await container.read(todayViewProvider.future);
+    expect(view.grammarDue, isEmpty);
+    expect(view.grammarDone, 1, reason: "the practice is still today's");
+    expect(view.completed, 3);
+    expect(view.total, 5);
+  });
+
   test('a topic falling due after the day opened waits for tomorrow', () async {
     await db.customUpdate(
       'INSERT INTO grammar_state (grammar_uid, status, due, last_review) '

@@ -447,10 +447,10 @@
     "C1.2": 21,
     "C2.2": 21
   },
-  "built_at": "2026-09-27T19:35:39+00:00",
-  "content_version": "20260927193539",
+  "built_at": "2026-09-27T19:50:32+00:00",
+  "content_version": "20260927195032",
   "counts": {
-    "examples": 10553,
+    "examples": 10545,
     "grammar": 182,
     "tips": 494,
     "words": 5076
@@ -5918,7 +5918,7 @@
       "words": 497
     },
     "B1.1": {
-      "examples": 389,
+      "examples": 388,
       "grammar": 10,
       "words": 194
     },
@@ -5928,7 +5928,7 @@
       "words": 185
     },
     "B2.1": {
-      "examples": 1055,
+      "examples": 1054,
       "grammar": 20,
       "words": 513
     },
@@ -5938,17 +5938,17 @@
       "words": 510
     },
     "C1.1": {
-      "examples": 861,
+      "examples": 858,
       "grammar": 20,
       "words": 403
     },
     "C1.2": {
-      "examples": 851,
+      "examples": 850,
       "grammar": 20,
       "words": 416
     },
     "C2.1": {
-      "examples": 620,
+      "examples": 618,
       "grammar": 20,
       "words": 229
     },
@@ -6834,7 +6834,7 @@
     "2a8e8d5c26c5b37f": "fc89c6054b141540",
     "2a91a2011f81c071": "055f72edefdfc616",
     "2aa0578862a5de78": "560fa6a970224588",
-    "2aa3b8c4f222cee9": "7f412777de9d7b5a",
+    "2aa3b8c4f222cee9": "60b380c49de5bd55",
     "2aa9af097e397db2": "7537f481c45dac47",
     "2ac204a81be96431": "cafa76b8042d5205",
     "2aca2c22d274c3ad": "5c4545da3c7e18ee",
@@ -7790,7 +7790,7 @@
     "595cef56ba963ba3": "d176d3b93ac764ca",
     "596485ace6e345c4": "d80aabced86c6bdc",
     "596ccdcee1a4c01c": "5f019f948e886428",
-    "597ae0cd31e4f094": "519939f7dde28e6c",
+    "597ae0cd31e4f094": "7457eccb4c0ae47f",
     "59801a61e34364ed": "b89aa0fe31f75cf3",
     "598455e6ed561892": "293d256110cb5bdc",
     "5990d6c17a072b45": "d4f2187dc0b7c30c",
@@ -8433,7 +8433,7 @@
     "77c5826dc53012d3": "636baeb32f8e51de",
     "77ea05521838bd99": "391484d2956f321d",
     "7801ac6969cae81d": "7beb83bf41f7e33f",
-    "7809ebcc12c630c3": "ee924a26d81f325d",
+    "7809ebcc12c630c3": "0631a56345c00a87",
     "780bc4595a02f8a6": "4eb09fdb3e4608c3",
     "781358f0f651f593": "e6ccfbdbf37627e8",
     "7829908ad80a5043": "93bd46313f0e1c86",
@@ -8613,7 +8613,7 @@
     "804260202b70d588": "f82f86524803a9f2",
     "8043a015b6b876d1": "a3abbc096b1a67cb",
     "8044e8e68e011a44": "591ac7552c6fb175",
-    "8048b3e7ca8bf787": "88769e6db8216214",
+    "8048b3e7ca8bf787": "c057a33afa89ae55",
     "805595e436c60187": "3efcdb8be8f04584",
     "8059f8d1f188a6e5": "d2b4d376d53714ee",
     "805bbefdee262647": "59bd80329d0e2d26",
@@ -9183,7 +9183,7 @@
     "9bf197012e777612": "1c53aa408d9f3795",
     "9bf1e5465d033f30": "445d0a657a76e684",
     "9bfe1ed125626bd7": "941164f473bafc54",
-    "9c0f0bc27748ad0b": "1eabad93c00e9abe",
+    "9c0f0bc27748ad0b": "191a6d91a4f5799e",
     "9c28a0f54d08adc4": "86aef8d577ae5616",
     "9c347a6fbc507fce": "456cdf48ccaf23f7",
     "9c5d24d611507b07": "f7f008c840035a0f",
@@ -9390,7 +9390,7 @@
     "a6419a4f6046ad1b": "4886def65c20d475",
     "a673b085e7cffd48": "9c857837d42d6b9f",
     "a68537fb074c89bc": "b0ef5bfb5eccf67a",
-    "a694a6054953ba28": "78ba75b11b315a4e",
+    "a694a6054953ba28": "57401bf7ac17b51d",
     "a6a80b65f996fdf4": "2636ec2f40fea034",
     "a6bfa52bdfa36156": "5ae9846b1b5e5005",
     "a6c3b8a329834688": "71cc117175e2632c",
@@ -9569,7 +9569,7 @@
     "aefca736ac10347c": "539d1d9dbb2d6c39",
     "af01b421e49c3ea1": "afeddc3605d95a79",
     "af16aaa6a6c53211": "cac4ae2d0dfd9993",
-    "af1fd2c99f5ae5cd": "3e4f1c3fa3119937",
+    "af1fd2c99f5ae5cd": "ed3433a7cb5999cf",
     "af2223383a9cfd6a": "7bbd9b7e3f5ada16",
     "af228b15d5e0b74f": "3487f2eda9d2a89d",
     "af254bd4d0839a3e": "38d4b618d605297c",
@@ -10882,7 +10882,7 @@
     "efd99ccec0477fc1": "eb4b317172ae256c",
     "efe50ba536adb41f": "cc1dceea82d752a2",
     "f029fe105e86bc08": "fe2dbb1e503065bb",
-    "f03921e489a0117a": "896207b40aea2f7c",
+    "f03921e489a0117a": "525e9592bab77a68",
     "f0470e95c4ed59d7": "8af82943969ca036",
     "f0485d01865295ab": "a97c406ffb1c1788",
     "f07564a573c9e929": "3a79f39f7f7769ae",

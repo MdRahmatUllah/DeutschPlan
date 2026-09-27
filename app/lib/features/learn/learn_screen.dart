@@ -478,7 +478,9 @@ class StepTile extends StatelessWidget {
       children: <Widget>[
         _Dot(badge: badge),
         const SizedBox(width: 12),
-        Expanded(child: tile),
+        // A button to a screen reader, as LinkCard and QuizTile are: the
+        // tile opens its step (#690 LQ-11).
+        Expanded(child: Semantics(button: true, container: true, child: tile)),
       ],
     );
   }
