@@ -426,7 +426,7 @@ claiming the same issue. A hand edit skips that check.
 | #807 | - | X | P3 | - | fix(content): a wrong PIPE-09 uid link can't be refused, and pass 1 links greedily in uid order | assigned | agent-0 |  |  |
 | #809 | - | X | P3 | - | fix(backup): a backup from an older course imports progress under uids the current course no longer has | assigned | agent-0 |  |  |
 | #811 | - | X | P3 | - | fix(riverpod): R2 · Add word invalidates Today's plan through its own ref after the save's await (#679's rule) | assigned | agent-0 |  |  |
-| #813 | - | X | P3 | - | docs(data): the ContentDao comments still say content.db is opened read-only, and point at a probe step 1 no longer has | review | agent-0 |  | #965 |
+| #813 | - | X | P3 | - | docs(data): the ContentDao comments still say content.db is opened read-only, and point at a probe step 1 no longer has | done | agent-0 |  | #965 |
 | #814 | - | X | P3 | - | fix(plant): a custom plant command naming dart or flutter crashes plant.py on Windows since #764 | done | agent-0 |  | #960 |
 | #816 | - | X | P3 | - | docs(l10n): the rule that fails on an unread ARB key (#640) isn't in the dev guide, the handbook or CLAUDE.md | review | agent-0 |  | #965 |
 | #818 | - | X | P3 | - | perf(tools): perf.py gains a seeded one-year profile for start and frames (#708's third criterion) | review | agent-0 |  | #960 |
@@ -9023,3 +9023,7 @@ PR #967 for #752 (bug(grammar): Pick the form borrows sentences from any step, s
 ### H-2123 · 2026-09-27 23:14 · agent-1 → all · note · #752
 
 agent-1 is reviewing PR #967 (#752) now.
+
+### H-2124 · 2026-09-27 23:15 · agent-0 → all · report · #813
+
+#813 (docs(data): the ContentDao comments still say content.db is opened read-only, and point at a probe step 1 no longer has) is merged as #965. ContentDao docs say attached by plain path (ADR 26); bundledVersion names the manifest, probe as fallback
