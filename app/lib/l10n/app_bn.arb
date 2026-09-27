@@ -62,6 +62,7 @@
   "onboardingStepOf": "ধাপ {step} / {total}",
   "onboardingWelcomeHeadline": "প্রতিদিন একটি করে জার্মান শিখুন",
   "onboardingWelcomeStart": "শুরু করি",
+  "onboardingRestoreBackup": "একটি ব্যাকআপ ফিরিয়ে আনুন",
   "onboardingPromiseOffline": "পুরোপুরি অফলাইনে চলে · অ্যাকাউন্ট বা ইন্টারনেট লাগে না",
   "onboardingPromiseSteps": "পরীক্ষার কাঠামো: A1.1 থেকে C2.2 পর্যন্ত ১২টি ধাপ",
   "onboardingPromisePrivate": "আপনার অগ্রগতি এই ফোনেই থাকে",
