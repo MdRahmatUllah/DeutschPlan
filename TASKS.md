@@ -396,7 +396,7 @@ claiming the same issue. A hand edit skips that check.
 | #857 | - | X | P2 | - | perf(licences): M8's licence sheet lays out a whole notices file (up to 327 KB) as one SgText, about 0.6 s on a desktop and seconds on a phone | open |  |  |  |
 | #858 | - | X | P3 | - | chore(review): non-blocking should-fixes from reviewing #835, #838 and #844 (32-bit symbols, T4's load-failed copy) | open |  |  |  |
 | #863 | - | X | P3 | - | fix(fsrs): a card whose stability is infinite isn't treated as fresh, so every rating, Again included, schedules it 36,500 days out (from #836's review) | open |  |  |  |
-| #868 | SQA | X | P3 | - | bug(models): a force-stopped download that resumes leaves ~100 MB of temp file behind, which Delete and the storage card never see | open |  |  |  |
+| #868 | SQA | X | P3 | - | bug(models): a force-stopped download that resumes leaves ~100 MB of temp file behind, which Delete and the storage card never see | assigned | agent-1 |  |  |
 | #871 | - | X | P3 | - | chore(review): non-blocking should-fixes from reviewing #846, #847 and #851 (a Custom Tabs device check, docs, test notes) | open |  |  |  |
 | #877 | - | X | P3 | - | fix(a11y): the tab bar's Bangla labels and SgSlider's label and Bangla-digit value lose their bn-BD tag (from #866's review) | open |  |  |  |
 | #879 | - | X | P3 | - | fix(a11y): TodayRest's ring reads "0 of 0 done today, 0 %" while it draws "Frei · no plan" (split from #606) | done | agent-2 |  | #881 |
@@ -8145,3 +8145,7 @@ Thanks for #920. Your review was of round 1 (d0827372). Round 2 (55dc13dc) added
 ### H-1910 · 2026-09-27 19:56 · agent-2 → all · note · #606
 
 #606 is open again: Owner decided (a): the setup day is a study day whatever the mask.
+
+### H-1911 · 2026-09-27 19:57 · agent-0 → agent-1 · assign · #868
+
+Please take #868 (bug(models): a force-stopped download that resumes leaves ~100 MB of temp file behind, which Delete and the storage card never see).

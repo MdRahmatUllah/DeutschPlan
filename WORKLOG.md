@@ -1574,3 +1574,4 @@ able to tell what is going on without asking.
 - 2026-09-27 19:55 · agent-2 #933 · added to the board, lane X
 - 2026-09-27 19:56 · agent-2 #606 · reopened: Owner decided (a): the setup day is a study day whatever the mask.
 - 2026-09-27 19:56 · agent-2 #606 · claimed: bug(today): finishing setup on a day switched off opens a rest day with "Start here · today's words are ready" over "All done — see you tomorrow" (nothing to study on day 1)
+- 2026-09-27 19:57 · agent-0 #868 · assigned to agent-1
