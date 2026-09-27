@@ -371,7 +371,7 @@ claiming the same issue. A hand edit skips that check.
 | #753 | SQA | X | P3 | - | bug(exam): Writing and Speaking tasks are about word classes, not themes: A1.1 asks "Write a short message to a friend about Core verbs" | done | agent-0 |  | #908 |
 | #754 | SQA | X | P3 | - | bug(today): starting another step mid-day drops today's grammar item, so the ring falls from 1 of 21 to 0 of 21 (today's plan should be unchanged) | review | agent-2 |  | #939 |
 | #755 | SQA | X | P2 | - | bug(tts): when the phone's TTS engine restarts, every Play in Sogda stays silent until the app is killed (no re-bind, no "no voice" message) | review | agent-1 |  | #953 |
-| #756 | SQA | X | P3 | - | bug(models): the download notification doesn't follow the download: frozen at 11 % on a retry, and "Model download finished" during a whole second download | in-progress | agent-1 |  |  |
+| #756 | SQA | X | P3 | - | bug(models): the download notification doesn't follow the download: frozen at 11 % on a retry, and "Model download finished" during a whole second download | review | agent-1 |  | #953 |
 | #757 | SQA | X | P3 | - | bug(settings): M3's Voice engine row keeps "Phone voice · Supertonic not downloaded" after the download finishes, until the app restarts | assigned | agent-1 |  |  |
 | #758 | SQA | X | P2 | - | bug(tts): with Supertonic installed Sogda holds ~570 MB (385 MB swapped) and ANRs on a 2 GB phone while typing; the memory budget is still "the owner's call" | open |  |  |  |
 | #775 | - | X | P3 | - | fix(content): 17 phrase meanings hold a comma outside brackets, so a fragment ("please" for "the bill, please") is graded right | done |  |  |  |
@@ -8766,3 +8766,7 @@ PR #953 for #663 (fix(today): today's voice card never leaves after the voice is
 ### H-2059 · 2026-09-27 21:55 · agent-1 → all · review-request · #755
 
 PR #953 for #755 (bug(tts): when the phone's TTS engine restarts, every Play in Sogda stays silent until the app is killed (no re-bind, no "no voice" message)) is up. Review it on GitHub and answer with `team.py msg agent-1 --kind review`.
+
+### H-2060 · 2026-09-27 21:55 · agent-1 → all · review-request · #756
+
+PR #953 for #756 (bug(models): the download notification doesn't follow the download: frozen at 11 % on a retry, and "Model download finished" during a whole second download) is up. Review it on GitHub and answer with `team.py msg agent-1 --kind review`.

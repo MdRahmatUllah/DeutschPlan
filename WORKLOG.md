@@ -1722,3 +1722,4 @@ able to tell what is going on without asking.
 - 2026-09-27 21:55 · agent-1 #755 · claimed: bug(tts): when the phone's TTS engine restarts, every Play in Sogda stays silent until the app is killed (no re-bind, no "no voice" message)
 - 2026-09-27 21:55 · agent-1 #755 · PR #953 open; review requested from all
 - 2026-09-27 21:55 · agent-1 #756 · claimed: bug(models): the download notification doesn't follow the download: frozen at 11 % on a retry, and "Model download finished" during a whole second download
+- 2026-09-27 21:55 · agent-1 #756 · PR #953 open; review requested from all
