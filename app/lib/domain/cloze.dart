@@ -140,7 +140,7 @@ ClozeGap? _gap(String sentence, String german, String? pos) {
   for (final i in order) {
     // Never an article, a pronoun or a question word on its own: "die" for
     // *Der Zweck heiligt die Mittel* blanked "diesem".
-    if (keys[i].length < minKey || _functionWords.contains(keys[i])) continue;
+    if (keys[i].length < minKey || functionWords.contains(keys[i])) continue;
     final infinitive =
         !noun(i) && keys[i].length > minKey + 1 && keys[i].endsWith('n');
     final hit = _find(
@@ -205,8 +205,9 @@ ClozeGap? _find(
 /// Below this a key matches only whole words.
 const int minKey = 3;
 
-/// Words a phrase's fallback never blanks alone, as search keys.
-const Set<String> _functionWords = <String>{
+/// Words a phrase's fallback never blanks alone, as search keys; nor are
+/// they a stem of another word in a sentence's coverage (#842).
+const Set<String> functionWords = <String>{
   // articles
   'der', 'die', 'das', 'den', 'dem', 'des', 'ein', 'eine', 'einen', 'einem',
   'einer', 'eines', 'kein', 'keine', 'keinen', 'keinem', 'keiner',

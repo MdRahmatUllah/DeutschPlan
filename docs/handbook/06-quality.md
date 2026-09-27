@@ -318,6 +318,10 @@ The emulator is not a mid-range phone: it catches regressions, and the
 absolute budgets (cold start under 1.5 s, warm under 500 ms, 16 ms frames) are
 reported, not enforced, except search's. The owner times cold and warm start
 on a real phone before each release. `--update-baseline` records new numbers.
+`--profile year` measures frames and start again on a learner with a year
+behind them (#818: about 13,500 ratings seeded by
+`app/integration_test/year_profile.dart`), whose metrics are `year.<metric>`
+with baselines of their own.
 
 ## The content pipeline's checks
 
