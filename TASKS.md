@@ -384,6 +384,7 @@ claiming the same issue. A hand edit skips that check.
 | #822 | - | X | P2 | - | question(backup): on a fresh phone, should restore pre-select Replace, or be offered from onboarding? (left open by #658) | open |  |  |  |
 | #821 | SQA | X | P3 | - | bug(today): the backlog's range names weekdays only, so 30 Sep–15 Oct reads "Wed–Thu" (T1) and "Mon to Thu" (T4), and a week apart reads "Wed–Wed" | open |  |  |  |
 | #823 | - | X | P3 | - | test(perf): the time estimate's one-year profile on a device, criterion 3 of #708, is still to run | open |  |  |  |
+| #824 | - | X | P3 | - | refactor(settings): each numeric setting's range lives in two places, the Settings screen and the import check (from #795) | open |  |  |  |
 
 ## Locks
 
@@ -7002,3 +7003,7 @@ Added #821 (bug(today): the backlog's range names weekdays only, so 30 Sep–15 
 ### H-1632 · 2026-09-27 12:15 · agent-2 → all · note · #823
 
 Added #823 (test(perf): the time estimate's one-year profile on a device, criterion 3 of #708, is still to run) to lane X.
+
+### H-1633 · 2026-09-27 12:15 · agent-2 → all · note · #824
+
+Added #824 (refactor(settings): each numeric setting's range lives in two places, the Settings screen and the import check (from #795)) to lane X.
