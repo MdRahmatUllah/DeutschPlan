@@ -149,9 +149,15 @@ List<String> splitMeanings(String expected) =>
 ///
 /// The one rule for what a meaning is: [checkMeaning] grades by it, and
 /// Search's exact tier matches by it, so the two can't disagree (#645).
+///
+/// A hyphen may be left out: "email" is "e-mail" (#699). Only in a meaning:
+/// German's "Email" is enamel, not "E-Mail".
 Set<String> meaningAnswers(String cell) => <String>{
   for (final meaning in <String>[cell, ...splitMeanings(cell)])
-    ..._withoutAside(meaning),
+    for (final answer in _withoutAside(meaning)) ...<String>{
+      answer,
+      answer.replaceAll('-', ''),
+    },
 };
 
 /// Every way [german] may be typed: its alternatives, each with and without a
@@ -220,8 +226,9 @@ List<String> _splitOutsideBrackets(String text, Set<String> separators) {
 
 /// The best verdict [given] earns against any of [candidates].
 ///
-/// Best, not first: "to go / to walk" against "wlak" is *almost* on the second
-/// candidate, and stopping at the first wrong answer would mark it wrong.
+/// Best, not first: "go / walking" against "walkign" is *almost* on the
+/// second candidate, and stopping at the first wrong answer would mark it
+/// wrong.
 Verdict _best(
   String given,
   Iterable<String> candidates, {
@@ -266,8 +273,15 @@ Verdict _compare(String given, String expected, {required bool german}) {
   // Both spellings get a shot at the typo — a learner typing "Baeuem" for
   // "Bäume" is one character out on the expanded key and two on the folded
   // one — but the length gate always comes from the folded key, which is the
-  // closest thing here to a letter count.
-  final gate = expectedAlt.split(' ');
+  // closest thing here to a letter count. With ß as one letter, not the fold's
+  // "ss": "Größe" is five letters, and a typo in it is wrong (#699). Keyed
+  // with any article and cut to the key's words, which drop only an article.
+  final words = expectedAlt.split(' ').length;
+  final letters = searchKeyAlt(
+    expected.toLowerCase().replaceAll('ß', 's'),
+    stripArticle: false,
+  ).split(' ');
+  final gate = letters.sublist(letters.length - words);
 
   return _typo(key, expectedKey, gate) || _typo(alt, expectedAlt, gate)
       ? Verdict.almost

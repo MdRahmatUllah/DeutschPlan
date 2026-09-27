@@ -173,8 +173,8 @@ class Fsrs {
 
     // `pow` of a negative base to -0.5 is NaN, and NaN compares false against
     // everything — a clock that moved backwards would scramble BR-PLAN-03's
-    // "lowest retrievability first" sort rather than failing. Nothing recalls
-    // worse than perfectly at the moment of review, so zero is the floor.
+    // "lowest retrievability first" sort rather than failing. So no time, or
+    // less than none, is the moment of review, when recall is perfect.
     if (elapsedDays <= 0) return 1;
 
     return math.pow(1 + factor * elapsedDays / stability, -0.5).toDouble();
@@ -228,9 +228,10 @@ class Fsrs {
     final (stability, difficulty) = _next(state, rating, elapsed);
 
     // An Again on a first review comes out at one day without a special case:
-    // `w0` is small enough that the interval rounds to zero and the clamp in
-    // `intervalDays` lifts it, at every retention in the 0.80–0.97 range. I
-    // wrote the special case first, then found it never fired.
+    // `w0` is small enough that its interval is under a day and a half at
+    // every retention in the 0.80–0.97 range (1.17 days at 0.80, 0.13 at
+    // 0.97), so it rounds to 1, or to 0, which the clamp in `intervalDays`
+    // lifts to 1. I wrote the special case first, then found it never fired.
     final scheduled = rating == Rating.again
         ? intervalDays(stability)
         : _passingIntervals(state, elapsed)[rating.value - 2];

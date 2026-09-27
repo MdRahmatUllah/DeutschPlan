@@ -87,6 +87,15 @@ void main() {
       expect(checkMeaning('und', 'understand'), Verdict.wrong);
     });
 
+    test("#699 BR-ANS-01 a meaning's hyphen may be left out", () {
+      expect(checkMeaning('email', 'e-mail'), Verdict.correct);
+      expect(checkMeaning('e-mail', 'e-mail'), Verdict.correct);
+      expect(checkMeaning('well known', 'well-known'), Verdict.correct);
+      expect(meaningAnswers('e-mail / letter'), contains('email'));
+      // Not in German: "Email" is enamel.
+      expect(checkGerman('Email', 'E-Mail'), isNot(Verdict.correct));
+    });
+
     test('the best verdict across the list wins, not the first', () {
       // "wlak" is wrong against "go" and almost against "walk". Stopping at
       // the first candidate would call it wrong.
@@ -236,6 +245,21 @@ void main() {
       }
       expect(checkGerman('haette', 'hätte'), Verdict.correct);
       expect(checkForm('Muetter', 'Mütter'), Verdict.correct);
+    });
+
+    test('#699 BR-ANS-01 ß is one letter for the typo gate, not two', () {
+      // Five letters: one out is a different word ("Grüße"), not a typo.
+      expect(checkGerman('Grüße', 'Größe'), Verdict.wrong);
+      expect(checkGerman('die Grüße', 'die Größe'), Verdict.wrong);
+      expect(checkGerman('Grosse', 'Größe'), Verdict.almost, reason: 'ö/o');
+      // Six letters, as "Straße" is: a typo still.
+      expect(checkGerman('Strase', 'Straße'), Verdict.almost);
+      // The gate lines up with the key's words when an article is stripped.
+      expect(checkForm('Strasen', 'die Straßen'), Verdict.almost);
+      expect(
+        checkGerman('die Strase', 'Straße', article: 'die'),
+        Verdict.almost,
+      );
     });
 
     test('ß and ss are the same word', () {

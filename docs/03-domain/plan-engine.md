@@ -5,12 +5,15 @@
 ## openDay(date) — idempotent
 
 ```
-1. generateNewThrough(date)        // fills missed study days up to backlog_catchup_days
-2. ensureRevise(date)              // picks revise_count cards once per date
-3. ensureGrammarDue(date)          // topics with due <= date
-4. sentences = SentencePicker.forDay(date)   // persisted in sentence_log
-5. return DailyPlan(revise, newToday, grammarDue, backlog, sentences, activeStep, estimateMinutes)
+atomically:
+  reopened = last_planned_date >= date   // a day opened before (#342)
+  1. generateNewThrough(date)            // fills missed study days up to backlog_catchup_days
+  2. if !reopened: ensureRevise(date)    // picks revise_count cards once per date
+3. return DailyPlan(revise, newToday, grammarDue, backlog, activeStep,
+                    nextStep, stepComplete, isStudyDay, newPaused)
 ```
+
+`grammarDue` is read, not planned: the topics with `due <= date`. The day's sentences are `SentencePicker.forDay(date)`'s, persisted in `sentence_log`, and its time is `PlanEngine.estimate(plan)` (BR-PLAN-09); Today asks for both after opening the day.
 
 A day is opened atomically: steps 1 and 2 run in one transaction (`PlanStore.atomically`), so callers that overlap (setup's finish and a live Today) plan it once (#548). *Start next step* and L2's *Start* are atomic the same way.
 
