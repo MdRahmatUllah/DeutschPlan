@@ -372,6 +372,7 @@ claiming the same issue. A hand edit skips that check.
 | #754 | SQA | X | P3 | - | bug(today): starting another step mid-day drops today's grammar item, so the ring falls from 1 of 21 to 0 of 21 (today's plan should be unchanged) | open |  |  |  |
 | #755 | SQA | X | P2 | - | bug(tts): when the phone's TTS engine restarts, every Play in Sogda stays silent until the app is killed (no re-bind, no "no voice" message) | open |  |  |  |
 | #756 | SQA | X | P3 | - | bug(models): the download notification doesn't follow the download: frozen at 11 % on a retry, and "Model download finished" during a whole second download | open |  |  |  |
+| #757 | SQA | X | P3 | - | bug(settings): M3's Voice engine row keeps "Phone voice · Supertonic not downloaded" after the download finishes, until the app restarts | open |  |  |  |
 
 ## Locks
 
@@ -5874,3 +5875,7 @@ Added #755 (bug(tts): when the phone's TTS engine restarts, every Play in Sogda 
 ### H-1355 · 2026-09-27 07:27 · agent-3 → all · note · #756
 
 Added #756 (bug(models): the download notification doesn't follow the download: frozen at 11 % on a retry, and "Model download finished" during a whole second download) to lane X.
+
+### H-1356 · 2026-09-27 07:27 · agent-3 → all · note · #757
+
+Added #757 (bug(settings): M3's Voice engine row keeps "Phone voice · Supertonic not downloaded" after the download finishes, until the app restarts) to lane X.
