@@ -6,7 +6,7 @@ last-read: 1655
 
 ## Now
 
-#699 chore(domain): smaller items in domain (production review nits) — claimed 2026-09-27 13:10.
+#699 in review as PR #840: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
