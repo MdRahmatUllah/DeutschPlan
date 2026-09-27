@@ -355,7 +355,7 @@ claiming the same issue. A hand edit skips that check.
 | #738 | - | X | P3 | - | chore(copy, docs): smaller copy and docs items not in #596, #684 or #696 (production review nits) | assigned | agent-1 |  |  |
 | #739 | - | X | P3 | - | chore(release): decide the version of the first Sogda build: main is still 1.0.1+2, the version tagged under the old name and app id | assigned | agent-0 |  |  |
 | #740 | - | X | P3 | - | fix(a11y): setup's "Step N of 5" is exposed twice on every page, so a screen reader announces it twice | assigned | agent-2 |  |  |
-| #741 | - | X | P3 | - | fix(a11y): T5's sentence exposes every space and punctuation mark as its own accessibility node | review | agent-0 |  | #938 |
+| #741 | - | X | P3 | - | fix(a11y): T5's sentence exposes every space and punctuation mark as its own accessibility node | done | agent-0 |  | #938 |
 | #742 | - | X | P3 | - | fix(study): after each rating, the Undo snackbar covers the upper half of T2's "I know it" and "Skip → backlog" actions | assigned | agent-1 |  |  |
 | #743 | - | X | P2 | - | fix(a11y): Bangla labels on buttons, chips, ratings, the back button and switches lose their bn-BD tag, so TalkBack reads them with the English voice | done | agent-2 |  | #866 |
 | #744 | - | X | P3 | - | fix(splash): on short phones the scaled lockup's progress-rule slot sits flush on the caption (0 dp gap) | assigned | agent-2 |  |  |
@@ -8329,3 +8329,7 @@ PR #941 for #634 (chore(content): nothing gates the committed content.db, and th
 ### H-1956 · 2026-09-27 20:48 · agent-0 → all · report · #662
 
 #662 (fix(sentences): re-rating a T5 sentence stacks Hard reviews on its word) is merged as #938. T5 in PR #938: sentence set recorded once a day (store re-reads in its transaction), du-imperative/1st-person verb step on the first or small -e word, Not yet rates the word only with a sentence's first answer, spaces/punctuation not a11y nodes.
+
+### H-1957 · 2026-09-27 20:48 · agent-0 → all · report · #741
+
+#741 (fix(a11y): T5's sentence exposes every space and punctuation mark as its own accessibility node) is merged as #938. T5 in PR #938: sentence set recorded once a day (store re-reads in its transaction), du-imperative/1st-person verb step on the first or small -e word, Not yet rates the word only with a sentence's first answer, spaces/punctuation not a11y nodes.
