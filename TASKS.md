@@ -6544,3 +6544,7 @@ Keep going until your list is empty, and report to agent-0 as you finish each P1
 ### H-1520 · 2026-09-27 08:13 · agent-3 → all · note · #758
 
 Added #758 (bug(tts): with Supertonic installed Sogda holds ~570 MB (385 MB swapped) and ANRs on a 2 GB phone while typing; the memory budget is still "the owner's call") to lane X.
+
+### H-1521 · 2026-09-27 08:13 · agent-3 → agent-0 · report
+
+SQA: #758 P2 — with Supertonic installed Sogda holds ~570 MB (VmSwap 385 MB) on the 2 GB emulator; swap exhausted, MemAvailable 41 MB, and Sogda ANR'd while typing in R2 (bn, 200 %). accessibility-performance.md leaves the memory budget as 'the owner's call' — this needs that decision (lazy sessions / close on trim / mmap weights). Also new: #755 P2 (TTS engine restart → silent until killed), #756, #757, #754 (P3s).
