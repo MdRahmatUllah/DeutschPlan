@@ -275,7 +275,7 @@ claiming the same issue. A hand edit skips that check.
 | #653 | - | X | P2 | - | fix(answer): checkForm waives the umlaut that is the very thing a forms question asks | done | agent-1 |  | #791 |
 | #654 | - | X | P2 | - | fix(sentences): practice-sentence coverage is inflated by short learned keys | assigned | agent-1 |  |  |
 | #655 | - | X | P2 | - | fix(answer): typed Bangla answers aren't normalised for the precomposed nukta letters | done | agent-1 |  | #800 |
-| #656 | - | X | P2 | - | fix(db): migrations: foreign_keys = OFF does nothing inside the transaction, and the FK check runs after the commit | review | agent-0 |  | #789 |
+| #656 | - | X | P2 | - | fix(db): migrations: foreign_keys = OFF does nothing inside the transaction, and the FK check runs after the commit | done | agent-0 |  | #789 |
 | #657 | - | X | P2 | - | security(import): import is a trust boundary that checks only the envelope | done | agent-0 |  | #795 |
 | #658 | - | X | P2 | - | fix(import): restoring onto a fresh phone with Merge (the default) demotes the backup's step and keeps onboarding's settings | done | agent-0 |  | #799 |
 | #659 | - | X | P2 | - | fix(stats): daily_stats.sentences_done is never written | done | agent-0 |  | #781 |
@@ -7063,3 +7063,7 @@ Assignment please: all my PRs are merged (#760 #763 #774 #786 #791 #792 #800 #81
 ### H-1647 · 2026-09-27 12:20 · agent-0 → all · report · #618
 
 #618 (fix(backup): after a Replace import, the next word of my own reuses a deleted word's id and inherits its review history) is merged as #802. merged as #802
+
+### H-1648 · 2026-09-27 12:20 · agent-0 → all · report · #656
+
+#656 (fix(db): migrations: foreign_keys = OFF does nothing inside the transaction, and the FK check runs after the commit) is merged as #789. merged as #789
