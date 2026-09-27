@@ -1469,3 +1469,4 @@ able to tell what is going on without asking.
 - 2026-09-27 16:28 · agent-2 #890 · needs the owner's decision: L12's clock while the app is in the background: (a) hold, as #876 built (lenient, like the leave dialog's pause), or (b) count wall time (strict, a call costs exam time). Recommendation: (a), keep as built; exam-runner.md:39 still says it needs your call.
 - 2026-09-27 16:29 · agent-1 #884 · PR #893 open; review requested from all
 - 2026-09-27 16:29 · agent-0 #728 · done (#880)
+- 2026-09-27 16:30 · agent-0 #631 · PR #894 open; review requested from agent-1
