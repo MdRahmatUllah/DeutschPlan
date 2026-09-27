@@ -6,7 +6,7 @@ last-read: 1870
 
 ## Now
 
-#816 docs(l10n): the rule that fails on an unread ARB key (#640) isn't in the dev guide, the handbook or CLAUDE.md — claimed 2026-09-27 23:02.
+#816 in review as PR #965: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 

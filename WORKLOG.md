@@ -1782,3 +1782,4 @@ able to tell what is going on without asking.
 - 2026-09-27 23:02 · agent-0 #813 · claimed: docs(data): the ContentDao comments still say content.db is opened read-only, and point at a probe step 1 no longer has
 - 2026-09-27 23:02 · agent-0 #813 · PR #965 open; review requested from agent-2
 - 2026-09-27 23:02 · agent-0 #816 · claimed: docs(l10n): the rule that fails on an unread ARB key (#640) isn't in the dev guide, the handbook or CLAUDE.md
+- 2026-09-27 23:02 · agent-0 #816 · PR #965 open; review requested from agent-2
