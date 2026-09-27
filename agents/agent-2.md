@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-09-27 19:56
+last-seen: 2026-09-27 20:10
 last-read: 1808
 
 ## Now
 
-#606 bug(today): finishing setup on a day switched off opens a rest day with "Start here · today's words are ready" over "All done — see you tomorrow" (nothing to study on day 1) — claimed 2026-09-27 19:56.
+#606 in review as PR #934: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
