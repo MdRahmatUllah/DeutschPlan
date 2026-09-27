@@ -248,7 +248,7 @@ claiming the same issue. A hand edit skips that check.
 | #630 | - | X | P2 | - | fix(content): about 180 lesson notes are authored as vocabulary (word formation, ↔ comparisons, grammar-concept names), so they are scheduled as flashcards and asked in quizzes and exams (18 % of C2) | assigned | agent-0 |  |  |
 | #631 | - | X | P2 | - | fix(content): 312 example sentences don't contain their headword, and for 57 words neither example does, so cloze, practice and gap-fill never appear for them | assigned | agent-0 |  |  |
 | #632 | - | X | P2 | - | fix(content): the Forms quiz and exam Word forms mark the right Perfekt wrong for 8 core A1 verbs (a bracketed Präteritum in the forms cell) | assigned | agent-0 |  |  |
-| #633 | - | X | P2 | - | fix(content): core nouns with no article (Ende, Anfang, Mitte, Nominalisierung, Wirtschaftsflüchtling), and phrases whose article makes an ungrammatical Articles item ("der Fehler machen") | open |  |  |  |
+| #633 | - | X | P2 | - | fix(content): core nouns with no article (Ende, Anfang, Mitte, Nominalisierung, Wirtschaftsflüchtling), and phrases whose article makes an ungrammatical Articles item ("der Fehler machen") | assigned | agent-0 |  |  |
 | #634 | - | X | P2 | - | chore(content): nothing gates the committed content.db, and the source workbooks are neither in git nor fingerprinted | open |  |  |  |
 | #635 | - | X | P3 | - | fix(content): the same word is taught 2–3 times, across levels (145 exact duplicates) and within a level (44 near-duplicates) | open |  |  |  |
 | #636 | - | X | P3 | - | fix(content): category tab names cut at Excel's 31 characters leave 25 empty truncated categories, and 25 real ones with no description | open |  |  |  |
@@ -6429,5 +6429,9 @@ production-review fix pass (owner, 2026-09-27): solve all open issues
 production-review fix pass (owner, 2026-09-27): solve all open issues
 
 ### H-1494 · 2026-09-27 08:04 · agent-0 → agent-0 · assign · #632
+
+production-review fix pass (owner, 2026-09-27): solve all open issues
+
+### H-1495 · 2026-09-27 08:04 · agent-0 → agent-0 · assign · #633
 
 production-review fix pass (owner, 2026-09-27): solve all open issues
