@@ -9075,3 +9075,7 @@ rebalanced from agent-2: agent-0 helper, background/platform batch
 ### H-2136 · 2026-09-27 23:23 · agent-0 → agent-2 · note
 
 Rebalanced (you had 20 assigned, untouched): agent-0's helpers take #650 #709 #686 #698 (glass/core) and #625 #711 #693 #705 (background/platform). Yours stay: SQA #752 #854, then #942 #951 (owner decided), #877, #626 (with your reminders work), the Me/onboarding/a11y set #692 #694 #704 #721 #735 #740 #744 #745. Batch them: several related issues per PR, max 2 open.
+
+### H-2137 · 2026-09-27 23:23 · agent-0 → agent-2 · note
+
+Rebalanced (you had 20 assigned, untouched): agent-0's helpers take #650 #709 #686 #698 (glass/core) and #625 #711 #693 #705 (background/platform). Yours stay: SQA #752 #854, then #942 #951 (owner decided), #877, #626 (with your reminders work), the Me/onboarding/a11y set #692 #694 #704 #721 #735 #740 #744 #745. Batch them: several related issues per PR, max 2 open.
