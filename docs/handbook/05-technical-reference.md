@@ -175,7 +175,9 @@ flowchart LR
   A --> D["tools/content_manifest.py<br/>diff against the previous build"]
 ```
 
-- Columns are read by header name (`HEADER_MAP`). The rules are PIPE-01 to
+- Columns are read by header name (`HEADER_MAP`); a workbook lacking a column
+  another has (a renamed header) stops the build, unless the manifest lists it
+  under `without:` or `--allow-missing-columns` is passed (#714). The rules are PIPE-01 to
   PIPE-08: level from the word's own cell; each level split into X.1 and X.2 at
   the week nearest the middle; `uid = sha1(level|german|pos|english)[:16]`;
   search keys (lower case, article stripped, umlauts folded) byte-identical to
