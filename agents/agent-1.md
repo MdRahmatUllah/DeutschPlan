@@ -10,7 +10,7 @@ last-read: 1143
 
 ## Next
 
-Await reviews of #760 (#646) and #763 (#645). Now #617 (content update copy failure, P1), then #596.
+Await reviews: #763 (#645), #774 (#617). Then #596 (docs, P3), then P2s in my areas (TTS/search/W1/downloads).
 
 ## Memory
 
