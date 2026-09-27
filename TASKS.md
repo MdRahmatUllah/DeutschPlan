@@ -404,7 +404,7 @@ The emulator lock is local, not here: `team.py device`.
 |---|---|---|---|
 | user-db-schema |  |  |  |
 | adr-number |  |  |  |
-| pubspec |  |  |  |
+| pubspec | agent-0 | 2026-09-27 12:31 | #707: declare assets/db files explicitly so its README stops shipping |
 | ci-config |  |  |  |
 | shared-look |  |  |  |
 
