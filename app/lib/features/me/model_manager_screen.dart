@@ -417,6 +417,9 @@ class _ModelCardView extends ConsumerWidget {
     final l10n = AppLocalizations.of(context);
     final id = card.entry.id;
     final downloads = ref.read(modelDownloadsProvider);
+    // For what runs after an await: the learner can back out of M4 while a
+    // download starts, and this card's ref goes with it (#679).
+    final container = ProviderScope.containerOf(context, listen: false);
     final size = modelSize(l10n, card.variant.bytes);
     final freed = modelSize(l10n, card.installed.bytesOnDisk);
 
@@ -444,7 +447,7 @@ class _ModelCardView extends ConsumerWidget {
       } on Object {
         if (context.mounted) SgToast.show(context, l10n.modelsStartFailed);
       }
-      ref
+      container
         ..invalidate(modelCardProvider(id))
         ..invalidate(phoneSpaceProvider);
     }
@@ -454,10 +457,10 @@ class _ModelCardView extends ConsumerWidget {
     // chooses Supertonic, as deleting it chose the phone's voice.
     Future<void> download() async {
       // #501: the progress in a notification, asked for first.
-      await askToNotifyDownload(ref.read(notificationPermissionProvider));
+      await askToNotifyDownload(container.read(notificationPermissionProvider));
       await downloads.start(id);
       if (_isVoice) {
-        await ref
+        await container
             .read(settingsProvider)
             .write(SettingKeys.ttsEngine, TtsEngineSetting.supertonic);
       }
@@ -465,7 +468,7 @@ class _ModelCardView extends ConsumerWidget {
 
     final deleteButton = _Action(
       label: l10n.modelsDelete(freed),
-      onPressed: () => unawaited(_delete(context, ref)),
+      onPressed: () => unawaited(_delete(context)),
     );
 
     switch (status) {
@@ -509,7 +512,7 @@ class _ModelCardView extends ConsumerWidget {
             onChanged: (on) async {
               await downloads.setWifiOnly(on: on);
               // The line above says "· Wi-Fi" or not.
-              ref.invalidate(modelCardProvider(id));
+              container.invalidate(modelCardProvider(id));
             },
           ),
           _Actions(
@@ -543,7 +546,7 @@ class _ModelCardView extends ConsumerWidget {
                 onPressed: () => unawaited(
                   act(() async {
                     await askToNotifyDownload(
-                      ref.read(notificationPermissionProvider),
+                      container.read(notificationPermissionProvider),
                     );
                     return card.live == null
                         ? downloads.start(id)
@@ -586,8 +589,10 @@ class _ModelCardView extends ConsumerWidget {
   }
 
   /// FR-M4-03: after a confirm, the files go and what used them turns off.
-  Future<void> _delete(BuildContext context, WidgetRef ref) async {
+  Future<void> _delete(BuildContext context) async {
     final l10n = AppLocalizations.of(context);
+    // Held: the learner can leave M4 while the files go (#679).
+    final container = ProviderScope.containerOf(context, listen: false);
     final confirmed = await Adaptive.showConfirm(
       context: context,
       title: l10n.modelsDeleteTitle(
@@ -601,12 +606,12 @@ class _ModelCardView extends ConsumerWidget {
       destructive: true,
     );
     if (confirmed != true) return;
-    await ref.read(modelRepositoryProvider).delete(card.entry);
+    await container.read(modelRepositoryProvider).delete(card.entry);
     // With `tts_engine` now the phone's, nothing would ask Supertonic again:
     // asked once, it finds its model gone and lets go of its ~400 MB of
     // sessions and its clips.
-    if (_isVoice) await ref.read(supertonicTtsProvider).isAvailable();
-    ref
+    if (_isVoice) await container.read(supertonicTtsProvider).isAvailable();
+    container
       ..invalidate(modelCardProvider(card.entry.id))
       ..invalidate(phoneSpaceProvider);
   }

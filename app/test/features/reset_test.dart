@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:sogda/core/adaptive/adaptive.dart';
@@ -30,8 +31,12 @@ class _Recordings extends Fake implements ModelRepository {
   /// A file the system holds: the delete throws.
   bool held = false;
 
+  /// Holds the delete until completed: a reset still running.
+  Completer<void>? gate;
+
   @override
   Future<void> deleteRecordings([Iterable<int>? attempts]) async {
+    await gate?.future;
     if (held) throw const FileSystemException('held');
     deleted.add(attempts);
   }
@@ -263,6 +268,45 @@ void main() {
     expect(await count('enrollments'), 0);
     expect(settings.read(SettingKeys.themeMode), ThemeModeSetting.dark);
     expect(settings.read(SettingKeys.uiLanguage), UiLanguage.bangla);
+  });
+
+  testWidgets('FR-M7-02 #679 Settings closed while the reset runs: onboarding '
+      'opens all the same', (tester) async {
+    await pump(tester);
+    final gate = recordings.gate = Completer<void>();
+    await tap(tester, l10n.settingsReset);
+    await tap(tester, l10n.resetEverything);
+    await tester.enterText(find.byType(TextField), resetWord);
+    await tester.pump();
+    await tester.tap(confirm());
+    await tester.pumpAndSettle();
+    GoRouter.of(tester.element(find.byType(SettingsScreen))).go('/me');
+    await tester.pumpAndSettle();
+    expect(find.byType(SettingsScreen), findsNothing);
+
+    gate.complete();
+    await tester.pumpAndSettle();
+    expect(tester.takeException(), isNull);
+    expect(recordings.deleted, <Iterable<int>?>[null]);
+    expect(went, '/onboarding/1');
+  });
+
+  testWidgets('FR-M7-01 #679 Settings closed while a step resets: no error, '
+      'the recordings still go', (tester) async {
+    await pump(tester);
+    final gate = recordings.gate = Completer<void>();
+    await tap(tester, l10n.settingsReset);
+    await tap(tester, l10n.resetOneStep);
+    await tap(tester, 'A1.1');
+    await tap(tester, l10n.resetStepConfirm);
+    GoRouter.of(tester.element(find.byType(SettingsScreen))).go('/me');
+    await tester.pumpAndSettle();
+
+    gate.complete();
+    await tester.pumpAndSettle();
+    expect(tester.takeException(), isNull);
+    expect(recordings.deleted, hasLength(1));
+    expect(await count('word_state'), 0);
   });
 
   testWidgets('FR-M7-01 one step: picked, confirmed, reset; M3 stays', (

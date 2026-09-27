@@ -543,6 +543,26 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code, skipped,
       await tester.pumpAndSettle();
     });
 
+    testWidgets('#679 the Undo still works once T4 is closed', (tester) async {
+      // The bar outlives T4, and T4's notifier goes with the screen.
+      await pump(tester);
+      await longPress(tester, l10n.backlogMarkKnown);
+      // A screen with a Scaffold, as the tabs have, to carry the bar.
+      GoRouter.of(tester.element(find.byType(BacklogScreen))).go('/elsewhere');
+      await tester.pumpAndSettle();
+      expect(find.byType(BacklogScreen), findsNothing);
+
+      await tester.tap(find.text(l10n.undo));
+      await settle(tester);
+      expect(tester.takeException(), isNull);
+      final log = await tester.runAsync(
+        () => db.customSelect('SELECT word_uid FROM review_log').get(),
+      );
+      expect(log, isEmpty);
+      await tester.pump(const Duration(seconds: 5));
+      await tester.pumpAndSettle();
+    });
+
     testWidgets('Suspend keeps it here, marked suspended', (tester) async {
       await pump(tester);
       await longPress(tester, l10n.backlogSuspend);

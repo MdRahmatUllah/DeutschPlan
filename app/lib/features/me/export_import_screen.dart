@@ -143,6 +143,9 @@ class _ExportImportState extends ConsumerState<ExportImportScreen> {
     }
     final backups = ref.read(backupRepositoryProvider);
     final settings = ref.read(settingsSourceProvider);
+    // Held, not this screen's ref: Back can close M6 during the import,
+    // and Today must still let go of the old plan (#679).
+    final container = ProviderScope.containerOf(context, listen: false);
     setState(() => _busy = true);
     try {
       await backups.import(file.json, mode: _mode);
@@ -150,7 +153,7 @@ class _ExportImportState extends ConsumerState<ExportImportScreen> {
       // kept alive under Today) and Today's plan were read before the
       // import: the streams follow drift, these don't.
       await settings.reload();
-      ref
+      container
         ..invalidate(planEngineProvider)
         ..invalidate(todayPlanProvider)
         ..invalidate(exportSizeProvider);

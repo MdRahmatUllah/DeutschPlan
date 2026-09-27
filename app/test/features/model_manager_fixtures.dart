@@ -114,9 +114,13 @@ class FakeDownloads extends Fake implements ModelDownloads {
   /// What [start] throws, once.
   Object? startFails;
 
+  /// Holds [start] until completed: the manager still taking it.
+  Completer<void>? startGate;
+
   @override
   Future<void> start(String modelId) async {
     calls.add('start $modelId');
+    await startGate?.future;
     final fails = startFails;
     startFails = null;
     if (fails != null) throw fails;
