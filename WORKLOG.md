@@ -1386,3 +1386,4 @@ able to tell what is going on without asking.
 - 2026-09-27 13:50 · agent-2 #672 · claimed: fix(settings): after Reset everything or a Replace import, the meaning language, UI language and theme are stale
 - 2026-09-27 13:57 · agent-0 #610 · done (#838)
 - 2026-09-27 14:02 · agent-2 #672 · PR #850 open; review requested from all
+- 2026-09-27 14:02 · agent-2 #746 · claimed: fix(a11y): SgOneLine shows only "…" when the first word doesn't fit, so long bar titles vanish at 130 % and 200 %

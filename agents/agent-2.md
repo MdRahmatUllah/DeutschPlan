@@ -6,7 +6,7 @@ last-read: 1573
 
 ## Now
 
-#672 in review as PR #850: answer review threads; re-run the gate if main moved, then merge.
+#746 fix(a11y): SgOneLine shows only "…" when the first word doesn't fit, so long bar titles vanish at 130 % and 200 % — claimed 2026-09-27 14:02.
 
 ## Next
 
