@@ -94,10 +94,12 @@ class CardState {
   /// these, one per rating.
   final int scheduledDays;
 
-  /// Never reviewed, or reviewed with no stability to grow (0, negative or
-  /// NaN): no review leaves one, but an imported row can bring it, and
-  /// `fsrs_state` has no CHECK (#687 AN-6). Such a card starts again.
-  bool get isFresh => state == FsrsState.fresh || !(stability > 0);
+  /// Never reviewed, or reviewed with no stability to grow (0, negative,
+  /// NaN or infinite): no review leaves one, but an imported row can bring
+  /// it, and `fsrs_state` has no CHECK (#687 AN-6, #863). Such a card starts
+  /// again.
+  bool get isFresh =>
+      state == FsrsState.fresh || !(stability > 0 && stability.isFinite);
 
   @override
   String toString() =>
@@ -235,8 +237,9 @@ class Fsrs {
     // An Again on a first review comes out at one day without a special case:
     // `w0` is small enough that its interval is under a day and a half at
     // every retention in the 0.80–0.97 range (1.17 days at 0.80, 0.13 at
-    // 0.97), so it rounds to 1, or to 0, which the clamp in `intervalDays`
-    // lifts to 1. I wrote the special case first, then found it never fired.
+    // 0.97), so the clamp in `intervalDays` lifts it to 1 where it is under a
+    // day, and it rounds to 1 where it isn't. I wrote the special case first,
+    // then found it never fired.
     final scheduled = rating == Rating.again
         ? intervalDays(stability)
         : _passingIntervals(state, elapsed)[rating.value - 2];

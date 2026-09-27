@@ -38,8 +38,20 @@ void main() {
         'does not make "erklärt" known', () {
       const short = <String>{'er', 'an', 'zu', 'wo', 'es'};
       expect(coverage('erklärt andere zusammen Woche essen', short), 0);
-      // Three letters are a stem, as in the cloze: "hau" is Haus's.
-      expect(coverage('Häuser Haus', <String>{'hau'}), 0.5);
+      // Four letters are a stem, as in the cloze: "haus" is Hauses'.
+      expect(coverage('Hauses Häuser', <String>{'haus'}), 0.5);
+    });
+
+    test('#842 FR-T5-01 a three-letter key is no stem, nor a function word: '
+        'sie, man, wie and was make sieben, Mann, wieder and Wasser no '
+        'better known', () {
+      const learned = <String>{'sie', 'man', 'wie', 'was', 'sich', 'dich'};
+      expect(coverage('sieben Mann wieder Wasser sicher dicht', learned), 0);
+      // As whole words they are known.
+      expect(coverage('Sie, man, wie, was, sich, dich', learned), 1.0);
+      // Nor a three-letter key that isn't a function word: "See" is not
+      // "Seele", nor "Eis" "Eisen".
+      expect(coverage('Seele Eisen', <String>{'see', 'eis'}), 0);
     });
 
     test('reads umlauts and ß the way the search keys are written', () {

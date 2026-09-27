@@ -12,7 +12,7 @@ import 'package:sogda/core/typography/sg_text.dart';
 import 'package:sogda/data/repositories/search_repository.dart';
 import 'package:sogda/data/repositories/word_repository.dart';
 import 'package:sogda/features/search/search_screen.dart'
-    show myWordsProvider, savedAs;
+    show myWordsProvider, sameWord, savedAs;
 import 'package:sogda/features/today/today_providers.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/router/routes.dart';
@@ -200,7 +200,7 @@ class _AddWordState extends ConsumerState<AddWordScreen> {
   /// The word of the learner's own the German already is, other than the one
   /// being edited (#669).
   MyWord? _mine(List<MyWord>? words) =>
-      savedAs(words, _german.text, except: widget.id);
+      savedAs(words, _german.text, article: _article, except: widget.id);
 
   /// *Log it* on a word of the learner's own (#669): one more real-life
   /// sighting, "seen N×" in R1's *My words*, and no second word.
@@ -255,6 +255,9 @@ class _AddWordState extends ConsumerState<AddWordScreen> {
     // #669: already one of my words (another, in edit mode). Read from the
     // field, not the debounced check: a quick Save must not make it twice.
     final mine = _mine(ref.watch(myWordsProvider).value);
+    // #841: only the word itself, key and article, is refused. One only like
+    // it (schon for schön, die See for der See) is shown, and Save stays.
+    final twice = mine != null && sameWord(mine, _german.text, _article);
     // Until it is known, as if it were: the button appears rather than
     // flashing up and going.
     final inRevision =
@@ -339,7 +342,7 @@ class _AddWordState extends ConsumerState<AddWordScreen> {
                 const SizedBox(height: 24),
                 SgButton(
                   label: l10n.addWordSave,
-                  onPressed: _complete && !_busy && mine == null
+                  onPressed: _complete && !_busy && !twice
                       ? () => unawaited(_save(match))
                       : null,
                 ),
@@ -348,7 +351,7 @@ class _AddWordState extends ConsumerState<AddWordScreen> {
                   SgButton(
                     label: l10n.addWordSaveRevise,
                     kind: SgButtonKind.secondary,
-                    onPressed: _complete && !_busy && mine == null
+                    onPressed: _complete && !_busy && !twice
                         ? () => unawaited(_save(match, revise: true))
                         : null,
                   ),
