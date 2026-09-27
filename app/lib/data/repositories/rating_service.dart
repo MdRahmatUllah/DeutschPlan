@@ -221,20 +221,6 @@ LIMIT ?2
   String _dateOf(DateTime day) => planDate(day);
 }
 
-/// BR-STATUS-02: `done` is derived from stability, never set by hand.
-///
-/// A lapse drops the stability, which is what moves a `done` word back to
-/// `learning` — there is no separate rule for it, and that is the point of
-/// deriving rather than storing.
-///
-/// Top-level and pure so the boundary can be tested. `>=`, not `>`, and the
-/// difference is unreachable through the service: FSRS stabilities are
-/// products of the weights and never land exactly on an integer threshold, so
-/// planting `>` there changes nothing observable. The rule still says `>=`,
-/// and this is where that can be held to.
-WordStatus statusForStability(double stability, int doneStabilityDays) =>
-    stability >= doneStabilityDays ? WordStatus.done : WordStatus.learning;
-
 /// What `word_state.card_mode` stores (BR-FSRS-06).
 enum CardMode { plain, cloze }
 
