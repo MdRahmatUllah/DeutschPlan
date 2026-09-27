@@ -225,15 +225,15 @@ class Fsrs {
         ? 0
         : elapsedDays(state.lastReview!, now);
 
-    final (stability, difficulty) = state.isFresh
-        ? _first(rating)
-        : _later(state, rating, elapsed);
+    final (stability, difficulty) = _next(state, rating, elapsed);
 
     // An Again on a first review comes out at one day without a special case:
     // `w0` is small enough that the interval rounds to zero and the clamp in
     // `intervalDays` lifts it, at every retention in the 0.80–0.97 range. I
     // wrote the special case first, then found it never fired.
-    final scheduled = intervalDays(stability);
+    final scheduled = rating == Rating.again
+        ? intervalDays(stability)
+        : _passingIntervals(state, elapsed)[rating.value - 2];
 
     return CardState(
       stability: stability,
@@ -248,6 +248,25 @@ class Fsrs {
       due: _addDays(_startOfDay(now.toLocal()), scheduled),
       scheduledDays: scheduled,
     );
+  }
+
+  (double, double) _next(CardState state, Rating rating, int elapsed) =>
+      state.isFresh ? _first(rating) : _later(state, rating, elapsed);
+
+  /// Hard, Good and Easy's intervals, Hard < Good < Easy as py-fsrs orders
+  /// them (#616), up to [maxInterval]. On a same-day re-review recall is 1,
+  /// the stability grows by nothing whatever the rating, and all three would
+  /// be the same interval. Only the intervals move: each rating keeps its own
+  /// stability.
+  ///
+  /// Hard is never above Good to begin with: `w1 < w2` and `w15 < 1`.
+  List<int> _passingIntervals(CardState state, int elapsed) {
+    int raw(Rating rating) => intervalDays(_next(state, rating, elapsed).$1);
+
+    final hard = raw(Rating.hard);
+    final good = math.min(math.max(raw(Rating.good), hard + 1), maxInterval);
+    final easy = math.min(math.max(raw(Rating.easy), good + 1), maxInterval);
+    return <int>[hard, good, easy];
   }
 
   /// First review: `S = w[rating-1]`, `D = clamp(w4 − (rating−3)·w5, 1, 10)`.
