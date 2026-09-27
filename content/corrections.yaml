@@ -191,3 +191,116 @@ words:
     why: "#628: personal details replaced with generic ones"
     example_de_1: "Ich arbeite bei der Firma Müller."
     example_en_1: "I work at the Müller company."
+  "43c987965e1bafba":
+    why: "#629: one headword; 'nicht bestehen' moves to the synonyms"
+    german: "bestehen"
+    english: "to pass (an exam)"
+    bangla: "উত্তীর্ণ হওয়া"
+    synonyms_register: "↔ nicht bestehen, durchfallen (to fail)"
+  "7351c92b098899b0":
+    why: "#629: the headword is the word the row teaches (its second half)"
+    german: "sich auszahlen"
+  "51825e3d2a39b75c":
+    why: "#629: the headword is the word the row teaches (its second half)"
+    german: "Zustimmung"
+  "34823b5f1da3c7d4":
+    why: "#629: the headword is the word the row teaches (its second half)"
+    german: "sich rentieren"
+  "f4a9699e72388780":
+    why: "#629: the headword is the word the row teaches, and its article is die"
+    article: "die"
+    german: "Weiterentwicklung"
+  "34e017af35ce6b48":
+    why: "#629: the headword is the word the row teaches, and its article is der"
+    article: "der"
+    german: "Freiwilligendienst"
+  "cfee5d97387744ed":
+    why: "#629: one headword; 'auspendeln' moves to the synonyms, and the forms are einpendeln's"
+    german: "einpendeln"
+    english: "to commute in"
+    forms: "pendelt ein · ist eingependelt"
+    synonyms_register: "↔ auspendeln (to commute out); pendeln; statistics/urban planning term"
+  "d3a45c1419612e91":
+    why: "#629: the headword is the word the row teaches (its second half)"
+    german: "beitragen zu"
+  "5ca8bccd1202630f":
+    why: "#629: the headword is the word the row teaches (its second half)"
+    german: "zum einen … zum anderen"
+  "d56705022cd51823":
+    why: "#629: the headword is the word the row teaches (its second half)"
+    german: "Verantwortung tragen"
+  "738822df37581665":
+    why: "#629: the headword is the word the row teaches (its second half)"
+    german: "offenkundig"
+  "b7ac85c15e3e81ed":
+    why: "#629: the headword is the word the row teaches (its second half)"
+    german: "abschwächen"
+  "4a21b186e8b3b9f3":
+    why: "#629: the headword is the word the row teaches (its second half)"
+    german: "ausfallen"
+  "63f8482ffda2bedc":
+    why: "#629: the headword is the word the row teaches (its second half)"
+    german: "sich auszahlen"
+  "b2a876acba6ac15f":
+    why: "#629: the headword is the word the row teaches (its second half)"
+    german: "sich fortpflanzen"
+  "c3832c436865527b":
+    why: "#629: the headword is the word the row teaches (its second half)"
+    german: "im Übrigen"
+  "1c6a2a54e16968c8":
+    why: "#629: the headword is the word the row teaches (its second half)"
+    german: "auf den Punkt bringen"
+  "83645608678cc5fc":
+    why: "#629: the headword is the word the row teaches (its second half)"
+    german: "den Überblick behalten"
+  "48ac37fda5d6bcf9":
+    why: "#629: the headword is the word the row teaches (its second half)"
+    german: "sich andeuten"
+  "73418ec785ac0072":
+    why: "#629: the headword is the word the row teaches (its second half)"
+    german: "sich als tragfähig erweisen"
+  "15a24d266f0f0a0d":
+    why: "#629: the headword is the word the row teaches (its second half)"
+    german: "Nüchternheit"
+  "a761858350e871d7":
+    why: "#629: the headword is the word the row teaches (its second half)"
+    german: "Vereinnahmung"
+  "730e60f6c0afd709":
+    why: "#629: the headword is the word the row teaches; its opposite moves to the synonyms"
+    german: "unterminieren"
+    synonyms_register: "untergraben, schwächen; ↔ untermauern (to underpin)"
+  "367cd89e900c96a7":
+    why: "#629: the headword is the word the row teaches (its second half)"
+    german: "schlechterdings"
+  "7cf5b3c5ba5dc21a":
+    why: "#629: the headword is the word the row teaches (its second half)"
+    german: "zu Buche schlagen"
+  "13f333c1713661e1":
+    why: "#629: the headword is the word the row teaches (its second half)"
+    german: "sich fügen"
+  "4c2b750fb9f0949e":
+    why: "#629: the headword is the word the row teaches (its second half)"
+    german: "pauschalisieren"
+  "9b2aa03489eeed16":
+    why: "#629: the headword is the word the row teaches (its second half)"
+    article: "die"
+    german: "Pointe"
+  "147b16e5da09e383":
+    why: "#629: the headword is the word the row teaches (its second half)"
+    german: "dramatisieren"
+  "8197f37f58fb9264":
+    why: "#629: the headword is the word the row teaches (its second half)"
+    german: "Verwendung finden"
+  "82c0f30663dea2de":
+    why: "#629: the headword is the word the row teaches (its second half)"
+    german: "desgleichen"
+  "04d3447a347a8f00":
+    why: "#629: the headword is the word the row teaches (its second half)"
+    german: "folgerichtig"
+  "9e72c9f83642c79a":
+    why: "#629: the headword is the word the row teaches (its second half)"
+    german: "im Trüben fischen"
+  "05a05b8b7b608609":
+    why: "#629: the headword is the word the row teaches, and its article is das"
+    article: "das"
+    german: "Vetorecht"

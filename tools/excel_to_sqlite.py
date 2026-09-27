@@ -127,6 +127,9 @@ class Word:
 
     # Derived by pipeline_steps, not read from the workbook.
     uid: str | None = None
+    #: The uid the row had as read, when content/corrections.yaml changed it:
+    #: the exact link PIPE-09 needs when a correction changes a uid field.
+    corrected_from: str | None = None
     sublevel_code: str | None = None
     seq: int | None = None
     seq_in_sublevel: int | None = None
@@ -635,7 +638,8 @@ def link_previous(
     before, previous = previous_build(previous_dir)
     after = {w.uid: word_key(w.level, w.german, w.pos, w.english) for w in words}
     carried = (previous or {}).get("aliases", {})
-    aliases, unmatched = link_uids(before, after, carried)
+    corrected = {w.corrected_from: w.uid for w in words if w.corrected_from}
+    aliases, unmatched = link_uids(before, after, carried, corrected)
 
     fresh = {old: new for old, new in aliases.items() if old in before}
     _report(

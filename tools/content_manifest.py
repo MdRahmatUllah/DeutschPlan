@@ -168,6 +168,7 @@ def link_uids(
     before: dict[str, WordKey],
     after: dict[str, WordKey],
     carried: dict[str, str] | None = None,
+    known: dict[str, str] | None = None,
 ) -> tuple[dict[str, str], list[str]]:
     """PIPE-09 (#648): which new uid each removed one became.
 
@@ -179,16 +180,25 @@ def link_uids(
     1. the same level, German and part of speech: the nearest English wins;
     2. else the same German, part of speech and English: it moved level.
 
-    Each added uid takes one removed uid at most. [carried] is the previous
-    build's map, followed through this one's, so a learner who skipped a
-    version still lands on the word as it is now.
+    Each added uid takes one removed uid at most. [known] links come first:
+    a row `content/corrections.yaml` changed maps the uid it had as read to
+    the one it has now, exactly, whatever it changed (#629). [carried] is the
+    previous build's map, followed through this one's, so a learner who
+    skipped a version still lands on the word as it is now.
 
     Returns the map and the removed uids nothing matched, which the build
     refuses to drop without `--allow-removed`.
     """
-    removed = sorted(set(before) - set(after))
-    free = {uid: after[uid] for uid in sorted(set(after) - set(before))}
-    links: dict[str, str] = {}
+    links = {
+        old: new
+        for old, new in (known or {}).items()
+        if old in before and old not in after and new in after
+    }
+    removed = sorted(set(before) - set(after) - set(links))
+    free = {
+        uid: after[uid]
+        for uid in sorted(set(after) - set(before) - set(links.values()))
+    }
 
     def link(old: str, same, closeness) -> None:
         candidates = [uid for uid, key in free.items() if same(before[old], key)]
