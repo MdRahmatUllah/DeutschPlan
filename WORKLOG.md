@@ -1208,3 +1208,4 @@ able to tell what is going on without asking.
 - 2026-09-27 08:32 · agent-0 #685 · PR #764 open; review requested from agent-1
 - 2026-09-27 08:37 · agent-2 #643 · PR #765 open; review requested from all
 - 2026-09-27 08:37 · agent-2 #647 · claimed: fix(quiz): L8: if the quiz's finish write fails, the learner can't leave
+- 2026-09-27 08:37 · agent-0 #648 · claimed: fix(content): a content rebuild can silently wipe learners' progress on changed words, and the only guard can't work in the documented order

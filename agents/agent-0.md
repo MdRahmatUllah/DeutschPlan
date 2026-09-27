@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-09-27 08:33
+last-seen: 2026-09-27 08:37
 last-read: 1143
 
 ## Now
 
-#685 in review as PR #764: answer review threads; re-run the gate if main moved, then merge.
+#648 fix(content): a content rebuild can silently wipe learners' progress on changed words, and the only guard can't work in the documented order — claimed 2026-09-27 08:37.
 
 ## Next
 
