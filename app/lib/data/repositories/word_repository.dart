@@ -38,6 +38,22 @@ enum WordStatus {
   String get wire => name;
 }
 
+/// BR-STATUS-02: `done` is derived from stability, never set by hand. The
+/// one Dart statement of the rule, for words and grammar topics alike (#639).
+/// The queries that derive a status in SQL state it as `>= :doneAfter` (and
+/// `< :doneAfter` for learning); `done_rule_test.dart` holds them to this.
+///
+/// A lapse drops the stability, which is what moves a `done` word back to
+/// `learning` — there is no separate rule for it, and that is the point of
+/// deriving rather than storing.
+///
+/// Top-level and pure so the boundary can be tested. `>=`, not `>`, and the
+/// difference is unreachable through rating: FSRS stabilities are products of
+/// the weights and never land exactly on an integer threshold. The rule still
+/// says `>=`, and this is where that can be held to.
+WordStatus statusForStability(double stability, int doneStabilityDays) =>
+    stability >= doneStabilityDays ? WordStatus.done : WordStatus.learning;
+
 /// How often a word was reviewed and how it was last rated; `last` is null
 /// for a word never reviewed.
 typedef ReviewHistory = ({int reviews, Rating? last});
@@ -611,8 +627,10 @@ class WordRepository extends DatabaseAccessor<AppDatabase>
     // back to `todo` on the next refresh and offer it as new again.
     if (state.introducedOn == null && state.reps == 0) return WordStatus.todo;
 
-    final threshold = _settings.read(SettingKeys.doneStabilityDays);
-    return state.stability >= threshold ? WordStatus.done : WordStatus.learning;
+    return statusForStability(
+      state.stability,
+      _settings.read(SettingKeys.doneStabilityDays),
+    );
   }
 
   /// Recomputes and stores the derived status for one word.
