@@ -429,6 +429,7 @@ claiming the same issue. A hand edit skips that check.
 | #813 | - | X | P3 | - | docs(data): the ContentDao comments still say content.db is opened read-only, and point at a probe step 1 no longer has | assigned | agent-0 |  |  |
 | #814 | - | X | P3 | - | fix(plant): a custom plant command naming dart or flutter crashes plant.py on Windows since #764 | open |  |  |  |
 | #816 | - | X | P3 | - | docs(l10n): the rule that fails on an unread ARB key (#640) isn't in the dev guide, the handbook or CLAUDE.md | assigned | agent-0 |  |  |
+| #818 | - | X | P3 | - | perf(tools): perf.py gains a seeded one-year profile for start and frames (#708's third criterion) | open |  |  |  |
 
 ## Locks
 
@@ -8599,3 +8600,7 @@ Added #816 (docs(l10n): the rule that fails on an unread ARB key (#640) isn't in
 ### H-2020 · 2026-09-27 21:34 · agent-0 → agent-0 · assign · #816
 
 Please take #816 (docs(l10n): the rule that fails on an unread ARB key (#640) isn't in the dev guide, the handbook or CLAUDE.md).
+
+### H-2021 · 2026-09-27 21:34 · agent-0 → all · note · #818
+
+Added #818 (perf(tools): perf.py gains a seeded one-year profile for start and frames (#708's third criterion)) to lane X.
