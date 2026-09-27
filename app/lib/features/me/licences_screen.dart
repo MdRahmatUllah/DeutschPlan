@@ -58,8 +58,9 @@ const List<Licence> fontLicences = <Licence>[
 
 /// FR-M8-01 (#610): the native libraries in the APK that no package's
 /// LICENSE covers, bundled in full: ONNX Runtime (the Supertonic voice's
-/// engine) with its third-party notices, and the Apache-2.0 Android
-/// libraries the plugins pull in. `tools/licences.py` fetches and checks them.
+/// engine) with its third-party notices, the Apache-2.0 Android libraries the
+/// plugins pull in, and desugar_jdk_libs, which the build compiles into the
+/// DEX (#848). `tools/licences.py` fetches and checks them.
 const List<Licence> nativeLicences = <Licence>[
   (
     name: 'ONNX Runtime',
@@ -77,6 +78,12 @@ const List<Licence> nativeLicences = <Licence>[
     name: 'AndroidX, Jetpack Glance, WorkManager, Kotlin, Gson',
     kind: 'Apache-2.0',
     asset: 'assets/licences/AndroidX-Apache-2.0.txt',
+    text: null,
+  ),
+  (
+    name: 'desugar_jdk_libs',
+    kind: 'GPL-2.0 with the Classpath Exception',
+    asset: 'assets/licences/DesugarJdkLibs-GPL-2.0-Classpath-Exception.txt',
     text: null,
   ),
 ];
@@ -272,6 +279,10 @@ class _Row extends StatelessWidget {
 }
 
 /// FR-M8-01: a licence's text in full, in a sheet that scrolls.
+///
+/// Line by line, and built as it scrolls (#849): ONNX Runtime's notices are
+/// 6,000 lines, which as one text were laid out and painted whole on open.
+/// A hard line break ends a line either way, so it reads as one text did.
 class _Text extends ConsumerWidget {
   const _Text({required this.licence, required this.kind});
 
@@ -285,6 +296,7 @@ class _Text extends ConsumerWidget {
     final text = asset == null
         ? licence.text
         : ref.watch(licenceTextProvider(asset)).value;
+    final lines = (text ?? '').replaceAll('\r\n', '\n').split('\n');
     return ConstrainedBox(
       constraints: BoxConstraints(
         maxHeight: MediaQuery.sizeOf(context).height * 0.85,
@@ -306,8 +318,13 @@ class _Text extends ConsumerWidget {
             ),
             const SizedBox(height: 12),
             Flexible(
-              child: SingleChildScrollView(
-                child: SgText(text ?? '', role: SgTextRole.caption),
+              // Shrink-wrapped, so a short licence still hugs its text.
+              child: ListView.builder(
+                shrinkWrap: true,
+                padding: EdgeInsets.zero,
+                itemCount: lines.length,
+                itemBuilder: (context, i) =>
+                    SgText(lines[i], role: SgTextRole.caption),
               ),
             ),
           ],
