@@ -356,6 +356,31 @@ VALUES (?, ?, 'A1', ?, ?, ?, ?, ?, ?)
       );
     });
 
+    test(
+      '#620 a new pace for the same step reaches a live stepProgress',
+      () async {
+        // The settings already say 12, so nothing restarts the watch: only the
+        // enrollment's own write can tell it (the #114 bug class).
+        await firstRun();
+        await settings.write(SettingKeys.dailyNew, 12);
+        final paces = container
+            .read(wordRepositoryProvider)
+            .watchStepProgress()
+            .map((steps) => steps.firstWhere((s) => s.code == 'A1.1').dailyNew);
+        final seen = <int>[];
+        final sub = paces.listen(seen.add);
+        addTearDown(sub.cancel);
+        await pumpEventQueue();
+        expect(seen.last, 7, reason: 'the enrollment was frozen at 7');
+
+        await flow().beginRestart();
+        await flow().finish();
+        await pumpEventQueue();
+
+        expect(seen.last, 12);
+      },
+    );
+
     test('a different step closes the old one — one active, always', () async {
       // `idx_one_active_enrollment` would refuse a second open row; closing
       // the first is what keeps the insert from failing.
