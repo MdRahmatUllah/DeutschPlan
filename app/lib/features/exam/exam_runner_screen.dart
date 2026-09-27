@@ -15,6 +15,7 @@ import 'package:sogda/features/exam/exam_navigator_sheet.dart';
 import 'package:sogda/features/exam/exam_question_view.dart';
 import 'package:sogda/features/learn/step_exams.dart'
     show examMinutes, examSectionName;
+import 'package:sogda/features/study/write_guard.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/l10n/ui_digits.dart';
 import 'package:sogda/router/back_behaviour.dart';
@@ -68,6 +69,12 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
   // ponytail: FR-L12-06's plays live in memory, so a resumed attempt
   // gives each word three again; a column on exam_answers when it matters.
   final Map<int, int> _plays = <int, int>{};
+
+  /// Speaking's retakes used, by ord: here, not in the task's view, which is
+  /// built again on every visit (#731).
+  // ponytail: in memory, so a resumed attempt offers the retake again; a
+  // column on exam_answers when it matters.
+  final Map<int, int> _retakes = <int, int>{};
   final TextEditingController _field = TextEditingController();
 
   bool _timed = true;
@@ -87,23 +94,43 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
   /// no longer be used.
   late final ExamRunService _service;
 
+  /// The app is in the background (#670): the clock holds.
+  bool _away = false;
+  late final AppLifecycleListener _lifecycle;
+
   @override
   void initState() {
     super.initState();
     _service = ref.read(examRunServiceProvider);
+    _lifecycle = AppLifecycleListener(onHide: _hide, onShow: _show);
     unawaited(_load());
   }
 
   @override
   void dispose() {
+    _lifecycle.dispose();
     _tick?.cancel();
     // What the learner typed and the seconds since the last write: the
     // route is going, not the attempt.
-    _saveTyped();
+    unawaited(_saveTyped());
     unawaited(_flush());
     _field.dispose();
     super.dispose();
   }
+
+  /// #670: the app goes to the background, where the OS may kill it and
+  /// Android silences the microphone. What was typed and the time are
+  /// written, a recording is stopped and kept, as leaving the exam keeps it,
+  /// and the clock holds until the learner is back.
+  void _hide() {
+    _away = true;
+    if (_paper == null || _done) return;
+    unawaited(_saveTyped());
+    unawaited(_flush());
+    if (_stopRecording case final stop?) unawaited(stop());
+  }
+
+  void _show() => _away = false;
 
   Future<void> _load() async {
     try {
@@ -154,7 +181,9 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
   /// FR-L12-03: the clock counts only while running; paused seconds are
   /// kept apart; at 0:00 the exam submits itself.
   void _second() {
-    if (!mounted || _done) return;
+    // #670: Android runs the timer in the background until it freezes the
+    // app, iOS not at all: the time away is not the exam's.
+    if (!mounted || _done || _away) return;
     setState(() {
       if (_paused) {
         _pausePending++;
@@ -174,7 +203,7 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
     // Writing's text is long to lose: it is written with the clock too
     // (FR-L12W-04). Any other typed answer waits for the learner to move on,
     // or a half-typed "Hau" would count as answered and skip the resume.
-    if (_paper?.questions[_at].item is WritingTask) _saveTyped();
+    if (_paper?.questions[_at].item is WritingTask) unawaited(_saveTyped());
     final (running, paused) = (_runPending, _pausePending);
     if (running == 0 && paused == 0) return;
     _runPending = 0;
@@ -192,16 +221,59 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
   }
 
   /// FR-L12-01: the current typed answer, written if it changed.
-  void _saveTyped() {
-    final paper = _paper;
-    if (paper == null || !_typedHere || _done) return;
+  Future<void> _saveTyped() async {
+    if (_paper == null || !_typedHere || _done) return;
     final typed = _field.text.trim();
     final given = typed.isEmpty ? null : typed;
     if (given == _given[_at]) return;
-    _given[_at] = given;
-    unawaited(
-      _service.answer(widget.attemptId, paper.questions[_at].ord, given),
-    );
+    await _answer(_at, given);
+  }
+
+  /// #730: [value] recorded for question [index] and written through
+  /// [guardWrite]: a write that fails brings up its sheet (*Retry* ·
+  /// *Export progress*), and closed, the question is as it was stored, so
+  /// the navigator and the submit's confirm don't count an answer the
+  /// grading won't find.
+  Future<void> _answer(int index, String? value) async {
+    final was = _given[index];
+    _change(() => _given[index] = value);
+    final ord = _paper!.questions[index].ord;
+    if (await _written(() => _service.answer(widget.attemptId, ord, value))) {
+      return;
+    }
+    if (_given[index] == value) _change(() => _given[index] = was);
+  }
+
+  /// Whether the runner is on screen. Not in [dispose], which writes what
+  /// was typed: its element is gone by then, though [mounted] says true.
+  bool get _live => mounted && context.mounted;
+
+  /// A write, guarded (#730). Once the runner is gone (a take stopped by
+  /// leaving the exam lands after it, or [dispose]'s last write), no sheet
+  /// can ask: the error is logged, as [guardWrite] does.
+  Future<bool> _written(Future<void> Function() write) async {
+    if (!_live) {
+      try {
+        await write();
+        return true;
+      } on Object catch (error) {
+        debugPrint('write: $error');
+        return false;
+      }
+    }
+    return guardWrite(context, () async {
+      await write();
+      return true;
+    });
+  }
+
+  /// [change] made, and drawn while the runner is on screen.
+  void _change(VoidCallback change) {
+    if (_live) {
+      setState(change);
+    } else {
+      change();
+    }
   }
 
   /// A choice tapped, or the field submitted: written at once. Nothing
@@ -210,31 +282,22 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
   /// [at] is the question it belongs to (#372): Speaking stopped by moving
   /// on lands after [_at] has moved, and belongs to the task it was said in.
   void _record(String value, {int? at}) {
-    final paper = _paper;
-    if (paper == null) return;
+    if (_paper == null) return;
     final index = at ?? _at;
     if (index == _at && _typedHere) {
-      _saveTyped();
+      unawaited(_saveTyped());
       return;
     }
-    final given = value.isEmpty ? null : value;
     // Speaking stopped by leaving the exam lands after the runner has gone,
     // and is still written: what was said is kept.
-    if (mounted) {
-      setState(() => _given[index] = given);
-    } else {
-      _given[index] = given;
-    }
-    unawaited(
-      _service.answer(widget.attemptId, paper.questions[index].ord, given),
-    );
+    unawaited(_answer(index, value.isEmpty ? null : value));
   }
 
   /// While Speaking records: how to stop it and keep what was said (#372).
   Future<void> Function()? _stopRecording;
 
   void _go(int to) {
-    _saveTyped();
+    unawaited(_saveTyped());
     setState(() {
       _at = to;
       _field.text = _typedHere ? _given[to] ?? '' : '';
@@ -244,7 +307,7 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
   /// #131: the navigator. A tap goes to that question; *Submit exam*
   /// submits, asking first when questions are open.
   Future<void> _openNavigator(List<ExamRunQuestion> questions) async {
-    _saveTyped();
+    unawaited(_saveTyped());
     final numbered = <int>[
       for (final (i, q) in questions.indexed)
         if (examNumbered(q.item)) i,
@@ -269,18 +332,32 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
     }
   }
 
-  void _toggleFlag() {
+  Future<void> _toggleFlag() async {
     final paper = _paper;
     if (paper == null) return;
-    final flagged = !_flagged[_at];
-    setState(() => _flagged[_at] = flagged);
-    unawaited(
-      _service.flag(
-        widget.attemptId,
-        paper.questions[_at].ord,
-        flagged: flagged,
-      ),
-    );
+    final index = _at;
+    final flagged = !_flagged[index];
+    setState(() => _flagged[index] = flagged);
+    final ord = paper.questions[index].ord;
+    if (await _written(
+      () => _service.flag(widget.attemptId, ord, flagged: flagged),
+    )) {
+      return;
+    }
+    // #730: not written, so not flagged as the review would list it.
+    if (_flagged[index] == flagged) _change(() => _flagged[index] = !flagged);
+  }
+
+  /// FR-L12S-03's ticks for question [index], written as they are ticked;
+  /// ticks that aren't written are taken back (#730).
+  Future<void> _rubric(int index, List<bool> ticks) async {
+    final was = _rubrics[index];
+    _change(() => _rubrics[index] = ticks);
+    final ord = _paper!.questions[index].ord;
+    if (await _written(() => _service.rubric(widget.attemptId, ord, ticks))) {
+      return;
+    }
+    if (identical(_rubrics[index], ticks)) _change(() => _rubrics[index] = was);
   }
 
   /// FR-L12-04 *Leave*: what was typed and the time are written, and the
@@ -290,7 +367,7 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
     final paper = _paper;
     if (paper == null || _submitting || _done) return;
     _tick?.cancel();
-    _saveTyped();
+    await _saveTyped();
     try {
       await _flush();
       await _service.abandon(widget.attemptId);
@@ -327,7 +404,8 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
     // while this one stops the recorder or asks is turned away; a submit the
     // learner takes back lets the next one through.
     _submitting = true;
-    _saveTyped();
+    await _saveTyped();
+    if (!mounted) return;
     // #372: a live recording is stopped and saved first, so the confirm
     // counts it and the grading has it. It never throws: a recorder that
     // fails loses the take (ExamSpeaking's `_stop`), not the exam.
@@ -480,7 +558,7 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
                     label: _flagged[_at]
                         ? l10n.examRunFlagged
                         : l10n.examRunFlag,
-                    onTap: _toggleFlag,
+                    onTap: () => unawaited(_toggleFlag()),
                     excludeSemantics: true,
                     child: AdaptiveTooltip(
                       message: _flagged[_at]
@@ -488,7 +566,7 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
                           : l10n.examRunFlag,
                       child: GestureDetector(
                         behavior: HitTestBehavior.opaque,
-                        onTap: _toggleFlag,
+                        onTap: () => unawaited(_toggleFlag()),
                         child: SizedBox.square(
                           dimension: 48,
                           child: Icon(
@@ -523,17 +601,17 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
                   countPinned: typing && item is WritingTask,
                   onGiven: (value) => _record(value, at: at),
                   onRecording: (stop) => _stopRecording = stop,
-                  rubric: _rubrics[_at],
-                  onRubric: (ticks) {
-                    _rubrics[_at] = ticks;
-                    unawaited(
-                      _service.rubric(
-                        widget.attemptId,
-                        questions[_at].ord,
-                        ticks,
-                      ),
-                    );
-                  },
+                  rubric: _rubrics[at],
+                  onRubric: (ticks) => unawaited(_rubric(at, ticks)),
+                  retakesLeft:
+                      ExamSpeaking.retakes - (_retakes[questions[at].ord] ?? 0),
+                  onRetake: () => _change(
+                    () => _retakes.update(
+                      questions[at].ord,
+                      (n) => n + 1,
+                      ifAbsent: () => 1,
+                    ),
+                  ),
                   recordingPath: () => _service.recordingPath(widget.attemptId),
                   onDiscard: _service.discard,
                   plays: _plays[questions[_at].ord] ?? 0,

@@ -7,11 +7,13 @@ import 'package:sogda/features/exam/exam_runner_screen.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
+import 'package:sogda/services/exam_recorder.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:record/record.dart' show AudioInterruptionMode;
 
 import 'exam_run_fixtures.dart';
 
@@ -237,6 +239,95 @@ void main() {
       semantics.dispose();
     });
 
+    testWidgets('#731 the retake used stays used when the learner leaves '
+        'the task and comes back', (tester) async {
+      await pump(tester);
+      await press(tester, Icons.mic);
+      await press(tester, Icons.stop);
+      await tester.pumpAndSettle();
+      await tester.tap(find.text(l10n.examSpeakingRetake(1)));
+      await tester.pump();
+      await press(tester, Icons.stop);
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text(l10n.examRunNext));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text(l10n.examRunPrevious));
+      await tester.pumpAndSettle();
+
+      expect(find.text(l10n.examSpeakingRetake(0)), findsOneWidget);
+      expect(find.text(l10n.examSpeakingRetake(1)), findsNothing);
+    });
+
+    test('FR-L12S-02 #624 the phone pauses a recording for a call and '
+        'resumes it after, never leaves it paused for good', () {
+      expect(
+        PlatformExamRecorder.config.audioInterruption,
+        AudioInterruptionMode.pauseResume,
+      );
+      expect(PlatformExamRecorder.config.bitRate, 32000);
+      expect(PlatformExamRecorder.config.numChannels, 1);
+    });
+
+    testWidgets('#624 a call, an alarm or an assistant holds the recording '
+        'and its time, which go on after', (tester) async {
+      await pump(tester);
+      await press(tester, Icons.mic);
+      await tester.pump(const Duration(seconds: 2));
+      expect(find.text('00:02'), findsOneWidget);
+
+      // The event lands after the first frame; the second draws it.
+      mic.interruptions.add(true);
+      await tester.pump();
+      await tester.pump();
+      expect(find.text(l10n.examSpeakingInterrupted), findsOneWidget);
+      await tester.pump(const Duration(seconds: 90));
+      expect(find.text('00:02'), findsOneWidget);
+      expect(mic.stopped, 0, reason: 'past the length, the time is held');
+
+      mic.interruptions.add(false);
+      await tester.pump();
+      await tester.pump();
+      expect(find.text(l10n.examSpeakingRecording), findsOneWidget);
+      await tester.pump(const Duration(seconds: 1));
+      expect(find.text('00:03'), findsOneWidget);
+    });
+
+    testWidgets('#670 the app going to the background stops and keeps it', (
+      tester,
+    ) async {
+      await pump(tester);
+      await press(tester, Icons.mic);
+      await tester.pump(const Duration(seconds: 12));
+
+      tester.binding
+        ..handleAppLifecycleStateChanged(AppLifecycleState.inactive)
+        ..handleAppLifecycleStateChanged(AppLifecycleState.hidden);
+      await tester.pump();
+      expect(mic.stopped, 1);
+      expect(run.answers, <(int, String?)>[(1, path)]);
+
+      // No frames while the app is hidden: the screen shows it on return.
+      tester.binding
+        ..handleAppLifecycleStateChanged(AppLifecycleState.inactive)
+        ..handleAppLifecycleStateChanged(AppLifecycleState.resumed);
+      await tester.pumpAndSettle();
+      expect(find.text(l10n.examSpeakingRecorded), findsOneWidget);
+    });
+
+    testWidgets('#732 a take that cannot be played says so, and Play comes '
+        'back', (tester) async {
+      await pump(tester, recorder: FakeRecorder()..playFails = true);
+      await press(tester, Icons.mic);
+      await press(tester, Icons.stop);
+      await tester.pumpAndSettle();
+
+      await press(tester, Icons.play_arrow);
+      expect(find.text(l10n.examSpeakingPlayFailed), findsOneWidget);
+      expect(find.byIcon(Icons.play_arrow), findsOneWidget);
+      await tester.pumpAndSettle(const Duration(seconds: 5));
+    });
+
     testWidgets('one made before shows as recorded, with its length', (
       tester,
     ) async {
@@ -449,5 +540,51 @@ void main() {
     expect(run.discarded, <String>[path]);
     expect(run.answers, <(int, String?)>[(1, null)]);
     expect(find.text(l10n.examSpeakingReady), findsOneWidget);
+  });
+
+  testWidgets("FR-L12S-04 #731 delete clears the take's ticks", (tester) async {
+    final semantics = tester.ensureSemantics();
+    await pump(
+      tester,
+      items: const <ExamItem>[artboardSpeaking],
+      given: <int, String>{1: path},
+    );
+    await tester.tap(find.text(l10n.examSpeakingRubricTask));
+    await tester.pump();
+
+    await tester.tap(find.text(l10n.examSpeakingDelete));
+    await tester.pumpAndSettle();
+    expect(run.rubrics.last.$2, <bool>[false, false, false, false]);
+
+    await press(tester, Icons.mic);
+    await press(tester, Icons.stop);
+    await tester.pumpAndSettle();
+    expect(
+      tester.getSemantics(find.bySemanticsLabel(l10n.examSpeakingRubricTask)),
+      isSemantics(isChecked: false, hasCheckedState: true),
+      reason: 'the new take starts unticked',
+    );
+    semantics.dispose();
+  });
+
+  testWidgets('#730 a tick that is not written is taken back', (tester) async {
+    final semantics = tester.ensureSemantics();
+    await pump(
+      tester,
+      items: const <ExamItem>[artboardSpeaking],
+      given: <int, String>{1: path},
+    );
+    run.failWrites = true;
+    await tester.tap(find.text(l10n.examSpeakingRubricTask));
+    await tester.pumpAndSettle();
+    expect(find.text(l10n.saveAnswerFailed), findsOneWidget);
+    Navigator.of(tester.element(find.text(l10n.saveAnswerFailed))).pop();
+    await tester.pumpAndSettle();
+
+    expect(
+      tester.getSemantics(find.bySemanticsLabel(l10n.examSpeakingRubricTask)),
+      isSemantics(isChecked: false, hasCheckedState: true),
+    );
+    semantics.dispose();
   });
 }
