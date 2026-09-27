@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-09-27 20:40
+last-seen: 2026-09-27 20:43
 last-read: 1870
 
 ## Now
 
-#785 in review as PR #940: answer review threads; re-run the gate if main moved, then merge.
+#634 chore(content): nothing gates the committed content.db, and the source workbooks are neither in git nor fingerprinted — claimed 2026-09-27 20:43.
 
 ## Next
 
