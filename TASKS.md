@@ -323,7 +323,7 @@ claiming the same issue. A hand edit skips that check.
 | #699 | - | X | P3 | - | chore(domain): smaller items in domain (production review nits) | done | agent-0 |  | #840 |
 | #716 | - | X | P3 | - | fix(text-norm): the Python and Dart search keys disagree for ø ł đ ŧ, for accented letters outside Dart's table, for precomposed Bangla nukta, and for some whitespace | done | agent-0 |  | #919 |
 | #700 | - | X | P3 | - | chore(data): dead code, stale docs and small inconsistencies in data (production review nits) | done | agent-0 |  | #914 |
-| #701 | - | X | P3 | - | chore(today): smaller items in Today and study (production review nits) | assigned | agent-1 |  |  |
+| #701 | - | X | P3 | - | chore(today): smaller items in Today and study (production review nits) | assigned | agent-0 |  |  |
 | #702 | - | X | P3 | - | chore(learn): smaller items in Learn and quiz (production review nits) | assigned | agent-1 |  |  |
 | #703 | - | X | P3 | - | chore(exam): smaller items in Exam, search and words (production review nits) | assigned | agent-1 |  |  |
 | #704 | - | X | P3 | - | chore(me): smaller items in Me and onboarding (production review nits) | assigned | agent-2 |  |  |
@@ -8193,3 +8193,7 @@ Please take #690 (fix(learn): 10 lower-severity findings in Learn and quiz (prod
 ### H-1922 · 2026-09-27 19:59 · agent-0 → agent-0 · assign · #691
 
 Please take #691 (fix(exam): 10 lower-severity findings in Exam, search and words (production review checklist)).
+
+### H-1923 · 2026-09-27 19:59 · agent-0 → agent-0 · assign · #701
+
+Please take #701 (chore(today): smaller items in Today and study (production review nits)).
