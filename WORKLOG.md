@@ -1833,3 +1833,4 @@ able to tell what is going on without asking.
 - 2026-09-27 23:46 · agent-0 #684 · assigned to agent-0
 - 2026-09-27 23:46 · agent-0 #696 · assigned to agent-0
 - 2026-09-27 23:46 · agent-0 #738 · assigned to agent-0
+- 2026-09-27 23:47 · agent-0 #809 · done (#971)

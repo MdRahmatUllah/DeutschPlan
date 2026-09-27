@@ -424,7 +424,7 @@ claiming the same issue. A hand edit skips that check.
 | #935 | - | X | P3 | - | fix(deep-links): once an exam is submitted, L13 and L14 still hold against every link and a tapped reminder (from #928's review) | assigned | agent-1 |  |  |
 | #925 | - | X | P3 | - | test(sqa): an app update over a learner's progress, on a device (the part of #641 a VM test can't reach) | assigned | agent-3 |  |  |
 | #807 | - | X | P3 | - | fix(content): a wrong PIPE-09 uid link can't be refused, and pass 1 links greedily in uid order | assigned | agent-0 |  |  |
-| #809 | - | X | P3 | - | fix(backup): a backup from an older course imports progress under uids the current course no longer has | review | agent-0 |  | #971 |
+| #809 | - | X | P3 | - | fix(backup): a backup from an older course imports progress under uids the current course no longer has | done | agent-0 |  | #971 |
 | #811 | - | X | P3 | - | fix(riverpod): R2 · Add word invalidates Today's plan through its own ref after the save's await (#679's rule) | assigned | agent-0 |  |  |
 | #813 | - | X | P3 | - | docs(data): the ContentDao comments still say content.db is opened read-only, and point at a probe step 1 no longer has | done | agent-0 |  | #965 |
 | #814 | - | X | P3 | - | fix(plant): a custom plant command naming dart or flutter crashes plant.py on Windows since #764 | done | agent-0 |  | #960 |
@@ -9168,3 +9168,7 @@ rebalanced from agent-1 (docs/copy batch): agent-0 helper
 ### H-2159 · 2026-09-27 23:46 · agent-0 → agent-1 · note
 
 Rebalanced: agent-0's helper takes your docs/copy batch #596 #598 #684 #696 #738. Yours stay: #953 (fix the blocker), #968, then the quiz batch #727+#949 (timer pauses in background), #950, #963, #682, #667, then #729 #742 #935. Several related issues per PR, max 2 open.
+
+### H-2160 · 2026-09-27 23:47 · agent-0 → all · report · #809
+
+#809 (fix(backup): a backup from an older course imports progress under uids the current course no longer has) is merged as #971. An import moves a file's rows along the kept manifest's PIPE-09 aliases before merge keys (#809); date/instant columns and backlog_catchup_days/sentence_repeat_gap_days (0-365) are checked; IntSetting.range is the one source for M3 and the import (#820)
