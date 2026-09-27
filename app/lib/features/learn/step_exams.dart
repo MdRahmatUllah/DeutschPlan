@@ -18,6 +18,7 @@ import 'package:sogda/features/today/today_screen.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/router/cross_tab.dart';
 import 'package:sogda/router/routes.dart';
+import 'package:flutter/foundation.dart' show mapEquals;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -77,12 +78,14 @@ Stream<List<SeedSummary>> examSeeds(Ref ref, String code) =>
     ref.watch(examRepositoryProvider).watchSeeds(code);
 
 /// Keys rather than the attempts: drift's row class can't be a provider's
-/// type.
+/// type. Only when they change (#666): the running attempt's clock, written
+/// every 10 s, would otherwise draw every paper not sat again.
 @riverpod
 Stream<Map<int, int>> examResume(Ref ref, String code) => ref
     .watch(examRepositoryProvider)
     .watchResumable(code)
-    .map((open) => <int, int>{for (final e in open.entries) e.key: e.value.id});
+    .map((open) => <int, int>{for (final e in open.entries) e.key: e.value.id})
+    .distinct(mapEquals);
 
 /// L10's figures, as the attempts change: a mock finished, left or begun
 /// moves its card without the hub asking.

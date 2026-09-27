@@ -16,6 +16,7 @@ import 'package:sogda/domain/quiz_builder.dart' show FormLabel;
 import 'package:sogda/features/exam/exam_runner_screen.dart';
 import 'package:sogda/features/quiz/quiz_item_view.dart' show GermanWord;
 import 'package:sogda/l10n/generated/app_localizations.dart';
+import 'package:sogda/l10n/ui_digits.dart';
 import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -427,6 +428,42 @@ void main() {
       await tester.pumpAndSettle();
     }
 
+    for (final bangla in <bool>[false, true]) {
+      testWidgets('#733 at 200 % ${bangla ? 'in Bangla ' : ''}on 360 × 640 '
+          "a flag never covers its question's number", (tester) async {
+        final semantics = tester.ensureSemantics();
+        tester.view
+          ..physicalSize = const Size(360, 640) * 3
+          ..devicePixelRatio = 3;
+        addTearDown(tester.view.reset);
+        await pump(
+          tester,
+          textScaler: const AndroidTextScaler(2),
+          locale: bangla ? const Locale('bn') : null,
+          stub: StubExamRun(flagged: const <int>{7, 21, 38}),
+        );
+        final loc = bangla ? bn : l10n;
+        await tester.tap(find.bySemanticsLabel(loc.examNavOpen));
+        await tester.pumpAndSettle();
+        for (final n in <int>[7, 21, 38]) {
+          final cell = find.bySemanticsLabel(loc.examNavQuestion(n));
+          Rect inCell(Finder f) =>
+              tester.getRect(find.descendant(of: cell, matching: f));
+          final flag = inCell(find.byIcon(Icons.flag));
+          final number = inCell(find.text(loc.digits(n)));
+          final overlap = flag.intersect(number);
+          expect(
+            overlap.width <= 0 || overlap.height <= 0,
+            isTrue,
+            reason: '$n: the flag $flag is on the number $number',
+          );
+        }
+        expect(tester.takeException(), isNull);
+        expectNothingClipped(tester);
+        semantics.dispose();
+      });
+    }
+
     testWidgets("#580 in Bangla at 200 % a question's number shows whole in "
         'its cell', (tester) async {
       final semantics = tester.ensureSemantics();
@@ -494,6 +531,36 @@ void main() {
       expect(find.text(l10n.examNavAnswered(19)), findsOneWidget);
       expect(find.text(l10n.examNavFlagged(1)), findsOneWidget);
       expect(find.text(l10n.examNavEmpty(20)), findsOneWidget);
+      semantics.dispose();
+    });
+
+    testWidgets('#733 a flagged question carries a flag, not only its '
+        'colour: in its cell and in the legend', (tester) async {
+      final semantics = tester.ensureSemantics();
+      await pump(tester, stub: StubExamRun(flagged: const <int>{7}));
+      await open(tester);
+      final flags = find.byIcon(Icons.flag);
+      // The flagged cell's mark and the legend's; an answered cell has none.
+      expect(flags, findsNWidgets(2));
+      final inCells = <int>[
+        for (var n = 1; n <= 40; n++)
+          for (var i = 0; i < 2; i++)
+            if (tester
+                .getRect(find.bySemanticsLabel(l10n.examNavQuestion(n)))
+                .contains(tester.getCenter(flags.at(i))))
+              n,
+      ];
+      expect(
+        inCells,
+        hasLength(1),
+        reason: 'one flag sits in a cell, the flagged one',
+      );
+      expect(
+        tester.getSemantics(
+          find.bySemanticsLabel(l10n.examNavQuestion(inCells.single)),
+        ),
+        isSemantics(value: l10n.examNavFlaggedState),
+      );
       semantics.dispose();
     });
 
