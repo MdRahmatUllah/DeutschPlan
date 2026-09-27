@@ -326,7 +326,7 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
             : () => _step(StudyNextStep.grammar, session),
       );
     } else if (dayComplete) {
-      _once(() => _leave(() => DayCompleteRoute.instead(context)));
+      _once(() => _leave(() => DayCompleteRoute.instead(context, date!)));
     }
     if (session != null && _bannered == null && session.startsBlock) {
       // The first block's banner, once the queue has been built.
