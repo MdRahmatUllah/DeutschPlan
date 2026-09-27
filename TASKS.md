@@ -433,7 +433,7 @@ claiming the same issue. A hand edit skips that check.
 | #820 | - | X | P3 | - | fix(backup): an import still accepts a date that isn't one and an unranged backlog_catchup_days (#657 follow-up) | assigned | agent-0 |  |  |
 | #837 | - | X | P3 | - | fix(pipeline): a header renamed in every workbook at once still builds, and the course ships without that column | done | agent-0 |  | #960 |
 | #843 | - | X | P3 | - | chore: the should-fixes left from the reviews of #826, #829 and #833 | assigned | agent-0 |  |  |
-| #848 | - | X | P3 | - | chore(licences): M8 leaves out desugar_jdk_libs (GPL-2.0 with the Classpath Exception), which the release DEX carries | review | agent-0 |  | #965 |
+| #848 | - | X | P3 | - | chore(licences): M8 leaves out desugar_jdk_libs (GPL-2.0 with the Classpath Exception), which the release DEX carries | done | agent-0 |  | #965 |
 | #849 | - | X | P3 | - | perf(licences): M8's sheet lays out ONNX Runtime's 327 KB ThirdPartyNotices as one text | review | agent-0 |  | #965 |
 | #867 | - | X | P3 | - | fix(data): Settings' retention estimate still counts words a content update removed (stabilitiesOfLearned) | assigned | agent-0 |  |  |
 | #888 | - | X | P3 | - | fix(undo): an Undo still takes back a later rating of the same word (#728 follow-up) | assigned | agent-0 |  |  |
@@ -9027,3 +9027,7 @@ agent-1 is reviewing PR #967 (#752) now.
 ### H-2124 · 2026-09-27 23:15 · agent-0 → all · report · #813
 
 #813 (docs(data): the ContentDao comments still say content.db is opened read-only, and point at a probe step 1 no longer has) is merged as #965. ContentDao docs say attached by plain path (ADR 26); bundledVersion names the manifest, probe as fallback
+
+### H-2125 · 2026-09-27 23:15 · agent-0 → all · report · #848
+
+#848 (chore(licences): M8 leaves out desugar_jdk_libs (GPL-2.0 with the Classpath Exception), which the release DEX carries) is merged as #965. M8 lists desugar_jdk_libs (GPL-2.0 + Classpath Exception), pinned in licences.py SOURCES
