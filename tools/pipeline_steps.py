@@ -672,6 +672,106 @@ def check_formula_prefixes(
     return warnings
 
 
+# Corrections: reviewed fixes to the workbooks, made in the pipeline (#628).
+#
+# The workbooks are the owner's, and a tool never writes them: openpyxl drops
+# their charts (#545). A fix goes into `content/corrections.yaml` instead,
+# keyed by the uid the row has as read, and is applied before anything else
+# looks at the words.
+
+#: One line of a multi-line example cell: `example_de_2` is the second German
+#: sentence, as PIPE-06 pairs them.
+EXAMPLE_FIELD = r"example_(de|en)_([1-9][0-9]*)"
+
+
+def read_corrections(path) -> dict[str, dict]:
+    """`content/corrections.yaml`'s `words:`: uid -> the fields it changes.
+
+    Every entry says `why`, so the next person to read the file knows what
+    the workbook got wrong without opening it.
+    """
+    import re
+
+    import yaml
+
+    if path is None:
+        return {}
+    if not path.exists():
+        raise PipelineError(
+            f"{path} is missing. It is named by `corrections:` in "
+            f"content/manifest.yaml; add the file or remove the key."
+        )
+    raw = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+    entries = raw.get("words") or {}
+    for uid, entry in entries.items():
+        # Quoted in the file: an unquoted all-digit uid is a YAML number.
+        if not isinstance(uid, str) or not re.fullmatch(r"[0-9a-f]{16}", uid):
+            raise PipelineError(
+                f"{path.name}: {uid!r} is not a uid. Keys are the 16 hex "
+                f"characters of a word's uid, in quotes."
+            )
+        if not isinstance(entry, dict) or not str(entry.get("why") or "").strip():
+            raise PipelineError(
+                f"{path.name}: {uid} needs a `why:` saying what it corrects."
+            )
+    return entries
+
+
+def apply_corrections(words: Sequence, corrections: dict[str, dict], fields) -> list:
+    """Applies each correction to the one row whose uid, as read, is its key.
+
+    [fields] are the columns an entry may set; `example_de_N` and
+    `example_en_N` set one line of the example cells, the line after the last
+    adding one; `delete: true` drops the row. Returns the rows kept.
+
+    A key that matches no row, or more than one, fails the build: the workbook
+    changed under the correction, and it has to be looked at again.
+    """
+    import re
+
+    by_uid: dict[str, list] = {}
+    for word in words:
+        by_uid.setdefault(uid_for(word), []).append(word)
+
+    dropped: set[int] = set()
+    for uid, entry in corrections.items():
+        rows = by_uid.get(uid, [])
+        if len(rows) != 1:
+            raise PipelineError(
+                f"corrections: {uid} matches {len(rows)} rows, not one. The "
+                f"workbook changed under it: re-key or delete the entry."
+            )
+        word = rows[0]
+        for field, value in entry.items():
+            example = re.fullmatch(EXAMPLE_FIELD, field)
+            if field == "why":
+                continue
+            if field == "delete" and value is True:
+                dropped.add(id(word))
+            elif example:
+                _set_example(word, example.group(1), int(example.group(2)), value, uid)
+            elif field in fields:
+                setattr(word, field, value)
+            else:
+                raise PipelineError(
+                    f"corrections: {uid} sets {field!r}, which is not a "
+                    f"column the pipeline reads."
+                )
+    return [word for word in words if id(word) not in dropped]
+
+
+def _set_example(word, language: str, number: int, value: str, uid: str) -> None:
+    name = f"examples_{language}"
+    lines = _lines(getattr(word, name))
+    if number > len(lines) + 1:
+        raise PipelineError(
+            f"corrections: {uid} sets example {number} ({language}), but the "
+            f"cell has {len(lines)} lines."
+        )
+    lines[number - 1 : number] = [value]
+    setattr(word, name, "\n".join(lines))
+
+
 def assign_examples(words: Sequence) -> None:
     """Sets `examples` on every word."""
     for word in words:

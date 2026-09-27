@@ -39,6 +39,8 @@ from pipeline_steps import (
     resolve_tips,
     PipelineError,
     assign_examples,
+    apply_corrections,
+    read_corrections,
     assign_grammar_uids,
     assign_search_keys,
     assign_uids,
@@ -175,6 +177,7 @@ class SourceBook:
 class Manifest:
     workbooks: list[Path]
     tips: Path | None
+    corrections: Path | None = None
 
 
 def read_manifest(path: Path) -> Manifest:
@@ -200,7 +203,12 @@ def read_manifest(path: Path) -> Manifest:
         books.append(_resolve(entry["file"]))
 
     tips = raw.get("tips")
-    return Manifest(workbooks=books, tips=_resolve(tips) if tips else None)
+    corrections = raw.get("corrections")
+    return Manifest(
+        workbooks=books,
+        tips=_resolve(tips) if tips else None,
+        corrections=_resolve(corrections) if corrections else None,
+    )
 
 
 def _resolve(value: str) -> Path:
@@ -449,6 +457,24 @@ def read_sources(manifest: Manifest) -> list[SourceBook]:
     return [read_workbook(path) for path in manifest.workbooks]
 
 
+def correct(sources: list[SourceBook], corrections: dict[str, dict]) -> None:
+    """Applies `content/corrections.yaml` (#628) to the rows as read.
+
+    Over every workbook at once, because a key has to match one row in the
+    whole course; then back into `source.words`, which is what ships.
+    """
+    kept = apply_corrections(
+        [word for source in sources for word in source.words],
+        corrections,
+        HEADER_MAP,
+    )
+    ids = {id(word) for word in kept}
+    for source in sources:
+        source.words = [word for word in source.words if id(word) in ids]
+    if corrections:
+        print(f"corrections: {len(corrections)} applied", file=sys.stderr)
+
+
 def derive(sources: list[SourceBook]) -> dict[str, LevelSplit]:
     """Everything between reading and writing: the step split, so far.
 
@@ -662,6 +688,7 @@ def main(argv: list[str] | None = None) -> int:
     try:
         manifest = read_manifest(args.manifest)
         sources = read_sources(manifest)
+        correct(sources, read_corrections(manifest.corrections))
         splits = derive(sources)
         resolved, tip_warnings = resolve_tips(
             read_tips(manifest.tips),
