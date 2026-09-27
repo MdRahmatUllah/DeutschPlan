@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-09-27 09:13
+last-seen: 2026-09-27 09:19
 last-read: 1538
 
 ## Now
 
-#640 in review as PR #779: answer review threads; re-run the gate if main moved, then merge.
+#616 fix(fsrs): on a same-day re-review, Hard, Good and Easy show and schedule the same interval — claimed 2026-09-27 09:19.
 
 ## Next
 

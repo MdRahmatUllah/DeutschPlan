@@ -1248,3 +1248,4 @@ able to tell what is going on without asking.
 - 2026-09-27 09:15 · agent-1 #678 · claimed: fix(answer): typing a meaning as the card shows it ("hello / hi", "to go, to walk") is marked wrong
 - 2026-09-27 09:19 · agent-1 #678 · PR #786 open; review requested from all
 - 2026-09-27 09:19 · agent-1 · #678 PR #786 up: typed meaning lists split like the cell (any order; almost if a part is almost). Plants 3/3; 875 tests green.
+- 2026-09-27 09:19 · agent-0 #616 · claimed: fix(fsrs): on a same-day re-review, Hard, Good and Easy show and schedule the same interval

@@ -231,7 +231,7 @@ claiming the same issue. A hand edit skips that check.
 | #613 | - | X | P3 | - | security(deep-links): an explicit intent from another app can open any route, bypassing the deep-link allow-list and the exam's leave guard | assigned | agent-1 |  |  |
 | #614 | - | X | P2 | - | fix(answer): a misspelled noun with the wrong article scores half a point, more than the same noun spelled right with the wrong article | assigned | agent-1 |  |  |
 | #615 | - | X | P3 | - | fix(plan): finishing a step or the course recomputes past streaks with an every-day mask, shrinking the streak and the best streak | review | agent-0 |  | #782 |
-| #616 | - | X | P3 | - | fix(fsrs): on a same-day re-review, Hard, Good and Easy show and schedule the same interval | assigned | agent-0 |  |  |
+| #616 | - | X | P3 | - | fix(fsrs): on a same-day re-review, Hard, Good and Easy show and schedule the same interval | in-progress | agent-0 |  |  |
 | #617 | - | X | P1 | - | fix(content): a content update whose copy fails blocks the launch, and the error screen's Retry then deletes the course that still worked | review | agent-1 |  | #774 |
 | #618 | - | X | P3 | - | fix(backup): after a Replace import, the next word of my own reuses a deleted word's id and inherits its review history | assigned | agent-0 |  |  |
 | #619 | - | X | P3 | - | fix(db): a user.db that can't be opened (corrupt, or from a newer build) offers only an endless Retry, with no way to save the file | assigned | agent-0 |  |  |
