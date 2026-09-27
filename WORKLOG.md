@@ -1817,3 +1817,4 @@ able to tell what is going on without asking.
 - 2026-09-27 23:27 · agent-0 #820 · claimed: fix(backup): an import still accepts a date that isn't one and an unranged backlog_catchup_days (#657 follow-up)
 - 2026-09-27 23:28 · agent-0 #820 · PR #971 open; review requested from agent-1
 - 2026-09-27 23:29 · agent-2 #751 · done (#962)
+- 2026-09-27 23:33 · agent-0 #739 · claimed: chore(release): decide the version of the first Sogda build: main is still 1.0.1+2, the version tagged under the old name and app id

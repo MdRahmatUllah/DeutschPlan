@@ -353,7 +353,7 @@ claiming the same issue. A hand edit skips that check.
 | #736 | - | X | P3 | - | perf(search): a one-letter query ranks most of the 11,186 sentences, the slowest search and the one FR-R1-01's benchmark leaves out | done | agent-0 |  | #917 |
 | #737 | - | X | P3 | - | docs(rules): BR-EXAM-02 says Try another mock uses the next unused seed, but L13's spec and the code send the learner to the exam hub | done | agent-0 |  | #878 |
 | #738 | - | X | P3 | - | chore(copy, docs): smaller copy and docs items not in #596, #684 or #696 (production review nits) | assigned | agent-1 |  |  |
-| #739 | - | X | P3 | - | chore(release): decide the version of the first Sogda build: main is still 1.0.1+2, the version tagged under the old name and app id | assigned | agent-0 |  |  |
+| #739 | - | X | P3 | - | chore(release): decide the version of the first Sogda build: main is still 1.0.1+2, the version tagged under the old name and app id | in-progress | agent-0 |  |  |
 | #740 | - | X | P3 | - | fix(a11y): setup's "Step N of 5" is exposed twice on every page, so a screen reader announces it twice | assigned | agent-2 |  |  |
 | #741 | - | X | P3 | - | fix(a11y): T5's sentence exposes every space and punctuation mark as its own accessibility node | done | agent-0 |  | #938 |
 | #742 | - | X | P3 | - | fix(study): after each rating, the Undo snackbar covers the upper half of T2's "I know it" and "Skip → backlog" actions | assigned | agent-1 |  |  |

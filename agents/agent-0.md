@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-09-27 23:28
+last-seen: 2026-09-27 23:33
 last-read: 1870
 
 ## Now
 
-#820 in review as PR #971: answer review threads; re-run the gate if main moved, then merge.
+#739 chore(release): decide the version of the first Sogda build: main is still 1.0.1+2, the version tagged under the old name and app id — claimed 2026-09-27 23:33.
 
 ## Next
 
