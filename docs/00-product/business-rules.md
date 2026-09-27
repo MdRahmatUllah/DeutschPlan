@@ -67,7 +67,7 @@ Every rule has an ID. Engines in `03-domain/` implement them; screens in `04-scr
 
 - **BR-CONTENT-01** Word identity is the uid hash of `level | german | pos | english`. Progress is keyed by uid and survives content updates.
 - **BR-CONTENT-02** New words join their step's To-do queue in teaching order; removed words are hidden but their history stays; changed meanings show an *updated* chip for 7 days.
-- **BR-CONTENT-03** Today shows a one-time update card with counts.
+- **BR-CONTENT-03** Today shows a one-time update card with counts. A duplicate merged into a word the course kept (PIPE-12) is not counted as removed: its progress moved to that word (#922).
 - **BR-CONTENT-04** A row of the course is a word to learn (`vocab`), a lesson note (`note`: word formation, "beantworten — Präfix be-"; a grammar rule's name, "Vorfeldbesetzung") or a comparison (`compare`: "machen ↔ tun"). Notes and comparisons are listed, searched and opened (L2, L6, R1, W1) like any word, with no status; they are never planned, revised, quizzed, examined, placed, practised in sentences or counted in a step's or the course's words (#630). The pipeline assigns the kind (PIPE-10).
 
 ## Privacy

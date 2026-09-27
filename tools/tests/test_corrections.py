@@ -41,6 +41,7 @@ from pipeline_steps import (  # noqa: E402
 )
 from verify_content import (  # noqa: E402
     DEFAULT_DENYLIST,
+    check_no_cross_level_duplicates,
     check_no_denylisted_terms,
     check_no_same_level_duplicates,
     verify,
@@ -359,6 +360,58 @@ class TestDuplicates:
             assert check_no_same_level_duplicates(connection) == []
         finally:
             connection.close()
+
+    @staticmethod
+    def cross_level(rows):
+        connection = sqlite3.connect(":memory:")
+        connection.execute("CREATE TABLE words (level_code TEXT, german TEXT, pos TEXT)")
+        connection.executemany("INSERT INTO words VALUES (?, ?, ?)", rows)
+        try:
+            return check_no_cross_level_duplicates(connection)
+        finally:
+            connection.close()
+
+    def test_921_a_word_in_two_levels_fails_verify_unless_each_teaches_a_sense_of_its_own(self):
+        failures = self.cross_level([("A1", "Bedeutung", "noun"), ("B2", "Bedeutung", "noun")])
+        assert [f.gate for f in failures] == ["duplicates"]
+        assert "Bedeutung (noun: " in failures[0].message
+        assert "SENSES" in failures[0].message
+        # Listed on purpose: a piece in A1, a play in B1.
+        assert self.cross_level([("A1", "Stück", "noun"), ("B1", "Stück", "noun")]) == []
+        # Another part of speech is another word; one level is the gate above.
+        assert self.cross_level([("A1", "Haus", "noun"), ("B2", "Haus", "verb")] + [("A1", "Maus", "noun")] * 2) == []
+
+    def test_921_verify_runs_the_gate(self, tmp_path):
+        write_all(tmp_path)
+        sources = [read_workbook(tmp_path / name) for name in BOOK_LEVELS]
+        course = tmp_path / "course.db"
+        build(course, collect(sources, derive(sources)))
+        with sqlite3.connect(course) as connection:
+            connection.execute(
+                "UPDATE words SET (german, pos) = (SELECT german, pos FROM words WHERE seq = 1) "
+                "WHERE seq = (SELECT MIN(seq) FROM words WHERE level_code <> "
+                "(SELECT level_code FROM words WHERE seq = 1))"
+            )
+        connection.close()
+        failures = [f.message for f in verify(course) if f.gate == "duplicates"]
+        assert any("taught in two levels" in message for message in failures)
+
+    def test_921_924_the_shipped_course_teaches_a_word_in_one_level_and_keeps_its_senses(self):
+        connection = sqlite3.connect(REPO / "app" / "assets" / "db" / "content.db")
+        try:
+            assert check_no_cross_level_duplicates(connection) == []
+            english = dict(
+                connection.execute(
+                    "SELECT german, english FROM words WHERE german IN "
+                    "('Kunde', 'Nachvollziehbarkeit', 'Angebot') AND level_code <> 'C2'"
+                )
+            )
+        finally:
+            connection.close()
+        # #924: the row that stays names the sense its merged twin glossed.
+        assert "client" in english["Kunde"]
+        assert "comprehensibility" in english["Nachvollziehbarkeit"]
+        assert "supply" in english["Angebot"]
 
 
 class TestDenylist:

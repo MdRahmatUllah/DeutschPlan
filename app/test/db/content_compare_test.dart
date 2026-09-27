@@ -138,8 +138,23 @@ void main() {
   });
 
   test("FR-W2-01 the set's own step first, then the course's order", () async {
+    // #921 teaches each word in one step, so the rule is shown on twins: A1.1's
+    // "bekommen" in the set's step, C2.1, and A2.1's "erhalten" in B2.1.
+    await db.customStatement(
+      'CREATE TEMP TABLE twin AS SELECT * FROM c.words '
+      "WHERE german IN ('bekommen', 'erhalten')",
+    );
+    await db.customStatement(
+      "UPDATE twin SET uid = 'twin-' || german, seq = seq + 100000, "
+      "sublevel_code = CASE german WHEN 'bekommen' THEN 'C2.1' ELSE 'B2.1' END",
+    );
+    await db.customStatement('INSERT INTO c.words SELECT * FROM twin');
+    addTearDown(() async {
+      await db.customStatement("DELETE FROM c.words WHERE uid LIKE 'twin-%'");
+      await db.customStatement('DROP TABLE twin');
+    });
     final get = await set('bekommen / erhalten / beziehen / zuteilwerden');
-    expect(get.resolved['bekommen']!.step, 'C2.1', reason: 'not A1.1');
+    expect(get.resolved['bekommen']!.uid, 'twin-bekommen', reason: 'not A1.1');
     expect(get.resolved['erhalten']!.step, 'A2.1', reason: 'not B2.1');
   });
 

@@ -198,11 +198,12 @@ words:
     example_de_1: "Ich arbeite bei der Firma Müller."
     example_en_1: "I work at the Müller company."
   "43c987965e1bafba":
-    why: "#629: one headword; 'nicht bestehen' moves to the synonyms"
+    why: "#629: one headword; 'nicht bestehen' moves to the synonyms; #921: bestehen, the A2.1 word glossed another way"
     german: "bestehen"
     english: "to pass (an exam)"
     bangla: "উত্তীর্ণ হওয়া"
     synonyms_register: "↔ nicht bestehen, durchfallen (to fail)"
+    merge_into: "59daf3116673e418"
   "7351c92b098899b0":
     why: "#629: the headword is the word the row teaches (its second half)"
     german: "sich auszahlen"
@@ -244,10 +245,12 @@ words:
     why: "#629: the headword is the word the row teaches (its second half)"
     german: "abschwächen"
   "4a21b186e8b3b9f3":
-    why: "#629: the headword is the word the row teaches (its second half); #631: no example the cloze can gap; one that names the word"
+    why: "#629: the headword is the word the row teaches (its second half); #631: no example the cloze can gap; one that names the word; #921: a sense of its own beside the A2.2 word; the English names it"
     german: "ausfallen"
     example_de_3: "Wegen des Streiks kann der Zug ausfallen."
     example_en_3: "The train may be cancelled because of the strike."
+    english: "to turn out (well, badly)"
+    bangla: "ফল হওয়া"
   "63f8482ffda2bedc":
     why: "#629: the headword is the word the row teaches (its second half); #635: sich auszahlen, taught at B2.2 already"
     merge_into: "7351c92b098899b0"
@@ -284,8 +287,9 @@ words:
     why: "#629: the headword is the word the row teaches (its second half)"
     german: "schlechterdings"
   "7cf5b3c5ba5dc21a":
-    why: "#629: the headword is the word the row teaches (its second half)"
+    why: "#629: the headword is the word the row teaches (its second half); #924: names the sense of the row #635 merged into it"
     german: "zu Buche schlagen"
+    english: "to weigh in financially / to amount to"
   "13f333c1713661e1":
     why: "#629: the headword is the word the row teaches (its second half)"
     german: "sich fügen"
@@ -293,9 +297,11 @@ words:
     why: "#629: the headword is the word the row teaches (its second half)"
     german: "pauschalisieren"
   "9b2aa03489eeed16":
-    why: "#629: the headword is the word the row teaches (its second half)"
+    why: "#629: the headword is the word the row teaches (its second half); #924: names the sense of the row #635 merged into it"
     article: "die"
     german: "Pointe"
+    english: "punchline / point / twist"
+    bangla: "মূল কথা / চূড়ান্ত বক্তব্য / চূড়ান্ত মোচড়"
   "147b16e5da09e383":
     why: "#629: the headword is the word the row teaches (its second half)"
     german: "dramatisieren"
@@ -703,9 +709,11 @@ words:
     example_de_3: "Ein wichtiger Umstand wurde übersehen."
     example_en_3: "An important circumstance was overlooked."
   "a97ed47380f1ef56":
-    why: "#631: no example the cloze can gap; one that names the word"
+    why: "#631: no example the cloze can gap; one that names the word; #921: a sense of its own beside the A2.1 word; the English names it"
     example_de_3: "Die Zahl der Geburten wird weiter abnehmen."
     example_en_3: "The number of births will continue to decrease."
+    english: "to decrease / to answer (the phone)"
+    bangla: "কমা / ফোন ধরা"
   "2f9d744fe9399ca5":
     why: "#631: no example the cloze can gap; one that names the word"
     example_de_3: "Die Kosten dürften etwa 500 Euro betragen."
@@ -727,9 +735,10 @@ words:
     example_de_3: "Ich möchte zwei Punkte besonders hervorheben."
     example_en_3: "I'd like to highlight two points in particular."
   "2547385aa30697ac":
-    why: "#631: no example the cloze can gap; one that names the word"
+    why: "#631: no example the cloze can gap; one that names the word; #921: nachweisen, the B1.2 word glossed another way"
     example_de_3: "Das lässt sich nur schwer nachweisen."
     example_en_3: "That is hard to prove."
+    merge_into: "37e285234841e95c"
   "63e7397536ffd1c8":
     why: "#631: no example the cloze can gap; one that names the word"
     example_de_3: "Wie soll ich mich in dieser Situation verhalten?"
@@ -751,9 +760,10 @@ words:
     example_de_3: "Ich weiß, dass die Stelle Erfahrung voraussetzt."
     example_en_3: "I know that the position requires experience."
   "fe4e3ba2ac33df9a":
-    why: "#631: no example the cloze can gap; one that names the word"
+    why: "#631: no example the cloze can gap; one that names the word; #921: zunehmen, the A2.2 word glossed another way"
     example_de_3: "Der Verkehr wird in Zukunft zunehmen."
     example_en_3: "Traffic will increase in future."
+    merge_into: "6c62dc6054bb94e7"
   "e073767200147f17":
     why: "#631: the example did not name its word"
     example_de_2: "Prüfen Sie die Quelle, damit Sie keine Falschmeldung teilen."
@@ -960,17 +970,19 @@ words:
     example_de_2: "Nach zwei Fehlversuchen sagte sie: Aller guten Dinge sind drei."
     example_en_2: "After two failed attempts she said: third time lucky."
   "b92ada70f8ef9c43":
-    why: "#631: the example did not name its word"
+    why: "#631: the example did not name its word; #921: Andere Länder, andere Sitten, the B2.2 word glossed another way"
     example_de_2: "Im Ausland denke ich oft: Andere Länder, andere Sitten."
     example_en_2: "Abroad I often think: other countries, other customs."
+    merge_into: "2ecdd1ec0d770a9a"
   "2ff8b2dc916f0019":
     why: "#631: the example did not name its word"
     example_de_2: "Laut Aufgabenstellung müssen alle Leitpunkte bearbeitet werden."
     example_en_2: "According to the task, all guiding points must be addressed."
   "a04cf2bfb54e3634":
-    why: "#631: the example did not name its word"
+    why: "#631: the example did not name its word; #921: a sense of its own beside the C1.1 word; the English names it"
     example_de_2: "Kant definierte die Aufklärung als Ausgang aus selbstverschuldeter Unmündigkeit."
     example_en_2: "Kant defined the Enlightenment as emergence from self-incurred immaturity."
+    english: "the Enlightenment"
   "c36775084aae54a5":
     why: "#631: the example did not name its word"
     example_de_2: "Der Satz „Ausnahmen bestätigen die Regel“ wird gern missbraucht."
@@ -1012,9 +1024,10 @@ words:
     example_de_2: "Ein Kurzsatz am Absatzende bricht den Rhythmus und setzt einen Akzent."
     example_en_2: "A short sentence at the end of a paragraph breaks the rhythm and adds emphasis."
   "87a8bfff48a81a11":
-    why: "#631: the example did not name its word"
+    why: "#631: the example did not name its word; #921: Semmel, the A1.2 word glossed another way"
     example_de_2: "Die Semmel heißt in Berlin Schrippe, in Hamburg Rundstück."
     example_en_2: "In Berlin a Semmel is called Schrippe, in Hamburg Rundstück."
+    merge_into: "44757488c61f8929"
   "9705d1a7dc0466d2":
     why: "#631: the example did not name its word"
     example_de_2: "Die Wettbewerbsfähigkeit wird oft an Lohnstückkosten gemessen."
@@ -1032,9 +1045,10 @@ words:
     example_de_3: "Dieser Schritt wird keiner weiteren Erklärung bedürfen."
     example_en_3: "This step will need no further explanation."
   "6266211865353565":
-    why: "#631: the example did not name its word"
+    why: "#631: the example did not name its word; #921: bekommen, the A1.1 word glossed another way"
     example_de_2: "Bekommen heißt „to get“; „to become“ heißt werden."
     example_en_2: "'Bekommen' means 'to get'; 'to become' is 'werden'."
+    merge_into: "78c7379f726ce97f"
   "25ec0ff43d498745":
     why: "#631: no example the cloze can gap; one that names the word"
     example_de_3: "Das Duzen und Siezen regelt jede Firma anders."
@@ -1052,9 +1066,10 @@ words:
     example_de_2: "Dieweil sagt man heute nur noch scherzhaft."
     example_en_2: "Today 'dieweil' is only used jokingly."
   "7a522ce5f5ea8e98":
-    why: "#631: the example did not name its word"
+    why: "#631: the example did not name its word; #921: dranbleiben, the B2.1 word glossed another way"
     example_de_2: "Wer zehn Minuten täglich dranbleibt, erreicht in drei Jahren ein neues Sprachniveau."
     example_en_2: "If you stick with it for ten minutes a day, you'll reach a new level in three years."
+    merge_into: "4279f6aa69134949"
   "fa6c98279278de54":
     why: "#631: no example the cloze can gap; one that names the word"
     example_de_3: "Mehr hat die Quelle nicht hergegeben."
@@ -1085,9 +1100,10 @@ words:
     example_de_3: "Bei der Abstimmung wird sie sich enthalten."
     example_en_3: "She will abstain in the vote."
   "57bc23d243445af4":
-    why: "#631: the example did not name its word"
+    why: "#631: the example did not name its word; #921: Überleitung, the C1.2 word glossed another way"
     example_de_2: "Mit der Überleitung „Damit komme ich zum zweiten Punkt“ wechselt man das Thema."
     example_en_2: "With the transition 'That brings me to the second point' you change topic."
+    merge_into: "074f193905b72bfc"
   "5245f1eaa18f9dd6":
     why: "#631: the example did not name its word"
     example_de_1: "Die Anapher „wir haben geplant, wir haben geprüft“ wirkt eindringlich."
@@ -1318,11 +1334,12 @@ words:
     example_de_2: "„Wo gehobelt wird, da fallen Späne“ ist keine Entschuldigung für Kollateralschäden."
     example_en_2: "'You can't make an omelette without breaking eggs' is no excuse for collateral damage."
   "959e5191c6a5cc60":
-    why: "#631: the example did not name its word"
+    why: "#631: the example did not name its word; #921: Zeiteinteilung, the C1.2 word glossed another way"
     example_de_1: "Eine gute Zeiteinteilung: 15 Minuten planen, 55 schreiben, 10 überarbeiten."
     example_en_1: "Good time management: 15 minutes planning, 55 writing, 10 revising."
     example_de_2: "Bei der Zeiteinteilung gilt: Die Überarbeitung bringt mehr Punkte als der letzte Absatz."
     example_en_2: "In time management, revision earns more marks than the final paragraph."
+    merge_into: "6391e2d4e5b11fcb"
   "caffe4f54f94a84f":
     why: "#631: the example did not name its word"
     example_de_2: "Zeitgeist ist ein Wort, das ins Englische gewandert ist."
@@ -1819,8 +1836,8 @@ words:
     why: "#635: Stellung nehmen zu, taught at B2.1 already"
     merge_into: "ffc2927d5f6d06ac"
   "ca4027b44f790f6e":
-    why: "#635: Entwicklung, the B2.1 word glossed another way"
-    merge_into: "54982448a7f87ca6"
+    why: "#635: Entwicklung, the B2.1 word glossed another way; #921: the row it merged into merges on, so it points at that row's target"
+    merge_into: "28a78cb226e6241b"
   "5dca5abc7c42ca55":
     why: "#635: Fachkräftemangel, the B2.1 word glossed another way"
     merge_into: "48fed5d2d1791747"
@@ -1960,8 +1977,8 @@ words:
     why: "#635: Kreislaufwirtschaft, taught at B2.2 already"
     merge_into: "4f8e8fd5066296b1"
   "d8f15b87a215aa35":
-    why: "#635: abwägen, taught at C1.1 already"
-    merge_into: "bc3f2eae5285b68e"
+    why: "#635: abwägen, taught at C1.1 already; #921: the row it merged into merges on, so it points at that row's target"
+    merge_into: "10329c5cec6e1222"
   "9882018d5520fdc7":
     why: "#635: tendenziell, the C1.1 word glossed another way"
     merge_into: "c1867f94f19313e9"
@@ -1978,8 +1995,8 @@ words:
     why: "#635: gegenüberstellen, the C1.1 word glossed another way"
     merge_into: "124db1b63eb0c557"
   "989a0d6c01efde20":
-    why: "#635: Schnittstelle, the C1.1 word glossed another way"
-    merge_into: "003a45460ac2845f"
+    why: "#635: Schnittstelle, the C1.1 word glossed another way; #921: the row it merged into merges on, so it points at that row's target"
+    merge_into: "988f512f1a9bbb6c"
   "dcb149decc7d302b":
     why: "#635: gehoben, taught at C1.1 already"
     merge_into: "a0be304500653ed1"
@@ -2037,6 +2054,601 @@ words:
   "fd6c2736b84de9bf":
     why: "#635: unbeschadet, the C2.2 word glossed another way"
     merge_into: "16a90963569ffeac"
+  # #921: a word taught again in a later level with its English worded
+  # differently. The same sense merges into the row the learner meets
+  # first; a sense of its own stays, its English naming that sense, and
+  # the pair is listed in SENSES in tools/verify_content.py. #924: a row
+  # that stays takes the sense its merged twin glossed and it lacked.
+  "fc6e3283a86b3e4d":
+    why: "#921: beginnen, the A1.1 word glossed another way"
+    merge_into: "680dee1263c611e2"
+  "cca41d234f27cd1b":
+    why: "#921: a sense of its own beside the A1.1 word; the English names it"
+    english: "shoddy / facile (pejorative)"
+  "fa38dcc4145065bc":
+    why: "#921: Angebot, the A1.1 word glossed another way"
+    merge_into: "f13dd0a7d7bf5a88"
+  "f13dd0a7d7bf5a88":
+    why: "#924: names the sense of the B2.1 row merged into it (#921)"
+    english: "offer / special offer / supply"
+    bangla: "অফার / সরবরাহ"
+  "b44878424056024e":
+    why: "#921: a sense of its own beside the A1.1 word; the English names it"
+    english: "play (theatre)"
+    bangla: "নাটক"
+  "1211cb287cb8e493":
+    why: "#921: a sense of its own beside the A1.1 word; the English names it"
+    english: "open-minded (of a person)"
+  "74bbf392e56b52a7":
+    why: "#921: tragen, the A1.1 word glossed another way"
+    merge_into: "23508d0124831f31"
+  "2746ed0c98b996c6":
+    why: "#921: a sense of its own beside the A1.1 word; the English names it"
+    english: "neighbourhood / district"
+  "a6b8d63e2d3735ae":
+    why: "#921: Krankenkasse, the A1.1 word glossed another way"
+    merge_into: "ea8d4b215319d9f8"
+  "89dc215a64bb6bc9":
+    why: "#921: Chef, the A1.2 word glossed another way"
+    merge_into: "9f66b05cbb0f7cc1"
+  "0e8f359769573dfb":
+    why: "#921: dringend, the A2.1 word glossed another way"
+    merge_into: "3b2289592050f5a5"
+  "974c016b4ed9d4b1":
+    why: "#921: Rechnung, the A1.2 word glossed another way"
+    merge_into: "99c5fb6e94506256"
+  "49a60c8706c8d7f7":
+    why: "#921: Handy, the A1.2 word glossed another way"
+    merge_into: "07e18ecf352de968"
+  "c86fdf03ff84f91a":
+    why: "#921: löschen, the A1.2 word glossed another way"
+    merge_into: "3715db97f67d0b92"
+  "cec67eadd5c7dff1":
+    why: "#921: sympathisch, the A2.1 word glossed another way"
+    merge_into: "8c2bf51d83221a0b"
+  "d327a9b9e4063af5":
+    why: "#921: speichern, the A1.2 word glossed another way"
+    merge_into: "010ece0a29ba773e"
+  "4e68efa359e907dc":
+    why: "#921: Nachricht, the A1.2 word glossed another way"
+    merge_into: "fd4fe1456916f5d6"
+  "160a99f6c6a90152":
+    why: "#921: Nachricht, the A1.2 word glossed another way"
+    merge_into: "fd4fe1456916f5d6"
+  "7f2df1f9feb95bc5":
+    why: "#921: sich vorstellen, the A1.2 word glossed another way"
+    merge_into: "b37a137a0f2225e7"
+  "c92aa818978f636a":
+    why: "#921: sparen, the A1.2 word glossed another way"
+    merge_into: "d147b3bbc549a872"
+  "d147b3bbc549a872":
+    why: "#924: names the sense of the B2.1 row merged into it (#921)"
+    english: "to save (money, resources)"
+  "2a19b028e2d023df":
+    why: "#921: Garantie, the A2.1 word glossed another way"
+    merge_into: "97c1aef47c78445d"
+  "e5f23871640b8ce0":
+    why: "#921: Bedeutung, the A1.2 word glossed another way"
+    merge_into: "e33fdc45ac403558"
+  "4989bf4ce3c260b8":
+    why: "#921: Notaufnahme, the A2.1 word glossed another way"
+    merge_into: "343157cfa44cf202"
+  "19200895c22c40f7":
+    why: "#921: Geschichte, the A1.2 word glossed another way"
+    merge_into: "3b69f2d3308e7f80"
+  "02a8ca0d5d83f849":
+    why: "#921: Lage, the A2.1 word glossed another way"
+    merge_into: "c8af0efa7a5da60b"
+  "f002498af90fce50":
+    why: "#921: Neubau, the A2.1 word glossed another way"
+    merge_into: "46b811e3ed8afd8e"
+  "d219f76f8fa2b4d3":
+    why: "#921: a sense of its own beside the A2.1 word; the English names it"
+    english: "to move (a motion, in a meeting)"
+    bangla: "প্রস্তাব করা"
+  "7423d5075efb9cbe":
+    why: "#921: Gebühr, the A2.1 word glossed another way"
+    merge_into: "3f9682d197c30027"
+  "6a004b709d475f99":
+    why: "#921: Behörde, the A2.1 word glossed another way"
+    merge_into: "07ae248ed9e92bc8"
+  "e81a43e36bf164c0":
+    why: "#921: Lösung, the A2.1 word glossed another way"
+    merge_into: "f789d34c3da127a7"
+  "257da23fe1dd65bc":
+    why: "#921: a sense of its own beside the A2.1 word; the English names it"
+    english: "emissions allowance (CO₂ certificate)"
+    bangla: "নিঃসরণ অনুমতিপত্র"
+  "f7067ac96c60625c":
+    why: "#921: Fortschritt, the A2.1 word glossed another way"
+    merge_into: "064db02e0178ea9a"
+  "93d9dc8075ecb2af":
+    why: "#921: Fortschritt, the A2.1 word glossed another way"
+    merge_into: "064db02e0178ea9a"
+  "09b8cdae430e7aa2":
+    why: "#921: Sicherheit, the A2.1 word glossed another way"
+    merge_into: "9f654e072ce04a14"
+  "9f654e072ce04a14":
+    why: "#924: names the sense of the B2.1 row merged into it (#921)"
+    english: "security / safety / certainty"
+    bangla: "নিরাপত্তা / নিশ্চয়তা"
+  "54982448a7f87ca6":
+    why: "#921: Entwicklung, the A2.1 word glossed another way"
+    merge_into: "28a78cb226e6241b"
+  "28a78cb226e6241b":
+    why: "#924: names the sense of the B2.1 row merged into it (#921)"
+    english: "development / trend"
+    bangla: "উন্নয়ন / প্রবণতা"
+  "9519719cc844eb3f":
+    why: "#921: a sense of its own beside the A2.1 word; the English names it"
+    english: "review (of a book, film)"
+    bangla: "সমালোচনা"
+  "6586ee1d573cecce":
+    why: "#921: Betreff, the A2.1 word glossed another way"
+    merge_into: "2e0d99f9007d2284"
+  "1c31864ba2219b3d":
+    why: "#921: Rückmeldung, the A2.1 word glossed another way"
+    merge_into: "4b3931ed78b7dd05"
+  "21bcacc1ca45f666":
+    why: "#921: Rezeption, the C1.2 word glossed another way"
+    merge_into: "04cea5eedf737806"
+  "f0aa632f7b207bb3":
+    why: "#921: a sense of its own beside the C1.2 word; the English names it"
+    english: "reception (desk)"
+  "31ae5683ff3df40a":
+    why: "#921: Sehenswürdigkeit, the A2.1 word glossed another way"
+    merge_into: "a7e3ab31edbe3a0d"
+  "a3bf8387bac45d5e":
+    why: "#921: Sendung, the A2.1 word glossed another way"
+    merge_into: "9d78ab68e20e4c99"
+  "302245a53b3fcbe4":
+    why: "#921: a sense of its own beside the A2.1 word; the English names it"
+    english: "shipment / consignment"
+    bangla: "প্রেরিত পার্সেল"
+  "94582c63e9a4a347":
+    why: "#921: trainieren, the A1.2 word glossed another way"
+    merge_into: "2ffc2c54dcacc97f"
+  "bc427b17709a8d6c":
+    why: "#921: das heißt, the A2.1 word glossed another way"
+    merge_into: "4dd79376031823b3"
+  "69fe72b432d2afe2":
+    why: "#921: sich melden, the A2.1 word glossed another way"
+    merge_into: "034339c304209d42"
+  "b036ea08e6ce45aa":
+    why: "#921: erledigen, the A2.1 word glossed another way"
+    merge_into: "ac666a488200d7f1"
+  "8f05708a5d742845":
+    why: "#921: Frist, the A2.1 word glossed another way"
+    merge_into: "3a7bc66d0d208578"
+  "1816e73a1f62fcf7":
+    why: "#921: Frist, the A2.1 word glossed another way"
+    merge_into: "3a7bc66d0d208578"
+  "bd01b7152a32a3a4":
+    why: "#921: Homeoffice, the A2.1 word glossed another way"
+    merge_into: "9467ddd0697469eb"
+  "13486479608dbdd6":
+    why: "#921: kündigen, the A2.1 word glossed another way"
+    merge_into: "d6c265a0da600630"
+  "b193b5ea8477a7df":
+    why: "#921: Freiheit, the A2.1 word glossed another way"
+    merge_into: "fae6063c2b8adc06"
+  "ae1057986fd652db":
+    why: "#921: Gesellschaft, the A2.1 word glossed another way"
+    merge_into: "1434520f1a40e092"
+  "c3bfc6fad8ec2763":
+    why: "#921: Vergangenheit, the A2.1 word glossed another way"
+    merge_into: "3a6e2b1837255853"
+  "801f07e13210c6d5":
+    why: "#921: erhalten, the A2.1 word glossed another way"
+    merge_into: "ea2eeab8f21b6b7a"
+  "f000b2e4d0d3643d":
+    why: "#921: wechseln, the A2.1 word glossed another way"
+    merge_into: "e28fe6144e7c4d9e"
+  "fbdd0667b384298f":
+    why: "#921: Auftrag, the A2.1 word glossed another way"
+    merge_into: "793164fd2eac8f7e"
+  "572d399f1229e04d":
+    why: "#921: a sense of its own beside the A2.1 word; the English names it"
+    english: "to ease (of a situation)"
+  "6f31eaffea911298":
+    why: "#921: Nebenkostenabrechnung, the B1.1 word glossed another way"
+    merge_into: "bdebd47eddbb595e"
+  "9eaf5a32da23a74c":
+    why: "#921: Eigentumswohnung, the B1.1 word glossed another way"
+    merge_into: "782c39ebe9fe6a43"
+  "80c2c4a5abbfebb4":
+    why: "#921: Mangel, the B1.1 word glossed another way"
+    merge_into: "7012a47dfcfc2276"
+  "7012a47dfcfc2276":
+    why: "#924: names the sense of the B2.2 row merged into it (#921)"
+    english: "defect / shortcoming / shortage"
+    bangla: "ত্রুটি / ঘাটতি"
+  "11cf1767fbf9105a":
+    why: "#921: Anerkennung, the B1.1 word glossed another way"
+    merge_into: "215e50829af88db6"
+  "215e50829af88db6":
+    why: "#924: names the sense of the B2.1 row merged into it (#921)"
+    english: "recognition / appreciation"
+  "fc78c7f158729e9e":
+    why: "#921: Störung, the A2.2 word glossed another way"
+    merge_into: "bf62822bea06d896"
+  "9faac998156719cc":
+    why: "#921: Gleichberechtigung, the B1.1 word glossed another way"
+    merge_into: "520aca4aff4de239"
+  "5f893f4714baaa6a":
+    why: "#921: Gesetz, the A2.2 word glossed another way"
+    merge_into: "2ac204a81be96431"
+  "d5d58280b9fdfa68":
+    why: "#921: Schlagzeile, the B1.1 word glossed another way"
+    merge_into: "7e451bac36a2f830"
+  "7d067a3bcd3fcc37":
+    why: "#921: Bescheid wissen, the A2.2 word glossed another way"
+    merge_into: "b780524255cc6c04"
+  "41bfad22f01c608b":
+    why: "#921: Passt schon, the A2.2 word glossed another way"
+    merge_into: "bf9022fcd4dd3303"
+  "fddcd3c7fa5d5bcd":
+    why: "#921: genehmigen, the B1.1 word glossed another way"
+    merge_into: "88fdb35c0c648830"
+  "7c96e82542f00f02":
+    why: "#921: Weiterbildung, the B1.1 word glossed another way"
+    merge_into: "89448e685404b93c"
+  "66ac009c65212313":
+    why: "#921: Zusammenarbeit, the B1.1 word glossed another way"
+    merge_into: "b0f7a9e54780d1d0"
+  "043f042d3c28d38b":
+    why: "#921: einhalten, the B1.1 word glossed another way"
+    merge_into: "aa598a1712170dad"
+  "27349d778e0aa0d6":
+    why: "#921: Vielfalt, the B1.1 word glossed another way"
+    merge_into: "dd968be3d5e086a1"
+  "63451a1e31697ad0":
+    why: "#921: Mahnung, the B1.1 word glossed another way"
+    merge_into: "8ddf38b776f79140"
+  "5cc91f31e1448b7a":
+    why: "#921: Gewinn, the A2.2 word glossed another way"
+    merge_into: "b51913e1ffd8f4b2"
+  "445c89be7eccf29c":
+    why: "#921: Brotzeit, the A2.2 word glossed another way"
+    merge_into: "167e362718077dc0"
+  "eee47f910073b8cf":
+    why: "#921: Anwendung, the B1.1 word glossed another way"
+    merge_into: "a04849158921e362"
+  "7f71562d9b46ad7b":
+    why: "#921: während, the B1.1 word glossed another way"
+    merge_into: "78c3b9400bec495f"
+  "78c3b9400bec495f":
+    why: "#924: names the sense of the B2.1 row merged into it (#921)"
+    english: "while / during / whereas"
+    bangla: "যখন (একই সময়ে) / চলাকালে / অন্যদিকে"
+  "af4afa6aa91209d4":
+    why: "#921: Bußgeld, the B1.1 word glossed another way"
+    merge_into: "f544aa0524311529"
+  "f215de8be5aba6e7":
+    why: "#921: Laufzeit, the B1.1 word glossed another way"
+    merge_into: "ac92ac1b393e1331"
+  "d56945dc773cdd5f":
+    why: "#921: Das sehe ich anders, the B1.1 word glossed another way"
+    merge_into: "3e4b705e1b78cc0c"
+  "c9c565b1889fc2df":
+    why: "#921: sich lohnen, the B1.1 word glossed another way"
+    merge_into: "7ae4b9606f118771"
+  "72153028b664fda0":
+    why: "#921: allerdings, the B1.1 word glossed another way"
+    merge_into: "a31bf227f3ce01a2"
+  "a31bf227f3ce01a2":
+    why: "#924: names the sense of the C1.1 row merged into it (#921)"
+    english: "however / though / admittedly"
+  "6cce891429675c52":
+    why: "#921: insgesamt, the B1.1 word glossed another way"
+    merge_into: "8480de1ac5316da6"
+  "8be9616eea9f375a":
+    why: "#921: trotz, the B1.1 word glossed another way"
+    merge_into: "7de5787f655cf380"
+  "90465688ca627937":
+    why: "#921: Vertrauen, the B1.2 word glossed another way"
+    merge_into: "e92302f0911420ba"
+  "fc6d5266172fd64d":
+    why: "#921: Beschwerden, the B1.2 word glossed another way"
+    merge_into: "4881bc555b3ca2e7"
+  "f03fe7d1e291c7a7":
+    why: "#921: Gemeinde, the B1.2 word glossed another way"
+    merge_into: "0d409777c425c01d"
+  "2639196bd66e420a":
+    why: "#921: Protokoll, the B1.2 word glossed another way"
+    merge_into: "534f7578627af5ff"
+  "37e285234841e95c":
+    why: "#924: names the sense of the B2.1 row merged into it (#921)"
+    english: "to prove / to detect"
+    bangla: "প্রমাণ করা / শনাক্ত করা"
+  "91698c130eb54598":
+    why: "#921: Widerspruch, the B1.2 word glossed another way"
+    merge_into: "6eb3abb75a1f6137"
+  "fe734e85f137c87b":
+    why: "#921: a sense of its own beside the B1.2 word; the English names it"
+    english: "contradiction"
+    bangla: "বৈপরীত্য"
+  "5f6f950da203fd7b":
+    why: "#921: a sense of its own beside the B1.2 word; the English names it"
+    english: "accurate / apt"
+  "2dbea4bd02db261e":
+    why: "#921: sich engagieren, the B1.2 word glossed another way"
+    merge_into: "bb93d04544c8cd11"
+  "35228dff5c94c803":
+    why: "#921: Partei, the B1.2 word glossed another way"
+    merge_into: "51a33a917db8cabd"
+  "dc67499b0a96805e":
+    why: "#921: sich schämen, the B1.2 word glossed another way"
+    merge_into: "b1cc579a34c8c1a6"
+  "3388970d54f05ab4":
+    why: "#921: Standpunkt, the B1.2 word glossed another way"
+    merge_into: "6626a9e3fd485a57"
+  "d5ebdb0313678256":
+    why: "#921: vermutlich, the B1.2 word glossed another way"
+    merge_into: "9085cdbfb66e42d4"
+  "bd97c9b2e821bfd5":
+    why: "#921: Voraussetzung, the B2.1 word glossed another way"
+    merge_into: "b9924518f67af96c"
+  "b9924518f67af96c":
+    why: "#924: names the sense of the C1.1 row merged into it (#921)"
+    english: "prerequisite / requirement / premise"
+  "bb07d6a4f8be94b0":
+    why: "#921: dabei, the B2.1 word glossed another way"
+    merge_into: "167b5365708addf6"
+  "411e78b05581eaa5":
+    why: "#921: anhand, the B2.1 word glossed another way"
+    merge_into: "03484cbef17e9a7b"
+  "5889197689cb7ec6":
+    why: "#921: in Anspruch nehmen, the B2.1 word glossed another way"
+    merge_into: "546a1d1f6de6843a"
+  "b49f51d76a1865c0":
+    why: "#921: Kritik üben an, the B2.1 word glossed another way"
+    merge_into: "0e01f1f1704f757a"
+  "48af09caf062289a":
+    why: "#921: argumentieren, the B2.1 word glossed another way"
+    merge_into: "fa348a3ec09dc1b3"
+  "e34d89a9eadfbe41":
+    why: "#921: Vorhaben, the B2.1 word glossed another way"
+    merge_into: "f0b4d2e7deb31f8c"
+  "b09dca3a4a93981d":
+    why: "#921: Kommentar, the B2.1 word glossed another way"
+    merge_into: "e25f704e5129a649"
+  "1b7587db8794bcb7":
+    why: "#921: umstritten, the B2.1 word glossed another way"
+    merge_into: "da1ef172df8240ce"
+  "61ab2d12be3cc732":
+    why: "#921: Abstimmung, the B2.1 word glossed another way"
+    merge_into: "9173f80d1d67fe46"
+  "d882a2cb893d8b0c":
+    why: "#921: Wandel, the B2.1 word glossed another way"
+    merge_into: "1d0c248e521e42f4"
+  "003a45460ac2845f":
+    why: "#921: Schnittstelle, the B2.1 word glossed another way"
+    merge_into: "988f512f1a9bbb6c"
+  "988f512f1a9bbb6c":
+    why: "#924: names the sense of the C1.1 row merged into it (#921)"
+    english: "interface / API / point of contact"
+    bangla: "ইন্টারফেস / সংযোগস্থল"
+  "cce281966bfdd237":
+    why: "#921: Vorsorge, the B2.1 word glossed another way"
+    merge_into: "b899dd1baff3eb3d"
+  "12b7e2720c1d058e":
+    why: "#921: Befund, the B2.1 word glossed another way"
+    merge_into: "6b285f89a3f3accd"
+  "d1a9a57cc4f3c38f":
+    why: "#921: Zulassung, the B2.1 word glossed another way"
+    merge_into: "c8d5730d405183f4"
+  "cf4ff68ec03c1a25":
+    why: "#921: keineswegs, the B2.1 word glossed another way"
+    merge_into: "fe6fd60ecc4e42a8"
+  "cca9e64e80b6c44b":
+    why: "#921: abschließend, the B2.1 word glossed another way"
+    merge_into: "9eafca131178d6e7"
+  "c1e7d8b783c1cacc":
+    why: "#921: mithilfe, the B2.1 word glossed another way"
+    merge_into: "f3e88b14bcf86106"
+  "5c169fecf2c350ee":
+    why: "#921: Ausmaß, the B2.1 word glossed another way"
+    merge_into: "9dfd45507fd7f4d9"
+  "a0cfea553a1298f0":
+    why: "#921: Haltung, the B2.1 word glossed another way"
+    merge_into: "89b47d9e826b3b27"
+  "ab4cf9f3d3e856c8":
+    why: "#921: Rückgang, the B2.1 word glossed another way"
+    merge_into: "019909d89170732d"
+  "a73e38057a500520":
+    why: "#921: sofern, the B2.1 word glossed another way"
+    merge_into: "0245677d3c69fd3b"
+  "0245677d3c69fd3b":
+    why: "#924: names the sense of the C1.1 row merged into it (#921)"
+    english: "provided that / if / insofar as"
+  "2c1f54573c123453":
+    why: "#921: zumal, the B2.1 word glossed another way"
+    merge_into: "bcf1871756923ae1"
+  "0e0deca4c4bc2134":
+    why: "#921: unter Umständen, the B2.2 word glossed another way"
+    merge_into: "07d58e9ed301d2e9"
+  "0df60e354136a1c8":
+    why: "#921: vorliegen, the B2.2 word glossed another way"
+    merge_into: "08b0eef9c03cf0b5"
+  "e54f10e600742c40":
+    why: "#921: offenbar, the B2.2 word glossed another way"
+    merge_into: "2aca2c22d274c3ad"
+  "1f9377683dbe48e4":
+    why: "#921: sogenannt, the B2.2 word glossed another way"
+    merge_into: "dbc02a67aeff8cf1"
+  "7152a7e5607fc1a4":
+    why: "#921: weitgehend, the B2.2 word glossed another way"
+    merge_into: "a79fec6d955a8e83"
+  "3cefaf3078e483e3":
+    why: "#921: Verstoß, the B2.2 word glossed another way"
+    merge_into: "b721f69e1327df65"
+  "a2ff4330c03979d8":
+    why: "#921: Auflage, the B2.2 word glossed another way"
+    merge_into: "ba54934a9365f483"
+  "3e5adcba290812ae":
+    why: "#921: Öffentlichkeit, the B2.2 word glossed another way"
+    merge_into: "4b4d6d88427a87d4"
+  "5fe37b79bf07127c":
+    why: "#921: Anpassung, the B2.2 word glossed another way"
+    merge_into: "b7819b64346d171a"
+  "6c281c49a5a37b7c":
+    why: "#921: a sense of its own beside the B2.2 word; the English names it"
+    english: "robustness (of data, evidence)"
+    bangla: "নির্ভরযোগ্যতা"
+  "ade7bd97967bbdc6":
+    why: "#924: names the sense of the row #635 merged into it"
+    english: "resilience / ability to work under pressure"
+    bangla: "সহনশীলতা / চাপ সহ্য করার ক্ষমতা"
+  "0a7cac7d0abfaf07":
+    why: "#921: a sense of its own beside the B2.2 word; the English names it"
+    english: "to coin (a term)"
+    bangla: "শব্দ প্রবর্তন করা"
+  "ac7b015a62d910f9":
+    why: "#921: sich belaufen auf, the B2.2 word glossed another way"
+    merge_into: "6404e4b280e1ea89"
+  "a237e8b3666365cf":
+    why: "#921: einräumen, the B2.2 word glossed another way"
+    merge_into: "d42ca3e8cc2825e3"
+  "d42ca3e8cc2825e3":
+    why: "#924: names the sense of the C1.1 row merged into it (#921)"
+    english: "to concede / to admit / to grant"
+    bangla: "স্বীকার করা / মঞ্জুর করা"
+  "9a9d68e30709f134":
+    why: "#921: hierbei, the B2.2 word glossed another way"
+    merge_into: "baf14aa7b2d7f2fb"
+  "e76ac7e6f818d769":
+    why: "#921: insofern, the B2.2 word glossed another way"
+    merge_into: "01cbefe65acd16bb"
+  "f96e01a8a0d9c568":
+    why: "#921: zwecks, the B2.2 word glossed another way"
+    merge_into: "7b26fe1d6824303f"
+  "bc3f2eae5285b68e":
+    why: "#921: abwägen, the B2.2 word glossed another way"
+    merge_into: "10329c5cec6e1222"
+  "4a536abc875da686":
+    why: "#921: lockern, the B2.2 word glossed another way"
+    merge_into: "905505c22f302aac"
+  "2fc9b39533a32fd9":
+    why: "#921: sich bewähren, the B2.2 word glossed another way"
+    merge_into: "b8d4a8863c1f11fa"
+  "b8d4a8863c1f11fa":
+    why: "#924: names the sense of the C1.2 row merged into it (#921)"
+    english: "to prove its worth / to prove oneself"
+    bangla: "কার্যকর প্রমাণিত হওয়া / নিজেকে প্রমাণ করা"
+  "8a085f166e73e91b":
+    why: "#921: gängig, the B2.2 word glossed another way"
+    merge_into: "90a83f36a1cba1fd"
+  "da6f174ea33c0292":
+    why: "#921: maßgeblich, the B2.2 word glossed another way"
+    merge_into: "913485a483d51b00"
+  "7d8042637c339cce":
+    why: "#921: vermeintlich, the B2.2 word glossed another way"
+    merge_into: "bba0a50f0cb098c7"
+  "a4d677cfd6d714c1":
+    why: "#921: vermeintlich, the B2.2 word glossed another way"
+    merge_into: "bba0a50f0cb098c7"
+  "bba0a50f0cb098c7":
+    why: "#924: names the sense of the C1.1, C2.1 row merged into it (#921)"
+    english: "supposed / alleged (implies it is not so)"
+    bangla: "তথাকথিত (সন্দেহসূচক)"
+  "e864f0429e52d4b5":
+    why: "#921: aus dem Ruder laufen, the B2.2 word glossed another way"
+    merge_into: "0a6a4e8cf5636ba3"
+  "c2f59b952f361d77":
+    why: "#921: den Faden verlieren, the B2.2 word glossed another way"
+    merge_into: "4c1e79474c6b7f29"
+  "0adea518f2d2b990":
+    why: "#921: Spielraum, the B2.2 word glossed another way"
+    merge_into: "de34541a8e8c5ddf"
+  "b2c1ffb2b76894e1":
+    why: "#921: Spielraum, the B2.2 word glossed another way"
+    merge_into: "de34541a8e8c5ddf"
+  "039550ee041315f0":
+    why: "#921: Zuständigkeit, the B2.2 word glossed another way"
+    merge_into: "6c5b6e426a2053c5"
+  "1dc5c4d7252f9c81":
+    why: "#921: Auslastung, the B2.2 word glossed another way"
+    merge_into: "03c9c99839517c00"
+  "9df29fa2229e265d":
+    why: "#921: Falschmeldung, the B2.2 word glossed another way"
+    merge_into: "e073767200147f17"
+  "43379c399b132b0a":
+    why: "#921: Reichweite, the B2.2 word glossed another way"
+    merge_into: "2af611de12c4b8c5"
+  "24adafe483c713dd":
+    why: "#921: in Verzug geraten, the B2.2 word glossed another way"
+    merge_into: "9b4501ae433fcdc5"
+  "83849027e5a36bbe":
+    why: "#921: Schuldenbremse, the B2.2 word glossed another way"
+    merge_into: "36f6c87bc0538cdb"
+  "026f2d79403b7080":
+    why: "#921: Verjährung, the B2.2 word glossed another way"
+    merge_into: "045bac77aecadc35"
+  "e7b0a3e9df1b44ba":
+    why: "#921: Gattung, the B2.2 word glossed another way"
+    merge_into: "1d39ee342f43320a"
+  "c93ccdbec3f961d4":
+    why: "#921: Fragestellung, the C1.1 word glossed another way"
+    merge_into: "ccad18004bb6de16"
+  "3b6f1edb15f4fd2e":
+    why: "#921: schlicht, the C1.1 word glossed another way"
+    merge_into: "24d9e356deaaf5c6"
+  "0681033bc5d9b661":
+    why: "#921: Resilienz, the C1.1 word glossed another way"
+    merge_into: "b46defd521fc7354"
+  "2fa62ccead9403a4":
+    why: "#921: zuspitzen, the C1.1 word glossed another way"
+    merge_into: "18d75b4e78a7a2b0"
+  "832ccbcc55aa74b4":
+    why: "#921: ins Stocken geraten, the C1.2 word glossed another way"
+    merge_into: "36bdc36b5f3d02ea"
+  "04122a39edece805":
+    why: "#921: unterliegen, the C1.2 word glossed another way"
+    merge_into: "88cdcef54cd37508"
+  "0683634a4b699130":
+    why: "#921: Zeitenwende, the C1.2 word glossed another way"
+    merge_into: "a2915154a3b757ac"
+  "4d9151c56fe7fa01":
+    why: "#921: Quellenlage, the C1.2 word glossed another way"
+    merge_into: "4ee2b3e01f9a47f2"
+  "91c7b64139000ba0":
+    why: "#921: sich bedienen, the C1.2 word glossed another way"
+    merge_into: "142a8cb6edb56781"
+  "d30ca11b9e9b1ea6":
+    why: "#921: Abhilfe schaffen, the C1.2 word glossed another way"
+    merge_into: "55bb70cca4f733f3"
+  "11934a6a7f2eee33":
+    why: "#921: ins Feld führen, the C1.2 word glossed another way"
+    merge_into: "5e220530f3e882e1"
+  "ba028db0fd91bbbe":
+    why: "#921: vorbehaltlich, the C1.2 word glossed another way"
+    merge_into: "48cbc8c21283aa74"
+  "039a944c33bbf2a3":
+    why: "#921: Duktus, the C1.2 word glossed another way"
+    merge_into: "49fc8bcd9ab7bdaa"
+  "294be69fcaf2dbd7":
+    why: "#921: Floskel, the C1.2 word glossed another way"
+    merge_into: "0c49dcff2e145d0c"
+  "a6ea55b50f3791a4":
+    why: "#921: salopp, the C1.2 word glossed another way"
+    merge_into: "2d133d3e3af91ccf"
+  "3c4cd4716d5bd6d8":
+    why: "#924: names the sense of the row #635 merged into it"
+    english: "customer / client"
+    bangla: "গ্রাহক (পুরুষ) / ক্লায়েন্ট"
+  "d24c7be064ebdeb9":
+    why: "#924: names the sense of the row #635 merged into it"
+    english: "sustainable / lasting"
+    bangla: "টেকসই / দীর্ঘস্থায়ী"
+  "bd14d4d1d246703d":
+    why: "#924: names the sense of the row #635 merged into it"
+    english: "explainability / comprehensibility / traceability"
+    bangla: "ব্যাখ্যাযোগ্যতা / বোধগম্যতা / অনুসরণযোগ্যতা"
+  "16a90963569ffeac":
+    why: "#924: names the sense of the row #635 merged into it"
+    english: "without prejudice to / notwithstanding (+ genitive)"
+    bangla: "ক্ষতি না করে / সত্ত্বেও"
 
 # Grammar topics, keyed by their uid as built (`grammar_topics.uid`). An
 # entry sets a topic's `rule`, `example_de`, `example_en` or `watch_out`, never
