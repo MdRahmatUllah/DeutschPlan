@@ -7,6 +7,7 @@ import 'dart:io';
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/data/repositories/settings_repository.dart';
+import 'package:sogda/data/repositories/setup_repository.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 /// `docs/02-data/user-database.md` holds the settings table, and the first
@@ -196,6 +197,48 @@ void main() {
       await pumpEventQueue();
 
       expect(seen, <SettingKey<Object?>>[SettingKeys.dailyNew]);
+    });
+
+    test('#688 DA-8 a write that fails puts the cache back, and says so, so '
+        'the reminders follow it back', () async {
+      await db.customStatement(
+        'CREATE TEMP TRIGGER refuse BEFORE INSERT ON settings '
+        "BEGIN SELECT RAISE(ABORT, 'disk full'); END",
+      );
+      final seen = <SettingKey<Object?>>[];
+      final subscription = settings.changes.listen(seen.add);
+      addTearDown(subscription.cancel);
+
+      await expectLater(
+        settings.write(SettingKeys.reminderEnabled, true),
+        throwsA(anything),
+      );
+      await pumpEventQueue();
+
+      expect(settings.read(SettingKeys.reminderEnabled), isFalse);
+      expect(seen, <SettingKey<Object?>>[
+        SettingKeys.reminderEnabled,
+        SettingKeys.reminderEnabled,
+      ], reason: 'on, then back off');
+    });
+
+    test("#688 DA-8 so does a transaction rolled back around one: M3's New "
+        'words per day', () async {
+      await db.customStatement(
+        'INSERT INTO enrollments (sublevel_code, started_on, daily_new, '
+        "study_days_mask) VALUES ('A1.1', '2026-03-02', 7, 127)",
+      );
+      await db.customStatement(
+        'CREATE TEMP TRIGGER refuse BEFORE UPDATE ON enrollments '
+        "BEGIN SELECT RAISE(ABORT, 'disk full'); END",
+      );
+
+      await expectLater(
+        SetupRepository(db, settings).setDailyNew(19),
+        throwsA(anything),
+      );
+
+      expect(settings.read(SettingKeys.dailyNew), 7);
     });
   });
 

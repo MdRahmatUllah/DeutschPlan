@@ -184,6 +184,8 @@ class StepHeader extends StatelessWidget {
                       )
                     : const SizedBox.shrink(),
               ),
+              // Material's own on iOS too, its ripple included; iOS is
+              // Later (#695 TS-4). ponytail: allow-chrome
               IconButton(
                 tooltip: l10n.stepSearch,
                 icon: Icon(Icons.search, color: ink),

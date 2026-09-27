@@ -113,6 +113,42 @@ void main() {
     expect(built, greaterThan(before));
   });
 
+  test("#666 a running exam's clock does not draw the papers again; a "
+      'finished one does', () async {
+    final running = await sit(1);
+    final done = await sit(2);
+    await exams.finish(
+      attemptId: done,
+      finishedAt: '2026-09-22T08:30:00Z',
+      score: const ExamScore(scorePoints: 36, maxPoints: 48, passed: true),
+    );
+    var built = 0;
+    container.listen(examHubProvider('A1.2'), (_, next) {
+      if (next.hasValue) built++;
+    });
+    await pumpEventQueue();
+    await hub();
+    final before = built;
+
+    for (var i = 0; i < 3; i++) {
+      await exams.recordTime(attemptId: running, running: 10);
+      await pumpEventQueue();
+    }
+    await hub();
+    expect(built, before, reason: 'the time is no card of the hub');
+
+    await exams.finish(
+      attemptId: running,
+      finishedAt: '2026-09-21T08:30:00Z',
+      score: const ExamScore(scorePoints: 12, maxPoints: 48, passed: false),
+    );
+    await pumpEventQueue();
+    final view = await hub();
+    expect(built, greaterThan(before));
+    expect(view.resume, isEmpty);
+    expect(view.seeds.map((s) => s.seed), <int>[1, 2]);
+  });
+
   test('BR-EXAM-02 eleven topics for twelve slots: Mock 3 shares', () async {
     // A1.2 has 11 grammar topics; B2.1 has 20.
     expect((await hub()).reused, <int>{3});

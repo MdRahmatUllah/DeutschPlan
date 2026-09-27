@@ -359,6 +359,24 @@ void main() {
       );
     });
 
+    test('#688 DA-10 FR-M4-01 the stamp goes in with the model: a crash just '
+        'after the swap leaves it ready, not failed', () async {
+      final good = variantOf('version one');
+      await stage('hymt', good, 'version one');
+      // A file where the model goes: everything before the swap happens,
+      // and the swap fails, as a crash there would stop it.
+      final active = await models.directoryFor('hymt');
+      File(active.path).writeAsStringSync('in the way');
+      await expectLater(models.activate('hymt', good), throwsA(anything));
+
+      // The swap, as it would have landed.
+      File(active.path).deleteSync();
+      (await models.stagingFor('hymt')).renameSync(active.path);
+
+      final state = await models.stateOf(entryOf(<ModelVariant>[good]), good);
+      expect(state.status, ModelStatus.ready, reason: 'not 1.1 GB again');
+    });
+
     test('a successful activation leaves nothing behind', () async {
       final first = variantOf('version one');
       await stage('hymt', first, 'version one');
@@ -663,6 +681,26 @@ void main() {
         (await models.recordingFor(1)).path,
         isNot((await models.recordingFor(2)).path),
       );
+    });
+
+    test('#688 DA-6 an answer names its recording, and finds it by its '
+        'attempt: a stored name, or an old absolute path', () async {
+      expect(ModelRepository.recordingName(42), 'recordings/42.m4a');
+      final file = await models.recordingFor(42);
+      file.parent.createSync(recursive: true);
+      file.writeAsStringSync('aac');
+
+      expect(await models.recordingOf(42, 'recordings/42.m4a'), file.path);
+      expect(
+        await models.recordingOf(42, '/data/user/0/old.app/files/42.m4a'),
+        file.path,
+      );
+    });
+
+    test('#688 DA-6 a missing file, or no answer, is not recorded', () async {
+      expect(await models.recordingOf(43, 'recordings/43.m4a'), isNull);
+      expect(await models.recordingOf(42, null), isNull);
+      expect(await models.recordingOf(42, ''), isNull);
     });
   });
 

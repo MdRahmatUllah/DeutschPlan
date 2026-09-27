@@ -13,6 +13,8 @@ import '../core/text_clipping.dart';
 import 'dart:io';
 import 'dart:ui' show LocaleStringAttribute;
 
+import 'package:flutter/semantics.dart' show SemanticsAction, SemanticsNode;
+
 import 'package:sogda/data/db/content_dao.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/core/components/sg_button.dart';
@@ -400,6 +402,45 @@ void main() {
 
       expect(location(), '/learn/grammar/konj2');
     });
+
+    for (final (name, view) in <(String, TodayView Function())>[
+      ('in progress', artboardToday),
+      ('done', artboardDone),
+    ]) {
+      testWidgets('#749 $name, it is its own node, with its own bounds, and '
+          'no tappable node wraps another', (tester) async {
+        final semantics = tester.ensureSemantics();
+        await pump(tester, view: view());
+        final card = find.byType(GrammarPreviewCard);
+        await tester.ensureVisible(card);
+        await tester.pumpAndSettle();
+
+        final node = tester.getSemantics(card);
+        expect(node.rect.size, tester.getSize(card));
+        expect(node.getSemanticsData().label, contains(l10n.todayGrammarWeek));
+
+        // A button that wraps the ring and the plan cards reads first and
+        // takes every tap between them (#749).
+        bool tappable(SemanticsNode n) =>
+            n.getSemanticsData().hasAction(SemanticsAction.tap);
+        final wrapping = <String>[];
+        void walk(SemanticsNode n, bool under) {
+          // Merged into its parent, it is part of the parent's one node.
+          if (n.isMergedIntoParent) return;
+          if (under && tappable(n)) {
+            wrapping.add(n.getSemanticsData().label);
+          }
+          n.visitChildren((child) {
+            walk(child, under || tappable(n));
+            return true;
+          });
+        }
+
+        walk(tester.getSemantics(find.byType(TodayScreen)), false);
+        expect(wrapping, isEmpty);
+        semantics.dispose();
+      });
+    }
   });
 
   group('the docked button', () {

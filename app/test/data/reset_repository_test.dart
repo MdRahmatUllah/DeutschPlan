@@ -172,6 +172,26 @@ void main() {
     expect(await count("enrollments WHERE sublevel_code = 'A1.1'"), 1);
   });
 
+  test('#688 DA-7 FR-M7-01 today is planned anew when the 00:05 task, not '
+      'this app, planned it', () async {
+    await settings.write(
+      SettingKeys.lastPlannedDate,
+      DateTime.utc(2026, 9, 24),
+    );
+    // The task: its own connection, its own settings.
+    final task = SettingsRepository(db);
+    await task.load();
+    addTearDown(task.dispose);
+    await task.write(SettingKeys.lastPlannedDate, DateTime.utc(2026, 9, 25));
+
+    await reset.resetStep('A1.2', today: today);
+
+    final disk = SettingsRepository(db);
+    await disk.load();
+    addTearDown(disk.dispose);
+    expect(planDate(disk.read(SettingKeys.lastPlannedDate)!), '2026-09-24');
+  });
+
   test('#420 a step reset leaves the course where it started: T1 day '
       'and M1 Learning since do not move', () async {
     await db.customStatement(

@@ -650,6 +650,95 @@ void main() {
       );
     });
 
+    test('#906 one set of sessions at a time: a speak during a release waits '
+        'for the old set to close before it opens the new', () async {
+      await install();
+      final closedAtLoad = <bool>[];
+      tts = SupertonicTts(
+        models: models,
+        settings: settings,
+        cache: cache,
+        load: (dir) async {
+          loads.add(dir);
+          closedAtLoad.add(model.closed);
+          return model;
+        },
+        player: player,
+      );
+      model.gate = Completer<void>();
+      final first = tts.speak('Haus');
+      await until(() => loads.length == 1);
+      final released = tts.release();
+      final second = tts.speak('die Tür');
+      // A wait for something not to happen: the second speak reaching its
+      // load while the first set is still open.
+      await Future<void>.delayed(const Duration(milliseconds: 100));
+      expect(loads, hasLength(1), reason: 'not while the old set is open');
+
+      model.gate!.complete();
+      await first;
+      await released;
+      expect(await second, isTrue);
+      expect(closedAtLoad, <bool>[false, true]);
+    });
+
+    test('#906 a load that fails after a release leaves the newer load '
+        'owned: its sessions still close', () async {
+      await install();
+      final failing = Completer<SupertonicModel>();
+      final newer = _Model();
+      var calls = 0;
+      tts = SupertonicTts(
+        models: models,
+        settings: settings,
+        cache: cache,
+        load: (dir) => ++calls == 1 ? failing.future : Future.value(newer),
+        player: player,
+      );
+      final first = tts.speak('Haus');
+      await until(() => calls == 1);
+      final released = tts.release();
+      final second = tts.speak('die Tür');
+      // Time for the second speak to reach its own load before the first
+      // fails, the order the bug needs: longer on a busy machine, never red.
+      await Future<void>.delayed(const Duration(milliseconds: 100));
+
+      failing.completeError(StateError('not enough memory'));
+      await expectLater(first, throwsStateError);
+      await released;
+      expect(await second, isTrue);
+
+      await tts.release();
+      expect(newer.closed, isTrue);
+    });
+
+    test('#906 the list a release stopped goes on after the next speak, and '
+        'one its screen stopped does not', () async {
+      await install();
+      final list = <String>['das Haus', 'die Tür', 'die Straße'];
+      final files = <File>[
+        for (final text in list)
+          await cache.fileFor(text, voice: 'Anna', speed: 1),
+      ];
+
+      final prepared = tts.prepare(list);
+      await tts.release();
+      await prepared;
+      await tts.speak('das Haus');
+      await until(() => files.every((file) => file.existsSync()));
+
+      final other = <String>['der Tisch', 'die Lampe'];
+      final again = tts.prepare(other);
+      await tts.release();
+      await again;
+      await tts.stopPreparing(other);
+      await tts.speak('der Tisch');
+      // A wait for something not to happen: its list would have made it by
+      // now, as the one above did.
+      await Future<void>.delayed(const Duration(milliseconds: 100));
+      expect(model.asked.map((a) => a.$1), isNot(contains('die Lampe')));
+    });
+
     test('#638 with nothing open, release opens nothing', () async {
       await install();
       await tts.release();
@@ -689,17 +778,7 @@ void main() {
       addTearDown(onnx.uninstall);
       await install();
       final model = await models.directoryFor(ModelRepository.voiceModel);
-      File('${model.path}/tts.json').writeAsStringSync(
-        jsonEncode(<String, Object?>{
-          'ae': <String, Object?>{'sample_rate': 44100, 'base_chunk_size': 512},
-          'ttl': <String, Object?>{
-            'chunk_compress_factor': 6,
-            'latent_dim': 24,
-          },
-        }),
-      );
-      File('${model.path}/unicode_indexer.json')
-          .writeAsStringSync(jsonEncode(List<int>.generate(128, (i) => i)));
+      _writeConfig(model);
       File('${model.path}/M1.json').writeAsStringSync(styleOf(2));
       File('${model.path}/F2.json').writeAsStringSync(styleOf(3));
       final engine = SupertonicTts(
@@ -723,7 +802,52 @@ void main() {
         <double>[3, 3],
       ], reason: "F1's, M1's and F2's own style, in turn");
     });
+
+    test('#627 a session that fails to open closes the ones opened before '
+        'it', () async {
+      final onnx = _Onnx()..failOn = 3;
+      addTearDown(onnx.uninstall);
+      final model = Directory('${support.path}/model')..createSync();
+      _writeConfig(model);
+
+      await expectLater(
+        OrtSupertonicModel.load(model),
+        throwsA(isA<PlatformException>()),
+      );
+      expect(onnx.closed, <String>[
+        'duration_predictor.onnx',
+        'text_encoder.onnx',
+      ]);
+    });
+
+    test('#627 a session that fails to close leaves none of the others '
+        'open', () async {
+      final onnx = _Onnx()..failClose = 'duration_predictor.onnx';
+      addTearDown(onnx.uninstall);
+      final model = Directory('${support.path}/model')..createSync();
+      _writeConfig(model);
+
+      await (await OrtSupertonicModel.load(model)).close();
+      expect(onnx.closed, <String>[
+        'text_encoder.onnx',
+        'vector_estimator.onnx',
+        'vocoder.onnx',
+      ]);
+    });
   });
+}
+
+/// Supertonic 3's `tts.json` and `unicode_indexer.json`, as small as the
+/// loader takes them.
+void _writeConfig(Directory model) {
+  File('${model.path}/tts.json').writeAsStringSync(
+    jsonEncode(<String, Object?>{
+      'ae': <String, Object?>{'sample_rate': 44100, 'base_chunk_size': 512},
+      'ttl': <String, Object?>{'chunk_compress_factor': 6, 'latent_dim': 24},
+    }),
+  );
+  File('${model.path}/unicode_indexer.json')
+      .writeAsStringSync(jsonEncode(List<int>.generate(128, (i) => i)));
 }
 
 /// `flutter_onnxruntime`'s channel, stubbed: what `OrtSupertonicModel` asks
@@ -743,6 +867,15 @@ class _Onnx {
 
   /// The sessions opened.
   int sessions = 0;
+
+  /// The session (1 is the first) whose open fails, as out of memory would.
+  int? failOn;
+
+  /// The sessions closed, by file name.
+  final List<String> closed = <String>[];
+
+  /// The session, by file name, whose close fails.
+  String? failClose;
 
   /// The style each clip's duration was predicted in, in order.
   final List<List<double>> styles = <List<double>>[];
@@ -766,6 +899,9 @@ class _Onnx {
     switch (call.method) {
       case 'createSession':
         sessions++;
+        if (sessions == failOn) {
+          throw PlatformException(code: 'OOM', message: 'out of memory');
+        }
         return <String, Object?>{
           'sessionId': (args!['modelPath']! as String).split('/').last,
           'inputNames': <String>[],
@@ -789,8 +925,13 @@ class _Onnx {
         };
       case 'getOrtValueData':
         return <String, Object?>{'data': _values[args!['valueId']]};
+      case 'closeSession':
+        final id = args!['sessionId']! as String;
+        if (id == failClose) throw PlatformException(code: 'CLOSE');
+        closed.add(id);
+        return null;
       default:
-        // releaseOrtValue, closeSession.
+        // releaseOrtValue.
         return null;
     }
   }

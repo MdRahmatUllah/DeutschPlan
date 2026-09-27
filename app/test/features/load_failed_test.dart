@@ -203,7 +203,7 @@ void main() {
     final calls = await pump(
       tester,
       const GrammarPracticeScreen(topicUids: <String>['stale-uid']),
-      (calls) => practiceSetProvider.overrideWith((ref, uid) async {
+      (calls) => practiceSetProvider.overrideWith((ref, _) async {
         calls.add(1);
         fail();
       }),
@@ -241,7 +241,7 @@ void main() {
     final calls = await pump(
       tester,
       const GrammarPracticeScreen(topicUids: <String>['stale-uid']),
-      (calls) => practiceSetProvider.overrideWith((ref, uid) async {
+      (calls) => practiceSetProvider.overrideWith((ref, _) async {
         calls.add(1);
         return null;
       }),
