@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-09-27 08:54
+last-seen: 2026-09-27 08:55
 last-read: 1538
 
 ## Now
 
-#628 in review as PR #771: answer review threads; re-run the gate if main moved, then merge.
+#664 perf(backlog): T4 runs one query per row on every table change — claimed 2026-09-27 08:55.
 
 ## Next
 
