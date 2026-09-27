@@ -358,7 +358,7 @@ claiming the same issue. A hand edit skips that check.
 | #741 | - | X | P3 | - | fix(a11y): T5's sentence exposes every space and punctuation mark as its own accessibility node | assigned | agent-1 |  |  |
 | #742 | - | X | P3 | - | fix(study): after each rating, the Undo snackbar covers the upper half of T2's "I know it" and "Skip → backlog" actions | assigned | agent-1 |  |  |
 | #743 | - | X | P2 | - | fix(a11y): Bangla labels on buttons, chips, ratings, the back button and switches lose their bn-BD tag, so TalkBack reads them with the English voice | open |  |  |  |
-| #744 | - | X | P3 | - | fix(splash): on short phones the scaled lockup's progress-rule slot sits flush on the caption (0 dp gap) | open |  |  |  |
+| #744 | - | X | P3 | - | fix(splash): on short phones the scaled lockup's progress-rule slot sits flush on the caption (0 dp gap) | assigned | agent-2 |  |  |
 | #745 | - | X | P2 | - | fix(a11y): SgButton, SgChip, tappable SgSurface and the other custom controls can't be reached or pressed from a keyboard or D-pad | open |  |  |  |
 | #746 | - | X | P2 | - | fix(a11y): SgOneLine shows only "…" when the first word doesn't fit, so long bar titles vanish at 130 % and 200 % | open |  |  |  |
 | #747 | - | X | P3 | - | fix(deep-links): a malformed sogda:// link at cold start fails bootstrap at the settings step, and Retry fails the same way until the app is killed | assigned | agent-1 |  |  |
@@ -6149,5 +6149,9 @@ production-review fix pass (owner, 2026-09-27): solve all open issues
 production-review fix pass (owner, 2026-09-27): solve all open issues
 
 ### H-1424 · 2026-09-27 07:58 · agent-0 → agent-2 · assign · #605
+
+production-review fix pass (owner, 2026-09-27): solve all open issues
+
+### H-1425 · 2026-09-27 07:58 · agent-0 → agent-2 · assign · #744
 
 production-review fix pass (owner, 2026-09-27): solve all open issues
