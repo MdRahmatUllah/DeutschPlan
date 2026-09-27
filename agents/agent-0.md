@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-09-27 08:48
+last-seen: 2026-09-27 08:49
 last-read: 1538
 
 ## Now
 
-#708 in review as PR #768: answer review threads; re-run the gate if main moved, then merge.
+#715 perf(plan): unplannedWords' NOT EXISTS re-scans every planned word for each word of the step, costing seconds per catch-up late in the course, inside openDay's write lock — claimed 2026-09-27 08:49.
 
 ## Next
 

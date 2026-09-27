@@ -314,7 +314,7 @@ claiming the same issue. A hand edit skips that check.
 | #691 | - | X | P3 | - | fix(exam): 10 lower-severity findings in Exam, search and words (production review checklist) | assigned | agent-1 |  |  |
 | #692 | - | X | P3 | - | fix(me): 11 lower-severity findings in Me and onboarding (production review checklist) | assigned | agent-2 |  |  |
 | #693 | - | X | P3 | - | fix(platform): 5 lower-severity findings in platform, notifications and background work (production review checklist) | assigned | agent-2 |  |  |
-| #715 | - | X | P2 | - | perf(plan): unplannedWords' NOT EXISTS re-scans every planned word for each word of the step, costing seconds per catch-up late in the course, inside openDay's write lock | assigned | agent-0 |  |  |
+| #715 | - | X | P2 | - | perf(plan): unplannedWords' NOT EXISTS re-scans every planned word for each word of the step, costing seconds per catch-up late in the course, inside openDay's write lock | in-progress | agent-0 |  |  |
 | #694 | - | X | P3 | - | fix(errors): 2 lower-severity findings in error handling across screens (production review checklist) | assigned | agent-2 |  |  |
 | #695 | - | X | P3 | - | test(guards): 4 lower-severity findings in tests and their guards (production review checklist) | assigned | agent-0 |  |  |
 | #696 | - | X | P3 | - | docs(copy): 4 lower-severity findings in Bangla copy and docs (production review checklist) | assigned | agent-1 |  |  |
