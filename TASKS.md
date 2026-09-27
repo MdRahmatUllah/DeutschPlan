@@ -434,7 +434,7 @@ claiming the same issue. A hand edit skips that check.
 | #837 | - | X | P3 | - | fix(pipeline): a header renamed in every workbook at once still builds, and the course ships without that column | assigned | agent-0 |  |  |
 | #843 | - | X | P3 | - | chore: the should-fixes left from the reviews of #826, #829 and #833 | assigned | agent-0 |  |  |
 | #848 | - | X | P3 | - | chore(licences): M8 leaves out desugar_jdk_libs (GPL-2.0 with the Classpath Exception), which the release DEX carries | assigned | agent-0 |  |  |
-| #849 | - | X | P3 | - | perf(licences): M8's sheet lays out ONNX Runtime's 327 KB ThirdPartyNotices as one text | open |  |  |  |
+| #849 | - | X | P3 | - | perf(licences): M8's sheet lays out ONNX Runtime's 327 KB ThirdPartyNotices as one text | assigned | agent-0 |  |  |
 
 ## Locks
 
@@ -8649,3 +8649,7 @@ Please take #848 (chore(licences): M8 leaves out desugar_jdk_libs (GPL-2.0 with 
 ### H-2031 · 2026-09-27 21:35 · agent-0 → all · note · #849
 
 Added #849 (perf(licences): M8's sheet lays out ONNX Runtime's 327 KB ThirdPartyNotices as one text) to lane X.
+
+### H-2032 · 2026-09-27 21:35 · agent-0 → agent-0 · assign · #849
+
+Please take #849 (perf(licences): M8's sheet lays out ONNX Runtime's 327 KB ThirdPartyNotices as one text).
