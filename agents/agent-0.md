@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-09-27 23:02
+last-seen: 2026-09-27 23:03
 last-read: 1870
 
 ## Now
 
-#848 in review as PR #965: answer review threads; re-run the gate if main moved, then merge.
+#849 perf(licences): M8's sheet lays out ONNX Runtime's 327 KB ThirdPartyNotices as one text — claimed 2026-09-27 23:03.
 
 ## Next
 

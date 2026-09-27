@@ -434,7 +434,7 @@ claiming the same issue. A hand edit skips that check.
 | #837 | - | X | P3 | - | fix(pipeline): a header renamed in every workbook at once still builds, and the course ships without that column | review | agent-0 |  | #960 |
 | #843 | - | X | P3 | - | chore: the should-fixes left from the reviews of #826, #829 and #833 | assigned | agent-0 |  |  |
 | #848 | - | X | P3 | - | chore(licences): M8 leaves out desugar_jdk_libs (GPL-2.0 with the Classpath Exception), which the release DEX carries | review | agent-0 |  | #965 |
-| #849 | - | X | P3 | - | perf(licences): M8's sheet lays out ONNX Runtime's 327 KB ThirdPartyNotices as one text | assigned | agent-0 |  |  |
+| #849 | - | X | P3 | - | perf(licences): M8's sheet lays out ONNX Runtime's 327 KB ThirdPartyNotices as one text | in-progress | agent-0 |  |  |
 | #867 | - | X | P3 | - | fix(data): Settings' retention estimate still counts words a content update removed (stabilitiesOfLearned) | assigned | agent-0 |  |  |
 | #888 | - | X | P3 | - | fix(undo): an Undo still takes back a later rating of the same word (#728 follow-up) | assigned | agent-0 |  |  |
 | #923 | - | X | P3 | - | fix(content): a rebuild can move a level's step boundary, and words change step under learners (#913 follow-up) | assigned | agent-0 |  |  |
