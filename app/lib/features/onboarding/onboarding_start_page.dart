@@ -1,3 +1,4 @@
+import 'package:sogda/core/components/sg_feedback.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/core/theme/sg_surface.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
@@ -48,7 +49,11 @@ class OnboardingStartPage extends ConsumerWidget {
     final l10n = AppLocalizations.of(context);
     final setup = ref.watch(setupFlowProvider);
     final chosen = ref.watch(onboardingProvider).step;
-    final steps = ref.watch(courseStepsProvider).value ?? const <CourseStep>[];
+    final stepsState = ref.watch(courseStepsProvider);
+    final steps = stepsState.value ?? const <CourseStep>[];
+    // #677: with the steps unread there is nothing to choose, and Continue
+    // would quietly commit A1.1.
+    final unread = stepsState.value == null && stepsState.hasError;
 
     // Level by level, keeping the order the steps arrived in. A map literal
     // is insertion-ordered, so this is the grouping and nothing else.
@@ -68,7 +73,7 @@ class OnboardingStartPage extends ConsumerWidget {
       page: OnboardingPage.startingPoint,
       headline: l10n.onboardingStartHeadline,
       primaryLabel: l10n.continueAction,
-      onPrimary: onContinue,
+      onPrimary: unread ? null : onContinue,
       onBack: onBack,
       onSkip: onSkip,
       busy: setup == SetupStatus.finishing,
@@ -76,6 +81,11 @@ class OnboardingStartPage extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
+          if (unread)
+            SgLoadFailed(
+              message: l10n.learnLoadFailed,
+              onRetry: () => ref.invalidate(courseStepsProvider),
+            ),
           for (final MapEntry(key: level, value: inLevel) in levels.entries)
             Padding(
               padding: const EdgeInsets.only(bottom: rowGap),

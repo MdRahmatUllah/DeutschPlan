@@ -151,7 +151,9 @@ class _UmlautKey extends StatelessWidget {
       child: Semantics(
         button: true,
         enabled: onTap != null,
-        label: AppLocalizations.of(context).umlautLongPressHint(label, shifted),
+        attributedLabel: SgScript.attributedLabel(
+          AppLocalizations.of(context).umlautLongPressHint(label, shifted),
+        ),
         onTap: onTap,
         onLongPress: onLongPress,
         child: ExcludeSemantics(

@@ -100,6 +100,7 @@ INSERT INTO sentence_log (word_uid, ord, shown_on, self_rating) VALUES
     bool planOpen = true,
     String? rated,
     bool voice = true,
+    DateTime Function()? clock,
   }) async {
     tts = FakeTts(voice: voice);
     await tester.runAsync(() => open(planOpen: planOpen, rated: rated));
@@ -115,7 +116,9 @@ INSERT INTO sentence_log (word_uid, ord, shown_on, self_rating) VALUES
           appDatabaseProvider.overrideWithValue(db),
           settingsProvider.overrideWithValue(settings),
           fakeVoice(tts),
-          clockProvider.overrideWithValue(() => DateTime(2026, 9, 21, 9)),
+          clockProvider.overrideWithValue(
+            clock ?? () => DateTime(2026, 9, 21, 9),
+          ),
         ],
         child: MaterialApp.router(
           theme: AppTheme.light(),
@@ -217,6 +220,41 @@ INSERT INTO sentence_log (word_uid, ord, shown_on, self_rating) VALUES
       await tester.pumpAndSettle();
       expect((await tester.runAsync(log))!.first['self_rating'], 3);
       semantics.dispose();
+    });
+
+    testWidgets('#660 past midnight it keeps the day it opened on: the same '
+        "sentences, and that day's ratings", (tester) async {
+      var now = DateTime(2026, 9, 21, 23, 55);
+      final container = await pump(tester, clock: () => now);
+      await answer(tester, l10n.sentencesUnderstood);
+
+      // Today's resume, after midnight, as T1's lifecycle listener does it.
+      now = DateTime(2026, 9, 22, 0, 5);
+      container.invalidate(todayProvider);
+      await tester.runAsync(
+        () => Future<void>.delayed(const Duration(milliseconds: 60)),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text(l10n.sentencesPlace(2, 3)), findsOneWidget);
+
+      await answer(tester, l10n.sentencesPartly);
+      final days = await tester.runAsync(
+        () => db
+            .customSelect(
+              'SELECT DISTINCT shown_on FROM sentence_log '
+              'WHERE self_rating IS NOT NULL',
+            )
+            .get(),
+      );
+      expect(days!.map((row) => row.read<String>('shown_on')), <String>[
+        '2026-09-21',
+      ]);
+      // Both answers kept: the second is not lost to a day with no row.
+      final rows = await tester.runAsync(log);
+      expect(rows!.map((row) => row['self_rating']).whereType<int>(), <int>[
+        3,
+        2,
+      ]);
     });
 
     testWidgets('Partly writes 2', (tester) async {
@@ -484,12 +522,12 @@ INSERT INTO sentence_log (word_uid, ord, shown_on, self_rating) VALUES
         '(#324)', () async {
       await db.customStatement('''
 INSERT INTO c.words (uid, sublevel_code, level_code, seq, seq_in_sublevel,
-  german, forms, pos, english, search_key, search_key_alt)
+  german, forms, pos, english, search_key, search_key_alt, kind)
 VALUES
   ('uid-sein', 'A1.1', 'A1', 7, 7, 'sein', 'ist · ist gewesen (war)', 'verb',
-   'to be', 'sein', 'sein'),
+   'to be', 'sein', 'sein', 'vocab'),
   ('uid-geben', 'A1.1', 'A1', 8, 8, 'geben', 'gibt · hat gegeben', 'verb',
-   'to give', 'geben', 'geben')
+   'to give', 'geben', 'geben', 'vocab')
 ''');
       final dao = ContentDao(db);
       expect((await dao.wordForToken('ist'))?.uid, 'uid-sein');
@@ -506,8 +544,8 @@ VALUES
     test('a short key only as itself: "in" does not claim "innen"', () async {
       await db.customStatement('''
 INSERT INTO c.words (uid, sublevel_code, level_code, seq, seq_in_sublevel,
-  german, english, search_key, search_key_alt)
-VALUES ('uid-in', 'A1.1', 'A1', 9, 9, 'in', 'in', 'in', 'in')
+  german, english, search_key, search_key_alt, kind)
+VALUES ('uid-in', 'A1.1', 'A1', 9, 9, 'in', 'in', 'in', 'in', 'vocab')
 ''');
       final dao = ContentDao(db);
       expect((await dao.wordForToken('in'))?.uid, 'uid-in');

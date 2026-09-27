@@ -320,6 +320,38 @@ void main() {
     });
   });
 
+  testWidgets('BR-CONTENT-04 a note is found like any word, and its row has '
+      'no status', (tester) async {
+    await pump(
+      tester,
+      extra: <Override>[
+        searchResultsProvider.overrideWith(
+          (ref, args) => Stream.value(
+            SearchView(
+              words: <SearchRow>[
+                searchRow(
+                  'note',
+                  german: 'beantworten — Präfix be-',
+                  meaning: 'prefix be-',
+                  tier: SearchTier.exact,
+                  kind: 'note',
+                ),
+              ],
+              sentences: const <SentenceHit>[],
+            ),
+          ),
+        ),
+      ],
+    );
+    await type(tester, 'beantworten');
+    final row = find.byType(WordRow);
+    expect(row, findsOneWidget);
+    expect(
+      find.descendant(of: row, matching: find.byType(WordStatusChip)),
+      findsNothing,
+    );
+  });
+
   testWidgets('FR-R1-01 a failed search says so, and Retry asks again', (
     tester,
   ) async {

@@ -211,4 +211,28 @@ void main() {
     final states = await db.select(db.wordState).get();
     expect(states.map((s) => s.due).toSet(), <String>{'2026-09-22'});
   });
+
+  test('FR-L13-02 #717 Add missed words to revision that fails half way '
+      'saves nothing, so a retry rates no word twice', () async {
+    // The second rating's review_log insert fails, as a full disk would.
+    await db.customStatement(
+      'CREATE TEMP TRIGGER fail_rating BEFORE INSERT ON review_log '
+      'WHEN (SELECT count(*) FROM review_log) >= 1 '
+      "BEGIN SELECT RAISE(ABORT, 'disk full'); END",
+    );
+    final uids = <String>[ContentFixture.haus, ContentFixture.tuer];
+
+    await expectLater(
+      service.addToRevision(uids, today: '2026-09-21'),
+      throwsA(anything),
+    );
+    expect(await db.select(db.reviewLog).get(), isEmpty);
+    expect(await db.select(db.wordState).get(), isEmpty);
+    expect(await db.select(db.dailyStats).get(), isEmpty);
+
+    await db.customStatement('DROP TRIGGER fail_rating');
+    await service.addToRevision(uids, today: '2026-09-21');
+    final log = await db.select(db.reviewLog).get();
+    expect([for (final r in log) r.wordUid], uids, reason: 'each once');
+  });
 }

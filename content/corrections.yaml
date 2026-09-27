@@ -8,8 +8,9 @@
 # Each key is the uid of the row as the workbook has it, in quotes. An entry
 # says `why`, and sets any column the pipeline reads (`german`, `article`,
 # `forms`, `english`, ...), one example line (`example_de_2` is the second
-# German sentence, `example_en_2` its translation), or `delete: true`. A key
-# that matches no row, or more than one, fails the build.
+# German sentence, `example_en_2` its translation), `kind` (vocab, note or
+# compare: PIPE-10's heuristic, overridden), or `delete: true`. A key that
+# matches no row, or more than one, fails the build.
 #
 # This repository is public: an entry holds the new text only, never the text
 # it replaces.
@@ -395,3 +396,139 @@ words:
   "a95924d25ee9c929":
     why: "#633: a noun phrase is a noun: its article is asked as the noun's"
     pos: "noun"
+  "3fdadd10b11315dd":
+    why: "#630: a lesson note (present participle as attribute (active, ongoing)), not a word to learn"
+    kind: note
+  "fd61e45746b4de64":
+    why: "#630: a lesson note (past participle as attribute (passive, completed)), not a word to learn"
+    kind: note
+  "c028c9ff7a08356e":
+    why: "#630: a lesson note (standard abbreviations in written German), not a word to learn"
+    kind: note
+  "8cafb295df20c58f":
+    why: "#630: a lesson note (irregular comparison forms), not a word to learn"
+    kind: note
+  "7c9295d7d66675a8":
+    why: "#630: a lesson note (dropped -e in spoken German), not a word to learn"
+    kind: note
+  "c793da6574325ac4":
+    why: "#630: a lesson note (word order after connectors), not a word to learn"
+    kind: note
+  "e4f5108e2641e95f":
+    why: "#630: a lesson note (word order in subordinate clauses), not a word to learn"
+    kind: note
+  "66f469f0a66736dd":
+    why: "#630: a lesson note (what occupies position 1), not a word to learn"
+    kind: note
+  "0665a8db61014e84":
+    why: "#630: a lesson note (salutation conventions), not a word to learn"
+    kind: note
+  "0b686c3b780d89b8":
+    why: "#630: a lesson note (dropping 'dass' in speech), not a word to learn"
+    kind: note
+  "d0a179cb74a80525":
+    why: "#630: a lesson note (contracted du-forms), not a word to learn"
+    kind: note
+  "f822c0a61219d27b":
+    why: "#630: a lesson note (German requires articles where Bangla/English omit them), not a word to learn"
+    kind: note
+  "2115e2b29d4b99a0":
+    why: "#630: a lesson note (participle forms as a gender solution), not a word to learn"
+    kind: note
+  "5a053f10d1ac0760":
+    why: "#630: a lesson note (wenn-less conditional), not a word to learn"
+    kind: note
+  "304869451ae3345d":
+    why: "#630: a lesson note (preposed genitive (poetic)), not a word to learn"
+    kind: note
+  "59a17e1b2234d118":
+    why: "#630: a lesson note (German politeness is indirect, not warm), not a word to learn"
+    kind: note
+  "2f0a9c2bf509daec":
+    why: "#630: a lesson note (SOV transfer into German main clauses), not a word to learn"
+    kind: note
+  "5bcc69dab3f097f2":
+    why: "#630: a lesson note (inflecting anglicisms), not a word to learn"
+    kind: note
+  "19d28e6eee2c0268":
+    why: "#630: a lesson note (colloquial preposition-article fusions), not a word to learn"
+    kind: note
+  "a967bfb0ba67cc67":
+    why: "#630: a lesson note (given–new information structure), not a word to learn"
+    kind: note
+  "3b5656659e87fde3":
+    why: "#630: a lesson note (Switzerland writes ss, never ß), not a word to learn"
+    kind: note
+  "6c5cb0382d362e30":
+    why: "#630: a lesson note (southern perfect with sein), not a word to learn"
+    kind: note
+  "298434d641cdb8ac":
+    why: "#630: a lesson note (intensifier patterns in casual speech), not a word to learn"
+    kind: note
+  "7895614fe08ece88":
+    why: "#630: a lesson note (dropping the first element), not a word to learn"
+    kind: note
+  "8e9087fab344a444":
+    why: "#630: a lesson note (Berlin dialect forms), not a word to learn"
+    kind: note
+  "1fc25ac3d683eea9":
+    why: "#630: a lesson note (how to recognise officialese), not a word to learn"
+    kind: note
+  "204a2139c38ac56b":
+    why: "#630: a lesson note (ordering within an enumeration), not a word to learn"
+    kind: note
+  "67125ba556f3f919":
+    why: "#630: a lesson note (cleft sentence), not a word to learn"
+    kind: note
+  "f0ea349b9bb1f8f8":
+    why: "#630: a lesson note (Konjunktiv I as an optative), not a word to learn"
+    kind: note
+  "9ef3481a696ce8f0":
+    why: "#630: a word-formation note (the -er suffix), shaped as the others are; A1.2 teaches the word"
+    german: "Lehrer — Wortbildung -er"
+  "0158fbfe93594fcb":
+    why: "#630: the comparison is Konferenz and Vorlesung, as its meaning and examples say"
+    german: "die Konferenz ↔ die Vorlesung"
+  "032761110c9ec5d7":
+    why: "#630: the commercial 'at' is à"
+    german: "je ↔ pro ↔ à"
+  "d8f59f5a88e6ff69":
+    why: "#630: the article was the formed nouns' gender, shown as das Suffix's"
+    article: null
+  "df6e5ab84f808477":
+    why: "#630: the article was the formed nouns' gender, shown as das Suffix's"
+    article: null
+  "0709d825ae106145":
+    why: "#630: the article was the formed nouns' gender, shown as das Suffix's"
+    article: null
+  "7df5ff629a536fe4":
+    why: "#630: the article was the formed nouns' gender, shown as das Suffix's"
+    article: null
+  "88fd3273e1fd8cc0":
+    why: "#630: a starred ungrammatical sentence was read aloud as a model"
+    example_de_1: "Es gibt ein Problem."
+  "632ce4b5160f95b6":
+    why: "#630: a starred ungrammatical sentence was read aloud as a model"
+    example_de_2: ""
+    example_en_2: ""
+  "edb916d64765634c":
+    why: "#630: a grammar note, not a word (German has no continuous tense); Verlaufsform is feminine; a starred sentence was read aloud as a model"
+    german: "keine Verlaufsform"
+    kind: note
+    example_de_1: "Ich arbeite gerade."
+  "18796e5a16e6a545":
+    why: "#630: a grammar note, not a word (no double negative); a starred sentence was read aloud as a model"
+    kind: note
+    example_de_1: "Ich habe nichts gesehen."
+  "470f6d0ba72624af":
+    why: "#630: a grammar note, not a word (the dative with body parts); a starred sentence was read aloud as a model"
+    kind: note
+    example_de_1: "Mir tut der Kopf weh."
+  "4e5c033a05b0667b":
+    why: "#630: a grammar note, not a word (particle position); a starred sentence was read aloud as a model"
+    kind: note
+    example_de_2: ""
+    example_en_2: ""
+  "78b95eba293e3f4b":
+    why: "#630: a lesson note (the reporting subjunctive), not a word to learn"
+    kind: note

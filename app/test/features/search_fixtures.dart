@@ -12,10 +12,12 @@ SearchRow searchRow(
   String? article,
   String step = 'A1.1',
   WordStatus status = WordStatus.todo,
+  String kind = 'vocab',
 }) => (
   word: (
     word: WordWithState(
       word: Word(
+        kind: kind,
         uid: uid,
         sublevelCode: step,
         levelCode: step.substring(0, 2),

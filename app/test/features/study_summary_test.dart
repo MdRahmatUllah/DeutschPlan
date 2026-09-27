@@ -278,6 +278,7 @@ VALUES ('$today', 9, 12, 900)
             studyWordProvider(uid).overrideWith(
               (ref) async => WordWithState(
                 word: Word(
+                  kind: 'vocab',
                   uid: uid,
                   sublevelCode: 'A1.1',
                   levelCode: 'A1',

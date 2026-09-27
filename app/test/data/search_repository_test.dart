@@ -582,8 +582,8 @@ void _writeCourseSizedContent(String path) {
     final word = db.prepare(
       'INSERT INTO words (uid, sublevel_code, level_code, seq, '
       'seq_in_sublevel, article, german, pos, english, bangla, freq, '
-      'source_week, search_key, search_key_alt) '
-      'VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+      'source_week, search_key, search_key_alt, kind) '
+      "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'vocab')",
     );
     final example = db.prepare(
       'INSERT INTO word_examples (word_uid, ord, german, english) '

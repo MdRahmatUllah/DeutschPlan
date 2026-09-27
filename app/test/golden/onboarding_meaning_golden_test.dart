@@ -25,6 +25,7 @@ void main() {
         meaningSampleProvider.overrideWith(
           (ref) async => const WordWithState(
             word: Word(
+              kind: 'vocab',
               uid: meaningSampleUid,
               sublevelCode: 'A1.1',
               levelCode: 'A1',
