@@ -102,6 +102,7 @@ INSERT INTO sentence_log (word_uid, ord, shown_on, self_rating) VALUES
     bool planOpen = true,
     String? rated,
     bool voice = true,
+    DateTime Function()? clock,
   }) async {
     tts = FakeTts(voice: voice);
     await tester.runAsync(() => open(planOpen: planOpen, rated: rated));
@@ -117,7 +118,9 @@ INSERT INTO sentence_log (word_uid, ord, shown_on, self_rating) VALUES
           appDatabaseProvider.overrideWithValue(db),
           settingsProvider.overrideWithValue(settings),
           fakeVoice(tts),
-          clockProvider.overrideWithValue(() => DateTime(2026, 9, 21, 9)),
+          clockProvider.overrideWithValue(
+            clock ?? () => DateTime(2026, 9, 21, 9),
+          ),
         ],
         child: MaterialApp.router(
           theme: AppTheme.light(),
@@ -219,6 +222,41 @@ INSERT INTO sentence_log (word_uid, ord, shown_on, self_rating) VALUES
       await tester.pumpAndSettle();
       expect((await tester.runAsync(log))!.first['self_rating'], 3);
       semantics.dispose();
+    });
+
+    testWidgets('#660 past midnight it keeps the day it opened on: the same '
+        "sentences, and that day's ratings", (tester) async {
+      var now = DateTime(2026, 9, 21, 23, 55);
+      final container = await pump(tester, clock: () => now);
+      await answer(tester, l10n.sentencesUnderstood);
+
+      // Today's resume, after midnight, as T1's lifecycle listener does it.
+      now = DateTime(2026, 9, 22, 0, 5);
+      container.invalidate(todayProvider);
+      await tester.runAsync(
+        () => Future<void>.delayed(const Duration(milliseconds: 60)),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text(l10n.sentencesPlace(2, 3)), findsOneWidget);
+
+      await answer(tester, l10n.sentencesPartly);
+      final days = await tester.runAsync(
+        () => db
+            .customSelect(
+              'SELECT DISTINCT shown_on FROM sentence_log '
+              'WHERE self_rating IS NOT NULL',
+            )
+            .get(),
+      );
+      expect(days!.map((row) => row.read<String>('shown_on')), <String>[
+        '2026-09-21',
+      ]);
+      // Both answers kept: the second is not lost to a day with no row.
+      final rows = await tester.runAsync(log);
+      expect(rows!.map((row) => row['self_rating']).whereType<int>(), <int>[
+        3,
+        2,
+      ]);
     });
 
     testWidgets('Partly writes 2', (tester) async {

@@ -29,7 +29,7 @@
 | `/me/about` · `/me/about/licences` | M9 · M8 | pushed |
 | `/study` (extra: `SessionArgs`) | T2 → T3 | full-screen modal (declared outside the shell's branches, so on the root navigator) |
 | `/sentences` | T5 | full-screen modal |
-| `/day-complete` | T6 | full-screen overlay |
+| `/day-complete` (`?day=`: the plan day the session studied) | T6 | full-screen overlay |
 | `/grammar-practice` (extra) | L15 | full-screen modal |
 | `/quiz` (extra: `QuizArgs`) | L8 → L9 | full-screen modal |
 | `/exam/:attemptId` | L12 → L13 → L14 | full-screen modal; swipe-dismiss disabled |

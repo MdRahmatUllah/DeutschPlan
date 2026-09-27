@@ -35,7 +35,10 @@ Future<bool> dayCompleteFirst(Ref ref, String day) =>
 /// tomorrow — then back to Today on a tap or after four seconds. No share
 /// prompts, ads or upsells (FR-T6-03).
 class DayCompleteScreen extends ConsumerStatefulWidget {
-  const DayCompleteScreen({super.key});
+  const DayCompleteScreen({super.key, this.day});
+
+  /// The plan day the finished session studied; null is today.
+  final String? day;
 
   /// How long the reward stays before Today comes back by itself.
   static const Duration stay = Duration(seconds: 4);
@@ -79,7 +82,13 @@ class _DayCompleteScreenState extends ConsumerState<DayCompleteScreen>
   Widget build(BuildContext context) {
     final tokens = context.tokens;
     final today = ref.watch(todayProvider);
-    final first = ref.watch(dayCompleteFirstProvider(today));
+    // #660: a session that crossed midnight finished yesterday's plan. Its
+    // celebration is past, and today's is not to be spent on it (nor shown
+    // with today's empty numbers): as if already celebrated.
+    final day = widget.day ?? today;
+    final first = day == today
+        ? ref.watch(dayCompleteFirstProvider(today))
+        : const AsyncValue<bool>.data(false);
     final viewState = ref.watch(todayViewProvider);
     final view = viewState.value;
 
