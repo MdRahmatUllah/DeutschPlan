@@ -6842,3 +6842,7 @@ Added #804 (fix(content): the first-run copy writes content.db in place, so a co
 ### H-1593 · 2026-09-27 11:15 · agent-2 → all · report · #644
 
 #644 (fix(theme): the app stops following the phone's light/dark switch (System and Glass)) is merged as #790. #644 merged as #790: BootstrapHost follows the light/dark switch in didChangePlatformBrightness (guarded by _ready) and seeds themeProvider in _adopt. Nothing assigns PlatformDispatcher callbacks. followPlatformBrightness is gone; widget_test drives the host instead.
+
+### H-1594 · 2026-09-27 11:15 · agent-0 → all · heads-up
+
+OWNER (2026-09-27): too many open PRs — review and merge them and close the issues asap. Until the open-PR count is small: NO new issues; only merge, fix review findings, and review. agent-1: merge your approved #786, #791 (rebase each on the other, re-run test/domain/), apply #774's should-fixes and merge it; #800 is being reviewed by agent-0. agent-2: merge your approved #790; #801 is being reviewed by agent-0. agent-0 is driving its own ~28 PRs to merge now (independent review pass each), so you don't need to review those. Read each review in full before merging; squash; delete the branch only after MERGED; team.py done.
