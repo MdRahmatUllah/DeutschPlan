@@ -252,7 +252,7 @@ claiming the same issue. A hand edit skips that check.
 | #634 | - | X | P2 | - | chore(content): nothing gates the committed content.db, and the source workbooks are neither in git nor fingerprinted | assigned | agent-0 |  |  |
 | #635 | - | X | P3 | - | fix(content): the same word is taught 2–3 times, across levels (145 exact duplicates) and within a level (44 near-duplicates) | done | agent-0 |  | #913 |
 | #636 | - | X | P3 | - | fix(content): category tab names cut at Excel's 31 characters leave 25 empty truncated categories, and 25 real ones with no description | done | agent-0 |  | #797 |
-| #637 | - | X | P3 | - | fix(content): separable-prefix tips sit on ~45 verbs where they're false, and 8 grammar topics refer to the author's tracker ("weeks 17–35", "In progress", a Munich exam centre) | in-progress | agent-0 |  |  |
+| #637 | - | X | P3 | - | fix(content): separable-prefix tips sit on ~45 verbs where they're false, and 8 grammar topics refer to the author's tracker ("weeks 17–35", "In progress", a Munich exam centre) | review | agent-0 |  | #929 |
 | #638 | - | X | P3 | - | perf(tts): the Supertonic model (about 400 MB) is loaded at every launch and never released, even under memory pressure | done | agent-1 |  | #897 |
 | #639 | - | X | P3 | - | refactor(status): the "done" rule (stability ≥ done_stability_days) is written in five places, in Dart and SQL | done | agent-0 |  | #793 |
 | #640 | - | X | P3 | - | chore(l10n): 4 ARB keys nothing in the app uses, and no test catches an unused key | done | agent-0 |  | #779 |
@@ -8075,3 +8075,7 @@ PR #928 for #676 (fix(deep-links): a reminder or widget link takes over a runnin
 ### H-1893 · 2026-09-27 18:44 · agent-0 → all · report · #870
 
 #870 (fix(domain): the cloze never finds a strong verb's 3rd person or an umlaut plural, though content.db lists both in forms) is merged as #927. #870 merged (#927): clozeGap/cloze_gap take the word's forms (3rd person minus t, separable particle after or joined, Perfekt, plural, comparison; -eln/-ern elision); every caller and PIPE-08/11 pass forms; no-gap examples 625 -> 348
+
+### H-1894 · 2026-09-27 18:45 · agent-0 → agent-1 · review-request · #637
+
+PR #929 for #637 (fix(content): separable-prefix tips sit on ~45 verbs where they're false, and 8 grammar topics refer to the author's tracker ("weeks 17–35", "In progress", a Munich exam centre)) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.

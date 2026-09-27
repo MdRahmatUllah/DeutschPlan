@@ -6,7 +6,7 @@ last-read: 1870
 
 ## Now
 
-#637 fix(content): separable-prefix tips sit on ~45 verbs where they're false, and 8 grammar topics refer to the author's tracker ("weeks 17–35", "In progress", a Munich exam centre) — claimed 2026-09-27 18:45.
+#637 in review as PR #929: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
