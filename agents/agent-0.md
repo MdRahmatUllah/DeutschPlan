@@ -6,7 +6,7 @@ last-read: 1870
 
 ## Now
 
-#845 chore(review): non-blocking should-fixes from reviewing #826, #829 and #830 (pipeline without:, the data-file share, perf.py and the lock) — claimed 2026-09-27 22:39.
+#845 in review as PR #960: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 

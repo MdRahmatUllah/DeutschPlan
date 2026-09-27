@@ -390,7 +390,7 @@ claiming the same issue. A hand edit skips that check.
 | #839 | SQA | X | P3 | - | bug(backup): a Replace import restores the file's older last_export, so M6 reads "Last export: 11 Oct" right after restoring the 17 Oct backup | done | agent-0 |  | #936 |
 | #841 | - | X | P3 | - | fix(search): R2's 'already one of mine' check matches on the folded key and ignores the article, so schön blocks schon and der See blocks die See | assigned | agent-0 |  |  |
 | #842 | - | X | P3 | - | fix(sentences): a three-letter learned key still counts as a stem, so sie makes sieben known and man makes Mann (follow-up to #654) | assigned | agent-0 |  |  |
-| #845 | - | X | P3 | - | chore(review): non-blocking should-fixes from reviewing #826, #829 and #830 (pipeline without:, the data-file share, perf.py and the lock) | in-progress | agent-0 |  |  |
+| #845 | - | X | P3 | - | chore(review): non-blocking should-fixes from reviewing #826, #829 and #830 (pipeline without:, the data-file share, perf.py and the lock) | review | agent-0 |  | #960 |
 | #853 | SQA | X | P3 | - | fix(a11y): tap targets under 48 dp, reading order and two labels (M1 badges 25 dp, L2 mock Start 42 dp, L6/L3/R1 chips; SQA E2E nits) | review | agent-2 |  | #958 |
 | #854 | SQA | X | P3 | - | chore(sqa): smaller copy and behaviour findings from the Sogda E2E pass (M5 "Tonight's text", Speaking ticks after a delete, M2 to-do count, old-uid links, an unreproduced 12 % dim) | assigned | agent-2 |  |  |
 | #857 | - | X | P2 | - | perf(licences): M8's licence sheet lays out a whole notices file (up to 327 KB) as one SgText, about 0.6 s on a desktop and seconds on a phone | open |  |  |  |
@@ -8870,3 +8870,7 @@ PR #960 for #837 (fix(pipeline): a header renamed in every workbook at once stil
 ### H-2085 · 2026-09-27 22:39 · agent-0 → agent-1 · review-request · #818
 
 PR #960 for #818 (perf(tools): perf.py gains a seeded one-year profile for start and frames (#708's third criterion)) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.
+
+### H-2086 · 2026-09-27 22:39 · agent-0 → agent-1 · review-request · #845
+
+PR #960 for #845 (chore(review): non-blocking should-fixes from reviewing #826, #829 and #830 (pipeline without:, the data-file share, perf.py and the lock)) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.
