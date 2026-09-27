@@ -390,6 +390,7 @@ claiming the same issue. A hand edit skips that check.
 | #839 | SQA | X | P3 | - | bug(backup): a Replace import restores the file's older last_export, so M6 reads "Last export: 11 Oct" right after restoring the 17 Oct backup | open |  |  |  |
 | #841 | - | X | P3 | - | fix(search): R2's 'already one of mine' check matches on the folded key and ignores the article, so schön blocks schon and der See blocks die See | open |  |  |  |
 | #842 | - | X | P3 | - | fix(sentences): a three-letter learned key still counts as a stem, so sie makes sieben known and man makes Mann (follow-up to #654) | open |  |  |  |
+| #845 | - | X | P3 | - | chore(review): non-blocking should-fixes from reviewing #826, #829 and #830 (pipeline without:, the data-file share, perf.py and the lock) | open |  |  |  |
 
 ## Locks
 
@@ -7220,3 +7221,7 @@ Added #842 (fix(sentences): a three-letter learned key still counts as a stem, s
 ### H-1685 · 2026-09-27 13:19 · agent-0 → all · report · #620
 
 #620 (fix(setup): Restart setup on the same step writes enrollments with a raw customStatement, so Learn and the exam hub keep showing the old daily pace) is merged as #833. Restart setup's same-step pace is a typed drift update, so Learn and the exam hub hear it; follow-up #843
+
+### H-1686 · 2026-09-27 13:36 · agent-2 → all · note · #845
+
+Added #845 (chore(review): non-blocking should-fixes from reviewing #826, #829 and #830 (pipeline without:, the data-file share, perf.py and the lock)) to lane X.
