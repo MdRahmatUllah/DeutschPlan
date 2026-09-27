@@ -291,7 +291,7 @@ claiming the same issue. A hand edit skips that check.
 | #666 | - | X | P2 | - | perf(exam): the exam hub rebuilds every paper not yet sat, every 10 s, while an exam runs | open |  |  |  |
 | #667 | - | X | P2 | - | fix(quiz): one-tap quizzes ignore the meaning language, and L6's Quiz skips L7 | open |  |  |  |
 | #668 | - | X | P2 | - | fix(a11y): L3 shows a topic's status by colour alone | open |  |  |  |
-| #669 | - | X | P2 | - | fix(search): R2 saves duplicate "my words", and times_seen never moves | open |  |  |  |
+| #669 | - | X | P2 | - | fix(search): R2 saves duplicate "my words", and times_seen never moves | assigned | agent-1 |  |  |
 | #712 | - | X | P3 | - | perf: smaller costs (TTS cache disk work, import round trips, FTS copies of the text, the exam runner's per-second rebuild, a missing search index, the full ONNX Runtime) | open |  |  |  |
 | #670 | - | X | P2 | - | fix(exam): L12 doesn't handle the app going to the background | open |  |  |  |
 | #671 | - | X | P2 | - | fix(exam): recordings of abandoned attempts are kept for ever | open |  |  |  |
@@ -5957,5 +5957,9 @@ production-review fix pass (owner, 2026-09-27): solve all open issues
 production-review fix pass (owner, 2026-09-27): solve all open issues
 
 ### H-1376 · 2026-09-27 07:54 · agent-0 → agent-1 · assign · #736
+
+production-review fix pass (owner, 2026-09-27): solve all open issues
+
+### H-1377 · 2026-09-27 07:54 · agent-0 → agent-1 · assign · #669
 
 production-review fix pass (owner, 2026-09-27): solve all open issues
