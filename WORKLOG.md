@@ -1724,3 +1724,4 @@ able to tell what is going on without asking.
 - 2026-09-27 21:55 · agent-1 #756 · claimed: bug(models): the download notification doesn't follow the download: frozen at 11 % on a retry, and "Model download finished" during a whole second download
 - 2026-09-27 21:55 · agent-1 #756 · PR #953 open; review requested from all
 - 2026-09-27 21:55 · agent-1 #757 · claimed: bug(settings): M3's Voice engine row keeps "Phone voice · Supertonic not downloaded" after the download finishes, until the app restarts
+- 2026-09-27 21:56 · agent-1 #757 · PR #953 open; review requested from all
