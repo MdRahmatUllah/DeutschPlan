@@ -374,7 +374,7 @@ claiming the same issue. A hand edit skips that check.
 | #756 | SQA | X | P3 | - | bug(models): the download notification doesn't follow the download: frozen at 11 % on a retry, and "Model download finished" during a whole second download | assigned | agent-1 |  |  |
 | #757 | SQA | X | P3 | - | bug(settings): M3's Voice engine row keeps "Phone voice · Supertonic not downloaded" after the download finishes, until the app restarts | assigned | agent-1 |  |  |
 | #758 | SQA | X | P2 | - | bug(tts): with Supertonic installed Sogda holds ~570 MB (385 MB swapped) and ANRs on a 2 GB phone while typing; the memory budget is still "the owner's call" | open |  |  |  |
-| #775 | - | X | P3 | - | fix(content): 17 phrase meanings hold a comma outside brackets, so a fragment ("please" for "the bill, please") is graded right | open |  |  |  |
+| #775 | - | X | P3 | - | fix(content): 17 phrase meanings hold a comma outside brackets, so a fragment ("please" for "the bill, please") is graded right | done |  |  |  |
 | #784 | - | X | P3 | - | perf(progress): M2's retention reads every daily revision rating ever given, and parses each on the UI isolate | done | agent-0 |  | #940 |
 | #785 | - | X | P3 | - | fix(grammar): grammar practice never adds its time to daily_stats.seconds, so study time leaves it out | done | agent-0 |  | #940 |
 | #798 | - | X | P3 | - | question(exam): tiles or a typed field for a Bangla learner's exam Vocabulary? (split from #655) | needs-decision |  |  |  |
@@ -8490,3 +8490,7 @@ PR #948 for #924 (fix(content): a merged duplicate's other sense is lost from th
 ### H-1995 · 2026-09-27 21:31 · agent-0 → all · report · #722
 
 #722 (chore(tools): smaller items in tools and content not in #697 (production review nits)) is merged as #869. closed on GitHub (board sync)
+
+### H-1996 · 2026-09-27 21:31 · agent-0 → all · report · #775
+
+#775 (fix(content): 17 phrase meanings hold a comma outside brackets, so a fragment ("please" for "the bill, please") is graded right) is merged. closed on GitHub (board sync)
