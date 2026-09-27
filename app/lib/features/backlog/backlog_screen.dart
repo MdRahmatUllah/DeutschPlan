@@ -76,6 +76,9 @@ class Backlog extends _$Backlog {
     BacklogWord row,
   ) async {
     final uid = row.word.word.uid;
+    // Suspending a suspended word changes nothing, so its *Undo* must not
+    // resume it (#728).
+    final wasSuspended = row.word.isSuspended;
     final rating = ref.read(ratingServiceProvider);
     final plans = ref.read(planRepositoryProvider);
     final clock = ref.read(clockProvider);
@@ -101,12 +104,13 @@ class Backlog extends _$Backlog {
     return () async {
       switch (action) {
         case BacklogAction.known:
-          await rating.undo();
+          // Only this word's rating: another made since stays (#728).
+          await rating.undo(expectUid: uid);
         case BacklogAction.suspended:
-          await rating.resume(uid);
+          if (!wasSuspended) await rating.resume(uid);
         case BacklogAction.removed:
           await complete(at: null);
-          await rating.resume(uid);
+          if (!wasSuspended) await rating.resume(uid);
       }
     };
   }
