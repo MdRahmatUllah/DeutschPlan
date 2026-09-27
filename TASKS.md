@@ -275,7 +275,7 @@ claiming the same issue. A hand edit skips that check.
 | #653 | - | X | P2 | - | fix(answer): checkForm waives the umlaut that is the very thing a forms question asks | assigned | agent-1 |  |  |
 | #654 | - | X | P2 | - | fix(sentences): practice-sentence coverage is inflated by short learned keys | assigned | agent-1 |  |  |
 | #655 | - | X | P2 | - | fix(answer): typed Bangla answers aren't normalised for the precomposed nukta letters | assigned | agent-1 |  |  |
-| #656 | - | X | P2 | - | fix(db): migrations: foreign_keys = OFF does nothing inside the transaction, and the FK check runs after the commit | open |  |  |  |
+| #656 | - | X | P2 | - | fix(db): migrations: foreign_keys = OFF does nothing inside the transaction, and the FK check runs after the commit | assigned | agent-0 |  |  |
 | #657 | - | X | P2 | - | security(import): import is a trust boundary that checks only the envelope | open |  |  |  |
 | #658 | - | X | P2 | - | fix(import): restoring onto a fresh phone with Merge (the default) demotes the backup's step and keeps onboarding's settings | open |  |  |  |
 | #659 | - | X | P2 | - | fix(stats): daily_stats.sentences_done is never written | open |  |  |  |
@@ -6357,5 +6357,9 @@ production-review fix pass (owner, 2026-09-27): solve all open issues
 production-review fix pass (owner, 2026-09-27): solve all open issues
 
 ### H-1476 · 2026-09-27 08:02 · agent-0 → agent-0 · assign · #621
+
+production-review fix pass (owner, 2026-09-27): solve all open issues
+
+### H-1477 · 2026-09-27 08:02 · agent-0 → agent-0 · assign · #656
 
 production-review fix pass (owner, 2026-09-27): solve all open issues
