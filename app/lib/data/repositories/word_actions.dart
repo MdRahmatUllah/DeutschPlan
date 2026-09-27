@@ -23,7 +23,16 @@ class WordActions {
   /// A word already planned and not yet studied keeps its one row: a backlog
   /// row moves to today, and back on *Undo*. A second open row would outlive
   /// the first being studied, and serve a learned word again.
+  ///
+  /// One transaction (#688 DA-11): a double tap's second read waits for the
+  /// first insert, and finds the row, rather than failing on its key.
   Future<Undo> addToToday(
+    String uid, {
+    required String today,
+    required String step,
+  }) => _db.transaction(() => _addToToday(uid, today: today, step: step));
+
+  Future<Undo> _addToToday(
     String uid, {
     required String today,
     required String step,
