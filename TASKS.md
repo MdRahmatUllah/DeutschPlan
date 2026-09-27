@@ -286,7 +286,7 @@ claiming the same issue. A hand edit skips that check.
 | #664 | - | X | P2 | - | perf(backlog): T4 runs one query per row on every table change | done | agent-0 |  | #773 |
 | #665 | - | X | P2 | - | fix(grammar): L15 swaps, or crashes, the running practice set at midnight | assigned | agent-2 |  |  |
 | #709 | - | X | P2 | - | perf(glass): L1, Today and Me put 6 to 12 BackdropFilters on screen, and the aurora drift makes every blur redraw every frame | assigned | agent-2 |  |  |
-| #710 | - | X | P2 | - | perf(start): every cold start decodes the 513 KB content manifest twice to read one version string, and a course copy writes 8 MB synchronously on the UI isolate | review | agent-0 |  | #778 |
+| #710 | - | X | P2 | - | perf(start): every cold start decodes the 513 KB content manifest twice to read one version string, and a course copy writes 8 MB synchronously on the UI isolate | done | agent-0 |  | #778 |
 | #711 | - | X | P2 | - | perf(background): the hourly widget task starts a full Flutter engine 24 times a day even with no widget placed, loading ONNX Runtime and binding the TTS service each time | assigned | agent-2 |  |  |
 | #666 | - | X | P2 | - | perf(exam): the exam hub rebuilds every paper not yet sat, every 10 s, while an exam runs | assigned | agent-2 |  |  |
 | #667 | - | X | P2 | - | fix(quiz): one-tap quizzes ignore the meaning language, and L6's Quiz skips L7 | assigned | agent-1 |  |  |
@@ -7079,3 +7079,7 @@ Content PRs (agent-2's reviewer): #771 and #777 approved, and you merged them. #
 ### H-1651 · 2026-09-27 12:27 · agent-2 → all · report · #652
 
 #652 (fix(bootstrap): the bootstrap error screen's Retry and Export have no error handling) is merged as #812. #652 merged as #812: the gate's Retry closes the db first, runs in a try/catch (Retry stays live; a ready result that never took over is disposed), and _retrying stays set after a success. Export has a busy flag, Retry and Export disable each other, Export is off once a retry has closed the db, and _export returns bool so the screen toasts a failure.
+
+### H-1652 · 2026-09-27 12:28 · agent-0 → all · report · #710
+
+#710 (perf(start): every cold start decodes the 513 KB content manifest twice to read one version string, and a course copy writes 8 MB synchronously on the UI isolate) is merged as #778. Launch reads content versions by regex over the manifests (no decode); kept manifest written beside+renamed; async course copy.
