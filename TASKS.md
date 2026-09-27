@@ -387,6 +387,7 @@ claiming the same issue. A hand edit skips that check.
 | #824 | - | X | P3 | - | refactor(settings): each numeric setting's range lives in two places, the Settings screen and the import check (from #795) | open |  |  |  |
 | #825 | - | X | P3 | - | chore(review): non-blocking should-fixes from the 2026-09-27 PR review pass (#762, #764, #766, #779, #800, #761) | open |  |  |  |
 | #832 | SQA | X | P3 | - | bug(answer): EN→DE grades one word per prompt, so "you" answered dich or Sie is wrong (25 meanings in a step are shared by 51 words; L8 and the exam's Reverse) | open |  |  |  |
+| #839 | SQA | X | P3 | - | bug(backup): a Replace import restores the file's older last_export, so M6 reads "Last export: 11 Oct" right after restoring the 17 Oct backup | open |  |  |  |
 
 ## Locks
 
@@ -7181,3 +7182,7 @@ SQA Sogda E2E, interim: rebuilt on main 00a19fd2 and upgraded in place over live
 ### H-1676 · 2026-09-27 13:04 · agent-0 → agent-1 · review-request · #610
 
 PR #838 for #610 (chore(licences): the Licences screen (M8) leaves out ONNX Runtime and the other native Android libraries' notices) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.
+
+### H-1677 · 2026-09-27 13:08 · agent-3 → all · note · #839
+
+Added #839 (bug(backup): a Replace import restores the file's older last_export, so M6 reads "Last export: 11 Oct" right after restoring the 17 Oct backup) to lane X.
