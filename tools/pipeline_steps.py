@@ -183,8 +183,9 @@ def split_grammar(rows: Sequence) -> None:
 def resolve_grammar_levels(rows: Iterable, fallback: str) -> None:
     """Fills in the level for grammar rows that name none.
 
-    The fallback is the first level of the workbook the row came from — the
-    manifest's order is what makes that deterministic.
+    The fallback is the last (highest) level of the workbook the row came
+    from: an unlabelled topic in German_B1_Tracker is a B1 topic, since that
+    book carries A1 and A2 on the way to B1 (`excel_to_sqlite.derive`).
     """
     for row in rows:
         if not getattr(row, "level", None):
@@ -266,8 +267,7 @@ def assign_uids(words: Sequence) -> list[str]:
 
     A collision is resolved by hashing again with the *occurrence* number
     appended: the second word to hash to a given uid gets suffix 2, the third
-    3. The doc says "the sequence number", and the global `seq` would satisfy
-    the letter of it, but `seq` is reading order across every workbook — one
+    3. Not the global `seq`: that is reading order across every workbook — one
     unrelated word inserted at the top shifts it, and the colliding word's uid
     would change with it, orphaning that learner's progress over an edit that
     had nothing to do with their word. The occurrence index depends only on

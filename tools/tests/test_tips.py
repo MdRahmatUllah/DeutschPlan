@@ -326,7 +326,7 @@ class TestTheShippedCourse:
 
         from verify_content import check_tips_fit_their_word_class
 
-        db = sqlite3.connect(self.DB)
+        db = sqlite3.connect(f"{self.DB.as_uri()}?mode=ro", uri=True)
         try:
             assert check_tips_fit_their_word_class(db, SEED) == []
         finally:
@@ -335,7 +335,7 @@ class TestTheShippedCourse:
     def test_versuchen_has_no_tip_and_das_maedchen_keeps_its_own(self):
         import sqlite3
 
-        db = sqlite3.connect(self.DB)
+        db = sqlite3.connect(f"{self.DB.as_uri()}?mode=ro", uri=True)
         try:
 
             def tips(german: str) -> list[str]:

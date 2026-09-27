@@ -954,6 +954,35 @@ ORDER BY w.seq_in_sublevel
       expect(row.read<int>('skipped'), 1);
       expect(row.read<String?>('done'), isNull);
     });
+
+    test('#687 AN-7 a new word skipped, suspended or known today still '
+        'counts as planned, so a top-up never puts one back', () async {
+      // The walk tops a day up to daily_new from `plannedOn`'s count. Skip
+      // and W1's Suspend set `skipped`, Mark known closes the row: none of
+      // them may drop it from the count.
+      await store.addToPlan(monday, PlanKind.newWord, <String>[
+        's1',
+        's2',
+        's3',
+      ]);
+      final plans = PlanRepository(db);
+      await plans.skip(
+        planDate: monday,
+        uid: 's1',
+        kind: repo.PlanKind.newWord,
+      );
+      await plans.complete(
+        planDate: monday,
+        uid: 's2',
+        kind: repo.PlanKind.newWord,
+        at: '${monday}T09:00:00',
+      );
+      expect(await store.plannedOn(monday, PlanKind.newWord), <String>[
+        's1',
+        's2',
+        's3',
+      ]);
+    });
   });
 
   group('the streak queries', () {
