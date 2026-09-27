@@ -237,7 +237,11 @@ the verdict.
   `python tools/plant.py "$TEMP/plants-N.json"`. Paths are relative to `app/`.
 - **Verdicts.** `CAUGHT` (the tests failed: good), `*MISSED*` (strengthen the
   test and plant again), `COMPILE?` (the plant doesn't compile, so it proves
-  nothing: rewrite it), `SKIP` (the snippet isn't in the file exactly once).
+  nothing: rewrite it), `ERROR?` (the run broke without a test failing: fix the
+  run), `HUNG?` (it timed out: plant it again), `SKIP` (the snippet isn't in
+  the file exactly once). Only `CAUGHT` counts, and it needs a non-zero exit
+  with failing tests. The same tests first run unplanted and must pass, or
+  nothing is planted (#685).
 - A plant in a codegen input (a `.drift` file, or a file with a generated part
   it affects) sets `"codegen": true`, and build_runner runs around it.
 - One plant per behaviour the PR claims: an ordering, an edge case, a route, an
