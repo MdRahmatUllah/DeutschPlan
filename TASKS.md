@@ -255,7 +255,7 @@ claiming the same issue. A hand edit skips that check.
 | #637 | - | X | P3 | - | fix(content): separable-prefix tips sit on ~45 verbs where they're false, and 8 grammar topics refer to the author's tracker ("weeks 17–35", "In progress", a Munich exam centre) | assigned | agent-0 |  |  |
 | #638 | - | X | P3 | - | perf(tts): the Supertonic model (about 400 MB) is loaded at every launch and never released, even under memory pressure | assigned | agent-1 |  |  |
 | #639 | - | X | P3 | - | refactor(status): the "done" rule (stability ≥ done_stability_days) is written in five places, in Dart and SQL | assigned | agent-0 |  |  |
-| #640 | - | X | P3 | - | chore(l10n): 4 ARB keys nothing in the app uses, and no test catches an unused key | open |  |  |  |
+| #640 | - | X | P3 | - | chore(l10n): 4 ARB keys nothing in the app uses, and no test catches an unused key | assigned | agent-0 |  |  |
 | #641 | - | X | P3 | - | test: critical-path gaps: the background tasks' database path copies drift_flutter's internal name, and no integration test covers an upgrade with existing progress | open |  |  |  |
 | #642 | - | X | P3 | - | fix(exam): L13's "Add missed words to revision" comes back on every visit and rates the same words Again each time, adding lapses | assigned | agent-2 |  |  |
 | #675 | - | X | P2 | - | fix(answer): the umlaut fold accepts the minimal pair a gap fill, a form or a listening item tests: "hatte" for "hätte", "schon" for "schön", "Mutter" for "Mütter" | assigned | agent-1 |  |  |
@@ -6473,5 +6473,9 @@ production-review fix pass (owner, 2026-09-27): solve all open issues
 production-review fix pass (owner, 2026-09-27): solve all open issues
 
 ### H-1505 · 2026-09-27 08:04 · agent-0 → agent-0 · assign · #664
+
+production-review fix pass (owner, 2026-09-27): solve all open issues
+
+### H-1506 · 2026-09-27 08:05 · agent-0 → agent-0 · assign · #640
 
 production-review fix pass (owner, 2026-09-27): solve all open issues
