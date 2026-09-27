@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-09-27 09:36
+last-seen: 2026-09-27 09:37
 last-read: 1538
 
 ## Now
 
-#679 in review as PR #796: answer review threads; re-run the gate if main moved, then merge.
+#636 fix(content): category tab names cut at Excel's 31 characters leave 25 empty truncated categories, and 25 real ones with no description — claimed 2026-09-27 09:37.
 
 ## Next
 
