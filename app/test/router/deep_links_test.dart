@@ -142,11 +142,18 @@ void main() {
   group('through the real router', () {
     late GoRouter router;
 
+    // A learner who has set up: with nobody enrolled, a link opens setup
+    // (#674), which its own group tests.
+    final enrolled = RouteGuards(
+      hasExamAttempt: (_) async => true,
+      isEnrolled: () async => true,
+    );
+
     Future<void> pumpApp(
       WidgetTester tester, {
       List<Override> extra = const <Override>[],
     }) async {
-      router = buildRouter(guards: RouteGuards.permissive());
+      router = buildRouter(guards: enrolled);
       addTearDown(router.dispose);
 
       await tester.pumpWidget(
@@ -379,6 +386,57 @@ void main() {
 
         expect(location(), '/exam/7');
         expect(find.byType(ExamRunnerScreen), findsOneWidget);
+      });
+    });
+
+    group('#674 FR-S1-01 nobody enrolled yet', () {
+      final notEnrolled = RouteGuards(
+        hasExamAttempt: (_) async => true,
+        isEnrolled: () async => false,
+      );
+
+      Future<void> start(WidgetTester tester, {required String at}) async {
+        router = buildRouter(initialLocation: at, guards: notEnrolled);
+        addTearDown(router.dispose);
+        await tester.pumpWidget(
+          ProviderScope(
+            overrides: todayStub(),
+            child: MaterialApp.router(
+              routerConfig: router,
+              theme: AppTheme.light(),
+              localizationsDelegates: appLocalizationsDelegates,
+              supportedLocales: supportedLocales,
+            ),
+          ),
+        );
+        await tester.pumpAndSettle();
+      }
+
+      testWidgets("a cold start from the widget's link opens setup, not an "
+          'empty Today', (tester) async {
+        // The platform's first route, the intent's link, wins over
+        // bootstrap's `initialLocation` (go_router).
+        tester.platformDispatcher.defaultRouteNameTestValue = 'sogda://today';
+        addTearDown(tester.platformDispatcher.clearDefaultRouteNameTestValue);
+        await start(tester, at: const OnboardingRoute(page: '1').location);
+
+        expect(location(), '/onboarding/1');
+      });
+
+      testWidgets('a link during setup leaves the learner on their page', (
+        tester,
+      ) async {
+        await start(tester, at: '/onboarding/3');
+        await openLink(tester, 'sogda://learn/A2.1');
+
+        expect(location(), '/onboarding/3');
+      });
+
+      testWidgets("so does another app's", (tester) async {
+        await start(tester, at: '/onboarding/3');
+        await openLink(tester, 'x://h/today');
+
+        expect(location(), '/onboarding/3');
       });
     });
 
