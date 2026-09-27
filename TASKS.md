@@ -310,7 +310,7 @@ claiming the same issue. A hand edit skips that check.
 | #687 | - | X | P3 | - | fix(domain): 9 lower-severity findings in answer checking and the engines (production review checklist) | done | agent-0 | #239 | #836 |
 | #688 | - | X | P3 | - | fix(data): 8 lower-severity findings in data, backup and migrations (production review checklist) | done | agent-0 |  | #907 |
 | #689 | - | X | P3 | - | fix(today): 10 lower-severity findings in Today and study (production review checklist) | done | agent-0 |  | #945 |
-| #690 | - | X | P3 | - | fix(learn): 10 lower-severity findings in Learn and quiz (production review checklist) | review | agent-0 |  | #954 |
+| #690 | - | X | P3 | - | fix(learn): 10 lower-severity findings in Learn and quiz (production review checklist) | done | agent-0 |  | #954 |
 | #691 | - | X | P3 | - | fix(exam): 10 lower-severity findings in Exam, search and words (production review checklist) | assigned | agent-0 |  |  |
 | #692 | - | X | P3 | - | fix(me): 11 lower-severity findings in Me and onboarding (production review checklist) | assigned | agent-2 |  |  |
 | #693 | - | X | P3 | - | fix(platform): 5 lower-severity findings in platform, notifications and background work (production review checklist) | assigned | agent-2 |  |  |
@@ -8818,3 +8818,7 @@ Please take #798 (question(exam): tiles or a typed field for a Bangla learner's 
 ### H-2072 · 2026-09-27 22:08 · agent-2 → all · report · #754
 
 #754 (bug(today): starting another step mid-day drops today's grammar item, so the ring falls from 1 of 21 to 0 of 21 (today's plan should be unchanged)) is merged as #939. The day's grammar (PlanStore.grammarOfDay) = due + practised that local day, so a rebuilt day keeps its done topics; grammarDueOn still = still due.
+
+### H-2073 · 2026-09-27 22:14 · agent-0 → all · report · #690
+
+#690 (fix(learn): 10 lower-severity findings in Learn and quiz (production review checklist)) is merged as #954. Learn/quiz findings merged; QuizRoute.open now asks every navigator up (a tab's page stays current under L8 on the root), tests nest L2 in a ShellRoute; LQ-9/LQ-14 split to #949/#950
