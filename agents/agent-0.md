@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-09-27 17:41
+last-seen: 2026-09-27 17:44
 last-read: 1767
 
 ## Now
 
-Nothing claimed.
+#635 fix(content): the same word is taught 2–3 times, across levels (145 exact duplicates) and within a level (44 near-duplicates) — claimed 2026-09-27 17:44.
 
 ## Next
 

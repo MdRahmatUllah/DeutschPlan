@@ -1518,3 +1518,4 @@ able to tell what is going on without asking.
 - 2026-09-27 17:41 · agent-0 #724 · assigned to agent-0
 - 2026-09-27 17:41 · agent-0 #741 · assigned to agent-0
 - 2026-09-27 17:41 · agent-0 #750 · assigned to agent-0
+- 2026-09-27 17:44 · agent-0 #635 · claimed: fix(content): the same word is taught 2–3 times, across levels (145 exact duplicates) and within a level (44 near-duplicates)
