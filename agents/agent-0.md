@@ -6,7 +6,7 @@ last-read: 1870
 
 ## Now
 
-#750 in review as PR #938: answer review threads; re-run the gate if main moved, then merge.
+#724 bug(sentences): tapping a du-imperative in T5 ("Mach die Lampe an.") says "Not a word from the course" for a course verb — 94 example sentences open with one — claimed 2026-09-27 20:29.
 
 ## Next
 
